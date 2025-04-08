@@ -19,7 +19,8 @@ propositional resizing, as an explicit assumption each time it is
 used.
 
 The above notions don't seem to be definable in our spartan univalent
-type theory. Their specifications are as follows:
+type theory (but they are definable with higher-inductive
+types). Their specifications are as follows:
 
   * Quasidecidable propositions.
 
@@ -38,39 +39,39 @@ type theory. Their specifications are as follows:
 
     A σ-sup-lattice has an empty join ⊥ and countable joins ⋁ with
     homomorphisms that preserve them. It automatically has binary
-    joins, which are automatically preserved by homomorphisms.
+    joins, which are automatically preserved by homomorphisms, and the
+    generator is automatically the maximum element.
 
 We have:
 
- * Quasidecidable propositions exist (the precise definition of
-   their existence is given below)  if and only if the free
-   σ-sup-lattice on one generator exists.
+  * The type of quasidecidable propositions exists if and only if the
+    free σ-sup-lattice on one generator exists.
 
-   The quasidecidable propositions form a dominance.
+    The quasidecidable propositions form a dominance.
 
- * The free σ-sup-lattice on one generator, if it exists, is also the
-   initial σ-frame.
+  * The free σ-sup-lattice on one generator, if it exists, is also the
+    initial σ-frame.
 
-   We have that σ-sup-lattice homomorphisms from the free
-   σ-sup-lattice on one generator into a σ-frame qua σ-sup-lattice
-   automatically preserve finite meets and hence are σ-frame
-   homomorphisms.
+    We have that σ-sup-lattice homomorphisms from the free
+    σ-sup-lattice on one generator into a σ-frame qua σ-sup-lattice
+    automatically preserve finite meets and hence are σ-frame
+    homomorphisms.
 
-* Assuming that the free σ-sup-lattice on one generator exists, we
-  have that σ-sup-lattices (and hence σ-frames) have joins of families
-  indexed by quasidecidable propositions.
+ * Assuming that the free σ-sup-lattice on one generator exists, we
+   have that σ-sup-lattices (and hence σ-frames) have joins of
+   families indexed by quasidecidable propositions.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.SubtypeClassifier renaming (⊥ to ⊥Ω ; ⊤ to ⊤Ω)
 open import UF.SubtypeClassifier-Properties
-open import UF.Sets
 
 \end{code}
 
@@ -79,6 +80,7 @@ the existence of propositional truncations, as explicit hypotheses for
 this file.
 
 \begin{code}
+
 module NotionsOfDecidability.QuasiDecidable
         (fe  : Fun-Ext)
         (pe  : Prop-Ext)
@@ -90,6 +92,8 @@ open import UF.Size
 import OrderedTypes.Frame
 import OrderedTypes.sigma-frame
 import OrderedTypes.sigma-sup-lattice
+
+open PropositionalTruncation pt
 
 \end{code}
 
@@ -122,10 +126,7 @@ record quasidecidable-propositions-exist (𝓣 𝓚 : Universe) : 𝓤ω where
  constructor
   quasidecidable-propositions
 
- open PropositionalTruncation pt
-
  field
-
   is-quasidecidable : 𝓣 ̇ → 𝓚 ̇
 
   being-quasidecidable-is-prop : ∀ P → is-prop (is-quasidecidable P)
@@ -170,7 +171,8 @@ record initial-σ-frame-exists (𝓣 : Universe) : 𝓤ω where
 
 \end{code}
 
-And finally the existence of the free σ-sup-lattice on one generator:
+And finally the existence of the free σ-sup-lattice on one generator,
+called ⊤ (because it will be automatically the top element).
 
 \begin{code}
 
@@ -226,23 +228,21 @@ types other than propositional truncation?
 
 \begin{code}
 
-open PropositionalTruncation pt
-
 open import UF.Base
-open import UF.Subsingletons-FunExt
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
-open import UF.UA-FunExt
 open import UF.EquivalenceExamples
-open import UF.Yoneda
-open import UF.Embeddings
 open import UF.Powerset
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
+open import UF.Yoneda
 
 open import Dominance.Definition
 
 \end{code}
 
-Before considering quasidecidable propositions, we review
+Digression. Before considering quasidecidable propositions, we review
 semidecidable ones.
 
 A proposition is semidecidable if it is a countable join of decidable
@@ -250,7 +250,8 @@ propositions. See the paper
 https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
 by Martin Escardo and Cory Knapp.
 
-NB. Semidecidable propositions are called Rosolini propositions in the above reference.
+NB. Semidecidable propositions are called Rosolini propositions in the
+above reference.
 
 \begin{code}
 
@@ -296,7 +297,10 @@ module only-use-of-univalence-in-this-file where
   where
    i   = Σ-flip
    ii  = Σ-cong (λ α → Σ-cong (λ X → ≃-Sym'' (univalence-gives-funext ua)))
-   iii = Σ-cong (λ α → singleton-≃-𝟙 (univalence-via-singletons→ ua (∃ n ꞉ ℕ , α n ＝ ₁)))
+   iii = Σ-cong (λ α → singleton-≃-𝟙
+                        (univalence-via-singletons→
+                          ua
+                          (∃ n ꞉ ℕ , α n ＝ ₁)))
    iv  = 𝟙-rneutral
 
 \end{code}
@@ -313,6 +317,8 @@ End of module only-use-of-univalence-in-this-file.
 The type 𝓢 of semidecidable propositions is not a σ-frame unless we
 have enough countable choice - see the Escardo-Knapp reference above.
 
+End of digression.
+
 The set of quasidecidable propositions, if it exists, is the smallest
 collection of propositions containing 𝟘 and 𝟙 and closed under
 countable joins.
@@ -328,7 +334,7 @@ types in this collection are automatically propositions. The
 minimality condition of the collection amounts to an induction
 principle.
 
-We recall the above convention:
+We recall the above conventions:
 
   * 𝓣 is the universe where the quasidecidable truth values live.
 
@@ -380,11 +386,11 @@ We collect the quasidecidable propositions in the type 𝓠:
  being-true-is-prop : (𝕡 : 𝓠) → is-prop (𝕡 is-true)
  being-true-is-prop (P , i) = quasidecidable-types-are-props P i
 
- 𝓠→Ω : 𝓠 → Ω 𝓣
- 𝓠→Ω (P , i) = P , quasidecidable-types-are-props P i
+ 𝓠-to-Ω : 𝓠 → Ω 𝓣
+ 𝓠-to-Ω (P , i) = P , quasidecidable-types-are-props P i
 
- 𝓠→Ω-is-embedding : is-embedding 𝓠→Ω
- 𝓠→Ω-is-embedding = NatΣ-is-embedding is-quasidecidable is-prop ζ ζ-is-embedding
+ 𝓠-to-Ω-is-embedding : is-embedding 𝓠-to-Ω
+ 𝓠-to-Ω-is-embedding = NatΣ-is-embedding is-quasidecidable is-prop ζ ζ-is-embedding
   where
    ζ : (P : 𝓣 ̇ ) → is-quasidecidable P → is-prop P
    ζ = quasidecidable-types-are-props
@@ -394,8 +400,8 @@ We collect the quasidecidable propositions in the type 𝓠:
                        (being-quasidecidable-is-prop P) (being-prop-is-prop fe)
 
  𝓠-is-set : is-set 𝓠
- 𝓠-is-set = subtypes-of-sets-are-sets 𝓠→Ω
-             𝓠→Ω-is-embedding
+ 𝓠-is-set = subtypes-of-sets-are-sets 𝓠-to-Ω
+             𝓠-to-Ω-is-embedding
              (Ω-is-set fe pe)
 
  ⊥ : 𝓠
@@ -474,14 +480,14 @@ closure under binary products (that is, conjunctions, or meets):
 
 \begin{code}
 
- quasidecidable-closed-under-×
+ quasidecidable-types-form-a-dominance
   : (P : 𝓣 ̇ )
   → is-quasidecidable P
   → (Q : 𝓣 ̇ )
   → (P → is-quasidecidable Q)
   → is-quasidecidable (P × Q)
- quasidecidable-closed-under-× =
-  quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
+ quasidecidable-types-form-a-dominance
+  = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
   where
    F : 𝓣 ̇ → 𝓣 ⁺ ⊔ 𝓚 ̇
    F P = (Q : 𝓣 ̇ ) → (P → is-quasidecidable Q) → is-quasidecidable (P × Q)
@@ -556,10 +562,10 @@ by quasidecidable propositions:
   → is-quasidecidable P
   → ((p : P) → is-quasidecidable (Q p))
   → is-quasidecidable (Σ Q)
- quasidecidable-closed-under-Σ =
-  D3-and-D5'-give-D5 pe is-quasidecidable
-   (quasidecidable-types-are-props)
-   (λ P Q' i → quasidecidable-closed-under-× P i Q')
+ quasidecidable-closed-under-Σ
+  = D3-and-D5'-give-D5 pe is-quasidecidable
+     (quasidecidable-types-are-props)
+     (λ P Q' i → quasidecidable-types-form-a-dominance P i Q')
 
 \end{code}
 
@@ -951,14 +957,15 @@ case to this particular case.
 
 \begin{code}
 
- quasidecidable-induction₀ :
-     (F : 𝓣 ̇ → 𝓚 ̇ )
-   → ((P : 𝓣 ̇ ) → is-prop (F P))
-   → F 𝟘
-   → F 𝟙
-   → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
-   → (P : 𝓣 ̇ ) →  is-quasidecidable P → F P
- quasidecidable-induction₀ F F-is-prop-valued F₀ F₁ Fω P P-is-quasidecidable = γ
+ quasidecidable-induction₀
+  : (F : 𝓣 ̇ → 𝓚 ̇ )
+  → ((P : 𝓣 ̇ ) → is-prop (F P))
+  → F 𝟘
+  → F 𝟙
+  → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
+  → (P : 𝓣 ̇ ) →  is-quasidecidable P → F P
+ quasidecidable-induction₀ F F-is-prop-valued F₀ F₁ Fω P P-is-quasidecidable
+  = γ
   where
    A : (P : 𝓣 ̇ ) → Ω 𝓚
    A P = F P , F-is-prop-valued P
@@ -1036,7 +1043,8 @@ quasidecidable propositions to the above hypothetical development.
   , ((𝓑 : σ-SupLat 𝓤 𝓥) (u : ⟨ 𝓑 ⟩)
         → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
                                   × (f t ＝ u))
- free-σ-suplat-on-one-generator-exists {𝓤} {𝓥} = QD , ⊤ , QD-is-free-σ-SupLat
+ free-σ-suplat-on-one-generator-exists {𝓤} {𝓥}
+  = QD , ⊤ , QD-is-free-σ-SupLat
   where
    open hypothetical-quasidecidability
           (quasidecidable-propositions
@@ -1079,13 +1087,13 @@ module hypothetical-free-σ-SupLat-on-one-generator where
 
  open import OrderedTypes.sigma-sup-lattice fe
 
- module assumption
-        {𝓣 𝓚 : Universe}
-        (𝓐 : σ-SupLat 𝓣 𝓚)
-        (⊤ : ⟨ 𝓐 ⟩)
-        (𝓐-free : {𝓥 𝓦 : Universe} (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩)
-                → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
-                                         × (f ⊤ ＝ t))
+ module assumptions
+         {𝓣 𝓚 : Universe}
+         (𝓐 : σ-SupLat 𝓣 𝓚)
+         (⊤ : ⟨ 𝓐 ⟩)
+         (𝓐-free : {𝓥 𝓦 : Universe} (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩)
+                 → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
+                                          × (f ⊤ ＝ t))
         where
 
 \end{code}
@@ -1326,7 +1334,8 @@ least upper bound of the weakly constant family λ (_ : a ＝ ⊤) → t:
 
 \end{code}
 
-Such joins are absolute, in the sense that they are preserved by all homomorphisms:
+Such joins are absolute, in the sense that they are preserved by all
+homomorphisms:
 
 \begin{code}
 
@@ -1986,15 +1995,15 @@ application of the submodule hypothetical-quasidecidability.
    → is-quasidecidable P
    → ((p : P) → is-quasidecidable (Q p))
    → is-quasidecidable (Σ Q)
-  quasidecidable-closed-under-Σ =
-   hypothetical-quasidecidability.quasidecidable-closed-under-Σ
-     (quasidecidable-propositions
-        is-quasidecidable
-        being-quasidecidable-is-prop
-        𝟘-is-quasidecidable
-        𝟙-is-quasidecidable
-        quasidecidable-closed-under-ω-joins
-        quasidecidable-induction)
+  quasidecidable-closed-under-Σ
+   = hypothetical-quasidecidability.quasidecidable-closed-under-Σ
+      (quasidecidable-propositions
+         is-quasidecidable
+         being-quasidecidable-is-prop
+         𝟘-is-quasidecidable
+         𝟙-is-quasidecidable
+         quasidecidable-closed-under-ω-joins
+         quasidecidable-induction)
 
 \end{code}
 
@@ -2230,7 +2239,8 @@ joins.
    → is-q-embeddingl f
    → (b : ℕ → ⟨ 𝓑 ⟩)
    → Σ c ꞉ ⟨ 𝓑 ⟩ , (c is-the-join-of (b ∘ f) on 𝓑)
-  σ-suplats-have-quasidecidable-joins' {𝓥} {𝓦} 𝓑 {I} f q b = c , α , β
+  σ-suplats-have-quasidecidable-joins' {𝓥} {𝓦} 𝓑 {I} f q b
+   = c , α , β
    where
     g : I → ⟨ 𝓑 ⟩
     g = b ∘ f
@@ -2342,8 +2352,8 @@ quasidecidability:
    → F 𝟙
    → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
    → (P : 𝓣 ̇ ) → is-quasidecidable₀ P → F P
-  quasidecidable₀-induction F i F₀ F₁ Fω P q =
-   quasidecidable-induction F i F₀ F₁ Fω P (⌜ quasidecidability-resizing P ⌝⁻¹ q)
+  quasidecidable₀-induction F i F₀ F₁ Fω P q
+   = quasidecidable-induction F i F₀ F₁ Fω P (⌜ quasidecidability-resizing P ⌝⁻¹ q)
 
 \end{code}
 
@@ -2375,13 +2385,13 @@ theorem₂ {𝓣} {𝓤} f = quasidecidable-propositions
  where
   open free-σ-SupLat-on-one-generator-exists f
   open hypothetical-free-σ-SupLat-on-one-generator
-  open assumption {𝓣} {𝓤} 𝓐 ⊤ 𝓐-free
+  open assumptions {𝓣} {𝓤} 𝓐 ⊤ 𝓐-free
 
 theorem₃ {𝓣} {𝓚} f = initial-σ-frame 𝓐-qua-σ-frame 𝓐-qua-σ-frame-is-initial
  where
   open free-σ-SupLat-on-one-generator-exists f
   open hypothetical-free-σ-SupLat-on-one-generator
-  open assumption {𝓣} {𝓚} 𝓐 ⊤ 𝓐-free
+  open assumptions {𝓣} {𝓚} 𝓐 ⊤ 𝓐-free
 
 theorem₄ {𝓣} {𝓚} ρ = quasidecidable-propositions
                        is-quasidecidable
@@ -2395,7 +2405,7 @@ theorem₄ {𝓣} {𝓚} ρ = quasidecidable-propositions
 
 \end{code}
 
-TODO:
+TODO.
 
   ⋆ Very little here has to do with the nature of the type ℕ. We never
     used zero, successor, or induction! (But they are used in another
