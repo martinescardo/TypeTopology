@@ -1385,8 +1385,9 @@ that SCSC implies EKC.
 
 We briefly sketch the proof of the observation.
 
-(1) Assume P : 𝓤 is semidecidable and Q : P → 𝓥.
-    We are to show that Σ Q is semidecidable.
+(1) Assume P : 𝓤 is semidecidable and Q : P → 𝓥 a family of
+    semidecidable propositions.  We are to show that Σ Q is
+    semidecidable.
 
 (2) Find α : ℕ → 𝟚 witnesses the semidecidability of P.
 
