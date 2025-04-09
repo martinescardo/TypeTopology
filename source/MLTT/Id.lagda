@@ -57,7 +57,7 @@ transport⁻¹ B p = transport B (p ⁻¹)
 \end{code}
 
 Added 4th Feb 2025. For the above definition, we have the definitional
-equality p ∙ refl = p. In order to simplify some computatations, we
+equality p ∙ refl = p. In order to simplify some computations, we
 include a version with refl ∙ q = q definitionally.
 
 \begin{code}
@@ -68,6 +68,14 @@ refl ∙' q = q
 ∙-agrees-with-∙' : {X : 𝓤 ̇ } {x y z : X} (p : x ＝ y) (q : y ＝ z)
                  → p ∙' q ＝ p ∙ q
 ∙-agrees-with-∙' refl refl = refl
+
+right-unit-law-∙ : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y)
+                 → p ∙ refl ＝ p
+right-unit-law-∙ _ = refl
+
+left-unit-law-∙ : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y)
+                 → refl ∙ p ＝ p
+left-unit-law-∙ refl = refl
 
 \end{code}
 
