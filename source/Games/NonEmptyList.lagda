@@ -24,6 +24,9 @@ List⁺ X = Σ xs ꞉ List X , is-non-empty xs
 
 module _ {X : Type} where
 
+ [_]⁺ : X → List⁺ X
+ [ x ]⁺ = (x ∷ []) , cons-is-non-empty
+
  head⁺ : List⁺ X → X
  head⁺ ((x ∷ xs) , cons-is-non-empty) = x
 
