@@ -4,7 +4,7 @@ We will prove some results about cocones of spans.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import UF.FunExt
 
