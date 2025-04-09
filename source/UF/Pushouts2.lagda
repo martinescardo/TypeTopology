@@ -272,8 +272,6 @@ computation rules and the uniqueness principles.
        (u , H , H' , M)
        (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)))
 
-\end{code}
-
  pushout-uniqueness-inll : {X : 𝓣 ̇}
                          → (u u' : pushout → X)
                          → (H : (a : A) → u (inll a) ＝ u' (inll a))
@@ -293,6 +291,8 @@ computation rules and the uniqueness principles.
        (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue))
        (u , H , H' , M)
        (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)))
+
+\end{code}
 
  pushout-uniqueness-inrr : {X : 𝓣 ̇}
                          → (u u' : pushout → X)
