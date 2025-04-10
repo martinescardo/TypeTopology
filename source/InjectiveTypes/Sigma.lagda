@@ -10,7 +10,7 @@ motivation, the reader should check [1].
 Two major improvements here are that
 
  1. We don't require the canonical map to be an equivalence - we
-    merely require it to have a section (*). (So it is easier to apply
+    merely require it to have a section. (So it is easier to apply
     the theorems as there are fewer things to check.)
 
  2. We don't restrict to a particular flabiness structure, whereas in [1]
@@ -82,8 +82,9 @@ module _ {X : 𝓤 ̇ }
 
 \end{code}
 
-We now give a sufficient *compatibility* condition to derive the
-aflabbiness of Σ x ꞉ X , A x from that of X.
+We now give a sufficient condition to derive the aflabbiness of the
+type Σ x ꞉ X , A x from that of X, consisting of given "compatibility
+data".
 
 In order to extend f' as in the diagram below, first notice that it is
 of the form ⟨ f , g ⟩ with f as in the previous diagram and
@@ -98,8 +99,8 @@ g : (h : p holds) → A (f h).
                    v
                Σ x ꞉ X , A x.
 
-Our compatibility condition says that the map ρ defined below has a
-section, so that we can define the extension (x , a) by
+Our compatibility data is a specified section for the map ρ defined
+below, so that we can define the extension (x , a) by
 
  x = extension ϕ p f,
  a = the section of ρ applied to g.
@@ -112,22 +113,19 @@ section, so that we can define the extension (x , a) by
 
 \end{code}
 
-Our first objective is to prove that Σ x ꞉ X , A x is aflabby if the
-following compatibility condition holds. For a motivation for this
-compatibility condition, see the file
-InjectiveTypes.MathematicalStructures.
+Our first objective construct aflabbiness data for the type
+Σ x ꞉ X , A x from the following compatibility data. For a motivation
+for this data, see the file InjectiveTypes.MathematicalStructures.
 
 \begin{code}
 
- compatibility-condition : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺)  ̇
- compatibility-condition = (p : Ω 𝓦)
-                           (f : p holds → X)
-                         → has-section (ρ p f)
-
+ compatibility-data : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺)  ̇
+ compatibility-data = (p : Ω 𝓦)
+                      (f : p holds → X)
+                    → has-section (ρ p f)
 \end{code}
 
-NB. Notice that our compatibility condition is data rather than
-property. TODO. Should we call it compatibility data?
+We sometimes refer to this data as the compatibility condition.
 
 That this compatibility condition is sufficient but not necessary is
 illustrated in the file InjectiveTypes.InhabitednessTaboo, with the
@@ -141,7 +139,7 @@ ainjective.
 
 \begin{code}
 
- Σ-is-aflabby : compatibility-condition → aflabby (Σ A) 𝓦
+ Σ-is-aflabby : compatibility-data → aflabby (Σ A) 𝓦
  Σ-is-aflabby ρ-has-section = I
   where
    I : aflabby (Σ A) 𝓦
@@ -178,7 +176,7 @@ ainjective.
              ρ p f (σ g) h                    ＝⟨ ap (λ - → - h) (η g) ⟩
              g h                              ∎
 
- Σ-ainjective : compatibility-condition → ainjective-type (Σ A) 𝓦 𝓦
+ Σ-ainjective : compatibility-data → ainjective-type (Σ A) 𝓦 𝓦
  Σ-ainjective = aflabby-types-are-ainjective (Σ A) ∘ Σ-is-aflabby
 
 \end{code}
@@ -190,23 +188,23 @@ section following automatically.
 
 \begin{code}
 
- simplified-compatibility-condition : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
- simplified-compatibility-condition =
+ simplified-compatibility-data : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+ simplified-compatibility-data =
     (p : Ω 𝓦)
     (f : p holds → X)
   → ((h : p holds) → A (f h)) → A (extension ϕ p f)
 
- compatibility-condition-gives-simplified-compatibility-condition :
-    compatibility-condition
-  → simplified-compatibility-condition
- compatibility-condition-gives-simplified-compatibility-condition c p f =
-  section-of (ρ p f) (c p f)
+ compatibility-data-gives-simplified-compatibility-data
+  : compatibility-data
+  → simplified-compatibility-data
+ compatibility-data-gives-simplified-compatibility-data c p f
+  = section-of (ρ p f) (c p f)
 
- simplified-compatibility-condition-gives-compatibility-condition :
-    ((x : X) → is-prop (A x))
-  → simplified-compatibility-condition
-  → compatibility-condition
- simplified-compatibility-condition-gives-compatibility-condition
+ simplified-compatibility-data-gives-compatibility-data
+  : ((x : X) → is-prop (A x))
+  → simplified-compatibility-data
+  → compatibility-data
+ simplified-compatibility-data-gives-compatibility-data
   A-is-prop-valued c p f = I , II
    where
     I : ((h : p holds) → A (f h)) → A (extension ϕ p f)
@@ -217,11 +215,11 @@ section following automatically.
                    (λ h → A-is-prop-valued (f h) ((ρ p f ∘ c p f) g h) (g h))
 
  subtype-is-aflabby : ((x : X) → is-prop (A x))
-                    → simplified-compatibility-condition
+                    → simplified-compatibility-data
                     → aflabby (Σ A) 𝓦
  subtype-is-aflabby A-is-prop-valued c =
   Σ-is-aflabby
-   (simplified-compatibility-condition-gives-compatibility-condition
+   (simplified-compatibility-data-gives-compatibility-data
      A-is-prop-valued
      c)
 
@@ -234,16 +232,16 @@ purpose.
 
 \begin{code}
 
-compatibility-condition-×
+compatibility-data-×
  : {𝓤 𝓥₁ 𝓥₂ 𝓦 : Universe}
    {X : 𝓤 ̇ }
    (ϕ : aflabby X 𝓦)
    {A₁ : X → 𝓥₁ ̇ } {A₂ : X → 𝓥₂ ̇ }
- → compatibility-condition A₁ ϕ
- → compatibility-condition A₂ ϕ
- → compatibility-condition (λ x → A₁ x × A₂ x) ϕ
-compatibility-condition-× {𝓤} {𝓥₁} {𝓥₂} {𝓦} {X} ϕ {A₁} {A₂}
-                          ρ₁-has-section ρ₂-has-section = γ
+ → compatibility-data A₁ ϕ
+ → compatibility-data A₂ ϕ
+ → compatibility-data (λ x → A₁ x × A₂ x) ϕ
+compatibility-data-× {𝓤} {𝓥₁} {𝓥₂} {𝓦} {X} ϕ {A₁} {A₂}
+                     ρ₁-has-section ρ₂-has-section = γ
  where
   A : X → 𝓥₁ ⊔ 𝓥₂ ̇
   A x = A₁ x × A₂ x
@@ -313,7 +311,7 @@ private
            (C : Σ A → 𝓣 ̇ )
          → (ϕ : aflabby (Σ A) 𝓦)
          → ((σ : Σ A) → is-prop (C σ))
-         → simplified-compatibility-condition C ϕ
+         → simplified-compatibility-data C ϕ
          → aflabby (Σ C) 𝓦
  example = subtype-is-aflabby
 
@@ -338,11 +336,11 @@ exemplified in the module InjectiveTypes.MathematicalStructuresMoreGeneral.
 
 \begin{code}
 
-compatibility-condition-with-axioms
+compatibility-data-with-axioms
  : {X : 𝓤 ̇ }
    (ϕ : aflabby X 𝓥)
    (A : X → 𝓦 ̇ )
-   (ρ-has-section : compatibility-condition A ϕ)
+   (ρ-has-section : compatibility-data A ϕ)
    (B : (x : X ) → A x → 𝓥 ̇ )
    (B-is-prop-valued : (x : X) (a : A x) → is-prop (B x a))
    (B-is-closed-under-extension
@@ -351,8 +349,8 @@ compatibility-condition-with-axioms
      → (α : (h : p holds) → A (f h))
      → ((h : p holds) → B (f h) (α h))
      → B (extension ϕ p f) (section-of (ρ A ϕ p f) (ρ-has-section p f) α))
- → compatibility-condition (λ x → Σ a ꞉ A x , B x a) ϕ
-compatibility-condition-with-axioms
+ → compatibility-data (λ x → Σ a ꞉ A x , B x a) ϕ
+compatibility-data-with-axioms
  {𝓤} {𝓥} {𝓦} {X}
  ϕ
  A
