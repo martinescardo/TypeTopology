@@ -261,13 +261,23 @@ Pointed X = X
 Pointed-Π-data : compatibility-data (Pointed {𝓤}) universes-are-aflabby-Π
 Pointed-Π-data {𝓤} = Π-lemma Pointed T T-refl c
  where
+  S : 𝓤 ̇ → 𝓤 ̇
+  S X = X
+
   T : {X Y : 𝓤 ̇ } → (X ≃ Y) → X → Y
   T = ⌜_⌝
 
   T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
   T-refl x = refl
 
-  c : compatibility-data-Π (λ X → X) T T-refl
+  remark₁ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ ) → ρΠ S T T-refl p A ＝ 𝑖𝑑 (S (Π A))
+  remark₁ p A = refl
+
+  remark₂ : compatibility-data-Π S T T-refl
+          ＝ ((p : Ω 𝓤) (A : p holds → 𝓤 ̇ ) → has-section (𝑖𝑑 (S (Π A))))
+  remark₂ = refl
+
+  c : compatibility-data-Π S T T-refl
   c p A = equivs-have-sections id (id-is-equiv (Π A))
 
 ainjectivity-of-type-of-pointed-types : ainjective-type (Pointed-type 𝓤) 𝓤 𝓤
