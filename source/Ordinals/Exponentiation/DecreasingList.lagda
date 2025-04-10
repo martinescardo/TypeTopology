@@ -102,6 +102,10 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
  lex-prop-valued st pr irR (x ∷ l) (y ∷ l') (tail-lex refl u) (tail-lex e v) =
   ap₂ tail-lex (st refl e) (lex-prop-valued st pr irR l l' u v)
 
+ head-lex-lc : {x y : X} {l l' : List X} (r r' : R x y)
+             → head-lex {R = R} {l = l} {l'} r ＝ head-lex r' → r ＝ r'
+ head-lex-lc r r refl = refl
+
 \end{code}
 
 We now consider the subtype of decreasing lists.
