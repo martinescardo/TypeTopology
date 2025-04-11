@@ -37,13 +37,11 @@ open import MLTT.Spartan
 
 open import UF.Base
 open import UF.Equiv
-open import UF.Sets
 open import UF.Subsingletons-FunExt
 
 open import Ordinals.Arithmetic fe
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Equivalence
-open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua renaming (_≼_ to _≼OO_)
 open import Ordinals.Propositions ua
