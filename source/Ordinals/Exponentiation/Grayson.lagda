@@ -66,6 +66,7 @@ module Ordinals.Exponentiation.Grayson
        (pt : propositional-truncations-exist)
        where
 
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.UA-FunExt
 open import UF.Subsingletons
@@ -79,7 +80,6 @@ private
 
  pe : Prop-Ext
  pe = Univalence-gives-Prop-Ext ua
-
 
 open import MLTT.List
 open import MLTT.Plus-Properties
@@ -108,21 +108,13 @@ open PropositionalTruncation pt
 
 \begin{code}
 
-data All {X : 𝓤 ̇ } (P : X → 𝓥 ̇ ) : List X → 𝓤 ⊔ 𝓥 ̇  where
-  [] : All P []
-  _∷_ : {x : X}{xs : List X} → P x → All P xs → All P (x ∷ xs)
-
-All-is-prop : {X : 𝓤 ̇ } (P : X → 𝓥 ̇ )
-            → is-prop-valued-family P
-            → is-prop-valued-family (All P)
-All-is-prop P p [] [] [] = refl
-All-is-prop P p (x ∷ l) (a ∷ as) (a' ∷ as') =
- ap₂ _∷_ (p x a a') (All-is-prop P p l as as')
-
 is-positively-non-minimal : {A : 𝓤 ̇  } (R : A → A → 𝓥 ̇  ) → A → 𝓤 ⊔ 𝓥 ̇
 is-positively-non-minimal {A = A} R x = ∃ a ꞉ A ,  R a x
 
 \end{code}
+
+In an ordinal with a trichotomous least element ⊥, an element x is positively
+non-minimal if and only if ⊥ ≺ x.
 
 \begin{code}
 
@@ -143,10 +135,20 @@ is-positively-non-minimal-iff-positive α (⊥ , τ) x =
 
 \end{code}
 
+The type of Grayson lists on ordinals α and β is the type of lists over α ×ₒ β
+such that the list is (strictly) decreasing in the second component and such
+that all the elements in the first component are positively non-minimal.
+That is, an element looks like
+   (a₀ , b₀) , (a₁ , b₁) , ... , (aₙ , bₙ)
+with bₙ ≺ ... ≺ b₁ ≺ b₀ and each aᵢ is positively non-minimal.
+
+We define it a bit more generally below: instead of two ordinals, we just assume
+two types and a binary relations on each of them, imposing additional
+assumptions only as we need them.
+
 \begin{code}
 
-module _ {A B : 𝓤 ̇  } (R : A → A → 𝓥 ̇  )(R' : B → B → 𝓥 ̇  ) where
-
+module _ {A B : 𝓤 ̇  } (R : A → A → 𝓥 ̇  ) (R' : B → B → 𝓥 ̇  ) where
 
  is-grayson : List (A × B) → 𝓤 ⊔ 𝓥 ̇
  is-grayson l = is-decreasing R' (map pr₂ l)
@@ -232,6 +234,12 @@ module _ {A : 𝓤 ̇  } (R : A → A → 𝓥 ̇  ) where
  sing⁺ : (x y : A⁺) → R⁺ x y → sing (inr x) ≺ sing (inr y)
  sing⁺ x y p = head-lex (inr (refl , p))
 
+\end{code}
+
+Assuming that the order on Grayson lists is a well-order, so is the order on A⁺.
+
+\begin{code}
+
  R⁺-propvalued : is-prop-valued _≺_ → is-prop-valued R⁺
  R⁺-propvalued prop x y p q = ap pr₂ II
   where
@@ -281,22 +289,23 @@ module _ {A : 𝓤 ̇  } (R : A → A → 𝓥 ̇  ) where
 
 \end{code}
 
-However, it is a constructive taboo that the subtype of positively
-non-minimal elements is always an ordinal.
+However, it is a constructive taboo that the subtype of positively non-minimal
+elements is always an ordinal, with essentially the same proof as for
+subtype-of-positive-elements-an-ordinal-implies-EM in
+Ordinals.Exponentiation.Taboos.
 
 \begin{code}
 
-open import UF.ClassicalLogic
-open import UF.SubtypeClassifier
-
 subtype-of-positively-non-minimal-elements-an-ordinal-implies-EM
  : ((α : Ordinal (𝓤 ⁺⁺))
-    → is-well-order (subtype-order α (is-positively-non-minimal (underlying-order α))))
+    → is-well-order
+       (subtype-order α (is-positively-non-minimal (underlying-order α))))
  → EM 𝓤
 subtype-of-positively-non-minimal-elements-an-ordinal-implies-EM {𝓤} hyp = III
  where
   open import Ordinals.OrdinalOfTruthValues fe 𝓤 pe
   open import UF.DiscreteAndSeparated
+  open import UF.SubtypeClassifier
 
   _<_ = subtype-order (OO (𝓤 ⁺)) (is-positively-non-minimal _⊲_)
 
@@ -311,7 +320,8 @@ subtype-of-positively-non-minimal-elements-an-ordinal-implies-EM {𝓤} hyp = II
   Ord⁺ = Σ α ꞉ Ordinal (𝓤 ⁺) , is-positively-non-minimal _⊲_ α
 
   Ωₚ : Ord⁺
-  Ωₚ = Ωₒ , ∣ 𝟘ₒ , ⊥ , eqtoidₒ (ua (𝓤 ⁺)) fe' 𝟘ₒ (Ωₒ ↓ ⊥) (≃ₒ-trans 𝟘ₒ 𝟘ₒ (Ωₒ ↓ ⊥) II I) ∣
+  Ωₚ = Ωₒ , ∣ 𝟘ₒ , ⊥ , eqtoidₒ (ua (𝓤 ⁺)) fe' 𝟘ₒ (Ωₒ ↓ ⊥)
+                               (≃ₒ-trans 𝟘ₒ 𝟘ₒ (Ωₒ ↓ ⊥) II I) ∣
    where
     I : 𝟘ₒ ≃ₒ Ωₒ ↓ ⊥
     I = ≃ₒ-sym (Ωₒ ↓ ⊥) 𝟘ₒ (Ωₒ↓-is-id ua ⊥)
@@ -330,22 +340,22 @@ subtype-of-positively-non-minimal-elements-an-ordinal-implies-EM {𝓤} hyp = II
     I' (.(γ ↓ c') , (c' , refl)) = I₁ , I₂
      where
       I₁ : ((γ , p) < Ωₚ) → ((γ , p) < 𝟚ₚ)
-      I₁ (P , refl) = (inr ⋆ , eqtoidₒ (ua (𝓤 ⁺)) fe' _ _ (≃ₒ-trans (Ωₒ ↓ P) Pₒ (𝟚ₒ ↓ inr ⋆) e₁ e₂))
-       where
-        Pₒ = prop-ordinal (P holds) (holds-is-prop P)
+      I₁ (P , refl) =
+       (inr ⋆ , eqtoidₒ (ua (𝓤 ⁺)) fe' _ _ (≃ₒ-trans (Ωₒ ↓ P) Pₒ (𝟚ₒ ↓ inr ⋆) e₁ e₂))
+        where
+         Pₒ = prop-ordinal (P holds) (holds-is-prop P)
 
-        e₁ : (Ωₒ ↓ P) ≃ₒ Pₒ
-        e₁ = Ωₒ↓-is-id ua P
+         e₁ : (Ωₒ ↓ P) ≃ₒ Pₒ
+         e₁ = Ωₒ↓-is-id ua P
 
-        e₂ : Pₒ ≃ₒ 𝟚ₒ ↓ inr ⋆
-        e₂ = transport⁻¹ (Pₒ ≃ₒ_) (successor-lemma-right 𝟙ₒ)
-                         ((prop-ordinal-≃ₒ (holds-is-prop P) 𝟙-is-prop
-                                           (λ _ → ⋆)
-                                           λ _ → ≃ₒ-to-fun (Ωₒ ↓ P) Pₒ e₁ c'))
+         e₂ : Pₒ ≃ₒ 𝟚ₒ ↓ inr ⋆
+         e₂ = transport⁻¹ (Pₒ ≃ₒ_) (successor-lemma-right 𝟙ₒ)
+                          ((prop-ordinal-≃ₒ (holds-is-prop P) 𝟙-is-prop
+                                            (λ _ → ⋆)
+                                            (λ _ → ≃ₒ-to-fun (Ωₒ ↓ P) Pₒ e₁ c')))
 
       I₂ : ((γ , p) < 𝟚ₚ) → ((γ , p) < Ωₚ)
       I₂ l = ⊲-⊴-gives-⊲ γ 𝟚ₒ Ωₒ l (𝟚ₒ-leq-Ωₒ ua)
-
 
   II : Ω 𝓤 ＝ ⟨ 𝟚ₒ ⟩
   II = ap (⟨_⟩ ∘ pr₁) (hyp' Ωₚ 𝟚ₚ I)
@@ -364,16 +374,17 @@ that GraysonList α β is an ordinal whenever α and β are.
 \begin{code}
 
 GraysonList-always-ordinal-implies-EM
- : ((α β : Ordinal (𝓤 ⁺⁺)) → is-well-order (Grayson-order (underlying-order α) (underlying-order β)))
+ : ((α β : Ordinal (𝓤 ⁺⁺))
+   → is-well-order (Grayson-order (underlying-order α) (underlying-order β)))
  → EM 𝓤
-GraysonList-always-ordinal-implies-EM {𝓤 = 𝓤} hyp = II
+GraysonList-always-ordinal-implies-EM {𝓤} hyp = II
  where
   I : (α : Ordinal (𝓤 ⁺⁺))
-        → is-well-order (subtype-order α (is-positively-non-minimal (underlying-order α)))
+    → is-well-order
+       (subtype-order α (is-positively-non-minimal (underlying-order α)))
   I α = R⁺-wellorder (underlying-order α) (hyp α 𝟙ₒ)
 
   II : EM 𝓤
   II = subtype-of-positively-non-minimal-elements-an-ordinal-implies-EM I
-
 
 \end{code}

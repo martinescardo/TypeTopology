@@ -15,6 +15,8 @@ open import MLTT.Bool
 open import Naturals.Properties
 open import Naturals.Order hiding (minus)
 open import Notation.Order
+open import UF.Base
+open import UF.Subsingletons
 
 data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇ where
  [] : List X
@@ -548,5 +550,22 @@ member-of-map {𝓤} {X} f y (x ∷ xs) (in-tail m) = I IH
 
   I : type-of IH → Σ x' ꞉ X , member x' (x ∷ xs) × (f x' ＝ y)
   I (x , m , e) = x , in-tail m , e
+
+\end{code}
+
+Added 10 April 2025 by Fredrik Nordvall Forsberg.
+
+\begin{code}
+
+data All {X : 𝓤 ̇ } (P : X → 𝓥 ̇ ) : List X → 𝓤 ⊔ 𝓥 ̇  where
+  [] : All P []
+  _∷_ : {x : X} {xs : List X} → P x → All P xs → All P (x ∷ xs)
+
+All-is-prop : {X : 𝓤 ̇ } (P : X → 𝓥 ̇ )
+            → is-prop-valued-family P
+            → is-prop-valued-family (All P)
+All-is-prop P p [] [] [] = refl
+All-is-prop P p (x ∷ l) (a ∷ as) (a' ∷ as') =
+ ap₂ _∷_ (p x a a') (All-is-prop P p l as as')
 
 \end{code}
