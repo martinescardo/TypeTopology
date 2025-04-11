@@ -32,12 +32,13 @@ Since this recursive equation uniquely specifies the operation ^ₒ, this implie
 that Grayson's construction satisfies the equation precisely when it coincides
 with abstract exponentiation.
 Now, Grayson's construction is easily to seen have a trichotomous least element,
-namely the empty list. But given ordinals α and β with least elements, we show
-in Ordinals.Exponentiation.Supremum that if the least element of abstract
-exponentiation of α by β is trichotomous, then the least element of α must be
-too. Hence, the recursive equation cannot hold for Grayson's construction unless
-α has a trichotomous least element, in which case the equation holds indeed, as
-proved in Ordinals.Exponentiation.RelatingConstructions.
+namely the empty list. But given an ordinal α with a least elements, we show in
+Ordinals.Exponentiation.Supremum that if the least element of abstract
+exponentiation of α by 𝟙ₒ is trichotomous, then the least element of α must be
+too. Hence, the recursive equation cannot hold for Grayson's construction (even
+in the very simple case where β ＝ 𝟙ₒ) unless α has a trichotomous least
+element, in which case the equation holds indeed, as proved in
+Ordinals.Exponentiation.RelatingConstructions.
 
 [1] Robin J. Grayson
     Constructive Well-Orderings
