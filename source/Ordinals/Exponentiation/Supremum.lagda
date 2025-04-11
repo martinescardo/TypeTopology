@@ -699,3 +699,65 @@ strictly greater than 𝟙ₒ).
 ^ₒ-order-preserving-in-exponent α β γ h (c , refl) = ^ₒ-⊲-lemma α γ h
 
 \end{code}
+
+Added 11 April 2025.
+
+\begin{code}
+
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua
+
+^ₒ-preserves-trichotomous-least-in-base
+ : (α β : Ordinal 𝓤) (a₀ : ⟨ α ⟩)
+ → is-least α a₀
+ → 𝟙ₒ ⊴ β
+ → is-trichotomous-least (α ^ₒ β) (^ₒ-⊥ α β)
+ → is-trichotomous-least α a₀
+^ₒ-preserves-trichotomous-least-in-base α β a₀ a₀-is-least (f , f-sim) = III
+ where
+  b₀ : ⟨ β ⟩
+  b₀ = f ⋆
+  b₀-eq : β ↓ b₀ ＝ 𝟘ₒ
+  b₀-eq = (simulations-preserve-↓ 𝟙ₒ β (f , f-sim) ⋆) ⁻¹ ∙ 𝟙ₒ-↓
+
+  I : (a : ⟨ α ⟩)
+    → α ^ₒ β ↓ ×ₒ-to-^ₒ α β (^ₒ-⊥ α (β ↓ b₀) , a) ＝ α ↓ a
+  I a = α ^ₒ β ↓ ×ₒ-to-^ₒ α β (^ₒ-⊥ α (β ↓ b₀) , a)                   ＝⟨ I₁ ⟩
+        α ^ₒ (β ↓ b₀) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b₀) ↓ ^ₒ-⊥ α (β ↓ b₀)) ＝⟨ I₂ ⟩
+        α ^ₒ (β ↓ b₀) ×ₒ (α ↓ a) +ₒ 𝟘ₒ                                ＝⟨ I₃ ⟩
+        α ^ₒ (β ↓ b₀) ×ₒ (α ↓ a)                                      ＝⟨ I₄ ⟩
+        α ^ₒ 𝟘ₒ ×ₒ (α ↓ a)                                            ＝⟨ I₅ ⟩
+        𝟙ₒ ×ₒ (α ↓ a)                                                 ＝⟨ I₆ ⟩
+        α ↓ a                                                         ∎
+   where
+    I₁ = ^ₒ-↓-×ₒ-to-^ₒ α β
+    I₂ = ap (α ^ₒ (β ↓ b₀) ×ₒ (α ↓ a) +ₒ_) (^ₒ-↓-⊥ α (β ↓ b₀))
+    I₃ = 𝟘ₒ-right-neutral (α ^ₒ (β ↓ b₀) ×ₒ (α ↓ a))
+    I₄ = ap (λ - → α ^ₒ - ×ₒ (α ↓ a)) b₀-eq
+    I₅ = ap (_×ₒ (α ↓ a)) (^ₒ-satisfies-zero-specification α)
+    I₆ = 𝟙ₒ-left-neutral-×ₒ (α ↓ a)
+
+  II = α ↓ a₀            ＝⟨ II' ⟩
+       𝟘ₒ                ＝⟨ ^ₒ-↓-⊥ α β ⁻¹ ⟩
+       α ^ₒ β ↓ ^ₒ-⊥ α β ∎
+   where
+    II' = initial-segment-of-least-element-is-𝟘ₒ α a₀ a₀-is-least
+
+  III : is-trichotomous-least (α ^ₒ β) (^ₒ-⊥ α β)
+      → is-trichotomous-least α a₀
+  III τ a = III' a (τ (×ₒ-to-^ₒ α β (^ₒ-⊥ α (β ↓ b₀) , a)))
+   where
+    III' : (a : ⟨ α ⟩)
+         → (^ₒ-⊥ α β ＝ ×ₒ-to-^ₒ α β (^ₒ-⊥ α (β ↓ b₀) , a))
+           + (^ₒ-⊥ α β ≺⟨ α ^ₒ β ⟩ ×ₒ-to-^ₒ α β (^ₒ-⊥ α (β ↓ b₀) , a))
+         → (a₀ ＝ a) + (a₀ ≺⟨ α ⟩ a)
+    III' a (inl e) = inl (↓-lc α a₀ a e')
+     where
+      e' = α ↓ a₀                                      ＝⟨ II ⟩
+           α ^ₒ β ↓ ^ₒ-⊥ α β                           ＝⟨ ap (α ^ₒ β ↓_) e ⟩
+           α ^ₒ β ↓ ×ₒ-to-^ₒ α β (^ₒ-⊥ α (β ↓ b₀) , a) ＝⟨ I a ⟩
+           α ↓ a                                       ∎
+    III' a (inr l) = inr (↓-reflects-order α a₀ a
+                           (transport₂ _⊲_ (II ⁻¹) (I a)
+                            (↓-preserves-order (α ^ₒ β) _ _ l)))
+
+\end{code}
