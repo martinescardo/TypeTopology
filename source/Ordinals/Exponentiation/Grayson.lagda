@@ -1,8 +1,58 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu.
 April 2025.
 
-An implementation of Robin Grayson's variant of the decreasing list
-construction of exponentials.
+An implementation of Robin Grayson's variant of the decreasing list construction
+of exponentials, and a proof that it is not, in general, an ordinal, as this
+would imply excluded middle.
+
+Grayson's construction is published as [1] which is essentially Chapter IX of
+Grayson's PhD thesis [2].
+
+The "concrete" list-based exponentiation that we consider in
+Ordinals.Exponentiation.DecreasingList is essentially Grayson's construction,
+except that Grayson does not require the base ordinal α to have a trichotomous
+least element. In fact, he does not even require α to have a least element and
+consequently restricts to those elements x of α for which there exists an a ≺ x.
+We shall refer to this condition as "positively non-minimal" as it is a positive
+reformulation of non-minimality.
+
+Unfortunately, Grayson's construction does not always yield an ordinal
+constructively as we show by a suitable reduction to excluded middle.
+
+However, if α has a trichotomous least element ⊥, then it is straightforward to
+show that x : α is positively non-minimal if and only if ⊥ ≺ x, so that
+Grayson's construction coincides with our concrete construction (and hence is
+always an ordinal).
+
+Grayson moreover claims that his construction satisfies the recursive equation:
+   α ^ₒ β ＝ sup (α ^ₒ (β ↓ b) ×ₒ α) ∨ 𝟙ₒ
+which we used to define abstract exponentiation in
+Ordinals.Exponentiation.Supremum.
+Since this recursive equation uniquely specifies the operation ^ₒ, this implies
+that Grayson's construction satisfies the equation precisely when it coincides
+with abstract exponentiation.
+Now, Grayson's construction is easily to seen have a trichotomous least element,
+namely the empty list. But given ordinals α and β with least elements, we show
+in Ordinals.Exponentiation.Supremum that if the least element of abstract
+exponentiation of α by β is trichotomous, then the least element of α must be
+too. Hence, the recursive equation cannot hold for Grayson's construction unless
+α has a trichotomous least element, in which case the equation holds indeed, as
+proved in Ordinals.Exponentiation.RelatingConstructions.
+
+[1] Robin J. Grayson
+    Constructive Well-Orderings
+    Mathematical Logic Quarterly
+    Volume 28, Issue 33-38
+    1982
+    Pages 481-574
+    https://doi.org/10.1002/malq.19820283304
+
+[2] Robin John Grayson
+    Intuitionistic Set Theory
+    PhD thesis
+    University of Oxford
+    1978
+    https://doi.org/10.5287/ora-azgxayaor
 
 \begin{code}
 
