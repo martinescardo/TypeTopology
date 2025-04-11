@@ -1,9 +1,9 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu.
 April 2025.
 
-An implementation of Robin Grayson's variant of the decreasing list construction
-of exponentials, and a proof that it is not, in general, an ordinal, as this
-would imply excluded middle.
+We implement Robin Grayson's variant of the decreasing list construction of
+exponentials, and a proof that it is not, in general, an ordinal, as this would
+imply excluded middle.
 
 Grayson's construction is published as [1] which is essentially Chapter IX of
 Grayson's PhD thesis [2].
