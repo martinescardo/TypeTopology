@@ -767,3 +767,17 @@ open import Ordinals.Exponentiation.TrichotomousLeastElement ua
                             (↓-preserves-order (α ^ₒ β) _ _ l)))
 
 \end{code}
+
+In particular, we can fix β ＝ 𝟙ₒ.
+
+\begin{code}
+
+^ₒ-reflects-trichotomous-least-in-base'
+ : (α : Ordinal 𝓤) (a₀ : ⟨ α ⟩)
+ → is-least α a₀
+ → is-trichotomous-least (α ^ₒ 𝟙ₒ) (^ₒ-⊥ α 𝟙ₒ)
+ → is-trichotomous-least α a₀
+^ₒ-reflects-trichotomous-least-in-base' α a₀ l t =
+ ^ₒ-reflects-trichotomous-least-in-base α 𝟙ₒ a₀ l (⊴-refl 𝟙ₒ) t
+
+\end{code}
