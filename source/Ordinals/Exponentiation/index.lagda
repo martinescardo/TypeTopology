@@ -1,5 +1,6 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 November 2023 — January 2025
+With additions in April 2025, notably (9) below.
 
 \begin{code}
 
@@ -25,8 +26,8 @@ OVERVIEW
    only if it can be decomposed as 𝟙ₒ +ₒ α' for a necessarily unique ordinal α'.
 8. Constructive taboos involving ordinal exponentiation.
 9. An implementation of Robin Grayson's variant of the decreasing list
-   construction of exponentials.
-
+   construction of exponentials and a proof that it is not, in general, an
+   ordinal.
 
 \begin{code}
 
