@@ -44,7 +44,7 @@ proved in Ordinals.Exponentiation.RelatingConstructions.
     Mathematical Logic Quarterly
     Volume 28, Issue 33-38
     1982
-    Pages 481-574
+    Pages 495-504
     https://doi.org/10.1002/malq.19820283304
 
 [2] Robin John Grayson
