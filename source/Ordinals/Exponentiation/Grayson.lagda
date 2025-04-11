@@ -74,6 +74,28 @@ All-is-prop P p (x ∷ l) (a ∷ as) (a' ∷ as') =
 is-positively-non-minimal : {A : 𝓤 ̇  } (R : A → A → 𝓥 ̇  ) → A → 𝓤 ⊔ 𝓥 ̇
 is-positively-non-minimal {A = A} R x = ∃ a ꞉ A ,  R a x
 
+\end{code}
+
+\begin{code}
+
+is-positively-non-minimal-iff-positive
+ : (α : Ordinal 𝓤)
+ → ((⊥ , τ) : has-trichotomous-least-element α)
+ → (x : ⟨ α ⟩) → is-positively-non-minimal (underlying-order α) x ↔ ⊥ ≺⟨ α ⟩ x
+is-positively-non-minimal-iff-positive α (⊥ , τ) x =
+ (∥∥-rec (Prop-valuedness α ⊥ x) I) , (λ l → ∣ ⊥ , l ∣)
+ where
+   I : (Σ a ꞉ ⟨ α ⟩ , a ≺⟨ α ⟩ x)
+     → ⊥ ≺⟨ α ⟩ x
+   I (a , l) = I' (τ a)
+    where
+     I' : (⊥ ＝ a) + (⊥ ≺⟨ α ⟩ a) → ⊥ ≺⟨ α ⟩ x
+     I' (inl refl) = l
+     I' (inr k) = Transitivity α ⊥ a x k l
+
+\end{code}
+
+\begin{code}
 
 module _ {A B : 𝓤 ̇  } (R : A → A → 𝓥 ̇  )(R' : B → B → 𝓥 ̇  ) where
 
