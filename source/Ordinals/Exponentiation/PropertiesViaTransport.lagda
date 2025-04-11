@@ -178,6 +178,25 @@ exponentiationᴸ-preserves-trichotomy α β h tri-α tri-β =
 
 \end{code}
 
+Added 11 April 2025.
+
+If the base ordinal has a trichotomous least element, then so does α ^ₒ β, which
+provides the converse to ^ₒ-preserves-trichotomous-least-in-base from
+Ordinals.Exponentiation.Supremum.
+
+\begin{code}
+
+^ₒ-has-trichotomous-least-element : (α β : Ordinal 𝓤)
+                                  → has-trichotomous-least-element α
+                                  → has-trichotomous-least-element (α ^ₒ β)
+^ₒ-has-trichotomous-least-element α β h =
+ transport
+  has-trichotomous-least-element
+  (exponentiation-constructions-agree α β h)
+  (exponentiationᴸ-has-trichotomous-least-element α h β)
+
+\end{code}
+
 Since the abstract construction satisfies the ordinal specifications, so does
 the concrete construction.
 
