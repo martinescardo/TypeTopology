@@ -122,6 +122,23 @@ module _ {A B : 𝓤 ̇  } (R : A → A → 𝓥 ̇  )(R' : B → B → 𝓥 ̇ 
  Grayson-order : GraysonList → GraysonList → 𝓤 ⊔ 𝓥 ̇
  Grayson-order (l , _) (l' , _) = lex (times.order R R') l l'
 
+ GraysonList-⊥ : GraysonList
+ GraysonList-⊥ = [] , ([]-decr , [])
+
+\end{code}
+
+We defined is-trichotomous-least for ordinals only, so we inline that definition
+in the following.
+
+\begin{code}
+
+ GraysonList-has-trichotomous-least-element
+  : is-prop-valued R'
+  → (l : GraysonList) → (GraysonList-⊥ ＝ l) + (Grayson-order GraysonList-⊥ l)
+ GraysonList-has-trichotomous-least-element p ([] , g) =
+  inl (to-GraysonList-＝ p refl)
+ GraysonList-has-trichotomous-least-element p ((_ ∷ l) , g) = inr []-lex
+
 \end{code}
 
 We now fix B = 𝟙ₒ, in order to derive properties on the positively
