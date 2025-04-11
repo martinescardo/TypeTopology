@@ -180,9 +180,7 @@ exponentiationᴸ-preserves-trichotomy α β h tri-α tri-β =
 
 Added 11 April 2025.
 
-If the base ordinal has a trichotomous least element, then so does α ^ₒ β, which
-provides the converse to ^ₒ-preserves-trichotomous-least-in-base from
-Ordinals.Exponentiation.Supremum.
+If the base ordinal has a trichotomous least element, then so does α ^ₒ β.
 
 \begin{code}
 

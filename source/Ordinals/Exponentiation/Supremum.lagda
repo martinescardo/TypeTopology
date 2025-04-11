@@ -702,17 +702,23 @@ strictly greater than 𝟙ₒ).
 
 Added 11 April 2025.
 
+Provided α and β have least elements, trichotomy of the least element of α ^ₒ β
+implies trichotomy of the least element of α.
+
+This provides the converse to ^ₒ-has-trichotomous-least-element from
+Ordinals.Exponentiation.PropertiesViaTransport.
+
 \begin{code}
 
 open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 
-^ₒ-preserves-trichotomous-least-in-base
+^ₒ-reflects-trichotomous-least-in-base
  : (α β : Ordinal 𝓤) (a₀ : ⟨ α ⟩)
  → is-least α a₀
  → 𝟙ₒ ⊴ β
  → is-trichotomous-least (α ^ₒ β) (^ₒ-⊥ α β)
  → is-trichotomous-least α a₀
-^ₒ-preserves-trichotomous-least-in-base α β a₀ a₀-is-least (f , f-sim) = III
+^ₒ-reflects-trichotomous-least-in-base α β a₀ a₀-is-least (f , f-sim) = III
  where
   b₀ : ⟨ β ⟩
   b₀ = f ⋆
