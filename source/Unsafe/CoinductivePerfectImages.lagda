@@ -66,15 +66,15 @@ module _
    (λ n (x₁ , p₁) →
     ρ (succ n) (x₁ , (ap (g ∘ f) p₁ ∙ ap g (p₀ ⁻¹) ∙ ρ 0 (x , refl) .pr₂)))
 
- coinductive-perfect-images-are-perfect-images-is-a-retraction
-  : (x : X) (u : is-coinductive-perfect-image f g x)
-  → similarity-of-the-coinductive-perfect-image-predicate
-     (perfect-images-are-coinductive-perfect-images x
-      (coinductive-perfect-images-are-perfect-images x u))
-     u
- coinductive-perfect-images-are-perfect-images-is-a-retraction x u .eq-y = refl
- coinductive-perfect-images-are-perfect-images-is-a-retraction x u .eq-eq = refl
- coinductive-perfect-images-are-perfect-images-is-a-retraction x u .eq-coind x₀ p₀ = {!   !}
+--  coinductive-perfect-images-are-perfect-images-is-a-retraction
+--   : (x : X) (u : is-coinductive-perfect-image f g x)
+--   → similarity-of-the-coinductive-perfect-image-predicate
+--      (perfect-images-are-coinductive-perfect-images x
+--       (coinductive-perfect-images-are-perfect-images x u))
+--      u
+--  coinductive-perfect-images-are-perfect-images-is-a-retraction x u .eq-y = refl
+--  coinductive-perfect-images-are-perfect-images-is-a-retraction x u .eq-eq = refl
+--  coinductive-perfect-images-are-perfect-images-is-a-retraction x u .eq-coind x₀ p₀ = {!   !}
 
 \end{code}
 
@@ -82,24 +82,31 @@ module _
 
 module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} where
 
- has-section-on-coinductive-perfect-image : (x : X)
-                                       → is-coinductive-perfect-image f g x
-                                       → fiber g x
+ has-section-on-coinductive-perfect-image
+  : (x : X)
+  → is-coinductive-perfect-image f g x
+  → fiber g x
  has-section-on-coinductive-perfect-image x ρ = ρ .y , ρ .eq
 
- inverse-on-coinductive-perfect-image : (x : X)
-                                   → is-coinductive-perfect-image f g x → Y
- inverse-on-coinductive-perfect-image x ρ = pr₁ (has-section-on-coinductive-perfect-image x ρ)
+ inverse-on-coinductive-perfect-image
+  : (x : X)
+  → is-coinductive-perfect-image f g x
+  → Y
+ inverse-on-coinductive-perfect-image x ρ =
+  pr₁ (has-section-on-coinductive-perfect-image x ρ)
 
- inverse-on-coinductive-perfect-image-is-section : (x : X)
-                                              → (ρ : is-coinductive-perfect-image f g x)
-                                              → g (inverse-on-coinductive-perfect-image x ρ) ＝ x
- inverse-on-coinductive-perfect-image-is-section x ρ = pr₂ (has-section-on-coinductive-perfect-image x ρ)
+ inverse-on-coinductive-perfect-image-is-section
+  : (x : X)
+  → (ρ : is-coinductive-perfect-image f g x)
+  → g (inverse-on-coinductive-perfect-image x ρ) ＝ x
+ inverse-on-coinductive-perfect-image-is-section x ρ =
+  pr₂ (has-section-on-coinductive-perfect-image x ρ)
 
- inverse-on-coinductive-perfect-image-is-retraction : left-cancellable g
-                                                 → (y : Y)
-                                                 → (ρ : is-coinductive-perfect-image f g (g y))
-                                                 → inverse-on-coinductive-perfect-image (g y) ρ ＝ y
+ inverse-on-coinductive-perfect-image-is-retraction
+  : left-cancellable g
+  → (y : Y)
+  → (ρ : is-coinductive-perfect-image f g (g y))
+  → inverse-on-coinductive-perfect-image (g y) ρ ＝ y
  inverse-on-coinductive-perfect-image-is-retraction lc-g y ρ =
   lc-g (inverse-on-coinductive-perfect-image-is-section (g y) ρ)
 
@@ -109,10 +116,11 @@ If g (f x) is a perfect image then so is x.
 
 \begin{code}
 
- previous-coinductive-perfect-image : left-cancellable g -- Didn't need this assumption here before. Can we do without by tweaking definition?
-                                 → (x : X)
-                                 → is-coinductive-perfect-image f g (g (f x))
-                                 → is-coinductive-perfect-image f g x
+ previous-coinductive-perfect-image
+  : left-cancellable g
+  → (x : X)
+  → is-coinductive-perfect-image f g (g (f x))
+  → is-coinductive-perfect-image f g x
  previous-coinductive-perfect-image lc-g x ρ = ρ .coind x (lc-g (ρ .eq))
 
 \end{code}
@@ -121,11 +129,12 @@ The perfect image of g relative to f is disjoint from the image of f.
 
 \begin{code}
 
- coinductive-perfect-image-is-disjoint : left-cancellable g
-                                    → (x x₀ : X)
-                                    → ¬ is-coinductive-perfect-image f g x
-                                    → (ρ : is-coinductive-perfect-image f g x₀)
-                                    → f x ≠ inverse-on-coinductive-perfect-image x₀ ρ
+ coinductive-perfect-image-is-disjoint
+  : left-cancellable g
+  → (x x₀ : X)
+  → ¬ is-coinductive-perfect-image f g x
+  → (ρ : is-coinductive-perfect-image f g x₀)
+  → f x ≠ inverse-on-coinductive-perfect-image x₀ ρ
  coinductive-perfect-image-is-disjoint lc-g x x₀ nρ ρ p = v ρ
   where
    q : g (f x) ＝ x₀
@@ -151,18 +160,22 @@ module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (g : Y → X) where
 
 module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} where
 
- double-negation-elimination-on-coinductive-perfect-image : is-¬¬-stable-map g
-                                                       → (x : X)
-                                                       → ¬ is-nonperfect-image f g x
-                                                       → is-coinductive-perfect-image f g x
+ double-negation-elimination-on-coinductive-perfect-image
+  : is-¬¬-stable-map g
+  → (x : X)
+  → ¬ is-nonperfect-image f g x
+  → is-coinductive-perfect-image f g x
  double-negation-elimination-on-coinductive-perfect-image ¬¬elim-g x nρ .y =
   ¬¬elim-g x (λ nq → nρ (x , 0 , refl , nq)) .pr₁
  double-negation-elimination-on-coinductive-perfect-image ¬¬elim-g x nρ .eq =
   ¬¬elim-g x (λ nq → nρ (x , 0 , refl , nq)) .pr₂
- double-negation-elimination-on-coinductive-perfect-image ¬¬elim-g x nρ .coind x₀ p =
+ double-negation-elimination-on-coinductive-perfect-image
+  ¬¬elim-g x nρ .coind x₀ p =
   double-negation-elimination-on-coinductive-perfect-image ¬¬elim-g x₀
    (λ (y₀ , n , s , nq₀) →
-    nρ (y₀ , succ n , (ap g (ap f s ∙ p ⁻¹) ∙ ¬¬elim-g x (λ nq → nρ (x , 0 , refl , nq)) .pr₂) , nq₀))
+    nρ (y₀ , succ n
+       , (ap g (ap f s ∙ p ⁻¹) ∙ pr₂ (¬¬elim-g x (λ nq → nρ (x , 0 , refl , nq))))
+       , nq₀))
 
 \end{code}
 
@@ -288,41 +301,13 @@ module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} where
 --      (¬¬elim-g z))
 
 
- coinductive-perfect-images-are-complemented
-  : is-Π-Compact-map f {𝓤 ⊔ 𝓥}
-  → is-Π-Compact-map g {𝓤 ⊔ 𝓥}
-  → is-complemented-map f
-  → is-complemented-map g
-  → is-complemented (is-coinductive-perfect-image f g)
- coinductive-perfect-images-are-complemented αf αg cf cg x =
-  decidable-↔ {!   !} (αg x {!   !} {!   !})
-
 --  coinductive-perfect-images-are-complemented
 --   : is-Π-Compact-map f {𝓤 ⊔ 𝓥}
 --   → is-Π-Compact-map g {𝓤 ⊔ 𝓥}
 --   → is-complemented-map f
 --   → is-complemented-map g
 --   → is-complemented (is-coinductive-perfect-image f g)
---  coinductive-perfect-images-are-complemented αf αg cf cg x = χ (cg x) -- !NOT VALID PROOF!
---   where
---    χ : is-decidable (fiber g x) → is-decidable (is-coinductive-perfect-image f g x)
---    χ (inr ngx) = inr (λ ρ → ngx (ρ .y , ρ .eq))
---    χ (inl u) = γ₀' u
---     where
---      γ₀' : fiber g x → is-decidable (is-coinductive-perfect-image f g x)
---      γ₀' (y₀ , p₀) = γ₀ (cf y₀)
---       where
---        γ₀ : is-decidable (fiber f y₀) → is-decidable (is-coinductive-perfect-image f g x)
---        γ₀ (inr nfy) = inl (record { y = y₀ ; eq = p₀ ; coind = λ x₀ q₀ → 𝟘-elim (nfy (x₀ , (q₀ ⁻¹))) })
---        γ₀ (inl v) = χ₀' v
---         where
---          χ₀' : fiber f y₀ → is-decidable (is-coinductive-perfect-image f g x)
---          χ₀' (x₀ , q₀) = yippie ρ₀
---           where
---            ρ₀ : is-decidable (is-coinductive-perfect-image f g x₀)
---            ρ₀ = coinductive-perfect-images-are-complemented αf αg cf cg x₀
-
---            yippie : is-decidable (is-coinductive-perfect-image f g x₀) → is-decidable (is-coinductive-perfect-image f g x)
---            yippie = {!   !}
+--  coinductive-perfect-images-are-complemented αf αg cf cg x =
+--   decidable-↔ {!   !} (αg x {!   !} {!   !})
 
 \end{code}
