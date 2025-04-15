@@ -180,7 +180,7 @@ The construction is an equivalence.
 
 \end{code}
 
-This gives us the conclusion we want.
+If WLPO holds, the perfect image is decidable and we have our theorem.
 
 \begin{code}
 
