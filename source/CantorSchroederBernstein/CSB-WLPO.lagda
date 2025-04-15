@@ -44,7 +44,7 @@ open import CantorSchroederBernstein.CSB
 
 \end{code}
 
-With this in hand, the construction is straightforward!
+Using our lemmas about perfect images, the construction is straight forward!
 
 \begin{code}
 
@@ -83,6 +83,7 @@ module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} where
 
 \end{code}
 
+Computations with the construction.
 
 \begin{code}
 
@@ -117,7 +118,11 @@ module _
   𝟘-elim (nonperfect-fiber-of-not-perfect-image-is-not-perfect' αf ¬¬elim-g lc-g y nγ v)
  compute-construction-on-not-perfect-image y nγ (inr _) =
   compute-element-in-nonperfect-fiber-of-not-perfect-image' αf ¬¬elim-g lc-g y nγ
+\end{code}
 
+The construction is an equivalence.
+
+\begin{code}
  inverse-construction :
    (y : Y) → is-decidable (is-perfect-image f g (g y)) → X
  inverse-construction y (inl _) = g y
@@ -212,7 +217,8 @@ module _
 
  equiv-CSB-assuming-WLPO : is-complemented-map g
                          → is-embedding g
-                         → is-¬¬-Compact'-map f {𝓤 ⊔ 𝓥} -- TODO: these three imply $f$ is a complemented embedding
+                         -- The following three imply $f$ is a complemented embedding
+                         → is-¬¬-Compact'-map f {𝓤 ⊔ 𝓥}
                          → is-Π-Compact-map f {𝓤 ⊔ 𝓥}
                          → left-cancellable f
                          → X ≃ Y
@@ -233,9 +239,16 @@ module _
   equiv-CSB
    (λ y → ¬¬-elim (cg y))
    (embeddings-are-lc g emb-g)
-   (λ y → decidable-types-with-double-negation-dense-equality-are-¬¬-Compact' (cf y) (λ p q → ¬¬-intro (emb-f y p q)))
+   (λ y →
+    decidable-types-with-double-negation-dense-equality-are-¬¬-Compact'
+     (cf y)
+     (λ p q → ¬¬-intro (emb-f y p q)))
    (embeddings-are-lc f emb-f)
    (lemma cg emb-g
-    (λ y → Σ-Compact-types-are-Π-Compact (fiber f y) (compact-types-are-Compact (decidable-propositions-are-compact (fiber f y) (emb-f y) (cf y)))))
+    (λ y →
+     Σ-Compact-types-are-Π-Compact
+      (fiber f y)
+      (compact-types-are-Compact
+       (decidable-propositions-are-compact (fiber f y) (emb-f y) (cf y)))))
 
 \end{code}

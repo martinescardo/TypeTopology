@@ -194,17 +194,23 @@ decidable-types-with-double-negation-dense-equality-are-¬¬-Compact'
  → ((x y : A) → ¬¬ (x ＝ y))
  → is-¬¬-Compact' A {𝓦}
 decidable-types-with-double-negation-dense-equality-are-¬¬-Compact' d H =
-  cases (λ x B ¬¬elim nnab → x , ¬¬elim x (λ nb → nnab (λ (x' , b') → H x' x (λ p → nb (transport B p b'))))) (λ nx B ¬¬elim nnab → 𝟘-elim (nnab (λ (x , b) → nx x))) d
+  cases
+   (λ x B ¬¬elim nnab →
+    x ,
+    ¬¬elim x (λ nb → nnab (λ (x' , b') → H x' x (λ p → nb (transport B p b')))))
+   (λ nx B ¬¬elim nnab → 𝟘-elim (nnab (λ (x , b) → nx x))) d
 
 is-¬¬-Compact : 𝓤 ̇  → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 is-¬¬-Compact {𝓤} A {𝓥} =
  (B : A → Ω¬¬ 𝓥) → ¬¬ (Σ a ꞉ A , (B a holds¬¬)) → Σ a ꞉ A , (B a holds¬¬)
 
-¬¬-Compact-types-are-¬¬-stable : {A : 𝓤 ̇ } → is-¬¬-Compact A {𝓤} → ¬¬-stable A
+¬¬-Compact-types-are-¬¬-stable : {A : 𝓤 ̇ }
+                               → is-¬¬-Compact A {𝓤} → ¬¬-stable A
 ¬¬-Compact-types-are-¬¬-stable α nna =
  pr₁ (α (λ _ → ((𝟙 , 𝟙-is-prop) , λ _ → ⋆)) (¬¬-functor (λ a → a , ⋆) nna))
 
-¬¬-Compact'-types-are-¬¬-stable : {A : 𝓤 ̇ } → is-¬¬-Compact' A {𝓤} → ¬¬-stable A
+¬¬-Compact'-types-are-¬¬-stable : {A : 𝓤 ̇ }
+                                → is-¬¬-Compact' A {𝓤} → ¬¬-stable A
 ¬¬-Compact'-types-are-¬¬-stable α nna =
  pr₁ (α (λ _ → 𝟙) (λ _ _ → ⋆) (¬¬-functor (λ a → a , ⋆) nna))
 
@@ -213,7 +219,8 @@ is-¬¬-Compact'-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 is-¬¬-Compact'-map {𝓤} {𝓥} {X} {Y} f {𝓦} =
  each-fiber-of f (λ T → is-¬¬-Compact' T {𝓦})
 
-module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} (αf : is-¬¬-Compact'-map f) where
+module _
+  {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} (αf : is-¬¬-Compact'-map f) where
 
  nonperfect-fibers-are-¬¬-stable' : (y : Y)
                                   → ¬¬-stable (has-nonperfect-fiber f g y)
