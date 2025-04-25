@@ -35,8 +35,8 @@ open PropositionalTruncation pt
 
 \end{code}
 
-The set of fixed points of a nucleus coincides is equivalent to its image. This
-is a standard fact of locale theory. See, for example, [Joh82, p. 49].
+The set of fixed points of a nucleus is equivalent to its image. This is a
+standard fact of locale theory; see, for example, [Joh82, p. 49].
 
 \begin{code}
 
