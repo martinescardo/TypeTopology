@@ -14,11 +14,11 @@ open import UF.Classifiers
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
+open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
-open import UF.Size
 
 module Locales.Compactness.CharacterizationOfCompactLocales
         (pt : propositional-truncations-exist)
@@ -28,9 +28,13 @@ module Locales.Compactness.CharacterizationOfCompactLocales
        where
 
 open import Locales.AdjointFunctorTheoremForFrames
-open import Locales.CompactRegular pt fe using (clopens-are-compact-in-compact-frames; is-clopen; compacts-are-clopen-in-zero-dimensional-locales; frame-homomorphisms-preserve-complements; complementation-is-symmetric; is-complement-of)
+open import Locales.CompactRegular pt fe
+ using (clopens-are-compact-in-compact-frames;
+        is-clopen;
+        compacts-are-clopen-in-zero-dimensional-locales;
+        frame-homomorphisms-preserve-complements;
+        complementation-is-symmetric; is-complement-of)
 open import Locales.Compactness.Definition pt fe
--- open import Locales.Complements pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.Frame pt fe renaming (⟨_⟩ to ⟨_⟩∙) hiding (∅)
 open import Locales.GaloisConnection pt fe
