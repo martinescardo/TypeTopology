@@ -28,7 +28,7 @@ module Locales.Compactness.CharacterizationOfCompactLocales
        where
 
 open import Locales.AdjointFunctorTheoremForFrames
-open import Locales.CompactRegular pt fe using (clopens-are-compact-in-compact-frames; is-clopen; compacts-are-clopen-in-zero-dimensional-locales; frame-homomorphisms-preserve-complements; complementation-is-symmetric)
+open import Locales.CompactRegular pt fe using (clopens-are-compact-in-compact-frames; is-clopen; compacts-are-clopen-in-zero-dimensional-locales; frame-homomorphisms-preserve-complements; complementation-is-symmetric; is-complement-of)
 open import Locales.Compactness.Definition pt fe
 -- open import Locales.Complements pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
@@ -56,17 +56,22 @@ instance
 \section{Preliminaries}
 
 The universal property of the inital frame gives that there is a unique frame
-homomorphism `Ω → 𝒪(X)`, for every locale `X`. We denote this by `‼`
+homomorphism `Ω → 𝒪(X)`, for every locale `X`. We denote this by `‼`. We also
+define the shorthand notation `‼⁺` for the underlying function of the frame
+homomorphism in consideration.
 
 \begin{code}
 
 ‼_ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → 𝟎-𝔽𝕣𝕞 pe ─f→ 𝒪 X
 ‼ X = center (𝟎-𝔽𝕣𝕞-initial pe (𝒪 X))
 
+‼⁺[_]_ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Ω 𝓤 → ⟨ 𝒪 X ⟩
+‼⁺[_]_ X = fun (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (‼ X)
+
 \end{code}
 
-We also define some shorthand notation for the right adjoint of this map, which
-we know to exist since the initial frame has a small base.
+We also define some shorthand notation for the right adjoint of this map. We
+know that this exists since the initial frame has a small base.
 
 \begin{code}
 
@@ -80,64 +85,116 @@ we know to exist since the initial frame has a small base.
 
 \section{Characterization of compactness}
 
-An alternative way to express that a locale `X` is compact is by asserting that
-the map `‼ X` is perfect.
+The subscript `_⁺` is intended to approximate the right adjoint notation `_^*`.
+Unfortunately, however, there is no superscript asterisk in unicode, so we use
+the superscript plus instead.
+
+We work in a module parameterized by a locale `X`, being the locale whose
+compactness we are interested in.
 
 \begin{code}
 
-is-compact' : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Ω (𝓤 ⁺)
-is-compact' {𝓤} X =
- PerfectMaps.is-perfect-map X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣ (‼ X)
-  where
-   open Spectrality-of-𝟎 𝓤 pe
+module CharacterizationOfCompactLocales (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
+
+ open Spectrality-of-𝟎 𝓤 pe
+
+ open AdjointFunctorTheorem pt fe X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
+ open PerfectMaps X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
+ open SpectralMaps X (𝟏Loc pe)
+
 
 \end{code}
 
-We now prove that this implies the standard definition of compact locale.
+An alternative way to express that a locale `X` is compact is by asserting that
+the map `‼ X` is perfect, which is to say that its right adjoint is Scott
+continuous.
 
 \begin{code}
 
-compact-implies-compact' : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
-                         → (is-compact' X ⇒ is-compact X) holds
-compact-implies-compact' {𝓤} X κ =
- transport (λ - → is-compact-open X - holds) (q ⁻¹) †
-  where
-   open Spectrality-of-𝟎 𝓤 pe
-   open PerfectMaps X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
+ is-compact' : Ω (𝓤 ⁺)
+ is-compact' = is-perfect-map (‼ X)
 
-   q : 𝟏[ 𝒪 X ] ＝ (‼ X) .pr₁ ⊤
-   q = frame-homomorphisms-preserve-top (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (‼ X) ⁻¹
+\end{code}
 
-   𝕤 : SpectralMaps.is-spectral-map X (𝟏Loc pe) (‼ X) holds
-   𝕤 = perfect-maps-are-spectral (‼ X) κ
+Because a map into a spectral locale is perfect if and only if it reflects
+compact opens (i.e. is “spectral”), this could also be formulated as:
 
-   † : is-compact-open X ((‼ X) .pr₁ ⊤) holds
-   † = 𝕤 𝟏[ 𝟎-𝔽𝕣𝕞 pe ] (𝟎Frm-is-compact 𝓤 pe)
+\begin{code}
 
-compact'-implies-compact : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
-                         → (is-compact X ⇒ is-compact' X) holds
-compact'-implies-compact {𝓤} X κ =
- spectral-maps-are-perfect (𝟎-𝔽𝕣𝕞-is-spectral 𝓤 pe) (‼ X ) †
-  where
-   open Spectrality-of-𝟎 𝓤 pe
-   open PerfectMaps X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
-   open AdjointFunctorTheorem pt fe X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
+ is-compact'' : Ω (𝓤 ⁺)
+ is-compact'' = is-spectral-map (‼ X)
 
-   † : SpectralMaps.is-spectral-map X (𝟏Loc pe) (‼ X) holds
-   † P 𝕔 = clopens-are-compact-in-compact-frames (𝒪 X) κ ((‼ X) .pr₁ P) ‡
-    where
-     ψ : is-clopen (𝟎-𝔽𝕣𝕞 pe) P holds
-     ψ = compact-implies-clopen pe P 𝕔
+ compact'-implies-compact'' : (is-compact' ⇒ is-compact'') holds
+ compact'-implies-compact'' = perfect-maps-are-spectral (‼ X)
 
-     P′ : Ω 𝓤
-     P′ = pr₁ ψ
+ compact''-implies-compact' : (is-compact'' ⇒ is-compact') holds
+ compact''-implies-compact' φ =
+  spectral-maps-are-perfect (𝟎-𝔽𝕣𝕞-is-spectral 𝓤 pe) (‼ X) φ
 
-     ‡ : is-clopen (𝒪 X) ((‼ X) .pr₁ P) holds
-     ‡ = ((‼ X) .pr₁ P′)
-       , frame-homomorphisms-preserve-complements
-          (𝟎-𝔽𝕣𝕞 pe)
-          (𝒪 X)
-          (‼ X)
-          (complementation-is-symmetric (𝟎-𝔽𝕣𝕞 pe) _ _ (pr₂ ψ))
+\end{code}
+
+We now prove that this alternative formulation of compactness implies the
+standard one.
+
+The proof is quite simple:
+
+  - We have to show that the top `𝟏[ 𝒪 X ]` is compact.
+  - Because `‼⁺[ X ]` is a frame homomorphism, we have that `𝟏 = ‼⁺[ X ] ⊤`,
+    so it suffices to show that `‼⁺[ X ] ⊤` is compact.
+  - Since we are given that `‼⁺[ X ] ⊤` preserves compact opens, we just
+    have to show that `⊤` is compact, which we know since the terminal locale
+    is compact.
+
+\begin{code}
+
+ compact-implies-compact' : (is-compact' ⇒ is-compact X) holds
+ compact-implies-compact' κ =
+  transport (λ - → is-compact-open X - holds) (q ⁻¹) †
+   where
+    open Spectrality-of-𝟎 𝓤 pe
+
+    q : 𝟏[ 𝒪 X ] ＝ ‼⁺[ X ] ⊤
+    q = frame-homomorphisms-preserve-top (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (‼ X) ⁻¹
+
+    𝕤 : SpectralMaps.is-spectral-map X (𝟏Loc pe) (‼ X) holds
+    𝕤 = perfect-maps-are-spectral (‼ X) κ
+
+    † : is-compact-open X (‼⁺[ X ] ⊤) holds
+    † = 𝕤 𝟏[ 𝟎-𝔽𝕣𝕞 pe ] (𝟎Frm-is-compact 𝓤 pe)
+
+\end{code}
+
+We now tackle the other direction.
+
+- Suppose `X` is compact in the standard sense.
+- Let `K : Ω` be a compact open of the terminal locale.
+- We need to show that `‼⁺[ X ] K` is compact.
+- Since `X` is and clopens are compact in compact frames, we simply have to
+  show that `‼⁺[ X ] K`.
+- This is easy since we already know that `K` is a clopen in `Ω` (since `Ω` is
+  a Stone locale) and frame homomorphisms preserve complements.
+
+\begin{code}
+
+ compact'-implies-compact : (is-compact X ⇒ is-compact') holds
+ compact'-implies-compact κ = compact''-implies-compact' †
+   where
+    † : is-spectral-map (‼ X) holds
+    † P 𝕔 = clopens-are-compact-in-compact-frames (𝒪 X) κ (‼⁺[ X ] P) ‡
+     where
+      ψ : is-clopen (𝟎-𝔽𝕣𝕞 pe) P holds
+      ψ = compact-implies-clopen pe P 𝕔
+
+      P′ : Ω 𝓤
+      P′ = pr₁ ψ
+
+      ν : is-complement-of (𝒪 X) (‼⁺[ X ] P′) (‼⁺[ X ] P)
+      ν = frame-homomorphisms-preserve-complements
+           (𝟎-𝔽𝕣𝕞 pe)
+           (𝒪 X)
+           (‼ X)(complementation-is-symmetric (𝟎-𝔽𝕣𝕞 pe) _ _ (pr₂ ψ))
+
+      ‡ : is-clopen (𝒪 X) (‼⁺[ X ] P) holds
+      ‡ = (‼⁺[ X ] P′) , ν
 
 \end{code}
