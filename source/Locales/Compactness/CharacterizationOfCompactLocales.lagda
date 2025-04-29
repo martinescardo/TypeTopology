@@ -18,23 +18,28 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
+open import UF.Size
 
 module Locales.Compactness.CharacterizationOfCompactLocales
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
+        (sr : Set-Replacement pt)
        where
 
 open import Locales.AdjointFunctorTheoremForFrames
+open import Locales.CompactRegular pt fe using (clopens-are-compact-in-compact-frames; is-clopen; compacts-are-clopen-in-zero-dimensional-locales; frame-homomorphisms-preserve-complements; complementation-is-symmetric)
 open import Locales.Compactness.Definition pt fe
+-- open import Locales.Complements pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.Frame pt fe renaming (⟨_⟩ to ⟨_⟩∙) hiding (∅)
 open import Locales.GaloisConnection pt fe
-open import Slice.Family
 open import Locales.InitialFrame pt fe
 open import Locales.PerfectMaps pt fe
-open import Locales.TerminalLocale.Properties pt fe
+open import Locales.Spectrality.SpectralityOfOmega pt fe sr
+open import Locales.TerminalLocale.Properties pt fe sr
 open import Notation.UnderlyingType
+open import Slice.Family
 open import UF.Logic
 
 open AllCombinators pt fe
@@ -105,5 +110,31 @@ compact-implies-compact' X κ S δ p =
    γ : index S →
         ∃ (λ i → (poset-of (𝒪 X) PosetNotation.≤ 𝟏[ 𝒪 X ]) (S [ i ]) holds)
    γ i = {! !}
+
+compact'-implies-compact : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+                         → (is-compact X ⇒ is-compact' X) holds
+compact'-implies-compact {𝓤} X κ =
+ spectral-maps-are-perfect (𝟎-𝔽𝕣𝕞-is-spectral 𝓤 pe) (‼ X ) †
+  where
+   open Spectrality-of-𝟎 𝓤 pe
+   open PerfectMaps X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
+   open AdjointFunctorTheorem pt fe X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
+
+   † : SpectralMaps.is-spectral-map X (𝟏Loc pe) (‼ X) holds
+   † P 𝕔 = clopens-are-compact-in-compact-frames (𝒪 X) κ ((‼ X) .pr₁ P) ‡
+    where
+     ψ : is-clopen (𝟎-𝔽𝕣𝕞 pe) P holds
+     ψ = compact-implies-clopen pe P 𝕔
+
+     P′ : Ω 𝓤
+     P′ = pr₁ ψ
+
+     ‡ : is-clopen (𝒪 X) ((‼ X) .pr₁ P) holds
+     ‡ = ((‼ X) .pr₁ P′)
+       , frame-homomorphisms-preserve-complements
+          (𝟎-𝔽𝕣𝕞 pe)
+          (𝒪 X)
+          (‼ X)
+          (complementation-is-symmetric (𝟎-𝔽𝕣𝕞 pe) _ _ (pr₂ ψ))
 
 \end{code}
