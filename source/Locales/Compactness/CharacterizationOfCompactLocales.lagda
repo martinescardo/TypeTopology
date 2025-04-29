@@ -99,17 +99,20 @@ We now prove that this implies the standard definition of compact locale.
 
 compact-implies-compact' : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
                          → (is-compact' X ⇒ is-compact X) holds
-compact-implies-compact' X κ S δ p =
- ∥∥-rec ∃-is-prop γ (directedness-entails-inhabitation (𝒪 X) S δ)
+compact-implies-compact' {𝓤} X κ =
+ transport (λ - → is-compact-open X - holds) (q ⁻¹) †
   where
-   † : ‼₊[ X ] (⋁[ 𝒪 X ] S) ＝ ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ ‼₊[ X ] U ∣ U ε S ⁆
-   † = ⋁[ 𝟎-𝔽𝕣𝕞 pe ]-unique ⁅ ‼₊[ X ] U ∣ U ε S ⁆
-        (‼₊[ X ] (⋁[ 𝒪 X ] S))
-        (κ S δ)
+   open Spectrality-of-𝟎 𝓤 pe
+   open PerfectMaps X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
 
-   γ : index S →
-        ∃ (λ i → (poset-of (𝒪 X) PosetNotation.≤ 𝟏[ 𝒪 X ]) (S [ i ]) holds)
-   γ i = {! !}
+   q : 𝟏[ 𝒪 X ] ＝ (‼ X) .pr₁ ⊤
+   q = frame-homomorphisms-preserve-top (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (‼ X) ⁻¹
+
+   𝕤 : SpectralMaps.is-spectral-map X (𝟏Loc pe) (‼ X) holds
+   𝕤 = perfect-maps-are-spectral (‼ X) κ
+
+   † : is-compact-open X ((‼ X) .pr₁ ⊤) holds
+   † = 𝕤 𝟏[ 𝟎-𝔽𝕣𝕞 pe ] (𝟎Frm-is-compact 𝓤 pe)
 
 compact'-implies-compact : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
                          → (is-compact X ⇒ is-compact' X) holds
