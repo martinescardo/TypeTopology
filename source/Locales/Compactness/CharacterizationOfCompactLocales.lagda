@@ -1,7 +1,8 @@
 ---
-title:        Characterization of compact locales
-author:       Ayberk Tosun
-date-started: 2025-04-23
+title:          Characterizations of compact locales
+author:         Ayberk Tosun
+date-started:   2025-04-23
+date-completed: 2024-04-28
 ---
 
 \begin{code}
