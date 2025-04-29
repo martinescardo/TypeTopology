@@ -120,7 +120,7 @@ addition-left-cancellable x y = ℕ-induction base step
   base h = x      ＝⟨ zero-left-neutral x ⁻¹ ⟩
            0 + x  ＝⟨ h                      ⟩
            0 + y  ＝⟨ zero-left-neutral y    ⟩
-           y ∎
+           y      ∎
 
   step : (k : ℕ)
        → (k + x      ＝ k + y      → x ＝ y)
@@ -128,9 +128,9 @@ addition-left-cancellable x y = ℕ-induction base step
   step k IH r = IH (succ-lc (lemma₁ r))
    where
     lemma₁ : succ k + x ＝ succ k + y → succ (k + x) ＝ succ (k + y)
-    lemma₁ r = succ (k + x)           ＝⟨ succ-left k x ⁻¹ ⟩
-               succ k + x             ＝⟨ r                ⟩
-               succ k + y             ＝⟨ succ-left k y    ⟩
+    lemma₁ r = succ (k + x) ＝⟨ succ-left k x ⁻¹ ⟩
+               succ k + x   ＝⟨ r                ⟩
+               succ k + y   ＝⟨ succ-left k y    ⟩
                succ (k + y) ∎
 
 
@@ -138,9 +138,9 @@ addition-right-cancellable : (x y z : ℕ) → x + z ＝ y + z → x ＝ y
 addition-right-cancellable x y z r = addition-left-cancellable x y z lemma₀
  where
   lemma₀ : z + x ＝ z + y
-  lemma₀ = z + x      ＝⟨ addition-commutativity z x ⟩
-           x + z      ＝⟨ r                          ⟩
-           y + z      ＝⟨ addition-commutativity y z ⟩
+  lemma₀ = z + x ＝⟨ addition-commutativity z x ⟩
+           x + z ＝⟨ r                          ⟩
+           y + z ＝⟨ addition-commutativity y z ⟩
            z + y ∎
 
 \end{code}
