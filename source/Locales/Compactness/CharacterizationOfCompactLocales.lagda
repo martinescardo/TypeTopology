@@ -88,6 +88,54 @@ know that this exists since the initial frame has a small base.
 
 \end{code}
 
+The above map can be thought of as the universal quantifier for the opens of
+locale `X`: it takes some open `U : ⟨ 𝒪 X ⟩` and tells if `U ＝ 𝟏[ 𝒪 X ]`.
+
+\begin{code}
+
+‼₊-is-universal-quantifier-⇒ : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+                             → (U : ⟨ 𝒪 X ⟩)
+                             → (‼₊[ X ] U) holds → U ＝ 𝟏[ 𝒪 X ]
+‼₊-is-universal-quantifier-⇒ {𝓤} X U p = only-𝟏-is-above-𝟏 (𝒪 X) U †
+ where
+  open Spectrality-of-𝟎 𝓤 pe
+  open AdjointFunctorTheorem pt fe X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
+  open PosetReasoning (poset-of (𝒪 X))
+
+  Ⅱ : (‼⁺[ X ] ⊤ ≤[ poset-of (𝒪 X) ] U) holds
+  Ⅱ = adjunction-inequality-backward (‼ X) U ⊤ λ { ⋆ → p }
+
+  Ⅰ : 𝟏[ 𝒪 X ] ＝ ‼⁺[ X ] ⊤
+  Ⅰ = frame-homomorphisms-preserve-top (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (‼ X) ⁻¹
+
+  † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] U) holds
+  † = 𝟏[ 𝒪 X ]     ＝⟨ Ⅰ ⟩ₚ
+      (‼⁺[ X ] ⊤)  ≤⟨ Ⅱ ⟩
+      U            ■
+
+‼₊-is-universal-quantifier-⇐ : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+                             → (U : ⟨ 𝒪 X ⟩)
+                             → U ＝ 𝟏[ 𝒪 X ] → (‼₊[ X ] U) holds
+‼₊-is-universal-quantifier-⇐ {𝓤} X U p = γ ⋆
+ where
+  open Spectrality-of-𝟎 𝓤 pe
+  open AdjointFunctorTheorem pt fe X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
+  open PosetReasoning (poset-of (𝒪 X))
+
+  Ⅰ : 𝟏[ 𝒪 X ] ＝ ‼⁺[ X ] ⊤
+  Ⅰ = frame-homomorphisms-preserve-top (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (‼ X) ⁻¹
+
+  ‡ : (‼⁺[ X ] ⊤ ≤[ poset-of (𝒪 X) ] U) holds
+  ‡ = ‼⁺[ X ] ⊤ ＝⟨ Ⅰ ⁻¹ ⟩ₚ 𝟏[ 𝒪 X ] ＝⟨ p ⁻¹ ⟩ₚ U ■
+
+  γ : (⊤ ⇒ ‼₊[ X ] U) holds
+  γ = adjunction-inequality-forward (‼ X) U ⊤ ‡
+
+\end{code}
+
+For spatial locales, this can be thought of as checking if the verifiable
+property in consideration holds for all points.
+
 \section{Characterization of compactness}
 
 The subscript `_⁺` is intended to approximate the right adjoint notation `_^*`.
