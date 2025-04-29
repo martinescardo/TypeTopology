@@ -2,7 +2,7 @@
 title:          Characterizations of compact locales
 author:         Ayberk Tosun
 date-started:   2025-04-23
-date-completed: 2024-04-28
+date-completed: 2024-04-29
 ---
 
 \begin{code}
@@ -96,6 +96,8 @@ the superscript plus instead.
 
 We work in a module parameterized by a locale `X`, being the locale whose
 compactness we are interested in.
+
+This result was added on 2025-04-29.
 
 \begin{code}
 
