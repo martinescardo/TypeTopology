@@ -249,8 +249,8 @@ module spec-stone-duality-morphisms
  open DistributiveLattice 𝒦⦅Y⦆⁻ hiding (X) renaming (_∧_ to _∧Y⁻_)
  open DistributiveLattice 𝒦⦅Y⦆ hiding (X) renaming (𝟏 to 𝟏y; _∧_ to _∧y_)
 
- to-spectral-map : Spectral-Map X Y → (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻)
- to-spectral-map (𝒻@(f , _) , σ) =
+ 𝒦-Hom : Spectral-Map X Y → (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻)
+ 𝒦-Hom (𝒻@(f , _) , σ) =
   record { h = h ; h-is-homomorphism = α , β , {!!} , {!!} }
    where
     open 𝒦-Duality₁ Y σ₂ using (ι; ι-gives-compact-opens; ι-preserves-𝟏; ι-is-monotone; ι-preserves-∧)
