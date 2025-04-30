@@ -252,12 +252,12 @@ module _ (pt : propositional-truncations-exist) where
 Fixed point theorems for dense maps.
 
 We give an alternative formulation of Lawvere's fixed point theorem using double
-negations. This formulations also leads to a variant of Cantor's theorem. The
+negations. This formulation also leads to a variant of Cantor's theorem. The
 strengthening again only assumes a relaxation of function extensionality: that
 negations are propositions.
 
-The formalization is a repeat of the proofs for the traditional theorems, but
-with double negations substituted in.
+The formalization is a repeat of the proofs for the traditional theorems with
+double negations appropriately substituted in.
 
 \begin{code}
 
