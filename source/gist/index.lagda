@@ -16,4 +16,5 @@ import gist.remove-swap
 import gist.InjectivesVersusAlgebras
 import gist.DependentlyTypedTensors
 import gist.transport-discussion
+
 \end{code}

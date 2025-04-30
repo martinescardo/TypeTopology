@@ -165,6 +165,14 @@ double-negation-elimination-inside-double-negation X = II
   II : ¬¬ (¬¬ X → X)
   II = double-negation-of-implication→ I
 
+\end{code}
+
+The following is the particular case of Lawvere's fixed-point
+combinator defined in the module Various.LawvereFPT, but we can't use
+it here as that module imports this one.
+
+\begin{code}
+
 not-equivalent-to-own-negation' : {A : 𝓤 ̇ } {R : 𝓥 ̇ } → (A ↔ (A → R)) → R
 not-equivalent-to-own-negation' (f , g) = f (g (λ a → f a a)) (g (λ a → f a a))
 

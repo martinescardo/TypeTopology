@@ -1288,3 +1288,4 @@ Added by Fredrik Bakke on the 2nd of April 2025.
   (Π-Compact-types-have-decidable-negations' αX)
 
 \end{code}
+

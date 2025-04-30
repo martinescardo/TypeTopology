@@ -11,7 +11,7 @@ open import MLTT.Spartan hiding (J)
 module Games.NonEmptyList where
 
 open import Games.Monad
-open import MLTT.List hiding (map)
+open import MLTT.List renaming (map to lmap)
 open import Notation.CanonicalMap
 open import UF.Subsingletons
 
@@ -23,6 +23,9 @@ List⁺ : Type → Type
 List⁺ X = Σ xs ꞉ List X , is-non-empty xs
 
 module _ {X : Type} where
+
+ [_]⁺ : X → List⁺ X
+ [ x ]⁺ = (x ∷ []) , cons-is-non-empty
 
  head⁺ : List⁺ X → X
  head⁺ ((x ∷ xs) , cons-is-non-empty) = x
@@ -84,3 +87,11 @@ module List⁺-definitions where
 
  mapᴸ⁺ : {X Y : Type} → (X → Y) → List⁺ X → List⁺ Y
  mapᴸ⁺ = map 𝕃⁺
+
+ lmap⁺ : {X Y : Type} (f : X → Y) (xs : List⁺ X) → List⁺ Y
+ lmap⁺ f xs = lmap f (ι xs) ,
+              map-is-non-empty f (ι xs) (underlying-list⁺-is-non-empty xs)
+
+ mapᴸ⁺-lemma : {X Y : Type} (f : X → Y) (xs : List⁺ X)
+             → mapᴸ⁺ f xs ＝ lmap⁺ f xs
+ mapᴸ⁺-lemma f xs = to-List⁺-＝ (concat-singletons' f (ι xs))

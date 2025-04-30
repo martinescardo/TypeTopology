@@ -104,9 +104,9 @@ We work with hypothetical T and T-refl with the following types.
 \end{code}
 
 The point is that any such T can be equivalently expressed as a
-transport and hence we may apply the above theorem, but it may be
-easier to check the compatibility condition using T rather than transport
-(see examples below).
+transport and hence we may apply the theorems of the import file
+InjectiveTypes.Sigma, but it may be easier to check the compatibility
+condition using T rather than transport (see examples below).
 
 \begin{code}
 
@@ -129,7 +129,7 @@ easier to check the compatibility condition using T rather than transport
 \end{code}
 
 We introduce names for the canonical maps induced by Π- and
-Σ-flabbiness structure on 𝓤.
+Σ-flabbiness structures on 𝓤.
 
 \begin{code}
 
@@ -144,23 +144,26 @@ We introduce names for the canonical maps induced by Π- and
   ρΣ : (p : Ω 𝓤)
        (A : p holds → 𝓤 ̇ )
      → S (Σ A) → ((h : p holds) → S (A h))
-  ρΣ p A s h = T (prop-indexed-sum (holds-is-prop p) h) s
+  ρΣ p A s h = T I s
+   where
+    I : Σ A ≃ A h
+    I = prop-indexed-sum (holds-is-prop p) h
 
 \end{code}
 
 In our applications, we will use Π-flabbiness structure, and it will
-be easier to check compatibility-condition-Π than
-(compatibility-condition S universes-are-aflabby-Π).
+be easier to produce compatibility-data-Π than to produce
+(compatibility-data S universes-are-aflabby-Π).
 
 \begin{code}
 
-  compatibility-condition-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
-  compatibility-condition-Π = (p : Ω 𝓤)
-                              (A : p holds → 𝓤 ̇ )
-                            → has-section (ρΠ p A)
+  compatibility-data-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
+  compatibility-data-Π = (p : Ω 𝓤)
+                         (A : p holds → 𝓤 ̇ )
+                       → has-section (ρΠ p A)
 
-  Π-lemma : compatibility-condition-Π
-          → compatibility-condition S universes-are-aflabby-Π
+  Π-lemma : compatibility-data-Π
+          → compatibility-data S universes-are-aflabby-Π
   Π-lemma t p A = II
    where
     π : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ ) (h : p holds) → Π A ≃ A h
@@ -181,12 +184,12 @@ be easier to check compatibility-condition-Π than
 \end{code}
 
 We could have proved Π-lemma as follows, but then it wouldn't "compute
-enough" for the purposes of e.g. Monoid-Π-condition.
+enough" for the purposes of e.g. Monoid-Π-data.
 
 \begin{code}
 
-  Π-lemma' : compatibility-condition-Π
-           → compatibility-condition S universes-are-aflabby-Π
+  Π-lemma' : compatibility-data-Π
+           → compatibility-data S universes-are-aflabby-Π
   Π-lemma' t p A = transport has-section I II
    where
     I : ρΠ p A ＝ ρ S universes-are-aflabby-Π p A
@@ -198,13 +201,13 @@ enough" for the purposes of e.g. Monoid-Π-condition.
     II : has-section (ρΠ p A)
     II = t p A
 
-  compatibility-condition-Σ : 𝓤 ⁺ ⊔ 𝓥 ̇
-  compatibility-condition-Σ = (p : Ω 𝓤)
-                              (A : p holds → 𝓤 ̇ )
-                            → has-section (ρΣ p A)
+  compatibility-data-Σ : 𝓤 ⁺ ⊔ 𝓥 ̇
+  compatibility-data-Σ = (p : Ω 𝓤)
+                         (A : p holds → 𝓤 ̇ )
+                       → has-section (ρΣ p A)
 
-  Σ-lemma : compatibility-condition-Σ
-          → compatibility-condition S universes-are-aflabby-Σ
+  Σ-lemma : compatibility-data-Σ
+          → compatibility-data S universes-are-aflabby-Σ
   Σ-lemma t p A = transport has-section I II
    where
     I : ρΣ p A ＝ ρ S universes-are-aflabby-Σ p A
@@ -230,12 +233,12 @@ two ways, assuming the compatibility condition.
 
  module _ (ϕ : aflabby (𝓤 ̇ ) 𝓤) where
 
-  aflabbiness-of-type-of-structured-types : compatibility-condition S ϕ
+  aflabbiness-of-type-of-structured-types : compatibility-data S ϕ
                                           → aflabby (Σ S) 𝓤
   aflabbiness-of-type-of-structured-types = Σ-is-aflabby S ϕ
 
 
-  ainjectivity-of-type-of-structures : compatibility-condition S ϕ
+  ainjectivity-of-type-of-structures : compatibility-data S ϕ
                                      → ainjective-type (Σ S) 𝓤 𝓤
   ainjectivity-of-type-of-structures = aflabby-types-are-ainjective (Σ S)
                                        ∘ aflabbiness-of-type-of-structured-types
@@ -255,18 +258,26 @@ Pointed-type 𝓤 = Σ X ꞉ 𝓤 ̇ , X
 Pointed : 𝓤 ̇ → 𝓤 ̇
 Pointed X = X
 
-Pointed-Π-condition : compatibility-condition
-                       (Pointed {𝓤})
-                        universes-are-aflabby-Π
-Pointed-Π-condition {𝓤} = Π-lemma Pointed T T-refl c
+Pointed-Π-data : compatibility-data (Pointed {𝓤}) universes-are-aflabby-Π
+Pointed-Π-data {𝓤} = Π-lemma Pointed T T-refl c
  where
+  S : 𝓤 ̇ → 𝓤 ̇
+  S X = X
+
   T : {X Y : 𝓤 ̇ } → (X ≃ Y) → X → Y
   T = ⌜_⌝
 
   T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
   T-refl x = refl
 
-  c : compatibility-condition-Π (λ X → X) T T-refl
+  remark₁ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ ) → ρΠ S T T-refl p A ＝ 𝑖𝑑 (S (Π A))
+  remark₁ p A = refl
+
+  remark₂ : compatibility-data-Π S T T-refl
+          ＝ ((p : Ω 𝓤) (A : p holds → 𝓤 ̇ ) → has-section (𝑖𝑑 (S (Π A))))
+  remark₂ = refl
+
+  c : compatibility-data-Π S T T-refl
   c p A = equivs-have-sections id (id-is-equiv (Π A))
 
 ainjectivity-of-type-of-pointed-types : ainjective-type (Pointed-type 𝓤) 𝓤 𝓤
@@ -274,7 +285,7 @@ ainjectivity-of-type-of-pointed-types {𝓤} =
  ainjectivity-of-type-of-structures
   Pointed
   universes-are-aflabby-Π
-  Pointed-Π-condition
+  Pointed-Π-data
 
 \end{code}
 
@@ -290,10 +301,10 @@ guess what T should be.
 ∞-Magma-structure : 𝓤 ̇ → 𝓤 ̇
 ∞-Magma-structure = λ X → X → X → X
 
-∞-Magma-structure-Π-condition : compatibility-condition
-                                 (∞-Magma-structure {𝓤})
-                                 universes-are-aflabby-Π
-∞-Magma-structure-Π-condition {𝓤} =
+∞-Magma-structure-Π-data : compatibility-data
+                            (∞-Magma-structure {𝓤})
+                            universes-are-aflabby-Π
+∞-Magma-structure-Π-data {𝓤} =
  Π-lemma S T T-refl ρΠ-has-section
  where
   S = ∞-Magma-structure
@@ -337,7 +348,7 @@ ainjectivity-of-∞-Magma {𝓤} =
  ainjectivity-of-type-of-structures
   ∞-Magma-structure
   universes-are-aflabby-Π
-  ∞-Magma-structure-Π-condition
+  ∞-Magma-structure-Π-data
 
 \end{code}
 
@@ -371,21 +382,21 @@ open monoid
 ∞-Magma∙-structure : 𝓤 ̇ → 𝓤 ̇
 ∞-Magma∙-structure = monoid-structure
 
-∞-Magma∙-structure-Π-condition : compatibility-condition
+∞-Magma∙-structure-Π-data : compatibility-data
                                   (∞-Magma∙-structure {𝓤})
                                   universes-are-aflabby-Π
-∞-Magma∙-structure-Π-condition =
- compatibility-condition-×
+∞-Magma∙-structure-Π-data =
+ compatibility-data-×
   universes-are-aflabby-Π
-  ∞-Magma-structure-Π-condition
-  Pointed-Π-condition
+  ∞-Magma-structure-Π-data
+  Pointed-Π-data
 
 ainjectivity-of-∞-Magma∙ : ainjective-type (∞-Magma∙ 𝓤) 𝓤 𝓤
 ainjectivity-of-∞-Magma∙ {𝓤} =
  ainjectivity-of-type-of-structures
   ∞-Magma∙-structure
   universes-are-aflabby-Π
-  ∞-Magma∙-structure-Π-condition
+  ∞-Magma∙-structure-Π-data
 
 \end{code}
 
@@ -394,31 +405,31 @@ the monoid axioms are closed under Π.
 
 \begin{code}
 
-Monoid-Π-condition : compatibility-condition {𝓤 ⁺}
-                      (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
-                      universes-are-aflabby-Π
-Monoid-Π-condition {𝓤} =
- compatibility-condition-with-axioms
+Monoid-Π-data : compatibility-data {𝓤 ⁺}
+                 (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
+                 universes-are-aflabby-Π
+Monoid-Π-data {𝓤} =
+ compatibility-data-with-axioms
   universes-are-aflabby-Π
   monoid-structure
-  ∞-Magma∙-structure-Π-condition
+  ∞-Magma∙-structure-Π-data
   monoid-axioms
   (monoid-axioms-is-prop fe')
-  axioms-Π-condition
+  axioms-Π-data
  where
   σ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ )
     → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
   σ p A = section-of
            (ρ monoid-structure universes-are-aflabby-Π p A)
-           (∞-Magma∙-structure-Π-condition p A)
+           (∞-Magma∙-structure-Π-data p A)
 
-  axioms-Π-condition
+  axioms-Π-data
     : (p : Ω 𝓤)
       (A : p holds → 𝓤 ̇ )
       (α : (h : p holds) → monoid-structure (A h))
       (F : (h : p holds) → monoid-axioms (A h) (α h))
     → monoid-axioms (Π A) (σ p A α)
-  axioms-Π-condition p A α F = I , II , III , IV
+  axioms-Π-data p A α F = I , II , III , IV
    where
     _·_ : Π A → Π A → Π A
     f · g = λ h → pr₁ (α h) (f h) (g h)
@@ -454,7 +465,7 @@ ainjectivity-of-Monoid {𝓤} =
  ainjectivity-of-type-of-structures
   (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
   universes-are-aflabby-Π
-  Monoid-Π-condition
+  Monoid-Π-data
 
 \end{code}
 

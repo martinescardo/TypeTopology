@@ -93,11 +93,17 @@ is-non-empty : {X : 𝓤 ̇ } → List X → 𝓤 ̇
 is-non-empty []       = 𝟘
 is-non-empty (x ∷ xs) = 𝟙
 
-[]-is-empty : {X : 𝓤 ̇ } → ¬ is-non-empty ([] {𝓤} {X})
-[]-is-empty = 𝟘-elim
-
 -- cons-is-non-empty : {X : 𝓤 ̇ } {x : X} {xs : List X} → is-non-empty (x ∷ xs)
 pattern cons-is-non-empty = ⋆
+
+map-is-non-empty : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (xs : List X)
+                 → is-non-empty xs
+                 → is-non-empty (map f xs)
+map-is-non-empty f (x ∷ xs) cons-is-non-empty = cons-is-non-empty
+
+
+[]-is-empty : {X : 𝓤 ̇ } → ¬ is-non-empty ([] {𝓤} {X})
+[]-is-empty = 𝟘-elim
 
 is-non-empty-++ : {X : 𝓤 ̇ } (xs ys : List X)
                 → is-non-empty xs
