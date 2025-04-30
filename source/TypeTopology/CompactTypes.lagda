@@ -695,7 +695,6 @@ Compactness-gives-complemented-choice : {X : 𝓤 ̇ }
                                       → Complemented-choice X {𝓥}
 Compactness-gives-complemented-choice c A δ = ¬¬-elim (c A δ)
 
-
 compact-types-are-Compact : {X : 𝓤 ̇ } → is-compact X → is-Compact X {𝓥}
 compact-types-are-Compact {𝓤} {𝓥} {X} c A d = iii
  where
