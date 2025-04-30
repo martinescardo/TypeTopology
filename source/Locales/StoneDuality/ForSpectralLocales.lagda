@@ -244,17 +244,18 @@ module spec-stone-duality-morphisms
 
  s₂ = ⌜ e₂ ⌝
 
- open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻X (≃-sym e₁) using () renaming (sₕ to sₕ′; rₕ to rₕ′; Lᶜ to 𝒦⦅X⦆⁻; 𝟏ᶜ to 𝟏⁻X)
- open DistributiveLatticeResizing 𝒦⦅Y⦆ 𝒦⁻Y (≃-sym e₂) using (sₕ; rₕ) renaming (Lᶜ to 𝒦⦅Y⦆⁻; 𝟏ᶜ to 𝟏⁻𝒦Y)
-
+ open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻X (≃-sym e₁) using () renaming (sₕ to sₕ′; rₕ to rₕ′; Lᶜ to 𝒦⦅X⦆⁻; 𝟏ᶜ to 𝟏⁻X; s-preserves-∧ to r₁-preserves-∧)
+ open DistributiveLatticeResizing 𝒦⦅Y⦆ 𝒦⁻Y (≃-sym e₂) using (sₕ; rₕ) renaming (Lᶜ to 𝒦⦅Y⦆⁻; 𝟏ᶜ to 𝟏⁻𝒦Y; r-preserves-∧ to s₂-preserves-∧)
+ open DistributiveLattice 𝒦⦅Y⦆⁻ hiding (X) renaming (_∧_ to _∧Y⁻_)
+ open DistributiveLattice 𝒦⦅Y⦆ hiding (X) renaming (𝟏 to 𝟏y; _∧_ to _∧y_)
 
  to-spectral-map : Spectral-Map X Y → (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻)
  to-spectral-map (𝒻@(f , _) , σ) =
-  record { h = h ; h-is-homomorphism = α , β , {!!} }
+  record { h = h ; h-is-homomorphism = α , β , {!!} , {!!} }
    where
-    open 𝒦-Duality₁ Y σ₂ using (ι; ι-gives-compact-opens; ι-preserves-𝟏; ι-is-monotone)
+    open 𝒦-Duality₁ Y σ₂ using (ι; ι-gives-compact-opens; ι-preserves-𝟏; ι-is-monotone; ι-preserves-∧)
     open DistributiveLattice 𝒦⦅X⦆ hiding (X) renaming (𝟏 to 𝟏ₓ; _∧_ to _∧ₓ_)
-    open DistributiveLattice 𝒦⦅Y⦆ hiding (X) renaming (𝟏 to 𝟏y; _∧_ to _∧y_)
+    open DistributiveLattice 𝒦⦅X⦆⁻ hiding (X) renaming (_∧_ to _∧X⁻_)
     open PropositionalTruncation pt
 
     h : 𝒦⁻Y → 𝒦⁻X
@@ -279,9 +280,33 @@ module spec-stone-duality-morphisms
           † = ap r₁ (to-𝒦-＝ X (σ (ι (r₂ 𝟏y)) (ι-gives-compact-opens (r₂ 𝟏y))) (𝒦-Lattice.𝟏-is-compact X σ₁) p)
 
     β : preserves-∧ 𝒦⦅Y⦆⁻ 𝒦⦅X⦆⁻ h holds
-    β x y = h (r₂ (s₂ x ∧y s₂ y))       ＝⟨ {!!} ⟩
-            h {!!}                      ＝⟨ {!!} ⟩
-            r₁ (s₁ (h x) ∧ₓ s₁ (h y))   ∎
+    β x y = h (x ∧Y⁻ y)                                ＝⟨ refl ⟩
+            r₁ (f (ι (x ∧Y⁻ y)) , σ (ι (x ∧Y⁻ y)) κ′)  ＝⟨ Ⅲ ⟩
+            r₁ (f (ι x ∧[ 𝒪 Y ] ι y) , κ₅)             ＝⟨ Ⅱ ⟩
+            r₁ ((f (ι x) ∧[ 𝒪 X ] f (ι y)) , κ′′)       ＝⟨ Ⅰ ⟩
+            (r₁ (f (ι x) , κ₃)) ∧X⁻ (r₁ (f (ι y) , κ₄)) ＝⟨ refl ⟩
+            (r₁ (f (ι x) , κ₃)) ∧X⁻ h y                ＝⟨ refl ⟩
+            h x ∧X⁻ h y                                ∎
+             where
+              κ′ : is-compact-open Y (ι (x ∧Y⁻ y)) holds
+              κ′ = ι-gives-compact-opens (x ∧Y⁻ y)
+
+              κ′′ : is-compact-open X (f (ι x) ∧[ 𝒪 X ] f (ι y)) holds
+              κ′′ = binary-coherence X (pr₁ σ₁) (f (ι x)) (f (ι y)) (σ (ι x) (ι-gives-compact-opens x)) (σ (ι y) (ι-gives-compact-opens y))
+
+              κ₃ : is-compact-open X (f (ι x)) holds
+              κ₃ = σ (ι x) (ι-gives-compact-opens x)
+
+              κ₄ : is-compact-open X (f (ι y)) holds
+              κ₄ = σ (ι y) (ι-gives-compact-opens y)
+
+              κ₅ : is-compact-open X (f (ι x ∧[ 𝒪 Y ] ι y)) holds
+              κ₅ = σ (meet-of (𝒪 Y) (ι x) (ι y)) (binary-coherence Y (pr₁ σ₂) (ι x) (ι y) (ι-gives-compact-opens x) (ι-gives-compact-opens y))
+
+              Ⅰ = r₁-preserves-∧ (f (ι x) , κ₃) (f (ι y) , κ₄)
+              Ⅱ = ap r₁ (to-𝒦-＝ X κ₅ κ′′ (frame-homomorphisms-preserve-meets (𝒪 Y) (𝒪 X) 𝒻 (ι x) (ι y)))
+              Ⅲ = ap r₁ (to-𝒦-＝ X (σ (ι (x ∧Y⁻ y)) κ′) κ₅ (ap f (ι-preserves-∧ x y)))
+
 
  σᴰ₁ : spectralᴰ X
  σᴰ₁ = ssb-implies-spectralᴰ ua X σ₁
@@ -303,47 +328,8 @@ module spec-stone-duality-morphisms
 
    open Homomorphismᵈᵣ 𝒽 using (h)
 
-   -- 𝒥 = cover-indexₛ Y σᴰ₂
-
    f : ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
    f U = ⋁[ 𝒪 X ] ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆
-
-{--
-
-   lemma : (𝒦@(K , _) : 𝒦 Y) → f K ＝ ι (h (r₂ 𝒦))
-   lemma 𝒦@(K , κ) = ∥∥-rec carrier-of-[ poset-of (𝒪 X) ]-is-set γ †₀
-    where
-     T : Fam 𝓤 ⟨ 𝒪 Y ⟩
-     T = ⁅ ℬY [ j ] ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆
-
-     † : K ＝ ⋁[ 𝒪 Y ] T
-     † = basisₛ-covers-do-cover-eq Y σᴰ₂ K
-
-     †₀ : (Ǝ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (K ≤[ poset-of (𝒪 Y) ] ℬY [ 𝒥 K [ j ] ]) holds) holds
-     †₀ = κ
-           ⁅ ℬY [ j ] ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆
-           (basisₛ-covers-are-directed Y σᴰ₂ K)
-           (reflexivity+ (poset-of (𝒪 Y)) †)
-
-
-     γ : (Σ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (K ≤[ poset-of (𝒪 Y) ] ℬY [ 𝒥 K [ j ] ]) holds)
-       → f K ＝ ι (h (r₂ 𝒦))
-     γ (j , q) = {!!}
-      where
-       open PosetReasoning (poset-of (𝒪 Y)) renaming (_■ to _𝒬ℰ𝒟)
-
-       T∙ : Fam 𝓤 ⟨ 𝒪 Y ⟩
-       T∙ = ⁅ ℬY [ j ] ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆
-
-       q₀ : (ℬY [ 𝒥 K [ j ] ] ≤[ poset-of (𝒪 Y) ] K) holds
-       q₀ = ℬY [ 𝒥 K [ j ] ]    ≤⟨ ⋁[ 𝒪 Y ]-upper T j ⟩
-            ⋁[ 𝒪 Y ] T          ＝⟨ † ⁻¹ ⟩ₚ
-            K                   𝒬ℰ𝒟
-
-       r : K ＝ ℬY [ 𝒥 K [ j ] ]
-       r = ≤-is-antisymmetric (poset-of (𝒪 Y)) q q₀
-
---}
 
    α : preserves-top (𝒪 Y) (𝒪 X) f holds
    α = {!!}
@@ -351,7 +337,7 @@ module spec-stone-duality-morphisms
    β : preserves-binary-meets (𝒪 Y) (𝒪 X) f holds
    β U V = {!!}
 
-   γ : {!!}
+   γ : preserves-joins (𝒪 Y) (𝒪 X) f holds
    γ = {!!}
 
    𝒻 : X ─c→ Y
