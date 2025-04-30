@@ -262,3 +262,12 @@ We now tackle the other direction.
       ‡ = ‼⁺[ X ] P′ , ζ
 
 \end{code}
+
+\section{Acknowledgements}
+
+I have benefited from Graham Manuell's notes on constructive locale theory [1],
+where this characterization of compactness is discussed. The proof here is
+different, however, as it uses the machinery of spectral and perfect maps.
+
+[1]: Manuell, Graham. "Pointfree topology and constructive mathematics." arXiv
+preprint arXiv:2304.06000 (2023).
