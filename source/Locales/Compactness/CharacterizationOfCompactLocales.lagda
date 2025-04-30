@@ -75,8 +75,13 @@ homomorphism in consideration.
 
 \end{code}
 
-We also define some shorthand notation for the right adjoint of this map. We
-know that this exists since the initial frame has a small base.
+The subscript `_⁺` is intended to approximate the right adjoint notation `_^*`.
+Unfortunately, however, there is no superscript asterisk in unicode, so we use
+the superscript plus instead.
+
+We also define some shorthand notation for the right adjoint of this map, which
+we know to exist since the initial frame has a small base. We denote by
+`‼₊[ X ]_` the underlying function of the right adjoint of `‼⁺[ X ]_`.
 
 \begin{code}
 
@@ -88,64 +93,68 @@ know that this exists since the initial frame has a small base.
 
 \end{code}
 
-The above map can be thought of as the universal quantifier for the opens of
-locale `X`: it takes some open `U : ⟨ 𝒪 X ⟩` and tells if `U ＝ 𝟏[ 𝒪 X ]`.
+Thinking of a frame as a system of finitely verifiable properties, the above map
+can be thought of as the **universal quantifier** for these properties: it takes
+some open `U : ⟨ 𝒪 X ⟩` and tells if `U ＝ 𝟏[ 𝒪 X ]`.
 
 \begin{code}
 
-‼₊-is-universal-quantifier-⇒ : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
-                             → (U : ⟨ 𝒪 X ⟩)
-                             → (‼₊[ X ] U) holds → U ＝ 𝟏[ 𝒪 X ]
-‼₊-is-universal-quantifier-⇒ {𝓤} X U p = only-𝟏-is-above-𝟏 (𝒪 X) U †
+‼₊-is-universal-quantifier : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+                           → (U : ⟨ 𝒪 X ⟩)
+                           → (‼₊[ X ] U) holds ↔ U ＝ 𝟏[ 𝒪 X ]
+‼₊-is-universal-quantifier {𝓤} X U = † , ‡
  where
   open Spectrality-of-𝟎 𝓤 pe
   open AdjointFunctorTheorem pt fe X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
   open PosetReasoning (poset-of (𝒪 X))
 
-  Ⅱ : (‼⁺[ X ] ⊤ ≤[ poset-of (𝒪 X) ] U) holds
-  Ⅱ = adjunction-inequality-backward (‼ X) U ⊤ λ { ⋆ → p }
+  † : (‼₊[ X ] U) holds → U ＝ 𝟏[ 𝒪 X ]
+  † p = only-𝟏-is-above-𝟏 (𝒪 X) U γ
+   where
+    Ⅱ : (‼⁺[ X ] ⊤ ≤[ poset-of (𝒪 X) ] U) holds
+    Ⅱ = adjunction-inequality-backward (‼ X) U ⊤ λ { ⋆ → p }
 
-  Ⅰ : 𝟏[ 𝒪 X ] ＝ ‼⁺[ X ] ⊤
-  Ⅰ = frame-homomorphisms-preserve-top (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (‼ X) ⁻¹
+    Ⅰ : 𝟏[ 𝒪 X ] ＝ ‼⁺[ X ] ⊤
+    Ⅰ = frame-homomorphisms-preserve-top (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (‼ X) ⁻¹
 
-  † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] U) holds
-  † = 𝟏[ 𝒪 X ]     ＝⟨ Ⅰ ⟩ₚ
-      (‼⁺[ X ] ⊤)  ≤⟨ Ⅱ ⟩
-      U            ■
+    γ : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] U) holds
+    γ = 𝟏[ 𝒪 X ]     ＝⟨ Ⅰ ⟩ₚ
+        (‼⁺[ X ] ⊤)  ≤⟨ Ⅱ ⟩
+        U            ■
 
-‼₊-is-universal-quantifier-⇐ : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
-                             → (U : ⟨ 𝒪 X ⟩)
-                             → U ＝ 𝟏[ 𝒪 X ] → (‼₊[ X ] U) holds
-‼₊-is-universal-quantifier-⇐ {𝓤} X U p = γ ⋆
- where
-  open Spectrality-of-𝟎 𝓤 pe
-  open AdjointFunctorTheorem pt fe X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
-  open PosetReasoning (poset-of (𝒪 X))
+  ‡ : U ＝ 𝟏[ 𝒪 X ] → (‼₊[ X ] U) holds
+  ‡ p = γ ⋆
+   where
+    Ⅰ : 𝟏[ 𝒪 X ] ＝ ‼⁺[ X ] ⊤
+    Ⅰ = frame-homomorphisms-preserve-top (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (‼ X) ⁻¹
 
-  Ⅰ : 𝟏[ 𝒪 X ] ＝ ‼⁺[ X ] ⊤
-  Ⅰ = frame-homomorphisms-preserve-top (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (‼ X) ⁻¹
+    q : (‼⁺[ X ] ⊤ ≤[ poset-of (𝒪 X) ] U) holds
+    q = ‼⁺[ X ] ⊤ ＝⟨ Ⅰ ⁻¹ ⟩ₚ 𝟏[ 𝒪 X ] ＝⟨ p ⁻¹ ⟩ₚ U ■
 
-  ‡ : (‼⁺[ X ] ⊤ ≤[ poset-of (𝒪 X) ] U) holds
-  ‡ = ‼⁺[ X ] ⊤ ＝⟨ Ⅰ ⁻¹ ⟩ₚ 𝟏[ 𝒪 X ] ＝⟨ p ⁻¹ ⟩ₚ U ■
-
-  γ : (⊤ ⇒ ‼₊[ X ] U) holds
-  γ = adjunction-inequality-forward (‼ X) U ⊤ ‡
+    γ : (⊤ ⇒ ‼₊[ X ] U) holds
+    γ = adjunction-inequality-forward (‼ X) U ⊤ q
 
 \end{code}
 
-For spatial locales, this can be thought of as checking if the verifiable
-property in consideration holds for all points.
+Accordingly, we define some suggestive notation, which we use when we want to
+highlight this attitude on the right adjoint.
+
+\begin{code}
+
+locale-forall-syntax : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → ⟨ 𝒪 X ⟩ → Ω 𝓤
+locale-forall-syntax X U = ‼₊[ X ] U
+
+syntax locale-forall-syntax X U = Ɐ[ X ] U
+infix 7 locale-forall-syntax
+
+\end{code}
 
 \section{Characterization of compactness}
 
-The subscript `_⁺` is intended to approximate the right adjoint notation `_^*`.
-Unfortunately, however, there is no superscript asterisk in unicode, so we use
-the superscript plus instead.
+This result was added on 2025-04-29.
 
 We work in a module parameterized by a locale `X`, being the locale whose
 compactness we are interested in.
-
-This result was added on 2025-04-29.
 
 \begin{code}
 
@@ -157,12 +166,11 @@ module CharacterizationOfCompactLocales (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
  open PerfectMaps X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
  open SpectralMaps X (𝟏Loc pe)
 
-
 \end{code}
 
 An alternative way to express that a locale `X` is compact is by asserting that
-the map `‼ X` is perfect, which is to say that its right adjoint is Scott
-continuous.
+the map `‼ X` is perfect, which is to say that the universal quantifier
+`Ɐ[ X ]_` is Scott continuous.
 
 \begin{code}
 
@@ -224,10 +232,11 @@ We now tackle the other direction.
 - Suppose `X` is compact in the standard sense.
 - Let `K : Ω` be a compact open of the terminal locale.
 - We need to show that `‼⁺[ X ] K` is compact.
-- Since `X` is and clopens are compact in compact frames, we simply have to
-  show that `‼⁺[ X ] K`.
+- Since `X` is a compact locale, and clopens are compact in compact frames, we
+  simply have to show that `‼⁺[ X ] K` is a clopen.
 - This is easy since we already know that `K` is a clopen in `Ω` (since `Ω` is
-  a Stone locale) and frame homomorphisms preserve complements.
+  a Stone locale, in which the clopens and the compact opens coincide) and
+  frame homomorphisms preserve complements.
 
 \begin{code}
 
@@ -237,19 +246,19 @@ We now tackle the other direction.
     † : is-spectral-map (‼ X) holds
     † P 𝕔 = clopens-are-compact-in-compact-frames (𝒪 X) κ (‼⁺[ X ] P) ‡
      where
-      ψ : is-clopen (𝟎-𝔽𝕣𝕞 pe) P holds
-      ψ = compact-implies-clopen pe P 𝕔
+      ξ : is-clopen (𝟎-𝔽𝕣𝕞 pe) P holds
+      ξ = compact-implies-clopen pe P 𝕔
 
       P′ : Ω 𝓤
-      P′ = pr₁ ψ
+      P′ = pr₁ ξ
 
-      ν : is-complement-of (𝒪 X) (‼⁺[ X ] P′) (‼⁺[ X ] P)
-      ν = frame-homomorphisms-preserve-complements
+      ζ : is-complement-of (𝒪 X) (‼⁺[ X ] P′) (‼⁺[ X ] P)
+      ζ = frame-homomorphisms-preserve-complements
            (𝟎-𝔽𝕣𝕞 pe)
            (𝒪 X)
-           (‼ X)(complementation-is-symmetric (𝟎-𝔽𝕣𝕞 pe) _ _ (pr₂ ψ))
+           (‼ X)(complementation-is-symmetric (𝟎-𝔽𝕣𝕞 pe) _ _ (pr₂ ξ))
 
       ‡ : is-clopen (𝒪 X) (‼⁺[ X ] P) holds
-      ‡ = (‼⁺[ X ] P′) , ν
+      ‡ = ‼⁺[ X ] P′ , ζ
 
 \end{code}
