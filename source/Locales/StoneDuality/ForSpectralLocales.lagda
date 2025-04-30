@@ -320,8 +320,8 @@ module spec-stone-duality-morphisms
  ℬYₖ : Fam 𝓤 ∣ 𝒦⦅Y⦆⁻ ∣ᵈ
  ℬYₖ = index ℬY , λ i → r₂ (ℬY [ i ] , basisₛ-consists-of-compact-opens Y σᴰ₂ i)
 
- to-dlat-map : (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻) → Spectral-Map X Y
- to-dlat-map 𝒽 = 𝒻 , 𝕤
+ 𝒦-Hom⁻¹ : (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻) → Spectral-Map X Y
+ 𝒦-Hom⁻¹ 𝒽 = 𝒻 , 𝕤
   where
    open PropositionalTruncation pt
    open 𝒦-Duality₁ X σ₁ using (ι; ι-is-monotone; ι-gives-compact-opens)
