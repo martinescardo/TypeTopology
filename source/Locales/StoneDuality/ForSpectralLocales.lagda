@@ -508,6 +508,30 @@ Quasi-inverse.
     † U = ‡ U
 
  𝒦-cancels-spec : (h : 𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻) → 𝒦-Hom (spec-hom h) ＝ h
- 𝒦-cancels-spec = {!!}
+ 𝒦-cancels-spec h = to-homomorphismᵈ-＝ 𝒦⦅Y⦆⁻ 𝒦⦅X⦆⁻ (𝒦-Hom (spec-hom h)) h †
+  where
+   open 𝒦-Duality₁ Y σ₂ using (ι) renaming (ι-is-monotone to ιY-is-monotone)
+   open 𝒦-Duality₁ X σ₁ using () renaming (ι to ιX)
+
+   h₀ : ∣ 𝒦⦅Y⦆⁻ ∣ᵈ → ∣ 𝒦⦅X⦆⁻ ∣ᵈ
+   h₀ = funᵈ 𝒦⦅Y⦆⁻ 𝒦⦅X⦆⁻ h
+
+   𝕜 : (V : ⟨ 𝒪 Y ⟩)
+     → is-compact-open Y V holds
+     → is-compact-open X (spec-hom₀ h₀ V) holds
+   𝕜 = pr₂ (spec-hom h)
+
+   -- λ K → r₁ (f⁺ (ι K) , φ (ι K) (ι-gives-compact-opens K))
+   ‡ : (K : 𝒦⁻Y) → 𝒦-Hom₀ (spec-hom₀ h₀) 𝕜 K ＝ h₀ K
+   ‡ K = 𝒦-Hom₀ (spec-hom₀ h₀) 𝕜 K                                                    ＝⟨ refl ⟩
+         r₁ ((spec-hom₀ h₀ (ι K)) , 𝕜 (ι K) κ)                                        ＝⟨ refl ⟩
+         r₁ ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , κ₂)  ＝⟨ {!!} ⟩
+         h₀ K                                                                         ∎
+          where
+           κ  = 𝒦-Duality₁.ι-gives-compact-opens Y σ₂ K
+           κ₂ = 𝕜 (ι K) κ
+
+   † : 𝒦-Hom₀ (spec-hom₀ h₀) 𝕜 ∼ h₀
+   † = ‡
 
 \end{code}
