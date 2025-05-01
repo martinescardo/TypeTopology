@@ -56,12 +56,13 @@ open import Locales.Spectrality.LatticeOfCompactOpens-Duality ua pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
 open import Slice.Family
-open import UF.Equiv
+open import UF.Base
+open import UF.Equiv hiding (_■)
 open import UF.Logic
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
-open FrameHomomorphismProperties
+open FrameHomomorphismProperties hiding (meet-preserving-implies-monotone)
 open FrameHomomorphisms
 open Locale
 
@@ -249,6 +250,13 @@ module spec-stone-duality-morphisms
  open DistributiveLattice 𝒦⦅Y⦆⁻ hiding (X) renaming (_∧_ to _∧Y⁻_)
  open DistributiveLattice 𝒦⦅Y⦆ hiding (X) renaming (𝟏 to 𝟏y; _∧_ to _∧y_)
 
+ 𝒦-Hom₀ : (f : ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩)
+        → ((V : ⟨ 𝒪 Y ⟩) → is-compact-open Y V holds → is-compact-open X (f V) holds)
+        → (𝒦⁻Y → 𝒦⁻X)
+ 𝒦-Hom₀ f⁺ φ = λ K → r₁ (f⁺ (ι K) , φ (ι K) (ι-gives-compact-opens K))
+  where
+   open 𝒦-Duality₁ Y σ₂ using (ι; ι-gives-compact-opens)
+
  𝒦-Hom : Spectral-Map X Y → (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻)
  𝒦-Hom (𝒻@(f , _) , σ) =
   record { h = h ; h-is-homomorphism = α , β , {!!} , {!!} }
@@ -259,10 +267,7 @@ module spec-stone-duality-morphisms
     open PropositionalTruncation pt
 
     h : 𝒦⁻Y → 𝒦⁻X
-    h K = r₁ (f (ι K) , σ (ι K) κ)
-     where
-      κ : is-compact-open Y (ι K) holds
-      κ = ι-gives-compact-opens K
+    h = 𝒦-Hom₀ f σ
 
     α : preserves-𝟏 𝒦⦅Y⦆⁻ 𝒦⦅X⦆⁻ h holds
     α = h 𝟏⁻𝒦Y      ＝⟨ refl ⟩
@@ -320,8 +325,13 @@ module spec-stone-duality-morphisms
  ℬYₖ : Fam 𝓤 ∣ 𝒦⦅Y⦆⁻ ∣ᵈ
  ℬYₖ = index ℬY , λ i → r₂ (ℬY [ i ] , basisₛ-consists-of-compact-opens Y σᴰ₂ i)
 
- 𝒦-Hom⁻¹ : (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻) → Spectral-Map X Y
- 𝒦-Hom⁻¹ 𝒽 = 𝒻 , 𝕤
+ spec-hom₀ : (𝒦⁻Y → 𝒦⁻X) → (⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩)
+ spec-hom₀ h = λ V → ⋁[ 𝒪 X ] ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ V ⁆
+  where
+   open 𝒦-Duality₁ X σ₁ using (ι; ι-is-monotone; ι-gives-compact-opens)
+
+ spec-hom : (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻) → Spectral-Map X Y
+ spec-hom 𝒽 = 𝒻 , 𝕤
   where
    open PropositionalTruncation pt
    open 𝒦-Duality₁ X σ₁ using (ι; ι-is-monotone; ι-gives-compact-opens)
@@ -329,7 +339,7 @@ module spec-stone-duality-morphisms
    open Homomorphismᵈᵣ 𝒽 using (h)
 
    f : ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
-   f U = ⋁[ 𝒪 X ] ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆
+   f = spec-hom₀ h
 
    α : preserves-top (𝒪 Y) (𝒪 X) f holds
    α = {!!}
@@ -402,5 +412,102 @@ module spec-stone-duality-morphisms
              last′ : rel-syntax (poset-of (𝒪 Y)) (ℬY [ 𝒥 [ k ] ]) (ℬY [ 𝒥 [ j ] ]) holds
              last′ = transport
                       (λ - → rel-syntax (poset-of (𝒪 Y)) (ℬY [ 𝒥 [ k ] ]) - holds) φ (ℬY [ 𝒥 [ k ] ] ≤⟨ ⋁[ 𝒪 Y ]-upper T k ⟩∙ ⋁[ 𝒪 Y ] T ≤⟨ reflexivity+ (poset-of (𝒪 Y)) (q ⁻¹) ⟩∙ K 𝒬ℰ𝒟∙)
+
+\end{code}
+
+Quasi-inverse.
+
+\begin{code}
+
+ lemma₁ : (U : ⟨ 𝒪 X ⟩) (κ : is-compact-open X U holds)
+        → 𝒦-Duality₁.ι X σ₁ (r₁ (U , κ)) ＝ U
+ lemma₁ U κ = pr₁ (from-Σ-＝ γ)
+  where
+   γ : s₁ (r₁ (U , κ)) ＝ (U , κ)
+   γ = inverses-are-sections s₁ ⌜ e₁ ⌝-is-equiv (U , κ)
+
+ lemma₂ : (U : ⟨ 𝒪 Y ⟩) (κ : is-compact-open Y U holds)
+        → 𝒦-Duality₁.ι Y σ₂ (r₂ (U , κ)) ＝ U
+ lemma₂ U κ = pr₁ (from-Σ-＝ γ)
+  where
+   γ : s₂ (r₂ (U , κ)) ＝ (U , κ)
+   γ = inverses-are-sections s₂ ⌜ e₂ ⌝-is-equiv (U , κ)
+
+ lemma₃ : (U : ⟨ 𝒪 Y ⟩) (κ : is-compact-open Y U holds)
+        → pr₁ (s₂ (r₂ (U , κ))) ＝ U
+ lemma₃ U κ = ap pr₁ (inverses-are-sections' e₂ (U , κ))
+
+ spec-cancels-𝒦 : (𝒻 : Spectral-Map X Y) → spec-hom (𝒦-Hom 𝒻) ＝ 𝒻
+ spec-cancels-𝒦 𝒻@((f⁺ , f-homo) , σ) =
+  to-subtype-＝
+   (λ - → holds-is-prop (is-spectral-map Y X -))
+    (to-subtype-＝ (λ - → holds-is-prop (is-a-frame-homomorphism (𝒪 Y) (𝒪 X) -))
+     (dfunext fe †))
+   where
+    ‡ : (U : ⟨ 𝒪 Y ⟩) → spec-hom₀ (𝒦-Hom₀ f⁺ σ) U ＝ f⁺ U
+    ‡ U = γ
+     where
+      open 𝒦-Duality₁ X σ₁ using (ι)
+      open 𝒦-Duality₁ Y σ₂ hiding (σ) renaming (ι to ιY)
+      open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+      ζ : ⋁[ 𝒪 X ] ⁅ ι (r₁ (f⁺ (ιY (ℬYₖ [ j ])) , σ (ιY (ℬYₖ [ j ])) (ι-gives-compact-opens _))) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆
+        ＝ f⁺ U
+      ζ = ⋁[ 𝒪 X ] ⁅ ι (r₁ (f⁺ (ιY (ℬYₖ [ j ])) , σ (ιY (ℬYₖ [ j ])) (ι-gives-compact-opens _))) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆   ＝⟨ Ⅰ ⟩
+          ⋁[ 𝒪 X ] ⁅ f⁺ (ιY (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆                                                           ＝⟨ Ⅱ ⟩
+          f⁺ U                                                                                                                   ∎
+           where
+            φ : (j : index (cover-indexₛ Y σᴰ₂ U))
+              → ι (r₁ (f⁺ (ιY (ℬYₖ [ cover-indexₛ Y σᴰ₂ U [ j ] ])) , σ (ιY (ℬYₖ [ cover-indexₛ Y σᴰ₂ U [ j ] ])) (ι-gives-compact-opens _)))
+                ＝ f⁺ (ιY (ℬYₖ [ cover-indexₛ Y σᴰ₂ U [ j ] ]))
+            φ j = lemma₁ (f⁺ (ιY (ℬYₖ [ cover-indexₛ Y σᴰ₂ U [ j ] ]))) (σ (ιY (ℬYₖ [ cover-indexₛ Y σᴰ₂ U [ j ] ])) (ι-gives-compact-opens _))
+
+
+            Ⅰ = ap (λ - → ⋁[ 𝒪 X ] -) (to-Σ-＝ (refl , dfunext fe φ))
+
+            γ : (f⁺ U is-an-upper-bound-of ⁅ f⁺ (ιY (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆) holds
+            γ j =
+              let
+              open PosetReasoning (poset-of (𝒪 X))
+              in
+              f⁺ (ιY (ℬYₖ [ cover-indexₛ Y σᴰ₂ U [ j ] ]))    ≤⟨ frame-morphisms-are-monotonic (𝒪 Y) (𝒪 X) f⁺ f-homo (ιY (ℬYₖ [ cover-indexₛ Y σᴰ₂ U [ j ] ]) , U) ϑ ⟩
+              f⁺ U                                            ■
+              where
+              open 𝒦-Duality₁ Y σ₂ using () renaming (ι-is-monotone to ιY-is-monotone)
+
+              ϑ : (ιY (ℬYₖ [ cover-indexₛ Y σᴰ₂ U [ j ] ]) ≤[ poset-of (𝒪 Y) ] U) holds
+              ϑ = ιY (ℬYₖ [ cover-indexₛ Y σᴰ₂ U [ j ] ])        ＝⟨ refl ⟩ₚ
+                  pr₁ (s₂ (r₂ (ℬY [ cover-indexₛ Y σᴰ₂ U [ j ] ] , κ)))  ＝⟨ ap pr₁ (inverses-are-sections' e₂ (ℬY [ cover-indexₛ Y σᴰ₂ U [ j ] ] , κ)) ⟩ₚ
+                  ℬY [ cover-indexₛ Y σᴰ₂ U [ j ] ]              ≤⟨ pr₁ (basisₛ-covers-do-cover Y σᴰ₂ U) j ⟩
+                  U ■
+                where
+                open PosetReasoning (poset-of (𝒪 Y))
+                κ = basisₛ-consists-of-compact-opens Y σᴰ₂ (cover-indexₛ Y σᴰ₂ U [ j ])
+
+            Ⅱ : ⋁[ 𝒪 X ] ⁅ f⁺ (ιY (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆ ＝ f⁺ U
+            Ⅱ = ⋁[ 𝒪 X ] ⁅ f⁺ (ιY (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆   ＝⟨ foo ⟩
+                ⋁[ 𝒪 X ] ⁅ f⁺ (ℬY [ j ]) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆         ＝⟨ frame-homomorphisms-preserve-all-joins′  (𝒪 Y) (𝒪 X) (pr₁ 𝒻)  ⁅ (ℬY [ j ]) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆ ⁻¹  ⟩
+                f⁺ (⋁[ 𝒪 Y ] ⁅ (ℬY [ j ]) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆)       ＝⟨ baz ⟩
+                f⁺ U                                                          ∎
+                 where
+
+                  bar : (λ x → f⁺ (ιY (ℬYₖ [ cover-indexₛ Y σᴰ₂ U .pr₂ x ]))) ∼ (λ x → f⁺ (ℬY [ cover-indexₛ Y σᴰ₂ U .pr₂ x ]))
+                  bar j = ap f⁺ (lemma₃ (ℬY [ cover-indexₛ Y σᴰ₂ U .pr₂ j ]) κ)
+                   where
+                    κ = basisₛ-consists-of-compact-opens Y σᴰ₂ (cover-indexₛ Y σᴰ₂ U [ j ])
+
+                  foo : ⋁[ 𝒪 X ] ⁅ f⁺ (ιY (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆ ＝ ⋁[ 𝒪 X ] ⁅ f⁺ (ℬY [ j ]) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆
+                  foo = ap (λ - → ⋁[ 𝒪 X ] (index (cover-indexₛ Y σᴰ₂ U) , -)) (dfunext fe bar)
+
+                  baz = ap f⁺ (basisₛ-covers-do-cover-eq Y σᴰ₂ U ⁻¹)
+
+      γ : ⋁[ 𝒪 X ] ⁅ ι (𝒦-Hom₀ f⁺ σ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆ ＝ f⁺ U
+      γ = ζ
+
+    † : (U : ⟨ 𝒪 Y ⟩) → spec-hom (𝒦-Hom 𝒻) .pr₁ .pr₁ U ＝ 𝒻 .pr₁ .pr₁ U
+    † U = ‡ U
+
+ 𝒦-cancels-spec : (h : 𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻) → 𝒦-Hom (spec-hom h) ＝ h
+ 𝒦-cancels-spec = {!!}
 
 \end{code}
