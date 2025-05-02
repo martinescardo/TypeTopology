@@ -447,6 +447,12 @@ map-id : {X : 𝓤 ̇ }
 map-id [] = refl
 map-id (x ∷ xs) = ap (x ∷_) (map-id xs)
 
+map-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+        (f : X → Y) (g : Y → Z)
+      → map (g ∘ f) ∼ map g ∘ map f
+map-∘ f g []       = refl
+map-∘ f g (x ∷ xs) = ap (g (f x) ∷_) (map-∘ f g xs)
+
 concat : {X : 𝓤 ̇ } → List (List X) → List X
 concat []         = []
 concat (xs ∷ xss) = xs ++ concat xss

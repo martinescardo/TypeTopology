@@ -11,7 +11,7 @@ open import MLTT.Spartan hiding (J)
 module Games.NonEmptyList where
 
 open import Games.Monad
-open import MLTT.List renaming (map to lmap)
+open import MLTT.List renaming (map to lmap ; map-∘ to lmap-∘)
 open import Notation.CanonicalMap
 open import UF.Subsingletons
 
@@ -92,6 +92,56 @@ module List⁺-definitions where
  lmap⁺ f xs = lmap f (ι xs) ,
               map-is-non-empty f (ι xs) (underlying-list⁺-is-non-empty xs)
 
+ concat⁺-non-empty : {X : Type} (xss : List⁺ (List⁺ X))
+                   → is-non-empty (concat (lmap ι (ι xss)))
+ concat⁺-non-empty (((xs , xs-ne) ∷ xss) , xss-ne) =
+  is-non-empty-++ xs (concat (lmap ι xss)) xs-ne
+
+ concat⁺ : {X : Type} → List⁺ (List⁺ X) → List⁺ X
+ concat⁺ {X} xss = concat (lmap ι (ι xss)) , concat⁺-non-empty xss
+
  mapᴸ⁺-lemma : {X Y : Type} (f : X → Y) (xs : List⁺ X)
              → mapᴸ⁺ f xs ＝ lmap⁺ f xs
  mapᴸ⁺-lemma f xs = to-List⁺-＝ (concat-singletons' f (ι xs))
+
+ extᴸ⁺-explicitly : {X Y : Type}
+                    (f : X → List⁺ Y)
+                    (xs : List⁺ X)
+                  → extᴸ⁺ f xs ＝ concat⁺ (lmap⁺ f xs)
+ extᴸ⁺-explicitly f xs = to-List⁺-＝ I
+  where
+   I : concat (lmap (ι ∘ f) (ι xs)) ＝ concat (lmap ι (lmap f (ι xs)))
+   I = ap concat (lmap-∘ f ι (ι xs))
+
+ open import UF.FunExt
+
+ ⊗ᴸ⁺-explicitly
+  : funext₀
+  → {X : Type} {Y : X → Type}
+    (xs : List⁺ X)
+    (ys : (x : X) → List⁺ (Y x))
+  → xs ⊗ᴸ⁺ ys ＝ concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x , y) (ys x)) xs)
+ ⊗ᴸ⁺-explicitly fe xs ys =
+  xs ⊗ᴸ⁺ ys ＝⟨ refl ⟩
+  extᴸ⁺ (λ x → mapᴸ⁺ (λ y → x , y) (ys x)) xs           ＝⟨ I ⟩
+  extᴸ⁺ (λ x → lmap⁺ (λ y → x , y) (ys x)) xs           ＝⟨ II ⟩
+  concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x , y) (ys x)) xs) ∎
+   where
+    I  = ap (λ - → extᴸ⁺ - xs)
+            (dfunext fe (λ x → mapᴸ⁺-lemma (λ y → x , y) (ys x)))
+    II = extᴸ⁺-explicitly (λ x → lmap⁺ (λ y → x , y) (ys x)) xs
+
+ _+++_ : {X : Type} → List⁺ X → List X → List⁺ X
+ (xs , xs-ne) +++ ys = (xs ++ ys) , is-non-empty-++ xs ys xs-ne
+
+ head⁺-of-+++ : {X : Type} (xs : List⁺ X) (ys : List X)
+              → head⁺ (xs +++ ys) ＝ head⁺ xs
+ head⁺-of-+++ ((x ∷ xs) , xs-ne) ys = refl
+
+ head⁺-of-concat⁺ : {X : Type} (xss : List⁺ (List⁺ X))
+                  → head⁺ (concat⁺ xss) ＝ head⁺ (head⁺ xss)
+ head⁺-of-concat⁺ ((xs ∷ xss) , cons-is-non-empty) = head⁺-of-+++ xs (concat (lmap ι xss))
+
+ head⁺-of-lmap⁺ :  {X Y : Type} (f : X → Y) (xs : List⁺ X)
+                → head⁺ (lmap⁺ f xs) ＝ f (head⁺ xs)
+ head⁺-of-lmap⁺ f ((x ∷ xs) , _) = refl
