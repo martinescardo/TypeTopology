@@ -40,6 +40,8 @@ open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.ContinuousMap.Homeomorphism-Definition pt fe
 open import Locales.ContinuousMap.Homeomorphism-Properties ua pt sr
+open import Locales.GaloisConnection pt fe
+open import Locales.Adjunctions.Properties pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.DistributiveLattice.Isomorphism fe pt
@@ -245,10 +247,20 @@ module spec-stone-duality-morphisms
 
  s₂ = ⌜ e₂ ⌝
 
- open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻X (≃-sym e₁) using () renaming (sₕ to sₕ′; rₕ to rₕ′; Lᶜ to 𝒦⦅X⦆⁻; 𝟏ᶜ to 𝟏⁻X; s-preserves-∧ to r₁-preserves-∧)
- open DistributiveLatticeResizing 𝒦⦅Y⦆ 𝒦⁻Y (≃-sym e₂) using (sₕ; rₕ) renaming (Lᶜ to 𝒦⦅Y⦆⁻; 𝟏ᶜ to 𝟏⁻𝒦Y; r-preserves-∧ to s₂-preserves-∧)
+ open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻X (≃-sym e₁) using () renaming (sₕ to sₕ′; rₕ to rₕ′; Lᶜ to 𝒦⦅X⦆⁻; 𝟏ᶜ to 𝟏⁻X; s-preserves-∧ to r₁-preserves-∧; r-preserves-∧ to s₁-preserves-∧)
+ open DistributiveLatticeResizing 𝒦⦅Y⦆ 𝒦⁻Y (≃-sym e₂) using (sₕ; rₕ) renaming (Lᶜ to 𝒦⦅Y⦆⁻; 𝟏ᶜ to 𝟏⁻𝒦Y; r-preserves-∧ to s₂-preserves-∧; s-preserves-∧ to r₂-preserves-∧)
  open DistributiveLattice 𝒦⦅Y⦆⁻ hiding (X) renaming (_∧_ to _∧Y⁻_)
  open DistributiveLattice 𝒦⦅Y⦆ hiding (X) renaming (𝟏 to 𝟏y; _∧_ to _∧y_)
+ open Homomorphismᵈᵣ sₕ using () renaming (h-is-monotone to r₂-is-monotone)
+
+ r₁-is-monotone : is-monotonic (poset-ofᵈ 𝒦⦅X⦆) (poset-ofᵈ 𝒦⦅X⦆⁻) r₁ holds
+ r₁-is-monotone = meet-preserving-implies-monotone 𝒦⦅X⦆ 𝒦⦅X⦆⁻ r₁ r₁-preserves-∧
+
+ s₁-is-monotone : is-monotonic (poset-ofᵈ 𝒦⦅X⦆⁻) (poset-ofᵈ 𝒦⦅X⦆) s₁ holds
+ s₁-is-monotone = meet-preserving-implies-monotone 𝒦⦅X⦆⁻ 𝒦⦅X⦆ s₁ s₁-preserves-∧
+
+ s₂-is-monotone : is-monotonic (poset-ofᵈ 𝒦⦅Y⦆⁻) (poset-ofᵈ 𝒦⦅Y⦆) s₂ holds
+ s₂-is-monotone = meet-preserving-implies-monotone 𝒦⦅Y⦆⁻ 𝒦⦅Y⦆ s₂ s₂-preserves-∧
 
  𝒦-Hom₀ : (f : ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩)
         → ((V : ⟨ 𝒪 Y ⟩) → is-compact-open Y V holds → is-compact-open X (f V) holds)
@@ -402,7 +414,6 @@ module spec-stone-duality-morphisms
          brzzx = ⋁[ 𝒪 X ]-least ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆ (ι (h (ℬYₖ [ 𝒥 [ j ] ])) , last)
           where
            open Homomorphismᵈᵣ 𝒽 using (h-is-monotone)
-           open Homomorphismᵈᵣ sₕ using () renaming (h-is-monotone to r₂-is-monotone)
 
            last : (k : index (cover-indexₛ Y σᴰ₂ K)) → (ι (h (ℬYₖ [ 𝒥 [ k ] ])) ≤[ poset-of (𝒪 X) ] ι (h (ℬYₖ [ 𝒥 [ j ] ]))) holds
            last k = ι-is-monotone (h (ℬYₖ [ 𝒥 [ k ] ])) (h (ℬYₖ [ 𝒥 [ j ] ])) (h-is-monotone (ℬYₖ [ 𝒥 [ k ] ] , ℬYₖ [ 𝒥 [ j ] ]) (r₂-is-monotone _ (to-𝒦-＝ Y _ _ (connecting-lemma₁ (𝒪 Y) last′ ⁻¹))))
@@ -436,6 +447,11 @@ Quasi-inverse.
  lemma₃ : (U : ⟨ 𝒪 Y ⟩) (κ : is-compact-open Y U holds)
         → pr₁ (s₂ (r₂ (U , κ))) ＝ U
  lemma₃ U κ = ap pr₁ (inverses-are-sections' e₂ (U , κ))
+
+ lemma₄ : (K₁ K₂ : 𝒦⁻Y)
+        → (K₁ ≤[ poset-ofᵈ 𝒦⦅Y⦆⁻ ] K₂) holds
+        → (s₂ K₁  ≤[ poset-ofᵈ 𝒦⦅Y⦆ ] s₂ K₂) holds
+ lemma₄ K₁ K₂ = {!!}
 
  spec-cancels-𝒦 : (𝒻 : Spectral-Map X Y) → spec-hom (𝒦-Hom 𝒻) ＝ 𝒻
  spec-cancels-𝒦 𝒻@((f⁺ , f-homo) , σ) =
@@ -510,8 +526,13 @@ Quasi-inverse.
  𝒦-cancels-spec : (h : 𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻) → 𝒦-Hom (spec-hom h) ＝ h
  𝒦-cancels-spec h = to-homomorphismᵈ-＝ 𝒦⦅Y⦆⁻ 𝒦⦅X⦆⁻ (𝒦-Hom (spec-hom h)) h †
   where
-   open 𝒦-Duality₁ Y σ₂ using (ι) renaming (ι-is-monotone to ιY-is-monotone)
-   open 𝒦-Duality₁ X σ₁ using () renaming (ι to ιX)
+   open 𝒦-Duality₁ Y σ₂ using (ι) renaming (ι-is-monotone to ιY-is-monotone; ι-gives-compact-opens to ιY-gives-compact-opens; ι-is-order-embedding to ιY-is-order-embedding)
+   open 𝒦-Duality₁ X σ₁ using () renaming (ι to ιX; ι-is-monotone to ιX-is-monotone; ι-is-order-embedding to ιX-is-order-embedding)
+   open GaloisConnectionBetween (poset-ofᵈ 𝒦⦅X⦆⁻) (poset-ofᵈ 𝒦⦅X⦆) renaming (_⊣_ to _⊣₁_)
+   open GaloisConnectionBetween (poset-ofᵈ 𝒦⦅X⦆) (poset-ofᵈ 𝒦⦅X⦆⁻) renaming (_⊣_ to _⊣₂_)
+   open GaloisConnectionBetween (poset-ofᵈ 𝒦⦅Y⦆) (poset-ofᵈ 𝒦⦅Y⦆⁻) renaming (_⊣_ to _⊣₃_)
+   open Some-Properties-Of-Posetal-Adjunctions
+   open Homomorphismᵈᵣ h using (h-is-monotone; h-preserves-∧)
 
    h₀ : ∣ 𝒦⦅Y⦆⁻ ∣ᵈ → ∣ 𝒦⦅X⦆⁻ ∣ᵈ
    h₀ = funᵈ 𝒦⦅Y⦆⁻ 𝒦⦅X⦆⁻ h
@@ -521,15 +542,80 @@ Quasi-inverse.
      → is-compact-open X (spec-hom₀ h₀ V) holds
    𝕜 = pr₂ (spec-hom h)
 
+   𝒶𝒹𝒿 : ((s₁ , s₁-is-monotone) ⊣₁ (r₁ , r₁-is-monotone)) holds
+   𝒶𝒹𝒿 = monotone-equivalences-are-adjoint
+          (poset-ofᵈ 𝒦⦅X⦆⁻)
+          (poset-ofᵈ 𝒦⦅X⦆)
+          (s₁ , s₁-is-monotone)
+          (r₁ , r₁-is-monotone)
+          (inverses-are-sections s₁ ⌜ e₁ ⌝-is-equiv)
+          (inverses-are-retractions s₁ ⌜ e₁ ⌝-is-equiv)
+
+   𝒶𝒹𝒿′ : ((r₁ , r₁-is-monotone) ⊣₂ (s₁ , s₁-is-monotone)) holds
+   𝒶𝒹𝒿′ = monotone-equivalences-are-adjoint
+          (poset-ofᵈ 𝒦⦅X⦆)
+          (poset-ofᵈ 𝒦⦅X⦆⁻)
+          (r₁ , r₁-is-monotone)
+          (s₁ , s₁-is-monotone)
+          (inverses-are-retractions s₁ ⌜ e₁ ⌝-is-equiv)
+          (inverses-are-sections s₁ ⌜ e₁ ⌝-is-equiv)
+
+   𝒶𝒹𝒿′′ : ((r₂ , r₂-is-monotone) ⊣₃ (s₂ , s₂-is-monotone)) holds
+   𝒶𝒹𝒿′′ = monotone-equivalences-are-adjoint
+            (poset-ofᵈ 𝒦⦅Y⦆)
+            (poset-ofᵈ 𝒦⦅Y⦆⁻)
+            (r₂ , r₂-is-monotone)
+            (s₂ , s₂-is-monotone)
+            (inverses-are-retractions s₂ ⌜ e₂ ⌝-is-equiv)
+            (inverses-are-sections s₂ ⌜ e₂ ⌝-is-equiv)
+
+   Ⅰ₁ : (K : 𝒦⁻Y)
+      → (r₁ ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K)) ≤[ poset-ofᵈ 𝒦⦅X⦆⁻ ] h₀ K) holds
+   Ⅰ₁ K = adjunction-law₂ (poset-ofᵈ 𝒦⦅X⦆) (poset-ofᵈ 𝒦⦅X⦆⁻) (r₁ , r₁-is-monotone) (s₁ , s₁-is-monotone) 𝒶𝒹𝒿′ †
+    where
+     final′ : (j : index (cover-indexₛ Y σᴰ₂ (ι K)))
+            → (ιX (h₀ (ℬYₖ [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ])) ≤[ poset-of (𝒪 X) ] pr₁ (s₁ (h₀ K))) holds
+     final′ j = ιX-is-monotone (h₀ (ℬYₖ [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ])) (h₀ K) final′′
+      where
+       open PosetReasoning (poset-ofᵈ 𝒦⦅Y⦆)
+
+       bar : (ℬY [ (cover-indexₛ Y σᴰ₂ (ι K)) [ j ] ] ≤[ poset-of (𝒪 Y) ] ι K) holds
+       bar = pr₁ (basisₛ-covers-do-cover Y σᴰ₂ (ι K)) j
+
+       bar′ : ℬY [ (cover-indexₛ Y σᴰ₂ (ι K)) [ j ] ] ∧[ 𝒪 Y ] ι K ＝ ℬY [ (cover-indexₛ Y σᴰ₂ (ι K)) [ j ] ]
+       bar′ = connecting-lemma₁ (𝒪 Y) bar ⁻¹
+
+       really-final : ((ℬY [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ] , _) ≤[ poset-ofᵈ 𝒦⦅Y⦆ ] s₂ K) holds
+       really-final = to-𝒦-＝ Y _ (basisₛ-consists-of-compact-opens Y σᴰ₂ (cover-indexₛ Y σᴰ₂ (ι K) [ j ])) bar′
+
+       final′′ : (h₀ (r₂ (ℬY [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ] , _)) ≤[ poset-ofᵈ 𝒦⦅X⦆⁻ ] h₀ K) holds
+       final′′ = h-is-monotone
+                  (_ , _)
+                  (adjunction-law₂ (poset-ofᵈ 𝒦⦅Y⦆) (poset-ofᵈ 𝒦⦅Y⦆⁻) (r₂ , r₂-is-monotone) (s₂ , s₂-is-monotone) 𝒶𝒹𝒿′′ really-final)
+
+     final : rel-syntax (poset-of (𝒪 X)) (spec-hom₀ h₀ (ι K)) (s₁ (h₀ K) .pr₁) holds
+     final = ⋁[ 𝒪 X ]-least
+              ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆
+              ((s₁ (h₀ K) .pr₁) , final′)
+
+     † : (((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K)) ≤[ poset-ofᵈ 𝒦⦅X⦆ ] s₁ (h₀ K)) holds
+     † = to-𝒦-＝ X _ (𝕜 (ι K) (ιY-gives-compact-opens K)) (connecting-lemma₁ (𝒪 X) final ⁻¹)
+
+   Ⅰ₂ : (K : 𝒦⁻Y)
+      → (h₀ K ≤[ poset-ofᵈ 𝒦⦅X⦆⁻ ] r₁ ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K))) holds
+   Ⅰ₂ K = {!!}
+
    -- λ K → r₁ (f⁺ (ι K) , φ (ι K) (ι-gives-compact-opens K))
    ‡ : (K : 𝒦⁻Y) → 𝒦-Hom₀ (spec-hom₀ h₀) 𝕜 K ＝ h₀ K
    ‡ K = 𝒦-Hom₀ (spec-hom₀ h₀) 𝕜 K                                                    ＝⟨ refl ⟩
          r₁ ((spec-hom₀ h₀ (ι K)) , 𝕜 (ι K) κ)                                        ＝⟨ refl ⟩
-         r₁ ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , κ₂)  ＝⟨ {!!} ⟩
+         r₁ ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , κ₂)  ＝⟨ Ⅰ    ⟩
          h₀ K                                                                         ∎
           where
            κ  = 𝒦-Duality₁.ι-gives-compact-opens Y σ₂ K
            κ₂ = 𝕜 (ι K) κ
+
+           Ⅰ = ≤-is-antisymmetric (poset-ofᵈ 𝒦⦅X⦆⁻) (Ⅰ₁ K) (Ⅰ₂ K)
 
    † : 𝒦-Hom₀ (spec-hom₀ h₀) 𝕜 ∼ h₀
    † = ‡
