@@ -25,8 +25,7 @@ data 𝕄 : 𝓤₀ ̇ where
  R : 𝕄
  η : 𝔹 → 𝕄
 
-C : 𝕄
-C = η center
+pattern C = η center
 
 l : 𝕄 → 𝕄
 l L     = L
@@ -60,7 +59,6 @@ open import UF.Subsingletons hiding (center)
                        × (f R b ＝ g L a)
                        × (b ＝ g R b)
 
-
 𝕄-induction : (P : 𝕄 → 𝓤 ̇ )
             → (a : P L)
             → (b : P R)
@@ -70,7 +68,7 @@ open import UF.Subsingletons hiding (center)
             → (x : 𝕄) → P x
 𝕄-induction P a b f g ι L             = a
 𝕄-induction P a b f g ι R             = b
-𝕄-induction P a b f g ι (η center)    = f R b -- (*)
+𝕄-induction P a b f g ι C             = f R b -- (*)
 𝕄-induction P a b f g ι (η (left x))  = f (η x) (𝕄-induction P a b f g ι (η x))
 𝕄-induction P a b f g ι (η (right x)) = g (η x) (𝕄-induction P a b f g ι (η x))
 
@@ -143,6 +141,8 @@ equations f R b ＝ g L a and b ＝ g R b as assumptions:
 𝕄-induction-r P a b f g ι (η x) = refl
 
 \end{code}
+
+We now show that 𝕄 is a set and so is a binary system.
 
 \begin{code}
 
@@ -925,8 +925,16 @@ module _ (fe  : Fun-Ext) where
 
    u = α L
    v = α R
-   w = α (l y) ∙ 𝕄-cases-l (middle ∘ (x ⊕_)) (r ∘ (x ⊕_)) (𝕄-is-set , pr₂ (⊕-property x)) y
-   t = α (r y) ∙ 𝕄-cases-r (middle ∘ (x ⊕_)) (r ∘ (x ⊕_)) (𝕄-is-set , pr₂ (⊕-property x)) y
+   w = α (l y) ∙ 𝕄-cases-l
+                  (middle ∘ (x ⊕_))
+                  (r ∘ (x ⊕_))
+                  (𝕄-is-set , pr₂ (⊕-property x))
+                  y
+   t = α (r y) ∙ 𝕄-cases-r
+                  (middle ∘ (x ⊕_))
+                  (r ∘ (x ⊕_))
+                  (𝕄-is-set , pr₂ (⊕-property x))
+                  y
 
 \end{code}
 
