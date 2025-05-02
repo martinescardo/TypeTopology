@@ -176,7 +176,8 @@ Added on 2024-06-09.
 \begin{code}
 
 meet-preserving-implies-monotone
- : (K L : DistributiveLattice 𝓤)
+ : (K : DistributiveLattice 𝓤)
+ → (L : DistributiveLattice 𝓥)
  → (f : ∣ K ∣ᵈ → ∣ L ∣ᵈ)
  → (preserves-∧ K L f ⇒ is-monotonic (poset-ofᵈ K) (poset-ofᵈ L) f) holds
 meet-preserving-implies-monotone K L f φ (x , y) p =
