@@ -351,6 +351,10 @@ system.
 
 \end{code}
 
+TODO. Now that we have removed the sethood requirement for the
+underlying type of a binary system we need to prove unique existence
+as contractibility (as done for nno's in the MGS'2019 lecture notes).
+
 Primitive (or parametric) recursion, which has the above as a special
 case:
 
@@ -942,3 +946,5 @@ operation _⊕_ such that
    R ⊕ x = r x.
 
 To be continued.
+
+h a = h (f a) = f' (h a)
