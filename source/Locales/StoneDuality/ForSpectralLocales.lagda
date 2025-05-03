@@ -569,6 +569,15 @@ Quasi-inverse.
             (inverses-are-retractions s₂ ⌜ e₂ ⌝-is-equiv)
             (inverses-are-sections s₂ ⌜ e₂ ⌝-is-equiv)
 
+   𝒶𝒹𝒿′′′ : ((r₂ , r₂-is-monotone) ⊣₃ (s₂ , s₂-is-monotone)) holds
+   𝒶𝒹𝒿′′′ = monotone-equivalences-are-adjoint
+            (poset-ofᵈ 𝒦⦅Y⦆)
+            (poset-ofᵈ 𝒦⦅Y⦆⁻)
+            (r₂ , r₂-is-monotone)
+            (s₂ , s₂-is-monotone)
+            (inverses-are-retractions s₂ ⌜ e₂ ⌝-is-equiv)
+            (inverses-are-sections s₂ ⌜ e₂ ⌝-is-equiv)
+
    Ⅰ₁ : (K : 𝒦⁻Y)
       → (r₁ ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K)) ≤[ poset-ofᵈ 𝒦⦅X⦆⁻ ] h₀ K) holds
    Ⅰ₁ K = adjunction-law₂ (poset-ofᵈ 𝒦⦅X⦆) (poset-ofᵈ 𝒦⦅X⦆⁻) (r₁ , r₁-is-monotone) (s₁ , s₁-is-monotone) 𝒶𝒹𝒿′ †
@@ -603,7 +612,45 @@ Quasi-inverse.
 
    Ⅰ₂ : (K : 𝒦⁻Y)
       → (h₀ K ≤[ poset-ofᵈ 𝒦⦅X⦆⁻ ] r₁ ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K))) holds
-   Ⅰ₂ K = {!!}
+   Ⅰ₂ K = ∥∥-rec (holds-is-prop ((h₀ K ≤[ poset-ofᵈ 𝒦⦅X⦆⁻ ] r₁ ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K))))) γ ♣
+    where
+     open PropositionalTruncation pt
+
+     ♣ : (Ǝ j ꞉ index (cover-indexₛ Y σᴰ₂ (ι K)) , (ι K ≤[ poset-of (𝒪 Y) ] ℬY [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ]) holds) holds
+     ♣ = ιY-gives-compact-opens K ⁅ ℬY [ j ] ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆ (basisₛ-covers-are-directed Y σᴰ₂ (ι K)) (reflexivity+ (poset-of (𝒪 Y)) (basisₛ-covers-do-cover-eq Y σᴰ₂ (ι K)))
+
+     γ : (Σ j ꞉ index (cover-indexₛ Y σᴰ₂ (ι K)) , (ι K ≤[ poset-of (𝒪 Y) ] ℬY [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ]) holds)
+       → (h₀ K ≤[ poset-ofᵈ 𝒦⦅X⦆⁻ ] r₁ ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K))) holds
+     γ (j , p) = adjunction-law₁ (poset-ofᵈ 𝒦⦅X⦆⁻) (poset-ofᵈ 𝒦⦅X⦆) (s₁ , s₁-is-monotone) (r₁ , r₁-is-monotone) 𝒶𝒹𝒿 foo
+      where
+       open PosetReasoning (poset-of (𝒪 X))
+
+       q : rel-syntax (poset-ofᵈ 𝒦⦅Y⦆⁻) K (ℬYₖ [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ]) holds
+       q = adjunction-law₁ (poset-ofᵈ 𝒦⦅Y⦆⁻) (poset-ofᵈ 𝒦⦅Y⦆) {!r₁ , r₁-is-monotone!} {!!} {!𝒶𝒹𝒿′′!} {!!}
+
+       foo : ((s₁ (h₀ K)) ≤[ poset-ofᵈ 𝒦⦅X⦆ ] ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K))) holds
+       foo = to-𝒦-＝ X _ _ bar
+        where
+         baz : (ιX (h₀ K) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆)) holds
+         baz = ιX (h₀ K)                                                       ≤⟨ ιX-is-monotone _ _ (h-is-monotone (_ , _) q) ⟩
+               ιX (h₀ (ℬYₖ [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ]))                ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆ j ⟩
+               ⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆ ■
+
+         bar : pr₁ (s₁ (h₀ K)) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) ＝ pr₁ (s₁ (h₀ K))
+         bar = connecting-lemma₁ (𝒪 X) baz ⁻¹
+        -- s₁ (h₀ K)                                                                                              ≤⟨ {!!} ⟩
+        --      (ιX (h₀ K) , κ)                                                                                        ≤⟨ {!!} ⟩
+        --      (ιX (h₀ (ℬYₖ [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ])) , κ′)                                                ≤⟨ φ ⟩
+        --      (⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K) ■
+        --       where
+        --        κ : {!!}
+        --        κ = {!!}
+
+        --        κ′ : {!!}
+        --        κ′ = {!!}
+
+        --        φ : {!!}
+        --        φ = {!!}
 
    -- λ K → r₁ (f⁺ (ι K) , φ (ι K) (ι-gives-compact-opens K))
    ‡ : (K : 𝒦⁻Y) → 𝒦-Hom₀ (spec-hom₀ h₀) 𝕜 K ＝ h₀ K
