@@ -448,11 +448,6 @@ Quasi-inverse.
         → pr₁ (s₂ (r₂ (U , κ))) ＝ U
  lemma₃ U κ = ap pr₁ (inverses-are-sections' e₂ (U , κ))
 
- lemma₄ : (K₁ K₂ : 𝒦⁻Y)
-        → (K₁ ≤[ poset-ofᵈ 𝒦⦅Y⦆⁻ ] K₂) holds
-        → (s₂ K₁  ≤[ poset-ofᵈ 𝒦⦅Y⦆ ] s₂ K₂) holds
- lemma₄ K₁ K₂ = {!!}
-
  spec-cancels-𝒦 : (𝒻 : Spectral-Map X Y) → spec-hom (𝒦-Hom 𝒻) ＝ 𝒻
  spec-cancels-𝒦 𝒻@((f⁺ , f-homo) , σ) =
   to-subtype-＝
@@ -531,6 +526,7 @@ Quasi-inverse.
    open GaloisConnectionBetween (poset-ofᵈ 𝒦⦅X⦆⁻) (poset-ofᵈ 𝒦⦅X⦆) renaming (_⊣_ to _⊣₁_)
    open GaloisConnectionBetween (poset-ofᵈ 𝒦⦅X⦆) (poset-ofᵈ 𝒦⦅X⦆⁻) renaming (_⊣_ to _⊣₂_)
    open GaloisConnectionBetween (poset-ofᵈ 𝒦⦅Y⦆) (poset-ofᵈ 𝒦⦅Y⦆⁻) renaming (_⊣_ to _⊣₃_)
+   open GaloisConnectionBetween (poset-ofᵈ 𝒦⦅Y⦆⁻) (poset-ofᵈ 𝒦⦅Y⦆) renaming (_⊣_ to _⊣₄_)
    open Some-Properties-Of-Posetal-Adjunctions
    open Homomorphismᵈᵣ h using (h-is-monotone; h-preserves-∧)
 
@@ -569,14 +565,21 @@ Quasi-inverse.
             (inverses-are-retractions s₂ ⌜ e₂ ⌝-is-equiv)
             (inverses-are-sections s₂ ⌜ e₂ ⌝-is-equiv)
 
-   𝒶𝒹𝒿′′′ : ((r₂ , r₂-is-monotone) ⊣₃ (s₂ , s₂-is-monotone)) holds
+   𝒶𝒹𝒿′′′ : ((s₂ , s₂-is-monotone) ⊣₄ (r₂ , r₂-is-monotone)) holds
    𝒶𝒹𝒿′′′ = monotone-equivalences-are-adjoint
-            (poset-ofᵈ 𝒦⦅Y⦆)
-            (poset-ofᵈ 𝒦⦅Y⦆⁻)
-            (r₂ , r₂-is-monotone)
-            (s₂ , s₂-is-monotone)
-            (inverses-are-retractions s₂ ⌜ e₂ ⌝-is-equiv)
-            (inverses-are-sections s₂ ⌜ e₂ ⌝-is-equiv)
+             (poset-ofᵈ 𝒦⦅Y⦆⁻)
+             (poset-ofᵈ 𝒦⦅Y⦆)
+             (s₂ , s₂-is-monotone)
+             (r₂ , r₂-is-monotone)
+             (inverses-are-sections s₂ ⌜ e₂ ⌝-is-equiv)
+             (inverses-are-retractions s₂ ⌜ e₂ ⌝-is-equiv)
+    -- monotone-equivalences-are-adjoint
+    --         (poset-ofᵈ 𝒦⦅Y⦆⁻)
+    --         (poset-ofᵈ 𝒦⦅Y⦆)
+    --         (s₂ , s₂-is-monotone)
+    --         (r₂ , r₂-is-monotone)
+    --         (inverses-are-sections s₂ ⌜ e₂ ⌝-is-equiv)
+    --         (inverses-are-retractions s₂ ⌜ e₂ ⌝-is-equiv)
 
    Ⅰ₁ : (K : 𝒦⁻Y)
       → (r₁ ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K)) ≤[ poset-ofᵈ 𝒦⦅X⦆⁻ ] h₀ K) holds
@@ -625,8 +628,17 @@ Quasi-inverse.
       where
        open PosetReasoning (poset-of (𝒪 X))
 
-       q : rel-syntax (poset-ofᵈ 𝒦⦅Y⦆⁻) K (ℬYₖ [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ]) holds
-       q = adjunction-law₁ (poset-ofᵈ 𝒦⦅Y⦆⁻) (poset-ofᵈ 𝒦⦅Y⦆) {!r₁ , r₁-is-monotone!} {!!} {!𝒶𝒹𝒿′′!} {!!}
+       ϑ : (s₂ K ≤[ poset-ofᵈ 𝒦⦅Y⦆ ] (ℬY [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ] , basisₛ-consists-of-compact-opens Y σᴰ₂ _)) holds
+       ϑ = to-𝒦-＝ Y _ (ιY-gives-compact-opens K) (connecting-lemma₁ (𝒪 Y) p ⁻¹)
+
+       q : (K ≤[ poset-ofᵈ 𝒦⦅Y⦆⁻ ] ℬYₖ [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ]) holds
+       q = adjunction-law₁
+            (poset-ofᵈ 𝒦⦅Y⦆⁻)
+            (poset-ofᵈ 𝒦⦅Y⦆)
+            (s₂ , s₂-is-monotone)
+            (r₂ , r₂-is-monotone)
+            𝒶𝒹𝒿′′′
+            ϑ
 
        foo : ((s₁ (h₀ K)) ≤[ poset-ofᵈ 𝒦⦅X⦆ ] ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K))) holds
        foo = to-𝒦-＝ X _ _ bar
@@ -638,21 +650,7 @@ Quasi-inverse.
 
          bar : pr₁ (s₁ (h₀ K)) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) ＝ pr₁ (s₁ (h₀ K))
          bar = connecting-lemma₁ (𝒪 X) baz ⁻¹
-        -- s₁ (h₀ K)                                                                                              ≤⟨ {!!} ⟩
-        --      (ιX (h₀ K) , κ)                                                                                        ≤⟨ {!!} ⟩
-        --      (ιX (h₀ (ℬYₖ [ cover-indexₛ Y σᴰ₂ (ι K) [ j ] ])) , κ′)                                                ≤⟨ φ ⟩
-        --      (⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K) ■
-        --       where
-        --        κ : {!!}
-        --        κ = {!!}
 
-        --        κ′ : {!!}
-        --        κ′ = {!!}
-
-        --        φ : {!!}
-        --        φ = {!!}
-
-   -- λ K → r₁ (f⁺ (ι K) , φ (ι K) (ι-gives-compact-opens K))
    ‡ : (K : 𝒦⁻Y) → 𝒦-Hom₀ (spec-hom₀ h₀) 𝕜 K ＝ h₀ K
    ‡ K = 𝒦-Hom₀ (spec-hom₀ h₀) 𝕜 K                                                    ＝⟨ refl ⟩
          r₁ ((spec-hom₀ h₀ (ι K)) , 𝕜 (ι K) κ)                                        ＝⟨ refl ⟩
