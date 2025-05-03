@@ -382,7 +382,6 @@ primitive-recursive a b f g h =
    𝕄-induction-l (λ _ → A) a b f g ι ,
    𝕄-induction-r (λ _ → A) a b f g ι
 
-
 𝕄-at-most-one-primrec : {A : 𝓤 ̇ }
     (a b : A)
     (f g : 𝕄 → A → A)
@@ -395,8 +394,6 @@ primitive-recursive a b f g h =
 𝕄-at-most-one-primrec {𝓤} {A} a b f g (ι₁ , ι')  h k
                        (hL , hR , hl , hr) (kL , kR , kl , kr) = δ
  where
-  arbitrary-element-of-𝕄 = L
-
   α = h L ＝⟨ hL ⟩
       a   ＝⟨ kL ⁻¹ ⟩
       k L ∎
@@ -420,7 +417,6 @@ primitive-recursive a b f g h =
   δ : h ∼ k
   δ = 𝕄-induction (λ x → h x ＝ k x) α β ϕ γ
 
-
 𝕄-primrec-uniqueness
   : {A : 𝓤 ̇ }
     (a b : A)
@@ -437,7 +433,7 @@ primitive-recursive a b f g h =
 \end{code}
 
 Under some special conditions that often hold in practice, we can
-remove the "base" case in the uniqueness theorem.
+remove the base case in the uniqueness theorem.
 
 \begin{code}
 
@@ -455,16 +451,16 @@ fixed-point-conditions : {A : 𝓤 ̇ } → A → A → (𝕄 → A → A) → (
 fixed-point-conditions a b f g = (∀ a' → a' ＝ f L a' → a' ＝ a)
                                × (∀ b' → b' ＝ g R b' → b' ＝ b)
 
-wprimrec-primitive-recursive : {A : 𝓤 ̇ }
+wprimrec-primitive-recursive
+ : {A : 𝓤 ̇ }
    (a b : A)
    (f g : 𝕄 → A → A)
    (h : 𝕄 → A)
  → fixed-point-conditions a b f g
  → is-wprimrec f g h
  → primitive-recursive a b f g h
-
-wprimrec-primitive-recursive a b f g h (fixa , fixb) (hl , hr) =
- (hL , hR , hl , hr)
+wprimrec-primitive-recursive a b f g h (fixa , fixb) (hl , hr)
+ = (hL , hR , hl , hr)
  where
   hL' = h L       ＝⟨ refl ⟩
         h (l L)   ＝⟨ hl L ⟩
@@ -527,8 +523,8 @@ conditions:
   (2) f R ＝ g L,
   (3) b ＝ g R.
 
-If we take a = f L and b = g L, so that (1) and (2) hold, we are left
-with condition (3) as the only assumption, and the condition on h
+If we take a = f L and b = g L, so that (1) and (3) hold, we are left
+with condition (2) as the only assumption, and the condition on h
 becomes
 
       h L     = f L,
@@ -541,20 +537,20 @@ But also the first two equations follow from the second two, since
      h L = h (l L) = f L,
      h R = h (r R) = g r.
 
-Hence it is enough to consider the endpoint agreement condition (3)
+Hence it is enough to consider the endpoint agreement condition (2)
 and work with the equations
 
       h (l x) = f x,
       h (r x) = g x.
 
-Hence 𝕄-cases gives the mediating map of a pushout diagram that glues
-two copies of the dyadic interval, identifying the end of one with the
-beginning of the other, so that 𝕄 is equivalent to the pushout 𝕄 +₁ 𝕄:
+Hence the function 𝕄-cases defined belowgives the mediating map of a
+pushout diagram that glues two copies of the dyadic interval,
+identifying the end of one with the beginning of the other, so that 𝕄
+is equivalent to the pushout 𝕄 +₁ 𝕄:
 
       𝕄 ≃ 𝕄 +₁ 𝕄
 
-when f = l and g = r. The function 𝕄-cases defined below
-produces the mediating map of the pushout:
+when f = l and g = r.
 
 The following constructions and facts are all particular cases of
 those for 𝕄-primrec.
@@ -793,21 +789,17 @@ module _ (fe  : Fun-Ext) where
  F-eq-lr = to-subtype-＝ being-𝓛𝓡-function-is-prop v
   where
    i = λ (x : 𝕄) →
-    𝕄-cases (l ∘ r) (m ∘ r) refl (l x) ＝⟨ i₀ x ⟩
+    𝕄-cases (l ∘ r) (m ∘ r) refl (l x) ＝⟨ 𝕄-cases-l _ _ refl x ⟩
     l (r x)                            ＝⟨ (m-l x)⁻¹ ⟩
     m (l x)                            ∎
-     where
-      i₀ = 𝕄-cases-l _ _ refl
 
    ii = λ (x : 𝕄) →
-    𝕄-cases (l ∘ r) (m ∘ r) refl (r x) ＝⟨ ii₀ x ⟩
+    𝕄-cases (l ∘ r) (m ∘ r) refl (r x) ＝⟨ 𝕄-cases-r _ _ refl x ⟩
     m (r x)                            ＝⟨ m-r x ⟩
     r (l x)                            ∎
-     where
-      ii₀ = 𝕄-cases-r _ _ refl
 
-   iii : 𝕄-cases (l ∘ r)      (m ∘ r) refl
-       ∼ 𝕄-cases (m ∘ l) (r ∘ l)      refl
+   iii : 𝕄-cases (l ∘ r) (m ∘ r) refl
+       ∼ 𝕄-cases (m ∘ l) (r ∘ l) refl
    iii = 𝕄-cases-uniqueness _ _ refl (𝕄-cases _ _ refl) (i , ii)
 
    iv : 𝓛 r refl ∼ 𝓡 l refl
