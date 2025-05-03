@@ -946,5 +946,3 @@ operation _⊕_ such that
    R ⊕ x = r x.
 
 To be continued.
-
-h a = h (f a) = f' (h a)
