@@ -590,13 +590,6 @@ Quasi-inverse.
              (r₂ , r₂-is-monotone)
              (inverses-are-sections s₂ ⌜ e₂ ⌝-is-equiv)
              (inverses-are-retractions s₂ ⌜ e₂ ⌝-is-equiv)
-    -- monotone-equivalences-are-adjoint
-    --         (poset-ofᵈ 𝒦⦅Y⦆⁻)
-    --         (poset-ofᵈ 𝒦⦅Y⦆)
-    --         (s₂ , s₂-is-monotone)
-    --         (r₂ , r₂-is-monotone)
-    --         (inverses-are-sections s₂ ⌜ e₂ ⌝-is-equiv)
-    --         (inverses-are-retractions s₂ ⌜ e₂ ⌝-is-equiv)
 
    Ⅰ₁ : (K : 𝒦⁻Y)
       → (r₁ ((⋁[ 𝒪 X ] ⁅ ιX (h₀ (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ (ι K) ⁆) , 𝕜 (ι K) (ιY-gives-compact-opens K)) ≤[ poset-ofᵈ 𝒦⦅X⦆⁻ ] h₀ K) holds
