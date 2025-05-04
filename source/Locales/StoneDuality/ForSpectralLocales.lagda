@@ -271,7 +271,7 @@ module spec-stone-duality-morphisms
 
  𝒦-Hom : Spectral-Map X Y → (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻)
  𝒦-Hom (𝒻@(f , _) , σ) =
-  record { h = h ; h-is-homomorphism = α , β , γ , {!γ!} }
+  record { h = h ; h-is-homomorphism = α , β , γ , {!!} }
    where
     open 𝒦-Duality₁ Y σ₂ using (ι; ι-gives-compact-opens; ι-preserves-𝟏; ι-is-monotone; ι-preserves-∧; ι-preserves-𝟎)
     open DistributiveLattice 𝒦⦅X⦆ hiding (X) renaming (𝟏 to 𝟏ₓ; _∧_ to _∧ₓ_; 𝟎 to 𝟎X)
@@ -359,19 +359,41 @@ module spec-stone-duality-morphisms
   where
    open 𝒦-Duality₁ X σ₁ using (ι; ι-is-monotone; ι-gives-compact-opens)
 
+ spec-hom₁ : (𝒦⁻Y → 𝒦⁻X) → (⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩)
+ spec-hom₁ h = λ V → ⋁[ 𝒪 X ] ⁅ ι (h K) ∣ (K , _) ∶ (Σ K ꞉ 𝒦⁻Y , (ιY K ≤[ poset-of (𝒪 Y) ] V) holds) ⁆
+  where
+   open 𝒦-Duality₁ X σ₁ using (ι; ι-is-monotone; ι-gives-compact-opens)
+   open 𝒦-Duality₁ Y σ₂ using () renaming (ι to ιY)
+
  spec-hom : (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻) → Spectral-Map X Y
  spec-hom 𝒽 = 𝒻 , 𝕤
   where
    open PropositionalTruncation pt
-   open 𝒦-Duality₁ X σ₁ using (ι; ι-is-monotone; ι-gives-compact-opens)
+   open 𝒦-Duality₁ X σ₁ using (ι; ι-is-monotone; ι-gives-compact-opens; ι-preserves-𝟏)
+   open DistributiveLattice 𝒦⦅Y⦆⁻ hiding (X) renaming (𝟏 to 𝟏Y⁻)
+   open DistributiveLattice 𝒦⦅X⦆⁻ hiding (X) renaming (𝟏 to 𝟏X⁻)
+   open 𝒦-Duality₁ Y σ₂ using () renaming (ι to ιY)
 
-   open Homomorphismᵈᵣ 𝒽 using (h)
+
+   open Homomorphismᵈᵣ 𝒽 using (h; h-preserves-𝟏)
 
    f : ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
    f = spec-hom₀ h
 
    α : preserves-top (𝒪 Y) (𝒪 X) f holds
-   α = {!!}
+   α = only-𝟏-is-above-𝟏 (𝒪 X) (spec-hom₀ h 𝟏[ 𝒪 Y ]) †
+    where
+     open PosetReasoning (poset-of (𝒪 X))
+
+     † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] spec-hom₀ h 𝟏[ 𝒪 Y ]) holds
+     † = 𝟏[ 𝒪 X ]                ＝⟨ ι-preserves-𝟏 ⁻¹ ⟩ₚ
+         ι 𝟏X⁻                   ＝⟨ ap ι Ⅰ ⁻¹ ⟩ₚ
+         ι (h 𝟏Y⁻)               ≤⟨  Ⅱ ⟩
+         spec-hom₁ h 𝟏[ 𝒪 Y ]    ≤⟨ {!!} ⟩
+         spec-hom₀ h 𝟏[ 𝒪 Y ]    ■
+          where
+           Ⅰ = h-preserves-𝟏
+           Ⅱ = ⋁[ 𝒪 X ]-upper _ (𝟏Y⁻ , 𝟏-is-top (𝒪 Y) (ιY 𝟏Y⁻))
 
    β : preserves-binary-meets (𝒪 Y) (𝒪 X) f holds
    β U V = {!!}
