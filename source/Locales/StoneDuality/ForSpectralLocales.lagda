@@ -271,10 +271,12 @@ module spec-stone-duality-morphisms
 
  𝒦-Hom : Spectral-Map X Y → (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻)
  𝒦-Hom (𝒻@(f , _) , σ) =
-  record { h = h ; h-is-homomorphism = α , β , {!!} , {!!} }
+  record { h = h ; h-is-homomorphism = α , β , γ , {!γ!} }
    where
-    open 𝒦-Duality₁ Y σ₂ using (ι; ι-gives-compact-opens; ι-preserves-𝟏; ι-is-monotone; ι-preserves-∧)
-    open DistributiveLattice 𝒦⦅X⦆ hiding (X) renaming (𝟏 to 𝟏ₓ; _∧_ to _∧ₓ_)
+    open 𝒦-Duality₁ Y σ₂ using (ι; ι-gives-compact-opens; ι-preserves-𝟏; ι-is-monotone; ι-preserves-∧; ι-preserves-𝟎)
+    open DistributiveLattice 𝒦⦅X⦆ hiding (X) renaming (𝟏 to 𝟏ₓ; _∧_ to _∧ₓ_; 𝟎 to 𝟎X)
+    open DistributiveLattice 𝒦⦅Y⦆ hiding (X) renaming (𝟎 to 𝟎Y)
+    open DistributiveLattice 𝒦⦅Y⦆⁻ hiding (X) renaming (𝟎 to 𝟎Y⁻)
     open DistributiveLattice 𝒦⦅X⦆⁻ hiding (X) renaming (_∧_ to _∧X⁻_)
     open PropositionalTruncation pt
 
@@ -295,6 +297,21 @@ module spec-stone-duality-morphisms
               𝟏[ 𝒪 X ] ∎
 
           † = ap r₁ (to-𝒦-＝ X (σ (ι (r₂ 𝟏y)) (ι-gives-compact-opens (r₂ 𝟏y))) (𝒦-Lattice.𝟏-is-compact X σ₁) p)
+
+    γ : preserves-𝟎 𝒦⦅Y⦆⁻ 𝒦⦅X⦆⁻ h holds
+    γ = h 𝟎Y⁻                                                               ＝⟨ refl ⟩
+        h (r₂ 𝟎Y)                                                           ＝⟨ refl ⟩
+        r₁ (f (ι (r₂ 𝟎Y)) , σ (ι (r₂ 𝟎Y)) (ι-gives-compact-opens (r₂ 𝟎Y)))  ＝⟨ †   ⟩
+        r₁ (𝟎[ 𝒪 X ] , 𝟎-is-compact X)                                      ＝⟨ refl ⟩
+        _                                                                   ∎
+         where
+          p : f (ι (r₂ 𝟎Y)) ＝ 𝟎[ 𝒪 X ]
+          p = f (ι (r₂ 𝟎Y))     ＝⟨ refl               ⟩
+              f (ι 𝟎Y⁻)         ＝⟨ ap f ι-preserves-𝟎 ⟩
+              f 𝟎[ 𝒪 Y ]        ＝⟨ frame-homomorphisms-preserve-bottom (𝒪 Y) (𝒪 X) 𝒻  ⟩
+              𝟎[ 𝒪 X ]          ∎
+
+          † = ap r₁ (to-𝒦-＝ X (σ (ι (r₂ 𝟎Y)) (ι-gives-compact-opens (r₂ 𝟎Y))) (𝟎-is-compact X) p)
 
     β : preserves-∧ 𝒦⦅Y⦆⁻ 𝒦⦅X⦆⁻ h holds
     β x y = h (x ∧Y⁻ y)                                ＝⟨ refl ⟩
