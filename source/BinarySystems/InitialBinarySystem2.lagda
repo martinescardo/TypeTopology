@@ -240,7 +240,7 @@ induction principle:
 \begin{code}
 
 𝓜-rec : (𝓐 : BS 𝓤) → (𝕄 → ⟨ 𝓐 ⟩)
-𝓜-rec (A , (a , b , f , g) , (ι₁ , ι')) =
+𝓜-rec (A , (a , b , f , g) , _) =
  𝕄-induction (λ _ → A) a b (λ _ → f) (λ _ → g)
 
 \end{code}
@@ -627,8 +627,8 @@ case-equations f g h = (h ∘ l ∼ f)
    v a' p = p
 
 𝕄-cases-uniqueness
- : {A : 𝓤 ̇ }
-   (f g : 𝕄 → A)
+  : {A : 𝓤 ̇ }
+    (f g : 𝕄 → A)
   → (p : 𝕄-caseable A f g)
   → (h : 𝕄 → A)
   → case-equations f g h
@@ -913,7 +913,7 @@ So, the set of defining equations is the following, where it can be
 seen that there is some redundancy:
 
      (  l (x ⊕ R) ＝ m (x ⊕ L)    )
-   × (  m (x ⊕ R) ＝ r  (x ⊕ L)   )
+   × (  m (x ⊕ R) ＝ r (x ⊕ L)    )
    × (  L   ⊕ y   ＝ l y          )
    × (  R   ⊕ y   ＝ r y          )
    × (  l x ⊕ L   ＝ l (x ⊕ L)    )
@@ -927,7 +927,7 @@ seen that there is some redundancy:
 
 The first two come from the binary system F and the remaining ones from the homomorphism condition and case analysis.
 
-Next we want to show that
+TODO. Next we want to show that
 
   _⊕_ : 𝕄 → 𝕄 → 𝕄
 
@@ -944,5 +944,3 @@ operation _⊕_ such that
 
    L ⊕ x = l x,
    R ⊕ x = r x.
-
-To be continued.

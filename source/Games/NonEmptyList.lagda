@@ -50,6 +50,10 @@ module _ {X : Type} where
  to-List⁺-＝ : {xs ys : List⁺ X} → ι xs ＝ ι ys → xs ＝ ys
  to-List⁺-＝ = to-subtype-＝ being-non-empty-is-prop
 
+head⁺-is-member : {X : Type} (xs : List⁺ X)
+                → member (head⁺ xs) (ι xs)
+head⁺-is-member ((x ∷ xs) , _) = in-head
+
 List-ext-lemma⁻ : {X Y : Type} (f : X → List⁺ Y) (xs : List X)
                 → is-non-empty xs
                 → is-non-empty (List-ext (ι ∘ f) xs)
