@@ -203,8 +203,8 @@ The proof is quite simple:
 
 \begin{code}
 
- compact-implies-compact' : (is-perfect-map (! X) ⇒ is-compact X) holds
- compact-implies-compact' κ =
+ perfection-of-!-gives-compactness : (is-perfect-map (! X) ⇒ is-compact X) holds
+ perfection-of-!-gives-compactness κ =
   transport (λ - → is-compact-open X - holds) (q ⁻¹) †
    where
     open Spectrality-of-𝟎 𝓤 pe
