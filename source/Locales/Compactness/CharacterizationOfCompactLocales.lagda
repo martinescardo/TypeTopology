@@ -62,7 +62,7 @@ instance
 
 The universal property of the inital frame gives that there is a unique frame
 homomorphism `Ω → 𝒪(X)`, for every locale `X`. We denote this by `!`. We also
-define the shorthand notation `!⁺` for the underlying function of the frame
+define the shorthand notation `!٭` for the underlying function of the frame
 homomorphism in consideration.
 
 \begin{code}
@@ -70,8 +70,8 @@ homomorphism in consideration.
 !_ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → 𝟎-𝔽𝕣𝕞 pe ─f→ 𝒪 X
 ! X = center (𝟎-𝔽𝕣𝕞-initial pe (𝒪 X))
 
-!⁺[_]_ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Ω 𝓤 → ⟨ 𝒪 X ⟩
-!⁺[_]_ X = fun (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (! X)
+!٭[_]_ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Ω 𝓤 → ⟨ 𝒪 X ⟩
+!٭[_]_ X = fun (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (! X)
 
 \end{code}
 
@@ -81,7 +81,7 @@ the superscript plus instead.
 
 We also define some shorthand notation for the right adjoint of this map, which
 we know to exist since the initial frame has a small base. We denote by
-`!₊[ X ]_` the underlying function of the right adjoint of `!⁺[ X ]_`.
+`!₊[ X ]_` the underlying function of the right adjoint of `!٭[ X ]_`.
 
 \begin{code}
 
@@ -111,25 +111,25 @@ some open `U : ⟨ 𝒪 X ⟩` and tells if `U ＝ 𝟏[ 𝒪 X ]`.
   † : (!₊[ X ] U) holds → U ＝ 𝟏[ 𝒪 X ]
   † p = only-𝟏-is-above-𝟏 (𝒪 X) U γ
    where
-    Ⅱ : (!⁺[ X ] ⊤ ≤[ poset-of (𝒪 X) ] U) holds
+    Ⅱ : (!٭[ X ] ⊤ ≤[ poset-of (𝒪 X) ] U) holds
     Ⅱ = adjunction-inequality-backward (! X) U ⊤ λ { ⋆ → p }
 
-    Ⅰ : 𝟏[ 𝒪 X ] ＝ !⁺[ X ] ⊤
+    Ⅰ : 𝟏[ 𝒪 X ] ＝ !٭[ X ] ⊤
     Ⅰ = frame-homomorphisms-preserve-top (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (! X) ⁻¹
 
     γ : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] U) holds
     γ = 𝟏[ 𝒪 X ]     ＝⟨ Ⅰ ⟩ₚ
-        (!⁺[ X ] ⊤)  ≤⟨ Ⅱ ⟩
+        (!٭[ X ] ⊤)  ≤⟨ Ⅱ ⟩
         U            ■
 
   ‡ : U ＝ 𝟏[ 𝒪 X ] → (!₊[ X ] U) holds
   ‡ p = γ ⋆
    where
-    Ⅰ : 𝟏[ 𝒪 X ] ＝ !⁺[ X ] ⊤
+    Ⅰ : 𝟏[ 𝒪 X ] ＝ !٭[ X ] ⊤
     Ⅰ = frame-homomorphisms-preserve-top (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (! X) ⁻¹
 
-    q : (!⁺[ X ] ⊤ ≤[ poset-of (𝒪 X) ] U) holds
-    q = !⁺[ X ] ⊤ ＝⟨ Ⅰ ⁻¹ ⟩ₚ 𝟏[ 𝒪 X ] ＝⟨ p ⁻¹ ⟩ₚ U ■
+    q : (!٭[ X ] ⊤ ≤[ poset-of (𝒪 X) ] U) holds
+    q = !٭[ X ] ⊤ ＝⟨ Ⅰ ⁻¹ ⟩ₚ 𝟏[ 𝒪 X ] ＝⟨ p ⁻¹ ⟩ₚ U ■
 
     γ : (⊤ ⇒ !₊[ X ] U) holds
     γ = adjunction-inequality-forward (! X) U ⊤ q
@@ -202,9 +202,9 @@ standard one.
 The proof is quite simple:
 
   - We have to show that the top `𝟏[ 𝒪 X ]` is compact.
-  - Because `!⁺[ X ]` is a frame homomorphism, we have that `𝟏 = !⁺[ X ] ⊤`,
-    so it suffices to show that `!⁺[ X ] ⊤` is compact.
-  - Since we are given that `!⁺[ X ] ⊤` preserves compact opens, we just
+  - Because `!٭[ X ]` is a frame homomorphism, we have that `𝟏 = !٭[ X ] ⊤`,
+    so it suffices to show that `!٭[ X ] ⊤` is compact.
+  - Since we are given that `!٭[ X ] ⊤` preserves compact opens, we just
     have to show that `⊤` is compact, which we know since the terminal locale
     is compact.
 
@@ -216,13 +216,13 @@ The proof is quite simple:
    where
     open Spectrality-of-𝟎 𝓤 pe
 
-    q : 𝟏[ 𝒪 X ] ＝ !⁺[ X ] ⊤
+    q : 𝟏[ 𝒪 X ] ＝ !٭[ X ] ⊤
     q = frame-homomorphisms-preserve-top (𝟎-𝔽𝕣𝕞 pe) (𝒪 X) (! X) ⁻¹
 
     𝕤 : SpectralMaps.is-spectral-map X (𝟏Loc pe) (! X) holds
     𝕤 = perfect-maps-are-spectral (! X) κ
 
-    † : is-compact-open X (!⁺[ X ] ⊤) holds
+    † : is-compact-open X (!٭[ X ] ⊤) holds
     † = 𝕤 𝟏[ 𝟎-𝔽𝕣𝕞 pe ] (𝟎Frm-is-compact 𝓤 pe)
 
 \end{code}
@@ -231,9 +231,9 @@ We now tackle the other direction.
 
 - Suppose `X` is compact in the standard sense.
 - Let `K : Ω` be a compact open of the terminal locale.
-- We need to show that `!⁺[ X ] K` is compact.
+- We need to show that `!٭[ X ] K` is compact.
 - Since `X` is a compact locale, and clopens are compact in compact frames, we
-  simply have to show that `!⁺[ X ] K` is a clopen.
+  simply have to show that `!٭[ X ] K` is a clopen.
 - This is easy since we already know that `K` is a clopen in `Ω` (since `Ω` is
   a Stone locale, in which the clopens and the compact opens coincide) and
   frame homomorphisms preserve complements.
@@ -244,7 +244,7 @@ We now tackle the other direction.
  compact'-implies-compact κ = compact''-implies-compact' †
    where
     † : is-spectral-map (! X) holds
-    † P 𝕔 = clopens-are-compact-in-compact-frames (𝒪 X) κ (!⁺[ X ] P) ‡
+    † P 𝕔 = clopens-are-compact-in-compact-frames (𝒪 X) κ (!٭[ X ] P) ‡
      where
       ξ : is-clopen (𝟎-𝔽𝕣𝕞 pe) P holds
       ξ = compact-implies-clopen pe P 𝕔
@@ -252,14 +252,14 @@ We now tackle the other direction.
       P′ : Ω 𝓤
       P′ = pr₁ ξ
 
-      ζ : is-complement-of (𝒪 X) (!⁺[ X ] P′) (!⁺[ X ] P)
+      ζ : is-complement-of (𝒪 X) (!٭[ X ] P′) (!٭[ X ] P)
       ζ = frame-homomorphisms-preserve-complements
            (𝟎-𝔽𝕣𝕞 pe)
            (𝒪 X)
            (! X)(complementation-is-symmetric (𝟎-𝔽𝕣𝕞 pe) _ _ (pr₂ ξ))
 
-      ‡ : is-clopen (𝒪 X) (!⁺[ X ] P) holds
-      ‡ = !⁺[ X ] P′ , ζ
+      ‡ : is-clopen (𝒪 X) (!٭[ X ] P) holds
+      ‡ = !٭[ X ] P′ , ζ
 
 \end{code}
 
