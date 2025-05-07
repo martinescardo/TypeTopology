@@ -35,6 +35,7 @@ private
  pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
 open import Locales.Compactness pt fe
+open import Locales.CompactRegular pt fe using (compact-join-lemma)
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
@@ -64,7 +65,7 @@ open import UF.Logic
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
-open FrameHomomorphismProperties hiding (meet-preserving-implies-monotone)
+open FrameHomomorphismProperties renaming (meet-preserving-implies-monotone to meet-preserving-implies-monotone′)
 open FrameHomomorphisms
 open Locale
 
@@ -370,12 +371,13 @@ module spec-stone-duality-morphisms
   where
    open PropositionalTruncation pt
    open 𝒦-Duality₁ X σ₁ using (ι; ι-is-monotone; ι-gives-compact-opens; ι-preserves-𝟏)
-   open DistributiveLattice 𝒦⦅Y⦆⁻ hiding (X) renaming (𝟏 to 𝟏Y⁻)
+   open DistributiveLattice 𝒦⦅Y⦆⁻ hiding (X) renaming (𝟏 to 𝟏Y⁻; 𝟎 to 𝟎Y⁻; _∨_ to _∨Y⁻_)
+   open DistributiveLattice 𝒦⦅Y⦆ hiding (X) renaming (_∨_ to _∨Y_)
    open DistributiveLattice 𝒦⦅X⦆⁻ hiding (X) renaming (𝟏 to 𝟏X⁻)
-   open 𝒦-Duality₁ Y σ₂ using () renaming (ι to ιY)
+   open 𝒦-Duality₁ Y σ₂ using () renaming (ι to ιY; ι-preserves-𝟎 to ιY-preserves-𝟎; ι-gives-compact-opens to ιY-gives-compact-opens)
 
 
-   open Homomorphismᵈᵣ 𝒽 using (h; h-preserves-𝟏)
+   open Homomorphismᵈᵣ 𝒽 using (h; h-preserves-𝟏) renaming (h-is-monotone to 𝓂h)
 
    f : ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
    f = spec-hom₀ h
@@ -398,8 +400,106 @@ module spec-stone-duality-morphisms
    β : preserves-binary-meets (𝒪 Y) (𝒪 X) f holds
    β U V = {!!}
 
+   𝓂 : is-monotonic (poset-of (𝒪 Y)) (poset-of (𝒪 X)) f holds
+   𝓂 = meet-preserving-implies-monotone′ (𝒪 Y) (𝒪 X) f β
+
+   lemma-α : (V₁ V₂ : ⟨ 𝒪 Y ⟩)
+           → (spec-hom₁ h (V₁ ∨[ 𝒪 Y ] V₂) ≤[ poset-of (𝒪 X) ] (spec-hom₁ h V₁ ∨[ 𝒪 X ] spec-hom₁ h V₂))
+             holds
+   lemma-α V₁ V₂ =
+    let
+      open PosetReasoning (poset-of (𝒪 X))
+    in
+     spec-hom₁ h (V₁ ∨[ 𝒪 Y ] V₂)                       ＝⟨ refl ⟩ₚ
+     ⋁[ 𝒪 X ] ⁅ ι (h K) ∣ (K , _) ∶ (Σ K ꞉ 𝒦⁻Y , (ιY K ≤[ poset-of (𝒪 Y) ] (V₁ ∨[ 𝒪 Y ] V₂)) holds) ⁆  ≤⟨ Ⅰ ⟩
+     ⋁[ 𝒪 X ] ⁅ ι (h K₁) ∨[ 𝒪 X ] ι (h K₂) ∣ ((K₁ , _) , (K₂ , _)) ∶ (Σ K₁ ꞉ 𝒦⁻Y , (ιY K₁ ≤[ poset-of (𝒪 Y) ] V₁) holds) × (Σ K₂ ꞉ 𝒦⁻Y , (ιY K₂ ≤[ poset-of (𝒪 Y) ] V₂) holds)  ⁆  ≤⟨ {!!} ⟩
+     (join-of (𝒪 X) fam₁) ∨[ 𝒪 X ] (join-of (𝒪 X) fam₂) ■
+     where
+
+      fam₁ = ⁅ ι (h K₁) ∣ (K₁ , _) ∶ (Σ K₁ ꞉ 𝒦⁻Y , (ιY K₁ ≤[ poset-of (𝒪 Y) ] V₁) holds) ⁆
+      fam₂ = ⁅ ι (h K₂) ∣ (K₂ , _) ∶ (Σ K₂ ꞉ 𝒦⁻Y , (ιY K₂ ≤[ poset-of (𝒪 Y) ] V₂) holds) ⁆
+
+      -- inh₁ = ∣ 𝟎Y⁻ , (ιY 𝟎Y⁻ ＝⟨ ιY-preserves-𝟎 ⟩ₚ 𝟎[ 𝒪 Y ] ≤⟨ 𝟎-is-bottom (𝒪 Y) V₁ ⟩ V₁ ■) ∣
+      --  where
+      --   open PosetReasoning (poset-of (𝒪 Y))
+      -- inh₂ = ∣ 𝟎Y⁻ , (ιY 𝟎Y⁻ ＝⟨ ιY-preserves-𝟎 ⟩ₚ 𝟎[ 𝒪 Y ] ≤⟨ 𝟎-is-bottom (𝒪 Y) V₂ ⟩ V₂ ■) ∣
+      --  where
+      --   open PosetReasoning (poset-of (𝒪 Y))
+
+      Ⅰ = cofinal-implies-join-covered
+           (𝒪 X)
+           ⁅ ι (h K) ∣ (K , _) ∶ (Σ K ꞉ 𝒦⁻Y , (ιY K ≤[ poset-of (𝒪 Y) ] (V₁ ∨[ 𝒪 Y ] V₂)) holds) ⁆
+           ⁅ ι (h K₁) ∨[ 𝒪 X ] ι (h K₂) ∣ ((K₁ , _) , (K₂ , _)) ∶ (Σ K₁ ꞉ 𝒦⁻Y , (ιY K₁ ≤[ poset-of (𝒪 Y) ] V₁) holds) × (Σ K₂ ꞉ 𝒦⁻Y , (ιY K₂ ≤[ poset-of (𝒪 Y) ] V₂) holds) ⁆
+           ♠
+       where
+        open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+        ♠ : (cofinal-in
+              (𝒪 X)
+              ⁅ ι (h K) ∣ (K , _) ∶ (Σ K ꞉ 𝒦⁻Y , (ιY K ≤[ poset-of (𝒪 Y) ] (V₁ ∨[ 𝒪 Y ] V₂)) holds) ⁆
+              ⁅ ι (h K₁) ∨[ 𝒪 X ] ι (h K₂) ∣ ((K₁ , _) , (K₂ , _)) ∶ (Σ K₁ ꞉ 𝒦⁻Y , (ιY K₁ ≤[ poset-of (𝒪 Y) ] V₁) holds) × (Σ K₂ ꞉ 𝒦⁻Y , (ιY K₂ ≤[ poset-of (𝒪 Y) ] V₂) holds) ⁆)
+            holds
+        ♠ (K , p) = ∥∥-rec ∃-is-prop † (compact-join-lemma (𝒪 Y) {!!} V₁ V₂ (ιY K) (ιY-gives-compact-opens K) p)
+         where
+          † : (Σ (K₁ , K₂) ꞉ ⟨ 𝒪 Y ⟩ × ⟨ 𝒪 Y ⟩ , _) → _
+          † ((K₁ , K₂) , κ₁ , κ₂ , p , q , r) = ∣ ((r₂ (K₁ , κ₁) , υ) , (r₂ (K₂ , κ₂) , ν)) , ϑ ∣
+           where
+
+            υ : (ιY (r₂ (K₁ , κ₁)) ≤[ poset-of (𝒪 Y) ] V₁) holds
+            υ = ιY (r₂ (K₁ , κ₁)) ＝⟨ ap pr₁ (inverses-are-sections' e₂ (K₁ , κ₁)) ⟩ₚ K₁ ≤⟨ q ⟩ V₁ ■
+             where
+              open PosetReasoning (poset-of (𝒪 Y))
+
+            ν : (ιY (r₂ (K₂ , κ₂)) ≤[ poset-of (𝒪 Y) ] V₂) holds
+            ν = ιY (r₂ (K₂ , κ₂)) ＝⟨ ap pr₁ (inverses-are-sections' e₂ (K₂ , κ₂)) ⟩ₚ K₂ ≤⟨ r ⟩ V₂ ■
+             where
+              open PosetReasoning (poset-of (𝒪 Y))
+
+            ϑ : (ι (h K) ≤[ poset-of (𝒪 X) ] (ι (h (r₂ (K₁ , κ₁))) ∨[ 𝒪 X ] ι (h (r₂ (K₂ , κ₂))))) holds
+            ϑ = {!p!}
+             where
+              open PosetReasoning (poset-of (𝒪 X))
+
+        goal : (((join-of (𝒪 X) fam₁) ∨[ 𝒪 X ] (join-of (𝒪 X) fam₂))
+                 is-an-upper-bound-of
+                ⁅ ι (h K) ∣ (K , _) ∶ (Σ K ꞉ 𝒦⁻Y , (ιY K ≤[ poset-of (𝒪 Y) ] (V₁ ∨[ 𝒪 Y ] V₂)) holds) ⁆) holds
+        goal (K , p) = ∥∥-rec (holds-is-prop (_ ≤[ poset-of (𝒪 X ) ] _)) nts (compact-join-lemma (𝒪 Y) {!!} V₁ V₂ (ιY K) (ιY-gives-compact-opens K) p)
+         where
+          nts : (Σ (K₁ , K₂) ꞉ ⟨ 𝒪 Y ⟩ × ⟨ 𝒪 Y ⟩ ,
+                   is-compact-open Y K₁ holds
+                 × is-compact-open Y K₂ holds
+                 × (ιY K ≤[ poset-of (𝒪 Y) ] (K₁ ∨[ 𝒪 Y ] K₂)) holds
+                 × ((K₁ ≤[ poset-of (𝒪 Y) ] V₁) holds)
+                 × (K₂ ≤[ poset-of (𝒪 Y) ] V₂) holds)
+              → _
+          nts ((K₁ , K₂) , κ₁ , κ₂ , p , q , r) = {!cofinal-implies-join-covered (𝒪 X) fam₁ fam₂ ?!}
+
+      Ⅲ = {!!}
+
+   main : (V₁ V₂ : ⟨ 𝒪 Y ⟩)
+        → (spec-hom₁ h (V₁ ∨[ 𝒪 Y ] V₂) ≤[ poset-of (𝒪 X) ] (spec-hom₁ h V₁ ∨[ 𝒪 X ] spec-hom₁ h V₂)) holds
+   main V₁ V₂ = lemma-α V₁ V₂
+
+   ξ : {!!}
+   ξ = {!!}
+
+   χ : f 𝟎[ 𝒪 Y ] ＝ 𝟎[ 𝒪 X ]
+   χ = only-𝟎-is-below-𝟎 (𝒪 X) (f 𝟎[ 𝒪 Y ]) †
+    where
+     open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+     ‡ : (j : index (cover-indexₛ Y σᴰ₂ 𝟎[ 𝒪 Y ]))
+       → (ι (h (ℬYₖ [ cover-indexₛ Y σᴰ₂ 𝟎[ 𝒪 Y ] [ j ] ])) ≤[ poset-of (𝒪 X) ] 𝟎[ 𝒪 X ]) holds
+     ‡ j = {!!}
+
+     † : (f 𝟎[ 𝒪 Y ] ≤[ poset-of (𝒪 X) ] 𝟎[ 𝒪 X ]) holds
+     † = ⋁[ 𝒪 X ]-least ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ 𝟎[ 𝒪 Y ] ⁆ (_ , ‡)
+
    γ : preserves-joins (𝒪 Y) (𝒪 X) f holds
-   γ = {!!}
+   γ S = {!!}
+    where
+     p : f (⋁[ 𝒪 Y ] S) ＝ ⋁[ 𝒪 X ] ⁅ f U ∣ U ε S ⁆
+     p = sc-and-∨-preserving-⇒-⋁-preserving (𝒪 Y) (𝒪 X) f {!!} χ {!!} S
 
    𝒻 : X ─c→ Y
    𝒻 = f , α , β , γ
