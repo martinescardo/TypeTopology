@@ -77,6 +77,10 @@ homomorphism in consideration.
 
 \end{code}
 
+Note here that the notation `_꙳` is intended to mimic a superscript asterisk.
+Sadly, there is no proper superscript asterisk in Unicode so we use the Slavonic
+asterisk.
+
 We also define some shorthand notation for the right adjoint of this map, which
 we know to exist since the initial frame has a small base. We denote by
 `!⁎[ X ]_` the underlying function of the right adjoint of `!꙳[ X ]_`.
