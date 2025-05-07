@@ -178,8 +178,6 @@ compact opens (i.e. is “spectral”), this could also be formulated as:
 
 \begin{code}
 
- is-compact'' : Ω (𝓤 ⁺)
- is-compact'' = is-spectral-map (! X)
 
  compact'-implies-compact'' : (is-compact' ⇒ is-compact'') holds
  compact'-implies-compact'' = perfect-maps-are-spectral (! X)
