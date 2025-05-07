@@ -53,6 +53,7 @@ Compact opens.
 
 import Locales.Compactness.Definition
 import Locales.Compactness.Properties
+import Locales.Compactness.CharacterizationOfCompactLocales
 
 \end{code}
 
