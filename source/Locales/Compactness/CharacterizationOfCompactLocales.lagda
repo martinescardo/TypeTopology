@@ -194,12 +194,12 @@ standard one.
 
 The proof is quite simple:
 
-  - We have to show that the top `𝟏[ 𝒪 X ]` is compact.
-  - Because `!٭[ X ]` is a frame homomorphism, we have that `𝟏 = !٭[ X ] ⊤`,
-    so it suffices to show that `!٭[ X ] ⊤` is compact.
-  - Since we are given that `!٭[ X ] ⊤` preserves compact opens, we just
-    have to show that `⊤` is compact, which we know since the terminal locale
-    is compact.
+- We have to show that the top `𝟏[ 𝒪 X ]` is compact.
+- Because `!٭[ X ]` is a frame homomorphism, we have that `𝟏 = !٭[ X ] ⊤`,
+  so it suffices to show that `!٭[ X ] ⊤` is compact.
+- Since we are given that `!٭[ X ] ⊤` preserves compact opens, we just
+  have to show that `⊤` is compact, which we know since the terminal locale
+  is compact.
 
 \begin{code}
 
