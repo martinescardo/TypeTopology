@@ -121,6 +121,7 @@ import Locales.InitialFrame                      -- (13)
 import Locales.NotationalConventions             -- (14)
 
 import Locales.Nucleus                           -- (15)
+import Locales.NucleusImage
 
 import Locales.PatchLocale                       -- (16)
 
