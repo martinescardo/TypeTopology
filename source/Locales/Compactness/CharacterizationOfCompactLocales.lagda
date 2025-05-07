@@ -81,12 +81,12 @@ the superscript plus instead.
 
 We also define some shorthand notation for the right adjoint of this map, which
 we know to exist since the initial frame has a small base. We denote by
-`!₊[ X ]_` the underlying function of the right adjoint of `!٭[ X ]_`.
+`!⁎[ X ]_` the underlying function of the right adjoint of `!٭[ X ]_`.
 
 \begin{code}
 
-!₊[_]_ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → ⟨ 𝒪 X ⟩ → Ω 𝓤
-!₊[_]_ {𝓤} X = ! X ⁎·_
+!⁎[_]_ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → ⟨ 𝒪 X ⟩ → Ω 𝓤
+!⁎[_]_ {𝓤} X = ! X ⁎·_
  where
   open Spectrality-of-𝟎 𝓤 pe
   open AdjointFunctorTheorem pt fe X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
@@ -99,16 +99,16 @@ some open `U : ⟨ 𝒪 X ⟩` and tells if `U ＝ 𝟏[ 𝒪 X ]`.
 
 \begin{code}
 
-!₊-is-universal-quantifier : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+!⁎-is-universal-quantifier : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
                            → (U : ⟨ 𝒪 X ⟩)
-                           → (!₊[ X ] U) holds ↔ U ＝ 𝟏[ 𝒪 X ]
-!₊-is-universal-quantifier {𝓤} X U = † , ‡
+                           → (!⁎[ X ] U) holds ↔ U ＝ 𝟏[ 𝒪 X ]
+!⁎-is-universal-quantifier {𝓤} X U = † , ‡
  where
   open Spectrality-of-𝟎 𝓤 pe
   open AdjointFunctorTheorem pt fe X (𝟏Loc pe) ∣ ℬ𝟎↑ , ℬ𝟎↑-is-basis ∣
   open PosetReasoning (poset-of (𝒪 X))
 
-  † : (!₊[ X ] U) holds → U ＝ 𝟏[ 𝒪 X ]
+  † : (!⁎[ X ] U) holds → U ＝ 𝟏[ 𝒪 X ]
   † p = only-𝟏-is-above-𝟏 (𝒪 X) U γ
    where
     Ⅱ : (!٭[ X ] ⊤ ≤[ poset-of (𝒪 X) ] U) holds
@@ -122,7 +122,7 @@ some open `U : ⟨ 𝒪 X ⟩` and tells if `U ＝ 𝟏[ 𝒪 X ]`.
         (!٭[ X ] ⊤)  ≤⟨ Ⅱ ⟩
         U            ■
 
-  ‡ : U ＝ 𝟏[ 𝒪 X ] → (!₊[ X ] U) holds
+  ‡ : U ＝ 𝟏[ 𝒪 X ] → (!⁎[ X ] U) holds
   ‡ p = γ ⋆
    where
     Ⅰ : 𝟏[ 𝒪 X ] ＝ !٭[ X ] ⊤
@@ -131,7 +131,7 @@ some open `U : ⟨ 𝒪 X ⟩` and tells if `U ＝ 𝟏[ 𝒪 X ]`.
     q : (!٭[ X ] ⊤ ≤[ poset-of (𝒪 X) ] U) holds
     q = !٭[ X ] ⊤ ＝⟨ Ⅰ ⁻¹ ⟩ₚ 𝟏[ 𝒪 X ] ＝⟨ p ⁻¹ ⟩ₚ U ■
 
-    γ : (⊤ ⇒ !₊[ X ] U) holds
+    γ : (⊤ ⇒ !⁎[ X ] U) holds
     γ = adjunction-inequality-forward (! X) U ⊤ q
 
 \end{code}
@@ -142,7 +142,7 @@ highlight this attitude on the right adjoint.
 \begin{code}
 
 locale-forall-syntax : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → ⟨ 𝒪 X ⟩ → Ω 𝓤
-locale-forall-syntax X U = !₊[ X ] U
+locale-forall-syntax X U = !⁎[ X ] U
 
 syntax locale-forall-syntax X U = Ɐ[ X ] U
 infix 7 locale-forall-syntax
