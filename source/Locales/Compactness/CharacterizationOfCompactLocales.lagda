@@ -36,6 +36,7 @@ open import Locales.CompactRegular pt fe
         frame-homomorphisms-preserve-complements;
         complementation-is-symmetric; is-complement-of)
 open import Locales.Compactness.Definition pt fe
+open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.Frame pt fe renaming (⟨_⟩ to ⟨_⟩∙) hiding (∅)
 open import Locales.GaloisConnection pt fe
@@ -48,6 +49,7 @@ open import Slice.Family
 open import UF.Logic
 
 open AllCombinators pt fe
+open ContinuousMaps
 open FrameHomomorphisms
 open Locale
 open PropositionalTruncation pt
@@ -67,7 +69,7 @@ homomorphism in consideration.
 
 \begin{code}
 
-!_ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → 𝟎-𝔽𝕣𝕞 pe ─f→ 𝒪 X
+!_ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → X ─c→ 𝟏Loc pe
 ! X = center (𝟎-𝔽𝕣𝕞-initial pe (𝒪 X))
 
 !٭[_]_ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Ω 𝓤 → ⟨ 𝒪 X ⟩
