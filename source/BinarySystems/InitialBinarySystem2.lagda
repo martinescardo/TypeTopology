@@ -3,8 +3,8 @@ Martin Escardo, 7th August 2020.
 This file improves the file InitialBinarySystem.lagda, which gives the
 background for this file.
 
-Modified 2nd May to remove the requirement that the underlying types
-of binary systems are sets, and also to removed some unused
+Modified 2nd May 2025 to remove the requirement that the underlying
+types of binary systems are sets, and also to removed some unused
 hypotheses. But it is still the case that the initial binary system is
 a set.
 
