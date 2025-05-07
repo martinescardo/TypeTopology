@@ -182,7 +182,8 @@ compact opens (i.e. is “spectral”), this could also be formulated as:
   : (is-perfect-map (! X) ⇒ is-spectral-map (! X)) holds
  perfection-of-!-implies-the-spectrality-of-! = perfect-maps-are-spectral (! X)
 
- spectrality-of-!-implies-the-perfection-of-! : (is-spectral-map (! X) ⇒ is-perfect-map (! X)) holds
+ spectrality-of-!-implies-the-perfection-of-!
+  : (is-spectral-map (! X) ⇒ is-perfect-map (! X)) holds
  spectrality-of-!-implies-the-perfection-of-! φ =
   spectral-maps-are-perfect (𝟎-𝔽𝕣𝕞-is-spectral 𝓤 pe) (! X) φ
 
