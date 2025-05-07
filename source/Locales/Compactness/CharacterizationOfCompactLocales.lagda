@@ -178,12 +178,12 @@ compact opens (i.e. is “spectral”), this could also be formulated as:
 
 \begin{code}
 
+ perfection-of-!-implies-the-spectrality-of-!
+  : (is-perfect-map (! X) ⇒ is-spectral-map (! X)) holds
+ perfection-of-!-implies-the-spectrality-of-! = perfect-maps-are-spectral (! X)
 
- compact'-implies-compact'' : (is-compact' ⇒ is-compact'') holds
- compact'-implies-compact'' = perfect-maps-are-spectral (! X)
-
- compact''-implies-compact' : (is-compact'' ⇒ is-compact') holds
- compact''-implies-compact' φ =
+ spectrality-of-!-implies-the-perfection-of-! : (is-spectral-map (! X) ⇒ is-perfect-map (! X)) holds
+ spectrality-of-!-implies-the-perfection-of-! φ =
   spectral-maps-are-perfect (𝟎-𝔽𝕣𝕞-is-spectral 𝓤 pe) (! X) φ
 
 \end{code}
@@ -202,7 +202,7 @@ The proof is quite simple:
 
 \begin{code}
 
- compact-implies-compact' : (is-compact' ⇒ is-compact X) holds
+ compact-implies-compact' : (is-perfect-map (! X) ⇒ is-compact X) holds
  compact-implies-compact' κ =
   transport (λ - → is-compact-open X - holds) (q ⁻¹) †
    where
