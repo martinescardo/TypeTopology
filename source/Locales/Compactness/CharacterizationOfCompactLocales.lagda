@@ -233,26 +233,26 @@ We now tackle the other direction.
 
 \begin{code}
 
- compact'-implies-compact : (is-compact X ⇒ is-compact') holds
- compact'-implies-compact κ = compact''-implies-compact' †
-   where
-    † : is-spectral-map (! X) holds
-    † P 𝕔 = clopens-are-compact-in-compact-frames (𝒪 X) κ (!٭[ X ] P) ‡
-     where
-      ξ : is-clopen (𝟎-𝔽𝕣𝕞 pe) P holds
-      ξ = compact-implies-clopen pe P 𝕔
+ compact'-implies-compact : (is-compact X ⇒ is-perfect-map (! X)) holds
+ compact'-implies-compact κ = spectrality-of-!-implies-the-perfection-of-! †
+  where
+   † : is-spectral-map (! X) holds
+   † P 𝕔 = clopens-are-compact-in-compact-frames (𝒪 X) κ (!٭[ X ] P) ‡
+    where
+     ξ : is-clopen (𝟎-𝔽𝕣𝕞 pe) P holds
+     ξ = compact-implies-clopen pe P 𝕔
 
-      P′ : Ω 𝓤
-      P′ = pr₁ ξ
+     P′ : Ω 𝓤
+     P′ = pr₁ ξ
 
-      ζ : is-complement-of (𝒪 X) (!٭[ X ] P′) (!٭[ X ] P)
-      ζ = frame-homomorphisms-preserve-complements
-           (𝟎-𝔽𝕣𝕞 pe)
-           (𝒪 X)
-           (! X)(complementation-is-symmetric (𝟎-𝔽𝕣𝕞 pe) _ _ (pr₂ ξ))
+     ζ : is-complement-of (𝒪 X) (!٭[ X ] P′) (!٭[ X ] P)
+     ζ = frame-homomorphisms-preserve-complements
+          (𝟎-𝔽𝕣𝕞 pe)
+          (𝒪 X)
+          (! X)(complementation-is-symmetric (𝟎-𝔽𝕣𝕞 pe) _ _ (pr₂ ξ))
 
-      ‡ : is-clopen (𝒪 X) (!٭[ X ] P) holds
-      ‡ = !٭[ X ] P′ , ζ
+     ‡ : is-clopen (𝒪 X) (!٭[ X ] P) holds
+     ‡ = !٭[ X ] P′ , ζ
 
 \end{code}
 
