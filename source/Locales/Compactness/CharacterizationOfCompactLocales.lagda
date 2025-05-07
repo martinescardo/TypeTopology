@@ -172,9 +172,9 @@ An alternative way to express that a locale `X` is compact is by asserting that
 the map `! X` is perfect, which is to say that the universal quantifier
 `Ɐ[ X ]_` is Scott continuous.
 
-
 Because a map into a spectral locale is perfect if and only if it reflects
-compact opens (i.e. is “spectral”), this could also be formulated as:
+compact opens (i.e. is “spectral”), this is the same thing as saying `! X` is
+spectral.
 
 \begin{code}
 
