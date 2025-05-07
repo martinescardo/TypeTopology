@@ -77,10 +77,6 @@ homomorphism in consideration.
 
 \end{code}
 
-The subscript `_⁺` is intended to approximate the right adjoint notation `_^*`.
-Unfortunately, however, there is no superscript asterisk in unicode, so we use
-the superscript plus instead.
-
 We also define some shorthand notation for the right adjoint of this map, which
 we know to exist since the initial frame has a small base. We denote by
 `!⁎[ X ]_` the underlying function of the right adjoint of `!٭[ X ]_`.
