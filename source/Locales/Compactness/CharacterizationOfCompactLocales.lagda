@@ -233,8 +233,8 @@ We now tackle the other direction.
 
 \begin{code}
 
- compact'-implies-compact : (is-compact X ⇒ is-perfect-map (! X)) holds
- compact'-implies-compact κ = spectrality-of-!-implies-the-perfection-of-! †
+ compactness-gives-perfection-of-! : (is-compact X ⇒ is-perfect-map (! X)) holds
+ compactness-gives-perfection-of-! κ = spectrality-of-!-implies-the-perfection-of-! †
   where
    † : is-spectral-map (! X) holds
    † P 𝕔 = clopens-are-compact-in-compact-frames (𝒪 X) κ (!٭[ X ] P) ‡
