@@ -135,6 +135,21 @@ module List⁺-definitions where
             (dfunext fe (λ x → mapᴸ⁺-lemma (λ y → x , y) (ys x)))
     II = extᴸ⁺-explicitly (λ x → lmap⁺ (λ y → x , y) (ys x)) xs
 
+ ι-⊗ᴸ⁺-explicitly
+  : funext₀
+  → {X : Type} {Y : X → Type}
+    (xs : List⁺ X)
+    (ys : (x : X) → List⁺ (Y x))
+  → ι (xs ⊗ᴸ⁺ ys) ＝ concat (lmap (λ x → lmap (x ,_) (ι (ys x))) (ι xs))
+ ι-⊗ᴸ⁺-explicitly fe xs ys =
+   ι (xs ⊗ᴸ⁺ ys)                                             ＝⟨ I ⟩
+   ι (concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x , y) (ys x)) xs)) ＝⟨ refl ⟩
+   concat (lmap ι (lmap (λ x → lmap⁺ (x ,_) (ys x)) (ι xs))) ＝⟨ II ⟩
+   concat (lmap (λ x → lmap (x ,_) (ι (ys x))) (ι xs))       ∎
+    where
+     I  = ap ι (⊗ᴸ⁺-explicitly fe xs ys)
+     II = ap concat ((lmap-∘ (λ x → lmap⁺ (x ,_) (ys x)) ι (ι xs))⁻¹)
+
  _+++_ : {X : Type} → List⁺ X → List X → List⁺ X
  (xs , xs-ne) +++ ys = (xs ++ ys) , is-non-empty-++ xs ys xs-ne
 
@@ -149,3 +164,75 @@ module List⁺-definitions where
  head⁺-of-lmap⁺ :  {X Y : Type} (f : X → Y) (xs : List⁺ X)
                 → head⁺ (lmap⁺ f xs) ＝ f (head⁺ xs)
  head⁺-of-lmap⁺ f ((x ∷ xs) , _) = refl
+
+ split-membership : funext₀
+                  → {X : Type}
+                    {Y : X → Type}
+                    (x : X)
+                    (y : Y x)
+                    (xs : List⁺ X)
+                    (yf : (x : X) → List⁺ (Y x))
+                  → member (x , y) (ι (xs ⊗ᴸ⁺ yf))
+                  → member x (ι xs) × member y (ι (yf x))
+ split-membership fe {X} {Y} x y xs yf m = m₀ , m₁
+  where
+   I : ι (xs ⊗ᴸ⁺ yf) ＝ concat (lmap (λ x → lmap (x ,_) (ι (yf x))) (ι xs))
+   I = ι-⊗ᴸ⁺-explicitly fe xs yf
+
+   II : member (x , y) (concat (lmap (λ x → lmap (x ,_) (ι (yf x))) (ι xs)))
+   II = transport (member (x , y)) I m
+
+   III : Σ zs ꞉ List (Σ x ꞉ X , Y x)
+             , member zs (lmap (λ x → lmap (x ,_) (ι (yf x))) (ι xs))
+             × member (x , y) zs
+   III = member-of-concat
+          (x , y)
+          (lmap (λ x → lmap (x ,_) (ι (yf x))) (ι xs))
+          II
+
+   zs : List (Σ x ꞉ X , Y x)
+   zs = pr₁ III
+
+   III₀ : member zs (lmap (λ x → lmap (x ,_) (ι (yf x))) (ι xs))
+   III₀ = pr₁ (pr₂ III)
+
+   III₁ : member (x , y) zs
+   III₁ = pr₂ (pr₂ III)
+
+   IV : Σ x' ꞉ X , member x' (ι xs) × (lmap (x' ,_) (ι (yf x')) ＝ zs)
+   IV = member-of-map (λ x → lmap (x ,_) (ι (yf x))) zs (ι xs) III₀
+
+   x' : X
+   x' = pr₁ IV
+
+   IV₀ : member x' (ι xs)
+   IV₀ = pr₁ (pr₂ IV)
+
+   IV₁ : lmap (x' ,_) (ι (yf x')) ＝ zs
+   IV₁ = pr₂ (pr₂ IV)
+
+   V : member (x , y) (lmap (x' ,_) (ι (yf x')))
+   V = transport⁻¹ (member (x , y)) IV₁ III₁
+
+   VI : Σ y' ꞉ Y x' , member y' (ι (yf x')) × ((x' , y') ＝ (x , y))
+   VI = member-of-map (x' ,_) (x , y) (ι (yf x')) V
+
+   y' : Y x'
+   y' = pr₁ VI
+
+   VI₀ : member y' (ι (yf x'))
+   VI₀ = pr₁ (pr₂ VI)
+
+   VI₁ : (x' , y') ＝ (x , y)
+   VI₁ = pr₂ (pr₂ VI)
+
+   m₀ : member x (ι xs)
+   m₀ = transport (λ - → member - (ι xs)) (ap pr₁ VI₁) IV₀
+
+   VII : ∀ x' y' x y → (x' , y') ＝ (x , y) →  member y' (ι (yf x')) → member y (ι (yf x))
+   VII x' y' x y refl = id
+
+   m₁ : member y (ι (yf x))
+   m₁ = VII x' y' x y VI₁ VI₀
+
+\end{code}
