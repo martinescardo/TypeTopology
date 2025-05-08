@@ -732,4 +732,4 @@ NB. The type Ordinal 𝓤 of well-ordered sets in 𝓤 is also injective,
 but for a different reason.
 
 TODO. The type of posets should be injective, but with a different
-proof. May the proof for the type of ordinals can be adapted (check).
+proof. Maybe the proof for the type of ordinals can be adapted (check).
