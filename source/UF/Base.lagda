@@ -108,6 +108,12 @@ transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
             ＝ (transport A p (pr₁ c) , transport B p (pr₂ c))
 transport-× A B refl = refl
 
+transport-×₄ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (C : X → 𝓣 ̇ ) (D : X → 𝓣' ̇ )
+               {x y : X} {(a , b , c , d) : A x × B x × C x × D x} (p : x ＝ y)
+             → transport (λ x → A x × B x × C x × D x) p (a , b , c , d)
+             ＝ (transport A p a , transport B p b , transport C p c , transport D p d)
+transport-×₄ _ _ _ _ refl = refl
+
 transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
              {x : X}  (a : A x) {y : X} (p : x ＝ y)
            → B x a
