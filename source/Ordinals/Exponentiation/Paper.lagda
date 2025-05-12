@@ -1,8 +1,14 @@
-Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
+Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu
 January 2025
+Updated May 2025
 
 This file follows the definitions, equations, lemmas, propositions, theorems and
-remarks of the paper "Ordinal Exponentiation in Homotopy Type Theory".
+remarks of our paper
+
+   Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu
+   Ordinal Exponentiation in Homotopy Type Theory
+   https://arxiv.org/abs/2501.14542
+   To appear at LICS 2025.
 
 See also Ordinals.Exponentiation.index for an overview of the relevant files.
 
@@ -63,6 +69,7 @@ open import Ordinals.Underlying
 
 open import Ordinals.Exponentiation.DecreasingList ua
 open import Ordinals.Exponentiation.DecreasingListProperties-Concrete ua pt sr
+open import Ordinals.Exponentiation.Grayson ua pt
 open import Ordinals.Exponentiation.PropertiesViaTransport ua pt sr
 open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
@@ -81,7 +88,7 @@ is-ordinal-equiv       = is-order-equiv
 
 \end{code}
 
-Section III. Ordinals in Homotopy Type Theory
+Section II. Ordinals in Homotopy Type Theory
 
 \begin{code}
 
@@ -163,14 +170,14 @@ Proposition-4 =
      (λ α → pr₁ (exp-sup α)))
  , EM-gives-full-exponentiation
 
-Eq-double-dagger-prime : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-Eq-double-dagger-prime {𝓤} exp =
-    ((α : Ordinal 𝓤) → exp-specification-succ α (exp α))
-  × ((α : Ordinal 𝓤) → exp-specification-sup-strong α (exp α))
+Eq-double-dagger' : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+Eq-double-dagger' {𝓤} exp =
+   ((α : Ordinal 𝓤) → exp-specification-succ α (exp α))
+ × ((α : Ordinal 𝓤) → exp-specification-sup-strong α (exp α))
 
 \end{code}
 
-Section IV. Abstract Algebraic Exponentiation
+Section III. Abstract Algebraic Exponentiation
 
 \begin{code}
 
@@ -207,13 +214,13 @@ Proposition-10 : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
 Proposition-10 = ^ₒ-by-+ₒ
 
 Proposition-11 : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
-               → α ^ₒ (β ×ₒ γ) ＝ (α ^ₒ β) ^ₒ γ
-Proposition-11 = ^ₒ-by-×ₒ
+               → (α ^ₒ β) ^ₒ γ ＝ α ^ₒ (β ×ₒ γ)
+Proposition-11 α β γ = (^ₒ-by-×ₒ α β γ) ⁻¹
 
 \end{code}
 
-Section V. Decreasing Lists: A Constructive Formulation
-           of Sierpiński's Definition
+Section IV. Decreasing Lists: A Constructive Formulation
+            of Sierpiński's Definition
 
 \begin{code}
 
@@ -280,8 +287,11 @@ module fixed-assumptions-1
  Lemma-18-i : (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
               (f : ⟨ β ⟩ → ⟨ γ ⟩)
             → is-order-preserving β γ f
-            → ⟨ exp[α, β ] ⟩ → ⟨ exp[α, γ ] ⟩
- Lemma-18-i β γ = expᴸ-map α⁺ β γ
+            → Σ f̅ ꞉ (⟨ exp[α, β ] ⟩ → ⟨ exp[α, γ ] ⟩)
+                  , is-order-preserving exp[α, β ] exp[α, γ ] f̅
+ Lemma-18-i β γ f f-order-pres =
+    expᴸ-map α⁺ β γ f f-order-pres
+  , expᴸ-map-is-order-preserving α⁺ β γ f f-order-pres
 
  Lemma-18-ii : (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
              → β ⊴ γ → exp[α, β ] ⊴ exp[α, γ ]
@@ -297,42 +307,42 @@ module fixed-assumptions-2
 
  open fixed-assumptions-1 α h
 
- Eq-5 : (b : ⟨ β ⟩) → exp[α, β ↓ b ] ⊴ exp[α, β ]
- Eq-5 = expᴸ-segment-inclusion-⊴ α⁺ β
+ Eq-4 : (b : ⟨ β ⟩) → exp[α, β ↓ b ] ⊴ exp[α, β ]
+ Eq-4 = expᴸ-segment-inclusion-⊴ α⁺ β
 
  ι = expᴸ-segment-inclusion α⁺ β
  ι-list = expᴸ-segment-inclusion-list α⁺ β
 
- Eq-6 : (a : ⟨ α ⁺[ h ] ⟩) (b : ⟨ β ⟩)
+ Eq-5 : (a : ⟨ α ⁺[ h ] ⟩) (b : ⟨ β ⟩)
       → (l : ⟨ exp[α, β ] ⟩)
       → is-decreasing-pr₂ α⁺ β ((a , b) ∷ pr₁ l)
       → ⟨ exponentiationᴸ α h (β ↓ b) ⟩
- Eq-6 a b l δ = expᴸ-tail α⁺ β a b (pr₁ l) δ
+ Eq-5 a b l δ = expᴸ-tail α⁺ β a b (pr₁ l) δ
 
  τ = expᴸ-tail α⁺ β
 
- Eq-6-addendum-i
+ Eq-5-addendum-i
   : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
     (l₁ l₂ : List ⟨ α⁺ ×ₒ β ⟩)
     (δ₁ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₁))
     (δ₂ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₂))
   → l₁ ≺⟨List (α⁺ ×ₒ β) ⟩ l₂
   → τ a b l₁ δ₁ ≺⟨ exp[α, β ↓ b ] ⟩ τ a b l₂ δ₂
- Eq-6-addendum-i a b l₁ l₂ δ₁ δ₂ = expᴸ-tail-is-order-preserving α⁺ β a b δ₁ δ₂
+ Eq-5-addendum-i a b l₁ l₂ δ₁ δ₂ = expᴸ-tail-is-order-preserving α⁺ β a b δ₁ δ₂
 
- Eq-6-addendum-ii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
+ Eq-5-addendum-ii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
                     (l : List ⟨ α⁺ ×ₒ β ⟩)
                     {δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l)}
                     {ε : is-decreasing-pr₂ α⁺ β l}
                   → ι b (τ a b l δ) ＝ (l , ε)
- Eq-6-addendum-ii a b = expᴸ-tail-section-of-expᴸ-segment-inclusion α⁺ β a b
+ Eq-5-addendum-ii a b = expᴸ-tail-section-of-expᴸ-segment-inclusion α⁺ β a b
 
- Eq-6-addendum-iii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
+ Eq-5-addendum-iii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
                      (l : List ⟨ α⁺ ×ₒ (β ↓ b) ⟩)
                      {δ : is-decreasing-pr₂ α⁺ (β ↓ b) l}
                      {ε : is-decreasing-pr₂ α⁺ β ((a , b) ∷ ι-list b l)}
                    → τ a b (ι-list b l) ε ＝ (l , δ)
- Eq-6-addendum-iii a b l {δ} =
+ Eq-5-addendum-iii a b l {δ} =
   expᴸ-segment-inclusion-section-of-expᴸ-tail α⁺ β a b l δ
 
  Proposition-19-i
@@ -403,7 +413,7 @@ Proposition-23 = exponentiationᴸ-preserves-trichotomy
 
 \end{code}
 
-Section VI. Abstract and Concrete Exponentiation
+Section V. Abstract and Concrete Exponentiation
 
 \begin{code}
 
@@ -485,11 +495,29 @@ module fixed-assumptions-6
 
 \end{code}
 
+Section VI. On Grayson's Decreasing Lists
+
+\begin{code}
+
+Definition-34 : (α β : Ordinal 𝓤) → 𝓤 ̇
+Definition-34 α β = GraysonList (underlying-order α) (underlying-order β)
+
+-- TODO: Formalize converse as Proposition-35-i
+
+Proposition-35-ii
+ : ((α β : Ordinal (𝓤 ⁺⁺))
+   → has-least α
+   → is-well-order (Grayson-order (underlying-order α) (underlying-order β)))
+ → EM 𝓤
+Proposition-35-ii = GraysonList-always-ordinal-implies-EM
+
+\end{code}
+
 Section VII. Constructive Taboos
 
 \begin{code}
 
-Proposition-34
+Proposition-36
  : (((α β γ : Ordinal 𝓤) → has-trichotomous-least-element α
                          → has-trichotomous-least-element β
                          → α ⊴ β → α ^ₒ γ ⊴ β ^ₒ γ)
@@ -502,27 +530,31 @@ Proposition-34
                        → has-trichotomous-least-element β
                        → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β)
    → EM 𝓤)
-Proposition-34 =   (  ^ₒ-monotone-in-base-implies-EM
+Proposition-36 =   (  ^ₒ-monotone-in-base-implies-EM
                    , (λ em α β γ _ _ → EM-implies-exp-monotone-in-base em α β γ))
                  , ^ₒ-weakly-monotone-in-base-implies-EM
                  , ×ₒ-weakly-monotone-in-both-arguments-implies-EM
 
-Lemma-35 : (P : 𝓤 ̇  ) (i : is-prop P)
+Lemma-37 : (P : 𝓤 ̇  ) (i : is-prop P)
          → let Pₒ = prop-ordinal P i in
            𝟚ₒ {𝓤} ^ₒ Pₒ ＝ 𝟙ₒ +ₒ Pₒ
-Lemma-35 = ^ₒ-𝟚ₒ-by-prop
+Lemma-37 = ^ₒ-𝟚ₒ-by-prop
 
-Lemma-36
+Lemma-38
  : ((α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩) → is-order-preserving α β f → α ⊴ β)
  ↔ EM 𝓤
-Lemma-36 =   order-preserving-gives-≼-implies-EM ∘ H₁
+Lemma-38 =   order-preserving-gives-≼-implies-EM ∘ H₁
            , H₂ ∘ EM-implies-order-preserving-gives-≼
  where
   H₁ = λ h α β (f , f-order-pres) → ⊴-gives-≼ α β (h α β  f   f-order-pres)
   H₂ = λ h α β  f   f-order-pres  → ≼-gives-⊴ α β (h α β (f , f-order-pres))
 
-Proposition-37 : ((α β : Ordinal 𝓤) → 𝟙ₒ ⊲ α → β ⊴ α ^ₒ β) ↔ EM 𝓤
-Proposition-37 =   ^ₒ-as-large-as-exponent-implies-EM
-                 , EM-implies-^ₒ-as-large-as-exponent
+Proposition-39-i : ((α β : Ordinal 𝓤) → 𝟙ₒ ⊲ α → β ⊴ α ^ₒ β) ↔ EM 𝓤
+Proposition-39-i =   ^ₒ-as-large-as-exponent-implies-EM
+                   , EM-implies-^ₒ-as-large-as-exponent
+
+Proposition-39-ii : ((β : Ordinal 𝓤) → β ⊴ 𝟚ₒ ^ₒ β) ↔ EM 𝓤
+Proposition-39-ii =   𝟚ₒ^ₒ-as-large-as-exponent-implies-EM
+                    , (λ em β → rl-implication Proposition-39-i em 𝟚ₒ β (successor-increasing 𝟙ₒ))
 
 \end{code}

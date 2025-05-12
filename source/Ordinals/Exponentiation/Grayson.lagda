@@ -294,13 +294,15 @@ However, it is a constructive taboo that the subtype of positively non-minimal
 elements is always an ordinal, with essentially the same proof as for
 subtype-of-positive-elements-an-ordinal-implies-EM in
 Ordinals.Exponentiation.Taboos.
+Note that we can even restrict to ordinals with a least element.
 
 \begin{code}
 
 subtype-of-positively-non-minimal-elements-an-ordinal-implies-EM
  : ((α : Ordinal (𝓤 ⁺⁺))
-    → is-well-order
-       (subtype-order α (is-positively-non-minimal (underlying-order α))))
+   → has-least α
+   → is-well-order
+      (subtype-order α (is-positively-non-minimal (underlying-order α))))
  → EM 𝓤
 subtype-of-positively-non-minimal-elements-an-ordinal-implies-EM {𝓤} hyp = III
  where
@@ -316,7 +318,7 @@ subtype-of-positively-non-minimal-elements-an-ordinal-implies-EM {𝓤} hyp = II
 
   hyp' : is-extensional' _<_
   hyp' = extensional-gives-extensional' _<_
-          (extensionality _<_ (hyp (OO (𝓤 ⁺))))
+          (extensionality _<_ (hyp (OO (𝓤 ⁺)) (𝟘ₒ , 𝟘ₒ-least)))
 
   Ord⁺ = Σ α ꞉ Ordinal (𝓤 ⁺) , is-positively-non-minimal _⊲_ α
 
@@ -376,14 +378,16 @@ that GraysonList α β is an ordinal whenever α and β are.
 
 GraysonList-always-ordinal-implies-EM
  : ((α β : Ordinal (𝓤 ⁺⁺))
+   → has-least α
    → is-well-order (Grayson-order (underlying-order α) (underlying-order β)))
  → EM 𝓤
 GraysonList-always-ordinal-implies-EM {𝓤} hyp = II
  where
   I : (α : Ordinal (𝓤 ⁺⁺))
+    → has-least α
     → is-well-order
        (subtype-order α (is-positively-non-minimal (underlying-order α)))
-  I α = R⁺-wellorder (underlying-order α) (hyp α 𝟙ₒ)
+  I α h = R⁺-wellorder (underlying-order α) (hyp α 𝟙ₒ h)
 
   II : EM 𝓤
   II = subtype-of-positively-non-minimal-elements-an-ordinal-implies-EM I
