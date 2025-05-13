@@ -158,7 +158,7 @@ trichotomy-to-decomposed-at {𝓤} α x tri = β , γ , p , p-spec
 
   β : Ordinal 𝓤
   β = ⟨β⟩ , _<'_ ,
-      <'-propvalued , <'-wellfounded , <'-extensional , <'-transitive
+      <'-propvalued , <'-well-founded , <'-extensional , <'-transitive
    where
     ⟨β⟩ : 𝓤 ̇
     ⟨β⟩ = Σ y ꞉ ⟨ α ⟩ , y < x
@@ -166,8 +166,8 @@ trichotomy-to-decomposed-at {𝓤} α x tri = β , γ , p , p-spec
     _<'_ = subtype-order α (_< x)
     <'-propvalued : is-prop-valued _<'_
     <'-propvalued = subtype-order-is-prop-valued α (_< x)
-    <'-wellfounded : is-well-founded _<'_
-    <'-wellfounded = subtype-order-is-well-founded α (_< x)
+    <'-well-founded : is-well-founded _<'_
+    <'-well-founded = subtype-order-is-well-founded α (_< x)
     <'-transitive : is-transitive _<'_
     <'-transitive = subtype-order-is-transitive α (_< x)
     <'-extensional : is-extensional _<'_
@@ -181,7 +181,7 @@ trichotomy-to-decomposed-at {𝓤} α x tri = β , γ , p , p-spec
 
   γ : Ordinal 𝓤
   γ = ⟨γ⟩ , _<″_ ,
-      <″-propvalued , <″-wellfounded , <″-extensional , <″-transitive
+      <″-propvalued , <″-well-founded , <″-extensional , <″-transitive
    where
     ⟨γ⟩ : 𝓤 ̇
     ⟨γ⟩ = Σ y ꞉ ⟨ α ⟩ , x < y
@@ -189,8 +189,8 @@ trichotomy-to-decomposed-at {𝓤} α x tri = β , γ , p , p-spec
     _<″_ = subtype-order α (λ - → x < -)
     <″-propvalued : is-prop-valued _<″_
     <″-propvalued = subtype-order-is-prop-valued α (λ - → x < -)
-    <″-wellfounded : is-well-founded _<″_
-    <″-wellfounded = subtype-order-is-well-founded α (λ - → x < -)
+    <″-well-founded : is-well-founded _<″_
+    <″-well-founded = subtype-order-is-well-founded α (λ - → x < -)
     <″-transitive : is-transitive _<″_
     <″-transitive = subtype-order-is-transitive α (λ - → x < -)
     <″-extensional : is-extensional _<″_
