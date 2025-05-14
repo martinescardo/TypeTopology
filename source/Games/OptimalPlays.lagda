@@ -128,11 +128,18 @@ module _ (X : Type)
          (ε-attains-ϕ : ε attains ϕ)
       where
 
- x₀ : X
- x₀ = ε (λ _ → r₀)
+ private
+  x₀ : X
+  x₀ = ε (λ _ → r₀)
 
  X-is-listed⁺ : listed⁺ X
  X-is-listed⁺ = x₀ , X-is-listed
+
+\end{code}
+
+The above is the only use of the distinguished point r₀ of R.
+
+\begin{code}
 
  private
   A : (X → R) → X → Type
@@ -212,7 +219,7 @@ module _ {X : Type} {Xf : X → 𝑻}
  head⁺-of-⊗ᴶᵀ : head⁺ ((e⁺ ⊗ᴶᵀ d⁺) q) ＝ x :: xs
  head⁺-of-⊗ᴶᵀ =
   head⁺ ((e⁺ ⊗ᴶᵀ d⁺) q)                                         ＝⟨ I ⟩
-  head⁺ (xt ⊗ᴸ⁺ g)                                               ＝⟨ II ⟩
+  head⁺ (xt ⊗ᴸ⁺ g)                                              ＝⟨ II ⟩
   head⁺ (concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x :: y) (g x)) xt)) ＝⟨ III ⟩
   head⁺ (head⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x :: y) (g x)) xt))   ＝⟨ IV ⟩
   head⁺ (lmap⁺ (head⁺ xt ::_) (g (head⁺ xt)))                   ＝⟨ refl ⟩
@@ -258,8 +265,8 @@ JT-in-terms-of-K Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af) lt
   I : member x (ι (e⁺ p))
   I = head⁺-is-member (e⁺ p)
 
-  II = α-extᵀ q ((e⁺ ⊗[ 𝕁𝕋 ] d⁺) q)                        ＝⟨ II₀ ⟩
-       q (head⁺ ((e⁺ ⊗[ 𝕁𝕋 ] d⁺) q))                       ＝⟨ II₁ ⟩
+  II = α-extᵀ q ((e⁺ ⊗ᴶᵀ d⁺) q)                           ＝⟨ II₀ ⟩
+       q (head⁺ ((e⁺ ⊗ᴶᵀ d⁺) q))                          ＝⟨ II₁ ⟩
        q (x :: head⁺ (f x))                               ＝⟨ II₂ ⟩
        p x                                                ＝⟨ II₃ ⟩
        ϕ p                                                ＝⟨ II₄ ⟩
