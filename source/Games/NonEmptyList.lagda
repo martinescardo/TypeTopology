@@ -123,17 +123,17 @@ module List⁺-definitions where
   : funext₀
   → {X : Type} {Y : X → Type}
     (xs : List⁺ X)
-    (ys : (x : X) → List⁺ (Y x))
-  → xs ⊗ᴸ⁺ ys ＝ concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x , y) (ys x)) xs)
- ⊗ᴸ⁺-explicitly fe xs ys =
-  xs ⊗ᴸ⁺ ys ＝⟨ refl ⟩
-  extᴸ⁺ (λ x → mapᴸ⁺ (λ y → x , y) (ys x)) xs           ＝⟨ I ⟩
-  extᴸ⁺ (λ x → lmap⁺ (λ y → x , y) (ys x)) xs           ＝⟨ II ⟩
-  concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x , y) (ys x)) xs) ∎
+    (yf : (x : X) → List⁺ (Y x))
+  → xs ⊗ᴸ⁺ yf ＝ concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x , y) (yf x)) xs)
+ ⊗ᴸ⁺-explicitly fe xs yf =
+  xs ⊗ᴸ⁺ yf ＝⟨ refl ⟩
+  extᴸ⁺ (λ x → mapᴸ⁺ (λ y → x , y) (yf x)) xs           ＝⟨ I ⟩
+  extᴸ⁺ (λ x → lmap⁺ (λ y → x , y) (yf x)) xs           ＝⟨ II ⟩
+  concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x , y) (yf x)) xs) ∎
    where
     I  = ap (λ - → extᴸ⁺ - xs)
-            (dfunext fe (λ x → mapᴸ⁺-lemma (λ y → x , y) (ys x)))
-    II = extᴸ⁺-explicitly (λ x → lmap⁺ (λ y → x , y) (ys x)) xs
+            (dfunext fe (λ x → mapᴸ⁺-lemma (λ y → x , y) (yf x)))
+    II = extᴸ⁺-explicitly (λ x → lmap⁺ (λ y → x , y) (yf x)) xs
 
  ι-⊗ᴸ⁺-explicitly
   : funext₀
@@ -176,31 +176,34 @@ module List⁺-definitions where
                   → member x (ι xs) × member y (ι (yf x))
  split-membership fe {X} {Y} x y xs yf m = m₀ , m₁
   where
-   I : ι (xs ⊗ᴸ⁺ yf) ＝ concat (lmap (λ x → lmap (x ,_) (ι (yf x))) (ι xs))
+   f : X → List (Σ x ꞉ X , Y x)
+   f x = lmap (x ,_) (ι (yf x))
+
+   I : ι (xs ⊗ᴸ⁺ yf) ＝ concat (lmap f (ι xs))
    I = ι-⊗ᴸ⁺-explicitly fe xs yf
 
-   II : member (x , y) (concat (lmap (λ x → lmap (x ,_) (ι (yf x))) (ι xs)))
+   II : member (x , y) (concat (lmap f (ι xs)))
    II = transport (member (x , y)) I m
 
    III : Σ zs ꞉ List (Σ x ꞉ X , Y x)
-             , member zs (lmap (λ x → lmap (x ,_) (ι (yf x))) (ι xs))
+             , member zs (lmap f (ι xs))
              × member (x , y) zs
-   III = member-of-concat
+   III = member-of-concat←
           (x , y)
-          (lmap (λ x → lmap (x ,_) (ι (yf x))) (ι xs))
+          (lmap f (ι xs))
           II
 
    zs : List (Σ x ꞉ X , Y x)
    zs = pr₁ III
 
-   III₀ : member zs (lmap (λ x → lmap (x ,_) (ι (yf x))) (ι xs))
+   III₀ : member zs (lmap f (ι xs))
    III₀ = pr₁ (pr₂ III)
 
    III₁ : member (x , y) zs
    III₁ = pr₂ (pr₂ III)
 
    IV : Σ x' ꞉ X , member x' (ι xs) × (lmap (x' ,_) (ι (yf x')) ＝ zs)
-   IV = member-of-map (λ x → lmap (x ,_) (ι (yf x))) zs (ι xs) III₀
+   IV = member-of-map← f zs (ι xs) III₀
 
    x' : X
    x' = pr₁ IV
@@ -215,7 +218,7 @@ module List⁺-definitions where
    V = transport⁻¹ (member (x , y)) IV₁ III₁
 
    VI : Σ y' ꞉ Y x' , member y' (ι (yf x')) × ((x' , y') ＝ (x , y))
-   VI = member-of-map (x' ,_) (x , y) (ι (yf x')) V
+   VI = member-of-map← (x' ,_) (x , y) (ι (yf x')) V
 
    y' : Y x'
    y' = pr₁ VI
@@ -234,5 +237,34 @@ module List⁺-definitions where
 
    m₁ : member y (ι (yf x))
    m₁ = VII x' y' x y VI₁ VI₀
+
+ join-membership : funext₀
+                 → {X : Type}
+                   {Y : X → Type}
+                   (x : X)
+                   (y : Y x)
+                   (xs : List⁺ X)
+                   (yf : (x : X) → List⁺ (Y x))
+                 → member x (ι xs) × member y (ι (yf x))
+                 → member (x , y) (ι (xs ⊗ᴸ⁺ yf))
+ join-membership fe {X} {Y} x y xs yf (m₀ , m₁) = m
+  where
+   f : X → List (Σ x ꞉ X , Y x)
+   f x = lmap (x ,_) (ι (yf x))
+
+   I : ι (xs ⊗ᴸ⁺ yf) ＝ concat (lmap f (ι xs))
+   I = ι-⊗ᴸ⁺-explicitly fe xs yf
+
+   II : member (x , y) (f x)
+   II = member-of-map→ (x ,_) (ι (yf x)) y m₁
+
+   III : member (f x) (lmap f (ι xs))
+   III = member-of-map→ f (ι xs) x m₀
+
+   IV : member (x , y) (concat (lmap f (ι xs)))
+   IV = member-of-concat→ (x , y) (lmap f (ι xs)) (f x) III II
+
+   m : member (x , y) (ι (xs ⊗ᴸ⁺ yf))
+   m = transport (member (x , y)) (I ⁻¹) IV
 
 \end{code}

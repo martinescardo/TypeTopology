@@ -531,10 +531,10 @@ Added by Martin Escardo and Paulo Oliva 12th March 2025.
 
 \begin{code}
 
-member-of-concat : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
-                 → member x (concat yss)
-                 → Σ ys ꞉ List X , member ys yss × member x ys
-member-of-concat {𝓤} {X} x (ys ∷ yss) m = II I
+member-of-concat← : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
+                  → member x (concat yss)
+                  → Σ ys ꞉ List X , member ys yss × member x ys
+member-of-concat← {𝓤} {X} x (ys ∷ yss) m = II I
  where
   I : member x ys + member x (concat yss)
   I = ++-membership₁ x ys (concat yss) m
@@ -544,21 +544,47 @@ member-of-concat {𝓤} {X} x (ys ∷ yss) m = II I
   II (inr r) = III IH
    where
     IH : Σ ys' ꞉ List X , member ys' yss × member x ys'
-    IH = member-of-concat x yss r
+    IH = member-of-concat← x yss r
 
     III : type-of IH → Σ ys' ꞉ List X , member ys' (ys ∷ yss) × member x ys'
     III (ys' , r₁ , r₂) = ys' , in-tail r₁ , r₂
 
-member-of-map : {X Y : 𝓤 ̇ } (f : X → Y) (y : Y) (xs : List X)
+member-of-map← : {X Y : 𝓤 ̇ } (f : X → Y) (y : Y) (xs : List X)
               → member y (map f xs)
               → Σ x ꞉ X , member x xs × (f x ＝ y)
-member-of-map f y (x ∷ xs) in-head = x , in-head , refl
-member-of-map {𝓤} {X} f y (x ∷ xs) (in-tail m) = I IH
+member-of-map← f y (x ∷ xs) in-head = x , in-head , refl
+member-of-map← {𝓤} {X} f y (x ∷ xs) (in-tail m) = I IH
  where
   IH : Σ x ꞉ X , member x xs × (f x ＝ y)
-  IH = member-of-map f y xs m
+  IH = member-of-map← f y xs m
 
   I : type-of IH → Σ x' ꞉ X , member x' (x ∷ xs) × (f x' ＝ y)
   I (x , m , e) = x , in-tail m , e
+
+\end{code}
+
+Added by Martin Escardo and Paulo Oliva 14th May 2025.
+
+\begin{code}
+
+member-of-concat→ : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
+                    (zs : List X)
+                  → member zs yss
+                  → member x zs
+                  → member x (concat yss)
+member-of-concat→ x (ys ∷ yss) .ys in-head m₂ =
+ right-concatenation-preserves-membership x ys (concat yss) m₂
+member-of-concat→ x (ys ∷ yss) zs (in-tail m₁) m₂ =
+ left-concatenation-preserves-membership x (concat yss) ys IH
+ where
+  IH : member x (concat yss)
+  IH = member-of-concat→ x yss zs m₁ m₂
+
+member-of-map→ : {X Y : 𝓤 ̇ } (f : X → Y) (xs : List X)
+                 (x : X)
+               → member x xs
+               → member (f x) (map f xs)
+member-of-map→ f xs x in-head = in-head
+member-of-map→ f (_ ∷ xs) x (in-tail m) = in-tail (member-of-map→ f xs x m)
 
 \end{code}

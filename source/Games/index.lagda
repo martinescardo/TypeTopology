@@ -29,6 +29,7 @@ import Games.TicTacToe2              -- More efficient and less elegant version.
 import Games.TypeTrees               -- Dependent type trees.
 import Games.alpha-beta              -- Many new things for efficiency.
 import Games.Discussion
+import Games.OptimalPlays            -- Computes the list of all optimal plays of a game.
 
 -- import Games.Main                 -- To be able to compile for efficieny.
                                      -- Can't be imported here as it's not --safe.
