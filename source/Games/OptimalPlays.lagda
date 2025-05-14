@@ -7,7 +7,7 @@ selection functions.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
