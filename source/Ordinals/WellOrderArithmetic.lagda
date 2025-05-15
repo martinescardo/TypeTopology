@@ -458,12 +458,14 @@ constructed in the module UF.PropIndexedPiSigma:
   ψ p x q = transport X (P-is-prop p q) x
 
   η : (p : P) (u : Π X) → ψ p (φ p u) ＝ u
-  η p = pr₂ (pr₂ (pr₂ (prop-indexed-product fe P-is-prop p)))
+  η p = pr₂ (pr₂ (pr₂ (prop-indexed-product p fe P-is-prop)))
 
   ε : (p : P) (x : X p) → φ p (ψ p x) ＝ x
-  ε p = pr₂ (pr₁ (pr₂ (prop-indexed-product fe P-is-prop p)))
+  ε p = pr₂ (pr₁ (pr₂ (prop-indexed-product p fe P-is-prop)))
 
 \end{code}
+
+TODO. Get rid of the projections above. There are more meaningful names for them.
 
 The order on the product is constructed as follows from the order in
 the components:

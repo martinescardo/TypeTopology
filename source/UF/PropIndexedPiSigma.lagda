@@ -1,60 +1,73 @@
-Martin Escardo, 27 April 2014
+Martin Escardo, 27 April 2014.
+
+With additions 18th December 2017, and slightly refactored
+15th May 2025, with minor improvements in the code.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-module UF.PropIndexedPiSigma where
-
 open import MLTT.Spartan
+
+module UF.PropIndexedPiSigma
+        {X : 𝓤 ̇ }
+        {Y : X → 𝓥 ̇ }
+       where
+
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-Properties
 
+module _ (a : X) where
 
-Π-proj : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (a : X) → Π Y → Y a
-Π-proj a f = f a
+ Π-proj : Π Y → Y a
+ Π-proj f = f a
 
-Π-inj : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → is-prop X → (a : X) → Y a → Π Y
-Π-inj {𝓤} {𝓥} {X} {Y} i a y x = transport Y (i a x) y
+ Π-proj⁻¹ : is-prop X → Y a → Π Y
+ Π-proj⁻¹ i y x = transport Y (i a x) y
 
-Π-proj-is-equiv : funext 𝓤 𝓥
-                → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                → is-prop X
-                → (a : X) → is-equiv (Π-proj a)
-Π-proj-is-equiv {𝓤} {𝓥} fe {X} {Y} i a = γ
- where
-  l : (x : X) → i x x ＝ refl
-  l x = props-are-sets i (i x x) refl
+ Π-proj-is-equiv : funext 𝓤 𝓥
+                 → is-prop X
+                 → is-equiv Π-proj
+ Π-proj-is-equiv fe i = qinvs-are-equivs Π-proj (Π-proj⁻¹ i , η , ε)
+  where
+   ε : Π-proj ∘ Π-proj⁻¹ i ∼ id
+   ε y =
+    (Π-proj ∘ Π-proj⁻¹ i) y ＝⟨ refl ⟩
+    transport Y (i a a) y   ＝⟨ I ⟩
+    transport Y refl y      ＝⟨ refl ⟩
+    y ∎
+     where
+      I = ap (λ - → transport Y - y) (identifications-in-props-are-refl i a)
 
-  η : (y : Y a) → transport Y (i a a) y ＝ y
-  η y = ap (λ - → transport Y - y) (l a)
+   II : (f : Π Y) {x : X} → x ＝ a → transport Y (i a x) (f a) ＝ f x
+   II f refl =
+    transport Y (i a a) (f a) ＝⟨ II₀ ⟩
+    transport Y refl (f a)    ＝⟨ refl ⟩
+    f a ∎
+     where
+      II₀ = ap (λ - → transport Y - (f a)) (identifications-in-props-are-refl i a)
 
-  ε'' : (f : Π Y) {x x' : X} → x ＝ x' → transport Y (i x x') (f x) ＝ f x'
-  ε'' f {x} refl = ap (λ - → transport Y - (f x)) (l x)
+   III : (f : Π Y) → Π-proj⁻¹ i (Π-proj f) ∼ f
+   III f x =
+    Π-proj⁻¹ i (Π-proj f) x   ＝⟨ refl ⟩
+    transport Y (i a x) (f a) ＝⟨ II f (i x a) ⟩
+    f x                       ∎
 
-  ε' : (f : Π Y) (x : X) → transport Y (i a x) (f a) ＝ f x
-  ε' f x = ε'' f (i a x)
+   η : Π-proj⁻¹ i ∘ Π-proj ∼ id
+   η φ = dfunext fe (III φ)
 
-  ε : (f : Π Y) → Π-inj i a (Π-proj a f) ＝ f
-  ε φ = dfunext fe (ε' φ)
-
-  γ : is-equiv (Π-proj a)
-  γ = qinvs-are-equivs (Π-proj a) (Π-inj i a , ε , η)
-
-prop-indexed-product : funext 𝓤 𝓥
-                     → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                     → is-prop X
-                     → (a : X) → Π Y ≃ Y a
-prop-indexed-product fe i a = Π-proj a , Π-proj-is-equiv fe i a
+ prop-indexed-product : funext 𝓤 𝓥
+                      → is-prop X
+                      → Π Y ≃ Y a
+ prop-indexed-product fe i = Π-proj , Π-proj-is-equiv fe i
 
 empty-indexed-product-is-𝟙 : funext 𝓤 𝓥
-                           → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                            → (X → 𝟘 {𝓦})
                            → Π Y ≃ 𝟙 {𝓣}
-empty-indexed-product-is-𝟙 {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {Y} v = γ
+empty-indexed-product-is-𝟙 {𝓦} {𝓣} fe v = γ
  where
   g : 𝟙 → Π Y
   g ⋆ x = unique-from-𝟘 {𝓥} {𝓦} (v x)
@@ -77,33 +90,44 @@ Added 18th December 2017.
 
 \begin{code}
 
-prop-indexed-sum : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                 → is-prop X
-                 → (a : X) → Σ Y ≃ Y a
-prop-indexed-sum {𝓤} {𝓥} {X} {Y} i a = qinveq f (g , ε , η)
- where
-  f : Σ Y → Y a
-  f (x , y) = transport Y (i x a) y
+module _ (a : X) where
 
-  g : Y a → Σ Y
-  g y = a , y
+ Σ-in⁻¹ : is-prop X → Σ Y → Y a
+ Σ-in⁻¹ i (x , y) = transport Y (i x a) y
 
-  l : (x : X) → i x x ＝ refl
-  l x = props-are-sets i (i x x) refl
+ Σ-in : Y a → Σ Y
+ Σ-in y = (a , y)
 
-  η : (y : Y a) → f (a , y) ＝ y
-  η y = ap (λ - → transport Y - y) (l a)
+ Σ-in-is-equiv : is-prop X → is-equiv Σ-in
+ Σ-in-is-equiv i = qinvs-are-equivs Σ-in (Σ-in⁻¹ i , η , ε)
+  where
+   η : (y : Y a) → Σ-in⁻¹ i (Σ-in y) ＝ y
+   η y =
+    Σ-in⁻¹ i (Σ-in y)     ＝⟨ refl ⟩
+    transport Y (i a a) y ＝⟨ I ⟩
+    transport Y refl y    ＝⟨ refl ⟩
+    y                     ∎
+     where
+      I = ap (λ - → transport Y - y) (identifications-in-props-are-refl i a)
 
-  c : (x : X) (y : Y x) → x ＝ a → transport Y (i a x) (f (x , y)) ＝ y
-  c _ y refl = η (f (a , y)) ∙ η y
+   II : (x : X) (y : Y x) → x ＝ a
+      → transport Y (i a x) (transport Y (i x a) y) ＝ y
+   II a y refl =
+    transport Y (i a a) (transport Y (i a a) y) ＝⟨ η (transport Y (i a a) y) ⟩
+    transport Y (i a a) y                       ＝⟨ η y ⟩
+    y                                           ∎
 
-  ε : (σ : Σ Y) → g (f σ) ＝ σ
-  ε (x , y) = to-Σ-＝ (i a x , c x y (i x a))
+   ε : (σ : Σ Y) → Σ-in (Σ-in⁻¹ i σ) ＝ σ
+   ε (x , y) =
+    Σ-in (Σ-in⁻¹ i (x , y))     ＝⟨ refl ⟩
+    (a , transport Y (i x a) y) ＝⟨ to-Σ-＝ (i a x , II x y (i x a)) ⟩
+    (x , y)                     ∎
 
-empty-indexed-sum-is-𝟘 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                      → (X → 𝟘 {𝓦})
-                      → Σ Y ≃ (𝟘 {𝓣})
-empty-indexed-sum-is-𝟘 {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} φ = qinveq f (g , ε , η)
+ prop-indexed-sum : is-prop X → Σ Y ≃ Y a
+ prop-indexed-sum i = ≃-sym (Σ-in , Σ-in-is-equiv i)
+
+empty-indexed-sum-is-𝟘 : (X → 𝟘 {𝓦}) → Σ Y ≃ (𝟘 {𝓣})
+empty-indexed-sum-is-𝟘 {𝓦} {𝓣} φ = qinveq f (g , ε , η)
  where
   f : Σ Y → 𝟘
   f (x , y) = 𝟘-elim (φ x)

@@ -431,9 +431,9 @@ September. Here is an application of the above.
   V   = Σ-cong (λ Z → ×-cong (≃-Sym' fe fe fe fe) (≃-refl (Z → Y)))
   VI  = ≃-sym Σ-assoc
   VII = prop-indexed-sum
+         (X , ≃-refl X)
          (singletons-are-props
            (univalence-via-singletons→ ua X))
-         (X , ≃-refl X)
 
 private
  ∑ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇

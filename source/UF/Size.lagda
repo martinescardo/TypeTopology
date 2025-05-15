@@ -503,7 +503,7 @@ Lift-is-section ua R 𝓤 𝓥 = (r , rs)
     X' = fiber-point v
 
     a : r (s X) ≃ X'
-    a = prop-indexed-product (Univalence-gives-FunExt ua 𝓤 𝓤) (i (s X)) u
+    a = prop-indexed-product u (Univalence-gives-FunExt ua 𝓤 𝓤) (i (s X))
 
     b : s X' ＝ s X
     b = fiber-identification v

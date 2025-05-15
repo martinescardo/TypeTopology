@@ -54,7 +54,7 @@ universes-are-aflabby-Π {𝓤} P P-is-prop A = Π A , I
   X = Π A
 
   I : (p : P) → Π A ＝ A p
-  I p = eqtoid (ua 𝓤) (Π A) (A p) (prop-indexed-product fe' P-is-prop p)
+  I p = eqtoid (ua 𝓤) (Π A) (A p) (prop-indexed-product p fe' P-is-prop )
 
 universes-are-injective-Π : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
 universes-are-injective-Π {𝓤} = aflabby-types-are-ainjective (𝓤 ̇ )
@@ -67,7 +67,7 @@ universes-are-aflabby-Σ {𝓤} P P-is-prop A = Σ A , I
   X = Σ A
 
   I : (p : P) → Σ A ＝ A p
-  I p = eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum P-is-prop p)
+  I p = eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum p P-is-prop)
 
 \end{code}
 
@@ -154,7 +154,7 @@ proposition p and family A indexed by p.
   hp = holds-is-prop p
 
   π : (h : p holds) → Π A ≃ A h
-  π = prop-indexed-product fe' hp
+  π h = prop-indexed-product h fe' hp
 
   remark-π : (h : p holds) (α : Π A)
            → ⌜ π h ⌝ α ＝ α h
