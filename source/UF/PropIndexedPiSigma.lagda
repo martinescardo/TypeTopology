@@ -92,11 +92,11 @@ Added 18th December 2017.
 
 module _ (a : X) where
 
- Σ-in⁻¹ : is-prop X → Σ Y → Y a
- Σ-in⁻¹ i (x , y) = transport Y (i x a) y
-
  Σ-in : Y a → Σ Y
  Σ-in y = (a , y)
+
+ Σ-in⁻¹ : is-prop X → Σ Y → Y a
+ Σ-in⁻¹ i (x , y) = transport Y (i x a) y
 
  Σ-in-is-equiv : is-prop X → is-equiv Σ-in
  Σ-in-is-equiv i = qinvs-are-equivs Σ-in (Σ-in⁻¹ i , η , ε)
