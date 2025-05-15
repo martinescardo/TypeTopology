@@ -179,7 +179,6 @@ exponentiation-constructions-agree'-bis
 exponentiation-constructions-agree'-bis α β =
  exp-strong-specification-uniquely-specifies-exp'
   (𝟙ₒ +ₒ α)
-  nonzero
   (expᴸ[𝟙+ α ])
   ((𝟙ₒ +ₒ α) ^ₒ_)
   (expᴸ-satisfies-strong-sup-specification α)
@@ -187,9 +186,6 @@ exponentiation-constructions-agree'-bis α β =
   (^ₒ-satisfies-strong-sup-specification (𝟙ₒ +ₒ α))
   (^ₒ-satisfies-succ-specification (𝟙ₒ +ₒ α) (+ₒ-left-⊴ 𝟙ₒ α))
   β
-   where
-    nonzero : 𝟙ₒ +ₒ α ≠ 𝟘ₒ
-    nonzero e = 𝟘-elim (Idtofunₒ e (inl ⋆))
 
 exponentiation-constructions-agree-bis
  : (α β : Ordinal 𝓤) (h : has-trichotomous-least-element α)

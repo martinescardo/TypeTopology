@@ -368,7 +368,7 @@ that it satisfies the (ordinary) supremum specification.
 
 ^ₒ-satisfies-strong-sup-specification : (α : Ordinal 𝓤)
                                       → exp-specification-sup-strong α (α ^ₒ_)
-^ₒ-satisfies-strong-sup-specification {𝓤} α _ S F =
+^ₒ-satisfies-strong-sup-specification {𝓤} α S F =
  ⊴-antisym (α ^ₒ sup F) (sup (cases (λ _ → 𝟙ₒ) (λ s → α ^ₒ F s))) I II
   where
    G : 𝟙{𝓤} + S → Ordinal 𝓤
