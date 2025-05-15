@@ -14,12 +14,15 @@ trichotomous least element.
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
+open import UF.PropTrunc
 
 module Ordinals.Exponentiation.TrichotomousLeastElement
        (ua : Univalence)
+       (pt : propositional-truncations-exist)
        where
 
 open import UF.Base
+open import UF.ClassicalLogic
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Sets
@@ -34,6 +37,9 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
+ pe : Prop-Ext
+ pe = Univalence-gives-Prop-Ext ua
+
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 
@@ -47,6 +53,7 @@ open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
+open PropositionalTruncation pt
 
 \end{code}
 
@@ -535,7 +542,7 @@ module _
 
 \end{code}
 
-Finally, we record that any ordinal with a trichotomous least element is at
+We record that any ordinal with a trichotomous least element is at
 least as big as 𝟙ₒ.
 
 \begin{code}
@@ -545,5 +552,60 @@ trichotomous-least-element-gives-𝟙ₒ-⊴ : (α : Ordinal 𝓤)
                                       → 𝟙ₒ ⊴ α
 trichotomous-least-element-gives-𝟙ₒ-⊴ α h =
  transport⁻¹ (𝟙ₒ ⊴_) (α ⁺[ h ]-part-of-decomposition) (+ₒ-left-⊴ 𝟙ₒ (α ⁺[ h ]))
+
+\end{code}
+
+Classically, any ordinal is either 𝟘ₒ, or it has a trichotomous least element.
+
+\begin{code}
+
+has-trichotomous-least-element-or-is-zero : Ordinal 𝓤 → 𝓤 ⁺ ̇
+has-trichotomous-least-element-or-is-zero α =
+ has-trichotomous-least-element α + (α ＝ 𝟘ₒ)
+
+Has-trichotomous-least-element-or-is-zero : 𝓤 ⁺ ̇
+Has-trichotomous-least-element-or-is-zero {𝓤} =
+ (α : Ordinal 𝓤) → has-trichotomous-least-element-or-is-zero α
+
+EM-gives-Has-trichotomous-least-element-or-is-zero
+ : EM 𝓤
+ → Has-trichotomous-least-element-or-is-zero {𝓤}
+EM-gives-Has-trichotomous-least-element-or-is-zero em α =
+ II (em ∥ ⟨ α ⟩ ∥ ∥∥-is-prop)
+  where
+   open import Ordinals.WellOrderingTaboo fe' pe
+   open ClassicalWellOrder pt
+
+   has-minimal = Σ x₀ ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → ¬ (x ≺⟨ α ⟩ x₀))
+
+   I : ∥ ⟨ α ⟩ ∥ → has-minimal
+   I i = pr₁ I' , (λ x → pr₂ (pr₂ I') x ⋆)
+    where
+     I' : Σ x₀ ꞉ ⟨ α ⟩ , 𝟙 × ((x : ⟨ α ⟩) → 𝟙 → ¬ (x ≺⟨ α ⟩ x₀))
+     I' = well-order-gives-minimal (underlying-order α) em (is-well-ordered α)
+           (λ _ → 𝟙) (λ _ → 𝟙-is-prop) (∥∥-functor (λ x → x , ⋆) i)
+
+   II : is-decidable ∥ ⟨ α ⟩ ∥ → has-trichotomous-least-element-or-is-zero α
+   II (inl  i) = inl (x₀ ,
+                      τ (classical-well-orders-are-uniquely-trichotomous
+                          (underlying-order α)
+                          (inductive-well-order-is-classical
+                            (underlying-order α) em (is-well-ordered α))))
+    where
+     x₀ = pr₁ (I i)
+     x₀-is-minimal = pr₂ (I i)
+
+     τ : ((x y : ⟨ α ⟩) → is-singleton ((x ≺⟨ α ⟩ y) + (x ＝ y) + (y ≺⟨ α ⟩ x)))
+       → is-trichotomous-least α x₀
+     τ σ x = κ (center (σ x₀ x))
+      where
+       κ : (x₀ ≺⟨ α ⟩ x) + (x₀ ＝ x) + (x ≺⟨ α ⟩ x₀)
+         → (x₀ ＝ x) + (x₀ ≺⟨ α ⟩ x)
+       κ (inl u)       = inr u
+       κ (inr (inl e)) = inl e
+       κ (inr (inr v)) = 𝟘-elim (x₀-is-minimal x v)
+   II (inr ni) = inr (⊴-antisym α 𝟘ₒ
+                       (to-⊴ α 𝟘ₒ λ x → 𝟘-elim (ni ∣ x ∣))
+                       (≼-gives-⊴ 𝟘ₒ α (𝟘ₒ-least α)))
 
 \end{code}

@@ -49,7 +49,7 @@ open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
-open import Ordinals.Exponentiation.DecreasingList ua
+open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.Specification ua pt sr
 
 open PropositionalTruncation pt

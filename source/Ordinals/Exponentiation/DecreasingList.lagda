@@ -9,9 +9,11 @@ lists.
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.Univalence
+open import UF.PropTrunc
 
 module Ordinals.Exponentiation.DecreasingList
        (ua : Univalence)
+       (pt : propositional-truncations-exist)
        where
 
 open import UF.FunExt
@@ -43,7 +45,7 @@ open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
 
 \end{code}
 

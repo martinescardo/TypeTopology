@@ -41,11 +41,11 @@ open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
-open import Ordinals.Exponentiation.DecreasingList ua
+open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
 
 open import DiscreteGraphicMonoids.ListsWithoutRepetitions fe'
              using (List-is-discrete)

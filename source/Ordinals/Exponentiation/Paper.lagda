@@ -67,7 +67,7 @@ open suprema pt sr
 open import Ordinals.Type
 open import Ordinals.Underlying
 
-open import Ordinals.Exponentiation.DecreasingList ua
+open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.DecreasingListProperties-Concrete ua pt sr
 open import Ordinals.Exponentiation.Grayson ua pt
 open import Ordinals.Exponentiation.PropertiesViaTransport ua pt sr
@@ -75,7 +75,7 @@ open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Exponentiation.Taboos ua pt sr
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
 
 \end{code}
 
@@ -502,7 +502,11 @@ Section VI. On Grayson's Decreasing Lists
 Definition-34 : (α β : Ordinal 𝓤) → 𝓤 ̇
 Definition-34 α β = GraysonList (underlying-order α) (underlying-order β)
 
--- TODO: Formalize converse as Proposition-35-i
+Proposition-35-i
+ : EM 𝓤
+ → (α β : Ordinal 𝓤)
+ → is-well-order (Grayson-order (underlying-order α) (underlying-order β))
+Proposition-35-i = EM-implies-GraysonList-is-ordinal
 
 Proposition-35-ii
  : ((α β : Ordinal (𝓤 ⁺⁺))

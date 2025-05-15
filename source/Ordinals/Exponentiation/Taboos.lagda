@@ -47,11 +47,11 @@ open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
-open import Ordinals.Exponentiation.DecreasingList ua
+open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.PropertiesViaTransport ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
 
 open import UF.Base
 open import UF.ClassicalLogic
@@ -386,56 +386,6 @@ Ordinals.Exponentiation.Supremum.
                       (≃ₒ-is-prop-valued fe' β 𝟘ₒ) 𝟘-is-prop
                       (λ e → 𝟘-elim (β-ne (eqtoidₒ (ua _) fe' _ _ e)))
                       𝟘-elim
-
-private
- has-trichotomous-least-element-or-is-zero : Ordinal 𝓤 → 𝓤 ⁺ ̇
- has-trichotomous-least-element-or-is-zero α =
-  has-trichotomous-least-element α + (α ＝ 𝟘ₒ)
-
- Has-trichotomous-least-element-or-is-zero : 𝓤 ⁺ ̇
- Has-trichotomous-least-element-or-is-zero {𝓤} =
-  (α : Ordinal 𝓤) → has-trichotomous-least-element-or-is-zero α
-
- EM-gives-Has-trichotomous-least-element-or-is-zero
-  : EM 𝓤
-  → Has-trichotomous-least-element-or-is-zero {𝓤}
- EM-gives-Has-trichotomous-least-element-or-is-zero em α =
-  II (em ∥ ⟨ α ⟩ ∥ ∥∥-is-prop)
-   where
-    open import Ordinals.WellOrderingTaboo fe' pe
-    open ClassicalWellOrder pt
-
-    has-minimal = Σ x₀ ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → ¬ (x ≺⟨ α ⟩ x₀))
-
-    I : ∥ ⟨ α ⟩ ∥ → has-minimal
-    I i = pr₁ I' , (λ x → pr₂ (pr₂ I') x ⋆)
-     where
-      I' : Σ x₀ ꞉ ⟨ α ⟩ , 𝟙 × ((x : ⟨ α ⟩) → 𝟙 → ¬ (x ≺⟨ α ⟩ x₀))
-      I' = well-order-gives-minimal (underlying-order α) em (is-well-ordered α)
-            (λ _ → 𝟙) (λ _ → 𝟙-is-prop) (∥∥-functor (λ x → x , ⋆) i)
-
-    II : is-decidable ∥ ⟨ α ⟩ ∥ → has-trichotomous-least-element-or-is-zero α
-    II (inl  i) = inl (x₀ ,
-                       τ (classical-well-orders-are-uniquely-trichotomous
-                           (underlying-order α)
-                           (inductive-well-order-is-classical
-                             (underlying-order α) em (is-well-ordered α))))
-     where
-      x₀ = pr₁ (I i)
-      x₀-is-minimal = pr₂ (I i)
-
-      τ : ((x y : ⟨ α ⟩) → is-singleton ((x ≺⟨ α ⟩ y) + (x ＝ y) + (y ≺⟨ α ⟩ x)))
-        → is-trichotomous-least α x₀
-      τ σ x = κ (center (σ x₀ x))
-       where
-        κ : (x₀ ≺⟨ α ⟩ x) + (x₀ ＝ x) + (x ≺⟨ α ⟩ x₀)
-          → (x₀ ＝ x) + (x₀ ≺⟨ α ⟩ x)
-        κ (inl u)       = inr u
-        κ (inr (inl e)) = inl e
-        κ (inr (inr v)) = 𝟘-elim (x₀-is-minimal x v)
-    II (inr ni) = inr (⊴-antisym α 𝟘ₒ
-                        (to-⊴ α 𝟘ₒ λ x → 𝟘-elim (ni ∣ x ∣))
-                        (≼-gives-⊴ 𝟘ₒ α (𝟘ₒ-least α)))
 
 \end{code}
 
