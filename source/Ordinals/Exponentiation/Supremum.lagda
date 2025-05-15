@@ -6,7 +6,7 @@ ordinals.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -458,7 +458,7 @@ product into the supremum.
      h (inl ⋆) = 𝟙ₒ-right-neutral-×ₒ γ
      h (inr b) = (×ₒ-assoc γ (α ^ₒ (β ↓ b)) α) ⁻¹
 
-^ₒ-by-+ₒ : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+^ₒ-by-+ₒ : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
          → α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ
 ^ₒ-by-+ₒ {𝓤} {𝓥} α β =
  transfinite-induction-on-OO (λ γ → α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ) I
@@ -555,7 +555,7 @@ Exponentiating by a product is iterated exponentiation:
 
 \begin{code}
 
-^ₒ-by-×ₒ : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+^ₒ-by-×ₒ : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
          → α ^ₒ (β ×ₒ γ) ＝ (α ^ₒ β) ^ₒ γ
 ^ₒ-by-×ₒ {𝓤} {𝓥} α β =
  transfinite-induction-on-OO (λ γ → α ^ₒ (β ×ₒ γ) ＝ (α ^ₒ β) ^ₒ γ) I

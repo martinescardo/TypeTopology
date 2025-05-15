@@ -14,7 +14,7 @@ See also Ordinals.Exponentiation.index for an overview of the relevant files.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 \end{code}
 
@@ -209,11 +209,11 @@ Theorem-9 {𝓤} α α-pos =   ^ₒ-satisfies-zero-specification {𝓤} {𝓤} �
                         , ^ₒ-satisfies-strong-sup-specification α
                         , ^ₒ-satisfies-sup-specification α
 
-Proposition-10 : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+Proposition-10 : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
                → α ^ₒ (β +ₒ γ) ＝ (α ^ₒ β) ×ₒ (α ^ₒ γ)
 Proposition-10 = ^ₒ-by-+ₒ
 
-Proposition-11 : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+Proposition-11 : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
                → (α ^ₒ β) ^ₒ γ ＝ α ^ₒ (β ×ₒ γ)
 Proposition-11 α β γ = (^ₒ-by-×ₒ α β γ) ⁻¹
 
