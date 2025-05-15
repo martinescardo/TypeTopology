@@ -172,8 +172,8 @@ Proposition-4 =
 
 Eq-double-dagger' : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
 Eq-double-dagger' {𝓤} exp =
-   ((α : Ordinal 𝓤) → exp-specification-succ α (exp α))
- × ((α : Ordinal 𝓤) → exp-specification-sup-strong α (exp α))
+   ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-succ α (exp α))
+ × ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-sup-strong α (exp α))
 
 \end{code}
 
