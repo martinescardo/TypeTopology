@@ -126,7 +126,9 @@ Positively-non-minimal-is-set : {A : 𝓤 ̇  } (R : A → A → 𝓥 ̇  )
 Positively-non-minimal-is-set {A = A} R s
  = subsets-of-sets-are-sets A (is-positively-non-minimal R) s ∃-is-prop
 
-Positively-non-minimal-order : {A : 𝓤 ̇  } (R : A → A → 𝓥 ̇  ) → Positively-non-minimal R → Positively-non-minimal R → 𝓥 ̇
+Positively-non-minimal-order
+ : {A : 𝓤 ̇  } (R : A → A → 𝓥 ̇  )
+ → Positively-non-minimal R → Positively-non-minimal R → 𝓥 ̇
 Positively-non-minimal-order R (a , _) (a' , _) = R a a'
 
 \end{code}
@@ -215,15 +217,27 @@ module _ {A B : 𝓤 ̇  } (R : A → A → 𝓥 ̇  ) (R' : B → B → 𝓥 ̇
 \end{code}
 
 For comparison with Ordinals.Exponentiation.DecreasingList, it is
-convenient to reformulate the type of Grayson lists slightly:
+convenient to reformulate the type of Grayson lists slightly in an
+equivalent way:
 
 \begin{code}
 
  GraysonList' : 𝓤 ⊔ 𝓥 ̇
- GraysonList' = Σ l ꞉ List (Positively-non-minimal R × B) , is-decreasing R' (map pr₂ l)
+ GraysonList' =
+  Σ l ꞉ List (Positively-non-minimal R × B) , is-decreasing R' (map pr₂ l)
+
+ GraysonList'-list : GraysonList' → List (Positively-non-minimal R × B)
+ GraysonList'-list = pr₁
+
+ to-GraysonList'-＝ : is-prop-valued R'
+                   → {l l' : GraysonList'}
+                   → GraysonList'-list l ＝ GraysonList'-list l' → l ＝ l'
+ to-GraysonList'-＝ p' =
+  to-subtype-＝ (λ l → is-decreasing-is-prop R' p' (map pr₂ l))
 
  Grayson'-order : GraysonList' → GraysonList' → 𝓤 ⊔ 𝓥 ̇
- Grayson'-order (l , _) (l' , _) = lex (times.order (Positively-non-minimal-order R) R') l l'
+ Grayson'-order (l , _) (l' , _) =
+  lex (times.order (Positively-non-minimal-order R) R') l l'
 
  Grayson'-order-is-prop : is-set A
                         → is-set B
@@ -242,89 +256,93 @@ convenient to reformulate the type of Grayson lists slightly:
     irr (a , b) (inl q) = i' b q
     irr ((a , _) , b) (inr (r , q)) = i a q
 
- GraysonList-to-List'
-  : (l : List (A × B)) → is-grayson l → List ((Positively-non-minimal R) × B)
- GraysonList-to-List' [] p = []
- GraysonList-to-List' (a , b ∷ l) (δ , (p ∷ ps))
-  = ((a , p) , b) ∷ GraysonList-to-List' l (tail-is-decreasing R' δ , ps)
-
- GraysonList-to-List'-decreasing
-  : (l : List (A × B))
-  → (g : is-grayson l)
-  → is-decreasing R' (map pr₂ (GraysonList-to-List' l g))
- GraysonList-to-List'-decreasing [] g = []-decr
- GraysonList-to-List'-decreasing (a , b ∷ []) (δ , (p ∷ ps)) = sing-decr
- GraysonList-to-List'-decreasing (a , b ∷ (a' , b') ∷ l) (many-decr q δ , (p ∷ p' ∷ ps)) =
-  many-decr q (GraysonList-to-List'-decreasing ((a' , b') ∷ l) (δ , (p' ∷ ps)))
-
- GraysonList-to-GraysonList' : GraysonList → GraysonList'
- GraysonList-to-GraysonList' (l , g) =
-  GraysonList-to-List' l g , GraysonList-to-List'-decreasing l g
-
- GraysonList'-to-List : (l : List ((Positively-non-minimal R) × B))
-                      → List (A × B)
- GraysonList'-to-List [] = []
- GraysonList'-to-List (((a , _) , b) ∷ l) = (a , b) ∷ GraysonList'-to-List l
-
- GraysonList'-to-List-grayson : (l : List ((Positively-non-minimal R) × B))
-                              → is-decreasing R' (map pr₂ l)
-                              → is-grayson ( GraysonList'-to-List l)
- GraysonList'-to-List-grayson [] δ = δ , []
- GraysonList'-to-List-grayson ((a , p) , b ∷ []) δ = sing-decr , (p ∷ [])
- GraysonList'-to-List-grayson ((a , p) , b ∷ (a' , p') , b' ∷ l) (many-decr q δ) =
-  many-decr q (pr₁ (GraysonList'-to-List-grayson ((a' , p') , b' ∷ l) δ)) ,
-  (p ∷ pr₂ (GraysonList'-to-List-grayson ((a' , p') , b' ∷ l) δ))
-
- GraysonList'-to-GraysonList : GraysonList' → GraysonList
- GraysonList'-to-GraysonList (l , δ) =
-  GraysonList'-to-List l , GraysonList'-to-List-grayson l δ
-
- GraysonLists-agree : is-prop-valued R' →  GraysonList ≃ GraysonList'
- GraysonLists-agree R'-is-prop =
-  GraysonList-to-GraysonList' ,
-  qinvs-are-equivs _ (GraysonList'-to-GraysonList , η , ε)
+ GraysonLists-agree : is-prop-valued R' → GraysonList ≃ GraysonList'
+ GraysonLists-agree R'-is-prop = f , qinvs-are-equivs f (g , η , ε)
    where
-    η : GraysonList'-to-GraysonList  ∘ GraysonList-to-GraysonList' ∼ id
-    η (l , g) = to-subtype-＝ (is-grayson-is-prop R'-is-prop) (η' l g)
+    f₀ : (l : List (A × B))(g : is-grayson l)
+       → List ((Positively-non-minimal R) × B)
+    f₀ [] p = []
+    f₀ (a , b ∷ l) (δ , (p ∷ ps)) =
+     ((a , p) , b) ∷ f₀ l (tail-is-decreasing R' δ , ps)
+
+    f : GraysonList → GraysonList'
+    f (l , g) = f₀ l g , f₀-decreasing l g
      where
-      η' : (l : List (A × B))(g : is-grayson l)
-         → GraysonList'-to-List (GraysonList-to-List' l g) ＝ l
+      f₀-decreasing : (l : List (A × B))(g : is-grayson l)
+                    → is-decreasing R' (map pr₂ (f₀ l g))
+      f₀-decreasing [] g = []-decr
+      f₀-decreasing (a , b ∷ []) (δ , (p ∷ ps)) = sing-decr
+      f₀-decreasing (a , b ∷ (a' , b') ∷ l) (many-decr q δ , (p ∷ p' ∷ ps)) =
+       many-decr q (f₀-decreasing ((a' , b') ∷ l) (δ , (p' ∷ ps)))
+
+    g₀ : (l : List ((Positively-non-minimal R) × B)) → List (A × B)
+    g₀ [] = []
+    g₀ (((a , _) , b) ∷ l) = (a , b) ∷ g₀ l
+
+    g₀-decreasing : (l : List ((Positively-non-minimal R) × B))
+                  → is-decreasing R' (map pr₂ l)
+                  → is-decreasing R' (map pr₂ (g₀ l))
+    g₀-decreasing [] δ = δ
+    g₀-decreasing ((a , p) , b ∷ []) δ = sing-decr
+    g₀-decreasing ((a , p) , b ∷ (a' , p') , b' ∷ l) (many-decr q δ) =
+     many-decr q (g₀-decreasing ((a' , p') , b' ∷ l) δ)
+
+    g₀-pos-non-minimal : (l : List ((Positively-non-minimal R) × B))
+                       → All (is-positively-non-minimal R) (map pr₁ (g₀ l))
+    g₀-pos-non-minimal [] = []
+    g₀-pos-non-minimal ((a , p) , b ∷ []) = (p ∷ [])
+    g₀-pos-non-minimal ((a , p) , b ∷ (a' , p') , b' ∷ l) =
+     p ∷ (g₀-pos-non-minimal ((a' , p') , b' ∷ l))
+
+    g : GraysonList' → GraysonList
+    g (l , δ) = (g₀ l , g₀-decreasing l δ , g₀-pos-non-minimal l)
+
+    η : g  ∘ f ∼ id
+    η (l , g) = to-GraysonList-＝ R'-is-prop (η' l g)
+     where
+      η' : (l : List (A × B))(g : is-grayson l) → g₀ (f₀ l g) ＝ l
       η' [] g = refl
       η' (x ∷ []) (δ , (p ∷ [])) = refl
       η' (x ∷ x' ∷ l) (many-decr q δ , (p ∷ p' ∷ ps)) =
        ap (x ∷_) (η' (x' ∷ l) (δ , (p' ∷ ps)))
 
-    ε : GraysonList-to-GraysonList'  ∘ GraysonList'-to-GraysonList ∼ id
-    ε (l , δ) = to-subtype-＝ (λ l → is-decreasing-is-prop R' R'-is-prop _) (ε' l δ)
+    ε : f ∘ g ∼ id
+    ε (l , δ) = to-GraysonList'-＝ R'-is-prop (ε' l δ)
      where
-      ε' : (l : List (Positively-non-minimal R × B))(δ : is-decreasing R' (map pr₂ l))
-         → GraysonList-to-List' (pr₁ (GraysonList'-to-GraysonList (l , δ))) (pr₂ (GraysonList'-to-GraysonList (l , δ))) ＝ l
+      ε' : (l : List (Positively-non-minimal R × B))
+         → (δ : is-decreasing R' (map pr₂ l))
+         → f₀ (g₀ l) (g₀-decreasing l δ , g₀-pos-non-minimal l) ＝ l
       ε' [] δ = refl
       ε' (x ∷ []) δ = refl
       ε' (x ∷ x' ∷ l) (many-decr q δ) = ap (x ∷_) (ε' (x' ∷ l) δ)
 
- Grayson-orders-agree→ : (l l' : GraysonList)
-                  → Grayson-order l l' → (Grayson'-order (GraysonList-to-GraysonList' l) (GraysonList-to-GraysonList' l'))
- Grayson-orders-agree→ l ((x ∷ l') , (δ , (p ∷ ps))) []-lex = []-lex
- Grayson-orders-agree→ ((x ∷ l) , (δ , (p ∷ ps))) ((x' ∷ l') , (δ' , (p' ∷ ps'))) (head-lex q) = head-lex q
- Grayson-orders-agree→ ((x ∷ l) , (δ , (p ∷ ps))) ((x ∷ l') , (δ' , (p' ∷ ps'))) (tail-lex refl q) = tail-lex (to-×-＝ (to-subtype-＝ (λ _ → ∃-is-prop) refl) refl) (Grayson-orders-agree→ (l , (tail-is-decreasing R' δ , ps)) (l' , tail-is-decreasing R' δ' , ps') q)
-
- Grayson-orders-agree← : (l l' : GraysonList)
-                  → (Grayson'-order (GraysonList-to-GraysonList' l) (GraysonList-to-GraysonList' l')) → Grayson-order l l'
- Grayson-orders-agree← ([] , _) ((x ∷ l') , (δ , (p ∷ ps))) []-lex = []-lex
- Grayson-orders-agree← ((x ∷ l) , (δ , (p ∷ ps))) ((x' ∷ l') , (δ' , (p' ∷ ps'))) (head-lex q) = head-lex q
- Grayson-orders-agree← ((x ∷ l) , (δ , (p ∷ ps))) ((x ∷ l') , (δ' , (p' ∷ ps'))) (tail-lex refl q) = tail-lex refl (Grayson-orders-agree← (l , (tail-is-decreasing R' δ , ps)) (l' , tail-is-decreasing R' δ' , ps') q)
-
  Grayson-orders-agree
-  : is-set A
-  → is-set B
-  → is-prop-valued R
-  → is-prop-valued R'
-  → is-irreflexive R
-  → is-irreflexive R'
-  → (l l' : GraysonList)
-  → Grayson-order l l' ＝ (Grayson'-order (GraysonList-to-GraysonList' l) (GraysonList-to-GraysonList' l'))
- Grayson-orders-agree s s' p p' i i' l l' = pe (Grayson-order-is-prop s s' p p' i i' l l') (Grayson'-order-is-prop s s' p p' i i' _ _) (Grayson-orders-agree→ l l') (Grayson-orders-agree← l l')
+  : (p : is-prop-valued R')(l l' : GraysonList)
+  → Grayson-order l l'
+  ↔ Grayson'-order (⌜ GraysonLists-agree p ⌝ l) (⌜ GraysonLists-agree p ⌝ l')
+ Grayson-orders-agree p l l' = (I l l' , II l l')
+  where
+   I : (l l' : GraysonList)
+     → Grayson-order l l'
+     → Grayson'-order (⌜ GraysonLists-agree p ⌝ l) (⌜ GraysonLists-agree p ⌝ l')
+   I ([] , _) ((x ∷ l') , (δ , (p ∷ ps))) []-lex = []-lex
+   I ((x ∷ l) , (δ , (p ∷ ps))) ((x' ∷ l') , (δ' , (p' ∷ ps'))) (head-lex q) =
+    head-lex q
+   I ((x ∷ l) , (δ , (p ∷ ps))) ((x ∷ l') , (δ' , (p' ∷ ps'))) (tail-lex refl q) =
+    tail-lex (to-×-＝ (to-subtype-＝ (λ _ → ∃-is-prop) refl) refl)
+             (I (l , tail-is-decreasing R' δ , ps)
+                (l' , tail-is-decreasing R' δ' , ps') q)
+
+   II : (l l' : GraysonList)
+      → Grayson'-order (⌜ GraysonLists-agree p ⌝ l) (⌜ GraysonLists-agree p ⌝ l')
+      → Grayson-order l l'
+   II ([] , _) ((x ∷ l') , (δ , (p ∷ ps))) []-lex = []-lex
+   II ((x ∷ l) , (δ , (p ∷ ps))) ((x' ∷ l') , (δ' , (p' ∷ ps'))) (head-lex q) =
+    head-lex q
+   II ((x ∷ l) , (δ , (p ∷ ps))) ((x ∷ l') , (δ' , (p' ∷ ps'))) (tail-lex refl q) =
+    tail-lex refl
+             (II (l , (tail-is-decreasing R' δ , ps))
+                 (l' , tail-is-decreasing R' δ' , ps') q)
 
 \end{code}
 
@@ -547,114 +565,127 @@ is always an ordinal, because excluded middle implies either α ＝ 𝟘₀,
 or α has a least trichotomous element. And if α has a least
 trichotomous element, then the notions of being positive and being
 positively non-minimal collapses, hence in this case Grayson lists and
-our notion of "concrete" exponention coincides.
+our notion of "concrete" exponentiation coincides.
 
 \begin{code}
 
-trichotomous-least-implies-positive-and-positively-non-minimal-coincide
+trichotomous-least-implies-positive-and-pos-non-minimal-coincide
  : (α : Ordinal 𝓤)
  → (h : has-trichotomous-least-element α)
  → Positively-non-minimal (underlying-order α) ≃ ⟨ α ⁺[ h ] ⟩
-trichotomous-least-implies-positive-and-positively-non-minimal-coincide α (a₀ , p)
- = Σ-cong (λ x → idtoeq _ _ (II x (p x)))
+trichotomous-least-implies-positive-and-pos-non-minimal-coincide α (⊥ , τ)
+ = Σ-cong III
   where
-   I : (a : ⟨ α ⟩) → a ≺⟨ α ⟩ a₀ → ((a₀ ＝ a) + a₀ ≺⟨ α ⟩ a) → 𝟘
-   I a q (inl refl) = irrefl α a q
-   I a q (inr q') = irrefl α a (Transitivity α a a₀ a q q')
+   I : (x : ⟨ α ⟩) → ∃ a ꞉ ⟨ α ⟩ , a ≺⟨ α ⟩ x → ⊥ ≺⟨ α ⟩ x
+   I x = lr-implication (is-positively-non-minimal-iff-positive α (⊥ , τ) x)
 
-   II : (x : ⟨ α ⟩) → ((a₀ ＝ x) + a₀ ≺⟨ α ⟩ x)
-      → (∃ a ꞉ ⟨ α ⟩ , a ≺⟨ α ⟩ x) ＝ a₀ ≺⟨ α ⟩ x
-   II a₀ (inl refl) =
-    pe ∃-is-prop (Prop-valuedness α a₀ a₀)
-       (∥∥-rec (Prop-valuedness α a₀ a₀) λ (a , q) → 𝟘-elim (I a q (p a)))
-       (λ q → 𝟘-elim (irrefl α a₀ q))
-   II x (inr q) = pe ∃-is-prop (Prop-valuedness α a₀ x) (λ _ → q) λ _ → ∣ a₀ , q ∣
+   II : (x : ⟨ α ⟩) → ⊥ ≺⟨ α ⟩ x → ∃ a ꞉ ⟨ α ⟩ , a ≺⟨ α ⟩ x
+   II x = rl-implication (is-positively-non-minimal-iff-positive α (⊥ , τ) x)
 
-GraysonList'-coincides-DecreasingList-for-trichotomous-least-base
+   III : (x : ⟨ α ⟩) → (∃ a ꞉ ⟨ α ⟩ , a ≺⟨ α ⟩ x) ≃ ⊥ ≺⟨ α ⟩ x
+   III x = logically-equivalent-props-are-equivalent ∃-is-prop
+                                                     (Prop-valuedness α ⊥ x)
+                                                     (I x)
+                                                     (II x)
+
+
+GraysonList'-is-concrete-exp-for-trichotomous-least-base
  : (α β : Ordinal 𝓤)
  → (h : has-trichotomous-least-element α)
  → GraysonList' (underlying-order α) (underlying-order β) ≃ ⟨ exponentiationᴸ α h β ⟩
-GraysonList'-coincides-DecreasingList-for-trichotomous-least-base α β h
+GraysonList'-is-concrete-exp-for-trichotomous-least-base α β h
  = Σ-bicong (λ l → is-decreasing _≺β_ (map pr₂ l))
             (λ l → is-decreasing _≺β_ (map pr₂ l))
-            (map ⌜ f ⌝ ,  map-equiv (⌜⌝-is-equiv f))
+            (map ⌜ 𝕗 ⌝ ,  map-equiv (⌜⌝-is-equiv 𝕗))
             𝕘
  where
   _≺β_ = (underlying-order β)
   αₚ = Positively-non-minimal (underlying-order α)
 
-  f : αₚ × ⟨ β ⟩ ≃ ⟨ α ⁺[ h ] ⟩ × ⟨ β ⟩
-  f = ×-cong (trichotomous-least-implies-positive-and-positively-non-minimal-coincide α h)
+  𝕗 : αₚ × ⟨ β ⟩ ≃ ⟨ α ⁺[ h ] ⟩ × ⟨ β ⟩
+  𝕗 = ×-cong (trichotomous-least-implies-positive-and-pos-non-minimal-coincide α h)
              (≃-refl ⟨ β ⟩)
 
   𝕘 : (l : List (αₚ × ⟨ β ⟩ ))
-    → is-decreasing _≺β_ (map pr₂ l) ≃ is-decreasing _≺β_ (map pr₂ (map ⌜ f ⌝ l))
+    → is-decreasing _≺β_ (map pr₂ l) ≃ is-decreasing _≺β_ (map pr₂ (map ⌜ 𝕗 ⌝ l))
   𝕘 l = transport⁻¹ (λ - → is-decreasing _≺β_ (map pr₂ l) ≃ is-decreasing _≺β_ -)
-                    (map-comp ⌜ f ⌝ pr₂ l)
+                    (map-comp ⌜ 𝕗 ⌝ pr₂ l)
                     (≃-refl _)
 
-GraysonList-coincides-DecreasingList-for-trichotomous-least-base
+GraysonList-is-DecreasingList-for-trichotomous-least-base
  : (α β : Ordinal 𝓤)
  → (h : has-trichotomous-least-element α)
  → GraysonList (underlying-order α) (underlying-order β) ≃ ⟨ exponentiationᴸ α h β ⟩
-GraysonList-coincides-DecreasingList-for-trichotomous-least-base α β h =
- ≃-comp (GraysonLists-agree (underlying-order α) (underlying-order β) (Prop-valuedness β))
-        (GraysonList'-coincides-DecreasingList-for-trichotomous-least-base α β h)
+GraysonList-is-DecreasingList-for-trichotomous-least-base α β h =
+ GraysonList  _≺α_ _≺β_    ≃⟨ I ⟩
+ GraysonList' _≺α_ _≺β_    ≃⟨ II ⟩
+ ⟨ exponentiationᴸ α h β ⟩ ■
+  where
+   _≺α_ = underlying-order α
+   _≺β_ = underlying-order β
+   I = GraysonLists-agree _≺α_ _≺β_ (Prop-valuedness β)
+   II = GraysonList'-is-concrete-exp-for-trichotomous-least-base α β h
 
-Grayson'-order→DecrList-order
+GraysonList'-order-is-DecreasingList-for-trichotomous-least-base
  : (α β : Ordinal 𝓤)
  → (h : has-trichotomous-least-element α)
+ → (let f = ⌜ GraysonList'-is-concrete-exp-for-trichotomous-least-base α β h ⌝)
  → (l l' : GraysonList' (underlying-order α) (underlying-order β))
- → (Grayson'-order _ _ l l')
- → underlying-order (exponentiationᴸ α h β) (⌜ GraysonList'-coincides-DecreasingList-for-trichotomous-least-base α β h ⌝ l) (⌜ GraysonList'-coincides-DecreasingList-for-trichotomous-least-base α β h ⌝ l')
-Grayson'-order→DecrList-order α β h (l , p) (l' , p') []-lex = []-lex
-Grayson'-order→DecrList-order α β h (l , p) (l' , p') (head-lex q) = head-lex q
-Grayson'-order→DecrList-order α β h ((x ∷ l) , p) ((x' ∷ l') , p') (tail-lex refl q) =
- tail-lex refl
-          (Grayson'-order→DecrList-order α β h (l , tail-is-decreasing _ p)
-                                               (l' , tail-is-decreasing _ p') q)
+ → (Grayson'-order _ _ l l') ↔ underlying-order (exponentiationᴸ α h β) (f l) (f l')
+GraysonList'-order-is-DecreasingList-for-trichotomous-least-base α β h l l' =
+ I l l' , II l l'
+ where
+   f = ⌜ GraysonList'-is-concrete-exp-for-trichotomous-least-base α β h ⌝
 
-DecrList-order→Grayson'-order
+   I : (l l' : GraysonList' (underlying-order α) (underlying-order β))
+     → (Grayson'-order _ _ l l')
+     → underlying-order (exponentiationᴸ α h β) (f l) (f l')
+   I (l , p) (l' , p') []-lex = []-lex
+   I (l , p) (l' , p') (head-lex q) = head-lex q
+   I ((x ∷ l) , p) ((x' ∷ l') , p') (tail-lex refl q) =
+    tail-lex refl
+             (I (l , tail-is-decreasing _ p) (l' , tail-is-decreasing _ p') q)
+
+   II : (l l' : GraysonList' (underlying-order α) (underlying-order β))
+      → underlying-order (exponentiationᴸ α h β) (f l) (f l')
+      → (Grayson'-order _ _ l l')
+   II ([] , p) ((x ∷ l') , p') q = []-lex
+   II ((x ∷ l) , p) ((x' ∷ l') , p') (head-lex q) = head-lex q
+   II ((x ∷ l) , p) ((x' ∷ l') , p') (tail-lex r q) =
+    tail-lex (equivs-are-lc _ (⌜⌝-is-equiv _) r )
+             (II (l , tail-is-decreasing _ p) (l' , tail-is-decreasing _ p') q)
+
+GraysonList-order-is-DecreasingList-for-trichotomous-least-base
  : (α β : Ordinal 𝓤)
  → (h : has-trichotomous-least-element α)
- → (l l' : GraysonList' (underlying-order α) (underlying-order β))
- → underlying-order (exponentiationᴸ α h β) (⌜ GraysonList'-coincides-DecreasingList-for-trichotomous-least-base α β h ⌝ l) (⌜ GraysonList'-coincides-DecreasingList-for-trichotomous-least-base α β h ⌝ l')
- → (Grayson'-order _ _ l l')
-DecrList-order→Grayson'-order α β h ([] , p) ((x ∷ l') , p') q = []-lex
-DecrList-order→Grayson'-order α β h ((x ∷ l) , p) ((x' ∷ l') , p') (head-lex q) =
- head-lex q
-DecrList-order→Grayson'-order α β h ((x ∷ l) , p) ((x' ∷ l') , p') (tail-lex r q) =
- tail-lex (equivs-are-lc _ (⌜⌝-is-equiv _) r ) (DecrList-order→Grayson'-order α β h (l , tail-is-decreasing _ p) (l' , tail-is-decreasing _ p') q)
-
-GraysonList'-order-coincides-DecreasingList-for-trichotomous-least-base
- : (α β : Ordinal 𝓤)
- → (h : has-trichotomous-least-element α)
- → (l l' : GraysonList' (underlying-order α) (underlying-order β))
- → (Grayson'-order _ _ l l') ＝ underlying-order (exponentiationᴸ α h β) (⌜ GraysonList'-coincides-DecreasingList-for-trichotomous-least-base α β h ⌝ l) (⌜ GraysonList'-coincides-DecreasingList-for-trichotomous-least-base α β h ⌝ l')
-GraysonList'-order-coincides-DecreasingList-for-trichotomous-least-base α β h l l' =
- pe (Grayson'-order-is-prop _ _ (underlying-type-is-set fe α)
-                                (underlying-type-is-set fe β)
-                                (Prop-valuedness α)
-                                (Prop-valuedness β)
-                                (Irreflexivity α)
-                                (Irreflexivity β)
-                                _ _)
-    (Prop-valuedness (exponentiationᴸ α h β) _ _)
-    (Grayson'-order→DecrList-order α β h l l')
-    (DecrList-order→Grayson'-order α β h l l')
-
-GraysonList-order-coincides-DecreasingList-for-trichotomous-least-base
- : (α β : Ordinal 𝓤)
- → (h : has-trichotomous-least-element α)
+ → (let f = ⌜ GraysonList-is-DecreasingList-for-trichotomous-least-base α β h ⌝)
  → (l l' : GraysonList (underlying-order α) (underlying-order β))
- → (Grayson-order _ _ l l') ＝ underlying-order (exponentiationᴸ α h β) (⌜ GraysonList-coincides-DecreasingList-for-trichotomous-least-base α β h ⌝ l) (⌜ GraysonList-coincides-DecreasingList-for-trichotomous-least-base α β h ⌝ l')
-GraysonList-order-coincides-DecreasingList-for-trichotomous-least-base α β h l l' =
-  Grayson-orders-agree (underlying-order α) (underlying-order β)
-                       (underlying-type-is-set fe α) (underlying-type-is-set fe β)
-                       (Prop-valuedness α) (Prop-valuedness β)
-                       (Irreflexivity α) (Irreflexivity β)
-                       l l'
- ∙ GraysonList'-order-coincides-DecreasingList-for-trichotomous-least-base α β h _ _
+ → (Grayson-order _ _ l l') ≃ underlying-order (exponentiationᴸ α h β) (f l) (f l')
+GraysonList-order-is-DecreasingList-for-trichotomous-least-base α β h l l' =
+ logically-equivalent-props-are-equivalent I II (lr-implication III) (rl-implication III)
+  where
+   f = ⌜ GraysonList-is-DecreasingList-for-trichotomous-least-base α β h ⌝
+   _≺α_ = underlying-order α
+   _≺β_ = underlying-order β
+   _≺⟨exp⟩_ = underlying-order (exponentiationᴸ α h β)
+
+   I : is-prop (Grayson-order _≺α_ _≺β_ l l')
+   I = Grayson-order-is-prop _≺α_ _≺β_
+                             (underlying-type-is-set fe α)
+                             (underlying-type-is-set fe β)
+                             (Prop-valuedness α)
+                             (Prop-valuedness β)
+                             (Irreflexivity α)
+                             (Irreflexivity β)
+                             l l'
+
+   II : is-prop ((f l) ≺⟨exp⟩ (f l'))
+   II = Prop-valuedness (exponentiationᴸ α h β) (f l) (f l')
+
+   III : Grayson-order _≺α_ _≺β_ l l' ↔ (f l) ≺⟨exp⟩ (f l')
+   III = ↔-trans
+          (Grayson-orders-agree _≺α_ _≺β_ (Prop-valuedness β) l l')
+          (GraysonList'-order-is-DecreasingList-for-trichotomous-least-base α β h _ _)
 
 GraysonList-is-ordinal-if-base-has-trichotomous-least
  : (α β : Ordinal 𝓤)
@@ -664,42 +695,53 @@ GraysonList-is-ordinal-if-base-has-trichotomous-least α β h =
  order-transfer-lemma₄.well-order← fe
   (GraysonList _ _) ⟨ exponentiationᴸ α h β ⟩
   (Grayson-order _ _) (underlying-order (exponentiationᴸ α h β))
-  (GraysonList-coincides-DecreasingList-for-trichotomous-least-base α β h)
-  (λ l l' → idtoeq _ _ (GraysonList-order-coincides-DecreasingList-for-trichotomous-least-base α β h l l'))
+  (GraysonList-is-DecreasingList-for-trichotomous-least-base α β h)
+  (GraysonList-order-is-DecreasingList-for-trichotomous-least-base α β h)
   (is-well-ordered (exponentiationᴸ α h β))
 
 \end{code}
 
-Since GraysonList 𝟘ₒ β ＝ 𝟙, we do have that GraysonList 𝟘ₒ β is an ordinal.
+Since GraysonList 𝟘ₒ β ＝ 𝟙, we do have that GraysonList 𝟘ₒ β is
+always an ordinal.
 
 \begin{code}
 
 GraysonList-is-𝟙-if-base-zero
- : (β : Ordinal 𝓤) → GraysonList (underlying-order 𝟘ₒ) (underlying-order β) ≃ 𝟙 {𝓤}
-GraysonList-is-𝟙-if-base-zero β = (λ _ → ⋆) , qinvs-are-equivs _ ((λ _ → GraysonList-⊥ _ _) , η , ε)
+ : (β : Ordinal 𝓤)
+ → GraysonList (underlying-order 𝟘ₒ) (underlying-order β) ≃ 𝟙 {𝓤}
+GraysonList-is-𝟙-if-base-zero β = f , qinvs-are-equivs f (g , η , ε)
  where
-  η : (λ _ → GraysonList-⊥ _ _) ∼ id
+  f : GraysonList (underlying-order 𝟘ₒ) (underlying-order β) → 𝟙
+  f _ = ⋆
+
+  g : 𝟙 → GraysonList (underlying-order 𝟘ₒ) (underlying-order β)
+  g _ = GraysonList-⊥ _ _
+
+  η : g ∘ f ∼ id
   η ([] , ([]-decr , [])) = refl
   η (((a , b) ∷ l) , _) = 𝟘-elim a
 
-  ε : (λ _ → ⋆) ∼ id
+  ε : f ∘ g ∼ id
   ε x = refl
 
 GraysonOrder-is-𝟘-if-base-zero
  : (β : Ordinal 𝓤)
  → (l l' : GraysonList (underlying-order 𝟘ₒ) (underlying-order β))
- → Grayson-order (underlying-order 𝟘ₒ) (underlying-order β) l l' ＝ 𝟘 {𝓤}
+ → Grayson-order (underlying-order 𝟘ₒ) (underlying-order β) l l' ≃ 𝟘 {𝓤}
 GraysonOrder-is-𝟘-if-base-zero β l l' =
- pe (Grayson-order-is-prop _ _ (underlying-type-is-set fe 𝟘ₒ) (underlying-type-is-set fe β) (Prop-valuedness 𝟘ₒ) (Prop-valuedness β) (Irreflexivity 𝟘ₒ) (Irreflexivity β) l l')
-    𝟘-is-prop
-    (η l l')
-    𝟘-elim
-   where
-    η : (l l' : GraysonList (underlying-order 𝟘ₒ) (underlying-order β))
+ logically-equivalent-props-are-equivalent I 𝟘-is-prop (II l l') 𝟘-elim
+  where
+   I : is-prop (Grayson-order (underlying-order 𝟘ₒ) (underlying-order β) l l')
+   I = Grayson-order-is-prop _ _ 𝟘-is-set (underlying-type-is-set fe β)
+                                 𝟘-elim (Prop-valuedness β)
+                                 𝟘-elim (Irreflexivity β)
+                                 l l'
+
+   II : (l l' : GraysonList (underlying-order 𝟘ₒ) (underlying-order β))
       → Grayson-order (underlying-order 𝟘ₒ) (underlying-order β) l l' → 𝟘
-    η ([] , _) ([] , _) p = 𝟘-elim (lex-irreflexive _ (λ x → 𝟘-elim (pr₁ x)) [] p)
-    η ([] , _) (((a' , b') ∷ l') , _) p = 𝟘-elim a'
-    η (((a' , b) ∷ l) , _) _ p = 𝟘-elim a'
+   II ([] , _) ([] , _) p = 𝟘-elim (lex-irreflexive _ (λ x → 𝟘-elim (pr₁ x)) [] p)
+   II ([] , _) (((a' , b') ∷ l') , _) p = 𝟘-elim a'
+   II (((a' , b) ∷ l) , _) _ p = 𝟘-elim a'
 
 GraysonList-is-ordinal-if-base-zero
  : (β : Ordinal 𝓤)
@@ -710,7 +752,7 @@ GraysonList-is-ordinal-if-base-zero β =
    (Grayson-order (underlying-order 𝟘ₒ) (underlying-order β))
    (underlying-order 𝟙ₒ)
    (GraysonList-is-𝟙-if-base-zero β)
-   (λ l l' → idtoeq _ _ (GraysonOrder-is-𝟘-if-base-zero β l l'))
+   (GraysonOrder-is-𝟘-if-base-zero β)
    (is-well-ordered 𝟙ₒ)
 
 \end{code}
@@ -724,11 +766,14 @@ EM-implies-GraysonList-is-ordinal
  : EM 𝓤
  → (α β : Ordinal 𝓤)
  → is-well-order (Grayson-order (underlying-order α) (underlying-order β))
-EM-implies-GraysonList-is-ordinal em α β = I (EM-gives-Has-trichotomous-least-element-or-is-zero em α)
+EM-implies-GraysonList-is-ordinal em α β = I II
  where
   I : has-trichotomous-least-element-or-is-zero α
     → is-well-order (Grayson-order (underlying-order α) (underlying-order β))
   I (inl h) = GraysonList-is-ordinal-if-base-has-trichotomous-least α β h
   I (inr refl) = GraysonList-is-ordinal-if-base-zero β
+
+  II : has-trichotomous-least-element-or-is-zero α
+  II = EM-gives-Has-trichotomous-least-element-or-is-zero em α
 
 \end{code}
