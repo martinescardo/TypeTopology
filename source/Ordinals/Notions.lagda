@@ -173,6 +173,12 @@ is-transitive = (x y z : X) → x < y → y < z → x < z
 is-irreflexive : 𝓤 ⊔ 𝓥 ̇
 is-irreflexive = (x : X) → ¬ (x < x)
 
+is-irreflexive' : 𝓤 ⊔ 𝓥 ̇
+is-irreflexive' = {x y : X} → x ＝ y → ¬ (x < y)
+
+is-irreflexive'-if-irreflexive : is-irreflexive → is-irreflexive'
+is-irreflexive'-if-irreflexive ir {x} {_} refl = ir x
+
 private
   _≼_ : X → X → 𝓤 ⊔ 𝓥 ̇
   x ≼ y = ∀ u → u < x → u < y
