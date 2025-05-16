@@ -522,7 +522,7 @@ compatibility-condition-with-axioms
    A' : X → 𝓥 ⊔ 𝓦 ̇
    A' x = Σ a ꞉ A x , B x a
 
-   d : compatibility-data (λ x → Σ a ꞉ A x , B x a) ϕ
+   d : compatibility-data A' ϕ
    d = compatibility-data-with-axioms ϕ A
         (compatibility-condition-gives-compatibility-data A ϕ ρ-is-equiv)
         B B-is-prop-valued B-is-closed-under-extension
@@ -564,7 +564,7 @@ compatibility-condition-with-axioms
              (inverses-are-retractions (ρ A ϕ p f) (ρ-is-equiv p f) a)
 
     γ : is-equiv ρ'
-    γ = d p f , (σ' , σρ')
+    γ = d p f , σ' , σρ'
 
 
 \end{code}
