@@ -290,11 +290,7 @@ module _ {X : 𝓤 ̇ }
 \begin{code}
 
   Π-extension-property : is-embedding j → (x : X) → f/j (j x) ≃ f x
-  Π-extension-property e x =
-   prop-indexed-product (fe (𝓤 ⊔ 𝓥) 𝓦)
-    {fiber j (j x)} {λ (z : fiber j (j x)) → f (fiber-point z)}
-    (e (j x))
-    (x , refl)
+  Π-extension-property e x = prop-indexed-product (x , refl) (fe (𝓤 ⊔ 𝓥) 𝓦) (e (j x))
 
   Π-extension-equivalence : is-embedding j
                           → (x : X) → is-equiv (Π-proj (x , refl))
@@ -302,11 +298,10 @@ module _ {X : 𝓤 ̇ }
 
   Π-extension-out-of-range : {𝓦 : Universe} (y : Y)
                            → ((x : X) → j x ≠ y) → f/j (y) ≃ 𝟙 {𝓦}
-  Π-extension-out-of-range y φ =
-   empty-indexed-product-is-𝟙 (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
+  Π-extension-out-of-range y φ = empty-indexed-product-is-𝟙 (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
 
   Σ-extension-property : is-embedding j → (x : X) → f∖j (j x) ≃ f x
-  Σ-extension-property e x = prop-indexed-sum (e (j x)) (x , refl)
+  Σ-extension-property e x = prop-indexed-sum (x , refl) (e (j x))
 
   Σ-extension-out-of-range : {𝓦 : Universe} (y : Y)
                            → ((x : X) → j x ≠ y) → f∖j (y) ≃ 𝟘 {𝓦}
@@ -777,7 +772,7 @@ module /-extension-is-embedding-special-case
  s = Π
 
  rs : ∀ A → r (s A) ＝ A
- rs A = dfunext fe' (λ p → eqtoid ua (s A) (A p) (prop-indexed-product feuu i p))
+ rs A = dfunext fe' (λ p → eqtoid ua (s A) (A p) (prop-indexed-product p feuu i))
 
  sr : ∀ X → s (r X) ＝ (P → X)
  sr X = refl
@@ -848,7 +843,7 @@ module ∖-extension-is-embedding-special-case
  r X p = X
 
  rs : ∀ A → r (s A) ＝ A
- rs A = dfunext fe' (λ p → eqtoid ua (Σ A) (A p) (prop-indexed-sum i p))
+ rs A = dfunext fe' (λ p → eqtoid ua (Σ A) (A p) (prop-indexed-sum p i))
 
  sr : ∀ X → s (r X) ＝ P × X
  sr X = refl

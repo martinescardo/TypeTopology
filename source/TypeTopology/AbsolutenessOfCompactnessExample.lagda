@@ -116,7 +116,7 @@ z, and so is compact.
 \begin{code}
 
   𝕗 : (z : P) → Π A ≃ A z
-  𝕗 = prop-indexed-product fe P-is-prop
+  𝕗 z = prop-indexed-product z fe P-is-prop
 
   product-locally-compact : P → is-compact∙ (Π A)
   product-locally-compact z =

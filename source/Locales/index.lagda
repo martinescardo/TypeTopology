@@ -53,6 +53,7 @@ Compact opens.
 
 import Locales.Compactness.Definition
 import Locales.Compactness.Properties
+import Locales.Compactness.CharacterizationOfCompactLocales
 
 \end{code}
 
@@ -120,6 +121,7 @@ import Locales.InitialFrame                      -- (13)
 import Locales.NotationalConventions             -- (14)
 
 import Locales.Nucleus                           -- (15)
+import Locales.NucleusImage
 
 import Locales.PatchLocale                       -- (16)
 

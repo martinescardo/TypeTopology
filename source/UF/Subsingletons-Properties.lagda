@@ -20,4 +20,10 @@ props-are-sets h = Id-collapsibles-are-sets (props-are-Id-collapsible h)
 singletons-are-sets : {X : 𝓤 ̇ } → is-singleton X → is-set X
 singletons-are-sets i = props-are-sets (singletons-are-props i)
 
+identifications-in-props-are-refl : {X : 𝓤 ̇} (i : is-prop X) (x : X)
+                                  → i x x ＝ refl
+identifications-in-props-are-refl i x = props-are-sets i (i x x) refl
+
+
+
 \end{code}

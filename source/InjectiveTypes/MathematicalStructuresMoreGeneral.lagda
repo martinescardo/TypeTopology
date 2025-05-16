@@ -57,7 +57,7 @@ universes-are-aflabby-Π {𝓤} P P-is-prop A = Π A , I
   X = Π A
 
   I : (p : P) → Π A ＝ A p
-  I p = eqtoid (ua 𝓤) (Π A) (A p) (prop-indexed-product fe' P-is-prop p)
+  I p = eqtoid (ua 𝓤) (Π A) (A p) (prop-indexed-product p fe' P-is-prop)
 
 universes-are-injective-Π : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
 universes-are-injective-Π {𝓤} = aflabby-types-are-ainjective (𝓤 ̇ )
@@ -70,7 +70,7 @@ universes-are-aflabby-Σ {𝓤} P P-is-prop A = Σ A , I
   X = Σ A
 
   I : (p : P) → Σ A ＝ A p
-  I p = eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum P-is-prop p)
+  I p = eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum p P-is-prop)
 
 module _ (S : 𝓤 ̇ → 𝓥 ̇ ) where
 
@@ -139,7 +139,7 @@ We introduce names for the canonical maps induced by Π- and
   ρΠ p A s h = T I s
    where
     I : Π A ≃ A h
-    I = prop-indexed-product fe' (holds-is-prop p) h
+    I = prop-indexed-product h fe' (holds-is-prop p)
 
   ρΣ : (p : Ω 𝓤)
        (A : p holds → 𝓤 ̇ )
@@ -147,7 +147,7 @@ We introduce names for the canonical maps induced by Π- and
   ρΣ p A s h = T I s
    where
     I : Σ A ≃ A h
-    I = prop-indexed-sum (holds-is-prop p) h
+    I = prop-indexed-sum h (holds-is-prop p)
 
 \end{code}
 
@@ -167,7 +167,7 @@ be easier to produce compatibility-data-Π than to produce
   Π-lemma t p A = II
    where
     π : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ ) (h : p holds) → Π A ≃ A h
-    π p A = prop-indexed-product fe' (holds-is-prop p)
+    π p A h = prop-indexed-product h fe' (holds-is-prop p)
 
     I : ρΠ p A ∼ ρ S universes-are-aflabby-Π p A
     I s =
@@ -195,7 +195,7 @@ enough" for the purposes of e.g. Monoid-Π-data.
     I : ρΠ p A ＝ ρ S universes-are-aflabby-Π p A
     I = dfunext fe' (λ s →
         dfunext fe' (λ h →
-          ap (λ - → - (prop-indexed-product fe' (holds-is-prop p) h) s)
+          ap (λ - → - (prop-indexed-product h fe' (holds-is-prop p)) s)
              (dfunext fe' (λ 𝕗 → dfunext fe' (T-is-treq 𝕗)))))
 
     II : has-section (ρΠ p A)
@@ -213,7 +213,7 @@ enough" for the purposes of e.g. Monoid-Π-data.
     I : ρΣ p A ＝ ρ S universes-are-aflabby-Σ p A
     I = dfunext fe' (λ s →
         dfunext fe' (λ h →
-          ap (λ - → - (prop-indexed-sum (holds-is-prop p) h) s)
+          ap (λ - → - (prop-indexed-sum h (holds-is-prop p)) s)
              (dfunext fe' (λ 𝕗 → dfunext fe' (T-is-treq 𝕗)))))
 
     II : has-section (ρΣ p A)
@@ -320,7 +320,7 @@ guess what T should be.
          where
 
    π : (h : p holds) → Π A ≃ A h
-   π = prop-indexed-product fe' (holds-is-prop p)
+   π h = prop-indexed-product h fe' (holds-is-prop p)
 
    σ : ((h : p holds) → S (A h)) → S (Π A)
    σ g α β h = g h (⌜ π h ⌝ α) (⌜ π h ⌝ β)

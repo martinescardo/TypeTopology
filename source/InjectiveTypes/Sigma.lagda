@@ -38,6 +38,7 @@ private
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Spartan
 open import UF.Base
+open import UF.Equiv
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
@@ -119,22 +120,31 @@ for this data, see the file InjectiveTypes.MathematicalStructures.
 
 \begin{code}
 
+ compatibility-condition : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺)  ̇
+ compatibility-condition = (p : Ω 𝓦)
+                           (f : p holds → X)
+                         → is-equiv (ρ p f)
+
  compatibility-data : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺)  ̇
  compatibility-data = (p : Ω 𝓦)
                       (f : p holds → X)
                     → has-section (ρ p f)
 \end{code}
 
-We sometimes refer to this data as the compatibility condition.
+In all examples of interest we look at, the compatibility condition,
+which is property, holds (see the file
+MathematicalStructures). However, the (weaker) compatibility data is
+enough for our purposes, and easier to check (see the file
+MathematicalStructuresMoreGeneral).
 
-That this compatibility condition is sufficient but not necessary is
+That the compatibility data is sufficient but not necessary is
 illustrated in the file InjectiveTypes.InhabitednessTaboo, with the
 type of pointed types (which is injective) shown to be equivalent to a
 subtype of the type of inhabited types (which is not injective in
 general).
 
-One of the main results of this file is that if A satisfies the
-compatibility condition, then Σ x ꞉ X , A x is aflabby and hence
+One of the main results of this file is that if we have compatibility
+data for the flabbiness of A, then Σ x ꞉ X , A x is aflabby and hence
 ainjective.
 
 \begin{code}
@@ -182,7 +192,7 @@ ainjective.
 \end{code}
 
 If the type family A is a predicate, i.e. a family of propositions,
-then the compatibility condition simplifies to just having a map in
+then the compatibility data simplifies to just having a map in
 the reverse direction of ρ p f with the requirement that it's a
 section following automatically.
 
@@ -226,8 +236,8 @@ section following automatically.
 \end{code}
 
 Sometimes we want to prove that Σ x : X , A₁ x × A₂ x is
-aflabby/ainjective when we already know that A₁ and A₂ satisfy the
-compatibility conditions, and the following lemma can be used for that
+aflabby/ainjective when we already have compatibility data for the
+aflabbiness of A₁ and A₂, and the following lemma can be used for that
 purpose.
 
 \begin{code}
@@ -293,11 +303,12 @@ Sometimes we want to show that types of the form
 
   Σ x ꞉ X , Σ a ꞉ A x , B x a
 
-is aflabby/ainjective, where the family B happens to be proposition valued and
-the type Σ x : X , A x is already known to be aflabby/ainjective. (See the
-discussion below for the case that B is not necessarily proposition valued.)
-This can often be done directly using the simplified compatibility condition if
-we consider types of the equivalent form
+is aflabby/ainjective, where the family B happens to be proposition
+valued and the type Σ x : X , A x is already known to be
+aflabby/ainjective. (See the discussion below for the case that B is
+not necessarily proposition valued.)  This can often be done directly
+using simplified compatibility data if we consider types of the
+equivalent form
 
   Σ σ ꞉ (Σ x : X , A x) , C σ
 
@@ -321,18 +332,18 @@ One practical example of this situation takes place when the type X is
 a universe, the family A is the structure of pointed ∞-magmas, and C
 gives the monoid axioms. So we first show that pointed ∞-magmas are
 aflabby, then, using the above, we conclude that so is the subtype of
-monoids, provided we also show that the monoid axioms satisfy the
-simplified compatibility condition.
+monoids, provided we also give simplified compatibility data for the
+monoid axioms.
 
 The following theorem strengthens both the hypothesis and the
 conclusion of the above example, by showing that the full
-compatibility condition is preserved if B is closed under extension in
-a suitable sense. This gives an alternative way of successively
+compatibility data is preserved if B is closed under extension in a
+suitable sense. This gives an alternative way of successively
 combining simple mathematical structures such as pointed types and
 ∞-magmas to get monoids, groups, rings, etc., to show that all the
-axioms considered satisfy the compatibility condition and hence the
-corresponding types of mathematical structures are aflabby, as
-exemplified in the module InjectiveTypes.MathematicalStructuresMoreGeneral.
+axioms considered have compatibility data and hence the corresponding
+types of mathematical structures are aflabby, as exemplified in the
+module InjectiveTypes.MathematicalStructuresMoreGeneral.
 
 \begin{code}
 
@@ -429,6 +440,5 @@ resolve, or at least give contraints to.
 
 However, the hypothesis (*) will not be very useful in practice, as in
 many cases it will be difficult to check. So a good thing to do would
-be to formulate and prove an equivalent condition that would be easier
-to work with. Or even a weaker condition that is good enough in
-practice.
+be to formulate and construct an alternative notion of compatibility
+data that would be easier to work with.

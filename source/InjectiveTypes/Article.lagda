@@ -319,15 +319,17 @@ product indexed by a proposition is equal to any of its factors.
                → (f : X → 𝓤 ⊔ 𝓥 ̇ )
                → f ↓ j ∘ j ∼ f
 ↓-is-extension {𝓤} {𝓥} j i f x = eqtoid (ua (𝓤 ⊔ 𝓥)) ((f ↓ j ∘ j) x) (f x)
-                                   (prop-indexed-sum (i (j x)) (x , refl))
+                                   (prop-indexed-sum (x , refl) (i (j x)))
 
 ↑-is-extension : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                → is-embedding j
                → (f : X → 𝓤 ⊔ 𝓥 ̇ )
                → f ↑ j ∘ j ∼ f
 ↑-is-extension {𝓤} {𝓥} j i f x = eqtoid (ua (𝓤 ⊔ 𝓥)) ((f ↑ j ∘ j) x) (f x)
-                                   (prop-indexed-product (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
-                                                         (i (j x)) (x , refl))
+                                   (prop-indexed-product
+                                     (x , refl)
+                                     (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
+                                     (i (j x)))
 
 universes-are-ainjective-Σ : ainjective-type (𝓤 ⊔ 𝓥 ̇ ) 𝓤 𝓥
 universes-are-ainjective-Σ j e f = (f ↓ j , ↓-is-extension j e f)
@@ -965,7 +967,7 @@ subuniverse-aflabby-Σ {𝓤} {𝓣} A φ α κ P i f
   c p = to-Σ-＝ (q , r)
    where
      q : X ＝ g p
-     q = eqtoid (ua 𝓤) X (g p) (prop-indexed-sum i p)
+     q = eqtoid (ua 𝓤) X (g p) (prop-indexed-sum p i)
 
      r : transport A q a ＝ h p
      r = φ (g p) (transport A q a) (h p)
@@ -998,7 +1000,7 @@ subuniverse-aflabby-Π {𝓤} {𝓣} A φ α κ P i f
   c p = to-Σ-＝ (q , r)
    where
      q : X ＝ pr₁ (f p)
-     q = eqtoid (ua 𝓤) X (pr₁ (f p)) (prop-indexed-product (fe 𝓤 𝓤) i p)
+     q = eqtoid (ua 𝓤) X (pr₁ (f p)) (prop-indexed-product p (fe 𝓤 𝓤) i)
 
      r : transport A q a ＝ pr₂ (f p)
      r = φ (pr₁ (f p)) (transport A q a) (pr₂ (f p))
@@ -1234,7 +1236,7 @@ universe-retract-unfolded R 𝓤 𝓥
     X' = pr₁ v
 
     a : r (s X) ≃ X'
-    a = prop-indexed-product (fe 𝓤 𝓤) (i (s X)) u
+    a = prop-indexed-product u (fe 𝓤 𝓤) (i (s X))
 
     b : s X' ＝ s X
     b = pr₂ v

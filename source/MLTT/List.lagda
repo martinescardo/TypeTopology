@@ -95,11 +95,17 @@ is-non-empty : {X : 𝓤 ̇ } → List X → 𝓤 ̇
 is-non-empty []       = 𝟘
 is-non-empty (x ∷ xs) = 𝟙
 
-[]-is-empty : {X : 𝓤 ̇ } → ¬ is-non-empty ([] {𝓤} {X})
-[]-is-empty = 𝟘-elim
-
 -- cons-is-non-empty : {X : 𝓤 ̇ } {x : X} {xs : List X} → is-non-empty (x ∷ xs)
 pattern cons-is-non-empty = ⋆
+
+map-is-non-empty : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (xs : List X)
+                 → is-non-empty xs
+                 → is-non-empty (map f xs)
+map-is-non-empty f (x ∷ xs) cons-is-non-empty = cons-is-non-empty
+
+
+[]-is-empty : {X : 𝓤 ̇ } → ¬ is-non-empty ([] {𝓤} {X})
+[]-is-empty = 𝟘-elim
 
 is-non-empty-++ : {X : 𝓤 ̇ } (xs ys : List X)
                 → is-non-empty xs
@@ -443,11 +449,11 @@ map-id : {X : 𝓤 ̇ }
 map-id [] = refl
 map-id (x ∷ xs) = ap (x ∷_) (map-id xs)
 
-map-comp : {X : 𝓤 ̇ }{Y : 𝓥 ̇ }{Z : 𝓦 ̇ }
-           (f : X → Y)(g : Y → Z) →
-           (map g ∘ map f) ∼ map (g ∘ f)
-map-comp f g [] = refl
-map-comp f g (x ∷ xs) = ap (g (f x) ∷_) (map-comp f g xs)
+map-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+        (f : X → Y) (g : Y → Z)
+      → map (g ∘ f) ∼ map g ∘ map f
+map-∘ f g []       = refl
+map-∘ f g (x ∷ xs) = ap (g (f x) ∷_) (map-∘ f g xs)
 
 concat : {X : 𝓤 ̇ } → List (List X) → List X
 concat []         = []
@@ -527,10 +533,10 @@ Added by Martin Escardo and Paulo Oliva 12th March 2025.
 
 \begin{code}
 
-member-of-concat : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
-                 → member x (concat yss)
-                 → Σ ys ꞉ List X , member ys yss × member x ys
-member-of-concat {𝓤} {X} x (ys ∷ yss) m = II I
+member-of-concat← : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
+                  → member x (concat yss)
+                  → Σ ys ꞉ List X , member ys yss × member x ys
+member-of-concat← {𝓤} {X} x (ys ∷ yss) m = II I
  where
   I : member x ys + member x (concat yss)
   I = ++-membership₁ x ys (concat yss) m
@@ -540,19 +546,19 @@ member-of-concat {𝓤} {X} x (ys ∷ yss) m = II I
   II (inr r) = III IH
    where
     IH : Σ ys' ꞉ List X , member ys' yss × member x ys'
-    IH = member-of-concat x yss r
+    IH = member-of-concat← x yss r
 
     III : type-of IH → Σ ys' ꞉ List X , member ys' (ys ∷ yss) × member x ys'
     III (ys' , r₁ , r₂) = ys' , in-tail r₁ , r₂
 
-member-of-map : {X Y : 𝓤 ̇ } (f : X → Y) (y : Y) (xs : List X)
+member-of-map← : {X Y : 𝓤 ̇ } (f : X → Y) (y : Y) (xs : List X)
               → member y (map f xs)
               → Σ x ꞉ X , member x xs × (f x ＝ y)
-member-of-map f y (x ∷ xs) in-head = x , in-head , refl
-member-of-map {𝓤} {X} f y (x ∷ xs) (in-tail m) = I IH
+member-of-map← f y (x ∷ xs) in-head = x , in-head , refl
+member-of-map← {𝓤} {X} f y (x ∷ xs) (in-tail m) = I IH
  where
   IH : Σ x ꞉ X , member x xs × (f x ＝ y)
-  IH = member-of-map f y xs m
+  IH = member-of-map← f y xs m
 
   I : type-of IH → Σ x' ꞉ X , member x' (x ∷ xs) × (f x' ＝ y)
   I (x , m , e) = x , in-tail m , e
@@ -573,5 +579,31 @@ All-is-prop : {X : 𝓤 ̇ } (P : X → 𝓥 ̇ )
 All-is-prop P p [] [] [] = refl
 All-is-prop P p (x ∷ l) (a ∷ as) (a' ∷ as') =
  ap₂ _∷_ (p x a a') (All-is-prop P p l as as')
+
+\end{code}
+
+Added by Martin Escardo and Paulo Oliva 14th May 2025.
+
+\begin{code}
+
+member-of-concat→ : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
+                    (zs : List X)
+                  → member zs yss
+                  → member x zs
+                  → member x (concat yss)
+member-of-concat→ x (ys ∷ yss) .ys in-head m₂ =
+ right-concatenation-preserves-membership x ys (concat yss) m₂
+member-of-concat→ x (ys ∷ yss) zs (in-tail m₁) m₂ =
+ left-concatenation-preserves-membership x (concat yss) ys IH
+ where
+  IH : member x (concat yss)
+  IH = member-of-concat→ x yss zs m₁ m₂
+
+member-of-map→ : {X Y : 𝓤 ̇ } (f : X → Y) (xs : List X)
+                 (x : X)
+               → member x xs
+               → member (f x) (map f xs)
+member-of-map→ f xs x in-head = in-head
+member-of-map→ f (_ ∷ xs) x (in-tail m) = in-tail (member-of-map→ f xs x m)
 
 \end{code}

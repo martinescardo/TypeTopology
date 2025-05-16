@@ -622,7 +622,7 @@ GraysonList'-is-concrete-exp-for-trichotomous-least-base α β h
   𝕘 : (l : List (αₚ × ⟨ β ⟩ ))
     → is-decreasing _≺β_ (map pr₂ l) ≃ is-decreasing _≺β_ (map pr₂ (map ⌜ 𝕗 ⌝ l))
   𝕘 l = transport⁻¹ (λ - → is-decreasing _≺β_ (map pr₂ l) ≃ is-decreasing _≺β_ -)
-                    (map-comp ⌜ 𝕗 ⌝ pr₂ l)
+                    ((map-∘ ⌜ 𝕗 ⌝ pr₂ l) ⁻¹)
                     (≃-refl _)
 
 GraysonList-is-exponentiationᴸ-for-trichotomous-least-base

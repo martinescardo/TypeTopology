@@ -129,10 +129,10 @@ module JT-definitions
   ⊗ᴶᵀ-explicitly = refl
 
   ν : (x : X) → T (Y x)
-  ν x = δ x (λ y → q (x , y))
+  ν x = δ x (curry q x)
 
   τ : T X
-  τ = ε (λ x → α-extᵀ (λ y → q (x , y)) (ν x))
+  τ = ε (λ x → α-extᵀ (curry q x) (ν x))
 
   module _ (fe : funext₀) where
 
@@ -141,7 +141,7 @@ module JT-definitions
    lemma-f fe x =
     δ x (λ y → α (extᵀ (ηᵀ ∘ q) (ηᵀ (x , y)))) ＝⟨ I ⟩
     δ x (λ y → α (ηᵀ (q (x , y))))             ＝⟨ II ⟩
-    δ x (λ y → q (x , y))                      ∎
+    δ x (curry q x)                            ∎
      where
       I = ap (λ - → δ x (λ y → α (- y))) (dfunext fe (λ y → unitᵀ (ηᵀ ∘ q) (x , y)))
       II = ap (δ x) (dfunext fe (λ y → α-unitᵀ (q (x , y))))
@@ -157,7 +157,7 @@ module JT-definitions
     ε (λ x → α (extᵀ (extᵀ (ηᵀ ∘ q) ∘ (λ y → ηᵀ (x , y))) (ν x))) ＝⟨ refl ⟩
     ε (λ x → α (extᵀ (λ y → extᵀ (ηᵀ ∘ q) (ηᵀ (x , y))) (ν x)))   ＝⟨ III ⟩
     ε (λ x → α (extᵀ (λ y → ηᵀ (q (x , y))) (ν x)))               ＝⟨ refl ⟩
-    ε (λ x → α-extᵀ (λ y → q (x , y)) (ν x))                      ＝⟨ refl ⟩
+    ε (λ x → α-extᵀ (curry q x) (ν x))                            ＝⟨ refl ⟩
     τ ∎
      where
       I   = ap (λ - → ε (λ x → α (extᵀ (ηᵀ ∘ q) (- x))))
