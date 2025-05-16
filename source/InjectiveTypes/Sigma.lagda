@@ -129,13 +129,20 @@ for this data, see the file InjectiveTypes.MathematicalStructures.
  compatibility-data = (p : Ω 𝓦)
                       (f : p holds → X)
                     → has-section (ρ p f)
+
+
+ compatibility-condition-gives-compatibility-data
+  : compatibility-condition
+  → compatibility-data
+ compatibility-condition-gives-compatibility-data c p f
+  = equivs-have-sections (ρ p f) (c p f)
+
 \end{code}
 
 In all examples of interest we look at, the compatibility condition,
-which is property, holds (see the file
-MathematicalStructures). However, the (weaker) compatibility data is
-enough for our purposes, and easier to check (see the file
-MathematicalStructuresMoreGeneral).
+which is property, holds (see the file MathematicalStructures). However,
+the (weaker) compatibility data is enough for our purposes, and easier
+to check (see the file MathematicalStructuresMoreGeneral).
 
 That the compatibility data is sufficient but not necessary is
 illustrated in the file InjectiveTypes.InhabitednessTaboo, with the
@@ -299,6 +306,64 @@ compatibility-data-× {𝓤} {𝓥₁} {𝓥₂} {𝓦} {X} ϕ {A₁} {A₂}
 
 \end{code}
 
+We also have that the compatibility condition is preserved by binary
+products.
+
+\begin{code}
+
+compatibility-condition-×
+ : {𝓤 𝓥₁ 𝓥₂ 𝓦 : Universe}
+   {X : 𝓤 ̇ }
+   (ϕ : aflabby X 𝓦)
+   {A₁ : X → 𝓥₁ ̇ } {A₂ : X → 𝓥₂ ̇ }
+ → compatibility-condition A₁ ϕ
+ → compatibility-condition A₂ ϕ
+ → compatibility-condition (λ x → A₁ x × A₂ x) ϕ
+compatibility-condition-× {𝓤} {𝓥₁} {𝓥₂} {𝓦} {X} ϕ {A₁} {A₂} c₁ c₂
+ = γ
+ where
+  d : compatibility-data (λ x → A₁ x × A₂ x) ϕ
+  d = compatibility-data-× ϕ
+       (compatibility-condition-gives-compatibility-data A₁ ϕ c₁)
+       (compatibility-condition-gives-compatibility-data A₂ ϕ c₂)
+
+  A : X → 𝓥₁ ⊔ 𝓥₂ ̇
+  A x = A₁ x × A₂ x
+
+  module _ (p : Ω 𝓦)
+           (f : p holds → X)
+         where
+
+   σ₁ : ((h : p holds) → A₁ (f h)) → A₁ (extension ϕ p f)
+   σ₁ = section-of (ρ A₁ ϕ p f) (equivs-have-sections (ρ A₁ ϕ p f) (c₁ p f))
+
+   σ₂ : ((h : p holds) → A₂ (f h)) → A₂ (extension ϕ p f)
+   σ₂ = section-of (ρ A₂ ϕ p f) (equivs-have-sections (ρ A₂ ϕ p f) (c₂ p f))
+
+   σ : ((h : p holds) → A (f h)) → A (extension ϕ p f)
+   σ α = σ₁ (λ h → pr₁ (α h)) , σ₂ (λ h → pr₂ (α h))
+
+   σρ : σ ∘ ρ A ϕ p f ∼ id
+   σρ (a₁ , a₂) =
+    σ (ρ A ϕ p f (a₁ , a₂))                                 ＝⟨ refl ⟩
+    σ (λ h → transport A (e h) (a₁ , a₂))                   ＝⟨ I ⟩
+    σ (λ h → transport A₁ (e h) a₁ , transport A₂ (e h) a₂) ＝⟨ refl ⟩
+    σ₁ (ρ A₁ ϕ p f a₁) , σ₂ (ρ A₂ ϕ p f a₂)                 ＝⟨ II ⟩
+    (a₁ , a₂)                                               ∎
+     where
+      e : (h : p holds) → extension ϕ p f ＝ f h
+      e = extends ϕ p f
+
+      I = ap σ (dfunext fe' λ h → transport-× A₁ A₂ (e h))
+      II = ap₂ _,_
+              (inverses-are-retractions (ρ A₁ ϕ p f) (c₁ p f) a₁)
+              (inverses-are-retractions (ρ A₂ ϕ p f) (c₂ p f) a₂)
+
+   γ : is-equiv (ρ A ϕ p f)
+   γ = d p f , σ , σρ
+
+\end{code}
+
 Sometimes we want to show that types of the form
 
   Σ x ꞉ X , Σ a ꞉ A x , B x a
@@ -422,6 +487,85 @@ compatibility-data-with-axioms
 
     ρ'-has-section : has-section ρ'
     ρ'-has-section = σ' , ρσ'
+
+\end{code}
+
+We also have the compatibility condition is preserved by the addition
+of axioms.
+
+\begin{code}
+
+compatibility-condition-with-axioms
+ : {X : 𝓤 ̇ }
+   (ϕ : aflabby X 𝓥)
+   (A : X → 𝓦 ̇ )
+   (ρ-is-equiv : compatibility-condition A ϕ)
+   (B : (x : X ) → A x → 𝓥 ̇ )
+   (B-is-prop-valued : (x : X) (a : A x) → is-prop (B x a))
+   (B-is-closed-under-extension
+     : (p : Ω 𝓥 )
+       (f : p holds → X)
+     → (α : (h : p holds) → A (f h))
+     → ((h : p holds) → B (f h) (α h))
+     → B (extension ϕ p f) (inverse (ρ A ϕ p f) (ρ-is-equiv p f) α))
+ → compatibility-condition (λ x → Σ a ꞉ A x , B x a) ϕ
+compatibility-condition-with-axioms
+  {𝓤} {𝓥} {𝓦} {X}
+  ϕ
+  A
+  ρ-is-equiv
+  B
+  B-is-prop-valued
+  B-is-closed-under-extension
+ = γ
+ where
+   A' : X → 𝓥 ⊔ 𝓦 ̇
+   A' x = Σ a ꞉ A x , B x a
+
+   d : compatibility-data (λ x → Σ a ꞉ A x , B x a) ϕ
+   d = compatibility-data-with-axioms ϕ A
+        (compatibility-condition-gives-compatibility-data A ϕ ρ-is-equiv)
+        B B-is-prop-valued B-is-closed-under-extension
+
+   module _ (p : Ω 𝓥)
+            (f : p holds → X)
+          where
+
+    σ : ((h : p holds) → A (f h)) → A (extension ϕ p f)
+    σ = section-of (ρ A ϕ p f) (equivs-have-sections _ (ρ-is-equiv p f))
+
+    ρ' : A' (extension ϕ p f) → ((h : p holds) → A' (f h))
+    ρ' = ρ A' ϕ p f
+
+    τ : (α : (h : p holds) → A' (f h))
+      → B (extension ϕ p f) (σ (λ h → pr₁ (α h)))
+    τ α = B-is-closed-under-extension p f
+           (λ h → pr₁ (α h))
+           (λ h → pr₂ (α h))
+
+    σ' : ((h : p holds) → A' (f h)) → A' (extension ϕ p f)
+    σ' α = σ (λ h → pr₁ (α h)) , τ α
+
+    σρ' : σ' ∘ ρ' ∼ id
+    σρ' (a , b) =
+     σ' (ρ' (a , b)) ＝⟨ refl ⟩
+     σ' (λ h → transport A' (e h) (a , b)) ＝⟨ I ⟩
+     σ' (λ h → transport A (e h) a , _)    ＝⟨ refl ⟩
+     (σ (λ h → transport A (e h) a) , _)   ＝⟨ refl ⟩
+     (σ (ρ A ϕ p f a) , _)                 ＝⟨ II ⟩
+     (a , b) ∎
+      where
+       e : (h : p holds) → extension ϕ p f ＝ f h
+       e = extends ϕ p f
+
+       I = ap σ' (dfunext fe' (λ h → transport-Σ A B (f h) (e h) a))
+       II = to-subtype-＝
+             (B-is-prop-valued (extension ϕ p f))
+             (inverses-are-retractions (ρ A ϕ p f) (ρ-is-equiv p f) a)
+
+    γ : is-equiv ρ'
+    γ = d p f , (σ' , σρ')
+
 
 \end{code}
 
