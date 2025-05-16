@@ -413,6 +413,20 @@ Added 4th April 2022.
 
 \end{code}
 
+Added 11 April 2025 by Tom de Jong.
+
+\begin{code}
+
+initial-segment-of-least-element-is-𝟘ₒ : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
+                                       → is-least α a
+                                       → α ↓ a ＝ 𝟘ₒ
+initial-segment-of-least-element-is-𝟘ₒ α a a-is-least =
+ ⊴-antisym (α ↓ a) 𝟘ₒ
+  (to-⊴ (α ↓ a) 𝟘ₒ (λ (x , l) → 𝟘-elim (least-is-minimal α a a-is-least x l)))
+  (𝟘ₒ-least-⊴ (α ↓ a))
+
+\end{code}
+
 Originally added 21st April 2022 by Martín Escardó.
 Moved up here on 27th May 2024 by Tom de Jong.
 

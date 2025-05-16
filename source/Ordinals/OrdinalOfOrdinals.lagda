@@ -253,6 +253,7 @@ segment-inclusion-lc α {a} =
                     (α ↓_)
                     (↓-lc α _ _)
                     (the-type-of-ordinals-is-a-set (ua _) fe')
+
 \end{code}
 
 We are now ready to make the type of ordinals into an ordinal.

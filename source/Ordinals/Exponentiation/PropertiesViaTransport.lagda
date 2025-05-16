@@ -7,7 +7,7 @@ Ordinals.Exponentiation.RelatingConstructions.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -41,11 +41,11 @@ open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
-open import Ordinals.Exponentiation.DecreasingList ua
+open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
 
 open import DiscreteGraphicMonoids.ListsWithoutRepetitions fe'
              using (List-is-discrete)
@@ -175,6 +175,23 @@ exponentiationᴸ-preserves-trichotomy α β h tri-α tri-β =
     h : has-trichotomous-least-element α
     h = ⊥ ,
         is-trichotomous-and-least-implies-is-trichotomous-least α ⊥ (tri-α ⊥) p
+
+\end{code}
+
+Added 11 April 2025.
+
+If the base ordinal has a trichotomous least element, then so does α ^ₒ β.
+
+\begin{code}
+
+^ₒ-has-trichotomous-least-element : (α β : Ordinal 𝓤)
+                                  → has-trichotomous-least-element α
+                                  → has-trichotomous-least-element (α ^ₒ β)
+^ₒ-has-trichotomous-least-element α β h =
+ transport
+  has-trichotomous-least-element
+  (exponentiation-constructions-agree α β h)
+  (exponentiationᴸ-has-trichotomous-least-element α h β)
 
 \end{code}
 

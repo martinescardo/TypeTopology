@@ -1,5 +1,6 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 November 2023 — January 2025
+With additions in April 2025, notably (9) below.
 
 \begin{code}
 
@@ -24,6 +25,9 @@ OVERVIEW
 7. Auxiliary result that an ordinal α has a trichotomous least element if and
    only if it can be decomposed as 𝟙ₒ +ₒ α' for a necessarily unique ordinal α'.
 8. Constructive taboos involving ordinal exponentiation.
+9. An implementation of Robin Grayson's variant of the decreasing list
+   construction of exponentials and a proof that it is not, in general, an
+   ordinal.
 
 \begin{code}
 
@@ -35,6 +39,7 @@ import Ordinals.Exponentiation.RelatingConstructions             -- (5)
 import Ordinals.Exponentiation.PropertiesViaTransport            -- (6)
 import Ordinals.Exponentiation.TrichotomousLeastElement          -- (7)
 import Ordinals.Exponentiation.Taboos                            -- (8)
+import Ordinals.Exponentiation.Grayson                           -- (9)
 
 \end{code}
 
