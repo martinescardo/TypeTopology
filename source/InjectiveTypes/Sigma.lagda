@@ -558,7 +558,7 @@ compatibility-condition-with-axioms
        e : (h : p holds) → extension ϕ p f ＝ f h
        e = extends ϕ p f
 
-       I = ap σ' (dfunext fe' (λ h → transport-Σ A B (f h) (e h) a))
+       I  = ap σ' (dfunext fe' (λ h → transport-Σ A B (f h) (e h) a))
        II = to-subtype-＝
              (B-is-prop-valued (extension ϕ p f))
              (inverses-are-retractions (ρ A ϕ p f) (ρ-is-equiv p f) a)
