@@ -39,27 +39,25 @@ module _ (a : X) where
                  → is-equiv Π-proj
  Π-proj-is-equiv fe i = qinvs-are-equivs Π-proj (Π-proj⁻¹ i , η , ε)
   where
+   η : Π-proj⁻¹ i ∘ Π-proj ∼ id
+   η f = dfunext fe I
+    where
+     I : Π-proj⁻¹ i (Π-proj f) ∼ f
+     I x =
+      Π-proj⁻¹ i (Π-proj f) x   ＝⟨ refl ⟩
+      transport Y (i a x) (f a) ＝⟨ II (i x a) ⟩
+      f x                       ∎
+       where
+        II : x ＝ a → transport Y (i a x) (f a) ＝ f x
+        II refl =
+         transport Y (i a a) (f a) ＝⟨ transport-lemma i ⟩
+         f a                       ∎
+
    ε : Π-proj ∘ Π-proj⁻¹ i ∼ id
    ε y =
     (Π-proj ∘ Π-proj⁻¹ i) y ＝⟨ refl ⟩
     transport Y (i a a) y   ＝⟨ transport-lemma i ⟩
-    transport Y refl y      ＝⟨ refl ⟩
     y                       ∎
-
-   II : (f : Π Y) {x : X} → x ＝ a → transport Y (i a x) (f a) ＝ f x
-   II f refl =
-    transport Y (i a a) (f a) ＝⟨ transport-lemma i ⟩
-    transport Y refl (f a)    ＝⟨ refl ⟩
-    f a                       ∎
-
-   III : (f : Π Y) → Π-proj⁻¹ i (Π-proj f) ∼ f
-   III f x =
-    Π-proj⁻¹ i (Π-proj f) x   ＝⟨ refl ⟩
-    transport Y (i a x) (f a) ＝⟨ II f (i x a) ⟩
-    f x                       ∎
-
-   η : Π-proj⁻¹ i ∘ Π-proj ∼ id
-   η φ = dfunext fe (III φ)
 
  prop-indexed-product : funext 𝓤 𝓥
                       → is-prop X
@@ -69,22 +67,19 @@ module _ (a : X) where
 empty-indexed-product-is-𝟙 : funext 𝓤 𝓥
                            → (X → 𝟘 {𝓦})
                            → Π Y ≃ 𝟙 {𝓣}
-empty-indexed-product-is-𝟙 {𝓦} {𝓣} fe v = γ
+empty-indexed-product-is-𝟙 {𝓦} {𝓣} fe v = qinveq unique-to-𝟙 (g , η , ε)
  where
   g : 𝟙 → Π Y
   g ⋆ x = unique-from-𝟘 {𝓥} {𝓦} (v x)
 
-  η : (u : 𝟙) → ⋆ ＝ u
-  η ⋆ = refl
-
-  ε : (φ : Π Y) → g ⋆ ＝ φ
-  ε φ = dfunext fe u
+  η : (f : Π Y) → g ⋆ ＝ f
+  η f = dfunext fe I
    where
-    u : (x : X) → g (unique-to-𝟙 φ) x ＝ φ x
-    u x = unique-from-𝟘 (v x)
+    I : (x : X) → g (unique-to-𝟙 f) x ＝ f x
+    I x = unique-from-𝟘 (v x)
 
-  γ : Π Y ≃ 𝟙 {𝓣}
-  γ = qinveq unique-to-𝟙 (g , ε , η)
+  ε : (u : 𝟙) → ⋆ ＝ u
+  ε ⋆ = refl
 
 \end{code}
 
@@ -107,7 +102,6 @@ module _ (a : X) where
    η y =
     Σ-in⁻¹ i (Σ-in y)     ＝⟨ refl ⟩
     transport Y (i a a) y ＝⟨ transport-lemma i ⟩
-    transport Y refl y    ＝⟨ refl ⟩
     y                     ∎
 
    ε : (σ : Σ Y) → Σ-in (Σ-in⁻¹ i σ) ＝ σ
