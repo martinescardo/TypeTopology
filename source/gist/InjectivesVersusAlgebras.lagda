@@ -485,13 +485,13 @@ module pullback-naturality-for-ainjectivity-induced-by-aflabbiness
   ϕ : (P : 𝓤 ̇ ) → is-prop P → (P → D) → D
   ϕ P i f = pr₁ (φ P i f)
 
-  e-change-of-variable : is-univalent 𝓤
+  ϕ-change-of-variable : is-univalent 𝓤
                        → {P : 𝓤 ̇} (i : is-prop P)
                          {Q : 𝓤 ̇} (j : is-prop Q)
                          (e : P ≃ Q)
                          (f : P → D)
                        → ϕ P i f ＝ ϕ Q j (f ∘ ⌜ e ⌝⁻¹)
-  e-change-of-variable ua {P} i {Q} j e f = JEq ua P C I Q e j
+  ϕ-change-of-variable ua {P} i {Q} j e f = JEq ua P C I Q e j
    where
     C : (Q : 𝓤 ̇) → P ≃ Q → 𝓤 ⊔ 𝓦 ̇
     C Q e = (j : is-prop Q) → ϕ P i f ＝ ϕ Q j (f ∘ ⌜ e ⌝⁻¹)
@@ -551,7 +551,7 @@ embeddings.
      v : fiber j (h b) → fiber k b
      v (x , e) = (x , b , e) , refl
 
-     I = e-change-of-variable
+     I = ϕ-change-of-variable
           ua
           (j-is-embedding (h b))
           (k-is-embedding b)
@@ -562,13 +562,10 @@ embeddings.
             u)
           (f ∘ pr₁)
 
-     d' : f ∘ pr₁ ∘ u ∼ f ∘ g ∘ pr₁
-     d' ((x , b' , e) , refl) = refl
+     H : f ∘ pr₁ ∘ u ∼ f ∘ g ∘ pr₁
+     H ((x , b' , e) , refl) = refl
 
-     d : f ∘ pr₁ ∘ u ＝ f ∘ g ∘ pr₁
-     d = dfunext fe' d'
-
-     II = ap (ϕ (fiber k b) (k-is-embedding b)) d
+     II = ap (ϕ (fiber k b) (k-is-embedding b)) (dfunext fe' H)
 
 \end{code}
 
