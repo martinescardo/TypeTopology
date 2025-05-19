@@ -426,6 +426,11 @@ module pullback-naturality
  εΠ : (b : B) → backΠ b ∘ forthΠ b ∼ id
  εΠ b ϕ = dfunext fe' (εΠ' b ϕ)
 
+ Π-naturality : (b : B) → (f / j) (h b) ≃ ((f ∘ g) / k) b
+ Π-naturality b = qinveq
+                   (forthΠ b)
+                   (backΠ b , εΠ b , ηΠ b)
+
  forthΣ : (b : B) → (f ∖ j) (h b) → ((f ∘ g) ∖ k) b
  forthΣ b ((x , e) , y) = ((x , b , e) , refl) , y
 
@@ -437,6 +442,11 @@ module pullback-naturality
 
  εΣ : (b : B) → backΣ b ∘ forthΣ b ∼ id
  εΣ b ((x , e) , y) = refl
+
+ Σ-naturality : (b : B) → (f ∖ j) (h b) ≃ ((f ∘ g) ∖ k) b
+ Σ-naturality b = qinveq
+                   (forthΣ b)
+                   (backΣ b , εΣ b , ηΣ b)
 
 \end{code}
 
