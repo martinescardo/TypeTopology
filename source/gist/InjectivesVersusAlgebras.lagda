@@ -366,7 +366,7 @@ module unnaturality where
  weak-naturalityΣ-fails : weak-naturalityΣ → 𝟘
  weak-naturalityΣ-fails wn = pr₁ (pr₁ t)
   where
-   t : (𝟘 ×  (⋆ ＝ ⋆)) × 𝟙
+   t : (𝟘 × (⋆ ＝ ⋆)) × 𝟙
    t = wn 𝓤₀ 𝓤₀ 𝓤₀ 𝓤₀ 𝓤₀
         𝟘 𝟙 𝟙 𝟙
         unique-to-𝟙
