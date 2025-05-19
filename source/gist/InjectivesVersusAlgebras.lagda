@@ -310,7 +310,137 @@ Is the above the case? Or does it need to be an assumption?
 
 \end{code}
 
-Added 16th Feb 2025.
+Added 28 Feb 2025 incomplete, resumed 19th May 2025.
+
+It is natural to conjecture that the Π- and Σ-ainjectivity structures
+are natural. But even weak naturality fails.
+
+\begin{code}
+
+open import InjectiveTypes.Blackboard fe hiding (ηΠ ; ηΣ)
+
+module unnaturality where
+
+ weak-naturalityΠ : 𝓤ω
+ weak-naturalityΠ =
+    (𝓤 𝓥 𝓦 𝓣 𝓣' : Universe)
+    (A : 𝓤 ̇ ) (B : 𝓥 ̇ ) (X : 𝓦 ̇ ) (Y : 𝓣 ̇ )
+    (k : A → B)
+    (j : X → Y)
+    (g : A → X)
+    (h : B → Y)
+    (f : X → 𝓣' ̇ )
+    (square : j ∘ g ∼ h ∘ k)
+    (b : B)
+  → ((f ∘ g) / k) b
+  → (f / j) (h b)
+
+ weak-naturalityΣ : 𝓤ω
+ weak-naturalityΣ =
+    (𝓤 𝓥 𝓦 𝓣 𝓣' : Universe)
+    (A : 𝓤 ̇ ) (B : 𝓥 ̇ ) (X : 𝓦 ̇ ) (Y : 𝓣 ̇ )
+    (k : A → B)
+    (j : X → Y)
+    (g : A → X)
+    (h : B → Y)
+    (f : X → 𝓣' ̇ )
+    (square : j ∘ g ∼ h ∘ k)
+    (b : B)
+  → (f ∖ j) (h b)
+  → ((f ∘ g) ∖ k) b
+
+ weak-naturalityΠ-fails : weak-naturalityΠ → 𝟘
+ weak-naturalityΠ-fails wn =
+  wn 𝓤₀ 𝓤₀ 𝓤₀ 𝓤₀ 𝓤₀
+     𝟘 𝟙 𝟙 𝟙
+     unique-to-𝟙
+     id
+     unique-to-𝟙
+     id
+     (λ _ → 𝟘)
+     (λ (a : 𝟘) → refl)
+     ⋆
+     pr₁
+     (⋆ , refl)
+
+ weak-naturalityΣ-fails : weak-naturalityΣ → 𝟘
+ weak-naturalityΣ-fails wn = pr₁ (pr₁ t)
+  where
+   t : (𝟘 ×  (⋆ ＝ ⋆)) × 𝟙
+   t = wn 𝓤₀ 𝓤₀ 𝓤₀ 𝓤₀ 𝓤₀
+        𝟘 𝟙 𝟙 𝟙
+        unique-to-𝟙
+        id
+        unique-to-𝟙
+        id
+        (λ _ → 𝟙)
+        (λ (a : 𝟘) → refl)
+        ⋆
+        ((⋆ , refl) , ⋆)
+
+
+\end{code}
+
+But we have pullback naturality.
+
+For simplicity, instead of working with a square as above and assuming
+that it is a pullback, we start with h,j as above and define A to be
+their pullback.
+
+\begin{code}
+
+module pullback-naturality
+         {B : 𝓥 ̇ } {X : 𝓦 ̇ } {Y : 𝓣 ̇ }
+         (h : B → Y)
+         (j : X → Y)
+         (f : X → 𝓣' ̇ )
+       where
+
+ A : 𝓦 ⊔ 𝓥 ⊔ 𝓣 ̇
+ A = Σ x ꞉ X , Σ b ꞉ B , j x ＝ h b
+
+ g : A → X
+ g (x , b , e) = x
+
+ k : A → B
+ k (x , b , e) = b
+
+ square : j ∘ g ∼ h ∘ k
+ square (x , b , e) = e
+
+ forthΠ : (b : B) → (f / j) (h b) → ((f ∘ g) / k) b
+ forthΠ .(k a) ϕ (a , refl) = ϕ (g a , square a)
+
+ backΠ : (b : B) → ((f ∘ g) / k) b → (f / j) (h b)
+ backΠ b γ (x , e) = γ ((x , b , e) , refl)
+
+ ηΠ' : (b : B) (γ : ((f ∘ g) / k) b) → forthΠ b (backΠ b γ) ∼ γ
+ ηΠ' b γ ((x , .b , e) , refl) = refl
+
+ εΠ' : (b : B) (ϕ : (f / j) (h b)) → backΠ b (forthΠ b ϕ) ∼ ϕ
+ εΠ' b ϕ (a , e) = refl
+
+ ηΠ : (b : B) → forthΠ b ∘ backΠ b ∼ id
+ ηΠ b γ = dfunext fe' (ηΠ' b γ)
+
+ εΠ : (b : B) → backΠ b ∘ forthΠ b ∼ id
+ εΠ b ϕ = dfunext fe' (εΠ' b ϕ)
+
+ forthΣ : (b : B) → (f ∖ j) (h b) → ((f ∘ g) ∖ k) b
+ forthΣ b ((x , e) , y) = ((x , b , e) , refl) , y
+
+ backΣ : (b : B) → ((f ∘ g) ∖ k) b → (f ∖ j) (h b)
+ backΣ b (((x , b , e) , refl) , y) = (x , e) , y
+
+ ηΣ : (b : B) → forthΣ b ∘ backΣ b ∼ id
+ ηΣ b (((x , b , e) , refl) , y) = refl
+
+ εΣ : (b : B) → backΣ b ∘ forthΣ b ∼ id
+ εΣ b ((x , e) , y) = refl
+
+\end{code}
+
+Added 16th Feb 2025. Think about the following later.
 
 \begin{code}
 
@@ -354,72 +484,3 @@ module _ (𝓤 𝓥 : Universe)
 -}
 
 \end{code}
-
-Added 28 Feb 2025.
-
-\begin{code}
-
--- open import InjectiveTypes.Blackboard fe
-
--- module _ {A : 𝓤 ̇ } {B : 𝓥 ̇ } {X : 𝓦 ̇ } {Y : 𝓣 ̇ }
---          (k : A → B)
---          (j : X → Y)
---          (g : A → X)
---          (h : B → Y)
---          (square : h ∘ k ∼ j ∘ g)
---          (pb : {𝓣' : Universe} (C : 𝓣' ̇) → (C → X) → (C → B) → (C → A))
---          (f : X → 𝓣' ̇ )
---        where
-
-
---  blah' : (b : B) → (f ∖ j) (h b) → ((f ∘ g) ∖ k) b
---  blah' b ((x , d) , y) = (pb X id (λ _ → b) x , {!!}) , {!!}
-
---  halb' : (b : B) → ((f ∘ g) ∖ k) b → (f ∖ j) (h b)
---  halb' .(k a) ((a , refl) , y) = (g a , ((square a)⁻¹)) , y
-
-
---  blah : (b : B) → (f / j) (h b) → ((f ∘ g) / k) b
---  blah .(k a) ϕ (a , refl) = ϕ (g a , ((square a)⁻¹))
-
---  halb : (b : B) → ((f ∘ g) / k) b → (f / j) (h b)
---  halb b γ (x , e) = {!!}
---   where
---    III : x ＝ g {!!}
---    III = {!!}
---    IV : b ＝ k {!!}
---    IV = {!!}
---    II : f (g {!!})
---    II = γ ({!!} , {!!})
---    I = {!!} ＝⟨ {!!} ⟩
---        {!!} ＝⟨ {!!} ⟩
---        {!!} ＝⟨ {!!} ⟩
---        {!!} ＝⟨ {!!} ⟩
---        {!!} ＝⟨ {!!} ⟩
---        {!!} ＝⟨ {!!} ⟩
---        {!!} ＝⟨ {!!} ⟩
---        {!!} ＝⟨ {!!} ⟩
---        {!!} ＝⟨ {!!} ⟩
---        {!!} ＝⟨ {!!} ⟩
---        {!!} ∎
-
---  try : (b : B) → (f / j) (h b) ≃ ((f ∘ g) / k) b
---  try b =
---   (f / j) (h b) ≃⟨ ≃-refl _ ⟩
---   ((w : fiber j (h b)) → f (pr₁ w)) ≃⟨ curry-uncurry fe ⟩
---   ((x : X) (e : j x ＝ h b) → f x) ≃⟨ {!!} ⟩
---   {!!} ≃⟨ {!!} ⟩
---   {!!} ≃⟨ {!!} ⟩
---   {!!} ≃⟨ {!!} ⟩
---   {!!} ≃⟨ {!!} ⟩
---   {!!} ≃⟨ {!!} ⟩
---   {!!} ≃⟨ {!!} ⟩
---   {!!} ≃⟨ {!!} ⟩
---   {!!} ≃⟨ {!!} ⟩
---   {!!} ≃⟨ {!!} ⟩
---   {!!} ≃⟨ Π-cong fe' fe' {!!} ⟩
---   ((a : A) (e : k a ＝ b) → f (g a)) ≃⟨ ≃-sym (curry-uncurry fe) ⟩
---   ((t : fiber k b) → f (g (pr₁ t))) ≃⟨ ≃-refl _ ⟩
---   ((f ∘ g) / k) b ■
-
--- \end{code}
