@@ -3,7 +3,7 @@ Martin Escardo, 22nd October 2024
 Incomplete blackboard thoughts on injectives as algebras of the
 partial-map classifier monad, also known as the lifting monad.
 
-Added 13th Feb 2025.
+Comment added 13th Feb 2025.
 
 The original paper on injectives in HoTT/UF characterizes the
 injective types as the algebras of the lifting monad. This file
@@ -449,7 +449,16 @@ module pullback-naturality-for-Σ-and-Π
                     (forthΣ b)
                     (backΣ b , εΣ b , ηΣ b)
 
-module pullback-naturality-for-aflabbiness
+\end{code}
+
+We now generalize the above to any aflabiness structure, but make the
+universes less general for now.
+
+TODO. Make the universes as general as possible.
+
+\begin{code}
+
+module pullback-naturality-for-ainjectivity-induced-by-aflabbiness
          {B : 𝓤 ̇ } {X : 𝓤 ̇ } {Y : 𝓤 ̇ }
          (h : B → Y)
          (j : X → Y)
@@ -477,11 +486,11 @@ module pullback-naturality-for-aflabbiness
   ϕ P i f = pr₁ (φ P i f)
 
   e-change-of-variable : is-univalent 𝓤
-                        → {P : 𝓤 ̇} (i : is-prop P)
-                          {Q : 𝓤 ̇} (j : is-prop Q)
-                          (e : P ≃ Q)
-                          (f : P → D)
-                        → ϕ P i f ＝ ϕ Q j (f ∘ ⌜ e ⌝⁻¹)
+                       → {P : 𝓤 ̇} (i : is-prop P)
+                         {Q : 𝓤 ̇} (j : is-prop Q)
+                         (e : P ≃ Q)
+                         (f : P → D)
+                       → ϕ P i f ＝ ϕ Q j (f ∘ ⌜ e ⌝⁻¹)
   e-change-of-variable ua {P} i {Q} j e f = JEq ua P C I Q e j
    where
     C : (Q : 𝓤 ̇) → P ≃ Q → 𝓤 ⊔ 𝓦 ̇
@@ -496,6 +505,13 @@ module pullback-naturality-for-aflabbiness
   _∣_ : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
   (f ∣ (j , j-is-embedding)) y = ϕ (fiber j y) (j-is-embedding y) (f ∘ pr₁)
 
+\end{code}
+
+The following is just the fact that pullbacks of embeddings are
+embeddings.
+
+\begin{code}
+
   k-is-embedding : is-embedding k
   k-is-embedding b = I
    where
@@ -509,10 +525,10 @@ module pullback-naturality-for-aflabbiness
       II = j-is-embedding (h b) (x₁ , e₁) (x₂ , e₂)
 
       III : {σ τ : fiber j (h b)}
-         → σ ＝ τ
-         → ((pr₁ σ , b , pr₂ σ) , refl)
-         ＝[ fiber k b ]
-           ((pr₁ τ , b , pr₂ τ) , refl)
+          → σ ＝ τ
+          → ((pr₁ σ , b , pr₂ σ) , refl)
+          ＝[ fiber k b ]
+            ((pr₁ τ , b , pr₂ τ) , refl)
       III refl = refl
 
   𝕛 : X ↪ Y
