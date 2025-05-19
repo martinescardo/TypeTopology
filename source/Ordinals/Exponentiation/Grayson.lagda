@@ -32,7 +32,7 @@ Since this recursive equation uniquely specifies the operation ^ₒ, this implie
 that Grayson's construction satisfies the equation precisely when it coincides
 with abstract exponentiation.
 Now, Grayson's construction is easily to seen have a trichotomous least element,
-namely the empty list. But given an ordinal α with a least elements, we show in
+namely the empty list. But given an ordinal α with a least element, we show in
 Ordinals.Exponentiation.Supremum that if the least element of abstract
 exponentiation of α by 𝟙ₒ is trichotomous, then the least element of α must be
 too. Hence, the recursive equation cannot hold for Grayson's construction (even
