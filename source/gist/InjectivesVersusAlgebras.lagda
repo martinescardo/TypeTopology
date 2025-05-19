@@ -389,11 +389,10 @@ their pullback.
 
 \begin{code}
 
-module pullback-naturality
+module pullback-naturality-for-Σ-and-Π
          {B : 𝓥 ̇ } {X : 𝓦 ̇ } {Y : 𝓣 ̇ }
          (h : B → Y)
          (j : X → Y)
-         (f : X → 𝓣' ̇ )
        where
 
  A : 𝓦 ⊔ 𝓥 ⊔ 𝓣 ̇
@@ -408,45 +407,152 @@ module pullback-naturality
  square : j ∘ g ∼ h ∘ k
  square (x , b , e) = e
 
- forthΠ : (b : B) → (f / j) (h b) → ((f ∘ g) / k) b
- forthΠ .(k a) ϕ (a , refl) = ϕ (g a , square a)
+ module _ (f : X → 𝓣' ̇ ) where
 
- backΠ : (b : B) → ((f ∘ g) / k) b → (f / j) (h b)
- backΠ b γ (x , e) = γ ((x , b , e) , refl)
+  forthΠ : (b : B) → (f / j) (h b) → ((f ∘ g) / k) b
+  forthΠ .(k a) ϕ (a , refl) = ϕ (g a , square a)
 
- ηΠ' : (b : B) (γ : ((f ∘ g) / k) b) → forthΠ b (backΠ b γ) ∼ γ
- ηΠ' b γ ((x , .b , e) , refl) = refl
+  backΠ : (b : B) → ((f ∘ g) / k) b → (f / j) (h b)
+  backΠ b γ (x , e) = γ ((x , b , e) , refl)
 
- εΠ' : (b : B) (ϕ : (f / j) (h b)) → backΠ b (forthΠ b ϕ) ∼ ϕ
- εΠ' b ϕ (a , e) = refl
+  ηΠ' : (b : B) (γ : ((f ∘ g) / k) b) → forthΠ b (backΠ b γ) ∼ γ
+  ηΠ' b γ ((x , .b , e) , refl) = refl
 
- ηΠ : (b : B) → forthΠ b ∘ backΠ b ∼ id
- ηΠ b γ = dfunext fe' (ηΠ' b γ)
+  εΠ' : (b : B) (ϕ : (f / j) (h b)) → backΠ b (forthΠ b ϕ) ∼ ϕ
+  εΠ' b ϕ (a , e) = refl
 
- εΠ : (b : B) → backΠ b ∘ forthΠ b ∼ id
- εΠ b ϕ = dfunext fe' (εΠ' b ϕ)
+  ηΠ : (b : B) → forthΠ b ∘ backΠ b ∼ id
+  ηΠ b γ = dfunext fe' (ηΠ' b γ)
 
- Π-naturality : (b : B) → (f / j) (h b) ≃ ((f ∘ g) / k) b
- Π-naturality b = qinveq
-                   (forthΠ b)
-                   (backΠ b , εΠ b , ηΠ b)
+  εΠ : (b : B) → backΠ b ∘ forthΠ b ∼ id
+  εΠ b ϕ = dfunext fe' (εΠ' b ϕ)
 
- forthΣ : (b : B) → (f ∖ j) (h b) → ((f ∘ g) ∖ k) b
- forthΣ b ((x , e) , y) = ((x , b , e) , refl) , y
+  Π-naturality : (b : B) → (f / j) (h b) ≃ ((f ∘ g) / k) b
+  Π-naturality b = qinveq
+                    (forthΠ b)
+                    (backΠ b , εΠ b , ηΠ b)
 
- backΣ : (b : B) → ((f ∘ g) ∖ k) b → (f ∖ j) (h b)
- backΣ b (((x , b , e) , refl) , y) = (x , e) , y
+  forthΣ : (b : B) → (f ∖ j) (h b) → ((f ∘ g) ∖ k) b
+  forthΣ b ((x , e) , y) = ((x , b , e) , refl) , y
 
- ηΣ : (b : B) → forthΣ b ∘ backΣ b ∼ id
- ηΣ b (((x , b , e) , refl) , y) = refl
+  backΣ : (b : B) → ((f ∘ g) ∖ k) b → (f ∖ j) (h b)
+  backΣ b (((x , b , e) , refl) , y) = (x , e) , y
 
- εΣ : (b : B) → backΣ b ∘ forthΣ b ∼ id
- εΣ b ((x , e) , y) = refl
+  ηΣ : (b : B) → forthΣ b ∘ backΣ b ∼ id
+  ηΣ b (((x , b , e) , refl) , y) = refl
 
- Σ-naturality : (b : B) → (f ∖ j) (h b) ≃ ((f ∘ g) ∖ k) b
- Σ-naturality b = qinveq
-                   (forthΣ b)
-                   (backΣ b , εΣ b , ηΣ b)
+  εΣ : (b : B) → backΣ b ∘ forthΣ b ∼ id
+  εΣ b ((x , e) , y) = refl
+
+  Σ-naturality : (b : B) → (f ∖ j) (h b) ≃ ((f ∘ g) ∖ k) b
+  Σ-naturality b = qinveq
+                    (forthΣ b)
+                    (backΣ b , εΣ b , ηΣ b)
+
+module pullback-naturality-for-aflabbiness
+         {B : 𝓤 ̇ } {X : 𝓤 ̇ } {Y : 𝓤 ̇ }
+         (h : B → Y)
+         (j : X → Y)
+       where
+
+ A : 𝓤 ̇
+ A = Σ x ꞉ X , Σ b ꞉ B , j x ＝ h b
+
+ g : A → X
+ g (x , b , e) = x
+
+ k : A → B
+ k (x , b , e) = b
+
+ square : j ∘ g ∼ h ∘ k
+ square (x , b , e) = e
+
+ module _ (D : 𝓦 ̇ )
+          (φ : aflabby D 𝓤)
+          (j-is-embedding : is-embedding j)
+          (f : X → D)
+        where
+
+  ϕ : (P : 𝓤 ̇ ) → is-prop P → (P → D) → D
+  ϕ P i f = pr₁ (φ P i f)
+
+  e-change-of-variable : is-univalent 𝓤
+                        → {P : 𝓤 ̇} (i : is-prop P)
+                          {Q : 𝓤 ̇} (j : is-prop Q)
+                          (e : P ≃ Q)
+                          (f : P → D)
+                        → ϕ P i f ＝ ϕ Q j (f ∘ ⌜ e ⌝⁻¹)
+  e-change-of-variable ua {P} i {Q} j e f = JEq ua P C I Q e j
+   where
+    C : (Q : 𝓤 ̇) → P ≃ Q → 𝓤 ⊔ 𝓦 ̇
+    C Q e = (j : is-prop Q) → ϕ P i f ＝ ϕ Q j (f ∘ ⌜ e ⌝⁻¹)
+
+    I : C P (≃-refl P)
+    I j = ap (λ - → ϕ P - f) (being-prop-is-prop fe' i j)
+
+  D-is-ainjective : ainjective-type D 𝓤 𝓤
+  D-is-ainjective = aflabby-types-are-ainjective D φ
+
+  _∣_ : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+  (f ∣ (j , j-is-embedding)) y = ϕ (fiber j y) (j-is-embedding y) (f ∘ pr₁)
+
+  k-is-embedding : is-embedding k
+  k-is-embedding b = I
+   where
+    have : fiber k b ＝ (Σ (x , b' , e) ꞉ A ,  b' ＝ b)
+    have = refl
+
+    I : is-prop (fiber k b)
+    I ((x₁ , .b , e₁) , refl) ((x₂ , .b , e₂) , refl) = III II
+     where
+      II : (x₁ , e₁) ＝ (x₂ , e₂)
+      II = j-is-embedding (h b) (x₁ , e₁) (x₂ , e₂)
+
+      III : {σ τ : fiber j (h b)}
+         → σ ＝ τ
+         → ((pr₁ σ , b , pr₂ σ) , refl)
+         ＝[ fiber k b ]
+           ((pr₁ τ , b , pr₂ τ) , refl)
+      III refl = refl
+
+  𝕛 : X ↪ Y
+  𝕛 = (j , j-is-embedding)
+
+  𝕜 : A ↪ B
+  𝕜 = (k , k-is-embedding)
+
+  naturality : is-univalent 𝓤 → (b : B) → (f ∣ 𝕛) (h b) ＝ ((f ∘ g) ∣ 𝕜) b
+  naturality ua b =
+   (f ∣ 𝕛) (h b)                                       ＝⟨ refl ⟩
+   ϕ (fiber j (h b)) (j-is-embedding (h b)) (f ∘ pr₁) ＝⟨ I ⟩
+   ϕ (fiber k b) (k-is-embedding b) (f ∘ pr₁ ∘ u)     ＝⟨ II ⟩
+   ϕ (fiber k b) (k-is-embedding b) (f ∘ g ∘ pr₁)     ＝⟨ refl ⟩
+   ((f ∘ g) ∣ 𝕜) b                                     ∎
+    where
+     u : fiber k b → fiber j (h b)
+     u ((x , b' , e) , refl) = x , e
+
+     v : fiber j (h b) → fiber k b
+     v (x , e) = (x , b , e) , refl
+
+     I = e-change-of-variable
+          ua
+          (j-is-embedding (h b))
+          (k-is-embedding b)
+          (logically-equivalent-props-are-equivalent
+            (j-is-embedding (h b))
+            (k-is-embedding b)
+            v
+            u)
+          (f ∘ pr₁)
+
+     d' : f ∘ pr₁ ∘ u ∼ f ∘ g ∘ pr₁
+     d' ((x , b' , e) , refl) = refl
+
+     d : f ∘ pr₁ ∘ u ＝ f ∘ g ∘ pr₁
+     d = dfunext fe' d'
+
+     II = ap (ϕ (fiber k b) (k-is-embedding b)) d
 
 \end{code}
 
