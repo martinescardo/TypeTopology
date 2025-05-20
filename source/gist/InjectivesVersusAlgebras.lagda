@@ -617,6 +617,26 @@ module lifting-algebras-as-categories
       → Σ α ꞉ ((p : P) → f p ⊑ ⨆ i f)
             , ((u : D) (β : (p : P) → f p ⊑ u)
                   → ∃! γ ꞉ ⨆ i f ⊑ u , ((p : P) → α p □ γ ＝ β p))
+
+  colimit-conjecture-particular : 𝓤 ̇
+  colimit-conjecture-particular =
+   (d : D)
+      → Σ α ꞉ d ＝ d
+            , ((u : D) (β : d ＝ u)
+                  → ∃! γ ꞉ d ＝ u , (α ∙ γ ＝ β))
+
+  sanity-check : colimit-conjecture-particular
+  sanity-check d = (refl , ϕ)
+   where
+    ϕ : (u : D) (β : d ＝ u) → ∃! γ ꞉ d ＝ u , (refl ∙ γ ＝ β)
+    ϕ u = equivs-are-vv-equivs (refl ∙_) II
+     where
+      I : (refl ∙_) ∼ id
+      I γ = refl-left-neutral
+
+      II : is-equiv (refl ∙_)
+      II = equiv-closed-under-∼ id (refl ∙_) (id-is-equiv (d ＝ u)) I
+
 \end{code}
 
 More modestly, for now we have the following weakening of the conjecture.
@@ -645,3 +665,16 @@ More modestly, for now we have the following weakening of the conjecture.
         I = ⨆-property P i f p
 
 \end{code}
+
+This completes the proof. But notice that we also have
+
+\begin{code}
+
+    φ : (u : D) → ⨆ i f ⊑ u → ((p : P) → f p ⊑ u)
+    φ u γ = λ p → α p □ γ
+
+\end{code}
+
+which should be an inverse of γ, so that we can use the same idea of
+the sanity check to prove the colimit conjecture. This is the next
+thing to try.
