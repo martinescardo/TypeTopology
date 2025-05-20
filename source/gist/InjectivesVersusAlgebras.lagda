@@ -34,6 +34,7 @@ fe' : Fun-Ext
 fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 open import MLTT.Spartan
+open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -81,37 +82,7 @@ module _ (𝓤 𝓥 : Universe)
           (f : X → D)
         where
 
-  δ : D → 𝓥 ⊔  𝓤 ⁺ ̇
-  δ d = {P : 𝓤 ̇ } (i : is-prop P) (f : P → D) → ⨆ i f ＝ d → P
-
-  δ' : D → 𝓥 ⊔  𝓤 ⁺ ̇
-  δ' d = {P : 𝓤 ̇ } (i : is-prop P) → ⨆ i (λ _ → d) ＝ d → P
-
-  δ-gives-δ' : (d : D) → δ d → δ' d
-  δ-gives-δ' d π {P} i = π i (λ _ → d)
-
-  δ'-gives-δ : (d : D) → δ' d → δ d
-  δ'-gives-δ d π {P} i f e =
-   π i (⨆ i (λ _ → d) ＝⟨ ap (⨆ i) (dfunext fe' (λ p → e ⁻¹ ∙ ⨆-property P i f p)) ⟩
-   ⨆ i f              ＝⟨ e ⟩
-   d                   ∎)
-
-  hom : D → D → 𝓥 ⊔  𝓤 ⁺ ̇
-  hom x y = δ x → x ＝ y
-
-  idD : {x : D} → hom x x
-  idD {x} = λ _ → refl
-
-  compD : {x y z : D} → hom x y → hom y z → hom x z
-  compD {x} {y} {z} α β π = α π ∙ β (transport δ (α π) π)
-
-{-
-  assocD : {x y z t : D} (α : hom x y) (β : hom y z) (γ : hom z t)
-         → compD α (compD β γ) ∼ compD (compD α β) γ
-  assocD {x} {y} {z} {t} α β γ π = ?
--}
-
-  extension : (Y → D)
+  extension : Y → D
   extension y = ⨆ (e y) (λ ((x , _) : fiber j y) → f x)
 
   extension-property : (x : X) → extension (j x) ＝ f x
@@ -165,24 +136,6 @@ module _ (𝓤 𝓥 : Universe)
         (∘-is-embedding j-emb k-emb z)
         (λ ((x , _) : fiber (k ∘ j) z) → f x)
    I = II ∙ III
-
-\end{code}
-
-TODO. Define algebraic injectivity data to be iterative if
-
- (f | j) | k = f | (k ∘ j).
-
-The above shows one direction that iterative algebraic injectivity
-data on D is equivalent to lifting algebra structure on D.
-
-Notice the following.
-
-If g = f | j then by definition g ∘ j = f
-If h = g | k then by definition h ∘ k = g
-
-So (h ∘ k) ∘ j = h ∘ (k ∘ j)
-
-\begin{code}
 
 module _ (𝓤 : Universe)
          (D : 𝓤 ̇ )
@@ -238,17 +191,6 @@ module _ (𝓤 : Universe)
  Extensions-are-Pointwise : 𝓤 ⁺ ̇
  Extensions-are-Pointwise = {X : 𝓤 ̇} {Y : 𝓤 ̇ } (f : X → D) (j : X ↪ Y)
                           → f / j ∼ f /̇ j
-
-{-
- extensions-are-pointwise : Extensions-are-Pointwise
- extensions-are-pointwise = {!!}
--}
-
-\end{code}
-
-Is the above the case? Or does it need to be an assumption?
-
-\begin{code}
 
  ⨆-assoc' : Extensions-are-Pointwise
            → is-univalent 𝓤
@@ -368,16 +310,15 @@ module unnaturality where
   where
    t : (𝟘 × (⋆ ＝ ⋆)) × 𝟙
    t = wn 𝓤₀ 𝓤₀ 𝓤₀ 𝓤₀ 𝓤₀
-        𝟘 𝟙 𝟙 𝟙
-        unique-to-𝟙
-        id
-        unique-to-𝟙
-        id
-        (λ _ → 𝟙)
-        (λ (a : 𝟘) → refl)
-        ⋆
-        ((⋆ , refl) , ⋆)
-
+          𝟘 𝟙 𝟙 𝟙
+          unique-to-𝟙
+          id
+          unique-to-𝟙
+          id
+          (λ _ → 𝟙)
+          (λ (a : 𝟘) → refl)
+          ⋆
+          ((⋆ , refl) , ⋆)
 
 \end{code}
 
@@ -451,10 +392,11 @@ module pullback-naturality-for-Σ-and-Π
 
 \end{code}
 
-We now generalize the above to any aflabiness structure, but make the
+We now generalize the above to any aflabbiness structure, but make the
 universes less general for now.
 
-TODO. Make the universes as general as possible.
+TODO. Make the universes as general as possible. (This will work
+easily if we instead assume that we are given an arbitrary pullback.)
 
 \begin{code}
 
@@ -569,47 +511,137 @@ embeddings.
 
 \end{code}
 
-Added 16th Feb 2025. Think about the following later.
+\begin{code}
+
+module lifting-algebras-as-categories
+        (𝓤 : Universe)
+        (D : 𝓤 ̇ )
+        (⨆ : {P : 𝓤 ̇} → is-prop P → (P → D) → D)
+        (⨆-property : (P : 𝓤 ̇)
+                       (i : is-prop P)
+                       (f : P → D)
+                       (p : P)
+                     → ⨆ i f ＝ f p)
+       where
+
+  δ : D → 𝓤 ⁺ ̇
+  δ d = (P : 𝓤 ̇ ) (i : is-prop P) → ⨆ i (λ (p : P) → d) ＝ d → P
+
+  δ' : D → 𝓤 ⁺ ̇
+  δ' d = (P : 𝓤 ̇ ) (i : is-prop P) (f : P → D) → ⨆ i f ＝ d → P
+
+  δ'-is-prop-valued : (d : D) → is-prop (δ' d)
+  δ'-is-prop-valued d = Π₄-is-prop fe' (λ _ i _ _ → i)
+
+  δ-is-prop-valued : (d : D) → is-prop (δ d)
+  δ-is-prop-valued d = Π₃-is-prop fe' (λ _ i _ → i)
+
+  δ-gives-δ' : (d : D) → δ d → δ' d
+  δ-gives-δ' d a' P i f e =
+   a' P i (⨆ i (λ _ → d) ＝⟨ ap (⨆ i) (dfunext fe' I) ⟩
+   ⨆ i f                 ＝⟨ e ⟩
+   d                      ∎)
+    where
+     I = λ p → d     ＝⟨ e ⁻¹ ⟩
+               ⨆ i f ＝⟨ ⨆-property P i f p ⟩
+               f p   ∎
+
+  δ'-gives-δ : (d : D) → δ' d → δ d
+  δ'-gives-δ d a P i = a P i (λ _ → d)
+
+  _⊑_ : D → D → 𝓤 ⁺ ̇
+  x ⊑ y = δ x → x ＝ y
+
+  δ-property : (P : 𝓤 ̇ ) (i : is-prop P) (f : P → D)
+             → δ (⨆ i f)
+             → P
+  δ-property P i f a = a P i e
+   where
+    e : ⨆ i (λ _ → ⨆ i f) ＝ ⨆ i f
+    e = ap (⨆ i) (dfunext fe' (⨆-property P i f ))
+
+  ⊥ : D
+  ⊥ = ⨆ 𝟘-is-prop unique-from-𝟘
+
+  ⊥-is-undefined : ¬ δ ⊥
+  ⊥-is-undefined a = 𝟘-elim (δ-property 𝟘 𝟘-is-prop 𝟘-elim a)
+
+  ⊥-least : (x : D) → ⊥ ⊑ x
+  ⊥-least x a = 𝟘-elim (⊥-is-undefined a)
+
+  being-upper-bound-of-⊥-is-prop : (x : D) → is-prop (⊥ ⊑ x)
+  being-upper-bound-of-⊥-is-prop x α β =
+   dfunext fe' (λ (a : δ ⊥) → 𝟘-elim (⊥-is-undefined a))
+
+  being-upper-bound-of-⊥-is-singleton : (x : D) → is-singleton (⊥ ⊑ x)
+  being-upper-bound-of-⊥-is-singleton x =
+   pointed-props-are-singletons
+    (⊥-least x)
+    (being-upper-bound-of-⊥-is-prop x)
+
+  idD : {x : D} → x ⊑ x
+  idD {x} a = refl
+
+  _□_ : {x y z : D} → x ⊑ y → y ⊑ z → x ⊑ z
+  α □ β = λ a → α a ∙ β (transport δ (α a) a)
+
+  idD-left : {x y : D} (α : x ⊑ y)
+           → α □ idD ∼ α
+  idD-left {x} {y} α a = refl
+
+  idD-right : {x y : D} (α : x ⊑ y)
+            → idD □ α ∼ α
+  idD-right {x} {y} α a = refl-left-neutral
+
+  assocD : {x y z t : D} (α : x ⊑ y) (β : y ⊑ z) (γ : z ⊑ t)
+         → α □ (β □ γ) ∼ (α □ β) □ γ
+  assocD {x} {y} {z} {t} α β γ a =
+   (α □ (β □ γ)) a    ＝⟨ refl ⟩
+   α a ∙ (β b ∙ γ c)  ＝⟨ (∙assoc _ _ _)⁻¹ ⟩
+   (α a ∙ β b) ∙ γ c  ＝⟨ I ⟩
+   (α a ∙ β b) ∙ γ c' ＝⟨ refl ⟩
+   ((α □ β) □ γ) a    ∎
+    where
+     b : δ y
+     b = transport δ (α a) a
+
+     c c' : δ z
+     c  = transport δ (β b) b
+     c' = transport δ ((α □ β) a) a
+
+     I = ap (λ - → (α a ∙ β b) ∙ γ -) (δ-is-prop-valued z c c')
+
+  colimit-conjecture : 𝓤 ⁺ ̇
+  colimit-conjecture =
+   (P : 𝓤 ̇ ) (i : is-prop P) (f : P → D)
+      → Σ α ꞉ ((p : P) → f p ⊑ ⨆ i f)
+            , ((u : D) (β : (p : P) → f p ⊑ u)
+                  → ∃! γ ꞉ ⨆ i f ⊑ u , ((p : P) → α p □ γ ＝ β p))
+\end{code}
+
+More modestly, for now we have the following weakening of the conjecture.
 
 \begin{code}
 
-{-
-module _ (𝓤 𝓥 : Universe)
-         (D : 𝓤 ⊔ 𝓥 ̇ )
-         (⨆ : {P : 𝓤 ̇} → is-prop P → (P → D) → D)
-         (⨆-property : (P : 𝓤 ̇)
-                        (i : is-prop P)
-                        (f : P → D)
-                        (p : P)
-                      → ⨆ i f ＝ f p)
-         (P : 𝓤 ̇ )
-         (P-is-prop : is-prop P)
-         (Q : 𝓤 ̇ )
-         (Q-is-prop : is-prop Q)
-         (j : P → Q)
-         (f : P → D)
-      where
+  ⨆-is-lub
+    : (P : 𝓤 ̇ ) (i : is-prop P) (f : P → D)
+    → ((p : P) → f p ⊑ ⨆ i f)
+    × ((u : D) → ((p : P) → f p ⊑ u) → ⨆ i f ⊑ u)
+  ⨆-is-lub P i f = α , γ
+   where
+    α : (p : P) → f p ⊑ ⨆ i f
+    α p a = (⨆-property P i f p)⁻¹
 
- j-is-embedding : is-embedding j
- j-is-embedding = maps-of-props-are-embeddings j P-is-prop Q-is-prop
+    γ : (u : D) → ((p : P) → f p ⊑ u) → ⨆ i f ⊑ u
+    γ u β c =
+      ⨆ i f ＝⟨ I ⟩
+      f p   ＝⟨ β p (transport δ I c) ⟩
+      u     ∎
+       where
+        p : P
+        p = δ-property P i f c
 
- g h : Q → D
- g q = ⨆ P-is-prop f
- h q = ⨆ (j-is-embedding q) (λ ((p , _) : fiber j q) → f p)
-
- try : g ∼ h
- try q =
-  g q ＝⟨ refl ⟩
-  ⨆ P-is-prop f ＝⟨ {!!} ⟩
-  {!!} ＝⟨ {!!} ⟩
-  {!!} ＝⟨ {!!} ⟩
-  {!!} ＝⟨ {!!} ⟩
-  {!!} ＝⟨ {!!} ⟩
-  {!!} ＝⟨ {!!} ⟩
-  {!!} ＝⟨ {!!} ⟩
-  {!!} ＝⟨ {!!} ⟩
-  ⨆ (j-is-embedding q) (λ ((p , _) : fiber j q) → f p) ＝⟨ refl ⟩
-  h q ∎
--}
+        I : ⨆ i f ＝ f p
+        I = ⨆-property P i f p
 
 \end{code}

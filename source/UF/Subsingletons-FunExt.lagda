@@ -34,17 +34,17 @@ open import UF.Subsingletons-Properties
            → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
            → ((x : X) → is-prop (A x))
            → is-prop ({x : X} → A x)
-Π-is-prop' fe {X} {A} i = retract-of-prop retr (Π-is-prop fe i)
+Π-is-prop' fe {X} {A} i = retract-of-prop ρ (Π-is-prop fe i)
  where
-  retr : retract ({x : X} → A x) of Π A
-  retr = (λ f {x} → f x) , (λ g x → g {x}) , (λ x → refl)
+  ρ : retract ({x : X} → A x) of Π A
+  ρ = (λ f {x} → f x) , (λ g x → g {x}) , (λ x → refl)
 
 Π-is-singleton : funext 𝓤 𝓥
                → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                → ((x : X) → is-singleton (A x))
                → is-singleton (Π A)
-Π-is-singleton fe i = (λ x → pr₁ (i x)) ,
-                      (λ f → dfunext fe (λ x → pr₂ (i x) (f x)))
+Π-is-singleton fe i = (λ x → center (i x)) ,
+                      (λ f → dfunext fe (λ x → centrality (i x) (f x)))
 
 being-prop-is-prop : {X : 𝓤 ̇ }
                    → funext 𝓤 𝓤
