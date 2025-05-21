@@ -16,11 +16,17 @@
 
 {-# OPTIONS --without-K --type-in-type --no-level-universe --no-termination-check --guardedness #-}
 
-import index                    -- Of --safe modules using --level-universe.
-import GamesExperimental.index  -- With --safe but --no-level-universe.
-import Unsafe.index             -- Of unsafe modules.
-import InfinitePigeon.index     -- Disables termination check for bar recursion.
+import index                                -- (1)
+import GamesExperimental.index              -- (2)
+import RelativeMonadOnStructuredTypes.index -- (2)
+import Unsafe.index                         -- (3)
+import InfinitePigeon.index                 -- (4)
 
 \end{code}
+
+(1) Of --safe modules using --level-universe.
+(2) With --safe but --no-level-universe.
+(3) Of unsafe modules.
+(4) Disables termination check for bar recursion.
 
 See the module index for an explanation of the philosophy of TypeTopology.
