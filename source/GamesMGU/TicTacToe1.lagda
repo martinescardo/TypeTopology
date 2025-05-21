@@ -9,7 +9,7 @@ TODO. Organaze this module better, following the organization of TicTacToe0.
 
 {-# OPTIONS --safe --without-K --no-level-universe #-}
 
-module GamesExperimental.TicTacToe1 where
+module GamesMGU.TicTacToe1 where
 
 open import Fin.ArgMinMax
 open import Fin.Topology
@@ -23,9 +23,9 @@ open import UF.DiscreteAndSeparated
 𝟛 : 𝓤₀ ̇
 𝟛 = Fin 3
 
-open import GamesExperimental.FiniteHistoryDependent {𝓤₀} {𝓤₀} 𝟛
-open import GamesExperimental.Constructor {𝓤₀} {𝓤₀} 𝟛
-open import GamesExperimental.J
+open import GamesMGU.FiniteHistoryDependent {𝓤₀} {𝓤₀} 𝟛
+open import GamesMGU.Constructor {𝓤₀} {𝓤₀} 𝟛
+open import GamesMGU.J
 
 tic-tac-toe₁ : Game
 tic-tac-toe₁ = build-Game draw Board transition 9 board₀

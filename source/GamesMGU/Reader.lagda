@@ -6,9 +6,9 @@ Martin Escardo, Paulo Oliva, 2023
 
 open import MLTT.Spartan hiding (J)
 
-module GamesExperimental.Reader where
+module GamesMGU.Reader where
 
-open import GamesExperimental.Monad
+open import GamesMGU.Monad
 
 Reader : {𝓦₀ : Universe} → 𝓦₀ ̇ → Monad
 Reader {𝓦₀} A = record {

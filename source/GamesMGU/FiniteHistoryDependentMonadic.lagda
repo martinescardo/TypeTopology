@@ -5,7 +5,7 @@ moment the proofs are in "blackboard" style (improvised proofs that
 work) rather than "article" style (proofs written in a more
 presentable way).
 
-This generalizes (but also uses) the file GamesExperimental.FiniteHistoryDependent
+This generalizes (but also uses) the file GamesMGU.FiniteHistoryDependent
 with a monad parameter 𝓣. When 𝓣 is the identity monad 𝕀𝕕, the
 original development is obtained. We apply the selection-monad
 transformer 𝕁-transf to 𝓣. Notice, however, that the definition of
@@ -14,12 +14,12 @@ game is the same. See [1] for background.
 The main examples of 𝓣 we have in mind are the powerset monad (for the
 Herbrand Functional Interpretation [2]), probability distribution
 monads (for mixed strategies) and the reader monad (for alpha-beta
-pruning in the file GamesExperimental.alpha-beta).
+pruning in the file GamesMGU.alpha-beta).
 
 [1] M. Escardo and P. Oliva.
     Higher-order Games with Dependent Types (2023)
     https://doi.org/10.1016/j.tcs.2023.114111
-    Available in TypeTopology at GamesExperimental.FiniteHistoryDependent.
+    Available in TypeTopology at GamesMGU.FiniteHistoryDependent.
 
 [2] M. Escardo and P. Oliva.
     The Herbrand functional interpretation of the double negation shift (2017)
@@ -30,13 +30,13 @@ pruning in the file GamesExperimental.alpha-beta).
 
 {-# OPTIONS --safe --without-K --no-level-universe #-}
 
-open import GamesExperimental.Monad
-open import GamesExperimental.J
-open import GamesExperimental.K
+open import GamesMGU.Monad
+open import GamesMGU.J
+open import GamesMGU.K
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
 
-module GamesExperimental.FiniteHistoryDependentMonadic
+module GamesMGU.FiniteHistoryDependentMonadic
         (fe : Fun-Ext)
         (𝕋 : Monad)
         {𝓤 𝓦₀ : Universe}
@@ -44,9 +44,9 @@ module GamesExperimental.FiniteHistoryDependentMonadic
         (𝓐 : Algebra 𝕋 R)
  where
 
-open import GamesExperimental.TypeTrees {𝓤}
+open import GamesMGU.TypeTrees {𝓤}
 
-open import GamesExperimental.FiniteHistoryDependent {𝓤} {𝓦₀} R
+open import GamesMGU.FiniteHistoryDependent {𝓤} {𝓦₀} R
      using (𝓚 ; Game ; game ; sequenceᴷ ; optimal-outcome)
 
 open Game

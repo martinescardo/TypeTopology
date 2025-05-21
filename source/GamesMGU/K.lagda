@@ -6,9 +6,9 @@ Martin Escardo, Paulo Oliva, 2023
 
 open import MLTT.Spartan hiding (J)
 
-module GamesExperimental.K where
+module GamesMGU.K where
 
-open import GamesExperimental.Monad
+open import GamesMGU.Monad
 
 private
  variable

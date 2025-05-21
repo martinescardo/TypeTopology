@@ -7,14 +7,14 @@ history dependent game.
 
 {-# OPTIONS --safe --without-K --no-level-universe #-}
 
-module GamesExperimental.TicTacToe0 where
+module GamesMGU.TicTacToe0 where
 
 open import Fin.ArgMinMax
 open import Fin.Topology
 open import Fin.Type
-open import GamesExperimental.J
-open import GamesExperimental.K
-open import GamesExperimental.TypeTrees
+open import GamesMGU.J
+open import GamesMGU.K
+open import GamesMGU.TypeTrees
 open import MLTT.Athenian
 open import MLTT.Spartan hiding (J)
 open import TypeTopology.CompactTypes
@@ -30,8 +30,8 @@ The type of outcomes:
 R : 𝓤₀ ̇
 R = Fin 3
 
-open import GamesExperimental.FiniteHistoryDependent {𝓤₀} {𝓤₀} R
-open import GamesExperimental.JK
+open import GamesMGU.FiniteHistoryDependent {𝓤₀} {𝓤₀} R
+open import GamesMGU.JK
 
 \end{code}
 

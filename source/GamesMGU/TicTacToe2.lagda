@@ -8,7 +8,7 @@ another file.
 {-# OPTIONS --safe --without-K --no-exact-split --no-level-universe #-}
 
 
-module GamesExperimental.TicTacToe2 where
+module GamesMGU.TicTacToe2 where
 
 open import MLTT.Spartan hiding (J)
 open import MLTT.Fin
@@ -16,10 +16,10 @@ open import MLTT.Fin
 data 𝟛 : Type where
  O-wins draw X-wins : 𝟛
 
-open import GamesExperimental.Constructor {𝓤₀} {𝓤₀} 𝟛
-open import GamesExperimental.FiniteHistoryDependent {𝓤₀} {𝓤₀} 𝟛
-open import GamesExperimental.TypeTrees {𝓤₀}
-open import GamesExperimental.J
+open import GamesMGU.Constructor {𝓤₀} {𝓤₀} 𝟛
+open import GamesMGU.FiniteHistoryDependent {𝓤₀} {𝓤₀} 𝟛
+open import GamesMGU.TypeTrees {𝓤₀}
+open import GamesMGU.J
 open import MLTT.Athenian
 
 open list-util

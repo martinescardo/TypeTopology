@@ -5,7 +5,7 @@ the end of this file with the various possibilities offered here.
 
 We incorporate alpha-beta pruning to our previous work on finite
 history-dependent games using the selection and continuous monads (in
-the module GamesExperimental.FiniteHistoryDependent). But we do much more than
+the module GamesMGU.FiniteHistoryDependent). But we do much more than
 just that.
 
 We define a minimax game (R , Xt, q , ϕt) to be a two-player game with
@@ -43,17 +43,17 @@ We now define standard minimax games.
 
 \begin{code}
 
-module GamesExperimental.alpha-beta
+module GamesMGU.alpha-beta
         {𝓤 𝓥 : Universe}
         (R : 𝓤 ̇ )
         (_<_ : R → R → 𝓥  ̇ )
         (δ : (r s : R) → is-decidable (r < s))
       where
 
-open import GamesExperimental.FiniteHistoryDependent {𝓤} public
-open import GamesExperimental.J
-open import GamesExperimental.K
-open import GamesExperimental.TypeTrees {𝓤} public
+open import GamesMGU.FiniteHistoryDependent {𝓤} public
+open import GamesMGU.J
+open import GamesMGU.K
+open import GamesMGU.TypeTrees {𝓤} public
 open import MLTT.Athenian
 open import UF.FunExt
 
@@ -202,8 +202,8 @@ reader monad, to speed-up the computation of the optimal play.
 
   module _ (fe : Fun-Ext) (-∞ ∞ : R) where
 
-   open import GamesExperimental.Reader
-   open import GamesExperimental.Monad
+   open import GamesMGU.Reader
+   open import GamesMGU.Monad
 
    AB = R × R
 
@@ -253,7 +253,7 @@ reader monad, to speed-up the computation of the optimal play.
    ρ : T R → R
    ρ = structure-map 𝓡
 
-   open import GamesExperimental.FiniteHistoryDependentMonadic
+   open import GamesMGU.FiniteHistoryDependentMonadic
                 fe
                 (Reader AB)
                 {𝓤}
@@ -356,8 +356,8 @@ quantifiers with the reader monad to incorporate alpha-beta pruning.
              (λ (_ : s < r) → s)
              (λ (_ : s ≥ r) → r)
 
-  open import GamesExperimental.Reader
-  open import GamesExperimental.Monad
+  open import GamesMGU.Reader
+  open import GamesMGU.Monad
 
   AB = R × R
 
