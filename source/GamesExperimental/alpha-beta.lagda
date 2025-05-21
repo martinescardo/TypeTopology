@@ -253,7 +253,7 @@ reader monad, to speed-up the computation of the optimal play.
    ρ : T R → R
    ρ = structure-map 𝓡
 
-   open import GamesExperimental.Transformer
+   open import GamesExperimental.FiniteHistoryDependentMonadic
                 fe
                 (Reader AB)
                 {𝓤}

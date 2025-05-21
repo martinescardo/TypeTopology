@@ -12,7 +12,8 @@ module GamesExperimental.index where
 import GamesExperimental.Constructor             -- For simplifying the construction of games.
 import GamesExperimental.Examples                -- Miscelaneous small examples.
 import GamesExperimental.FiniteHistoryDependent  -- Theory of finite history dependent games.
-import GamesExperimental.Transformer             -- With additional monad for irrational players.
+import GamesExperimental.FiniteHistoryDependentMonadic
+                                                 -- With additional monad for irrational players.
 import GamesExperimental.J                       -- Selection monad.
 import GamesExperimental.K                       -- Continuation (or quantifier) monad.
 import GamesExperimental.JK                      -- Relationship between the two mondas.

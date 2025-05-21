@@ -647,13 +647,13 @@ More modestly, for now we have the following weakening of the conjecture.
     : (P : 𝓤 ̇ ) (i : is-prop P) (f : P → D)
     → ((p : P) → f p ⊑ ⨆ i f)
     × ((u : D) → ((p : P) → f p ⊑ u) → ⨆ i f ⊑ u)
-  ⨆-is-lub P i f = α , γ
+  ⨆-is-lub P i f = α , ψ
    where
     α : (p : P) → f p ⊑ ⨆ i f
     α p a = (⨆-property P i f p)⁻¹
 
-    γ : (u : D) → ((p : P) → f p ⊑ u) → ⨆ i f ⊑ u
-    γ u β c =
+    ψ : (u : D) → ((p : P) → f p ⊑ u) → ⨆ i f ⊑ u
+    ψ u β c =
       ⨆ i f ＝⟨ I ⟩
       f p   ＝⟨ β p (transport δ I c) ⟩
       u     ∎
@@ -675,6 +675,21 @@ This completes the proof. But notice that we also have
 
 \end{code}
 
-which should be an inverse of γ, so that we can use the same idea of
+which should be an inverse of ψ, so that we can use the same idea of
 the sanity check to prove the colimit conjecture. This is the next
 thing to try.
+
+\begin{code}
+
+    φ-explicitly : (u : D) (γ : ⨆ i f ⊑ u)
+                 → φ u γ ＝ λ p a → α p a ∙ γ (transport δ (α p a) a)
+    φ-explicitly u γ = refl
+
+    ψ-explicitly : (u : D) (β : (p : P) → f p ⊑ u)
+                 → ψ u β
+                 ＝ λ c → ⨆-property P i f (δ-property P i f c)
+                        ∙ β (δ-property P i f c)
+                            (transport δ (⨆-property P i f (δ-property P i f c)) c)
+    ψ-explicitly u β = refl
+
+\end{code}

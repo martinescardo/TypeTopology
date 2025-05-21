@@ -36,7 +36,7 @@ open import GamesExperimental.K
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
 
-module GamesExperimental.Transformer
+module GamesExperimental.FiniteHistoryDependentMonadic
         (fe : Fun-Ext)
         (𝕋 : Monad)
         {𝓤 𝓦₀ : Universe}
