@@ -256,7 +256,7 @@ Tosun.
 
    https://doi.org/10.48550/arxiv.2501.14542
 
-1. Martin H. Escardo, Bruno da Rocha Paive, Vincent Rahli and Ayberk Tosun.
+1. Martin H. Escardo, Bruno da Rocha Paiva, Vincent Rahli and Ayberk Tosun.
    *Internal Effectful Forcing in System T*. To appear in [FSCD'2025](https://fscd2025.github.io/).
 
    https://doi.org/10.48550/arXiv.2505.11055
