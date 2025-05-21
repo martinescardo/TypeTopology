@@ -48,10 +48,10 @@ module GamesMGU.FiniteHistoryDependent
         (R : 𝓦₀ ̇ )
        where
 
-open import GamesMGU.Monad
-open import GamesMGU.J
-open import GamesMGU.K
-open import GamesMGU.JK
+open import MonadOnTypesMGU.Monad
+open import MonadOnTypesMGU.J
+open import MonadOnTypesMGU.K
+open import MonadOnTypesMGU.JK
 open import UF.Base
 open import UF.FunExt
 

@@ -12,8 +12,8 @@ module GamesMGU.Examples where
 open import MLTT.Spartan hiding (J)
 open import MLTT.Fin
 open import GamesMGU.TypeTrees
-open import GamesMGU.J
-open import GamesMGU.K
+open import MonadOnTypesMGU.J
+open import MonadOnTypesMGU.K
 
 module permutations where
 

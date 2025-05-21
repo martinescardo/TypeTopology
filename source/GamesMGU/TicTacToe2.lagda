@@ -19,7 +19,7 @@ data 𝟛 : Type where
 open import GamesMGU.Constructor {𝓤₀} {𝓤₀} 𝟛
 open import GamesMGU.FiniteHistoryDependent {𝓤₀} {𝓤₀} 𝟛
 open import GamesMGU.TypeTrees {𝓤₀}
-open import GamesMGU.J
+open import MonadOnTypesMGU.J
 open import MLTT.Athenian
 
 open list-util

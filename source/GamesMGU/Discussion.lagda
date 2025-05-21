@@ -713,7 +713,7 @@ modification needed to use ℍ instead:
 
 module illustration (R : 𝓤  ̇ ) where
 
- open import GamesMGU.K
+ open import MonadOnTypesMGU.K
 
  open K-definitions R
 

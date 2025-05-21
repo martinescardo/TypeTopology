@@ -30,9 +30,9 @@ pruning in the file GamesMGU.alpha-beta).
 
 {-# OPTIONS --safe --without-K --no-level-universe #-}
 
-open import GamesMGU.Monad
-open import GamesMGU.J
-open import GamesMGU.K
+open import MonadOnTypesMGU.Monad
+open import MonadOnTypesMGU.J
+open import MonadOnTypesMGU.K
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
 

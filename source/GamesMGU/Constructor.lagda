@@ -17,8 +17,8 @@ open import UF.FunExt
 
 open import GamesMGU.TypeTrees {𝓤}
 open import GamesMGU.FiniteHistoryDependent {𝓤} {𝓦₀} R
-open import GamesMGU.J
-open import GamesMGU.JK
+open import MonadOnTypesMGU.J
+open import MonadOnTypesMGU.JK
 
 open J-definitions R
 

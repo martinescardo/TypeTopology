@@ -19,7 +19,7 @@ open import MLTT.Spartan
 open import UF.Equiv
 open import UF.FunExt
 
-module GamesMGU.Monad where
+module MonadOnTypesMGU.Monad where
 
 record Monad : 𝓤ω where
  constructor

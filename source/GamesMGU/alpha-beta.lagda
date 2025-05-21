@@ -51,10 +51,10 @@ module GamesMGU.alpha-beta
       where
 
 open import GamesMGU.FiniteHistoryDependent {𝓤} public
-open import GamesMGU.J
-open import GamesMGU.K
 open import GamesMGU.TypeTrees {𝓤} public
 open import MLTT.Athenian
+open import MonadOnTypesMGU.J
+open import MonadOnTypesMGU.K
 open import UF.FunExt
 
 _≥_ : R → R → 𝓥 ̇
@@ -202,8 +202,8 @@ reader monad, to speed-up the computation of the optimal play.
 
   module _ (fe : Fun-Ext) (-∞ ∞ : R) where
 
-   open import GamesMGU.Reader
-   open import GamesMGU.Monad
+   open import MonadOnTypesMGU.Reader
+   open import MonadOnTypesMGU.Monad
 
    AB = R × R
 
@@ -356,8 +356,8 @@ quantifiers with the reader monad to incorporate alpha-beta pruning.
              (λ (_ : s < r) → s)
              (λ (_ : s ≥ r) → r)
 
-  open import GamesMGU.Reader
-  open import GamesMGU.Monad
+  open import MonadOnTypesMGU.Reader
+  open import MonadOnTypesMGU.Monad
 
   AB = R × R
 

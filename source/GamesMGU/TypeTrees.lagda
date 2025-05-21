@@ -20,7 +20,7 @@ module GamesMGU.TypeTrees
         {𝓤 : Universe}
        where
 
-open import GamesMGU.Monad
+open import MonadOnTypesMGU.Monad
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

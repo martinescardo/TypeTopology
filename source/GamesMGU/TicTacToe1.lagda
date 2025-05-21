@@ -25,7 +25,7 @@ open import UF.DiscreteAndSeparated
 
 open import GamesMGU.FiniteHistoryDependent {𝓤₀} {𝓤₀} 𝟛
 open import GamesMGU.Constructor {𝓤₀} {𝓤₀} 𝟛
-open import GamesMGU.J
+open import MonadOnTypesMGU.J
 
 tic-tac-toe₁ : Game
 tic-tac-toe₁ = build-Game draw Board transition 9 board₀

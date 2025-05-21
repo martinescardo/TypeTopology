@@ -18,6 +18,7 @@
 
 import index                                -- (1)
 import GamesMGU.index                       -- (2)
+import MonadOnTypesMGU.index                -- (2)
 import RelativeMonadOnStructuredTypes.index -- (2)
 import Unsafe.index                         -- (3)
 import InfinitePigeon.index                 -- (4)

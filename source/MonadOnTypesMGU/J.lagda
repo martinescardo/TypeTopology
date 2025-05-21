@@ -6,10 +6,10 @@ Martin Escardo, Paulo Oliva, 2023
 
 open import MLTT.Spartan hiding (J)
 
-module GamesMGU.J where
+module MonadOnTypesMGU.J where
 
 open import UF.FunExt
-open import GamesMGU.Monad
+open import MonadOnTypesMGU.Monad
 
 private
  variable
@@ -109,7 +109,7 @@ module JT-definitions
         (fe : Fun-Ext)
        where
 
- open import GamesMGU.K
+ open import MonadOnTypesMGU.K
 
  open T-definitions 𝓣
  open α-definitions 𝓣 R 𝓐
