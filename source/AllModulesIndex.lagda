@@ -17,7 +17,7 @@
 {-# OPTIONS --without-K --type-in-type --no-level-universe --no-termination-check --guardedness #-}
 
 import index                                -- (1)
-import GamesExperimental.index              -- (2)
+import GamesMGU.index                       -- (2)
 import RelativeMonadOnStructuredTypes.index -- (2)
 import Unsafe.index                         -- (3)
 import InfinitePigeon.index                 -- (4)
