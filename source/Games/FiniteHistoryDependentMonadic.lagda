@@ -31,13 +31,13 @@ pruning in the file Games.alpha-beta).
 {-# OPTIONS --safe --without-K #-}
 
 open import Games.TypeTrees
-open import Games.Monad
-open import Games.J-transf
-open import Games.K
+open import MonadOnTypes.Monad
+open import MonadOnTypes.J-transf
+open import MonadOnTypes.K
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
 
-module Games.Transformer
+module Games.FiniteHistoryDependentMonadic
         (fe : Fun-Ext)
         (𝕋  : Monad)
         (R  : Type)
@@ -156,10 +156,10 @@ T-selection-strategy {X ∷ Xf} εt@(ε :: εf) q = σ :: σf
 \end{code}
 
 For the next technical lemma, we need the monad T to satisfy the
-condition extᵀ-const defined in Games.Monads, which says that the
+condition extᵀ-const defined in MonadOnTypes.Monads, which says that the
 Kleisli extension of a constant function is itself constant. Ohad
 Kammar pointed out to us that this condition is equivalent to the
-monad being affine. A proof is included in the module Games.Monad.
+monad being affine. A proof is included in the module MonadOnTypes.Monad.
 
 TODO. Explain the intuition of the condition extᵀ-const and
 equivalents.

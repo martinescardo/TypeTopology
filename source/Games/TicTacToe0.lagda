@@ -12,11 +12,11 @@ module Games.TicTacToe0 where
 open import Fin.ArgMinMax
 open import Fin.Topology
 open import Fin.Type
-open import Games.J
-open import Games.K
 open import Games.TypeTrees
 open import MLTT.Athenian
 open import MLTT.Spartan hiding (J)
+open import MonadOnTypes.J
+open import MonadOnTypes.K
 open import TypeTopology.CompactTypes
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.DiscreteAndSeparated
@@ -31,7 +31,7 @@ R : Type
 R = Fin 3
 
 open import Games.FiniteHistoryDependent R
-open import Games.JK
+open import MonadOnTypes.JK
 
 \end{code}
 

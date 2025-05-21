@@ -16,7 +16,7 @@ range over such trees.
 
 module Games.TypeTrees where
 
-open import Games.Monad
+open import MonadOnTypes.Monad
 open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Subsingletons

@@ -156,12 +156,6 @@ T-selection-strategy{X ∷ Xf} εt@(ε :: εf) q = σ :: σf
 
 \end{code}
 
-For the next technical lemma, we need the monad T to satisfy the
-condition extᵀ-const defined in GamesExperimental.Monads, which says that the
-Kleisli extension of a constant function is itself constant. Ohad
-Kammar pointed out to us that this condition is equivalent to the
-monad being affine. A proof is included in the module GamesExperimental.Monad.
-
 TODO. Explain the intuition of the condition extᵀ-const and
 equivalents.
 

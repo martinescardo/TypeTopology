@@ -160,6 +160,7 @@ import MGS.index
 import MLTT.index
 import MetricSpaces.index
 import Modal.index
+import MonadOnTypes.index
 import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index

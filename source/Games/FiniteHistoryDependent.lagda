@@ -45,10 +45,10 @@ open import MLTT.Spartan hiding (J)
 
 module Games.FiniteHistoryDependent (R : Type) where
 
-open import Games.Monad
-open import Games.J
-open import Games.K
-open import Games.JK
+open import MonadOnTypes.Monad
+open import MonadOnTypes.J
+open import MonadOnTypes.K
+open import MonadOnTypes.JK
 open import UF.Base
 open import UF.FunExt
 

@@ -27,14 +27,14 @@ module Games.OptimalPlays
        where
 
 open import Games.FiniteHistoryDependent R
-open import Games.J-transf-variation
-open import Games.JK
-open import Games.K
-open import Games.List
-open import Games.Monad
-open import Games.NonEmptyList
 open import Games.TypeTrees
 open import MLTT.List hiding ([_]) renaming (map to lmap)
+open import MonadOnTypes.J-transf-variation
+open import MonadOnTypes.JK
+open import MonadOnTypes.K
+open import MonadOnTypes.List
+open import MonadOnTypes.Monad
+open import MonadOnTypes.NonEmptyList
 open import Notation.CanonicalMap
 open import UF.Base
 
