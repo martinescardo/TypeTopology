@@ -84,7 +84,7 @@ module relative-JT-definitions
         (fe : Fun-Ext)
        where
 
- open import GamesExperimental.K
+ open import GamesMGU.K
 
  open relative-T-definitions 𝓣
  open relative-α-definitions 𝓣 𝓡 𝓐
