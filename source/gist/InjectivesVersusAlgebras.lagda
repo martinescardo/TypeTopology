@@ -511,11 +511,16 @@ embeddings.
 
 \end{code}
 
+Digression with speculative ideas.
+
 \begin{code}
+
+open import UF.Size
 
 module lifting-algebras-as-categories
         (𝓤 : Universe)
-        (D : 𝓤 ̇ )
+        (D : 𝓤 ⁺ ̇ )
+        (D-is-locally-small : is-locally-small D)
         (⨆ : {P : 𝓤 ̇} → is-prop P → (P → D) → D)
         (⨆-property : (P : 𝓤 ̇)
                        (i : is-prop P)
@@ -552,13 +557,16 @@ module lifting-algebras-as-categories
   _⊑_ : D → D → 𝓤 ⁺ ̇
   x ⊑ y = δ x → x ＝ y
 
+  δ-is-monotone : {x y : D} → x ⊑ y → δ x → δ y
+  δ-is-monotone α a = transport δ (α a) a
+
   δ-property : (P : 𝓤 ̇ ) (i : is-prop P) (f : P → D)
              → δ (⨆ i f)
              → P
   δ-property P i f a = a P i e
    where
     e : ⨆ i (λ _ → ⨆ i f) ＝ ⨆ i f
-    e = ap (⨆ i) (dfunext fe' (⨆-property P i f ))
+    e = ap (⨆ i) (dfunext fe' (⨆-property P i f))
 
   ⊥ : D
   ⊥ = ⨆ 𝟘-is-prop unique-from-𝟘
@@ -583,7 +591,7 @@ module lifting-algebras-as-categories
   idD {x} a = refl
 
   _□_ : {x y z : D} → x ⊑ y → y ⊑ z → x ⊑ z
-  α □ β = λ a → α a ∙ β (transport δ (α a) a)
+  α □ β = λ a → α a ∙ β (δ-is-monotone α a)
 
   idD-left : {x y : D} (α : x ⊑ y)
            → α □ idD ∼ α
@@ -603,11 +611,11 @@ module lifting-algebras-as-categories
    ((α □ β) □ γ) a    ∎
     where
      b : δ y
-     b = transport δ (α a) a
+     b = δ-is-monotone α a
 
      c c' : δ z
-     c  = transport δ (β b) b
-     c' = transport δ ((α □ β) a) a
+     c  = δ-is-monotone β b
+     c' = δ-is-monotone (α □ β) a
 
      I = ap (λ - → (α a ∙ β b) ∙ γ -) (δ-is-prop-valued z c c')
 
@@ -618,7 +626,7 @@ module lifting-algebras-as-categories
             , ((u : D) (β : (p : P) → f p ⊑ u)
                   → ∃! γ ꞉ ⨆ i f ⊑ u , ((p : P) → α p □ γ ＝ β p))
 
-  colimit-conjecture-particular : 𝓤 ̇
+  colimit-conjecture-particular : 𝓤 ⁺ ̇
   colimit-conjecture-particular =
    (d : D)
       → Σ α ꞉ d ＝ d
@@ -682,7 +690,7 @@ thing to try.
 \begin{code}
 
     φ-explicitly : (u : D) (γ : ⨆ i f ⊑ u)
-                 → φ u γ ＝ λ p a → α p a ∙ γ (transport δ (α p a) a)
+                 → φ u γ ＝ λ p a → α p a ∙ γ (δ-is-monotone (α p) a)
     φ-explicitly u γ = refl
 
     ψ-explicitly : (u : D) (β : (p : P) → f p ⊑ u)
