@@ -13,6 +13,8 @@ import GamesMGU.Examples                -- Miscelaneous small examples.
 import GamesMGU.FiniteHistoryDependent  -- Theory of finite history dependent games.
 import GamesMGU.FiniteHistoryDependentMonadic
                                         -- With additional monad for irrational players.
+import GamesMGU.FiniteHistoryDependentRelativeMonadic
+                                        -- Same but with relative monad.
 import GamesMGU.TicTacToe0
 import GamesMGU.TicTacToe1              -- Like TicTacToe0 but using GamesMGU.Constructor.
 import GamesMGU.TicTacToe2              -- More efficient and less elegant version.
