@@ -515,12 +515,9 @@ Digression with speculative ideas.
 
 \begin{code}
 
-open import UF.Size
-
 module lifting-algebras-as-categories
         (𝓤 : Universe)
         (D : 𝓤 ⁺ ̇ )
-        (D-is-locally-small : is-locally-small D)
         (⨆ : {P : 𝓤 ̇} → is-prop P → (P → D) → D)
         (⨆-property : (P : 𝓤 ̇)
                        (i : is-prop P)
