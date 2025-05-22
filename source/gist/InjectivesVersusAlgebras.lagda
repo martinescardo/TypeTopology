@@ -518,13 +518,19 @@ Digression with speculative ideas.
 module lifting-algebras-as-categories
         (𝓤 : Universe)
         (D : 𝓤 ⁺ ̇ )
-        (⨆ : {P : 𝓤 ̇} → is-prop P → (P → D) → D)
+        (⨆ : {P : 𝓤 ̇ } → is-prop P → (P → D) → D)
         (⨆-property : (P : 𝓤 ̇)
                        (i : is-prop P)
                        (f : P → D)
                        (p : P)
                      → ⨆ i f ＝ f p)
        where
+
+\end{code}
+
+A definedness predicate:
+
+\begin{code}
 
   δ : D → 𝓤 ⁺ ̇
   δ d = (P : 𝓤 ̇ ) (i : is-prop P) → ⨆ i (λ (p : P) → d) ＝ d → P
@@ -551,6 +557,20 @@ module lifting-algebras-as-categories
   δ'-gives-δ : (d : D) → δ' d → δ d
   δ'-gives-δ d a P i = a P i (λ _ → d)
 
+\end{code}
+
+So they are equivalent because logically equivalent propositional are
+(typally) equivalent.
+
+I wrote "hom x y" instead of "x ⊑ y" in a previous version of this
+file. This would be indeed more accurate.
+
+The idea is that an algebra of the lifting monad has the structure of
+an ∞-category which is almost an ∞-groupoid, except for having a
+bottom element.
+
+\begin{code}
+
   _⊑_ : D → D → 𝓤 ⁺ ̇
   x ⊑ y = δ x → x ＝ y
 
@@ -571,6 +591,13 @@ module lifting-algebras-as-categories
   ⊥-is-undefined : ¬ δ ⊥
   ⊥-is-undefined a = 𝟘-elim (δ-property 𝟘 𝟘-is-prop 𝟘-elim a)
 
+\end{code}
+
+The idea of δ x is that it gives a positive (but still propositional)
+way of saying that x is different from ⊥.
+
+\begin{code}
+
   ⊥-least : (x : D) → ⊥ ⊑ x
   ⊥-least x a = 𝟘-elim (⊥-is-undefined a)
 
@@ -583,6 +610,12 @@ module lifting-algebras-as-categories
    pointed-props-are-singletons
     (⊥-least x)
     (being-upper-bound-of-⊥-is-prop x)
+
+\end{code}
+
+The ∞-categorical structure alluded above.
+
+\begin{code}
 
   idD : {x : D} → x ⊑ x
   idD {x} a = refl
@@ -698,3 +731,12 @@ thing to try.
     ψ-explicitly u β = refl
 
 \end{code}
+
+It is interesting to instantiate the above to D := 𝓤 and ⨆ := Σ or ⨆ := Π.
+
+Then we have that ⊥ is respectively the empty type 𝟘 or the unit type 𝟙.
+
+Moreover, δΣ X ≃ ∥ X ∥, whereas δΠ X is a positive way of saying that X is not 𝟙.
+
+(And, of course, ∥ X ∥ is a positive way of saying that X is not 𝟘,
+without exhibiting a point of X.)
