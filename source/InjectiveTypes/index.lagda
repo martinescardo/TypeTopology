@@ -91,3 +91,12 @@ distinct points can be injective without Ω¬¬-resizing.
 import InjectiveTypes.Resizing
 
 \end{code}
+
+We explore a factorization system of embeddings and fiberwise algebraically
+injective maps in the following file.
+
+\begin{code}
+
+import InjectiveTypes.WeakFactorizationSystem
+
+\end{code}
