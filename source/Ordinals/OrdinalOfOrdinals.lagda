@@ -863,6 +863,7 @@ EM-implies-order-preserving-gives-≼ em α β σ = δ
 
   δ : α ≼ β
   δ = γ (≼-or-> _⊲⁻_ fe' em ⊲⁻-is-well-order α β)
+
 \end{code}
 
 Added 19 November 2024 by Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu

@@ -174,7 +174,7 @@ Added 21st May 2022. Unfortunately, the above is not very useful in
 the generality it is proved. The reason is that in other modules we
 have sups and sums constructed under different assumptions, and
 although the assumptions are propositions and hence we can transport
-using propositional extensionality, this becomes to cumbersome to even
+using propositional extensionality, this becomes too cumbersome to even
 write down, let alone prove. Hence we will repeat the above (short)
 code with the two assumptions we need.
 

@@ -650,6 +650,7 @@ left-preserves-least α β a₀ a₀-least (inr x) (inl u) l = ⋆
 
 \end{code}
 
+End of addition.
 
 Added 29 March 2022.
 

@@ -130,7 +130,6 @@ for this data, see the file InjectiveTypes.MathematicalStructures.
                       (f : p holds → X)
                     → has-section (ρ p f)
 
-
  compatibility-condition-gives-compatibility-data
   : compatibility-condition
   → compatibility-data
@@ -565,7 +564,6 @@ compatibility-condition-with-axioms
 
     γ : is-equiv ρ'
     γ = d p f , σ' , σρ'
-
 
 \end{code}
 

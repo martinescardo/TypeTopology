@@ -1887,6 +1887,9 @@ If we drop the inhabitation conditions, the endpoints can be ±∞:
 
 \end{code}
 
+TODO. Show that 𝓡∞ is isomorphic, as a dcpo, to the ideal completion
+of the dyadic intervals.
+
 The notion of a locator for a real number was studied by my student
 Auke Booij in his PhD thesis.
 
