@@ -38,11 +38,11 @@ open import UF.Univalence
 We define a fiberwise algebraically injective map to be one whose fibers are all
 algebraically injective types.
 
-NB: It may be that fiberwise flabbiness is more convenient to work with.
+NB. It may be that fiberwise flabbiness is more convenient to work with.
 
 \begin{code}
 
-fiberwise-ainjective : {A : 𝓤 ̇  } {B : 𝓥 ̇  } → (A → B) → (𝓦 𝓣 : Universe)
+fiberwise-ainjective : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (𝓦 𝓣 : Universe)
                      → ((𝓦 ⊔ 𝓣) ⁺ ⊔ 𝓤 ⊔ 𝓥) ̇
 fiberwise-ainjective f 𝓦 𝓣 =
  each-fiber-of f (λ F → ainjective-type F 𝓦 𝓣)
@@ -55,74 +55,79 @@ injective map.
 \begin{code}
 
 embedding-fiberwise-ainjective-factorization
- : {A : 𝓤 ̇  } {B : 𝓥 ̇  }
+ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
  → is-univalent (𝓤 ⊔ 𝓥)
  → (f : A → B)
- → Σ X ꞉ (𝓤 ⊔ 𝓥) ⁺ ̇  ,
+ → Σ X ꞉ (𝓤 ⊔ 𝓥)⁺ ̇  ,
    Σ l ꞉ (A → X) ,
    Σ r ꞉ (X → B) , (f ＝ r ∘ l)
                  × is-embedding l
                  × fiberwise-ainjective r (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-
-private
- module factorization-construction
-         {A : 𝓤 ̇  } {B : 𝓥 ̇  } (f : A → B)
-        where
-
-  ι : (X : 𝓤' ̇  ) → X → (X → 𝓤' ̇  )
-  ι X = Id
-
-  ι-is-embedding : is-univalent 𝓤' → (X : 𝓤' ̇  ) → is-embedding (ι X)
-  ι-is-embedding ua X = UA-Id-embedding ua fe
-
-  l : A → Σ b ꞉ B , (fiber f b → 𝓤 ⊔ 𝓥 ̇ )
-  l = NatΣ (λ b → ι (fiber f b)) ∘ ⌜ domain-is-total-fiber f ⌝
-
-  l-is-embedding : is-univalent (𝓤 ⊔ 𝓥) → is-embedding l
-  l-is-embedding ua =
-   ∘-is-embedding
-    (equivs-are-embeddings ⌜ domain-is-total-fiber f ⌝
-                           (⌜⌝-is-equiv (domain-is-total-fiber f)))
-    (NatΣ-is-embedding
-      (fiber f)
-      (λ b → fiber f b → 𝓤 ⊔ 𝓥 ̇ )
-      (λ b → ι (fiber f b))
-      (λ b → ι-is-embedding ua (fiber f b)))
-
-  r : (Σ b ꞉ B , (fiber f b → 𝓤 ⊔ 𝓥 ̇  )) → B
-  r = pr₁
-
-  r-fiberwise-ainjective : is-univalent (𝓤 ⊔ 𝓥)
-                         → fiberwise-ainjective r (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-  r-fiberwise-ainjective ua b =
-   equiv-to-ainjective
-    (fiber r b)
-    (fiber f b → 𝓤 ⊔ 𝓥 ̇ )
-    (power-of-ainjective (universes-are-ainjective-Π' ua))
-    (pr₁-fiber-equiv b)
-
-  f-factors : f ＝ r ∘ l
-  f-factors = refl
-
 embedding-fiberwise-ainjective-factorization {𝓤} {𝓥} {A} {B} ua f =
- let open factorization-construction f in
- (Σ b ꞉ B , (fiber f b → (𝓤 ⊔ 𝓥) ̇ )) ,
- l , r ,
- f-factors , l-is-embedding ua , r-fiberwise-ainjective ua
+ X , l , r , refl , l-is-embedding ua , r-fiberwise-ainjective ua
+  where
+   X : (𝓤 ⊔ 𝓥) ⁺ ̇
+   X = Σ b ꞉ B , (fiber f b → (𝓤 ⊔ 𝓥) ̇ )
+
+   ι : (Y : 𝓤' ̇ ) → Y → (Y → 𝓤' ̇ )
+   ι Y = Id
+
+   ι-is-embedding : is-univalent 𝓤' → (Y : 𝓤' ̇ ) → is-embedding (ι Y)
+   ι-is-embedding ua _ = UA-Id-embedding ua fe
+
+   l : A → X
+   l = NatΣ (λ b → ι (fiber f b)) ∘ ⌜ domain-is-total-fiber f ⌝
+
+   l-is-embedding : is-univalent (𝓤 ⊔ 𝓥) → is-embedding l
+   l-is-embedding ua =
+    ∘-is-embedding
+     (equivs-are-embeddings' (domain-is-total-fiber f))
+     (NatΣ-is-embedding
+       (fiber f)
+       (λ b → fiber f b → 𝓤 ⊔ 𝓥 ̇ )
+       (λ b → ι (fiber f b))
+       (λ b → ι-is-embedding ua (fiber f b)))
+
+   r : X → B
+   r = pr₁
+
+   r-fiberwise-ainjective : is-univalent (𝓤 ⊔ 𝓥)
+                          → fiberwise-ainjective r (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+   r-fiberwise-ainjective ua b =
+    equiv-to-ainjective
+     (fiber r b)
+     (fiber f b → 𝓤 ⊔ 𝓥 ̇ )
+     (power-of-ainjective (universes-are-ainjective-Π' ua))
+     (pr₁-fiber-equiv b)
 
 \end{code}
 
 We have (specified) diagonal lifts of embeddings against fiberwise algebraically
 injective maps.
 
+We consider a commutative square with j an embedding and r fiberwise
+algebraically injective and we look to find diagonal filler: a map e : Y → D
+making the resulting triangles commute.
+
+       f
+  X ------> D
+  |       ^ |
+  |      /  |
+j |  ∃e /   | r
+  |    /    |
+  |   /     |
+  v  /      v
+  Y ------> E
+       g
+
 \begin{code}
 
 module lifting-problem
-        {X : 𝓤 ̇  } {Y : 𝓥 ̇  } {D : 𝓦 ̇  } {E : 𝓣 ̇  }
+        {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {D : 𝓦 ̇ } {E : 𝓣 ̇ }
         (j : X → Y) (f : X → D) (r : D → E) (g : Y → E)
         (j-is-embedding : is-embedding j)
         (r-fiberwise-ainjective : fiberwise-ainjective r (𝓤 ⊔ 𝓥) 𝓣')
-        -- NB: The last universe parameter is arbitrary.
+        -- NB. The last universe parameter is arbitrary.
         (comm-sq : r ∘ f ∼ g ∘ j)
        where
 
@@ -134,7 +139,7 @@ module lifting-problem
     f̅ : fiber j y → fiber r (g y)
     f̅ (x , e) = (f x , (r (f x) ＝⟨ comm-sq x ⟩
                         g (j x) ＝⟨ ap g e ⟩
-                        g y ∎))
+                        g y     ∎))
 
     𝕖 : Σ e ꞉ fiber r (g y) , ((p : fiber j y) → e ＝ f̅ p)
     𝕖 = ainjective-types-are-aflabby
