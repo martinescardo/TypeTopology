@@ -1,0 +1,617 @@
+Theo Hepburn, started January 2025.
+
+Contains the full version of our language with natural numbers and lists of
+natural numbers as the available basic types.
+
+\begin{code}
+
+{-# OPTIONS --safe --without-K #-}
+
+open import MLTT.Spartan renaming (_+_ to _∔_) hiding (_^_ ; _∙_)
+open import UF.FunExt
+open import TGH.Strategy
+
+module TGH.Language (fe : naive-funext 𝓤₀ 𝓤₀) where
+
+open import Naturals.Addition renaming
+ (addition-commutativity to +-comm ; addition-associativity to +-assoc)
+open import Naturals.Multiplication
+open import Naturals.Exponentiation renaming (_ℕ^_ to _^_)
+open import Naturals.Order renaming (_≤ℕ_ to _≤_ ; _<ℕ_ to _<_)
+open import Naturals.Properties renaming (pred to pred')
+open import MLTT.Vector renaming (Vector to Vec)
+open import MLTT.Fin
+open import MLTT.List
+open import UF.Base
+open import TGH.NatOrder
+open import TGH.Thunk
+
+
+infixr 30 _⇒_
+data LType : 𝓤₀ ̇  where
+ nat : LType
+ list : LType
+ _⇒_ : LType → LType → LType
+
+Ctx : ℕ → 𝓤₀ ̇
+Ctx = Vec LType
+
+infixl 20 _∙_
+data Term {n : ℕ} (Γ : Ctx n) : LType → 𝓤₀ ̇  where
+ var : (v : Fin n) → Term Γ (Γ !! v)
+ zero : Term Γ nat
+ suc : Term Γ nat → Term Γ nat
+ pred : Term Γ nat → Term Γ nat
+ nil : Term Γ list
+ cons : Term Γ nat → Term Γ list → Term Γ list
+ if_then_else_ : {σ : LType} → Term Γ nat → Term Γ σ → Term Γ σ → Term Γ σ
+ _∙_ : {σ τ : LType} → Term Γ (σ ⇒ τ) → Term Γ σ → Term Γ τ
+ lam : (σ : LType) {τ : LType} → Term (σ ∷ Γ) τ → Term Γ (σ ⇒ τ)
+ nrec : {σ : LType} → Term Γ nat → Term Γ σ → Term Γ (σ ⇒ σ) → Term Γ σ
+ lrec : {σ : LType} → Term Γ list → Term Γ σ → Term Γ (σ ⇒ nat ⇒ σ) → Term Γ σ
+
+Closed : LType → 𝓤₀ ̇
+Closed = Term []
+
+⟦_⟧ : LType → 𝓤₀ ̇
+⟦ nat ⟧ = ℕ
+⟦ list ⟧ = List ℕ
+⟦ σ ⇒ τ ⟧ = ⟦ σ ⟧ → ⟦ τ ⟧
+
+infixr 5 _∷E_
+data Env : {n : ℕ} → Ctx n → 𝓤₀ ̇  where
+ [] : Env []
+ _∷E_ : {n : ℕ} {Γ : Ctx n } {τ : LType} → ⟦ τ ⟧ → Env Γ → Env (τ ∷ Γ)
+
+lookupEnv : {n : ℕ} {Γ : Ctx n} (m : Fin n) → Env Γ → ⟦ Γ !! m ⟧
+lookupEnv 𝟎 (x ∷E _) = x
+lookupEnv (suc m) (x ∷E env) = lookupEnv m env
+
+if'_then'_else'_ : {X : 𝓤₀ ̇ } → ℕ → X → X → X
+if' zero then' x else' y = x
+if' succ _ then' x else' y = y
+
+natRec : {n : ℕ} {σ : LType} {Γ : Ctx n} → Env Γ → (m : ℕ) → (base : Term Γ σ)
+       → (f : Term Γ (σ ⇒ σ)) → ⟦ σ ⟧
+
+listRec : {σ : LType} {n : ℕ} {Γ : Ctx n} → Env Γ → (l : List ℕ)
+        → (base : Term Γ σ) → (f : Term Γ (σ ⇒ nat ⇒ σ)) → ⟦ σ ⟧
+
+_[_]ₑ : {n : ℕ} {Γ : Ctx n} {τ : LType} → Env Γ → Term Γ τ → ⟦ τ ⟧
+env [ var v ]ₑ = lookupEnv v env
+env [ zero ]ₑ = zero
+env [ suc t ]ₑ = succ (env [ t ]ₑ)
+env [ pred t ]ₑ = pred' (env [ t ]ₑ)
+env [ nil ]ₑ = []
+env [ cons t l ]ₑ = (env [ t ]ₑ) ∷ (env [ l ]ₑ)
+env [ if t then u else v ]ₑ
+ = if' (env [ t ]ₑ) then' (env [ u ]ₑ) else' (env [ v ]ₑ)
+env [ t ∙ u ]ₑ = (env [ t ]ₑ) (env [ u ]ₑ)
+env [ lam _ t ]ₑ = λ x → (x ∷E env) [ t ]ₑ
+--env [ elam _ t ]ₑ = λ x → (x ∷E env) [ t ]ₑ
+env [ nrec t u v ]ₑ = natRec env (env [ t ]ₑ) u v
+env [ lrec t u v ]ₑ = listRec env (env [ t ]ₑ) u v
+
+natRec env zero base f = env [ base ]ₑ
+natRec env (succ m) base f = (env [ f ]ₑ) (natRec env m base f)
+
+listRec env [] base f = env [ base ]ₑ
+listRec env (x ∷ l) base f = (env [ f ]ₑ) (listRec env l base f) x
+
+⟦_⟧ᵢ : LType → 𝓤₀ ̇
+
+thunk-type : {σ : LType} → ⟦ σ ⟧ → ⟦ σ ⟧ᵢ
+
+strip-thunk : {σ : LType} → ⟦ σ ⟧ᵢ → ⟦ σ ⟧
+
+value-time-independent : {σ τ : LType} → (f : ⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) → 𝓤₀ ̇
+value-time-independent {σ} f = (x y : ⟦ σ ⟧ᵢ) → strip-thunk x ＝ strip-thunk y
+                             →  strip-thunk (f x) ＝ strip-thunk (f y)
+
+⟦ nat ⟧ᵢ = Σ t ꞉ ℕ , Thunk t ℕ
+⟦ list ⟧ᵢ = Σ t ꞉ ℕ , Thunk t (List ℕ)
+⟦ σ ⇒ τ ⟧ᵢ = Σ f ꞉ (⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) , value-time-independent f 
+
+thunk-type {nat} x = 0 , return x
+thunk-type {list} l = 0 , return l
+thunk-type {σ ⇒ σ₁} f = (λ x → thunk-type (f (strip-thunk x))) , γ f
+  where
+    γ : {σ σ₁ : LType} (f : ⟦ σ ⟧ → ⟦ σ₁ ⟧) → (x y : ⟦ σ ⟧ᵢ) →
+      strip-thunk x ＝ strip-thunk y →
+      strip-thunk (thunk-type (f (strip-thunk x))) ＝
+      strip-thunk (thunk-type (f (strip-thunk y)))
+    γ {_} {_} f x y eq = ap (strip-thunk ∘ thunk-type ∘ f) eq
+
+
+strip-thunk {nat} (_ , n) = force n
+strip-thunk {list} (_ , l) = force l
+strip-thunk {σ ⇒ σ₁} (f , _) = λ x → strip-thunk (f (thunk-type x))
+
+strip-thunk-is-inverse-of-thunk-type : {σ : LType} → (x : ⟦ σ ⟧)
+                                     → strip-thunk (thunk-type x) ＝ x
+
+strip-thunk-is-inverse-of-thunk-lemma : {σ τ : LType} → (f : ⟦ σ ⟧ → ⟦ τ ⟧)
+                                      → (x : ⟦ σ ⟧)
+                                      → strip-thunk (thunk-type f) x ＝ f x
+strip-thunk-is-inverse-of-thunk-lemma f x
+ = strip-thunk (thunk-type (f (strip-thunk (thunk-type x))))
+   ＝⟨ ap (strip-thunk ∘ thunk-type ∘ f)
+   (strip-thunk-is-inverse-of-thunk-type x) ⟩
+   strip-thunk (thunk-type (f x))
+   ＝⟨ strip-thunk-is-inverse-of-thunk-type (f x) ⟩
+   f x ∎
+
+strip-thunk-is-inverse-of-thunk-type {nat} x = refl
+strip-thunk-is-inverse-of-thunk-type {list} l = refl
+strip-thunk-is-inverse-of-thunk-type {σ ⇒ τ} f
+ = fe (strip-thunk-is-inverse-of-thunk-lemma f)
+
+infixr 5 _∷Eᵢ_
+data Envᵢ : {n : ℕ} → Ctx n → 𝓤₀ ̇  where
+ [] : Envᵢ []
+ _∷Eᵢ_ : {n : ℕ} {Γ : Ctx n } {τ : LType} → ⟦ τ ⟧ᵢ → Envᵢ Γ → Envᵢ (τ ∷ Γ)
+
+strip-thunk-env : {n : ℕ} {Γ : Ctx n } → Envᵢ Γ → Env Γ
+strip-thunk-env [] = []
+strip-thunk-env (x ∷Eᵢ xs) = strip-thunk x ∷E (strip-thunk-env xs)
+
+lookupEnvᵢ : {n : ℕ} {Γ : Ctx n} (m : Fin n) → Envᵢ Γ → ⟦ Γ !! m ⟧ᵢ
+lookupEnvᵢ 𝟎 (x ∷Eᵢ _) = x
+lookupEnvᵢ (suc m) (x ∷Eᵢ env) = lookupEnvᵢ m env
+
+inc-function : {σ τ : LType} → (⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) → ⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ
+
+strip-thunk-thunk-type-rearrange : {τ σ : LType} → (f : ⟦ τ ⇒ σ ⟧ᵢ)
+                                 → (z : ⟦ τ ⟧)
+                                 → strip-thunk ((pr₁ f) (thunk-type z))
+                                 ＝ (strip-thunk f) z
+strip-thunk-thunk-type-rearrange f z = refl
+
+inc-eq : {σ τ : LType} → (f : ⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ)
+   → value-time-independent f
+   →  (x y : ⟦ σ ⟧ᵢ)
+   → strip-thunk x ＝ strip-thunk y
+   → strip-thunk (inc-function f x) ＝ strip-thunk (inc-function f y)
+
+inc-nat : Σ t ꞉ ℕ , Thunk t ℕ → Σ t ꞉ ℕ , Thunk t ℕ
+inc-nat (n , x) = succ n , (√ x)
+
+inc-list : Σ t ꞉ ℕ , Thunk t (List ℕ) → Σ t ꞉ ℕ , Thunk t (List ℕ)
+inc-list (n , x) = succ n , (√ x)
+
+inc-function {_} {nat} f x = inc-nat (f x)
+inc-function {_} {list} f l = inc-list (f l)
+inc-function {σ₁} {σ ⇒ τ} f x = inc-function (pr₁ (f x))
+                              , inc-eq (pr₁ (f x)) (pr₂ (f x))
+
+change-function : {σ τ : LType}
+                → (f : (Σ f' ꞉ (⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) , value-time-independent f'))
+                → (g : (Σ g' ꞉ (⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) , value-time-independent g'))
+                → strip-thunk {σ ⇒ τ} f ＝ strip-thunk {σ ⇒ τ} g
+                → (λ x → strip-thunk (inc-function (pr₁ f) (thunk-type x)))
+                ＝ (λ x → strip-thunk (inc-function (pr₁ g) (thunk-type x)))
+    
+change-function {σ} {nat} _ _ eq = eq
+change-function {σ} {list} _ _ eq = eq
+
+change-function {σ} {τ ⇒ τ₁} f g eq = fe λ x
+                                    → change-function (pr₁ f (thunk-type x))
+                                      (pr₁ g (thunk-type x)) (ap (λ w → w x) eq)
+
+inc-eq {_} {nat} f value-time-ind = value-time-ind
+inc-eq {_} {list} f value-time-ind = value-time-ind
+inc-eq {σ₁} {σ ⇒ τ} f value-time-ind x y eq
+ = change-function (f x) (f y) (value-time-ind x y eq)
+
+increment : {τ : LType} → ⟦ τ ⟧ᵢ → ⟦ τ ⟧ᵢ
+increment {nat} = inc-nat
+increment {list} = inc-list
+increment {τ ⇒ σ} (f , eqt) = inc-function f , inc-eq f eqt
+
+increment-equal-semantics : {τ : LType} {x : ⟦ τ ⟧ᵢ}
+                          → strip-thunk x ＝ strip-thunk (increment x)
+increment-equal-semantics {nat} {x} = refl
+increment-equal-semantics {list} {l} = refl
+increment-equal-semantics {σ ⇒ τ} {f , eqt} = fe λ x → γ₂ (thunk-type x)
+ where
+  γ₁ : {σ τ : LType} → (f : ⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) → (y : ⟦ σ ⟧ᵢ)
+     → strip-thunk (increment (f y)) ＝ strip-thunk (inc-function f y)
+  γ₁ {σ} {nat} f y = refl
+  γ₁ {σ} {list} f y = refl
+  γ₁ {σ} {τ ⇒ τ₁} f y = refl
+
+  γ₂ : (y : ⟦ σ ⟧ᵢ) → strip-thunk (f y) ＝ strip-thunk (inc-function f y)
+  γ₂ y = strip-thunk (f y) ＝⟨ increment-equal-semantics ⟩
+         strip-thunk (increment (f y)) ＝⟨ γ₁ f y ⟩
+         strip-thunk (inc-function f y) ∎
+
+thunk-if : {σ : LType} → (Σ n₁ ꞉ ℕ , Thunk n₁ ℕ) → ⟦ σ ⟧ᵢ → ⟦ σ ⟧ᵢ → ⟦ σ ⟧ᵢ
+thunk-if (zero , return zero) l r = increment l
+thunk-if (zero , return (succ _)) l r = increment r
+thunk-if (succ n₁ , (√ t)) u v = increment (thunk-if (n₁ , t) u v)
+
+natRecᵢ : {σ : LType} {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ → (m : ℕ)
+        → (base : Term Γ σ) → (f : Term Γ (σ ⇒ σ))
+        → (strategy : Strategy) → ⟦ σ ⟧ᵢ
+
+natRecBuilder : {σ : LType} {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ
+              → Σ t ꞉ ℕ , Thunk t ℕ → (base : Term Γ σ)
+              → (f : Term Γ (σ ⇒ σ)) → (strategy : Strategy) → ⟦ σ ⟧ᵢ
+
+listRecᵢ : {σ : LType} {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ → List ℕ
+         → (base : Term Γ σ) → (f : Term Γ (σ ⇒ nat ⇒ σ))
+         → (strategy : Strategy) → ⟦ σ ⟧ᵢ
+
+listRecBuilder : {σ : LType} {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ
+               → Σ t ꞉ ℕ , Thunk t (List ℕ) → (base : Term Γ σ)
+               → (f : Term Γ (σ ⇒ nat ⇒ σ)) → (strategy : Strategy) → ⟦ σ ⟧ᵢ
+
+_[_]ᵢ_ : {n : ℕ} {Γ : Ctx n} {τ : LType} → Envᵢ Γ → Term Γ τ → Strategy → ⟦ τ ⟧ᵢ
+
+equivalent-semantics : {n : ℕ} {σ : LType} {Γ : Ctx n} → (env : Envᵢ Γ)
+                     → (term : Term Γ σ) → (strategy : Strategy)
+                     → strip-thunk (env [ term ]ᵢ strategy)
+                     ＝ (strip-thunk-env env) [ term ]ₑ
+
+lazy-function : {σ τ : LType} {n : ℕ} {Γ : Ctx n} → Envᵢ Γ → Term (σ ∷ Γ) τ
+              → (strategy : Strategy) → Σ f ꞉ (⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) ,
+                value-time-independent f
+lazy-function env t s = (λ x → (x ∷Eᵢ env) [ t ]ᵢ s) ,
+                        λ x y eq → strip-thunk ((x ∷Eᵢ env) [ t ]ᵢ s)
+                        ＝⟨ equivalent-semantics (x ∷Eᵢ env) t s ⟩
+                        ((strip-thunk x) ∷E (strip-thunk-env env)) [ t ]ₑ
+                        ＝⟨ ap (λ z → (z ∷E strip-thunk-env env) [ t ]ₑ) eq ⟩
+                        (((strip-thunk y) ∷E (strip-thunk-env env)) [ t ]ₑ)
+                        ＝⟨ (equivalent-semantics (y ∷Eᵢ env) t s)⁻¹ ⟩
+                        strip-thunk ((y ∷Eᵢ env) [ t ]ᵢ s) ∎
+
+eager-function-nat-helper : {τ : LType} {n : ℕ} {Γ : Ctx n} → Envᵢ Γ
+                          → Term (nat ∷ Γ) τ → Σ t ꞉ ℕ , Thunk t ℕ → ⟦ τ ⟧ᵢ
+eager-function-nat-helper env t x@(zero , return _)
+ = (x ∷Eᵢ env) [ t ]ᵢ eager
+eager-function-nat-helper env t (succ n , (√ x))
+ = increment (eager-function-nat-helper env t (n , x))
+
+eager-function-list-helper : {τ : LType} {n : ℕ} {Γ : Ctx n} → Envᵢ Γ
+                           → Term (list ∷ Γ) τ → Σ t ꞉ ℕ , Thunk t (List ℕ)
+                           → ⟦ τ ⟧ᵢ
+eager-function-list-helper env t x@(zero , return _)
+ = (x ∷Eᵢ env) [ t ]ᵢ eager
+eager-function-list-helper env t (succ n , (√ x))
+ = increment (eager-function-list-helper env t (n , x))
+
+eager-function-nat : {τ : LType} {n : ℕ} {Γ : Ctx n} → Envᵢ Γ
+                   → Term (nat ∷ Γ) τ → Σ f ꞉ (Σ t ꞉ ℕ , Thunk t ℕ
+                   → ⟦ τ ⟧ᵢ) , value-time-independent f
+eager-function-nat env t = (eager-function-nat-helper env t) , γ₀
+ where
+  γ₀ : (x y : Σ (λ t₁ → Thunk' ℕ t₁)) →
+       force (pr₂ x) ＝ force (pr₂ y) →
+       strip-thunk (eager-function-nat-helper env t x)
+       ＝ strip-thunk (eager-function-nat-helper env t y)
+  γ₀ (.0 , return .(force (return x))) (zero , return x) refl = refl
+  γ₀ (.0 , return .(force x)) (succ n , (√ x)) refl
+   = strip-thunk (((0 , return (force x)) ∷Eᵢ env) [ t ]ᵢ eager)
+     ＝⟨ γ₀ (0 , return (force x)) (_ , x) refl ⟩
+     strip-thunk (eager-function-nat-helper env t (n , x))
+     ＝⟨ increment-equal-semantics ⟩
+     strip-thunk (increment (eager-function-nat-helper env t (n , x))) ∎
+  γ₀ (.(succ _) , (√ x)) (zero , return .(force x)) refl
+   = strip-thunk (increment (eager-function-nat-helper env t (_ , x)))
+     ＝⟨ (increment-equal-semantics)⁻¹ ⟩
+     strip-thunk (eager-function-nat-helper env t (_ , x))
+     ＝⟨ γ₀ (_ , x) (0 , return (force x)) refl  ⟩
+     strip-thunk (((0 , return (force x)) ∷Eᵢ env) [ t ]ᵢ eager) ∎
+  γ₀ (.(succ _) , (√ x)) (succ _ , (√ y)) eq
+   = strip-thunk (increment (eager-function-nat-helper env t (_ , x)))
+     ＝⟨ (increment-equal-semantics)⁻¹ ⟩
+     strip-thunk (eager-function-nat-helper env t (_ , x))
+     ＝⟨ γ₀ (_ , x) (_ , y) eq ⟩
+     strip-thunk (eager-function-nat-helper env t (_ , y))
+     ＝⟨ increment-equal-semantics ⟩
+     strip-thunk (increment (eager-function-nat-helper env t (_ , y))) ∎
+
+eager-function-list : {τ : LType} {n : ℕ} {Γ : Ctx n} → Envᵢ Γ
+                    → Term (list ∷ Γ) τ
+                    → Σ f ꞉ (Σ t ꞉ ℕ , Thunk t (List ℕ)
+                    → ⟦ τ ⟧ᵢ) , value-time-independent f
+eager-function-list env t = (eager-function-list-helper env t) , γ₀
+ where
+  γ₀ : (l₁ l₂ : Σ t ꞉ ℕ , Thunk t (List ℕ)) →
+       force (pr₂ l₁) ＝ force (pr₂ l₂) →
+       strip-thunk (eager-function-list-helper env t l₁)
+       ＝ strip-thunk (eager-function-list-helper env t l₂)
+  γ₀ (.0 , return .(force (return x))) (zero , return x) refl = refl
+  γ₀ (.0 , return .(force x)) (succ n , (√ x)) refl
+   = strip-thunk (((0 , return (force x)) ∷Eᵢ env) [ t ]ᵢ eager)
+     ＝⟨ γ₀ (0 , return (force x)) (_ , x) refl ⟩
+     strip-thunk (eager-function-list-helper env t (n , x))
+     ＝⟨ increment-equal-semantics ⟩
+     strip-thunk (increment (eager-function-list-helper env t (n , x))) ∎
+  γ₀ (.(succ _) , (√ x)) (zero , return .(force x)) refl
+   = strip-thunk (increment (eager-function-list-helper env t (_ , x)))
+     ＝⟨ (increment-equal-semantics)⁻¹ ⟩
+     strip-thunk (eager-function-list-helper env t (_ , x))
+     ＝⟨ γ₀ (_ , x) (0 , return (force x)) refl  ⟩
+     strip-thunk (((0 , return (force x)) ∷Eᵢ env) [ t ]ᵢ eager) ∎
+  γ₀ (.(succ _) , (√ x)) (succ _ , (√ y)) eq
+   = strip-thunk (increment (eager-function-list-helper env t (_ , x)))
+     ＝⟨ (increment-equal-semantics)⁻¹ ⟩
+     strip-thunk (eager-function-list-helper env t (_ , x))
+     ＝⟨ γ₀ (_ , x) (_ , y) eq ⟩
+     strip-thunk (eager-function-list-helper env t (_ , y))
+     ＝⟨ increment-equal-semantics ⟩
+     strip-thunk (increment (eager-function-list-helper env t (_ , y))) ∎
+
+thunk-cons : Σ t ꞉ ℕ , Thunk t ℕ
+           → Σ t ꞉ ℕ , Thunk t (List ℕ)
+           → Σ t ꞉ ℕ , Thunk t (List ℕ)
+thunk-cons (zero , return x) (n , thl)
+ = 1 + n , (thl >>= λ l → √ return (x ∷ l)) 
+thunk-cons (succ _ , (√ x)) l = inc-list (thunk-cons (_ , x) l)
+
+env [ var v ]ᵢ _ = increment (lookupEnvᵢ v env)
+env [ zero ]ᵢ _ = 1 , (√ return zero) --0 , return zero --
+env [ suc t ]ᵢ s = γ (env [ t ]ᵢ s)
+ where
+  γ : Σ t ꞉ ℕ , Thunk t ℕ → Σ t ꞉ ℕ , Thunk t ℕ
+  γ (n , t) = 1 + n , (t >>= λ x → √ return (succ x))
+env [ pred t ]ᵢ s = γ (env [ t ]ᵢ s)
+ where
+  γ : Σ t ꞉ ℕ , Thunk t ℕ → Σ t ꞉ ℕ , Thunk t ℕ
+  γ (n , th) = 1 + n , (th >>= λ x → √ return (pred' x))
+env [ nil ]ᵢ _ = (1 , (√ return []))
+env [ cons t u ]ᵢ s = thunk-cons (env [ t ]ᵢ s) (env [ u ]ᵢ s)
+env [ if t then u else v ]ᵢ s
+ = thunk-if (env [ t ]ᵢ s) (env [ u ]ᵢ s) (env [ v ]ᵢ s)
+env [ t ∙ u ]ᵢ s = (pr₁ (env [ t ]ᵢ s)) (env [ u ]ᵢ s)
+env [ lam σ t ]ᵢ lazy = lazy-function env t lazy
+env [ lam nat t ]ᵢ eager = eager-function-nat env t
+env [ lam list t ]ᵢ eager = eager-function-list env t
+env [ lam (σ ⇒ σ₁) t ]ᵢ eager = lazy-function env t eager
+env [ nrec t u v ]ᵢ s = natRecBuilder env (env [ t ]ᵢ s) u v s
+env [ lrec t u v ]ᵢ s = listRecBuilder env (env [ t ]ᵢ s) u v s
+
+natRecBuilder env (zero , return x) u v s = natRecᵢ env x u v s
+natRecBuilder env (succ _ , (√ x)) u v s
+ = increment (natRecBuilder env (_ , x) u v s)
+
+natRecᵢ env zero base f s = env [ base ]ᵢ s
+natRecᵢ env (succ n) base f s
+ = (pr₁ (env [ f ]ᵢ s)) (natRecᵢ env n base f s)
+
+listRecBuilder env (zero , return l) u v s = listRecᵢ env l u v s
+listRecBuilder env (succ _ , (√ l)) u v s
+ = increment (listRecBuilder env (_ , l) u v s)
+
+listRecᵢ env [] base f s = env [ base ]ᵢ s
+listRecᵢ env (x ∷ l) base f s
+ = (pr₁ ((pr₁ (env [ f ]ᵢ s)) (listRecᵢ env l base f s))) (0 , return x)
+
+strip-thunk-thunk-type-lemma : {σ τ : LType} → (f : ⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ)
+           → (eqt : (x y : ⟦ σ ⟧ᵢ) →
+           strip-thunk x ＝ strip-thunk y →
+           strip-thunk (f x) ＝ strip-thunk (f y))
+           →  (thunked : ⟦ σ ⟧ᵢ) → (unthunked : ⟦ σ ⟧)
+           → strip-thunk thunked ＝ unthunked → strip-thunk (f thunked)
+           ＝ strip-thunk (f (thunk-type unthunked))
+strip-thunk-thunk-type-lemma f eqt thunked unthunked eq
+ = eqt thunked (thunk-type unthunked) (strip-thunk thunked ＝⟨ eq ⟩
+   unthunked ＝⟨ (strip-thunk-is-inverse-of-thunk-type unthunked)⁻¹ ⟩
+   strip-thunk (thunk-type unthunked) ∎)
+
+if-then-else-equality : {σ : LType} {n : ℕ} {Γ : Ctx n}
+      → (env : Envᵢ Γ) → (term₁ : Term Γ σ) → (term₂ : Term Γ σ)
+      → (thunked : Σ t ꞉ ℕ , Thunk t ℕ)
+      → (not-thunked : ℕ)
+      → (force (pr₂ thunked)) ＝ not-thunked
+      → (strategy : Strategy)
+      → strip-thunk (thunk-if thunked (env [ term₁ ]ᵢ strategy)
+        (env [ term₂ ]ᵢ strategy))
+      ＝ if' not-thunked then' ((strip-thunk-env env) [ term₁ ]ₑ)
+         else' ((strip-thunk-env env) [ term₂ ]ₑ)
+if-then-else-equality env term₁ term₂ (.0 , return zero) zero refl s
+ = strip-thunk (increment (env [ term₁ ]ᵢ s))
+   ＝⟨ (increment-equal-semantics)⁻¹ ⟩
+   strip-thunk (env [ term₁ ]ᵢ s) ＝⟨ equivalent-semantics env term₁ s ⟩
+   strip-thunk-env env [ term₁ ]ₑ ∎
+if-then-else-equality env term₁ term₂ (.(succ _) , (√ t)) zero x s
+ = strip-thunk (increment (thunk-if (_ , t) (env [ term₁ ]ᵢ s)
+   (env [ term₂ ]ᵢ s))) ＝⟨ (increment-equal-semantics)⁻¹ ⟩
+   strip-thunk (thunk-if (_ , t) (env [ term₁ ]ᵢ s) (env [ term₂ ]ᵢ s))
+   ＝⟨ if-then-else-equality env term₁ term₂ (_ , t) zero x s  ⟩
+   strip-thunk-env env [ term₁ ]ₑ ∎
+if-then-else-equality env term₁ term₂ (.0 , return (succ _)) (succ _) refl s
+ = strip-thunk (increment (env [ term₂ ]ᵢ s))
+   ＝⟨ (increment-equal-semantics)⁻¹ ⟩
+   strip-thunk (env [ term₂ ]ᵢ s) ＝⟨ equivalent-semantics env term₂ s ⟩
+   strip-thunk-env env [ term₂ ]ₑ ∎
+if-then-else-equality env term₁ term₂ (.(succ _) , (√ t)) (succ not-thunked) x s
+ = strip-thunk (increment (thunk-if (_ , t) (env [ term₁ ]ᵢ s)
+   (env [ term₂ ]ᵢ s))) ＝⟨ (increment-equal-semantics)⁻¹ ⟩
+   strip-thunk (thunk-if (_ , t) (env [ term₁ ]ᵢ s)
+   (env [ term₂ ]ᵢ s))
+   ＝⟨ if-then-else-equality env term₁ term₂ (_ , t) _ x s  ⟩
+   strip-thunk-env env [ term₂ ]ₑ ∎
+
+
+application-equality : {n : ℕ} {Γ : Ctx n} {σ τ : LType} → (env : Envᵢ Γ)
+      → (thunked₁ : Σ f ꞉ (⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) , value-time-independent f)
+      → (thunked₂ : ⟦ σ ⟧ᵢ)
+      → (unthunked₁ : ⟦ σ ⟧ → ⟦ τ ⟧)
+      → (unthunked₂ : ⟦ σ ⟧)
+      → strip-thunk thunked₁  ＝ unthunked₁
+      → strip-thunk thunked₂ ＝ unthunked₂
+      → strip-thunk ((pr₁ thunked₁) thunked₂) ＝ unthunked₁ unthunked₂
+application-equality env (f₁ , eqt) thunked₂ unthunked₁ unthunked₂ eq₁ eq₂
+ = strip-thunk (f₁ thunked₂) ＝⟨ strip-thunk-thunk-type-lemma f₁ eqt thunked₂
+   unthunked₂ eq₂ ⟩
+   strip-thunk (f₁ (thunk-type unthunked₂)) ＝⟨ refl ⟩
+   (λ x → strip-thunk (f₁ (thunk-type x))) unthunked₂
+   ＝⟨ ap (λ z → z unthunked₂) eq₁ ⟩
+   unthunked₁ unthunked₂ ∎
+
+equivalent-nrec-lemma : {σ : LType} {n : ℕ} {Γ : Ctx n} → (env : Envᵢ Γ)
+                      → (ctr : ℕ) → (base : Term Γ σ) → (f : Term Γ (σ ⇒ σ))
+      → (strategy : Strategy)
+      → strip-thunk (natRecᵢ env ctr base f strategy)
+      ＝ natRec (strip-thunk-env env) ctr base f
+equivalent-nrec-lemma env zero base f s = equivalent-semantics env base s
+equivalent-nrec-lemma env (succ ctr) base f s
+ = application-equality env (env [ f ]ᵢ s) (natRecᵢ env ctr base f s)
+   (strip-thunk-env env [ f ]ₑ) (natRec (strip-thunk-env env) ctr base f)
+   (equivalent-semantics env f s) (equivalent-nrec-lemma env ctr base f s)
+
+
+equivalent-nrec : {σ : LType} {n : ℕ} → {Γ : Ctx n} → (env : Envᵢ Γ)
+                → (ctrᵢ : Σ t ꞉ ℕ , Thunk t ℕ) → (ctr : ℕ)
+                → (strip-thunk ctrᵢ ＝ ctr)
+                → (base : Term Γ σ) (f : Term Γ (σ ⇒ σ))
+                → (strategy : Strategy)
+                → strip-thunk (natRecBuilder env ctrᵢ base f strategy)
+                ＝ natRec (strip-thunk-env env) ctr base f
+equivalent-nrec env (.0 , return n) .(strip-thunk (0 , return n)) refl base f s
+ = equivalent-nrec-lemma env n base f  s
+equivalent-nrec env (.(succ _) , (√ y)) ctr x base f s
+ = strip-thunk (increment (natRecBuilder env (_ , y) base f s))
+   ＝⟨ (increment-equal-semantics)⁻¹ ⟩
+   strip-thunk (natRecBuilder env (_ , y) base f s)
+   ＝⟨ equivalent-nrec env (_ , y) ctr x base f s ⟩
+   natRec (strip-thunk-env env) ctr base f ∎
+
+equivalent-thunk-cons : (xᵢ : Σ t ꞉ ℕ , Thunk t ℕ)
+                      → (lᵢ : Σ t ꞉ ℕ , Thunk t (List ℕ))
+                      → {x : ℕ} {l : List ℕ}
+                      → strip-thunk xᵢ ＝ x
+                      → strip-thunk lᵢ ＝ l
+                      → strip-thunk ((thunk-cons xᵢ lᵢ))
+                      ＝ x ∷ l
+equivalent-thunk-cons (zero , return _) (zero , return _) eq₁ eq₂
+ = ap₂ _∷_ eq₁ eq₂
+equivalent-thunk-cons (zero , return z₁) (succ _ , (√ z₂)) eq₁ eq₂
+ = equivalent-thunk-cons (0 , return z₁) (_ , z₂) eq₁ eq₂
+equivalent-thunk-cons (succ _ , (√ z)) lᵢ eq₁ eq₂
+ = equivalent-thunk-cons (_ , z) lᵢ eq₁ eq₂
+
+equivalent-lrec-lemma : {σ : LType} {n : ℕ} {Γ : Ctx n} → (env : Envᵢ Γ)
+                      → (l : List ℕ) → (base : Term Γ σ)
+                      → (f : Term Γ (σ ⇒ nat ⇒ σ))
+                      → (strategy : Strategy)
+                      → strip-thunk (listRecᵢ env l base f strategy)
+                      ＝ listRec (strip-thunk-env env) l base f
+equivalent-lrec-lemma env [] base f s = equivalent-semantics env base s
+equivalent-lrec-lemma env (x ∷ l) base f s
+ = application-equality env (pr₁ (env [ f ]ᵢ s) (listRecᵢ env l base f s))
+   (thunk-type x) ((strip-thunk-env env [ f ]ₑ) (listRec (strip-thunk-env env)
+   l base f)) x γ refl
+ where
+  γ : strip-thunk (pr₁ (env [ f ]ᵢ s) (listRecᵢ env l base f s))
+    ＝ (strip-thunk-env env [ f ]ₑ) (listRec (strip-thunk-env env) l base f)
+  γ = application-equality env (env [ f ]ᵢ s) (listRecᵢ env l base f s)
+      (strip-thunk-env env [ f ]ₑ) (listRec (strip-thunk-env env) l base f)
+      (equivalent-semantics env f s) (equivalent-lrec-lemma env l base f s)
+
+
+equivalent-lrec : {σ : LType} {n : ℕ} → {Γ : Ctx n} → (env : Envᵢ Γ)
+                → (lᵢ : Σ t ꞉ ℕ , Thunk t (List ℕ)) → (l : List ℕ)
+                → (strip-thunk lᵢ ＝ l)
+                → (base : Term Γ σ) (f : Term Γ (σ ⇒ nat ⇒ σ))
+                → (strategy : Strategy)
+                → strip-thunk (listRecBuilder env lᵢ base f strategy)
+                ＝ listRec (strip-thunk-env env) l base f
+equivalent-lrec env (.0 , return l) .(strip-thunk (0 , return l)) refl base f s
+ = equivalent-lrec-lemma env l base f s
+equivalent-lrec env (.(succ _) , (√ thl)) l eq base f s
+ = strip-thunk (increment (listRecBuilder env (_ , thl) base f s))
+   ＝⟨ (increment-equal-semantics)⁻¹ ⟩
+   strip-thunk (listRecBuilder env (_ , thl) base f s)
+   ＝⟨ equivalent-lrec env (_ , thl) l eq base f s ⟩
+   listRec (strip-thunk-env env) l base f ∎
+
+equivalent-semantics env (var v) _ = strip-thunk (increment (lookupEnvᵢ v env))
+ ＝⟨ (increment-equal-semantics)⁻¹ ⟩
+ strip-thunk (lookupEnvᵢ v env) ＝⟨ γ env v ⟩
+ lookupEnv v (strip-thunk-env env) ∎
+ where
+  γ : {n : ℕ} → {Γ : Ctx n} → (env : Envᵢ Γ) → (v : Fin n)
+    → strip-thunk (lookupEnvᵢ v env)
+    ＝ lookupEnv v (strip-thunk-env env)
+  γ (x ∷Eᵢ _) 𝟎 = refl
+  γ (_ ∷Eᵢ env) (suc v) = γ env v
+equivalent-semantics env zero _ = refl
+equivalent-semantics env (suc term) s = γ₁ (equivalent-semantics env term s)
+ where
+  γ₀ : {n : ℕ}
+     → (th : Thunk n ℕ)
+     → force (th >>= (λ x → √ return (succ x))) ＝ succ (force th)
+  γ₀ (return x) = refl
+  γ₀ (√ th) = γ₀ th
+
+  γ₁ : strip-thunk (env [ term ]ᵢ s) ＝ (strip-thunk-env env) [ term ]ₑ
+     → strip-thunk (env [ suc term ]ᵢ s) ＝ (strip-thunk-env env) [ suc term ]ₑ
+  γ₁ eq = force (pr₂ (env [ term ]ᵢ s) >>= (λ x → √ return (succ x)))
+          ＝⟨ γ₀ (pr₂ (env [ term ]ᵢ s)) ⟩
+          succ (force (pr₂ (env [ term ]ᵢ s))) ＝⟨ ap succ eq ⟩
+          succ ((strip-thunk-env env) [ term ]ₑ) ∎
+equivalent-semantics env (pred term) s = γ₁ (equivalent-semantics env term s)
+ where
+  γ₀ : {n : ℕ} → (th : Thunk n ℕ) → force (th >>= (λ x → √ return (pred' x)))
+       ＝ pred' (force th)
+  γ₀ (return x) = refl
+  γ₀ (√ th) = γ₀ th
+
+  γ₁ : strip-thunk (env [ term ]ᵢ s) ＝ (strip-thunk-env env) [ term ]ₑ
+     → strip-thunk (env [ pred term ]ᵢ s)
+     ＝ (strip-thunk-env env) [ pred term ]ₑ
+  γ₁ eq = force (pr₂ (env [ term ]ᵢ s) >>= (λ x → √ return (pred' x)))
+          ＝⟨ γ₀ (pr₂ (env [ term ]ᵢ s)) ⟩
+          pred' (force (pr₂ (env [ term ]ᵢ s))) ＝⟨ ap pred' eq ⟩
+          pred' ((strip-thunk-env env) [ term ]ₑ) ∎
+equivalent-semantics env nil _ = refl
+equivalent-semantics env (cons term term₁) s
+ = equivalent-thunk-cons (env [ term ]ᵢ s) (env [ term₁ ]ᵢ s)
+    (equivalent-semantics env term s) (equivalent-semantics env term₁ s)
+equivalent-semantics env (if term then term₁ else term₂) s
+ = if-then-else-equality env term₁ term₂ (env [ term ]ᵢ s)
+   ((strip-thunk-env env) [ term ]ₑ) (equivalent-semantics env term s) s
+equivalent-semantics env (term ∙ term₁) s
+ = application-equality env (env [ term ]ᵢ s) (env [ term₁ ]ᵢ s)
+   ((strip-thunk-env env) [ term ]ₑ) ((strip-thunk-env env) [ term₁ ]ₑ)
+   (equivalent-semantics env term s) (equivalent-semantics env term₁ s)
+equivalent-semantics env (lam σ term) lazy
+ = fe  λ y → strip-thunk ((thunk-type y ∷Eᵢ env) [ term ]ᵢ lazy)
+   ＝⟨ equivalent-semantics (thunk-type y ∷Eᵢ env) term lazy ⟩
+   (strip-thunk-env (thunk-type y ∷Eᵢ env)) [ term ]ₑ
+   ＝⟨ ap (λ z → (z ∷E strip-thunk-env env) [ term ]ₑ)
+   (strip-thunk-is-inverse-of-thunk-type y) ⟩
+   (y ∷E (strip-thunk-env env)) [ term ]ₑ ∎
+equivalent-semantics env (lam nat term) eager
+ = fe  λ y → strip-thunk ((thunk-type y ∷Eᵢ env) [ term ]ᵢ eager)
+   ＝⟨ equivalent-semantics (thunk-type y ∷Eᵢ env) term eager ⟩
+   (strip-thunk-env (thunk-type y ∷Eᵢ env)) [ term ]ₑ
+   ＝⟨ ap (λ z → (z ∷E strip-thunk-env env) [ term ]ₑ)
+   (strip-thunk-is-inverse-of-thunk-type y) ⟩
+   (y ∷E (strip-thunk-env env)) [ term ]ₑ ∎
+equivalent-semantics env (lam list term) eager
+ = fe  λ y → strip-thunk ((thunk-type y ∷Eᵢ env) [ term ]ᵢ eager)
+   ＝⟨ equivalent-semantics (thunk-type y ∷Eᵢ env) term eager ⟩
+   (strip-thunk-env (thunk-type y ∷Eᵢ env)) [ term ]ₑ
+   ＝⟨ ap (λ z → (z ∷E strip-thunk-env env) [ term ]ₑ)
+   (strip-thunk-is-inverse-of-thunk-type y) ⟩
+   (y ∷E (strip-thunk-env env)) [ term ]ₑ ∎
+equivalent-semantics env (lam (σ ⇒ σ₁) term) eager
+ = fe  λ y → strip-thunk ((thunk-type y ∷Eᵢ env) [ term ]ᵢ eager)
+   ＝⟨ equivalent-semantics (thunk-type y ∷Eᵢ env) term eager ⟩
+   (strip-thunk-env (thunk-type y ∷Eᵢ env)) [ term ]ₑ
+   ＝⟨ ap (λ z → (z ∷E strip-thunk-env env) [ term ]ₑ)
+   (strip-thunk-is-inverse-of-thunk-type y) ⟩
+   (y ∷E (strip-thunk-env env)) [ term ]ₑ ∎
+
+equivalent-semantics env (nrec t u v) s
+ = equivalent-nrec env (env [ t ]ᵢ s) ((strip-thunk-env env) [ t ]ₑ)
+   (equivalent-semantics env t s) u v s
+equivalent-semantics env (lrec term term₁ term₂) s
+ = equivalent-lrec env (env [ term ]ᵢ s) (strip-thunk-env env [ term ]ₑ)
+   (equivalent-semantics env term s) term₁ term₂ s
+
+\end{code}
