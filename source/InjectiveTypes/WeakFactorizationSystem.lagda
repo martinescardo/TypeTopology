@@ -120,6 +120,8 @@ j |  ∃e /   | r
   Y ------> E
        g
 
+Note that in our case we have a designated filler.
+
 \begin{code}
 
 module lifting-problem
