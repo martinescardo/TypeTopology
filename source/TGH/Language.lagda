@@ -63,22 +63,22 @@ data Env : {n : ℕ} → Ctx n → 𝓤₀ ̇  where
  [] : Env []
  _∷E_ : {n : ℕ} {Γ : Ctx n } {τ : LType} → ⟦ τ ⟧ → Env Γ → Env (τ ∷ Γ)
 
-lookupEnv : {n : ℕ} {Γ : Ctx n} (m : Fin n) → Env Γ → ⟦ Γ !! m ⟧
-lookupEnv 𝟎 (x ∷E _) = x
-lookupEnv (suc m) (x ∷E env) = lookupEnv m env
+lookup-env : {n : ℕ} {Γ : Ctx n} (m : Fin n) → Env Γ → ⟦ Γ !! m ⟧
+lookup-env 𝟎 (x ∷E _) = x
+lookup-env (suc m) (x ∷E env) = lookup-env m env
 
 if'_then'_else'_ : {X : 𝓤₀ ̇ } → ℕ → X → X → X
 if' zero then' x else' y = x
 if' succ _ then' x else' y = y
 
-natRec : {n : ℕ} {σ : LType} {Γ : Ctx n} → Env Γ → (m : ℕ) → (base : Term Γ σ)
+nat-rec : {n : ℕ} {σ : LType} {Γ : Ctx n} → Env Γ → (m : ℕ) → (base : Term Γ σ)
        → (f : Term Γ (σ ⇒ σ)) → ⟦ σ ⟧
 
-listRec : {σ : LType} {n : ℕ} {Γ : Ctx n} → Env Γ → (l : List ℕ)
+list-rec : {σ : LType} {n : ℕ} {Γ : Ctx n} → Env Γ → (l : List ℕ)
         → (base : Term Γ σ) → (f : Term Γ (σ ⇒ nat ⇒ σ)) → ⟦ σ ⟧
 
 _[_]ₑ : {n : ℕ} {Γ : Ctx n} {τ : LType} → Env Γ → Term Γ τ → ⟦ τ ⟧
-env [ var v ]ₑ = lookupEnv v env
+env [ var v ]ₑ = lookup-env v env
 env [ zero ]ₑ = zero
 env [ suc t ]ₑ = succ (env [ t ]ₑ)
 env [ pred t ]ₑ = pred' (env [ t ]ₑ)
@@ -89,14 +89,14 @@ env [ if t then u else v ]ₑ
 env [ t ∙ u ]ₑ = (env [ t ]ₑ) (env [ u ]ₑ)
 env [ lam _ t ]ₑ = λ x → (x ∷E env) [ t ]ₑ
 --env [ elam _ t ]ₑ = λ x → (x ∷E env) [ t ]ₑ
-env [ nrec t u v ]ₑ = natRec env (env [ t ]ₑ) u v
-env [ lrec t u v ]ₑ = listRec env (env [ t ]ₑ) u v
+env [ nrec t u v ]ₑ = nat-rec env (env [ t ]ₑ) u v
+env [ lrec t u v ]ₑ = list-rec env (env [ t ]ₑ) u v
 
-natRec env zero base f = env [ base ]ₑ
-natRec env (succ m) base f = (env [ f ]ₑ) (natRec env m base f)
+nat-rec env zero base f = env [ base ]ₑ
+nat-rec env (succ m) base f = (env [ f ]ₑ) (nat-rec env m base f)
 
-listRec env [] base f = env [ base ]ₑ
-listRec env (x ∷ l) base f = (env [ f ]ₑ) (listRec env l base f) x
+list-rec env [] base f = env [ base ]ₑ
+list-rec env (x ∷ l) base f = (env [ f ]ₑ) (list-rec env l base f) x
 
 ⟦_⟧ᵢ : LType → 𝓤₀ ̇
 
@@ -155,9 +155,9 @@ strip-thunk-env : {n : ℕ} {Γ : Ctx n } → Envᵢ Γ → Env Γ
 strip-thunk-env [] = []
 strip-thunk-env (x ∷Eᵢ xs) = strip-thunk x ∷E (strip-thunk-env xs)
 
-lookupEnvᵢ : {n : ℕ} {Γ : Ctx n} (m : Fin n) → Envᵢ Γ → ⟦ Γ !! m ⟧ᵢ
-lookupEnvᵢ 𝟎 (x ∷Eᵢ _) = x
-lookupEnvᵢ (suc m) (x ∷Eᵢ env) = lookupEnvᵢ m env
+lookup-envᵢ : {n : ℕ} {Γ : Ctx n} (m : Fin n) → Envᵢ Γ → ⟦ Γ !! m ⟧ᵢ
+lookup-envᵢ 𝟎 (x ∷Eᵢ _) = x
+lookup-envᵢ (suc m) (x ∷Eᵢ env) = lookup-envᵢ m env
 
 inc-function : {σ τ : LType} → (⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) → ⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ
 
@@ -230,19 +230,19 @@ thunk-if (zero , return zero) l r = increment l
 thunk-if (zero , return (succ _)) l r = increment r
 thunk-if (succ n₁ , (√ t)) u v = increment (thunk-if (n₁ , t) u v)
 
-natRecᵢ : {σ : LType} {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ → (m : ℕ)
+nat-recᵢ : {σ : LType} {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ → (m : ℕ)
         → (base : Term Γ σ) → (f : Term Γ (σ ⇒ σ))
         → (strategy : Strategy) → ⟦ σ ⟧ᵢ
 
-natRecBuilder : {σ : LType} {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ
+nat-rec-builder : {σ : LType} {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ
               → Σ t ꞉ ℕ , Thunk t ℕ → (base : Term Γ σ)
               → (f : Term Γ (σ ⇒ σ)) → (strategy : Strategy) → ⟦ σ ⟧ᵢ
 
-listRecᵢ : {σ : LType} {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ → List ℕ
+list-recᵢ : {σ : LType} {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ → List ℕ
          → (base : Term Γ σ) → (f : Term Γ (σ ⇒ nat ⇒ σ))
          → (strategy : Strategy) → ⟦ σ ⟧ᵢ
 
-listRecBuilder : {σ : LType} {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ
+list-rec-builder : {σ : LType} {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ
                → Σ t ꞉ ℕ , Thunk t (List ℕ) → (base : Term Γ σ)
                → (f : Term Γ (σ ⇒ nat ⇒ σ)) → (strategy : Strategy) → ⟦ σ ⟧ᵢ
 
@@ -350,7 +350,7 @@ thunk-cons (zero , return x) (n , thl)
  = 1 + n , (thl >>= λ l → √ return (x ∷ l)) 
 thunk-cons (succ _ , (√ x)) l = inc-list (thunk-cons (_ , x) l)
 
-env [ var v ]ᵢ _ = increment (lookupEnvᵢ v env)
+env [ var v ]ᵢ _ = increment (lookup-envᵢ v env)
 env [ zero ]ᵢ _ = 1 , (√ return zero) --0 , return zero --
 env [ suc t ]ᵢ s = γ (env [ t ]ᵢ s)
  where
@@ -369,24 +369,24 @@ env [ lam σ t ]ᵢ lazy = lazy-function env t lazy
 env [ lam nat t ]ᵢ eager = eager-function-nat env t
 env [ lam list t ]ᵢ eager = eager-function-list env t
 env [ lam (σ ⇒ σ₁) t ]ᵢ eager = lazy-function env t eager
-env [ nrec t u v ]ᵢ s = natRecBuilder env (env [ t ]ᵢ s) u v s
-env [ lrec t u v ]ᵢ s = listRecBuilder env (env [ t ]ᵢ s) u v s
+env [ nrec t u v ]ᵢ s = nat-rec-builder env (env [ t ]ᵢ s) u v s
+env [ lrec t u v ]ᵢ s = list-rec-builder env (env [ t ]ᵢ s) u v s
 
-natRecBuilder env (zero , return x) u v s = natRecᵢ env x u v s
-natRecBuilder env (succ _ , (√ x)) u v s
- = increment (natRecBuilder env (_ , x) u v s)
+nat-rec-builder env (zero , return x) u v s = nat-recᵢ env x u v s
+nat-rec-builder env (succ _ , (√ x)) u v s
+ = increment (nat-rec-builder env (_ , x) u v s)
 
-natRecᵢ env zero base f s = env [ base ]ᵢ s
-natRecᵢ env (succ n) base f s
- = (pr₁ (env [ f ]ᵢ s)) (natRecᵢ env n base f s)
+nat-recᵢ env zero base f s = env [ base ]ᵢ s
+nat-recᵢ env (succ n) base f s
+ = (pr₁ (env [ f ]ᵢ s)) (nat-recᵢ env n base f s)
 
-listRecBuilder env (zero , return l) u v s = listRecᵢ env l u v s
-listRecBuilder env (succ _ , (√ l)) u v s
- = increment (listRecBuilder env (_ , l) u v s)
+list-rec-builder env (zero , return l) u v s = list-recᵢ env l u v s
+list-rec-builder env (succ _ , (√ l)) u v s
+ = increment (list-rec-builder env (_ , l) u v s)
 
-listRecᵢ env [] base f s = env [ base ]ᵢ s
-listRecᵢ env (x ∷ l) base f s
- = (pr₁ ((pr₁ (env [ f ]ᵢ s)) (listRecᵢ env l base f s))) (0 , return x)
+list-recᵢ env [] base f s = env [ base ]ᵢ s
+list-recᵢ env (x ∷ l) base f s
+ = (pr₁ ((pr₁ (env [ f ]ᵢ s)) (list-recᵢ env l base f s))) (0 , return x)
 
 strip-thunk-thunk-type-lemma : {σ τ : LType} → (f : ⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ)
            → (eqt : (x y : ⟦ σ ⟧ᵢ) →
@@ -454,12 +454,12 @@ application-equality env (f₁ , eqt) thunked₂ unthunked₁ unthunked₂ eq₁
 equivalent-nrec-lemma : {σ : LType} {n : ℕ} {Γ : Ctx n} → (env : Envᵢ Γ)
                       → (ctr : ℕ) → (base : Term Γ σ) → (f : Term Γ (σ ⇒ σ))
       → (strategy : Strategy)
-      → strip-thunk (natRecᵢ env ctr base f strategy)
-      ＝ natRec (strip-thunk-env env) ctr base f
+      → strip-thunk (nat-recᵢ env ctr base f strategy)
+      ＝ nat-rec (strip-thunk-env env) ctr base f
 equivalent-nrec-lemma env zero base f s = equivalent-semantics env base s
 equivalent-nrec-lemma env (succ ctr) base f s
- = application-equality env (env [ f ]ᵢ s) (natRecᵢ env ctr base f s)
-   (strip-thunk-env env [ f ]ₑ) (natRec (strip-thunk-env env) ctr base f)
+ = application-equality env (env [ f ]ᵢ s) (nat-recᵢ env ctr base f s)
+   (strip-thunk-env env [ f ]ₑ) (nat-rec (strip-thunk-env env) ctr base f)
    (equivalent-semantics env f s) (equivalent-nrec-lemma env ctr base f s)
 
 
@@ -468,16 +468,16 @@ equivalent-nrec : {σ : LType} {n : ℕ} → {Γ : Ctx n} → (env : Envᵢ Γ)
                 → (strip-thunk ctrᵢ ＝ ctr)
                 → (base : Term Γ σ) (f : Term Γ (σ ⇒ σ))
                 → (strategy : Strategy)
-                → strip-thunk (natRecBuilder env ctrᵢ base f strategy)
-                ＝ natRec (strip-thunk-env env) ctr base f
+                → strip-thunk (nat-rec-builder env ctrᵢ base f strategy)
+                ＝ nat-rec (strip-thunk-env env) ctr base f
 equivalent-nrec env (.0 , return n) .(strip-thunk (0 , return n)) refl base f s
  = equivalent-nrec-lemma env n base f  s
 equivalent-nrec env (.(succ _) , (√ y)) ctr x base f s
- = strip-thunk (increment (natRecBuilder env (_ , y) base f s))
+ = strip-thunk (increment (nat-rec-builder env (_ , y) base f s))
    ＝⟨ (increment-equal-semantics)⁻¹ ⟩
-   strip-thunk (natRecBuilder env (_ , y) base f s)
+   strip-thunk (nat-rec-builder env (_ , y) base f s)
    ＝⟨ equivalent-nrec env (_ , y) ctr x base f s ⟩
-   natRec (strip-thunk-env env) ctr base f ∎
+   nat-rec (strip-thunk-env env) ctr base f ∎
 
 equivalent-thunk-cons : (xᵢ : Σ t ꞉ ℕ , Thunk t ℕ)
                       → (lᵢ : Σ t ꞉ ℕ , Thunk t (List ℕ))
@@ -497,18 +497,18 @@ equivalent-lrec-lemma : {σ : LType} {n : ℕ} {Γ : Ctx n} → (env : Envᵢ Γ
                       → (l : List ℕ) → (base : Term Γ σ)
                       → (f : Term Γ (σ ⇒ nat ⇒ σ))
                       → (strategy : Strategy)
-                      → strip-thunk (listRecᵢ env l base f strategy)
-                      ＝ listRec (strip-thunk-env env) l base f
+                      → strip-thunk (list-recᵢ env l base f strategy)
+                      ＝ list-rec (strip-thunk-env env) l base f
 equivalent-lrec-lemma env [] base f s = equivalent-semantics env base s
 equivalent-lrec-lemma env (x ∷ l) base f s
- = application-equality env (pr₁ (env [ f ]ᵢ s) (listRecᵢ env l base f s))
-   (thunk-type x) ((strip-thunk-env env [ f ]ₑ) (listRec (strip-thunk-env env)
+ = application-equality env (pr₁ (env [ f ]ᵢ s) (list-recᵢ env l base f s))
+   (thunk-type x) ((strip-thunk-env env [ f ]ₑ) (list-rec (strip-thunk-env env)
    l base f)) x γ refl
  where
-  γ : strip-thunk (pr₁ (env [ f ]ᵢ s) (listRecᵢ env l base f s))
-    ＝ (strip-thunk-env env [ f ]ₑ) (listRec (strip-thunk-env env) l base f)
-  γ = application-equality env (env [ f ]ᵢ s) (listRecᵢ env l base f s)
-      (strip-thunk-env env [ f ]ₑ) (listRec (strip-thunk-env env) l base f)
+  γ : strip-thunk (pr₁ (env [ f ]ᵢ s) (list-recᵢ env l base f s))
+    ＝ (strip-thunk-env env [ f ]ₑ) (list-rec (strip-thunk-env env) l base f)
+  γ = application-equality env (env [ f ]ᵢ s) (list-recᵢ env l base f s)
+      (strip-thunk-env env [ f ]ₑ) (list-rec (strip-thunk-env env) l base f)
       (equivalent-semantics env f s) (equivalent-lrec-lemma env l base f s)
 
 
@@ -517,25 +517,25 @@ equivalent-lrec : {σ : LType} {n : ℕ} → {Γ : Ctx n} → (env : Envᵢ Γ)
                 → (strip-thunk lᵢ ＝ l)
                 → (base : Term Γ σ) (f : Term Γ (σ ⇒ nat ⇒ σ))
                 → (strategy : Strategy)
-                → strip-thunk (listRecBuilder env lᵢ base f strategy)
-                ＝ listRec (strip-thunk-env env) l base f
+                → strip-thunk (list-rec-builder env lᵢ base f strategy)
+                ＝ list-rec (strip-thunk-env env) l base f
 equivalent-lrec env (.0 , return l) .(strip-thunk (0 , return l)) refl base f s
  = equivalent-lrec-lemma env l base f s
 equivalent-lrec env (.(succ _) , (√ thl)) l eq base f s
- = strip-thunk (increment (listRecBuilder env (_ , thl) base f s))
+ = strip-thunk (increment (list-rec-builder env (_ , thl) base f s))
    ＝⟨ (increment-equal-semantics)⁻¹ ⟩
-   strip-thunk (listRecBuilder env (_ , thl) base f s)
+   strip-thunk (list-rec-builder env (_ , thl) base f s)
    ＝⟨ equivalent-lrec env (_ , thl) l eq base f s ⟩
-   listRec (strip-thunk-env env) l base f ∎
+   list-rec (strip-thunk-env env) l base f ∎
 
-equivalent-semantics env (var v) _ = strip-thunk (increment (lookupEnvᵢ v env))
+equivalent-semantics env (var v) _ = strip-thunk (increment (lookup-envᵢ v env))
  ＝⟨ (increment-equal-semantics)⁻¹ ⟩
- strip-thunk (lookupEnvᵢ v env) ＝⟨ γ env v ⟩
- lookupEnv v (strip-thunk-env env) ∎
+ strip-thunk (lookup-envᵢ v env) ＝⟨ γ env v ⟩
+ lookup-env v (strip-thunk-env env) ∎
  where
   γ : {n : ℕ} → {Γ : Ctx n} → (env : Envᵢ Γ) → (v : Fin n)
-    → strip-thunk (lookupEnvᵢ v env)
-    ＝ lookupEnv v (strip-thunk-env env)
+    → strip-thunk (lookup-envᵢ v env)
+    ＝ lookup-env v (strip-thunk-env env)
   γ (x ∷Eᵢ _) 𝟎 = refl
   γ (_ ∷Eᵢ env) (suc v) = γ env v
 equivalent-semantics env zero _ = refl

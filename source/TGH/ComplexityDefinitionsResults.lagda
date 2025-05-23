@@ -49,7 +49,7 @@ time-independent-of-list-values : {τ : LType} {n : ℕ} {Γ : Ctx n}
                                 → (nat-or-list : (τ ＝ nat) ∔ (τ ＝ list))
                                 → (strategy : Strategy)
                                 → (Term Γ (list ⇒ τ))
-                                → Type
+                                → 𝓤₀ ̇
 time-independent-of-list-values env (inl refl) strategy program
  = (l₁ l₂ : List ℕ) → (length l₁ ＝ length l₂)
    → pr₁ (call-intermediate-l env program strategy l₁)
@@ -101,13 +101,13 @@ is-linear-time {τ} {n} {Γ} program nat-or-list
 is-linear-time-n : {τ : LType} {n : ℕ} {Γ : Ctx n}
                  → (program : Term Γ (list ⇒ nat ⇒ τ))
                  → (nat-or-list : (τ ＝ nat) ∔ (τ ＝ list))
-                 → Type
+                 → 𝓤₀ ̇
 is-linear-time-n {τ} {n} {Γ} program nat-or-list
  = Σ C ꞉ ℕ , Σ N₀ ꞉ ℕ , Π l ꞉ List ℕ , Π x ꞉ ℕ , Π env ꞉ Envᵢ Γ ,
    is-polytime 1 C N₀ (length l) (get-time nat-or-list
    (pr₁ (pr₁ (env [ program ]ᵢ eager) (thunk-type l)) (thunk-type x)))
 
-is-polytime-to-polybigO : {τ : LType} {n : ℕ} {Γ : Ctx n}
+is-polytime-to-polybig-o : {τ : LType} {n : ℕ} {Γ : Ctx n}
                         → (nat-or-list : (τ ＝ nat) ∔ (τ ＝ list))
                         → (program : Term (list ∷ Γ) τ)
                         → (k : ℕ)
@@ -118,14 +118,14 @@ is-polytime-to-polybigO : {τ : LType} {n : ℕ} {Γ : Ctx n}
                         → Π env ꞉ Envᵢ Γ ,
                           ((list-time-function-naive env nat-or-list
                           (lam list program) eager) ∈O[ (λ n → n ^ k) ])
-is-polytime-to-polybigO (inl refl) program k (C , N₀ , f) env
- = bigO (C , (N₀ , λ n le → transport (λ z → pr₁
+is-polytime-to-polybig-o (inl refl) program k (C , N₀ , f) env
+ = big-o (C , (N₀ , λ n le → transport (λ z → pr₁
    (pr₁ (eager-function-list env program)
    (0 , return (gen-naive-list n))) ≤ (C * z ^ k))
    (naive-list-length-lemma n ⁻¹) (f (gen-naive-list n) env (transport (N₀ ≤_)
    (naive-list-length-lemma n) le))))
-is-polytime-to-polybigO (inr refl) program k (C , N₀ , f) env
- = bigO (C , (N₀ , λ n le → transport (λ z → pr₁
+is-polytime-to-polybig-o (inr refl) program k (C , N₀ , f) env
+ = big-o (C , (N₀ , λ n le → transport (λ z → pr₁
    (pr₁ (eager-function-list env program)
    (0 , return (gen-naive-list n))) ≤ (C * z ^ k))
    (naive-list-length-lemma n ⁻¹) (f (gen-naive-list n) env (transport (N₀ ≤_)
