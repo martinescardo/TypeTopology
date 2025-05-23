@@ -59,7 +59,7 @@ lookup-env : {n : ℕ} {Γ : Ctx n} (m : Fin n) → Env Γ → ⟦ Γ !! m ⟧
 lookup-env 𝟎 (x ∷E _) = x
 lookup-env (suc m) (x ∷E env) = lookup-env m env
 
-if'_then'_else'_ : {X : Type} → ℕ → X → X → X
+if'_then'_else'_ : {X : 𝓤₀ ̇} → ℕ → X → X → X
 if' zero then' x else' y = x
 if' succ _ then' x else' y = y
 
@@ -122,13 +122,13 @@ Intermediate semantics
 
 \begin{code}
 
-⟦_⟧ᵢ : LType → Type
+⟦_⟧ᵢ : LType → 𝓤₀ ̇
 
 thunk-type : {σ : LType} → ⟦ σ ⟧ → ⟦ σ ⟧ᵢ
 
 strip-thunk : {σ : LType} → ⟦ σ ⟧ᵢ → ⟦ σ ⟧
 
-value-time-independent : {σ τ : LType} → (f : ⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) → Type
+value-time-independent : {σ τ : LType} → (f : ⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) → 𝓤₀ ̇
 value-time-independent {σ} f = (x y : ⟦ σ ⟧ᵢ) → strip-thunk x ＝ strip-thunk y
                              →  strip-thunk (f x) ＝ strip-thunk (f y)
 
@@ -167,7 +167,7 @@ strip-thunk-is-inverse-of-thunk-type {σ ⇒ τ} f
  = fe (strip-thunk-is-inverse-of-thunk-lemma f)                           
 
 infixr 5 _∷Eᵢ_
-data Envᵢ : {n : ℕ} → Ctx n → Type where
+data Envᵢ : {n : ℕ} → Ctx n → 𝓤₀ ̇ where
  [] : Envᵢ []
  _∷Eᵢ_ : {n : ℕ} {Γ : Ctx n } {τ : LType} → ⟦ τ ⟧ᵢ → Envᵢ Γ → Envᵢ (τ ∷ Γ)
 

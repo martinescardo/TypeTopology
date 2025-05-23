@@ -8,12 +8,12 @@ Provides functions for manipulating isomorphisms
 module TGH.AFP2024.iso-utils where
 
 open import MLTT.Spartan renaming (_+_ to _∔_ ; _∙_ to trans)
-open import TGH.isomorphisms
+open import TGH.AFP2024.isomorphisms
 
 open _≅_
 open is-bijection
 
-id-iso : (A : Type) → A ≅ A
+id-iso : (A : 𝓤₀ ̇) → A ≅ A
 id-iso A = record { bijection = f ; bijectivity = f-is-bijection }
  where
   f : A → A
@@ -31,10 +31,10 @@ id-iso A = record { bijection = f ; bijectivity = f-is-bijection }
   f-is-bijection : is-bijection f
   f-is-bijection = record { inverse = g ; η = gf ; ε = fg }
 
-≅-sym : {X Y : Type} → X ≅ Y → Y ≅ X
+≅-sym : {X Y : 𝓤₀ ̇} → X ≅ Y → Y ≅ X
 ≅-sym (Isomorphism f (Inverse g η ε)) = Isomorphism g (Inverse f ε η)
 
-_∘ᵢ_ : {A B C : Type} → B ≅ C → A ≅ B → A ≅ C
+_∘ᵢ_ : {A B C : 𝓤₀ ̇} → B ≅ C → A ≅ B → A ≅ C
 α ∘ᵢ β = record { bijection = f ; bijectivity = f-is-bijection }
  where
   f : _ → _
@@ -55,16 +55,16 @@ _∘ᵢ_ : {A B C : Type} → B ≅ C → A ≅ B → A ≅ C
   f-is-bijection = record { inverse = g ; η = gf ; ε = fg }
 
 -- Equational reasoning for iso's
-_≅⟨_⟩_ : (X : Type) {Y Z : Type} → X ≅ Y → Y ≅ Z → X ≅ Z
+_≅⟨_⟩_ : (X : 𝓤₀ ̇) {Y Z : 𝓤₀ ̇} → X ≅ Y → Y ≅ Z → X ≅ Z
 X ≅⟨ p ⟩ q = q ∘ᵢ p
 
-_∎ᵢ : (X : Type) → X ≅ X
+_∎ᵢ : (X : 𝓤₀ ̇) → X ≅ X
 X ∎ᵢ = id-iso X
 
 infixr  0 _≅⟨_⟩_
 infix   1 _∎ᵢ
 
-∔-unit-left-iso : (X : Type) → X ≅ 𝟘 ∔ X
+∔-unit-left-iso : (X : 𝓤₀ ̇) → X ≅ 𝟘 ∔ X
 ∔-unit-left-iso X = record { bijection = f ; bijectivity = f-is-bijection }
  where
   f : X → 𝟘 ∔ X
@@ -82,7 +82,7 @@ infix   1 _∎ᵢ
   f-is-bijection : is-bijection f
   f-is-bijection = record { inverse = g ; η = gf ; ε = fg }
   
-∔-pair-iso : {A B C D : Type} → A ≅ B → C ≅ D → (A ∔ C) ≅ (B ∔ D)
+∔-pair-iso : {A B C D : 𝓤₀ ̇} → A ≅ B → C ≅ D → (A ∔ C) ≅ (B ∔ D)
 ∔-pair-iso {A} {B} {C} {D} α β = record { bijection = f ; bijectivity = f-is-bijection }
  where
   f : A ∔ C → B ∔ D
@@ -104,7 +104,7 @@ infix   1 _∎ᵢ
   f-is-bijection : is-bijection f
   f-is-bijection = record { inverse = g ; η = gf ; ε = fg }
 
-∔-assoc-iso : (A B C : Type) → A ∔ B ∔ C ≅ (A ∔ B) ∔ C
+∔-assoc-iso : (A B C : 𝓤₀ ̇) → A ∔ B ∔ C ≅ (A ∔ B) ∔ C
 ∔-assoc-iso A B C = record { bijection = f ; bijectivity = f-is-bijection }
  where
   f : A ∔ B ∔ C → (A ∔ B) ∔ C
@@ -130,7 +130,7 @@ infix   1 _∎ᵢ
   f-is-bijection : is-bijection f
   f-is-bijection = record { inverse = g ; η = gf ; ε = fg }
 
-∔-left-swap-iso : (A B C : Type) → A ∔ B ∔ C ≅ B ∔ A ∔ C
+∔-left-swap-iso : (A B C : 𝓤₀ ̇) → A ∔ B ∔ C ≅ B ∔ A ∔ C
 ∔-left-swap-iso A B C = record { bijection = f ; bijectivity = f-is-bijection }
  where
   f : A ∔ B ∔ C → B ∔ A ∔ C

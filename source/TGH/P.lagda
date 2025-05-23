@@ -39,7 +39,7 @@ is-binary-program {n} {Γ} program
  = (env : Env Γ) → (xs : List ℕ) → (all-binary xs)
  → all-binary ((env [ lam list program ]ₑ) xs)
 
-Reduction : {n : ℕ} (Γ : Ctx n) → Type
+Reduction : {n : ℕ} (Γ : Ctx n) → 𝓤₀ ̇
 Reduction Γ = Σ program ꞉ Term (list ∷ Γ) list , is-binary-program program
 
 bool-to-nat : Bool → ℕ
@@ -50,14 +50,14 @@ nat-to-bool : ℕ → Bool
 nat-to-bool zero = true
 nat-to-bool (succ _) = false
 
-_inverse-of_ : {X Y : Type} → (f : Y → X) → (g : X → Y) → 𝓤₀ ̇
+_inverse-of_ : {X Y : 𝓤₀ ̇} → (f : Y → X) → (g : X → Y) → 𝓤₀ ̇
 f inverse-of g = f ∘ g ∼ id
 
 bool-nat-inverse : nat-to-bool inverse-of bool-to-nat
 bool-nat-inverse true = refl
 bool-nat-inverse false = refl
 
-map-inverse : {X Y : Type} → {f : Y → X} → {g : X → Y} → f inverse-of g
+map-inverse : {X Y : 𝓤₀ ̇} → {f : Y → X} → {g : X → Y} → f inverse-of g
             → (map f) inverse-of (map g)
 map-inverse eq [] = refl
 map-inverse eq (x ∷ l) = ap₂ _∷_ (eq x) (map-inverse eq l)
@@ -65,7 +65,7 @@ map-inverse eq (x ∷ l) = ap₂ _∷_ (eq x) (map-inverse eq l)
 map-bool-nat-inverse : (map nat-to-bool) inverse-of (map bool-to-nat)
 map-bool-nat-inverse = map-inverse bool-nat-inverse
 
-ite-nat-bool-inverse : {X : Type} {x y : X} → (n : ℕ)
+ite-nat-bool-inverse : {X : 𝓤₀ ̇} {x y : X} → (n : ℕ)
                      → if' n then' x else' y
                      ＝ if' bool-to-nat (nat-to-bool n) then' x else' y
 ite-nat-bool-inverse zero = refl
@@ -105,7 +105,7 @@ to-decision-solver env program l
 
 
 general-list-polytime : {τ : LType} {n : ℕ} {Γ : Ctx n}
-                      → ((τ ＝ nat) ∔ (τ ＝ list)) → Term (list ∷ Γ) τ → Type
+                      → ((τ ＝ nat) ∔ (τ ＝ list)) → Term (list ∷ Γ) τ → 𝓤₀ ̇
 general-list-polytime {_} {n} {Γ} (inl refl) program
  = Σ k ꞉ ℕ , Σ C ꞉ ℕ , Σ N₀ ꞉ ℕ , Π l ꞉ List ℕ , Π env ꞉ Envᵢ Γ ,
    is-polytime k C N₀ (length l) (pr₁ (pr₁ (env [ lam list program ]ᵢ eager)
@@ -115,7 +115,7 @@ general-list-polytime {_} {n} {Γ} (inr refl) program
    is-polytime k C N₀ (length l) (pr₁ (pr₁ (env [ lam list program ]ᵢ eager)
    (thunk-type l)))
 
-_∈P : (decision : List Bool → Bool) → Type
+_∈P : (decision : List Bool → Bool) → 𝓤₀ ̇
 _∈P decision = Π n ꞉ ℕ , Π Γ ꞉ Ctx n ,
                 Σ program ꞉ Term (list ∷ Γ) nat ,
                 ((env : Env Γ)
