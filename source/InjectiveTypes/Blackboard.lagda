@@ -546,14 +546,43 @@ ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                       → (f : X → D)
                       → Σ f' ꞉ (Y → D) , f' ∘ j ∼ f
 
+extension : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {D : 𝓦 ̇ }
+          → ainjective-type D 𝓤 𝓥
+          → (j : X → Y)
+          → is-embedding j
+          → (X → D)
+          → (Y → D)
+extension i j e f = pr₁ (i j e f)
+
+extension-property : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {D : 𝓦 ̇ }
+                     (a : ainjective-type D 𝓤 𝓥)
+                     (j : X → Y)
+                     (i : is-embedding j)
+                     (f : X → D)
+                   → extension a j i f ∘ j ∼ f
+extension-property i j e f = pr₂ (i j e f)
+
+extension' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {D : 𝓦 ̇ }
+           → ainjective-type D 𝓤 𝓥
+           → (𝕛 : X ↪ Y)
+           → (X → D)
+           → (Y → D)
+extension' i (j , e) = extension i j e
+
+extension-property' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {D : 𝓦 ̇ }
+                      (a : ainjective-type D 𝓤 𝓥)
+                      (𝕛 : X ↪ Y)
+                      (f : X → D)
+                    → extension' a 𝕛 f ∘ ⌊ 𝕛 ⌋ ∼ f
+extension-property' i (j , e) = extension-property i j e
+
 embedding-retract : (D : 𝓦 ̇ ) (Y : 𝓥 ̇ ) (j : D → Y)
                   → is-embedding j
                   → ainjective-type D 𝓦 𝓥
                   → retract D of Y
-embedding-retract D Y j e i = pr₁ a , j , pr₂ a
- where
-  a : Σ f' ꞉ (Y → D) , f' ∘ j ∼ id
-  a = i j e id
+embedding-retract D Y j e i = extension i j e id ,
+                              j ,
+                              extension-property i j e id
 
 retract-of-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
                       → ainjective-type D 𝓤 𝓥
