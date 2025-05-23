@@ -150,7 +150,7 @@ We now show that pullbacks exist.
 
    γ : is-equiv (chosen-pullback-map X)
    γ = qinvs-are-equivs
-                         (chosen-pullback-map X)
-                         (chosen-pullback-map⁻¹ , η , ε)
+        (chosen-pullback-map X)
+        (chosen-pullback-map⁻¹ , η , ε)
 
 \end{code}
