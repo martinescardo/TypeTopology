@@ -26,7 +26,7 @@ open import TGH.MyExponentiation
 open import TGH.Language fe
 open import TGH.P fe
 
-is-polytime' : (k C A₀ x y : ℕ) → Type
+is-polytime' : (k C A₀ x y : ℕ) → 𝓤₀ ̇
 is-polytime' k C M x y = y ≤ C * (x ^ k) + M
 
 to-decision-verifier : {n : ℕ} {Γ : Ctx n} → (env : Env Γ)
@@ -41,7 +41,7 @@ reduce : {n : ℕ} {Γ : Ctx n} → (env : Env Γ)
 reduce env r l
  = map nat-to-bool ((env [ lam list r ]ₑ) (map bool-to-nat l))
 
-is-polytime₂ : (k C N₀ N₁ x₁ x₂ y : ℕ) → Type
+is-polytime₂ : (k C N₀ N₁ x₁ x₂ y : ℕ) → 𝓤₀ ̇
 is-polytime₂ k C N₀ N₁ x₀ x₁ y
   = N₀ ≤ x₀ → N₁ ≤ x₁ → y ≤ C * (x₀ + x₁) ^ k 
 
@@ -60,7 +60,7 @@ general-list-polytime' {_} {n} {Γ} (inr refl) program
    is-polytime' k C M (length l) (pr₁ (pr₁ (env [ lam list program ]ᵢ eager)
    (thunk-type (map bool-to-nat l))))
 
-verifier-polytime : {n : ℕ} {Γ : Ctx n} → Term (list ∷ list ∷ Γ) nat → Type
+verifier-polytime : {n : ℕ} {Γ : Ctx n} → Term (list ∷ list ∷ Γ) nat → 𝓤₀ ̇
 verifier-polytime {n} {Γ} program
  = Σ k ꞉ ℕ , Σ C ꞉ ℕ , Σ N₀ ꞉ ℕ , Σ N₁ ꞉ ℕ , Π l ꞉ List ℕ , Π c ꞉ List ℕ ,
    Π env ꞉ Envᵢ Γ ,
@@ -68,7 +68,7 @@ verifier-polytime {n} {Γ} program
     (pr₁ (pr₁ (pr₁ (env [ lam list (lam list program) ]ᵢ eager) (thunk-type c))
     (thunk-type l)))
 
-_∈NP : (decision : List Bool → Bool) → Type
+_∈NP : (decision : List Bool → Bool) → 𝓤₀ ̇
 _∈NP decision = Π n ꞉ ℕ , Π Γ ꞉ Ctx n ,
                 Σ program ꞉ Term (list ∷ list ∷ Γ) nat , (Σ k ꞉ ℕ , Σ C ꞉ ℕ ,
                 Π l ꞉ List Bool , Σ c ꞉ List Bool , polynomial-length l c k C

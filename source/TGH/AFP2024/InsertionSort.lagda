@@ -11,11 +11,11 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import MLTT.List
 open import Notation.Order
 open import Ordinals.Notions
-open import TGH.isomorphisms
-open import TGH.iso-utils
+open import TGH.AFP2024.isomorphisms
+open import TGH.AFP2024.iso-utils
 
 
-module TGH.AFP2024.InsertionSort (X : Type) (_<_ : X → X → 𝓤₀ ̇ )
+module TGH.AFP2024.InsertionSort (X : 𝓤₀ ̇) (_<_ : X → X → 𝓤₀ ̇ )
  (trichotomy : is-trichotomous-order _<_) where
 insert : X → List X → List X
 insert y [] = y ∷ []
@@ -40,20 +40,20 @@ data Sorted : List X → Set where
              → (x ＝ y) ∔ (y < x)
              → Sorted (y ∷ x ∷ xs)
 
-Pos : {X : Type} → List X → 𝓤₀ ̇ 
+Pos : {X : 𝓤₀ ̇} → List X → 𝓤₀ ̇ 
 Pos [] = 𝟘
 Pos (_ ∷ xs) = 𝟙 ∔ Pos xs
 
-Inhab : {X : Type} (l : List X) → Pos l → X
+Inhab : {X : 𝓤₀ ̇} (l : List X) → Pos l → X
 Inhab (x ∷ _) (inl ⋆) = x
 Inhab (_ ∷ l) (inr p) = Inhab l p
 
-record _IsPermutationOf_ (xs ys : List X) : Type where
+record _IsPermutationOf_ (xs ys : List X) : 𝓤₀ ̇ where
  field
   pos-iso : Pos xs ≅ Pos ys
   inhab-eq : (p : Pos xs) → Inhab xs p ＝ Inhab ys (_≅_.bijection pos-iso p)
 
-record SortingAlgorithm : Type where
+record SortingAlgorithm : 𝓤₀ ̇ where
  field
   sort : List X → List X
   sort-is-sorted : (xs : List X) → Sorted (sort xs)

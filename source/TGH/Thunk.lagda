@@ -14,14 +14,14 @@ open import Naturals.Addition
 infixl 1 _>>=_
 infix 0 √_
 
-data Thunk' (X : Type) : ℕ → 𝓤₀ ̇ where
+data Thunk' (X : 𝓤₀ ̇) : ℕ → 𝓤₀ ̇ where
  return : X → Thunk' X 0
  √_     : {n : ℕ} → Thunk' X n → Thunk' X (succ n)
 
 Thunk : ℕ → 𝓤₀ ̇ → 𝓤₀ ̇
 Thunk n X = Thunk' X n
 
-force : {n : ℕ} {X : Type} → Thunk n X → X
+force : {n : ℕ} {X : 𝓤₀ ̇} → Thunk n X → X
 force (return x) = x
 force (√ x)      = force x
 

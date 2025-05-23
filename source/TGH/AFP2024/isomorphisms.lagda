@@ -14,7 +14,7 @@ module isomorphisms where
   is-bijection : {A B : 𝓤₀ ̇ } → (A → B) → 𝓤₀ ̇ 
   is-bijection f = Σ g ꞉ (codomain f → domain f) , ((g ∘ f ∼ id) × (f ∘ g ∼ id))
 
-  _≅_ : Type → Type → Type
+  _≅_ : 𝓤₀ ̇ → 𝓤₀ ̇ → 𝓤₀ ̇
   A ≅ B = Σ f ꞉ (A → B) , is-bijection f
 
 record is-bijection {A B : 𝓤₀ ̇ } (f : A → B) : 𝓤₀ ̇  where
