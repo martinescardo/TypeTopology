@@ -9,11 +9,7 @@ Pullbacks.
 module UF.Pullback where
 
 open import MLTT.Spartan
-open import MLTT.Unit-Properties
-open import UF.Base
 open import UF.Equiv
-open import UF.Retracts
-open import UF.Subsingletons
 
 \end{code}
 
