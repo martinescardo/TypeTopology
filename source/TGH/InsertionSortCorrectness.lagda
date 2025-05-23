@@ -89,8 +89,6 @@ concat-correctness {_} {_} {env} (x ∷ xs) ys = x ∷
 ℕ-subtract n zero = n
 ℕ-subtract n (succ m) = pred' (ℕ-subtract n m)
 
---ℕ-subtract-lemma-I : (n k : ℕ) → n ≤ n + k
-
 subtract-env-lemma : {n₁ n₂ : ℕ} → {Γ₁ : Ctx n₁} → {Γ₂ : Ctx n₂}
                    → {env₁ : Env Γ₁} → {env₂ : Env Γ₂}
                    → {y₁ y₂ : ℕ}
@@ -580,117 +578,137 @@ sort-env-lemma : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂} {env₁
 sort-env-lemma [] = refl
 sort-env-lemma {_} {_} {_} {_} {env₁} {env₂} (x ∷ xs)
  = ((x ∷E
-                            list-rec env₁ xs nil
-                            (lam list
-                             (lam nat
-                              (lam list
-                               (lam nat
-                                (lam list
-                                 (lam list
-                                  (lrec (var 𝟏) (var 𝟎)
-                                   (lam list (lam nat (cons (var 𝟎) (var 𝟏))))))
-                                 ∙
-                                 (lam list
-                                  (lam nat
-                                   (lrec (var 𝟏) nil
-                                    (lam list
-                                     (lam nat
-                                      (if subtract ∙ var 𝟐 ∙ var 𝟎 then nil else
-                                       cons (var 𝟎) (var 𝟏))))))
-                                  ∙ var 𝟏
-                                  ∙ var 𝟎)
-                                 ∙
-                                 cons (var 𝟎)
-                                 (removeLessThanFromStart ∙ var 𝟏 ∙ var 𝟎)))
-                               ∙ var 𝟏
-                               ∙ var 𝟎)))
-                            ∷E env₁) [ insert ]ₑ) (list-rec env₁ xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) x ＝⟨ ap (λ z → ((x ∷E
-                            list-rec env₁ xs nil
-                            (lam list
-                             (lam nat
-                              (lam list
-                               (lam nat
-                                (lam list
-                                 (lam list
-                                  (lrec (var 𝟏) (var 𝟎)
-                                   (lam list (lam nat (cons (var 𝟎) (var 𝟏))))))
-                                 ∙
-                                 (lam list
-                                  (lam nat
-                                   (lrec (var 𝟏) nil
-                                    (lam list
-                                     (lam nat
-                                      (if subtract ∙ var 𝟐 ∙ var 𝟎 then nil else
-                                       cons (var 𝟎) (var 𝟏))))))
-                                  ∙ var 𝟏
-                                  ∙ var 𝟎)
-                                 ∙
-                                 cons (var 𝟎)
-                                 (removeLessThanFromStart ∙ var 𝟏 ∙ var 𝟎)))
-                               ∙ var 𝟏
-                               ∙ var 𝟎)))
-                            ∷E env₁) [ insert ]ₑ) z x) (sort-env-lemma xs) ⟩
-                           ((x ∷E
-                            list-rec _ xs nil
-                            (lam list
-                             (lam nat
-                              (lam list
-                               (lam nat
-                                (lam list
-                                 (lam list
-                                  (lrec (var 𝟏) (var 𝟎)
-                                   (lam list (lam nat (cons (var 𝟎) (var 𝟏))))))
-                                 ∙
-                                 (lam list
-                                  (lam nat
-                                   (lrec (var 𝟏) nil
-                                    (lam list
-                                     (lam nat
-                                      (if subtract ∙ var 𝟐 ∙ var 𝟎 then nil else
-                                       cons (var 𝟎) (var 𝟏))))))
-                                  ∙ var 𝟏
-                                  ∙ var 𝟎)
-                                 ∙
-                                 cons (var 𝟎)
-                                 (removeLessThanFromStart ∙ var 𝟏 ∙ var 𝟎)))
-                               ∙ var 𝟏
-                               ∙ var 𝟎)))
-                            ∷E env₁) [ insert ]ₑ) (list-rec env₂ xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) x ＝⟨ insert-env-lemma (list-rec env₂ xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) x ⟩
-                           ((x ∷E
-                            list-rec env₂ xs nil
-                            (lam list
-                             (lam nat
-                              (lam list
-                               (lam nat
-                                (lam list
-                                 (lam list
-                                  (lrec (var 𝟏) (var 𝟎)
-                                   (lam list (lam nat (cons (var 𝟎) (var 𝟏))))))
-                                 ∙
-                                 (lam list
-                                  (lam nat
-                                   (lrec (var 𝟏) nil
-                                    (lam list
-                                     (lam nat
-                                      (if subtract ∙ var 𝟐 ∙ var 𝟎 then nil else
-                                       cons (var 𝟎) (var 𝟏))))))
-                                  ∙ var 𝟏
-                                  ∙ var 𝟎)
-                                 ∙
-                                 cons (var 𝟎)
-                                 (removeLessThanFromStart ∙ var 𝟏 ∙ var 𝟎)))
-                               ∙ var 𝟏
-                               ∙ var 𝟎)))
-                            ∷E env₂) [ insert ]ₑ) (list-rec env₂ xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) x ∎
+   list-rec env₁ xs nil
+   (lam list
+   (lam nat
+   (lam list
+   (lam nat
+   (lam list
+   (lam list
+   (lrec (var 𝟏) (var 𝟎)
+   (lam list (lam nat (cons (var 𝟎) (var 𝟏))))))
+   ∙
+   (lam list
+   (lam nat
+   (lrec (var 𝟏) nil
+   (lam list
+   (lam nat
+   (if subtract ∙ var 𝟐 ∙ var 𝟎 then nil else
+   cons (var 𝟎) (var 𝟏))))))
+   ∙ var 𝟏
+   ∙ var 𝟎)
+   ∙
+   cons (var 𝟎)
+   (removeLessThanFromStart ∙ var 𝟏 ∙ var 𝟎)))
+   ∙ var 𝟏
+   ∙ var 𝟎)))
+   ∷E env₁) [ insert ]ₑ) (list-rec env₁ xs nil
+   (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) x ＝⟨ ap (λ z → ((x ∷E
+   list-rec env₁ xs nil
+   (lam list
+   (lam nat
+   (lam list
+   (lam nat
+   (lam list
+   (lam list
+   (lrec (var 𝟏) (var 𝟎)
+   (lam list (lam nat (cons (var 𝟎) (var 𝟏))))))
+   ∙
+   (lam list
+   (lam nat
+   (lrec (var 𝟏) nil
+   (lam list
+   (lam nat
+   (if subtract ∙ var 𝟐 ∙ var 𝟎 then nil else
+   cons (var 𝟎) (var 𝟏))))))
+   ∙ var 𝟏
+   ∙ var 𝟎)
+   ∙
+   cons (var 𝟎)
+   (removeLessThanFromStart ∙ var 𝟏 ∙ var 𝟎)))
+   ∙ var 𝟏
+   ∙ var 𝟎)))
+   ∷E env₁) [ insert ]ₑ) z x) (sort-env-lemma xs) ⟩
+   ((x ∷E
+   list-rec _ xs nil
+   (lam list
+   (lam nat
+   (lam list
+   (lam nat
+   (lam list
+   (lam list
+   (lrec (var 𝟏) (var 𝟎)
+   (lam list (lam nat (cons (var 𝟎) (var 𝟏))))))
+   ∙
+   (lam list
+   (lam nat
+   (lrec (var 𝟏) nil
+   (lam list
+   (lam nat
+   (if subtract ∙ var 𝟐 ∙ var 𝟎 then nil else
+   cons (var 𝟎) (var 𝟏))))))
+   ∙ var 𝟏
+   ∙ var 𝟎)
+   ∙
+   cons (var 𝟎)
+   (removeLessThanFromStart ∙ var 𝟏 ∙ var 𝟎)))
+   ∙ var 𝟏
+   ∙ var 𝟎)))
+   ∷E env₁) [ insert ]ₑ) (list-rec env₂ xs nil (lam list (lam nat
+   (insert ∙ (var 𝟏) ∙ (var 𝟎))))) x ＝⟨ insert-env-lemma
+   (list-rec env₂ xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) x ⟩
+   ((x ∷E
+   list-rec env₂ xs nil
+   (lam list
+   (lam nat
+   (lam list
+   (lam nat
+   (lam list
+   (lam list
+   (lrec (var 𝟏) (var 𝟎)
+   (lam list (lam nat (cons (var 𝟎) (var 𝟏))))))
+   ∙
+   (lam list
+   (lam nat
+   (lrec (var 𝟏) nil
+   (lam list
+   (lam nat
+   (if subtract ∙ var 𝟐 ∙ var 𝟎 then nil else
+   cons (var 𝟎) (var 𝟏))))))
+   ∙ var 𝟏
+   ∙ var 𝟎)
+   ∙
+   cons (var 𝟎)
+   (removeLessThanFromStart ∙ var 𝟏 ∙ var 𝟎)))
+   ∙ var 𝟏
+   ∙ var 𝟎)))
+   ∷E env₂) [ insert ]ₑ) (list-rec env₂ xs nil
+   (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) x ∎
 
-sort-correctness : {n : ℕ} {Γ : Ctx n} {env : Env Γ} → (xs : List ℕ) → (env [ sort ]ₑ) xs ＝ insertion-sort xs
+sort-correctness : {n : ℕ} {Γ : Ctx n} {env : Env Γ} → (xs : List ℕ)
+                 → (env [ sort ]ₑ) xs ＝ insertion-sort xs
 sort-correctness [] = refl
-sort-correctness {_} {_} {env} (x ∷ xs) = (env [ sort ]ₑ) (x ∷ xs) ＝⟨ refl ⟩
-                             list-rec ((x ∷ xs) ∷E env) (x ∷ xs) nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎)))) ＝⟨ refl ⟩
-                             ((x ∷E (list-rec ((x ∷ xs) ∷E env) xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) ∷E (x ∷ xs) ∷E env) [ insert ]ₑ) (list-rec ((x ∷ xs) ∷E env) xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) x ＝⟨ ap (λ z → ((x ∷E (list-rec ((x ∷ xs) ∷E env) xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) ∷E (x ∷ xs) ∷E env) [ insert ]ₑ) z x) (sort-env-lemma xs) ⟩
-                             ((x ∷E (list-rec ((x ∷ xs) ∷E env) xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) ∷E (x ∷ xs) ∷E env) [ insert ]ₑ) (list-rec (xs ∷E env) xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) x ＝⟨ ap (λ z → ((x ∷E (list-rec ((x ∷ xs) ∷E env) xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) ∷E (x ∷ xs) ∷E env) [ insert ]ₑ) z x) (sort-correctness xs) ⟩
-                             ((x ∷E (list-rec ((x ∷ xs) ∷E env) xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) ∷E (x ∷ xs) ∷E env) [ insert ]ₑ) (insertion-sort xs) x ＝⟨ insert-correctness (insertion-sort xs) x (insertion-sort-is-sorted xs) ⟩
-                             insert' x (insertion-sort xs) ＝⟨ refl ⟩
-                             insertion-sort (x ∷ xs) ∎
+sort-correctness {_} {_} {env} (x ∷ xs)
+ = (env [ sort ]ₑ) (x ∷ xs) ＝⟨ refl ⟩
+   list-rec ((x ∷ xs) ∷E env) (x ∷ xs) nil
+   (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎)))) ＝⟨ refl ⟩
+   ((x ∷E (list-rec ((x ∷ xs) ∷E env) xs nil (lam list (lam nat
+   (insert ∙ (var 𝟏) ∙ (var 𝟎))))) ∷E (x ∷ xs) ∷E env) [ insert ]ₑ)
+   (list-rec ((x ∷ xs) ∷E env) xs nil (lam list (lam nat (insert
+   ∙ (var 𝟏) ∙ (var 𝟎))))) x ＝⟨ ap (λ z → ((x ∷E (list-rec ((x ∷ xs)
+   ∷E env) xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) ∷E (x ∷ xs)
+   ∷E env) [ insert ]ₑ) z x) (sort-env-lemma xs) ⟩
+   ((x ∷E (list-rec ((x ∷ xs) ∷E env) xs nil (lam list (lam nat (insert
+   ∙ (var 𝟏) ∙ (var 𝟎))))) ∷E (x ∷ xs) ∷E env) [ insert ]ₑ) (list-rec
+   (xs ∷E env) xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) x
+   ＝⟨ ap (λ z → ((x ∷E (list-rec ((x ∷ xs) ∷E env) xs nil (lam list (lam nat
+   (insert ∙ (var 𝟏) ∙ (var 𝟎))))) ∷E (x ∷ xs) ∷E env) [ insert ]ₑ) z x)
+   (sort-correctness xs) ⟩
+   ((x ∷E (list-rec ((x ∷ xs) ∷E env) xs nil (lam list (lam nat (insert
+   ∙ (var 𝟏) ∙ (var 𝟎))))) ∷E (x ∷ xs) ∷E env) [ insert ]ₑ)
+   (insertion-sort xs) x ＝⟨ insert-correctness
+   (insertion-sort xs) x (insertion-sort-is-sorted xs) ⟩
+   insert' x (insertion-sort xs) ＝⟨ refl ⟩
+   insertion-sort (x ∷ xs) ∎
 
 \end{code}
