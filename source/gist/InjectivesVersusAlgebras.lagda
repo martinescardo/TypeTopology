@@ -22,7 +22,7 @@ blackboard file.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
@@ -635,7 +635,7 @@ The ∞-categorical structure alluded above.
          → α □ (β □ γ) ∼ (α □ β) □ γ
   assocD {x} {y} {z} {t} α β γ a =
    (α □ (β □ γ)) a    ＝⟨ refl ⟩
-   α a ∙ (β b ∙ γ c)  ＝⟨ (∙assoc _ _ _)⁻¹ ⟩
+   α a ∙ (β b ∙ γ c)  ＝⟨ (∙assoc (α a) (β b) (γ c))⁻¹ ⟩
    (α a ∙ β b) ∙ γ c  ＝⟨ I ⟩
    (α a ∙ β b) ∙ γ c' ＝⟨ refl ⟩
    ((α □ β) □ γ) a    ∎
