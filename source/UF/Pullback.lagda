@@ -114,39 +114,39 @@ We now show that pullbacks exist.
 
 \begin{code}
 
- chosen-pullback : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
- chosen-pullback = Σ x ꞉ A , Σ y ꞉ B , f x ＝ g y
+ standard-pullback : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+ standard-pullback = Σ x ꞉ A , Σ y ꞉ B , f x ＝ g y
 
- pb₁ : chosen-pullback → A
+ pb₁ : standard-pullback → A
  pb₁ (x , y , e) = x
 
- pb₂ : chosen-pullback → B
+ pb₂ : standard-pullback → B
  pb₂ (x , y , e) = y
 
  pb-square : commutative-square pb₁ pb₂
  pb-square (x , y , e) = e
 
- chosen-pullback-cone : cone chosen-pullback
- chosen-pullback-cone = (pb₁ , pb₂ , pb-square)
+ standard-pullback-cone : cone standard-pullback
+ standard-pullback-cone = (pb₁ , pb₂ , pb-square)
 
- chosen-pullback-map : (X : 𝓣' ̇ ) → (X → chosen-pullback) → cone X
- chosen-pullback-map X = cone-map chosen-pullback X chosen-pullback-cone
+ standard-pullback-map : (X : 𝓣' ̇ ) → (X → standard-pullback) → cone X
+ standard-pullback-map X = cone-map standard-pullback X standard-pullback-cone
 
- chosen-pullback-is-pullback : is-pullback chosen-pullback chosen-pullback-cone
- chosen-pullback-is-pullback X = γ
+ standard-pullback-is-pullback : is-pullback standard-pullback standard-pullback-cone
+ standard-pullback-is-pullback X = γ
   where
-   chosen-pullback-map⁻¹ : cone X → (X → chosen-pullback)
-   chosen-pullback-map⁻¹ (p , q , s) x = p x , q x , s x
+   standard-pullback-map⁻¹ : cone X → (X → standard-pullback)
+   standard-pullback-map⁻¹ (p , q , s) x = p x , q x , s x
 
-   η : chosen-pullback-map⁻¹ ∘ chosen-pullback-map X ∼ id
+   η : standard-pullback-map⁻¹ ∘ standard-pullback-map X ∼ id
    η x = refl
 
-   ε : chosen-pullback-map X ∘ chosen-pullback-map⁻¹ ∼ id
+   ε : standard-pullback-map X ∘ standard-pullback-map⁻¹ ∼ id
    ε c = refl
 
-   γ : is-equiv (chosen-pullback-map X)
+   γ : is-equiv (standard-pullback-map X)
    γ = qinvs-are-equivs
-        (chosen-pullback-map X)
-        (chosen-pullback-map⁻¹ , η , ε)
+        (standard-pullback-map X)
+        (standard-pullback-map⁻¹ , η , ε)
 
 \end{code}
