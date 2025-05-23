@@ -61,12 +61,25 @@ record SortingAlgorithm : 𝓤₀ ̇ where
 
 insert-is-sorted : (x : X) (xs : List X) → Sorted xs → Sorted (insert x xs)
 insert-is-sorted y [] nil-sorted = sing-sorted 
-insert-is-sorted y (x ∷ []) sing-sorted with trichotomy x y
-insert-is-sorted y (x ∷ []) sing-sorted | inl x<y
+insert-is-sorted y (x ∷ []) sing-sorted = γ (trichotomy x y)
+  where
+    γ : (x < y) ∔ (x ＝ y) ∔ (y < x)
+      → Sorted (insert y (x ∷ []))
+    γ (inl x<y) = {!adj-sorted sing-sorted (inr x<y)!}
+    γ (inr y≤x) = {!!}
+{-insert-is-sorted y (x ∷ []) sing-sorted | inl x<y
  = adj-sorted sing-sorted (inr x<y)
 insert-is-sorted y (x ∷ []) sing-sorted | inr y≤x
- = adj-sorted sing-sorted y≤x
-insert-is-sorted y (z ∷ x ∷ xs) (adj-sorted srtd z≤x) with trichotomy z y
+ = adj-sorted sing-sorted y≤x-}
+insert-is-sorted y (z ∷ x ∷ xs) (adj-sorted srtd z≤x) = γ (trichotomy z y)
+ where
+  γ : (z < y) ∔ (z ＝ y) ∔ (y < z)
+    → Sorted (insert y (z ∷ x ∷ xs))
+  γ (inl z<y) = {!!}
+  γ (inr y≤z) = {!!}
+  --adj-sorted (adj-sorted srtd z≤x) y≤z
+
+{-with trichotomy z y
 insert-is-sorted y (z ∷ x ∷ xs) (adj-sorted srtd z≤x)
  | inl z<y with trichotomy x y | insert-is-sorted y (x ∷ xs) srtd
 insert-is-sorted y (z ∷ x ∷ xs) (adj-sorted srtd z≤x)
@@ -74,7 +87,7 @@ insert-is-sorted y (z ∷ x ∷ xs) (adj-sorted srtd z≤x)
 insert-is-sorted y (z ∷ x ∷ xs) (adj-sorted srtd z≤x)
  | inl z<y | inr y≤x | _ = adj-sorted (adj-sorted srtd y≤x) (inr z<y)
 insert-is-sorted y (z ∷ x ∷ xs) (adj-sorted srtd z≤x)
- | inr y≤z = adj-sorted (adj-sorted srtd z≤x) y≤z
+ | inr y≤z = adj-sorted (adj-sorted srtd z≤x) y≤z-}
 
 insert-all-is-sorted : (xs ys : List X) (ys-srtd : Sorted ys)
   → Sorted (insert-all xs ys)
