@@ -515,69 +515,6 @@ Digression with speculative ideas.
 
 \begin{code}
 
-δΣ : 𝓤 ̇ → 𝓤 ⁺ ̇
-δΣ {𝓤} X = (P : 𝓤 ̇ ) → is-prop P → (P × X) ≃ X → P
-
-δΣ-is-prop-valued : (X : 𝓤 ̇ ) → is-prop (δΣ X)
-δΣ-is-prop-valued X = Π₃-is-prop fe' (λ _ i _ → i)
-
-δΠ : 𝓤 ̇ → 𝓤 ⁺ ̇
-δΠ {𝓤} X = (P : 𝓤 ̇ ) → is-prop P → (P → X) ≃ X → P
-
-δΠ-is-prop-valued : (X : 𝓤 ̇ ) → is-prop (δΠ X)
-δΠ-is-prop-valued X = Π₃-is-prop fe' (λ _ i _ → i)
-
-𝟘-is-not-Σ-defined : ¬ δΣ (𝟘 {𝓤})
-𝟘-is-not-Σ-defined f = 𝟘-elim (f 𝟘 𝟘-is-prop (≃-sym ×𝟘))
-
-pointed-is-Σ-defined : {X : 𝓤 ̇ } → X → δΣ X
-pointed-is-Σ-defined x P i e = pr₁ (⌜ e ⌝⁻¹ x)
-
-open import UF.PropTrunc
-
-module _ (pt : propositional-truncations-exist) where
-
- open PropositionalTruncation pt
-
- inhabited-is-Σ-defined : {X : 𝓤 ̇ } → ∥ X ∥ → δΣ X
- inhabited-is-Σ-defined {𝓤} {X} = ∥∥-rec (δΣ-is-prop-valued X) pointed-is-Σ-defined
-
- Σ-defined-is-inhabited : {X : 𝓤 ̇ } → δΣ X → ∥ X ∥
- Σ-defined-is-inhabited {𝓤} {X} f = f ∥ X ∥ ∥∥-is-prop e
-  where
-    e : ∥ X ∥ × X ≃ X
-    e = qinveq pr₂
-         ((λ x → ∣ x ∣ , x) ,
-          (λ (s , x) → to-×-＝ (∥∥-is-prop ∣ x ∣ s) refl) ,
-          (λ x → refl))
-
-𝟙-is-not-Π-defined : ¬ δΠ (𝟙 {𝓤})
-𝟙-is-not-Π-defined f = 𝟘-elim (f 𝟘 𝟘-is-prop (≃-sym (𝟘→ fe')))
-
-𝟘-is-Π-defined-gives-DNE : δΠ 𝟘
-                         → (P : 𝓤₀ ̇ ) → is-prop P → ¬¬ P → P
-𝟘-is-Π-defined-gives-DNE f P i ϕ = f P i e
- where
-  e : (P → 𝟘) ≃ 𝟘
-  e = qinveq ϕ
-       ((λ z p → z) ,
-        (λ u → dfunext fe' (λ p → 𝟘-is-prop (ϕ u) (u p))) ,
-        (λ z → 𝟘-elim z))
-
-DNE-gives-𝟘-is-Π-defined : ((P : 𝓤₀ ̇ ) → is-prop P → ¬¬ P → P)
-                         → δΠ 𝟘
-DNE-gives-𝟘-is-Π-defined dne P i e = dne P i ⌜ e ⌝
-
-\end{code}
-
-So the Π-definedness of 𝟘 is undecided in our constructive setting.
-
-Is any example of a type that we can prove to be Π-defined?
-
-Now we consider definedness more generally.
-
-\begin{code}
-
 module lifting-algebras-as-categories
         (𝓤 : Universe)
         (D : 𝓤 ⁺ ̇ )
@@ -803,3 +740,64 @@ Moreover, δΣ X ≃ ∥ X ∥, whereas δΠ X is a positive way of saying that 
 
 (And, of course, ∥ X ∥ is a positive way of saying that X is not 𝟘,
 without exhibiting a point of X.)
+
+\begin{code}
+
+δΣ : 𝓤 ̇ → 𝓤 ⁺ ̇
+δΣ {𝓤} X = (P : 𝓤 ̇ ) → is-prop P → (P × X) ≃ X → P
+
+δΣ-is-prop-valued : (X : 𝓤 ̇ ) → is-prop (δΣ X)
+δΣ-is-prop-valued X = Π₃-is-prop fe' (λ _ i _ → i)
+
+δΠ : 𝓤 ̇ → 𝓤 ⁺ ̇
+δΠ {𝓤} X = (P : 𝓤 ̇ ) → is-prop P → (P → X) ≃ X → P
+
+δΠ-is-prop-valued : (X : 𝓤 ̇ ) → is-prop (δΠ X)
+δΠ-is-prop-valued X = Π₃-is-prop fe' (λ _ i _ → i)
+
+𝟘-is-not-Σ-defined : ¬ δΣ (𝟘 {𝓤})
+𝟘-is-not-Σ-defined f = 𝟘-elim (f 𝟘 𝟘-is-prop (≃-sym ×𝟘))
+
+pointed-is-Σ-defined : {X : 𝓤 ̇ } → X → δΣ X
+pointed-is-Σ-defined x P i e = pr₁ (⌜ e ⌝⁻¹ x)
+
+open import UF.PropTrunc
+
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ inhabited-is-Σ-defined : {X : 𝓤 ̇ } → ∥ X ∥ → δΣ X
+ inhabited-is-Σ-defined {𝓤} {X} = ∥∥-rec (δΣ-is-prop-valued X) pointed-is-Σ-defined
+
+ Σ-defined-is-inhabited : {X : 𝓤 ̇ } → δΣ X → ∥ X ∥
+ Σ-defined-is-inhabited {𝓤} {X} f = f ∥ X ∥ ∥∥-is-prop e
+  where
+    e : ∥ X ∥ × X ≃ X
+    e = qinveq pr₂
+         ((λ x → ∣ x ∣ , x) ,
+          (λ (s , x) → to-×-＝ (∥∥-is-prop ∣ x ∣ s) refl) ,
+          (λ x → refl))
+
+𝟙-is-not-Π-defined : ¬ δΠ (𝟙 {𝓤})
+𝟙-is-not-Π-defined f = 𝟘-elim (f 𝟘 𝟘-is-prop (≃-sym (𝟘→ fe')))
+
+𝟘-is-Π-defined-gives-DNE : δΠ 𝟘
+                         → (P : 𝓤₀ ̇ ) → is-prop P → ¬¬ P → P
+𝟘-is-Π-defined-gives-DNE f P i ϕ = f P i e
+ where
+  e : (P → 𝟘) ≃ 𝟘
+  e = qinveq ϕ
+       ((λ z p → z) ,
+        (λ u → dfunext fe' (λ p → 𝟘-is-prop (ϕ u) (u p))) ,
+        (λ z → 𝟘-elim z))
+
+DNE-gives-𝟘-is-Π-defined : ((P : 𝓤₀ ̇ ) → is-prop P → ¬¬ P → P)
+                         → δΠ 𝟘
+DNE-gives-𝟘-is-Π-defined dne P i e = dne P i ⌜ e ⌝
+
+\end{code}
+
+So the Π-definedness of 𝟘 is undecided in our constructive setting.
+
+Is any example of a type that we can prove to be Π-defined?
