@@ -55,30 +55,30 @@ data Env : {n : ℕ} → Ctx n → 𝓤₀ ̇  where
  [] : Env []
  _∷E_ : {n : ℕ} {Γ : Ctx n } {τ : LType} → ⟦ τ ⟧ → Env Γ → Env (τ ∷ Γ)
 
-lookupEnv : {n : ℕ} {Γ : Ctx n} (m : Fin n) → Env Γ → ⟦ Γ !! m ⟧
-lookupEnv 𝟎 (x ∷E _) = x
-lookupEnv (suc m) (x ∷E env) = lookupEnv m env
+lookup-env : {n : ℕ} {Γ : Ctx n} (m : Fin n) → Env Γ → ⟦ Γ !! m ⟧
+lookup-env 𝟎 (x ∷E _) = x
+lookup-env (suc m) (x ∷E env) = lookup-env m env
 
 if'_then'_else'_ : {X : Type} → ℕ → X → X → X
 if' zero then' x else' y = x
 if' succ _ then' x else' y = y
 
-natRec : {n : ℕ} {Γ : Ctx n} → Env Γ → (m : ℕ)
+nat-rec : {n : ℕ} {Γ : Ctx n} → Env Γ → (m : ℕ)
        → (base : Term Γ nat) → (f : Term Γ (nat ⇒ nat)) → ℕ
 
 _[_]ₑ : {n : ℕ} {Γ : Ctx n} {τ : LType} → Env Γ → Term Γ τ → ⟦ τ ⟧
-env [ var v ]ₑ = lookupEnv v env
+env [ var v ]ₑ = lookup-env v env
 env [ zero ]ₑ = zero
 env [ suc t ]ₑ = succ (env [ t ]ₑ)
 env [ if t then u else v ]ₑ
  = if' (env [ t ]ₑ) then' (env [ u ]ₑ) else' (env [ v ]ₑ)
 env [ t ∙ u ]ₑ = (env [ t ]ₑ) (env [ u ]ₑ)
 env [ lam _ t ]ₑ = λ x → (x ∷E env) [ t ]ₑ
-env [ nrec t u v ]ₑ = natRec env (env [ t ]ₑ) u v
+env [ nrec t u v ]ₑ = nat-rec env (env [ t ]ₑ) u v
     
 
-natRec env zero base f = env [ base ]ₑ
-natRec env (succ m) base f = (env [ f ]ₑ) (natRec env m base f)
+nat-rec env zero base f = env [ base ]ₑ
+nat-rec env (succ m) base f = (env [ f ]ₑ) (nat-rec env m base f)
 
 double : Closed (nat ⇒ nat)
 double = lam nat (nrec (var 𝟎) zero (lam nat (suc (suc (var 𝟎)))))
@@ -91,28 +91,28 @@ Correctness of double
 
 double-env-lemma : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
                    {env₁ : Env Γ₁} {env₂ : Env Γ₂} → (m : ℕ )
-                 → natRec env₁ m zero (lam nat (suc (suc (var 𝟎))))
-                 ＝ natRec env₂ m zero (lam nat (suc (suc (var 𝟎))))
+                 → nat-rec env₁ m zero (lam nat (suc (suc (var 𝟎))))
+                 ＝ nat-rec env₂ m zero (lam nat (suc (suc (var 𝟎))))
 double-env-lemma zero = refl
 double-env-lemma (succ m) = ap (succ ∘ succ) (double-env-lemma m)
 
 double-correctness : (n : ℕ) → ([] [ double ]ₑ) n ＝ double' n
 double-correctness zero = refl
 double-correctness (succ n)
- = succ (succ (natRec (succ n ∷E []) n zero (lam nat (suc (suc (var 𝟎))))))
+ = succ (succ (nat-rec (succ n ∷E []) n zero (lam nat (suc (suc (var 𝟎))))))
    ＝⟨ γ₀ ⟩
-   succ (succ (natRec [] n zero (lam nat (suc (suc (var 𝟎))))))
+   succ (succ (nat-rec [] n zero (lam nat (suc (suc (var 𝟎))))))
    ＝⟨ ap (succ ∘ succ) γ₁ ⟩
    succ (succ (double' n)) ∎
  where
-  γ₀ : succ (succ (natRec (succ n ∷E []) n zero (lam nat (suc (suc (var 𝟎))))))
-       ＝ succ (succ (natRec [] n zero (lam nat (suc (suc (var 𝟎))))))
+  γ₀ : succ (succ (nat-rec (succ n ∷E []) n zero (lam nat (suc (suc (var 𝟎))))))
+       ＝ succ (succ (nat-rec [] n zero (lam nat (suc (suc (var 𝟎))))))
   γ₀ = ap (succ ∘ succ) (double-env-lemma n)
 
-  γ₁ : natRec [] n zero (lam nat (suc (suc (var 𝟎)))) ＝ double' n
-  γ₁ = natRec [] n zero (lam nat (suc (suc (var 𝟎))))
+  γ₁ : nat-rec [] n zero (lam nat (suc (suc (var 𝟎)))) ＝ double' n
+  γ₁ = nat-rec [] n zero (lam nat (suc (suc (var 𝟎))))
        ＝⟨ (double-env-lemma n)⁻¹ ⟩
-       natRec (n ∷E []) n zero (lam nat (suc (suc (var 𝟎))))
+       nat-rec (n ∷E []) n zero (lam nat (suc (suc (var 𝟎))))
        ＝⟨ double-correctness n ⟩
        double' n ∎
 
@@ -175,9 +175,9 @@ strip-thunk-env : {n : ℕ} {Γ : Ctx n } → Envᵢ Γ → Env Γ
 strip-thunk-env [] = []
 strip-thunk-env (x ∷Eᵢ xs) = strip-thunk x ∷E (strip-thunk-env xs)
 
-lookupEnvᵢ : {n : ℕ} {Γ : Ctx n} (m : Fin n) → Envᵢ Γ → ⟦ Γ !! m ⟧ᵢ
-lookupEnvᵢ 𝟎 (x ∷Eᵢ _) = x
-lookupEnvᵢ (suc m) (x ∷Eᵢ env) = lookupEnvᵢ m env
+lookup-envᵢ : {n : ℕ} {Γ : Ctx n} (m : Fin n) → Envᵢ Γ → ⟦ Γ !! m ⟧ᵢ
+lookup-envᵢ 𝟎 (x ∷Eᵢ _) = x
+lookup-envᵢ (suc m) (x ∷Eᵢ env) = lookup-envᵢ m env
 
 thunk-if : (Σ n₁ ꞉ ℕ , Thunk n₁ ℕ) → (Σ n₂ ꞉ ℕ , Thunk n₂ ℕ)
          → (Σ n₃ ꞉ ℕ , Thunk n₃ ℕ) → (Σ m ꞉ ℕ , Thunk m ℕ)
@@ -186,10 +186,10 @@ thunk-if (zero , return (succ _)) (n₂ , u) (n₃ , v) = succ n₃ , (√ v)
 thunk-if (succ n₁ , (√ t)) u v
  = succ (pr₁ (thunk-if (n₁ , t) u v)) , (√ (pr₂ (thunk-if (n₁ , t) u v)))
 
-natRecᵢ : {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ → (m : ℕ) → (base : Term Γ nat)
+nat-recᵢ : {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ → (m : ℕ) → (base : Term Γ nat)
         → (f : Term Γ (nat ⇒ nat)) → Σ t ꞉ ℕ , Thunk t ℕ
 
-recBuilder : {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ
+rec-builder : {n : ℕ} → {Γ : Ctx n} → Envᵢ Γ
            → Σ t ꞉ ℕ , Thunk t ℕ → (base : Term Γ nat)
            → (f : Term Γ (nat ⇒ nat)) → Σ t ꞉ ℕ , Thunk t ℕ
 
@@ -272,7 +272,7 @@ lam-value-time-independent σ env t
    ＝⟨ (equivalent-semantics (y ∷Eᵢ env) t)⁻¹ ⟩
    strip-thunk ((y ∷Eᵢ env) [ t ]ᵢ) ∎
 
-env [ var v ]ᵢ = increment (lookupEnvᵢ v env )
+env [ var v ]ᵢ = increment (lookup-envᵢ v env )
 env [ zero ]ᵢ = 1 , (√ return zero)
 env [ if t then u else v ]ᵢ = thunk-if (env [ t ]ᵢ) (env [ u ]ᵢ) (env [ v ]ᵢ)
 env [ suc t ]ᵢ = γ (env [ t ]ᵢ)
@@ -282,15 +282,15 @@ env [ suc t ]ᵢ = γ (env [ t ]ᵢ)
 env [ t ∙ u ]ᵢ = (pr₁ (env [ t ]ᵢ)) (env [ u ]ᵢ)
 env [ lam σ t ]ᵢ
  = (λ x → (x ∷Eᵢ env) [ t ]ᵢ) , lam-value-time-independent σ env t
-env [ nrec t u v ]ᵢ = recBuilder env (env [ t ]ᵢ) u v
+env [ nrec t u v ]ᵢ = rec-builder env (env [ t ]ᵢ) u v
 
-recBuilder env (0 , return x) u v = natRecᵢ env x u v
-recBuilder env ((succ _) , (√ x)) u v
- = succ (pr₁ (recBuilder env (_ , x) u v)) ,
-   (√ (pr₂ (recBuilder env (_ , x) u v)))
+rec-builder env (0 , return x) u v = nat-recᵢ env x u v
+rec-builder env ((succ _) , (√ x)) u v
+ = succ (pr₁ (rec-builder env (_ , x) u v)) ,
+   (√ (pr₂ (rec-builder env (_ , x) u v)))
 
-natRecᵢ env zero base f = env [ base ]ᵢ
-natRecᵢ env (succ n) base f = (pr₁ (env [ f ]ᵢ)) (natRecᵢ env n base f)
+nat-recᵢ env zero base f = env [ base ]ᵢ
+nat-recᵢ env (succ n) base f = (pr₁ (env [ f ]ᵢ)) (nat-recᵢ env n base f)
 
 \end{code}
 
@@ -346,33 +346,33 @@ application-equality env (f₁ , eqt) thunked₂ unthunked₁ unthunked₂ eq₁
 
 equivalent-nrec-lemma : {n : ℕ} → {Γ : Ctx n} → (env : Envᵢ Γ) → (ctr : ℕ)
                       → (base : Term Γ nat) → (f : Term Γ (nat ⇒ nat))
-                      → strip-thunk (natRecᵢ env ctr base f)
-                      ＝ (natRec (strip-thunk-env env) ctr base f)
+                      → strip-thunk (nat-recᵢ env ctr base f)
+                      ＝ (nat-rec (strip-thunk-env env) ctr base f)
 equivalent-nrec-lemma env zero base f = equivalent-semantics env base
 equivalent-nrec-lemma env (succ ctr) base f
- = application-equality env (env [ f ]ᵢ) (natRecᵢ env ctr base f)
-   (strip-thunk-env env [ f ]ₑ) (natRec (strip-thunk-env env) ctr base f)
+ = application-equality env (env [ f ]ᵢ) (nat-recᵢ env ctr base f)
+   (strip-thunk-env env [ f ]ₑ) (nat-rec (strip-thunk-env env) ctr base f)
    (equivalent-semantics env f) (equivalent-nrec-lemma env ctr base f) 
 
 equivalent-nrec : {n : ℕ} → {Γ : Ctx n} → (env : Envᵢ Γ)
  → (ctrᵢ : Σ t ꞉ ℕ , Thunk t ℕ) → (ctr : ℕ)
  → (strip-thunk ctrᵢ ＝ ctr) → (base : Term Γ nat)
  → (f : Term Γ (nat ⇒ nat))
- → strip-thunk (recBuilder env ctrᵢ base f)
- ＝ natRec (strip-thunk-env env) ctr base f
+ → strip-thunk (rec-builder env ctrᵢ base f)
+ ＝ nat-rec (strip-thunk-env env) ctr base f
 equivalent-nrec env (.0 , return n) .(strip-thunk (0 , return n)) refl base f
  = equivalent-nrec-lemma env n base f 
 equivalent-nrec env (.(succ _) , (√ y)) ctr x base f
  = equivalent-nrec env (_ , y) ctr x base f
 
 equivalent-semantics env (var v)
- = strip-thunk (increment (lookupEnvᵢ v env))
-   ＝⟨ (increment-equal-semantics (lookupEnvᵢ v env))⁻¹ ⟩
-   strip-thunk (lookupEnvᵢ v env) ＝⟨ γ env v ⟩
-   lookupEnv v (strip-thunk-env env) ∎
+ = strip-thunk (increment (lookup-envᵢ v env))
+   ＝⟨ (increment-equal-semantics (lookup-envᵢ v env))⁻¹ ⟩
+   strip-thunk (lookup-envᵢ v env) ＝⟨ γ env v ⟩
+   lookup-env v (strip-thunk-env env) ∎
  where
   γ : {n : ℕ} → {Γ : Ctx n} → (env : Envᵢ Γ) → (v : Fin n)
-    → strip-thunk (lookupEnvᵢ v env) ＝ lookupEnv v (strip-thunk-env env)
+    → strip-thunk (lookup-envᵢ v env) ＝ lookup-env v (strip-thunk-env env)
   γ (x ∷Eᵢ _) 𝟎 = refl
   γ (_ ∷Eᵢ env) (suc v) = γ env v
 equivalent-semantics env zero = refl
@@ -414,8 +414,8 @@ time-function term n = pr₁ ((pr₁ ([] [ term ]ᵢ)) (0 , return n))
 double-natrec-lemma : {m₁ m₂ : ℕ} {Γ₁ : Ctx m₁} {Γ₂ : Ctx m₂}
                       {env₁ : Envᵢ Γ₁} {env₂ : Envᵢ Γ₂}
                     → (n : ℕ)
-                    → (natRecᵢ env₁ n zero (lam nat (suc (suc (var 𝟎)))))
-                    ＝ (natRecᵢ env₂ n zero (lam nat (suc (suc (var 𝟎)))))
+                    → (nat-recᵢ env₁ n zero (lam nat (suc (suc (var 𝟎)))))
+                    ＝ (nat-recᵢ env₂ n zero (lam nat (suc (suc (var 𝟎)))))
 double-natrec-lemma zero = refl
 double-natrec-lemma (succ n) = ap (λ y → succ
       (1 +
@@ -428,10 +428,10 @@ double-natrec-lemma (succ n) = ap (λ y → succ
        >>= (λ x → √ return (succ x)))) (double-natrec-lemma n)
 
 double-time : (time-function double) ∈O[ (λ n → n) ]
-double-time = bigO (5 , 1 , γ)
+double-time = big-o (5 , 1 , γ)
  where
   γ₀ : (x : ℕ) → 1 ≤ (succ x)
-     → succ (pr₁ (natRecᵢ ((0 , return (succ x)) ∷Eᵢ [])
+     → succ (pr₁ (nat-recᵢ ((0 , return (succ x)) ∷Eᵢ [])
        (succ x) zero (lam nat (suc (suc (var 𝟎)))))) ≤ (5 + 5 * x)
   γ₀ zero ⋆ = ⋆
   γ₀ (succ n) ⋆ = γ₈
@@ -460,36 +460,36 @@ double-time = bigO (5 , 1 , γ)
     γ₇ : (n : ℕ) → n ≤ succ (succ n)
     γ₇ n = ≤-trans n (succ n) (succ (succ n)) (≤-succ n) (≤-succ (succ n))
 
-    γ₅ : 1 + (1 + (pr₁ (natRecᵢ ((0 , return (succ n)) ∷Eᵢ []) n
+    γ₅ : 1 + (1 + (pr₁ (nat-recᵢ ((0 , return (succ n)) ∷Eᵢ []) n
          zero (lam nat (suc (suc (var 𝟎)))))))
          ≤ 5 * (succ n)
-    γ₅ = ≤-trans (1 + (1 + pr₁ (natRecᵢ ((0 , return (succ n)) ∷Eᵢ []) n
+    γ₅ = ≤-trans (1 + (1 + pr₁ (nat-recᵢ ((0 , return (succ n)) ∷Eᵢ []) n
          zero (lam nat (suc (suc (var 𝟎))))))) (succ (succ (1 + (1 + pr₁
-         (natRecᵢ ((0 , return (succ n)) ∷Eᵢ []) n zero
+         (nat-recᵢ ((0 , return (succ n)) ∷Eᵢ []) n zero
          (lam nat (suc (suc (var 𝟎))))
-         ))))) (5 + 5 * n) (γ₇ (1 + (1 + pr₁ (natRecᵢ
+         ))))) (5 + 5 * n) (γ₇ (1 + (1 + pr₁ (nat-recᵢ
          ((0 , return (succ n)) ∷Eᵢ []) n zero
          (lam nat (suc (suc (var 𝟎)))))))) (γ₀ n ⋆)
 
-    γ₆ : (n : ℕ) → 1 + (1 + pr₁ (natRecᵢ ((0 , return (succ (succ n))) ∷Eᵢ [])
-         n zero (lam nat (suc (suc (var 𝟎)))))) ＝ 1 + (1 + (pr₁ (natRecᵢ
+    γ₆ : (n : ℕ) → 1 + (1 + pr₁ (nat-recᵢ ((0 , return (succ (succ n))) ∷Eᵢ [])
+         n zero (lam nat (suc (suc (var 𝟎)))))) ＝ 1 + (1 + (pr₁ (nat-recᵢ
          ((0 , return (succ n)) ∷Eᵢ []) n zero (lam nat (suc (suc (var 𝟎)))))))
-    γ₆ n = 1 + (1 + pr₁ (natRecᵢ ((0 , return (succ (succ n))) ∷Eᵢ []) n zero
+    γ₆ n = 1 + (1 + pr₁ (nat-recᵢ ((0 , return (succ (succ n))) ∷Eᵢ []) n zero
            (lam nat (suc (suc (var 𝟎)))))) ＝⟨ ap ((1 +_) ∘ (1 +_) ∘ pr₁)
            (double-natrec-lemma n) ⟩
-           1 + (1 + pr₁ (natRecᵢ ((0 , return (succ n)) ∷Eᵢ []) n zero
+           1 + (1 + pr₁ (nat-recᵢ ((0 , return (succ n)) ∷Eᵢ []) n zero
            (lam nat (suc (suc (var 𝟎)))))) ∎
 
 
-    γ₈ : succ (succ (succ (1 + (1 + (1 + (1 + pr₁ (natRecᵢ ((0 , return (succ
+    γ₈ : succ (succ (succ (1 + (1 + (1 + (1 + pr₁ (nat-recᵢ ((0 , return (succ
          (succ n))) ∷Eᵢ []) n zero (lam nat (suc (suc (var 𝟎)))))))))))
          ≤ 5 + (5 + 5 * n)
-    γ₈ = γ₄ (1 + (1 + pr₁ (natRecᵢ ((0 , return (succ (succ n))) ∷Eᵢ []) n zero
+    γ₈ = γ₄ (1 + (1 + pr₁ (nat-recᵢ ((0 , return (succ (succ n))) ∷Eᵢ []) n zero
          (lam nat (suc (suc (var 𝟎))))))) (5 + 5 * n)
          (transport (λ z → z ≤ 5 + 5 * n) ((γ₆ n)⁻¹) γ₅)
 
   γ : (x : ℕ) → 1 ≤ x
-    → succ (pr₁ (natRecᵢ ((0 , return x) ∷Eᵢ []) x zero
+    → succ (pr₁ (nat-recᵢ ((0 , return x) ∷Eᵢ []) x zero
       (lam nat (suc (suc (var 𝟎))))))
                           ≤ (5 * x)
   γ (succ n) le = γ₀ n ⋆
@@ -504,9 +504,9 @@ my-even (succ n) = if' my-even n then' 1 else' 0
 
 is-even-env-lemma : {m₁ m₂ : ℕ} {Γ₁ : Ctx m₁} {Γ₂ : Ctx m₂}
                     {env₁ : Env Γ₁} {env₂ : Env Γ₂} → (n : ℕ )
-                  → natRec env₁ n zero
+                  → nat-rec env₁ n zero
                     (lam nat (if var 𝟎 then suc zero else zero))
-                  ＝ natRec env₂ n zero (lam nat
+                  ＝ nat-rec env₂ n zero (lam nat
                     (if var 𝟎 then suc zero else zero))
 is-even-env-lemma zero = refl
 is-even-env-lemma (succ n) = ap (λ z → if' z then' 1 else' 0)
@@ -515,18 +515,18 @@ is-even-env-lemma (succ n) = ap (λ z → if' z then' 1 else' 0)
 is-even-correctness : (n : ℕ) → ([] [ is-even ]ₑ) n ＝ my-even n
 is-even-correctness zero = refl
 is-even-correctness (succ n) =
- (if' natRec (succ n ∷E []) n zero (lam nat (if var 𝟎 then suc zero else zero))
+ (if' nat-rec (succ n ∷E []) n zero (lam nat (if var 𝟎 then suc zero else zero))
  then' 1 else' 0) ＝⟨ is-even-env-lemma (succ n) ⟩
- (if' natRec (n ∷E []) n zero (lam nat (if var 𝟎 then suc zero else zero))
+ (if' nat-rec (n ∷E []) n zero (lam nat (if var 𝟎 then suc zero else zero))
  then' 1 else' 0)
  ＝⟨ ap (λ z → if' z then' 1 else' 0) (is-even-correctness n) ⟩
  if' my-even n then' 1 else' 0 ∎
 
 is-even-natrec-lemma : {m₁ m₂ : ℕ} {Γ₁ : Ctx m₁} {Γ₂ : Ctx m₂}
                        {env₁ : Envᵢ Γ₁} {env₂ : Envᵢ Γ₂} → (n : ℕ)
-                       → natRecᵢ env₁ n zero (lam nat
+                       → nat-recᵢ env₁ n zero (lam nat
                        (if var 𝟎 then suc zero else zero))
-                       ＝ natRecᵢ env₂ n zero (lam nat
+                       ＝ nat-recᵢ env₂ n zero (lam nat
                        (if var 𝟎 then suc zero else zero))
 is-even-natrec-lemma zero = refl
 is-even-natrec-lemma (succ n)
@@ -534,38 +534,38 @@ is-even-natrec-lemma (succ n)
    , (√ pr₂ (thunk-if x (2 , (√ (√ return 1))) (1 , (√ return 0))))))
    (is-even-natrec-lemma n)
 
-natRec<2 : {m : ℕ} {Γ : Ctx m} {env : Env Γ} → (n : ℕ)
-         → natRec env n zero (lam nat (if var 𝟎 then suc zero else zero)) < 2
-natRec<2 zero = ⋆
-natRec<2 (succ n) = γ (natRec _ n zero (lam nat (if var 𝟎 then suc zero else
-                    zero))) (natRec<2 n)
+nat-rec<2 : {m : ℕ} {Γ : Ctx m} {env : Env Γ} → (n : ℕ)
+         → nat-rec env n zero (lam nat (if var 𝟎 then suc zero else zero)) < 2
+nat-rec<2 zero = ⋆
+nat-rec<2 (succ n) = γ (nat-rec _ n zero (lam nat (if var 𝟎 then suc zero else
+                    zero))) (nat-rec<2 n)
  where
   γ : (n : ℕ) → (n < 2) → (if' n then' 1 else' 0) < 2
   γ zero le = ⋆
   γ (succ zero) le = ⋆
 
 is-even-time : (time-function is-even) ∈O[ (λ n → n) ]
-is-even-time = bigO (6 , 1 , γ)
+is-even-time = big-o (6 , 1 , γ)
  where
-  γ₀ : (n : ℕ) → 1 ≤ (succ n) → succ (pr₁ (natRecᵢ {1} {nat ∷ []}
+  γ₀ : (n : ℕ) → 1 ≤ (succ n) → succ (pr₁ (nat-recᵢ {1} {nat ∷ []}
        ((0 , return (succ n)) ∷Eᵢ []) (succ n) zero (lam nat
        (if var 𝟎 then suc zero else zero)))) ≤ (6 * (succ n))
   γ₀ zero ⋆ = ⋆
   γ₀ (succ n) ⋆ = goal
    where
-    IH : succ (succ (pr₁ (thunk-if (natRecᵢ {1} {nat ∷ []}
+    IH : succ (succ (pr₁ (thunk-if (nat-recᵢ {1} {nat ∷ []}
          ((0 , return (succ n)) ∷Eᵢ []) n zero (lam nat
          (if var 𝟎 then suc zero else zero))) (2 ,
          (√ (√ return 1))) (1 , (√ return 0)))))
          ≤ (6 + 6 * n)
     IH = γ₀ n ⋆
 
-    γ₁ : succ (succ (pr₁ (thunk-if (natRecᵢ {1} {nat ∷ []}
+    γ₁ : succ (succ (pr₁ (thunk-if (nat-recᵢ {1} {nat ∷ []}
          ((0 , return (succ n)) ∷Eᵢ []) n zero (lam nat
          (if var 𝟎 then suc zero else zero))) (2 ,
          (√ (√ return 1))) (1 , (√ return 0)))))
          ≤ (6 * n + 6)
-    γ₁ = transport (λ y → succ (succ (pr₁ (thunk-if (natRecᵢ
+    γ₁ = transport (λ y → succ (succ (pr₁ (thunk-if (nat-recᵢ
          {1} {nat ∷ []} ((0 , return (succ n)) ∷Eᵢ []) n zero
          (lam nat (if var 𝟎 then suc zero else zero))) (2 , (√ (√ return 1)))
          (1 , (√ return 0))))) ≤ y) (+-comm 6 (6 * n)) IH
@@ -574,44 +574,44 @@ is-even-time = bigO (6 , 1 , γ)
     γ₂ zero le = refl
     γ₂ (succ zero) le = refl
         
-    γ₃ : (n : ℕ) → force (pr₂ (thunk-if (natRecᵢ {1} {nat ∷ []}
+    γ₃ : (n : ℕ) → force (pr₂ (thunk-if (nat-recᵢ {1} {nat ∷ []}
          ((0 , return (succ (succ (succ n)))) ∷Eᵢ []) (succ (succ n)) zero
          (lam nat (if var 𝟎 then suc zero else zero))) (2 , (√ (√ return 1)))
          (1 , (√ return 0))))
-       ＝ force (pr₂ (thunk-if (natRecᵢ ((0 , return (succ n)) ∷Eᵢ []) n zero
+       ＝ force (pr₂ (thunk-if (nat-recᵢ ((0 , return (succ n)) ∷Eᵢ []) n zero
          (lam nat (if var 𝟎 then suc zero else zero))) (2 , (√ (√ return 1)))
          (1 , (√ return 0))))
-    γ₃ n = force (pr₂ (thunk-if (natRecᵢ ((0 , return (succ (succ (succ n))))
+    γ₃ n = force (pr₂ (thunk-if (nat-recᵢ ((0 , return (succ (succ (succ n))))
            ∷Eᵢ []) (succ (succ n)) zero (lam nat (if var 𝟎 then suc zero else
            zero))) (2 , (√ (√ return 1))) (1 , (√ return 0)))) ＝⟨ ap (λ y →
            force (pr₂ (thunk-if y (2 , (√ (√ return 1))) (1 , (√ return 0)))))
            (is-even-natrec-lemma (succ (succ n))) ⟩
-           force (pr₂ (thunk-if (natRecᵢ [] (succ (succ n)) zero (lam nat (if
+           force (pr₂ (thunk-if (nat-recᵢ [] (succ (succ n)) zero (lam nat (if
            var 𝟎 then suc zero else zero))) (2 , (√ (√ return 1))) (1 ,
-           (√ return 0)))) ＝⟨ if-then-else-equality [] (suc zero) zero (natRecᵢ
+           (√ return 0)))) ＝⟨ if-then-else-equality [] (suc zero) zero (nat-recᵢ
            [] (succ (succ n)) zero (lam nat (if var 𝟎 then suc zero else zero)))
-           (natRec [] (succ (succ n)) zero (lam nat (if var 𝟎 then suc zero else
+           (nat-rec [] (succ (succ n)) zero (lam nat (if var 𝟎 then suc zero else
            zero))) (equivalent-nrec-lemma [] (succ (succ n)) zero (lam nat (if
            var 𝟎 then suc zero else zero))) ⟩
-           if' (natRec [] (succ (succ n)) zero (lam nat (if var 𝟎 then suc zero
+           if' (nat-rec [] (succ (succ n)) zero (lam nat (if var 𝟎 then suc zero
            else zero))) then' 1 else' 0 ＝⟨ ap (λ y → if' y then' 1 else' 0)
-           (γ₂ (natRec [] n zero (lam nat (if var 𝟎 then suc zero else zero)))
-           (natRec<2 n)) ⟩
-           if' (natRec [] n zero (lam nat (if var 𝟎 then suc zero else zero)))
+           (γ₂ (nat-rec [] n zero (lam nat (if var 𝟎 then suc zero else zero)))
+           (nat-rec<2 n)) ⟩
+           if' (nat-rec [] n zero (lam nat (if var 𝟎 then suc zero else zero)))
            then' 1 else' 0 ＝⟨ (if-then-else-equality [] (suc zero) zero
-           (natRecᵢ [] n zero (lam nat (if var 𝟎 then suc zero else zero)))
-           (natRec [] n zero (lam nat (if var 𝟎 then suc zero else zero)))
+           (nat-recᵢ [] n zero (lam nat (if var 𝟎 then suc zero else zero)))
+           (nat-rec [] n zero (lam nat (if var 𝟎 then suc zero else zero)))
            (equivalent-nrec-lemma [] n zero (lam nat (if var 𝟎 then suc zero else
            zero))))⁻¹ ⟩
-           force (pr₂ (thunk-if (natRecᵢ [] n zero (lam nat (if var 𝟎 then suc
+           force (pr₂ (thunk-if (nat-recᵢ [] n zero (lam nat (if var 𝟎 then suc
            zero else zero))) (2 , (√ (√ return 1))) (1 , (√ return 0))))
            ＝⟨ ap (λ y → force (pr₂ (thunk-if y (2 , (√ (√ return 1)))
            (1 , (√ return 0))))) (is-even-natrec-lemma n)⁻¹ ⟩
-           force (pr₂ (thunk-if (natRecᵢ ((0 , return (succ n)) ∷Eᵢ []) n zero
+           force (pr₂ (thunk-if (nat-recᵢ ((0 , return (succ n)) ∷Eᵢ []) n zero
            (lam nat (if var 𝟎 then suc zero else zero))) (2 , (√ (√ return 1)))
            (1 , (√ return 0)))) ∎
 
-    γ₄ : (n : ℕ) → force (pr₂ (thunk-if (natRecᵢ ((0 , return (succ n)) ∷Eᵢ [])
+    γ₄ : (n : ℕ) → force (pr₂ (thunk-if (nat-recᵢ ((0 , return (succ n)) ∷Eᵢ [])
          n zero (lam nat (if var 𝟎 then suc zero else zero)))
          (2 , (√ (√ return 1))) (1 , (√ return 0)))) < 2
     γ₄ zero = ⋆
@@ -624,25 +624,25 @@ is-even-time = bigO (6 , 1 , γ)
     γ₅ (.0 , return 1) le = ⋆
     γ₅ (.(succ _) , (√ x)) le = γ₅ (_ , x) le
 
-    γ₆ : (pr₁ (thunk-if (thunk-if (natRecᵢ {1} {nat ∷ []} ((0 , return (succ n))
+    γ₆ : (pr₁ (thunk-if (thunk-if (nat-recᵢ {1} {nat ∷ []} ((0 , return (succ n))
          ∷Eᵢ []) n zero (lam nat (if var 𝟎 then suc zero else zero))) (2 ,
          (√ (√ return 1))) (1 , (√ return 0))) (2 , (√ (√ return 1)))
-         (1 , (√ return 0)))) ≤ pr₁ (thunk-if (natRecᵢ {1} {nat ∷ []}
+         (1 , (√ return 0)))) ≤ pr₁ (thunk-if (nat-recᵢ {1} {nat ∷ []}
          ((0 , return (succ n)) ∷Eᵢ []) n zero (lam nat (if var 𝟎 then suc zero
          else zero))) (2 , (√ (√ return 1))) (1 , (√ return 0))) + 3
-    γ₆ = γ₅ (thunk-if (natRecᵢ {1} {nat ∷ []} ((0 , return (succ n)) ∷Eᵢ []) n
+    γ₆ = γ₅ (thunk-if (nat-recᵢ {1} {nat ∷ []} ((0 , return (succ n)) ∷Eᵢ []) n
          zero (lam nat (if var 𝟎 then suc zero else zero))) (2 ,
          (√ (√ return 1))) (1 , (√ return 0))) (γ₄ n)
 
-    γ₇ : (pr₁ (thunk-if (thunk-if (natRecᵢ {1} {nat ∷ []} ((0 , return (succ n))
+    γ₇ : (pr₁ (thunk-if (thunk-if (nat-recᵢ {1} {nat ∷ []} ((0 , return (succ n))
          ∷Eᵢ []) n zero (lam nat (if var 𝟎 then suc zero else zero)))
          (2 , (√ (√ return 1))) (1 , (√ return 0))) (2 , (√ (√ return 1)))
          (1 , (√ return 0)))) ≤ 6 * n + 7
-    γ₇ = ≤-trans (pr₁ (thunk-if (thunk-if (natRecᵢ
+    γ₇ = ≤-trans (pr₁ (thunk-if (thunk-if (nat-recᵢ
          ((0 , return (succ n)) ∷Eᵢ [])
          n zero (lam nat (if var 𝟎 then suc zero else zero))) (2 , (√ (√ return
          1))) (1 , (√ return 0))) (2 , (√ (√ return 1))) (1 , (√ return 0))))
-         (pr₁ (thunk-if (natRecᵢ ((0 , return (succ n)) ∷Eᵢ []) n zero (lam nat
+         (pr₁ (thunk-if (nat-recᵢ ((0 , return (succ n)) ∷Eᵢ []) n zero (lam nat
          (if var 𝟎 then suc zero else zero))) (2 , (√ (√ return 1)))
          (1 , (√ return 0))) + 3) (6 * n + 7) γ₆ γ₁
 
@@ -651,12 +651,12 @@ is-even-time = bigO (6 , 1 , γ)
          9 + 6 * n ＝⟨ +-comm 9 (6 * n) ⟩
          6 * n + 9 ∎
 
-    γ₉ : pr₁ (thunk-if (thunk-if (natRecᵢ ((0 , return (succ n)) ∷Eᵢ []) n
+    γ₉ : pr₁ (thunk-if (thunk-if (nat-recᵢ ((0 , return (succ n)) ∷Eᵢ []) n
          zero (lam nat (if var 𝟎 then suc zero else zero)))
          (2 , (√ (√ return 1)))
          (1 , (√ return 0))) (2 , (√ (√ return 1))) (1 , (√ return 0)))
          ≤ (3 + (6 + 6 * n))
-    γ₉ = ≤-trans (pr₁ (thunk-if (thunk-if (natRecᵢ ((0 , return (succ n))
+    γ₉ = ≤-trans (pr₁ (thunk-if (thunk-if (nat-recᵢ ((0 , return (succ n))
          ∷Eᵢ []) n zero (lam nat (if var 𝟎 then suc zero else zero)))
          (2 , (√ (√ return 1))) (1 , (√ return 0))) (2 , (√ (√ return 1)))
          (1 , (√ return 0)))) (6 * n + 7) (3 + (6 + 6 * n)) γ₇
@@ -668,17 +668,17 @@ is-even-time = bigO (6 , 1 , γ)
           3 + (3 + (6 + 6 * n)) ＝⟨ (+-assoc 3 3 (6 + 6 * n))⁻¹ ⟩
           6 + (6 + 6 * n) ∎
 
-    γ₁₁ : pr₁ (thunk-if (thunk-if (natRecᵢ {1} {nat ∷ []}
+    γ₁₁ : pr₁ (thunk-if (thunk-if (nat-recᵢ {1} {nat ∷ []}
           ((0 , return (succ n)) ∷Eᵢ []) n zero (lam nat
           (if var 𝟎 then suc zero else zero))) (2 , (√ (√ return 1)))
           (1 , (√ return 0))) (2 , (√ (√ return 1))) (1 , (√ return 0)))
           + 3 ≤ (6 + (6 + 6 * n))
-    γ₁₁ = transport (λ z → pr₁ (thunk-if (thunk-if (natRecᵢ {1} {nat ∷ []}
+    γ₁₁ = transport (λ z → pr₁ (thunk-if (thunk-if (nat-recᵢ {1} {nat ∷ []}
           ((0 , return (succ n)) ∷Eᵢ []) n zero (lam nat (if var 𝟎 then suc
           zero else zero))) (2 , (√ (√ return 1))) (1 , (√ return 0))) (2 ,
           (√ (√ return 1))) (1 , (√ return 0))) + 3 ≤ z) γ₁₀ γ₉        
 
-    goal : succ (succ (succ (pr₁ (thunk-if (thunk-if (natRecᵢ {1} {nat ∷ []}
+    goal : succ (succ (succ (pr₁ (thunk-if (thunk-if (nat-recᵢ {1} {nat ∷ []}
            ((0 , return (succ (succ n))) ∷Eᵢ []) n zero (lam nat (if var 𝟎
            then suc zero else zero))) (2 , (√ (√ return 1))) (1 , (√ return 0)))
            (2 , (√ (√ return 1))) (1 , (√ return 0)))))) ≤ (6 + (6 + 6 * n))
@@ -687,7 +687,7 @@ is-even-time = bigO (6 , 1 , γ)
            (1 , (√ return 0)))))) ≤ 6 + (6 + 6 * n)) (is-even-natrec-lemma n)
            γ₁₁
 
-  γ : (n : ℕ) → 1 ≤ n → succ (pr₁ (natRecᵢ ((0 , return n) ∷Eᵢ []) n zero
+  γ : (n : ℕ) → 1 ≤ n → succ (pr₁ (nat-recᵢ ((0 , return n) ∷Eᵢ []) n zero
       (lam nat (if var 𝟎 then suc zero else zero)))) ≤ (6 * n)
   γ (succ n) ⋆ = γ₀ n ⋆
 
