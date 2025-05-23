@@ -35,7 +35,7 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
-open import InjectiveTypes.Blackboard fe
+open import InjectiveTypes.Blackboard fe hiding (extension)
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
