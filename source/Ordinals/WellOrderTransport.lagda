@@ -58,8 +58,9 @@ _<_ : X → X → 𝓤 to an order _≺_ : Y → Y → 𝓥 along a given equiva
 X ≃ Y without propositional resizing, which we prefer not to assume.
 
 However, if a particular order is resizable we can perform the
-transport, although univalence won't help, which is what we do in this
-file.
+transport, which is what we do in this file.
+
+TODO. Is it possible to do this more easily using univalence?
 
 \begin{code}
 

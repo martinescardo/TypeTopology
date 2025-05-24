@@ -24,6 +24,11 @@ identifications-in-props-are-refl : {X : 𝓤 ̇} (i : is-prop X) (x : X)
                                   → i x x ＝ refl
 identifications-in-props-are-refl i x = props-are-sets i (i x x) refl
 
+transport-over-prop : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {x : X} {y : Y x} (i : is-prop X)
+                    → transport Y (i x x) y ＝ y
+transport-over-prop {𝓤} {𝓥} {X} {Y} {x} {y} i =
+ ap (λ - → transport Y - y) (identifications-in-props-are-refl i x)
+
 
 
 \end{code}

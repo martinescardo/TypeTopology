@@ -35,7 +35,7 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
-open import InjectiveTypes.Blackboard fe
+open import InjectiveTypes.Blackboard fe hiding (extension)
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
@@ -129,7 +129,6 @@ for this data, see the file InjectiveTypes.MathematicalStructures.
  compatibility-data = (p : Ω 𝓦)
                       (f : p holds → X)
                     → has-section (ρ p f)
-
 
  compatibility-condition-gives-compatibility-data
   : compatibility-condition
@@ -565,7 +564,6 @@ compatibility-condition-with-axioms
 
     γ : is-equiv ρ'
     γ = d p f , σ' , σρ'
-
 
 \end{code}
 

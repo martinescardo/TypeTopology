@@ -49,6 +49,7 @@ import UF.PreUnivalence
 import UF.PropIndexedPiSigma
 import UF.PropTrunc
 import UF.PropTrunc-Variation
+import UF.Pullback
 import UF.Retracts
 import UF.Retracts-FunExt
 import UF.SIP

@@ -22,7 +22,7 @@ blackboard file.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
@@ -518,13 +518,19 @@ Digression with speculative ideas.
 module lifting-algebras-as-categories
         (𝓤 : Universe)
         (D : 𝓤 ⁺ ̇ )
-        (⨆ : {P : 𝓤 ̇} → is-prop P → (P → D) → D)
+        (⨆ : {P : 𝓤 ̇ } → is-prop P → (P → D) → D)
         (⨆-property : (P : 𝓤 ̇)
                        (i : is-prop P)
                        (f : P → D)
                        (p : P)
                      → ⨆ i f ＝ f p)
        where
+
+\end{code}
+
+A definedness predicate, generalizing the above examples.
+
+\begin{code}
 
   δ : D → 𝓤 ⁺ ̇
   δ d = (P : 𝓤 ̇ ) (i : is-prop P) → ⨆ i (λ (p : P) → d) ＝ d → P
@@ -551,6 +557,20 @@ module lifting-algebras-as-categories
   δ'-gives-δ : (d : D) → δ' d → δ d
   δ'-gives-δ d a P i = a P i (λ _ → d)
 
+\end{code}
+
+So they are equivalent because logically equivalent propositional are
+(typally) equivalent.
+
+I wrote "hom x y" instead of "x ⊑ y" in a previous version of this
+file. This would be indeed more accurate.
+
+The idea is that an algebra of the lifting monad has the structure of
+an ∞-category which is almost an ∞-groupoid, except for having a
+bottom element.
+
+\begin{code}
+
   _⊑_ : D → D → 𝓤 ⁺ ̇
   x ⊑ y = δ x → x ＝ y
 
@@ -571,6 +591,13 @@ module lifting-algebras-as-categories
   ⊥-is-undefined : ¬ δ ⊥
   ⊥-is-undefined a = 𝟘-elim (δ-property 𝟘 𝟘-is-prop 𝟘-elim a)
 
+\end{code}
+
+The idea of δ x is that it gives a positive (but still propositional)
+way of saying that x is different from ⊥.
+
+\begin{code}
+
   ⊥-least : (x : D) → ⊥ ⊑ x
   ⊥-least x a = 𝟘-elim (⊥-is-undefined a)
 
@@ -583,6 +610,12 @@ module lifting-algebras-as-categories
    pointed-props-are-singletons
     (⊥-least x)
     (being-upper-bound-of-⊥-is-prop x)
+
+\end{code}
+
+The ∞-categorical structure alluded above.
+
+\begin{code}
 
   idD : {x : D} → x ⊑ x
   idD {x} a = refl
@@ -602,7 +635,7 @@ module lifting-algebras-as-categories
          → α □ (β □ γ) ∼ (α □ β) □ γ
   assocD {x} {y} {z} {t} α β γ a =
    (α □ (β □ γ)) a    ＝⟨ refl ⟩
-   α a ∙ (β b ∙ γ c)  ＝⟨ (∙assoc _ _ _)⁻¹ ⟩
+   α a ∙ (β b ∙ γ c)  ＝⟨ (∙assoc (α a) (β b) (γ c))⁻¹ ⟩
    (α a ∙ β b) ∙ γ c  ＝⟨ I ⟩
    (α a ∙ β b) ∙ γ c' ＝⟨ refl ⟩
    ((α □ β) □ γ) a    ∎
@@ -698,3 +731,73 @@ thing to try.
     ψ-explicitly u β = refl
 
 \end{code}
+
+It is interesting to instantiate the above to D := 𝓤 and ⨆ := Σ or ⨆ := Π.
+
+Then we have that ⊥ is respectively the empty type 𝟘 or the unit type 𝟙.
+
+Moreover, δΣ X ≃ ∥ X ∥, whereas δΠ X is a positive way of saying that X is not 𝟙.
+
+(And, of course, ∥ X ∥ is a positive way of saying that X is not 𝟘,
+without exhibiting a point of X.)
+
+\begin{code}
+
+δΣ : 𝓤 ̇ → 𝓤 ⁺ ̇
+δΣ {𝓤} X = (P : 𝓤 ̇ ) → is-prop P → (P × X) ≃ X → P
+
+δΣ-is-prop-valued : (X : 𝓤 ̇ ) → is-prop (δΣ X)
+δΣ-is-prop-valued X = Π₃-is-prop fe' (λ _ i _ → i)
+
+δΠ : 𝓤 ̇ → 𝓤 ⁺ ̇
+δΠ {𝓤} X = (P : 𝓤 ̇ ) → is-prop P → (P → X) ≃ X → P
+
+δΠ-is-prop-valued : (X : 𝓤 ̇ ) → is-prop (δΠ X)
+δΠ-is-prop-valued X = Π₃-is-prop fe' (λ _ i _ → i)
+
+𝟘-is-not-Σ-defined : ¬ δΣ (𝟘 {𝓤})
+𝟘-is-not-Σ-defined f = 𝟘-elim (f 𝟘 𝟘-is-prop (≃-sym ×𝟘))
+
+pointed-is-Σ-defined : {X : 𝓤 ̇ } → X → δΣ X
+pointed-is-Σ-defined x P i e = pr₁ (⌜ e ⌝⁻¹ x)
+
+open import UF.PropTrunc
+
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ inhabited-is-Σ-defined : {X : 𝓤 ̇ } → ∥ X ∥ → δΣ X
+ inhabited-is-Σ-defined {𝓤} {X} = ∥∥-rec (δΣ-is-prop-valued X) pointed-is-Σ-defined
+
+ Σ-defined-is-inhabited : {X : 𝓤 ̇ } → δΣ X → ∥ X ∥
+ Σ-defined-is-inhabited {𝓤} {X} f = f ∥ X ∥ ∥∥-is-prop e
+  where
+    e : ∥ X ∥ × X ≃ X
+    e = qinveq pr₂
+         ((λ x → ∣ x ∣ , x) ,
+          (λ (s , x) → to-×-＝ (∥∥-is-prop ∣ x ∣ s) refl) ,
+          (λ x → refl))
+
+𝟙-is-not-Π-defined : ¬ δΠ (𝟙 {𝓤})
+𝟙-is-not-Π-defined f = 𝟘-elim (f 𝟘 𝟘-is-prop (≃-sym (𝟘→ fe')))
+
+𝟘-is-Π-defined-gives-DNE : δΠ 𝟘
+                         → (P : 𝓤₀ ̇ ) → is-prop P → ¬¬ P → P
+𝟘-is-Π-defined-gives-DNE f P i ϕ = f P i e
+ where
+  e : (P → 𝟘) ≃ 𝟘
+  e = qinveq ϕ
+       ((λ z p → z) ,
+        (λ u → dfunext fe' (λ p → 𝟘-is-prop (ϕ u) (u p))) ,
+        (λ z → 𝟘-elim z))
+
+DNE-gives-𝟘-is-Π-defined : ((P : 𝓤₀ ̇ ) → is-prop P → ¬¬ P → P)
+                         → δΠ 𝟘
+DNE-gives-𝟘-is-Π-defined dne P i e = dne P i ⌜ e ⌝
+
+\end{code}
+
+So the Π-definedness of 𝟘 is undecided in our constructive setting.
+
+Is any example of a type that we can prove to be Π-defined?

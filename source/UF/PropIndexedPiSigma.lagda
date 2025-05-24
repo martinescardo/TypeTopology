@@ -20,12 +20,6 @@ open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-Properties
 
-private
- transport-lemma : {x : X} {y : Y x} (i : is-prop X)
-                 → transport Y (i x x) y ＝ y
- transport-lemma {x} {y} i = ap (λ - → transport Y - y)
-                                (identifications-in-props-are-refl i x)
-
 module _ (a : X) where
 
  Π-proj : Π Y → Y a
@@ -50,13 +44,13 @@ module _ (a : X) where
        where
         II : x ＝ a → transport Y (i a x) (f a) ＝ f x
         II refl =
-         transport Y (i a a) (f a) ＝⟨ transport-lemma i ⟩
+         transport Y (i a a) (f a) ＝⟨ transport-over-prop i ⟩
          f a                       ∎
 
    ε : Π-proj ∘ Π-proj⁻¹ i ∼ id
    ε y =
     (Π-proj ∘ Π-proj⁻¹ i) y ＝⟨ refl ⟩
-    transport Y (i a a) y   ＝⟨ transport-lemma i ⟩
+    transport Y (i a a) y   ＝⟨ transport-over-prop i ⟩
     y                       ∎
 
  prop-indexed-product : funext 𝓤 𝓥
@@ -101,7 +95,7 @@ module _ (a : X) where
    η : (y : Y a) → Σ-in⁻¹ i (Σ-in y) ＝ y
    η y =
     Σ-in⁻¹ i (Σ-in y)     ＝⟨ refl ⟩
-    transport Y (i a a) y ＝⟨ transport-lemma i ⟩
+    transport Y (i a a) y ＝⟨ transport-over-prop i ⟩
     y                     ∎
 
    ε : (σ : Σ Y) → Σ-in (Σ-in⁻¹ i σ) ＝ σ
@@ -112,8 +106,8 @@ module _ (a : X) where
      where
       I : x ＝ a → transport Y (i a x) (transport Y (i x a) y) ＝ y
       I refl =
-       transport Y (i a a) (transport Y (i a a) y) ＝⟨ transport-lemma i ⟩
-       transport Y (i a a) y                       ＝⟨ transport-lemma i ⟩
+       transport Y (i a a) (transport Y (i a a) y) ＝⟨ transport-over-prop i ⟩
+       transport Y (i a a) y                       ＝⟨ transport-over-prop i ⟩
        y                                           ∎
 
  prop-indexed-sum : is-prop X → Σ Y ≃ Y a
