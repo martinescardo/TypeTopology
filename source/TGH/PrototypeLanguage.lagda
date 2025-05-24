@@ -22,7 +22,6 @@ open import Naturals.Order renaming (_≤ℕ_ to _≤_ ; _<ℕ_ to _<_)
 open import Naturals.Properties renaming (pred to pred' ; double to double')
 open import MLTT.Vector renaming (Vector to Vec)
 open import MLTT.Fin
-open import TGH.NatOrder
 open import TGH.BigO
 open import TGH.Thunk
 

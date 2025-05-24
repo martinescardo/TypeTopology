@@ -25,7 +25,6 @@ open import MLTT.List
 open import MLTT.Bool
 open import UF.Base
 open import TGH.Thunk
-open import TGH.NatOrder
 open import TGH.Language fe
 open import TGH.HeadExample fe
 open import TGH.LastCorrectness fe

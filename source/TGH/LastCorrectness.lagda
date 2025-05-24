@@ -23,7 +23,6 @@ open import MLTT.Fin
 open import MLTT.List
 open import UF.Base
 open import TGH.Thunk
-open import TGH.NatOrder
 open import TGH.BigO
 open import TGH.Language fe
 open import TGH.HeadExample fe

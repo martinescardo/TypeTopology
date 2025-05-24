@@ -1,3 +1,8 @@
+Theo Hepburn, started March 2025
+
+Provides a formalisation of the the complexity class NP,
+with a proof that P⊆NP.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -5,7 +10,6 @@
 open import MLTT.Spartan renaming (_+_ to _∔_) hiding (_^_ ; _∙_)
 open import UF.FunExt
 open import TGH.Strategy
-
 
 module TGH.NP (fe : naive-funext 𝓤₀ 𝓤₀) where
 
@@ -21,8 +25,6 @@ open import MLTT.List
 open import MLTT.Bool hiding (if_then_else_)
 open import UF.Base
 open import TGH.Thunk
-open import TGH.NatOrder
-open import TGH.MyExponentiation
 open import TGH.Language fe
 open import TGH.P fe
 
