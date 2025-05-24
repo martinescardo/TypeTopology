@@ -13,8 +13,6 @@ import TGH.Language
 import TGH.LastCorrectness
 import TGH.LastLinearTimeEager
 import TGH.LastTimeListValueIndependent
-import TGH.MyExponentiation
-import TGH.NatOrder
 import TGH.NP
 import TGH.PExamples
 import TGH.P
