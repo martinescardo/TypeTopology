@@ -10,6 +10,7 @@ module UF.Pullback where
 
 open import MLTT.Spartan
 open import UF.Equiv
+open import UF.Subsingletons
 
 \end{code}
 
@@ -39,7 +40,7 @@ And we consider commutative squares of the form
       |          |
     p |          | g
       |          |
-      |          v
+      v          v
       A -------> C
             f
 
@@ -61,6 +62,22 @@ A cone over the span is the totality of these data.
 
 \end{code}
 
+It is convenient to collect all cones in a universe into a single
+type.
+
+\begin{code}
+
+ Cone : (𝓣 : Universe) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ (𝓣 ⁺) ̇
+ Cone 𝓣 = Σ P ꞉ 𝓣 ̇ , cone P
+
+ source : Cone 𝓣 → 𝓣 ̇
+ source (P , c) = P
+
+ cone-of : (𝓒 : Cone 𝓣) → cone (source 𝓒)
+ cone-of (P , c) = c
+
+\end{code}
+
 If we have a cone
 
             q
@@ -68,7 +85,7 @@ If we have a cone
       |          |
     p |          | g
       |          |
-      |          v
+      v          v
       A -------> C
             f
 
@@ -79,14 +96,14 @@ and a map u : X → P, we get a cone
       |          |
 p ∘ u |          | g
       |          |
-      |          v
+      v          v
       A -------> C
             f
 
 \begin{code}
 
- cone-map : (P : 𝓣' ̇ ) (X : 𝓣 ̇ ) → cone P → (X → P) → cone X
- cone-map P X (p , q , e) u = p ∘ u , q ∘ u , e ∘ u
+ cone-map : {P : 𝓣' ̇ } (X : 𝓣 ̇ ) → cone P → (X → P) → cone X
+ cone-map X (p , q , e) u = p ∘ u , q ∘ u , e ∘ u
 
 \end{code}
 
@@ -97,7 +114,7 @@ We say that a cone
       |          |
     p |          | g
       |          |
-      |          v
+      v          v
       A -------> C
             f
 
@@ -105,48 +122,64 @@ is a (homotopy) pullback if this map is an equivalence for every X.
 
 \begin{code}
 
- is-pullback : (P : 𝓣 ̇ ) → cone P → 𝓤ω
- is-pullback P c = {𝓣' : Universe} (X : 𝓣' ̇ ) → is-equiv (cone-map P X c)
+ is-pullback : Cone 𝓣 → 𝓤ω
+ is-pullback (P , c) = {𝓣' : Universe} (X : 𝓣' ̇ ) → is-equiv (cone-map X c)
+
+ pullback-equivalence : (𝓒 : Cone 𝓣)
+                      → is-pullback 𝓒
+                      → (X : 𝓣' ̇ ) → (X → source 𝓒) ≃ cone X
+ pullback-equivalence (P , c) i X = cone-map X c , i X
+
+ mediating-map : (𝓒 : Cone 𝓣)
+               → is-pullback 𝓒
+               → (X : 𝓣' ̇ ) → cone X → (X → source 𝓒)
+ mediating-map 𝓒 i X = ⌜ pullback-equivalence 𝓒 i X ⌝⁻¹
 
 \end{code}
 
-We now show that pullbacks exist.
+We now show that pullbacks exist, and call them simply pullbacks,
+although perhaps we should call them standard pullbacks, or chosen
+pullbacks.
 
 \begin{code}
 
- standard-pullback : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
- standard-pullback = Σ x ꞉ A , Σ y ꞉ B , f x ＝ g y
+ pullback-source : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+ pullback-source = Σ a ꞉ A , Σ b ꞉ B , f a ＝ g b
 
- pb₁ : standard-pullback → A
- pb₁ (x , y , e) = x
+ private
+  P = pullback-source
 
- pb₂ : standard-pullback → B
- pb₂ (x , y , e) = y
+\end{code}
 
- pb-square : commutative-square pb₁ pb₂
- pb-square (x , y , e) = e
+We denote the pullback projections by pb₁ and pb₂.
 
- standard-pullback-cone : cone standard-pullback
- standard-pullback-cone = (pb₁ , pb₂ , pb-square)
+\begin{code}
 
- standard-pullback-map : (X : 𝓣' ̇ ) → (X → standard-pullback) → cone X
- standard-pullback-map X = cone-map standard-pullback X standard-pullback-cone
+ pb₁ : P → A
+ pb₁ (a , b , e) = a
 
- standard-pullback-is-pullback : is-pullback standard-pullback standard-pullback-cone
- standard-pullback-is-pullback X = γ
-  where
-   standard-pullback-map⁻¹ : cone X → (X → standard-pullback)
-   standard-pullback-map⁻¹ (p , q , s) x = p x , q x , s x
+ pb₂ : P → B
+ pb₂ (a , b , e) = b
 
-   η : standard-pullback-map⁻¹ ∘ standard-pullback-map X ∼ id
-   η x = refl
+ pullback-square : commutative-square pb₁ pb₂
+ pullback-square (a , b , e) = e
 
-   ε : standard-pullback-map X ∘ standard-pullback-map⁻¹ ∼ id
-   ε c = refl
+ pullback-cone : cone P
+ pullback-cone = (pb₁ , pb₂ , pullback-square)
 
-   γ : is-equiv (standard-pullback-map X)
-   γ = qinvs-are-equivs
-        (standard-pullback-map X)
-        (standard-pullback-map⁻¹ , η , ε)
+ Pullback-Cone : Cone (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+ Pullback-Cone = P , pullback-cone
+
+ pullback-cone-map : (X : 𝓣' ̇ ) → (X → P) → cone X
+ pullback-cone-map X = cone-map X pullback-cone
+
+ pullback-mediating-map : {X : 𝓣 ̇ } → cone X → (X → P)
+ pullback-mediating-map (p , q , s) x = p x , q x , s x
+
+ pullback-Cone-is-pullback : is-pullback Pullback-Cone
+ pullback-Cone-is-pullback X =
+  qinvs-are-equivs
+   (pullback-cone-map X)
+   (pullback-mediating-map , (λ x → refl) , (λ c → refl))
 
 \end{code}
