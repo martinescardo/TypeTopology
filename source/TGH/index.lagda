@@ -8,7 +8,7 @@ import TGH.AFP2024.index
 import TGH.BigO
 import TGH.ComplexityDefinitionsResults
 import TGH.HeadExample
--- import TGH.InsertionSortCorrectness
+import TGH.InsertionSortCorrectness
 import TGH.Language
 import TGH.LastCorrectness
 import TGH.LastLinearTimeEager

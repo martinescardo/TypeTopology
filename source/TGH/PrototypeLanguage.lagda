@@ -588,9 +588,11 @@ is-even-time = big-o (6 , 1 , γ)
            (is-even-natrec-lemma (succ (succ n))) ⟩
            force (pr₂ (thunk-if (nat-recᵢ [] (succ (succ n)) zero (lam nat (if
            var 𝟎 then suc zero else zero))) (2 , (√ (√ return 1))) (1 ,
-           (√ return 0)))) ＝⟨ if-then-else-equality [] (suc zero) zero (nat-recᵢ
+           (√ return 0)))) ＝⟨ if-then-else-equality [] (suc zero) zero
+           (nat-recᵢ
            [] (succ (succ n)) zero (lam nat (if var 𝟎 then suc zero else zero)))
-           (nat-rec [] (succ (succ n)) zero (lam nat (if var 𝟎 then suc zero else
+           (nat-rec [] (succ (succ n)) zero (lam nat (if var 𝟎 then suc zero
+           else
            zero))) (equivalent-nrec-lemma [] (succ (succ n)) zero (lam nat (if
            var 𝟎 then suc zero else zero))) ⟩
            if' (nat-rec [] (succ (succ n)) zero (lam nat (if var 𝟎 then suc zero
@@ -601,8 +603,8 @@ is-even-time = big-o (6 , 1 , γ)
            then' 1 else' 0 ＝⟨ (if-then-else-equality [] (suc zero) zero
            (nat-recᵢ [] n zero (lam nat (if var 𝟎 then suc zero else zero)))
            (nat-rec [] n zero (lam nat (if var 𝟎 then suc zero else zero)))
-           (equivalent-nrec-lemma [] n zero (lam nat (if var 𝟎 then suc zero else
-           zero))))⁻¹ ⟩
+           (equivalent-nrec-lemma [] n zero (lam nat (if var 𝟎 then suc zero
+           else zero))))⁻¹ ⟩
            force (pr₂ (thunk-if (nat-recᵢ [] n zero (lam nat (if var 𝟎 then suc
            zero else zero))) (2 , (√ (√ return 1))) (1 , (√ return 0))))
            ＝⟨ ap (λ y → force (pr₂ (thunk-if y (2 , (√ (√ return 1)))
@@ -624,7 +626,8 @@ is-even-time = big-o (6 , 1 , γ)
     γ₅ (.0 , return 1) le = ⋆
     γ₅ (.(succ _) , (√ x)) le = γ₅ (_ , x) le
 
-    γ₆ : (pr₁ (thunk-if (thunk-if (nat-recᵢ {1} {nat ∷ []} ((0 , return (succ n))
+    γ₆ : (pr₁ (thunk-if (thunk-if (nat-recᵢ {1} {nat ∷ []}
+         ((0 , return (succ n))
          ∷Eᵢ []) n zero (lam nat (if var 𝟎 then suc zero else zero))) (2 ,
          (√ (√ return 1))) (1 , (√ return 0))) (2 , (√ (√ return 1)))
          (1 , (√ return 0)))) ≤ pr₁ (thunk-if (nat-recᵢ {1} {nat ∷ []}
@@ -634,7 +637,8 @@ is-even-time = big-o (6 , 1 , γ)
          zero (lam nat (if var 𝟎 then suc zero else zero))) (2 ,
          (√ (√ return 1))) (1 , (√ return 0))) (γ₄ n)
 
-    γ₇ : (pr₁ (thunk-if (thunk-if (nat-recᵢ {1} {nat ∷ []} ((0 , return (succ n))
+    γ₇ : (pr₁ (thunk-if (thunk-if (nat-recᵢ {1} {nat ∷ []}
+         ((0 , return (succ n))
          ∷Eᵢ []) n zero (lam nat (if var 𝟎 then suc zero else zero)))
          (2 , (√ (√ return 1))) (1 , (√ return 0))) (2 , (√ (√ return 1)))
          (1 , (√ return 0)))) ≤ 6 * n + 7

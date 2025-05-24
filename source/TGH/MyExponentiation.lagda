@@ -23,7 +23,8 @@ open import UF.Base
 ^-over-* n m (succ k)
  = n * m * (n * m) ^ k ＝⟨ ap (λ z → n * m * z) ((^-over-* n m k)) ⟩
    (n * m) * (n ^ k * m ^ k) ＝⟨ *-assoc n m (n ^ k * m ^ k) ⟩
-   n * (m * (n ^ k * m ^ k)) ＝⟨ ap (λ z → n * z) (*-assoc m (n ^ k) (m ^ k) ⁻¹) ⟩
+   n * (m * (n ^ k * m ^ k)) ＝⟨ ap (λ z → n * z)
+                                 (*-assoc m (n ^ k) (m ^ k) ⁻¹) ⟩
    n * ((m * n ^ k) * m ^ k) ＝⟨ *-assoc n (m * n ^ k) (m ^ k) ⁻¹ ⟩
    n * (m * n ^ k) * m ^ k ＝⟨ ap (λ z → n * z * m ^ k) (*-comm m (n ^ k)) ⟩
    n * (n ^ k * m) * m ^ k ＝⟨ ap (λ z → z * m ^ k) (*-assoc n (n ^ k) m ⁻¹) ⟩

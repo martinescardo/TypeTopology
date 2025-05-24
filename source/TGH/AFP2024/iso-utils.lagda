@@ -44,11 +44,13 @@ _∘ᵢ_ : {A B C : 𝓤₀ ̇} → B ≅ C → A ≅ B → A ≅ C
   g = inverse (bijectivity β) ∘ inverse (bijectivity α)
 
   gf : g ∘ f ∼ id
-  gf a = trans (ap (inverse (bijectivity β)) (η (bijectivity α) (bijection β a)))
+  gf a = trans (ap (inverse (bijectivity β)) (η (bijectivity α)
+               (bijection β a)))
                (η (bijectivity β) a)
 
   fg : f ∘ g ∼ id
-  fg c = trans (ap (bijection α) (ε (bijectivity β) (inverse (bijectivity α) c)))
+  fg c = trans (ap (bijection α) (ε (bijectivity β) (inverse
+               (bijectivity α) c)))
                (ε (bijectivity α) c)
 
   f-is-bijection : is-bijection f
@@ -83,7 +85,8 @@ infix   1 _∎ᵢ
   f-is-bijection = record { inverse = g ; η = gf ; ε = fg }
   
 ∔-pair-iso : {A B C D : 𝓤₀ ̇} → A ≅ B → C ≅ D → (A ∔ C) ≅ (B ∔ D)
-∔-pair-iso {A} {B} {C} {D} α β = record { bijection = f ; bijectivity = f-is-bijection }
+∔-pair-iso {A} {B} {C} {D} α β
+ = record { bijection = f ; bijectivity = f-is-bijection }
  where
   f : A ∔ C → B ∔ D
   f (inl a) = inl (bijection α a)
