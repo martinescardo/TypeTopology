@@ -613,10 +613,12 @@ last-list-list-value-independent env [] [] eq = refl
 last-list-list-value-independent env (x₁ ∷ l₁) (x₂ ∷ l₂) eq
  = pr₁
     (pr₁ (env [ lam list last-list ]ᵢ eager) (thunk-type (x₁ ∷ l₁))) ＝⟨ refl ⟩
-    succ (pr₁ (list-recᵢ ((thunk-type (x₁ ∷ l₁)) ∷Eᵢ env) (x₁ ∷ l₁) nil (lam list
+    succ (pr₁ (list-recᵢ ((thunk-type (x₁ ∷ l₁)) ∷Eᵢ env) (x₁ ∷ l₁) nil
+    (lam list
     (lam nat recursive-call)) eager)) ＝⟨ refl ⟩
     succ (pr₁ ((pr₁ ((pr₁ (((thunk-type (x₁ ∷ l₁)) ∷Eᵢ env) [ lam list (lam nat
-    recursive-call) ]ᵢ eager)) (list-recᵢ ((thunk-type (x₁ ∷ l₁)) ∷Eᵢ env) l₁ nil
+    recursive-call) ]ᵢ eager))
+    (list-recᵢ ((thunk-type (x₁ ∷ l₁)) ∷Eᵢ env) l₁ nil
     (lam list (lam nat recursive-call)) eager))) (0 , return x₁))) ＝⟨ ap succ
     ((adding-times-lemma-l-n-l (_∷Eᵢ_ {_} {_} {list} (thunk-type (x₁ ∷ l₁)) env)
     recursive-call (list-recᵢ ((thunk-type (x₁ ∷ l₁)) ∷Eᵢ env) l₁ nil (lam list
@@ -681,8 +683,8 @@ last-list-list-value-independent env (x₁ ∷ l₁) (x₂ ∷ l₂) eq
     (x₂ ∷ l₂)) env) recursive-call (list-recᵢ ((thunk-type (x₂ ∷ l₂)) ∷Eᵢ env)
     l₂ nil (lam list (lam nat recursive-call)) eager) (0 , return x₂))) ⟩
     succ (pr₁ ((pr₁ ((pr₁ (((thunk-type (x₂ ∷ l₂)) ∷Eᵢ env) [ lam list (lam nat
-    recursive-call) ]ᵢ eager)) (list-recᵢ ((thunk-type (x₂ ∷ l₂)) ∷Eᵢ env) l₂ nil
-    (lam list (lam nat recursive-call)) eager))) (0 , return x₂))) ∎
+    recursive-call) ]ᵢ eager)) (list-recᵢ ((thunk-type (x₂ ∷ l₂)) ∷Eᵢ env) l₂
+    nil (lam list (lam nat recursive-call)) eager))) (0 , return x₂))) ∎
 
 
 

@@ -40,20 +40,21 @@ concat : {n : ℕ} {Γ : Ctx n} → Term Γ (list ⇒ list ⇒ list)
 concat = lam list (lam list (lrec (var 𝟏) (var 𝟎)
          (lam list (lam nat (cons (var 𝟎) (var 𝟏))))))
 
-removeGreaterThanFromEnd : {n : ℕ} {Γ : Ctx n} → Term Γ (list ⇒ nat ⇒ list)
-removeGreaterThanFromEnd
+remove-greater-than-from-end : {n : ℕ} {Γ : Ctx n} → Term Γ (list ⇒ nat ⇒ list)
+remove-greater-than-from-end
  = lam list (lam nat (lrec (var 𝟏) nil (lam list (lam nat
    (if subtract ∙ (var 𝟐) ∙ (var 𝟎) then nil else cons (var 𝟎) (var 𝟏))))))
 
-removeLessThanFromStart : {n : ℕ} {Γ : Ctx n} → Term Γ (list ⇒ nat ⇒ list)
-removeLessThanFromStart
+remove-less-than-from-start : {n : ℕ} {Γ : Ctx n} → Term Γ (list ⇒ nat ⇒ list)
+remove-less-than-from-start
  = lam list (lam nat (lrec (var 𝟏) nil (lam list (lam nat
    (if subtract ∙ (var 𝟐) ∙ (var 𝟎) then cons (var 𝟎) (var 𝟏) else var 𝟏)))))
 
 insert : {n : ℕ} {Γ : Ctx n} → Term Γ (list ⇒ nat ⇒ list)
 insert
- = lam list (lam nat (concat ∙ (removeGreaterThanFromEnd ∙ (var 𝟏) ∙ (var 𝟎))
-   ∙ (cons (var 𝟎) (removeLessThanFromStart ∙ (var 𝟏) ∙ (var 𝟎)))))
+ = lam list (lam nat (concat ∙
+   (remove-greater-than-from-end ∙ (var 𝟏) ∙ (var 𝟎))
+   ∙ (cons (var 𝟎) (remove-less-than-from-start ∙ (var 𝟏) ∙ (var 𝟎)))))
 
 sort : {n : ℕ} {Γ : Ctx n} → Term Γ (list ⇒ list)
 sort
@@ -93,11 +94,12 @@ subtract-env-lemma : {n₁ n₂ : ℕ} → {Γ₁ : Ctx n₁} → {Γ₂ : Ctx n
                    → {env₁ : Env Γ₁} → {env₂ : Env Γ₂}
                    → {y₁ y₂ : ℕ}
                    → (x y : ℕ)
-                   → nat-rec (y₁ ∷E x ∷E env₁) y (var 𝟏) (lam nat (pred (var 𝟎)))
+                   → nat-rec (y₁ ∷E x ∷E env₁) y (var 𝟏)
+                     (lam nat (pred (var 𝟎)))
                    ＝ nat-rec (y₂ ∷E x ∷E env₂)
                       y (var 𝟏) (lam nat (pred (var 𝟎)))
 subtract-env-lemma x zero = refl
-subtract-env-lemma x (succ y) = ap pred' (subtract-env-lemma x y)                    
+subtract-env-lemma x (succ y) = ap pred' (subtract-env-lemma x y)
 
 subtract-correctness : {n : ℕ} {Γ : Ctx n} {env : Env Γ} → (x y : ℕ)
                       → (env [ subtract ]ₑ) x y ＝ ℕ-subtract x y
@@ -112,21 +114,29 @@ subtract-correctness {_} {_} {env} x (succ y)
 ℕ-subtract-lemma-I : (n m : ℕ)
                   → (n ≤ m) → ℕ-subtract n m ＝ 0
 ℕ-subtract-lemma-I n zero n≤m = zero-least'' n n≤m
-ℕ-subtract-lemma-I n (succ m) n≤m with (subtraction n (succ m) n≤m)
-... | zero , eq = ap pred' (transport (λ z → ℕ-subtract z m ＝ 1) (( n ＝⟨ (zero-left-neutral n)⁻¹ ⟩
-                                                                      0 + n ＝⟨ eq ⟩
-                                                                      succ m ∎ )⁻¹) (γ 1 m))
-  where
-    γ : (k n : ℕ) → ℕ-subtract (n + k) n ＝ k
-    γ k zero = zero-left-neutral k
-    γ k (succ n) = pred' (ℕ-subtract (succ n + k) n) ＝⟨ ap (λ z → pred' (ℕ-subtract z n)) (succ-left n k) ⟩
-                    pred' (ℕ-subtract (n + succ k) n) ＝⟨ ap pred' (γ (succ k) n) ⟩
-                    pred' (succ k) ＝⟨ refl ⟩
-                    k ∎
-... | succ k , eq = ap pred' (ℕ-subtract-lemma-I n m (cosubtraction n m (k ,
-                    ap pred' (succ (k + n) ＝⟨ (succ-left k n)⁻¹ ⟩
-                              succ k + n ＝⟨ eq ⟩
-                              succ m ∎))))
+ℕ-subtract-lemma-I n (succ m) n≤m = γ (subtraction n (succ m) n≤m)
+ where
+  γ : Σ (λ k → k + n ＝ succ m)
+    → ℕ-subtract n (succ m) ＝ 0
+  γ (zero , eq)
+   = ap pred' (transport (λ z → ℕ-subtract z m ＝ 1)
+      (( n ＝⟨ (zero-left-neutral n)⁻¹ ⟩
+      0 + n ＝⟨ eq ⟩
+      succ m ∎ )⁻¹) (γ' 1 m))
+   where
+    γ' : (k n : ℕ) → ℕ-subtract (n + k) n ＝ k
+    γ' k zero = zero-left-neutral k
+    γ' k (succ n)
+     = pred' (ℕ-subtract (succ n + k) n)
+       ＝⟨ ap (λ z → pred' (ℕ-subtract z n)) (succ-left n k) ⟩
+       pred' (ℕ-subtract (n + succ k) n) ＝⟨ ap pred' (γ' (succ k) n) ⟩
+       pred' (succ k) ＝⟨ refl ⟩
+       k ∎
+  γ (succ k , eq)
+   = ap pred' (ℕ-subtract-lemma-I n m (cosubtraction n m (k ,
+     ap pred' (succ (k + n) ＝⟨ (succ-left k n)⁻¹ ⟩
+     succ k + n ＝⟨ eq ⟩
+     succ m ∎))))
 
 less-than-implies-neq : (n m : ℕ) → (n < m) → m ≠ n
 less-than-implies-neq .(succ m) (succ m) le refl = not-less-than-itself m le
@@ -165,7 +175,8 @@ subtract-lemma-II : {n : ℕ} {Γ : Ctx n} {env : Env Γ} → (y x : ℕ)
 subtract-lemma-II y x x<y
  = transport (0 <_) ((subtract-correctness y x)⁻¹) (ℕ-subtract-lemma-II y x x<y)
 
-removeLessThanFromStart-env-lemma : {n₁ n₂ : ℕ} → {Γ₁ : Ctx n₁} → {Γ₂ : Ctx n₂}
+remove-less-than-from-start-env-lemma : {n₁ n₂ : ℕ}
+                                  → {Γ₁ : Ctx n₁} → {Γ₂ : Ctx n₂}
                                   → {env₁ : Env Γ₁} → {env₂ : Env Γ₂}
                                   → {y : ℕ}
                                   → (xs : List ℕ)
@@ -175,8 +186,8 @@ removeLessThanFromStart-env-lemma : {n₁ n₂ : ℕ} → {Γ₁ : Ctx n₁} →
                                   ＝ list-rec (y ∷E env₂) xs nil (lam list
                                     (lam nat (if subtract ∙ (var 𝟐) ∙ (var 𝟎)
                                     then cons (var 𝟎) (var 𝟏) else var 𝟏)))
-removeLessThanFromStart-env-lemma [] = refl
-removeLessThanFromStart-env-lemma {_} {_} {_} {_} {env₁} {env₂} {y}(x ∷ xs)
+remove-less-than-from-start-env-lemma [] = refl
+remove-less-than-from-start-env-lemma {_} {_} {_} {_} {env₁} {env₂} {y}(x ∷ xs)
  = if' ((x ∷E
          list-rec (y ∷E env₁) xs nil
          (lam list
@@ -235,7 +246,7 @@ removeLessThanFromStart-env-lemma {_} {_} {_} {_} {env₁} {env₂} {y}(x ∷ xs
                          ∷E y ∷E env₂)
                          x (var 𝟏) (lam nat (pred (var 𝟎)))
                          then' x ∷ z else' z)
-              (removeLessThanFromStart-env-lemma xs) ⟩
+              (remove-less-than-from-start-env-lemma xs) ⟩
     if' ((x ∷E
           list-rec (y ∷E env₂) xs nil
           (lam list
@@ -253,7 +264,8 @@ removeLessThanFromStart-env-lemma {_} {_} {_} {_} {env₁} {env₂} {y}(x ∷ xs
     else' list-rec (y ∷E env₂) xs nil (lam list (lam nat (if subtract ∙ (var 𝟐)
     ∙ (var 𝟎) then cons (var 𝟎) (var 𝟏) else var 𝟏))) ∎
 
-removeGreaterThanFromEnd-env-lemma : {n₁ n₂ : ℕ} → {Γ₁ : Ctx n₁} → {Γ₂ : Ctx n₂}
+remove-greater-than-from-end-env-lemma : {n₁ n₂ : ℕ}
+                                   → {Γ₁ : Ctx n₁} → {Γ₂ : Ctx n₂}
                                    → {env₁ : Env Γ₁} → {env₂ : Env Γ₂}
                                    → {y : ℕ}
                                    → (xs : List ℕ)
@@ -263,8 +275,9 @@ removeGreaterThanFromEnd-env-lemma : {n₁ n₂ : ℕ} → {Γ₁ : Ctx n₁} �
                                     ＝ list-rec (y ∷E env₂) xs nil (lam list
                                      (lam nat (if subtract ∙ (var 𝟐) ∙ (var 𝟎)
                                      then nil else cons (var 𝟎) (var 𝟏))))
-removeGreaterThanFromEnd-env-lemma [] = refl
-removeGreaterThanFromEnd-env-lemma {_} {_} {_} {_} {env₁} {env₂} {y} (x ∷ xs)
+remove-greater-than-from-end-env-lemma [] = refl
+remove-greater-than-from-end-env-lemma {_} {_} {_} {_}
+ {env₁} {env₂} {y} (x ∷ xs)
  = if' ((x ∷E
          list-rec (y ∷E env₁) xs nil
          (lam list
@@ -280,7 +293,8 @@ removeGreaterThanFromEnd-env-lemma {_} {_} {_} {_} {env₁} {env₂} {y} (x ∷ 
    then' []
    else' (x ∷ (list-rec (y ∷E env₁) xs nil (lam list (lam nat
    (if subtract ∙ (var 𝟐) ∙ (var 𝟎) then nil else cons (var 𝟎) (var 𝟏))))))
-   ＝⟨ ap (λ z → if' z then' [] else' (x ∷ (list-rec (y ∷E env₁) xs nil (lam list
+   ＝⟨ ap (λ z → if' z then' [] else' (x ∷ (list-rec (y ∷E env₁) xs nil
+   (lam list
    (lam nat (if subtract ∙ (var 𝟐) ∙ (var 𝟎) then nil else cons (var 𝟎)
    (var 𝟏))))))) (subtract-env-lemma y x) ⟩
      (if' ((x ∷E
@@ -311,7 +325,7 @@ removeGreaterThanFromEnd-env-lemma {_} {_} {_} {_} {env₁} {env₂} {y} (x ∷ 
             then nil else cons (var 𝟎) (var 𝟏))))
          ∷E y ∷E env₂) [ subtract ]ₑ) y x
          then' []
-         else' (x ∷ z))) (removeGreaterThanFromEnd-env-lemma xs) ⟩
+         else' (x ∷ z))) (remove-greater-than-from-end-env-lemma xs) ⟩
          ((if' ((x ∷E
          list-rec (y ∷E env₂) xs nil
          (lam list
@@ -337,13 +351,13 @@ if-then-else-ap refl = refl
 ≤-lemma x y (inl eq) = transport (x ≤_) ((eq)⁻¹) (≤-refl x)
 ≤-lemma x y (inr le) = ≤-trans x (succ x) y (≤-succ x) le
 
-removeLessThanFromStart-≤ : {n : ℕ} {Γ : Ctx n} {env : Env Γ}
+remove-less-than-from-start-≤ : {n : ℕ} {Γ : Ctx n} {env : Env Γ}
                           → (xs : List ℕ) → (x y : ℕ)
                           → (y ≤ x)
                           → Sorted (x ∷ xs)
-                          → (env [ removeLessThanFromStart ]ₑ) (x ∷ xs) y
+                          → (env [ remove-less-than-from-start ]ₑ) (x ∷ xs) y
                              ＝ x ∷ xs
-removeLessThanFromStart-≤ {n} {Γ} {env} [] x y y≤x srtd
+remove-less-than-from-start-≤ {n} {Γ} {env} [] x y y≤x srtd
  = if' ((x ∷E
          list-rec (y ∷E (_∷E_ {_} {_} {list} (x ∷ []) env)) [] nil
          (lam list
@@ -361,7 +375,8 @@ removeLessThanFromStart-≤ {n} {Γ} {env} [] x y y≤x srtd
    (subtract-lemma-I y x y≤x) ⟩
          if' 0 then' x ∷ [] else' [] ＝⟨ refl ⟩
          x ∷ [] ∎
-removeLessThanFromStart-≤ {n} {Γ} {env} (z ∷ xs) x y y≤x (adj-sorted srtd x≤z)
+remove-less-than-from-start-≤ {n} {Γ} {env} (z ∷ xs) x y y≤x
+ (adj-sorted srtd x≤z)
  = if' ((x ∷E
    list-rec (y ∷E (x ∷ z ∷ xs) ∷E _) (z ∷ xs) nil
    (lam list
@@ -383,19 +398,20 @@ removeLessThanFromStart-≤ {n} {Γ} {env} (z ∷ xs) x y y≤x (adj-sorted srtd
    ＝⟨ if-then-else-ap (subtract-lemma-I y x y≤x) ⟩
    (x ∷ list-rec (y ∷E (x ∷ z ∷ xs) ∷E env) (z ∷ xs) nil (lam list
    (lam nat (if subtract ∙ (var 𝟐) ∙ (var 𝟎) then cons (var 𝟎) (var 𝟏)
-   else var 𝟏)))) ＝⟨ ap (x ∷_) (removeLessThanFromStart-env-lemma (z ∷ xs)) ⟩
+   else var 𝟏))))
+   ＝⟨ ap (x ∷_) (remove-less-than-from-start-env-lemma (z ∷ xs)) ⟩
    (x ∷ list-rec (y ∷E (z ∷ xs) ∷E env) (z ∷ xs) nil (lam list (lam nat
    (if subtract ∙ (var 𝟐) ∙ (var 𝟎) then cons (var 𝟎) (var 𝟏) else var 𝟏))))
-   ＝⟨ ap (x ∷_) (removeLessThanFromStart-≤ xs z y
+   ＝⟨ ap (x ∷_) (remove-less-than-from-start-≤ xs z y
    (≤-trans y x z y≤x (≤-lemma x z x≤z)) srtd) ⟩
    (x ∷ z ∷ xs) ∎                            
 
-removeGreaterThanFromEnd-≤ : {n : ℕ} {Γ : Ctx n} {env : Env Γ}
+remove-greater-than-from-end-≤ : {n : ℕ} {Γ : Ctx n} {env : Env Γ}
                            → (xs : List ℕ) → (x y : ℕ)
                            → (y ≤ x)
-                           → (env [ removeGreaterThanFromEnd ]ₑ) (x ∷ xs) y
+                           → (env [ remove-greater-than-from-end ]ₑ) (x ∷ xs) y
                            ＝ []
-removeGreaterThanFromEnd-≤ {_} {_} {env} xs x y y≤x
+remove-greater-than-from-end-≤ {_} {_} {env} xs x y y≤x
  = if' ((x ∷E
    list-rec (y ∷E (x ∷ xs) ∷E env) xs nil
      (lam list
@@ -410,7 +426,8 @@ removeGreaterThanFromEnd-≤ {_} {_} {env} xs x y y≤x
        ∷E y ∷E (x ∷ xs) ∷E env) [ subtract ]ₑ) y x
    then' []
    else' _
-   ＝⟨ ap (λ z → if' z then' [] else' (x ∷ list-rec (y ∷E (x ∷ xs) ∷E env) xs nil
+   ＝⟨ ap (λ z → if' z then' [] else' (x ∷ list-rec (y ∷E (x ∷ xs) ∷E env) xs
+      nil
       (lam list
       (lam nat
       (if
@@ -436,12 +453,12 @@ ite-second-branch : {X : 𝓤₀ ̇ } → {x y : X}
                   → (n : ℕ) → 0 < n → if' n then' x else' y ＝ y
 ite-second-branch (succ n) 0<n = refl
 
-removeLessThanFromStart-< : {n : ℕ} {Γ : Ctx n} {env : Env Γ}
+remove-less-than-from-start-< : {n : ℕ} {Γ : Ctx n} {env : Env Γ}
                           → (xs : List ℕ) → (x y : ℕ)
                            → x < y
-                           → (env [ removeLessThanFromStart ]ₑ) (x ∷ xs) y
-                           ＝ (env [ removeLessThanFromStart ]ₑ) xs y
-removeLessThanFromStart-< {_} {_} {env} xs x y x<y
+                           → (env [ remove-less-than-from-start ]ₑ) (x ∷ xs) y
+                           ＝ (env [ remove-less-than-from-start ]ₑ) xs y
+remove-less-than-from-start-< {_} {_} {env} xs x y x<y
  = if' ((x ∷E
          list-rec (y ∷E (x ∷ xs) ∷E _) xs nil
          (lam list
@@ -475,15 +492,16 @@ removeLessThanFromStart-< {_} {_} {env} xs x y x<y
     list-rec (y ∷E (_∷E_ {_} {_} {list} (x ∷ xs) env)) xs nil
     (lam list (lam nat (if subtract ∙ (var 𝟐) ∙ (var 𝟎) then
     cons (var 𝟎) (var 𝟏) else var 𝟏)))
-    ＝⟨ removeLessThanFromStart-env-lemma xs ⟩
-    (env [ removeLessThanFromStart ]ₑ) xs y ∎
+    ＝⟨ remove-less-than-from-start-env-lemma xs ⟩
+    (env [ remove-less-than-from-start ]ₑ) xs y ∎
 
-removeGreaterThanFromEnd-< : {n : ℕ} {Γ : Ctx n} {env : Env Γ} → (xs : List ℕ)
+remove-greater-than-from-end-< : {n : ℕ} {Γ : Ctx n} {env : Env Γ}
+                           → (xs : List ℕ)
                            → (x y : ℕ)
                            → x < y
-                           → (env [ removeGreaterThanFromEnd ]ₑ) (x ∷ xs) y
-                           ＝ x ∷ ((env [ removeGreaterThanFromEnd ]ₑ) xs y)
-removeGreaterThanFromEnd-< xs x y x<y
+                           → (env [ remove-greater-than-from-end ]ₑ) (x ∷ xs) y
+                           ＝ x ∷ ((env [ remove-greater-than-from-end ]ₑ) xs y)
+remove-greater-than-from-end-< xs x y x<y
  = if' ((x ∷E
          list-rec (y ∷E (x ∷ xs) ∷E _) xs nil
          (lam list
@@ -514,67 +532,95 @@ removeGreaterThanFromEnd-< xs x y x<y
          (subtract-lemma-II y x x<y) ⟩
     (x ∷ (list-rec (y ∷E (x ∷ xs) ∷E _) xs nil (lam list (lam nat
     (if subtract ∙ (var 𝟐) ∙ (var 𝟎) then nil else cons (var 𝟎) (var 𝟏))))))
-    ＝⟨ ap (x ∷_) (removeGreaterThanFromEnd-env-lemma xs) ⟩
-    (x ∷ (_ [ removeGreaterThanFromEnd ]ₑ) xs y) ∎
+    ＝⟨ ap (x ∷_) (remove-greater-than-from-end-env-lemma xs) ⟩
+    (x ∷ (_ [ remove-greater-than-from-end ]ₑ) xs y) ∎
 
 insert-lemma : {n : ℕ} {Γ : Ctx n} {env : Env Γ} → (xs : List ℕ) → (x y : ℕ)
               → x < y
               → (env [ insert ]ₑ) (x ∷ xs) y ＝ x ∷ ((env [ insert ]ₑ) xs y)
 insert-lemma xs x y x<y
  = ((y ∷E (x ∷ xs) ∷E _) [ concat ]ₑ) (((y ∷E (x ∷ xs) ∷E _)
-   [ removeGreaterThanFromEnd ]ₑ) (x ∷ xs) y) (y ∷ (((y ∷E (x ∷ xs) ∷E _)
-   [ removeLessThanFromStart ]ₑ) (x ∷ xs) y)) ＝⟨ ap₂ (λ w z
+   [ remove-greater-than-from-end ]ₑ) (x ∷ xs) y) (y ∷ (((y ∷E (x ∷ xs) ∷E _)
+   [ remove-less-than-from-start ]ₑ) (x ∷ xs) y)) ＝⟨ ap₂ (λ w z
    → ((y ∷E (x ∷ xs) ∷E _) [ concat ]ₑ) w (y ∷ z))
-   (removeGreaterThanFromEnd-< xs x y x<y)
-   (removeLessThanFromStart-< xs x y x<y) ⟩
+   (remove-greater-than-from-end-< xs x y x<y)
+   (remove-less-than-from-start-< xs x y x<y) ⟩
    ((y ∷E (x ∷ xs) ∷E _) [ concat ]ₑ) (x ∷ (((y ∷E (x ∷ xs) ∷E _)
-   [ removeGreaterThanFromEnd ]ₑ) xs y)) (y ∷ (((y ∷E (x ∷ xs) ∷E _)
-   [ removeLessThanFromStart ]ₑ) xs y))
+   [ remove-greater-than-from-end ]ₑ) xs y)) (y ∷ (((y ∷E (x ∷ xs) ∷E _)
+   [ remove-less-than-from-start ]ₑ) xs y))
    ＝⟨ ap₂ (λ w z → ((y ∷E (x ∷ xs) ∷E _) [ concat ]ₑ) (x ∷ w) (y ∷ z))
-   (removeGreaterThanFromEnd-env-lemma xs)
-   (removeLessThanFromStart-env-lemma xs) ⟩
+   (remove-greater-than-from-end-env-lemma xs)
+   (remove-less-than-from-start-env-lemma xs) ⟩
    ((y ∷E (x ∷ xs) ∷E _) [ concat ]ₑ) (x ∷ (((y ∷E xs ∷E _)
-   [ removeGreaterThanFromEnd ]ₑ) xs y)) (y ∷ (((y ∷E xs ∷E _)
-   [ removeLessThanFromStart ]ₑ) xs y)) ＝⟨ concat-correctness
-   (x ∷ (((y ∷E xs ∷E _) [ removeGreaterThanFromEnd ]ₑ) xs y))
-   (y ∷ (((y ∷E xs ∷E _) [ removeLessThanFromStart ]ₑ) xs y)) ⟩
-   x ∷ ((((y ∷E xs ∷E _) [ removeGreaterThanFromEnd ]ₑ) xs y)
-   ++ (y ∷ (((y ∷E xs ∷E _) [ removeLessThanFromStart ]ₑ) xs y)))
+   [ remove-greater-than-from-end ]ₑ) xs y)) (y ∷ (((y ∷E xs ∷E _)
+   [ remove-less-than-from-start ]ₑ) xs y)) ＝⟨ concat-correctness
+   (x ∷ (((y ∷E xs ∷E _) [ remove-greater-than-from-end ]ₑ) xs y))
+   (y ∷ (((y ∷E xs ∷E _) [ remove-less-than-from-start ]ₑ) xs y)) ⟩
+   x ∷ ((((y ∷E xs ∷E _) [ remove-greater-than-from-end ]ₑ) xs y)
+   ++ (y ∷ (((y ∷E xs ∷E _) [ remove-less-than-from-start ]ₑ) xs y)))
    ＝⟨ ap (x ∷_) (concat-correctness (((y ∷E xs ∷E _)
-   [ removeGreaterThanFromEnd ]ₑ) xs y) (y ∷ (((y ∷E xs ∷E _)
-   [ removeLessThanFromStart ]ₑ) xs y)))⁻¹  ⟩
+   [ remove-greater-than-from-end ]ₑ) xs y) (y ∷ (((y ∷E xs ∷E _)
+   [ remove-less-than-from-start ]ₑ) xs y)))⁻¹  ⟩
    x ∷ ((y ∷E xs ∷E _) [ concat ]ₑ)
-   (((y ∷E xs ∷E _) [ removeGreaterThanFromEnd ]ₑ) xs y)
-   (y ∷ (((y ∷E xs ∷E _) [ removeLessThanFromStart ]ₑ) xs y)) ∎
+   (((y ∷E xs ∷E _) [ remove-greater-than-from-end ]ₑ) xs y)
+   (y ∷ (((y ∷E xs ∷E _) [ remove-less-than-from-start ]ₑ) xs y)) ∎
 
 insert-correctness : {n : ℕ} {Γ : Ctx n} {env : Env Γ} → (xs : List ℕ)
                    → (y : ℕ)
                    → Sorted xs
                    → (env [ insert ]ₑ) xs y ＝ insert' y xs
 insert-correctness [] y srtd = refl
-insert-correctness {_} {_} {env} (x ∷ xs) y srtd with <-trichotomous x y
-... | inl x<y = (env [ insert ]ₑ) (x ∷ xs) y ＝⟨ insert-lemma xs x y x<y ⟩
-                 x ∷ ((env [ insert ]ₑ) xs y)
-                 ＝⟨ ap (x ∷_) (insert-correctness xs y (srtd' srtd)) ⟩
-                 x ∷ (insert' y xs) ∎
-                 where
-                   srtd' : Sorted (x ∷ xs) → Sorted xs
-                   srtd' sing-sorted = nil-sorted
-                   srtd' (adj-sorted srtd _) = srtd
-... | inr y≤x = ((y ∷E (x ∷ xs) ∷E _) [ concat ]ₑ) (((y ∷E (x ∷ xs) ∷E _) [ removeGreaterThanFromEnd ]ₑ) (x ∷ xs) y) (y ∷ (((y ∷E (x ∷ xs) ∷E _) [ removeLessThanFromStart ]ₑ) (x ∷ xs) y)) ＝⟨ ap₂ (λ w z → ((y ∷E (x ∷ xs) ∷E _) [ concat ]ₑ) w (y ∷ z)) (removeGreaterThanFromEnd-≤ xs x y (≤-lemma y x y≤x)) (removeLessThanFromStart-≤ xs x y (≤-lemma y x y≤x) srtd) ⟩
-                 ((y ∷E (_∷E_ {_} {_} {list} (x ∷ xs) env)) [ concat ]ₑ) [] (y ∷ x ∷ xs) ＝⟨ concat-correctness {_} {_} {y ∷E (_∷E_ {_} {_} {list} (x ∷ xs) env)} [] (y ∷ x ∷ xs) ⟩
-                 [] ++ (y ∷ x ∷ xs) ＝⟨ refl ⟩
-                 y ∷ x ∷ xs ∎
+insert-correctness {_} {_} {env} (x ∷ xs) y srtd = γ (<-trichotomous x y)
+ where
+  γ : (trich : ((x < y) ∔ (x ＝ y) ∔ (y < x)))
+    → (env [ insert ]ₑ) (x ∷ xs) y
+    ＝ (insert-trich y x xs trich)
+  γ (inl x<y)
+   = (env [ insert ]ₑ) (x ∷ xs) y ＝⟨ insert-lemma xs x y x<y ⟩
+      x ∷ ((env [ insert ]ₑ) xs y)
+      ＝⟨ ap (x ∷_) (insert-correctness xs y (srtd' srtd)) ⟩
+      x ∷ (insert' y xs) ∎
+   where
+    srtd' : Sorted (x ∷ xs) → Sorted xs
+    srtd' sing-sorted = nil-sorted
+    srtd' (adj-sorted srtd _) = srtd
+  γ (inr y≤x)
+   = ((y ∷E (x ∷ xs) ∷E _) [ concat ]ₑ) (((y ∷E (x ∷ xs) ∷E _)
+     [ remove-greater-than-from-end ]ₑ) (x ∷ xs) y) (y ∷ (((y ∷E (x ∷ xs) ∷E _)
+     [ remove-less-than-from-start ]ₑ) (x ∷ xs) y)) ＝⟨ ap₂ (λ w z
+     → ((y ∷E (x ∷ xs) ∷E _) [ concat ]ₑ) w (y ∷ z))
+     (remove-greater-than-from-end-≤ xs x y (≤-lemma y x y≤x))
+     (remove-less-than-from-start-≤ xs x y (≤-lemma y x y≤x) srtd) ⟩
+     ((y ∷E (_∷E_ {_} {_} {list} (x ∷ xs) env)) [ concat ]ₑ) []
+     (y ∷ x ∷ xs) ＝⟨ concat-correctness {_} {_} {y ∷E
+     (_∷E_ {_} {_} {list} (x ∷ xs) env)} [] (y ∷ x ∷ xs) ⟩
+     [] ++ (y ∷ x ∷ xs) ＝⟨ refl ⟩
+     y ∷ x ∷ xs ∎
 
-insert-env-lemma : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂} {env₁ : Env Γ₁} {env₂ : Env Γ₂}
-                  → (xs : List ℕ) → (x : ℕ)
-                  → (env₁ [ insert ]ₑ) xs x ＝ (env₂ [ insert ]ₑ) xs x
+insert-env-lemma : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
+                   {env₁ : Env Γ₁} {env₂ : Env Γ₂}
+                 → (xs : List ℕ) → (x : ℕ)
+                 → (env₁ [ insert ]ₑ) xs x ＝ (env₂ [ insert ]ₑ) xs x
 insert-env-lemma {_} {_} {_} {_} {env₁} {env₂} xs x
- = ((x ∷E xs ∷E env₁) [ concat ]ₑ) (((x ∷E xs ∷E env₁) [ removeGreaterThanFromEnd ]ₑ) xs x) (x ∷ (((x ∷E xs ∷E env₁) [ removeLessThanFromStart ]ₑ) xs x)) ＝⟨ concat-env-lemma ((((x ∷E xs ∷E env₁) [ removeGreaterThanFromEnd ]ₑ) xs x)) ⟩
-                          ((x ∷E xs ∷E env₂) [ concat ]ₑ) (((x ∷E xs ∷E env₁) [ removeGreaterThanFromEnd ]ₑ) xs x) (x ∷ (((x ∷E xs ∷E env₁) [ removeLessThanFromStart ]ₑ) xs x)) ＝⟨ ap₂ (λ w z → ((x ∷E xs ∷E env₂) [ concat ]ₑ) w (x ∷ z)) (removeGreaterThanFromEnd-env-lemma xs) (removeLessThanFromStart-env-lemma xs) ⟩
-                          ((x ∷E xs ∷E env₂) [ concat ]ₑ) (((x ∷E xs ∷E env₂) [ removeGreaterThanFromEnd ]ₑ) xs x) (x ∷ (((x ∷E xs ∷E env₂) [ removeLessThanFromStart ]ₑ) xs x)) ∎
+ = ((x ∷E xs ∷E env₁) [ concat ]ₑ) (((x ∷E xs ∷E env₁)
+   [ remove-greater-than-from-end ]ₑ) xs x) (x ∷ (((x ∷E xs ∷E env₁)
+   [ remove-less-than-from-start ]ₑ) xs x)) ＝⟨ concat-env-lemma
+   ((((x ∷E xs ∷E env₁) [ remove-greater-than-from-end ]ₑ) xs x)) ⟩
+   ((x ∷E xs ∷E env₂) [ concat ]ₑ) (((x ∷E xs ∷E env₁)
+   [ remove-greater-than-from-end ]ₑ) xs x) (x ∷ (((x ∷E xs ∷E env₁)
+   [ remove-less-than-from-start ]ₑ) xs x)) ＝⟨ ap₂ (λ w z → ((x ∷E xs ∷E env₂)
+   [ concat ]ₑ) w (x ∷ z)) (remove-greater-than-from-end-env-lemma xs)
+   (remove-less-than-from-start-env-lemma xs) ⟩
+   ((x ∷E xs ∷E env₂) [ concat ]ₑ) (((x ∷E xs ∷E env₂)
+   [ remove-greater-than-from-end ]ₑ) xs x) (x ∷ (((x ∷E xs ∷E env₂)
+   [ remove-less-than-from-start ]ₑ) xs x)) ∎
 
-sort-env-lemma : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂} {env₁ : Env Γ₁} {env₂ : Env Γ₂} (xs : List ℕ) → (list-rec env₁ xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎))))) ＝ (list-rec env₂ xs nil (lam list (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎)))))
+sort-env-lemma : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
+                 {env₁ : Env Γ₁} {env₂ : Env Γ₂} (xs : List ℕ)
+               → (list-rec env₁ xs nil (lam list (lam nat
+                 (insert ∙ (var 𝟏) ∙ (var 𝟎)))))
+                 ＝ (list-rec env₂ xs nil (lam list
+                    (lam nat (insert ∙ (var 𝟏) ∙ (var 𝟎)))))
 sort-env-lemma [] = refl
 sort-env-lemma {_} {_} {_} {_} {env₁} {env₂} (x ∷ xs)
  = ((x ∷E
@@ -599,7 +645,7 @@ sort-env-lemma {_} {_} {_} {_} {env₁} {env₂} (x ∷ xs)
    ∙ var 𝟎)
    ∙
    cons (var 𝟎)
-   (removeLessThanFromStart ∙ var 𝟏 ∙ var 𝟎)))
+   (remove-less-than-from-start ∙ var 𝟏 ∙ var 𝟎)))
    ∙ var 𝟏
    ∙ var 𝟎)))
    ∷E env₁) [ insert ]ₑ) (list-rec env₁ xs nil
@@ -625,7 +671,7 @@ sort-env-lemma {_} {_} {_} {_} {env₁} {env₂} (x ∷ xs)
    ∙ var 𝟎)
    ∙
    cons (var 𝟎)
-   (removeLessThanFromStart ∙ var 𝟏 ∙ var 𝟎)))
+   (remove-less-than-from-start ∙ var 𝟏 ∙ var 𝟎)))
    ∙ var 𝟏
    ∙ var 𝟎)))
    ∷E env₁) [ insert ]ₑ) z x) (sort-env-lemma xs) ⟩
@@ -651,7 +697,7 @@ sort-env-lemma {_} {_} {_} {_} {env₁} {env₂} (x ∷ xs)
    ∙ var 𝟎)
    ∙
    cons (var 𝟎)
-   (removeLessThanFromStart ∙ var 𝟏 ∙ var 𝟎)))
+   (remove-less-than-from-start ∙ var 𝟏 ∙ var 𝟎)))
    ∙ var 𝟏
    ∙ var 𝟎)))
    ∷E env₁) [ insert ]ₑ) (list-rec env₂ xs nil (lam list (lam nat
@@ -679,7 +725,7 @@ sort-env-lemma {_} {_} {_} {_} {env₁} {env₂} (x ∷ xs)
    ∙ var 𝟎)
    ∙
    cons (var 𝟎)
-   (removeLessThanFromStart ∙ var 𝟏 ∙ var 𝟎)))
+   (remove-less-than-from-start ∙ var 𝟏 ∙ var 𝟎)))
    ∙ var 𝟏
    ∙ var 𝟎)))
    ∷E env₂) [ insert ]ₑ) (list-rec env₂ xs nil

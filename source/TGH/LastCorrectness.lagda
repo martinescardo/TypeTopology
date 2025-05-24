@@ -164,7 +164,8 @@ last-list-correctness {_} {_} {env} (x ∷ l@(x₁ ∷ x₂))
      ∷E env) [ length' ]ₑ) (list-rec ((x ∷ l) ∷E env) l nil (lam list (lam nat
      (if length' ∙ (var 𝟏) then cons (var 𝟎) nil else (var 𝟏)))))
        then' x ∷ [] else'
-        (list-rec ((x ∷ l) ∷E env) l nil (lam list (lam nat (if length' ∙ (var 𝟏)
+        (list-rec ((x ∷ l) ∷E env) l nil (lam list (lam nat (if length' ∙
+        (var 𝟏)
         then cons (var 𝟎) nil else (var 𝟏))))) ＝⟨ ap (λ z → if' z (list-rec
         ((x ∷ l) ∷E env) l nil (lam list (lam nat (if length' ∙ (var 𝟏)
         then cons (var 𝟎) nil else (var 𝟏))))) then' x ∷ [] else' (list-rec

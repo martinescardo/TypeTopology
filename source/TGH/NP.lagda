@@ -125,14 +125,16 @@ P⊆NP decision p n Γ
            (0 , return l))
            ≤ (C * (length c + length l) ^ k)
       II l c env le
-       = ≤-trans (pr₁ (pr₁ (((0 , return c) ∷Eᵢ env) [ lam list program ]ᵢ eager)
+       = ≤-trans (pr₁ (pr₁
+         (((0 , return c) ∷Eᵢ env) [ lam list program ]ᵢ eager)
          (0 , return l)))
          (C * (length l) ^ k) (C * (length c + length l) ^ k) (f' l
          ((0 , return c)
          ∷Eᵢ env) le)
          (multiplication-preserves-order-left C ((length l) ^ k)
          ((length c + length l) ^ k)
-         (exponentiation-preserves-order-right (length l) (length c + length l) k
+         (exponentiation-preserves-order-right (length l)
+         (length c + length l) k
          (transport (_≤ length c + length l) (zero-left-neutral (length l))
          (≤-n-monotone-right 0 (length c) (length l) ⋆))))
 

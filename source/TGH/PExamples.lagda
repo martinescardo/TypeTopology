@@ -11,7 +11,6 @@ open import MLTT.Spartan renaming (_+_ to _∔_) hiding (_^_ ; _∙_)
 open import UF.FunExt
 open import TGH.Strategy
 
-
 module TGH.PExamples (fe : naive-funext 𝓤₀ 𝓤₀) where
 
 open import Naturals.Addition
@@ -35,66 +34,66 @@ open import TGH.P fe
 open import TGH.LastTimeListValueIndependent fe
 open import TGH.LastLinearTimeEager fe
 
-firstTrue : List Bool → Bool
-firstTrue [] = true
-firstTrue (b ∷ _) = b
+first-true : List Bool → Bool
+first-true [] = true
+first-true (b ∷ _) = b
 
-lastTrue : List Bool → Bool
-lastTrue [] = true
-lastTrue (b ∷ []) = b
-lastTrue (_ ∷ bs@(_ ∷ _)) = lastTrue bs
+last-true : List Bool → Bool
+last-true [] = true
+last-true (b ∷ []) = b
+last-true (_ ∷ bs@(_ ∷ _)) = last-true bs
 
 list-head-first-true : (xs : List Bool)
                      → nat-to-bool (list-head (map bool-to-nat xs))
-                     ＝ firstTrue xs
+                     ＝ first-true xs
 list-head-first-true [] = refl
 list-head-first-true (x ∷ _) = bool-nat-inverse x
 
 list-last-last-true : (xs : List Bool)
                     → nat-to-bool (last' (map bool-to-nat xs))
-                    ＝ lastTrue xs
+                    ＝ last-true xs
 list-last-last-true [] = refl
 list-last-last-true (x ∷ []) = bool-nat-inverse x
 list-last-last-true (x ∷ y ∷ xs) = list-last-last-true (y ∷ xs)
 
-head-is-firstTrue : {n : ℕ} {Γ : Ctx n}
+head-is-first-true : {n : ℕ} {Γ : Ctx n}
                   → (env : Env Γ)
                   → (xs : List Bool)
                   → nat-to-bool ((env [ head ]ₑ) (map bool-to-nat xs))
-                  ＝ firstTrue xs
-head-is-firstTrue env xs
+                  ＝ first-true xs
+head-is-first-true env xs
  = nat-to-bool ((env [ head ]ₑ) (map bool-to-nat xs)) ＝⟨ ap nat-to-bool
    (head-correctness (map bool-to-nat xs)) ⟩
    nat-to-bool (list-head (map bool-to-nat xs)) ＝⟨ list-head-first-true xs ⟩
-   firstTrue xs ∎
+   first-true xs ∎
 
-last-is-lastTrue : {n : ℕ} {Γ : Ctx n}
+last-is-last-true : {n : ℕ} {Γ : Ctx n}
                  → (env : Env Γ)
                  → (xs : List Bool)
                  → nat-to-bool ((env [ last ]ₑ) (map bool-to-nat xs))
-                 ＝ lastTrue xs
-last-is-lastTrue env xs
+                 ＝ last-true xs
+last-is-last-true env xs
  = nat-to-bool ((env [ last ]ₑ) (map bool-to-nat xs))
    ＝⟨ ap nat-to-bool (last-correctness (map bool-to-nat xs)) ⟩
    nat-to-bool (last' (map bool-to-nat xs)) ＝⟨ list-last-last-true xs ⟩
-   lastTrue xs ∎
+   last-true xs ∎
 
-firstTrue∈P : firstTrue ∈P
-firstTrue∈P _ _ = head-comp , head-is-firstTrue , (1 , eager-head-linear-time')
+first-true∈P : first-true ∈P
+first-true∈P _ _ = head-comp , head-is-first-true , (1 , eager-head-linear-time')
 
-notFirstTrue∈P : (not ∘ firstTrue) ∈P
-notFirstTrue∈P = P-closure₁ firstTrue firstTrue∈P
+not-first-true∈P : (not ∘ first-true) ∈P
+not-first-true∈P = P-closure₁ first-true first-true∈P
 
-lastTrue∈P : lastTrue ∈P
-lastTrue∈P _ _ = last-comp , last-is-lastTrue , (1 , last-linear-time)
+last-true∈P : last-true ∈P
+last-true∈P _ _ = last-comp , last-is-last-true , (1 , last-linear-time)
 
-notLastTrue∈P : (not ∘ lastTrue) ∈P
-notLastTrue∈P = P-closure₁ lastTrue lastTrue∈P
+not-last-true∈P : (not ∘ last-true) ∈P
+not-last-true∈P = P-closure₁ last-true last-true∈P
 
-firstOrLastTrue∈P : (λ bs → (firstTrue bs || lastTrue bs)) ∈P
-firstOrLastTrue∈P = P-closure₂ firstTrue lastTrue firstTrue∈P lastTrue∈P
+first-or-last-true∈P : (λ bs → (first-true bs || last-true bs)) ∈P
+first-or-last-true∈P = P-closure₂ first-true last-true first-true∈P last-true∈P
 
-firstAndLastTrue∈P : (λ bs → (firstTrue bs && lastTrue bs)) ∈P
-firstAndLastTrue∈P = P-closure₃ firstTrue lastTrue firstTrue∈P lastTrue∈P
+first-and-last-true∈P : (λ bs → (first-true bs && last-true bs)) ∈P
+first-and-last-true∈P = P-closure₃ first-true last-true first-true∈P last-true∈P
 
 \end{code}

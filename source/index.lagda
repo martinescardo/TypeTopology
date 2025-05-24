@@ -152,6 +152,7 @@
 
 module index where
 
+<<<<<<< HEAD
 \end{code}
 
 **Foundations**
@@ -280,6 +281,7 @@ import Factorial.index  -- [Automorphism types and their combinatorics](https://
 import Various.index    -- [Miscellaneous results of interest](https://github.com/martinescardo/TypeTopologyModuleDescriptions#various).
 import gist.index       -- [Examples, discussions and experiments](https://github.com/martinescardo/TypeTopologyModuleDescriptions#gist).
 import MGS.index        -- [A modular version](https://github.com/martinescardo/TypeTopologyModuleDescriptions#mgs) of our [HoTT/UF lecture notes](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/).
+import TGH.index        -- Time complexity, Big O notation, and complexity classes - link to be added
 import deprecated.index -- [Superseded modules, kept for reference](https://github.com/martinescardo/TypeTopologyModuleDescriptions#deprecated).
 
 \end{code}
