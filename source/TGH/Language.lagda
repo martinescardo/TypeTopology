@@ -23,7 +23,6 @@ open import MLTT.Vector renaming (Vector to Vec)
 open import MLTT.Fin
 open import MLTT.List
 open import UF.Base
-open import TGH.NatOrder
 open import TGH.Thunk
 
 

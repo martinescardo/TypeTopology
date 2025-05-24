@@ -25,7 +25,6 @@ open import MLTT.List
 open import MLTT.Bool hiding (if_then_else_)
 open import UF.Base
 open import TGH.Thunk
-open import TGH.NatOrder
 open import TGH.Language fe
 open import TGH.ComplexityDefinitionsResults fe
 

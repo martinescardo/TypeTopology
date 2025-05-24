@@ -11,7 +11,6 @@ open import MLTT.Spartan renaming (_+_ to _∔_) hiding (_^_ ; _∙_)
 open import UF.FunExt
 open import TGH.Strategy
 
-
 module TGH.LastTimeListValueIndependent (fe : naive-funext 𝓤₀ 𝓤₀) where
 
 open import Naturals.Addition renaming
@@ -25,7 +24,6 @@ open import MLTT.Fin
 open import MLTT.List
 open import UF.Base
 open import TGH.Thunk
-open import TGH.NatOrder
 open import TGH.Language fe
 open import TGH.HeadExample fe
 open import TGH.LastCorrectness fe
