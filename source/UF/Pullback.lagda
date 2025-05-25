@@ -1,6 +1,6 @@
 Martin Escardo, 23rd May 2025.
 
-Pullbacks.
+Homotopy pullbacks.
 
 \begin{code}
 
@@ -9,12 +9,14 @@ Pullbacks.
 module UF.Pullback where
 
 open import MLTT.Spartan
+open import UF.Base
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.Subsingletons
 
 \end{code}
 
-We assume a span
+We assume a cospan
 
                  B
                  |
@@ -44,21 +46,21 @@ And we consider commutative squares of the form
       A -------> C
             f
 
-completing the span.
+completing the cospan.
 
 \begin{code}
 
- commutative-square : {X : 𝓣 ̇ } → (X → A) → (X → B) → 𝓦 ⊔ 𝓣 ̇
- commutative-square p q = f ∘ p ∼ g ∘ q
+ commutative-square : {X : 𝓣 ̇ } → (X → A) × (X → B) → 𝓦 ⊔ 𝓣 ̇
+ commutative-square (p , q) = f ∘ p ∼ g ∘ q
 
 \end{code}
 
-A cone over the span is the totality of these data.
+A cone over the cospan is the totality of these data.
 
 \begin{code}
 
  cone : 𝓣 ̇ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
- cone X = Σ p ꞉ (X → A) , Σ q ꞉ (X → B) , commutative-square p q
+ cone X = Σ pq ꞉ ((X → A) × (X → B)) , commutative-square pq
 
 \end{code}
 
@@ -103,7 +105,7 @@ p ∘ u |          | g
 \begin{code}
 
  cone-map : {P : 𝓣' ̇ } (X : 𝓣 ̇ ) → cone P → (X → P) → cone X
- cone-map X (p , q , e) u = p ∘ u , q ∘ u , e ∘ u
+ cone-map X ((p , q) , e) u = (p ∘ u , q ∘ u) , e ∘ u
 
 \end{code}
 
@@ -118,22 +120,38 @@ We say that a cone
       A -------> C
             f
 
-is a (homotopy) pullback if this map is an equivalence for every X.
+is a (homotopy) pullback if the cone map is an equivalence for every X.
 
 \begin{code}
 
  is-pullback : Cone 𝓣 → 𝓤ω
  is-pullback (P , c) = {𝓣' : Universe} (X : 𝓣' ̇ ) → is-equiv (cone-map X c)
 
- pullback-equivalence : (𝓒 : Cone 𝓣)
-                      → is-pullback 𝓒
-                      → (X : 𝓣' ̇ ) → (X → source 𝓒) ≃ cone X
- pullback-equivalence (P , c) i X = cone-map X c , i X
+ module _ (𝓒@(P , c@((p₁ , p₂) , s)) : Cone 𝓣)
+          (i : is-pullback 𝓒)
+        where
 
- mediating-map : (𝓒 : Cone 𝓣)
-               → is-pullback 𝓒
-               → (X : 𝓣' ̇ ) → cone X → (X → source 𝓒)
- mediating-map 𝓒 i X = ⌜ pullback-equivalence 𝓒 i X ⌝⁻¹
+  pullback-equivalence : (X : 𝓣' ̇ ) → (X → P) ≃ cone X
+  pullback-equivalence X = cone-map X c , i X
+
+  module _ (𝓓@(X , d@((h₁ , h₂) , t)) : Cone 𝓣') where
+
+   universal-property
+    : ∃! u ꞉ (X → P) , ((p₁ ∘ u , p₂ ∘ u) , s ∘ u) ＝ ((h₁ , h₂) , t)
+   universal-property
+    = equivs-are-vv-equivs (cone-map X c) (i X) d
+
+   mediating-map : (X → P)
+   mediating-map = pr₁ (center universal-property)
+
+   _ : mediating-map ＝ ⌜ pullback-equivalence X ⌝⁻¹ d
+   _ = refl
+
+   mediating-map-eq₁ : p₁ ∘ mediating-map ＝ h₁
+   mediating-map-eq₁ = ap (pr₁ ∘ pr₁) (pr₂ (center universal-property))
+
+   mediating-map-eq₂ : p₂ ∘ mediating-map ＝ h₂
+   mediating-map-eq₂ = ap (pr₂ ∘ pr₁) (pr₂ (center universal-property))
 
 \end{code}
 
@@ -144,7 +162,7 @@ pullbacks.
 \begin{code}
 
  pullback-source : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
- pullback-source = Σ a ꞉ A , Σ b ꞉ B , f a ＝ g b
+ pullback-source = Σ (a , b) ꞉ A × B , f a ＝ g b
 
  private
   P = pullback-source
@@ -156,16 +174,16 @@ We denote the pullback projections by pb₁ and pb₂.
 \begin{code}
 
  pb₁ : P → A
- pb₁ (a , b , e) = a
+ pb₁ ((a , b) , e) = a
 
  pb₂ : P → B
- pb₂ (a , b , e) = b
+ pb₂ ((a , b) , e) = b
 
- pullback-square : commutative-square pb₁ pb₂
- pullback-square (a , b , e) = e
+ pullback-square : commutative-square (pb₁ , pb₂)
+ pullback-square ((a , b) , e) = e
 
  pullback-cone : cone P
- pullback-cone = (pb₁ , pb₂ , pullback-square)
+ pullback-cone = ((pb₁ , pb₂) , pullback-square)
 
  Pullback-Cone : Cone (𝓤 ⊔ 𝓥 ⊔ 𝓦)
  Pullback-Cone = P , pullback-cone
@@ -174,7 +192,7 @@ We denote the pullback projections by pb₁ and pb₂.
  pullback-cone-map X = cone-map X pullback-cone
 
  pullback-mediating-map : {X : 𝓣 ̇ } → cone X → (X → P)
- pullback-mediating-map (p , q , s) x = p x , q x , s x
+ pullback-mediating-map ((p , q) , s) x = (p x , q x) , s x
 
  pullback-Cone-is-pullback : is-pullback Pullback-Cone
  pullback-Cone-is-pullback X =
