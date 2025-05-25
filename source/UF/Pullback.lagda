@@ -133,6 +133,12 @@ is a (homotopy) pullback if the cone map is an equivalence for every X.
  is-pullback : Cone 𝓣 → 𝓤ω
  is-pullback (P , c) = {𝓣' : Universe} (X : 𝓣' ̇ ) → is-equiv (cone-map X c)
 
+\end{code}
+
+We record the equivalence explicitly.
+
+\begin{code}
+
  module _ (𝓒@(P , c@((p₁ , p₂) , s)) : Cone 𝓣)
           (i : is-pullback 𝓒)
         where
@@ -140,12 +146,26 @@ is a (homotopy) pullback if the cone map is an equivalence for every X.
   pullback-equivalence : (X : 𝓣' ̇ ) → (X → P) ≃ cone X
   pullback-equivalence X = cone-map X c , i X
 
+\end{code}
+
+And we can formulate the universal property of pullbacks in terms of
+(homotopy) unique existence.
+
+\begin{code}
+
   module _ (𝓓@(X , d@((h₁ , h₂) , t)) : Cone 𝓣') where
 
    universal-property
     : ∃! u ꞉ (X → P) , ((p₁ ∘ u , p₂ ∘ u) , s ∘ u) ＝ ((h₁ , h₂) , t)
    universal-property
     = equivs-are-vv-equivs (cone-map X c) (i X) d
+
+\end{code}
+
+It is convenient to name the uniquely existing u as the "mediating
+map", and record the equations it satisfies.
+
+\begin{code}
 
    mediating-map : (X → P)
    mediating-map = pr₁ (center universal-property)
@@ -165,6 +185,16 @@ We now show that pullbacks exist, and call them simply pullbacks,
 although perhaps we should call them standard pullbacks, or chosen
 pullbacks.
 
+The construction is illustrated in the following diagram.
+
+                                   pb₂
+ Σ (a , b) ꞉ A × B , f a ＝ g b  -------> B
+            |                             |
+       pb₁  |                             | g
+            |                             |
+            v                             v
+            A --------------------------> C
+                                   f
 \begin{code}
 
  pullback-source : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
@@ -175,7 +205,7 @@ pullbacks.
 
 \end{code}
 
-We denote the pullback projections by pb₁ and pb₂.
+The pullback projections pb₁ and pb₂ are defined as followd.
 
 \begin{code}
 
