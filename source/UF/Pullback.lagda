@@ -244,6 +244,16 @@ of f and g, and then pb₁ and pb₂.
 
 TODO. Implement other results from [1].
 
+We have a pullback
+
+           fiber f c ----> 𝟙
+              |            |
+  fiber-point |            | c
+              |            |
+              v            v
+              A ---------> C
+                     f
+
 \begin{code}
 
 fiber-is-pullback
