@@ -205,7 +205,7 @@ The construction is illustrated in the following diagram.
 
 \end{code}
 
-The pullback projections pb₁ and pb₂ are defined as followd.
+The pullback projections pb₁ and pb₂ are defined as follows.
 
 \begin{code}
 
