@@ -189,11 +189,11 @@ The construction is illustrated in the following diagram.
 
                                    pb₂
  Σ (a , b) ꞉ A × B , f a ＝ g b  -------> B
-            |                             |
-       pb₁  |                             | g
-            |                             |
-            v                             v
-            A --------------------------> C
+           |                              |
+      pb₁  |                              | g
+           |                              |
+           v                              v
+           A ---------------------------> C
                                    f
 \begin{code}
 
@@ -202,12 +202,6 @@ The construction is illustrated in the following diagram.
 
  private
   P = pullback-source
-
-\end{code}
-
-The pullback projections pb₁ and pb₂ are defined as follows.
-
-\begin{code}
 
  pb₁ : P → A
  pb₁ ((a , b) , e) = a
