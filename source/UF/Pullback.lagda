@@ -200,4 +200,28 @@ We denote the pullback projections by pb₁ and pb₂.
    (pullback-cone-map X)
    (pullback-mediating-map , (λ x → refl) , (λ c → refl))
 
+ _ : (X : 𝓣' ̇ ) (c : cone X)
+   → pullback-mediating-map c
+   ＝ mediating-map Pullback-Cone pullback-Cone-is-pullback (X , c)
+ _ = λ X c → refl
+
+ pb₂-is-embedding : is-embedding f → is-embedding pb₂
+ pb₂-is-embedding f-is-embedding b = I
+   where
+    _ : fiber pb₂ b ＝ (Σ ((x , b') , e) ꞉ pullback-source ,  b' ＝ b)
+    _ = refl
+
+    I : is-prop (fiber pb₂ b)
+    I (((x₁ , .b) , e₁) , refl) (((x₂ , .b) , e₂) , refl) = III II
+     where
+      II : (x₁ , e₁) ＝ (x₂ , e₂)
+      II = f-is-embedding (g b) (x₁ , e₁) (x₂ , e₂)
+
+      III : {σ τ : fiber f (g b)}
+          → σ ＝ τ
+          → (((fiber-point σ , b) , fiber-identification σ) , refl)
+          ＝[ fiber pb₂ b ]
+            (((fiber-point τ , b) , fiber-identification τ) , refl)
+      III refl = refl
+
 \end{code}
