@@ -4,9 +4,9 @@ Homotopy pullbacks and some basic properties to begin with.
 
 This is loosely based on
 
-Jeremy Avigad, Chris Kapulkin, Peter LeFanu Lumsdaine.
-Homotopy limits in type theory, 2015 (first version 2013).
-https://arxiv.org/abs/1304.0680
+[1] Jeremy Avigad, Chris Kapulkin, Peter LeFanu Lumsdaine.
+    Homotopy limits in type theory, 2015 (first version 2013).
+    https://arxiv.org/abs/1304.0680
 
 \begin{code}
 
@@ -211,6 +211,12 @@ We denote the pullback projections by pb₁ and pb₂.
    ＝ mediating-map Pullback-Cone pullback-Cone-is-pullback (X , c)
  _ = λ X c → refl
 
+\end{code}
+
+Pullbacks of embeddings are embeddings.
+
+\begin{code}
+
  pb₂-is-embedding : is-embedding f → is-embedding pb₂
  pb₂-is-embedding f-is-embedding b = I
    where
@@ -232,4 +238,26 @@ We denote the pullback projections by pb₁ and pb₂.
 
 \end{code}
 
-TODO.
+This is a "biased" version. Of course, also if g is an embedding, then
+the projection pb₁ is also an enbedding, just by switching the roles
+of f and g, and then pb₁ and pb₂.
+
+TODO. Implement other results from [1].
+
+\begin{code}
+
+fiber-is-pullback
+ : {𝓥 : Universe} {A : 𝓤 ̇ } {C : 𝓦 ̇ }
+   (f : A → C) (c : C)
+ → is-pullback f (λ (_ : 𝟙 {𝓥}) → c)
+    (fiber f c ,
+     ((fiber-point , unique-to-𝟙) , fiber-identification))
+fiber-is-pullback f c X = qinvs-are-equivs ϕ (γ , (λ u → refl) , (λ c → refl))
+ where
+  ϕ : (X → fiber f c) → cone f (λ _ → c) X
+  ϕ = cone-map f (λ _ → c) X ((fiber-point , unique-to-𝟙) , fiber-identification)
+
+  γ : cone f (λ _ → c) X → X → fiber f c
+  γ ((p , q) , s) x = p x , s x
+
+\end{code}
