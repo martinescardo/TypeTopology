@@ -1,6 +1,12 @@
 Martin Escardo, 23rd May 2025.
 
-Homotopy pullbacks.
+Homotopy pullbacks and some basic properties to begin with.
+
+This is loosely based on
+
+Jeremy Avigad, Chris Kapulkin, Peter LeFanu Lumsdaine.
+Homotopy limits in type theory, 2015 (first version 2013).
+https://arxiv.org/abs/1304.0680
 
 \begin{code}
 
@@ -225,3 +231,5 @@ We denote the pullback projections by pb₁ and pb₂.
       III refl = refl
 
 \end{code}
+
+TODO.
