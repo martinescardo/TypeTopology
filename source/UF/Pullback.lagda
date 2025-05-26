@@ -23,19 +23,19 @@ open import UF.Subsingletons
 
 We assume a cospan
 
-                 B
+                 Y
                  |
                  | g
                  |
                  v
-      A -------> C
+      X -------> C
            f
 
 \begin{code}
 
 module _ {𝓤 𝓥 𝓦 : Universe}
-         {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇}
-         (f : A → C) (g : B → C)
+         {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇}
+         (f : X → Z) (g : Y → Z)
        where
 
 \end{code}
@@ -43,19 +43,19 @@ module _ {𝓤 𝓥 𝓦 : Universe}
 And we consider commutative squares of the form
 
            q
-      X -------> B
+      A -------> X
       |          |
     p |          | g
       |          |
       v          v
-      A -------> C
+      Y -------> Z
             f
 
 completing the cospan.
 
 \begin{code}
 
- commutative-square : {X : 𝓣 ̇ } → (X → A) × (X → B) → 𝓦 ⊔ 𝓣 ̇
+ commutative-square : {A : 𝓣 ̇ } → (A → X) × (A → Y) → 𝓦 ⊔ 𝓣 ̇
  commutative-square (p , q) = f ∘ p ∼ g ∘ q
 
 \end{code}
@@ -65,7 +65,7 @@ A cone over the cospan is the totality of these data.
 \begin{code}
 
  cone : 𝓣 ̇ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
- cone X = Σ pq ꞉ ((X → A) × (X → B)) , commutative-square pq
+ cone A = Σ pq ꞉ ((A → X) × (A → Y)) , commutative-square pq
 
 \end{code}
 
@@ -75,7 +75,7 @@ type.
 \begin{code}
 
  Cone : (𝓣 : Universe) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ (𝓣 ⁺) ̇
- Cone 𝓣 = Σ P ꞉ 𝓣 ̇ , cone P
+ Cone 𝓣 = Σ A ꞉ 𝓣 ̇ , cone A
 
  source : Cone 𝓣 → 𝓣 ̇
  source (P , c) = P
@@ -88,28 +88,28 @@ type.
 If we have a cone
 
             q
-      P -------> B
+      P -------> Y
       |          |
     p |          | g
       |          |
       v          v
-      A -------> C
+      X -------> Z
             f
 
-and a map u : X → P, we get a cone
+and a map u : A → P, we get a cone
 
           q ∘ u
-      X -------> B
+      A -------> Y
       |          |
 p ∘ u |          | g
       |          |
       v          v
-      A -------> C
+      X -------> Z
             f
 
 \begin{code}
 
- cone-map : {P : 𝓣' ̇ } (X : 𝓣 ̇ ) → cone P → (X → P) → cone X
+ cone-map : {P : 𝓣' ̇ } (A : 𝓣 ̇ ) → cone P → (A → P) → cone A
  cone-map X ((p , q) , e) u = (p ∘ u , q ∘ u) , e ∘ u
 
 \end{code}
@@ -117,20 +117,20 @@ p ∘ u |          | g
 We say that a cone
 
             q
-      P -------> B
+      P -------> Y
       |          |
     p |          | g
       |          |
       v          v
-      A -------> C
+      X -------> Z
             f
 
-is a (homotopy) pullback if the cone map is an equivalence for every X.
+is a (homotopy) pullback if the cone map is an equivalence for every A.
 
 \begin{code}
 
  is-pullback : Cone 𝓣 → 𝓤ω
- is-pullback (P , c) = {𝓣' : Universe} (X : 𝓣' ̇ ) → is-equiv (cone-map X c)
+ is-pullback (P , c) = {𝓣' : Universe} (A : 𝓣' ̇ ) → is-equiv (cone-map A c)
 
 \end{code}
 
@@ -142,8 +142,8 @@ We record the equivalence explicitly.
           (i : is-pullback 𝓒)
         where
 
-  pullback-equivalence : (X : 𝓣' ̇ ) → (X → P) ≃ cone X
-  pullback-equivalence X = cone-map X c , i X
+  pullback-equivalence : (A : 𝓣' ̇ ) → (A → P) ≃ cone A
+  pullback-equivalence A = cone-map A c , i A
 
 \end{code}
 
@@ -152,12 +152,12 @@ And we can formulate the universal property of pullbacks in terms of
 
 \begin{code}
 
-  module _ (𝓓@(X , d@((h₁ , h₂) , t)) : Cone 𝓣') where
+  module _ (𝓓@(A , d@((h₁ , h₂) , t)) : Cone 𝓣') where
 
    universal-property
-    : ∃! u ꞉ (X → P) , ((p₁ ∘ u , p₂ ∘ u) , s ∘ u) ＝ ((h₁ , h₂) , t)
+    : ∃! u ꞉ (A → P) , ((p₁ ∘ u , p₂ ∘ u) , s ∘ u) ＝ ((h₁ , h₂) , t)
    universal-property
-    = equivs-are-vv-equivs (cone-map X c) (i X) d
+    = equivs-are-vv-equivs (cone-map A c) (i A) d
 
 \end{code}
 
@@ -166,10 +166,10 @@ map", and record the equations it satisfies.
 
 \begin{code}
 
-   mediating-map : (X → P)
+   mediating-map : (A → P)
    mediating-map = pr₁ (center universal-property)
 
-   _ : mediating-map ＝ ⌜ pullback-equivalence X ⌝⁻¹ d
+   _ : mediating-map ＝ ⌜ pullback-equivalence A ⌝⁻¹ d
    _ = refl
 
    mediating-map-eq₁ : p₁ ∘ mediating-map ＝ h₁
@@ -187,29 +187,29 @@ pullbacks.
 The construction is illustrated in the following diagram.
 
                                    pb₂
- Σ (a , b) ꞉ A × B , f a ＝ g b  -------> B
+ Σ (x , y) ꞉ X × Y , f x ＝ g y  -------> Y
            |                              |
       pb₁  |                              | g
            |                              |
            v                              v
-           A ---------------------------> C
+           Z ---------------------------> Z
                                    f
 \begin{code}
 
  pullback-source : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
- pullback-source = Σ (a , b) ꞉ A × B , f a ＝ g b
+ pullback-source = Σ (x , y) ꞉ X × Y , f x ＝ g y
 
  private
   P = pullback-source
 
- pb₁ : P → A
- pb₁ ((a , b) , e) = a
+ pb₁ : P → X
+ pb₁ ((x , y) , s) = x
 
- pb₂ : P → B
- pb₂ ((a , b) , e) = b
+ pb₂ : P → Y
+ pb₂ ((x , y) , s) = y
 
  pullback-square : commutative-square (pb₁ , pb₂)
- pullback-square ((a , b) , e) = e
+ pullback-square ((x , y) , s) = s
 
  pullback-cone : cone P
  pullback-cone = ((pb₁ , pb₂) , pullback-square)
@@ -217,22 +217,22 @@ The construction is illustrated in the following diagram.
  Pullback-Cone : Cone (𝓤 ⊔ 𝓥 ⊔ 𝓦)
  Pullback-Cone = P , pullback-cone
 
- pullback-cone-map : (X : 𝓣' ̇ ) → (X → P) → cone X
- pullback-cone-map X = cone-map X pullback-cone
+ pullback-cone-map : (A : 𝓣' ̇ ) → (A → P) → cone A
+ pullback-cone-map A = cone-map A pullback-cone
 
- pullback-mediating-map : {X : 𝓣 ̇ } → cone X → (X → P)
- pullback-mediating-map ((p , q) , s) x = (p x , q x) , s x
+ pullback-mediating-map : {A : 𝓣 ̇ } → cone A → (A → P)
+ pullback-mediating-map ((p , q) , s) a = (p a , q a) , s a
 
  pullback-Cone-is-pullback : is-pullback Pullback-Cone
- pullback-Cone-is-pullback X =
+ pullback-Cone-is-pullback A =
   qinvs-are-equivs
-   (pullback-cone-map X)
-   (pullback-mediating-map , (λ x → refl) , (λ c → refl))
+   (pullback-cone-map A)
+   (pullback-mediating-map , (λ u → refl) , (λ c → refl))
 
- _ : (X : 𝓣' ̇ ) (c : cone X)
+ _ : (A : 𝓣' ̇ ) (c : cone A)
    → pullback-mediating-map c
-   ＝ mediating-map Pullback-Cone pullback-Cone-is-pullback (X , c)
- _ = λ X c → refl
+   ＝ mediating-map Pullback-Cone pullback-Cone-is-pullback (A , c)
+ _ = λ A c → refl
 
 \end{code}
 
@@ -266,24 +266,23 @@ We have a pullback
   fiber-point |            | c
               |            |
               v            v
-              A ---------> C
+              X ---------> Z
                      f
 
 \begin{code}
 
 fiber-is-pullback
- : {𝓥 : Universe} {A : 𝓤 ̇ } {C : 𝓦 ̇ }
-   (f : A → C) (c : C)
- → is-pullback f (λ (_ : 𝟙 {𝓥}) → c)
-    (fiber f c ,
-     ((fiber-point , unique-to-𝟙) , fiber-identification))
-fiber-is-pullback f c X = qinvs-are-equivs ϕ (γ , (λ u → refl) , (λ c → refl))
+ : {𝓥 : Universe} {X : 𝓤 ̇ } {Z : 𝓦 ̇ }
+   (f : X → Z) (z : Z)
+ → is-pullback f (λ (_ : 𝟙 {𝓥}) → z)
+    (fiber f z , (fiber-point , unique-to-𝟙) , fiber-identification)
+fiber-is-pullback f z A = qinvs-are-equivs ϕ (γ , (λ u → refl) , (λ c → refl))
  where
-  ϕ : (X → fiber f c) → cone f (λ _ → c) X
-  ϕ = cone-map f (λ _ → c) X ((fiber-point , unique-to-𝟙) , fiber-identification)
+  ϕ : (A → fiber f z) → cone f (λ _ → z) A
+  ϕ = cone-map f (λ _ → z) A ((fiber-point , unique-to-𝟙) , fiber-identification)
 
-  γ : cone f (λ _ → c) X → (X → fiber f c)
-  γ ((p , q) , s) x = p x , s x
+  γ : cone f (λ _ → z) A → (A → fiber f z)
+  γ ((p , q) , s) a = p a , s a
 
 \end{code}
 
