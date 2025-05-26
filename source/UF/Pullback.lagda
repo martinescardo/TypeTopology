@@ -243,9 +243,6 @@ Pullbacks of embeddings are embeddings.
  pb₂-is-embedding : is-embedding f → is-embedding pb₂
  pb₂-is-embedding f-is-embedding y = I
    where
-    _ : fiber pb₂ y ＝ (Σ ((x , y') , e) ꞉ pullback-source ,  y' ＝ y)
-    _ = refl
-
     I : is-prop (fiber pb₂ y)
     I (((x₁ , y) , e₁) , refl) (((x₂ , y) , e₂) , refl) = III II
      where

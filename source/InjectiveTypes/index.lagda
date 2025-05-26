@@ -100,3 +100,17 @@ injective maps in the following file.
 import InjectiveTypes.WeakFactorizationSystem
 
 \end{code}
+
+And Martin Escardo explores a closer relation between algebraic
+injectivity and algebras of the partial-map classifier (aka lifting)
+monad in these two files.
+
+\begin{code}
+
+import InjectiveTypes.Algebra
+import gist.InjectivesVersusAlgebras
+
+\end{code}
+
+Eventually the second file will be deleted after it is moved to the
+first, in a suitable form.
