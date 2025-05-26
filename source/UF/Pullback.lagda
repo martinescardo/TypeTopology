@@ -241,31 +241,23 @@ Pullbacks of embeddings are embeddings.
 \begin{code}
 
  pb₂-is-embedding : is-embedding f → is-embedding pb₂
- pb₂-is-embedding f-is-embedding b = I
+ pb₂-is-embedding f-is-embedding y = I
    where
-    _ : fiber pb₂ b ＝ (Σ ((x , b') , e) ꞉ pullback-source ,  b' ＝ b)
+    _ : fiber pb₂ y ＝ (Σ ((x , y') , e) ꞉ pullback-source ,  y' ＝ y)
     _ = refl
 
-    I : is-prop (fiber pb₂ b)
-    I (((x₁ , .b) , e₁) , refl) (((x₂ , .b) , e₂) , refl) = III II
+    I : is-prop (fiber pb₂ y)
+    I (((x₁ , y) , e₁) , refl) (((x₂ , y) , e₂) , refl) = III II
      where
       II : (x₁ , e₁) ＝ (x₂ , e₂)
-      II = f-is-embedding (g b) (x₁ , e₁) (x₂ , e₂)
+      II = f-is-embedding (g y) (x₁ , e₁) (x₂ , e₂)
 
-      III : {σ τ : fiber f (g b)}
-          → σ ＝ τ
-          → (((fiber-point σ , b) , fiber-identification σ) , refl)
-          ＝[ fiber pb₂ b ]
-            (((fiber-point τ , b) , fiber-identification τ) , refl)
+      III : {(x₁ , e₁) (x₂ , e₂) : fiber f (g y)}
+          → (x₁ , e₁) ＝ (x₂ , e₂)
+          → (((x₁ , y) , e₁) , refl) ＝[ fiber pb₂ y ] (((x₂ , y) , e₂) , refl)
       III refl = refl
 
 \end{code}
-
-This is a "biased" version. Of course, also if g is an embedding, then
-the projection pb₁ is also an enbedding, just by switching the roles
-of f and g, and then pb₁ and pb₂.
-
-TODO. Implement other results from [1].
 
 We have a pullback
 
@@ -290,7 +282,9 @@ fiber-is-pullback f c X = qinvs-are-equivs ϕ (γ , (λ u → refl) , (λ c → 
   ϕ : (X → fiber f c) → cone f (λ _ → c) X
   ϕ = cone-map f (λ _ → c) X ((fiber-point , unique-to-𝟙) , fiber-identification)
 
-  γ : cone f (λ _ → c) X → X → fiber f c
+  γ : cone f (λ _ → c) X → (X → fiber f c)
   γ ((p , q) , s) x = p x , s x
 
 \end{code}
+
+TODO. Implement other results from [1].
