@@ -26,9 +26,8 @@ embeddings j and k, as in the following commutative diagram.
                      ➘  ↓  ↙
                         D
 
-
 Pullback naturality is expressed by the following diagram, where the
-square is a pullback.
+square is a pullback and j (and hence k) is an embedding.
 
                    k
               A ──────→ B
@@ -46,7 +45,6 @@ square is a pullback.
                      ➘  ↓
                         D
 
-
 It actually suffices to consider pullbacks of the form
 
 
@@ -57,9 +55,30 @@ It actually suffices to consider pullbacks of the form
               ↓    j    ↓
               X ──────→ Y
 
+One may wonder whether it is reasonable to consider naturality with
+respect to all commutative squares
 
-Notice that 𝓛-algebraic structure is, by definition, flabbiness
-structure plus an associativity law on this structure.
+                   k
+              A ──────→ B
+              │         │
+           g  │         │ h
+              │         │
+              ↓    j    ↓
+              X ──────→ Y
+
+where j and k are embeddings, but which are not necessarily
+pullbacks. However, a counter-example is the commutative square
+
+
+              𝟘 ──────→ 𝟙
+              │         │
+              │         │
+              │         │
+              ↓         ↓
+              𝟙 ──────→ 𝟙
+
+Finally, notice that 𝓛-algebraic structure is, by definition,
+flabbiness structure plus an associativity law on this structure.
 
 \begin{code}
 
