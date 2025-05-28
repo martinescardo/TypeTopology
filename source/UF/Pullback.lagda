@@ -33,9 +33,10 @@ We assume a cospan
 
 \begin{code}
 
-module _ {𝓤 𝓥 𝓦 : Universe}
-         {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇}
-         (f : X → Z) (g : Y → Z)
+module pullback
+        {𝓤 𝓥 𝓦 : Universe}
+        {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇}
+        (f : X → Z) (g : Y → Z)
        where
 
 \end{code}
@@ -192,15 +193,15 @@ The construction is illustrated in the following diagram.
       pb₁  |                              | g
            |                              |
            v                              v
-           Z ---------------------------> Z
+           X ---------------------------> Z
                                    f
 \begin{code}
 
- pullback-source : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
- pullback-source = Σ (x , y) ꞉ X × Y , f x ＝ g y
+ pullback : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+ pullback = Σ (x , y) ꞉ X × Y , f x ＝ g y
 
  private
-  P = pullback-source
+  P = pullback
 
  pb₁ : P → X
  pb₁ ((x , y) , s) = x
@@ -268,18 +269,25 @@ We have a pullback
 
 \begin{code}
 
-fiber-is-pullback
- : {𝓥 : Universe} {X : 𝓤 ̇ } {Z : 𝓦 ̇ }
-   (f : X → Z) (z : Z)
- → is-pullback f (λ (_ : 𝟙 {𝓥}) → z)
-    (fiber f z , (fiber-point , unique-to-𝟙) , fiber-identification)
-fiber-is-pullback f z A = qinvs-are-equivs ϕ (γ , (λ u → refl) , (λ c → refl))
- where
-  ϕ : (A → fiber f z) → cone f (λ _ → z) A
-  ϕ = cone-map f (λ _ → z) A ((fiber-point , unique-to-𝟙) , fiber-identification)
+module _ {𝓤 𝓥 𝓦 : Universe}
+         {X : 𝓤 ̇ }
+         {Z : 𝓦 ̇ }
+         (f : X → Z)
+         (z : Z)
+       where
 
-  γ : cone f (λ _ → z) A → (A → fiber f z)
-  γ ((p , q) , s) a = p a , s a
+ open pullback f (λ (_ : 𝟙 {𝓥}) → z)
+
+ fiber-is-pullback
+  : is-pullback (fiber f z , (fiber-point , unique-to-𝟙) , fiber-identification)
+ fiber-is-pullback A
+  = qinvs-are-equivs ϕ (γ , (λ u → refl) , (λ c → refl))
+  where
+   ϕ : (A → fiber f z) → cone A
+   ϕ = cone-map A ((fiber-point , unique-to-𝟙) , fiber-identification)
+
+   γ : cone A → (A → fiber f z)
+   γ ((p , q) , s) a = p a , s a
 
 \end{code}
 

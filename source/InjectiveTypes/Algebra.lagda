@@ -93,15 +93,16 @@ module InjectiveTypes.Algebra
 fe' : Fun-Ext
 fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
+open import InjectiveTypes.Blackboard fe hiding (ηΠ ; ηΣ)
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
+open import UF.Pullback
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Univalence
-open import InjectiveTypes.Blackboard fe hiding (ηΠ ; ηΣ)
 
 module _ {𝓤 𝓦 : Universe}
          (D : 𝓦 ̇ )
@@ -115,6 +116,61 @@ module _ {𝓤 𝓦 : Universe}
  stability-under-composition =
     {X Y Z : 𝓤 ̇ } (f : X → D) (𝕛 : X ↪ Y) (𝕜 : Y ↪ Z)
   → f ∣ (𝕜 ∘↪ 𝕛) ∼ (f ∣ 𝕛) ∣ 𝕜
+
+\end{code}
+
+For the following definition, we consider the standard pullback
+
+                   pb₂
+    pullback j h ─────→ B
+              │ ⌟       │
+          pb₁ │         │ h
+              │         │
+              ↓     j   ↓
+              X ──────→ Y
+
+where pullback j h := Σ (x , y) ꞉ X × B , j x ＝ h y and pb₁ and pb₂
+are the projections, rather than an abstract pullback, for simplicity,
+so that the above naturality condition becomes
+
+                   pb₂
+    pullback j h ─────→ B
+              │ ⌟       │
+          pb₁ │         │ h
+              │         │
+              ↓     j   ↓
+              X ──────→ Y
+               ╲        │
+                ╲       │
+             f   ╲      │ f|j ∘ h = (f ∘ pb₁) | pb₂
+                  ╲     │
+                   ╲    │
+                    ╲   │
+                     ➘  ↓
+                        D
+
+\begin{code}
+
+ module _ {X Y B : 𝓤 ̇ }
+          (f : X → D)
+          (𝕛 : X ↪ Y)
+          (h : B → Y)
+        where
+
+  open pullback ⌊ 𝕛 ⌋ h
+
+  𝕡𝕓₂ : pullback ↪ B
+  𝕡𝕓₂ = pb₂ , pb₂-is-embedding ⌊ 𝕛 ⌋-is-embedding
+
+  pullback-naturality : 𝓤 ⊔ 𝓦 ̇
+  pullback-naturality = (f ∣ 𝕛) ∘ h ＝ (f ∘ pb₁) ∣ 𝕡𝕓₂
+
+ Pullback-Naturality : (𝓤 ⁺) ⊔ 𝓦 ̇
+ Pullback-Naturality = {X Y B : 𝓤 ̇ }
+                       (f : X → D)
+                       (𝕛 : X ↪ Y)
+                       (h : B → Y)
+                     → pullback-naturality f 𝕛 h
 
 \end{code}
 
