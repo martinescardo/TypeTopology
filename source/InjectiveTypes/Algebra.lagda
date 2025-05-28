@@ -7,12 +7,11 @@ We give conditions on algebraic injective structure on a type so that
 it coincides with the algebraic structure for the partial-map
 classifier (aka lifting) monad 𝓛 on types.
 
-We call these conditions "stability under composition" and "pullback
-naturality".
+We call these conditions "associativity" and "pullback naturality".
 
-Stability under composition says that an extension (f|j)|k of an
-extension f|j is the extension f|(k∘j) along the composition of the
-embeddings j and k, as in the following commutative diagram.
+Associativity says that an extension (f|j)|k of an extension f|j is
+the extension f|(k∘j) along the composition of the embeddings j and k,
+as in the following commutative diagram.
 
 
                    j         k
@@ -55,6 +54,8 @@ It actually suffices to consider pullbacks of the form
               ↓    j    ↓
               X ──────→ Y
 
+This is a sense in which extensions are pointwise.
+
 One may wonder whether it is reasonable to consider naturality with
 respect to all commutative squares
 
@@ -77,8 +78,72 @@ pullbacks. However, a counter-example is the commutative square
               ↓         ↓
               𝟙 ──────→ 𝟙
 
-Finally, notice that 𝓛-algebraic structure is, by definition,
-flabbiness structure plus an associativity law on this structure.
+Now, an algebra α : 𝓛 D → D of the lifting monad amounts flabbiness
+structure plus an associativity law on this structure. Via the
+canonical correspondence between algebraic injective structure and
+algebraic flabby structure, the above associativity condition
+corresponds to the associativity law for 𝓛-algebras (which justifies
+our terminology in the case of injectivity). In terms of flabbinnes,
+this says that if we have a situation
+
+            P × Q ────→ 𝟙
+               ╲        │
+                ╲       │
+             f   ╲      │
+                  ╲     │
+                   ╲    │
+                    ╲   │
+                     ➘  ↓
+                        D
+
+where P and Q propositions, so that also P × Q is a proposition, then
+we can
+
+ 1. extend f at once, or
+ 2. extend f in its first variable and then in its second variable,
+
+and these two processes give the same result.
+
+As for pullback naturality, it is given automatically by the canonical
+construction of algebraic injectivity data from algebraic flabiness
+data.
+
+If we define homomorphisms h : D → E of algebraic injectives in the
+obvious way, namely, that for any f : X → D and j : X ↪ Y we have that
+
+    h ∘ f ∣ j = (h ∘ f) ∣ j
+
+as (partially) illustrated by the (incomplete, due to typographical
+reasons) diagram
+
+                   j
+              X ───────→ Y
+               ╲       ╱
+                ╲     ╱
+               f ╲   ╱ f/j
+                  ➘ ↙
+                   D
+                   │
+                   │ h
+                   ↓
+                   E
+
+then injective homomorphisms correspond to 𝓛-homomorphisms.
+
+When we restrict to types that are sets, we get that the category of
+associative, pullback-natural algebraically injective objects is
+isomorphic to the category of 𝓛-algebras, with an isomorphism which is
+the identity on objects and morphisms.
+
+This result holds for the objects of any 1-topos, due to our
+constructive reasoning in a restricted type theory.
+
+However, at the moment we don't have a result for ∞-toposes, because,
+although the associativity, pullback naturality and the algebra
+equations are all property for sets, they are data, and we have proved
+only a logical equivalence of associativity + pullback-naturality and
+the 𝓛-algebra equations, rather than a full type equivalence (whose
+possibility we are currently investigating).
 
 \begin{code}
 
@@ -142,7 +207,7 @@ so that the above naturality condition becomes
               X ──────→ Y
                ╲        │
                 ╲       │
-             f   ╲      │ f|j ∘ h = (f ∘ pb₁) | pb₂
+             f   ╲      │ (f | j) ∘ h = (f ∘ pb₁) | pb₂
                   ╲     │
                    ╲    │
                     ╲   │

@@ -65,33 +65,28 @@ free-𝓛-algebra ua X = μ , 𝓛-unit-left∼ ua , 𝓛-assoc∼ ua
 
 \end{code}
 
-We can describe algebras in terms of "join" operations subject to two
-laws:
+We can describe algebras in terms of "extension" operations subject to
+two laws:
 
 \begin{code}
 
-joinop : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
-joinop X = {P : 𝓣 ̇ } → is-prop P → (P → X) → X
+extension-op : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
+extension-op X = {P : 𝓣 ̇ } → is-prop P → (P → X) → X
 
 \end{code}
 
-The intuitive idea is that a "join" operation on X consists of, for
-each proposition P, a map (P → X) → X that "puts together" the
-elements of a family f : P → X to get an element ∐ f of X.
+The intuitive idea is that a "extension" operation extends a partial
+element to a total element.
 
-Unfortunately, we won't be able to write simply ∐ f in Agda notation,
-as the witness that P is a proposition can almost never be
-automatically inferred and hence has to be written explicitly.
-
-To characterize algebras, the join operations have two satisfy the
+To characterize algebras, the extension operations have two satisfy the
 following two laws:
 
 \begin{code}
 
-𝓛-alg-Law₀ : {X : 𝓤 ̇ } → joinop X → 𝓤 ̇
+𝓛-alg-Law₀ : {X : 𝓤 ̇ } → extension-op X → 𝓤 ̇
 𝓛-alg-Law₀ {𝓤} {X} ∐ = (x : X) → ∐ 𝟙-is-prop (λ (p : 𝟙) → x) ＝ x
 
-𝓛-alg-Law₁ : {X : 𝓤 ̇ } → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
+𝓛-alg-Law₁ : {X : 𝓤 ̇ } → extension-op X → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg-Law₁ {𝓤} {X} ∐ =
    (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ )
    (i : is-prop P) (j : (p : P) → is-prop (Q p))
@@ -113,7 +108,7 @@ written in more standard mathematical notation as follows:
 \begin{code}
 
 𝓛-alg : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
-𝓛-alg X = Σ ∐ ꞉ joinop X , 𝓛-alg-Law₀ ∐ × 𝓛-alg-Law₁ ∐
+𝓛-alg X = Σ ∐ ꞉ extension-op X , 𝓛-alg-Law₀ ∐ × 𝓛-alg-Law₁ ∐
 
 \end{code}
 
@@ -121,18 +116,18 @@ Before proving that we have an equivalence
 
   𝓛-algebra X ≃ 𝓛-alg X,
 
-we characterize the algebra morphisms in terms of joins (unfortunately
+we characterize the algebra morphisms in terms of extensions (unfortunately
 overloading is not available):
 
 \begin{code}
 
-⋁ : {X : 𝓤 ̇ } → (𝓛 X → X) → joinop X
+⋁ : {X : 𝓤 ̇ } → (𝓛 X → X) → extension-op X
 ⋁ s {P} i f = s (P , f , i)
 
-∐̇ : {X : 𝓤 ̇ } → 𝓛-algebra X → joinop X
+∐̇ : {X : 𝓤 ̇ } → 𝓛-algebra X → extension-op X
 ∐̇ (s , _) = ⋁ s
 
-∐ : {X : 𝓤 ̇ } → 𝓛-alg X → joinop X
+∐ : {X : 𝓤 ̇ } → 𝓛-alg X → extension-op X
 ∐ (∐ , κ , ι) = ∐
 
 law₀ : {X : 𝓤 ̇ } (a : 𝓛-alg X) → 𝓛-alg-Law₀ (∐ a)
@@ -144,7 +139,7 @@ law₁ (∐ , κ , ι) = ι
 
 \end{code}
 
-The algebra morphisms are the maps that preserve joins. Omitting the
+The algebra morphisms are the maps that preserve extensions. Omitting the
 first argument of ⋁, the following says that the morphisms are the
 maps h : X → Y with
 
@@ -158,7 +153,6 @@ for all f:P→X.
 𝓛-morphism-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                     (s : 𝓛 X → X) (t : 𝓛 Y → Y)
                     (h : X → Y)
-
                   → (h ∘ s ∼ t ∘ 𝓛̇ h)
                   ≃ ({P : 𝓣 ̇ } (i : is-prop P) (f : P → X)
                        → h (⋁ s i f) ＝ ⋁ t i (λ p → h (f p)))
@@ -224,7 +218,7 @@ type injectivity purposes).
 
 \begin{code}
 
-𝓛-alg-Law₀' : {X : 𝓤 ̇ } → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
+𝓛-alg-Law₀' : {X : 𝓤 ̇ } → extension-op X → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg-Law₀' {𝓤} {X} ∐ = (P : 𝓣 ̇ )
                          (i : is-prop P)
                          (f : P → X)
@@ -235,7 +229,7 @@ type injectivity purposes).
                    → funext 𝓣 𝓣
                    → funext 𝓣 𝓤
                    → {X : 𝓤 ̇ }
-                     (∐ : joinop X)
+                     (∐ : extension-op X)
                    → 𝓛-alg-Law₀ ∐
                    → 𝓛-alg-Law₀' ∐
 𝓛-alg-Law₀-gives₀' pe fe fe' {X} ∐ κ P i f p = γ
@@ -254,7 +248,7 @@ type injectivity purposes).
       f p                         ∎
 
 𝓛-alg-Law₀'-gives₀ : {X : 𝓤 ̇ }
-                     (∐ : joinop X)
+                     (∐ : extension-op X)
                     → 𝓛-alg-Law₀' ∐
                     → 𝓛-alg-Law₀ ∐
 𝓛-alg-Law₀'-gives₀ {𝓤} {X} ∐ φ x = φ 𝟙 𝟙-is-prop (λ _ → x) ⋆
@@ -266,7 +260,7 @@ equivalent to 𝓛-alg-Law₁:
 
 \begin{code}
 
-𝓛-alg-Law₁' : {X : 𝓤 ̇ } → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
+𝓛-alg-Law₁' : {X : 𝓤 ̇ } → extension-op X → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg-Law₁' {𝓤} {X} ∐ = (P Q : 𝓣 ̇ )
                          (i : is-prop P) (j : is-prop Q)
                          (f : P × Q → X)
@@ -285,19 +279,19 @@ One direction of the logical equivalence is trivial:
 
 \begin{code}
 
-𝓛-alg-Law₁-gives₁' : {X : 𝓤 ̇ } (∐ : joinop X)
+𝓛-alg-Law₁-gives₁' : {X : 𝓤 ̇ } (∐ : extension-op X)
                    → 𝓛-alg-Law₁ ∐ → 𝓛-alg-Law₁' ∐
 𝓛-alg-Law₁-gives₁' {𝓤} {X} ∐ a P Q i j = a P (λ _ → Q) i (λ p → j)
 
 \end{code}
 
-To establish the converse we need the following lemma for joins, which
-is interesting on its own right,
+To establish the converse we need the following lemma for extensions,
+which is interesting on its own right,
 
   ∐  f p ＝ ∐  f (k q),
  p:P      q:Q
 
-and also gives self-distributivity of joins:
+and also gives self-distributivity of extensions:
 
   ∐   ∐  f (p , q) =   ∐   ∐  f (p , q)
  p:P q:Q              q:Q p:P
@@ -305,15 +299,16 @@ and also gives self-distributivity of joins:
 
 \begin{code}
 
-change-of-variables-in-join : {X : 𝓤 ̇ } (∐ : joinop X)
-                              (P : 𝓣 ̇ ) (i : is-prop P)
-                              (Q : 𝓣 ̇ ) (j : is-prop Q)
-                              (h : P → Q) (k : Q → P)
-                              (f : P → X)
-                            → is-univalent 𝓣
-                            → ∐ i f ＝ ∐ j (f ∘ k)
-
-change-of-variables-in-join ∐ P i Q j h k f ua = γ
+change-of-variables-in-extension
+ : {X : 𝓤 ̇ } (∐ : extension-op X)
+   (P : 𝓣 ̇ ) (i : is-prop P)
+   (Q : 𝓣 ̇ ) (j : is-prop Q)
+   (h : P → Q) (k : Q → P)
+   (f : P → X)
+ → is-univalent 𝓣
+ → ∐ i f ＝ ∐ j (f ∘ k)
+change-of-variables-in-extension ∐ P i Q j h k f ua
+ = γ
  where
   cd : (r : Q ＝ P) → ∐ i f ＝ ∐ j (f ∘ Idtofun r)
   cd refl = ap (λ - → ∐ - f) (being-prop-is-prop (univalence-gives-funext ua) i j)
@@ -327,7 +322,7 @@ change-of-variables-in-join ∐ P i Q j h k f ua = γ
   γ : ∐ i f ＝ ∐ j (f ∘ k)
   γ = cd (eqtoid ua Q P e) ∙ ap (λ - → ∐ j (f ∘ -)) a
 
-𝓛-alg-self-distr : {X : 𝓤 ̇ } (∐ : joinop X)
+𝓛-alg-self-distr : {X : 𝓤 ̇ } (∐ : extension-op X)
                    (P : 𝓣 ̇ ) (i : is-prop P)
                    (Q : 𝓣 ̇ ) (j : is-prop Q)
                  → is-univalent 𝓣
@@ -343,7 +338,7 @@ change-of-variables-in-join ∐ P i Q j h k f ua = γ
  ∐ j (λ q → ∐ i (λ p → f (p , q)))                     ∎
   where
    a = (l₁' P Q i j f)⁻¹
-   b = change-of-variables-in-join
+   b = change-of-variables-in-extension
         ∐
         (P × Q)
         (Σ-is-prop i (λ p → j))
@@ -359,7 +354,7 @@ claimed above:
 
 \begin{code}
 
-𝓛-alg-Law₁'-gives₁ : {X : 𝓤 ̇ } (∐ : joinop X)
+𝓛-alg-Law₁'-gives₁ : {X : 𝓤 ̇ } (∐ : extension-op X)
                     → is-univalent 𝓣
                     → funext 𝓣 𝓤
                     → 𝓛-alg-Law₁' ∐
@@ -388,7 +383,7 @@ claimed above:
       ∐ {P} i (λ p → ∐ {Q p} (j p) (λ q → f (p , q)))                   ∎
    where
     b = (ap (∐ {Σ Q} (Σ-is-prop i j)) (dfunext fe H))⁻¹
-    c = change-of-variables-in-join
+    c = change-of-variables-in-extension
          ∐
          (P × Σ Q)
          (×-is-prop i (Σ-is-prop i j))
@@ -396,7 +391,7 @@ claimed above:
          (Σ-is-prop i j) pr₂ k' f' ua
     d = a P (Σ Q) i (Σ-is-prop i j) (λ z → f (pr₁ z , k (pr₁ z) (pr₂ z)))
     e = (ap (∐ {P} i)
-          (dfunext fe (λ p → change-of-variables-in-join
+          (dfunext fe (λ p → change-of-variables-in-extension
                               ∐
                               (Q p)
                               (j p)
