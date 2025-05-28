@@ -1,4 +1,5 @@
-Martin Escardo, Paulo Oliva, 2023
+Martin Escardo, Paulo Oliva, originally 2023, modified in 2024 for
+relative monads on structured types.
 
 \begin{code}
 
@@ -113,12 +114,6 @@ module relative-JT-definitions
        → ((x : ⟨ 𝓧 ⟩) → JT (𝓨 x))
        → JT (Σₛ x ꞉ 𝓧 , 𝓨 x)
  _⊗ᴶᵀ_ = _⊗ᵣ_ 𝕁𝕋
-
-\end{code}
-
-Is -overlineᴬ useful? It seems this is what we need in ConstructorTransformer.
-
-\begin{code}
 
  overlineᴬ : {𝓧 : 𝕊 𝓤} → JT 𝓧 → KT 𝓧
  overlineᴬ ε = λ p → α (extᵀ p (ε p))

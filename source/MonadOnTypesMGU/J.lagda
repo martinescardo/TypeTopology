@@ -1,4 +1,5 @@
-Martin Escardo, Paulo Oliva, 2023
+Martin Escardo, Paulo Oliva, originally 2023, with universes
+generalized in March 2024.
 
 \begin{code}
 

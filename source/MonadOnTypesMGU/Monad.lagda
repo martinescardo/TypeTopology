@@ -58,6 +58,16 @@ tensor 𝕋 = _⊗_ 𝕋
 
 syntax tensor 𝕋 t f = t ⊗[ 𝕋 ] f
 
+\end{code}
+
+TODO. Is "tensor" an appropriate terminology? Would (left)
+convolution, in the sense of Day, be better?
+
+    https://ncatlab.org/nlab/show/tensorial+strength
+    https://ncatlab.org/nlab/show/Day+convolution
+
+\begin{code}
+
 𝕀𝕕 : Monad
 𝕀𝕕 = record {
       ℓ       = id ;

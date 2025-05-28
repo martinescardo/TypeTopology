@@ -52,9 +52,11 @@ open Relative-Monad public
 
 \end{code}
 
-TODO. Don't call this "tensor", as "tensorial strength" is used for
-something else.
-https://ncatlab.org/nlab/show/tensorial+strength
+TODO. Is "tensor" an appropriate terminology? Would (left)
+convolution, in the sense of Day, be better?
+
+    https://ncatlab.org/nlab/show/tensorial+strength
+    https://ncatlab.org/nlab/show/Day+convolution
 
 \begin{code}
 

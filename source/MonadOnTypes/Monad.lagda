@@ -140,6 +140,16 @@ tensor : (𝕋 : Monad) {X : Type} {Y : X → Type}
        → functor 𝕋 (Σ x ꞉ X , Y x)
 tensor 𝕋 = _⊗_ 𝕋
 
+\end{code}
+
+TODO. Is "tensor" an appropriate terminology? Would (left)
+convolution, in the sense of Day, be better?
+
+    https://ncatlab.org/nlab/show/tensorial+strength
+    https://ncatlab.org/nlab/show/Day+convolution
+
+\begin{code}
+
 syntax tensor 𝕋 t f = t ⊗[ 𝕋 ] f
 
 𝕀𝕕 : Monad

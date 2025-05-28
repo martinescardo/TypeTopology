@@ -1,4 +1,4 @@
-Martin Escardo, Paulo Oliva, 2024
+Martin Escardo, Paulo Oliva, circa March 2024
 
 Non-empty list monad.
 
