@@ -1,4 +1,3 @@
-
 Martin Escardo and Paulo Oliva, April 2024
 
 The type of lists without repetitions, and various facts about it.
@@ -46,7 +45,6 @@ the development of this file to get better goals, but it also
 complicates some proofs for users of this module, so we are removing
 it.
 
-
 \begin{code}
 
  ccons : ({x} y : X) → is-decidable (x ＝ y) → List X → List X
@@ -59,26 +57,9 @@ it.
 
 \end{code}
 
-The following function δ' is used only during development to prevent δ
-from reducing in more complicated expressions, and, so far, doesn't
-occur in production code.
-
-The following was also made abstract during development (see comment
-above).
-
-\begin{code}
-
- δ' : X → List X → List X
- δ' = δ
-
-\end{code}
-
 The following two facts are the specification of δ, together with the
 equation δ x [] = []. We never use the definition of `ccons` other
 than in the proof of these two facts.
-
-The function δ-＝ and δ-≠ were made abstract during development (see
-comments above).
 
 \begin{code}
 
@@ -189,17 +170,6 @@ one.
 
  ρ-is-non-empty : (xs : List X) → is-non-empty xs → is-non-empty (ρ xs)
  ρ-is-non-empty (x • xs) cons-is-non-empty = cons-is-non-empty
-
-\end{code}
-
-The following function ρ' is used only during development, and, so
-far, doesn't occur in production code.
-
-\begin{code}
-
- ρ' : List X → List X
- ρ' []       = []
- ρ' (x • xs) = x • δ' x (ρ' xs)
 
  δ-ρ-cancel : (x : X) (ys : List X)
             → δ x (ρ (x • ys)) ＝ δ x (ρ ys)
