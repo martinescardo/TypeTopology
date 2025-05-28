@@ -132,8 +132,7 @@ then injective homomorphisms correspond to 𝓛-homomorphisms.
 
 When we restrict to types that are sets, we get that the category of
 associative, pullback-natural algebraically injective objects is
-isomorphic to the category of 𝓛-algebras, with an isomorphism which is
-the identity on objects and morphisms.
+isomorphic to the category of 𝓛-algebras.
 
 This result holds for the objects of any 1-topos, due to our
 constructive reasoning in a restricted type theory.
@@ -168,10 +167,11 @@ open import UF.Pullback
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Univalence
+open import Lifting.Algebras
 
 \end{code}
 
-Definiion of algebraic injective homomorphisms.
+Definition of algebraic injective homomorphisms.
 
 \begin{code}
 
@@ -200,13 +200,15 @@ Definitions of associativity and pullback naturality.
 
 \begin{code}
 
-module _ {𝓤 𝓦 : Universe}
-         (D : 𝓦 ̇ )
-         (D-ainj : ainjective-type D 𝓤 𝓤)
+module _
+        {𝓤 𝓦 : Universe}
+        (D : 𝓦 ̇ )
+        (D-ainj : ainjective-type D 𝓤 𝓤)
        where
 
- _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
- f ∣ 𝕛 = extension' D-ainj 𝕛 f
+ private
+  _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+  f ∣ 𝕛 = extension' D-ainj 𝕛 f
 
  associativity : 𝓦 ⊔ 𝓤 ⁺ ̇
  associativity = {X Y Z : 𝓤 ̇ } (f : X → D) (𝕛 : X ↪ Y) (𝕜 : Y ↪ Z)
@@ -246,10 +248,11 @@ so that the above naturality condition becomes
 
 \begin{code}
 
- module _ {X Y B : 𝓤 ̇ }
-          (f : X → D)
-          (𝕛 : X ↪ Y)
-          (h : B → Y)
+ module _
+         {X Y B : 𝓤 ̇ }
+         (f : X → D)
+         (𝕛 : X ↪ Y)
+         (h : B → Y)
         where
 
   open pullback ⌊ 𝕛 ⌋ h
@@ -266,6 +269,47 @@ so that the above naturality condition becomes
                        (𝕛 : X ↪ Y)
                        (h : B → Y)
                      → pullback-naturality f 𝕛 h
+
+\end{code}
+
+\begin{code}
+
+aainjective-structure : (𝓤 : Universe) → 𝓦 ̇ → (𝓤 ⁺) ⊔ 𝓦 ̇
+aainjective-structure 𝓤 D =
+ Σ D-ainj ꞉ ainjective-type D 𝓤 𝓤 , associativity D D-ainj
+
+module _
+        {𝓤 𝓦 : Universe}
+        (D : 𝓦 ̇ )
+       where
+
+ aainjective-structure₁ : aainjective-structure 𝓤 D → ainjective-type D 𝓤 𝓤
+ aainjective-structure₁ = pr₁
+
+ aainjective-structure₂ : (s : aainjective-structure 𝓤 D)
+                        → associativity D (aainjective-structure₁ s)
+ aainjective-structure₂ = pr₂
+
+{-
+ associativity-gives-𝓛-alg-structure : aainjective-structure 𝓤 D → 𝓛-alg 𝓤 D
+ associativity-gives-𝓛-alg-structure = {!!}
+
+ 𝓛-alg-structure-gives-associativity : 𝓛-alg 𝓤 D → aainjective-structure 𝓤 D
+ 𝓛-alg-structure-gives-associativity = {!!}
+
+ private
+  ϕ = associativity-gives-𝓛-alg-structure
+  ψ = 𝓛-alg-structure-gives-associativity
+
+ η : (s@(D-ainj , a) : aainjective-structure 𝓤 D)
+   → Pullback-Naturality D D-ainj
+   → extension (aainjective-structure₁ (ψ (ϕ s)))＝ extension D-ainj
+ η = {!!}
+
+ ε : (t : 𝓛-alg 𝓤 D)
+   → ∐ 𝓤 (ϕ (ψ t)) ＝ ∐ 𝓤 t
+ ε = {!!}
+-}
 
 \end{code}
 
