@@ -169,6 +169,37 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Univalence
 
+\end{code}
+
+Definiion of algebraic injective homomorphisms.
+
+\begin{code}
+
+
+module algebraic-injective-homomorphisms
+        {𝓤 𝓦 𝓣 : Universe}
+        (D : 𝓦 ̇ )
+        (E : 𝓣 ̇ )
+        (D-ainj : ainjective-type D 𝓤 𝓤)
+        (E-ainj : ainjective-type E 𝓤 𝓤)
+       where
+
+ _∣ᴰ_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+ f ∣ᴰ 𝕛 = extension' D-ainj 𝕛 f
+
+ _∣ᴱ_ : {X Y : 𝓤 ̇ } → (X → E) → (X ↪ Y) → (Y → E)
+ g ∣ᴱ 𝕛 = extension' E-ainj 𝕛 g
+
+ is-hom : (D → E) → (𝓤 ⁺) ⊔ 𝓦 ⊔ 𝓣 ̇
+ is-hom h = {X Y : 𝓤 ̇ } (f : X → D) (𝕛 : X ↪ Y)
+          → h ∘ f ∣ᴰ 𝕛 ∼ (h ∘ f) ∣ᴱ 𝕛
+
+\end{code}
+
+Definitions of associativity and pullback naturality.
+
+\begin{code}
+
 module _ {𝓤 𝓦 : Universe}
          (D : 𝓦 ̇ )
          (D-ainj : ainjective-type D 𝓤 𝓤)
@@ -177,10 +208,9 @@ module _ {𝓤 𝓦 : Universe}
  _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
  f ∣ 𝕛 = extension' D-ainj 𝕛 f
 
- stability-under-composition : 𝓦 ⊔ 𝓤 ⁺ ̇
- stability-under-composition =
-    {X Y Z : 𝓤 ̇ } (f : X → D) (𝕛 : X ↪ Y) (𝕜 : Y ↪ Z)
-  → f ∣ (𝕜 ∘↪ 𝕛) ∼ (f ∣ 𝕛) ∣ 𝕜
+ associativity : 𝓦 ⊔ 𝓤 ⁺ ̇
+ associativity = {X Y Z : 𝓤 ̇ } (f : X → D) (𝕛 : X ↪ Y) (𝕜 : Y ↪ Z)
+               → f ∣ (𝕜 ∘↪ 𝕛) ∼ (f ∣ 𝕛) ∣ 𝕜
 
 \end{code}
 
