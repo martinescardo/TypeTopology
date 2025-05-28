@@ -96,8 +96,7 @@ A particular case of `δ-＝` occurs more often in practice.
 
 \end{code}
 
-Everything about δ should be proved only from this specification, and
-this is why we put it in an abstract block.
+Everything about δ should be proved only from this specification.
 
 \begin{code}
 
@@ -313,8 +312,8 @@ More generally, we have the following.
 \end{code}
 
 The following two technical lemmas, which are probably not very well
-named, and are used to show that the that monad of non-empty lists
-without repetitions is affine, in another module.WS
+named, and are used to show that the monad of non-empty lists without
+repetitions is affine, in another module.
 
 \begin{code}
 
