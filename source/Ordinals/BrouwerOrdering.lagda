@@ -362,10 +362,10 @@ L-preserves-⊒⊑ : (ϕ ψ : ℕ → B) → ((n : ℕ) → ϕ n ⊒⊑ ψ n) �
 L-preserves-⊒⊑ ϕ ψ h = L-is-monotonic ϕ ψ (λ n → pr₁ (h n)) ,
                        L-is-monotonic ψ ϕ (λ n → pr₂ (h n))
 
-Z-not-⊒⊑-S : (b : B) → ¬ (Z ⊒⊑ S b)
-Z-not-⊒⊑-S Z (_ , S-⊑ .Z d .Z l x) = {!!}
-Z-not-⊒⊑-S (S b) (_ , _) = {!!}
-Z-not-⊒⊑-S (L x) (_ , _) = {!!}
+--Z-not-⊒⊑-S : (b : B) → ¬ (Z ⊒⊑ S b)
+--Z-not-⊒⊑-S Z (_ , S-⊑ .Z d .Z l x) = {!!}
+--Z-not-⊒⊑-S (S b) (_ , _) = {!!}
+--Z-not-⊒⊑-S (L x) (_ , _) = {!!}
 
 \end{code}
 

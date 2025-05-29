@@ -344,10 +344,10 @@ TODO talk about results
 0-powers-are-1 (S b) = 0-powers-are-1 b
 0-powers-are-1 (L ϕ) = 0-powers-are-1 (ϕ zero)
 
-foo : (b c : B) → Z ⊒⊑ c → S Z ⊒⊑ b ^B c
-foo b Z     h = S-⊑ Z Z (S Z) (Z-⊑ Z) (◂-stop Z≈) , S-⊑ Z Z (S Z) (pr₁ h) (◂-stop Z≈)
-foo b (S c) h = 𝟘-elim ?
-foo b (L ϕ) h = {!!}
+--foo : (b c : B) → Z ⊒⊑ c → S Z ⊒⊑ b ^B c
+--foo b Z     h = S-⊑ Z Z (S Z) (Z-⊑ Z) (◂-stop Z≈) , S-⊑ Z Z (S Z) (pr₁ h) (◂-stop Z≈)
+--foo b (S c) h = 𝟘-elim {!!}
+--foo b (L ϕ) h = {!!}
 
 data SubtreeOf_IndexedBy_ (b : B) : B → 𝓤₀ ̇ where
  1-tree : (c : B)
