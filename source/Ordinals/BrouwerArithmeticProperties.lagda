@@ -381,51 +381,51 @@ join-subtrees-⊏-^B (L-tree ϕ n ts) =
 0⊏-is-decidable : B → 𝓤₀ ̇
 0⊏-is-decidable b = (c : B) → c ◂ b → Z ⊏ c + Z ⊒⊑ c
 
-^B-inflationary-right : (b c : B)
-                      → 0⊏-is-decidable c
-                      → S Z ⊏ b
-                      → c ⊑ b ^B c
-^B-inflationary-right b Z     h l = Z-⊑ (S Z)
-^B-inflationary-right b (S c) h l =
-  cases
-   (λ m → ⊑-trans _ _ _ (I1 m) II1)
-   {!!}
-   (h c (◂-stop (≈-refl c)))
- where
-  h' : 0⊏-is-decidable c
-  h' c m = h c (◂-continue m)
+--^B-inflationary-right : (b c : B)
+--                      → 0⊏-is-decidable c
+--                      → S Z ⊏ b
+--                      → c ⊑ b ^B c
+--^B-inflationary-right b Z     h l = Z-⊑ (S Z)
+--^B-inflationary-right b (S c) h l =
+--  cases
+--   (λ m → ⊑-trans _ _ _ (I1 m) II1)
+--   {!!}
+--   (h c (◂-stop (≈-refl c)))
+-- where
+--  h' : 0⊏-is-decidable c
+--  h' c m = h c (◂-continue m)
+--
+--  I1 : Z ⊏ c → S c ⊑ c ×B b
+--  I1 m = increment-⊑-×B c b m l
+--
+--  II1 : c ×B b ⊑ (b ^B c) ×B b
+--  II1 = ×B-monotonic-left c b (b ^B c)
+--         (^B-inflationary-right b c h' l)
+--
+--  I2 : Z ⊒⊑ c → S c ⊑ (b ^B c) ×B b
+--  I2 m = {!!}
+--   where
+--    I : S c ⊑ S Z
+--    I = S-is-monotonic _ _ (pr₂ m)
+--
+--    II : S Z ⊑ b
+--    II = ⊏-implies-⊑ _ _ l
+--
+--    III : b ⊑ S Z ×B b
+--    III = ≈-preserves-⊑-left (⊑-refl (S Z ×B b)) (≈-sym (1-left-unit-×B b))
+--
+--    IV : S Z ×B b ⊑ (b ^B c) ×B b
+--    IV = ×B-monotonic-left (S Z) b (b ^B c)
+--          (⊑-trans _ _ _ {!!} {!!})
 
-  I1 : Z ⊏ c → S c ⊑ c ×B b
-  I1 m = increment-⊑-×B c b m l
-
-  II1 : c ×B b ⊑ (b ^B c) ×B b
-  II1 = ×B-monotonic-left c b (b ^B c)
-         (^B-inflationary-right b c h' l)
-
-  I2 : Z ⊒⊑ c → S c ⊑ (b ^B c) ×B b
-  I2 m = {!!}
-   where
-    I : S c ⊑ S Z
-    I = S-is-monotonic _ _ (pr₂ m)
-
-    II : S Z ⊑ b
-    II = ⊏-implies-⊑ _ _ l
-
-    III : b ⊑ S Z ×B b
-    III = ≈-preserves-⊑-left (⊑-refl (S Z ×B b)) (≈-sym (1-left-unit-×B b))
-
-    IV : S Z ×B b ⊑ (b ^B c) ×B b
-    IV = ×B-monotonic-left (S Z) b (b ^B c)
-          (⊑-trans _ _ _ {!!} {!!})
-
-^B-inflationary-right b (L ϕ) h l =
-  L-⊑ ϕ (L (λ i → b ^B ϕ i))
-   (λ i → ⊑-trans _ _ _
-    (^B-inflationary-right b (ϕ i) (h' i) l)
-    (L-is-upper-bound (λ i → b ^B ϕ i) i))
- where
-  h' : (i : ℕ) → 0⊏-is-decidable (ϕ i)
-  h' i d m = h d (◂-pick ϕ i m)
+--^B-inflationary-right b (L ϕ) h l =
+--  L-⊑ ϕ (L (λ i → b ^B ϕ i))
+--   (λ i → ⊑-trans _ _ _
+--    (^B-inflationary-right b (ϕ i) (h' i) l)
+--    (L-is-upper-bound (λ i → b ^B ϕ i) i))
+-- where
+--  h' : (i : ℕ) → 0⊏-is-decidable (ϕ i)
+--  h' i d m = h d (◂-pick ϕ i m)
 
 -- IDEA: define "subtype" of brouwer trees with only limits of strictly
 -- increasing trees. All arithmetic operations should preserve this. So namely
