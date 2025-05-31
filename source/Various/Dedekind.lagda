@@ -1997,7 +1997,7 @@ Limits of sequences, but using the topological, rather than metric, structure of
 
 \end{code}
 
-Some (overlapping) problems:
+TODO. Some (overlapping) problems:
 
 \begin{code}
 

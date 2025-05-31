@@ -175,7 +175,6 @@ Definition of algebraic injective homomorphisms.
 
 \begin{code}
 
-
 module algebraic-injective-homomorphisms
         {𝓤 𝓦 𝓣 : Universe}
         (D : 𝓦 ̇ )
