@@ -6,10 +6,6 @@ More precisely, if 𝓓 is a poset with a least element and suprema for directed
 families indexed by types in a universe 𝓥, then the carrier of 𝓓 is
 algebraically injective with respect to embeddings of types in 𝓥.
 
-We emphasize that this does *not* mean that pointed dcpos are injective in the
-category of dcpos and continuous maps (which they are not). For this reason we
-explicitly talk about the carrier of a pointed dcpo above.
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
