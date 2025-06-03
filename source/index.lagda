@@ -57,8 +57,8 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
-   * In our last count, on 2025.05.26, this development has 833 Agda
-     files with 247K lines of code, including comments and blank
+   * In our last count, on 2025.05.26, this development has 834 Agda
+     files with 248K lines of code, including comments and blank
      lines.
 
 Philosophy of the repository
