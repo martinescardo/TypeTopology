@@ -43,7 +43,6 @@ joinop X = {I : 𝓣 ̇ } → (I → X) → X
 𝓕-alg-Law₁ {𝓤} {X} ∐ = (I : 𝓣 ̇ ) (J : I → 𝓣 ̇ ) (f : Σ J → X)
                      → ∐ f ＝ ∐ (λ i → ∐ (λ j → f (i , j)))
 
-
 𝓕-alg : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓕-alg X = Σ ∐ ꞉ joinop X , 𝓕-alg-Law₀ ∐ × 𝓕-alg-Law₁ ∐
 
@@ -93,7 +92,8 @@ law₁ (∐ , κ , ι) = ι
 
 Π-is-alg : funext 𝓤 𝓥
          → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-         → ((x : X) → 𝓕-alg (A x)) → 𝓕-alg (Π A)
+         → ((x : X) → 𝓕-alg (A x))
+         → 𝓕-alg (Π A)
 Π-is-alg {𝓤} {𝓥} fe {X} A α = ∐· , l₀ , l₁
  where
   ∐· : {I : 𝓣 ̇ } → (I → Π A) → Π A

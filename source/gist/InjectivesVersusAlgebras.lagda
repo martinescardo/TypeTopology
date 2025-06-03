@@ -800,4 +800,4 @@ DNE-gives-𝟘-is-Π-defined dne P i e = dne P i ⌜ e ⌝
 
 So the Π-definedness of 𝟘 is undecided in our constructive setting.
 
-Is any example of a type that we can prove to be Π-defined?
+Is there any example of a type that we can prove to be Π-defined?
