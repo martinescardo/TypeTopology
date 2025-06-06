@@ -49,7 +49,7 @@ module ainjectivity-of-Lifting'
 
  open ainjectivity-of-Lifting 𝓣
 
- open import Lifting.UnivalentPrecategory 𝓣
+ open import Lifting.UnivalentWildCategory 𝓣
  open import UF.Retracts
 
  η-is-small-map : {X : 𝓤 ̇ } → (η ∶ (X → 𝓛 X)) is 𝓣 small-map

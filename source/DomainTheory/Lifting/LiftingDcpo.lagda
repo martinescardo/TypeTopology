@@ -216,7 +216,7 @@ continuous.
  𝓛-order-lemma : {k l : 𝓛D} → k ⊑' l → k ⊑ l
  𝓛-order-lemma {k} {l} k-below-l = (pr₁ claim , (λ p → ＝-to-⊑ 𝓓 (pr₂ claim p)))
   where
-   open import Lifting.UnivalentPrecategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
+   open import Lifting.UnivalentWildCategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
    claim : k ⊑'' l
    claim = ⊑'-to-⊑'' k-below-l
 

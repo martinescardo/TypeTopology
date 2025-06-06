@@ -47,7 +47,7 @@ open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓥 hiding (κ)
 open import Lifting.Construction 𝓥
 open import Lifting.Miscelanea 𝓥
 open import Lifting.Miscelanea-PropExt-FunExt 𝓥 pe fe
-open import Lifting.UnivalentPrecategory 𝓥 P hiding (_⊑_)
+open import Lifting.UnivalentWildCategory 𝓥 P hiding (_⊑_)
 
 open import OrderedTypes.Poset
 open PosetAxioms fe

@@ -1,7 +1,7 @@
 Martin Escardo 7th November 2018.
 
-(Strong) 'Monad' structure on 𝓛.
-Again the proofs are simplified by the use of SIP.
+(Strong) wild monad structure on 𝓛.  Again the proofs are simplified
+by the use of SIP.
 
 We prove the laws for the various notions of equality because
 different ones are more convenient in different situations, and

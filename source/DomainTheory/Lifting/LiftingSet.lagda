@@ -183,7 +183,7 @@ repackaging. This is a refactoring to consider in the future.
 
 \begin{code}
 
- open import Lifting.UnivalentPrecategory 𝓣 X
+ open import Lifting.UnivalentWildCategory 𝓣 X
  open PosetAxioms
 
  𝓛-DCPO⁻ : DCPO {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⊔ 𝓤}

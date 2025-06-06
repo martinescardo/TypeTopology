@@ -1,11 +1,9 @@
 Martin Escardo December 2018.
 
-The lifting of a type forms a univalent pre-∞-category with hom types
-l ⊑ m, which is a partial order if the type is a set.
+The lifting of a type forms a univalent wild-∞-category with hom types
+l ⊑ m, which is a partial order if the type is a set (wild because we
+are not giving coherence data).
 
-At the moment we don't have categories in this development, but this
-doesn't prevent us from giving this particular example of a univalent
-category.
 
 \begin{code}
 
@@ -13,7 +11,7 @@ category.
 
 open import MLTT.Spartan
 
-module Lifting.UnivalentPrecategory
+module Lifting.UnivalentWildCategory
         (𝓣 : Universe)
         {𝓤 : Universe}
         (X : 𝓤 ̇ )
@@ -82,12 +80,13 @@ cod {l} {m} α = m
 
 \end{code}
 
-Thus, the associativity law in this pre-∞-category is that of function
-composition in the first component (where it hence holds
+Thus, the associativity law in this wild-∞-category is that of
+function composition in the first component (where it hence holds
 definitionally) and that of path composition in the first
-component. (Hence this pre-∞-category should qualify as an ∞-category,
-with all coherence laws satisfied automatically, except that there is
-at present no definition of ∞-category in univalent type theory.)
+component. (Hence this wild-∞-category should qualify as an
+∞-category, with all coherence laws satisfied automatically, except
+that there is at present no definition of ∞-category in univalent type
+theory.)
 
 If X is a set, then _⊑_ is a partial order:
 
@@ -578,7 +577,7 @@ is-𝓛-equiv← pe fe fe' l m α e = γ
 \end{code}
 
 With this and Yoneda we can now easily derive the univalence of the
-pre-∞-category 𝓛 X.
+wild-∞-category 𝓛 X.
 
 The univalence of 𝓣 is more than we need in the
 following. Propositional extensionality for propositions in 𝓣
@@ -747,3 +746,5 @@ Added 13th March 2024.
  x'       ∎
 
 \end{code}
+
+TODO. Monad algebras should also be wild-∞-categories.

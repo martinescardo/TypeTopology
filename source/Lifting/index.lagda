@@ -19,6 +19,6 @@ import Lifting.Monad
 import Lifting.MonadVariation
 import Lifting.Set
 import Lifting.Size
-import Lifting.UnivalentPrecategory
+import Lifting.UnivalentWildCategory
 
 \end{code}

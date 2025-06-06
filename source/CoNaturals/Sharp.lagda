@@ -36,7 +36,7 @@ open import CoNaturals.Type2
 open import Lifting.Construction 𝓤₀
 open import Lifting.IdentityViaSIP 𝓤₀ {𝓤₀} {ℕ}
 open import Lifting.Set 𝓤₀
-open import Lifting.UnivalentPrecategory 𝓤₀ {𝓤₀} ℕ
+open import Lifting.UnivalentWildCategory 𝓤₀ {𝓤₀} ℕ
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
