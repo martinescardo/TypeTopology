@@ -466,3 +466,78 @@ universe-is-algebra-Π ua = prod , k , ι
   ι P Q i j f = eqtoid ua _ _ (curry-uncurry' fe fe)
 
 \end{code}
+
+Added 6th June 2025. A retract of the underlying type of an algebra
+can be given an algebra structure, if the induced idempotent is an
+automorphism, in such a way that the section becomes a homomorphism.
+
+\begin{code}
+
+is-hom : {A B : 𝓤 ̇ } → 𝓛-alg A → 𝓛-alg B → (A → B) → (𝓣 ⁺) ⊔ 𝓤 ̇
+is-hom {𝓤} {A} {B} (∐ᵃ , _ , _) (∐ᵇ , _ , _) h =
+ (P : 𝓣 ̇) (i : is-prop P) (φ : P → A) → h (∐ᵃ i φ) ＝ ∐ᵇ i (h ∘ φ)
+
+open import UF.Retracts
+
+module _
+         (A B : 𝓤 ̇ )
+         (𝓐@(∐ᵃ , lawᵃ₀ , lawᵃ₁) : 𝓛-alg A)
+         ((r , s , rs) : retract B of A)
+         (sr-is-hom : is-hom 𝓐 𝓐 (s ∘ r))
+         (fe : Fun-Ext)
+       where
+
+ private
+  ∐ᵇ : extension-op B
+  ∐ᵇ P-is-prop φ = r (∐ᵃ P-is-prop (s ∘ φ))
+
+  lawᵇ₀ : 𝓛-alg-Law₀ ∐ᵇ
+  lawᵇ₀ b =
+   ∐ᵇ 𝟙-is-prop (λ _ → b)       ＝⟨ refl ⟩
+   r (∐ᵃ 𝟙-is-prop (λ _ → s b)) ＝⟨ ap r (lawᵃ₀ (s b)) ⟩
+   r (s b)                      ＝⟨ rs b ⟩
+   b                            ∎
+
+\end{code}
+
+Before we know that ∐ᵇ satisfies the second algebra law, we can show
+that the section is a homomorphism. In fact, we use this to prove the
+second algebra law.
+
+\begin{code}
+
+  s-is-hom = λ P i φ →
+   s (∐ᵇ i φ)           ＝⟨ refl ⟩
+   s (r (∐ᵃ i (s ∘ φ))) ＝⟨ sr-is-hom P i (s ∘ φ) ⟩
+   ∐ᵃ i (s ∘ r ∘ s ∘ φ) ＝⟨ ap (λ - → ∐ᵃ i (s ∘ - ∘ φ)) (dfunext fe rs) ⟩
+   ∐ᵃ i (s ∘ φ)         ∎
+
+  lawᵇ₁ : 𝓛-alg-Law₁ ∐ᵇ
+  lawᵇ₁ P Q i j φ =
+   ∐ᵇ (Σ-is-prop i j) φ                                    ＝⟨ refl ⟩
+   r (∐ᵃ (Σ-is-prop i j) (s ∘ φ))                          ＝⟨ by-lawᵃ₁ ⟩
+   r (∐ᵃ i (λ p → ∐ᵃ (j p) (λ q → s (φ (p , q)))))         ＝⟨ because-s-is-hom ⟩
+   r (∐ᵃ i (λ p → s (r (∐ᵃ (j p) (λ q → s (φ (p , q))))))) ＝⟨ refl ⟩
+   ∐ᵇ i (λ p → ∐ᵇ (j p) (λ q → φ (p , q)))                 ∎
+    where
+     by-lawᵃ₁ = ap r (lawᵃ₁ P Q i j (s ∘ φ))
+     because-s-is-hom =
+      ap (r ∘ ∐ᵃ i)
+         ((dfunext fe (λ p → s-is-hom (Q p) (j p) (λ q → φ (p , q))))⁻¹)
+
+  𝓑 : 𝓛-alg B
+  𝓑 = ∐ᵇ , lawᵇ₀ , lawᵇ₁
+
+\end{code}
+
+The following are the only public things in this anonymous module.
+
+\begin{code}
+
+ retract-of-algebra : 𝓛-alg B
+ retract-of-algebra = 𝓑
+
+ section-is-hom : is-hom 𝓑 𝓐 s
+ section-is-hom = s-is-hom
+
+\end{code}

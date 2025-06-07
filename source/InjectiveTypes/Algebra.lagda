@@ -167,7 +167,7 @@ open import UF.Pullback
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Univalence
-open import Lifting.Algebras
+open import Lifting.Algebras hiding (is-hom)
 
 \end{code}
 
