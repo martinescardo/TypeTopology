@@ -489,7 +489,7 @@ module _
 
  private
   ∐ᵇ : extension-op B
-  ∐ᵇ P-is-prop φ = r (∐ᵃ P-is-prop (s ∘ φ))
+  ∐ᵇ i φ = r (∐ᵃ i (s ∘ φ))
 
   lawᵇ₀ : 𝓛-alg-Law₀ ∐ᵇ
   lawᵇ₀ b =
