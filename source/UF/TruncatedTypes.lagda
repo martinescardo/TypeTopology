@@ -63,7 +63,7 @@ Being -1-truncated is equivalent to being a proposition.
 
 \begin{code}
 
-is-prop' : (X : 𝓤 ̇ ) → 𝓤  ̇
+is-prop' : (X : 𝓤 ̇ ) → 𝓤 ̇
 is-prop' X = X is −1 truncated
 
 being-prop'-is-prop : (X : 𝓤 ̇ ) → is-prop (is-prop' X)

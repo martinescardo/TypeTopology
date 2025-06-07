@@ -22,7 +22,7 @@ module permutations where
  no-repetitions 0        X = []
  no-repetitions (succ n) X = X ∷ λ (x : X) → no-repetitions n (Σ y ꞉ X , y ≠ x)
 
- Permutations : ℕ → 𝓤₀  ̇
+ Permutations : ℕ → 𝓤₀ ̇
  Permutations n = Path (no-repetitions n (Fin n))
 
  example-permutation2 : Permutations 2
@@ -74,9 +74,9 @@ module another-game-representation {𝓤 𝓦₀ : Universe} (R : 𝓦₀ ̇ ) w
 
  open K-definitions R
 
- data GameK {𝓤 : Universe} : 𝓤 ⁺ ⊔ 𝓦₀  ̇ where
+ data GameK {𝓤 : Universe} : 𝓤 ⁺ ⊔ 𝓦₀ ̇ where
   leaf   : R → GameK {𝓤}
-  branch : (X : 𝓤  ̇ ) (Xf : X → GameK {𝓤}) (ϕ : K X) → GameK
+  branch : (X : 𝓤 ̇ ) (Xf : X → GameK {𝓤}) (ϕ : K X) → GameK
 
 \end{code}
 
@@ -90,7 +90,7 @@ TODO. Define game isomorphism (and possibly homomorphism more generally).
   []  : 𝑻' X
   _∷_ : (A : X → 𝓤 ̇ ) (Xf : (x : X) → A x → 𝑻' X) → 𝑻' X
 
- record Game⁻ {𝓤 : Universe} : 𝓤 ⁺ ⊔ 𝓦₀  ̇ where
+ record Game⁻ {𝓤 : Universe} : 𝓤 ⁺ ⊔ 𝓦₀ ̇ where
   constructor game⁻
   field
    Xt  : 𝑻 {𝓤}
@@ -98,5 +98,5 @@ TODO. Define game isomorphism (and possibly homomorphism more generally).
 
 \end{code}
 
-TODO. Game⁻ ≃ (Σ R : ?  ̇ , 𝑻' R). In Game⁻, we know how to play the
+TODO. Game⁻ ≃ (Σ R : ? ̇ , 𝑻' R). In Game⁻, we know how to play the
 game, but we don't know what the objective of the game is.

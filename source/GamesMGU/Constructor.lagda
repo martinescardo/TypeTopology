@@ -30,7 +30,7 @@ than to give a game directly.
 
 \begin{code}
 
-data GameJ : 𝓤 ⁺ ⊔ 𝓦₀  ̇ where
+data GameJ : 𝓤 ⁺ ⊔ 𝓦₀ ̇ where
  leaf   : R → GameJ
  branch : (X : 𝓤 ̇ ) (Xf : X → GameJ) (ε : J X) → GameJ
 
@@ -78,7 +78,7 @@ in a convenient way.
 \begin{code}
 
 build-GameJ : (r     : R)
-              (Board : 𝓥  ̇ )
+              (Board : 𝓥 ̇ )
               (τ     : Board → R + (Σ M ꞉ 𝓤 ̇ , (M → Board) × J M))
               (n     : ℕ)
               (b     : Board)
@@ -89,7 +89,7 @@ build-GameJ r Board τ n b = h n b
   h 0        b = leaf r
   h (succ n) b = g (τ b)
    where
-    g : (f : R + (Σ M ꞉ 𝓤  ̇ , (M → Board) × J M)) → GameJ
+    g : (f : R + (Σ M ꞉ 𝓤 ̇ , (M → Board) × J M)) → GameJ
     g (inl r)              = leaf r
     g (inr (M , play , ε)) = branch M Xf ε
      where

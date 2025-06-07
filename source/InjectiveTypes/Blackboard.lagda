@@ -1657,7 +1657,7 @@ injectivity.
 
  injectivity-in-terms-of-ainjectivity' : is-univalent 𝓤
                                        → propositional-resizing (𝓤 ⁺) 𝓤
-                                       → (D : 𝓤  ̇ )
+                                       → (D : 𝓤 ̇ )
                                        → injective-type D 𝓤 (𝓤 ⁺)
                                          ↔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
  injectivity-in-terms-of-ainjectivity' {𝓤} ua R D = a , b

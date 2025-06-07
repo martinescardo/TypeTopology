@@ -133,7 +133,7 @@ equivalence.
 
 \begin{code}
 
- record _─f·→_ : 𝓤 ⊔ 𝓤' ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇ where
+ record _─f·→_ : 𝓤 ⊔ 𝓤' ⊔ 𝓥' ⊔ 𝓦 ⁺ ̇ where
   field
    h : ⟨ F ⟩ → ⟨ G ⟩
 

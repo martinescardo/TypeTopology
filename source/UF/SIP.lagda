@@ -159,7 +159,7 @@ module sip-with-axioms where
             → SNS (λ X → Σ s ꞉ S X , axioms X s) 𝓣
  add-axioms {𝓤} {𝓥} {𝓦} {𝓣} {S} axioms i (ι , ρ , θ) = ι' , ρ' , θ'
   where
-   S' : 𝓤 ̇ → 𝓥 ⊔ 𝓦  ̇
+   S' : 𝓤 ̇ → 𝓥 ⊔ 𝓦 ̇
    S' X = Σ s ꞉ S X , axioms X s
 
    ι' : (A B : Σ S') → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓣 ̇

@@ -284,7 +284,7 @@ The function extensionality axiom implies that negations are propositions.
 \begin{code}
 
 negations-are-props-statement : ∀ 𝓤 → 𝓤 ⁺ ̇
-negations-are-props-statement 𝓤 = {X : 𝓤  ̇} → is-prop (¬ X)
+negations-are-props-statement 𝓤 = {X : 𝓤 ̇ } → is-prop (¬ X)
 
 negations-are-props : funext 𝓤 𝓤₀ → negations-are-props-statement 𝓤
 negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
@@ -310,7 +310,7 @@ equal-𝟘-is-empty : {X : 𝓤 ̇ } → X ＝ 𝟘 → X → 𝟘 {𝓦}
 equal-𝟘-is-empty e x = 𝟘-elim (transport id e x)
 
 negationext : ∀ 𝓤 𝓥 → (𝓤 ⁺) ⊔ 𝓥 ̇
-negationext 𝓤 𝓥 = {X : 𝓤  ̇} → (X → 𝟘 {𝓥}) → X ＝ 𝟘
+negationext 𝓤 𝓥 = {X : 𝓤 ̇ } → (X → 𝟘 {𝓥}) → X ＝ 𝟘
 
 empty-types-are-＝-𝟘 : propext 𝓤
                      → {X : 𝓤 ̇ }

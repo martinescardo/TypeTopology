@@ -120,12 +120,12 @@ for this data, see the file InjectiveTypes.MathematicalStructures.
 
 \begin{code}
 
- compatibility-condition : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺)  ̇
+ compatibility-condition : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
  compatibility-condition = (p : Ω 𝓦)
                            (f : p holds → X)
                          → is-equiv (ρ p f)
 
- compatibility-data : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺)  ̇
+ compatibility-data : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
  compatibility-data = (p : Ω 𝓦)
                       (f : p holds → X)
                     → has-section (ρ p f)

@@ -436,7 +436,7 @@ We use the superscript `(-)⁻` to denote the small copy of the type `image ↓(
 
 \begin{code}
 
- image-↓⁻ : 𝓤  ̇
+ image-↓⁻ : 𝓤 ̇
  image-↓⁻ = resized (image principal-ideal) image-of-↓-is-small
 
 \end{code}

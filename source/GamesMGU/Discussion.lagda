@@ -97,7 +97,7 @@ full plays in a game.
 
 \begin{code}
 
-Path : 𝕋 → 𝓤  ̇
+Path : 𝕋 → 𝓤 ̇
 Path []       = 𝟙
 Path (X ∷ Xf) = Σ x ꞉ X , Path (Xf x)
 
@@ -280,7 +280,7 @@ This type is isomorphic to a subtype ℍ of 𝔸 defined as follows.
 
 \begin{code}
 
-is-hereditarily-decidable : 𝔸 → 𝓤  ̇
+is-hereditarily-decidable : 𝔸 → 𝓤 ̇
 is-hereditarily-decidable (X ∷ Xf) = (is-decidable ∥ X ∥)
                                    × ((x : X) → is-hereditarily-decidable (Xf x))
 
@@ -325,7 +325,7 @@ function X → Y (which is automatically an isomorphism).
 
 \begin{code}
 
-to-𝔸-＝ : {X Y : 𝓤  ̇ }
+to-𝔸-＝ : {X Y : 𝓤 ̇ }
           (Xf : X → 𝔸) (Yf : Y → 𝔸)
           (p : X ＝ Y)
         → Xf ＝ Yf ∘ Idtofun p
@@ -340,7 +340,7 @@ use of univalence in this file.)
 
 \begin{code}
 
-[]ᴬ-＝ : {X : 𝓤  ̇ } (Xf : X → 𝔸) → is-empty X → []ᴬ ＝ (X ∷ Xf)
+[]ᴬ-＝ : {X : 𝓤 ̇ } (Xf : X → 𝔸) → is-empty X → []ᴬ ＝ (X ∷ Xf)
 []ᴬ-＝ {X} Xf e =
  []ᴬ               ＝⟨ refl ⟩
  𝟘 ∷ unique-from-𝟘 ＝⟨ to-𝔸-＝ 𝟘-elim Xf I II ⟩
@@ -553,7 +553,7 @@ tree must be hereditarily inhabited.
 
 \begin{code}
 
-Strategy : 𝕋 -> 𝓤  ̇
+Strategy : 𝕋 -> 𝓤 ̇
 Strategy [] = 𝟙
 Strategy (X ∷ Xf) = X × ((x : X) → Strategy (Xf x))
 
@@ -571,7 +571,7 @@ isomorphic copy ℍ of 𝔾.
 
 \begin{code}
 
-Strategy' : ℍ -> 𝓤  ̇
+Strategy' : ℍ -> 𝓤 ̇
 Strategy' ((X ∷ Xf) , inr _ , _) = 𝟙
 Strategy' ((X ∷ Xf) , inl _ , h) = X × ((x : X) → Strategy' (Xf x , h x))
 
@@ -649,7 +649,7 @@ leaf [] in the tree Xt.
 
 \begin{code}
 
-has-at-least-one-[] : 𝕋 → 𝓤  ̇
+has-at-least-one-[] : 𝕋 → 𝓤 ̇
 has-at-least-one-[] []       = 𝟙
 has-at-least-one-[] (X ∷ Xf) = ∃ x ꞉ X , has-at-least-one-[] (Xf x)
 
@@ -711,13 +711,13 @@ modification needed to use ℍ instead:
 
 \begin{code}
 
-module illustration (R : 𝓤  ̇ ) where
+module illustration (R : 𝓤 ̇ ) where
 
  open import MonadOnTypesMGU.K
 
  open K-definitions R
 
- Path' : ℍ → 𝓤  ̇
+ Path' : ℍ → 𝓤 ̇
  Path' ((X ∷ Xf) , inr _ , _) = 𝟙
  Path' ((X ∷ Xf) , inl _ , h) = Σ x ꞉ X , Path' (Xf x , h x)
 
@@ -755,7 +755,7 @@ To illustrate the richness of 𝔸 and 𝕋, we now show how to embed the
 type of all ordinals into 𝔸, and then some kinds of ordinals in 𝔾, following
 
    Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie
-   Xu. *Set-Theoretic and ?  ̇ -Theoretic Ordinals Coincide.*
+   Xu. *Set-Theoretic and ? ̇ -Theoretic Ordinals Coincide.*
    To appear at LICS 2023, June 2023.
 
    https://arxiv.org/abs/2301.10696
@@ -895,7 +895,7 @@ definition of (material) set.
 \begin{code}
 
 data ℂ : 𝓤⁺ ̇ where
- conway : (L R : 𝓤  ̇ ) (Lf : L → ℂ) (Rf : R → ℂ) → ℂ
+ conway : (L R : 𝓤 ̇ ) (Lf : L → ℂ) (Rf : R → ℂ) → ℂ
 
 \end{code}
 
@@ -931,7 +931,7 @@ Aczel's 𝕎-type using hereditary embeddings is due to Håkon Gylterud.
 
 open import UF.Embeddings
 
-is-CZF-set : 𝔸 → 𝓤⁺  ̇
+is-CZF-set : 𝔸 → 𝓤⁺ ̇
 is-CZF-set (X ∷ Xf) = is-embedding Xf × ((x : X) → is-CZF-set (Xf x))
 
 \end{code}

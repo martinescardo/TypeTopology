@@ -208,7 +208,7 @@ is-in-equilibrium : {X : 𝓤 ̇ } {Xf : X → 𝑻}
 is-in-equilibrium {X} {Xf} q ϕ σt@(x₀ :: σf)  =
  subpred q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → subpred q x (strategic-path (σf x)))
 
-is-in-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → 𝓤 ⊔ 𝓦₀  ̇
+is-in-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → 𝓤 ⊔ 𝓦₀ ̇
 is-in-sgpe {[]}     ⟨⟩        q ⟨⟩            = 𝟙
 is-in-sgpe {X ∷ Xf} (ϕ :: ϕf) q σt@(x₀ :: σf) =
    is-in-equilibrium q ϕ σt
@@ -243,7 +243,7 @@ is in subgame perfect equilibrium.
 
 \begin{code}
 
-is-optimal : (G : Game) (σ : Strategy (Xt G)) → 𝓤 ⊔ 𝓦₀  ̇
+is-optimal : (G : Game) (σ : Strategy (Xt G)) → 𝓤 ⊔ 𝓦₀ ̇
 is-optimal (game Xt ϕt q) σ = is-in-sgpe {Xt} q ϕt σ
 
 \end{code}
@@ -296,7 +296,7 @@ in another module.
 
 \begin{code}
 
-𝓙 : 𝑻 → 𝓦₀ ⊔ 𝓤  ̇
+𝓙 : 𝑻 → 𝓦₀ ⊔ 𝓤 ̇
 𝓙 = structure J
 
 remark-𝓙 : {X : 𝓤 ̇ } {Xf : X → 𝑻}
@@ -355,7 +355,7 @@ obvious way, by induction:
 
 open JK R
 
-_Attains_ : {Xt : 𝑻} → 𝓙 Xt → 𝓚 Xt → 𝓤 ⊔ 𝓦₀  ̇
+_Attains_ : {Xt : 𝑻} → 𝓙 Xt → 𝓚 Xt → 𝓤 ⊔ 𝓦₀ ̇
 _Attains_ {[]}     ⟨⟩        ⟨⟩        = 𝟙
 _Attains_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε attains ϕ)
                                            × ((x : X) → (εf x) Attains (ϕf x))

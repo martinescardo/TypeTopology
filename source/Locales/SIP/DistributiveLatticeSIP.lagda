@@ -51,7 +51,7 @@ we call `str₁` and `str₂`.
 \begin{code}
 
 module SIP-For-Distributive-Lattices
-        {A : 𝓤  ̇ }
+        {A : 𝓤 ̇ }
         (str₁ str₂ : Distributive-Lattice-Structure A)
        where
 
@@ -277,7 +277,7 @@ The distributive lattice structure is a standard notion of structure.
 distributive-lattice-sns-data : SNS Distributive-Lattice-Structure 𝓤
 distributive-lattice-sns-data {𝓤} = ι , ρ , θ
  where
-  ι : (K′ L′ : Distributive-Lattice₀ 𝓤) → sip.⟨ K′ ⟩ ≃ sip.⟨ L′ ⟩ → 𝓤  ̇
+  ι : (K′ L′ : Distributive-Lattice₀ 𝓤) → sip.⟨ K′ ⟩ ≃ sip.⟨ L′ ⟩ → 𝓤 ̇
   ι K′ L′ e = is-homomorphic e holds
    where
     K′ᵣ = to-distributive-lattice 𝓤 K′
@@ -288,7 +288,7 @@ distributive-lattice-sns-data {𝓤} = ι , ρ , θ
   ρ : (L : Distributive-Lattice₀ 𝓤) → ι L L (≃-refl sip.⟨ L ⟩)
   ρ L = (λ _ → id) , (λ _ → id)
 
-  θ : {X : 𝓤  ̇ }
+  θ : {X : 𝓤 ̇ }
     → (str₁ str₂ : Distributive-Lattice-Structure X)
     → is-equiv (canonical-map ι ρ str₁ str₂)
   θ {X} str₁ str₂ = (homomorphic-equivalence-gives-structural-equality , †)

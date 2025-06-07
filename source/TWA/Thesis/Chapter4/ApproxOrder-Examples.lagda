@@ -95,12 +95,12 @@ embedding-order-is-linear-order {𝓤} {𝓥} {𝓦} {X} {Y}
 
 inclusion-approx-order
  : {X : 𝓤 ̇ } {Y : ClosenessSpace 𝓥} (f : X → ⟨ Y ⟩)
- → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦  ̇ )
- → X → X → ℕ → 𝓦  ̇
+ → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦 ̇ )
+ → X → X → ℕ → 𝓦 ̇
 inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
 
-Σ-order : {X : 𝓤 ̇ } (P : X → 𝓥 ̇ ) (_≤_ : X → X → 𝓦  ̇ )
-        → Σ P → Σ P → 𝓦  ̇
+Σ-order : {X : 𝓤 ̇ } (P : X → 𝓥 ̇ ) (_≤_ : X → X → 𝓦 ̇ )
+        → Σ P → Σ P → 𝓦 ̇
 Σ-order P _≤_ (x , _) (y , _) = x ≤ y
 
 Σ-order-is-preorder
@@ -116,15 +116,15 @@ inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
   p : is-prop-valued (Σ-order P _≤_)
   p (x , _) (y , _) = p' x y
 
-Σ-approx-order : {X : 𝓤 ̇ } → (P : X → 𝓥 ̇ ) → (_≤ⁿ_ : X → X → ℕ → 𝓦  ̇ )
-               → Σ P → Σ P → ℕ → 𝓦  ̇
+Σ-approx-order : {X : 𝓤 ̇ } → (P : X → 𝓥 ̇ ) → (_≤ⁿ_ : X → X → ℕ → 𝓦 ̇ )
+               → Σ P → Σ P → ℕ → 𝓦 ̇
 Σ-approx-order P _≤ⁿ_ (x , _) (y , _) = x ≤ⁿ y
 
 Σ-approx-order-is-approx-order
  : (X : ClosenessSpace 𝓤)
  → (P : ⟨ X ⟩ → 𝓥 ̇ )
  → (p : (x : ⟨ X ⟩) → is-prop (P x))
- → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
+ → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ )
  → is-approx-order X _≤ⁿ_
  → is-approx-order (Σ-ClosenessSpace X P p) (Σ-approx-order P _≤ⁿ_)
 Σ-approx-order-is-approx-order
@@ -154,7 +154,7 @@ module ΣOrder-Relates (pt : propositional-truncations-exist) where
   : (X : ClosenessSpace 𝓤)
   → (P : ⟨ X ⟩ → 𝓥 ̇ )
   → (p : (x : ⟨ X ⟩) → is-prop (P x))
-  → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
+  → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ )
   → (a : is-approx-order X _≤ⁿ_)
   → (_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
   → (i : is-preorder _≤_)
@@ -173,7 +173,7 @@ module ΣOrder-Relates (pt : propositional-truncations-exist) where
 ## Finite orders
 
 \begin{code}
-_≤Fin_ : {n : ℕ} → Fin n → Fin n → 𝓤₀  ̇
+_≤Fin_ : {n : ℕ} → Fin n → Fin n → 𝓤₀ ̇
 _≤Fin_ {succ n} 𝟎 y = 𝟙
 _≤Fin_ {succ n} (suc x) 𝟎 = 𝟘
 _≤Fin_ {succ n} (suc x) (suc y) = x ≤Fin y
@@ -215,7 +215,7 @@ _≤Fin_ {succ n} (suc x) (suc y) = x ≤Fin y
  = ≤Fin-is-partial-order
  , pr₂ ≤Fin-is-linear-preorder
 
-finite-order : {F : 𝓤 ̇ } → finite-linear-order F → F → F → 𝓤₀  ̇
+finite-order : {F : 𝓤 ̇ } → finite-linear-order F → F → F → 𝓤₀ ̇
 finite-order (n , (g , _)) = inclusion-order g _≤Fin_
 
 finite-order-is-partial-order
@@ -251,7 +251,7 @@ discrete-lexicorder : {D : 𝓤 ̇ }
                     → is-discrete D
                     → (_≤_ : D → D → 𝓥 ̇ )
                     → (α β : ℕ → D)
-                    → 𝓤 ⊔ 𝓥  ̇
+                    → 𝓤 ⊔ 𝓥 ̇
 discrete-lexicorder f _≤_ α β
  = (n : ℕ) → (α ∼ⁿ β) n → α n ≤ β n
 
@@ -291,7 +291,7 @@ discrete-lexicorder-is-preorder d _≤_ ((r' , t' , p') , a') = r , t , p
 finite-lexicorder
  : {F : 𝓤 ̇ } (f : finite-linear-order F) (d : is-discrete F)
  → (_<_ : F → F → 𝓦 ̇ )
- → (ℕ → F) → (ℕ → F) → 𝓤 ⊔ 𝓦  ̇
+ → (ℕ → F) → (ℕ → F) → 𝓤 ⊔ 𝓦 ̇
 finite-lexicorder f d _<_ = discrete-lexicorder d _<_
 
 linear-finite-lexicorder-implies-linear-ℕ∞-order
@@ -343,7 +343,7 @@ discrete-approx-lexicorder : {D : 𝓤 ̇ }
                            → (_≤_ : D → D → 𝓥 ̇ )
                            → (α β : ℕ → D)
                            → ℕ
-                           → 𝓤 ⊔ 𝓥  ̇
+                           → 𝓤 ⊔ 𝓥 ̇
 discrete-approx-lexicorder d _≤_ α β n
  = (i : ℕ) → i < n → (α ∼ⁿ β) i → α i ≤ β i
 

@@ -204,7 +204,7 @@ listed X = Σ xs ꞉ List X , ((x : X) → member x xs)
 listed⁺ : 𝓤 ̇ → 𝓤 ̇
 listed⁺ X = X × listed X
 
-type-from-list : {X : 𝓤  ̇ } → List X → 𝓤  ̇
+type-from-list : {X : 𝓤 ̇ } → List X → 𝓤 ̇
 type-from-list {X = X} xs = Σ x ꞉ X , member x xs
 
 type-from-list-is-listed : {X : 𝓤 ̇ } (xs : List X)

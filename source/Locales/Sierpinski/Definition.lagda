@@ -174,10 +174,10 @@ It is obvious that these form an equivalence.
 Ω-equivalent-to-𝕊 : Ω 𝓤 ≃ ⟨ 𝕊𝓓 ⟩∙
 Ω-equivalent-to-𝕊 = to-𝕊𝓓 , ((to-Ω , †) , (to-Ω , ‡))
  where
-  ψ : {A : 𝓤  ̇ } → is-prop (A → 𝟙)
+  ψ : {A : 𝓤 ̇ } → is-prop (A → 𝟙)
   ψ = Π-is-prop fe (λ _ → 𝟙-is-prop)
 
-  ϑ : {A : 𝓤  ̇ } → is-prop (is-prop A)
+  ϑ : {A : 𝓤 ̇ } → is-prop (is-prop A)
   ϑ = being-prop-is-prop fe
 
   † : (to-𝕊𝓓 ∘ to-Ω) ∼ id

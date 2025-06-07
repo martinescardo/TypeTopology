@@ -475,7 +475,7 @@ automorphism, in such a way that the section becomes a homomorphism.
 
 is-hom : {A B : 𝓤 ̇ } → 𝓛-alg A → 𝓛-alg B → (A → B) → (𝓣 ⁺) ⊔ 𝓤 ̇
 is-hom {𝓤} {A} {B} (∐ᵃ , _ , _) (∐ᵇ , _ , _) h =
- (P : 𝓣 ̇) (i : is-prop P) (φ : P → A) → h (∐ᵃ i φ) ＝ ∐ᵇ i (h ∘ φ)
+ (P : 𝓣 ̇ ) (i : is-prop P) (φ : P → A) → h (∐ᵃ i φ) ＝ ∐ᵇ i (h ∘ φ)
 
 open import UF.Retracts
 

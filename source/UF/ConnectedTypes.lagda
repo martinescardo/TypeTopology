@@ -199,7 +199,7 @@ the identity type at one level below. We will assume univalence only when necess
  connected-types-are-inhabited {_} {_} {k} X-conn =
   −1-connected-types-are-inhabited (connectedness-is-lower-closed' ⋆ X-conn)
 
- _is-locally_connected : (X : 𝓤 ̇ ) (k : ℕ₋₂) → 𝓤  ̇
+ _is-locally_connected : (X : 𝓤 ̇ ) (k : ℕ₋₂) → 𝓤 ̇
  X is-locally k connected = (x y : X) → (x ＝ y) is k connected
 
  connected-types-are-locally-connected : {X : 𝓤 ̇ } {k : ℕ₋₂}

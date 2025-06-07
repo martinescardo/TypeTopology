@@ -63,7 +63,7 @@ clashes.
 \begin{code}
 
 instance
- underlying-type-of-frame : Underlying-Type (Frame 𝓤 𝓥 𝓦) (𝓤  ̇ )
+ underlying-type-of-frame : Underlying-Type (Frame 𝓤 𝓥 𝓦) (𝓤 ̇ )
  ⟨_⟩ {{underlying-type-of-frame}} (A , _) = A
 
 \end{code}
@@ -72,8 +72,8 @@ Given a family `S`, we denote the type of its subfamilies by `SubFam S`.
 
 \begin{code}
 
-SubFam : {A : 𝓤  ̇ } {𝓦 : Universe} → Fam 𝓦 A → 𝓦 ⁺  ̇
-SubFam {_} {A} {𝓦} (I , α) = Σ J ꞉ 𝓦  ̇ , (J → I)
+SubFam : {A : 𝓤 ̇ } {𝓦 : Universe} → Fam 𝓦 A → 𝓦 ⁺ ̇
+SubFam {_} {A} {𝓦} (I , α) = Σ J ꞉ 𝓦 ̇ , (J → I)
 
 \end{code}
 
@@ -82,7 +82,7 @@ Kuratowski-finite type.
 
 \begin{code}
 
-list-members-is-Kuratowski-finite : {X : 𝓤  ̇ }
+list-members-is-Kuratowski-finite : {X : 𝓤 ̇ }
                                   → (xs : List X)
                                   → is-Kuratowski-finite
                                      (Σ x ꞉ X , ∥ member x xs ∥)
@@ -318,7 +318,7 @@ module characterization-of-compactness₂ (X : Locale (𝓤 ⁺) 𝓤 𝓤) wher
  open PosetReasoning (poset-of (𝒪 X))
  open Joins (λ x y → x ≤ y)
 
- Upper-Bound-Data : 𝓟 {𝓣} ⟨ 𝒪 X ⟩ → Fam 𝓤 ⟨ 𝒪 X ⟩ → 𝓤 ⁺ ⊔ 𝓣  ̇
+ Upper-Bound-Data : 𝓟 {𝓣} ⟨ 𝒪 X ⟩ → Fam 𝓤 ⟨ 𝒪 X ⟩ → 𝓤 ⁺ ⊔ 𝓣 ̇
  Upper-Bound-Data P S =
   Σ i ꞉ index S , (Ɐ x ꞉ ⟨ 𝒪 X ⟩ , P x ⇒ x ≤ S [ i ]) holds
 
@@ -383,7 +383,7 @@ contains at least one upper bound of every Kuratowski-finite subset.
  directed-families-have-upper-bounds-of-Kuratowski-finite-subsets S 𝒹 (P , 𝕗) φ =
   Kuratowski-finite-subset-induction pe fe ⟨ 𝒪 X ⟩ σ R i β γ δ (P , 𝕗) φ
    where
-    R : 𝓚 ⟨ 𝒪 X ⟩ → 𝓤 ⁺  ̇
+    R : 𝓚 ⟨ 𝒪 X ⟩ → 𝓤 ⁺ ̇
     R Q = ⟨ Q ⟩ ⊆ χ∙ S → has-upper-bound-in ⟨ Q ⟩ S holds
 
     i : (Q : 𝓚 ⟨ 𝒪 X ⟩) → is-prop (R Q)

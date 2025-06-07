@@ -62,16 +62,16 @@ The types of trees with JT and KT structure.
 
 \begin{code}
 
-𝓙𝓣 : 𝑻 → ℓ 𝕋 𝓦₀ ⊔ ℓ 𝕋 𝓤 ⊔ 𝓤  ̇
+𝓙𝓣 : 𝑻 → ℓ 𝕋 𝓦₀ ⊔ ℓ 𝕋 𝓤 ⊔ 𝓤 ̇
 𝓙𝓣 = structure JT
 
-𝓚𝓣 : 𝑻 → ℓ 𝕋 𝓦₀ ⊔ 𝓦₀ ⊔ 𝓤  ̇
+𝓚𝓣 : 𝑻 → ℓ 𝕋 𝓦₀ ⊔ 𝓦₀ ⊔ 𝓤 ̇
 𝓚𝓣 = structure KT
 
 sequenceᴶᵀ : {Xt : 𝑻} → 𝓙𝓣 Xt → JT (Path Xt)
 sequenceᴶᵀ = path-sequence 𝕁𝕋
 
-T-Strategy : 𝑻 → ℓ 𝕋 𝓤 ⊔ 𝓤  ̇
+T-Strategy : 𝑻 → ℓ 𝕋 𝓤 ⊔ 𝓤 ̇
 T-Strategy = structure T
 
 T-strategic-path : {Xt : 𝑻} → T-Strategy Xt → T (Path Xt)
@@ -93,7 +93,7 @@ is-in-T-sgpe {X ∷ Xf} (ϕ :: ϕf) q σt@(σ :: σf) =
     is-in-T-equilibrium q ϕ σt
   × ((x : X) → is-in-T-sgpe {Xf x} (ϕf x) (subpred q x) (σf x))
 
-is-T-optimal : (G : Game) → T-Strategy (Xt G) → 𝓦₀ ⊔ 𝓤  ̇
+is-T-optimal : (G : Game) → T-Strategy (Xt G) → 𝓦₀ ⊔ 𝓤 ̇
 is-T-optimal (game Xt q ϕt) = is-in-T-sgpe {Xt} ϕt q
 
 \end{code}
@@ -210,7 +210,7 @@ above.
 
 module _ {X  : 𝓤 ̇ }
          {𝓥 : Universe}
-         {Y  : X → 𝓥  ̇ }
+         {Y  : X → 𝓥 ̇ }
          (ε  : JT X)
          (δ  : (x : X) → JT (Y x))
  where
@@ -331,7 +331,7 @@ Is α-Overlineᵀ useful?
 α-Overlineᵀ {[]}     ⟨⟩        = ⟨⟩
 α-Overlineᵀ {X ∷ Xf} (ε :: εf) = α-overlineᵀ ε :: λ x → α-Overlineᵀ  {Xf x} (εf x)
 
-_Attainsᵀ_ : {Xt : 𝑻} → 𝓙𝓣 Xt → 𝓚 Xt → ℓ 𝕋 𝓦₀ ⊔ 𝓤 ⊔ 𝓦₀  ̇
+_Attainsᵀ_ : {Xt : 𝑻} → 𝓙𝓣 Xt → 𝓚 Xt → ℓ 𝕋 𝓦₀ ⊔ 𝓤 ⊔ 𝓦₀ ̇
 _Attainsᵀ_  {[]}     ⟨⟩        ⟨⟩       = 𝟙
 _Attainsᵀ_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε α-attainsᵀ ϕ)
                                         × ((x : X) → (εf x) Attainsᵀ (ϕf x))
@@ -435,7 +435,7 @@ notion. Partial, possibly empty, paths in 𝑻's, and related notions.
 
 \begin{code}
 
-pPath : 𝑻 → 𝓤  ̇
+pPath : 𝑻 → 𝓤 ̇
 pPath []       = 𝟙
 pPath (X ∷ Xf) = 𝟙 {𝓤} + (Σ x ꞉ X , pPath (Xf x))
 
@@ -467,11 +467,11 @@ sub-T-Strategy {[]}     ⟨⟩        ⟨⟩              = ⟨⟩
 sub-T-Strategy {X ∷ Xf} (σ :: σf) (inl ⟨⟩)        = σ :: σf
 sub-T-Strategy {X ∷ Xf} (σ :: σf) (inr (x :: xs)) = sub-T-Strategy {Xf x} (σf x) xs
 
-is-in-T-equilibrium' : (G : Game) → T-Strategy (Xt G) → 𝓦₀  ̇
+is-in-T-equilibrium' : (G : Game) → T-Strategy (Xt G) → 𝓦₀ ̇
 is-in-T-equilibrium' (game []       q ⟨⟩)       ⟨⟩ = 𝟙
 is-in-T-equilibrium' (game (X ∷ Xf) q (ϕ :: _)) σt = is-in-T-equilibrium q ϕ σt
 
-is-T-optimal₂ : (G : Game) (σ : T-Strategy (Xt G)) → 𝓤 ⊔ 𝓦₀  ̇
+is-T-optimal₂ : (G : Game) (σ : T-Strategy (Xt G)) → 𝓤 ⊔ 𝓦₀ ̇
 is-T-optimal₂ G σ =
  (xs : pPath (Xt G)) → is-in-T-equilibrium' (subgame G xs) (sub-T-Strategy σ xs)
 
@@ -499,7 +499,7 @@ T-sgpe-equiv : (G : Game) (σ : T-Strategy (Xt G))
              → is-T-optimal G σ ↔ is-T-optimal₂ G σ
 T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
 
-is-in-subgame-perfect-equilibrium : (G : Game) → 𝓙𝓣 (Xt G) → ?  ̇
+is-in-subgame-perfect-equilibrium : (G : Game) → 𝓙𝓣 (Xt G) → ? ̇
 is-in-subgame-perfect-equilibrium G εt =
 
  (xs : pPath (Xt G)) → is-in-head-equilibrium (subgame G xs) (sub𝓙𝓣 εt xs)

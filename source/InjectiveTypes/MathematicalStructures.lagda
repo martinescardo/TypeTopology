@@ -50,7 +50,7 @@ We already know the following, but here is a short direct proof.
 universes-are-aflabby-Π : aflabby (𝓤 ̇ ) 𝓤
 universes-are-aflabby-Π {𝓤} P P-is-prop A = Π A , I
  where
-  X : 𝓤  ̇
+  X : 𝓤 ̇
   X = Π A
 
   I : (p : P) → Π A ＝ A p
@@ -63,7 +63,7 @@ universes-are-injective-Π {𝓤} = aflabby-types-are-ainjective (𝓤 ̇ )
 universes-are-aflabby-Σ : aflabby (𝓤 ̇ ) 𝓤
 universes-are-aflabby-Σ {𝓤} P P-is-prop A = Σ A , I
  where
-  X : 𝓤  ̇
+  X : 𝓤 ̇
   X = Σ A
 
   I : (p : P) → Σ A ＝ A p

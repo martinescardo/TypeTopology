@@ -54,7 +54,7 @@ We denote by `_⊑_` the informating ordering of the dcpo `𝓓`.
 
 \begin{code}
 
- _⊑_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓣  ̇
+ _⊑_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓣 ̇
  x ⊑ y = x ⊑⟨ 𝓓 ⟩ y
 
 \end{code}

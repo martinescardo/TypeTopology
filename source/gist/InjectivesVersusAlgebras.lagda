@@ -44,8 +44,8 @@ open import UF.Univalence
 
 module _ (𝓤 𝓥 : Universe)
          (D : 𝓤 ⊔ 𝓥 ̇ )
-         (⨆ : {P : 𝓤 ̇} → is-prop P → (P → D) → D)
-         (⨆-property : (P : 𝓤 ̇)
+         (⨆ : {P : 𝓤 ̇ } → is-prop P → (P → D) → D)
+         (⨆-property : (P : 𝓤 ̇ )
                         (i : is-prop P)
                         (f : P → D)
                         (p : P)
@@ -53,14 +53,14 @@ module _ (𝓤 𝓥 : Universe)
        where
 
  ⨆-change-of-variable : is-univalent 𝓤
-                       → {P : 𝓤 ̇} (i : is-prop P)
-                         {Q : 𝓤 ̇} (j : is-prop Q)
+                       → {P : 𝓤 ̇ } (i : is-prop P)
+                         {Q : 𝓤 ̇ } (j : is-prop Q)
                          (e : P ≃ Q)
                          (f : P → D)
                        → ⨆ i f ＝ ⨆ j (f ∘ ⌜ e ⌝⁻¹)
  ⨆-change-of-variable ua {P} i {Q} j e f = JEq ua P A I Q e j
   where
-   A : (Q : 𝓤 ̇) → P ≃ Q → 𝓤 ⊔ 𝓥 ̇
+   A : (Q : 𝓤 ̇ ) → P ≃ Q → 𝓤 ⊔ 𝓥 ̇
    A Q e = (j : is-prop Q) → ⨆ i f ＝ ⨆ j (f ∘ ⌜ e ⌝⁻¹)
 
    I : A P (≃-refl P)
@@ -139,44 +139,44 @@ module _ (𝓤 𝓥 : Universe)
 
 module _ (𝓤 : Universe)
          (D : 𝓤 ̇ )
-         (_/_ : {X : 𝓤 ̇} {Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D))
-         (extension-property : {X : 𝓤 ̇} {Y : 𝓤 ̇ } (f : X → D) (j : X ↪ Y)
+         (_/_ : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D))
+         (extension-property : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (f : X → D) (j : X ↪ Y)
                              →  f / j ∘ ⌊ j ⌋ ∼ f)
        where
 
- ⨆ : {P : 𝓤 ̇} → is-prop P → (P → D) → D
+ ⨆ : {P : 𝓤 ̇ } → is-prop P → (P → D) → D
  ⨆ {P} P-is-prop g = (g / (embedding-into-𝟙 P P-is-prop)) ⋆
 
  ⨆-change-of-variable' : is-univalent 𝓤
-                        → {P : 𝓤 ̇} (i : is-prop P)
-                          {Q : 𝓤 ̇} (j : is-prop Q)
+                        → {P : 𝓤 ̇ } (i : is-prop P)
+                          {Q : 𝓤 ̇ } (j : is-prop Q)
                           (e : P ≃ Q)
                           (f : P → D)
                         → ⨆ i f ＝ ⨆ j (f ∘ ⌜ e ⌝⁻¹)
  ⨆-change-of-variable' ua {P} i {Q} j e f = JEq ua P A I Q e j
   where
-   A : (Q : 𝓤 ̇) → P ≃ Q → 𝓤 ̇
+   A : (Q : 𝓤 ̇ ) → P ≃ Q → 𝓤 ̇
    A Q e = (j : is-prop Q) → ⨆ i f ＝ ⨆ j (f ∘ ⌜ e ⌝⁻¹)
 
    I : A P (≃-refl P)
    I j = ap (λ - → ⨆ - f) (being-prop-is-prop fe' i j)
 
 
- fiber-to-𝟙 : {X : 𝓤 ̇} {Y : 𝓤 ̇ } (j : X ↪ Y) (y : Y)
+ fiber-to-𝟙 : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (j : X ↪ Y) (y : Y)
             → fiber ⌊ j ⌋ y ↪ 𝟙
  fiber-to-𝟙 j y = embedding-into-𝟙 {𝓤} {𝓤} (fiber ⌊ j ⌋ y) (⌊ j ⌋-is-embedding y)
 
- fiber-map : {X : 𝓤 ̇} {Y : 𝓤 ̇ } (f : X → D) (j : X ↪ Y) (y : Y)
+ fiber-map : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (f : X → D) (j : X ↪ Y) (y : Y)
            → fiber ⌊ j ⌋ y → D
  fiber-map f j y (x , _) = f x
 
- _/̇_ : {X : 𝓤 ̇} {Y : 𝓤 ̇ }
+ _/̇_ : {X : 𝓤 ̇ } {Y : 𝓤 ̇ }
       → (X → D)
       → (X ↪ Y)
       → Y → D
  f /̇ j = λ y → ⨆ (⌊ j ⌋-is-embedding y) (fiber-map f j y)
 
- ⨆-property : (P : 𝓤 ̇)
+ ⨆-property : (P : 𝓤 ̇ )
                (i : is-prop P)
                (f : P → D)
                (p : P)
@@ -189,7 +189,7 @@ module _ (𝓤 : Universe)
                  → (f / j) / k ∼ f / (k ∘↪ j)
 
  Extensions-are-Pointwise : 𝓤 ⁺ ̇
- Extensions-are-Pointwise = {X : 𝓤 ̇} {Y : 𝓤 ̇ } (f : X → D) (j : X ↪ Y)
+ Extensions-are-Pointwise = {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (f : X → D) (j : X ↪ Y)
                           → f / j ∼ f /̇ j
 
  ⨆-assoc' : Extensions-are-Pointwise
@@ -428,14 +428,14 @@ module pullback-naturality-for-ainjectivity-induced-by-aflabbiness
   ϕ P i f = pr₁ (φ P i f)
 
   ϕ-change-of-variable : is-univalent 𝓤
-                       → {P : 𝓤 ̇} (i : is-prop P)
-                         {Q : 𝓤 ̇} (j : is-prop Q)
+                       → {P : 𝓤 ̇ } (i : is-prop P)
+                         {Q : 𝓤 ̇ } (j : is-prop Q)
                          (e : P ≃ Q)
                          (f : P → D)
                        → ϕ P i f ＝ ϕ Q j (f ∘ ⌜ e ⌝⁻¹)
   ϕ-change-of-variable ua {P} i {Q} j e f = JEq ua P C I Q e j
    where
-    C : (Q : 𝓤 ̇) → P ≃ Q → 𝓤 ⊔ 𝓦 ̇
+    C : (Q : 𝓤 ̇ ) → P ≃ Q → 𝓤 ⊔ 𝓦 ̇
     C Q e = (j : is-prop Q) → ϕ P i f ＝ ϕ Q j (f ∘ ⌜ e ⌝⁻¹)
 
     I : C P (≃-refl P)
@@ -519,7 +519,7 @@ module lifting-algebras-as-categories
         (𝓤 : Universe)
         (D : 𝓤 ⁺ ̇ )
         (⨆ : {P : 𝓤 ̇ } → is-prop P → (P → D) → D)
-        (⨆-property : (P : 𝓤 ̇)
+        (⨆-property : (P : 𝓤 ̇ )
                        (i : is-prop P)
                        (f : P → D)
                        (p : P)

@@ -372,12 +372,12 @@ module Local-Smallness (𝓤  𝓦  𝓥 : Universe)
                        (_≤_ : ∣ A ∣ₚ → ∣ A ∣ₚ → Ω 𝓦)
                         where
 
- is-locally-small-order : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+ is-locally-small-order : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺) ̇
  is-locally-small-order = (x y : ∣ A ∣ₚ) → ((x ≤ y) holds) is 𝓥 small
 
  module local-smallness (l : is-locally-small-order) where
 
-  _≤ⱽ_ : (x y : ∣ A ∣ₚ) → 𝓥  ̇
+  _≤ⱽ_ : (x y : ∣ A ∣ₚ) → 𝓥 ̇
   x ≤ⱽ y = pr₁ (l x y)
 
   ≤ⱽ-is-prop : (x : ∣ A ∣ₚ) → (y : ∣ A ∣ₚ) → is-prop (x ≤ⱽ y)
@@ -615,7 +615,7 @@ module Small-δ-complete-poset (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦)
 
  module small-δ-complete-poset (i : is-δ-complete) where
 
-  poset-is-small : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+  poset-is-small : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺) ̇
   poset-is-small = is-locally-small-order × ∣ A ∣ₚ is 𝓥 small
 
 \end{code}
@@ -628,7 +628,7 @@ type of propositions.
 
 module Ω-δ-complete-positive-Poset (𝓥 : Universe) where
 
- _⊑_ : Ω 𝓥 → Ω 𝓥 → 𝓥  ̇
+ _⊑_ : Ω 𝓥 → Ω 𝓥 → 𝓥 ̇
  P ⊑ Q = P holds → Q holds
 
  ⊑-is-prop-valued : (P Q : Ω 𝓥) → is-prop (P ⊑ Q)
@@ -697,7 +697,7 @@ module Ω-δ-complete-positive-Poset (𝓥 : Universe) where
 
 module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
 
- _⊑_ : Ω¬¬ 𝓥 → Ω¬¬ 𝓥 → 𝓥  ̇
+ _⊑_ : Ω¬¬ 𝓥 → Ω¬¬ 𝓥 → 𝓥 ̇
  P ⊑ Q = P holds' → Q holds'
 
  ⊑-is-prop-valued : (P Q : Ω¬¬ 𝓥) → is-prop (P ⊑ Q)

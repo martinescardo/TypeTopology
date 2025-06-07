@@ -35,7 +35,7 @@ We assume a cospan
 
 module pullback
         {𝓤 𝓥 𝓦 : Universe}
-        {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇}
+        {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
         (f : X → Z) (g : Y → Z)
        where
 

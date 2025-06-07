@@ -50,7 +50,7 @@ record Monad : 𝓤ω where
 
 open Monad public
 
-tensor : (𝕋 : Monad) → {X : 𝓤 ̇ } {Y : X → 𝓥  ̇ }
+tensor : (𝕋 : Monad) → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
        → functor 𝕋 X
        → ((x : X) → functor 𝕋 (Y x))
        → functor 𝕋 (Σ x ꞉ X , Y x)
@@ -251,7 +251,7 @@ If we want to call an algebra (literally) α, we can used this module:
 module α-definitions
         (𝕋 : Monad)
         {𝓦₀ : Universe}
-        (R : 𝓦₀  ̇ )
+        (R : 𝓦₀ ̇ )
         (𝓐 : Algebra 𝕋 R)
        where
 

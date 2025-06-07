@@ -181,7 +181,7 @@ theoretic ordinal.
  𝕍ᵒʳᵈ-is-subtype : {x y : 𝕍ᵒʳᵈ} → pr₁ x ＝ pr₁ y → x ＝ y
  𝕍ᵒʳᵈ-is-subtype = to-subtype-＝ (λ _ → being-set-theoretic-ordinal-is-prop)
 
- _∈ᵒʳᵈ_ : 𝕍ᵒʳᵈ → 𝕍ᵒʳᵈ → 𝓤 ⁺  ̇
+ _∈ᵒʳᵈ_ : 𝕍ᵒʳᵈ → 𝕍ᵒʳᵈ → 𝓤 ⁺ ̇
  _∈ᵒʳᵈ_ (x , _) (y , _) = x ∈ y
 
  ∈ᵒʳᵈ-is-extensional : is-extensional _∈ᵒʳᵈ_

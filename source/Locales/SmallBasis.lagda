@@ -45,13 +45,13 @@ version of a notion.
 
 \begin{code}
 
-basis-forᴰ : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+basis-forᴰ : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
 basis-forᴰ {𝓦 = 𝓦} F (I , β) =
  (U : ⟨ F ⟩) → Σ J ꞉ Fam 𝓦 I , (U is-lub-of ⁅ β j ∣ j ε J ⁆) holds
   where
    open Joins (λ x y → x ≤[ poset-of F ] y)
 
-basisᴰ : (F : Frame 𝓤 𝓥 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+basisᴰ : (F : Frame 𝓤 𝓥 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
 basisᴰ {𝓤} {𝓥} {𝓦} F = Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , basis-forᴰ F ℬ
 
 \end{code}
@@ -61,7 +61,7 @@ families are directed.
 
 \begin{code}
 
-directed-basis-forᴰ : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+directed-basis-forᴰ : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
 directed-basis-forᴰ {𝓤} {𝓥} {𝓦} F ℬ@(I , β) =
  (U : ⟨ F ⟩) →
   Σ J ꞉ Fam 𝓦 I ,
@@ -69,7 +69,7 @@ directed-basis-forᴰ {𝓤} {𝓥} {𝓦} F ℬ@(I , β) =
     where
      open Joins (λ x y → x ≤[ poset-of F ] y)
 
-directed-basisᴰ : (F : Frame 𝓤 𝓥 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+directed-basisᴰ : (F : Frame 𝓤 𝓥 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
 directed-basisᴰ {𝓤} {𝓥} {𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , directed-basis-forᴰ F ℬ
 
@@ -107,7 +107,7 @@ closed-under-binary-meets F 𝒮 =
 closed-under-finite-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
-spectralₛᴰ : Locale 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+spectralₛᴰ : Locale 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
 spectralₛᴰ {_} {_} {𝓦} X =
   Σ ℬ ꞉ Fam 𝓦 ⟨ 𝒪 X ⟩ ,
      is-directed-basis (𝒪 X) ℬ
@@ -171,7 +171,7 @@ type of compact opens of a locale to be small:
 
 \begin{code}
 
-has-small-𝒦 : Locale 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+has-small-𝒦 : Locale 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
 has-small-𝒦 {_} {_} {𝓦} X = 𝒦 X is 𝓦 small
 
 \end{code}
@@ -296,7 +296,7 @@ basic-is-small X (ℬ , b) ψ =
   σ : image (ℬ [_]) is 𝓦 small
   σ = basic-is-small X (ℬ , b) ψ
 
-  B₀ : 𝓦  ̇
+  B₀ : 𝓦 ̇
   B₀ = pr₁ σ
 
   Ⅰ = pr₂ σ

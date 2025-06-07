@@ -46,7 +46,7 @@ We now define standard minimax games.
 module GamesMGU.alpha-beta
         {𝓤 𝓥 : Universe}
         (R : 𝓤 ̇ )
-        (_<_ : R → R → 𝓥  ̇ )
+        (_<_ : R → R → 𝓥 ̇ )
         (δ : (r s : R) → is-decidable (r < s))
       where
 

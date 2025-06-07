@@ -103,7 +103,7 @@ module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓
 
  module _ {A B : ob} (f : A ⊢ B) where
-  is-thunkable : 𝓤 ⊔ 𝓥  ̇
+  is-thunkable : 𝓤 ⊔ 𝓥 ̇
   is-thunkable =
    (C D : ob) (g : B ⊢ C) (h : C ⊢ D)
    → cut (cut f g) h ＝ cut f (cut g h)

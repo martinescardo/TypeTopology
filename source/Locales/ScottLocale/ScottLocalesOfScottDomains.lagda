@@ -76,7 +76,7 @@ The following function expresses a list being contained in a given subset.
 
 \begin{code}
 
-_⊆⊆_ : {𝓤 𝓥 : Universe} {X : 𝓤  ̇ } → List X → 𝓟 {𝓥} {𝓤} X → 𝓤 ⊔ 𝓥  ̇
+_⊆⊆_ : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } → List X → 𝓟 {𝓥} {𝓤} X → 𝓤 ⊔ 𝓥 ̇
 _⊆⊆_ {_} {_} {X} xs U = (x : X) → member x xs → x ∈ U
 
 \end{code}
@@ -86,7 +86,7 @@ assumption for upper boundedness of compact elements.
 
 \begin{code}
 
-decidability-condition : (𝓓 : DCPO {𝓤 ⁺} {𝓤}) → 𝓤 ⁺  ̇
+decidability-condition : (𝓓 : DCPO {𝓤 ⁺} {𝓤}) → 𝓤 ⁺ ̇
 decidability-condition 𝓓 = (c d : ⟨ 𝓓 ⟩∙) →
                             is-compact 𝓓 c → is-compact 𝓓 d →
                              is-decidable (bounded-above 𝓓 c d holds)
@@ -140,7 +140,7 @@ We denote by `(B, β)` the algebraic basis of the pointed dcpo 𝓓 in considera
 
 \begin{code}
 
- B : 𝓤  ̇
+ B : 𝓤 ̇
  B = index-of-compact-basis 𝓓 hscb
 
  β : B → ⟨ 𝓓 ⟩∙
@@ -630,7 +630,7 @@ This forms a directed basis.
 
     open 𝒪ₛᴿ Uᴿ renaming (pred to 𝔘)
 
-    D : 𝓤  ̇
+    D : 𝓤 ̇
     D = (Σ b⃗ ꞉ (List B) , ((b : B) → member b b⃗ → (β b) ∈ 𝔘))
 
     δ : (Σ b⃗ ꞉ (List B) , ((b : B) → member b b⃗ → (β b) ∈ 𝔘)) → List B

@@ -12,7 +12,7 @@ open import MLTT.Spartan
 
 record Strict-Order {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇ where
  field
-   _<_ : X → Y → 𝓦  ̇
+   _<_ : X → Y → 𝓦 ̇
 
  _≮_ : X → Y → 𝓦 ̇
  _>_ _≯_ : Y → X → 𝓦 ̇
@@ -30,7 +30,7 @@ open Strict-Order {{...}} public
 
 record Order {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇ where
  field
-   _≤_ : X → Y → 𝓦  ̇
+   _≤_ : X → Y → 𝓦 ̇
 
  _≰_ : X → Y → 𝓦 ̇
  _≥_ _≱_ : Y → X → 𝓦 ̇
@@ -49,7 +49,7 @@ open Order {{...}} public
 
 record Strict-Square-Order {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇ where
  field
-   _⊏_ : X → Y → 𝓦  ̇
+   _⊏_ : X → Y → 𝓦 ̇
 
  _⊐_ : Y → X → 𝓦 ̇
  x ⊐ y = y ⊏ x
@@ -61,7 +61,7 @@ open Strict-Square-Order {{...}} public
 
 record Square-Order {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇ where
  field
-   _⊑_ : X → Y → 𝓦  ̇
+   _⊑_ : X → Y → 𝓦 ̇
 
  _⊒_ : Y → X → 𝓦 ̇
  x ⊒ y = y ⊑ x
@@ -73,7 +73,7 @@ open Square-Order {{...}} public
 
 record Strict-Curly-Order {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇ where
  field
-   _≺_ : X → Y → 𝓦  ̇
+   _≺_ : X → Y → 𝓦 ̇
 
  _≻_ : Y → X → 𝓦 ̇
  x ≻ y = y ≺ x
@@ -85,7 +85,7 @@ open Strict-Curly-Order {{...}} public
 
 record Curly-Order {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇ where
  field
-   _≼_ : X → Y → 𝓦  ̇
+   _≼_ : X → Y → 𝓦 ̇
 
  _≽_ : Y → X → 𝓦 ̇
  x ≽ y = y ≼ x

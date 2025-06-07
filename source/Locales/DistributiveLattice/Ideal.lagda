@@ -57,7 +57,7 @@ is-closed-under-binary-joins L I =
   where
    open DistributiveLattice L
 
-record Ideal (L : DistributiveLattice 𝓤) : 𝓤 ⁺  ̇ where
+record Ideal (L : DistributiveLattice 𝓤) : 𝓤 ⁺ ̇ where
  open DistributiveLattice L
 
  field
@@ -86,7 +86,7 @@ is-ideal : (L : DistributiveLattice 𝓤) → 𝓟 {𝓤} ∣ L ∣ᵈ → Ω �
 is-ideal L I =
  is-inhabited L I ∧ is-downward-closed L I ∧ is-closed-under-binary-joins L I
 
-Ideal₀ : DistributiveLattice 𝓤 → 𝓤 ⁺  ̇
+Ideal₀ : DistributiveLattice 𝓤 → 𝓤 ⁺ ̇
 Ideal₀ {𝓤} L = Σ I ꞉ 𝓟 {𝓤} ∣ L ∣ᵈ , is-ideal L I holds
 
 to-ideal₀ : (L : DistributiveLattice 𝓤) → Ideal L → Ideal₀ L

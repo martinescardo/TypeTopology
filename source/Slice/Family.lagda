@@ -15,10 +15,10 @@ universe `𝓤`.
 
 \begin{code}
 
-Fam : (𝓤 : Universe) → 𝓦  ̇ → 𝓤 ⁺ ⊔ 𝓦  ̇
-Fam 𝓤 A = Σ I ꞉ 𝓤  ̇ , (I → A)
+Fam : (𝓤 : Universe) → 𝓦 ̇ → 𝓤 ⁺ ⊔ 𝓦 ̇
+Fam 𝓤 A = Σ I ꞉ 𝓤 ̇ , (I → A)
 
-index : {A : 𝓤  ̇ } → Fam 𝓦 A → 𝓦  ̇
+index : {A : 𝓤 ̇ } → Fam 𝓦 A → 𝓦 ̇
 index (I , _) = I
 
 \end{code}
@@ -65,7 +65,7 @@ Resizing of families.
 
 \begin{code}
 
-resize-family : {A : 𝓤  ̇ }
+resize-family : {A : 𝓤 ̇ }
               → (S : Fam 𝓥 A)
               → index S is 𝓦 small
               → Fam 𝓦 A
@@ -79,8 +79,8 @@ families.
 \begin{code}
 
 module _
-        {B : 𝓥  ̇ }
-        {A : 𝓤  ̇ }
+        {B : 𝓥 ̇ }
+        {A : 𝓤 ̇ }
         (m : B → A)
        where
 

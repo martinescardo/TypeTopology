@@ -59,7 +59,7 @@ Transport lemma for distributive lattices.
 \begin{code}
 
  ≅d≅-transport : (K L : DistributiveLattice 𝓤)
-               → (B : DistributiveLattice 𝓤 → 𝓣  ̇ )
+               → (B : DistributiveLattice 𝓤 → 𝓣 ̇ )
                → K ≅d≅ L
                → B K
                → B L

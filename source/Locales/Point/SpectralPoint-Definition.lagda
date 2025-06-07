@@ -58,7 +58,7 @@ homomorphism `point-fn.
 
 \begin{code}
 
- record Spectral-Point : 𝓤 ⁺  ̇ where
+ record Spectral-Point : 𝓤 ⁺ ̇ where
   field
    point-fn : ⟨ 𝒪 X ⟩ → Ω 𝓤
 
@@ -85,7 +85,7 @@ This record-based definition is of course just a more verbose way of writing
 
 \begin{code}
 
- Spectral-Point₀ : 𝓤 ⁺  ̇
+ Spectral-Point₀ : 𝓤 ⁺ ̇
  Spectral-Point₀ = Spectral-Map (𝟏Loc pe) X
 
  to-spectral-point₀ : Spectral-Point → Spectral-Point₀

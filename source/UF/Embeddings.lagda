@@ -484,7 +484,7 @@ maps-of-props-are-embeddings : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } (f : P → Q)
 maps-of-props-are-embeddings f i j =
  maps-of-props-into-sets-are-embeddings f i (props-are-sets j)
 
-×-is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+×-is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
                  (f : X → A) (g : Y → B)
                → is-embedding f
                → is-embedding g

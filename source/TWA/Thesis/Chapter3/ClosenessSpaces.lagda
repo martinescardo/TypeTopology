@@ -70,7 +70,7 @@ is-pseudocloseness c
 is-pseudocloseness-space : (X : 𝓤 ̇ ) → 𝓤 ̇
 is-pseudocloseness-space X = Σ c ꞉ (X → X → ℕ∞) , is-pseudocloseness c
 
-PseudoClosenessSpace : (𝓤 : Universe) → 𝓤 ⁺  ̇
+PseudoClosenessSpace : (𝓤 : Universe) → 𝓤 ⁺ ̇
 PseudoClosenessSpace 𝓤
  = Σ X ꞉ 𝓤 ̇ , is-pseudocloseness-space X
 
@@ -83,7 +83,7 @@ is-closeness-space X
  , (indistinguishable-are-equal c
  × is-pseudocloseness c)
 
-ClosenessSpace : (𝓤 : Universe) → 𝓤 ⁺  ̇
+ClosenessSpace : (𝓤 : Universe) → 𝓤 ⁺ ̇
 ClosenessSpace 𝓤
  = Σ X ꞉ 𝓤 ̇ , is-closeness-space X
 
@@ -259,20 +259,20 @@ ucontinuous-continuous : (X : ClosenessSpace 𝓤)
 ucontinuous-continuous X Y f ϕ ϵ x₁ = pr₁ (ϕ ϵ)  , pr₂ (ϕ ϵ) x₁
 
 p-ucontinuous'-with-mod
- : (X : PseudoClosenessSpace 𝓤) → (p : ⟪ X ⟫ → Ω 𝓦) → ℕ → 𝓤 ⊔ 𝓦  ̇
+ : (X : PseudoClosenessSpace 𝓤) → (p : ⟪ X ⟫ → Ω 𝓦) → ℕ → 𝓤 ⊔ 𝓦 ̇
 p-ucontinuous'-with-mod X p δ
  = (x₁ x₂ : ⟪ X ⟫) → C' X δ x₁ x₂ → (p x₁ holds → p x₂ holds)
 
 p-ucontinuous'
- : (X : PseudoClosenessSpace 𝓤) → (p : ⟪ X ⟫ → Ω 𝓦) → 𝓤 ⊔ 𝓦  ̇
+ : (X : PseudoClosenessSpace 𝓤) → (p : ⟪ X ⟫ → Ω 𝓦) → 𝓤 ⊔ 𝓦 ̇
 p-ucontinuous' X p
  = Σ δ ꞉ ℕ , p-ucontinuous'-with-mod X p δ
 
 p-ucontinuous-with-mod
- : (X : ClosenessSpace 𝓤) → (p : ⟨ X ⟩ → Ω 𝓦) → ℕ → 𝓤 ⊔ 𝓦  ̇
+ : (X : ClosenessSpace 𝓤) → (p : ⟨ X ⟩ → Ω 𝓦) → ℕ → 𝓤 ⊔ 𝓦 ̇
 p-ucontinuous-with-mod X p δ = p-ucontinuous'-with-mod (ι X) p δ
 
-p-ucontinuous : (X : ClosenessSpace 𝓤) → (p : ⟨ X ⟩ → Ω 𝓦) → 𝓤 ⊔ 𝓦  ̇
+p-ucontinuous : (X : ClosenessSpace 𝓤) → (p : ⟨ X ⟩ → Ω 𝓦) → 𝓤 ⊔ 𝓦 ̇
 p-ucontinuous X p
  = Σ δ ꞉ ℕ , p-ucontinuous-with-mod X p δ
 \end{code}
@@ -342,12 +342,12 @@ C-ucontinuous-r X ϵ y = ϵ , γ
 ## Predicates from closeness relations
 
 \begin{code}
-decidable-predicate : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓦 ⁺  ̇
+decidable-predicate : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓦 ⁺ ̇
 decidable-predicate 𝓦 X
  = Σ p ꞉ (X → Ω 𝓦) , is-complemented (λ x → (p x) holds)
 
 decidable-uc-predicate
- : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ 𝓦 ⁺  ̇
+ : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ 𝓦 ⁺ ̇
 decidable-uc-predicate 𝓦 X
  = Σ (p , d) ꞉ decidable-predicate 𝓦 ⟨ X ⟩ , p-ucontinuous X p
 
@@ -397,7 +397,7 @@ C-f-decidable-uc-predicate-r X Y f ϕ ϵ y
 ## Totally bounded
 
 \begin{code}
-_is_net-of_ : (X' : 𝓤'  ̇ ) → ℕ → ClosenessSpace 𝓤 → 𝓤 ⊔ 𝓤'  ̇
+_is_net-of_ : (X' : 𝓤' ̇ ) → ℕ → ClosenessSpace 𝓤 → 𝓤 ⊔ 𝓤' ̇
 X' is ϵ net-of X
  = (Σ g ꞉ (  X'  → ⟨ X ⟩)
  , Σ h ꞉ (⟨ X ⟩ →   X' )
@@ -410,6 +410,6 @@ pointed-has-a-0-net : (X : ClosenessSpace 𝓤)
 pointed-has-a-0-net X x
  = 𝟙 , ((λ _ → x) , (λ _ → ⋆) , λ _ _ ()) , 𝟙-is-finite
 
-totally-bounded : ClosenessSpace 𝓤 → (𝓤' : Universe) → 𝓤 ⊔ (𝓤' ⁺)  ̇
+totally-bounded : ClosenessSpace 𝓤 → (𝓤' : Universe) → 𝓤 ⊔ (𝓤' ⁺) ̇
 totally-bounded X 𝓤' = (ϵ : ℕ) → Σ X' ꞉ 𝓤' ̇ , X' is ϵ net-of X
 \end{code}

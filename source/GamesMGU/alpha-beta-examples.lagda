@@ -230,7 +230,7 @@ module tic-tac-toe where
   value : Board → R
   value (x , o) = if wins x then 2 else if wins o then 0 else 1
 
-  data Player : 𝓤₀  ̇ where
+  data Player : 𝓤₀ ̇ where
    X O : Player
 
   maximizing-player : Player
@@ -304,7 +304,7 @@ module tic-tac-toe where
   TTT-tree-is-listed⁺ : structure listed⁺ TTT-tree
   TTT-tree-is-listed⁺ = perm-tree-is-listed⁺ all-moves
 
-  data Player : 𝓤₀  ̇ where
+  data Player : 𝓤₀ ̇ where
    X O : Player
 
   opponent : Player → Player

@@ -17,7 +17,7 @@ open import MLTT.Spartan
 open import TypeTopology.CompactTypes
 open import UF.FunExt
 
-module TypeTopology.UniformSearch (X : 𝓤  ̇ )(fe : funext 𝓤₀ 𝓤) (κ : is-compact∙ X) where
+module TypeTopology.UniformSearch (X : 𝓤 ̇ )(fe : funext 𝓤₀ 𝓤) (κ : is-compact∙ X) where
 
 \end{code}
 
@@ -51,7 +51,7 @@ cons-head-tail α = dfunext fe h
 
 \begin{code}
 
-_＝⟦_⟧_ : (ℕ → X) → ℕ → (ℕ → X) → 𝓤  ̇
+_＝⟦_⟧_ : (ℕ → X) → ℕ → (ℕ → X) → 𝓤 ̇
 𝓊 ＝⟦ zero   ⟧ 𝓋 = 𝟙
 𝓊 ＝⟦ succ n ⟧ 𝓋 = (head 𝓊 ＝ head 𝓋) × (tail 𝓊 ＝⟦ n ⟧ tail 𝓋 )
 
@@ -62,10 +62,10 @@ localy constancy.
 
 \begin{code}
 
-_is-a-mod-of-lc-of_ : ℕ → ((ℕ → X) → 𝟚) → 𝓤  ̇
+_is-a-mod-of-lc-of_ : ℕ → ((ℕ → X) → 𝟚) → 𝓤 ̇
 n is-a-mod-of-lc-of p = (𝓊 𝓋 : ℕ → X) → 𝓊 ＝⟦ n ⟧ 𝓋 → p 𝓊 ＝ p 𝓋
 
-is-locally-constant : ((ℕ → X) → 𝟚) → 𝓤  ̇
+is-locally-constant : ((ℕ → X) → 𝟚) → 𝓤 ̇
 is-locally-constant p = Σ n ꞉ ℕ , n is-a-mod-of-lc-of p
 
 \end{code}

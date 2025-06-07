@@ -39,7 +39,7 @@ First, we define some nicer syntax for inherently typed System T terms.
 
 \begin{code}
 
-_⊢_ : Cxt → type → 𝓤₀  ̇
+_⊢_ : Cxt → type → 𝓤₀ ̇
 _⊢_ Γ τ = T Γ τ
 
 infix 4 _⊢_
@@ -282,7 +282,7 @@ use of function extensionality from it yet.
 
 \begin{code}
 
--- church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇ }
+-- church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
 --                      → (d : D X Y Z)
 --                      → (η′ : Z → A)
 --                      → (β′ : (Y → A) → X → A)
@@ -338,7 +338,7 @@ and show that our `modulusᵀ` operator satisfies it.
 
 \begin{code}
 
-_is-a-modulus-of-continuity-for_at_ : ℕ → ((ℕ → ℕ) → ℕ) → (ℕ → ℕ) → 𝓤₀  ̇
+_is-a-modulus-of-continuity-for_at_ : ℕ → ((ℕ → ℕ) → ℕ) → (ℕ → ℕ) → 𝓤₀ ̇
 m is-a-modulus-of-continuity-for f at α =
  (β : ℕ → ℕ) → α ＝⦅ m ⦆ β → f α ＝ f β
 

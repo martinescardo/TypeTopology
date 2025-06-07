@@ -27,7 +27,7 @@ open import UF.Subsingletons-FunExt
 
 data 𝑻 : 𝓤 ⁺ ̇ where
   []  : 𝑻
-  _∷_ : (X : 𝓤  ̇ ) (Xf : X → 𝑻) → 𝑻
+  _∷_ : (X : 𝓤 ̇ ) (Xf : X → 𝑻) → 𝑻
 
 \end{code}
 
@@ -78,7 +78,7 @@ it:
 
 data Path₁ : 𝑻 → 𝓤 ⁺ ̇ where
  []  : Path₁ []
- _∷_ : {X : 𝓤  ̇ } {Xf : X → 𝑻} (x : X) (xs : Path₁ (Xf x)) → Path₁ (X ∷ Xf)
+ _∷_ : {X : 𝓤 ̇ } {Xf : X → 𝑻} (x : X) (xs : Path₁ (Xf x)) → Path₁ (X ∷ Xf)
 
 \end{code}
 
@@ -86,7 +86,7 @@ Equip the internal nodes of a type tree with structure:
 
 \begin{code}
 
-structure : (𝓤  ̇ → 𝓥 ̇ ) → 𝑻 → 𝓤 ⊔ 𝓥 ̇
+structure : (𝓤 ̇ → 𝓥 ̇ ) → 𝑻 → 𝓤 ⊔ 𝓥 ̇
 structure S []       = 𝟙
 structure S (X ∷ Xf) = S X × ((x : X) → structure S (Xf x))
 
@@ -98,9 +98,9 @@ it:
 
 \begin{code}
 
-data structure₁ (S : 𝓤  ̇ → 𝓥 ̇ ) : 𝑻 → 𝓤 ⁺ ⊔ 𝓥 ̇ where
+data structure₁ (S : 𝓤 ̇ → 𝓥 ̇ ) : 𝑻 → 𝓤 ⁺ ⊔ 𝓥 ̇ where
  []  : structure₁ S []
- _∷_ : {X : 𝓤  ̇ } {Xf : X → 𝑻} → S X → ((x : X) → structure₁ S (Xf x)) → structure₁ S (X ∷ Xf)
+ _∷_ : {X : 𝓤 ̇ } {Xf : X → 𝑻} → S X → ((x : X) → structure₁ S (Xf x)) → structure₁ S (X ∷ Xf)
 
 structure-up : (S : 𝓤 ̇ → 𝓥 ̇ ) (Xt : 𝑻) → structure S Xt → structure₁ S Xt
 structure-up S []      ⟨⟩         = []
@@ -116,7 +116,7 @@ Xt is hereditarily P if all its internal nodes satisfy P:
 
 \begin{code}
 
-_is-hereditarily_ : 𝑻 → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥  ̇
+_is-hereditarily_ : 𝑻 → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 []       is-hereditarily P = 𝟙
 (X ∷ Xf) is-hereditarily P = P X × ((x : X) → Xf x is-hereditarily P)
 
@@ -160,7 +160,7 @@ completeness, but won't be used directly:
 
 𝑻-recursion : (A : 𝓥 ̇ )
             → A
-            → ((X : 𝓤  ̇ ) → (X → 𝑻) → (X → A) → A)
+            → ((X : 𝓤 ̇ ) → (X → 𝑻) → (X → A) → A)
             → 𝑻 → A
 𝑻-recursion A = 𝑻-induction (λ _ → A)
 
@@ -178,7 +178,7 @@ Here are some examples for the sake of illustration:
 
 private
 
- Path' : 𝑻 → 𝓤  ̇
+ Path' : 𝑻 → 𝓤 ̇
  Path' = 𝑻-iteration (_ ̇ )  𝟙 (λ X F → Σ x ꞉ X , F x)
 
  Path'-[] : Path' [] ＝ 𝟙

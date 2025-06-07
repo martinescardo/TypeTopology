@@ -181,10 +181,10 @@ reals, after some preparation.
 
 \begin{code}
 
-are-ordered : 𝓟 ℚ → 𝓟 ℚ → 𝓤  ̇
+are-ordered : 𝓟 ℚ → 𝓟 ℚ → 𝓤 ̇
 are-ordered L U = (p q : ℚ) → p ∈ L → q ∈ U → p < q
 
-are-located : 𝓟 ℚ → 𝓟 ℚ → 𝓤  ̇
+are-located : 𝓟 ℚ → 𝓟 ℚ → 𝓤 ̇
 are-located L U = (p q : ℚ) → p < q → p ∈ L ∨ q ∈ U
 
 being-ordered-is-prop : (L U : 𝓟 ℚ) → is-prop (are-ordered L U)

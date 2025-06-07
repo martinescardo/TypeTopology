@@ -153,7 +153,7 @@ union of ideals `⋃_{j : J} I_j`. Intuitively, this just says: for every `x` in
 
  infix 30 covering-syntax
 
- covering-syntax : (S : Fam 𝓤 (Ideal L)) → List ∣ L ∣ᵈ → 𝓤  ̇
+ covering-syntax : (S : Fam 𝓤 (Ideal L)) → List ∣ L ∣ᵈ → 𝓤 ̇
  covering-syntax S []       = 𝟙
  covering-syntax S (x ∷ xs) =
   (Σ i ꞉ index S , x ∈ᵢ (S [ i ]) holds) × covering-syntax S xs

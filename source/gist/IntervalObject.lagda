@@ -339,14 +339,14 @@ TODO. There should be a variation that doesn't assume that P is prop-valued.
 
 \begin{code}
 
- is-closed-under-midpoint : ([𝟎,𝟏] → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+ is-closed-under-midpoint : ([𝟎,𝟏] → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
  is-closed-under-midpoint P = (r s : [𝟎,𝟏]) → P r → P s → P (r ⊕ s)
 
- is-closed-under-big-midpoint : ([𝟎,𝟏] → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+ is-closed-under-big-midpoint : ([𝟎,𝟏] → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
  is-closed-under-big-midpoint P = (x : ℕ → [𝟎,𝟏]) → ((i : ℕ) → P (x i)) → P (⨁ x)
 
  closure-under-big-midpoint-gives-closure-under-midpoint
-  : (P : [𝟎,𝟏] → 𝓥 ̇)
+  : (P : [𝟎,𝟏] → 𝓥 ̇ )
   → is-closed-under-big-midpoint P
   → is-closed-under-midpoint P
  closure-under-big-midpoint-gives-closure-under-midpoint
@@ -360,7 +360,7 @@ TODO. There should be a variation that doesn't assume that P is prop-valued.
      I (succ i) = ps
 
  [𝟎,𝟏]-induction
-  : (P : [𝟎,𝟏] → 𝓥 ̇)
+  : (P : [𝟎,𝟏] → 𝓥 ̇ )
   → ((r : [𝟎,𝟏]) → is-prop (P r))
   → P 𝟎
   → P 𝟏

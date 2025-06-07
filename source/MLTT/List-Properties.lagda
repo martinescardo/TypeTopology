@@ -26,7 +26,7 @@ The empty list has no members.
 
 \begin{code}
 
-not-in-empty-list : {A : 𝓤  ̇ } {x : A} → ¬ member x []
+not-in-empty-list : {A : 𝓤 ̇ } {x : A} → ¬ member x []
 not-in-empty-list ()
 
 \end{code}
@@ -36,7 +36,7 @@ surjection.
 
 \begin{code}
 
-module list-indexing (pt : propositional-truncations-exist) {X : 𝓤  ̇ } where
+module list-indexing (pt : propositional-truncations-exist) {X : 𝓤 ̇ } where
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt

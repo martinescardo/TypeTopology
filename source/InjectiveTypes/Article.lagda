@@ -1602,7 +1602,7 @@ Injectivity in terms of algebraic injectivity in the presence of resizing I
 
 injectivity-in-terms-of-ainjectivity'
  : propositional-resizing (𝓤 ⁺) 𝓤
- → (D : 𝓤  ̇ ) → injective-type D 𝓤 (𝓤 ⁺)
+ → (D : 𝓤 ̇ ) → injective-type D 𝓤 (𝓤 ⁺)
               ↔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
 injectivity-in-terms-of-ainjectivity' {𝓤} R D = a , b
   where

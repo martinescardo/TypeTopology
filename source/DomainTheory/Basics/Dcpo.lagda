@@ -98,7 +98,7 @@ module _ {𝓤 𝓣 : Universe}
  being-directed-is-prop α =
   ×-is-prop being-inhabited-is-prop (being-semidirected-is-prop α)
 
- is-directed-complete : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣  ̇
+ is-directed-complete : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣 ̇
  is-directed-complete = (I : 𝓥 ̇ ) (α : I → D) → is-directed α → has-sup α
 
  is-sup-is-prop : poset-axioms _⊑_

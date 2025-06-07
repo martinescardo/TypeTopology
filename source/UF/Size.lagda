@@ -159,7 +159,7 @@ excluded middle, which is consistent (with or without univalence):
 
 \begin{code}
 
-decidable-propositions-have-any-size : (P : 𝓤  ̇ )
+decidable-propositions-have-any-size : (P : 𝓤 ̇ )
                                      → is-prop P
                                      → is-decidable P
                                      → P is 𝓥 small

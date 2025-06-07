@@ -33,7 +33,7 @@ open basic-interval-object-development fe io hiding (−1 ; O ; +1)
 ⟪_⟫ : 𝟛ᴺ → 𝕀
 ⟪ α ⟫ = M (map ⟨_⟩ α)
 
-_realises¹_ : (𝟛ᴺ → 𝟛ᴺ) → (𝕀 → 𝕀) → 𝓦  ̇
+_realises¹_ : (𝟛ᴺ → 𝟛ᴺ) → (𝕀 → 𝕀) → 𝓦 ̇
 f realises¹ f' = (α : 𝟛ᴺ) → f' ⟪ α ⟫ ＝ ⟪ f α ⟫
 
 _realises²_ : (𝟛ᴺ → 𝟛ᴺ → 𝟛ᴺ) → (𝕀 → 𝕀 → 𝕀) → 𝓦 ̇
@@ -103,8 +103,8 @@ half +2 = v
 
 ⊕-idem' = λ {a}             → ⊕-idem a
 ⊕-comm' = λ {a} {b}         → ⊕-comm a b
-⊕-tran' = λ {a} {b} {c} {d} → ⊕-tran a b c d 
-⊕-canc' = λ {a} {b} {c}     → ⊕-canc a b c 
+⊕-tran' = λ {a} {b} {c} {d} → ⊕-tran a b c d
+⊕-canc' = λ {a} {b} {c}     → ⊕-canc a b c
 
 div2-aux-＝ : (x y : 𝟝) (z : 𝕀) → let (a , b) = div2-aux x y in
              ⟨ a ⟩ ⊕ (half b ⊕ z) ＝ (half x ⊕ (half y ⊕ z))
@@ -359,7 +359,7 @@ div4-aux-＝ −1 +3 z
  ∙ ⊕-tran'
  ∙ l ⊕-comm'
 div4-aux-＝ −1 +4 z = ⊕-tran'
-div4-aux-＝  O  y z = refl 
+div4-aux-＝  O  y z = refl
 div4-aux-＝ +1 −4 z
  = l ⊕-comm'
  ∙ ⊕-tran'
@@ -566,7 +566,7 @@ f realisesᴺ f' = (δs : ℕ → 𝟛ᴺ) → f' (map ⟪_⟫ δs) ＝ ⟪ f δ
 𝟡s-conv-＝ −1  O  O = ap (u ⊕_) ⊕-idem'
 𝟡s-conv-＝ −1  O +1 = ap (u ⊕_) ⊕-comm'
 𝟡s-conv-＝ −1 +1 −1 = ap (u ⊕_) ⊕-comm'
-𝟡s-conv-＝ −1 +1  O = refl 
+𝟡s-conv-＝ −1 +1  O = refl
 𝟡s-conv-＝ −1 +1 +1 = ap (u ⊕_) ⊕-idem'
 𝟡s-conv-＝  O −1 −1 = ⊕-comm' ∙ ap (_⊕ (u ⊕ v)) ⊕-idem'
 𝟡s-conv-＝  O −1  O = ⊕-tran' ∙ ap (_⊕ (v ⊕ (u ⊕ v))) ⊕-idem'

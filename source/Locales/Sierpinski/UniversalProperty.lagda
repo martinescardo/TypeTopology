@@ -77,7 +77,7 @@ defining frame is the free frame on one generator.
 
 has-the-universal-property-of-sierpinski : (S : Locale (𝓤 ⁺) 𝓤 𝓤)
                                          → ⟨ 𝒪 S ⟩
-                                         → 𝓤 ⁺ ⁺  ̇
+                                         → 𝓤 ⁺ ⁺ ̇
 has-the-universal-property-of-sierpinski S truth =
  (X : Locale (𝓤 ⁺) 𝓤 𝓤) →
   (U : ⟨ 𝒪 X ⟩) →
@@ -108,7 +108,7 @@ The frame homomorphism `h : 𝒪(𝕊) → 𝒪(X)` is defined as `h(𝔙) :≡ 
 
 \begin{code}
 
-  I : ⟨ 𝒪 𝕊 ⟩ → 𝓤  ̇
+  I : ⟨ 𝒪 𝕊 ⟩ → 𝓤 ̇
   I 𝔘 = (⊤ₛ ∈ₛ 𝔘) holds + (⊥ₛ ∈ₛ 𝔘) holds
 
   α : (𝔙 : ⟨ 𝒪 𝕊 ⟩) → (⊤ₛ ∈ₛ 𝔙) holds + (⊥ₛ ∈ₛ 𝔙) holds → ⟨ 𝒪 X ⟩

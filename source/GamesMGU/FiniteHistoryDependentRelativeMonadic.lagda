@@ -105,15 +105,15 @@ The types of trees with JT and KT structure.
 
 \begin{code}
 
-structure' : (𝕊 𝓤 → 𝓥 ̇) → (Xt : 𝑻) → structure S Xt → 𝓤 ⊔ 𝓥 ̇
+structure' : (𝕊 𝓤 → 𝓥 ̇ ) → (Xt : 𝑻) → structure S Xt → 𝓤 ⊔ 𝓥 ̇
 structure' F [] ⟨⟩ = 𝟙
 structure' F (X ∷ Xf) (s :: sf)
  = F (X , s) × ((x : X) → structure' F (Xf x) (sf x))
 
-𝓙𝓣 : (Xt : 𝑻) → structure S Xt → ℓ 𝕋 𝓦₀ ⊔ ℓ 𝕋 𝓤 ⊔ 𝓤  ̇
+𝓙𝓣 : (Xt : 𝑻) → structure S Xt → ℓ 𝕋 𝓦₀ ⊔ ℓ 𝕋 𝓤 ⊔ 𝓤 ̇
 𝓙𝓣 = structure' JT
 
-𝓚𝓣 : (Xt : 𝑻) → structure S Xt → ℓ 𝕋 𝓦₀ ⊔ 𝓦₀ ⊔ 𝓤  ̇
+𝓚𝓣 : (Xt : 𝑻) → structure S Xt → ℓ 𝕋 𝓦₀ ⊔ 𝓦₀ ⊔ 𝓤 ̇
 𝓚𝓣 = structure' KT
 
 \end{code}

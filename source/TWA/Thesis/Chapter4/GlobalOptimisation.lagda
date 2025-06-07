@@ -21,11 +21,11 @@ open import TWA.Thesis.Chapter4.ApproxOrder fe
 
 \begin{code}
 is-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_≤_ : Y → Y → 𝓦 ̇ )
-                  → (X → Y) → X → 𝓤 ⊔ 𝓦  ̇
+                  → (X → Y) → X → 𝓤 ⊔ 𝓦 ̇
 is-global-minimal {𝓤} {𝓥} {𝓦'} {X} _≤_ f x₀ = (x : X) → f x₀ ≤ f x
 
 has-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_≤_ : Y → Y → 𝓦 ̇ )
-                   → (X → Y) → 𝓤 ⊔ 𝓦  ̇
+                   → (X → Y) → 𝓤 ⊔ 𝓦 ̇
 has-global-minimal f = Σ ∘ (is-global-minimal f)
 
 Fin-global-minimal : (n : ℕ) → Fin n → {Y : 𝓤 ̇ }
@@ -55,7 +55,7 @@ Fin-global-minimal (succ (succ n)) x _≤_ l@(p , _) f
     γ (suc x)
      = ≤-trans⟨ p ⟩ (f 𝟎) (f (suc x'₀)) (f (suc x)) 𝟎≤x'₀ (m x)
 
-finite-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥  ̇ }
+finite-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                       → X → finite-linear-order X
                       → (_≤_ : Y → Y → 𝓦 ̇ )
                       → is-linear-preorder _≤_
@@ -78,7 +78,7 @@ finite-global-minimal x (n , e@(g , _ , (h , μ))) _≤_ l f
 is_global-minimal : ℕ → {𝓤 𝓥 : Universe}
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → (_≤ⁿ_ : Y → Y → ℕ → 𝓦 ̇ )
-                  → (f : X → Y) → X → 𝓦 ⊔ 𝓤  ̇
+                  → (f : X → Y) → X → 𝓦 ⊔ 𝓤 ̇
 (is ϵ global-minimal) {𝓤} {𝓥} {X} _≤ⁿ_ f x₀
  = (x : X) → (f x₀ ≤ⁿ f x) ϵ
 
@@ -91,7 +91,7 @@ has_global-minimal : ℕ → {𝓤 𝓥 : Universe} {X : 𝓤 ̇ }
 
 F-ϵ-global-minimal : {X : 𝓤 ̇ } (Y : ClosenessSpace 𝓥)
                    → X → finite-linear-order X
-                   → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦'  ̇ )
+                   → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦' ̇ )
                    → is-approx-order Y _≤ⁿ_
                    → (ϵ : ℕ) → (f : X → ⟨ Y ⟩)
                    → (has ϵ global-minimal) _≤ⁿ_ f
@@ -104,7 +104,7 @@ F-ϵ-global-minimal Y x l _≤ⁿ_ a ϵ
 \begin{code}
 cover-continuity-lemma
  : (X : ClosenessSpace 𝓤) {X' : 𝓤' ̇ } (Y : ClosenessSpace 𝓥)
- → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦'  ̇ )
+ → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦' ̇ )
  → is-approx-order Y _≤ⁿ_
  → (ϵ : ℕ) → (f : ⟨ X ⟩ → ⟨ Y ⟩) (ϕ : f-ucontinuous X Y f)
  → let δ = pr₁ (ϕ ϵ) in (((g , _) , _) : X' is δ net-of X)
@@ -120,7 +120,7 @@ cover-continuity-lemma
 
 global-opt : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
            → ⟨ X ⟩
-           → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦'  ̇ )
+           → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦' ̇ )
            → is-approx-order Y _≤ⁿ_
            → (ϵ : ℕ)
            → (f : ⟨ X ⟩ → ⟨ Y ⟩) (ϕ : f-ucontinuous X Y f)
@@ -134,7 +134,7 @@ global-opt {𝓤} {𝓥} {𝓦'} {𝓤'} X Y x₁ _≤ⁿ_ a ϵ f ϕ t
  where
   δ : ℕ
   δ = pr₁ (ϕ ϵ)
-  X' : 𝓤'  ̇
+  X' : 𝓤' ̇
   X' =  pr₁ (t δ)
   X'-is-δ-net : X' is δ net-of X
   X'-is-δ-net  = pr₂ (t δ)

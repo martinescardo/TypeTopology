@@ -55,7 +55,7 @@ open Locale
 open PropositionalTruncation pt
 
 instance
- underlying-type-of-frame : Underlying-Type (Frame 𝓤 𝓥 𝓦) (𝓤  ̇ )
+ underlying-type-of-frame : Underlying-Type (Frame 𝓤 𝓥 𝓦) (𝓤 ̇ )
  ⟨_⟩ {{underlying-type-of-frame}} (A , _) = A
 
 \end{code}

@@ -902,7 +902,7 @@ We now name the quotient set and the universal map into it.
 
 \begin{code}
 
-   FA/∾ : 𝓤̅  ̇
+   FA/∾ : 𝓤̅ ̇
    FA/∾ = FA / -∾-
 
    η/∾ : FA → FA/∾

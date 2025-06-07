@@ -21,7 +21,7 @@ It was also known that
 
 which resizes down the first universe parameter, and that
 
- * ainjective-type (𝓤  ̇ ) 𝓤 𝓤      (Universes are injective)
+ * ainjective-type (𝓤 ̇ ) 𝓤 𝓤      (Universes are injective)
  * ainjective-type (Ω 𝓤) 𝓤 𝓤       (the type of propositions is injective)
  * ainjective-type (Ω¬¬ 𝓤) 𝓤 𝓤     (the type of ¬¬-stable propositions is injective)
  * ainjective-type (Ordinal 𝓤) 𝓤 𝓤 (the type of ordinals is injective)
@@ -279,7 +279,7 @@ module Ω¬¬-resizing-examples
  open import Ordinals.Injectivity
  open import Ordinals.Type
 
- recall-𝓤-ainjective : ainjective-type (𝓤  ̇ ) 𝓤 𝓤
+ recall-𝓤-ainjective : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
  recall-𝓤-ainjective = universes-are-ainjective-Π
 
  recall-ainjective-resizing : (D : 𝓦 ̇ )

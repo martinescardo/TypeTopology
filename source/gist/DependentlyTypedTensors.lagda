@@ -27,7 +27,7 @@ carrier of a ring, but we are not interested in the ring structure in this gist.
 
 \begin{code}
 
-module Tensor (R : 𝓤₀  ̇) where
+module Tensor (R : 𝓤₀ ̇ ) where
 
 \end{code}
 
@@ -35,7 +35,7 @@ A vector of length `n` over `R` is a function `Fin n → R`
 
 \begin{code}
 
- Vector : ℕ → 𝓤₀  ̇
+ Vector : ℕ → 𝓤₀ ̇
  Vector n = Fin n → R
 
 \end{code}
@@ -45,7 +45,7 @@ rows and `n` columns.
 
 \begin{code}
 
- Matrix : ℕ → ℕ → 𝓤₀  ̇
+ Matrix : ℕ → ℕ → 𝓤₀ ̇
  Matrix m n = (Fin m × Fin n) → R
 
 \end{code}
@@ -54,7 +54,7 @@ This readily generalizes to a rank-`r` tensor over `R`.
 
 \begin{code}
 
- Rank-[_]-Tensor : (r : ℕ) → (Fin r → ℕ) → 𝓤₀  ̇
+ Rank-[_]-Tensor : (r : ℕ) → (Fin r → ℕ) → 𝓤₀ ̇
  Rank-[_]-Tensor r d = ((i : Fin r) → Fin (d i)) → R
 
 \end{code}
@@ -93,7 +93,7 @@ Matrices are rank-2 tensors.
 
 \begin{code}
 
- _by_ : {X : 𝓥  ̇} → X → X → Fin 2 → X
+ _by_ : {X : 𝓥 ̇ } → X → X → Fin 2 → X
  _by_ x y 𝟎 = x
  _by_ x y 𝟏 = y
 
@@ -134,11 +134,11 @@ Matrices are rank-2 tensors.
 We now generalize tensors as to be able to consider arbitrary index types.
 Previously, we had a function `d : Fin r → ℕ`, whose product
 `Π i : Fin r , Fin (d i)` gave us the _shape_ of the tensor in consideration.
-We now work with a generalized shape function `S : I → 𝓥  ̇`.
+We now work with a generalized shape function `S : I → 𝓥 ̇`.
 
 \begin{code}
 
- Shape-[_]-Tensor : {I : 𝓤₀  ̇} → (I → 𝓤₀  ̇) → 𝓤₀  ̇
+ Shape-[_]-Tensor : {I : 𝓤₀ ̇ } → (I → 𝓤₀ ̇ ) → 𝓤₀ ̇
  Shape-[_]-Tensor {I} S = ((i : I) → S i) → R
 
 \end{code}
