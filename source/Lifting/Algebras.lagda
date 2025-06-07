@@ -537,7 +537,7 @@ The following are the only public things in this anonymous module.
  retract-of-algebra : 𝓛-alg B
  retract-of-algebra = 𝓑
 
- section-is-hom : is-hom 𝓑 𝓐 s
+ section-is-hom : is-hom retract-of-algebra 𝓐 s
  section-is-hom = s-is-hom
 
 \end{code}
