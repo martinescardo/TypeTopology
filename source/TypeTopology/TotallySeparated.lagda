@@ -383,14 +383,13 @@ the following particular cases:
    (t (λ (p : X → 𝟚) → φ (λ ((x , y) : X × Y) → p x)))
    (u (λ (q : Y → 𝟚) → φ (λ ((x , y) : X × Y) → q y)))
 
-Σ-is-totally-separated-if-index-type-is-discrete :
-
-    (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
-  → is-discrete X
-  → ((x : X) → is-totally-separated (Y x))
-  → is-totally-separated (Σ Y)
-
-Σ-is-totally-separated-if-index-type-is-discrete X Y d t {a , b} {x , y} φ = γ
+Σ-is-totally-separated-if-index-type-is-discrete
+ : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+ → is-discrete X
+ → ((x : X) → is-totally-separated (Y x))
+ → is-totally-separated (Σ Y)
+Σ-is-totally-separated-if-index-type-is-discrete X Y d t {a , b} {x , y} φ
+ = γ
  where
   r : a ＝ x
   r = discrete-types-are-totally-separated d (λ p → φ (λ z → p (pr₁ z)))

@@ -473,14 +473,15 @@ automorphism, in such a way that the section becomes a homomorphism.
 
 \begin{code}
 
-is-hom : {A B : 𝓤 ̇ } → 𝓛-alg A → 𝓛-alg B → (A → B) → (𝓣 ⁺) ⊔ 𝓤 ̇
-is-hom {𝓤} {A} {B} (∐ᵃ , _ , _) (∐ᵇ , _ , _) h =
+is-hom : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → 𝓛-alg A → 𝓛-alg B → (A → B) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ̇
+is-hom {𝓤} {𝓥} {A} {B} (∐ᵃ , _ , _) (∐ᵇ , _ , _) h =
  (P : 𝓣 ̇ ) (i : is-prop P) (φ : P → A) → h (∐ᵃ i φ) ＝ ∐ᵇ i (h ∘ φ)
 
 open import UF.Retracts
 
 module _
-         (A B : 𝓤 ̇ )
+         (A : 𝓤 ̇ )
+         (B : 𝓥 ̇ )
          (𝓐@(∐ᵃ , lawᵃ₀ , lawᵃ₁) : 𝓛-alg A)
          ((r , s , rs) : retract B of A)
          (sr-is-hom : is-hom 𝓐 𝓐 (s ∘ r))
