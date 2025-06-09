@@ -33,6 +33,10 @@ open import UF.EquivalenceExamples
 open import UF.IdEmbedding
 open import UF.Univalence
 
+private
+ fe' : Fun-Ext
+ fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+
 \end{code}
 
 We define a fiberwise algebraically injective map to be one whose fibers are all
@@ -64,7 +68,7 @@ embedding-fiberwise-ainjective-factorization
                  × is-embedding l
                  × fiberwise-ainjective r (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
 embedding-fiberwise-ainjective-factorization {𝓤} {𝓥} {A} {B} ua f =
- X , l , r , refl , l-is-embedding ua , r-fiberwise-ainjective ua
+ X , l , r , refl , l-is-embedding , r-fiberwise-ainjective
   where
    X : (𝓤 ⊔ 𝓥) ⁺ ̇
    X = Σ b ꞉ B , (fiber f b → (𝓤 ⊔ 𝓥) ̇ )
@@ -78,8 +82,8 @@ embedding-fiberwise-ainjective-factorization {𝓤} {𝓥} {A} {B} ua f =
    l : A → X
    l = NatΣ (λ b → ι (fiber f b)) ∘ ⌜ domain-is-total-fiber f ⌝
 
-   l-is-embedding : is-univalent (𝓤 ⊔ 𝓥) → is-embedding l
-   l-is-embedding ua =
+   l-is-embedding : is-embedding l
+   l-is-embedding =
     ∘-is-embedding
      (equivs-are-embeddings' (domain-is-total-fiber f))
      (NatΣ-is-embedding
@@ -91,9 +95,8 @@ embedding-fiberwise-ainjective-factorization {𝓤} {𝓥} {A} {B} ua f =
    r : X → B
    r = pr₁
 
-   r-fiberwise-ainjective : is-univalent (𝓤 ⊔ 𝓥)
-                          → fiberwise-ainjective r (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-   r-fiberwise-ainjective ua b =
+   r-fiberwise-ainjective : fiberwise-ainjective r (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+   r-fiberwise-ainjective b =
     equiv-to-ainjective
      (fiber r b)
      (fiber f b → 𝓤 ⊔ 𝓥 ̇ )
@@ -188,3 +191,57 @@ TODO. Formalize this and, as a preliminary, retracts of maps.
         Cambridge University Press, 2014.
         doi: 10.1017/ CBO9781107261457.
         url: https://math.jhu.edu/~eriehl/cathtpy.pdf.
+
+Added 9 June 2025.
+Due to the contravariance of (-) → 𝓤, the above factorization does not appear to
+be functorial. Therefore, for f : A → B, we instead consider
+   A ↪ Σ b ꞉ B , 𝓛 (fiber f b) → B,
+where 𝓛 takes the partial elements of an element.
+
+\begin{code}
+
+open ainjectivity-of-Lifting
+
+embedding-fiberwise-ainjective-factorization'
+ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+ → is-univalent (𝓤 ⊔ 𝓥)
+ → (f : A → B)
+ → Σ X ꞉ (𝓤 ⊔ 𝓥)⁺ ̇  ,
+   Σ l ꞉ (A → X) ,
+   Σ r ꞉ (X → B) , (f ＝ r ∘ l)
+                 × is-embedding l
+                 × fiberwise-ainjective r (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+embedding-fiberwise-ainjective-factorization' {𝓤} {𝓥} {A} {B} ua f =
+ X , l , r , refl , l-is-embedding , r-fiberwise-ainjective
+  where
+   X : (𝓤 ⊔ 𝓥)⁺ ̇
+   X = Σ b ꞉ B , 𝓛 (𝓤 ⊔ 𝓥) (fiber f b)
+
+   l : A → X
+   l = NatΣ (λ b → η (𝓤 ⊔ 𝓥)) ∘ ⌜ domain-is-total-fiber f ⌝
+
+   l-is-embedding : is-embedding l
+   l-is-embedding =
+    ∘-is-embedding
+     (equivs-are-embeddings' (domain-is-total-fiber f))
+      (NatΣ-is-embedding
+       (fiber f)
+       (λ b → 𝓛 (𝓤 ⊔ 𝓥) (fiber f b))
+       (λ b → η (𝓤 ⊔ 𝓥))
+       (λ b → η-is-embedding' _ _ (fiber f b) ua fe'))
+
+   r : X → B
+   r = pr₁
+
+   r-fiberwise-ainjective : fiberwise-ainjective r (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+   r-fiberwise-ainjective b =
+    equiv-to-ainjective
+     (fiber r b)
+     (𝓛 (𝓤 ⊔ 𝓥) (fiber f b))
+     (free-𝓛-algebra-ainjective (𝓤 ⊔ 𝓥) ua (fiber f b))
+     (pr₁-fiber-equiv b)
+
+\end{code}
+
+TODO. Formalize functoriality (easy consequence of the functoriality of Σ,
+taking fibers and 𝓛).
