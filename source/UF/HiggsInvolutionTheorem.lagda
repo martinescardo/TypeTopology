@@ -811,7 +811,9 @@ Added 7th November 2023.
 
 \end{code}
 
-Added 10th June 2025.
+Added 10th June 2025. The Higgs object has at most two elements, and
+one of them is 𝕥. (Therefore Aut Ω has at most two elements, and one
+of them is the identity.)
 
 \begin{code}
 
