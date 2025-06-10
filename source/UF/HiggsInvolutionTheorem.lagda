@@ -841,3 +841,6 @@ of them is the identity.)
    II = ∥∥-functor₂ I QP PQ
 
 \end{code}
+
+By the above development, the assertion that Aut Ω is a singleton is a
+stronger principle than the negation of the law of excluded middle.
