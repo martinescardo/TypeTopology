@@ -327,6 +327,16 @@ module _ {A : 𝓤 ̇ } {B : 𝓥 ̇ } {X : 𝓦 ̇ } {Y : 𝓣 ̇ } {Z : 𝓤' 
                → Σfunctor {Y = Z} h γ ∼ Σfunctor g β ∘ Σfunctor f α
 Σfunctor-comp' f g h p α β γ q (a , x) = to-Σ-＝ (((p a) ⁻¹) , ((q a x) ⁻¹))
 
+Σfunctor-comp'' :  {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
+                  {X : A → 𝓤' ̇ } {Y : B → 𝓥' ̇ } {Z : C → 𝓦' ̇ }
+                  (f : A → B) (g : B → C)
+                  (α : (a : A) → X a → Y (f a))
+                  (β : (b : B) → Y b → Z (g b))
+                  (γ : (a : A) → X a → Z (g (f a)))
+                  (q : (a : A) (x : X a) → β (f a) (α a x) ＝ γ a x)
+                → Σfunctor {Y = Z} (g ∘ f) γ ∼ Σfunctor g β ∘ Σfunctor f α
+Σfunctor-comp'' f g = Σfunctor-comp' f g (g ∘ f) (λ _ → refl)
+
 open import Lifting.Monad renaming (𝓛̇ to 𝓛-functor)
 open import UF.Subsingletons-FunExt
 
@@ -365,19 +375,18 @@ factorization-functor-comp : {A B X Y Z W : 𝓤 ̇ }
                              (α : [ f , g ]) (β : [ g , h ])
                            → factorization-functor f h {𝓤} ([,]-comp f g h α β)
                              ∼ factorization-functor g h β ∘ factorization-functor f g α
-factorization-functor-comp f g h α β =
- Σfunctor-comp'
+factorization-functor-comp {𝓤} f g h α β =
+ Σfunctor-comp''
   (bottom α)
   (bottom β)
-  (bottom ([,]-comp f g h α β)) -- (bottom ([,]-comp f g h α β))
-  (λ _ → refl)
   (λ b → 𝓛-functor _ (fiber-functor f g α b))
   (λ y → 𝓛-functor _ (fiber-functor g h β y))
-  (λ b → 𝓛-functor _ (fiber-functor f h ([,]-comp f g h α β) b))
-  (λ b w → 𝓛-functor _ (fiber-functor g h β (bottom α b))
-             (𝓛-functor _ (fiber-functor f g α b) w) ＝⟨ 𝓛-functor-comp (fiber-functor f g α b) (fiber-functor g h β (bottom α b)) {!!} (λ v → fiber-functor-comp f g h α β b {!!}) w ⟩
-            {!!} ＝⟨ {!!} ⟩
-            {!!} ∎) -- 𝓛-functor-comp {!!} {!!} (fiber-functor f h {![,]-comp f g h α β!} {!!}) {!!} w)
+  (λ b → 𝓛-functor 𝓤 (fiber-functor f h ([,]-comp f g h α β) b))
+  (λ b → ∼-sym (𝓛-functor-comp
+                 (fiber-functor f g α b)
+                 (fiber-functor g h β (bottom α b))
+                 (fiber-functor f h ([,]-comp f g h α β) b)
+                 (∼-sym (fiber-functor-comp f g h α β b))))
 
 module _ (ua : Univalence)
         where
@@ -408,7 +417,6 @@ module _ (ua : Univalence)
  module _ {A B X Y : 𝓤 ̇ } -- {B : 𝓥 ̇ } {X : 𝓦 ̇ } {Y : 𝓣 ̇ }
           (f : A → B) (g : X → Y)
         where
-
 
   factorization-functor-left-maps : (α : [ f , g ])
                                   → [ left-map (factorization f) , left-map (factorization g) ]
