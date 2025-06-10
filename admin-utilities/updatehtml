@@ -18,15 +18,6 @@ cd ~/martinescardo.github.io/
 # but are linked from published papers, blogs etc.
 # Symbolic links don't work any more, so we replace "ln -s" by "cp -a"
 
-# Deprecated - agda-new should not be offered as a public link any more,
-# for some years now:
-cp -a TypeTopology agda-new
-cp -a TypeTopology agda
-chmod a+r agda-new/*.html
-chmod a+r agda/*.html
-git add agda-new
-git add agda
-
 cd ~/martinescardo.github.io/TypeTopology/
 
 cp -a CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
@@ -111,3 +102,14 @@ cp -a PCF.Lambda.index.html Published.PCF.Lambda.index.html
 cd ..
 chmod a+r TypeTopology/*
 git add TypeTopology
+
+# Deprecated - agda-new should not be offered as a public link any more,
+# for some years now:
+rm -rf agda-new
+rm -rf agda
+cp -a TypeTopology agda-new
+cp -a TypeTopology agda
+chmod a+r agda-new/*.html
+chmod a+r agda/*.html
+git add agda-new
+git add agda

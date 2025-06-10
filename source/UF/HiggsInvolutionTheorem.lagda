@@ -34,6 +34,9 @@ https://mathstodon.xyz/deck/@MartinEscardo/111291658836418672
 open import MLTT.Spartan
 open import UF.Base
 open import UF.FunExt
+open import MLTT.Plus-Properties
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
@@ -507,10 +510,43 @@ being-widespread-is-prop r = Π-is-prop fe (λ p → Ω-is-set fe pe)
 ℍ : 𝓤⁺ ̇
 ℍ = Σ r ꞉ Ω , is-widespread r
 
+ℍ-is-set : is-set ℍ
+ℍ-is-set = subsets-of-sets-are-sets
+            Ω
+            is-widespread
+            (Ω-is-set fe pe)
+            (λ {r} → being-widespread-is-prop r)
+
 to-ℍ-＝ : (r s : Ω) {i : is-widespread r} {j : is-widespread s}
        → r ＝ s
        → (r , i) ＝[ ℍ ] (s , j)
 to-ℍ-＝ r s {i} {j} = to-subtype-＝ being-widespread-is-prop
+
+to-ℍ-＝' : (x@(p , i) y@(q , j) : ℍ)
+         → (p holds ↔ q holds)
+         → x ＝ y
+to-ℍ-＝' (r , i) (s , j) (f , g) = to-ℍ-＝ r s (Ω-extensionality pe fe f g)
+
+\end{code}
+
+The equality of the Higgs object has values in 𝓤⁺, but is equivalent
+to a an equality with values in 𝓤 and hence in Ω.
+
+\begin{code}
+
+_＝ₕ_ : ℍ → ℍ → Ω
+(p , p-is-ws) ＝ₕ (q , q-is-ws) = p ⇔ q
+
+infix 4 _＝ₕ_
+
+＝ₕ-agrees-with-＝ : (x y : ℍ) → ((x ＝ₕ y) holds) ≃ (x ＝ y)
+＝ₕ-agrees-with-＝ x@(p , p-is-ws) y@(q , q-is-ws)
+ = logically-equivalent-props-are-equivalent
+    (holds-is-prop (x ＝ₕ y))
+    ℍ-is-set
+    (to-ℍ-＝' x y)
+    (λ (e : x ＝ y) → idtofun _ _ (ap (_holds ∘ pr₁) e) ,
+                      idtofun _ _ (ap (_holds ∘ pr₁) (e ⁻¹)))
 
 Ω-automorphisms-are-⇔-embeddings : (𝕗 : Aut Ω)
                                    (p q : Ω)
@@ -614,6 +650,9 @@ The unit of 𝓗 is ⊤ and its multiplication is logical equivalence.
 corollary-⊤ : is-widespread ⊤
 corollary-⊤ = ⟪ unit 𝓗 ⟫-is-widespread
 
+𝕥 : ℍ
+𝕥 = ⊤ , corollary-⊤
+
 corollary-⇔ : (r s : Ω)
             → is-widespread r
             → is-widespread s
@@ -676,7 +715,7 @@ Added 6th November 2023.
 
 \begin{code}
 
- open PropositionalTruncation pt hiding (_∨_)
+ open PropositionalTruncation pt hiding (_∨_ ; ∨-elim)
 
  widespread'-gives-widespread : (r : Ω)
                               → is-widespread' r
@@ -769,5 +808,34 @@ Added 7th November 2023.
 
     IV : (p ∨ (p ⇒ r)) holds
     IV = III
+
+\end{code}
+
+Added 10th June 2025.
+
+\begin{code}
+
+ ℍ-has-at-most-two-elements
+  : (x y : ℍ)
+  → ∥ (𝕥 ＝ x) + (x ＝ y) + (y ＝ 𝕥) ∥
+ ℍ-has-at-most-two-elements x@(p@(P , i) , p-is-ws)
+                            y@(q@(Q , j) , q-is-ws)
+  = II
+  where
+   QP : ∥ Q + (Q → P) ∥
+   QP = widespread-gives-widespread' p p-is-ws q
+
+   PQ : ∥ P + (P → Q) ∥
+   PQ = widespread-gives-widespread' q q-is-ws p
+
+   I : (Q + (Q → P))
+     → (P + (P → Q))
+     → (𝕥 ＝ x) + (x ＝ y) + (y ＝ 𝕥)
+   I (inl q)  _        = inr (inr (to-ℍ-＝' y 𝕥 ((λ _ → ⋆) , (λ _ → q))))
+   I (inr _)  (inl p)  = inl (to-ℍ-＝' 𝕥 x ((λ _ → p) , (λ _ → ⋆)))
+   I (inr qp) (inr pq) = inr (inl (to-ℍ-＝' x y (pq , qp)))
+
+   II : ∥ (𝕥 ＝ x) + (x ＝ y) + (y ＝ 𝕥) ∥
+   II = ∥∥-functor₂ I QP PQ
 
 \end{code}

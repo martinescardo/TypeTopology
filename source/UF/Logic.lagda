@@ -221,7 +221,7 @@ module Disjunction (pt : propositional-truncations-exist) where
  _∨_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
  P ∨ Q = ∥ P holds + Q holds ∥ , ∥∥-is-prop
 
- infix 3 _∨_
+ infixr 3 _∨_
 
 \end{code}
 
