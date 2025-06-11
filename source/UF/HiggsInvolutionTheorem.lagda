@@ -34,7 +34,6 @@ https://mathstodon.xyz/deck/@MartinEscardo/111291658836418672
 open import MLTT.Spartan
 open import UF.Base
 open import UF.FunExt
-open import MLTT.Plus-Properties
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
@@ -480,8 +479,9 @@ automorphisms of Ω.
 \begin{code}
 
 open import UF.Logic
-open Implication fe
+
 open Conjunction
+open Implication fe
 open Universal fe
 
 can-recover-automorphism-from-its-value-at-⊤
@@ -889,6 +889,8 @@ elements of ℍ, two of them are equal.
 We have the following corollary.
 
 \begin{code}
+
+ open import MLTT.Plus-Properties
 
  Aut-Ω-has-at-most-two-elements
   : (f g h : Aut Ω)
