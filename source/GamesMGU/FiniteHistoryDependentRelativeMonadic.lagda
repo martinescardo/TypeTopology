@@ -1,4 +1,14 @@
-_Martin Escardo, Paulo Oliva, 2022, version of October 2023.
+Martin Escardo, Paulo Oliva, mid 2024.
+
+Remark added 11th June 2025. This file is experimental. In particular,
+we are not sure our use of the algebra is modelling the intented
+notions. It may be that different players need different algebras. For
+example, if we are working with the powerset monad, whose algebras are
+the sup-lattices, and some players play argmax and some players play
+argmin, then it is plausible that the argmax players need an
+inf-algebra, whereas the argim players need a sup-algebra. Another
+potential issue is the notion of attainability for multi-valued
+selection functions and quantifiers.
 
 Warning. This module is a mess. We plan to clean it up soon. At the
 moment the proofs are in "blackboard" style (improvised proofs that
@@ -82,7 +92,6 @@ open relative-α-definitions 𝕋 𝓡 𝓐
 open relative-JT-definitions 𝕋 𝓡 𝓐 fe
 
 \end{code}
-
 
 We need a variation of `structure` which equips the nodes of a
 structured game tree with relative monadic structure.
@@ -175,21 +184,21 @@ is-in-T-equilibrium {X} {Xf} st@(s , sf) q ϕ σt@(σ :: σf)  =
     extᴬ q (T-strategic-path {X ∷ Xf} st σt)
  ＝ ϕ (λ x → extᴬ (subpred q x) (T-strategic-path (sf x) (σf x)))
 
-is-in-T-sgpe : {Xt : 𝑻}
+is-in-T-sgpe' : {Xt : 𝑻}
                (st : structure S Xt)
              → 𝓚 Xt
              → (Path Xt → R)
              → T-Strategy Xt st
              → 𝓤 ⊔ 𝓦₀ ̇
-is-in-T-sgpe {[]}     st          ⟨⟩        q ⟨⟩           = 𝟙
-is-in-T-sgpe {X ∷ Xf} st@(s , sf) (ϕ :: ϕf) q σt@(σ :: σf) =
+is-in-T-sgpe' {[]}     st          ⟨⟩        q ⟨⟩           = 𝟙
+is-in-T-sgpe' {X ∷ Xf} st@(s , sf) (ϕ :: ϕf) q σt@(σ :: σf) =
     is-in-T-equilibrium st q ϕ σt
-  × ((x : X) → is-in-T-sgpe {Xf x} (sf x) (ϕf x) (subpred q x) (σf x))
+  × ((x : X) → is-in-T-sgpe' {Xf x} (sf x) (ϕf x) (subpred q x) (σf x))
 
-is-T-optimal : (G : Game) (st : structure S (Xt G))
+is-in-T-sgpe : (G : Game) (st : structure S (Xt G))
              → T-Strategy (Xt G) st
              → 𝓤 ⊔ 𝓦₀ ̇
-is-T-optimal (game Xt q ϕt) st = is-in-T-sgpe {Xt} st ϕt q
+is-in-T-sgpe (game Xt q ϕt) st = is-in-T-sgpe' {Xt} st ϕt q
 
 \end{code}
 
@@ -208,7 +217,7 @@ T-sgpe-lemma : (Xt : 𝑻)
                (st : structure S Xt)
                (q : Path Xt → R)
                (σt : T-Strategy Xt st)
-             → is-in-T-sgpe st ϕt q σt
+             → is-in-T-sgpe' st ϕt q σt
              → extᴬ q (T-strategic-path st σt) ＝ sequenceᴷ ϕt q
 T-sgpe-lemma [] ⟨⟩ ⟨⟩ q ⟨⟩ ⟨⟩ =
  extᴬ q (T-strategic-path ⟨⟩ ⟨⟩) ＝⟨ refl ⟩
@@ -234,13 +243,13 @@ This can be reformulated as follows in terms of the type of games:
 
 \begin{code}
 
-T-optimality-theorem
+T-equilibrium-theorem
  : (G : Game)
    (st : structure S (Xt G))
    (σt : T-Strategy (Xt G) st)
- → is-T-optimal G st σt
+ → is-in-T-sgpe G st σt
  → extᴬ (q G) (T-strategic-path st σt) ＝ optimal-outcome G
-T-optimality-theorem (game Xt q ϕt) st = T-sgpe-lemma Xt ϕt st q
+T-equilibrium-theorem (game Xt q ϕt) st = T-sgpe-lemma Xt ϕt st q
 
 \end{code}
 
@@ -475,7 +484,7 @@ T-selection-strategy-lemma
    (ϕt : 𝓚 Xt)
    (q : Path Xt → R)
  → [ st ] εt Attainsᴬ ϕt
- → is-in-T-sgpe st ϕt q (T-selection-strategy st εt q)
+ → is-in-T-sgpe' st ϕt q (T-selection-strategy st εt q)
 T-selection-strategy-lemma
  ext-const {[]} ⟨⟩ ⟨⟩ ⟨⟩ q ⟨⟩ = ⟨⟩
 T-selection-strategy-lemma
@@ -542,7 +551,7 @@ T-selection-strategy-lemma
          II₂ = ap (λ - → α (extᵀ (λ x → - x) σ)) (dfunext fe (λ x → assocᵀ (ηᵀ ∘ q) (λ xs → ηᵀ (x :: xs)) (T-strategic-path (sf x) (σf x))))
          II₃ = ap α (assocᵀ (ηᵀ ∘ q) (λ x → mapᵀ (λ y → x , y) (T-strategic-path (sf x) (σf x))) σ)
 
-  γ : is-in-T-sgpe st ϕt q (T-selection-strategy st εt q)
+  γ : is-in-T-sgpe' st ϕt q (T-selection-strategy st εt q)
   γ = (extᴬ q (T-strategic-path {X ∷ Xf} st (σ :: σf)) ＝⟨ new-agrees-with-old fe q t ⟩
        α (mapᵀ q (T-strategic-path {X ∷ Xf} st (σ :: σf))) ＝⟨ refl ⟩
        α (mapᵀ q t) ＝⟨ II ⁻¹ ⟩
@@ -557,7 +566,7 @@ main-theorem : ext-const 𝕋
                (st : structure S (Xt G))
                (εt : 𝓙𝓣 (Xt G) st)
              → [ st ] εt Attainsᴬ (ϕt G)
-             → is-T-optimal G st (T-selection-strategy st εt (q G))
+             → is-in-T-sgpe G st (T-selection-strategy st εt (q G))
 main-theorem ext-const G st εt = T-selection-strategy-lemma ext-const st εt (ϕt G) (q G)
 
 \end{code}

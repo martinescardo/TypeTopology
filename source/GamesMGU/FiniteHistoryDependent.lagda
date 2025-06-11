@@ -1,4 +1,4 @@
-Martin Escardo, Paulo Oliva, 2-27 July 2021
+Martin Escardo, Paulo Oliva, 2-27 July 2021.
 
 The following paper is based on this file:
 
@@ -251,6 +251,10 @@ is-optimal (game Xt ϕt q) σ = is-in-sgpe {Xt} q ϕt σ
 The main lemma is that the optimal outcome is the same thing as the
 application of the outcome function to the path induced by a strategy
 in perfect subgame equilibrium.
+
+Remark. In the published paper [0] above, we use the terminology
+`is-optimal` as above, but perhaps we should stick to subgame perfect
+equilibrium for the terminology.
 
 The following is Theorem 3.1 of reference [1].
 

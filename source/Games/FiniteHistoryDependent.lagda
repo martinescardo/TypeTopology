@@ -249,6 +249,10 @@ The main lemma is that the optimal outcome is the same thing as the
 application of the outcome function to the path induced by a strategy
 in perfect subgame equilibrium.
 
+Remark. In the published paper [0] above, we use the terminology
+`is-optimal` as above, but perhaps we should stick to subgame perfect
+equilibrium for the terminology.
+
 The following is Theorem 3.1 of reference [1].
 
 \begin{code}
