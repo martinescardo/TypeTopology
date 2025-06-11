@@ -884,6 +884,12 @@ elements of ℍ, two of them are equal.
    V : ∥ (z ＝ x) + (x ＝ y) + (y ＝ z) ∥
    V = ∥∥-functor₃ IV I II III
 
+\end{code}
+
+We have the following corollary.
+
+\begin{code}
+
  Aut-Ω-has-at-most-two-elements
   : (f g h : Aut Ω)
   → ∥ (h ＝ f) + (f ＝ g) + (g ＝ h) ∥
