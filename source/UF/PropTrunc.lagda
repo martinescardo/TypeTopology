@@ -75,6 +75,10 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
              → (X → Y → Z) → ∥ X ∥ → ∥ Y ∥ → ∥ Z ∥
  ∥∥-functor₂ f s t = ∥∥-rec ∥∥-is-prop (λ x → ∥∥-functor (f x) t) s
 
+ ∥∥-functor₃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
+             → (X → Y → Z → T) → ∥ X ∥ → ∥ Y ∥ → ∥ Z ∥ → ∥ T ∥
+ ∥∥-functor₃ f s t u = ∥∥-rec ∥∥-is-prop (λ x → ∥∥-functor₂ (f x) t u) s
+
  ∃ : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
  ∃ Y = ∥ Σ Y ∥
 

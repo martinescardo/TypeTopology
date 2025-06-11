@@ -522,8 +522,8 @@ to-ℍ-＝ : (r s : Ω) {i : is-widespread r} {j : is-widespread s}
        → (r , i) ＝[ ℍ ] (s , j)
 to-ℍ-＝ r s {i} {j} = to-subtype-＝ being-widespread-is-prop
 
-to-ℍ-＝' : (x@(p , i) y@(q , j) : ℍ)
-         → (p holds ↔ q holds)
+to-ℍ-＝' : (x@(r , i) y@(s , j) : ℍ)
+         → (r holds ↔ s holds)
          → x ＝ y
 to-ℍ-＝' (r , i) (s , j) (f , g) = to-ℍ-＝ r s (Ω-extensionality pe fe f g)
 
@@ -592,6 +592,9 @@ Aut-Ω-to-ℍ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-is-widespread 𝕗
 
 ℍ-to-Aut-Ω-is-equiv : is-equiv ℍ-to-Aut-Ω
 ℍ-to-Aut-Ω-is-equiv = qinvs-are-equivs ℍ-to-Aut-Ω (Aut-Ω-to-ℍ , ε-ℍ , η-ℍ)
+
+Aut-Ω-to-ℍ-is-equiv : is-equiv Aut-Ω-to-ℍ
+Aut-Ω-to-ℍ-is-equiv = inverses-are-equivs ℍ-to-Aut-Ω ℍ-to-Aut-Ω-is-equiv
 
 ℍ-to-Aut-Ω-equivalence : ℍ ≃ Aut Ω
 ℍ-to-Aut-Ω-equivalence = ℍ-to-Aut-Ω , ℍ-to-Aut-Ω-is-equiv
@@ -811,17 +814,18 @@ Added 7th November 2023.
 
 \end{code}
 
-Added 10th June 2025. The Higgs object has at most two elements, and
-one of them is 𝕥. (Therefore Aut Ω has at most two elements, and one
-of them is the identity.)
+Added 10th June 2025. The Higgs object has at most two elements, where
+one of them is 𝕥. Therefore Aut Ω has at most two elements, and one
+of them is the identity.
 
 \begin{code}
 
- ℍ-has-at-most-two-elements
+ ℍ-has-at-most-two-elements-lemma
   : (x y : ℍ)
   → ∥ (𝕥 ＝ x) + (x ＝ y) + (y ＝ 𝕥) ∥
- ℍ-has-at-most-two-elements x@(p@(P , i) , p-is-ws)
-                            y@(q@(Q , j) , q-is-ws)
+ ℍ-has-at-most-two-elements-lemma
+  x@(p@(P , i) , p-is-ws)
+  y@(q@(Q , j) , q-is-ws)
   = II
   where
    QP : ∥ Q + (Q → P) ∥
@@ -842,5 +846,61 @@ of them is the identity.)
 
 \end{code}
 
-By the above development, the assertion that Aut Ω is a singleton is a
-stronger principle than the negation of the law of excluded middle.
+And so ℍ has at most two elements, in the sense that among any three
+elements of ℍ, two of them are equal.
+
+\begin{code}
+
+ ℍ-has-at-most-two-elements
+  : (x y z : ℍ)
+  → ∥ (z ＝ x) + (x ＝ y) + (y ＝ z) ∥
+ ℍ-has-at-most-two-elements x y z
+  = V
+  where
+   I : ∥ (𝕥 ＝ x) + (x ＝ y) + (y ＝ 𝕥) ∥
+   I = ℍ-has-at-most-two-elements-lemma x y
+
+   II : ∥ (𝕥 ＝ y) + (y ＝ z) + (z ＝ 𝕥) ∥
+   II = ℍ-has-at-most-two-elements-lemma y z
+
+   III : ∥ (𝕥 ＝ z) + (z ＝ x) + (x ＝ 𝕥) ∥
+   III = ℍ-has-at-most-two-elements-lemma z x
+
+   IV : (𝕥 ＝ x) + (x ＝ y) + (y ＝ 𝕥)
+      → (𝕥 ＝ y) + (y ＝ z) + (z ＝ 𝕥)
+      → (𝕥 ＝ z) + (z ＝ x) + (x ＝ 𝕥)
+      → (z ＝ x) + (x ＝ y) + (y ＝ z)
+   IV (inl a)       (inl b)       _             = inr (inl (a ⁻¹ ∙ b))
+   IV (inl a)       (inr (inl b)) _             = inr (inr b)
+   IV (inl a)       (inr (inr b)) _             = inl (b ∙ a)
+   IV (inr (inl a)) (inl _)       _             = inr (inl a)
+   IV (inr (inr _)) (inl b)       (inl c)       = inr (inr (b ⁻¹ ∙ c))
+   IV (inr (inr _)) (inl _)       (inr (inl c)) = inl c
+   IV (inr (inr _)) (inl b)       (inr (inr c)) = inr (inl (c ∙ b))
+   IV (inr (inl a)) (inr _)       _             = inr (inl a)
+   IV (inr (inr _)) (inr (inl b)) _             = inr (inr b)
+   IV (inr (inr a)) (inr (inr b)) _             = inr (inr (a ∙ b ⁻¹))
+
+   V : ∥ (z ＝ x) + (x ＝ y) + (y ＝ z) ∥
+   V = ∥∥-functor₃ IV I II III
+
+ Aut-Ω-has-at-most-two-elements
+  : (f g h : Aut Ω)
+  → ∥ (h ＝ f) + (f ＝ g) + (g ＝ h) ∥
+ Aut-Ω-has-at-most-two-elements f g h
+  = II
+  where
+   ϕ    = Aut-Ω-to-ℍ
+   ϕ-lc = equivs-are-lc ϕ Aut-Ω-to-ℍ-is-equiv
+
+   I : ∥ (ϕ h ＝ ϕ f) + (ϕ f ＝ ϕ g) + (ϕ g ＝ ϕ h) ∥
+   I = ℍ-has-at-most-two-elements (ϕ f) (ϕ g) (ϕ h)
+
+   II : ∥ (h ＝ f) + (f ＝ g) + (g ＝ h) ∥
+   II = ∥∥-functor (+functor₂ ϕ-lc ϕ-lc ϕ-lc) I
+
+\end{code}
+
+By the above development, the assertion that Aut Ω is a singleton (or
+equivalently a proposition, because it is pointed) is a stronger
+principle than the negation of the law of excluded middle.

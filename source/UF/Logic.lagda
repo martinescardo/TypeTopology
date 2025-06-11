@@ -328,3 +328,5 @@ module AllCombinators
  open Negation-of-equality fe public
 
 \end{code}
+
+TODO. Prove the all the missing equations for Heyting algebras for Ω.
