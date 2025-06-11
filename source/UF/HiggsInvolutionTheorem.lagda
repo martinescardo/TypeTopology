@@ -1,5 +1,5 @@
 Martin Escardo, 15 August 2014, with additions 23 January 2021,
-October-November 2023.
+October-November 2023, June 2025.
 
 Higgs' Involution Theorem. In any topos, if f : Ω → Ω is a
 monomorphism, then it is an involution.
@@ -871,7 +871,7 @@ elements of ℍ, two of them are equal.
       → (𝕥 ＝ z) + (z ＝ x) + (x ＝ 𝕥)
       → (z ＝ x) + (x ＝ y) + (y ＝ z)
    IV (inl a)       (inl b)       _             = inr (inl (a ⁻¹ ∙ b))
-   IV (inl a)       (inr (inl b)) _             = inr (inr b)
+   IV (inl _)       (inr (inl b)) _             = inr (inr b)
    IV (inl a)       (inr (inr b)) _             = inl (b ∙ a)
    IV (inr (inl a)) (inl _)       _             = inr (inl a)
    IV (inr (inr _)) (inl b)       (inl c)       = inr (inr (b ⁻¹ ∙ c))
