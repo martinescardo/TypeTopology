@@ -567,15 +567,15 @@ It is noteworthy and remarkable that the above doesn't need decidable
 equality on A. We repeat that this construction is due to Mines,
 Richman and Ruitenburg [1].
 
-The following import defines
+The following imports define
 
   _◁▷_       the symmetric closure of _▷_,
   _∿_        the symmetric, reflexive, transitive closure of _▷_,
   _▷*_       the reflexive, transitive closure of _▷_,
-  _▷[ n ]_   the n-fold iteration of _▷_.
-  _◁▷[ n ]_  the n-fold iteration of _◁▷_.
+  _▷[ n ]_   the n-fold iteration of _▷_,
+  _◁▷[ n ]_  the n-fold iteration of _◁▷_,
 
-and develops some useful consequences of the Church-Rosser property in
+and develop some useful consequences of the Church-Rosser property in
 a general setting.
 
 \begin{code}
@@ -617,6 +617,7 @@ after quotienting:
   where
    σ : Σ s ꞉ FA , (η a ▷⋆ s) × (η b ▷⋆ s)
    σ = from-∿ Theorem[Church-Rosser] (η a) (η b) e
+
    s = pr₁ σ
 
    p = η a ＝⟨  η-irreducible⋆ (pr₁ (pr₂ σ)) ⟩
@@ -677,8 +678,8 @@ steps:
  ◦-◁▷-left s s' t (inr a) = inr (◦-▷-left s' s t a)
 
  ◦-iteration-left : (s s' t : FA) (n : ℕ)
-                   → s ◁▷[ n ] s'
-                   → s ◦ t ◁▷[ n ] s' ◦ t
+                  → s ◁▷[ n ] s'
+                  → s ◦ t ◁▷[ n ] s' ◦ t
  ◦-iteration-left s s  t 0        refl        = refl
  ◦-iteration-left s s' t (succ n) (u , b , c) = (u ◦ t) ,
                                                  ◦-◁▷-left s u t b ,
@@ -739,9 +740,9 @@ It is a congruence, which is proved in several steps:
 
  finv-◦ : (s t : FA) → finv (s ◦ t) ＝ finv t ◦ finv s
  finv-◦ []      t = []-right-neutral (finv t)
- finv-◦ (x • s) t = finv (s ◦ t) ◦ x ⁻ • []       ＝⟨ IH ⟩
-                     (finv t ◦ finv s) ◦ x ⁻ • [] ＝⟨ a ⟩
-                     finv t ◦ (finv s ◦ x ⁻ • []) ∎
+ finv-◦ (x • s) t = finv (s ◦ t) ◦ x ⁻ • []      ＝⟨ IH ⟩
+                    (finv t ◦ finv s) ◦ x ⁻ • [] ＝⟨ a ⟩
+                    finv t ◦ (finv s ◦ x ⁻ • []) ∎
   where
    IH = ap (_◦ x ⁻ • []) (finv-◦ s t)
    a  = ◦-assoc (finv t) (finv s) [ x ⁻ ]
@@ -813,18 +814,17 @@ The inverse really is an inverse:
 
  finv-left-∿ : (s : FA) → finv s ◦ s ∿ []
  finv-left-∿ []      = srt-reflexive _▷_ []
- finv-left-∿ (x • s) = γ
-  where
-   γ = (finv s ◦ x ⁻ • []) ◦ x • s      ∿⟨ I ⟩
-       finv s ◦ (x ⁻ • [] ◦ x • s)      ∿⟨ II ⟩
-       finv s ◦ (x ⁻ • [] ◦ x • []) ◦ s ∿⟨ III ⟩
-       finv s ◦ s                       ∿⟨ IV ⟩
-       []                               ∿∎
-    where
-     I   = ＝-gives-∿ (◦-assoc (finv s) [ x ⁻ ] (x • s))
-     II  = ＝-gives-∿ (ap (finv s ◦_) ((◦-assoc [ x ⁻ ] [ x ] s)⁻¹))
-     III = ◦-cong-right (finv s) (◦-cong-left _ _ _ (finv-lemma-left x))
-     IV  = finv-left-∿ s
+ finv-left-∿ (x • s) =
+  (finv s ◦ x ⁻ • []) ◦ x • s      ∿⟨ I ⟩
+  finv s ◦ (x ⁻ • [] ◦ x • s)      ∿⟨ II ⟩
+  finv s ◦ (x ⁻ • [] ◦ x • []) ◦ s ∿⟨ III ⟩
+  finv s ◦ s                       ∿⟨ IV ⟩
+  []                               ∿∎
+   where
+    I   = ＝-gives-∿ (◦-assoc (finv s) [ x ⁻ ] (x • s))
+    II  = ＝-gives-∿ (ap (finv s ◦_) ((◦-assoc [ x ⁻ ] [ x ] s)⁻¹))
+    III = ◦-cong-right (finv s) (◦-cong-left _ _ _ (finv-lemma-left x))
+    IV  = finv-left-∿ s
 
 \end{code}
 
@@ -1379,7 +1379,7 @@ Lemma[free-groups-from-general-set-quotients] pt fe ℓ sq eff A =
   ; universality   = extension-to-free-group-uniqueness
   ; η-is-embedding = η-free-group-is-embedding
   ; η-is-small     = λ _ → η-free-group-is-small -- (*)
- }
+  }
  where
   open FreeGroupInterface pt fe ℓ sq eff A
 
@@ -1391,8 +1391,9 @@ be small in this case, but it is needed for η to be an embedding.
 We now proceed to the proof of Theorem₁, which requires an enhancement
 of the above proof.
 
-The last three assumptions in the following module parameters are a
-slight weakening of the local smallness condition on the type A.
+The assumptions _＝₀_, refl₀ and from-＝₀ in the following module
+parameters are a slight weakening of the local smallness condition on
+the type A.
 
 \begin{code}
 
@@ -1510,7 +1511,9 @@ We now show that _▶_ defined above is logically equivalent to _▷_.
   where
    f : (u v : FA) (x : X) → (u ◦ x • x ⁻ • v) ▶ (u ◦ v)
    f []      []      x = to-＝[X] {x ⁻} refl , ⋆
-   f []      (y • v) x = inl (to-＝[X] {x ⁻} refl , to-＝[X] {y} refl , to-＝[FA] {v} refl)
+   f []      (y • v) x = inl (to-＝[X] {x ⁻} refl ,
+                              to-＝[X] {y} refl ,
+                              to-＝[FA] {v} refl)
    f (y • u) v       x = inr (to-＝[X] {y} refl , f u v x)
 
 \end{code}
@@ -1551,7 +1554,9 @@ redex r, which is what we prove next:
  lemma-reduct← (x • y • s) []      (p , q)       = inl p , from-＝[FA] q
  lemma-reduct← (x • y • s) (z • t) (inl (p , q)) = inl p , from-＝[FA] q
  lemma-reduct← (x • y • s) (z • t) (inr (p , r)) = inr (pr₁ IH) ,
-                                                   ap₂ _•_ (from-＝[X] p) (pr₂ IH)
+                                                   ap₂ _•_
+                                                       (from-＝[X] p)
+                                                       (pr₂ IH)
   where
    IH : Σ r ꞉ redex (y • s) , reduct (y • s) r ＝ t
    IH = lemma-reduct← (y • s) t r
@@ -1571,7 +1576,8 @@ corresponding notion of reduct for such chains:
  chain-reduct s 0        ρ       = s
  chain-reduct s (succ n) (r , ρ) = chain-reduct (reduct s r) n ρ
 
- chain-lemma→ : (s : FA) (n : ℕ) (ρ : redex-chain n s) → s ▷[ n ] chain-reduct s n ρ
+ chain-lemma→ : (s : FA) (n : ℕ) (ρ : redex-chain n s)
+              → s ▷[ n ] chain-reduct s n ρ
  chain-lemma→ s 0        ρ       = refl
  chain-lemma→ s (succ n) (r , ρ) = reduct s r ,
                                    ▶-gives-▷ (lemma-reduct→ s r) ,
@@ -1708,7 +1714,8 @@ over η". First, this type is a proposition:
         r₂ : s  ▷⋆ η a
         r₂ = transport (s ▷⋆_) (p ⁻¹) r₁
 
-        δ : s  ▷⋆ η a → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ＝ η a
+        δ : s  ▷⋆ η a
+          → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ＝ η a
         δ (n , r₃) = (n , chain-lemma← s (η a) n r₃)
 
       δ : type-of (d c) → generator s
@@ -1724,7 +1731,9 @@ over η". First, this type is a proposition:
       r = chain-lemma→ s n ρ
 
       e : chain-reduct s n ρ ∾ s
-      e = ∣ to-∿ (chain-reduct s n ρ) s (chain-reduct s n ρ , (0 , refl) , (n , r)) ∣
+      e = ∣ to-∿ (chain-reduct s n ρ) s (chain-reduct s n ρ ,
+           (0 , refl) ,
+           (n , r)) ∣
 
       δ : fiber η (chain-reduct s n ρ) → Σ a ꞉ A , η a ∾ s
       δ (a , p) = a , transport (_∾ s) (p ⁻¹) e
@@ -1757,12 +1766,13 @@ as desired:
    (Σ a ꞉ A , η a ∾ s)            ≃⟨ ∾-fiber-η-lemma s ⟩
    is-generator s                 ■
 
-  the-ηᴳʳᵖ-fibers-of-equivalence-classes-are-tiny : (s : FA)
-                                                  → fiber ηᴳʳᵖ (η/∾ s) is 𝓤 small
-  the-ηᴳʳᵖ-fibers-of-equivalence-classes-are-tiny s =
-   smallness-closed-under-≃'
-    (being-generator-is-small s)
-    (fiber-ηηᴳʳᵖ-lemma s)
+  the-ηᴳʳᵖ-fibers-of-equivalence-classes-are-tiny
+   : (s : FA)
+   → fiber ηᴳʳᵖ (η/∾ s) is 𝓤 small
+  the-ηᴳʳᵖ-fibers-of-equivalence-classes-are-tiny s
+   = smallness-closed-under-≃'
+      (being-generator-is-small s)
+      (fiber-ηηᴳʳᵖ-lemma s)
 
   ηᴳʳᵖ-is-tiny : ηᴳʳᵖ is 𝓤 small-map
   ηᴳʳᵖ-is-tiny = /-induction -∾-
