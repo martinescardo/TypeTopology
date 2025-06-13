@@ -505,8 +505,8 @@ module _
 
 To be continued.
 
-In addition to filling two gaps (where the second one is bureacratic), we
-need to add the things discussed in the following talk,
+In addition to filling one gap, we need to add the things discussed in
+the following talk,
 
 https://martinescardo.github.io/.talks/2025-05-29-Note-09-58-algebraic-injectives-assume_pdf.pdf
 
