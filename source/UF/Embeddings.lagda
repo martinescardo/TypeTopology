@@ -24,6 +24,7 @@ open import UF.Subsingletons-Properties
 open import UF.UA-FunExt
 open import UF.Univalence
 open import UF.Yoneda
+open import UF.SubtypeClassifier
 
 is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding f = each-fiber-of f is-prop
@@ -647,6 +648,18 @@ equiv-embeds-into-function fe =
 \end{code}
 
 End of addition.
+
+Added by Martin Escardo 13th June 2025.
+
+\begin{code}
+
+Fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → Y → Ω (𝓤 ⊔ 𝓥)
+Fiber 𝕛 y = fiber ⌊ 𝕛 ⌋ y , ⌊ 𝕛 ⌋-is-embedding y
+
+embedding-to-𝟙 : {P : Ω 𝓤} → P holds ↪ 𝟙 {𝓥}
+embedding-to-𝟙 {𝓤} {𝓥} {P} = embedding-into-𝟙 (P holds) (holds-is-prop P)
+
+\end{code}
 
 Fixities:
 

@@ -16,6 +16,16 @@ module InjectiveTypes.index where
 
 import InjectiveTypes.Article
 import InjectiveTypes.Blackboard
+
+\end{code}
+
+The following gives equivalent formulations of algebraic injective and
+flabby structure.
+
+\begin{code}
+
+import InjectiveTypes.Repackaging
+
 \end{code}
 
 The following have been done after the above article was published.
