@@ -148,26 +148,29 @@ possibility we are currently investigating).
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
+open import MLTT.Spartan
 open import UF.FunExt
 
 module InjectiveTypes.Algebra
+        {𝓦 : Universe}
+        (D : 𝓦 ̇ )
         (fe : FunExt)
        where
 
 fe' : Fun-Ext
 fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
-open import InjectiveTypes.Blackboard fe hiding (ηΠ ; ηΣ)
-open import MLTT.Spartan
+open import InjectiveTypes.Repackaging
+open import Lifting.Algebras hiding (is-hom)
 open import UF.Base
-open import UF.Embeddings
+open import UF.Embeddings renaming (_∘↪_ to _⊚_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Pullback
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
 open import UF.Univalence
-open import Lifting.Algebras hiding (is-hom)
 
 \end{code}
 
@@ -175,43 +178,31 @@ Definition of algebraic injective homomorphisms.
 
 \begin{code}
 
-module algebraic-injective-homomorphisms
-        {𝓤 𝓦 𝓣 : Universe}
-        (D : 𝓦 ̇ )
+module _
+        {𝓤 𝓥 𝓣 : Universe}
         (E : 𝓣 ̇ )
-        (D-ainj : ainjective-type D 𝓤 𝓤)
-        (E-ainj : ainjective-type E 𝓤 𝓤)
+        ((_∣ᴰ_ , _) : injective-structure D 𝓤 𝓥)
+        ((_∣ᴱ_ , _) : injective-structure E 𝓤 𝓥)
        where
 
- _∣ᴰ_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
- f ∣ᴰ 𝕛 = extension' D-ainj 𝕛 f
-
- _∣ᴱ_ : {X Y : 𝓤 ̇ } → (X → E) → (X ↪ Y) → (Y → E)
- g ∣ᴱ 𝕛 = extension' E-ainj 𝕛 g
-
- is-hom : (D → E) → (𝓤 ⁺) ⊔ 𝓦 ⊔ 𝓣 ̇
- is-hom h = {X Y : 𝓤 ̇ } (f : X → D) (𝕛 : X ↪ Y)
+ is-hom : (D → E) → 𝓥 ⁺ ⊔ 𝓤 ⁺ ⊔ 𝓦 ⊔ 𝓣 ̇
+ is-hom h = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → D) (𝕛 : X ↪ Y)
           → h ∘ f ∣ᴰ 𝕛 ∼ (h ∘ f) ∣ᴱ 𝕛
 
 \end{code}
 
-Definitions of associativity and pullback naturality.
+Definitions of associativity and pullback naturality for injectivity structure.
 
 \begin{code}
 
 module _
-        {𝓤 𝓦 : Universe}
-        (D : 𝓦 ̇ )
-        (D-ainj : ainjective-type D 𝓤 𝓤)
+        {𝓤 : Universe}
+        ((_∣_ , _) : injective-structure D 𝓤 𝓤)
        where
 
- private
-  _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
-  f ∣ 𝕛 = extension' D-ainj 𝕛 f
-
- associativity : 𝓦 ⊔ 𝓤 ⁺ ̇
- associativity = {X Y Z : 𝓤 ̇ } (f : X → D) (𝕛 : X ↪ Y) (𝕜 : Y ↪ Z)
-               → f ∣ (𝕜 ∘↪ 𝕛) ∼ (f ∣ 𝕛) ∣ 𝕜
+ ∣-associativity : 𝓦 ⊔ 𝓤 ⁺ ̇
+ ∣-associativity = {X Y Z : 𝓤 ̇ } (f : X → D) (𝕛 : X ↪ Y) (𝕜 : Y ↪ Z)
+               → f ∣ (𝕜 ⊚ 𝕛) ∼ (f ∣ 𝕛) ∣ 𝕜
 
 \end{code}
 
@@ -245,6 +236,7 @@ so that the above naturality condition becomes
                      ➘  ↓
                         D
 
+
 \begin{code}
 
  module _
@@ -271,44 +263,18 @@ so that the above naturality condition becomes
 
 \end{code}
 
+
+
 \begin{code}
 
-aainjective-structure : (𝓤 : Universe) → 𝓦 ̇ → (𝓤 ⁺) ⊔ 𝓦 ̇
-aainjective-structure 𝓤 D =
- Σ D-ainj ꞉ ainjective-type D 𝓤 𝓤 , associativity D D-ainj
-
 module _
-        {𝓤 𝓦 : Universe}
-        (D : 𝓦 ̇ )
+        {𝓤 : Universe}
+        ((⨆ , _) : flabby-structure D 𝓤)
        where
 
- aainjective-structure₁ : aainjective-structure 𝓤 D → ainjective-type D 𝓤 𝓤
- aainjective-structure₁ = pr₁
-
- aainjective-structure₂ : (s : aainjective-structure 𝓤 D)
-                        → associativity D (aainjective-structure₁ s)
- aainjective-structure₂ = pr₂
-
-{-
- associativity-gives-𝓛-alg-structure : aainjective-structure 𝓤 D → 𝓛-alg 𝓤 D
- associativity-gives-𝓛-alg-structure = {!!}
-
- 𝓛-alg-structure-gives-associativity : 𝓛-alg 𝓤 D → aainjective-structure 𝓤 D
- 𝓛-alg-structure-gives-associativity = {!!}
-
- private
-  ϕ = associativity-gives-𝓛-alg-structure
-  ψ = 𝓛-alg-structure-gives-associativity
-
- η : (s@(D-ainj , a) : aainjective-structure 𝓤 D)
-   → Pullback-Naturality D D-ainj
-   → extension (aainjective-structure₁ (ψ (ϕ s)))＝ extension D-ainj
- η = {!!}
-
- ε : (t : 𝓛-alg 𝓤 D)
-   → ∐ 𝓤 (ϕ (ψ t)) ＝ ∐ 𝓤 t
- ε = {!!}
--}
+ ⨆-associativity : 𝓤 ⁺ ⊔ 𝓦 ̇
+ ⨆-associativity = (P : Ω 𝓤) (Q : P holds → Ω 𝓤) (f : ΣΩ Q holds → D)
+                 → ⨆ P (λ p → ⨆ (Q p) (λ q → f (p , q))) ＝ ⨆ (ΣΩ Q) f
 
 \end{code}
 
