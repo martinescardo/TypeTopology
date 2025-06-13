@@ -1,6 +1,6 @@
 Martin Escardo, 22nd October 2024 - June 2025
 
-WARNING. This file has gaps.
+WARNING. This file has two gaps.
 
 This file is work in progress and aims to eventually subsume the file
 gist.InjectivesVersusAlgebras (at which point that file will be deleted).
