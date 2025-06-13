@@ -200,8 +200,8 @@ module _
         ((_∣_ , _) : injective-structure D 𝓤 𝓤)
        where
 
- ∣-associativity : 𝓦 ⊔ 𝓤 ⁺ ̇
- ∣-associativity = {X Y Z : 𝓤 ̇ } (f : X → D) (𝕛 : X ↪ Y) (𝕜 : Y ↪ Z)
+ injective-associativity : 𝓦 ⊔ 𝓤 ⁺ ̇
+ injective-associativity = {X Y Z : 𝓤 ̇ } (f : X → D) (𝕛 : X ↪ Y) (𝕜 : Y ↪ Z)
                → f ∣ (𝕜 ⊚ 𝕛) ∼ (f ∣ 𝕛) ∣ 𝕜
 
 \end{code}
@@ -248,11 +248,12 @@ so that the above naturality condition becomes
 
   open pullback ⌊ 𝕛 ⌋ h
 
-  𝕡𝕓₂ : pullback ↪ B
-  𝕡𝕓₂ = pb₂ , pb₂-is-embedding ⌊ 𝕛 ⌋-is-embedding
+  private
+   𝑝𝑏₂ : pullback ↪ B
+   𝑝𝑏₂ = 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
 
   pullback-naturality : 𝓤 ⊔ 𝓦 ̇
-  pullback-naturality = (f ∣ 𝕛) ∘ h ＝ (f ∘ pb₁) ∣ 𝕡𝕓₂
+  pullback-naturality = (f ∣ 𝕛) ∘ h ＝ (f ∘ pb₁) ∣ 𝑝𝑏₂
 
  Pullback-Naturality : (𝓤 ⁺) ⊔ 𝓦 ̇
  Pullback-Naturality = {X Y B : 𝓤 ̇ }
@@ -263,19 +264,95 @@ so that the above naturality condition becomes
 
 \end{code}
 
-
+Now the definition of flabby associativity.
 
 \begin{code}
 
 module _
         {𝓤 : Universe}
-        ((⨆ , _) : flabby-structure D 𝓤)
+        (s@(⨆ , e) : flabby-structure D 𝓤)
        where
 
- ⨆-associativity : 𝓤 ⁺ ⊔ 𝓦 ̇
- ⨆-associativity = (P : Ω 𝓤) (Q : P holds → Ω 𝓤) (f : ΣΩ Q holds → D)
-                 → ⨆ P (λ p → ⨆ (Q p) (λ q → f (p , q))) ＝ ⨆ (ΣΩ Q) f
+ flabby-associativity : 𝓤 ⁺ ⊔ 𝓦 ̇
+ flabby-associativity = (P : Ω 𝓤) (Q : P holds → Ω 𝓤) (f : ΣΩ Q holds → D)
+                      → ⨆ (ΣΩ Q) f ＝ ⨆ P (λ p → ⨆ (Q p) (λ q → f (p , q)))
 
 \end{code}
+
+\begin{code}
+
+ module _
+         (pe : Prop-Ext)
+         (fe : Fun-Ext)
+       where
+
+  derived-injective-associativity
+   : flabby-associativity
+   → injective-associativity (derived-injective-structure D s)
+  derived-injective-associativity fassoc f 𝕛 𝕜 z = V
+   where
+    I : ⨆ (ΣΩ w ꞉ Fiber 𝕜 z , Fiber 𝕛 (fiber-point w)) (λ q → f (fiber-point (pr₂ q)))
+      ＝ ⨆ (Fiber 𝕜 z) (λ u → ⨆ (Fiber 𝕛 (fiber-point u)) (f ∘ fiber-point))
+    I = fassoc
+          (Fiber 𝕜 z)
+          (λ (p : Fiber 𝕜 z holds) → Fiber 𝕛 (fiber-point p))
+          (λ (q : (ΣΩ p ꞉ Fiber 𝕜 z , Fiber 𝕛 (fiber-point p)) holds) → f (fiber-point (pr₂ q)))
+
+    II : (Fiber (𝕜 ⊚ 𝕛) z holds) ≃ ((ΣΩ w ꞉ Fiber 𝕜 z , Fiber 𝕛 (fiber-point w)) holds)
+    II = fiber-of-composite ⌊ 𝕛 ⌋ ⌊ 𝕜 ⌋ z
+
+    III : ⨆ (Fiber (𝕜 ⊚ 𝕛) z) (f ∘ fiber-point)
+      ＝ ⨆ (ΣΩ w ꞉ Fiber 𝕜 z , Fiber 𝕛 (fiber-point w)) (λ q → f (fiber-point (pr₂ q)))
+    III = ⨆-change-of-variable-≃ D pe fe ⨆ (f ∘ fiber-point) II
+
+    IV : ⨆ (Fiber (𝕜 ⊚ 𝕛) z) (f ∘ fiber-point)
+      ＝ ⨆ (Fiber 𝕜 z) (λ w → ⨆ (Fiber 𝕛 (fiber-point w)) (f ∘ fiber-point))
+    IV = III ∙ I
+
+    _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+    _∣_ = injective-extension-operator D (derived-injective-structure D s)
+
+    V : (f ∣ (𝕜 ⊚ 𝕛)) z ＝ ((f ∣ 𝕛) ∣ 𝕜) z
+    V = IV
+
+  derived-injective-pullback-naturality
+   : flabby-associativity
+   → Pullback-Naturality (derived-injective-structure D s)
+  derived-injective-pullback-naturality fassoc {X} {Y} {B} f 𝕛 h = γ
+   where
+    open pullback ⌊ 𝕛 ⌋ h
+
+    𝑝𝑏₂ : pullback ↪ B
+    𝑝𝑏₂ = 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
+
+    _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+    _∣_ = injective-extension-operator D (derived-injective-structure D s)
+
+    ν : (b : B) → (f ∣ 𝕛) (h b) ＝ ((f ∘ pb₁) ∣ 𝑝𝑏₂) b
+    ν b =
+     (f ∣ 𝕛) (h b) ＝⟨ refl ⟩
+     ⨆ (Fiber 𝕛 (h b)) (f ∘ fiber-point) ＝⟨ I ⟩
+     ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ fiber-point ∘ v) ＝⟨ II ⟩
+     ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ pb₁ ∘ fiber-point) ＝⟨ refl ⟩
+     ((f ∘ pb₁) ∣ 𝑝𝑏₂) b ∎
+      where
+       u : Fiber 𝕛 (h b) holds → Fiber 𝑝𝑏₂ b holds
+       u = (λ (x , e) → ((x , b) , e) , refl)
+
+       v : Fiber 𝑝𝑏₂ b holds → Fiber 𝕛 (h b) holds
+       v (((x , _) , e) , refl) = (x , e)
+
+       I = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (u , v)
+
+       H : f ∘ pr₁ ∘ v ∼ f ∘ pb₁ ∘ fiber-point
+       H (((x , _) , e) , refl) = refl
+
+       II = ap (⨆ (Fiber 𝑝𝑏₂ b)) (dfunext fe H)
+
+    γ : (f ∣ 𝕛) ∘ h ＝ (f ∘ pb₁) ∣ 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
+    γ = dfunext fe ν
+
+\end{code}
+
 
 To be continued, following gist.InjectivesVersusAlgebras.

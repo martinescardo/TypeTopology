@@ -27,9 +27,9 @@ injective-structure 𝓤 𝓥
  = Σ _∣_ ꞉ ({X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → D) → (X ↪ Y) → (Y → D))
          , ({X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → D) (𝕛 : X ↪ Y) → (f ∣ 𝕛) ∘ ⌊ 𝕛 ⌋ ∼ f)
 
-flabby-structure-gives-injective-structure
+derived-injective-structure
  : flabby-structure (𝓤 ⊔ 𝓥) → injective-structure 𝓤 𝓥
-flabby-structure-gives-injective-structure {𝓤} {𝓥} (⨆ , e)
+derived-injective-structure {𝓤} {𝓥} (⨆ , e)
  = _∣_ , e'
  where
   _∣_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
@@ -38,9 +38,9 @@ flabby-structure-gives-injective-structure {𝓤} {𝓥} (⨆ , e)
   e' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → D) (𝕛 : X ↪ Y) → (f ∣ 𝕛) ∘ ⌊ 𝕛 ⌋ ∼ f
   e' f 𝕛 x = e (Fiber 𝕛 (⌊ 𝕛 ⌋ x)) (f ∘ pr₁) (x , refl)
 
-injective-structure-gives-flabby-structure
+derived-flabby-structure
  : injective-structure 𝓤 𝓥 → flabby-structure 𝓤
-injective-structure-gives-flabby-structure {𝓤} {𝓥} (_∣_ , e) = ⨆ , e'
+derived-flabby-structure {𝓤} {𝓥} (_∣_ , e) = ⨆ , e'
  where
   ⨆ : (P : Ω 𝓤) → (P holds → D) → D
   ⨆ P f = (f ∣ embedding-to-𝟙) ⋆
@@ -98,13 +98,11 @@ proofs as a comment.
 
 \begin{code}
 
- injective-structure-gives-flabby-structure-agreement
+ derived-flabby-structure-agreement
   : (s : injective-structure 𝓤 𝓥)
-  → ⌜ aflabby-repackaging ⌝
-      (injective-structure-gives-flabby-structure s)
-  ＝ ainjective-types-are-aflabby D
-      (⌜ ainjective-type-repackaging ⌝ s)
- injective-structure-gives-flabby-structure-agreement s = refl
+  → ⌜ aflabby-repackaging ⌝ (derived-flabby-structure s)
+  ＝ ainjective-types-are-aflabby D (⌜ ainjective-type-repackaging ⌝ s)
+ derived-flabby-structure-agreement s = refl
 
  \end{code}
 
@@ -114,14 +112,12 @@ proofs as a comment.
 
  \begin{code}
 
- flabby-structure-gives-injective-structure-agreement
+ derived-injective-structure-agreement
   : (s : flabby-structure 𝓤)
   → (λ {X Y : 𝓤 ̇} (j : X → Y)
-     → ⌜ ainjective-type-repackaging ⌝
-         (flabby-structure-gives-injective-structure s) {X} {Y} j)
-  ＝ aflabby-types-are-ainjective D
-      (⌜ aflabby-repackaging ⌝ s)
- flabby-structure-gives-injective-structure-agreement s = refl
+     → ⌜ ainjective-type-repackaging ⌝ (derived-injective-structure s) {X} {Y} j)
+  ＝ aflabby-types-are-ainjective D (⌜ aflabby-repackaging ⌝ s)
+ derived-injective-structure-agreement s = refl
 
 \end{code}
 
@@ -133,31 +129,64 @@ the development of the lifting monad.
 
 open import UF.Subsingletons
 
-⨆-change-of-variable : propext 𝓤
-                     → funext 𝓤 𝓤
-                     → (⨆ : (P : Ω 𝓤) → (P holds → D) → D)
-                     → (P Q : Ω 𝓤)
-                       (f : P holds → D)
-                       ((g , h) : (P holds) ↔ Q holds)
-                     → ⨆ P f ＝ ⨆ Q (f ∘ h)
-⨆-change-of-variable pe fe ⨆ P Q f (g , h) = IV
- where
-  h' : (e : P ＝ Q) → Q holds → P holds
-  h' e = ⌜ idtoeq _ _ (ap _holds e) ⌝⁻¹
+module _
+        (pe : propext 𝓤)
+        (fe : funext 𝓤 𝓤)
+        (⨆ : (P : Ω 𝓤) → (P holds → D) → D)
+        {P Q : Ω 𝓤}
+        (f : P holds → D)
+       where
 
-  I : (e : P ＝ Q) → h' e ＝ h
-  I e = dfunext fe (λ p → holds-is-prop P (h' e p) (h p))
+ ⨆-change-of-variable : ((g , h) : (P holds) ↔ Q holds)
+                      → ⨆ P f ＝ ⨆ Q (f ∘ h)
+ ⨆-change-of-variable (g , h) = IV
+  where
+   h' : (e : P ＝ Q) → Q holds → P holds
+   h' e = ⌜ idtoeq _ _ (ap _holds e) ⌝⁻¹
 
-  II : (e : P ＝ Q) → ⨆ P f ＝ ⨆ Q (f ∘ h' e)
-  II refl = refl
+   I : (e : P ＝ Q) → h' e ＝ h
+   I e = dfunext fe (λ p → holds-is-prop P (h' e p) (h p))
 
-  e : P ＝ Q
-  e = Ω-extensionality pe fe g h
+   II : (e : P ＝ Q) → ⨆ P f ＝ ⨆ Q (f ∘ h' e)
+   II refl = refl
 
-  III : ⨆ P f ＝ ⨆ Q (f ∘ h' e)
-  III = II e
+   e : P ＝ Q
+   e = Ω-extensionality pe fe g h
 
-  IV : ⨆ P f ＝ ⨆ Q (f ∘ h)
-  IV = transport (λ - → ⨆ P f ＝ ⨆ Q (f ∘ -)) (I e) III
+   III : ⨆ P f ＝ ⨆ Q (f ∘ h' e)
+   III = II e
+
+   IV : ⨆ P f ＝ ⨆ Q (f ∘ h)
+   IV = transport (λ - → ⨆ P f ＝ ⨆ Q (f ∘ -)) (I e) III
+
+ ⨆-change-of-variable-≃ : (𝕘 : (P holds) ≃ Q holds)
+                        → ⨆ P f ＝ ⨆ Q (f ∘ ⌜ 𝕘 ⌝⁻¹)
+ ⨆-change-of-variable-≃ 𝕘 = ⨆-change-of-variable (⌜ 𝕘 ⌝ , ⌜ 𝕘 ⌝⁻¹)
+
+\end{code}
+
+We give names to the projections.
+
+\begin{code}
+
+injective-extension-operator
+ : injective-structure 𝓤 𝓥
+ → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+injective-extension-operator (_∣_ , e) = _∣_
+
+injective-identification
+ : ((_∣_ , e) : injective-structure 𝓤 𝓥)
+ → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → D) (𝕛 : X ↪ Y) → (f ∣ 𝕛) ∘ ⌊ 𝕛 ⌋ ∼ f
+injective-identification (_∣_ , e) = e
+
+flabby-extension-operator
+ : flabby-structure 𝓤
+ → (P : Ω 𝓤) → (P holds → D) → D
+flabby-extension-operator (⨆ , h) = ⨆
+
+flabby-identification
+ : ((⨆ , e) : flabby-structure 𝓤)
+ → (P : Ω 𝓤) (f : P holds → D) (p : P holds) → ⨆ P f ＝ f p
+flabby-identification (_∣_ , e) = e
 
 \end{code}
