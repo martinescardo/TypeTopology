@@ -290,8 +290,10 @@ so that the above naturality condition becomes
 We now observe that the pullback requirement in the naturality
 condition is essential, no matter which injectivity structure we have,
 provided D has the property that for every d : D there is a designated
-d' ≠ d. We also need function extensionality for functions defined on
-the empty type.
+d' ≠ d. This is the case, in all examples of algebraically injective
+types we've identified (for example, for the universe, d' is given by
+negation). We also need function extensionality for functions defined
+on the empty type.
 
 \begin{code}
 
@@ -466,7 +468,7 @@ module _
     (f ∣ w) ⋆                              ＝⟨ ap (λ - → (f ∣ -) ⋆) I ⟩
     (f ∣ (v ⊚ u)) ⋆                        ＝⟨ iassoc f u v ⋆ ⟩
     ((f ∣ u) ∣ v) ⋆                        ＝⟨ refl ⟩
-    ⨆ P (f ∣ u)                            ＝⟨ ap (⨆ P) (dfunext fe II) ⟩
+    ⨆ P (f ∣ u)                            ＝⟨ ap (⨆ P) (dfunext fe III) ⟩
     ⨆ P (λ p → ⨆ (Q p) (λ q → f (p , q))) ∎
     where
      u : ΣΩ Q holds ↪ P holds
@@ -481,9 +483,9 @@ module _
      I : w ＝ v ⊚ u
      I = to-subtype-＝ (being-embedding-is-prop fe') refl
 
-     II-lemma : (p : P holds)
+     II : (p : P holds)
               → ⨆ (Fiber u p) (f ∘ fiber-point) ＝ ⨆ (Q p) (λ q → f (p , q))
-     II-lemma p = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (g , h)
+     II p = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (g , h)
       where
        g : fiber ⌊ u ⌋ p → Q p holds
        g ((p' , q) , _) = transport (λ - → Q - holds) (holds-is-prop P p' p) q
@@ -492,10 +494,10 @@ module _
        h q = (p , q) , holds-is-prop P (⌊ u ⌋ (p , q)) p
 
 
-     II : (p : P holds) → (f ∣ u) p ＝ ⨆ (Q p) (λ q → f (p , q))
-     II p = (f ∣ u) p                                ＝⟨ II₀ ⟩
+     III : (p : P holds) → (f ∣ u) p ＝ ⨆ (Q p) (λ q → f (p , q))
+     III p = (f ∣ u) p                                ＝⟨ II₀ ⟩
             (fiber-map s f u p ∣ fiber-to-𝟙 s u p) ⋆ ＝⟨ refl ⟩
-            ⨆ (Fiber u p) (f ∘ fiber-point)         ＝⟨ II-lemma p ⟩
+            ⨆ (Fiber u p) (f ∘ fiber-point)         ＝⟨ II p ⟩
             ⨆ (Q p) (λ q → f (p , q))               ∎
              where
               II₀ = Pullback-Naturality-gives-that-extensions-are-fiberwise
