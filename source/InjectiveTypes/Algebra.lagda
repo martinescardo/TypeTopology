@@ -301,7 +301,7 @@ module counter-example-to-general-naturality
         (ϕ : D → D)
         (δ : (d : D) → ϕ d ≠ d)
         (𝓤 𝓥 : Universe)
-        ((_∣_ , e) : injective-structure D 𝓤 𝓥)
+        ((_∣_ , _∣_-is-extension) : injective-structure D 𝓤 𝓥)
         (fe : funext 𝓤 𝓦)
       where
 
@@ -339,7 +339,7 @@ module counter-example-to-general-naturality
    I = dfunext fe (λ x → 𝟘-elim x)
 
    II = ϕ d₀              ＝⟨ refl ⟩
-        f ⋆               ＝⟨ (e f 𝕛 ⋆)⁻¹ ⟩
+        f ⋆               ＝⟨ (_∣_-is-extension f 𝕛 ⋆)⁻¹ ⟩
         (f ∣ 𝕛) (⌊ 𝕛 ⌋ ⋆) ＝⟨ refl ⟩
         (f ∣ 𝕛) ⋆         ＝⟨ refl ⟩
         ((f ∣ 𝕛) ∘ h) ⋆   ＝⟨ p ⋆ ⟩
@@ -507,9 +507,9 @@ module _
 
 To be continued.
 
-In addition to filling one gap, we need to add the things discussed in
+In addition to filling thw gap above, we need to add the things discussed in
 the following talk,
 
-https://martinescardo.github.io/.talks/2025-05-29-Note-09-58-algebraic-injectives-assume_pdf.pdf
+https://cs.bham.ac.uk/~mhe/.talks/2025-05-29-Note-09-58-algebraic-injectives-assume_pdf.pdf
 
 regarding round trips between injective structure and flabby structure.
