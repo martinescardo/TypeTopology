@@ -279,17 +279,21 @@ module _
 
 \end{code}
 
+To show that flabby associativity implies injective associativity and
+pullback naturality of the derived injective structure, we need to
+assume propositional and functional extensionality.
+
 \begin{code}
 
  module _
          (pe : Prop-Ext)
          (fe : Fun-Ext)
+         (fassoc : flabby-associativity)
        where
 
   derived-injective-associativity
-   : flabby-associativity
-   → injective-associativity (derived-injective-structure D s)
-  derived-injective-associativity fassoc f 𝕛 𝕜 z = V
+   : injective-associativity (derived-injective-structure D s)
+  derived-injective-associativity f 𝕛 𝕜 z = V
    where
     I : ⨆ (ΣΩ w ꞉ Fiber 𝕜 z , Fiber 𝕛 (fiber-point w)) (λ q → f (fiber-point (pr₂ q)))
       ＝ ⨆ (Fiber 𝕜 z) (λ u → ⨆ (Fiber 𝕛 (fiber-point u)) (f ∘ fiber-point))
@@ -316,9 +320,8 @@ module _
     V = IV
 
   derived-injective-pullback-naturality
-   : flabby-associativity
-   → Pullback-Naturality (derived-injective-structure D s)
-  derived-injective-pullback-naturality fassoc {X} {Y} {B} f 𝕛 h = γ
+   : Pullback-Naturality (derived-injective-structure D s)
+  derived-injective-pullback-naturality {X} {Y} {B} f 𝕛 h = III
    where
     open pullback ⌊ 𝕛 ⌋ h
 
@@ -328,29 +331,30 @@ module _
     _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
     _∣_ = injective-extension-operator D (derived-injective-structure D s)
 
-    ν : (b : B) → (f ∣ 𝕛) (h b) ＝ ((f ∘ pb₁) ∣ 𝑝𝑏₂) b
-    ν b =
-     (f ∣ 𝕛) (h b) ＝⟨ refl ⟩
-     ⨆ (Fiber 𝕛 (h b)) (f ∘ fiber-point) ＝⟨ I ⟩
-     ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ fiber-point ∘ v) ＝⟨ II ⟩
-     ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ pb₁ ∘ fiber-point) ＝⟨ refl ⟩
-     ((f ∘ pb₁) ∣ 𝑝𝑏₂) b ∎
-      where
-       u : Fiber 𝕛 (h b) holds → Fiber 𝑝𝑏₂ b holds
-       u = (λ (x , e) → ((x , b) , e) , refl)
+    module _ (b : B) where
 
-       v : Fiber 𝑝𝑏₂ b holds → Fiber 𝕛 (h b) holds
-       v (((x , _) , e) , refl) = (x , e)
+     ϕ : Fiber 𝕛 (h b) holds → Fiber 𝑝𝑏₂ b holds
+     ϕ = (λ (x , e) → ((x , b) , e) , refl)
 
-       I = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (u , v)
+     ψ : Fiber 𝑝𝑏₂ b holds → Fiber 𝕛 (h b) holds
+     ψ (((x , _) , e) , refl) = (x , e)
 
-       H : f ∘ pr₁ ∘ v ∼ f ∘ pb₁ ∘ fiber-point
-       H (((x , _) , e) , refl) = refl
+     I : f ∘ pr₁ ∘ ψ ∼ f ∘ pb₁ ∘ fiber-point
+     I (((x , _) , e) , refl) = refl
 
-       II = ap (⨆ (Fiber 𝑝𝑏₂ b)) (dfunext fe H)
 
-    γ : (f ∣ 𝕛) ∘ h ＝ (f ∘ pb₁) ∣ 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
-    γ = dfunext fe ν
+     II : (f ∣ 𝕛) (h b) ＝ ((f ∘ pb₁) ∣ 𝑝𝑏₂) b
+     II = (f ∣ 𝕛) (h b)                            ＝⟨ refl ⟩
+          ⨆ (Fiber 𝕛 (h b)) (f ∘ fiber-point)      ＝⟨ I₀ ⟩
+          ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ fiber-point ∘ ψ)    ＝⟨ I₁ ⟩
+          ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ pb₁ ∘ fiber-point)  ＝⟨ refl ⟩
+          ((f ∘ pb₁) ∣ 𝑝𝑏₂) b                      ∎
+           where
+            I₀ = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (ϕ , ψ)
+            I₁ = ap (⨆ (Fiber 𝑝𝑏₂ b)) (dfunext fe I)
+
+    III : (f ∣ 𝕛) ∘ h ＝ (f ∘ pb₁) ∣ 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
+    III = dfunext fe II
 
 \end{code}
 

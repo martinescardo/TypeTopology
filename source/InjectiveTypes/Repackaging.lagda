@@ -123,7 +123,8 @@ proofs as a comment.
 
 We can change variables in ⨆ in the following sense. Notice that there
 is a similar fact proved with the stronger assumption of univalence in
-the development of the lifting monad.
+the development of the lifting monad. But propositional and functional
+extensionality are enough.
 
 \begin{code}
 
