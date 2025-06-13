@@ -264,6 +264,64 @@ so that the above naturality condition becomes
 
 \end{code}
 
+We now observe that the pullback requirement in the naturality
+condition is essential, no matter which injectivity structure we have,
+provided D has the property that for every d : D there is a designated
+d' ≠ d. We also need function extensionality for functions defined on
+the empty type.
+
+\begin{code}
+
+module counter-example-to-general-naturality
+        (ϕ : D → D)
+        (δ : (d : D) → ϕ d ≠ d)
+        (𝓤 𝓥 : Universe)
+        ((_∣_ , e) : injective-structure D 𝓤 𝓥)
+        (fe : funext 𝓤 𝓦)
+      where
+
+ A X : 𝓤 ̇
+ B Y : 𝓥 ̇
+ A = 𝟘
+ B = 𝟙
+ X = 𝟙
+ Y = 𝟙
+
+ 𝕜 : A ↪ B
+ 𝕛 : X ↪ Y
+ g : A → X
+ h : B → Y
+ 𝕜 = unique-from-𝟘 , unique-from-𝟘-is-embedding
+ 𝕛 = unique-to-𝟙 , maps-of-props-are-embeddings _ 𝟙-is-prop 𝟙-is-prop
+ g = unique-from-𝟘
+ h = id
+
+ f₀ : A → D
+ f₀ = unique-from-𝟘
+
+ d₀ : D
+ d₀ = (f₀ ∣ 𝕜) ⋆
+
+ f : X → D
+ f _ = ϕ d₀
+
+ naturality-failure : ¬ ((f ∣ 𝕛) ∘ h ∼ (f ∘ g) ∣ 𝕜)
+ naturality-failure p = δ d₀ II
+  where
+   I : f ∘ g ＝ f₀
+   I = dfunext fe (λ x → 𝟘-elim x)
+
+   II = ϕ d₀              ＝⟨ refl ⟩
+        f ⋆               ＝⟨ (e f 𝕛 ⋆)⁻¹ ⟩
+        (f ∣ 𝕛) (⌊ 𝕛 ⌋ ⋆) ＝⟨ refl ⟩
+        (f ∣ 𝕛) ⋆         ＝⟨ refl ⟩
+        ((f ∣ 𝕛) ∘ h) ⋆   ＝⟨ p ⋆ ⟩
+        ((f ∘ g) ∣ 𝕜) ⋆   ＝⟨ ap (λ - → (- ∣ 𝕜) ⋆) I ⟩
+        (f₀ ∣ 𝕜) ⋆        ＝⟨ refl ⟩
+        d₀                ∎
+
+\end{code}
+
 Now the definition of flabby associativity.
 
 \begin{code}
@@ -345,18 +403,17 @@ assume propositional and functional extensionality.
 
      II : (f ∣ 𝕛) (h b) ＝ ((f ∘ pb₁) ∣ 𝑝𝑏₂) b
      II = (f ∣ 𝕛) (h b)                            ＝⟨ refl ⟩
-          ⨆ (Fiber 𝕛 (h b)) (f ∘ fiber-point)      ＝⟨ I₀ ⟩
-          ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ fiber-point ∘ ψ)    ＝⟨ I₁ ⟩
+          ⨆ (Fiber 𝕛 (h b)) (f ∘ fiber-point)      ＝⟨ II₀ ⟩
+          ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ fiber-point ∘ ψ)    ＝⟨ II₁ ⟩
           ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ pb₁ ∘ fiber-point)  ＝⟨ refl ⟩
           ((f ∘ pb₁) ∣ 𝑝𝑏₂) b                      ∎
            where
-            I₀ = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (ϕ , ψ)
-            I₁ = ap (⨆ (Fiber 𝑝𝑏₂ b)) (dfunext fe I)
+            II₀ = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (ϕ , ψ)
+            II₁ = ap (⨆ (Fiber 𝑝𝑏₂ b)) (dfunext fe I)
 
     III : (f ∣ 𝕛) ∘ h ＝ (f ∘ pb₁) ∣ 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
     III = dfunext fe II
 
 \end{code}
-
 
 To be continued, following gist.InjectivesVersusAlgebras.
