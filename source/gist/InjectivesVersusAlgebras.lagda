@@ -176,6 +176,12 @@ module _ (𝓤 : Universe)
       → Y → D
  f /̇ j = λ y → ⨆ (⌊ j ⌋-is-embedding y) (fiber-map f j y)
 
+ _ : {X : 𝓤 ̇ } {Y : 𝓤 ̇ }
+     (f : X → D)
+     (j : X ↪ Y)
+   → f /̇ j ＝ (λ y → (fiber-map f j y / fiber-to-𝟙 j y) ⋆)
+ _ = λ f j → refl
+
  ⨆-property : (P : 𝓤 ̇ )
                (i : is-prop P)
                (f : P → D)

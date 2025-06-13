@@ -1,4 +1,6 @@
-Martin Escardo, 22nd October 2024 - 22 May 2025
+Martin Escardo, 22nd October 2024 - June 2025
+
+WARNING. This file has gaps.
 
 This file is work in progress and aims to eventually subsume the file
 gist.InjectivesVersusAlgebras (at which point that file will be deleted).
@@ -152,6 +154,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 
 module InjectiveTypes.Algebra
+        (gap : {𝓤 : Universe} {X : 𝓤 ̇} → X) -- WARNING. This file has gaps.
         {𝓦 : Universe}
         (D : 𝓦 ̇ )
         (fe : FunExt)
@@ -253,7 +256,7 @@ so that the above naturality condition becomes
    𝑝𝑏₂ = 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
 
   pullback-naturality : 𝓤 ⊔ 𝓦 ̇
-  pullback-naturality = (f ∣ 𝕛) ∘ h ＝ (f ∘ pb₁) ∣ 𝑝𝑏₂
+  pullback-naturality = (f ∣ 𝕛) ∘ h ∼ (f ∘ pb₁) ∣ 𝑝𝑏₂
 
  Pullback-Naturality : (𝓤 ⁺) ⊔ 𝓦 ̇
  Pullback-Naturality = {X Y B : 𝓤 ̇ }
@@ -261,6 +264,26 @@ so that the above naturality condition becomes
                        (𝕛 : X ↪ Y)
                        (h : B → Y)
                      → pullback-naturality f 𝕛 h
+
+ fiber-map : {X Y : 𝓤 ̇ } (f : X → D) (j : X ↪ Y) (y : Y)
+           → fiber ⌊ j ⌋ y → D
+ fiber-map f j y (x , _) = f x
+
+ fiber-to-𝟙 : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (𝕛 : X ↪ Y) (y : Y)
+            → fiber ⌊ 𝕛 ⌋ y ↪ 𝟙 {𝓤}
+ fiber-to-𝟙 𝕛 y = embedding-to-𝟙 {𝓤} {𝓤} {Fiber 𝕛 y}
+
+ extensions-are-fiberwise : 𝓤 ⁺ ⊔ 𝓦 ̇
+ extensions-are-fiberwise = {X Y B : 𝓤 ̇ }
+                            (f : X → D)
+                            (𝕛 : X ↪ Y)
+                            (y : Y)
+                          → (f ∣ 𝕛) y ＝ (fiber-map f 𝕛 y ∣ fiber-to-𝟙 𝕛 y) ⋆
+
+ Pullback-Naturality-gives-that-extensions-are-fiberwise
+  : Pullback-Naturality
+  → extensions-are-fiberwise
+ Pullback-Naturality-gives-that-extensions-are-fiberwise = gap
 
 \end{code}
 
@@ -282,6 +305,7 @@ module counter-example-to-general-naturality
 
  A X : 𝓤 ̇
  B Y : 𝓥 ̇
+
  A = 𝟘
  B = 𝟙
  X = 𝟙
@@ -291,6 +315,7 @@ module counter-example-to-general-naturality
  𝕛 : X ↪ Y
  g : A → X
  h : B → Y
+
  𝕜 = unique-from-𝟘 , unique-from-𝟘-is-embedding
  𝕛 = unique-to-𝟙 , maps-of-props-are-embeddings _ 𝟙-is-prop 𝟙-is-prop
  g = unique-from-𝟘
@@ -328,7 +353,7 @@ Now the definition of flabby associativity.
 
 module _
         {𝓤 : Universe}
-        (s@(⨆ , e) : flabby-structure D 𝓤)
+        (s@(⨆ , _) : flabby-structure D 𝓤)
        where
 
  flabby-associativity : 𝓤 ⁺ ⊔ 𝓦 ̇
@@ -349,6 +374,11 @@ assume propositional and functional extensionality.
          (fassoc : flabby-associativity)
        where
 
+  private
+   _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+   _∣_ = injective-extension-operator D (derived-injective-structure D s)
+
+
   derived-injective-associativity
    : injective-associativity (derived-injective-structure D s)
   derived-injective-associativity f 𝕛 𝕜 z = V
@@ -357,10 +387,10 @@ assume propositional and functional extensionality.
       ＝ ⨆ (Fiber 𝕜 z) (λ u → ⨆ (Fiber 𝕛 (fiber-point u)) (f ∘ fiber-point))
     I = fassoc
           (Fiber 𝕜 z)
-          (λ (p : Fiber 𝕜 z holds) → Fiber 𝕛 (fiber-point p))
-          (λ (q : (ΣΩ p ꞉ Fiber 𝕜 z , Fiber 𝕛 (fiber-point p)) holds) → f (fiber-point (pr₂ q)))
+          (λ (p : fiber ⌊ 𝕜 ⌋ z) → Fiber 𝕛 (fiber-point p))
+          (λ (q : (Σ w ꞉ fiber ⌊ 𝕜 ⌋ z , fiber ⌊ 𝕛 ⌋ (fiber-point w))) → f (fiber-point (pr₂ q)))
 
-    II : (Fiber (𝕜 ⊚ 𝕛) z holds) ≃ ((ΣΩ w ꞉ Fiber 𝕜 z , Fiber 𝕛 (fiber-point w)) holds)
+    II : (fiber ⌊ 𝕜 ⊚ 𝕛 ⌋ z) ≃ (Σ w ꞉ fiber ⌊ 𝕜 ⌋ z , fiber ⌊ 𝕛 ⌋ (fiber-point w))
     II = fiber-of-composite ⌊ 𝕛 ⌋ ⌊ 𝕜 ⌋ z
 
     III : ⨆ (Fiber (𝕜 ⊚ 𝕛) z) (f ∘ fiber-point)
@@ -371,30 +401,24 @@ assume propositional and functional extensionality.
       ＝ ⨆ (Fiber 𝕜 z) (λ w → ⨆ (Fiber 𝕛 (fiber-point w)) (f ∘ fiber-point))
     IV = III ∙ I
 
-    _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
-    _∣_ = injective-extension-operator D (derived-injective-structure D s)
-
     V : (f ∣ (𝕜 ⊚ 𝕛)) z ＝ ((f ∣ 𝕛) ∣ 𝕜) z
     V = IV
 
   derived-injective-pullback-naturality
    : Pullback-Naturality (derived-injective-structure D s)
-  derived-injective-pullback-naturality {X} {Y} {B} f 𝕛 h = III
+  derived-injective-pullback-naturality {X} {Y} {B} f 𝕛 h = II
    where
     open pullback ⌊ 𝕛 ⌋ h
 
     𝑝𝑏₂ : pullback ↪ B
     𝑝𝑏₂ = 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
 
-    _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
-    _∣_ = injective-extension-operator D (derived-injective-structure D s)
-
     module _ (b : B) where
 
-     ϕ : Fiber 𝕛 (h b) holds → Fiber 𝑝𝑏₂ b holds
+     ϕ : fiber ⌊ 𝕛 ⌋ (h b) → fiber ⌊ 𝑝𝑏₂ ⌋ b
      ϕ = (λ (x , e) → ((x , b) , e) , refl)
 
-     ψ : Fiber 𝑝𝑏₂ b holds → Fiber 𝕛 (h b) holds
+     ψ : fiber ⌊ 𝑝𝑏₂ ⌋ b → fiber ⌊ 𝕛 ⌋ (h b)
      ψ (((x , _) , e) , refl) = (x , e)
 
      I : f ∘ pr₁ ∘ ψ ∼ f ∘ pb₁ ∘ fiber-point
@@ -411,9 +435,85 @@ assume propositional and functional extensionality.
             II₀ = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (ϕ , ψ)
             II₁ = ap (⨆ (Fiber 𝑝𝑏₂ b)) (dfunext fe I)
 
-    III : (f ∣ 𝕛) ∘ h ＝ (f ∘ pb₁) ∣ 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
-    III = dfunext fe II
+\end{code}
+
+Notice that we didn't use the extension properties of the flabby
+structure or the derive injective structure.
+
+We now show that injective associativity implies flabby associativity
+of the derived flabby structure, assuming pullback naturality.
+
+\begin{code}
+
+module _
+        {𝓤          : Universe}
+        (s@(_∣_ , e) : injective-structure D 𝓤 𝓤)
+        (pe          : Prop-Ext)
+        (fe          : Fun-Ext)
+        (iassoc      : injective-associativity s)
+        (pbn         : Pullback-Naturality s)
+      where
+
+ private
+  ⨆ : (P : Ω 𝓤) → (P holds → D) → D
+  ⨆ = flabby-extension-operator D (derived-flabby-structure D s)
+
+ derived-flabby-associativity
+  : Pullback-Naturality s
+  → flabby-associativity (derived-flabby-structure D s)
+ derived-flabby-associativity pbn P Q f
+  = ⨆ (ΣΩ Q) f                             ＝⟨ refl ⟩
+    (f ∣ w) ⋆                              ＝⟨ ap (λ - → (f ∣ -) ⋆) I ⟩
+    (f ∣ (v ⊚ u)) ⋆                        ＝⟨ iassoc f u v ⋆ ⟩
+    ((f ∣ u) ∣ v) ⋆                        ＝⟨ refl ⟩
+    ⨆ P (f ∣ u)                            ＝⟨ ap (⨆ P) (dfunext fe II) ⟩
+    ⨆ P (λ p → ⨆ (Q p) (λ q → f (p , q))) ∎
+    where
+     u : ΣΩ Q holds ↪ P holds
+     u = pr₁ , pr₁-is-embedding (λ p → holds-is-prop (Q p))
+
+     v : P holds ↪ 𝟙
+     v = embedding-to-𝟙
+
+     w : ΣΩ Q holds ↪ 𝟙
+     w = embedding-to-𝟙
+
+     I : w ＝ v ⊚ u
+     I = to-subtype-＝ (being-embedding-is-prop fe') refl
+
+     II-lemma : (p : P holds)
+              → ⨆ (Fiber u p) (f ∘ fiber-point) ＝ ⨆ (Q p) (λ q → f (p , q))
+     II-lemma p = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (g , h)
+      where
+       g : fiber ⌊ u ⌋ p → Q p holds
+       g ((p' , q) , _) = transport (λ - → Q - holds) (holds-is-prop P p' p) q
+
+       h : Q p holds → fiber ⌊ u ⌋ p
+       h q = (p , q) , holds-is-prop P (⌊ u ⌋ (p , q)) p
+
+
+     II : (p : P holds) → (f ∣ u) p ＝ ⨆ (Q p) (λ q → f (p , q))
+     II p = (f ∣ u) p                                ＝⟨ II₀ ⟩
+            (fiber-map s f u p ∣ fiber-to-𝟙 s u p) ⋆ ＝⟨ refl ⟩
+            ⨆ (Fiber u p) (f ∘ fiber-point)         ＝⟨ II-lemma p ⟩
+            ⨆ (Q p) (λ q → f (p , q))               ∎
+             where
+              II₀ = gap
+              -- This gives yellow but is correct:
+              {- Pullback-Naturality-gives-that-extensions-are-fiberwise
+                  s
+                  pbn
+                  f u p -}
+              -- It is again a case of Agda having the wrong design decision for
+              -- implicit arguments.
 
 \end{code}
 
-To be continued, following gist.InjectivesVersusAlgebras.
+To be continued.
+
+In addition to filling two gaps (where the second one is bureacratic), we
+need to add the things discussed in the following talk,
+
+https://martinescardo.github.io/.talks/2025-05-29-Note-09-58-algebraic-injectives-assume_pdf.pdf
+
+regarding round trips between injective structure and flabby structure.
