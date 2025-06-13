@@ -1,6 +1,6 @@
 Martin Escardo, 22nd October 2024 - June 2025
 
-WARNING. This file has two gaps.
+WARNING. This file has one gap.
 
 This file is work in progress and aims to eventually subsume the file
 gist.InjectivesVersusAlgebras (at which point that file will be deleted).
@@ -259,7 +259,7 @@ so that the above naturality condition becomes
   pullback-naturality = (f ∣ 𝕛) ∘ h ∼ (f ∘ pb₁) ∣ 𝑝𝑏₂
 
  Pullback-Naturality : (𝓤 ⁺) ⊔ 𝓦 ̇
- Pullback-Naturality = {X Y B : 𝓤 ̇ }
+ Pullback-Naturality = (X Y B : 𝓤 ̇ )
                        (f : X → D)
                        (𝕛 : X ↪ Y)
                        (h : B → Y)
@@ -274,7 +274,7 @@ so that the above naturality condition becomes
  fiber-to-𝟙 𝕛 y = embedding-to-𝟙 {𝓤} {𝓤} {Fiber 𝕛 y}
 
  extensions-are-fiberwise : 𝓤 ⁺ ⊔ 𝓦 ̇
- extensions-are-fiberwise = {X Y B : 𝓤 ̇ }
+ extensions-are-fiberwise = (X Y B : 𝓤 ̇ )
                             (f : X → D)
                             (𝕛 : X ↪ Y)
                             (y : Y)
@@ -406,7 +406,7 @@ assume propositional and functional extensionality.
 
   derived-injective-pullback-naturality
    : Pullback-Naturality (derived-injective-structure D s)
-  derived-injective-pullback-naturality {X} {Y} {B} f 𝕛 h = II
+  derived-injective-pullback-naturality X Y B f 𝕛 h = II
    where
     open pullback ⌊ 𝕛 ⌋ h
 
@@ -498,14 +498,8 @@ module _
             ⨆ (Fiber u p) (f ∘ fiber-point)         ＝⟨ II-lemma p ⟩
             ⨆ (Q p) (λ q → f (p , q))               ∎
              where
-              II₀ = gap
-              -- This gives yellow but is correct:
-              {- Pullback-Naturality-gives-that-extensions-are-fiberwise
-                  s
-                  pbn
-                  f u p -}
-              -- It is again a case of Agda having the wrong design decision for
-              -- implicit arguments.
+              II₀ = Pullback-Naturality-gives-that-extensions-are-fiberwise
+                     s pbn (ΣΩ Q holds) (P holds) (P holds) f u p
 
 \end{code}
 
