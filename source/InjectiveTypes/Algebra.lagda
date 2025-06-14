@@ -1,6 +1,6 @@
 Martin Escardo, 22nd October 2024 - June 2025
 
-WARNING. This file has one gap.
+WARNING. This file has gaps.
 
 This file is work in progress and aims to eventually subsume the file
 gist.InjectivesVersusAlgebras (at which point that file will be deleted).
@@ -157,11 +157,7 @@ module InjectiveTypes.Algebra
         (gap : {𝓤 : Universe} {X : 𝓤 ̇} → X) -- WARNING. This file has gaps.
         {𝓦 : Universe}
         (D : 𝓦 ̇ )
-        (fe : FunExt)
        where
-
-fe' : Fun-Ext
-fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 open import InjectiveTypes.Repackaging
 open import Lifting.Algebras hiding (is-hom)
@@ -242,48 +238,35 @@ so that the above naturality condition becomes
 
 \begin{code}
 
- module _
-         {X Y B : 𝓤 ̇ }
-         (f : X → D)
-         (𝕛 : X ↪ Y)
-         (h : B → Y)
-        where
-
-  open pullback ⌊ 𝕛 ⌋ h
-
-  private
-   𝑝𝑏₂ : pullback ↪ B
-   𝑝𝑏₂ = 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
-
-  pullback-naturality : 𝓤 ⊔ 𝓦 ̇
-  pullback-naturality = (f ∣ 𝕛) ∘ h ∼ (f ∘ pb₁) ∣ 𝑝𝑏₂
-
- Pullback-Naturality : (𝓤 ⁺) ⊔ 𝓦 ̇
- Pullback-Naturality = (X Y B : 𝓤 ̇ )
+ pullback-naturality : (𝓤 ⁺) ⊔ 𝓦 ̇
+ pullback-naturality = (X Y B : 𝓤 ̇ )
                        (f : X → D)
                        (𝕛 : X ↪ Y)
                        (h : B → Y)
-                     → pullback-naturality f 𝕛 h
+                      → let open pullback ⌊ 𝕛 ⌋ h
+                            𝑝𝑏₂ : pullback ↪ B
+                            𝑝𝑏₂ = 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
+                        in (f ∣ 𝕛) ∘ h ∼ (f ∘ pb₁) ∣ 𝑝𝑏₂
 
  fiber-map : {X Y : 𝓤 ̇ } (f : X → D) (j : X ↪ Y) (y : Y)
            → fiber ⌊ j ⌋ y → D
- fiber-map f j y (x , _) = f x
+ fiber-map f j y = f ∘ fiber-point
 
  fiber-to-𝟙 : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (𝕛 : X ↪ Y) (y : Y)
             → fiber ⌊ 𝕛 ⌋ y ↪ 𝟙 {𝓤}
  fiber-to-𝟙 𝕛 y = embedding-to-𝟙 {𝓤} {𝓤} {Fiber 𝕛 y}
 
  extensions-are-fiberwise : 𝓤 ⁺ ⊔ 𝓦 ̇
- extensions-are-fiberwise = (X Y B : 𝓤 ̇ )
+ extensions-are-fiberwise = (X Y : 𝓤 ̇ )
                             (f : X → D)
                             (𝕛 : X ↪ Y)
                             (y : Y)
-                          → (f ∣ 𝕛) y ＝ (fiber-map f 𝕛 y ∣ fiber-to-𝟙 𝕛 y) ⋆
+                          → (f ∣ 𝕛) y ＝ ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆
 
- Pullback-Naturality-gives-that-extensions-are-fiberwise
-  : Pullback-Naturality
+ pullback-naturality-gives-that-extensions-are-fiberwise
+  : pullback-naturality
   → extensions-are-fiberwise
- Pullback-Naturality-gives-that-extensions-are-fiberwise = gap
+ pullback-naturality-gives-that-extensions-are-fiberwise = gap
 
 \end{code}
 
@@ -364,19 +347,22 @@ module _
 
 \end{code}
 
-To show that flabby associativity implies injective associativity and
-pullback naturality of the derived injective structure, we need to
+We now show that flabby associativity implies injective associativity and
+pullback naturality of the derived injective structure., we need to
 assume propositional and functional extensionality.
 
 \begin{code}
 
  module _
          (pe : Prop-Ext)
-         (fe : Fun-Ext)
+         (fe : FunExt)
          (fassoc : flabby-associativity)
        where
 
   private
+   fe' : Fun-Ext
+   fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+
    _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
    _∣_ = injective-extension-operator D (derived-injective-structure D s)
 
@@ -397,7 +383,7 @@ assume propositional and functional extensionality.
 
     III : ⨆ (Fiber (𝕜 ⊚ 𝕛) z) (f ∘ fiber-point)
       ＝ ⨆ (ΣΩ w ꞉ Fiber 𝕜 z , Fiber 𝕛 (fiber-point w)) (λ q → f (fiber-point (pr₂ q)))
-    III = ⨆-change-of-variable-≃ D pe fe ⨆ (f ∘ fiber-point) II
+    III = ⨆-change-of-variable-≃ D pe fe' ⨆ (f ∘ fiber-point) II
 
     IV : ⨆ (Fiber (𝕜 ⊚ 𝕛) z) (f ∘ fiber-point)
       ＝ ⨆ (Fiber 𝕜 z) (λ w → ⨆ (Fiber 𝕛 (fiber-point w)) (f ∘ fiber-point))
@@ -407,7 +393,7 @@ assume propositional and functional extensionality.
     V = IV
 
   derived-injective-pullback-naturality
-   : Pullback-Naturality (derived-injective-structure D s)
+   : pullback-naturality (derived-injective-structure D s)
   derived-injective-pullback-naturality X Y B f 𝕛 h = II
    where
     open pullback ⌊ 𝕛 ⌋ h
@@ -434,41 +420,61 @@ assume propositional and functional extensionality.
           ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ pb₁ ∘ fiber-point)  ＝⟨ refl ⟩
           ((f ∘ pb₁) ∣ 𝑝𝑏₂) b                      ∎
            where
-            II₀ = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (ϕ , ψ)
-            II₁ = ap (⨆ (Fiber 𝑝𝑏₂ b)) (dfunext fe I)
+            II₀ = ⨆-change-of-variable D pe fe' ⨆ (f ∘ fiber-point) (ϕ , ψ)
+            II₁ = ap (⨆ (Fiber 𝑝𝑏₂ b)) (dfunext fe' I)
+
+  private
+   ⨆' : (P : Ω 𝓤) → (P holds → D) → D
+   ⨆' = flabby-extension-operator D
+          (derived-flabby-structure D {𝓤} {𝓤}
+            (derived-injective-structure D s))
+
+  ⨆-roundtrip : ⨆ ＝ ⨆'
+  ⨆-roundtrip = dfunext fe' (λ P → dfunext fe' (I P))
+   where
+    I :  (P : Ω 𝓤) (f : P holds → D) → ⨆ P f ＝ ⨆' P f
+    I P f = ⨆ P f                                        ＝⟨ I₀ ⟩
+            ⨆ (Fiber embedding-to-𝟙 ⋆) (f ∘ fiber-point) ＝⟨ refl ⟩
+            ⨆' P f                                       ∎
+      where
+       I₀ = ⨆-change-of-variable D pe fe' ⨆ f ((λ p → p , refl) , fiber-point)
 
 \end{code}
 
 Notice that we didn't use the extension properties of the flabby
-structure or the derive injective structure.
+structure or the derived injective structure.
 
 We now show that injective associativity implies flabby associativity
 of the derived flabby structure, assuming pullback naturality.
 
 \begin{code}
 
+
 module _
         {𝓤          : Universe}
         (s@(_∣_ , e) : injective-structure D 𝓤 𝓤)
         (pe          : Prop-Ext)
-        (fe          : Fun-Ext)
+        (fe          : FunExt)
         (iassoc      : injective-associativity s)
-        (pbn         : Pullback-Naturality s)
+        (pbn         : pullback-naturality s)
       where
 
  private
+  fe' : Fun-Ext
+  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+
   ⨆ : (P : Ω 𝓤) → (P holds → D) → D
   ⨆ = flabby-extension-operator D (derived-flabby-structure D s)
 
  derived-flabby-associativity
-  : Pullback-Naturality s
+  : pullback-naturality s
   → flabby-associativity (derived-flabby-structure D s)
  derived-flabby-associativity pbn P Q f
   = ⨆ (ΣΩ Q) f                             ＝⟨ refl ⟩
     (f ∣ w) ⋆                              ＝⟨ ap (λ - → (f ∣ -) ⋆) I ⟩
     (f ∣ (v ⊚ u)) ⋆                        ＝⟨ iassoc f u v ⋆ ⟩
     ((f ∣ u) ∣ v) ⋆                        ＝⟨ refl ⟩
-    ⨆ P (f ∣ u)                            ＝⟨ ap (⨆ P) (dfunext fe III) ⟩
+    ⨆ P (f ∣ u)                            ＝⟨ ap (⨆ P) (dfunext fe' III) ⟩
     ⨆ P (λ p → ⨆ (Q p) (λ q → f (p , q))) ∎
     where
      u : ΣΩ Q holds ↪ P holds
@@ -484,8 +490,8 @@ module _
      I = to-subtype-＝ (being-embedding-is-prop fe') refl
 
      II : (p : P holds)
-              → ⨆ (Fiber u p) (f ∘ fiber-point) ＝ ⨆ (Q p) (λ q → f (p , q))
-     II p = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (g , h)
+        → ⨆ (Fiber u p) (f ∘ fiber-point) ＝ ⨆ (Q p) (λ q → f (p , q))
+     II p = ⨆-change-of-variable D pe fe' ⨆ (f ∘ fiber-point) (g , h)
       where
        g : fiber ⌊ u ⌋ p → Q p holds
        g ((p' , q) , _) = transport (λ - → Q - holds) (holds-is-prop P p' p) q
@@ -500,8 +506,25 @@ module _
             ⨆ (Fiber u p) (f ∘ fiber-point)         ＝⟨ II p ⟩
             ⨆ (Q p) (λ q → f (p , q))               ∎
              where
-              II₀ = Pullback-Naturality-gives-that-extensions-are-fiberwise
-                     s pbn (ΣΩ Q holds) (P holds) (P holds) f u p
+              II₀ = pullback-naturality-gives-that-extensions-are-fiberwise
+                     s pbn (ΣΩ Q holds) (P holds) f u p
+
+ private
+  s' : injective-structure D 𝓤 𝓤
+  s' = derived-injective-structure D (derived-flabby-structure D {𝓤} {𝓤} s)
+
+  _∣'_ : {X Y : 𝓤 ̇} → (X → D) → X ↪ Y → Y → D
+  _∣'_ = injective-extension-operator D {𝓤} {𝓤} s'
+
+
+ ∣-roundtrip : {X Y : 𝓤 ̇} (f : X → D) (𝕛 : X ↪ Y)
+            → f ∣ 𝕛 ∼ f ∣' 𝕛
+ ∣-roundtrip {X} {Y} f 𝕛 y =
+  (f ∣ 𝕛) y                                 ＝⟨ I ⟩
+  ((f ∘ fiber-point) ∣ fiber-to-𝟙 s' 𝕛 y) ⋆ ＝⟨ refl ⟩
+  (f ∣' 𝕛) y                                ∎
+  where
+   I = pullback-naturality-gives-that-extensions-are-fiberwise s pbn X Y f 𝕛 y
 
 \end{code}
 
