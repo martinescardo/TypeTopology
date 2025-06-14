@@ -303,6 +303,12 @@ so that the above naturality condition becomes
 
 \end{code}
 
+TODO. At the moment, we define pullback naturality with respect to the
+canonical pullback. But the above argument actually shows that this
+implies naturality with respect to any pullback. So we should
+reformulate the above in this way, and then use the (already proved)
+fact that fibers are pullbacks.
+
 We now observe that the pullback requirement in the naturality
 condition is essential, no matter which injective structure we have,
 provided D has the property that for every d : D there is a designated
