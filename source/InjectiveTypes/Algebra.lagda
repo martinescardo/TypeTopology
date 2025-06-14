@@ -567,4 +567,4 @@ In particular the (trivial) connection with lifting algebras.
 Then also conclude as a corollary that the algebras of the lifting
 monad coincide with the pullback-natural, associative injective
 algebras, for the case of *sets*, so that we get the theorem for
-1-topos stated in [1]
+1-toposes stated in [1].
