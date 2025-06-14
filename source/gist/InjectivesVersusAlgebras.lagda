@@ -1,5 +1,10 @@
 Martin Escardo, 22nd October 2024
 
+This file is now obsolete. The main ideas are at
+InjectiveTypes.Algebras, in a better way. There still a few
+speculative ideas towards the end. In any case, I will probably delete
+this file soon.
+
 Incomplete blackboard thoughts on injectives as algebras of the
 partial-map classifier monad, also known as the lifting monad.
 
