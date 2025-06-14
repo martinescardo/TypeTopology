@@ -269,6 +269,10 @@ pr₁-is-embedding f x ((x , y') , refl) ((x , y'') , refl) = g
   g : (x , y') , refl ＝ (x , y'') , refl
   g = ap (λ - → (x , -) , refl) (f x y' y'')
 
+𝕡𝕣₁ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+    → ((x : X) → is-prop (Y x))
+    → (Σ Y ↪ X)
+𝕡𝕣₁ i = pr₁ , pr₁-is-embedding i
 
 to-subtype-＝-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                 → ((x : X) → is-prop (A x))

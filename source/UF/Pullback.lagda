@@ -255,7 +255,7 @@ Pullbacks of embeddings are embeddings.
           → (((x₁ , y) , e₁) , refl) ＝[ fiber pb₂ y ] (((x₂ , y) , e₂) , refl)
       III refl = refl
 
- 𝕡𝕓₂ : (e : is-embedding f) → P ↪ Y
+ 𝕡𝕓₂ : is-embedding f → P ↪ Y
  𝕡𝕓₂ e = pb₂ , (pb₂-is-embedding e)
 
 \end{code}

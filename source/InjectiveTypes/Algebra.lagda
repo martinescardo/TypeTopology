@@ -1,6 +1,7 @@
 Martin Escardo, 22nd October 2024 - June 2025
 
-WARNING. This file has gaps.
+Taking "algebraically" seriously in the definition of algebraically injective type.
+https://cs.bham.ac.uk/~mhe/.talks/2025-05-29-Note-09-58-algebraic-injectives-assume_pdf.pdf
 
 This file is work in progress and aims to eventually subsume the file
 gist.InjectivesVersusAlgebras (at which point that file will be deleted).
@@ -154,7 +155,6 @@ open import MLTT.Spartan
 open import UF.FunExt
 
 module InjectiveTypes.Algebra
-        (gap : {𝓤 : Universe} {X : 𝓤 ̇} → X) -- WARNING. This file has gaps.
         {𝓦 : Universe}
         (D : 𝓦 ̇ )
        where
@@ -190,13 +190,13 @@ module _
 
 \end{code}
 
-Definitions of associativity and pullback naturality for injectivity structure.
+Definitions of associativity and pullback naturality for injective structure.
 
 \begin{code}
 
 module _
         {𝓤 : Universe}
-        ((_∣_ , _) : injective-structure D 𝓤 𝓤)
+        (s@(_∣_ , _) : injective-structure D 𝓤 𝓤)
        where
 
  injective-associativity : 𝓦 ⊔ 𝓤 ⁺ ̇
@@ -239,7 +239,7 @@ so that the above naturality condition becomes
 \begin{code}
 
  pullback-naturality : (𝓤 ⁺) ⊔ 𝓦 ̇
- pullback-naturality = (X Y B : 𝓤 ̇ )
+ pullback-naturality = ({X} {Y} B : 𝓤 ̇ )
                        (f : X → D)
                        (𝕛 : X ↪ Y)
                        (h : B → Y)
@@ -248,32 +248,65 @@ so that the above naturality condition becomes
                             𝑝𝑏₂ = 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
                         in (f ∣ 𝕛) ∘ h ∼ (f ∘ pb₁) ∣ 𝑝𝑏₂
 
- fiber-map : {X Y : 𝓤 ̇ } (f : X → D) (j : X ↪ Y) (y : Y)
-           → fiber ⌊ j ⌋ y → D
- fiber-map f j y = f ∘ fiber-point
-
  fiber-to-𝟙 : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (𝕛 : X ↪ Y) (y : Y)
             → fiber ⌊ 𝕛 ⌋ y ↪ 𝟙 {𝓤}
  fiber-to-𝟙 𝕛 y = embedding-to-𝟙 {𝓤} {𝓤} {Fiber 𝕛 y}
 
  extensions-are-fiberwise : 𝓤 ⁺ ⊔ 𝓦 ̇
- extensions-are-fiberwise = (X Y : 𝓤 ̇ )
+ extensions-are-fiberwise = {X Y : 𝓤 ̇ }
                             (f : X → D)
                             (𝕛 : X ↪ Y)
                             (y : Y)
                           → (f ∣ 𝕛) y ＝ ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆
 
  pullback-naturality-gives-that-extensions-are-fiberwise
-  : pullback-naturality
+  : propext 𝓤
+  → funext 𝓤 𝓤
+  → pullback-naturality
   → extensions-are-fiberwise
- pullback-naturality-gives-that-extensions-are-fiberwise = gap
+ pullback-naturality-gives-that-extensions-are-fiberwise pe fe pbn {X} {Y} f 𝕛 y
+  = II
+  where
+   h : 𝟙 {𝓤} → Y
+   h _ = y
+
+   open pullback ⌊ 𝕛 ⌋ h
+
+   ϕ : pullback ≃ fiber ⌊ 𝕛 ⌋ y
+   ϕ = pullback                           ≃⟨ ≃-refl _ ⟩
+       (Σ z ꞉ X × 𝟙 , ⌊ 𝕛 ⌋ (pr₁ z) ＝ y) ≃⟨ Σ-assoc ⟩
+       (Σ x ꞉ X , 𝟙 × (⌊ 𝕛 ⌋ x ＝ y))     ≃⟨ Σ-cong (λ x → 𝟙-lneutral) ⟩
+       fiber ⌊ 𝕛 ⌋ y                      ■
+
+   𝑝𝑏₂ : pullback ↪ 𝟙
+   𝑝𝑏₂ = 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
+
+   I : 𝑝𝑏₂ ＝ embedding-to-𝟙
+   I = to-subtype-＝ (being-embedding-is-prop fe) refl
+
+   ⨆ : (P : Ω 𝓤) → (P holds → D) → D
+   ⨆ P f = (f ∣ embedding-to-𝟙) ⋆
+
+   II =
+    (f ∣ 𝕛) y                                                         ＝⟨ III₀ ⟩
+    ((f ∘ pb₁) ∣ 𝑝𝑏₂) ⋆                                               ＝⟨ refl ⟩
+    ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ 𝑝𝑏₂) ⋆                               ＝⟨ III₁ ⟩
+    ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ embedding-to-𝟙) ⋆                    ＝⟨ refl ⟩
+    ⨆ (Fiber (𝕛 ⊚ 𝕡𝕣₁ (λ _ → 𝟙-is-prop)) y) (f ∘ fiber-point ∘ ⌜ ϕ ⌝) ＝⟨ III₂ ⟩
+    ⨆ (Fiber 𝕛 y) (f ∘ fiber-point)                                   ＝⟨ refl ⟩
+    ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆                            ∎
+     where
+      III₀ = pbn 𝟙 f 𝕛 h ⋆
+      III₁ = ap (λ - → ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ -) ⋆) I
+      III₂ = (⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point)
+               (⌜ ϕ ⌝⁻¹ , ⌜ ϕ ⌝))⁻¹
 
 \end{code}
 
 We now observe that the pullback requirement in the naturality
-condition is essential, no matter which injectivity structure we have,
+condition is essential, no matter which injective structure we have,
 provided D has the property that for every d : D there is a designated
-d' ≠ d. This is the case, in all examples of algebraically injective
+d' ≠ d. This is the case in all examples of algebraically injective
 types we've identified (for example, for the universe, d' is given by
 negation). We also need function extensionality for functions defined
 on the empty type.
@@ -347,9 +380,9 @@ module _
 
 \end{code}
 
-We now show that flabby associativity implies injective associativity and
-pullback naturality of the derived injective structure., we need to
-assume propositional and functional extensionality.
+We now show that flabby associativity implies injective associativity
+and pullback naturality of the derived injective structure (assuming
+propositional and functional extensionality).
 
 \begin{code}
 
@@ -366,7 +399,6 @@ assume propositional and functional extensionality.
    _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
    _∣_ = injective-extension-operator D (derived-injective-structure D s)
 
-
   derived-injective-associativity
    : injective-associativity (derived-injective-structure D s)
   derived-injective-associativity f 𝕛 𝕜 z = V
@@ -376,7 +408,8 @@ assume propositional and functional extensionality.
     I = fassoc
           (Fiber 𝕜 z)
           (λ (p : fiber ⌊ 𝕜 ⌋ z) → Fiber 𝕛 (fiber-point p))
-          (λ (q : (Σ w ꞉ fiber ⌊ 𝕜 ⌋ z , fiber ⌊ 𝕛 ⌋ (fiber-point w))) → f (fiber-point (pr₂ q)))
+          (λ (q : (Σ w ꞉ fiber ⌊ 𝕜 ⌋ z , fiber ⌊ 𝕛 ⌋ (fiber-point w)))
+                → f (fiber-point (pr₂ q)))
 
     II : (fiber ⌊ 𝕜 ⊚ 𝕛 ⌋ z) ≃ (Σ w ꞉ fiber ⌊ 𝕜 ⌋ z , fiber ⌊ 𝕛 ⌋ (fiber-point w))
     II = fiber-of-composite ⌊ 𝕛 ⌋ ⌊ 𝕜 ⌋ z
@@ -394,7 +427,7 @@ assume propositional and functional extensionality.
 
   derived-injective-pullback-naturality
    : pullback-naturality (derived-injective-structure D s)
-  derived-injective-pullback-naturality X Y B f 𝕛 h = II
+  derived-injective-pullback-naturality B f 𝕛 h = II
    where
     open pullback ⌊ 𝕛 ⌋ h
 
@@ -442,17 +475,17 @@ assume propositional and functional extensionality.
 \end{code}
 
 Notice that we didn't use the extension properties of the flabby
-structure or the derived injective structure.
+structure or the derived injective structure. The same is the case
+below.
 
 We now show that injective associativity implies flabby associativity
 of the derived flabby structure, assuming pullback naturality.
 
 \begin{code}
 
-
 module _
         {𝓤          : Universe}
-        (s@(_∣_ , e) : injective-structure D 𝓤 𝓤)
+        (s@(_∣_ , _) : injective-structure D 𝓤 𝓤)
         (pe          : Prop-Ext)
         (fe          : FunExt)
         (iassoc      : injective-associativity s)
@@ -501,21 +534,20 @@ module _
 
 
      III : (p : P holds) → (f ∣ u) p ＝ ⨆ (Q p) (λ q → f (p , q))
-     III p = (f ∣ u) p                                ＝⟨ II₀ ⟩
-            (fiber-map s f u p ∣ fiber-to-𝟙 s u p) ⋆ ＝⟨ refl ⟩
-            ⨆ (Fiber u p) (f ∘ fiber-point)         ＝⟨ II p ⟩
-            ⨆ (Q p) (λ q → f (p , q))               ∎
+     III p = (f ∣ u) p                               ＝⟨ II₀ ⟩
+            ((f ∘ fiber-point) ∣ fiber-to-𝟙 s u p) ⋆ ＝⟨ refl ⟩
+            ⨆ (Fiber u p) (f ∘ fiber-point)          ＝⟨ II p ⟩
+            ⨆ (Q p) (λ q → f (p , q))                ∎
              where
               II₀ = pullback-naturality-gives-that-extensions-are-fiberwise
-                     s pbn (ΣΩ Q holds) (P holds) f u p
+                     s pe fe' pbn f u p
 
  private
   s' : injective-structure D 𝓤 𝓤
-  s' = derived-injective-structure D (derived-flabby-structure D {𝓤} {𝓤} s)
+  s' = derived-injective-structure D (derived-flabby-structure D s)
 
   _∣'_ : {X Y : 𝓤 ̇} → (X → D) → X ↪ Y → Y → D
   _∣'_ = injective-extension-operator D {𝓤} {𝓤} s'
-
 
  ∣-roundtrip : {X Y : 𝓤 ̇} (f : X → D) (𝕛 : X ↪ Y)
             → f ∣ 𝕛 ∼ f ∣' 𝕛
@@ -524,15 +556,8 @@ module _
   ((f ∘ fiber-point) ∣ fiber-to-𝟙 s' 𝕛 y) ⋆ ＝⟨ refl ⟩
   (f ∣' 𝕛) y                                ∎
   where
-   I = pullback-naturality-gives-that-extensions-are-fiberwise s pbn X Y f 𝕛 y
+   I = pullback-naturality-gives-that-extensions-are-fiberwise s pe fe' pbn f 𝕛 y
 
 \end{code}
 
 To be continued.
-
-In addition to filling thw gap above, we need to add the things discussed in
-the following talk,
-
-https://cs.bham.ac.uk/~mhe/.talks/2025-05-29-Note-09-58-algebraic-injectives-assume_pdf.pdf
-
-regarding round trips between injective structure and flabby structure.
