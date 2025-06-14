@@ -55,7 +55,7 @@ It actually suffices to consider pullbacks of the form
               ↓    j    ↓
               X ──────→ Y
 
-This is a sense in which extensions are pointwise.
+This is a sense in which extensions are pointwise (or fiberwise).
 
 One may wonder whether it is reasonable to consider naturality with
 respect to all commutative squares
