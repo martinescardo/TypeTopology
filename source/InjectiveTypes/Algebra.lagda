@@ -1,10 +1,8 @@
 Martin Escardo, 22nd October 2024 - June 2025
 
-Taking "algebraically" seriously in the definition of algebraically injective type.
+[1] Taking "algebraically" seriously in the definition of
+algebraically injective type.
 https://cs.bham.ac.uk/~mhe/.talks/2025-05-29-Note-09-58-algebraic-injectives-assume_pdf.pdf
-
-This file is work in progress and aims to eventually subsume the file
-gist.InjectivesVersusAlgebras (at which point that file will be deleted).
 
 We give conditions on algebraic injective structure on a type so that
 it coincides with the algebraic structure for the partial-map
@@ -160,16 +158,12 @@ module InjectiveTypes.Algebra
        where
 
 open import InjectiveTypes.Repackaging
-open import Lifting.Algebras hiding (is-hom)
-open import UF.Base
 open import UF.Embeddings renaming (_∘↪_ to _⊚_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Pullback
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
-open import UF.Univalence
 
 \end{code}
 
@@ -567,3 +561,10 @@ module _
 \end{code}
 
 To be continued.
+
+In particular the (trivial) connection with lifting algebras.
+
+Then also conclude as a corollary that the algebras of the lifting
+monad coincide with the pullback-natural, associative injective
+algebras, for the case of *sets*, so that we get the theorem for
+1-topos stated in [1]
