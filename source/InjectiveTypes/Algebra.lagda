@@ -601,14 +601,23 @@ module _
         (fe : Fun-Ext)
        where
 
- injective-associativity-is-prop : (s : injective-structure D 𝓤 𝓤) → is-prop (injective-associativity s)
- injective-associativity-is-prop s = Π₇-is-prop fe (λ _ _ _ _ _ _ _ → D-is-set)
+ injective-associativity-is-prop
+  : (s : injective-structure D 𝓤 𝓤)
+  → is-prop (injective-associativity s)
+ injective-associativity-is-prop s
+  = Π₇-is-prop fe (λ _ _ _ _ _ _ _ → D-is-set)
 
- pullback-naturality-is-prop : (s : injective-structure D 𝓤 𝓤) → is-prop (pullback-naturality s)
- pullback-naturality-is-prop s = Π₇-is-prop fe (λ _ _ _ _ _ _ _ → D-is-set)
+ pullback-naturality-is-prop
+  : (s : injective-structure D 𝓤 𝓤) →
+  is-prop (pullback-naturality s)
+ pullback-naturality-is-prop s
+  = Π₇-is-prop fe (λ _ _ _ _ _ _ _ → D-is-set)
 
- flabby-associativity-is-prop : (t : flabby-structure D 𝓤) → is-prop (flabby-associativity t)
- flabby-associativity-is-prop t = Π₃-is-prop fe (λ _ _ _ → D-is-set)
+ flabby-associativity-is-prop
+  : (t : flabby-structure D 𝓤)
+  → is-prop (flabby-associativity t)
+ flabby-associativity-is-prop t
+  = Π₃-is-prop fe (λ _ _ _ → D-is-set)
 
 \end{code}
 
@@ -632,13 +641,15 @@ module _
   fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
   ϕ : ainjective-structure 𝓤 → aflabby-structure 𝓤
-  ϕ (s , iassoc , pbn) = derived-flabby-structure D s ,
-                         derived-flabby-associativity s pe fe' iassoc pbn
+  ϕ (s , iassoc , pbn) =
+   derived-flabby-structure D s ,
+   derived-flabby-associativity s pe fe' iassoc pbn
 
   γ : aflabby-structure 𝓤 → ainjective-structure 𝓤
-  γ (t , fassoc) = derived-injective-structure D t ,
-                   derived-injective-associativity t pe fe' fassoc ,
-                   derived-injective-pullback-naturality t pe fe' fassoc
+  γ (t , fassoc) =
+   derived-injective-structure D t ,
+   derived-injective-associativity t pe fe' fassoc ,
+   derived-injective-pullback-naturality t pe fe' fassoc
 
  ainjective-structure-iff-aflabby-structure
   : ainjective-structure 𝓤 ↔ aflabby-structure 𝓤
