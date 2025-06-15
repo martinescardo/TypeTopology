@@ -731,7 +731,7 @@ classifier) wild monad on types, as we record below.
   = qinveq α (β , βα , αβ)
   where
    βα : β ∘ α ∼ id
-   βα (t@(⨆ , e) , a) =
+   βα _ =
     to-subtype-＝
      (flabby-associativity-is-prop D-is-set fe)
      (to-subtype-＝
@@ -739,7 +739,7 @@ classifier) wild monad on types, as we record below.
        refl)
 
    αβ : α ∘ β ∼ id
-   αβ u@(⨆ , law₀ , law₁) =
+   αβ _ =
     to-subtype-＝
      (λ _ → ×-is-prop
             (Π-is-prop fe (λ _ → D-is-set))
