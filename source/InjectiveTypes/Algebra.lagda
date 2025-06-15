@@ -651,7 +651,7 @@ is the main theorem of this file.
 
 The construction of the equivalence is longer than what we would like
 it to be, but it is just unenlightening bureaucracy. The essence of
-the proof are the above two "round trip" functions together with the
+the proof are the above two round-trip functions together with the
 trivial fact that pullback naturality and associativity, for both
 injectivity and flabbiness, are property (rather than data) when D is
 a set.
@@ -703,7 +703,6 @@ classifier) wild monad on types, as we record below.
 
 \begin{code}
 
- open import Lifting.Construction 𝓤
  open import Lifting.Algebras 𝓤
 
  private
@@ -747,3 +746,8 @@ classifier) wild monad on types, as we record below.
      refl
 
 \end{code}
+
+TODO. Bring homomorphisms into the picture explicitly.
+
+TODO. What can we say when D is not necessarily a set? Do we have the
+same theorems?
