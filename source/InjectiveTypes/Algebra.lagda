@@ -194,7 +194,7 @@ module _
        where
 
  injective-associativity : 𝓦 ⊔ 𝓤 ⁺ ̇
- injective-associativity = {X Y Z : 𝓤 ̇ } (f : X → D) (𝕛 : X ↪ Y) (𝕜 : Y ↪ Z)
+ injective-associativity = (X Y Z : 𝓤 ̇ ) (f : X → D) (𝕛 : X ↪ Y) (𝕜 : Y ↪ Z)
                → f ∣ (𝕜 ⊚ 𝕛) ∼ (f ∣ 𝕛) ∣ 𝕜
 
 \end{code}
@@ -233,7 +233,7 @@ so that the above naturality condition becomes
 \begin{code}
 
  pullback-naturality : (𝓤 ⁺) ⊔ 𝓦 ̇
- pullback-naturality = ({X} {Y} B : 𝓤 ̇ )
+ pullback-naturality = (X Y B : 𝓤 ̇ )
                        (f : X → D)
                        (𝕛 : X ↪ Y)
                        (h : B → Y)
@@ -247,7 +247,7 @@ so that the above naturality condition becomes
  fiber-to-𝟙 𝕛 y = embedding-to-𝟙 {𝓤} {𝓤} {Fiber 𝕛 y}
 
  extensions-are-fiberwise : 𝓤 ⁺ ⊔ 𝓦 ̇
- extensions-are-fiberwise = {X Y : 𝓤 ̇ }
+ extensions-are-fiberwise = (X Y : 𝓤 ̇ )
                             (f : X → D)
                             (𝕛 : X ↪ Y)
                             (y : Y)
@@ -272,7 +272,7 @@ The following uses the fact that the following is a pullback.
   → funext 𝓤 𝓤
   → pullback-naturality
   → extensions-are-fiberwise
- pullback-naturality-gives-that-extensions-are-fiberwise pe fe pbn {X} {Y} f 𝕛 y
+ pullback-naturality-gives-that-extensions-are-fiberwise pe fe pbn X Y f 𝕛 y
   = II
   where
    h : 𝟙 {𝓤} → Y
@@ -308,7 +308,7 @@ The following uses the fact that the following is a pullback.
         ⨆ (Fiber 𝕛 y) (f ∘ fiber-point)                  ＝⟨ refl ⟩
         ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆           ∎
          where
-          by-pbn = pbn 𝟙 f 𝕛 h ⋆
+          by-pbn = pbn X Y 𝟙 f 𝕛 h ⋆
           by-I = ap (λ - → ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ -) ⋆) I
           change-of-var = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point)
                           (⌜ ϕ ⌝⁻¹ , ⌜ ϕ ⌝)
@@ -419,7 +419,7 @@ propositional and functional extensionality).
 
   derived-injective-associativity
    : injective-associativity (derived-injective-structure D s)
-  derived-injective-associativity f 𝕛 𝕜 z = V
+  derived-injective-associativity X Y Z f 𝕛 𝕜 z = V
    where
     I : ⨆ (ΣΩ w ꞉ Fiber 𝕜 z , Fiber 𝕛 (fiber-point w)) (λ q → f (fiber-point (pr₂ q)))
       ＝ ⨆ (Fiber 𝕜 z) (λ u → ⨆ (Fiber 𝕛 (fiber-point u)) (f ∘ fiber-point))
@@ -445,7 +445,7 @@ propositional and functional extensionality).
 
   derived-injective-pullback-naturality
    : pullback-naturality (derived-injective-structure D s)
-  derived-injective-pullback-naturality B f 𝕛 h = II
+  derived-injective-pullback-naturality X Y B f 𝕛 h = II
    where
     open pullback ⌊ 𝕛 ⌋ h
 
@@ -507,7 +507,6 @@ module _
         (pe          : Prop-Ext)
         (fe          : FunExt)
         (iassoc      : injective-associativity s)
-        (pbn         : pullback-naturality s)
       where
 
  private
@@ -523,7 +522,7 @@ module _
  derived-flabby-associativity pbn P Q f
   = ⨆ (ΣΩ Q) f                             ＝⟨ refl ⟩
     (f ∣ w) ⋆                              ＝⟨ ap (λ - → (f ∣ -) ⋆) I ⟩
-    (f ∣ (v ⊚ u)) ⋆                        ＝⟨ iassoc f u v ⋆ ⟩
+    (f ∣ (v ⊚ u)) ⋆                        ＝⟨ iassoc _ _ _ f u v ⋆ ⟩
     ((f ∣ u) ∣ v) ⋆                        ＝⟨ refl ⟩
     ⨆ P (f ∣ u)                            ＝⟨ ap (⨆ P) (dfunext fe' III) ⟩
     ⨆ P (λ p → ⨆ (Q p) (λ q → f (p , q))) ∎
@@ -558,7 +557,7 @@ module _
             ⨆ (Q p) (λ q → f (p , q))                ∎
              where
               II₀ = pullback-naturality-gives-that-extensions-are-fiberwise
-                     s pe fe' pbn f u p
+                     s pe fe' pbn (ΣΩ Q holds) (P holds) f u p
 
  private
   s' : injective-structure D 𝓤 𝓤
@@ -567,22 +566,129 @@ module _
   _∣'_ : {X Y : 𝓤 ̇} → (X → D) → X ↪ Y → Y → D
   _∣'_ = injective-extension-operator D {𝓤} {𝓤} s'
 
- ∣-roundtrip : {X Y : 𝓤 ̇} (f : X → D) (𝕛 : X ↪ Y)
+ ∣-roundtrip : pullback-naturality s
+             → (X Y : 𝓤 ̇) (f : X → D) (𝕛 : X ↪ Y)
             → f ∣ 𝕛 ∼ f ∣' 𝕛
- ∣-roundtrip {X} {Y} f 𝕛 y =
+ ∣-roundtrip pbn X Y f 𝕛 y =
   (f ∣ 𝕛) y                                 ＝⟨ I ⟩
   ((f ∘ fiber-point) ∣ fiber-to-𝟙 s' 𝕛 y) ⋆ ＝⟨ refl ⟩
   (f ∣' 𝕛) y                                ∎
   where
-   I = pullback-naturality-gives-that-extensions-are-fiberwise s pe fe' pbn f 𝕛 y
+   I = pullback-naturality-gives-that-extensions-are-fiberwise
+        s pe fe' pbn X Y f 𝕛 y
 
 \end{code}
 
-To be continued.
+Motivated by the above, we (re)define algebraic injective and flabby
+structure as follows.
 
-In particular the (trivial) connection with lifting algebras.
+\begin{code}
 
-Then also conclude as a corollary that the algebras of the lifting
-monad coincide with the pullback-natural, associative injective
-algebras, for the case of *sets*, so that we get the theorem for
-1-toposes stated in [1].
+ainjective-structure : (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓦 ̇
+ainjective-structure 𝓤 =
+ Σ s ꞉ injective-structure D 𝓤 𝓤 , injective-associativity s
+                                  × pullback-naturality s
+
+aflabby-structure : (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓦 ̇
+aflabby-structure 𝓤 =
+ Σ t ꞉ flabby-structure D 𝓤 , flabby-associativity t
+
+\end{code}
+
+And the main theorem of this file is that they are equivalent
+(assuming propositional and functional extensionality).
+
+For the arbitrary type D, all we know so far is that they *logically*
+equivalent.
+
+\begin{code}
+
+module _
+         (pe : Prop-Ext)
+         (fe : Fun-Ext)
+         {𝓤 : Universe}
+       where
+
+ private
+
+  fe' : FunExt
+  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+
+  ϕ : ainjective-structure 𝓤 → aflabby-structure 𝓤
+  ϕ (s , iassoc , pbn) = derived-flabby-structure D s ,
+                         derived-flabby-associativity s pe fe' iassoc pbn
+
+  γ : aflabby-structure 𝓤 → ainjective-structure 𝓤
+  γ (t , fassoc) = derived-injective-structure D t ,
+                   derived-injective-associativity t pe fe' fassoc ,
+                   derived-injective-pullback-naturality t pe fe' fassoc
+
+ ainjective-structure-iff-aflabby-structure
+  : ainjective-structure 𝓤 ↔ aflabby-structure 𝓤
+ ainjective-structure-iff-aflabby-structure = (ϕ , γ)
+
+ open import UF.Sets
+ open import UF.Subsingletons-FunExt
+
+\end{code}
+
+But if D is a set, it follows that they are typally equivalent. The
+construction of the equivalence is longer than what we would like it
+to be, but it is just unenlightening bureaucracy. The essence of the
+proof is the above two "round trip" functions together with the fact
+that the equations of pullback naturality and associativity, for both
+injectivity and flabbiness, are property (rather than data) when D is
+a set.
+
+\begin{code}
+
+ ainjective-structure-≃-aflabby-structure-for-sets
+  : is-set D
+  → ainjective-structure 𝓤 ≃ aflabby-structure 𝓤
+ ainjective-structure-≃-aflabby-structure-for-sets D-is-set
+  = qinveq ϕ (γ , γϕ , ϕγ)
+  where
+   I : (s : injective-structure D 𝓤 𝓤) → is-prop (injective-associativity s)
+   I s = Π₇-is-prop fe (λ _ _ _ _ _ _ _ → D-is-set)
+
+   II : (s : injective-structure D 𝓤 𝓤) → is-prop (pullback-naturality s)
+   II s = Π₇-is-prop fe (λ _ _ _ _ _ _ _ → D-is-set)
+
+   III : (t : flabby-structure D 𝓤) → is-prop (flabby-associativity t)
+   III t = Π₃-is-prop fe (λ _ _ _ → D-is-set)
+
+   γϕ : γ ∘ ϕ ∼ id
+   γϕ (s@(_∣_ , e) , iassoc , pbn) =
+    to-subtype-＝
+     (λ s → ×-is-prop (I s) (II s))
+     (to-subtype-＝
+       (λ _ → Π-is-prop' fe
+       (λ X → Π-is-prop' fe
+       (λ Y → Π₃-is-prop fe
+               (λ f 𝕛 x → D-is-set))))
+       (implicit-dfunext fe (λ X →
+        implicit-dfunext fe (λ Y →
+        dfunext          fe (λ f →
+        dfunext          fe (λ 𝕛 →
+        dfunext          fe (λ y →
+         ((∣-roundtrip s pe fe' iassoc pbn X Y f 𝕛 y)⁻¹))))))))
+
+   ϕγ : ϕ ∘ γ ∼ id
+   ϕγ (t , fassoc) =
+    to-subtype-＝
+     III
+     (to-subtype-＝
+       (λ _ → Π₃-is-prop fe (λ _ _ _ → D-is-set))
+       ((⨆-roundtrip t pe fe' fassoc)⁻¹))
+
+\end{code}
+
+The above establishes that, in a 1-topos, pulback-natural, associative
+injective structure is isomorphic to associative flabby structure.
+
+To be continued, where the next step is to show that associative
+flabby structure for D is isomorphic to 𝓛-algebra structure for D,
+where 𝓛 is the lifting (of partial-map classifier) wild monad on
+types.
+
+This next step is, again, mere bureaucracy. To be continued.
