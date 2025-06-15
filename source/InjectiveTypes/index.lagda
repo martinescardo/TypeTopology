@@ -19,15 +19,6 @@ import InjectiveTypes.Blackboard
 
 \end{code}
 
-The following gives equivalent formulations of algebraic injective and
-flabby structure.
-
-\begin{code}
-
-import InjectiveTypes.Repackaging
-
-\end{code}
-
 The following have been done after the above article was published.
 
 \begin{code}
@@ -111,7 +102,16 @@ import InjectiveTypes.WeakFactorizationSystem
 
 \end{code}
 
-And Martin Escardo explores a closer relation between algebraic
+The following reformulates the definitions of algebraically injective and
+flabby types and proves a few technical lemmas.
+
+\begin{code}
+
+import InjectiveTypes.Structure
+
+\end{code}
+
+And the following explores a closer relation between algebraic
 injectivity and algebras of the partial-map classifier (aka lifting)
 monad in these two files.
 
@@ -122,5 +122,5 @@ import gist.InjectivesVersusAlgebras
 
 \end{code}
 
-Eventually the second file will be deleted after it is moved to the
-first, in a suitable form.
+Eventually the last file will be deleted after it is moved to the
+first.

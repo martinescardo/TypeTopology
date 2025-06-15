@@ -1,4 +1,4 @@
-Martin Escardo, 22nd October 2024 - June 2025
+Martin Escardo, 22nd October 2024 - 15 June 2025
 
 [1] Taking "algebraically" seriously in the definition of
 algebraically injective type.
@@ -157,7 +157,7 @@ module InjectiveTypes.Algebra
         (D : 𝓦 ̇ )
        where
 
-open import InjectiveTypes.Repackaging
+open import InjectiveTypes.Structure
 open import UF.Embeddings renaming (_∘↪_ to _⊚_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -237,8 +237,8 @@ so that the above naturality condition becomes
                        (f : X → D)
                        (𝕛 : X ↪ Y)
                        (h : B → Y)
-                      → let open pullback ⌊ 𝕛 ⌋ h
-                            𝑝𝑏₂ : pullback ↪ B
+                      → let open pullback ⌊ 𝕛 ⌋ h renaming (pullback to A)
+                            𝑝𝑏₂ : A ↪ B
                             𝑝𝑏₂ = 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
                         in (f ∣ 𝕛) ∘ h ∼ (f ∘ pb₁) ∣ 𝑝𝑏₂
 
@@ -253,6 +253,20 @@ so that the above naturality condition becomes
                             (y : Y)
                           → (f ∣ 𝕛) y ＝ ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆
 
+\end{code}
+
+The following uses the fact that the following is a pullback.
+
+
+       fiber j y ─────→ 𝟙
+              │ ⌟       │
+  fiber-point │         │ y
+              │         │
+              ↓     j   ↓
+              X ──────→ Y
+
+\begin{code}
+
  pullback-naturality-gives-that-extensions-are-fiberwise
   : propext 𝓤
   → funext 𝓤 𝓤
@@ -264,36 +278,40 @@ so that the above naturality condition becomes
    h : 𝟙 {𝓤} → Y
    h _ = y
 
-   open pullback ⌊ 𝕛 ⌋ h
+   open pullback ⌊ 𝕛 ⌋ h renaming (pullback to A)
 
-   ϕ : pullback ≃ fiber ⌊ 𝕛 ⌋ y
-   ϕ = pullback                           ≃⟨ ≃-refl _ ⟩
+   ϕ = A                                  ≃⟨ ≃-refl _ ⟩
        (Σ z ꞉ X × 𝟙 , ⌊ 𝕛 ⌋ (pr₁ z) ＝ y) ≃⟨ Σ-assoc ⟩
        (Σ x ꞉ X , 𝟙 × (⌊ 𝕛 ⌋ x ＝ y))     ≃⟨ Σ-cong (λ x → 𝟙-lneutral) ⟩
        fiber ⌊ 𝕛 ⌋ y                      ■
 
-   𝑝𝑏₂ : pullback ↪ 𝟙
+   𝑝𝑏₂ : A ↪ 𝟙
    𝑝𝑏₂ = 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
+
+   𝓅𝓇₁ : X × 𝟙 ↪ X
+   𝓅𝓇₁ = 𝕡𝕣₁ (λ _ → 𝟙-is-prop)
+
+   _ : pb₁ ＝ fiber-point ∘ ⌜ ϕ ⌝
+   _ = refl
 
    I : 𝑝𝑏₂ ＝ embedding-to-𝟙
    I = to-subtype-＝ (being-embedding-is-prop fe) refl
 
    ⨆ : (P : Ω 𝓤) → (P holds → D) → D
-   ⨆ P f = (f ∣ embedding-to-𝟙) ⋆
+   ⨆ P g = (g ∣ embedding-to-𝟙) ⋆
 
-   II =
-    (f ∣ 𝕛) y                                                         ＝⟨ III₀ ⟩
-    ((f ∘ pb₁) ∣ 𝑝𝑏₂) ⋆                                               ＝⟨ refl ⟩
-    ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ 𝑝𝑏₂) ⋆                               ＝⟨ III₁ ⟩
-    ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ embedding-to-𝟙) ⋆                    ＝⟨ refl ⟩
-    ⨆ (Fiber (𝕛 ⊚ 𝕡𝕣₁ (λ _ → 𝟙-is-prop)) y) (f ∘ fiber-point ∘ ⌜ ϕ ⌝) ＝⟨ III₂ ⟩
-    ⨆ (Fiber 𝕛 y) (f ∘ fiber-point)                                   ＝⟨ refl ⟩
-    ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆                            ∎
-     where
-      III₀ = pbn 𝟙 f 𝕛 h ⋆
-      III₁ = ap (λ - → ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ -) ⋆) I
-      III₂ = (⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point)
-               (⌜ ϕ ⌝⁻¹ , ⌜ ϕ ⌝))⁻¹
+   II = (f ∣ 𝕛) y                                        ＝⟨ by-pbn ⟩
+        ((f ∘ pb₁) ∣ 𝑝𝑏₂) ⋆                              ＝⟨ refl ⟩
+        ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ 𝑝𝑏₂) ⋆              ＝⟨ by-I ⟩
+        ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ embedding-to-𝟙) ⋆   ＝⟨ refl ⟩
+        ⨆ (Fiber (𝕛 ⊚ 𝓅𝓇₁) y) (f ∘ fiber-point ∘ ⌜ ϕ ⌝)  ＝⟨ change-of-var ⁻¹ ⟩
+        ⨆ (Fiber 𝕛 y) (f ∘ fiber-point)                  ＝⟨ refl ⟩
+        ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆           ∎
+         where
+          by-pbn = pbn 𝟙 f 𝕛 h ⋆
+          by-I = ap (λ - → ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ -) ⋆) I
+          change-of-var = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point)
+                          (⌜ ϕ ⌝⁻¹ , ⌜ ϕ ⌝)
 
 \end{code}
 

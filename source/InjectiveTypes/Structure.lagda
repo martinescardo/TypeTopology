@@ -1,7 +1,10 @@
 Martin Escardo, 13th June 2025
 
-We repackage the definitions of algebraic injective and flabby
-structure in a more convenient way for some purposes.
+We repackage the definitions of algebraic injective and flabby types
+in a more convenient, which we refer to as injective structure and
+flabby structure.
+
+We also prove some useful lemmas about them.
 
 \begin{code}
 
@@ -9,7 +12,7 @@ structure in a more convenient way for some purposes.
 
 open import MLTT.Spartan
 
-module InjectiveTypes.Repackaging
+module InjectiveTypes.Structure
         {𝓦 : Universe}
         (D : 𝓦 ̇ )
        where
