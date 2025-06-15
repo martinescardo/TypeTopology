@@ -632,11 +632,13 @@ module _
 
 \end{code}
 
-But if D is a set, it follows that they are typally equivalent. The
-construction of the equivalence is longer than what we would like it
-to be, but it is just unenlightening bureaucracy. The essence of the
-proof are the above two "round trip" functions together with the fact
-that the equations of pullback naturality and associativity, for both
+But if D is a set, it follows that they are typally equivalent, which
+is the main theorem of this file.
+
+The construction of the equivalence is longer than what we would like
+it to be, but it is just unenlightening bureaucracy. The essence of
+the proof are the above two "round trip" functions together with the
+trivial fact that pullback naturality and associativity, for both
 injectivity and flabbiness, are property (rather than data) when D is
 a set.
 
