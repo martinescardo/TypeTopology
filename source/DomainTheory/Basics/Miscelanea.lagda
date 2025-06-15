@@ -1030,7 +1030,7 @@ is-closed-under-directed-supsₚ : (𝓓 : DCPO {𝓤} {𝓣})
                                → Ω (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦)
 is-closed-under-directed-supsₚ {𝓤} {𝓣} 𝓓 P =
  is-closed-under-directed-sups 𝓓 (λ x → P x holds) ,
- Π-is-prop' fe (λ I → Π₃-is-prop fe (λ α δ c → holds-is-prop (P (∐ 𝓓 δ))))
+ implicit-Π-is-prop fe (λ I → Π₃-is-prop fe (λ α δ c → holds-is-prop (P (∐ 𝓓 δ))))
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})

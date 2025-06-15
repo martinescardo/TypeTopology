@@ -1547,8 +1547,8 @@ module injective (pt : propositional-truncations-exist) where
  injectivity-is-prop : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
                      → is-prop (injective-type D 𝓤 𝓥)
  injectivity-is-prop {𝓦} D 𝓤 𝓥 =
-  Π-is-prop' (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦)) (λ X →
-  Π-is-prop' (fe (𝓥 ⁺) (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ Y →
+  implicit-Π-is-prop (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦)) (λ X →
+  implicit-Π-is-prop (fe (𝓥 ⁺) (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ Y →
   Π₃-is-prop fe' (λ j e f → ∥∥-is-prop)))
 
  ainjective-gives-injective : (D : 𝓦 ̇ )

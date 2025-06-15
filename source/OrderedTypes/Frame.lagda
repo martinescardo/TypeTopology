@@ -68,11 +68,11 @@ module _ (𝓤 𝓥 : Universe) where
        (Π₃-is-prop fe (λ x y z →      i {x ∧ (y ∧ z)} {(x ∧ y) ∧ z}))
        (Π-is-prop fe (λ x →           i {x ∧ ⊤} {x}))
        (Π-is-prop fe (λ x →
-        Π-is-prop' fe (λ N →
+        implicit-Π-is-prop fe (λ N →
         Π-is-prop fe (λ y →           i {x ∧ ⋁ y} {⋁ (λ n → x ∧ y n)}))))
-       (Π-is-prop' fe (λ n
+       (implicit-Π-is-prop fe (λ n
          →  Π₂-is-prop  fe (λ 𝕪 n →   i {𝕪 n ∧ ⋁ 𝕪} {𝕪 n})))
-       (Π-is-prop' fe (λ n
+       (implicit-Π-is-prop fe (λ n
          →  Π₃-is-prop  fe (λ 𝕪 u _ → i {⋁ 𝕪 ∧ u} {⋁ 𝕪})))
 
  Frame : (𝓤 ⊔ 𝓥)⁺ ̇

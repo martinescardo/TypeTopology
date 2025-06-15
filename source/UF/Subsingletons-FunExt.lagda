@@ -30,11 +30,11 @@ open import UF.Subsingletons-Properties
           → is-prop (Π A)
 Π-is-prop fe i f g = dfunext fe (λ x → i x (f x) (g x))
 
-Π-is-prop' : funext 𝓤 𝓥
-           → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-           → ((x : X) → is-prop (A x))
-           → is-prop ({x : X} → A x)
-Π-is-prop' fe {X} {A} i = retract-of-prop ρ (Π-is-prop fe i)
+implicit-Π-is-prop : funext 𝓤 𝓥
+                   → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                   → ((x : X) → is-prop (A x))
+                   → is-prop ({x : X} → A x)
+implicit-Π-is-prop fe {X} {A} i = retract-of-prop ρ (Π-is-prop fe i)
  where
   ρ : retract ({x : X} → A x) of Π A
   ρ = (λ f {x} → f x) , (λ g x → g {x}) , (λ x → refl)
@@ -269,13 +269,15 @@ boiler-plate code.)
                → H a b c d e f g)
 Π₇-is-prop fe i = Π-is-prop fe (λ x → Π₆-is-prop fe (i x))
 
-Π₂-is-prop' : Fun-Ext
-            → {X : 𝓤 ̇ }
-              {Y : X → 𝓥 ̇ }
-              {Z : (x : X) → Y x → 𝓦 ̇ }
-            → ((x : X) (y : Y x) → is-prop (Z x y))
-            → is-prop ({x : X} {y : Y x} → Z x y)
-Π₂-is-prop' fe i = Π-is-prop' fe (λ x → Π-is-prop' fe (i x))
+implicit-Π₂-is-prop
+ : Fun-Ext
+ → {X : 𝓤 ̇ }
+   {Y : X → 𝓥 ̇ }
+   {Z : (x : X) → Y x → 𝓦 ̇ }
+ → ((x : X) (y : Y x) → is-prop (Z x y))
+ → is-prop ({x : X} {y : Y x} → Z x y)
+implicit-Π₂-is-prop fe i
+ = implicit-Π-is-prop fe (λ x → implicit-Π-is-prop fe (i x))
 
 \end{code}
 

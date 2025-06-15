@@ -627,9 +627,6 @@ module _
   : ainjective-structure 𝓤 ↔ aflabby-structure 𝓤
  ainjective-structure-iff-aflabby-structure = (ϕ , γ)
 
- open import UF.Sets
- open import UF.Subsingletons-FunExt
-
 \end{code}
 
 But if D is a set, it follows that they are typally equivalent, which
@@ -643,6 +640,9 @@ injectivity and flabbiness, are property (rather than data) when D is
 a set.
 
 \begin{code}
+
+ open import UF.Sets
+ open import UF.Subsingletons-FunExt
 
  ainjective-structure-≃-aflabby-structure-for-sets
   : is-set D
@@ -664,8 +664,9 @@ a set.
     to-subtype-＝
      (λ s → ×-is-prop (I s) (II s))
      (to-subtype-＝
-       (λ _ → Π-is-prop' fe
-       (λ X → Π-is-prop' fe
+       (λ (_∣_ : {X Y : 𝓤 ̇} → (X → D) → X ↪ Y → Y → D)
+            → implicit-Π-is-prop fe
+       (λ X → implicit-Π-is-prop fe
        (λ Y → Π₃-is-prop fe
                (λ f 𝕛 x → D-is-set))))
        (implicit-dfunext fe (λ X →
@@ -694,4 +695,6 @@ flabby structure for D is isomorphic to 𝓛-algebra structure for D,
 where 𝓛 is the lifting (of partial-map classifier) wild monad on
 types.
 
-This next step is, again, mere bureaucracy.
+This next step is, again, mere bureaucracy, because 𝓛-algebra
+structure is directly essentially the same as associative flabbly
+structure.

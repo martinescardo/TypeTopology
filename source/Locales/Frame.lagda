@@ -77,7 +77,9 @@ being-antisymmetric-is-prop : {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥)
                             → is-set A
                             → is-prop (is-antisymmetric _≤_)
 being-antisymmetric-is-prop {𝓤} {A} _≤_ A-is-set =
- Π-is-prop' fe (λ x → Π-is-prop' fe (λ y → Π₂-is-prop fe (λ _ _ → A-is-set {x} {y})))
+         implicit-Π-is-prop fe
+  (λ x → implicit-Π-is-prop fe
+  (λ y → Π₂-is-prop fe (λ _ _ → A-is-set {x} {y})))
 
 is-partial-order : (A : 𝓤 ̇ )→ (A → A → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
 is-partial-order A _≤_ = is-preorder _≤_ holds ×  is-antisymmetric _≤_
