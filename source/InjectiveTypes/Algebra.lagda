@@ -104,7 +104,10 @@ we can
  1. extend f at once, or
  2. extend f in its first variable and then in its second variable,
 
-and these two processes give the same result.
+and these two processes give the same result. More generally, we can
+replace the type P × Q by the type Σ p : P , Q p when Q depends on p :
+Q, but this doesn't make any difference, as shown in the study of the
+lifting monad elsewhere in this development.
 
 As for pullback naturality, it is given automatically by the canonical
 construction of algebraic injectivity data from algebraic flabiness
