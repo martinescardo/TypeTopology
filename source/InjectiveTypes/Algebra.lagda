@@ -4,9 +4,10 @@ Martin Escardo, 22nd October 2024 - 15 June 2025
 algebraically injective type.
 https://cs.bham.ac.uk/~mhe/.talks/2025-05-29-Note-09-58-algebraic-injectives-assume_pdf.pdf
 
-We give conditions on algebraic injective structure on a type so that
-it coincides with the algebraic structure for the partial-map
-classifier (aka lifting) monad 𝓛 on types.
+We give conditions on algebraic injective structure on a type D so
+that it coincides with the algebraic structure for the partial-map
+classifier (aka lifting) monad 𝓛 on types, when D is a set, and we
+also have partial results in this direction when D is a general type.
 
 We call these conditions "associativity" and "pullback naturality".
 
