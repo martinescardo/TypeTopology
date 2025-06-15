@@ -635,7 +635,7 @@ module _
 But if D is a set, it follows that they are typally equivalent. The
 construction of the equivalence is longer than what we would like it
 to be, but it is just unenlightening bureaucracy. The essence of the
-proof is the above two "round trip" functions together with the fact
+proof are the above two "round trip" functions together with the fact
 that the equations of pullback naturality and associativity, for both
 injectivity and flabbiness, are property (rather than data) when D is
 a set.
@@ -658,7 +658,7 @@ a set.
    III t = Π₃-is-prop fe (λ _ _ _ → D-is-set)
 
    γϕ : γ ∘ ϕ ∼ id
-   γϕ (s@(_∣_ , e) , iassoc , pbn) =
+   γϕ (s , iassoc , pbn) =
     to-subtype-＝
      (λ s → ×-is-prop (I s) (II s))
      (to-subtype-＝
@@ -691,4 +691,4 @@ flabby structure for D is isomorphic to 𝓛-algebra structure for D,
 where 𝓛 is the lifting (of partial-map classifier) wild monad on
 types.
 
-This next step is, again, mere bureaucracy. To be continued.
+This next step is, again, mere bureaucracy.
