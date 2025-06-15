@@ -593,6 +593,23 @@ aflabby-structure : (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓦 ̇
 aflabby-structure 𝓤 =
  Σ t ꞉ flabby-structure D 𝓤 , flabby-associativity t
 
+open import UF.Sets
+open import UF.Subsingletons-FunExt
+
+module _
+        (D-is-set : is-set D)
+        (fe : Fun-Ext)
+       where
+
+ injective-associativity-is-prop : (s : injective-structure D 𝓤 𝓤) → is-prop (injective-associativity s)
+ injective-associativity-is-prop s = Π₇-is-prop fe (λ _ _ _ _ _ _ _ → D-is-set)
+
+ pullback-naturality-is-prop : (s : injective-structure D 𝓤 𝓤) → is-prop (pullback-naturality s)
+ pullback-naturality-is-prop s = Π₇-is-prop fe (λ _ _ _ _ _ _ _ → D-is-set)
+
+ flabby-associativity-is-prop : (t : flabby-structure D 𝓤) → is-prop (flabby-associativity t)
+ flabby-associativity-is-prop t = Π₃-is-prop fe (λ _ _ _ → D-is-set)
+
 \end{code}
 
 And the main theorem of this file is that they are equivalent
@@ -641,28 +658,18 @@ a set.
 
 \begin{code}
 
- open import UF.Sets
- open import UF.Subsingletons-FunExt
-
- ainjective-structure-≃-aflabby-structure-for-sets
+ Theorem[ainjective-structure-≃-aflabby-structure-for-sets]
   : is-set D
   → ainjective-structure 𝓤 ≃ aflabby-structure 𝓤
- ainjective-structure-≃-aflabby-structure-for-sets D-is-set
+ Theorem[ainjective-structure-≃-aflabby-structure-for-sets] D-is-set
   = qinveq ϕ (γ , γϕ , ϕγ)
   where
-   I : (s : injective-structure D 𝓤 𝓤) → is-prop (injective-associativity s)
-   I s = Π₇-is-prop fe (λ _ _ _ _ _ _ _ → D-is-set)
-
-   II : (s : injective-structure D 𝓤 𝓤) → is-prop (pullback-naturality s)
-   II s = Π₇-is-prop fe (λ _ _ _ _ _ _ _ → D-is-set)
-
-   III : (t : flabby-structure D 𝓤) → is-prop (flabby-associativity t)
-   III t = Π₃-is-prop fe (λ _ _ _ → D-is-set)
-
    γϕ : γ ∘ ϕ ∼ id
    γϕ (s , iassoc , pbn) =
     to-subtype-＝
-     (λ s → ×-is-prop (I s) (II s))
+     (λ s → ×-is-prop
+             (injective-associativity-is-prop D-is-set fe s)
+             (pullback-naturality-is-prop D-is-set fe s))
      (to-subtype-＝
        (λ (_∣_ : {X Y : 𝓤 ̇} → (X → D) → X ↪ Y → Y → D)
             → implicit-Π-is-prop fe
@@ -679,7 +686,7 @@ a set.
    ϕγ : ϕ ∘ γ ∼ id
    ϕγ (t , fassoc) =
     to-subtype-＝
-     III
+     (flabby-associativity-is-prop D-is-set fe)
      (to-subtype-＝
        (λ _ → Π₃-is-prop fe (λ _ _ _ → D-is-set))
        ((⨆-roundtrip t pe fe' fassoc)⁻¹))
@@ -687,14 +694,57 @@ a set.
 \end{code}
 
 The above establishes the internal fact in a 1-topos that
-pulback-natural, associative injective structure is isomorphic to
-associative flabby structure.
+pulback-natural, associative injective structure on D is isomorphic to
+associative flabby structure on D.
 
-To be continued, where the next step is to show that associative
-flabby structure for D is isomorphic to 𝓛-algebra structure for D,
-where 𝓛 is the lifting (of partial-map classifier) wild monad on
-types.
+Amd also associative flabby structure on D is isomorphic to 𝓛-algebra
+structure on D, where 𝓛 is the lifting (of partial-map classifier)
+wild monad on types. But 𝓛-algebra structure is the same as
+associative flabbly structure, again with routine bureaucracy.
 
-This next step is, again, mere bureaucracy, because 𝓛-algebra
-structure is directly essentially the same as associative flabbly
-structure.
+\begin{code}
+
+ open import Lifting.Construction 𝓤
+ open import Lifting.Algebras 𝓤
+
+ private
+
+  α : aflabby-structure 𝓤 → 𝓛-alg D
+  α ((⨆ , e) , a) =
+   (λ {P} (i : is-prop P) f
+      → ⨆ (P , i) f) ,
+        (λ (d : D) → e (𝟙 , 𝟙-is-prop) (λ _ → d) ⋆) ,
+   (λ P Q i j → a (P , i) (λ p → Q p , j p))
+
+  β : 𝓛-alg D → aflabby-structure 𝓤
+  β (⨆ , law₀ , law₁) =
+   ((λ (P , i) → ⨆ i) ,
+    (λ (P , i) f p → 𝓛-alg-Law₀-gives₀' pe fe fe ⨆ law₀ P i f p)) ,
+   (λ (P , i) Q → law₁ P (λ - → Q - holds) i (λ p → holds-is-prop (Q p)))
+
+ aflabby-structure-↔-𝓛-alg : aflabby-structure 𝓤 ↔ 𝓛-alg D
+ aflabby-structure-↔-𝓛-alg = α , β
+
+ Theorem[aflabby-structure-≃-𝓛-alg-for-sets]
+  : is-set D
+  → aflabby-structure 𝓤 ≃ 𝓛-alg D
+ Theorem[aflabby-structure-≃-𝓛-alg-for-sets] D-is-set
+  = qinveq α (β , βα , αβ)
+  where
+   βα : β ∘ α ∼ id
+   βα (t@(⨆ , e) , a) =
+    to-subtype-＝
+     (flabby-associativity-is-prop D-is-set fe)
+     (to-subtype-＝
+       (λ _ → Π₃-is-prop fe (λ _ _ _ → D-is-set))
+       refl)
+
+   αβ : α ∘ β ∼ id
+   αβ u@(⨆ , law₀ , law₁) =
+    to-subtype-＝
+     (λ _ → ×-is-prop
+            (Π-is-prop fe (λ _ → D-is-set))
+            (Π₅-is-prop fe (λ _ _ _ _ _ → D-is-set)))
+     refl
+
+\end{code}
