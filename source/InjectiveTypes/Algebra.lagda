@@ -683,8 +683,9 @@ a set.
 
 \end{code}
 
-The above establishes that, in a 1-topos, pulback-natural, associative
-injective structure is isomorphic to associative flabby structure.
+The above establishes the internal fact in a 1-topos that
+pulback-natural, associative injective structure is isomorphic to
+associative flabby structure.
 
 To be continued, where the next step is to show that associative
 flabby structure for D is isomorphic to 𝓛-algebra structure for D,
