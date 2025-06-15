@@ -532,7 +532,7 @@ module _
     ⨆ P (λ p → ⨆ (Q p) (λ q → f (p , q))) ∎
     where
      u : ΣΩ Q holds ↪ P holds
-     u = pr₁ , pr₁-is-embedding (λ p → holds-is-prop (Q p))
+     u = 𝕡𝕣₁ (λ p → holds-is-prop (Q p))
 
      v : P holds ↪ 𝟙
      v = embedding-to-𝟙
@@ -552,7 +552,6 @@ module _
 
        h : Q p holds → fiber ⌊ u ⌋ p
        h q = (p , q) , holds-is-prop P (⌊ u ⌋ (p , q)) p
-
 
      III : (p : P holds) → (f ∣ u) p ＝ ⨆ (Q p) (λ q → f (p , q))
      III p = (f ∣ u) p                               ＝⟨ II₀ ⟩
