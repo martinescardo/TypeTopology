@@ -19,7 +19,7 @@ as in the following commutative diagram.
               X ──────→ Y ──────→ Z
                ╲        │        ╱
                 ╲       │       ╱
-             f   ╲      │ f|j  ╱ (f|j)|k = f(k∘j
+             f   ╲      │ f|j  ╱ (f|j)|k = f∣(k∘j)
                   ╲     │     ╱
                    ╲    │    ╱
                     ╲   │   ╱
