@@ -693,14 +693,13 @@ a set.
 
 \end{code}
 
-The above establishes the internal fact in a 1-topos that
+The above establishes the internal fact that in a 1-topos we have that
 pulback-natural, associative injective structure on D is isomorphic to
 associative flabby structure on D.
 
-Amd also associative flabby structure on D is isomorphic to 𝓛-algebra
-structure on D, where 𝓛 is the lifting (of partial-map classifier)
-wild monad on types. But 𝓛-algebra structure is the same as
-associative flabbly structure, again with routine bureaucracy.
+But also, trivially, associative flabby structure on D is isomorphic
+to 𝓛-algebra structure on D, where 𝓛 is the lifting (of partial-map
+classifier) wild monad on types, as we record below.
 
 \begin{code}
 
