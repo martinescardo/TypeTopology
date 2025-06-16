@@ -194,7 +194,7 @@ The construction is illustrated in the following diagram.
            |                              |
            v                              v
            X ---------------------------> Z
-                                   f
+                                  f
 \begin{code}
 
  pullback : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇

@@ -235,6 +235,13 @@ module _
   _∣_  = injective-extension-operator (derived-injective-structure s)
   _∣'_ = injective-extension-operator derived-injective-structure'
 
+\end{code}
+
+The agreement of these two extension operators is a direct application
+of change of variables in ⨆, defined above.
+
+\begin{code}
+
  derived-injective-structure-operator-lemma
   : propext (𝓤 ⊔ 𝓥)
   → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
