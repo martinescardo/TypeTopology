@@ -21,7 +21,11 @@ for any *set* D:
  (iii) 𝓛-algebra structure on D, where 𝓛 is the lifting monad, also
        known as the partial-map classifier monad.
 
-For an arbitrary type D, the above as only *logical equivalences*, but
+This theorem applies to objects D of (elementary) 1-toposes, given
+that we work constructively in HoTT/UF here, without assuming
+univalence.
+
+For an arbitrary type D, the above are only *logical equivalences*, but
 perhaps there is a chance that they are actually typical equivalences,
 and we leave this as an open problem.
 
@@ -869,3 +873,7 @@ module _
 
 TODO (more challenging and more interesting). What can we say when D
 is not necessarily a set? Do we have the same theorems?
+
+These questions are particularly interesting because in HoTT/UF, and
+hence in ∞-toposes, as illustrated in this development, there is a
+richer supply of injective objects than in 1-toposes.
