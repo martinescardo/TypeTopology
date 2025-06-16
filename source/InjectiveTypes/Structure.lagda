@@ -213,11 +213,11 @@ module _
    k : fiber ⌊ 𝕛 ⌋ y → 𝟙
    k = unique-to-𝟙 {𝓤 ⊔ 𝓥} {𝓤 ⊔ 𝓥}
 
-   h : fiber k ⋆ → fiber ⌊ 𝕛 ⌋ y
-   h = pr₁
-
    g : fiber ⌊ 𝕛 ⌋ y → fiber k ⋆
    g w = w , refl
+
+   h : fiber k ⋆ → fiber ⌊ 𝕛 ⌋ y
+   h = pr₁
 
  derived-injective-structure' : injective-structure 𝓤 𝓥
  derived-injective-structure' = _∣_ , e'
