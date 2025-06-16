@@ -569,10 +569,10 @@ module _
   _∣'_ : {X Y : 𝓤 ̇} → (X → D) → X ↪ Y → Y → D
   _∣'_ = injective-extension-operator D {𝓤} {𝓤} s'
 
- ∣-round-trip : pullback-naturality s
+ ∣-round-trip' : pullback-naturality s
              → (X Y : 𝓤 ̇) (f : X → D) (𝕛 : X ↪ Y)
              → f ∣ 𝕛 ∼ f ∣' 𝕛
- ∣-round-trip pbn X Y f 𝕛 y =
+ ∣-round-trip' pbn X Y f 𝕛 y =
   (f ∣ 𝕛) y                                 ＝⟨ I ⟩
   ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆    ＝⟨ refl ⟩
   (f ∣' 𝕛) y                                ∎
@@ -580,14 +580,14 @@ module _
    I = pullback-naturality-gives-that-extensions-are-fiberwise
         s pe fe pbn X Y f 𝕛 y
 
- ∣-round-trip' : pullback-naturality s
+ ∣-round-trip : pullback-naturality s
               → (λ {X} {Y} → _∣_ {X} {Y}) ＝ _∣'_
- ∣-round-trip' pbn =
+ ∣-round-trip pbn =
   implicit-dfunext fe (λ X →
   implicit-dfunext fe (λ Y →
   dfunext          fe (λ f →
   dfunext          fe (λ 𝕛 →
-  dfunext          fe (λ y → ((∣-round-trip pbn X Y f 𝕛 y)))))))
+  dfunext          fe (λ y → ((∣-round-trip' pbn X Y f 𝕛 y)))))))
 
 \end{code}
 
@@ -693,7 +693,7 @@ a set.
             → implicit-Π-is-prop fe (λ X →
               implicit-Π-is-prop fe (λ Y →
               Π₃-is-prop fe         (λ f 𝕛 x → D-is-set))))
-       (∣-round-trip' s pe fe iassoc pbn)⁻¹)
+       (∣-round-trip s pe fe iassoc pbn)⁻¹)
 
    ϕγ : ϕ ∘ γ ∼ id
    ϕγ (t , fassoc) =
