@@ -25,11 +25,11 @@ This theorem applies to objects D of (elementary) 1-toposes, given
 that we work constructively in HoTT/UF here, without assuming
 univalence.
 
-For an arbitrary type D, the above are only *logical equivalences*, but
-perhaps there is a chance that they are actually typical equivalences,
-and we leave this as an open problem.
+For an arbitrary type D, we only prove the above to be *logical
+equivalences*, but perhaps there is a chance that they are actually
+typical equivalences, and we leave this as an open problem.
 
-The following ASSUME (https://tdejong.com/ASSUME/) slides discuss
+The following ASSUME slides (https://tdejong.com/ASSUME/) discuss
 this, but we include most of the discussion here in comments.
 
 [1] Taking "algebraically" seriously in the definition of
