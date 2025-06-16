@@ -41,30 +41,6 @@ derived-injective-structure {𝓤} {𝓥} (⨆ , e)
   e' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → D) (𝕛 : X ↪ Y) → (f ∣ 𝕛) ∘ ⌊ 𝕛 ⌋ ∼ f
   e' f 𝕛 x = e (Fiber 𝕛 (⌊ 𝕛 ⌋ x)) (f ∘ fiber-point) (x , refl)
 
-\end{code}
-
-Maybe we should have worked with the following equivalent derived
-injective structure.
-
-\begin{code}
-
-derived-injective-structure'
- : flabby-structure (𝓤 ⊔ 𝓥) → injective-structure 𝓤 𝓥
-derived-injective-structure' {𝓤} {𝓥} (⨆ , e)
- = _∣_ , e'
- where
-  ϕ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕛 : X ↪ Y) (y : Y)
-    → Fiber {𝓤 ⊔ 𝓥} {𝓤 ⊔ 𝓥} (fiber-to-𝟙 𝕛 y) ⋆ holds → Fiber 𝕛 y holds
-  ϕ 𝕛 y = pr₁
-
-  _∣_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
-  (f ∣ 𝕛) y = ⨆ (Fiber (fiber-to-𝟙 𝕛 y) ⋆) (f ∘ fiber-point ∘ ϕ 𝕛 y)
-
-  e' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → D) (𝕛 : X ↪ Y) → (f ∣ 𝕛) ∘ ⌊ 𝕛 ⌋ ∼ f
-  e' f 𝕛 x = e (Fiber (fiber-to-𝟙 𝕛 (⌊ 𝕛 ⌋ x)) ⋆)
-               (f ∘ fiber-point ∘ ϕ 𝕛 (⌊ 𝕛 ⌋ x))
-               ((x , refl) , refl)
-
 derived-flabby-structure
  : injective-structure 𝓤 𝓥 → flabby-structure 𝓤
 derived-flabby-structure {𝓤} {𝓥} (_∣_ , e) = ⨆ , e'
@@ -216,5 +192,61 @@ flabby-identification
  : ((⨆ , e) : flabby-structure 𝓤)
  → (P : Ω 𝓤) (f : P holds → D) (p : P holds) → ⨆ P f ＝ f p
 flabby-identification (_∣_ , e) = e
+
+\end{code}
+
+\end{code}
+
+Maybe we should have worked with the following equivalent derived
+injective structure.
+
+\begin{code}
+
+module _
+        {𝓤 𝓥 : Universe}
+        (s@(⨆ , e) : flabby-structure (𝓤 ⊔ 𝓥))
+       where
+
+ private
+  module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕛 : X ↪ Y) (y : Y) where
+   k : fiber ⌊ 𝕛 ⌋ y → 𝟙
+   k = unique-to-𝟙 {𝓤 ⊔ 𝓥} {𝓤 ⊔ 𝓥}
+
+   h : fiber k ⋆ → fiber ⌊ 𝕛 ⌋ y
+   h = pr₁
+
+   g : fiber ⌊ 𝕛 ⌋ y → fiber k ⋆
+   g w = w , refl
+
+ derived-injective-structure' : injective-structure 𝓤 𝓥
+ derived-injective-structure' = _∣_ , e'
+  where
+   _∣_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+   (f ∣ 𝕛) y = ⨆ (Fiber (fiber-to-𝟙 𝕛 y) ⋆) (f ∘ fiber-point ∘ h 𝕛 y)
+
+   e' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → D) (𝕛 : X ↪ Y) → (f ∣ 𝕛) ∘ ⌊ 𝕛 ⌋ ∼ f
+   e' f 𝕛 x = e (Fiber (fiber-to-𝟙 𝕛 (⌊ 𝕛 ⌋ x)) ⋆)
+                (f ∘ fiber-point ∘ h 𝕛 (⌊ 𝕛 ⌋ x))
+                ((x , refl) , refl)
+
+ private
+  _∣_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+  _∣_ = injective-extension-operator (derived-injective-structure s)
+
+  _∣'_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+  _∣'_ = injective-extension-operator derived-injective-structure'
+
+ derived-injective-structure-operator-lemma
+  : propext (𝓤 ⊔ 𝓥)
+  → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → D) (𝕛 : X ↪ Y)
+  → f ∣ 𝕛 ∼ f ∣' 𝕛
+ derived-injective-structure-operator-lemma pe fe f 𝕛 y
+  = (f ∣ 𝕛) y                                              ＝⟨ refl ⟩
+    ⨆ (Fiber 𝕛 y) (f ∘ fiber-point)                       ＝⟨ I ⟩
+    ⨆ (Fiber (fiber-to-𝟙 𝕛 y) ⋆) (f ∘ fiber-point ∘ h 𝕛 y) ＝⟨ refl ⟩
+    (f ∣' 𝕛) y ∎
+    where
+     I = ⨆-change-of-variable pe fe ⨆ (f ∘ fiber-point) (g 𝕛 y , h 𝕛 y)
 
 \end{code}

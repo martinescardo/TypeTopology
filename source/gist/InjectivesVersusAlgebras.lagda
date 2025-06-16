@@ -166,11 +166,6 @@ module _ (𝓤 : Universe)
    I : A P (≃-refl P)
    I j = ap (λ - → ⨆ - f) (being-prop-is-prop fe' i j)
 
-
- fiber-to-𝟙 : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (j : X ↪ Y) (y : Y)
-            → fiber ⌊ j ⌋ y ↪ 𝟙
- fiber-to-𝟙 j y = embedding-into-𝟙 {𝓤} {𝓤} (fiber ⌊ j ⌋ y) (⌊ j ⌋-is-embedding y)
-
  fiber-map : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (f : X → D) (j : X ↪ Y) (y : Y)
            → fiber ⌊ j ⌋ y → D
  fiber-map f j y (x , _) = f x

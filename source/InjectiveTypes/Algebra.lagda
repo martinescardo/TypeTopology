@@ -167,6 +167,7 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Pullback
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 \end{code}
@@ -407,14 +408,11 @@ propositional and functional extensionality).
 
  module _
          (pe : Prop-Ext)
-         (fe : FunExt)
+         (fe : Fun-Ext)
          (fassoc : flabby-associativity)
        where
 
   private
-   fe' : Fun-Ext
-   fe' {𝓤} {𝓥} = fe 𝓤 𝓥
-
    _∣_ : {X Y : 𝓤 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
    _∣_ = injective-extension-operator D (derived-injective-structure D s)
 
@@ -435,7 +433,7 @@ propositional and functional extensionality).
 
     III : ⨆ (Fiber (𝕜 ⊚ 𝕛) z) (f ∘ fiber-point)
       ＝ ⨆ (ΣΩ w ꞉ Fiber 𝕜 z , Fiber 𝕛 (fiber-point w)) (λ q → f (fiber-point (pr₂ q)))
-    III = ⨆-change-of-variable-≃ D pe fe' ⨆ (f ∘ fiber-point) II
+    III = ⨆-change-of-variable-≃ D pe fe ⨆ (f ∘ fiber-point) II
 
     IV : ⨆ (Fiber (𝕜 ⊚ 𝕛) z) (f ∘ fiber-point)
       ＝ ⨆ (Fiber 𝕜 z) (λ w → ⨆ (Fiber 𝕛 (fiber-point w)) (f ∘ fiber-point))
@@ -449,23 +447,8 @@ propositional and functional extensionality).
   derived-injective-fiberwise-extensions X Y f 𝕛 y
    = I
    where
-    k : fiber ⌊ 𝕛 ⌋ y → 𝟙
-    k = unique-to-𝟙
-
-    h : fiber k ⋆ → fiber ⌊ 𝕛 ⌋ y
-    h = pr₁
-
-    g : fiber ⌊ 𝕛 ⌋ y → fiber k ⋆
-    g w = w , refl
-
     I : (f ∣ 𝕛) y ＝ ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆
-    I =
-     (f ∣ 𝕛) y                                          ＝⟨ refl ⟩
-     ⨆ (Fiber 𝕛 y) (f ∘ fiber-point)                    ＝⟨ I₀ ⟩
-     ⨆ (Fiber (fiber-to-𝟙 𝕛 y) ⋆) (f ∘ fiber-point ∘ h) ＝⟨ refl ⟩
-     ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y ) ⋆            ∎
-      where
-       I₀ = ⨆-change-of-variable D pe fe' ⨆ (f ∘ fiber-point) (g , h)
+    I = derived-injective-structure-operator-lemma D s pe fe f 𝕛 y
 
   derived-injective-pullback-naturality
    : pullback-naturality (derived-injective-structure D s)
@@ -495,8 +478,8 @@ propositional and functional extensionality).
           ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ pb₁ ∘ fiber-point)  ＝⟨ refl ⟩
           ((f ∘ pb₁) ∣ 𝑝𝑏₂) b                      ∎
            where
-            II₀ = ⨆-change-of-variable D pe fe' ⨆ (f ∘ fiber-point) (ϕ , ψ)
-            II₁ = ap (⨆ (Fiber 𝑝𝑏₂ b)) (dfunext fe' I)
+            II₀ = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (ϕ , ψ)
+            II₁ = ap (⨆ (Fiber 𝑝𝑏₂ b)) (dfunext fe I)
 
   private
    ⨆' : (P : Ω 𝓤) → (P holds → D) → D
@@ -504,15 +487,15 @@ propositional and functional extensionality).
           (derived-flabby-structure D {𝓤} {𝓤}
             (derived-injective-structure D s))
 
-  ⨆-roundtrip : ⨆ ＝ ⨆'
-  ⨆-roundtrip = dfunext fe' (λ P → dfunext fe' (I P))
+  ⨆-round-trip : ⨆ ＝ ⨆'
+  ⨆-round-trip = dfunext fe (λ P → dfunext fe (I P))
    where
     I :  (P : Ω 𝓤) (f : P holds → D) → ⨆ P f ＝ ⨆' P f
     I P f = ⨆ P f                                        ＝⟨ I₀ ⟩
             ⨆ (Fiber embedding-to-𝟙 ⋆) (f ∘ fiber-point) ＝⟨ refl ⟩
             ⨆' P f                                       ∎
       where
-       I₀ = ⨆-change-of-variable D pe fe' ⨆ f ((λ p → p , refl) , fiber-point)
+       I₀ = ⨆-change-of-variable D pe fe ⨆ f ((λ p → p , refl) , fiber-point)
 
 \end{code}
 
@@ -529,14 +512,11 @@ module _
         {𝓤          : Universe}
         (s@(_∣_ , _) : injective-structure D 𝓤 𝓤)
         (pe          : Prop-Ext)
-        (fe          : FunExt)
+        (fe          : Fun-Ext)
         (iassoc      : injective-associativity s)
       where
 
  private
-  fe' : Fun-Ext
-  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
-
   ⨆ : (P : Ω 𝓤) → (P holds → D) → D
   ⨆ = flabby-extension-operator D (derived-flabby-structure D s)
 
@@ -548,7 +528,7 @@ module _
     (f ∣ w) ⋆                              ＝⟨ ap (λ - → (f ∣ -) ⋆) I ⟩
     (f ∣ (v ⊚ u)) ⋆                        ＝⟨ iassoc _ _ _ f u v ⋆ ⟩
     ((f ∣ u) ∣ v) ⋆                        ＝⟨ refl ⟩
-    ⨆ P (f ∣ u)                            ＝⟨ ap (⨆ P) (dfunext fe' III) ⟩
+    ⨆ P (f ∣ u)                            ＝⟨ ap (⨆ P) (dfunext fe III) ⟩
     ⨆ P (λ p → ⨆ (Q p) (λ q → f (p , q))) ∎
     where
      u : ΣΩ Q holds ↪ P holds
@@ -561,11 +541,11 @@ module _
      w = embedding-to-𝟙
 
      I : w ＝ v ⊚ u
-     I = to-subtype-＝ (being-embedding-is-prop fe') refl
+     I = to-subtype-＝ (being-embedding-is-prop fe) refl
 
      II : (p : P holds)
         → ⨆ (Fiber u p) (f ∘ fiber-point) ＝ ⨆ (Q p) (λ q → f (p , q))
-     II p = ⨆-change-of-variable D pe fe' ⨆ (f ∘ fiber-point) (g , h)
+     II p = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (g , h)
       where
        g : fiber ⌊ u ⌋ p → Q p holds
        g ((p' , q) , _) = transport (λ - → Q - holds) (holds-is-prop P p' p) q
@@ -580,7 +560,7 @@ module _
             ⨆ (Q p) (λ q → f (p , q))              ∎
              where
               II₀ = pullback-naturality-gives-that-extensions-are-fiberwise
-                     s pe fe' pbn (ΣΩ Q holds) (P holds) f u p
+                     s pe fe pbn (ΣΩ Q holds) (P holds) f u p
 
  private
   s' : injective-structure D 𝓤 𝓤
@@ -589,16 +569,25 @@ module _
   _∣'_ : {X Y : 𝓤 ̇} → (X → D) → X ↪ Y → Y → D
   _∣'_ = injective-extension-operator D {𝓤} {𝓤} s'
 
- ∣-roundtrip : pullback-naturality s
+ ∣-round-trip : pullback-naturality s
              → (X Y : 𝓤 ̇) (f : X → D) (𝕛 : X ↪ Y)
-            → f ∣ 𝕛 ∼ f ∣' 𝕛
- ∣-roundtrip pbn X Y f 𝕛 y =
+             → f ∣ 𝕛 ∼ f ∣' 𝕛
+ ∣-round-trip pbn X Y f 𝕛 y =
   (f ∣ 𝕛) y                                 ＝⟨ I ⟩
   ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆    ＝⟨ refl ⟩
   (f ∣' 𝕛) y                                ∎
   where
    I = pullback-naturality-gives-that-extensions-are-fiberwise
-        s pe fe' pbn X Y f 𝕛 y
+        s pe fe pbn X Y f 𝕛 y
+
+ ∣-round-trip' : pullback-naturality s
+              → (λ {X} {Y} → _∣_ {X} {Y}) ＝ _∣'_
+ ∣-round-trip' pbn =
+  implicit-dfunext fe (λ X →
+  implicit-dfunext fe (λ Y →
+  dfunext          fe (λ f →
+  dfunext          fe (λ 𝕛 →
+  dfunext          fe (λ y → ((∣-round-trip pbn X Y f 𝕛 y)))))))
 
 \end{code}
 
@@ -617,7 +606,6 @@ aflabby-structure 𝓤 =
  Σ t ꞉ flabby-structure D 𝓤 , flabby-associativity t
 
 open import UF.Sets
-open import UF.Subsingletons-FunExt
 
 module _
         (D-is-set : is-set D)
@@ -659,20 +647,16 @@ module _
        where
 
  private
-
-  fe' : FunExt
-  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
-
   ϕ : ainjective-structure 𝓤 → aflabby-structure 𝓤
   ϕ (s , iassoc , pbn) =
    derived-flabby-structure D s ,
-   derived-flabby-associativity s pe fe' iassoc pbn
+   derived-flabby-associativity s pe fe iassoc pbn
 
   γ : aflabby-structure 𝓤 → ainjective-structure 𝓤
   γ (t , fassoc) =
    derived-injective-structure D t ,
-   derived-injective-associativity t pe fe' fassoc ,
-   derived-injective-pullback-naturality t pe fe' fassoc
+   derived-injective-associativity t pe fe fassoc ,
+   derived-injective-pullback-naturality t pe fe fassoc
 
  ainjective-structure-iff-aflabby-structure
   : ainjective-structure 𝓤 ↔ aflabby-structure 𝓤
@@ -706,16 +690,10 @@ a set.
              (pullback-naturality-is-prop D-is-set fe s))
      (to-subtype-＝
        (λ (_∣_ : {X Y : 𝓤 ̇} → (X → D) → X ↪ Y → Y → D)
-            → implicit-Π-is-prop fe
-       (λ X → implicit-Π-is-prop fe
-       (λ Y → Π₃-is-prop fe
-               (λ f 𝕛 x → D-is-set))))
-       (implicit-dfunext fe (λ X →
-        implicit-dfunext fe (λ Y →
-        dfunext          fe (λ f →
-        dfunext          fe (λ 𝕛 →
-        dfunext          fe (λ y →
-         ((∣-roundtrip s pe fe' iassoc pbn X Y f 𝕛 y)⁻¹))))))))
+            → implicit-Π-is-prop fe (λ X →
+              implicit-Π-is-prop fe (λ Y →
+              Π₃-is-prop fe         (λ f 𝕛 x → D-is-set))))
+       (∣-round-trip' s pe fe iassoc pbn)⁻¹)
 
    ϕγ : ϕ ∘ γ ∼ id
    ϕγ (t , fassoc) =
@@ -723,7 +701,7 @@ a set.
      (flabby-associativity-is-prop D-is-set fe)
      (to-subtype-＝
        (λ _ → Π₃-is-prop fe (λ _ _ _ → D-is-set))
-       ((⨆-roundtrip t pe fe' fassoc)⁻¹))
+       (⨆-round-trip t pe fe fassoc)⁻¹)
 
 \end{code}
 
