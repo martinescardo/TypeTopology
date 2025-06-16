@@ -246,10 +246,6 @@ so that the above naturality condition becomes
                             𝑝𝑏₂ = 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
                         in (f ∣ 𝕛) ∘ h ∼ (f ∘ pb₁) ∣ 𝑝𝑏₂
 
- fiber-to-𝟙 : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (𝕛 : X ↪ Y) (y : Y)
-            → fiber ⌊ 𝕛 ⌋ y ↪ 𝟙 {𝓤}
- fiber-to-𝟙 𝕛 y = embedding-to-𝟙 {𝓤} {𝓤} {Fiber 𝕛 y}
-
  extensions-are-fiberwise : 𝓤 ⁺ ⊔ 𝓦 ̇
  extensions-are-fiberwise = (X Y : 𝓤 ̇ )
                             (f : X → D)
@@ -259,7 +255,8 @@ so that the above naturality condition becomes
 
 \end{code}
 
-The following uses the fact that the following is a pullback.
+The following implicitly uses the fact that the following is a
+pullback.
 
 
        fiber j y ─────→ 𝟙
@@ -292,8 +289,8 @@ The following uses the fact that the following is a pullback.
    𝑝𝑏₂ : A ↪ 𝟙
    𝑝𝑏₂ = 𝕡𝕓₂ ⌊ 𝕛 ⌋-is-embedding
 
-   𝓅𝓇₁ : X × 𝟙 ↪ X
-   𝓅𝓇₁ = 𝕡𝕣₁ (λ _ → 𝟙-is-prop)
+   𝑝𝑟₁ : X × 𝟙 ↪ X
+   𝑝𝑟₁ = 𝕡𝕣₁ (λ _ → 𝟙-is-prop)
 
    _ : pb₁ ＝ fiber-point ∘ ⌜ ϕ ⌝
    _ = refl
@@ -308,7 +305,7 @@ The following uses the fact that the following is a pullback.
         ((f ∘ pb₁) ∣ 𝑝𝑏₂) ⋆                              ＝⟨ refl ⟩
         ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ 𝑝𝑏₂) ⋆              ＝⟨ by-I ⟩
         ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ embedding-to-𝟙) ⋆   ＝⟨ refl ⟩
-        ⨆ (Fiber (𝕛 ⊚ 𝓅𝓇₁) y) (f ∘ fiber-point ∘ ⌜ ϕ ⌝)  ＝⟨ change-of-var ⁻¹ ⟩
+        ⨆ (Fiber (𝕛 ⊚ 𝑝𝑟₁) y) (f ∘ fiber-point ∘ ⌜ ϕ ⌝)  ＝⟨ change-of-var ⁻¹ ⟩
         ⨆ (Fiber 𝕛 y) (f ∘ fiber-point)                  ＝⟨ refl ⟩
         ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆           ∎
          where
@@ -447,6 +444,29 @@ propositional and functional extensionality).
     V : (f ∣ (𝕜 ⊚ 𝕛)) z ＝ ((f ∣ 𝕛) ∣ 𝕜) z
     V = IV
 
+  derived-injective-fiberwise-extensions
+   : extensions-are-fiberwise (derived-injective-structure D s)
+  derived-injective-fiberwise-extensions X Y f 𝕛 y
+   = I
+   where
+    k : fiber ⌊ 𝕛 ⌋ y → 𝟙
+    k = unique-to-𝟙
+
+    h : fiber k ⋆ → fiber ⌊ 𝕛 ⌋ y
+    h = pr₁
+
+    g : fiber ⌊ 𝕛 ⌋ y → fiber k ⋆
+    g w = w , refl
+
+    I : (f ∣ 𝕛) y ＝ ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆
+    I =
+     (f ∣ 𝕛) y                                          ＝⟨ refl ⟩
+     ⨆ (Fiber 𝕛 y) (f ∘ fiber-point)                    ＝⟨ I₀ ⟩
+     ⨆ (Fiber (fiber-to-𝟙 𝕛 y) ⋆) (f ∘ fiber-point ∘ h) ＝⟨ refl ⟩
+     ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y ) ⋆            ∎
+      where
+       I₀ = ⨆-change-of-variable D pe fe' ⨆ (f ∘ fiber-point) (g , h)
+
   derived-injective-pullback-naturality
    : pullback-naturality (derived-injective-structure D s)
   derived-injective-pullback-naturality X Y B f 𝕛 h = II
@@ -554,10 +574,10 @@ module _
        h q = (p , q) , holds-is-prop P (⌊ u ⌋ (p , q)) p
 
      III : (p : P holds) → (f ∣ u) p ＝ ⨆ (Q p) (λ q → f (p , q))
-     III p = (f ∣ u) p                               ＝⟨ II₀ ⟩
-            ((f ∘ fiber-point) ∣ fiber-to-𝟙 s u p) ⋆ ＝⟨ refl ⟩
-            ⨆ (Fiber u p) (f ∘ fiber-point)          ＝⟨ II p ⟩
-            ⨆ (Q p) (λ q → f (p , q))                ∎
+     III p = (f ∣ u) p                             ＝⟨ II₀ ⟩
+            ((f ∘ fiber-point) ∣ fiber-to-𝟙 u p) ⋆ ＝⟨ refl ⟩
+            ⨆ (Fiber u p) (f ∘ fiber-point)        ＝⟨ II p ⟩
+            ⨆ (Q p) (λ q → f (p , q))              ∎
              where
               II₀ = pullback-naturality-gives-that-extensions-are-fiberwise
                      s pe fe' pbn (ΣΩ Q holds) (P holds) f u p
@@ -574,7 +594,7 @@ module _
             → f ∣ 𝕛 ∼ f ∣' 𝕛
  ∣-roundtrip pbn X Y f 𝕛 y =
   (f ∣ 𝕛) y                                 ＝⟨ I ⟩
-  ((f ∘ fiber-point) ∣ fiber-to-𝟙 s' 𝕛 y) ⋆ ＝⟨ refl ⟩
+  ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆    ＝⟨ refl ⟩
   (f ∣' 𝕛) y                                ∎
   where
    I = pullback-naturality-gives-that-extensions-are-fiberwise

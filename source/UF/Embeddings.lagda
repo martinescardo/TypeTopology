@@ -663,6 +663,10 @@ Fiber 𝕛 y = fiber ⌊ 𝕛 ⌋ y , ⌊ 𝕛 ⌋-is-embedding y
 embedding-to-𝟙 : {P : Ω 𝓤} → P holds ↪ 𝟙 {𝓥}
 embedding-to-𝟙 {𝓤} {𝓥} {P} = embedding-into-𝟙 (P holds) (holds-is-prop P)
 
+fiber-to-𝟙 : {𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕛 : X ↪ Y) (y : Y)
+           → fiber ⌊ 𝕛 ⌋ y ↪ 𝟙 {𝓦}
+fiber-to-𝟙 𝕛 y = embedding-to-𝟙 {_} {_} {Fiber 𝕛 y}
+
 \end{code}
 
 Fixities:

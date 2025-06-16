@@ -36,10 +36,34 @@ derived-injective-structure {𝓤} {𝓥} (⨆ , e)
  = _∣_ , e'
  where
   _∣_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
-  (f ∣ 𝕛) y = ⨆ ((Fiber 𝕛 y)) (f ∘ pr₁)
+  (f ∣ 𝕛) y = ⨆ (Fiber 𝕛 y) (f ∘ fiber-point)
 
   e' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → D) (𝕛 : X ↪ Y) → (f ∣ 𝕛) ∘ ⌊ 𝕛 ⌋ ∼ f
-  e' f 𝕛 x = e (Fiber 𝕛 (⌊ 𝕛 ⌋ x)) (f ∘ pr₁) (x , refl)
+  e' f 𝕛 x = e (Fiber 𝕛 (⌊ 𝕛 ⌋ x)) (f ∘ fiber-point) (x , refl)
+
+\end{code}
+
+Maybe we should have worked with the following equivalent derived
+injective structure.
+
+\begin{code}
+
+derived-injective-structure'
+ : flabby-structure (𝓤 ⊔ 𝓥) → injective-structure 𝓤 𝓥
+derived-injective-structure' {𝓤} {𝓥} (⨆ , e)
+ = _∣_ , e'
+ where
+  ϕ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕛 : X ↪ Y) (y : Y)
+    → Fiber {𝓤 ⊔ 𝓥} {𝓤 ⊔ 𝓥} (fiber-to-𝟙 𝕛 y) ⋆ holds → Fiber 𝕛 y holds
+  ϕ 𝕛 y = pr₁
+
+  _∣_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+  (f ∣ 𝕛) y = ⨆ (Fiber (fiber-to-𝟙 𝕛 y) ⋆) (f ∘ fiber-point ∘ ϕ 𝕛 y)
+
+  e' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → D) (𝕛 : X ↪ Y) → (f ∣ 𝕛) ∘ ⌊ 𝕛 ⌋ ∼ f
+  e' f 𝕛 x = e (Fiber (fiber-to-𝟙 𝕛 (⌊ 𝕛 ⌋ x)) ⋆)
+               (f ∘ fiber-point ∘ ϕ 𝕛 (⌊ 𝕛 ⌋ x))
+               ((x , refl) , refl)
 
 derived-flabby-structure
  : injective-structure 𝓤 𝓥 → flabby-structure 𝓤
