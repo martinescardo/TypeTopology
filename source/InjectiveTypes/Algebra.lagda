@@ -355,8 +355,8 @@ TODO. At the moment, we define pullback naturality with respect to the
 canonical, or chosen, pullback. But the above argument actually shows
 that this implies naturality with respect to any pullback. So we
 should reformulate the above in this way, and then use the (already
-proved) fact that fibers are pullbacks. This low priority, but it is
-interesting for conceptual reasons.
+proved) fact that fibers are pullbacks. This is low priority, but it
+is interesting for conceptual reasons.
 
 We now observe that the pullback requirement in the naturality
 condition is essential, no matter which injective structure we have,
@@ -666,7 +666,7 @@ are really showing is that _∣_ ＝ _∣'_.
 We now put the above together to get the main results of this file.
 
 Motivated by the above, we (re)define algebraic injective and flabby
-structure as follows.
+structure on our type D as follows.
 
 \begin{code}
 
@@ -683,7 +683,7 @@ module _ {𝓤 : Universe} where
 
 \end{code}
 
-When D is a set, then pullback naturality and the two associativity
+When D is a set, pullback naturality and the two associativity
 conditions are property rather than data.
 
 \begin{code}
@@ -717,7 +717,7 @@ And the main theorem of this file is that the above notions of
 algebraic injectivity and flabbines are equivalent (assuming
 propositional and functional extensionality).
 
-For the arbitrary type D, all we know so far is that they *logically*
+For our arbitrary type D, all we know so far is that they *logically*
 equivalent.
 
 \begin{code}
@@ -749,9 +749,9 @@ But if D is a set, it follows that they are typally equivalent, which
 is the main theorem of this file.
 
 The essence of the proof are the above two round-trip functions
-together with the trivial fact that pullback naturality and
-associativity, for both injectivity and flabbiness, are property,
-rather than just data, when D is a set.
+together with the fact that pullback naturality and associativity, for
+both injectivity and flabbiness, are property, rather than just data,
+when D is a set.
 
 \begin{code}
 
@@ -793,7 +793,7 @@ to 𝓛-algebra structure on D, where 𝓛 is the lifting (of partial-map
 classifier) wild monad on types, as we record now.
 
 The construction amounts to ΠΣ-distributivity (known as (sic) the
-type-theoretic axiom of choice, which doesn't perform any choices).
+type-theoretic axiom of choice, which doesn't perform any choice).
 
 \begin{code}
 
@@ -816,7 +816,7 @@ type-theoretic axiom of choice, which doesn't perform any choices).
 
 \end{code}
 
-As above, we only have a logical equivalence for an arbitrary type D.
+As above, we only have a logical equivalence for our arbitrary type D.
 
 \begin{code}
 
@@ -875,5 +875,5 @@ TODO (more challenging and more interesting). What can we say when D
 is not necessarily a set? Do we have the same theorems?
 
 These questions are particularly interesting because in HoTT/UF, and
-hence in ∞-toposes, as illustrated in this development, there is a
-richer supply of injective objects than in 1-toposes.
+hence in ∞-toposes, because, as illustrated in this development, there
+is a richer supply of injective objects than in 1-toposes.
