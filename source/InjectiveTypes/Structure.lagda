@@ -198,7 +198,8 @@ flabby-identification (_∣_ , e) = e
 \end{code}
 
 Maybe we should have worked with the following equivalent derived
-injective structure.
+injective structure, as this would have avoided some detours in
+proofs.
 
 \begin{code}
 
@@ -230,10 +231,8 @@ module _
                 ((x , refl) , refl)
 
  private
-  _∣_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
-  _∣_ = injective-extension-operator (derived-injective-structure s)
-
-  _∣'_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+  _∣_ _∣'_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → D) → (X ↪ Y) → (Y → D)
+  _∣_  = injective-extension-operator (derived-injective-structure s)
   _∣'_ = injective-extension-operator derived-injective-structure'
 
  derived-injective-structure-operator-lemma
