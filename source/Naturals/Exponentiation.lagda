@@ -58,3 +58,28 @@ exponents-not-zero (succ n) e = exponents-not-zero n I
   I = mult-left-cancellable (2^ n) 0 1 e
 
 \end{code}
+
+Theo Hepburn, started February 2025
+
+Contains a proof that exponentiation distributes over
+multiplication.
+
+\begin{code}
+
+^-over-* : (n m k : ℕ) → (n * m) ℕ^ k ＝ (n ℕ^ k * m ℕ^ k)
+^-over-* n m zero = refl
+^-over-* n m (succ k)
+ = n * m * (n * m) ℕ^ k ＝⟨ ap (λ z → n * m * z) ((^-over-* n m k)) ⟩
+   (n * m) * (n ℕ^ k * m ℕ^ k) ＝⟨ mult-associativity n m (n ℕ^ k * m ℕ^ k) ⟩
+   n * (m * (n ℕ^ k * m ℕ^ k)) ＝⟨ ap (λ z → n * z)
+                                 (mult-associativity m (n ℕ^ k) (m ℕ^ k) ⁻¹) ⟩
+   n * ((m * n ℕ^ k) * m ℕ^ k) ＝⟨ mult-associativity n
+                                  (m * n ℕ^ k) (m ℕ^ k) ⁻¹ ⟩
+   n * (m * n ℕ^ k) * m ℕ^ k ＝⟨ ap (λ z → n * z * m ℕ^ k)
+                                 (mult-commutativity m (n ℕ^ k)) ⟩
+   n * (n ℕ^ k * m) * m ℕ^ k ＝⟨ ap (λ z → z * m ℕ^ k)
+                                 (mult-associativity n (n ℕ^ k) m ⁻¹) ⟩
+   (n * n ℕ^ k) * m * m ℕ^ k ＝⟨ mult-associativity (n * n ℕ^ k) m (m ℕ^ k) ⟩
+   n * n ℕ^ k * (m * m ℕ^ k) ∎
+
+\end{code}
