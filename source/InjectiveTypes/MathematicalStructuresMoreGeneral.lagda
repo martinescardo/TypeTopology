@@ -3,7 +3,8 @@ Martin Escardo, 16th August 2023
 This file improves InjectiveTypes.MathematicalStructures at the cost
 of being harder to understand, with the benefit of at the same time
 being more general and allowing shorter proofs. It relies on the file
-InjectiveTypes.Sigma.
+InjectiveTypes.Sigma, which also arises as a generalization of the
+original file InjectiveTypes.MathematicalStructures.
 
 We give a sufficient condition for types of mathematical structures,
 such as pointed types, ∞-magmas, monoids, groups, etc. to be
@@ -11,7 +12,7 @@ algebraically injective. We use algebraic flabbiness as our main tool.
 
 There is already enough discussion in the files
 InjectiveTypes.MathematicalStructures and InjectiveTypes.Sigma, which
-we will not repeat here. But we still add some remarks.
+we will not repeat here. But we include some further remarks.
 
 \begin{code}
 
@@ -19,7 +20,9 @@ we will not repeat here. But we still add some remarks.
 
 open import UF.Univalence
 
-module InjectiveTypes.MathematicalStructuresMoreGeneral (ua : Univalence) where
+module InjectiveTypes.MathematicalStructuresMoreGeneral
+        (ua : Univalence)
+       where
 
 open import UF.FunExt
 open import UF.UA-FunExt
@@ -72,20 +75,57 @@ universes-are-aflabby-Σ {𝓤} P P-is-prop A = Σ A , I
   I : (p : P) → Σ A ＝ A p
   I p = eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum p P-is-prop)
 
+\end{code}
+
+We now work with an arbitrary notion of structure on 𝓤.
+
+\begin{code}
+
 module _ (S : 𝓤 ̇ → 𝓥 ̇ ) where
+
+\end{code}
+
+By the results of InjectiveTypes.Sigma, we get that Σ S is aflabby in
+two ways, assuming the compatibility condition for the flabbiness
+data.
+
+\begin{code}
+
+ module _ (ϕ : aflabby (𝓤 ̇ ) 𝓤) where
+
+  aflabbiness-of-type-of-structured-types : compatibility-data S ϕ
+                                          → aflabby (Σ S) 𝓤
+  aflabbiness-of-type-of-structured-types = Σ-is-aflabby S ϕ
+
+
+  ainjectivity-of-type-of-structures : compatibility-data S ϕ
+                                     → ainjective-type (Σ S) 𝓤 𝓤
+  ainjectivity-of-type-of-structures = aflabby-types-are-ainjective (Σ S)
+                                       ∘ aflabbiness-of-type-of-structured-types
+
+\end{code}
+
+We apply this with ϕ taken to be the above canonical Π-flabby
+structure on the universe/
+
+Next we want to simplify working with compatibility data, where we
+avoid transports by working with the following function treq and
+suitable choices of T and T-refl below.
+
+\begin{code}
 
  treq : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y
  treq {X} {Y} 𝕗 = transport S (eqtoid (ua 𝓤) X Y 𝕗)
 
 \end{code}
 
-We don't need this fact explicitly, but it is worth keeping it in
-mind:
+We don't need the following fact explicitly, but it is worth keeping
+it in mind:
 
 \begin{code}
 
- treq-is-equiv : {X Y : 𝓤 ̇ } (𝕗 : X ≃ Y) → is-equiv (treq 𝕗)
- treq-is-equiv {X} {Y} 𝕗 = transports-are-equivs (eqtoid (ua 𝓤) X Y 𝕗)
+ _ : {X Y : 𝓤 ̇ } (𝕗 : X ≃ Y) → is-equiv (treq 𝕗)
+ _ = λ 𝕗 → transports-are-equivs (eqtoid (ua 𝓤) _ _ 𝕗)
 
 \end{code}
 
@@ -128,8 +168,123 @@ condition using T rather than transport (see examples below).
 
 \end{code}
 
-We introduce names for the canonical maps induced by Π- and
-Σ-flabbiness structures on 𝓤.
+The following is for the sake of discussion only.
+
+\begin{code}
+
+  module discussion (ϕ : aflabby (𝓤 ̇ ) 𝓤) where
+
+   ⨆ : (p : Ω 𝓤) → (p holds → 𝓤 ̇) → 𝓤 ̇
+   ⨆ = aflabby-extension ϕ
+
+   ε : (p : Ω 𝓤)
+       (A : p holds → 𝓤 ̇)
+       (h : p holds)
+     → ⨆ p A ＝ A h
+   ε p A h = aflabby-extension-property ϕ p A h
+
+   ρϕ : (p : Ω 𝓤)
+        (A : p holds → 𝓤 ̇ )
+      → S (⨆ p A) → ((h : p holds) → S (A h))
+   ρϕ p A s h = T (idtoeq _ _ (ε p A h)) s
+
+   compatibility-data-ϕ : 𝓤 ⁺ ⊔ 𝓥 ̇
+   compatibility-data-ϕ = (p : Ω 𝓤)
+                          (A : p holds → 𝓤 ̇ )
+                        → has-section (ρϕ p A)
+
+   ϕ-construction : compatibility-data-ϕ
+                   → compatibility-data S ϕ
+   ϕ-construction t p A = III
+    where
+     I : (h : p holds) → ⨆ p A ≃ A h
+     I h = idtoeq _ _ (ε p A h)
+
+     II : ρϕ p A ∼ ρ S ϕ p A
+     II s =
+      ρϕ p A s                                        ＝⟨ refl ⟩
+      (λ h → T (I h) s)                               ＝⟨ I₀ ⟩
+      (λ h → treq (I h) s)                            ＝⟨ refl ⟩
+      (λ h → transport S (eqtoid (ua 𝓤) _ _ (I h)) s) ＝⟨ I₁ ⟩
+      (λ h → transport S (ε p A h) s)                 ＝⟨ refl ⟩
+      ρ S ϕ p A s                                     ∎
+      where
+       I₀ = dfunext fe' (λ h → T-is-treq (I h) s)
+       I₁ = dfunext fe'
+              (λ h → ap (λ - → transport S - s)
+                        (eqtoid-idtoeq (ua 𝓤) _ _ (ε p A h)))
+
+     III : has-section (ρ S ϕ p A)
+     III = has-section-closed-under-∼ (ρϕ p A) _ (t p A) (∼-sym II)
+
+\end{code}
+
+This completes the construction, but we record that the section map
+
+
+
+of
+the conclusion is literally the same as that of the hypothesis.
+
+\begin{code}
+
+     _ = section-of (ρ S ϕ p A) III  ＝⟨ refl ⟩
+         section-of (ρϕ p A) (t p A) ＝⟨ refl ⟩
+         pr₁ (t p A)                 ∎
+
+\end{code}
+
+But notice that the above remark is only saying that the section map
+is literally the same. It is definitely not saying that the proof that
+it is a section is also the same (literally or otherwise).
+
+We can specialize this to the Π and Σ flabbiness structures discussed
+above, to get
+
+\begin{code}
+
+  module discussion-Π where
+
+   open discussion universes-are-aflabby-Π
+
+   ρΠ : (p : Ω 𝓤)
+        (A : p holds → 𝓤 ̇ )
+      → S (Π A) → ((h : p holds) → S (A h))
+   ρΠ = ρϕ
+
+   compatibility-data-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
+   compatibility-data-Π = (p : Ω 𝓤)
+                          (A : p holds → 𝓤 ̇ )
+                        → has-section (ρΠ p A)
+
+   Π-construction : compatibility-data-Π
+                  → compatibility-data S universes-are-aflabby-Π
+   Π-construction = ϕ-construction
+
+  module discussion-Σ where
+
+   open discussion universes-are-aflabby-Σ
+
+   ρΣ : (p : Ω 𝓤)
+        (A : p holds → 𝓤 ̇ )
+      → S (Σ A) → ((h : p holds) → S (A h))
+   ρΣ = ρϕ
+
+   compatibility-data-Σ : 𝓤 ⁺ ⊔ 𝓥 ̇
+   compatibility-data-Σ = (p : Ω 𝓤)
+                          (A : p holds → 𝓤 ̇ )
+                        → has-section (ρΣ p A)
+
+   Σ-construction : compatibility-data-Σ
+                  → compatibility-data S universes-are-aflabby-Σ
+   Σ-construction = ϕ-construction
+
+\end{code}
+
+However, it is difficult, in practice, work with the above
+constructions, as they don't have some further definitional properties
+which are useful in practice when constructing examples. For that
+purpose, we are interested in ρΠ, which we redefine as follows.
 
 \begin{code}
 
@@ -141,30 +296,14 @@ We introduce names for the canonical maps induced by Π- and
     I : Π A ≃ A h
     I = prop-indexed-product h fe' (holds-is-prop p)
 
-  ρΣ : (p : Ω 𝓤)
-       (A : p holds → 𝓤 ̇ )
-     → S (Σ A) → ((h : p holds) → S (A h))
-  ρΣ p A s h = T I s
-   where
-    I : Σ A ≃ A h
-    I = prop-indexed-sum h (holds-is-prop p)
-
-\end{code}
-
-In our applications, we will use Π-flabbiness structure, and it will
-be easier to produce compatibility-data-Π than to produce
-(compatibility-data S universes-are-aflabby-Π).
-
-\begin{code}
-
   compatibility-data-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
   compatibility-data-Π = (p : Ω 𝓤)
                          (A : p holds → 𝓤 ̇ )
                        → has-section (ρΠ p A)
 
-  Π-lemma : compatibility-data-Π
-          → compatibility-data S universes-are-aflabby-Π
-  Π-lemma t p A = II
+  Π-construction : compatibility-data-Π
+                 → compatibility-data S universes-are-aflabby-Π
+  Π-construction t p A = II
    where
     π : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ ) (h : p holds) → Π A ≃ A h
     π p A h = prop-indexed-product h fe' (holds-is-prop p)
@@ -174,7 +313,7 @@ be easier to produce compatibility-data-Π than to produce
      ρΠ p A s                                                    ＝⟨ refl ⟩
      (λ h → T (π p A h) s)                                       ＝⟨ I₀ ⟩
      (λ h → transport S (eqtoid (ua 𝓤) (Π A) (A h) (π p A h)) s) ＝⟨ refl ⟩
-          ρ S universes-are-aflabby-Π p A s                      ∎
+     ρ S universes-are-aflabby-Π p A s                            ∎
      where
       I₀ = dfunext fe' (λ h → T-is-treq (π p A h) s)
 
@@ -183,69 +322,42 @@ be easier to produce compatibility-data-Π than to produce
 
 \end{code}
 
-We could have proved Π-lemma as follows, but then it wouldn't "compute
-enough" for the purposes of e.g. Monoid-Π-data, giving longer proofs.
+This completes the construction, and we again remark that we have that
+the section of the map
+
+  ρ S universes-are-aflabby-Π p
+
+in the above construction is literally the same as that of the given
+section of the map
+
+  ρΠ p A
+
+(although the equation that prove that they are sections may be
+different), which is crucial for the examples below.
 
 \begin{code}
+{-
+    _ : section-of (ρ S universes-are-aflabby-Π p A) II
+      ＝ section-of (ρΠ p A) (t p A)
+    _ = refl
 
-  Π-lemma' : compatibility-data-Π
-           → compatibility-data S universes-are-aflabby-Π
-  Π-lemma' t p A = transport has-section I II
-   where
-    I : ρΠ p A ＝ ρ S universes-are-aflabby-Π p A
-    I = dfunext fe' (λ s →
-        dfunext fe' (λ h →
-         ap (λ - → - (prop-indexed-product h fe' (holds-is-prop p)) s)
-            (dfunext fe' (λ 𝕗 → dfunext fe' (T-is-treq 𝕗)))))
-
-    II : has-section (ρΠ p A)
-    II = t p A
-
-  compatibility-data-Σ : 𝓤 ⁺ ⊔ 𝓥 ̇
-  compatibility-data-Σ = (p : Ω 𝓤)
-                         (A : p holds → 𝓤 ̇ )
-                       → has-section (ρΣ p A)
-
-  Σ-lemma : compatibility-data-Σ
-          → compatibility-data S universes-are-aflabby-Σ
-  Σ-lemma t p A = transport has-section I II
-   where
-    I : ρΣ p A ＝ ρ S universes-are-aflabby-Σ p A
-    I = dfunext fe' (λ s →
-        dfunext fe' (λ h →
-          ap (λ - → - (prop-indexed-sum h (holds-is-prop p)) s)
-             (dfunext fe' (λ 𝕗 → dfunext fe' (T-is-treq 𝕗)))))
-
-    II : has-section (ρΣ p A)
-    II = t p A
-
+    _ = ((h : p holds) → S (A h)) → S (Π A)
+    _ = section-of (ρΠ p A) (t p A)
+-}
 \end{code}
 
-Because at the moment we are not applying the Σ-flabbiness structure
-of the universe, we haven't bothered to produce a version of Σ-lemma
-with better computational properties, but this may be needed in the
-future (TODO).
+But, compared to the above general definition, for examples of S , T
+and T-refl of interest, we have two additional definitional
+equalities, namely
 
-By the results of InjectiveTypes.Sigma, we get that Σ S is aflabby in
-two ways, assuming the compatibility condition.
+  remark₁ : ρΠ S T T-refl p A ＝ 𝑖𝑑 (S (Π A))
+  remark₁ = refl
 
-\begin{code}
+  remark₂ : compatibility-data-Π
+          ＝ ((p : Ω 𝓤) (A : p holds → 𝓤 ̇ ) → has-section (𝑖𝑑 (S (Π A))))
+  remark₂ = refl
 
- module _ (ϕ : aflabby (𝓤 ̇ ) 𝓤) where
-
-  aflabbiness-of-type-of-structured-types : compatibility-data S ϕ
-                                          → aflabby (Σ S) 𝓤
-  aflabbiness-of-type-of-structured-types = Σ-is-aflabby S ϕ
-
-
-  ainjectivity-of-type-of-structures : compatibility-data S ϕ
-                                     → ainjective-type (Σ S) 𝓤 𝓤
-  ainjectivity-of-type-of-structures = aflabby-types-are-ainjective (Σ S)
-                                       ∘ aflabbiness-of-type-of-structured-types
-
-\end{code}
-
-We apply the latter for the examples below.
+which don't hold in general.
 
 Example. The type of pointed types is algebraically injective. We use
 the Π-flabbiness of the universe.
@@ -259,7 +371,7 @@ Pointed : 𝓤 ̇ → 𝓤 ̇
 Pointed X = X
 
 Pointed-Π-data : compatibility-data (Pointed {𝓤}) universes-are-aflabby-Π
-Pointed-Π-data {𝓤} = Π-lemma Pointed T T-refl c
+Pointed-Π-data {𝓤} = Π-construction Pointed T T-refl c
  where
   S : 𝓤 ̇ → 𝓤 ̇
   S X = X
@@ -271,14 +383,21 @@ Pointed-Π-data {𝓤} = Π-lemma Pointed T T-refl c
   T-refl x = refl
 
   remark₁ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ ) → ρΠ S T T-refl p A ＝ 𝑖𝑑 (S (Π A))
-  remark₁ p A = refl
+  remark₁ p A = refl -- (*)
 
   remark₂ : compatibility-data-Π S T T-refl
           ＝ ((p : Ω 𝓤) (A : p holds → 𝓤 ̇ ) → has-section (𝑖𝑑 (S (Π A))))
-  remark₂ = refl
+  remark₂ = refl -- (*)
 
   c : compatibility-data-Π S T T-refl
   c p A = equivs-have-sections id (id-is-equiv (Π A))
+
+\end{code}
+
+(*) The above proofs "refl" in the remarks, and hence in c, don't work
+    with the alternative Π-construction.
+
+\begin{code}
 
 ainjectivity-of-type-of-pointed-types : ainjective-type (Pointed-type 𝓤) 𝓤 𝓤
 ainjectivity-of-type-of-pointed-types {𝓤} =
@@ -305,7 +424,7 @@ guess what T should be.
                             (∞-Magma-structure {𝓤})
                             universes-are-aflabby-Π
 ∞-Magma-structure-Π-data {𝓤} =
- Π-lemma S T T-refl ρΠ-has-section
+ Π-construction S T T-refl ρΠ-has-section
  where
   S = ∞-Magma-structure
 
