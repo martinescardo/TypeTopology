@@ -184,7 +184,7 @@ be easier to produce compatibility-data-Π than to produce
 \end{code}
 
 We could have proved Π-lemma as follows, but then it wouldn't "compute
-enough" for the purposes of e.g. Monoid-Π-data.
+enough" for the purposes of e.g. Monoid-Π-data, giving longer proofs.
 
 \begin{code}
 
@@ -195,8 +195,8 @@ enough" for the purposes of e.g. Monoid-Π-data.
     I : ρΠ p A ＝ ρ S universes-are-aflabby-Π p A
     I = dfunext fe' (λ s →
         dfunext fe' (λ h →
-          ap (λ - → - (prop-indexed-product h fe' (holds-is-prop p)) s)
-             (dfunext fe' (λ 𝕗 → dfunext fe' (T-is-treq 𝕗)))))
+         ap (λ - → - (prop-indexed-product h fe' (holds-is-prop p)) s)
+            (dfunext fe' (λ 𝕗 → dfunext fe' (T-is-treq 𝕗)))))
 
     II : has-section (ρΠ p A)
     II = t p A
