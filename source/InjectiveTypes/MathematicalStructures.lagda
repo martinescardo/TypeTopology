@@ -50,9 +50,8 @@ open import UF.SubtypeClassifier
 
 \end{code}
 
-It is convenient to work with the notion the following definition of
-flabbiness of a universe, which uses equivalence of types rather than
-equality.
+It is convenient to work with the following definition of flabbiness
+of a universe, which uses equivalence of types rather than equality.
 
 \begin{code}
 
