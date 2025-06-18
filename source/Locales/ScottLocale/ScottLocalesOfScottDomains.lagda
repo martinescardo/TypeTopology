@@ -670,7 +670,7 @@ This forms a directed basis.
     𝒹↑ (is , 𝕚) (js , 𝕛)= ∣ ((is ++ js) , ♣) , 𝜸-lemma₁ is js , 𝜸-lemma₂ is js ∣
      where
       ♣ : (b : B) → member b (is ++ js) → 𝔘 (β b) holds
-      ♣ b q = cases (𝕚 b) (𝕛 b) (++-membership₁ b is js q)
+      ♣ b q = cases (𝕚 b) (𝕛 b) (split-++-membership b is js q)
 
     𝒹 : is-directed (𝒪 Σ[𝓓]) ⁅ 𝜸 d ∣ d ε (D , δ) ⁆ holds
     𝒹 = ∣ [] , (λ _ ()) ∣ , 𝒹↑

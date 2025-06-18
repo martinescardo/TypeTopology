@@ -435,12 +435,13 @@ left-concatenation-preserves-membership x xs (y ∷ ys) p = †
   † : member x (y ∷ (ys ++ xs))
   † = in-tail (left-concatenation-preserves-membership x xs ys p)
 
-++-membership₁ : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
-               → member x (xs ++ ys)
-               → member x xs + member x ys
-++-membership₁ x []       zs p           = inr p
-++-membership₁ x (x ∷ ys) zs in-head     = inl in-head
-++-membership₁ x (y ∷ ys) zs (in-tail p) = cases † ‡ (++-membership₁ x ys zs p)
+split-++-membership : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
+                    → member x (xs ++ ys)
+                    → member x xs + member x ys
+split-++-membership x []       zs p           = inr p
+split-++-membership x (x ∷ ys) zs in-head     = inl in-head
+split-++-membership x (y ∷ ys) zs (in-tail p) =
+ cases † ‡ (split-++-membership x ys zs p)
  where
   † : member x ys → member x (y ∷ ys) + member x zs
   † p = inl (in-tail p)
@@ -558,7 +559,7 @@ member-of-concat← : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
 member-of-concat← {𝓤} {X} x (ys ∷ yss) m = II I
  where
   I : member x ys + member x (concat yss)
-  I = ++-membership₁ x ys (concat yss) m
+  I = split-++-membership x ys (concat yss) m
 
   II : type-of I → Σ ys' ꞉ List X , member ys' (ys ∷ yss) × member x ys'
   II (inl l) = ys , in-head , l

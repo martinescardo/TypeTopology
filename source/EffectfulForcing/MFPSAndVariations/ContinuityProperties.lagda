@@ -140,7 +140,7 @@ homomorphism from semigroup `(List ℕ, _++_)` into semigroup `(𝓤₀, _×_)`.
                → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
                → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
 ＝⟪⟫-++-lemma₂ α₁ α₂ ms ns (p , q) i r =
- cases (p i) (q i) (++-membership₁ i ms ns r)
+ cases (p i) (q i) (split-++-membership i ms ns r)
 
 ＝⟪⟫-respects-list-concatenation : {X : 𝓤₀ ̇ } (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
                                  → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
