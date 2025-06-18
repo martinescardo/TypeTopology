@@ -201,11 +201,30 @@ member'-map f x' (x ∷ xs) (inr m) = inr (member'-map f x' xs m)
 listed : 𝓤 ̇ → 𝓤 ̇
 listed X = Σ xs ꞉ List X , ((x : X) → member x xs)
 
+the-list : {X : 𝓤 ̇ } → listed X → List X
+the-list (xs , m) = xs
+
+member-of-the-list : {X : 𝓤 ̇ } (X-is-listed : listed X)
+                   → (x : X) → member x (the-list X-is-listed)
+member-of-the-list (xs , m) = m
+
+𝟙-is-listed : listed (𝟙 {𝓤})
+𝟙-is-listed = (⋆ ∷ []) , (λ x → in-head)
+
 listed⁺ : 𝓤 ̇ → 𝓤 ̇
 listed⁺ X = X × listed X
 
+distinguished-element : {X : 𝓤 ̇ } → listed⁺ X → X
+distinguished-element (x , X-listed) = x
+
+listed⁺-types-are-listed : {X : 𝓤 ̇ } → listed⁺ X → listed X
+listed⁺-types-are-listed (x , X-is-listed) = X-is-listed
+
+𝟙-is-listed⁺ : listed⁺ (𝟙 {𝓤})
+𝟙-is-listed⁺ = ⋆ , 𝟙-is-listed
+
 type-from-list : {X : 𝓤 ̇ } → List X → 𝓤 ̇
-type-from-list {X = X} xs = Σ x ꞉ X , member x xs
+type-from-list {𝓤} {X} xs = Σ x ꞉ X , member x xs
 
 type-from-list-is-listed : {X : 𝓤 ̇ } (xs : List X)
                          → listed (type-from-list xs)

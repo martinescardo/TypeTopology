@@ -15,14 +15,14 @@ open import UF.DiscreteAndSeparated
 
 \end{code}
 
-We work with a pointed discrete type R of outcomes.
+We work with a type of outcomes R with decidable equality (called
+discreteness).
 
 \begin{code}
 
 module Games.OptimalPlays
         (fe : Fun-Ext)
         (R  : Type)
-        (r₀ : R)
         (R-is-discrete : is-discrete R)
        where
 
@@ -62,7 +62,6 @@ is-optimal-play Xt@{X ∷ Xf} ϕt@(ϕ :: ϕf) q (x :: xs) =
  × is-optimal-play {Xf x} (ϕf x) (subpred q x) xs
 
 \end{code}
-
 
 We now proceed to compute the non-empty list of all optimal plays of a
 game, under suitable assumptions on the game.
@@ -117,27 +116,26 @@ characterized as follows.
 
 We now construct a JT-selection function ε⁺ from an ordinary
 J-selection function ε that attains a quantifier ϕ, for any listed
-type X.
+type X with at least one element.
+
+Recall that we say that a type is listed⁺ if it has a distinguished
+element and a list of all its elements (which will automatically
+include the distinguished element).
 
 \begin{code}
 
 module _ (X : Type)
-         (X-is-listed@(xs , μ) : listed X)
+         (X-is-listed⁺@(x₀ , xs , μ) : listed⁺ X)
          (ϕ : (X → R) → R)
          (ε : (X → R) → X)
          (ε-attains-ϕ : ε attains ϕ)
       where
 
- private
-  x₀ : X
-  x₀ = ε (λ _ → r₀)
-
- X-is-listed⁺ : listed⁺ X
- X-is-listed⁺ = x₀ , X-is-listed
-
 \end{code}
 
 The above is the only use of the distinguished point r₀ of R.
+
+Alternatively, we could have assumed listed⁺ X,
 
 \begin{code}
 
@@ -180,7 +178,7 @@ quantifiers.
       (ϕt : 𝓚 Xt)
       (εt : 𝓙 Xt)
     → εt Attains ϕt
-    → structure listed Xt
+    → structure listed⁺ Xt
     → 𝓙𝓣 Xt
 εt⁺ [] ϕt εt at lt = ⟨⟩
 εt⁺ (X ∷ Xf) (ϕ :: ϕf) (ε :: εf) (a :: af) (l :: lf) =
@@ -238,7 +236,7 @@ JT-in-terms-of-K : (Xt : 𝑻)
                    (q : Path Xt → R)
                    (εt : 𝓙 Xt)
                    (at : εt Attains ϕt)
-                   (lt : structure listed Xt)
+                   (lt : structure listed⁺ Xt)
                  → α-extᵀ q (path-sequence 𝕁𝕋 (εt⁺ Xt ϕt εt at lt) q)
                  ＝ path-sequence (𝕂 R) ϕt q
 JT-in-terms-of-K [] ϕt q εt at lt = refl
@@ -291,7 +289,7 @@ theorem→ : (Xt : 𝑻)
            (q : Path Xt → R)
            (εt : 𝓙 Xt)
            (at : εt Attains ϕt)
-           (lt : structure listed Xt)
+           (lt : structure listed⁺ Xt)
            (xs : Path Xt)
          → member xs (ι (path-sequence 𝕁𝕋 (εt⁺ Xt ϕt εt at lt) q))
          → is-optimal-play ϕt q xs
@@ -361,7 +359,7 @@ theorem← : (Xt : 𝑻)
            (q : Path Xt → R)
            (εt : 𝓙 Xt)
            (at : εt Attains ϕt)
-           (lt : structure listed Xt)
+           (lt : structure listed⁺ Xt)
            (xs : Path Xt)
          → is-optimal-play ϕt q xs
          → member xs (ι (path-sequence 𝕁𝕋 (εt⁺ Xt ϕt εt at lt) q))
@@ -418,18 +416,34 @@ selection functions for the quantifiers.
 \begin{code}
 
 module _ (G@(game Xt q ϕt) : Game)
-         (Xt-is-listed : structure listed Xt)
+         (Xt-is-listed⁺ : structure listed⁺ Xt)
          (εt : 𝓙 Xt)
          (εt-Attains-ϕt : εt Attains ϕt)
        where
 
  optimal-plays : List⁺ (Path Xt)
- optimal-plays = path-sequence 𝕁𝕋 (εt⁺ Xt ϕt εt εt-Attains-ϕt Xt-is-listed) q
+ optimal-plays = path-sequence 𝕁𝕋 (εt⁺ Xt ϕt εt εt-Attains-ϕt Xt-is-listed⁺) q
 
  Theorem→ : (xs : Path Xt) → member xs (ι optimal-plays) → is-optimal-play ϕt q xs
- Theorem→ = theorem→ Xt ϕt q εt εt-Attains-ϕt Xt-is-listed
+ Theorem→ = theorem→ Xt ϕt q εt εt-Attains-ϕt Xt-is-listed⁺
 
  Theorem← : (xs : Path Xt) → is-optimal-play ϕt q xs → member xs (ι optimal-plays)
- Theorem← = theorem← Xt ϕt q εt εt-Attains-ϕt Xt-is-listed
+ Theorem← = theorem← Xt ϕt q εt εt-Attains-ϕt Xt-is-listed⁺
 
 \end{code}
+
+This concludes what we wished to construct and prove.
+
+Remark. The assumption Xt-is-listed⁺ implies that the type R of
+outcomes has at least one element.
+
+\begin{code}
+
+ r₀ : R
+ r₀ = q (head⁺ optimal-plays)
+
+\end{code}
+
+In a previous version of this file, we instead assumed r₀ : R, and we
+worked with "listed" instead of "listed⁺", but the listings were
+automatically non-empty.

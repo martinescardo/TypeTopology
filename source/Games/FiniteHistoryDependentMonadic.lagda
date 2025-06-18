@@ -65,7 +65,11 @@ fext = dfunext fe
 open K-definitions R
 open T-definitions 𝕋
 open α-definitions 𝕋 R 𝓐
-open JT-definitions 𝕋 R 𝓐 fe
+open JT-definitions 𝕋 R fe
+open JT-algebra-definitions 𝕋 R 𝓐 fe
+
+JT-remark : JT ＝ λ X → (X → T R) → T X
+JT-remark = by-definition
 
 \end{code}
 
@@ -358,9 +362,11 @@ Is α-Overlineᵀ useful?
 
 \begin{code}
 
+{-
 α-Overlineᵀ : {Xt : 𝑻} → 𝓙𝓣 Xt → 𝓚𝓣 Xt
 α-Overlineᵀ {[]}     ⟨⟩        = ⟨⟩
 α-Overlineᵀ {X ∷ Xf} (ε :: εf) = α-overlineᵀ ε :: λ x → α-Overlineᵀ {Xf x} (εf x)
+-}
 
 _Attainsᵀ_ : {Xt : 𝑻} → 𝓙𝓣 Xt → 𝓚 Xt → Type
 _Attainsᵀ_ {[]}     ⟨⟩        ⟨⟩        = 𝟙

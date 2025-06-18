@@ -61,14 +61,12 @@ open import MonadOnTypes.Monad
 module JT-definitions
         (𝓣 : Monad)
         (R : Type)
-        (𝓐 : Algebra 𝓣 R)
         (fe : Fun-Ext)
        where
 
  open import MonadOnTypes.K
 
  open T-definitions 𝓣
- open α-definitions 𝓣 R 𝓐
  open K-definitions R
 
  𝕁𝕋 : Monad
@@ -95,19 +93,33 @@ module JT-definitions
        → JT (Σ x ꞉ X , Y x)
  _⊗ᴶᵀ_ = _⊗_ 𝕁𝕋
 
-\end{code}
+module JT-algebra-definitions
+        (𝓣 : Monad)
+        (R : Type)
+        (𝓐 : Algebra 𝓣 R)
+        (fe : Fun-Ext)
+       where
 
-Is -α-overlineᵀ useful?
+ open import MonadOnTypes.K
 
-\begin{code}
+ open T-definitions 𝓣
+ open K-definitions R
+ open JT-definitions 𝓣 R fe
+ open α-definitions 𝓣 R 𝓐
 
  α-overlineᵀ : {X : Type} → JT X → KT X
  α-overlineᵀ ε = λ p → α (extᵀ p (ε p))
 
- -α-overlineᵀ : {X : Type} → JT X → K X
- -α-overlineᵀ ε = λ p → α (extᵀ (ηᵀ ∘ p) (ε (ηᵀ ∘ p)))
-
  _α-attainsᵀ_ : {X : Type} → JT X → K X → Type
  _α-attainsᵀ_ {X} ε ϕ = (p : X → T R) → α-overlineᵀ ε p ＝ ϕ (α ∘ p)
+
+\end{code}
+
+Is the following variation of α-overlineᵀ useful?
+
+\begin{code}
+
+ -α-overlineᵀ : {X : Type} → JT X → K X
+ -α-overlineᵀ ε = λ p → α (extᵀ (ηᵀ ∘ p) (ε (ηᵀ ∘ p)))
 
 \end{code}
