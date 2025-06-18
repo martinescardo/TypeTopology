@@ -3,20 +3,16 @@ Martin Escardo, 16th August 2023, with more improvements 18th June 2025.
 Injectivity of types of mathematical structures, such as pointed
 types, ∞-magmas, magmas, monoids, groups etc.
 
+We give a sufficient condition for types of mathematical structures to
+be injective, and we apply it to examples such as the type of pointed
+types, ∞-magmas, monoids, groups, etc. to be algebraically
+injective.
+
 This file improves InjectiveTypes.MathematicalStructuresOriginal at
 the cost of perhaps being harder to understand, but with the benefit
 of at the same time being more general and allowing shorter proofs in
 applications. It relies on the file InjectiveTypes.Sigma, which also
 arises as a generalization of the above original file.
-
-We give a sufficient condition for types of mathematical structures,
-such as pointed types, ∞-magmas, monoids, groups, etc. to be
-algebraically injective. We use algebraic flabbiness as our main tool.
-
-There is already enough discussion in the files
-InjectiveTypes.MathematicalStructuresOriginal and
-InjectiveTypes.Sigma, which we will not repeat here. But we include
-some further remarks.
 
 \begin{code}
 
@@ -87,8 +83,7 @@ from-afabbly {𝓤} aflab =
 We already know that universes are flabby in two ways, using ⨆ := Π
 and ⨆ := Σ, but we give constructions that they are Flabby without
 univalence, and hence have better computational behaviour, which will
-simplify many proofs and constructions, and, more importanly, the
-applications we have in mind.
+simplify the applications we have in mind.
 
 If the index type is a proposition, then the projection out of a
 Π-type is an equivalence.
@@ -119,7 +114,7 @@ In this file we apply the above constructions only for the case of Π,
 but we include those for Σ for the sake illustration (and perhaps for
 future use).
 
-We now work with an arbitrary notion of structure on 𝓤. E.g. for
+We now work with an arbitrary notion S of structure on 𝓤. E.g. for
 monoids we will take S X := X → X → X, the type of the multiplication
 operation.
 
@@ -155,7 +150,7 @@ Next we want to simplify working with compatibility data (as defined
 in the module InjectiveTypes.Sigma), where we avoid transports by
 working with the following function treq and suitable choices of T and
 T-refl in the examples below. Notice that the definition of treq uses
-univalence. The point of T and T-refl is that they won't use
+univalence. The point of T and T-refl below is that they won't use
 univalence in our examples of interest, so that they will have a
 better computational behaviour than treq.
 
@@ -163,16 +158,6 @@ better computational behaviour than treq.
 
  treq : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y
  treq {X} {Y} 𝕗 = transport S (eqtoid (ua 𝓤) X Y 𝕗)
-
-\end{code}
-
-We don't need the following fact explicitly, but it is worth keeping
-it in mind:
-
-\begin{code}
-
- _ : {X Y : 𝓤 ̇ } (𝕗 : X ≃ Y) → is-equiv (treq 𝕗)
- _ = λ 𝕗 → transports-are-equivs (eqtoid (ua 𝓤) _ _ 𝕗)
 
 \end{code}
 
@@ -218,7 +203,8 @@ condition using T rather than transport (see examples below).
 In order to be able to apply the results of InjectiveTypes.Sigma, we
 perform the following construction. That file requires compatibility
 data of a certain kind, which we reduce to compatibility of another
-kind, which will be easier to produce in our sample applications.
+kind, which in turn will be easier to produce in our sample
+applications.
 
 \begin{code}
 
@@ -270,7 +256,7 @@ section. In fact, it is different in the strong sense that the
 comparison for equality doesn't even make sense - it wouldn't even
 typecheck.
 
-A way to verify this in Agda is to try to supply the following
+A way to verify this in Agda is to try to supply the following naive
 definition.
 
    construction' : compatibility-data-for-derived-ρ
@@ -279,8 +265,8 @@ definition.
 
 We can sensibly have only that the *section map* of the construction
 agrees with the given section map, which is what we have already
-observed, but record again with full type information, outside the
-above "where" clause.
+observed in the above proof, but record again with full type
+information, outside the above proof.
 
 \begin{code}
 
@@ -333,7 +319,8 @@ try to record this explicitly when we do so).
 
 For our examples below, we only need the above functions ρΠ,
 compatibility-data-Π and Π-construction, but we take the opportunity
-to remark that we also have the following, with Π replaced by Σ.
+to remark that we also have the following, with Π replaced by Σ (for
+which we don't have any application so far).
 
 \begin{code}
 
@@ -385,8 +372,9 @@ Pointed-Π-data {𝓤} = Π-construction Pointed T T-refl c
 
 \end{code}
 
-This completes the construction, but we remark that the definition of
-c works because we have the following definitional equality.
+This completes the construction, but we remark that the above
+definition of `c` works because we have the following definitional
+equality.
 
 \begin{code}
 
@@ -445,7 +433,7 @@ guess what T should be.
    r _·_ h a b = ⌜ π h ⌝ (⌜ π h ⌝⁻¹ a · ⌜ π h ⌝⁻¹ b)
 
    _ : r ＝ ρΠ S T T-refl p A
-   _ = refl
+   _ = refl -- Which is crucial for the proof below to work.
 
    σ : ((h : p holds) → S (A h)) → S (Π A)
    σ g α β h = g h (⌜ π h ⌝ α) (⌜ π h ⌝ β)
@@ -562,7 +550,7 @@ Monoid-Π-data {𝓤} =
     e h = pr₂ (α h)
 
     _ : σ p A α ＝ (_·_ , e)
-    _ = refl
+    _ = refl -- Which is crucial for the proof below to work.
 
     I : is-set (Π A)
     I = Π-is-set fe' (λ h →
