@@ -174,7 +174,7 @@ ainjective.
      g = pr₂ ∘ f'
 
      σ : ((h : p holds) → A (f h)) → A (extension ϕ p f)
-     σ = section-of (ρ p f) (ρ-has-section p f)
+     σ = section-map (ρ p f) (ρ-has-section p f)
 
      η : ρ p f ∘ σ ∼ id
      η = section-equation (ρ p f) (ρ-has-section p f)
@@ -214,7 +214,7 @@ section following automatically.
   : compatibility-data
   → simplified-compatibility-data
  compatibility-data-gives-simplified-compatibility-data c p f
-  = section-of (ρ p f) (c p f)
+  = section-map (ρ p f) (c p f)
 
  simplified-compatibility-data-gives-compatibility-data
   : ((x : X) → is-prop (A x))
@@ -267,10 +267,10 @@ compatibility-data-× {𝓤} {𝓥₁} {𝓥₂} {𝓦} {X} ϕ {A₁} {A₂}
          where
 
    σ₁ : ((h : p holds) → A₁ (f h)) → A₁ (extension ϕ p f)
-   σ₁ = section-of (ρ A₁ ϕ p f) (ρ₁-has-section p f)
+   σ₁ = section-map (ρ A₁ ϕ p f) (ρ₁-has-section p f)
 
    σ₂ : ((h : p holds) → A₂ (f h)) → A₂ (extension ϕ p f)
-   σ₂ = section-of (ρ A₂ ϕ p f) (ρ₂-has-section p f)
+   σ₂ = section-map (ρ A₂ ϕ p f) (ρ₂-has-section p f)
 
    σ : ((h : p holds) → A (f h)) → A (extension ϕ p f)
    σ α = σ₁ (λ h → pr₁ (α h)) , σ₂ (λ h → pr₂ (α h))
@@ -334,10 +334,10 @@ compatibility-condition-× {𝓤} {𝓥₁} {𝓥₂} {𝓦} {X} ϕ {A₁} {A₂
          where
 
    σ₁ : ((h : p holds) → A₁ (f h)) → A₁ (extension ϕ p f)
-   σ₁ = section-of (ρ A₁ ϕ p f) (equivs-have-sections (ρ A₁ ϕ p f) (c₁ p f))
+   σ₁ = section-map (ρ A₁ ϕ p f) (equivs-have-sections (ρ A₁ ϕ p f) (c₁ p f))
 
    σ₂ : ((h : p holds) → A₂ (f h)) → A₂ (extension ϕ p f)
-   σ₂ = section-of (ρ A₂ ϕ p f) (equivs-have-sections (ρ A₂ ϕ p f) (c₂ p f))
+   σ₂ = section-map (ρ A₂ ϕ p f) (equivs-have-sections (ρ A₂ ϕ p f) (c₂ p f))
 
    σ : ((h : p holds) → A (f h)) → A (extension ϕ p f)
    σ α = σ₁ (λ h → pr₁ (α h)) , σ₂ (λ h → pr₂ (α h))
@@ -423,7 +423,7 @@ compatibility-data-with-axioms
        (f : p holds → X)
      → (α : (h : p holds) → A (f h))
      → ((h : p holds) → B (f h) (α h))
-     → B (extension ϕ p f) (section-of (ρ A ϕ p f) (ρ-has-section p f) α))
+     → B (extension ϕ p f) (section-map (ρ A ϕ p f) (ρ-has-section p f) α))
  → compatibility-data (λ x → Σ a ꞉ A x , B x a) ϕ
 compatibility-data-with-axioms
  {𝓤} {𝓥} {𝓦} {X}
@@ -442,7 +442,7 @@ compatibility-data-with-axioms
           where
 
     σ : ((h : p holds) → A (f h)) → A (extension ϕ p f)
-    σ = section-of (ρ A ϕ p f) (ρ-has-section p f)
+    σ = section-map (ρ A ϕ p f) (ρ-has-section p f)
 
     ρ' : A' (extension ϕ p f) → ((h : p holds) → A' (f h))
     ρ' = ρ A' ϕ p f
@@ -531,7 +531,7 @@ compatibility-condition-with-axioms
           where
 
     σ : ((h : p holds) → A (f h)) → A (extension ϕ p f)
-    σ = section-of (ρ A ϕ p f) (equivs-have-sections _ (ρ-is-equiv p f))
+    σ = section-map (ρ A ϕ p f) (equivs-have-sections _ (ρ-is-equiv p f))
 
     ρ' : A' (extension ϕ p f) → ((h : p holds) → A' (f h))
     ρ' = ρ A' ϕ p f

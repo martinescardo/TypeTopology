@@ -1,10 +1,13 @@
 Martin Escardo, 16th August 2023, with more improvements 18th June 2025.
 
+Injectivity of types of mathematical structures, such as pointed
+types, ∞-magmas, magmas, monoids, groups etc.
+
 This file improves InjectiveTypes.MathematicalStructuresOriginal at
-the cost of being harder to understand, with the benefit of at the
-same time being more general and allowing shorter proofs. It relies on
-the file InjectiveTypes.Sigma, which also arises as a generalization
-of the original file InjectiveTypes.MathematicalStructuresOriginal.
+the cost of perhaps being harder to understand, but with the benefit
+of at the same time being more general and allowing shorter proofs in
+applications. It relies on the file InjectiveTypes.Sigma, which also
+arises as a generalization of the above original file.
 
 We give a sufficient condition for types of mathematical structures,
 such as pointed types, ∞-magmas, monoids, groups, etc. to be
@@ -18,6 +21,8 @@ some further remarks.
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
+
+import InjectiveTypes.MathematicalStructuresOriginal -- For comparison only.
 
 open import UF.Univalence
 
@@ -50,8 +55,9 @@ open import UF.SubtypeClassifier
 
 \end{code}
 
-It is convenient to work with the following definition of flabbiness
-of a universe, which uses equivalence of types rather than equality.
+It is convenient to work with the following definition of (algebraic)
+flabbiness of a universe, which uses equivalence of types rather than
+equality.
 
 \begin{code}
 
@@ -61,17 +67,18 @@ Flabby 𝓤 = Σ ⨆ ꞉ ((p : Ω 𝓤) → (p holds → 𝓤 ̇ ) → 𝓤 ̇ )
 
 \end{code}
 
-Using univalence we can convert back and forth the usual definition,
-but in this file we need the first one only.
+In the presence of univalence we can convert to the usual definition,
+and we can always convert in the other direction, but in this file we
+need the first one only.
 
 \begin{code}
 
-from-Flabby : Flabby 𝓤 → aflabby (𝓤 ̇ ) 𝓤
-from-Flabby {𝓤} (⨆ , e) P i A =
+to-aflabby : Flabby 𝓤 → aflabby (𝓤 ̇ ) 𝓤
+to-aflabby {𝓤} (⨆ , e) P i A =
  ⨆ (P , i) A , (λ h → eqtoid (ua 𝓤) _ _ (e (P , i) A h))
 
-to-Flabby : aflabby (𝓤 ̇ ) 𝓤 → Flabby 𝓤
-to-Flabby {𝓤} aflab =
+from-afabbly : aflabby (𝓤 ̇ ) 𝓤 → Flabby 𝓤
+from-afabbly {𝓤} aflab =
  (λ p A → pr₁ (aflab (p holds) (holds-is-prop p) A)) ,
  (λ p A h → idtoeq _ _ (pr₂ (aflab (p holds) (holds-is-prop p) A) h))
 
@@ -80,7 +87,11 @@ to-Flabby {𝓤} aflab =
 We already know that universes are flabby in two ways, using ⨆ := Π
 and ⨆ := Σ, but we give constructions that they are Flabby without
 univalence, and hence have better computational behaviour, which will
-simplify many proofs and constructions.
+simplify many proofs and constructions, and, more importanly, the
+applications we have in mind.
+
+If the index type is a proposition, then the projection out of a
+Π-type is an equivalence.
 
 \begin{code}
 
@@ -89,25 +100,28 @@ simplify many proofs and constructions.
 Π-𝕡𝕣𝕠𝕛 p h = prop-indexed-product h fe' (holds-is-prop p)
 
 universes-are-Flabby-Π : Flabby 𝓤
-universes-are-Flabby-Π {𝓤} = (λ p A → Π A) ,
-                             (λ p A → Π-𝕡𝕣𝕠𝕛 p)
+universes-are-Flabby-Π = (λ p A → Π A) ,
+                         (λ p A → Π-𝕡𝕣𝕠𝕛 p)
 
 universes-are-flabby-Π : aflabby (𝓤  ̇) 𝓤
-universes-are-flabby-Π {𝓤} = from-Flabby universes-are-Flabby-Π
+universes-are-flabby-Π = to-aflabby universes-are-Flabby-Π
 
 universes-are-Flabby-Σ : Flabby 𝓤
-universes-are-Flabby-Σ {𝓤} = (λ p A → Σ A) ,
-                             (λ p A h → prop-indexed-sum h (holds-is-prop p))
+universes-are-Flabby-Σ = (λ p A → Σ A) ,
+                         (λ p A h → prop-indexed-sum h (holds-is-prop p))
 
 universes-are-flabby-Σ : aflabby (𝓤  ̇) 𝓤
-universes-are-flabby-Σ {𝓤} = from-Flabby universes-are-Flabby-Σ
+universes-are-flabby-Σ = to-aflabby universes-are-Flabby-Σ
 
 \end{code}
 
-In this file we apply only the the above constructions for Π, but we
-include those for Σ for illustration (and perhaps for future use).
+In this file we apply the above constructions only for the case of Π,
+but we include those for Σ for the sake illustration (and perhaps for
+future use).
 
-We now work with an arbitrary notion of structure on 𝓤.
+We now work with an arbitrary notion of structure on 𝓤. E.g. for
+monoids we will take S X := X → X → X, the type of the multiplication
+operation.
 
 \begin{code}
 
@@ -134,12 +148,16 @@ data.
 
 \end{code}
 
-We apply this with ϕ taken to be the above canonical Π-flabby
-structure on the universe.
+We will apply this to get our desired examples with ϕ taken to be the
+above canonical Π-flabby structure on the universe.
 
-Next we want to simplify working with compatibility data, where we
-avoid transports by working with the following function treq and
-suitable choices of T and T-refl in the examples below.
+Next we want to simplify working with compatibility data (as defined
+in the module InjectiveTypes.Sigma), where we avoid transports by
+working with the following function treq and suitable choices of T and
+T-refl in the examples below. Notice that the definition of treq uses
+univalence. The point of T and T-refl is that they won't use
+univalence in our examples of interest, so that they will have a
+better computational behaviour than treq.
 
 \begin{code}
 
@@ -197,7 +215,10 @@ condition using T rather than transport (see examples below).
 
 \end{code}
 
-
+In order to be able to apply the results of InjectiveTypes.Sigma, we
+perform the following construction. That file requires compatibility
+data of a certain kind, which we reduce to compatibility of another
+kind, which will be easier to produce in our sample applications.
 
 \begin{code}
 
@@ -213,41 +234,70 @@ condition using T rather than transport (see examples below).
                                       (A : p holds → 𝓤 ̇ )
                                     → has-section (derived-ρ p A)
 
-   κ : compatibility-data-for-derived-ρ → compatibility-data S (from-Flabby ϕ)
-   κ t p A = III
+   construction : compatibility-data-for-derived-ρ
+                → compatibility-data S (to-aflabby ϕ)
+   construction t p A = III
     where
 
-     II : derived-ρ p A ∼ ρ S (from-Flabby ϕ) p A
+     II : derived-ρ p A ∼ ρ S (to-aflabby ϕ) p A
      II s =
       derived-ρ p A s                                     ＝⟨ refl ⟩
       (λ h → T (ε p A h) s)                               ＝⟨ I₀ ⟩
       (λ h → treq (ε p A h) s)                            ＝⟨ refl ⟩
       (λ h → transport S (eqtoid (ua 𝓤) _ _ (ε p A h)) s) ＝⟨ refl ⟩
-      ρ S (from-Flabby ϕ) p A s                           ∎
+      ρ S (to-aflabby ϕ) p A s                           ∎
       where
        I₀ = dfunext fe' (λ h → T-is-treq (ε p A h) s)
 
-     III : has-section (ρ S (from-Flabby ϕ) p A)
+     III : has-section (ρ S (to-aflabby ϕ) p A)
      III = has-section-closed-under-∼ (derived-ρ p A) _ (t p A) (∼-sym II)
 
 \end{code}
 
-This completes the construction, but we record that the section map
-of the conclusion is literally the same as that of the hypothesis.
+This completes the construction, but we record that the section map of
+the above construction is literally the same as that of the
+hypothesis t.
 
 \begin{code}
 
-     _ = section-of (ρ S (from-Flabby ϕ) p A) III  ＝⟨ refl ⟩
-         section-of (derived-ρ p A) (t p A)        ∎
+     _ = section-map (ρ S (to-aflabby ϕ) p A) III  ＝⟨ refl ⟩
+         section-map (derived-ρ p A) (t p A)        ∎
 
 \end{code}
 
-But notice that the above remark is only saying that the section map
-is literally the same. It is definitely not saying that the proof that
-it is a section is also the same (literally or otherwise).
+What is necessarily different is the proof that this map is a
+section. In fact, it is different in the strong sense that the
+comparison for equality doesn't even make sense - it wouldn't even
+typecheck.
+
+A way to verify this in Agda is to try to supply the following
+definition.
+
+   construction' : compatibility-data-for-derived-ρ
+                 → compatibility-data S (to-aflabby ϕ)
+   construction' t = t -- Doesn't type check (of course).
+
+We can sensibly have only that the *section map* of the construction
+agrees with the given section map, which is what we have already
+observed, but record again with full type information, outside the
+above "where" clause.
+
+\begin{code}
+
+   construction-fact : (p : Ω 𝓤)
+                       (A : p holds → 𝓤 ̇)
+                       (t : compatibility-data-for-derived-ρ)
+                     → section-map (ρ S (to-aflabby ϕ) p A) (construction t p A)
+                     ＝ section-map (derived-ρ p A)         (t p A)
+   construction-fact p A t = refl
+
+\end{code}
+
+In any case, this fact about the construction will be rather useful in
+practice, for the applications we have in mind.
 
 We can specialize this to the Π and Σ flabbiness structures discussed
-above, to get
+above, to get the following.
 
 \begin{code}
 
@@ -267,11 +317,12 @@ above, to get
 
    Π-construction : compatibility-data-Π
                   → compatibility-data S universes-are-flabby-Π
-   Π-construction = κ
+   Π-construction = construction
 
 \end{code}
 
-We use the following definitional equality a number of types.
+We use the following definitional equality a number of types (and we
+try to record this explicitly when we do so).
 
 \begin{code}
 
@@ -282,7 +333,7 @@ We use the following definitional equality a number of types.
 
 For our examples below, we only need the above functions ρΠ,
 compatibility-data-Π and Π-construction, but we take the opportunity
-to remark that we also have the following.
+to remark that we also have the following, with Π replaced by Σ.
 
 \begin{code}
 
@@ -302,7 +353,7 @@ to remark that we also have the following.
 
    Σ-construction : compatibility-data-Σ
                   → compatibility-data S universes-are-flabby-Σ
-   Σ-construction = κ
+   Σ-construction = construction
 
 \end{code}
 
@@ -344,7 +395,7 @@ c works because we have the following definitional equality.
 
 \end{code}
 
-Hence we conclude that the type of pointed types is injective.
+Hence we conclude that the type of pointed types is ainjective.
 
 \begin{code}
 
@@ -456,8 +507,8 @@ open monoid
 ∞-Magma∙-structure = monoid-structure
 
 ∞-Magma∙-structure-Π-data : compatibility-data
-                                  (∞-Magma∙-structure {𝓤})
-                                  universes-are-flabby-Π
+                             (∞-Magma∙-structure {𝓤})
+                             universes-are-flabby-Π
 ∞-Magma∙-structure-Π-data =
  compatibility-data-×
   universes-are-flabby-Π
@@ -492,7 +543,7 @@ Monoid-Π-data {𝓤} =
  where
   σ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ )
     → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
-  σ p A = section-of
+  σ p A = section-map
            (ρ monoid-structure universes-are-flabby-Π p A)
            (∞-Magma∙-structure-Π-data p A)
 
@@ -544,8 +595,7 @@ ainjectivity-of-Monoid {𝓤} =
 
 TODO. It is easy to add further axioms to monoids to get groups, and
 then show that the type of groups is injective using the above
-technique. I expect this to be entirely routine as the example of
-monoids.
+technique. This is just as routine as the example of monoids.
 
 TODO. More techniques are needed to show that the type of 1-categories
 would be injective. This is more interesting.
