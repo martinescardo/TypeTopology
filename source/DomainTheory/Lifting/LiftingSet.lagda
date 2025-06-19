@@ -183,7 +183,7 @@ repackaging. This is a refactoring to consider in the future.
 
 \begin{code}
 
- open import Lifting.UnivalentPrecategory 𝓣 X
+ open import Lifting.UnivalentWildCategory 𝓣 X
  open PosetAxioms
 
  𝓛-DCPO⁻ : DCPO {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⊔ 𝓤}
@@ -209,7 +209,7 @@ repackaging. This is a refactoring to consider in the future.
         , λ j k →
            ∥∥-rec
             ∃-is-prop
-            (λ { (i , p , q) → ∣ i , ⊑-to-⊑' p , ⊑-to-⊑' q ∣ })
+            (λ { (i , p , q) → ∣ i , ⊑-to-⊑' p , ⊑-to-⊑' q ∣})
             (υ j k)
 
      σ₁ : (j : I) → ι j ⊑ lifting-sup ι δ′
@@ -428,7 +428,7 @@ module _
   𝓛P = 𝓛-DCPO (props-are-sets (P-is-prop))
 
  lifting-of-prop-is-sup-complete : is-sup-complete 𝓛P
- lifting-of-prop-is-sup-complete = record { ⋁ = sup ; ⋁-is-sup = lemma }
+ lifting-of-prop-is-sup-complete = record { ⋁ = sup ; ⋁-is-sup = lemma}
   where
    sup-map : {I : 𝓣 ̇ } (α : I → ⟨ 𝓛P ⟩) → (∃ i ꞉ I , is-defined (α i)) → P
    sup-map α = ∥∥-rec P-is-prop (λ (i , q) → value (α i) q)

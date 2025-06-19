@@ -50,7 +50,7 @@ We start with the record-based definition of the notion of frame isomorphism.
 
 \begin{code}
 
- record Isomorphismᵣ : 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇ where
+ record Isomorphismᵣ : 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺ ̇ where
   field
    𝓈 : F ─f→ G
    𝓇 : G ─f→ F
@@ -80,7 +80,7 @@ proposition.
 
 \begin{code}
 
- homomorphic-inverse : (F ─f→ G) → 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+ homomorphic-inverse : (F ─f→ G) → 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
  homomorphic-inverse s =
   Σ r ꞉ (G ─f→ F) , fun F G s ∘ fun G F r ∼ id
                   × fun G F r ∘ fun F G s ∼ id
@@ -125,7 +125,7 @@ We define the type of isomorphisms between frames `F` and `G` accordingly.
 
 \begin{code}
 
- Isomorphism : 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇
+ Isomorphism : 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺ ̇
  Isomorphism = Σ h ꞉ F ─f→ G , is-isomorphism h holds
 
 \end{code}
@@ -141,7 +141,7 @@ It is immediate that `Isomorphism` and `Isomorphismᵣ` are equivalent types.
    ; 𝓇           = 𝓇
    ; 𝓇-cancels-𝓈 = ψ
    ; 𝓈-cancels-𝓇 = φ
-   }
+  }
 
  isomorphismᵣ-to-isomorphism : Isomorphismᵣ → Isomorphism
  isomorphismᵣ-to-isomorphism iso =
@@ -178,7 +178,7 @@ as the type of homomorphic equivalences.
 
 \begin{code}
 
- Isomorphism₀ : 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇
+ Isomorphism₀ : 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺ ̇
  Isomorphism₀ = Σ e ꞉ ⟨ F ⟩ ≃ ⟨ G ⟩ , is-homomorphic e holds
 
 \end{code}
@@ -211,7 +211,7 @@ These two notions of frame isomorphism are equivalent.
    ; 𝓇           = inverse ⌜ e ⌝ (⌜⌝-is-equiv e) , ψ
    ; 𝓇-cancels-𝓈 = inverses-are-retractions ⌜ e ⌝ (⌜⌝-is-equiv e)
    ; 𝓈-cancels-𝓇 = inverses-are-sections ⌜ e ⌝ (⌜⌝-is-equiv e)
-   }
+  }
 
  isomorphism-to-isomorphism₀ : Isomorphism → Isomorphism₀
  isomorphism-to-isomorphism₀ =
@@ -250,7 +250,7 @@ Some nice syntax for frame isomorphisms.
 
 \begin{code}
 
-Isomorphismᵣ-Syntax : Frame 𝓤 𝓥 𝓦 → Frame 𝓤' 𝓥' 𝓦 → 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇
+Isomorphismᵣ-Syntax : Frame 𝓤 𝓥 𝓦 → Frame 𝓤' 𝓥' 𝓦 → 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺ ̇
 Isomorphismᵣ-Syntax = FrameIsomorphisms.Isomorphismᵣ
 
 infix 0 Isomorphismᵣ-Syntax

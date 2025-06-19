@@ -377,7 +377,7 @@ it:
 
   recall-the-notion-of-decidability : {𝓦 : Universe}
                                       {A : 𝓦 ̇ }
-                                      → is-decidable A ＝ (A + ¬ A)
+                                    → is-decidable A ＝ (A + ¬ A)
   recall-the-notion-of-decidability = by-definition
 
   δ : (x : X) → is-decidable (is-g-point x)
@@ -1012,7 +1012,7 @@ blemma : (P : 𝓤 ̇ ) {X : 𝓥 ̇ }
        → Σ A ꞉ (X → 𝓤 ⊔ 𝓥 ̇ ) , ((x : X) → is-decidable (A x))
                               × is-prop (Σ A)
                               × (P ↔ Σ A)
-blemma {𝓤} {𝓥 } P {X} j i (f , (s , η) , (r , ε)) = A , d , l , (φ , γ)
+blemma {𝓤} {𝓥} P {X} j i (f , (s , η) , (r , ε)) = A , d , l , (φ , γ)
  where
   A : X → 𝓤 ⊔ 𝓥 ̇
   A x = Σ p ꞉ P , f x ＝ inl p

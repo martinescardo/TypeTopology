@@ -8,6 +8,8 @@ This file corresponds to the paper
    2024
    https://doi.org/10.48550/arxiv.2407.06956
 
+NB: The names in this file should not be unchanged to ensure they correspond
+correctly to the above paper.
 
 See DomainTheory.index.lagda for an overview of all domain theory in
 TypeTopology.
@@ -58,7 +60,7 @@ open binary-unions-of-subsets pt
 
 \end{code}
 
-Section 2
+Section 2. The way-below relation and compactness
 
 \begin{code}
 
@@ -119,7 +121,7 @@ module _ (𝓥 : Universe) where
  Definition-2-8 : (X : 𝓤 ̇ ) → 𝓟-general {𝓣} X → 𝓤 ⊔ 𝓣 ̇
  Definition-2-8 X = 𝕋
 
- Definition-2-9 : {X : 𝓤 ̇} → 𝓟 X → 𝓤 ̇
+ Definition-2-9 : {X : 𝓤 ̇ } → 𝓟 X → 𝓤 ̇
  Definition-2-9 = is-Kuratowski-finite-subset
 
  module _
@@ -140,7 +142,7 @@ module _ (𝓥 : Universe) where
                ❴❵-is-Kuratowski-finite-subset X-set ,
                ∪-is-Kuratowski-finite-subset {𝓤} {X}
 
-  Lemma-2-11 : {𝓣 : Universe} (Q : 𝓚 X → 𝓣 ̇)
+  Lemma-2-11 : {𝓣 : Universe} (Q : 𝓚 X → 𝓣 ̇ )
              → ((A : 𝓚 X) → is-prop (Q A))
              → Q ∅[𝓚]
              → ((x : X) → Q (❴ x ❵[𝓚]))
@@ -210,7 +212,7 @@ universe as the index types for directed completeness.
 
 \end{code}
 
-Section 3
+Section 3. The ind-completion
 
 \begin{code}
 
@@ -270,7 +272,7 @@ Section 3
 
 \end{code}
 
-Section 4.1
+Section 4.1. Continuous dcpos
 
 \begin{code}
 
@@ -359,7 +361,7 @@ Section 4.1
 
 \end{code}
 
-Section 4.2
+Section 4.2. Pseudocontinuity
 
 \begin{code}
 
@@ -393,7 +395,7 @@ Section 4.2
 
 \end{code}
 
-Section 4.3
+Section 4.3. Algebraic dcpos
 
 \begin{code}
 
@@ -408,7 +410,7 @@ Section 4.3
 
 \end{code}
 
-Section 5
+Section 5. Small bases
 
 \begin{code}
 
@@ -510,7 +512,7 @@ Section 5
       ; s-section-of-r = s-section-of-r
       ; s-is-continuous = s-cont
       ; r-is-continuous = r-cont
-      })
+     })
 
   open import DomainTheory.Basics.Exponential pt fe 𝓥
 
@@ -521,7 +523,7 @@ Section 5
 
 \end{code}
 
-Section 5.1
+Section 5.1. Small compact bases
 
 \begin{code}
 
@@ -552,20 +554,20 @@ Section 5.1
  Lemma-5-14 𝓓 = structurally-algebraic-if-specified-small-compact-basis 𝓓 ,
                 is-algebraic-dcpo-if-unspecified-small-compact-basis 𝓓
 
- Lemma-5-15 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇} (β : B → ⟨ 𝓓 ⟩)
+ Lemma-5-15 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
             → is-small-basis 𝓓 β
             → ((b : B) → is-compact 𝓓 (β b))
             → is-small-compact-basis 𝓓 β
  Lemma-5-15 = small-and-compact-basis
 
- Proposition-5-16 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇} (β : B → ⟨ 𝓓 ⟩)
+ Proposition-5-16 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
                   → is-small-compact-basis 𝓓 β
                   → (x : ⟨ 𝓓 ⟩) → is-compact 𝓓 x → ∃ b ꞉ B , β b ＝ x
  Proposition-5-16 = small-compact-basis-contains-all-compact-elements
 
 \end{code}
 
-Section 5.2
+Section 5.2. Examples of dcpos with small compact bases
 
 \begin{code}
 
@@ -596,7 +598,7 @@ Section 5.2
   open import DomainTheory.Examples.Powerset pt fe pe X-set
   open canonical-map-from-lists-to-subsets X-set renaming (κ to β)
 
-  Example-5-19 : is-small-compact-basis 𝓟-DCPO (canonical-map-from-lists-to-subsets.κ X-set)
+  Example-5-19 : is-small-compact-basis 𝓟-DCPO β
                × is-algebraic-dcpo 𝓟-DCPO
   Example-5-19 = κ-is-small-compact-basis , 𝓟-is-algebraic-dcpo
 
@@ -626,7 +628,7 @@ module _
        where
 
  fe' : Fun-Ext
- fe' {𝓤 } {𝓥} = Univalence-gives-FunExt ua 𝓤 𝓥
+ fe' {𝓤} {𝓥} = Univalence-gives-FunExt ua 𝓤 𝓥
 
  open import DomainTheory.Examples.Ordinals pt ua sr 𝓤
  open import DomainTheory.Basics.Dcpo pt fe' 𝓤
@@ -645,7 +647,7 @@ module _
 
 \end{code}
 
-Section 5.3
+Section 5.3. The basis of compact elements
 
 \begin{code}
 
@@ -684,7 +686,7 @@ module _
 
 \end{code}
 
-Section 6
+Section 6. The rounded ideal completion
 
 \begin{code}
 
@@ -712,7 +714,7 @@ Section 6
             → is-ideal (⋃ (carrier ∘ 𝓘))
   Lemma-6-4 𝓘 δ = ideality (Idl-∐ 𝓘 δ)
 
-  Lemma-6-5 : DCPO {𝓥 ⁺ } {𝓥}
+  Lemma-6-5 : DCPO {𝓥 ⁺} {𝓥}
   Lemma-6-5 = Idl-DCPO
 
   Lemma-6-6 : (I : Idl) {a : B} → (a ∈ᵢ I) → ∃ b ꞉ B , b ∈ᵢ I × a ≺ b
@@ -747,7 +749,7 @@ Section 6
 
 \end{code}
 
-Section 6.1
+Section 6.1. The rounded ideal completion of a reflexive abstract basis
 
 \begin{code}
 
@@ -764,7 +766,7 @@ Section 6.1
    ; ≺-trans = λ {x y z} → t x y z
    ; INT₀ = reflexivity-implies-INT₀ _≺_ (λ {b} → r b)
    ; INT₂ = reflexivity-implies-INT₂ _≺_ (λ {b} → r b)
-   }
+  }
 
  module _
          (abs-basis : abstract-basis)
@@ -803,7 +805,7 @@ Section 6.1
 
 \end{code}
 
-Section 6.2
+Section 6.2. Example: the ideal completion of dyadics
 
 \begin{code}
 
@@ -849,7 +851,7 @@ module _ where
                      ; ≺-trans = λ {x y z} → ≺-is-transitive x y z
                      ; INT₀ = ≺-has-no-left-endpoint
                      ; INT₂ = λ {x y z} → ≺-interpolation₂ x y z
-                     }
+                    }
 
  Proposition-6-22 : has-specified-small-basis Idl-𝔻
                   × is-continuous-dcpo Idl-𝔻
@@ -862,7 +864,7 @@ module _ where
 
 \end{code}
 
-Section 6.3
+Section 6.3. Ideal completions of small bases
 
 \begin{code}
 
@@ -909,7 +911,7 @@ module _ (𝓥 : Universe) where
    Lemma-6-24-ad = ∐-↡ᴮ-retract I
 
   module _
-          (_≺_ : B → B → 𝓥 ̇)
+          (_≺_ : B → B → 𝓥 ̇ )
           (x : ⟨ 𝓓 ⟩)
          where
 
@@ -999,7 +1001,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 7.1
+Section 7.1. Structurally continuous and algebraic bilimits
 
 \begin{code}
 
@@ -1078,7 +1080,7 @@ Section 7.1
 
 \end{code}
 
-Section 7.2
+Section 7.2. Exponentials with small (compact) bases
 
 \begin{code}
 
@@ -1139,7 +1141,7 @@ Section 7.2
   open sup-complete-dcpo 𝓓 𝓓-is-sup-complete
        renaming (directify to directification)
 
-  Definition-7-10 : {𝓦 : Universe} {I : 𝓦 ̇}
+  Definition-7-10 : {𝓦 : Universe} {I : 𝓦 ̇ }
                   → (α : I → ⟨ 𝓓 ⟩)
                   → List I → ⟨ 𝓓 ⟩
   Definition-7-10 = directification

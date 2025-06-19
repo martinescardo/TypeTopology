@@ -25,7 +25,7 @@ open import UF.UA-FunExt
 open import UF.Univalence
 
 open import W.Type
-open import W.Properties (𝓤 ̇) id
+open import W.Properties (𝓤 ̇ ) id
 
 private
  𝓤⁺ : Universe

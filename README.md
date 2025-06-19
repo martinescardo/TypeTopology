@@ -47,6 +47,8 @@ Please add yourself the first time you contribute.
 * Chuangjie Xu
 * Cory Knapp
 * Ettore Aldrovandi
+* Evan Cavallo
+* Fredrik Bakke
 * Fredrik Nordvall Forsberg
 * Ian Ray
 * Igor Arrieta (ii)
@@ -248,11 +250,22 @@ Tosun.
 
    https://doi.org/10.48550/arxiv.2407.06956
 
+1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
+   *Ordinal Exponentiation in Homotopy Type Theory*. January 2025. Updated
+   May 2025. To appear at [LICS 2025][LICS25].
+
+   https://doi.org/10.48550/arxiv.2501.14542
+
+1. Martin H. Escardo, Bruno da Rocha Paiva, Vincent Rahli and Ayberk Tosun.
+   *Internal Effectful Forcing in System T*. To appear in [FSCD'2025](https://fscd2025.github.io/).
+
+   https://doi.org/10.48550/arXiv.2505.11055
 
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
 [LICS21]: https://easyconferences.eu/lics2021/
 [LICS23]: https://lics.siglog.org/lics23/
+[LICS25]: https://lics.siglog.org/lics25/
 [MFPS38]: https://www.cs.cornell.edu/mfps-2022/
 [LMCS]: https://lmcs.episciences.org/
 [MSCS]: https://www.cambridge.org/core/journals/mathematical-structures-in-computer-science

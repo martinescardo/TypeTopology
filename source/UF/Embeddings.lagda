@@ -24,6 +24,7 @@ open import UF.Subsingletons-Properties
 open import UF.UA-FunExt
 open import UF.Univalence
 open import UF.Yoneda
+open import UF.SubtypeClassifier
 
 is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding f = each-fiber-of f is-prop
@@ -257,7 +258,7 @@ embedding'-gives-embedding {𝓤} {𝓥} {X} {Y} f ise = g
   g y = left-cancellable-reflects-is-prop
          ⌜ fiber-lemma f y ⌝
          (section-lc _
-           (equivs-are-sections _ (⌜⌝-is-equiv (fiber-lemma f y ))))
+           (equivs-are-sections _ (⌜⌝-is-equiv (fiber-lemma f y))))
          (g' y)
 
 pr₁-is-embedding : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
@@ -268,6 +269,10 @@ pr₁-is-embedding f x ((x , y') , refl) ((x , y'') , refl) = g
   g : (x , y') , refl ＝ (x , y'') , refl
   g = ap (λ - → (x , -) , refl) (f x y' y'')
 
+𝕡𝕣₁ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+    → ((x : X) → is-prop (Y x))
+    → (Σ Y ↪ X)
+𝕡𝕣₁ i = pr₁ , pr₁-is-embedding i
 
 to-subtype-＝-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                 → ((x : X) → is-prop (A x))
@@ -379,7 +384,7 @@ factor-is-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g i j = γ
   γ = embedding-criterion' f c
 
 is-essential : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
-is-essential f 𝓦 = (Z : 𝓦 ̇) (g : codomain f → Z)
+is-essential f 𝓦 = (Z : 𝓦 ̇ ) (g : codomain f → Z)
                  → is-embedding (g ∘ f)
                  → is-embedding g
 
@@ -485,7 +490,7 @@ maps-of-props-are-embeddings f i j =
  maps-of-props-into-sets-are-embeddings f i (props-are-sets j)
 
 ×-is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-                 (f : X → A ) (g : Y → B)
+                 (f : X → A) (g : Y → B)
                → is-embedding f
                → is-embedding g
                → is-embedding (λ ((x , y) : X × Y) → (f x , g y))
@@ -647,6 +652,22 @@ equiv-embeds-into-function fe =
 \end{code}
 
 End of addition.
+
+Added by Martin Escardo 13th June 2025.
+
+\begin{code}
+
+Fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → Y → Ω (𝓤 ⊔ 𝓥)
+Fiber 𝕛 y = fiber ⌊ 𝕛 ⌋ y , ⌊ 𝕛 ⌋-is-embedding y
+
+embedding-to-𝟙 : {P : Ω 𝓤} → P holds ↪ 𝟙 {𝓥}
+embedding-to-𝟙 {𝓤} {𝓥} {P} = embedding-into-𝟙 (P holds) (holds-is-prop P)
+
+fiber-to-𝟙 : {𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕛 : X ↪ Y) (y : Y)
+           → fiber ⌊ 𝕛 ⌋ y ↪ 𝟙 {𝓦}
+fiber-to-𝟙 𝕛 y = embedding-to-𝟙 {_} {_} {Fiber 𝕛 y}
+
+\end{code}
 
 Fixities:
 

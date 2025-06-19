@@ -37,8 +37,8 @@ open import MLTT.Spartan hiding (J)
 open import MLTT.Fin
 open import Games.FiniteHistoryDependent
 open import Games.TypeTrees
-open import Games.K
-open import Games.J
+open import MonadOnTypes.K
+open import MonadOnTypes.J
 open import MLTT.Athenian
 open import UF.FunExt
 
@@ -199,8 +199,8 @@ reader monad, to speed-up the computation of the optimal play.
 
  module _ (fe : Fun-Ext) (-∞ ∞ : R) where
 
-  open import Games.Reader
-  open import Games.Monad
+  open import MonadOnTypes.Reader
+  open import MonadOnTypes.Monad
 
   AB = R × R
 
@@ -245,12 +245,12 @@ reader monad, to speed-up the computation of the optimal play.
         structure-map = λ (t : AB → R) → t (-∞ , ∞) ;
         aunit = λ x → refl ;
         aassoc = λ x → refl
-       }
+      }
 
   ρ : T R → R
   ρ = structure-map 𝓡
 
-  open import Games.Transformer
+  open import Games.FiniteHistoryDependentMonadic
                fe
                (Reader AB)
                R
@@ -465,8 +465,8 @@ module minimax⋆
             (λ (_ : s < r) → s)
             (λ (_ : s ≥ r) → r)
 
- open import Games.Reader
- open import Games.Monad
+ open import MonadOnTypes.Reader
+ open import MonadOnTypes.Monad
 
  AB = R × R
 
@@ -563,7 +563,7 @@ wikipedia-optimal-outcome＝⋆ : wikipedia-optimal-outcome⋆ (0 , 10)
                             ＝ (6 , 𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
 wikipedia-optimal-outcome＝⋆ = refl
 
-module _ {X : Type }
+module _ {X : Type}
        where
 
  open list-util

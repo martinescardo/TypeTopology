@@ -1,5 +1,5 @@
 Martin Escardo, 15 August 2014, with additions 23 January 2021,
-October-November 2023.
+October-November 2023, June 2025.
 
 Higgs' Involution Theorem. In any topos, if f : Ω → Ω is a
 monomorphism, then it is an involution.
@@ -34,6 +34,8 @@ https://mathstodon.xyz/deck/@MartinEscardo/111291658836418672
 open import MLTT.Spartan
 open import UF.Base
 open import UF.FunExt
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
@@ -477,8 +479,9 @@ automorphisms of Ω.
 \begin{code}
 
 open import UF.Logic
-open Implication fe
+
 open Conjunction
+open Implication fe
 open Universal fe
 
 can-recover-automorphism-from-its-value-at-⊤
@@ -507,10 +510,43 @@ being-widespread-is-prop r = Π-is-prop fe (λ p → Ω-is-set fe pe)
 ℍ : 𝓤⁺ ̇
 ℍ = Σ r ꞉ Ω , is-widespread r
 
+ℍ-is-set : is-set ℍ
+ℍ-is-set = subsets-of-sets-are-sets
+            Ω
+            is-widespread
+            (Ω-is-set fe pe)
+            (λ {r} → being-widespread-is-prop r)
+
 to-ℍ-＝ : (r s : Ω) {i : is-widespread r} {j : is-widespread s}
        → r ＝ s
        → (r , i) ＝[ ℍ ] (s , j)
 to-ℍ-＝ r s {i} {j} = to-subtype-＝ being-widespread-is-prop
+
+to-ℍ-＝' : (x@(r , i) y@(s , j) : ℍ)
+         → (r holds ↔ s holds)
+         → x ＝ y
+to-ℍ-＝' (r , i) (s , j) (f , g) = to-ℍ-＝ r s (Ω-extensionality pe fe f g)
+
+\end{code}
+
+The equality of the Higgs object has values in 𝓤⁺, but is equivalent
+to a an equality with values in 𝓤 and hence in Ω.
+
+\begin{code}
+
+_＝ₕ_ : ℍ → ℍ → Ω
+(p , p-is-ws) ＝ₕ (q , q-is-ws) = p ⇔ q
+
+infix 4 _＝ₕ_
+
+＝ₕ-agrees-with-＝ : (x y : ℍ) → ((x ＝ₕ y) holds) ≃ (x ＝ y)
+＝ₕ-agrees-with-＝ x@(p , p-is-ws) y@(q , q-is-ws)
+ = logically-equivalent-props-are-equivalent
+    (holds-is-prop (x ＝ₕ y))
+    ℍ-is-set
+    (to-ℍ-＝' x y)
+    (λ (e : x ＝ y) → idtofun _ _ (ap (_holds ∘ pr₁) e) ,
+                      idtofun _ _ (ap (_holds ∘ pr₁) (e ⁻¹)))
 
 Ω-automorphisms-are-⇔-embeddings : (𝕗 : Aut Ω)
                                    (p q : Ω)
@@ -556,6 +592,9 @@ Aut-Ω-to-ℍ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-is-widespread 𝕗
 
 ℍ-to-Aut-Ω-is-equiv : is-equiv ℍ-to-Aut-Ω
 ℍ-to-Aut-Ω-is-equiv = qinvs-are-equivs ℍ-to-Aut-Ω (Aut-Ω-to-ℍ , ε-ℍ , η-ℍ)
+
+Aut-Ω-to-ℍ-is-equiv : is-equiv Aut-Ω-to-ℍ
+Aut-Ω-to-ℍ-is-equiv = inverses-are-equivs ℍ-to-Aut-Ω ℍ-to-Aut-Ω-is-equiv
 
 ℍ-to-Aut-Ω-equivalence : ℍ ≃ Aut Ω
 ℍ-to-Aut-Ω-equivalence = ℍ-to-Aut-Ω , ℍ-to-Aut-Ω-is-equiv
@@ -613,6 +652,9 @@ The unit of 𝓗 is ⊤ and its multiplication is logical equivalence.
 
 corollary-⊤ : is-widespread ⊤
 corollary-⊤ = ⟪ unit 𝓗 ⟫-is-widespread
+
+𝕥 : ℍ
+𝕥 = ⊤ , corollary-⊤
 
 corollary-⇔ : (r s : Ω)
             → is-widespread r
@@ -676,7 +718,7 @@ Added 6th November 2023.
 
 \begin{code}
 
- open PropositionalTruncation pt hiding (_∨_)
+ open PropositionalTruncation pt hiding (_∨_ ; ∨-elim)
 
  widespread'-gives-widespread : (r : Ω)
                               → is-widespread' r
@@ -771,3 +813,102 @@ Added 7th November 2023.
     IV = III
 
 \end{code}
+
+Added 10th June 2025. The Higgs object has at most two elements, where
+one of them is 𝕥. Therefore Aut Ω has at most two elements, and one
+of them is the identity.
+
+\begin{code}
+
+ ℍ-has-at-most-two-elements-lemma
+  : (x y : ℍ)
+  → ∥ (𝕥 ＝ x) + (x ＝ y) + (y ＝ 𝕥) ∥
+ ℍ-has-at-most-two-elements-lemma
+  x@(p@(P , i) , p-is-ws)
+  y@(q@(Q , j) , q-is-ws)
+  = II
+  where
+   QP : ∥ Q + (Q → P) ∥
+   QP = widespread-gives-widespread' p p-is-ws q
+
+   PQ : ∥ P + (P → Q) ∥
+   PQ = widespread-gives-widespread' q q-is-ws p
+
+   I : (Q + (Q → P))
+     → (P + (P → Q))
+     → (𝕥 ＝ x) + (x ＝ y) + (y ＝ 𝕥)
+   I (inl q)  _        = inr (inr (to-ℍ-＝' y 𝕥 ((λ _ → ⋆) , (λ _ → q))))
+   I (inr _)  (inl p)  = inl (to-ℍ-＝' 𝕥 x ((λ _ → p) , (λ _ → ⋆)))
+   I (inr qp) (inr pq) = inr (inl (to-ℍ-＝' x y (pq , qp)))
+
+   II : ∥ (𝕥 ＝ x) + (x ＝ y) + (y ＝ 𝕥) ∥
+   II = ∥∥-functor₂ I QP PQ
+
+\end{code}
+
+And so ℍ has at most two elements, in the sense that among any three
+elements of ℍ, two of them are equal.
+
+\begin{code}
+
+ ℍ-has-at-most-two-elements
+  : (x y z : ℍ)
+  → ∥ (z ＝ x) + (x ＝ y) + (y ＝ z) ∥
+ ℍ-has-at-most-two-elements x y z
+  = V
+  where
+   I : ∥ (𝕥 ＝ x) + (x ＝ y) + (y ＝ 𝕥) ∥
+   I = ℍ-has-at-most-two-elements-lemma x y
+
+   II : ∥ (𝕥 ＝ y) + (y ＝ z) + (z ＝ 𝕥) ∥
+   II = ℍ-has-at-most-two-elements-lemma y z
+
+   III : ∥ (𝕥 ＝ z) + (z ＝ x) + (x ＝ 𝕥) ∥
+   III = ℍ-has-at-most-two-elements-lemma z x
+
+   IV : (𝕥 ＝ x) + (x ＝ y) + (y ＝ 𝕥)
+      → (𝕥 ＝ y) + (y ＝ z) + (z ＝ 𝕥)
+      → (𝕥 ＝ z) + (z ＝ x) + (x ＝ 𝕥)
+      → (z ＝ x) + (x ＝ y) + (y ＝ z)
+   IV (inl a)       (inl b)       _             = inr (inl (a ⁻¹ ∙ b))
+   IV (inl _)       (inr (inl b)) _             = inr (inr b)
+   IV (inl a)       (inr (inr b)) _             = inl (b ∙ a)
+   IV (inr (inl a)) (inl _)       _             = inr (inl a)
+   IV (inr (inr _)) (inl b)       (inl c)       = inr (inr (b ⁻¹ ∙ c))
+   IV (inr (inr _)) (inl _)       (inr (inl c)) = inl c
+   IV (inr (inr _)) (inl b)       (inr (inr c)) = inr (inl (c ∙ b))
+   IV (inr (inl a)) (inr _)       _             = inr (inl a)
+   IV (inr (inr _)) (inr (inl b)) _             = inr (inr b)
+   IV (inr (inr a)) (inr (inr b)) _             = inr (inr (a ∙ b ⁻¹))
+
+   V : ∥ (z ＝ x) + (x ＝ y) + (y ＝ z) ∥
+   V = ∥∥-functor₃ IV I II III
+
+\end{code}
+
+We have the following corollary.
+
+\begin{code}
+
+ open import MLTT.Plus-Properties
+
+ Aut-Ω-has-at-most-two-elements
+  : (f g h : Aut Ω)
+  → ∥ (h ＝ f) + (f ＝ g) + (g ＝ h) ∥
+ Aut-Ω-has-at-most-two-elements f g h
+  = II
+  where
+   ϕ    = Aut-Ω-to-ℍ
+   ϕ-lc = equivs-are-lc ϕ Aut-Ω-to-ℍ-is-equiv
+
+   I : ∥ (ϕ h ＝ ϕ f) + (ϕ f ＝ ϕ g) + (ϕ g ＝ ϕ h) ∥
+   I = ℍ-has-at-most-two-elements (ϕ f) (ϕ g) (ϕ h)
+
+   II : ∥ (h ＝ f) + (f ＝ g) + (g ＝ h) ∥
+   II = ∥∥-functor (+functor₂ ϕ-lc ϕ-lc ϕ-lc) I
+
+\end{code}
+
+By the above development, the assertion that Aut Ω is a singleton (or
+equivalently a proposition, because it is pointed) is a stronger
+principle than the negation of the law of excluded middle.

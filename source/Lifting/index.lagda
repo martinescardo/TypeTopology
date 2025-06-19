@@ -1,4 +1,6 @@
-Martin Escardo
+Martin Escardo, 2018-2019
+
+The lifting (aka partial-map classifier) monad.
 
 \begin{code}
 
@@ -7,16 +9,16 @@ Martin Escardo
 module Lifting.index where
 
 import Lifting.Algebras
+import Lifting.Construction
 import Lifting.EmbeddingDirectly
 import Lifting.EmbeddingViaSIP
 import Lifting.IdentityViaSIP
-import Lifting.Construction
-import Lifting.Miscelanea
-import Lifting.Miscelanea-PropExt-FunExt
+import Lifting.Miscelanea                  -- By Tom de Jong 2019
+import Lifting.Miscelanea-PropExt-FunExt   -- By Tom de Jong 2019
 import Lifting.Monad
 import Lifting.MonadVariation
 import Lifting.Set
 import Lifting.Size
-import Lifting.UnivalentPrecategory
+import Lifting.UnivalentWildCategory
 
 \end{code}

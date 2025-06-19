@@ -141,6 +141,9 @@ open import Ordinals.Underlying
   h = eqtoidₒ (ua 𝓤) fe' γ δ
        (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
 
++ₒ-left-⊴ : (α β : Ordinal 𝓤)
+          → α ⊴ α +ₒ β
++ₒ-left-⊴ α β = to-⊴ α (α +ₒ β) (λ a → inl a , +ₒ-↓-left a)
 
 +ₒ-↓-right : {α β : Ordinal 𝓤} (b : ⟨ β ⟩)
            → (α +ₒ (β ↓ b)) ＝ ((α +ₒ β) ↓ inr b)
@@ -390,6 +393,12 @@ partial ordering:
     o : (β ↓ b) ⊲ γ
     o = +ₒ-left-reflects-⊲ α (β ↓ b) γ n
 
++ₒ-left-reflects-⊴ : (α β γ : Ordinal 𝓤)
+                   → (α +ₒ β) ⊴ (α +ₒ γ)
+                   → β ⊴ γ
++ₒ-left-reflects-⊴ α β γ l =
+ ≼-gives-⊴ β γ (+ₒ-left-reflects-≼ α β γ (⊴-gives-≼ (α +ₒ β) (α +ₒ γ) l))
+
 \end{code}
 
 Added 4th April 2022.
@@ -401,6 +410,20 @@ Added 4th April 2022.
 
 𝟘ₒ-least : (α : Ordinal 𝓤) → 𝟘ₒ {𝓤} ≼ α
 𝟘ₒ-least α = ⊴-gives-≼ 𝟘ₒ α (𝟘ₒ-least-⊴ α)
+
+\end{code}
+
+Added 11 April 2025 by Tom de Jong.
+
+\begin{code}
+
+initial-segment-of-least-element-is-𝟘ₒ : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
+                                       → is-least α a
+                                       → α ↓ a ＝ 𝟘ₒ
+initial-segment-of-least-element-is-𝟘ₒ α a a-is-least =
+ ⊴-antisym (α ↓ a) 𝟘ₒ
+  (to-⊴ (α ↓ a) 𝟘ₒ (λ (x , l) → 𝟘-elim (least-is-minimal α a a-is-least x l)))
+  (𝟘ₒ-least-⊴ (α ↓ a))
 
 \end{code}
 
@@ -616,6 +639,19 @@ retract-Ω-of-Ordinal {𝓤} = r , s , η
 
 \end{code}
 
+Added 17 September 2024 by Fredrik Nordvall Forsberg.
+
+\begin{code}
+
+left-preserves-least : (α β : Ordinal 𝓤)
+                     → (a₀ : ⟨ α ⟩) → is-least α a₀ → is-least (α +ₒ β) (inl a₀)
+left-preserves-least α β a₀ a₀-least (inl x) (inl u) l = a₀-least x u l
+left-preserves-least α β a₀ a₀-least (inr x) (inl u) l = ⋆
+
+\end{code}
+
+End of addition.
+
 Added 29 March 2022.
 
 It is not the case in general that β ≼ α +ₒ β. We work with the
@@ -633,9 +669,7 @@ module _ {𝓤 : Universe} where
  ⊴-add-taboo (f , s) = VI
   where
    I : is-least (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
-   I (inl ⋆) u       l = l
-   I (inr x) (inl ⋆) l = 𝟘-elim l
-   I (inr x) (inr y) l = 𝟘-elim l
+   I = left-preserves-least 𝟙ₒ Ωₒ ⋆ (λ ⋆ ⋆ ())
 
    II : f ⊥ ＝ inl ⋆
    II = simulations-preserve-least Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥ (inl ⋆) f s ⊥-is-least I
@@ -658,7 +692,7 @@ module _ {𝓤 : Universe} where
                   → inr (contrapositive
                           (λ (u : ¬ P)
                                 → to-subtype-＝ (λ _ → being-prop-is-prop fe')
-                                   (empty-types-are-＝-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
+                                   (empty-types-are-＝-𝟘 (pe 𝓤) u)⁻¹) ν))
 
    VI : ∀ P → ¬ P + ¬¬ P
    VI = WEM-gives-typal-WEM fe' V
@@ -744,7 +778,7 @@ succ-not-necessarily-monotone : ((α β : Ordinal 𝓤)
                               → typal-WEM 𝓤
 succ-not-necessarily-monotone {𝓤} ϕ = XII
  where
-  module _ (P : 𝓤 ̇) (isp : is-prop P) where
+  module _ (P : 𝓤 ̇ ) (isp : is-prop P) where
    α : Ordinal 𝓤
    α = prop-ordinal P isp
 
@@ -958,9 +992,33 @@ which would ensure that there is at most one operation satisfying the above
 equations for successors and suprema. The problem is that constructively we
 cannot, in general, make a case distinction on whether β is zero or not.
 
-In contrast, multiplication behaves differently and is unique characterized by
+In contrast, multiplication behaves differently and is uniquely characterized by
 similar equations since it does preserve all suprema, see
 MultiplicationProperties.
+
+Added 14 February 2025 by Tom de Jong.
+
+However, we could reformulate the equations for addition to the classically
+equivalent set of equations:
+
+  α +ₒ (β +ₒ 𝟙ₒ) ＝ (α +ₒ βₒ) +ₒ 𝟙ₒ
+  α +ₒ (sup β)   ＝ α ∨ sup (λ i → α +ₒ β i)
+
+for all families β : I → Ord without any inhabitedness condition on the index
+type I.
+
+Note that the equation α +ₒ 𝟘ₒ = α follows by taking the empty family in the
+supremum equation.
+
+These reformulated equations have the benefit that they uniquely characterize
+addition via the recursive equation
+  α +ₒ β ＝ α +ₒ sup (λ b → (B ↓ b) +ₒ 𝟙ₒ)
+         ＝ α ∨ sup (λ b → α +ₒ ((B ↓ b) +ₒ 𝟙ₒ))
+         ＝ α ∨ sup (λ b → (α +ₒ (B ↓ b)) +ₒ 𝟙ₒ)
+which also gives a construction of addition via transfinite recursion.
+
+I first realized this in the context of ordinal exponentiation, cf.
+Ordinals.Exponentiation.Specification.
 
 
 Added 24th May 2024 by Tom de Jong.

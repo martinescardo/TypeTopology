@@ -47,7 +47,7 @@ any x : X the right-multiplication map λ g → g · x is an equivalence.
 
 open PropositionalTruncation pt
 
-is-torsor : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤  ̇
+is-torsor : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤 ̇
 is-torsor G (X , a) = ∥ X ∥ ×
                     ((x : X) → is-equiv (right-mult G (X , a) x))
 
@@ -75,7 +75,7 @@ is-torsor₁-is-prop G 𝕏 = ×-is-prop (∥∥-is-prop)
 
 torsor→torsor₁ : {G : Group 𝓤} (𝕏 : G Sets)
                → is-torsor G 𝕏 → is-torsor₁ G 𝕏
-torsor→torsor₁ {G = G } (X , a) (n , e) = n , ee
+torsor→torsor₁ {G = G} (X , a) (n , e) = n , ee
   where
     ee : is-equiv (mult G (X , a))
     ee = (u , ε) , v , η

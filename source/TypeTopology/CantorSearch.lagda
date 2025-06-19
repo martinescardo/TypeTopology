@@ -100,15 +100,15 @@ then it has modulus of continuity k for any k > n.
 
 \begin{code}
 
-modulus-zero-iff-constant  : (p : Cantor → 𝟚)
+modulus-zero-iff-constant  : (p : 𝟚ᴺ → 𝟚)
                            → 0 is-a-modulus-of-uniform-continuity-of p
-                           ↔ ((α β : Cantor) → p α ＝ p β)
+                           ↔ ((α β : 𝟚ᴺ) → p α ＝ p β)
 modulus-zero-iff-constant p = I , II
  where
-  I :  0 is-a-modulus-of-uniform-continuity-of p → ((α β : Cantor) → p α ＝ p β)
+  I :  0 is-a-modulus-of-uniform-continuity-of p → ((α β : 𝟚ᴺ) → p α ＝ p β)
   I u α β = u α β ⋆
 
-  II :  ((α β : Cantor) → p α ＝ p β) → 0 is-a-modulus-of-uniform-continuity-of p
+  II :  ((α β : 𝟚ᴺ) → p α ＝ p β) → 0 is-a-modulus-of-uniform-continuity-of p
   II κ α β ⋆ = κ α β
 
 \end{code}
@@ -117,7 +117,7 @@ The crucial lemma for Cantor search is this:
 
 \begin{code}
 
-cons-decreases-modulus : (p : Cantor → 𝟚)
+cons-decreases-modulus : (p : 𝟚ᴺ → 𝟚)
                          (n : ℕ)
                          (b : 𝟚)
                        → (succ n) is-a-modulus-of-uniform-continuity-of p
@@ -141,16 +141,16 @@ function extensionality from previous versions of this file.
 
 \begin{code}
 
-uniform-continuity-gives-extensionality : (p : Cantor → 𝟚)
+uniform-continuity-gives-extensionality : (p : 𝟚ᴺ → 𝟚)
                                         → uniformly-continuous p
-                                        → (α β : Cantor) → α ∼ β → p α ＝ p β
+                                        → (α β : 𝟚ᴺ) → α ∼ β → p α ＝ p β
 uniform-continuity-gives-extensionality p (n , u) = II
  where
-  I : (n : ℕ) (α β : Cantor) → α ∼ β → α ＝⟦ n ⟧ β
+  I : (n : ℕ) (α β : 𝟚ᴺ) → α ∼ β → α ＝⟦ n ⟧ β
   I 0        α β h = ⋆
   I (succ n) α β h = h 0 , I n (α ∘ succ) (β ∘ succ) (h ∘ succ)
 
-  II : (α β : Cantor) → α ∼ β → p α ＝ p β
+  II : (α β : 𝟚ᴺ) → α ∼ β → p α ＝ p β
   II α β h = u α β (I n α β h)
 
 \end{code}
@@ -166,11 +166,11 @@ works with any choice of c₀. So we make it abstract.
 \begin{code}
 
 abstract
- c₀ : Cantor
+ c₀ : 𝟚ᴺ
  c₀ = λ i → ₀
 
-A  : ℕ → (Cantor → 𝟚) → 𝟚
-ε  : ℕ → (Cantor → 𝟚) → Cantor
+A  : ℕ → (𝟚ᴺ → 𝟚) → 𝟚
+ε  : ℕ → (𝟚ᴺ → 𝟚) → 𝟚ᴺ
 
 A n p = p (ε n p)
 
@@ -181,7 +181,7 @@ A n p = p (ε n p)
 
 The function A is designed to satisfy the specification
 
-  A n p ＝ ₁ ↔ ((α : Cantor) → p α ＝ ₁)
+  A n p ＝ ₁ ↔ ((α : 𝟚ᴺ) → p α ＝ ₁)
 
 for any decidable predicate p with modulus of uniform continuity n.
 
@@ -193,9 +193,9 @@ still need to supply a number:
 
 \begin{code}
 
-A-property← : (p : Cantor → 𝟚)
+A-property← : (p : 𝟚ᴺ → 𝟚)
               (n : ℕ)
-            → ((α : Cantor) → p α ＝ ₁)
+            → ((α : 𝟚ᴺ) → p α ＝ ₁)
             → A n p ＝ ₁
 A-property← p n ϕ = ϕ (ε n p)
 
@@ -205,17 +205,17 @@ The other direction is proved by induction on ℕ.
 
 \begin{code}
 
-A-property→ : (p : Cantor → 𝟚)
+A-property→ : (p : 𝟚ᴺ → 𝟚)
               (n : ℕ)
             → n is-a-modulus-of-uniform-continuity-of p
             → A n p ＝ ₁
-            → (α : Cantor) → p α ＝ ₁
+            → (α : 𝟚ᴺ) → p α ＝ ₁
 A-property→ p 0        u r α = p α  ＝⟨ u α c₀ ⋆ ⟩
                                p c₀ ＝⟨ r ⟩
                                ₁    ∎
 A-property→ p (succ n) u r α = V
  where
-  IH : (b : 𝟚) → A n (p ∘ cons b) ＝ ₁ → (β : Cantor) → p (cons b β) ＝ ₁
+  IH : (b : 𝟚) → A n (p ∘ cons b) ＝ ₁ → (β : 𝟚ᴺ) → p (cons b β) ＝ ₁
   IH b = A-property→ (p ∘ cons b) n (cons-decreases-modulus p n b u)
 
   b₀ : 𝟚
@@ -230,7 +230,7 @@ A-property→ p (succ n) u r α = V
   observation₁ : A (succ n) p ＝ A n (p ∘ cons b₀)
   observation₁ = refl
 
-  II : (b : 𝟚) (β : Cantor) → p (cons b β) ＝ ₁
+  II : (b : 𝟚) (β : 𝟚ᴺ) → p (cons b β) ＝ ₁
   II b = IH b (I r b)
 
   III : p (cons (head α) (tail α)) ＝ ₁
@@ -255,32 +255,32 @@ The desired construction is the following:
 
 \begin{code}
 
-Cantor-uniformly-searchable : (p : Cantor → 𝟚)
+Cantor-uniformly-searchable : (p : 𝟚ᴺ → 𝟚)
                             → uniformly-continuous p
-                            → Σ α₀ ꞉ Cantor , (p α₀ ＝ ₁ → (α : Cantor) → p α ＝ ₁)
+                            → Σ α₀ ꞉ 𝟚ᴺ , (p α₀ ＝ ₁ → (α : 𝟚ᴺ) → p α ＝ ₁)
 Cantor-uniformly-searchable p (n , u) = ε n p , A-property→ p n u
 
-having-root-is-decidable : (p : Cantor → 𝟚)
+having-root-is-decidable : (p : 𝟚ᴺ → 𝟚)
                          → uniformly-continuous p
-                         → is-decidable (Σ α ꞉ Cantor , p α ＝ ₀)
+                         → is-decidable (Σ α ꞉ 𝟚ᴺ , p α ＝ ₀)
 having-root-is-decidable p (n , u) = γ (p α) refl
  where
-  α : Cantor
+  α : 𝟚ᴺ
   α = ε n p
 
-  γ : (k : 𝟚) → p α ＝ k → is-decidable (Σ α ꞉ Cantor , p α ＝ ₀)
+  γ : (k : 𝟚) → p α ＝ k → is-decidable (Σ α ꞉ 𝟚ᴺ , p α ＝ ₀)
   γ ₀ r = inl (α  , r)
   γ ₁ r = inr (λ (β , s) → zero-is-not-one
                             (₀   ＝⟨ s ⁻¹ ⟩
                              p β ＝⟨ A-property→ p n u r β ⟩
                              ₁   ∎))
 
-being-constantly-₁-is-decidable : (p : Cantor → 𝟚)
+being-constantly-₁-is-decidable : (p : 𝟚ᴺ → 𝟚)
                                 → uniformly-continuous p
-                                → is-decidable ((α : Cantor) → p α ＝ ₁)
+                                → is-decidable ((α : 𝟚ᴺ) → p α ＝ ₁)
 being-constantly-₁-is-decidable p u = γ (having-root-is-decidable p u)
  where
-  γ : is-decidable (Σ α ꞉ Cantor , p α ＝ ₀) → is-decidable ((α : Cantor) → p α ＝ ₁)
+  γ : is-decidable (Σ α ꞉ 𝟚ᴺ , p α ＝ ₀) → is-decidable ((α : 𝟚ᴺ) → p α ＝ ₁)
   γ (inl (α , r)) = inr (λ ϕ → zero-is-not-one (r ⁻¹ ∙ ϕ α))
   γ (inr ν)       = inl (λ α → different-from-₀-equal-₁ (λ r → ν (α , r)))
 
@@ -293,7 +293,7 @@ if the supplied modulus of uniform continuity is large.
 
 module examples where
 
- prc : ℕ → Cantor → 𝟚
+ prc : ℕ → 𝟚ᴺ → 𝟚
  prc n α = α n
 
  sprc-lemma : (n : ℕ) → (succ n) is-a-modulus-of-uniform-continuity-of (prc n)
@@ -315,7 +315,7 @@ In the worst case, however, A n p runs in time 2ⁿ.
 
 \begin{code}
 
- xor : ℕ → Cantor → 𝟚
+ xor : ℕ → 𝟚ᴺ → 𝟚
  xor 0        α = ₀
  xor (succ n) α = head α ⊕ xor n (tail α)
 
@@ -356,7 +356,7 @@ Another fast example (linear):
 
 \begin{code}
 
- κ₁ : ℕ → Cantor → 𝟚
+ κ₁ : ℕ → 𝟚ᴺ → 𝟚
  κ₁ n α = complement (α n ⊕ α n)
 
  sκ₁-lemma : (n : ℕ) → (succ n) is-a-modulus-of-uniform-continuity-of (κ₁ n)

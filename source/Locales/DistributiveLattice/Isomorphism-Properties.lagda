@@ -59,7 +59,7 @@ Transport lemma for distributive lattices.
 \begin{code}
 
  ≅d≅-transport : (K L : DistributiveLattice 𝓤)
-               → (B : DistributiveLattice 𝓤 → 𝓣  ̇)
+               → (B : DistributiveLattice 𝓤 → 𝓣 ̇ )
                → K ≅d≅ L
                → B K
                → B L
@@ -85,7 +85,7 @@ Distributive lattice isomorphisms are symmetric.
   ; 𝓇           = 𝓈 𝒾
   ; r-cancels-s = s-cancels-r 𝒾
   ; s-cancels-r = r-cancels-s 𝒾
-  }
+ }
    where
     open DistributiveLatticeIsomorphisms.Isomorphismᵈᵣ
 

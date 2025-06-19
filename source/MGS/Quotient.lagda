@@ -48,7 +48,7 @@ module quotient
  equiv-rel : X → (X → Ω 𝓥)
  equiv-rel x y = (x ≈ y) , ≈p x y
 
- X/≈ : 𝓥 ⁺ ⊔ 𝓤  ̇
+ X/≈ : 𝓥 ⁺ ⊔ 𝓤 ̇
  X/≈ = image equiv-rel
 
  X/≈-is-set : is-set X/≈

@@ -50,6 +50,9 @@ SigmaΩ : {𝓤 𝓥 : Universe} (p : Ω 𝓤) (q : p holds → Ω 𝓥) → Ω 
 SigmaΩ p q = (Σ h ꞉ p holds , q h holds) ,
              Σ-is-prop (holds-is-prop p) (λ (h : p holds) → holds-is-prop (q h))
 
+ΣΩ : {𝓤 𝓥 : Universe} {p : Ω 𝓤} (q : p holds → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ΣΩ {𝓤} {𝓥} {p} q = SigmaΩ p q
+
 syntax SigmaΩ p (λ x → q) = ΣΩ x ꞉ p , q
 
 infixr -1 SigmaΩ
@@ -143,7 +146,7 @@ not-equal-⊤-gives-equal-⊥ fe pe p r = γ
   f = Idtofun (ap _holds r ⁻¹) ⋆
 
   t : p holds ＝ 𝟘
-  t = empty-types-are-＝-𝟘 fe pe f
+  t = empty-types-are-＝-𝟘 pe f
 
   γ : p ＝ ⊥
   γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) t

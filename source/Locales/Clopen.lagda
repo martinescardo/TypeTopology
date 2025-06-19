@@ -87,7 +87,7 @@ The type of clopens of a locale `X`.
 
 \begin{code}
 
-𝒞 : Locale 𝓤 𝓥 𝓦 → 𝓤  ̇
+𝒞 : Locale 𝓤 𝓥 𝓦 → 𝓤 ̇
 𝒞 X = Σ C ꞉ ⟨ 𝒪 X ⟩ , is-clopen (𝒪 X) C holds
 
 \end{code}

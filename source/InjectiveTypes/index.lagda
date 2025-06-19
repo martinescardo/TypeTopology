@@ -16,6 +16,7 @@ module InjectiveTypes.index where
 
 import InjectiveTypes.Article
 import InjectiveTypes.Blackboard
+
 \end{code}
 
 The following have been done after the above article was published.
@@ -73,9 +74,9 @@ import Ordinals.Injectivity
 import Iterative.Multisets-Addendum
 import Iterative.Sets-Addendum
 import Iterative.Ordinals
-import InjectiveTypes.MathematicalStructures
 import InjectiveTypes.Sigma
-import InjectiveTypes.MathematicalStructuresMoreGeneral
+import InjectiveTypes.MathematicalStructuresOriginal -- obsolete but keep.
+import InjectiveTypes.MathematicalStructures
 import InjectiveTypes.PointedDcpos
 import InjectiveTypes.Subtypes
 
@@ -91,3 +92,35 @@ distinct points can be injective without Ω¬¬-resizing.
 import InjectiveTypes.Resizing
 
 \end{code}
+
+We explore a factorization system of embeddings and fiberwise algebraically
+injective maps in the following file.
+
+\begin{code}
+
+import InjectiveTypes.WeakFactorizationSystem
+
+\end{code}
+
+The following reformulates the definitions of algebraically injective and
+flabby types and proves a few technical lemmas.
+
+\begin{code}
+
+import InjectiveTypes.Structure
+
+\end{code}
+
+And the following explores a closer relation between algebraic
+injectivity and algebras of the partial-map classifier (aka lifting)
+monad in these two files.
+
+\begin{code}
+
+import InjectiveTypes.Algebra
+import gist.InjectivesVersusAlgebras
+
+\end{code}
+
+Eventually the last file will be deleted after it is moved to the
+first.

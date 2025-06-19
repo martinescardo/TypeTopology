@@ -180,7 +180,7 @@ module _
      { ≪ᴮ-is-small = λ x → pr₁ (sb x)
      ; ↡ᴮ-is-directed = λ x → pr₁ (pr₂ (sb x))
      ; ↡ᴮ-is-sup  = λ x → pr₂ (pr₂ (sb x))
-     }
+    }
 
  being-small-basis-is-prop : Prop-Ext → is-prop (is-small-basis 𝓓 β)
  being-small-basis-is-prop pe = equiv-to-prop is-small-basis-≃
@@ -213,7 +213,7 @@ module _
    ; approximating-family-is-directed  = ↡ᴮₛ-is-directed
    ; approximating-family-is-way-below = ↡ᴮₛ-is-way-below
    ; approximating-family-∐-＝          = ↡ᴮₛ-∐-＝
-   }
+  }
     where
      open is-small-basis sb
 
@@ -425,7 +425,7 @@ element is compact.
                              (↓ᴮ-≃-↡ᴮ x) (↓-inclusion x) (↓ᴮ-is-directed x)
    ; ↡ᴮ-is-sup      = λ x → reindexed-family-sup 𝓓 (↓ᴮ-≃-↡ᴮ x) (↓-inclusion x)
                              x (↓ᴮ-is-sup x)
-   }
+  }
    where
     open is-small-compact-basis scb
     lemma : (b : B) {x : ⟨ 𝓓 ⟩} → (β b ⊑⟨ 𝓓 ⟩ x) ≃ (β b ≪⟨ 𝓓 ⟩ x)
@@ -452,7 +452,7 @@ element is compact.
                                (↡ᴮ-≃-↓ᴮ x) (↡-inclusion 𝓓 β x) (↡ᴮ-is-directed x)
    ; ↓ᴮ-is-sup        = λ x → reindexed-family-sup 𝓓
                                (↡ᴮ-≃-↓ᴮ x) (↡-inclusion 𝓓 β x) x (↡ᴮ-is-sup x)
-   }
+  }
    where
     open is-small-basis β-is-small-basis
     lemma : (b : B) {x : ⟨ 𝓓 ⟩} → (β b ≪⟨ 𝓓 ⟩ x) ≃ (β b ⊑⟨ 𝓓 ⟩ x)
@@ -498,7 +498,7 @@ module _
  has-specified-small-compact-basis =
   Σ B ꞉ 𝓥 ̇ , Σ β ꞉ (B → ⟨ 𝓓 ⟩) , is-small-compact-basis 𝓓 β
 
- index-of-compact-basis : has-specified-small-compact-basis → 𝓥  ̇
+ index-of-compact-basis : has-specified-small-compact-basis → 𝓥 ̇
  index-of-compact-basis (B , _) = B
 
  family-of-compact-elements : (𝒷 : has-specified-small-compact-basis)
@@ -522,7 +522,7 @@ module _
    ; compact-family-is-directed = ↓ᴮₛ-is-directed
    ; compact-family-is-compact  = ↓ᴮₛ-compact
    ; compact-family-∐-＝         = ↓ᴮₛ-∐-＝
-   }
+  }
    where
     open is-small-compact-basis scb
 
@@ -628,7 +628,7 @@ module _
    { ≪ᴮ-is-small    = ≪ʳᴮ-is-small
    ; ↡ᴮ-is-directed = ≪ʳᴮ-is-directed
    ; ↡ᴮ-is-sup      = ↡ʳᴮ-is-sup
-   }
+  }
    where
     open is-small-basis sb
 
@@ -892,7 +892,7 @@ module _
           ↡ᴮ-is-directed =
            λ x → ↡ᴮ-directedness-criterion 𝓓 β' x (ι x) (δ x) (ub x);
           ↡ᴮ-is-sup = λ x → ↡ᴮ-sup-criterion 𝓓 β' x (ι x) (sup x)
-        }
+       }
     where
      open is-small-basis β-is-basis
      I : β' ∘ [_] ∼ β
@@ -922,7 +922,7 @@ module _
           _∨ᴮ_ = _++_ ;
           ⊥ᴮ-is-⊥ = refl ;
           ∨ᴮ-is-∨ = finite-join-eq
-        }
+       }
     where
      finite-join-eq : (l k : List B) → directify β (l ++ k) ＝ β' l ∨ β' k
      finite-join-eq l k =

@@ -124,7 +124,7 @@ conclusion.
 
 \begin{code}
 
-simple-type₂-injective-gives-WEM : (X : 𝓤₀ ̇)
+simple-type₂-injective-gives-WEM : (X : 𝓤₀ ̇ )
                                  → simple-type₂ X
                                  → ainjective-type X 𝓤 𝓤
                                  → typal-WEM 𝓤
@@ -149,9 +149,6 @@ simple-type₂-injective-gives-WEM-examples =
  simple-type₂-injective-gives-WEM _ (step (step (step base base) base) base)
 
 \end{code}
-
-TODO. More generally, if a non-trivial totally separated type is
-injective, then WEM holds.
 
 TODO. We can also close under _×_ and _+_ to get the same result. We
 can also close under Π, but maybe not under Σ.
@@ -414,11 +411,11 @@ In particular, we have the following.
 \begin{code}
 
 non-trivial-apartness-on-universe-gives-WEM
- : is-univalent (𝓤 ⊔ 𝓥)
- → Nontrivial-Apartness (𝓤 ⊔ 𝓥 ̇ ) 𝓥
+ : is-univalent 𝓤
+ → Nontrivial-Apartness (𝓤 ̇ ) 𝓥
  → typal-WEM 𝓤
-non-trivial-apartness-on-universe-gives-WEM ua =
- ainjective-type-with-non-trivial-apartness-gives-WEM
+non-trivial-apartness-on-universe-gives-WEM {𝓤} {𝓥} ua =
+ ainjective-type-with-non-trivial-apartness-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
   (universes-are-ainjective ua)
 
 non-trivial-apartness-on-universe-iff-WEM
@@ -435,6 +432,29 @@ non-trivial-apartness-on-universe-iff-WEM {𝓤} ua = f , g
        (universes-are-locally-small ua)
        universe-has-two-distinct-points
 
+non-trivial-apartness-on-Ω-gives-WEM
+ : propext 𝓤
+ → Nontrivial-Apartness (Ω 𝓤) 𝓥
+ → typal-WEM 𝓤
+non-trivial-apartness-on-Ω-gives-WEM {𝓤} {𝓥} pe =
+ ainjective-type-with-non-trivial-apartness-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
+  (Ω-ainjective pe)
+
+non-trivial-apartness-on-Ω-iff-WEM
+ : propext 𝓤
+ → funext 𝓤 𝓤
+ → Nontrivial-Apartness (Ω 𝓤) 𝓤 ↔ typal-WEM 𝓤
+non-trivial-apartness-on-Ω-iff-WEM {𝓤} pe fe = f , g
+ where
+  f : Nontrivial-Apartness (Ω 𝓤) 𝓤 → typal-WEM 𝓤
+  f = non-trivial-apartness-on-Ω-gives-WEM pe
+
+  g : typal-WEM 𝓤 → Nontrivial-Apartness (Ω 𝓤) 𝓤
+  g = WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
+       fe'
+       (Ω-is-locally-small pe fe)
+       ((⊥ , ⊤) , ⊥-is-not-⊤)
+
 \end{code}
 
 Notice that ainjective-type-with-non-trivial-apartness-gives-WEM
@@ -445,3 +465,47 @@ standard apartness), ℕ∞ (again because it is totally
 separated).
 
 TODO. Maybe we can list a few more interesting examples?
+
+\end{code}
+
+Added 27 January 2025 by Tom de Jong. Revised 6 February 2025.
+
+We generalize non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM from
+Taboos.Decomposability, where the notion of total separatedness is exploited
+directly, to derive ¬¬ WEM from the assumption of a non-trivial injective type
+with a tight apartness.
+
+\begin{code}
+
+non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM
+ : (Σ X ꞉ 𝓤 ̇ , ((¬ is-prop X) × ainjective-type X 𝓥 𝓦 × Tight-Apartness X 𝓣))
+ → ¬¬ typal-WEM 𝓥
+non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM
+ {𝓤} {𝓥} {𝓦} {𝓣}
+ (X , X-not-prop , X-inj , (_♯_ , ♯-is-apartness , ♯-is-tight)) = III
+  where
+   I : (x y : X) → x ♯ y → typal-WEM 𝓥
+   I x y a = ainjective-type-with-non-trivial-apartness-gives-WEM X-inj
+              ((_♯_ , ♯-is-apartness) , (((x , y) , a)))
+
+   II : ¬ typal-WEM 𝓥 → is-prop X
+   II ν x y = ♯-is-tight x y (λ (a : x ♯ y) → 𝟘-elim (ν (I x y a)))
+
+   III : ¬¬ typal-WEM 𝓥
+   III ν = 𝟘-elim (X-not-prop (II ν))
+
+open import TypeTopology.TotallySeparated
+
+non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM'
+ : (Σ X ꞉ 𝓤 ̇ , ((¬ is-prop X) × is-totally-separated X × ainjective-type X 𝓥 𝓦))
+ → ¬¬ typal-WEM 𝓥
+non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM'
+ (X , X-not-prop , X-tot-sep , X-inj) =
+  non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM
+   (  X , X-not-prop , X-inj
+    , _♯₂_ , ♯₂-is-apartness
+    , totally-separated-gives-totally-separated₃ X-tot-sep)
+    where
+     open total-separatedness-via-apartness pt
+
+\end{code}

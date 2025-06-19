@@ -30,21 +30,21 @@ open import UF.Subsingletons-Properties
           → is-prop (Π A)
 Π-is-prop fe i f g = dfunext fe (λ x → i x (f x) (g x))
 
-Π-is-prop' : funext 𝓤 𝓥
-           → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-           → ((x : X) → is-prop (A x))
-           → is-prop ({x : X} → A x)
-Π-is-prop' fe {X} {A} i = retract-of-prop retr (Π-is-prop fe i)
+implicit-Π-is-prop : funext 𝓤 𝓥
+                   → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                   → ((x : X) → is-prop (A x))
+                   → is-prop ({x : X} → A x)
+implicit-Π-is-prop fe {X} {A} i = retract-of-prop ρ (Π-is-prop fe i)
  where
-  retr : retract ({x : X} → A x) of Π A
-  retr = (λ f {x} → f x) , (λ g x → g {x}) , (λ x → refl)
+  ρ : retract ({x : X} → A x) of Π A
+  ρ = (λ f {x} → f x) , (λ g x → g {x}) , (λ x → refl)
 
 Π-is-singleton : funext 𝓤 𝓥
                → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                → ((x : X) → is-singleton (A x))
                → is-singleton (Π A)
-Π-is-singleton fe i = (λ x → pr₁ (i x)) ,
-                      (λ f → dfunext fe (λ x → pr₂ (i x) (f x)))
+Π-is-singleton fe i = (λ x → center (i x)) ,
+                      (λ f → dfunext fe (λ x → centrality (i x) (f x)))
 
 being-prop-is-prop : {X : 𝓤 ̇ }
                    → funext 𝓤 𝓤
@@ -120,52 +120,11 @@ being-singleton-is-prop fe {X} (x , φ) (y , γ) = δ
            → is-prop (∃! A)
 ∃!-is-prop fe = being-singleton-is-prop fe
 
-negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → is-prop (X → 𝟘 {𝓥})
-negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
-
-decidability-of-prop-is-prop : funext 𝓤 𝓤₀
-                             → {P : 𝓤 ̇ }
-                             → is-prop P
-                             → is-prop (P + ¬ P)
-decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
-                                      i
-                                      (negations-are-props fe₀)
-                                      (λ p u → u p)
-
-empty-types-are-props : {X : 𝓤 ̇ } → (X → 𝟘 {𝓥}) → is-prop X
-empty-types-are-props f x = 𝟘-elim (f x)
-
-equal-𝟘-is-empty : {X : 𝓤 ̇ } → X ＝ 𝟘 → X → 𝟘 {𝓦}
-equal-𝟘-is-empty e x = 𝟘-elim (transport id e x)
-
-empty-types-are-＝-𝟘 : funext 𝓤 𝓤₀
-                    → propext 𝓤
-                    → {X : 𝓤 ̇ }
-                    → (X → 𝟘 {𝓥})
-                    → X ＝ 𝟘
-empty-types-are-＝-𝟘 fe pe f = pe (empty-types-are-props f)
-                                𝟘-is-prop
-                                (λ x → 𝟘-elim (f x))
-                                𝟘-elim
-
 holds-gives-equal-𝟙 : propext 𝓤 → (P : 𝓤 ̇ ) → is-prop P → P → P ＝ 𝟙
 holds-gives-equal-𝟙 pe P i p = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
 
 equal-𝟙-gives-holds : (P : 𝓤 ̇ ) → P ＝ 𝟙 → P
 equal-𝟙-gives-holds P r = Idtofun (r ⁻¹) ⋆
-
-not-𝟘-is-𝟙' : funext 𝓤 𝓥
-           → propext (𝓤 ⊔ 𝓥)
-           → (𝟘 {𝓤} → 𝟘 {𝓥}) ＝ 𝟙 {𝓤 ⊔ 𝓥}
-not-𝟘-is-𝟙' fe pe = pe (negations-are-props fe)
-                      𝟙-is-prop
-                      (λ _ → ⋆)
-                      (λ _ z → 𝟘-elim z)
-
-not-𝟘-is-𝟙 : funext 𝓤 𝓤₀
-           → propext 𝓤
-           → (¬ 𝟘) ＝ 𝟙
-not-𝟘-is-𝟙 = not-𝟘-is-𝟙'
 
 \end{code}
 
@@ -310,12 +269,76 @@ boiler-plate code.)
                → H a b c d e f g)
 Π₇-is-prop fe i = Π-is-prop fe (λ x → Π₆-is-prop fe (i x))
 
-Π₂-is-prop' : Fun-Ext
-            → {X : 𝓤 ̇ }
-              {Y : X → 𝓥 ̇ }
-              {Z : (x : X) → Y x → 𝓦 ̇ }
-            → ((x : X) (y : Y x) → is-prop (Z x y))
-            → is-prop ({x : X} {y : Y x} → Z x y)
-Π₂-is-prop' fe i = Π-is-prop' fe (λ x → Π-is-prop' fe (i x))
+implicit-Π₂-is-prop
+ : Fun-Ext
+ → {X : 𝓤 ̇ }
+   {Y : X → 𝓥 ̇ }
+   {Z : (x : X) → Y x → 𝓦 ̇ }
+ → ((x : X) (y : Y x) → is-prop (Z x y))
+ → is-prop ({x : X} {y : Y x} → Z x y)
+implicit-Π₂-is-prop fe i
+ = implicit-Π-is-prop fe (λ x → implicit-Π-is-prop fe (i x))
+
+\end{code}
+
+The function extensionality axiom implies that negations are propositions.
+
+\begin{code}
+
+negations-are-props-statement : ∀ 𝓤 → 𝓤 ⁺ ̇
+negations-are-props-statement 𝓤 = {X : 𝓤 ̇ } → is-prop (¬ X)
+
+negations-are-props : funext 𝓤 𝓤₀ → negations-are-props-statement 𝓤
+negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
+
+decidability-of-prop-is-prop' : negations-are-props-statement 𝓤
+                              → {P : 𝓤 ̇ }
+                              → is-prop P
+                              → is-prop (P + ¬ P)
+decidability-of-prop-is-prop' ne {P} i =
+  sum-of-contradictory-props i ne (λ p np → np p)
+
+decidability-of-prop-is-prop : funext 𝓤 𝓤₀
+                             → {P : 𝓤 ̇ }
+                             → is-prop P
+                             → is-prop (P + ¬ P)
+decidability-of-prop-is-prop fe =
+  decidability-of-prop-is-prop' (negations-are-props fe)
+
+empty-types-are-props : {X : 𝓤 ̇ } → (X → 𝟘 {𝓥}) → is-prop X
+empty-types-are-props f x = 𝟘-elim (f x)
+
+equal-𝟘-is-empty : {X : 𝓤 ̇ } → X ＝ 𝟘 → X → 𝟘 {𝓦}
+equal-𝟘-is-empty e x = 𝟘-elim (transport id e x)
+
+negationext : ∀ 𝓤 𝓥 → (𝓤 ⁺) ⊔ 𝓥 ̇
+negationext 𝓤 𝓥 = {X : 𝓤 ̇ } → (X → 𝟘 {𝓥}) → X ＝ 𝟘
+
+empty-types-are-＝-𝟘 : propext 𝓤
+                     → {X : 𝓤 ̇ }
+                     → (X → 𝟘 {𝓥})
+                     → X ＝ 𝟘
+empty-types-are-＝-𝟘 pe f = pe (empty-types-are-props f)
+                                𝟘-is-prop
+                                (λ x → 𝟘-elim (f x))
+                                𝟘-elim
+
+not-𝟘-is-𝟙'' : negations-are-props-statement 𝓤
+             → propext 𝓤
+             → (𝟘 {𝓤} → 𝟘 {𝓤₀}) ＝ 𝟙 {𝓤}
+not-𝟘-is-𝟙'' ne pe = pe ne
+                      𝟙-is-prop
+                      (λ _ → ⋆)
+                      (λ _ z → 𝟘-elim z)
+
+not-𝟘-is-𝟙' : negations-are-props-statement 𝓤
+            → propext 𝓤
+            → (¬ 𝟘) ＝ 𝟙
+not-𝟘-is-𝟙' = not-𝟘-is-𝟙''
+
+not-𝟘-is-𝟙 : funext 𝓤 𝓤₀
+           → propext 𝓤
+           → (¬ 𝟘) ＝ 𝟙
+not-𝟘-is-𝟙 fe = not-𝟘-is-𝟙' (negations-are-props fe)
 
 \end{code}

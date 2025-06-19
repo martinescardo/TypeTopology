@@ -93,10 +93,12 @@ equal-₀-different-from-₁ : {b : 𝟚} → b ＝ ₀ → b ≠ ₁
 equal-₀-different-from-₁ r s = zero-is-not-one (r ⁻¹ ∙ s)
 
 [a＝₁→b＝₁]-gives-[b＝₀→a＝₀] : {a b : 𝟚} → (a ＝ ₁ → b ＝ ₁) → b ＝ ₀ → a ＝ ₀
-[a＝₁→b＝₁]-gives-[b＝₀→a＝₀] f = different-from-₁-equal-₀ ∘ (contrapositive f) ∘ equal-₀-different-from-₁
+[a＝₁→b＝₁]-gives-[b＝₀→a＝₀] f =
+ different-from-₁-equal-₀ ∘ (contrapositive f) ∘ equal-₀-different-from-₁
 
 [a＝₀→b＝₀]-gives-[b＝₁→a＝₁] : {a b : 𝟚} → (a ＝ ₀ → b ＝ ₀) → b ＝ ₁ → a ＝ ₁
-[a＝₀→b＝₀]-gives-[b＝₁→a＝₁] f = different-from-₀-equal-₁ ∘ (contrapositive f) ∘ equal-₁-different-from-₀
+[a＝₀→b＝₀]-gives-[b＝₁→a＝₁] f =
+ different-from-₀-equal-₁ ∘ (contrapositive f) ∘ equal-₁-different-from-₀
 
 \end{code}
 
@@ -167,19 +169,22 @@ instance
 ≤₂-is-prop-valued {₁} {₀} = 𝟘-is-prop
 ≤₂-is-prop-valued {₁} {₁} = 𝟙-is-prop
 
-<₂-criterion : {a b : 𝟚} → (a ＝ ₀) → (b ＝ ₁) → a <₂ b
+<₂-criterion : {a b : 𝟚} → (a ＝ ₀) → (b ＝ ₁) → a < b
 <₂-criterion {₀} {₁} refl refl = ⋆
 
-<₂-criterion-converse : {a b : 𝟚} → a <₂ b → (a ＝ ₀) × (b ＝ ₁)
+<₂-criterion-converse : {a b : 𝟚} → a < b → (a ＝ ₀) × (b ＝ ₁)
 <₂-criterion-converse {₀} {₁} l = refl , refl
 
-≤₂-criterion : {a b : 𝟚} → (a ＝ ₁ → b ＝ ₁) → a ≤₂ b
+≤₂-criterion : {a b : 𝟚} → (a ＝ ₁ → b ＝ ₁) → a ≤ b
 ≤₂-criterion {₀} {b} f = ⋆
 ≤₂-criterion {₁} {₀} f = 𝟘-elim (zero-is-not-one (f refl))
 ≤₂-criterion {₁} {₁} f = ⋆
 
-≤₂-criterion-converse : {a b : 𝟚} → a ≤₂ b → a ＝ ₁ → b ＝ ₁
+≤₂-criterion-converse : {a b : 𝟚} → a ≤ b → a ＝ ₁ → b ＝ ₁
 ≤₂-criterion-converse {₁} {₁} l refl = refl
+
+₀-smallest : {a b : 𝟚} → a ≤ b → b ＝ ₀ → a ＝ ₀
+₀-smallest {₀} {b} l refl = refl
 
 <₂-gives-≤₂ : {a b : 𝟚} → a < b → a ≤ b
 <₂-gives-≤₂ {₀} {₀} ()

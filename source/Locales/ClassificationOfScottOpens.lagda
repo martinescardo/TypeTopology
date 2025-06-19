@@ -67,7 +67,7 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
                (underlying-order (𝕊 ⁻))
                (directed-completeness (𝕊 ⁻) (index S) (S [_]) δ)
 
- image-on-directed-set-is-directed : {I : 𝓤  ̇}(𝒻 : DCPO⊥[ 𝓓 , 𝕊 ])
+ image-on-directed-set-is-directed : {I : 𝓤 ̇ }(𝒻 : DCPO⊥[ 𝓓 , 𝕊 ])
                                    → (α : I → ⟪ 𝓓 ⟫)
                                    → is-Directed (𝓓 ⁻) α
                                    → is-Directed (𝕊 ⁻) (𝒻 .pr₁ ∘ α)
@@ -152,7 +152,7 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
               (pr₁ (pr₂ (𝟙-＝-≃ (P (⋁ ((I , α) , δ)) holds) fe pe (holds-is-prop _))))
               (υ (α i) (⋁ ((I , α) , δ)) p q)
 
-         ♠ : (P : 𝓤  ̇) → is-prop ((P → 𝟙) × is-prop P)
+         ♠ : (P : 𝓤 ̇ ) → is-prop ((P → 𝟙) × is-prop P)
          ♠ _ = ×-is-prop (Π-is-prop fe (λ _ → 𝟙-is-prop)) (being-prop-is-prop fe)
 
          ♣ : P (α i) holds ＝ P (⋁ ((I , α) , δ)) holds
@@ -169,7 +169,7 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
              → to-𝕊-map₀ P (⋁ ((I , α) , δ)) ＝ 𝒬
           †₂ (i , r) = to-subtype-＝ ♠ ♣
            where
-            ♠ : (Q : 𝓤  ̇) (x y : Π (λ _ → 𝟙) × is-prop Q) → x ＝ y
+            ♠ : (Q : 𝓤 ̇ ) (x y : Π (λ _ → 𝟙) × is-prop Q) → x ＝ y
             ♠ _ = ×-is-prop
                    (Π-is-prop fe (λ _ → 𝟙-is-prop))
                    (being-prop-is-prop fe)

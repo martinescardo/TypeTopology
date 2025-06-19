@@ -14,7 +14,7 @@ type B : 𝓥 and map β : B → L such that
   β b ≤ x is 𝓥 small
 and
   x = ⋁ ↓ᴮ x
-for all x. 
+for all x.
 
 \begin{code}
 
@@ -48,7 +48,7 @@ open PropositionalTruncation pt
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥 ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
        where
@@ -62,7 +62,7 @@ module _
 
  open Joins _≤_
 
- ↓ᴮ : ⟨ L ⟩ → 𝓣 ⊔ 𝓥  ̇
+ ↓ᴮ : ⟨ L ⟩ → 𝓣 ⊔ 𝓥 ̇
  ↓ᴮ x = Σ b ꞉ B , (β b ≤ x) holds
 
  ↓ᴮ-to-base : (x : ⟨ L ⟩) → ↓ᴮ x → B
@@ -80,7 +80,7 @@ boiler plate that will allow us to use a small basis with greater efficiency.
 
 \begin{code}
 
- record is-basis : 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺  ̇ where
+ record is-basis : 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺ ̇ where
   field
    ≤-is-small : (x : ⟨ L ⟩) (b : B) → ((β b ≤ x) holds) is 𝓥 small
    ↓-is-sup : (x : ⟨ L ⟩) → (x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
@@ -94,7 +94,7 @@ boiler plate that will allow us to use a small basis with greater efficiency.
                          → (x ≤ u') holds
   is-least-upper-bound-↓ x = pr₂ (↓-is-sup x)
 
-  _≤ᴮ_ : (b : B) → (x : ⟨ L ⟩) → 𝓥  ̇
+  _≤ᴮ_ : (b : B) → (x : ⟨ L ⟩) → 𝓥 ̇
   b ≤ᴮ x = (resized ((β b ≤ x) holds)) (≤-is-small x b)
 
   ≤ᴮ-≃-≤ : {b : B} {x : ⟨ L ⟩} → (b ≤ᴮ x) ≃ ((β b) ≤ x) holds
@@ -109,8 +109,8 @@ boiler plate that will allow us to use a small basis with greater efficiency.
   ≤ᴮ-is-prop-valued : {b : B} {x : ⟨ L ⟩} → is-prop (b ≤ᴮ x)
   ≤ᴮ-is-prop-valued {b} {x} =
    equiv-to-prop ≤ᴮ-≃-≤ (holds-is-prop ((β b) ≤ x))
-   
-  small-↓ᴮ : ⟨ L ⟩ → 𝓥  ̇
+
+  small-↓ᴮ : ⟨ L ⟩ → 𝓥 ̇
   small-↓ᴮ x = Σ b ꞉ B , b ≤ᴮ x
 
   small-↓ᴮ-inclusion : (x : ⟨ L ⟩) → small-↓ᴮ x → ⟨ L ⟩
@@ -146,4 +146,3 @@ boiler plate that will allow us to use a small basis with greater efficiency.
                         → (x ≤ u') holds
   is-least-upper-boundᴮ x = pr₂ (is-supᴮ x)
 \end{code}
-

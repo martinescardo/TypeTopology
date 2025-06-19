@@ -8,6 +8,9 @@ This file corresponds to the paper
    2024
    https://doi.org/10.48550/arxiv.2407.06952
 
+NB: The names in this file should not be unchanged to ensure they correspond
+correctly to the above paper.
+
 See DomainTheory.index.lagda for an overview of all domain theory in
 TypeTopology.
 
@@ -54,7 +57,7 @@ open import OrderedTypes.Poset fe
 
 \end{code}
 
-Section 2
+Section 2. Foundations
 
 \begin{code}
 
@@ -74,7 +77,7 @@ Definition-2-4 𝓥 X = _∈_ , _⊆_
 
 \end{code}
 
-Section 3
+Section 3. Directed complete posets
 
 \begin{code}
 
@@ -120,7 +123,7 @@ module _
   Definition-3-7 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
   Definition-3-7 = is-directed-complete _⊑_
 
-  Definition-3-7-ad : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇}
+  Definition-3-7-ad : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ }
                       {α : I → ⟨ 𝓓 ⟩} → is-Directed 𝓓 α → ⟨ 𝓓 ⟩
   Definition-3-7-ad = ∐
 
@@ -182,7 +185,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 4
+Section 4. Scott continuous maps
 
 \begin{code}
 
@@ -314,7 +317,7 @@ Section 4
 
 \end{code}
 
-Section 5
+Section 5. Lifting
 
 \begin{code}
 
@@ -354,10 +357,10 @@ module _ (𝓥 : Universe) where
  Definition-5-6-ad = value
 
  open import UF.ClassicalLogic
- Proposition-5-7 : (X : 𝓤 ̇) → EM 𝓥 → 𝓛 X ≃ 𝟙 + X
+ Proposition-5-7 : (X : 𝓤 ̇ ) → EM 𝓥 → 𝓛 X ≃ 𝟙 + X
  Proposition-5-7 = EM-gives-classical-lifting
 
- Proposition-5-7-ad : ((X : 𝓤 ̇) → 𝓛 X ≃ 𝟙 + X) → EM 𝓥
+ Proposition-5-7-ad : ((X : 𝓤 ̇ ) → 𝓛 X ≃ 𝟙 + X) → EM 𝓥
  Proposition-5-7-ad = classical-lifting-gives-EM
 
  module _ {X : 𝓤 ̇ } where
@@ -409,7 +412,7 @@ module _ (𝓥 : Universe) where
                          ⊑'-is-transitive ,
                          ⊑'-is-antisymmetric
 
-  open import Lifting.UnivalentPrecategory 𝓥 X
+  open import Lifting.UnivalentWildCategory 𝓥 X
   Proposition-5-14-ad₂ : {l m : 𝓛 X} → (l ⊑ m → l ⊑' m) × (l ⊑' m → l ⊑ m)
   Proposition-5-14-ad₂ = ⊑-to-⊑' , ⊑'-to-⊑
 
@@ -430,9 +433,9 @@ module _ (𝓥 : Universe) where
                                 (⊑-prop-valued fe fe s l m)
                                 (⊑'-prop-valued s)
                                 ⊑-to-⊑'
-                                ⊑'-to-⊑ }
+                                ⊑'-to-⊑}
    where
-    open import Lifting.UnivalentPrecategory 𝓥 X
+    open import Lifting.UnivalentWildCategory 𝓥 X
 
  module _
          {X : 𝓤 ̇ }
@@ -491,7 +494,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 6
+Section 6. Products and exponentials
 
 \begin{code}
 
@@ -606,7 +609,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 7
+Section 7. Bilimits
 
 \begin{code}
 
@@ -752,7 +755,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 8
+Section 8. Scott's D∞ model of the untyped λ-calculus
 
 \begin{code}
 

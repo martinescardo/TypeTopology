@@ -49,7 +49,7 @@ vvfunext-gives-unique-choice vv X A R s = c
 unique-choice-gives-vvfunext : Unique-Choice 𝓤 𝓥 𝓥 → vvfunext 𝓤 𝓥
 unique-choice-gives-vvfunext {𝓤} {𝓥} uc {X} {A} φ = γ
  where
-  R : (x : X) → A x → 𝓥  ̇
+  R : (x : X) → A x → 𝓥 ̇
   R x a = A x
 
   s' : (x : X) → is-singleton (A x × A x)

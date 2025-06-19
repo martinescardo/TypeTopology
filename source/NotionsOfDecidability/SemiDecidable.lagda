@@ -20,7 +20,7 @@ called Escardo-Knapp Choice here, holds.
 
 The table of contents is as follows:
 
-∗ Part I   Basic definitions and properties of semidecidablity (structure)
+∗ Part I   Basic definitions and properties of semidecidability (structure)
 
 ∗ Part II  Formulating LPO, MP and BKS⁺ in terms of the type of semidecidability
            propositions having/being a particular subtype.
@@ -890,8 +890,6 @@ We start by formulating:
 
 and prove their equivalence following [End of Section 2.5, EKC2017].
 
-\end{code}
-
 \begin{code}
 
 Semidecidable-Closed-Under-Σ : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
@@ -1119,7 +1117,7 @@ the absence of countable choice.
 
 Next, we consider a particular instance of countable choice that we dub
 Countable Semidecidable Choice (CSC) here and prove that it suffices to show
-that the semidecidable propositions are closed under countable choice.
+that the semidecidable propositions are closed under countable joins.
 
 \begin{code}
 
@@ -1387,8 +1385,9 @@ that SCSC implies EKC.
 
 We briefly sketch the proof of the observation.
 
-(1) Assume P : 𝓤 is semidecidable and Q : P → 𝓥.
-    We are to show that Σ Q is semidecidable.
+(1) Assume P : 𝓤 is semidecidable and Q : P → 𝓥 a family of
+    semidecidable propositions.  We are to show that Σ Q is
+    semidecidable.
 
 (2) Find α : ℕ → 𝟚 witnesses the semidecidability of P.
 

@@ -78,7 +78,7 @@ a least fixed point.
 
 module _ {𝓤 𝓣 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓣 𝓥) where
 
- has-least-fixed-point : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓣  ̇
+ has-least-fixed-point : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓣 ̇
  has-least-fixed-point f =
   Σ p ꞉ ⟨ L ⟩ , (f p ＝ p) × ((a : ⟨ L ⟩) → (f a ＝ a) → (p ≤⟨ L ⟩ a) holds)
 
@@ -128,7 +128,7 @@ our least fixed point theorem.
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥 ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -147,7 +147,7 @@ We give names to the closure conditions.
 
 \begin{code}
 
- c-closure : {𝓦 : Universe} (S : 𝓟 {𝓦} B) → (𝓥 ⁺) ⊔ 𝓦  ̇
+ c-closure : {𝓦 : Universe} (S : 𝓟 {𝓦} B) → (𝓥 ⁺) ⊔ 𝓦 ̇
  c-closure S = (U : 𝓟 {𝓥} B)
              → U ⊆ S
              → (b : B) → b ≤ᴮ (⋁ 【 β , U 】)
@@ -155,7 +155,7 @@ We give names to the closure conditions.
 
  _closure : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
           → {𝓦 : Universe} (S : 𝓟 {𝓦} B)
-          → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
+          → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
  (ϕ closure) S = (a : ⟨ L ⟩)
                → (b : B)
                → (b , a) ∈ ϕ
@@ -177,7 +177,7 @@ one may expect).
    inductively-generated-subset
 
   field
-   Ind : B → 𝓤 ⊔ 𝓥 ⁺  ̇
+   Ind : B → 𝓤 ⊔ 𝓥 ⁺ ̇
    Ind-trunc : (b : B) → is-prop (Ind b)
   private
    𝓘 : 𝓟 {𝓤 ⊔ 𝓥 ⁺} B
@@ -238,7 +238,7 @@ inductive definition.
 
 module local-inductive-definitions
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥 ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -259,7 +259,7 @@ that depends on ϕ.
 
 \begin{code}
 
- _↓_ : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (a : ⟨ L ⟩) → 𝓤 ⊔ 𝓣 ⊔ 𝓥  ̇
+ _↓_ : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (a : ⟨ L ⟩) → 𝓤 ⊔ 𝓣 ⊔ 𝓥 ̇
  ϕ ↓ a = Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
 
  ↓-to-base : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (a : ⟨ L ⟩) → ϕ ↓ a → B
@@ -293,13 +293,13 @@ that depends on ϕ.
    s'-is-upbnd : (s' is-an-upper-bound-of (ϕ ↓ x , β ∘ ↓-to-base ϕ x)) holds
    s'-is-upbnd (b , e) = is-upbnd' (↓-monotonicity-lemma ϕ x y o ((b , e)))
 
- is-local : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺)  ̇
+ is-local : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺) ̇
  is-local ϕ = (a : ⟨ L ⟩) → (ϕ ↓ a) is 𝓥 small
 
  module _ (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) (i : is-local ϕ) where
 
   private
-   S' : (a : ⟨ L ⟩) → 𝓥  ̇
+   S' : (a : ⟨ L ⟩) → 𝓥 ̇
    S' a = resized (ϕ ↓ a) (i a)
 
    S'-equiv-↓ : (a : ⟨ L ⟩) → S' a ≃ ϕ ↓ a
@@ -439,7 +439,7 @@ assumpions.
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥 ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -466,7 +466,7 @@ respect to an arbitrary universe parameter 𝓣.)
 
 \begin{code}
 
-  is-small-closed-subset : (P : 𝓟 {𝓥} B) → 𝓤 ⊔ (𝓥 ⁺)  ̇
+  is-small-closed-subset : (P : 𝓟 {𝓥} B) → 𝓤 ⊔ (𝓥 ⁺) ̇
   is-small-closed-subset P = ((U : 𝓟 {𝓥} B)
                             → (U ⊆ P)
                             → ((b : B)
@@ -484,7 +484,7 @@ respect to an arbitrary universe parameter 𝓣.)
    ×-is-prop (Π₄-is-prop fe (λ _ _ b _ → holds-is-prop (P b)))
              (Π₄-is-prop fe (λ _ b _ _ → holds-is-prop (P b)))
 
-  small-closed-subsets : 𝓤 ⊔ (𝓥 ⁺)  ̇
+  small-closed-subsets : 𝓤 ⊔ (𝓥 ⁺) ̇
   small-closed-subsets = Σ P ꞉ 𝓟 {𝓥} B , is-small-closed-subset P
 
   subset-of-small-closed-subset : small-closed-subsets → 𝓟 {𝓥} B
@@ -508,13 +508,13 @@ respect to an arbitrary universe parameter 𝓣.)
                                   → b ∈ subset-of-small-closed-subset X)
   ϕ-closed-of-small-closed-subset (P , c-clsd , ϕ-clsd) = ϕ-clsd
 
-  is-deflationary : (a : ⟨ L ⟩) → 𝓣  ̇
+  is-deflationary : (a : ⟨ L ⟩) → 𝓣 ̇
   is-deflationary a = ((Γ ϕ i) a ≤ a) holds
 
   is-deflationary-is-predicate : (a : ⟨ L ⟩) → is-prop (is-deflationary a)
   is-deflationary-is-predicate a = holds-is-prop ((Γ ϕ i) a ≤ a)
 
-  deflationary-points : 𝓤 ⊔ 𝓣  ̇
+  deflationary-points : 𝓤 ⊔ 𝓣 ̇
   deflationary-points = Σ a ꞉ ⟨ L ⟩ , (is-deflationary a)
 
   point-def-points : deflationary-points → ⟨ L ⟩
@@ -673,7 +673,7 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
    module smallness-assumption (j : (b : B) → (b ∈ 𝓘nd) is 𝓥 small) where
 
     private
-     𝓘' : (b : B) →  𝓥  ̇
+     𝓘' : (b : B) →  𝓥 ̇
      𝓘' b = (resized (b ∈ 𝓘nd)) (j b)
 
      𝓘'-equiv-𝓘nd : (b : B) → 𝓘' b ≃ b ∈ 𝓘nd
@@ -875,7 +875,7 @@ precise below.
 
 module bounded-inductive-definitions
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥 ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -889,22 +889,22 @@ module bounded-inductive-definitions
  open local-inductive-definitions L β h
  open is-basis h
 
- _is-a-small-cover-of_ : (X : 𝓥  ̇) → (Y : 𝓦  ̇) → 𝓥 ⊔ 𝓦  ̇
+ _is-a-small-cover-of_ : (X : 𝓥 ̇ ) → (Y : 𝓦 ̇ ) → 𝓥 ⊔ 𝓦 ̇
  X is-a-small-cover-of Y = X ↠ Y
 
- has-a-bound : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺)  ̇
- has-a-bound ϕ = Σ I ꞉ 𝓥  ̇ , Σ α ꞉ (I → 𝓥  ̇) ,
+ has-a-bound : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺) ̇
+ has-a-bound ϕ = Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → 𝓥 ̇ ) ,
                  ((a : ⟨ L ⟩)
                → (b : B)
                → (b , a) ∈ ϕ
                → (Ǝ i ꞉ I , α i is-a-small-cover-of ↓ᴮ L β a) holds)
 
- bound-index : {ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)} → has-a-bound ϕ → 𝓥  ̇
+ bound-index : {ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)} → has-a-bound ϕ → 𝓥 ̇
  bound-index (I , α , covering) = I
 
  bound-family : {ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)}
               → (bnd : has-a-bound ϕ)
-              → (bound-index {ϕ} bnd → 𝓥  ̇)
+              → (bound-index {ϕ} bnd → 𝓥 ̇ )
  bound-family (I , α , covering) = α
 
  covering-condition : {ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)}
@@ -917,7 +917,7 @@ module bounded-inductive-definitions
                         holds)
  covering-condition (I , α , covering) = covering
 
- is-bounded : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺)  ̇
+ is-bounded : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺) ̇
  is-bounded ϕ = ((a : ⟨ L ⟩) → (b : B) → ((b , a) ∈ ϕ) is 𝓥 small)
               × (has-a-bound ϕ)
 
@@ -927,16 +927,16 @@ module bounded-inductive-definitions
  bounded-implies-local ϕ (ϕ-small , ϕ-has-bound) a =
   smallness-closed-under-≃ S₀-is-small S₀-equiv-↓
   where
-   I : 𝓥  ̇
+   I : 𝓥 ̇
    I = bound-index {ϕ} ϕ-has-bound
-   α : I → 𝓥  ̇
+   α : I → 𝓥 ̇
    α = bound-family {ϕ} ϕ-has-bound
    cov : (a : ⟨ L ⟩)
        → (b : B)
        → (b , a) ∈ ϕ
        → (Ǝ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ L β a)) holds
    cov = covering-condition {ϕ} ϕ-has-bound
-   S₀ : 𝓤 ⊔ 𝓣 ⊔ 𝓥  ̇
+   S₀ : 𝓤 ⊔ 𝓣 ⊔ 𝓥 ̇
    S₀ = Σ b ꞉ B , (Ǝ i ꞉ I , (Σ m ꞉ (α i → ↓ᴮ L β a) ,
                   (b , ⋁ (α i , ↓ᴮ-inclusion L β a ∘ m)) ∈ ϕ)) holds
    S₀-is-small : S₀ is 𝓥 small
@@ -1022,7 +1022,7 @@ precise below.
 
 module small-presentation-of-lattice
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥 ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -1037,16 +1037,16 @@ module small-presentation-of-lattice
  open is-basis h
 
  _is-a-small-presentation :
-  Σ J ꞉ 𝓥  ̇ , (J → 𝓟 {𝓥} B) × 𝓟 {𝓥} (B × 𝓟 {𝓥} B) → (𝓥 ⁺)  ̇
+  Σ J ꞉ 𝓥 ̇ , (J → 𝓟 {𝓥} B) × 𝓟 {𝓥} (B × 𝓟 {𝓥} B) → (𝓥 ⁺) ̇
  (J , Y , R) is-a-small-presentation = (b : B)
                                      → (X : 𝓟 {𝓥} B)
                                      → b ≤ᴮ (⋁ 【 β , X 】)
                                      ≃ ((Ǝ j ꞉ J , Y j ⊆ X × (b , Y j) ∈ R)
                                         holds)
 
- has-small-presentation : (𝓥 ⁺)  ̇
+ has-small-presentation : (𝓥 ⁺) ̇
  has-small-presentation =
-  Σ 𝓡 ꞉ Σ J ꞉ 𝓥  ̇ , (J → 𝓟 {𝓥} B) × 𝓟 {𝓥} (B × 𝓟 {𝓥} B)
+  Σ 𝓡 ꞉ Σ J ꞉ 𝓥 ̇ , (J → 𝓟 {𝓥} B) × 𝓟 {𝓥} (B × 𝓟 {𝓥} B)
                   , 𝓡 is-a-small-presentation
 
 \end{code}
@@ -1060,7 +1060,7 @@ large quantification!
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥 ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -1080,7 +1080,7 @@ module _
          (bnd : is-bounded ϕ)
         where
 
-  I₁ : 𝓥  ̇
+  I₁ : 𝓥 ̇
   I₁ = pr₁ (pr₁ small-pres)
 
   Y : I₁ → 𝓟 {𝓥} B
@@ -1107,7 +1107,7 @@ module _
   ϕ-is-small : (a : ⟨ L ⟩) → (b : B) → ((b , a) ∈ ϕ) is 𝓥 small
   ϕ-is-small = pr₁ bnd
 
-  small-ϕ : (b : B) → (a : ⟨ L ⟩) → 𝓥  ̇
+  small-ϕ : (b : B) → (a : ⟨ L ⟩) → 𝓥 ̇
   small-ϕ b a = pr₁ (ϕ-is-small a b)
 
   small-ϕ-equiv-ϕ : (a : ⟨ L ⟩) → (b : B) → small-ϕ b a ≃ (b , a) ∈ ϕ
@@ -1119,10 +1119,10 @@ module _
   ϕ-is-small-backward : (a : ⟨ L ⟩) → (b : B) → (b , a) ∈ ϕ → small-ϕ b a
   ϕ-is-small-backward a b = ⌜ small-ϕ-equiv-ϕ a b ⌝⁻¹
 
-  I₂ : 𝓥  ̇
+  I₂ : 𝓥 ̇
   I₂ = pr₁ (pr₂ bnd)
 
-  α : I₂ → 𝓥  ̇
+  α : I₂ → 𝓥 ̇
   α = pr₁ (pr₂ (pr₂ bnd))
 
   cover-condition : ((a : ⟨ L ⟩)
@@ -1138,7 +1138,7 @@ atleast has strictly positive point constructors).
 
 \begin{code}
 
-  data Small-Ind-Check : B → 𝓥  ̇ where
+  data Small-Ind-Check : B → 𝓥 ̇ where
    Small-c-cl' : (i : I₁)
                → ((b : B) → (b ∈ Y i → Small-Ind-Check b))
                → (b : B) → (b , Y i) ∈ R
@@ -1158,13 +1158,13 @@ names for the closure properties.
 
 \begin{code}
 
-  Small-c-closure : {𝓦 : Universe} (S : 𝓟 {𝓦} B) → 𝓥 ⊔ 𝓦  ̇
+  Small-c-closure : {𝓦 : Universe} (S : 𝓟 {𝓦} B) → 𝓥 ⊔ 𝓦 ̇
   Small-c-closure S = (i : I₁)
                     → ((b : B) → (b ∈ Y i → b ∈ S))
                     → (b : B) → (b , Y i) ∈ R
                     → b ∈ S
 
-  Small-ϕ-closure : {𝓦 : Universe} (S : 𝓟 {𝓦} B) → 𝓥 ⊔ 𝓦  ̇
+  Small-ϕ-closure : {𝓦 : Universe} (S : 𝓟 {𝓦} B) → 𝓥 ⊔ 𝓦 ̇
   Small-ϕ-closure S = (i : I₂)
                     → (m : α i → B)
                     → (b : B)
@@ -1177,7 +1177,7 @@ names for the closure properties.
     inductively-generated-small-subset
 
    field
-    Small-Ind : B → 𝓥  ̇
+    Small-Ind : B → 𝓥 ̇
     Small-Ind-trunc : (b : B) → is-prop (Small-Ind b)
    private
     Small-𝓘 : 𝓟 {𝓥} B
@@ -1227,7 +1227,7 @@ least fixed point theorem.
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥 ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -1345,7 +1345,7 @@ endomap f : L → L. If there exists a bounded abstract inductive definition
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥 ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -1433,7 +1433,7 @@ A monotone map f, on a 𝓥-generated sup-lattice L, is dense if there is a fami
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥 ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -1448,16 +1448,16 @@ module _
  open is-basis h
 
  density-condition : (f : ⟨ L ⟩ → ⟨ L ⟩)
-                   → (I : 𝓥  ̇)
+                   → (I : 𝓥 ̇ )
                    → (γ : I → ⟨ L ⟩)
-                   → 𝓤 ⊔ 𝓣 ⊔ 𝓥  ̇
+                   → 𝓤 ⊔ 𝓣 ⊔ 𝓥 ̇
  density-condition f I γ = (b : B)
                          → (a : ⟨ L ⟩)
                          → b ≤ᴮ f a
                          → (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × (γ i ≤ a) holds) holds
 
- is-dense : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺)  ̇
- is-dense f = Σ I ꞉ 𝓥  ̇ , Σ γ ꞉ (I → ⟨ L ⟩) , density-condition f I γ
+ is-dense : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺) ̇
+ is-dense f = Σ I ꞉ 𝓥 ̇ , Σ γ ꞉ (I → ⟨ L ⟩) , density-condition f I γ
 
  module _ (l-small : ⟨ L ⟩ is-locally 𝓥 small) where
 
@@ -1603,7 +1603,7 @@ theorem.
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥 ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)

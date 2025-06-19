@@ -45,10 +45,10 @@ open import MLTT.Spartan hiding (J)
 
 module Games.FiniteHistoryDependent (R : Type) where
 
-open import Games.Monad
-open import Games.J
-open import Games.K
-open import Games.JK
+open import MonadOnTypes.Monad
+open import MonadOnTypes.J
+open import MonadOnTypes.K
+open import MonadOnTypes.JK
 open import UF.Base
 open import UF.FunExt
 
@@ -248,6 +248,10 @@ is-optimal (game Xt ϕt q) σ = is-in-sgpe {Xt} q ϕt σ
 The main lemma is that the optimal outcome is the same thing as the
 application of the outcome function to the path induced by a strategy
 in perfect subgame equilibrium.
+
+Remark. In the published paper [0] above, we use the terminology
+`is-optimal` as above, but perhaps we should stick to subgame perfect
+equilibrium for the terminology.
 
 The following is Theorem 3.1 of reference [1].
 

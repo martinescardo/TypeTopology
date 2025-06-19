@@ -50,7 +50,7 @@ required to be
 
     2. transitive,
 
-    3. extensional (any two points with same lower set are the same),
+    3. extensional (any two points with same predecessors are the same),
 
     4. well founded (every element is accessible, or, equivalently,
        the principle of transfinite induction holds).

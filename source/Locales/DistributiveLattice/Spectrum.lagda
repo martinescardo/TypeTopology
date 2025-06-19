@@ -109,7 +109,7 @@ The binary meets of two ideals `I₁` and `I₂` is just the set intersection
    ; I-is-inhabited       = ∣ 𝟎 , I₁-contains-𝟎 , I₂-contains-𝟎 ∣
    ; I-is-downward-closed = †
    ; I-is-closed-under-∨  = ‡
-   }
+  }
    where
     open Ideal ℐ₁ renaming (I to I₁; I-contains-𝟎 to I₁-contains-𝟎)
     open Ideal ℐ₂ renaming (I to I₂; I-contains-𝟎 to I₂-contains-𝟎)
@@ -135,7 +135,7 @@ The binary meets of two ideals `I₁` and `I₂` is just the set intersection
  ∧ᵢ-is-greatest I₁ I₂ I₃ (φ , ψ) x p = φ x p , ψ x p
 
  ∧ᵢ-is-glb : (I₁ I₂ : Ideal L) → ((I₁ ∧ᵢ I₂) is-glb-of (I₁ , I₂)) holds
- ∧ᵢ-is-glb I₁ I₂ = ∧ᵢ-is-lower I₁ I₂ , λ { (I₃ , p) → ∧ᵢ-is-greatest I₁ I₂ I₃ p }
+ ∧ᵢ-is-glb I₁ I₂ = ∧ᵢ-is-lower I₁ I₂ , λ { (I₃ , p) → ∧ᵢ-is-greatest I₁ I₂ I₃ p}
 
 \end{code}
 
@@ -153,7 +153,7 @@ union of ideals `⋃_{j : J} I_j`. Intuitively, this just says: for every `x` in
 
  infix 30 covering-syntax
 
- covering-syntax : (S : Fam 𝓤 (Ideal L)) → List ∣ L ∣ᵈ → 𝓤  ̇
+ covering-syntax : (S : Fam 𝓤 (Ideal L)) → List ∣ L ∣ᵈ → 𝓤 ̇
  covering-syntax S []       = 𝟙
  covering-syntax S (x ∷ xs) =
   (Σ i ꞉ index S , x ∈ᵢ (S [ i ]) holds) × covering-syntax S xs
@@ -266,7 +266,7 @@ subcover.
 We are now ready to define the join. Given a family `( Iⱼ )_{j : J}` of ideals,
 their union is given by the family:
 
-    { (⋁ F) ∣ F ⊆ (⋃_{j : J} I_j), F finite }.
+    { (⋁ F) ∣ F ⊆ (⋃_{j : J} I_j), F finite}.
 
 We capture finiteness using lists instead (which amounts to Kuratowski
 finiteness).
@@ -352,7 +352,7 @@ We package the proofs up into the following join operation `⋁ᵢ_`.
          ; I-is-inhabited       = ∣ 𝟎 , ∣ [] , (⋆ , refl) ∣ ∣
          ; I-is-downward-closed = ideal-join-is-downward-closed S
          ; I-is-closed-under-∨  = ideal-join-is-closed-under-∨ S
-         }
+        }
 
 \end{code}
 
@@ -481,7 +481,7 @@ We are now ready to package everything up as a frame.
   , 𝟏ᵢ-is-top
   , (λ (I₁ , I₂) → ∧ᵢ-is-lower I₁ I₂ , λ (I₃ , lb) → ∧ᵢ-is-greatest I₁ I₂ I₃ lb)
   , (λ S → ⋁ᵢ-is-an-upper-bound S , λ (I , ub) → ⋁ᵢ-is-least S I ub)
-  , λ { (I , S) → distributivityᵢ I S }
+  , λ { (I , S) → distributivityᵢ I S}
 
 \end{code}
 
@@ -495,6 +495,6 @@ locale that this frame defines as the spectrum over the distributive lattice
  spectrum : Locale (𝓤 ⁺) 𝓤 𝓤
  spectrum = record
              { ⟨_⟩ₗ         = Ideal L
-             ; frame-str-of = pr₂ frame-of-ideals }
+             ; frame-str-of = pr₂ frame-of-ideals}
 
 \end{code}

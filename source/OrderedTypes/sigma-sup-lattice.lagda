@@ -13,7 +13,7 @@ open import UF.Subsingletons
 
 module OrderedTypes.sigma-sup-lattice (fe : Fun-Ext) where
 
-open import UF.Hedberg
+open import UF.HedbergApplications
 open import UF.SIP
 open import UF.Sets
 open import UF.Subsingletons-FunExt

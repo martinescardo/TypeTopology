@@ -45,7 +45,7 @@ the sake of convenience.
 
 \begin{code}
 
-is-Kuratowski-finite-subsetₚ : {X : 𝓤  ̇} → 𝓟 X → Ω 𝓤
+is-Kuratowski-finite-subsetₚ : {X : 𝓤 ̇ } → 𝓟 X → Ω 𝓤
 is-Kuratowski-finite-subsetₚ P =
  is-Kuratowski-finite-subset P , being-Kuratowski-finite-is-prop
 
@@ -58,7 +58,7 @@ Kuratowski-finite.
 
 \begin{code}
 
-Kuratowski-finiteness-is-hereditary : 𝓤  ̇ → Ω (𝓤 ⁺)
+Kuratowski-finiteness-is-hereditary : 𝓤 ̇ → Ω (𝓤 ⁺)
 Kuratowski-finiteness-is-hereditary X =
  Ɐ F ꞉ 𝓟 X , Ɐ S ꞉ 𝓟 X ,
   S ⊆ₚ F ⇒ is-Kuratowski-finite-subsetₚ F ⇒ is-Kuratowski-finite-subsetₚ S
@@ -78,7 +78,7 @@ Lemma 1:
 \begin{code}
 
 having-empty-enumeration-entails-emptiness :
- (X : 𝓤  ̇) → (e : 𝟘 {𝓤₀} → X) → is-surjection e → ¬ X
+ (X : 𝓤 ̇ ) → (e : 𝟘 {𝓤₀} → X) → is-surjection e → ¬ X
 having-empty-enumeration-entails-emptiness X e σ x =
  ∥∥-rec 𝟘-is-prop (𝟘-elim ∘ pr₁) (σ x)
 
@@ -89,7 +89,7 @@ Lemma 2:
 \begin{code}
 
 having-nonempty-enumeration-entails-inhabitedness :
- (X : 𝓤  ̇) (n : ℕ) → 0 < n → (e : Fin n → X) → is-surjection e → X
+ (X : 𝓤 ̇ ) (n : ℕ) → 0 < n → (e : Fin n → X) → is-surjection e → X
 having-nonempty-enumeration-entails-inhabitedness X (succ n) p e σ = e 𝟎
 
 \end{code}
@@ -100,7 +100,7 @@ hereditary is discrete.
 \begin{code}
 
 hereditary-Kuratowski-finiteness-gives-discreteness :
-   (X : 𝓤  ̇)
+   (X : 𝓤 ̇ )
  → is-set X
  → Kuratowski-finiteness-is-hereditary X holds
  → is-discrete X
@@ -183,7 +183,7 @@ Combining the two, we get:
 finite-subset-property-gives-EM :
    (𝓤 : Universe)
  → (pe : propext 𝓤)
- → ((X : 𝓤 ⁺  ̇) → Kuratowski-finiteness-is-hereditary X holds)
+ → ((X : 𝓤 ⁺ ̇ ) → Kuratowski-finiteness-is-hereditary X holds)
  → EM 𝓤
 finite-subset-property-gives-EM 𝓤 pe ϡ =
  hereditary-Kuratowski-finiteness-for-Ω-gives-EM pe (ϡ (Ω 𝓤))

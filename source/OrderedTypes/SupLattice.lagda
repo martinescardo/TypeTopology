@@ -11,7 +11,7 @@ order values and 𝓥 for the families which have suprema.
 open import MLTT.Spartan
 open import UF.Equiv
 open import UF.FunExt
-open import UF.Hedberg
+open import UF.HedbergApplications
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
 open import UF.PropTrunc
@@ -40,21 +40,21 @@ We commence by defining sup lattices.
 
 module _ (𝓤 𝓣 𝓥 : Universe) where
 
- sup-lattice-data : 𝓤  ̇ → 𝓤 ⊔ 𝓣 ⁺ ⊔ 𝓥 ⁺  ̇
+ sup-lattice-data : 𝓤 ̇ → 𝓤 ⊔ 𝓣 ⁺ ⊔ 𝓥 ⁺ ̇
  sup-lattice-data A = (A → A → Ω 𝓣) × (Fam 𝓥 A → A)
 
- is-sup-lattice : {A : 𝓤  ̇} → sup-lattice-data A → 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺  ̇
+ is-sup-lattice : {A : 𝓤 ̇ } → sup-lattice-data A → 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺ ̇
  is-sup-lattice {A} (_≤_ , ⋁_) = is-partial-order A _≤_ × suprema
   where
    open Joins _≤_
-   suprema : 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺  ̇
+   suprema : 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺ ̇
    suprema = (U : Fam 𝓥 A) → ((⋁ U) is-lub-of U) holds
 
  sup-lattice-structure : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓣 ⁺ ̇
  sup-lattice-structure A = Σ d ꞉ (sup-lattice-data A) , is-sup-lattice d
 
- Sup-Lattice : (𝓤 ⊔ 𝓣 ⊔ 𝓥) ⁺  ̇
- Sup-Lattice = Σ A ꞉ 𝓤  ̇ , sup-lattice-structure A
+ Sup-Lattice : (𝓤 ⊔ 𝓣 ⊔ 𝓥) ⁺ ̇
+ Sup-Lattice = Σ A ꞉ 𝓤 ̇ , sup-lattice-structure A
 
 \end{code}
 
@@ -62,7 +62,7 @@ Now we give some naming conventions which will be useful.
 
 \begin{code}
 
-⟨_⟩ : Sup-Lattice 𝓤 𝓣 𝓥 → 𝓤  ̇
+⟨_⟩ : Sup-Lattice 𝓤 𝓣 𝓥 → 𝓤 ̇
 ⟨ A , rest ⟩ = A
 
 order-of : (L : Sup-Lattice 𝓤 𝓣 𝓥) → (⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓣)
@@ -125,7 +125,7 @@ module _ where
  is-monotone : {𝓤 𝓤' 𝓣 𝓣' 𝓥 𝓥' : Universe}
              → (L : Sup-Lattice 𝓤 𝓣 𝓥) (M : Sup-Lattice 𝓤' 𝓣' 𝓥')
              → (f : ⟨ L ⟩ → ⟨ M ⟩)
-             → 𝓤 ⊔ 𝓣 ⊔ 𝓣'  ̇
+             → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
  is-monotone L M f = (x y : ⟨ L ⟩)
                    → (x ≤⟨ L ⟩ y) holds
                    → (f x ≤⟨ M ⟩ f y) holds
@@ -133,7 +133,7 @@ module _ where
  is-monotone-endomap : {𝓤 𝓣 𝓥 : Universe}
                      → (L : Sup-Lattice 𝓤 𝓣 𝓥)
                      → (f : ⟨ L ⟩ → ⟨ L ⟩)
-                     → 𝓤 ⊔ 𝓣  ̇
+                     → 𝓤 ⊔ 𝓣 ̇
  is-monotone-endomap L f = is-monotone L L f
 
 \end{code}
@@ -146,7 +146,7 @@ spaces are ordered as expected.
 module _
         {𝓤 𝓣 𝓥 : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
-        {A : 𝓥  ̇}
+        {A : 𝓥 ̇ }
         (m : A → ⟨ L ⟩)
        where
 
@@ -171,12 +171,12 @@ We now show if a type is small and has a map to the carrier then it has a join.
 module _
         {𝓤 𝓣 𝓥 𝓦 : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
-        {T : 𝓦  ̇}
+        {T : 𝓦 ̇ }
         (m : T → ⟨ L ⟩)
         (T-is-small : T is 𝓥 small)
        where
  private
-  T' : 𝓥  ̇
+  T' : 𝓥 ̇
   T' = (resized T) T-is-small
 
   T'-≃-T : T' ≃ T
@@ -237,8 +237,8 @@ We now show that reindexing families along a surjection preserves the supremum.
 module _
         {𝓤 𝓣 𝓥 𝓦 𝓦' : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
-        {T : 𝓦  ̇}
-        {T' : 𝓦'  ̇}
+        {T : 𝓦 ̇ }
+        {T' : 𝓦' ̇ }
         (e : T' ↠ T)
         (m : T → ⟨ L ⟩)
        where
@@ -279,8 +279,8 @@ surjection.
 module _
         {𝓤 𝓣 𝓥 𝓦 𝓦' : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
-        {T : 𝓦  ̇}
-        {T' : 𝓦'  ̇}
+        {T : 𝓦 ̇ }
+        {T' : 𝓦' ̇ }
         (e : T' ≃ T)
         (m : T → ⟨ L ⟩)
        where

@@ -12,14 +12,14 @@ open import UF.Subsingletons
 has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-section r = Σ s ꞉ (codomain r → domain r), r ∘ s ∼ id
 
-section-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (r : X → Y)
+section-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (r : X → Y)
            → has-section r
            → (Y → X)
-section-of r (s , rs) = s
+section-map r (s , rs) = s
 
 section-equation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (r : X → Y)
                  → (h : has-section r)
-                 → r ∘ section-of r h ∼ id
+                 → r ∘ section-map r h ∼ id
 section-equation r (s , rs) = rs
 
 is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇

@@ -173,7 +173,7 @@ A : {n : ℕ} → (𝟚 ^ n → 𝟚) → 𝟚
 A f = f (ε f)
 
 ε {0}      f = ⟨⟩
-ε {succ n} f = cons b₀ (ε (f ∘ cons b₀) )
+ε {succ n} f = cons b₀ (ε (f ∘ cons b₀))
  where
   b₀ : 𝟚
   b₀ = ε𝟚 (b ↦ A (f ∘ cons b))
@@ -366,7 +366,7 @@ Their intended behaviour is as follows:
 
 𝕔𝕠𝕟𝕤s-behaviour f e₀ ⟨⟩       = refl
 𝕔𝕠𝕟𝕤s-behaviour f e₀ (e , es) = ap₂ _,_
-                                   (𝕔𝕠𝕟𝕤-behaviour  f e₀ e )
+                                   (𝕔𝕠𝕟𝕤-behaviour  f e₀ e)
                                    (𝕔𝕠𝕟𝕤s-behaviour f e₀ es)
 \end{code}
 
@@ -573,11 +573,11 @@ Notice that 𝕔𝕠𝕟𝕤 and 𝕔𝕠𝕟𝕤 are more refined versions of �
 𝕞𝕒𝕡-cons-𝕔𝕠𝕟𝕤 : {n k : ℕ}
                 (e₀ : E (succ n))
                 (e : E n)
-               → 𝕞𝕒𝕡 (cons e₀ ) e ＝ 𝕔𝕠𝕟𝕤 e₀ e
+               → 𝕞𝕒𝕡 (cons e₀) e ＝ 𝕔𝕠𝕟𝕤 e₀ e
 𝕞𝕒𝕡s-cons-𝕔𝕠𝕟𝕤s : {n k : ℕ}
                 → (e₀ : E (succ n))
                 → (es : E n ^ k)
-                → 𝕞𝕒𝕡s (cons e₀ ) es ＝ 𝕔𝕠𝕟𝕤s e₀ es
+                → 𝕞𝕒𝕡s (cons e₀) es ＝ 𝕔𝕠𝕟𝕤s e₀ es
 
 𝕞𝕒𝕡-cons-𝕔𝕠𝕟𝕤 {n} {k} e₀ O = refl
 𝕞𝕒𝕡-cons-𝕔𝕠𝕟𝕤 {n} {k} e₀ (𝕗 es) = ap (𝕗 ∘ cons e₀) (𝕞𝕒𝕡s-cons-𝕔𝕠𝕟𝕤s e₀ es)

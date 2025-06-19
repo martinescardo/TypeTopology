@@ -93,7 +93,7 @@ We can at least show that the relation is an equivalence relation.
 ＝C'-trans : ∀ {x y z} → x ＝C' y → y ＝C' z → x ＝C' z
 
 ＝C-trans p q .prove = ＝C'-trans (p .prove) (q .prove)
-＝C'-trans {cozero } {cozero} {cozero}   (con p) (con q) = con ⋆
+＝C'-trans {cozero} {cozero} {cozero}   (con p) (con q) = con ⋆
 ＝C'-trans {cosuc _} {cosuc _} {cosuc _} (con p) (con q) = con (＝C-trans p q)
 
 \end{code}
@@ -187,9 +187,9 @@ CoNat≈ℕ∞ fe bisim = f , (g , λ - → bisim _ _ (f∘g∼id -)) , (g , g�
    where
     I : (x : CoNat')
       → (n : ℕ) → CoNat-to-ℕ→𝟚 (f (g (conat x))) n ＝ CoNat-to-ℕ→𝟚 (conat x) n
-    I (cozero ) zero = refl
+    I (cozero) zero = refl
     I (cosuc α) zero = refl
-    I (cozero ) (succ n) = refl
+    I (cozero) (succ n) = refl
     I (cosuc α) (succ n) = I (α .force) n
 
 \end{code}

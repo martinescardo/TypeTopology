@@ -1,7 +1,7 @@
 Martin Escardo 7th November 2018.
 
-(Strong) 'Monad' structure on 𝓛.
-Again the proofs are simplified by the use of SIP.
+(Strong) wild monad structure on 𝓛.  Again the proofs are simplified
+by the use of SIP.
 
 We prove the laws for the various notions of equality because
 different ones are more convenient in different situations, and
@@ -150,6 +150,11 @@ _×_:
 
 𝓛-m : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → 𝓛 X × 𝓛 Y → 𝓛 (X × Y)
 𝓛-m (l , m) = ((λ x → curry 𝓛-σ x m)♯) l
+
+𝓛-m-explicitly : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                 (n@((P , φ , i), (Q , γ , j)) : 𝓛 X × 𝓛 Y)
+               → 𝓛-m n ＝ (P × Q) , (λ (p , q) → φ p , γ q) , ×-is-prop i j
+𝓛-m-explicitly _ = refl
 
 \end{code}
 

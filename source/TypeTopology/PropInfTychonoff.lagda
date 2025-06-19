@@ -34,7 +34,7 @@ prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} X-is-prop _≺_ ε p =
   φ ≤ γ = ¬ (Σ x ꞉ X , γ x ≺ φ x)
 
   𝕗 : (x : X) → Π Y ≃ Y x
-  𝕗 = prop-indexed-product (fe 𝓤 𝓥) X-is-prop
+  𝕗 x = prop-indexed-product x (fe 𝓤 𝓥) X-is-prop
 
   _ : (x : X) (φ : Π Y) → ⌜ 𝕗 x ⌝ φ ＝ φ x
   _ = λ x φ → refl

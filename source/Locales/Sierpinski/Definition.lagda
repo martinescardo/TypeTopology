@@ -53,7 +53,7 @@ We first define the Sierpinski dcpo
 
 \begin{code}
 
-𝕊𝓓⁺ : DCPO {𝓤 ⁺ } {𝓤 ⁺}
+𝕊𝓓⁺ : DCPO {𝓤 ⁺} {𝓤 ⁺}
 𝕊𝓓⁺ = 𝓛-DCPO {X = 𝟙 {𝓤}} 𝟙-is-set
 
 \end{code}
@@ -174,10 +174,10 @@ It is obvious that these form an equivalence.
 Ω-equivalent-to-𝕊 : Ω 𝓤 ≃ ⟨ 𝕊𝓓 ⟩∙
 Ω-equivalent-to-𝕊 = to-𝕊𝓓 , ((to-Ω , †) , (to-Ω , ‡))
  where
-  ψ : {A : 𝓤  ̇} → is-prop (A → 𝟙)
+  ψ : {A : 𝓤 ̇ } → is-prop (A → 𝟙)
   ψ = Π-is-prop fe (λ _ → 𝟙-is-prop)
 
-  ϑ : {A : 𝓤  ̇} → is-prop (is-prop A)
+  ϑ : {A : 𝓤 ̇ } → is-prop (is-prop A)
   ϑ = being-prop-is-prop fe
 
   † : (to-𝕊𝓓 ∘ to-Ω) ∼ id
@@ -258,7 +258,7 @@ hscb = (𝟙 {𝓤} + 𝟙 {𝓤}) , β , σ
        ; ⊑ᴮ-is-small = λ x b → (β b ⊑⟨ 𝕊𝓓 ⟩ x) , ≃-refl (β b ⊑⟨ 𝕊𝓓 ⟩ x)
        ; ↓ᴮ-is-directed = λ x → ∣ inl ⋆ , ⊥-is-least 𝕊𝓓⊥ x ∣ , β-is-upward-directed x
        ; ↓ᴮ-is-sup = covering
-       }
+      }
 
 𝕊𝓓-is-structurally-algebraic : structurally-algebraic 𝕊𝓓
 𝕊𝓓-is-structurally-algebraic =
@@ -320,7 +320,7 @@ truthᵣ =
   { pred                              = truth₀
   ; pred-is-upwards-closed            = υ
   ; pred-is-inaccessible-by-dir-joins = ι
-  }
+ }
   where
    υ : is-upwards-closed truth₀ holds
    υ U V u (φ , _) = φ u

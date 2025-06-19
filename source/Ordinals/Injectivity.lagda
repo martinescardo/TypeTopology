@@ -27,7 +27,7 @@ module ordinals-injectivity (fe : FunExt) where
 
  open import InjectiveTypes.Blackboard fe
 
- _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
+ _↗_ : {I : 𝓤 ̇ } {J : 𝓥 ̇ }
      → (I → Ordinal 𝓦)
      → (I ↪ J)
      → (J → Ordinal (𝓤 ⊔ 𝓥 ⊔ 𝓦))
@@ -42,7 +42,7 @@ module ordinals-injectivity (fe : FunExt) where
                        e-is-embedding
                        (λ {i} → underlying-order (α i))
 
- ↗-propertyₒ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
+ ↗-propertyₒ : {I : 𝓤 ̇ } {J : 𝓥 ̇ }
               (α : I → Ordinal 𝓦)
               (𝓮@(e , e-is-embedding) : I ↪ J)
               (i : I)
@@ -86,7 +86,7 @@ module ordinals-injectivity (fe : FunExt) where
    γ = g , g-is-order-preserving , g-is-equiv , g⁻¹-is-order-preserving
 
  ↗-property : is-univalent (𝓤 ⊔ 𝓥)
-            → {I : 𝓤  ̇ } {J : 𝓥 ̇ }
+            → {I : 𝓤 ̇ } {J : 𝓥 ̇ }
               (α : I → Ordinal (𝓤 ⊔ 𝓥))
               (𝓮@(e , e-is-embedding) : I ↪ J)
               (i : I)
@@ -105,7 +105,7 @@ module topped-ordinals-injectivity (fe : FunExt) where
  open import InjectiveTypes.Blackboard fe
  open import Ordinals.ToppedType fe
 
- _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
+ _↗_ : {I : 𝓤 ̇ } {J : 𝓥 ̇ }
      → (I → Ordinalᵀ 𝓦)
      → (I ↪ J)
      → (J → Ordinalᵀ (𝓤 ⊔ 𝓥 ⊔ 𝓦))
@@ -120,7 +120,7 @@ module topped-ordinals-injectivity (fe : FunExt) where
                        e-is-embedding
                        (λ {i} → underlying-order (τ i))
 
- ↗-propertyₒ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
+ ↗-propertyₒ : {I : 𝓤 ̇ } {J : 𝓥 ̇ }
                (α : I → Ordinalᵀ 𝓦)
                (𝓮@(e , e-is-embedding) : I ↪ J)
                (i : I)
@@ -148,7 +148,7 @@ module ordinals-injectivity-order (ua : Univalence) where
 
  open ordinals-injectivity fe
 
- ↗-preserves-⊴ : {I J : 𝓤  ̇ } (𝓮 : I ↪ J)
+ ↗-preserves-⊴ : {I J : 𝓤 ̇ } (𝓮 : I ↪ J)
                  (α β : I → Ordinal 𝓤)
                → ((i : I) → α i ⊴ β i)
                → (j : J) → (α ↗ 𝓮) j ⊴ (β ↗ 𝓮) j
@@ -236,7 +236,7 @@ module topped-ordinals-injectivity-order (ua : Univalence) where
 
  open topped-ordinals-injectivity fe
 
- ↗-preserves-⊴ : {I J : 𝓤  ̇ } (𝓮 : I ↪ J)
+ ↗-preserves-⊴ : {I J : 𝓤 ̇ } (𝓮 : I ↪ J)
                  (α β : I → Ordinalᵀ 𝓤)
                → ((i : I) → [ α i ] ⊴ [ β i ])
                → (j : J) → [ (α ↗ 𝓮) j ] ⊴ [ (β ↗ 𝓮) j ]

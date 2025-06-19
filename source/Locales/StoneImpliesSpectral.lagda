@@ -185,7 +185,7 @@ stoneᴰ-implies-spectralᴰ {_} {_} {𝓦} X (κₓ , zdₓ) = ℬ , β , κ , 
   μ₀ : contains-top (𝒪 X) ℬ holds
   μ₀ = ∥∥-rec
         (holds-is-prop (contains-top (𝒪 X) ℬ))
-        (λ { (j , p) → ∣ j , transport (λ - → is-top (𝒪 X) - holds) (p ⁻¹) (𝟏-is-top (𝒪 X)) ∣ })
+        (λ { (j , p) → ∣ j , transport (λ - → is-top (𝒪 X) - holds) (p ⁻¹) (𝟏-is-top (𝒪 X)) ∣})
         (clopens-are-basic X (κₓ , zdₓ) (ℬ , β) 𝟏[ 𝒪 X ] (𝟏-is-clopen (𝒪 X)))
 
   open Meets (λ x y → x ≤[ poset-of (𝒪 X) ] y)

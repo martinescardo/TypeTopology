@@ -64,7 +64,7 @@ The type of points of a locale is then the completely prime filters.
 
 \begin{code}
 
- Point : 𝓤 ⁺  ̇
+ Point : 𝓤 ⁺ ̇
  Point = Σ ϕ ꞉ 𝓟 {𝓤} ⟨ 𝒪 X ⟩ , is-cpf ϕ holds
 
 \end{code}
@@ -85,7 +85,7 @@ and pairings to construct inhabitants of the `Point` type.
 
 \begin{code}
 
-record Pointᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺  ̇ where
+record Pointᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺ ̇ where
  open DefnOfCPF X
 
  field
@@ -113,7 +113,7 @@ record Pointᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺  ̇ where
 open DefnOfCPF
 
 to-pointᵣ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Point X → Pointᵣ X
-to-pointᵣ X (ϕ , cpf) = record { point = ϕ ; point-is-cpf = cpf }
+to-pointᵣ X (ϕ , cpf) = record { point = ϕ ; point-is-cpf = cpf}
 
 to-point : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Pointᵣ X → Point X
 to-point X x = point x , point-is-filter x , point-is-completely-prime x
@@ -128,7 +128,7 @@ point-rec-equiv X =
 
 \begin{code}
 
-record Point′ᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺  ̇ where
+record Point′ᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺ ̇ where
  field
   point                     : 𝓟 {𝓤} ⟨ 𝒪 X ⟩
   point-is-upwards-closed   : is-upwards-closed X point holds
@@ -163,13 +163,13 @@ to-point′ᵣ X 𝓍 =
   ; point-contains-top        = Pointᵣ.point-contains-top 𝓍
   ; point-is-closed-under-∧   = Pointᵣ.point-is-closed-under-∧ 𝓍
   ; point-is-completely-prime = Pointᵣ.point-is-completely-prime 𝓍
-  }
+ }
 
 point′ᵣ-to-pointᵣ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Point′ᵣ X → Pointᵣ X
 point′ᵣ-to-pointᵣ X 𝓍 =
  record
   { point        = Point′ᵣ.point 𝓍
   ; point-is-cpf = Point′ᵣ.point-is-cpf 𝓍
-  }
+ }
 
 \end{code}

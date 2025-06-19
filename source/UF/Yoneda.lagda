@@ -287,7 +287,7 @@ is-vv-equiv-has-adj {𝓤} {𝓥} {X} {Y} g isv = f , η , hass
   gf = pr₂ (pr₁ (vv-equivs-are-equivs g isv))
 
   η : (x : X) (y : Y) → f x ＝ y → g y ＝ x
-  η x y p = transport (λ - → g - ＝ x) p (gf x )
+  η x y p = transport (λ - → g - ＝ x) p (gf x)
 
   hass : (x : X) (y : Y) → has-section (η x y)
   hass x = Yoneda-section-forth (f x) (η x) (isv x)
@@ -400,7 +400,7 @@ universality-equiv {𝓤} {𝓥} {X} {A} x a u = nats-with-sections-are-equivs x
 
 equiv-universality : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                      (x : X) (a : A x)
-                   → is-fiberwise-equiv (yoneda-nat x A a )
+                   → is-fiberwise-equiv (yoneda-nat x A a)
                    → is-universal-element-of A (x , a)
 equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 

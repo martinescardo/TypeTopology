@@ -14,7 +14,7 @@ open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.ClassicalLogic
 open import UF.FunExt
-open import UF.Hedberg
+open import UF.HedbergApplications
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Subsingletons
@@ -130,7 +130,8 @@ use in other constructions.
 
 \begin{code}
 
-transfinite-induction-behaviour : FunExt → (w : is-well-founded)
+transfinite-induction-behaviour : FunExt
+                                → (w : is-well-founded)
                                   {𝓦 : Universe} (P : X → 𝓦 ̇ )
                                   (f : (x : X) → ((y : X) → y < x → P y) → P x)
                                   (x : X)
@@ -169,6 +170,15 @@ End of addition.
 is-transitive : 𝓤 ⊔ 𝓥 ̇
 is-transitive = (x y z : X) → x < y → y < z → x < z
 
+is-irreflexive : 𝓤 ⊔ 𝓥 ̇
+is-irreflexive = (x : X) → ¬ (x < x)
+
+is-irreflexive' : 𝓤 ⊔ 𝓥 ̇
+is-irreflexive' = {x y : X} → x ＝ y → ¬ (x < y)
+
+is-irreflexive'-if-irreflexive : is-irreflexive → is-irreflexive'
+is-irreflexive'-if-irreflexive ir {x} {_} refl = ir x
+
 private
   _≼_ : X → X → 𝓤 ⊔ 𝓥 ̇
   x ≼ y = ∀ u → u < x → u < y
@@ -179,7 +189,7 @@ extensional-po-is-prop-valued : FunExt
                               → is-prop-valued
                               → (x y : X) → is-prop (x ≼ y)
 extensional-po-is-prop-valued fe isp x y =
-  Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) (λ u l → isp u y)
+ Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) (λ u l → isp u y)
 
 ≼-refl : {x : X} → x ≼ x
 ≼-refl u l = l
@@ -238,22 +248,9 @@ extensionally-ordered-types-are-sets : FunExt
                                      → is-prop-valued
                                      → is-extensional
                                      → is-set X
-extensionally-ordered-types-are-sets fe isp e = γ
- where
-  f : {x y :  X} → x ＝ y → x ＝ y
-  f {x} {y} p = e x y (transport (x ≼_) p (≼-refl {x}))
-                      (transport (_≼ x) p (≼-refl {x}))
-
-  ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ＝ e x y l' m'
-  ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y)
-                                     (extensional-po-is-prop-valued fe isp x y l l')
-                                     (extensional-po-is-prop-valued fe isp y x m m')
-
-  κ : {x y : X} → wconstant (f {x} {y})
-  κ p q = ec
-
-  γ : is-set X
-  γ = Id-collapsibles-are-sets (f , κ)
+extensionally-ordered-types-are-sets fe isp =
+ type-with-prop-valued-refl-antisym-rel-is-set
+  _≼_ (extensional-po-is-prop-valued fe isp) (λ x → ≼-refl {x})
 
 well-ordered-types-are-sets : FunExt → is-well-order → is-set X
 well-ordered-types-are-sets fe (p , w , e , t) =
@@ -276,7 +273,7 @@ being-well-order-is-prop : FunExt → is-prop is-well-order
 being-well-order-is-prop fe = prop-criterion γ
  where
   γ : is-well-order → is-prop is-well-order
-  γ o = ×₄-is-prop (Π₂-is-prop ((λ {𝓤} {𝓥} → fe 𝓤 𝓥))
+  γ o = ×₄-is-prop (Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
                       (λ x y → being-prop-is-prop (fe 𝓥 𝓥)))
                    (well-foundedness-is-prop fe)
                    (extensionality-is-prop fe (prop-valuedness o))
@@ -291,7 +288,7 @@ private
 
 <-gives-≾  : (x : X)
            → is-accessible x
-           → (y : X) → y < x → y ≾ x
+          → (y : X) → y < x → y ≾ x
 <-gives-≾ = transfinite-induction'
                      (λ x → (y : X) → y < x → y ≾ x)
                      (λ x f y l m → f y l x m l)
@@ -780,13 +777,18 @@ decidable-order-iff-trichotomy (_ , w , e , t) =
 
 \end{code}
 
-Paul also remarks that the result can be strengthened as follows: A
-transitive well-founded relation is trichotomous iff it is both
+Paul Levy also remarks that the result can be strengthened as follows:
+A transitive well-founded relation is trichotomous iff it is both
 extensional and decidable. TODO. Write this down in Agda.
 
 End of 16th November 2022 addition.
 
+Remark (added 30th January 2025). Paul Levy found that this was already
+known by Robin Grayson in his 1978 PhD thesis, page 93.
+https://ora.ox.ac.uk/objects/uuid:3a88ef78-7a3e-4b98-83ac-467a00cf3311
+
 \begin{code}
+
 not-<-gives-≼ : funext (𝓤 ⊔ 𝓥) 𝓤₀
               → excluded-middle (𝓤 ⊔ 𝓥)
               → is-well-order
@@ -799,10 +801,10 @@ not-<-gives-≼ fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
   γ (inr (inr m)) ν = <-gives-≼ t m
 
 ≼-or-> : funext (𝓤 ⊔ 𝓥) 𝓤₀
-       → excluded-middle (𝓤 ⊔ 𝓥)
+       → excluded-middle 𝓥
        → is-well-order
        → (x y : X) → (x ≼ y) + y < x
-≼-or-> fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
+≼-or-> fe em wo@(p , w , e , t) x y = γ (trichotomy₃ em wo x y)
  where
   γ : (x < y) + (x ＝ y) + (y < x) → (x ≼ y) + (y < x)
   γ (inl l)       = inl (<-gives-≼ t l)

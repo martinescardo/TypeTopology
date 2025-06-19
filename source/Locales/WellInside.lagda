@@ -33,7 +33,7 @@ open PropositionalTruncation pt
 
 \begin{code}
 
-well-inside₀ : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤  ̇
+well-inside₀ : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤 ̇
 well-inside₀ F U V =
  Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ＝ 𝟎[ F ]) × (V ∨[ F ] W ＝ 𝟏[ F ])
 
@@ -81,7 +81,7 @@ well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ]
 
 \end{code}
 
-The set `↑↑(U) ≡ { V ∣ U ⋜ V }` is upwards-closed.
+The set `↑↑(U) ≡ { V ∣ U ⋜ V}` is upwards-closed.
 
 \begin{code}
 
@@ -108,7 +108,7 @@ The set `↑↑(U) ≡ { V ∣ U ⋜ V }` is upwards-closed.
 
 \end{code}
 
-The set `↓↓(U) ≡ { V | V ⋜ U }` is downwards-closed.
+The set `↓↓(U) ≡ { V | V ⋜ U}` is downwards-closed.
 
 \begin{code}
 

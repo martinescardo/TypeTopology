@@ -113,7 +113,7 @@ Notice that f' preserves the unit my construction.
 
 The function ι : List⁻ X → List X doesn't preserve multiplication, as
 this would mean that ρ (xs ◦ ys) ＝ xs ◦ ys for any two lists with
-ρ xs ＝ xs and ρ ys = ys. However, it's composition f⁻ with f'
+ρ xs ＝ xs and ρ ys = ys. However, its composition f⁻ with f'
 does. We need to use the graphic law, as this is not true in general.
 
 \begin{code}

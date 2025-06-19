@@ -59,7 +59,7 @@ and `str₂`.
 
 \begin{code}
 
-module SIP-For-Frames {A : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 𝓤 A) where
+module SIP-For-Frames {A : 𝓤 ⁺ ̇ } (str₁ str₂ : frame-structure 𝓤 𝓤 A) where
 
  open FrameIsomorphisms
 
@@ -241,13 +241,13 @@ an easy corollary.
 frame-sns-data : SNS (frame-structure 𝓤 𝓤) (𝓤 ⁺)
 frame-sns-data {𝓤} = ι , ρ , θ
  where
-  ι : (F′ G′ : Frame (𝓤 ⁺) 𝓤 𝓤) → sip.⟨ F′ ⟩ ≃ sip.⟨ G′ ⟩ → 𝓤 ⁺  ̇
+  ι : (F′ G′ : Frame (𝓤 ⁺) 𝓤 𝓤) → sip.⟨ F′ ⟩ ≃ sip.⟨ G′ ⟩ → 𝓤 ⁺ ̇
   ι F′ G′ e = is-homomorphic F′ G′ e holds
 
   ρ : (L : Frame (𝓤 ⁺) 𝓤 𝓤) → ι L L (≃-refl sip.⟨ L ⟩)
   ρ L = 𝔦𝔡-is-frame-homomorphism L , 𝔦𝔡-is-frame-homomorphism L
 
-  θ : {X : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 𝓤 X)
+  θ : {X : 𝓤 ⁺ ̇ } (str₁ str₂ : frame-structure 𝓤 𝓤 X)
     → is-equiv (canonical-map ι ρ str₁ str₂)
   θ {X = X} str₁ str₂ = (homomorphic-equivalence-gives-structural-equality , †)
                       , (homomorphic-equivalence-gives-structural-equality , ‡)

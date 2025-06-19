@@ -329,10 +329,10 @@ decomposition-of-Ω-gives-WEM
   III₁ : (q : Ω 𝓤) → f (g q) ＝ ₁ → ¬ (q holds) + ¬¬ (q holds)
   III₁ q e = inl (contrapositive (I₀ q) (equal-₁-different-from-₀ e))
 
-  IV : (Q : 𝓤  ̇ ) → is-prop Q → ¬ Q + ¬¬ Q
+  IV : (Q : 𝓤 ̇ ) → is-prop Q → ¬ Q + ¬¬ Q
   IV Q j = 𝟚-equality-cases (III₀ (Q , j)) (III₁ (Q , j))
 
-  V : (Q : 𝓤  ̇ ) → ¬ Q + ¬¬ Q
+  V : (Q : 𝓤 ̇ ) → ¬ Q + ¬¬ Q
   V = WEM-gives-typal-WEM fe' IV
 
 decomposition-of-type-with-Ω-paths-gives-WEM : propext 𝓥
@@ -692,7 +692,8 @@ not all two elements are equal, which means that the type is not a
 proposition.
 
 (Of course, "Σ" in the hypothesis can be replaced by "∃" because the
-type of the conclusion, being a negation, is a proposition.)
+type of the conclusion, being a negation, is a proposition, if we
+assume function extensionality.)
 
 \begin{code}
 

@@ -73,7 +73,7 @@ module ScottLocaleProperties
  open ScottLocaleConstruction 𝓓 hscb pe
 
  private
-  B : 𝓤  ̇
+  B : 𝓤 ̇
   B = index-of-compact-basis 𝓓 hscb
 
   β : B → ⟨ 𝓓 ⟩∙
@@ -120,7 +120,7 @@ Scott locale on `𝓓`.
    † = ⊆ₛ-implies-⊆ₖ
         𝟏[ 𝒪 ScottLocale ]
         𝔘
-        (λ { x ⋆ → contains-bottom-implies-is-top 𝔘 μ x })
+        (λ { x ⋆ → contains-bottom-implies-is-top 𝔘 μ x})
 
 \end{code}
 
@@ -177,6 +177,6 @@ of their principal filters is the empty Scott open.
   only-𝟎-is-below-𝟎 (𝒪 Σ⦅𝓓⦆) (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ]) †
    where
     † : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ]) ⊆ₖ 𝟎[ 𝒪 Σ⦅𝓓⦆ ]) holds
-    † i (p₁ , p₂) = 𝟘-elim (ν ∣ β i , (λ { (inl ⋆) → p₁ ; (inr ⋆) → p₂ }) ∣)
+    † i (p₁ , p₂) = 𝟘-elim (ν ∣ β i , (λ { (inl ⋆) → p₁ ; (inr ⋆) → p₂}) ∣)
 
 \end{code}

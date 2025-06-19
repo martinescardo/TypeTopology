@@ -87,7 +87,7 @@ Record-based definition of distributive lattice homomorphisms.
 
 \begin{code}
 
-record Homomorphismᵈᵣ (L₁ : DistributiveLattice 𝓤) (L₂ : DistributiveLattice 𝓥) : 𝓤 ⊔ 𝓥  ̇ where
+record Homomorphismᵈᵣ (L₁ : DistributiveLattice 𝓤) (L₂ : DistributiveLattice 𝓥) : 𝓤 ⊔ 𝓥 ̇ where
  field
   h                 : ∣ L₁ ∣ᵈ → ∣ L₂ ∣ᵈ
   h-is-homomorphism : is-homomorphismᵈ L₁ L₂ h holds
@@ -155,7 +155,7 @@ to-homomorphismᵈ-＝ K L 𝒽₁ 𝒽₂ φ = † (dfunext fe φ)
    renaming (h to h₂; h-is-homomorphism to h₂-is-homomorphism)
 
   f : is-homomorphismᵈ K L h₁ holds → Homomorphismᵈᵣ K L
-  f ϑ = record { h = h₁ ; h-is-homomorphism = ϑ }
+  f ϑ = record { h = h₁ ; h-is-homomorphism = ϑ}
 
   † : funᵈ K L 𝒽₁ ＝ funᵈ K L 𝒽₂ → 𝒽₁ ＝ 𝒽₂
   † refl = ap f p

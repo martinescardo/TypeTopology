@@ -20,6 +20,7 @@ import TypeTopology.CompactTypes
 import TypeTopology.ConvergentSequenceHasInf
 import TypeTopology.DecidabilityOfNonContinuity
 import TypeTopology.Density
+import TypeTopology.DenseMapsProperties -- by Fredrik Bakke
 import TypeTopology.DisconnectedTypes
 import TypeTopology.ExtendedSumCompact
 import TypeTopology.FailureOfTotalSeparatedness

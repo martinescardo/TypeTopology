@@ -502,8 +502,8 @@ HoTT/UF is as follows.
     To see that this is indeed a surjection, we use the induction principle of
     𝓚 X:
     - the empty set is mapped to by the sequence of n 0-bits.
-    - for a singleton { x }, the element x is hit by eᵢ for some 0 ≤ i < n, so
-      that { x } = f (b₁ , ... , bₙ) with bᵢ = 1 and all other bⱼ = 0.
+    - for a singleton { x}, the element x is hit by eᵢ for some 0 ≤ i < n, so
+      that { x} = f (b₁ , ... , bₙ) with bᵢ = 1 and all other bⱼ = 0.
     - given subsets A,B : 𝓚 X that are in the image of f, we obtain
       sequences 𝕓 and 𝕓' such that f 𝕓 = A and f 𝕓' = B so that the union A ∪ B
       is obtained as f (𝕓 ∨ 𝕓') where ∨ denotes pointwise disjunction.

@@ -47,7 +47,7 @@ module _
         (X-is-set : is-set X)
        where
 
- open import Lifting.UnivalentPrecategory 𝓤 X
+ open import Lifting.UnivalentWildCategory 𝓤 X
 
 \end{code}
 
@@ -58,7 +58,7 @@ locally small.
 \begin{code}
 
  𝓛-is-locally-small : is-locally-small (𝓛-DCPO X-is-set)
- 𝓛-is-locally-small = record { _⊑ₛ_ = _⊑_ ; ⊑ₛ-≃-⊑ = γ }
+ 𝓛-is-locally-small = record { _⊑ₛ_ = _⊑_ ; ⊑ₛ-≃-⊑ = γ}
   where
    γ : {x y : 𝓛 X} → (x ⊑ y) ≃ (x ⊑' y)
    γ {x} {y} = logically-equivalent-props-are-equivalent
@@ -184,7 +184,7 @@ A small compact basis for 𝓛 X will be given by [⊥ , η] : 𝟙 + X → 𝓛
                               𝓛-is-locally-small (κ b) l
    ; ↓ᴮ-is-directed   = κ⁺-is-directed
    ; ↓ᴮ-is-sup        = κ⁺-sup
-   }
+  }
 
  𝓛-has-specified-small-compact-basis : has-specified-small-compact-basis
                                          (𝓛-DCPO X-is-set)

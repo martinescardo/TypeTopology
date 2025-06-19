@@ -77,7 +77,7 @@ Ordinals-DCPO-is-sup-complete =
  record
   { ⋁ = sup ;
     ⋁-is-sup = sup-is-least-upper-bound
-  }
+ }
 
 open sup-complete-dcpo Ordinals-DCPO Ordinals-DCPO-is-sup-complete
 
@@ -124,7 +124,7 @@ Ordinals-DCPO-is-algebraic' =
                                        (family α)
                                        (λ a → successor-ordinals-are-compact (α ↓ a))
   ; compact-family-∐-＝ = eq
-  }
+ }
    where
     eq : (α : Ordinal 𝓤)
        → ∐ Ordinals-DCPO (directify-is-directed (family α)) ＝ α

@@ -111,20 +111,17 @@ local-hedberg' {𝓤} {X} x pc y p q =
 
 \end{code}
 
-Here is an example (added some time after the pandemic, not sure
-when). Any type that admits a prop-valued, reflexive and antisymmetric
-relation is a set.
 
 \begin{code}
 
-type-with-prop-valued-refl-antisym-rel-is-set
+type-with-prop-valued-refl-antisym-rel-is-set'
  : {X : 𝓤 ̇ }
  → (_≤_ : X → X → 𝓥 ̇ )
  → ((x y : X) → is-prop (x ≤ y))
  → ((x : X) → x ≤ x)
  → ((x y : X) → x ≤ y → y ≤ x → x ＝ y)
  → is-set X
-type-with-prop-valued-refl-antisym-rel-is-set
+type-with-prop-valued-refl-antisym-rel-is-set'
  {𝓤} {𝓥} {X} _≤_ ≤-prop-valued ≤-refl ≤-anti = γ
  where
   α : ∀ {x y} (l l' : x ≤ y) (m m' : y ≤ x) → ≤-anti x y l m ＝ ≤-anti x y l' m'

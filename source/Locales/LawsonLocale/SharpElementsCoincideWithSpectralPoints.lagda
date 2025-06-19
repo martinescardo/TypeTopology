@@ -163,7 +163,7 @@ The family `basis` given below is the basis of the Scott locale of domain `𝓓`
  basis : Fam 𝓤 ⟨ 𝒪 Scott⦅𝓓⦆ ⟩
  basis = basisₛ Scott⦅𝓓⦆ σᴰ
 
- Bσ : 𝓤  ̇
+ Bσ : 𝓤 ̇
  Bσ = index basis
 
  βσ : Bσ → ⟨ 𝒪 Scott⦅𝓓⦆ ⟩
@@ -235,7 +235,7 @@ We now define the type `♯𝓓` of sharp elements of the Scott domain `𝓓`.
 
 \begin{code}
 
- ♯𝓓 : 𝓤 ⁺  ̇
+ ♯𝓓 : 𝓤 ⁺ ̇
  ♯𝓓 = Σ x ꞉ ⟨ 𝓓 ⟩∙ , is-sharp x holds
 
 \end{code}

@@ -265,7 +265,7 @@ gives ideals.
          ; I-is-inhabited       = ∣ 𝟎⁻ , ϕ₀-contains-𝟎 U ∣
          ; I-is-downward-closed = ϕ₀-is-downward-closed U
          ; I-is-closed-under-∨  = ϕ₀-is-closed-under-∨ U
-         }
+        }
 
 \end{code}
 

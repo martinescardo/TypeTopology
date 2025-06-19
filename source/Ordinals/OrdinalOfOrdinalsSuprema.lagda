@@ -49,6 +49,7 @@ open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Sets
 open import UF.Size
 open import UF.SubtypeClassifier
 open import UF.Subsingletons
@@ -884,6 +885,15 @@ which can be shown to be a simulation by proving related properties of f̃.
     e : f̅ ((β ↓ y) , t) ＝ y
     e = pr₂ (pr₂ proof-of-claim)
 
+  f̅-behaviour : (i : I) (x : ⟨ α i ⟩)
+              → f̅ ([ α i , α⁺-Ord ]⟨ α⁺-is-upper-bound i ⟩ x) ＝ f i x
+  f̅-behaviour i x =
+   f̅ ([ α i , α⁺-Ord ]⟨ α⁺-is-upper-bound i ⟩ x) ＝⟨ e ⟩
+   f̃ (α i ↓ x) (i , x , refl)                    ＝⟨ refl ⟩
+   f i x                                         ∎
+    where
+     e = (f̅-key-property (α i ↓ x) (i , (x , refl)) ∣ i , x , refl ∣) ⁻¹
+
  α⁺-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
                                    → ((i : I) → α i ⊴ β)
                                    → α⁺-Ord ⊴ β
@@ -891,6 +901,14 @@ which can be shown to be a simulation by proving related properties of f̃.
                                                  , f̅-is-order-preserving
   where
    open lower-bound-of-upper-bounds-proof β β-is-ub
+
+ α⁺-is-lower-bound-of-upper-bounds-behaviour
+  : (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β) (i : I)
+  → [ α⁺-Ord , β ]⟨ α⁺-is-lower-bound-of-upper-bounds β f ⟩
+      ∘ [ α i , α⁺-Ord ]⟨ α⁺-is-upper-bound i ⟩
+    ∼ [ α i , β ]⟨ f i ⟩
+ α⁺-is-lower-bound-of-upper-bounds-behaviour β f i x =
+  lower-bound-of-upper-bounds-proof.f̅-behaviour β f i x
 
 \end{code}
 
@@ -924,7 +942,7 @@ Next, we resize α⁺ using:
   private
    small-image : is-small (image σ)
    small-image = replacement σ ((Σ i ꞉ I , ⟨ α i ⟩) , ≃-refl _)
-                               (λ β γ → β ≃ₒ γ , ≃-sym (UAₒ-≃ (ua 𝓤) fe' β γ))
+                               (λ β γ → (β ≃ₒ γ) , ≃-sym (UAₒ-≃ (ua 𝓤) fe' β γ))
                                (the-type-of-ordinals-is-a-set (ua 𝓤) fe')
    α⁻ : 𝓤 ̇
    α⁻ = pr₁ small-image
@@ -985,6 +1003,30 @@ the supremum of α are given by initial segments of some αᵢ.
   α⁻-is-lower-bound-of-upper-bounds β β-is-ub =
    ⊴-trans α⁻-Ord α⁺-Ord β (≃ₒ-to-⊴ α⁻-Ord α⁺-Ord α⁻-≃ₒ-α⁺)
                            (α⁺-is-lower-bound-of-upper-bounds β β-is-ub)
+
+  α⁻-is-lower-bound-of-upper-bounds-behaviour
+   : (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β) (i : I)
+   → [ α⁻-Ord , β ]⟨ α⁻-is-lower-bound-of-upper-bounds β f ⟩
+       ∘ [ α i , α⁻-Ord ]⟨ α⁻-is-upper-bound i ⟩
+     ∼ [ α i , β ]⟨ f i ⟩
+  α⁻-is-lower-bound-of-upper-bounds-behaviour β f i x =
+   (h ∘ g) x            ＝⟨ refl ⟩
+   (h⁺ ∘ ϕ ∘ g) x       ＝⟨ refl ⟩
+   (h⁺ ∘ ϕ ∘ ψ ∘ g⁺) x  ＝⟨ e₁ ⟩
+   (h⁺ ∘ g⁺) x          ＝⟨ e₂ ⟩
+   [ α i , β ]⟨ f i ⟩ x ∎
+    where
+     h = [ α⁻-Ord , β ]⟨ α⁻-is-lower-bound-of-upper-bounds β f ⟩
+     h⁺ = [ α⁺-Ord , β ]⟨ α⁺-is-lower-bound-of-upper-bounds β f ⟩
+     g = [ α i , α⁻-Ord ]⟨ α⁻-is-upper-bound i ⟩
+     g⁺ = [ α i , α⁺-Ord ]⟨ α⁺-is-upper-bound i ⟩
+     ϕ = ≃ₒ-to-fun _ _ α⁻-≃ₒ-α⁺
+     ψ = ≃ₒ-to-fun _ _ α⁺-≃ₒ-α⁻
+     e₁ = ap h⁺
+          (inverses-are-sections ϕ
+            (≃ₒ-to-fun-is-equiv _ _ α⁻-≃ₒ-α⁺)
+            ([ α i , α⁺-Ord ]⟨ α⁺-is-upper-bound i ⟩ x))
+     e₂ = α⁺-is-lower-bound-of-upper-bounds-behaviour β f i x
 
 \end{code}
 
@@ -1055,10 +1097,40 @@ module suprema
    sup-is-upper-bound : (i : I) → α i ⊴ sup
    sup-is-upper-bound = pr₁ (sup-is-least-upper-bound)
 
+   private
+    q : (i : I) → ⟨ α i ⟩ → ⟨ sup ⟩
+    q i = pr₁ (sup-is-upper-bound i)
+
+    q-surj : (y : ⟨ sup ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , q i x ＝ y
+    q-surj = α⁻-is-upper-bound-surjectivity sr
+
+   sup-is-upper-bound-jointly-surjective :
+      (y : ⟨ sup ⟩)
+    → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , [ α i , sup ]⟨ sup-is-upper-bound i ⟩ x ＝ y
+   sup-is-upper-bound-jointly-surjective = q-surj
+
    sup-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
                                       → ((i : I) → α i ⊴ β)
                                       → sup ⊴ β
    sup-is-lower-bound-of-upper-bounds = pr₂ (sup-is-least-upper-bound)
+
+   sup-is-lower-bound-of-upper-bounds-behaviour
+    : (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
+      (i : I) (x : ⟨ α i ⟩)
+    → [ sup , β ]⟨ sup-is-lower-bound-of-upper-bounds β f ⟩ (q i x)
+      ＝ [ α i , β ]⟨ f i ⟩ x
+   sup-is-lower-bound-of-upper-bounds-behaviour =
+    α⁻-is-lower-bound-of-upper-bounds-behaviour sr
+
+   induced-simulation-from-sup-is-surjection :
+      (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
+    → ((y : ⟨ β ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , [ α i , β ]⟨ f i ⟩ x ＝ y)
+    → is-surjection ([ sup , β ]⟨ sup-is-lower-bound-of-upper-bounds β f ⟩)
+   induced-simulation-from-sup-is-surjection β f s y =
+    ∥∥-functor
+     (λ (i , x , p) → q i x ,
+                      (sup-is-lower-bound-of-upper-bounds-behaviour β f i x ∙ p))
+     (s y)
 
    sup-is-image-of-sum-to-ordinals : ⟨ sup ⟩ ≃ image sum-to-ordinals
    sup-is-image-of-sum-to-ordinals =
@@ -1080,7 +1152,8 @@ module suprema
    sup-is-image-of-sum = sum-to-sup , sum-to-sup-is-surjection
 
    initial-segment-of-sup-at-component :
-     (i : I) (x : ⟨ α i ⟩) → sup ↓ pr₁ (sup-is-upper-bound i) x ＝ α i ↓ x
+      (i : I) (x : ⟨ α i ⟩)
+    → sup ↓ [ α i , sup ]⟨ sup-is-upper-bound i ⟩ x ＝ α i ↓ x
    initial-segment-of-sup-at-component i x =
     (simulations-preserve-↓ (α i) sup (sup-is-upper-bound i) x) ⁻¹
 
@@ -1089,7 +1162,7 @@ module suprema
    initial-segment-of-sup-is-initial-segment-of-some-component y =
     ∥∥-functor h (α⁻-is-upper-bound-surjectivity sr y)
      where
-      h : (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (sup-is-upper-bound i) x ＝ y)
+      h : (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , [ α i , sup ]⟨ sup-is-upper-bound i ⟩ x ＝ y)
         → Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , sup ↓ y ＝ α i ↓ x
       h (i , x , e) = (i , x , e')
        where
@@ -1099,15 +1172,24 @@ module suprema
              α i ↓ x  ∎
          where
           y' : ⟨ sup ⟩
-          y' = pr₁ (sup-is-upper-bound i) x
+          y' = [ α i , sup ]⟨ sup-is-upper-bound i ⟩ x
+
+ sup-composition-⊴ : {I J : 𝓤 ̇  } (ρ : I → J) (α : J → Ordinal 𝓤)
+                   → sup (α ∘ ρ) ⊴ sup α
+ sup-composition-⊴ ρ α =
+  sup-is-lower-bound-of-upper-bounds
+   (α ∘ ρ)
+   (sup α)
+   (λ i → sup-is-upper-bound α (ρ i))
 
  sup-monotone : {I : 𝓤 ̇ } (α β : I → Ordinal 𝓤)
               → ((i : I) → α i ⊴ β i)
               → sup α ⊴ sup β
  sup-monotone α β l = sup-is-lower-bound-of-upper-bounds α (sup β)
                        (λ i → ⊴-trans
-                                (α i) (β i) (sup β)
-                                (l i) (sup-is-upper-bound β i))
+                               (α i) (β i) (sup β)
+                               (l i) (sup-is-upper-bound β i))
+
 \end{code}
 
 Conjecture (Martin Escardo, August 2018 originally in the file
@@ -1117,3 +1199,71 @@ joins constructed by taking the joint image in any upper bound.
 In this way we avoid both small quotients and small images. Moreover,
 the results of the second part of this file are a particular case of
 this taking Ord 𝓤 as an upper bound.
+
+Moved here on 5 December 2024 by Tom de Jong and Fredrik Nordvall Forsberg, but
+developed in February 2024 in collaboration with Nicolai Kraus and Chuangjie Xu.
+
+\begin{code}
+
+ is-continuous : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+ is-continuous {𝓤} F =
+    {I : 𝓤 ̇  } → ∥ I ∥ → (γ : I → Ordinal 𝓤)
+  → F (sup γ) ＝ sup (F ∘ γ)
+
+ is-continuous-generalized : (Ordinal 𝓤 → Ordinal (𝓤 ⊔ 𝓥)) → (𝓤 ⊔ 𝓥) ⁺ ̇
+ is-continuous-generalized {𝓤} {𝓥} F =
+    {I : 𝓤 ̇  } → ∥ I ∥ → (γ : I → Ordinal 𝓤)
+  → F (sup γ) ＝ sup (λ (i : Lift 𝓥 I) → F (γ (lower i)))
+  where
+   open import UF.UniverseEmbedding
+
+ is-monotone-if-continuous-generalized : (F : Ordinal 𝓤 → Ordinal (𝓤 ⊔ 𝓥))
+                                       → is-continuous-generalized F
+                                       → is-monotone (OO 𝓤) (OO (𝓤 ⊔ 𝓥)) F
+ is-monotone-if-continuous-generalized {𝓤} {𝓥} F F-cont α β l = IV
+  where
+   open import UF.UniverseEmbedding
+   γ : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
+   γ (inl _) = α
+   γ (inr _) = β
+
+   β-is-upper-bound : (i : 𝟙 + 𝟙) → γ i ⊴ β
+   β-is-upper-bound (inl _) = ≼-gives-⊴ α β l
+   β-is-upper-bound (inr _) = ⊴-refl β
+
+   I : F (sup γ) ＝ sup (F ∘ γ ∘ lower)
+   I = F-cont ∣ inl ⋆ ∣ γ
+
+   II : sup γ ＝ β
+   II = ⊴-antisym (sup γ) β
+         (sup-is-lower-bound-of-upper-bounds γ β β-is-upper-bound)
+         (sup-is-upper-bound γ (inr ⋆))
+
+   III : F α ⊴ sup (F ∘ γ ∘ lower)
+   III = sup-is-upper-bound (F ∘ γ ∘ lower) (lift 𝓥 (inl ⋆))
+
+   IV : F α ≼ F β
+   IV = ⊴-gives-≼ (F α) (F β) (transport (F α ⊴_) (I ⁻¹ ∙ ap F II) III)
+
+ to-is-continuous-generalized : (F : Ordinal 𝓤 → Ordinal 𝓤)
+                              → is-continuous F
+                              → is-continuous-generalized {𝓤} {𝓤} F
+ to-is-continuous-generalized {𝓤} F F-cont {S} S-inh γ =
+  transport⁻¹
+   (_＝ sup (F ∘ γ ∘ lower))
+   (F-cont S-inh γ)
+   (⊴-antisym (sup (F ∘ γ)) (sup (F ∘ γ ∘ lower)) I II)
+   where
+    open import UF.UniverseEmbedding
+    I : sup (F ∘ γ) ⊴ sup (F ∘ γ ∘ lower)
+    I = sup-composition-⊴ (lift 𝓤) (F ∘ γ ∘ lower)
+    II : sup (F ∘ γ ∘ lower) ⊴ sup (F ∘ γ)
+    II = sup-composition-⊴ lower (F ∘ γ)
+
+ is-monotone-if-continuous : (F : Ordinal 𝓤 → Ordinal 𝓤)
+                           → is-continuous F
+                           → is-monotone (OO 𝓤) (OO 𝓤) F
+ is-monotone-if-continuous {𝓤} F F-cont =
+  is-monotone-if-continuous-generalized F (to-is-continuous-generalized F F-cont)
+
+\end{code}

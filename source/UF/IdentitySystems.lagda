@@ -17,18 +17,18 @@ open import UF.Retracts
 open import UF.Subsingletons
 open import UF.PairFun as PairFun
 
-record Has-Id-Sys {𝓦} (A : 𝓤 ̇ ) (a : A) (fam : A → 𝓦 ̇) : 𝓤ω where
+record Has-Id-Sys {𝓦} (A : 𝓤 ̇ ) (a : A) (fam : A → 𝓦 ̇ ) : 𝓤ω where
  field
   ctr : fam a
   ind : {𝓥 : Universe}
-        (P : (x : A) (q : fam x) → 𝓥 ̇)
+        (P : (x : A) (q : fam x) → 𝓥 ̇ )
         (p : P a ctr)
         (x : A)
         (q : fam x)
       → P x q
   ind-β : {𝓥 : Universe}
           (P : (x : A)
-          (q : fam x) → 𝓥 ̇)
+          (q : fam x) → 𝓥 ̇ )
           (p : P a ctr)
         → ind P p a ctr ＝ p
 
@@ -49,7 +49,7 @@ record Has-Id-Sys {𝓦} (A : 𝓤 ̇ ) (a : A) (fam : A → 𝓦 ̇) : 𝓤ω w
 
 record Id-Sys 𝓦 (A : 𝓤 ̇ ) (a : A) : 𝓤ω where
  field
-  fam : A → 𝓦  ̇
+  fam : A → 𝓦 ̇
   sys : Has-Id-Sys A a fam
  open Has-Id-Sys sys public
 
@@ -109,7 +109,7 @@ module from-path-characterization
      (singleton-types'-are-props refl)
 
    gen : Aux → P a Q-refl
-   gen (ϕ , ψ ) = transport (P a) ψ (aux P p a ϕ)
+   gen (ϕ , ψ) = transport (P a) ψ (aux P p a ϕ)
 
 module _ 𝓦 𝓦' (A : 𝓤 ̇ ) (B : A → 𝓥 ̇ ) where
  record Dep-Id-Sys {a : A} ([a] : Id-Sys 𝓦 A a) (b : B a) : 𝓤ω where

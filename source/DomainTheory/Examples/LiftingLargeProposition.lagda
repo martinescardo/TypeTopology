@@ -47,7 +47,7 @@ open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓥 hiding (κ)
 open import Lifting.Construction 𝓥
 open import Lifting.Miscelanea 𝓥
 open import Lifting.Miscelanea-PropExt-FunExt 𝓥 pe fe
-open import Lifting.UnivalentPrecategory 𝓥 P hiding (_⊑_)
+open import Lifting.UnivalentWildCategory 𝓥 P hiding (_⊑_)
 
 open import OrderedTypes.Poset
 open PosetAxioms fe
@@ -97,7 +97,7 @@ private
               (prop-valuedness (𝓛P ⁻) Q R)
               (⊑-to-𝓛-⊑ Q R)
               (𝓛-⊑-to-⊑ Q R)
-  }
+ }
 
 \end{code}
 
@@ -161,7 +161,7 @@ private
   ; compact-family-is-directed = δ
   ; compact-family-is-compact = κ
   ; compact-family-∐-＝ = ∐ˢˢ-＝
-  }
+ }
    where
     κ : (Q : ⟪ 𝓛P ⟫) (i : 𝟙 + is-defined Q)
       → is-compact (𝓛P ⁻) (add-⊥ 𝓛P (family Q) i)

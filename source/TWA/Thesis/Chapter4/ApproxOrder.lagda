@@ -23,30 +23,30 @@ open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 ## Traditional orders
 
 \begin{code}
-is-preorder : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇ 
+is-preorder : {X : 𝓤 ̇ } → (X → X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓦 ̇
 is-preorder _≤_ = reflexive _≤_
                 × transitive _≤_
                 × is-prop-valued _≤_
 
-is-partial-order : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇
+is-partial-order : {X : 𝓤 ̇ } → (X → X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓦 ̇
 is-partial-order {_} {_} {X} _≤_
  = is-preorder _≤_ × antisymmetric _≤_
 
-linear :  {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇
+linear :  {X : 𝓤 ̇ } → (X → X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓦 ̇
 linear {_} {_} {X} _≤_ = (x y : X) → (x ≤ y) + (y ≤ x)
 
-is-linear-preorder : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇
+is-linear-preorder : {X : 𝓤 ̇ } → (X → X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓦 ̇
 is-linear-preorder {_} {_} {X} _≤_
  = is-preorder _≤_ × linear _≤_
 
-is-linear-order : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇
+is-linear-order : {X : 𝓤 ̇ } → (X → X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓦 ̇
 is-linear-order {_} {_} {X} _≤_
  = is-partial-order _≤_ × linear _≤_
 
 discrete-reflexive-antisym-linear-order-is-decidable
- : {X : 𝓤  ̇ } 
+ : {X : 𝓤 ̇ }
  → is-discrete X
- → (_≤_ : X → X → 𝓦  ̇ )
+ → (_≤_ : X → X → 𝓦 ̇ )
  → reflexive _≤_
  → antisymmetric _≤_
  → linear _≤_
@@ -64,13 +64,13 @@ discrete-reflexive-antisym-linear-order-is-decidable
 
 \begin{code}
 is-approx-order : (X : ClosenessSpace 𝓤)
-                → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
-                → 𝓤 ⊔ 𝓦'  ̇
+                → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ )
+                → 𝓤 ⊔ 𝓦' ̇
 is-approx-order X _≤ⁿ_
  = ((ϵ : ℕ) → is-linear-preorder (λ x y → (x ≤ⁿ y) ϵ))
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) → is-decidable ((x ≤ⁿ y) ϵ))
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) →   C X ϵ x y → (x ≤ⁿ y) ϵ)
- 
+
 ≤-refl⟨_⟩
  : {X : 𝓤 ̇ } {_≤_ : X → X → 𝓦 ̇ }
  → is-preorder _≤_
@@ -103,14 +103,14 @@ is-approx-order X _≤ⁿ_
 
 ≤ⁿ-all-linear
  : (X : ClosenessSpace 𝓤)
- → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
+ → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ }
  → is-approx-order X _≤ⁿ_
  → (ϵ : ℕ) → is-linear-preorder (λ x y → (x ≤ⁿ y) ϵ)
 ≤ⁿ-all-linear X (l , d , c) = l
 
 ≤ⁿ-refl
  : (X : ClosenessSpace 𝓤)
- → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
+ → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ }
  → is-approx-order X _≤ⁿ_
  → (ϵ : ℕ)
  → (x : ⟨ X ⟩) → (x ≤ⁿ x) ϵ
@@ -126,7 +126,7 @@ is-approx-order X _≤ⁿ_
 
 ≤ⁿ-prop
  : (X : ClosenessSpace 𝓤)
- → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
+ → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ }
  → is-approx-order X _≤ⁿ_
  → (ϵ : ℕ) (x y : ⟨ X ⟩)
  → is-prop ((x ≤ⁿ y) ϵ)
@@ -134,7 +134,7 @@ is-approx-order X _≤ⁿ_
 
 ≤ⁿ-linear
  : (X : ClosenessSpace 𝓤)
- → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
+ → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ }
  → is-approx-order X _≤ⁿ_
  → (ϵ : ℕ) (x y : ⟨ X ⟩)
  → (x ≤ⁿ y) ϵ + (y ≤ⁿ x) ϵ
@@ -142,7 +142,7 @@ is-approx-order X _≤ⁿ_
 
 ≤ⁿ-decidable
  : (X : ClosenessSpace 𝓤)
- → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
+ → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ }
  → is-approx-order X _≤ⁿ_
  → (ϵ : ℕ) (x y : ⟨ X ⟩)
  → is-decidable ((x ≤ⁿ y) ϵ)
@@ -150,7 +150,7 @@ is-approx-order X _≤ⁿ_
 
 ≤ⁿ-close
  : (X : ClosenessSpace 𝓤)
- → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
+ → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ }
  → is-approx-order X _≤ⁿ_
  → (ϵ : ℕ) (x y : ⟨ X ⟩)
  → C X ϵ x y → (x ≤ⁿ y) ϵ
@@ -161,25 +161,25 @@ module ApproxOrder-Relates (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  _relates-to→_ : {X : 𝓤 ̇ }
-               → (_≤ⁿ_ : X → X → ℕ → 𝓦'  ̇ )
+               → (_≤ⁿ_ : X → X → ℕ → 𝓦' ̇ )
                → (_≤_  : X → X → 𝓦 ̇ )
-               → 𝓤 ⊔ 𝓦 ⊔ 𝓦'  ̇
- _≤ⁿx_ relates-to→ _≤x_ 
+               → 𝓤 ⊔ 𝓦 ⊔ 𝓦' ̇
+ _≤ⁿx_ relates-to→ _≤x_
   = ∀ x y → ((n : ℕ) → (x ≤ⁿx y) n) → x ≤x y
 
  _relates-to←_ : {X : 𝓤 ̇ }
-               → (_≤ⁿ_ : X → X → ℕ → 𝓦'  ̇ )
+               → (_≤ⁿ_ : X → X → ℕ → 𝓦' ̇ )
                → (_≤_  : X → X → 𝓦 ̇ )
-               → 𝓤 ⊔ 𝓦 ⊔ 𝓦'  ̇
+               → 𝓤 ⊔ 𝓦 ⊔ 𝓦' ̇
  _≤ⁿx_ relates-to← _≤x_
   = ∀ x y → x ≤x y → ∃ n ꞉ ℕ , ((ϵ : ℕ) → n ≤ ϵ → (x ≤ⁿx y) ϵ)
-  
+
  approx-order-relates : (X : ClosenessSpace 𝓤)
-                      → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
+                      → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ )
                       → is-approx-order X _≤ⁿ_
                       → (_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
                       → is-preorder _≤_
-                      → 𝓤 ⊔ 𝓦 ⊔ 𝓦'  ̇
+                      → 𝓤 ⊔ 𝓦 ⊔ 𝓦' ̇
  approx-order-relates X _≤ⁿ_ _ _≤_ _
   = _≤ⁿ_ relates-to→ _≤_
   × _≤ⁿ_ relates-to← _≤_
@@ -190,7 +190,7 @@ module ApproxOrder-Relates (pt : propositional-truncations-exist) where
 \begin{code}
 approx-order-ucontinuous-l
  : (X : ClosenessSpace 𝓤)
- → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
+ → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ }
  → (a : is-approx-order X _≤ⁿ_)
  → (ε : ℕ) (y : ⟨ X ⟩)
  → p-ucontinuous X (λ x → (x ≤ⁿ y) ε , ≤ⁿ-prop X a ε x y)
@@ -202,7 +202,7 @@ approx-order-ucontinuous-l X a ε y
 
 approx-order-ucontinuous-r
  : (X : ClosenessSpace 𝓤)
- → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
+ → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ }
  → (a : is-approx-order X _≤ⁿ_)
  → (ε : ℕ) (y : ⟨ X ⟩)
  → p-ucontinuous X (λ x → (y ≤ⁿ x) ε , ≤ⁿ-prop X a ε y x)

@@ -194,7 +194,7 @@ module _ (pt : propositional-truncations-exist) where
              → X is 𝓦 small
              → ∥ X ∥ is 𝓦 small
  ∥∥-is-small (X' , 𝕗) = ∥ X' ∥ ,
-                       qinveq (∥∥-functor ⌜ 𝕗 ⌝ )
+                       qinveq (∥∥-functor ⌜ 𝕗 ⌝)
                         (∥∥-functor ⌜ 𝕗 ⌝⁻¹ ,
                          (λ _ → ∥∥-is-prop _ _) ,
                          (λ _ → ∥∥-is-prop _ _))

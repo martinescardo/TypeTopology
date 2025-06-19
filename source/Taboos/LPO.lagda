@@ -51,14 +51,14 @@ LPO = (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n)
 Added 10th September 2024. In retrospect, it would have been better if
 we had equivalently defined
 
-  LPO = (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , ι n ＝ ℕ)
+  LPO = (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , ι n ＝ x)
 
 because we have
 
-  fiber ι x = Σ n ꞉ ℕ , ι n ＝ ℕ
+  fiber ι x = Σ n ꞉ ℕ , ι n ＝ x
 
-by definition and ι is an embedding, so that e.g. the following would
-require a proof given our definition of embedding.
+by definition and ι is an embedding, so that e.g. the following
+wouldn't require a proof given our definition of embedding.
 
 End of addition.
 
@@ -105,7 +105,7 @@ LPO-gives-compact-ℕ fe ℓ β = γ
             ι (ι n) n ＝⟨ ℕ-to-ℕ∞-diagonal₀ n ⟩
             ₀         ∎
 
-    b : (¬ (Σ n ꞉ ℕ , x ＝ ι n)) → A
+    b : ¬ (Σ n ꞉ ℕ , x ＝ ι n) → A
     b u = inr g
       where
         v : (n : ℕ) → x ＝ ι n → 𝟘
@@ -276,3 +276,80 @@ LPO-gives-WLPO fe lpo u =
 ¬WLPO-gives-¬LPO fe = contrapositive (LPO-gives-WLPO fe)
 
 \end{code}
+
+Added 1 February 2025 by Tom de Jong.
+The following type is logically equivalent to LPO but it should be noted that it
+is not a proposition.
+
+\begin{code}
+
+LPO-variation : 𝓤₀ ̇
+LPO-variation = (α : ℕ → 𝟚) → is-decidable (Σ n ꞉ ℕ , α n ＝ ₀)
+
+LPO-variation-implies-LPO : funext₀ → LPO-variation → LPO
+LPO-variation-implies-LPO fe lpovar = compact-ℕ-gives-LPO fe I
+ where
+  I : is-compact ℕ
+  I α = κ (lpovar α)
+   where
+    κ : is-decidable (Σ n ꞉ ℕ , α n ＝ ₀)
+      → (Σ n ꞉ ℕ , α n ＝ ₀) + (Π n ꞉ ℕ , α n ＝ ₁)
+    κ (inl r) = inl r
+    κ (inr ν) = inr (λ n → 𝟚-equality-cases
+                            (λ (e : α n ＝ ₀) → 𝟘-elim (ν (n , e)))
+                            id)
+
+LPO-implies-LPO-variation : funext₀ → LPO → LPO-variation
+LPO-implies-LPO-variation fe lpo α = I (LPO-gives-compact-ℕ fe lpo α)
+ where
+  I : (Σ n ꞉ ℕ , α n ＝ ₀) + (Π n ꞉ ℕ , α n ＝ ₁)
+    → is-decidable (Σ n ꞉ ℕ , α n ＝ ₀)
+  I (inl r) = inl r
+  I (inr ν) = inr (Π-not-implies-not-Σ
+                    (λ n (e : α n ＝ ₀) → 𝟘-elim
+                                           (zero-is-not-one (e ⁻¹ ∙ ν n))))
+
+\end{code}
+
+Added 3rd December by Martin Escardo.
+
+\begin{code}
+
+ℕ-compact-criterion : funext₀
+                    → ((x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ⊑ n))
+                    → is-compact ℕ
+ℕ-compact-criterion fe ℓ β = γ
+  where
+    A = (Σ n ꞉ ℕ , β n ＝ ₀) + (Π n ꞉ ℕ , β n ＝ ₁)
+
+    α : ℕ → 𝟚
+    α = force-decreasing β
+
+    x : ℕ∞
+    x = (α , force-decreasing-is-decreasing β)
+
+    d : is-decidable (Σ n ꞉ ℕ , x ⊑ n)
+    d = ℓ x
+
+    a : (Σ n ꞉ ℕ , x ⊑ n) → A
+    a (n , p) = inl (force-decreasing-is-not-much-smaller β n p)
+
+    b : ¬ (Σ n ꞉ ℕ , ι x n ＝ ₀) → A
+    b ν = inr f
+      where
+       f : (n : ℕ) → β n ＝ ₁
+       f n = different-from-₀-equal-₁
+              (λ (e : β n ＝ ₀)
+                    → ν (n , ₀-smallest (force-decreasing-is-smaller β n) e))
+
+    γ : A
+    γ = cases a b d
+
+LPO-criterion : funext₀
+              → ((x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ⊑ n))
+              → LPO
+LPO-criterion fe ℓ = compact-ℕ-gives-LPO fe (ℕ-compact-criterion fe ℓ)
+
+\end{code}
+
+TODO. Add the converse of LPO-criterion.

@@ -101,7 +101,7 @@ B⋆ = D⋆ ℕ ℕ
 B↦B⋆ : {X A : Type} → B X → B⋆ X A
 B↦B⋆ = church-encode
 
-church-encode-B : {X : 𝓦 ̇ } {A : 𝓣  ̇ }
+church-encode-B : {X : 𝓦 ̇ } {A : 𝓣 ̇ }
                 → B X
                 → B⋆ X A
 church-encode-B = church-encode

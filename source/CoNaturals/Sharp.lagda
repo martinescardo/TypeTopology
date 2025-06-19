@@ -36,7 +36,7 @@ open import CoNaturals.Type2
 open import Lifting.Construction 𝓤₀
 open import Lifting.IdentityViaSIP 𝓤₀ {𝓤₀} {ℕ}
 open import Lifting.Set 𝓤₀
-open import Lifting.UnivalentPrecategory 𝓤₀ {𝓤₀} ℕ
+open import Lifting.UnivalentWildCategory 𝓤₀ {𝓤₀} ℕ
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
@@ -359,6 +359,12 @@ only-sharp-is-sharp y@(P , φ , P-is-prop) y-is-sharp = V
   V : Σ x ꞉ ℕ∞ , sharp x ＝ y
   V = x , IV
 
+\end{code}
+
+The following gives yet another construction of the conatural nunbers.
+
+\begin{code}
+
 theorem : ℕ∞ ≃ (Σ y ꞉ ℕ⊥ , is-sharp y)
 theorem = r , r-is-equiv
  where
@@ -384,6 +390,12 @@ theorem = r , r-is-equiv
 
 \end{code}
 
+TODO. Notice that
+
+ is-sharp y ≃ ((x : X) → is-decidable (fiber (value y) x))
+
+because (ι x ⊑ u) ≃ fiber (value y) x.
+
 Other ways to distinguish ℕ∞ and ℕ⊥:
 
  * ℕ∞ is totally separated.
@@ -391,3 +403,13 @@ Other ways to distinguish ℕ∞ and ℕ⊥:
  * ℕ⊥ is injective and hence indecomposable.
 
 This is already proved in other modules.
+
+For any type X, we can define X∞ = (Σ y ꞉ X⊥ , is-sharp y). But to
+define a map X → X∞ we need X to have decidable equality, because
+η x ⊑ η y iff x ＝ y.
+
+In a constructive setting, there are in principle discrete types X
+that are not necessarily countable. One of them is the type ℕ∞ → 𝟚.
+But this is countable as soon as we assume that all functions ℕ∞ → 𝟚
+are continuous (which is implied by "all functions (ℕ → ℕ) → ℕ are
+continuous").

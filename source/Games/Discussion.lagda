@@ -706,7 +706,7 @@ modification needed to use ℍ instead:
 
 module illustration (R : Type) where
 
- open import Games.K
+ open import MonadOnTypes.K
 
  open K-definitions R
 

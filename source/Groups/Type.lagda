@@ -62,7 +62,7 @@ Direct proof that the "group-axioms" is a proposition.
 \begin{code}
 
 group-axioms-is-prop : funext 𝓤 𝓤
-                     → (X : 𝓤 ̇)
+                     → (X : 𝓤 ̇ )
                      → (_·_ : group-structure X)
                      → is-prop (group-axioms X _·_)
 group-axioms-is-prop fe X _·_ s = γ s
@@ -201,8 +201,8 @@ id-is-hom G = refl
 being-hom-is-prop : Fun-Ext
                   → (G : Group 𝓤) (H : Group 𝓥) (f : ⟨ G ⟩ → ⟨ H ⟩)
                   → is-prop (is-hom G H f)
-being-hom-is-prop fe G H f = Π-is-prop' fe
-                              (λ x → Π-is-prop' fe
+being-hom-is-prop fe G H f = implicit-Π-is-prop fe
+                              (λ x → implicit-Π-is-prop fe
                                       (λ y → groups-are-sets H))
 
 preserves-unit : (G : Group 𝓤) (H : Group 𝓥) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓥 ̇

@@ -39,7 +39,7 @@ First, we define some nicer syntax for inherently typed System T terms.
 
 \begin{code}
 
-_⊢_ : Cxt → type → 𝓤₀  ̇
+_⊢_ : Cxt → type → 𝓤₀ ̇
 _⊢_ Γ τ = T Γ τ
 
 infix 4 _⊢_
@@ -125,6 +125,9 @@ maxᵀ-correct (succ m) (succ n) =
   where
    Ⅰ = ifzᵀ-correct (succ n) (succ m) (succ (⟦ maxᵀ ⟧₀ m (⟦ predᵀ ⟧₀ (succ n))))
    Ⅱ = ap succ (maxᵀ-correct m n)
+
+⟦maxᵀ⟧≡max : ⟦ maxᵀ ⟧₀ ≡ max
+⟦maxᵀ⟧≡max {n} refl {m} refl = maxᵀ-correct n m
 
 \end{code}
 
@@ -222,7 +225,6 @@ the proof.
 
 \begin{code}
 
-
 main-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : ℕ → ℕ)
            → ⟦ max-questionᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
              ＝ max-question₀ (dialogue-tree t) α
@@ -280,7 +282,7 @@ use of function extensionality from it yet.
 
 \begin{code}
 
--- church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
+-- church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
 --                      → (d : D X Y Z)
 --                      → (η′ : Z → A)
 --                      → (β′ : (Y → A) → X → A)
@@ -290,5 +292,61 @@ use of function extensionality from it yet.
 --  where
 --   † : (y : Y) → church-encode (φ y) η′ β′ ＝ D-rec η′ β′ (φ y)
 --   † y = church-encode-to-D-rec (φ y) η′ β′
+
+\end{code}
+
+Added on 2025-02-11.
+
+\begin{code}
+
+internal-mod-cont-correct₀ : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : ℕ → ℕ)
+                           → α ＝⦅ ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α ⦆ β
+                           → ⟦ t ⟧₀ α ＝ ⟦ t ⟧₀ β
+internal-mod-cont-correct₀ t α β p = †
+ where
+  ε : eloquent ⟦ t ⟧₀
+  ε = eloquence-theorem ⟦ t ⟧₀ (t , refl)
+
+  c : is-continuous ⟦ t ⟧₀
+  c = eloquent-functions-are-continuous ⟦ t ⟧₀ ε
+
+  c₀ : is-continuous₀ ⟦ t ⟧₀
+  c₀ = continuity-implies-continuity₀ ⟦ t ⟧₀ c
+
+  m₀ : ℕ
+  m₀ = succ (max-question₀ (dialogue-tree t) α)
+
+  q : ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α ＝ m₀
+  q = ap succ (main-lemma t α)
+
+  ‡ : α ＝⦅ m₀ ⦆ β
+  ‡ = transport (λ - → α ＝⦅ - ⦆ β) q p
+
+  † : ⟦ t ⟧₀ α ＝ ⟦ t ⟧₀ β
+  † = pr₂ (c₀ α) β ‡
+
+internal-mod-cont-correct′ : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
+                           → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) · α ⟧₀ ⦆ ⟦ β ⟧₀
+                           → ⟦ t · α ⟧₀ ＝ ⟦ t ·  β ⟧₀
+internal-mod-cont-correct′ t α β = internal-mod-cont-correct₀ t ⟦ α ⟧₀ ⟦ β ⟧₀
+
+\end{code}
+
+In the paper, we have an explicit specification for the notion of modulus of
+continuity. For the sake of consistency, we write down the same definition here
+and show that our `modulusᵀ` operator satisfies it.
+
+\begin{code}
+
+_is-a-modulus-of-continuity-for_at_ : ℕ → ((ℕ → ℕ) → ℕ) → (ℕ → ℕ) → 𝓤₀ ̇
+m is-a-modulus-of-continuity-for f at α =
+ (β : ℕ → ℕ) → α ＝⦅ m ⦆ β → f α ＝ f β
+
+modulusᵀ-is-a-modulus-operator : (t : T₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
+                               → ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
+                                  is-a-modulus-of-continuity-for ⟦ t ⟧₀
+                                 at
+                                  α
+modulusᵀ-is-a-modulus-operator t α β = internal-mod-cont-correct₀ t α β
 
 \end{code}

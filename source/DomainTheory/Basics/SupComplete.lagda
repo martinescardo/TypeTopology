@@ -105,7 +105,7 @@ sup-complete-dcpo-has-finite-joins 𝓓 sc =
           ⊥-is-least = λ x → ⋁-is-lowerbound-of-upperbounds 𝟘-elim x 𝟘-induction ;
           _∨_ = λ x y → ⋁ (∨-family 𝓓 x y);
           ∨-is-sup = λ x y → ⋁-is-sup (∨-family 𝓓 x y)
-        }
+       }
   where
    open is-sup-complete sc
 
@@ -353,7 +353,7 @@ dcpo-with-finite-joins-is-sup-complete 𝓓 h =
   where
    open has-finite-joins h
    open make-family-directed
-   sup : {I : 𝓥 ̇} → (I → ⟨ 𝓓 ⟩) → ⟨ 𝓓 ⟩
+   sup : {I : 𝓥 ̇ } → (I → ⟨ 𝓓 ⟩) → ⟨ 𝓓 ⟩
    sup {I} α = ∐ 𝓓 (directify-is-directed 𝓓 h α)
 
 \end{code}

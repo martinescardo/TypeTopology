@@ -1,6 +1,7 @@
 Tom de Jong 22nd May 2019
 
 The lifting of a set is a set.
+
 We need to assume propositional extensionality for the fixed universe 𝓣 of
 propositions and two instances of function extensionality.
 

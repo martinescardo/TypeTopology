@@ -25,7 +25,7 @@ greatest element.
 
 \begin{code}
 
-Fin-wf : {n : ℕ} (A : Fin n → 𝓤  ̇ ) (r₀ : Fin n)
+Fin-wf : {n : ℕ} (A : Fin n → 𝓤 ̇ ) (r₀ : Fin n)
        → is-complemented A
        → A r₀
        → Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → r ≤ s)
@@ -53,7 +53,7 @@ Fin-wf {𝓤} {succ n} A (suc r₀) d a = γ
        (λ a₀ → 𝟎 , a₀ , λ s a' → ⟨⟩)
        (λ (ν : ¬ A 𝟎) → suc r , b , l ν)
 
-Fin-co-wf : {n : ℕ} (A : Fin n → 𝓤  ̇ ) (r₀ : Fin n)
+Fin-co-wf : {n : ℕ} (A : Fin n → 𝓤 ̇ ) (r₀ : Fin n)
           → is-complemented A
           → A r₀
           → Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → s ≤ r)
@@ -102,13 +102,13 @@ Fin-co-wf {𝓤} {succ n} A (suc x) d a = suc (pr₁ IH) , pr₁ (pr₂ IH) , h
   h 𝟎       b = ⋆
   h (suc x) b = pr₂ (pr₂ IH) x b
 
-compact-argmax : {X : 𝓤  ̇ } {n : ℕ } (p : X → Fin n)
+compact-argmax : {X : 𝓤 ̇ } {n : ℕ} (p : X → Fin n)
                → is-Compact X
                → X
                → Σ x ꞉ X , ((y : X) → p y ≤ p x)
 compact-argmax {𝓤} {X} {n} p κ x₀ = II I
  where
-  A : Fin n → 𝓤  ̇
+  A : Fin n → 𝓤 ̇
   A r = Σ x ꞉ X , p x ＝ r
 
   a₀ : A (p x₀)
@@ -123,13 +123,13 @@ compact-argmax {𝓤} {X} {n} p κ x₀ = II I
   II : type-of I → Σ x ꞉ X , ((y : X) → p y ≤ p x)
   II (.(p y) , ((y , refl) , ϕ)) = y , (λ y → ϕ (p y) (y , refl))
 
-compact-argmin : {X : 𝓤  ̇ } {n : ℕ } (p : X → Fin n)
+compact-argmin : {X : 𝓤 ̇ } {n : ℕ} (p : X → Fin n)
                → is-Compact X
                → X
                → Σ x ꞉ X , ((y : X) → p x ≤ p y)
 compact-argmin {𝓤} {X} {n} p κ x₀ = II I
  where
-  A : Fin n → 𝓤  ̇
+  A : Fin n → 𝓤 ̇
   A r = Σ x ꞉ X , p x ＝ r
 
   a₀ : A (p x₀)

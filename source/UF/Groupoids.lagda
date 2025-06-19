@@ -34,15 +34,15 @@ is-groupoid : 𝓤 ̇ → 𝓤 ̇
 is-groupoid X = {x y : X} → is-set (x ＝ y)
 
 being-groupoid-is-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop (is-groupoid X)
-being-groupoid-is-prop fe = Π-is-prop' fe (λ x →
-                            Π-is-prop' fe (λ x' → being-set-is-prop fe))
+being-groupoid-is-prop fe = implicit-Π-is-prop fe (λ x →
+                            implicit-Π-is-prop fe (λ x' → being-set-is-prop fe))
 \end{code}
 
 Sets are Groupoids.
 
 \begin{code}
 
-sets-are-groupoids : {X : 𝓤 ̇} → is-set X → is-groupoid X
+sets-are-groupoids : {X : 𝓤 ̇ } → is-set X → is-groupoid X
 sets-are-groupoids i = props-are-sets i
 
 \end{code}

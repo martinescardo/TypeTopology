@@ -150,7 +150,7 @@ fe-and-em-give-propositional-truncations fe em =
   ∥∥-is-prop   = Π-is-prop (fe _ _) (λ _ → 𝟘-is-prop) ;
   ∣_∣          = λ x u → u x ;
   ∥∥-rec       = λ i u φ → EM-gives-DNE em _ i (¬¬-functor u φ)
-  }
+ }
 
 \end{code}
 
@@ -610,7 +610,7 @@ propositions.
    (λ (u : ¬ ∥ X ∥)
          → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-prop)
 
- ¬¬Σ→∃ : {𝓤 𝓣 : Universe} {X : 𝓤 ̇ } → {A : X → 𝓣  ̇}
+ ¬¬Σ→∃ : {𝓤 𝓣 : Universe} {X : 𝓤 ̇ } → {A : X → 𝓣 ̇ }
        → DNE (𝓤 ⊔ 𝓣)
        → ¬¬ (Σ x ꞉ X , A x )
        → (∃ x ꞉ X , A x)

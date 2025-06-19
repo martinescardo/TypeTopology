@@ -181,8 +181,8 @@ f-Hydra n = battle 1 (tall-hydra n) (⊲-is-well-founded _)
   tall-hydra (succ n) = Node (tall-hydra n ∷ [])
 
   battle : ℕ → (h : Hydra) → is-accessible _⊲_ h → ℕ
-  battle turn Head            (acc rec₁ ) = 0
-  battle turn (Node (h ∷ hs)) (acc rec₁ ) =
+  battle turn Head            (acc rec₁) = 0
+  battle turn (Node (h ∷ hs)) (acc rec₁) =
    succ (battle (succ turn) cut-hydra (rec₁ cut-hydra (turn , cut-head , refl)))
    where
     cut-head : HeadLocation (Node (h ∷ hs))

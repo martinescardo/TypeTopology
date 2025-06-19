@@ -211,7 +211,7 @@ module sip-with-axioms where
 
  add-axioms {𝓤} {𝓥} {𝓦} {𝓣} {S} axioms i (ι , ρ , θ) = ι' , ρ' , θ'
   where
-   S' : 𝓤 ̇ → 𝓥 ⊔ 𝓦  ̇
+   S' : 𝓤 ̇ → 𝓥 ⊔ 𝓦 ̇
    S' X = Σ s ꞉ S X , axioms X s
 
    ι' : (A B : Σ S') → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓣 ̇
@@ -1208,7 +1208,7 @@ module generalized-metric-space
    θ : {X : 𝓤 ̇ } (d e : S X) → is-equiv (canonical-map ι ρ d e)
    θ d e = equivs-closed-under-∼ (id-is-equiv (d ＝ e)) h
 
- M : 𝓤 ⁺ ⊔ 𝓥  ̇
+ M : 𝓤 ⁺ ⊔ 𝓥 ̇
  M = Σ X ꞉ 𝓤 ̇ , Σ d ꞉ (X → X → R) , axioms X d
 
  _≅_  : M → M → 𝓤 ⊔ 𝓥 ̇
@@ -1246,7 +1246,7 @@ module generalized-topological-space
  ℙℙ : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  ℙℙ X = ℙ (ℙ X)
 
- Space : 𝓤 ⁺ ⊔ 𝓥  ̇
+ Space : 𝓤 ⁺ ⊔ 𝓥 ̇
  Space = Σ X ꞉ 𝓤 ̇ , Σ 𝓞 ꞉ ℙℙ X , axioms X 𝓞
 
  sns-data : SNS ℙℙ (𝓤 ⊔ 𝓥)
@@ -1306,7 +1306,7 @@ module selection-space
  S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = (X → R) → X
 
- SelectionSpace : 𝓤 ⁺ ⊔ 𝓥  ̇
+ SelectionSpace : 𝓤 ⁺ ⊔ 𝓥 ̇
  SelectionSpace = Σ X ꞉ 𝓤 ̇ , Σ ε ꞉ S X , axioms X ε
 
  sns-data : SNS S (𝓤 ⊔ 𝓥)

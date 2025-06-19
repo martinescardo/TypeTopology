@@ -18,12 +18,15 @@ module EffectfulForcing.Internal.InternalModUniCont (fe : Fun-Ext) where
 
 open import EffectfulForcing.Internal.Correctness
  using (Rnorm; Rnorm-generic; Rnorm-lemma₀; is-dialogue-for)
+open import EffectfulForcing.Internal.ExtensionalEquality
 open import EffectfulForcing.Internal.External
  using (B⟦_⟧; B⟦_⟧₀; dialogue-tree; eloquence-theorem; ⟪⟫)
 open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.Internal.InternalModCont fe
- using (maxᵀ; maxᵀ-correct)
+ using (maxᵀ; maxᵀ-correct; ⟦maxᵀ⟧≡max)
 open import EffectfulForcing.Internal.SystemT
+open import EffectfulForcing.Internal.Subst
+ using (≡-refl₀)
 open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-continuous; _＝⟪_⟫_; C-restriction; Cantor; Baire;
@@ -44,7 +47,7 @@ First, we define some nicer syntax for inherently typed System T terms.
 
 \begin{code}
 
-_⊢_ : Cxt → type → 𝓤₀  ̇
+_⊢_ : Cxt → type → 𝓤₀ ̇
 _⊢_ Γ τ = T Γ τ
 
 infix 4 _⊢_
@@ -104,7 +107,7 @@ space.
 
 \begin{code}
 
-is-boolean-pointᵀ : 〈〉 ⊢ baire → 𝓤₀  ̇
+is-boolean-pointᵀ : 〈〉 ⊢ baire → 𝓤₀ ̇
 is-boolean-pointᵀ α =
  (n : 〈〉 ⊢ ι) → (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ 0) + (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ 1)
 
@@ -209,26 +212,19 @@ max-boolean-question⋆-agreement (D.β φ n) = †
    max n (max n₀⋆ n₁⋆)                                                ＝⟨ refl ⟩
    max-boolean-question⋆ (encode (D.β φ n))                           ∎
 
-max-boolean-questionᵀ-agreement : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι)
-                                → ⟦ max-boolean-questionᵀ · d ⟧₀
-                                  ＝ max-boolean-question⋆ ⟦ d ⟧₀
-max-boolean-questionᵀ-agreement d =
- ⟦ max-boolean-questionᵀ · d ⟧₀                                  ＝⟨ refl  ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → ⟦ maxᵀ ⟧₀ x (⟦ maxᵀ ⟧₀ (g 0) (g 1)))  ＝⟨ Ⅰ     ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (⟦ maxᵀ ⟧₀ (g 0) (g 1)))        ＝⟨ Ⅱ     ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (max (g 0) (g 1)))              ＝⟨ refl  ⟩
- max-boolean-question⋆ ⟦ d ⟧₀                                    ∎
+max-boolean-questionᵀ-agreement : ⟦ max-boolean-questionᵀ ⟧₀
+                                   ≡ max-boolean-question⋆
+max-boolean-questionᵀ-agreement {d₁} {d₂} d≡ =
+ d≡ (λ _ → refl) f≡
   where
-   † : (g : ℕ → ℕ) (n : ℕ)
-     → ⟦ maxᵀ ⟧₀ n (⟦ maxᵀ ⟧₀ (g 0) (g 1)) ＝ max n (⟦ maxᵀ ⟧₀ (g 0) (g 1))
-   † g n = maxᵀ-correct n (⟦ maxᵀ ⟧₀ (g 0) (g 1))
+   f₁ : (ℕ → ℕ) → ℕ → ℕ
+   f₁ g n = ⟦ maxᵀ ⟧₀ n (⟦ maxᵀ ⟧₀ (g 0) (g 1))
 
-   ‡ : (g : ℕ → ℕ) (n : ℕ)
-     → max n (⟦ maxᵀ ⟧₀ (g 0) (g 1)) ＝ max n (max (g 0) (g 1))
-   ‡ g n = ap (max n) (maxᵀ-correct (g 0) (g 1))
+   f₂ : (ℕ → ℕ) → ℕ → ℕ
+   f₂ g n = max n (max (g 0) (g 1))
 
-   Ⅰ = ap (⟦ d ⟧₀ (λ _ → 0)) (dfunext fe λ g → dfunext fe λ n → † g n)
-   Ⅱ = ap (⟦ d ⟧₀ (λ _ → 0)) (dfunext fe λ g → dfunext fe λ n → ‡ g n)
+   f≡ : f₁ ≡ f₂
+   f≡ g≡ n≡ = ⟦maxᵀ⟧≡max n≡ (⟦maxᵀ⟧≡max (g≡ refl) (g≡ refl))
 
 \end{code}
 
@@ -261,7 +257,7 @@ main-lemma t =
                            Ⅱ = ap (λ - → max n (max - (f 1))) (φ refl)
                            Ⅲ = ap (λ - → max n (max (g 0) -)) (φ refl)
 
-   Ⅰ = max-boolean-questionᵀ-agreement (⌜dialogue-tree⌝ t)
+   Ⅰ = max-boolean-questionᵀ-agreement (≡-refl₀ (⌜dialogue-tree⌝ t))
    Ⅱ = † (λ _ → refl) (λ {f} {g} → γ f g)
    Ⅲ = max-boolean-question⋆-agreement (dialogue-tree t) ⁻¹
 
@@ -353,6 +349,8 @@ agreement-with-restriction f α bv =
 
 \end{code}
 
+Refactored and simplified on 2025-02-12.
+
 Finally, we state and prove our main result:
 
   given any Boolean `t : baire ⇒ ι`, and given any two Boolean points `αᵀ, βᵀ :
@@ -361,28 +359,22 @@ Finally, we state and prove our main result:
 
 \begin{code}
 
-internal-uni-mod-correct : (t : 〈〉 ⊢ baire ⇒ ι) (αᵀ βᵀ : 〈〉 ⊢ baire)
-                         → is-boolean-pointᵀ αᵀ
-                         → is-boolean-pointᵀ βᵀ
-                         → ⟦ αᵀ ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ βᵀ ⟧₀
-                         → ⟦ t · αᵀ ⟧₀ ＝ ⟦ t · βᵀ ⟧₀
-internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ φ =
+internal-uni-mod-correct₀ : (t : 〈〉 ⊢ baire ⇒ ι) (α β : ℕ → ℕ)
+                          → is-boolean-point α
+                          → is-boolean-point β
+                          → α ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ β
+                          → ⟦ t ⟧₀ α ＝ ⟦ t ⟧₀ β
+internal-uni-mod-correct₀ t α β ψ₁ ψ₂ φ =
  f α ＝⟨ Ⅰ ⟩ f₀ (to-cantor α₀) ＝⟨ Ⅱ ⟩ f₀ (to-cantor β₀) ＝⟨ Ⅲ ⟩ f β ∎
   where
    f : Baire → ℕ
    f = ⟦ t ⟧₀
 
-   α : Baire
-   α = ⟦ αᵀ ⟧₀
-
-   β : Baire
-   β = ⟦ βᵀ ⟧₀
-
    α₀ : Cantor₀
-   α₀ = α , boolean-valuedᵀ-lemma αᵀ ψ₁
+   α₀ = α , ψ₁
 
    β₀ : Cantor₀
-   β₀ = β , boolean-valuedᵀ-lemma βᵀ ψ₂
+   β₀ = β , ψ₂
 
    f₀ : Cantor → ℕ
    f₀ = C-restriction f
@@ -435,15 +427,35 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ φ =
    δ = ＝⟪⟫₀-implies-＝⟦⟧ α β bt ζ
 
    γ : to-cantor α₀ ＝⟦ bt ⟧ to-cantor β₀
-   γ = to-cantor-＝⟦⟧
-        (boolean-valuedᵀ-lemma αᵀ ψ₁)
-        (boolean-valuedᵀ-lemma βᵀ ψ₂)
-        bt
-        δ
+   γ = to-cantor-＝⟦⟧ ψ₁ ψ₂ bt δ
 
    Ⅱ = pr₂ c (to-cantor α₀) (to-cantor β₀) γ
 
-   Ⅰ = agreement-with-restriction f α (boolean-valuedᵀ-lemma αᵀ ψ₁)
-   Ⅲ = agreement-with-restriction f β (boolean-valuedᵀ-lemma βᵀ ψ₂) ⁻¹
+   Ⅰ = agreement-with-restriction f α ψ₁
+   Ⅲ = agreement-with-restriction f β ψ₂ ⁻¹
+
+internal-uni-mod-correct : (t : 〈〉 ⊢ baire ⇒ ι) (αᵀ βᵀ : 〈〉 ⊢ baire)
+                         → is-boolean-pointᵀ αᵀ
+                         → is-boolean-pointᵀ βᵀ
+                         → ⟦ αᵀ ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ βᵀ ⟧₀
+                         → ⟦ t · αᵀ ⟧₀ ＝ ⟦ t · βᵀ ⟧₀
+internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ φ =
+ internal-uni-mod-correct₀
+  t
+  ⟦ αᵀ ⟧₀
+  ⟦ βᵀ ⟧₀
+  (boolean-valuedᵀ-lemma αᵀ ψ₁)
+  (boolean-valuedᵀ-lemma βᵀ ψ₂)
+  φ
+
+\end{code}
+
+Added on 2025-02-11.
+
+\begin{code}
+
+_is-a-modulus-of-uniform-continuity-for_ : ℕ → ((ℕ → 𝟚) → ℕ) → 𝓤₀ ̇
+m is-a-modulus-of-uniform-continuity-for f =
+ (α β : ℕ → 𝟚) → α ＝⦅ m ⦆ β → f α ＝ f β
 
 \end{code}

@@ -73,7 +73,7 @@ We also define the type `𝒦 X` expressing the type of compact opens of a local
 
 \begin{code}
 
-𝒦 : Locale 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+𝒦 : Locale 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
 𝒦 X = Σ U ꞉ ⟨ 𝒪 X ⟩ , is-compact-open X U holds
 
 𝒦-is-set : (X : Locale 𝓤 𝓥 𝓦) → is-set (𝒦 X)

@@ -14,7 +14,7 @@ terminal locale), or equivalently, a frame homomorphism 𝒪(σ(D)) → Ω.
 Given a point F, we define the family of compact elements with principal filters
 falling in F, i.e.
 
-  { c : 𝒦(D) ∣ ↑c ∈ F }.
+  { c : 𝒦(D) ∣ ↑c ∈ F}.
 
 The notation 𝒦(D) above is our notation for the type of compact elements of
 the domain.
@@ -112,7 +112,7 @@ in the preamble.
 
 \begin{code}
 
- Point : 𝓤 ⁺  ̇
+ Point : 𝓤 ⁺ ̇
  Point = 𝟏L ─c→  X
 
 \end{code}
@@ -121,7 +121,7 @@ This is definitionally the same thing as a frame homomorphism `𝒪(X) → Ω`.
 
 \begin{code}
 
- Point′ : 𝓤 ⁺  ̇
+ Point′ : 𝓤 ⁺ ̇
  Point′ = 𝒪 X ─f→ Ω∙
 
  _ : Point ＝ Point′

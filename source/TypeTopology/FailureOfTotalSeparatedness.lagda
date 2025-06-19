@@ -39,9 +39,8 @@ open import UF.FunExt
 
 module TypeTopology.FailureOfTotalSeparatedness (fe₀ : funext₀) where
 
-open import MLTT.Spartan
-
 open import CoNaturals.Type
+open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import Taboos.BasicDiscontinuity fe₀
@@ -98,8 +97,8 @@ because we know that WLPO is not provable:
 
 \begin{code}
 
-failure : (p : ℕ∞₂ → 𝟚) → p ∞₀ ≠ p ∞₁ → WLPO
-failure p = disagreement-taboo p₀ p₁ lemma
+failure-of-decomposability-at-∞₀-and-∞₁ : (p : ℕ∞₂ → 𝟚) → p ∞₀ ≠ p ∞₁ → WLPO
+failure-of-decomposability-at-∞₀-and-∞₁ p = disagreement-taboo p₀ p₁ lemma
  where
   p₀ : ℕ∞ → 𝟚
   p₀ u = p (u , λ r → ₀)
@@ -113,15 +112,17 @@ failure p = disagreement-taboo p₀ p₁ lemma
     claim : (r : ι n ＝ ∞) → (λ r → ₀) r ＝ (λ r → ₁) r
     claim s = 𝟘-elim (∞-is-not-finite n (s ⁻¹))
 
-open import UF.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated hiding (_♯_)
 
-𝟚-indistinguishability : ¬ WLPO → (p : ℕ∞₂ → 𝟚) → p ∞₀ ＝ p ∞₁
-𝟚-indistinguishability nwlpo p = 𝟚-is-¬¬-separated (p ∞₀) (p ∞₁)
-                                  (not-Σ-implies-Π-not
-                                    (contrapositive
-                                      (λ (p , ν) → failure p ν)
-                                      nwlpo)
-                                    p)
+𝟚-indistinguishability-of-∞₀-and-∞₁ : ¬ WLPO → (p : ℕ∞₂ → 𝟚) → p ∞₀ ＝ p ∞₁
+𝟚-indistinguishability-of-∞₀-and-∞₁ nwlpo p =
+ 𝟚-is-¬¬-separated (p ∞₀) (p ∞₁)
+  (not-Σ-implies-Π-not
+    (contrapositive
+      (λ (p , ν) → failure-of-decomposability-at-∞₀-and-∞₁ p ν)
+      nwlpo)
+    p)
+
 \end{code}
 
 Precisely because one cannot construct maps from ℕ∞₂ into 𝟚 that
@@ -167,7 +168,7 @@ open import TypeTopology.TotallySeparated
   g = contrapositive ts ∞₀-and-∞₁-different
 
   c : 𝟘
-  c = g (𝟚-indistinguishability nwlpo)
+  c = g (𝟚-indistinguishability-of-∞₀-and-∞₁ nwlpo)
 
 \end{code}
 
@@ -309,7 +310,7 @@ open import UF.Equiv
 
 open import TypeTopology.Cantor
 
-weakly-isolated-point-of-Cantor-gives-WLPO : (α : Cantor)
+weakly-isolated-point-of-Cantor-gives-WLPO : (α : 𝟚ᴺ)
                                            → is-weakly-isolated α
                                            → WLPO
 weakly-isolated-point-of-Cantor-gives-WLPO = III
@@ -321,7 +322,7 @@ weakly-isolated-point-of-Cantor-gives-WLPO = III
            (λ (e : ¬ (α ≠ 𝟏))
                  → inl (λ n → happly (Cantor-is-¬¬-separated fe₀ α 𝟏 e) n))
 
-  II : (α : Cantor) → is-weakly-isolated α → WLPO-traditional
+  II : (α : 𝟚ᴺ) → is-weakly-isolated α → WLPO-traditional
   II α i = I b
    where
     a : is-weakly-isolated (⌜ Cantor-swap-≃ fe₀ α 𝟏 ⌝ α)
@@ -330,7 +331,7 @@ weakly-isolated-point-of-Cantor-gives-WLPO = III
     b : is-weakly-isolated 𝟏
     b = transport is-weakly-isolated (Cantor-swap-swaps fe₀ α 𝟏) a
 
-  III : (α : Cantor) → is-weakly-isolated α → WLPO
+  III : (α : 𝟚ᴺ) → is-weakly-isolated α → WLPO
   III α i = WLPO-traditional-gives-WLPO fe₀ (II α i)
 
 module examples-of-non-weakly-isolated-points (nwlpo : ¬ WLPO) where
@@ -345,17 +346,17 @@ module examples-of-non-weakly-isolated-points (nwlpo : ¬ WLPO) where
    (isolated-gives-weakly-isolated ∞)
    ∞-is-not-weakly-isolated
 
- Cantor-has-no-weakly-isolated-points : (α : Cantor) → ¬ is-weakly-isolated α
+ Cantor-has-no-weakly-isolated-points : (α : 𝟚ᴺ) → ¬ is-weakly-isolated α
  Cantor-has-no-weakly-isolated-points α =
   contrapositive (weakly-isolated-point-of-Cantor-gives-WLPO α) nwlpo
 
- Cantor-has-no-isolated-points : (α : Cantor) → ¬ is-isolated α
+ Cantor-has-no-isolated-points : (α : 𝟚ᴺ) → ¬ is-isolated α
  Cantor-has-no-isolated-points α =
   contrapositive
    (isolated-gives-weakly-isolated α)
    (Cantor-has-no-weakly-isolated-points α)
 
- Cantor-is-perfect : is-perfect Cantor
+ Cantor-is-perfect : is-perfect 𝟚ᴺ
  Cantor-is-perfect (α , i) = Cantor-has-no-isolated-points α i
 
 \end{code}
@@ -371,8 +372,201 @@ open import TypeTopology.LimitPoints
 ∞-is-a-limit-point⁺-of-ℕ∞ = ∞-is-weakly-isolated-gives-WLPO
 
 every-point-of-the-Cantor-type-is-a-limit-point⁺
- : (α : Cantor) → is-limit-point⁺ α
+ : (α : 𝟚ᴺ) → is-limit-point⁺ α
 every-point-of-the-Cantor-type-is-a-limit-point⁺ =
  weakly-isolated-point-of-Cantor-gives-WLPO
+
+\end{code}
+
+Added 4th Feb 2025. A characterization of equality in ℕ∞₂ and
+discussion about the possibility of a tight apartness relation on ℕ∞₂.
+
+\begin{code}
+
+open import UF.SigmaIdentity
+open import UF.EquivalenceExamples
+
+ℕ∞₂-equality : funext 𝓤₀ 𝓤₀
+             → (u@(x , f) v@(y , g) : ℕ∞₂)
+             → (u ＝ v) ≃ (Σ p ꞉ x ＝ y , f ∘ (p ∙_) ∼ g)
+ℕ∞₂-equality fe u@(x , f) v@(y , g) = IV
+ where
+  i : ((x , f) (y , g) : ℕ∞₂) → x ＝ y → 𝓤₀ ̇
+  i (x , f) (y , g) p = f ∘ (p ∙'_) ∼ g
+
+  ρ : (u : ℕ∞₂) → i u u refl
+  ρ u p = refl
+
+  open Σ-identity renaming (canonical-map to κ)
+
+  c : {x : ℕ∞} (s t : x ＝ ∞ → 𝟚) → s ＝ t → s ∼ t
+  c = κ i ρ
+
+  I : {x : ℕ∞} (s t : x ＝ ∞ → 𝟚) → c s t ∼ happly' s t
+  I s t refl = refl
+
+  θ : {x : ℕ∞} (s t : x ＝ ∞ → 𝟚) → is-equiv (c s t)
+  θ s t = equiv-closed-under-∼ (happly' s t) (c s t) (fe s t) (I s t)
+
+  II : (u ＝ v) ≃ (Σ p ꞉ x ＝ y , f ∘ (p ∙'_) ∼ g)
+  II = characterization-of-＝ (i , ρ , θ) (x , f) (y , g)
+
+  III : (p : x ＝ y) → (f ∘ (p ∙'_) ∼ g) ≃ (f ∘ (p ∙_) ∼ g)
+  III p = transport-≃
+           (λ - → (f ∘ - ∼ g))
+           (dfunext fe (∙-agrees-with-∙' p))
+
+  IV = (u ＝ v)                         ≃⟨ II ⟩
+       (Σ p ꞉ x ＝ y , f ∘ (p ∙'_) ∼ g) ≃⟨ Σ-cong III ⟩
+       (Σ p ꞉ x ＝ y , f ∘ (p ∙_) ∼ g)  ■
+
+\end{code}
+
+Added 7th Feb 2025. Another characterization of equality of ℕ∞₂, which
+I knew before, but I should have written earlier. It has the virtue of
+being non-dependent, compared to the above one.
+
+We also now give only a logical equivalence, rather than a type
+equivalence, because the two involved types are propositions, so that
+we automatically get a type equivalence from this (although, for the
+moment, we don't record this in the code as we don't need it).
+
+\begin{code}
+
+open import UF.Sets
+open import UF.Sets-Properties
+
+ℕ∞₂-is-set : funext₀ → is-set ℕ∞₂
+ℕ∞₂-is-set fe = Σ-is-set (ℕ∞-is-set fe) (λ x → Π-is-set fe (λ _ → 𝟚-is-set))
+
+ℕ∞₂-equality-non-dependent
+ : funext 𝓤₀ 𝓤₀
+ → (u@(x , f) v@(y , g) : ℕ∞₂)
+ → (u ＝ v) ↔ ((x ＝ y) × ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q))
+ℕ∞₂-equality-non-dependent fe u@(x , f) v@(y , g) = I , II
+ where
+  I : (x , f ＝ y , g) → (x ＝ y) × ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q)
+  I refl = refl , I₀
+   where
+    I₀ : (p q : x ＝ ∞) → f p ＝ f q
+    I₀ p q = ap f (ℕ∞-is-set fe p q)
+
+  II : (x ＝ y) × ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q) → (x , f) ＝ (y , g)
+  II (refl , ϕ) = ap (x ,_) (dfunext fe (λ r → ϕ r r))
+
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+
+ℕ∞₂-is-¬¬-separated : funext₀ → is-¬¬-separated ℕ∞₂
+ℕ∞₂-is-¬¬-separated fe u@(x , f) v@(y , g) ν = VI
+ where
+  I : ¬¬ ((x ＝ y) × ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q))
+  I = ¬¬-functor (lr-implication (ℕ∞₂-equality-non-dependent fe u v)) ν
+
+  II : ¬¬ (x ＝ y)
+  II = ¬¬-functor pr₁ I
+
+  III : x ＝ y
+  III = ℕ∞-is-¬¬-separated fe x y II
+
+  IV : ¬¬ ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q)
+  IV = ¬¬-functor pr₂ I
+
+  V : (p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q
+  V p q = 𝟚-is-¬¬-separated (f p) (g q) (¬¬-functor (λ ϕ → ϕ p q) IV)
+
+  VI : (x , f) ＝ (y , g)
+  VI = rl-implication (ℕ∞₂-equality-non-dependent fe u v) (III , V)
+
+\end{code}
+
+Theorem ℕ∞₂-equality-non-dependent above suggests to define a tentative
+apartness relation on ℕ∞₂ by
+
+ u ♯ v := (α ♯ β) + (Σ p ꞉ x ＝ ∞ , Σ q ꞉ y ＝ ∞ , f p ≠ g q).
+
+where α ♯ β is the standard apartness relation on the Cantor type, and
+u and v are of the forms (x , f) and v = (y , g), with x and y of the
+forms (α , _) and (β , _).
+
+Then the negation of u ♯ v implies u ＝ v, which means that the
+relation _♯_ is tight. It is also proposition valued, irreflexive and
+symmetric, but if it is cotransitive, then LPO holds. This is shown in
+the module gist.not-an-apartness.
+
+The following was added 4th Feb 2025.
+
+Moreover, we have that if ℕ∞₂ has any strong apartness _♯_ with ∞₀ ♯ ∞₁
+then WLPO holds. So we are looking for a (weak) tight apartness, if
+any exists.
+
+\begin{code}
+
+open import Taboos.WLPO
+open import Apartness.Definition
+
+strong-apartness-separating-∞₀-and-∞₁-gives-WLPO
+ : (_♯_  : ℕ∞₂ → ℕ∞₂ → 𝓤₀ ̇ )
+ → ∞₀ ♯ ∞₁
+ → is-irreflexive _♯_
+ → is-strongly-cotransitive _♯_
+ → WLPO
+strong-apartness-separating-∞₀-and-∞₁-gives-WLPO _♯_ a ir sc =
+ failure-of-decomposability-at-∞₀-and-∞₁ g II
+ where
+  f : (x : ℕ∞₂) → (∞₀ ♯ x) + (∞₁ ♯ x) → 𝟚
+  f x (inl _) = ₀
+  f x (inr _) = ₁
+
+  g : ℕ∞₂ → 𝟚
+  g x = f x (sc ∞₀ ∞₁ x a)
+
+  I : (i : (∞₀ ♯ ∞₀) + (∞₁ ♯ ∞₀))
+      (j : (∞₀ ♯ ∞₁) + (∞₁ ♯ ∞₁))
+    → f ∞₀ i ≠ f ∞₁ j
+  I (inl b) _       = 𝟘-elim (ir ∞₀ b)
+  I (inr _) (inl _) = one-is-not-zero
+  I (inr _) (inr c) = 𝟘-elim (ir ∞₁ c)
+
+  II : g ∞₀ ≠ g ∞₁
+  II = I (sc ∞₀ ∞₁ ∞₀ a) (sc ∞₀ ∞₁ ∞₁ a)
+
+\end{code}
+
+Question. Does ℕ∞₂ admit a tight apartness relation? I am inclined to
+conjecture that it doesn't.
+
+\begin{code}
+
+module isolated-elements-of-ℕ∞₂ where
+
+ r : ℕ∞₂ → ℕ∞
+ r (x , _) = x
+
+ S : 𝟚 → ℕ∞ → ℕ∞₂
+ S b x = x , (λ _ → b)
+
+ S-agreement : funext₀ → (n : ℕ) → S ₀ (ι n) ＝ S ₁ (ι n)
+ S-agreement fe n = ⌜ ℕ∞₂-equality fe _ _ ⌝⁻¹
+                      (refl , (λ p → 𝟘-elim (≠-sym (∞-is-not-finite n) p)))
+
+ s : ℕ∞ → ℕ∞₂
+ s = S ₀
+
+ rs : r ∘ s ∼ id
+ rs x = refl
+
+ e : ℕ → ℕ∞₂
+ e n = s (ι n)
+
+ e-is-isolated : funext₀ → (n : ℕ) → is-isolated (e n)
+ e-is-isolated fe n (x , f) =
+  Cases (finite-isolated fe n x)
+   (λ (p : ι n ＝ x)
+         → inl (⌜ ℕ∞₂-equality fe _ _ ⌝⁻¹
+                  (p ,
+                   (λ (q : x ＝ ∞) → 𝟘-elim (∞-is-not-finite n (q ⁻¹ ∙ p ⁻¹))))))
+   (λ (ν : ι n ≠ x)
+         → inr (λ (q : e n ＝ (x , f)) → ν (ap pr₁ q)))
 
 \end{code}

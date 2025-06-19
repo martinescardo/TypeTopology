@@ -33,8 +33,8 @@ module OrderedTypes.ZornsLemma
  {𝓤 𝓣 : Universe}
  (pt : propositional-truncations-exist)
  (ua : Univalence)
- {X : 𝓤 ̇}
- (_≪_ : X → X → 𝓣 ̇)
+ {X : 𝓤 ̇ }
+ (_≪_ : X → X → 𝓣 ̇ )
   where
 
 open PropositionalTruncation pt
@@ -75,7 +75,7 @@ has-maximal-element-strong = Σ x ꞉ X , ((y : X) → x ≪ y → x ＝ y)
 has-maximal-element : (𝓤 ⊔ 𝓣) ̇
 has-maximal-element = ∃ x ꞉ X , ((y : X) → x ≪ y → x ＝ y)
 
-all-chains-have-upper-bound : {𝓥 : Universe} → (𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺))  ̇
+all-chains-have-upper-bound : {𝓥 : Universe} → (𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺)) ̇
 all-chains-have-upper-bound {𝓥} =
  (Y : 𝓟 {𝓥} X) → (is-chain Y) → Σ x ꞉ X , (∀ y → y ∈ Y → y ≪ x)
 
@@ -120,10 +120,10 @@ choice-function-gives-zorns-lemma
  (ε , ε-behaviour) =
   (¬¬Σ→∃ pt dn (λ no-max → absurd no-max))
    where
-    dn : {𝓥 : Universe } → DNE 𝓥
+    dn : {𝓥 : Universe} → DNE 𝓥
     dn {𝓥} = EM-gives-DNE lem
 
-    eq-is-¬¬-stable : {x : X} {y : X } →  ¬¬-stable (x ＝ y)
+    eq-is-¬¬-stable : {x : X} {y : X} →  ¬¬-stable (x ＝ y)
     eq-is-¬¬-stable {x} {y} ¬¬x=y = dn (x ＝ y) (X-is-set) ¬¬x=y
 
     ≪-is-¬¬-stable : {x : X} {y : X} → ¬¬-stable (x ≪ y)
@@ -143,7 +143,7 @@ choice-function-gives-zorns-lemma
     f : Ordinal 𝓤 → X
     f = transfinite-recursion-on-OO X g
 
-    A : Ordinal 𝓤 → 𝓟 { (𝓤 ⊔ 𝓣) } X
+    A : Ordinal 𝓤 → 𝓟 { (𝓤 ⊔ 𝓣)} X
     A α = ⁅ x ꞉ X ∣ Ɐ a ꞉ ⟨ α ⟩ , (f (α ↓ a) ⋘ x , ⋘-prop (f (α ↓ a)) x ) ⁆
 
     f-behaviour : (α : Ordinal 𝓤) → f α ＝ ε (A α)

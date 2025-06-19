@@ -904,7 +904,7 @@ is given by the restriction of the family, given by the function `𝕔𝕠𝕧`
 
 \begin{code}
 
- basic-below : Perfect-Nucleus-on-X → 𝓤  ̇
+ basic-below : Perfect-Nucleus-on-X → 𝓤 ̇
  basic-below 𝒿@(j , _) =
   Σ (k , l) ꞉ (index ℬ × index ℬ) , ((ℬ [ k ]) ≤[ poset-of (𝒪 X) ] j (ℬ [ l ])) holds
 

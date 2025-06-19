@@ -94,7 +94,7 @@ module sup-bounded-by-sum-under-em
      fop y z l = inr (refl , l)
 
      m : β x ≼ ∑ α β
-     m = order-preserving-gives-≼ em (β x) (∑ α β) (f , fop)
+     m = EM-implies-order-preserving-gives-≼ em (β x) (∑ α β) (f , fop)
 
 \end{code}
 
@@ -174,7 +174,7 @@ Added 21st May 2022. Unfortunately, the above is not very useful in
 the generality it is proved. The reason is that in other modules we
 have sups and sums constructed under different assumptions, and
 although the assumptions are propositions and hence we can transport
-using propositional extensionality, this becomes to cumbersome to even
+using propositional extensionality, this becomes too cumbersome to even
 write down, let alone prove. Hence we will repeat the above (short)
 code with the two assumptions we need.
 
@@ -205,7 +205,7 @@ module _ {𝓤 : Universe}
      fop y z l = inr (refl , l)
 
      m : [ υ x ] ≼ [ ∑ τ υ ]
-     m = order-preserving-gives-≼ em [ υ x ] [ ∑ τ υ ] (f , fop)
+     m = EM-implies-order-preserving-gives-≼ em [ υ x ] [ ∑ τ υ ] (f , fop)
 
    γ : sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ]
    γ = sup-is-lower-bound-of-upper-bounds (λ x → [ υ x ]) [ ∑ τ υ ] bound
@@ -227,7 +227,7 @@ module _ {𝓤 : Universe}
      fop y z l = inr (refl , l)
 
      m : [ υ x ] ≼ [ ∑³ τ υ ]
-     m = order-preserving-gives-≼ em [ υ x ] [ ∑³ τ υ ] (f , fop)
+     m = EM-implies-order-preserving-gives-≼ em [ υ x ] [ ∑³ τ υ ] (f , fop)
 
    γ : sup (λ x → [ υ x ]) ⊴ [ ∑³ τ υ ]
    γ = sup-is-lower-bound-of-upper-bounds (λ x → [ υ x ]) [ ∑³ τ υ ] bound

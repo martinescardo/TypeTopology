@@ -54,7 +54,7 @@ K-∃-shift {R} (∃-intro x φ) = K-functor {R} (∃-intro x) φ
 
 J-Excluded-Middle : {R A : Ω} →
 
-                     J {R } (A ∨ (A → R))
+                     J {R} (A ∨ (A → R))
 
 J-Excluded-Middle = λ p → ∨-intro₁(λ a → p (∨-intro₀ a))
 

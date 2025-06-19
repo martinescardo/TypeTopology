@@ -91,7 +91,7 @@ generateMakefileTarget fs decls n = concat [l1, l2, l3]
     is = dependencies n decls
     l1 = agdaiFile fs n
          ++ ": " ++ unwords (lagdaFile fs n : (agdaiFile fs <$> is)) ++ "\n"
-    l2 = "\tagda --safe " ++ lagdaFile fs n ++ "\n"
+    l2 = "\tagda " ++ lagdaFile fs n ++ "\n"
     l3 = "\ttouch $@" ++ "\n"
 
 -- | Goes through all of the declarations and generates the corresponding list of
@@ -103,7 +103,7 @@ generateMakefile fs decls = map $ generateMakefileTarget fs decls
 emitTargetForPrimitive :: IO ()
 emitTargetForPrimitive = do
   putStrLn $ "_build/" ++ agdaVersion ++ "/agda/source/Agda/Primitive.agdai:"
-  putStrLn $ "\tagda --safe source/MLTT/Universes.lagda\n"
+  putStrLn $ "\tagda source/MLTT/Universes.lagda\n"
 
 -- | Emit all the targets of the Makefile to be generated.
 emitLineForTargetAll :: IO ()

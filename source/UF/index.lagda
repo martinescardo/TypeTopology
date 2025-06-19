@@ -50,6 +50,7 @@ import UF.PreUnivalence
 import UF.PropIndexedPiSigma
 import UF.PropTrunc
 import UF.PropTrunc-Variation
+import UF.Pullback
 import UF.Pushouts                    -- by [2]   
 import UF.Retracts
 import UF.Retracts-FunExt

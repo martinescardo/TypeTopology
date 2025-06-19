@@ -257,7 +257,7 @@ module Idl-continuous-retract-of-algebraic
                                 ; ≺-prop-valued = ⊑ᴮ-is-prop-valued
                                 ; ≺-trans = ⊑ᴮ-is-transitive
                                 ; ≺-refl = ⊑ᴮ-is-reflexive
-                                }
+                               }
 
  ⊑ᴮ-abstract-basis : abstract-basis
  ⊑ᴮ-abstract-basis = reflexive-abstract-basis-to-abstract-basis
@@ -318,7 +318,7 @@ module Idl-continuous-retract-of-algebraic
    ; s-section-of-r  = retract-condition Idl-retract
    ; s-is-continuous = to-Idl-is-continuous
    ; r-is-continuous = from-Idl-is-continuous
-   }
+  }
 
  Idl-embedding-projection-pair : embedding-projection-pair-between 𝓓 Idl-DCPO
  Idl-embedding-projection-pair =
@@ -329,7 +329,7 @@ module Idl-continuous-retract-of-algebraic
     ; e-p-deflation   = Idl-deflation
     ; e-is-continuous = to-Idl-is-continuous
     ; p-is-continuous = from-Idl-is-continuous
-    }
+   }
 
  Idl-is-algebraic : is-algebraic-dcpo Idl-DCPO
  Idl-is-algebraic = Idl-is-algebraic-dcpo (λ b → ⊑ᴮ-is-reflexive)
@@ -471,7 +471,7 @@ sup-complete dcpo yields another sup-complete dcpo.
             ⊥-is-least = ⊥Idl-is-least ;
             _∨_        = _∨Idl_ ;
             ∨-is-sup   = ∨Idl-is-sup
-          }
+         }
 
 \end{code}
 
@@ -544,7 +544,7 @@ module Idl-continuous
                      ; ≺-trans = ≺-is-transitive
                      ; INT₀ = ≺-INT₀
                      ; INT₂ = ≺-INT₂
-                     }
+                    }
 
  open Ideals-of-small-abstract-basis ≪-abstract-basis
  open Idl-retract-common 𝓓 β β-is-small-basis

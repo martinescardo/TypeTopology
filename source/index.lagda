@@ -5,7 +5,9 @@
 
    Martin Escardo and collaborators,
    2010--2025--∞, continuously evolving.
+
    https://www.cs.bham.ac.uk/~mhe/
+   https://www.cs.bham.ac.uk/~mhe/TypeTopology/
    https://github.com/martinescardo/TypeTopology
 
    Tested with Agda 2.7.0.1. (It may still work with Agda 2.6.4.3.)
@@ -55,8 +57,8 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
-   * In our last count, on 2025.01.14, this development has 800 Agda
-     files with 230K lines of code, including comments and blank
+   * In our last count, on 2025.05.26, this development has 835 Agda
+     files with 249K lines of code, including comments and blank
      lines.
 
 Philosophy of the repository
@@ -158,6 +160,7 @@ import MGS.index
 import MLTT.index
 import MetricSpaces.index
 import Modal.index
+import MonadOnTypes.index
 import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index

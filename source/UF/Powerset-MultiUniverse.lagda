@@ -73,7 +73,7 @@ syntax comprehension X (λ x → A) = ⁅ x ꞉ X ∣ A ⁆
 full : {X : 𝓤 ̇ } →  𝓟 {𝓥} X
 full _ = 𝟙 , 𝟙-is-prop
 
-_∈ₚ_ : {X : 𝓤  ̇} → X → (X → Ω 𝓥) → Ω 𝓥
+_∈ₚ_ : {X : 𝓤 ̇ } → X → (X → Ω 𝓥) → Ω 𝓥
 x ∈ₚ A = A x
 
 _∈_ : {X : 𝓤 ̇ } → X → 𝓟 {𝓥} X → 𝓥 ̇
@@ -144,7 +144,7 @@ module inhabited-subsets (pt : propositional-truncations-exist) where
  𝓟⁺-is-set : Univalence → {X : 𝓤 ̇ } → is-set (𝓟⁺ X)
  𝓟⁺-is-set {𝓤} ua = 𝓟⁺-is-set'
                       (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
-                      (univalence-gives-propext (ua 𝓤) )
+                      (univalence-gives-propext (ua 𝓤))
 
  _∈⁺_ : {X : 𝓤 ̇ } → X → 𝓟⁺ X → 𝓤 ̇
  x ∈⁺ (A , _) = x ∈ A
@@ -184,7 +184,7 @@ complement fe A = λ x → (x ∉ A) , (∉-is-prop fe A x)
 
 module PropositionalSubsetInclusionNotation (fe : Fun-Ext) where
 
- _⊆ₚ_ _⊇ₚ_ : {X : 𝓤  ̇} → 𝓟 {𝓤} X → 𝓟 {𝓤} X → Ω 𝓤
+ _⊆ₚ_ _⊇ₚ_ : {X : 𝓤 ̇ } → 𝓟 {𝓤} X → 𝓟 {𝓤} X → Ω 𝓤
  A ⊆ₚ B = (A ⊆ B) , ⊆-is-prop fe A B
  A ⊇ₚ B = (A ⊇ B) , ⊆-is-prop fe B A
 

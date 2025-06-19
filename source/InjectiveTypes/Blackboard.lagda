@@ -290,11 +290,7 @@ module _ {X : 𝓤 ̇ }
 \begin{code}
 
   Π-extension-property : is-embedding j → (x : X) → f/j (j x) ≃ f x
-  Π-extension-property e x =
-   prop-indexed-product (fe (𝓤 ⊔ 𝓥) 𝓦)
-    {fiber j (j x)} {λ (z : fiber j (j x)) → f (fiber-point z)}
-    (e (j x))
-    (x , refl)
+  Π-extension-property e x = prop-indexed-product (x , refl) (fe (𝓤 ⊔ 𝓥) 𝓦) (e (j x))
 
   Π-extension-equivalence : is-embedding j
                           → (x : X) → is-equiv (Π-proj (x , refl))
@@ -302,11 +298,10 @@ module _ {X : 𝓤 ̇ }
 
   Π-extension-out-of-range : {𝓦 : Universe} (y : Y)
                            → ((x : X) → j x ≠ y) → f/j (y) ≃ 𝟙 {𝓦}
-  Π-extension-out-of-range y φ =
-   empty-indexed-product-is-𝟙 (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
+  Π-extension-out-of-range y φ = empty-indexed-product-is-𝟙 (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
 
   Σ-extension-property : is-embedding j → (x : X) → f∖j (j x) ≃ f x
-  Σ-extension-property e x = prop-indexed-sum (e (j x)) (x , refl)
+  Σ-extension-property e x = prop-indexed-sum (x , refl) (e (j x))
 
   Σ-extension-out-of-range : {𝓦 : Universe} (y : Y)
                            → ((x : X) → j x ≠ y) → f∖j (y) ≃ 𝟘 {𝓦}
@@ -551,14 +546,43 @@ ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                       → (f : X → D)
                       → Σ f' ꞉ (Y → D) , f' ∘ j ∼ f
 
+extension : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {D : 𝓦 ̇ }
+          → ainjective-type D 𝓤 𝓥
+          → (j : X → Y)
+          → is-embedding j
+          → (X → D)
+          → (Y → D)
+extension i j e f = pr₁ (i j e f)
+
+extension-property : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {D : 𝓦 ̇ }
+                     (a : ainjective-type D 𝓤 𝓥)
+                     (j : X → Y)
+                     (i : is-embedding j)
+                     (f : X → D)
+                   → extension a j i f ∘ j ∼ f
+extension-property i j e f = pr₂ (i j e f)
+
+extension' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {D : 𝓦 ̇ }
+           → ainjective-type D 𝓤 𝓥
+           → (𝕛 : X ↪ Y)
+           → (X → D)
+           → (Y → D)
+extension' i (j , e) = extension i j e
+
+extension-property' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {D : 𝓦 ̇ }
+                      (a : ainjective-type D 𝓤 𝓥)
+                      (𝕛 : X ↪ Y)
+                      (f : X → D)
+                    → extension' a 𝕛 f ∘ ⌊ 𝕛 ⌋ ∼ f
+extension-property' i (j , e) = extension-property i j e
+
 embedding-retract : (D : 𝓦 ̇ ) (Y : 𝓥 ̇ ) (j : D → Y)
                   → is-embedding j
                   → ainjective-type D 𝓦 𝓥
                   → retract D of Y
-embedding-retract D Y j e i = pr₁ a , j , pr₂ a
- where
-  a : Σ f' ꞉ (Y → D) , f' ∘ j ∼ id
-  a = i j e id
+embedding-retract D Y j e i = extension i j e id ,
+                              j ,
+                              extension-property i j e id
 
 retract-of-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
                       → ainjective-type D 𝓤 𝓥
@@ -625,7 +649,7 @@ every-type-can-be-embedded-into-an-ainjective-type
  → (X : 𝓤 ⊔ 𝓥 ̇ )
  → Σ D ꞉ (𝓤 ⊔ 𝓥)⁺ ̇ , Σ e ꞉ X ↪ D , ainjective-type D 𝓤 𝓥
 every-type-can-be-embedded-into-an-ainjective-type {𝓤} {𝓥} ua X
- = (X → 𝓤 ⊔ 𝓥 ̇) ,
+ = (X → 𝓤 ⊔ 𝓥 ̇ ) ,
    (Id , UA-Id-embedding ua fe) ,
    power-of-ainjective (universes-are-ainjective ua)
 
@@ -777,7 +801,7 @@ module /-extension-is-embedding-special-case
  s = Π
 
  rs : ∀ A → r (s A) ＝ A
- rs A = dfunext fe' (λ p → eqtoid ua (s A) (A p) (prop-indexed-product feuu i p))
+ rs A = dfunext fe' (λ p → eqtoid ua (s A) (A p) (prop-indexed-product p feuu i))
 
  sr : ∀ X → s (r X) ＝ (P → X)
  sr X = refl
@@ -848,7 +872,7 @@ module ∖-extension-is-embedding-special-case
  r X p = X
 
  rs : ∀ A → r (s A) ＝ A
- rs A = dfunext fe' (λ p → eqtoid ua (Σ A) (A p) (prop-indexed-sum i p))
+ rs A = dfunext fe' (λ p → eqtoid ua (Σ A) (A p) (prop-indexed-sum p i))
 
  sr : ∀ X → s (r X) ＝ P × X
  sr X = refl
@@ -1523,8 +1547,8 @@ module injective (pt : propositional-truncations-exist) where
  injectivity-is-prop : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
                      → is-prop (injective-type D 𝓤 𝓥)
  injectivity-is-prop {𝓦} D 𝓤 𝓥 =
-  Π-is-prop' (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦)) (λ X →
-  Π-is-prop' (fe (𝓥 ⁺) (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ Y →
+  implicit-Π-is-prop (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦)) (λ X →
+  implicit-Π-is-prop (fe (𝓥 ⁺) (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ Y →
   Π₃-is-prop fe' (λ j e f → ∥∥-is-prop)))
 
  ainjective-gives-injective : (D : 𝓦 ̇ )
@@ -1633,7 +1657,7 @@ injectivity.
 
  injectivity-in-terms-of-ainjectivity' : is-univalent 𝓤
                                        → propositional-resizing (𝓤 ⁺) 𝓤
-                                       → (D : 𝓤  ̇ )
+                                       → (D : 𝓤 ̇ )
                                        → injective-type D 𝓤 (𝓤 ⁺)
                                          ↔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
  injectivity-in-terms-of-ainjectivity' {𝓤} ua R D = a , b

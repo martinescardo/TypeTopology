@@ -44,7 +44,7 @@ is-∃-compact X = (p : X → 𝟚) → is-decidable (∃ x ꞉ X , p x ＝ ₀)
 ∃-compactness-is-prop : {X : 𝓤 ̇ } → is-prop (is-∃-compact X)
 ∃-compactness-is-prop {𝓤} {X} = Π-is-prop fe'
                                   (λ _ → decidability-of-prop-is-prop fe'
-                                          ∥∥-is-prop)
+                                          ∃-is-prop)
 
 ∃-compactness-gives-Markov : {X : 𝓤 ̇ }
                            → is-∃-compact X
@@ -106,8 +106,8 @@ compact-types-are-∃-compact {𝓤} {X} φ p = g (φ p)
 ∥Compact∥-types-are-∃-compact : {X : 𝓤 ̇ } → ∥ is-Compact X ∥ → is-∃-compact X
 ∥Compact∥-types-are-∃-compact {𝓤} {X} =
  ∥∥-rec
-   ∃-compactness-is-prop
-   (compact-types-are-∃-compact ∘ Compact-types-are-compact)
+  ∃-compactness-is-prop
+  (compact-types-are-∃-compact ∘ Compact-types-are-compact)
 
 \end{code}
 
@@ -208,17 +208,15 @@ discrete-power-of-disconnected-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d
   γ : is-Π-compact X
   γ = power-of-two-discrete-gives-compact-exponent b
 
-discrete-power-of-non-trivial-discrete-gives-compact-exponent' :
-
-    {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
-  → is-discrete Y
-  → is-discrete (X → Y)
-  → is-Π-compact X
-
-discrete-power-of-non-trivial-discrete-gives-compact-exponent' w d =
-  discrete-power-of-disconnected-gives-compact-exponent
-   (discrete-types-with-two-different-points-are-disconnected w d)
+discrete-power-of-non-trivial-discrete-gives-compact-exponent'
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
+ → is-discrete Y
+ → is-discrete (X → Y)
+ → is-Π-compact X
+discrete-power-of-non-trivial-discrete-gives-compact-exponent' w d
+ = discrete-power-of-disconnected-gives-compact-exponent
+    (discrete-types-with-two-different-points-are-disconnected w d)
 
 \end{code}
 
@@ -282,7 +280,7 @@ retract-is-∃-compact' t c = ∥∥-rec
 
 image-is-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                    → is-Π-compact X
-                  → is-Π-compact (image f)
+                   → is-Π-compact (image f)
 image-is-Π-compact f = codomain-of-surjection-is-Π-compact
                         (corestriction f)
                         (corestrictions-are-surjections f)
@@ -302,15 +300,13 @@ retract-is-Π-compact' t c = ∥∥-rec
                              Π-compactness-is-prop
                              (λ r → retract-is-Π-compact r c) t
 
-Π-compact-exponential-with-pointed-domain-has-Π-compact-domain :
-
-    {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-  → X
-  → is-Π-compact (X → Y)
-  → is-Π-compact Y
-
-Π-compact-exponential-with-pointed-domain-has-Π-compact-domain x =
- retract-is-Π-compact (codomain-is-retract-of-function-space-with-pointed-domain x)
+Π-compact-exponential-with-pointed-domain-has-Π-compact-domain
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → X
+ → is-Π-compact (X → Y)
+ → is-Π-compact Y
+Π-compact-exponential-with-pointed-domain-has-Π-compact-domain x
+ = retract-is-Π-compact (codomain-is-retract-of-function-space-with-pointed-domain x)
 
 \end{code}
 
@@ -483,7 +479,7 @@ type (ℕ∞→𝟚) is "not" Π-compact, internally and constructively.
 
 [ℕ∞→𝟚]-compact-implies-WLPO : is-Π-compact (ℕ∞ → 𝟚) → WLPO
 [ℕ∞→𝟚]-compact-implies-WLPO c = ℕ∞-discrete-gives-WLPO
-                                  (tscd (ℕ∞-is-totally-separated fe') c)
+                                 (tscd (ℕ∞-is-totally-separated fe') c)
 
 \end{code}
 
@@ -557,7 +553,8 @@ information for the moment.
                                         → is-∃-compact X
                                         → ¬¬ X
                                         → ∥ X ∥
-∃-compact-non-empty-types-are-inhabited {𝓤} {X} c φ = g (∃-compact-types-have-decidable-support c)
+∃-compact-non-empty-types-are-inhabited {𝓤} {X} c φ =
+ g (∃-compact-types-have-decidable-support c)
  where
   g : is-decidable ∥ X ∥ → ∥ X ∥
   g (inl s) = s
@@ -583,11 +580,10 @@ decidable-propositions-are-∃-compact X isp d p = g d
 
   g (inr u) = inr (∥∥-rec 𝟘-is-prop (λ σ → u (pr₁ σ)))
 
-negations-of-Π-compact-propositions-are-decidable : (X : 𝓤 ̇ )
-                                                  → is-prop X
-                                                  → is-Π-compact X
-                                                  → is-decidable (¬ X)
-negations-of-Π-compact-propositions-are-decidable X isp c = f a
+negations-of-Π-compact-types-are-decidable : (X : 𝓤 ̇ )
+                                           → is-Π-compact X
+                                           → is-decidable (¬ X)
+negations-of-Π-compact-types-are-decidable X c = f a
  where
   a : is-decidable (X → ₀ ＝ ₁)
   a = c (λ x → ₀)
@@ -596,14 +592,12 @@ negations-of-Π-compact-propositions-are-decidable X isp c = f a
   f (inl u) = inl (zero-is-not-one  ∘ u)
   f (inr φ) = inr (λ u → φ (λ x → 𝟘-elim (u x)))
 
-negations-of-propositions-whose-decidability-is-Π-compact-are-decidable :
-
-    (X : 𝓤 ̇ )
-  → is-prop X
-  → is-Π-compact (is-decidable X)
-  → is-decidable (¬ X)
-
-negations-of-propositions-whose-decidability-is-Π-compact-are-decidable X isp c = Cases a l m
+negations-of-types-whose-decidability-is-Π-compact-are-decidable
+ : (X : 𝓤 ̇ )
+ → is-Π-compact (is-decidable X)
+ → is-decidable (¬ X)
+negations-of-types-whose-decidability-is-Π-compact-are-decidable X c
+ = Cases a l m
  where
   p : X + ¬ X → 𝟚
   p (inl x) = ₀

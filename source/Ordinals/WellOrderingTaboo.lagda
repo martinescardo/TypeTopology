@@ -488,6 +488,10 @@ module ClassicalWellOrder
                           × is-uniquely-trichotomous
                           × inhabited-has-minimal
 
+  classical-well-orders-are-uniquely-trichotomous
+   : is-classical-well-order → is-uniquely-trichotomous
+  classical-well-orders-are-uniquely-trichotomous = pr₁ ∘ pr₂
+
 \end{code}
 
 Assuming excluded middle (for 𝓤 ⊔ 𝓣), we show
@@ -782,9 +786,9 @@ module _
  open InductiveWellOrder pt
 
  classical-well-ordering-implies-ac : classical-well-order-on-every-set (𝓤 ⊔ 𝓣) 𝓣
-                                    → AC {𝓤 ⊔ 𝓣} {𝓤 ⊔ 𝓣}
+                                    → AC₀ {𝓤 ⊔ 𝓣} {𝓤 ⊔ 𝓣}
  classical-well-ordering-implies-ac {𝓤} {𝓣} CWO =
-  AC₁-gives-AC (AC₂-gives-AC₁ γ)
+  AC₁-gives-AC₀ (AC₂-gives-AC₁ γ)
    where
     γ : (X : 𝓤 ⊔ 𝓣 ̇ ) (Y : X → 𝓤 ⊔ 𝓣 ̇ )
       → is-set X
@@ -809,20 +813,20 @@ module _
          y' = pr₂ (pr₁ m)
 
  classical-well-ordering-implies-ac-corollary :
-   classical-well-order-on-every-set 𝓤 𝓤 → AC {𝓤} {𝓤}
+   classical-well-order-on-every-set 𝓤 𝓤 → AC₀ {𝓤} {𝓤}
  classical-well-ordering-implies-ac-corollary {𝓤} =
    classical-well-ordering-implies-ac {𝓤} {𝓤}
 
  inductive-well-ordering-implies-ac :
   inductive-well-order-on-every-set ((𝓤 ⁺) ⊔ (𝓣 ⁺)) 𝓣
-  → AC {𝓤 ⊔ 𝓣} {𝓤 ⊔ 𝓣}
+  → AC₀ {𝓤 ⊔ 𝓣} {𝓤 ⊔ 𝓣}
  inductive-well-ordering-implies-ac {𝓤} {𝓣} =
      classical-well-ordering-implies-ac {𝓤} {𝓣}
    ∘ inductive-well-ordering-implies-classical-well-ordering
 
  inductive-well-ordering-implies-ac-corollary :
    inductive-well-order-on-every-set (𝓤 ⁺) 𝓤
-   → AC {𝓤} {𝓤}
+   → AC₀ {𝓤} {𝓤}
  inductive-well-ordering-implies-ac-corollary {𝓤} =
    inductive-well-ordering-implies-ac {𝓤} {𝓤}
 

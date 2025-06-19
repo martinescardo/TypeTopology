@@ -255,7 +255,7 @@ module _
    ∨-is-upperbound₁               = ∪[𝓚]-is-upperbound₁;
    ∨-is-upperbound₂               = ∪[𝓚]-is-upperbound₂;
    ∨-is-lowerbound-of-upperbounds = ∪[𝓚]-is-lowerbound-of-upperbounds
-  }
+   }
 
 \end{code}
 

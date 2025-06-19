@@ -179,7 +179,7 @@ Added 3 July 2024 (but known much earlier of course).
  𝓛-DCPO-is-locally-small : is-locally-small 𝓓 → is-locally-small 𝓛-DCPO
  𝓛-DCPO-is-locally-small ls =
   record { _⊑ₛ_ = _≼_ ;
-           ⊑ₛ-≃-⊑ = Σ-cong (λ f → Π-cong fe fe (λ p → ⊑ₛ-≃-⊑)) }
+           ⊑ₛ-≃-⊑ = Σ-cong (λ f → Π-cong fe fe (λ p → ⊑ₛ-≃-⊑))}
   where
    open is-locally-small ls
    _≼_ : 𝓛D → 𝓛D → 𝓥 ̇
@@ -216,7 +216,7 @@ continuous.
  𝓛-order-lemma : {k l : 𝓛D} → k ⊑' l → k ⊑ l
  𝓛-order-lemma {k} {l} k-below-l = (pr₁ claim , (λ p → ＝-to-⊑ 𝓓 (pr₂ claim p)))
   where
-   open import Lifting.UnivalentPrecategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
+   open import Lifting.UnivalentWildCategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
    claim : k ⊑'' l
    claim = ⊑'-to-⊑'' k-below-l
 

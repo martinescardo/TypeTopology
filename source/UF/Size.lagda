@@ -159,7 +159,7 @@ excluded middle, which is consistent (with or without univalence):
 
 \begin{code}
 
-decidable-propositions-have-any-size : (P : 𝓤  ̇ )
+decidable-propositions-have-any-size : (P : 𝓤 ̇ )
                                      → is-prop P
                                      → is-decidable P
                                      → P is 𝓥 small
@@ -343,7 +343,7 @@ universe, and of all other universes, of course:
 
 \begin{code}
 
-Ω-Resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
+Ω-Resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 Ω-Resizing 𝓤 𝓥 = (Ω 𝓤) is 𝓥 small
 
 Ω-global-resizing-from-em-pe-fe : EM 𝓤
@@ -503,7 +503,7 @@ Lift-is-section ua R 𝓤 𝓥 = (r , rs)
     X' = fiber-point v
 
     a : r (s X) ≃ X'
-    a = prop-indexed-product (Univalence-gives-FunExt ua 𝓤 𝓤) (i (s X)) u
+    a = prop-indexed-product u (Univalence-gives-FunExt ua 𝓤 𝓤) (i (s X))
 
     b : s X' ＝ s X
     b = fiber-identification v
@@ -581,7 +581,7 @@ resizing-truncation fe R = record {
                                                        (to-resize R P i ∘ u)
                                                        (from-resize R ∥ X ∥⁺
                                                          (∥∥⁺-is-prop fe) s))
-  }
+ }
 
 \end{code}
 
@@ -751,7 +751,7 @@ The above should not be used anymore, but should be kept here.
 
 \begin{code}
 
-pr₁-is-small-map : {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
+pr₁-is-small-map : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                  → (λ (σ : Σ Y) → pr₁ σ) is 𝓥 small-map
 pr₁-is-small-map {𝓤} {𝓥} {X} {Y} x = Y x , ≃-sym (pr₁-fiber-equiv x)
 
@@ -912,6 +912,10 @@ For example, by univalence, universes are locally small, and so is the
 
 universes-are-locally-small : is-univalent 𝓤 → is-locally-small (𝓤 ̇ )
 universes-are-locally-small ua X Y = (X ≃ Y) , ≃-sym (univalence-≃ ua X Y)
+
+Ω-is-locally-small : propext 𝓤 → funext 𝓤 𝓤 → is-locally-small (Ω 𝓤)
+Ω-is-locally-small pe fe p q = ((p holds) ↔ (q holds)) ,
+                               Ω-extensionality-≃ pe fe
 
 \end{code}
 
@@ -1080,13 +1084,13 @@ module _ (pt : propositional-truncations-exist) where
                  → image f is (𝓤 ⊔ 𝓥) small
 \end{code}
 
-Added by Ian Ray 11th September 2024
+Added by Ian Ray 11th September 2024.
 
 If X is 𝓥-small then it is locally 𝓥-small.
 
 \begin{code}
 
-small-implies-locally-small : (X : 𝓤 ̇) → (𝓥 : Universe)
+small-implies-locally-small : (X : 𝓤 ̇ ) → (𝓥 : Universe)
                             → X is 𝓥 small
                             → X is-locally 𝓥 small
 small-implies-locally-small X 𝓥 (Y , e) x x' =
@@ -1096,6 +1100,8 @@ small-implies-locally-small X 𝓥 (Y , e) x x' =
   path-resized = ≃-sym (ap ⌜ e ⌝⁻¹ , ap-is-equiv ⌜ e ⌝⁻¹ (⌜⌝⁻¹-is-equiv e))
 
 \end{code}
+
+End of addition.
 
 Added by Martin Escardo and Tom de Jong 29th August 2024.
 

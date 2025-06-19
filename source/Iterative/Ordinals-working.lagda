@@ -58,7 +58,7 @@ open import UF.Subsingletons-FunExt
 rank : 𝕍 → 𝕆
 rank = 𝕍-induction (λ _ → 𝕆) {!!}
  where
-  f : (X : 𝓤 ̇) (ϕ : X → 𝕍) → is-embedding ϕ
+  f : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) → is-embedding ϕ
     → (X → 𝕆) → 𝕆
   f = {!!}
 

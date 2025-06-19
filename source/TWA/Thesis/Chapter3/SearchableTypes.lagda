@@ -26,16 +26,16 @@ open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
 ## Searchable types
 
 \begin{code}
-decidable-predicate : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓦 ⁺  ̇
+decidable-predicate : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓦 ⁺ ̇
 decidable-predicate 𝓦 X
  = Σ p ꞉ (X → Ω 𝓦) , is-complemented (λ x → (p x) holds)
 
-searchable𝓔 : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ (𝓦 ⁺)  ̇
+searchable𝓔 : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ (𝓦 ⁺) ̇
 searchable𝓔 𝓦 X = Σ 𝓔 ꞉ (decidable-predicate 𝓦 X → X)
                 , (((p , d) : decidable-predicate 𝓦 X)
                 → (Σ x ꞉ X , (p x holds)) → p (𝓔 (p , d)) holds)
 
-searchable : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ (𝓦 ⁺)  ̇
+searchable : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ (𝓦 ⁺) ̇
 searchable 𝓦 X
  = ((p , d) : decidable-predicate 𝓦 X)
  → Σ x₀ ꞉ X , ((Σ x ꞉ X , (p x holds)) → p x₀ holds)
@@ -97,7 +97,7 @@ Fin-searchable (succ (succ n)) _
  = +-searchable (Fin-searchable (succ n) 𝟎) 𝟙-searchable
 
 equivs-preserve-searchability
- : {X : 𝓤  ̇ } {Y : 𝓥  ̇}
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
  → (f : X → Y)
  → is-equiv f
  → searchable 𝓦 X
@@ -117,16 +117,16 @@ equivs-preserve-searchability {𝓤} {𝓥} {𝓦} {X} {Y}
   γ (y , py) = γx (g y , transport (λ - → p - holds) (η y ⁻¹) py)
 
 ≃-searchable
- : {X : 𝓤  ̇ } {Y : 𝓥 ̇ } → X ≃ Y → searchable 𝓦 X → searchable 𝓦 Y
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → searchable 𝓦 X → searchable 𝓦 Y
 ≃-searchable (f , e) = equivs-preserve-searchability f e
-             
+
 finite-searchable : {X : 𝓤 ̇ }
                   → finite-linear-order X
                   → X
                   → searchable 𝓦 X
 finite-searchable (0 , (g , _)) x = 𝟘-elim (g x)
 finite-searchable (succ n , e) x
- = ≃-searchable (≃-sym e) (Fin-searchable (succ n) 𝟎) 
+ = ≃-searchable (≃-sym e) (Fin-searchable (succ n) 𝟎)
 
 ×-searchable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
              → searchable 𝓦 X
@@ -156,7 +156,7 @@ finite-searchable (succ n , e) x
 ## Cantor searchability is LPO
 
 \begin{code}
-LPO : 𝓤₀  ̇
+LPO : 𝓤₀ ̇
 LPO = (α : ℕ → 𝟚) → ((n : ℕ) → α n ＝ ₀) + (Σ n ꞉ ℕ , α n ＝ ₁)
 
 no-ones-means-all-zero
@@ -189,7 +189,7 @@ decidable-to-𝟚 (inl  x)
 decidable-to-𝟚 (inr ¬x)
  = ₀ , ((𝟘-elim ∘ zero-is-not-one) , (λ x → 𝟘-elim (¬x x)))
      , (λ _ → ¬x) , (λ _ → refl)
-     
+
 LPO-implies-ℕ-searchability : LPO → searchable 𝓦 ℕ
 LPO-implies-ℕ-searchability {𝓦} f (p , d)
  = Cases (f (λ i → decidable-𝟚 (d i)))
@@ -202,13 +202,13 @@ LPO-implies-ℕ-searchability {𝓦} f (p , d)
 
 \begin{code}
 decidable-uc-predicate-with-mod
- : (𝓦 : Universe) → ClosenessSpace 𝓤 → ℕ → 𝓤 ⊔ 𝓦 ⁺  ̇
+ : (𝓦 : Universe) → ClosenessSpace 𝓤 → ℕ → 𝓤 ⊔ 𝓦 ⁺ ̇
 decidable-uc-predicate-with-mod 𝓦 X δ
  = Σ (p , d) ꞉ decidable-predicate 𝓦 ⟨ X ⟩
  , p-ucontinuous-with-mod X p δ
 
 decidable-uc-predicate
- : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ 𝓦 ⁺  ̇
+ : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ 𝓦 ⁺ ̇
 decidable-uc-predicate 𝓦 X
  = Σ (p , d) ꞉ decidable-predicate 𝓦 ⟨ X ⟩ , p-ucontinuous X p
 
@@ -222,14 +222,14 @@ to-uc-pred 𝓦 X δ ((p , d) , ϕ) = (p , d) , δ , ϕ
 get-uc-mod : (X : ClosenessSpace 𝓤) → decidable-uc-predicate 𝓦 X → ℕ
 get-uc-mod 𝓦 (_ , δ , _) = δ
 
-csearchable𝓔 : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ (𝓦 ⁺)  ̇
+csearchable𝓔 : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ (𝓦 ⁺) ̇
 csearchable𝓔 𝓦 X
  = Σ 𝓔 ꞉ (decidable-uc-predicate 𝓦 X → ⟨ X ⟩)
  , ((((p , d) , ϕ) : decidable-uc-predicate 𝓦 X)
  → (Σ x ꞉ ⟨ X ⟩ , (p x holds))
  → p (𝓔 ((p , d) , ϕ)) holds)
 
-csearchable : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ (𝓦 ⁺)  ̇
+csearchable : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ (𝓦 ⁺) ̇
 csearchable 𝓦 X
  = (((p , d) , ϕ) : decidable-uc-predicate 𝓦 X)
  → Σ x₀ ꞉ ⟨ X ⟩ , ((Σ x ꞉ ⟨ X ⟩ , (p x holds)) → p x₀ holds)
@@ -251,7 +251,7 @@ csearchable-pointed
  : (𝓦 : Universe)
  → (X : ClosenessSpace 𝓤)
  → csearchable 𝓦 X
- → ⟨ X ⟩ 
+ → ⟨ X ⟩
 csearchable-pointed 𝓦 X Sx
  = pr₁ (Sx (((λ _ → ⊤) , (λ _ → inl ⋆)) , 0 , λ _ _ _ → id))
 
@@ -262,7 +262,7 @@ totally-bounded-csearchable : (X : ClosenessSpace 𝓤)
 totally-bounded-csearchable {𝓤} {𝓤'} {𝓦} X x t ((p , d) , δ , ϕ)
  = x₀ , γ
  where
-  X' : 𝓤'  ̇
+  X' : 𝓤' ̇
   X' = pr₁ (t δ)
   g  :   X'  → ⟨ X ⟩
   g  = pr₁ (pr₁ (pr₂ (t δ)))

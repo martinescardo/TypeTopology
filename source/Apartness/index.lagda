@@ -10,9 +10,8 @@ the following modules.
 module Apartness.index where
 
 import Apartness.Definition
-import Apartness.Examples
 import Apartness.Morphisms
-import Apartness.NegationOfApartness
+import Apartness.Negation
 import Apartness.Properties
 import Apartness.TightReflection
 

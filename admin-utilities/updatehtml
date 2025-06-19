@@ -18,25 +18,20 @@ cd ~/martinescardo.github.io/
 # but are linked from published papers, blogs etc.
 # Symbolic links don't work any more, so we replace "ln -s" by "cp -a"
 
-# Deprecated - agda-new should not be offered as a public link any more,
-# for some years now:
-cp -a TypeTopology agda-new
-chmod a+r agda-new/*.html
-git add agda-new
-
 cd ~/martinescardo.github.io/TypeTopology/
 
 cp -a CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
-cp -a CoNaturals.GenericConvergentSequence.html GenericConvergentSequence.html
+cp -a CoNaturals.index.html CoNaturals.html
 cp -a DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html PCFModules.html
 cp -a Factorial.Law.html UF-Factorial.html
 cp -a Fin.ArithmeticViaEquivalence.html ArithmeticViaEquivalence.html
-cp -a Fin.index.html Fin-Properties.html
 cp -a Fin.Type.html Fin.html
 cp -a Fin.UniverseInvariance.html UF-Finiteness-Universe-Invariance.html
+cp -a Fin.index.html Fin-Properties.html
 cp -a Games.FiniteHistoryDependent.html FiniteHistoryDependentGames.html
 cp -a Groups.Free.html FreeGroup.html
 cp -a Groups.Free.html FreeGroupOfLargeLocallySmallSet.html
+cp -a InjectiveTypes.index.html InjectiveTypes.html
 cp -a Locales.AdjointFunctorTheoremForFrames.html AdjointFunctorTheoremForFrames.html
 cp -a Locales.CompactRegular.html CompactRegular.html
 cp -a Locales.Frame.html Frame.html
@@ -49,20 +44,23 @@ cp -a Ordinals.Notions.html Ordinal-Notions.html
 cp -a Ordinals.OrdinalOfOrdinals.html OrdinalOfOrdinals.html
 cp -a Ordinals.WellOrderTransport.html OrdinalsWellOrderTransport.html
 cp -a Ordinals.index.html Ordinals.html
-cp -a Various.Types2019.html Types2019.html
 cp -a Slice.Construction.html Slice.html
 cp -a TypeTopology.ADecidableQuantificationOverTheNaturals.html ADecidableQuantificationOverTheNaturals.html
-cp -a UF.DiscreteAndSeparated.html DiscreteAndSeparated.html
 cp -a TypeTopology.GenericConvergentSequenceCompactness.html ConvergentSequenceCompactness.html
+cp -a TypeTopology.GenericConvergentSequenceCompactness.html ConvergentSequenceSearchable.html
+cp -a TypeTopology.RicesTheoremForTheUniverse.html RicesTheoremForTheUniverse.html
+cp -a TypeTopology.TheTopologyOfTheUniverse.html TheTopologyOfTheUniverse.html
 cp -a UF.Choice.html UF-Choice.html
+cp -a UF.DiscreteAndSeparated.html DiscreteAndSeparated.html
+cp -a UF.HiggsInvolutionTheorem.html Various.HiggsInvolutionTheorem.html
 cp -a UF.Size.html UF-Size.html
 cp -a UF.UniverseEmbedding.html UniverseEmbedding.html
 cp -a UF.Yoneda.html UF-Yoneda.html
 cp -a UF.index.html UF.html
-cp -a UF.HiggsInvolutionTheorem.html Various.HiggsInvolutionTheorem.html
 cp -a Various.Dedekind.html Dedekind.html
 cp -a Various.HiggsInvolutionTheorem.html HiggsInvolutionTheorem.html
 cp -a Various.LawvereFPT.html LawvereFPT.html
+cp -a Various.Types2019.html Types2019.html
 cp -a Various.UnivalenceFromScratch.html UnivalenceFromScratch.html
 
 # From now on (12th Jan 2023), published things should go to
@@ -104,3 +102,14 @@ cp -a PCF.Lambda.index.html Published.PCF.Lambda.index.html
 cd ..
 chmod a+r TypeTopology/*
 git add TypeTopology
+
+# Deprecated - agda-new should not be offered as a public link any more,
+# for some years now:
+rm -rf agda-new
+rm -rf agda
+cp -a TypeTopology agda-new
+cp -a TypeTopology agda
+chmod a+r agda-new/*.html
+chmod a+r agda/*.html
+git add agda-new
+git add agda

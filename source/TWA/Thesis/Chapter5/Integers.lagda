@@ -4,7 +4,7 @@ Todd Waugh Ambridge, January 2024
 
 \begin{code}
 {-# OPTIONS --without-K --safe #-}
-            
+
 open import Integers.Addition renaming (_+_ to _+ℤ_ ; _-_ to _ℤ-_)
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Negation renaming (-_ to ℤ-_)
@@ -67,7 +67,7 @@ rec-to-monotone f g h a b (succ n) a≤b
  = h (rec a f n) (rec b g n) (rec-to-monotone f g h a b n a≤b)
 
 rec-f-＝ : {X : 𝓤 ̇ } → (f : X → X) (x : X) (n : ℕ)
-        → rec (f x) f n ＝ rec x f (succ n) 
+        → rec (f x) f n ＝ rec x f (succ n)
 rec-f-＝ f x zero = refl
 rec-f-＝ f x (succ n) = ap f (rec-f-＝ f x n)
 \end{code}
@@ -99,7 +99,7 @@ negsucc x /2' = ℤ- (pos (succ x /2))
 _ℕ^_ : ℕ → ℕ → ℕ
 a ℕ^ b = ((a ℕ*_) ^ b) 1
 
-infixl 33 _ℕ^_ 
+infixl 33 _ℕ^_
 
 2^ : ℕ → ℕ
 2^ = 2 ℕ^_
@@ -138,7 +138,7 @@ exponents-of-two-ordered 0        = ⋆
 exponents-of-two-ordered (succ m)
  = transport₂ _<_ I II
      (multiplication-preserves-strict-order (2 ℕ^ m) (2 ℕ^ succ m) 1 IH)
- where 
+ where
   IH : 2 ℕ^ m < 2 ℕ^ succ m
   IH = exponents-of-two-ordered m
   I : 2 ℕ^ m ℕ* 2 ＝ 2 ℕ^ succ m
@@ -181,7 +181,7 @@ pred-shift a b = ℤ-left-pred a (ℤ- b)
    γ ()
 
 ≤-succℤ' : (x y : ℤ) → succℤ x ≤ succℤ y → x ≤ y
-≤-succℤ' x y (n , e) = n , succℤ-lc (ℤ-left-succ x (pos n) ⁻¹ ∙ e) 
+≤-succℤ' x y (n , e) = n , succℤ-lc (ℤ-left-succ x (pos n) ⁻¹ ∙ e)
 
 ℤ≤-succ-inj : (a b : ℤ) → a ≤ℤ b → succℤ a ≤ℤ succℤ b
 ℤ≤-succ-inj a b (n , refl) = n , ℤ-left-succ-pos a n
@@ -197,7 +197,7 @@ pred-shift a b = ℤ-left-pred a (ℤ- b)
  : (a b : ℤ) (n : ℕ) → a ≤ℤ b → (predℤ ^ n) a ≤ℤ (predℤ ^ n) b
 ℤ≤-predⁿ-inj = rec-to-monotone predℤ predℤ ℤ≤-pred-inj
 
-_≤ℤ_≤ℤ_ : ℤ → ℤ → ℤ → 𝓤₀ ̇ 
+_≤ℤ_≤ℤ_ : ℤ → ℤ → ℤ → 𝓤₀ ̇
 x ≤ℤ y ≤ℤ z = (x ≤ℤ y) × (y ≤ℤ z)
 
 ℤ≤²-refl : (k : ℤ) → k ≤ℤ k ≤ℤ k
@@ -211,7 +211,7 @@ x ≤ℤ y ≤ℤ z = (x ≤ℤ y) × (y ≤ℤ z)
 
 ℤ[_,_]-succ : (l u : ℤ) → ℤ[ l , u ] → ℤ[ l , succℤ u ]
 ℤ[ l , u ]-succ (z , l≤z , z≤u)
- = z , l≤z , ℤ≤-trans z u (succℤ u) z≤u (1 , refl) 
+ = z , l≤z , ℤ≤-trans z u (succℤ u) z≤u (1 , refl)
 
 ≤ℤ-antisym : (x y : ℤ) → x ≤ℤ y ≤ℤ x → x ＝ y
 ≤ℤ-antisym x y (x≤y , y≤x)
@@ -230,7 +230,7 @@ x ≤ℤ y ≤ℤ z = (x ≤ℤ y) × (y ≤ℤ z)
        ∙ ap predℤ (ℤ-left-succ x (pos n) ⁻¹))
        (ℤ≤-refl (x +pos n)))
 
-ℤ-dich-succ : (x y : ℤ) 
+ℤ-dich-succ : (x y : ℤ)
             → ((      x <ℤ y) + (y ≤ℤ       x))
             → ((succℤ x <ℤ y) + (y ≤ℤ succℤ x))
 ℤ-dich-succ x y (inl (0 , refl)) = inr (ℤ≤-refl _)
@@ -238,7 +238,7 @@ x ≤ℤ y ≤ℤ z = (x ≤ℤ y) × (y ≤ℤ z)
  = inl (m , ℤ-left-succ-pos (succℤ x) m)
 ℤ-dich-succ x y (inr (m , refl)) = inr (succ m , refl)
 
-ℤ-trich-succ : (x y : ℤ) 
+ℤ-trich-succ : (x y : ℤ)
              → ((      x <ℤ y) + (      x ＝ y) + (y <ℤ       x))
              → ((succℤ x <ℤ y) + (succℤ x ＝ y) + (y <ℤ succℤ x))
 ℤ-trich-succ x y (inl (0           , sn+j＝i))
@@ -453,7 +453,7 @@ negsucc-lemma x
 div-by-two : (k : ℤ) → (k +ℤ k) /2' ＝ k
 div-by-two (pos k)
  = (pos k +ℤ pos k) /2'
-     ＝⟨ ap _/2' (distributivity-pos-addition k k) ⟩     
+     ＝⟨ ap _/2' (distributivity-pos-addition k k) ⟩
    pos (k +ℕ k) /2'
      ＝⟨ ap pos (div-by-two' k) ⟩
    pos k ∎

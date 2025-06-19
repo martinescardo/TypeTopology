@@ -1,7 +1,6 @@
 Martin Escardo 25th October 2018.
 
-The type of partial elements of a type (or lifting). Constructions and
-properties of lifting are discussed in other modules.
+The type of partial elements of a type (or lifting).
 
 \begin{code}
 
