@@ -1,6 +1,6 @@
 Ian Ray, 15th January 2025
 
-Edited by Ian Ray on 16th March 2025.
+Edited by Ian Ray on 16th March 2025 and 19th June 2025.
 
 The pushout is the universal completion of a span
 
