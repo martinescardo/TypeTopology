@@ -4,9 +4,7 @@ Injectivity of types of mathematical structures, such as pointed
 types, ∞-magmas, magmas, monoids, groups etc.
 
 We give a sufficient condition for types of mathematical structures to
-be injective, and we apply it to examples such as the type of pointed
-types, ∞-magmas, monoids, groups, etc. to be algebraically
-injective.
+be injective, and we apply it to examples such as the above.
 
 This file improves InjectiveTypes.MathematicalStructuresOriginal at
 the cost of perhaps being harder to understand, but with the benefit
@@ -211,8 +209,7 @@ condition using T rather than transport (see examples below).
 In order to be able to apply the results of InjectiveTypes.Sigma, we
 perform the following construction. That file requires compatibility
 data of a certain kind, which we reduce to compatibility of another
-kind, which in turn will be easier to produce in our sample
-applications.
+kind, which will be easier to produce in our sample applications.
 
 \begin{code}
 
@@ -287,8 +284,8 @@ information, outside the above proof.
 
 \end{code}
 
-In any case, this fact about the construction will be rather useful in
-practice, for the applications we have in mind.
+This fact about the construction will be rather useful in practice,
+for the applications we have in mind.
 
 We can specialize this to the Π and Σ flabbiness structures discussed
 above, to get the following.
@@ -315,7 +312,7 @@ above, to get the following.
 
 \end{code}
 
-We use the following definitional equality a number of types (and we
+We use the following definitional equality a number of times (and we
 try to record this explicitly when we do so).
 
 \begin{code}
@@ -375,19 +372,11 @@ Pointed-Π-data {𝓤} = Π-construction Pointed T T-refl c
   T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
   T-refl x = refl
 
-  c : compatibility-data-Π S T T-refl
-  c p A = equivs-have-sections id (id-is-equiv (Π A))
-
-\end{code}
-
-This completes the construction, but we remark that the above
-definition of `c` works because we have the following definitional
-equality.
-
-\begin{code}
-
   _ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) → ρΠ S T T-refl p A ＝ 𝑖𝑑 (S (Π A))
   _ = λ p A → refl
+
+  c : compatibility-data-Π S T T-refl
+  c p A = equivs-have-sections id (id-is-equiv (Π A))
 
 \end{code}
 
