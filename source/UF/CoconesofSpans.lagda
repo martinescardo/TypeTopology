@@ -1,10 +1,10 @@
 Ian Ray, 15th January 2025
 
-We will prove some results about cocones of spans. For details see section 23
-of Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest summer school
-version:
+We will prove some results about cocones of spans. This formalization was inspired by
+section 23 of Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest summer
+school version:
 https://github.com/martinescardo/HoTTEST-Summer-School/blob/main/HoTT/hott-intro.pdf)
-and the development found in the Agda Uni-Math library
+and the development found in the agda-unimath library
 (https://unimath.github.io/agda-unimath/synthetic-homotopy-theory.cocones-under-spans.html).
 
 \begin{code}

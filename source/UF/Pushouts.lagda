@@ -27,7 +27,7 @@ Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest summer school vers
 https://github.com/martinescardo/HoTTEST-Summer-School/blob/main/HoTT/hott-intro.pdf)
 or chapter 6 section 8 of HoTT book (although it is important to note that the HoTT
 book utilizes definitional computation rules). In addition to the above references,
-this formalization was inspired by the development found in the Agda Uni-Math library
+this formalization was inspired by the development found in the agda-unimath library
 (https://unimath.github.io/agda-unimath/synthetic-homotopy-theory.pushouts.html).
 
 In the present work pushouts are defined as a higher inductive type (in the form of a
