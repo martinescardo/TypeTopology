@@ -392,7 +392,7 @@ guess what T should be.
   T 𝕗 _·_ = λ y y' → ⌜ 𝕗 ⌝ (⌜ 𝕗 ⌝⁻¹ y · ⌜ 𝕗 ⌝⁻¹ y')
 
   T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
-  T-refl _·_ = dfunext fe' (λ x → dfunext fe' (λ x' → refl))
+  T-refl _·_ = refl
 
   module _ (p : Ω 𝓤)
            (A : p holds → 𝓤 ̇ )

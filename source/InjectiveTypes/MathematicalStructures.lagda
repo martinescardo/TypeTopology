@@ -22,6 +22,14 @@ import InjectiveTypes.MathematicalStructuresOriginal -- For comparison only.
 
 open import UF.Univalence
 
+\end{code}
+
+We assume univalence (and hence function extensionality, which,
+follows from it), but no other HoTT/UF extensions, not even
+propositional truncations.
+
+\begin{code}
+
 module InjectiveTypes.MathematicalStructures
         (ua : Univalence)
        where
