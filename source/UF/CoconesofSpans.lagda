@@ -4,6 +4,8 @@ We will prove some results about cocones of spans. For details see section 23
 of Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest summer school
 version:
 https://github.com/martinescardo/HoTTEST-Summer-School/blob/main/HoTT/hott-intro.pdf)
+and the development found in the Agda Uni-Math library
+(https://unimath.github.io/agda-unimath/synthetic-homotopy-theory.cocones-under-spans.html).
 
 \begin{code}
 
@@ -18,7 +20,6 @@ open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.PropIndexedPiSigma
-open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Yoneda
 
@@ -33,7 +34,7 @@ A span is a pair of maps
         v
         B
 
-It is possible to complete a span with a commuting sqaure
+It is possible to complete a span with a commuting square
 
         C --------> A
         |           |

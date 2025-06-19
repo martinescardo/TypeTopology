@@ -2,13 +2,43 @@ Ian Ray, 15th January 2025
 
 Edited by Ian Ray on 16th March 2025.
 
-Pushouts are defined as a higher inductive type (in the form of a record type). We
-assume point and path constructors and the (dependent) universal property. We will
-derive other important results like induction and recursion principles along
-with the corresponding propositional computation rules. Of course, due to Kristina
-Sojakova's dissertation (and the following paper on the same topic doi:
-https://doi.org/10.1145/2775051.2676983), it is well known that for higher inductive
-types with propositional computation rules the following are equivalent:
+The pushout is the universal completion of a span
+
+        C --------> A
+        |
+        |
+        |
+        v
+        B
+
+the data consists of a pair of maps into the pushout with homotopy witnessing that the
+square
+
+        C --------> A
+        |           |
+        |           |
+        |           |
+        v           v
+        B --------> P
+
+commutes as well as a certain universal property, which in the style of HoTT is stated
+as an equivalence of a canonical map. For details on the pushout see section 23 of
+Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest summer school version:
+https://github.com/martinescardo/HoTTEST-Summer-School/blob/main/HoTT/hott-intro.pdf)
+or chapter 6 section 8 of HoTT book (although it is important to note that the HoTT
+book utilizes definitional computation rules). In addition to the above references,
+this formalization was inspired by the development found in the Agda Uni-Math library
+(https://unimath.github.io/agda-unimath/synthetic-homotopy-theory.pushouts.html).
+
+In the present work pushouts are defined as a higher inductive type (in the form of a
+record type). We assume point and path constructors and the (dependent) universal
+property. We will derive other important results like induction and recursion
+principles along with the corresponding propositional computation rules.
+
+Of course, due to Kristina Sojakova's dissertation (and the following paper on the
+same topic doi: https://doi.org/10.1145/2775051.2676983), it is well known that for
+higher inductive types with propositional computation rules the following are
+equivalent:
 
 1) dependent homotopy initiality
 2) induction principle with propositional computation rules
@@ -16,8 +46,8 @@ types with propositional computation rules the following are equivalent:
    principle
 4) non-dependent homotopy initiality
 
-Sojakova uses the term 'homotopy initiality' of 'algebra morphisms'.
-The translation from Sojakova's work to the present work is roughly:
+Sojakova uses the term 'homotopy initiality' of 'algebra morphisms' in the more
+general setting. The translation from Sojakova's work to the present work is roughly:
   algebras ---> cocones
   algebra morphisms ---> cocone morphisms
   homotopy intiality of algebra morphisms ---> universality of maps
@@ -36,10 +66,7 @@ open import UF.Base
 open import UF.CoconesofSpans fe
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.PropIndexedPiSigma
-open import UF.Retracts
 open import UF.Subsingletons
-open import UF.Yoneda
 
 \end{code}
 
@@ -63,12 +90,12 @@ module _ {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇}
                             → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓤' ⊔ 𝓣 ̇
  Pushout-Universal-Property X = is-equiv (canonical-map-to-cocone X) 
 
- canonical-map-to-dependent-cocone : (P : S →  𝓣 ̇)
+ canonical-map-to-dependent-cocone : (P : S → 𝓣 ̇)
                                    → ((x : S) → P x)
                                    → dependent-cocone f g S s P
  canonical-map-to-dependent-cocone P d = (d ∘ i , d ∘ j , λ c → apd d (G c))
 
- Pushout-Dependent-Universal-Property : (P : S →  𝓣 ̇)
+ Pushout-Dependent-Universal-Property : (P : S → 𝓣 ̇)
                                       → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓤' ⊔ 𝓣 ̇
  Pushout-Dependent-Universal-Property P =
   is-equiv (canonical-map-to-dependent-cocone P)
