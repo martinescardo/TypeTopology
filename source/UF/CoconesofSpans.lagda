@@ -479,5 +479,4 @@ module _ {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇} (f : C → A) (g : C → B) (
                   (λ - → refl-left-neutral) c
    II c = I u (H c) (L (g c)) (K (f c)) (H' c) (M c)
 
-
 \end{code}
