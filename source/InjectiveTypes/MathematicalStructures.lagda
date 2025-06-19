@@ -81,8 +81,8 @@ to-aflabby {𝓤} (⨆ , e) P i A =
 
 from-afabbly : aflabby (𝓤 ̇ ) 𝓤 → Flabby 𝓤
 from-afabbly {𝓤} aflab =
- (λ p A → pr₁ (aflab (p holds) (holds-is-prop p) A)) ,
- (λ p A h → idtoeq _ _ (pr₂ (aflab (p holds) (holds-is-prop p) A) h))
+ aflabby-extension aflab ,
+ (λ p A h → idtoeq _ _ (aflabby-extension-property aflab p A h))
 
 \end{code}
 
