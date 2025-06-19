@@ -27,7 +27,7 @@ open import UF.Yoneda
 
 \end{code}
 
-A span is a pair of maps 
+A span is a pair of maps
 
         C --------> A
         |
@@ -141,9 +141,9 @@ module _ {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇} (f : C → A) (g : C → B)
             (Σ H' ꞉ (i ∘ f ∼ j ∘ g) , H' ∼ H)                    ■
        where
         VIII = ≃-sym Σ-assoc
-        IX = prop-indexed-sum (equiv-to-prop III 𝟙-is-prop) (i , ∼-refl)
+        IX = prop-indexed-sum (i , ∼-refl) (equiv-to-prop III 𝟙-is-prop)
         XI = ≃-sym Σ-assoc
-        XII = prop-indexed-sum (equiv-to-prop VI 𝟙-is-prop) (j , ∼-refl)
+        XII = prop-indexed-sum (j , ∼-refl) (equiv-to-prop VI 𝟙-is-prop)
         XIII = Σ-cong (λ H' → Π-cong fe fe (λ c → ＝-cong (refl ∙ H' c)
                 (∼-trans H (λ _ → refl) c) refl-left-neutral
                  (refl-right-neutral (H c) ⁻¹)))
@@ -278,12 +278,13 @@ module _ {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇} (f : C → A) (g : C → B) (
                                                                 ■
       where
        VIII = ≃-sym Σ-assoc
-       IX = prop-indexed-sum (equiv-to-prop III 𝟙-is-prop) (i , ∼-refl)
+       IX = prop-indexed-sum (i , ∼-refl) (equiv-to-prop III 𝟙-is-prop)
        XI = ≃-sym Σ-assoc
-       XII = prop-indexed-sum (equiv-to-prop VI 𝟙-is-prop) (j , ∼-refl)
+       XII = prop-indexed-sum (j , ∼-refl) (equiv-to-prop VI 𝟙-is-prop)
+
        XIII = Σ-cong (λ H' → Π-cong fe fe (λ c → ＝-cong (refl ∙ H' c)
                (∼-trans H (λ _ → refl) c) refl-left-neutral
-                (refl-right-neutral (H c) ⁻¹))) 
+                (refl-right-neutral (H c) ⁻¹)))
      XIV = ≃-comp (Σ-cong (λ - → ≃-sym (≃-funext fe - H)))
             (singleton-≃-𝟙 (equiv-to-singleton (Σ-cong (λ - → ＝-flip))
              (singleton-types-are-singletons H)))
@@ -304,7 +305,7 @@ module _ {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇} (f : C → A) (g : C → B) (
                               → u ＝ u'
  inverse-dependent-cocone-map t P u u' =
   ⌜ (dependent-cocone-identity-characterization t P u u') ⌝⁻¹
-                 
+
 \end{code}
 
 We now define the type of morphisms between (non-dependent) cocones.
@@ -360,7 +361,7 @@ module _ {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇} (f : C → A) (g : C → B) (
     (ϕr : (b : B) → θ (j b) ∙ L' b ＝ L b)
     (c : C)
   → K (f c) ∙ H' c ＝ ap u (H c) ∙ L (g c)
- 
+
  alt-path : (s : cocone f g P)
           → (s' : cocone f g X)
           → (m : cocone-morphism s s')

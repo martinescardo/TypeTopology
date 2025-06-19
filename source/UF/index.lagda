@@ -9,6 +9,7 @@ import UF.Choice
 import UF.ClassicalLogic
 import UF.Classifiers
 import UF.Classifiers-Old
+import UF.CoconesofSpans                    -- by [2]
 import UF.Connected
 import UF.ConnectedTypes                    -- by [2]
 import UF.CumulativeHierarchy               -- by [1]
@@ -50,6 +51,7 @@ import UF.PropIndexedPiSigma
 import UF.PropTrunc
 import UF.PropTrunc-Variation
 import UF.Pullback
+import UF.Pushouts                   -- by [2]
 import UF.Retracts
 import UF.Retracts-FunExt
 import UF.SIP

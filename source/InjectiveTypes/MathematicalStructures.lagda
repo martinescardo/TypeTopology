@@ -367,8 +367,7 @@ Pointed X = X
 Pointed-Π-data : compatibility-data (Pointed {𝓤}) universes-are-flabby-Π
 Pointed-Π-data {𝓤} = Π-construction Pointed T T-refl c
  where
-  S : 𝓤 ̇ → 𝓤 ̇
-  S X = X
+  S = Pointed
 
   T : {X Y : 𝓤 ̇ } → (X ≃ Y) → X → Y
   T = ⌜_⌝
