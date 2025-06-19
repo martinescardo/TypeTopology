@@ -1,7 +1,7 @@
 Martin Escardo, 13th June 2025
 
 We repackage the definitions of algebraic injective and flabby types
-in a more convenient, which we refer to as injective structure and
+in a more convenient way, which we refer to as injective structure and
 flabby structure.
 
 We also prove some useful lemmas about them.
@@ -43,7 +43,7 @@ derived-injective-structure {𝓤} {𝓥} (⨆ , e)
 
 derived-flabby-structure
  : injective-structure 𝓤 𝓥 → flabby-structure 𝓤
-derived-flabby-structure {𝓤} {𝓥} (_∣_ , e) = ⨆ , e'
+derived-flabby-structure {𝓤} (_∣_ , e) = ⨆ , e'
  where
   ⨆ : (P : Ω 𝓤) → (P holds → D) → D
   ⨆ P f = (f ∣ embedding-to-𝟙) ⋆
@@ -199,7 +199,7 @@ flabby-identification (_∣_ , e) = e
 
 Maybe we should have worked with the following equivalent derived
 injective structure, as this would have avoided some detours in
-proofs.
+proofs in the module InjectiveTypes.Algebra.
 
 \begin{code}
 

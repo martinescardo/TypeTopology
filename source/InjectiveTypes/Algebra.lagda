@@ -27,7 +27,7 @@ univalence.
 
 For an arbitrary type D, we only prove the above to be *logical
 equivalences*, but perhaps there is a chance that they are actually
-typical equivalences, and we leave this as an open problem.
+typal equivalences, and we leave this as an open problem.
 
 The following ASSUME slides (https://tdejong.com/ASSUME/) discuss
 this, but we include most of the discussion here in comments.
@@ -223,7 +223,7 @@ module _
 
  injective-associativity : 𝓦 ⊔ 𝓤 ⁺ ̇
  injective-associativity = (X Y Z : 𝓤 ̇ ) (f : X → D) (𝕛 : X ↪ Y) (𝕜 : Y ↪ Z)
-               → f ∣ (𝕜 ⊚ 𝕛) ∼ (f ∣ 𝕛) ∣ 𝕜
+                         → f ∣ (𝕜 ⊚ 𝕛) ∼ (f ∣ 𝕛) ∣ 𝕜
 
 \end{code}
 
@@ -362,9 +362,9 @@ We now observe that the pullback requirement in the naturality
 condition is essential, no matter which injective structure we have,
 provided D has the property that for every d : D there is a designated
 d' ≠ d. This is the case in all examples of algebraically injective
-types we've identified so far (for example, for the universe, d' is
-given by negation). We also need function extensionality for functions
-defined on the empty type (but we assume general function
+types we've identified so far (for example, for the universe, d' can
+be given by negation). We also need function extensionality for
+functions defined on the empty type (but we assume general function
 extensionality).
 
 \begin{code}
@@ -700,8 +700,8 @@ conditions are property rather than data.
    = Π₇-is-prop fe (λ _ _ _ _ _ _ _ → D-is-set)
 
   pullback-naturality-is-prop
-   : (s : injective-structure D 𝓤 𝓤) →
-   is-prop (pullback-naturality s)
+   : (s : injective-structure D 𝓤 𝓤)
+   → is-prop (pullback-naturality s)
   pullback-naturality-is-prop s
    = Π₇-is-prop fe (λ _ _ _ _ _ _ _ → D-is-set)
 
@@ -769,9 +769,9 @@ when D is a set.
               (pullback-naturality-is-prop D-is-set fe s))
       (to-subtype-＝
         (λ (_∣_ : {X Y : 𝓤 ̇} → (X → D) → X ↪ Y → Y → D)
-             → implicit-Π-is-prop fe (λ X →
-               implicit-Π-is-prop fe (λ Y →
-               Π₃-is-prop fe         (λ f 𝕛 x → D-is-set))))
+               → implicit-Π-is-prop fe (λ X →
+                 implicit-Π-is-prop fe (λ Y →
+                 Π₃-is-prop fe         (λ f 𝕛 x → D-is-set))))
         (∣-round-trip s pe fe pbn)⁻¹)
 
     ϕγ : ϕ ∘ γ ∼ id
@@ -788,12 +788,10 @@ The above establishes the internal fact that, in a 1-topos,
 pulback-natural, associative injective structure on D is isomorphic to
 associative flabby structure on D.
 
-But also, trivially, associative flabby structure on D is isomorphic
-to 𝓛-algebra structure on D, where 𝓛 is the lifting (of partial-map
-classifier) wild monad on types, as we record now.
+But also associative flabby structure on D is equivalent to 𝓛-algebra
+structure on D, where 𝓛 is the lifting (of partial-map classifier)
+wild monad on types, as we record now.
 
-The construction amounts to ΠΣ-distributivity (known as (sic) the
-type-theoretic axiom of choice, which doesn't perform any choice).
 
 \begin{code}
 
@@ -875,5 +873,5 @@ TODO (more challenging and more interesting). What can we say when D
 is not necessarily a set? Do we have the same theorems?
 
 These questions are particularly interesting because in HoTT/UF, and
-hence in ∞-toposes, because, as illustrated in this development, there
-is a richer supply of injective objects than in 1-toposes.
+hence in ∞-toposes, as illustrated in other files in this development,
+there is a richer supply of injective objects than in 1-toposes.

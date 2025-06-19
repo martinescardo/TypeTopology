@@ -98,7 +98,7 @@ If the index type is a proposition, then the projection out of a
 
 Π-𝕡𝕣𝕠𝕛 : (p : Ω 𝓤) {A : p holds → 𝓤 ̇ } (h : p holds)
       → Π A ≃ A h
-Π-𝕡𝕣𝕠𝕛 p h = prop-indexed-product h fe' (holds-is-prop p)
+Π-𝕡𝕣𝕠𝕛 p h = Π-proj h , Π-proj-is-equiv h fe' (holds-is-prop p)
 
 universes-are-Flabby-Π : Flabby 𝓤
 universes-are-Flabby-Π = (λ p A → Π A) ,
@@ -107,9 +107,13 @@ universes-are-Flabby-Π = (λ p A → Π A) ,
 universes-are-flabby-Π : aflabby (𝓤  ̇) 𝓤
 universes-are-flabby-Π = to-aflabby universes-are-Flabby-Π
 
+Σ-𝕚𝕟 : (p : Ω 𝓤) {A : p holds → 𝓤 ̇ } (h : p holds)
+    → A h ≃ Σ A
+Σ-𝕚𝕟 p h = Σ-in h , Σ-in-is-equiv h (holds-is-prop p)
+
 universes-are-Flabby-Σ : Flabby 𝓤
 universes-are-Flabby-Σ = (λ p A → Σ A) ,
-                         (λ p A h → prop-indexed-sum h (holds-is-prop p))
+                         (λ p A h → ≃-sym (Σ-𝕚𝕟 p h))
 
 universes-are-flabby-Σ : aflabby (𝓤  ̇) 𝓤
 universes-are-flabby-Σ = to-aflabby universes-are-Flabby-Σ

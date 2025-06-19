@@ -29,6 +29,4 @@ transport-over-prop : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x} (i :
 transport-over-prop {𝓤} {𝓥} {X} {Y} {x} {y} i =
  ap (λ - → transport Y - y) (identifications-in-props-are-refl i x)
 
-
-
 \end{code}

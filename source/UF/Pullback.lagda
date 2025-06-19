@@ -24,11 +24,11 @@ open import UF.Subsingletons
 We assume a cospan
 
                  Y
-                 |
-                 | g
-                 |
-                 v
-      X -------> C
+                 │
+                 │ g
+                 │
+                 ↓
+      X ───────→ C
            f
 
 \begin{code}
@@ -44,12 +44,12 @@ module pullback
 And we consider commutative squares of the form
 
            q
-      A -------> X
-      |          |
-    p |          | g
-      |          |
-      v          v
-      Y -------> Z
+      A ───────→ X
+      │          │
+    p │          │ g
+      │          │
+      ↓          ↓
+      Y ───────→ Z
             f
 
 completing the cospan.
@@ -89,23 +89,23 @@ type.
 If we have a cone
 
             q
-      P -------> Y
-      |          |
-    p |          | g
-      |          |
-      v          v
-      X -------> Z
+      P ───────→ Y
+      │          │
+    p │          │ g
+      │          │
+      ↓          ↓
+      X ───────→ Z
             f
 
 and a map u : A → P, we get a cone
 
           q ∘ u
-      A -------> Y
-      |          |
-p ∘ u |          | g
-      |          |
-      v          v
-      X -------> Z
+      A ───────→ Y
+      │          │
+p ∘ u │          │ g
+      │          │
+      ↓          ↓
+      X ───────→ Z
             f
 
 \begin{code}
@@ -118,12 +118,12 @@ p ∘ u |          | g
 We say that a cone
 
             q
-      P -------> Y
-      |          |
-    p |          | g
-      |          |
-      v          v
-      X -------> Z
+      P ───────→ Y
+      │          │
+    p │          │ g
+      │          │
+      ↓          ↓
+      X ───────→ Z
             f
 
 is a (homotopy) pullback if the cone map is an equivalence for every A.
@@ -188,12 +188,12 @@ pullbacks.
 The construction is illustrated in the following diagram.
 
                                    pb₂
- Σ (x , y) ꞉ X × Y , f x ＝ g y  -------> Y
-           |                              |
-      pb₁  |                              | g
-           |                              |
-           v                              v
-           X ---------------------------> Z
+ Σ (x , y) ꞉ X × Y , f x ＝ g y  ───────→ Y
+           │                              │
+      pb₁  │                              │ g
+           │                              │
+           ↓                              ↓
+           X --------------------───────→ Z
                                   f
 \begin{code}
 
@@ -262,12 +262,12 @@ Pullbacks of embeddings are embeddings.
 
 We have a pullback
 
-           fiber f c ----> 𝟙
-              |            |
-  fiber-point |            | c
-              |            |
-              v            v
-              X ---------> Z
+           fiber f c ────→ 𝟙
+              │            │
+  fiber-point │            │ c
+              │            │
+              ↓            ↓
+              X --───────→ Z
                      f
 
 \begin{code}

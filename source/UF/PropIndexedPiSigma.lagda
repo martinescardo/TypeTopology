@@ -61,10 +61,10 @@ module _ (a : X) where
 empty-indexed-product-is-𝟙 : funext 𝓤 𝓥
                            → (X → 𝟘 {𝓦})
                            → Π Y ≃ 𝟙 {𝓣}
-empty-indexed-product-is-𝟙 {𝓦} {𝓣} fe v = qinveq unique-to-𝟙 (g , η , ε)
+empty-indexed-product-is-𝟙 fe v = qinveq unique-to-𝟙 (g , η , ε)
  where
   g : 𝟙 → Π Y
-  g ⋆ x = unique-from-𝟘 {𝓥} {𝓦} (v x)
+  g ⋆ x = unique-from-𝟘 (v x)
 
   η : (f : Π Y) → g ⋆ ＝ f
   η f = dfunext fe I
@@ -114,7 +114,7 @@ module _ (a : X) where
  prop-indexed-sum i = ≃-sym (Σ-in , Σ-in-is-equiv i)
 
 empty-indexed-sum-is-𝟘 : (X → 𝟘 {𝓦}) → Σ Y ≃ (𝟘 {𝓣})
-empty-indexed-sum-is-𝟘 {𝓦} {𝓣} φ = qinveq f (g , η , ε)
+empty-indexed-sum-is-𝟘 φ = qinveq f (g , η , ε)
  where
   f : Σ Y → 𝟘
   f (x , y) = 𝟘-elim (φ x)
