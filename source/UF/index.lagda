@@ -5,6 +5,7 @@
 module UF.index where
 
 import UF.Base
+import UF.CoconesofSpans                    -- by [2]
 import UF.Choice
 import UF.ClassicalLogic
 import UF.Classifiers
@@ -49,6 +50,7 @@ import UF.PreUnivalence
 import UF.PropIndexedPiSigma
 import UF.PropTrunc
 import UF.PropTrunc-Variation
+import UF.Pushouts                    -- by [2]   
 import UF.Retracts
 import UF.Retracts-FunExt
 import UF.SIP
