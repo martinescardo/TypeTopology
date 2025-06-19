@@ -1,6 +1,6 @@
 Ian Ray, 15th January 2025
 
-Editted by Ian Ray, 19th Jun 2025.
+Edited by Ian Ray, 19th Jun 2025.
 
 We will prove some results about cocones of spans. This formalization was inspired by
 section 23 of Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest summer
