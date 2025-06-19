@@ -10,8 +10,8 @@ The pushout is the universal completion of a span
         |
         v
         B
-
-the data consists of a pair of maps into the pushout with homotopy witnessing that the
+        
+which consists of a pair of maps with homotopy witnessing that the
 square
 
         C --------> A
@@ -21,9 +21,10 @@ square
         v           v
         B --------> P
 
-commutes as well as a certain universal property, which in the style of HoTT is stated
-as an equivalence of a canonical map. For details on the pushout see section 23 of
-Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest summer school version:
+commutes. The pushout also satisfies a universal property, which in the style of
+HoTT/UF is stated as an equivalence of a canonical map. For details on pushouts
+see section 23 of Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest
+summer school version:
 https://github.com/martinescardo/HoTTEST-Summer-School/blob/main/HoTT/hott-intro.pdf)
 or chapter 6 section 8 of HoTT book (although it is important to note that the HoTT
 book utilizes definitional computation rules). In addition to the above references,
