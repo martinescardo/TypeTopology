@@ -629,9 +629,6 @@ Family-Π-data {𝓤} =
 
    r :  S (Π A) → ((h : p holds) → S (A h))
    r s h a = s (⌜ Π-𝕡𝕣𝕠𝕛 p h ⌝⁻¹ a)
-    where
-     _ : Π A
-     _ = ⌜ Π-𝕡𝕣𝕠𝕛 p h ⌝⁻¹ a
 
    _ : ρΠ S T T-refl p A ＝ r
    _ = refl
@@ -662,7 +659,6 @@ Family-Π-data {𝓤} =
                  (holds-is-prop p) 𝟙-is-prop unique-to-𝟙 (λ _ → h))
          I₂ = ≃-sym (𝟙→ fe')
 
-      II : r (σ g) h a ＝ g h a
       II = r (σ g) h a                            ＝⟨ refl ⟩
            σ g (⌜ π ⌝⁻¹ a)                        ＝⟨ refl ⟩
            ((h' : p holds) → g h' (⌜ π ⌝⁻¹ a h')) ＝⟨ II₀ ⟩
@@ -705,5 +701,94 @@ ainjectivity-of-type-of-all-functions {𝓤}
       (Σ Y ꞉ 𝓤 ̇ , Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃⟨ Σ-cong (classification (ua 𝓤) fe') ⟩
       (Σ Y ꞉ 𝓤 ̇ , (Y → 𝓤 ̇))           ≃⟨ ≃-refl _ ⟩
       Family 𝓤                        ■
+
+\end{code}
+
+The type of all type-valued relations, or multigraphs, in a universe
+is injective.
+
+\begin{code}
+
+Graph : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Graph 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → X → 𝓤 ̇)
+
+Graph-structure : 𝓤 ̇ → 𝓤 ⁺ ̇
+Graph-structure {𝓤} X = X → X → 𝓤 ̇
+
+open import UF.EquivalenceExamples
+open import UF.Subsingletons
+
+Graph-Π-data : compatibility-data
+                   (Graph-structure {𝓤})
+                   universes-are-flabby-Π
+Graph-Π-data {𝓤} =
+ Π-construction Graph-structure T T-refl c
+ where
+  S = Graph-structure
+
+  T : {X Y : 𝓤 ̇} → X ≃ Y → (X → X → 𝓣 ̇ ) → (Y → Y → 𝓣 ̇ )
+  T 𝕗 R y y' = R (⌜ 𝕗 ⌝⁻¹ y) (⌜ 𝕗 ⌝⁻¹ y')
+
+  T-refl : {X : 𝓤 ̇} → T (≃-refl X) ∼ id
+  T-refl v = refl
+
+  module _ (p : Ω 𝓤) (A : p holds → 𝓤 ̇) where
+
+   r :  S (Π A) → ((h : p holds) → S (A h))
+   r s h a a' = s (⌜ Π-𝕡𝕣𝕠𝕛 p h ⌝⁻¹ a) (⌜ Π-𝕡𝕣𝕠𝕛 p h ⌝⁻¹ a')
+
+   _ : ρΠ S T T-refl p A ＝ r
+   _ = refl
+
+   σ : ((h : p holds) → S (A h)) → S (Π A)
+   σ g f f' = (h : p holds) → g h (f h) (f' h)
+
+   rσ : r ∘ σ ∼ id
+   rσ g = dfunext fe' (λ h →
+          dfunext fe' (λ a →
+          dfunext fe' (λ a' → II h a a')))
+    where
+     module _ (h : p holds) (a a' : A h) where
+
+      π : Π A ≃ A h
+      π = Π-𝕡𝕣𝕠𝕛 p h
+
+      I = ((h' : p holds) → g h' (⌜ π ⌝⁻¹ a h') (⌜ π ⌝⁻¹ a' h')) ≃⟨ I₀ ⟩
+          (p holds → g h (⌜ π ⌝⁻¹ a h) (⌜ π ⌝⁻¹ a' h))           ≃⟨ I₁ ⟩
+          (𝟙 → g h (⌜ π ⌝⁻¹ a h) (⌜ π ⌝⁻¹ a' h))                 ≃⟨ I₂ ⟩
+          g h (⌜ π ⌝⁻¹ a h) (⌜ π ⌝⁻¹ a' h)                       ■
+        where
+         I₀ = Π-cong fe' fe'
+               (λ h' → transport (λ - → g - (⌜ π ⌝⁻¹ a -) (⌜ π ⌝⁻¹ a' -))
+                                 (holds-is-prop p h' h) ,
+                       transports-are-equivs (holds-is-prop p h' h))
+         I₁ = Π-change-of-variable-≃ {𝓤} {𝓤} fe
+               (λ _ → g h (⌜ π ⌝⁻¹ a h) (⌜ π ⌝⁻¹ a' h))
+               (logically-equivalent-props-are-equivalent
+                 (holds-is-prop p) 𝟙-is-prop unique-to-𝟙 (λ _ → h))
+         I₂ = ≃-sym (𝟙→ fe')
+
+      II : r (σ g) h a a' ＝ g h a a'
+      II = r (σ g) h a a'                                         ＝⟨ refl ⟩
+           σ g (⌜ π ⌝⁻¹ a) (⌜ π ⌝⁻¹ a')                           ＝⟨ refl ⟩
+           ((h' : p holds) → g h' (⌜ π ⌝⁻¹ a h') (⌜ π ⌝⁻¹ a' h')) ＝⟨ II₀ ⟩
+           g h (⌜ π ⌝⁻¹ a h) (⌜ π ⌝⁻¹ a' h)                       ＝⟨ refl ⟩
+           g h (⌜ π ⌝ (⌜ π ⌝⁻¹ a)) (⌜ π ⌝ (⌜ π ⌝⁻¹ a'))           ＝⟨ II₁ ⟩
+           g h a a'                                               ∎
+            where
+             II₀  = eqtoid (ua 𝓤) _ _ I
+             II₁ = ap₂ (g h)
+                       (inverses-are-sections' π a)
+                       (inverses-are-sections' π a')
+
+  c :  compatibility-data-Π Graph-structure T T-refl
+  c p A = σ p A , rσ p A
+
+ainjectivity-of-Graph : ainjective-type (Graph 𝓤) 𝓤 𝓤
+ainjectivity-of-Graph =
+ ainjectivity-of-type-of-structures
+  Graph-structure
+  universes-are-flabby-Π
+  Graph-Π-data
 
 \end{code}
