@@ -596,3 +596,114 @@ proof. Maybe the proof for the type of ordinals can be adapted
 (check). What about metric spaces? Notice that both posets and metric
 spaces have structure of the form X → X → R where R is
 respectively Ω 𝓤 and ℝ.
+
+Added 20th June 2025. The type of all families in a universe is
+injective.
+
+\begin{code}
+
+Family : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Family 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → 𝓤 ̇)
+
+Family-structure : 𝓤 ̇ → 𝓤 ⁺ ̇
+Family-structure {𝓤} X = X → 𝓤 ̇
+
+open import UF.EquivalenceExamples
+open import UF.Subsingletons
+
+Family-Π-data : compatibility-data
+                    (Family-structure {𝓤})
+                    universes-are-flabby-Π
+Family-Π-data {𝓤} =
+ Π-construction Family-structure T T-refl c
+ where
+  S = Family-structure
+
+  T : {X Y : 𝓤 ̇} → X ≃ Y → (X → 𝓣 ̇ ) → (Y → 𝓣 ̇ )
+  T 𝕗 v = v ∘ ⌜ 𝕗 ⌝⁻¹
+
+  T-refl : {X : 𝓤 ̇} → T (≃-refl X) ∼ id
+  T-refl v = refl
+
+  module _ (p : Ω 𝓤) (A : p holds → 𝓤 ̇) where
+
+   r :  S (Π A) → ((h : p holds) → S (A h))
+   r s h a = s (⌜ Π-𝕡𝕣𝕠𝕛 p h ⌝⁻¹ a)
+    where
+     _ : Π A
+     _ = ⌜ Π-𝕡𝕣𝕠𝕛 p h ⌝⁻¹ a
+
+   _ : ρΠ S T T-refl p A ＝ r
+   _ = refl
+
+   σ : ((h : p holds) → S (A h)) → S (Π A)
+   σ g f = (h : p holds) → g h (f h)
+
+   rσ : r ∘ σ ∼ id
+   rσ g = dfunext fe' (λ h → dfunext fe' (II h))
+    where
+     module _ (h : p holds) (a : A h) where
+
+      π : Π A ≃ A h
+      π = Π-𝕡𝕣𝕠𝕛 p h
+
+      I = ((h' : p holds) → g h' (⌜ π ⌝⁻¹ a h')) ≃⟨ I₀ ⟩
+          (p holds → g h (⌜ π ⌝⁻¹ a h))          ≃⟨ I₁ ⟩
+          (𝟙 → g h (⌜ π ⌝⁻¹ a h))                ≃⟨ I₂ ⟩
+          g h (⌜ π ⌝⁻¹ a h)                      ■
+        where
+         I₀ = Π-cong fe' fe'
+               (λ h' → transport (λ - → g - (⌜ π ⌝⁻¹ a -))
+                                 (holds-is-prop p h' h) ,
+                       transports-are-equivs (holds-is-prop p h' h))
+         I₁ = Π-change-of-variable-≃ {𝓤} {𝓤} fe
+               (λ _ → g h (⌜ π ⌝⁻¹ a h))
+               (logically-equivalent-props-are-equivalent
+                 (holds-is-prop p) 𝟙-is-prop unique-to-𝟙 (λ _ → h))
+         I₂ = ≃-sym (𝟙→ fe')
+
+      II : r (σ g) h a ＝ g h a
+      II = r (σ g) h a                            ＝⟨ refl ⟩
+           σ g (⌜ π ⌝⁻¹ a)                        ＝⟨ refl ⟩
+           ((h' : p holds) → g h' (⌜ π ⌝⁻¹ a h')) ＝⟨ II₀ ⟩
+           g h (⌜ π ⌝⁻¹ a h)                      ＝⟨ refl ⟩
+           g h (⌜ π ⌝ (⌜ π ⌝⁻¹ a))                ＝⟨ II₁ ⟩
+           g h a                                  ∎
+            where
+             II₀  = eqtoid (ua 𝓤) _ _ I
+             II₁ = ap (g h) (inverses-are-sections' π a)
+
+  c :  compatibility-data-Π Family-structure T T-refl
+  c p A = σ p A , rσ p A
+
+ainjectivity-of-Family : ainjective-type (Family 𝓤) 𝓤 𝓤
+ainjectivity-of-Family =
+ ainjectivity-of-type-of-structures
+  Family-structure
+  universes-are-flabby-Π
+  Family-Π-data
+
+\end{code}
+
+A corollary is that the type of all functions in a universe is injective.
+
+\begin{code}
+
+open import UF.Classifiers
+
+ainjectivity-of-type-of-all-functions
+ : ainjective-type (Σ X ꞉ 𝓤 ̇ , Σ Y ꞉ 𝓤 ̇ , (X → Y)) 𝓤 𝓤
+ainjectivity-of-type-of-all-functions {𝓤}
+ = transport
+    (λ - → ainjective-type - 𝓤 𝓤)
+    (eqtoid (ua (𝓤 ⁺)) _ _ (≃-sym I))
+    ainjectivity-of-Family
+ where
+  open classifier-single-universe 𝓤
+
+  I = (Σ X ꞉ 𝓤 ̇ , Σ Y ꞉ 𝓤 ̇ , (X → Y)) ≃⟨ Σ-flip ⟩
+      (Σ Y ꞉ 𝓤 ̇ , Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃⟨ Σ-cong (classification (ua 𝓤) fe') ⟩
+      (Σ Y ꞉ 𝓤 ̇ , (Y → 𝓤 ̇))           ≃⟨ ≃-refl _ ⟩
+      Family 𝓤                        ■
+
+\end{code}
