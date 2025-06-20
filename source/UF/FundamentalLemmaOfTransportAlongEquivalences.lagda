@@ -49,7 +49,7 @@ following fundamental lemma of transport along equivalences.
 
 This says that, for any equivalence
 
-  𝕗 : X ≃ Y
+  𝕗 : X ≃ Y,
 
 we have that
 
