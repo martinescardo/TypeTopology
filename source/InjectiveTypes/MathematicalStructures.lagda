@@ -600,26 +600,25 @@ injective.
 
 \begin{code}
 
-Family : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Family 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → 𝓤 ̇)
+Fam : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Fam 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → 𝓤 ̇)
 
-Family-structure : 𝓤 ̇ → 𝓤 ⁺ ̇
-Family-structure {𝓤} X = X → 𝓤 ̇
+Fam-structure : 𝓤 ̇ → 𝓤 ⁺ ̇
+Fam-structure {𝓤} X = X → 𝓤 ̇
 
 open import UF.EquivalenceExamples
 open import UF.Subsingletons
 
-Family-Π-data : compatibility-data (Family-structure {𝓤}) universes-are-flabby-Π
-Family-Π-data {𝓤} =
- Π-construction Family-structure T T-refl c
+Fam-Π-data : compatibility-data (Fam-structure {𝓤}) universes-are-flabby-Π
+Fam-Π-data {𝓤} = Π-construction Fam-structure T T-refl c
  where
-  S = Family-structure
+  S = Fam-structure
 
   T : {X Y : 𝓤 ̇} → X ≃ Y → (X → 𝓣 ̇ ) → (Y → 𝓣 ̇ )
   T 𝕗 R = λ y → R (⌜ 𝕗 ⌝⁻¹ y)
 
   T-refl : {X : 𝓤 ̇} → T (≃-refl X) ∼ id
-  T-refl v = refl
+  T-refl R = refl
 
   module _ (p : Ω 𝓤) (A : p holds → 𝓤 ̇) where
 
@@ -665,15 +664,15 @@ Family-Π-data {𝓤} =
              II₀  = eqtoid (ua 𝓤) _ _ I
              II₁ = ap (g h) (inverses-are-sections' π a)
 
-  c :  compatibility-data-Π Family-structure T T-refl
+  c :  compatibility-data-Π Fam-structure T T-refl
   c p A = σ p A , rσ p A
 
-ainjectivity-of-Family : ainjective-type (Family 𝓤) 𝓤 𝓤
-ainjectivity-of-Family =
+ainjectivity-of-Fam : ainjective-type (Fam 𝓤) 𝓤 𝓤
+ainjectivity-of-Fam =
  ainjectivity-of-type-of-structures
-  Family-structure
+  Fam-structure
   universes-are-flabby-Π
-  Family-Π-data
+  Fam-Π-data
 
 \end{code}
 
@@ -689,14 +688,14 @@ ainjectivity-of-type-of-all-functions {𝓤}
  = transport
     (λ - → ainjective-type - 𝓤 𝓤)
     (eqtoid (ua (𝓤 ⁺)) _ _ (≃-sym I))
-    ainjectivity-of-Family
+    ainjectivity-of-Fam
  where
   open classifier-single-universe 𝓤
 
   I = (Σ X ꞉ 𝓤 ̇ , Σ Y ꞉ 𝓤 ̇ , (X → Y)) ≃⟨ Σ-flip ⟩
       (Σ Y ꞉ 𝓤 ̇ , Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃⟨ Σ-cong (classification (ua 𝓤) fe') ⟩
       (Σ Y ꞉ 𝓤 ̇ , (Y → 𝓤 ̇))           ≃⟨ ≃-refl _ ⟩
-      Family 𝓤                        ■
+      Fam 𝓤                           ■
 
 \end{code}
 
@@ -724,7 +723,7 @@ Graph-Π-data {𝓤} =
   T 𝕗 R y y' = R (⌜ 𝕗 ⌝⁻¹ y) (⌜ 𝕗 ⌝⁻¹ y')
 
   T-refl : {X : 𝓤 ̇} → T (≃-refl X) ∼ id
-  T-refl v = refl
+  T-refl R = refl
 
   module _ (p : Ω 𝓤) (A : p holds → 𝓤 ̇) where
 
@@ -853,7 +852,7 @@ Poset-Π-data {𝓤} =
     I : is-set (Π A)
     I = Π-is-set fe' (λ h →
          case F h of
-          λ (Ah-is-set , ln , rn , assoc) → Ah-is-set)
+          λ (s , pv , r , t , a) → s)
 
     II : (f g : Π A) → is-prop (f ≤ g)
     II f g = Π-is-prop fe' (λ h →
