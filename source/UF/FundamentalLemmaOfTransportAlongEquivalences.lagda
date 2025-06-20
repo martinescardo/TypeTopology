@@ -40,7 +40,7 @@ hypothesis, it is difficult to reason with, and also to compute with.
 
 However, if we can guess *any* functions
 
-   T      : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y
+   T      : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y,
    T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id,
 
 which we are very often able to do in practice, then it becomes
@@ -56,7 +56,7 @@ we have that
   T 𝕗 ∼ transport-along-≃ ua S 𝕗,
 
 so that we can work with T rather than with the more awkward
-transport-along-≃.
+map transport-along-≃.
 
 What is perhaps surprising is that no conditions on T and T-refl are
 needed. Any T and T-refl with the given types work, without the need
@@ -92,9 +92,9 @@ fundamental-transport-along-≃-lemma {𝓤} {𝓥} S T T-refl ua {X} {Y} 𝕗 s
 
 \end{code}
 
-I am not sure if this lemma has been formulated and proved before, but
-I won't be surprised if it has. But it does follow from what Egbert
-Rijke calls "The Fundamental Theorem of identity types", although here
-we are giving a direct proof by equivalence induction.
+I am not sure this lemma has been formulated and proved before, but I
+won't be surprised if it has. It does follow from what Egbert Rijke
+calls "The Fundamental Theorem of identity types", although here we
+are giving a direct proof by equivalence induction.
 
 In any case, we have found it to be really useful in practice.
