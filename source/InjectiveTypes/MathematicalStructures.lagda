@@ -616,7 +616,7 @@ Family-Π-data {𝓤} =
   S = Family-structure
 
   T : {X Y : 𝓤 ̇} → X ≃ Y → (X → 𝓣 ̇ ) → (Y → 𝓣 ̇ )
-  T 𝕗 v = v ∘ ⌜ 𝕗 ⌝⁻¹
+  T 𝕗 R = λ y → R (⌜ 𝕗 ⌝⁻¹ y)
 
   T-refl : {X : 𝓤 ̇} → T (≃-refl X) ∼ id
   T-refl v = refl
