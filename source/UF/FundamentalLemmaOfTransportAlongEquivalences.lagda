@@ -44,8 +44,8 @@ However, if we can guess *any* functions
    T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id,
 
 which we are very often able to do in practice, then it becomes
-trivial to reason with, and also compute with, thanks to the following
-fundamental lemma of transport along equivalences.
+trivial to reason with, and also to compute with, thanks to the
+following fundamental lemma of transport along equivalences.
 
 This says that, for any equivalence
 
@@ -93,5 +93,8 @@ fundamental-transport-along-≃-lemma {𝓤} {𝓥} S T T-refl ua {X} {Y} 𝕗 s
 \end{code}
 
 I am not sure if this lemma has been formulated and proved before, but
-I won't be surprised if it has. In any case, we have found it to be
-really useful in practice.
+I won't be surprised if it has. But it does follow from what Egbert
+Rijke calls "The Fundamental Theorem" of identity types, although here
+we are giving a direct proof by equivalence induction.
+
+In any case, we have found it to be really useful in practice.
