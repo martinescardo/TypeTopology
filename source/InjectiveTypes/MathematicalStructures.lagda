@@ -886,9 +886,9 @@ ainjectivity-of-Poset {𝓤} =
 Notice that, just as in the case for monoids, the proof amounts to
 showing that posets are closed under prop-indexed products. Using the
 same idea, it is straightforward to show that the types of dcpos,
-continuous dcpos, suplattices, frames etc. all all injective. (Notice
+continuous dcpos, suplattices, frames etc. are all injective. (Notice
 that this is different from e.g. saying that the underlying type of a
-dcpos is injective, which is also true and is prove in another
+dcpos is injective, which is also true and is proved in another
 module.)
 
 TODO. Maybe implement (some of) these examples.
