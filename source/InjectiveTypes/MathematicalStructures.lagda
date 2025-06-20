@@ -405,16 +405,16 @@ guess what T should be.
 ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
 ∞-Magma 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → X → X)
 
-∞-Magma-structure : 𝓤 ̇ → 𝓤 ̇
-∞-Magma-structure = λ X → X → X → X
+∞-magma-structure : 𝓤 ̇ → 𝓤 ̇
+∞-magma-structure = λ X → X → X → X
 
 ∞-Magma-structure-Π-data : compatibility-data
-                            (∞-Magma-structure {𝓤})
+                            (∞-magma-structure {𝓤})
                             universes-are-flabby-Π
 ∞-Magma-structure-Π-data {𝓤} =
  Π-construction S T T-refl ρΠ-has-section
  where
-  S = ∞-Magma-structure
+  S = ∞-magma-structure
 
   T : {X Y : 𝓤 ̇ } → (X ≃ Y) → S X → S Y
   T 𝕗 _·_ = λ y y' → ⌜ 𝕗 ⌝ (⌜ 𝕗 ⌝⁻¹ y · ⌜ 𝕗 ⌝⁻¹ y')
@@ -458,7 +458,7 @@ guess what T should be.
 ainjectivity-of-∞-Magma : ainjective-type (∞-Magma 𝓤) 𝓤 𝓤
 ainjectivity-of-∞-Magma =
  ainjectivity-of-type-of-structures
-  ∞-Magma-structure
+  ∞-magma-structure
   universes-are-flabby-Π
   ∞-Magma-structure-Π-data
 
@@ -581,21 +581,16 @@ ainjectivity-of-Monoid {𝓤} =
 
 \end{code}
 
-TODO. It is easy to add further axioms to monoids to get groups, and
-then show that the type of groups is injective using the above
-technique. This is just as routine as the example of monoids.
+It is easy to add further axioms to monoids to get groups, and then
+show that the type of groups is injective using the above
+technique. This is just as routine as the example of monoids. All one
+needs to do is to show that the group axioms are closed under
+prop-indexed products.
 
-TODO. More techniques are needed to show that the type of 1-categories
-would be injective. This is more interesting.
+TODO. Maybe implement this.
 
 NB. The type Ordinal 𝓤 of well-ordered sets in 𝓤 is also injective,
-but for a different reason.
-
-TODO. The type of posets should be injective, but with a different
-proof. Maybe the proof for the type of ordinals can be adapted
-(check). What about metric spaces? Notice that both posets and metric
-spaces have structure of the form X → X → R where R is
-respectively Ω 𝓤 and ℝ.
+but for different reasons, two of them given in two different modules.
 
 Added 20th June 2025. The type of all families in a universe is
 injective.
@@ -611,9 +606,7 @@ Family-structure {𝓤} X = X → 𝓤 ̇
 open import UF.EquivalenceExamples
 open import UF.Subsingletons
 
-Family-Π-data : compatibility-data
-                    (Family-structure {𝓤})
-                    universes-are-flabby-Π
+Family-Π-data : compatibility-data (Family-structure {𝓤}) universes-are-flabby-Π
 Family-Π-data {𝓤} =
  Π-construction Family-structure T T-refl c
  where
@@ -705,26 +698,24 @@ ainjectivity-of-type-of-all-functions {𝓤}
 \end{code}
 
 The type of all type-valued relations, or multigraphs, in a universe
-is injective.
+is injective. The proof is the binary version of the above unary proof.
 
 \begin{code}
 
 Graph : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Graph 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → X → 𝓤 ̇)
 
-Graph-structure : 𝓤 ̇ → 𝓤 ⁺ ̇
-Graph-structure {𝓤} X = X → X → 𝓤 ̇
+graph-structure : 𝓤 ̇ → 𝓤 ⁺ ̇
+graph-structure {𝓤} X = X → X → 𝓤 ̇
 
 open import UF.EquivalenceExamples
 open import UF.Subsingletons
 
-Graph-Π-data : compatibility-data
-                   (Graph-structure {𝓤})
-                   universes-are-flabby-Π
+Graph-Π-data : compatibility-data (graph-structure {𝓤}) universes-are-flabby-Π
 Graph-Π-data {𝓤} =
- Π-construction Graph-structure T T-refl c
+ Π-construction graph-structure T T-refl c
  where
-  S = Graph-structure
+  S = graph-structure
 
   T : {X Y : 𝓤 ̇} → X ≃ Y → (X → X → 𝓣 ̇ ) → (Y → Y → 𝓣 ̇ )
   T 𝕗 R y y' = R (⌜ 𝕗 ⌝⁻¹ y) (⌜ 𝕗 ⌝⁻¹ y')
@@ -781,14 +772,124 @@ Graph-Π-data {𝓤} =
                        (inverses-are-sections' π a)
                        (inverses-are-sections' π a')
 
-  c :  compatibility-data-Π Graph-structure T T-refl
+  c :  compatibility-data-Π graph-structure T T-refl
   c p A = σ p A , rσ p A
 
 ainjectivity-of-Graph : ainjective-type (Graph 𝓤) 𝓤 𝓤
 ainjectivity-of-Graph =
  ainjectivity-of-type-of-structures
-  Graph-structure
+  graph-structure
   universes-are-flabby-Π
   Graph-Π-data
 
 \end{code}
+
+As a consequence, we get the injectivity of the type of posets.
+
+\begin{code}
+
+poset-axioms : (X : 𝓤 ̇ ) → graph-structure X → 𝓤 ̇
+poset-axioms X _≤_ = is-set X
+                   × ((x y : X) → is-prop (x ≤ y))
+                   × reflexive     _≤_
+                   × transitive    _≤_
+                   × antisymmetric _≤_
+
+Poset : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Poset 𝓤 = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ graph-structure X , poset-axioms X s
+
+open import UF.Subsingletons-FunExt
+
+poset-axioms-is-prop : (X : 𝓤 ̇ ) (s : graph-structure X)
+                     → is-prop (poset-axioms X s)
+poset-axioms-is-prop X _≤_ = prop-criterion I
+ where
+  I : poset-axioms X _≤_ → is-prop (poset-axioms X _≤_)
+  I (s , pv , r , t , a) =
+   ×₅-is-prop
+    (being-set-is-prop fe')
+    (Π₂-is-prop fe' (λ x y → being-prop-is-prop fe'))
+    (Π-is-prop fe' (λ x → pv x x))
+    (Π₅-is-prop fe' (λ x _ z _ _ → pv x z))
+    (Π₄-is-prop fe' (λ _ _ _ _ → s))
+
+Poset-Π-data : compatibility-data {𝓤 ⁺}
+                 (λ X → Σ s ꞉ graph-structure X , poset-axioms X s)
+                 universes-are-flabby-Π
+Poset-Π-data {𝓤} =
+ compatibility-data-with-axioms
+  universes-are-flabby-Π
+  graph-structure
+  Graph-Π-data
+  poset-axioms
+  poset-axioms-is-prop
+  axioms-Π-data
+ where
+  σ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ )
+    → ((h : p holds) → graph-structure (A h)) → graph-structure (Π A)
+  σ p A = section-map
+           (ρ graph-structure universes-are-flabby-Π p A)
+           (Graph-Π-data p A)
+
+  axioms-Π-data
+    : (p : Ω 𝓤)
+      (A : p holds → 𝓤 ̇ )
+      (α : (h : p holds) → graph-structure (A h))
+      (F : (h : p holds) → poset-axioms (A h) (α h))
+    → poset-axioms (Π A) (σ p A α)
+  axioms-Π-data p A α F = I , II , III , IV , V
+   where
+    _≤_ : Π A → Π A → 𝓤 ̇
+    f ≤ g = (h : p holds) → α h (f h) (g h)
+
+    _ : σ p A α ＝ _≤_
+    _ = refl -- Which is crucial for the proof below to work.
+
+    I : is-set (Π A)
+    I = Π-is-set fe' (λ h →
+         case F h of
+          λ (Ah-is-set , ln , rn , assoc) → Ah-is-set)
+
+    II : (f g : Π A) → is-prop (f ≤ g)
+    II f g = Π-is-prop fe' (λ h →
+              case F h of
+               λ (s , pv , r , t , a) → pv (f h) (g h))
+
+    III : reflexive _≤_
+    III f h =
+     case F h of
+      λ (s , pv , r , t , a) → r (f h)
+
+    IV : transitive _≤_
+    IV f₀ f₁ f₂ l m h =
+     case F h of
+      λ (s , pv , r , t , a) → t (f₀ h) (f₁ h) (f₂ h) (l h) (m h)
+
+    V : antisymmetric _≤_
+    V f₀ f₁ l m = dfunext fe' (λ h →
+                   case F h of
+                    λ (s , pv , r , t , a) → a (f₀ h) (f₁ h) (l h) (m h))
+
+ainjectivity-of-Poset : ainjective-type (Poset 𝓤) 𝓤 𝓤
+ainjectivity-of-Poset {𝓤} =
+ ainjectivity-of-type-of-structures
+  (λ X → Σ s ꞉ graph-structure X , poset-axioms X s)
+  universes-are-flabby-Π
+  Poset-Π-data
+
+\end{code}
+
+Notice that, just as in the case for monoids, the proof amounts to
+showing that posets are closed under prop-indexed products. Using the
+same idea, it is straightforward to show that the types of dcpos,
+continuous dcpos, suplattices, frames etc. all all injective. (Notice
+that this is different from e.g. saying that the underlying type of a
+dcpos is injective, which is also true and is prove in another
+module.)
+
+TODO. Maybe implement (some of) these examples.
+
+TODO. More techniques are needed to show that the type of 1-categories
+would be injective. A category can be seen as a graph equipped with
+operations (identity and composition) satisfying properties (identity
+laws, associativity, univalence).
