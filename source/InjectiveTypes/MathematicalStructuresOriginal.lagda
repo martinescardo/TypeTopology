@@ -1,5 +1,9 @@
 Martin Escardo, 16th August 2023
 
+Note. Editions to this file should be avoided, because it is kept only
+for the purpose of history. Only editions to make it compatible with
+other modifications in TypeTopology should be done, and with care.
+
 We give a sufficient condition for types of mathematical structures,
 such as pointed types, ∞-magmas, monoids, groups, etc. to be
 algebraically injective. We use algebraic flabbiness as our main tool.
