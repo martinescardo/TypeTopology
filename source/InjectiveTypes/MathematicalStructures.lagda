@@ -543,8 +543,11 @@ Monoid-Π-data {𝓤} =
     → monoid-axioms (Π A) (σ p A α)
   axioms-Π-data p A α F = I , II , III , IV
    where
+    _*_ : {h : p holds} → A h → A h → A h
+    _*_ {h} = pr₁ (α h)
+
     _·_ : Π A → Π A → Π A
-    f · g = λ h → pr₁ (α h) (f h) (g h)
+    f · g = λ h → f h * g h
 
     e : Π A
     e h = pr₂ (α h)
@@ -759,7 +762,6 @@ Graph-Π-data {𝓤} =
                  (holds-is-prop p) 𝟙-is-prop unique-to-𝟙 (λ _ → h))
          I₂ = ≃-sym (𝟙→ fe')
 
-      II : r (σ g) h a a' ＝ g h a a'
       II = r (σ g) h a a'                                         ＝⟨ refl ⟩
            σ g (⌜ π ⌝⁻¹ a) (⌜ π ⌝⁻¹ a')                           ＝⟨ refl ⟩
            ((h' : p holds) → g h' (⌜ π ⌝⁻¹ a h') (⌜ π ⌝⁻¹ a' h')) ＝⟨ II₀ ⟩
@@ -839,8 +841,11 @@ Poset-Π-data {𝓤} =
     → poset-axioms (Π A) (σ p A α)
   axioms-Π-data p A α F = I , II , III , IV , V
    where
+    _⊑_ : {h : p holds} → A h → A h → 𝓤 ̇
+    _⊑_ {h} = α h
+
     _≤_ : Π A → Π A → 𝓤 ̇
-    f ≤ g = (h : p holds) → α h (f h) (g h)
+    f ≤ g = (h : p holds) → f h ⊑ g h
 
     _ : σ p A α ＝ _≤_
     _ = refl -- Which is crucial for the proof below to work.
