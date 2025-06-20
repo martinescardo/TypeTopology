@@ -94,7 +94,7 @@ fundamental-transport-along-≃-lemma {𝓤} {𝓥} S T T-refl ua {X} {Y} 𝕗 s
 
 I am not sure if this lemma has been formulated and proved before, but
 I won't be surprised if it has. But it does follow from what Egbert
-Rijke calls "The Fundamental Theorem" of identity types, although here
+Rijke calls "The Fundamental Theorem of identity types", although here
 we are giving a direct proof by equivalence induction.
 
 In any case, we have found it to be really useful in practice.
