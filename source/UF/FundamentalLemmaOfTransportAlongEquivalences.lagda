@@ -67,7 +67,7 @@ the induction step.
 
 \begin{code}
 
-fundamental-transport-along-≃-lemma
+transport-along-≃-fundamental-lemma
  : {𝓤 𝓥 : Universe}
    (S : 𝓤 ̇ → 𝓥 ̇ )
    (T : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y)
@@ -76,7 +76,7 @@ fundamental-transport-along-≃-lemma
    (𝕗 : X ≃ Y)
    (ua : is-univalent 𝓤)
  → T 𝕗 ∼ transport-along-≃ ua S 𝕗
-fundamental-transport-along-≃-lemma {𝓤} {𝓥} S T T-refl {X} {Y} 𝕗 ua s
+transport-along-≃-fundamental-lemma {𝓤} {𝓥} S T T-refl {X} {Y} 𝕗 ua s
  = JEq ua X A I Y 𝕗
  where
   A : (Y : 𝓤 ̇ ) (𝕗 : X ≃ Y) → 𝓥 ̇
