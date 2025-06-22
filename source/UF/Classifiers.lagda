@@ -1,6 +1,6 @@
 Martin Escardo 8th May 2020.
 
-An old version of this file is at UF.Classifiers-Old.
+An obsolete, clumsy version of this file is at UF.Classifiers-Old.
 
 This version is ported from the Midlands Graduate School 2019 lecture notes
 
