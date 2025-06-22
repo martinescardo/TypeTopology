@@ -466,7 +466,6 @@ the universe 𝓤.
 
 \begin{code}
 
-open import UF.DiscreteAndSeparated
 open import UF.Equiv-FunExt
 open import UF.Lower-FunExt
 open import UF.Subsingletons-FunExt
