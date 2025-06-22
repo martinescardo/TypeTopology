@@ -42,7 +42,7 @@ module UF.Singleton-Properties where
 
 \end{code}
 
-Added by Martin Escardo 22nd June 2024.
+Added by Martin Escardo 22nd June 2025.
 
 \begin{code}
 

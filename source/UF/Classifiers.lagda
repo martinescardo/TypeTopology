@@ -456,3 +456,75 @@ more general universes in the following:
   (X → Y)                       ■
 
 \end{code}
+
+Added 22nd June 2025 by Martin Escardo, from an old draft.
+
+If a universe 𝓤 is a classifier, then it is univalent, assuming
+function extensionality from function from with domains in 𝓤 and
+codomain in 𝓤⁺, and also assuming extensionality for propositions in
+the universe 𝓤.
+
+\begin{code}
+
+open import UF.DiscreteAndSeparated
+open import UF.Equiv-FunExt
+open import UF.Lower-FunExt
+open import UF.Subsingletons-FunExt
+open import UF.Yoneda
+open import UF.Singleton-Properties
+
+open classifier-single-universe
+
+universe-is-classifier-implies-universe-is-univalent
+ : funext 𝓤 (𝓤 ⁺)
+ → propext 𝓤
+ → universe-is-classifier 𝓤
+ → is-univalent 𝓤
+universe-is-classifier-implies-universe-is-univalent {𝓤} fe⁺ pe c = V
+ where
+  fe : funext 𝓤 𝓤
+  fe = lower-funext 𝓤 (𝓤 ⁺) fe⁺
+
+  open special-classifier 𝓤 𝓤 𝓤
+
+  P : 𝓤 ̇ → 𝓤 ̇
+  P = is-singleton
+
+  module _ (Y : 𝓤 ̇ ) where
+
+   I : (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → P (fiber f y))) ≃ (Y → Σ P)
+   I = χ-special P Y , classifier-gives-special-classifier c P Y
+
+   _ : (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → P (fiber f y)))
+    ＝ (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , is-vv-equiv f)
+   _ = refl
+
+   II : is-singleton (Y → Σ P)
+   II = Π-is-singleton fe⁺ (λ _ → the-singletons-form-a-singleton-type fe pe)
+
+   III : is-singleton (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , is-vv-equiv f)
+   III = equiv-to-singleton I II
+
+   IV : is-singleton (Σ X ꞉ 𝓤 ̇ , (Y ≃ X))
+   IV = equiv-to-singleton
+         ((Σ X ꞉ 𝓤 ̇ , (Y ≃ X))                        ≃⟨ IV₀ ⟩
+          (Σ X ꞉ 𝓤 ̇ , (X ≃ Y))                        ≃⟨ ≃-refl _ ⟩
+          (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , is-equiv f)     ≃⟨ IV₁ ⟩
+          (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , is-vv-equiv f)  ■)
+        III
+         where
+          IV₀ = Σ-cong (λ X → ≃-sym (≃-flip' fe fe fe fe))
+          IV₁ = Σ-cong (λ X →
+                Σ-cong (λ f →
+                 logically-equivalent-props-are-equivalent
+                  (being-equiv-is-prop'' fe f)
+                  (being-vv-equiv-is-prop' fe fe f)
+                  (equivs-are-vv-equivs f)
+                  (vv-equivs-are-equivs f)))
+
+  V : is-univalent 𝓤
+  V = univalence-via-singletons← IV
+
+\end{code}
+
+Question. Is it possible to remove the extensionality assumptions?
