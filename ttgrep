@@ -1,0 +1,3 @@
+# TypeTopology grep
+
+grep $1 `git ls-files '*agda'`
