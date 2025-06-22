@@ -1,7 +1,7 @@
 Ian Ray, 7 February 2024
 
 Singleton Properties. Of course there are alot more we can add to this file.
-For now we will show that singletons are closed under retracts and Σ types.
+For now we will show that singletons are closed under Σ types and equivalence.
 
 \begin{code}
 
@@ -16,17 +16,6 @@ open import UF.Retracts
 open import UF.Subsingletons
 
 module UF.Singleton-Properties where
-
-singleton-closed-under-retract : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
-                               → retract X of Y
-                               → is-singleton Y
-                               → is-singleton X
-singleton-closed-under-retract X Y (r , s , H) (c , C) = (r c , C')
- where
-  C' : is-central X (r c)
-  C' x = r c      ＝⟨ ap r (C (s x)) ⟩
-         r (s x)  ＝⟨ H x ⟩
-         x        ∎
 
 Σ-is-singleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                → is-singleton X

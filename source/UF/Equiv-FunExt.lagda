@@ -589,3 +589,42 @@ is-equiv-≃-qinv' fe f Y-is-set =
   (qinvs-are-equivs f)
 
 \end{code}
+
+
+Added by Martin Escardo 22nd June 2025.
+
+The function ≃-sym : X ≃ Y → Y ≃ X is an equivalence.
+
+\begin{code}
+
+module _
+         {X : 𝓤 ̇ }
+         {Y : 𝓥 ̇ }
+       where
+
+ module _
+          (feuu : funext 𝓤 𝓤)
+          (feuv : funext 𝓤 𝓥)
+          (fevv : funext 𝓥 𝓥)
+          (fevu : funext 𝓥 𝓤)
+      where
+
+  ≃-sym-is-equiv' : is-equiv (≃-sym {𝓤} {𝓥} {X} {Y})
+  ≃-sym-is-equiv' =
+   qinvs-are-equivs (≃-sym {𝓤} {𝓥} {X} {Y})
+    (≃-sym {𝓥} {𝓤} {Y} {X} ,
+    (λ _ → to-subtype-＝ (being-equiv-is-prop' fevu fevv feuu fevu) refl) ,
+    (λ _ → to-subtype-＝ (being-equiv-is-prop' feuv feuu fevv feuv) refl))
+
+  ≃-flip' : (X ≃ Y) ≃ (Y ≃ X)
+  ≃-flip' = ≃-sym , ≃-sym-is-equiv'
+
+ module _ (fe : Fun-Ext) where
+
+  ≃-sym-is-equiv : is-equiv (≃-sym {𝓤} {𝓥} {X} {Y})
+  ≃-sym-is-equiv = ≃-sym-is-equiv' fe fe fe fe
+
+  ≃-flip : (X ≃ Y) ≃ (Y ≃ X)
+  ≃-flip = ≃-sym , ≃-sym-is-equiv
+
+\end{code}
