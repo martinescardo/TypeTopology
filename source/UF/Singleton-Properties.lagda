@@ -12,7 +12,6 @@ open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Retracts
 open import UF.Subsingletons
 
 module UF.Singleton-Properties where
@@ -40,5 +39,32 @@ module UF.Singleton-Properties where
 ≃-is-singleton fe i j = pointed-props-are-singletons
                          (singleton-≃ i j)
                          (≃-is-prop fe (singletons-are-props j))
+
+\end{code}
+
+Added by Martin Escardo 22nd June 2024.
+
+\begin{code}
+
+open import UF.Subsingletons-FunExt
+
+the-singletons-props-form-a-singleton-type
+ : funext 𝓤 𝓤
+ → propext 𝓤
+ → is-singleton (Σ X ꞉ 𝓤 ̇ , is-singleton X)
+the-singletons-props-form-a-singleton-type {𝓤} fe pe =
+ equiv-to-singleton
+  ((Σ X ꞉ 𝓤 ̇ , is-singleton X) ≃⟨ Σ-cong I ⟩
+   (Σ X ꞉ 𝓤 ̇ , is-prop X × X) ■)
+ (the-true-props-form-a-singleton-type fe pe)
+  where
+   I = λ X → logically-equivalent-props-are-equivalent
+              (being-singleton-is-prop fe)
+              (prop-criterion
+                (λ (X-is-prop , _) → ×-is-prop
+                                      (being-prop-is-prop fe)
+                                      X-is-prop))
+              (λ (i : is-singleton X) → singletons-are-props i , center i)
+              (λ (j , x) → pointed-props-are-singletons x j)
 
 \end{code}
