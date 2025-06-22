@@ -48,11 +48,11 @@ Added by Martin Escardo 22nd June 2024.
 
 open import UF.Subsingletons-FunExt
 
-the-singletons-props-form-a-singleton-type
+the-singletons-form-a-singleton-type
  : funext 𝓤 𝓤
  → propext 𝓤
  → is-singleton (Σ X ꞉ 𝓤 ̇ , is-singleton X)
-the-singletons-props-form-a-singleton-type {𝓤} fe pe =
+the-singletons-form-a-singleton-type {𝓤} fe pe =
  equiv-to-singleton
   ((Σ X ꞉ 𝓤 ̇ , is-singleton X) ≃⟨ Σ-cong I ⟩
    (Σ X ꞉ 𝓤 ̇ , is-prop X × X) ■)
