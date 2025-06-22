@@ -460,7 +460,7 @@ more general universes in the following:
 Added 22nd June 2025 by Martin Escardo, from an old draft.
 
 If a universe 𝓤 is a classifier, then it is univalent, assuming
-function extensionality from function from with domains in 𝓤 and
+function extensionality from functions from with domains in 𝓤 and
 codomain in 𝓤⁺, and also assuming extensionality for propositions in
 the universe 𝓤.
 
