@@ -226,7 +226,7 @@ of a 1-topos, as [1] does, existence takes values in Ω). .
     IV = ∥∥-functor III II
 
   flabby-gives-flabby' : flabby X 𝓤 → flabby'
-  flabby-gives-flabby' ϕ K K-subterminal = γ
+  flabby-gives-flabby' ϕ K K-subterminal = II
    where
     P : Ω 𝓤
     P = (Σ x ꞉ X , x ∈ K) ,
@@ -240,7 +240,7 @@ of a 1-topos, as [1] does, existence takes values in Ω). .
     I : ∃ x₀ ꞉ X , ((p : P holds) → x₀ ＝ pr₁ p)
     I = ϕ (P holds) (holds-is-prop P) f
 
-    γ : ∃ x₀ ꞉ X , ((x : X) → x ∈ K → x ＝ x₀)
-    γ = ∥∥-functor (λ (x₀ , e) → x₀ , (λ x m → (e (x , m))⁻¹)) I
+    II : ∃ x₀ ꞉ X , ((x : X) → x ∈ K → x ＝ x₀)
+    II = ∥∥-functor (λ (x₀ , e) → x₀ , (λ x m → (e (x , m))⁻¹)) I
 
 \end{code}
