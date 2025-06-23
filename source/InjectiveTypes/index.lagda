@@ -118,9 +118,16 @@ monad in these two files.
 \begin{code}
 
 import InjectiveTypes.Algebra
-import gist.InjectivesVersusAlgebras
 
 \end{code}
 
-Eventually the last file will be deleted after it is moved to the
-first.
+In the following, we compare our definition of flabbiness with that of
+
+[1] Ingo Blechschmidt (2018). Flabby and injective objects in toposes.
+    https://arxiv.org/abs/1810.12708
+
+\begin{code}
+
+import InjectiveTypes.AlternativeFlabbiness
+
+\end{code}

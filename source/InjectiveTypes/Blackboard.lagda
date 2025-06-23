@@ -1544,6 +1544,40 @@ module injective (pt : propositional-truncations-exist) where
                        → (f : X → D)
                        → ∃ g ꞉ (Y → D), g ∘ j ∼ f
 
+\end{code}
+
+Added 23rd June 2025. We hadn't considered a truncated version of
+algebrabraic flabbiness before. We just add a remark.
+
+\begin{code}
+
+ flabby : 𝓦 ̇ → (𝓤 : Universe) → 𝓦 ⊔ 𝓤 ⁺ ̇
+ flabby D 𝓤 = (P : 𝓤 ̇ )
+            → is-prop P
+            → (f : P → D)
+            → ∃ d ꞉ D , ((p : P) → d ＝ f p)
+
+ injective-types-are-flabby : (D : 𝓦 ̇ )
+                            → injective-type D 𝓤 𝓥
+                            → flabby D 𝓤
+ injective-types-are-flabby {𝓦} {𝓤} {𝓥} D i P isp f =
+  ∥∥-functor I (i unique-to-𝟙 (unique-to-𝟙-is-embedding P isp 𝓥) f)
+  where
+   I : (Σ f' ꞉ (𝟙 → D) , f' ∘ unique-to-𝟙 ∼ f)
+     → Σ d ꞉ D , ((p : P) → d ＝ f p)
+   I (f' , e) = f' ⋆ , e
+
+\end{code}
+
+One can't expect the converse of the above. See
+
+ Ingo Blechschmidt (2018). Flabby and injective objects in toposes.
+ https://arxiv.org/abs/1810.12708
+
+End of addition and back to the past.
+
+\begin{code}
+
  injectivity-is-prop : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
                      → is-prop (injective-type D 𝓤 𝓥)
  injectivity-is-prop {𝓦} D 𝓤 𝓥 =

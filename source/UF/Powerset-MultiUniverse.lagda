@@ -263,6 +263,33 @@ module _
 
 \end{code}
 
+Added by Martin Escardo 23rd June 2025.
+
+\begin{code}
+
+ open import UF.Embeddings
+ open import UF.Equiv
+
+ module _ (K : 𝓟 {𝓥} X) where
+
+  𝕋-to-carrier-is-embedding : is-embedding (𝕋-to-carrier K)
+  𝕋-to-carrier-is-embedding = pr₁-is-embedding (∈-is-prop K)
+
+  from-𝕋-fiber : (x : X) → fiber (𝕋-to-carrier K) x → x ∈ K
+  from-𝕋-fiber x ((x , m) , refl) = m
+
+  to-𝕋-fiber : (x : X) → x ∈ K → fiber (𝕋-to-carrier K) x
+  to-𝕋-fiber x m = ((x , m) , refl)
+
+  𝕋-fiber : (x : X) → fiber (𝕋-to-carrier K) x ≃ (x ∈ K)
+  𝕋-fiber x = qinveq (from-𝕋-fiber x)
+               (to-𝕋-fiber x , (λ {((x , m) , refl) → refl}) , (λ m → refl))
+
+\end{code}
+
+End of 23rd June addition and continuing with Tom de Jong older
+additions.
+
 We use a named module when defining singleton subsets, so that we can write
 ❴ x ❵ without having to keep supplying the proof that the ambient type is a set.
 
