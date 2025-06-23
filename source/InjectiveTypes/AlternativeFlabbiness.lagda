@@ -74,7 +74,7 @@ which is what we adopt below.
 tailored for 1-toposes.)
 
 We have that (1) is property if X is a set, and that the above
-reformulation (2') of (2) is always a proposition.
+reformulation (2') of (2) is always a property.
 
 To begin with, we will work with the following notion, which is data
 rather than property.
