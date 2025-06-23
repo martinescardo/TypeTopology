@@ -70,8 +70,8 @@ and only (2') makes sense in our setting for an arbitrary type X,
 which is what we adopt below.
 
 (However, in any case, we will eventually need to assume that X is a
-1-type, as the internal definition of flabbiness is tailored for
-1-toposes.)
+1-type, as the internal definition of flabbiness gives in [1] is
+tailored for 1-toposes.)
 
 We have that (1) is property if X is a set, and the above
 reformulation (2') of (2) is always a proposition.
