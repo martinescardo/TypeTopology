@@ -160,13 +160,15 @@ The converse doesn't require X to be a set.
    x₀ : X
    x₀ = ⨆ P f
 
-   I : (x : X) → x ∈ K  → x ＝ x₀
+   I : (x : X) → x ∈ K → x ＝ x₀
    I x m = (e P f (x , m))⁻¹
 
 \end{code}
 
 We do the truncated version now, which is what is relevant for the
-comparison with the reference [1].
+comparison with the reference [1], as it works with the truncated
+versions (implicitly, because when one works in the internal language
+of a 1-topos, as [1] does, existence takes values in Ω). .
 
 \begin{code}
 
