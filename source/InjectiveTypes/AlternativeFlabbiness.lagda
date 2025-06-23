@@ -70,10 +70,10 @@ and only (2') makes sense in our setting for an arbitrary type X,
 which is what we adopt below.
 
 (However, in any case, we will eventually need to assume that X is a
-1-type, as the internal definition of flabbiness gives in [1] is
+1-type, as the internal definition of flabbiness given in [1] is
 tailored for 1-toposes.)
 
-We have that (1) is property if X is a set, and the above
+We have that (1) is property if X is a set, and that the above
 reformulation (2') of (2) is always a proposition.
 
 To begin with, we will work with the following notion, which is data
@@ -96,7 +96,7 @@ module _ {X : 𝓤 ̇ } (K : 𝓟 X) where
 
 \end{code}
 
-Notice that the above is strictly speak data unless X is a set.
+Notice that the above is strictly speaking data unless X is a set.
 
 \begin{code}
 
@@ -172,9 +172,9 @@ The first direction requires X to be a 1-type, or set.
 module _ {X : 𝓤 ̇ } where
 
  flabby-structure'-gives-flabby-structure
-   : is-set X
-   → flabby-structure' X
-   → flabby-structure X 𝓤
+  : is-set X
+  → flabby-structure' X
+  → flabby-structure X 𝓤
  flabby-structure'-gives-flabby-structure X-is-set a = ⨆ , e
   where
    module _ (P : Ω 𝓤) (f : P holds → X) where
@@ -235,8 +235,8 @@ the comparison with the reference [1], as discussed above.
 
 We have already defined the notions (1) and (3) above, and it remains
 to define the notion (2), which we call is-subsingleton-set. For that
-purpose, we need assume that propositional truncations exist, so that
-we have the existential quantifier ∃ available.
+purpose, we need to assume that propositional truncations exist, so
+that we have the existential quantifier ∃ available.
 
 \begin{code}
 
@@ -287,14 +287,16 @@ as a converse of the above fact.
 \end{code}
 
 In this repository we have our own internal definition of flabbiness
-of a type X, called fabby, which says that for every proposiiton P and
-function f : P → X, there exists x : X such that x = f p for all p : P.
+of a type X, called "flabby", which says that for every propositon P
+and function f : P → X, there exists x : X such that x = f p
+for all p : P.
 
 We now show that this is equivalent to the definition given in [1],
 where the first direction assumes that X is a set.
 
 Notice that this is a logical equivalence, as stated, but also a typal
-equivalence because the two notions of flabbiness are property.
+equivalence, as a consequence, because the two notions of flabbiness
+are property.
 
 \begin{code}
 
