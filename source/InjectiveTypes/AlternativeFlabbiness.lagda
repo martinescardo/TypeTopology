@@ -43,6 +43,52 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
+\end{code}
+
+The reference [1] and [2] work with the following two concepts,
+working the internal language of an elementary 1-topos.
+
+(1) A set K : 𝓟 X is *subterminal* if and only if any two elements of K are equal.
+
+(2) A set K : 𝓟 X is a *subsingleton* if there is x₀ : X with K ⊆ {x₀}.
+
+In our more general setting of HoTT/UF, which can be considered as an
+internal language for ∞-toposes, the singleton {x} can be formed if X
+is a set, or 1-type, in the sense of HoTT/UF (and if and only if x₀ is
+homotopy isolated, meaning that the equality x₀ = x is decidable for
+every x : X).
+
+But K ⊆ {x₀}, in their setting, amounts to the implication
+x ∈ K → x ＝ x₀, and so that we can circumvent this obstacle.
+
+(2') A set K : 𝓟 X is a *subsingleton* if there is x₀ : X such that
+     x ∈ K implies x ＝ x₀ for all x : X.
+
+In the setting of [1] and [2], the conditions (2) and (2') are
+equivalent, and only (2') makes sense in our setting for an arbitrary
+type X.
+
+(However, in any case, at a later point we will need to assume that X
+is a 1-types, as the internal definition of flabbiness is tailored for
+1-toposes.)
+
+We have that (1) is property if X is a set, and the above
+reformulation of (2) is always a set.
+
+To begin with, we will work with the following notion, which is data
+rather than property.
+
+(3) *Singleton data* for a set K : 𝓟 X consists of a designated point
+     x₀ : X such that x ∈ K implies x = x₀ for all x : X.
+
+
+The difference between (2) and (3) is that in (2) the point x₀ merely
+exists, but in (3) it is part of the data.
+
+We begin by formally discussing (1) and (3), leaving (2) for later.
+
+\begin{code}
+
 module _ {X : 𝓤 ̇ } (K : 𝓟 X) where
 
  is-subterminal-set : 𝓤 ̇
@@ -54,31 +100,42 @@ module _ {X : 𝓤 ̇ } (K : 𝓟 X) where
  being-subterminal-set-is-prop X-is-set
   = Π₄-is-prop fe (λ _ _ _ _ → X-is-set)
 
- subsingleton-set-structure : 𝓤 ̇
- subsingleton-set-structure = Σ x₀ ꞉ X , ((x : X) → x ∈ K → x ＝ x₀)
+ subsingleton-set-data : 𝓤 ̇
+ subsingleton-set-data = Σ x₀ ꞉ X , ((x : X) → x ∈ K → x ＝ x₀)
 
- sets-with-subsingleton-structure-are-subterminal
-  : subsingleton-set-structure
+\end{code}
+
+As observed in [1], subsingleton sets are subterminal. We also have
+the following, replacing the subsigleton property by subsingleton
+data.
+
+\begin{code}
+
+ sets-with-subsingleton-data-are-subterminal
+  : subsingleton-set-data
   → is-subterminal-set
- sets-with-subsingleton-structure-are-subterminal (x₀ , ϕ) x y i j
+ sets-with-subsingleton-data-are-subterminal (x₀ , ϕ) x y i j
   = ϕ x i ∙ (ϕ y j)⁻¹
 
 \end{code}
 
-In the above reference [1], we find the alternative definition flabby'
-of flabbiness given below. We first consider a "proof relevant"
-counterpart.
+We make the converse construction, which isn't always possible, into
+an alternative definition of flabby structure.
 
 \begin{code}
 
-aflabby' : 𝓤 ̇ → 𝓤 ⁺ ̇
-aflabby' X = (K : 𝓟 X)
-           → is-subterminal-set K
-           → subsingleton-set-structure K
+flabby-structure' : 𝓤 ̇ → 𝓤 ⁺ ̇
+flabby-structure' X = (K : 𝓟 X)
+                    → is-subterminal-set K
+                    → subsingleton-set-data K
 
 \end{code}
 
-The following two definitions are not used.
+The following two observations are not used directly in our
+discussion, but may be enlightening. They say that the total space 𝕋 K
+of the subset K of X is a proposition, assuming either that K is
+subterminal or that it is equipped with subsingleton data and X is a
+set.
 
 \begin{code}
 
@@ -90,27 +147,29 @@ module _ {X : 𝓤 ̇ } (K : 𝓟 X) where
  subterminals-have-propositional-total-space s (x , m) (y , n)
   = to-subtype-＝ (∈-is-prop K) (s x y m n)
 
- types-with-subsubgleton-structure-have-propositional-total-space
-  : subsingleton-set-structure K
+ types-with-subsubgleton-data-have-propositional-total-space
+  : subsingleton-set-data K
   → is-prop (𝕋 K)
- types-with-subsubgleton-structure-have-propositional-total-space s
+ types-with-subsubgleton-data-have-propositional-total-space s
   = subterminals-have-propositional-total-space
-     (sets-with-subsingleton-structure-are-subterminal K s)
+     (sets-with-subsingleton-data-are-subterminal K s)
 
 \end{code}
 
-TODO. I don't think the assumption that X is a set can be removed from
-the following.
+We now show that we can construct flabby structure from the
+alternative flanny structure, and conversely.
+
+The first direction requires X to be a 1-type.
 
 \begin{code}
 
 module _ {X : 𝓤 ̇ } where
 
- aflabby'-gives-flabby-structure
+ flabby-structure'-gives-flabby-structure
    : is-set X
-   → aflabby' X
+   → flabby-structure' X
    → flabby-structure X 𝓤
- aflabby'-gives-flabby-structure X-is-set a = ⨆ , e
+ flabby-structure'-gives-flabby-structure X-is-set a = ⨆ , e
   where
    module _ (P : Ω 𝓤) (f : P holds → X) where
 
@@ -125,7 +184,7 @@ module _ {X : 𝓤 ̇ } where
      f q ＝⟨ e ⟩
      y   ∎
 
-    II : subsingleton-set-structure K
+    II : subsingleton-set-data K
     II = a K I
 
     ⨆ : X
@@ -139,14 +198,14 @@ module _ {X : 𝓤 ̇ } where
 
 \end{code}
 
-The converse doesn't require X to be a set.
+The converse doesn't require X to a 1-type.
 
 \begin{code}
 
- flabby-structure-gives-aflabby'
+ flabby-structure-gives-flabby-structure'
   : flabby-structure X 𝓤
-  → aflabby' X
- flabby-structure-gives-aflabby' (⨆ , e) K K-subterminal = x₀ , I
+  → flabby-structure' X
+ flabby-structure-gives-flabby-structure' (⨆ , e) K K-subterminal = x₀ , I
   where
    P : Ω 𝓤
    P = (Σ x ꞉ X , x ∈ K) ,
@@ -166,9 +225,12 @@ The converse doesn't require X to be a set.
 \end{code}
 
 We do the truncated version now, which is what is relevant for the
-comparison with the reference [1], as it works with the truncated
-versions (implicitly, because when one works in the internal language
-of a 1-topos, as [1] does, existence takes values in Ω). .
+comparison with the reference [1], as discussed above.
+
+We have already defined the notions (1) and (3) above, and it remains
+to define the notions (2), which we call is-subsingleton set. For that
+purpose, we need assume that propositional truncations exist, so that
+we have the existential quantifier ∃ available.
 
 \begin{code}
 
@@ -187,6 +249,14 @@ of a 1-topos, as [1] does, existence takes values in Ω). .
    being-subsingleton-set-is-prop : is-prop is-subsingleton-set
    being-subsingleton-set-is-prop = ∃-is-prop
 
+\end{code}
+
+As observed in [1], subsingleton sets are subterminal. In our more
+general setting, we need to assume that X is a 1-type to reach the
+same conclusion.
+
+\begin{code}
+
    subsingleton-sets-are-subterminal
     : is-set X
     → is-subsingleton-set
@@ -194,12 +264,33 @@ of a 1-topos, as [1] does, existence takes values in Ω). .
    subsingleton-sets-are-subterminal X-is-set =
     ∥∥-rec
      (being-subterminal-set-is-prop K X-is-set)
-     (sets-with-subsingleton-structure-are-subterminal K)
+     (sets-with-subsingleton-data-are-subterminal K)
+
+\end{code}
+
+And the following is the internal definition of flabbiness proposed in [1],
+as a converse of the above fact.
+
+\begin{code}
 
   flabby' : 𝓤 ⁺ ̇
   flabby' = (K : 𝓟 {𝓤} X)
           → is-subterminal-set K
           → is-subsingleton-set K
+
+\end{code}
+
+In this repository we have our own internal definition of flabbiness
+of a type X, called fabby, which says that for every proposiiton P and
+function f : P → X, there exists x : X such that x = f p for all p : P.
+
+We now show that this is equivalent to the definition given in [1],
+where the first direction assumes that X is a set.
+
+Notice that this is a logical equivalence, as stated, but also a typal
+equivalence because the two notions of flabbiness are property.
+
+\begin{code}
 
   flabby'-gives-flabby : is-set X → flabby' → flabby X 𝓤
   flabby'-gives-flabby X-is-set ϕ' P P-is-prop f = IV
@@ -244,3 +335,9 @@ of a 1-topos, as [1] does, existence takes values in Ω). .
     II = ∥∥-functor (λ (x₀ , e) → x₀ , (λ x m → (e (x , m))⁻¹)) I
 
 \end{code}
+
+So, at least for sets, this justifies our internal definition of
+flabbiness used in this repository. Perhaps an ∞-topos theorist can
+chime in and discuss whether our proposed internal definition does
+correspond to any external definition of flabbiness discussed in the
+∞-topos literature.
