@@ -15,11 +15,11 @@ and "subsingleton" subsets, as defined in e.g.
     Berlin, Heidelberg. https://doi.org/10.1007/BFb0084225
 
 We show that the notion of flabbiness defined in [1] coincides with
-ours for types that are sets in the sense of HoTT/UF.
+ours for types that are sets, or 1-types, in the sense of HoTT/UF.
 
-*Terminological warning.* Sometimes we use, in names of functions, the
-word "set" to refer to "subset", to e.g. avoid awkward names such as
-"is-subterminal-subset".
+*Terminological warning.* Sometimes we use, in names of functions, and
+in discussions, the word "set" to refer to "subset", to e.g. avoid
+awkward names such as "is-subterminal-subset".
 
 \begin{code}
 
@@ -45,18 +45,19 @@ open import UF.SubtypeClassifier
 
 \end{code}
 
-The reference [1] and [2] work with the following two concepts,
-working the internal language of an elementary 1-topos.
+The references [1] and [2] work with the following two concepts, in
+the internal language of an elementary 1-topos.
 
-(1) A set K : 𝓟 X is *subterminal* if and only if any two elements of K are equal.
+(1) A set K : 𝓟 X is *subterminal* if and only if any two elements of
+    K are equal.
 
 (2) A set K : 𝓟 X is a *subsingleton* if there is x₀ : X with K ⊆ {x₀}.
 
 In our more general setting of HoTT/UF, which can be considered as an
 internal language for ∞-toposes, the singleton {x} can be formed if X
 is a set, or 1-type, in the sense of HoTT/UF (and if and only if x₀ is
-homotopy isolated, meaning that the equality x₀ = x is decidable for
-every x : X).
+homotopy isolated, meaning that the equality x₀ = x is a proposition
+for every x : X).
 
 But K ⊆ {x₀}, in their setting, amounts to the implication
 x ∈ K → x ＝ x₀, and so that we can circumvent this obstacle.
@@ -64,23 +65,22 @@ x ∈ K → x ＝ x₀, and so that we can circumvent this obstacle.
 (2') A set K : 𝓟 X is a *subsingleton* if there is x₀ : X such that
      x ∈ K implies x ＝ x₀ for all x : X.
 
-In the setting of [1] and [2], the conditions (2) and (2') are
-equivalent, and only (2') makes sense in our setting for an arbitrary
-type X.
+In the setting of [1] and [2], conditions (2) and (2') are equivalent,
+and only (2') makes sense in our setting for an arbitrary type X,
+which is what we adopt below.
 
-(However, in any case, at a later point we will need to assume that X
-is a 1-types, as the internal definition of flabbiness is tailored for
+(However, in any case, we will eventually need to assume that X is a
+1-type, as the internal definition of flabbiness is tailored for
 1-toposes.)
 
 We have that (1) is property if X is a set, and the above
-reformulation of (2) is always a set.
+reformulation (2') of (2) is always a proposition.
 
 To begin with, we will work with the following notion, which is data
 rather than property.
 
 (3) *Singleton data* for a set K : 𝓟 X consists of a designated point
      x₀ : X such that x ∈ K implies x = x₀ for all x : X.
-
 
 The difference between (2) and (3) is that in (2) the point x₀ merely
 exists, but in (3) it is part of the data.
@@ -91,12 +91,18 @@ We begin by formally discussing (1) and (3), leaving (2) for later.
 
 module _ {X : 𝓤 ̇ } (K : 𝓟 X) where
 
- is-subterminal-set : 𝓤 ̇
- is-subterminal-set = (x y : X) → x ∈ K → y ∈ K → x ＝ y
+ subterminal-set : 𝓤 ̇
+ subterminal-set = (x y : X) → x ∈ K → y ∈ K → x ＝ y
+
+\end{code}
+
+Notice that the above is strictly speak data unless X is a set.
+
+\begin{code}
 
  being-subterminal-set-is-prop
   : is-set X
-  → is-prop is-subterminal-set
+  → is-prop subterminal-set
  being-subterminal-set-is-prop X-is-set
   = Π₄-is-prop fe (λ _ _ _ _ → X-is-set)
 
@@ -113,7 +119,7 @@ data.
 
  sets-with-subsingleton-data-are-subterminal
   : subsingleton-set-data
-  → is-subterminal-set
+  → subterminal-set
  sets-with-subsingleton-data-are-subterminal (x₀ , ϕ) x y i j
   = ϕ x i ∙ (ϕ y j)⁻¹
 
@@ -126,23 +132,23 @@ an alternative definition of flabby structure.
 
 flabby-structure' : 𝓤 ̇ → 𝓤 ⁺ ̇
 flabby-structure' X = (K : 𝓟 X)
-                    → is-subterminal-set K
+                    → subterminal-set K
                     → subsingleton-set-data K
 
 \end{code}
 
 The following two observations are not used directly in our
-discussion, but may be enlightening. They say that the total space 𝕋 K
-of the subset K of X is a proposition, assuming either that K is
-subterminal or that it is equipped with subsingleton data and X is a
-set.
+discussion, but may be enlightening. They say that the total space
+𝕋 K := Σ x ꞉ X , x ∈ K of the subset K of X is a proposition, assuming
+that K is subterminal, or, in particular, that it is equipped with
+subsingleton data.
 
 \begin{code}
 
 module _ {X : 𝓤 ̇ } (K : 𝓟 X) where
 
  subterminals-have-propositional-total-space
-  : is-subterminal-set K
+  : subterminal-set K
   → is-prop (𝕋 K)
  subterminals-have-propositional-total-space s (x , m) (y , n)
   = to-subtype-＝ (∈-is-prop K) (s x y m n)
@@ -157,9 +163,9 @@ module _ {X : 𝓤 ̇ } (K : 𝓟 X) where
 \end{code}
 
 We now show that we can construct flabby structure from the
-alternative flanny structure, and conversely.
+alternative flabby structure, and conversely.
 
-The first direction requires X to be a 1-type.
+The first direction requires X to be a 1-type, or set.
 
 \begin{code}
 
@@ -177,7 +183,7 @@ module _ {X : 𝓤 ̇ } where
     K x = fiber f x ,
           maps-of-props-into-sets-are-embeddings f (holds-is-prop P) X-is-set x
 
-    I : is-subterminal-set K
+    I : subterminal-set K
     I x y (p , d) (q , e) =
      x   ＝⟨ d ⁻¹ ⟩
      f p ＝⟨ ap f (holds-is-prop P p q) ⟩
@@ -224,11 +230,11 @@ The converse doesn't require X to a 1-type.
 
 \end{code}
 
-We do the truncated version now, which is what is relevant for the
-comparison with the reference [1], as discussed above.
+We discuss the truncated version now, which is what is relevant for
+the comparison with the reference [1], as discussed above.
 
 We have already defined the notions (1) and (3) above, and it remains
-to define the notions (2), which we call is-subsingleton set. For that
+to define the notion (2), which we call is-subsingleton-set. For that
 purpose, we need assume that propositional truncations exist, so that
 we have the existential quantifier ∃ available.
 
@@ -260,7 +266,7 @@ same conclusion.
    subsingleton-sets-are-subterminal
     : is-set X
     → is-subsingleton-set
-    → is-subterminal-set K
+    → subterminal-set K
    subsingleton-sets-are-subterminal X-is-set =
     ∥∥-rec
      (being-subterminal-set-is-prop K X-is-set)
@@ -275,7 +281,7 @@ as a converse of the above fact.
 
   flabby' : 𝓤 ⁺ ̇
   flabby' = (K : 𝓟 {𝓤} X)
-          → is-subterminal-set K
+          → subterminal-set K
           → is-subsingleton-set K
 
 \end{code}
@@ -299,7 +305,7 @@ equivalence because the two notions of flabbiness are property.
     K x = fiber f x ,
           maps-of-props-into-sets-are-embeddings f P-is-prop X-is-set x
 
-    I : is-subterminal-set K
+    I : subterminal-set K
     I x y (p , d) (q , e) =
      x   ＝⟨ d ⁻¹ ⟩
      f p ＝⟨ ap f (P-is-prop p q) ⟩
