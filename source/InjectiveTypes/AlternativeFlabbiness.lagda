@@ -74,7 +74,7 @@ which is what we adopt below.
 tailored for 1-toposes.)
 
 We have that (1) is property if X is a set, and that the above
-reformulation (2') of (2) is always a property.
+reformulation (2') of (2) is always property.
 
 To begin with, we will work with the following notion, which is data
 rather than property.
@@ -121,7 +121,9 @@ data.
   : subsingleton-set-data
   → subterminal-set
  sets-with-subsingleton-data-are-subterminal (x₀ , ϕ) x y i j
-  = ϕ x i ∙ (ϕ y j)⁻¹
+  = x  ＝⟨ ϕ x i ⟩
+    x₀ ＝⟨ (ϕ y j)⁻¹ ⟩
+    y  ∎
 
 \end{code}
 
@@ -240,9 +242,7 @@ that we have the existential quantifier ∃ available.
 
 \begin{code}
 
- module _
-          (pt : propositional-truncations-exist)
-        where
+ module _ (pt : propositional-truncations-exist) where
 
   open PropositionalTruncation pt
   open injective (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) pt
@@ -296,7 +296,7 @@ where the first direction assumes that X is a set.
 
 Notice that this is a logical equivalence, as stated, but also a typal
 equivalence, as a consequence, because the two notions of flabbiness
-are property.
+are property, when X is a 1-type, or set.
 
 \begin{code}
 
