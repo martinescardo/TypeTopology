@@ -536,11 +536,11 @@ Monoid-Π-data {𝓤} =
            (∞-Magma∙-structure-Π-data p A)
 
   axioms-Π-data
-    : (p : Ω 𝓤)
-      (A : p holds → 𝓤 ̇ )
-      (α : (h : p holds) → monoid-structure (A h))
-      (F : (h : p holds) → monoid-axioms (A h) (α h))
-    → monoid-axioms (Π A) (σ p A α)
+   : (p : Ω 𝓤)
+     (A : p holds → 𝓤 ̇ )
+     (α : (h : p holds) → monoid-structure (A h))
+     (F : (h : p holds) → monoid-axioms (A h) (α h))
+   → monoid-axioms (Π A) (σ p A α)
   axioms-Π-data p A α F = I , II , III , IV
    where
     _*_ : {h : p holds} → A h → A h → A h
@@ -730,7 +730,7 @@ Graph-Π-data {𝓤} =
    r :  S (Π A) → ((h : p holds) → S (A h))
    r s h a a' = s (⌜ Π-𝕡𝕣𝕠𝕛 p h ⌝⁻¹ a) (⌜ Π-𝕡𝕣𝕠𝕛 p h ⌝⁻¹ a')
 
-   _ : ρΠ S T T-refl p A ＝ r
+   _ : r ＝ ρΠ S T T-refl p A
    _ = refl
 
    σ : ((h : p holds) → S (A h)) → S (Π A)
@@ -833,11 +833,11 @@ Poset-Π-data {𝓤} =
            (Graph-Π-data p A)
 
   axioms-Π-data
-    : (p : Ω 𝓤)
-      (A : p holds → 𝓤 ̇ )
-      (α : (h : p holds) → graph-structure (A h))
-      (F : (h : p holds) → poset-axioms (A h) (α h))
-    → poset-axioms (Π A) (σ p A α)
+   : (p : Ω 𝓤)
+     (A : p holds → 𝓤 ̇ )
+     (α : (h : p holds) → graph-structure (A h))
+     (F : (h : p holds) → poset-axioms (A h) (α h))
+   → poset-axioms (Π A) (σ p A α)
   axioms-Π-data p A α F = I , II , III , IV , V
    where
     _⊑_ : {h : p holds} → A h → A h → 𝓤 ̇

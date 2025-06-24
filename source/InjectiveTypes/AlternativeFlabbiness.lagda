@@ -280,7 +280,7 @@ as a converse of the above fact.
 \begin{code}
 
   flabby' : 𝓤 ⁺ ̇
-  flabby' = (K : 𝓟 {𝓤} X)
+  flabby' = (K : 𝓟 X)
           → subterminal-set K
           → is-subsingleton-set K
 
