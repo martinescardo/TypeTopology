@@ -31,8 +31,8 @@ module InjectiveTypes.AlternativeFlabbiness
         (fe : Fun-Ext)
        where
 
-open import InjectiveTypes.Structure
 open import InjectiveTypes.Blackboard
+open import InjectiveTypes.Structure
 open import MLTT.Spartan
 open import UF.Embeddings
 open import UF.Equiv
@@ -54,7 +54,7 @@ the internal language of an elementary 1-topos.
 (2) A set K : 𝓟 X is a *subsingleton* if there is x₀ : X with K ⊆ {x₀}.
 
 In our more general setting of HoTT/UF, which can be considered as an
-internal language for ∞-toposes, the singleton {x} can be formed if X
+internal language for ∞-toposes, the singleton {x₀} can be formed if X
 is a set, or 1-type, in the sense of HoTT/UF (and if and only if x₀ is
 homotopy isolated, meaning that the equality x₀ = x is a proposition
 for every x : X).
@@ -66,12 +66,12 @@ x ∈ K → x ＝ x₀, and so that we can circumvent this obstacle.
      x ∈ K implies x ＝ x₀ for all x : X.
 
 In the setting of [1] and [2], conditions (2) and (2') are equivalent,
-and only (2') makes sense in our setting for an arbitrary type X,
+but only (2') makes sense in our setting for an arbitrary type X,
 which is what we adopt below.
 
-(However, in any case, we will eventually need to assume that X is a
+However, in any case, we will eventually need to assume that X is a
 1-type, as the internal definition of flabbiness given in [1] is
-tailored for 1-toposes.)
+tailored for 1-toposes.
 
 We have that (1) is property if X is a set, and that the above
 reformulation (2') of (2) is always property.
