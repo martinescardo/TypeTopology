@@ -79,7 +79,7 @@ reformulation (2') of (2) is always property.
 To begin with, we will work with the following notion, which is data
 rather than property.
 
-(3) *Singleton data* for a set K : 𝓟 X consists of a designated point
+(3) *Subsingleton data* for a set K : 𝓟 X consists of a designated point
      x₀ : X such that x ∈ K implies x = x₀ for all x : X.
 
 The difference between (2) and (3) is that in (2) the point x₀ merely
@@ -127,22 +127,26 @@ data.
 
 \end{code}
 
+The following is the internal definition of functional flabbiness
+proposed in [1], as a converse of the above fact.
+
 We make the converse construction, which isn't always possible, into
-an alternative definition of flabby structure.
+an alternative definition of flabby structure. This appears in [1]
+under the name "functionally flabby".
 
 \begin{code}
 
-flabby-structure' : 𝓤 ̇ → 𝓤 ⁺ ̇
-flabby-structure' X = (K : 𝓟 X)
-                    → subterminal-set K
-                    → subsingleton-set-data K
+functionally-flabby : 𝓤 ̇ → 𝓤 ⁺ ̇
+functionally-flabby X = (K : 𝓟 X)
+                      → subterminal-set K
+                      → subsingleton-set-data K
 
 \end{code}
 
 The following two observations are not used directly in our
 discussion, but may be enlightening. They say that the total space
 𝕋 K := Σ x ꞉ X , x ∈ K of the subset K of X is a proposition, assuming
-that K is subterminal, or, in particular, that it is equipped with
+that K is subterminal, and, in particular, that it is equipped with
 subsingleton data.
 
 \begin{code}
@@ -164,8 +168,12 @@ module _ {X : 𝓤 ̇ } (K : 𝓟 X) where
 
 \end{code}
 
-We now show that we can construct flabby structure from the
-alternative flabby structure, and conversely.
+We define, in an imported module, flabby structure for a type X to be
+a map ⨆ : (P : Ω) → (P → X) → X together with equality data ⨆ P f = f p
+for every p : P.
+
+We now show that we can construct flabby structure from functional
+flabbiness, and conversely.
 
 The first direction requires X to be a 1-type, or set.
 
@@ -173,11 +181,11 @@ The first direction requires X to be a 1-type, or set.
 
 module _ {X : 𝓤 ̇ } where
 
- flabby-structure'-gives-flabby-structure
+ functionally-flabby-gives-flabby-structure
   : is-set X
-  → flabby-structure' X
+  → functionally-flabby X
   → flabby-structure X 𝓤
- flabby-structure'-gives-flabby-structure X-is-set a = ⨆ , e
+ functionally-flabby-gives-flabby-structure X-is-set a = ⨆ , e
   where
    module _ (P : Ω 𝓤) (f : P holds → X) where
 
@@ -206,14 +214,14 @@ module _ {X : 𝓤 ̇ } where
 
 \end{code}
 
-The converse doesn't require X to a 1-type.
+The converse doesn't require X to be a 1-type.
 
 \begin{code}
 
- flabby-structure-gives-flabby-structure'
+ flabby-structure-gives-functionally-flabby
   : flabby-structure X 𝓤
-  → flabby-structure' X
- flabby-structure-gives-flabby-structure' (⨆ , e) K K-subterminal = x₀ , I
+  → functionally-flabby X
+ flabby-structure-gives-functionally-flabby (⨆ , e) K K-subterminal = x₀ , I
   where
    P : Ω 𝓤
    P = (Σ x ꞉ X , x ∈ K) ,
@@ -232,8 +240,7 @@ The converse doesn't require X to a 1-type.
 
 \end{code}
 
-We discuss the truncated version now, which is what is relevant for
-the comparison with the reference [1], as discussed above.
+We now discuss the truncated version.
 
 We have already defined the notions (1) and (3) above, and it remains
 to define the notion (2), which we call is-subsingleton-set. For that
