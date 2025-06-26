@@ -6,6 +6,9 @@ language of a 1-topos.
 [1] Ingo Blechschmidt (2018). Flabby and injective objects in toposes.
     https://arxiv.org/abs/1810.12708
 
+    More recent version at
+    https://www.speicherleck.de/iblech/stuff/paper-flabby-objects.pdf
+
 This definition of flabbiness uses the two notions of "subterminal"
 and "subsingleton" subsets, as defined in e.g.
 
