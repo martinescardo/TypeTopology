@@ -243,6 +243,9 @@ The converse doesn't require X to be a 1-type.
 
 \end{code}
 
+TODO. Show that the above maps are mutually inverse if X is a set, and
+hence give a typal equivalence.
+
 We now discuss the truncated version.
 
 We have already defined the notions (1) and (3) above, and it remains

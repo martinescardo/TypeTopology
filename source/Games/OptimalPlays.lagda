@@ -167,14 +167,14 @@ quantifiers.
 𝓙𝓣 = structure JT
 
 εt⁺ : (Xt : 𝑻)
-      (ϕt : 𝓚 Xt)
-      (εt : 𝓙 Xt)
-    → εt Attains ϕt
     → structure listed⁺ Xt
+    → (ϕt : 𝓚 Xt)
+    → (εt : 𝓙 Xt)
+    → εt Attains ϕt
     → 𝓙𝓣 Xt
-εt⁺ [] ϕt εt at lt = ⟨⟩
-εt⁺ (X ∷ Xf) (ϕ :: ϕf) (ε :: εf) (a :: af) (l :: lf) =
- ε⁺ X l ϕ ε a :: (λ x → εt⁺ (Xf x) (ϕf x) (εf x) (af x) (lf x))
+εt⁺ [] ⟨⟩ ⟨⟩ ⟨⟩ ⟨⟩ = ⟨⟩
+εt⁺ (X ∷ Xf) (l :: lf) (ϕ :: ϕf) (ε :: εf) (a :: af) =
+ ε⁺ X l ϕ ε a :: (λ x → εt⁺ (Xf x) (lf x) (ϕf x) (εf x) (af x))
 
 open List⁺-definitions
 
@@ -229,13 +229,13 @@ JT-in-terms-of-K : (Xt : 𝑻)
                    (εt : 𝓙 Xt)
                    (at : εt Attains ϕt)
                    (lt : structure listed⁺ Xt)
-                 → α-extᵀ q (path-sequence 𝕁𝕋 (εt⁺ Xt ϕt εt at lt) q)
+                 → α-extᵀ q (path-sequence 𝕁𝕋 (εt⁺ Xt lt ϕt εt at) q)
                  ＝ path-sequence (𝕂 R) ϕt q
 JT-in-terms-of-K [] ϕt q εt at lt = refl
 JT-in-terms-of-K Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af) lt@(l :: lf) = II
  where
   d⁺ : (x : X) → JT (Path (Xf x))
-  d⁺ x = path-sequence 𝕁𝕋 (εt⁺ (Xf x) (ϕf x) (εf x) (af x) (lf x))
+  d⁺ x = path-sequence 𝕁𝕋 (εt⁺ (Xf x) (lf x) (ϕf x) (εf x) (af x))
 
   f : (x : X) → List⁺ (Path (Xf x))
   f x = d⁺ x (subpred q x)
@@ -276,24 +276,25 @@ optimal plays.
 
 \begin{code}
 
-theorem→ : (Xt : 𝑻)
-           (ϕt : 𝓚 Xt)
-           (q : Path Xt → R)
-           (εt : 𝓙 Xt)
-           (at : εt Attains ϕt)
-           (lt : structure listed⁺ Xt)
-           (xs : Path Xt)
-         → member xs (ι (path-sequence 𝕁𝕋 (εt⁺ Xt ϕt εt at lt) q))
-         → is-optimal-play ϕt q xs
-theorem→ [] ⟨⟩ q ⟨⟩ ⟨⟩ ⟨⟩ ⟨⟩ in-head = ⟨⟩
-theorem→ Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af) lt@(l :: lf) (x :: xs) m =
+main-lemma→ : (Xt : 𝑻)
+              (ϕt : 𝓚 Xt)
+              (q : Path Xt → R)
+              (εt : 𝓙 Xt)
+              (at : εt Attains ϕt)
+              (lt : structure listed⁺ Xt)
+              (xs : Path Xt)
+            → member xs (ι (path-sequence 𝕁𝕋 (εt⁺ Xt lt ϕt εt at) q))
+            → is-optimal-play ϕt q xs
+main-lemma→ [] ⟨⟩ q ⟨⟩ ⟨⟩ ⟨⟩ ⟨⟩ in-head = ⟨⟩
+main-lemma→ Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af)
+            lt@(l :: lf) (x :: xs) m =
  head-is-optimal-move , tail-is-optimal-play
  where
   e⁺ : JT X
   e⁺ = ε⁺ X l ϕ ε a
 
   d⁺ : (x : X) → JT (Path (Xf x))
-  d⁺ x = path-sequence 𝕁𝕋 (εt⁺ (Xf x) (ϕf x) (εf x) (af x) (lf x))
+  d⁺ x = path-sequence 𝕁𝕋 (εt⁺ (Xf x) (lf x) (ϕf x) (εf x) (af x))
 
   t : List⁺ X
   t = τ e⁺ d⁺ q
@@ -308,10 +309,10 @@ theorem→ Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af) lt@(l ::
   p' x = α-extᵀ
           (subpred q x)
           (path-sequence 𝕁𝕋
-            (εt⁺ (Xf x) (ϕf x) (εf x) (af x) (lf x))
+            (εt⁺ (Xf x) (lf x) (ϕf x) (εf x) (af x))
             (subpred q x))
 
-  I : path-sequence 𝕁𝕋 (εt⁺ Xt ϕt εt at lt) q ＝ t ⊗ᴸ⁺ tf
+  I : path-sequence 𝕁𝕋 (εt⁺ Xt lt ϕt εt at) q ＝ t ⊗ᴸ⁺ tf
   I = ⊗ᴶᵀ-in-terms-of-⊗ᵀ e⁺ d⁺ q fe
 
   II : member (x :: xs) (ι (t ⊗ᴸ⁺ tf))
@@ -341,23 +342,23 @@ theorem→ Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af) lt@(l ::
 
   IH : member xs (ι (tf x))
      → is-optimal-play (ϕf x) (subpred q x) xs
-  IH = theorem→ (Xf x) (ϕf x) (subpred q x) (εf x) (af x) (lf x) xs
+  IH = main-lemma→ (Xf x) (ϕf x) (subpred q x) (εf x) (af x) (lf x) xs
 
   tail-is-optimal-play : is-optimal-play (ϕf x) (subpred q x) xs
   tail-is-optimal-play = IH IV
 
-theorem← : (Xt : 𝑻)
-           (ϕt : 𝓚 Xt)
-           (q : Path Xt → R)
-           (εt : 𝓙 Xt)
-           (at : εt Attains ϕt)
-           (lt : structure listed⁺ Xt)
-           (xs : Path Xt)
-         → is-optimal-play ϕt q xs
-         → member xs (ι (path-sequence 𝕁𝕋 (εt⁺ Xt ϕt εt at lt) q))
-theorem← [] ⟨⟩ q ⟨⟩ ⟨⟩ ⟨⟩ ⟨⟩ ⋆ = in-head
-theorem← Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af)
-       lt@(l :: lf) (x :: xs) (om , op) = VI
+main-lemma← : (Xt : 𝑻)
+              (ϕt : 𝓚 Xt)
+              (q : Path Xt → R)
+              (εt : 𝓙 Xt)
+              (at : εt Attains ϕt)
+              (lt : structure listed⁺ Xt)
+              (xs : Path Xt)
+            → is-optimal-play ϕt q xs
+            → member xs (ι (path-sequence 𝕁𝕋 (εt⁺ Xt lt ϕt εt at) q))
+main-lemma← [] ⟨⟩ q ⟨⟩ ⟨⟩ ⟨⟩ ⟨⟩ ⋆ = in-head
+main-lemma← Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af)
+            lt@(l :: lf) (x :: xs) (om , op) = VI
  where
   p : X → R
   p x = path-sequence (𝕂 R) (ϕf x) (subpred q x)
@@ -366,7 +367,7 @@ theorem← Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af)
   e⁺ = ε⁺ X l ϕ ε a
 
   d⁺ : (x : X) → JT (Path (Xf x))
-  d⁺ x = path-sequence 𝕁𝕋 (εt⁺ (Xf x) (ϕf x) (εf x) (af x) (lf x))
+  d⁺ x = path-sequence 𝕁𝕋 (εt⁺ (Xf x) (lf x) (ϕf x) (εf x) (af x))
 
   t : List⁺ X
   t = τ e⁺ d⁺ q
@@ -378,7 +379,7 @@ theorem← Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af)
   p' x = α-extᵀ (subpred q x) (tf x)
 
   IH : member xs (ι (tf x))
-  IH = theorem← (Xf x) (ϕf x) (subpred q x) (εf x) (af x) (lf x) xs op
+  IH = main-lemma← (Xf x) (ϕf x) (subpred q x) (εf x) (af x) (lf x) xs op
 
   I : p ＝ p'
   I = dfunext fe
@@ -393,10 +394,10 @@ theorem← Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af)
   IV : member (x :: xs) (ι (t ⊗ᴸ⁺ tf))
   IV = join-membership fe x xs t tf (III , IH)
 
-  V : ι (t ⊗ᴸ⁺ tf) ＝ ι (path-sequence 𝕁𝕋 (εt⁺ Xt ϕt εt at lt) q)
+  V : ι (t ⊗ᴸ⁺ tf) ＝ ι (path-sequence 𝕁𝕋 (εt⁺ Xt lt ϕt εt at) q)
   V = (ap ι (⊗ᴶᵀ-in-terms-of-⊗ᵀ e⁺ d⁺ q fe))⁻¹
 
-  VI : member (x :: xs) (ι (path-sequence 𝕁𝕋 (εt⁺ Xt ϕt εt at lt) q))
+  VI : member (x :: xs) (ι (path-sequence 𝕁𝕋 (εt⁺ Xt lt ϕt εt at) q))
   VI = transport (member (x :: xs)) V IV
 
 \end{code}
@@ -414,7 +415,7 @@ module _ (G@(game Xt q ϕt) : Game)
        where
 
  optimal-plays : List⁺ (Path Xt)
- optimal-plays = path-sequence 𝕁𝕋 (εt⁺ Xt ϕt εt εt-Attains-ϕt Xt-is-listed⁺) q
+ optimal-plays = path-sequence 𝕁𝕋 (εt⁺ Xt Xt-is-listed⁺ ϕt εt εt-Attains-ϕt) q
 
  Theorem→ : (xs : Path Xt) → member xs (ι optimal-plays) → is-optimal-play ϕt q xs
  Theorem→ = theorem→ Xt ϕt q εt εt-Attains-ϕt Xt-is-listed⁺
