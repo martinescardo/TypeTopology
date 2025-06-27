@@ -131,14 +131,6 @@ module _ (X : Type)
          (ε-attains-ϕ : ε attains ϕ)
       where
 
-\end{code}
-
-The above is the only use of the distinguished point r₀ of R.
-
-Alternatively, we could have assumed listed⁺ X,
-
-\begin{code}
-
  private
   A : (X → R) → X → Type
   A p x = p x ＝ ϕ p
