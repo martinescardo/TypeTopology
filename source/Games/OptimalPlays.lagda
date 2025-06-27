@@ -418,10 +418,10 @@ module _ (G@(game Xt q ϕt) : Game)
  optimal-plays = path-sequence 𝕁𝕋 (εt⁺ Xt Xt-is-listed⁺ ϕt εt εt-Attains-ϕt) q
 
  Theorem→ : (xs : Path Xt) → member xs (ι optimal-plays) → is-optimal-play ϕt q xs
- Theorem→ = theorem→ Xt ϕt q εt εt-Attains-ϕt Xt-is-listed⁺
+ Theorem→ = main-lemma→ Xt ϕt q εt εt-Attains-ϕt Xt-is-listed⁺
 
  Theorem← : (xs : Path Xt) → is-optimal-play ϕt q xs → member xs (ι optimal-plays)
- Theorem← = theorem← Xt ϕt q εt εt-Attains-ϕt Xt-is-listed⁺
+ Theorem← = main-lemma← Xt ϕt q εt εt-Attains-ϕt Xt-is-listed⁺
 
 \end{code}
 
