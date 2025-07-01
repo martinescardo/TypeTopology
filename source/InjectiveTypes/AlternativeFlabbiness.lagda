@@ -268,8 +268,8 @@ typal equivalence.
      module _ (K : 𝓟 X) (s : subterminal-set K) where
 
       I : ∀ {K' s'} → K' ＝ K → pr₁ (ϕ K' s') ＝ pr₁ (ϕ K s)
-      I {K'} refl = ap (pr₁ ∘ ϕ K')
-                       (being-subterminal-set-is-prop K' X-is-set _ _)
+      I {K'} {s'} refl = ap (pr₁ ∘ ϕ K')
+                            (being-subterminal-set-is-prop K' X-is-set s' s)
 
       K' : 𝓟 X
       K' x = fiber pr₁ x , _
