@@ -243,8 +243,54 @@ The converse doesn't require X to be a 1-type.
 
 \end{code}
 
-TODO. Show that the above maps are mutually inverse if X is a set, and
-hence give a typal equivalence.
+The above maps are mutually inverse if X is a set, and hence give a
+typal equivalence.
+
+\begin{code}
+
+ functionally-flabby-is-equiv-to-flabby-structure
+  : propext 𝓤
+  → is-set X
+  → functionally-flabby X ≃ flabby-structure X 𝓤
+ functionally-flabby-is-equiv-to-flabby-structure pe X-is-set =
+  qinveq (α X-is-set) (β , η , ε)
+  where
+   α = functionally-flabby-gives-flabby-structure
+   β = flabby-structure-gives-functionally-flabby
+
+   η : β ∘ α X-is-set ∼ id
+   η ϕ = dfunext fe (λ K →
+         dfunext fe (λ s →
+         to-subtype-＝
+          (λ x → Π₂-is-prop fe (λ _ _ → X-is-set))
+          (III K s)))
+    where
+     module _ (K : 𝓟 X) (s : subterminal-set K) where
+
+      I : ∀ {K' s'} → K' ＝ K → pr₁ (ϕ K' s') ＝ pr₁ (ϕ K s)
+      I {K'} refl = ap (pr₁ ∘ ϕ K')
+                       (being-subterminal-set-is-prop K' X-is-set _ _)
+
+      K' : 𝓟 X
+      K' x = fiber pr₁ x , _
+
+      II : K' ＝ K
+      II = subset-extensionality'' pe fe fe
+            (λ {x ((.x , p) , refl) → p})
+            (λ x p → ((x , p) , refl))
+
+      III : pr₁ (ϕ K' _) ＝ pr₁ (ϕ K s)
+      III = I II
+
+   ε : α X-is-set ∘ β ∼ id
+   ε (⨆ , e) = to-subtype-＝
+                 (λ _ → Π₃-is-prop fe (λ _ _ _ → X-is-set))
+                 (dfunext fe (λ P →
+                  dfunext fe (λ f →
+                  ⨆-change-of-variable X pe fe ⨆ pr₁
+                    ((λ σ → pr₁ (pr₂ σ)) , (λ p → f p , p , refl)))))
+
+\end{code}
 
 We now discuss the truncated version.
 
