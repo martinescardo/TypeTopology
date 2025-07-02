@@ -50,7 +50,7 @@ First we show that if if 0 ＝ succ n for some n : ℕ, then ℕ is an h-proposi
 
 \end{code}
 
-Now we follow the proof of that ℕ is a set from Hedberg's theorem, but we use
+Now we follow the proof that ℕ is a set from Hedberg's theorem, but we use
 is-prop ℕ as a substitute for the empty type. This proof strategy is inspired by
 Friedman's A-translation (or "Friedman's trick") from
 
