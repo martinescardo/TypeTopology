@@ -54,7 +54,9 @@ dne-wconstant m n nneq nneq' = dne-lemma-wconstant (decide m n)
   dne-lemma-wconstant (inr neq) = props-are-sets (nneq neq) (nneq neq m n) (nneq' neq m n)
 
 -- A Hedberg-style theorem that does not require the relation to be prop-valued
--- but insstead requires the map from R to equality to be weakly constant
+-- but instead requires the map from R to equality to be weakly constant.
+-- If we had funext we could just prove that ((m ＝ n) → is-prop ℕ) → is-prop ℕ)
+-- is a proposition instead.
 
 reflexive-relation-that-wconstantly-implies-equality-gives-set
  : {X : 𝓤 ̇ }
