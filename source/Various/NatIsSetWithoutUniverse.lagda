@@ -83,7 +83,8 @@ contractible):
 \end{code}
 
 From this decision procedure we derive double "negation" elimination for
-equality in ℕ in the usual way:
+equality in ℕ in the usual way. Here, we need that our "empty type" is-prop ℕ
+implies whatever equality in ℕ we need.
 
 \begin{code}
 
@@ -102,9 +103,9 @@ equality in ℕ in the usual way:
 \end{code}
 
 To apply a Hedberg-like argument, we will also need to know that double
-"negation" elimination is weakly constant. Note that for this, it is important
-that our replacement is-prop ℕ of the empty type implies that all elements of
-identity types in ℕ are equal. (In fact we could have used is-set ℕ instead!)
+"negation" elimination is weakly constant. Here, we need that our "empty type"
+is-prop ℕ implies that all elements of identity types in ℕ are equal (i.e., ℕ is
+a set).
 
 If we assumed function extensionality, ((m ＝ n) → is-prop ℕ) → is-prop ℕ) would
 be a proposition and this would be immediate.
