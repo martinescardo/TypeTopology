@@ -16,6 +16,8 @@ and then applying Hedberg's theorem.
 
 \begin{code}
 
+{-# OPTIONS --safe --without-K #-}
+
 open import MLTT.Id
 open import MLTT.NaturalNumbers
 open import MLTT.Pi

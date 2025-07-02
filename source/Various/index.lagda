@@ -18,5 +18,6 @@ import Various.Pataraia-Taylor
 import Various.RootsOfBooleanFunctions
 import Various.Types2019
 import Various.UnivalenceFromScratch
+import Various.NatIsSetWithoutUniverse    -- by Evan Cavallo
 
 \end{code}
