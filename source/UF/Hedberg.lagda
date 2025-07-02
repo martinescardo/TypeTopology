@@ -111,6 +111,10 @@ local-hedberg' {𝓤} {X} x pc y p q =
 
 \end{code}
 
+Moved in 2025 from another file from many years ago, not related to be
+above paper. Apologies for the lack of an exact date for both this
+year and the other file. But, in any case, the following was not
+formulated and proved in the above reference.
 
 \begin{code}
 
