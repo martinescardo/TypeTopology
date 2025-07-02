@@ -260,12 +260,12 @@ typal equivalence.
   → is-set X
   → functionally-flabby X ≃ flabby-structure X 𝓤
  functionally-flabby-is-equiv-to-flabby-structure pe X-is-set =
-  qinveq (α X-is-set) (β , η , ε)
+  qinveq α (β , η , ε)
   where
-   α = functionally-flabby-gives-flabby-structure
+   α = functionally-flabby-gives-flabby-structure X-is-set
    β = flabby-structure-gives-functionally-flabby
 
-   η : β ∘ α X-is-set ∼ id
+   η : β ∘ α ∼ id
    η ϕ = dfunext fe (λ K →
          dfunext fe (λ s →
          to-subtype-＝
@@ -291,7 +291,7 @@ typal equivalence.
       III : subsingleton-set-point K' (ϕ K' _) ＝ subsingleton-set-point K (ϕ K s)
       III = I II
 
-   ε : α X-is-set ∘ β ∼ id
+   ε : α ∘ β ∼ id
    ε (⨆ , e) = to-subtype-＝
                  (λ _ → Π₃-is-prop fe (λ _ _ _ → X-is-set))
                  (dfunext fe (λ P → dfunext fe (I P)))
