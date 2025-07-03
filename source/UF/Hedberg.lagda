@@ -39,7 +39,6 @@ collapsible : 𝓤 ̇ → 𝓤 ̇
 collapsible X = Σ f ꞉ (X → X) , wconstant f
 
 Id-collapsible' : {X : 𝓤 ̇ } → X → 𝓤 ̇
-
 Id-collapsible' x = ∀ {y} → collapsible (x ＝ y)
 
 Id-collapsible : 𝓤 ̇ → 𝓤 ̇
@@ -108,44 +107,5 @@ local-hedberg' {𝓤} {X} x pc y p q =
 
   c : (y : X) (r : y ＝ x) → r ＝  f y r ∙ (f x refl)⁻¹
   c _ refl = sym-is-inverse' (f x refl)
-
-\end{code}
-
-Moved in 2025 from another file from many years ago, not related to be
-above paper. Apologies for the lack of an exact date for both this
-year and the other file. But, in any case, the following was not
-formulated and proved in the above reference.
-
-\begin{code}
-
-type-with-prop-valued-refl-antisym-rel-is-set'
- : {X : 𝓤 ̇ }
- → (_≤_ : X → X → 𝓥 ̇ )
- → ((x y : X) → is-prop (x ≤ y))
- → ((x : X) → x ≤ x)
- → ((x y : X) → x ≤ y → y ≤ x → x ＝ y)
- → is-set X
-type-with-prop-valued-refl-antisym-rel-is-set'
- {𝓤} {𝓥} {X} _≤_ ≤-prop-valued ≤-refl ≤-anti = γ
- where
-  α : ∀ {x y} (l l' : x ≤ y) (m m' : y ≤ x) → ≤-anti x y l m ＝ ≤-anti x y l' m'
-  α {x} {y} l l' m m' = ap₂ (≤-anti x y)
-                            (≤-prop-valued x y l l')
-                            (≤-prop-valued y x m m')
-
-  g : ∀ {x y} → x ＝ y → x ≤ y
-  g {x} p = transport (x ≤_) p (≤-refl x)
-
-  h : ∀ {x y} → x ＝ y → y ≤ x
-  h p = g (p ⁻¹)
-
-  f : ∀ {x y} → x ＝ y → x ＝ y
-  f {x} {y} p = ≤-anti x y (g p) (h p)
-
-  κ : ∀ {x y} p q → f {x} {y} p ＝ f {x} {y} q
-  κ p q = α (g p) (g q) (h p) (h q)
-
-  γ : is-set X
-  γ = Id-collapsibles-are-sets (f , κ)
 
 \end{code}
