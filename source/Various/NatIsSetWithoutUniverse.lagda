@@ -26,6 +26,8 @@ open import MLTT.NaturalNumbers
 open import MLTT.Pi
 open import MLTT.Plus
 open import MLTT.Sigma
+open import MLTT.List
+open import UF.Base using (ap₂)
 open import UF.Hedberg
 open import UF.Sets using (is-set)
 open import UF.Subsingletons using (is-prop)
@@ -185,5 +187,47 @@ substitution, we have:
    ( (λ p → ℕ-＝-double-[to-is-prop]-elim _ _ (λ neq → neq p))
    , (λ p q → ℕ-＝-double-[to-is-prop]-elim-is-wconstant _ _ _ _)
    )
+
+\end{code}
+
+\begin{code}
+
+module _ {A : 𝓤 ̇ } (setA : is-set A) where
+
+  [nil＝cons]-implies-List-is-prop
+   : {x : A} {xs : List A} → [] ＝ x ∷ xs → is-prop (List A)
+  [nil＝cons]-implies-List-is-prop p ys zs = ap distinguish p
+   where
+    distinguish : List A → List A
+    distinguish [] = ys
+    distinguish (_ ∷ _) = zs
+
+  safeHead : A → List A → A
+  safeHead a [] = a
+  safeHead a (x ∷ xs) = x
+
+  tail : List A → List A
+  tail [] = []
+  tail (x ∷ xs) = xs
+
+  collapse : (xs ys : List A) → xs ＝ ys → xs ＝ ys
+  collapse [] [] p = refl
+  collapse [] (y ∷ ys) p = [nil＝cons]-implies-List-is-prop p _ _
+  collapse (x ∷ xs) [] p = [nil＝cons]-implies-List-is-prop (p ⁻¹) _ _
+  collapse (x ∷ xs) (y ∷ ys) p =
+   ap₂ _∷_ (ap (safeHead x) p) (collapse xs ys (ap tail p))
+
+  collapse-is-wconstant : (xs ys : List A) → wconstant (collapse xs ys)
+  collapse-is-wconstant [] [] p q = refl
+  collapse-is-wconstant [] (y ∷ ys) p q =
+   props-are-sets ([nil＝cons]-implies-List-is-prop p) _ _
+  collapse-is-wconstant (x ∷ xs) [] p q =
+   props-are-sets ([nil＝cons]-implies-List-is-prop (p ⁻¹)) _ _
+  collapse-is-wconstant (x ∷ xs) (y ∷ ys) p q =
+    ap₂ (ap₂ _∷_) (setA _ _) (collapse-is-wconstant xs ys (ap tail p) (ap tail q))
+
+  List-is-set-without-universe : is-set (List A)
+  List-is-set-without-universe =
+    Id-collapsibles-are-sets (collapse _ _ , collapse-is-wconstant _ _)
 
 \end{code}
