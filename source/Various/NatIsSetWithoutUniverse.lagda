@@ -1,7 +1,10 @@
 Evan Cavallo, 2nd July 2025
 
 A proof that the natural numbers form a set that does not use a universe, in
-response to a question asked by Naïm Favier on Mastodon.
+response to a question asked by Naïm Favier on Mastodon:
+
+ https://types.pl/@ncf/114779291760324789
+ https://mathstodon.xyz/@ecavallo/114780841234656632
 
 In Martin-Löf type theory without a universe or large elimination from ℕ, it is
 impossible to prove that 0 ≠ 1:
