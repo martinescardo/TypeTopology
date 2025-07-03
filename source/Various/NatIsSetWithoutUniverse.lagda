@@ -1,7 +1,10 @@
-Evan Cavallo, 2nd July 2025
+Evan Cavallo, 2nd July 2025, updated 3rd July 2025.
 
 A proof that the natural numbers form a set that does not use a universe, in
-response to a question asked by Naïm Favier on Mastodon.
+response to a question asked by Naïm Favier on Mastodon:
+
+ https://types.pl/@ncf/114779291760324789
+ https://mathstodon.xyz/@ecavallo/114780841234656632
 
 In Martin-Löf type theory without a universe or large elimination from ℕ, it is
 impossible to prove that 0 ≠ 1:
@@ -33,22 +36,16 @@ module Various.NatIsSetWithoutUniverse where
 
 \end{code}
 
-First we show that if if 0 ＝ succ n for some n : ℕ, then ℕ is an h-proposition.
+First we show that if 0 ＝ succ n for some n : ℕ, then ℕ is an h-proposition.
 
 \begin{code}
 
-[0＝succ]-gives-[0＝1] : (n : ℕ) → 0 ＝ succ n → 0 ＝ 1
-[0＝succ]-gives-[0＝1] zero = id
-[0＝succ]-gives-[0＝1] (succ n) eq = [0＝succ]-gives-[0＝1] n (ap pred eq)
-
-[0＝1]-gives-[0＝] : (n : ℕ) → 0 ＝ 1 → 0 ＝ n
-[0＝1]-gives-[0＝] zero _ = refl
-[0＝1]-gives-[0＝] (succ n) eq = eq ∙ ap succ ([0＝1]-gives-[0＝] n eq)
-
 [0＝succ]-implies-ℕ-is-prop : (n : ℕ) → 0 ＝ succ n → is-prop ℕ
-[0＝succ]-implies-ℕ-is-prop n eq m k =
- ([0＝1]-gives-[0＝] m ([0＝succ]-gives-[0＝1] n eq)) ⁻¹
- ∙ [0＝1]-gives-[0＝] k ([0＝succ]-gives-[0＝1] n eq)
+[0＝succ]-implies-ℕ-is-prop n eq m k = ap distinguish eq
+ where
+  distinguish : ℕ → ℕ
+  distinguish 0 = m
+  distinguish (succ _) = k
 
 \end{code}
 
@@ -59,6 +56,8 @@ Friedman's A-translation (or "Friedman's trick") from
  Harvey Friedman. Classically and intuitionistically provably recursive functions.
  In: Higher Set Theory. Lecture Notes in Mathematics, Volume 669, 1978, pp 21–27,
  doi:10.1007/BFb0103100.
+
+Another option would be to use 0 ＝ 1 instead of is-prop ℕ.
 
 We can't show that ℕ has decidable equality, but we can show that any m,n : ℕ
 are either equal or their equality would imply that ℕ is a proposition (thus
