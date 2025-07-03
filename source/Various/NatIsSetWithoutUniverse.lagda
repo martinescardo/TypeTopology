@@ -36,7 +36,7 @@ module Various.NatIsSetWithoutUniverse where
 
 \end{code}
 
-First we show that if if 0 ＝ succ n for some n : ℕ, then ℕ is an h-proposition.
+First we show that if 0 ＝ succ n for some n : ℕ, then ℕ is an h-proposition.
 
 \begin{code}
 
