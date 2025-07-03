@@ -1,5 +1,9 @@
 J.A. Carr 2 July 2025
 
+This code fragment is part of the development in UF/HiggsInvolutionTheorem, pending reorganizations of the document
+
+
+
 Aut Ω has weak excluded middle: Every automorphism is either equal to
 not (in which case full LEM holds) or it's not equal to it, and hence
 not not equal to the identity.
@@ -29,10 +33,6 @@ On the other hand, Aut Ω is sometimes a singleton. For another sheaf topos exam
 
    II : (⇁ p) holds + (⇁⇁ p) holds
    II = ∥∥-rec weak-lem-is-prop I (w (⇁ p))
-
-\end{code}
-
-\begin{code}
 
  ℍ-has-WEM
    : (x : ℍ)
