@@ -17,6 +17,10 @@ impossible to prove that 0 ≠ 1:
 Thus, we cannot take the usual route of showing that ℕ has decidable equality
 and then applying Hedberg's theorem.
 
+There are multiple proofs of the same result in this file: the first one is the
+original, and the others are subsequent simplifications. At the end, there is
+also a proof that if A is a set then List A is a set.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -39,11 +43,12 @@ module Various.NatIsSetWithoutUniverse where
 \end{code}
 
 First we show that if 0 ＝ succ n for some n : ℕ, then ℕ is an h-proposition.
+This will be used in all the proofs.
 
 \begin{code}
 
-[0＝succ]-implies-ℕ-is-prop : (n : ℕ) → 0 ＝ succ n → is-prop ℕ
-[0＝succ]-implies-ℕ-is-prop n eq m k = ap distinguish eq
+[0＝succ]-implies-ℕ-is-prop : {n : ℕ} → 0 ＝ succ n → is-prop ℕ
+[0＝succ]-implies-ℕ-is-prop eq m k = ap distinguish eq
  where
   distinguish : ℕ → ℕ
   distinguish 0 = m
@@ -51,9 +56,9 @@ First we show that if 0 ＝ succ n for some n : ℕ, then ℕ is an h-propositio
 
 \end{code}
 
-Now we follow the proof that ℕ is a set from Hedberg's theorem, but we use
-is-prop ℕ as a substitute for the empty type. This proof strategy is inspired by
-Friedman's A-translation (or "Friedman's trick") from
+For the first proof we follow the standard proof that ℕ is a set from Hedberg's
+theorem, but we use is-prop ℕ as a substitute for the empty type. This proof
+strategy is inspired by Friedman's A-translation (or "Friedman's trick") from
 
  Harvey Friedman. Classically and intuitionistically provably recursive functions.
  In: Higher Set Theory. Lecture Notes in Mathematics, Volume 669, 1978, pp 21–27,
@@ -72,9 +77,9 @@ contractible):
 ℕ-＝-holds-or-makes-ℕ-prop zero zero =
  inl refl
 ℕ-＝-holds-or-makes-ℕ-prop zero (succ n) =
- inr ([0＝succ]-implies-ℕ-is-prop n)
+ inr [0＝succ]-implies-ℕ-is-prop
 ℕ-＝-holds-or-makes-ℕ-prop (succ m) zero =
- inr ([0＝succ]-implies-ℕ-is-prop m ∘ _⁻¹)
+ inr ([0＝succ]-implies-ℕ-is-prop ∘ _⁻¹)
 ℕ-＝-holds-or-makes-ℕ-prop (succ m) (succ n) =
  bump (ℕ-＝-holds-or-makes-ℕ-prop m n)
  where
@@ -190,44 +195,90 @@ substitution, we have:
 
 \end{code}
 
+Added by Evan Cavallo, 3rd July 2025.
+
+We can give a significantly simpler proof that ℕ is a set by proving that ℕ's
+identity types are collapsible directly by induction, rather going through a
+"decision" procedure first.
+
+Beware that Agda's coverage checker would let us leave out the "impossible"
+cases of these inductions, but those omissions are not justified in MLTT without
+a universe!
+
+\begin{code}
+
+ℕ-＝-collapse : (m n : ℕ) → m ＝ n → m ＝ n
+ℕ-＝-collapse zero zero _ = refl
+ℕ-＝-collapse zero (succ n) p = [0＝succ]-implies-ℕ-is-prop p _ _
+ℕ-＝-collapse (succ m) zero p = [0＝succ]-implies-ℕ-is-prop (p ⁻¹) _ _
+ℕ-＝-collapse (succ m) (succ n) p = ap succ (ℕ-＝-collapse m n (ap pred p))
+
+ℕ-＝-collapse-is-wconstant : (m n : ℕ) → wconstant (ℕ-＝-collapse m n)
+ℕ-＝-collapse-is-wconstant zero zero _ _ = refl
+ℕ-＝-collapse-is-wconstant zero (succ n) p _  =
+ props-are-sets ([0＝succ]-implies-ℕ-is-prop p) _ _
+ℕ-＝-collapse-is-wconstant (succ m) zero p _ =
+ props-are-sets ([0＝succ]-implies-ℕ-is-prop (p ⁻¹)) _ _
+ℕ-＝-collapse-is-wconstant (succ m) (succ n) p q =
+ ap (ap succ) (ℕ-＝-collapse-is-wconstant m n (ap pred p) (ap pred q))
+
+ℕ-is-Id-collapsible : Id-collapsible ℕ
+ℕ-is-Id-collapsible = (ℕ-＝-collapse _ _ , ℕ-＝-collapse-is-wconstant _ _)
+
+ℕ-is-set-without-universe'' : is-set ℕ
+ℕ-is-set-without-universe'' = Id-collapsibles-are-sets ℕ-is-Id-collapsible
+
+\end{code}
+
+An advantage of the preceding proof is that we can apply the same argument to
+types that we don't expect to have decidable equality (even with a universe).
+For example, we can show that if A is a set then List A is a set:
+
 \begin{code}
 
 module _ {A : 𝓤 ̇ } (setA : is-set A) where
 
-  [nil＝cons]-implies-List-is-prop
-   : {x : A} {xs : List A} → [] ＝ x ∷ xs → is-prop (List A)
-  [nil＝cons]-implies-List-is-prop p ys zs = ap distinguish p
-   where
-    distinguish : List A → List A
-    distinguish [] = ys
-    distinguish (_ ∷ _) = zs
+ [nil＝cons]-implies-List-is-prop
+  : {x : A} {xs : List A} → [] ＝ x ∷ xs → is-prop (List A)
+ [nil＝cons]-implies-List-is-prop p ys zs = ap distinguish p
+  where
+   distinguish : List A → List A
+   distinguish [] = ys
+   distinguish (_ ∷ _) = zs
 
-  safeHead : A → List A → A
-  safeHead a [] = a
-  safeHead a (x ∷ xs) = x
+ safe-head : A → List A → A
+ safe-head a [] = a
+ safe-head a (x ∷ xs) = x
 
-  tail : List A → List A
-  tail [] = []
-  tail (x ∷ xs) = xs
+ tail : List A → List A
+ tail [] = []
+ tail (x ∷ xs) = xs
 
-  collapse : (xs ys : List A) → xs ＝ ys → xs ＝ ys
-  collapse [] [] p = refl
-  collapse [] (y ∷ ys) p = [nil＝cons]-implies-List-is-prop p _ _
-  collapse (x ∷ xs) [] p = [nil＝cons]-implies-List-is-prop (p ⁻¹) _ _
-  collapse (x ∷ xs) (y ∷ ys) p =
-   ap₂ _∷_ (ap (safeHead x) p) (collapse xs ys (ap tail p))
+ List-＝-collapse : (xs ys : List A) → xs ＝ ys → xs ＝ ys
+ List-＝-collapse [] [] p = refl
+ List-＝-collapse [] (y ∷ ys) p = [nil＝cons]-implies-List-is-prop p _ _
+ List-＝-collapse (x ∷ xs) [] p = [nil＝cons]-implies-List-is-prop (p ⁻¹) _ _
+ List-＝-collapse (x ∷ xs) (y ∷ ys) p =
+  ap₂ _∷_ (ap (safe-head x) p) (List-＝-collapse xs ys (ap tail p))
 
-  collapse-is-wconstant : (xs ys : List A) → wconstant (collapse xs ys)
-  collapse-is-wconstant [] [] p q = refl
-  collapse-is-wconstant [] (y ∷ ys) p q =
-   props-are-sets ([nil＝cons]-implies-List-is-prop p) _ _
-  collapse-is-wconstant (x ∷ xs) [] p q =
-   props-are-sets ([nil＝cons]-implies-List-is-prop (p ⁻¹)) _ _
-  collapse-is-wconstant (x ∷ xs) (y ∷ ys) p q =
-    ap₂ (ap₂ _∷_) (setA _ _) (collapse-is-wconstant xs ys (ap tail p) (ap tail q))
+ List-＝-collapse-is-wconstant
+  : (xs ys : List A) → wconstant (List-＝-collapse xs ys)
+ List-＝-collapse-is-wconstant [] [] p q = refl
+ List-＝-collapse-is-wconstant [] (y ∷ ys) p q =
+  props-are-sets ([nil＝cons]-implies-List-is-prop p) _ _
+ List-＝-collapse-is-wconstant (x ∷ xs) [] p q =
+  props-are-sets ([nil＝cons]-implies-List-is-prop (p ⁻¹)) _ _
+ List-＝-collapse-is-wconstant (x ∷ xs) (y ∷ ys) p q =
+   ap₂
+    (ap₂ _∷_)
+    (setA _ _)
+    (List-＝-collapse-is-wconstant xs ys (ap tail p) (ap tail q))
 
-  List-is-set-without-universe : is-set (List A)
-  List-is-set-without-universe =
-    Id-collapsibles-are-sets (collapse _ _ , collapse-is-wconstant _ _)
+ List-is-Id-collapsible : Id-collapsible (List A)
+ List-is-Id-collapsible = (List-＝-collapse _ _ , List-＝-collapse-is-wconstant _ _)
+
+ List-is-set-without-universe : is-set (List A)
+ List-is-set-without-universe =
+  Id-collapsibles-are-sets List-is-Id-collapsible
 
 \end{code}
