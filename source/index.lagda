@@ -73,7 +73,7 @@ Philosophy of the repository
      extensionality and propositional extensionality, are not needed
      to reason about them.
 
-   * We work in a minimal version of intensional Martin Löf Type
+   * We work in a minimal version of intensional Martin-Löf Type
      Theory, with very few exceptions, which we refer to as Spartan
      MLTT. This is compatible with the UniMath approach.
 
@@ -86,38 +86,44 @@ Philosophy of the repository
      features (with the flags --safe --no-sized-types --no-guardedness
      and more).
 
+   * Most of the time we prefer to use Σ types rather than records,
+     although records are not forbidden, as they are equivalent to
+     iterated Σ types. The reason for this is that UF has a number of
+     constructions and theorems for Σ types that we often need to
+     apply.
+
    * Some functions, theorems, and definitions need HoTT/UF
-     axioms. They are always given explicitly as
-     assumptions. Postulates are not allowed in this development.
+     axioms. They are always given explicitly as assumptions.
+     Postulates are not allowed in this development.
 
    * The development is mostly constructive.
 
      A few theorems have non-constructive, explicit assumptions, such
-     as excluded middle, or choice and global choice. One example is
+     as excluded middle, or choice or global choice. One example is
      Cantor-Schröder-Bernstein for arbitrary (homotopy) types, which
      was published in the Journal of Homotopy and Related Structures
      (written in mathematical vernacular as advanced in the HoTT book
-     and originally proposed by Peter Aczel).
+     and originally proposed by Peter Aczel). We also have Zorn's
+     Lemma, the Well-Ordering Principle and more.
 
    * We don't assume propositional resizing as Voevodsky and UniMath do.
 
      But there are some theorems whose hypotheses or conclusions
-     involve propositional resizing (as a hypothesis, rather than as a
-     rule of the type theory as unimath does).
+     involve propositional resizing.
 
    * The general idea is that any theorem here should be valid in any
      ∞-topos, but some theorems will be valid only in special ∞-toposes,
-     such as boolean toposes.
+     such as boolean toposes or other kinds of toposes.
 
    * In particular, we don't use Cubical Agda features, deliberately,
      because at present it is not known whether (some) cubical type
      theory has an interpretation in any ∞-topos.
 
-   * However, by fulfilling the HoTT hypotheses with Cubical-Agda
+     However, by fulfilling the HoTT hypotheses with Cubical-Agda
      implementations, we should be able to run the constructions and
      proofs given here, so that we get constructivity in the
-     computational sense, as opposed to constructivity in the sense of
-     validity in any (∞-)topos.
+     computational sense, as opposed to constructivity just in the
+     sense of validity in any (∞-)topos.
 
    * Although our philosophy is based on HoTT/UF and ∞-toposes, it
      should be emphasized that much of what we do here also holds in
