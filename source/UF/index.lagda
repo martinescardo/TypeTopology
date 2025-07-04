@@ -61,6 +61,7 @@ import UF.SemistrictIdentity
 import UF.SetTrunc
 import UF.Sets
 import UF.Sets-Properties
+import UF.SequentialColimits         -- by [2]
 import UF.SigmaIdentity
 import UF.Singleton-Properties       -- by [2]
 import UF.Size
