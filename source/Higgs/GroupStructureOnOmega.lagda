@@ -34,15 +34,6 @@ open import Higgs.InvolutionTheorem fe pe
 
 open Negation {𝓤} fe
 
-\end{code}
-
-To define negation on Ω we need function extensionality, which we are
-assuming in this module. We introduce friendlier notation for it:
-
-\begin{code}
-
-
-
 lc-monoid-structure-on-Ω-gives-EM : (O : Ω)
                                     (_⊕_ : Ω → Ω → Ω)
                                   → left-neutral O _⊕_
