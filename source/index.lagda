@@ -40,20 +40,21 @@
      Our philosophy, here and in the lecture notes, is to work with a
      minimal Martin-Löf type theory, and use principles from HoTT/UF
      (existence of propositional truncations, function extensionality,
-     propositional extensionality, univalence, propositional resizing)
-     and classical mathematics (excluded middle, choice, LPO, WLPO) as
-     explicit assumptions for the theorems, or for the modules, that
-     require them. As a consequence, we are able to tell very
-     precisely which assumptions of HoTT/UF and classical mathematics,
-     if any, we have used for each construction, theorem or set of
-     results. We also work, deliberately, with a minimal subset of
-     Agda. See below for more about the philosophy.
+     propositional extensionality, univalence, propositional resizing,
+     etc.)  and classical mathematics (excluded middle, choice, LPO,
+     WLPO) as explicit assumptions for the theorems, or for the
+     modules, that require them. As a consequence, we are able to tell
+     very precisely which assumptions of HoTT/UF and classical
+     mathematics, if any, we have used for each construction, theorem
+     or set of results. We also work, deliberately, with a minimal
+     subset of Agda. See below for more about the philosophy.
 
    * There is also a module that links some "unsafe" modules that use
      type theory beyond MLTT and HoTT/UF, which cannot be included in
      this safe-modules index: The system with type-in-type is
      inconsistent (as is well known), countable Tychonoff, and
-     compactness of the Cantor type using countable Tychonoff.
+     compactness of the Cantor type using countable Tychonoff, and
+     more.
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
