@@ -17,6 +17,7 @@ open import UF.Embeddings
 open import UF.Equiv hiding (_≅_)
 open import UF.Equiv-FunExt
 open import UF.FunExt
+open import UF.Logic
 open import UF.Subsingletons
 open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
 open import UF.SubtypeClassifier-Properties
@@ -27,7 +28,10 @@ module Higgs.AutomorphismsOfOmegaWEM
         (pe : propext 𝓤)
        where
 
+open import Higgs.InvolutionTheorem fe pe
+open import Higgs.Rigidity fe pe
 open import Higgs.AutomorphismsOfOmega fe pe
+open import Higgs.GroupStructureOnOmega fe pe
 
 widespread'-has-weak-excluded-middle
  : (p : Ω)
@@ -112,8 +116,8 @@ EM-gives-not-is-automorphism : EM 𝓤 → is-equiv ⇁_
 EM-gives-not-is-automorphism em = ( (⇁_ , I) , (⇁_ , I))
   where
     I : (P : Ω) → ⇁⇁ P ＝ P
-    I =
-      DNE-gives-double-negation-equality (EM-gives-DNE em)
+    I = DNE-gives-double-negation-equality
+          (EM-gives-DNE em)
 
 Ω-automorphism-not-id-iff-equals-not
  : (𝕗 : Aut Ω)
@@ -150,4 +154,3 @@ EM-gives-not-is-automorphism em = ( (⇁_ , I) , (⇁_ , I))
   BW f-is-not e = not-is-not-id (f-is-not ⁻¹ ∙ ap pr₁ e)
 
 \end{code}
-
