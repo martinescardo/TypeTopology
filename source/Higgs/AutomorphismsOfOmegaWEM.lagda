@@ -30,7 +30,7 @@ open import UF.FunExt
 open import UF.Logic
 open import UF.PropTrunc
 open import UF.Subsingletons
-open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
+open import UF.SubtypeClassifier hiding (Ω)
 
 module Higgs.AutomorphismsOfOmegaWEM
         {𝓤 : Universe}

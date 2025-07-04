@@ -21,7 +21,7 @@ open import UF.Equiv hiding (_≅_)
 open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.Subsingletons
-open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
+open import UF.SubtypeClassifier hiding (Ω)
 open import UF.SubtypeClassifier-Properties
 
 module Higgs.Rigidity

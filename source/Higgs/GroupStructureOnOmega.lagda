@@ -22,7 +22,7 @@ open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Logic
 open import UF.Subsingletons
-open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
+open import UF.SubtypeClassifier hiding (Ω)
 
 module Higgs.GroupStructureOnOmega
         {𝓤 : Universe}

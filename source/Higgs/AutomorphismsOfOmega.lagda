@@ -26,7 +26,7 @@ open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
+open import UF.SubtypeClassifier hiding (Ω)
 open import UF.SubtypeClassifier-Properties
 
 module Higgs.AutomorphismsOfOmega
