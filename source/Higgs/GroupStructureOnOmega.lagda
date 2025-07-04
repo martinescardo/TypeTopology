@@ -18,10 +18,11 @@ that every element is its own inverse.
 
 open import MLTT.Spartan
 open import UF.Base
+open import UF.ClassicalLogic
 open import UF.FunExt
+open import UF.Logic
 open import UF.Subsingletons
 open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
-open import UF.ClassicalLogic
 
 module Higgs.GroupStructureOnOmega
         {𝓤 : Universe}
@@ -31,6 +32,8 @@ module Higgs.GroupStructureOnOmega
 
 open import Higgs.InvolutionTheorem fe pe
 
+open Negation {𝓤} fe
+
 \end{code}
 
 To define negation on Ω we need function extensionality, which we are
@@ -38,11 +41,7 @@ assuming in this module. We introduce friendlier notation for it:
 
 \begin{code}
 
-⇁_ : Ω → Ω
-⇁_ = not fe
 
-⇁⇁_ : Ω → Ω
-⇁⇁ p = ⇁(⇁ p)
 
 lc-monoid-structure-on-Ω-gives-EM : (O : Ω)
                                     (_⊕_ : Ω → Ω → Ω)

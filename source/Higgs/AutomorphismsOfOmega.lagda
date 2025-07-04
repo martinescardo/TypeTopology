@@ -71,6 +71,12 @@ being-widespread-is-prop r = Π-is-prop fe (λ p → Ω-is-set fe pe)
 ℍ : 𝓤⁺ ̇
 ℍ = Σ r ꞉ Ω , is-widespread r
 
+⟪_⟫ : ℍ → Ω
+⟪ r , _ ⟫ = r
+
+⟪_⟫-is-widespread : (x : ℍ) → is-widespread ⟪ x ⟫
+⟪ _ , i ⟫-is-widespread = i
+
 ℍ-is-set : is-set ℍ
 ℍ-is-set = subsets-of-sets-are-sets
             Ω
@@ -91,7 +97,7 @@ to-ℍ-＝' (r , i) (s , j) (f , g) = to-ℍ-＝ r s (Ω-extensionality pe fe f 
 \end{code}
 
 The equality of the Higgs object has values in 𝓤⁺, but is equivalent
-to a an equality with values in 𝓤 and hence in Ω.
+to an equality with values in 𝓤 and hence in Ω.
 
 \begin{code}
 
@@ -106,8 +112,8 @@ infix 4 _＝ₕ_
     (holds-is-prop (x ＝ₕ y))
     ℍ-is-set
     (to-ℍ-＝' x y)
-    (λ (e : x ＝ y) → idtofun _ _ (ap (_holds ∘ pr₁) e) ,
-                      idtofun _ _ (ap (_holds ∘ pr₁) (e ⁻¹)))
+    (λ (e : x ＝ y) → idtofun _ _ (ap (_holds ∘ ⟪_⟫) e) ,
+                      idtofun _ _ (ap (_holds ∘ ⟪_⟫) (e ⁻¹)))
 
 Ω-automorphisms-are-⇔-embeddings : (𝕗 : Aut Ω)
                                    (p q : Ω)
@@ -185,12 +191,6 @@ open import Groups.Symmetric fe
 
 𝓗-to-Ωₛ-isomorphism : 𝓗 ≅ Ωₛ
 𝓗-to-Ωₛ-isomorphism = ℍ-to-Aut-Ω , ℍ-to-Aut-Ω-is-equiv , pr₂ 𝓗-construction
-
-⟪_⟫ : ℍ → Ω
-⟪ r , _ ⟫ = r
-
-⟪_⟫-is-widespread : (x : ℍ) → is-widespread ⟪ x ⟫
-⟪ _ , i ⟫-is-widespread = i
 
 𝓚-isomorphism-explicitly : (x : ℍ) (p : Ω)
                          → ⌜ ℍ-to-Aut-Ω x ⌝ p ＝ (p ⇔ ⟪ x ⟫)
