@@ -273,12 +273,11 @@ open import UF.PropTrunc
 
 module _ (pt : propositional-truncations-exist) where
 
+ open PropositionalTruncation pt hiding (_∨_ ; ∨-elim)
  open Disjunction pt
 
  is-widespread' : Ω → 𝓤⁺ ̇
  is-widespread' r = (p : Ω) → (p ∨ (p ⇒ r)) holds
-
- open PropositionalTruncation pt hiding (_∨_ ; ∨-elim)
 
  widespread'-gives-widespread : (r : Ω)
                               → is-widespread' r
