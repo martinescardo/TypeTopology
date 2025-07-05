@@ -13,7 +13,7 @@ We prove the main results of [1] and [2] about automorphisms of Ω.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Groups.Type
 open import MLTT.Spartan
@@ -163,8 +163,9 @@ Aut-Ω-to-ℍ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-is-widespread 𝕗
 Aut-Ω-to-ℍ-is-equiv : is-equiv Aut-Ω-to-ℍ
 Aut-Ω-to-ℍ-is-equiv = inverses-are-equivs ℍ-to-Aut-Ω ℍ-to-Aut-Ω-is-equiv
 
-ℍ-to-Aut-Ω-equivalence : ℍ ≃ Aut Ω
-ℍ-to-Aut-Ω-equivalence = ℍ-to-Aut-Ω , ℍ-to-Aut-Ω-is-equiv
+opaque
+ ℍ-to-Aut-Ω-equivalence : ℍ ≃ Aut Ω
+ ℍ-to-Aut-Ω-equivalence = ℍ-to-Aut-Ω , ℍ-to-Aut-Ω-is-equiv
 
 \end{code}
 
@@ -183,8 +184,9 @@ open import Groups.Symmetric fe
 Ωₛ : Group 𝓤⁺
 Ωₛ = symmetric-group Ω (Ω-is-set fe pe)
 
-𝓗-construction : Σ s ꞉ Group-structure ℍ , is-hom (ℍ , s) Ωₛ ℍ-to-Aut-Ω
-𝓗-construction = transport-Group-structure Ωₛ ℍ ℍ-to-Aut-Ω ℍ-to-Aut-Ω-is-equiv
+opaque
+ 𝓗-construction : Σ s ꞉ Group-structure ℍ , is-hom (ℍ , s) Ωₛ ℍ-to-Aut-Ω
+ 𝓗-construction = transport-Group-structure Ωₛ ℍ ℍ-to-Aut-Ω ℍ-to-Aut-Ω-is-equiv
 
 𝓗 : Group 𝓤⁺
 𝓗 = ℍ , pr₁ 𝓗-construction
@@ -202,17 +204,20 @@ The unit of 𝓗 is ⊤ and its multiplication is logical equivalence.
 
 \begin{code}
 
-𝓗-unit : ⟪ unit 𝓗 ⟫ ＝ ⊤
-𝓗-unit = refl
+opaque
+ unfolding 𝓗-construction
 
-𝓗-multiplication : (x y : ℍ) → ⟪ x ·⟨ 𝓗 ⟩ y ⟫ ＝ (⟪ x ⟫ ⇔ ⟪ y ⟫)
-𝓗-multiplication x y =
- ⟪ x ·⟨ 𝓗 ⟩ y ⟫     ＝⟨ refl ⟩
- (⊤ ⇔ ⟪ x ⟫) ⇔ ⟪ y ⟫ ＝⟨ ap (_⇔ ⟪ y ⟫) (⊤-⇔-neutral' pe ⟪ x ⟫) ⟩
- ⟪ x ⟫ ⇔ ⟪ y ⟫       ∎
+ 𝓗-unit : ⟪ unit 𝓗 ⟫ ＝ ⊤
+ 𝓗-unit = refl
 
-corollary-⊤ : is-widespread ⊤
-corollary-⊤ = ⟪ unit 𝓗 ⟫-is-widespread
+ 𝓗-multiplication : (x y : ℍ) → ⟪ x ·⟨ 𝓗 ⟩ y ⟫ ＝ (⟪ x ⟫ ⇔ ⟪ y ⟫)
+ 𝓗-multiplication x y =
+  ⟪ x ·⟨ 𝓗 ⟩ y ⟫     ＝⟨ refl ⟩
+  (⊤ ⇔ ⟪ x ⟫) ⇔ ⟪ y ⟫ ＝⟨ ap (_⇔ ⟪ y ⟫) (⊤-⇔-neutral' pe ⟪ x ⟫) ⟩
+  ⟪ x ⟫ ⇔ ⟪ y ⟫       ∎
+
+ corollary-⊤ : is-widespread ⊤
+ corollary-⊤ = ⟪ unit 𝓗 ⟫-is-widespread
 
 𝕥 : ℍ
 𝕥 = ⊤ , corollary-⊤
@@ -312,7 +317,7 @@ module _ (pt : propositional-truncations-exist) where
         I₃ = equal-⊤-gives-holds _ I₂
 
         g : (r ⇒ p) holds
-        g x = ∧-Elim-R _ _ (I₃ x) x
+        g r-holds = ∧-Elim-R (p ⇒ r) (r ⇒ p) (I₃ r-holds) r-holds
 
         I₄ : p ＝ r
         I₄ = Ω-extensionality pe fe f g

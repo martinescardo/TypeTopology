@@ -10,7 +10,7 @@ to Freyd [1]. Our proof is not based on [1], though.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Equiv hiding (_≅_)
@@ -118,8 +118,8 @@ We have the following corollary.
  Aut-Ω-has-at-most-two-elements f g h
   = II
   where
-   ϕ    = Aut-Ω-to-ℍ
-   ϕ-lc = equivs-are-lc ϕ Aut-Ω-to-ℍ-is-equiv
+   ϕ = ⌜ ℍ-to-Aut-Ω-equivalence ⌝⁻¹
+   ϕ-lc = equivs-are-lc ϕ ⌜ ℍ-to-Aut-Ω-equivalence ⌝⁻¹-is-equiv
 
    I : ∥ (ϕ h ＝ ϕ f) + (ϕ f ＝ ϕ g) + (ϕ g ＝ ϕ h) ∥
    I = ℍ-has-at-most-two-elements (ϕ f) (ϕ g) (ϕ h)
