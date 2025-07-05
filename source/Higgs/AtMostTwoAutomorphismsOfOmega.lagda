@@ -13,6 +13,7 @@ to Freyd [1]. Our proof is not based on [1], though.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
+open import MLTT.Plus-Properties
 open import UF.Equiv hiding (_≅_)
 open import UF.FunExt
 open import UF.Logic
@@ -26,7 +27,6 @@ module Higgs.AtMostTwoAutomorphismsOfOmega
        where
 
 open import Higgs.InvolutionTheorem fe pe
-open import Higgs.Rigidity fe pe
 open import Higgs.AutomorphismsOfOmega fe pe
 
 open Conjunction
@@ -109,8 +109,6 @@ elements of ℍ, two of them are equal.
 We have the following corollary.
 
 \begin{code}
-
- open import MLTT.Plus-Properties
 
  Aut-Ω-has-at-most-two-elements
   : (f g h : Aut Ω)
