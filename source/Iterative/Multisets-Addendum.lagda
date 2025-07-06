@@ -167,12 +167,11 @@ separation as defined above.
   have-𝕗 : X ≃ 𝕄
   have-𝕗 = 𝕗
 
-  private
-   remark-X : 𝓤 ̇
-   remark-X = X
+  _ : 𝓤 ̇
+  _ = X
 
-   remark-𝕄 : 𝓤⁺ ̇
-   remark-𝕄 = 𝕄
+  _ : 𝓤⁺ ̇
+  _ = 𝕄
 
   M : 𝕄
   M = ssup X ⌜ 𝕗 ⌝
