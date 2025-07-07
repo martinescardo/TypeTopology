@@ -224,13 +224,14 @@ We prove the universal property for the sequential colimit.
         → b (pr₁ (f c)) (pr₂ (f c)) ＝ b (pr₁ (g c)) (pr₂ (g c))
       II (inl -) = refl
       II (inr (n , x)) = H n x
-    III : I ∘ canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-               sequential-colimit-is-cocone
-        ∼ id
-    III u = {!!}
-    IV : canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-          sequential-colimit-is-cocone ∘ I ∼ id
-    IV (b , H) = {!!}
+    composition-1 = I ∘ canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
+                     sequential-colimit-is-cocone
+    III : composition-1 ∼ id
+    III u = dfunext fe (pushout-uniqueness (composition-1 u) u {!!} {!!} {!!})
+    composition-2 = canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
+                     sequential-colimit-is-cocone ∘ I
+    IV : composition-2 ∼ id
+    IV (b , H) = sequential-cocone-family-to-id 𝓐 {!X!} {!!} {!!} {!!}
 
   sequential-colimit-universal-property'
    : Seqential-Colimit-Universal-Property 𝓐 sequential-colimit X
@@ -243,8 +244,6 @@ We prove the universal property for the sequential colimit.
    where
     I : is-vv-equiv (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
          sequential-colimit-is-cocone)
-    I (b , H) = {!!}
-    
-    
+    I (b , H) = (({!!} , {!!}) , {!!})    
 
 \end{code}
