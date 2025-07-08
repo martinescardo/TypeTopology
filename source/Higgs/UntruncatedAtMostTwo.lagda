@@ -1,4 +1,4 @@
-J.A. Carr 8 July 2025.
+J. A. Carr 8 July 2025.
 
 The untruncated form of the at-most-two elements is equivalent
 to the statement that Aut Ω has exactly 1 or 2 elements
