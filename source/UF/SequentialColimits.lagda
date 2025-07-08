@@ -204,6 +204,23 @@ We give the sequential cocone structure for the sequential colimt.
 
 \end{code}
 
+We will define our inverse map before showing the universal property of sequential
+colimits.
+
+\begin{code}
+
+  gluing-from-sequential-cocone : ((b , H) : sequential-cocone 𝓐 X)
+                                → (c : Σ A + Σ A)
+                                → b (pr₁ (f c)) (pr₂ (f c)) ＝ b (pr₁ (g c)) (pr₂ (g c))
+  gluing-from-sequential-cocone (b , H) (inl -) = refl
+  gluing-from-sequential-cocone (b , H) (inr (n , x)) = H n x
+
+  map-from-sequential-cocone : sequential-cocone 𝓐 X → (sequential-colimit → X)
+  map-from-sequential-cocone (b , H)
+   = pushout-recursion (uncurry b) (uncurry b) (gluing-from-sequential-cocone (b , H))
+
+\end{code}
+
 We prove the universal property for the sequential colimit.
 
 \begin{code}
@@ -215,23 +232,28 @@ We prove the universal property for the sequential colimit.
    = qinvs-are-equivs
       (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
        sequential-colimit-is-cocone)
-      (I , III , IV)
+      (map-from-sequential-cocone , III , IV)
    where
-    I : sequential-cocone 𝓐 X → (sequential-colimit → X)
-    I (b , H) = pushout-recursion (λ (n , x) → b n x) (λ (n , x) → b n x) II
-     where
-      II : (c : Σ A + Σ A)
-        → b (pr₁ (f c)) (pr₂ (f c)) ＝ b (pr₁ (g c)) (pr₂ (g c))
-      II (inl -) = refl
-      II (inr (n , x)) = H n x
-    composition-1 = I ∘ canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-                     sequential-colimit-is-cocone
+    composition-1 = map-from-sequential-cocone
+                   ∘ canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
+                      sequential-colimit-is-cocone
     III : composition-1 ∼ id
     III u = dfunext fe (pushout-uniqueness (composition-1 u) u {!!} {!!} {!!})
     composition-2 = canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-                     sequential-colimit-is-cocone ∘ I
+                     sequential-colimit-is-cocone ∘ map-from-sequential-cocone
+    observe-2 : ((b , H) : sequential-cocone 𝓐 X)
+              → composition-2 (b , H)
+              ＝ ((λ n → λ x → map-from-sequential-cocone (b , H) (ι n x)) , λ n → λ x → ap (map-from-sequential-cocone (b , H)) (K n x))
+    observe-2 (b , H) = refl
     IV : composition-2 ∼ id
-    IV (b , H) = sequential-cocone-family-to-id 𝓐 {!X!} {!!} {!!} {!!}
+    IV (b , H) = sequential-cocone-family-to-id 𝓐 X (composition-2 (b , H)) (b , H) V
+     where
+      V : sequential-cocone-family 𝓐 X (composition-2 (b , H)) (b , H)
+      V = (VI , {!!})
+       where
+        VI : (n : ℕ) → (λ - → map-from-sequential-cocone (b , H) (ι n -)) ∼ b n
+        VI n x = pushout-rec-comp-inrr (uncurry b) (uncurry b)
+                  (gluing-from-sequential-cocone (b , H)) (n , x)
 
   sequential-colimit-universal-property'
    : Seqential-Colimit-Universal-Property 𝓐 sequential-colimit X
