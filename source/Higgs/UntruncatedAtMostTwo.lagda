@@ -11,6 +11,7 @@ to the statement that Aut Ω has exactly 1 or 2 elements
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
 open import UF.DiscreteAndSeparated
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.Equiv hiding (_≅_)
 open import UF.FunExt
 open import UF.Logic
