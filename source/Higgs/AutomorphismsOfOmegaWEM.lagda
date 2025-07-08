@@ -1,4 +1,4 @@
-J.A. Carr 2 July 2025.
+J. A. Carr 2 July 2025.
 
 The type Aut Ω has a sort of weak excluded middle: Every automorphism
 is either equal to not (in which case full LEM holds) or it's not
