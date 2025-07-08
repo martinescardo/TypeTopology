@@ -18,5 +18,6 @@ import Higgs.Rigidity
 import Higgs.AutomorphismsOfOmega
 import Higgs.AtMostTwoAutomorphismsOfOmega
 import Higgs.AutomorphismsOfOmegaWEM       -- By J. A. Carr
+import Higgs.UntruncatedAtMostTwo          -- By J. A. Carr
 
 \end{code}
