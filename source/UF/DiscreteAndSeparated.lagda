@@ -129,6 +129,26 @@ inr-is-isolated {𝓤} {𝓥} {X} {Y} y i = γ
 
 \end{code}
 
+Added by J. A. Carr on 8 July 2025.
+\begin{code}
+
+×-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              → is-discrete X
+              → is-discrete Y
+              → is-discrete (X × Y)
+×-is-discrete {_} {_} {X} {Y} d e (x1 , y1) (x2 , y2) = I (d x1 x2) (e y1 y2)
+ where
+  I : {x1 x2 : X} {y1 y2 : Y}
+    → ((x1 ＝ x2) + (x1 ≠ x2))
+    → ((y1 ＝ y2) + (y1 ≠ y2))
+    → ((x1 , y1) ＝ (x2 , y2)) + ((x1 , y1) ≠ (x2 , y2))
+  I (inl ex) (inl ey) = inl (to-×-＝ ex ey)
+  I (inr nx) (inl _ ) = inr (λ e → nx (ap pr₁ e))
+  I (inl _)  (inr ny) = inr (λ e → ny (ap pr₂ e))
+  I (inr _)  (inr ny) = inr (λ e → ny (ap pr₂ e))
+
+\end{code}
+
 Added by Tom de Jong on 15 December 2024.
 Note that we could also derive this from Σ-is-discrete (see the comment below)
 and props-are-discrete (as above).
