@@ -34,13 +34,13 @@ leaf' : R → Game'
 leaf' r = game' [] (λ ⟨⟩ → r) ⟨⟩
 
 branch' : (X : Type) → K X → (X → Game') → Game'
-branch' X ϕ G = game' (X ∷ (moves-tree ∘ G))
-                      (λ (x :: xs) → payoff-function (G x) xs)
-                      (ϕ :: (quantifier-tree ∘ G))
+branch' X ϕ Gf = game' (X ∷ (moves-tree ∘ Gf))
+                       (λ (x :: xs) → payoff-function (Gf x) xs)
+                       (ϕ :: (quantifier-tree ∘ Gf))
 
 from-Game : Game → Game'
 from-Game (leaf r)        = leaf' r
-from-Game (branch X ϕ Xf) = branch' X ϕ (from-Game ∘ Xf)
+from-Game (branch X ϕ Gf) = branch' X ϕ (from-Game ∘ Gf)
 
 \end{code}
 
@@ -118,30 +118,30 @@ module _ (fe : Fun-Ext) where
    h []       q ⟨⟩       = refl
    h (X ∷ Xf) q (ϕ , ϕf) =
     from-Game (to-Game (game' (X ∷ Xf) q (ϕ :: ϕf))) ＝⟨ refl ⟩
-    from-Game (branch X ϕ (to-Game ∘ G))             ＝⟨ refl ⟩
-    branch' X ϕ G'                                   ＝⟨ I ⟩
-    branch' X ϕ G                                    ＝⟨ refl ⟩
+    from-Game (branch X ϕ (to-Game ∘ Gf))            ＝⟨ refl ⟩
+    branch' X ϕ Hf                                   ＝⟨ I ⟩
+    branch' X ϕ Gf                                   ＝⟨ refl ⟩
     game' (X ∷ Xf) q (ϕ :: ϕf)                       ∎
     where
-     G G' : X → Game'
-     G  x = subgame X Xf ϕ ϕf q x
-     G' x = from-Game (to-Game (G x))
+     Gf Hf : X → Game'
+     Gf x = subgame X Xf ϕ ϕf q x
+     Hf x = from-Game (to-Game (Gf x))
 
-     IH : G' ∼ G
+     IH : Hf ∼ Gf
      IH x = h (Xf x) (subpred q x) (ϕf x)
 
-     I : branch' X ϕ G' ＝ branch' X ϕ G
+     I : branch' X ϕ Hf ＝ branch' X ϕ Gf
      I = ap (branch' X ϕ) (dfunext fe IH)
 
  to-from-Game : to-Game ∘ from-Game ∼ id
  to-from-Game (leaf x)        = refl
- to-from-Game (branch X ϕ Xf) =
-  to-Game (from-Game (branch X ϕ Xf))    ＝⟨ refl ⟩
-  to-Game (branch' X ϕ (from-Game ∘ Xf)) ＝⟨ refl ⟩
-  branch X ϕ (to-Game ∘ from-Game ∘ Xf)  ＝⟨ I ⟩
-  branch X ϕ Xf                          ∎
+ to-from-Game (branch X ϕ Gf) =
+  to-Game (from-Game (branch X ϕ Gf))    ＝⟨ refl ⟩
+  to-Game (branch' X ϕ (from-Game ∘ Gf)) ＝⟨ refl ⟩
+  branch X ϕ (to-Game ∘ from-Game ∘ Gf)  ＝⟨ I ⟩
+  branch X ϕ Gf                          ∎
   where
-   I = ap (branch X ϕ) (dfunext fe (to-from-Game ∘ Xf))
+   I = ap (branch X ϕ) (dfunext fe (to-from-Game ∘ Gf))
 
  Game-is-equiv-to-Game' : Game ≃ Game'
  Game-is-equiv-to-Game' = qinveq from-Game (to-Game , to-from-Game , from-to-Game)
