@@ -17,10 +17,7 @@ open import UF.FunExt
 open import Games.TypeTrees
 open import Games.FiniteHistoryDependent R
              renaming (Game to Game' ;
-                       game to game' ;
-                       Xt to moves-tree ;
-                       q to payoff-function ;
-                       ϕt to quantifier-tree)
+                       game to game')
 
 open import MonadOnTypes.K
 
@@ -34,7 +31,7 @@ leaf' : R → Game'
 leaf' r = game' [] (λ ⟨⟩ → r) ⟨⟩
 
 branch' : (X : Type) → K X → (X → Game') → Game'
-branch' X ϕ Gf = game' (X ∷ (moves-tree ∘ Gf))
+branch' X ϕ Gf = game' (X ∷ (game-tree ∘ Gf))
                        (λ (x :: xs) → payoff-function (Gf x) xs)
                        (ϕ :: (quantifier-tree ∘ Gf))
 

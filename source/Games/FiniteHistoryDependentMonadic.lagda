@@ -112,7 +112,7 @@ is-in-T-sgpe' {X ∷ Xf} (ϕ :: ϕf) q σt@(σ :: σf) =
     is-in-T-equilibrium q ϕ σt
   × ((x : X) → is-in-T-sgpe' {Xf x} (ϕf x) (subpred q x) (σf x))
 
-is-in-T-sgpe : (G : Game) → T-Strategy (Xt G) → Type
+is-in-T-sgpe : (G : Game) → T-Strategy (game-tree G) → Type
 is-in-T-sgpe (game Xt q ϕt) = is-in-T-sgpe' {Xt} ϕt q
 
 \end{code}
@@ -148,9 +148,9 @@ This can be reformulated as follows in terms of the type of games:
 
 \begin{code}
 
-T-optimality-theorem : (G : Game) (σt : T-Strategy (Xt G))
+T-optimality-theorem : (G : Game) (σt : T-Strategy (game-tree G))
                      → is-in-T-sgpe G σt
-                     → α-extᵀ (q G) (T-strategic-path σt)
+                     → α-extᵀ (payoff-function G) (T-strategic-path σt)
                      ＝ optimal-outcome G
 T-optimality-theorem (game Xt q ϕt) = T-sgpe-lemma Xt ϕt q
 
@@ -459,10 +459,10 @@ T-selection-strategy-lemma ext-const {X ∷ Xf} εt@(ε :: εf) ϕt@(ϕ :: ϕf) 
 
 main-theorem : ext-const 𝕋
              → (G : Game)
-               (εt : 𝓙𝓣 (Xt G))
-             → εt Attainsᵀ (ϕt G)
-             → is-in-T-sgpe G (T-selection-strategy εt (q G))
-main-theorem ext-const G εt = T-selection-strategy-lemma ext-const εt (ϕt G) (q G)
+               (εt : 𝓙𝓣 (game-tree G))
+             → εt Attainsᵀ (quantifier-tree G)
+             → is-in-T-sgpe G (T-selection-strategy εt (payoff-function G))
+main-theorem ext-const G εt = T-selection-strategy-lemma ext-const εt (quantifier-tree G) (payoff-function G)
 
 \end{code}
 
@@ -496,7 +496,7 @@ sub𝓙𝓣 {[]} εt ⟨⟩ = ⟨⟩
 sub𝓙𝓣 {X ∷ Xf} εt (inl ⟨⟩) = εt
 sub𝓙𝓣 {X ∷ Xf} (ε :: εf) (inr (x :: xs)) = sub𝓙𝓣 {Xf x} (εf x) xs
 
-subgame : (G : Game) → pPath (Xt G) → Game
+subgame : (G : Game) → pPath (game-tree G) → Game
 subgame (game Xt q ϕt) xs = game (sub𝑻 Xt xs) (Subpred q xs) (sub𝓚 ϕt xs)
 
 sub-T-Strategy : {Xt : 𝑻} → T-Strategy Xt → (xs : pPath Xt) → T-Strategy (sub𝑻 Xt xs)
@@ -504,15 +504,15 @@ sub-T-Strategy {[]}     ⟨⟩        ⟨⟩              = ⟨⟩
 sub-T-Strategy {X ∷ Xf} (σ :: σf) (inl ⟨⟩)        = σ :: σf
 sub-T-Strategy {X ∷ Xf} (σ :: σf) (inr (x :: xs)) = sub-T-Strategy {Xf x} (σf x) xs
 
-is-in-T-equilibrium' : (G : Game) → T-Strategy (Xt G) → Type
+is-in-T-equilibrium' : (G : Game) → T-Strategy (game-tree G) → Type
 is-in-T-equilibrium' (game []       q ⟨⟩)       ⟨⟩ = 𝟙
 is-in-T-equilibrium' (game (X ∷ Xf) q (ϕ :: _)) σt = is-in-T-equilibrium q ϕ σt
 
-is-in-T-sgpe₂ : (G : Game) (σ : T-Strategy (Xt G)) → Type
+is-in-T-sgpe₂ : (G : Game) (σ : T-Strategy (game-tree G)) → Type
 is-in-T-sgpe₂ G σ =
- (xs : pPath (Xt G)) → is-in-T-equilibrium' (subgame G xs) (sub-T-Strategy σ xs)
+ (xs : pPath (game-tree G)) → is-in-T-equilibrium' (subgame G xs) (sub-T-Strategy σ xs)
 
-T-sgpe-equiv : (G : Game) (σ : T-Strategy (Xt G))
+T-sgpe-equiv : (G : Game) (σ : T-Strategy (game-tree G))
              → is-in-T-sgpe  G σ
              ↔ is-in-T-sgpe₂ G σ
 T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
