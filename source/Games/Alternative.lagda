@@ -1,0 +1,149 @@
+Martin Escardo, Paulo Oliva, 9th July 2024.
+
+Alternative, equivalent, inductive definition of Game, which may have
+some practical advantages, such as more modular definitions of games.
+
+\begin{code}
+
+{-# OPTIONS --safe --without-K #-}
+
+open import MLTT.Spartan hiding (J)
+
+module Games.Alternative (R : Type) where
+
+open import UF.Equiv
+open import UF.FunExt
+
+open import Games.TypeTrees
+open import Games.FiniteHistoryDependent R
+             renaming (Game to Game' ;
+                       game to game' ;
+                       Xt to moves-tree ;
+                       q to payoff-function ;
+                       ϕt to quantifier-tree)
+
+open import MonadOnTypes.K
+
+open K-definitions R
+
+data Game : Type₁ where
+ leaf   : R → Game
+ branch : (X : Type) → K X → (X → Game) → Game
+
+leaf' : R → Game'
+leaf' r = game' [] (λ ⟨⟩ → r) ⟨⟩
+
+branch' : (X : Type) → K X → (X → Game') → Game'
+branch' X ϕ G = game' (X ∷ (moves-tree ∘ G))
+                      (λ (x :: xs) → payoff-function (G x) xs)
+                      (ϕ :: (quantifier-tree ∘ G))
+
+from-Game : Game → Game'
+from-Game (leaf r)        = leaf' r
+from-Game (branch X ϕ Xf) = branch' X ϕ (from-Game ∘ Xf)
+
+\end{code}
+
+We need the curried version h of the conversion function to-Game
+defined below to convince the termination checker that the following
+recursion does terminate.
+
+\begin{code}
+
+to-Game : Game' → Game
+to-Game (game' Xt q ϕt) = h Xt q ϕt
+ where
+  h : (Xt : 𝑻) → (Path Xt → R) → 𝓚 Xt → Game
+  h [] q ϕt              = leaf (q ⟨⟩)
+  h (X ∷ Xf) q (ϕ :: ϕf) = branch X ϕ (λ x → h (Xf x) (subpred q x) (ϕf x))
+
+\end{code}
+
+The equations we would have liked to use to define the function
+to-Game are the following:
+
+\begin{code}
+
+to-Game-base
+ : (q : Path [] → R)
+ → to-Game (game' [] q ⟨⟩) ＝ leaf (q ⟨⟩)
+to-Game-base q = refl
+
+to-Game-step
+ : (X : Type) (Xf : X → 𝑻) (ϕ : K X) (ϕf : (x : X) → 𝓚 (Xf x)) (q : Path (X ∷ Xf) → R)
+ → to-Game (game' (X ∷ Xf) q (ϕ :: ϕf))
+ ＝ branch X ϕ (λ x → to-Game (game' (Xf x) (subpred q x) (ϕf x)))
+to-Game-step X Xf ϕ ϕf q = refl
+
+\end{code}
+
+We also have he following equivalent definitional equalities expressed
+in terms of leaf' and branch':
+
+\begin{code}
+
+to-Game-base' : (r : R) → to-Game (leaf' r) ＝ leaf r
+to-Game-base' r = refl
+
+module _
+         (X : Type)
+         (Xf : X → 𝑻)
+         (ϕ : K X)
+         (ϕf : (x : X) → 𝓚 (Xf x))
+         (q : Path (X ∷ Xf) → R)
+       where
+
+ subgame : X → Game'
+ subgame x = game' (Xf x) (subpred q x) (ϕf x)
+
+ to-Game-step' : to-Game (branch' X ϕ subgame) ＝ branch X ϕ (to-Game ∘ subgame)
+ to-Game-step' = refl
+
+\end{code}
+
+The above conversion functions are mutually inverse the types Game and
+Game' are equivalence, assuming function extensionality.
+
+\begin{code}
+
+module _ (fe : Fun-Ext) where
+
+ from-to-Game : from-Game ∘ to-Game ∼ id
+ from-to-Game (game' Xt q ϕt) = h Xt q ϕt
+  where
+   h : (Xt : 𝑻)
+       (q : Path Xt → R)
+       (ϕt : 𝓚 Xt)
+     → from-Game (to-Game (game' Xt q ϕt)) ＝ game' Xt q ϕt
+   h []       q ⟨⟩       = refl
+   h (X ∷ Xf) q (ϕ , ϕf) =
+    from-Game (to-Game (game' (X ∷ Xf) q (ϕ :: ϕf))) ＝⟨ refl ⟩
+    from-Game (branch X ϕ (to-Game ∘ G))             ＝⟨ refl ⟩
+    branch' X ϕ G'                                   ＝⟨ I ⟩
+    branch' X ϕ G                                    ＝⟨ refl ⟩
+    game' (X ∷ Xf) q (ϕ :: ϕf)                       ∎
+    where
+     G G' : X → Game'
+     G  x = subgame X Xf ϕ ϕf q x
+     G' x = from-Game (to-Game (G x))
+
+     IH : G' ∼ G
+     IH x = h (Xf x) (subpred q x) (ϕf x)
+
+     I : branch' X ϕ G' ＝ branch' X ϕ G
+     I = ap (branch' X ϕ) (dfunext fe IH)
+
+ to-from-Game : to-Game ∘ from-Game ∼ id
+ to-from-Game (leaf x)        = refl
+ to-from-Game (branch X ϕ Xf) =
+  to-Game (from-Game (branch X ϕ Xf))    ＝⟨ refl ⟩
+  to-Game (branch' X ϕ (from-Game ∘ Xf)) ＝⟨ refl ⟩
+  branch X ϕ (to-Game ∘ from-Game ∘ Xf)  ＝⟨ I ⟩
+  branch X ϕ Xf                          ∎
+  where
+   I = ap (branch X ϕ) (dfunext fe (to-from-Game ∘ Xf))
+
+ Game-is-equiv-to-Game' : Game ≃ Game'
+ Game-is-equiv-to-Game' = qinveq from-Game (to-Game , to-from-Game , from-to-Game)
+
+\end{code}

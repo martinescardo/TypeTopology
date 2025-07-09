@@ -9,6 +9,7 @@ Refactored and slightly improved October 2022, and then again in April
 
 module Games.index where
 
+import Games.Alternative             -- Alternative definition of games.
 import Games.Constructor             -- For simplifying the construction of games.
 import Games.Examples                -- Miscelaneous small examples.
 import Games.FiniteHistoryDependent  -- Theory of finite history dependent games.
