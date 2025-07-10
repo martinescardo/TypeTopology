@@ -1,7 +1,8 @@
 Martin Escardo, Paulo Oliva, 9th July 2024.
 
-Alternative, equivalent, inductive definition of Game, which may have
-some practical advantages, such as more modular definitions of games.
+Alternative, equivalent, inductive definition of the type Game of
+games, which may have some practical advantages, such as more modular
+definitions of games.
 
 \begin{code}
 
@@ -74,8 +75,8 @@ to-Game-step X Xf ϕ ϕf q = refl
 
 \end{code}
 
-We also have he following equivalent definitional equalities expressed
-in terms of leaf' and branch':
+We also have the following equivalent definitional equalities
+expressed in terms of leaf' and branch':
 
 \begin{code}
 
@@ -98,8 +99,8 @@ module _
 
 \end{code}
 
-The above conversion functions are mutually inverse the types Game and
-Game' are equivalence, assuming function extensionality.
+The above conversion functions are mutually inverse and so the types
+Game and Game' are equivalent, assuming function extensionality.
 
 \begin{code}
 
