@@ -29,6 +29,7 @@ module Higgs.UntruncatedAtMostTwo
         (pt : propositional-truncations-exist)
        where
 
+open import Higgs.Rigidity fe pe
 open import Higgs.InvolutionTheorem fe pe
 open import Higgs.AutomorphismsOfOmega fe pe
 open import Higgs.AutomorphismsOfOmegaWEM fe pe pt
@@ -217,9 +218,11 @@ untruncated-at-most-two-iff-em = (FW , BW)
     → (f ≠ 𝕚𝕕)
     → (g ≠ 𝕚𝕕)
     → (f ＝ g)
-  I f-not g-not =
-    ((not-id-is-not f-not g-not) ∙
-     (not-id-is-not g-not g-not) ⁻¹)
+  I {f} f-not g-not =
+    ((not-id-is-not f-not em) ∙
+     (not-id-is-not g-not em) ⁻¹)
+    where
+      em = Ω-automorphism-distinct-from-𝕚𝕕-gives-EM (f , f-not)
 
   II : {f g h : Aut Ω}
      → ((f ＝ 𝕚𝕕) + (f ≠ 𝕚𝕕))

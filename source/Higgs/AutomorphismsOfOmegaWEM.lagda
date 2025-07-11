@@ -126,21 +126,18 @@ EM-gives-not-is-automorphism em = ((⇁_ , I) , (⇁_ , I))
   I = DNE-gives-double-negation-equality
        (EM-gives-DNE em)
 
-⇁' : {𝕗 : Aut Ω} → (𝕗 ≠ 𝕚𝕕) → Aut Ω
-⇁' {𝕗} ν = (⇁_ ,
-        EM-gives-not-is-automorphism
-         (Ω-automorphism-distinct-from-𝕚𝕕-gives-EM (𝕗 , ν)))
+⇁' : EM 𝓤 → Aut Ω
+⇁' em = (⇁_ , EM-gives-not-is-automorphism em)
 
-not-true-is-false : {𝕗 : Aut Ω}
-                  → (ν : 𝕗 ≠ 𝕚𝕕)
-                  → ⊥ ＝ eval-at-⊤ (⇁' ν)
+not-true-is-false : (em : EM 𝓤)
+                  → ⊥ ＝ eval-at-⊤ (⇁' em)
 not-true-is-false ν = Ω-extensionality pe fe 𝟘-elim (λ f → 𝟘-elim (f ⋆))
 
-not-id-is-not : {𝕗 𝕘 : Aut Ω}
+not-id-is-not : {𝕗 : Aut Ω}
               → (ν : 𝕗 ≠ 𝕚𝕕)
-              → (χ : 𝕘 ≠ 𝕚𝕕)
-              → 𝕗 ＝ (⇁' χ)
-not-id-is-not {𝕗@(f , f-is-equiv)} ν χ = eval-at-⊤-is-lc (III ν ∙ not-true-is-false χ)
+              → (em : EM 𝓤)
+              → 𝕗 ＝ (⇁' em)
+not-id-is-not {𝕗@(f , f-is-equiv)} ν em = eval-at-⊤-is-lc (III ν ∙ not-true-is-false em)
  where
   I : f ⊤ ＝ ⊤ → 𝕗 ＝ 𝕚𝕕
   I = eval-at-⊤-is-lc {𝕗} {𝕚𝕕}
@@ -158,7 +155,9 @@ not-id-is-not {𝕗@(f , f-is-equiv)} ν χ = eval-at-⊤-is-lc (III ν ∙ not-
  where
 
   FW : (𝕗 ≠ 𝕚𝕕) → ⌜ 𝕗 ⌝ ＝ ⇁_
-  FW ν = ap ⌜_⌝ {𝕗} {⇁' ν} (not-id-is-not ν ν)
+  FW ν = ap ⌜_⌝ {𝕗} {⇁' em} (not-id-is-not ν em)
+   where
+    em = Ω-automorphism-distinct-from-𝕚𝕕-gives-EM (𝕗 , ν)
 
   not-is-not-id : ⇁_ ≠ id
   not-is-not-id e = ⊥-is-not-⊤
