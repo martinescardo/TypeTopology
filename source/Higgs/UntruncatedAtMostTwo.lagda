@@ -221,8 +221,8 @@ untruncated-at-most-two-iff-em = (FW , BW)
   I {f} f-not g-not =
     ((not-id-is-not f-not em) ∙
      (not-id-is-not g-not em) ⁻¹)
-    where
-      em = Ω-automorphism-distinct-from-𝕚𝕕-gives-EM (f , f-not)
+   where
+     em = Ω-automorphism-distinct-from-𝕚𝕕-gives-EM (f , f-not)
 
   II : {f g h : Aut Ω}
      → ((f ＝ 𝕚𝕕) + (f ≠ 𝕚𝕕))
