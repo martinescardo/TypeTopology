@@ -90,15 +90,15 @@ different choice of S.
 Let f : P → Σ S be a "partial element" where P is a proposition. Then
 f is of the form
 
- f h = A h , B h
+ f h = A h , g h
 
-with A : P → 𝓤 ̇ and B : (h : P) → S (A h).
+with A : P → 𝓤 ̇ and g : (h : P) → S (A h).
 
 We need to construct a (total) element (X , s) of Σ S, with s : S X ,
-such that for all h : P we have that (X , s) = (A h , B h).
+such that for all h : P we have that (X , s) = (A h , g h).
 
-This forces X = A h for any h : P. Because P is a proposition, we have
-a fiberwise equivalence
+In particular, X = A h for any h : P. Because P is a
+proposition, we have a fiberwise equivalence
 
  π : (h : P) → Π A ≃ A h.
 
