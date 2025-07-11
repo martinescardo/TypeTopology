@@ -52,7 +52,7 @@ to-Game : Game' → Game
 to-Game (game' Xt q ϕt) = h Xt q ϕt
  where
   h : (Xt : 𝑻) → (Path Xt → R) → 𝓚 Xt → Game
-  h [] q ϕt              = leaf (q ⟨⟩)
+  h []       q ⟨⟩        = leaf (q ⟨⟩)
   h (X ∷ Xf) q (ϕ :: ϕf) = branch X ϕ (λ x → h (Xf x) (subpred q x) (ϕf x))
 
 \end{code}
@@ -114,7 +114,7 @@ module _ (fe : Fun-Ext) where
        (ϕt : 𝓚 Xt)
      → from-Game (to-Game (game' Xt q ϕt)) ＝ game' Xt q ϕt
    h []       q ⟨⟩       = refl
-   h (X ∷ Xf) q (ϕ , ϕf) =
+   h (X ∷ Xf) q (ϕ :: ϕf) =
     from-Game (to-Game (game' (X ∷ Xf) q (ϕ :: ϕf))) ＝⟨ refl ⟩
     from-Game (branch X ϕ (to-Game ∘ Gf))            ＝⟨ refl ⟩
     branch' X ϕ Hf                                   ＝⟨ I ⟩
