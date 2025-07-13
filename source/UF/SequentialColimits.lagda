@@ -15,6 +15,7 @@ module UF.SequentialColimits (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import UF.Base
+open import UF.CoconesofSpans fe
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Powerset-MultiUniverse
@@ -223,8 +224,6 @@ colimits.
 
 We prove the universal property for the sequential colimit.
 
-\begin{code}
-
   sequential-colimit-universal-property
    : Seqential-Colimit-Universal-Property 𝓐 sequential-colimit X
       sequential-colimit-is-cocone  
@@ -271,10 +270,48 @@ We prove the universal property for the sequential colimit.
           ＝ (IV n) x ∙ (H n x)
         V n x = {!!}
 
-  sequential-colimit-universal-property'
+\begin{code}
+
+  seq-cocone-to-pushout-cocone : sequential-cocone 𝓐 X → cocone f g X
+  seq-cocone-to-pushout-cocone (b , H)
+   = (uncurry b , uncurry b , gluing-from-sequential-cocone (b , H))
+
+  pushout-cocone-to-seq-cocone : cocone f g X → sequential-cocone 𝓐 X
+  pushout-cocone-to-seq-cocone (i , j , H) = (curry j , I)
+   where
+    I : (n : ℕ) → (curry j n) ∼ (λ - → j (succ n , a n -))
+    I n x = H (inl (n , x)) ⁻¹ ∙ H (inr (n , x))
+
+  pushout-to-seq-cocone-is-equiv : is-equiv pushout-cocone-to-seq-cocone
+  pushout-to-seq-cocone-is-equiv = {!!}
+
+  canonical-maps-commute
+   : canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
+      sequential-colimit-is-cocone
+   ∼ pushout-cocone-to-seq-cocone
+    ∘ canonical-map-to-cocone sequential-colimit f g pushout-cocone X
+  canonical-maps-commute u
+   = sequential-cocone-family-to-id 𝓐 X
+      (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
+       sequential-colimit-is-cocone u)
+      (pushout-cocone-to-seq-cocone (canonical-map-to-cocone sequential-colimit f g
+       pushout-cocone X u))
+      (I , II)
+    where
+     I : (n : ℕ) → u ∘ ι n ∼ curry (u ∘ inrr) n
+     I n x = refl
+     II : (n : ℕ) (x : A n)
+        → ap u (K n x)
+        ＝ refl ∙ (ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x))))
+     II n x = ap-∙ u (glue (inl (n , x)) ⁻¹) (glue (inr (n , x)))
+             ∙ (ap (_∙ ap u (glue (inr (n , x)))) (ap-sym u (glue (inl (n , x))) ⁻¹)
+             ∙ refl-left-neutral ⁻¹)
+
+  sequential-colimit-universal-property
    : Seqential-Colimit-Universal-Property 𝓐 sequential-colimit X
       sequential-colimit-is-cocone  
-  sequential-colimit-universal-property'
-   = {!!}  
+  sequential-colimit-universal-property
+   = transport is-equiv (dfunext fe (∼-sym canonical-maps-commute))
+      (∘-is-equiv pushout-universal-property pushout-to-seq-cocone-is-equiv)
 
 \end{code}
