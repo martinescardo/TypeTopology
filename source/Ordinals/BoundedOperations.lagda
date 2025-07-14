@@ -101,6 +101,27 @@ module greatest-element-satisfying-predicate
 -- Note that we can't quite assume continuity, but we can assume something like
 -- t (sup F) ＝ c ∨ sup (t ∘ F) for some suitable c
 
+module Enderton
+        (t : Ordinal 𝓤 → Ordinal 𝓤)
+        (γ : Ordinal 𝓤)
+        (t-is-continuous : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
+                         → t (sup F) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → γ) (λ i → t (F i))))
+       where
+
+ private
+  t-is-monotone : (α β : Ordinal 𝓤) → α ⊴ β → t α ⊴ t β
+  t-is-monotone α β l = {!!}
+   where
+    F : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
+    F (inl ⋆) = α
+    F (inr ⋆) = β
+    I : sup F ＝ β
+    I = {!!}
+    II : t (sup F) ＝ sup (cases (λ _ → γ) (λ i → t (F i)))
+    II = t-is-continuous F
+    III : t α ⊴ t β
+    III = {!!} -- t α ⊴ sup (cases (λ _ → γ) (λ i → t (F i))) ⊴ t (sup F) ＝ t (sup β)
+
 approximate-subtraction
  : (α β : Ordinal 𝓤) → α ⊴ β
  → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (α +ₒ - ⊴ β) × (- ⊴ β))
