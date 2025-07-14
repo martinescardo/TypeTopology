@@ -3,7 +3,7 @@ Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -97,184 +97,106 @@ module greatest-element-satisfying-predicate
  γ-greatest-satisfying-P : γ greatest-satisfying P
  γ-greatest-satisfying-P = γ-satisfies-P , γ-greatest
 
--- TODO: Capture the common core à la Enderton
 -- Note that we can't quite assume continuity, but we can assume something like
 -- t (sup F) ＝ c ∨ sup (t ∘ F) for some suitable c
 
 module Enderton
         (t : Ordinal 𝓤 → Ordinal 𝓤)
-        (γ : Ordinal 𝓤)
-        (t-is-continuous : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
-                         → t (sup F) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → γ) (λ i → t (F i))))
+        (δ₀ δ : Ordinal 𝓤)
+        (δ₀-below-δ : δ₀ ⊴ δ)
+        (t-preserves-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤) -- TODO: rename
+                         → t (sup F) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → δ₀) (λ i → t (F i))))
        where
 
  private
   t-is-monotone : (α β : Ordinal 𝓤) → α ⊴ β → t α ⊴ t β
-  t-is-monotone α β l = {!!}
+  t-is-monotone α β l = III
    where
     F : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
     F (inl ⋆) = α
     F (inr ⋆) = β
     I : sup F ＝ β
-    I = {!!}
-    II : t (sup F) ＝ sup (cases (λ _ → γ) (λ i → t (F i)))
-    II = t-is-continuous F
+    I = ⊴-antisym (sup F) β
+         (sup-is-lower-bound-of-upper-bounds F β ub)
+         (sup-is-upper-bound F (inr ⋆))
+     where
+      ub : (i : 𝟙 + 𝟙) → F i ⊴ β
+      ub (inl ⋆) = l
+      ub (inr ⋆) = ⊴-refl β
+    II : t (sup F) ＝ sup (cases (λ _ → δ₀) (λ i → t (F i)))
+    II = t-preserves-suprema F
     III : t α ⊴ t β
-    III = {!!} -- t α ⊴ sup (cases (λ _ → γ) (λ i → t (F i))) ⊴ t (sup F) ＝ t (sup β)
+    III = transport⁻¹
+           (t α ⊴_)
+           (ap t I ⁻¹ ∙ II)
+           (sup-is-upper-bound (cases (λ _ → δ₀) (t ∘ F)) (inr (inl ⋆)))
+
+ enderton : Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (t - ⊴ δ) × (- ⊴ δ))
+ enderton = γ , γ-greatest-satisfying-P
+  where
+   P : Ordinal 𝓤 → 𝓤 ̇
+   P α = (t α ⊴ δ) × (α ⊴ δ)
+   P-closed-under-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
+                          → ((i : I) → P (F i))
+                          → P (sup F)
+   P-closed-under-suprema {I} F ρ =
+    transport⁻¹ (_⊴ δ) (t-preserves-suprema F) σ ,
+    sup-is-lower-bound-of-upper-bounds F δ (λ i → pr₂ (ρ i))
+     where
+      σ : sup (cases (λ ⋆ → δ₀) (λ i → t (F i))) ⊴ δ
+      σ = sup-is-lower-bound-of-upper-bounds _ δ h
+       where
+        h : (x : 𝟙 + I) → cases (λ ⋆ → δ₀) (λ i → t (F i)) x ⊴ δ
+        h (inl ⋆) = δ₀-below-δ
+        h (inr i) = pr₁ (ρ i)
+   P-antitone : (α₁ α₂ : Ordinal 𝓤) → α₁ ⊴ α₂ → P α₂ → P α₁
+   P-antitone α₁ α₂ k (l , m) =
+     ⊴-trans (t α₁) (t α₂) δ (t-is-monotone α₁ α₂ k) l ,
+     ⊴-trans α₁ α₂ δ k m
+   P-bounded : Σ β ꞉ Ordinal 𝓤 , ((α : Ordinal 𝓤) → P α → α ⊴ β)
+   P-bounded = δ , (λ α p → pr₂ p)
+   open greatest-element-satisfying-predicate P P-closed-under-suprema P-antitone P-bounded
 
 approximate-subtraction
  : (α β : Ordinal 𝓤) → α ⊴ β
  → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (α +ₒ - ⊴ β) × (- ⊴ β))
-approximate-subtraction {𝓤} α β β-above-α = γ , γ-greatest-satisfying-P
+approximate-subtraction {𝓤} α β β-above-α = enderton
  where
-  P : Ordinal 𝓤 → 𝓤 ̇
-  P δ = (α +ₒ δ ⊴ β) × (δ ⊴ β)
-  P-closed-under-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
-                         → ((i : I) → P (F i))
-                         → P (sup F)
-  P-closed-under-suprema {I} F ρ =
-      transport⁻¹ (_⊴ β) (+ₒ-preserves-suprema pt sr α F) σ
-    , (sup-is-lower-bound-of-upper-bounds F β (λ i → pr₂ (ρ i)))
-   where
-    σ : sup (cases (λ ⋆ → α) (λ i → α +ₒ F i)) ⊴ β
-    σ = sup-is-lower-bound-of-upper-bounds _ β h
-     where
-      h : (x : 𝟙 + I) → cases (λ _ → α) (λ i → α +ₒ F i) x ⊴ β
-      h (inl ⋆) = β-above-α
-      h (inr i) = pr₁ (ρ i)
-  P-antitone : (α₁ α₂ : Ordinal 𝓤) → α₁ ⊴ α₂ → P α₂ → P α₁
-  P-antitone α₁ α₂ k (l , m) =
-     ⊴-trans (α +ₒ α₁) (α +ₒ α₂) β (+ₒ-right-monotone-⊴ α α₁ α₂ k) l
-   , ⊴-trans α₁ α₂ β k m
-  P-bounded : Σ β ꞉ Ordinal 𝓤 , ((α : Ordinal 𝓤) → P α → α ⊴ β)
-  P-bounded = β , (λ α p → pr₂ p)
-  open greatest-element-satisfying-predicate P P-closed-under-suprema P-antitone P-bounded
+  open Enderton (α +ₒ_) α β β-above-α (+ₒ-preserves-suprema pt sr α)
 
 approximate-division
- : (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ β
+ : (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ β -- In our weakening this assumption becomes redundant
  → Σ γ ꞉ Ordinal 𝓤 ,
     γ greatest-satisfying (λ - → (β ×ₒ - ⊴ α) × (- ⊴ α))
-approximate-division {𝓤} α β β-pos = γ , γ-greatest-satisfying-P
- where
-  b₀ : ⟨ β ⟩
-  b₀ = pr₁ β-pos
-  b₀-eq : β ↓ b₀ ＝ 𝟘ₒ
-  b₀-eq = (pr₂ β-pos) ⁻¹
-  fact : (δ : Ordinal 𝓤) → β ×ₒ δ +ₒ (β ↓ b₀) ＝ β ×ₒ δ
-  fact δ = ap (β ×ₒ δ +ₒ_) b₀-eq ∙ 𝟘ₒ-right-neutral (β ×ₒ δ)
-
-  P : Ordinal 𝓤 → 𝓤 ̇
-  P δ = (β ×ₒ δ ⊴ α) × (δ ⊴ α)
-  P-closed-under-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
-                         → ((i : I) → P (F i))
-                         → P (sup F)
-  P-closed-under-suprema {I} F ρ =
-     transport⁻¹ (_⊴ α) (×ₒ-preserves-suprema pt sr β F) (sup-is-lower-bound-of-upper-bounds (λ i → β ×ₒ F i) α (λ i → pr₁ (ρ i)))
-   , sup-is-lower-bound-of-upper-bounds F α (λ i → pr₂ (ρ i))
-  P-antitone : (α₁ α₂ : Ordinal 𝓤) → α₁ ⊴ α₂ → P α₂ → P α₁
-  P-antitone α₁ α₂ k (l , m) = ⊴-trans (β ×ₒ α₁) (β ×ₒ α₂) α (×ₒ-right-monotone-⊴ β α₁ α₂ k) l , ⊴-trans α₁ α₂ α k m
-  P-bounded : Σ ε ꞉ Ordinal 𝓤 , ((δ : Ordinal 𝓤) → P δ → δ ⊴ ε)
-  P-bounded = α , (λ δ p → pr₂ p)
-  open greatest-element-satisfying-predicate P P-closed-under-suprema P-antitone P-bounded
+approximate-division {𝓤} α β β-pos = enderton
+ where -- TODO: Upstream this part into the Enderton module
+  σ : {I : 𝓤 ̇} (F : I → Ordinal 𝓤)
+    → β ×ₒ sup F ＝ sup (cases (λ _ → 𝟘ₒ) (λ i → β ×ₒ F i))
+  σ {I} F = e₁ ∙ e₂
+   where
+    e₁ : β ×ₒ sup F ＝ sup (λ i → β ×ₒ F i)
+    e₁ = ×ₒ-preserves-suprema pt sr β F
+    e₂ : sup (λ i → β ×ₒ F i) ＝ sup (cases (λ _ → 𝟘ₒ) (λ i → β ×ₒ F i))
+    e₂ = ⊴-antisym _ _ u v
+     where
+      u : sup (λ i → β ×ₒ F i) ⊴ sup (cases (λ _ → 𝟘ₒ) (λ i → β ×ₒ F i))
+      u = sup-is-lower-bound-of-upper-bounds _ _ (λ i → sup-is-upper-bound _ (inr i))
+      v : sup (cases (λ _ → 𝟘ₒ) (λ i → β ×ₒ F i)) ⊴ sup (λ i → β ×ₒ F i)
+      v = sup-is-lower-bound-of-upper-bounds _ _ w
+       where
+        w : (x : 𝟙 + I)
+          → cases (λ _ → 𝟘ₒ) (λ i → β ×ₒ F i) x ⊴ sup (λ i → β ×ₒ F i)
+        w (inl ⋆) = 𝟘ₒ-least-⊴ (sup (λ i → β ×ₒ F i))
+        w (inr i) = sup-is-upper-bound (λ j → β ×ₒ F j) i
+  open Enderton (β ×ₒ_) 𝟘ₒ α (𝟘ₒ-least-⊴ α) σ
 
 open import Ordinals.Exponentiation.Supremum ua pt sr
 aproximate-logarithm
  : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β
  → Σ γ ꞉ Ordinal 𝓤 ,
     γ greatest-satisfying (λ - → (α ^ₒ - ⊴ β) × (- ⊴ β))
-aproximate-logarithm {𝓤} α β β-pos = γ , γ-greatest-satisfying-P
+aproximate-logarithm {𝓤} α β β-pos = enderton
  where
-  P : Ordinal 𝓤 → 𝓤 ̇
-  P δ = (α ^ₒ δ ⊴ β) × (δ ⊴ β)
-  P-closed-under-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
-                         → ((i : I) → P (F i))
-                         → P (sup F)
-  P-closed-under-suprema {I} F ρ =
-   transport⁻¹ (_⊴ β) (^ₒ-satisfies-strong-sup-specification α I F) (sup-is-lower-bound-of-upper-bounds _ β h) ,
-   sup-is-lower-bound-of-upper-bounds F β (λ i → pr₂ (ρ i))
-    where
-     h : (x : 𝟙 + I) → cases (λ _ → 𝟙ₒ) (λ i → α ^ₒ F i) x ⊴ β
-     h (inl ⋆) = β-pos
-     h (inr i) = pr₁ (ρ i)
-  P-antitone : (α₁ α₂ : Ordinal 𝓤) → α₁ ⊴ α₂ → P α₂ → P α₁
-  P-antitone α₁ α₂ k (l , m) = ⊴-trans (α ^ₒ α₁) (α ^ₒ α₂) β (^ₒ-monotone-in-exponent α α₁ α₂ k) l , ⊴-trans α₁ α₂ β k m
-  P-bounded : Σ ε ꞉ Ordinal 𝓤 , ((δ : Ordinal 𝓤) → P δ → δ ⊴ ε)
-  P-bounded = β , (λ δ p → pr₂ p)
-  open greatest-element-satisfying-predicate P P-closed-under-suprema P-antitone P-bounded
-
-{-
-Original silly version
-approximate-division
- : (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ β
- → Σ γ ꞉ Ordinal 𝓤 ,
-    γ greatest-satisfying (λ - → Σ b ꞉ ⟨ β ⟩ , (β ×ₒ - +ₒ (β ↓ b) ⊴ α) × (- ⊴ α))
-approximate-division {𝓤} α β β-pos = γ , γ-greatest-satisfying-P
- where
-  b₀ : ⟨ β ⟩
-  b₀ = pr₁ β-pos
-  b₀-eq : β ↓ b₀ ＝ 𝟘ₒ
-  b₀-eq = (pr₂ β-pos) ⁻¹
-  fact : (δ : Ordinal 𝓤) → β ×ₒ δ +ₒ (β ↓ b₀) ＝ β ×ₒ δ
-  fact δ = ap (β ×ₒ δ +ₒ_) b₀-eq ∙ 𝟘ₒ-right-neutral (β ×ₒ δ)
-
-  P : Ordinal 𝓤 → 𝓤 ̇
-  P δ = Σ b ꞉ ⟨ β ⟩ , (β ×ₒ δ +ₒ (β ↓ b) ⊴ α) × (δ ⊴ α)
-  P-closed-under-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
-                         → ((i : I) → P (F i))
-                         → P (sup F)
-  P-closed-under-suprema {I} F ρ =
-   b₀ ,
-   transport⁻¹ (_⊴ α) (fact (sup F) ∙ ×ₒ-preserves-suprema pt sr β F) t ,
-   sup-is-lower-bound-of-upper-bounds F α (λ i → pr₂ (pr₂ (ρ i)))
-    where
-     t : sup (λ i → β ×ₒ F i) ⊴ α
-     t = sup-is-lower-bound-of-upper-bounds _ α s
-      where
-       s : (i : I) → β ×ₒ F i ⊴ α
-       s i = ⊴-trans (β ×ₒ F i) (β ×ₒ F i +ₒ (β ↓ bᵢ)) α (+ₒ-left-⊴ (β ×ₒ F i) (β ↓ bᵢ)) (pr₁ (pr₂ (ρ i)))
-        where
-         bᵢ : ⟨ β ⟩
-         bᵢ = pr₁ (ρ i)
-  P-antitone : (α₁ α₂ : Ordinal 𝓤) → α₁ ⊴ α₂ → P α₂ → P α₁
-  P-antitone α₁ α₂ k (b , l , m) = b₀ , transport⁻¹ (_⊴ α) (fact α₁) t , ⊴-trans α₁ α₂ α k m
-   where
-    t : β ×ₒ α₁ ⊴ α
-    t = ⊴-trans (β ×ₒ α₁) (β ×ₒ α₂) α (×ₒ-right-monotone-⊴ β α₁ α₂ k) (⊴-trans (β ×ₒ α₂) (β ×ₒ α₂ +ₒ (β ↓ b)) α (+ₒ-left-⊴ (β ×ₒ α₂) (β ↓ b)) l)
-  P-bounded : Σ ε ꞉ Ordinal 𝓤 , ((δ : Ordinal 𝓤) → P δ → δ ⊴ ε)
-  P-bounded = α , (λ δ p → pr₂ (pr₂ p))
-  open greatest-element-satisfying-predicate P P-closed-under-suprema P-antitone P-bounded
--}
-
-{-
-open import UF.Subsingletons-FunExt
-experiment : (P : 𝓤 ̇ ) → is-prop P → Ordinal 𝓤
-experiment {𝓤} P P-is-prop = γ
- where
-  Pₒ ¬Pₒ α β : Ordinal 𝓤
-  Pₒ = prop-ordinal P P-is-prop
-  ¬Pₒ = prop-ordinal (¬ P) (negations-are-props fe')
-  α = 𝟚ₒ{𝓤} ×ₒ Pₒ +ₒ ¬Pₒ
-  β = 𝟚ₒ{𝓤}
-  β-pos : 𝟘ₒ ⊲ β
-  β-pos = inl ⋆ , (𝟙ₒ-↓ ⁻¹ ∙ +ₒ-↓-left ⋆)
-  γ =  pr₁ (approximate-division α β β-pos)
-  bit : 𝟙 + 𝟙
-  bit = pr₁ (pr₁ (pr₂ (approximate-division α β β-pos)))
-  I : ¬ P → bit ＝ inr ⋆
-  I ν = {!!}
-   where
-    e : α ＝ 𝟙ₒ
-    e = {!!}
-    fact : 𝟘ₒ greatest-satisfying (λ - → Σ b ꞉ ⟨ β ⟩ , (β ×ₒ - +ₒ (β ↓ b) ⊴ α) × (- ⊴ α))
-    fact = ((inr ⋆) , ({!-- OK using e!} , {!-- OK using e!})) , fact'
-     where
-      fact' : (α₁ : Ordinal 𝓤) →
-                Sigma (Underlying.⟨ underlying-type-of-ordinal ⟩ β)
-                (λ b → β ×ₒ α₁ +ₒ (β ↓ b) ⊴ α × α₁ ⊴ α) →
-                α₁ ⊴ 𝟘ₒ
-      fact' δ (b , k , l) = {!-- OK as δ must be empty by k and e!}
-    foo : γ ⊴ 𝟘ₒ
-    foo = pr₂ fact γ (pr₁ ((pr₂ (approximate-division α β β-pos))))
--}
+ open Enderton (α ^ₒ_) 𝟙ₒ β β-pos (^ₒ-satisfies-strong-sup-specification α _)
 
 \end{code}
