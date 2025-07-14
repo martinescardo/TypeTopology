@@ -234,6 +234,12 @@ open import Ordinals.Underlying
   ϕ : (x : ⟨ α +ₒ β ⟩) → ((α +ₒ β) ↓ x) ⊲ (α +ₒ γ)
   ϕ = dep-cases l r
 
++ₒ-right-monotone-⊴ : (α β γ : Ordinal 𝓤)
+                    → β ⊴ γ
+                    → (α +ₒ β) ⊴ (α +ₒ γ)
++ₒ-right-monotone-⊴ α β γ l =
+ ≼-gives-⊴ (α +ₒ β) (α +ₒ γ) (+ₒ-right-monotone α β γ (⊴-gives-≼ β γ l))
+
 \end{code}
 
 TODO. Find better names for the following lemmas.
@@ -953,9 +959,7 @@ module _ (pt : propositional-truncations-exist)
     ⦅2⦆ = sup-is-lower-bound-of-upper-bounds (λ i → α +ₒ β i) (α +ₒ sup β) ⦅2⦆'
      where
       ⦅2⦆' : (i : I) → (α +ₒ β i) ⊴ (α +ₒ sup β)
-      ⦅2⦆' i = ≼-gives-⊴ (α +ₒ β i) (α +ₒ sup β)
-                (+ₒ-right-monotone α (β i) (sup β)
-                 (⊴-gives-≼ _ _ (sup-is-upper-bound β i)))
+      ⦅2⦆' i = +ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i)
 
     ⦅1⦆ : I → (α +ₒ sup β) ≼ sup (λ i → α +ₒ β i)
     ⦅1⦆ i₀ _ (inl a , refl) =
@@ -1049,6 +1053,61 @@ Every ordinal is the supremum of the successors of its initial segments.
     II : s ⊴ α
     II = sup-is-lower-bound-of-upper-bounds F α
           (upper-bound-of-successors-of-initial-segments α)
+
+\end{code}
+
+Added 14 July 2024.
+
+We prove that α +ₒ (sup β) ＝ α ∨ sup (λ i → α +ₒ β i), but we formulate the RHS
+as a single supremum by indexing over 𝟙 + I instead, sending inl ⋆ to α.
+
+\begin{code}
+
+ +ₒ-preserves-suprema
+  : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
+  → α +ₒ sup β ＝ sup (cases (λ ⋆ → α) (λ i → α +ₒ β i))
+ +ₒ-preserves-suprema {𝓤} α {I} β = ⊴-antisym (α +ₒ sup β) (sup F) ⦅1⦆ ⦅2⦆
+  where
+   F : 𝟙 {𝓤} + I → Ordinal 𝓤
+   F = cases (λ _ → α) (λ i → α +ₒ β i)
+
+   ⦅1⦆ : α +ₒ sup β ⊴ sup F
+   ⦅1⦆ = to-⊴ (α +ₒ sup β) (sup F) h
+    where
+     h : (z : ⟨ α +ₒ sup β ⟩)
+       → (α +ₒ sup β) ↓ z ⊲ sup F
+     h (inl a) = (s , (α +ₒ sup β ↓ inl a ＝⟨ (+ₒ-↓-left a) ⁻¹ ⟩
+                       α ↓ a              ＝⟨ e ⟩
+                       sup F ↓ s          ∎))
+      where
+       s : ⟨ sup F ⟩
+       s = [ α , sup F ]⟨ sup-is-upper-bound F (inl ⋆) ⟩ a
+       e = (initial-segment-of-sup-at-component F (inl ⋆) a) ⁻¹
+     h (inr y) =
+      ∥∥-rec
+       (⊲-is-prop-valued (α +ₒ sup β ↓ inr y) (sup F))
+       g
+       (initial-segment-of-sup-is-initial-segment-of-some-component β y)
+      where
+       g : (Σ i ꞉ I , Σ x ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ β i ↓ x)
+         → α +ₒ sup β ↓ inr y ⊲ sup F
+       g (i , x , e) = s , ((α +ₒ sup β) ↓ inr y ＝⟨ (+ₒ-↓-right y) ⁻¹ ⟩
+                            α +ₒ (sup β ↓ y)     ＝⟨ ap (α +ₒ_) e ⟩
+                            α +ₒ (β i ↓ x)       ＝⟨ +ₒ-↓-right x ⟩
+                            (α +ₒ β i) ↓ inr x   ＝⟨ e' ⟩
+                            sup F ↓ s            ∎)
+        where
+         s : ⟨ sup F ⟩
+         s = [ F (inr i) , sup F ]⟨ sup-is-upper-bound F (inr i) ⟩ (inr x)
+         e' = (initial-segment-of-sup-at-component F (inr i) (inr x)) ⁻¹
+
+   ⦅2⦆ : sup F ⊴ α +ₒ sup β
+   ⦅2⦆ = sup-is-lower-bound-of-upper-bounds F (α +ₒ sup β) h
+    where
+     h : (x : 𝟙 + I) → F x ⊴ α +ₒ sup β
+     h (inl ⋆) = +ₒ-left-⊴ α (sup β)
+     h (inr i) = +ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i)
+
 
 \end{code}
 

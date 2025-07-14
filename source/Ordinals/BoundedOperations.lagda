@@ -105,12 +105,18 @@ approximate-subtraction {𝓤} α β β-above-α = γ , γ-greatest-satisfying-P
                          → ((i : I) → P (F i))
                          → P (sup F)
   P-closed-under-suprema {I} F ρ =
-      {!!} -- Should formalize [α +ₒ (sup F) ＝ α ∨ sup (λ i → α +ₒ F i)]
+      transport⁻¹ (_⊴ β) (+ₒ-preserves-suprema pt sr α F) σ
     , (sup-is-lower-bound-of-upper-bounds F β (λ i → pr₂ (ρ i)))
+   where
+    σ : sup (cases (λ ⋆ → α) (λ i → α +ₒ F i)) ⊴ β
+    σ = sup-is-lower-bound-of-upper-bounds _ β h
+     where
+      h : (x : 𝟙 + I) → cases (λ _ → α) (λ i → α +ₒ F i) x ⊴ β
+      h (inl ⋆) = β-above-α
+      h (inr i) = pr₁ (ρ i)
   P-antitone : (α₁ α₂ : Ordinal 𝓤) → α₁ ⊴ α₂ → P α₂ → P α₁
   P-antitone α₁ α₂ k (l , m) =
-     ⊴-trans (α +ₒ α₁) (α +ₒ α₂) β (≼-gives-⊴ _ _ (+ₒ-right-monotone α α₁ α₂ (⊴-gives-≼ α₁ α₂ k))) l
-     -- Should record monotonicity for ⊴
+     ⊴-trans (α +ₒ α₁) (α +ₒ α₂) β (+ₒ-right-monotone-⊴ α α₁ α₂ k) l
    , ⊴-trans α₁ α₂ β k m
   P-bounded : Σ β ꞉ Ordinal 𝓤 , ((α : Ordinal 𝓤) → P α → α ⊴ β)
   P-bounded = β , (λ α p → pr₂ p)
