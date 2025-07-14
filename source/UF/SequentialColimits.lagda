@@ -21,6 +21,7 @@ open import UF.EquivalenceExamples
 open import UF.Powerset-MultiUniverse
 open import UF.PropIndexedPiSigma
 open import UF.Pushouts fe
+open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Yoneda
 
@@ -165,8 +166,8 @@ where σ (n , x) = (n + 1 , a n x).
 
 \begin{code}
 
-module _ (X : 𝓣 ̇)
-         (𝓐@(A , a) : type-sequence 𝓤)
+module _ (𝓐@(A , a) : type-sequence 𝓤)
+         (X : 𝓣 ̇)
           where
 
  σ : Σ A → Σ A
@@ -222,8 +223,8 @@ colimits.
 
 \end{code}
 
-We will now show an equivalence between cocones over the above pushout diagram are
-equivalent to a sequential cocone over the above type sequence.
+We will now show cocones over the above pushout diagram are equivalent to a sequential
+cocones over the above type sequence.
 
 \begin{code}
 
@@ -302,13 +303,93 @@ Using the above we prove the universal property for the sequential colimit.
 
 \end{code}
 
-From the universal property we will derived the recursion principle for sequential
-colimits.
+We unpack the equivalence obtained from the universal property.
 
 \begin{code}
 
+  module _ (𝓧@(h , H) : sequential-cocone 𝓐 X)
+            where
 
+   canonical-map-seq-cocone-fiber-contr
+    : is-contr (fiber (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
+       sequential-colimit-is-cocone) 𝓧)
+   canonical-map-seq-cocone-fiber-contr
+    = equivs-are-vv-equivs (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
+       sequential-colimit-is-cocone) sequential-colimit-universal-property 𝓧
+
+   canonical-map-seq-cocone-fiber-contr'
+    : is-contr (Σ u ꞉ (sequential-colimit → X) ,
+       sequential-cocone-family 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
+   canonical-map-seq-cocone-fiber-contr' =
+    equiv-to-singleton'
+     (Σ-cong (λ - → sequential-cocone-identity-characterization 𝓐 X
+      ((λ n → - ∘ ι n) , λ n → ∼-ap-∘ - (K n)) 𝓧)) (canonical-map-seq-cocone-fiber-contr)
+
+   sequential-colimit-fiber-center
+    : Σ u ꞉ (sequential-colimit → X) ,
+       sequential-cocone-family 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧
+   sequential-colimit-fiber-center = center (canonical-map-seq-cocone-fiber-contr')
+
+   sequential-colimit-fiber-centrality
+    : is-central
+       (Σ u ꞉ (sequential-colimit → X) ,
+        sequential-cocone-family 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
+       (sequential-colimit-fiber-center)
+   sequential-colimit-fiber-centrality
+    = centrality (canonical-map-seq-cocone-fiber-contr')
+
+   sequential-colimit-unique-map
+    : Σ u ꞉ (sequential-colimit → X) ,
+       sequential-cocone-family 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧
+    → sequential-colimit → X
+   sequential-colimit-unique-map (u , _ , _) = u
+
+   sequential-colimit-homotopy
+    : (z : Σ u ꞉ (sequential-colimit → X) ,
+       sequential-cocone-family 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
+    → (n : ℕ) → sequential-colimit-unique-map z ∘ ι n ∼ h n
+   sequential-colimit-homotopy (_ , G , _) = G
+
+   sequential-colimit-glue
+    : ((u , G , M) : Σ u ꞉ (sequential-colimit → X) ,
+       sequential-cocone-family 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
+    → (n : ℕ) → ∼-trans (∼-ap-∘ u (K n)) (λ x → G (succ n) (a n x))
+              ∼ ∼-trans (G n) (H n)
+   sequential-colimit-glue (_ , _ , M) = M
 
 \end{code}
 
-TODO. Derive the dependent universal property and induction principle from pushouts.
+From the universal property we will derived the recursion principle and computation rules
+for sequential colimits.
+
+\begin{code}
+
+  sequential-colimit-recursion : sequential-cocone 𝓐 X
+                               → sequential-colimit → X
+  sequential-colimit-recursion 𝓧
+   = sequential-colimit-unique-map 𝓧 (sequential-colimit-fiber-center 𝓧)
+
+  sequential-colimit-recursion-computation
+   : ((h , H) : sequential-cocone 𝓐 X)
+   → (n : ℕ)
+   → (x : A n)
+   → sequential-colimit-recursion (h , H) (ι n x) ＝ h n x
+  sequential-colimit-recursion-computation 𝓧
+   = sequential-colimit-homotopy 𝓧 (sequential-colimit-fiber-center 𝓧)
+
+  sequential-colimit-recursion-glue
+   : ((h , H) : sequential-cocone 𝓐 X)
+   → (n : ℕ)
+   → (x : A n)
+   → ap (sequential-colimit-recursion (h , H)) (K n x)
+     ∙ sequential-colimit-recursion-computation (h , H) (succ n) (a n x)
+   ＝ sequential-colimit-recursion-computation (h , H) n x ∙ H n x
+  sequential-colimit-recursion-glue 𝓧
+   = sequential-colimit-glue 𝓧 (sequential-colimit-fiber-center 𝓧)
+
+\end{code}
+
+TODO. Derive uniqueness principle for sequential colimits.
+
+TODO. Derive the dependent universal property and induction principle for sequential
+colimits.
