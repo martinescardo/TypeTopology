@@ -47,7 +47,7 @@ open PropositionalTruncation pt
 open suprema pt sr
 
 _greatest-satisfying_ : Ordinal 𝓤 → (Ordinal 𝓤 → 𝓥 ̇ ) → 𝓤 ⁺ ⊔ 𝓥 ̇
-_greatest-satisfying_ {𝓤} γ P = (α : Ordinal 𝓤) → P α → α ⊴ γ
+_greatest-satisfying_ {𝓤} γ P = P γ × ((α : Ordinal 𝓤) → P α → α ⊴ γ)
 
 module greatest-element-satisfying-predicate
         (P : Ordinal 𝓤 → 𝓤 ̇ )
@@ -73,8 +73,8 @@ module greatest-element-satisfying-predicate
  γ-satisfies-P : P γ
  γ-satisfies-P = P-closed-under-suprema (λ (b , _) → S β b) (λ (b , p) → p)
 
- γ-greatest-satisfying-P : γ greatest-satisfying P
- γ-greatest-satisfying-P α p = to-⊴ α γ I
+ γ-greatest : (α : Ordinal 𝓤) → P α → α ⊴ γ
+ γ-greatest α p = to-⊴ α γ I
   where
    II : (a : ⟨ α ⟩) → Σ bₐ ꞉ ⟨ β ⟩ , α ↓ a ＝ β ↓ bₐ
    II = from-≼ (⊴-gives-≼ α β (β-is-bound α p))
@@ -93,6 +93,9 @@ module greatest-element-satisfying-predicate
        p'' = P-antitone _ _ (upper-bound-of-successors-of-initial-segments α a) p
      c : ⟨ γ ⟩
      c = [ S β bₐ , γ ]⟨ sup-is-upper-bound _ (bₐ , p') ⟩ (inr ⋆)
+
+ γ-greatest-satisfying-P : γ greatest-satisfying P
+ γ-greatest-satisfying-P = γ-satisfies-P , γ-greatest
 
 approximate-subtraction
  : (α β : Ordinal 𝓤) → α ⊴ β
