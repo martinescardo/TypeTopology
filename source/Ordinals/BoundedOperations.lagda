@@ -128,6 +128,35 @@ approximate-subtraction {𝓤} α β β-above-α = γ , γ-greatest-satisfying-P
 approximate-division
  : (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ β
  → Σ γ ꞉ Ordinal 𝓤 ,
+    γ greatest-satisfying (λ - → (β ×ₒ - ⊴ α) × (- ⊴ α))
+approximate-division {𝓤} α β β-pos = γ , γ-greatest-satisfying-P
+ where
+  b₀ : ⟨ β ⟩
+  b₀ = pr₁ β-pos
+  b₀-eq : β ↓ b₀ ＝ 𝟘ₒ
+  b₀-eq = (pr₂ β-pos) ⁻¹
+  fact : (δ : Ordinal 𝓤) → β ×ₒ δ +ₒ (β ↓ b₀) ＝ β ×ₒ δ
+  fact δ = ap (β ×ₒ δ +ₒ_) b₀-eq ∙ 𝟘ₒ-right-neutral (β ×ₒ δ)
+
+  P : Ordinal 𝓤 → 𝓤 ̇
+  P δ = (β ×ₒ δ ⊴ α) × (δ ⊴ α)
+  P-closed-under-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
+                         → ((i : I) → P (F i))
+                         → P (sup F)
+  P-closed-under-suprema {I} F ρ =
+     transport⁻¹ (_⊴ α) (×ₒ-preserves-suprema pt sr β F) (sup-is-lower-bound-of-upper-bounds (λ i → β ×ₒ F i) α (λ i → pr₁ (ρ i)))
+   , sup-is-lower-bound-of-upper-bounds F α (λ i → pr₂ (ρ i))
+  P-antitone : (α₁ α₂ : Ordinal 𝓤) → α₁ ⊴ α₂ → P α₂ → P α₁
+  P-antitone α₁ α₂ k (l , m) = ⊴-trans (β ×ₒ α₁) (β ×ₒ α₂) α (×ₒ-right-monotone-⊴ β α₁ α₂ k) l , ⊴-trans α₁ α₂ α k m
+  P-bounded : Σ ε ꞉ Ordinal 𝓤 , ((δ : Ordinal 𝓤) → P δ → δ ⊴ ε)
+  P-bounded = α , (λ δ p → pr₂ p)
+  open greatest-element-satisfying-predicate P P-closed-under-suprema P-antitone P-bounded
+
+{-
+Original silly version
+approximate-division
+ : (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ β
+ → Σ γ ꞉ Ordinal 𝓤 ,
     γ greatest-satisfying (λ - → Σ b ꞉ ⟨ β ⟩ , (β ×ₒ - +ₒ (β ↓ b) ⊴ α) × (- ⊴ α))
 approximate-division {𝓤} α β β-pos = γ , γ-greatest-satisfying-P
  where
@@ -164,5 +193,38 @@ approximate-division {𝓤} α β β-pos = γ , γ-greatest-satisfying-P
   P-bounded : Σ ε ꞉ Ordinal 𝓤 , ((δ : Ordinal 𝓤) → P δ → δ ⊴ ε)
   P-bounded = α , (λ δ p → pr₂ (pr₂ p))
   open greatest-element-satisfying-predicate P P-closed-under-suprema P-antitone P-bounded
+-}
+
+{-
+open import UF.Subsingletons-FunExt
+experiment : (P : 𝓤 ̇ ) → is-prop P → Ordinal 𝓤
+experiment {𝓤} P P-is-prop = γ
+ where
+  Pₒ ¬Pₒ α β : Ordinal 𝓤
+  Pₒ = prop-ordinal P P-is-prop
+  ¬Pₒ = prop-ordinal (¬ P) (negations-are-props fe')
+  α = 𝟚ₒ{𝓤} ×ₒ Pₒ +ₒ ¬Pₒ
+  β = 𝟚ₒ{𝓤}
+  β-pos : 𝟘ₒ ⊲ β
+  β-pos = inl ⋆ , (𝟙ₒ-↓ ⁻¹ ∙ +ₒ-↓-left ⋆)
+  γ =  pr₁ (approximate-division α β β-pos)
+  bit : 𝟙 + 𝟙
+  bit = pr₁ (pr₁ (pr₂ (approximate-division α β β-pos)))
+  I : ¬ P → bit ＝ inr ⋆
+  I ν = {!!}
+   where
+    e : α ＝ 𝟙ₒ
+    e = {!!}
+    fact : 𝟘ₒ greatest-satisfying (λ - → Σ b ꞉ ⟨ β ⟩ , (β ×ₒ - +ₒ (β ↓ b) ⊴ α) × (- ⊴ α))
+    fact = ((inr ⋆) , ({!-- OK using e!} , {!-- OK using e!})) , fact'
+     where
+      fact' : (α₁ : Ordinal 𝓤) →
+                Sigma (Underlying.⟨ underlying-type-of-ordinal ⟩ β)
+                (λ b → β ×ₒ α₁ +ₒ (β ↓ b) ⊴ α × α₁ ⊴ α) →
+                α₁ ⊴ 𝟘ₒ
+      fact' δ (b , k , l) = {!-- OK as δ must be empty by k and e!}
+    foo : γ ⊴ 𝟘ₒ
+    foo = pr₂ fact γ (pr₁ ((pr₂ (approximate-division α β β-pos))))
+-}
 
 \end{code}
