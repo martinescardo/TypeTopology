@@ -222,59 +222,10 @@ colimits.
 
 \end{code}
 
-We prove the universal property for the sequential colimit.
-
-  sequential-colimit-universal-property
-   : Seqential-Colimit-Universal-Property 𝓐 sequential-colimit X
-      sequential-colimit-is-cocone  
-  sequential-colimit-universal-property
-   = qinvs-are-equivs
-      (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-       sequential-colimit-is-cocone)
-      (map-from-sequential-cocone , I , II)
-   where
-    composition-1 = map-from-sequential-cocone
-                   ∘ canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-                      sequential-colimit-is-cocone
-    observe-1 : (u : sequential-colimit → X)
-              → composition-1 u
-              ＝ pushout-recursion (λ (n , x) → u (ι n x)) (λ (n , x) → u (ι n x))
-                 (gluing-from-sequential-cocone ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)))
-    observe-1 u = refl
-    I : composition-1 ∼ id
-    I u = dfunext fe (pushout-uniqueness (composition-1 u) u III IV V)
-     where
-      III : (z : Σ A) → composition-1 u (inll z) ＝ u (inll z)
-      III (n , x) = {!!}
-      IV : (z : Σ A) → composition-1 u (inrr z) ＝ u (inrr z)
-      IV = pushout-rec-comp-inrr (λ (n , x) → u (ι n x)) (λ (n , x) → u (ι n x))
-            (gluing-from-sequential-cocone ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)))
-      V : (c : Σ A + Σ A)
-        → ap (composition-1 u) (glue c) ∙ IV (g c)
-        ＝ III (f c) ∙ ap u (glue c)
-      V = pushout-rec-comp-glue (λ (n , x) → u (ι n x)) (λ (n , x) → u (ι n x))
-           (gluing-from-sequential-cocone {!!})
-    composition-2 = canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-                     sequential-colimit-is-cocone ∘ map-from-sequential-cocone
-    II : composition-2 ∼ id
-    II (b , H) = sequential-cocone-family-to-id 𝓐 X (composition-2 (b , H)) (b , H) III
-     where
-      III : sequential-cocone-family 𝓐 X (composition-2 (b , H)) (b , H)
-      III = (IV , V)
-       where
-        IV : (n : ℕ) → (λ - → map-from-sequential-cocone (b , H) (ι n -)) ∼ b n
-        IV n x = pushout-rec-comp-inrr (uncurry b) (uncurry b)
-                  (gluing-from-sequential-cocone (b , H)) (n , x)
-        V : (n : ℕ) (x : A n)
-          → ap (map-from-sequential-cocone (b , H)) (K n x) ∙ (IV (succ n) (a n x))
-          ＝ (IV n) x ∙ (H n x)
-        V n x = {!!}
+We will now show an equivalence between cocones over the above pushout diagram are
+equivalent to a sequential cocone over the above type sequence.
 
 \begin{code}
-
-  seq-cocone-to-pushout-cocone : sequential-cocone 𝓐 X → cocone f g X
-  seq-cocone-to-pushout-cocone (b , H)
-   = (uncurry b , uncurry b , gluing-from-sequential-cocone (b , H))
 
   pushout-cocone-to-seq-cocone : cocone f g X → sequential-cocone 𝓐 X
   pushout-cocone-to-seq-cocone (i , j , H) = (curry j , I)
@@ -282,8 +233,37 @@ We prove the universal property for the sequential colimit.
     I : (n : ℕ) → (curry j n) ∼ (λ - → j (succ n , a n -))
     I n x = H (inl (n , x)) ⁻¹ ∙ H (inr (n , x))
 
+  seq-cocone-to-pushout-cocone : sequential-cocone 𝓐 X → cocone f g X
+  seq-cocone-to-pushout-cocone (b , H)
+   = (uncurry b , uncurry b , gluing-from-sequential-cocone (b , H))
+
+  pushout-cocone-to-seq-cocone-is-retraction
+   : pushout-cocone-to-seq-cocone ∘ seq-cocone-to-pushout-cocone ∼ id
+  pushout-cocone-to-seq-cocone-is-retraction (b , H)
+   = sequential-cocone-family-to-id 𝓐 X
+      (pushout-cocone-to-seq-cocone (seq-cocone-to-pushout-cocone (b , H)))
+      (b , H) ((λ n → λ x → refl) , (λ n → λ x → refl))
+
+  pushout-cocone-to-seq-cocone-is-section
+   : seq-cocone-to-pushout-cocone ∘ pushout-cocone-to-seq-cocone ∼ id
+  pushout-cocone-to-seq-cocone-is-section (i , j , H)
+   = inverse-cocone-map f g X
+      (seq-cocone-to-pushout-cocone (pushout-cocone-to-seq-cocone (i , j , H)))
+      (i , j , H) ((λ (n , x) → H (inl (n , x)) ⁻¹) , ∼-refl , I)
+   where
+    I : (z : Σ A + Σ A)
+      → H (inl (pr₁ (f z) , pr₂ (f z))) ⁻¹ ∙ H z
+      ＝ gluing-from-sequential-cocone
+         (curry j , λ n → λ x → H (inl (n , x)) ⁻¹ ∙ H (inr (n , x))) z
+    I (inl -) = left-inverse (H (inl -))
+    I (inr -) = refl
+
   pushout-to-seq-cocone-is-equiv : is-equiv pushout-cocone-to-seq-cocone
-  pushout-to-seq-cocone-is-equiv = {!!}
+  pushout-to-seq-cocone-is-equiv
+   = qinvs-are-equivs pushout-cocone-to-seq-cocone
+      (seq-cocone-to-pushout-cocone ,
+       pushout-cocone-to-seq-cocone-is-section ,
+        pushout-cocone-to-seq-cocone-is-retraction)
 
   canonical-maps-commute
    : canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
@@ -307,6 +287,12 @@ We prove the universal property for the sequential colimit.
              ∙ (ap (_∙ ap u (glue (inr (n , x)))) (ap-sym u (glue (inl (n , x))) ⁻¹)
              ∙ refl-left-neutral ⁻¹)
 
+\end{code}
+
+Using the above we prove the universal property for the sequential colimit.
+
+\begin{code}
+
   sequential-colimit-universal-property
    : Seqential-Colimit-Universal-Property 𝓐 sequential-colimit X
       sequential-colimit-is-cocone  
@@ -315,3 +301,14 @@ We prove the universal property for the sequential colimit.
       (∘-is-equiv pushout-universal-property pushout-to-seq-cocone-is-equiv)
 
 \end{code}
+
+From the universal property we will derived the recursion principle for sequential
+colimits.
+
+\begin{code}
+
+
+
+\end{code}
+
+TODO. Derive the dependent universal property and induction principle from pushouts.
