@@ -97,6 +97,10 @@ module greatest-element-satisfying-predicate
  γ-greatest-satisfying-P : γ greatest-satisfying P
  γ-greatest-satisfying-P = γ-satisfies-P , γ-greatest
 
+-- TODO: Capture the common core à la Enderton
+-- Note that we can't quite assume continuity, but we can assume something like
+-- t (sup F) ＝ c ∨ sup (t ∘ F) for some suitable c
+
 approximate-subtraction
  : (α β : Ordinal 𝓤) → α ⊴ β
  → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (α +ₒ - ⊴ β) × (- ⊴ β))
@@ -150,6 +154,31 @@ approximate-division {𝓤} α β β-pos = γ , γ-greatest-satisfying-P
   P-antitone α₁ α₂ k (l , m) = ⊴-trans (β ×ₒ α₁) (β ×ₒ α₂) α (×ₒ-right-monotone-⊴ β α₁ α₂ k) l , ⊴-trans α₁ α₂ α k m
   P-bounded : Σ ε ꞉ Ordinal 𝓤 , ((δ : Ordinal 𝓤) → P δ → δ ⊴ ε)
   P-bounded = α , (λ δ p → pr₂ p)
+  open greatest-element-satisfying-predicate P P-closed-under-suprema P-antitone P-bounded
+
+open import Ordinals.Exponentiation.Supremum ua pt sr
+aproximate-logarithm
+ : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β
+ → Σ γ ꞉ Ordinal 𝓤 ,
+    γ greatest-satisfying (λ - → (α ^ₒ - ⊴ β) × (- ⊴ β))
+aproximate-logarithm {𝓤} α β β-pos = γ , γ-greatest-satisfying-P
+ where
+  P : Ordinal 𝓤 → 𝓤 ̇
+  P δ = (α ^ₒ δ ⊴ β) × (δ ⊴ β)
+  P-closed-under-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
+                         → ((i : I) → P (F i))
+                         → P (sup F)
+  P-closed-under-suprema {I} F ρ =
+   transport⁻¹ (_⊴ β) (^ₒ-satisfies-strong-sup-specification α I F) (sup-is-lower-bound-of-upper-bounds _ β h) ,
+   sup-is-lower-bound-of-upper-bounds F β (λ i → pr₂ (ρ i))
+    where
+     h : (x : 𝟙 + I) → cases (λ _ → 𝟙ₒ) (λ i → α ^ₒ F i) x ⊴ β
+     h (inl ⋆) = β-pos
+     h (inr i) = pr₁ (ρ i)
+  P-antitone : (α₁ α₂ : Ordinal 𝓤) → α₁ ⊴ α₂ → P α₂ → P α₁
+  P-antitone α₁ α₂ k (l , m) = ⊴-trans (α ^ₒ α₁) (α ^ₒ α₂) β (^ₒ-monotone-in-exponent α α₁ α₂ k) l , ⊴-trans α₁ α₂ β k m
+  P-bounded : Σ ε ꞉ Ordinal 𝓤 , ((δ : Ordinal 𝓤) → P δ → δ ⊴ ε)
+  P-bounded = β , (λ δ p → pr₂ p)
   open greatest-element-satisfying-predicate P P-closed-under-suprema P-antitone P-bounded
 
 {-
