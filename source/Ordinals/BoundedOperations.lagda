@@ -122,6 +122,44 @@ approximate-subtraction {𝓤} α β β-above-α = γ , γ-greatest-satisfying-P
   P-bounded = β , (λ α p → pr₂ p)
   open greatest-element-satisfying-predicate P P-closed-under-suprema P-antitone P-bounded
 
+approximate-division
+ : (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ β
+ → Σ γ ꞉ Ordinal 𝓤 ,
+    γ greatest-satisfying (λ - → Σ b ꞉ ⟨ β ⟩ , (β ×ₒ - +ₒ (β ↓ b) ⊴ α) × (- ⊴ α))
+approximate-division {𝓤} α β β-pos = γ , γ-greatest-satisfying-P
+ where
+  b₀ : ⟨ β ⟩
+  b₀ = pr₁ β-pos
+  b₀-eq : β ↓ b₀ ＝ 𝟘ₒ
+  b₀-eq = (pr₂ β-pos) ⁻¹
+  fact : (δ : Ordinal 𝓤) → β ×ₒ δ +ₒ (β ↓ b₀) ＝ β ×ₒ δ
+  fact δ = ap (β ×ₒ δ +ₒ_) b₀-eq ∙ 𝟘ₒ-right-neutral (β ×ₒ δ)
 
+  P : Ordinal 𝓤 → 𝓤 ̇
+  P δ = Σ b ꞉ ⟨ β ⟩ , (β ×ₒ δ +ₒ (β ↓ b) ⊴ α) × (δ ⊴ α)
+  P-closed-under-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
+                         → ((i : I) → P (F i))
+                         → P (sup F)
+  P-closed-under-suprema {I} F ρ =
+   b₀ ,
+   transport⁻¹ (_⊴ α) (fact (sup F) ∙ ×ₒ-preserves-suprema pt sr β F) t ,
+   sup-is-lower-bound-of-upper-bounds F α (λ i → pr₂ (pr₂ (ρ i)))
+    where
+     t : sup (λ i → β ×ₒ F i) ⊴ α
+     t = sup-is-lower-bound-of-upper-bounds _ α s
+      where
+       s : (i : I) → β ×ₒ F i ⊴ α
+       s i = ⊴-trans (β ×ₒ F i) (β ×ₒ F i +ₒ (β ↓ bᵢ)) α (+ₒ-left-⊴ (β ×ₒ F i) (β ↓ bᵢ)) (pr₁ (pr₂ (ρ i)))
+        where
+         bᵢ : ⟨ β ⟩
+         bᵢ = pr₁ (ρ i)
+  P-antitone : (α₁ α₂ : Ordinal 𝓤) → α₁ ⊴ α₂ → P α₂ → P α₁
+  P-antitone α₁ α₂ k (b , l , m) = b₀ , transport⁻¹ (_⊴ α) (fact α₁) t , ⊴-trans α₁ α₂ α k m
+   where
+    t : β ×ₒ α₁ ⊴ α
+    t = ⊴-trans (β ×ₒ α₁) (β ×ₒ α₂) α (×ₒ-right-monotone-⊴ β α₁ α₂ k) (⊴-trans (β ×ₒ α₂) (β ×ₒ α₂ +ₒ (β ↓ b)) α (+ₒ-left-⊴ (β ×ₒ α₂) (β ↓ b)) l)
+  P-bounded : Σ ε ꞉ Ordinal 𝓤 , ((δ : Ordinal 𝓤) → P δ → δ ⊴ ε)
+  P-bounded = α , (λ δ p → pr₂ (pr₂ p))
+  open greatest-element-satisfying-predicate P P-closed-under-suprema P-antitone P-bounded
 
 \end{code}
