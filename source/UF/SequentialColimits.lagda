@@ -118,7 +118,42 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
              Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
               ((n : ℕ) → ∼-trans (G n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (G' n)))
          ≃ (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n))
-     III = {!!}
+     III = (Σ b' ꞉ ((n : ℕ) → A n → B) ,
+            Σ H ꞉ ((n : ℕ) → b n ∼ b' n) ,
+             Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
+              ((n : ℕ) → ∼-trans (G n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (G' n)))
+                                                                               ≃⟨ V ⟩
+           (Σ (b' , H) ꞉ (Σ b' ꞉ ((n : ℕ) → A n → B) , ((n : ℕ) → b n ∼ b' n)) ,
+            (Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
+              ((n : ℕ) → ∼-trans (G n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (G' n))))
+                                                                               ≃⟨ VII ⟩
+           (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) ,
+            ((n : ℕ) → ∼-trans (G n) ∼-refl ∼ ∼-trans ∼-refl (G' n)))
+                                                                               ≃⟨ VIII ⟩
+           (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n))■
+      where
+       V = ≃-sym Σ-assoc
+       VI : (Σ b' ꞉ ((n : ℕ) → A n → B) , ((n : ℕ) → b n ∼ b' n)) ≃ 𝟙 {𝓤 ⊔ 𝓥}
+       VI = (Σ b' ꞉ ((n : ℕ) → A n → B) , ((n : ℕ) → b n ∼ b' n))
+                                                                  ≃⟨ Σ-cong IX ⟩
+            (Σ b' ꞉ ((n : ℕ) → A n → B) , b ＝ b')
+                                                                  ≃⟨ X ⟩
+            𝟙                                                     ■
+        where
+         IX : (b' : (n : ℕ) → A n → B)
+            → ((n : ℕ) → b n ∼ b' n) ≃ (b ＝ b')
+         IX b' = ((n : ℕ) → b n ∼ b' n)
+                                         ≃⟨ Π-cong fe fe
+                                             (λ n → ≃-sym (≃-funext fe (b n) (b' n))) ⟩
+                 ((n : ℕ) → b n ＝ b' n)
+                                         ≃⟨ ≃-sym (≃-funext fe b b') ⟩
+                 (b ＝ b')               ■
+         X = singleton-≃-𝟙 (singleton-types-are-singletons b)
+       VII = prop-indexed-sum (b , (λ n → ∼-refl)) (equiv-to-prop VI 𝟙-is-prop)
+       VIII = Σ-cong (λ G' → Π-cong fe fe
+               (λ n → Π-cong fe fe
+                (λ x → ＝-cong (G n x) (∼-trans (λ - → refl) (G' n) x)
+                 refl refl-left-neutral)))
      IV : (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n)) ≃ 𝟙
      IV = (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n))
                                                                                ≃⟨ VI ⟩
@@ -421,7 +456,24 @@ for sequential colimits.
 
 \end{code}
 
-TODO. Derive uniqueness principle for sequential colimits.
+We will now prove the uniqueness principle for sequential colimits.
+
+\begin{code}
+
+  sequential-colimit-uniqueness
+   : (u u' : sequential-colimit → X)
+   → (G : (n : ℕ)
+        → u ∘ (ι n) ∼ u' ∘ (ι n))
+   → (M : (n : ℕ) (x : A n)
+        → ap u (K n x) ∙ G (succ n) (a n x) ＝ G n x ∙ ap u' (K n x))
+   → u ∼ u'
+  sequential-colimit-uniqueness u u' G M
+   = pushout-uniqueness u u'
+      (λ (n , x) → ap u (glue (inl (n , x))) ∙ (G n x ∙ ap u' (glue (inl (n , x)) ⁻¹)))
+       (λ z → G (pr₁ (f (inl z))) (pr₂ (f (inl z))))
+        (λ c → {!!})
+
+\end{code}
 
 TODO. Derive the dependent universal property and induction principle for sequential
 colimits.
