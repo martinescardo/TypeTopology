@@ -105,7 +105,7 @@ module Enderton
         (δ₀ δ : Ordinal 𝓤)
         (δ₀-below-δ : δ₀ ⊴ δ)
         (t-preserves-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤) -- TODO: rename
-                         → t (sup F) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → δ₀) (λ i → t (F i))))
+                         → t (sup F) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → δ₀) (t ∘ F)))
        where
 
  private
@@ -123,7 +123,7 @@ module Enderton
       ub : (i : 𝟙 + 𝟙) → F i ⊴ β
       ub (inl ⋆) = l
       ub (inr ⋆) = ⊴-refl β
-    II : t (sup F) ＝ sup (cases (λ _ → δ₀) (λ i → t (F i)))
+    II : t (sup F) ＝ sup (cases (λ _ → δ₀) (t ∘ F))
     II = t-preserves-suprema F
     III : t α ⊴ t β
     III = transport⁻¹
@@ -175,7 +175,8 @@ module Enderton'
     G : 𝟙{𝓤} + I → Ordinal 𝓤
     G = cases (λ _ → 𝟘ₒ) (t ∘ F)
     u : sup (t ∘ F) ⊴ sup G
-    u = sup-is-lower-bound-of-upper-bounds (t ∘ F) (sup G) (λ i → sup-is-upper-bound G (inr i))
+    u = sup-is-lower-bound-of-upper-bounds (t ∘ F) (sup G)
+         (λ i → sup-is-upper-bound G (inr i))
     v : sup G ⊴ sup (t ∘ F)
     v = sup-is-lower-bound-of-upper-bounds G (sup (t ∘ F)) w
      where
@@ -194,12 +195,12 @@ approximate-subtraction {𝓤} α β β-above-α = enderton
   open Enderton (α +ₒ_) α β β-above-α (+ₒ-preserves-suprema pt sr α)
 
 approximate-division
- : (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ β -- In our weakening this assumption becomes redundant
+ : (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α -- In our weakening this assumption becomes redundant
  → Σ γ ꞉ Ordinal 𝓤 ,
-    γ greatest-satisfying (λ - → (β ×ₒ - ⊴ α) × (- ⊴ α))
-approximate-division {𝓤} α β β-pos = enderton
+    γ greatest-satisfying (λ - → (α ×ₒ - ⊴ β) × (- ⊴ β))
+approximate-division {𝓤} α β α-pos = enderton
  where
-  open Enderton' (β ×ₒ_) α (×ₒ-preserves-suprema pt sr β)
+  open Enderton' (α ×ₒ_) β (×ₒ-preserves-suprema pt sr α)
 
 open import Ordinals.Exponentiation.Supremum ua pt sr
 aproximate-logarithm
@@ -211,3 +212,11 @@ aproximate-logarithm {𝓤} α β β-pos = enderton
  open Enderton (α ^ₒ_) 𝟙ₒ β β-pos (^ₒ-satisfies-strong-sup-specification α _)
 
 \end{code}
+
+TODO. The seemingly mild variation
+
+approximate-subtraction'
+ : (α β : Ordinal 𝓤) → α ⊴ β
+ → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α +ₒ - ⊴ β))
+
+yields LEM, and similarly for division and logarithm.
