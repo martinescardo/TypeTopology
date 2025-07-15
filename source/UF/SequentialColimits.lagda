@@ -475,8 +475,31 @@ We will now prove the uniqueness principle for sequential colimits.
     II (n , x) = G n x
     III : (c : Σ A + Σ A)
         → ap u (glue c) ∙ II (g c) ＝ I (f c) ∙ ap u' (glue c)
-    III (inl (n , x)) = {!!}
-    III (inr (n , x)) = {!!}
+    III (inl (n , x)) = ap u (glue (inl (n , x))) ∙ G n x
+                                                                 ＝⟨ IV ⟩
+                        (ap u (glue (inl (n , x))) ∙ G n x)
+                        ∙ (ap u' (glue (inl (n , x))) ⁻¹
+                        ∙ ap u' (glue (inl (n , x))))
+                                                                 ＝⟨ V ⟩
+                        (ap u (glue (inl (n , x))) ∙ G n x
+                        ∙ ap u' (glue (inl (n , x))) ⁻¹)
+                        ∙ ap u' (glue (inl (n , x)))
+                                                                 ＝⟨ VI ⟩
+                        (ap u (glue (inl (n , x))) ∙ G n x
+                        ∙ ap u' (glue (inl (n , x)) ⁻¹))
+                        ∙ ap u' (glue (inl (n , x)))
+                                                                 ＝⟨ VII ⟩
+                        I (n , x) ∙ ap u' (glue (inl (n , x)))   ∎
+     where
+      IV = ap (ap u (glue (inl (n , x))) ∙ G n x ∙_)
+            (sym-is-inverse (ap u' (glue (inl (n , x)))))
+      V = ∙assoc (ap u (glue (inl (n , x))) ∙ G n x) (ap u' (glue (inl (n , x))) ⁻¹)
+           (ap u' (glue (inl (n , x)))) ⁻¹
+      VI = ap (_∙ ap u' (glue (inl (n , x)))) (ap (ap u (glue (inl (n , x))) ∙ G n x ∙_)
+            (ap-sym u' (glue (inl (n , x)))))
+      VII = ap (_∙ ap u' (glue (inl (n , x)))) (∙assoc (ap u (glue (inl (n , x))))
+             (G n x) (ap u' (glue (inl (n , x)) ⁻¹)))
+    III (inr (n , x)) = {!M!}
 
 \end{code}
 
