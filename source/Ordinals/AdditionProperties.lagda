@@ -40,6 +40,7 @@ open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
@@ -1063,50 +1064,51 @@ as a single supremum by indexing over 𝟙 + I instead, sending inl ⋆ to α.
 
 \begin{code}
 
- +ₒ-preserves-suprema
-  : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
+ +ₒ-preserves-suprema-up-to-join
+  : (α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
   → α +ₒ sup β ＝ sup (cases (λ ⋆ → α) (λ i → α +ₒ β i))
- +ₒ-preserves-suprema {𝓤} α {I} β = ⊴-antisym (α +ₒ sup β) (sup F) ⦅1⦆ ⦅2⦆
-  where
-   F : 𝟙 {𝓤} + I → Ordinal 𝓤
-   F = cases (λ _ → α) (λ i → α +ₒ β i)
+ +ₒ-preserves-suprema-up-to-join {𝓤} α I β =
+  ⊴-antisym (α +ₒ sup β) (sup F) ⦅1⦆ ⦅2⦆
+   where
+    F : 𝟙 {𝓤} + I → Ordinal 𝓤
+    F = cases (λ _ → α) (λ i → α +ₒ β i)
 
-   ⦅1⦆ : α +ₒ sup β ⊴ sup F
-   ⦅1⦆ = to-⊴ (α +ₒ sup β) (sup F) h
-    where
-     h : (z : ⟨ α +ₒ sup β ⟩)
-       → (α +ₒ sup β) ↓ z ⊲ sup F
-     h (inl a) = (s , (α +ₒ sup β ↓ inl a ＝⟨ (+ₒ-↓-left a) ⁻¹ ⟩
-                       α ↓ a              ＝⟨ e ⟩
-                       sup F ↓ s          ∎))
-      where
-       s : ⟨ sup F ⟩
-       s = [ α , sup F ]⟨ sup-is-upper-bound F (inl ⋆) ⟩ a
-       e = (initial-segment-of-sup-at-component F (inl ⋆) a) ⁻¹
-     h (inr y) =
-      ∥∥-rec
-       (⊲-is-prop-valued (α +ₒ sup β ↓ inr y) (sup F))
-       g
-       (initial-segment-of-sup-is-initial-segment-of-some-component β y)
-      where
-       g : (Σ i ꞉ I , Σ x ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ β i ↓ x)
-         → α +ₒ sup β ↓ inr y ⊲ sup F
-       g (i , x , e) = s , ((α +ₒ sup β) ↓ inr y ＝⟨ (+ₒ-↓-right y) ⁻¹ ⟩
-                            α +ₒ (sup β ↓ y)     ＝⟨ ap (α +ₒ_) e ⟩
-                            α +ₒ (β i ↓ x)       ＝⟨ +ₒ-↓-right x ⟩
-                            (α +ₒ β i) ↓ inr x   ＝⟨ e' ⟩
-                            sup F ↓ s            ∎)
-        where
-         s : ⟨ sup F ⟩
-         s = [ F (inr i) , sup F ]⟨ sup-is-upper-bound F (inr i) ⟩ (inr x)
-         e' = (initial-segment-of-sup-at-component F (inr i) (inr x)) ⁻¹
+    ⦅1⦆ : α +ₒ sup β ⊴ sup F
+    ⦅1⦆ = to-⊴ (α +ₒ sup β) (sup F) h
+     where
+      h : (z : ⟨ α +ₒ sup β ⟩)
+        → (α +ₒ sup β) ↓ z ⊲ sup F
+      h (inl a) = (s , (α +ₒ sup β ↓ inl a ＝⟨ (+ₒ-↓-left a) ⁻¹ ⟩
+                        α ↓ a              ＝⟨ e ⟩
+                        sup F ↓ s          ∎))
+       where
+        s : ⟨ sup F ⟩
+        s = [ α , sup F ]⟨ sup-is-upper-bound F (inl ⋆) ⟩ a
+        e = (initial-segment-of-sup-at-component F (inl ⋆) a) ⁻¹
+      h (inr y) =
+       ∥∥-rec
+        (⊲-is-prop-valued (α +ₒ sup β ↓ inr y) (sup F))
+        g
+        (initial-segment-of-sup-is-initial-segment-of-some-component β y)
+       where
+        g : (Σ i ꞉ I , Σ x ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ β i ↓ x)
+          → α +ₒ sup β ↓ inr y ⊲ sup F
+        g (i , x , e) = s , ((α +ₒ sup β) ↓ inr y ＝⟨ (+ₒ-↓-right y) ⁻¹ ⟩
+                             α +ₒ (sup β ↓ y)     ＝⟨ ap (α +ₒ_) e ⟩
+                             α +ₒ (β i ↓ x)       ＝⟨ +ₒ-↓-right x ⟩
+                             (α +ₒ β i) ↓ inr x   ＝⟨ e' ⟩
+                             sup F ↓ s            ∎)
+         where
+          s : ⟨ sup F ⟩
+          s = [ F (inr i) , sup F ]⟨ sup-is-upper-bound F (inr i) ⟩ (inr x)
+          e' = (initial-segment-of-sup-at-component F (inr i) (inr x)) ⁻¹
 
-   ⦅2⦆ : sup F ⊴ α +ₒ sup β
-   ⦅2⦆ = sup-is-lower-bound-of-upper-bounds F (α +ₒ sup β) h
-    where
-     h : (x : 𝟙 + I) → F x ⊴ α +ₒ sup β
-     h (inl ⋆) = +ₒ-left-⊴ α (sup β)
-     h (inr i) = +ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i)
+    ⦅2⦆ : sup F ⊴ α +ₒ sup β
+    ⦅2⦆ = sup-is-lower-bound-of-upper-bounds F (α +ₒ sup β) h
+     where
+      h : (x : 𝟙 + I) → F x ⊴ α +ₒ sup β
+      h (inl ⋆) = +ₒ-left-⊴ α (sup β)
+      h (inr i) = +ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i)
 
 
 \end{code}
@@ -1126,5 +1128,68 @@ no-greatest-ordinal {𝓤} (α , α-greatest) = irrefl (OO 𝓤) α IV
   III = ⊴-antisym (α +ₒ 𝟙ₒ) α I II
   IV : α ⊲ α
   IV = transport (α ⊲_) III (successor-increasing α)
+
+\end{code}
+
+Added 15 July 2025 by Tom de Jong after discussions with Nicolai Kraus, Fredrik
+Nordvall Forsberg and Chuangjie Xu a year earlier.
+
+\begin{code}
+
++ₒ-as-large-as-right-summand-implies-EM : ((α β : Ordinal 𝓤) → β ⊴ α +ₒ β)
+                                        → EM 𝓤
++ₒ-as-large-as-right-summand-implies-EM hyp P P-is-prop = IV
+ where
+  α = prop-ordinal P P-is-prop
+  β = 𝟙ₒ
+  𝕗 : β ⊴ α +ₒ β
+  𝕗 = hyp α β
+  f = [ β , α +ₒ β ]⟨ 𝕗 ⟩
+  I : (p : P) → f ⋆ ＝ inl p → P
+  I p _ = p
+  II : (p : P) → f ⋆ ＝ inl p
+  II p = simulations-preserve-least β (α +ₒ β) ⋆ (inl p) f
+                                    [ β , α +ₒ β ]⟨ 𝕗 ⟩-is-simulation
+                                    𝟙ₒ-least
+                                    l
+   where
+    l : is-least (α +ₒ β) (inl p)
+    l = minimal-is-least (α +ₒ β) (inl p) m
+     where
+      m : is-minimal (α +ₒ β) (inl p)
+      m (inl p') = 𝟘-elim
+      m (inr ⋆ ) = 𝟘-elim
+  III : f ⋆ ＝ inr ⋆ → ¬ P
+  III e p = +disjoint ((II p) ⁻¹ ∙ e)
+  IV : P + ¬ P
+  IV = equality-cases (f ⋆) (λ p → inl ∘ I p) (λ _ → inr ∘ III)
+
+EM-implies-+ₒ-as-large-as-right-summand : EM 𝓤
+                                        → ((α β : Ordinal 𝓤) → β ⊴ α +ₒ β)
+EM-implies-+ₒ-as-large-as-right-summand em α β =
+ ≼-gives-⊴ β (α +ₒ β)
+           (EM-implies-order-preserving-gives-≼ em β (α +ₒ β) (f , I))
+  where
+   f : ⟨ β ⟩ → ⟨ α +ₒ β ⟩
+   f = inr
+   I : is-order-preserving β (α +ₒ β) f
+   I y y' l = l
+
+\end{code}
+
+Added 15 July 2025 by Tom de Jong.
+
+\begin{code}
+
++ₒ-minimal : (α β : Ordinal 𝓤) (a₀ : ⟨ α ⟩)
+           → is-minimal α a₀ → is-minimal (α +ₒ β) (inl a₀)
++ₒ-minimal α β a₀ a₀-minimal (inl a) = a₀-minimal a
++ₒ-minimal α β a₀ a₀-minimal (inr b) = 𝟘-elim
+
++ₒ-least : (α β : Ordinal 𝓤) (a₀ : ⟨ α ⟩)
+         → is-least α a₀ → is-least (α +ₒ β) (inl a₀)
++ₒ-least α β  a₀ a₀-least =
+ minimal-is-least (α +ₒ β) (inl a₀)
+                  (+ₒ-minimal α β a₀ (least-is-minimal α a₀ a₀-least))
 
 \end{code}
