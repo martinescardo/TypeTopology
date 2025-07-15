@@ -164,28 +164,63 @@ module Enderton'
                              → t (sup F) ＝ sup (t ∘ F))
        where
 
- private
-  t-preserve-suprema-up-to-join
-   : {I : 𝓤 ̇} (F : I → Ordinal 𝓤)
-   → t (sup F) ＝ sup (cases (λ _  → 𝟘ₒ) (t ∘ F))
-  t-preserve-suprema-up-to-join {I} F =
-   t-preserves-suprema F
-   ∙ (⊴-antisym (sup (t ∘ F)) (sup G) u v)
-   where
-    G : 𝟙{𝓤} + I → Ordinal 𝓤
-    G = cases (λ _ → 𝟘ₒ) (t ∘ F)
-    u : sup (t ∘ F) ⊴ sup G
-    u = sup-is-lower-bound-of-upper-bounds (t ∘ F) (sup G)
-         (λ i → sup-is-upper-bound G (inr i))
-    v : sup G ⊴ sup (t ∘ F)
-    v = sup-is-lower-bound-of-upper-bounds G (sup (t ∘ F)) w
-     where
-      w : (x : 𝟙 + I)
-        → cases (λ _ → 𝟘ₒ) (t ∘ F) x ⊴ sup (t ∘ F)
-      w (inl ⋆) = 𝟘ₒ-least-⊴ (sup (t ∘ F))
-      w (inr i) = sup-is-upper-bound (t ∘ F) i
+ t-preserves-suprema-up-to-join
+  : {I : 𝓤 ̇} (F : I → Ordinal 𝓤)
+  → t (sup F) ＝ sup (cases (λ _  → 𝟘ₒ) (t ∘ F))
+ t-preserves-suprema-up-to-join {I} F =
+  t-preserves-suprema F
+  ∙ (⊴-antisym (sup (t ∘ F)) (sup G) u v)
+  where
+   G : 𝟙{𝓤} + I → Ordinal 𝓤
+   G = cases (λ _ → 𝟘ₒ) (t ∘ F)
+   u : sup (t ∘ F) ⊴ sup G
+   u = sup-is-lower-bound-of-upper-bounds (t ∘ F) (sup G)
+        (λ i → sup-is-upper-bound G (inr i))
+   v : sup G ⊴ sup (t ∘ F)
+   v = sup-is-lower-bound-of-upper-bounds G (sup (t ∘ F)) w
+    where
+     w : (x : 𝟙 + I)
+       → cases (λ _ → 𝟘ₒ) (t ∘ F) x ⊴ sup (t ∘ F)
+     w (inl ⋆) = 𝟘ₒ-least-⊴ (sup (t ∘ F))
+     w (inr i) = sup-is-upper-bound (t ∘ F) i
 
- open Enderton t 𝟘ₒ δ (𝟘ₒ-least-⊴ δ) t-preserve-suprema-up-to-join public
+ open Enderton t 𝟘ₒ δ (𝟘ₒ-least-⊴ δ) t-preserves-suprema-up-to-join public
+
+module Enderton-classical-variation
+        (t : Ordinal 𝓤 → Ordinal 𝓤)
+        (δ₀ δ : Ordinal 𝓤)
+        (δ₀-below-δ : δ₀ ⊴ δ)
+        (t-preserves-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤) -- TODO: rename
+                         → t (sup F) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → δ₀) (t ∘ F)))
+        (t-increasing : (α : Ordinal 𝓤) → α ⊴ t α)
+       where
+
+ enderton-classical : Σ γ ꞉ Ordinal 𝓤 , γ ⊴ δ × γ greatest-satisfying (λ - → (t - ⊴ δ))
+ enderton-classical = γ , γ-fact₂ , γ-fact₁ , γ-fact₄
+  where
+   open Enderton t δ₀ δ δ₀-below-δ t-preserves-suprema
+   I : Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → t - ⊴ δ × - ⊴ δ)
+   I = enderton
+   γ : Ordinal 𝓤
+   γ = pr₁ I
+   γ-fact₁ : t γ ⊴ δ
+   γ-fact₁ = pr₁ (pr₁ (pr₂ I))
+   γ-fact₂ : γ ⊴ δ
+   γ-fact₂ = pr₂ (pr₁ (pr₂ I))
+   γ-fact₃ : (α : Ordinal 𝓤) → (t α ⊴ δ) × (α ⊴ δ) → α ⊴ γ
+   γ-fact₃ = pr₂ (pr₂ I)
+   γ-fact₄ : (α : Ordinal 𝓤) → t α ⊴ δ → α ⊴ γ
+   γ-fact₄ α l = γ-fact₃ α (l , (⊴-trans α (t α) δ (t-increasing α) l))
+
+module Enderton-classical-variation'
+        (t : Ordinal 𝓤 → Ordinal 𝓤)
+        (δ : Ordinal 𝓤)
+        (t-preserves-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
+                         → t (sup F) ＝ sup (t ∘ F))
+        (t-increasing : (α : Ordinal 𝓤) → α ⊴ t α)
+       where
+
+ open Enderton-classical-variation t 𝟘ₒ δ (𝟘ₒ-least-⊴ δ) (Enderton'.t-preserves-suprema-up-to-join t δ t-preserves-suprema) t-increasing public
 
 approximate-subtraction
  : (α β : Ordinal 𝓤) → α ⊴ β
@@ -227,10 +262,10 @@ open import MLTT.Plus-Properties
 open import UF.ClassicalLogic
 open import Ordinals.Exponentiation.Taboos ua pt sr
 
--- TODO: Upstream and include converse
-+ₒ-as-large-right-summand-implies-EM : ((α β : Ordinal 𝓤) → β ⊴ α +ₒ β)
+-- TODO: Upstream
++ₒ-as-large-as-right-summand-implies-EM : ((α β : Ordinal 𝓤) → β ⊴ α +ₒ β)
                                      → EM 𝓤
-+ₒ-as-large-right-summand-implies-EM hyp P P-is-prop = IV
++ₒ-as-large-as-right-summand-implies-EM hyp P P-is-prop = IV
  where
   α = prop-ordinal P P-is-prop
   β = 𝟙ₒ
@@ -253,12 +288,23 @@ open import Ordinals.Exponentiation.Taboos ua pt sr
   IV : P + ¬ P
   IV = equality-cases (f ⋆) (λ p → inl ∘ I p) (λ _ → inr ∘ III)
 
--- TODO: Add converse
+EM-implies-+ₒ-as-large-as-right-summand : EM 𝓤
+                                        → ((α β : Ordinal 𝓤) → β ⊴ α +ₒ β)
+EM-implies-+ₒ-as-large-as-right-summand em α β =
+ ≼-gives-⊴ β (α +ₒ β)
+           (EM-implies-order-preserving-gives-≼ em β (α +ₒ β) (f , I))
+  where
+   f : ⟨ β ⟩ → ⟨ α +ₒ β ⟩
+   f = inr
+   I : is-order-preserving β (α +ₒ β) f
+   I y y' l = l
+---
+
 approximate-subtraction-variation-implies-EM
  : ((α β : Ordinal 𝓤) → α ⊴ β
    → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α +ₒ - ⊴ β))))
  → EM 𝓤
-approximate-subtraction-variation-implies-EM {𝓤} hyp = +ₒ-as-large-right-summand-implies-EM I
+approximate-subtraction-variation-implies-EM {𝓤} hyp = +ₒ-as-large-as-right-summand-implies-EM I
  where
   I : (α β : Ordinal 𝓤) → β ⊴ α +ₒ β
   I α β = IV
@@ -271,6 +317,14 @@ approximate-subtraction-variation-implies-EM {𝓤} hyp = +ₒ-as-large-right-su
     IV : β ⊴ α +ₒ β
     IV = ⊴-trans β γ (α +ₒ β) III (pr₁ (pr₂ II))
 
+EM-implies-approximate-subtraction-variation
+ : EM 𝓤
+ → (α β : Ordinal 𝓤) → α ⊴ β
+   → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α +ₒ - ⊴ β)))
+EM-implies-approximate-subtraction-variation {𝓤} em α β l = enderton-classical
+ where
+  open Enderton-classical-variation (α +ₒ_) α β l (+ₒ-preserves-suprema pt sr α) (EM-implies-+ₒ-as-large-as-right-summand em α)
+
 -- TODO: Upstream
 +ₒ-minimal : (α β : Ordinal 𝓤) (a₀ : ⟨ α ⟩)
            → is-minimal α a₀ → is-minimal (α +ₒ β) (inl a₀)
@@ -282,10 +336,10 @@ approximate-subtraction-variation-implies-EM {𝓤} hyp = +ₒ-as-large-right-su
 +ₒ-least α β  a₀ a₀-least =
  minimal-is-least (α +ₒ β) (inl a₀) (+ₒ-minimal α β a₀ (least-is-minimal α a₀ a₀-least))
 
--- TODO: Upstream and include converse
-×ₒ-as-large-right-summand-implies-EM : ((α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β)
+-- TODO: Upstream
+×ₒ-as-large-as-right-factor-implies-EM : ((α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β)
                                      → EM 𝓤
-×ₒ-as-large-right-summand-implies-EM  hyp P P-is-prop = IV (f (inr ⋆)) refl
+×ₒ-as-large-as-right-factor-implies-EM  hyp P P-is-prop = IV (f (inr ⋆)) refl
  where
   Pₒ = prop-ordinal P P-is-prop
   α = 𝟙ₒ +ₒ Pₒ
@@ -319,12 +373,24 @@ approximate-subtraction-variation-implies-EM {𝓤} hyp = +ₒ-as-large-right-su
   IV (inl ⋆ , inr ⋆) e = inr (II (inl ⋆) e)
   IV (inr p , inr ⋆) e = inl p
 
--- TODO: Add converses
+EM-implies-×ₒ-as-large-as-right-factor
+ : EM 𝓤
+ → (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β
+EM-implies-×ₒ-as-large-as-right-factor em α β (a₀ , _) =
+ ≼-gives-⊴ β (α ×ₒ β)
+           (EM-implies-order-preserving-gives-≼ em β (α ×ₒ β) (f , I))
+  where
+   f : ⟨ β ⟩ → ⟨ α ×ₒ β ⟩
+   f b = (a₀ , b)
+   I : is-order-preserving β (α ×ₒ β) f
+   I b b' l = inl l
+---
+
 approximate-division-variation-implies-EM
  : ((α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α
    → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α ×ₒ - ⊴ β))))
  → EM 𝓤
-approximate-division-variation-implies-EM {𝓤} hyp = ×ₒ-as-large-right-summand-implies-EM I
+approximate-division-variation-implies-EM {𝓤} hyp = ×ₒ-as-large-as-right-factor-implies-EM I
  where
   I : (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β
   I α β α-pos = IV
@@ -336,6 +402,14 @@ approximate-division-variation-implies-EM {𝓤} hyp = ×ₒ-as-large-right-summ
     III = pr₂ (pr₂ (pr₂ II)) β (⊴-refl (α ×ₒ β))
     IV : β ⊴ α ×ₒ β
     IV = ⊴-trans β γ (α ×ₒ β) III (pr₁ (pr₂ II))
+
+EM-implies-approximate-division-variation
+ : EM 𝓤
+ → (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α
+   → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α ×ₒ - ⊴ β)))
+EM-implies-approximate-division-variation em α β α-pos = enderton-classical
+ where
+  open Enderton-classical-variation' (α ×ₒ_) β (×ₒ-preserves-suprema pt sr α) (λ δ → EM-implies-×ₒ-as-large-as-right-factor em α δ α-pos)
 
 approximate-logarithm-variation-implies-EM
  : ((α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β → 𝟙ₒ ⊲ α
@@ -353,5 +427,13 @@ approximate-logarithm-variation-implies-EM {𝓤} hyp = ^ₒ-as-large-as-exponen
     III = pr₂ (pr₂ (pr₂ II)) β (⊴-refl (α ^ₒ β))
     IV : β ⊴ α ^ₒ β
     IV = ⊴-trans β γ (α ^ₒ β) III (pr₁ (pr₂ II))
+
+EM-implies-approximate-logarithm-variation
+ : EM 𝓤
+ → (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β → 𝟙ₒ ⊲ α
+   → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α ^ₒ - ⊴ β)))
+EM-implies-approximate-logarithm-variation em α β β-pos α-strictly-pos = enderton-classical
+  where
+   open Enderton-classical-variation (α ^ₒ_) 𝟙ₒ β β-pos (^ₒ-satisfies-strong-sup-specification α _) (λ δ → EM-implies-^ₒ-as-large-as-exponent em α δ α-strictly-pos)
 
 \end{code}
