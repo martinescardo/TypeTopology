@@ -467,11 +467,16 @@ We will now prove the uniqueness principle for sequential colimits.
    → (M : (n : ℕ) (x : A n)
         → ap u (K n x) ∙ G (succ n) (a n x) ＝ G n x ∙ ap u' (K n x))
    → u ∼ u'
-  sequential-colimit-uniqueness u u' G M
-   = pushout-uniqueness u u'
-      (λ (n , x) → ap u (glue (inl (n , x))) ∙ (G n x ∙ ap u' (glue (inl (n , x)) ⁻¹)))
-       (λ z → G (pr₁ (f (inl z))) (pr₂ (f (inl z))))
-        (λ c → {!!})
+  sequential-colimit-uniqueness u u' G M = pushout-uniqueness u u' I II III
+   where
+    I : (z : Σ A) → u (inll z) ＝ u' (inll z)
+    I (n , x) = ap u (glue (inl (n , x))) ∙ (G n x ∙ ap u' (glue (inl (n , x)) ⁻¹))
+    II : (z : Σ A) → u (inrr z) ＝ u' (inrr z)
+    II (n , x) = G n x
+    III : (c : Σ A + Σ A)
+        → ap u (glue c) ∙ II (g c) ＝ I (f c) ∙ ap u' (glue c)
+    III (inl (n , x)) = {!!}
+    III (inr (n , x)) = {!!}
 
 \end{code}
 
