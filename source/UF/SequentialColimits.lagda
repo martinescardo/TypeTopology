@@ -97,13 +97,45 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
    e = (Σ 𝓑' ꞉ (sequential-cocone 𝓐 B) , sequential-cocone-family (b , G) 𝓑')
                                                                                 ≃⟨ I ⟩
        (Σ b' ꞉ ((n : ℕ) → A n → B) ,
-        (Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
+        Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
          Σ H ꞉ ((n : ℕ) → b n ∼ b' n) ,
-          ((n : ℕ) → ∼-trans (G n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (G' n))))
-                                                                                ≃⟨ {!!} ⟩
-       {!!}
+          ((n : ℕ) → ∼-trans (G n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (G' n)))
+                                                                                ≃⟨ II ⟩
+       (Σ b' ꞉ ((n : ℕ) → A n → B) ,
+        Σ H ꞉ ((n : ℕ) → b n ∼ b' n) ,
+         Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
+          ((n : ℕ) → ∼-trans (G n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (G' n)))
+                                                                                ≃⟨ III ⟩
+       (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) ,
+        ((n : ℕ) → G n ∼ G' n))
+                                                                                ≃⟨ IV ⟩
+       𝟙                                                                        ■
     where
      I = Σ-assoc
+     II = Σ-cong (λ - → Σ-flip)
+     III : (Σ b' ꞉ ((n : ℕ) → A n → B) ,
+            Σ H ꞉ ((n : ℕ) → b n ∼ b' n) ,
+             Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
+              ((n : ℕ) → ∼-trans (G n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (G' n)))
+         ≃ (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n))
+     III = {!!}
+     IV : (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n)) ≃ 𝟙
+     IV = (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n))
+                                                                               ≃⟨ VI ⟩
+          (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , G ＝ G')
+                                                                               ≃⟨ VII ⟩
+          𝟙                                                                    ■
+      where
+       V : (G' : ((n : ℕ) → b n ∼ b (succ n) ∘ a n))
+         → ((n : ℕ) → G n ∼ G' n) ≃ (G ＝ G')
+       V G' = ((n : ℕ) → G n ∼ G' n)
+                                      ≃⟨ Π-cong fe fe
+                                          (λ n → ≃-sym (≃-funext fe (G n) (G' n))) ⟩
+              ((n : ℕ) → G n ＝ G' n)
+                                      ≃⟨ ≃-sym (≃-funext fe G G') ⟩
+              (G ＝ G')               ■
+       VI = Σ-cong V
+       VII = singleton-≃-𝟙 (singleton-types-are-singletons G)
 
  sequential-cocone-identity-characterization : (𝓑 𝓑' : sequential-cocone 𝓐 B)
                                              → (𝓑 ＝ 𝓑') ≃ (sequential-cocone-family 𝓑 𝓑')
@@ -125,7 +157,7 @@ a sequential cocone over C.
 
 \begin{code}
 
-module _ (𝓐@(A , a) : type-sequence 𝓤)
+module _ (𝓐 : type-sequence 𝓤)
          (B : 𝓥 ̇) (C : 𝓣 ̇)
           where
 
