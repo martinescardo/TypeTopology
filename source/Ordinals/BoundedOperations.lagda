@@ -1,9 +1,9 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu.
-14 July 2025.
+14-15 July 2025.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -157,6 +157,35 @@ module Enderton
    P-bounded = δ , (λ α p → pr₂ p)
    open greatest-element-satisfying-predicate P P-closed-under-suprema P-antitone P-bounded
 
+module Enderton'
+        (t : Ordinal 𝓤 → Ordinal 𝓤)
+        (δ : Ordinal 𝓤)
+        (t-preserves-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
+                             → t (sup F) ＝ sup (t ∘ F))
+       where
+
+ private
+  t-preserve-suprema-up-to-join
+   : {I : 𝓤 ̇} (F : I → Ordinal 𝓤)
+   → t (sup F) ＝ sup (cases (λ _  → 𝟘ₒ) (t ∘ F))
+  t-preserve-suprema-up-to-join {I} F =
+   t-preserves-suprema F
+   ∙ (⊴-antisym (sup (t ∘ F)) (sup G) u v)
+   where
+    G : 𝟙{𝓤} + I → Ordinal 𝓤
+    G = cases (λ _ → 𝟘ₒ) (t ∘ F)
+    u : sup (t ∘ F) ⊴ sup G
+    u = sup-is-lower-bound-of-upper-bounds (t ∘ F) (sup G) (λ i → sup-is-upper-bound G (inr i))
+    v : sup G ⊴ sup (t ∘ F)
+    v = sup-is-lower-bound-of-upper-bounds G (sup (t ∘ F)) w
+     where
+      w : (x : 𝟙 + I)
+        → cases (λ _ → 𝟘ₒ) (t ∘ F) x ⊴ sup (t ∘ F)
+      w (inl ⋆) = 𝟘ₒ-least-⊴ (sup (t ∘ F))
+      w (inr i) = sup-is-upper-bound (t ∘ F) i
+
+ open Enderton t 𝟘ₒ δ (𝟘ₒ-least-⊴ δ) t-preserve-suprema-up-to-join public
+
 approximate-subtraction
  : (α β : Ordinal 𝓤) → α ⊴ β
  → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (α +ₒ - ⊴ β) × (- ⊴ β))
@@ -169,26 +198,8 @@ approximate-division
  → Σ γ ꞉ Ordinal 𝓤 ,
     γ greatest-satisfying (λ - → (β ×ₒ - ⊴ α) × (- ⊴ α))
 approximate-division {𝓤} α β β-pos = enderton
- where -- TODO: Upstream this part into the Enderton module
-  σ : {I : 𝓤 ̇} (F : I → Ordinal 𝓤)
-    → β ×ₒ sup F ＝ sup (cases (λ _ → 𝟘ₒ) (λ i → β ×ₒ F i))
-  σ {I} F = e₁ ∙ e₂
-   where
-    e₁ : β ×ₒ sup F ＝ sup (λ i → β ×ₒ F i)
-    e₁ = ×ₒ-preserves-suprema pt sr β F
-    e₂ : sup (λ i → β ×ₒ F i) ＝ sup (cases (λ _ → 𝟘ₒ) (λ i → β ×ₒ F i))
-    e₂ = ⊴-antisym _ _ u v
-     where
-      u : sup (λ i → β ×ₒ F i) ⊴ sup (cases (λ _ → 𝟘ₒ) (λ i → β ×ₒ F i))
-      u = sup-is-lower-bound-of-upper-bounds _ _ (λ i → sup-is-upper-bound _ (inr i))
-      v : sup (cases (λ _ → 𝟘ₒ) (λ i → β ×ₒ F i)) ⊴ sup (λ i → β ×ₒ F i)
-      v = sup-is-lower-bound-of-upper-bounds _ _ w
-       where
-        w : (x : 𝟙 + I)
-          → cases (λ _ → 𝟘ₒ) (λ i → β ×ₒ F i) x ⊴ sup (λ i → β ×ₒ F i)
-        w (inl ⋆) = 𝟘ₒ-least-⊴ (sup (λ i → β ×ₒ F i))
-        w (inr i) = sup-is-upper-bound (λ j → β ×ₒ F j) i
-  open Enderton (β ×ₒ_) 𝟘ₒ α (𝟘ₒ-least-⊴ α) σ
+ where
+  open Enderton' (β ×ₒ_) α (×ₒ-preserves-suprema pt sr β)
 
 open import Ordinals.Exponentiation.Supremum ua pt sr
 aproximate-logarithm
