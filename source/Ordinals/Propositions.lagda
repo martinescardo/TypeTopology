@@ -65,6 +65,9 @@ prop-ordinal-least : {P : 𝓤 ̇  } (i : is-prop P) (p : P)
                    → is-least (prop-ordinal P i) p
 prop-ordinal-least i p p' p'' l = 𝟘-elim l
 
+𝟙ₒ-least : {x : 𝟙 {𝓤}} → is-least 𝟙ₒ x
+𝟙ₒ-least = prop-ordinal-least 𝟙-is-prop _
+
 𝟙ₒ-↓ : {x : 𝟙 {𝓤}} → 𝟙ₒ ↓ x ＝ 𝟘ₒ
 𝟙ₒ-↓ {𝓤} {x} = prop-ordinal-↓ 𝟙-is-prop x
 

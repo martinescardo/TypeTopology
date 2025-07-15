@@ -3,7 +3,7 @@ Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -204,7 +204,7 @@ approximate-division {𝓤} α β α-pos = enderton
 
 open import Ordinals.Exponentiation.Supremum ua pt sr
 aproximate-logarithm
- : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β
+ : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β -- 𝟙ₒ ⊲ α should be included too, even if it's not technically necessary
  → Σ γ ꞉ Ordinal 𝓤 ,
     γ greatest-satisfying (λ - → (α ^ₒ - ⊴ β) × (- ⊴ β))
 aproximate-logarithm {𝓤} α β β-pos = enderton
@@ -217,6 +217,141 @@ TODO. The seemingly mild variation
 
 approximate-subtraction'
  : (α β : Ordinal 𝓤) → α ⊴ β
- → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α +ₒ - ⊴ β))
+ → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α +ₒ - ⊴ β)))
 
 yields LEM, and similarly for division and logarithm.
+
+\begin{code}
+
+open import MLTT.Plus-Properties
+open import UF.ClassicalLogic
+open import Ordinals.Exponentiation.Taboos ua pt sr
+
+-- TODO: Upstream and include converse
++ₒ-as-large-right-summand-implies-EM : ((α β : Ordinal 𝓤) → β ⊴ α +ₒ β)
+                                     → EM 𝓤
++ₒ-as-large-right-summand-implies-EM hyp P P-is-prop = IV
+ where
+  α = prop-ordinal P P-is-prop
+  β = 𝟙ₒ
+  𝕗 : β ⊴ α +ₒ β
+  𝕗 = hyp α β
+  f = [ β , α +ₒ β ]⟨ 𝕗 ⟩
+  I : (p : P) → f ⋆ ＝ inl p → P
+  I p _ = p
+  II : (p : P) → f ⋆ ＝ inl p
+  II p = simulations-preserve-least β (α +ₒ β) ⋆ (inl p) f [ β , α +ₒ β ]⟨ 𝕗 ⟩-is-simulation 𝟙ₒ-least l
+   where
+    l : is-least (α +ₒ β) (inl p)
+    l = minimal-is-least (α +ₒ β) (inl p) m
+     where
+      m : is-minimal (α +ₒ β) (inl p)
+      m (inl p') = 𝟘-elim
+      m (inr ⋆ ) = 𝟘-elim
+  III : f ⋆ ＝ inr ⋆ → ¬ P
+  III e p = +disjoint ((II p) ⁻¹ ∙ e)
+  IV : P + ¬ P
+  IV = equality-cases (f ⋆) (λ p → inl ∘ I p) (λ _ → inr ∘ III)
+
+-- TODO: Add converse
+approximate-subtraction-variation-implies-EM
+ : ((α β : Ordinal 𝓤) → α ⊴ β
+   → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α +ₒ - ⊴ β))))
+ → EM 𝓤
+approximate-subtraction-variation-implies-EM {𝓤} hyp = +ₒ-as-large-right-summand-implies-EM I
+ where
+  I : (α β : Ordinal 𝓤) → β ⊴ α +ₒ β
+  I α β = IV
+   where
+    II : Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ α +ₒ β) × (γ greatest-satisfying (λ - → α +ₒ - ⊴ α +ₒ β))
+    II = hyp α (α +ₒ β) (+ₒ-left-⊴ α β)
+    γ = pr₁ II
+    III : β ⊴ γ
+    III = pr₂ (pr₂ (pr₂ II)) β (⊴-refl (α +ₒ β))
+    IV : β ⊴ α +ₒ β
+    IV = ⊴-trans β γ (α +ₒ β) III (pr₁ (pr₂ II))
+
+-- TODO: Upstream
++ₒ-minimal : (α β : Ordinal 𝓤) (a₀ : ⟨ α ⟩)
+           → is-minimal α a₀ → is-minimal (α +ₒ β) (inl a₀)
++ₒ-minimal α β a₀ a₀-minimal (inl a) = a₀-minimal a
++ₒ-minimal α β a₀ a₀-minimal (inr b) = 𝟘-elim
+
++ₒ-least : (α β : Ordinal 𝓤) (a₀ : ⟨ α ⟩)
+         → is-least α a₀ → is-least (α +ₒ β) (inl a₀)
++ₒ-least α β  a₀ a₀-least =
+ minimal-is-least (α +ₒ β) (inl a₀) (+ₒ-minimal α β a₀ (least-is-minimal α a₀ a₀-least))
+
+-- TODO: Upstream and include converse
+×ₒ-as-large-right-summand-implies-EM : ((α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β)
+                                     → EM 𝓤
+×ₒ-as-large-right-summand-implies-EM  hyp P P-is-prop = IV (f (inr ⋆)) refl
+ where
+  Pₒ = prop-ordinal P P-is-prop
+  α = 𝟙ₒ +ₒ Pₒ
+  β = 𝟚ₒ
+  𝕗 : β ⊴ α ×ₒ β
+  𝕗 = hyp α β (inl ⋆ , (𝟙ₒ-↓ ⁻¹ ∙ +ₒ-↓-left ⋆))
+  f = [ β , α ×ₒ β ]⟨ 𝕗 ⟩
+  I : (p : P) → f (inr ⋆) ＝ (inr p , inl ⋆)
+  I p = ↓-lc (α ×ₒ β) (f (inr ⋆)) (inr p , inl ⋆) e
+   where
+    e = (α ×ₒ β) ↓ f (inr ⋆) ＝⟨ (simulations-preserve-↓ β (α ×ₒ β) 𝕗 (inr ⋆)) ⁻¹ ⟩
+        β ↓ inr ⋆ ＝⟨ +ₒ-↓-right ⋆ ⁻¹ ∙ ap (𝟙ₒ +ₒ_) 𝟙ₒ-↓ ∙ 𝟘ₒ-right-neutral 𝟙ₒ ⟩
+        𝟙ₒ ＝⟨ (𝟘ₒ-right-neutral 𝟙ₒ) ⁻¹ ∙ ap (𝟙ₒ +ₒ_) ((prop-ordinal-↓ P-is-prop p) ⁻¹) ∙ +ₒ-↓-right p ⟩
+        α ↓ inr p ＝⟨ (ap (_+ₒ (α ↓ inr p)) (×ₒ-𝟘ₒ-right α) ∙ 𝟘ₒ-left-neutral (α ↓ inr p)) ⁻¹ ⟩
+        α ×ₒ 𝟘ₒ +ₒ (α ↓ inr p) ＝⟨ ap (λ - → α ×ₒ - +ₒ (α ↓ inr p)) (𝟙ₒ-↓ ⁻¹ ∙ +ₒ-↓-left ⋆) ⟩
+        α ×ₒ (β ↓ inl ⋆) +ₒ (α ↓ inr p) ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
+        (α ×ₒ β) ↓ (inr p , inl ⋆)      ∎
+  II : (x : ⟨ α ⟩) → f (inr ⋆) ＝ (x , inr ⋆) → ¬ P
+  II x e p = +disjoint (ap pr₂ ((I p) ⁻¹ ∙ e))
+  III : f (inr ⋆) ≠ (inl ⋆ , inl ⋆)
+  III h = +disjoint (simulations-are-lc β (α ×ₒ β) f [ β , α ×ₒ β ]⟨ 𝕗 ⟩-is-simulation (e ∙ h ⁻¹))
+   where
+    e : f (inl ⋆) ＝ (inl ⋆ , inl ⋆)
+    e = simulations-preserve-least β (α ×ₒ β) (inl ⋆) (inl ⋆ , inl ⋆) f [ β , α ×ₒ β ]⟨ 𝕗 ⟩-is-simulation β-least (×ₒ-least α β (inl ⋆) (inl ⋆) (+ₒ-least 𝟙ₒ Pₒ ⋆ 𝟙ₒ-least) β-least)
+     where
+      β-least : is-least β (inl ⋆)
+      β-least = +ₒ-least 𝟙ₒ 𝟙ₒ ⋆ 𝟙ₒ-least
+  IV : (x : ⟨ α ×ₒ β ⟩) → f (inr ⋆) ＝ x → P + ¬ P
+  IV (inl ⋆ , inl ⋆) e = 𝟘-elim (III e)
+  IV (inr p , inl ⋆) e = inl p
+  IV (inl ⋆ , inr ⋆) e = inr (II (inl ⋆) e)
+  IV (inr p , inr ⋆) e = inl p
+
+-- TODO: Add converses
+approximate-division-variation-implies-EM
+ : ((α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α
+   → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α ×ₒ - ⊴ β))))
+ → EM 𝓤
+approximate-division-variation-implies-EM {𝓤} hyp = ×ₒ-as-large-right-summand-implies-EM I
+ where
+  I : (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β
+  I α β α-pos = IV
+   where
+    II : Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ α ×ₒ β) × (γ greatest-satisfying (λ - → α ×ₒ - ⊴ α ×ₒ β))
+    II = hyp α (α ×ₒ β) α-pos
+    γ = pr₁ II
+    III : β ⊴ γ
+    III = pr₂ (pr₂ (pr₂ II)) β (⊴-refl (α ×ₒ β))
+    IV : β ⊴ α ×ₒ β
+    IV = ⊴-trans β γ (α ×ₒ β) III (pr₁ (pr₂ II))
+
+approximate-logarithm-variation-implies-EM
+ : ((α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β → 𝟙ₒ ⊲ α
+   → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α ^ₒ - ⊴ β))))
+ → EM 𝓤
+approximate-logarithm-variation-implies-EM {𝓤} hyp = ^ₒ-as-large-as-exponent-implies-EM I
+ where
+  I : (α β : Ordinal 𝓤) → 𝟙ₒ ⊲ α → β ⊴ α ^ₒ β
+  I α β α-strictly-pos = IV
+   where
+    II : Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ α ^ₒ β) × (γ greatest-satisfying (λ - → α ^ₒ - ⊴ α ^ₒ β))
+    II = hyp α (α ^ₒ β) (^ₒ-has-least-element α β) α-strictly-pos
+    γ = pr₁ II
+    III : β ⊴ γ
+    III = pr₂ (pr₂ (pr₂ II)) β (⊴-refl (α ^ₒ β))
+    IV : β ⊴ α ^ₒ β
+    IV = ⊴-trans β γ (α ^ₒ β) III (pr₁ (pr₂ II))
+
+\end{code}
