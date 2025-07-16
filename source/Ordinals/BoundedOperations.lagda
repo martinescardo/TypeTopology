@@ -344,28 +344,28 @@ In a similar sense, we can approximate division of ordinals.
 \begin{code}
 
 approximate-division
- : (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α
- → Σ γ ꞉ Ordinal 𝓤 ,
-    γ greatest-satisfying (λ - → (α ×ₒ - ⊴ β) × (- ⊴ β))
-approximate-division {𝓤} α β _ = enderton-like
+ : (α β : Ordinal 𝓤)
+ → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (α ×ₒ - ⊴ β) × (- ⊴ β))
+approximate-division {𝓤} α β = enderton-like
  where
   open Enderton-like' (α ×ₒ_) β (×ₒ-preserves-suprema pt sr α)
 
 \end{code}
 
-Note that the assumption 𝟘ₒ ⊲ α isn't actually used (for α ＝ 𝟘ₒ, we simply get
-γ ＝ β due to the - ⊴ β requirement).
+Note that it is not technically necessary to assume 𝟘ₒ ⊲ α in the above, even
+though division by 𝟘ₒ is not well defined. In fact, the - ⊴ β requirement forces
+γ ＝ β in case α ＝ 𝟘₀.
 
 Again, in a similar sense, we can approximate logarithms of
-ordinals. And similarly, the assumption 𝟙ₒ ⊲ α isn't used.
+ordinals. And similarly, assuming 𝟙ₒ ⊲ α isn't needed.
 
 \begin{code}
 
 aproximate-logarithm
- : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β → 𝟙ₒ ⊲ α
+ : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β
  → Σ γ ꞉ Ordinal 𝓤 ,
     γ greatest-satisfying (λ - → (α ^ₒ - ⊴ β) × (- ⊴ β))
-aproximate-logarithm {𝓤} α β β-pos _ = enderton-like
+aproximate-logarithm {𝓤} α β β-pos = enderton-like
  where
  open Enderton-like (α ^ₒ_) 𝟙ₒ β β-pos (^ₒ-satisfies-strong-sup-specification α)
 
