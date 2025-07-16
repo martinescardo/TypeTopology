@@ -135,10 +135,13 @@ suprema up to a binary join in the following sense:
    t (sup F) ＝ δ₀ ∨ sup (t ∘ F)             (†)
 for some fixed ordinal δ₀.
 
+(Note that Eq. (†) forces t 𝟘ₒ to be δ₀ by considering the supremum of the empty
+family.)
+
 Examples of such endofunctions are
-* addition by α with δ₀ ＝ α,
-* multiplication by α with δ₀ ＝ 𝟘ₒ,
-* and exponentiation by α with δ₀ ＝ 𝟙ₒ (for α ⊵ 𝟙ₒ).
+* addition α +ₒ_ with δ₀ ＝ α,
+* multiplication α ×ₒ_ with δ₀ ＝ 𝟘ₒ
+* and exponentiation α ^ₒ_ with δ₀ ＝ 𝟙ₒ (for α ⊵ 𝟙ₒ).
 
 Then for any bound δ with δ₀ ⊴ δ, we have a greatest ordinal γ such that
 γ ⊴ δ and t γ ⊴ δ.
@@ -149,8 +152,6 @@ This is close to [Theorem Schema 8D, End77] but with a few differences:
     (b) t λ = sup_{β ⊲ γ} t β for all limit ordinals λ;
 (2) loc. cit proves: for any bound δ with δ₀ ⊴ δ, we have a greatest ordinal γ
     such that t γ ⊴ δ (so the condition γ ⊴ δ is absent).
-
-(Note that Eq. (†) forces t 𝟘ₒ to be δ₀, which is why [End77] mentions t 𝟘ₒ.)
 
 We will see that in several examples of t and δ, excluded middle is equivalent
 to the existence of γ such that γ ⊴ δ and γ is the greatest such that t γ ⊴ δ.
@@ -325,7 +326,7 @@ module Enderton-like-inflationary'
 We now consider some examples and applications.
 
 While the existence of a subtraction function on ordinals implies excluded
-middle (see Ordinals.AdditionProperties), we can construct an approximate of what
+middle (see Ordinals.AdditionProperties), we can construct an approximation of what
 would be the ordinal β - α (for α ⊴ β) in the following sense.
 
 \begin{code}
