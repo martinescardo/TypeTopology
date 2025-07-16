@@ -415,7 +415,8 @@ EM-implies-approximate-subtraction-variation {𝓤} em α β l =
 
 \end{code}
 
-Indeed, analogous results hold for approximate division and logarithm.
+Indeed, analogous results hold for approximate division (with the assumption
+𝟘₀ ⊲ α this time) and logarithm (with the assumption 𝟙₀ ⊲ α this time).
 
 \begin{code}
 
