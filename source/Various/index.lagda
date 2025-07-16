@@ -12,6 +12,7 @@ import Various.DummettDisjunction
 import Various.Hydra                      -- by Alice Laroche
 import Various.LawvereFPT
 import Various.Lumsdaine
+import Various.NatIsSetWithoutUniverse    -- by Evan Cavallo
 import Various.NonCollapsibleFamily
 import Various.Pataraia
 import Various.Pataraia-Taylor

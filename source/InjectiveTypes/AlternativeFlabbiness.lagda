@@ -39,6 +39,7 @@ open import InjectiveTypes.Structure
 open import MLTT.Spartan
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Sets
@@ -111,6 +112,13 @@ Notice that the above is strictly speaking data unless X is a set.
 
  subsingleton-set-data : 𝓤 ̇
  subsingleton-set-data = Σ x₀ ꞉ X , ((x : X) → x ∈ K → x ＝ x₀)
+
+ subsingleton-set-point : subsingleton-set-data → X
+ subsingleton-set-point = pr₁
+
+ subsingleton-set-condition : (s : subsingleton-set-data)
+                            → (x : X) → x ∈ K → x ＝ subsingleton-set-point s
+ subsingleton-set-condition = pr₂
 
 \end{code}
 
@@ -188,7 +196,7 @@ module _ {X : 𝓤 ̇ } where
   : is-set X
   → functionally-flabby X
   → flabby-structure X 𝓤
- functionally-flabby-gives-flabby-structure X-is-set a = ⨆ , e
+ functionally-flabby-gives-flabby-structure X-is-set ϕ = ⨆ , e
   where
    module _ (P : Ω 𝓤) (f : P holds → X) where
 
@@ -197,23 +205,22 @@ module _ {X : 𝓤 ̇ } where
           maps-of-props-into-sets-are-embeddings f (holds-is-prop P) X-is-set x
 
     I : subterminal-set K
-    I x y (p , d) (q , e) =
-     x   ＝⟨ d ⁻¹ ⟩
-     f p ＝⟨ ap f (holds-is-prop P p q) ⟩
-     f q ＝⟨ e ⟩
-     y   ∎
+    I x y (p , d) (q , e) = x   ＝⟨ d ⁻¹ ⟩
+                            f p ＝⟨ ap f (holds-is-prop P p q) ⟩
+                            f q ＝⟨ e ⟩
+                            y   ∎
 
     II : subsingleton-set-data K
-    II = a K I
+    II = ϕ K I
 
     ⨆ : X
-    ⨆ = pr₁ II
+    ⨆ = subsingleton-set-point K II
 
     _ : (x : X) → fiber f x → x ＝ ⨆
-    _ = pr₂ II
+    _ = subsingleton-set-condition K II
 
     e : (p : P holds) → ⨆ ＝ f p
-    e p = (pr₂ II (f p) (p , refl))⁻¹
+    e p = (subsingleton-set-condition K II (f p) (to-fiber f p))⁻¹
 
 \end{code}
 
@@ -232,14 +239,70 @@ The converse doesn't require X to be a 1-type.
                               (∈-is-prop K)
                               (K-subterminal x y m n)})
 
-   f : P holds → X
-   f = pr₁
+   _ : 𝕋-to-carrier K ＝ (pr₁ ∶ ((Σ x ꞉ X , x ∈ K) → X))
+   _ = refl
 
    x₀ : X
-   x₀ = ⨆ P f
+   x₀ = ⨆ P (𝕋-to-carrier K)
 
    I : (x : X) → x ∈ K → x ＝ x₀
-   I x m = (e P f (x , m))⁻¹
+   I x m = (e P (𝕋-to-carrier K) (x , m))⁻¹
+
+\end{code}
+
+The above maps are mutually inverse if X is a set, and hence give a
+typal equivalence.
+
+\begin{code}
+
+ functionally-flabby-is-equiv-to-flabby-structure
+  : propext 𝓤
+  → is-set X
+  → functionally-flabby X ≃ flabby-structure X 𝓤
+ functionally-flabby-is-equiv-to-flabby-structure pe X-is-set =
+  qinveq α (β , η , ε)
+  where
+   α = functionally-flabby-gives-flabby-structure X-is-set
+   β = flabby-structure-gives-functionally-flabby
+
+   η : β ∘ α ∼ id
+   η ϕ = dfunext fe (λ K →
+         dfunext fe (λ s →
+         to-subtype-＝
+          (λ x → Π₂-is-prop fe (λ _ _ → X-is-set))
+          (III K s)))
+    where
+     module _ (K : 𝓟 X) (s : subterminal-set K) where
+
+      I : ∀ {K' s'}
+        → K' ＝ K
+        → subsingleton-set-point K' (ϕ K' s') ＝ subsingleton-set-point K (ϕ K s)
+      I {.K} {s'} refl = ap (subsingleton-set-point K ∘ ϕ K)
+                            (being-subterminal-set-is-prop K X-is-set s' s)
+
+      K' : 𝓟 X
+      K' x = fiber (𝕋-to-carrier K) x , _
+
+      II : K' ＝ K
+      II = subset-extensionality'' pe fe fe
+            (from-𝕋-fiber K ∶ (K' ⊆ K))
+            (to-𝕋-fiber K ∶ (K ⊆ K'))
+
+      III : subsingleton-set-point K' (ϕ K' _) ＝ subsingleton-set-point K (ϕ K s)
+      III = I II
+
+   ε : α ∘ β ∼ id
+   ε (⨆ , e) = to-subtype-＝
+                 (λ _ → Π₃-is-prop fe (λ _ _ _ → X-is-set))
+                 (dfunext fe (λ P → dfunext fe (I P)))
+    where
+     module _ (P : Ω 𝓤) (f : P holds → X) where
+
+      P' : Ω 𝓤
+      P' = (Σ x ꞉ X , fiber f x) , _
+
+      I : ⨆ P' pr₁ ＝ ⨆ P f
+      I = ⨆-change-of-variable-≃ X pe fe ⨆ pr₁ (total-fiber-is-domain f)
 
 \end{code}
 
@@ -311,25 +374,24 @@ are property, when X is a 1-type, or set.
 \begin{code}
 
   flabby'-gives-flabby : is-set X → flabby' → flabby X 𝓤
-  flabby'-gives-flabby X-is-set ϕ' P P-is-prop f = IV
+  flabby'-gives-flabby X-is-set ϕ P P-is-prop f = IV
    where
     K : 𝓟 X
     K x = fiber f x ,
           maps-of-props-into-sets-are-embeddings f P-is-prop X-is-set x
 
     I : subterminal-set K
-    I x y (p , d) (q , e) =
-     x   ＝⟨ d ⁻¹ ⟩
-     f p ＝⟨ ap f (P-is-prop p q) ⟩
-     f q ＝⟨ e ⟩
-     y   ∎
+    I x y (p , d) (q , e) = x   ＝⟨ d ⁻¹ ⟩
+                            f p ＝⟨ ap f (P-is-prop p q) ⟩
+                            f q ＝⟨ e ⟩
+                            y   ∎
 
     II : is-subsingleton-set K
-    II = ϕ' K I
+    II = ϕ K I
 
     III : (Σ x₀ ꞉ X , ((x : X) → x ∈ K → x ＝ x₀))
         → (Σ x ꞉ X , ((p : P) → x ＝ f p))
-    III (x₀ , α) = x₀ , (λ p → (α (f p) (p , refl))⁻¹)
+    III (x₀ , α) = x₀ , (λ p → (α (f p) (to-fiber f p))⁻¹)
 
     IV : ∃ x ꞉ X , ((p : P) → x ＝ f p)
     IV = ∥∥-functor III II

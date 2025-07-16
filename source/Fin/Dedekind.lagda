@@ -24,8 +24,8 @@ Example. The type Ω 𝓤 of propositions is Dedekind finite.
 
 \begin{code}
 
+open import Higgs.InvolutionTheorem hiding (Ω)
 open import UF.FunExt
-open import UF.HiggsInvolutionTheorem
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
 

@@ -4,8 +4,7 @@ author:       Martín Escardó and Ayberk Tosun
 date-started: 2021-03-10
 ---
 
-Based in part by the `Cubical.Functions.Logic` module UF.of
-`agda/cubical`.
+Based in part by the `Cubical.Functions.Logic` module UF.of `agda/cubical`.
 
 \begin{code}
 
@@ -22,6 +21,20 @@ open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 open import UF.Sets
+
+\end{code}
+
+\section{Negation}
+
+\begin{code}
+
+module Negation (fe : funext 𝓤 𝓤₀) where
+
+ ⇁_ : Ω 𝓤 → Ω 𝓤
+ ⇁_ = not fe
+
+ ⇁⇁_ : Ω 𝓤 → Ω 𝓤
+ ⇁⇁ p = ⇁(⇁ p)
 
 \end{code}
 
@@ -244,6 +257,7 @@ Added by Ayberk Tosun 2024-05-28.
 \section{Truncation}
 
 \begin{code}
+
 module Truncation (pt : propositional-truncations-exist) where
 
   open PropositionalTruncation pt

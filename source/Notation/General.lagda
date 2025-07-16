@@ -27,6 +27,10 @@ Type₁ = Set₁
 fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
 fiber f y = Σ x ꞉ domain f , f x ＝ y
 
+to-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X)
+         → fiber f (f x)
+to-fiber f x = x , refl
+
 fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} → fiber f y → X
 fiber-point = pr₁
 

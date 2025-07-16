@@ -20,6 +20,7 @@ cd ~/martinescardo.github.io/
 
 cd ~/martinescardo.github.io/TypeTopology/
 
+cp -a Higgs.index.html UF.HiggsInvolutionTheorem.html
 cp -a CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
 cp -a CoNaturals.index.html CoNaturals.html
 cp -a DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html PCFModules.html

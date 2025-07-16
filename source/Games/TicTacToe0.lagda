@@ -255,7 +255,7 @@ selections b@(p , A) (succ k) with wins (opponent p) A | Move-decidable b
 ... | false | inr _  = ⟨⟩
 
 
-p : Path (Xt tic-tac-toe)
-p = sequenceᴶ (selections board₀ 9) (q tic-tac-toe)
+p : Path (game-tree tic-tac-toe)
+p = sequenceᴶ (selections board₀ 9) (payoff-function tic-tac-toe)
 
 \end{code}

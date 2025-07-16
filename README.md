@@ -52,6 +52,7 @@ Please add yourself the first time you contribute.
 * Fredrik Nordvall Forsberg
 * Ian Ray
 * Igor Arrieta (ii)
+* J.A. Carr
 * Jon Sterling
 * Kelton OBrien
 * Keri D'Angelo
