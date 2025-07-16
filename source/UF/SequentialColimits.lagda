@@ -1,8 +1,7 @@
 Ian Ray, 21st Jun 2025.
 
-We will prove some results about sequential colimits. This formalization will follow
-section 26 of Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest summer
-school version:
+We develop sequential colimits in HoTT/UF. This formalization will follow Section 26 of
+Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest summer school version:
 https://github.com/martinescardo/HoTTEST-Summer-School/blob/main/HoTT/hott-intro.pdf).
 
 \begin{code}
@@ -32,7 +31,7 @@ A diagram of the following form
           a₀      a₁      a₂
      A₀ ----> A₁ ----> A₂ ----> ...
 
-is a type sequence. We can give a formal specification as follows.
+is a (directed?) type sequence. We can give a formal specification as follows.
 
 \begin{code}
 
@@ -41,7 +40,8 @@ type-sequence 𝓤 = Σ A ꞉ (ℕ → 𝓤 ̇) , ((n : ℕ) → A n → A (succ
 
 \end{code}
 
-A sequential cocone over a type sequence consists of maps to a vertex
+A sequential cocone over a type sequence consists of a sequence of maps to a specified
+vertex
 
           a₀      a₁      a₂
      A₀ ----> A₁ ----> A₂ ----> ...
@@ -53,7 +53,7 @@ A sequential cocone over a type sequence consists of maps to a vertex
            v  v   v
               B
 
-such that everything commuts. Formally we can define this as follows.
+such that every composable triangle commuts. Formally we can define this as follows.
 
 \begin{code}
 
@@ -66,7 +66,7 @@ sequential-cocone (A , a) B
 
 \end{code}
 
-TODO. Characterize equality of sequential cocones.
+We now characterize the identity type of sequential cocones.
 
 \begin{code}
 
@@ -187,36 +187,36 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
 
 \end{code}
 
-Given a sequential cocone over B and a map B → C there is a canonical assignment to
-a sequential cocone over C.
+Given a sequential cocone over X and a map X → Y there is a canonical assignment to
+a sequential cocone over Y.
 
 \begin{code}
 
 module _ (𝓐 : type-sequence 𝓤)
-         (B : 𝓥 ̇) (C : 𝓣 ̇)
+         (X : 𝓥 ̇) (Y : 𝓣 ̇)
           where
 
- canonical-map-to-sequential-cocone : sequential-cocone 𝓐 B
-                                    → (B → C)
-                                    → sequential-cocone 𝓐 C
- canonical-map-to-sequential-cocone (b , H) u =
-  ((λ n → u ∘ b n) , λ n → ∼-ap-∘ u (H n))
+ canonical-map-to-sequential-cocone : sequential-cocone 𝓐 X
+                                    → (X → Y)
+                                    → sequential-cocone 𝓐 Y
+ canonical-map-to-sequential-cocone (h , H) u =
+  ((λ n → u ∘ h n) , λ n → ∼-ap-∘ u (H n))
 
 \end{code}
 
-A sequential cocone over B is universal if the above map is an equivalence for any C.
+A sequential cocone over X is universal if the above map is an equivalence for any Y.
 Such a sequential cocone is said to be the sequential colimit of a type sequence.
 
 \begin{code}
 
- Seqential-Colimit-Universal-Property : (𝓑 : sequential-cocone 𝓐 B)
+ Seqential-Colimit-Universal-Property : (𝓧 : sequential-cocone 𝓐 X)
                                       → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
- Seqential-Colimit-Universal-Property 𝓑 =
-  is-equiv (canonical-map-to-sequential-cocone 𝓑)
+ Seqential-Colimit-Universal-Property 𝓧 =
+  is-equiv (canonical-map-to-sequential-cocone 𝓧)
 
 \end{code}
 
-We will now give a construction of the sequential colimit in terms of the pushout.
+We now give a construction of the sequential colimit in terms of the pushout.
 This construction follows 26.2 in Introduction to Homotopy Type Theory (link above).
 
 The sequential colimit A∞ can be constructed as the pushout of the following diagram
@@ -273,8 +273,8 @@ We give the sequential cocone structure for the sequential colimt.
 
 \end{code}
 
-We will define our inverse map before showing the universal property of sequential
-colimits.
+We will now show cocones over the above pushout diagram are equivalent to sequential
+cocones over the above type sequence. 
 
 \begin{code}
 
@@ -283,17 +283,6 @@ colimits.
                                 → b (pr₁ (f c)) (pr₂ (f c)) ＝ b (pr₁ (g c)) (pr₂ (g c))
   gluing-from-sequential-cocone (b , H) (inl -) = refl
   gluing-from-sequential-cocone (b , H) (inr (n , x)) = H n x
-
-  map-from-sequential-cocone : sequential-cocone 𝓐 X → (sequential-colimit → X)
-  map-from-sequential-cocone (b , H)
-   = pushout-recursion (uncurry b) (uncurry b) (gluing-from-sequential-cocone (b , H))
-
-\end{code}
-
-We will now show cocones over the above pushout diagram are equivalent to a sequential
-cocones over the above type sequence.
-
-\begin{code}
 
   pushout-cocone-to-seq-cocone : cocone f g X → sequential-cocone 𝓐 X
   pushout-cocone-to-seq-cocone (i , j , H) = (curry j , I)
@@ -333,6 +322,13 @@ cocones over the above type sequence.
        pushout-cocone-to-seq-cocone-is-section ,
         pushout-cocone-to-seq-cocone-is-retraction)
 
+\end{code}
+
+Additionally, we show that canonical maps to sequential cocones and pushout cocones
+commute with the above map that translates between them.
+
+\begin{code}
+
   canonical-maps-commute
    : canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
       sequential-colimit-is-cocone
@@ -357,7 +353,7 @@ cocones over the above type sequence.
 
 \end{code}
 
-Using the above we prove the universal property for the sequential colimit.
+Using the above results we prove the universal property for the sequential colimit.
 
 \begin{code}
 
@@ -456,7 +452,7 @@ for sequential colimits.
 
 \end{code}
 
-We will now prove the uniqueness principle for sequential colimits.
+Finally we prove the uniqueness principle for sequential colimits.
 
 \begin{code}
 
