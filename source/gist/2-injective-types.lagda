@@ -245,3 +245,5 @@ Now let's go back to (algebraic) injectivity with respect to all
 embeddings. Say that a map j : X → Y is injecting if all algebraically
 injective types with respect to embeddings are injective with respect
 to j. Question. Can we show that j is necessarily an embedding?
+Perhaps an embedding is precisely the same thing as an Ω-injecting
+map.
