@@ -7,7 +7,7 @@ The motivation for this discussion is two-fold:
 (1) Injective types don't have any non-trivial decidable properties in general.
 
 (2) In particular, totally separated types, which have plenty of
-    decidable properties by definition, are not innjective in general.
+    decidable properties by definition, are not injective in general.
 
     Can the totally separated types be the injective types with
     respect to *some* class of maps?
