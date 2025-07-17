@@ -194,7 +194,7 @@ K-is-totally-separated = Π-is-totally-separated fe' (λ _ → 𝟚-is-totally-s
 
 \end{code}
 
-This shows that 𝟚-injecting map doesn't need to be an
+This shows that a 𝟚-injecting map doesn't need to be an
 embedding. Indeed, we have seen that the map η : X → K X is always
 𝟚-injecting, but we also know that it is an embedding if and only if X
 is totally separated.
@@ -228,22 +228,25 @@ module _
 
 \end{code}
 
-TODO. Can we generalize the universes in `𝟚-injectives-are-totally-separated`
-and (hence) the above?
+TODO.
 
-Can we show that every totally separated type A is 𝟚-injective? I
-can't even show, at the time of writing, that ℕ, a totally separated
-type, is 𝟚-injective.
+  (1) Can we generalize the universes in
+      `𝟚-injectives-are-totally-separated` and (hence) the above?
 
-Do totally separated types "think that 𝟚-injective types are
-embeddings"? Formulate this question precisely.
+  (2) Can we show that every totally separated type is 𝟚-injective? I
+      can't even show, at the time of writing, that ℕ, a totally
+      separated type, is 𝟚-injective.
 
-Can we show that the totally separated types are precisely the
-algebras of the 𝟚-based double dualization monad?
+  (3) Do totally separated types "think that 𝟚-injective types are
+      embeddings"? Formulate this question precisely, and maybe answer
+      it.
 
-Now let's go back to (algebraic) injectivity with respect to all
-embeddings. Say that a map j : X → Y is injecting if all algebraically
-injective types with respect to embeddings are injective with respect
-to j. Question. Can we show that j is necessarily an embedding?
-Perhaps an embedding is precisely the same thing as an Ω-injecting
-map.
+  (4) Can we show that the totally separated types are precisely the
+      algebras of the 𝟚-based double dualization monad?
+
+  (5) Now let's go back to (algebraic) injectivity with respect to all
+      embeddings. Say that a map j : X → Y is injecting if all
+      algebraically injective types with respect to embeddings are
+      injective with respect to j. Question. Can we show that j is
+      necessarily an embedding?  Perhaps an embedding is precisely the
+      same thing as an Ω-injecting map.
