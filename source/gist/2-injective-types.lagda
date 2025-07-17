@@ -237,7 +237,7 @@ TODO.
       can't even show, at the time of writing, that ℕ, a totally
       separated type, is 𝟚-injective.
 
-  (3) Do totally separated types "think that 𝟚-injective types are
+  (3) Do totally separated types "think that 𝟚-injecting maps are
       embeddings"? Formulate this question precisely, and maybe answer
       it.
 
