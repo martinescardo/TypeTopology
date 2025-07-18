@@ -22,8 +22,11 @@ module Ordinals.BoundedOperations
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
+open import UF.Base
 open import UF.ClassicalLogic
 open import UF.FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 
 private
@@ -53,14 +56,14 @@ open suprema pt sr
 We start by proving that every bounded and antitone predicate that is closed
 under suprema has a greatest element satisfying it.
 
-Usually, we would reserve the words "satisfying" and "predicate" for a
-proposition valued type family, but the formulation below is convenient in our
-applications. Similarly we simply formulate boundedness using Σ rather than ∃.
-
 \begin{code}
 
 _is-upper-bound-for_ : (γ : Ordinal 𝓤) → (Ordinal 𝓤 → 𝓥 ̇ ) → 𝓤 ⁺ ⊔ 𝓥 ̇
 _is-upper-bound-for_ {𝓤} γ P = (α : Ordinal 𝓤) → P α → α ⊴ γ
+
+is-upper-bound-for-is-prop : {P : Ordinal 𝓤 → 𝓥 ̇ } → (γ : Ordinal 𝓤)
+                           → is-prop (γ is-upper-bound-for P)
+is-upper-bound-for-is-prop γ = Π₂-is-prop fe' (λ α _ → ⊴-is-prop-valued α γ)
 
 _greatest-satisfying_ : Ordinal 𝓤 → (Ordinal 𝓤 → 𝓥 ̇ ) → 𝓤 ⁺ ⊔ 𝓥 ̇
 _greatest-satisfying_ {𝓤} γ P = P γ × γ is-upper-bound-for P
@@ -75,60 +78,86 @@ greatest-is-upper-bound : (γ : Ordinal 𝓤) {P : Ordinal 𝓤 → 𝓥 ̇ }
                         → γ is-upper-bound-for P
 greatest-is-upper-bound γ {P} = pr₂
 
+greatest-is-unique : (α β : Ordinal 𝓤) {P : Ordinal 𝓤 → 𝓥 ̇ }
+                   → α greatest-satisfying P
+                   → β greatest-satisfying P
+                   → α ＝ β
+greatest-is-unique α β (p , g) (p' , g') = ⊴-antisym α β I II
+ where
+  I : α ⊴ β
+  I = g' α p
+
+  II : β ⊴ α
+  II = g β p'
+
 module _ (P : Ordinal 𝓤  → 𝓥 ̇ ) where
 
  bounded antitone closed-under-suprema : 𝓤 ⁺ ⊔ 𝓥 ̇
 
- bounded = Σ δ ꞉ Ordinal 𝓤 , ((α : Ordinal 𝓤) → P α → α ⊴ δ)
+ bounded = ∃ δ ꞉ Ordinal 𝓤 , ((α : Ordinal 𝓤) → P α → α ⊴ δ)
  antitone = (α β : Ordinal 𝓤) → α ⊴ β → P β → P α
  closed-under-suprema =
   (I : 𝓤 ̇ ) (F : I → Ordinal 𝓤) → ((i : I) → P (F i)) → P (sup F)
 
 greatest-ordinal-satisfying-predicate : (P : Ordinal 𝓤 → 𝓤 ̇ )
+                                      → ((α : Ordinal 𝓤) → is-prop (P α))
                                       → bounded P
                                       → antitone P
                                       → closed-under-suprema P
                                       → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying P
 greatest-ordinal-satisfying-predicate
- {𝓤} P (δ , δ-bound) P-antitone P-closed-under-sup =
-  γ , γ-satisfies-P , γ-is-upper-bound
+ {𝓤} P P-is-prop P-bounded P-antitone P-closed-under-sup =
+  ∥∥-rec goal-is-prop goal' P-bounded
    where
-    S : (α : Ordinal 𝓤) → ⟨ α ⟩ → Ordinal 𝓤
-    S α a = (α ↓ a) +ₒ 𝟙ₒ
+    goal-is-prop : is-prop (Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying P)
+    goal-is-prop (γ , γ-greatest) (γ' , γ'-greatest) =
+     to-subtype-＝ (λ δ → ×-is-prop (P-is-prop δ) (is-upper-bound-for-is-prop δ))
+                   (greatest-is-unique γ γ' γ-greatest γ'-greatest)
 
-    γ : Ordinal 𝓤
-    γ = sup {𝓤} {Σ x ꞉ ⟨ δ ⟩ , P (S δ x)} (λ (x , _) → S δ x)
-
-    γ-satisfies-P : P γ
-    γ-satisfies-P = P-closed-under-sup _ (λ (x , _) → S δ x) (λ (_ , p) → p)
-
-    γ-is-upper-bound : γ is-upper-bound-for P
-    γ-is-upper-bound α p = to-⊴ α γ II
+    goal' : Σ δ ꞉ Ordinal 𝓤 , ((α : Ordinal 𝓤) → P α → α ⊴ δ)
+          → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying P
+    goal' (δ , δ-bound) = γ , γ-satisfies-P , γ-is-upper-bound
      where
-      I : (a : ⟨ α ⟩) → Σ bₐ ꞉ ⟨ δ ⟩ , α ↓ a ＝ δ ↓ bₐ
-      I = from-≼ (⊴-gives-≼ α δ (δ-bound α p))
-      II : (a : ⟨ α ⟩) → α ↓ a ⊲ γ
-      II a = c , (α ↓ a         ＝⟨ II₁ ⟩
-                 δ ↓ bₐ         ＝⟨ II₂ ⟩
-                 S δ bₐ ↓ inr ⋆ ＝⟨ II₃ ⟩
-                 γ ↓ c          ∎)
+      S : (α : Ordinal 𝓤) → ⟨ α ⟩ → Ordinal 𝓤
+      S α a = (α ↓ a) +ₒ 𝟙ₒ
+
+      γ : Ordinal 𝓤
+      γ = sup {𝓤} {Σ x ꞉ ⟨ δ ⟩ , P (S δ x)} (λ (x , _) → S δ x)
+
+      γ-satisfies-P : P γ
+      γ-satisfies-P = P-closed-under-sup _ (λ (x , _) → S δ x) (λ (_ , p) → p)
+
+      γ-is-upper-bound : γ is-upper-bound-for P
+      γ-is-upper-bound α p = to-⊴ α γ II
        where
-        bₐ = pr₁ (I a)
-        II₁ = pr₂ (I a)
-        II₂ = (successor-lemma-right (δ ↓ bₐ)) ⁻¹
-
-        p' : P (S δ bₐ)
-        p' = transport P (ap (_+ₒ 𝟙ₒ) II₁) p''
+        I : (a : ⟨ α ⟩) → Σ bₐ ꞉ ⟨ δ ⟩ , α ↓ a ＝ δ ↓ bₐ
+        I = from-≼ (⊴-gives-≼ α δ (δ-bound α p))
+        II : (a : ⟨ α ⟩) → α ↓ a ⊲ γ
+        II a = c , (α ↓ a         ＝⟨ II₁ ⟩
+                   δ ↓ bₐ         ＝⟨ II₂ ⟩
+                   S δ bₐ ↓ inr ⋆ ＝⟨ II₃ ⟩
+                   γ ↓ c          ∎)
          where
-          p'' : P (S α a)
-          p'' = P-antitone (S α a) α
-                 (upper-bound-of-successors-of-initial-segments α a) p
-        c : ⟨ γ ⟩
-        c = [ S δ bₐ , γ ]⟨ sup-is-upper-bound _ (bₐ , p') ⟩ (inr ⋆)
+          bₐ = pr₁ (I a)
+          II₁ = pr₂ (I a)
+          II₂ = (successor-lemma-right (δ ↓ bₐ)) ⁻¹
 
-        II₃ = (initial-segment-of-sup-at-component _ (bₐ , p') (inr ⋆)) ⁻¹
+          p' : P (S δ bₐ)
+          p' = transport P (ap (_+ₒ 𝟙ₒ) II₁) p''
+           where
+            p'' : P (S α a)
+            p'' = P-antitone (S α a) α
+                   (upper-bound-of-successors-of-initial-segments α a) p
+          c : ⟨ γ ⟩
+          c = [ S δ bₐ , γ ]⟨ sup-is-upper-bound _ (bₐ , p') ⟩ (inr ⋆)
+
+          II₃ = (initial-segment-of-sup-at-component _ (bₐ , p') (inr ⋆)) ⁻¹
 
 \end{code}
+
+Inspecting the proof, we see that we can drop the assumption that P is
+proposition-valued if we are given an explicit bound δ rather than just a proof
+of the mere existence of a bound.
 
 Now we consider an endofunction t on ordinals and assume that it preserves
 suprema up to a binary join in the following sense:
@@ -200,12 +229,15 @@ module Enderton-like
   : Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (t - ⊴ δ) × (- ⊴ δ))
  enderton-like = greatest-ordinal-satisfying-predicate
                   P
+                  P-is-prop
                   P-bounded
                   P-antitone
                   P-closed-under-suprema
   where
    P : Ordinal 𝓤 → 𝓤 ̇
    P α = (t α ⊴ δ) × (α ⊴ δ)
+   P-is-prop : (α : Ordinal 𝓤) → is-prop (P α)
+   P-is-prop α = ×-is-prop (⊴-is-prop-valued (t α) δ) (⊴-is-prop-valued α δ)
    P-closed-under-suprema : closed-under-suprema P
    P-closed-under-suprema I F ρ =
     transport⁻¹ (_⊴ δ) (t-preserves-suprema-up-to-join _ F) l ,
@@ -221,8 +253,8 @@ module Enderton-like
    P-antitone α₁ α₂ k (l , m) =
      ⊴-trans (t α₁) (t α₂) δ (t-is-monotone α₁ α₂ k) l ,
      ⊴-trans α₁ α₂ δ k m
-   P-bounded : Σ β ꞉ Ordinal 𝓤 , ((α : Ordinal 𝓤) → P α → α ⊴ β)
-   P-bounded = δ , (λ α p → pr₂ p)
+   P-bounded : ∃ β ꞉ Ordinal 𝓤 , ((α : Ordinal 𝓤) → P α → α ⊴ β)
+   P-bounded = ∣ δ , (λ α p → pr₂ p) ∣
 
 \end{code}
 
