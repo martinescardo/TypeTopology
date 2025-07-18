@@ -451,7 +451,7 @@ product into the supremum.
    F = cases (λ _ → γ) (λ b → γ ×ₒ α ^ₒ (β ↓ b) ×ₒ α)
 
    I   = ap (γ ×ₒ_) (^ₒ-behaviour α β)
-   II  = ×ₒ-preserves-suprema pt sr γ (^ₒ-family α β)
+   II  = ×ₒ-preserves-suprema pt sr γ _ (^ₒ-family α β)
    III = ap sup (dfunext fe' h)
     where
      h : (λ - → γ ×ₒ ^ₒ-family α β -) ∼ F
