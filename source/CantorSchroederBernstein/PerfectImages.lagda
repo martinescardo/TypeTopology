@@ -305,7 +305,7 @@ module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} where
   perfect-images-at-are-decidable'
    (∘-is-Π-Compact-map αf αg)
    (λ z →
-    ¬¬-stable-De-Morgan-types-are-decidable
+    ¬¬-stable-weakly-decidable-types-are-decidable
      (Π-Compact-types-have-decidable-negations (αg z))
      (¬¬elim-g z))
 
