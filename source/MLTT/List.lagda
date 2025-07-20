@@ -15,6 +15,8 @@ open import MLTT.Bool
 open import Naturals.Properties
 open import Naturals.Order hiding (minus)
 open import Notation.Order
+open import UF.Base
+open import UF.Subsingletons
 
 data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇ where
  [] : List X
@@ -199,11 +201,30 @@ member'-map f x' (x ∷ xs) (inr m) = inr (member'-map f x' xs m)
 listed : 𝓤 ̇ → 𝓤 ̇
 listed X = Σ xs ꞉ List X , ((x : X) → member x xs)
 
+the-list : {X : 𝓤 ̇ } → listed X → List X
+the-list (xs , m) = xs
+
+member-of-the-list : {X : 𝓤 ̇ } (X-is-listed : listed X)
+                   → (x : X) → member x (the-list X-is-listed)
+member-of-the-list (xs , m) = m
+
+𝟙-is-listed : listed (𝟙 {𝓤})
+𝟙-is-listed = (⋆ ∷ []) , (λ x → in-head)
+
 listed⁺ : 𝓤 ̇ → 𝓤 ̇
 listed⁺ X = X × listed X
 
-type-from-list : {X : 𝓤  ̇ } → List X → 𝓤  ̇
-type-from-list {X = X} xs = Σ x ꞉ X , member x xs
+distinguished-element : {X : 𝓤 ̇ } → listed⁺ X → X
+distinguished-element (x , X-listed) = x
+
+listed⁺-types-are-listed : {X : 𝓤 ̇ } → listed⁺ X → listed X
+listed⁺-types-are-listed (x , X-is-listed) = X-is-listed
+
+𝟙-is-listed⁺ : listed⁺ (𝟙 {𝓤})
+𝟙-is-listed⁺ = ⋆ , 𝟙-is-listed
+
+type-from-list : {X : 𝓤 ̇ } → List X → 𝓤 ̇
+type-from-list {𝓤} {X} xs = Σ x ꞉ X , member x xs
 
 type-from-list-is-listed : {X : 𝓤 ̇ } (xs : List X)
                          → listed (type-from-list xs)
@@ -414,12 +435,13 @@ left-concatenation-preserves-membership x xs (y ∷ ys) p = †
   † : member x (y ∷ (ys ++ xs))
   † = in-tail (left-concatenation-preserves-membership x xs ys p)
 
-++-membership₁ : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
-               → member x (xs ++ ys)
-               → member x xs + member x ys
-++-membership₁ x []       zs p           = inr p
-++-membership₁ x (x ∷ ys) zs in-head     = inl in-head
-++-membership₁ x (y ∷ ys) zs (in-tail p) = cases † ‡ (++-membership₁ x ys zs p)
+split-++-membership : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
+                    → member x (xs ++ ys)
+                    → member x xs + member x ys
+split-++-membership x []       zs p           = inr p
+split-++-membership x (x ∷ ys) zs in-head     = inl in-head
+split-++-membership x (y ∷ ys) zs (in-tail p) =
+ cases † ‡ (split-++-membership x ys zs p)
  where
   † : member x ys → member x (y ∷ ys) + member x zs
   † p = inl (in-tail p)
@@ -446,6 +468,12 @@ map-id : {X : 𝓤 ̇ }
        → map id xs ＝ xs
 map-id [] = refl
 map-id (x ∷ xs) = ap (x ∷_) (map-id xs)
+
+map-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+        (f : X → Y) (g : Y → Z)
+      → map (g ∘ f) ∼ map g ∘ map f
+map-∘ f g []       = refl
+map-∘ f g (x ∷ xs) = ap (g (f x) ∷_) (map-∘ f g xs)
 
 concat : {X : 𝓤 ̇ } → List (List X) → List X
 concat []         = []
@@ -525,34 +553,77 @@ Added by Martin Escardo and Paulo Oliva 12th March 2025.
 
 \begin{code}
 
-member-of-concat : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
-                 → member x (concat yss)
-                 → Σ ys ꞉ List X , member ys yss × member x ys
-member-of-concat {𝓤} {X} x (ys ∷ yss) m = II I
+member-of-concat← : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
+                  → member x (concat yss)
+                  → Σ ys ꞉ List X , member ys yss × member x ys
+member-of-concat← {𝓤} {X} x (ys ∷ yss) m = II I
  where
   I : member x ys + member x (concat yss)
-  I = ++-membership₁ x ys (concat yss) m
+  I = split-++-membership x ys (concat yss) m
 
   II : type-of I → Σ ys' ꞉ List X , member ys' (ys ∷ yss) × member x ys'
   II (inl l) = ys , in-head , l
   II (inr r) = III IH
    where
     IH : Σ ys' ꞉ List X , member ys' yss × member x ys'
-    IH = member-of-concat x yss r
+    IH = member-of-concat← x yss r
 
     III : type-of IH → Σ ys' ꞉ List X , member ys' (ys ∷ yss) × member x ys'
     III (ys' , r₁ , r₂) = ys' , in-tail r₁ , r₂
 
-member-of-map : {X Y : 𝓤 ̇ } (f : X → Y) (y : Y) (xs : List X)
+member-of-map← : {X Y : 𝓤 ̇ } (f : X → Y) (y : Y) (xs : List X)
               → member y (map f xs)
               → Σ x ꞉ X , member x xs × (f x ＝ y)
-member-of-map f y (x ∷ xs) in-head = x , in-head , refl
-member-of-map {𝓤} {X} f y (x ∷ xs) (in-tail m) = I IH
+member-of-map← f y (x ∷ xs) in-head = x , in-head , refl
+member-of-map← {𝓤} {X} f y (x ∷ xs) (in-tail m) = I IH
  where
   IH : Σ x ꞉ X , member x xs × (f x ＝ y)
-  IH = member-of-map f y xs m
+  IH = member-of-map← f y xs m
 
   I : type-of IH → Σ x' ꞉ X , member x' (x ∷ xs) × (f x' ＝ y)
   I (x , m , e) = x , in-tail m , e
+
+\end{code}
+
+Added 10 April 2025 by Fredrik Nordvall Forsberg.
+
+\begin{code}
+
+data All {X : 𝓤 ̇ } (P : X → 𝓥 ̇ ) : List X → 𝓤 ⊔ 𝓥 ̇  where
+  [] : All P []
+  _∷_ : {x : X} {xs : List X} → P x → All P xs → All P (x ∷ xs)
+
+All-is-prop : {X : 𝓤 ̇ } (P : X → 𝓥 ̇ )
+            → is-prop-valued-family P
+            → is-prop-valued-family (All P)
+All-is-prop P p [] [] [] = refl
+All-is-prop P p (x ∷ l) (a ∷ as) (a' ∷ as') =
+ ap₂ _∷_ (p x a a') (All-is-prop P p l as as')
+
+\end{code}
+
+Added by Martin Escardo and Paulo Oliva 14th May 2025.
+
+\begin{code}
+
+member-of-concat→ : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
+                    (zs : List X)
+                  → member zs yss
+                  → member x zs
+                  → member x (concat yss)
+member-of-concat→ x (ys ∷ yss) .ys in-head m₂ =
+ right-concatenation-preserves-membership x ys (concat yss) m₂
+member-of-concat→ x (ys ∷ yss) zs (in-tail m₁) m₂ =
+ left-concatenation-preserves-membership x (concat yss) ys IH
+ where
+  IH : member x (concat yss)
+  IH = member-of-concat→ x yss zs m₁ m₂
+
+member-of-map→ : {X Y : 𝓤 ̇ } (f : X → Y) (xs : List X)
+                 (x : X)
+               → member x xs
+               → member (f x) (map f xs)
+member-of-map→ f xs x in-head = in-head
+member-of-map→ f (_ ∷ xs) x (in-tail m) = in-tail (member-of-map→ f xs x m)
 
 \end{code}

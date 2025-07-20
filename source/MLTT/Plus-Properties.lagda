@@ -77,4 +77,8 @@ inl-preservation {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} f p l x = γ x (f (inl x)) 
 +functor f g (inl x) = inl (f x)
 +functor f g (inr y) = inr (g y)
 
++functor₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {X' : 𝓤' ̇ } {Y' : 𝓥' ̇ } {Z' : 𝓦' ̇ }
+          → (X → X') → (Y → Y') → (Z → Z') → X + Y + Z → X' + Y' + Z'
++functor₂ f g h = +functor f (+functor g h)
+
 \end{code}

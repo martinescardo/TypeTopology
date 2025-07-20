@@ -4,8 +4,7 @@ author:       Martín Escardó and Ayberk Tosun
 date-started: 2021-03-10
 ---
 
-Based in part by the `Cubical.Functions.Logic` module UF.of
-`agda/cubical`.
+Based in part by the `Cubical.Functions.Logic` module UF.of `agda/cubical`.
 
 \begin{code}
 
@@ -22,6 +21,20 @@ open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 open import UF.Sets
+
+\end{code}
+
+\section{Negation}
+
+\begin{code}
+
+module Negation (fe : funext 𝓤 𝓤₀) where
+
+ ⇁_ : Ω 𝓤 → Ω 𝓤
+ ⇁_ = not fe
+
+ ⇁⇁_ : Ω 𝓤 → Ω 𝓤
+ ⇁⇁ p = ⇁(⇁ p)
 
 \end{code}
 
@@ -221,7 +234,7 @@ module Disjunction (pt : propositional-truncations-exist) where
  _∨_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
  P ∨ Q = ∥ P holds + Q holds ∥ , ∥∥-is-prop
 
- infix 3 _∨_
+ infixr 3 _∨_
 
 \end{code}
 
@@ -244,6 +257,7 @@ Added by Ayberk Tosun 2024-05-28.
 \section{Truncation}
 
 \begin{code}
+
 module Truncation (pt : propositional-truncations-exist) where
 
   open PropositionalTruncation pt
@@ -251,7 +265,7 @@ module Truncation (pt : propositional-truncations-exist) where
   ∥_∥Ω : 𝓤 ̇ → Ω 𝓤
   ∥ A ∥Ω = ∥ A ∥ , ∥∥-is-prop
 
-  ∥∥Ω-rec : {X : 𝓤  ̇ } {P : Ω 𝓥} → (X → P holds) → ∥ X ∥ → P holds
+  ∥∥Ω-rec : {X : 𝓤 ̇ } {P : Ω 𝓥} → (X → P holds) → ∥ X ∥ → P holds
   ∥∥Ω-rec {𝓤} {𝓥} {X} {P} = ∥∥-rec (holds-is-prop P)
 
 \end{code}
@@ -299,7 +313,7 @@ The following was added by Ayberk Tosun on 2024-05-16.
 
 \begin{code}
 
-module Equality {X : 𝓤  ̇ } (s : is-set X) where
+module Equality {X : 𝓤 ̇ } (s : is-set X) where
 
  _＝ₚ_ : X → X → Ω 𝓤
  _＝ₚ_ x y = (x ＝ y) , s
@@ -328,3 +342,5 @@ module AllCombinators
  open Negation-of-equality fe public
 
 \end{code}
+
+TODO. Prove the all the missing equations for Heyting algebras for Ω.

@@ -45,7 +45,7 @@ open Locale
 
 \begin{code}
 
-stoneᴰ : (X : Locale 𝓤 𝓥 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+stoneᴰ : (X : Locale 𝓤 𝓥 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
 stoneᴰ X = is-compact X holds × zero-dimensionalᴰ (𝒪 X)
 
 \end{code}

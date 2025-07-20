@@ -498,7 +498,7 @@ module _
  has-specified-small-compact-basis =
   Σ B ꞉ 𝓥 ̇ , Σ β ꞉ (B → ⟨ 𝓓 ⟩) , is-small-compact-basis 𝓓 β
 
- index-of-compact-basis : has-specified-small-compact-basis → 𝓥  ̇
+ index-of-compact-basis : has-specified-small-compact-basis → 𝓥 ̇
  index-of-compact-basis (B , _) = B
 
  family-of-compact-elements : (𝒷 : has-specified-small-compact-basis)

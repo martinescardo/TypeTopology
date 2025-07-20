@@ -58,8 +58,9 @@ _<_ : X → X → 𝓤 to an order _≺_ : Y → Y → 𝓥 along a given equiva
 X ≃ Y without propositional resizing, which we prefer not to assume.
 
 However, if a particular order is resizable we can perform the
-transport, although univalence won't help, which is what we do in this
-file.
+transport, which is what we do in this file.
+
+TODO. Is it possible to do this more easily using univalence?
 
 \begin{code}
 
@@ -383,5 +384,54 @@ transfer-structure {𝓤} {𝓥} X α 𝕗 (_<_ , <-is-equivalent-to-≺) = γ
 
   γ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ α
   γ = ((_≺_ , w) , e)
+
+\end{code}
+
+Added by Fredrik Nordvall Forsberg 14 May 2025:
+Combining the above, we can also transfer being a well order along
+equivalences both on the underlying type and the order, as we would
+expect.
+
+
+\begin{code}
+module order-transfer-lemma₄
+         (X Y : 𝓤 ̇ )
+         (_<_ : X → X → 𝓤 ̇ )
+         (_≺_ : Y → Y → 𝓤 ̇ )
+         (𝕗 : X ≃ Y)
+         (𝕘 : (x y : X) → (x < y) ≃ (⌜ 𝕗 ⌝ x ≺ ⌜ 𝕗 ⌝ y))
+       where
+
+    well-order→ : is-well-order _<_ → is-well-order _≺_
+    well-order→ wo = III
+     where
+      _≺'_ = order-transfer-lemma₁.order X Y 𝕗 _<_
+
+      I : is-well-order _≺'_
+      I = order-transfer-lemma₁.well-order→ X Y 𝕗 _<_ wo
+
+      II : (x y : Y) → (x ≺' y) ≃ (x ≺ y)
+      II x y = transport ((x ≺' y) ≃_) II₁ (𝕘 (⌜ 𝕗 ⌝⁻¹ x) (⌜ 𝕗 ⌝⁻¹ y))
+       where
+        II₁ : (⌜ 𝕗 ⌝ (⌜ 𝕗 ⌝⁻¹ x) ≺ ⌜ 𝕗 ⌝ (⌜ 𝕗 ⌝⁻¹ y)) ＝ x ≺ y
+        II₁ = ap₂ _≺_ (inverses-are-sections ⌜ 𝕗 ⌝ (⌜⌝-is-equiv 𝕗) x)
+                      (inverses-are-sections ⌜ 𝕗 ⌝ (⌜⌝-is-equiv 𝕗) y)
+
+      III : is-well-order _≺_
+      III = order-transfer-lemma₃.well-order→ Y _≺'_ _≺_ II I
+
+    well-order← : is-well-order _≺_ → is-well-order _<_
+    well-order← wo = III
+     where
+      _<'_ = order-transfer-lemma₁.order Y X (≃-sym 𝕗) _≺_
+
+      I : is-well-order _<'_
+      I = order-transfer-lemma₁.well-order→ Y X (≃-sym 𝕗) _≺_ wo
+
+      II : (x y : X) → (x <' y) ≃ (x < y)
+      II x y = ≃-sym (𝕘 x y)
+
+      III : is-well-order _<_
+      III = order-transfer-lemma₃.well-order→ X _<'_ _<_ II I
 
 \end{code}

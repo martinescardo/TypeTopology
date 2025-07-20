@@ -16,6 +16,7 @@ open import Naturals.Order hiding (minus)
 open import Naturals.Properties
 open import Notation.Order
 open import UF.Base
+open import UF.Equiv
 open import UF.PropTrunc
 open import UF.Subsingletons
 
@@ -25,7 +26,7 @@ The empty list has no members.
 
 \begin{code}
 
-not-in-empty-list : {A : 𝓤  ̇ } {x : A} → ¬ member x []
+not-in-empty-list : {A : 𝓤 ̇ } {x : A} → ¬ member x []
 not-in-empty-list ()
 
 \end{code}
@@ -35,7 +36,7 @@ surjection.
 
 \begin{code}
 
-module list-indexing (pt : propositional-truncations-exist) {X : 𝓤  ̇ } where
+module list-indexing (pt : propositional-truncations-exist) {X : 𝓤 ̇ } where
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
@@ -64,5 +65,24 @@ module list-indexing (pt : propositional-truncations-exist) {X : 𝓤  ̇ } wher
      ‡ : Σ i ꞉ Fin (length xs) , (nth xs i ＝ y , ∣ p ∣)
        → ∃ i ꞉ Fin (length (x ∷ xs)) , (nth (x ∷ xs) i ＝ y , μ)
      ‡ (i , q) = ∣ inl i , to-subtype-＝ (λ _ → ∥∥-is-prop) (pr₁ (from-Σ-＝ q)) ∣
+
+\end{code}
+
+Added by Fredrik Nordvall Forsberg 14 May 2025
+
+\begin{code}
+
+map-equiv : {A B : 𝓤 ̇ } → {f : A → B} → is-equiv f → is-equiv (map f)
+map-equiv {A = A} {B} {f} e = qinvs-are-equivs (map f) (map f⁻¹ , η , ε)
+ where
+  f⁻¹ = inverse f e
+
+  η : (l : List A) → map f⁻¹ (map f l) ＝ l
+  η [] = refl
+  η (a ∷ l) = ap₂ _∷_ (inverses-are-retractions f e a) (η l)
+
+  ε : (l : List B) → map f (map f⁻¹ l) ＝ l
+  ε [] = refl
+  ε (b ∷ l) = ap₂ _∷_ (inverses-are-sections f e b) (ε l)
 
 \end{code}

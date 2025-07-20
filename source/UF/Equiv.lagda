@@ -339,6 +339,10 @@ transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ＝
                       → is-equiv (transport A p)
 transports-are-equivs refl = id-is-equiv _
 
+transports-are-equivs' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ＝ y)
+                      → is-equiv (transport A p)
+transports-are-equivs' A refl = id-is-equiv _
+
 transport-≃ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ＝ y)
             → A x ≃ A y
 transport-≃ A p = transport A p , transports-are-equivs p

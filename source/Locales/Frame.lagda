@@ -77,7 +77,9 @@ being-antisymmetric-is-prop : {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥)
                             → is-set A
                             → is-prop (is-antisymmetric _≤_)
 being-antisymmetric-is-prop {𝓤} {A} _≤_ A-is-set =
- Π-is-prop' fe (λ x → Π-is-prop' fe (λ y → Π₂-is-prop fe (λ _ _ → A-is-set {x} {y})))
+         implicit-Π-is-prop fe
+  (λ x → implicit-Π-is-prop fe
+  (λ y → Π₂-is-prop fe (λ _ _ → A-is-set {x} {y})))
 
 is-partial-order : (A : 𝓤 ̇ )→ (A → A → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
 is-partial-order A _≤_ = is-preorder _≤_ holds ×  is-antisymmetric _≤_
@@ -252,7 +254,7 @@ module Joins {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥) where
  upper-bound : Fam 𝓦 A → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
  upper-bound U = Σ u ꞉ A , (u is-an-upper-bound-of U) holds
 
- upper-bound₂ : A × A → 𝓤 ⊔ 𝓥  ̇
+ upper-bound₂ : A × A → 𝓤 ⊔ 𝓥 ̇
  upper-bound₂ (x , y) = Σ u ꞉ A , (u is-an-upper-bound-of₂ (x , y)) holds
 
  _is-lub-of_ : A → Fam 𝓦 A → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
@@ -335,7 +337,7 @@ The proof `satisfying-frame-laws-is-prop` has been added on 2024-04-15.
 
 \begin{code}
 
-satisfying-frame-laws-is-prop : {A : 𝓤  ̇ } (d : frame-data 𝓥 𝓦 A)
+satisfying-frame-laws-is-prop : {A : 𝓤 ̇ } (d : frame-data 𝓥 𝓦 A)
                               → is-prop (satisfies-frame-laws d)
 satisfying-frame-laws-is-prop {𝓤} {𝓥} {𝓦} {A} d@(_≤_ , 𝟏 , _⊓_ , ⊔_) =
  Σ-is-prop (being-partial-order-is-prop A _≤_) †
@@ -648,7 +650,7 @@ map.
 
 \begin{code}
 
-∅ : {A : 𝓤  ̇ } → (𝓦 : Universe) → Fam 𝓦 A
+∅ : {A : 𝓤 ̇ } → (𝓦 : Universe) → Fam 𝓦 A
 ∅ 𝓦 = 𝟘 {𝓦} , λ ()
 
 𝟎[_] : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩
@@ -2012,11 +2014,11 @@ below have been been added on 2024-04-17.
 
 \begin{code}
 
-order-is-set : {𝓥 : Universe} (pe : propext 𝓥) (A : 𝓤  ̇ ) → is-set (A → A → Ω 𝓥)
+order-is-set : {𝓥 : Universe} (pe : propext 𝓥) (A : 𝓤 ̇ ) → is-set (A → A → Ω 𝓥)
 order-is-set {𝓥} pe A {_≤₁_} {_≤₂_} =
  Π-is-set fe λ x → Π-is-set fe λ y → Ω-is-set fe pe
 
-frame-data-is-set : (A : 𝓤  ̇ ) (σ : is-set A) (𝓥 𝓦 : Universe) → propext 𝓥 → is-set (frame-data 𝓥 𝓦 A)
+frame-data-is-set : (A : 𝓤 ̇ ) (σ : is-set A) (𝓥 𝓦 : Universe) → propext 𝓥 → is-set (frame-data 𝓥 𝓦 A)
 frame-data-is-set A σ 𝓥 𝓦 pe =
  Σ-is-set (order-is-set pe A) λ _≤_ →
   ×-is-set
@@ -2024,7 +2026,7 @@ frame-data-is-set A σ 𝓥 𝓦 pe =
    (×-is-set (Π-is-set fe λ _ → Π-is-set fe λ _ → σ) (Π-is-set fe λ _ → σ))
 
 frame-structure-is-set : {𝓤 : Universe}
-                       → (A : 𝓤  ̇ ) (𝓥 𝓦 : Universe)
+                       → (A : 𝓤 ̇ ) (𝓥 𝓦 : Universe)
                        → propext 𝓥
                        → is-set (frame-structure 𝓥 𝓦 A)
 frame-structure-is-set A 𝓥 𝓦 pe {(d₁ , p₁)} {(d₂ , p₂)} =

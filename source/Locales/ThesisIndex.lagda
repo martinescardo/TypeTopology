@@ -37,10 +37,10 @@ open Locale
 
 \begin{code}
 
-definition∶frame : (𝓤 𝓥 𝓦 : Universe) → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ⁺  ̇
+definition∶frame : (𝓤 𝓥 𝓦 : Universe) → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ⁺ ̇
 definition∶frame = Frame
 
-lemma∶partial-order-gives-sethood : (X : 𝓤  ̇ )
+lemma∶partial-order-gives-sethood : (X : 𝓤 ̇ )
                                   → (_≤_ : X → X → Ω 𝓥)
                                   → is-partial-order X _≤_
                                   → is-set X
@@ -71,7 +71,7 @@ denoted `K ─f→ L`.
 
 \begin{code}
 
-definition∶frame-homomorphism : Frame 𝓤 𝓥 𝓦 → Frame 𝓤' 𝓥' 𝓦 → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤' ⊔ 𝓥'  ̇
+definition∶frame-homomorphism : Frame 𝓤 𝓥 𝓦 → Frame 𝓤' 𝓥' 𝓦 → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤' ⊔ 𝓥' ̇
 definition∶frame-homomorphism =
  FrameHomomorphisms._─f→_
 
@@ -94,7 +94,7 @@ Definition of the notion of nucleus:
 
 \begin{code}
 
-definition∶nucleus : Frame 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥  ̇
+definition∶nucleus : Frame 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ̇
 definition∶nucleus = Nucleus
 
 \end{code}

@@ -199,7 +199,7 @@ the identity type at one level below. We will assume univalence only when necess
  connected-types-are-inhabited {_} {_} {k} X-conn =
   −1-connected-types-are-inhabited (connectedness-is-lower-closed' ⋆ X-conn)
 
- _is-locally_connected : (X : 𝓤 ̇ ) (k : ℕ₋₂) → 𝓤  ̇
+ _is-locally_connected : (X : 𝓤 ̇ ) (k : ℕ₋₂) → 𝓤 ̇
  X is-locally k connected = (x y : X) → (x ＝ y) is k connected
 
  connected-types-are-locally-connected : {X : 𝓤 ̇ } {k : ℕ₋₂}
@@ -306,7 +306,7 @@ quantification issue.
  connected-when-consts-is-equiv {_} {X} {n} is-equiv-from-trunc = (c , G)
   where
    s : (X → ∥ X ∥[ n ]) → ∥ X ∥[ n ]
-   s = section-of (consts X ∥ X ∥[ n ])
+   s = section-map (consts X ∥ X ∥[ n ])
         (equivs-have-sections (consts X ∥ X ∥[ n ])
         (is-equiv-from-trunc ∥ X ∥[ n ] ∥∥ₙ-is-truncated))
    H : (consts X ∥ X ∥[ n ]) ∘ s ∼ id
@@ -384,7 +384,7 @@ a map is connected (see Lemma 7.5.7.)
    Q y = ∥ fiber f y ∥[ n ]
    c' : ((x : X) → ∥ fiber f (f x) ∥[ n ])
       → ((y : Y) → ∥ fiber f y ∥[ n ])
-   c' = section-of (dprecomp Q f) (sec-from-trunc Q (λ - → ∥∥ₙ-is-truncated))
+   c' = section-map (dprecomp Q f) (sec-from-trunc Q (λ - → ∥∥ₙ-is-truncated))
    c : (y : Y) → ∥ fiber f y ∥[ n ]
    c = c' (λ - → ∣ (- , refl) ∣[ n ])
    H' : (dprecomp Q f) ∘ c' ∼ id

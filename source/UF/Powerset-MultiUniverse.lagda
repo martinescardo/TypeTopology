@@ -73,7 +73,7 @@ syntax comprehension X (λ x → A) = ⁅ x ꞉ X ∣ A ⁆
 full : {X : 𝓤 ̇ } →  𝓟 {𝓥} X
 full _ = 𝟙 , 𝟙-is-prop
 
-_∈ₚ_ : {X : 𝓤  ̇ } → X → (X → Ω 𝓥) → Ω 𝓥
+_∈ₚ_ : {X : 𝓤 ̇ } → X → (X → Ω 𝓥) → Ω 𝓥
 x ∈ₚ A = A x
 
 _∈_ : {X : 𝓤 ̇ } → X → 𝓟 {𝓥} X → 𝓥 ̇
@@ -184,7 +184,7 @@ complement fe A = λ x → (x ∉ A) , (∉-is-prop fe A x)
 
 module PropositionalSubsetInclusionNotation (fe : Fun-Ext) where
 
- _⊆ₚ_ _⊇ₚ_ : {X : 𝓤  ̇ } → 𝓟 {𝓤} X → 𝓟 {𝓤} X → Ω 𝓤
+ _⊆ₚ_ _⊇ₚ_ : {X : 𝓤 ̇ } → 𝓟 {𝓤} X → 𝓟 {𝓤} X → Ω 𝓤
  A ⊆ₚ B = (A ⊆ B) , ⊆-is-prop fe A B
  A ⊇ₚ B = (A ⊇ B) , ⊆-is-prop fe B A
 
@@ -262,6 +262,33 @@ module _
  𝕋-to-membership A = pr₂
 
 \end{code}
+
+Added by Martin Escardo 23rd June 2025.
+
+\begin{code}
+
+ open import UF.Embeddings
+ open import UF.Equiv
+
+ module _ (K : 𝓟 {𝓥} X) where
+
+  𝕋-to-carrier-is-embedding : is-embedding (𝕋-to-carrier K)
+  𝕋-to-carrier-is-embedding = pr₁-is-embedding (∈-is-prop K)
+
+  from-𝕋-fiber : (x : X) → fiber (𝕋-to-carrier K) x → x ∈ K
+  from-𝕋-fiber x ((x , m) , refl) = m
+
+  to-𝕋-fiber : (x : X) → x ∈ K → fiber (𝕋-to-carrier K) x
+  to-𝕋-fiber x m = ((x , m) , refl)
+
+  𝕋-fiber : (x : X) → fiber (𝕋-to-carrier K) x ≃ (x ∈ K)
+  𝕋-fiber x = qinveq (from-𝕋-fiber x)
+               (to-𝕋-fiber x , (λ {((x , m) , refl) → refl}) , (λ m → refl))
+
+\end{code}
+
+End of 23rd June addition and continuing with Tom de Jong older
+additions.
 
 We use a named module when defining singleton subsets, so that we can write
 ❴ x ❵ without having to keep supplying the proof that the ambient type is a set.

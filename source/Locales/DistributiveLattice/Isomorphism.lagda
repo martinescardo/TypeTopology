@@ -55,7 +55,7 @@ between distributive lattices `L₁` and `L₂`.
 
 \begin{code}
 
- record Isomorphismᵈᵣ : (𝓤 ⊔ 𝓥) ⁺  ̇ where
+ record Isomorphismᵈᵣ : (𝓤 ⊔ 𝓥) ⁺ ̇ where
   field
    𝓈 : L₁ ─d→ L₂
    𝓇 : L₂ ─d→ L₁
@@ -128,7 +128,7 @@ Pretty syntax for `Isomorphismᵈᵣ`.
 
 Isomorphismᵈᵣ-Syntax : DistributiveLattice 𝓤
                      → DistributiveLattice 𝓥
-                     → (𝓤 ⊔ 𝓥) ⁺  ̇
+                     → (𝓤 ⊔ 𝓥) ⁺ ̇
 Isomorphismᵈᵣ-Syntax K L = DistributiveLatticeIsomorphisms.Isomorphismᵈᵣ K L
 
 infix 0 Isomorphismᵈᵣ-Syntax
@@ -160,7 +160,7 @@ definition.
 
 \begin{code}
 
- Isomorphism₀ : 𝓤  ̇
+ Isomorphism₀ : 𝓤 ̇
  Isomorphism₀ = Σ e ꞉ ∣ K ∣ᵈ ≃ ∣ L ∣ᵈ , is-homomorphic e holds
 
 \end{code}

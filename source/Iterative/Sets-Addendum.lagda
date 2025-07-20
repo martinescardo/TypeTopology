@@ -103,12 +103,11 @@ small copy.
   have-𝕗 : X ≃ 𝕍
   have-𝕗 = 𝕗
 
-  private
-   remark-X : 𝓤 ̇
-   remark-X = X
+  _ : 𝓤 ̇
+  _ = X
 
-   remark-𝕍 : 𝓤⁺ ̇
-   remark-𝕍 = 𝕍
+  _ : 𝓤⁺ ̇
+  _ = 𝕍
 
   A : 𝕍
   A = 𝕍-ssup X ⌜ 𝕗 ⌝ (equivs-are-embeddings' 𝕗)

@@ -112,7 +112,7 @@ in the preamble.
 
 \begin{code}
 
- Point : 𝓤 ⁺  ̇
+ Point : 𝓤 ⁺ ̇
  Point = 𝟏L ─c→  X
 
 \end{code}
@@ -121,7 +121,7 @@ This is definitionally the same thing as a frame homomorphism `𝒪(X) → Ω`.
 
 \begin{code}
 
- Point′ : 𝓤 ⁺  ̇
+ Point′ : 𝓤 ⁺ ̇
  Point′ = 𝒪 X ─f→ Ω∙
 
  _ : Point ＝ Point′

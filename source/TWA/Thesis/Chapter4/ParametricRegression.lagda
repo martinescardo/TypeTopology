@@ -76,7 +76,7 @@ invert-approx-order-is-approx-order X _≤ⁿ_ a'@(_ , d' , c') = l , d , c
 is_global-maximal : ℕ → {𝓤 𝓥 : Universe}
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → (_≤ⁿ_ : Y → Y → ℕ → 𝓦 ̇ )
-                  → (f : X → Y) → X → 𝓦 ⊔ 𝓤  ̇
+                  → (f : X → Y) → X → 𝓦 ⊔ 𝓤 ̇
 (is ϵ global-maximal) {𝓤} {𝓥} {X} _≤ⁿ_ f x₀
  = is ϵ global-minimal (invert-rel' _≤ⁿ_) f x₀
 
@@ -161,7 +161,7 @@ optimisation-convergence X Y x₀ t M 𝓞 ϕᴹ
   c : ⟪ Y ⟫ → ⟪ Y ⟫ → ℕ∞
   c = pr₁ (pr₂ Y)
 
-regressor : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥) → 𝓤 ⊔ 𝓥  ̇
+regressor : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥) → 𝓤 ⊔ 𝓥 ̇
 regressor {𝓤} {𝓥} X Y
  = (M : ⟨ X ⟩ → ⟪ Y ⟫) → f-ucontinuous' (ι X) Y M → ⟪ Y ⟫ → ⟨ X ⟩
 

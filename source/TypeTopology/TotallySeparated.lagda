@@ -272,11 +272,11 @@ already implies excluded middle:
 
 open import UF.ClassicalLogic
 
-Ω-separated-gives-DNE : propext 𝓤
-                      → funext 𝓤 𝓤
-                      → is-¬¬-separated (Ω 𝓤)
-                      → DNE 𝓤
-Ω-separated-gives-DNE {𝓤} pe fe Ω-is-¬¬-separated P P-is-prop not-not-P = d
+Ω-¬¬-separated-gives-DNE : propext 𝓤
+                         → funext 𝓤 𝓤
+                         → is-¬¬-separated (Ω 𝓤)
+                         → DNE 𝓤
+Ω-¬¬-separated-gives-DNE {𝓤} pe fe Ω-is-¬¬-separated P P-is-prop not-not-P = d
  where
   p : Ω 𝓤
   p = (P , P-is-prop)
@@ -290,19 +290,19 @@ open import UF.ClassicalLogic
   d : P
   d = equal-⊤-gives-holds p c
 
-Ω-separated-gives-EM : propext 𝓤
-                     → funext 𝓤 𝓤
-                     → is-¬¬-separated (Ω 𝓤)
-                     → EM 𝓤
-Ω-separated-gives-EM {𝓤} pe fe Ω-is-¬¬-separated =
-  DNE-gives-EM (lower-funext 𝓤 𝓤 fe) (Ω-separated-gives-DNE pe fe Ω-is-¬¬-separated)
+Ω-¬¬-separated-gives-EM : propext 𝓤
+                        → funext 𝓤 𝓤
+                        → is-¬¬-separated (Ω 𝓤)
+                        → EM 𝓤
+Ω-¬¬-separated-gives-EM {𝓤} pe fe Ω-is-¬¬-separated =
+  DNE-gives-EM (lower-funext 𝓤 𝓤 fe) (Ω-¬¬-separated-gives-DNE pe fe Ω-is-¬¬-separated)
 
 Ω-totally-separated-gives-EM : propext 𝓤
                              → funext 𝓤 𝓤
                              → is-totally-separated (Ω 𝓤)
                              → EM 𝓤
 Ω-totally-separated-gives-EM {𝓤} pe fe Ω-is-totally-separated =
- Ω-separated-gives-EM pe fe
+ Ω-¬¬-separated-gives-EM pe fe
   (totally-separated-types-are-¬¬-separated (Ω 𝓤) Ω-is-totally-separated)
 
 \end{code}
@@ -383,14 +383,13 @@ the following particular cases:
    (t (λ (p : X → 𝟚) → φ (λ ((x , y) : X × Y) → p x)))
    (u (λ (q : Y → 𝟚) → φ (λ ((x , y) : X × Y) → q y)))
 
-Σ-is-totally-separated-if-index-type-is-discrete :
-
-    (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
-  → is-discrete X
-  → ((x : X) → is-totally-separated (Y x))
-  → is-totally-separated (Σ Y)
-
-Σ-is-totally-separated-if-index-type-is-discrete X Y d t {a , b} {x , y} φ = γ
+Σ-is-totally-separated-if-index-type-is-discrete
+ : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+ → is-discrete X
+ → ((x : X) → is-totally-separated (Y x))
+ → is-totally-separated (Σ Y)
+Σ-is-totally-separated-if-index-type-is-discrete X Y d t {a , b} {x , y} φ
+ = γ
  where
   r : a ＝ x
   r = discrete-types-are-totally-separated d (λ p → φ (λ z → p (pr₁ z)))

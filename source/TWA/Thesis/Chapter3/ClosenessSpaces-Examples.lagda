@@ -564,7 +564,7 @@ close-to-close X Y Z f {succ n} v@(y :: ys) ϕʸ g ε = δ , γ
 ≃-preserves-nets : {X : 𝓤 ̇ } (Y : ClosenessSpace 𝓥)
                  → (e : X ≃ ⟨ Y ⟩)
                  → (ε : ℕ)
-                 → (Y' : 𝓥'  ̇ )
+                 → (Y' : 𝓥' ̇ )
                  → Y' is ε net-of Y
                  → Y' is ε net-of (≃-ClosenessSpace Y e)
 ≃-preserves-nets Y (f , ((g , η) , (h , μ))) ε Y' ((gₙ , hₙ , ηₙ) , fₙ)

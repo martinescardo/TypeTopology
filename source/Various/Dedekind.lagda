@@ -181,10 +181,10 @@ reals, after some preparation.
 
 \begin{code}
 
-are-ordered : 𝓟 ℚ → 𝓟 ℚ → 𝓤  ̇
+are-ordered : 𝓟 ℚ → 𝓟 ℚ → 𝓤 ̇
 are-ordered L U = (p q : ℚ) → p ∈ L → q ∈ U → p < q
 
-are-located : 𝓟 ℚ → 𝓟 ℚ → 𝓤  ̇
+are-located : 𝓟 ℚ → 𝓟 ℚ → 𝓤 ̇
 are-located L U = (p q : ℚ) → p < q → p ∈ L ∨ q ∈ U
 
 being-ordered-is-prop : (L U : 𝓟 ℚ) → is-prop (are-ordered L U)
@@ -1887,6 +1887,9 @@ If we drop the inhabitation conditions, the endpoints can be ±∞:
 
 \end{code}
 
+TODO. Show that 𝓡∞ is isomorphic, as a dcpo, to the ideal completion
+of the dyadic intervals.
+
 The notion of a locator for a real number was studied by my student
 Auke Booij in his PhD thesis.
 
@@ -1994,7 +1997,7 @@ Limits of sequences, but using the topological, rather than metric, structure of
 
 \end{code}
 
-Some (overlapping) problems:
+TODO. Some (overlapping) problems:
 
 \begin{code}
 

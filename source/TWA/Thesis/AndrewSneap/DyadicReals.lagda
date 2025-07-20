@@ -68,7 +68,7 @@ a real satisfies.
            × disjoint L R
            × located L R
 
- ℝ-d : 𝓤₁  ̇
+ ℝ-d : 𝓤₁ ̇
  ℝ-d = Σ (L , R) ꞉ 𝓟 ℤ[1/2] × 𝓟 ℤ[1/2] , isCut L R
 \end{code}
 
@@ -129,7 +129,7 @@ inhabiting a cut. This is useful for readability purposes.
  located-from-real
   ((L , R) , inhab-L , inhab-R , rounded-L , rounded-R , disjoint , located)
   = located
- 
+
  instance
   Strict-Order-ℤ[1/2]-ℝ-d : Strict-Order ℤ[1/2] ℝ-d
   _<_ {{Strict-Order-ℤ[1/2]-ℝ-d}} = in-lower-cut
@@ -144,8 +144,8 @@ We now define negation and addition from the operations on dyadic rationals.
  ℝd- x = (L , R) , {!!}
   where
    L R : 𝓟 ℤ[1/2]
-   L p = x < (ℤ[1/2]- p) , ∈-is-prop (upper-cut-of x) (ℤ[1/2]- p) 
-   R q = (ℤ[1/2]- q) < x , ∈-is-prop (lower-cut-of x) (ℤ[1/2]- q) 
+   L p = x < (ℤ[1/2]- p) , ∈-is-prop (upper-cut-of x) (ℤ[1/2]- p)
+   R q = (ℤ[1/2]- q) < x , ∈-is-prop (lower-cut-of x) (ℤ[1/2]- q)
 
  _ℝd+_ : ℝ-d → ℝ-d → ℝ-d
  x ℝd+ y = (L , R) , {!!}
@@ -162,7 +162,7 @@ We now define negation and addition from the operations on dyadic rationals.
 Order and equality:
 
 \begin{code}
- _ℝ-d≤_ : ℝ-d → ℝ-d → 𝓤₀  ̇
+ _ℝ-d≤_ : ℝ-d → ℝ-d → 𝓤₀ ̇
  _ℝ-d≤_ x y = (r : ℤ[1/2])
          → r ∈ lower-cut-of x
          → r ∈ lower-cut-of y
@@ -197,4 +197,3 @@ From dyadic:
    L R : 𝓟 ℤ[1/2]
    L p = p ≤ x , ≤ℤ[1/2]-is-prop p x
    R q = x ≤ q , ≤ℤ[1/2]-is-prop x q
-

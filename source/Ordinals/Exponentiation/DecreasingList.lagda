@@ -9,9 +9,11 @@ lists.
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.Univalence
+open import UF.PropTrunc
 
 module Ordinals.Exponentiation.DecreasingList
        (ua : Univalence)
+       (pt : propositional-truncations-exist)
        where
 
 open import UF.FunExt
@@ -43,7 +45,7 @@ open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
 
 \end{code}
 
@@ -102,6 +104,10 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
  lex-prop-valued st pr irR (x ∷ l) (y ∷ l') (tail-lex refl u) (tail-lex e v) =
   ap₂ tail-lex (st refl e) (lex-prop-valued st pr irR l l' u v)
 
+ head-lex-lc : {x y : X} {l l' : List X} (r r' : R x y)
+             → head-lex {R = R} {l = l} {l'} r ＝ head-lex r' → r ＝ r'
+ head-lex-lc r r refl = refl
+
 \end{code}
 
 We now consider the subtype of decreasing lists.
@@ -154,7 +160,7 @@ We now consider the subtype of decreasing lists.
 \end{code}
 
 Next we show that the lexicographic order on lists when restricted to
-DecreasingList is wellfounded, provided the original order is.
+DecreasingList is well-founded, provided the original order is.
 
 \begin{code}
 
@@ -204,19 +210,19 @@ DecreasingList is wellfounded, provided the original order is.
           g (y ∷ z ∷ l') ε (tail-lex refl u) =
            IH₂ ((z ∷ l') , tail-is-decreasing ε) u ε
 
- lex-wellfounded : is-transitive R
-                 → is-well-founded R
-                 → is-well-founded lex-decr
- lex-wellfounded tr wf (l , δ) = lex-wellfounded' wf l δ
+ lex-well-founded : is-transitive R
+                  → is-well-founded R
+                  → is-well-founded lex-decr
+ lex-well-founded tr wf (l , δ) = lex-well-founded' wf l δ
   where
-   lex-wellfounded' : is-well-founded R
-                    → (xs : List X) (δ : is-decreasing xs)
-                    → is-accessible lex-decr (xs , δ)
-   lex-wellfounded' wf [] δ = []-acc-decr
-   lex-wellfounded' wf (x ∷ l) δ =
+   lex-well-founded' : is-well-founded R
+                     → (xs : List X) (δ : is-decreasing xs)
+                     → is-accessible lex-decr (xs , δ)
+   lex-well-founded' wf [] δ = []-acc-decr
+   lex-well-founded' wf (x ∷ l) δ =
      lex-decr-acc tr x (wf x) l
       (tail-is-decreasing δ)
-      (lex-wellfounded' wf l (tail-is-decreasing δ))
+      (lex-well-founded' wf l (tail-is-decreasing δ))
       δ
 
 \end{code}
@@ -298,7 +304,7 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
 
 \end{code}
 
-The order on DecrList₂ α β is transitive and wellfounded.
+The order on DecrList₂ α β is transitive and well-founded.
 
 \begin{code}
 
@@ -306,14 +312,14 @@ The order on DecrList₂ α β is transitive and wellfounded.
  DecrList₂-order-is-transitive (l , _) (l' , _) (l'' , _) p q =
   lex-transitive (underlying-order (α ×ₒ β)) (Transitivity (α ×ₒ β)) l l' l'' p q
 
- DecrList₂-order-is-wellfounded : is-well-founded DecrList₂-order
- DecrList₂-order-is-wellfounded (l , δ) =
+ DecrList₂-order-is-well-founded : is-well-founded DecrList₂-order
+ DecrList₂-order-is-well-founded (l , δ) =
   acc-lex-decr-to-acc-exponential l δ
-   (lex-wellfounded (underlying-order (α ×ₒ β))
-                    (Transitivity (α ×ₒ β))
-                    (Well-foundedness (α ×ₒ β))
-                    (DecrList₂-list (l , δ) ,
-                     DecrList₂-list-is-decreasing (l , δ)))
+   (lex-well-founded (underlying-order (α ×ₒ β))
+                     (Transitivity (α ×ₒ β))
+                     (Well-foundedness (α ×ₒ β))
+                     (DecrList₂-list (l , δ) ,
+                      DecrList₂-list-is-decreasing (l , δ)))
   where
    acc-lex-decr-to-acc-exponential
     : (l : List ⟨ α ×ₒ β ⟩)
@@ -473,7 +479,7 @@ expᴸ[𝟙+_] : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
 expᴸ[𝟙+_] α β = DecrList₂ α β
                 , DecrList₂-order α β
                 , DecrList₂-order-is-prop-valued α β
-                , DecrList₂-order-is-wellfounded α β
+                , DecrList₂-order-is-well-founded α β
                 , DecrList₂-order-is-extensional α β
                 , DecrList₂-order-is-transitive α β
 

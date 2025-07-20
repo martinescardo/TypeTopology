@@ -137,7 +137,7 @@ function of the basis.
 
 \begin{code}
 
- Bₐ : 𝓤  ̇
+ Bₐ : 𝓤 ̇
  Bₐ = pr₁ (pr₁ σᴰ)
 
  βₐ : Bₐ → ⟨ 𝒪 A ⟩
@@ -150,7 +150,7 @@ the enumeration function.
 
 \begin{code}
 
- Bₓ : 𝓤  ̇
+ Bₓ : 𝓤 ̇
  Bₓ = pr₁ (pr₁ 𝕫ᴰ)
 
  βₓ : Bₓ → ⟨ 𝒪 X ⟩
@@ -250,7 +250,7 @@ TODO: improve the naming.
  𝔏 : ⟨ 𝒪 Patchₛ-A ⟩ → Bₐ → Bₐ → Ω 𝓤
  𝔏 𝒿 m n = (‘ βₐ m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) ≼ᵏ 𝒿
 
- below : ⟨ 𝒪 Patchₛ-A ⟩ → 𝓤  ̇
+ below : ⟨ 𝒪 Patchₛ-A ⟩ → 𝓤 ̇
  below 𝒿 = Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝒿 m n holds
 
 \end{code}

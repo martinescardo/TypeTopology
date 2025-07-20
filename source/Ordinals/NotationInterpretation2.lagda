@@ -683,7 +683,7 @@ Let P be a proposition and assume function extensionality.
 (1) If (P → 𝟚) has decidable equality, then ¬ P is decidable.
 
 It doesn't seem to be possible to reverse any of the implications (0)
-and (1), so that the proposition "(P -> 2) has decidable equality"
+and (1), so that the proposition "(P → 2) has decidable equality"
 seems to be strictly between "P is decidable" and "¬P is decidable".
 
 This is discussed in the following module.

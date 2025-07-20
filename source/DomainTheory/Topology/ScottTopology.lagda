@@ -34,7 +34,7 @@ underlying-orderₚ 𝓓 x y = (x ⊑⟨ 𝓓 ⟩ y) , prop-valuedness 𝓓 x y
 
 syntax underlying-orderₚ 𝓓 x y = x ⊑⟨ 𝓓 ⟩ₚ y
 
-_∈imageₚ_ : {X : 𝓤  ̇ } {Y : 𝓦  ̇ } → Y → (X → Y) → Ω (𝓤 ⊔ 𝓦)
+_∈imageₚ_ : {X : 𝓤 ̇ } {Y : 𝓦 ̇ } → Y → (X → Y) → Ω (𝓤 ⊔ 𝓦)
 y ∈imageₚ f = y ∈image f , ∃-is-prop
 
 \end{code}
@@ -55,7 +55,7 @@ I find it convenient to define the type of directed families.
 
 \begin{code}
 
- Fam↑ : 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓣  ̇
+ Fam↑ : 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓣 ̇
  Fam↑ = Σ S ꞉ Fam 𝓥 ⟨ 𝓓 ⟩ , is-Directed 𝓓 (S [_])
 
  ⋁_ : Fam↑ → ⟨ 𝓓 ⟩
@@ -79,7 +79,7 @@ I find it convenient to define the type of directed families.
  is-scott-open : 𝓟 {𝓦} ⟨ 𝓓 ⟩ → Ω (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦)
  is-scott-open P = is-upwards-closed P ∧ is-inaccessible-by-directed-joins P
 
- 𝒪ₛ : 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓣  ̇
+ 𝒪ₛ : 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓣 ̇
  𝒪ₛ = Σ P ꞉ (⟨ 𝓓 ⟩ → Ω 𝓦) , is-scott-open P holds
 
  _∈ₛ_ : ⟨ 𝓓 ⟩ → 𝒪ₛ → Ω 𝓦
@@ -89,7 +89,7 @@ I find it convenient to define the type of directed families.
 
 \begin{code}
 
- record 𝒪ₛᴿ : 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓣  ̇ where
+ record 𝒪ₛᴿ : 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓣 ̇ where
   field
    pred : ⟨ 𝓓 ⟩ → Ω 𝓦
 

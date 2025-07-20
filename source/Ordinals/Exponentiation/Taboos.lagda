@@ -47,11 +47,11 @@ open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
-open import Ordinals.Exponentiation.DecreasingList ua
+open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.PropertiesViaTransport ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
 
 open import UF.Base
 open import UF.ClassicalLogic
@@ -387,56 +387,6 @@ Ordinals.Exponentiation.Supremum.
                       (λ e → 𝟘-elim (β-ne (eqtoidₒ (ua _) fe' _ _ e)))
                       𝟘-elim
 
-private
- has-trichotomous-least-element-or-is-zero : Ordinal 𝓤 → 𝓤 ⁺ ̇
- has-trichotomous-least-element-or-is-zero α =
-  has-trichotomous-least-element α + (α ＝ 𝟘ₒ)
-
- Has-trichotomous-least-element-or-is-zero : 𝓤 ⁺ ̇
- Has-trichotomous-least-element-or-is-zero {𝓤} =
-  (α : Ordinal 𝓤) → has-trichotomous-least-element-or-is-zero α
-
- EM-gives-Has-trichotomous-least-element-or-is-zero
-  : EM 𝓤
-  → Has-trichotomous-least-element-or-is-zero {𝓤}
- EM-gives-Has-trichotomous-least-element-or-is-zero em α =
-  II (em ∥ ⟨ α ⟩ ∥ ∥∥-is-prop)
-   where
-    open import Ordinals.WellOrderingTaboo fe' pe
-    open ClassicalWellOrder pt
-
-    has-minimal = Σ x₀ ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → ¬ (x ≺⟨ α ⟩ x₀))
-
-    I : ∥ ⟨ α ⟩ ∥ → has-minimal
-    I i = pr₁ I' , (λ x → pr₂ (pr₂ I') x ⋆)
-     where
-      I' : Σ x₀ ꞉ ⟨ α ⟩ , 𝟙 × ((x : ⟨ α ⟩) → 𝟙 → ¬ (x ≺⟨ α ⟩ x₀))
-      I' = well-order-gives-minimal (underlying-order α) em (is-well-ordered α)
-            (λ _ → 𝟙) (λ _ → 𝟙-is-prop) (∥∥-functor (λ x → x , ⋆) i)
-
-    II : is-decidable ∥ ⟨ α ⟩ ∥ → has-trichotomous-least-element-or-is-zero α
-    II (inl  i) = inl (x₀ ,
-                       τ (classical-well-orders-are-uniquely-trichotomous
-                           (underlying-order α)
-                           (inductive-well-order-is-classical
-                             (underlying-order α) em (is-well-ordered α))))
-     where
-      x₀ = pr₁ (I i)
-      x₀-is-minimal = pr₂ (I i)
-
-      τ : ((x y : ⟨ α ⟩) → is-singleton ((x ≺⟨ α ⟩ y) + (x ＝ y) + (y ≺⟨ α ⟩ x)))
-        → is-trichotomous-least α x₀
-      τ σ x = κ (center (σ x₀ x))
-       where
-        κ : (x₀ ≺⟨ α ⟩ x) + (x₀ ＝ x) + (x ≺⟨ α ⟩ x₀)
-          → (x₀ ＝ x) + (x₀ ≺⟨ α ⟩ x)
-        κ (inl u)       = inr u
-        κ (inr (inl e)) = inl e
-        κ (inr (inr v)) = 𝟘-elim (x₀-is-minimal x v)
-    II (inr ni) = inr (⊴-antisym α 𝟘ₒ
-                        (to-⊴ α 𝟘ₒ λ x → 𝟘-elim (ni ∣ x ∣))
-                        (≼-gives-⊴ 𝟘ₒ α (𝟘ₒ-least α)))
-
 \end{code}
 
 We now explicitly include a zero case in the supremum specification:
@@ -671,70 +621,73 @@ taboo.
 
 \begin{code}
 
-^ₒ-as-large-as-exponent-implies-EM
- : ((α β : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊲ α → β ⊴ α ^ₒ β)
+𝟚ₒ^ₒ-as-large-as-exponent-implies-EM
+ : ((β : Ordinal 𝓤) → β ⊴ 𝟚ₒ {𝓤} ^ₒ β)
  → EM 𝓤
-^ₒ-as-large-as-exponent-implies-EM hyp P P-is-prop = V (f (inr ⋆)) refl
+𝟚ₒ^ₒ-as-large-as-exponent-implies-EM hyp P P-is-prop = IV (f (inr ⋆)) refl
  where
-  α = 𝟚ₒ
   Pₒ = prop-ordinal P P-is-prop
   β = Pₒ +ₒ 𝟙ₒ
 
   γ = (𝟙ₒ +ₒ Pₒ) ×ₒ 𝟚ₒ
 
-  I : 𝟙ₒ ⊲ α
-  I = (inr ⋆ , (successor-lemma-right 𝟙ₒ ⁻¹))
-
-  II : α ^ₒ β ＝ γ
-  II = 𝟚ₒ ^ₒ (Pₒ +ₒ 𝟙ₒ) ＝⟨ II₀ ⟩
-       𝟚ₒ ^ₒ Pₒ   ×ₒ 𝟚ₒ ＝⟨ ap (_×ₒ 𝟚ₒ) (^ₒ-𝟚ₒ-by-prop P P-is-prop) ⟩
-       (𝟙ₒ +ₒ Pₒ) ×ₒ 𝟚ₒ ∎
+  I : 𝟚ₒ ^ₒ β ＝ γ
+  I = 𝟚ₒ ^ₒ (Pₒ +ₒ 𝟙ₒ) ＝⟨ I₀ ⟩
+      𝟚ₒ ^ₒ Pₒ   ×ₒ 𝟚ₒ ＝⟨ ap (_×ₒ 𝟚ₒ) (^ₒ-𝟚ₒ-by-prop P P-is-prop) ⟩
+      (𝟙ₒ +ₒ Pₒ) ×ₒ 𝟚ₒ ∎
    where
-    II₀ = ^ₒ-satisfies-succ-specification 𝟚ₒ (⊲-gives-⊴ 𝟙ₒ 𝟚ₒ I) Pₒ
+    I₀ = ^ₒ-satisfies-succ-specification 𝟚ₒ
+          (⊲-gives-⊴ 𝟙ₒ 𝟚ₒ (successor-increasing 𝟙ₒ)) Pₒ
 
-  III : β ⊴ γ
-  III = transport (β ⊴_) II (hyp α β I)
+  II : β ⊴ γ
+  II = transport (β ⊴_) I (hyp β)
 
   f : ⟨ β ⟩ → ⟨ γ ⟩
-  f = [ β , γ ]⟨ III ⟩
+  f = [ β , γ ]⟨ II ⟩
   f-sim : is-simulation β γ f
-  f-sim = [ β , γ ]⟨ III ⟩-is-simulation
+  f-sim = [ β , γ ]⟨ II ⟩-is-simulation
 
-  V : (x : ⟨ γ ⟩) → f (inr ⋆) ＝ x → P + ¬ P
-  V (inr p , _) r = inl p
-  V (inl ⋆ , inl ⋆) r = inr VI
+  IV : (x : ⟨ γ ⟩) → f (inr ⋆) ＝ x → P + ¬ P
+  IV (inr p , _) r = inl p
+  IV (inl ⋆ , inl ⋆) r = inr III
    where
-    VI : ¬ P
-    VI p = +disjoint (simulations-are-lc β γ f f-sim VI₁)
+    III : ¬ P
+    III p = +disjoint (simulations-are-lc β γ f f-sim III₁)
      where
-      VI₁ = f (inl p)       ＝⟨ VI₂ ⟩
-            (inl ⋆ , inl ⋆) ＝⟨ r ⁻¹ ⟩
-            f (inr ⋆)       ∎
+      III₁ = f (inl p)       ＝⟨ III₂ ⟩
+             (inl ⋆ , inl ⋆) ＝⟨ r ⁻¹ ⟩
+             f (inr ⋆)       ∎
        where
-        VI₂ = simulations-preserve-least β γ
-               (inl p)
-               (inl ⋆ , inl ⋆)
-               f f-sim
-               (left-preserves-least Pₒ 𝟙ₒ p (prop-ordinal-least P-is-prop p))
-               (×ₒ-least (𝟙ₒ +ₒ Pₒ) 𝟚ₒ
-                (inl ⋆)
-                (inl ⋆)
-                (left-preserves-least 𝟙ₒ Pₒ ⋆ ⋆-least)
-                (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least))
+        III₂ = simulations-preserve-least β γ
+                (inl p)
+                (inl ⋆ , inl ⋆)
+                f f-sim
+                (left-preserves-least Pₒ 𝟙ₒ p (prop-ordinal-least P-is-prop p))
+                (×ₒ-least (𝟙ₒ +ₒ Pₒ) 𝟚ₒ
+                 (inl ⋆)
+                 (inl ⋆)
+                 (left-preserves-least 𝟙ₒ Pₒ ⋆ ⋆-least)
+                 (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least))
          where
           ⋆-least : is-least 𝟙ₒ ⋆
           ⋆-least = prop-ordinal-least 𝟙-is-prop ⋆
-  V (inl ⋆ , inr ⋆) r = inl (VI VIII)
+  IV (inl ⋆ , inr ⋆) r = inl (V VII)
    where
-    VI : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl ⋆ , inl ⋆)) → P
-    VI (inl p , _ , _) = p
+    V : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl ⋆ , inl ⋆)) → P
+    V (inl p , _ , _) = p
 
-    VII : (inl ⋆ , inl ⋆) ≺⟨ γ ⟩ f (inr ⋆)
-    VII = transport⁻¹ (underlying-order γ (inl ⋆ , inl ⋆)) r (inl ⋆)
+    VI : (inl ⋆ , inl ⋆) ≺⟨ γ ⟩ f (inr ⋆)
+    VI = transport⁻¹ (underlying-order γ (inl ⋆ , inl ⋆)) r (inl ⋆)
 
-    VIII : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl ⋆ , inl ⋆))
-    VIII = simulations-are-initial-segments β γ f f-sim
-                                            (inr ⋆) (inl ⋆ , inl ⋆) VII
+    VII : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl ⋆ , inl ⋆))
+    VII = simulations-are-initial-segments β γ f f-sim
+                                           (inr ⋆) (inl ⋆ , inl ⋆) VI
+
+^ₒ-as-large-as-exponent-implies-EM
+ : ((α β : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊲ α → β ⊴ α ^ₒ β)
+ → EM 𝓤
+^ₒ-as-large-as-exponent-implies-EM hyp =
+ 𝟚ₒ^ₒ-as-large-as-exponent-implies-EM (λ β → hyp 𝟚ₒ β (successor-increasing 𝟙ₒ))
 
 \end{code}
 

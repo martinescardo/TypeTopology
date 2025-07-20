@@ -9,6 +9,7 @@ import UF.Choice
 import UF.ClassicalLogic
 import UF.Classifiers
 import UF.Classifiers-Old
+import UF.CoconesofSpans                    -- by [2]
 import UF.Connected
 import UF.ConnectedTypes                    -- by [2]
 import UF.CumulativeHierarchy               -- by [1]
@@ -19,6 +20,7 @@ import UF.Equiv
 import UF.Equiv-FunExt
 import UF.EquivalenceExamples
 import UF.ExitPropTrunc
+import UF.FundamentalLemmaOfTransportAlongEquivalences
 import UF.FunExt
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
@@ -27,7 +29,6 @@ import UF.HLevels
 import UF.Hedberg
 import UF.HedbergApplications
 import UF.HiddenSwap
-import UF.HiggsInvolutionTheorem
 import UF.IdEmbedding
 import UF.IdentitySystems
 import UF.ImageAndSurjection
@@ -49,6 +50,8 @@ import UF.PreUnivalence
 import UF.PropIndexedPiSigma
 import UF.PropTrunc
 import UF.PropTrunc-Variation
+import UF.Pullback
+import UF.Pushouts                   -- by [2]
 import UF.Retracts
 import UF.Retracts-FunExt
 import UF.SIP
@@ -61,7 +64,7 @@ import UF.Sets-Properties
 import UF.SigmaIdentity
 import UF.Singleton-Properties       -- by [2]
 import UF.Size
-import UF.Size-TruncatedConnected    -- by [3]
+import UF.Size-TruncatedConnected    -- by [2]
 import UF.SmallnessProperties
 import UF.StructureIdentityPrinciple -- Obsolete but keep. Use UF.SIP instead
 import UF.Subsingletons

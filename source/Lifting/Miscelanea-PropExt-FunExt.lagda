@@ -54,7 +54,7 @@ module _ {𝓤 : Universe}
          {X : 𝓤 ̇ }
        where
 
- open import Lifting.UnivalentPrecategory 𝓣 X
+ open import Lifting.UnivalentWildCategory 𝓣 X
 
  lifting-of-set-is-set : is-set X → is-set (𝓛 X)
  lifting-of-set-is-set i {l} {m} p q  = retract-of-prop r j p q
@@ -169,7 +169,7 @@ module _ {𝓤 : Universe}
   (f ♯) (η (value l d)) ＝⟨ ⋍-to-＝ (Kleisli-Law₁ f (value l d)) ⟩
   f (value l d)         ∎
 
- open import Lifting.UnivalentPrecategory 𝓣 Y
+ open import Lifting.UnivalentWildCategory 𝓣 Y
 
  𝓛̇-♯-∼ : (f : X → Y) → (η ∘ f) ♯ ∼ 𝓛̇ f
  𝓛̇-♯-∼ f l = ⊑-anti pe fe fe (a , b)

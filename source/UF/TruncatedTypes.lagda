@@ -63,7 +63,7 @@ Being -1-truncated is equivalent to being a proposition.
 
 \begin{code}
 
-is-prop' : (X : 𝓤 ̇ ) → 𝓤  ̇
+is-prop' : (X : 𝓤 ̇ ) → 𝓤 ̇
 is-prop' X = X is −1 truncated
 
 being-prop'-is-prop : (X : 𝓤 ̇ ) → is-prop (is-prop' X)
@@ -138,7 +138,7 @@ truncated-types-are-closed-under-retracts : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 
                                           → Y is n truncated
                                           → X is n truncated
 truncated-types-are-closed-under-retracts {𝓤} {𝓥} {−2} {X} {Y} =
- singleton-closed-under-retract X Y
+ retract-of-singleton
 truncated-types-are-closed-under-retracts {𝓤} {𝓥} {succ n} (r , s , H) t x x' =
  truncated-types-are-closed-under-retracts
   (＝-retract s (r , H) x x')

@@ -54,25 +54,25 @@ formalization.
 
 \begin{code}
 
-Termᵀ : Cxt → type → 𝓤₀  ̇
+Termᵀ : Cxt → type → 𝓤₀ ̇
 Termᵀ Γ σ = T Γ σ
 
-Termᵀ₀ : type → 𝓤₀  ̇
+Termᵀ₀ : type → 𝓤₀ ̇
 Termᵀ₀ σ = T₀ σ
 
-Typeᵀ : 𝓤₀  ̇
+Typeᵀ : 𝓤₀ ̇
 Typeᵀ = type
 
-Ctxᵀ : 𝓤₀  ̇
+Ctxᵀ : 𝓤₀ ̇
 Ctxᵀ = Cxt
 
-Definition-1 : 𝓤₀  ̇
+Definition-1 : 𝓤₀ ̇
 Definition-1 = Σ Γ ꞉ Ctxᵀ , Σ σ ꞉ Typeᵀ , Termᵀ Γ σ
 
-Definition-2a : Typeᵀ → 𝓤₀  ̇
+Definition-2a : Typeᵀ → 𝓤₀ ̇
 Definition-2a = 〖_〗
 
-Definition-2b : Ctxᵀ → 𝓤₀  ̇
+Definition-2b : Ctxᵀ → 𝓤₀ ̇
 Definition-2b = 【_】
 
 Definition-2c : {Γ : Ctxᵀ} {σ : Typeᵀ} → Termᵀ Γ σ → (【 Γ 】 → 〖 σ 〗)
@@ -90,39 +90,39 @@ Proposition-4 γ n = ⟦numeral⟧ γ n ⁻¹
 
 \begin{code}
 
-Definition-5 : (I : 𝓤  ̇) → (O : 𝓥  ̇) → (X : 𝓦  ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
+Definition-5 : (I : 𝓤 ̇ ) → (O : 𝓥 ̇ ) → (X : 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 Definition-5 = Dial
 
 𝒟 : 𝓤₀ ̇ → 𝓤₀ ̇
 𝒟 X = Dial ℕ ℕ X
 
-Definition-6 : {I : 𝓤  ̇} {O : 𝓥  ̇} {X : 𝓦  ̇} → Dial I O X → (I → O) → X
+Definition-6 : {I : 𝓤 ̇ } {O : 𝓥 ̇ } {X : 𝓦 ̇ } → Dial I O X → (I → O) → X
 Definition-6 = dialogue
 
-Definition-7a : {I : 𝓤  ̇} {O : 𝓥  ̇} {X : 𝓦  ̇}
-              → ((I → O) → X) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
+Definition-7a : {I : 𝓤 ̇ } {O : 𝓥 ̇ } {X : 𝓦 ̇ }
+              → ((I → O) → X) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 Definition-7a {𝓤} {𝓥} {𝓦} {I} {O} {X} f =
  Σ d ꞉ Dial I O X , ((α : I → O) → f α ＝ dialogue d α)
 
-Definition-7b : {O : 𝓥  ̇} {X : 𝓦  ̇} → ((ℕ → O) → X) → 𝓥 ⊔ 𝓦  ̇
+Definition-7b : {O : 𝓥 ̇ } {X : 𝓦 ̇ } → ((ℕ → O) → X) → 𝓥 ⊔ 𝓦 ̇
 Definition-7b = is-continuous₁
 
-Definition-7c : {O : 𝓥  ̇} {X : 𝓦  ̇} → ((ℕ → O) → X) → 𝓥 ⊔ 𝓦  ̇
+Definition-7c : {O : 𝓥 ̇ } {X : 𝓦 ̇ } → ((ℕ → O) → X) → 𝓥 ⊔ 𝓦 ̇
 Definition-7c = is-uniformly-continuous₁
 
 \end{code}
 
 \begin{code}
 
-Definition-9 : {X Y : 𝓤₀  ̇}
+Definition-9 : {X Y : 𝓤₀ ̇ }
              → (X → 𝒟 Y) → 𝒟 X → 𝒟 Y
 Definition-9 = kleisli-extension
 
-Definition-10 : {X Y : 𝓤₀  ̇}
+Definition-10 : {X Y : 𝓤₀ ̇ }
               → (X → Y) → 𝒟 X → 𝒟 Y
 Definition-10 = 𝒟-functor
 
-Definition-11 : {X : 𝓤₀  ̇} {σ : Typeᵀ} → (X → 〖 σ 〗𝒟) → 𝒟 X → 〖 σ 〗𝒟
+Definition-11 : {X : 𝓤₀ ̇ } {σ : Typeᵀ} → (X → 〖 σ 〗𝒟) → 𝒟 X → 〖 σ 〗𝒟
 Definition-11 = Kleisli-extension
 
 \end{code}
@@ -132,10 +132,10 @@ respectively, `Definition-12a`, `Definition-12b`, and `Definition-12c` below.
 
 \begin{code}
 
-Definition-12a : Typeᵀ → 𝓤₀  ̇
+Definition-12a : Typeᵀ → 𝓤₀ ̇
 Definition-12a = 〖_〗𝒟
 
-Definition-12b : Ctxᵀ → 𝓤₀  ̇
+Definition-12b : Ctxᵀ → 𝓤₀ ̇
 Definition-12b = 【_】𝒟
 
 Definition-12c : {Γ : Ctxᵀ} {σ : Typeᵀ} → Termᵀ Γ σ → (【 Γ 】𝒟 → 〖 σ 〗𝒟)
@@ -252,7 +252,7 @@ Hereditary extensional equality.
 
 \begin{code}
 
-Definition-24 : (σ : Typeᵀ) → 〖 σ 〗 → 〖 σ 〗 → 𝓤₀  ̇
+Definition-24 : (σ : Typeᵀ) → 〖 σ 〗 → 〖 σ 〗 → 𝓤₀ ̇
 Definition-24 σ = _≡_ {σ}
 
 \end{code}
@@ -418,7 +418,7 @@ Definition-41a = modulus
 Definition-41b : Termᵀ₀ (𝒟ᵀ ι ι ⇒ (ι ⇒ ι) ⇒ ι)
 Definition-41b = modulusᵀ
 
-Definition-42 : ((ℕ → ℕ) → ℕ) → (ℕ → ℕ) → ℕ → 𝓤₀  ̇
+Definition-42 : ((ℕ → ℕ) → ℕ) → (ℕ → ℕ) → ℕ → 𝓤₀ ̇
 Definition-42 f α m = m is-a-modulus-of-continuity-for f at α
 
 Lemma-44 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
@@ -481,7 +481,7 @@ The definition of the notion of modulus of uniform continuity.
 
 \begin{code}
 
-Definition-52 : ℕ → ((ℕ → 𝟚) → ℕ) → 𝓤₀  ̇
+Definition-52 : ℕ → ((ℕ → 𝟚) → ℕ) → 𝓤₀ ̇
 Definition-52 = _is-a-modulus-of-uniform-continuity-for_
 
 \end{code}

@@ -445,7 +445,7 @@ order-equivs-are-continuous 𝓓 𝓔 f 𝕖@(f-equiv , f-monotone , f-order-ref
    g-order-reflecting : is-order-reflecting 𝓔 𝓓 g
    g-order-reflecting = pr₂ (pr₂ (inverse-of-order-equiv-is-order-equiv 𝓓 𝓔 f 𝕖))
 
-   cont-condition : (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+   cont-condition : (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
                   → f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 (image-is-directed 𝓓 𝓔 f-monotone δ)
    cont-condition I α δ =
     g-order-reflecting (f (∐ 𝓓 δ))
@@ -1030,7 +1030,7 @@ is-closed-under-directed-supsₚ : (𝓓 : DCPO {𝓤} {𝓣})
                                → Ω (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦)
 is-closed-under-directed-supsₚ {𝓤} {𝓣} 𝓓 P =
  is-closed-under-directed-sups 𝓓 (λ x → P x holds) ,
- Π-is-prop' fe (λ I → Π₃-is-prop fe (λ α δ c → holds-is-prop (P (∐ 𝓓 δ))))
+ implicit-Π-is-prop fe (λ I → Π₃-is-prop fe (λ α δ c → holds-is-prop (P (∐ 𝓓 δ))))
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})

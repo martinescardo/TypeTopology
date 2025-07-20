@@ -73,7 +73,7 @@ module ScottLocaleProperties
  open ScottLocaleConstruction 𝓓 hscb pe
 
  private
-  B : 𝓤  ̇
+  B : 𝓤 ̇
   B = index-of-compact-basis 𝓓 hscb
 
   β : B → ⟨ 𝓓 ⟩∙

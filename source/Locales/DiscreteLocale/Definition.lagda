@@ -40,7 +40,7 @@ We work with a fixed set `X` in this module.
 
 \begin{code}
 
-module DefnOfDiscreteLocale (X : 𝓤  ̇ ) (σ : is-set X) where
+module DefnOfDiscreteLocale (X : 𝓤 ̇ ) (σ : is-set X) where
 
 \end{code}
 
@@ -155,7 +155,7 @@ The discrete locale on set `X` is the locale given by the frame of subsets of
 
 \begin{code}
 
-discrete-locale : (X : 𝓤  ̇ ) → is-set X → Locale (𝓤 ⁺) 𝓤 𝓤
+discrete-locale : (X : 𝓤 ̇ ) → is-set X → Locale (𝓤 ⁺) 𝓤 𝓤
 discrete-locale X σ =
  record
   { ⟨_⟩ₗ         = 𝓟 X

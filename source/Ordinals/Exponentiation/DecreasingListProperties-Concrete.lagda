@@ -11,7 +11,7 @@ direct proofs of some of these properties here.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -49,7 +49,7 @@ open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
-open import Ordinals.Exponentiation.DecreasingList ua
+open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.Specification ua pt sr
 
 open PropositionalTruncation pt
@@ -882,6 +882,6 @@ module _ {I : 𝓤 ̇  }
 
 expᴸ-satisfies-strong-sup-specification :
  (α : Ordinal 𝓤) → exp-specification-sup-strong (𝟙ₒ +ₒ α) (expᴸ[𝟙+ α ])
-expᴸ-satisfies-strong-sup-specification α α-nonzero I β = (expᴸ-sup⁺-＝ β α)
+expᴸ-satisfies-strong-sup-specification α I β = expᴸ-sup⁺-＝ β α
 
 \end{code}

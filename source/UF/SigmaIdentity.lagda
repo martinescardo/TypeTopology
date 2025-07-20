@@ -217,7 +217,7 @@ module Σ-identity-with-axioms where
               → SNI (λ x → Σ s ꞉ S x , axioms x s) 𝓣
    add-axioms {𝓣} (ι , ρ , θ) = ι' , ρ' , θ'
     where
-     S' : X → 𝓥 ⊔ 𝓦  ̇
+     S' : X → 𝓥 ⊔ 𝓦 ̇
      S' x = Σ s ꞉ S x , axioms x s
 
      ι' : (σ τ : Σ S') → ⟨ σ ⟩ ＝ ⟨ τ ⟩ → 𝓣 ̇

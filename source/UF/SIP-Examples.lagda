@@ -1350,7 +1350,7 @@ module generalized-topological-space
  ℙℙ : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  ℙℙ X = ℙ (ℙ X)
 
- Space : 𝓤 ⁺ ⊔ 𝓥  ̇
+ Space : 𝓤 ⁺ ⊔ 𝓥 ̇
  Space = Σ X ꞉ 𝓤 ̇ , Σ 𝓞 ꞉ ℙℙ X , axioms X 𝓞
 
  sns-data : SNS ℙℙ (𝓤 ⊔ 𝓥)
@@ -1403,7 +1403,7 @@ module selection-space
  S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = (X → R) → X
 
- SelectionSpace : 𝓤 ⁺ ⊔ 𝓥  ̇
+ SelectionSpace : 𝓤 ⁺ ⊔ 𝓥 ̇
  SelectionSpace = Σ X ꞉ 𝓤 ̇ , Σ ε ꞉ S X , axioms X ε
 
  sns-data : SNS S (𝓤 ⊔ 𝓥)

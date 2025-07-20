@@ -172,7 +172,7 @@ module sums-assuming-EM (em : EM 𝓤) where
                        Sum.order  ,
                        Sum.well-order o (λ x → is-well-ordered (β x))
   where
-   _≺_ : {x : X} → ⟨ β x ⟩ → ⟨ β x ⟩ → 𝓤  ̇
+   _≺_ : {x : X} → ⟨ β x ⟩ → ⟨ β x ⟩ → 𝓤 ̇
    y ≺ z = y ≺⟨ β _ ⟩ z
 
    module Sum = sum-cotransitive fe _<_ _≺_ (em-gives-cotrans _<_ fe em (is-well-ordered α))

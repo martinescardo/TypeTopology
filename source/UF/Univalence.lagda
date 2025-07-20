@@ -294,12 +294,6 @@ MGS-Equivalence-induction.
 
 \begin{code}
 
-≃-transport : is-univalent 𝓤
-            → ∀ {𝓥} (A : 𝓤 ̇ → 𝓥 ̇ ) {X Y : 𝓤 ̇ }
-            → X ≃ Y
-            → A X → A Y
-≃-transport {𝓤} ua {𝓥} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e
-
 ≃-induction' : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 ≃-induction' 𝓤  𝓥 = (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
                   → ((X : 𝓤 ̇ ) → A X X (≃-refl X))

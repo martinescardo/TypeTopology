@@ -30,9 +30,9 @@ We give the equational definition from Stone Spaces.
 
 \begin{code}
 
-record DistributiveLattice (𝓤 : Universe) : 𝓤 ⁺  ̇ where
+record DistributiveLattice (𝓤 : Universe) : 𝓤 ⁺ ̇ where
  field
-  X   : 𝓤  ̇
+  X   : 𝓤 ̇
   𝟏   : X
   𝟎   : X
   _∧_ : X → X → X
@@ -112,7 +112,7 @@ Notation for the carrier set.
 
 \begin{code}
 
-∣_∣ᵈ : DistributiveLattice 𝓤 → 𝓤  ̇
+∣_∣ᵈ : DistributiveLattice 𝓤 → 𝓤 ̇
 ∣_∣ᵈ L = let open DistributiveLattice L in X
 
 \end{code}

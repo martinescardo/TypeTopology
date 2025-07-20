@@ -33,7 +33,7 @@ open PropositionalTruncation pt
 
 \begin{code}
 
-well-inside₀ : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤  ̇
+well-inside₀ : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤 ̇
 well-inside₀ F U V =
  Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ＝ 𝟎[ F ]) × (V ∨[ F ] W ＝ 𝟏[ F ])
 

@@ -47,7 +47,7 @@ module _
         (X-is-set : is-set X)
        where
 
- open import Lifting.UnivalentPrecategory 𝓤 X
+ open import Lifting.UnivalentWildCategory 𝓤 X
 
 \end{code}
 

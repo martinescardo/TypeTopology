@@ -253,6 +253,7 @@ segment-inclusion-lc α {a} =
                     (α ↓_)
                     (↓-lc α _ _)
                     (the-type-of-ordinals-is-a-set (ua _) fe')
+
 \end{code}
 
 We are now ready to make the type of ordinals into an ordinal.
@@ -862,6 +863,7 @@ EM-implies-order-preserving-gives-≼ em α β σ = δ
 
   δ : α ≼ β
   δ = γ (≼-or-> _⊲⁻_ fe' em ⊲⁻-is-well-order α β)
+
 \end{code}
 
 Added 19 November 2024 by Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu

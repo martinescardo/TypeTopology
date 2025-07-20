@@ -154,7 +154,7 @@ module monoids where
  associative _·_ = ∀ x y z → (x · y) · z ＝ x · (y · z)
 
  Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
- Monoid 𝓤 = Σ X ꞉ 𝓤  ̇ , is-set X
+ Monoid 𝓤 = Σ X ꞉ 𝓤 ̇ , is-set X
                       × (Σ · ꞉ (X → X → X) , (Σ e ꞉ X , (left-neutral e ·)
                                                       × (right-neutral e ·)
                                                       × (associative ·)))

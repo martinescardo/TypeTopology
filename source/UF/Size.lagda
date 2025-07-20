@@ -159,7 +159,7 @@ excluded middle, which is consistent (with or without univalence):
 
 \begin{code}
 
-decidable-propositions-have-any-size : (P : 𝓤  ̇ )
+decidable-propositions-have-any-size : (P : 𝓤 ̇ )
                                      → is-prop P
                                      → is-decidable P
                                      → P is 𝓥 small
@@ -503,7 +503,7 @@ Lift-is-section ua R 𝓤 𝓥 = (r , rs)
     X' = fiber-point v
 
     a : r (s X) ≃ X'
-    a = prop-indexed-product (Univalence-gives-FunExt ua 𝓤 𝓤) (i (s X)) u
+    a = prop-indexed-product u (Univalence-gives-FunExt ua 𝓤 𝓤) (i (s X))
 
     b : s X' ＝ s X
     b = fiber-identification v

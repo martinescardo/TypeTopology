@@ -63,7 +63,7 @@ prop-tychonoff {𝓤} {𝓥} fe {X} {Y} X-is-prop ε p = γ
   _ = p
 
   𝕗 : (x : X) → Π Y ≃ Y x
-  𝕗 = prop-indexed-product fe X-is-prop
+  𝕗 x = prop-indexed-product x fe X-is-prop
 
 \end{code}
 

@@ -412,7 +412,7 @@ module _ (𝓥 : Universe) where
                          ⊑'-is-transitive ,
                          ⊑'-is-antisymmetric
 
-  open import Lifting.UnivalentPrecategory 𝓥 X
+  open import Lifting.UnivalentWildCategory 𝓥 X
   Proposition-5-14-ad₂ : {l m : 𝓛 X} → (l ⊑ m → l ⊑' m) × (l ⊑' m → l ⊑ m)
   Proposition-5-14-ad₂ = ⊑-to-⊑' , ⊑'-to-⊑
 
@@ -435,7 +435,7 @@ module _ (𝓥 : Universe) where
                                 ⊑-to-⊑'
                                 ⊑'-to-⊑}
    where
-    open import Lifting.UnivalentPrecategory 𝓥 X
+    open import Lifting.UnivalentWildCategory 𝓥 X
 
  module _
          {X : 𝓤 ̇ }

@@ -27,7 +27,7 @@ open import MLTT.Unit-Type renaming (𝟙 to 𝟙') public
 !𝟙' : (X : 𝓤 ̇ ) → X → 𝟙
 !𝟙' X x = ⋆
 
-!𝟙 : {X : 𝓤 ̇} → X → 𝟙
+!𝟙 : {X : 𝓤 ̇ } → X → 𝟙
 !𝟙 x = ⋆
 
 open import MLTT.Empty-Type renaming (𝟘 to 𝟘') public

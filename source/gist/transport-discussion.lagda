@@ -54,7 +54,7 @@ we try to keep things as simple as possible.
 \begin{code}
 
 reflexive-structure : (𝓦 : Universe) → 𝓣 ̇  → 𝓦 ⁺ ⊔ 𝓣 ̇
-reflexive-structure 𝓦 V = Σ _⇒_ ꞉ (V → V → 𝓦 ̇)
+reflexive-structure 𝓦 V = Σ _⇒_ ꞉ (V → V → 𝓦 ̇ )
                                  , ((v : V) → v ⇒ v)
                                  × ((v v' : V) → is-prop (v ⇒ v'))
 
@@ -91,7 +91,7 @@ module discussion
         (X : 𝓤 ̇ )
         (f : X ≃ A)
         (ua : is-univalent (𝓤 ⊔ 𝓥))
-        (sorry : {𝓦 : Universe} {S : 𝓦 ̇} → S)
+        (sorry : {𝓦 : Universe} {S : 𝓦 ̇ } → S)
       where
 
 \end{code}
@@ -197,7 +197,7 @@ open import UF.EquivalenceExamples
 resizing-taboo : Transport-Assumption → Propositional-Resizing
 resizing-taboo t {𝓥} {𝓤} = γ
  where
-  module _ (P : 𝓥 ̇) (P-is-prop : is-prop P) where
+  module _ (P : 𝓥 ̇ ) (P-is-prop : is-prop P) where
    X : 𝓤 ̇
    X = 𝟙 {𝓤} + 𝟙 {𝓤}
 

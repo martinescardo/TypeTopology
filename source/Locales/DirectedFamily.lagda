@@ -21,7 +21,7 @@ open import UF.SubtypeClassifier
 module Locales.DirectedFamily
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
-        {X : 𝓤  ̇ }
+        {X : 𝓤 ̇ }
         (_≤_ : X → X → Ω 𝓥)
        where
 

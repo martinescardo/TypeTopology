@@ -274,7 +274,7 @@ Section 3.4. Lifting
  Definition-3-23 = ⊥𝓛
 
  module _ {X : 𝓤 ̇ } where
-  open import Lifting.UnivalentPrecategory 𝓥 X
+  open import Lifting.UnivalentWildCategory 𝓥 X
 
   Proposition-3-24 : 𝓛 X → 𝓛 X → 𝓥 ⁺ ⊔ 𝓤 ̇
   Proposition-3-24 = _⊑'_
@@ -303,7 +303,7 @@ Section 3.4. Lifting
                                ⊑-to-⊑'
                                ⊑'-to-⊑}
   where
-   open import Lifting.UnivalentPrecategory 𝓥 X
+   open import Lifting.UnivalentWildCategory 𝓥 X
 
 \end{code}
 

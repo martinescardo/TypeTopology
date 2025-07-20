@@ -80,7 +80,7 @@ module that it is logically equivalent to `is-continuous`.
 
 \begin{code}
 
-is-continuous₀ : (Baire → ℕ) → 𝓤₀  ̇
+is-continuous₀ : (Baire → ℕ) → 𝓤₀ ̇
 is-continuous₀ f =
  (α : Baire) → Σ n ꞉ ℕ , ((α′ : Baire) → α ＝⦅ n ⦆ α′ → f α ＝ f α′)
 
@@ -103,7 +103,7 @@ step to simplify our proofs.
 
 \begin{code}
 
-_＝⟪_⟫₀_ : {X : 𝓤₀  ̇ } → (ℕ → X) → List ℕ → (ℕ → X) → 𝓤₀  ̇
+_＝⟪_⟫₀_ : {X : 𝓤₀ ̇ } → (ℕ → X) → List ℕ → (ℕ → X) → 𝓤₀ ̇
 _＝⟪_⟫₀_ α₁ s α₂ = (i : ℕ) → member i s → α₁ i ＝ α₂ i
 
 \end{code}
@@ -113,7 +113,7 @@ equality up to `is`. We record this fact as `＝⟪⟫₀-cons`.
 
 \begin{code}
 
-＝⟪⟫₀-cons : {X : 𝓤₀  ̇ } (α α′ : ℕ → X) (i : ℕ) (is : List ℕ)
+＝⟪⟫₀-cons : {X : 𝓤₀ ̇ } (α α′ : ℕ → X) (i : ℕ) (is : List ℕ)
            → α ＝⟪ i ∷ is ⟫₀ α′ → α ＝⟪ is ⟫₀ α′
 ＝⟪⟫₀-cons α α′ i is t j p = t j (in-tail p)
 
@@ -125,7 +125,7 @@ homomorphism from semigroup `(List ℕ, _++_)` into semigroup `(𝓤₀, _×_)`.
 
 \begin{code}
 
-＝⟪⟫-++-lemma₁ : {X : 𝓤₀  ̇ } (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
+＝⟪⟫-++-lemma₁ : {X : 𝓤₀ ̇ } (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
                → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
                → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
 ＝⟪⟫-++-lemma₁ α₁ α₂ ms ns p = † , ‡
@@ -136,13 +136,13 @@ homomorphism from semigroup `(List ℕ, _++_)` into semigroup `(𝓤₀, _×_)`.
   ‡ : α₁ ＝⟪ ns ⟫₀ α₂
   ‡ n q = p n (left-concatenation-preserves-membership n ns ms q)
 
-＝⟪⟫-++-lemma₂ : {X : 𝓤₀  ̇ } (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
+＝⟪⟫-++-lemma₂ : {X : 𝓤₀ ̇ } (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
                → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
                → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
 ＝⟪⟫-++-lemma₂ α₁ α₂ ms ns (p , q) i r =
- cases (p i) (q i) (++-membership₁ i ms ns r)
+ cases (p i) (q i) (split-++-membership i ms ns r)
 
-＝⟪⟫-respects-list-concatenation : {X : 𝓤₀  ̇ } (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
+＝⟪⟫-respects-list-concatenation : {X : 𝓤₀ ̇ } (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
                                  → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
                                  ↔ (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
 ＝⟪⟫-respects-list-concatenation α₁ α₂ ms ns =
@@ -155,14 +155,14 @@ equivalent to the original version.
 
 \begin{code}
 
-＝⟪⟫₀-implies-＝⟪⟫ : {X : 𝓤₀  ̇ } (α α′ : ℕ → X) (s : List ℕ)
+＝⟪⟫₀-implies-＝⟪⟫ : {X : 𝓤₀ ̇ } (α α′ : ℕ → X) (s : List ℕ)
                    → α ＝⟪ s ⟫₀ α′ → α ＝⟪ s ⟫  α′
 ＝⟪⟫₀-implies-＝⟪⟫ α α′ []       t = []
 ＝⟪⟫₀-implies-＝⟪⟫ α α′ (i ∷ is) t = t i in-head ∷ IH
  where
   IH = ＝⟪⟫₀-implies-＝⟪⟫ α α′ is (＝⟪⟫₀-cons α α′ i is t)
 
-＝⟪⟫-implies-＝⟪⟫₀ : {X : 𝓤₀  ̇ } (α β : ℕ → X) (s : List ℕ)
+＝⟪⟫-implies-＝⟪⟫₀ : {X : 𝓤₀ ̇ } (α β : ℕ → X) (s : List ℕ)
                    → α ＝⟪ s ⟫ β → α ＝⟪ s ⟫₀ β
 ＝⟪⟫-implies-＝⟪⟫₀ α α′ []       []       i ()
 ＝⟪⟫-implies-＝⟪⟫₀ α α′ (i ∷ is) (p ∷ ps) i in-head     = p
@@ -201,7 +201,7 @@ member-implies-below-max (n ∷ ns) m (in-tail p) =
   where
    IH =(member-implies-below-max ns m p)
 
-＝⦅⦆-implies-＝⟪⟫ : {X : 𝓤₀  ̇ } (α α′ : ℕ → X) (s : List ℕ)
+＝⦅⦆-implies-＝⟪⟫ : {X : 𝓤₀ ̇ } (α α′ : ℕ → X) (s : List ℕ)
                   → α ＝⦅ succ (maximum s) ⦆ α′
                   → α ＝⟪ s ⟫ α′
 ＝⦅⦆-implies-＝⟪⟫ α α′ s t = ＝⟪⟫₀-implies-＝⟪⟫ α α′ s †
@@ -306,7 +306,7 @@ of the Baire space is called Boolean if its range is a subset of `{0, 1}`.
 
 \begin{code}
 
-is-boolean-valued : ℕ → 𝓤₀  ̇
+is-boolean-valued : ℕ → 𝓤₀ ̇
 is-boolean-valued n = (n ＝ 0) + (n ＝ 1)
 
 embedding-𝟚-ℕ-gives-boolean : (b : 𝟚) → is-boolean-valued (embedding-𝟚-ℕ b)
@@ -331,7 +331,7 @@ is a subset of {`₀`, `₁`}.
 
 \begin{code}
 
-is-boolean-point : Baire → 𝓤₀  ̇
+is-boolean-point : Baire → 𝓤₀ ̇
 is-boolean-point α = (n : ℕ) → is-boolean-valued (α n)
 
 \end{code}
@@ -363,7 +363,7 @@ subtype of Baire space consisting of the Boolean points,
 
 \begin{code}
 
-Cantor₀ : 𝓤₀  ̇
+Cantor₀ : 𝓤₀ ̇
 Cantor₀ = Σ α ꞉ Baire , is-boolean-point α
 
 point-of : Cantor₀ → Baire
@@ -548,7 +548,7 @@ of uniform continuity with the original one. We define the following function
 
 \begin{code}
 
-sequentialize : {X : 𝓤₀  ̇ } → BT X → List X
+sequentialize : {X : 𝓤₀ ̇ } → BT X → List X
 sequentialize []      = []
 sequentialize (x ∷ φ) = x ∷ sequentialize (φ ₀) ++ sequentialize (φ ₁)
 
@@ -660,7 +660,7 @@ We now define the alternative notion of uniform continuity, analogous to
 
 \begin{code}
 
-is-uniformly-continuous₀ : (Cantor → ℕ) → 𝓤₀  ̇
+is-uniformly-continuous₀ : (Cantor → ℕ) → 𝓤₀ ̇
 is-uniformly-continuous₀ f =
  Σ n ꞉ ℕ , ((ξ₁@(α₁ , _) ξ₂@(α₂ , _) : Cantor₀) → α₁ ＝⦅ n ⦆ α₂ → f₀ ξ₁ ＝ f₀ ξ₂)
   where
@@ -677,7 +677,7 @@ The equality-up-to relation `_＝⟪_⟫₀_` that we have defined above, implie
 
 \begin{code}
 
-＝⟪⟫₀-implies-＝⟦⟧ : {X : 𝓤₀  ̇ } (α₁ α₂ : ℕ → X) (t : BT ℕ)
+＝⟪⟫₀-implies-＝⟦⟧ : {X : 𝓤₀ ̇ } (α₁ α₂ : ℕ → X) (t : BT ℕ)
                    → α₁ ＝⟪ sequentialize t ⟫₀ α₂ → α₁ ＝⟦ t ⟧ α₂
 ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ []      p = []
 ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ (x ∷ φ) p = p x in-head ∷ †
@@ -820,7 +820,7 @@ rangeᵤ : (n : ℕ) → BT ℕ
 rangeᵤ zero     = singleton 0
 rangeᵤ (succ n) = succ n ∷ λ { ₀ → [] ; ₁ → rangeᵤ n}
 
-＝⟦⟧-up-to-rangeᵤ-m-implies-＝⟪⟫-up-to-range-m : {X : 𝓤₀  ̇ } (α α′ : ℕ → X) (m : ℕ)
+＝⟦⟧-up-to-rangeᵤ-m-implies-＝⟪⟫-up-to-range-m : {X : 𝓤₀ ̇ } (α α′ : ℕ → X) (m : ℕ)
                                                → α ＝⟦ rangeᵤ m ⟧ α′
                                                → α ＝⟪ range m ⟫ α′
 ＝⟦⟧-up-to-rangeᵤ-m-implies-＝⟪⟫-up-to-range-m α α′ zero (p ∷ _) = p ∷ []
@@ -913,7 +913,7 @@ Slight generalization of the notions of continuity and uniform continuity.
 
 \begin{code}
 
-is-continuous₁ : {O : 𝓤  ̇} {X : 𝓥  ̇} → ((ℕ → O) → X) → 𝓤 ⊔ 𝓥  ̇
+is-continuous₁ : {O : 𝓤 ̇ } {X : 𝓥 ̇ } → ((ℕ → O) → X) → 𝓤 ⊔ 𝓥 ̇
 is-continuous₁ {_} {_} {O} {X} f =
  (α : ℕ → O) → Σ n ꞉ ℕ , ((α′ : ℕ → O) → α ＝⦅ n ⦆ α′ → f α ＝ f α′)
 
@@ -932,7 +932,7 @@ Added on 2025-02-17.
 
 \begin{code}
 
-＝⦅⦆-ap : {X : 𝓤  ̇} {Y : 𝓥  ̇}
+＝⦅⦆-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
         → (n : ℕ)
         → (f : X → Y)
         → (α β : ℕ → X)

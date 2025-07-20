@@ -167,12 +167,11 @@ separation as defined above.
   have-𝕗 : X ≃ 𝕄
   have-𝕗 = 𝕗
 
-  private
-   remark-X : 𝓤 ̇
-   remark-X = X
+  _ : 𝓤 ̇
+  _ = X
 
-   remark-𝕄 : 𝓤⁺ ̇
-   remark-𝕄 = 𝕄
+  _ : 𝓤⁺ ̇
+  _ = 𝕄
 
   M : 𝕄
   M = ssup X ⌜ 𝕗 ⌝
@@ -243,7 +242,7 @@ prop-indexed-sumᴹ : {X : 𝓤 ̇ } {A : X → 𝕄}
                   → (x₀ : X) → Σᴹ A ＝ A x₀
 prop-indexed-sumᴹ {X} {A} i x₀ = IV
  where
-  𝕗 = (Σ x ꞉ X , 𝕄-root (A x)) ≃⟨ prop-indexed-sum i x₀ ⟩
+  𝕗 = (Σ x ꞉ X , 𝕄-root (A x)) ≃⟨ prop-indexed-sum x₀ i ⟩
       𝕄-root (A x₀)            ■
 
   remark : ⌜ 𝕗 ⌝ ＝ (λ (x , y) → transport (λ - → 𝕄-root (A -)) (i x x₀) y)
@@ -315,7 +314,7 @@ prop-indexed-productᴹ : {X : 𝓤 ̇ } {A : X → 𝕄}
                       → (x₀ : X) → Πᴹ A ＝ A x₀
 prop-indexed-productᴹ {X} {A} i x₀ = IV
  where
-  𝕗 = (Π x ꞉ X , 𝕄-root (A x)) ≃⟨ prop-indexed-product fe i x₀ ⟩
+  𝕗 = (Π x ꞉ X , 𝕄-root (A x)) ≃⟨ prop-indexed-product x₀ fe i ⟩
       𝕄-root (A x₀)            ■
 
   remark : ⌜ 𝕗 ⌝ ＝ λ g → g x₀

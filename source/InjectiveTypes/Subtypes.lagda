@@ -148,5 +148,38 @@ module _ (D : 𝓤 ⁺ ̇ )
 
 \end{code}
 
-TODO. Can the above logical equivalences be made into type
-equivalences?
+Can the above logical equivalences be made into type equivalences?
+
+No, at least not with the functions given to prove each implication.
+
+Example. The injectivity structure on Ω induces the following endofunction f of the universe.
+
+\begin{code}
+
+open import UF.Subsingletons-FunExt
+
+module example (pe : propext 𝓤) (X : 𝓤 ̇ ) where
+
+ f : 𝓤 ̇ → 𝓤 ̇
+ f = pr₁ (necessary-condition-for-injectivity-of-subtype
+           {𝓤 ⁺} {𝓤}
+           (𝓤 ̇)
+           is-prop
+           (λ _ → being-prop-is-prop (fe 𝓤 𝓤))
+           {𝓤} {𝓤}
+           (Ω-ainjective pe))
+
+ _ : f X ＝ ((is-prop X × (⋆ ＝ ⋆)) × (⋆ ＝ ⋆) → X)
+ _ = refl
+
+\end{code}
+
+So f X ≃ (is-prop X → X), because (⋆ ＝ ⋆) ≃ 𝟙 as 𝟙 is a set.
+
+On the other hand, another construction that Ω 𝓤 is injective is to
+start with the injectivity of 𝓤 and f := propositional truncation.
+
+But clearly we don't have that ∥ X ∥ ≃ (is-prop X → X).
+
+TODO. Maybe complete the formalization of the example, but I am not
+sure it is worth it.

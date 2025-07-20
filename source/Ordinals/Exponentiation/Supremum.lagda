@@ -6,7 +6,7 @@ ordinals.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -368,7 +368,7 @@ that it satisfies the (ordinary) supremum specification.
 
 ^ₒ-satisfies-strong-sup-specification : (α : Ordinal 𝓤)
                                       → exp-specification-sup-strong α (α ^ₒ_)
-^ₒ-satisfies-strong-sup-specification {𝓤} α _ S F =
+^ₒ-satisfies-strong-sup-specification {𝓤} α S F =
  ⊴-antisym (α ^ₒ sup F) (sup (cases (λ _ → 𝟙ₒ) (λ s → α ^ₒ F s))) I II
   where
    G : 𝟙{𝓤} + S → Ordinal 𝓤
@@ -458,7 +458,7 @@ product into the supremum.
      h (inl ⋆) = 𝟙ₒ-right-neutral-×ₒ γ
      h (inr b) = (×ₒ-assoc γ (α ^ₒ (β ↓ b)) α) ⁻¹
 
-^ₒ-by-+ₒ : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+^ₒ-by-+ₒ : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
          → α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ
 ^ₒ-by-+ₒ {𝓤} {𝓥} α β =
  transfinite-induction-on-OO (λ γ → α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ) I
@@ -555,7 +555,7 @@ Exponentiating by a product is iterated exponentiation:
 
 \begin{code}
 
-^ₒ-by-×ₒ : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+^ₒ-by-×ₒ : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
          → α ^ₒ (β ×ₒ γ) ＝ (α ^ₒ β) ^ₒ γ
 ^ₒ-by-×ₒ {𝓤} {𝓥} α β =
  transfinite-induction-on-OO (λ γ → α ^ₒ (β ×ₒ γ) ＝ (α ^ₒ β) ^ₒ γ) I
@@ -697,5 +697,87 @@ strictly greater than 𝟙ₒ).
                                 → 𝟙ₒ ⊲ α
                                 → β ⊲ γ → α ^ₒ β ⊲ α ^ₒ γ
 ^ₒ-order-preserving-in-exponent α β γ h (c , refl) = ^ₒ-⊲-lemma α γ h
+
+\end{code}
+
+Added 11 April 2025.
+
+Provided α and β have least elements, trichotomy of the least element of α ^ₒ β
+implies trichotomy of the least element of α.
+
+This provides the converse to ^ₒ-has-trichotomous-least-element from
+Ordinals.Exponentiation.PropertiesViaTransport.
+
+\begin{code}
+
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
+
+^ₒ-reflects-trichotomous-least-in-base
+ : (α β : Ordinal 𝓤) (a₀ : ⟨ α ⟩)
+ → is-least α a₀
+ → 𝟙ₒ ⊴ β
+ → is-trichotomous-least (α ^ₒ β) (^ₒ-⊥ α β)
+ → is-trichotomous-least α a₀
+^ₒ-reflects-trichotomous-least-in-base α β a₀ a₀-is-least (f , f-sim) = III
+ where
+  b₀ : ⟨ β ⟩
+  b₀ = f ⋆
+  b₀-eq : β ↓ b₀ ＝ 𝟘ₒ
+  b₀-eq = (simulations-preserve-↓ 𝟙ₒ β (f , f-sim) ⋆) ⁻¹ ∙ 𝟙ₒ-↓
+
+  I : (a : ⟨ α ⟩)
+    → α ^ₒ β ↓ ×ₒ-to-^ₒ α β (^ₒ-⊥ α (β ↓ b₀) , a) ＝ α ↓ a
+  I a = α ^ₒ β ↓ ×ₒ-to-^ₒ α β (^ₒ-⊥ α (β ↓ b₀) , a)                   ＝⟨ I₁ ⟩
+        α ^ₒ (β ↓ b₀) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b₀) ↓ ^ₒ-⊥ α (β ↓ b₀)) ＝⟨ I₂ ⟩
+        α ^ₒ (β ↓ b₀) ×ₒ (α ↓ a) +ₒ 𝟘ₒ                                ＝⟨ I₃ ⟩
+        α ^ₒ (β ↓ b₀) ×ₒ (α ↓ a)                                      ＝⟨ I₄ ⟩
+        α ^ₒ 𝟘ₒ ×ₒ (α ↓ a)                                            ＝⟨ I₅ ⟩
+        𝟙ₒ ×ₒ (α ↓ a)                                                 ＝⟨ I₆ ⟩
+        α ↓ a                                                         ∎
+   where
+    I₁ = ^ₒ-↓-×ₒ-to-^ₒ α β
+    I₂ = ap (α ^ₒ (β ↓ b₀) ×ₒ (α ↓ a) +ₒ_) (^ₒ-↓-⊥ α (β ↓ b₀))
+    I₃ = 𝟘ₒ-right-neutral (α ^ₒ (β ↓ b₀) ×ₒ (α ↓ a))
+    I₄ = ap (λ - → α ^ₒ - ×ₒ (α ↓ a)) b₀-eq
+    I₅ = ap (_×ₒ (α ↓ a)) (^ₒ-satisfies-zero-specification α)
+    I₆ = 𝟙ₒ-left-neutral-×ₒ (α ↓ a)
+
+  II = α ↓ a₀            ＝⟨ II' ⟩
+       𝟘ₒ                ＝⟨ ^ₒ-↓-⊥ α β ⁻¹ ⟩
+       α ^ₒ β ↓ ^ₒ-⊥ α β ∎
+   where
+    II' = initial-segment-of-least-element-is-𝟘ₒ α a₀ a₀-is-least
+
+  III : is-trichotomous-least (α ^ₒ β) (^ₒ-⊥ α β)
+      → is-trichotomous-least α a₀
+  III τ a = III' a (τ (×ₒ-to-^ₒ α β (^ₒ-⊥ α (β ↓ b₀) , a)))
+   where
+    III' : (a : ⟨ α ⟩)
+         → (^ₒ-⊥ α β ＝ ×ₒ-to-^ₒ α β (^ₒ-⊥ α (β ↓ b₀) , a))
+           + (^ₒ-⊥ α β ≺⟨ α ^ₒ β ⟩ ×ₒ-to-^ₒ α β (^ₒ-⊥ α (β ↓ b₀) , a))
+         → (a₀ ＝ a) + (a₀ ≺⟨ α ⟩ a)
+    III' a (inl e) = inl (↓-lc α a₀ a e')
+     where
+      e' = α ↓ a₀                                      ＝⟨ II ⟩
+           α ^ₒ β ↓ ^ₒ-⊥ α β                           ＝⟨ ap (α ^ₒ β ↓_) e ⟩
+           α ^ₒ β ↓ ×ₒ-to-^ₒ α β (^ₒ-⊥ α (β ↓ b₀) , a) ＝⟨ I a ⟩
+           α ↓ a                                       ∎
+    III' a (inr l) = inr (↓-reflects-order α a₀ a
+                           (transport₂ _⊲_ (II ⁻¹) (I a)
+                            (↓-preserves-order (α ^ₒ β) _ _ l)))
+
+\end{code}
+
+In particular, we can fix β ＝ 𝟙ₒ.
+
+\begin{code}
+
+^ₒ-reflects-trichotomous-least-in-base'
+ : (α : Ordinal 𝓤) (a₀ : ⟨ α ⟩)
+ → is-least α a₀
+ → is-trichotomous-least (α ^ₒ 𝟙ₒ) (^ₒ-⊥ α 𝟙ₒ)
+ → is-trichotomous-least α a₀
+^ₒ-reflects-trichotomous-least-in-base' α a₀ l t =
+ ^ₒ-reflects-trichotomous-least-in-base α 𝟙ₒ a₀ l (⊴-refl 𝟙ₒ) t
 
 \end{code}

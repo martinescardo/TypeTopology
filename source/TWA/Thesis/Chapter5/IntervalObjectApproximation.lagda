@@ -33,12 +33,12 @@ m : {n : ℕ} → Vec 𝕀 (succ n) → 𝕀
 m {0} (x :: ⟨⟩) = x
 m {succ n} (x :: xs) = x ⊕ m xs
 
-n-approx : (x y : ℕ → 𝕀) (n : ℕ) → 𝓤  ̇
+n-approx : (x y : ℕ → 𝕀) (n : ℕ) → 𝓤 ̇
 n-approx x y n = Σ (z , w) ꞉ 𝕀 × 𝕀
                , m (append-one z ((first- n) x))
                ＝ m (append-one w ((first- n) y))
 
-approximation : 𝓤  ̇
+approximation : 𝓤 ̇
 approximation = (x y : ℕ → 𝕀) → Π (n-approx x y) → M x ＝ M y
 
 multi-canc : (w z : 𝕀) (y : ℕ → 𝕀) (n : ℕ)
@@ -200,7 +200,7 @@ approx-holds x y f = ⊕-canc (M x) (M y) (M (tail z)) γ
             γ'
         ∙ M-hom y (z ∘ succ) ⁻¹
 
-n-approx' : (ℕ → 𝕀) → (ℕ → 𝕀) → ℕ → 𝓤  ̇
+n-approx' : (ℕ → 𝕀) → (ℕ → 𝕀) → ℕ → 𝓤 ̇
 n-approx' x y n = Σ (z , w) ꞉ 𝕀 × 𝕀
                 , m (append-one z ((first- (succ n)) x))
                 ＝ m (append-one w ((first- (succ n)) y))

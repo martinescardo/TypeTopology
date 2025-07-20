@@ -272,7 +272,7 @@ The above function is called is_equivariant_identity in UniMath.
 
 \begin{code}
 
-  Action-Map : (𝕏 𝕐 : Action) → 𝓤  ̇
+  Action-Map : (𝕏 𝕐 : Action) → 𝓤 ̇
   Action-Map 𝕏 𝕐 = Σ f ꞉ (⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩) , is-equivariant 𝕏 𝕐 f
 
   underlying-function : (𝕏 𝕐 : Action) (u : Action-Map 𝕏 𝕐) → ⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩

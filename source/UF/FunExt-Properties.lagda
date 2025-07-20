@@ -131,12 +131,9 @@ equivext-gives-funext {𝓤} ee =
       cancel = inverses-are-sections _ (ee _ _) (∼-refl)
 
    main : is-singleton (Π Y)
-   main =
-    singleton-closed-under-retract
-     (Π Y)
-     (fiber ⌜ promote X π ⌝ 𝕚𝕕)
-     (ret , sec , inv)
-     (equivs-are-vv-equivs _ (pr₂ (promote X π)) 𝕚𝕕)
+   main = retract-of-singleton
+           (ret , sec , inv)
+           (equivs-are-vv-equivs _ (pr₂ (promote X π)) 𝕚𝕕)
 
 \end{code}
 

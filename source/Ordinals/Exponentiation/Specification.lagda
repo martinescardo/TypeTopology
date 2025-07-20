@@ -96,19 +96,18 @@ module _
 \end{code}
 
 Added 29 January 2025 by Tom de Jong.
-
+Minor changes 15 May 2025 by Fredrik Nordvall Forsberg
 \begin{code}
 
  exp-specification-sup-strong : 𝓤 ⁺ ̇
  exp-specification-sup-strong =
-  α ≠ 𝟘ₒ → (I : 𝓤 ̇  ) → (β : I → Ordinal 𝓤)
-         → F (sup β) ＝ sup (cases {X = 𝟙{𝓤}} (λ _ → 𝟙ₒ) (F ∘ β))
+  (I : 𝓤 ̇  ) → (β : I → Ordinal 𝓤)
+             → F (sup β) ＝ sup (cases {X = 𝟙{𝓤}} (λ _ → 𝟙ₒ) (F ∘ β))
 
  exp-specification-sup-strong-implies-monotonicity
   : exp-specification-sup-strong
-  → α ≠ 𝟘ₒ
   → is-monotone (OO 𝓤) (OO 𝓤) F
- exp-specification-sup-strong-implies-monotonicity σ α-nonzero β γ l =
+ exp-specification-sup-strong-implies-monotonicity σ β γ l =
   transport (F β ≼_) (ap F (e ⁻¹)) k
    where
     Δ : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
@@ -120,18 +119,17 @@ Added 29 January 2025 by Tom de Jong.
            (dep-cases (λ _ → ≼-gives-⊴ β γ l) (λ _ → ⊴-refl γ)))
     k : F β ≼ F (sup Δ)
     k = transport⁻¹ (F β ≼_)
-                    (σ α-nonzero (𝟙 + 𝟙) Δ)
+                    (σ (𝟙 + 𝟙) Δ)
                     (⊴-gives-≼ (F β)
                       (sup (cases (λ _ → 𝟙ₒ) (F ∘ Δ)))
                       (sup-is-upper-bound _ (inr (inl ⋆))))
 
  exp-specification-zero-from-strong-sup-specification
   : exp-specification-sup-strong
-  → α ≠ 𝟘ₒ
   → exp-specification-zero α F
- exp-specification-zero-from-strong-sup-specification σ α-nonzero =
+ exp-specification-zero-from-strong-sup-specification σ =
   F 𝟘ₒ      ＝⟨ ap F I ⟩
-  F (sup ε) ＝⟨ σ α-nonzero 𝟘 ε ⟩
+  F (sup ε) ＝⟨ σ 𝟘 ε ⟩
   sup ε'    ＝⟨ II ⟩
   𝟙ₒ        ∎
    where
@@ -152,15 +150,14 @@ Added 29 January 2025 by Tom de Jong.
  exp-specification-sup-from-strong : exp-specification-sup-strong
                                    → exp-specification-sup
  exp-specification-sup-from-strong specₛ α-nonzero {I} I-inh β =
-  F (sup β)                      ＝⟨ specₛ α-nonzero I β ⟩
+  F (sup β)                      ＝⟨ specₛ I β ⟩
   sup (cases (λ _ → 𝟙ₒ) (F ∘ β)) ＝⟨ e ⟩
   sup (F ∘ β)                    ∎
    where
     spec₀ : exp-specification-zero α F
-    spec₀ = exp-specification-zero-from-strong-sup-specification specₛ α-nonzero
+    spec₀ = exp-specification-zero-from-strong-sup-specification specₛ
     F-monotone : is-monotone (OO 𝓤) (OO 𝓤) F
-    F-monotone = exp-specification-sup-strong-implies-monotonicity
-                  specₛ α-nonzero
+    F-monotone = exp-specification-sup-strong-implies-monotonicity specₛ
     e = ⊴-antisym _ _
          (sup-is-lower-bound-of-upper-bounds
            (cases (λ _ → 𝟙ₒ) (F ∘ β))
@@ -180,10 +177,11 @@ Added 29 January 2025 by Tom de Jong.
                  (sup-is-upper-bound (F ∘ β) i)
 
  exp-specification-sup-strong-if-EM : EM 𝓤
+                                    → α ≠ 𝟘ₒ
                                     → exp-specification-zero α F
                                     → exp-specification-sup
                                     → exp-specification-sup-strong
- exp-specification-sup-strong-if-EM em spec₀ specₛ α-nonzero I β =
+ exp-specification-sup-strong-if-EM em α-nonzero spec₀ specₛ I β =
   κ (em ∥ I ∥ ∥∥-is-prop)
   where
     G : 𝟙 + I → Ordinal 𝓤
@@ -241,40 +239,38 @@ nonzero base.
 
 exp-strong-specification-uniquely-specifies-exp'
  : (α : Ordinal 𝓤)
- → α ≠ 𝟘ₒ
  → (F G : Ordinal 𝓤 → Ordinal 𝓤)
  → exp-specification-sup-strong α F
  → exp-specification-succ α F
  → exp-specification-sup-strong α G
  → exp-specification-succ α G
  → F ∼ G
-exp-strong-specification-uniquely-specifies-exp'
- {𝓤} α α-nonzero F G F-eq₁ F-eq₂ G-eq₁ G-eq₂ =
-  transfinite-induction-on-OO _ e
-   where
-    e : (β : Ordinal 𝓤)
-      → ((b : ⟨ β ⟩) → F (β ↓ b) ＝ G (β ↓ b))
-      → F β ＝ G β
-    e β IH =
-      F β                                              ＝⟨ I   ⟩
-      F (sup λ b → (β ↓ b) +ₒ 𝟙ₒ)                      ＝⟨ II  ⟩
-      sup (cases (λ _ → 𝟙ₒ) (λ b → F ((β ↓ b) +ₒ 𝟙ₒ))) ＝⟨ III ⟩
-      sup (cases (λ _ → 𝟙ₒ) (λ b → F (β ↓ b) ×ₒ α))    ＝⟨ IV  ⟩
-      sup (cases (λ _ → 𝟙ₒ) (λ b → G (β ↓ b) ×ₒ α))    ＝⟨ V   ⟩
-      sup (cases (λ _ → 𝟙ₒ) (λ b → G ((β ↓ b) +ₒ 𝟙ₒ))) ＝⟨ VI  ⟩
-      G (sup (λ b → (β ↓ b) +ₒ 𝟙ₒ))                    ＝⟨ VII ⟩
-      G β                                              ∎
-       where
-        I   = ap F (supremum-of-successors-of-initial-segments pt sr β)
-        II  = F-eq₁ α-nonzero ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
-        III = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → 𝟙ₒ) -))
-                 (dfunext fe' (λ b → F-eq₂ (β ↓ b)))
-        IV  = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → 𝟙ₒ) -))
-                 (dfunext fe' (λ b → ap (_×ₒ α) (IH b)))
-        V   = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → 𝟙ₒ) -))
-                 (dfunext fe' (λ b → (G-eq₂ (β ↓ b)) ⁻¹))
-        VI  = (G-eq₁ α-nonzero ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)) ⁻¹
-        VII = ap G ((supremum-of-successors-of-initial-segments pt sr β) ⁻¹)
+exp-strong-specification-uniquely-specifies-exp' {𝓤} α F G F-eq₁ F-eq₂ G-eq₁ G-eq₂ =
+ transfinite-induction-on-OO _ e
+  where
+   e : (β : Ordinal 𝓤)
+     → ((b : ⟨ β ⟩) → F (β ↓ b) ＝ G (β ↓ b))
+     → F β ＝ G β
+   e β IH =
+     F β                                              ＝⟨ I   ⟩
+     F (sup λ b → (β ↓ b) +ₒ 𝟙ₒ)                      ＝⟨ II  ⟩
+     sup (cases (λ _ → 𝟙ₒ) (λ b → F ((β ↓ b) +ₒ 𝟙ₒ))) ＝⟨ III ⟩
+     sup (cases (λ _ → 𝟙ₒ) (λ b → F (β ↓ b) ×ₒ α))    ＝⟨ IV  ⟩
+     sup (cases (λ _ → 𝟙ₒ) (λ b → G (β ↓ b) ×ₒ α))    ＝⟨ V   ⟩
+     sup (cases (λ _ → 𝟙ₒ) (λ b → G ((β ↓ b) +ₒ 𝟙ₒ))) ＝⟨ VI  ⟩
+     G (sup (λ b → (β ↓ b) +ₒ 𝟙ₒ))                    ＝⟨ VII ⟩
+     G β                                              ∎
+      where
+       I   = ap F (supremum-of-successors-of-initial-segments pt sr β)
+       II  = F-eq₁ ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
+       III = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → 𝟙ₒ) -))
+                (dfunext fe' (λ b → F-eq₂ (β ↓ b)))
+       IV  = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → 𝟙ₒ) -))
+                (dfunext fe' (λ b → ap (_×ₒ α) (IH b)))
+       V   = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → 𝟙ₒ) -))
+                (dfunext fe' (λ b → (G-eq₂ (β ↓ b)) ⁻¹))
+       VI  = (G-eq₁ ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)) ⁻¹
+       VII = ap G ((supremum-of-successors-of-initial-segments pt sr β) ⁻¹)
 
 exp-strong-specification-uniquely-specifies-exp
  : (α : Ordinal 𝓤)
@@ -285,10 +281,10 @@ exp-strong-specification-uniquely-specifies-exp {𝓤} α α-nonzero =
  (λ (F , F-eq₁ , F-eq₂) (G , G-eq₁ , G-eq₂)
    → to-subtype-＝
       (λ H → ×-is-prop
-              (Π₃-is-prop fe' (λ _ _ _ → underlying-type-is-set fe (OO 𝓤)))
+              (Π₂-is-prop fe' (λ _ _ → underlying-type-is-set fe (OO 𝓤)))
               (Π-is-prop fe' (λ _ → underlying-type-is-set fe (OO 𝓤))))
               (dfunext fe'
-                (exp-strong-specification-uniquely-specifies-exp' α α-nonzero
+                (exp-strong-specification-uniquely-specifies-exp' α
                   F G F-eq₁ F-eq₂ G-eq₁ G-eq₂)))
 
 \end{code}

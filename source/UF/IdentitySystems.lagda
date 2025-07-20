@@ -49,7 +49,7 @@ record Has-Id-Sys {𝓦} (A : 𝓤 ̇ ) (a : A) (fam : A → 𝓦 ̇ ) : 𝓤ω 
 
 record Id-Sys 𝓦 (A : 𝓤 ̇ ) (a : A) : 𝓤ω where
  field
-  fam : A → 𝓦  ̇
+  fam : A → 𝓦 ̇
   sys : Has-Id-Sys A a fam
  open Has-Id-Sys sys public
 

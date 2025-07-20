@@ -64,7 +64,7 @@ The type of points of a locale is then the completely prime filters.
 
 \begin{code}
 
- Point : 𝓤 ⁺  ̇
+ Point : 𝓤 ⁺ ̇
  Point = Σ ϕ ꞉ 𝓟 {𝓤} ⟨ 𝒪 X ⟩ , is-cpf ϕ holds
 
 \end{code}
@@ -85,7 +85,7 @@ and pairings to construct inhabitants of the `Point` type.
 
 \begin{code}
 
-record Pointᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺  ̇ where
+record Pointᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺ ̇ where
  open DefnOfCPF X
 
  field
@@ -128,7 +128,7 @@ point-rec-equiv X =
 
 \begin{code}
 
-record Point′ᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺  ̇ where
+record Point′ᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺ ̇ where
  field
   point                     : 𝓟 {𝓤} ⟨ 𝒪 X ⟩
   point-is-upwards-closed   : is-upwards-closed X point holds

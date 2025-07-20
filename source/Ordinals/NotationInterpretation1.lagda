@@ -38,7 +38,7 @@ module Ordinals.NotationInterpretation1 (fe : FunExt) where
 
 We work with ordinal encodings, or ordinal expressions, that are
 slightly different from the traditional Brouwer ordinal trees, which
-we also consider towards the end of this article.
+we also consider in the file NotationInterpretation0.
 
 \begin{code}
 

@@ -936,7 +936,7 @@ left-Id-equiv {𝓤} {𝓥} {X} {Y} x =
    (Σ (x' , _) ꞉ singleton-type' x , Y x') ≃⟨ a ⟩
    Y x                                     ■
   where
-   a = prop-indexed-sum (singleton-types'-are-props x) (singleton'-center x)
+   a = prop-indexed-sum (singleton'-center x) (singleton-types'-are-props x)
 
 right-Id-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X)
                → (Σ x' ꞉ X , Y x' × (x' ＝ x)) ≃ Y x

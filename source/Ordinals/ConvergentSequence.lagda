@@ -6,7 +6,7 @@ equivalent to LPO.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
 open import UF.FunExt

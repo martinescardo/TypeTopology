@@ -47,7 +47,7 @@ First, we define some nicer syntax for inherently typed System T terms.
 
 \begin{code}
 
-_⊢_ : Cxt → type → 𝓤₀  ̇
+_⊢_ : Cxt → type → 𝓤₀ ̇
 _⊢_ Γ τ = T Γ τ
 
 infix 4 _⊢_
@@ -107,7 +107,7 @@ space.
 
 \begin{code}
 
-is-boolean-pointᵀ : 〈〉 ⊢ baire → 𝓤₀  ̇
+is-boolean-pointᵀ : 〈〉 ⊢ baire → 𝓤₀ ̇
 is-boolean-pointᵀ α =
  (n : 〈〉 ⊢ ι) → (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ 0) + (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ 1)
 
@@ -454,9 +454,8 @@ Added on 2025-02-11.
 
 \begin{code}
 
-_is-a-modulus-of-uniform-continuity-for_ : ℕ → ((ℕ → 𝟚) → ℕ) → 𝓤₀  ̇
+_is-a-modulus-of-uniform-continuity-for_ : ℕ → ((ℕ → 𝟚) → ℕ) → 𝓤₀ ̇
 m is-a-modulus-of-uniform-continuity-for f =
  (α β : ℕ → 𝟚) → α ＝⦅ m ⦆ β → f α ＝ f β
 
 \end{code}
-

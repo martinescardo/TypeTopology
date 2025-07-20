@@ -15,6 +15,7 @@ open import Ordinals.Notions
 
 open import UF.Base
 open import UF.FunExt
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-Properties
 
@@ -331,26 +332,33 @@ module times
    q : b ＝ y
    q = e' b y f'' g''
 
+ prop-valued : is-set Y
+             → is-prop-valued _<_
+             → is-prop-valued _≺_
+             → is-irreflexive _≺_
+             → is-prop-valued _⊏_
+ prop-valued s p p' i (a , b) (x , y) (inl l) (inl m) =
+  ap inl (p' b y l m)
+ prop-valued s p p' i (a , b) (x , y) (inl l) (inr (u , m)) =
+  𝟘-elim (i y (transport (λ - → - ≺ y) u l))
+ prop-valued s p p' i (a , b) (x , y) (inr (r , l)) (inl m) =
+  𝟘-elim (i y ((transport (λ - → - ≺ y) r m)))
+ prop-valued s p p' i (a , b) (x , y) (inr (r , l)) (inr (u , m)) =
+  ap inr (to-×-＝ (s r u) (p a x l m))
+
  well-order : FunExt
             → is-well-order _<_
             → is-well-order _≺_
             → is-well-order _⊏_
- well-order fe (p , w , e , t) (p' , w' , e' , t') =
-  prop-valued , well-founded w w' , extensional w w' e e' , transitive t t'
-  where
-   prop-valued : is-prop-valued _⊏_
-   prop-valued (a , b) (x , y) (inl l) (inl m) =
-    ap inl (p' b y l m)
-   prop-valued (a , b) (x , y) (inl l) (inr (s , m)) =
-    𝟘-elim (irreflexive _≺_ y (w' y) (transport (λ - → - ≺ y) s l))
-   prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
-    𝟘-elim (irreflexive _≺_ y (w' y) (transport (λ - → - ≺ y) r m))
-   prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-    ap inr (to-×-＝ (well-ordered-types-are-sets _≺_ fe
-                      (p' , w' , e' , t')
-                      r
-                      s)
-                    (p a x l m))
+ well-order fe (p , w , e , t) wo'@(p' , w' , e' , t') =
+  prop-valued (well-ordered-types-are-sets _≺_ fe wo')
+              p
+              p'
+              (λ x → irreflexive _≺_ x (w' x)) ,
+  well-founded w w' ,
+  extensional w w' e e' ,
+  transitive t t'
+
 
  top-preservation : has-top _<_ → has-top _≺_ → has-top _⊏_
  top-preservation (x , f) (y , g) = (x , y) , h
@@ -458,12 +466,14 @@ constructed in the module UF.PropIndexedPiSigma:
   ψ p x q = transport X (P-is-prop p q) x
 
   η : (p : P) (u : Π X) → ψ p (φ p u) ＝ u
-  η p = pr₂ (pr₂ (pr₂ (prop-indexed-product fe P-is-prop p)))
+  η p = pr₂ (pr₂ (pr₂ (prop-indexed-product p fe P-is-prop)))
 
   ε : (p : P) (x : X p) → φ p (ψ p x) ＝ x
-  ε p = pr₂ (pr₁ (pr₂ (prop-indexed-product fe P-is-prop p)))
+  ε p = pr₂ (pr₁ (pr₂ (prop-indexed-product p fe P-is-prop)))
 
 \end{code}
+
+TODO. Get rid of the projections above. There are more meaningful names for them.
 
 The order on the product is constructed as follows from the order in
 the components:

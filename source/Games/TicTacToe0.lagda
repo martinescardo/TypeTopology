@@ -12,11 +12,11 @@ module Games.TicTacToe0 where
 open import Fin.ArgMinMax
 open import Fin.Topology
 open import Fin.Type
-open import Games.J
-open import Games.K
 open import Games.TypeTrees
 open import MLTT.Athenian
 open import MLTT.Spartan hiding (J)
+open import MonadOnTypes.J
+open import MonadOnTypes.K
 open import TypeTopology.CompactTypes
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.DiscreteAndSeparated
@@ -31,7 +31,7 @@ R : Type
 R = Fin 3
 
 open import Games.FiniteHistoryDependent R
-open import Games.JK
+open import MonadOnTypes.JK
 
 \end{code}
 
@@ -255,7 +255,7 @@ selections b@(p , A) (succ k) with wins (opponent p) A | Move-decidable b
 ... | false | inr _  = ⟨⟩
 
 
-p : Path (Xt tic-tac-toe)
-p = sequenceᴶ (selections board₀ 9) (q tic-tac-toe)
+p : Path (game-tree tic-tac-toe)
+p = sequenceᴶ (selections board₀ 9) (payoff-function tic-tac-toe)
 
 \end{code}
