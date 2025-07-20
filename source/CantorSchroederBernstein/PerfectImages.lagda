@@ -1,7 +1,7 @@
 Fredrik Bakke, April 2025
 
 Perfect images
--------------------------------------------------------------------------
+--------------
 
 \begin{code}
 
@@ -10,35 +10,25 @@ Perfect images
 module CantorSchroederBernstein.PerfectImages where
 
 
-open import CoNaturals.Type
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import Naturals.Properties
 open import TypeTopology.CompactTypes
 open import TypeTopology.DenseMapsProperties
-open import TypeTopology.Density
-open import TypeTopology.GenericConvergentSequenceCompactness
-open import UF.Base
-open import UF.DiscreteAndSeparated
-open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ClassicalLogic
 open import NotionsOfDecidability.Complemented
-open import NotionsOfDecidability.Decidable
-open import UF.FunExt
-open import UF.Lower-FunExt
-open import UF.PropTrunc
-open import UF.SubtypeClassifier
-open import UF.Retracts
-open import UF.Sets
 open import UF.NotNotStablePropositions
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Subsingletons-Properties
-open import CantorSchroederBernstein.CSB
 
 \end{code}
+
+We introduce the concept of perfect images, as used by König in his argument for
+the Cantor–Schröder–Bernstein theorem.
+
+Given maps f : X → Y and g : Y → X, then an element x : X is said to be a
+perfect image of g relative to f, if for every natural number n and every
+preimage x₀ of x under (g ∘ f)ⁿ x, i.e., (g ∘ f)ⁿ x₀ = x, then x₀ has a further
+preimage under g.
 
 \begin{code}
 
@@ -344,3 +334,9 @@ module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} where
    (perfect-images-at-are-decidable αf αg ¬¬elim-g x)
 
 \end{code}
+
+References
+----------
+
+ - The Cantor–Schröder–Bernstein theorem in ∞-Topoi, slides
+   (Bakke 2025, https://hott-uf.github.io/2025/slides/Bakke.pdf)

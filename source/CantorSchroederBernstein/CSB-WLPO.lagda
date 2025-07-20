@@ -1,10 +1,10 @@
 Fredrik Bakke, April 2025
 
-The Cantor-Schröder-Bernstein assuming WLPO in Agda
--------------------------------------------------------------------------
+The Cantor-Schröder-Bernstein theorem assuming WLPO in Agda
+-----------------------------------------------------------
 
 We prove a generalization of the Cantor-Schröder-Bernstein theorem assuming
-WLPO. We do not assume function extensionality.
+the weak limited principle of omniscience.
 
 \begin{code}
 
@@ -14,37 +14,47 @@ module CantorSchroederBernstein.CSB-WLPO where
 
 open import CantorSchroederBernstein.PerfectImages
 
-open import CoNaturals.Type
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import Naturals.Properties
 open import TypeTopology.CompactTypes
 open import TypeTopology.DenseMapsProperties
-open import TypeTopology.Density
-open import TypeTopology.GenericConvergentSequenceCompactness
-open import UF.Base
-open import UF.DiscreteAndSeparated
-open import UF.Embeddings
+open import UF.Embeddingss
 open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.ClassicalLogic
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
-open import UF.FunExt
-open import UF.Lower-FunExt
-open import UF.PropTrunc
-open import UF.SubtypeClassifier
 open import UF.Retracts
-open import UF.Sets
-open import UF.NotNotStablePropositions
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Subsingletons-Properties
-open import CantorSchroederBernstein.CSB
 
 \end{code}
 
-Using our lemmas about perfect images, the construction is straight forward!
+In this file we consider a generalization of the Cantor–Schröder–Bernstein (CSB)
+theorem only assuming the weak limited principle of omniscience (WLPO), based on
+König's argument.
+
+Theorem.
+Assuming WLPO, then for every pair of types X and Y, if there are complemented
+embeddings X ↪ Y and Y ↪ X, then X is equivalent to Y.
+
+In particular, we do not assume function extensionality.
+
+This theorem can be viewed as a proper generalization of the
+Cantor–Schröder–Bernstein theorem to arbitrary non-topological ∞-topoi, since,
+under the assumption of the law of excluded middle (LEM), every embedding is
+complemented. On the other hand, It was shown by Pradic and Brown (2022) that
+the Cantor–Schröder–Bernstein theorem in its most naïve form implies the law of
+excluded middle:
+
+If it is true that for every pair of sets X and Y, if X injects into Y and Y
+injects into X then X and Y are in bijection, then the law of excluded middle
+holds.
+
+Hence we also know that in the absence of the law of excluded middle, the
+hypotheses of the theorem must be strengthened.
+
+Construction
+------------
+
+For our formalization we import a series of properties of perfect images from
+which the construction is straight forward.
 
 \begin{code}
 
@@ -180,7 +190,19 @@ The construction is an equivalence.
 
 \end{code}
 
-If WLPO holds, the perfect image is decidable and we have our theorem.
+Note in particular that the above definition gives us a fully constructive
+version of König's argument:
+
+If f and g are such that
+
+ 1. g is left cancellable and ¬¬-stable,
+ 2. f is left cancellable and has ¬¬-compact fibers
+ 3. the perfect image of g relative to f is complemented
+
+then X ≃ Y.
+
+Now, if WLPO holds and f and g are complemented embeddings we can show that the
+perfect image is always complemented, hence deriving our main result.
 
 \begin{code}
 
@@ -217,7 +239,8 @@ module _
 
  equiv-CSB-assuming-WLPO : is-complemented-map g
                          → is-embedding g
-                         -- The following three imply $f$ is a complemented embedding
+                         -- The following three assumptions imply
+                         -- that f is a complemented embedding
                          → is-¬¬-Compact'-map f {𝓤 ⊔ 𝓥}
                          → is-Π-Compact-map f {𝓤 ⊔ 𝓥}
                          → left-cancellable f
@@ -252,3 +275,12 @@ module _
        (decidable-propositions-are-compact (fiber f y) (emb-f y) (cf y)))))
 
 \end{code}
+
+References
+----------
+
+ - Cantor-Bernstein implies Excluded Middle
+   (Pradic & Brown 2022, https://arxiv.org/abs/1904.09193).
+
+ - The Cantor–Schröder–Bernstein theorem in ∞-Topoi, slides
+   (Bakke 2025, https://hott-uf.github.io/2025/slides/Bakke.pdf)
