@@ -18,7 +18,7 @@ open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import TypeTopology.CompactTypes
 open import TypeTopology.DenseMapsProperties
-open import UF.Embeddingss
+open import UF.Embeddings
 open import UF.Equiv
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
