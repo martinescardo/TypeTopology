@@ -461,7 +461,7 @@ tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
   e = retract-is-Π-compact d c
 
   f : is-discrete (𝕋 X)
-  f = tscd τ e
+  f = tscd 𝕋-is-totally-separated e
 
 \end{code}
 
