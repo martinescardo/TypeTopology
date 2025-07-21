@@ -629,7 +629,7 @@ rather than direct proofs (as in the proof of tight reflection below).
  totally-separated-reflection : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                               → is-totally-separated A
                               → (f : X → A)
-                              → ∃! f⁻ ꞉ (𝕋 X → A) , f⁻ ∘ ηᵀ ＝ f
+                              → ∃! f̅ ꞉ (𝕋 X → A) , f̅ ∘ ηᵀ ＝ f
  totally-separated-reflection {𝓤} {𝓥} {X} {A} τ f = δ
   where
    A-is-set : is-set A
@@ -652,24 +652,24 @@ rather than direct proofs (as in the proof of tight reflection below).
    h' : (x' : 𝕋 X) → Σ a ꞉ A , eval A a ＝ (λ q → pr₁ x' (q ∘ f))
    h' (φ , s) = h φ s
 
-   f⁻ : 𝕋 X → A
-   f⁻ (φ , s) = pr₁ (h φ s)
+   f̅ : 𝕋 X → A
+   f̅ (φ , s) = pr₁ (h φ s)
 
-   b : (x' : 𝕋 X) (q : A → 𝟚) → q (f⁻ x') ＝ pr₁ x' (q ∘ f)
+   b : (x' : 𝕋 X) (q : A → 𝟚) → q (f̅ x') ＝ pr₁ x' (q ∘ f)
    b (φ , s) = happly (pr₂ (h φ s))
 
-   r : f⁻ ∘ ηᵀ ＝ f
+   r : f̅ ∘ ηᵀ ＝ f
    r = dfunext fe' (λ x → τ (b (ηᵀ x)))
 
-   c : (σ : Σ f⁺ ꞉ (𝕋 X → A) , f⁺ ∘ ηᵀ ＝ f) → (f⁻ , r) ＝ σ
+   c : (σ : Σ f⁺ ꞉ (𝕋 X → A) , f⁺ ∘ ηᵀ ＝ f) → (f̅ , r) ＝ σ
    c (f⁺ , s) = to-Σ-＝ (t , v)
     where
-     w : f⁻ ∘ ηᵀ ∼ f⁺ ∘ ηᵀ
-     w = happly (f⁻ ∘ ηᵀ  ＝⟨ r ⟩
+     w : f̅ ∘ ηᵀ ∼ f⁺ ∘ ηᵀ
+     w = happly (f̅ ∘ ηᵀ ＝⟨ r ⟩
                  f       ＝⟨ s ⁻¹ ⟩
-                 f⁺ ∘ ηᵀ ∎ )
+                 f⁺ ∘ ηᵀ ∎)
 
-     t : f⁻ ＝ f⁺
+     t : f̅ ＝ f⁺
      t = dfunext fe' (ηᵀ-induction _ (λ _ → A-is-set) w)
 
      u : f⁺ ∘ ηᵀ ＝ f
@@ -678,8 +678,8 @@ rather than direct proofs (as in the proof of tight reflection below).
      v : u ＝ s
      v = Π-is-set fe' (λ _ → A-is-set) u s
 
-   δ : ∃! f⁻ ꞉ (𝕋 X → A) , f⁻ ∘ ηᵀ ＝ f
-   δ = (f⁻ , r) , c
+   δ : ∃! f̅ ꞉ (𝕋 X → A) , f̅ ∘ ηᵀ ＝ f
+   δ = (f̅ , r) , c
 
 \end{code}
 
@@ -690,14 +690,14 @@ We package the above as follows for convenient use elsewhere
 
  totally-separated-reflection' : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                                → is-totally-separated A
-                               → is-equiv (λ (f⁻ : 𝕋 X → A) → f⁻ ∘ ηᵀ)
+                               → is-equiv (λ (f̅ : 𝕋 X → A) → f̅ ∘ ηᵀ)
  totally-separated-reflection' τ =
   vv-equivs-are-equivs _ (totally-separated-reflection τ)
 
  totally-separated-reflection'' : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                                 → is-totally-separated A
                                 → (𝕋 X → A) ≃ (X → A)
- totally-separated-reflection'' τ = (λ f⁻ → f⁻ ∘ ηᵀ) ,
+ totally-separated-reflection'' τ = (λ f̅ → f̅ ∘ ηᵀ) ,
                                     totally-separated-reflection' τ
 
 \end{code}
