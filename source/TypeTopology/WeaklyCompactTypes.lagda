@@ -322,31 +322,31 @@ module _ (X : 𝓤 ̇ ) where
  open totally-separated-reflection fe pt
 
  private
-  EP : (p : X → 𝟚) → ∃! p' ꞉ (𝕋 X → 𝟚) , p' ∘ η ＝ p
+  EP : (p : X → 𝟚) → ∃! p' ꞉ (𝕋 X → 𝟚) , p' ∘ ηᵀ ＝ p
   EP = totally-separated-reflection 𝟚-is-totally-separated
 
   extension : (X → 𝟚) → (𝕋 X → 𝟚)
   extension p = ∃!-witness (EP p)
 
-  extension-property : (p : X → 𝟚) (x : X) → extension p (η x) ＝ p x
+  extension-property : (p : X → 𝟚) (x : X) → extension p (ηᵀ x) ＝ p x
   extension-property p = happly (∃!-is-witness (EP p))
 
  ∃-compact-types-are-∃-compact-𝕋 : is-∃-compact X → is-∃-compact (𝕋 X)
  ∃-compact-types-are-∃-compact-𝕋 = codomain-of-surjection-is-∃-compact
-                                    η η-is-surjection
+                                    ηᵀ ηᵀ-is-surjection
 
  ∃-compact-𝕋-types-are-∃-compact : is-∃-compact (𝕋 X) → is-∃-compact X
  ∃-compact-𝕋-types-are-∃-compact c p = h (c (extension p))
   where
    f : (Σ x' ꞉ 𝕋 X , extension p x' ＝ ₀) → ∃ x ꞉ X , p x ＝ ₀
-   f (x' , r) = ∥∥-functor f' (η-is-surjection x')
+   f (x' , r) = ∥∥-functor f' (ηᵀ-is-surjection x')
     where
-     f' : (Σ x ꞉ X , η x ＝ x') → Σ x ꞉ X , p x ＝ ₀
+     f' : (Σ x ꞉ X , ηᵀ x ＝ x') → Σ x ꞉ X , p x ＝ ₀
      f' (x , s) = x , ((extension-property p x) ⁻¹ ∙ ap (extension p) s ∙ r)
 
    g : (Σ x ꞉ X , p x ＝ ₀)
      → Σ x' ꞉ 𝕋 X , extension p x' ＝ ₀
-   g (x , r) = η x , (extension-property p x ∙ r)
+   g (x , r) = ηᵀ x , (extension-property p x ∙ r)
 
    h : is-decidable (∃ x' ꞉ 𝕋 X , extension p x' ＝ ₀)
      → is-decidable (∃ x ꞉ X , p x ＝ ₀)
@@ -355,19 +355,19 @@ module _ (X : 𝓤 ̇ ) where
 
  Π-compact-types-are-Π-compact-𝕋 : is-Π-compact X → is-Π-compact (𝕋 X)
  Π-compact-types-are-Π-compact-𝕋 = codomain-of-surjection-is-Π-compact
-                                    η (η-is-surjection)
+                                    ηᵀ (ηᵀ-is-surjection)
 
  Π-compact-𝕋-types-are-Π-compact : is-Π-compact (𝕋 X) → is-Π-compact X
  Π-compact-𝕋-types-are-Π-compact c p = h (c (extension p))
   where
    f : ((x' : 𝕋 X) → extension p x' ＝ ₁) → ((x : X) → p x ＝ ₁)
-   f α x = (extension-property p x)⁻¹ ∙ α (η x)
+   f α x = (extension-property p x)⁻¹ ∙ α (ηᵀ x)
 
    g : (α : (x : X) → p x ＝ ₁)
      → ((x' : 𝕋 X) → extension p x' ＝ ₁)
-   g α = η-induction (λ x' → extension p x' ＝ ₁) (λ _ → 𝟚-is-set) g'
+   g α = ηᵀ-induction (λ x' → extension p x' ＝ ₁) (λ _ → 𝟚-is-set) g'
      where
-      g' : (x : X) → extension p (η x) ＝ ₁
+      g' : (x : X) → extension p (ηᵀ x) ＝ ₁
       g' x = extension-property p x ∙ α x
 
    h : is-decidable ((x' : 𝕋 X) → extension p x' ＝ ₁)
