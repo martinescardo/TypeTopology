@@ -607,17 +607,17 @@ the reflector.
 
 \begin{code}
 
- η : {X : 𝓤 ̇ } → X → 𝕋 X
- η {𝓤} {X} = corestriction (eval X)
+ ηᵀ : {X : 𝓤 ̇ } → X → 𝕋 X
+ ηᵀ {𝓤} {X} = corestriction (eval X)
 
- η-is-surjection : {X : 𝓤 ̇ } → is-surjection η
- η-is-surjection {𝓤} {X} = corestrictions-are-surjections (eval X)
+ ηᵀ-is-surjection : {X : 𝓤 ̇ } → is-surjection ηᵀ
+ ηᵀ-is-surjection {𝓤} {X} = corestrictions-are-surjections (eval X)
 
- η-induction :  {X : 𝓤 ̇ } (P : 𝕋 X → 𝓦 ̇ )
+ ηᵀ-induction :  {X : 𝓤 ̇ } (P : 𝕋 X → 𝓦 ̇ )
              → ((x' : 𝕋 X) → is-prop (P x'))
-             → ((x : X) → P (η x))
+             → ((x : X) → P (ηᵀ x))
              → (x' : 𝕋 X) → P x'
- η-induction = surjection-induction η η-is-surjection
+ ηᵀ-induction = surjection-induction ηᵀ ηᵀ-is-surjection
 
 \end{code}
 
@@ -629,7 +629,7 @@ rather than direct proofs (as in the proof of tight reflection below).
  totally-separated-reflection : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                               → is-totally-separated A
                               → (f : X → A)
-                              → ∃! f⁻ ꞉ (𝕋 X → A) , f⁻ ∘ η ＝ f
+                              → ∃! f⁻ ꞉ (𝕋 X → A) , f⁻ ∘ ηᵀ ＝ f
  totally-separated-reflection {𝓤} {𝓥} {X} {A} τ f = δ
   where
    A-is-set : is-set A
@@ -658,27 +658,27 @@ rather than direct proofs (as in the proof of tight reflection below).
    b : (x' : 𝕋 X) (q : A → 𝟚) → q (f⁻ x') ＝ pr₁ x' (q ∘ f)
    b (φ , s) = happly (pr₂ (h φ s))
 
-   r : f⁻ ∘ η ＝ f
-   r = dfunext fe' (λ x → τ (b (η x)))
+   r : f⁻ ∘ ηᵀ ＝ f
+   r = dfunext fe' (λ x → τ (b (ηᵀ x)))
 
-   c : (σ : Σ f⁺ ꞉ (𝕋 X → A) , f⁺ ∘ η ＝ f) → (f⁻ , r) ＝ σ
+   c : (σ : Σ f⁺ ꞉ (𝕋 X → A) , f⁺ ∘ ηᵀ ＝ f) → (f⁻ , r) ＝ σ
    c (f⁺ , s) = to-Σ-＝ (t , v)
     where
-     w : f⁻ ∘ η ∼ f⁺ ∘ η
-     w = happly (f⁻ ∘ η  ＝⟨ r ⟩
+     w : f⁻ ∘ ηᵀ ∼ f⁺ ∘ ηᵀ
+     w = happly (f⁻ ∘ ηᵀ  ＝⟨ r ⟩
                  f       ＝⟨ s ⁻¹ ⟩
-                 f⁺ ∘ η ∎ )
+                 f⁺ ∘ ηᵀ ∎ )
 
      t : f⁻ ＝ f⁺
-     t = dfunext fe' (η-induction _ (λ _ → A-is-set) w)
+     t = dfunext fe' (ηᵀ-induction _ (λ _ → A-is-set) w)
 
-     u : f⁺ ∘ η ＝ f
-     u = transport (λ - → - ∘ η ＝ f) t r
+     u : f⁺ ∘ ηᵀ ＝ f
+     u = transport (λ - → - ∘ ηᵀ ＝ f) t r
 
      v : u ＝ s
      v = Π-is-set fe' (λ _ → A-is-set) u s
 
-   δ : ∃! f⁻ ꞉ (𝕋 X → A) , f⁻ ∘ η ＝ f
+   δ : ∃! f⁻ ꞉ (𝕋 X → A) , f⁻ ∘ ηᵀ ＝ f
    δ = (f⁻ , r) , c
 
 \end{code}
@@ -690,14 +690,14 @@ We package the above as follows for convenient use elsewhere
 
  totally-separated-reflection' : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                                → is-totally-separated A
-                               → is-equiv (λ (f⁻ : 𝕋 X → A) → f⁻ ∘ η)
+                               → is-equiv (λ (f⁻ : 𝕋 X → A) → f⁻ ∘ ηᵀ)
  totally-separated-reflection' τ =
   vv-equivs-are-equivs _ (totally-separated-reflection τ)
 
  totally-separated-reflection'' : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                                 → is-totally-separated A
                                 → (𝕋 X → A) ≃ (X → A)
- totally-separated-reflection'' τ = (λ f⁻ → f⁻ ∘ η) ,
+ totally-separated-reflection'' τ = (λ f⁻ → f⁻ ∘ ηᵀ) ,
                                     totally-separated-reflection' τ
 
 \end{code}
