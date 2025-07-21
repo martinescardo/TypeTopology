@@ -216,14 +216,31 @@ The 𝟚-injective types are closed under products and retracts.
  (λ x → dfunext fe'
  (λ i → extension-extends j (D-𝟚-inj i j j-𝟚-injecting) (λ x → f x i) x))
 
+retract-of-𝟚-injective : (D' : 𝓣' ̇ ) (D : 𝓣 ̇ )
+                       → 𝟚-injective D 𝓤 𝓥
+                       → retract D' of D
+                       → 𝟚-injective D' 𝓤 𝓥
+retract-of-𝟚-injective D' D i (r , s , rs) {X} {Y} j e f = φ a
+  where
+   a : Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f
+   a = i j e (s ∘ f)
+
+   φ : (Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f) → Σ f'' ꞉ (Y → D') , f'' ∘ j ∼ f
+   φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
+
 \end{code}
+
+TODO. Formulate the above in more generality with the same proof.
 
 The free algebras of the 𝟚-based double dualization monad are 𝟚-injective.
 
 \begin{code}
 
+first-dual-is-𝟚-injective : {X : 𝓣 ̇ } → 𝟚-injective (X → 𝟚) 𝓤 𝓥
+first-dual-is-𝟚-injective = 𝟚-injectives-closed-under-Π (λ i → 𝟚-is-𝟚-injective)
+
 K-is-𝟚-injective : {X : 𝓣 ̇ } → 𝟚-injective (K X) 𝓤 𝓥
-K-is-𝟚-injective = 𝟚-injectives-closed-under-Π (λ i → 𝟚-is-𝟚-injective)
+K-is-𝟚-injective = first-dual-is-𝟚-injective
 
 \end{code}
 
