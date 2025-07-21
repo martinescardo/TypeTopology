@@ -358,6 +358,13 @@ The unit of the totally separated reflection is 𝟚-injecting.
  ηᵀ-is-𝟚-injecting {𝓤} {X} f = extᵀ 𝟚-is-totally-separated f ,
                                ext-ηᵀ 𝟚-is-totally-separated f
 
+\end{code}
+
+The reflection of any 𝟚-injecting map is again 𝟚-injecting, and also
+always an embedding.
+
+\begin{code}
+
  module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y) (ji : is-𝟚-injecting j) where
 
   𝕋-is-𝟚-injecting : is-𝟚-injecting (𝕋-functor j)
@@ -396,9 +403,10 @@ The unit of the totally separated reflection is 𝟚-injecting.
                     𝕋-is-𝟚-injecting
                     𝕋-is-totally-separated
                     𝕋-is-totally-separated
-
-
 \end{code}
+
+TODO. The above proof probably doesn't need induction. The reflection
+laws should suffice.
 
 The formulation of the following doesn't use propositional
 truncations, but its construction does, indirectly.
@@ -422,12 +430,12 @@ The following are equivalent for any type D.
   → is-totally-separated Y
   → D is-injective-over j
 
- 𝟚-injective-iff-injective-over-𝟚-injective-embeddings
+ characterization-of-𝟚-injectivity
   : (D : 𝓤 ̇ )
   → 𝟚-injective D 𝓤 𝓤
   ↔ (is-totally-separated D
     × is-injective-over-𝟚-injective-embeddings-of-ts-types D 𝓤 𝓤)
- 𝟚-injective-iff-injective-over-𝟚-injective-embeddings {𝓤} D
+ characterization-of-𝟚-injectivity {𝓤} D
   = (λ D-𝟚-inj → 𝟚-injectives-are-totally-separated D-𝟚-inj ,
                  (λ j ji je X-ts Y-ys → D-𝟚-inj j ji)) ,
     I
