@@ -303,7 +303,7 @@ module _
 
 \end{code}
 
-As discussed above, we didn't require 2-is-injective-over maps to be
+As discussed above, we didn't require 2-injecting maps to be
 embeddings. We now show, in a number of steps, that we could have
 required them to be embeddings without loss of generality.
 
