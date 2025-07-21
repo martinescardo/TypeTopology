@@ -266,9 +266,9 @@ Added 3rd April 2025 by Fredrik Bakke
 \begin{code}
 
 ¬¬-stable-weakly-decidable-types-are-decidable : {X : 𝓤 ̇ }
-                                        → is-decidable (¬ X)
-                                        → ¬¬-stable X
-                                        → is-decidable X
+                                               → is-decidable (¬ X)
+                                               → ¬¬-stable X
+                                               → is-decidable X
 ¬¬-stable-weakly-decidable-types-are-decidable (inl nx) ¬¬-elim-X = inr nx
 ¬¬-stable-weakly-decidable-types-are-decidable (inr x) ¬¬-elim-X = inl (¬¬-elim-X x)
 
