@@ -590,8 +590,8 @@ We construct the reflection as the image of the evaluation map.
  𝕋 : 𝓤 ̇ → 𝓤 ̇
  𝕋 X = image (eval X)
 
- τ : {X : 𝓤 ̇ } → is-totally-separated (𝕋 X)
- τ {𝓤} {X} {φ , s} {γ , t} = g
+ 𝕋-is-totally-separated : {X : 𝓤 ̇ } → is-totally-separated (𝕋 X)
+ 𝕋-is-totally-separated {𝓤} {X} {φ , s} {γ , t} = g
   where
    f : (e : (q : 𝕋 X → 𝟚) → q (φ , s) ＝ q (γ , t)) (p : X → 𝟚) → φ p ＝ γ p
    f e p = e (λ (x' : 𝕋 X) → pr₁ x' p)
@@ -614,9 +614,9 @@ the reflector.
  ηᵀ-is-surjection {𝓤} {X} = corestrictions-are-surjections (eval X)
 
  ηᵀ-induction :  {X : 𝓤 ̇ } (P : 𝕋 X → 𝓦 ̇ )
-             → ((x' : 𝕋 X) → is-prop (P x'))
-             → ((x : X) → P (ηᵀ x))
-             → (x' : 𝕋 X) → P x'
+              → ((x' : 𝕋 X) → is-prop (P x'))
+              → ((x : X) → P (ηᵀ x))
+              → (x' : 𝕋 X) → P x'
  ηᵀ-induction = surjection-induction ηᵀ ηᵀ-is-surjection
 
 \end{code}
@@ -704,6 +704,39 @@ We package the above as follows for convenient use elsewhere
 
 In particular, because 𝟚 is totally separated, 𝕋 X and X have the same
 boolean predicates (which we exploit in the module CompactTypes).
+
+Added 21st July 2025.
+
+\begin{code}
+
+ extᵀ : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+      → is-totally-separated A
+      → (X → A) → (𝕋 X → A)
+ extᵀ τ = ⌜ totally-separated-reflection'' τ ⌝⁻¹
+
+ ext-ηᵀ : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+          (τ : is-totally-separated A)
+          (f : X → A) → extᵀ τ f ∘ ηᵀ ∼ f
+ ext-ηᵀ τ f = happly
+               (inverses-are-sections' (totally-separated-reflection'' τ) f)
+
+ 𝕋-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝕋 X → 𝕋 Y)
+ 𝕋-functor f = extᵀ 𝕋-is-totally-separated (ηᵀ ∘ f)
+
+ 𝕋-natural : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+           → 𝕋-functor f ∘ ηᵀ ∼ ηᵀ ∘ f
+ 𝕋-natural f x = ext-ηᵀ 𝕋-is-totally-separated (ηᵀ ∘ f) x
+
+ ηᵀ-relates-identified-points : {X : 𝓤 ̇ } {x y : X} → ηᵀ x ＝ ηᵀ y → x ＝₂ y
+ ηᵀ-relates-identified-points e = happly (ap pr₁ e)
+
+ ηᵀ-identifies-related-points : {X : 𝓤 ̇ } {x y : X} → x ＝₂ y → ηᵀ x ＝ ηᵀ y
+ ηᵀ-identifies-related-points e = to-subtype-＝
+                                   (λ ϕ → being-in-the-image-is-prop ϕ (eval _))
+                                   (dfunext fe' e)
+\end{code}
+
+End of 21st July 2025 addition.
 
 The notion of total separatedness (or 𝟚-separatedness) is analogous to
 the T₀-separation axiom (which says that any two points with the same
