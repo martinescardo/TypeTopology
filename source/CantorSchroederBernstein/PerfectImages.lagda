@@ -9,7 +9,6 @@ Perfect images
 
 module CantorSchroederBernstein.PerfectImages where
 
-
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import TypeTopology.CompactTypes
@@ -195,34 +194,42 @@ is-¬¬-Compact {𝓤} A {𝓥} =
  (B : A → Ω¬¬ 𝓥) → ¬¬ (Σ a ꞉ A , (B a holds¬¬)) → Σ a ꞉ A , (B a holds¬¬)
 
 ¬¬-Compact-types-are-¬¬-stable : {A : 𝓤 ̇ }
-                               → is-¬¬-Compact A {𝓤} → ¬¬-stable A
+                               → is-¬¬-Compact A {𝓤}
+                               → ¬¬-stable A
 ¬¬-Compact-types-are-¬¬-stable α nna =
  pr₁ (α (λ _ → ((𝟙 , 𝟙-is-prop) , λ _ → ⋆)) (¬¬-functor (λ a → a , ⋆) nna))
 
 ¬¬-Compact'-types-are-¬¬-stable : {A : 𝓤 ̇ }
-                                → is-¬¬-Compact' A {𝓤} → ¬¬-stable A
+                                → is-¬¬-Compact' A {𝓤}
+                                → ¬¬-stable A
 ¬¬-Compact'-types-are-¬¬-stable α nna =
  pr₁ (α (λ _ → 𝟙) (λ _ _ → ⋆) (¬¬-functor (λ a → a , ⋆) nna))
 
-is-¬¬-Compact'-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                  → (X → Y) → {𝓦 : Universe} → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+is-¬¬-Compact'-map : {X : 𝓤 ̇ }
+                   → {Y : 𝓥 ̇ }
+                   → (X → Y)
+                   → {𝓦 : Universe}
+                   → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
 is-¬¬-Compact'-map {𝓤} {𝓥} {X} {Y} f {𝓦} =
  each-fiber-of f (λ T → is-¬¬-Compact' T {𝓦})
 
-module _
-  {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} (αf : is-¬¬-Compact'-map f) where
+module _ {X  : 𝓤 ̇ }
+         {Y  : 𝓥 ̇ }
+         {f  : X → Y}
+         {g  : Y → X}
+         (αf : is-¬¬-Compact'-map f)
+       where
 
  nonperfect-fibers-are-¬¬-stable' : (y : Y)
                                   → ¬¬-stable (has-nonperfect-fiber f g y)
  nonperfect-fibers-are-¬¬-stable' y =
   αf y (λ (x , p) → ¬ is-perfect-image f g x) (λ _ → three-negations-imply-one)
 
- module _
-  (¬¬elim-g : is-¬¬-stable-map g)
-  (lc-g : left-cancellable g)
-  (y : Y)
-  (nρ : ¬ is-perfect-image f g (g y))
-  where
+ module _ (¬¬elim-g : is-¬¬-stable-map g)
+          (lc-g     : left-cancellable g)
+          (y        : Y)
+          (nρ       : ¬ is-perfect-image f g (g y))
+        where
 
   not-perfect-images-have-nonperfect-fibers' : has-nonperfect-fiber f g y
   not-perfect-images-have-nonperfect-fibers' =
@@ -249,7 +256,7 @@ module _
 
 \end{code}
 
-Finally, we need conditions under which the `is-perfect-image` predicate is
+Finally, we need conditions under which the is-perfect-image predicate is
 decidable. For this purpose we consider maps with Π-compact fibers. This class
 includes complemented embeddings, but is in general much larger. For instance,
 the fibers will in general only be weakly complemented, and can include things
@@ -258,8 +265,11 @@ equality is double negation dense.
 
 \begin{code}
 
-is-Π-Compact-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                 → (X → Y) → {𝓦 : Universe} → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+is-Π-Compact-map : {X : 𝓤 ̇ }
+                 → {Y : 𝓥 ̇ }
+                 → (X → Y)
+                 → {𝓦 : Universe}
+                 → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
 is-Π-Compact-map {𝓤} {𝓥} {X} {Y} f {𝓦} =
  each-fiber-of f (λ T → is-Π-Compact T {𝓦})
 
@@ -316,19 +326,6 @@ module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} where
                                                → is-complemented
                                                   (is-perfect-image f g)
  perfect-images-are-complemented-assuming-WLPO wlpo αf αg ¬¬elim-g x =
-  wlpo
-   (is-perfect-image-at f g x)
-   (perfect-images-at-are-decidable αf αg ¬¬elim-g x)
-
-
-
- perfect-images-are-complemented-assuming-WLPO' : is-Π-Compact ℕ {𝓤 ⊔ 𝓥}
-                                               → is-Π-Compact-map f {𝓤 ⊔ 𝓥}
-                                               → is-Π-Compact-map g {𝓤 ⊔ 𝓥}
-                                               → is-¬¬-stable-map g
-                                               → is-complemented
-                                                  (is-perfect-image f g)
- perfect-images-are-complemented-assuming-WLPO' wlpo αf αg ¬¬elim-g x =
   wlpo
    (is-perfect-image-at f g x)
    (perfect-images-at-are-decidable αf αg ¬¬elim-g x)
