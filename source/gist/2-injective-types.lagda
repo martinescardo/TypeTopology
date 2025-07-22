@@ -437,9 +437,9 @@ The following are equivalent for any type D.
 
 \begin{code}
 
- is-injective-over-𝟚-injective-embeddings-of-ts-types
+ is-injective-over-𝟚-injecting-embeddings-of-ts-types
   : 𝓣 ̇ → (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ⊔ 𝓣 ̇
- is-injective-over-𝟚-injective-embeddings-of-ts-types D 𝓤 𝓥
+ is-injective-over-𝟚-injecting-embeddings-of-ts-types D 𝓤 𝓥
   = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
   → is-𝟚-injecting j
   → is-embedding j
@@ -451,14 +451,14 @@ The following are equivalent for any type D.
   : (D : 𝓤 ̇ )
   → 𝟚-injective D 𝓤 𝓤
   ↔ (is-totally-separated D
-    × is-injective-over-𝟚-injective-embeddings-of-ts-types D 𝓤 𝓤)
+    × is-injective-over-𝟚-injecting-embeddings-of-ts-types D 𝓤 𝓤)
  characterization-of-𝟚-injectivity {𝓤} D
   = (λ D-𝟚-inj → 𝟚-injectives-are-totally-separated D-𝟚-inj ,
                  (λ j ji je X-ts Y-ys → D-𝟚-inj j ji)) ,
     I
   where
    I : is-totally-separated D
-     × is-injective-over-𝟚-injective-embeddings-of-ts-types D 𝓤 𝓤
+     × is-injective-over-𝟚-injecting-embeddings-of-ts-types D 𝓤 𝓤
      → 𝟚-injective D 𝓤 𝓤
    I (D-ts , D-inj) {X} {Y} j ji f = f' , f'-extends-f
     where
