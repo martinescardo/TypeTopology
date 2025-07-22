@@ -43,9 +43,9 @@ complemented. On the other hand, It was shown by Pradic and Brown (2022) that
 the Cantor–Schröder–Bernstein theorem in its most naïve form implies the law of
 excluded middle:
 
-If it is true that for every pair of sets X and Y, if X injects into Y and Y
-injects into X then X and Y are in bijection, then the law of excluded middle
-holds.
+ If it is true that for every pair of sets X and Y, if X injects into Y and Y
+ injects into X then X and Y are in bijection, then the law of excluded middle
+ holds.
 
 Hence we also know that in the absence of the law of excluded middle, the
 hypotheses of the theorem must be strengthened.
