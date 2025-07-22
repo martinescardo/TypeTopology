@@ -196,7 +196,7 @@ import gist.index
 
 \end{code}
 
-TODO. Explain what each of the above does here.
+TODO. Explain what each of the above does here. This is long overdue.
 
 The above includes only the --safe modules. A list of all modules is here:
 
