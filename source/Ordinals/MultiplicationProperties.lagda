@@ -1,7 +1,7 @@
 Fredrik Nordvall Forsberg, 13 November 2023.
 In collaboration with Tom de Jong, Nicolai Kraus and Chuangjie Xu.
 
-Minor updates 9 and 11 September, and 1 November 2024.
+Minor updates 9 and 11 September, 1 November 2024 and 15 July 2025.
 
 We prove several properties of ordinal multiplication, including that it
 preserves suprema of ordinals and that it enjoys a left-cancellation property.
@@ -34,13 +34,14 @@ private
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
 
+open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import Ordinals.AdditionProperties ua
 
 ×ₒ-𝟘ₒ-right : (α : Ordinal 𝓤) → α ×ₒ 𝟘ₒ {𝓥} ＝ 𝟘ₒ
 ×ₒ-𝟘ₒ-right α = ⊴-antisym _ _
@@ -307,9 +308,9 @@ module _ (pt : propositional-truncations-exist)
  open suprema pt sr
  open PropositionalTruncation pt
 
- ×ₒ-preserves-suprema : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
+ ×ₒ-preserves-suprema : (α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
                       → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i)
- ×ₒ-preserves-suprema {𝓤} α {I} β = ⊴-antisym (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆ ⦅2⦆
+ ×ₒ-preserves-suprema {𝓤} α I β = ⊴-antisym (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆ ⦅2⦆
   where
    ⦅2⦆ : sup (λ i → α ×ₒ β i) ⊴ (α ×ₒ sup β)
    ⦅2⦆ = sup-is-lower-bound-of-upper-bounds (λ i → α ×ₒ β i) (α ×ₒ sup β)
@@ -348,7 +349,7 @@ module _ (pt : propositional-truncations-exist)
 11 September 2024, added by Tom de Jong following a question by Martin Escardo.
 
 The equations for successor and suprema uniquely specify the multiplication
-operation even though they are not constructively sufficient to define it.
+operation and lead to a definition by transfinite recursion.
 
 \begin{code}
 
@@ -384,7 +385,7 @@ operation even though they are not constructively sufficient to define it.
  ×ₒ-recursive-equation : recursive-equation {𝓤} _×ₒ_
  ×ₒ-recursive-equation =
   successor-and-suprema-equations-give-recursive-equation
-    _×ₒ_ ×ₒ-successor (λ α _ β → ×ₒ-preserves-suprema α β)
+    _×ₒ_ ×ₒ-successor ×ₒ-preserves-suprema
 
  ×ₒ-is-uniquely-specified'
   : (_⊗_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
@@ -409,7 +410,7 @@ operation even though they are not constructively sufficient to define it.
   : ∃! _⊗_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
      (successor-equation _⊗_) × (suprema-equation _⊗_)
  ×ₒ-is-uniquely-specified {𝓤} =
-  (_×ₒ_ , (×ₒ-successor , (λ α _ β → ×ₒ-preserves-suprema α β))) ,
+  (_×ₒ_ , (×ₒ-successor , ×ₒ-preserves-suprema)) ,
   (λ (_⊗_ , ⊗-succ , ⊗-sup) →
    to-subtype-＝
     (λ F → ×-is-prop (Π₂-is-prop fe'
@@ -425,14 +426,6 @@ operation even though they are not constructively sufficient to define it.
         α β) ⁻¹))))
 
 \end{code}
-
-The above should be contrasted to the situation for addition where we do not
-know how to prove such a result since only *inhabited* suprema are preserved by
-addition.
-However, a classically equivalent, but constructively stronger, reformulation of
-the equations for addition does uniquely specify, and lead to a definition of
-ordinal addition, cf. the comment in Ordinals.AdditionProperties.
-
 
 Added 17 September 2024 by Fredrik Nordvall Forsberg:
 
@@ -1007,5 +1000,73 @@ simulation-product-decomposition-leftover-empty α β γ (a₀ , p) a e = II
 
   III : β ＝ γ ↓ c
   III = ×ₒ-left-cancellable α β (γ ↓ c) α-positive II
+
+\end{code}
+
+Added 15 July 2025 by Tom de Jong.
+
+\begin{code}
+
+×ₒ-as-large-as-right-factor-implies-EM
+ : ((α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β) → EM 𝓤
+×ₒ-as-large-as-right-factor-implies-EM  hyp P P-is-prop = IV (f (inr ⋆)) refl
+ where
+  Pₒ = prop-ordinal P P-is-prop
+  α = 𝟙ₒ +ₒ Pₒ
+  β = 𝟚ₒ
+  𝕗 : β ⊴ α ×ₒ β
+  𝕗 = hyp α β (inl ⋆ , (𝟙ₒ-↓ ⁻¹ ∙ +ₒ-↓-left ⋆))
+  f = [ β , α ×ₒ β ]⟨ 𝕗 ⟩
+  f-is-sim : is-simulation β (α ×ₒ β) f
+  f-is-sim = [ β , α ×ₒ β ]⟨ 𝕗 ⟩-is-simulation
+
+  I : (p : P) → f (inr ⋆) ＝ (inr p , inl ⋆)
+  I p = ↓-lc (α ×ₒ β) (f (inr ⋆)) (inr p , inl ⋆) e
+   where
+    e = (α ×ₒ β) ↓ f (inr ⋆)            ＝⟨ e₁ ⟩
+        β ↓ inr ⋆                       ＝⟨ e₂ ⟩
+        𝟙ₒ                              ＝⟨ e₃ ⟩
+        α ↓ inr p                       ＝⟨ e₄ ⟩
+        α ×ₒ 𝟘ₒ +ₒ (α ↓ inr p)          ＝⟨ e₅ ⟩
+        α ×ₒ (β ↓ inl ⋆) +ₒ (α ↓ inr p) ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
+        (α ×ₒ β) ↓ (inr p , inl ⋆)      ∎
+     where
+      e₁ = (simulations-preserve-↓ β (α ×ₒ β) 𝕗 (inr ⋆)) ⁻¹
+      e₂ = +ₒ-↓-right ⋆ ⁻¹ ∙ ap (𝟙ₒ +ₒ_) 𝟙ₒ-↓ ∙ 𝟘ₒ-right-neutral 𝟙ₒ
+      e₃ = (𝟘ₒ-right-neutral 𝟙ₒ) ⁻¹
+           ∙ ap (𝟙ₒ +ₒ_) ((prop-ordinal-↓ P-is-prop p) ⁻¹) ∙ +ₒ-↓-right p
+      e₄ = (ap (_+ₒ (α ↓ inr p)) (×ₒ-𝟘ₒ-right α)
+           ∙ 𝟘ₒ-left-neutral (α ↓ inr p)) ⁻¹
+      e₅ = ap (λ - → α ×ₒ - +ₒ (α ↓ inr p)) (𝟙ₒ-↓ ⁻¹ ∙ +ₒ-↓-left ⋆)
+  II : (x : ⟨ α ⟩) → f (inr ⋆) ＝ (x , inr ⋆) → ¬ P
+  II x e p = +disjoint (ap pr₂ ((I p) ⁻¹ ∙ e))
+  III : f (inr ⋆) ≠ (inl ⋆ , inl ⋆)
+  III h = +disjoint (simulations-are-lc β (α ×ₒ β) f f-is-sim (e ∙ h ⁻¹))
+   where
+    e : f (inl ⋆) ＝ (inl ⋆ , inl ⋆)
+    e = simulations-preserve-least
+         β (α ×ₒ β) (inl ⋆) (inl ⋆ , inl ⋆) f f-is-sim
+         β-least
+         (×ₒ-least α β (inl ⋆) (inl ⋆) (+ₒ-least 𝟙ₒ Pₒ ⋆ 𝟙ₒ-least) β-least)
+     where
+      β-least : is-least β (inl ⋆)
+      β-least = +ₒ-least 𝟙ₒ 𝟙ₒ ⋆ 𝟙ₒ-least
+  IV : (x : ⟨ α ×ₒ β ⟩) → f (inr ⋆) ＝ x → P + ¬ P
+  IV (inl ⋆ , inl ⋆) e = 𝟘-elim (III e)
+  IV (inr p , inl ⋆) e = inl p
+  IV (inl ⋆ , inr ⋆) e = inr (II (inl ⋆) e)
+  IV (inr p , inr ⋆) e = inl p
+
+EM-implies-×ₒ-as-large-as-right-factor
+ : EM 𝓤
+ → (α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β
+EM-implies-×ₒ-as-large-as-right-factor em α β (a₀ , _) =
+ ≼-gives-⊴ β (α ×ₒ β)
+             (EM-implies-order-preserving-gives-≼ em β (α ×ₒ β) (f , I))
+  where
+   f : ⟨ β ⟩ → ⟨ α ×ₒ β ⟩
+   f b = (a₀ , b)
+   I : is-order-preserving β (α ×ₒ β) f
+   I b b' l = inl l
 
 \end{code}

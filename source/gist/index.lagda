@@ -10,6 +10,7 @@ are eventually moved to the main (old or new) folders.
 
 module gist.index where
 
+import gist.2-injective-types
 import gist.DependentlyTypedTensors
 import gist.InjectivesVersusAlgebras
 import gist.IntervalObject

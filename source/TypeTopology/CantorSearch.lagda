@@ -19,6 +19,7 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import TypeTopology.Cantor
 open import UF.Base
+open import UF.DiscreteAndSeparated hiding (_♯_)
 
 module TypeTopology.CantorSearch where
 
@@ -100,15 +101,17 @@ then it has modulus of continuity k for any k > n.
 
 \begin{code}
 
+open notions-of-continuity 𝟚 𝟚-is-discrete
+
 modulus-zero-iff-constant  : (p : 𝟚ᴺ → 𝟚)
-                           → 0 is-a-modulus-of-uniform-continuity-of p
+                           → 0 is-a-modulus-of-uc-of p
                            ↔ ((α β : 𝟚ᴺ) → p α ＝ p β)
 modulus-zero-iff-constant p = I , II
  where
-  I :  0 is-a-modulus-of-uniform-continuity-of p → ((α β : 𝟚ᴺ) → p α ＝ p β)
+  I :  0 is-a-modulus-of-uc-of p → ((α β : 𝟚ᴺ) → p α ＝ p β)
   I u α β = u α β ⋆
 
-  II :  ((α β : 𝟚ᴺ) → p α ＝ p β) → 0 is-a-modulus-of-uniform-continuity-of p
+  II :  ((α β : 𝟚ᴺ) → p α ＝ p β) → 0 is-a-modulus-of-uc-of p
   II κ α β ⋆ = κ α β
 
 \end{code}
@@ -120,8 +123,8 @@ The crucial lemma for Cantor search is this:
 cons-decreases-modulus : (p : 𝟚ᴺ → 𝟚)
                          (n : ℕ)
                          (b : 𝟚)
-                       → (succ n) is-a-modulus-of-uniform-continuity-of p
-                       → n is-a-modulus-of-uniform-continuity-of (p ∘ cons b)
+                       → (succ n) is-a-modulus-of-uc-of p
+                       → n is-a-modulus-of-uc-of (p ∘ cons b)
 cons-decreases-modulus p n b u α β = III
  where
   I : α ＝⟦ n ⟧ β → cons b α ＝⟦ succ n ⟧ cons b β
@@ -207,7 +210,7 @@ The other direction is proved by induction on ℕ.
 
 A-property→ : (p : 𝟚ᴺ → 𝟚)
               (n : ℕ)
-            → n is-a-modulus-of-uniform-continuity-of p
+            → n is-a-modulus-of-uc-of p
             → A n p ＝ ₁
             → (α : 𝟚ᴺ) → p α ＝ ₁
 A-property→ p 0        u r α = p α  ＝⟨ u α c₀ ⋆ ⟩
@@ -296,7 +299,7 @@ module examples where
  prc : ℕ → 𝟚ᴺ → 𝟚
  prc n α = α n
 
- sprc-lemma : (n : ℕ) → (succ n) is-a-modulus-of-uniform-continuity-of (prc n)
+ sprc-lemma : (n : ℕ) → (succ n) is-a-modulus-of-uc-of (prc n)
  sprc-lemma 0        α β (r , _) = r
  sprc-lemma (succ n) α β (_ , s) = sprc-lemma n (tail α) (tail β) s
 
@@ -319,7 +322,7 @@ In the worst case, however, A n p runs in time 2ⁿ.
  xor 0        α = ₀
  xor (succ n) α = head α ⊕ xor n (tail α)
 
- xor-uc : (n : ℕ) → n is-a-modulus-of-uniform-continuity-of (xor n)
+ xor-uc : (n : ℕ) → n is-a-modulus-of-uc-of (xor n)
  xor-uc 0        α β ⋆       = refl
  xor-uc (succ n) α β (p , q) = γ
   where
@@ -359,7 +362,7 @@ Another fast example (linear):
  κ₁ : ℕ → 𝟚ᴺ → 𝟚
  κ₁ n α = complement (α n ⊕ α n)
 
- sκ₁-lemma : (n : ℕ) → (succ n) is-a-modulus-of-uniform-continuity-of (κ₁ n)
+ sκ₁-lemma : (n : ℕ) → (succ n) is-a-modulus-of-uc-of (κ₁ n)
  sκ₁-lemma 0        α β (r , _) = ap (λ - → complement (- ⊕ -)) r
  sκ₁-lemma (succ n) α β (_ , s) = sκ₁-lemma n (tail α) (tail β) s
 
