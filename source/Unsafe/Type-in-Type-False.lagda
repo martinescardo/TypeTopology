@@ -70,7 +70,7 @@ s is a definitional section of the function r):
 \end{code}
 
 Part 2. As mentioned above, this is an application of work of Ingo
-Blechschmidt (see the module LavwereFPT) to show that type-in-type,
+Blechschmidt (see the module LawvereFPT) to show that type-in-type,
 Streicher's K-axiom, functional and propositional extensionality are
 together impossible.
 

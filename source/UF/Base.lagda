@@ -573,7 +573,7 @@ ap-left-inverse' l {p} {q} α =
  p            ＝⟨ refl-left-neutral ⁻¹ ⟩
  refl ∙ p     ＝⟨ ap (_∙ p) (sym-is-inverse' l) ⟩
  l ∙ l ⁻¹ ∙ p ＝⟨ ap-on-left-is-assoc'' l (l ⁻¹) q p α ⟩
- l ∙ q        ∎ 
+ l ∙ q        ∎
 
 ap-right-inverse : {X : 𝓤 ̇ } {x y z : X} (r : y ＝ z)
                    {p : x ＝ z} {q : x ＝ y}
@@ -608,7 +608,7 @@ transport-after-ap refl s s' q =
  ap s refl ∙ q  ＝⟨ ap (_∙ q) (ap-refl s) ⟩
  refl ∙ q       ＝⟨ refl-left-neutral ⟩
  q ∙ refl       ＝⟨ ap (q ∙_) (ap-refl s') ⟩
- q ∙ ap s' refl ∎ 
+ q ∙ ap s' refl ∎
 
 transport-after-ap'
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X}
@@ -619,6 +619,6 @@ transport-after-ap'
 transport-after-ap' refl s s' q =
  q                             ＝⟨ refl-left-neutral ⁻¹ ⟩
  refl ∙ q                      ＝⟨ refl ⟩
- ap s refl ⁻¹ ∙ q ∙ ap s' refl ∎ 
+ ap s refl ⁻¹ ∙ q ∙ ap s' refl ∎
 
 \end{code}
