@@ -41,7 +41,7 @@ type-sequence 𝓤 = Σ A ꞉ (ℕ → 𝓤 ̇) , ((n : ℕ) → A n → A (succ
 \end{code}
 
 A sequential cocone over a type sequence consists of a sequence of maps to a specified
-vertex
+type
 
           a₀      a₁      a₂
      A₀ ----> A₁ ----> A₂ ----> ...
@@ -324,8 +324,8 @@ cocones over the above type sequence.
 
 \end{code}
 
-Additionally, we show that canonical maps to sequential cocones and pushout cocones
-commute with the above map that translates between them.
+Additionally, we show that the canonical map to sequential cocones factors through the
+canonical map to pushout cocones and the above map that translates between them.
 
 \begin{code}
 
