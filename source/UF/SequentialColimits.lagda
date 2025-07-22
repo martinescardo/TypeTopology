@@ -1,6 +1,6 @@
 Ian Ray, 21st Jun 2025.
 
-We develop sequential colimits in HoTT/UF. This formalization will follow Section 26 of
+We develop sequential colimits in HoTT/UF. This formalization follows Section 26 of
 Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest summer school version:
 https://github.com/martinescardo/HoTTEST-Summer-School/blob/main/HoTT/hott-intro.pdf).
 
@@ -31,7 +31,7 @@ A diagram of the following form
           a₀      a₁      a₂
      A₀ ----> A₁ ----> A₂ ----> ...
 
-is a (directed?) type sequence. We can give a formal specification as follows.
+is a type sequence. We can give a formal specification as follows.
 
 \begin{code}
 
@@ -47,13 +47,13 @@ vertex
      A₀ ----> A₁ ----> A₂ ----> ...
       \       |        /
        \      |       /
-    b₀  \     | b₁   / b₂
+    b₀  \     | b₁   / b₂ ...
          \    |     /
           \   |    /
            v  v   v
               B
 
-such that every composable triangle commuts. Formally we can define this as follows.
+such that every composable triangle commutes. Formally we can define this as follows.
 
 \begin{code}
 
@@ -72,7 +72,7 @@ We now characterize the identity type of sequential cocones.
 
 module _ (𝓐@(A , a) : type-sequence 𝓤)
          (B : 𝓥 ̇)
-          where
+       where
 
  sequential-cocone-family : sequential-cocone 𝓐 B
                           → sequential-cocone 𝓐 B
@@ -194,7 +194,7 @@ a sequential cocone over Y.
 
 module _ (𝓐 : type-sequence 𝓤)
          (X : 𝓥 ̇) (Y : 𝓣 ̇)
-          where
+       where
 
  canonical-map-to-sequential-cocone : sequential-cocone 𝓐 X
                                     → (X → Y)
@@ -209,9 +209,9 @@ Such a sequential cocone is said to be the sequential colimit of a type sequence
 
 \begin{code}
 
- Seqential-Colimit-Universal-Property : (𝓧 : sequential-cocone 𝓐 X)
-                                      → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
- Seqential-Colimit-Universal-Property 𝓧 =
+ Sequential-Colimit-Universal-Property : (𝓧 : sequential-cocone 𝓐 X)
+                                       → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
+ Sequential-Colimit-Universal-Property 𝓧 =
   is-equiv (canonical-map-to-sequential-cocone 𝓧)
 
 \end{code}
@@ -235,7 +235,7 @@ where σ (n , x) = (n + 1 , a n x).
 
 module _ (𝓐@(A , a) : type-sequence 𝓤)
          (X : 𝓣 ̇)
-          where
+       where
 
  σ : Σ A → Σ A
  σ (n , x) = (succ n , a n x)
@@ -258,7 +258,7 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
 
 \end{code}
 
-We give the sequential cocone structure for the sequential colimt.
+We give the sequential cocone structure for the sequential colimit.
 
 \begin{code}
 
@@ -358,7 +358,7 @@ Using the above results we prove the universal property for the sequential colim
 \begin{code}
 
   sequential-colimit-universal-property
-   : Seqential-Colimit-Universal-Property 𝓐 sequential-colimit X
+   : Sequential-Colimit-Universal-Property 𝓐 sequential-colimit X
       sequential-colimit-is-cocone  
   sequential-colimit-universal-property
    = transport is-equiv (dfunext fe (∼-sym canonical-maps-commute))
@@ -366,12 +366,12 @@ Using the above results we prove the universal property for the sequential colim
 
 \end{code}
 
-We unpack the equivalence obtained from the universal property.
+We unpack useful results from the equivalence obtained from the universal property.
 
 \begin{code}
 
   module _ (𝓧@(h , H) : sequential-cocone 𝓐 X)
-            where
+         where
 
    canonical-map-seq-cocone-fiber-contr
     : is-contr (fiber (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
@@ -422,8 +422,8 @@ We unpack the equivalence obtained from the universal property.
 
 \end{code}
 
-From the universal property we will derived the recursion principle and computation rules
-for sequential colimits.
+From the universal property we derive the recursion principle and computation rules for
+sequential colimits.
 
 \begin{code}
 
@@ -452,7 +452,7 @@ for sequential colimits.
 
 \end{code}
 
-Finally we prove the uniqueness principle for sequential colimits.
+Finally, we prove the uniqueness principle for sequential colimits.
 
 \begin{code}
 
