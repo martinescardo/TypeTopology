@@ -566,7 +566,7 @@ open import MLTT.Two-Properties
   III n k is-mod = not-less-bigger-or-equal (succ n) k (II n k is-mod)
 
   UC : 𝓤₀ ̇
-  UC = Σ ϕ ꞉ (𝟚ᴺ → 𝟚) , is-uniformly-continuous ϕ
+  UC = Σ f ꞉ (𝟚ᴺ → 𝟚) , is-uniformly-continuous f
 
   s : ℕ → UC
   s n = ηᴷ n , succ n , I n , III n
