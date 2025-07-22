@@ -40,6 +40,7 @@ jobs:
         main-file: AllModulesIndex.lagda
         source-dir: source
         unsafe: true
+        generate_html: false
 
     - name: "Save .agdai files"
       id: cache-agdai-save
