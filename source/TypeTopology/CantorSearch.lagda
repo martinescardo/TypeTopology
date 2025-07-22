@@ -19,6 +19,7 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import TypeTopology.Cantor
 open import UF.Base
+open import UF.DiscreteAndSeparated hiding (_♯_)
 
 module TypeTopology.CantorSearch where
 
@@ -99,6 +100,8 @@ it is constant, and that if a function has modulus of continuity n
 then it has modulus of continuity k for any k > n.
 
 \begin{code}
+
+open notions-of-continuity 𝟚 𝟚-is-discrete
 
 modulus-zero-iff-constant  : (p : 𝟚ᴺ → 𝟚)
                            → 0 is-a-modulus-of-uc-of p

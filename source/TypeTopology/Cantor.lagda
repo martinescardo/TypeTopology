@@ -9,8 +9,8 @@ The Cantor type of infinite binary sequences.
 open import Apartness.Definition
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import Naturals.Order
 open import Naturals.ExitTruncation
+open import Naturals.Order
 open import Notation.Order
 open import NotionsOfDecidability.Decidable
 open import UF.DiscreteAndSeparated hiding (_♯_)
@@ -131,46 +131,51 @@ We have that (α ＝⟦ n ⟧ β) iff α k ＝ β k for all k < n:
 
 \begin{code}
 
-agreement→ : (α β : 𝟚ᴺ)
-             (n : ℕ)
-           → (α ＝⟦ n ⟧ β)
-           → ((k : ℕ) → k < n → α k ＝ β k)
-agreement→ α β 0        *       k        l = 𝟘-elim l
-agreement→ α β (succ n) (p , e) 0        l = p
-agreement→ α β (succ n) (p , e) (succ k) l = IH k l
+⟦⟧-agreement→ : (α β : 𝟚ᴺ)
+                (n : ℕ)
+                → (α ＝⟦ n ⟧ β)
+                → ((k : ℕ) → k < n → α k ＝ β k)
+⟦⟧-agreement→ α β 0        *       k        l = 𝟘-elim l
+⟦⟧-agreement→ α β (succ n) (p , e) 0        l = p
+⟦⟧-agreement→ α β (succ n) (p , e) (succ k) l = IH k l
  where
   IH : (k : ℕ) → k < n → α (succ k) ＝ β (succ k)
-  IH = agreement→ (tail α) (tail β) n e
+  IH = ⟦⟧-agreement→ (tail α) (tail β) n e
 
-agreement← : (α β : 𝟚ᴺ)
-             (n : ℕ)
-           → ((k : ℕ) → k < n → α k ＝ β k)
-           → (α ＝⟦ n ⟧ β)
-agreement← α β 0        ϕ = ⋆
-agreement← α β (succ n) ϕ = ϕ 0 ⋆ , agreement← (tail α) (tail β) n (ϕ ∘ succ)
+⟦⟧-agreement← : (α β : 𝟚ᴺ)
+                (n : ℕ)
+              → ((k : ℕ) → k < n → α k ＝ β k)
+              → (α ＝⟦ n ⟧ β)
+⟦⟧-agreement← α β 0        ϕ = ⋆
+⟦⟧-agreement← α β (succ n) ϕ = ϕ 0 ⋆ , ⟦⟧-agreement← (tail α) (tail β) n (ϕ ∘ succ)
 
 \end{code}
 
-A function 𝟚ᴺ → 𝟚 is uniformly continuous if it has a modulus
-of uniform continuity (uc):
+A function 𝟚ᴺ → N, with N a discrete type, is uniformly continuous if
+it has a modulus of uniform continuity (uc):
 
 \begin{code}
 
-_is-a-modulus-of-uc-of_ : ℕ → (𝟚ᴺ → 𝟚) → 𝓤₀ ̇
-m is-a-modulus-of-uc-of p = ∀ α β → α ＝⟦ m ⟧ β → p α ＝ p β
+module notions-of-continuity
+         (N : 𝓤 ̇ )
+         (N-is-discrete : is-discrete N)
+        where
 
-being-a-modulus-of-uc-is-prop
- : Fun-Ext
- → (m : ℕ)
-   (p : 𝟚ᴺ → 𝟚)
- → is-prop (m is-a-modulus-of-uc-of p)
-being-a-modulus-of-uc-is-prop fe m p
- = Π₃-is-prop fe (λ α β e → 𝟚-is-set)
+ _is-a-modulus-of-uc-of_ : ℕ → (𝟚ᴺ → N) → 𝓤 ̇
+ m is-a-modulus-of-uc-of p = ∀ α β → α ＝⟦ m ⟧ β → p α ＝ p β
 
-uniformly-continuous : (𝟚ᴺ → 𝟚) → 𝓤₀ ̇
-uniformly-continuous p = Σ m ꞉ ℕ , m is-a-modulus-of-uc-of p
+ being-a-modulus-of-uc-is-prop
+  : Fun-Ext
+  → (m : ℕ)
+    (p : 𝟚ᴺ → N)
+  → is-prop (m is-a-modulus-of-uc-of p)
+ being-a-modulus-of-uc-is-prop fe m p
+  = Π₃-is-prop fe (λ α β e → discrete-types-are-sets N-is-discrete)
 
-uniform-continuity-data = uniformly-continuous
+ uniformly-continuous : (𝟚ᴺ → N) → 𝓤 ̇
+ uniformly-continuous p = Σ m ꞉ ℕ , m is-a-modulus-of-uc-of p
+
+ uniform-continuity-data = uniformly-continuous
 
 \end{code}
 
@@ -180,17 +185,17 @@ also a modulus.
 
 Exercise. Show that
 
- (Σ p ꞉ (𝟚ᴺ  → 𝟚) , uniformly-continuous p) ≃ (Σ n ꞉ ℕ , Fin (2 ^ n) → 𝟚)
+ (Σ p ꞉ (𝟚ᴺ  → N) , uniformly-continuous p) ≃ (Σ n ꞉ ℕ , Fin (2 ^ n) → N)
 
 If we define uniform continuity with ∃ rather than Σ, this is no
 longer the case.
 
 \begin{code}
 
-continuous : (𝟚ᴺ → 𝟚) → 𝓤₀ ̇
-continuous p = ∀ α → Σ m ꞉ ℕ , (∀ β → α ＝⟦ m ⟧ β → p α ＝ p β)
+ continuous : (𝟚ᴺ → N) → 𝓤 ̇
+ continuous p = ∀ α → Σ m ꞉ ℕ , (∀ β → α ＝⟦ m ⟧ β → p α ＝ p β)
 
-continuity-data = continuous
+ continuity-data = continuous
 
 \end{code}
 
@@ -198,21 +203,21 @@ Any number bigger than a modulus of uniform continuity is also a modulus.
 
 \begin{code}
 
-increase-modulus-of-uc : (p : 𝟚ᴺ → 𝟚)
-                       → (m : ℕ)
-                       → m is-a-modulus-of-uc-of p
-                       → (succ m) is-a-modulus-of-uc-of p
-increase-modulus-of-uc p 0        0-is-mod      α β _       = 0-is-mod α β ⋆
-increase-modulus-of-uc p (succ m) succ-m-is-mod α β (h , t) = II
- where
-  I : ∀ α β m
-    → (head (tail α) ＝ head (tail β)) × (tail (tail α) ＝⟦ m ⟧ tail (tail β))
-    → tail α ＝⟦ m ⟧ tail β
-  I α β 0        (h , t) = ⋆
-  I α β (succ m) (h , t) = h , I (tail α) (tail β) m t
+ increase-modulus-of-uc : (p : 𝟚ᴺ → N)
+                        → (m : ℕ)
+                        → m is-a-modulus-of-uc-of p
+                        → (succ m) is-a-modulus-of-uc-of p
+ increase-modulus-of-uc p 0        0-is-mod      α β _       = 0-is-mod α β ⋆
+ increase-modulus-of-uc p (succ m) succ-m-is-mod α β (h , t) = II
+  where
+   I : ∀ α β m
+     → (head (tail α) ＝ head (tail β)) × (tail (tail α) ＝⟦ m ⟧ tail (tail β))
+     → tail α ＝⟦ m ⟧ tail β
+   I α β 0        (h , t) = ⋆
+   I α β (succ m) (h , t) = h , I (tail α) (tail β) m t
 
-  II : p α ＝ p β
-  II = succ-m-is-mod α β (h , I α β m t)
+   II : p α ＝ p β
+   II = succ-m-is-mod α β (h , I α β m t)
 
 \end{code}
 
@@ -221,34 +226,34 @@ smallest modulus of continuity.
 
 \begin{code}
 
-_is-a-smallest-modulus-of-uc-of_ : ℕ → (𝟚ᴺ → 𝟚) → 𝓤₀ ̇
-m is-a-smallest-modulus-of-uc-of p =
-   (m is-a-modulus-of-uc-of p)
- × ((n : ℕ) → n is-a-modulus-of-uc-of p → m ≤ n)
+ _is-a-smallest-modulus-of-uc-of_ : ℕ → (𝟚ᴺ → N) → 𝓤 ̇
+ m is-a-smallest-modulus-of-uc-of p =
+    (m is-a-modulus-of-uc-of p)
+  × ((n : ℕ) → n is-a-modulus-of-uc-of p → m ≤ n)
 
-being-a-smallest-modulus-of-uc-is-prop
- : Fun-Ext
- → (m : ℕ)
-   (p : 𝟚ᴺ → 𝟚)
- → is-prop (m is-a-smallest-modulus-of-uc-of p)
-being-a-smallest-modulus-of-uc-is-prop fe m p
- = ×-is-prop
-    (being-a-modulus-of-uc-is-prop fe m p)
-    (Π₂-is-prop fe (λ n _ → ≤-is-prop-valued m n))
+ being-a-smallest-modulus-of-uc-is-prop
+  : Fun-Ext
+  → (m : ℕ)
+    (p : 𝟚ᴺ → N)
+  → is-prop (m is-a-smallest-modulus-of-uc-of p)
+ being-a-smallest-modulus-of-uc-is-prop fe m p
+  = ×-is-prop
+     (being-a-modulus-of-uc-is-prop fe m p)
+     (Π₂-is-prop fe (λ n _ → ≤-is-prop-valued m n))
 
-is-uniformly-continuous : (𝟚ᴺ → 𝟚) → 𝓤₀ ̇
-is-uniformly-continuous p =
- Σ m ꞉ ℕ , m is-a-smallest-modulus-of-uc-of p
+ is-uniformly-continuous : (𝟚ᴺ → N) → 𝓤 ̇
+ is-uniformly-continuous p =
+  Σ m ꞉ ℕ , m is-a-smallest-modulus-of-uc-of p
 
-being-uniformly-continuous-is-prop
- : Fun-Ext
- → (p : 𝟚ᴺ → 𝟚) → is-prop (is-uniformly-continuous p)
-being-uniformly-continuous-is-prop
- fe p (m , m-is-mod , m-μ) (m' , m'-is-mod , m'-μ)
- = to-subtype-＝
-    (λ n → being-a-smallest-modulus-of-uc-is-prop fe n p)
-    (m ＝⟨ ≤-anti m m' (m-μ m' m'-is-mod) (m'-μ m m-is-mod) ⟩
-     m' ∎)
+ being-uniformly-continuous-is-prop
+  : Fun-Ext
+  → (p : 𝟚ᴺ → N) → is-prop (is-uniformly-continuous p)
+ being-uniformly-continuous-is-prop
+  fe p (m , m-is-mod , m-μ) (m' , m'-is-mod , m'-μ)
+  = to-subtype-＝
+     (λ n → being-a-smallest-modulus-of-uc-is-prop fe n p)
+     (m ＝⟨ ≤-anti m m' (m-μ m' m'-is-mod) (m'-μ m m-is-mod) ⟩
+      m' ∎)
 
 \end{code}
 
@@ -256,13 +261,13 @@ The following easy lemma is often useful.
 
 \begin{code}
 
-cons-decrease-uc-modulus
- : (p : 𝟚ᴺ → 𝟚)
- → (m : ℕ)
- → (succ m) is-a-modulus-of-uc-of p
- → (b : 𝟚) → m is-a-modulus-of-uc-of (p ∘ cons b)
-cons-decrease-uc-modulus p m succ-m-is-mod b α β e
- = succ-m-is-mod (cons b α) (cons b β) (refl , e)
+ cons-decrease-uc-modulus
+  : (p : 𝟚ᴺ → N)
+  → (m : ℕ)
+  → (succ m) is-a-modulus-of-uc-of p
+  → (b : 𝟚) → m is-a-modulus-of-uc-of (p ∘ cons b)
+ cons-decrease-uc-modulus p m succ-m-is-mod b α β e
+  = succ-m-is-mod (cons b α) (cons b β) (refl , e)
 
 \end{code}
 
@@ -273,96 +278,96 @@ modulus we can find the smallest one by bounded search.
 
 \begin{code}
 
-decidable-smaller-modulus-of-uc
- : (p : 𝟚ᴺ → 𝟚)
- → (m : ℕ)
- → (succ m) is-a-modulus-of-uc-of p
- → is-decidable (m is-a-modulus-of-uc-of p)
-decidable-smaller-modulus-of-uc p 0 1-is-mod = γ
- where
-  have : (α β : ℕ → 𝟚) → (α 0 ＝ β 0) × 𝟙 → p α ＝ p β
-  have = 1-is-mod
+ decidable-smaller-modulus-of-uc
+  : (p : 𝟚ᴺ → N)
+  → (m : ℕ)
+  → (succ m) is-a-modulus-of-uc-of p
+  → is-decidable (m is-a-modulus-of-uc-of p)
+ decidable-smaller-modulus-of-uc p 0 1-is-mod = γ
+  where
+   have : (α β : 𝟚ᴺ) → (α 0 ＝ β 0) × 𝟙 → p α ＝ p β
+   have = 1-is-mod
 
-  γ : is-decidable ((α β : ℕ → 𝟚) → 𝟙 → p α ＝ p β)
-  γ = dep-Cases
-       (λ _ → is-decidable ((α β : ℕ → 𝟚) → 𝟙 → p α ＝ p β))
-       (𝟚-is-discrete (p 𝟎) (p 𝟏))
-       (λ (e : p 𝟎 ＝ p 𝟏) → inl (λ α β ⋆
-             → 𝟚-equality-cases
-                (λ (a₀ : α 0 ＝ ₀)
-                       → 𝟚-equality-cases
-                          (λ (b₀ : β 0 ＝ ₀)
-                                 → p α ＝⟨ 1-is-mod α 𝟎 (a₀ , ⋆) ⟩
-                                   p 𝟎 ＝⟨ 1-is-mod 𝟎 β ((b₀ ⁻¹) , ⋆) ⟩
-                                   p β ∎)
-                          (λ (b₁ : β 0 ＝ ₁)
-                                 → p α ＝⟨ 1-is-mod α 𝟎 (a₀ , ⋆) ⟩
-                                   p 𝟎 ＝⟨ e ⟩
-                                   p 𝟏 ＝⟨ 1-is-mod 𝟏 β ((b₁ ⁻¹) , ⋆) ⟩
-                                   p β ∎))
-                (λ (a₁ : α 0 ＝ ₁)
-                       → 𝟚-equality-cases
-                          (λ (b₀ : β 0 ＝ ₀)
-                                 → p α ＝⟨ 1-is-mod α 𝟏 (a₁ , ⋆) ⟩
-                                   p 𝟏 ＝⟨ e ⁻¹ ⟩
-                                   p 𝟎 ＝⟨ 1-is-mod 𝟎 β ((b₀ ⁻¹) , ⋆) ⟩
-                                   p β ∎)
-                          (λ (b₁ : β 0 ＝ ₁)
-                                 → p α ＝⟨ 1-is-mod α 𝟏 (a₁ , ⋆) ⟩
-                                   p 𝟏 ＝⟨ 1-is-mod 𝟏 β ((b₁ ⁻¹) , ⋆) ⟩
-                                   p β ∎))))
-       (λ (ν : p 𝟎 ≠ p 𝟏) → inr (λ 0-is-mod → ν (0-is-mod 𝟎 𝟏 ⋆)))
+   γ : is-decidable ((α β : 𝟚ᴺ) → 𝟙 → p α ＝ p β)
+   γ = dep-Cases
+        (λ _ → is-decidable ((α β : 𝟚ᴺ) → 𝟙 → p α ＝ p β))
+        (N-is-discrete (p 𝟎) (p 𝟏))
+        (λ (e : p 𝟎 ＝ p 𝟏) → inl (λ α β ⋆
+              → 𝟚-equality-cases
+                 (λ (a₀ : α 0 ＝ ₀)
+                        → 𝟚-equality-cases
+                           (λ (b₀ : β 0 ＝ ₀)
+                                  → p α ＝⟨ 1-is-mod α 𝟎 (a₀ , ⋆) ⟩
+                                    p 𝟎 ＝⟨ 1-is-mod 𝟎 β ((b₀ ⁻¹) , ⋆) ⟩
+                                    p β ∎)
+                           (λ (b₁ : β 0 ＝ ₁)
+                                  → p α ＝⟨ 1-is-mod α 𝟎 (a₀ , ⋆) ⟩
+                                    p 𝟎 ＝⟨ e ⟩
+                                    p 𝟏 ＝⟨ 1-is-mod 𝟏 β ((b₁ ⁻¹) , ⋆) ⟩
+                                    p β ∎))
+                 (λ (a₁ : α 0 ＝ ₁)
+                        → 𝟚-equality-cases
+                           (λ (b₀ : β 0 ＝ ₀)
+                                  → p α ＝⟨ 1-is-mod α 𝟏 (a₁ , ⋆) ⟩
+                                    p 𝟏 ＝⟨ e ⁻¹ ⟩
+                                    p 𝟎 ＝⟨ 1-is-mod 𝟎 β ((b₀ ⁻¹) , ⋆) ⟩
+                                    p β ∎)
+                           (λ (b₁ : β 0 ＝ ₁)
+                                  → p α ＝⟨ 1-is-mod α 𝟏 (a₁ , ⋆) ⟩
+                                    p 𝟏 ＝⟨ 1-is-mod 𝟏 β ((b₁ ⁻¹) , ⋆) ⟩
+                                    p β ∎))))
+        (λ (ν : p 𝟎 ≠ p 𝟏) → inr (λ 0-is-mod → ν (0-is-mod 𝟎 𝟏 ⋆)))
 
-decidable-smaller-modulus-of-uc p (succ m)is-mod = I (IH ₀) (IH ₁)
- where
-  have : succ (succ m) is-a-modulus-of-uc-of p
-  have = is-mod
+ decidable-smaller-modulus-of-uc p (succ m)is-mod = I (IH ₀) (IH ₁)
+  where
+   have : succ (succ m) is-a-modulus-of-uc-of p
+   have = is-mod
 
-  IH : (b : 𝟚) → is-decidable (m is-a-modulus-of-uc-of (p ∘ cons b))
-  IH b = decidable-smaller-modulus-of-uc (p ∘ cons b) m
-          (cons-decrease-uc-modulus p (succ m) is-mod b)
+   IH : (b : 𝟚) → is-decidable (m is-a-modulus-of-uc-of (p ∘ cons b))
+   IH b = decidable-smaller-modulus-of-uc (p ∘ cons b) m
+           (cons-decrease-uc-modulus p (succ m) is-mod b)
 
-  I : is-decidable (m is-a-modulus-of-uc-of (p ∘ cons ₀))
-    → is-decidable (m is-a-modulus-of-uc-of (p ∘ cons ₁))
-    → is-decidable (succ m is-a-modulus-of-uc-of p)
-  I (inl m₀) (inl m₁) = inl II
-   where
-    II : (α β : ℕ → 𝟚) → (α 0 ＝ β 0) × (tail α ＝⟦ m ⟧ tail β) → p α ＝ p β
-    II α β (h , t) =
-     𝟚-equality-cases
-      (λ (a₀ : α 0 ＝ ₀)
-       → p α                     ＝⟨ is-mod _ _ (refl , refl , ＝⟦⟧-refl _ m) ⟩
-         p (cons (α 0) (tail α)) ＝⟨ ap (λ - → p (cons - (tail α))) a₀ ⟩
-         (p ∘ cons ₀) (tail α)   ＝⟨ m₀ (tail α) (tail β) t ⟩
-         (p ∘ cons ₀) (tail β)   ＝⟨ (ap (λ - → p (cons - (tail β))) (h ⁻¹ ∙ a₀))⁻¹ ⟩
-         p (cons (β 0) (tail β)) ＝⟨ is-mod _ _ (refl , refl , ＝⟦⟧-refl _ m) ⟩
-         p β                     ∎)
-      (λ (a₁ : α 0 ＝ ₁)
-       → p α                     ＝⟨ is-mod _ _ (refl , refl , ＝⟦⟧-refl _ m) ⟩
-         p (cons (α 0) (tail α)) ＝⟨ ap (λ - → p (cons - (tail α))) a₁ ⟩
-         (p ∘ cons ₁) (tail α)   ＝⟨ m₁ (tail α) (tail β) t ⟩
-         (p ∘ cons ₁) (tail β)   ＝⟨ (ap (λ - → p (cons - (tail β))) (h ⁻¹ ∙ a₁))⁻¹ ⟩
-         p (cons (β 0) (tail β)) ＝⟨ is-mod _ _ (refl , refl , ＝⟦⟧-refl _ m) ⟩
-         p β                     ∎)
-  I (inl _)  (inr ν₁) = inr (contrapositive
-                              (λ succ-m-is-mod → cons-decrease-uc-modulus
-                                                  p m succ-m-is-mod ₁)
-                              ν₁)
-  I (inr ν₀) _        = inr (contrapositive
-                              (λ succ-m-is-mod → cons-decrease-uc-modulus
-                                                  p m succ-m-is-mod ₀)
-                              ν₀)
+   I : is-decidable (m is-a-modulus-of-uc-of (p ∘ cons ₀))
+     → is-decidable (m is-a-modulus-of-uc-of (p ∘ cons ₁))
+     → is-decidable (succ m is-a-modulus-of-uc-of p)
+   I (inl m₀) (inl m₁) = inl II
+    where
+     II : (α β : 𝟚ᴺ) → (α 0 ＝ β 0) × (tail α ＝⟦ m ⟧ tail β) → p α ＝ p β
+     II α β (h , t) =
+      𝟚-equality-cases
+       (λ (a₀ : α 0 ＝ ₀)
+        → p α                     ＝⟨ is-mod _ _ (refl , refl , ＝⟦⟧-refl _ m) ⟩
+          p (cons (α 0) (tail α)) ＝⟨ ap (λ - → p (cons - (tail α))) a₀ ⟩
+          (p ∘ cons ₀) (tail α)   ＝⟨ m₀ (tail α) (tail β) t ⟩
+          (p ∘ cons ₀) (tail β)   ＝⟨ (ap (λ - → p (cons - (tail β))) (h ⁻¹ ∙ a₀))⁻¹ ⟩
+          p (cons (β 0) (tail β)) ＝⟨ is-mod _ _ (refl , refl , ＝⟦⟧-refl _ m) ⟩
+          p β                     ∎)
+       (λ (a₁ : α 0 ＝ ₁)
+        → p α                     ＝⟨ is-mod _ _ (refl , refl , ＝⟦⟧-refl _ m) ⟩
+          p (cons (α 0) (tail α)) ＝⟨ ap (λ - → p (cons - (tail α))) a₁ ⟩
+          (p ∘ cons ₁) (tail α)   ＝⟨ m₁ (tail α) (tail β) t ⟩
+          (p ∘ cons ₁) (tail β)   ＝⟨ (ap (λ - → p (cons - (tail β))) (h ⁻¹ ∙ a₁))⁻¹ ⟩
+          p (cons (β 0) (tail β)) ＝⟨ is-mod _ _ (refl , refl , ＝⟦⟧-refl _ m) ⟩
+          p β                     ∎)
+   I (inl _)  (inr ν₁) = inr (contrapositive
+                               (λ succ-m-is-mod → cons-decrease-uc-modulus
+                                                   p m succ-m-is-mod ₁)
+                               ν₁)
+   I (inr ν₀) _        = inr (contrapositive
+                               (λ succ-m-is-mod → cons-decrease-uc-modulus
+                                                   p m succ-m-is-mod ₀)
+                               ν₀)
 
-conditional-decidability-of-being-a-modulus-of-uc
- : (p : 𝟚ᴺ → 𝟚)
-   (m : ℕ)
- → m is-a-modulus-of-uc-of p
- → (n : ℕ) → n < m → is-decidable (n is-a-modulus-of-uc-of p)
-conditional-decidability-of-being-a-modulus-of-uc p
- = regression-lemma
-    (_is-a-modulus-of-uc-of p)
-    (decidable-smaller-modulus-of-uc p)
-    (increase-modulus-of-uc p)
+ conditional-decidability-of-being-a-modulus-of-uc
+  : (p : 𝟚ᴺ → N)
+    (m : ℕ)
+  → m is-a-modulus-of-uc-of p
+  → (n : ℕ) → n < m → is-decidable (n is-a-modulus-of-uc-of p)
+ conditional-decidability-of-being-a-modulus-of-uc p
+  = regression-lemma
+     (_is-a-modulus-of-uc-of p)
+     (decidable-smaller-modulus-of-uc p)
+     (increase-modulus-of-uc p)
 
 \end{code}
 
@@ -371,12 +376,12 @@ continuity data, without propositional truncation.
 
 \begin{code}
 
-uc-data-gives-uc-property
- : (p : 𝟚ᴺ → 𝟚) → uniformly-continuous p → is-uniformly-continuous p
-uc-data-gives-uc-property p
- = minimal-witness⁺
-    (_is-a-modulus-of-uc-of p)
-    (conditional-decidability-of-being-a-modulus-of-uc p)
+ uc-data-gives-uc-property
+  : (p : 𝟚ᴺ → N) → uniformly-continuous p → is-uniformly-continuous p
+ uc-data-gives-uc-property p
+  = minimal-witness⁺
+     (_is-a-modulus-of-uc-of p)
+     (conditional-decidability-of-being-a-modulus-of-uc p)
 
 \end{code}
 
@@ -384,9 +389,9 @@ The converse is trivial, and amounts to discarding a piece of data.
 
 \begin{code}
 
-uc-property-gives-uc-data
- : (p : 𝟚ᴺ → 𝟚) → is-uniformly-continuous p → uniformly-continuous p
-uc-property-gives-uc-data p (m , m-is-mod , m-μ) = m , m-is-mod
+ uc-property-gives-uc-data
+  : (p : 𝟚ᴺ → N) → is-uniformly-continuous p → uniformly-continuous p
+ uc-property-gives-uc-data p (m , m-is-mod , m-μ) = m , m-is-mod
 
 \end{code}
 
@@ -395,31 +400,33 @@ equivalent to the propositional truncation of uniform continuity data.
 
 \begin{code}
 
-module notions-of-continuity (pt : propositional-truncations-exist) where
+ module alternative-notions-of-continuity
+         (pt : propositional-truncations-exist)
+        where
 
- open PropositionalTruncation pt
- open exit-truncations pt
+  open PropositionalTruncation pt
+  open exit-truncations pt
 
- is-uniformly-continuous' : (𝟚ᴺ → 𝟚) → 𝓤₀ ̇
- is-uniformly-continuous' p = ∃ m ꞉ ℕ , m is-a-modulus-of-uc-of p
+  is-uniformly-continuous' : (𝟚ᴺ → N) → 𝓤 ̇
+  is-uniformly-continuous' p = ∃ m ꞉ ℕ , m is-a-modulus-of-uc-of p
 
- uniform-continuity-prime
-  : (p : 𝟚ᴺ → 𝟚) → is-uniformly-continuous p → is-uniformly-continuous' p
- uniform-continuity-prime p (m , m-is-mod , m-μ) = ∣ m , m-is-mod ∣
+  uniform-continuity-prime
+   : (p : 𝟚ᴺ → N) → is-uniformly-continuous p → is-uniformly-continuous' p
+  uniform-continuity-prime p (m , m-is-mod , m-μ) = ∣ m , m-is-mod ∣
 
- uniform-continuity-unprime
-  : Fun-Ext
-  → (p : 𝟚ᴺ → 𝟚) → is-uniformly-continuous' p → is-uniformly-continuous p
- uniform-continuity-unprime fe p p-uc'
-  = uc-data-gives-uc-property p
-     (exit-truncation⁺
-       (_is-a-modulus-of-uc-of p)
-       (λ m → being-a-modulus-of-uc-is-prop fe m p)
-       (conditional-decidability-of-being-a-modulus-of-uc p)
-       p-uc')
+  uniform-continuity-unprime
+   : Fun-Ext
+   → (p : 𝟚ᴺ → N) → is-uniformly-continuous' p → is-uniformly-continuous p
+  uniform-continuity-unprime fe p p-uc'
+   = uc-data-gives-uc-property p
+      (exit-truncation⁺
+        (_is-a-modulus-of-uc-of p)
+        (λ m → being-a-modulus-of-uc-is-prop fe m p)
+        (conditional-decidability-of-being-a-modulus-of-uc p)
+        p-uc')
 
- is-continuous : (𝟚ᴺ → 𝟚) → 𝓤₀ ̇
- is-continuous p = ∀ α → ∃ m ꞉ ℕ , (∀ β → α ＝⟦ m ⟧ β → p α ＝ p β)
+  is-continuous : (𝟚ᴺ → N) → 𝓤 ̇
+  is-continuous p = ∀ α → ∃ m ꞉ ℕ , (∀ β → α ＝⟦ m ⟧ β → p α ＝ p β)
 
 \end{code}
 

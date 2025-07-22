@@ -547,7 +547,7 @@ precision k, written x ＝⟪ k ⟫ y.
 
 \begin{code}
 
-open import TypeTopology.Cantor hiding (continuous ; continuity-data)
+open import TypeTopology.Cantor
 
 _＝⟪_⟫_ : ℕ∞ → ℕ → ℕ∞ → 𝓤₀ ̇
 x ＝⟪ k ⟫ y = ι x ＝⟦ k ⟧ ι y
