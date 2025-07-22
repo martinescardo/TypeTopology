@@ -30,9 +30,9 @@ In this file we consider a generalization of the Cantor–Schröder–Bernstein 
 theorem assuming the weak limited principle of omniscience (WLPO), based on
 König's argument.
 
-Theorem.
-Assuming WLPO, then for every pair of types X and Y, if there are complemented
-embeddings X ↪ Y and Y ↪ X, then X is equivalent to Y.
+ Theorem.
+ Assuming WLPO, then for every pair of types X and Y, if there are complemented
+ embeddings X ↪ Y and Y ↪ X, then X is equivalent to Y.
 
 In particular, we do not assume function extensionality.
 
