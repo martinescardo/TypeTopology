@@ -69,14 +69,6 @@ refl ∙' q = q
                  → p ∙' q ＝ p ∙ q
 ∙-agrees-with-∙' refl refl = refl
 
-right-unit-law-∙ : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y)
-                 → p ∙ refl ＝ p
-right-unit-law-∙ _ = refl
-
-left-unit-law-∙ : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y)
-                 → refl ∙ p ＝ p
-left-unit-law-∙ refl = refl
-
 \end{code}
 
 End of addition.
