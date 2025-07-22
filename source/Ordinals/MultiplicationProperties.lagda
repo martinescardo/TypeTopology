@@ -349,7 +349,7 @@ module _ (pt : propositional-truncations-exist)
 11 September 2024, added by Tom de Jong following a question by Martin Escardo.
 
 The equations for successor and suprema uniquely specify the multiplication
-operation even though they are not constructively sufficient to define it.
+operation and lead to a definition by transfinite recursion.
 
 \begin{code}
 
@@ -426,14 +426,6 @@ operation even though they are not constructively sufficient to define it.
         α β) ⁻¹))))
 
 \end{code}
-
-The above should be contrasted to the situation for addition where we do not
-know how to prove such a result since only *inhabited* suprema are preserved by
-addition.
-However, a classically equivalent, but constructively stronger, reformulation of
-the equations for addition does uniquely specify, and lead to a definition of
-ordinal addition, cf. the comment in Ordinals.AdditionProperties.
-
 
 Added 17 September 2024 by Fredrik Nordvall Forsberg:
 

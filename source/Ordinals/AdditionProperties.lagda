@@ -1,6 +1,6 @@
 Martin Escardo, 18 January 2021.
 
-Small additions by Tom de Jong in May and June 2024.
+Several additions by Tom de Jong in May and June 2024 and July 2025.
 
 \begin{code}
 
@@ -993,7 +993,7 @@ the recursive equation
   α +ₒ β ＝ α +ₒ sup (λ b → (B ↓ b) +ₒ 𝟙ₒ)
          ＝ sup (λ b → α +ₒ ((B ↓ b) +ₒ 𝟙ₒ))
          ＝ sup (λ b → (α +ₒ (B ↓ b)) +ₒ 𝟙ₒ)
-which would ensure that there is at most one operation satisfying the above
+which would ensure that there is a unique operation satisfying the above
 equations for successors and suprema. The problem is that constructively we
 cannot, in general, make a case distinction on whether β is zero or not.
 
@@ -1110,6 +1110,90 @@ as a single supremum by indexing over 𝟙 + I instead, sending inl ⋆ to α.
       h (inl ⋆) = +ₒ-left-⊴ α (sup β)
       h (inr i) = +ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i)
 
+\end{code}
+
+Added 22 July 2025 by Tom de Jong.
+
+The above, together with +ₒ-commutes-with-successor, uniquely determines
+addition of ordinals, see also the comment dated 14 February 2025.
+
+\begin{code}
+
+ private
+  successor-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+  successor-equation {𝓤} _⊕_ =
+   (α β : Ordinal 𝓤) → α ⊕ (β +ₒ 𝟙ₒ) ＝ (α ⊕ β) +ₒ 𝟙ₒ
+
+  suprema-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+  suprema-equation {𝓤} _⊕_ =
+   (α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
+    → α ⊕ (sup β) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → α) (λ i → α ⊕ β i))
+
+  recursive-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+  recursive-equation {𝓤} _⊕_ =
+   (α β : Ordinal 𝓤)
+     → α ⊕ β ＝ sup (cases (λ (_ : 𝟙{𝓤}) → α) (λ b → (α ⊕ (β ↓ b)) +ₒ 𝟙ₒ))
+
+  successor-and-suprema-equations-give-recursive-equation
+   : (_⊕_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
+   → successor-equation _⊕_
+   → suprema-equation _⊕_
+   → recursive-equation _⊕_
+  successor-and-suprema-equations-give-recursive-equation
+   {𝓤} _⊕_ ⊕-succ ⊕-sup α β =
+    α ⊕ β                                             ＝⟨ I   ⟩
+    (α ⊕ sup (λ b → (β ↓ b) +ₒ 𝟙ₒ))                   ＝⟨ II  ⟩
+    sup (cases (λ ⋆ → α) (λ b → α ⊕ ((β ↓ b) +ₒ 𝟙ₒ))) ＝⟨ III ⟩
+    sup (cases (λ ⋆ → α) (λ b → (α ⊕ (β ↓ b)) +ₒ 𝟙ₒ)) ∎
+     where
+      I   = ap (α ⊕_) (supremum-of-successors-of-initial-segments β)
+      II  = ⊕-sup α ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
+      III = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → α) -))
+               (dfunext fe' (λ b → ⊕-succ α (β ↓ b)))
+
+ +ₒ-recursive-equation : recursive-equation {𝓤} _+ₒ_
+ +ₒ-recursive-equation =
+  successor-and-suprema-equations-give-recursive-equation
+    _+ₒ_ +ₒ-commutes-with-successor +ₒ-preserves-suprema-up-to-join
+
+ +ₒ-is-uniquely-specified'
+  : (_⊕_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
+  → recursive-equation _⊕_
+  → (α β : Ordinal 𝓤) → α ⊕ β ＝ α +ₒ β
+ +ₒ-is-uniquely-specified' {𝓤} _⊕_ ⊕-rec α =
+  transfinite-induction-on-OO (λ - → (α ⊕ -) ＝ (α +ₒ -)) I
+   where
+    I : (β : Ordinal 𝓤)
+      → ((b : ⟨ β ⟩) → (α ⊕ (β ↓ b)) ＝ (α +ₒ (β ↓ b)))
+      → (α ⊕ β) ＝ (α +ₒ β)
+    I β IH = α ⊕ β                                              ＝⟨ II  ⟩
+             sup (cases (λ ⋆ → α) (λ b → (α ⊕ (β ↓ b)) +ₒ 𝟙ₒ))  ＝⟨ III ⟩
+             sup (cases (λ ⋆ → α) (λ b → (α +ₒ (β ↓ b)) +ₒ 𝟙ₒ)) ＝⟨ IV  ⟩
+             α +ₒ β                                             ∎
+     where
+      II  = ⊕-rec α β
+      III = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → α) -))
+               (dfunext fe' (λ b → ap (_+ₒ 𝟙ₒ) (IH b)))
+      IV  = +ₒ-recursive-equation α β ⁻¹
+
+ +ₒ-is-uniquely-specified
+  : ∃! _⊕_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
+     (successor-equation _⊕_) × (suprema-equation _⊕_)
+ +ₒ-is-uniquely-specified {𝓤} =
+  (_+ₒ_ , (+ₒ-commutes-with-successor , +ₒ-preserves-suprema-up-to-join)) ,
+  (λ (_⊕_ , ⊕-succ , ⊕-sup) →
+   to-subtype-＝
+    (λ F → ×-is-prop (Π₂-is-prop fe'
+                       (λ _ _ → underlying-type-is-set fe (OO 𝓤)))
+                     (Π₃-is-prop fe'
+                       (λ _ _ _ → underlying-type-is-set fe (OO 𝓤))))
+    (dfunext fe'
+      (λ α → dfunext fe'
+       (λ β →
+        (+ₒ-is-uniquely-specified' _⊕_
+          (successor-and-suprema-equations-give-recursive-equation
+            _⊕_ ⊕-succ ⊕-sup)
+        α β) ⁻¹))))
 
 \end{code}
 
