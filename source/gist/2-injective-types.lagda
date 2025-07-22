@@ -33,7 +33,6 @@ open import UF.Equiv
 open import UF.Embeddings
 open import UF.PropTrunc
 open import UF.Retracts
-open import UF.SmallnessProperties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -511,3 +510,96 @@ TODO.
       injective with respect to j. Question. Can we show that j is
       necessarily an embedding?  Perhaps an embedding is precisely the
       same thing as an Ω-injecting map.
+
+We now show that if all functions 𝟚ᴺ → 𝟚 are uniformly continuous,
+then ℕ is 𝟚-injective.
+
+\begin{code}
+
+open import TypeTopology.Cantor
+open notions-of-continuity 𝟚 𝟚-is-discrete
+open import Naturals.Order
+open import Naturals.Properties
+open import Notation.Order
+open import MLTT.Two-Properties
+
+ℕ-is-𝟚-injective-if-all-functions-𝟚ᴺ→𝟚-are-uc
+ : ((f : 𝟚ᴺ → 𝟚) → is-uniformly-continuous f)
+ → 𝟚-injective ℕ 𝓤 𝓥
+ℕ-is-𝟚-injective-if-all-functions-𝟚ᴺ→𝟚-are-uc {𝓤} {𝓥} brouwer
+ = ℕ-is-𝟚-injective
+ where
+  I : (n : ℕ) → (succ n) is-a-modulus-of-uc-of (ηᴷ n)
+  I 0 α β (e , _) = e
+  I (succ n) α β (e , es) = I n (tail α) (tail β) es
+
+  II : (n k : ℕ)
+    → k is-a-modulus-of-uc-of (ηᴷ n)
+    → ¬ (k < succ n)
+  II n k is-mod l = impossible
+   where
+    have-l : k ≤ n
+    have-l = l
+
+    have-is-mod : (α β : 𝟚ᴺ) → α ＝⟦ k ⟧ β → α n ＝ β n
+    have-is-mod = is-mod
+
+    γ : ℕ → 𝟚ᴺ
+    γ 0 = 𝟏
+    γ (succ k) = cons ₀ (γ k)
+
+    γ-property₀ : (n k : ℕ) → k ≤ n → 𝟎 ＝⟦ k ⟧ (γ k)
+    γ-property₀ n 0 l = ⋆
+    γ-property₀ n (succ k) l =
+     refl , γ-property₀ n k (≤-trans k (succ k) n (≤-succ k) l)
+
+    γ-property₁ : (n k : ℕ) → k ≤ n → ₀ ≠ γ k n
+    γ-property₁ n 0 l e = zero-is-not-one e
+    γ-property₁ (succ n) (succ k) l e = γ-property₁ n k l e
+
+    impossible : 𝟘
+    impossible = γ-property₁ n k l (is-mod 𝟎 (γ k) (γ-property₀ n k l))
+
+  III : (n k : ℕ)
+      → k is-a-modulus-of-uc-of (ηᴷ n)
+      → succ n ≤ k
+  III n k is-mod = not-less-bigger-or-equal (succ n) k (II n k is-mod)
+
+  UC : 𝓤₀ ̇
+  UC = Σ ϕ ꞉ (𝟚ᴺ → 𝟚) , is-uniformly-continuous ϕ
+
+  s : ℕ → UC
+  s n = ηᴷ n , succ n , I n , III n
+
+  r : UC → ℕ
+  r (_ , m , _) = pred m
+
+  rs : r ∘ s ∼ id
+  rs n = refl
+
+  ℕ-retract-of-UC : retract ℕ of UC
+  ℕ-retract-of-UC = r , s , rs
+
+  IV : UC ≃ (𝟚ᴺ → 𝟚)
+  IV = pr₁ ,
+       pr₁-is-equiv
+        (𝟚ᴺ → 𝟚)
+        is-uniformly-continuous
+        (λ f → pointed-props-are-singletons
+                (brouwer f)
+                (being-uniformly-continuous-is-prop fe' f))
+
+  ℕ-retract-of-𝟚ᴺ→𝟚 : retract ℕ of (𝟚ᴺ → 𝟚)
+  ℕ-retract-of-𝟚ᴺ→𝟚 = retracts-compose (≃-gives-◁ IV) ℕ-retract-of-UC
+
+  ℕ-is-𝟚-injective : 𝟚-injective ℕ 𝓤 𝓥
+  ℕ-is-𝟚-injective = retract-of-𝟚-injective ℕ (𝟚ᴺ → 𝟚)
+                      K-is-𝟚-injective
+                      ℕ-retract-of-𝟚ᴺ→𝟚
+\end{code}
+
+Originally I tried to prove that UC is 𝟚-injective, to avoid the
+Brouwerian assumption, but I didn't succeed, and I doubt this can be done.
+
+Question. Can ℕ be proved to be 𝟚-injective unconditionally? Or does
+the 𝟚-injectivity of ℕ give a cotaboo such as the above Brouwerian assumption?
