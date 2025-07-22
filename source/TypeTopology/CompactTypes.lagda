@@ -1252,7 +1252,7 @@ TODO. (1) is-Compact' X ≃ is-compact X.
 
 Added by Fredrik Bakke on the 2nd of April 2025.
 
-Π-Compact types are closed under dependent sums.
+Π-Compact types are closed under sums.
 
 \begin{code}
 
@@ -1287,4 +1287,3 @@ Added by Fredrik Bakke on the 2nd of April 2025.
   (Π-Compact-types-have-decidable-negations' αX)
 
 \end{code}
-
