@@ -253,12 +253,12 @@ Tosun.
 
 1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
    *Ordinal Exponentiation in Homotopy Type Theory*. January 2025. Updated
-   May 2025. To appear at [LICS 2025][LICS25].
+   May 2025. [LICS 2025][LICS25].
 
    https://doi.org/10.48550/arxiv.2501.14542
 
 1. Martin H. Escardo, Bruno da Rocha Paiva, Vincent Rahli and Ayberk Tosun.
-   *Internal Effectful Forcing in System T*. To appear in [FSCD'2025](https://fscd2025.github.io/).
+   *Internal Effectful Forcing in System T*. [FSCD'2025](https://fscd2025.github.io/).
 
    https://doi.org/10.48550/arXiv.2505.11055
 
