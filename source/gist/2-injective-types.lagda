@@ -613,3 +613,9 @@ and, indeed, this can be proved from our Brouwerian assumption.
 
 Question. Can ℕ be proved to be 𝟚-injective unconditionally? Or does
 the 𝟚-injectivity of ℕ give a cotaboo such as the above Brouwerian assumption?
+
+Notice also that a map X → ℕ can be seen as a partition of X by
+countably many clopens. Hence asking ℕ to be 𝟚-injective amounts to
+saying that from the ability to extend clopens along j : X → Y, we
+should be able to extend countable clopen partitions to countable
+clopen partitions along j.
