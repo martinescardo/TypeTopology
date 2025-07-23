@@ -522,12 +522,13 @@ then ℕ is 𝟚-injective.
 
 \begin{code}
 
-open import TypeTopology.Cantor
-open notions-of-continuity 𝟚 𝟚-is-discrete
+open import MLTT.Two-Properties
 open import Naturals.Order
 open import Naturals.Properties
 open import Notation.Order
-open import MLTT.Two-Properties
+open import TypeTopology.Cantor
+
+open notions-of-continuity 𝟚 𝟚-is-discrete
 
 ℕ-is-𝟚-injective-if-all-functions-𝟚ᴺ→𝟚-are-uc
  : ((f : 𝟚ᴺ → 𝟚) → is-uniformly-continuous f)
@@ -536,31 +537,31 @@ open import MLTT.Two-Properties
  = ℕ-is-𝟚-injective
  where
   I : (n : ℕ) → (succ n) is-a-modulus-of-uc-of (ηᴷ n)
-  I 0 α β (e , _) = e
-  I (succ n) α β (e , es) = I n (tail α) (tail β) es
+  I 0        α β (e , _ ) = e
+  I (succ n) α β (_ , es) = I n (tail α) (tail β) es
 
   II : (n k : ℕ)
     → k is-a-modulus-of-uc-of (ηᴷ n)
-    → ¬ (k < succ n)
+    → ¬ (k ≤ n)
   II n k is-mod l = impossible
    where
-    have-l : k ≤ n
-    have-l = l
-
     have-is-mod : (α β : 𝟚ᴺ) → α ＝⟦ k ⟧ β → α n ＝ β n
     have-is-mod = is-mod
 
+    have-l : k ≤ n
+    have-l = l
+
     γ : ℕ → 𝟚ᴺ
-    γ 0 = 𝟏
+    γ 0        = 𝟏
     γ (succ k) = cons ₀ (γ k)
 
     γ-property₀ : (n k : ℕ) → k ≤ n → 𝟎 ＝⟦ k ⟧ (γ k)
-    γ-property₀ n 0 l = ⋆
+    γ-property₀ n 0        l = ⋆
     γ-property₀ n (succ k) l =
      refl , γ-property₀ n k (≤-trans k (succ k) n (≤-succ k) l)
 
     γ-property₁ : (n k : ℕ) → k ≤ n → ₀ ≠ γ k n
-    γ-property₁ n 0 l e = zero-is-not-one e
+    γ-property₁ n        0        l e = zero-is-not-one e
     γ-property₁ (succ n) (succ k) l e = γ-property₁ n k l e
 
     impossible : 𝟘
@@ -606,6 +607,9 @@ open import MLTT.Two-Properties
 
 Originally I tried to prove that UC is 𝟚-injective, to avoid the
 Brouwerian assumption, but I didn't succeed, and I doubt this can be done.
+
+TODO. In the topological topos, we in fact have that ℕ ≃ (𝟚ᴺ → 𝟚),
+and, indeed, this can be proved from our Brouwerian assumption.
 
 Question. Can ℕ be proved to be 𝟚-injective unconditionally? Or does
 the 𝟚-injectivity of ℕ give a cotaboo such as the above Brouwerian assumption?
