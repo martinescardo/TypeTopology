@@ -15,10 +15,10 @@ All the simple types (those obtained from 𝟚 and ℕ by iterating
 function spaces) are totally separated (see the module
 SimpleTypes). This is because the totally separated types form an
 exponential ideal. Moreover, Π Y is totally separated for any family
-Y:X→U provided Y x is totally separated for all x:X. This assumes
-function extensionality.
+Y : X → U provided Y x is totally separated for all x : X. This
+assumes function extensionality.
 
-In particular, the Cantor and Baire types 𝟚^ℕ and ℕ^ℕ are totally
+In particular, the Cantor and Baire types ℕ → 𝟚 and ℕ → ℕ are totally
 separated (like in topology).
 
 Closure under Σ fails in general. However, we have closure under _×_,
@@ -26,7 +26,7 @@ and ℕ∞ (defined with Σ) is totally separated (proved in the module
 GenericConvergentSequence).
 
 A counter-example to closure under Σ (from 2012) is in the file
-http://www.cs.bham.ac.uk/~mhe/TypeTopology/FailureOfTotalSeparatedness.html
+FailureOfTotalSeparatedness.
 
 This is the "compactification" of ℕ with two points at infinity:
 
@@ -34,7 +34,7 @@ This is the "compactification" of ℕ with two points at infinity:
 
 If there is a 𝟚-valued function separating the two points at infinity,
 then WLPO holds. (The totally separated reflection of this type should
-be ℕ∞ if ¬WLPO holds.)
+be ℕ∞ if ¬ WLPO holds.)
 
 (In the context of topology, I learned this example from the late
 Klaus Keimel (but the rendering in type theory is mine), where it is a
@@ -55,7 +55,6 @@ We also show how to construct the tight reflection of any type
 equipped with an apartness relation, given by a universal strongly
 extensional map into a tight apartness type. Any type with a tight
 apartness relation is a set, and so this reflection is always a set.
-
 
 \begin{code}
 
@@ -124,7 +123,7 @@ We now define an alternative characterization of total separatedness
 (added December 11th 2020), still using the equivalence relation ＝₂,
 and also motivated by topological considerations, namely that the
 quasi component of a point of a topological space is the intersection
-of all clopen sets containing x and a space is totally separated of
+of all clopen sets containing x, and a space is totally separated if
 the quasi-components are singletons:
 
 \begin{code}
@@ -262,11 +261,25 @@ totally-separated-types-are-sets : funext 𝓤 𝓤₀
 totally-separated-types-are-sets fe X t =
  ¬¬-separated-types-are-sets fe (totally-separated-types-are-¬¬-separated X t)
 
+being-totally-separated-is-prop : funext 𝓤 𝓤
+                                → (X : 𝓤 ̇ )
+                                → is-prop (is-totally-separated X)
+being-totally-separated-is-prop {𝓤} fe X = γ
+ where
+  p : is-totally-separated X → is-prop (is-totally-separated X)
+  p t = implicit-Π-is-prop fe (λ y →
+        implicit-Π-is-prop fe (λ x →
+        Π-is-prop          fe (λ p → totally-separated-types-are-sets
+                                      (lower-funext 𝓤 𝓤 fe) X t)))
+
+  γ : is-prop (is-totally-separated X)
+  γ = prop-criterion p
+
 \end{code}
 
-The converse fails: the type of propositions is a set, but its total
-separatedness implies excluded middle. In fact, its ¬¬-separatedness
-already implies excluded middle:
+The type of propositions is a set, but its total separatedness implies
+excluded middle. In fact, its ¬¬-separatedness already implies
+excluded middle:
 
 \begin{code}
 
@@ -295,7 +308,9 @@ open import UF.ClassicalLogic
                         → is-¬¬-separated (Ω 𝓤)
                         → EM 𝓤
 Ω-¬¬-separated-gives-EM {𝓤} pe fe Ω-is-¬¬-separated =
-  DNE-gives-EM (lower-funext 𝓤 𝓤 fe) (Ω-¬¬-separated-gives-DNE pe fe Ω-is-¬¬-separated)
+  DNE-gives-EM
+   (lower-funext 𝓤 𝓤 fe)
+   (Ω-¬¬-separated-gives-DNE pe fe Ω-is-¬¬-separated)
 
 Ω-totally-separated-gives-EM : propext 𝓤
                              → funext 𝓤 𝓤
@@ -304,40 +319,6 @@ open import UF.ClassicalLogic
 Ω-totally-separated-gives-EM {𝓤} pe fe Ω-is-totally-separated =
  Ω-¬¬-separated-gives-EM pe fe
   (totally-separated-types-are-¬¬-separated (Ω 𝓤) Ω-is-totally-separated)
-
-\end{code}
-
-The need to define f and g in the following proof arises because the
-function Π-is-prop requires a dependent function with explicit
-arguments, but total separatedness is defined with implicit
-arguments. The essence of the proof is that of p in the where clause.
-
-\begin{code}
-
-being-totally-separated-is-prop : funext 𝓤 𝓤
-                                → (X : 𝓤 ̇ )
-                                → is-prop (is-totally-separated X)
-being-totally-separated-is-prop {𝓤} fe X = γ
- where
-  T : 𝓤 ̇
-  T = (x y : X) → x ＝₂ y → x ＝ y
-
-  f : T → is-totally-separated X
-  f t {x} {y} φ = t x y φ
-
-  g : is-totally-separated X → T
-  g t x y φ = t {x} {y} φ
-
-  p : T → is-prop T
-  p t = Π-is-prop fe (λ x →
-        Π-is-prop fe (λ y →
-        Π-is-prop fe (λ p → totally-separated-types-are-sets
-                             (lower-funext 𝓤 𝓤 fe) X (f t))))
-  l : left-cancellable g
-  l = ap f
-
-  γ : is-prop (is-totally-separated X)
-  γ = subtypes-of-props-are-props' g l (prop-criterion p)
 
 \end{code}
 
@@ -562,7 +543,7 @@ totally-separated₂-gives-totally-separated fe {X} i {x} {y} e = ap pr₁ q
 
 \end{code}
 
-Now, if a type X is not (necessarily) totally separated, we can
+Now, if a type X is not necessarily totally separated, we can
 consider the image of the map eval X, and this gives the totally
 separated reflection, with the corestriction of eval X to its image as
 its reflector.

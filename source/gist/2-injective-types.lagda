@@ -182,6 +182,9 @@ is-𝟚-injecting j = 𝟚 is-injective-over j
 
 \end{code}
 
+In topological terms, the above means that every clopen of X can be
+extended to a clopen of Y along j.
+
 We say that a type is 𝟚-injective if it is injective over 𝟚-injecting
 maps.
 
@@ -242,6 +245,9 @@ K-is-𝟚-injective : {X : 𝓣 ̇ } → 𝟚-injective (K X) 𝓤 𝓥
 K-is-𝟚-injective = first-dual-is-𝟚-injective
 
 \end{code}
+
+So, for example, the Cantor type (ℕ → 𝟚) is 𝟚-injective, and hence so
+is ℕ∞, because it is a retract of the Cantor type).
 
 The unit of the monad is 𝟚-injecting.
 
@@ -453,7 +459,7 @@ The following are equivalent for any type D.
     × is-injective-over-𝟚-injecting-embeddings-of-ts-types D 𝓤 𝓤)
  characterization-of-𝟚-injectivity {𝓤} D
   = (λ D-𝟚-inj → 𝟚-injectives-are-totally-separated D-𝟚-inj ,
-                 (λ j ji je X-ts Y-ys → D-𝟚-inj j ji)) ,
+                 (λ j ji _ _ _ → D-𝟚-inj j ji)) ,
     I
   where
    I : is-totally-separated D
