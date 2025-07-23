@@ -1,7 +1,7 @@
 Ian Ray, 21st Jun 2025.
 
 We develop sequential colimits in HoTT/UF. This formalization follows Section 26 of
-Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest summer school version:
+Introduction to Homotopy Type Theory by Egbert Rijke (HoTTEST summer school version:
 https://github.com/martinescardo/HoTTEST-Summer-School/blob/main/HoTT/hott-intro.pdf).
 
 \begin{code}
@@ -17,10 +17,8 @@ open import UF.Base
 open import UF.CoconesofSpans fe
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.Powerset-MultiUniverse
 open import UF.PropIndexedPiSigma
 open import UF.Pushouts fe
-open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Yoneda
 
@@ -74,28 +72,28 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
          (B : 𝓥 ̇)
        where
 
- sequential-cocone-family : sequential-cocone 𝓐 B
-                          → sequential-cocone 𝓐 B
-                          → 𝓤 ⊔ 𝓥 ̇
- sequential-cocone-family (s , S) (r , R)
+ sequential-cocone-identity : sequential-cocone 𝓐 B
+                            → sequential-cocone 𝓐 B
+                            → 𝓤 ⊔ 𝓥 ̇
+ sequential-cocone-identity (s , S) (r , R)
   = Σ H ꞉ ((n : ℕ) → s n ∼ r n) ,
     ((n : ℕ) → ∼-trans (S n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (R n))
 
  id-to-sequential-cocone-family : (𝓑 𝓑' : sequential-cocone 𝓐 B)
                                 → 𝓑 ＝ 𝓑'
-                                → sequential-cocone-family 𝓑 𝓑'
- id-to-sequential-cocone-family 𝓑 .𝓑 refl
+                                → sequential-cocone-identity 𝓑 𝓑'
+ id-to-sequential-cocone-family 𝓑 𝓑 refl
   = ((λ - → ∼-refl) , λ - → λ -' → refl-left-neutral ⁻¹)
 
  sequential-cocone-family-is-identity-system
   : (𝓑 : sequential-cocone 𝓐 B)
-  → is-contr (Σ 𝓑' ꞉ (sequential-cocone 𝓐 B) , sequential-cocone-family 𝓑 𝓑')
+  → is-contr (Σ 𝓑' ꞉ (sequential-cocone 𝓐 B) , sequential-cocone-identity 𝓑 𝓑')
  sequential-cocone-family-is-identity-system (b , G)
   = equiv-to-singleton e 𝟙-is-singleton
   where
-   e : (Σ 𝓑' ꞉ (sequential-cocone 𝓐 B) , sequential-cocone-family (b , G) 𝓑') ≃ 𝟙 {𝓤 ⊔ 𝓥}
-   e = (Σ 𝓑' ꞉ (sequential-cocone 𝓐 B) , sequential-cocone-family (b , G) 𝓑')
-                                                                                ≃⟨ I ⟩
+   e : (Σ 𝓑' ꞉ (sequential-cocone 𝓐 B) , sequential-cocone-identity (b , G) 𝓑')
+     ≃ 𝟙 {𝓤 ⊔ 𝓥}
+   e = (Σ 𝓑' ꞉ (sequential-cocone 𝓐 B) , sequential-cocone-identity (b , G) 𝓑') ≃⟨ I ⟩
        (Σ b' ꞉ ((n : ℕ) → A n → B) ,
         Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
          Σ H ꞉ ((n : ℕ) → b n ∼ b' n) ,
@@ -113,11 +111,6 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
     where
      I = Σ-assoc
      II = Σ-cong (λ - → Σ-flip)
-     III : (Σ b' ꞉ ((n : ℕ) → A n → B) ,
-            Σ H ꞉ ((n : ℕ) → b n ∼ b' n) ,
-             Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
-              ((n : ℕ) → ∼-trans (G n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (G' n)))
-         ≃ (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n))
      III = (Σ b' ꞉ ((n : ℕ) → A n → B) ,
             Σ H ꞉ ((n : ℕ) → b n ∼ b' n) ,
              Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
@@ -133,11 +126,8 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
            (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n))■
       where
        V = ≃-sym Σ-assoc
-       VI : (Σ b' ꞉ ((n : ℕ) → A n → B) , ((n : ℕ) → b n ∼ b' n)) ≃ 𝟙 {𝓤 ⊔ 𝓥}
-       VI = (Σ b' ꞉ ((n : ℕ) → A n → B) , ((n : ℕ) → b n ∼ b' n))
-                                                                  ≃⟨ Σ-cong IX ⟩
-            (Σ b' ꞉ ((n : ℕ) → A n → B) , b ＝ b')
-                                                                  ≃⟨ X ⟩
+       VI = (Σ b' ꞉ ((n : ℕ) → A n → B) , ((n : ℕ) → b n ∼ b' n)) ≃⟨ Σ-cong IX ⟩
+            (Σ b' ꞉ ((n : ℕ) → A n → B) , b ＝ b')                ≃⟨ X ⟩
             𝟙                                                     ■
         where
          IX : (b' : (n : ℕ) → A n → B)
@@ -148,17 +138,14 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
                  ((n : ℕ) → b n ＝ b' n)
                                          ≃⟨ ≃-sym (≃-funext fe b b') ⟩
                  (b ＝ b')               ■
-         X = singleton-≃-𝟙 (singleton-types-are-singletons b)
+         X = singleton-≃-𝟙 {𝓤 ⊔ 𝓥} {𝓥} (singleton-types-are-singletons b)
        VII = prop-indexed-sum (b , (λ n → ∼-refl)) (equiv-to-prop VI 𝟙-is-prop)
        VIII = Σ-cong (λ G' → Π-cong fe fe
                (λ n → Π-cong fe fe
                 (λ x → ＝-cong (G n x) (∼-trans (λ - → refl) (G' n) x)
                  refl refl-left-neutral)))
-     IV : (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n)) ≃ 𝟙
-     IV = (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n))
-                                                                               ≃⟨ VI ⟩
-          (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , G ＝ G')
-                                                                               ≃⟨ VII ⟩
+     IV = (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n)) ≃⟨ VI ⟩
+          (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , G ＝ G')                ≃⟨ VII ⟩
           𝟙                                                                    ■
       where
        V : (G' : ((n : ℕ) → b n ∼ b (succ n) ∘ a n))
@@ -172,15 +159,16 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
        VI = Σ-cong V
        VII = singleton-≃-𝟙 (singleton-types-are-singletons G)
 
- sequential-cocone-identity-characterization : (𝓑 𝓑' : sequential-cocone 𝓐 B)
-                                             → (𝓑 ＝ 𝓑') ≃ (sequential-cocone-family 𝓑 𝓑')
+ sequential-cocone-identity-characterization
+  : (𝓑 𝓑' : sequential-cocone 𝓐 B)
+  → (𝓑 ＝ 𝓑') ≃ (sequential-cocone-identity 𝓑 𝓑')
  sequential-cocone-identity-characterization 𝓑 𝓑' =
   (id-to-sequential-cocone-family 𝓑 𝓑' ,
     Yoneda-Theorem-forth 𝓑 (id-to-sequential-cocone-family 𝓑)
      (sequential-cocone-family-is-identity-system 𝓑) 𝓑')
 
  sequential-cocone-family-to-id : (𝓑 𝓑' : sequential-cocone 𝓐 B)
-                                → (sequential-cocone-family 𝓑 𝓑')
+                                → (sequential-cocone-identity 𝓑 𝓑')
                                 → 𝓑 ＝ 𝓑'
  sequential-cocone-family-to-id 𝓑 𝓑'
   = ⌜ sequential-cocone-identity-characterization 𝓑 𝓑' ⌝⁻¹
@@ -241,12 +229,17 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
  σ (n , x) = (succ n , a n x)
 
  f : Σ A + Σ A → Σ A
- f (inl -) = -
- f (inr -) = -
+ f = cases id id
 
  g : Σ A + Σ A → Σ A
- g (inl -) = -
- g (inr -) = σ -
+ g = cases id σ
+
+ private
+  index : Σ A → ℕ
+  index = pr₁
+
+  element-at : ((n , x) : Σ A) → A n
+  element-at = pr₂
 
  module _ (push-ex : pushouts-exist f g)
            where
@@ -273,14 +266,15 @@ We give the sequential cocone structure for the sequential colimit.
 
 \end{code}
 
-We will now show cocones over the above pushout diagram are equivalent to sequential
+We show that cocones over the above pushout diagram are equivalent to sequential
 cocones over the above type sequence. 
 
 \begin{code}
 
-  gluing-from-sequential-cocone : ((b , H) : sequential-cocone 𝓐 X)
-                                → (c : Σ A + Σ A)
-                                → b (pr₁ (f c)) (pr₂ (f c)) ＝ b (pr₁ (g c)) (pr₂ (g c))
+  gluing-from-sequential-cocone
+   : ((b , H) : sequential-cocone 𝓐 X)
+   → (c : Σ A + Σ A)
+   → b (index (f c)) (element-at (f c)) ＝ b (index (g c)) (element-at (g c))
   gluing-from-sequential-cocone (b , H) (inl -) = refl
   gluing-from-sequential-cocone (b , H) (inr (n , x)) = H n x
 
@@ -309,7 +303,7 @@ cocones over the above type sequence.
       (i , j , H) ((λ (n , x) → H (inl (n , x)) ⁻¹) , ∼-refl , I)
    where
     I : (z : Σ A + Σ A)
-      → H (inl (pr₁ (f z) , pr₂ (f z))) ⁻¹ ∙ H z
+      → H (inl (index (f z) , element-at (f z))) ⁻¹ ∙ H z
       ＝ gluing-from-sequential-cocone
          (curry j , λ n → λ x → H (inl (n , x)) ⁻¹ ∙ H (inr (n , x))) z
     I (inl -) = left-inverse (H (inl -))
@@ -353,7 +347,8 @@ canonical map to pushout cocones and the above map that translates between them.
 
 \end{code}
 
-Using the above results we prove the universal property for the sequential colimit.
+Using the above results we prove that the pushout constructed above satisfies the
+universal property of the sequential colimit.
 
 \begin{code}
 
@@ -375,47 +370,34 @@ We unpack useful results from the equivalence obtained from the universal proper
 
    canonical-map-seq-cocone-fiber-contr
     : is-contr (fiber (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-       sequential-colimit-is-cocone) 𝓧)
+                        sequential-colimit-is-cocone) 𝓧)
    canonical-map-seq-cocone-fiber-contr
     = equivs-are-vv-equivs (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
        sequential-colimit-is-cocone) sequential-colimit-universal-property 𝓧
 
    canonical-map-seq-cocone-fiber-contr'
     : is-contr (Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-family 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
+       sequential-cocone-identity 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
    canonical-map-seq-cocone-fiber-contr' =
     equiv-to-singleton'
      (Σ-cong (λ - → sequential-cocone-identity-characterization 𝓐 X
       ((λ n → - ∘ ι n) , λ n → ∼-ap-∘ - (K n)) 𝓧)) (canonical-map-seq-cocone-fiber-contr)
 
-   sequential-colimit-fiber-center
-    : Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-family 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧
-   sequential-colimit-fiber-center = center (canonical-map-seq-cocone-fiber-contr')
-
-   sequential-colimit-fiber-centrality
-    : is-central
-       (Σ u ꞉ (sequential-colimit → X) ,
-        sequential-cocone-family 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
-       (sequential-colimit-fiber-center)
-   sequential-colimit-fiber-centrality
-    = centrality (canonical-map-seq-cocone-fiber-contr')
-
    sequential-colimit-unique-map
     : Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-family 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧
+       sequential-cocone-identity 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧
     → sequential-colimit → X
    sequential-colimit-unique-map (u , _ , _) = u
 
    sequential-colimit-homotopy
     : (z : Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-family 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
+       sequential-cocone-identity 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
     → (n : ℕ) → sequential-colimit-unique-map z ∘ ι n ∼ h n
    sequential-colimit-homotopy (_ , G , _) = G
 
    sequential-colimit-glue
     : ((u , G , M) : Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-family 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
+       sequential-cocone-identity 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
     → (n : ℕ) → ∼-trans (∼-ap-∘ u (K n)) (λ x → G (succ n) (a n x))
               ∼ ∼-trans (G n) (H n)
    sequential-colimit-glue (_ , _ , M) = M
@@ -430,7 +412,7 @@ sequential colimits.
   sequential-colimit-recursion : sequential-cocone 𝓐 X
                                → sequential-colimit → X
   sequential-colimit-recursion 𝓧
-   = sequential-colimit-unique-map 𝓧 (sequential-colimit-fiber-center 𝓧)
+   = sequential-colimit-unique-map 𝓧 (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
 
   sequential-colimit-recursion-computation
    : ((h , H) : sequential-cocone 𝓐 X)
@@ -438,7 +420,7 @@ sequential colimits.
    → (x : A n)
    → sequential-colimit-recursion (h , H) (ι n x) ＝ h n x
   sequential-colimit-recursion-computation 𝓧
-   = sequential-colimit-homotopy 𝓧 (sequential-colimit-fiber-center 𝓧)
+   = sequential-colimit-homotopy 𝓧 (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
 
   sequential-colimit-recursion-glue
    : ((h , H) : sequential-cocone 𝓐 X)
@@ -448,7 +430,7 @@ sequential colimits.
      ∙ sequential-colimit-recursion-computation (h , H) (succ n) (a n x)
    ＝ sequential-colimit-recursion-computation (h , H) n x ∙ H n x
   sequential-colimit-recursion-glue 𝓧
-   = sequential-colimit-glue 𝓧 (sequential-colimit-fiber-center 𝓧)
+   = sequential-colimit-glue 𝓧 (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
 
 \end{code}
 
@@ -458,10 +440,8 @@ Finally, we prove the uniqueness principle for sequential colimits.
 
   sequential-colimit-uniqueness
    : (u u' : sequential-colimit → X)
-   → (G : (n : ℕ)
-        → u ∘ (ι n) ∼ u' ∘ (ι n))
-   → (M : (n : ℕ) (x : A n)
-        → ap u (K n x) ∙ G (succ n) (a n x) ＝ G n x ∙ ap u' (K n x))
+   → (G : (n : ℕ) → u ∘ (ι n) ∼ u' ∘ (ι n))
+   → (M : (n : ℕ) (x : A n) → ap u (K n x) ∙ G (succ n) (a n x) ＝ G n x ∙ ap u' (K n x))
    → u ∼ u'
   sequential-colimit-uniqueness u u' G M = pushout-uniqueness u u' I II III
    where
@@ -499,7 +479,8 @@ Finally, we prove the uniqueness principle for sequential colimits.
                         refl ∙ (ap u (glue (inr (n , x))) ∙ G (succ n) (a n x))
                                                                                ＝⟨ V ⟩
                         (ap u (glue (inl (n , x))) ∙ ap u (glue (inl (n , x))) ⁻¹)
-                        ∙ (ap u (glue (inr (n , x))) ∙ G (succ n) (a n x))                                                                                               ＝⟨ VI ⟩
+                        ∙ (ap u (glue (inr (n , x))) ∙ G (succ n) (a n x))
+                                                                               ＝⟨ VI ⟩
                         (ap u (glue (inl (n , x))) ∙ ap u (glue (inl (n , x)) ⁻¹))
                         ∙ (ap u (glue (inr (n , x))) ∙ G (succ n) (a n x))
                                                                                ＝⟨ VII ⟩
@@ -509,7 +490,8 @@ Finally, we prove the uniqueness principle for sequential colimits.
                         ap u (glue (inl (n , x))) ∙ (ap u (glue (inl (n , x)) ⁻¹)
                         ∙ ap u (glue (inr (n , x))) ∙ G (succ n) (a n x))
                                                                                ＝⟨ IX ⟩
-                        ap u (glue (inl (n , x))) ∙ (ap u (K n x) ∙ G (succ n) (a n x))                                                                                  ＝⟨ X' ⟩
+                        ap u (glue (inl (n , x))) ∙ (ap u (K n x) ∙ G (succ n) (a n x))
+                                                                               ＝⟨ X' ⟩
                         ap u (glue (inl (n , x))) ∙ (G n x ∙ ap u' (K n x))
                                                                                ＝⟨ XI ⟩
                         ap u (glue (inl (n , x))) ∙ (G n x
