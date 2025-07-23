@@ -35,12 +35,11 @@ jobs:
 
     - name: Run Agda
       id: typecheck
-      uses: ayberkt/agda-github-action@v4.0
+      uses: ayberkt/agda-github-action@no-pandoc
       with:
         main-file: AllModulesIndex.lagda
         source-dir: source
         unsafe: true
-        generate_html: false
 
     - name: "Save .agdai files"
       id: cache-agdai-save
