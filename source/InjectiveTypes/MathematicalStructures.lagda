@@ -897,3 +897,53 @@ TODO. More techniques are needed to show that the type of 1-categories
 would be injective. A category can be seen as a graph equipped with
 operations (identity and composition) satisfying properties (identity
 laws, associativity, univalence).
+
+Added 24 July 2025 by Tom de Jong.
+
+In InjectiveTypes.InhabitedTypesTaboo we showed that the type of nonempty types
+is injective by exhibiting it as a retract of the universe. In line with the
+condition from InjectiveTypes.Subtypes, the argument there shows that a type is
+nonempty if and only if it is a fixed point of the map X ↦ (¬¬ X → X).
+
+Here is an alternative proof, using that
+   (Π (p : P) , ¬¬ A p)   →   ¬¬ Π (p : P) , A p
+is provable when P is a proposition.
+
+\begin{code}
+
+Nonempty-Π-data : compatibility-data (is-nonempty {𝓤}) universes-are-flabby-Π
+Nonempty-Π-data {𝓤} = Π-construction is-nonempty T T-refl c
+ where
+  S = is-nonempty
+
+  T : {X Y : 𝓤 ̇ } → (X ≃ Y) → S X → S Y
+  T e = ¬¬-functor ⌜ e ⌝
+
+  T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
+  T-refl x = refl
+
+  σ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ )
+    → ((h : p holds) → S (A h)) → S (Π A)
+  σ p A φ ν = III
+   where
+    I : (h : p holds) → ¬ A h
+    I h a = ν (λ h' → transport A (holds-is-prop p h h') a)
+
+    II : ¬ (p holds)
+    II h = φ h (I h)
+
+    III : 𝟘
+    III = ν (λ h → 𝟘-elim (II h))
+
+  c : compatibility-data-Π S T T-refl
+  c p A = σ p A , (λ φ → dfunext fe' (λ h → negations-are-props fe' _ _))
+
+ainjectivity-of-type-of-nonempty-types
+ : ainjective-type (Σ X ꞉ 𝓤 ̇ , is-nonempty X) 𝓤 𝓤
+ainjectivity-of-type-of-nonempty-types =
+ ainjectivity-of-type-of-structures
+  is-nonempty
+  universes-are-flabby-Π
+  Nonempty-Π-data
+
+\end{code}
