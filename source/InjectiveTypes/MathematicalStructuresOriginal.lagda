@@ -568,31 +568,32 @@ ainjectivity-of-∞-Magma∙ {𝓤} =
 \end{code}
 
 We now want to add axioms to e.g. pointed ∞-magmas to get monoids and
-conclude that the type of monoids is injective.
+conclude that the type of monoids is injective. We use the letter 𝔞 to
+range over arbitrary axioms.
 
 \begin{code}
 
 closure-under-prop-Π-with-axioms
  : (S : 𝓤 ̇ → 𝓥 ̇ )
    (ρ-is-equiv : closed-under-prop-Π S)
-   (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
-   (axioms-are-prop-valued : (X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
-   (axioms-closed-under-prop-Π :
-          (p : Ω 𝓤 )
-          (A : p holds → 𝓤 ̇ )
-        → (α : (h : p holds) → S (A h))
-        → ((h : p holds) → axioms (A h) (α h))
-        → axioms (Π A) (inverse (canonical-map.ρ S p A) (ρ-is-equiv p A) α))
- → closed-under-prop-Π (λ X → Σ s ꞉ S X , axioms X s)
+   (𝔞 : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
+   (𝔞-is-prop-valued : (X : 𝓤 ̇ ) (s : S X) → is-prop (𝔞 X s))
+   (𝔞-closed-under-prop-Π :
+       (p : Ω 𝓤 )
+       (A : p holds → 𝓤 ̇ )
+     → (α : (h : p holds) → S (A h))
+     → ((h : p holds) → 𝔞 (A h) (α h))
+     → 𝔞 (Π A) (inverse (canonical-map.ρ S p A) (ρ-is-equiv p A) α))
+ → closed-under-prop-Π (λ X → Σ s ꞉ S X , 𝔞 X s)
 closure-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
                                  S
                                  ρ-is-equiv
-                                 axioms
-                                 axioms-are-prop-valued
-                                 axioms-closed-under-prop-Π = ρₐ-is-equiv
+                                 𝔞
+                                 𝔞-is-prop-valued
+                                 𝔞-closed-under-prop-Π = ρₐ-is-equiv
    where
     Sₐ : 𝓤 ̇ → 𝓥 ⊔ 𝓦 ̇
-    Sₐ X = Σ s ꞉ S X , axioms X s
+    Sₐ X = Σ s ꞉ S X , 𝔞 X s
 
     module _ (p : Ω 𝓤)
              (A : p holds → 𝓤 ̇ )
@@ -606,7 +607,7 @@ closure-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
 
      ρₐ⁻¹ : ((h : p holds) → Sₐ (A h)) → Sₐ (Π A)
      ρₐ⁻¹ α = ρ⁻¹ (λ h → pr₁ (α h)) ,
-              axioms-closed-under-prop-Π p A
+              𝔞-closed-under-prop-Π p A
                (λ h → pr₁ (α h))
                (λ h → pr₂ (α h))
 
@@ -619,9 +620,9 @@ closure-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
       (ρ⁻¹ (ρ s) , _)                         ＝⟨ II ⟩
       (s , a)                                 ∎
        where
-        I = ap ρₐ⁻¹ (dfunext fe' (λ h → transport-Σ S axioms (A h) (ϕ h) s))
+        I = ap ρₐ⁻¹ (dfunext fe' (λ h → transport-Σ S 𝔞 (A h) (ϕ h) s))
         II = to-subtype-＝
-              (axioms-are-prop-valued (Π A))
+              (𝔞-is-prop-valued (Π A))
               (inverses-are-retractions ρ (ρ-is-equiv p A) s)
 
      ε : ρₐ ∘ ρₐ⁻¹ ∼ id
@@ -640,9 +641,9 @@ closure-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
         (α₁ h , α₂ h)                    ＝⟨ refl ⟩
         α h                              ∎
          where
-          II  = transport-Σ S axioms (A h) (ϕ h) (ρ⁻¹ α₁)
+          II  = transport-Σ S 𝔞 (A h) (ϕ h) (ρ⁻¹ α₁)
           III = to-subtype-＝
-                 (axioms-are-prop-valued (A h))
+                 (𝔞-is-prop-valued (A h))
                  (ap (λ - → - h) (inverses-are-sections ρ (ρ-is-equiv p A) α₁))
 
      ρₐ-is-equiv : is-equiv ρₐ
