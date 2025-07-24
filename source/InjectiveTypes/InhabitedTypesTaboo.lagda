@@ -257,6 +257,9 @@ unspecified-split-support-gives-retract.
 This also serves to highlight the (constructive) difference(s) between
 propositional truncation and double negation.
 
+An alternative proof of the injectivity of the type of non-empty types
+may be found in InjectiveTypes.MathematicalStrutures.
+
 \begin{code}
 
 Non-Empty : 𝓤 ⁺ ̇
