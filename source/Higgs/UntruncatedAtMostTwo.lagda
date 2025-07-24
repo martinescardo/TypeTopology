@@ -130,11 +130,11 @@ almost-constantly-is-constant {_} {_} {X} {Y} X-discrete x' y _ refl = dfunext f
 
 
 at-most-discrete-gives-discrete
-  : {𝓤 𝓥 : Universe}
-  → (X : 𝓤 ̇) (Y : 𝓥 ̇)
-  → is-discrete X
-  → ((f : X → Y) → f has-a-repetition)
-  → is-discrete Y
+ : {𝓤 𝓥 : Universe}
+ → (X : 𝓤 ̇) (Y : 𝓥 ̇)
+ → is-discrete X
+ → ((f : X → Y) → f has-a-repetition)
+ → is-discrete Y
 at-most-discrete-gives-discrete X Y X-discrete f-ph y y' = V VI
  where
 
@@ -145,15 +145,15 @@ at-most-discrete-gives-discrete X Y X-discrete f-ph y y' = V VI
     (f-ph f)
 
   repeat-is-repeat : (f : X → Y)
-                   → let (x , x') = repeat-indices f in
-                   f x ＝ f x'
+                   → let (x , x') = repeat-indices f
+                     in f x ＝ f x'
   repeat-is-repeat f =
     let (x , x' , _ , pf) = f-ph f
     in pf
 
   repeat-distinct : (f : X → Y)
-                → let (x , x') = repeat-indices f in
-                x ≠ x'
+                  → let (x , x') = repeat-indices f
+                    in x ≠ x'
   repeat-distinct f =
     let (x , x' , pf , _) = f-ph f
     in pf
@@ -165,7 +165,7 @@ at-most-discrete-gives-discrete X Y X-discrete f-ph y y' = V VI
 
   I : y ＝ y' → ix₁ ＝ ix₂
   I e = ap repeat-indices
-    (almost-constantly-is-constant X-discrete (pr₁ ix₁) y y' e)
+           (almost-constantly-is-constant X-discrete (pr₁ ix₁) y y' e)
 
   II : (x : X)
      → (pr₁ ix₁ ≠ x)
@@ -177,14 +177,14 @@ at-most-discrete-gives-discrete X Y X-discrete f-ph y y' = V VI
 
   IV : ix₁ ＝ ix₂ → y ＝ y'
   IV e =
-    y            ＝⟨ II (pr₂ ix₁) (repeat-distinct f₁) ⟩
-    f₂ (pr₂ ix₁) ＝⟨ ap (f₂ ∘ pr₂) e ⟩
-    f₂ (pr₂ ix₂) ＝⟨ refl ⟩
-    f₂ (pr₂ (repeat-indices f₂)) ＝⟨ repeat-is-repeat f₂ ⁻¹ ⟩
-    f₂ (pr₁ (repeat-indices f₂)) ＝⟨ refl ⟩
-    f₂ (pr₁ ix₂) ＝⟨ ap (f₂ ∘ pr₁) (e ⁻¹) ⟩
-    f₂ (pr₁ ix₁) ＝⟨ III ⟩
-    y' ∎
+   y                            ＝⟨ II (pr₂ ix₁) (repeat-distinct f₁) ⟩
+   f₂ (pr₂ ix₁)                 ＝⟨ ap (f₂ ∘ pr₂) e ⟩
+   f₂ (pr₂ ix₂)                 ＝⟨ refl ⟩
+   f₂ (pr₂ (repeat-indices f₂)) ＝⟨ repeat-is-repeat f₂ ⁻¹ ⟩
+   f₂ (pr₁ (repeat-indices f₂)) ＝⟨ refl ⟩
+   f₂ (pr₁ ix₂)                 ＝⟨ ap (f₂ ∘ pr₁) (e ⁻¹) ⟩
+   f₂ (pr₁ ix₁)                 ＝⟨ III ⟩
+   y'                           ∎
 
   V : is-decidable (ix₁ ＝ ix₂) → is-decidable (y ＝ y')
   V (inl e) = inl (IV e)
@@ -200,11 +200,11 @@ We may write the untruncated form of the at-most-2 lemma in this form
 \begin{code} 
 
 at-most-two-is-pigeonhole
-  : {𝓤 : Universe}
-  → {X : 𝓤 ̇}
-  → ((x y z : X) → (z ＝ x) + (x ＝ y) + (y ＝ z))
-  → (f : Fin 3 → X)
-  → f has-a-repetition
+ : {𝓤 : Universe}
+ → {X : 𝓤 ̇}
+ → ((x y z : X) → (z ＝ x) + (x ＝ y) + (y ＝ z))
+ → (f : Fin 3 → X)
+ → f has-a-repetition
 at-most-two-is-pigeonhole at-most-2 f = II I
  where
   v1 v2 v3 : Fin 3
@@ -244,11 +244,10 @@ at-most-two-is-pigeonhole at-most-2 f = II I
   II (inr (inr e23)) = ( v2 , v3 , v2-not-3 , e23 )
 
 aut-Ω-discrete-has-em
-  : is-discrete (Aut Ω)
-  → (𝕗 : Aut Ω)
-  → (𝕗 ＝ 𝕚𝕕) + (𝕗 ≠ 𝕚𝕕)
-aut-Ω-discrete-has-em aut-disc 𝕗 =
-  aut-disc 𝕗 𝕚𝕕
+ : is-discrete (Aut Ω)
+ → (𝕗 : Aut Ω)
+ → (𝕗 ＝ 𝕚𝕕) + (𝕗 ≠ 𝕚𝕕)
+aut-Ω-discrete-has-em aut-disc 𝕗 = aut-disc 𝕗 𝕚𝕕
 
 untruncated-at-most-two-iff-em
  : ((f g h : Aut Ω) → (h ＝ f) + (f ＝ g) + (g ＝ h))
@@ -258,21 +257,18 @@ untruncated-at-most-two-iff-em = (FW , BW)
   FW : ((f g h : Aut Ω) → (h ＝ f) + (f ＝ g) + (g ＝ h))
      → ((𝕗 : Aut Ω) → (𝕗 ＝ 𝕚𝕕) + (𝕗 ≠ 𝕚𝕕))
   FW at-most-two = aut-Ω-discrete-has-em
-    (at-most-discrete-gives-discrete
-      (Fin 3) (Aut Ω)
-      Fin-is-discrete
-      (at-most-two-is-pigeonhole at-most-two)
-    )
+      (at-most-discrete-gives-discrete
+       (Fin 3) (Aut Ω)
+       Fin-is-discrete
+       (at-most-two-is-pigeonhole at-most-two))
 
   I : {f g : Aut Ω}
     → (f ≠ 𝕚𝕕)
     → (g ≠ 𝕚𝕕)
     → (f ＝ g)
-  I {f} f-not g-not =
-    ((not-id-is-not f-not em) ∙
-     (not-id-is-not g-not em) ⁻¹)
+  I {f} f-not g-not = ((not-id-is-not f-not em) ∙ (not-id-is-not g-not em) ⁻¹)
    where
-     em = Ω-automorphism-distinct-from-𝕚𝕕-gives-EM (f , f-not)
+    em = Ω-automorphism-distinct-from-𝕚𝕕-gives-EM (f , f-not)
 
   II : {f g h : Aut Ω}
      → ((f ＝ 𝕚𝕕) + (f ≠ 𝕚𝕕))
