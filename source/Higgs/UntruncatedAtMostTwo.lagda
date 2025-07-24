@@ -215,11 +215,17 @@ at-most-two-is-pigeonhole at-most-2 f = II I
   true-when : Fin 3
             → Fin 3
             → 𝓤 ⁺ ̇
-  true-when (inr _) (inr _) = 𝟙
+  true-when (inl (inl _)) (inl (inl _)) = 𝟙
+  true-when (inl (inl _)) (inl (inr _)) = 𝟘
+  true-when (inl (inl _)) (inr _) = 𝟘
+
+  true-when (inl (inr _)) (inl (inl _)) = 𝟘
   true-when (inl (inr _)) (inl (inr _)) = 𝟙
-  true-when (inl (inl (inr _))) (inl (inl (inr _))) = 𝟙
-  {-# CATCHALL #-}
-  true-when _ _ = 𝟘
+  true-when (inl (inr _)) (inr _) = 𝟘
+
+  true-when (inr _) (inl (inl _)) = 𝟘
+  true-when (inr _) (inl (inr _)) = 𝟘
+  true-when (inr _) (inr _) = 𝟙
 
   v3-not-1 : v3 ≠ v1
   v3-not-1 e = 𝟘-elim (transport (true-when v3) e ⋆)
