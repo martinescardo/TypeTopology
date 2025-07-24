@@ -52,34 +52,82 @@ holds if and only if the two elements of the codomain are equal.
 constantly : {𝓤 𝓥 : Universe}
            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
            → Y → X → Y
-constantly const-y _ = const-y
+constantly y _ = y
+
+almost-constantly-inner : {𝓤 𝓥 : Universe}
+                  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                  → (x' : X) → Y → Y → (x : X)
+                  → ((x' ＝ x) + (x' ≠ x))
+                  → Y
+almost-constantly-inner _ y' y _ (inl _) = y'
+almost-constantly-inner _ y' y _ (inr _) = y
 
 almost-constantly : {𝓤 𝓥 : Universe}
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → is-discrete X
-                  → X → Y → Y → X → Y
-almost-constantly X-discrete pt-x pt-y const-y x' =
-  cases
-   (λ _ → pt-y) (λ _ → const-y)
-   (X-discrete x' pt-x)
+                  → X → Y → Y → X
+                  → Y
+almost-constantly X-discrete x' y' y x =
+ almost-constantly-inner x' y' y x (X-discrete x' x)
+
+almost-constantly-eq : {𝓤 𝓥 : Universe}
+                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                     → (X-discrete : is-discrete X)
+                     → (x : X)
+                     → (y' y : Y)
+                     → almost-constantly X-discrete x y' y x ＝ y'
+almost-constantly-eq X-discrete x y' y =
+ almost-constantly X-discrete x y' y x               ＝⟨ refl ⟩
+ almost-constantly-inner x y' y x (X-discrete x x)   ＝⟨ I ⟩
+ almost-constantly-inner x y' y x (inl refl)         ＝⟨ refl ⟩
+ y'                                                  ∎
+ where
+  I : almost-constantly-inner x y' y x (X-discrete x x) ＝
+      almost-constantly-inner x y' y x (inl refl)
+  I = ap (almost-constantly-inner x y' y x)
+         (discrete-inl-refl X-discrete x)
+
+almost-constantly-neq : {𝓤 𝓥 : Universe}
+                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                      → (X-discrete : is-discrete X)
+                      → (x' x : X)
+                      → (y' y : Y)
+                      → (x' ≠ x)
+                      → almost-constantly X-discrete x' y' y x ＝ y
+almost-constantly-neq X-discrete x' x y' y ν =
+ almost-constantly X-discrete x' y' y x               ＝⟨ refl ⟩
+ almost-constantly-inner x' y' y x (X-discrete x' x)  ＝⟨ I ⟩
+ almost-constantly-inner x' y' y x (inr ν)            ＝⟨ refl ⟩
+ y                                                    ∎
+ where
+  I :  almost-constantly-inner x' y' y x (X-discrete x' x) ＝
+       almost-constantly-inner x' y' y x (inr ν)
+  I = ap (almost-constantly-inner x' y' y x)
+         (discrete-inr fe X-discrete x' x ν)
+
 
 almost-constantly-is-constant
  : {𝓤 𝓥 : Universe}
  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
  → (X-discrete : is-discrete X)
- → (x : X)
+ → (x' : X)
  → (y y' : Y)
  → y ＝ y'
- → constantly y ＝ almost-constantly X-discrete x y' y
-almost-constantly-is-constant {_} {_} {X} {Y} X-discrete x y _ refl = dfunext fe I
+ → constantly y ＝ almost-constantly X-discrete x' y' y
+almost-constantly-is-constant {_} {_} {X} {Y} X-discrete x' y _ refl = dfunext fe III
  where
-  I : (x' : X)
-    → constantly y x' ＝ almost-constantly X-discrete x y y x'
-  -- possibly rewrite this with dep-cases?
-  -- it's more obvious and spartan but much more awkward
-  I x' with X-discrete x' x
-  ... | inl _ = refl
-  ... | inr _ = refl
+  I : constantly y x' ＝ y
+  I = refl
+
+  II : (x : X)
+     → ((x' ＝ x) + (x' ≠ x))
+     → almost-constantly X-discrete x' y y x ＝ y
+  II _ (inl refl) = almost-constantly-eq X-discrete x' y y
+  II x (inr ν) = almost-constantly-neq X-discrete x' x y y ν
+
+  III : (x : X) → constantly y x' ＝ almost-constantly X-discrete x' y y x
+  III x = I ∙ II x (X-discrete x' x) ⁻¹
+
 
 at-most-discrete-gives-discrete
   : {𝓤 𝓥 : Universe}
@@ -122,14 +170,10 @@ at-most-discrete-gives-discrete X Y X-discrete f-ph y y' = V VI
   II : (x : X)
      → (pr₁ ix₁ ≠ x)
      → y ＝ f₂ x
-  II x ne with X-discrete x (pr₁ ix₁)
-  ... | inl e = 𝟘-elim (ne (e ⁻¹))
-  ... | inr _ = refl
+  II x ne = almost-constantly-neq X-discrete (pr₁ ix₁) x y' y ne ⁻¹
 
   III : f₂ (pr₁ ix₁) ＝ y'
-  III with X-discrete (pr₁ ix₁) (pr₁ ix₁)
-  ... | inl e = refl
-  ... | inr ne = 𝟘-elim (ne refl)
+  III = almost-constantly-eq X-discrete (pr₁ ix₁) y' y
 
   IV : ix₁ ＝ ix₂ → y ＝ y'
   IV e =
