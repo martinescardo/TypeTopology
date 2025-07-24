@@ -547,7 +547,7 @@ Monoid-Π-data {𝓤} =
     _*_ {h} = pr₁ (α h)
 
     _·_ : Π A → Π A → Π A
-    f · g = λ h → f h * g h
+    (f · g) h = f h * g h
 
     e : Π A
     e h = pr₂ (α h)

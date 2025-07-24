@@ -578,74 +578,68 @@ closure-under-prop-Π-with-axioms
    (ρ-is-equiv : closed-under-prop-Π S)
    (𝔞 : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
    (𝔞-is-prop-valued : (X : 𝓤 ̇ ) (s : S X) → is-prop (𝔞 X s))
-   (𝔞-closed-under-prop-Π :
-       (p : Ω 𝓤 )
-       (A : p holds → 𝓤 ̇ )
-     → (α : (h : p holds) → S (A h))
-     → ((h : p holds) → 𝔞 (A h) (α h))
-     → 𝔞 (Π A) (inverse (canonical-map.ρ S p A) (ρ-is-equiv p A) α))
+   (𝔞Π : (p : Ω 𝓤 )
+         (A : p holds → 𝓤 ̇ )
+       → (α : (h : p holds) → S (A h))
+       → ((h : p holds) → 𝔞 (A h) (α h))
+       → 𝔞 (Π A) (inverse (canonical-map.ρ S p A) (ρ-is-equiv p A) α))
  → closed-under-prop-Π (λ X → Σ s ꞉ S X , 𝔞 X s)
-closure-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
-                                 S
-                                 ρ-is-equiv
-                                 𝔞
-                                 𝔞-is-prop-valued
-                                 𝔞-closed-under-prop-Π = ρₐ-is-equiv
-   where
-    Sₐ : 𝓤 ̇ → 𝓥 ⊔ 𝓦 ̇
-    Sₐ X = Σ s ꞉ S X , 𝔞 X s
+closure-under-prop-Π-with-axioms
+ {𝓤} {𝓥} {𝓦} S ρ-is-equiv 𝔞 𝔞-is-prop-valued 𝔞Π = ρₐ-is-equiv
+ where
+  Sₐ : 𝓤 ̇ → 𝓥 ⊔ 𝓦 ̇
+  Sₐ X = Σ s ꞉ S X , 𝔞 X s
 
-    module _ (p : Ω 𝓤)
-             (A : p holds → 𝓤 ̇ )
-           where
-
-     open canonical-map S  p A using (ρ ; ϕ)
-     open canonical-map Sₐ p A renaming (ρ to ρₐ) using ()
-
-     ρ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
-     ρ⁻¹ = inverse ρ (ρ-is-equiv p A)
-
-     ρₐ⁻¹ : ((h : p holds) → Sₐ (A h)) → Sₐ (Π A)
-     ρₐ⁻¹ α = ρ⁻¹ (pr₁ ⊚ α) ,
-              𝔞-closed-under-prop-Π p A (pr₁ ⊚ α) (pr₂ ⊚ α)
-
-     η : ρₐ⁻¹ ∘ ρₐ ∼ id
-     η (s , a) =
-      ρₐ⁻¹ (ρₐ (s , a))                       ＝⟨ refl ⟩
-      ρₐ⁻¹ (λ h → transport Sₐ (ϕ h) (s , _)) ＝⟨ I ⟩
-      ρₐ⁻¹ (λ h → transport S (ϕ h) s , _)    ＝⟨ refl ⟩
-      ρ⁻¹ (λ h → transport S (ϕ h) s) , _     ＝⟨ refl ⟩
-      ρ⁻¹ (ρ s) , _                           ＝⟨ II ⟩
-      (s , a)                                 ∎
-       where
-        I = ap ρₐ⁻¹ (dfunext fe' (λ h → transport-Σ S 𝔞 (A h) (ϕ h) s))
-        II = to-subtype-＝
-              (𝔞-is-prop-valued (Π A))
-              (inverses-are-retractions ρ (ρ-is-equiv p A) s)
-
-     ε : ρₐ ∘ ρₐ⁻¹ ∼ id
-     ε α = dfunext fe' I
-      where
-       α₁ = λ h → pr₁ (α h)
-       α₂ = λ h → pr₂ (α h)
-
-       I : ρₐ (ρₐ⁻¹ α) ∼ α
-       I h =
-        ρₐ (ρₐ⁻¹ α) h                    ＝⟨ refl ⟩
-        ρₐ (ρ⁻¹ α₁ , _) h                ＝⟨ refl ⟩
-        transport Sₐ (ϕ h) (ρ⁻¹ α₁ , _)  ＝⟨ II ⟩
-        (transport S (ϕ h) (ρ⁻¹ α₁) , _) ＝⟨ refl ⟩
-        (ρ (ρ⁻¹ α₁) h , _)               ＝⟨ III ⟩
-        (α₁ h , α₂ h)                    ＝⟨ refl ⟩
-        α h                              ∎
+  module _ (p : Ω 𝓤)
+           (A : p holds → 𝓤 ̇ )
          where
-          II  = transport-Σ S 𝔞 (A h) (ϕ h) (ρ⁻¹ α₁)
-          III = to-subtype-＝
-                 (𝔞-is-prop-valued (A h))
-                 (ap (λ - → - h) (inverses-are-sections ρ (ρ-is-equiv p A) α₁))
 
-     ρₐ-is-equiv : is-equiv ρₐ
-     ρₐ-is-equiv = qinvs-are-equivs ρₐ (ρₐ⁻¹ , η , ε)
+   open canonical-map S  p A using (ρ ; ϕ)
+   open canonical-map Sₐ p A renaming (ρ to ρₐ) using ()
+
+   ρ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
+   ρ⁻¹ = inverse ρ (ρ-is-equiv p A)
+
+   ρₐ⁻¹ : ((h : p holds) → Sₐ (A h)) → Sₐ (Π A)
+   ρₐ⁻¹ α = ρ⁻¹ (pr₁ ⊚ α) , 𝔞Π p A (pr₁ ⊚ α) (pr₂ ⊚ α)
+
+   η : ρₐ⁻¹ ∘ ρₐ ∼ id
+   η (s , a) =
+    ρₐ⁻¹ (ρₐ (s , a))                       ＝⟨ refl ⟩
+    ρₐ⁻¹ (λ h → transport Sₐ (ϕ h) (s , _)) ＝⟨ I ⟩
+    ρₐ⁻¹ (λ h → transport S (ϕ h) s , _)    ＝⟨ refl ⟩
+    ρ⁻¹ (λ h → transport S (ϕ h) s) , _     ＝⟨ refl ⟩
+    ρ⁻¹ (ρ s) , _                           ＝⟨ II ⟩
+    (s , a)                                 ∎
+     where
+      I = ap ρₐ⁻¹ (dfunext fe' (λ h → transport-Σ S 𝔞 (A h) (ϕ h) s))
+      II = to-subtype-＝
+            (𝔞-is-prop-valued (Π A))
+            (inverses-are-retractions ρ (ρ-is-equiv p A) s)
+
+   ε : ρₐ ∘ ρₐ⁻¹ ∼ id
+   ε α = dfunext fe' I
+    where
+     α₁ = λ h → pr₁ (α h)
+     α₂ = λ h → pr₂ (α h)
+
+     I : ρₐ (ρₐ⁻¹ α) ∼ α
+     I h =
+      ρₐ (ρₐ⁻¹ α) h                    ＝⟨ refl ⟩
+      ρₐ (ρ⁻¹ α₁ , _) h                ＝⟨ refl ⟩
+      transport Sₐ (ϕ h) (ρ⁻¹ α₁ , _)  ＝⟨ II ⟩
+      (transport S (ϕ h) (ρ⁻¹ α₁) , _) ＝⟨ refl ⟩
+      (ρ (ρ⁻¹ α₁) h , _)               ＝⟨ III ⟩
+      (α₁ h , α₂ h)                    ＝⟨ refl ⟩
+      α h                              ∎
+       where
+        II  = transport-Σ S 𝔞 (A h) (ϕ h) (ρ⁻¹ α₁)
+        III = to-subtype-＝
+               (𝔞-is-prop-valued (A h))
+               (ap (λ - → - h) (inverses-are-sections ρ (ρ-is-equiv p A) α₁))
+
+   ρₐ-is-equiv : is-equiv ρₐ
+   ρₐ-is-equiv = qinvs-are-equivs ρₐ (ρₐ⁻¹ , η , ε)
 
 \end{code}
 
@@ -680,8 +674,11 @@ Monoid-is-closed-under-prop-Π {𝓤} = V
     → monoid-axioms (Π A) (ρ⁻¹ p A α)
   axioms-closed-under-prop-Π p A α F = I , II , III , IV
    where
+    _*_ : {h : p holds} → A h → A h → A h
+    _*_ {h} = pr₁ (α h)
+
     _·_ : Π A → Π A → Π A
-    f · g = λ h → pr₁ (α h) (f h) (g h)
+    (f · g) h = f h * g h
 
     e : Π A
     e h = pr₂ (α h)
