@@ -257,10 +257,10 @@ untruncated-at-most-two-iff-em = (FW , BW)
   FW : ((f g h : Aut Ω) → (h ＝ f) + (f ＝ g) + (g ＝ h))
      → ((𝕗 : Aut Ω) → (𝕗 ＝ 𝕚𝕕) + (𝕗 ≠ 𝕚𝕕))
   FW at-most-two = aut-Ω-discrete-has-em
-      (at-most-discrete-gives-discrete
-       (Fin 3) (Aut Ω)
-       Fin-is-discrete
-       (at-most-two-is-pigeonhole at-most-two))
+   (at-most-discrete-gives-discrete
+    (Fin 3) (Aut Ω)
+    Fin-is-discrete
+    (at-most-two-is-pigeonhole at-most-two))
 
   I : {f g : Aut Ω}
     → (f ≠ 𝕚𝕕)
