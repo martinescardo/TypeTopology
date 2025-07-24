@@ -606,18 +606,16 @@ closure-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
      ρ⁻¹ = inverse ρ (ρ-is-equiv p A)
 
      ρₐ⁻¹ : ((h : p holds) → Sₐ (A h)) → Sₐ (Π A)
-     ρₐ⁻¹ α = ρ⁻¹ (λ h → pr₁ (α h)) ,
-              𝔞-closed-under-prop-Π p A
-               (λ h → pr₁ (α h))
-               (λ h → pr₂ (α h))
+     ρₐ⁻¹ α = ρ⁻¹ (pr₁ ⊚ α) ,
+              𝔞-closed-under-prop-Π p A (pr₁ ⊚ α) (pr₂ ⊚ α)
 
      η : ρₐ⁻¹ ∘ ρₐ ∼ id
      η (s , a) =
       ρₐ⁻¹ (ρₐ (s , a))                       ＝⟨ refl ⟩
-      ρₐ⁻¹ (λ h → transport Sₐ (ϕ h) (s , a)) ＝⟨ I ⟩
+      ρₐ⁻¹ (λ h → transport Sₐ (ϕ h) (s , _)) ＝⟨ I ⟩
       ρₐ⁻¹ (λ h → transport S (ϕ h) s , _)    ＝⟨ refl ⟩
-      (ρ⁻¹ (λ h → transport S (ϕ h) s) , _)   ＝⟨ refl ⟩
-      (ρ⁻¹ (ρ s) , _)                         ＝⟨ II ⟩
+      ρ⁻¹ (λ h → transport S (ϕ h) s) , _     ＝⟨ refl ⟩
+      ρ⁻¹ (ρ s) , _                           ＝⟨ II ⟩
       (s , a)                                 ∎
        where
         I = ap ρₐ⁻¹ (dfunext fe' (λ h → transport-Σ S 𝔞 (A h) (ϕ h) s))

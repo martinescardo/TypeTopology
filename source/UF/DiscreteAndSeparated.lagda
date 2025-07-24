@@ -387,7 +387,7 @@ binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') =
     q (inr v) = v
 
   lemma : ¬¬ (inr y ＝ inr y') → inr y ＝ inr y'
-  lemma = (ap inr) ∘ (t y y') ∘ ¬¬-functor claim
+  lemma = ap inr ∘ t y y' ∘ ¬¬-functor claim
 
 ⊥-⊤-density' : funext 𝓤 𝓤
              → propext 𝓤
