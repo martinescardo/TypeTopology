@@ -16,6 +16,10 @@ module InjectiveTypes.Subtypes
         (fe : FunExt)
        where
 
+private
+ fe' : Fun-Ext
+ fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+
 open import InjectiveTypes.Blackboard fe
 open import InjectiveTypes.OverSmallMaps fe
 open import MLTT.Spartan
@@ -183,3 +187,57 @@ But clearly we don't have that ∥ X ∥ ≃ (is-prop X → X).
 
 TODO. Maybe complete the formalization of the example, but I am not
 sure it is worth it.
+
+Added 24 July 2025 by Tom de Jong.
+
+In InjectiveTypes.InhabitedTypesTaboo we showed that the type of nonempty types
+is injective by exhibiting it as a retract of the universe. Here is an
+alternative proof, using that
+   (Π (p : P) , ¬¬ A p)   →   ¬¬ Π (p : P) , A p
+is provable when P is a proposition.
+
+\begin{code}
+
+open import UF.PropTrunc
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Univalence
+
+module _ (pt : propositional-truncations-exist) where
+ open PropositionalTruncation pt
+
+ Nonempty-type : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ Nonempty-type 𝓤 = Σ X ꞉ 𝓤 ̇ , is-nonempty X
+
+ ainjectivity-of-type-of-nonempty-types : is-univalent 𝓤 → ainjective-type (Nonempty-type 𝓤) 𝓤 𝓤
+ ainjectivity-of-type-of-nonempty-types {𝓤} ua = II
+  where
+   f : 𝓤 ̇  → 𝓤 ̇
+   f X = ¬¬ X → X
+   I-f : (X : 𝓤 ̇ ) → is-nonempty (f X)
+   I-f X = double-negation-elimination-inside-double-negation X
+   II-f : (X : 𝓤 ̇ ) → is-nonempty X → f X ＝ X
+   II-f X X-non-empty = eqtoid ua (f X) X e
+    where
+     e = (¬¬ X → X) ≃⟨ I ⟩
+         (𝟙{𝓤} → X) ≃⟨ ≃-sym (𝟙→ fe') ⟩
+         X          ■
+      where
+       I = →cong'' fe' fe' (idtoeq (¬¬ X) 𝟙 II)
+        where
+         II : ¬¬ X ＝ 𝟙
+         II = holds-gives-equal-𝟙 (univalence-gives-propext ua) (¬¬ X) (negations-are-props fe') X-non-empty
+
+   I : ainjective-type (Nonempty-type 𝓤) 𝓤 𝓤
+     ↔ (Σ f ꞉ (𝓤 ̇  → 𝓤 ̇ ) , ((X : 𝓤 ̇ ) → is-nonempty (f X))
+                                        × ((X : 𝓤 ̇ ) → is-nonempty X → f X ＝ X))
+   I = necessary-and-sufficient-condition-for-injectivity-of-subtype-single-universe
+          (𝓤 ̇ )
+          is-nonempty
+          (λ _ → negations-are-props (fe _ _))
+          (universes-are-ainjective ua)
+   II : ainjective-type (Nonempty-type 𝓤) 𝓤 𝓤
+   II = rl-implication I (f , I-f , II-f)
+
+
+\end{code}

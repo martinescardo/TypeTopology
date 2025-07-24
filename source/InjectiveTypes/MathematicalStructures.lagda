@@ -907,7 +907,7 @@ nonempty if and only if it is a fixed point of the map X ↦ (¬¬ X → X).
 
 Here is an alternative proof, using that
    (Π (p : P) , ¬¬ A p)   →   ¬¬ Π (p : P) , A p
-is provable when P is a proposition.
+holds when P is a proposition.
 
 \begin{code}
 
