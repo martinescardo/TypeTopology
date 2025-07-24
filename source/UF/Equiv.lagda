@@ -263,6 +263,13 @@ lc-split-surjections-are-equivs f l s = qinvs-are-equivs f (g , η , ε)
     p : f (g (f x)) ＝ f x
     p = ε (f x)
 
+lc-retractions-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                          → left-cancellable f
+                          → has-section f
+                          → is-equiv f
+lc-retractions-are-equivs f lc-f (s , H) =
+ lc-split-surjections-are-equivs f lc-f (λ y → s y , H y)
+
 ≃-sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  → X ≃ Y → Y ≃ X
 ≃-sym {𝓤} {𝓥} {X} {Y} (f , e) = inverse f e , inverses-are-equivs f e
 
@@ -376,6 +383,9 @@ vv-equivs-are-equivs {𝓤} {𝓥} {X} {Y} f φ = (g , fg) , (g , gf)
 
   gf : (x : X) → g (f x) ＝ x
   gf x = ap pr₁ (e x)
+
+id-is-vv-equiv : (X : 𝓤 ̇ ) → is-vv-equiv (id {𝓤} {X})
+id-is-vv-equiv X y = (y , refl) , (λ where (.y , refl) → refl)
 
 fiber' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
 fiber' f y = Σ x ꞉ domain f , y ＝ f x
