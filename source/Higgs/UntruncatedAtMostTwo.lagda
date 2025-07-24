@@ -212,27 +212,27 @@ at-most-two-is-pigeonhole at-most-2 f = II I
   v2 = inl (inr ⋆)
   v3 = inl (inl (inr ⋆))
 
-  true-when : Fin 3
-            → Fin 3
-            → 𝓤 ⁺ ̇
-  true-when (inl (inl _)) (inl (inl _)) = 𝟙
-  true-when (inl (inl _)) (inl (inr _)) = 𝟘
-  true-when (inl (inl _)) (inr _) = 𝟘
+  true-when-eq : Fin 3
+               → Fin 3
+               → 𝓤 ⁺ ̇
+  true-when-eq (inl (inl _)) (inl (inl _)) = 𝟙
+  true-when-eq (inl (inl _)) (inl (inr _)) = 𝟘
+  true-when-eq (inl (inl _)) (inr _) = 𝟘
 
-  true-when (inl (inr _)) (inl (inl _)) = 𝟘
-  true-when (inl (inr _)) (inl (inr _)) = 𝟙
-  true-when (inl (inr _)) (inr _) = 𝟘
+  true-when-eq (inl (inr _)) (inl (inl _)) = 𝟘
+  true-when-eq (inl (inr _)) (inl (inr _)) = 𝟙
+  true-when-eq (inl (inr _)) (inr _) = 𝟘
 
-  true-when (inr _) (inl (inl _)) = 𝟘
-  true-when (inr _) (inl (inr _)) = 𝟘
-  true-when (inr _) (inr _) = 𝟙
+  true-when-eq (inr _) (inl (inl _)) = 𝟘
+  true-when-eq (inr _) (inl (inr _)) = 𝟘
+  true-when-eq (inr _) (inr _) = 𝟙
 
   v3-not-1 : v3 ≠ v1
-  v3-not-1 e = 𝟘-elim (transport (true-when v3) e ⋆)
+  v3-not-1 e = 𝟘-elim (transport (true-when-eq v3) e ⋆)
   v1-not-2 : v1 ≠ v2
-  v1-not-2 e = 𝟘-elim (transport (true-when v1) e ⋆)
+  v1-not-2 e = 𝟘-elim (transport (true-when-eq v1) e ⋆)
   v2-not-3 : v2 ≠ v3
-  v2-not-3 e = 𝟘-elim (transport (true-when v2) e ⋆)
+  v2-not-3 e = 𝟘-elim (transport (true-when-eq v2) e ⋆)
 
   I : (f v3 ＝ f v1) + (f v1 ＝ f v2) + (f v2 ＝ f v3)
   I = at-most-2 (f v1) (f v2) (f v3)
