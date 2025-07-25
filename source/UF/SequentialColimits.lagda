@@ -251,15 +251,23 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
 
 \end{code}
 
-We give the sequential cocone structure for the sequential colimit.
+We provide the sequential cocone structure for the sequential colimit. Notice since the
+pushout is formed on a coproduct we get two equations from the canonical pushout gluing.
+These equations will prove useful throughout the development.
 
 \begin{code}
 
   ι : (n : ℕ) → A n → sequential-colimit
   ι n x = inrr (n , x)
 
+  glue-inl : ((n , x) : Σ A) → inll (n , x) ＝ inrr (n , x)
+  glue-inl (n , x) = glue (inl (n , x))
+
+  glue-inr : ((n , x) : Σ A) → inll (n , x) ＝ inrr (succ n , a n x)
+  glue-inr (n , x) = glue (inr (n , x))
+
   K : (n : ℕ) → ι n ∼ ι (succ n) ∘ a n
-  K n x = glue (inl (n , x)) ⁻¹ ∙ glue (inr (n , x))
+  K n x = glue-inl (n , x) ⁻¹ ∙ glue-inr (n , x)
 
   sequential-colimit-is-cocone : sequential-cocone 𝓐 sequential-colimit
   sequential-colimit-is-cocone = (ι , K)
@@ -340,10 +348,15 @@ canonical map to pushout cocones and the above map that translates between them.
      I n x = refl
      II : (n : ℕ) (x : A n)
         → ap u (K n x)
-        ＝ refl ∙ (ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x))))
-     II n x = ap-∙ u (glue (inl (n , x)) ⁻¹) (glue (inr (n , x)))
-             ∙ (ap (_∙ ap u (glue (inr (n , x)))) (ap-sym u (glue (inl (n , x))) ⁻¹)
-             ∙ refl-left-neutral ⁻¹)
+        ＝ refl ∙ (ap u (glue-inl (n , x)) ⁻¹ ∙ ap u (glue-inr (n , x)))
+     II n x = ap u (K n x)                                                   ＝⟨ III ⟩
+              ap u (glue-inl (n , x) ⁻¹) ∙ ap u (glue-inr (n , x))           ＝⟨ IV ⟩
+              ap u (glue-inl (n , x)) ⁻¹ ∙ ap u (glue-inr (n , x))           ＝⟨ V ⟩
+              refl ∙ (ap u (glue-inl (n , x)) ⁻¹ ∙ ap u (glue-inr (n , x)))  ∎
+      where
+       III = ap-∙ u (glue-inl (n , x) ⁻¹) (glue-inr (n , x))
+       IV = ap (_∙ ap u (glue-inr (n , x))) (ap-sym u (glue-inl (n , x)) ⁻¹)
+       V = refl-left-neutral ⁻¹
 
 \end{code}
 
@@ -446,83 +459,77 @@ Finally, we prove the uniqueness principle for sequential colimits.
   sequential-colimit-uniqueness u u' G M = pushout-uniqueness u u' I II III
    where
     I : (z : Σ A) → u (inll z) ＝ u' (inll z)
-    I (n , x) = ap u (glue (inl (n , x))) ∙ (G n x ∙ ap u' (glue (inl (n , x)) ⁻¹))
+    I (n , x) = ap u (glue-inl (n , x)) ∙ (G n x ∙ ap u' (glue-inl (n , x) ⁻¹))
     II : (z : Σ A) → u (inrr z) ＝ u' (inrr z)
     II (n , x) = G n x
     III : (c : Σ A + Σ A)
         → ap u (glue c) ∙ II (g c) ＝ I (f c) ∙ ap u' (glue c)
-    III (inl (n , x)) = ap u (glue (inl (n , x))) ∙ G n x
-                                                                 ＝⟨ IV ⟩
-                        (ap u (glue (inl (n , x))) ∙ G n x)
-                        ∙ (ap u' (glue (inl (n , x))) ⁻¹
-                        ∙ ap u' (glue (inl (n , x))))
-                                                                 ＝⟨ V ⟩
-                        (ap u (glue (inl (n , x))) ∙ G n x
-                        ∙ ap u' (glue (inl (n , x))) ⁻¹)
-                        ∙ ap u' (glue (inl (n , x)))
-                                                                 ＝⟨ VI ⟩
-                        (ap u (glue (inl (n , x))) ∙ G n x
-                        ∙ ap u' (glue (inl (n , x)) ⁻¹))
-                        ∙ ap u' (glue (inl (n , x)))
-                                                                 ＝⟨ VII ⟩
-                        I (n , x) ∙ ap u' (glue (inl (n , x)))   ∎
+    III (inl (n , x)) = ap u (glue-inl (n , x)) ∙ G n x
+                                                               ＝⟨ IV ⟩
+                        (ap u (glue-inl (n , x)) ∙ G n x)
+                        ∙ (ap u' (glue-inl (n , x)) ⁻¹
+                        ∙ ap u' (glue-inl (n , x)))
+                                                               ＝⟨ V ⟩
+                        (ap u (glue-inl (n , x)) ∙ G n x
+                        ∙ ap u' (glue-inl (n , x)) ⁻¹)
+                        ∙ ap u' (glue-inl (n , x))
+                                                               ＝⟨ VI ⟩
+                        (ap u (glue-inl (n , x)) ∙ G n x
+                        ∙ ap u' (glue-inl (n , x) ⁻¹))
+                        ∙ ap u' (glue-inl (n , x))
+                                                               ＝⟨ VII ⟩
+                        I (n , x) ∙ ap u' (glue-inl (n , x))   ∎
      where
-      IV = ap (ap u (glue (inl (n , x))) ∙ G n x ∙_)
-            (sym-is-inverse (ap u' (glue (inl (n , x)))))
-      V = ∙assoc (ap u (glue (inl (n , x))) ∙ G n x) (ap u' (glue (inl (n , x))) ⁻¹)
-           (ap u' (glue (inl (n , x)))) ⁻¹
-      VI = ap (_∙ ap u' (glue (inl (n , x)))) (ap (ap u (glue (inl (n , x))) ∙ G n x ∙_)
-            (ap-sym u' (glue (inl (n , x)))))
-      VII = ap (_∙ ap u' (glue (inl (n , x)))) (∙assoc (ap u (glue (inl (n , x))))
-             (G n x) (ap u' (glue (inl (n , x)) ⁻¹)))
-    III (inr (n , x)) = ap u (glue (inr (n , x))) ∙ G (succ n) (a n x)         ＝⟨ IV ⟩
-                        refl ∙ (ap u (glue (inr (n , x))) ∙ G (succ n) (a n x))
-                                                                               ＝⟨ V ⟩
-                        (ap u (glue (inl (n , x))) ∙ ap u (glue (inl (n , x))) ⁻¹)
-                        ∙ (ap u (glue (inr (n , x))) ∙ G (succ n) (a n x))
-                                                                               ＝⟨ VI ⟩
-                        (ap u (glue (inl (n , x))) ∙ ap u (glue (inl (n , x)) ⁻¹))
-                        ∙ (ap u (glue (inr (n , x))) ∙ G (succ n) (a n x))
-                                                                               ＝⟨ VII ⟩
-                        ap u (glue (inl (n , x))) ∙ (ap u (glue (inl (n , x)) ⁻¹)
-                        ∙ (ap u (glue (inr (n , x))) ∙ G (succ n) (a n x)))
-                                                                               ＝⟨ VIII ⟩
-                        ap u (glue (inl (n , x))) ∙ (ap u (glue (inl (n , x)) ⁻¹)
-                        ∙ ap u (glue (inr (n , x))) ∙ G (succ n) (a n x))
-                                                                               ＝⟨ IX ⟩
-                        ap u (glue (inl (n , x))) ∙ (ap u (K n x) ∙ G (succ n) (a n x))
-                                                                               ＝⟨ X' ⟩
-                        ap u (glue (inl (n , x))) ∙ (G n x ∙ ap u' (K n x))
-                                                                               ＝⟨ XI ⟩
-                        ap u (glue (inl (n , x))) ∙ (G n x
-                        ∙ (ap u' (glue (inl (n , x)) ⁻¹) ∙ ap u' (glue (inr (n , x)))))
-                                                                               ＝⟨ XII ⟩
-                        ap u (glue (inl (n , x))) ∙ ((G n x
-                        ∙ ap u' (glue (inl (n , x)) ⁻¹)) ∙ ap u' (glue (inr (n , x))))
-                                                                               ＝⟨ XIII ⟩
-                        I (n , x) ∙ ap u' (glue (inr (n , x)))                 ∎
+      IV = ap (ap u (glue-inl (n , x)) ∙ G n x ∙_)
+            (sym-is-inverse (ap u' (glue-inl (n , x))))
+      V = ∙assoc (ap u (glue-inl (n , x)) ∙ G n x) (ap u' (glue-inl (n , x)) ⁻¹)
+           (ap u' (glue-inl (n , x))) ⁻¹
+      VI = ap (_∙ ap u' (glue-inl (n , x))) (ap (ap u (glue-inl (n , x)) ∙ G n x ∙_)
+            (ap-sym u' (glue-inl (n , x))))
+      VII = ap (_∙ ap u' (glue-inl (n , x))) (∙assoc (ap u (glue-inl (n , x)))
+             (G n x) (ap u' (glue-inl (n , x) ⁻¹)))
+    III (inr (n , x)) = ap u (glue-inr (n , x)) ∙ G (succ n) (a n x)           ＝⟨ IV ⟩
+                        refl ∙ (ap u (glue-inr (n , x)) ∙ G (succ n) (a n x))  ＝⟨ V ⟩
+                        (ap u (glue-inl (n , x)) ∙ ap u (glue-inl (n , x)) ⁻¹)
+                        ∙ (ap u (glue-inr (n , x)) ∙ G (succ n) (a n x))       ＝⟨ VI ⟩
+                        (ap u (glue-inl (n , x)) ∙ ap u (glue-inl (n , x) ⁻¹))
+                        ∙ (ap u (glue-inr (n , x)) ∙ G (succ n) (a n x))       ＝⟨ VII ⟩
+                        ap u (glue-inl (n , x)) ∙ (ap u (glue-inl (n , x) ⁻¹)
+                        ∙ (ap u (glue (inr (n , x))) ∙ G (succ n) (a n x)))    ＝⟨ VIII ⟩
+                        ap u (glue-inl (n , x)) ∙ (ap u (glue-inl (n , x) ⁻¹)
+                        ∙ ap u (glue-inr (n , x)) ∙ G (succ n) (a n x))        ＝⟨ IX ⟩
+                        ap u (glue-inl (n , x))
+                        ∙ (ap u (K n x) ∙ G (succ n) (a n x))                  ＝⟨ X' ⟩
+                        ap u (glue-inl (n , x)) ∙ (G n x ∙ ap u' (K n x))      ＝⟨ XI ⟩
+                        ap u (glue-inl (n , x))
+                        ∙ (G n x ∙ (ap u' (glue-inl (n , x) ⁻¹)
+                        ∙ ap u' (glue-inr (n , x))))                           ＝⟨ XII ⟩
+                        ap u (glue-inl (n , x))
+                        ∙ ((G n x ∙ ap u' (glue-inl (n , x) ⁻¹))
+                        ∙ ap u' (glue-inr (n , x)))                            ＝⟨ XIII ⟩
+                        I (n , x) ∙ ap u' (glue-inr (n , x))                 ∎
      where
       IV = refl-left-neutral ⁻¹
-      V = ap (_∙ (ap u (glue (inr (n , x))) ∙ G (succ n) (a n x)))
-           (sym-is-inverse' (ap u (glue (inl (n , x)))))
-      VI = ap (λ - → (ap u (glue (inl (n , x))) ∙ -)
-                       ∙ (ap u (glue (inr (n , x)))
+      V = ap (_∙ (ap u (glue-inr (n , x)) ∙ G (succ n) (a n x)))
+           (sym-is-inverse' (ap u (glue-inl (n , x))))
+      VI = ap (λ - → (ap u (glue-inl (n , x)) ∙ -)
+                       ∙ (ap u (glue-inr (n , x))
                         ∙ G (succ n) (a n x)))
-             (ap-sym u (glue (inl (n , x))))
-      VII = ∙assoc (ap u (glue (inl (n , x)))) (ap u (glue (inl (n , x)) ⁻¹))
-             (ap u (glue (inr (n , x))) ∙ G (succ n) (a n x))
-      VIII = ap (ap u (glue (inl (n , x))) ∙_) (∙assoc (ap u (glue (inl (n , x)) ⁻¹))
-              (ap u (glue (inr (n , x)))) (G (succ n) (a n x)) ⁻¹)
-      IX = ap (ap u (glue (inl (n , x))) ∙_) (ap (_∙ G (succ n) (a n x))
-            (ap-∙ u (glue (inl (n , x)) ⁻¹) (glue (inr (n , x))) ⁻¹))
-      X' = ap (ap u (glue (inl (n , x))) ∙_) (M n x)
-      XI = ap (λ - → ap u (glue (inl (n , x))) ∙ (G n x ∙ -))
-            (ap-∙ u' (glue (inl (n , x)) ⁻¹) (glue (inr (n , x))))
-      XII = ap (ap u (glue (inl (n , x))) ∙_)
-             (∙assoc (G n x) (ap u' (glue (inl (n , x)) ⁻¹))
-              (ap u' (glue (inr (n , x)))) ⁻¹)
-      XIII = ∙assoc (ap u (glue (inl (n , x))))
-              (G n x ∙ ap u' (glue (inl (n , x)) ⁻¹)) (ap u' (glue (inr (n , x)))) ⁻¹
+             (ap-sym u (glue-inl (n , x)))
+      VII = ∙assoc (ap u (glue-inl (n , x))) (ap u (glue-inl (n , x) ⁻¹))
+             (ap u (glue-inr (n , x)) ∙ G (succ n) (a n x))
+      VIII = ap (ap u (glue-inl (n , x)) ∙_) (∙assoc (ap u (glue-inl (n , x) ⁻¹))
+              (ap u (glue-inr (n , x))) (G (succ n) (a n x)) ⁻¹)
+      IX = ap (ap u (glue-inl (n , x)) ∙_) (ap (_∙ G (succ n) (a n x))
+            (ap-∙ u (glue-inl (n , x) ⁻¹) (glue-inr (n , x)) ⁻¹))
+      X' = ap (ap u (glue-inl (n , x)) ∙_) (M n x)
+      XI = ap (λ - → ap u (glue-inl (n , x)) ∙ (G n x ∙ -))
+            (ap-∙ u' (glue-inl (n , x) ⁻¹) (glue-inr (n , x)))
+      XII = ap (ap u (glue-inl (n , x)) ∙_)
+             (∙assoc (G n x) (ap u' (glue-inl (n , x) ⁻¹))
+              (ap u' (glue-inr (n , x))) ⁻¹)
+      XIII = ∙assoc (ap u (glue-inl (n , x)))
+              (G n x ∙ ap u' (glue-inl (n , x) ⁻¹)) (ap u' (glue-inr (n , x))) ⁻¹
 
 \end{code}
 
