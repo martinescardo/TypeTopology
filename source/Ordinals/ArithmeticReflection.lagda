@@ -35,6 +35,7 @@ private
 
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Exponentiation.Taboos ua pt sr
 open import Ordinals.Maps
@@ -50,6 +51,11 @@ open PropositionalTruncation pt
 open suprema pt sr
 
 -- This should be moved elsewhere eventually
+
+⊴-gives-not-⊲ : (α β : Ordinal 𝓤) → α ⊴ β → ¬ (β ⊲ α)
+⊴-gives-not-⊲ α β (f , f-sim) =
+ order-preserving-gives-not-⊲ α β
+  (f , simulations-are-order-preserving α β f f-sim)
 
 _≤ᶜˡ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ≤ᶜˡ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f
@@ -246,13 +252,74 @@ private
     III = _ , (I ⁻¹ ∙ Idtofunₒ-↓-lemma II)
 
   -- Lemma 9
+  -- This ought to be cleaned up.
   F-tightening-bounds
    : Assumption-1
-   → (β γ : Ordinal 𝓤)
+   → (β : Ordinal 𝓤)
    → F 𝟘ₒ ⊴ β
+   → (γ : Ordinal 𝓤)
    → β ⊲ F γ
-   → Σ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
-  F-tightening-bounds asm-1 β γ l₁ l₂ = {!!}
+   → ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
+  F-tightening-bounds (H , H-S-eq) β β-ineq = transfinite-induction-on-OO _ I
+   where
+    I : (γ : Ordinal 𝓤)
+      → ((c : ⟨ γ ⟩)
+            → β ⊲ F (γ ↓ c)
+            → ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ ↓ c)
+                               × (F γ' ⊴ β)
+                               × (β ⊲ F (γ' +ₒ 𝟙ₒ)))
+      → β ⊲ F γ
+      → ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
+    I γ IH (x' , refl) =
+     ∥∥-rec ∃-is-prop IV
+       (initial-segment-of-sup-is-initial-segment-of-some-component _ x)
+      where
+       II : F γ ＝ extended-sup (λ c → S (F (γ ↓ c))) Z
+       II = F-eq γ
+
+       x = Idtofunₒ (F-eq γ) x'
+       III : β ＝ (extended-sup (λ c → S (F (γ ↓ c))) Z) ↓ x
+       III = Idtofunₒ-↓-lemma II
+
+       IV : (Σ i ꞉ 𝟙 + ⟨ γ ⟩ ,
+             Σ y ꞉ ⟨ cases (λ _ → Z) (λ c → S (F (γ ↓ c))) i ⟩ ,
+              sup (cases (λ _ → Z) (λ c → S (F (γ ↓ c)))) ↓ x
+              ＝ cases (λ _ → Z) (λ c → S (F (γ ↓ c))) i ↓ y)
+          → ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
+       IV (inl ⋆ , y , p) = 𝟘-elim (⊴-gives-not-⊲ (F 𝟘ₒ) β β-ineq l')
+        where
+         l : β ⊲ Z
+         l = y , (III ∙ p)
+         l' : β ⊲ F 𝟘ₒ
+         l' = transport (β ⊲_) Z-is-F𝟘ₒ l
+       IV (inr c , y , p) = V y' (p' ∙ Idtofunₒ-↓-lemma (H-S-eq (F (γ ↓ c))))
+        where
+         p' : β ＝ S (F (γ ↓ c)) ↓ y
+         p' = III ∙ p
+         y' : ⟨ F (γ ↓ c) +ₒ H (F (γ ↓ c)) ⟩
+         y' = Idtofunₒ (H-S-eq (F (γ ↓ c))) y
+
+         V : (y' : ⟨ F (γ ↓ c) +ₒ H (F (γ ↓ c)) ⟩)
+           → β ＝ (F (γ ↓ c) +ₒ H (F (γ ↓ c))) ↓ y'
+           → ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
+         V (inl z) q = ∥∥-functor V' ih
+          where
+           ih : ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ (γ ↓ c)) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
+           ih = IH c (z , (q ∙ (+ₒ-↓-left z) ⁻¹))
+           V' : (Σ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ (γ ↓ c)) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ)))
+              → (Σ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ)))
+           V' (γ' , k , l , m) =
+            γ' , ⊲-⊴-gives-⊲ γ' (γ ↓ c) γ k (segment-⊴ γ c) , l , m
+         V (inr z) q = ∣ γ ↓ c , (c , refl) , V₁ , V₂ ∣
+          where
+           e : β ＝ F (γ ↓ c) +ₒ (H (F (γ ↓ c)) ↓ z)
+           e = q ∙ (+ₒ-↓-right z) ⁻¹
+           V₁ : F (γ ↓ c) ⊴ β
+           V₁ = transport⁻¹ (F (γ ↓ c) ⊴_) e
+                            (+ₒ-left-⊴ (F (γ ↓ c)) (H (F (γ ↓ c)) ↓ z))
+           V₂ : β ⊲ F ((γ ↓ c) +ₒ 𝟙ₒ)
+           V₂ = Idtofunₒ ((F-succ (γ ↓ c)) ⁻¹) y ,
+                (III ∙ p ∙ Idtofunₒ-↓-lemma ((F-succ (γ ↓ c)) ⁻¹))
 
   -- Lemma 10
   F-impossibility : Assumption-1
