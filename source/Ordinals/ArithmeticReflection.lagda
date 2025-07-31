@@ -561,10 +561,11 @@ module _ (α : Ordinal 𝓤) (α-has-least : 𝟙ₒ ⊴ α) where
         (^ₒ-satisfies-strong-sup-specification α)
 
   asm-2 : has-trichotomous-least-element α
+        → 𝟚ₒ ⊴ α
         →  Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)
               , ((β : Ordinal 𝓤) → β ×ₒ α ＝ β +ₒ H β))
               , ((β : Ordinal 𝓤) → 𝟘ₒ ⊲ H (α ^ₒ β))
-  asm-2 h = (H , e) , H-has-min
+  asm-2 h α-at-least-𝟚ₒ = (H , e) , H-has-min
    where
     e : (β : Ordinal 𝓤) → β ×ₒ α ＝ β +ₒ (β ×ₒ α ⁺[ h ])
     e β = β ×ₒ α ＝⟨ ap (β ×ₒ_) (α ⁺[ h ]-part-of-decomposition) ⟩
@@ -573,11 +574,27 @@ module _ (α : Ordinal 𝓤) (α-has-least : 𝟙ₒ ⊴ α) where
           β +ₒ β ×ₒ (α ⁺[ h ]) ∎
     H : Ordinal 𝓤 → Ordinal 𝓤
     H β = β ×ₒ (α ⁺[ h ])
+    α⁺-pos : 𝟙ₒ ⊴ α ⁺[ h ] -- Note how we prove this :)
+    α⁺-pos =
+     +ₒ-reflects-⊴ 𝟙ₒ 𝟙ₒ
+      (α ⁺[ h ])
+      (transport (𝟚ₒ ⊴_) (α ⁺[ h ]-part-of-decomposition) α-at-least-𝟚ₒ)
     H-has-min' : (γ : Ordinal 𝓤) → 𝟙ₒ ⊴ γ → 𝟙ₒ ⊴ H γ
-    H-has-min' γ l = {!!}
+    H-has-min' γ l =
+     to-⊴ 𝟙ₒ (H γ) λ ⋆ → (f ⋆ , g ⋆) , (𝟙ₒ ↓ ⋆ ＝⟨ 𝟙ₒ-↓ ⟩
+                                        𝟘ₒ ＝⟨ (×ₒ-𝟘ₒ-right γ) ⁻¹ ⟩
+                                        γ ×ₒ 𝟘ₒ ＝⟨ ap (γ ×ₒ_) (𝟙ₒ-↓ ⁻¹ ∙ simulations-preserve-↓ 𝟙ₒ (α ⁺[ h ]) α⁺-pos ⋆) ⟩
+                                        γ ×ₒ (α ⁺[ h ] ↓ g ⋆) ＝⟨ (𝟘ₒ-right-neutral (γ ×ₒ (α ⁺[ h ] ↓ g ⋆))) ⁻¹ ⟩
+                                        γ ×ₒ (α ⁺[ h ] ↓ g ⋆) +ₒ 𝟘ₒ ＝⟨ ap (γ ×ₒ ((α ⁺[ h ]) ↓ g ⋆) +ₒ_) (((simulations-preserve-↓ 𝟙ₒ γ l ⋆) ⁻¹ ∙ 𝟙ₒ-↓) ⁻¹) ⟩
+                                        γ ×ₒ (α ⁺[ h ] ↓ g ⋆) +ₒ (γ ↓ f ⋆) ＝⟨ (×ₒ-↓ γ (α ⁺[ h ])) ⁻¹ ⟩
+                                        γ ×ₒ (α ⁺[ h ]) ↓ (f ⋆ , g ⋆) ＝⟨ refl ⟩
+                                        H γ ↓ (f ⋆ , g ⋆) ∎)
+     where
+      f = pr₁ l
+      g = pr₁ α⁺-pos
     H-has-min : (β : Ordinal 𝓤) → 𝟘ₒ ⊲ H (α ^ₒ β)
-    H-has-min β = ({!!} , {!!}) , {!!}
-
+    H-has-min β = transport (_⊲ H (α ^ₒ β)) 𝟙ₒ-↓ (_ , simulations-preserve-↓ 𝟙ₒ (H (α ^ₒ β)) (H-has-min' (α ^ₒ β) (^ₒ-has-least-element α β)) ⋆)
+     -- TODO. Turn this into a general lemma basically saying that 𝟘 ⊲ - is the same thing as 𝟙ₒ ⊴ -c
 
   asm-3 : (β γ : Ordinal 𝓤) → β ≤ᶜˡ γ → (β ×ₒ α) ≤ᶜˡ (γ ×ₒ α)
   asm-3 β γ (f , f-order-pres) = g , g-order-pres
@@ -588,14 +605,19 @@ module _ (α : Ordinal 𝓤) (α-has-least : 𝟙ₒ ⊴ α) where
     g-order-pres (b , a) (c , a') (inl l) = inl l
     g-order-pres (b , a) (c , a') (inr (refl , l)) = inr (refl , f-order-pres b c l)
 
-  module fwa (α-htle : has-trichotomous-least-element α) where
-   open framework-with-assumptions (asm-2 α-htle) asm-3 public
+  module fwa
+          (α-htle : has-trichotomous-least-element α)
+          (α-at-least-𝟚ₒ : 𝟚ₒ ⊴ α)
+         where
+   open framework-with-assumptions (asm-2 α-htle α-at-least-𝟚ₒ) asm-3 public
 
  ^ₒ-reflects-⊴ : has-trichotomous-least-element α
+               → 𝟚ₒ ⊴ α
                → is-⊴-reflecting (α ^ₒ_)
  ^ₒ-reflects-⊴ = fwa.F-reflects-⊴
 
  ^ₒ-left-cancellable : has-trichotomous-least-element α
+                     → 𝟚ₒ ⊴ α
                      → left-cancellable (α ^ₒ_)
  ^ₒ-left-cancellable = fwa.F-left-cancellable
 
