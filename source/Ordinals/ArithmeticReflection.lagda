@@ -5,7 +5,7 @@ We formalize cancel-exp.pdf [TODO. Write a proper description.]
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -51,6 +51,9 @@ open PropositionalTruncation pt
 open suprema pt sr
 
 -- This should be moved elsewhere eventually
+
+is-⊴-reflecting : (Ordinal 𝓤 → Ordinal 𝓥) → 𝓤 ⁺ ⊔ 𝓥 ̇
+is-⊴-reflecting {𝓤} {𝓥} f = (α β : Ordinal 𝓤) → f α ⊴ f β → α ⊴ β
 
 ⊴-gives-not-⊲ : (α β : Ordinal 𝓤) → α ⊴ β → ¬ (β ⊲ α)
 ⊴-gives-not-⊲ α β (f , f-sim) =
@@ -147,8 +150,6 @@ private
                 → F (sup J) ＝ extended-sup (F ∘ J) Z)
         where
 
-  -- TODO. Formalize examples of the above (see BoundedOperations.lagda).
-
   Assumption-1 : 𝓤 ⁺ ̇
   Assumption-1 =
    Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤) , ((β : Ordinal 𝓤) → S β ＝ β +ₒ H β)
@@ -159,7 +160,7 @@ private
   Assumption-3 : 𝓤 ⁺ ̇
   Assumption-3 = (β γ : Ordinal 𝓤) → β ≤ᶜˡ γ → S β ≤ᶜˡ S γ
 
-  -- TODO. Formalize examples with the assumptions of the above.
+-- See below for examples (cf. BoundedOperations.lagda).
 
   -- Lemma 7
   F-preserves-⊴ : (β γ : Ordinal 𝓤) → β ⊴ γ → F β ⊴ F γ
@@ -452,27 +453,150 @@ private
     I : Π P
     I = transfinite-induction _≺ᵤₒ_ (≺ᵤₒ-is-well-founded ⊲-is-well-founded) P II
 
-  F-reflects-⊴ : Assumption-2
-               → Assumption-3
-               → (β γ : Ordinal 𝓤) → F β ⊴ F γ → β ⊴ γ
-  F-reflects-⊴ asm-2 asm-3 β γ l =
-   F-reflects-⊴' asm-2 asm-3 β γ 𝟘ₒ
-    (transport⁻¹ (F β ⊴_) (𝟘ₒ-right-neutral (F γ)) l)
-    (transport⁻¹
-      (_⊲ F (γ +ₒ 𝟙ₒ))
-      (𝟘ₒ-right-neutral (F γ))
-      (F-preserves-⊲ asm-2 γ (γ +ₒ 𝟙ₒ) (successor-increasing γ)))
+  module framework-with-assumptions
+          (asm-2 : Assumption-2)
+          (asm-3 : Assumption-3)
+         where
 
-  -- Corollary 13
-  F-left-cancellable : Assumption-2
-                     → Assumption-3
-                     → left-cancellable F
-  F-left-cancellable asm-2 asm-3 p =
-   ⊴-antisym _ _ (F-reflects-⊴ asm-2 asm-3 _ _ (＝-to-⊴ _ _ p))
-                 (F-reflects-⊴ asm-2 asm-3 _ _ (＝-to-⊴ _ _ (p ⁻¹)))
+   F-reflects-⊴ : (β γ : Ordinal 𝓤) → F β ⊴ F γ → β ⊴ γ
+   F-reflects-⊴ β γ l =
+    F-reflects-⊴' asm-2 asm-3 β γ 𝟘ₒ
+     (transport⁻¹ (F β ⊴_) (𝟘ₒ-right-neutral (F γ)) l)
+     (transport⁻¹
+       (_⊲ F (γ +ₒ 𝟙ₒ))
+       (𝟘ₒ-right-neutral (F γ))
+       (F-preserves-⊲ asm-2 γ (γ +ₒ 𝟙ₒ) (successor-increasing γ)))
 
-  -- Corollary 14
-  -- TODO. Apply the above to the examples (addition, multiplication and
-  -- exponentiation)
+   -- Corollary 13
+   F-left-cancellable : left-cancellable F
+   F-left-cancellable p =
+    ⊴-antisym _ _ (F-reflects-⊴ _ _ (＝-to-⊴ _ _ p))
+                  (F-reflects-⊴ _ _ (＝-to-⊴ _ _ (p ⁻¹)))
+
+-- Corollary 14
+
+module _ (α : Ordinal 𝓤) where
+ private
+  open framework
+        (α +ₒ_)
+        (_+ₒ 𝟙ₒ)
+        α
+        (+ₒ-commutes-with-successor α)
+        (+ₒ-preserves-suprema-up-to-join pt sr α)
+
+  asm-2 : Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)
+              , ((β : Ordinal 𝓤) → β +ₒ 𝟙ₒ ＝ β +ₒ H β))
+              , ((β : Ordinal 𝓤) → 𝟘ₒ ⊲ H (α +ₒ β))
+  asm-2 = ((λ β → 𝟙ₒ) , (λ β → refl)) , (λ β → ⋆ , (𝟙ₒ-↓ ⁻¹))
+
+  asm-3 : (β γ : Ordinal 𝓤) → β ≤ᶜˡ γ → (β +ₒ 𝟙ₒ) ≤ᶜˡ (γ +ₒ 𝟙ₒ)
+  asm-3 β γ (f , f-order-pres) = g , g-order-pres
+   where
+    g : ⟨ β +ₒ 𝟙ₒ ⟩ → ⟨ γ +ₒ 𝟙ₒ ⟩
+    g (inl b) = inl (f b)
+    g (inr ⋆) = inr ⋆
+    g-order-pres : is-order-preserving (β +ₒ 𝟙ₒ) (γ +ₒ 𝟙ₒ) g
+    g-order-pres (inl b) (inl b') l = f-order-pres b b' l
+    g-order-pres (inl b) (inr ⋆)  l = ⋆
+    g-order-pres (inr ⋆) (inl b)  l = l
+    g-order-pres (inr ⋆) (inr ⋆)  l = l
+
+  open framework-with-assumptions asm-2 asm-3
+
+ +ₒ-reflects-⊴ : is-⊴-reflecting (α +ₒ_)
+ +ₒ-reflects-⊴ = F-reflects-⊴
+
+ +ₒ-left-cancellable' : left-cancellable (α +ₒ_)
+ +ₒ-left-cancellable' = F-left-cancellable
+
+
+-- TODO. Improve the dependencies
+-- I do this to reuse Enderton-like'.preservation-of-suprema-up-to-join
+open import Ordinals.BoundedOperations ua pt sr
+
+module _ (α : Ordinal 𝓤) where
+ private
+  open framework
+        (α ×ₒ_)
+        (_+ₒ α)
+        𝟘ₒ
+        (×ₒ-successor α)
+        (Enderton-like'.preservation-of-suprema-up-to-join (α ×ₒ_) 𝟘ₒ (×ₒ-preserves-suprema pt sr α))
+
+  asm-2 : 𝟘ₒ ⊲ α
+        → Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)
+              , ((β : Ordinal 𝓤) → β +ₒ α ＝ β +ₒ H β))
+              , ((β : Ordinal 𝓤) → 𝟘ₒ ⊲ H (α ×ₒ β))
+  asm-2 α-pos =
+   ((λ β → α) , (λ β → refl)) , (λ β → α-pos)
+
+  asm-3 : (β γ : Ordinal 𝓤) → β ≤ᶜˡ γ → (β +ₒ α) ≤ᶜˡ (γ +ₒ α)
+  asm-3 β γ (f , f-order-pres) = +functor f id , h
+   where
+    h : is-order-preserving (β +ₒ α) (γ +ₒ α) (+functor f id)
+    h (inl b) (inl b') l = f-order-pres b b' l
+    h (inl b) (inr a) l = ⋆
+    h (inr a) (inl b) l = l
+    h (inr a) (inr a') l = l
+
+  module fwa (α-pos : 𝟘ₒ ⊲ α) where
+   open framework-with-assumptions (asm-2 α-pos) asm-3 public
+
+ ×ₒ-reflects-⊴ : 𝟘ₒ ⊲ α → is-⊴-reflecting (α ×ₒ_)
+ ×ₒ-reflects-⊴ = fwa.F-reflects-⊴
+
+ ×ₒ-left-cancellable' : 𝟘ₒ ⊲ α → left-cancellable (α ×ₒ_)
+ ×ₒ-left-cancellable' = fwa.F-left-cancellable
+
+
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
+
+module _ (α : Ordinal 𝓤) (α-has-least : 𝟙ₒ ⊴ α) where
+ private
+  open framework
+        (α ^ₒ_)
+        (_×ₒ α)
+        𝟙ₒ
+        (^ₒ-satisfies-succ-specification α α-has-least)
+        (^ₒ-satisfies-strong-sup-specification α)
+
+  asm-2 : has-trichotomous-least-element α
+        →  Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)
+              , ((β : Ordinal 𝓤) → β ×ₒ α ＝ β +ₒ H β))
+              , ((β : Ordinal 𝓤) → 𝟘ₒ ⊲ H (α ^ₒ β))
+  asm-2 h = (H , e) , H-has-min
+   where
+    e : (β : Ordinal 𝓤) → β ×ₒ α ＝ β +ₒ (β ×ₒ α ⁺[ h ])
+    e β = β ×ₒ α ＝⟨ ap (β ×ₒ_) (α ⁺[ h ]-part-of-decomposition) ⟩
+          β ×ₒ (𝟙ₒ +ₒ α ⁺[ h ]) ＝⟨ ×ₒ-distributes-+ₒ-right β 𝟙ₒ (α ⁺[ h ]) ⟩
+          β ×ₒ 𝟙ₒ +ₒ β ×ₒ (α ⁺[ h ]) ＝⟨ ap (_+ₒ β ×ₒ (α ⁺[ h ])) (𝟙ₒ-right-neutral-×ₒ β) ⟩
+          β +ₒ β ×ₒ (α ⁺[ h ]) ∎
+    H : Ordinal 𝓤 → Ordinal 𝓤
+    H β = β ×ₒ (α ⁺[ h ])
+    H-has-min' : (γ : Ordinal 𝓤) → 𝟙ₒ ⊴ γ → 𝟙ₒ ⊴ H γ
+    H-has-min' γ l = {!!}
+    H-has-min : (β : Ordinal 𝓤) → 𝟘ₒ ⊲ H (α ^ₒ β)
+    H-has-min β = ({!!} , {!!}) , {!!}
+
+
+  asm-3 : (β γ : Ordinal 𝓤) → β ≤ᶜˡ γ → (β ×ₒ α) ≤ᶜˡ (γ ×ₒ α)
+  asm-3 β γ (f , f-order-pres) = g , g-order-pres
+   where
+    g : ⟨ β ×ₒ α ⟩ → ⟨ γ ×ₒ α ⟩
+    g (b , a) = (f b , a)
+    g-order-pres : is-order-preserving (β ×ₒ α) (γ ×ₒ α) g
+    g-order-pres (b , a) (c , a') (inl l) = inl l
+    g-order-pres (b , a) (c , a') (inr (refl , l)) = inr (refl , f-order-pres b c l)
+
+  module fwa (α-htle : has-trichotomous-least-element α) where
+   open framework-with-assumptions (asm-2 α-htle) asm-3 public
+
+ ^ₒ-reflects-⊴ : has-trichotomous-least-element α
+               → is-⊴-reflecting (α ^ₒ_)
+ ^ₒ-reflects-⊴ = fwa.F-reflects-⊴
+
+ ^ₒ-left-cancellable : has-trichotomous-least-element α
+                     → left-cancellable (α ^ₒ_)
+ ^ₒ-left-cancellable = fwa.F-left-cancellable
 
 \end{code}
