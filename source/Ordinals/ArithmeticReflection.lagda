@@ -104,7 +104,7 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
  <ᶜˡ-irrefl β (<ᶜˡ-≤ᶜˡ-to-<ᶜˡ β α β 𝕘 (⊴-gives-≤ᶜˡ α β 𝕗))
 
 -- Lemma 11
-module _
+module uo-order
         (A : 𝓤 ̇ ) (_≺_ : A → A → 𝓥 ̇ )
        where
 
@@ -363,7 +363,70 @@ private
                 → F β ⊴ F γ +ₒ δ
                 → F γ +ₒ δ ⊲ F (γ +ₒ 𝟙ₒ)
                 → β ⊴ γ
-  F-reflects-⊴' = {!!}
+  F-reflects-⊴' asm-2@((H , H-S-eq) , H-has-min) asm-3 = (λ β γ → I (β , γ))
+   where
+    open uo-order (Ordinal 𝓤) _⊲_
+    P : Ordinal 𝓤 × Ordinal 𝓤 → 𝓤 ⁺ ̇
+    P (β , γ) =
+     (δ : Ordinal 𝓤) → F β ⊴ F γ +ₒ δ → F γ +ₒ δ ⊲ F (γ +ₒ 𝟙ₒ) → β ⊴ γ
+
+    II : (X : Ordinal 𝓤 × Ordinal 𝓤)
+       → ((Y : Ordinal 𝓤 × Ordinal 𝓤) → Y ≺ᵤₒ X → P Y)
+       → P X
+    II (β , γ) IH δ l₁ l₂ = to-⊴ β γ goal
+     where
+      module _ (b : ⟨ β ⟩) where
+       III₁ : F 𝟘ₒ ⊴ F (β ↓ b)
+       III₁ = F-preserves-⊴ 𝟘ₒ (β ↓ b) (𝟘ₒ-least-⊴ (β ↓ b))
+       III₂ : F (β ↓ b) ⊲ F (γ +ₒ 𝟙ₒ)
+       III₂ = ⊲-⊴-gives-⊲ (F (β ↓ b)) (F β) (F (γ +ₒ 𝟙ₒ))
+               (F-preserves-⊲ asm-2 (β ↓ b) β (b , refl))
+               (⊴-trans (F β) (F γ +ₒ δ) (F (γ +ₒ 𝟙ₒ))
+                 l₁
+                 (⊲-gives-⊴ (F γ +ₒ δ) (F (γ +ₒ 𝟙ₒ)) l₂))
+       III₃ : ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ +ₒ 𝟙ₒ)
+                               × (F γ' ⊴ F (β ↓ b))
+                               × (F (β ↓ b) ⊲ F (γ' +ₒ 𝟙ₒ))
+       III₃ = F-tightening-bounds (H , H-S-eq) (F (β ↓ b)) III₁ (γ +ₒ 𝟙ₒ) III₂
+
+       IV₁ : F ((γ +ₒ 𝟙ₒ) ↓ inr ⋆) ⊴ F (β ↓ b) → 𝟘
+       IV₁ l = F-impossibility (H , H-S-eq) asm-3 β γ δ b k l₁ l₂
+        where
+         k : F γ ⊴ F (β ↓ b)
+         k = transport⁻¹ (_⊴ F (β ↓ b)) (ap F ((successor-lemma-right γ) ⁻¹)) l
+
+       IV₂ : (c : ⟨ γ ⟩)
+           → F (γ ↓ c) ⊴ F (β ↓ b)
+           → F (β ↓ b) ⊲ F ((γ ↓ c) +ₒ 𝟙ₒ)
+           → β ↓ b ＝ γ ↓ c
+       IV₂ c k₁ k₂ = ⊴-antisym (β ↓ b) (γ ↓ c) VI V
+        where
+         V : γ ↓ c ⊴ β ↓ b
+         V = IH (γ ↓ c , β ↓ b) (inr ((c , refl) , (b , refl))) 𝟘ₒ
+              (transport⁻¹ (F (γ ↓ c) ⊴_) (𝟘ₒ-right-neutral (F (β ↓ b))) k₁)
+              (transport⁻¹ (_⊲ F ((β ↓ b) +ₒ 𝟙ₒ)) (𝟘ₒ-right-neutral (F (β ↓ b)))
+                (F-preserves-⊲ asm-2 (β ↓ b) ((β ↓ b) +ₒ 𝟙ₒ) (successor-increasing (β ↓ b))))
+
+         VI : β ↓ b ⊴ γ ↓ c
+         VI = {!!}
+
+       goal : β ↓ b ⊲ γ
+       goal = ∥∥-rec (⊲-is-prop-valued (β ↓ b) γ) g III₃
+        where
+         g : (Σ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ +ₒ 𝟙ₒ)
+                               × (F γ' ⊴ F (β ↓ b))
+                               × (F (β ↓ b) ⊲ F (γ' +ₒ 𝟙ₒ)))
+           → β ↓ b ⊲ γ
+         g (γ' , (inl c , refl) , k₁ , k₂) = c , (IV₂ c k₁' k₂')
+          where
+           k₁' : F (γ ↓ c) ⊴ F (β ↓ b)
+           k₁' = transport⁻¹ (_⊴ F (β ↓ b)) (ap F (+ₒ-↓-left c)) k₁
+           k₂' : F (β ↓ b) ⊲ F ((γ ↓ c) +ₒ 𝟙ₒ)
+           k₂' = transport⁻¹ (F (β ↓ b) ⊲_) (ap F (ap (_+ₒ 𝟙ₒ) (+ₒ-↓-left c))) k₂
+         g (γ' , (inr ⋆ , refl) , k₁ , k₂) = 𝟘-elim (IV₁ k₁)
+
+    I : Π P
+    I = transfinite-induction _≺ᵤₒ_ (≺ᵤₒ-is-well-founded ⊲-is-well-founded) P II
 
   F-reflects-⊴ : Assumption-2
                → Assumption-3
