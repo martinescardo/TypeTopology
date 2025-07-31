@@ -19,11 +19,7 @@ module Ordinals.ArithmeticReflection
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan hiding (J)
-open import UF.Base
-open import UF.ClassicalLogic
 open import UF.FunExt
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 
 private
@@ -37,7 +33,6 @@ open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
 open import Ordinals.Exponentiation.Supremum ua pt sr
-open import Ordinals.Exponentiation.Taboos ua pt sr
 open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.MultiplicationProperties ua
