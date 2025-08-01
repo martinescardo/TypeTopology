@@ -29,6 +29,7 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
+open import UF.Base
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
@@ -546,7 +547,10 @@ module _ (α : Ordinal 𝓤) where
 
 open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
 
-module _ (α : Ordinal 𝓤) (α-has-least : 𝟙ₒ ⊴ α) where
+module _
+        (α : Ordinal 𝓤)
+        (α-has-least : 𝟙ₒ ⊴ α) -- TODO. This assumption on α gets superseded quite quickly
+       where
  private
   open framework
         (α ^ₒ_)
@@ -615,5 +619,122 @@ module _ (α : Ordinal 𝓤) (α-has-least : 𝟙ₒ ⊴ α) where
                      → 𝟚ₒ ⊴ α
                      → left-cancellable (α ^ₒ_)
  ^ₒ-left-cancellable = fwa.F-left-cancellable
+
+\end{code}
+
+The results above imply that the simulations are canonical.
+TODO. Explain better and give better names.
+
+\begin{code}
+
+-- This proof has better computational properties (and is arguably simpler than
+-- +ₒ-right-monotone in AdditionProperties anyway).
++ₒ-right-monotone-⊴' : (α β γ : Ordinal 𝓤)
+                     → β ⊴ γ
+                     → (α +ₒ β) ⊴ (α +ₒ γ)
++ₒ-right-monotone-⊴' α β γ 𝕗@(f , f-sim) = g , g-init-seg , g-order-pres
+ where
+  g : ⟨ α +ₒ β ⟩ → ⟨ α +ₒ γ ⟩
+  g (inl a) = inl a
+  g (inr b) = inr (f b)
+  g-order-pres : is-order-preserving (α +ₒ β) (α +ₒ γ) g
+  g-order-pres (inl a) (inl a') l = l
+  g-order-pres (inl a) (inr b)  l = l
+  g-order-pres (inr b) (inr b') l =
+   simulations-are-order-preserving β γ f f-sim b b' l
+  g-init-seg : is-initial-segment (α +ₒ β) (α +ₒ γ) g
+  g-init-seg (inl a) (inl a') l = inl a' , l , refl
+  g-init-seg (inr b) (inl a)  l = inl a , ⋆ , refl
+  g-init-seg (inr b) (inr b') l =
+   inr (pr₁ I) , pr₁ (pr₂ I) , ap inr (pr₂ (pr₂ I))
+    where
+     I : Σ b'' ꞉ ⟨ β ⟩ , (b'' ≺⟨ β ⟩ b) × (f b'' ＝ b')
+     I = simulations-are-initial-segments β γ f f-sim b b' l
+
++ₒ-canonical-simulation
+ : (α β γ : Ordinal 𝓤)
+ → ((g , _) : α +ₒ β ⊴ α +ₒ γ)
+ → Σ (f , _) ꞉ β ⊴ γ , ((a : ⟨ α ⟩) → g (inl a) ＝ inl a)
+                     × ((b : ⟨ β ⟩) → g (inr b) ＝ inr (f b))
++ₒ-canonical-simulation α β γ 𝕘@(g , g-sim) = 𝕗 , III , IV
+ where
+  𝕗 : β ⊴ γ
+  𝕗 = +ₒ-reflects-⊴ α β γ 𝕘
+  f = pr₁ 𝕗
+  𝕙 : α +ₒ β ⊴ α +ₒ γ
+  𝕙 = +ₒ-right-monotone-⊴' α β γ 𝕗
+  h = pr₁ 𝕙
+  I : (a : ⟨ α ⟩) → h (inl a) ＝ inl a
+  I a = refl
+  II : (b : ⟨ β ⟩) → h (inr b) ＝ inr (f b)
+  II b = refl
+  𝕘-is-𝕙 : 𝕘 ＝ 𝕙
+  𝕘-is-𝕙 = ⊴-is-prop-valued (α +ₒ β) (α +ₒ γ) 𝕘 𝕙
+  III : (a : ⟨ α ⟩) → g (inl a) ＝ inl a
+  III a = happly (ap pr₁ 𝕘-is-𝕙) (inl a)
+  IV : (b : ⟨ β ⟩) → g (inr b) ＝ inr (f b)
+  IV b = happly (ap pr₁ 𝕘-is-𝕙) (inr b)
+
+×ₒ-canonical-simulation
+ : (α β γ : Ordinal 𝓤)
+ → 𝟘ₒ ⊲ α
+ → ((g , _) : α ×ₒ β ⊴ α ×ₒ γ)
+ → Σ (f , _) ꞉ β ⊴ γ , ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → g (a , b) ＝ (a , f b))
+×ₒ-canonical-simulation α β γ α-pos 𝕘@(g , g-sim) = 𝕗 , II
+ where
+  𝕗 : β ⊴ γ
+  𝕗 = ×ₒ-reflects-⊴ α α-pos β γ 𝕘
+  f = pr₁ 𝕗
+  𝕙 : α ×ₒ β ⊴ α ×ₒ γ
+  𝕙 = ×ₒ-right-monotone-⊴ α β γ 𝕗
+  h = pr₁ 𝕙
+  I : (a : ⟨ α ⟩) (b : ⟨ β ⟩) → h (a , b) ＝ (a , f b)
+  I a b = refl
+  𝕘-is-𝕙 : 𝕘 ＝ 𝕙
+  𝕘-is-𝕙 = ⊴-is-prop-valued (α ×ₒ β) (α ×ₒ γ) 𝕘 𝕙
+  II : (a : ⟨ α ⟩) (b : ⟨ β ⟩) → g (a , b) ＝ (a , f b)
+  II a b = happly (ap pr₁ 𝕘-is-𝕙) (a , b)
+
+-- For exponentiation, this is best expressed using lists.
+open import MLTT.List
+open import Ordinals.Exponentiation.DecreasingList ua pt
+open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
+exponentiationᴸ-canonical-simulation
+ : (α β γ : Ordinal 𝓤)
+ → (h : has-trichotomous-least-element α)
+ → 𝟚ₒ ⊴ α
+ → ((g , _) : exponentiationᴸ α h β ⊴ exponentiationᴸ α h γ)
+ → Σ (f , _) ꞉ β ⊴ γ ,
+     (((l , δ) : DecrList₂ (α ⁺[ h ]) β)
+               → DecrList₂-list (α ⁺[ h ]) γ (g (l , δ))
+                 ＝ map (λ (a , b) → (a , f b)) l)
+exponentiationᴸ-canonical-simulation α β γ ht α-at-least-𝟚ₒ 𝕘@(g , g-sim) =
+ 𝕗 , II
+  where
+   𝕗 : β ⊴ γ
+   𝕗 = ^ₒ-reflects-⊴ α
+        (⊴-trans 𝟙ₒ 𝟚ₒ α (+ₒ-left-⊴ 𝟙ₒ 𝟙ₒ) α-at-least-𝟚ₒ)
+        ht α-at-least-𝟚ₒ
+        β γ
+        (transport₂ _⊴_
+          (exponentiation-constructions-agree α β ht)
+          (exponentiation-constructions-agree α γ ht)
+          𝕘)
+   f = pr₁ 𝕗
+   𝕙 : exponentiationᴸ α ht β ⊴ exponentiationᴸ α ht γ
+   𝕙 = expᴸ-is-monotone-in-exponent (α ⁺[ ht ]) β γ 𝕗
+   h = pr₁ 𝕙
+   I : (((l , δ) : DecrList₂ (α ⁺[ ht ]) β)
+     → DecrList₂-list (α ⁺[ ht ]) γ (h (l , δ))
+       ＝ map (λ (a , b) → (a , f b)) l)
+   I (l , δ) = refl
+   𝕘-is-𝕙 : 𝕘 ＝ 𝕙
+   𝕘-is-𝕙 =
+    ⊴-is-prop-valued (exponentiationᴸ α ht β) (exponentiationᴸ α ht γ) 𝕘 𝕙
+   II : (((l , δ) : DecrList₂ (α ⁺[ ht ]) β)
+      → DecrList₂-list (α ⁺[ ht ]) γ (g (l , δ))
+        ＝ map (λ (a , b) → (a , f b)) l)
+   II (l , δ) =
+    ap (DecrList₂-list (α ⁺[ ht ]) γ) (happly (ap pr₁ 𝕘-is-𝕙) (l , δ))
 
 \end{code}
