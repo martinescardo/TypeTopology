@@ -251,53 +251,35 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
 
 \end{code}
 
-We provide the sequential cocone structure for the sequential colimit. Notice since the
-pushout is formed on a coproduct we get two equations from the canonical pushout gluing.
-These equations will prove useful throughout the development.
+We provide the sequential cocone structure for the sequential colimit. 
 
 \begin{code}
 
   ι : (n : ℕ) → A n → sequential-colimit
   ι n x = inrr (n , x)
 
-  glue-inl : ((n , x) : Σ A) → inll (n , x) ＝ ι n x
-  glue-inl (n , x) = glue (inl (n , x))
-
-  glue-inr : ((n , x) : Σ A) → inll (n , x) ＝ ι (succ n) (a n x)
-  glue-inr (n , x) = glue (inr (n , x))
-
-  K : (n : ℕ) → ι n ∼ ι (succ n) ∘ a n
-  K n x = glue-inl (n , x) ⁻¹ ∙ glue-inr (n , x)
+  seq-colim-homotopy : (n : ℕ) → ι n ∼ ι (succ n) ∘ a n
+  seq-colim-homotopy n x = glue (inl (n , x)) ⁻¹ ∙ glue (inr (n , x))
 
   sequential-colimit-is-cocone : sequential-cocone 𝓐 sequential-colimit
-  sequential-colimit-is-cocone = (ι , K)
+  sequential-colimit-is-cocone = (ι , seq-colim-homotopy)
 
 \end{code}
 
-We will quickly provide names and a technical lemma that will prove useful later when
-applying a map to some of the above paths.
+We will quickly provide names and a technical lemma that will prove useful later.
 
 \begin{code}
 
-  ap-glue-inl : (u : sequential-colimit → X)
-              → ((n , x) : Σ A)
-              → u (inll (n , x)) ＝ u (ι n x)
-  ap-glue-inl u (n , x) = ap u (glue-inl (n , x))
-
-  ap-glue-inr : (u : sequential-colimit → X)
-              → ((n , x) : Σ A)
-              → u (inll (n , x)) ＝ u (ι (succ n) (a n x))
-  ap-glue-inr u (n , x) = ap u (glue-inr (n , x))
-
   ap-on-glue : (u : sequential-colimit → X)
              → ((n , x) : Σ A)
-             → ap u (K n x) ＝ ap-glue-inl u (n , x) ⁻¹ ∙ ap-glue-inr u (n , x)
-  ap-on-glue u (n , x) = ap u (K n x)                                        ＝⟨ I ⟩
-                         ap u (glue-inl (n , x) ⁻¹) ∙ ap-glue-inr u (n , x)  ＝⟨ II ⟩
-                         ap-glue-inl u (n , x) ⁻¹ ∙ ap-glue-inr u (n , x)    ∎
+             → ap u (seq-colim-homotopy n x)
+             ＝ ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))
+  ap-on-glue u (n , x) = ap u (seq-colim-homotopy n x)                             ＝⟨ I ⟩
+                         ap u (glue (inl (n , x)) ⁻¹) ∙ ap u (glue (inr (n , x)))  ＝⟨ II ⟩
+                         ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))  ∎
    where
-    I = ap-∙ u (glue-inl (n , x) ⁻¹) (glue-inr (n , x))
-    II = ap (_∙ ap u (glue-inr (n , x))) (ap-sym u (glue-inl (n , x))) ⁻¹
+    I = ap-∙ u (glue (inl (n , x)) ⁻¹) (glue (inr (n , x)))
+    II = ap (_∙ ap u (glue (inr (n , x)))) (ap-sym u (glue (inl (n , x)))) ⁻¹
 
 \end{code}
 
@@ -374,15 +356,15 @@ canonical map to pushout cocones and the above map that translates between them.
      I : (n : ℕ) → u ∘ ι n ∼ curry (u ∘ inrr) n
      I n x = refl
      II : (n : ℕ) (x : A n)
-        → ap u (K n x)
-        ＝ refl ∙ (ap u (glue-inl (n , x)) ⁻¹ ∙ ap u (glue-inr (n , x)))
-     II n x = ap u (K n x)                                                   ＝⟨ III ⟩
-              ap u (glue-inl (n , x) ⁻¹) ∙ ap u (glue-inr (n , x))           ＝⟨ IV ⟩
-              ap u (glue-inl (n , x)) ⁻¹ ∙ ap u (glue-inr (n , x))           ＝⟨ V ⟩
-              refl ∙ (ap u (glue-inl (n , x)) ⁻¹ ∙ ap u (glue-inr (n , x)))  ∎
+        → ap u (seq-colim-homotopy n x)
+        ＝ refl ∙ (ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x))))
+     II n x = ap u (seq-colim-homotopy n x)                                      ＝⟨ III ⟩
+              ap u (glue (inl (n , x)) ⁻¹) ∙ ap u (glue (inr (n , x)))           ＝⟨ IV ⟩
+              ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))           ＝⟨ V ⟩
+              refl ∙ (ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x))))  ∎
       where
-       III = ap-∙ u (glue-inl (n , x) ⁻¹) (glue-inr (n , x))
-       IV = ap (_∙ ap u (glue-inr (n , x))) (ap-sym u (glue-inl (n , x)) ⁻¹)
+       III = ap-∙ u (glue (inl (n , x)) ⁻¹) (glue (inr (n , x)))
+       IV = ap (_∙ ap u (glue (inr (n , x)))) (ap-sym u (glue (inl (n , x))) ⁻¹)
        V = refl-left-neutral ⁻¹
 
 \end{code}
@@ -417,29 +399,35 @@ We unpack some useful results from the from the universal property.
 
    canonical-map-seq-cocone-fiber-contr'
     : is-contr (Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-identity 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
+       sequential-cocone-identity 𝓐 X
+        ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (seq-colim-homotopy n)) 𝓧)
    canonical-map-seq-cocone-fiber-contr' =
     equiv-to-singleton'
      (Σ-cong (λ - → sequential-cocone-identity-characterization 𝓐 X
-      ((λ n → - ∘ ι n) , λ n → ∼-ap-∘ - (K n)) 𝓧)) (canonical-map-seq-cocone-fiber-contr)
+      ((λ n → - ∘ ι n) , λ n → ∼-ap-∘ - (seq-colim-homotopy n)) 𝓧))
+       (canonical-map-seq-cocone-fiber-contr)
 
    sequential-colimit-unique-map
     : Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-identity 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧
+       sequential-cocone-identity 𝓐 X
+        ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (seq-colim-homotopy n)) 𝓧
     → sequential-colimit → X
    sequential-colimit-unique-map (u , _ , _) = u
 
    sequential-colimit-homotopy
     : (z : Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-identity 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
+       sequential-cocone-identity 𝓐 X
+        ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (seq-colim-homotopy n)) 𝓧)
     → (n : ℕ) → sequential-colimit-unique-map z ∘ ι n ∼ h n
    sequential-colimit-homotopy (_ , G , _) = G
 
    sequential-colimit-glue
     : ((u , G , M) : Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-identity 𝓐 X ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (K n)) 𝓧)
-    → (n : ℕ) → ∼-trans (∼-ap-∘ u (K n)) (λ x → G (succ n) (a n x))
-              ∼ ∼-trans (G n) (H n)
+       sequential-cocone-identity 𝓐 X
+        ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (seq-colim-homotopy n)) 𝓧)
+    → (n : ℕ)
+    → ∼-trans (∼-ap-∘ u (seq-colim-homotopy n)) (λ x → G (succ n) (a n x))
+    ∼ ∼-trans (G n) (H n)
    sequential-colimit-glue (_ , _ , M) = M
 
 \end{code}
@@ -466,7 +454,7 @@ sequential colimits.
    : ((h , H) : sequential-cocone 𝓐 X)
    → (n : ℕ)
    → (x : A n)
-   → ap (sequential-colimit-recursion (h , H)) (K n x)
+   → ap (sequential-colimit-recursion (h , H)) (seq-colim-homotopy n x)
      ∙ sequential-colimit-recursion-computation (h , H) (succ n) (a n x)
    ＝ sequential-colimit-recursion-computation (h , H) n x ∙ H n x
   sequential-colimit-recursion-glue 𝓧
@@ -481,50 +469,45 @@ Finally, we prove the uniqueness principle for sequential colimits.
   sequential-colimit-uniqueness
    : (u u' : sequential-colimit → X)
    → (G : (n : ℕ) → u ∘ (ι n) ∼ u' ∘ (ι n))
-   → (M : (n : ℕ) (x : A n) → ap u (K n x) ∙ G (succ n) (a n x) ＝ G n x ∙ ap u' (K n x))
+   → (M : (n : ℕ) (x : A n) → ap u (seq-colim-homotopy n x) ∙ G (succ n) (a n x)
+   ＝ G n x ∙ ap u' (seq-colim-homotopy n x))
    → u ∼ u'
   sequential-colimit-uniqueness u u' G M = pushout-uniqueness u u' I II III
    where
     I : (z : Σ A) → u (inll z) ＝ u' (inll z)
-    I (n , x) = ap-glue-inl u (n , x) ∙ G n x ∙ ap-glue-inl u' (n , x) ⁻¹
+    I (n , x) = ap u (glue (inl (n , x))) ∙ G n x ∙ ap u' (glue (inl (n , x))) ⁻¹
     II : (z : Σ A) → u (inrr z) ＝ u' (inrr z)
     II (n , x) = G n x
     III : (c : Σ A + Σ A)
         → ap u (glue c) ∙ II (g c) ＝ I (f c) ∙ ap u' (glue c)
-    III (inl (n , x)) = ap-glue-inl u (n , x) ∙ G n x                          ＝⟨ IV ⟩
-                        ap-glue-inl u (n , x) ∙ G n x
-                        ∙ (ap-glue-inl u' (n , x) ⁻¹ ∙ ap-glue-inl u' (n , x)) ＝⟨ V ⟩
-                        I (n , x) ∙ ap-glue-inl u' (n , x)                     ∎
+    III (inl (n , x)) = p ∙ G n x                 ＝⟨ IV ⟩
+                        p ∙ G n x ∙ (p' ⁻¹ ∙ p')  ＝⟨ V ⟩
+                        I (n , x) ∙ p'            ∎
      where
-      IV = ap (ap-glue-inl u (n , x) ∙ G n x ∙_) (sym-is-inverse (ap-glue-inl u' (n , x)))
-      V = ∙assoc (ap-glue-inl u (n , x) ∙ G n x) (ap-glue-inl u' (n , x) ⁻¹)
-           (ap-glue-inl u' (n , x)) ⁻¹
-    III (inr (n , x)) = ap-glue-inr u (n , x) ∙ G (succ n) (a n x)         ＝⟨ IV ⟩
-                        (ap-glue-inl u (n , x) ∙ ap-glue-inl u (n , x) ⁻¹)
-                        ∙ (ap-glue-inr u (n , x) ∙ G (succ n) (a n x))     ＝⟨ V ⟩
-                        ap-glue-inl u (n , x) ∙ (ap-glue-inl u (n , x) ⁻¹
-                        ∙ (ap-glue-inr u (n , x) ∙ G (succ n) (a n x)))    ＝⟨ VI ⟩
-                        ap-glue-inl u (n , x) ∙ ((ap-glue-inl u (n , x) ⁻¹
-                        ∙ ap-glue-inr u (n , x)) ∙ G (succ n) (a n x))     ＝⟨ VII ⟩
-                        ap-glue-inl u (n , x)
-                        ∙ (ap u (K n x) ∙ G (succ n) (a n x))              ＝⟨ VIII ⟩
-                        ap-glue-inl u (n , x) ∙ (G n x ∙ ap u' (K n x))    ＝⟨ IX ⟩
-                        ap-glue-inl u (n , x) ∙ G n x ∙ ap u' (K n x)      ＝⟨ X' ⟩
-                        I (n , x) ∙ ap-glue-inr u' (n , x)                 ∎
+      p = ap u (glue (inl (n , x)))
+      p' = ap u' (glue (inl (n , x)))
+      IV = ap (p ∙ G n x ∙_) (sym-is-inverse p')
+      V = ∙assoc (p ∙ G n x) (p' ⁻¹) p' ⁻¹
+    III (inr (n , x)) = q ∙ G (succ n) (a n x)                                    ＝⟨ IV ⟩
+                        (p ∙ p ⁻¹) ∙ (q ∙ G (succ n) (a n x))                     ＝⟨ V ⟩
+                        p ∙ (p ⁻¹ ∙ (q ∙ G (succ n) (a n x)))                     ＝⟨ VI ⟩
+                        p ∙ (p ⁻¹ ∙ q ∙ G (succ n) (a n x))                       ＝⟨ VII ⟩
+                        p ∙ (ap u (seq-colim-homotopy n x) ∙ G (succ n) (a n x))  ＝⟨ VIII ⟩
+                        p ∙ (G n x ∙ ap u' (seq-colim-homotopy n x))              ＝⟨ IX ⟩
+                        p ∙ G n x ∙ ap u' (seq-colim-homotopy n x)                ＝⟨ X' ⟩
+                        I (n , x) ∙ q'                                            ∎
      where
-      IV = refl-left-neutral ⁻¹ ∙ ap (_∙ (ap-glue-inr u (n , x) ∙ G (succ n) (a n x)))
-                                   (sym-is-inverse' (ap u (glue-inl (n , x))))
-      V = ∙assoc (ap-glue-inl u (n , x)) (ap-glue-inl u (n , x) ⁻¹)
-           (ap-glue-inr u (n , x) ∙ G (succ n) (a n x))
-      VI = ap (ap-glue-inl u (n , x) ∙_)
-            (∙assoc (ap-glue-inl u (n , x) ⁻¹) (ap-glue-inr u (n , x)) (G (succ n) (a n x)) ⁻¹)
-      VII = ap (ap-glue-inl u (n , x) ∙_) (ap (_∙ G (succ n) (a n x))
-             (ap-on-glue u (n , x) ⁻¹))
-      VIII = ap (ap-glue-inl u (n , x) ∙_) (M n x)
-      IX = ∙assoc (ap-glue-inl u (n , x)) (G n x) (ap u' (K n x)) ⁻¹
-      X' = ap (ap-glue-inl u (n , x) ∙ G n x ∙_ ) (ap-on-glue u' (n , x))
-           ∙ (∙assoc (ap-glue-inl u (n , x) ∙ G n x) (ap-glue-inl u' (n , x) ⁻¹)
-              (ap-glue-inr u' (n , x))) ⁻¹
+      p = ap u (glue (inl (n , x)))
+      q = ap u (glue (inr (n , x)))
+      p' = ap u' (glue (inl (n , x)))
+      q' = ap u' (glue (inr (n , x)))
+      IV = refl-left-neutral ⁻¹ ∙ ap (_∙ (q ∙ G (succ n) (a n x))) (sym-is-inverse' p)
+      V = ∙assoc p (p ⁻¹) (q ∙ G (succ n) (a n x))
+      VI = ap (p ∙_) (∙assoc (p ⁻¹) q (G (succ n) (a n x)) ⁻¹)
+      VII = ap (p ∙_) (ap (_∙ G (succ n) (a n x)) (ap-on-glue u (n , x) ⁻¹))
+      VIII = ap (p ∙_) (M n x)
+      IX = ∙assoc p (G n x) (ap u' (seq-colim-homotopy n x)) ⁻¹
+      X' = ap (p ∙ G n x ∙_ ) (ap-on-glue u' (n , x)) ∙ (∙assoc (p ∙ G n x) (p' ⁻¹) q') ⁻¹
 
 \end{code}
 
