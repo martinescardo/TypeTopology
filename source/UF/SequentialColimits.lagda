@@ -241,10 +241,10 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
   element-at : ((n , x) : Σ A) → A n
   element-at = pr₂
 
- module _ (push-ex : pushouts-exist f g)
+ module _ (push-ex : pushout-exists f g)
            where
 
-  open pushouts-exist push-ex
+  open pushout-exists push-ex
 
   sequential-colimit : 𝓤 ̇
   sequential-colimit = pushout

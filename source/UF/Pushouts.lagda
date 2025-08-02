@@ -159,7 +159,7 @@ equivalence known from Sojakova. This is a work in progress.
 
 \begin{code}
 
-record pushouts-exist {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇} (f : C → A) (g : C → B) : 𝓤ω
+record pushout-exists {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇} (f : C → A) (g : C → B) : 𝓤ω
  where
  field
   pushout : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
