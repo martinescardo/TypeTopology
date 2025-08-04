@@ -1,7 +1,8 @@
 Ian Ray, 21st Jun 2025.
 
-We develop sequential colimits in HoTT/UF. This formalization follows Section 26 of
-Introduction to Homotopy Type Theory by Egbert Rijke (HoTTEST summer school version:
+We develop sequential colimits in HoTT/UF. This formalization follows Section 26
+of Introduction to Homotopy Type Theory by Egbert Rijke (HoTTEST summer school
+version:
 https://github.com/martinescardo/HoTTEST-Summer-School/blob/main/HoTT/hott-intro.pdf).
 
 \begin{code}
@@ -38,8 +39,8 @@ type-sequence 𝓤 = Σ A ꞉ (ℕ → 𝓤 ̇) , ((n : ℕ) → A n → A (succ
 
 \end{code}
 
-A sequential cocone over a type sequence consists of a sequence of maps to a specified
-type
+A sequential cocone over a type sequence consists of a sequence of maps to a
+specified type
 
           a₀      a₁      a₂
      A₀ ----> A₁ ----> A₂ ----> ...
@@ -51,7 +52,8 @@ type
            v  v   v
               B
 
-such that every composable triangle commutes. Formally we can define this as follows.
+such that every composable triangle commutes. Formally we can define this as
+follows.
 
 \begin{code}
 
@@ -93,21 +95,22 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
   where
    e : (Σ 𝓑' ꞉ (sequential-cocone 𝓐 B) , sequential-cocone-identity (b , G) 𝓑')
      ≃ 𝟙 {𝓤 ⊔ 𝓥}
-   e = (Σ 𝓑' ꞉ (sequential-cocone 𝓐 B) , sequential-cocone-identity (b , G) 𝓑') ≃⟨ I ⟩
+   e = (Σ 𝓑' ꞉ (sequential-cocone 𝓐 B) , sequential-cocone-identity (b , G) 𝓑')
+                                                                          ≃⟨ I ⟩
        (Σ b' ꞉ ((n : ℕ) → A n → B) ,
         Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
          Σ H ꞉ ((n : ℕ) → b n ∼ b' n) ,
           ((n : ℕ) → ∼-trans (G n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (G' n)))
-                                                                                ≃⟨ II ⟩
+                                                                          ≃⟨ II ⟩
        (Σ b' ꞉ ((n : ℕ) → A n → B) ,
         Σ H ꞉ ((n : ℕ) → b n ∼ b' n) ,
          Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
           ((n : ℕ) → ∼-trans (G n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (G' n)))
-                                                                                ≃⟨ III ⟩
+                                                                          ≃⟨ III ⟩
        (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) ,
         ((n : ℕ) → G n ∼ G' n))
-                                                                                ≃⟨ IV ⟩
-       𝟙                                                                        ■
+                                                                          ≃⟨ IV ⟩
+       𝟙                                                                  ■
     where
      I = Σ-assoc
      II = Σ-cong (λ - → Σ-flip)
@@ -115,15 +118,15 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
             Σ H ꞉ ((n : ℕ) → b n ∼ b' n) ,
              Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
               ((n : ℕ) → ∼-trans (G n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (G' n)))
-                                                                               ≃⟨ V ⟩
+                                                                          ≃⟨ V ⟩
            (Σ (b' , H) ꞉ (Σ b' ꞉ ((n : ℕ) → A n → B) , ((n : ℕ) → b n ∼ b' n)) ,
             (Σ G' ꞉ ((n : ℕ) → b' n ∼ b' (succ n) ∘ a n) ,
               ((n : ℕ) → ∼-trans (G n) (H (succ n) ∘ a n) ∼ ∼-trans (H n) (G' n))))
-                                                                               ≃⟨ VII ⟩
+                                                                          ≃⟨ VII ⟩
            (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) ,
             ((n : ℕ) → ∼-trans (G n) ∼-refl ∼ ∼-trans ∼-refl (G' n)))
-                                                                               ≃⟨ VIII ⟩
-           (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n))■
+                                                                          ≃⟨ VIII ⟩
+           (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n)) ■
       where
        V = ≃-sym Σ-assoc
        VI = (Σ b' ꞉ ((n : ℕ) → A n → B) , ((n : ℕ) → b n ∼ b' n)) ≃⟨ Σ-cong IX ⟩
@@ -134,7 +137,8 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
             → ((n : ℕ) → b n ∼ b' n) ≃ (b ＝ b')
          IX b' = ((n : ℕ) → b n ∼ b' n)
                                          ≃⟨ Π-cong fe fe
-                                             (λ n → ≃-sym (≃-funext fe (b n) (b' n))) ⟩
+                                             (λ n → ≃-sym
+                                              (≃-funext fe (b n) (b' n))) ⟩
                  ((n : ℕ) → b n ＝ b' n)
                                          ≃⟨ ≃-sym (≃-funext fe b b') ⟩
                  (b ＝ b')               ■
@@ -144,15 +148,18 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
                (λ n → Π-cong fe fe
                 (λ x → ＝-cong (G n x) (∼-trans (λ - → refl) (G' n) x)
                  refl refl-left-neutral)))
-     IV = (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n)) ≃⟨ VI ⟩
-          (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , G ＝ G')                ≃⟨ VII ⟩
-          𝟙                                                                    ■
+     IV = (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , ((n : ℕ) → G n ∼ G' n))
+                                                                           ≃⟨ VI ⟩
+          (Σ G' ꞉ ((n : ℕ) → b n ∼ b (succ n) ∘ a n) , G ＝ G')
+                                                                           ≃⟨ VII ⟩
+          𝟙                                                                ■
       where
        V : (G' : ((n : ℕ) → b n ∼ b (succ n) ∘ a n))
          → ((n : ℕ) → G n ∼ G' n) ≃ (G ＝ G')
        V G' = ((n : ℕ) → G n ∼ G' n)
                                       ≃⟨ Π-cong fe fe
-                                          (λ n → ≃-sym (≃-funext fe (G n) (G' n))) ⟩
+                                          (λ n → ≃-sym
+                                           (≃-funext fe (G n) (G' n))) ⟩
               ((n : ℕ) → G n ＝ G' n)
                                       ≃⟨ ≃-sym (≃-funext fe G G') ⟩
               (G ＝ G')               ■
@@ -175,8 +182,8 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
 
 \end{code}
 
-Given a sequential cocone over X and a map X → Y there is a canonical assignment to
-a sequential cocone over Y.
+Given a sequential cocone over X and a map X → Y there is a canonical assignment
+to a sequential cocone over Y.
 
 \begin{code}
 
@@ -192,8 +199,9 @@ module _ (𝓐 : type-sequence 𝓤)
 
 \end{code}
 
-A sequential cocone over X is universal if the above map is an equivalence for any Y.
-Such a sequential cocone is said to be the sequential colimit of a type sequence.
+A sequential cocone over X is universal if the above map is an equivalence for any
+Y. Such a sequential cocone is said to be the sequential colimit of a type
+sequence.
 
 \begin{code}
 
@@ -205,9 +213,11 @@ Such a sequential cocone is said to be the sequential colimit of a type sequence
 \end{code}
 
 We now give a construction of the sequential colimit in terms of the pushout.
-This construction follows 26.2 in Introduction to Homotopy Type Theory (link above).
+This construction follows 26.2 in Introduction to Homotopy Type Theory
+(link above).
 
-The sequential colimit A∞ can be constructed as the pushout of the following diagram
+The sequential colimit A∞ can be constructed as the pushout of the following
+diagram
 
                      [id , σ]
           Σ A + Σ A ------------> Σ A
@@ -274,9 +284,10 @@ We will quickly provide names and a technical lemma that will prove useful later
              → ((n , x) : Σ A)
              → ap u (seq-colim-homotopy n x)
              ＝ ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))
-  ap-on-glue u (n , x) = ap u (seq-colim-homotopy n x)                             ＝⟨ I ⟩
-                         ap u (glue (inl (n , x)) ⁻¹) ∙ ap u (glue (inr (n , x)))  ＝⟨ II ⟩
-                         ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))  ∎
+  ap-on-glue u (n , x)
+   = ap u (seq-colim-homotopy n x)                             ＝⟨ I ⟩
+     ap u (glue (inl (n , x)) ⁻¹) ∙ ap u (glue (inr (n , x)))  ＝⟨ II ⟩
+     ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))  ∎
    where
     I = ap-∙ u (glue (inl (n , x)) ⁻¹) (glue (inr (n , x)))
     II = ap (_∙ ap u (glue (inr (n , x)))) (ap-sym u (glue (inl (n , x)))) ⁻¹
@@ -335,8 +346,9 @@ cocones over the above type sequence.
 
 \end{code}
 
-Additionally, we show that the canonical map to sequential cocones factors through the
-canonical map to pushout cocones and the above map that translates between them.
+Additionally, we show that the canonical map to sequential cocones factors through
+the canonical map to pushout cocones and the above map that translates between
+them.
 
 \begin{code}
 
@@ -349,8 +361,9 @@ canonical map to pushout cocones and the above map that translates between them.
    = sequential-cocone-family-to-id 𝓐 X
       (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
        sequential-colimit-is-cocone u)
-      (pushout-cocone-to-seq-cocone (canonical-map-to-cocone sequential-colimit f g
-       pushout-cocone X u))
+      (pushout-cocone-to-seq-cocone
+       (canonical-map-to-cocone sequential-colimit f g
+        pushout-cocone X u))
       (I , II)
     where
      I : (n : ℕ) → u ∘ ι n ∼ curry (u ∘ inrr) n
@@ -358,10 +371,11 @@ canonical map to pushout cocones and the above map that translates between them.
      II : (n : ℕ) (x : A n)
         → ap u (seq-colim-homotopy n x)
         ＝ refl ∙ (ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x))))
-     II n x = ap u (seq-colim-homotopy n x)                                      ＝⟨ III ⟩
-              ap u (glue (inl (n , x)) ⁻¹) ∙ ap u (glue (inr (n , x)))           ＝⟨ IV ⟩
-              ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))           ＝⟨ V ⟩
-              refl ∙ (ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x))))  ∎
+     II n x
+      = ap u (seq-colim-homotopy n x)                                     ＝⟨ III ⟩
+        ap u (glue (inl (n , x)) ⁻¹) ∙ ap u (glue (inr (n , x)))          ＝⟨ IV ⟩
+        ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))          ＝⟨ V ⟩
+        refl ∙ (ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))) ∎
       where
        III = ap-∙ u (glue (inl (n , x)) ⁻¹) (glue (inr (n , x)))
        IV = ap (_∙ ap u (glue (inr (n , x)))) (ap-sym u (glue (inl (n , x))) ⁻¹)
@@ -432,15 +446,16 @@ We unpack some useful results from the from the universal property.
 
 \end{code}
 
-From the universal property we derive the recursion principle and computation rules for
-sequential colimits.
+From the universal property we derive the recursion principle and computation
+rules for sequential colimits.
 
 \begin{code}
 
   sequential-colimit-recursion : sequential-cocone 𝓐 X
                                → sequential-colimit → X
   sequential-colimit-recursion 𝓧
-   = sequential-colimit-unique-map 𝓧 (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
+   = sequential-colimit-unique-map 𝓧
+      (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
 
   sequential-colimit-recursion-computation
    : ((h , H) : sequential-cocone 𝓐 X)
@@ -448,7 +463,8 @@ sequential colimits.
    → (x : A n)
    → sequential-colimit-recursion (h , H) (ι n x) ＝ h n x
   sequential-colimit-recursion-computation 𝓧
-   = sequential-colimit-homotopy 𝓧 (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
+   = sequential-colimit-homotopy 𝓧
+      (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
 
   sequential-colimit-recursion-glue
    : ((h , H) : sequential-cocone 𝓐 X)
@@ -458,7 +474,8 @@ sequential colimits.
      ∙ sequential-colimit-recursion-computation (h , H) (succ n) (a n x)
    ＝ sequential-colimit-recursion-computation (h , H) n x ∙ H n x
   sequential-colimit-recursion-glue 𝓧
-   = sequential-colimit-glue 𝓧 (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
+   = sequential-colimit-glue 𝓧
+      (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
 
 \end{code}
 
@@ -488,28 +505,31 @@ Finally, we prove the uniqueness principle for sequential colimits.
       p' = ap u' (glue (inl (n , x)))
       IV = ap (p ∙ G n x ∙_) (sym-is-inverse p')
       V = ∙assoc (p ∙ G n x) (p' ⁻¹) p' ⁻¹
-    III (inr (n , x)) = q ∙ G (succ n) (a n x)                                    ＝⟨ IV ⟩
-                        (p ∙ p ⁻¹) ∙ (q ∙ G (succ n) (a n x))                     ＝⟨ V ⟩
-                        p ∙ (p ⁻¹ ∙ (q ∙ G (succ n) (a n x)))                     ＝⟨ VI ⟩
-                        p ∙ (p ⁻¹ ∙ q ∙ G (succ n) (a n x))                       ＝⟨ VII ⟩
-                        p ∙ (ap u (seq-colim-homotopy n x) ∙ G (succ n) (a n x))  ＝⟨ VIII ⟩
-                        p ∙ (G n x ∙ ap u' (seq-colim-homotopy n x))              ＝⟨ IX ⟩
-                        p ∙ G n x ∙ ap u' (seq-colim-homotopy n x)                ＝⟨ X' ⟩
-                        I (n , x) ∙ q'                                            ∎
+    III (inr (n , x)) =
+     q ∙ G (succ n) (a n x)                                    ＝⟨ IV ⟩
+     (p ∙ p ⁻¹) ∙ (q ∙ G (succ n) (a n x))                     ＝⟨ V ⟩
+     p ∙ (p ⁻¹ ∙ (q ∙ G (succ n) (a n x)))                     ＝⟨ VI ⟩
+     p ∙ (p ⁻¹ ∙ q ∙ G (succ n) (a n x))                       ＝⟨ VII ⟩
+     p ∙ (ap u (seq-colim-homotopy n x) ∙ G (succ n) (a n x))  ＝⟨ VIII ⟩
+     p ∙ (G n x ∙ ap u' (seq-colim-homotopy n x))              ＝⟨ IX ⟩
+     p ∙ G n x ∙ ap u' (seq-colim-homotopy n x)                ＝⟨ X' ⟩
+     I (n , x) ∙ q'                                            ∎
      where
       p = ap u (glue (inl (n , x)))
       q = ap u (glue (inr (n , x)))
       p' = ap u' (glue (inl (n , x)))
       q' = ap u' (glue (inr (n , x)))
-      IV = refl-left-neutral ⁻¹ ∙ ap (_∙ (q ∙ G (succ n) (a n x))) (sym-is-inverse' p)
+      IV = refl-left-neutral ⁻¹ ∙ ap (_∙ (q ∙ G (succ n) (a n x)))
+                                     (sym-is-inverse' p)
       V = ∙assoc p (p ⁻¹) (q ∙ G (succ n) (a n x))
       VI = ap (p ∙_) (∙assoc (p ⁻¹) q (G (succ n) (a n x)) ⁻¹)
       VII = ap (p ∙_) (ap (_∙ G (succ n) (a n x)) (ap-on-glue u (n , x) ⁻¹))
       VIII = ap (p ∙_) (M n x)
       IX = ∙assoc p (G n x) (ap u' (seq-colim-homotopy n x)) ⁻¹
-      X' = ap (p ∙ G n x ∙_ ) (ap-on-glue u' (n , x)) ∙ (∙assoc (p ∙ G n x) (p' ⁻¹) q') ⁻¹
+      X' = ap (p ∙ G n x ∙_ ) (ap-on-glue u' (n , x))
+           ∙ (∙assoc (p ∙ G n x) (p' ⁻¹) q') ⁻¹
 
 \end{code}
 
-TODO. Derive the dependent universal property and induction principle for sequential
-colimits.
+TODO. Derive the dependent universal property and induction principle for
+sequential colimits.
