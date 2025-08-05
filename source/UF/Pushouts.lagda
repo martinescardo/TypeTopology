@@ -4,42 +4,43 @@ Edited by Ian Ray on 16th March 2025 and 19th June 2025.
 
 The pushout is the universal completion of a span
 
-        C --------> A
+        C --------> B
         |
         |
         |
         v
-        B
+        A
         
-which consists of a pair of maps with homotopy witnessing that the
-square
+which consists of a pair of maps with homotopy witnessing that the square
 
-        C --------> A
+        C --------> B
         |           |
         |           |
         |           |
         v           v
-        B --------> P
+        A --------> P
 
 commutes. The pushout also satisfies a universal property, which in the style of
 HoTT/UF is stated as an equivalence of a canonical map. For details on pushouts
 see section 23 of Introduction to Homotopy Type Theory by Egbert Rijke (HoTTest
 summer school version:
 https://github.com/martinescardo/HoTTEST-Summer-School/blob/main/HoTT/hott-intro.pdf)
-or chapter 6 section 8 of HoTT book (although it is important to note that the HoTT
-book utilizes definitional computation rules). In addition to the above references,
-this formalization was inspired by the development found in the agda-unimath library
+or chapter 6 section 8 of HoTT book (although it is important to note that the
+HoTT book utilizes definitional computation rules). In addition to the above
+references, this formalization was inspired by the development found in the
+agda-unimath library
 (https://unimath.github.io/agda-unimath/synthetic-homotopy-theory.pushouts.html).
 
-In the present work pushouts are defined as a higher inductive type (in the form of a
-record type). We assume point and path constructors and the (dependent) universal
-property. We will derive other important results like induction and recursion
-principles along with the corresponding propositional computation rules.
+In the present work pushouts are defined as a higher inductive type (in the form
+of a record type). We assume point and path constructors and the (dependent)
+universal property. We will derive other important results like induction and
+recursion principles along with the corresponding propositional computation
+rules.
 
-Of course, due to Kristina Sojakova's dissertation (and the following paper on the
-same topic doi: https://doi.org/10.1145/2775051.2676983), it is well known that for
-higher inductive types with propositional computation rules the following are
-equivalent:
+Of course, due to Kristina Sojakova's dissertation (and the following paper on
+the same topic doi: https://doi.org/10.1145/2775051.2676983), it is well known
+that for higher inductive types with propositional computation rules the
+following are equivalent:
 
 1) dependent homotopy initiality
 2) induction principle with propositional computation rules
@@ -48,7 +49,8 @@ equivalent:
 4) non-dependent homotopy initiality
 
 Sojakova uses the term 'homotopy initiality' of 'algebra morphisms' in the more
-general setting. The translation from Sojakova's work to the present work is roughly:
+general setting. The translation from Sojakova's work to the present work is
+roughly:
   algebras ---> cocones
   algebra morphisms ---> cocone morphisms
   homotopy intiality of algebra morphisms ---> universality of maps
@@ -144,7 +146,8 @@ module _ {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇}
 
 \end{code}
 
-The following are logically equivalent (which is an instance of Sojakova's result):
+The following are logically equivalent (which is an instance of Sojakova's
+result):
 
 1) The dependent universal property
 2) The induction principle with propositional computation rules
@@ -159,7 +162,7 @@ equivalence known from Sojakova. This is a work in progress.
 
 \begin{code}
 
-record pushouts-exist {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇} (f : C → A) (g : C → B) : 𝓤ω
+record pushout-exists {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇} (f : C → A) (g : C → B) : 𝓤ω
  where
  field
   pushout : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
@@ -172,15 +175,16 @@ record pushouts-exist {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇} (f : C → A) (g
 
 \end{code}
 
-We need to unpack all the information from the dependent universal property (i.e.
-we extract the fact that the fiber of the canonical map is contractible).
+We need to unpack all the information from the dependent universal property
+(i.e. we extract the fact that the fiber of the canonical map is contractible).
 
 \begin{code}
 
  pushout-cocone : cocone f g pushout
  pushout-cocone = (inll , inrr , glue)
 
- module _ {P : pushout →  𝓣' ̇} (t : dependent-cocone f g pushout pushout-cocone P)
+ module _ {P : pushout →  𝓣' ̇}
+          (t : dependent-cocone f g pushout pushout-cocone P)
            where
 
   pushout-fiber-is-singleton
@@ -250,9 +254,9 @@ we extract the fact that the fiber of the canonical map is contractible).
 
 \end{code}
 
-Now we can derive the induction and recursion principles along with the corresponding
-computation rules, the uniqueness of maps out of the pushout and the (non-dependent)
-universal property.
+Now we can derive the induction and recursion principles along with the
+corresponding computation rules, the uniqueness of maps out of the pushout and
+the (non-dependent) universal property.
 
 \begin{code}
 
@@ -264,12 +268,14 @@ universal property.
    = pushout-unique-map (l , r , G) (pushout-fiber-center (l , r , G))
 
   pushout-ind-comp-inll
-   : Pushout-Computation-Rule₁ pushout f g (inll , inrr , glue) P pushout-induction
+   : Pushout-Computation-Rule₁ pushout f g (inll , inrr , glue) P
+      pushout-induction
   pushout-ind-comp-inll l r G
    = pushout-inll-homotopy (l , r , G) (pushout-fiber-center (l , r , G))
 
   pushout-ind-comp-inrr
-   : Pushout-Computation-Rule₂ pushout f g (inll , inrr , glue) P pushout-induction
+   : Pushout-Computation-Rule₂ pushout f g (inll , inrr , glue) P
+      pushout-induction
   pushout-ind-comp-inrr l r G
    = pushout-inrr-homotopy (l , r , G) (pushout-fiber-center (l , r , G))
 
@@ -312,7 +318,8 @@ universal property.
    → ap (pushout-recursion l r G) (glue c) ∙ pushout-rec-comp-inrr l r G (g c) 
      ＝ pushout-rec-comp-inll l r G (f c) ∙ G c
   pushout-rec-comp-glue l r G c =
-   ap (pushout-recursion l r G) (glue c) ∙ pushout-rec-comp-inrr l r G (g c)                                                                        ＝⟨ III ⟩
+   ap (pushout-recursion l r G) (glue c) ∙ pushout-rec-comp-inrr l r G (g c)
+                                                            ＝⟨ III ⟩
    transport-const (glue c) ⁻¹ ∙ apd (pushout-recursion l r G) (glue c)
     ∙ pushout-rec-comp-inrr l r G (g c)
                                                             ＝⟨ V ⟩
@@ -334,7 +341,8 @@ universal property.
      III = ap (_∙ pushout-rec-comp-inrr l r G (g c)) II 
      IV : apd (pushout-recursion l r G) (glue c)
          ∙ pushout-rec-comp-inrr l r G (g c)
-         ＝ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
+         ＝ ap (transport (λ - → D) (glue c))
+               (pushout-rec-comp-inll l r G (f c))
          ∙ (transport-const (glue c) ∙ G c)
      IV = pushout-ind-comp-glue l r (λ - → (transport-const (glue -) ∙ G -)) c
      V : transport-const (glue c) ⁻¹ ∙ apd (pushout-recursion l r G) (glue c)
@@ -344,14 +352,17 @@ universal property.
          ∙ (transport-const (glue c) ∙ G c)
      V = ap-on-left-is-assoc (transport-const (glue c) ⁻¹)
           {apd (pushout-recursion l r G) (glue c)}
-          {ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))}
+          {ap (transport (λ - → D) (glue c))
+           (pushout-rec-comp-inll l r G (f c))}
           {pushout-rec-comp-inrr l r G (g c)}
           {(transport-const (glue c) ∙ G c)} IV
-     VI = ∙assoc (transport-const (glue c) ⁻¹ ∙ ap (transport (λ - → D) (glue c))
-           (pushout-rec-comp-inll l r G (f c))) (transport-const (glue c))
-           (G c) ⁻¹
+     VI = ∙assoc (transport-const (glue c) ⁻¹
+          ∙ ap (transport (λ - → D) (glue c))
+               (pushout-rec-comp-inll l r G (f c))) (transport-const (glue c))
+               (G c) ⁻¹
      VII' : transport-const (glue c) ∙ ap id (pushout-rec-comp-inll l r G (f c))
-           ＝ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
+           ＝ ap (transport (λ - → D) (glue c))
+                 (pushout-rec-comp-inll l r G (f c))
             ∙ transport-const (glue c)
      VII' = homotopies-are-natural (transport (λ - → D) (glue c)) id
             (λ - → transport-const (glue c)) {_} {_}
@@ -365,7 +376,8 @@ universal property.
                    ∙ transport-const (glue c))
                  (ap-id-is-id (pushout-rec-comp-inll l r G (f c))) VII' ⁻¹
      VIII : transport-const (glue c) ⁻¹
-            ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
+            ∙ ap (transport (λ - → D) (glue c))
+                 (pushout-rec-comp-inll l r G (f c))
             ∙ transport-const (glue c)
            ＝ pushout-rec-comp-inll l r G (f c)
      VIII = ∙assoc (transport-const (glue c) ⁻¹)
