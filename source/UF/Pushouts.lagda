@@ -4,22 +4,22 @@ Edited by Ian Ray on 16th March 2025 and 19th June 2025.
 
 The pushout is the universal completion of a span
 
-        C --------> A
+        C --------> B
         |
         |
         |
         v
-        B
+        A
         
 which consists of a pair of maps with homotopy witnessing that the
 square
 
-        C --------> A
+        C --------> B
         |           |
         |           |
         |           |
         v           v
-        B --------> P
+        A --------> P
 
 commutes. The pushout also satisfies a universal property, which in the style of
 HoTT/UF is stated as an equivalence of a canonical map. For details on pushouts

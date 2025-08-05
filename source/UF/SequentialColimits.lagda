@@ -39,7 +39,7 @@ type-sequence 𝓤 = Σ A ꞉ (ℕ → 𝓤 ̇) , ((n : ℕ) → A n → A (succ
 
 \end{code}
 
-A sequential cocone over a type sequence consists of a sequence of maps to a
+A sequential cocone on a type sequence consists of a sequence of maps to a
 specified type
 
           a₀      a₁      a₂
@@ -52,8 +52,7 @@ specified type
            v  v   v
               B
 
-such that every composable triangle commutes. Formally we can define this as
-follows.
+such that every triangle commutes. Formally we can define this as follows.
 
 \begin{code}
 
@@ -87,10 +86,10 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
  id-to-sequential-cocone-family 𝓑 𝓑 refl
   = ((λ - → ∼-refl) , λ - → λ -' → refl-left-neutral ⁻¹)
 
- sequential-cocone-family-is-identity-system
+ sequential-cocone-identity-is-identity-system
   : (𝓑 : sequential-cocone 𝓐 B)
   → is-contr (Σ 𝓑' ꞉ (sequential-cocone 𝓐 B) , sequential-cocone-identity 𝓑 𝓑')
- sequential-cocone-family-is-identity-system (b , G)
+ sequential-cocone-identity-is-identity-system (b , G)
   = equiv-to-singleton e 𝟙-is-singleton
   where
    e : (Σ 𝓑' ꞉ (sequential-cocone 𝓐 B) , sequential-cocone-identity (b , G) 𝓑')
@@ -172,7 +171,7 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
  sequential-cocone-identity-characterization 𝓑 𝓑' =
   (id-to-sequential-cocone-family 𝓑 𝓑' ,
     Yoneda-Theorem-forth 𝓑 (id-to-sequential-cocone-family 𝓑)
-     (sequential-cocone-family-is-identity-system 𝓑) 𝓑')
+     (sequential-cocone-identity-is-identity-system 𝓑) 𝓑')
 
  sequential-cocone-family-to-id : (𝓑 𝓑' : sequential-cocone 𝓐 B)
                                 → (sequential-cocone-identity 𝓑 𝓑')
@@ -408,8 +407,9 @@ We unpack some useful results from the from the universal property.
     : is-contr (fiber (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
                         sequential-colimit-is-cocone) 𝓧)
    canonical-map-seq-cocone-fiber-contr
-    = equivs-are-vv-equivs (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-       sequential-colimit-is-cocone) sequential-colimit-universal-property 𝓧
+    = equivs-are-vv-equivs
+       (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
+        sequential-colimit-is-cocone) sequential-colimit-universal-property 𝓧
 
    canonical-map-seq-cocone-fiber-contr'
     : is-contr (Σ u ꞉ (sequential-colimit → X) ,
