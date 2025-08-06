@@ -262,6 +262,13 @@ Tosun.
 
    https://doi.org/10.48550/arXiv.2505.11055
 
+1. Igor Arrieta, Martín H. Escardó and Ayberk Tosun. *The Patch Topology in
+   Univalent Foundations*. [Mathematical Structures in Computer Science][MSCS],
+   Volume 35, Special Issue: Advances in Homotopy Type Theory.
+   August 2025.
+
+   https://doi.org/10.1017/S0960129525000088
+
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
 [LICS21]: https://easyconferences.eu/lics2021/
