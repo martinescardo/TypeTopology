@@ -10,7 +10,7 @@
    https://www.cs.bham.ac.uk/~mhe/TypeTopology/
    https://github.com/martinescardo/TypeTopology/
 
-   Tested with AgXbscrada 2.8.0
+   Tested with Agda 2.8.0
    (it will probably work with Agda 2.7.0.1, and it may still work with Agda 2.6.4.3).
 
 \begin{code}
