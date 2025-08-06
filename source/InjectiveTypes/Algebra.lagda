@@ -185,7 +185,7 @@ type equivalence (whose possibility is an interesting open problem).
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_⊚_)
 open import UF.FunExt
 
 \end{code}

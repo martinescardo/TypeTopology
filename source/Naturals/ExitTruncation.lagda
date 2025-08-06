@@ -55,8 +55,8 @@ of a minimization endomap of Σ n ꞉ ℕ , A n. See the module UF.ExitPropTrunc
    https://drops.dagstuhl.de/opus/portals/lipics/index.php?semnr=15006
    https://doi.org/10.4230/LIPIcs.TLCA.2015.153
 
-although it was presented with a different proof that assumes function
-extensionlity.
+   Although it was presented with a different proof that assumes function
+   extensionlity.
 
 \begin{code}
 
@@ -111,7 +111,7 @@ module _ (A : ℕ → 𝓤 ̇ )
 
 \end{code}
 
-We name the projections for convenience..
+We name the projections for convenience.
 
 \begin{code}
 

@@ -59,8 +59,8 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
-   * In our last count, on 2025.07.09, this development has 847 Agda
-     files with 252K lines of code, including comments and blank
+   * In our last count, on 2025.08.06, this development has 850 Agda
+     files with 254K lines of code, including comments and blank
      lines.
 
 Philosophy of the repository
@@ -196,7 +196,7 @@ import gist.index
 
 \end{code}
 
-TODO. Explain what each of the above does here.
+TODO. Explain what each of the above does here. This is long overdue.
 
 The above includes only the --safe modules. A list of all modules is here:
 

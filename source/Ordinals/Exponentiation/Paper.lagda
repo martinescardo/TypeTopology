@@ -140,7 +140,7 @@ Eq-3 I F y = ∥∥-functor h
 
 Lemma-2 : (α : Ordinal 𝓤)
         → ((β γ : Ordinal 𝓥) → β ⊴ γ → α ×ₒ β ⊴ α ×ₒ γ)
-        × ({I : 𝓤 ̇  } (F : I → Ordinal 𝓤) → α ×ₒ sup F ＝ sup (λ i → α ×ₒ F i))
+        × ((I : 𝓤 ̇ ) (F : I → Ordinal 𝓤) → α ×ₒ sup F ＝ sup (λ i → α ×ₒ F i))
 Lemma-2 α = ×ₒ-right-monotone-⊴ α , ×ₒ-preserves-suprema pt sr α
 
 Eq-double-dagger : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇

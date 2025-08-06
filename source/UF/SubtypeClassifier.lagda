@@ -70,8 +70,11 @@ infixr -1 SigmaΩ
 ⊥-is-not-⊤ : ⊥ {𝓤} ≠ ⊤ {𝓤}
 ⊥-is-not-⊤ b = 𝟘-elim (𝟘-is-not-𝟙 (ap _holds b))
 
+not' : negations-are-props-statement 𝓤 → Ω 𝓤 → Ω 𝓤
+not' ne (P , i) = (¬ P , ne)
+
 not : funext 𝓤 𝓤₀ → Ω 𝓤 → Ω 𝓤
-not fe (P , i) = (¬ P , negations-are-props fe)
+not fe = not' (negations-are-props fe)
 
 true-gives-equal-⊤ : propext 𝓤
                    → funext 𝓤 𝓤

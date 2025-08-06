@@ -40,7 +40,12 @@ g ∘ f = λ x → g (f x)
 S-combinator : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (x : X) → Y x → 𝓦 ̇ }
              → ((x : X) (y : Y x) → Z x y)
              → (f : (x : X) → Y x) (x : X) → Z x (f x)
-S-combinator g f = λ x → g x (f x)
+S-combinator g f x = g x (f x)
+
+_⊚_ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (x : X) → Y x → 𝓦 ̇ }
+    → ({x : X} (y : Y x) → Z x y)
+    → (f : (x : X) → Y x) (x : X) → Z x (f x)
+g ⊚ f = λ x → g {x} (f x)
 
 \end{code}
 
