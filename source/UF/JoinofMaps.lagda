@@ -17,23 +17,24 @@ open import UF.Pushouts fe
 
 \end{code}
 
-Given maps f : A → X and g : B → X, the fiberwise join A *_X B is given by the
-pushout of the pullback of f and g. The join of maps f and g is given by the unique
-map from the fiberwise join to X, guarenteed by the universal property of the
-pushout. That is,
+Given maps f : A → X and g : B → X, the join of types, A *_X B, is given by the
+pushout of the pullback of f and g (see diagram below). The join of maps f and
+g, f * g, is given by the unique map from A *_X B to X, guarenteed by the
+universal property of the pushout. That is,
 
                       π₂
-          A ×_X B -----------> B ---
-             |                 |     \
-         π₁  |                 | inrr \
-             |                 |       \
-             V                 V        \ 
-             A -----------> A *_X B      | g  
-              \     inll         \       |  
-               \                  \ u    | 
-                \                  \     | 
-                 \                  V    V
-                   ---------------->   X 
+          A ×_X B -----------> B ----
+             |                 |      \
+         π₁  |                 | inrr  \
+             |                 |        \
+             V                 V         \ 
+             A -----------> A *_X B       | g  
+              \     inll         \        |  
+               \                  \       | 
+                \           f * g  \      | 
+                 \                  \     |
+                  \                  V    V
+                    ---------------->   X 
                            f
 
 (this is ugly but I tried).
@@ -46,17 +47,22 @@ module _ {A : 𝓤 ̇} {B : 𝓥 ̇} {X : 𝓦 ̇}
 
  open pullback f g
 
- module _ (push-ex : pushouts-exist pb₁ pb₂)
+ module _ (push-ex : pushout-exists pb₁ pb₂)
            where
   
-  open pushouts-exist push-ex
+  open pushout-exists push-ex
 
-  fiber-wise-join : 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
-  fiber-wise-join = pushout
+  join-of-types : 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
+  join-of-types = pushout
 
-  join-of-maps : fiber-wise-join → X
+  join-of-maps : join-of-types → X
   join-of-maps = pushout-recursion f g pullback-square
 
 \end{code}
 
-TODO. Properties of the join of maps. REQUIRES FLATTENING LEMMA.
+TODO. Properties of the join of maps:
+ -universal property, recursion, uniqueness
+ -join of fibers is the fiber of joins*
+ -join of embeddings is embedding*
+
+*REQUIRES FLATTENING LEMMA
