@@ -26,10 +26,8 @@ record Monad : Type₁ where
  field
   η       : {X : Type} → X → T X
   ext     : {X Y : Type} → (X → T Y) → T X → T Y
-  ext-η   : {X : Type}
-          → ext (η {X}) ∼ 𝑖𝑑 (T X)
-  unit    : {X Y : Type} (f : X → T Y)
-          → ext f ∘ η ∼ f
+  ext-η   : {X : Type} → ext (η {X}) ∼ 𝑖𝑑 (T X)
+  unit    : {X Y : Type} (f : X → T Y) → ext f ∘ η ∼ f
   assoc   : {X Y Z : Type} (g : Y → T Z) (f : X → T Y)
           → ext (ext g ∘ f) ∼ ext g ∘ ext f
 
