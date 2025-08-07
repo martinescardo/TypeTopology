@@ -341,16 +341,18 @@ Monad algebras.
 \begin{code}
 
 record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
- field
-  structure-map : functor 𝕋 A → A
-  aunit         : structure-map ∘ η 𝕋 ∼ id
-  aassoc        : structure-map ∘ ext 𝕋 (η 𝕋 ∘ structure-map)
-                ∼ structure-map ∘ ext 𝕋 id
 
  open T-definitions 𝕋
 
+ field
+  structure-map : T A → A
+
  private
   α = structure-map
+
+ field
+  aunit         : α ∘ ηᵀ ∼ id
+  aassoc        : α ∘ extᵀ (ηᵀ ∘ α) ∼ α ∘ extᵀ id
 
  extension : {X : Type} → (X → A) → T X → A
  extension f = α ∘ mapᵀ f
