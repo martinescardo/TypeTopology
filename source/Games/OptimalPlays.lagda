@@ -66,9 +66,9 @@ is-optimal-play Xt@{X ∷ Xf} ϕt@(ϕ :: ϕf) q (x :: xs) =
 We now proceed to compute the non-empty list of all optimal plays of a
 game, under suitable assumptions on the game.
 
-An algebra of the nonempty list monad 𝕃⁺ is an associative magma. We
-work with the magma structure on R defined by x · y = x. Concretely,
-this amounts to the following construction.
+The algebras of the nonempty list monad 𝕃⁺ are the semigroups
+(associative magmas). We work with the magma structure on R defined by
+x · y = x. Concretely, this amounts to the following construction.
 
 \begin{code}
 
