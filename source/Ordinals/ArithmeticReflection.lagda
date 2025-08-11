@@ -1,7 +1,17 @@
 Tom de Jong, 31 July 2025.
-In collaboration with Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
 
-We formalize cancel-exp.pdf [TODO. Write a proper description.]
+This file provides a formalization of Section 7 ("Abstract Cancellation
+Arithmetic") of the paper "Constructive Ordinal Exponentiation" by Tom
+de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, and Chuangjie Xu.
+
+For a fixed ordinal α, we want to answer the following question:
+  Do the functions (α + _), (α × _), and (exp α _) : Ord → Ord
+  reflect ≤ and = ?
+It is quite trivial to see that α + β ≤ α + γ implies β ≤ γ,
+but the question is non-trivial for multiplication and exponentiation.
+This file develops a result for a general function F : Ord → Ord,
+of which the functions in question are instances.
+
 
 \begin{code}
 
@@ -62,7 +72,7 @@ _≤ᶜˡ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 _<ᶜˡ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α <ᶜˡ β = Σ (f , _) ꞉ α ≤ᶜˡ β , Σ b₀ ꞉ ⟨ β ⟩ , ((a : ⟨ α ⟩) → f a ≺⟨ β ⟩ b₀)
 
--- Lemma 2
+-- Lemma 41
 module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
 
  ⊴-gives-≤ᶜˡ : α ⊴ β → α ≤ᶜˡ β
@@ -84,12 +94,12 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
 ⊲-gives-<ᶜˡ α β (b₀ , refl) =
  ⊴-gives-≤ᶜˡ (β ↓ b₀) β (segment-⊴ β b₀) , b₀ , segment-inclusion-bound β b₀
 
--- Lemma 3(2)
+-- Lemma 41(2)
 ⊲-gives-not-≤ᶜˡ : (α β : Ordinal 𝓤) → α ⊲ β → ¬ (β ≤ᶜˡ α)
 ⊲-gives-not-≤ᶜˡ α β α-strictly-below-β β-below-α =
  order-preserving-gives-not-⊲ β α β-below-α α-strictly-below-β
 
--- Lemma 4
+-- Lemma 42
 <ᶜˡ-irrefl : (α : Ordinal 𝓤) → ¬ (α <ᶜˡ α)
 <ᶜˡ-irrefl α ((f , f-order-pres) , a₀ , f-below-a₀) =
  ⊲-gives-not-≤ᶜˡ (α ↓ a₀) α (a₀ , refl) I
@@ -97,12 +107,12 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
    I : α ≤ᶜˡ (α ↓ a₀)
    I = (λ a → f a , f-below-a₀ a) , f-order-pres
 
--- Lemma 3(1)
+-- Lemma 41(1)
 ⊴-gives-not-<ᶜˡ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ⊴ β → ¬ (β <ᶜˡ α)
 ⊴-gives-not-<ᶜˡ α β 𝕗 𝕘 =
  <ᶜˡ-irrefl β (<ᶜˡ-≤ᶜˡ-to-<ᶜˡ β α β 𝕘 (⊴-gives-≤ᶜˡ α β 𝕗))
 
--- Lemma 11
+-- Lemma 49
 module uo-order
         (A : 𝓤 ̇ ) (_≺_ : A → A → 𝓥 ̇ )
        where
@@ -158,7 +168,7 @@ private
 
 -- See below for examples (cf. BoundedOperations.lagda).
 
-  -- Lemma 7
+  -- Lemma 45
   F-preserves-⊴ : (β γ : Ordinal 𝓤) → β ⊴ γ → F β ⊴ F γ
   F-preserves-⊴ β γ l = III
    where
@@ -174,7 +184,7 @@ private
     III : F β ⊴ F γ
     III = transport⁻¹ (F β ⊴_) (ap F (I ⁻¹) ∙ F-sup (𝟙 + 𝟙) J) II
 
-  -- Remark 7
+  -- Remark 45 (??)
   F-eq : (β : Ordinal 𝓤)
        → F β ＝ extended-sup (λ (b : ⟨ β ⟩) → S (F (β ↓ b))) Z
   F-eq β = F β ＝⟨ ap F (supremum-of-successors-of-initial-segments pt sr β) ⟩
@@ -203,7 +213,7 @@ private
   Z-below-all-values-of-F β =
    transport⁻¹ (_⊴ F β) Z-is-F𝟘ₒ (F-preserves-⊴ 𝟘ₒ β (𝟘ₒ-least-⊴ β))
 
-  -- Lemma 8
+  -- Lemma 46
   F-preserves-⊲ : Assumption-2
                 → (β γ : Ordinal 𝓤) → β ⊲ γ → F β ⊲ F γ
   F-preserves-⊲ ((H , S-H-eq) , H-has-min) β γ (c₀ , refl) = III
@@ -248,7 +258,7 @@ private
     III : F (γ ↓ c₀) ⊲ F γ
     III = _ , (I ⁻¹ ∙ Idtofunₒ-↓-lemma II)
 
-  -- Lemma 9
+  -- Lemma 47
   -- This ought to be cleaned up.
   F-tightening-bounds
    : Assumption-1
@@ -318,7 +328,7 @@ private
            V₂ = Idtofunₒ ((F-succ (γ ↓ c)) ⁻¹) y ,
                 (III ∙ p ∙ Idtofunₒ-↓-lemma ((F-succ (γ ↓ c)) ⁻¹))
 
-  -- Lemma 10
+  -- Lemma 48
   F-impossibility : Assumption-1
                   → Assumption-3
                   → (β γ δ : Ordinal 𝓤) (b : ⟨ β ⟩)
@@ -352,7 +362,7 @@ private
      IV : S (F γ) <ᶜˡ S (F γ)
      IV = ≤ᶜˡ-<ᶜˡ-to-<ᶜˡ (S (F γ)) (F γ +ₒ δ) (S (F γ)) IV₁ IV₂
 
-  -- Lemma 12
+  -- Lemma 50
   F-reflects-⊴' : -- Assumption-1 -- redundant in the presence of Assumption-2
                   Assumption-2
                 → Assumption-3
@@ -463,13 +473,13 @@ private
        (𝟘ₒ-right-neutral (F γ))
        (F-preserves-⊲ asm-2 γ (γ +ₒ 𝟙ₒ) (successor-increasing γ)))
 
-   -- Corollary 13
+   -- Corollary 51
    F-left-cancellable : left-cancellable F
    F-left-cancellable p =
     ⊴-antisym _ _ (F-reflects-⊴ _ _ (＝-to-⊴ _ _ p))
                   (F-reflects-⊴ _ _ (＝-to-⊴ _ _ (p ⁻¹)))
 
--- Corollary 14
+-- Corollary 52
 
 module _ (α : Ordinal 𝓤) where
  private
