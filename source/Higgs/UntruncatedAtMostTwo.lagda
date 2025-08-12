@@ -82,8 +82,8 @@ almost-constantly-eq X-discrete x y' y =
  almost-constantly-inner x y' y x (inl refl)         ＝⟨ refl ⟩
  y'                                                  ∎
  where
-  I : almost-constantly-inner x y' y x (X-discrete x x) ＝
-      almost-constantly-inner x y' y x (inl refl)
+  I : almost-constantly-inner x y' y x (X-discrete x x)
+      ＝ almost-constantly-inner x y' y x (inl refl)
   I = ap (almost-constantly-inner x y' y x)
          (discrete-inl-refl X-discrete x)
 
@@ -100,8 +100,8 @@ almost-constantly-neq X-discrete x' x y' y ν =
  almost-constantly-inner x' y' y x (inr ν)            ＝⟨ refl ⟩
  y                                                    ∎
  where
-  I :  almost-constantly-inner x' y' y x (X-discrete x' x) ＝
-       almost-constantly-inner x' y' y x (inr ν)
+  I :  almost-constantly-inner x' y' y x (X-discrete x' x)
+       ＝ almost-constantly-inner x' y' y x (inr ν)
   I = ap (almost-constantly-inner x' y' y x)
          (discrete-inr fe X-discrete x' x ν)
 
