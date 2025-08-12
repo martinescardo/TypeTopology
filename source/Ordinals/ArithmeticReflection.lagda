@@ -56,6 +56,9 @@ open import Ordinals.Underlying
 open PropositionalTruncation pt
 open suprema pt sr
 
+\end{code}
+
+\begin{code}
 -- This should be moved elsewhere eventually
 
 is-⊴-reflecting : (Ordinal 𝓤 → Ordinal 𝓥) → 𝓤 ⁺ ⊔ 𝓥 ̇
@@ -66,6 +69,28 @@ is-⊴-reflecting {𝓤} {𝓥} f = (α β : Ordinal 𝓤) → f α ⊴ f β →
  order-preserving-gives-not-⊲ α β
   (f , simulations-are-order-preserving α β f f-sim)
 
+at-least-𝟙₀-iff-greater-𝟘ₒ : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α ↔ 𝟘ₒ ⊲ α
+at-least-𝟙₀-iff-greater-𝟘ₒ α = right , left
+ where
+  right : 𝟙ₒ ⊴ α → 𝟘ₒ ⊲ α
+  right 𝕗@(f , f-sim) = f ⋆ , (𝟙ₒ-↓ ⁻¹ ∙ simulations-preserve-↓ 𝟙ₒ α 𝕗 ⋆)
+
+  left : 𝟘ₒ ⊲ α → 𝟙ₒ ⊴ α
+  left (⊥ , p) = f , f-initial-seg , f-order-preserving
+   where
+    f : ⟨ 𝟙ₒ ⟩ →  ⟨ α ⟩
+    f _ = ⊥
+
+    f-initial-seg : is-initial-segment 𝟙ₒ α f
+    f-initial-seg x a q = 𝟘-elim (Idtofunₒ (p ⁻¹) (a , q))
+
+    f-order-preserving : is-order-preserving 𝟙ₒ α f
+    f-order-preserving x y p = 𝟘-elim p
+
+\end{code}
+
+\begin{code}
+
 _≤ᶜˡ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ≤ᶜˡ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f
 
@@ -75,8 +100,11 @@ _<ᶜˡ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 -- Lemma 41
 module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
 
+ <ᶜˡ-gives-≤ᶜˡ : α <ᶜˡ β → α ≤ᶜˡ β
+ <ᶜˡ-gives-≤ᶜˡ (f , _ , _) = f
+
  ⊴-gives-≤ᶜˡ : α ⊴ β → α ≤ᶜˡ β
- ⊴-gives-≤ᶜˡ (f , f-sim) = f , (simulations-are-order-preserving α β f f-sim)
+ ⊴-gives-≤ᶜˡ (f , f-sim) = f , simulations-are-order-preserving α β f f-sim
 
  ≤ᶜˡ-transitivity : (γ : Ordinal 𝓦) → α ≤ᶜˡ β → β ≤ᶜˡ γ → α ≤ᶜˡ γ
  ≤ᶜˡ-transitivity γ (f , f-order-pres) (g , g-order-pres) =
@@ -89,6 +117,10 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
  ≤ᶜˡ-<ᶜˡ-to-<ᶜˡ : (γ : Ordinal 𝓦) → α ≤ᶜˡ β → β <ᶜˡ γ → α <ᶜˡ γ
  ≤ᶜˡ-<ᶜˡ-to-<ᶜˡ γ 𝕗@(f , _) (𝕘@(g , _) , c₀ , g-below-c₀) =
   ≤ᶜˡ-transitivity γ 𝕗 𝕘 , c₀ , (λ a → g-below-c₀ (f a))
+
+ <ᶜˡ-transitivity : (γ : Ordinal 𝓦) → α <ᶜˡ β → β <ᶜˡ γ → α <ᶜˡ γ
+ <ᶜˡ-transitivity γ 𝕗 𝕘 = ≤ᶜˡ-<ᶜˡ-to-<ᶜˡ γ (<ᶜˡ-gives-≤ᶜˡ 𝕗) 𝕘
+
 
 ⊲-gives-<ᶜˡ : (α β : Ordinal 𝓤) → α ⊲ β → α <ᶜˡ β
 ⊲-gives-<ᶜˡ α β (b₀ , refl) =
@@ -125,6 +157,7 @@ module uo-order
   where
    P : A → A → 𝓤 ⊔ 𝓥 ̇
    P a b = is-accessible _≺ᵤₒ_ (a , b) × is-accessible _≺ᵤₒ_ (b , a)
+
    I : (a : A)
      → ((a' : A) → a' ≺ a → (b : A) → P a' b)
      → (b : A) → P a b
@@ -144,7 +177,7 @@ module uo-order
 
 
 extended-sup : {I : 𝓤 ̇ } (J : I → Ordinal 𝓤) (Z : Ordinal 𝓤) → Ordinal 𝓤
-extended-sup {𝓤} J Z = sup (cases (λ (_ : 𝟙{𝓤}) → Z) J)
+extended-sup {𝓤} {I} J Z = sup {I = 𝟙 + I} (cases (λ (_ : 𝟙{𝓤}) → Z) J)
 
 private
  module framework
@@ -174,6 +207,7 @@ private
    where
     J : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
     J = cases (λ _ → β) (λ _ → γ)
+
     I : sup J ＝ γ
     I = ⊴-antisym (sup J) γ
          (sup-is-lower-bound-of-upper-bounds J γ
@@ -187,19 +221,24 @@ private
   -- Remark 45 (??)
   F-eq : (β : Ordinal 𝓤)
        → F β ＝ extended-sup (λ (b : ⟨ β ⟩) → S (F (β ↓ b))) Z
-  F-eq β = F β ＝⟨ ap F (supremum-of-successors-of-initial-segments pt sr β) ⟩
-           F (sup λ b → (β ↓ b) +ₒ 𝟙ₒ) ＝⟨ F-sup ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ) ⟩
-           extended-sup (F ∘ (λ b → (β ↓ b) +ₒ 𝟙ₒ)) Z ＝⟨ ap (λ - → extended-sup - Z) (dfunext fe' (λ b → F-succ (β ↓ b))) ⟩
-           extended-sup (λ b → S (F (β ↓ b))) Z ∎
+  F-eq β = F β                                        ＝⟨ I ⟩
+           F (sup λ b → (β ↓ b) +ₒ 𝟙ₒ)                ＝⟨ II ⟩
+           extended-sup (F ∘ (λ b → (β ↓ b) +ₒ 𝟙ₒ)) Z ＝⟨ III ⟩
+           extended-sup (λ b → S (F (β ↓ b))) Z       ∎
+   where
+    I = ap F (supremum-of-successors-of-initial-segments pt sr β)
+    II = F-sup ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
+    III = ap (λ - → extended-sup - Z) (dfunext fe' (λ b → F-succ (β ↓ b)))
 
   Z-is-F𝟘ₒ : Z ＝ F 𝟘ₒ
-  Z-is-F𝟘ₒ = Z ＝⟨ I ⟩
+  Z-is-F𝟘ₒ = Z                      ＝⟨ I ⟩
              extended-sup (F ∘ J) Z ＝⟨ F-sup 𝟘 J ⁻¹ ⟩
-             F (sup J) ＝⟨ ap F II ⟩
-             F 𝟘ₒ ∎
+             F (sup J)              ＝⟨ ap F II ⟩
+             F 𝟘ₒ                   ∎
    where
     J : 𝟘 → Ordinal 𝓤
     J = 𝟘-elim
+
     I = ⊴-antisym Z (extended-sup (F ∘ J) Z)
          (sup-is-upper-bound _ (inl ⋆))
          (sup-is-lower-bound-of-upper-bounds _ Z
@@ -222,25 +261,29 @@ private
     h₀ = pr₁ (H-has-min (γ ↓ c₀))
     h₀-eq : H (F (γ ↓ c₀)) ↓ h₀ ＝ 𝟘ₒ
     h₀-eq = (pr₂ (H-has-min (γ ↓ c₀))) ⁻¹
+
     J : ⟨ γ ⟩ → Ordinal 𝓤
     J c = F (γ ↓ c) +ₒ H (F (γ ↓ c))
+
     [_,_] : (c : ⟨ γ ⟩) (h : ⟨ H (F (γ ↓ c)) ⟩) → ⟨ sup J ⟩
     [ c , h ] =
      [ F (γ ↓ c) +ₒ H (F (γ ↓ c)) , sup J ]⟨ sup-is-upper-bound J c ⟩ (inr h)
 
     I : sup J ↓ [ c₀ , h₀ ] ＝ F (γ ↓ c₀)
-    I = sup J ↓ [ c₀ , h₀ ] ＝⟨ initial-segment-of-sup-at-component J c₀ (inr h₀) ⟩
-        J c₀ ↓ inr h₀ ＝⟨ (+ₒ-↓-right h₀) ⁻¹ ⟩
+    I = sup J ↓ [ c₀ , h₀ ]                 ＝⟨ I₁ ⟩
+        J c₀ ↓ inr h₀                       ＝⟨ (+ₒ-↓-right h₀) ⁻¹ ⟩
         F (γ ↓ c₀) +ₒ (H (F (γ ↓ c₀)) ↓ h₀) ＝⟨ ap (F (γ ↓ c₀) +ₒ_) h₀-eq ⟩
-        F (γ ↓ c₀) +ₒ 𝟘ₒ ＝⟨ 𝟘ₒ-right-neutral (F (γ ↓ c₀)) ⟩
-        F (γ ↓ c₀) ∎
+        F (γ ↓ c₀) +ₒ 𝟘ₒ                    ＝⟨ 𝟘ₒ-right-neutral (F (γ ↓ c₀)) ⟩
+        F (γ ↓ c₀)                          ∎
+     where
+      I₁ = initial-segment-of-sup-at-component J c₀ (inr h₀)
 
     II : sup J ＝ F γ
-    II = sup J ＝⟨ II₁ ⟩
-         extended-sup J Z ＝⟨ refl ⟩
+    II = sup J                                             ＝⟨ II₁ ⟩
+         extended-sup J Z                                  ＝⟨ refl ⟩
          extended-sup (λ c → F (γ ↓ c) +ₒ H (F (γ ↓ c))) Z ＝⟨ II₂ ⟩
-         extended-sup (λ c → S (F (γ ↓ c))) Z ＝⟨ (F-eq γ ⁻¹) ⟩
-         F γ ∎
+         extended-sup (λ c → S (F (γ ↓ c))) Z              ＝⟨ (F-eq γ ⁻¹) ⟩
+         F γ                                               ∎
       where
        II₁ = ⊴-antisym (sup J) (extended-sup J Z)
               (sup-composition-⊴ inr (cases (λ _ → Z) J))
@@ -253,13 +296,13 @@ private
                          (+ₒ-left-⊴ (F (γ ↓ c₀)) (H (F (γ ↓ c₀))))
                          (sup-is-upper-bound J c₀))
          ub (inr c) = sup-is-upper-bound J c
-       II₂ = ap (λ - → extended-sup - Z) (dfunext fe' (λ c → (S-H-eq (F (γ ↓ c))) ⁻¹))
+       II₂ = ap (λ - → extended-sup - Z)
+                (dfunext fe' (λ c → (S-H-eq (F (γ ↓ c))) ⁻¹))
 
     III : F (γ ↓ c₀) ⊲ F γ
-    III = _ , (I ⁻¹ ∙ Idtofunₒ-↓-lemma II)
+    III = Idtofunₒ II [ c₀ , h₀ ] , (I ⁻¹ ∙ Idtofunₒ-↓-lemma II)
 
   -- Lemma 47
-  -- This ought to be cleaned up.
   F-tightening-bounds
    : Assumption-1
    → (β : Ordinal 𝓤)
@@ -267,66 +310,64 @@ private
    → (γ : Ordinal 𝓤)
    → β ⊲ F γ
    → ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
-  F-tightening-bounds (H , H-S-eq) β β-ineq = transfinite-induction-on-OO _ I
+  F-tightening-bounds (H , H-S-eq) β β-ineq = transfinite-induction-on-OO Q I
    where
-    I : (γ : Ordinal 𝓤)
-      → ((c : ⟨ γ ⟩)
-            → β ⊲ F (γ ↓ c)
-            → ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ ↓ c)
-                               × (F γ' ⊴ β)
-                               × (β ⊲ F (γ' +ₒ 𝟙ₒ)))
-      → β ⊲ F γ
-      → ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
+    P : Ordinal 𝓤 → Ordinal 𝓤 → (𝓤 ⁺) ̇
+    P γ γ' = (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
+    Q : Ordinal 𝓤 → (𝓤 ⁺) ̇
+    Q γ = β ⊲ F γ → ∃ γ' ꞉ Ordinal 𝓤 , P γ γ'
+
+    I : (γ : Ordinal 𝓤) → ((c : ⟨ γ ⟩) → Q (γ ↓ c)) → Q γ
     I γ IH (x' , refl) =
-     ∥∥-rec ∃-is-prop IV
+     ∥∥-rec ∃-is-prop III
        (initial-segment-of-sup-is-initial-segment-of-some-component _ x)
       where
-       II : F γ ＝ extended-sup (λ c → S (F (γ ↓ c))) Z
-       II = F-eq γ
-
        x = Idtofunₒ (F-eq γ) x'
-       III : β ＝ (extended-sup (λ c → S (F (γ ↓ c))) Z) ↓ x
-       III = Idtofunₒ-↓-lemma II
 
-       IV : (Σ i ꞉ 𝟙 + ⟨ γ ⟩ ,
-             Σ y ꞉ ⟨ cases (λ _ → Z) (λ c → S (F (γ ↓ c))) i ⟩ ,
-              sup (cases (λ _ → Z) (λ c → S (F (γ ↓ c)))) ↓ x
-              ＝ cases (λ _ → Z) (λ c → S (F (γ ↓ c))) i ↓ y)
-          → ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
-       IV (inl ⋆ , y , p) = 𝟘-elim (⊴-gives-not-⊲ (F 𝟘ₒ) β β-ineq l')
+       II : β ＝ (extended-sup (λ c → S (F (γ ↓ c))) Z) ↓ x
+       II = Idtofunₒ-↓-lemma (F-eq γ)
+
+       III : (Σ i ꞉ 𝟙 + ⟨ γ ⟩ ,
+              Σ y ꞉ ⟨ cases (λ _ → Z) (λ c → S (F (γ ↓ c))) i ⟩ ,
+               (extended-sup (λ c → S (F (γ ↓ c))) Z) ↓ x
+               ＝ cases (λ _ → Z) (λ c → S (F (γ ↓ c))) i ↓ y)
+           → ∃ γ' ꞉ Ordinal 𝓤 , P γ γ'
+       III (inl ⋆ , y , p) = 𝟘-elim (⊴-gives-not-⊲ (F 𝟘ₒ) β β-ineq l')
         where
          l : β ⊲ Z
-         l = y , (III ∙ p)
+         l = y , (II ∙ p)
          l' : β ⊲ F 𝟘ₒ
          l' = transport (β ⊲_) Z-is-F𝟘ₒ l
-       IV (inr c , y , p) = V y' (p' ∙ Idtofunₒ-↓-lemma (H-S-eq (F (γ ↓ c))))
+       III (inr c , y , p) = IV y' (p' ∙ Idtofunₒ-↓-lemma (H-S-eq (F (γ ↓ c))))
         where
          p' : β ＝ S (F (γ ↓ c)) ↓ y
-         p' = III ∙ p
+         p' = II ∙ p
          y' : ⟨ F (γ ↓ c) +ₒ H (F (γ ↓ c)) ⟩
          y' = Idtofunₒ (H-S-eq (F (γ ↓ c))) y
 
-         V : (y' : ⟨ F (γ ↓ c) +ₒ H (F (γ ↓ c)) ⟩)
-           → β ＝ (F (γ ↓ c) +ₒ H (F (γ ↓ c))) ↓ y'
-           → ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
-         V (inl z) q = ∥∥-functor V' ih
+         IV : (y' : ⟨ F (γ ↓ c) +ₒ H (F (γ ↓ c)) ⟩)
+            → β ＝ (F (γ ↓ c) +ₒ H (F (γ ↓ c))) ↓ y'
+            → ∃ γ' ꞉ Ordinal 𝓤 , P γ γ'
+         IV (inl z) q = ∥∥-functor IV' ih
           where
-           ih : ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ (γ ↓ c)) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
+           ih : ∃ γ' ꞉ Ordinal 𝓤 , P (γ ↓ c) γ'
            ih = IH c (z , (q ∙ (+ₒ-↓-left z) ⁻¹))
-           V' : (Σ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ (γ ↓ c)) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ)))
-              → (Σ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ)))
-           V' (γ' , k , l , m) =
+           IV' : Σ γ' ꞉ Ordinal 𝓤 , P (γ ↓ c) γ' → Σ γ' ꞉ Ordinal 𝓤 , P γ γ'
+           IV' (γ' , k , l , m) =
             γ' , ⊲-⊴-gives-⊲ γ' (γ ↓ c) γ k (segment-⊴ γ c) , l , m
-         V (inr z) q = ∣ γ ↓ c , (c , refl) , V₁ , V₂ ∣
+         IV (inr z) q = ∣ γ ↓ c , (c , refl) , IV₁ , IV₂ ∣
           where
-           e : β ＝ F (γ ↓ c) +ₒ (H (F (γ ↓ c)) ↓ z)
-           e = q ∙ (+ₒ-↓-right z) ⁻¹
-           V₁ : F (γ ↓ c) ⊴ β
-           V₁ = transport⁻¹ (F (γ ↓ c) ⊴_) e
-                            (+ₒ-left-⊴ (F (γ ↓ c)) (H (F (γ ↓ c)) ↓ z))
-           V₂ : β ⊲ F ((γ ↓ c) +ₒ 𝟙ₒ)
-           V₂ = Idtofunₒ ((F-succ (γ ↓ c)) ⁻¹) y ,
-                (III ∙ p ∙ Idtofunₒ-↓-lemma ((F-succ (γ ↓ c)) ⁻¹))
+           IV₁ : F (γ ↓ c) ⊴ β
+           IV₁ = transport⁻¹ (F (γ ↓ c) ⊴_) e
+                             (+ₒ-left-⊴ (F (γ ↓ c)) (H (F (γ ↓ c)) ↓ z))
+            where
+             e = β                                  ＝⟨ q ⟩
+                 F (γ ↓ c) +ₒ H (F (γ ↓ c)) ↓ inr z ＝⟨ (+ₒ-↓-right z) ⁻¹ ⟩
+                 F (γ ↓ c) +ₒ (H (F (γ ↓ c)) ↓ z)   ∎
+
+           IV₂ : β ⊲ F ((γ ↓ c) +ₒ 𝟙ₒ)
+           IV₂ = Idtofunₒ ((F-succ (γ ↓ c)) ⁻¹) y ,
+                 (II ∙ p ∙ Idtofunₒ-↓-lemma ((F-succ (γ ↓ c)) ⁻¹))
 
   -- Lemma 48
   F-impossibility : Assumption-1
@@ -412,7 +453,9 @@ private
          V = IH (γ ↓ c , β ↓ b) (inr ((c , refl) , (b , refl))) 𝟘ₒ
               (transport⁻¹ (F (γ ↓ c) ⊴_) (𝟘ₒ-right-neutral (F (β ↓ b))) k₁)
               (transport⁻¹ (_⊲ F ((β ↓ b) +ₒ 𝟙ₒ)) (𝟘ₒ-right-neutral (F (β ↓ b)))
-                (F-preserves-⊲ asm-2 (β ↓ b) ((β ↓ b) +ₒ 𝟙ₒ) (successor-increasing (β ↓ b))))
+                (F-preserves-⊲ asm-2 (β ↓ b)
+                                     ((β ↓ b) +ₒ 𝟙ₒ)
+                                     (successor-increasing (β ↓ b))))
 
          VI : β ↓ b ⊴ γ ↓ c
          VI = VI₂ z z-eq
@@ -437,9 +480,13 @@ private
              where
               δ' = H (F (γ ↓ c)) ↓ z₀
               m₁ : F (β ↓ b) ⊴ F (γ ↓ c) +ₒ δ'
-              m₁ = ＝-to-⊴ (F (β ↓ b)) (F (γ ↓ c) +ₒ δ') (z-eq ∙ (+ₒ-↓-right z₀) ⁻¹)
+              m₁ = ＝-to-⊴ (F (β ↓ b))
+                           (F (γ ↓ c) +ₒ δ')
+                           (z-eq ∙ (+ₒ-↓-right z₀) ⁻¹)
               m₂ : F (γ ↓ c) +ₒ δ' ⊲ F ((γ ↓ c) +ₒ 𝟙ₒ)
-              m₂ = transport⁻¹ (_⊲ F ((γ ↓ c) +ₒ 𝟙ₒ)) (+ₒ-↓-right z₀ ∙ z-eq ⁻¹) k₂
+              m₂ = transport⁻¹ (_⊲ F ((γ ↓ c) +ₒ 𝟙ₒ))
+                               (+ₒ-↓-right z₀ ∙ z-eq ⁻¹)
+                               k₂
 
        goal : β ↓ b ⊲ γ
        goal = ∥∥-rec (⊲-is-prop-valued (β ↓ b) γ) g III₃
@@ -590,20 +637,26 @@ module _
       (transport (𝟚ₒ ⊴_) (α ⁺[ h ]-part-of-decomposition) α-at-least-𝟚ₒ)
     H-has-min' : (γ : Ordinal 𝓤) → 𝟙ₒ ⊴ γ → 𝟙ₒ ⊴ H γ
     H-has-min' γ l =
-     to-⊴ 𝟙ₒ (H γ) λ ⋆ → (f ⋆ , g ⋆) , (𝟙ₒ ↓ ⋆ ＝⟨ 𝟙ₒ-↓ ⟩
-                                        𝟘ₒ ＝⟨ (×ₒ-𝟘ₒ-right γ) ⁻¹ ⟩
-                                        γ ×ₒ 𝟘ₒ ＝⟨ ap (γ ×ₒ_) (𝟙ₒ-↓ ⁻¹ ∙ simulations-preserve-↓ 𝟙ₒ (α ⁺[ h ]) α⁺-pos ⋆) ⟩
-                                        γ ×ₒ (α ⁺[ h ] ↓ g ⋆) ＝⟨ (𝟘ₒ-right-neutral (γ ×ₒ (α ⁺[ h ] ↓ g ⋆))) ⁻¹ ⟩
-                                        γ ×ₒ (α ⁺[ h ] ↓ g ⋆) +ₒ 𝟘ₒ ＝⟨ ap (γ ×ₒ ((α ⁺[ h ]) ↓ g ⋆) +ₒ_) (((simulations-preserve-↓ 𝟙ₒ γ l ⋆) ⁻¹ ∙ 𝟙ₒ-↓) ⁻¹) ⟩
-                                        γ ×ₒ (α ⁺[ h ] ↓ g ⋆) +ₒ (γ ↓ f ⋆) ＝⟨ (×ₒ-↓ γ (α ⁺[ h ])) ⁻¹ ⟩
-                                        γ ×ₒ (α ⁺[ h ]) ↓ (f ⋆ , g ⋆) ＝⟨ refl ⟩
-                                        H γ ↓ (f ⋆ , g ⋆) ∎)
+     to-⊴ 𝟙ₒ (H γ) λ ⋆ → (f ⋆ , g ⋆) ,
+     (𝟙ₒ ↓ ⋆ ＝⟨ 𝟙ₒ-↓ ⟩
+      𝟘ₒ ＝⟨ (×ₒ-𝟘ₒ-right γ) ⁻¹ ⟩
+      γ ×ₒ 𝟘ₒ                            ＝⟨ I ⟩
+      γ ×ₒ (α ⁺[ h ] ↓ g ⋆)              ＝⟨ II ⟩
+      γ ×ₒ (α ⁺[ h ] ↓ g ⋆) +ₒ 𝟘ₒ        ＝⟨ III ⟩
+      γ ×ₒ (α ⁺[ h ] ↓ g ⋆) +ₒ (γ ↓ f ⋆) ＝⟨ (×ₒ-↓ γ (α ⁺[ h ])) ⁻¹ ⟩
+      γ ×ₒ (α ⁺[ h ]) ↓ (f ⋆ , g ⋆)      ＝⟨ refl ⟩
+      H γ ↓ (f ⋆ , g ⋆) ∎)
      where
       f = pr₁ l
       g = pr₁ α⁺-pos
+
+      I = ap (γ ×ₒ_) (𝟙ₒ-↓ ⁻¹ ∙ simulations-preserve-↓ 𝟙ₒ (α ⁺[ h ]) α⁺-pos ⋆)
+      II = (𝟘ₒ-right-neutral (γ ×ₒ (α ⁺[ h ] ↓ g ⋆))) ⁻¹
+      III = ap (γ ×ₒ ((α ⁺[ h ]) ↓ g ⋆) +ₒ_)
+               (((simulations-preserve-↓ 𝟙ₒ γ l ⋆) ⁻¹ ∙ 𝟙ₒ-↓) ⁻¹)
     H-has-min : (β : Ordinal 𝓤) → 𝟘ₒ ⊲ H (α ^ₒ β)
-    H-has-min β = transport (_⊲ H (α ^ₒ β)) 𝟙ₒ-↓ (_ , simulations-preserve-↓ 𝟙ₒ (H (α ^ₒ β)) (H-has-min' (α ^ₒ β) (^ₒ-has-least-element α β)) ⋆)
-     -- TODO. Turn this into a general lemma basically saying that 𝟘 ⊲ - is the same thing as 𝟙ₒ ⊴ -c
+    H-has-min β = lr-implication (at-least-𝟙₀-iff-greater-𝟘ₒ (H (α ^ₒ β)))
+                                 (H-has-min' (α ^ₒ β) (^ₒ-has-least-element α β))
 
   asm-3 : (β γ : Ordinal 𝓤) → β ≤ᶜˡ γ → (β ×ₒ α) ≤ᶜˡ (γ ×ₒ α)
   asm-3 β γ (f , f-order-pres) = g , g-order-pres
