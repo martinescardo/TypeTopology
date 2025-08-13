@@ -234,18 +234,16 @@ where σ (n , x) = (n + 1 , a n x).
 
 \begin{code}
 
-module _ (𝓐@(A , a) : type-sequence 𝓤)
-         (X : 𝓣 ̇)
-       where
+module _ (𝓐@(A , a) : type-sequence 𝓤) where
 
  σ : Σ A → Σ A
  σ (n , x) = (succ n , a n x)
 
- f : Σ A + Σ A → Σ A
- f = cases id id
+ id-case : Σ A + Σ A → Σ A
+ id-case = cases id id
 
- g : Σ A + Σ A → Σ A
- g = cases id σ
+ succ-case : Σ A + Σ A → Σ A
+ succ-case = cases id σ
 
  private
   index : Σ A → ℕ
@@ -254,7 +252,7 @@ module _ (𝓐@(A , a) : type-sequence 𝓤)
   element-at : ((n , x) : Σ A) → A n
   element-at = pr₂
 
- module _ (push-ex : pushout-exists f g)
+ module _ (push-ex : pushout-exists id-case succ-case)
            where
 
   open pushout-exists push-ex
@@ -284,17 +282,19 @@ later.
 
 \begin{code}
 
-  ap-on-glue : (u : sequential-colimit → X)
-             → ((n , x) : Σ A)
-             → ap u (seq-colim-homotopy n x)
-             ＝ ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))
-  ap-on-glue u (n , x)
-   = ap u (seq-colim-homotopy n x)                             ＝⟨ I ⟩
-     ap u (glue (inl (n , x)) ⁻¹) ∙ ap u (glue (inr (n , x)))  ＝⟨ II ⟩
-     ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))  ∎
-   where
-    I = ap-∙ u (glue (inl (n , x)) ⁻¹) (glue (inr (n , x)))
-    II = ap (_∙ ap u (glue (inr (n , x)))) (ap-sym u (glue (inl (n , x)))) ⁻¹
+  module _ (X : 𝓣 ̇) where
+
+   ap-on-glue : (u : sequential-colimit → X)
+              → ((n , x) : Σ A)
+              → ap u (seq-colim-homotopy n x)
+              ＝ ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))
+   ap-on-glue u (n , x)
+    = ap u (seq-colim-homotopy n x)                             ＝⟨ I ⟩
+      ap u (glue (inl (n , x)) ⁻¹) ∙ ap u (glue (inr (n , x)))  ＝⟨ II ⟩
+      ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))  ∎
+    where
+     I = ap-∙ u (glue (inl (n , x)) ⁻¹) (glue (inr (n , x)))
+     II = ap (_∙ ap u (glue (inr (n , x)))) (ap-sym u (glue (inl (n , x)))) ⁻¹
 
 \end{code}
 
@@ -303,50 +303,53 @@ cocones over the above type sequence.
 
 \begin{code}
 
-  gluing-from-sequential-cocone
-   : ((b , H) : sequential-cocone 𝓐 X)
-   → (c : Σ A + Σ A)
-   → b (index (f c)) (element-at (f c)) ＝ b (index (g c)) (element-at (g c))
-  gluing-from-sequential-cocone (b , H) (inl -) = refl
-  gluing-from-sequential-cocone (b , H) (inr (n , x)) = H n x
+   gluing-from-sequential-cocone
+    : ((b , H) : sequential-cocone 𝓐 X)
+    → (c : Σ A + Σ A)
+    → b (index (id-case c)) (element-at (id-case c))
+    ＝ b (index (succ-case c)) (element-at (succ-case c))
+   gluing-from-sequential-cocone (b , H) (inl -) = refl
+   gluing-from-sequential-cocone (b , H) (inr (n , x)) = H n x
 
-  pushout-cocone-to-seq-cocone : cocone f g X → sequential-cocone 𝓐 X
-  pushout-cocone-to-seq-cocone (i , j , H) = (curry j , I)
-   where
-    I : (n : ℕ) → (curry j n) ∼ (λ - → j (succ n , a n -))
-    I n x = H (inl (n , x)) ⁻¹ ∙ H (inr (n , x))
+   pushout-cocone-to-seq-cocone : cocone id-case succ-case X
+                                → sequential-cocone 𝓐 X
+   pushout-cocone-to-seq-cocone (i , j , H) = (curry j , I)
+    where
+     I : (n : ℕ) → (curry j n) ∼ (λ - → j (succ n , a n -))
+     I n x = H (inl (n , x)) ⁻¹ ∙ H (inr (n , x))
 
-  seq-cocone-to-pushout-cocone : sequential-cocone 𝓐 X → cocone f g X
-  seq-cocone-to-pushout-cocone (b , H)
-   = (uncurry b , uncurry b , gluing-from-sequential-cocone (b , H))
+   seq-cocone-to-pushout-cocone : sequential-cocone 𝓐 X
+                                → cocone id-case succ-case X
+   seq-cocone-to-pushout-cocone (b , H)
+    = (uncurry b , uncurry b , gluing-from-sequential-cocone (b , H))
 
-  pushout-cocone-to-seq-cocone-is-retraction
-   : pushout-cocone-to-seq-cocone ∘ seq-cocone-to-pushout-cocone ∼ id
-  pushout-cocone-to-seq-cocone-is-retraction (b , H)
-   = sequential-cocone-family-to-id 𝓐 X
-      (pushout-cocone-to-seq-cocone (seq-cocone-to-pushout-cocone (b , H)))
-      (b , H) ((λ n → λ x → refl) , (λ n → λ x → refl))
+   pushout-cocone-to-seq-cocone-is-retraction
+    : pushout-cocone-to-seq-cocone ∘ seq-cocone-to-pushout-cocone ∼ id
+   pushout-cocone-to-seq-cocone-is-retraction (b , H)
+    = sequential-cocone-family-to-id 𝓐 X
+       (pushout-cocone-to-seq-cocone (seq-cocone-to-pushout-cocone (b , H)))
+       (b , H) ((λ n → λ x → refl) , (λ n → λ x → refl))
 
-  pushout-cocone-to-seq-cocone-is-section
-   : seq-cocone-to-pushout-cocone ∘ pushout-cocone-to-seq-cocone ∼ id
-  pushout-cocone-to-seq-cocone-is-section (i , j , H)
-   = inverse-cocone-map f g X
-      (seq-cocone-to-pushout-cocone (pushout-cocone-to-seq-cocone (i , j , H)))
-      (i , j , H) ((λ (n , x) → H (inl (n , x)) ⁻¹) , ∼-refl , I)
-   where
-    I : (z : Σ A + Σ A)
-      → H (inl (index (f z) , element-at (f z))) ⁻¹ ∙ H z
-      ＝ gluing-from-sequential-cocone
-         (curry j , λ n → λ x → H (inl (n , x)) ⁻¹ ∙ H (inr (n , x))) z
-    I (inl -) = left-inverse (H (inl -))
-    I (inr -) = refl
+   pushout-cocone-to-seq-cocone-is-section
+    : seq-cocone-to-pushout-cocone ∘ pushout-cocone-to-seq-cocone ∼ id
+   pushout-cocone-to-seq-cocone-is-section (i , j , H)
+    = inverse-cocone-map id-case succ-case X
+       (seq-cocone-to-pushout-cocone (pushout-cocone-to-seq-cocone (i , j , H)))
+       (i , j , H) ((λ (n , x) → H (inl (n , x)) ⁻¹) , ∼-refl , I)
+    where
+     I : (z : Σ A + Σ A)
+       → H (inl (index (id-case z) , element-at (id-case z))) ⁻¹ ∙ H z
+       ＝ gluing-from-sequential-cocone
+          (curry j , λ n → λ x → H (inl (n , x)) ⁻¹ ∙ H (inr (n , x))) z
+     I (inl -) = left-inverse (H (inl -))
+     I (inr -) = refl
 
-  pushout-to-seq-cocone-is-equiv : is-equiv pushout-cocone-to-seq-cocone
-  pushout-to-seq-cocone-is-equiv
-   = qinvs-are-equivs pushout-cocone-to-seq-cocone
-      (seq-cocone-to-pushout-cocone ,
-       pushout-cocone-to-seq-cocone-is-section ,
-        pushout-cocone-to-seq-cocone-is-retraction)
+   pushout-to-seq-cocone-is-equiv : is-equiv pushout-cocone-to-seq-cocone
+   pushout-to-seq-cocone-is-equiv
+    = qinvs-are-equivs pushout-cocone-to-seq-cocone
+       (seq-cocone-to-pushout-cocone ,
+        pushout-cocone-to-seq-cocone-is-section ,
+         pushout-cocone-to-seq-cocone-is-retraction)
 
 \end{code}
 
@@ -356,34 +359,36 @@ between them.
 
 \begin{code}
 
-  canonical-maps-commute
-   : canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-      sequential-colimit-is-cocone
-   ∼ pushout-cocone-to-seq-cocone
-    ∘ canonical-map-to-cocone sequential-colimit f g pushout-cocone X
-  canonical-maps-commute u
-   = sequential-cocone-family-to-id 𝓐 X
-      (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-       sequential-colimit-is-cocone u)
-      (pushout-cocone-to-seq-cocone
-       (canonical-map-to-cocone sequential-colimit f g
-        pushout-cocone X u))
-      (I , II)
-    where
-     I : (n : ℕ) → u ∘ ι n ∼ curry (u ∘ inrr) n
-     I n x = refl
-     II : (n : ℕ) (x : A n)
-        → ap u (seq-colim-homotopy n x)
-        ＝ refl ∙ (ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x))))
-     II n x
-      = ap u (seq-colim-homotopy n x)                                 ＝⟨ III ⟩
-      ap u (glue (inl (n , x)) ⁻¹) ∙ ap u (glue (inr (n , x)))        ＝⟨ IV ⟩
-        ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))      ＝⟨ V ⟩
-        refl ∙ (ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))) ∎
-      where
-       III = ap-∙ u (glue (inl (n , x)) ⁻¹) (glue (inr (n , x)))
-       IV = ap (_∙ ap u (glue (inr (n , x)))) (ap-sym u (glue (inl (n , x))) ⁻¹)
-       V = refl-left-neutral ⁻¹
+   canonical-maps-commute
+    : canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
+       sequential-colimit-is-cocone
+    ∼ pushout-cocone-to-seq-cocone
+     ∘ canonical-map-to-cocone sequential-colimit id-case succ-case
+        pushout-cocone X
+   canonical-maps-commute u
+    = sequential-cocone-family-to-id 𝓐 X
+       (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
+        sequential-colimit-is-cocone u)
+       (pushout-cocone-to-seq-cocone
+        (canonical-map-to-cocone sequential-colimit id-case succ-case
+         pushout-cocone X u))
+       (I , II)
+     where
+      I : (n : ℕ) → u ∘ ι n ∼ curry (u ∘ inrr) n
+      I n x = refl
+      II : (n : ℕ) (x : A n)
+         → ap u (seq-colim-homotopy n x)
+         ＝ refl ∙ (ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x))))
+      II n x
+       = ap u (seq-colim-homotopy n x)                                ＝⟨ III ⟩
+         ap u (glue (inl (n , x)) ⁻¹) ∙ ap u (glue (inr (n , x)))     ＝⟨ IV ⟩
+         ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))     ＝⟨ V ⟩
+         refl ∙ (ap u (glue (inl (n , x))) ⁻¹ ∙ ap u (glue (inr (n , x)))) ∎
+       where
+        III = ap-∙ u (glue (inl (n , x)) ⁻¹) (glue (inr (n , x)))
+        IV = ap (_∙ ap u (glue (inr (n , x))))
+                (ap-sym u (glue (inl (n , x))) ⁻¹)
+        V = refl-left-neutral ⁻¹
 
 \end{code}
 
@@ -392,12 +397,12 @@ the universal property of the sequential colimit.
 
 \begin{code}
 
-  sequential-colimit-universal-property
-   : Sequential-Colimit-Universal-Property 𝓐 sequential-colimit X
-      sequential-colimit-is-cocone  
-  sequential-colimit-universal-property
-   = transport is-equiv (dfunext fe (∼-sym canonical-maps-commute))
-      (∘-is-equiv pushout-universal-property pushout-to-seq-cocone-is-equiv)
+   sequential-colimit-universal-property
+    : Sequential-Colimit-Universal-Property 𝓐 sequential-colimit X
+       sequential-colimit-is-cocone  
+   sequential-colimit-universal-property
+    = transport is-equiv (dfunext fe (∼-sym canonical-maps-commute))
+       (∘-is-equiv pushout-universal-property pushout-to-seq-cocone-is-equiv)
 
 \end{code}
 
@@ -405,49 +410,50 @@ We unpack some useful results from the from the universal property.
 
 \begin{code}
 
-  module _ (𝓧@(h , H) : sequential-cocone 𝓐 X)
-         where
+   module _ (𝓧@(h , H) : sequential-cocone 𝓐 X)
+          where
 
-   canonical-map-seq-cocone-fiber-contr
-    : is-contr (fiber (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-                        sequential-colimit-is-cocone) 𝓧)
-   canonical-map-seq-cocone-fiber-contr
-    = equivs-are-vv-equivs
-       (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
-        sequential-colimit-is-cocone) sequential-colimit-universal-property 𝓧
+    canonical-map-seq-cocone-fiber-contr
+     : is-contr
+        (fiber (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
+                 sequential-colimit-is-cocone) 𝓧)
+    canonical-map-seq-cocone-fiber-contr
+     = equivs-are-vv-equivs
+        (canonical-map-to-sequential-cocone 𝓐 sequential-colimit X
+         sequential-colimit-is-cocone) sequential-colimit-universal-property 𝓧
 
-   canonical-map-seq-cocone-fiber-contr'
-    : is-contr (Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-identity 𝓐 X
-        ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (seq-colim-homotopy n)) 𝓧)
-   canonical-map-seq-cocone-fiber-contr' =
-    equiv-to-singleton'
-     (Σ-cong (λ - → sequential-cocone-identity-characterization 𝓐 X
-      ((λ n → - ∘ ι n) , λ n → ∼-ap-∘ - (seq-colim-homotopy n)) 𝓧))
-       (canonical-map-seq-cocone-fiber-contr)
+    canonical-map-seq-cocone-fiber-contr'
+     : is-contr (Σ u ꞉ (sequential-colimit → X) ,
+        sequential-cocone-identity 𝓐 X
+         ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (seq-colim-homotopy n)) 𝓧)
+    canonical-map-seq-cocone-fiber-contr' =
+     equiv-to-singleton'
+      (Σ-cong (λ - → sequential-cocone-identity-characterization 𝓐 X
+       ((λ n → - ∘ ι n) , λ n → ∼-ap-∘ - (seq-colim-homotopy n)) 𝓧))
+        (canonical-map-seq-cocone-fiber-contr)
 
-   sequential-colimit-unique-map
-    : Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-identity 𝓐 X
-        ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (seq-colim-homotopy n)) 𝓧
-    → sequential-colimit → X
-   sequential-colimit-unique-map (u , _ , _) = u
+    sequential-colimit-unique-map
+     : Σ u ꞉ (sequential-colimit → X) ,
+        sequential-cocone-identity 𝓐 X
+         ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (seq-colim-homotopy n)) 𝓧
+     → sequential-colimit → X
+    sequential-colimit-unique-map (u , _ , _) = u
 
-   sequential-colimit-homotopy
-    : (z : Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-identity 𝓐 X
-        ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (seq-colim-homotopy n)) 𝓧)
-    → (n : ℕ) → sequential-colimit-unique-map z ∘ ι n ∼ h n
-   sequential-colimit-homotopy (_ , G , _) = G
+    sequential-colimit-homotopy
+     : (z : Σ u ꞉ (sequential-colimit → X) ,
+        sequential-cocone-identity 𝓐 X
+         ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (seq-colim-homotopy n)) 𝓧)
+     → (n : ℕ) → sequential-colimit-unique-map z ∘ ι n ∼ h n
+    sequential-colimit-homotopy (_ , G , _) = G
 
-   sequential-colimit-glue
-    : ((u , G , M) : Σ u ꞉ (sequential-colimit → X) ,
-       sequential-cocone-identity 𝓐 X
-        ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (seq-colim-homotopy n)) 𝓧)
-    → (n : ℕ)
-    → ∼-trans (∼-ap-∘ u (seq-colim-homotopy n)) (λ x → G (succ n) (a n x))
-    ∼ ∼-trans (G n) (H n)
-   sequential-colimit-glue (_ , _ , M) = M
+    sequential-colimit-glue
+     : ((u , G , M) : Σ u ꞉ (sequential-colimit → X) ,
+        sequential-cocone-identity 𝓐 X
+         ((λ n → u ∘ ι n) , λ n → ∼-ap-∘ u (seq-colim-homotopy n)) 𝓧)
+     → (n : ℕ)
+     → ∼-trans (∼-ap-∘ u (seq-colim-homotopy n)) (λ x → G (succ n) (a n x))
+     ∼ ∼-trans (G n) (H n)
+    sequential-colimit-glue (_ , _ , M) = M
 
 \end{code}
 
@@ -456,31 +462,31 @@ rules for sequential colimits.
 
 \begin{code}
 
-  sequential-colimit-recursion : sequential-cocone 𝓐 X
-                               → sequential-colimit → X
-  sequential-colimit-recursion 𝓧
-   = sequential-colimit-unique-map 𝓧
-      (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
+   sequential-colimit-recursion : sequential-cocone 𝓐 X
+                                → sequential-colimit → X
+   sequential-colimit-recursion 𝓧
+    = sequential-colimit-unique-map 𝓧
+       (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
 
-  sequential-colimit-recursion-computation
-   : ((h , H) : sequential-cocone 𝓐 X)
-   → (n : ℕ)
-   → (x : A n)
-   → sequential-colimit-recursion (h , H) (ι n x) ＝ h n x
-  sequential-colimit-recursion-computation 𝓧
-   = sequential-colimit-homotopy 𝓧
-      (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
+   sequential-colimit-recursion-computation
+    : ((h , H) : sequential-cocone 𝓐 X)
+    → (n : ℕ)
+    → (x : A n)
+    → sequential-colimit-recursion (h , H) (ι n x) ＝ h n x
+   sequential-colimit-recursion-computation 𝓧
+    = sequential-colimit-homotopy 𝓧
+       (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
 
-  sequential-colimit-recursion-glue
-   : ((h , H) : sequential-cocone 𝓐 X)
-   → (n : ℕ)
-   → (x : A n)
-   → ap (sequential-colimit-recursion (h , H)) (seq-colim-homotopy n x)
-     ∙ sequential-colimit-recursion-computation (h , H) (succ n) (a n x)
-   ＝ sequential-colimit-recursion-computation (h , H) n x ∙ H n x
-  sequential-colimit-recursion-glue 𝓧
-   = sequential-colimit-glue 𝓧
-      (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
+   sequential-colimit-recursion-glue
+    : ((h , H) : sequential-cocone 𝓐 X)
+    → (n : ℕ)
+    → (x : A n)
+    → ap (sequential-colimit-recursion (h , H)) (seq-colim-homotopy n x)
+      ∙ sequential-colimit-recursion-computation (h , H) (succ n) (a n x)
+    ＝ sequential-colimit-recursion-computation (h , H) n x ∙ H n x
+   sequential-colimit-recursion-glue 𝓧
+    = sequential-colimit-glue 𝓧
+       (center (canonical-map-seq-cocone-fiber-contr' 𝓧))
 
 \end{code}
 
@@ -488,52 +494,53 @@ Finally, we prove the uniqueness principle for sequential colimits.
 
 \begin{code}
 
-  sequential-colimit-uniqueness
-   : (u u' : sequential-colimit → X)
-   → (G : (n : ℕ) → u ∘ (ι n) ∼ u' ∘ (ι n))
-   → (M : (n : ℕ) (x : A n) → ap u (seq-colim-homotopy n x) ∙ G (succ n) (a n x)
-   ＝ G n x ∙ ap u' (seq-colim-homotopy n x))
-   → u ∼ u'
-  sequential-colimit-uniqueness u u' G M = pushout-uniqueness u u' I II III
-   where
-    I : (z : Σ A) → u (inll z) ＝ u' (inll z)
-    I (n , x)
-     = ap u (glue (inl (n , x))) ∙ G n x ∙ ap u' (glue (inl (n , x))) ⁻¹
-    II : (z : Σ A) → u (inrr z) ＝ u' (inrr z)
-    II (n , x) = G n x
-    III : (c : Σ A + Σ A)
-        → ap u (glue c) ∙ II (g c) ＝ I (f c) ∙ ap u' (glue c)
-    III (inl (n , x)) = p ∙ G n x                 ＝⟨ IV ⟩
-                        p ∙ G n x ∙ (p' ⁻¹ ∙ p')  ＝⟨ V ⟩
-                        I (n , x) ∙ p'            ∎
-     where
-      p = ap u (glue (inl (n , x)))
-      p' = ap u' (glue (inl (n , x)))
-      IV = ap (p ∙ G n x ∙_) (sym-is-inverse p')
-      V = ∙assoc (p ∙ G n x) (p' ⁻¹) p' ⁻¹
-    III (inr (n , x)) =
-     q ∙ G (succ n) (a n x)                                    ＝⟨ IV ⟩
-     (p ∙ p ⁻¹) ∙ (q ∙ G (succ n) (a n x))                     ＝⟨ V ⟩
-     p ∙ (p ⁻¹ ∙ (q ∙ G (succ n) (a n x)))                     ＝⟨ VI ⟩
-     p ∙ (p ⁻¹ ∙ q ∙ G (succ n) (a n x))                       ＝⟨ VII ⟩
-     p ∙ (ap u (seq-colim-homotopy n x) ∙ G (succ n) (a n x))  ＝⟨ VIII ⟩
-     p ∙ (G n x ∙ ap u' (seq-colim-homotopy n x))              ＝⟨ IX ⟩
-     p ∙ G n x ∙ ap u' (seq-colim-homotopy n x)                ＝⟨ X' ⟩
-     I (n , x) ∙ q'                                            ∎
-     where
-      p = ap u (glue (inl (n , x)))
-      q = ap u (glue (inr (n , x)))
-      p' = ap u' (glue (inl (n , x)))
-      q' = ap u' (glue (inr (n , x)))
-      IV = refl-left-neutral ⁻¹ ∙ ap (_∙ (q ∙ G (succ n) (a n x)))
-                                     (sym-is-inverse' p)
-      V = ∙assoc p (p ⁻¹) (q ∙ G (succ n) (a n x))
-      VI = ap (p ∙_) (∙assoc (p ⁻¹) q (G (succ n) (a n x)) ⁻¹)
-      VII = ap (p ∙_) (ap (_∙ G (succ n) (a n x)) (ap-on-glue u (n , x) ⁻¹))
-      VIII = ap (p ∙_) (M n x)
-      IX = ∙assoc p (G n x) (ap u' (seq-colim-homotopy n x)) ⁻¹
-      X' = ap (p ∙ G n x ∙_ ) (ap-on-glue u' (n , x))
-           ∙ (∙assoc (p ∙ G n x) (p' ⁻¹) q') ⁻¹
+   sequential-colimit-uniqueness
+    : (u u' : sequential-colimit → X)
+    → (G : (n : ℕ) → u ∘ (ι n) ∼ u' ∘ (ι n))
+    → (M : (n : ℕ) (x : A n)
+         → ap u (seq-colim-homotopy n x) ∙ G (succ n) (a n x)
+    ＝ G n x ∙ ap u' (seq-colim-homotopy n x))
+    → u ∼ u'
+   sequential-colimit-uniqueness u u' G M = pushout-uniqueness u u' I II III
+    where
+     I : (z : Σ A) → u (inll z) ＝ u' (inll z)
+     I (n , x)
+      = ap u (glue (inl (n , x))) ∙ G n x ∙ ap u' (glue (inl (n , x))) ⁻¹
+     II : (z : Σ A) → u (inrr z) ＝ u' (inrr z)
+     II (n , x) = G n x
+     III : (c : Σ A + Σ A)
+         → ap u (glue c) ∙ II (succ-case c) ＝ I (id-case c) ∙ ap u' (glue c)
+     III (inl (n , x)) = p ∙ G n x                 ＝⟨ IV ⟩
+                         p ∙ G n x ∙ (p' ⁻¹ ∙ p')  ＝⟨ V ⟩
+                         I (n , x) ∙ p'            ∎
+      where
+       p = ap u (glue (inl (n , x)))
+       p' = ap u' (glue (inl (n , x)))
+       IV = ap (p ∙ G n x ∙_) (sym-is-inverse p')
+       V = ∙assoc (p ∙ G n x) (p' ⁻¹) p' ⁻¹
+     III (inr (n , x)) =
+      q ∙ G (succ n) (a n x)                                    ＝⟨ IV ⟩
+      (p ∙ p ⁻¹) ∙ (q ∙ G (succ n) (a n x))                     ＝⟨ V ⟩
+      p ∙ (p ⁻¹ ∙ (q ∙ G (succ n) (a n x)))                     ＝⟨ VI ⟩
+      p ∙ (p ⁻¹ ∙ q ∙ G (succ n) (a n x))                       ＝⟨ VII ⟩
+      p ∙ (ap u (seq-colim-homotopy n x) ∙ G (succ n) (a n x))  ＝⟨ VIII ⟩
+      p ∙ (G n x ∙ ap u' (seq-colim-homotopy n x))              ＝⟨ IX ⟩
+      p ∙ G n x ∙ ap u' (seq-colim-homotopy n x)                ＝⟨ X' ⟩
+      I (n , x) ∙ q'                                            ∎
+      where
+       p = ap u (glue (inl (n , x)))
+       q = ap u (glue (inr (n , x)))
+       p' = ap u' (glue (inl (n , x)))
+       q' = ap u' (glue (inr (n , x)))
+       IV = refl-left-neutral ⁻¹ ∙ ap (_∙ (q ∙ G (succ n) (a n x)))
+                                      (sym-is-inverse' p)
+       V = ∙assoc p (p ⁻¹) (q ∙ G (succ n) (a n x))
+       VI = ap (p ∙_) (∙assoc (p ⁻¹) q (G (succ n) (a n x)) ⁻¹)
+       VII = ap (p ∙_) (ap (_∙ G (succ n) (a n x)) (ap-on-glue u (n , x) ⁻¹))
+       VIII = ap (p ∙_) (M n x)
+       IX = ∙assoc p (G n x) (ap u' (seq-colim-homotopy n x)) ⁻¹
+       X' = ap (p ∙ G n x ∙_ ) (ap-on-glue u' (n , x))
+            ∙ (∙assoc (p ∙ G n x) (p' ⁻¹) q') ⁻¹
 
 \end{code}
 

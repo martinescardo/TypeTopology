@@ -431,3 +431,15 @@ the (non-dependent) universal property.
       ∼-sym (pushout-rec-comp-glue l r G))
    
 \end{code}
+
+We now provide a record that allows the existence of pushouts to be assumed polymorphically.
+
+\begin{code}
+
+record pushouts-exist : 𝓤ω
+ where
+ field
+  push-ex : {A : 𝓤 ̇} {B : 𝓥 ̇} {C : 𝓦 ̇} (f : C → A) (g : C → B)
+          → pushout-exists f g
+
+\end{code}
