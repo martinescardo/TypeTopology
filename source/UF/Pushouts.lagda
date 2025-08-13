@@ -432,7 +432,8 @@ the (non-dependent) universal property.
    
 \end{code}
 
-We now provide a record that allows the existence of pushouts to be assumed polymorphically.
+We now provide a record that allows the existence of pushouts to be assumed
+polymorphically.
 
 \begin{code}
 
