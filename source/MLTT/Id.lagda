@@ -57,7 +57,7 @@ transport⁻¹ B p = transport B (p ⁻¹)
 \end{code}
 
 Added 4th Feb 2025. For the above definition, we have the definitional
-equality p ∙ refl = p. In order to simplify some computatations, we
+equality p ∙ refl = p. In order to simplify some computations, we
 include a version with refl ∙ q = q definitionally.
 
 \begin{code}

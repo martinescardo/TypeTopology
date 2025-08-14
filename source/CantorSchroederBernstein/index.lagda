@@ -10,5 +10,7 @@ module CantorSchroederBernstein.index where
 
 import CantorSchroederBernstein.CSB
 import CantorSchroederBernstein.CSB-TheoryLabLunch
+import CantorSchroederBernstein.CSB-WLPO
+import CantorSchroederBernstein.PerfectImages
 
 \end{code}
