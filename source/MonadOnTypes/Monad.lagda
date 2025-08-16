@@ -13,21 +13,23 @@ open import UF.FunExt
 module MonadOnTypes.Monad where
 
 record Monad : Type₁ where
+
  constructor
   monad
+
  field
   functor : Type → Type
-  η       : {X : Type} → X → functor X
-  ext     : {X Y : Type} → (X → functor Y) → functor X → functor Y
-  ext-η   : {X : Type}
-          → ext (η {X}) ∼ 𝑖𝑑 (functor X)
-  unit    : {X Y : Type} (f : X → functor Y)
-          → ext f ∘ η ∼ f
-  assoc   : {X Y Z : Type} (g : Y → functor Z) (f : X → functor Y)
-          → ext (ext g ∘ f) ∼ ext g ∘ ext f
 
  private
   T = functor
+
+ field
+  η       : {X : Type} → X → T X
+  ext     : {X Y : Type} → (X → T Y) → T X → T Y
+  ext-η   : {X : Type} → ext (η {X}) ∼ 𝑖𝑑 (T X)
+  unit    : {X Y : Type} (f : X → T Y) → ext f ∘ η ∼ f
+  assoc   : {X Y Z : Type} (g : Y → T Z) (f : X → T Y)
+          → ext (ext g ∘ f) ∼ ext g ∘ ext f
 
  map : {X Y : Type} → (X → Y) → T X → T Y
  map f = ext (η ∘ f)
@@ -341,16 +343,18 @@ Monad algebras.
 \begin{code}
 
 record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
- field
-  structure-map : functor 𝕋 A → A
-  aunit         : structure-map ∘ η 𝕋 ∼ id
-  aassoc        : structure-map ∘ ext 𝕋 (η 𝕋 ∘ structure-map)
-                ∼ structure-map ∘ ext 𝕋 id
 
  open T-definitions 𝕋
 
+ field
+  structure-map : T A → A
+
  private
   α = structure-map
+
+ field
+  aunit         : α ∘ ηᵀ ∼ id
+  aassoc        : α ∘ extᵀ (ηᵀ ∘ α) ∼ α ∘ extᵀ id
 
  extension : {X : Type} → (X → A) → T X → A
  extension f = α ∘ mapᵀ f

@@ -1,4 +1,4 @@
-J.A. Carr 2 July 2025.
+J. A. Carr 2 July 2025.
 
 The type Aut Ω has a sort of weak excluded middle: Every automorphism
 is either equal to not (in which case full LEM holds) or it's not
@@ -126,10 +126,18 @@ EM-gives-not-is-automorphism em = ((⇁_ , I) , (⇁_ , I))
   I = DNE-gives-double-negation-equality
        (EM-gives-DNE em)
 
-Ω-automorphism-not-id-iff-equals-not
- : (𝕗 : Aut Ω)
- → (𝕗 ≠ 𝕚𝕕) ↔ (⌜ 𝕗 ⌝ ＝ ⇁_)
-Ω-automorphism-not-id-iff-equals-not 𝕗@(f , f-is-equiv) = (FW , BW)
+⇁' : EM 𝓤 → Aut Ω
+⇁' em = (⇁_ , EM-gives-not-is-automorphism em)
+
+not-true-is-false : (em : EM 𝓤)
+                  → ⊥ ＝ eval-at-⊤ (⇁' em)
+not-true-is-false ν = Ω-extensionality pe fe 𝟘-elim (λ f → 𝟘-elim (f ⋆))
+
+not-id-is-not : {𝕗 : Aut Ω}
+              → (ν : 𝕗 ≠ 𝕚𝕕)
+              → (em : EM 𝓤)
+              → 𝕗 ＝ (⇁' em)
+not-id-is-not {𝕗@(f , f-is-equiv)} ν em = eval-at-⊤-is-lc (III ν ∙ not-true-is-false em)
  where
   I : f ⊤ ＝ ⊤ → 𝕗 ＝ 𝕚𝕕
   I = eval-at-⊤-is-lc {𝕗} {𝕚𝕕}
@@ -140,19 +148,16 @@ EM-gives-not-is-automorphism em = ((⇁_ , I) , (⇁_ , I))
   III : (𝕗 ≠ 𝕚𝕕) → f ⊤ ＝ ⊥
   III ν = different-from-⊤-gives-equal-⊥ fe pe (f ⊤) (II ν)
 
-  ⇁' : (𝕗 ≠ 𝕚𝕕) → Aut Ω
-  ⇁' ν = (⇁_ ,
-          EM-gives-not-is-automorphism
-           (Ω-automorphism-distinct-from-𝕚𝕕-gives-EM (𝕗 , ν)))
-
-  not-true-is-false : (ν : 𝕗 ≠ 𝕚𝕕) → ⊥ ＝ eval-at-⊤ (⇁' ν)
-  not-true-is-false ν = Ω-extensionality pe fe 𝟘-elim (λ f → 𝟘-elim (f ⋆))
-
-  IV : (ν : 𝕗 ≠ 𝕚𝕕) → 𝕗 ＝ (⇁' ν)
-  IV ν = eval-at-⊤-is-lc (III ν ∙ not-true-is-false ν)
+Ω-automorphism-not-id-iff-equals-not
+ : (𝕗 : Aut Ω)
+ → (𝕗 ≠ 𝕚𝕕) ↔ (⌜ 𝕗 ⌝ ＝ ⇁_)
+Ω-automorphism-not-id-iff-equals-not 𝕗@(f , f-is-equiv) = (FW , BW)
+ where
 
   FW : (𝕗 ≠ 𝕚𝕕) → ⌜ 𝕗 ⌝ ＝ ⇁_
-  FW ν = ap ⌜_⌝ {𝕗} {⇁' ν} (IV ν)
+  FW ν = ap ⌜_⌝ {𝕗} {⇁' em} (not-id-is-not ν em)
+   where
+    em = Ω-automorphism-distinct-from-𝕚𝕕-gives-EM (𝕗 , ν)
 
   not-is-not-id : ⇁_ ≠ id
   not-is-not-id e = ⊥-is-not-⊤
