@@ -60,6 +60,19 @@ module _ {A : 𝓤 ̇} {X : 𝓥 ̇}
 
 \end{code}
 
+We can get a map from A to any approximation with n ≥ 1 but it suffices
+to provide a map into the first approximation.
+
+\begin{code}
+
+ im-approx-restriction : A → im-approx (succ zero)
+ im-approx-restriction = inll
+  where
+   open pullback f (join-power zero)
+   open pushout-exists (push-ex pb₁ pb₂)
+
+\end{code}
+
 We show that the image approximation forms a type sequence and show that
 together with X we have a sequential cocone.
 
@@ -100,14 +113,32 @@ approximations.
    open pushout-exists (push-ex (id-case im-approx-is-type-seq)
                         (succ-case im-approx-is-type-seq))
 
- image-inclusion* : image* → X
- image-inclusion* = sequential-colimit-recursion im-approx-is-type-seq
+ image*-embedding : image* → X
+ image*-embedding = sequential-colimit-recursion im-approx-is-type-seq
                      (push-ex (id-case im-approx-is-type-seq)
                       (succ-case im-approx-is-type-seq))
                      X im-approx-is-seq-cocone
   where
    open pushout-exists (push-ex (id-case im-approx-is-type-seq)
                         (succ-case im-approx-is-type-seq))
+
+ image*-inclusion : (n : ℕ)
+                  → im-approx n → image*
+ image*-inclusion
+  = ι im-approx-is-type-seq
+      (push-ex (id-case im-approx-is-type-seq)
+       (succ-case im-approx-is-type-seq))
+  where
+   open pushout-exists (push-ex (id-case im-approx-is-type-seq)
+                        (succ-case im-approx-is-type-seq))
+
+ image*-restriction : A → image*
+ image*-restriction = image*-inclusion (succ zero) ∘ im-approx-restriction
+
+\end{code}
+
+ image*-factorization : f ∼ image*-embedding ∘ image*-restriction
+ image*-factorization = {!!}
 
 \end{code}
 
