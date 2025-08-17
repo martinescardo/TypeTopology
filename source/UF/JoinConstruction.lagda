@@ -16,6 +16,7 @@ open import UF.Pullback
 open import UF.Pushouts fe
 open import UF.JoinofMaps fe
 open import UF.SequentialColimits fe
+open import UF.ImageAndSurjection
 
 \end{code}
 
@@ -60,19 +61,6 @@ module _ {A : 𝓤 ̇} {X : 𝓥 ̇}
 
 \end{code}
 
-We can get a map from A to any approximation with n ≥ 1 but it suffices
-to provide a map into the first approximation.
-
-\begin{code}
-
- im-approx-restriction : A → im-approx (succ zero)
- im-approx-restriction = inll
-  where
-   open pullback f (join-power zero)
-   open pushout-exists (push-ex pb₁ pb₂)
-
-\end{code}
-
 We show that the image approximation forms a type sequence and show that
 together with X we have a sequential cocone.
 
@@ -113,14 +101,20 @@ approximations.
    open pushout-exists (push-ex (id-case im-approx-is-type-seq)
                         (succ-case im-approx-is-type-seq))
 
- image*-embedding : image* → X
- image*-embedding = sequential-colimit-recursion im-approx-is-type-seq
-                     (push-ex (id-case im-approx-is-type-seq)
-                      (succ-case im-approx-is-type-seq))
-                     X im-approx-is-seq-cocone
+ image*-restriction : image* → X
+ image*-restriction = sequential-colimit-recursion im-approx-is-type-seq
+                       (push-ex (id-case im-approx-is-type-seq)
+                        (succ-case im-approx-is-type-seq))
+                       X im-approx-is-seq-cocone
   where
    open pushout-exists (push-ex (id-case im-approx-is-type-seq)
                         (succ-case im-approx-is-type-seq))
+
+\end{code}
+
+We will now work towards defining the image corestriction, a map A → image*.
+
+\begin{code}
 
  image*-inclusion : (n : ℕ)
                   → im-approx n → image*
@@ -132,13 +126,25 @@ approximations.
    open pushout-exists (push-ex (id-case im-approx-is-type-seq)
                         (succ-case im-approx-is-type-seq))
 
- image*-restriction : A → image*
- image*-restriction = image*-inclusion (succ zero) ∘ im-approx-restriction
+ im-approx-corestriction : (n : ℕ)
+                         → A → im-approx (succ n)
+ im-approx-corestriction n = inll
+  where
+   open pullback f (join-power n)
+   open pushout-exists (push-ex pb₁ pb₂)
+
+ image*-corestriction : A → image*
+ image*-corestriction
+  = image*-inclusion (succ zero) ∘ im-approx-corestriction zero
 
 \end{code}
 
- image*-factorization : f ∼ image*-embedding ∘ image*-restriction
- image*-factorization = {!!}
+We show that the map f factors through the corestriction and restriction.
+
+begin{code}
+
+ image*-factorization : f ∼ image*-restriction ∘ image*-corestriction
+ image*-factorization x = {!!}
 
 \end{code}
 
