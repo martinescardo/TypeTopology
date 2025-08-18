@@ -30,13 +30,9 @@ future use.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Univalence
 
-module UF.Replacement (fe : Fun-Ext)
-                      (pt : propositional-truncations-exist)
-                      (ua : Univalence)
+module UF.Replacement (pt : propositional-truncations-exist)
                        where
 
 open import MLTT.Spartan
@@ -45,7 +41,6 @@ open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
 open import UF.Size
 open import UF.SmallnessProperties
-open import UF.UniverseEmbedding
 
 \end{code}
 
@@ -81,7 +76,7 @@ Of course the two statements are inter-derivable.
 \begin{code}
 
  Replacement-to-Replacement' : {𝓤 𝓦 : Universe}
-                             → Replacement → Replacement' {𝓤} {𝓦}
+                             → Replacement {𝓤} {𝓦} → Replacement' {𝓤} {𝓦}
  Replacement-to-Replacement' 𝓡 {_} {X} f A-small X-loc-small f-surj
   = smallness-closed-under-≃ I II
   where
@@ -92,24 +87,13 @@ Of course the two statements are inter-derivable.
 
  open propositional-truncations-exist pt
 
- Replacement'-to-Replacement : Replacement' → Replacement {𝓤} {𝓦}
+ Replacement'-to-Replacement : {𝓤 𝓦 : Universe}
+                             → Replacement' {𝓤} {𝓤 ⊔ 𝓦} → Replacement {𝓤} {𝓦}
  Replacement'-to-Replacement 𝓡' {A} {X} f A-small X-loc-small
   = 𝓡' (corestriction f) A-small I II
   where
    I : image f is-locally 𝓥 small
-   I x y = smallness-closed-under-≃'
-            (Σ-is-small (X-loc-small (restriction f x) (restriction f y))
-             {!!}) Σ-＝-≃
-    where
-     III : (p : restriction f x ＝ restriction f y)
-         → (transport (λ - → - ∈image f) p (pr₂ x) ＝ pr₂ y) is 𝓥 small
-     III p = ∥∥-rec
-      (being-small-is-prop ua (transport (λ - → - ∈image f) p (pr₂ x) ＝ pr₂ y)
-       𝓥) {!!} (pr₂ y)
-      where
-       IV : Σ (λ x₁ → f x₁ ＝ pr₁ y)
-          → (transport (λ - → - ∈image f) p (pr₂ x) ＝ pr₂ y) is 𝓥 small
-       IV (a , q) = {!!}
+   I = subtype-is-locally-small' X-loc-small (λ - → ∥∥-is-prop)
    II : is-surjection (corestriction f)
    II = corestrictions-are-surjections f
 
