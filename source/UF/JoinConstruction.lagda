@@ -112,7 +112,7 @@ approximations.
 
 \end{code}
 
-We will now work towards defining the image corestriction, a map A → image*.
+We now work towards defining the image corestriction, a map A → image*.
 
 \begin{code}
 
