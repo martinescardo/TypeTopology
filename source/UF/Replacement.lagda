@@ -1,7 +1,8 @@
 Ian Ray, 17th August 2025.
 
 The type theoretic axiom of replacement (see section 2.19 of Symmetry:
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://unimath.github.io/SymmetryBook/book.pdf) is a statement about the size of the image of a function when certain
+chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://unimath.github.io/SymmetryBook/book.pdf)
+is a statement about the size of the image of a function when certain
 smallness assumptions are made about the domain and codomain. The nomenclature
 is derived from the axiom of replacement from axiomatic set theory. In type
 theory, this statement may be assumed or proven depending on the context. Thus,
