@@ -4,6 +4,8 @@ Modifications made by Ian Ray on 14 October 2024.
 
 Modifications made by Ian Ray on 7 January 2025.
 
+Modification made by Ian Ray on 17 August 2025.
+
 We develop some results that relate size, truncation and connectedness from
 the following paper:
 [1] Christensen, J.D. (2024), Non-accessible localizations.
