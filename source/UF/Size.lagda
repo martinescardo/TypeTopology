@@ -992,15 +992,8 @@ subtype-is-locally-small A-is-prop-valued X-is-ls (x , a) (y , b) = γ
   γ : is-small ((x , a) ＝ (y , b))
   γ = x ＝⟦ X-is-ls ⟧ y ,
      (x ＝⟦ X-is-ls ⟧ y     ≃⟨ resizing-condition (X-is-ls x y) ⟩
-     (x ＝ y)               ≃⟨ I ⟩
+     (x ＝ y)               ≃⟨ to-subtype-＝-≃ A-is-prop-valued ⟩
      ((x , a) ＝ (y , b))   ■)
-    where
-     I = ≃-sym (ap pr₁ ,
-                embedding-gives-embedding'
-                 pr₁
-                 (pr₁-is-embedding A-is-prop-valued)
-                 (x , a)
-                 (y , b))
 
 subtype-is-locally-small⁻ : {X : 𝓤 ⁺ ̇ } {A : X → 𝓤 ̇ }
                           → ((x : X) → is-prop (A x))
@@ -1011,7 +1004,7 @@ subtype-is-locally-small⁻ A-is-prop-valued X-is-ls (x , a) (y , b) = γ
   γ : is-small ((x , a) ＝ (y , b))
   γ = x ＝⟦ X-is-ls ⟧ y ,
      (x ＝⟦ X-is-ls ⟧ y     ≃⟨ resizing-condition (X-is-ls x y) ⟩
-     (x ＝ y)               ≃⟨ I ⟩
+     (x ＝ y)               ≃⟨ to-subtype-＝-≃ A-is-prop-valued ⟩
      ((x , a) ＝ (y , b))   ■)
     where
      I = ≃-sym (ap pr₁ ,
@@ -1024,9 +1017,6 @@ subtype-is-locally-small⁻ A-is-prop-valued X-is-ls (x , a) (y , b) = γ
 \end{code}
 
 TODO. Generalize the above to resize (the values of) A as well.
-
-TODO. Add a characterization of equality of subtypes somewhere (the
-proof is "I" above. Perhaps in UF.EquivalenceExamples.)
 
 Added 5 April 2022 by Tom de Jong, after discussion with Martín.
 (Refactoring an earlier addition dated 15 March 2022.)
@@ -1082,6 +1072,25 @@ module _ (pt : propositional-truncations-exist) where
                  → Y is-locally 𝓥 small
                  → is-set Y
                  → image f is (𝓤 ⊔ 𝓥) small
+\end{code}
+
+Added by Ian Ray 18th August 2025.
+
+\begin{code}
+
+subtype-is-locally-small' : {𝓤' : Universe} {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                          → X is-locally 𝓤' small
+                          → ((x : X) → is-prop (A x))
+                          → Σ A is-locally 𝓤' small
+subtype-is-locally-small' {_} {_} {𝓤'} {X} {A}
+ X-ls A-is-prop-valued (x , a) (y , b) = γ
+ where
+  γ : ((x , a) ＝ (y , b)) is 𝓤' small
+  γ = resized (x ＝ y) (X-ls x y) ,
+      (resized (x ＝ y) (X-ls x y) ≃⟨ resizing-condition (X-ls x y) ⟩
+      (x ＝ y)                     ≃⟨ to-subtype-＝-≃ A-is-prop-valued ⟩
+      ((x , a) ＝ (y , b))         ■)
+
 \end{code}
 
 Added by Ian Ray 11th September 2024.
