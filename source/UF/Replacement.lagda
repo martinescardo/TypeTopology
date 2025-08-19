@@ -1,8 +1,8 @@
 Ian Ray, 17th August 2025.
 
-The type theoretic axiom of replacement (see section 24.5 of Introduction to
+The type theoretic axiom of replacement (section 24.5 of Introduction to
 Homotopy Type Theory by Egbert Rijke:
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ulrikbuchholtz.dk/hott1920/hott-intro.pdf)
+https://ulrikbuchholtz.dk/hott1920/hott-intro.pdf)
 is a statement about the size of the image of a function when certain smallness
 assumptions are imposed on the domain and codomain. The nomenclature is derived
 from the set theoretic axiom of replacement, where 'sethood' provides a notion
