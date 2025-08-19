@@ -225,3 +225,21 @@ Id-is-small {𝓤} ua fe⁺ X A =
     II = Σ-cong (λ x → ≃-sym (≃-funext fe⁺ _ _))
 
 \end{code}
+
+Added by Ian Ray 18th August 2025.
+
+We show locally smallness (wrt arbitray universe level) is closed under sigma.
+
+\begin{code}
+
+Σ-is-locally-small : {𝓤' 𝓥' : Universe} {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                   → X is-locally 𝓤' small
+                   → ((x : X) → A x is-locally 𝓥' small)
+                   → Σ A is-locally 𝓤' ⊔ 𝓥' small
+Σ-is-locally-small {_} {_} {𝓤'} {𝓥'} {X} {A} X-ls A-ls (x , α) (y , β)
+ = smallness-closed-under-≃' I Σ-＝-≃
+ where
+  I : (Σ p ꞉ (x ＝ y) , transport A p α ＝ β) is 𝓤' ⊔ 𝓥' small
+  I = Σ-is-small (X-ls x y) (λ - → A-ls y (transport A - α) β)
+
+\end{code}
