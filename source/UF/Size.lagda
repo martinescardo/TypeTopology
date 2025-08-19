@@ -1078,7 +1078,7 @@ Added by Ian Ray 18th August 2025.
 
 \begin{code}
 
-subtype-is-locally-small' : {𝓤' : Universe} {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+subtype-is-locally-small' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                           → X is-locally 𝓤' small
                           → ((x : X) → is-prop (A x))
                           → Σ A is-locally 𝓤' small
