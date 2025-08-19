@@ -23,9 +23,8 @@ in other TypeTopology files.
 
 It is worth noting that the status of type replacement in the hierarchy of HIT
 strength is not completely understood (afaik), but it appears to be weaker than
-the assumption that pushouts exist. For this reason, we feel it is reasonable to
-explore type replacement as an explicit assumption and derive variations for
-future use.
+the assumption that pushouts exist. For this reason, it is reasonable to explore
+type replacement as an explicit assumption and derive variations for future use.
 
 \begin{code}
 
