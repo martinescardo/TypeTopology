@@ -1088,8 +1088,8 @@ subtype-is-locally-small' {_} {_} {𝓤'} {X} {A}
   γ : ((x , a) ＝ (y , b)) is 𝓤' small
   γ = resized (x ＝ y) (X-is-ls x y) ,
       (resized (x ＝ y) (X-is-ls x y) ≃⟨ resizing-condition (X-is-ls x y) ⟩
-      (x ＝ y)                     ≃⟨ to-subtype-＝-≃ A-is-prop-valued ⟩
-      ((x , a) ＝ (y , b))         ■)
+      (x ＝ y)                        ≃⟨ to-subtype-＝-≃ A-is-prop-valued ⟩
+      ((x , a) ＝ (y , b))            ■)
 
 \end{code}
 
