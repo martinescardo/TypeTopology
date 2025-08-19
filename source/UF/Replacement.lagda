@@ -1,30 +1,37 @@
 Ian Ray, 17th August 2025.
 
-The type theoretic axiom of replacement (see section 2.19 of Symmetry:
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://unimath.github.io/SymmetryBook/book.pdf)
+The type theoretic axiom of replacement (see section 24.5 of Introduction to
+Homotopy Type Theory by Egbert Rijke:
+chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ulrikbuchholtz.dk/hott1920/hott-intro.pdf)
 is a statement about the size of the image of a function when certain smallness
-assumptions are made about the domain and codomain. The nomenclature is derived
-from the axiom of replacement from axiomatic set theory. In type theory, this
-statement may be assumed or proven depending on the context. Thus, we will call
-it 'type replacement' or simply 'replacement' (when there is no risk of
-confusion with set replacement).
+assumptions are imposed on the domain and codomain. The nomenclature is derived
+from the set theoretic axiom of replacement, where 'sethood' provides a notion
+of size. In type theory, this statement may be assumed or proven depending on
+the context. Thus, we will call it 'type replacement' or simply 'replacement'
+(when there is no risk of confusion with set replacement).
 
 The statement of type replacement is as follows:
 The image of a map f : A → X, from a small type A to a locally small type X, is
 itself small.
+
+Note: some authors use the term 'essentially small' for what the TypeTopology
+refers to as simply 'small'. Although, often times it is desirable to explicitly
+state the universe with which a type is small relative to, as you will see in
+the code below.
 
 Type replacement is provable in the presence of a certain class of higher
 inductive types (HITs). In particular, "The Join Construction" by Egbert Rijke
 (https://arxiv.org/abs/1701.07538.) provides a construction that allows a proof
 of type replacement in the presence of 'graph quotients'. More conservativly one
 may carry out this construction merely with pushouts (in fact, one only requires
-the join of maps and sequential colimits). This route is actively being explored
-in other TypeTopology files.
+the join of maps and sequential colimits, which are instances of pushouts).
+This route is actively being explored in other TypeTopology files.
 
 It is worth noting that the status of type replacement in the hierarchy of HIT
-strength is not completely understood (afaik), but it appears to be weaker than
-the assumption that pushouts exist. For this reason, it is reasonable to explore
-type replacement as an explicit assumption and derive variations for future use.
+strength is not completely understood, but it appears to be weaker than the
+assumption that pushouts exist (this observation will follow from a forthcoming
+write up by Reid Barton). In light of this, it is reasonable to explore type
+replacement and use it as an indepent assumption when neccesary.
 
 \begin{code}
 
@@ -52,9 +59,9 @@ module _ {𝓥 : Universe} where
 
  Replacement : {𝓤 𝓦 : Universe} → (𝓥 ⁺) ⊔ (𝓤 ⁺) ⊔ (𝓦 ⁺) ̇
  Replacement {𝓤} {𝓦} = {A : 𝓤 ̇ } {X : 𝓦 ̇ } (f : A → X)
-             → A is 𝓥 small
-             → X is-locally 𝓥 small
-             → image f is 𝓥 small
+                     → A is 𝓥 small
+                     → X is-locally 𝓥 small
+                     → image f is 𝓥 small
 
 \end{code}
 
