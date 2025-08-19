@@ -140,8 +140,7 @@ the join construction. Interestingly, it seems that the assumptions neccesary to
 carry out the join construction are stronger than simply assuming replacement.
 In the interest of keeping the present work self contained and requiring only
 the weakest assumptions possible we simply assume the relevant form of
-replacement (globally) and show it is equivalent to the other phrasings of
-replacement.
+replacement as it is needed.
 
 \begin{code}
 
