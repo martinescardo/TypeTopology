@@ -1006,13 +1006,6 @@ subtype-is-locally-small⁻ A-is-prop-valued X-is-ls (x , a) (y , b) = γ
      (x ＝⟦ X-is-ls ⟧ y     ≃⟨ resizing-condition (X-is-ls x y) ⟩
      (x ＝ y)               ≃⟨ to-subtype-＝-≃ A-is-prop-valued ⟩
      ((x , a) ＝ (y , b))   ■)
-    where
-     I = ≃-sym (ap pr₁ ,
-                embedding-gives-embedding'
-                 pr₁
-                 (pr₁-is-embedding A-is-prop-valued)
-                 (x , a)
-                 (y , b))
 
 \end{code}
 
