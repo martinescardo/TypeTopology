@@ -1052,7 +1052,7 @@ subtype-is-locally-small' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                           → X is-locally 𝓤' small
                           → ((x : X) → is-prop (A x))
                           → Σ A is-locally 𝓤' small
-subtype-is-locally-small' {_} {_} {𝓤'} {X} {A}
+subtype-is-locally-small' {_} {_} {𝓤'}
  X-is-ls A-is-prop-valued (x , a) (y , b) = γ
  where
   γ : ((x , a) ＝ (y , b)) is 𝓤' small
