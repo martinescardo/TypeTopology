@@ -138,14 +138,14 @@ module _ (X : Type)
   δA : (p : X → R) (x : X) → is-decidable (A p x)
   δA p x = R-is-discrete (p x) (ϕ p)
 
- εᴸ :  (X → R) → List X
- εᴸ p = filter (A p) (δA p) xs
+  εᴸ :  (X → R) → List X
+  εᴸ p = filter (A p) (δA p) xs
 
- ε-member-of-εᴸ : (p : X → R) → member (ε p) (εᴸ p)
- ε-member-of-εᴸ p = filter-member← (A p) (δA p) (ε p) xs (ε-attains-ϕ p) (μ (ε p))
+  ε-member-of-εᴸ : (p : X → R) → member (ε p) (εᴸ p)
+  ε-member-of-εᴸ p = filter-member← (A p) (δA p) (ε p) xs (ε-attains-ϕ p) (μ (ε p))
 
- εᴸ-is-non-empty : (p : X → R) → is-non-empty (εᴸ p)
- εᴸ-is-non-empty p = lists-with-members-are-non-empty (ε-member-of-εᴸ p)
+  εᴸ-is-non-empty : (p : X → R) → is-non-empty (εᴸ p)
+  εᴸ-is-non-empty p = lists-with-members-are-non-empty (ε-member-of-εᴸ p)
 
  ε⁺ : JT X
  ε⁺ p = εᴸ p , εᴸ-is-non-empty p

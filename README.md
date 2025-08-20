@@ -268,7 +268,7 @@ Tosun.
    As requested by the journal, this publication merges the papers *Domain
    theory in univalent foundations I* and *II* mentioned above.
 
-   https://martinescardo.github.io/papers/continuous-algebraic-domains-in-uf.pdf
+   http://www.cs.bham.ac.uk/~mhe/papers/continuous-algebraic-domains-in-uf.pdf
 
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
