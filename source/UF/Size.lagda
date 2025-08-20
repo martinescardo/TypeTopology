@@ -1033,7 +1033,7 @@ If X is 𝓥-small then it is locally 𝓥-small.
 
 \begin{code}
 
-small-implies-locally-small : (X : 𝓤 ̇ ) → (𝓥 : Universe)
+small-implies-locally-small : (X : 𝓤 ̇ ) (𝓥 : Universe)
                             → X is 𝓥 small
                             → X is-locally 𝓥 small
 small-implies-locally-small X 𝓥 (Y , e) x x' =
