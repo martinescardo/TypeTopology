@@ -1018,6 +1018,53 @@ subtype-is-locally-small⁻ A-is-prop-valued X-is-ls (x , a) (y , b) = γ
 
 TODO. Generalize the above to resize (the values of) A as well.
 
+We generalize local smallness.
+
+\begin{code}
+
+_is-locally_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
+X is-locally 𝓥 small = (x y : X) → (x ＝ y) is 𝓥 small
+
+\end{code}
+
+Added by Ian Ray 11th September 2024.
+
+If X is 𝓥-small then it is locally 𝓥-small.
+
+\begin{code}
+
+small-implies-locally-small : (X : 𝓤 ̇ ) → (𝓥 : Universe)
+                            → X is 𝓥 small
+                            → X is-locally 𝓥 small
+small-implies-locally-small X 𝓥 (Y , e) x x' =
+ ((⌜ e ⌝⁻¹ x ＝ ⌜ e ⌝⁻¹ x') , path-resized)
+ where
+  path-resized : (⌜ e ⌝⁻¹ x ＝ ⌜ e ⌝⁻¹ x') ≃ (x ＝ x')
+  path-resized = ≃-sym (ap ⌜ e ⌝⁻¹ , ap-is-equiv ⌜ e ⌝⁻¹ (⌜⌝⁻¹-is-equiv e))
+
+\end{code}
+
+Added by Ian Ray 18th August 2025. 
+
+\begin{code}
+
+subtype-is-locally-small' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                          → X is-locally 𝓤' small
+                          → ((x : X) → is-prop (A x))
+                          → Σ A is-locally 𝓤' small
+subtype-is-locally-small' {_} {_} {𝓤'} {X} {A}
+ X-is-ls A-is-prop-valued (x , a) (y , b) = γ
+ where
+  γ : ((x , a) ＝ (y , b)) is 𝓤' small
+  γ = resized (x ＝ y) (X-is-ls x y) ,
+      (resized (x ＝ y) (X-is-ls x y) ≃⟨ resizing-condition (X-is-ls x y) ⟩
+      (x ＝ y)                        ≃⟨ to-subtype-＝-≃ A-is-prop-valued ⟩
+      ((x , a) ＝ (y , b))            ■)
+
+\end{code}
+
+End of addition.
+
 Added 5 April 2022 by Tom de Jong, after discussion with Martín.
 (Refactoring an earlier addition dated 15 March 2022.)
 
@@ -1059,9 +1106,6 @@ when adding set quotients as higher inductive types).
 
 \begin{code}
 
-_is-locally_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
-X is-locally 𝓥 small = (x y : X) → (x ＝ y) is 𝓥 small
-
 module _ (pt : propositional-truncations-exist) where
 
  open import UF.ImageAndSurjection pt
@@ -1073,44 +1117,6 @@ module _ (pt : propositional-truncations-exist) where
                  → is-set Y
                  → image f is (𝓤 ⊔ 𝓥) small
 \end{code}
-
-Added by Ian Ray 18th August 2025.
-
-\begin{code}
-
-subtype-is-locally-small' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                          → X is-locally 𝓤' small
-                          → ((x : X) → is-prop (A x))
-                          → Σ A is-locally 𝓤' small
-subtype-is-locally-small' {_} {_} {𝓤'} {X} {A}
- X-is-ls A-is-prop-valued (x , a) (y , b) = γ
- where
-  γ : ((x , a) ＝ (y , b)) is 𝓤' small
-  γ = resized (x ＝ y) (X-is-ls x y) ,
-      (resized (x ＝ y) (X-is-ls x y) ≃⟨ resizing-condition (X-is-ls x y) ⟩
-      (x ＝ y)                        ≃⟨ to-subtype-＝-≃ A-is-prop-valued ⟩
-      ((x , a) ＝ (y , b))            ■)
-
-\end{code}
-
-Added by Ian Ray 11th September 2024.
-
-If X is 𝓥-small then it is locally 𝓥-small.
-
-\begin{code}
-
-small-implies-locally-small : (X : 𝓤 ̇ ) → (𝓥 : Universe)
-                            → X is 𝓥 small
-                            → X is-locally 𝓥 small
-small-implies-locally-small X 𝓥 (Y , e) x x' =
- ((⌜ e ⌝⁻¹ x ＝ ⌜ e ⌝⁻¹ x') , path-resized)
- where
-  path-resized : (⌜ e ⌝⁻¹ x ＝ ⌜ e ⌝⁻¹ x') ≃ (x ＝ x')
-  path-resized = ≃-sym (ap ⌜ e ⌝⁻¹ , ap-is-equiv ⌜ e ⌝⁻¹ (⌜⌝⁻¹-is-equiv e))
-
-\end{code}
-
-End of addition.
 
 Added by Martin Escardo and Tom de Jong 29th August 2024.
 
