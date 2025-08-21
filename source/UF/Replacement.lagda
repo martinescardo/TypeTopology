@@ -8,24 +8,24 @@ assumptions are imposed on the domain and codomain. The nomenclature is derived
 from the set theoretic axiom of replacement, where 'sethood' provides a notion
 of size. In type theory, this statement may be assumed or proven depending on
 the context. Thus, we will call it 'type replacement' or simply 'replacement'
-(when there is no risk of confusion with set replacement).
+when there is no risk of confusion with set replacement (see Size.lagda).
 
 The statement of type replacement is as follows:
 The image of a map f : A → X, from a small type A to a locally small type X, is
 itself small.
 
 Note: some authors use the term 'essentially small' for what the TypeTopology
-refers to as simply 'small'. Although, often times it is desirable to explicitly
-state the universe with which a type is small relative to, as you will see in
-the code below.
+library refers to as simply 'small'. Although, often we wish to consider size
+relative to an explicit universe, as you can see below.
 
 Type replacement is provable in the presence of a certain class of higher
 inductive types (HITs). In particular, "The Join Construction" by Egbert Rijke
-(https://arxiv.org/abs/1701.07538.) provides a construction that allows a proof
-of type replacement in the presence of 'graph quotients'. More conservativly one
-may carry out this construction merely with pushouts (in fact, one only requires
-the join of maps and sequential colimits, which are instances of pushouts).
-This route is actively being explored in other TypeTopology files.
+(https://arxiv.org/abs/1701.07538.) uses 'graph quotients' to give an
+alternative construction of the image where type replacement can be proven.
+More conservatively one may carry out this construction merely with pushouts
+(in fact, one only requires the join of maps and sequential colimits, which are
+instances of pushouts). This route is actively being explored in other
+TypeTopology files.
 
 It is worth noting that the status of type replacement in the hierarchy of HIT
 strength is not completely understood, but it appears to be weaker than the
@@ -49,6 +49,8 @@ open import UF.ImageAndSurjection pt
 open import UF.Size
 open import UF.SmallnessProperties
 
+open propositional-truncations-exist pt
+
 \end{code}
 
 We begin by giving a precise statement of type replacement.
@@ -57,7 +59,7 @@ We begin by giving a precise statement of type replacement.
 
 module _ {𝓥 : Universe} where
 
- Replacement : {𝓤 𝓦 : Universe} → (𝓥 ⁺) ⊔ (𝓤 ⁺) ⊔ (𝓦 ⁺) ̇
+ Replacement : {𝓤 𝓦 : Universe} → (𝓥 ⊔ 𝓤 ⊔ 𝓦)⁺ ̇
  Replacement {𝓤} {𝓦} = {A : 𝓤 ̇ } {X : 𝓦 ̇ } (f : A → X)
                      → A is 𝓥 small
                      → X is-locally 𝓥 small
@@ -69,7 +71,7 @@ We can also give a variation of this statement when f is surjective.
 
 \begin{code}
 
- Replacement' : {𝓤 𝓦 : Universe} → (𝓤 ⁺) ⊔ (𝓥 ⁺) ⊔ (𝓦 ⁺) ̇
+ Replacement' : {𝓤 𝓦 : Universe} → (𝓥 ⊔ 𝓤 ⊔ 𝓦)⁺ ̇
  Replacement' {𝓤} {𝓦} = {A : 𝓤 ̇ } {X : 𝓦 ̇ } (f : A → X)
                       → A is 𝓥 small
                       → X is-locally 𝓥 small
@@ -91,8 +93,6 @@ Of course the two statements are inter-derivable.
    I = 𝓡 f A-small X-loc-small
    II : image f ≃ X
    II = surjection-≃-image f f-surj
-
- open propositional-truncations-exist pt
 
  Replacement'-to-Replacement : {𝓤 𝓦 : Universe}
                              → Replacement' {𝓤} {𝓤 ⊔ 𝓦} → Replacement {𝓤} {𝓦}
