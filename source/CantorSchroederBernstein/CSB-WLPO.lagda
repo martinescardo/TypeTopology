@@ -1,7 +1,7 @@
 Fredrik Bakke, April 2025
 
 The Cantor-Schröder-Bernstein theorem assuming WLPO in Agda
------------------------------------------------------------
+───────────────────────────────────────────────────────────
 
 We prove a generalization of the Cantor-Schröder-Bernstein theorem assuming
 the weak limited principle of omniscience.
@@ -28,7 +28,7 @@ open import UF.Retracts
 
 In this file we consider a generalization of the Cantor–Schröder–Bernstein (CSB)
 theorem assuming the weak limited principle of omniscience (WLPO), based on
-König's argument.
+König's argument (1906).
 
  Theorem.
  Assuming WLPO, then for every pair of types X and Y, if there are complemented
@@ -51,51 +51,54 @@ Hence we also know that in the absence of the law of excluded middle, the
 hypotheses of the theorem must be strengthened.
 
 Construction
-------------
+────────────
 
 For our formalization we import a series of properties of perfect images from
-which the construction is straight forward.
+which the construction is straightforward.
 
 \begin{code}
 
 module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} where
 
- map-construction : (x : X) → is-decidable (is-perfect-image f g x) → Y
- map-construction x (inl γ) = inverse-on-perfect-image x γ
- map-construction x (inr nγ) = f x
+ CSB-construction-map'
+  : (x : X) → is-decidable (is-perfect-image f g x) → Y
+ CSB-construction-map' x (inl γ) = inverse-on-perfect-image x γ
+ CSB-construction-map' x (inr nγ) = f x
 
- map-construction-CSB :
-  ((x : X) → is-decidable (is-perfect-image f g x)) → X → Y
- map-construction-CSB D x = map-construction x (D x)
+ CSB-construction-map
+  : ((x : X) → is-decidable (is-perfect-image f g x)) → X → Y
+ CSB-construction-map D x = CSB-construction-map' x (D x)
 
- map-construction-is-left-cancellable
+ CSB-construction-map-is-left-cancellable'
   : (lc-f : left-cancellable f)
   → {x x' : X}
   → (d : is-decidable (is-perfect-image f g x))
   → (d' : is-decidable (is-perfect-image f g x'))
-  → map-construction x d ＝ map-construction x' d'
+  → CSB-construction-map' x d ＝ CSB-construction-map' x' d'
   → x ＝ x'
- map-construction-is-left-cancellable lc-f {x} {x'} (inl ρ) (inl ρ') p =
-  x                                ＝⟨ inverse-on-perfect-image-is-section x ρ ⁻¹ ⟩
-  g (inverse-on-perfect-image x ρ) ＝⟨ ap g p ⟩
-  g (map-construction x' (inl ρ')) ＝⟨ inverse-on-perfect-image-is-section x' ρ' ⟩
-  x'                               ∎
- map-construction-is-left-cancellable lc-f {x} {x'} (inl ρ) (inr nρ') p =
+ CSB-construction-map-is-left-cancellable' lc-f {x} {x'} (inl ρ) (inl ρ') p =
+  x                                     ＝⟨ inverse-on-perfect-image-is-section x ρ ⁻¹ ⟩
+  g (inverse-on-perfect-image x ρ)      ＝⟨ ap g p ⟩
+  g (CSB-construction-map' x' (inl ρ')) ＝⟨ inverse-on-perfect-image-is-section x' ρ' ⟩
+  x'                                    ∎
+ CSB-construction-map-is-left-cancellable' lc-f {x} {x'} (inl ρ) (inr nρ') p =
   𝟘-elim (perfect-image-is-disjoint x' x nρ' ρ (p ⁻¹))
- map-construction-is-left-cancellable lc-f {x} {x'} (inr nρ) (inl ρ') p =
+ CSB-construction-map-is-left-cancellable' lc-f {x} {x'} (inr nρ) (inl ρ') p =
   𝟘-elim (perfect-image-is-disjoint x x' nρ ρ' p)
- map-construction-is-left-cancellable lc-f {x} {x'} (inr nρ) (inr nρ') = lc-f
+ CSB-construction-map-is-left-cancellable' lc-f {x} {x'} (inr nρ) (inr nρ') =
+  lc-f
 
- map-construction-CSB-is-left-cancellable
+ CSB-construction-map-is-left-cancellable
   : left-cancellable f
   → (D : (x : X) → is-decidable (is-perfect-image f g x))
-  → left-cancellable (map-construction-CSB D)
- map-construction-CSB-is-left-cancellable lc-f D {x} {x'} =
-  map-construction-is-left-cancellable lc-f (D x) (D x')
+  → left-cancellable (CSB-construction-map D)
+ CSB-construction-map-is-left-cancellable lc-f D {x} {x'} =
+  CSB-construction-map-is-left-cancellable' lc-f (D x) (D x')
 
 \end{code}
 
-Computations with the construction.
+We compute how the constructed map behaves on the perfect image and its
+complement.
 
 \begin{code}
 
@@ -108,29 +111,35 @@ module _ {X        : 𝓤 ̇ }
          (αf       : is-¬¬-Compact'-map f {𝓤 ⊔ 𝓥})
        where
 
- compute-construction-on-perfect-image
+ CSB-construction-map-on-perfect-image
   : (y : Y)
   → (γ : is-perfect-image f g (g y))
   → (d : is-decidable (is-perfect-image f g (g y)))
-  → map-construction (g y) d ＝ y
- compute-construction-on-perfect-image y γ (inl v') =
+  → CSB-construction-map' (g y) d ＝ y
+ CSB-construction-map-on-perfect-image y γ (inl v') =
   inverse-on-perfect-image-is-retraction lc-g y v'
- compute-construction-on-perfect-image y γ (inr v) = 𝟘-elim (v γ)
+ CSB-construction-map-on-perfect-image y γ (inr v) =
+  𝟘-elim (v γ)
 
- compute-construction-on-not-perfect-image
+ CSB-construction-map-on-not-perfect-image
   : (y : Y)
   → (nγ : ¬ is-perfect-image f g (g y))
   → (d : is-decidable
           (is-perfect-image f g
-           (element-in-nonperfect-fiber-of-not-perfect-image' αf ¬¬elim-g lc-g y nγ)))
-  → map-construction
-     (element-in-nonperfect-fiber-of-not-perfect-image' αf ¬¬elim-g lc-g y nγ)
+           (element-in-nonperfect-fiber-of-not-perfect-image'
+             αf ¬¬elim-g lc-g y nγ)))
+  → CSB-construction-map'
+     (element-in-nonperfect-fiber-of-not-perfect-image'
+       αf ¬¬elim-g lc-g y nγ)
      (d)
     ＝ y
- compute-construction-on-not-perfect-image y nγ (inl v) =
-  𝟘-elim (nonperfect-fiber-of-not-perfect-image-is-not-perfect' αf ¬¬elim-g lc-g y nγ v)
- compute-construction-on-not-perfect-image y nγ (inr _) =
-  compute-element-in-nonperfect-fiber-of-not-perfect-image' αf ¬¬elim-g lc-g y nγ
+ CSB-construction-map-on-not-perfect-image y nγ (inl v) =
+  𝟘-elim
+   (nonperfect-fiber-of-not-perfect-image-is-not-perfect'
+     αf ¬¬elim-g lc-g y nγ v)
+ CSB-construction-map-on-not-perfect-image y nγ (inr _) =
+  compute-element-in-nonperfect-fiber-of-not-perfect-image'
+   αf ¬¬elim-g lc-g y nγ
 
 \end{code}
 
@@ -138,75 +147,82 @@ The construction is an equivalence.
 
 \begin{code}
 
- inverse-construction
+ CSB-construction-inverse-map'
   : (y : Y) → is-decidable (is-perfect-image f g (g y)) → X
- inverse-construction y (inl _) = g y
- inverse-construction y (inr nγ) =
-   element-in-nonperfect-fiber-of-not-perfect-image' αf ¬¬elim-g lc-g y nγ
+ CSB-construction-inverse-map' y (inl _) =
+  g y
+ CSB-construction-inverse-map' y (inr nγ) =
+  element-in-nonperfect-fiber-of-not-perfect-image' αf ¬¬elim-g lc-g y nγ
 
- construction-is-retraction
+ CSB-construction-map-is-retraction'
   : (y : Y)
   → (d : is-decidable (is-perfect-image f g (g y)))
-  → (d' : is-decidable (is-perfect-image f g (inverse-construction y d)))
-  → map-construction (inverse-construction y d) d' ＝ y
- construction-is-retraction y (inl γ) =
-   compute-construction-on-perfect-image y γ
- construction-is-retraction y (inr nγ) =
-   compute-construction-on-not-perfect-image y nγ
+  → (d' : is-decidable
+           (is-perfect-image f g (CSB-construction-inverse-map' y d)))
+  → CSB-construction-map' (CSB-construction-inverse-map' y d) d' ＝ y
+ CSB-construction-map-is-retraction' y (inl γ) =
+  CSB-construction-map-on-perfect-image y γ
+ CSB-construction-map-is-retraction' y (inr nγ) =
+  CSB-construction-map-on-not-perfect-image y nγ
 
- inverse-construction-CSB
+ CSB-construction-inverse-map
   : ((y : Y) → is-decidable (is-perfect-image f g (g y))) → Y → X
- inverse-construction-CSB D y = inverse-construction y (D y)
+ CSB-construction-inverse-map D y =
+  CSB-construction-inverse-map' y (D y)
 
- is-section-inverse-construction-CSB
+ CSB-construction-map-is-retraction
   : (D : (x : X) → is-decidable (is-perfect-image f g x))
-  → map-construction-CSB D ∘ inverse-construction-CSB (D ∘ g) ∼ id
- is-section-inverse-construction-CSB D y =
-   construction-is-retraction y
+  → CSB-construction-map D ∘ CSB-construction-inverse-map (D ∘ g) ∼ id
+ CSB-construction-map-is-retraction D y =
+   CSB-construction-map-is-retraction' y
     (D (g y))
-    (D (inverse-construction-CSB (D ∘ g) y))
+    (D (CSB-construction-inverse-map (D ∘ g) y))
 
- map-construction-CSB-has-section
+ CSB-construction-map-has-section
   : (D : (x : X) → is-decidable (is-perfect-image f g x))
-  → has-section (map-construction-CSB D)
- map-construction-CSB-has-section D =
-  (inverse-construction-CSB (D ∘ g) , is-section-inverse-construction-CSB D)
+  → has-section (CSB-construction-map D)
+ CSB-construction-map-has-section D =
+  (CSB-construction-inverse-map (D ∘ g) , CSB-construction-map-is-retraction D)
 
- retract-CSB
+ CSB-construction-retract
    : ((x : X) → is-decidable (is-perfect-image f g x)) → retract Y of X
- retract-CSB D =
-  (map-construction-CSB D , map-construction-CSB-has-section D)
+ CSB-construction-retract D =
+  (CSB-construction-map D , CSB-construction-map-has-section D)
 
- construction-CSB-is-equiv
+ CSB-construction-is-equiv
   : left-cancellable f
   → (D : (x : X) → is-decidable (is-perfect-image f g x))
-  → is-equiv (map-construction-CSB D)
- construction-CSB-is-equiv lc-f D =
-  lc-retractions-are-equivs (map-construction-CSB D)
-   (map-construction-CSB-is-left-cancellable lc-f D)
-   (map-construction-CSB-has-section D)
+  → is-equiv (CSB-construction-map D)
+ CSB-construction-is-equiv lc-f D =
+  lc-retractions-are-equivs
+   (CSB-construction-map D)
+   (CSB-construction-map-is-left-cancellable lc-f D)
+   (CSB-construction-map-has-section D)
 
- equiv-CSB
+ CSB-construction-equiv
   : left-cancellable f
   → ((x : X) → is-decidable (is-perfect-image f g x))
   → X ≃ Y
- equiv-CSB lc-f D = (map-construction-CSB D , construction-CSB-is-equiv lc-f D)
+ CSB-construction-equiv lc-f D =
+  (CSB-construction-map D , CSB-construction-is-equiv lc-f D)
 
 \end{code}
 
 Note in particular that the above definition gives us a fully constructive
 version of König's argument:
 
-If f and g are such that
+ Proposition.
+ Given maps f : X → Y and g : Y → X such that
 
- 1. g is left cancellable and ¬¬-stable,
- 2. f is left cancellable and has ¬¬-compact fibers
- 3. the perfect image of g relative to f is complemented
+  1. g is left cancellable and ¬¬-stable,
+  2. f is left cancellable and has ¬¬-compact fibers
+  3. the perfect image of g relative to f is complemented
 
-then X ≃ Y.
+ then X ≃ Y.
 
 Now, if WLPO holds and f and g are complemented embeddings we can show that the
-perfect image is always complemented, hence deriving our main result.
+perfect image is always complemented, hence we can apply the above proposition
+and derive our main result.
 
 \begin{code}
 
@@ -231,26 +247,26 @@ module _ (wlpo : is-Π-Compact ℕ {𝓤 ⊔ 𝓥})
         (decidable-propositions-are-compact (fiber g y) (emb-g y) (cg y))))
      (λ y → ¬¬-elim (cg y))
 
- retract-CSB-assuming-WLPO : is-complemented-map g
+ CSB-retract-assuming-WLPO : is-complemented-map g
                            → is-embedding g
                            → is-¬¬-Compact'-map f {𝓤 ⊔ 𝓥}
                            → is-Π-Compact-map f {𝓤 ⊔ 𝓥}
                            → retract Y of X
- retract-CSB-assuming-WLPO cg emb-g αf βf =
-  retract-CSB
+ CSB-retract-assuming-WLPO cg emb-g αf βf =
+  CSB-construction-retract
    (λ y → ¬¬-elim (cg y))
    (embeddings-are-lc g emb-g)
    (αf)
    (lemma cg emb-g βf)
 
- equiv-CSB-assuming-WLPO : is-complemented-map g
+ CSB-equiv-assuming-WLPO : is-complemented-map g
                          → is-embedding g
                          → is-¬¬-Compact'-map f {𝓤 ⊔ 𝓥}
                          → is-Π-Compact-map f {𝓤 ⊔ 𝓥}
                          → left-cancellable f
                          → X ≃ Y
- equiv-CSB-assuming-WLPO cg emb-g αf βf lc-f =
-  equiv-CSB
+ CSB-equiv-assuming-WLPO cg emb-g αf βf lc-f =
+  CSB-construction-equiv
    (λ y → ¬¬-elim (cg y))
    (embeddings-are-lc g emb-g)
    (αf)
@@ -259,18 +275,19 @@ module _ (wlpo : is-Π-Compact ℕ {𝓤 ⊔ 𝓥})
 
 \end{code}
 
-In the preceding definition, the three assumptions on f imply that it is a
-complemented embedding.
+In the preceding definition the three assumptions on f are equivalent to f being
+a complemented embedding. We formalize that they at least follow from the
+latter.
 
 \begin{code}
 
- equiv-CSB-assuming-WLPO' : is-complemented-map g
+ CSB-equiv-assuming-WLPO' : is-complemented-map g
                           → is-embedding g
                           → is-complemented-map f
                           → is-embedding f
                           → X ≃ Y
- equiv-CSB-assuming-WLPO' cg emb-g cf emb-f =
-  equiv-CSB
+ CSB-equiv-assuming-WLPO' cg emb-g cf emb-f =
+  CSB-construction-equiv
    (λ y → ¬¬-elim (cg y))
    (embeddings-are-lc g emb-g)
    (λ y →
@@ -288,10 +305,12 @@ complemented embedding.
 \end{code}
 
 References
-----------
+──────────
+ - König, 1906. Sur la théorie des ensembles.
+   https://gallica.bnf.fr/ark:/12148/bpt6k30977.image.f110.langEN
 
- - Cantor-Bernstein implies Excluded Middle
-   (Pradic & Brown 2022, https://arxiv.org/abs/1904.09193).
+ - Pradic & Brown, 2022. Cantor-Bernstein implies Excluded Middle.
+   https://arxiv.org/abs/1904.09193
 
- - The Cantor–Schröder–Bernstein theorem in ∞-Topoi, slides
-   (Bakke 2025, https://hott-uf.github.io/2025/slides/Bakke.pdf)
+ - Bakke, 2025. The Cantor–Schröder–Bernstein theorem in ∞-Topoi.
+   https://hott-uf.github.io/2025/slides/Bakke.pdf (slides)

@@ -1,7 +1,7 @@
 Fredrik Bakke, April 2025
 
 Perfect images
---------------
+──────────────
 
 \begin{code}
 
@@ -21,11 +21,11 @@ open import UF.Subsingletons
 
 \end{code}
 
-We introduce the concept of perfect images, as used by König in his argument for
-the Cantor–Schröder–Bernstein theorem.
+We introduce the concept of perfect images, as used by König in his argument
+(1906) for the Cantor–Schröder–Bernstein theorem.
 
 Given maps f : X → Y and g : Y → X, then an element x : X is said to be a
-perfect image of g relative to f, if for every natural number n and every
+"perfect image" of g relative to f, if for every natural number n and every
 preimage x₀ of x under (g ∘ f)ⁿ x, i.e., (g ∘ f)ⁿ x₀ = x, then x₀ has a further
 preimage under g.
 
@@ -130,9 +130,11 @@ module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} where
 \end{code}
 
 If g y is not a perfect image, then f has a fiber over y, f x ＝ y, that is not
-a perfect image of g. We assume that g is ¬¬-stable and left-cancellable,
-although note that this implies g is an embedding (at least if we assume
-negations are propositions).
+a perfect image of g.
+
+Note that in the formalization we assume that g is ¬¬-stable and
+left-cancellable, though this implies that g is an embedding if negations are
+propositions, which is for instance true if function extensionality holds.
 
 \begin{code}
 
@@ -168,14 +170,33 @@ module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} where
 
 \end{code}
 
-If f has ¬¬-compact fibers (e.g., if f is a complemented embedding),
-then the nonperfect fibers of g are ¬¬-stable.
+Double negation elimination on nonperfect fibers.
+
+We introduce the concept of a ¬¬-compact type and show that if the map f has
+¬¬-compact fibers (e.g. if f is a complemented embedding) then the nonperfect
+fibers of g are ¬¬-stable.
+
+Definition.
+A type A is "¬¬-compact" if for every family of types B : A → 𝓤 that satisfy
+double negation elimination
+
+ (x : A) → ¬¬ B x → B x,
+
+the dependent sum (Σ (a ꞉ A), B a) again satisfies double negation elimination.
 
 \begin{code}
 
 is-¬¬-Compact' : 𝓤 ̇  → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 is-¬¬-Compact' {𝓤} A {𝓥} =
  (B : A → 𝓥 ̇ ) → ((x : A) → ¬¬ B x → B x) → ¬¬ Σ B → Σ B
+
+is-¬¬-Compact'-map : {X : 𝓤 ̇ }
+                   → {Y : 𝓥 ̇ }
+                   → (X → Y)
+                   → {𝓦 : Universe}
+                   → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+is-¬¬-Compact'-map {𝓤} {𝓥} {X} {Y} f {𝓦} =
+ each-fiber-of f (λ T → is-¬¬-Compact' T {𝓦})
 
 decidable-types-with-double-negation-dense-equality-are-¬¬-Compact'
  : {A : 𝓤 ̇ }
@@ -205,13 +226,11 @@ is-¬¬-Compact {𝓤} A {𝓥} =
 ¬¬-Compact'-types-are-¬¬-stable α nna =
  pr₁ (α (λ _ → 𝟙) (λ _ _ → ⋆) (¬¬-functor (λ a → a , ⋆) nna))
 
-is-¬¬-Compact'-map : {X : 𝓤 ̇ }
-                   → {Y : 𝓥 ̇ }
-                   → (X → Y)
-                   → {𝓦 : Universe}
-                   → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
-is-¬¬-Compact'-map {𝓤} {𝓥} {X} {Y} f {𝓦} =
- each-fiber-of f (λ T → is-¬¬-Compact' T {𝓦})
+\end{code}
+
+If f has ¬¬-compact fibers then the nonperfect fibers of g are ¬¬-stable.
+
+\begin{code}
 
 module _ {X  : 𝓤 ̇ }
          {Y  : 𝓥 ̇ }
@@ -256,12 +275,13 @@ module _ {X  : 𝓤 ̇ }
 
 \end{code}
 
-Finally, we need conditions under which the is-perfect-image predicate is
-decidable. For this purpose we consider maps with Π-compact fibers. This class
-includes complemented embeddings, but is in general much larger. For instance,
-the fibers will in general only be weakly complemented, and can include things
-like the type ℕ∞, or be complemented and weakly connected in the sense that
-equality is double negation dense.
+Complementedness of the perfect image.
+
+Finally, we need conditions under which the perfect image is complemented. For
+this purpose we consider maps with Π-compact fibers. This class includes
+complemented embeddings, but is much larger. For instance, the fibers are only
+weakly complemented in general, and can have multiple distinct elements. For
+example, the (infinite) type of conatural numbers ℕ∞ is Π-compact.
 
 \begin{code}
 
@@ -291,7 +311,8 @@ id-is-Π-Compact-map {𝓤} {𝓦} {X} x =
 iterate-is-Π-Compact-map : {X : 𝓤 ̇ } {f : X → X}
                          → is-Π-Compact-map f {𝓤 ⊔ 𝓦}
                          → (n : ℕ) → is-Π-Compact-map (f ^ n) {𝓦}
-iterate-is-Π-Compact-map αf zero = id-is-Π-Compact-map
+iterate-is-Π-Compact-map αf zero =
+ id-is-Π-Compact-map
 iterate-is-Π-Compact-map αf (succ n) =
  ∘-is-Π-Compact-map (iterate-is-Π-Compact-map αf n) αf
 
@@ -333,7 +354,9 @@ module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : Y → X} where
 \end{code}
 
 References
-----------
+──────────
+ - König, 1906. Sur la théorie des ensembles.
+   https://gallica.bnf.fr/ark:/12148/bpt6k30977.image.f110.langEN
 
- - The Cantor–Schröder–Bernstein theorem in ∞-Topoi, slides
-   (Bakke 2025, https://hott-uf.github.io/2025/slides/Bakke.pdf)
+ - Fredrik Bakke, 2025. The Cantor–Schröder–Bernstein theorem in ∞-Topoi.
+   https://hott-uf.github.io/2025/slides/Bakke.pdf (slides)
