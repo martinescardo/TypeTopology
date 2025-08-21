@@ -36,12 +36,11 @@ König's argument (1906).
 
 In particular, we do not assume function extensionality.
 
-This theorem can be viewed as a proper generalization of the
-Cantor–Schröder–Bernstein theorem to arbitrary non-topological ∞-topoi, since,
-under the assumption of the law of excluded middle (LEM), every embedding is
-complemented. On the other hand, It was shown by Pradic and Brown (2022) that
-the Cantor–Schröder–Bernstein theorem in its most naïve form implies the law of
-excluded middle:
+This theorem can be viewed as a generalization of the Cantor–Schröder–Bernstein
+theorem to arbitrary non-topological ∞-topoi, since, under the assumption of the
+law of excluded middle (LEM), every embedding is complemented. On the other
+hand, It was shown by Pradic and Brown (2022) that the Cantor–Schröder–Bernstein
+theorem in its most naïve form implies the law of excluded middle:
 
  If it is true that for every pair of sets X and Y, if X injects into Y and Y
  injects into X then X and Y are in bijection, then the law of excluded middle
@@ -247,25 +246,25 @@ module _ (wlpo : is-Π-Compact ℕ {𝓤 ⊔ 𝓥})
         (decidable-propositions-are-compact (fiber g y) (emb-g y) (cg y))))
      (λ y → ¬¬-elim (cg y))
 
- CSB-retract-assuming-WLPO : is-complemented-map g
-                           → is-embedding g
-                           → is-¬¬-Compact'-map f {𝓤 ⊔ 𝓥}
-                           → is-Π-Compact-map f {𝓤 ⊔ 𝓥}
-                           → retract Y of X
- CSB-retract-assuming-WLPO cg emb-g αf βf =
+ CSB-retract-assuming-WLPO' : is-complemented-map g
+                            → is-embedding g
+                            → is-¬¬-Compact'-map f {𝓤 ⊔ 𝓥}
+                            → is-Π-Compact-map f {𝓤 ⊔ 𝓥}
+                            → retract Y of X
+ CSB-retract-assuming-WLPO' cg emb-g αf βf =
   CSB-construction-retract
    (λ y → ¬¬-elim (cg y))
    (embeddings-are-lc g emb-g)
    (αf)
    (lemma cg emb-g βf)
 
- CSB-equiv-assuming-WLPO : is-complemented-map g
-                         → is-embedding g
-                         → is-¬¬-Compact'-map f {𝓤 ⊔ 𝓥}
-                         → is-Π-Compact-map f {𝓤 ⊔ 𝓥}
-                         → left-cancellable f
-                         → X ≃ Y
- CSB-equiv-assuming-WLPO cg emb-g αf βf lc-f =
+ CSB-equiv-assuming-WLPO' : is-complemented-map g
+                          → is-embedding g
+                          → is-¬¬-Compact'-map f {𝓤 ⊔ 𝓥}
+                          → is-Π-Compact-map f {𝓤 ⊔ 𝓥}
+                          → left-cancellable f
+                          → X ≃ Y
+ CSB-equiv-assuming-WLPO' cg emb-g αf βf lc-f =
   CSB-construction-equiv
    (λ y → ¬¬-elim (cg y))
    (embeddings-are-lc g emb-g)
@@ -281,12 +280,12 @@ latter.
 
 \begin{code}
 
- CSB-equiv-assuming-WLPO' : is-complemented-map g
-                          → is-embedding g
-                          → is-complemented-map f
-                          → is-embedding f
-                          → X ≃ Y
- CSB-equiv-assuming-WLPO' cg emb-g cf emb-f =
+ CSB-equiv-assuming-WLPO : is-complemented-map g
+                         → is-embedding g
+                         → is-complemented-map f
+                         → is-embedding f
+                         → X ≃ Y
+ CSB-equiv-assuming-WLPO cg emb-g cf emb-f =
   CSB-construction-equiv
    (λ y → ¬¬-elim (cg y))
    (embeddings-are-lc g emb-g)
