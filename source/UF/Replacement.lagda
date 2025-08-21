@@ -27,8 +27,8 @@ More conservatively one may carry out this construction merely with pushouts
 instances of pushouts). This route is actively being explored in other
 TypeTopology files.
 
-It is worth noting that the status of type replacement in the hierarchy of HIT
-strength is not completely understood, but it appears to be weaker than the
+It is worth noting that the status of type replacement's strength relative to
+other HITs is not completely understood, but it appears to be weaker than the
 assumption that pushouts exist (this observation will follow from a forthcoming
 write up by Reid Barton). In light of this, it is reasonable to explore type
 replacement and use it as an independent assumption when neccesary.
@@ -36,6 +36,7 @@ replacement and use it as an independent assumption when neccesary.
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
+
 
 open import UF.PropTrunc
 
