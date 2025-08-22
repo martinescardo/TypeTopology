@@ -6,7 +6,7 @@ This file corresponds to the paper
     Continuous and algebraic domains"
    Tom de Jong and Martín Hötzel Escardó
    2024
-   https://doi.org/10.48550/arxiv.2407.06956
+   https://arxiv.org/abs/arxiv.2407.06956v3
 
 NB: The names in this file should not be unchanged to ensure they correspond
 correctly to the above paper.
