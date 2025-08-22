@@ -401,12 +401,10 @@ module propositional-truncation-of-decidable-type
   decidable-types-have-split-support : ∥ X ∥ → X
   decidable-types-have-split-support s = ∣∣⟨ δ ⟩-exit (∥∥-to-∥∥⟨_⟩ s)
 
-
 \end{code}
 
-Added by Fredrik Bakke 22 August 2025.
-
-Negations of decidable types are decidable.
+Added by Fredrik Bakke 22nd August 2025. Negations of decidable types are
+decidable.
 
 \begin{code}
 
