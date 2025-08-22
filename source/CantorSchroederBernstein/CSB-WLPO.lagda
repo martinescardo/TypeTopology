@@ -16,6 +16,7 @@ open import CantorSchroederBernstein.PerfectImages
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
+open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.DenseMapsProperties
 open import UF.Embeddings
@@ -300,6 +301,44 @@ latter.
       (fiber f y)
       (compact-types-are-Compact
        (decidable-propositions-are-compact (fiber f y) (emb-f y) (cf y)))))
+
+\end{code}
+
+Finally, to dispell all doubt, we instantiate the previous theorem at the
+traditional phrasing of WLPO.
+
+\begin{code}
+
+is-Π-compact : 𝓤 ̇ → 𝓤 ̇
+is-Π-compact X = (p : X → 𝟚) → is-decidable ((x : X) → p x ＝ ₁)
+
+Π-compact-types-are-Π-Compact : {X : 𝓤 ̇ } → is-Π-compact X → is-Π-Compact X {𝓥}
+Π-compact-types-are-Π-Compact H A δ =
+ +functor
+  (λ na x → cases
+             id
+             (𝟘-elim ∘ characteristic-map-property₁ ¬A ¬δ x (na x))
+             (δ x))
+  (λ nna f → nna
+              (λ x → characteristic-map-property₁-back ¬A ¬δ x
+                      (¬¬-intro (f x))))
+  (H (characteristic-map ¬A ¬δ))
+  where
+   ¬A = ¬_ ∘ A
+   ¬δ = λ x → decidable-types-are-closed-under-negations (δ x)
+
+CSB-equiv-assuming-traditional-WLPO : WLPO-traditional
+                                    → {X : 𝓤 ̇ }
+                                    → {Y : 𝓥 ̇ }
+                                    → {f : X → Y}
+                                    → {g : Y → X}
+                                    → is-complemented-map g
+                                    → is-embedding g
+                                    → is-complemented-map f
+                                    → is-embedding f
+                                    → X ≃ Y
+CSB-equiv-assuming-traditional-WLPO wlpo =
+ CSB-equiv-assuming-WLPO (Π-compact-types-are-Π-Compact wlpo)
 
 \end{code}
 

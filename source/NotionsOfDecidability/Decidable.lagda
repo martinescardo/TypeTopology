@@ -401,4 +401,19 @@ module propositional-truncation-of-decidable-type
   decidable-types-have-split-support : ∥ X ∥ → X
   decidable-types-have-split-support s = ∣∣⟨ δ ⟩-exit (∥∥-to-∥∥⟨_⟩ s)
 
+
+\end{code}
+
+Added by Fredrik Bakke 22 August 2025.
+
+Negations of decidable types are decidable.
+
+\begin{code}
+
+decidable-types-are-closed-under-negations : {X : 𝓤 ̇ }
+                                           → is-decidable X
+                                           → is-decidable (¬ X)
+decidable-types-are-closed-under-negations (inl x) = inr (λ nx → nx x)
+decidable-types-are-closed-under-negations (inr nx) = inl nx
+
 \end{code}

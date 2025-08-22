@@ -112,7 +112,7 @@ compact-types-are-∃-compact {𝓤} {X} φ p = g (φ p)
 \end{code}
 
 But notice that the Π-compactness of ℕ is WLPO and its ∃-compactness
-is amounts to LPO.
+amounts to LPO.
 
 The Π-compactness of X is equivalent to the isolatedness of the boolean
 predicate λ x → ₁:
