@@ -325,7 +325,7 @@ is-Π-compact X = (p : X → 𝟚) → is-decidable ((x : X) → p x ＝ ₁)
   (H (characteristic-map ¬A ¬δ))
   where
    ¬A : X → 𝓥 ̇
-   ¬A = ¬_ ∘ A
+   ¬A x = ¬ (A x)
 
    ¬δ : is-complemented ¬A
    ¬δ x = decidable-types-are-closed-under-negations (δ x)
