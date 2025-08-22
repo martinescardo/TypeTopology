@@ -240,11 +240,13 @@ module _ (wlpo : is-Π-Compact ℕ {𝓤 ⊔ 𝓥})
          → (x : X) → is-decidable (is-perfect-image f g x)
    lemma  cg emb-g βf =
     perfect-images-are-complemented-assuming-WLPO wlpo βf
-     (λ y →
-      Σ-Compact-types-are-Π-Compact
-       (fiber g y)
-       (compact-types-are-Compact
-        (decidable-propositions-are-compact (fiber g y) (emb-g y) (cg y))))
+     (λ y → Σ-Compact-types-are-Π-Compact
+             (fiber g y)
+             (compact-types-are-Compact
+              (decidable-propositions-are-compact
+               (fiber g y)
+               (emb-g y)
+               (cg y))))
      (λ y → ¬¬-elim (cg y))
 
  CSB-retract-assuming-WLPO' : is-complemented-map g
@@ -290,17 +292,18 @@ latter.
   CSB-construction-equiv
    (λ y → ¬¬-elim (cg y))
    (embeddings-are-lc g emb-g)
-   (λ y →
-    decidable-types-with-double-negation-dense-equality-are-¬¬-Compact'
-     (cf y)
-     (λ p q → ¬¬-intro (emb-f y p q)))
+   (λ y → decidable-types-with-double-negation-dense-equality-are-¬¬-Compact'
+           (cf y)
+           (λ p q → ¬¬-intro (emb-f y p q)))
    (embeddings-are-lc f emb-f)
    (lemma cg emb-g
-    (λ y →
-     Σ-Compact-types-are-Π-Compact
-      (fiber f y)
-      (compact-types-are-Compact
-       (decidable-propositions-are-compact (fiber f y) (emb-f y) (cf y)))))
+    (λ y → Σ-Compact-types-are-Π-Compact
+            (fiber f y)
+            (compact-types-are-Compact
+             (decidable-propositions-are-compact
+              (fiber f y)
+              (emb-f y)
+              (cf y)))))
 
 \end{code}
 
