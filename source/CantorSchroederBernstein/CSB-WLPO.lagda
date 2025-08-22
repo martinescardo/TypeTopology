@@ -277,9 +277,9 @@ module _ (wlpo : is-Π-Compact ℕ {𝓤 ⊔ 𝓥})
 
 \end{code}
 
-In the preceding definition the three assumptions on f are equivalent to f being
-a complemented embedding. We formalize that they at least follow from the
-latter.
+In the preceding lemma, the three conditions on f are together equivalent to f
+being a complemented embedding, though we only formalize that they follow from
+the latter.
 
 \begin{code}
 
