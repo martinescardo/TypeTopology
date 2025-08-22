@@ -238,7 +238,7 @@ module _ (wlpo : is-Π-Compact ℕ {𝓤 ⊔ 𝓥})
          → is-embedding g
          → is-Π-Compact-map f {𝓤 ⊔ 𝓥}
          → (x : X) → is-decidable (is-perfect-image f g x)
-   lemma  cg emb-g βf =
+   lemma cg emb-g βf =
     perfect-images-are-complemented-assuming-WLPO wlpo βf
      (λ y → Σ-Compact-types-are-Π-Compact
              (fiber g y)
