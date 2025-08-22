@@ -313,19 +313,22 @@ is-Π-compact : 𝓤 ̇ → 𝓤 ̇
 is-Π-compact X = (p : X → 𝟚) → is-decidable ((x : X) → p x ＝ ₁)
 
 Π-compact-types-are-Π-Compact : {X : 𝓤 ̇ } → is-Π-compact X → is-Π-Compact X {𝓥}
-Π-compact-types-are-Π-Compact H A δ =
+Π-compact-types-are-Π-Compact {𝓤} {𝓥} {X} H A δ =
  +functor
-  (λ na x → cases
-             id
-             (𝟘-elim ∘ characteristic-map-property₁ ¬A ¬δ x (na x))
-             (δ x))
+  (λ na  x → cases
+              (id)
+              (𝟘-elim ∘ characteristic-map-property₁ ¬A ¬δ x (na x))
+              (δ x))
   (λ nna f → nna
               (λ x → characteristic-map-property₁-back ¬A ¬δ x
                       (¬¬-intro (f x))))
   (H (characteristic-map ¬A ¬δ))
   where
+   ¬A : X → 𝓥 ̇
    ¬A = ¬_ ∘ A
-   ¬δ = λ x → decidable-types-are-closed-under-negations (δ x)
+
+   ¬δ : is-complemented ¬A
+   ¬δ x = decidable-types-are-closed-under-negations (δ x)
 
 CSB-equiv-assuming-traditional-WLPO : WLPO-traditional
                                     → {X : 𝓤 ̇ }
