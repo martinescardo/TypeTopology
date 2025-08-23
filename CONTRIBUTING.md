@@ -44,7 +44,7 @@ comment how your new proof improves the old ones).
 
 # TODO
 
-The following is very old and should be rewritten when we have time. But for the moment please stick to it. You will learn further unwritten guidelines when you submit a pull request - apologies.
+The following is very old and should be rewritten and expanded when we have time. But for the moment please stick to it. You will learn further unwritten guidelines when you submit a pull request - apologies.
 
 # Conventions
 
