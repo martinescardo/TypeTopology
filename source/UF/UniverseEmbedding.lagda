@@ -347,16 +347,28 @@ X ＝⋖ 𝓦 ⋗ Y = Lift 𝓦 X ＝ᴸ Lift 𝓦 Y
         → Y ＝ᴸ X
 ＝ᴸ-sym p = p ⁻¹
 
-＝ᴸ-trans : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
-          → X ＝ᴸ Y
-          → Y ＝ᴸ Z
-          → X ＝⋖ 𝓥 ⋗ Z
-＝ᴸ-trans {𝓤} {𝓥} {𝓦} {X} {Y} {Z} p q = {!!}
+＝ᴸ-trans-ish : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
+              → Univalence
+              → X ＝ᴸ Y
+              → Y ＝ᴸ Z
+              → X ＝⋖ 𝓥 ⋗ Z
+＝ᴸ-trans-ish {𝓤} {𝓥} {𝓦} {X} {Y} {Z} ua p q = I
  where
-  I : Lift 𝓥 X ＝ Lift 𝓤 Y
-  I = p
-  II : Lift 𝓦 Y ＝ Lift 𝓥 Z
-  II = q
+  I : Lift (𝓥 ⊔ 𝓦) (Lift 𝓥 X) ＝ Lift (𝓤 ⊔ 𝓥) (Lift 𝓥 Z)
+  I = Lift (𝓥 ⊔ 𝓦) (Lift 𝓥 X) ＝⟨ ap (Lift (𝓥 ⊔ 𝓦)) p ⟩
+      Lift (𝓥 ⊔ 𝓦) (Lift 𝓤 Y) ＝⟨ III ⟩
+      Lift (𝓤 ⊔ 𝓥) (Lift 𝓦 Y) ＝⟨ ap (Lift (𝓤 ⊔ 𝓥)) q ⟩
+      Lift (𝓤 ⊔ 𝓥) (Lift 𝓥 Z) ∎
+   where
+    II : Lift (𝓥 ⊔ 𝓦) (Lift 𝓤 Y) ≃ Lift (𝓤 ⊔ 𝓥) (Lift 𝓦 Y)
+    II = Lift (𝓥 ⊔ 𝓦) (Lift 𝓤 Y) ≃⟨ Lift-≃ (𝓥 ⊔ 𝓦) (Lift 𝓤 Y) ⟩
+         Lift 𝓤 Y                ≃⟨ Lift-≃ 𝓤 Y ⟩
+         Y                       ≃⟨ ≃-Lift 𝓦 Y ⟩
+         Lift 𝓦 Y                ≃⟨ ≃-Lift (𝓤 ⊔ 𝓥) (Lift 𝓦 Y) ⟩
+         Lift (𝓤 ⊔ 𝓥) (Lift 𝓦 Y) ■ 
+    III : Lift (𝓥 ⊔ 𝓦) (Lift 𝓤 Y) ＝ Lift (𝓤 ⊔ 𝓥) (Lift 𝓦 Y)
+    III = eqtoid (ua (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (Lift (𝓥 ⊔ 𝓦) (Lift 𝓤 Y))
+           (Lift (𝓤 ⊔ 𝓥) (Lift 𝓦 Y)) II
 
 _⊰_ : (𝓤 𝓥 : Universe) → (𝓤 ⁺) ⊔ (𝓥 ⁺)  ̇
 𝓤 ⊰ 𝓥 = Σ f ꞉ (𝓤 ̇ → 𝓥 ̇) , is-universe-embedding f
