@@ -356,17 +356,19 @@ CSB-equiv-assuming-traditional-WLPO wlpo =
 
 References
 ──────────
- - König, 1906. Sur la théorie des ensembles.
-   https://gallica.bnf.fr/ark:/12148/bpt6k30977.image.f110.langEN
 
- - Escardó, 2020. The Cantor-Schröder-Bernstein for homotopy types, or ∞-groupoids, in Agda.
-   https://martinescardo.github.io/TypeTopology/CantorSchroederBernstein.CSB.html (formalization)
+ [1] König, 1906. Sur la théorie des ensembles.
+     https://gallica.bnf.fr/ark:/12148/bpt6k30977.image.f110.langEN
 
- - Escardó, 2021. The Cantor–Schröder–Bernstein Theorem for ∞-groupoids.
-   https://doi.org/10.1007/s40062-021-00284-6
+ [2] Escardó, 2020. The Cantor-Schröder-Bernstein for homotopy types,
+     or ∞-groupoids, in Agda.
+     https://cs.bham.ac.uk/~mhe/TypeTopology/CantorSchroederBernstein.CSB.html
 
- - Pradic & Brown, 2022. Cantor–Bernstein implies Excluded Middle.
-   https://arxiv.org/abs/1904.09193
+ [3] Escardó, 2021. The Cantor–Schröder–Bernstein Theorem for
+     ∞-groupoids. https://doi.org/10.1007/s40062-021-00284-6
 
- - Bakke, 2025. The Cantor–Schröder–Bernstein theorem in ∞-Topoi.
-   https://hott-uf.github.io/2025/slides/Bakke.pdf (slides)
+ [4] Pradic & Brown, 2022. Cantor–Bernstein implies Excluded Middle.
+     https://arxiv.org/abs/1904.09193
+
+ [5] Bakke, 2025. The Cantor–Schröder–Bernstein theorem in ∞-Topoi.
+     https://hott-uf.github.io/2025/slides/Bakke.pdf (slides)
