@@ -32,7 +32,7 @@ comment how your new proof improves the old ones).
 
 5. Below, we try to explain the style we adopt in TypeTopology. But we are not comprehensive enough. So first study how we write and typeset code, to avoid unnecessary interactions during pull-request reviews.
 
-6. Most importantly, the objective of `TypeTopology` is to explain mathematics to *people* and not just *computers*. So write *plenty* of comments in your contributions, just as you would to in your papers submitted for publication.
+6. Most importantly, the objective of `TypeTopology` is to explain mathematics to *people* and not just *computers*. So write *plenty* of comments in your contributions, just as you would in your papers submitted for publication.
 
 7. We recognize, in view of the previous remark, that non-academics would like to contribute, and they are welcome, too. In fact, a number of non-academics have already contributed, and we are very happy they did, and we would like to encourage everyone to join and contribute.
 
