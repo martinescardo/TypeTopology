@@ -65,6 +65,7 @@ Please add yourself the first time you contribute.
 * Paulo Oliva
 * Peter Dybjer
 * Simcha van Collem
+* Theo Hepburn
 * Thierry Coquand
 * Todd Waugh Ambridge
 * Tom de Jong
