@@ -1,11 +1,11 @@
 Martin Escardo, January 2020.
 
 The Cantor-Schröder-Berntein Theorem, under the assumption of excluded
-middle, generalized from sets to (homotopy) types. The result holds in
-any boolean ∞-topos.
+middle, generalized from sets to (homotopy) types.
 
-This says that if there is an embedding of a type X to a type Y, and
-also from Y to X, then the types X and Y are equivalent.
+The result holds in any boolean ∞-topos. It says that if there is an
+embedding of a type X to a type Y, and also from Y to X, then the
+types X and Y are equivalent.
 
 The file CSB led to the publication
 
