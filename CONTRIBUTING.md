@@ -1,6 +1,52 @@
 # Contribution Guidelines
 
-We always appreciate contributions in the form of pull requests. In this
+Welcome to TypeTopology!
+
+We always appreciate contributions in the form of pull requests.
+
+1. However, if you have something to add or modify, please in the first
+instance ask Martin Escardo and Tom de Jong, in a joint email message
+to their academic email addresses, where to add your contribution or
+modifications, before you make a pull request.
+
+2. Because the objective of TypeTopology is not to merely record existing
+mathematics, but to create new mathematics (read [the index
+file](https://cs.bham.ac.uk/~mhe/TypeTopology/), and also [Papers
+resulting from
+TypeTopology](README.md#publications-resulting-from-typetopology), it
+is not OK to attempt to modify somebody else's files without their explicit
+permission given in advance, before any pull request is made. These people may be working on a paper for publication, and it is not OK to jump in without their consent.
+
+3. By default, if you have a new original contribution, it should first
+go to the [gist](source/gist) folder, in a new subfolder there, and
+once we are fully done with your pull request and merged it, we may find a better
+home for it (and we are open for your suggestions to where to place it).
+
+4. But you may also be just adding already existing mathematics, and this
+is rather welcome (we need lots of missing things in order to carry out the new things we want to do!). You should discuss with Martin Escardo and Tom de
+Jong where to add it.  An important point is that we don't want to
+have just **one** proof, e.g. the "best proof". We want to have all
+known proofs. So, if you add a new, better (in your opinion) proof,
+don't delete the previous one (but you are invited to write in a
+comment how your new proof improves the old ones).
+
+5. Below, we try to explain the style we adopt in TypeTopology. But we are not comprehensive enough. So first study how we write and typeset code, to avoid unnecessary interactions during pull-request reviews.
+
+6. Most importantly, the objective of `TypeTopology` is to explain mathematics to *people* and not just *computers*. So write *plenty* of comments in your contributions, just as you would to in your papers submitted for publication.
+
+7. We recognize, in view of the previous remark, that non-academics would like to contribute, and they are welcome, too. In fact, a number of non-academics have already contributed, and we are very happy they did, and we would like to encourage everyone to join and contribute.
+
+8. And, please, do abide by the [code of conduct](CODE-OF-CONDUCT.md). So far we haven't had any problem whatsoever, and we want to keep it that way.
+
+9. **Important rule.** Everybody who contributes must add their given or adopted name to the file or place of contribution, together with the date of contribution. If in doubt, see how we do it in practice. If your contribution is in the middle of a file, then add "end of contribution by <name> at <date>". We want everybody who contributes to get explicit credit. We also want to have a historical record.
+
+# TODO
+
+The following is very old and should be rewritten when we have time. But for the moment please stick to it. You will learn further unwritten guidelines when you submit a pull request - apologies.
+
+# Conventions
+
+In this
 document, we provide a list of conventions and practices that we expect
 `TypeTopology` contributors to follow.
 

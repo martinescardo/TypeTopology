@@ -20,7 +20,7 @@ version of CSB that
  2. on the other hand, requires stronger assumptions on the two embeddings.
 
 Notice that (2) is absolutely necessary, in the presence of (1),
-because Pradic and Brouwn previously showed that CSB for (even just
+because Pradic and Brown previously showed that CSB for (even just
 sets) implies excluded middle
 
  [2] Cécilia Pradic, Chad E. Brown. Cantor-Bernstein implies Excluded
