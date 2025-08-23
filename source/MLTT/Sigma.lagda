@@ -33,7 +33,7 @@ uncurry : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : 𝓦 ̇ }
         → ((x : X) → Y x → Z) → Σ Y → Z
 uncurry f (x , y) = f x y
 
-curry :  {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : 𝓦 ̇ }
+curry : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : 𝓦 ̇ }
       → (Σ Y → Z) → ((x : X) → Y x → Z)
 curry f x y = f (x , y)
 

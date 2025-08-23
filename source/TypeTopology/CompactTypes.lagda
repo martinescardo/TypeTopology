@@ -769,6 +769,13 @@ is-Π-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → is-complemented A → i
   γ (inl a) = inl (⋆ , a)
   γ (inr u) = inr (λ {(⋆ , a) → u a})
 
+singletons-are-Compact : {X : 𝓤 ̇ } → is-singleton X → is-Compact X {𝓥}
+singletons-are-Compact (* , contraction) A δ = γ (δ *)
+ where
+  γ : A * + ¬ A * → is-decidable (Σ A)
+  γ (inl a) = inl (* , a)
+  γ (inr u) = inr (λ (x , a) → u (transport⁻¹ A (contraction x) a))
+
 +-is-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
              → is-Compact X {𝓦}
              → is-Compact Y {𝓦}
@@ -1242,3 +1249,41 @@ Compact-gives-Compact' C A _ = C A
 
 TODO. (1) is-Compact' X ≃ is-compact X.
       (2) is-Compact' X is a retract of is-Compact X.
+
+Added by Fredrik Bakke on the 2nd of April 2025.
+
+Π-Compact types are closed under sums.
+
+\begin{code}
+
+Σ-is-Π-Compact : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                → is-Π-Compact X {𝓥 ⊔ 𝓦}
+                → ((x : X) → is-Π-Compact (Y x) {𝓦})
+                → is-Π-Compact (Σ Y) {𝓦}
+Σ-is-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y} cX cY A dA =
+ decidable-↔
+  ( (λ f (x , y) → f x y) , (λ f x y → f (x , y)))
+  ( cX (λ x → (y : Y x) → A (x , y))
+       (λ x → cY x (λ y → A (x , y)) (λ y → dA (x , y))))
+
+\end{code}
+
+Π-Compact types have decidable negations.
+
+\begin{code}
+
+Π-Compact-types-have-decidable-negations' : {X : 𝓤 ̇ }
+                                          → is-Π-Compact X {𝓦}
+                                          → is-decidable (X → 𝟘)
+Π-Compact-types-have-decidable-negations' {𝓤} {𝓦} {X} αX =
+ αX (λ _ → 𝟘) (λ _ → 𝟘-is-decidable)
+
+Π-Compact-types-have-decidable-negations : {X : 𝓤 ̇ }
+                                         → is-Π-Compact X {𝓦}
+                                         → is-decidable (¬ X)
+Π-Compact-types-have-decidable-negations αX =
+ decidable-↔
+  ((λ x → 𝟘-elim ∘ x) , (λ x → 𝟘-elim ∘ x))
+  (Π-Compact-types-have-decidable-negations' αX)
+
+\end{code}
