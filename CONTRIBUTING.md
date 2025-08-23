@@ -30,7 +30,7 @@ known proofs. So, if you add a new, better (in your opinion) proof,
 don't delete the previous one (but you are invited to write in a
 comment how your new proof improves the old ones).
 
-5. Below, we try to explain the style we adopt in TypeTopology. But we are not comprehensive enough. So first study how we write and typeset code, to avoid unnecessary interactions during pull-request reviews.
+5. Below, we try to explain the style we adopt in TypeTopology. But we are not comprehensive enough. So first study how we write and typeset code in practice, to avoid unnecessary interactions during pull-request reviews.
 
 6. Most importantly, the objective of `TypeTopology` is to explain mathematics to *people* and not just *computers*. So write *plenty* of comments in your contributions, just as you would in your papers submitted for publication.
 
