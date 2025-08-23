@@ -239,11 +239,6 @@ Tosun.
 
    https://doi.org/10.48550/arxiv.2407.06952
 
-1. Tom de Jong and Martín H. Escardó. *Domain theory in univalent
-   foundations II: Continuous and algebraic domains*. July 2024.
-
-   https://doi.org/10.48550/arxiv.2407.06956
-
 1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
    *Ordinal Exponentiation in Homotopy Type Theory*. January 2025. Updated
    May 2025. [LICS 2025][LICS25].
@@ -265,10 +260,10 @@ Tosun.
 1. Tom de Jong and Martín H. Escardó. *Continuous and algebraic domains
    in univalent foundations*. Accepted for publication in the [Journal of Pure
    and Applied Algebra][JPAA]. August 2025. \
-   As requested by the journal, this publication merges the papers *Domain
-   theory in univalent foundations I* and *II* mentioned above.
+   As requested by the journal, this publication includes an abridged version of
+   the paper *Domain theory in univalent foundations I*.
 
-   http://www.cs.bham.ac.uk/~mhe/papers/continuous-algebraic-domains-in-uf.pdf
+   https://doi.org/10.48550/arxiv.2407.06956
 
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
