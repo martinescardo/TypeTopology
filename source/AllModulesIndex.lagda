@@ -50,7 +50,7 @@ Notice that, currently, all modules use --without-K.
 
 The default options for all modules are (as listed in
 typetopology.agda-lib, which should be taken as the authoritative
-source of information)
+source of information if this list gets obsolete)
 
   --auto-inline
   --exact-split
