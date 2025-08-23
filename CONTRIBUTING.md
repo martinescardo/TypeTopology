@@ -13,7 +13,7 @@ modifications, before you make a pull request.
 mathematics, but to create new mathematics (read [the index
 file](https://cs.bham.ac.uk/~mhe/TypeTopology/), and also [Papers
 resulting from
-TypeTopology](README.md#publications-resulting-from-typetopology), it
+TypeTopology](README.md#publications-resulting-from-typetopology)), it
 is not OK to attempt to modify somebody else's files without their explicit
 permission given in advance, before any pull request is made. These people may be working on a paper for publication, and it is not OK to jump in without their consent.
 
