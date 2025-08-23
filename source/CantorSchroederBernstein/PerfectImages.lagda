@@ -30,7 +30,7 @@ limited principle of omniscience.
 Definition.
 Given maps f : X → Y and g : Y → X, then an element x : X is said to be a
 "perfect image" of g relative to f, if for every natural number n and every
-preimage x₀ of x under (g ∘ f)ⁿ x, i.e., (g ∘ f)ⁿ x₀ = x, then x₀ has a further
+preimage x₀ of x under (g ∘ f)ⁿ, i.e., (g ∘ f)ⁿ x₀ = x, then x₀ has a further
 preimage under g.
 
 \begin{code}
