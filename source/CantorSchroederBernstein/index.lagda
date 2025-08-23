@@ -11,7 +11,7 @@ The file CSB led to the publication
 
  [1] M. H. Escardo. The Cantor–Schröder–Bernstein Theorem for
      ∞-groupoids. Journal of Homotopy and Related Structures.
-     https://doi.org/10.1007/s40062-021-00284-6
+     June 2021, https://doi.org/10.1007/s40062-021-00284-6
 
 After that, in 2025, Fredrik Bakke added the last two files, with a
 version of CSB that
@@ -24,7 +24,7 @@ because Pradic and Brouwn previously showed that CSB for (even just
 sets) implies excluded middle
 
  [2] Cécilia Pradic, Chad E. Brown. Cantor-Bernstein implies Excluded
- Middle. 2019, with later updates, https://arxiv.org/abs/1904.09193
+     Middle. 2019, with later updates, https://arxiv.org/abs/1904.09193
 
 \begin{code}
 
