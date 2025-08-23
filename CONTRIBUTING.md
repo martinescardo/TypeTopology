@@ -38,7 +38,7 @@ comment how your new proof improves the old ones).
 
 8. And, please, do abide by the [code of conduct](CODE-OF-CONDUCT.md). So far we haven't had any problem whatsoever, and we want to keep it that way.
 
-9. **Important rule.** Everybody who contributes must add their given or adopted name to the file or place of contribution, together with the date of contribution. If in doubt, see how we do it in practice. If your contribution is in the middle of a file, then add "end of contribution by `name` at `date`". We want everybody who contributes to get explicit credit. We also want to have a historical record.
+9. **Important rule.** Everybody who contributes must add their given or adopted name to the file or place of contribution, together with the date of contribution. If in doubt, see how we do it in practice. If your contribution is in the middle of a file, then add "end of contribution by `name` at `date`". We want everybody who contributes to get explicit credit. We also want to have an explicitly visible historical record.
 
 # TODO
 
