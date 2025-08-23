@@ -42,6 +42,8 @@ comment how your new proof improves the old ones).
 
 1. **Important rule.** Everybody who contributes must add their given or adopted name to the file or place of contribution, together with the date of contribution. If in doubt, see how we do it in practice. If your contribution is in the middle of a file, then add "Added by `name` on `date`", then your contribution, then "End of addition"  (again, see how we do it in practice). We want everybody who contributes to get explicit credit. We also want to have an explicitly visible historical record.
 
+1. Any new file in an existing folder must be imported by the index file in that folder. Any new folder must have a new index file that is imported by the index of the parent folder. This has two purposes: (1) make sure that the github action checks *all* files for correctness, and, more importantly, (2) make sure that a human navigating the html rendering of `TypeTopology` starting from []() can eventually reach any existing file starting from (http://cs.bham.ac.uk/~mhe/TypeTopologyAllModulesIndex.html).
+
 # TODO
 
 The following is very old and should be revised and expanded when we have time. But for the moment please stick to it. You will learn further unwritten guidelines when you submit a pull request - apologies.
