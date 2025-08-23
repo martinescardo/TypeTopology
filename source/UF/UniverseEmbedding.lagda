@@ -370,6 +370,62 @@ X ＝⋖ 𝓦 ⋗ Y = Lift 𝓦 X ＝ᴸ Lift 𝓦 Y
     III = eqtoid (ua (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (Lift (𝓥 ⊔ 𝓦) (Lift 𝓤 Y))
            (Lift (𝓤 ⊔ 𝓥) (Lift 𝓦 Y)) II
 
+≃-＝ᴸ : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+      → Univalence 
+      → X ≃ Y
+      → X ＝ᴸ Y 
+≃-＝ᴸ {𝓤} {𝓥} {X} {Y} ua e = eqtoid (ua _) (Lift 𝓥 X) (Lift 𝓤 Y) I
+ where
+  I : Lift 𝓥 X ≃ Lift 𝓤 Y
+  I = Lift 𝓥 X ≃⟨ Lift-≃ 𝓥 X ⟩
+      X        ≃⟨ e ⟩
+      Y        ≃⟨ ≃-Lift 𝓤 Y ⟩
+      Lift 𝓤 Y ■
+
+universe-family-perserves-≃ : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+                            → Univalence
+                            → (P : (𝓤 ⊔ 𝓥) ̇ → 𝓣 ̇)
+                            → X ≃ Y
+                            → P (Lift 𝓥 X) ≃ P (Lift 𝓤 Y)
+universe-family-perserves-≃ ua P e = transport-≃ P (≃-＝ᴸ ua e)
+
+universe-family-extension : {𝓥 : Universe} (P : 𝓤 ̇ → 𝓣 ̇) → (𝓤 ⊔ 𝓣 ⊔ 𝓥) ⁺  ̇
+universe-family-extension {𝓤} {𝓣} {𝓥} P
+ = Σ P' ꞉ ((𝓤 ⊔ 𝓥) ̇ → 𝓣 ̇) , ((X : 𝓤 ̇) → P X ≃ P' (Lift 𝓥 X))
+
+compatible-universe-family-extensions : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+                                      → (P : 𝓤 ̇ → 𝓣 ̇)
+                                      → (Q : 𝓥 ̇ → 𝓣 ̇)
+                                      → universe-family-extension {𝓤} {𝓣} {𝓥} P
+                                      → universe-family-extension {𝓥} {𝓣} {𝓤} Q
+                                      → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
+compatible-universe-family-extensions {𝓤} {𝓥} {𝓣} {X} {Y} P Q (P' , f) (Q' , g)
+ = X ≃ Y → P' (Lift 𝓥 X) ≃ Q' (Lift 𝓤 Y)
+
+universe-with-compatible-families-with-extensions-perserve-≃
+ : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+ → Univalence
+ → (P : 𝓤 ̇ → 𝓣 ̇)
+ → (Q : 𝓥 ̇ → 𝓣 ̇)
+ → (P-ext : universe-family-extension {𝓤} {𝓣} {𝓥} P)
+ → (Q-ext : universe-family-extension {𝓥} {𝓣} {𝓤} Q)
+ → compatible-universe-family-extensions {𝓤} {𝓥} {𝓣} {X} {Y} P Q P-ext Q-ext
+ → X ≃ Y
+ → P X ≃ Q Y
+universe-with-compatible-families-with-extensions-perserve-≃ {𝓤} {𝓥} {𝓣} {X} {Y}
+ ua P Q (P' , f) (Q' , g) comp e
+ = P X           ≃⟨ f X ⟩
+   P' (Lift 𝓥 X) ≃⟨ comp e ⟩
+   Q' (Lift 𝓤 Y) ≃⟨ ≃-sym (g Y) ⟩
+   Q Y           ■
+
+\end{code}
+
+We give an ordering of universes and show it (almost) assembles into a super
+large partial order.
+
+\begin{code}
+
 _⊰_ : (𝓤 𝓥 : Universe) → (𝓤 ⁺) ⊔ (𝓥 ⁺)  ̇
 𝓤 ⊰ 𝓥 = Σ f ꞉ (𝓤 ̇ → 𝓥 ̇) , is-universe-embedding f
 
