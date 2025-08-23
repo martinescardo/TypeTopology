@@ -410,12 +410,12 @@ _⊰_ : (𝓤 𝓥 : Universe) → (𝓤 ⁺) ⊔ (𝓥 ⁺)  ̇
          f X     ≃⟨ f-is-uni-emb X ⟩
          X       ■
 
-⊰-is-anti-symmetric : {𝓤 𝓥 : Universe}
-                    → Univalence
-                    → 𝓤 ⊰ 𝓥
-                    → 𝓥 ⊰ 𝓤
-                    → (𝓤 ̇) ＝ᴸ (𝓥 ̇)
-⊰-is-anti-symmetric {𝓤} {𝓥} ua o o'
+⊰-is-anti-symmetric-ish : {𝓤 𝓥 : Universe}
+                        → Univalence
+                        → 𝓤 ⊰ 𝓥
+                        → 𝓥 ⊰ 𝓤
+                        → (𝓤 ̇) ＝ᴸ (𝓥 ̇)
+⊰-is-anti-symmetric-ish {𝓤} {𝓥} ua o o'
  = eqtoid (ua _) (Lift (𝓥 ⁺) (𝓤 ̇)) (Lift (𝓤 ⁺) (𝓥 ̇)) I
  where
   I : Lift (𝓥 ⁺) (𝓤 ̇) ≃ Lift (𝓤 ⁺) (𝓥 ̇)
