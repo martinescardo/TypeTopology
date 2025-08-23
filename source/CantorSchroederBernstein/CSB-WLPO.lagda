@@ -367,8 +367,8 @@ References
  [3] Escardó, 2021. The Cantor–Schröder–Bernstein Theorem for
      ∞-groupoids. https://doi.org/10.1007/s40062-021-00284-6
 
- [4] Pradic & Brown, 2022. Cantor–Bernstein implies Excluded Middle.
-     https://arxiv.org/abs/1904.09193
+ [4] Pradic & Brown, 2022, originally 2019. Cantor–Bernstein implies
+     Excluded Middle. https://arxiv.org/abs/1904.09193
 
  [5] Bakke, 2025. The Cantor–Schröder–Bernstein theorem in ∞-Topoi.
      https://hott-uf.github.io/2025/slides/Bakke.pdf (slides)
