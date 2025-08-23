@@ -21,9 +21,13 @@ open import UF.Subsingletons
 
 \end{code}
 
-We introduce the concept of perfect images, as used by König in his argument
-(1906) for the Cantor–Schröder–Bernstein theorem.
+We introduce the concept of perfect images as used by König in his argument
+(1906) for the Cantor–Schröder–Bernstein theorem, and study logical properties
+of it. In CantorSchroederBernstein.CSB-WLPO we use these properties to give a
+generalization of the Cantor–Schröder–Bernstein theorem assuming the weak
+limited principle of omniscience.
 
+Definition.
 Given maps f : X → Y and g : Y → X, then an element x : X is said to be a
 "perfect image" of g relative to f, if for every natural number n and every
 preimage x₀ of x under (g ∘ f)ⁿ x, i.e., (g ∘ f)ⁿ x₀ = x, then x₀ has a further

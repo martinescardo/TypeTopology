@@ -27,28 +27,34 @@ open import UF.Retracts
 
 \end{code}
 
-In this file we consider a generalization of the Cantor–Schröder–Bernstein (CSB)
-theorem assuming the weak limited principle of omniscience (WLPO), based on
-König's argument (1906).
+In this file we consider a generalization of the Cantor–Schröder–Bernstein
+theorem (CSB) assuming the weak limited principle of omniscience (WLPO), based
+on König's argument (1906).
 
  Theorem.
  Assuming WLPO, then for every pair of types X and Y, if there are complemented
  embeddings X ↪ Y and Y ↪ X, then X is equivalent to Y.
 
-In particular, we do not assume function extensionality.
+In particular, we do not assume function extensionality, univalence, or axiom K.
 
-This theorem can be viewed as a generalization of the Cantor–Schröder–Bernstein
-theorem to arbitrary non-topological ∞-topoi, since, under the assumption of the
-law of excluded middle (LEM), every embedding is complemented. On the other
-hand, It was shown by Pradic and Brown (2022) that the Cantor–Schröder–Bernstein
-theorem in its most naïve form implies the law of excluded middle:
+This theorem builds on Escardó's earlier work (2021) which demonstrates that the
+Cantor–Schröder–Bernstein theorem holds in every boolean ∞-topos. This theorem
+can be understood as a generalization of to arbitrary non-topological ∞-topoi,
+since, under the assumption of the law of excluded middle (LEM), every embedding
+is complemented. On the other hand, It was shown by Pradic and Brown (2022) that
+the Cantor–Schröder–Bernstein theorem in its most naïve form implies the law of
+excluded middle:
 
- If it is true that for every pair of sets X and Y, if X injects into Y and Y
- injects into X then X and Y are in bijection, then the law of excluded middle
- holds.
+ Theorem (Pradic–Brown).
+ If the following implication is true for every pair of sets X and Y:
 
-Hence we also know that in the absence of the law of excluded middle, the
-hypotheses of the theorem must be strengthened.
+  If X injects into Y, and Y injects into X, then X and Y are in bijection.
+
+ Then the law of excluded middle holds.
+
+Hence we also know that in the absence of the law of excluded middle the
+hypotheses of the theorem must be strengthened. This is formalized in the file
+CantorSchroederBernstein.CSB.
 
 Construction
 ────────────
@@ -353,7 +359,13 @@ References
  - König, 1906. Sur la théorie des ensembles.
    https://gallica.bnf.fr/ark:/12148/bpt6k30977.image.f110.langEN
 
- - Pradic & Brown, 2022. Cantor-Bernstein implies Excluded Middle.
+ - Escardó, 2020. The Cantor-Schröder-Bernstein for homotopy types, or ∞-groupoids, in Agda.
+   https://martinescardo.github.io/TypeTopology/CantorSchroederBernstein.CSB.html (formalization)
+
+ - Escardó, 2021. The Cantor–Schröder–Bernstein Theorem for ∞-groupoids.
+   https://doi.org/10.1007/s40062-021-00284-6
+
+ - Pradic & Brown, 2022. Cantor–Bernstein implies Excluded Middle.
    https://arxiv.org/abs/1904.09193
 
  - Bakke, 2025. The Cantor–Schröder–Bernstein theorem in ∞-Topoi.
