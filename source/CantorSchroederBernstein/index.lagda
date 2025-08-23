@@ -16,7 +16,7 @@ The file CSB led to the publication
 After that, in 2025, Fredrik Bakke added the last two files, with a
 version of CSB that
 
- 1. replaces the assumption of excluded middle by WLPO,
+ 1. weakens the assumption of excluded middle to WLPO, and
  2. on the other hand, requires stronger assumptions on the two embeddings.
 
 Notice that (2) is absolutely necessary, in the presence of (1),
