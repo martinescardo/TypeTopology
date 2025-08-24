@@ -325,3 +325,54 @@ hSet-embeddings-are-embeddings {𝓤} {𝓥} ua f i =
   (Lift-hSet-is-embedding {𝓤} {𝓥} ua)
 
 \end{code}
+
+Added by Ian Ray 24th August 2025
+
+We give an ordering of universes and show it (almost) assembles into a super
+large partial order.
+
+\begin{code}
+
+_⊰_ : (𝓤 𝓥 : Universe) → (𝓤 ⁺) ⊔ (𝓥 ⁺)  ̇
+𝓤 ⊰ 𝓥 = Σ f ꞉ (𝓤 ̇ → 𝓥 ̇) , is-universe-embedding f
+
+⊰-is-reflexive : {𝓤 : Universe} → 𝓤 ⊰ 𝓤
+⊰-is-reflexive = id , ≃-refl
+
+⊰-is-transitive : {𝓤 𝓥 𝓦 : Universe}
+                → 𝓤 ⊰ 𝓥
+                → 𝓥 ⊰ 𝓦
+                → 𝓤 ⊰ 𝓦
+⊰-is-transitive (f , f-is-uni-emb) (g , g-is-uni-emb) = g ∘ f , gf-is-uni-emb
+ where
+  gf-is-uni-emb : is-universe-embedding (g ∘ f)
+  gf-is-uni-emb X = g (f X) ≃⟨ g-is-uni-emb (f X) ⟩
+                    f X     ≃⟨ f-is-uni-emb X ⟩
+                    X       ■
+
+⊰-is-anti-symmetric-≃ : {𝓤 𝓥 : Universe}
+                      → Univalence
+                      → 𝓤 ⊰ 𝓥
+                      → 𝓥 ⊰ 𝓤
+                      → 𝓤 ̇ ≃ 𝓥 ̇
+⊰-is-anti-symmetric-≃ ua (f , f-is-uni-emb) (g , g-is-uni-emb)
+ = f , (g , I) , (g , II)
+ where
+  I : f ∘ g ∼ id
+  I X = eqtoid (ua _) (f (g X)) X I'
+   where
+    I' : f (g X) ≃ X
+    I' = f (g X) ≃⟨ f-is-uni-emb (g X) ⟩
+         g X     ≃⟨ g-is-uni-emb X ⟩
+         X       ■
+  II : g ∘ f ∼ id
+  II X = eqtoid (ua _) (g (f X)) X II'
+   where
+    II' : g (f X) ≃ X
+    II' = g (f X) ≃⟨ g-is-uni-emb (f X) ⟩
+         f X     ≃⟨ f-is-uni-emb X ⟩
+         X       ■
+
+\end{code}
+
+End of addition.
