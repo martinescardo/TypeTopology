@@ -453,7 +453,7 @@ global-≃-ap'' {𝓣} {𝓤} {𝓥} ua A φ X Y e
   d : Lift 𝓥 X ≃ Lift 𝓤 Y
   d = Lift 𝓥 X ≃⟨ Lift-≃ 𝓥 X ⟩
       X        ≃⟨ e ⟩
-      Y        ≃⟨ ≃-Lift 𝓤 {!Y!} ⟩
+      Y        ≃⟨ ≃-Lift 𝓤 Y ⟩
       Lift 𝓤 Y ■
   p : Lift 𝓥 X ＝ Lift 𝓤 Y
   p = eqtoid (ua (𝓤 ⊔ 𝓥)) (Lift 𝓥 X) (Lift 𝓤 Y) d
