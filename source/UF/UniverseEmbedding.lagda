@@ -370,6 +370,14 @@ X ＝⋖ 𝓦 ⋗ Y = Lift 𝓦 X ＝ᴸ Lift 𝓦 Y
     III = eqtoid (ua (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (Lift (𝓥 ⊔ 𝓦) (Lift 𝓤 Y))
            (Lift (𝓤 ⊔ 𝓥) (Lift 𝓦 Y)) II
 
+＝ᴸ-≃ : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+      → X ＝ᴸ Y 
+      → X ≃ Y
+＝ᴸ-≃ {𝓤} {𝓥} {X} {Y} p = X        ≃⟨ ≃-Lift 𝓥 X ⟩
+                          Lift 𝓥 X ≃⟨ idtoeq (Lift 𝓥 X) (Lift 𝓤 Y) p ⟩
+                          Lift 𝓤 Y ≃⟨ Lift-≃ 𝓤 Y ⟩
+                          Y        ■ 
+
 ≃-＝ᴸ : {X : 𝓤 ̇} {Y : 𝓥 ̇}
       → Univalence 
       → X ≃ Y
@@ -402,7 +410,7 @@ compatible-universe-family-extensions : {X : 𝓤 ̇} {Y : 𝓥 ̇}
 compatible-universe-family-extensions {𝓤} {𝓥} {𝓣} {X} {Y} P Q (P' , f) (Q' , g)
  = X ≃ Y → P' (Lift 𝓥 X) ≃ Q' (Lift 𝓤 Y)
 
-universe-with-compatible-families-with-extensions-perserve-≃
+compatible-universe-families-perserve-≃
  : {X : 𝓤 ̇} {Y : 𝓥 ̇}
  → Univalence
  → (P : 𝓤 ̇ → 𝓣 ̇)
@@ -412,8 +420,8 @@ universe-with-compatible-families-with-extensions-perserve-≃
  → compatible-universe-family-extensions {𝓤} {𝓥} {𝓣} {X} {Y} P Q P-ext Q-ext
  → X ≃ Y
  → P X ≃ Q Y
-universe-with-compatible-families-with-extensions-perserve-≃ {𝓤} {𝓥} {𝓣} {X} {Y}
- ua P Q (P' , f) (Q' , g) comp e
+compatible-universe-families-perserve-≃
+ {𝓤} {𝓥} {_} {X} {Y} ua P Q (P' , f) (Q' , g) comp e
  = P X           ≃⟨ f X ⟩
    P' (Lift 𝓥 X) ≃⟨ comp e ⟩
    Q' (Lift 𝓤 Y) ≃⟨ ≃-sym (g Y) ⟩
