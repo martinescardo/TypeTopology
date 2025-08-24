@@ -326,7 +326,10 @@ hSet-embeddings-are-embeddings {𝓤} {𝓥} ua f i =
 
 \end{code}
 
-Added by Ian Ray Auguest 22nd 2025
+Added by Ian Ray Auguest 22nd 2025.
+
+First we investigate an (almost) equivalence relation defined using lift.
+(This doesn't appear to be very useful).
 
 \begin{code}
 
@@ -390,6 +393,14 @@ X ＝⋖ 𝓦 ⋗ Y = Lift 𝓦 X ＝ᴸ Lift 𝓦 Y
       Y        ≃⟨ ≃-Lift 𝓤 Y ⟩
       Lift 𝓤 Y ■
 
+\end{code}
+
+Now consider some restrictions to universe families so that we can 'transport'
+along equivalences. This has already been investigated by Martin above (see
+global-≃-ap').
+
+\begin{code}
+
 universe-family-perserves-≃ : {X : 𝓤 ̇} {Y : 𝓥 ̇}
                             → Univalence
                             → (P : (𝓤 ⊔ 𝓥) ̇ → 𝓣 ̇)
@@ -426,6 +437,28 @@ compatible-universe-families-perserve-≃
    P' (Lift 𝓥 X) ≃⟨ comp e ⟩
    Q' (Lift 𝓤 Y) ≃⟨ ≃-sym (g Y) ⟩
    Q Y           ■
+
+global-≃-ap'' : Univalence
+              → (A : {𝓤 : Universe} → 𝓤 ̇ → 𝓣 ̇ )
+              → ({𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → A X ≃ A (Lift 𝓥 X))
+              → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+              → X ≃ Y
+              → A X ≃ A Y
+global-≃-ap'' {𝓣} {𝓤} {𝓥} ua A φ X Y e
+ = A X          ≃⟨ φ X ⟩
+   A (Lift 𝓥 X) ≃⟨ idtoeq (A (Lift 𝓥 X)) (A (Lift 𝓤 Y)) q ⟩
+   A (Lift 𝓤 Y) ≃⟨ ≃-sym (φ Y) ⟩
+   A Y          ■
+ where
+  d : Lift 𝓥 X ≃ Lift 𝓤 Y
+  d = Lift 𝓥 X ≃⟨ Lift-is-universe-embedding 𝓥 X ⟩
+      X        ≃⟨ e ⟩
+      Y        ≃⟨ ≃-sym (Lift-is-universe-embedding 𝓤 Y) ⟩
+      Lift 𝓤 Y ■
+  p : Lift 𝓥 X ＝ Lift 𝓤 Y
+  p = eqtoid (ua (𝓤 ⊔ 𝓥)) (Lift 𝓥 X) (Lift 𝓤 Y) d
+  q : A (Lift 𝓥 X) ＝ A (Lift 𝓤 Y)
+  q = ap A p
 
 \end{code}
 
