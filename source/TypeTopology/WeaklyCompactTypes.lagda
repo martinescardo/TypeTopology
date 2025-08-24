@@ -112,7 +112,7 @@ compact-types-are-∃-compact {𝓤} {X} φ p = g (φ p)
 \end{code}
 
 But notice that the Π-compactness of ℕ is WLPO and its ∃-compactness
-is amounts to LPO.
+amounts to LPO.
 
 The Π-compactness of X is equivalent to the isolatedness of the boolean
 predicate λ x → ₁:
@@ -466,7 +466,7 @@ tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
 \end{code}
 
 In topological models, Π-compactness is the same as topological
-compactess in the presence of total separatedness, at least for some
+compactness in the presence of total separatedness, at least for some
 spaces, including the Kleene-Kreisel spaces, which model the simple
 types (see the module SimpleTypes). Hence, for example, the
 topological space (ℕ∞→𝟚) is not Π-compact because it is countably
