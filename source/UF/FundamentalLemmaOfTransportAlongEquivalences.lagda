@@ -63,7 +63,7 @@ needed. Any T and T-refl with the given types work, without the need
 of any further condition.
 
 The proof is by equivalence induction (called JEq), with T-refl giving
-the induction step.
+the base case.
 
 \begin{code}
 
