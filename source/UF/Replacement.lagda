@@ -7,12 +7,11 @@ is a statement about the size of the image of a function when certain smallness
 assumptions are imposed on the domain and codomain. The nomenclature is derived
 from the set theoretic axiom of replacement, where the set vs class distinction
 provides a notion of size. In type theory, this statement may be assumed or
-proven depending on the context. We will drop the term 'axiom' and call it
-'type replacement' or simply 'replacement' when there is no risk of confusion
-with set replacement. We also mention that the file UF/Size.lagda defines 'set
-replacement' which restricts type replacement to those maps whose codomain is
-a set in the sense of univalent foundations. This set replacement principle is
-equivalent to having small set quotients, see Quotient/index.lagda.
+proven depending on the context. We also mention that the file UF/Size.lagda
+defines 'set replacement' which restricts type replacement to those maps whose
+codomain is a set (in the sense of univalent foundations). We will drop the term
+'axiom' and call it 'type replacement' or simply 'replacement' when there is no
+risk of confusion with set replacement.
 
 The statement of type replacement is as follows:
 The image of a map f : A → X, from a small type A to a locally small type X, is
