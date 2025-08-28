@@ -57,10 +57,14 @@
      compactness of the Cantor type using countable Tychonoff, and
      more.
 
-     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
+     https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html
 
-   * In our last count, on 2025.08.12, this development has 851 Agda
-     files with 255K lines of code, including comments and blank
+     This file also explains which options are used in TypeTopology to
+     control safety and, to the extent this is currently possible, to
+     control which type theory is used.
+
+   * In our last count, on 2025.08.23, this development has 853 Agda
+     files with 256K lines of code, including comments and blank
      lines.
 
 Philosophy of the repository
