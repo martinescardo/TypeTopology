@@ -4,7 +4,8 @@ The type theoretic axiom of replacement (section 24.5 of Introduction to
 Homotopy Type Theory by Egbert Rijke:
 https://ulrikbuchholtz.dk/hott1920/hott-intro.pdf)
 is a statement about the size of the image of a function when certain smallness
-assumptions are imposed on the domain and codomain. The nomenclature is derived from the set theoretic axiom of replacement, where the set vs class distinction
+assumptions are imposed on the domain and codomain. The nomenclature is derived
+from the set theoretic axiom of replacement, where the set vs class distinction
 provides a notion of size. In type theory, this statement may be assumed or
 proven depending on the context. We will drop the term 'axiom' and call it
 'type replacement' or simply 'replacement' when there is no risk of confusion
