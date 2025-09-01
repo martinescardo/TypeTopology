@@ -52,7 +52,7 @@ open import UF.Replacement pt
 
 We begin by giving some definitions from [1] and proving important properties
 about them. We have fixed the universe parameter 𝓥 and use it as our point of
-reference for 'smallness'. Univalence is not required for every result so we
+reference for 'smallness'. Univalence is not required for every result, so we
 will explicitly assume it only when it is used.
 
 \begin{code}
@@ -138,14 +138,14 @@ Many of the results in [1] follow from a fact that some call the type theoretic
 axiom of replacement. It states that given a small type A, a locally small type
 X and a function f : A → X the image of f is small.
 
-We note that while the name for this result is due to it's 'apparent' similarity
+We note that while the name for this result is due to its 'apparent' similarity
 to the axiom of replacement from set theory. Replacement in type theory is
 quite a modest assumption in comparison. Indeed, type replacement follows from
 the assumption of pushouts (see the TypeTopology file on Replacement for further
 discussion on the modest strength of Replacement).
 
-In the interest of keeping the present work self contained and requiring only
-the weakest assumptions possible we simply assume the relevant form of
+In the interest of keeping the present work self-contained and requiring only
+the weakest assumptions possible, we simply assume the relevant form of
 replacement as it is needed.
 
 \begin{code}
@@ -171,9 +171,9 @@ Replacement''-to-Replacement' rep'' {_} {_} f A-sm X-ls f-surj
 
 \end{code}
 
-We will now begin proving some of the results from [1]. We will attempt to
-avoid any unnecessary use of propositional resizing. Theorem numbers will be
-provided for easy reference.
+We will now begin proving some of the results from [1]. We avoid any unnecessary
+use of propositional resizing. Theorem numbers will be provided for easy
+reference.
 
 Prop 2.2 of [1]
 

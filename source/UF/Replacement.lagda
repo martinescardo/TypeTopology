@@ -5,7 +5,7 @@ Homotopy Type Theory by Egbert Rijke:
 https://ulrikbuchholtz.dk/hott1920/hott-intro.pdf)
 is a statement about the size of the image of a function when certain smallness
 assumptions are imposed on the domain and codomain. The nomenclature is derived
-from the set theoretic axiom of replacement, where the set vs class distinction
+from the set-theoretic axiom of replacement, where the set vs class distinction
 provides a notion of size. In type theory, this statement may be assumed or
 proven depending on the context (see discussion below for details about the
 strength of type replacement). We also mention that the file UF/Size.lagda
@@ -25,18 +25,18 @@ size relative to an explicit universe.
 The reader may be cautious about the strength of type replacement due its
 'apparent' connection with set theories axiom of replacement; the latter is a
 rather strong assumption critical for more advanced set theoretic results. In
-contrast type replacement is a rather modest assumption. Indeed it follows
+contrast, type replacement is a rather modest assumption. Indeed it follows
 from the existence of a restricted class of Higher Inductive Types (HITs). For
 details see "The Join Construction" by Egbert Rijke
 (https://arxiv.org/abs/1701.07538.) where 'graph quotients' are used to give an
 alternative construction of the image from which type replacement can be proven.
-More conservatively one may carry out this construction merely with pushouts
+More conservatively, one may carry out this construction merely with pushouts
 (in fact, one only requires the join of maps and sequential colimits, which are
-instances of pushouts). This route is actively being explored in other
+instances of pushouts). This route is being actively explored in other
 TypeTopology files. Additionally, set replacement (see above) is equivalent
 to the existence of set quotients, another modest assumption.  
 
-It is worth noting that the status of type replacement's strength relative to
+It is worth noting that the status of type replacements strength relative to
 the strength of adding certain HITs is not completely understood, but it
 appears to be even weaker than the assumption that pushouts exist (this
 observation will follow from a forthcoming write up by Reid Barton). In light
