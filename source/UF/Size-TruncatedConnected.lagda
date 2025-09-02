@@ -142,7 +142,7 @@ We note that while the name for this result is due to its 'apparent' similarity
 to the axiom of replacement from set theory, but replacement in type theory is
 quite a modest assumption in comparison. Indeed, type replacement follows from
 the existence of pushouts (see UF/Replacement for further discussion on the
-modest strength of Replacement) as demonstrated by "The Join Construction" by
+modest strength of replacement) as demonstrated by "The Join Construction" by
 Egbert Rijke (https://arxiv.org/abs/1701.07538).
 
 In the interest of keeping the present work self-contained and requiring only
