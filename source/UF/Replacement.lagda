@@ -23,18 +23,18 @@ library refers to as simply 'small'. Additionally, we often wish to consider
 size relative to an explicit universe.
 
 The reader may be cautious about the strength of type replacement due to its
-'apparent' connection with set theories axiom of replacement; the latter is a
-rather strong assumption critical for more advanced set theoretic results. In
-contrast, type replacement is a rather modest assumption. Indeed it follows
+'apparent' connection with the axiom of replacement of set theory; the latter
+is a rather strong assumption critical for more advanced set-theoretic results.
+In contrast, type replacement is a rather modest assumption. Indeed it follows
 from the existence of a restricted class of Higher Inductive Types (HITs). For
 details see "The Join Construction" by Egbert Rijke
-(https://arxiv.org/abs/1701.07538.) where 'graph quotients' are used to give an
+(https://arxiv.org/abs/1701.07538) where 'graph quotients' are used to give an
 alternative construction of the image; from which type replacement can be
-proven. More conservatively, one may carry out this construction merely with
-pushouts (in fact, one only requires the join of maps and sequential colimits,
-which are instances of pushouts). This route is being actively explored in other
-TypeTopology files. Additionally, set replacement (see above) is equivalent to
-the existence of set quotients, another modest assumption.   
+proven. Additionally, one may carry out this construction simply with pushouts
+(which can be shown to be equivalent to graph quotients). The join construction
+via pushouts is being actively explored in other TypeTopology files.
+Additionally, set replacement (see above) is equivalent to the existence of set
+quotients, another modest assumption.   
 
 It is worth noting that the status of type replacements strength relative to
 the strength of adding certain HITs is not completely understood, but it

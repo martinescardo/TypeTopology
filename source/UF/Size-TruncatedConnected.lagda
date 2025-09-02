@@ -139,10 +139,11 @@ axiom of replacement. It states that given a small type A, a locally small type
 X and a function f : A → X the image of f is small.
 
 We note that while the name for this result is due to its 'apparent' similarity
-to the axiom of replacement from set theory. Replacement in type theory is
+to the axiom of replacement from set theory, but replacement in type theory is
 quite a modest assumption in comparison. Indeed, type replacement follows from
-the existence of pushouts (see the TypeTopology file on Replacement for further
-discussion on the modest strength of Replacement).
+the existence of pushouts (see UF/Replacement for further discussion on the
+modest strength of Replacement) as demonstrated by "The Join Construction" by
+Egbert Rijke (https://arxiv.org/abs/1701.07538).
 
 In the interest of keeping the present work self-contained and requiring only
 the weakest assumptions possible, we simply assume the relevant form of
