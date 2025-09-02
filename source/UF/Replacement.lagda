@@ -32,7 +32,7 @@ details see "The Join Construction" by Egbert Rijke
 alternative construction of the image; from which type replacement can be
 proven. Additionally, one may carry out this construction simply with pushouts
 (which can be shown to be equivalent to graph quotients). The join construction
-via pushouts is being actively explored in other TypeTopology files.
+via pushouts is being actively explored in files not yet publicly available.
 Additionally, set replacement (see above) is equivalent to the existence of set
 quotients, another modest assumption.   
 
