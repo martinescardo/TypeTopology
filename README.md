@@ -257,13 +257,13 @@ Tosun.
 
    https://doi.org/10.1017/S0960129525000088
 
-1. Tom de Jong and Martín H. Escardó. *Continuous and algebraic domains
-   in univalent foundations*. Accepted for publication in the [Journal of Pure
-   and Applied Algebra][JPAA]. August 2025. \
-   As requested by the journal, this publication includes an abridged version of
-   the paper *Domain theory in univalent foundations I*.
+1. Tom de Jong and Martín H. Escardó. *Continuous and algebraic domains in
+   univalent foundations*. [Journal of Pure and Applied Algebra][JPAA], Volume
+   229, Issue 10. August 2025. \ As requested by the journal, this publication
+   includes an abridged version of the paper *Domain theory in univalent
+   foundations I*.
 
-   https://doi.org/10.48550/arxiv.2407.06956
+   https://doi.org/10.1016/j.jpaa.2025.108072
 
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/

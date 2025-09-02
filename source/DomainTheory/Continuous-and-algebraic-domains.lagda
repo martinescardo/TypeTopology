@@ -4,8 +4,9 @@ This file corresponds to the paper
 
    "Continuous and algebraic domains in univalent foundations"
    Tom de Jong and Martín Hötzel Escardó
-   2025
-   https://doi.org/10.48550/arxiv.2407.06956
+   Journal of Pure and Applied Algebra
+   Volume 229, Issue 10, 2025
+   https://doi.org/10.1016/j.jpaa.2025.108072
 
 NB: The names in this file should not be unchanged to ensure they correspond
 correctly to the above paper.
