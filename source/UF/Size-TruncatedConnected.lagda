@@ -85,8 +85,8 @@ locally-small-types-are-small {_} {X} {succ n} X-small x x'
 
 \end{code}
 
-Local smallness is closed under equivalence, sigma types and truncation for each
-n : ℕ.
+Local smallness is closed under equivalence, sigma types and truncation for
+each n : ℕ.
 
 \begin{code}
 
@@ -141,7 +141,7 @@ X and a function f : A → X the image of f is small.
 We note that while the name for this result is due to its 'apparent' similarity
 to the axiom of replacement from set theory. Replacement in type theory is
 quite a modest assumption in comparison. Indeed, type replacement follows from
-the assumption of pushouts (see the TypeTopology file on Replacement for further
+the existence of pushouts (see the TypeTopology file on Replacement for further
 discussion on the modest strength of Replacement).
 
 In the interest of keeping the present work self-contained and requiring only
