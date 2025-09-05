@@ -57,8 +57,8 @@ is-optimal-move {X} {Xf} q ϕ ϕf x =
  ＝ optimal-outcome (game (Xf x) (subpred q x) (ϕf x))
 
 is-optimal-play : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → Path Xt → Type
-is-optimal-play {[]}     ⟨⟩        q ⟨⟩ = 𝟙
-is-optimal-play Xt@{X ∷ Xf} ϕt@(ϕ :: ϕf) q (x :: xs) =
+is-optimal-play {[]}     ⟨⟩        q ⟨⟩        = 𝟙
+is-optimal-play {X ∷ Xf} (ϕ :: ϕf) q (x :: xs) =
    is-optimal-move {X} {Xf} q ϕ ϕf x
  × is-optimal-play {Xf x} (ϕf x) (subpred q x) xs
 
