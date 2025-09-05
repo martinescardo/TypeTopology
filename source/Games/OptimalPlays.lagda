@@ -87,12 +87,14 @@ strategic-path-is-optimal-play {X ∷ Xf} (ϕ :: ϕf) q σ@(x₀ :: σf) ot@(o ,
   _ = of
 
   I : is-optimal-move q ϕ ϕf x₀
-  I = sequenceᴷ {X ∷ Xf} (ϕ :: ϕf) q                ＝⟨ refl ⟩
-      ϕ (λ x → sequenceᴷ (ϕf x) (subpred q x))      ＝⟨ I₁ ⟩
-      ϕ (λ x → subpred q x (strategic-path (σf x))) ＝⟨ o ⁻¹ ⟩
-      q (strategic-path σ)                          ＝⟨ refl ⟩
-      q (x₀ :: strategic-path (σf x₀))              ＝⟨ I₂ ⟩
-      sequenceᴷ {Xf x₀} (ϕf x₀) (subpred q x₀)      ∎
+  I = optimal-outcome (game (X ∷ Xf) q (ϕ :: ϕf))           ＝⟨ refl ⟩
+      sequenceᴷ {X ∷ Xf} (ϕ :: ϕf) q                        ＝⟨ refl ⟩
+      ϕ (λ x → sequenceᴷ (ϕf x) (subpred q x))              ＝⟨ I₁ ⟩
+      ϕ (λ x → subpred q x (strategic-path (σf x)))         ＝⟨ o ⁻¹ ⟩
+      q (strategic-path σ)                                  ＝⟨ refl ⟩
+      q (x₀ :: strategic-path (σf x₀))                      ＝⟨ I₂ ⟩
+      sequenceᴷ {Xf x₀} (ϕf x₀) (subpred q x₀)              ＝⟨ refl ⟩
+      optimal-outcome (game (Xf x₀) (subpred q x₀) (ϕf x₀)) ∎
        where
         I₀ : (x : X)
            → sequenceᴷ (ϕf x) (subpred q x)
