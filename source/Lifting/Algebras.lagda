@@ -542,3 +542,34 @@ The following are the only public things in this anonymous module.
  section-is-hom = s-is-hom
 
 \end{code}
+
+Added 6th September 2025 by Martin Escardo. Use Ω to repackage things
+more neatly. We use uppercase names to distinguish the repackaged
+things.
+
+\begin{code}
+
+open import UF.SubtypeClassifier
+
+Extension-op : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
+Extension-op X = (P : Ω 𝓣) → (P holds → X) → X
+
+𝓛-Alg-Law₀ : {X : 𝓤 ̇ } → Extension-op X → 𝓤 ̇
+𝓛-Alg-Law₀ {𝓤} {X} ∐ = (x : X) → ∐ ⊤ (λ _ → x) ＝ x
+
+𝓛-Alg-Law₁ : {X : 𝓤 ̇ } → Extension-op X → 𝓣 ⁺ ⊔ 𝓤 ̇
+𝓛-Alg-Law₁ {𝓤} {X} ∐ =
+   (P : Ω 𝓣) (Q : P holds → Ω 𝓣)
+   (f : (ΣΩ p ꞉ P , Q p) holds → X)
+ → ∐ (ΣΩ p ꞉ P , Q p) f ＝ ∐ P (λ p → ∐ (Q p) (λ q → f (p , q)))
+
+𝓛-Alg : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
+𝓛-Alg X = Σ ∐ ꞉ Extension-op X , 𝓛-Alg-Law₀ ∐ × 𝓛-Alg-Law₁ ∐
+
+𝓛-Alg-gives-𝓛-alg : {X : 𝓤 ̇ } → 𝓛-Alg X → 𝓛-alg X
+𝓛-Alg-gives-𝓛-alg (∐ , l₀ , l₁) =
+ (λ {P} P-is-prop → ∐ (P , P-is-prop)) ,
+ l₀ ,
+ (λ P Q i j → l₁ (P , i) (λ p → Q p , j p))
+
+\end{code}
