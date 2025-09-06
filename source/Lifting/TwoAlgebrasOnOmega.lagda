@@ -5,17 +5,16 @@ classifier Ω, with structure maps given by Σ (the free algebra) and Π,
 where 𝓛 is the lifting monad, also known as the partial map classifier
 monad.
 
-This is just an adaptation of the fact that Σ and Π are lifting
-structure maps on the universe, already proved in the file
-Lifting.ALgebras, which uses univalence.
+This is just an adaptation of the fact that Σ and Π are 𝓛-structure
+maps on the universe, already proved in the file Lifting.Algebras,
+which uses univalence.
 
 We could prove that Σ and Π are structure maps on Ω by showing that a
 subtype of an algebra closed under the structure map is itself an
 algebra, and apply this to the subtype Ω of the universe. However, we
 want a proof that doesn't use univalence, so that it makes sense in
 the internal language of a 1-topos. We use propositional and
-functional extensionality instead, which are validated by the internal
-language of a 1-topos.
+functional extensionality instead, which are validated in any 1-topos.
 
 So notice that not even classically do we have "every algebra is a
 free algebra". What we do have classically (i.e. in boolean toposes)
@@ -23,7 +22,7 @@ is that the underlying set of any algebra is isomorphic to the
 underlying set of a free algebra, that is, it is isomorphic to 𝓛 X
 for some X.
 
-Question. In an arbitrary topos, is it the case that the underlying
+Question. In an arbitrary 1-topos, is it the case that the underlying
 set of any algebra is isomorphic to 𝓛 X for some X?
 
 I very much doubt that this would be the case.
@@ -69,7 +68,7 @@ private
 private
  prod : {P : 𝓣 ̇ } → is-prop P → (P → Ω 𝓣) → Ω 𝓣
  prod {P} i f = (Π p ꞉ P , f p holds) ,
-                 Π-is-prop fe ((λ p → holds-is-prop (f p)))
+                 Π-is-prop fe (λ p → holds-is-prop (f p))
 
 Π-algebra-on-Ω : 𝓛-alg (Ω 𝓣)
 Π-algebra-on-Ω = prod , k , ι
