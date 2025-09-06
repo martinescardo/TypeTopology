@@ -15,6 +15,14 @@ the internal language of a 1-topos. We use propositional and
 functional extensionality instead, which are validated by the internal
 language of a 1-topos.
 
+So notice that not even classically do we have "every algebra is a
+free algebra". What we do have classically (i.e. in boolean toposes)
+is that the underlying set of any algebra admits the structure of a
+free algebra.
+
+Question. In an arbitrary topos, is it the case that the underlying
+set of any algebra admits the structure of a free algebra?
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
