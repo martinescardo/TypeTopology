@@ -1,7 +1,9 @@
 Martin Escardo, 6th September 2025.
 
-We construct two distinct lifting algebra structures on the subtype
-classifier Ω, with structure maps given by Σ (the free algebra) and Π.
+We construct two distinct 𝓛-algebra structures on the subtype
+classifier Ω, with structure maps given by Σ (the free algebra) and Π,
+where 𝓛 is the lifting monad, also known as the partial map classifier
+monad.
 
 This is just an adaptation of the fact that Σ and Π are lifting
 structure maps on the universe, already proved in the file
@@ -17,11 +19,14 @@ language of a 1-topos.
 
 So notice that not even classically do we have "every algebra is a
 free algebra". What we do have classically (i.e. in boolean toposes)
-is that the underlying set of any algebra admits the structure of a
-free algebra.
+is that the underlying set of any algebra is isomorphic to the
+underlying set of a free algebra, that is, it is isomorphic to 𝓛 X
+for some X.
 
 Question. In an arbitrary topos, is it the case that the underlying
-set of any algebra admits the structure of a free algebra?
+set of any algebra is isomorphic to 𝓛 X for some X?
+
+I very much doubt that this would be the case.
 
 \begin{code}
 
