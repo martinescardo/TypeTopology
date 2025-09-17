@@ -78,13 +78,13 @@ optimal-play-gives-optimal-outcome
  → is-optimal-play {Xt} ϕt q xs
  → q xs ＝ optimal-outcome (game Xt q ϕt)
 optimal-play-gives-optimal-outcome {[]}     ⟨⟩        q ⟨⟩        ⟨⟩ = refl
-optimal-play-gives-optimal-outcome {X ∷ Xf} (ϕ :: ϕf) q (x :: xs) (o :: of)
+optimal-play-gives-optimal-outcome {X ∷ Xf} (ϕ :: ϕf) q (x :: xs) (o :: os)
  = subpred q x xs                                     ＝⟨ IH ⟩
    optimal-outcome (game (Xf x) (subpred q x) (ϕf x)) ＝⟨ o ⁻¹ ⟩
    optimal-outcome (game (X ∷ Xf) q (ϕ :: ϕf))        ∎
  where
   IH : subpred q x xs ＝ optimal-outcome (game (Xf x) (subpred q x) (ϕf x))
-  IH = optimal-play-gives-optimal-outcome {Xf x} (ϕf x) (subpred q x) xs of
+  IH = optimal-play-gives-optimal-outcome {Xf x} (ϕf x) (subpred q x) xs os
 
 strategic-path-is-optimal-play
  : {Xt : 𝑻}
@@ -94,11 +94,11 @@ strategic-path-is-optimal-play
  → is-in-sgpe ϕt q σ
  → is-optimal-play ϕt q (strategic-path σ)
 strategic-path-is-optimal-play {[]} ⟨⟩ q ⟨⟩ ⟨⟩ = ⋆
-strategic-path-is-optimal-play {X ∷ Xf} ϕt@(ϕ :: ϕf) q σ@(x₀ :: σf) ot@(o :: of)
+strategic-path-is-optimal-play {X ∷ Xf} ϕt@(ϕ :: ϕf) q σ@(x₀ :: σf) ot@(o :: os)
  = I , IH x₀
  where
   IH : (x : X) → is-optimal-play (ϕf x) (subpred q x) (strategic-path (σf x))
-  IH x = strategic-path-is-optimal-play {Xf x} (ϕf x) (subpred q x) (σf x) (of x)
+  IH x = strategic-path-is-optimal-play {Xf x} (ϕf x) (subpred q x) (σf x) (os x)
 
   I : is-optimal-move q ϕ ϕf x₀
   I = optimal-outcome (game (X ∷ Xf) q (ϕ :: ϕf))                  ＝⟨ refl ⟩
@@ -499,3 +499,96 @@ outcomes has at least one element.
 In a previous version of this file, we instead assumed r₀ : R, and we
 worked with "listed" instead of "listed⁺", but the listings were
 automatically non-empty.
+
+Added 17th September. We calculate the subtree of the game tree whose
+paths are precisely the optimal plays of the original game.
+
+\begin{code}
+
+prune : {Xt : 𝑻}
+        (q : Path Xt → R)
+        (ϕt : 𝓚 Xt)
+      → 𝑻
+prune {[]} q ⟨⟩ = []
+prune {X ∷ Xf} q (ϕ :: ϕf) = (Σ x ꞉ X , is-optimal-move q ϕ ϕf x)
+                           ∷ (λ (x , o) → prune {Xf x} (subpred q x) (ϕf x))
+\end{code}
+
+Each path in the pruned tree is a path in the original tree.
+
+\begin{code}
+
+inclusion : {Xt : 𝑻}
+            (q : Path Xt → R)
+            (ϕt : 𝓚 Xt)
+          → Path (prune q ϕt )
+          → Path Xt
+inclusion {[]} q ⟨⟩ ⟨⟩ = ⟨⟩
+inclusion {X ∷ Xf} q (ϕ :: ϕf) ((x , _) :: xos)
+ = x :: inclusion {Xf x} (subpred q x) (ϕf x) xos
+
+\end{code}
+
+The predicate q restricts to a predicate in the pruned tree.
+
+\begin{code}
+
+restriction : {Xt : 𝑻}
+              (q : Path Xt → R)
+              (ϕt : 𝓚 Xt)
+            → Path (prune q ϕt) → R
+restriction q ϕt = q ∘ inclusion q ϕt
+
+\end{code}
+
+The paths in the pruned tree are precisely the optimals plays in the
+original tree.
+
+\begin{code}
+
+lemma→ : {Xt : 𝑻}
+         (q : Path Xt → R)
+         (ϕt : 𝓚 Xt)
+       → (xos : Path (prune q ϕt))
+       → is-optimal-play ϕt q (inclusion q ϕt xos)
+lemma→ {[]} q ⟨⟩ ⟨⟩ = ⟨⟩
+lemma→ {X ∷ Xf} q (ϕ :: ϕf) ((x , o) :: xos)
+ = o , lemma→ {Xf x} (subpred q x) (ϕf x) xos
+
+lemma← : {Xt : 𝑻}
+         (q : Path Xt → R)
+         (ϕt : 𝓚 Xt)
+         (xs : Path Xt)
+       → is-optimal-play ϕt q xs
+       → Σ xos ꞉ Path (prune q ϕt) , inclusion q ϕt xos ＝ xs
+lemma← {[]} q ⟨⟩ ⟨⟩ ⟨⟩ = ⟨⟩ , refl
+lemma← {X ∷ Xf} q (ϕ :: ϕf) (x :: xs) (o :: os)
+ = ((x , o) :: pr₁ IH) , ap (x ::_) (pr₂ IH)
+ where
+  IH : Σ xos ꞉ Path (prune (subpred q x) (ϕf x))
+             , inclusion (subpred q x) (ϕf x) xos ＝ xs
+  IH = lemma← {Xf x} (subpred q x) (ϕf x) xs os
+
+\end{code}
+
+This gives an alternative way to calculate the list of optimal plays.
+
+\begin{code}
+
+{- To be continued
+optimal-plays' : {Xt : 𝑻}
+                 (q : Path Xt → R)
+                 (ϕt : 𝓚 Xt)
+                 (Xt-is-listed : structure listed Xt)
+               → List (Path Xt)
+optimal-plays' {[]} q ⟨⟩ ⟨⟩ = []
+optimal-plays' {X ∷ Xf} q (ϕ :: ϕf) ((xs , _) , Xf-is-listed) = γ
+ where
+  IH : (x : X) → List (Path (Xf x))
+  IH x = optimal-plays' {Xf x} (subpred q x) (ϕf x) (Xf-is-listed x)
+
+  γ : List (Path (X ∷ Xf))
+  γ = ?
+-}
+
+\end{code}
