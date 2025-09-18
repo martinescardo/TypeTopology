@@ -72,7 +72,7 @@ open import UF.Subsingletons
 
 \end{code}
 
-We refer to set of isolated points as the co derived set (for
+We refer to the set of isolated points as the co derived set (for
 complement of the derived set, in the sense of Cantor, consisting of
 the limit points, i.e. non-isolated points).
 

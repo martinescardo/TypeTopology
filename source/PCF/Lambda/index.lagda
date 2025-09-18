@@ -1,9 +1,9 @@
 Brendan Hart 2019-2020
 
 Ported from https://github.com/BrendanHart/Investigating-Properties-of-PCF/
-by Martin Escardo, 17-18 May 2023. This is Brendan's final-year UG
-project at the School of Computer Science, University of Birmingham,
-UK, jointly supervised by Martin Escardo and Tom de Jong.
+by Martin Escardo, 17-18 May 2023. This is Brendan's MSci project at
+the School of Computer Science, University of Birmingham, UK, jointly
+supervised by Martin Escardo and Tom de Jong.
 
 Tom de Jong, in work reported in this repository, defines the Scott
 model of PCF in the combinary version of PCF. Brendan extends the
