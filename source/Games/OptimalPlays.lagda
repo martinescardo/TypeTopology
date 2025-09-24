@@ -186,8 +186,6 @@ include the distinguished element).
 module _ (X : Type)
          (X-is-listed⁺@(x₀ , xs , μ) : listed⁺ X)
          (ϕ : (X → R) → R)
-         (ε : (X → R) → X)
-         (ε-attains-ϕ : ε attains ϕ)
       where
 
  private
@@ -197,8 +195,18 @@ module _ (X : Type)
   δA : (p : X → R) (x : X) → is-decidable (A p x)
   δA p x = R-is-discrete (p x) (ϕ p)
 
-  εᴸ :  (X → R) → List X
-  εᴸ p = filter (A p) (δA p) xs
+ εᴸ :  (X → R) → List X
+ εᴸ p = filter (A p) (δA p) xs
+
+ εᴸ-property→ : (p : X → R) (x : X) → member x (εᴸ p) → p x ＝ ϕ p
+ εᴸ-property→ p x = filter-member→ (A p) (δA p) x xs
+
+ εᴸ-property← : (p : X → R) (x : X) → p x ＝ ϕ p → member x (εᴸ p)
+ εᴸ-property← p x e = filter-member← (A p) (δA p) x xs e (μ x)
+
+ module _ (ε : (X → R) → X)
+          (ε-attains-ϕ : ε attains ϕ)
+        where
 
   ε-member-of-εᴸ : (p : X → R) → member (ε p) (εᴸ p)
   ε-member-of-εᴸ p = filter-member← (A p) (δA p) (ε p) xs (ε-attains-ϕ p) (μ (ε p))
@@ -206,14 +214,8 @@ module _ (X : Type)
   εᴸ-is-non-empty : (p : X → R) → is-non-empty (εᴸ p)
   εᴸ-is-non-empty p = lists-with-members-are-non-empty (ε-member-of-εᴸ p)
 
- ε⁺ : JT X
- ε⁺ p = εᴸ p , εᴸ-is-non-empty p
-
- εᴸ-property→ : (p : X → R) (x : X) → member x (εᴸ p) → p x ＝ ϕ p
- εᴸ-property→ p x = filter-member→ (A p) (δA p) x xs
-
- εᴸ-property← : (p : X → R) (x : X) → p x ＝ ϕ p → member x (εᴸ p)
- εᴸ-property← p x e = filter-member← (A p) (δA p) x xs e (μ x)
+  ε⁺ : JT X
+  ε⁺ p = εᴸ p , εᴸ-is-non-empty p
 
 \end{code}
 
@@ -325,7 +327,7 @@ JT-in-terms-of-K Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af) lt
          II₀ = α-extᵀ-explicitly q ((e⁺ ⊗[ 𝕁𝕋 ] d⁺) q)
          II₁ = ap q (head⁺-of-⊗ᴶᵀ e⁺ d⁺ q)
          II₂ = (α-extᵀ-explicitly (subpred q x) (f x))⁻¹
-         II₃ = εᴸ-property→ X l ϕ ε a p x I
+         II₃ = εᴸ-property→ X l ϕ p x I
          II₄ = ap ϕ (dfunext fe IH)
 
 \end{code}
@@ -397,7 +399,7 @@ main-lemma→ Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af)
    p x                                      ＝⟨ refl ⟩
    path-sequence (𝕂 R) (ϕf x) (subpred q x) ∎
     where
-     VIII = (εᴸ-property→ X l ϕ ε a p x VII)⁻¹
+     VIII = (εᴸ-property→ X l ϕ p x VII)⁻¹
 
   IH : member xs (ι (tf x))
      → is-optimal-play (ϕf x) (subpred q x) xs
@@ -448,7 +450,7 @@ main-lemma← Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af)
   II = transport (λ - → - x ＝ ϕ -) I (om ⁻¹)
 
   III : member x (ι t)
-  III = εᴸ-property← X l ϕ ε a p' x II
+  III = εᴸ-property← X l ϕ p' x II
 
   IV : member (x :: xs) (ι (t ⊗ᴸ⁺ tf))
   IV = join-membership fe x xs t tf (III , IH)
@@ -500,6 +502,22 @@ In a previous version of this file, we instead assumed r₀ : R, and we
 worked with "listed" instead of "listed⁺", but the listings were
 automatically non-empty.
 
+Added 24th September 2025.
+
+\begin{code}
+
+quantifiers-over-empty-types-are-not-attainable
+ : {X : Type}
+ → is-empty X
+ → (ϕ : K X)
+ → ¬ is-attainable ϕ
+quantifiers-over-empty-types-are-not-attainable e ϕ (ε , a)
+ = e (ε (unique-from-𝟘 ∘ e))
+
+\end{code}
+
+TODO. It is not in general decidable whether a quantifier is attainable.
+
 Added 17th September. We calculate the subtree of the game tree whose
 paths are precisely the optimal plays of the original game.
 
@@ -513,6 +531,14 @@ prune {[]} q ⟨⟩ = []
 prune {X ∷ Xf} q (ϕ :: ϕf) = (Σ x ꞉ X , is-optimal-move q ϕ ϕf x)
                            ∷ (λ (x , o) → prune {Xf x} (subpred q x) (ϕf x))
 \end{code}
+
+Notice that it may happen that the pruned tree is non-empty, but all
+the nodes in the tree are empty types of moves. So we can't use the
+pruned tree to decide whether or not there is an optimal
+play. However, if we further assume that the types of moves in the
+original tree are listed, we can decide this, and, moreover, get the
+list of all optimal plays from the pruned tree *without* assuming that
+the quantifiers are attainable (as we did above).
 
 Each path in the pruned tree is a path in the original tree.
 
@@ -571,7 +597,8 @@ lemma← {X ∷ Xf} q (ϕ :: ϕf) (x :: xs) (o :: os)
 
 \end{code}
 
-This gives an alternative way to calculate the list of optimal plays.
+This gives an alternative way to calculate the list of optimal plays,
+which doesn't use selection functions.
 
 \begin{code}
 
