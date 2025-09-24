@@ -39,7 +39,13 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
+open import Naturals.Addition renaming (_+_ to _+N_)
+open import Naturals.Division
+open import Naturals.Order
+open import Naturals.Properties
+
 open import UF.Base
+open import UF.Equiv
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
@@ -87,6 +93,105 @@ at-least-𝟙₀-iff-greater-𝟘ₒ α = right , left
     f-order-preserving : is-order-preserving 𝟙ₒ α f
     f-order-preserving x y p = 𝟘-elim p
 
+\end{code}
+
+We start by briefly noting that right cancellation is just false:
+
+\begin{code}
+{-
+𝟘ₒ+ₒω-is-ω : 𝟘ₒ +ₒ ω ＝ ω
+𝟘ₒ+ₒω-is-ω = 𝟘ₒ-left-neutral ω
+
+𝟙ₒ+ₒω-is-ω : 𝟙ₒ +ₒ ω ＝ ω
+𝟙ₒ+ₒω-is-ω = eqtoidₒ (ua _) fe' (𝟙ₒ +ₒ ω) ω h
+ where
+  f : 𝟙 + ℕ → ℕ
+  f (inl ⋆) = 0
+  f (inr n) = succ n
+
+  g : ℕ → 𝟙 + ℕ
+  g 0 = inl ⋆
+  g (succ n) = inr n
+
+  f-equiv : is-equiv f
+  f-equiv = qinvs-are-equivs f (g , (η , ϵ))
+   where
+    η : (λ x → g (f x)) ∼ id
+    η (inl ⋆) = refl
+    η (inr n) = refl
+
+    ϵ : (λ x → f (g x)) ∼ id
+    ϵ zero = refl
+    ϵ (succ x) = refl
+
+  f-preserves-order : (x y : 𝟙 + ℕ) → x ≺⟨ 𝟙ₒ +ₒ ω ⟩ y → f x ≺⟨ ω ⟩ f y
+  f-preserves-order (inl ⋆) (inr n) p = ⋆
+  f-preserves-order (inr n) (inr m) p = p
+
+  f-reflects-order : (x y : 𝟙 + ℕ) → f x ≺⟨ ω ⟩ f y → x ≺⟨ 𝟙ₒ +ₒ ω ⟩ y
+  f-reflects-order (inl ⋆) (inr n) _ = ⋆
+  f-reflects-order (inr n) (inr m) p = p
+
+  h : (𝟙ₒ +ₒ ω) ≃ₒ ω
+  h = f , order-preserving-reflecting-equivs-are-order-equivs (𝟙ₒ +ₒ ω) ω f
+           f-equiv f-preserves-order f-reflects-order
+
+𝟙ₒ×ₒω-is-ω : 𝟙ₒ ×ₒ ω ＝ ω
+𝟙ₒ×ₒω-is-ω = 𝟙ₒ-left-neutral-×ₒ ω
+
+𝟚ₒ×ₒω-is-ω : 𝟚ₒ ×ₒ ω ＝ ω
+𝟚ₒ×ₒω-is-ω = eqtoidₒ (ua _) fe' (𝟚ₒ ×ₒ ω) ω h
+ where
+  f : ⟨ 𝟚ₒ ⟩ × ℕ → ℕ
+  f (inl ⋆ , n) = n +N n
+  f (inr ⋆ , n) = succ (n +N n)
+
+  g' : (n : ℕ) → division-theorem n 1 → ⟨ 𝟚ₒ ⟩ × ℕ
+  g' n (k , 0 , p , l) = inl ⋆ , k
+  g' n (k , 1 , p , l) = inr ⋆ , k
+
+  g : ℕ → ⟨ 𝟚ₒ ⟩ × ℕ
+  g n = g' n (division n 1)
+
+  f-equiv : is-equiv f
+  f-equiv = qinvs-are-equivs f (g , (η , ϵ))
+   where
+    η' : (x : ⟨ 𝟚ₒ ⟩ × ℕ)(m : ℕ) → m ＝ f x → (d : division-theorem m 1)
+       → g' m d ＝ x
+    η' (inl ⋆ , n) m r (k , 0 , p , l) = ap (inl ⋆ ,_) {! !}
+    η' (inr ⋆ , n) m r (k , 0 , p , l) = {!!}
+    η' (inl ⋆ , n) m r (k , 1 , p , l) = {!!}
+    η' (inr ⋆ , n) m r (k , 1 , p , l) = ap (inr ⋆ ,_) {!!}
+
+    η : (λ x → g (f x)) ∼ id
+    η x = η' x (f x) refl (division (f x) 1)
+
+    ϵ' : (n : ℕ) → (d : division-theorem n 1) → f (g' n d) ＝ n
+    ϵ' n (k , 0 , refl , l) = refl
+    ϵ' n (k , 1 , refl , l) = refl
+
+    ϵ : (λ n → f (g n)) ∼ id
+    ϵ n = ϵ' n (division n 1)
+
+  f-preserves-order : (x y : ⟨ 𝟚ₒ ⟩ × ℕ) → x ≺⟨ 𝟚ₒ ×ₒ ω ⟩ y → f x ≺⟨ ω ⟩ f y
+  f-preserves-order (inl ⋆ , x) (inl ⋆ , y) (inl p) = ≤-adding x y (succ x) y (≤-trans x (succ x) y (≤-succ x) p) p
+  f-preserves-order (inl ⋆ , x) (inr ⋆ , y) (inl p) = ≤-adding x y x y (≤-trans x (succ x) y (≤-succ x) p) (≤-trans x (succ x) y (≤-succ x) p)
+  f-preserves-order (inr ⋆ , x) (inl ⋆ , y) (inl p) = transport (λ - → succ - ≤ℕ (y +N y)) (succ-left x x) (≤-adding (succ x) y (succ x) y p p)
+  f-preserves-order (inr ⋆ , x) (inr ⋆ , y) (inl p) = ≤-adding x y (succ x) y (≤-trans x (succ x) y (≤-succ x) p) p
+  f-preserves-order (inl ⋆ , x) (inr ⋆ , x) (inr (refl , _)) = ≤-refl _
+  f-preserves-order (inr ⋆ , x) (inl ⋆ , x) (inr (refl , q)) = 𝟘-elim q
+  f-preserves-order (inr ⋆ , x) (inr ⋆ , x) (inr (refl , q)) = 𝟘-elim q
+
+  f-reflects-order : (x y : ⟨ 𝟚ₒ ⟩ × ℕ) → f x ≺⟨ ω ⟩ f y → x ≺⟨ 𝟚ₒ ×ₒ ω ⟩ y
+  f-reflects-order (inl ⋆ , x) (inl ⋆ , y) p = inl {!!}
+  f-reflects-order (inl ⋆ , x) (inr ⋆ , y) p = {!!}
+  f-reflects-order (inr ⋆ , x) (inl ⋆ , y) p = inl {!!}
+  f-reflects-order (inr ⋆ , x) (inr ⋆ , y) p = {!!}
+
+  h : (𝟚ₒ ×ₒ ω) ≃ₒ ω
+  h = f , order-preserving-reflecting-equivs-are-order-equivs (𝟚ₒ ×ₒ ω) ω f
+           f-equiv f-preserves-order f-reflects-order
+-}
 \end{code}
 
 \begin{code}
@@ -185,8 +290,8 @@ private
          (S : Ordinal 𝓤 → Ordinal 𝓤)
          (Z : Ordinal 𝓤)
          (F-succ : (β : Ordinal 𝓤) → F (β +ₒ 𝟙ₒ) ＝ S (F β))
-         (F-sup : (I : 𝓤 ̇ ) (J : I → Ordinal 𝓤)
-                → F (sup J) ＝ extended-sup (F ∘ J) Z)
+         (F-sup : (I : 𝓤 ̇ ) (L : I → Ordinal 𝓤)
+                → F (sup L) ＝ extended-sup (F ∘ L) Z)
         where
 
   Assumption-1 : 𝓤 ⁺ ̇
@@ -218,7 +323,6 @@ private
     III : F β ⊴ F γ
     III = transport⁻¹ (F β ⊴_) (ap F (I ⁻¹) ∙ F-sup (𝟙 + 𝟙) J) II
 
-  -- Remark 45 (??)
   F-eq : (β : Ordinal 𝓤)
        → F β ＝ extended-sup (λ (b : ⟨ β ⟩) → S (F (β ↓ b))) Z
   F-eq β = F β                                        ＝⟨ I ⟩
@@ -229,6 +333,25 @@ private
     I = ap F (supremum-of-successors-of-initial-segments pt sr β)
     II = F-sup ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
     III = ap (λ - → extended-sup - Z) (dfunext fe' (λ b → F-succ (β ↓ b)))
+
+  -- Remark 43
+  G : Ordinal 𝓤 → Ordinal 𝓤
+  G = transfinite-recursion-on-OO (Ordinal 𝓤)
+                                  (λ β ih → extended-sup (λ b → S (ih b)) Z)
+
+  F-unique : (β : Ordinal 𝓤) → F β ＝ G β
+  F-unique = transfinite-induction-on-OO (λ β → F β ＝ G β) step
+   where
+    step : (β : Ordinal 𝓤) → ((b : ⟨ β ⟩) → F (β ↓ b) ＝ G (β ↓ b)) → F β ＝ G β
+    step β ih = F β                                            ＝⟨ F-eq β ⟩
+                extended-sup (λ (b : ⟨ β ⟩) → S (F (β ↓ b))) Z ＝⟨ I ⟩
+                extended-sup (λ (b : ⟨ β ⟩) → S (G (β ↓ b))) Z ＝⟨ II ⟩
+                G β                                            ∎
+     where
+      I = ap (λ - → extended-sup - Z) (dfunext fe' (λ b → ap S (ih b)))
+      II = (transfinite-recursion-on-OO-behaviour
+             (Ordinal 𝓤)
+             (λ β ih → extended-sup (λ b → S (ih b)) Z) β) ⁻¹
 
   Z-is-F𝟘ₒ : Z ＝ F 𝟘ₒ
   Z-is-F𝟘ₒ = Z                      ＝⟨ I ⟩
@@ -370,14 +493,13 @@ private
                  (II ∙ p ∙ Idtofunₒ-↓-lemma ((F-succ (γ ↓ c)) ⁻¹))
 
   -- Lemma 48
-  F-impossibility : Assumption-1
-                  → Assumption-3
+  F-impossibility : Assumption-3
                   → (β γ δ : Ordinal 𝓤) (b : ⟨ β ⟩)
                   → F γ ⊴ F (β ↓ b)
                   → F β ⊴ F γ +ₒ δ
                   → F γ +ₒ δ ⊲ F (γ +ₒ 𝟙ₒ)
                   → 𝟘
-  F-impossibility ams-1 asm-3 β γ δ b l₁ l₂ l₃ =
+  F-impossibility asm-3 β γ δ b l₁ l₂ l₃ =
    <ᶜˡ-irrefl (S (F γ)) IV
     where
      I : S (F γ) ≤ᶜˡ S (F (β ↓ b))
@@ -438,7 +560,7 @@ private
        III₃ = F-tightening-bounds (H , H-S-eq) (F (β ↓ b)) III₁ (γ +ₒ 𝟙ₒ) III₂
 
        IV₁ : F ((γ +ₒ 𝟙ₒ) ↓ inr ⋆) ⊴ F (β ↓ b) → 𝟘
-       IV₁ l = F-impossibility (H , H-S-eq) asm-3 β γ δ b k l₁ l₂
+       IV₁ l = F-impossibility asm-3 β γ δ b k l₁ l₂
         where
          k : F γ ⊴ F (β ↓ b)
          k = transport⁻¹ (_⊴ F (β ↓ b)) (ap F ((successor-lemma-right γ) ⁻¹)) l
