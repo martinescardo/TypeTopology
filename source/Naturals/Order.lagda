@@ -924,3 +924,283 @@ triangle-inequality-bound' a b l = triangle-inequality-bound a b γ
   γ = ≤-trans₂ (succ (a +' b)) (succ a +' b) (succ (succ a +' b)) ∣ a - b ∣
        Γ (≤-succ (succ a +' b) ) l
 \end{code}
+
+Theo Hepburn, started on 8th October 2024
+
+Contains additional proofs regarding natural number ordering when
+multiplication and exponentiation are performed.
+
+\begin{code}
+
+multiplication-preserves-order-left : (k m n : ℕ) → m ≤ n → k * m ≤ k * n
+multiplication-preserves-order-left k m n l = transport₂ _≤_ γ₁ γ₂ γ₃
+ where
+  γ₁ : m * k ＝ k * m
+  γ₁ = mult-commutativity m k
+
+  γ₂ : n * k ＝ k * n
+  γ₂ = mult-commutativity n k
+
+  γ₃ : m * k ≤ n * k
+  γ₃ = multiplication-preserves-order m n k l
+
+≤-multiplying : (m n x y : ℕ) → m ≤ n → x ≤ y → m * x ≤ n * y
+≤-multiplying m n x y l₁ l₂ = ≤-trans (m * x) (n * x) (n * y) γ₁ γ₂
+ where
+  γ₁ : m * x ≤ n * x
+  γ₁ = multiplication-preserves-order m n x l₁ 
+
+  γ₂ : n * x ≤ n * y
+  γ₂ = multiplication-preserves-order-left n x y l₂
+
+open import Naturals.Exponentiation
+
+exponentiation-preserves-order-right : (m n k : ℕ) → m ≤ n → (m ℕ^ k) ≤ (n ℕ^ k)
+exponentiation-preserves-order-right m n 0 l = ⋆
+exponentiation-preserves-order-right m n (succ k) l
+ = ≤-multiplying m n (m ℕ^ k) (n ℕ^ k) l γ
+ where
+  γ : (m ℕ^ k) ≤ (n ℕ^ k)
+  γ = exponentiation-preserves-order-right m n k l
+
+\end{code}
+
+We prove that 1ᵏ ＝ 1 for all k and that 0ᵏ ＝ 0 for all k > 0.
+We then prove that if m ≤ n, then kᵐ ≤ kⁿ if k ≠ 0 or m ≠ 0 and n ≠ 0.
+
+\begin{code}
+
+exponentiation-of-one : (k : ℕ) → 1 ℕ^ k ＝ 1
+exponentiation-of-one zero = refl
+exponentiation-of-one (succ k)
+ = 1 * (1 ℕ^ k) ＝⟨ ap (λ x → 1 * x) (exponentiation-of-one k) ⟩
+   1 * 1 ＝⟨ refl ⟩
+   1 ∎
+
+exponentiation-of-zero : (k : ℕ) → 0 ℕ^ (succ k) ＝ 0
+exponentiation-of-zero k = zero-left-base (0 ℕ^ k)
+
+exponentiation-preserves-order-left : (k m n : ℕ)
+                                    → (k ≠ 0) + (m ≠ 0) + (n ＝ 0)
+                                    → m ≤ n → (k ℕ^ m) ≤ (k ℕ^ n)
+exponentiation-preserves-order-left zero m n (inl k≠0) l
+ = 𝟘-elim (k≠0 refl)
+exponentiation-preserves-order-left zero zero n (inr (inl m≠0)) l
+ = 𝟘-elim (m≠0 refl)
+exponentiation-preserves-order-left zero (succ m) (succ n) (inr (inl m≠0)) l
+ = transport₂ _≤_ γ₁ γ₂ γ₃ 
+ where
+  γ₁ : 0 ＝ 0 ℕ^ succ m
+  γ₁ = (exponentiation-of-zero  m)⁻¹ 
+
+  γ₂ : 0 ＝ 0 ℕ^ succ n
+  γ₂ = (exponentiation-of-zero n)⁻¹
+
+  γ₃ : 0 ≤ 0
+  γ₃ = ≤-refl 0
+exponentiation-preserves-order-left zero zero zero (inr (inr n＝0)) l = ⋆
+exponentiation-preserves-order-left (succ k) zero zero _ l = ⋆
+exponentiation-preserves-order-left (succ k) zero (succ n) _ l
+ = ≤-trans 1 (succ k ℕ^ n) (succ k ℕ^ succ n) γ₁ γ₄ 
+ where
+  γ₁ : 1 ≤ (succ k ℕ^ n)
+  γ₁ = exponentiation-preserves-order-left (succ k) zero n (inl (λ ())) l
+
+  γ₂ : 1 * (succ k ℕ^ n) ≤ (succ k) * (succ k ℕ^ n)
+  γ₂ = multiplication-preserves-order 1 (succ k) (succ k ℕ^ n) ⋆
+
+  γ₃ : 1 * (succ k ℕ^ n) ＝ succ k ℕ^ n
+  γ₃ = (mult-left-id (succ k ℕ^ n))
+
+  γ₄ : (succ k ℕ^ n) ≤ (succ k) * (succ k ℕ^ n)
+  γ₄ = transport (_≤ (succ k) * (succ k ℕ^ n)) γ₃ γ₂
+exponentiation-preserves-order-left (succ k) (succ m) (succ n) _ l = γ₂
+ where
+  γ₁ : (succ k) ℕ^ m ≤ (succ k) ℕ^ n
+  γ₁ = exponentiation-preserves-order-left (succ k) m n (inl (λ ())) l
+
+  γ₂ : (succ k * (succ k) ℕ^ m) ≤ (succ k * (succ k) ℕ^ n)
+  γ₂ = multiplication-preserves-order-left
+       (succ k) ((succ k) ℕ^ m) ((succ k) ℕ^ n) γ₁
+
+≤-exponentiating : (m n x y : ℕ) → (m ≠ 0) + (x ≠ 0) + (y ＝ 0)
+                 → m ≤ n → x ≤ y → m ℕ^ x ≤ n ℕ^ y
+≤-exponentiating m n x y (inl m≠0) l₁ l₂
+ = ≤-trans (m ℕ^ x) (m ℕ^ y) (n ℕ^ y) γ₁ γ₂
+ where
+  γ₁ : (m ℕ^ x) ≤ (m ℕ^ y)
+  γ₁ = exponentiation-preserves-order-left m x y (inl m≠0) l₂
+
+  γ₂ : (m ℕ^ y) ≤ (n ℕ^ y)
+  γ₂ = exponentiation-preserves-order-right m n y l₁
+≤-exponentiating m n x y (inr (inl x≠0)) l₁ l₂
+ = ≤-trans (m ℕ^ x) (m ℕ^ y) (n ℕ^ y) γ₁ γ₂
+ where
+  γ₁ : (m ℕ^ x) ≤ (m ℕ^ y)
+  γ₁ = exponentiation-preserves-order-left m x y (inr (inl x≠0)) l₂
+
+  γ₂ : (m ℕ^ y) ≤ (n ℕ^ y)
+  γ₂ = exponentiation-preserves-order-right m n y l₁
+≤-exponentiating m n zero zero (inr (inr y＝0)) l₁ l₂ = ⋆
+
+exponent-addition : (a b x y n : ℕ) → (n ≠ 0) + (x ≠ 0) + (y ＝ 0) → x ≤ y
+                    → a * (n ℕ^ x) ∔ b * (n ℕ^ y) ≤ (a ∔ b) * (n ℕ^ y)
+exponent-addition zero b x y n c l = transport₂ _≤_ γ₁ γ₂ γ₃
+ where
+  γ₁ : b * (n ℕ^ y) ＝ (0 * (n ℕ^ x)) ∔ (b * (n ℕ^ y))
+  γ₁ = b * (n ℕ^ y) ＝⟨ (zero-left-neutral (b * (n ℕ^ y)))⁻¹ ⟩
+       0 ∔ b * (n ℕ^ y) ＝⟨ ap (λ x → x ∔ b * (n ℕ^ y))
+                           (zero-left-base (n ℕ^ x))⁻¹ ⟩
+       (0 * (n ℕ^ x) ∔ b * (n ℕ^ y)) ∎
+
+  γ₂ : b * (n ℕ^ y) ＝ (0 ∔ b) * (n ℕ^ y)
+  γ₂ = ap (λ x → x * (n ℕ^ y)) (zero-left-neutral b)⁻¹
+
+  γ₃ : b * (n ℕ^ y) ≤ b * (n ℕ^ y)
+  γ₃ = ≤-refl (b * (n ℕ^ y))
+exponent-addition a@(succ _) zero x y n c l = transport₂ _≤_ γ₁ γ₂ γ₄
+ where
+  γ₁ : a * (n ℕ^ x) ＝ a * (n ℕ^ x) ∔ 0 * (n ℕ^ y)
+  γ₁ = a * (n ℕ^ x) ＝⟨ refl ⟩
+       a * (n ℕ^ x) ∔ 0 ＝⟨ ap (λ z → a * (n ℕ^ x) ∔ z)
+                           (zero-left-base (n ℕ^ y))⁻¹ ⟩
+       (a * (n ℕ^ x) ∔ 0 * (n ℕ^ y)) ∎
+
+  γ₂ : a * (n ℕ^ y) ＝ (a ∔ 0) * (n ℕ^ y)
+  γ₂ = refl
+
+  γ₃ : (n ℕ^ x) ≤ (n ℕ^ y)
+  γ₃ = exponentiation-preserves-order-left n x y c l
+
+  γ₄ : a * (n ℕ^ x) ≤ a * (n ℕ^ y)
+  γ₄ = multiplication-preserves-order-left a (n ℕ^ x) (n ℕ^ y) γ₃
+exponent-addition (succ a) (succ b) x y n c l
+ = transport₂ _≤_ ((γ₂)⁻¹) ((γ₃)⁻¹) γ₅
+ where
+  γ₁ : a * (n ℕ^ x) ∔ b * (n ℕ^ y) ≤ (a ∔ b) * n ℕ^ y
+  γ₁ = exponent-addition a b x y n c l
+
+  γ₂ : (succ a) * (n ℕ^ x) ∔ (succ b) * (n ℕ^ y)
+     ＝ (a * (n ℕ^ x) ∔ b * (n ℕ^ y)) ∔ ((n ℕ^ x) ∔ (n ℕ^ y))
+  γ₂ = (succ a) * (n ℕ^ x) ∔ (succ b) * (n ℕ^ y) ＝⟨ i  ⟩
+       (n ℕ^ x) * (succ a) ∔ (succ b) * (n ℕ^ y) ＝⟨ ii ⟩
+       (n ℕ^ x) * (succ a) ∔ (n ℕ^ y) * (succ b) ＝⟨ iii ⟩
+       (n ℕ^ x) ∔ (n ℕ^ x) * a ∔ (n ℕ^ y) * (succ b) ＝⟨ iv ⟩
+       (n ℕ^ x) ∔ (n ℕ^ x) * a ∔ ((n ℕ^ y) ∔ (n ℕ^ y) * b) ＝⟨ v ⟩
+       (n ℕ^ x) ∔ (n ℕ^ x) * a ∔ (n ℕ^ y) ∔ (n ℕ^ y) * b ＝⟨ vi ⟩
+       (n ℕ^ x) * a ∔ (n ℕ^ x) ∔ (n ℕ^ y) ∔ (n ℕ^ y) * b ＝⟨ vii ⟩
+       (n ℕ^ x) * a ∔ ((n ℕ^ x) ∔ (n ℕ^ y)) ∔ (n ℕ^ y) * b ＝⟨ viii ⟩
+       (n ℕ^ x) * a ∔ (((n ℕ^ x) ∔ (n ℕ^ y)) ∔ (n ℕ^ y) * b) ＝⟨ ix ⟩
+       (n ℕ^ x) * a ∔ ((n ℕ^ y) * b ∔ ((n ℕ^ x) ∔ (n ℕ^ y))) ＝⟨ x' ⟩
+       ((n ℕ^ x) * a ∔ (n ℕ^ y) * b) ∔ ((n ℕ^ x) ∔ (n ℕ^ y)) ＝⟨ xi ⟩
+       (a * (n ℕ^ x) ∔ (n ℕ^ y) * b) ∔ ((n ℕ^ x) ∔ (n ℕ^ y)) ＝⟨ xii  ⟩
+       ((a * (n ℕ^ x) ∔ b * (n ℕ^ y)) ∔ ((n ℕ^ x) ∔ (n ℕ^ y))) ∎
+   where
+    i : (succ a) * (n ℕ^ x) ∔ (succ b) * (n ℕ^ y)
+      ＝ (n ℕ^ x) * (succ a) ∔ (succ b) * (n ℕ^ y)
+    i = ap (λ z → z ∔ (succ b) * (n ℕ^ y))
+        (mult-commutativity (succ a) (n ℕ^ x))
+
+    ii : (n ℕ^ x) * (succ a) ∔ (succ b) * (n ℕ^ y)
+       ＝ (n ℕ^ x) * (succ a) ∔ (n ℕ^ y) * (succ b)
+    ii = ap (λ z → (n ℕ^ x) * (succ a) ∔ z)
+         (mult-commutativity (succ b) (n ℕ^ y))
+
+    iii : (n ℕ^ x) * (succ a) ∔ (n ℕ^ y) * (succ b)
+        ＝ (n ℕ^ x) ∔ (n ℕ^ x) * a ∔ (n ℕ^ y) * (succ b)
+    iii = refl
+
+    iv : (n ℕ^ x) ∔ (n ℕ^ x) * a ∔ (n ℕ^ y) * (succ b)
+       ＝ (n ℕ^ x) ∔ (n ℕ^ x) * a ∔ ((n ℕ^ y) ∔ (n ℕ^ y) * b)
+    iv = refl
+
+    v : (n ℕ^ x) ∔ (n ℕ^ x) * a ∔ ((n ℕ^ y) ∔ (n ℕ^ y) * b)
+      ＝ (n ℕ^ x) ∔ (n ℕ^ x) * a ∔ (n ℕ^ y) ∔ (n ℕ^ y) * b
+    v = (addition-associativity ((n ℕ^ x) ∔ (n ℕ^ x) * a) (n ℕ^ y)
+        ((n ℕ^ y) * b))⁻¹
+
+    vi : (n ℕ^ x) ∔ (n ℕ^ x) * a ∔ (n ℕ^ y) ∔ (n ℕ^ y) * b
+       ＝ (n ℕ^ x) * a ∔ (n ℕ^ x) ∔ (n ℕ^ y) ∔ (n ℕ^ y) * b
+    vi = ap (λ z → z ∔ (n ℕ^ y) ∔ (n ℕ^ y) * b)
+         (addition-commutativity (n ℕ^ x) ((n ℕ^ x) * a))
+
+    vii : (n ℕ^ x) * a ∔ (n ℕ^ x) ∔ (n ℕ^ y) ∔ (n ℕ^ y) * b
+        ＝ (n ℕ^ x) * a ∔ ((n ℕ^ x) ∔ (n ℕ^ y)) ∔ (n ℕ^ y) * b
+    vii = ap (λ z → z ∔ (n ℕ^ y) * b)
+          (addition-associativity ((n ℕ^ x) * a) (n ℕ^ x) (n ℕ^ y))
+
+    viii : (n ℕ^ x) * a ∔ ((n ℕ^ x) ∔ (n ℕ^ y)) ∔ (n ℕ^ y) * b
+         ＝ (n ℕ^ x) * a ∔ (((n ℕ^ x) ∔ (n ℕ^ y)) ∔ (n ℕ^ y) * b)
+    viii = addition-associativity ((n ℕ^ x) * a)
+           ((n ℕ^ x) ∔ (n ℕ^ y)) ((n ℕ^ y) * b)
+
+    ix : (n ℕ^ x) * a ∔ (((n ℕ^ x) ∔ (n ℕ^ y)) ∔ (n ℕ^ y) * b)
+       ＝ (n ℕ^ x) * a ∔ ((n ℕ^ y) * b ∔ ((n ℕ^ x) ∔ (n ℕ^ y)))
+    ix = ap (λ z → (n ℕ^ x) * a ∔ z)
+         (addition-commutativity ((n ℕ^ x) ∔ (n ℕ^ y)) ((n ℕ^ y) * b))
+
+    x' : (n ℕ^ x) * a ∔ ((n ℕ^ y) * b ∔ ((n ℕ^ x) ∔ (n ℕ^ y)))
+       ＝ ((n ℕ^ x) * a ∔ (n ℕ^ y) * b) ∔ ((n ℕ^ x) ∔ (n ℕ^ y))
+    x' = (addition-associativity ((n ℕ^ x) * a) ((n ℕ^ y) * b)
+         ((n ℕ^ x) ∔ (n ℕ^ y)))⁻¹
+
+    xi : ((n ℕ^ x) * a ∔ (n ℕ^ y) * b) ∔ ((n ℕ^ x) ∔ (n ℕ^ y))
+       ＝ (a * (n ℕ^ x) ∔ (n ℕ^ y) * b) ∔ ((n ℕ^ x) ∔ (n ℕ^ y))
+    xi = ap (λ z → z ∔ (n ℕ^ y) * b ∔ ((n ℕ^ x) ∔ (n ℕ^ y)))
+         (mult-commutativity (n ℕ^ x) a)
+
+    xii : (a * (n ℕ^ x) ∔ (n ℕ^ y) * b) ∔ ((n ℕ^ x) ∔ (n ℕ^ y))
+        ＝ (a * (n ℕ^ x) ∔ b * (n ℕ^ y)) ∔ ((n ℕ^ x) ∔ (n ℕ^ y))
+    xii = ap (λ z → a * (n ℕ^ x) ∔ z ∔ ((n ℕ^ x) ∔ (n ℕ^ y)))
+          (mult-commutativity (n ℕ^ y) b)
+
+  γ₃ : ((succ a) ∔ (succ b)) * (n ℕ^ y)
+     ＝ ((a ∔ b) * (n ℕ^ y)) ∔ ((n ℕ^ y) ∔ (n ℕ^ y))
+  γ₃ = ((succ a) ∔ (succ b)) * (n ℕ^ y) ＝⟨ refl ⟩
+       succ (succ a ∔ b) * (n ℕ^ y) ＝⟨ ap (λ z → succ z * (n ℕ^ y))
+                                       (succ-left a b) ⟩
+       succ (succ (a ∔ b)) * (n ℕ^ y)
+       ＝⟨ mult-commutativity (succ (succ (a ∔ b))) (n ℕ^ y) ⟩
+       (n ℕ^ y) * succ (succ (a ∔ b)) ＝⟨ refl ⟩
+       (n ℕ^ y) ∔ ((n ℕ^ y) ∔ (n ℕ^ y) * (a ∔ b))
+       ＝⟨ (addition-associativity (n ℕ^ y) (n ℕ^ y)
+                                                   ((n ℕ^ y) * (a ∔ b)))⁻¹ ⟩
+       ((n ℕ^ y) ∔ (n ℕ^ y)) ∔ (n ℕ^ y) * (a ∔ b)
+       ＝⟨ ap (((n ℕ^ y) ∔ (n ℕ^ y)) ∔_)
+       (mult-commutativity
+       (n ℕ^ y) (a ∔ b)) ⟩
+       ((n ℕ^ y) ∔ (n ℕ^ y)) ∔ (a ∔ b) * (n ℕ^ y)
+       ＝⟨ addition-commutativity ((n ℕ^ y) ∔ (n ℕ^ y))
+       ((a ∔ b) * (n ℕ^ y)) ⟩
+       (((a ∔ b) * (n ℕ^ y)) ∔ ((n ℕ^ y) ∔ (n ℕ^ y))) ∎
+
+  γ₄ : (n ℕ^ x) ∔ (n ℕ^ y) ≤ (n ℕ^ y) ∔ (n ℕ^ y)
+  γ₄ = ≤-adding (n ℕ^ x) (n ℕ^ y) (n ℕ^ y) (n ℕ^ y)
+       (exponentiation-preserves-order-left n x y c l) (≤-refl (n ℕ^ y))
+
+  γ₅ : (a * (n ℕ^ x) ∔ b * (n ℕ^ y)) ∔ ((n ℕ^ x) ∔ (n ℕ^ y))
+     ≤ ((a ∔ b) * (n ℕ^ y)) ∔ ((n ℕ^ y) ∔ (n ℕ^ y))
+  γ₅ = ≤-adding (a * (n ℕ^ x) ∔ b * (n ℕ^ y))
+       ((a ∔ b) * (n ℕ^ y)) ((n ℕ^ x) ∔ (n ℕ^ y)) ((n ℕ^ y) ∔ (n ℕ^ y)) γ₁ γ₄
+
+\end{code}
+
+A special case of the above for simplifying terms of form
+b ∔ a * n to (b ∔ a) * n when reasoning about inequalities.
+
+\begin{code}
+
+simplify-constant : (a b n : ℕ) → n ≠ 0 → b ∔ a * n ≤ (b ∔ a) * n
+simplify-constant a b zero l = 𝟘-elim (l refl)
+simplify-constant a b (succ n) l = transport₂ _≤_ γ₁ γ₂ γ₃
+ where
+  γ₁ : b * (succ n ℕ^ 0) ∔ a * (succ n ℕ^ 1) ＝ b ∔ a * (succ n)
+  γ₁ = refl
+
+  γ₂ : (b ∔ a) * (succ n ℕ^ 1) ＝ (b ∔ a) * (succ n)
+  γ₂ = refl
+
+  γ₃ : b * (succ n ℕ^ 0) ∔ a * (succ n ℕ^ 1) ≤ (b ∔ a) * (succ n ℕ^ 1)
+  γ₃ = exponent-addition b a 0 1 (succ n) (inl (λ ())) ⋆
+
+\end{code}

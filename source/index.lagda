@@ -189,6 +189,7 @@ import Quotient.index
 import Rationals.index
 import Relations.index
 import Slice.index
+import TGH.index
 import TWA.index
 import Taboos.index
 import TypeTopology.index
