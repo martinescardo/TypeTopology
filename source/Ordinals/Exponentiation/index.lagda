@@ -51,3 +51,12 @@ Homotopy Type Theory".
 import Ordinals.Exponentiation.Paper
 
 \end{code}
+
+And the following file acts as an index for the paper "Constrictive Ordinal
+Exponentiation".
+
+\begin{code}
+
+import Ordinals.Exponentiation.PaperJournal
+
+\end{code}
