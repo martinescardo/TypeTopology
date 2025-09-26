@@ -51,6 +51,9 @@ The simulations make the ordinals into a poset:
 _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ⊴ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-simulation α β f
 
+is-⊴-reflecting : (Ordinal 𝓤 → Ordinal 𝓥) → 𝓤 ⁺ ⊔ 𝓥 ̇
+is-⊴-reflecting {𝓤} {𝓥} f = (α β : Ordinal 𝓤) → f α ⊴ f β → α ⊴ β
+
 [_,_]⟨_⟩ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ⊴ β → ⟨ α ⟩ → ⟨ β ⟩
 [ α , β ]⟨ f ⟩ = pr₁ f
 
@@ -843,6 +846,11 @@ order-preserving-gives-not-⊲ {𝓤} α β σ (x₀ , refl) = γ σ
     κ : 𝟘
     κ = no-minimal-is-empty' (underlying-order α) (Well-foundedness α)
          A d (x₀ , 0 , refl)
+
+⊴-gives-not-⊲ : (α β : Ordinal 𝓤) → α ⊴ β → ¬ (β ⊲ α)
+⊴-gives-not-⊲ α β (f , f-sim) =
+ order-preserving-gives-not-⊲ α β
+  (f , simulations-are-order-preserving α β f f-sim)
 
 open import UF.ClassicalLogic
 

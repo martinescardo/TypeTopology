@@ -24,8 +24,10 @@ private
 open import MLTT.Spartan
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
+open import Ordinals.Underlying
 open import UF.Equiv
 open import UF.Subsingletons
 
@@ -99,5 +101,23 @@ only-one-𝟘ₒ =
 
 holds-gives-equal-𝟙ₒ : {P : 𝓤 ̇  } (i : is-prop P) → P → prop-ordinal P i ＝ 𝟙ₒ
 holds-gives-equal-𝟙ₒ i p = prop-ordinal-＝ i 𝟙-is-prop (λ _ → ⋆) (λ _ → p)
+
+at-least-𝟙₀-iff-greater-𝟘ₒ : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α ↔ 𝟘ₒ ⊲ α
+at-least-𝟙₀-iff-greater-𝟘ₒ α = right , left
+ where
+  right : 𝟙ₒ ⊴ α → 𝟘ₒ ⊲ α
+  right 𝕗@(f , f-sim) = f ⋆ , (𝟙ₒ-↓ ⁻¹ ∙ simulations-preserve-↓ 𝟙ₒ α 𝕗 ⋆)
+
+  left : 𝟘ₒ ⊲ α → 𝟙ₒ ⊴ α
+  left (⊥ , p) = f , f-initial-seg , f-order-preserving
+   where
+    f : 𝟙 →  ⟨ α ⟩
+    f _ = ⊥
+
+    f-initial-seg : is-initial-segment 𝟙ₒ α f
+    f-initial-seg x a q = 𝟘-elim (Idtofunₒ (p ⁻¹) (a , q))
+
+    f-order-preserving : is-order-preserving 𝟙ₒ α f
+    f-order-preserving x y p = 𝟘-elim p
 
 \end{code}
