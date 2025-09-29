@@ -4,7 +4,7 @@ We have a look at the algebras of the lifting monad.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 
@@ -90,8 +90,8 @@ following two laws:
 𝓛-alg-Law₁ {𝓤} {X} ∐ =
    (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ )
    (i : is-prop P) (j : (p : P) → is-prop (Q p))
-   (f : Σ Q → X)
- → ∐ (Σ-is-prop i j) f ＝ ∐ i (λ p → ∐ (j p) (λ q → f (p , q)))
+   (φ : Σ Q → X)
+ → ∐ (Σ-is-prop i j) φ ＝ ∐ i (λ p → ∐ (j p) (λ q → φ (p , q)))
 
 \end{code}
 
@@ -101,7 +101,7 @@ written in more standard mathematical notation as follows:
     ∐  x = x
    p:𝟙
 
-    ∐          f r  =  ∐   ∐     f (p , q)
+    ∐          φ r  =  ∐   ∐     φ (p , q)
   r : Σ {P} Q         p:P q:Q(p)
 
 
@@ -121,21 +121,21 @@ overloading is not available):
 
 \begin{code}
 
-⋁ : {X : 𝓤 ̇ } → (𝓛 X → X) → extension-op X
-⋁ s {P} i f = s (P , f , i)
+private
+ ⋁ : {X : 𝓤 ̇ } → (𝓛 X → X) → extension-op X
+ ⋁ s {P} i φ = s (P , φ , i)
 
-∐̇ : {X : 𝓤 ̇ } → 𝓛-algebra X → extension-op X
-∐̇ (s , _) = ⋁ s
+ ∐̇ : {X : 𝓤 ̇ } → 𝓛-algebra X → extension-op X
+ ∐̇ (s , _) = ⋁ s
 
-∐ : {X : 𝓤 ̇ } → 𝓛-alg X → extension-op X
-∐ (∐ , κ , ι) = ∐
+ ∐ : {X : 𝓤 ̇ } → 𝓛-alg X → extension-op X
+ ∐ (∐ , κ , ι) = ∐
 
-law₀ : {X : 𝓤 ̇ } (a : 𝓛-alg X) → 𝓛-alg-Law₀ (∐ a)
-law₀ (∐ , κ , ι) = κ
+ law₀ : {X : 𝓤 ̇ } (a : 𝓛-alg X) → 𝓛-alg-Law₀ (∐ a)
+ law₀ (∐ , κ , ι) = κ
 
-law₁ : {X : 𝓤 ̇ } (a : 𝓛-alg X) → 𝓛-alg-Law₁ (∐ a)
-law₁ (∐ , κ , ι) = ι
-
+ law₁ : {X : 𝓤 ̇ } (a : 𝓛-alg X) → 𝓛-alg-Law₁ (∐ a)
+ law₁ (∐ , κ , ι) = ι
 
 \end{code}
 
@@ -143,10 +143,10 @@ The algebra morphisms are the maps that preserve extensions. Omitting the
 first argument of ⋁, the following says that the morphisms are the
 maps h : X → Y with
 
-  h (⋁ f) ＝ ⋁ h (f p)
+  h (⋁ φ) ＝ ⋁ h (φ p)
             p:P
 
-for all f:P→X.
+for all φ : P → X.
 
 \begin{code}
 
@@ -154,10 +154,10 @@ for all f:P→X.
                     (s : 𝓛 X → X) (t : 𝓛 Y → Y)
                     (h : X → Y)
                   → (h ∘ s ∼ t ∘ 𝓛̇ h)
-                  ≃ ({P : 𝓣 ̇ } (i : is-prop P) (f : P → X)
-                       → h (⋁ s i f) ＝ ⋁ t i (λ p → h (f p)))
-𝓛-morphism-charac s t h = qinveq (λ H {P} i f → H (P , f , i))
-                                 ((λ {π (P , f , i) → π {P} i f}) ,
+                  ≃ ({P : 𝓣 ̇ } (i : is-prop P) (φ : P → X)
+                       → h (⋁ s i φ) ＝ ⋁ t i (λ p → h (φ p)))
+𝓛-morphism-charac s t h = qinveq (λ H {P} i φ → H (P , φ , i))
+                                 ((λ {π (P , φ , i) → π {P} i φ}) ,
                                  (λ _ → refl) ,
                                  (λ _ → refl))
 
@@ -174,9 +174,9 @@ We name the other two projections of 𝓛-alg:
 𝓛-alg-iterated : {X : 𝓤 ̇ } (A : 𝓛-alg X)
                  (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ )
                  (i : is-prop P) (j : (p : P) → is-prop (Q p))
-                 (f : Σ Q → X)
-               → ∐ A (Σ-is-prop i j) f
-               ＝ ∐ A i (λ p → ∐ A (j p) (λ q → f (p , q)))
+                 (φ : Σ Q → X)
+               → ∐ A (Σ-is-prop i j) φ
+               ＝ ∐ A i (λ p → ∐ A (j p) (λ q → φ (p , q)))
 𝓛-alg-iterated (∐ , κ , ι) = ι
 
 \end{code}
@@ -194,13 +194,13 @@ equations hold definitionally.
 𝓛-algebra-gives-alg (s , unit , assoc) =
   ⋁ s ,
   unit ,
-  (λ P Q i j f → assoc (P , (λ p → Q p , (λ q → f (p , q)) , j p) , i))
+  (λ P Q i j φ → assoc (P , (λ p → Q p , (λ q → φ (p , q)) , j p) , i))
 
 𝓛-alg-gives-algebra : {X : 𝓤 ̇ } → 𝓛-alg X → 𝓛-algebra X
 𝓛-alg-gives-algebra {𝓤} {X} (∐ , unit , ι) = s , unit , assoc
  where
   s : 𝓛 X → X
-  s (P , f , i) = ∐ i f
+  s (P , φ , i) = ∐ i φ
 
   assoc : s ∘ μ ∼ s ∘ 𝓛̇ s
   assoc (P , g , i) = ι P (pr₁ ∘ g) i
@@ -221,9 +221,9 @@ type injectivity purposes).
 𝓛-alg-Law₀' : {X : 𝓤 ̇ } → extension-op X → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg-Law₀' {𝓤} {X} ∐ = (P : 𝓣 ̇ )
                          (i : is-prop P)
-                         (f : P → X)
+                         (φ : P → X)
                          (p : P)
-                       → ∐ i f ＝ f p
+                       → ∐ i φ ＝ φ p
 
 𝓛-alg-Law₀-gives₀' : propext 𝓣
                    → funext 𝓣 𝓣
@@ -232,20 +232,20 @@ type injectivity purposes).
                      (∐ : extension-op X)
                    → 𝓛-alg-Law₀ ∐
                    → 𝓛-alg-Law₀' ∐
-𝓛-alg-Law₀-gives₀' pe fe fe' {X} ∐ κ P i f p = γ
+𝓛-alg-Law₀-gives₀' pe fe fe' {X} ∐ κ P i φ p = γ
  where
-  r : f ＝ λ (_ : P) → f p
-  r = dfunext fe' (λ p' → ap f (i p' p))
+  r : φ ＝ λ (_ : P) → φ p
+  r = dfunext fe' (λ p' → ap φ (i p' p))
 
-  s : P ＝ 𝟙 → ∐ {P} i f ＝ ∐ {𝟙} 𝟙-is-prop (λ (_ : 𝟙) → f p)
+  s : P ＝ 𝟙 → ∐ {P} i φ ＝ ∐ {𝟙} 𝟙-is-prop (λ (_ : 𝟙) → φ p)
   s refl = ap₂ ∐ (being-prop-is-prop fe i 𝟙-is-prop) r
 
   t : P ＝ 𝟙
   t = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
 
-  γ = ∐ {P} i f                   ＝⟨ s t ⟩
-      ∐ 𝟙-is-prop (f ∘ (λ _ → p)) ＝⟨ κ (f p) ⟩
-      f p                         ∎
+  γ = ∐ {P} i φ                   ＝⟨ s t ⟩
+      ∐ 𝟙-is-prop (φ ∘ (λ _ → p)) ＝⟨ κ (φ p) ⟩
+      φ p                         ∎
 
 𝓛-alg-Law₀'-gives₀ : {X : 𝓤 ̇ }
                      (∐ : extension-op X)
@@ -263,16 +263,16 @@ equivalent to 𝓛-alg-Law₁:
 𝓛-alg-Law₁' : {X : 𝓤 ̇ } → extension-op X → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg-Law₁' {𝓤} {X} ∐ = (P Q : 𝓣 ̇ )
                          (i : is-prop P) (j : is-prop Q)
-                         (f : P × Q → X)
-                       → ∐ (×-is-prop i j) f ＝ ∐ i (λ p → ∐ j (λ q → f (p , q)))
+                         (φ : P × Q → X)
+                       → ∐ (×-is-prop i j) φ ＝ ∐ i (λ p → ∐ j (λ q → φ (p , q)))
 
 \end{code}
 
-The difference with 𝓛-alg-Law₁ is that the family f has type P × Q → X
+The difference with 𝓛-alg-Law₁ is that the family φ has type P × Q → X
 rather than Σ {P} Q → X, and so the modified, logically equivalent law
 amounts to
 
-    ∐   ∐   f (p , q) =   ∐        f r
+    ∐   ∐   φ (p , q) =   ∐        φ r
    p:P q:Q              r : P × Q
 
 One direction of the logical equivalence is trivial:
@@ -288,12 +288,12 @@ One direction of the logical equivalence is trivial:
 To establish the converse we need the following lemma for extensions,
 which is interesting on its own right,
 
-  ∐  f p ＝ ∐  f (k q),
+  ∐  φ p ＝ ∐  φ (k q),
  p:P      q:Q
 
 and also gives self-distributivity of extensions:
 
-  ∐   ∐  f (p , q) =   ∐   ∐  f (p , q)
+  ∐   ∐  φ (p , q) =   ∐   ∐  φ (p , q)
  p:P q:Q              q:Q p:P
 
 
@@ -304,14 +304,14 @@ change-of-variables-in-extension
    (P : 𝓣 ̇ ) (i : is-prop P)
    (Q : 𝓣 ̇ ) (j : is-prop Q)
    (h : P → Q) (k : Q → P)
-   (f : P → X)
+   (φ : P → X)
  → is-univalent 𝓣
- → ∐ i f ＝ ∐ j (f ∘ k)
-change-of-variables-in-extension ∐ P i Q j h k f ua
+ → ∐ i φ ＝ ∐ j (φ ∘ k)
+change-of-variables-in-extension ∐ P i Q j h k φ ua
  = γ
  where
-  cd : (r : Q ＝ P) → ∐ i f ＝ ∐ j (f ∘ Idtofun r)
-  cd refl = ap (λ - → ∐ - f) (being-prop-is-prop (univalence-gives-funext ua) i j)
+  cd : (r : Q ＝ P) → ∐ i φ ＝ ∐ j (φ ∘ Idtofun r)
+  cd refl = ap (λ - → ∐ - φ) (being-prop-is-prop (univalence-gives-funext ua) i j)
 
   e : Q ≃ P
   e = qinveq k (h , ((λ q → j (h (k q)) q) , λ p → i (k (h p)) p))
@@ -319,33 +319,40 @@ change-of-variables-in-extension ∐ P i Q j h k f ua
   a : Idtofun (eqtoid ua Q P e) ＝ k
   a = ap ⌜_⌝ (idtoeq'-eqtoid ua Q P e)
 
-  γ : ∐ i f ＝ ∐ j (f ∘ k)
-  γ = cd (eqtoid ua Q P e) ∙ ap (λ - → ∐ j (f ∘ -)) a
+  γ : ∐ i φ ＝ ∐ j (φ ∘ k)
+  γ = cd (eqtoid ua Q P e) ∙ ap (λ - → ∐ j (φ ∘ -)) a
+
+\end{code}
+
+NB. The above is proved without univalence, but with propositional and
+functional extensionality in the module InjectiveTypes.Structure.
+
+\begin{code}
 
 𝓛-alg-self-distr : {X : 𝓤 ̇ } (∐ : extension-op X)
                    (P : 𝓣 ̇ ) (i : is-prop P)
                    (Q : 𝓣 ̇ ) (j : is-prop Q)
                  → is-univalent 𝓣
                  → 𝓛-alg-Law₁' ∐
-                 → (f : P × Q → X)
-                      → ∐ i (λ p → ∐ j (λ q → f (p , q)))
-                      ＝ ∐ j (λ q → ∐ i (λ p → f (p , q)))
+                 → (φ : P × Q → X)
+                      → ∐ i (λ p → ∐ j (λ q → φ (p , q)))
+                      ＝ ∐ j (λ q → ∐ i (λ p → φ (p , q)))
 
-𝓛-alg-self-distr ∐ P i Q j ua l₁' f =
- ∐ i (λ p → ∐ j (λ q → f (p , q)))                     ＝⟨ a ⟩
- ∐ (Σ-is-prop i (λ p → j)) f                           ＝⟨ b ⟩
- ∐ (Σ-is-prop j (λ p → i)) (f ∘ (λ t → pr₂ t , pr₁ t)) ＝⟨ c ⟩
- ∐ j (λ q → ∐ i (λ p → f (p , q)))                     ∎
+𝓛-alg-self-distr ∐ P i Q j ua l₁' φ =
+ ∐ i (λ p → ∐ j (λ q → φ (p , q)))                     ＝⟨ a ⟩
+ ∐ (Σ-is-prop i (λ p → j)) φ                           ＝⟨ b ⟩
+ ∐ (Σ-is-prop j (λ p → i)) (φ ∘ (λ t → pr₂ t , pr₁ t)) ＝⟨ c ⟩
+ ∐ j (λ q → ∐ i (λ p → φ (p , q)))                     ∎
   where
-   a = (l₁' P Q i j f)⁻¹
+   a = (l₁' P Q i j φ)⁻¹
    b = change-of-variables-in-extension
         ∐
         (P × Q)
         (Σ-is-prop i (λ p → j))
         (Q × P)
         (Σ-is-prop j (λ p → i))
-        (λ t → pr₂ t , pr₁ t) (λ t → pr₂ t , pr₁ t) f ua
-   c = l₁' Q P j i (λ t → f (pr₂ t , pr₁ t))
+        (λ t → pr₂ t , pr₁ t) (λ t → pr₂ t , pr₁ t) φ ua
+   c = l₁' Q P j i (λ t → φ (pr₂ t , pr₁ t))
 
 \end{code}
 
@@ -359,7 +366,7 @@ claimed above:
                     → funext 𝓣 𝓤
                     → 𝓛-alg-Law₁' ∐
                     → 𝓛-alg-Law₁ ∐
-𝓛-alg-Law₁'-gives₁ {𝓤} {X} ∐ ua fe a P Q i j f = γ
+𝓛-alg-Law₁'-gives₁ {𝓤} {X} ∐ ua fe a P Q i j φ = γ
  where
   h : (p : P) → Q p → Σ Q
   h p q = (p , q)
@@ -367,20 +374,20 @@ claimed above:
   k : (p : P) → Σ Q → Q p
   k p (p' , q) = transport Q (i p' p) q
 
-  f' : P × Σ Q → X
-  f' (p , p' , q) = f (p , k p (p' , q))
+  φ' : P × Σ Q → X
+  φ' (p , p' , q) = φ (p , k p (p' , q))
 
   k' : Σ Q → P × Σ Q
   k' (p , q) = p , p , q
 
-  H : f' ∘ k' ∼ f
-  H (p , q) = ap (λ - → f (p , -)) (j p _ _)
+  H : φ' ∘ k' ∼ φ
+  H (p , q) = ap (λ - → φ (p , -)) (j p _ _)
 
-  γ = ∐ {Σ Q} (Σ-is-prop i j) f                                         ＝⟨ b ⟩
-      ∐ {Σ Q} (Σ-is-prop i j) (f' ∘ k')                                 ＝⟨ c ⁻¹ ⟩
-      ∐ {P × Σ Q} (×-is-prop i (Σ-is-prop i j)) f'                      ＝⟨ d ⟩
-      ∐ {P} i (λ p → ∐ {Σ Q} (Σ-is-prop i j) ((λ σ → f (p , σ)) ∘ k p)) ＝⟨ e ⟩
-      ∐ {P} i (λ p → ∐ {Q p} (j p) (λ q → f (p , q)))                   ∎
+  γ = ∐ {Σ Q} (Σ-is-prop i j) φ                                         ＝⟨ b ⟩
+      ∐ {Σ Q} (Σ-is-prop i j) (φ' ∘ k')                                 ＝⟨ c ⁻¹ ⟩
+      ∐ {P × Σ Q} (×-is-prop i (Σ-is-prop i j)) φ'                      ＝⟨ d ⟩
+      ∐ {P} i (λ p → ∐ {Σ Q} (Σ-is-prop i j) ((λ σ → φ (p , σ)) ∘ k p)) ＝⟨ e ⟩
+      ∐ {P} i (λ p → ∐ {Q p} (j p) (λ q → φ (p , q)))                   ∎
    where
     b = (ap (∐ {Σ Q} (Σ-is-prop i j)) (dfunext fe H))⁻¹
     c = change-of-variables-in-extension
@@ -388,15 +395,15 @@ claimed above:
          (P × Σ Q)
          (×-is-prop i (Σ-is-prop i j))
          (Σ Q)
-         (Σ-is-prop i j) pr₂ k' f' ua
-    d = a P (Σ Q) i (Σ-is-prop i j) (λ z → f (pr₁ z , k (pr₁ z) (pr₂ z)))
+         (Σ-is-prop i j) pr₂ k' φ' ua
+    d = a P (Σ Q) i (Σ-is-prop i j) (λ z → φ (pr₁ z , k (pr₁ z) (pr₂ z)))
     e = (ap (∐ {P} i)
           (dfunext fe (λ p → change-of-variables-in-extension
                               ∐
                               (Q p)
                               (j p)
                               (Σ Q) (Σ-is-prop i j)
-                              (h p) (k p) (λ σ → f (p , σ)) ua)))⁻¹
+                              (h p) (k p) (λ σ → φ (p , σ)) ua)))⁻¹
 \end{code}
 
 The algebras form an exponential ideal with the pointwise
@@ -410,17 +417,17 @@ operations. More generally:
 Π-is-alg {𝓤} {𝓥} fe {X} A α = ∐· , l₀ , l₁
  where
   ∐· : {P : 𝓣 ̇ } → is-prop P → (P → Π A) → Π A
-  ∐· i f x = ∐ (α x) i (λ p → f p x)
+  ∐· i φ x = ∐ (α x) i (λ p → φ p x)
 
   l₀ : (φ : Π A) → ∐· 𝟙-is-prop (λ p → φ) ＝ φ
   l₀ φ = dfunext fe (λ x → law₀ (α x) (φ x))
 
   l₁ : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ )
        (i : is-prop P) (j : (p : P) → is-prop (Q p))
-       (f : Σ Q → Π A)
-      → ∐· (Σ-is-prop i j) f
-      ＝ ∐· i (λ p → ∐· (j p) (λ q → f (p , q)))
-  l₁ P Q i j f = dfunext fe (λ x → law₁ (α x) P Q i j (λ σ → f σ x))
+       (φ : Σ Q → Π A)
+      → ∐· (Σ-is-prop i j) φ
+      ＝ ∐· i (λ p → ∐· (j p) (λ q → φ (p , q)))
+  l₁ P Q i j φ = dfunext fe (λ x → law₁ (α x) P Q i j (λ σ → φ σ x))
 
 \end{code}
 
@@ -444,9 +451,9 @@ universe-is-algebra-Σ ua = sum , k , ι
   k X = eqtoid ua (𝟙 × X) X 𝟙-lneutral
 
   ι : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) (i : is-prop P)
-      (j : (p : P) → is-prop (Q p)) (f : Σ Q → 𝓣 ̇ )
-    → Σ f ＝ Σ (λ p → Σ (λ q → f (p , q)))
-  ι P Q i j f = eqtoid ua _ _ Σ-assoc
+      (j : (p : P) → is-prop (Q p)) (φ : Σ Q → 𝓣 ̇ )
+    → Σ φ ＝ Σ (λ p → Σ (λ q → φ (p , q)))
+  ι P Q i j φ = eqtoid ua _ _ Σ-assoc
 
 universe-is-algebra-Π : is-univalent 𝓣 → 𝓛-alg (𝓣 ̇ )
 universe-is-algebra-Π ua = prod , k , ι
@@ -461,9 +468,9 @@ universe-is-algebra-Π ua = prod , k , ι
   k X = eqtoid ua (𝟙 → X) X (≃-sym (𝟙→ (univalence-gives-funext ua)))
 
   ι : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) (i : is-prop P)
-      (j : (p : P) → is-prop (Q p)) (f : Σ Q → 𝓣 ̇ )
-    → Π f ＝ Π (λ p → Π (λ q → f (p , q)))
-  ι P Q i j f = eqtoid ua _ _ (curry-uncurry' fe fe)
+      (j : (p : P) → is-prop (Q p)) (φ : Σ Q → 𝓣 ̇ )
+    → Π φ ＝ Π (λ p → Π (λ q → φ (p , q)))
+  ι P Q i j φ = eqtoid ua _ _ (curry-uncurry' fe fe)
 
 \end{code}
 
@@ -476,6 +483,22 @@ automorphism, in such a way that the section becomes a homomorphism.
 is-hom : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → 𝓛-alg A → 𝓛-alg B → (A → B) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ̇
 is-hom {𝓤} {𝓥} {A} {B} (∐ᵃ , _ , _) (∐ᵇ , _ , _) h =
  (P : 𝓣 ̇ ) (i : is-prop P) (φ : P → A) → h (∐ᵃ i φ) ＝ ∐ᵇ i (h ∘ φ)
+
+open import UF.Sets
+
+being-hom-is-prop : Fun-Ext
+                  → {A : 𝓤 ̇ } (𝓐 : 𝓛-alg A)
+                    {B : 𝓥 ̇ } (𝓑 : 𝓛-alg B)
+                  → is-set B
+                  → (h : A → B)
+                  → is-prop (is-hom 𝓐 𝓑 h)
+being-hom-is-prop fe 𝓐 𝓑 B-is-set h = Π₃-is-prop fe (λ _ _ _ → B-is-set)
+
+⟨_⟩ : {A : 𝓤 ̇ } → 𝓛-alg A → 𝓤 ̇
+⟨_⟩ {𝓤} {A} 𝓐 = A
+
+Hom : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → 𝓛-alg A → 𝓛-alg B → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ̇
+Hom 𝓐 𝓑 = Σ h ꞉ (⟨ 𝓐 ⟩ →  ⟨ 𝓑 ⟩) , is-hom 𝓐 𝓑 h
 
 open import UF.Retracts
 
@@ -540,5 +563,227 @@ The following are the only public things in this anonymous module.
 
  section-is-hom : is-hom retract-of-algebra 𝓐 s
  section-is-hom = s-is-hom
+
+\end{code}
+
+Added 6th September 2025 by Martin Escardo. Use Ω to repackage things
+more neatly. We use uppercase names to distinguish the repackaged
+things.
+
+\begin{code}
+
+module algebra-repackaging where
+
+ open import UF.SubtypeClassifier
+
+ Extension-op : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
+ Extension-op X = (P : Ω 𝓣) → (P holds → X) → X
+
+ 𝓛-Alg-Law₀ : {X : 𝓤 ̇ } → Extension-op X → 𝓤 ̇
+ 𝓛-Alg-Law₀ {𝓤} {X} ∐ = (x : X) → ∐ ⊤ (λ _ → x) ＝ x
+
+ 𝓛-Alg-Law₁ : {X : 𝓤 ̇ } → Extension-op X → 𝓣 ⁺ ⊔ 𝓤 ̇
+ 𝓛-Alg-Law₁ {𝓤} {X} ∐ =
+    (P : Ω 𝓣) (Q : P holds → Ω 𝓣)
+    (φ : (ΣΩ p ꞉ P , Q p) holds → X)
+  → ∐ (ΣΩ p ꞉ P , Q p) φ ＝ ∐ P (λ p → ∐ (Q p) (λ q → φ (p , q)))
+
+ 𝓛-Alg : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
+ 𝓛-Alg X = Σ ∐ ꞉ Extension-op X , 𝓛-Alg-Law₀ ∐ × 𝓛-Alg-Law₁ ∐
+
+ 𝓛-Alg-gives-𝓛-alg : {X : 𝓤 ̇ } → 𝓛-Alg X → 𝓛-alg X
+ 𝓛-Alg-gives-𝓛-alg (∐ , l₀ , l₁) =
+  (λ {P} P-is-prop → ∐ (P , P-is-prop)) ,
+  l₀ ,
+  (λ P Q i j → l₁ (P , i) (λ p → Q p , j p))
+
+\end{code}
+
+But we probably won't use the above repackaging, as we already have
+everything written with the original choice of implementation.
+
+Added 8th September 2025 by Martin Escardo. The discussion of free
+algebras in the category of sets can be carried out without using
+univalence, and only its two consequences, propositional and
+functional extensionality. Notice that already the associativity law
+for the lifting monad uses univalence.
+
+\begin{code}
+
+module free-algebras-in-the-category-of-sets
+        (pe : Prop-Ext)
+        (fe : Fun-Ext)
+       where
+
+ is-𝓛-alg_freely-generated-by_with-insertion-of-generators_eliminating-at_
+  : {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F)
+    (X : 𝓥 ̇ )
+    (ι : X → ⟨ 𝓕 ⟩)
+    (𝓦 : Universe)
+  → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
+ is-𝓛-alg 𝓕 freely-generated-by X with-insertion-of-generators ι eliminating-at 𝓦
+  = {A : 𝓦 ̇ } (i : is-set A) (𝓐 : 𝓛-alg A) (f : X → A)
+       → ∃! (f̅ , _) ꞉ Hom 𝓕 𝓐 , f̅ ∘ ι ∼ f
+
+\end{code}
+
+Notice that above definition says that precomposition with ι is an
+equivalence.
+
+We now construct the canonical free algebra.
+
+\begin{code}
+
+ module _
+         (X : 𝓣 ̇ )
+         (X-is-set : is-set X)
+        where
+
+  open import Lifting.UnivalentWildCategory 𝓣 X
+  open import Lifting.IdentityViaSIP 𝓣
+
+  ⨆ : extension-op (𝓛 X)
+  ⨆ {P} P-is-prop φ =
+   (Σ p ꞉ P , is-defined (φ p)) ,
+   (λ (p , d) → value (φ p) d) ,
+   Σ-is-prop P-is-prop (λ p → being-defined-is-prop (φ p))
+
+  free : 𝓛-alg (𝓛 X)
+  free = ⨆ , l₀ , l₁
+   where
+    l₀ : 𝓛-alg-Law₀ ⨆
+    l₀ l@(P , φ , P-is-prop) =
+     ⊑-anti-lemma pe fe fe
+      ((λ (⋆ , p) → p) , (λ _ → refl))
+      (λ p → ⋆ , p)
+
+    l₁ : 𝓛-alg-Law₁ ⨆
+    l₁ P Q i j f =
+     ⊑-anti-lemma pe fe fe
+      ((λ ((p , q) , d) → (p , (q , d))) , (λ _ → refl))
+      (λ (p , (q , d)) → ((p , q), d))
+
+  private
+   𝓕 = free
+
+  module _
+           {A : 𝓤 ̇ }
+           (A-is-set : is-set A)
+           (𝓐@(∐ , l₀ , l₁) : 𝓛-alg A)
+           (f : X → A)
+         where
+
+   𝓛-extension : (𝓛 X → A)
+   𝓛-extension (P , φ , P-is-prop) = ∐ P-is-prop (f ∘ φ)
+
+   private
+    f̅ = 𝓛-extension
+
+   𝓛-extension-is-hom : is-hom 𝓕 𝓐 f̅
+   𝓛-extension-is-hom P i φ =
+    l₁ P
+       (λ p → is-defined (φ p))
+       i
+       (λ p → being-defined-is-prop (φ p))
+       (λ (p , d) → f (value (φ p) d))
+
+   𝓛-extension-extends : f̅ ∘ η ∼ f
+   𝓛-extension-extends x = l₀ (f x)
+
+   open import UF.Equiv-FunExt
+
+   η-fib : 𝓛 X → 𝓣 ̇
+   η-fib l = Σ x ꞉ X , η x ⋍· l
+
+   η-fib-point : (l : 𝓛 X) → η-fib l → X
+   η-fib-point l = pr₁
+
+   η-fib-⋍· : (l : 𝓛 X) (ϕ : η-fib l) → η (η-fib-point l ϕ) ⋍· l
+   η-fib-⋍· l = pr₂
+
+   η-fib-is-prop : (l : 𝓛 X) → is-prop (η-fib l)
+   η-fib-is-prop l@(P , φ , i) (x , a) (x' , a') = III
+    where
+     I : η x ⋍· η x'
+     I = ⋍·-trans (η x) l (η x') a (⋍·-sym (η x') l a')
+
+     II : η x ⋍· η x' → x ＝ x'
+     II (_ , e) = e ⋆
+
+     III : (x , a) ＝ (x' , a')
+     III = to-subtype-＝
+            (λ x → Σ-is-prop
+                    (equivalences-with-props-are-props fe P i 𝟙)
+                    (λ e → Π-is-prop fe (λ ⋆ → X-is-set)))
+            (II I)
+
+   η-fib-lemma : (l@(P , φ , i) : 𝓛 X)
+               → l ＝ ⨆ (η-fib-is-prop l) (η ∘ η-fib-point l)
+   η-fib-lemma (P , φ , i) =
+    ⊑-anti-lemma pe fe fe
+     ((λ p → (φ p ,
+              logically-equivalent-props-are-equivalent
+                𝟙-is-prop
+                i
+                (λ ⋆ → p)
+                (λ p → ⋆) ,
+              (λ _ → refl)) ,
+              ⋆) ,
+      (λ _ → refl))
+     λ ((_ , e , _) , ⋆) → ⌜ e ⌝ ⋆
+
+   private
+    H : 𝓣 ⁺ ⊔ 𝓤 ̇
+    H = Σ (h , _) ꞉ Hom 𝓕 𝓐 , h ∘ η ∼ f
+
+   hom-agreement
+    : (((h , _) , _) ((h' , _) , _) : H)
+    → h ∼ h'
+   hom-agreement
+    ((h , i) , e) ((h' , i') , e') l@(P , φ , P-is-prop)
+    = h l                          ＝⟨ I ⟩
+      h (⨆ j (η ∘ η-fib-point l))  ＝⟨ II ⟩
+      ∐ j (h ∘ η ∘ η-fib-point l)  ＝⟨ III ⟩
+      ∐ j (h' ∘ η ∘ η-fib-point l) ＝⟨ II' ⟩
+      h' (⨆ j (η ∘ η-fib-point l)) ＝⟨ I' ⟩
+      h' l                         ∎
+      where
+       j = η-fib-is-prop l
+
+       I   = ap h (η-fib-lemma l)
+       II  = i (η-fib l) j (η ∘ η-fib-point l)
+       III = ap (λ - → ∐ j (- ∘ η-fib-point l)) (dfunext fe (λ x → e x ∙ e' x ⁻¹))
+       II' = (i' (η-fib l) j (η ∘ η-fib-point l))⁻¹
+       I'  = ap h' ((η-fib-lemma l)⁻¹)
+
+   homomorphic-𝓛-extensions-form-a-prop : is-prop H
+   homomorphic-𝓛-extensions-form-a-prop he he'
+    = to-subtype-＝
+       (λ h → Π-is-prop fe (λ x → A-is-set))
+       (to-subtype-＝
+         (being-hom-is-prop fe 𝓕 𝓐 A-is-set)
+         (dfunext fe (hom-agreement he he')))
+
+   free-algebra-universal-property : is-singleton H
+   free-algebra-universal-property
+    = pointed-props-are-singletons
+       ((f̅ , 𝓛-extension-is-hom) , 𝓛-extension-extends)
+       homomorphic-𝓛-extensions-form-a-prop
+
+\end{code}
+
+Notice that the universal property of the algebra freely generated by
+X : 𝓣 with insertion of generators η : X → 𝓛 X eliminates into any
+universe:
+
+\begin{code}
+
+ _ : (X : 𝓣 ̇ ) (i : is-set X)
+     {𝓤 : Universe}
+   → is-𝓛-alg (free X i)
+     freely-generated-by X
+     with-insertion-of-generators η
+     eliminating-at 𝓤
+ _ = free-algebra-universal-property
 
 \end{code}

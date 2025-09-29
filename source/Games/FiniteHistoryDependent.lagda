@@ -130,7 +130,7 @@ quantifiers applied to the outcome function (Theorem 3.1 of [1]).
 \begin{code}
 
 optimal-outcome : Game → R
-optimal-outcome (game Xt q ϕt) = sequenceᴷ ϕt q
+optimal-outcome (game Xt q ϕt) = sequenceᴷ {Xt} ϕt q
 
 \end{code}
 

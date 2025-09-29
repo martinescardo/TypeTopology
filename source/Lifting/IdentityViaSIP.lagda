@@ -79,3 +79,28 @@ Id-to-⋍· l m refl = (≃-refl (is-defined l)) , (λ x → refl)
 ⋍·-gives-＝ ua fe = ⌜ 𝓛-Id· ua fe _ _ ⌝⁻¹
 
 \end{code}
+
+Added 8th September 2025.
+
+\begin{code}
+
+⋍·-refl : (l : 𝓛 X) → l ⋍· l
+⋍·-refl l = ≃-refl _ , ∼-refl
+
+⋍·-sym : (l m : 𝓛 X) → l ⋍· m → m ⋍· l
+⋍·-sym l m (e , d) =
+ ≃-sym e ,
+ λ p →
+  value m p                   ＝⟨ ap (value m) ((inverses-are-sections' e p)⁻¹) ⟩
+  value m (⌜ e ⌝ (⌜ e ⌝⁻¹ p)) ＝⟨ (d (⌜ e ⌝⁻¹ p))⁻¹ ⟩
+  value l (⌜ e ⌝⁻¹ p)         ∎
+
+⋍·-trans : (l m n : 𝓛 X) → l ⋍· m → m ⋍· n → l ⋍· n
+⋍·-trans l m n (e , d) (e' , d') =
+ (e ● e') ,
+ (λ p → value l p                  ＝⟨ d p ⟩
+        value m (⌜ e ⌝ p)          ＝⟨ d' (⌜ e ⌝ p) ⟩
+        value n (⌜ e' ⌝ (⌜ e ⌝ p)) ＝⟨ refl ⟩
+        value n (⌜ e ● e' ⌝ p)     ∎)
+
+\end{code}

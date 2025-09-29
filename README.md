@@ -52,7 +52,7 @@ Please add yourself the first time you contribute.
 * Fredrik Nordvall Forsberg
 * Ian Ray
 * Igor Arrieta (ii)
-* J.A. Carr
+* J. A. Carr
 * Jon Sterling
 * Kelton OBrien
 * Keri D'Angelo
@@ -234,22 +234,10 @@ Tosun.
 
    https://doi.org/10.48550/arXiv.2401.09270
 
-1. Igor Arrieta, Martín H. Escardó and Ayberk Tosun. *The Patch Topology in
-   Univalent Foundations*.
-
-   ArXiv preprint. Available online 5 February 2024.
-
-   https://arxiv.org/abs/2402.03134
-
 1. Tom de Jong. *Domain theory in univalent foundations I: Directed complete
    posets and Scott's D∞*. July 2024.
 
    https://doi.org/10.48550/arxiv.2407.06952
-
-1. Tom de Jong and Martín H. Escardó. *Domain theory in univalent
-   foundations II: Continuous and algebraic domains*. July 2024.
-
-   https://doi.org/10.48550/arxiv.2407.06956
 
 1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
    *Ordinal Exponentiation in Homotopy Type Theory*. January 2025. Updated
@@ -262,6 +250,21 @@ Tosun.
 
    https://doi.org/10.48550/arXiv.2505.11055
 
+1. Igor Arrieta, Martín H. Escardó and Ayberk Tosun. *The Patch Topology in
+   Univalent Foundations*. [Mathematical Structures in Computer Science][MSCS],
+   Volume 35, Special Issue: Advances in Homotopy Type Theory.
+   August 2025.
+
+   https://doi.org/10.1017/S0960129525000088
+
+1. Tom de Jong and Martín H. Escardó. *Continuous and algebraic domains in
+   univalent foundations*. [Journal of Pure and Applied Algebra][JPAA], Volume
+   229, Issue 10. August 2025. \ As requested by the journal, this publication
+   includes an abridged version of the paper *Domain theory in univalent
+   foundations I*.
+
+   https://doi.org/10.1016/j.jpaa.2025.108072
+
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
 [LICS21]: https://easyconferences.eu/lics2021/
@@ -271,3 +274,4 @@ Tosun.
 [LMCS]: https://lmcs.episciences.org/
 [MSCS]: https://www.cambridge.org/core/journals/mathematical-structures-in-computer-science
 [LIPICS]: https://www.dagstuhl.de/en/publishing/series/details/LIPIcs
+[JPAA]: https://www.sciencedirect.com/journal/journal-of-pure-and-applied-algebra

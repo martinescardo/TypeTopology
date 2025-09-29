@@ -98,6 +98,12 @@ is-non-empty (x ∷ xs) = 𝟙
 -- cons-is-non-empty : {X : 𝓤 ̇ } {x : X} {xs : List X} → is-non-empty (x ∷ xs)
 pattern cons-is-non-empty = ⋆
 
+list-non-emptiness-is-decidable : {X : 𝓤 ̇ }
+                                  (xs : List X)
+                                → is-decidable (is-non-empty xs)
+list-non-emptiness-is-decidable [] = inr 𝟘-elim
+list-non-emptiness-is-decidable (x ∷ xs) = inl cons-is-non-empty
+
 map-is-non-empty : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (xs : List X)
                  → is-non-empty xs
                  → is-non-empty (map f xs)
@@ -119,6 +125,11 @@ empty (x ∷ xs) = false
 data member {X : 𝓤 ̇ } : X → List X → 𝓤 ̇ where
  in-head : {x : X}   {xs : List X} → member x (x ∷ xs)
  in-tail : {x y : X} {xs : List X} → member x xs → member x (y ∷ xs)
+
+empty-list-has-no-members : {X : 𝓤 ̇ }
+                            (x : X)
+                          → ¬ member x []
+empty-list-has-no-members x ()
 
 lists-with-members-are-non-empty : {X : 𝓤 ̇ }
                                    {y : X}

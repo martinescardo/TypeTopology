@@ -6,7 +6,7 @@ set -euxo pipefail
 
 # Generate html files and deploy them.
 # This is to be run from TypeTopology/source.
-# It assumes that we want to deploy the html pages at ~/public_html.
+# It assumes that we want to deploy the html pages at ~/martinescardo.github.io/.
 
 rm -rf html
 agda --highlight-occurrences --html AllModulesIndex.lagda

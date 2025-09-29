@@ -173,7 +173,7 @@ open import Lifting.EmbeddingDirectly 𝓣
 η-fiber-same-as-is-defined pe fe fe' fe'' l = qinveq (f l) (g l , gf , fg)
  where
   f : (l : 𝓛 X) → fiber η l → is-defined l
-  f (.𝟙 , .(λ _ → x) , .𝟙-is-prop) (x , refl) = ⋆
+  f (𝟙 , .(λ _ → x) , 𝟙-is-prop) (x , refl) = ⋆
 
   g : (l : 𝓛 X) → is-defined l → fiber η l
   g (P , φ , i) p = φ p , ⊑-anti pe fe fe' (a , b)

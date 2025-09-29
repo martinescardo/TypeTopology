@@ -57,6 +57,19 @@ syntax SigmaΩ p (λ x → q) = ΣΩ x ꞉ p , q
 
 infixr -1 SigmaΩ
 
+module PiΩ {𝓤 𝓥 : Universe} (fe : funext 𝓤 𝓥) where
+
+ PiΩ : (p : Ω 𝓤) (q : p holds → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ PiΩ p q = (Π h ꞉ p holds , q h holds) ,
+           Π-is-prop fe (λ (h : p holds) → holds-is-prop (q h))
+
+ ΠΩ : {p : Ω 𝓤} (q : p holds → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ΠΩ {p} q = PiΩ p q
+
+ syntax PiΩ p (λ x → q) = ΠΩ x ꞉ p , q
+
+ infixr -1 PiΩ
+
 ⊥ ⊤ : Ω 𝓤
 ⊥ = 𝟘 , 𝟘-is-prop   -- false
 ⊤ = 𝟙 , 𝟙-is-prop   -- true

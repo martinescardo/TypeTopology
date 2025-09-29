@@ -84,6 +84,42 @@ Added by Martin Escardo 1st Nov 2023.
 
 \end{code}
 
+Added by Martin Escardo 8th September 2025.
+
+\begin{code}
+
+ module _ (pe : propext 𝓤)
+          (fe : funext 𝓤 𝓤)
+        where
+
+  ⊤-is-∧-left-neutral : (p : Ω 𝓤) → ⊤ {𝓤} ∧ p ＝ p
+  ⊤-is-∧-left-neutral p =
+   Ω-extensionality pe fe
+    pr₂
+    (λ p-holds → ⋆ , p-holds)
+
+  ⊤-is-∧-right-neutral : (p : Ω 𝓤) → p ∧ ⊤ {𝓤} ＝ p
+  ⊤-is-∧-right-neutral p =
+   Ω-extensionality pe fe
+    pr₁
+    (λ p-holds → p-holds , ⋆)
+
+  ⊥-is-∧-left-absorbtive : (p : Ω 𝓤) → ⊥ {𝓤} ∧ p ＝ ⊥
+  ⊥-is-∧-left-absorbtive p =
+   Ω-extensionality pe fe
+    pr₁
+    𝟘-elim
+
+  ∧-is-idempotent : (p : Ω 𝓤) → p ∧ p ＝ p
+  ∧-is-idempotent p =
+   Ω-extensionality pe fe
+    pr₁
+    (λ p-holds → p-holds , p-holds)
+
+\end{code}
+
+TODO. Add all the semilattice equations.
+
 End of addition.
 
 \section{Universal quantification}
@@ -161,7 +197,13 @@ module Implication (fe : Fun-Ext) where
  infix 3 ¬ₚ_
 
  ¬ₚ_ : Ω 𝓤 → Ω 𝓤
- ¬ₚ_ {𝓤} P = _⇒_ P (𝟘 {𝓤} , 𝟘-is-prop)
+ ¬ₚ_ {𝓤} P = P ⇒ ⊥ {𝓤}
+
+ ¬¬ₚ_ : Ω 𝓤 → Ω 𝓤
+ ¬¬ₚ p = ¬ₚ(¬ₚ p)
+
+ ¬¬¬ₚ_ : Ω 𝓤 → Ω 𝓤
+ ¬¬¬ₚ p = ¬ₚ(¬¬ₚ p)
 
 \end{code}
 
@@ -218,6 +260,30 @@ Added by Martin Escardo 1st Nov 2023.
                        (＝-gives-⇔ p q ,
                        (λ _ → Ω-is-set fe pe _ _) ,
                        (λ _ → Ω-is-set fe pe _ _))
+
+\end{code}
+
+Added by Martin Escardo 8th September 2025.
+
+\begin{code}
+
+  ⊥⇒anything-is-⊤ : (p : Ω 𝓤) → (⊥ {𝓤} ⇒ p) ＝ ⊤ {𝓤}
+  ⊥⇒anything-is-⊤ p =
+   Ω-extensionality pe fe
+    (λ (a : 𝟘 → p holds) → ⋆)
+    (λ ⋆ → 𝟘-elim)
+
+  ⊤⇒anything-is-the-thing : (p : Ω 𝓤) → (⊤ {𝓤} ⇒ p) ＝ p
+  ⊤⇒anything-is-the-thing p =
+   Ω-extensionality pe fe
+    (λ (f : 𝟙 → p holds) → f ⋆)
+    (λ p-holds ⋆ → p-holds)
+
+  anything-implies-itself-is-⊤ : (p : Ω 𝓤) → (p ⇒ p) ＝ ⊤
+  anything-implies-itself-is-⊤ p =
+   Ω-extensionality pe fe
+    (λ _ → ⋆)
+    (λ _ → id)
 
 \end{code}
 

@@ -4,8 +4,8 @@ author:       [Stefano Gogioso, Ayberk Tosun]
 date-started: 2025-02-19
 ---
 
-Summary of my understanding of a discussion (2025-02-13) with Stefano Gogioso on
-dependently typed tensors.
+Summary of a discussion (2025-02-13) with Stefano Gogioso on encoding tensors
+using dependent types. This observation was made independently by both of us.
 
 \begin{code}
 

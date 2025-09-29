@@ -307,6 +307,12 @@ happly' f g p x = ap (λ - → - x) p
 happly : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ＝ g → f ∼ g
 happly = happly' _ _
 
+implicit-happly : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                  {f g : {x : X} → A x}
+                → (λ {x} → f {x}) ＝ g
+                → (x : X) → f {x} ＝ g {x}
+implicit-happly {𝓤} {𝓥} {X} {A} {f} {g} p x = ap (λ - → - {x}) p
+
 sym-is-inverse : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y)
                → refl ＝ p ⁻¹ ∙ p
 sym-is-inverse refl = refl

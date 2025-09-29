@@ -1,4 +1,4 @@
-Martin Escardo, 2018-2019
+Martin Escardo, 2018-2019 with later additions.
 
 The lifting (aka partial-map classifier) monad.
 
@@ -20,5 +20,6 @@ import Lifting.MonadVariation
 import Lifting.Set
 import Lifting.Size
 import Lifting.UnivalentWildCategory
+import Lifting.TwoAlgebrasOnOmega
 
 \end{code}

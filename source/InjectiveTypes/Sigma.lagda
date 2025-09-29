@@ -56,7 +56,7 @@ extension = aflabby-extension
 extends : {X : 𝓤 ̇ } (ϕ : aflabby X 𝓦) (p : Ω 𝓦)
           (f : p holds → X) (h : p holds)
         → extension ϕ p f ＝ f h
-extends  = aflabby-extension-property
+extends = aflabby-extension-property
 
 \end{code}
 
