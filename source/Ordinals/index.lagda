@@ -8,7 +8,6 @@ module Ordinals.index where
 
 import Ordinals.AdditionProperties
 import Ordinals.Arithmetic
-import Ordinals.ArithmeticReflection          -- by [2]
 import Ordinals.BoundedOperations             -- by [2]
 import Ordinals.Brouwer
 import Ordinals.BuraliForti                   -- by [1]
