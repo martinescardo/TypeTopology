@@ -847,6 +847,11 @@ order-preserving-gives-not-⊲ {𝓤} α β σ (x₀ , refl) = γ σ
     κ = no-minimal-is-empty' (underlying-order α) (Well-foundedness α)
          A d (x₀ , 0 , refl)
 
+⊴-gives-not-⊲ : (α β : Ordinal 𝓤) → α ⊴ β → ¬ (β ⊲ α)
+⊴-gives-not-⊲ α β (f , f-sim) =
+ order-preserving-gives-not-⊲ α β
+  (f , simulations-are-order-preserving α β f f-sim)
+
 open import UF.ClassicalLogic
 
 EM-implies-order-preserving-gives-≼ : EM 𝓤
