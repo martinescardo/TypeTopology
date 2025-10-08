@@ -925,7 +925,7 @@ triangle-inequality-bound' a b l = triangle-inequality-bound a b γ
        Γ (≤-succ (succ a +' b) ) l
 \end{code}
 
-Added 26 September 2025 by Fredrik Nordvall Forsberg
+Added 26 September 2025 by Fredrik Nordvall Forsberg.
 
 \begin{code}
 
