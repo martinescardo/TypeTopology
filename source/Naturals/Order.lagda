@@ -924,3 +924,17 @@ triangle-inequality-bound' a b l = triangle-inequality-bound a b γ
   γ = ≤-trans₂ (succ (a +' b)) (succ a +' b) (succ (succ a +' b)) ∣ a - b ∣
        Γ (≤-succ (succ a +' b) ) l
 \end{code}
+
+Added 26 September 2025 by Fredrik Nordvall Forsberg.
+
+\begin{code}
+
+double-reflects-≤ : {x y : ℕ} → double x ≤ double y → x ≤ y
+double-reflects-≤ {zero} {y} _ = ⋆
+double-reflects-≤ {succ x} {succ y} p = double-reflects-≤ {x} {y} p
+
+double-reflects-< : {x y : ℕ} → double x < double y → x < y
+double-reflects-< {zero} {succ y} _ = ⋆
+double-reflects-< {succ x} {succ y} p = double-reflects-< {x} {y} p
+
+\end{code}

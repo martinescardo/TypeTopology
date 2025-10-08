@@ -157,7 +157,7 @@ sum-to-zero-gives-zero x (succ y) e = 𝟘-elim (positive-not-zero (x + y) e)
 
 \end{code}
 
-Added 26 September 2025 by Fredrik Nordvall Forsberg
+Added 26 September 2025 by Fredrik Nordvall Forsberg.
 
 \begin{code}
 
