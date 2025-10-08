@@ -24,10 +24,8 @@ private
 open import MLTT.Spartan
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
-open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
-open import Ordinals.Underlying
 open import UF.Equiv
 open import UF.Subsingletons
 
