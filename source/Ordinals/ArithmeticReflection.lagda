@@ -801,7 +801,7 @@ module _
       III = ap (γ ×ₒ ((α ⁺[ h ]) ↓ g ⋆) +ₒ_)
                (((simulations-preserve-↓ 𝟙ₒ γ l ⋆) ⁻¹ ∙ 𝟙ₒ-↓) ⁻¹)
     H-has-min : (β : Ordinal 𝓤) → 𝟘ₒ ⊲ H (α ^ₒ β)
-    H-has-min β = lr-implication (at-least-𝟙₀-iff-greater-𝟘ₒ (H (α ^ₒ β)))
+    H-has-min β = lr-implication (at-least-𝟙₀-iff-greater-than-𝟘ₒ (H (α ^ₒ β)))
                                  (H-has-min' (α ^ₒ β) (^ₒ-has-least-element α β))
 
   asm-3 : (β γ : Ordinal 𝓤) → β ≤ᶜˡ γ → (β ×ₒ α) ≤ᶜˡ (γ ×ₒ α)

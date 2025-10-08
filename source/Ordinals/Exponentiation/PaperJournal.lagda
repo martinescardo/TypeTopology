@@ -661,7 +661,7 @@ Theorem-50 : (α : Ordinal 𝓤)
                → is-⊴-reflecting (α ^ₒ_) × left-cancellable (α ^ₒ_))
 Theorem-50 α =
    +ₒ-reflects-⊴ α , +ₒ-left-cancellable' α
- , (λ l → let l' = lr-implication (at-least-𝟙₀-iff-greater-𝟘ₒ α) l
+ , (λ l → let l' = lr-implication (at-least-𝟙₀-iff-greater-than-𝟘ₒ α) l
           in ×ₒ-reflects-⊴ α l' , ×ₒ-left-cancellable' α l')
  , (λ l t → ^ₒ-reflects-⊴ α l t , ^ₒ-left-cancellable α l t)
 
