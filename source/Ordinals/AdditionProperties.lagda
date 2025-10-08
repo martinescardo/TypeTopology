@@ -1289,3 +1289,49 @@ Added 26 September 2025 by Fredrik Nordvall Forsberg.
   p' = p ∙ 𝟘ₒ-right-neutral 𝟙ₒ ⁻¹
 
 \end{code}
+
+Added in September 2025 by Fredrik Nordvall Forsberg.
+Moved here from ArithmeticReflection by Tom de Jong in October 2025.
+
+Some special cases of addition by ω.
+
+\begin{code}
+
+𝟘ₒ+ₒω-is-ω : 𝟘ₒ +ₒ ω ＝ ω
+𝟘ₒ+ₒω-is-ω = 𝟘ₒ-left-neutral ω
+
+𝟙ₒ+ₒω-is-ω : 𝟙ₒ +ₒ ω ＝ ω
+𝟙ₒ+ₒω-is-ω = eqtoidₒ (ua _) fe' (𝟙ₒ +ₒ ω) ω h
+ where
+  f : 𝟙 + ℕ → ℕ
+  f (inl ⋆) = 0
+  f (inr n) = succ n
+
+  g : ℕ → 𝟙 + ℕ
+  g 0 = inl ⋆
+  g (succ n) = inr n
+
+  f-equiv : is-equiv f
+  f-equiv = qinvs-are-equivs f (g , (η , ϵ))
+   where
+    η : (λ x → g (f x)) ∼ id
+    η (inl ⋆) = refl
+    η (inr n) = refl
+
+    ϵ : (λ x → f (g x)) ∼ id
+    ϵ zero = refl
+    ϵ (succ x) = refl
+
+  f-preserves-order : (x y : 𝟙 + ℕ) → x ≺⟨ 𝟙ₒ +ₒ ω ⟩ y → f x ≺⟨ ω ⟩ f y
+  f-preserves-order (inl ⋆) (inr n) p = ⋆
+  f-preserves-order (inr n) (inr m) p = p
+
+  f-reflects-order : (x y : 𝟙 + ℕ) → f x ≺⟨ ω ⟩ f y → x ≺⟨ 𝟙ₒ +ₒ ω ⟩ y
+  f-reflects-order (inl ⋆) (inr n) _ = ⋆
+  f-reflects-order (inr n) (inr m) p = p
+
+  h : (𝟙ₒ +ₒ ω) ≃ₒ ω
+  h = f , order-preserving-reflecting-equivs-are-order-equivs (𝟙ₒ +ₒ ω) ω f
+           f-equiv f-preserves-order f-reflects-order
+
+\end{code}

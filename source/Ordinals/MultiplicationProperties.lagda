@@ -1070,3 +1070,105 @@ EM-implies-×ₒ-as-large-as-right-factor em α β (a₀ , _) =
    I b b' l = inl l
 
 \end{code}
+
+Added in September 2025 by Fredrik Nordvall Forsberg.
+Moved here from ArithmeticReflection by Tom de Jong in October 2025.
+
+Some special cases of multiplication by ω.
+
+\begin{code}
+
+𝟙ₒ×ₒω-is-ω : 𝟙ₒ ×ₒ ω ＝ ω
+𝟙ₒ×ₒω-is-ω = 𝟙ₒ-left-neutral-×ₒ ω
+
+𝟚ₒ×ₒω-is-ω : 𝟚ₒ ×ₒ ω ＝ ω
+𝟚ₒ×ₒω-is-ω = eqtoidₒ (ua _) fe' (𝟚ₒ ×ₒ ω) ω h
+ where
+  open import Naturals.Addition hiding (_+_)
+  open import Naturals.Division
+  open import Naturals.Order
+  open import Naturals.Properties
+  f : ⟨ 𝟚ₒ ⟩ × ℕ → ℕ
+  f (inl ⋆ , n) = double n
+  f (inr ⋆ , n) = sdouble n
+
+  g' : (n : ℕ) → division-theorem n 1 → ⟨ 𝟚ₒ ⟩ × ℕ
+  g' n (k , 0 , p , l) = inl ⋆ , k
+  g' n (k , 1 , p , l) = inr ⋆ , k
+
+  g : ℕ → ⟨ 𝟚ₒ ⟩ × ℕ
+  g n = g' n (division n 1)
+
+  f-equiv : is-equiv f
+  f-equiv = qinvs-are-equivs f (g , (η , ϵ))
+   where
+    η' : (x : ⟨ 𝟚ₒ ⟩ × ℕ)(m : ℕ) → m ＝ f x → (d : division-theorem m 1)
+       → g' m d ＝ x
+    η' (inl ⋆ , n) m r (k , 0 , p , l) = ap (inl ⋆ ,_) (double-lc τ)
+     where
+      τ : double k ＝ double n
+      τ = double-is-self-addition k ∙ p ⁻¹ ∙ r
+    η' (inr ⋆ , n) m r (k , 0 , p , l) = 𝟘-elim (double-is-not-sdouble τ)
+     where
+      τ : double k ＝ sdouble n
+      τ = double-is-self-addition k ∙ p ⁻¹  ∙ r
+    η' (inl ⋆ , n) m r (k , 1 , p , l) = 𝟘-elim (double-is-not-sdouble τ)
+     where
+      τ : double n ＝ sdouble k
+      τ = r ⁻¹ ∙ p ∙ ap succ (double-is-self-addition k ⁻¹)
+    η' (inr ⋆ , n) m r (k , 1 , p , l) = ap (inr ⋆ ,_) (sdouble-lc τ)
+     where
+      τ : sdouble k ＝ sdouble n
+      τ = ap succ (double-is-self-addition k) ∙ p ⁻¹ ∙ r
+
+    η : (λ x → g (f x)) ∼ id
+    η x = η' x (f x) refl (division (f x) 1)
+
+    ϵ' : (n : ℕ) → (d : division-theorem n 1) → f (g' n d) ＝ n
+    ϵ' n (k , 0 , refl , l) = double-is-self-addition k
+    ϵ' n (k , 1 , refl , l) = ap succ (double-is-self-addition k)
+
+    ϵ : (λ n → f (g n)) ∼ id
+    ϵ n = ϵ' n (division n 1)
+
+  f-preserves-order : (x y : ⟨ 𝟚ₒ ⟩ × ℕ) → x ≺⟨ 𝟚ₒ ×ₒ ω ⟩ y → f x ≺⟨ ω ⟩ f y
+  f-preserves-order (inl ⋆ , x) (inl ⋆ , y) (inl p) =
+   transport₂⁻¹ (λ - → succ - ≤ℕ_)
+                (double-is-self-addition x)
+                (double-is-self-addition y)
+                (≤-adding x y (succ x) y (≤-trans x (succ x) y (≤-succ x) p) p)
+  f-preserves-order (inl ⋆ , x) (inr ⋆ , y) (inl p) =
+   transport₂⁻¹ _≤ℕ_ (double-is-self-addition x) (double-is-self-addition y)
+    (≤-adding x y x y (≤-trans x (succ x) y (≤-succ x) p)
+                      (≤-trans x (succ x) y (≤-succ x) p))
+  f-preserves-order (inr ⋆ , x) (inl ⋆ , y) (inl p) =
+   transport₂⁻¹ (λ - → succ - ≤ℕ_)
+                (ap succ (double-is-self-addition x) ∙ succ-left x x ⁻¹)
+                (double-is-self-addition y)
+                (≤-adding (succ x) y (succ x) y p p)
+  f-preserves-order (inr ⋆ , x) (inr ⋆ , y) (inl p) =
+   transport₂⁻¹ (λ - → succ - ≤ℕ_)
+                (double-is-self-addition x)
+                (double-is-self-addition y)
+                (≤-adding x y (succ x) y (≤-trans x (succ x) y (≤-succ x) p) p)
+  f-preserves-order (inl ⋆ , x) (inr ⋆ , x) (inr (refl , _)) = ≤-refl _
+  f-preserves-order (inr ⋆ , x) (inl ⋆ , x) (inr (refl , q)) = 𝟘-elim q
+  f-preserves-order (inr ⋆ , x) (inr ⋆ , x) (inr (refl , q)) = 𝟘-elim q
+
+  f-reflects-order : (x y : ⟨ 𝟚ₒ ⟩ × ℕ) → f x ≺⟨ ω ⟩ f y → x ≺⟨ 𝟚ₒ ×ₒ ω ⟩ y
+  f-reflects-order (inl ⋆ , x) (inl ⋆ , y) p = inl (double-reflects-< p)
+  f-reflects-order (inl ⋆ , x) (inr ⋆ , y) p = τ (<-trichotomous x y)
+   where
+    τ : (x <ℕ y) + (x ＝ y) + (y <ℕ x) → (x <ℕ y) + (x ＝ y) × 𝟙
+    τ (inl l) = inl l
+    τ (inr (inl e)) = inr (e , ⋆)
+    τ (inr (inr g)) =
+     𝟘-elim (less-than-not-equal y y (<-≤-trans y x y g (double-reflects-≤ p)) refl)
+  f-reflects-order (inr ⋆ , x) (inl ⋆ , y) p = inl (double-reflects-≤ p)
+  f-reflects-order (inr ⋆ , x) (inr ⋆ , y) p = inl (double-reflects-< p)
+
+  h : (𝟚ₒ ×ₒ ω) ≃ₒ ω
+  h = f , order-preserving-reflecting-equivs-are-order-equivs (𝟚ₒ ×ₒ ω) ω f
+           f-equiv f-preserves-order f-reflects-order
+
+\end{code}
