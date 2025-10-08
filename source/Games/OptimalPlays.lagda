@@ -628,6 +628,8 @@ lemma← {X ∷ Xf} q (ϕ :: ϕf) (x :: xs) (o :: os)
 This gives an alternative way to calculate the list of optimal plays,
 which doesn't use selection functions.
 
+Added 8th October 2025.
+
 TODO. Move the following general purpose functions on paths and on
 lists to appropriate modules. Also think of better names for the
 functions.
