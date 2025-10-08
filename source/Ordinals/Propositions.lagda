@@ -100,4 +100,16 @@ only-one-𝟘ₒ =
 holds-gives-equal-𝟙ₒ : {P : 𝓤 ̇  } (i : is-prop P) → P → prop-ordinal P i ＝ 𝟙ₒ
 holds-gives-equal-𝟙ₒ i p = prop-ordinal-＝ i 𝟙-is-prop (λ _ → ⋆) (λ _ → p)
 
+at-least-𝟙₀-iff-greater-than-𝟘ₒ : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α ↔ 𝟘ₒ ⊲ α
+at-least-𝟙₀-iff-greater-than-𝟘ₒ α = right , left
+ where
+  right : 𝟙ₒ ⊴ α → 𝟘ₒ ⊲ α
+  right 𝕗@(f , f-sim) = f ⋆ , (𝟙ₒ-↓ ⁻¹ ∙ simulations-preserve-↓ 𝟙ₒ α 𝕗 ⋆)
+
+  left : 𝟘ₒ ⊲ α → 𝟙ₒ ⊴ α
+  left (⊥ , p) = to-⊴ 𝟙ₒ α h
+   where
+    h : (x : 𝟙) → 𝟙ₒ ↓ x ⊲ α
+    h ⋆ = ⊥ , (𝟙ₒ-↓ ∙ p)
+
 \end{code}

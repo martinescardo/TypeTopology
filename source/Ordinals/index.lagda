@@ -6,8 +6,8 @@ Martin Escardo
 
 module Ordinals.index where
 
-import Ordinals.Arithmetic
 import Ordinals.AdditionProperties
+import Ordinals.Arithmetic
 import Ordinals.BoundedOperations             -- by [2]
 import Ordinals.Brouwer
 import Ordinals.BuraliForti                   -- by [1]

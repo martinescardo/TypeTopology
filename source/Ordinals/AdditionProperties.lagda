@@ -1277,3 +1277,15 @@ Added 15 July 2025 by Tom de Jong.
                   (+ₒ-minimal α β a₀ (least-is-minimal α a₀ a₀-least))
 
 \end{code}
+
+Added 26 September 2025 by Fredrik Nordvall Forsberg.
+
+\begin{code}
+
+𝟚ₒ-is-not-𝟙ₒ : 𝟚ₒ {𝓤} ≠ 𝟙ₒ {𝓤}
+𝟚ₒ-is-not-𝟙ₒ p = 𝟘ₒ-is-not-𝟙ₒ (+ₒ-left-cancellable 𝟙ₒ 𝟙ₒ 𝟘ₒ p' ⁻¹)
+ where
+  p' : 𝟚ₒ ＝ 𝟙ₒ +ₒ 𝟘ₒ
+  p' = p ∙ 𝟘ₒ-right-neutral 𝟙ₒ ⁻¹
+
+\end{code}
