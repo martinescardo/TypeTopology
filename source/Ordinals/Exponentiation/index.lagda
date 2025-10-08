@@ -52,7 +52,7 @@ import Ordinals.Exponentiation.Paper
 
 \end{code}
 
-And the following file acts as an index for the paper "Constrictive Ordinal
+And the following file acts as an index for the paper "Constructive Ordinal
 Exponentiation".
 
 \begin{code}
