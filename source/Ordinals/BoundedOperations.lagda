@@ -20,9 +20,7 @@ module Ordinals.BoundedOperations
        (sr : Set-Replacement pt)
        where
 
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import UF.Base
 open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Subsingletons
@@ -40,11 +38,9 @@ open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Exponentiation.Taboos ua pt sr
-open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
-open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
