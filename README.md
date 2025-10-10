@@ -206,9 +206,8 @@ Tosun.
    [Logic in Computer Science (LICS)](https://dl.acm.org/conference/lics),
    Proceedings of [LICS 2023][LICS23]. June 2023.
 
-   https://doi.org/10.1109/LICS56636.2023.10175762
-
-   Publicly available at https://arxiv.org/abs/2301.10696.
+   https://doi.org/10.1109/LICS56636.2023.10175762 \
+   https://arxiv.org/abs/2301.10696
 
 1. Tom de Jong and Martín H. Escardó. *On Small Types in Univalent
    Foundations.* [Logical Methods in Computer
@@ -240,10 +239,12 @@ Tosun.
    https://doi.org/10.48550/arxiv.2407.06952
 
 1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
-   *Ordinal Exponentiation in Homotopy Type Theory*. January 2025. Updated
-   May 2025. [LICS 2025][LICS25].
+   *Ordinal Exponentiation in Homotopy Type Theory*.
+   [Logic in Computer Science (LICS)](https://dl.acm.org/conference/lics),
+   Proceedings of [LICS 2025][LICS25]. October 2025.
 
-   https://doi.org/10.48550/arxiv.2501.14542
+   https://doi.org/10.1109/LICS65433.2025.00027 \
+   https://arxiv.org/abs/2501.14542
 
 1. Martin H. Escardo, Bruno da Rocha Paiva, Vincent Rahli and Ayberk Tosun.
    *Internal Effectful Forcing in System T*. [FSCD'2025](https://fscd2025.github.io/).
@@ -259,7 +260,8 @@ Tosun.
 
 1. Tom de Jong and Martín H. Escardó. *Continuous and algebraic domains in
    univalent foundations*. [Journal of Pure and Applied Algebra][JPAA], Volume
-   229, Issue 10. August 2025. \ As requested by the journal, this publication
+   229, Issue 10. August 2025. \
+   As requested by the journal, this publication
    includes an abridged version of the paper *Domain theory in univalent
    foundations I*.
 

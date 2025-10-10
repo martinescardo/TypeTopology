@@ -59,7 +59,8 @@ References.
 
 [5] Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and
     Chuangjie Xu. "Set-Theoretic and Type-Theoretic Ordinals
-    Coincide". To appear at LICS 2023, June 2023.
+    Coincide". LICS 2023, pp. 1—13, 2023.
+    https://doi.org/10.1109/LICS56636.2023.10175762
     https://arxiv.org/abs/2301.10696
 
 [6] Elisabeth Bonnevier, Håkon Robbestad Gylterud, Daniel Gratzer, and
