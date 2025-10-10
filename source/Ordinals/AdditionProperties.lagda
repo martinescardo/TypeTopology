@@ -235,11 +235,37 @@ open import Ordinals.Underlying
   ϕ : (x : ⟨ α +ₒ β ⟩) → ((α +ₒ β) ↓ x) ⊲ (α +ₒ γ)
   ϕ = dep-cases l r
 
-+ₒ-right-monotone-⊴ : (α β γ : Ordinal 𝓤)
-                    → β ⊴ γ
-                    → (α +ₒ β) ⊴ (α +ₒ γ)
++ₒ-right-monotone-⊴ : (α : Ordinal 𝓤) → is-⊴-preserving (α +ₒ_)
 +ₒ-right-monotone-⊴ α β γ l =
  ≼-gives-⊴ (α +ₒ β) (α +ₒ γ) (+ₒ-right-monotone α β γ (⊴-gives-≼ β γ l))
+
+\end{code}
+
+Added by Tom de Jong in July/October 2025. The following proof has
+better computational properties (and is arguably simpler) than the one
+above.
+
+\begin{code}
+
++ₒ-right-monotone-⊴' : (α : Ordinal 𝓤) → is-⊴-preserving (α +ₒ_)
++ₒ-right-monotone-⊴' α β γ 𝕗@(f , f-sim) = g , g-init-seg , g-order-pres
+ where
+  g : ⟨ α +ₒ β ⟩ → ⟨ α +ₒ γ ⟩
+  g (inl a) = inl a
+  g (inr b) = inr (f b)
+  g-order-pres : is-order-preserving (α +ₒ β) (α +ₒ γ) g
+  g-order-pres (inl a) (inl a') l = l
+  g-order-pres (inl a) (inr b)  l = l
+  g-order-pres (inr b) (inr b') l =
+   simulations-are-order-preserving β γ f f-sim b b' l
+  g-init-seg : is-initial-segment (α +ₒ β) (α +ₒ γ) g
+  g-init-seg (inl a) (inl a') l = inl a' , l , refl
+  g-init-seg (inr b) (inl a)  l = inl a , ⋆ , refl
+  g-init-seg (inr b) (inr b') l =
+   inr (pr₁ I) , pr₁ (pr₂ I) , ap inr (pr₂ (pr₂ I))
+    where
+     I : Σ b'' ꞉ ⟨ β ⟩ , (b'' ≺⟨ β ⟩ b) × (f b'' ＝ b')
+     I = simulations-are-initial-segments β γ f f-sim b b' l
 
 \end{code}
 
