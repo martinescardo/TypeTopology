@@ -5,7 +5,7 @@ Cancellation Arithmetic") of the paper "Constructive Ordinal
 Exponentiation" by Tom de Jong, Nicolai Kraus, Fredrik Nordvall
 Forsberg, and Chuangjie Xu.
 
-For a fixed ordinal α, we want to answer the following question:
+For a fixed ordinal α, we answer the following question positively:
   Do the functions (α + _), (α × _), and (exp α _) : Ord → Ord reflect
   ≤ and = ?
 It is quite trivial to see that α + β ≤ α + γ implies β ≤ γ, but the
@@ -83,15 +83,15 @@ no-right-cancellation-+ₒ hyp =
 
 \end{code}
 
-The proofs of our results will rely on two auxiliary notions.
-The first of which is the type of order-preserving (and possibly
+The proofs of our results will rely on two auxiliary notions, the
+first of which is the type of order-preserving (and possibly
 bounded) maps between two ordinals. Since LEM implies that every
 order-preserving map induces a simulation, we suggestively write
 α ≤ᶜˡ β (and α <ᶜˡ β) for "classical comparisons" consisting of
 order-preserving (bounded) maps.
 
-NB. If this finds any application outside this file, then the below
-    should probably be moved to Ordinals.Maps.
+NB. If this finds any application outside this file, then the code
+    below should probably be moved to Ordinals.Maps.
 
 \begin{code}
 
@@ -150,8 +150,8 @@ order" derived from a given order relates (a, b) and (a', b') if
 (a , b) is pointwise related to either (a', b') or (b', a') in the
 original order.
 
-NB. If this finds any application outside this file, then the below
-    should probably be moved to Ordinals.Notions.
+NB. If this finds any application outside this file, then the code
+    below should probably be moved to Ordinals.Notions.
 
 \begin{code}
 
