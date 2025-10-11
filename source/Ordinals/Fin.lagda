@@ -147,10 +147,16 @@ module _ (ua : Univalence) where
 
  Fin-ordinal-succ' : (n : ℕ) → Fin-ordinal (succ n) ＝ Fin-ordinal n +ₒ 𝟙ₒ
  Fin-ordinal-succ' n =
-  Fin-ordinal (succ n) ＝⟨ refl ⟩
-  Fin-ordinal (n +ℕ 1) ＝⟨ Fin-ordinal-+ₒ n 1 ⟩
+  Fin-ordinal (succ n)           ＝⟨ refl ⟩
+  Fin-ordinal (n +ℕ 1)           ＝⟨ Fin-ordinal-+ₒ n 1 ⟩
   Fin-ordinal n +ₒ Fin-ordinal 1 ＝⟨ ap (Fin-ordinal n +ₒ_) Fin-ordinal-one ⟩
-  Fin-ordinal n +ₒ 𝟙ₒ ∎
+  Fin-ordinal n +ₒ 𝟙ₒ            ∎
+
+ Fin-ordinal-two : Fin-ordinal 2 ＝ 𝟚ₒ
+ Fin-ordinal-two = Fin-ordinal-succ' 1 ∙ ap (_+ₒ 𝟙ₒ) Fin-ordinal-one
+
+ Fin-ordinal-three : Fin-ordinal 3 ＝ 𝟛ₒ
+ Fin-ordinal-three = Fin-ordinal-succ' 2 ∙ ap (_+ₒ 𝟙ₒ) Fin-ordinal-two
 
  Fin-ordinal-×ₒ : (n m : ℕ)
                 → Fin-ordinal (n * m) ＝ Fin-ordinal n ×ₒ Fin-ordinal m

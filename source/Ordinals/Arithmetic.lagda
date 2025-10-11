@@ -111,6 +111,9 @@ infixl 7 _×ₒ_
 𝟚ₒ : {𝓤 : Universe} → Ordinal 𝓤
 𝟚ₒ = 𝟙ₒ +ₒ 𝟙ₒ
 
+𝟛ₒ : {𝓤 : Universe} → Ordinal 𝓤
+𝟛ₒ = 𝟚ₒ +ₒ 𝟙ₒ
+
 𝟚ₒ-is-trichotomous : is-trichotomous (𝟚ₒ {𝓤})
 𝟚ₒ-is-trichotomous = +ₒ-is-trichotomous 𝟙ₒ 𝟙ₒ
                        𝟙ₒ-is-trichotomous
