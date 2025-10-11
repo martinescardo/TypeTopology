@@ -802,6 +802,19 @@ multiplication-preserves-strict-order m n (succ k) l = γ
 
 \end{code}
 
+A variation added by Fredrik Nordvall Forsberg 11 October 2025:
+
+\begin{code}
+
+multiplication-preserves-strict-order' : (m n k : ℕ)
+                                       → m < n
+                                       → 0 < k
+                                       → m * k < n * k
+multiplication-preserves-strict-order' m n (succ k) l p =
+ multiplication-preserves-strict-order m n k l
+
+\end{code}
+
 If x * (y + 1) ≤ z, then x ≤ z. This is a useful property to have, and
 proof follows from x ≤ x * y + 1 and transitivity of order.
 
@@ -936,5 +949,45 @@ double-reflects-≤ {succ x} {succ y} p = double-reflects-≤ {x} {y} p
 double-reflects-< : {x y : ℕ} → double x < double y → x < y
 double-reflects-< {zero} {succ y} _ = ⋆
 double-reflects-< {succ x} {succ y} p = double-reflects-< {x} {y} p
+
+\end{code}
+
+Added 11 October 2025 by Fredrik Nordvall Forsberg.
+
+\begin{code}
+
+open import Naturals.Exponentiation
+
+exponential-positive-if-base-positive : (n m : ℕ) → 0 < n → 0 <ℕ n ℕ^ m
+exponential-positive-if-base-positive n zero _ = ⋆
+exponential-positive-if-base-positive n@(succ n') (succ m) l = goal
+ where
+  IH : 0 <ℕ (n ℕ^ m)
+  IH = exponential-positive-if-base-positive  n m l
+
+  I : 0 <ℕ (n ℕ^ m) * n
+  I = less-than-pos-mult 0 (n ℕ^ m) n' IH
+
+  goal : 0 <ℕ n * (n ℕ^ m)
+  goal = transport (0 <ℕ_) (mult-commutativity (n ℕ^ m) n) I
+
+exponent-smaller-than-exponential-for-base-at-least-two : (n k : ℕ)
+                                                        → 2 ≤ℕ k
+                                                        → n ≤ℕ (k ℕ^ n)
+exponent-smaller-than-exponential-for-base-at-least-two zero k _ = ⋆
+exponent-smaller-than-exponential-for-base-at-least-two (succ n) k@(succ (succ k')) l
+ = ≤-<-trans n (1 * k ℕ^ n) (k * (k ℕ^ n)) I III
+  where
+   IH : n ≤ℕ (k ℕ^ n)
+   IH = exponent-smaller-than-exponential-for-base-at-least-two n k l
+
+   I : n ≤ℕ 1 * k ℕ^ n
+   I = transport⁻¹ (n ≤ℕ_) (mult-left-id (k ℕ^ n)) IH
+
+   II : 0 <ℕ k ℕ^ n
+   II = exponential-positive-if-base-positive k n ⋆
+
+   III : 1 * (k ℕ^ n) <ℕ k * (k ℕ^ n)
+   III = multiplication-preserves-strict-order' 1 k (k ℕ^ n) ⋆ II
 
 \end{code}

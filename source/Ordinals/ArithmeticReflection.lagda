@@ -27,8 +27,12 @@ module Ordinals.ArithmeticReflection
        (sr : Set-Replacement pt)
        where
 
-open import Naturals.Addition hiding (_+_)
+open import Fin.Type
+
+open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import Naturals.Division
+open import Naturals.Exponentiation
+open import Naturals.Multiplication
 open import Naturals.Order
 open import Naturals.Properties
 
@@ -45,6 +49,7 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
+open import Fin.Properties
 open import UF.Base
 open import UF.Equiv
 open import Ordinals.AdditionProperties ua
@@ -55,9 +60,11 @@ open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
+open import Ordinals.Fin
 open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.MultiplicationProperties ua
+open import Ordinals.Omega ua pt sr
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Propositions ua
@@ -70,8 +77,7 @@ open suprema pt sr
 \end{code}
 
 We start by briefly noting that right cancellation is just false
-for addition and multiplication.
-TODO: exponentiation.
+for addition, multiplication and exponentiation.
 
 \begin{code}
 
@@ -201,15 +207,93 @@ TODO: exponentiation.
   h = f , order-preserving-reflecting-equivs-are-order-equivs (𝟚ₒ ×ₒ ω) ω f
            f-equiv f-preserves-order f-reflects-order
 
-no-right-cancellation-×ₒ
- : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ×ₒ γ ＝ β ×ₒ γ → α ＝ β) → 𝟘
-no-right-cancellation-×ₒ hyp =
- 𝟚ₒ-is-not-𝟙ₒ (hyp 𝟚ₒ 𝟙ₒ ω (𝟚ₒ×ₒω-is-ω ∙ 𝟙ₒ×ₒω-is-ω ⁻¹))
+Fin-ordinal-_^ₒω-is-ω_ : (k : ℕ) -> 1 <ℕ k → Fin-ordinal k ^ₒ ω ＝ ω
+Fin-ordinal- k@(succ (succ k')) ^ₒω-is-ω p =
+  𝕜 ^ₒ ω                            ＝⟨ ap (𝕜 ^ₒ_) ω-is-sup-of-Fin ⟩
+  𝕜 ^ₒ (sup (λ n → Fin-ordinal n))  ＝⟨ I ⟩
+  sup (λ n → 𝕜 ^ₒ Fin-ordinal n)    ＝⟨ II ⟩
+  sup (λ n → Fin-ordinal (k ℕ^ n)) ＝⟨ ⊴-antisym _ _ III IV ⟩
+  sup (λ n → Fin-ordinal n)         ＝⟨ ω-is-sup-of-Fin ⁻¹ ⟩
+  ω                                 ∎
+   where
+    𝕜 = Fin-ordinal k
+
+    I = ^ₒ-satisfies-sup-specification 𝕜 𝕜-non-zero ∣ 0 ∣ Fin-ordinal
+     where
+      𝕜-non-zero : 𝕜 ≠ 𝟘ₒ
+      𝕜-non-zero eq = transport ⟨_⟩ eq fzero
+
+    II = ap sup (dfunext fe' λ n → Fin-ordinal-^ₒ ua pt sr (succ k') n ⁻¹)
+
+    III : sup (λ n → Fin-ordinal (k ℕ^ n)) ⊴ sup (λ n → Fin-ordinal n)
+    III = sup-composition-⊴ (k ℕ^_) Fin-ordinal
+
+    IV : sup (λ n → Fin-ordinal n) ⊴ sup (λ n → Fin-ordinal (k ℕ^ n))
+    IV = sup-monotone Fin-ordinal (Fin-ordinal ∘ (k ℕ^_)) IV₀
+     where
+      IV₀ : (n : ℕ) → Fin-ordinal n ⊴ Fin-ordinal (k ℕ^ n)
+      IV₀ n = Fin-ordinal-preserves-≤ ua
+               (exponent-smaller-than-exponential-for-base-at-least-two n k ⋆)
+
+
+
+{-
+𝟚ₒ^ₒω-is-ω : 𝟚ₒ ^ₒ ω ＝ ω
+𝟚ₒ^ₒω-is-ω = 𝟚ₒ ^ₒ ω ＝⟨ {!!} ⟩
+             𝟚ₒ ^ₒ (sup (λ n → Fin-ordinal n)) ＝⟨ {!!} ⟩
+             sup (λ n → 𝟚ₒ ^ₒ Fin-ordinal n) ＝⟨ {!!} ⟩
+             {!!} ＝⟨ {!!} ⟩
+             sup (λ n → Fin-ordinal n) ＝⟨ ω-is-sup-of-Fin ⁻¹ ⟩
+             ω ∎
+-}
 
 no-right-cancellation-+ₒ
  : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α +ₒ γ ＝ β +ₒ γ → α ＝ β) → 𝟘
 no-right-cancellation-+ₒ hyp =
  𝟘ₒ-is-not-𝟙ₒ (hyp 𝟘ₒ 𝟙ₒ ω (𝟘ₒ+ₒω-is-ω ∙ 𝟙ₒ+ₒω-is-ω ⁻¹))
+
+no-right-cancellation-+ₒ-⊴
+ : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α +ₒ γ ⊴ β +ₒ γ → α ⊴ β) → 𝟘
+no-right-cancellation-+ₒ-⊴ hyp = no-right-cancellation-+ₒ hyp'
+ where
+  hyp' : ∀ {𝓤} → (α β γ : Ordinal 𝓤) → α +ₒ γ ＝ β +ₒ γ → α ＝ β
+  hyp' α β γ e =
+   ⊴-antisym α β (hyp α β γ (＝-to-⊴ _ _ e)) (hyp β α γ (＝-to-⊴ _ _ (e ⁻¹)))
+
+no-right-cancellation-×ₒ
+ : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ×ₒ γ ＝ β ×ₒ γ → α ＝ β) → 𝟘
+no-right-cancellation-×ₒ hyp =
+ 𝟚ₒ-is-not-𝟙ₒ (hyp 𝟚ₒ 𝟙ₒ ω (𝟚ₒ×ₒω-is-ω ∙ 𝟙ₒ×ₒω-is-ω ⁻¹))
+
+no-right-cancellation-×ₒ-⊴
+ : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ×ₒ γ ⊴ β ×ₒ γ → α ⊴ β) → 𝟘
+no-right-cancellation-×ₒ-⊴ hyp = no-right-cancellation-×ₒ hyp'
+ where
+  hyp' : ∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ×ₒ γ ＝ β ×ₒ γ → α ＝ β
+  hyp' α β γ e =
+   ⊴-antisym α β (hyp α β γ (＝-to-⊴ _ _ e)) (hyp β α γ (＝-to-⊴ _ _ (e ⁻¹)))
+
+no-right-cancellation-^ₒ
+ : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ^ₒ γ ＝ β ^ₒ γ → α ＝ β) → 𝟘
+no-right-cancellation-^ₒ hyp =
+ Fin3-is-not-Fin2 (hyp (Fin-ordinal 3) (Fin-ordinal 2) ω Fin3^ₒω-is-Fin2^ₒω)
+  where
+   Fin3^ₒω-is-Fin2^ₒω : Fin-ordinal 3 ^ₒ ω ＝ Fin-ordinal 2 ^ₒ ω
+   Fin3^ₒω-is-Fin2^ₒω = Fin-ordinal- 3 ^ₒω-is-ω ⋆ ∙ Fin-ordinal- 2 ^ₒω-is-ω ⋆ ⁻¹
+
+   Fin3-is-not-Fin2 : Fin-ordinal 3 ≠ Fin-ordinal 2
+   Fin3-is-not-Fin2 eq = positive-not-zero 0 (succ-lc (succ-lc (3-is-2 eq)))
+    where
+     3-is-2 : Fin-ordinal 3 ＝ Fin-ordinal 2 → 3 ＝ 2
+     3-is-2 eq = Fin-lc 3 2 (idtoeq (Fin 3) (Fin 2) (ap ⟨_⟩ eq))
+
+no-right-cancellation-^ₒ-⊴
+ : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ^ₒ γ ⊴ β ^ₒ γ → α ⊴ β) → 𝟘
+no-right-cancellation-^ₒ-⊴ hyp = no-right-cancellation-^ₒ hyp'
+ where
+  hyp' : ∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ^ₒ γ ＝ β ^ₒ γ → α ＝ β
+  hyp' α β γ e =
+   ⊴-antisym α β (hyp α β γ (＝-to-⊴ _ _ e)) (hyp β α γ (＝-to-⊴ _ _ (e ⁻¹)))
 
 \end{code}
 

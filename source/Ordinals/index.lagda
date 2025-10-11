@@ -19,6 +19,7 @@ import Ordinals.CumulativeHierarchy           -- by [2]
 import Ordinals.CumulativeHierarchy-Addendum  -- by [2]
 import Ordinals.Equivalence
 import Ordinals.Exponentiation.index          -- by [2]
+import Ordinals.Fin                           -- by [5] (with additions by [2])
 import Ordinals.Indecomposable
 import Ordinals.InfProperty
 import Ordinals.Injectivity
@@ -32,6 +33,7 @@ import Ordinals.NotationInterpretation0
 import Ordinals.NotationInterpretation1
 import Ordinals.NotationInterpretation2
 import Ordinals.Notions
+import Ordinals.Omega                        -- by [2]
 import Ordinals.OrdinalOfOrdinals
 import Ordinals.OrdinalOfOrdinalsSuprema     -- by [3]
 import Ordinals.OrdinalOfTruthValues
@@ -56,3 +58,4 @@ import Ordinals.WellOrderingTaboo            -- by [4]
 [2] de Jong, Kraus, Nordvall Forsberg, and Xu.
 [3] Tom de Jong
 [4] Tom de Jong (after Andrew Swan)
+[5] Alice Laroche
