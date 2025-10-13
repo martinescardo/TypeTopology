@@ -205,7 +205,6 @@ The construction of finite ordinals is order preserving.
                                            (Fin-ordinal m)
                                            (Fin-ordinal-preserves-≤ l))
 
-
  Fin-ordinal-succ-positive : (n : ℕ) → 𝟙ₒ ⊴ Fin-ordinal (succ n)
  Fin-ordinal-succ-positive n =
   transport (_⊴ Fin-ordinal (succ n)) Fin-ordinal-one (Fin-ordinal-preserves-≤ ⋆)
