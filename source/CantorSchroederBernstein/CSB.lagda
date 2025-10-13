@@ -1242,7 +1242,9 @@ We now consider the propositional version of BKS⁺:
  discrete-wCSB-gives-BKS⁺ w P i = γ
   where
    s : ∥ ℕ ≃ P + ℕ ∥
-   s = w ℕ-is-discrete (+-is-discrete (props-are-discrete i) ℕ-is-discrete) (econstruction-ℕ P i)
+   s = w ℕ-is-discrete
+         (+-is-discrete (props-are-discrete i) ℕ-is-discrete)
+         (econstruction-ℕ P i)
 
    γ : is-Rosolini P
    γ = ∥∥-functor (rlemma P i) s
