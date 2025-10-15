@@ -33,6 +33,7 @@ import Ordinals.NotationInterpretation0
 import Ordinals.NotationInterpretation1
 import Ordinals.NotationInterpretation2
 import Ordinals.Notions
+import Ordinals.Omega                        -- by [2]
 import Ordinals.OrdinalOfOrdinals
 import Ordinals.OrdinalOfOrdinalsSuprema     -- by [3]
 import Ordinals.OrdinalOfTruthValues
