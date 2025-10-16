@@ -235,11 +235,37 @@ open import Ordinals.Underlying
   ϕ : (x : ⟨ α +ₒ β ⟩) → ((α +ₒ β) ↓ x) ⊲ (α +ₒ γ)
   ϕ = dep-cases l r
 
-+ₒ-right-monotone-⊴ : (α β γ : Ordinal 𝓤)
-                    → β ⊴ γ
-                    → (α +ₒ β) ⊴ (α +ₒ γ)
++ₒ-right-monotone-⊴ : (α : Ordinal 𝓤) → is-⊴-preserving (α +ₒ_)
 +ₒ-right-monotone-⊴ α β γ l =
  ≼-gives-⊴ (α +ₒ β) (α +ₒ γ) (+ₒ-right-monotone α β γ (⊴-gives-≼ β γ l))
+
+\end{code}
+
+Added by Tom de Jong in July/October 2025. The following proof has
+better computational properties (and is arguably simpler) than the one
+above.
+
+\begin{code}
+
++ₒ-right-monotone-⊴' : (α : Ordinal 𝓤) → is-⊴-preserving (α +ₒ_)
++ₒ-right-monotone-⊴' α β γ 𝕗@(f , f-sim) = g , g-init-seg , g-order-pres
+ where
+  g : ⟨ α +ₒ β ⟩ → ⟨ α +ₒ γ ⟩
+  g (inl a) = inl a
+  g (inr b) = inr (f b)
+  g-order-pres : is-order-preserving (α +ₒ β) (α +ₒ γ) g
+  g-order-pres (inl a) (inl a') l = l
+  g-order-pres (inl a) (inr b)  l = l
+  g-order-pres (inr b) (inr b') l =
+   simulations-are-order-preserving β γ f f-sim b b' l
+  g-init-seg : is-initial-segment (α +ₒ β) (α +ₒ γ) g
+  g-init-seg (inl a) (inl a') l = inl a' , l , refl
+  g-init-seg (inr b) (inl a)  l = inl a , ⋆ , refl
+  g-init-seg (inr b) (inr b') l =
+   inr (pr₁ I) , pr₁ (pr₂ I) , ap inr (pr₂ (pr₂ I))
+    where
+     I : Σ b'' ꞉ ⟨ β ⟩ , (b'' ≺⟨ β ⟩ b) × (f b'' ＝ b')
+     I = simulations-are-initial-segments β γ f f-sim b b' l
 
 \end{code}
 
@@ -1287,5 +1313,51 @@ Added 26 September 2025 by Fredrik Nordvall Forsberg.
  where
   p' : 𝟚ₒ ＝ 𝟙ₒ +ₒ 𝟘ₒ
   p' = p ∙ 𝟘ₒ-right-neutral 𝟙ₒ ⁻¹
+
+\end{code}
+
+Added in September 2025 by Fredrik Nordvall Forsberg.
+Moved here from ArithmeticReflection by Tom de Jong in October 2025.
+
+Some special cases of addition by ω.
+
+\begin{code}
+
+𝟘ₒ+ₒω-is-ω : 𝟘ₒ +ₒ ω ＝ ω
+𝟘ₒ+ₒω-is-ω = 𝟘ₒ-left-neutral ω
+
+𝟙ₒ+ₒω-is-ω : 𝟙ₒ +ₒ ω ＝ ω
+𝟙ₒ+ₒω-is-ω = eqtoidₒ (ua _) fe' (𝟙ₒ +ₒ ω) ω h
+ where
+  f : 𝟙 + ℕ → ℕ
+  f (inl ⋆) = 0
+  f (inr n) = succ n
+
+  g : ℕ → 𝟙 + ℕ
+  g 0 = inl ⋆
+  g (succ n) = inr n
+
+  f-equiv : is-equiv f
+  f-equiv = qinvs-are-equivs f (g , (η , ϵ))
+   where
+    η : (λ x → g (f x)) ∼ id
+    η (inl ⋆) = refl
+    η (inr n) = refl
+
+    ϵ : (λ x → f (g x)) ∼ id
+    ϵ zero = refl
+    ϵ (succ x) = refl
+
+  f-preserves-order : (x y : 𝟙 + ℕ) → x ≺⟨ 𝟙ₒ +ₒ ω ⟩ y → f x ≺⟨ ω ⟩ f y
+  f-preserves-order (inl ⋆) (inr n) p = ⋆
+  f-preserves-order (inr n) (inr m) p = p
+
+  f-reflects-order : (x y : 𝟙 + ℕ) → f x ≺⟨ ω ⟩ f y → x ≺⟨ 𝟙ₒ +ₒ ω ⟩ y
+  f-reflects-order (inl ⋆) (inr n) _ = ⋆
+  f-reflects-order (inr n) (inr m) p = p
+
+  h : (𝟙ₒ +ₒ ω) ≃ₒ ω
+  h = f , order-preserving-reflecting-equivs-are-order-equivs (𝟙ₒ +ₒ ω) ω f
+           f-equiv f-preserves-order f-reflects-order
 
 \end{code}

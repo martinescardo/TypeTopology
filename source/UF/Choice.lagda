@@ -733,8 +733,6 @@ Theorem 7.7 of the above reference.
 TODO. Add these and more facts about this. Some of them can be adapted
 from this Agda file: https://www.cs.bham.ac.uk/~mhe/GeneralizedHedberg/html/GeneralizedHedberg.html
 
-These additions are done in NotionsOfDecidability.SemiDecidable by Tom de Jong.
-
 Added 6th Feb 2025 by Martin Escardo.
 
 \begin{code}

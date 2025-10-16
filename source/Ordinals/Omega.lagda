@@ -27,7 +27,6 @@ open import Notation.Order
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
-open import UF.ImageAndSurjection pt
 open import UF.UA-FunExt
 
 private
@@ -55,12 +54,12 @@ open suprema pt sr
   f = Fin-unprime n
 
   f-order-preserving : is-order-preserving (ω ↓ n) (Fin-ordinal n) f
-  f-order-preserving k k' l =
-   transport₂⁻¹ (λ z w →  pr₁ z < pr₁ w) (ηFin n k) (ηFin n k') l
+  f-order-preserving k k' =
+   transport₂⁻¹ (λ z w → pr₁ z < pr₁ w) (ηFin n k) (ηFin n k')
 
   f-order-reflecting : is-order-reflecting (ω ↓ n) (Fin-ordinal n) f
-  f-order-reflecting m m' l =
-   transport₂ (λ z w →  pr₁ z < pr₁ w) (ηFin n m) (ηFin n m') l
+  f-order-reflecting m m' =
+   transport₂ (λ z w → pr₁ z < pr₁ w) (ηFin n m) (ηFin n m')
 
   f-is-order-equiv : is-order-equiv (ω ↓ n) (Fin-ordinal n) f
   f-is-order-equiv =
@@ -81,12 +80,9 @@ open suprema pt sr
   I = supremum-of-successors-of-initial-segments pt sr ω
   II = ap sup (dfunext fe' (λ n → ap (_+ₒ 𝟙ₒ) (ω-↓ n) ∙ Fin-ordinal-succ' ua n ⁻¹))
   III = ⊴-antisym _ _ (sup-composition-⊴ succ Fin-ordinal)
-                      (sup-monotone Fin-ordinal (Fin-ordinal ∘ succ) III₀)
+                      (sup-monotone Fin-ordinal (Fin-ordinal ∘ succ) III')
    where
-    III₀ : (m : ℕ) → Fin-ordinal m ⊴ Fin-ordinal (succ m)
-    III₀ m = transport₂ _⊴_
-                        (𝟘ₒ-right-neutral (Fin-ordinal m))
-                        (Fin-ordinal-succ' ua m ⁻¹)
-                        (+ₒ-right-monotone-⊴ (Fin-ordinal m) 𝟘ₒ 𝟙ₒ (𝟘ₒ-least-⊴ 𝟙₀))
+    III' : (m : ℕ) → Fin-ordinal m ⊴ Fin-ordinal (succ m)
+    III' m = Fin-ordinal-preserves-≤ ua (≤-succ m)
 
 \end{code}

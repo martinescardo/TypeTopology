@@ -6,7 +6,7 @@ Martin Escardo, started 5th May 2018
 
 module Naturals.Order where
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_^_)
 
 open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.AbsoluteDifference
@@ -155,7 +155,7 @@ not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬ (n < m)
 bigger-or-equal-not-less m n l u = not-less-than-itself n γ
  where
-  γ : succ n ≤ℕ n
+  γ : succ n ≤ n
   γ = ≤-trans (succ n) m n u l
 
 less-not-bigger-or-equal : (m n : ℕ) → m < n → ¬ (n ≤ m)
@@ -255,10 +255,10 @@ types (indexed or not) other than the natural numbers.
 <-is-extensional (succ m) (0   )   f g = unique-from-𝟘 (f 0    (zero-least m))
 <-is-extensional (succ m) (succ n) f g = ap succ (≤-anti m n γ₁ γ₂)
  where
-  γ₁ : m ≤ℕ n
+  γ₁ : m ≤ n
   γ₁ = f m (≤-refl m)
 
-  γ₂ : n ≤ℕ m
+  γ₂ : n ≤ m
   γ₂ = g n (≤-refl n)
 
 ℕ-ordinal : is-well-order _<_
@@ -540,7 +540,7 @@ equal-gives-less-than-or-equal x y p = transport (_≤ y) (p ⁻¹) (≤-refl y)
 less-than-not-equal : (x y : ℕ) → x < y → ¬ (x ＝ y)
 less-than-not-equal x y r p = less-not-bigger-or-equal x y r γ
  where
-  γ : y ≤ℕ x
+  γ : y ≤ x
   γ = equal-gives-less-than-or-equal y x (p ⁻¹)
 
 less-than-one-is-0 : (x : ℕ) → x < 1 → x ＝ 0
@@ -741,7 +741,7 @@ maximal-from-given A b δ (k , Ak , l) = Cases (bounded-maximisation A δ b) γ�
   γ₂ : no-maximal-element A b → maximal-element A b
   γ₂ ω = 𝟘-elim (not-less-than-itself b β)
    where
-    α : b ≤ℕ k
+    α : b ≤ k
     α = ω k Ak
 
     β : b < b
@@ -802,7 +802,7 @@ multiplication-preserves-strict-order m n (succ k) l = γ
 
 \end{code}
 
-A variation added by Fredrik Nordvall Forsberg 11 October 2025:
+A variation added by Fredrik Nordvall Forsberg on 11 October 2025.
 
 \begin{code}
 
@@ -852,13 +852,13 @@ Slight refactoring on 12 October 2023
 ≤-diff 0        (succ y) = ≤-+' 0    y
 ≤-diff (succ x) (succ y) = γ
  where
-  Γ : (x +' y) ≤ℕ (succ x +' y)
+  Γ : (x +' y) ≤ (succ x +' y)
   Γ = ≤-trans (x +' y) (succ (x +' y)) (succ x +' y)
        (≤-succ (x +' y))
        (equal-gives-less-than-or-equal (succ (x +' y)) (succ x +' y)
          (succ-left x y ⁻¹))
 
-  γ : ∣ x - y ∣ ≤ℕ succ (succ x +' y)
+  γ : ∣ x - y ∣ ≤ succ (succ x +' y)
   γ = ≤-trans₂ ∣ x - y ∣ (x +' y) (succ x +' y) (succ (succ x +' y))
        (≤-diff x y) Γ (≤-succ (succ x +' y))
 
@@ -867,17 +867,17 @@ Slight refactoring on 12 October 2023
 ≤-diff-minus (succ x) 0    = ≤-+' 0    x
 ≤-diff-minus (succ x) (succ y) = γ
  where
-  Γ : x ≤ℕ (y +' ∣ y - x ∣)
+  Γ : x ≤ (y +' ∣ y - x ∣)
   Γ = ≤-diff-minus x y
 
-  γ : succ x ≤ℕ (succ y +' ∣ y - x ∣)
+  γ : succ x ≤ (succ y +' ∣ y - x ∣)
   γ = ≤-trans (succ x) (succ (y +' ∣ y - x ∣)) (succ y +' ∣ y - x ∣)
        (succ-monotone x (y +' ∣ y - x ∣) Γ)
        (equal-gives-less-than-or-equal
         (succ (y +' ∣ y - x ∣)) (succ y +' ∣ y - x ∣)
         (succ-left y ∣ y - x ∣ ⁻¹))
 
-≤-diff-plus : (x y : ℕ) → x ≤ℕ (∣ x - y ∣ +' y)
+≤-diff-plus : (x y : ℕ) → x ≤ (∣ x - y ∣ +' y)
 ≤-diff-plus 0        y        = ⋆
 ≤-diff-plus (succ x) 0        = ≤-refl x
 ≤-diff-plus (succ x) (succ y) = ≤-diff-plus x y
@@ -886,16 +886,16 @@ triangle-inequality : (x y z : ℕ) → ∣ x - z ∣ ≤ ∣ x - y ∣ +' ∣ y
 triangle-inequality 0    y z =
  ≤-trans₂ ∣ 0 - z ∣ z (y +' ∣ y - z ∣) (∣ 0 - y ∣ +' ∣ y - z ∣) Γ α γ
   where
-   Γ : ∣ 0 - z ∣ ≤ℕ z
+   Γ : ∣ 0 - z ∣ ≤ z
    Γ = equal-gives-less-than-or-equal ∣ 0 - z ∣ z (minus-nothing z)
 
-   α : z ≤ℕ (y +' ∣ y - z ∣)
+   α : z ≤ (y +' ∣ y - z ∣)
    α = ≤-diff-minus z y
 
-   β : y ≤ℕ ∣ 0 - y ∣
+   β : y ≤ ∣ 0 - y ∣
    β = equal-gives-less-than-or-equal y ∣ 0 - y ∣ (minus-nothing y ⁻¹)
 
-   γ : (y +' ∣ y - z ∣) ≤ℕ (∣ 0 - y ∣ +' ∣ y - z ∣)
+   γ : (y +' ∣ y - z ∣) ≤ (∣ 0 - y ∣ +' ∣ y - z ∣)
    γ = ≤-adding y ∣ 0 - y ∣ ∣ y - z ∣ ∣ y - z ∣ β (≤-refl ∣ y - z ∣)
 triangle-inequality (succ x) 0    0        = ≤-refl x
 triangle-inequality (succ x) 0    (succ z) =
@@ -904,7 +904,7 @@ triangle-inequality (succ x) 0    (succ z) =
       (≤-succ (x +' z))
       (≤-trans (x +' z) (succ (x +' z)) (succ x +' z) (≤-succ (x +' z)) α )
   where
-   α : succ (x +' z) ≤ℕ (succ x +' z)
+   α : succ (x +' z) ≤ (succ x +' z)
    α = equal-gives-less-than-or-equal (succ (x +' z)) (succ x +' z)
         (succ-left x z ⁻¹)
 triangle-inequality (succ x) (succ y) 0        = ≤-diff-plus x y
@@ -956,38 +956,38 @@ Added 11 October 2025 by Fredrik Nordvall Forsberg.
 
 \begin{code}
 
-open import Naturals.Exponentiation
+open import Naturals.Exponentiation renaming (_ℕ^_ to _^_)
 
-exponential-positive-if-base-positive : (n m : ℕ) → 0 < n → 0 <ℕ n ℕ^ m
+exponential-positive-if-base-positive : (n m : ℕ) → 0 < n → 0 < n ^ m
 exponential-positive-if-base-positive n zero _ = ⋆
-exponential-positive-if-base-positive n@(succ n') (succ m) l = goal
+exponential-positive-if-base-positive n@(succ n') (succ m) l = II
  where
-  IH : 0 <ℕ (n ℕ^ m)
-  IH = exponential-positive-if-base-positive  n m l
+  IH : 0 < (n ^ m)
+  IH = exponential-positive-if-base-positive n m l
 
-  I : 0 <ℕ (n ℕ^ m) * n
-  I = less-than-pos-mult 0 (n ℕ^ m) n' IH
+  I : 0 < (n ^ m) * n
+  I = less-than-pos-mult 0 (n ^ m) n' IH
 
-  goal : 0 <ℕ n * (n ℕ^ m)
-  goal = transport (0 <ℕ_) (mult-commutativity (n ℕ^ m) n) I
+  II : 0 < n * (n ^ m)
+  II = transport (0 <_) (mult-commutativity (n ^ m) n) I
 
 exponent-smaller-than-exponential-for-base-at-least-two : (n k : ℕ)
-                                                        → 2 ≤ℕ k
-                                                        → n ≤ℕ (k ℕ^ n)
+                                                        → 2 ≤ k
+                                                        → n ≤ (k ^ n)
 exponent-smaller-than-exponential-for-base-at-least-two zero k _ = ⋆
-exponent-smaller-than-exponential-for-base-at-least-two (succ n) k@(succ (succ k')) l
- = ≤-<-trans n (1 * k ℕ^ n) (k * (k ℕ^ n)) I III
+exponent-smaller-than-exponential-for-base-at-least-two
+ (succ n) k@(succ (succ k')) l = ≤-<-trans n (1 * k ^ n) (k * (k ^ n)) I III
   where
-   IH : n ≤ℕ (k ℕ^ n)
+   IH : n ≤ (k ^ n)
    IH = exponent-smaller-than-exponential-for-base-at-least-two n k l
 
-   I : n ≤ℕ 1 * k ℕ^ n
-   I = transport⁻¹ (n ≤ℕ_) (mult-left-id (k ℕ^ n)) IH
+   I : n ≤ 1 * k ^ n
+   I = transport⁻¹ (n ≤_) (mult-left-id (k ^ n)) IH
 
-   II : 0 <ℕ k ℕ^ n
+   II : 0 < k ^ n
    II = exponential-positive-if-base-positive k n ⋆
 
-   III : 1 * (k ℕ^ n) <ℕ k * (k ℕ^ n)
-   III = multiplication-preserves-strict-order' 1 k (k ℕ^ n) ⋆ II
+   III : 1 * (k ^ n) < k * (k ^ n)
+   III = multiplication-preserves-strict-order' 1 k (k ^ n) ⋆ II
 
 \end{code}

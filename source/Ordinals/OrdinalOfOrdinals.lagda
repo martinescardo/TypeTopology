@@ -51,6 +51,9 @@ The simulations make the ordinals into a poset:
 _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ⊴ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-simulation α β f
 
+is-⊴-preserving : (Ordinal 𝓤 → Ordinal 𝓥) → 𝓤 ⁺ ⊔ 𝓥 ̇
+is-⊴-preserving {𝓤} {𝓥} f = (α β : Ordinal 𝓤) → α ⊴ β → f α ⊴ f β
+
 is-⊴-reflecting : (Ordinal 𝓤 → Ordinal 𝓥) → 𝓤 ⁺ ⊔ 𝓥 ̇
 is-⊴-reflecting {𝓤} {𝓥} f = (α β : Ordinal 𝓤) → f α ⊴ f β → α ⊴ β
 

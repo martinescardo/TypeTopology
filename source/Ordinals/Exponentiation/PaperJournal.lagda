@@ -571,13 +571,13 @@ Eq-6 = 𝟘ₒ+ₒω-is-ω , 𝟙ₒ×ₒω-is-ω , [1]
   [1] = (ap (_^ₒ ω) (Fin-ordinal-two ua ⁻¹) ∙ (Fin-ordinal- 2 ^ₒω-is-ω ⋆))
   [2] = (ap (_^ₒ ω) (Fin-ordinal-three ua ⁻¹) ∙ (Fin-ordinal- 3 ^ₒω-is-ω ⋆))
 
-Eq-6-addendum-i : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α +ₒ γ ＝ β +ₒ γ → α ＝ β) → 𝟘
+Eq-6-addendum-i : ¬ ((α β γ : Ordinal 𝓤₀) → α +ₒ γ ＝ β +ₒ γ → α ＝ β)
 Eq-6-addendum-i = no-right-cancellation-+ₒ
 
-Eq-6-addendum-ii : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ×ₒ γ ＝ β ×ₒ γ → α ＝ β) → 𝟘
+Eq-6-addendum-ii : ¬ ((α β γ : Ordinal 𝓤₀) → α ×ₒ γ ＝ β ×ₒ γ → α ＝ β)
 Eq-6-addendum-ii = no-right-cancellation-×ₒ
 
-Eq-6-addendum-iii : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ^ₒ γ ＝ β ^ₒ γ → α ＝ β) → 𝟘
+Eq-6-addendum-iii : ¬ ((α β γ : Ordinal 𝓤₀) → α ^ₒ γ ＝ β ^ₒ γ → α ＝ β)
 Eq-6-addendum-iii = no-right-cancellation-^ₒ
 
 Lemma-40 : (α β : Ordinal 𝓤)

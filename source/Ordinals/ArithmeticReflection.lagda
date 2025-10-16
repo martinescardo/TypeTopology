@@ -1,17 +1,17 @@
 Tom de Jong, 31 July 2025.
 
-This file provides a formalization of Section 7 ("Abstract Cancellation
-Arithmetic") of the paper "Constructive Ordinal Exponentiation" by Tom
-de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, and Chuangjie Xu.
+This file provides a formalization of Section 7 ("Abstract
+Cancellation Arithmetic") of the paper "Constructive Ordinal
+Exponentiation" by Tom de Jong, Nicolai Kraus, Fredrik Nordvall
+Forsberg, and Chuangjie Xu.
 
-For a fixed ordinal α, we want to answer the following question:
-  Do the functions (α + _), (α × _), and (exp α _) : Ord → Ord
-  reflect ≤ and = ?
-It is quite trivial to see that α + β ≤ α + γ implies β ≤ γ,
-but the question is non-trivial for multiplication and exponentiation.
-This file develops a result for a general function F : Ord → Ord,
-of which the functions in question are instances.
-
+For a fixed ordinal α, we answer the following question positively:
+  Do the functions (α + _), (α × _), and (exp α _) : Ord → Ord reflect
+  ≤ and = ?
+It is quite trivial to see that α + β ≤ α + γ implies β ≤ γ, but the
+question is non-trivial for multiplication and exponentiation.  This
+file develops a result for a general function F : Ord → Ord, of which
+the functions in question are instances.
 
 \begin{code}
 
@@ -27,15 +27,6 @@ module Ordinals.ArithmeticReflection
        (sr : Set-Replacement pt)
        where
 
-open import Fin.Type
-
-open import Naturals.Addition renaming (_+_ to _+ℕ_)
-open import Naturals.Division
-open import Naturals.Exponentiation
-open import Naturals.Multiplication
-open import Naturals.Order
-open import Naturals.Properties
-
 open import MLTT.Plus-Properties
 open import MLTT.Spartan hiding (J)
 open import MLTT.List hiding ([_])
@@ -49,7 +40,6 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
-open import Fin.Properties
 open import UF.Base
 open import UF.Equiv
 open import Ordinals.AdditionProperties ua
@@ -60,11 +50,9 @@ open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
-open import Ordinals.Fin
 open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.MultiplicationProperties ua
-open import Ordinals.Omega ua pt sr
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Propositions ua
@@ -76,137 +64,37 @@ open suprema pt sr
 
 \end{code}
 
-We start by briefly noting that right cancellation is just false
-for addition, multiplication and exponentiation.
+We start by briefly noting that right cancellation is just false for
+addition and multiplication.
+TODO. For exponentiation, formalize that 𝟚ₒ ^ₒ ω ＝ ω ＝ 𝟛ₒ ^ₒ ω, so that
+(-) ^ₒ ω is not injective.
 
 \begin{code}
 
-𝟘ₒ+ₒω-is-ω : 𝟘ₒ +ₒ ω ＝ ω
-𝟘ₒ+ₒω-is-ω = 𝟘ₒ-left-neutral ω
+no-right-cancellation-×ₒ
+ : ¬ ((α β γ : Ordinal 𝓤₀) → α ×ₒ γ ＝ β ×ₒ γ → α ＝ β)
+no-right-cancellation-×ₒ hyp =
+ 𝟚ₒ-is-not-𝟙ₒ (hyp 𝟚ₒ 𝟙ₒ ω (𝟚ₒ×ₒω-is-ω ∙ 𝟙ₒ×ₒω-is-ω ⁻¹))
 
-𝟙ₒ+ₒω-is-ω : 𝟙ₒ +ₒ ω ＝ ω
-𝟙ₒ+ₒω-is-ω = eqtoidₒ (ua _) fe' (𝟙ₒ +ₒ ω) ω h
- where
-  f : 𝟙 + ℕ → ℕ
-  f (inl ⋆) = 0
-  f (inr n) = succ n
+no-right-cancellation-+ₒ
+ : ¬ ((α β γ : Ordinal 𝓤₀) → α +ₒ γ ＝ β +ₒ γ → α ＝ β)
+no-right-cancellation-+ₒ hyp =
+ 𝟘ₒ-is-not-𝟙ₒ (hyp 𝟘ₒ 𝟙ₒ ω (𝟘ₒ+ₒω-is-ω ∙ 𝟙ₒ+ₒω-is-ω ⁻¹))
 
-  g : ℕ → 𝟙 + ℕ
-  g 0 = inl ⋆
-  g (succ n) = inr n
+\end{code}
 
-  f-equiv : is-equiv f
-  f-equiv = qinvs-are-equivs f (g , (η , ϵ))
-   where
-    η : (λ x → g (f x)) ∼ id
-    η (inl ⋆) = refl
-    η (inr n) = refl
+TODO. MERGE PROPERLY
+TODO. Change ∀ {𝓤} to just 𝓤₀.
 
-    ϵ : (λ x → f (g x)) ∼ id
-    ϵ zero = refl
-    ϵ (succ x) = refl
+\begin{code}
 
-  f-preserves-order : (x y : 𝟙 + ℕ) → x ≺⟨ 𝟙ₒ +ₒ ω ⟩ y → f x ≺⟨ ω ⟩ f y
-  f-preserves-order (inl ⋆) (inr n) p = ⋆
-  f-preserves-order (inr n) (inr m) p = p
-
-  f-reflects-order : (x y : 𝟙 + ℕ) → f x ≺⟨ ω ⟩ f y → x ≺⟨ 𝟙ₒ +ₒ ω ⟩ y
-  f-reflects-order (inl ⋆) (inr n) _ = ⋆
-  f-reflects-order (inr n) (inr m) p = p
-
-  h : (𝟙ₒ +ₒ ω) ≃ₒ ω
-  h = f , order-preserving-reflecting-equivs-are-order-equivs (𝟙ₒ +ₒ ω) ω f
-           f-equiv f-preserves-order f-reflects-order
-
-𝟙ₒ×ₒω-is-ω : 𝟙ₒ ×ₒ ω ＝ ω
-𝟙ₒ×ₒω-is-ω = 𝟙ₒ-left-neutral-×ₒ ω
-
-𝟚ₒ×ₒω-is-ω : 𝟚ₒ ×ₒ ω ＝ ω
-𝟚ₒ×ₒω-is-ω = eqtoidₒ (ua _) fe' (𝟚ₒ ×ₒ ω) ω h
- where
-  f : ⟨ 𝟚ₒ ⟩ × ℕ → ℕ
-  f (inl ⋆ , n) = double n
-  f (inr ⋆ , n) = sdouble n
-
-  g' : (n : ℕ) → division-theorem n 1 → ⟨ 𝟚ₒ ⟩ × ℕ
-  g' n (k , 0 , p , l) = inl ⋆ , k
-  g' n (k , 1 , p , l) = inr ⋆ , k
-
-  g : ℕ → ⟨ 𝟚ₒ ⟩ × ℕ
-  g n = g' n (division n 1)
-
-  f-equiv : is-equiv f
-  f-equiv = qinvs-are-equivs f (g , (η , ϵ))
-   where
-    η' : (x : ⟨ 𝟚ₒ ⟩ × ℕ)(m : ℕ) → m ＝ f x → (d : division-theorem m 1)
-       → g' m d ＝ x
-    η' (inl ⋆ , n) m r (k , 0 , p , l) = ap (inl ⋆ ,_) (double-lc τ)
-     where
-      τ : double k ＝ double n
-      τ = double-is-self-addition k ∙ p ⁻¹ ∙ r
-    η' (inr ⋆ , n) m r (k , 0 , p , l) = 𝟘-elim (double-is-not-sdouble τ)
-     where
-      τ : double k ＝ sdouble n
-      τ = double-is-self-addition k ∙ p ⁻¹  ∙ r
-    η' (inl ⋆ , n) m r (k , 1 , p , l) = 𝟘-elim (double-is-not-sdouble τ)
-     where
-      τ : double n ＝ sdouble k
-      τ = r ⁻¹ ∙ p ∙ ap succ (double-is-self-addition k ⁻¹)
-    η' (inr ⋆ , n) m r (k , 1 , p , l) = ap (inr ⋆ ,_) (sdouble-lc τ)
-     where
-      τ : sdouble k ＝ sdouble n
-      τ = ap succ (double-is-self-addition k) ∙ p ⁻¹ ∙ r
-
-    η : (λ x → g (f x)) ∼ id
-    η x = η' x (f x) refl (division (f x) 1)
-
-    ϵ' : (n : ℕ) → (d : division-theorem n 1) → f (g' n d) ＝ n
-    ϵ' n (k , 0 , refl , l) = double-is-self-addition k
-    ϵ' n (k , 1 , refl , l) = ap succ (double-is-self-addition k)
-
-    ϵ : (λ n → f (g n)) ∼ id
-    ϵ n = ϵ' n (division n 1)
-
-  f-preserves-order : (x y : ⟨ 𝟚ₒ ⟩ × ℕ) → x ≺⟨ 𝟚ₒ ×ₒ ω ⟩ y → f x ≺⟨ ω ⟩ f y
-  f-preserves-order (inl ⋆ , x) (inl ⋆ , y) (inl p) =
-   transport₂⁻¹ (λ - → succ - ≤ℕ_)
-                (double-is-self-addition x)
-                (double-is-self-addition y)
-                (≤-adding x y (succ x) y (≤-trans x (succ x) y (≤-succ x) p) p)
-  f-preserves-order (inl ⋆ , x) (inr ⋆ , y) (inl p) =
-   transport₂⁻¹ _≤ℕ_ (double-is-self-addition x) (double-is-self-addition y)
-    (≤-adding x y x y (≤-trans x (succ x) y (≤-succ x) p)
-                      (≤-trans x (succ x) y (≤-succ x) p))
-  f-preserves-order (inr ⋆ , x) (inl ⋆ , y) (inl p) =
-   transport₂⁻¹ (λ - → succ - ≤ℕ_)
-                (ap succ (double-is-self-addition x) ∙ succ-left x x ⁻¹)
-                (double-is-self-addition y)
-                (≤-adding (succ x) y (succ x) y p p)
-  f-preserves-order (inr ⋆ , x) (inr ⋆ , y) (inl p) =
-   transport₂⁻¹ (λ - → succ - ≤ℕ_)
-                (double-is-self-addition x)
-                (double-is-self-addition y)
-                (≤-adding x y (succ x) y (≤-trans x (succ x) y (≤-succ x) p) p)
-  f-preserves-order (inl ⋆ , x) (inr ⋆ , x) (inr (refl , _)) = ≤-refl _
-  f-preserves-order (inr ⋆ , x) (inl ⋆ , x) (inr (refl , q)) = 𝟘-elim q
-  f-preserves-order (inr ⋆ , x) (inr ⋆ , x) (inr (refl , q)) = 𝟘-elim q
-
-  f-reflects-order : (x y : ⟨ 𝟚ₒ ⟩ × ℕ) → f x ≺⟨ ω ⟩ f y → x ≺⟨ 𝟚ₒ ×ₒ ω ⟩ y
-  f-reflects-order (inl ⋆ , x) (inl ⋆ , y) p = inl (double-reflects-< p)
-  f-reflects-order (inl ⋆ , x) (inr ⋆ , y) p = τ (<-trichotomous x y)
-   where
-    τ : (x <ℕ y) + (x ＝ y) + (y <ℕ x) → (x <ℕ y) + (x ＝ y) × 𝟙
-    τ (inl l) = inl l
-    τ (inr (inl e)) = inr (e , ⋆)
-    τ (inr (inr g)) =
-     𝟘-elim (less-than-not-equal y y (<-≤-trans y x y g (double-reflects-≤ p)) refl)
-  f-reflects-order (inr ⋆ , x) (inl ⋆ , y) p = inl (double-reflects-≤ p)
-  f-reflects-order (inr ⋆ , x) (inr ⋆ , y) p = inl (double-reflects-< p)
-
-  h : (𝟚ₒ ×ₒ ω) ≃ₒ ω
-  h = f , order-preserving-reflecting-equivs-are-order-equivs (𝟚ₒ ×ₒ ω) ω f
-           f-equiv f-preserves-order f-reflects-order
-
+open import Naturals.Exponentiation
+open import Naturals.Order
+open import Naturals.Properties
+open import Ordinals.Fin
+open import Ordinals.Omega ua pt sr
+open import Fin.Type
+open import Fin.Properties
 Fin-ordinal-_^ₒω-is-ω_ : (k : ℕ) -> 1 <ℕ k → Fin-ordinal k ^ₒ ω ＝ ω
 Fin-ordinal- k@(succ (succ k')) ^ₒω-is-ω p =
   𝕜 ^ₒ ω                            ＝⟨ ap (𝕜 ^ₒ_) ω-is-sup-of-Fin ⟩
@@ -235,23 +123,6 @@ Fin-ordinal- k@(succ (succ k')) ^ₒω-is-ω p =
       IV₀ n = Fin-ordinal-preserves-≤ ua
                (exponent-smaller-than-exponential-for-base-at-least-two n k ⋆)
 
-
-
-{-
-𝟚ₒ^ₒω-is-ω : 𝟚ₒ ^ₒ ω ＝ ω
-𝟚ₒ^ₒω-is-ω = 𝟚ₒ ^ₒ ω ＝⟨ {!!} ⟩
-             𝟚ₒ ^ₒ (sup (λ n → Fin-ordinal n)) ＝⟨ {!!} ⟩
-             sup (λ n → 𝟚ₒ ^ₒ Fin-ordinal n) ＝⟨ {!!} ⟩
-             {!!} ＝⟨ {!!} ⟩
-             sup (λ n → Fin-ordinal n) ＝⟨ ω-is-sup-of-Fin ⁻¹ ⟩
-             ω ∎
--}
-
-no-right-cancellation-+ₒ
- : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α +ₒ γ ＝ β +ₒ γ → α ＝ β) → 𝟘
-no-right-cancellation-+ₒ hyp =
- 𝟘ₒ-is-not-𝟙ₒ (hyp 𝟘ₒ 𝟙ₒ ω (𝟘ₒ+ₒω-is-ω ∙ 𝟙ₒ+ₒω-is-ω ⁻¹))
-
 no-right-cancellation-+ₒ-⊴
  : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α +ₒ γ ⊴ β +ₒ γ → α ⊴ β) → 𝟘
 no-right-cancellation-+ₒ-⊴ hyp = no-right-cancellation-+ₒ hyp'
@@ -259,11 +130,6 @@ no-right-cancellation-+ₒ-⊴ hyp = no-right-cancellation-+ₒ hyp'
   hyp' : ∀ {𝓤} → (α β γ : Ordinal 𝓤) → α +ₒ γ ＝ β +ₒ γ → α ＝ β
   hyp' α β γ e =
    ⊴-antisym α β (hyp α β γ (＝-to-⊴ _ _ e)) (hyp β α γ (＝-to-⊴ _ _ (e ⁻¹)))
-
-no-right-cancellation-×ₒ
- : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ×ₒ γ ＝ β ×ₒ γ → α ＝ β) → 𝟘
-no-right-cancellation-×ₒ hyp =
- 𝟚ₒ-is-not-𝟙ₒ (hyp 𝟚ₒ 𝟙ₒ ω (𝟚ₒ×ₒω-is-ω ∙ 𝟙ₒ×ₒω-is-ω ⁻¹))
 
 no-right-cancellation-×ₒ-⊴
  : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ×ₒ γ ⊴ β ×ₒ γ → α ⊴ β) → 𝟘
@@ -274,7 +140,7 @@ no-right-cancellation-×ₒ-⊴ hyp = no-right-cancellation-×ₒ hyp'
    ⊴-antisym α β (hyp α β γ (＝-to-⊴ _ _ e)) (hyp β α γ (＝-to-⊴ _ _ (e ⁻¹)))
 
 no-right-cancellation-^ₒ
- : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ^ₒ γ ＝ β ^ₒ γ → α ＝ β) → 𝟘
+ : ¬ ((α β γ : Ordinal 𝓤₀) → α ^ₒ γ ＝ β ^ₒ γ → α ＝ β)
 no-right-cancellation-^ₒ hyp =
  Fin3-is-not-Fin2 (hyp (Fin-ordinal 3) (Fin-ordinal 2) ω Fin3^ₒω-is-Fin2^ₒω)
   where
@@ -297,9 +163,15 @@ no-right-cancellation-^ₒ-⊴ hyp = no-right-cancellation-^ₒ hyp'
 
 \end{code}
 
-Since LEM implies that every order-preserving map induces a simulation, we
-suggestively write α ≤ᶜˡ β (and α <ᶜˡ β) for "classical comparisions" consisting
-of order-preserving (bounded) maps.
+The proofs of our results will rely on two auxiliary notions, the
+first of which is the type of order-preserving (and possibly
+bounded) maps between two ordinals. Since LEM implies that every
+order-preserving map induces a simulation, we suggestively write
+α ≤ᶜˡ β (and α <ᶜˡ β) for "classical comparisons" consisting of
+order-preserving (bounded) maps.
+
+NB. If this finds any application outside this file, then the code
+    below should probably be moved to Ordinals.Maps.
 
 \begin{code}
 
@@ -332,7 +204,6 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
  <ᶜˡ-transitivity : (γ : Ordinal 𝓦) → α <ᶜˡ β → β <ᶜˡ γ → α <ᶜˡ γ
  <ᶜˡ-transitivity γ 𝕗 𝕘 = ≤ᶜˡ-<ᶜˡ-to-<ᶜˡ γ (<ᶜˡ-gives-≤ᶜˡ 𝕗) 𝕘
 
-
 ⊲-gives-<ᶜˡ : (α β : Ordinal 𝓤) → α ⊲ β → α <ᶜˡ β
 ⊲-gives-<ᶜˡ α β (b₀ , refl) =
  ⊴-gives-≤ᶜˡ (β ↓ b₀) β (segment-⊴ β b₀) , b₀ , segment-inclusion-bound β b₀
@@ -354,9 +225,13 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
 
 \end{code}
 
-The "unordered order" derived from a given order relates (a, b)
-and (a', b') if (a , b) is pointwise related to either (a', b')
-or (b', a') in the original order.
+The second auxiliary notion is the following relation. The "unordered
+order" derived from a given order relates (a, b) and (a', b') if
+(a , b) is pointwise related to either (a', b') or (b', a') in the
+original order.
+
+NB. If this finds any application outside this file, then the code
+    below should probably be moved to Ordinals.Notions.
 
 \begin{code}
 
@@ -392,15 +267,44 @@ module uo-order
 
 \end{code}
 
-We are interested in operations that are continuous "up to Z",
-in the sense that they satisfy the equation `F (sup L) = Z ∨ sup (F ∘ L)`.
+We now introduce a general scheme (cf. the BoundedOperations file)
+that captures addition, multiplication and exponentiation by a fixed
+ordinal α.
+
+We consider an operation F : Ordinal 𝓤 → Ordinal 𝓤 together with
+- an ordinal Z : Ordinal 𝓤 (for the zero case)
+- an operation S : Ordinal 𝓤 → Ordinal 𝓤 (for the successor case)
+such that
+- F (β +ₒ 𝟙ₒ) ＝ S (F β)         for all β : Ordinal 𝓤,
+- F (sup L)   ＝ Z ∨ sup (F ∘ L) for all L : I → Ordinal 𝓤 with I : 𝓤.
+
+Note that if we take L to be the empty family, then we get
+F 𝟘ₒ ＝ Z ∨ 𝟘ₒ ＝ Z, which is why Z is the zero case.
+
+As mentioned, examples are addition, multiplication and exponentiation
+by a fixed ordinal α. Specifically,
+- for F := (-) +ₒ α, we take Z = α  and S β := β +ₒ 𝟙ₒ;
+- for F := (-) ×ₒ α, we take Z = 𝟘ₒ and S β := β +ₒ α;
+- for F := α ^ₒ (-), we take Z = 𝟙ₒ and S β := β ×ₒ α (given 𝟙ₒ ⊴ α).
+
+We find it convenient to present Z ∨ sup (F ∘ L) via a single supremum.
 
 \begin{code}
 
 extended-sup : {I : 𝓤 ̇ } (L : I → Ordinal 𝓤) (Z : Ordinal 𝓤) → Ordinal 𝓤
 extended-sup {𝓤} {I} L Z = sup {I = 𝟙 + I} (cases (λ (_ : 𝟙{𝓤}) → Z) L)
 
-canonical-spec-by-cases : (S : Ordinal 𝓤 → Ordinal 𝓤)(Z : Ordinal 𝓤)
+\end{code}
+
+As shown below, Z and S determine F uniquely, because any F which
+satisfies the above equations will be equal to the function G defined
+by transfinite recursion as
+  G β := Z ∨ sup (λ (b : ⟨ β ⟩) → S (G (β ↓ b))).
+This map G is called canonical-spec-by-cases below.
+
+\begin{code}
+
+canonical-spec-by-cases : (S : Ordinal 𝓤 → Ordinal 𝓤) (Z : Ordinal 𝓤)
                         → Ordinal 𝓤 → Ordinal 𝓤
 canonical-spec-by-cases {𝓤} S Z =
  transfinite-recursion-on-OO (Ordinal 𝓤)
@@ -414,61 +318,6 @@ module framework
         (F-sup : (I : 𝓤 ̇ ) (L : I → Ordinal 𝓤)
                → F (sup L) ＝ extended-sup (F ∘ L) Z)
        where
-
- Assumption-1 : 𝓤 ⁺ ̇
- Assumption-1 =
-  Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤) , ((β : Ordinal 𝓤) → S β ＝ β +ₒ H β)
-
- Assumption-2 : 𝓤 ⁺ ̇
- Assumption-2 = Σ (H , _) ꞉ Assumption-1 , ((β : Ordinal 𝓤) → 𝟘ₒ ⊲ H (F β))
-
- Assumption-3 : 𝓤 ⁺ ̇
- Assumption-3 = (β γ : Ordinal 𝓤) → β ≤ᶜˡ γ → S β ≤ᶜˡ S γ
-
- -- See below for examples (cf. BoundedOperations.lagda).
-
- F-preserves-⊴ : (β γ : Ordinal 𝓤) → β ⊴ γ → F β ⊴ F γ
- F-preserves-⊴ β γ l = III
-  where
-   J : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
-   J = cases (λ _ → β) (λ _ → γ)
-
-   I : sup J ＝ γ
-   I = ⊴-antisym (sup J) γ
-        (sup-is-lower-bound-of-upper-bounds J γ
-          (dep-cases (λ _ → l) (λ _ → ⊴-refl γ)))
-        (sup-is-upper-bound J (inr ⋆))
-   II : F β ⊴ extended-sup (F ∘ J) Z
-   II = sup-is-upper-bound _ (inr (inl ⋆))
-   III : F β ⊴ F γ
-   III = transport⁻¹ (F β ⊴_) (ap F (I ⁻¹) ∙ F-sup (𝟙 + 𝟙) J) II
-
- F-eq : (β : Ordinal 𝓤)
-      → F β ＝ extended-sup (λ (b : ⟨ β ⟩) → S (F (β ↓ b))) Z
- F-eq β = F β                                        ＝⟨ I ⟩
-          F (sup λ b → (β ↓ b) +ₒ 𝟙ₒ)                ＝⟨ II ⟩
-          extended-sup (F ∘ (λ b → (β ↓ b) +ₒ 𝟙ₒ)) Z ＝⟨ III ⟩
-          extended-sup (λ b → S (F (β ↓ b))) Z       ∎
-  where
-   I = ap F (supremum-of-successors-of-initial-segments pt sr β)
-   II = F-sup ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
-   III = ap (λ - → extended-sup - Z) (dfunext fe' (λ b → F-succ (β ↓ b)))
-
- F-unique : (β : Ordinal 𝓤) → F β ＝ canonical-spec-by-cases S Z β
- F-unique = transfinite-induction-on-OO (λ β → F β ＝ G β) step
-  where
-   G = canonical-spec-by-cases S Z
-
-   step : (β : Ordinal 𝓤) → ((b : ⟨ β ⟩) → F (β ↓ b) ＝ G (β ↓ b)) → F β ＝ G β
-   step β ih = F β                                            ＝⟨ F-eq β ⟩
-               extended-sup (λ (b : ⟨ β ⟩) → S (F (β ↓ b))) Z ＝⟨ I ⟩
-               extended-sup (λ (b : ⟨ β ⟩) → S (G (β ↓ b))) Z ＝⟨ II ⟩
-               G β                                            ∎
-    where
-     I = ap (λ - → extended-sup - Z) (dfunext fe' (λ b → ap S (ih b)))
-     II = (transfinite-recursion-on-OO-behaviour
-            (Ordinal 𝓤)
-            (λ β ih → extended-sup (λ b → S (ih b)) Z) β) ⁻¹
 
  Z-is-F𝟘ₒ : Z ＝ F 𝟘ₒ
  Z-is-F𝟘ₒ = Z                      ＝⟨ I ⟩
@@ -488,9 +337,85 @@ module framework
          (sup-is-lower-bound-of-upper-bounds J 𝟘ₒ 𝟘-induction)
          (𝟘ₒ-least-⊴ (sup J))
 
+ F-eq : (β : Ordinal 𝓤)
+      → F β ＝ extended-sup (λ (b : ⟨ β ⟩) → S (F (β ↓ b))) Z
+ F-eq β = F β                                        ＝⟨ I ⟩
+          F (sup λ b → (β ↓ b) +ₒ 𝟙ₒ)                ＝⟨ II ⟩
+          extended-sup (F ∘ (λ b → (β ↓ b) +ₒ 𝟙ₒ)) Z ＝⟨ III ⟩
+          extended-sup (λ b → S (F (β ↓ b))) Z       ∎
+  where
+   I   = ap F (supremum-of-successors-of-initial-segments pt sr β)
+   II  = F-sup ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
+   III = ap (λ - → extended-sup - Z) (dfunext fe' (λ b → F-succ (β ↓ b)))
+
+ F-unique : (β : Ordinal 𝓤) → F β ＝ canonical-spec-by-cases S Z β
+ F-unique = transfinite-induction-on-OO (λ β → F β ＝ G β) I
+  where
+   G = canonical-spec-by-cases S Z
+
+   I : (β : Ordinal 𝓤) → ((b : ⟨ β ⟩) → F (β ↓ b) ＝ G (β ↓ b)) → F β ＝ G β
+   I β ih = F β                                            ＝⟨ F-eq β ⟩
+            extended-sup (λ (b : ⟨ β ⟩) → S (F (β ↓ b))) Z ＝⟨ I₁ ⟩
+            extended-sup (λ (b : ⟨ β ⟩) → S (G (β ↓ b))) Z ＝⟨ I₂ ⟩
+            G β                                            ∎
+    where
+     I₁ = ap (λ - → extended-sup - Z) (dfunext fe' (λ b → ap S (ih b)))
+     I₂ = (transfinite-recursion-on-OO-behaviour
+            (Ordinal 𝓤)
+            (λ β ih → extended-sup (λ b → S (ih b)) Z) β) ⁻¹
+
+\end{code}
+
+The equations also imply that F is order preserving and hence that Z
+is below all values of F.
+
+\begin{code}
+
+ F-preserves-⊴ : is-⊴-preserving F
+ F-preserves-⊴ β γ l = III
+  where
+   J : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
+   J = cases (λ _ → β) (λ _ → γ)
+
+   I : sup J ＝ γ
+   I = ⊴-antisym (sup J) γ
+        (sup-is-lower-bound-of-upper-bounds J γ
+          (dep-cases (λ _ → l) (λ _ → ⊴-refl γ)))
+        (sup-is-upper-bound J (inr ⋆))
+   II : F β ⊴ extended-sup (F ∘ J) Z
+   II = sup-is-upper-bound _ (inr (inl ⋆))
+   III : F β ⊴ F γ
+   III = transport⁻¹ (F β ⊴_) (ap F (I ⁻¹) ∙ F-sup (𝟙 + 𝟙) J) II
+
  Z-below-all-values-of-F : (β : Ordinal 𝓤) → Z ⊴ F β
  Z-below-all-values-of-F β =
   transport⁻¹ (_⊴ F β) Z-is-F𝟘ₒ (F-preserves-⊴ 𝟘ₒ β (𝟘ₒ-least-⊴ β))
+
+\end{code}
+
+We next introduce three additional assumptions on the parameter S that
+will ensure that F is order reflecting.
+
+Note that the second assumption is a strict extension of the first.
+
+\begin{code}
+
+ Assumption-1 : 𝓤 ⁺ ̇
+ Assumption-1 =
+  Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤) , ((β : Ordinal 𝓤) → S β ＝ β +ₒ H β)
+
+ Assumption-2 : 𝓤 ⁺ ̇
+ Assumption-2 = Σ (H , _) ꞉ Assumption-1 , ((β : Ordinal 𝓤) → 𝟘ₒ ⊲ H (F β))
+
+ Assumption-3 : 𝓤 ⁺ ̇
+ Assumption-3 = (β γ : Ordinal 𝓤) → β ≤ᶜˡ γ → S β ≤ᶜˡ S γ
+
+\end{code}
+
+The second assumption allows us to prove that F also preserves the
+strict order.
+
+\begin{code}
 
  F-preserves-⊲ : Assumption-2
                → (β γ : Ordinal 𝓤) → β ⊲ γ → F β ⊲ F γ
@@ -540,6 +465,12 @@ module framework
 
    III : F (γ ↓ c₀) ⊲ F γ
    III = Idtofunₒ II [ c₀ , h₀ ] , (I ⁻¹ ∙ Idtofunₒ-↓-lemma II)
+
+\end{code}
+
+The following two results are technical auxiliary lemmas.
+
+\begin{code}
 
  F-tightening-bounds
   : Assumption-1
@@ -639,6 +570,14 @@ module framework
     IV : S (F γ) <ᶜˡ S (F γ)
     IV = ≤ᶜˡ-<ᶜˡ-to-<ᶜˡ (S (F γ)) (F γ +ₒ δ) (S (F γ)) IV₁ IV₂
 
+\end{code}
+
+The following result is later instantiated with δ ＝ 𝟘ₒ to get that F
+is order reflecting. The more technical formulation below allows us to
+give a proof by transfinite induction.
+
+\begin{code}
+
  F-reflects-⊴' : -- Assumption-1 -- redundant in the presence of Assumption-2
                  Assumption-2
                → Assumption-3
@@ -646,69 +585,69 @@ module framework
                → F β ⊴ F γ +ₒ δ
                → F γ +ₒ δ ⊲ F (γ +ₒ 𝟙ₒ)
                → β ⊴ γ
- F-reflects-⊴' asm-2@((H , H-S-eq) , H-has-min) asm-3 = (λ β γ → I (β , γ))
+ F-reflects-⊴' asm-2@((H , H-S-eq) , H-has-min) asm-3 = (λ β γ → VI (β , γ))
   where
    open uo-order (Ordinal 𝓤) _⊲_
    P : Ordinal 𝓤 × Ordinal 𝓤 → 𝓤 ⁺ ̇
    P (β , γ) =
     (δ : Ordinal 𝓤) → F β ⊴ F γ +ₒ δ → F γ +ₒ δ ⊲ F (γ +ₒ 𝟙ₒ) → β ⊴ γ
 
-   II : (X : Ordinal 𝓤 × Ordinal 𝓤)
-      → ((Y : Ordinal 𝓤 × Ordinal 𝓤) → Y ≺ᵤₒ X → P Y)
-      → P X
-   II (β , γ) IH δ l₁ l₂ = to-⊴ β γ goal
+   I : (X : Ordinal 𝓤 × Ordinal 𝓤)
+     → ((Y : Ordinal 𝓤 × Ordinal 𝓤) → Y ≺ᵤₒ X → P Y)
+     → P X
+   I (β , γ) IH δ l₁ l₂ = to-⊴ β γ V
     where
      module _ (b : ⟨ β ⟩) where
-      III₁ : F 𝟘ₒ ⊴ F (β ↓ b)
-      III₁ = F-preserves-⊴ 𝟘ₒ (β ↓ b) (𝟘ₒ-least-⊴ (β ↓ b))
-      III₂ : F (β ↓ b) ⊲ F (γ +ₒ 𝟙ₒ)
-      III₂ = ⊲-⊴-gives-⊲ (F (β ↓ b)) (F β) (F (γ +ₒ 𝟙ₒ))
-              (F-preserves-⊲ asm-2 (β ↓ b) β (b , refl))
-              (⊴-trans (F β) (F γ +ₒ δ) (F (γ +ₒ 𝟙ₒ))
-                l₁
-                (⊲-gives-⊴ (F γ +ₒ δ) (F (γ +ₒ 𝟙ₒ)) l₂))
-      III₃ : ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ +ₒ 𝟙ₒ)
-                              × (F γ' ⊴ F (β ↓ b))
-                              × (F (β ↓ b) ⊲ F (γ' +ₒ 𝟙ₒ))
-      III₃ = F-tightening-bounds (H , H-S-eq) (F (β ↓ b)) III₁ (γ +ₒ 𝟙ₒ) III₂
+      II₁ : F 𝟘ₒ ⊴ F (β ↓ b)
+      II₁ = F-preserves-⊴ 𝟘ₒ (β ↓ b) (𝟘ₒ-least-⊴ (β ↓ b))
+      II₂ : F (β ↓ b) ⊲ F (γ +ₒ 𝟙ₒ)
+      II₂ = ⊲-⊴-gives-⊲ (F (β ↓ b)) (F β) (F (γ +ₒ 𝟙ₒ))
+             (F-preserves-⊲ asm-2 (β ↓ b) β (b , refl))
+             (⊴-trans (F β) (F γ +ₒ δ) (F (γ +ₒ 𝟙ₒ))
+               l₁
+               (⊲-gives-⊴ (F γ +ₒ δ) (F (γ +ₒ 𝟙ₒ)) l₂))
+      II : ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ +ₒ 𝟙ₒ)
+                            × (F γ' ⊴ F (β ↓ b))
+                            × (F (β ↓ b) ⊲ F (γ' +ₒ 𝟙ₒ))
+      II = F-tightening-bounds (H , H-S-eq) (F (β ↓ b)) II₁ (γ +ₒ 𝟙ₒ) II₂
 
-      IV₁ : F ((γ +ₒ 𝟙ₒ) ↓ inr ⋆) ⊴ F (β ↓ b) → 𝟘
-      IV₁ l = F-impossibility asm-3 β γ δ b k l₁ l₂
+      III : ¬ (F ((γ +ₒ 𝟙ₒ) ↓ inr ⋆) ⊴ F (β ↓ b))
+      III l = F-impossibility asm-3 β γ δ b k l₁ l₂
        where
         k : F γ ⊴ F (β ↓ b)
         k = transport⁻¹ (_⊴ F (β ↓ b)) (ap F ((successor-lemma-right γ) ⁻¹)) l
 
-      IV₂ : (c : ⟨ γ ⟩)
-          → F (γ ↓ c) ⊴ F (β ↓ b)
-          → F (β ↓ b) ⊲ F ((γ ↓ c) +ₒ 𝟙ₒ)
-          → β ↓ b ＝ γ ↓ c
-      IV₂ c k₁ k₂ = ⊴-antisym (β ↓ b) (γ ↓ c) VI V
+      IV : (c : ⟨ γ ⟩)
+         → F (γ ↓ c) ⊴ F (β ↓ b)
+         → F (β ↓ b) ⊲ F ((γ ↓ c) +ₒ 𝟙ₒ)
+         → β ↓ b ＝ γ ↓ c
+      IV c k₁ k₂ = ⊴-antisym (β ↓ b) (γ ↓ c) IV₁ IV₂
        where
-        V : γ ↓ c ⊴ β ↓ b
-        V = IH (γ ↓ c , β ↓ b) (inr ((c , refl) , (b , refl))) 𝟘ₒ
+        IV₂ : γ ↓ c ⊴ β ↓ b
+        IV₂ = IH (γ ↓ c , β ↓ b) (inr ((c , refl) , (b , refl))) 𝟘ₒ
              (transport⁻¹ (F (γ ↓ c) ⊴_) (𝟘ₒ-right-neutral (F (β ↓ b))) k₁)
              (transport⁻¹ (_⊲ F ((β ↓ b) +ₒ 𝟙ₒ)) (𝟘ₒ-right-neutral (F (β ↓ b)))
                (F-preserves-⊲ asm-2 (β ↓ b)
                                     ((β ↓ b) +ₒ 𝟙ₒ)
                                     (successor-increasing (β ↓ b))))
 
-        VI : β ↓ b ⊴ γ ↓ c
-        VI = VI₂ z z-eq
+        IV₁ : β ↓ b ⊴ γ ↓ c
+        IV₁ = IV₁ᵇ z z-eq
          where
-          VI₁ : F ((γ ↓ c) +ₒ 𝟙ₒ) ＝ F (γ ↓ c) +ₒ H (F (γ ↓ c))
-          VI₁ = F-succ (γ ↓ c) ∙ H-S-eq (F (γ ↓ c))
+          IV₁ᵃ : F ((γ ↓ c) +ₒ 𝟙ₒ) ＝ F (γ ↓ c) +ₒ H (F (γ ↓ c))
+          IV₁ᵃ = F-succ (γ ↓ c) ∙ H-S-eq (F (γ ↓ c))
           z : ⟨ F (γ ↓ c) +ₒ H (F (γ ↓ c)) ⟩
-          z = Idtofunₒ VI₁ (pr₁ k₂)
+          z = Idtofunₒ IV₁ᵃ (pr₁ k₂)
           z-eq : F (β ↓ b) ＝ (F (γ ↓ c) +ₒ H (F (γ ↓ c))) ↓ z
-          z-eq = pr₂ k₂ ∙ Idtofunₒ-↓-lemma VI₁
-          VI₂ : (z : ⟨ F (γ ↓ c) +ₒ H (F (γ ↓ c)) ⟩)
-              → F (β ↓ b) ＝ (F (γ ↓ c) +ₒ H (F (γ ↓ c))) ↓ z
-              → β ↓ b ⊴ γ ↓ c
-          VI₂ (inl z₀) z-eq =
+          z-eq = pr₂ k₂ ∙ Idtofunₒ-↓-lemma IV₁ᵃ
+          IV₁ᵇ : (z : ⟨ F (γ ↓ c) +ₒ H (F (γ ↓ c)) ⟩)
+               → F (β ↓ b) ＝ (F (γ ↓ c) +ₒ H (F (γ ↓ c))) ↓ z
+               → β ↓ b ⊴ γ ↓ c
+          IV₁ᵇ (inl z₀) z-eq =
            𝟘-elim (⊴-gives-not-⊲ (F (γ ↓ c)) (F (β ↓ b))
                     k₁
                     (z₀ , (z-eq ∙ (+ₒ-↓-left z₀) ⁻¹)))
-          VI₂ (inr z₀) z-eq =
+          IV₁ᵇ (inr z₀) z-eq =
            IH (β ↓ b , γ ↓ c)
               (inl ((b , refl) , (c , refl)))
               δ' m₁ m₂
@@ -723,30 +662,37 @@ module framework
                               (+ₒ-↓-right z₀ ∙ z-eq ⁻¹)
                               k₂
 
-      goal : β ↓ b ⊲ γ
-      goal = ∥∥-rec (⊲-is-prop-valued (β ↓ b) γ) g III₃
+      V : β ↓ b ⊲ γ
+      V = ∥∥-rec (⊲-is-prop-valued (β ↓ b) γ) g II
        where
         g : (Σ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ +ₒ 𝟙ₒ)
                               × (F γ' ⊴ F (β ↓ b))
                               × (F (β ↓ b) ⊲ F (γ' +ₒ 𝟙ₒ)))
           → β ↓ b ⊲ γ
-        g (γ' , (inl c , refl) , k₁ , k₂) = c , (IV₂ c k₁' k₂')
+        g (γ' , (inl c , refl) , k₁ , k₂) = c , (IV c k₁' k₂')
          where
           k₁' : F (γ ↓ c) ⊴ F (β ↓ b)
           k₁' = transport⁻¹ (_⊴ F (β ↓ b)) (ap F (+ₒ-↓-left c)) k₁
           k₂' : F (β ↓ b) ⊲ F ((γ ↓ c) +ₒ 𝟙ₒ)
           k₂' = transport⁻¹ (F (β ↓ b) ⊲_) (ap F (ap (_+ₒ 𝟙ₒ) (+ₒ-↓-left c))) k₂
-        g (γ' , (inr ⋆ , refl) , k₁ , k₂) = 𝟘-elim (IV₁ k₁)
+        g (γ' , (inr ⋆ , refl) , k₁ , k₂) = 𝟘-elim (III k₁)
 
-   I : Π P
-   I = transfinite-induction _≺ᵤₒ_ (≺ᵤₒ-is-well-founded ⊲-is-well-founded) P II
+   VI : Π P
+   VI = transfinite-induction _≺ᵤₒ_ (≺ᵤₒ-is-well-founded ⊲-is-well-founded) P I
+
+\end{code}
+
+As desired, F is order reflecting, in the presence of assumptions 2
+and 3, and hence also left cancellable (a.k.a. injective).
+
+\begin{code}
 
  module framework-with-assumptions
          (asm-2 : Assumption-2)
          (asm-3 : Assumption-3)
         where
 
-  F-reflects-⊴ : (β γ : Ordinal 𝓤) → F β ⊴ F γ → β ⊴ γ
+  F-reflects-⊴ : is-⊴-reflecting F
   F-reflects-⊴ β γ l =
    F-reflects-⊴' asm-2 asm-3 β γ 𝟘ₒ
     (transport⁻¹ (F β ⊴_) (𝟘ₒ-right-neutral (F γ)) l)
@@ -760,7 +706,14 @@ module framework
    ⊴-antisym _ _ (F-reflects-⊴ _ _ (＝-to-⊴ _ _ p))
                  (F-reflects-⊴ _ _ (＝-to-⊴ _ _ (p ⁻¹)))
 
--- Addition
+\end{code}
+
+We now instantiate the above framework with F ＝ (-) +ₒ α, and show
+that the assumptions are satisfied in this case, to conclude that
+addition by α is order reflecting.
+
+\begin{code}
+
 module _ (α : Ordinal 𝓤) where
  private
   open framework
@@ -795,7 +748,14 @@ module _ (α : Ordinal 𝓤) where
  +ₒ-left-cancellable' : left-cancellable (α +ₒ_)
  +ₒ-left-cancellable' = F-left-cancellable
 
---Multiplication
+\end{code}
+
+We now instantiate the above framework with F ＝ (-) ×ₒ α, and show
+that the assumptions are satisfied when 𝟘ₒ ⊲ α, to conclude that
+multiplication by α is order reflecting (when 𝟘ₒ ⊲ α).
+
+\begin{code}
+
 module _ (α : Ordinal 𝓤) where
  private
   open framework
@@ -831,7 +791,15 @@ module _ (α : Ordinal 𝓤) where
  ×ₒ-left-cancellable' : 𝟘ₒ ⊲ α → left-cancellable (α ×ₒ_)
  ×ₒ-left-cancellable' = fwa.F-left-cancellable
 
--- Exponentiation
+\end{code}
+
+We now instantiate the above framework with F ＝ (-) ^ₒ α, and show
+that the assumptions are satisfied when 𝟚ₒ ⊴ α and α further has a
+trichotomous least element, to conclude that exponentiation by α is
+order reflecting (under the conditions mentioned).
+
+\begin{code}
+
 module _
         (α : Ordinal 𝓤)
         (α-at-least-𝟚ₒ : 𝟚ₒ ⊴ α)
@@ -854,17 +822,23 @@ module _
   asm-2 h = (H , e) , H-has-min
    where
     e : (β : Ordinal 𝓤) → β ×ₒ α ＝ β +ₒ (β ×ₒ α ⁺[ h ])
-    e β = β ×ₒ α ＝⟨ ap (β ×ₒ_) (α ⁺[ h ]-part-of-decomposition) ⟩
-          β ×ₒ (𝟙ₒ +ₒ α ⁺[ h ]) ＝⟨ ×ₒ-distributes-+ₒ-right β 𝟙ₒ (α ⁺[ h ]) ⟩
-          β ×ₒ 𝟙ₒ +ₒ β ×ₒ (α ⁺[ h ]) ＝⟨ ap (_+ₒ β ×ₒ (α ⁺[ h ])) (𝟙ₒ-right-neutral-×ₒ β) ⟩
-          β +ₒ β ×ₒ (α ⁺[ h ]) ∎
+    e β = β ×ₒ α                     ＝⟨ e₁ ⟩
+          β ×ₒ (𝟙ₒ +ₒ α ⁺[ h ])      ＝⟨ e₂ ⟩
+          β ×ₒ 𝟙ₒ +ₒ β ×ₒ (α ⁺[ h ]) ＝⟨ e₃ ⟩
+          β +ₒ β ×ₒ (α ⁺[ h ])       ∎
+     where
+      e₁ = ap (β ×ₒ_) (α ⁺[ h ]-part-of-decomposition)
+      e₂ = ×ₒ-distributes-+ₒ-right β 𝟙ₒ (α ⁺[ h ])
+      e₃ = ap (_+ₒ β ×ₒ (α ⁺[ h ])) (𝟙ₒ-right-neutral-×ₒ β)
+
     H : Ordinal 𝓤 → Ordinal 𝓤
     H β = β ×ₒ (α ⁺[ h ])
-    α⁺-pos : 𝟙ₒ ⊴ α ⁺[ h ] -- Note how we prove this :)
+    α⁺-pos : 𝟙ₒ ⊴ α ⁺[ h ]
     α⁺-pos =
      +ₒ-reflects-⊴ 𝟙ₒ 𝟙ₒ
       (α ⁺[ h ])
       (transport (𝟚ₒ ⊴_) (α ⁺[ h ]-part-of-decomposition) α-at-least-𝟚ₒ)
+
     H-has-min' : (γ : Ordinal 𝓤) → 𝟙ₒ ⊴ γ → 𝟙ₒ ⊴ H γ
     H-has-min' γ l =
      to-⊴ 𝟙ₒ (H γ) λ ⋆ → (f ⋆ , g ⋆) ,
@@ -880,8 +854,8 @@ module _
       f = pr₁ l
       g = pr₁ α⁺-pos
 
-      I = ap (γ ×ₒ_) (𝟙ₒ-↓ ⁻¹ ∙ simulations-preserve-↓ 𝟙ₒ (α ⁺[ h ]) α⁺-pos ⋆)
-      II = (𝟘ₒ-right-neutral (γ ×ₒ (α ⁺[ h ] ↓ g ⋆))) ⁻¹
+      I   = ap (γ ×ₒ_) (𝟙ₒ-↓ ⁻¹ ∙ simulations-preserve-↓ 𝟙ₒ (α ⁺[ h ]) α⁺-pos ⋆)
+      II  = (𝟘ₒ-right-neutral (γ ×ₒ (α ⁺[ h ] ↓ g ⋆))) ⁻¹
       III = ap (γ ×ₒ ((α ⁺[ h ]) ↓ g ⋆) +ₒ_)
                (((simulations-preserve-↓ 𝟙ₒ γ l ⋆) ⁻¹ ∙ 𝟙ₒ-↓) ⁻¹)
     H-has-min : (β : Ordinal 𝓤) → 𝟘ₒ ⊲ H (α ^ₒ β)
@@ -918,34 +892,10 @@ The results above imply that any simulation
   (α ×ₒ β) ⊴ (α ×ₒ γ)
   (α ^ₒ β) ⊴ (α ^ₒ γ)
 
-compute in the expected way, i.e., that they are all induced from a
-simulation β ⊴ γ.
+computes in the expected way, i.e., that they are all induced from a
+simulation β ⊴ γ and leave elements of α untouched.
 
 \begin{code}
-
--- This proof has better computational properties (and is arguably simpler) than
--- +ₒ-right-monotone in AdditionProperties.
-+ₒ-right-monotone-⊴' : (α β γ : Ordinal 𝓤)
-                     → β ⊴ γ
-                     → (α +ₒ β) ⊴ (α +ₒ γ)
-+ₒ-right-monotone-⊴' α β γ 𝕗@(f , f-sim) = g , g-init-seg , g-order-pres
- where
-  g : ⟨ α +ₒ β ⟩ → ⟨ α +ₒ γ ⟩
-  g (inl a) = inl a
-  g (inr b) = inr (f b)
-  g-order-pres : is-order-preserving (α +ₒ β) (α +ₒ γ) g
-  g-order-pres (inl a) (inl a') l = l
-  g-order-pres (inl a) (inr b)  l = l
-  g-order-pres (inr b) (inr b') l =
-   simulations-are-order-preserving β γ f f-sim b b' l
-  g-init-seg : is-initial-segment (α +ₒ β) (α +ₒ γ) g
-  g-init-seg (inl a) (inl a') l = inl a' , l , refl
-  g-init-seg (inr b) (inl a)  l = inl a , ⋆ , refl
-  g-init-seg (inr b) (inr b') l =
-   inr (pr₁ I) , pr₁ (pr₂ I) , ap inr (pr₂ (pr₂ I))
-    where
-     I : Σ b'' ꞉ ⟨ β ⟩ , (b'' ≺⟨ β ⟩ b) × (f b'' ＝ b')
-     I = simulations-are-initial-segments β γ f f-sim b b' l
 
 +ₒ-simulation-behaviour
  : (α β γ : Ordinal 𝓤)
@@ -991,7 +941,13 @@ simulation β ⊴ γ.
   II : (a : ⟨ α ⟩) (b : ⟨ β ⟩) → g (a , b) ＝ (a , f b)
   II a b = happly (ap pr₁ 𝕘-is-𝕙) (a , b)
 
--- For exponentiation, this is best expressed using lists.
+\end{code}
+
+For exponentiation, the property seems most conveniently expressed for
+the list-based representation.
+
+\begin{code}
+
 exponentiationᴸ-simulation-behaviour
  : (α β γ : Ordinal 𝓤)
  → (h : has-trichotomous-least-element α)

@@ -1,4 +1,5 @@
 Alice Laroche, 25th September 2023
+With additions by Fredrik Nordvall Forsberg on 9 October 2025
 
 Fin n is an ordinal
 
@@ -9,7 +10,6 @@ Fin n is an ordinal
 module Ordinals.Fin where
 
 open import Fin.Embeddings
-open import Fin.Variation
 open import Fin.Order
 open import Fin.Type
 open import MLTT.Spartan
@@ -19,9 +19,9 @@ open import Naturals.Multiplication
 open import Naturals.Exponentiation
 open import Notation.Order
 open import Ordinals.Equivalence
-open import Ordinals.Type
 open import Ordinals.Maps
 open import Ordinals.Notions
+open import Ordinals.Type
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
@@ -62,7 +62,10 @@ Fin-ordinal n = Fin n , _<_ , <-is-well-order n
 
 \end{code}
 
-Added 9 October 2025 by Fredrik Nordvall Forsberg:
+Added 9 October 2025 by Fredrik Nordvall Forsberg.
+
+The construction of finite ordinals, from natural numbers to ordinals, preserves
+many arithmetical operations.
 
 \begin{code}
 
@@ -120,6 +123,12 @@ module _ (ua : Univalence) where
    f-order-equiv = order-preserving-reflecting-equivs-are-order-equivs
                     α β f f-equiv f-order-preserving f-order-reflecting
 
+\end{code}
+
+The construction of finite ordinals preserves addition.
+
+\begin{code}
+
  Fin-ordinal-+ₒ : (n m : ℕ)
                 → Fin-ordinal (n +ℕ m) ＝ Fin-ordinal n +ₒ Fin-ordinal m
  Fin-ordinal-+ₒ zero m =
@@ -135,7 +144,7 @@ module _ (ua : Univalence) where
   𝟙ₒ +ₒ F (n +ℕ m)   ＝⟨ ap (𝟙ₒ +ₒ_) (Fin-ordinal-+ₒ n m) ⟩
   𝟙ₒ +ₒ (F n +ₒ F m) ＝⟨ +ₒ-assoc 𝟙ₒ (F n) (F m) ⁻¹ ⟩
   (𝟙ₒ +ₒ F n) +ₒ F m ＝⟨ ap (_+ₒ F m) (Fin-ordinal-succ n ⁻¹) ⟩
-  F (succ n) +ₒ F m ∎
+  F (succ n) +ₒ F m  ∎
    where
     F = Fin-ordinal
 
@@ -158,34 +167,33 @@ module _ (ua : Univalence) where
  Fin-ordinal-three : Fin-ordinal 3 ＝ 𝟛ₒ
  Fin-ordinal-three = Fin-ordinal-succ' 2 ∙ ap (_+ₒ 𝟙ₒ) Fin-ordinal-two
 
+\end{code}
+
+The construction of finite ordinals preserves multiplication.
+
+\begin{code}
+
  Fin-ordinal-×ₒ : (n m : ℕ)
                 → Fin-ordinal (n * m) ＝ Fin-ordinal n ×ₒ Fin-ordinal m
  Fin-ordinal-×ₒ n zero = transport⁻¹ (λ - → - ＝ Fin-ordinal n ×ₒ -)
                                      Fin-ordinal-zero
                                      (×ₒ-𝟘ₒ-right (Fin-ordinal n) ⁻¹)
  Fin-ordinal-×ₒ n (succ m) =
-  F (n +ℕ n * m) ＝⟨ Fin-ordinal-+ₒ n (n * m) ⟩
-  F n +ₒ F (n * m) ＝⟨ ap (F n +ₒ_) (Fin-ordinal-×ₒ n m) ⟩
-  F n +ₒ F n ×ₒ F m ＝⟨ ap (_+ₒ F n ×ₒ F m) (𝟙ₒ-right-neutral-×ₒ (F n) ⁻¹) ⟩
+  F (n +ℕ n * m)          ＝⟨ Fin-ordinal-+ₒ n (n * m) ⟩
+  F n +ₒ F (n * m)        ＝⟨ ap (F n +ₒ_) (Fin-ordinal-×ₒ n m) ⟩
+  F n +ₒ F n ×ₒ F m       ＝⟨ I ⟩
   F n ×ₒ 𝟙₀ +ₒ F n ×ₒ F m ＝⟨ ×ₒ-distributes-+ₒ-right (F n) 𝟙ₒ (F m) ⁻¹ ⟩
-  F n ×ₒ (𝟙₀ +ₒ F m) ＝⟨ ap (F n ×ₒ_) (Fin-ordinal-succ m ⁻¹) ⟩
-  F n ×ₒ F (succ m) ∎
+  F n ×ₒ (𝟙₀ +ₒ F m)      ＝⟨ ap (F n ×ₒ_) (Fin-ordinal-succ m ⁻¹) ⟩
+  F n ×ₒ F (succ m)       ∎
    where
     F = Fin-ordinal
+    I = ap (_+ₒ F n ×ₒ F m) (𝟙ₒ-right-neutral-×ₒ (F n) ⁻¹)
 
 \end{code}
 
-Fin-ordinal distributes over exponentiation for positive bases, i.e., for a base
-of the form Fin-ordinal (succ n) for some n.
+The construction of finite ordinals is order preserving.
 
 \begin{code}
-
- Fin-ordinal-succ-positive : (n : ℕ) → 𝟙ₒ ⊴ Fin-ordinal (succ n)
- Fin-ordinal-succ-positive n =
-  transport₂ _⊴_ (𝟘ₒ-right-neutral 𝟙ₒ)
-                 (Fin-ordinal-succ n ⁻¹)
-                 (+ₒ-right-monotone-⊴ 𝟙ₒ 𝟘ₒ (Fin-ordinal n)
-                                      (𝟘ₒ-least-⊴ (Fin-ordinal n)))
 
  Fin-ordinal-preserves-≤ : {n m : ℕ} → n ≤ m → Fin-ordinal n ⊴ Fin-ordinal m
  Fin-ordinal-preserves-≤ {zero} {m} l =
@@ -196,6 +204,17 @@ of the form Fin-ordinal (succ n) for some n.
                    (+ₒ-right-monotone-⊴ 𝟙ₒ (Fin-ordinal n)
                                            (Fin-ordinal m)
                                            (Fin-ordinal-preserves-≤ l))
+
+ Fin-ordinal-succ-positive : (n : ℕ) → 𝟙ₒ ⊴ Fin-ordinal (succ n)
+ Fin-ordinal-succ-positive n =
+  transport (_⊴ Fin-ordinal (succ n)) Fin-ordinal-one (Fin-ordinal-preserves-≤ ⋆)
+
+\end{code}
+
+The construction of finite ordinals preserves exponentiation whenever the base
+is positive.
+
+\begin{code}
 
  open import UF.PropTrunc
  open import UF.Size

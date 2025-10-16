@@ -1096,13 +1096,13 @@ expense of assuming propositional extensionality (univalence for
 propositions).
 
 If we have a uniform way to get an equivalence ℕ ≃ P + ℕ for any
-proposition P, then given by a function
+proposition P, given by a function
 
  φ : (P : 𝓤 ̇ ) → is-prop P → ℕ ≃ P + ℕ,
 
-we can use φ to decide P for any proposition P. To see this, first
-consider P = 𝟙, and let x be the natural number that is mapped to
-inl ⋆ by the equivalence given by φ. Then, for an arbitrary
+then we can use φ to decide P for any proposition P. To see this,
+first consider P = 𝟙, and let x be the natural number that is mapped
+to inl ⋆ by the equivalence given by φ. Then, for an arbitrary
 proposition P, if the equivalence maps x to inl p for some p, we have
 that P holds. Otherwise, if it maps x to inr y for some y : ℕ, then P
 can't hold, for if it did we would have p : P, and hence P ＝ 𝟙 by
@@ -1242,7 +1242,9 @@ We now consider the propositional version of BKS⁺:
  discrete-wCSB-gives-BKS⁺ w P i = γ
   where
    s : ∥ ℕ ≃ P + ℕ ∥
-   s = w ℕ-is-discrete (+-is-discrete (props-are-discrete i) ℕ-is-discrete) (econstruction-ℕ P i)
+   s = w ℕ-is-discrete
+         (+-is-discrete (props-are-discrete i) ℕ-is-discrete)
+         (econstruction-ℕ P i)
 
    γ : is-Rosolini P
    γ = ∥∥-functor (rlemma P i) s
