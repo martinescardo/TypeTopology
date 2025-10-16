@@ -74,6 +74,7 @@ open import Ordinals.Underlying
 open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.DecreasingListProperties-Concrete ua pt sr
 open import Ordinals.Exponentiation.Grayson ua pt
+open import Ordinals.Exponentiation.Miscellaneous ua pt sr
 open import Ordinals.Exponentiation.PropertiesViaTransport ua pt sr
 open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
