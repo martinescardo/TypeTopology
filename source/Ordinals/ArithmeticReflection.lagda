@@ -1,6 +1,6 @@
 Tom de Jong, 31 July 2025.
 
-This file provides a formalization of Section 7 ("Abstract
+This file provides a formalization of Section 6 ("Abstract
 Cancellation Arithmetic") of the paper "Constructive Ordinal
 Exponentiation" by Tom de Jong, Nicolai Kraus, Fredrik Nordvall
 Forsberg, and Chuangjie Xu.

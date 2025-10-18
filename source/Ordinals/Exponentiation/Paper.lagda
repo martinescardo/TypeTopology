@@ -9,7 +9,7 @@ remarks of our paper
    Ordinal Exponentiation in Homotopy Type Theory
    LICS 2025, pp. 262—274, 2025.
    https://doi.org/10.1109/LICS65433.2025.00027
-   https://arxiv.org/abs/2501.14542
+   https://arxiv.org/abs/2501.14542v4
 
 See also Ordinals.Exponentiation.index for an overview of the relevant files.
 
