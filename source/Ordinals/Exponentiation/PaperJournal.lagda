@@ -60,6 +60,7 @@ open import Ordinals.Arithmetic fe
 open import Ordinals.ArithmeticReflection ua pt sr
 open import Ordinals.BoundedOperations ua pt sr
 open import Ordinals.Equivalence
+open import Ordinals.Fin
 open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.Notions
@@ -73,6 +74,7 @@ open import Ordinals.Underlying
 open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.DecreasingListProperties-Concrete ua pt sr
 open import Ordinals.Exponentiation.Grayson ua pt
+open import Ordinals.Exponentiation.Miscellaneous ua pt sr
 open import Ordinals.Exponentiation.PropertiesViaTransport ua pt sr
 open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
@@ -561,6 +563,23 @@ Proposition-39-ii = GraysonList-always-ordinal-implies-EM
 Section 6. Abstract Cancellation Arithmetic
 
 \begin{code}
+
+Eq-6 : (𝟘ₒ +ₒ ω ＝ ω)  ×  (𝟙ₒ ×ₒ ω ＝ ω)  ×  (𝟚ₒ ^ₒ ω ＝ ω)
+     × (𝟙ₒ +ₒ ω ＝ ω)  ×  (𝟚ₒ ×ₒ ω ＝ ω)  ×  (𝟛ₒ ^ₒ ω ＝ ω)
+Eq-6 = 𝟘ₒ+ₒω-is-ω , 𝟙ₒ×ₒω-is-ω , [1]
+     , 𝟙ₒ+ₒω-is-ω , 𝟚ₒ×ₒω-is-ω , [2]
+ where
+  [1] = (ap (_^ₒ ω) (Fin-ordinal-two ua ⁻¹) ∙ (Fin-ordinal- 2 ^ₒω-is-ω ⋆))
+  [2] = (ap (_^ₒ ω) (Fin-ordinal-three ua ⁻¹) ∙ (Fin-ordinal- 3 ^ₒω-is-ω ⋆))
+
+Eq-6-addendum-i : ¬ ((α β γ : Ordinal 𝓤₀) → α +ₒ γ ＝ β +ₒ γ → α ＝ β)
+Eq-6-addendum-i = no-right-cancellation-+ₒ
+
+Eq-6-addendum-ii : ¬ ((α β γ : Ordinal 𝓤₀) → α ×ₒ γ ＝ β ×ₒ γ → α ＝ β)
+Eq-6-addendum-ii = no-right-cancellation-×ₒ
+
+Eq-6-addendum-iii : ¬ ((α β γ : Ordinal 𝓤₀) → α ^ₒ γ ＝ β ^ₒ γ → α ＝ β)
+Eq-6-addendum-iii = no-right-cancellation-^ₒ
 
 Lemma-40 : (α β : Ordinal 𝓤)
          → β ⊲ α → ¬ (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f)

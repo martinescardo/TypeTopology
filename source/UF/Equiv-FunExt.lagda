@@ -590,7 +590,6 @@ is-equiv-≃-qinv' fe f Y-is-set =
 
 \end{code}
 
-
 Added by Martin Escardo 22nd June 2025.
 
 The function ≃-sym : X ≃ Y → Y ≃ X is an equivalence.
