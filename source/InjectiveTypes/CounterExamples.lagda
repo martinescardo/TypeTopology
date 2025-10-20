@@ -40,6 +40,7 @@ module InjectiveTypes.CounterExamples
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
+open import UF.Equiv
 open import UF.Embeddings
 open import UF.ClassicalLogic
 open import UF.FunExt
@@ -513,7 +514,9 @@ non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM'
 Added 16 October 2025 by Tom de Jong, formalizing a proof sketches
 of 4 and 8 September 2025.
 
-TODO. Refactor and put the code in appropriate places, like UF.Choice.
+The following theorem is instantiated below to show that the injectivity of the
+infinite dimensional real projective space RP∞ implies a weak choice principle
+known as the world's simplest axiom of choice.
 
 \begin{code}
 
@@ -550,104 +553,14 @@ family-has-unspecified-split-support-if-total-space-of-truncation-is-ainjective
      II : T (f d) → ∥ T d ∥ → T d
      II t τ = transport T (f₂ τ) t
 
-\end{code}
+open import SyntheticHomotopyTheory.RP-infinity pt
+open import UF.Choice
+open world's-simplest-axiom-of-choice fe pt
 
-TODO. Formulate a few equivalent versions of WSAC.
-TODO. Move definition of RP∞ and explain that RP∞ is actually small with
-      reference to the paper by Egbert and Ulrik.
-
-\begin{code}
-
-RP∞ : 𝓤₁ ̇
-RP∞ = Σ X ꞉ 𝓤₀ ̇  , ∥ X ＝ 𝟚 ∥
-
-RP∞-ainjective-implies-WSAC' : ainjective-type RP∞ (𝓤₁ ⊔ 𝓥) 𝓦
-                             → (X : 𝓤₀ ̇ ) → ∥ has-split-support (X ＝ 𝟚) ∥
-RP∞-ainjective-implies-WSAC' RP∞-inj =
- family-has-unspecified-split-support-if-total-space-of-truncation-is-ainjective
-  (𝓤₀ ̇ ) (universes-are-ainjective (ua 𝓤₀)) (λ X → X ＝ 𝟚) RP∞-inj
-
-RP∞-ainjective-implies-WSAC : ainjective-type RP∞ 𝓤₁ 𝓤₀
-                            → (X : 𝓤₀ ̇ ) → ∥ has-split-support (X ＝ 𝟚) ∥
-RP∞-ainjective-implies-WSAC = RP∞-ainjective-implies-WSAC' {𝓤₀}
-
-open import UF.Equiv
-
-RP∞' : 𝓤₁ ̇
-RP∞' = Σ X ꞉ 𝓤₀ ̇  , ∥ X ≃ 𝟚 ∥
-
-RP∞-ainjective-implies-WSAC'' : ainjective-type RP∞' 𝓥 𝓦
-                              → (X : 𝓤₀ ̇ ) → ∥ has-split-support (X ≃ 𝟚) ∥
-RP∞-ainjective-implies-WSAC'' RP∞-inj =
+RP∞-ainjective-implies-WSAC : ainjective-type RP∞ 𝓥 𝓦
+                            → WSAC' 𝓤₀
+RP∞-ainjective-implies-WSAC RP∞-inj =
  family-has-unspecified-split-support-if-total-space-of-truncation-is-ainjective
   (𝓤₀ ̇ ) (universes-are-ainjective (ua 𝓤₀)) (λ X → X ≃ 𝟚) RP∞-inj
-
-RP∞-ainjective-implies-WSAC''' : ainjective-type RP∞' 𝓤₀ 𝓤₀
-                               → (X : 𝓤₀ ̇ ) → ∥ has-split-support (X ≃ 𝟚) ∥
-RP∞-ainjective-implies-WSAC''' = RP∞-ainjective-implies-WSAC'' {𝓤₀}
-
-open import UF.Equiv-FunExt
-open import Fin.ArithmeticViaEquivalence
-open import Fin.Bishop
-open import Fin.Kuratowski pt
-open import Fin.Type
-open exponentiation-and-factorial fe
-open finiteness pt
-
-WSAC : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
-WSAC 𝓤 𝓥 = (P : 𝓤 ̇ ) (Y : P → 𝓥 ̇ )
-           → is-prop P
-           → ((p : P) → Y p has-cardinality 2)
-           → ∥ Π Y ∥
-
-world's-simplest-axiom-of-choice = WSAC
-
-WSAC' : (𝓤 : Universe) → 𝓤 ⁺ ̇
-WSAC' 𝓤 = (X : 𝓤 ̇ ) → ∥ has-split-support (X ≃ 𝟚) ∥
-
-WSAC-implies-WSAC' : WSAC 𝓤 𝓤 → WSAC' 𝓤
-WSAC-implies-WSAC' {𝓤} wsac X = wsac P Y P-is-prop Y-doubletons
- where
-  P : 𝓤 ̇
-  P = ∥ X ≃ 𝟚 ∥
-  Y : P → 𝓤 ̇
-  Y _ = X ≃ 𝟚
-  P-is-prop : is-prop P
-  P-is-prop = ∥∥-is-prop
-  Y-doubletons : (p : P) → Y p has-cardinality 2
-  Y-doubletons p = ∥∥-functor I p
-   where
-    I : X ≃ 𝟚 → Y p ≃ Fin 2
-    I e =
-     Y p             ≃⟨ ≃-refl _ ⟩
-     (X ≃ 𝟚)         ≃⟨ ≃-cong-left fe e ⟩
-     (𝟚 ≃ 𝟚)         ≃⟨ ≃-cong fe (𝟚-is-Fin2) 𝟚-is-Fin2 ⟩
-     (Fin 2 ≃ Fin 2) ≃⟨ ≃-refl _ ⟩
-     Aut (Fin 2)     ≃⟨ ≃-sym (pr₂ (!construction 2)) ⟩
-     Fin 2           ■
-
-open import UF.PropIndexedPiSigma
-
-WSAC'-implies-WSAC : WSAC' 𝓤 → WSAC 𝓤 𝓤
-WSAC'-implies-WSAC {𝓤} wsac' P Y P-is-prop Y-doubletons =
- ∥∥-functor I (wsac' (Π Y))
-   where
-    I : has-split-support (Π Y ≃ 𝟚) → Π Y
-    I h p = II (h' III)
-     where
-      e : Π Y ≃ Y p
-      e = prop-indexed-product p fe' P-is-prop
-      h' : has-split-support (Y p ≃ 𝟚)
-      h' = transport
-            has-split-support
-            (eqtoid (ua 𝓤) (Π Y ≃ 𝟚) (Y p ≃ 𝟚) (≃-cong-left fe e))
-            h
-      III : ∥ Y p ≃ 𝟚 ∥
-      III = ∥∥-functor III' (Y-doubletons p)
-       where
-        III' : Y p ≃ Fin 2 → Y p ≃ 𝟚
-        III' ϕ = ⌜ ≃-cong-right fe (≃-sym 𝟚-is-Fin2) ⌝ ϕ
-      II : Y p ≃ 𝟚 → Y p
-      II f = ⌜ f ⌝⁻¹ ₀
 
 \end{code}
