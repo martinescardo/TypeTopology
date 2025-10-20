@@ -16,7 +16,7 @@ the type of integers.
 
 open import MLTT.Spartan
 
-module Circle.Integers where
+module SyntheticHomotopyTheory.Circle.Integers where
 
 ℤ : 𝓤₀ ̇
 ℤ = 𝟙 + ℕ + ℕ

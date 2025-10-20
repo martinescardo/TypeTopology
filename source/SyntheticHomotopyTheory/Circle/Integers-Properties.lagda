@@ -6,7 +6,7 @@ Earlier version: 18 September 2020
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Circle.Integers
+open import SyntheticHomotopyTheory.Circle.Integers
 
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
@@ -15,7 +15,7 @@ open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-Properties
 
-module Circle.Integers-Properties where
+module SyntheticHomotopyTheory.Circle.Integers-Properties where
 
 ℤ-is-set : is-set ℤ
 ℤ-is-set = +-is-set 𝟙 (ℕ + ℕ) (props-are-sets 𝟙-is-prop)

@@ -14,8 +14,8 @@ UniMath" by Bezem, Buchholtz, Grayson and Shulman
 
 open import Naturals.UniversalProperty
 
-open import Circle.Integers
-open import Circle.Integers-Properties
+open import SyntheticHomotopyTheory.Circle.Integers
+open import SyntheticHomotopyTheory.Circle.Integers-Properties
 
 open import MLTT.Spartan
 open import UF.Embeddings
@@ -24,7 +24,7 @@ open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Subsingletons
 
-module Circle.Integers-SymmetricInduction where
+module SyntheticHomotopyTheory.Circle.Integers-SymmetricInduction where
 
 ℤ-symmetric-induction : {𝓤 : Universe}
                       → funext 𝓤₀ 𝓤

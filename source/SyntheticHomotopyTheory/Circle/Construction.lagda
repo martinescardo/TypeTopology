@@ -31,11 +31,11 @@ open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.Univalence
 
-open import Circle.Integers
-open import Circle.Integers-Properties
-open import Circle.Integers-SymmetricInduction
+open import SyntheticHomotopyTheory.Circle.Integers
+open import SyntheticHomotopyTheory.Circle.Integers-Properties
+open import SyntheticHomotopyTheory.Circle.Integers-SymmetricInduction
 
-module Circle.Construction
+module SyntheticHomotopyTheory.Circle.Construction
         (pt : propositional-truncations-exist)
         (ua : is-univalent 𝓤₀)
        where
@@ -589,7 +589,7 @@ principle.
 
 \begin{code}
 
-open import Circle.Induction
+open import SyntheticHomotopyTheory.Circle.Induction
 
 module _
         (fe : FunExt)

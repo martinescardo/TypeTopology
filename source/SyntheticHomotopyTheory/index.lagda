@@ -1,4 +1,4 @@
-Tom de Jong and Martín Escardó, 20 October 2025.
+Tom de Jong, 20 October 2025.
 
 \begin{code}
 
@@ -6,8 +6,7 @@ Tom de Jong and Martín Escardó, 20 October 2025.
 
 module SyntheticHomotopyTheory.index where
 
-import SyntheticHomotopyTheory.RP-infinity -- by [1]
+import SyntheticHomotopyTheory.Circle.index
+import SyntheticHomotopyTheory.RP-infinity
 
 \end{code}
-
-[1] Tom de Jong
