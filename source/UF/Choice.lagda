@@ -750,3 +750,109 @@ module local-shoice
                     → ∃ f ꞉ (X → Y) , ((x : X) → P x (f x))
 
 \end{code}
+
+If we restrict the family Y in the axiom of propositional choice (PAC) to be a
+family of doubletons, then we get the "world's simplest axiom choice" (WSAC), as
+introduced, and shown to fail in some toposes, by Fourman and Ščedrov in [1].
+
+[1] M. P. Fourman and A. Ščedrov
+    The "world's simplest axiom of choice" fails
+    manuscripta mathematica, volume 38, pp. 325—332, 1982
+    https://doi.org/10.1007/BF01170929
+
+We consider two formulations of WSAC and prove them to be equivalent.
+
+\begin{code}
+
+module world's-simplest-axiom-of-choice
+        (fe : FunExt)
+        (pt : propositional-truncations-exist)
+        where
+
+ open import Fin.ArithmeticViaEquivalence
+ open import Fin.Bishop
+ open import Fin.Kuratowski pt
+ open import Fin.Type
+ open import UF.Equiv
+ open import UF.Equiv-FunExt
+ open import UF.ExitPropTrunc
+ open import UF.PropIndexedPiSigma
+
+ open PropositionalTruncation pt
+ open exponentiation-and-factorial fe
+ open finiteness pt
+ open split-support-and-collapsibility pt
+
+ WSAC : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
+ WSAC 𝓤 𝓥 = (P : 𝓤 ̇ ) (Y : P → 𝓥 ̇ )
+            → is-prop P
+            → ((p : P) → Y p has-cardinality 2)
+            → ∥ Π Y ∥
+
+ world's-simplest-axiom-of-choice = WSAC
+
+\end{code}
+
+The following formulation is exploited in InjectiveTypes.CounterExamples.
+
+\begin{code}
+
+ WSAC' : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ WSAC' 𝓤 = (X : 𝓤 ̇ ) → ∥ has-split-support (X ≃ 𝟚) ∥
+
+ WSAC-implies-WSAC' : WSAC 𝓤 𝓤 → WSAC' 𝓤
+ WSAC-implies-WSAC' {𝓤} wsac X = wsac P Y P-is-prop Y-doubletons
+  where
+   P : 𝓤 ̇
+   P = ∥ X ≃ 𝟚 ∥
+   Y : P → 𝓤 ̇
+   Y _ = X ≃ 𝟚
+   P-is-prop : is-prop P
+   P-is-prop = ∥∥-is-prop
+   Y-doubletons : (p : P) → Y p has-cardinality 2
+   Y-doubletons p = ∥∥-functor I p
+    where
+     I : X ≃ 𝟚 → Y p ≃ Fin 2
+     I e =
+      Y p             ≃⟨ ≃-refl _ ⟩
+      (X ≃ 𝟚)         ≃⟨ ≃-cong-left fe e ⟩
+      (𝟚 ≃ 𝟚)         ≃⟨ ≃-cong fe (𝟚-is-Fin2) 𝟚-is-Fin2 ⟩
+      (Fin 2 ≃ Fin 2) ≃⟨ ≃-refl _ ⟩
+      Aut (Fin 2)     ≃⟨ ≃-sym (pr₂ (!construction 2)) ⟩
+      Fin 2           ■
+
+ WSAC'-implies-WSAC : WSAC' 𝓤 → WSAC 𝓤 𝓤
+ WSAC'-implies-WSAC {𝓤} wsac' P Y P-is-prop Y-doubletons =
+  ∥∥-functor I (wsac' (Π Y))
+    where
+     I : has-split-support (Π Y ≃ 𝟚) → Π Y
+     I h p = II (h' III)
+      where
+       e : Π Y ≃ Y p
+       e = prop-indexed-product p (fe 𝓤 𝓤) P-is-prop
+       h' : has-split-support (Y p ≃ 𝟚)
+       h' t = I₂
+        where
+         𝕗 : (Π Y ≃ 𝟚) ≃ (Y p ≃ 𝟚)
+         𝕗 = ≃-cong-left fe e
+         I₁ : Π Y ≃ 𝟚
+         I₁ = h (∥∥-functor ⌜ 𝕗 ⌝⁻¹ t)
+         I₂ : Y p ≃ 𝟚
+         I₂ = ⌜ 𝕗 ⌝ I₁
+       II : Y p ≃ 𝟚 → Y p
+       II f = ⌜ f ⌝⁻¹ ₀
+       III : ∥ Y p ≃ 𝟚 ∥
+       III = ∥∥-functor III' (Y-doubletons p)
+        where
+         III' : Y p ≃ Fin 2 → Y p ≃ 𝟚
+         III' = ⌜ ≃-cong-right fe (≃-sym 𝟚-is-Fin2) ⌝
+
+ WSAC-equivalent-formulations : WSAC 𝓤 𝓤 ≃ WSAC' 𝓤
+ WSAC-equivalent-formulations =
+  logically-equivalent-props-are-equivalent
+   (Π₄-is-prop (fe _ _) (λ _ _ _ _ → ∥∥-is-prop))
+   (Π-is-prop (fe _ _) (λ _ → ∥∥-is-prop))
+   WSAC-implies-WSAC'
+   WSAC'-implies-WSAC
+
+\end{code}
