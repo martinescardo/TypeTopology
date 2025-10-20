@@ -1,32 +1,21 @@
-Martin Escardo, 16th August 2023, with more improvements 18th June 2025.
+Martin Escardo, 16th August 2023
 
-Injectivity of types of mathematical structures, such as pointed
-types, ∞-magmas, magmas, monoids, groups etc.
+We give a sufficient condition for types of mathematical structures,
+such as pointed types, ∞-magmas, monoids, groups, etc. to be
+algebraically injective. We use algebraic flabbiness as our main tool.
 
-We give a sufficient condition for types of mathematical structures to
-be injective, and we apply it to examples such as the above.
+This file is generalized in [1] and [2], but it is still important for
+both the sake of motivation and the fact that it includes useful
+discussion, which probably should be read before reading [1] and [2].
 
-This file improves InjectiveTypes.MathematicalStructuresOriginal at
-the cost of perhaps being harder to understand, but with the benefit
-of at the same time being more general and allowing shorter proofs in
-applications. It relies on the file InjectiveTypes.Sigma, which also
-arises as a generalization of the above original file.
+[1] InjectiveTypes.Sigma
+[2] InjectiveTypes.MathematicalStructures
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
-
-import InjectiveTypes.MathematicalStructuresOriginal -- For comparison only.
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
-
-\end{code}
-
-We assume univalence (and hence function extensionality, which,
-follows from it), but no other HoTT/UF extensions, not even
-propositional truncations.
-
-\begin{code}
 
 module InjectiveTypes.MathematicalStructures
         (ua : Univalence)
@@ -43,158 +32,252 @@ private
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 open import InjectiveTypes.Blackboard fe
-open import InjectiveTypes.Sigma fe
 open import MLTT.Spartan
 open import Taboos.Decomposability fe
 open import UF.Base
 open import UF.Equiv
 open import UF.ClassicalLogic
 open import UF.PropIndexedPiSigma
-open import UF.Retracts
 open import UF.Sets
 open import UF.Sets-Properties
+open import UF.Subsingletons
 open import UF.SubtypeClassifier
 
 \end{code}
 
-It is convenient to work with the following definition of (algebraic)
-flabbiness of a universe, which uses equivalence of types rather than
-equality.
+We already know the following, but here is a short direct proof.
 
 \begin{code}
 
-Flabby : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Flabby 𝓤 = Σ ⨆ ꞉ ((p : Ω 𝓤) → (p holds → 𝓤 ̇ ) → 𝓤 ̇ )
-                , ((p : Ω 𝓤) (A : p holds → 𝓤 ̇) (h : p holds) → ⨆ p A ≃ A h)
+universes-are-aflabby-Π : aflabby (𝓤 ̇ ) 𝓤
+universes-are-aflabby-Π {𝓤} P P-is-prop A = Π A , I
+ where
+  X : 𝓤 ̇
+  X = Π A
+
+  I : (p : P) → Π A ＝ A p
+  I p = eqtoid (ua 𝓤) (Π A) (A p) (prop-indexed-product p fe' P-is-prop )
+
+universes-are-injective-Π : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
+universes-are-injective-Π {𝓤} = aflabby-types-are-ainjective (𝓤 ̇ )
+                                  universes-are-aflabby-Π
+
+universes-are-aflabby-Σ : aflabby (𝓤 ̇ ) 𝓤
+universes-are-aflabby-Σ {𝓤} P P-is-prop A = Σ A , I
+ where
+  X : 𝓤 ̇
+  X = Σ A
+
+  I : (p : P) → Σ A ＝ A p
+  I p = eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum p P-is-prop)
 
 \end{code}
 
-In the presence of univalence we can convert to the usual definition,
-and we can always convert in the other direction, but in this file we
-need the first one only.
+We now want to show that several types of mathematical structures are
+(algebraically) injective, or, equivalently, (algebraically) flabby.
 
-\begin{code}
+We work with an arbitrary S : 𝓤 ̇ → 𝓥 ̇ and want to show that Σ S is
+flabby. E.g. for ∞-magmas in a universe 𝓤, we will have 𝓥 the same as 𝓤
+and S X = X → X → X, specifying that we have a binary operation on the
+type X, subject to no axioms, and the type of ∞-magmas will be Σ S.
+Similarly, the type of groups will again be of the form Σ S for a
+different choice of S.
 
-to-aflabby : Flabby 𝓤 → aflabby (𝓤 ̇ ) 𝓤
-to-aflabby {𝓤} (⨆ , e) P i A =
- ⨆ (P , i) A , (λ h → eqtoid (ua 𝓤) _ _ (e (P , i) A h))
+Let f : P → Σ S be a "partial element" where P is a proposition. Then
+f is of the form
 
-from-afabbly : aflabby (𝓤 ̇ ) 𝓤 → Flabby 𝓤
-from-afabbly {𝓤} aflab =
- aflabby-extension aflab ,
- (λ p A h → idtoeq _ _ (aflabby-extension-property aflab p A h))
+ f h = A h , g h
 
-\end{code}
+with A : P → 𝓤 ̇ and g : (h : P) → S (A h).
 
-We already know that universes are flabby in two ways, using ⨆ := Π
-and ⨆ := Σ, but we give constructions that they are Flabby without
-univalence, and hence have better computational behaviour, which will
-simplify the applications we have in mind.
+We need to construct a (total) element (X , s) of Σ S, with s : S X ,
+such that for all h : P we have that (X , s) = (A h , g h).
 
-If the index type is a proposition, then the projection out of a
-Π-type is an equivalence.
+In particular, X = A h for any h : P. Because P is a
+proposition, we have a fiberwise equivalence
 
-\begin{code}
+ π : (h : P) → Π A ≃ A h.
 
-Π-𝕡𝕣𝕠𝕛 : (p : Ω 𝓤) {A : p holds → 𝓤 ̇ } (h : p holds)
-      → Π A ≃ A h
-Π-𝕡𝕣𝕠𝕛 p h = Π-proj h , Π-proj-is-equiv h fe' (holds-is-prop p)
+By univalence, π induces a fiberwise identification
 
-universes-are-Flabby-Π : Flabby 𝓤
-universes-are-Flabby-Π = (λ p A → Π A) ,
-                         (λ p A → Π-𝕡𝕣𝕠𝕛 p)
+ ϕ : (h : P) → Π A ＝ A h.
 
-universes-are-flabby-Π : aflabby (𝓤  ̇) 𝓤
-universes-are-flabby-Π = to-aflabby universes-are-Flabby-Π
+Hence we can take X to be Π A.
 
-Σ-𝕚𝕟 : (p : Ω 𝓤) {A : p holds → 𝓤 ̇ } (h : p holds)
-    → A h ≃ Σ A
-Σ-𝕚𝕟 p h = Σ-in h , Σ-in-is-equiv h (holds-is-prop p)
+To construct s, we need an assumption on S.
 
-universes-are-Flabby-Σ : Flabby 𝓤
-universes-are-Flabby-Σ = (λ p A → Σ A) ,
-                         (λ p A h → ≃-sym (Σ-𝕚𝕟 p h))
+Roughly, our assumption is that S is closed under proposition-indexed
+products, in the sense that from an element of the type
+(h : P) → S (A h) we can get an element of the type S (Π A).
 
-universes-are-flabby-Σ : aflabby (𝓤  ̇) 𝓤
-universes-are-flabby-Σ = to-aflabby universes-are-Flabby-Σ
+More precisely, we always have a map
 
-\end{code}
+ ρ : S (Π A) → ((h : P) → S (A h))
 
-In this file we apply the above constructions only for the case of Π,
-but we include those for Σ for the sake illustration (and perhaps for
-future use).
+in the opposite direction, and we stipulate that it is an equivalence
+for any proposition P and any type family A of types indexed by P.
 
-We now work with an arbitrary notion S of structure on 𝓤. E.g. for
-monoids we will take S X := X → X → X, the type of the multiplication
-operation.
+With this assumption, we can let the element s be the inverse of ρ
+applied to B.
+
+Remark. Regarding the discussion in the introduction of this file, it
+is actually enough to require that ρ is has a section.
 
 \begin{code}
 
 module _ (S : 𝓤 ̇ → 𝓥 ̇ ) where
-
-\end{code}
-
-By the results of InjectiveTypes.Sigma, we get that Σ S is aflabby in
-two ways, assuming the compatibility condition for the flabbiness
-data.
-
-\begin{code}
-
- module _ (ϕ : aflabby (𝓤 ̇ ) 𝓤) where
-
-  aflabbiness-of-type-of-structured-types : compatibility-data S ϕ
-                                          → aflabby (Σ S) 𝓤
-  aflabbiness-of-type-of-structured-types = Σ-is-aflabby S ϕ
-
-  ainjectivity-of-type-of-structures : compatibility-data S ϕ
-                                     → ainjective-type (Σ S) 𝓤 𝓤
-  ainjectivity-of-type-of-structures = aflabby-types-are-ainjective (Σ S)
-                                       ∘ aflabbiness-of-type-of-structured-types
-
-\end{code}
-
-We will apply this to get our desired examples with ϕ taken to be the
-above canonical Π-flabby structure on the universe.
-
-Next we want to simplify working with compatibility data (as defined
-in the module InjectiveTypes.Sigma), where we avoid transports by
-working with the following function treq and suitable choices of T and
-T-refl in the examples below. Notice that the definition of treq uses
-univalence. The point of T and T-refl below is that they won't use
-univalence in our examples of interest, so that they will have a
-better computational behaviour than treq.
-
-\begin{code}
 
  treq : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y
  treq {X} {Y} 𝕗 = transport S (eqtoid (ua 𝓤) X Y 𝕗)
 
 \end{code}
 
-The main additional work in this file on top of InjectiveTypes.Sigma
-is to make it easier to work with the compatibility condition for the
-purpose of injectivity of types of mathematical structures.
-
-We work with hypothetical T and T-refl with the following types.
+We don't need this fact explicitly, but it is worth keeping it in
+mind:
 
 \begin{code}
 
- module _ (T      : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y)
+ treq-is-equiv : {X Y : 𝓤 ̇ } (𝕗 : X ≃ Y) → is-equiv (treq 𝕗)
+ treq-is-equiv {X} {Y} 𝕗 = transports-are-equivs (eqtoid (ua 𝓤) X Y 𝕗)
+
+\end{code}
+
+We now define "canonical maps" π, ϕ and ρ parametrized by a
+proposition p and family A indexed by p.
+
+\begin{code}
+
+ module canonical-map
+         (p : Ω 𝓤)
+         (A : p holds → 𝓤 ̇ )
+         where
+
+  hp : is-prop (p holds)
+  hp = holds-is-prop p
+
+  π : (h : p holds) → Π A ≃ A h
+  π h = prop-indexed-product h fe' hp
+
+  remark-π : (h : p holds) (α : Π A)
+           → ⌜ π h ⌝ α ＝ α h
+  remark-π h α = refl
+
+  remark-π⁻¹ : (h : p holds) (a : A h)
+             → ⌜ π h ⌝⁻¹ a ＝ λ h' → transport A (hp h h') a
+  remark-π⁻¹ h a = refl
+
+  ϕ : (h : p holds) → Π A ＝ A h
+  ϕ h = eqtoid (ua 𝓤) (Π A) (A h) (π h)
+
+  ρ : S (Π A) → ((h : p holds) → S (A h))
+  ρ s h = treq (π h) s
+
+  remark-ρ : (s : S (Π A)) (h : p holds)
+           → ρ s h ＝ transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) s
+  remark-ρ s h = refl
+
+\end{code}
+
+Our assumption on S is that the map
+
+  ρ p A : S (Π A) → ((h : p holds) → S (A h))
+
+is an equivalence for every p and A.
+
+\begin{code}
+
+ closed-under-prop-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
+ closed-under-prop-Π = (p : Ω 𝓤)
+                       (A : p holds → 𝓤 ̇ )
+                     → is-equiv (ρ p A)
+  where
+   open canonical-map
+
+\end{code}
+
+And the main lemma, under this assumption, is that Ρ S is algebraically
+flabby with with respect to the universe 𝓤.
+
+\begin{code}
+
+ aflabbiness-of-type-of-structured-types : closed-under-prop-Π
+                                         → aflabby (Σ S) 𝓤
+ aflabbiness-of-type-of-structured-types ρ-is-equiv = I
+  where
+   I : aflabby (Σ S) 𝓤
+   I P P-is-prop f = (Π A , s) , II
+    where
+     p : Ω 𝓤
+     p = (P , P-is-prop)
+
+     have-f : p holds → Σ S
+     have-f = f
+
+     A : p holds → 𝓤 ̇
+     A = pr₁ ∘ f
+
+     open canonical-map p A
+
+     e : S (Π A) ≃ ((h : p holds) → S (A h))
+     e = ρ , ρ-is-equiv p A
+
+     g : (h : P) → S (A h)
+     g = pr₂ ∘ f
+
+     s : S (Π A)
+     s = ⌜ e ⌝⁻¹ g
+
+     II : (h : p holds) → Π A , s ＝ f h
+     II h = Π A , s   ＝⟨ to-Σ-＝ (ϕ h , III) ⟩
+            A h , g h ＝⟨ refl ⟩
+            f h       ∎
+      where
+       III = transport S (ϕ h) s ＝⟨ refl ⟩
+             ⌜ e ⌝ s h           ＝⟨ refl ⟩
+             ⌜ e ⌝ (⌜ e ⌝⁻¹ g) h ＝⟨ IV ⟩
+             g h                 ∎
+        where
+         IV = ap (λ - → - h) (inverses-are-sections' e g)
+
+\end{code}
+
+It follows that the type Σ S is algebraically injective if S is closed
+under proposition-indexed products, which is our main theorem.
+
+\begin{code}
+
+ ainjectivity-of-type-of-structures : closed-under-prop-Π
+                                    → ainjective-type (Σ S) 𝓤 𝓤
+ ainjectivity-of-type-of-structures = aflabby-types-are-ainjective (Σ S)
+                                      ∘ aflabbiness-of-type-of-structured-types
+
+\end{code}
+
+Our assumption of closure under proposition-indexed products may be
+difficult to check directly, because it involves transport along an
+identification induced by an equivalence by univalence.
+
+In practice, however, we are often able to construct T and T-refl
+below, for S of interest, without using transport.
+
+\begin{code}
+
+ module _ (T      : {X Y : 𝓤 ̇ } → (X ≃ Y) → S X → S Y)
           (T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id)
         where
 
 \end{code}
 
 The point is that any such T can be equivalently expressed as a
-transport and hence we may apply the theorems of the imported file
-InjectiveTypes.Sigma, but it may be easier to check the compatibility
-condition using T rather than transport (see examples below).
+transport and hence we may apply the above theorem, but it may be
+easier to check closure under products using T rather than transport
+(see examples below).
 
 \begin{code}
 
-  T-is-treq : {X Y : 𝓤 ̇ } (𝕗 : X ≃ Y)
-            → T 𝕗 ∼ treq 𝕗
-  T-is-treq {X} {Y} 𝕗 s = JEq (ua 𝓤) X A I Y 𝕗
+  transport-eqtoid : {X Y : 𝓤 ̇ } (𝕗 : X ≃ Y)
+                   → T 𝕗 ∼ treq 𝕗
+  transport-eqtoid {X} {Y} 𝕗 s = JEq (ua 𝓤) X A I Y 𝕗
    where
     A : (Y : 𝓤 ̇ ) (𝕗 : X ≃ Y) → 𝓥 ̇
     A Y 𝕗 = T 𝕗 s ＝ treq 𝕗 s
@@ -210,151 +293,54 @@ condition using T rather than transport (see examples below).
 
 \end{code}
 
-In order to be able to apply the results of InjectiveTypes.Sigma, we
-perform the following construction. That file requires compatibility
-data of a certain kind, which we reduce to compatibility of another
-kind, which will be easier to produce in our sample applications.
+Hence our condition on S formulated with transports can be
+equivalently formulated with T:
 
 \begin{code}
 
-  module compatibility-data-construction (ϕ@(⨆ , ε) : Flabby 𝓤) where
+  module canonical-map'
+          (p : Ω 𝓤)
+          (A : p holds → 𝓤 ̇ )
+          where
 
-   derived-ρ : (p : Ω 𝓤)
-               (A : p holds → 𝓤 ̇ )
-             → S (⨆ p A) → ((h : p holds) → S (A h))
-   derived-ρ p A s h = T (ε p A h) s
+   open canonical-map p A public
 
-   compatibility-data-for-derived-ρ : 𝓤 ⁺ ⊔ 𝓥 ̇
-   compatibility-data-for-derived-ρ = (p : Ω 𝓤)
-                                      (A : p holds → 𝓤 ̇ )
-                                    → has-section (derived-ρ p A)
+   τ : S (Π A) → (h : p holds) → S (A h)
+   τ s h = T (π h) s
 
-   construction : compatibility-data-for-derived-ρ
-                → compatibility-data S (to-aflabby ϕ)
-   construction t p A = III
+   ρ-and-τ-agree : ρ ∼ τ
+   ρ-and-τ-agree s =
+    ρ s                                                     ＝⟨ refl ⟩
+    (λ h → transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) s) ＝⟨ I ⟩
+    (λ h → T (π h) s)                                       ＝⟨ refl ⟩
+    τ s                                                     ∎
     where
+     I = dfunext fe' (λ h → (transport-eqtoid (π h) s)⁻¹)
 
-     II : derived-ρ p A ∼ ρ S (to-aflabby ϕ) p A
-     II s =
-      derived-ρ p A s                                     ＝⟨ refl ⟩
-      (λ h → T (ε p A h) s)                               ＝⟨ I₀ ⟩
-      (λ h → treq (ε p A h) s)                            ＝⟨ refl ⟩
-      (λ h → transport S (eqtoid (ua 𝓤) _ _ (ε p A h)) s) ＝⟨ refl ⟩
-      ρ S (to-aflabby ϕ) p A s                           ∎
-      where
-       I₀ = dfunext fe' (λ h → T-is-treq (ε p A h) s)
+  closed-under-prop-Π' : 𝓤 ⁺ ⊔ 𝓥 ̇
+  closed-under-prop-Π' = (p : Ω 𝓤)
+                         (A : p holds → 𝓤 ̇ )
+                       → is-equiv (τ p A)
+   where
+    open canonical-map'
 
-     III : has-section (ρ S (to-aflabby ϕ) p A)
-     III = has-section-closed-under-∼ (derived-ρ p A) _ (t p A) (∼-sym II)
+  Π-closure-criterion : closed-under-prop-Π'
+                      → closed-under-prop-Π
+  Π-closure-criterion τ-is-equiv p A =
+   equiv-closed-under-∼ τ ρ (τ-is-equiv p A) ρ-and-τ-agree
+   where
+    open canonical-map' p A
 
-\end{code}
-
-This completes the construction, but we record that the section map of
-the above construction is literally the same as that of the
-hypothesis t.
-
-\begin{code}
-
-     _ = section-map (ρ S (to-aflabby ϕ) p A) III  ＝⟨ refl ⟩
-         section-map (derived-ρ p A) (t p A)        ∎
+  Π-closure-criterion-converse : closed-under-prop-Π
+                               → closed-under-prop-Π'
+  Π-closure-criterion-converse ρ-is-equiv p A =
+   equiv-closed-under-∼ ρ τ (ρ-is-equiv p A) (∼-sym ρ-and-τ-agree)
+   where
+    open canonical-map' p A
 
 \end{code}
 
-What is necessarily different is the proof that this map is a
-section. In fact, it is different in the strong sense that the
-comparison for equality doesn't even make sense - it wouldn't even
-typecheck.
-
-A way to verify this in Agda is to try to supply the following naive
-definition.
-
-   construction' : compatibility-data-for-derived-ρ
-                 → compatibility-data S (to-aflabby ϕ)
-   construction' t = t -- Doesn't type check (of course).
-
-We can sensibly have only that the *section map* of the construction
-agrees with the given section map, which is what we have already
-observed in the above proof, but record again with full type
-information, outside the above proof.
-
-\begin{code}
-
-   construction-fact : (p : Ω 𝓤)
-                       (A : p holds → 𝓤 ̇)
-                       (t : compatibility-data-for-derived-ρ)
-                     → section-map (ρ S (to-aflabby ϕ) p A) (construction t p A)
-                     ＝ section-map (derived-ρ p A)         (t p A)
-   construction-fact p A t = refl
-
-\end{code}
-
-This fact about the construction will be rather useful in practice,
-for the applications we have in mind.
-
-We can specialize this to the Π and Σ flabbiness structures discussed
-above, to get the following.
-
-\begin{code}
-
-  module _ where
-
-   open compatibility-data-construction universes-are-Flabby-Π
-
-   ρΠ : (p : Ω 𝓤)
-        (A : p holds → 𝓤 ̇ )
-      → S (Π A) → ((h : p holds) → S (A h))
-   ρΠ = derived-ρ
-
-   compatibility-data-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
-   compatibility-data-Π = (p : Ω 𝓤)
-                          (A : p holds → 𝓤 ̇ )
-                        → has-section (ρΠ p A)
-
-   Π-construction : compatibility-data-Π
-                  → compatibility-data S universes-are-flabby-Π
-   Π-construction = construction
-
-\end{code}
-
-We use the following definitional equality a number of times (and we
-try to record this explicitly when we do so).
-
-\begin{code}
-
-   _ : ρΠ ＝ λ p A s h → T (Π-𝕡𝕣𝕠𝕛 p h) s
-   _ = refl
-
-\end{code}
-
-For our examples below, we only need the above functions ρΠ,
-compatibility-data-Π and Π-construction, but we take the opportunity
-to remark that we also have the following, with Π replaced by Σ (for
-which we don't have any application so far).
-
-\begin{code}
-
-  module _ where
-
-   open compatibility-data-construction universes-are-Flabby-Σ
-
-   ρΣ : (p : Ω 𝓤)
-        (A : p holds → 𝓤 ̇ )
-      → S (Σ A) → ((h : p holds) → S (A h))
-   ρΣ = derived-ρ
-
-   compatibility-data-Σ : 𝓤 ⁺ ⊔ 𝓥 ̇
-   compatibility-data-Σ = (p : Ω 𝓤)
-                          (A : p holds → 𝓤 ̇ )
-                        → has-section (ρΣ p A)
-
-   Σ-construction : compatibility-data-Σ
-                  → compatibility-data S universes-are-flabby-Σ
-   Σ-construction = construction
-
-\end{code}
-
-Example. The type of pointed types is algebraically injective. We use
-the Π-flabbiness of the universe.
+Example. The type of pointed types is algebraically injective.
 
 \begin{code}
 
@@ -364,35 +350,22 @@ Pointed-type 𝓤 = Σ X ꞉ 𝓤 ̇ , X
 Pointed : 𝓤 ̇ → 𝓤 ̇
 Pointed X = X
 
-Pointed-Π-data : compatibility-data (Pointed {𝓤}) universes-are-flabby-Π
-Pointed-Π-data {𝓤} = Π-construction Pointed T T-refl c
+Pointed-is-closed-under-prop-Π : closed-under-prop-Π (Pointed {𝓤})
+Pointed-is-closed-under-prop-Π {𝓤} =
+  Π-closure-criterion Pointed T T-refl c
  where
-  S = Pointed
-
   T : {X Y : 𝓤 ̇ } → (X ≃ Y) → X → Y
   T = ⌜_⌝
 
   T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
   T-refl x = refl
 
-  _ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) → ρΠ S T T-refl p A ＝ 𝑖𝑑 (S (Π A))
-  _ = λ p A → refl
-
-  c : compatibility-data-Π S T T-refl
-  c p A = equivs-have-sections id (id-is-equiv (Π A))
-
-\end{code}
-
-Hence we conclude that the type of pointed types is ainjective.
-
-\begin{code}
+  c : closed-under-prop-Π' Pointed T T-refl
+  c p A = id-is-equiv (Π A)
 
 ainjectivity-of-type-of-pointed-types : ainjective-type (Pointed-type 𝓤) 𝓤 𝓤
-ainjectivity-of-type-of-pointed-types =
- ainjectivity-of-type-of-structures
-  Pointed
-  universes-are-flabby-Π
-  Pointed-Π-data
+ainjectivity-of-type-of-pointed-types {𝓤} =
+ ainjectivity-of-type-of-structures Pointed Pointed-is-closed-under-prop-Π
 
 \end{code}
 
@@ -405,16 +378,15 @@ guess what T should be.
 ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
 ∞-Magma 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → X → X)
 
-∞-magma-structure : 𝓤 ̇ → 𝓤 ̇
-∞-magma-structure = λ X → X → X → X
+∞-Magma-structure : 𝓤 ̇ → 𝓤 ̇
+∞-Magma-structure = λ X → X → X → X
 
-∞-Magma-structure-Π-data : compatibility-data
-                            (∞-magma-structure {𝓤})
-                            universes-are-flabby-Π
-∞-Magma-structure-Π-data {𝓤} =
- Π-construction S T T-refl ρΠ-has-section
+∞-Magma-structure-is-closed-under-prop-Π : closed-under-prop-Π
+                                            (∞-Magma-structure {𝓤})
+∞-Magma-structure-is-closed-under-prop-Π {𝓤} =
+ Π-closure-criterion S T T-refl τ-is-equiv
  where
-  S = ∞-magma-structure
+  S = ∞-Magma-structure
 
   T : {X Y : 𝓤 ̇ } → (X ≃ Y) → S X → S Y
   T 𝕗 _·_ = λ y y' → ⌜ 𝕗 ⌝ (⌜ 𝕗 ⌝⁻¹ y · ⌜ 𝕗 ⌝⁻¹ y')
@@ -426,41 +398,47 @@ guess what T should be.
            (A : p holds → 𝓤 ̇ )
          where
 
-   π : (h : p holds) → Π A ≃ A h
-   π = Π-𝕡𝕣𝕠𝕛 p
+   open canonical-map' S T T-refl p A
 
-   r : S (Π A) → ((h : p holds) → S (A h))
-   r _·_ h a b = ⌜ π h ⌝ (⌜ π h ⌝⁻¹ a · ⌜ π h ⌝⁻¹ b)
+   τ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
+   τ⁻¹ g α β h = g h (⌜ π h ⌝ α) (⌜ π h ⌝ β)
 
-   _ : r ＝ ρΠ S T T-refl p A
-   _ = refl -- Which is crucial for the proof below to work.
+   η : τ⁻¹ ∘ τ ∼ id
+   η _·_ = dfunext fe' (λ α → dfunext fe' (I α))
+    where
+     I : ∀ α β → τ⁻¹ (τ _·_) α β ＝ α · β
+     I α β =
+      (τ⁻¹ ∘ τ) _·_ α β                                                ＝⟨ refl ⟩
+      (λ h → ⌜ π h ⌝  (⌜ π h ⌝⁻¹ (⌜ π h ⌝ α) · ⌜ π h ⌝⁻¹ (⌜ π h ⌝ β))) ＝⟨ II ⟩
+      (λ h → ⌜ π h ⌝ (α · β))                                          ＝⟨ refl ⟩
+      (λ h → (α · β) h)                                                ＝⟨ refl ⟩
+      α · β                                                            ∎
+      where
+       II = dfunext fe' (λ h →
+             ap₂ (λ -₁ -₂ → (-₁ · -₂) h)
+                 (inverses-are-retractions' (π h) α)
+                 (inverses-are-retractions' (π h) β))
 
-   σ : ((h : p holds) → S (A h)) → S (Π A)
-   σ g α β h = g h (⌜ π h ⌝ α) (⌜ π h ⌝ β)
-
-   rσ : r ∘ σ ∼ id
-   rσ g =
-    r (σ g)                                                         ＝⟨ refl ⟩
-    (λ h a b → g h (⌜ π h ⌝ (⌜ π h ⌝⁻¹ a)) (⌜ π h ⌝ (⌜ π h ⌝⁻¹ b))) ＝⟨ II ⟩
+   ε : τ ∘ τ⁻¹ ∼ id
+   ε g =
+    τ (τ⁻¹ g)                                                       ＝⟨ refl ⟩
+    (λ h a b → g h (⌜ π h ⌝ (⌜ π h ⌝⁻¹ a)) (⌜ π h ⌝ (⌜ π h ⌝⁻¹ b))) ＝⟨ I ⟩
     (λ h a b → g h a b)                                             ＝⟨ refl ⟩
     g                                                               ∎
      where
-      II = dfunext fe' (λ h →
-           dfunext fe' (λ a →
-           dfunext fe' (λ b →
-            ap₂ (g h)
-             (inverses-are-sections' (π h) a)
-             (inverses-are-sections' (π h) b))))
+      I = dfunext fe' (λ h → dfunext fe' (λ a → dfunext fe' (λ b →
+           ap₂ (g h)
+               (inverses-are-sections' (π h) a)
+               (inverses-are-sections' (π h) b))))
 
-   ρΠ-has-section : has-section (ρΠ S T T-refl p A)
-   ρΠ-has-section = σ , rσ
+   τ-is-equiv : is-equiv τ
+   τ-is-equiv = qinvs-are-equivs τ (τ⁻¹ , η , ε)
 
 ainjectivity-of-∞-Magma : ainjective-type (∞-Magma 𝓤) 𝓤 𝓤
-ainjectivity-of-∞-Magma =
+ainjectivity-of-∞-Magma {𝓤} =
  ainjectivity-of-type-of-structures
-  ∞-magma-structure
-  universes-are-flabby-Π
-  ∞-Magma-structure-Π-data
+  ∞-Magma-structure
+  ∞-Magma-structure-is-closed-under-prop-Π
 
 \end{code}
 
@@ -481,6 +459,83 @@ decomposition-of-∞-Magma-gives-WEM {𝓤} =
 The same is true for the type of pointed types, of course, and for any
 injective type.
 
+We now want to consider more examples, such as monoids and groups. For
+that purpose, we write combinators, like in UF.SIP, to show that
+mathematical structures constructed from standard building blocks,
+such as the above, form injective types.
+
+\begin{code}
+
+closure-under-prop-Π-× :
+      {𝓤 𝓥₁ 𝓥₂ : Universe}
+      {S₁ : 𝓤 ̇ → 𝓥₁ ̇ } {S₂ : 𝓤 ̇ → 𝓥₂ ̇ }
+    → closed-under-prop-Π S₁
+    → closed-under-prop-Π S₂
+    → closed-under-prop-Π (λ X → S₁ X × S₂ X)
+
+closure-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂}
+                       ρ₁-is-equiv ρ₂-is-equiv = ρ-is-equiv
+ where
+  S : 𝓤 ̇ → 𝓥₁ ⊔ 𝓥₂ ̇
+  S X = S₁ X × S₂ X
+
+  module _ (p : Ω 𝓤)
+           (A : p holds → 𝓤 ̇ )
+         where
+
+   open canonical-map S  p A using (ρ ; ϕ)
+   open canonical-map S₁ p A renaming (ρ to ρ₁) using ()
+   open canonical-map S₂ p A renaming (ρ to ρ₂) using ()
+
+   ρ₁⁻¹ : ((h : p holds) → S₁ (A h)) → S₁ (Π A)
+   ρ₁⁻¹ = inverse ρ₁ (ρ₁-is-equiv p A)
+
+   ρ₂⁻¹ : ((h : p holds) → S₂ (A h)) → S₂ (Π A)
+   ρ₂⁻¹ = inverse ρ₂ (ρ₂-is-equiv p A)
+
+   ρ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
+   ρ⁻¹ α = ρ₁⁻¹ (λ h → pr₁ (α h)) , ρ₂⁻¹ (λ h → pr₂ (α h))
+
+   η : ρ⁻¹ ∘ ρ ∼ id
+   η (s₁ , s₂) =
+    ρ⁻¹ (ρ (s₁ , s₂))                                         ＝⟨ refl ⟩
+    ρ⁻¹ (λ h → transport S (ϕ h) (s₁ , s₂))                   ＝⟨ I ⟩
+    ρ⁻¹ (λ h → transport S₁ (ϕ h) s₁ , transport S₂ (ϕ h) s₂) ＝⟨ refl ⟩
+    ρ₁⁻¹ (ρ₁ s₁) , ρ₂⁻¹ (ρ₂ s₂)                               ＝⟨ II ⟩
+    (s₁ , s₂)                                                 ∎
+     where
+      I  = ap ρ⁻¹ (dfunext fe' (λ h → transport-× S₁ S₂ (ϕ h)))
+      II = ap₂ _,_
+              (inverses-are-retractions ρ₁ (ρ₁-is-equiv p A) s₁)
+              (inverses-are-retractions ρ₂ (ρ₂-is-equiv p A) s₂)
+
+   ε : ρ ∘ ρ⁻¹ ∼ id
+   ε α = dfunext fe' I
+    where
+     α₁ = λ h → pr₁ (α h)
+     α₂ = λ h → pr₂ (α h)
+
+     I : ρ (ρ⁻¹ α) ∼ α
+     I h =
+      ρ (ρ⁻¹ α) h                                                 ＝⟨ refl ⟩
+      transport S (ϕ h) (ρ₁⁻¹ α₁ , ρ₂⁻¹ α₂)                       ＝⟨ II ⟩
+      transport S₁ (ϕ h) (ρ₁⁻¹ α₁) , transport S₂ (ϕ h) (ρ₂⁻¹ α₂) ＝⟨ refl ⟩
+      ρ₁ (ρ₁⁻¹ α₁) h , ρ₂ (ρ₂⁻¹ α₂) h                             ＝⟨ III ⟩
+      α₁ h , α₂ h                                                 ＝⟨ refl ⟩
+      α h                                                         ∎
+       where
+        II  = transport-× S₁ S₂ (ϕ h)
+        III = ap₂ _,_
+                 (ap (λ - → - h)
+                     (inverses-are-sections ρ₁ (ρ₁-is-equiv p A) α₁))
+                 (ap (λ - → - h)
+                     (inverses-are-sections ρ₂ (ρ₂-is-equiv p A) α₂))
+
+   ρ-is-equiv : is-equiv ρ
+   ρ-is-equiv = qinvs-are-equivs ρ (ρ⁻¹ , η , ε)
+
+\end{code}
+
 Example. The type of pointed ∞-magmas is injective.
 
 \begin{code}
@@ -494,54 +549,126 @@ open monoid
 ∞-Magma∙-structure : 𝓤 ̇ → 𝓤 ̇
 ∞-Magma∙-structure = monoid-structure
 
-∞-Magma∙-structure-Π-data : compatibility-data
-                             (∞-Magma∙-structure {𝓤})
-                             universes-are-flabby-Π
-∞-Magma∙-structure-Π-data =
- compatibility-data-×
-  universes-are-flabby-Π
-  ∞-Magma-structure-Π-data
-  Pointed-Π-data
+∞-Magma∙-structure-closed-under-Π : closed-under-prop-Π (∞-Magma∙-structure {𝓤})
+∞-Magma∙-structure-closed-under-Π =
+ closure-under-prop-Π-×
+  ∞-Magma-structure-is-closed-under-prop-Π
+  Pointed-is-closed-under-prop-Π
 
 ainjectivity-of-∞-Magma∙ : ainjective-type (∞-Magma∙ 𝓤) 𝓤 𝓤
-ainjectivity-of-∞-Magma∙ =
+ainjectivity-of-∞-Magma∙ {𝓤} =
  ainjectivity-of-type-of-structures
   ∞-Magma∙-structure
-  universes-are-flabby-Π
-  ∞-Magma∙-structure-Π-data
+  ∞-Magma∙-structure-closed-under-Π
 
 \end{code}
+
+We now want to add axioms to e.g. pointed ∞-magmas to get monoids and
+conclude that the type of monoids is injective. We use the letter 𝔞 to
+range over arbitrary axioms.
+
+\begin{code}
+
+closure-under-prop-Π-with-axioms
+ : (S : 𝓤 ̇ → 𝓥 ̇ )
+   (ρ-is-equiv : closed-under-prop-Π S)
+   (𝔞 : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
+   (𝔞-is-prop-valued : (X : 𝓤 ̇ ) (s : S X) → is-prop (𝔞 X s))
+   (𝔞Π : (p : Ω 𝓤 )
+         (A : p holds → 𝓤 ̇ )
+       → (α : (h : p holds) → S (A h))
+       → ((h : p holds) → 𝔞 (A h) (α h))
+       → 𝔞 (Π A) (inverse (canonical-map.ρ S p A) (ρ-is-equiv p A) α))
+ → closed-under-prop-Π (λ X → Σ s ꞉ S X , 𝔞 X s)
+closure-under-prop-Π-with-axioms
+ {𝓤} {𝓥} {𝓦} S ρ-is-equiv 𝔞 𝔞-is-prop-valued 𝔞Π = ρₐ-is-equiv
+ where
+  Sₐ : 𝓤 ̇ → 𝓥 ⊔ 𝓦 ̇
+  Sₐ X = Σ s ꞉ S X , 𝔞 X s
+
+  module _ (p : Ω 𝓤)
+           (A : p holds → 𝓤 ̇ )
+         where
+
+   open canonical-map S  p A using (ρ ; ϕ)
+   open canonical-map Sₐ p A renaming (ρ to ρₐ) using ()
+
+   ρ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
+   ρ⁻¹ = inverse ρ (ρ-is-equiv p A)
+
+   ρₐ⁻¹ : ((h : p holds) → Sₐ (A h)) → Sₐ (Π A)
+   ρₐ⁻¹ α = ρ⁻¹ (pr₁ ⊚ α) , 𝔞Π p A (pr₁ ⊚ α) (pr₂ ⊚ α)
+
+   η : ρₐ⁻¹ ∘ ρₐ ∼ id
+   η (s , a) =
+    ρₐ⁻¹ (ρₐ (s , a))                       ＝⟨ refl ⟩
+    ρₐ⁻¹ (λ h → transport Sₐ (ϕ h) (s , _)) ＝⟨ I ⟩
+    ρₐ⁻¹ (λ h → transport S (ϕ h) s , _)    ＝⟨ refl ⟩
+    ρ⁻¹ (λ h → transport S (ϕ h) s) , _     ＝⟨ refl ⟩
+    ρ⁻¹ (ρ s) , _                           ＝⟨ II ⟩
+    (s , a)                                 ∎
+     where
+      I = ap ρₐ⁻¹ (dfunext fe' (λ h → transport-Σ S 𝔞 (A h) (ϕ h) s))
+      II = to-subtype-＝
+            (𝔞-is-prop-valued (Π A))
+            (inverses-are-retractions ρ (ρ-is-equiv p A) s)
+
+   ε : ρₐ ∘ ρₐ⁻¹ ∼ id
+   ε α = dfunext fe' I
+    where
+     α₁ = λ h → pr₁ (α h)
+     α₂ = λ h → pr₂ (α h)
+
+     I : ρₐ (ρₐ⁻¹ α) ∼ α
+     I h =
+      ρₐ (ρₐ⁻¹ α) h                    ＝⟨ refl ⟩
+      ρₐ (ρ⁻¹ α₁ , _) h                ＝⟨ refl ⟩
+      transport Sₐ (ϕ h) (ρ⁻¹ α₁ , _)  ＝⟨ II ⟩
+      (transport S (ϕ h) (ρ⁻¹ α₁) , _) ＝⟨ refl ⟩
+      (ρ (ρ⁻¹ α₁) h , _)               ＝⟨ III ⟩
+      (α₁ h , α₂ h)                    ＝⟨ refl ⟩
+      α h                              ∎
+       where
+        II  = transport-Σ S 𝔞 (A h) (ϕ h) (ρ⁻¹ α₁)
+        III = to-subtype-＝
+               (𝔞-is-prop-valued (A h))
+               (ap (λ - → - h) (inverses-are-sections ρ (ρ-is-equiv p A) α₁))
+
+   ρₐ-is-equiv : is-equiv ρₐ
+   ρₐ-is-equiv = qinvs-are-equivs ρₐ (ρₐ⁻¹ , η , ε)
+
+\end{code}
+
+The above requires that the structures are closed under
+proposition-indexed products with the pointwise operations (where the
+operations are specified very abstractly by a structure operator S).
+But in many cases of interest, of course, such as monoids and groups,
+we have closure under arbitrary products under the pointwise
+operations. By the above, the type of any mathematical structure that
+is closed under arbitrary products is injective.
 
 Example. The type of monoids is injective. We just have to check that
 the monoid axioms are closed under Π.
 
 \begin{code}
 
-Monoid-Π-data : compatibility-data {𝓤 ⁺}
-                 (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
-                 universes-are-flabby-Π
-Monoid-Π-data {𝓤} =
- compatibility-data-with-axioms
-  universes-are-flabby-Π
-  monoid-structure
-  ∞-Magma∙-structure-Π-data
-  monoid-axioms
-  (monoid-axioms-is-prop fe')
-  axioms-Π-data
+Monoid-is-closed-under-prop-Π
+ : closed-under-prop-Π {𝓤} (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
+Monoid-is-closed-under-prop-Π {𝓤} = V
  where
-  σ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ )
-    → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
-  σ p A = section-map
-           (ρ monoid-structure universes-are-flabby-Π p A)
-           (∞-Magma∙-structure-Π-data p A)
+  open canonical-map monoid-structure
 
-  axioms-Π-data
-   : (p : Ω 𝓤)
-     (A : p holds → 𝓤 ̇ )
-     (α : (h : p holds) → monoid-structure (A h))
-     (F : (h : p holds) → monoid-axioms (A h) (α h))
-   → monoid-axioms (Π A) (σ p A α)
-  axioms-Π-data p A α F = I , II , III , IV
+  ρ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ )
+      → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
+  ρ⁻¹ p A = inverse (ρ p A) (∞-Magma∙-structure-closed-under-Π p A)
+
+  axioms-closed-under-prop-Π
+    : (p : Ω 𝓤)
+      (A : p holds → 𝓤 ̇ )
+      (α : (h : p holds) → monoid-structure (A h))
+      (F : (h : p holds) → monoid-axioms (A h) (α h))
+    → monoid-axioms (Π A) (ρ⁻¹ p A α)
+  axioms-closed-under-prop-Π p A α F = I , II , III , IV
    where
     _*_ : {h : p holds} → A h → A h → A h
     _*_ {h} = pr₁ (α h)
@@ -552,8 +679,8 @@ Monoid-Π-data {𝓤} =
     e : Π A
     e h = pr₂ (α h)
 
-    _ : σ p A α ＝ (_·_ , e)
-    _ = refl -- Which is crucial for the proof below to work.
+    ρ⁻¹-remark : ρ⁻¹ p A α ＝ (_·_ , e)
+    ρ⁻¹-remark = refl
 
     I : is-set (Π A)
     I = Π-is-set fe' (λ h →
@@ -575,375 +702,32 @@ Monoid-Π-data {𝓤} =
                 case F h of
                  λ (Ah-is-set , ln , rn , assoc) → assoc (f h) (g h) (k h))
 
+  V : closed-under-prop-Π {𝓤} (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
+  V =  closure-under-prop-Π-with-axioms
+        monoid-structure
+        ∞-Magma∙-structure-closed-under-Π
+        monoid-axioms
+        (monoid-axioms-is-prop fe')
+        axioms-closed-under-prop-Π
+
 ainjectivity-of-Monoid : ainjective-type (Monoid {𝓤}) 𝓤 𝓤
 ainjectivity-of-Monoid {𝓤} =
  ainjectivity-of-type-of-structures
   (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
-  universes-are-flabby-Π
-  Monoid-Π-data
+  Monoid-is-closed-under-prop-Π
 
 \end{code}
 
-It is easy to add further axioms to monoids to get groups, and then
-show that the type of groups is injective using the above
-technique. This is just as routine as the example of monoids. All one
-needs to do is to show that the group axioms are closed under
-prop-indexed products.
-
-TODO. Maybe implement this.
-
-NB. The type Ordinal 𝓤 of well-ordered sets in 𝓤 is also injective,
-but for different reasons, two of them given in two different modules.
-
-Added 20th June 2025. The type of all families in a universe is
-injective.
-
-\begin{code}
-
-Fam : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Fam 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → 𝓤 ̇)
-
-Fam-structure : 𝓤 ̇ → 𝓤 ⁺ ̇
-Fam-structure {𝓤} X = X → 𝓤 ̇
-
-open import UF.EquivalenceExamples
-open import UF.Subsingletons
-
-Fam-Π-data : compatibility-data (Fam-structure {𝓤}) universes-are-flabby-Π
-Fam-Π-data {𝓤} = Π-construction Fam-structure T T-refl c
- where
-  S = Fam-structure
-
-  T : {X Y : 𝓤 ̇} → X ≃ Y → (X → 𝓣 ̇ ) → (Y → 𝓣 ̇ )
-  T 𝕗 R = λ y → R (⌜ 𝕗 ⌝⁻¹ y)
-
-  T-refl : {X : 𝓤 ̇} → T (≃-refl X) ∼ id
-  T-refl R = refl
-
-  module _ (p : Ω 𝓤) (A : p holds → 𝓤 ̇) where
-
-   r :  S (Π A) → ((h : p holds) → S (A h))
-   r s h a = s (⌜ Π-𝕡𝕣𝕠𝕛 p h ⌝⁻¹ a)
-
-   _ : ρΠ S T T-refl p A ＝ r
-   _ = refl
-
-   σ : ((h : p holds) → S (A h)) → S (Π A)
-   σ g f = (h : p holds) → g h (f h)
-
-   rσ : r ∘ σ ∼ id
-   rσ g = dfunext fe' (λ h → dfunext fe' (II h))
-    where
-     module _ (h : p holds) (a : A h) where
-
-      π : Π A ≃ A h
-      π = Π-𝕡𝕣𝕠𝕛 p h
-
-      I = ((h' : p holds) → g h' (⌜ π ⌝⁻¹ a h')) ≃⟨ I₀ ⟩
-          (p holds → g h (⌜ π ⌝⁻¹ a h))          ≃⟨ I₁ ⟩
-          (𝟙 → g h (⌜ π ⌝⁻¹ a h))                ≃⟨ I₂ ⟩
-          g h (⌜ π ⌝⁻¹ a h)                      ■
-        where
-         I₀ = Π-cong fe' fe'
-               (λ h' → transport (λ - → g - (⌜ π ⌝⁻¹ a -))
-                                 (holds-is-prop p h' h) ,
-                       transports-are-equivs (holds-is-prop p h' h))
-         I₁ = Π-change-of-variable-≃ {𝓤} {𝓤} fe
-               (λ _ → g h (⌜ π ⌝⁻¹ a h))
-               (logically-equivalent-props-are-equivalent
-                 (holds-is-prop p) 𝟙-is-prop unique-to-𝟙 (λ _ → h))
-         I₂ = ≃-sym (𝟙→ fe')
-
-      II = r (σ g) h a                            ＝⟨ refl ⟩
-           σ g (⌜ π ⌝⁻¹ a)                        ＝⟨ refl ⟩
-           ((h' : p holds) → g h' (⌜ π ⌝⁻¹ a h')) ＝⟨ II₀ ⟩
-           g h (⌜ π ⌝⁻¹ a h)                      ＝⟨ refl ⟩
-           g h (⌜ π ⌝ (⌜ π ⌝⁻¹ a))                ＝⟨ II₁ ⟩
-           g h a                                  ∎
-            where
-             II₀  = eqtoid (ua 𝓤) _ _ I
-             II₁ = ap (g h) (inverses-are-sections' π a)
-
-  c :  compatibility-data-Π Fam-structure T T-refl
-  c p A = σ p A , rσ p A
-
-ainjectivity-of-Fam : ainjective-type (Fam 𝓤) 𝓤 𝓤
-ainjectivity-of-Fam =
- ainjectivity-of-type-of-structures
-  Fam-structure
-  universes-are-flabby-Π
-  Fam-Π-data
-
-\end{code}
-
-A corollary is that the type of all functions in a universe is injective.
-
-\begin{code}
-
-open import UF.Classifiers
-
-ainjectivity-of-type-of-all-functions
- : ainjective-type (Σ X ꞉ 𝓤 ̇ , Σ Y ꞉ 𝓤 ̇ , (X → Y)) 𝓤 𝓤
-ainjectivity-of-type-of-all-functions {𝓤}
- = transport
-    (λ - → ainjective-type - 𝓤 𝓤)
-    (eqtoid (ua (𝓤 ⁺)) _ _ (≃-sym I))
-    ainjectivity-of-Fam
- where
-  open classifier-single-universe 𝓤
-
-  I = (Σ X ꞉ 𝓤 ̇ , Σ Y ꞉ 𝓤 ̇ , (X → Y)) ≃⟨ Σ-flip ⟩
-      (Σ Y ꞉ 𝓤 ̇ , Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃⟨ Σ-cong (classification (ua 𝓤) fe') ⟩
-      (Σ Y ꞉ 𝓤 ̇ , (Y → 𝓤 ̇))           ≃⟨ ≃-refl _ ⟩
-      Fam 𝓤                           ■
-
-\end{code}
-
-The type of all type-valued relations, or multigraphs, in a universe
-is injective. The proof is the binary version of the above unary proof.
-
-\begin{code}
-
-Graph : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Graph 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → X → 𝓤 ̇)
-
-graph-structure : 𝓤 ̇ → 𝓤 ⁺ ̇
-graph-structure {𝓤} X = X → X → 𝓤 ̇
-
-open import UF.EquivalenceExamples
-open import UF.Subsingletons
-
-Graph-Π-data : compatibility-data (graph-structure {𝓤}) universes-are-flabby-Π
-Graph-Π-data {𝓤} =
- Π-construction graph-structure T T-refl c
- where
-  S = graph-structure
-
-  T : {X Y : 𝓤 ̇} → X ≃ Y → (X → X → 𝓣 ̇ ) → (Y → Y → 𝓣 ̇ )
-  T 𝕗 R y y' = R (⌜ 𝕗 ⌝⁻¹ y) (⌜ 𝕗 ⌝⁻¹ y')
-
-  T-refl : {X : 𝓤 ̇} → T (≃-refl X) ∼ id
-  T-refl R = refl
-
-  module _ (p : Ω 𝓤) (A : p holds → 𝓤 ̇) where
-
-   r :  S (Π A) → ((h : p holds) → S (A h))
-   r s h a a' = s (⌜ Π-𝕡𝕣𝕠𝕛 p h ⌝⁻¹ a) (⌜ Π-𝕡𝕣𝕠𝕛 p h ⌝⁻¹ a')
-
-   _ : r ＝ ρΠ S T T-refl p A
-   _ = refl
-
-   σ : ((h : p holds) → S (A h)) → S (Π A)
-   σ g f f' = (h : p holds) → g h (f h) (f' h)
-
-   rσ : r ∘ σ ∼ id
-   rσ g = dfunext fe' (λ h →
-          dfunext fe' (λ a →
-          dfunext fe' (λ a' → II h a a')))
-    where
-     module _ (h : p holds) (a a' : A h) where
-
-      π : Π A ≃ A h
-      π = Π-𝕡𝕣𝕠𝕛 p h
-
-      I = ((h' : p holds) → g h' (⌜ π ⌝⁻¹ a h') (⌜ π ⌝⁻¹ a' h')) ≃⟨ I₀ ⟩
-          (p holds → g h (⌜ π ⌝⁻¹ a h) (⌜ π ⌝⁻¹ a' h))           ≃⟨ I₁ ⟩
-          (𝟙 → g h (⌜ π ⌝⁻¹ a h) (⌜ π ⌝⁻¹ a' h))                 ≃⟨ I₂ ⟩
-          g h (⌜ π ⌝⁻¹ a h) (⌜ π ⌝⁻¹ a' h)                       ■
-        where
-         I₀ = Π-cong fe' fe'
-               (λ h' → transport (λ - → g - (⌜ π ⌝⁻¹ a -) (⌜ π ⌝⁻¹ a' -))
-                                 (holds-is-prop p h' h) ,
-                       transports-are-equivs (holds-is-prop p h' h))
-         I₁ = Π-change-of-variable-≃ {𝓤} {𝓤} fe
-               (λ _ → g h (⌜ π ⌝⁻¹ a h) (⌜ π ⌝⁻¹ a' h))
-               (logically-equivalent-props-are-equivalent
-                 (holds-is-prop p) 𝟙-is-prop unique-to-𝟙 (λ _ → h))
-         I₂ = ≃-sym (𝟙→ fe')
-
-      II = r (σ g) h a a'                                         ＝⟨ refl ⟩
-           σ g (⌜ π ⌝⁻¹ a) (⌜ π ⌝⁻¹ a')                           ＝⟨ refl ⟩
-           ((h' : p holds) → g h' (⌜ π ⌝⁻¹ a h') (⌜ π ⌝⁻¹ a' h')) ＝⟨ II₀ ⟩
-           g h (⌜ π ⌝⁻¹ a h) (⌜ π ⌝⁻¹ a' h)                       ＝⟨ refl ⟩
-           g h (⌜ π ⌝ (⌜ π ⌝⁻¹ a)) (⌜ π ⌝ (⌜ π ⌝⁻¹ a'))           ＝⟨ II₁ ⟩
-           g h a a'                                               ∎
-            where
-             II₀  = eqtoid (ua 𝓤) _ _ I
-             II₁ = ap₂ (g h)
-                       (inverses-are-sections' π a)
-                       (inverses-are-sections' π a')
-
-  c :  compatibility-data-Π graph-structure T T-refl
-  c p A = σ p A , rσ p A
-
-ainjectivity-of-Graph : ainjective-type (Graph 𝓤) 𝓤 𝓤
-ainjectivity-of-Graph =
- ainjectivity-of-type-of-structures
-  graph-structure
-  universes-are-flabby-Π
-  Graph-Π-data
-
-\end{code}
-
-As a consequence, we get the injectivity of the type of posets.
-
-\begin{code}
-
-poset-axioms : (X : 𝓤 ̇ ) → graph-structure X → 𝓤 ̇
-poset-axioms X _≤_ = is-set X
-                   × ((x y : X) → is-prop (x ≤ y))
-                   × reflexive     _≤_
-                   × transitive    _≤_
-                   × antisymmetric _≤_
-
-Poset : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Poset 𝓤 = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ graph-structure X , poset-axioms X s
-
-open import UF.Subsingletons-FunExt
-
-poset-axioms-is-prop : (X : 𝓤 ̇ ) (s : graph-structure X)
-                     → is-prop (poset-axioms X s)
-poset-axioms-is-prop X _≤_ = prop-criterion I
- where
-  I : poset-axioms X _≤_ → is-prop (poset-axioms X _≤_)
-  I (s , pv , r , t , a) =
-   ×₅-is-prop
-    (being-set-is-prop fe')
-    (Π₂-is-prop fe' (λ x y → being-prop-is-prop fe'))
-    (Π-is-prop fe' (λ x → pv x x))
-    (Π₅-is-prop fe' (λ x _ z _ _ → pv x z))
-    (Π₄-is-prop fe' (λ _ _ _ _ → s))
-
-Poset-Π-data : compatibility-data {𝓤 ⁺}
-                 (λ X → Σ s ꞉ graph-structure X , poset-axioms X s)
-                 universes-are-flabby-Π
-Poset-Π-data {𝓤} =
- compatibility-data-with-axioms
-  universes-are-flabby-Π
-  graph-structure
-  Graph-Π-data
-  poset-axioms
-  poset-axioms-is-prop
-  axioms-Π-data
- where
-  σ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ )
-    → ((h : p holds) → graph-structure (A h)) → graph-structure (Π A)
-  σ p A = section-map
-           (ρ graph-structure universes-are-flabby-Π p A)
-           (Graph-Π-data p A)
-
-  axioms-Π-data
-   : (p : Ω 𝓤)
-     (A : p holds → 𝓤 ̇ )
-     (α : (h : p holds) → graph-structure (A h))
-     (F : (h : p holds) → poset-axioms (A h) (α h))
-   → poset-axioms (Π A) (σ p A α)
-  axioms-Π-data p A α F = I , II , III , IV , V
-   where
-    _⊑_ : {h : p holds} → A h → A h → 𝓤 ̇
-    _⊑_ {h} = α h
-
-    _≤_ : Π A → Π A → 𝓤 ̇
-    f ≤ g = (h : p holds) → f h ⊑ g h
-
-    _ : σ p A α ＝ _≤_
-    _ = refl -- Which is crucial for the proof below to work.
-
-    I : is-set (Π A)
-    I = Π-is-set fe' (λ h →
-         case F h of
-          λ (s , pv , r , t , a) → s)
-
-    II : (f g : Π A) → is-prop (f ≤ g)
-    II f g = Π-is-prop fe' (λ h →
-              case F h of
-               λ (s , pv , r , t , a) → pv (f h) (g h))
-
-    III : reflexive _≤_
-    III f h =
-     case F h of
-      λ (s , pv , r , t , a) → r (f h)
-
-    IV : transitive _≤_
-    IV f₀ f₁ f₂ l m h =
-     case F h of
-      λ (s , pv , r , t , a) → t (f₀ h) (f₁ h) (f₂ h) (l h) (m h)
-
-    V : antisymmetric _≤_
-    V f₀ f₁ l m = dfunext fe' (λ h →
-                   case F h of
-                    λ (s , pv , r , t , a) → a (f₀ h) (f₁ h) (l h) (m h))
-
-ainjectivity-of-Poset : ainjective-type (Poset 𝓤) 𝓤 𝓤
-ainjectivity-of-Poset {𝓤} =
- ainjectivity-of-type-of-structures
-  (λ X → Σ s ꞉ graph-structure X , poset-axioms X s)
-  universes-are-flabby-Π
-  Poset-Π-data
-
-\end{code}
-
-Notice that, just as in the case for monoids, the proof amounts to
-showing that posets are closed under prop-indexed products. Using the
-same idea, it is straightforward to show that the types of dcpos,
-continuous dcpos, suplattices, frames etc. are all injective. (Notice
-that this is different from e.g. saying that the underlying type of a
-dcpos is injective, which is also true and is proved in another
-module.)
-
-TODO. Maybe implement (some of) these examples.
+TODO. It is easy to add further axioms to monoids to get groups, and
+then show that the type of groups is injective using the above
+technique. I expect this to be entirely routine as the example of
+monoids.
 
 TODO. More techniques are needed to show that the type of 1-categories
-would be injective. A category can be seen as a graph equipped with
-operations (identity and composition) satisfying properties (identity
-laws, associativity, univalence).
+would be injective. This is more interesting.
 
-Added 24 July 2025 by Tom de Jong.
+NB. The type Ordinal 𝓤 of well-ordered sets in 𝓤 is also injective,
+but for a different reason.
 
-In InjectiveTypes.InhabitedTypesTaboo we showed that the type of nonempty types
-is injective by exhibiting it as a retract of the universe. In line with the
-condition from InjectiveTypes.Subtypes, the argument there shows that a type is
-nonempty if and only if it is a fixed point of the map X ↦ (¬¬ X → X).
-
-Here is an alternative proof, using that
-   (Π (p : P) , ¬¬ A p)   →   ¬¬ Π (p : P) , A p
-holds when P is a proposition.
-
-\begin{code}
-
-Nonempty-Π-data : compatibility-data (is-nonempty {𝓤}) universes-are-flabby-Π
-Nonempty-Π-data {𝓤} = Π-construction is-nonempty T T-refl c
- where
-  S = is-nonempty
-
-  T : {X Y : 𝓤 ̇ } → (X ≃ Y) → S X → S Y
-  T e = ¬¬-functor ⌜ e ⌝
-
-  T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
-  T-refl x = refl
-
-  σ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ )
-    → ((h : p holds) → S (A h)) → S (Π A)
-  σ p A φ ν = III
-   where
-    I : (h : p holds) → ¬ A h
-    I h a = ν (λ h' → transport A (holds-is-prop p h h') a)
-
-    II : ¬ (p holds)
-    II h = φ h (I h)
-
-    III : 𝟘
-    III = ν (λ h → 𝟘-elim (II h))
-
-  c : compatibility-data-Π S T T-refl
-  c p A = σ p A , (λ φ → dfunext fe' (λ h → negations-are-props fe' _ _))
-
-ainjectivity-of-type-of-nonempty-types
- : ainjective-type (Σ X ꞉ 𝓤 ̇ , is-nonempty X) 𝓤 𝓤
-ainjectivity-of-type-of-nonempty-types =
- ainjectivity-of-type-of-structures
-  is-nonempty
-  universes-are-flabby-Π
-  Nonempty-Π-data
-
-\end{code}
+TODO. The type of posets should be injective, but with a different
+proof. Maybe the proof for the type of ordinals can be adapted (check).

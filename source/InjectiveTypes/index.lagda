@@ -75,8 +75,8 @@ import Iterative.Multisets-Addendum
 import Iterative.Sets-Addendum
 import Iterative.Ordinals
 import InjectiveTypes.Sigma
-import InjectiveTypes.MathematicalStructuresOriginal -- obsolete but keep.
 import InjectiveTypes.MathematicalStructures
+import InjectiveTypes.MathematicalStructuresMoreGeneral
 import InjectiveTypes.PointedDcpos
 import InjectiveTypes.Subtypes
 

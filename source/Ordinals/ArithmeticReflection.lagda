@@ -1,9 +1,9 @@
 Tom de Jong, 31 July 2025.
+With additions by Fredrik Nordvall Forsberg in October 2025.
 
-This file provides a formalization of Section 7 ("Abstract
-Cancellation Arithmetic") of the paper "Constructive Ordinal
-Exponentiation" by Tom de Jong, Nicolai Kraus, Fredrik Nordvall
-Forsberg, and Chuangjie Xu.
+This file provides a formalization of Section 7 ("Abstract Cancellation
+Arithmetic") of the paper "Constructive Ordinal Exponentiation" by
+Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
 
 For a fixed ordinal α, we answer the following question positively:
   Do the functions (α + _), (α × _), and (exp α _) : Ord → Ord reflect
@@ -40,19 +40,25 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
+open import Fin.Properties
+open import Fin.Type
+open import Naturals.Properties
 open import UF.Base
 open import UF.Equiv
+
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.BoundedOperations ua pt sr
 open import Ordinals.Equivalence
 open import Ordinals.Exponentiation.DecreasingList ua pt
+open import Ordinals.Exponentiation.Miscellaneous ua pt sr
 open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
+open import Ordinals.Fin
 open import Ordinals.Maps
-open import Ordinals.Notions
 open import Ordinals.MultiplicationProperties ua
+open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Propositions ua
@@ -65,21 +71,57 @@ open suprema pt sr
 \end{code}
 
 We start by briefly noting that right cancellation is just false for
-addition and multiplication.
-TODO. For exponentiation, formalize that 𝟚ₒ ^ₒ ω ＝ ω ＝ 𝟛ₒ ^ₒ ω, so that
-(-) ^ₒ ω is not injective.
+addition, multiplication and exponentiation.
 
 \begin{code}
+
+no-right-cancellation-+ₒ
+ : ¬ ((α β γ : Ordinal 𝓤₀) → α +ₒ γ ＝ β +ₒ γ → α ＝ β)
+no-right-cancellation-+ₒ hyp =
+ 𝟘ₒ-is-not-𝟙ₒ (hyp 𝟘ₒ 𝟙ₒ ω (𝟘ₒ+ₒω-is-ω ∙ 𝟙ₒ+ₒω-is-ω ⁻¹))
+
+no-right-cancellation-+ₒ-⊴
+ : ¬ ((α β γ : Ordinal 𝓤₀) → α +ₒ γ ⊴ β +ₒ γ → α ⊴ β)
+no-right-cancellation-+ₒ-⊴ hyp = no-right-cancellation-+ₒ hyp'
+ where
+  hyp' : (α β γ : Ordinal 𝓤₀) → α +ₒ γ ＝ β +ₒ γ → α ＝ β
+  hyp' α β γ e =
+   ⊴-antisym α β (hyp α β γ (＝-to-⊴ _ _ e)) (hyp β α γ (＝-to-⊴ _ _ (e ⁻¹)))
 
 no-right-cancellation-×ₒ
  : ¬ ((α β γ : Ordinal 𝓤₀) → α ×ₒ γ ＝ β ×ₒ γ → α ＝ β)
 no-right-cancellation-×ₒ hyp =
  𝟚ₒ-is-not-𝟙ₒ (hyp 𝟚ₒ 𝟙ₒ ω (𝟚ₒ×ₒω-is-ω ∙ 𝟙ₒ×ₒω-is-ω ⁻¹))
 
-no-right-cancellation-+ₒ
- : ¬ ((α β γ : Ordinal 𝓤₀) → α +ₒ γ ＝ β +ₒ γ → α ＝ β)
-no-right-cancellation-+ₒ hyp =
- 𝟘ₒ-is-not-𝟙ₒ (hyp 𝟘ₒ 𝟙ₒ ω (𝟘ₒ+ₒω-is-ω ∙ 𝟙ₒ+ₒω-is-ω ⁻¹))
+no-right-cancellation-×ₒ-⊴
+ : ¬ ((α β γ : Ordinal 𝓤₀) → α ×ₒ γ ⊴ β ×ₒ γ → α ⊴ β)
+no-right-cancellation-×ₒ-⊴ hyp = no-right-cancellation-×ₒ hyp'
+ where
+  hyp' : (α β γ : Ordinal 𝓤₀) → α ×ₒ γ ＝ β ×ₒ γ → α ＝ β
+  hyp' α β γ e =
+   ⊴-antisym α β (hyp α β γ (＝-to-⊴ _ _ e)) (hyp β α γ (＝-to-⊴ _ _ (e ⁻¹)))
+
+no-right-cancellation-^ₒ
+ : ¬ ((α β γ : Ordinal 𝓤₀) → α ^ₒ γ ＝ β ^ₒ γ → α ＝ β)
+no-right-cancellation-^ₒ hyp =
+ Fin3-is-not-Fin2 (hyp (Fin-ordinal 3) (Fin-ordinal 2) ω Fin3^ₒω-is-Fin2^ₒω)
+  where
+   Fin3^ₒω-is-Fin2^ₒω : Fin-ordinal 3 ^ₒ ω ＝ Fin-ordinal 2 ^ₒ ω
+   Fin3^ₒω-is-Fin2^ₒω = Fin-ordinal- 3 ^ₒω-is-ω ⋆ ∙ Fin-ordinal- 2 ^ₒω-is-ω ⋆ ⁻¹
+
+   Fin3-is-not-Fin2 : Fin-ordinal 3 ≠ Fin-ordinal 2
+   Fin3-is-not-Fin2 eq = positive-not-zero 0 (succ-lc (succ-lc (3-is-2 eq)))
+    where
+     3-is-2 : Fin-ordinal 3 ＝ Fin-ordinal 2 → 3 ＝ 2
+     3-is-2 eq = Fin-lc 3 2 (idtoeq (Fin 3) (Fin 2) (ap ⟨_⟩ eq))
+
+no-right-cancellation-^ₒ-⊴
+ : (∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ^ₒ γ ⊴ β ^ₒ γ → α ⊴ β) → 𝟘
+no-right-cancellation-^ₒ-⊴ hyp = no-right-cancellation-^ₒ hyp'
+ where
+  hyp' : ∀ {𝓤} → (α β γ : Ordinal 𝓤) → α ^ₒ γ ＝ β ^ₒ γ → α ＝ β
+  hyp' α β γ e =
+   ⊴-antisym α β (hyp α β γ (＝-to-⊴ _ _ e)) (hyp β α γ (＝-to-⊴ _ _ (e ⁻¹)))
 
 \end{code}
 
