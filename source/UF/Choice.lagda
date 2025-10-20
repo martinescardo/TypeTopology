@@ -751,6 +751,8 @@ module local-shoice
 
 \end{code}
 
+Added 20 October 2025 by Tom de Jong.
+
 If we restrict the family Y in the axiom of propositional choice (PAC) to be a
 family of doubletons, then we get the "world's simplest axiom choice" (WSAC), as
 introduced, and shown to fail in some toposes, by Fourman and Ščedrov in [1].
