@@ -40,6 +40,7 @@ module InjectiveTypes.CounterExamples
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
+open import UF.Equiv
 open import UF.Embeddings
 open import UF.ClassicalLogic
 open import UF.FunExt
@@ -507,5 +508,59 @@ non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM'
     , totally-separated-gives-totally-separated₃ X-tot-sep)
     where
      open total-separatedness-via-apartness pt
+
+\end{code}
+
+Added 16 October 2025 by Tom de Jong, formalizing a proof sketches
+of 4 and 8 September 2025.
+
+The following theorem is instantiated below to show that the injectivity of the
+infinite dimensional real projective space RP∞ implies a weak choice principle
+known as the world's simplest axiom of choice.
+
+\begin{code}
+
+open import InjectiveTypes.Subtypes fe
+open import UF.ExitPropTrunc
+open split-support-and-collapsibility pt
+
+family-has-unspecified-split-support-if-total-space-of-truncation-is-ainjective
+ : (D : 𝓤 ̇ )
+ → ainjective-type D 𝓥 𝓦
+ → (T : D → 𝓣 ̇ )
+ → ainjective-type (Σ d ꞉ D , ∥ T d ∥) (𝓣 ⊔ 𝓥') 𝓦'
+ → (d : D) → ∥ has-split-support (T d) ∥
+family-has-unspecified-split-support-if-total-space-of-truncation-is-ainjective
+ D D-inj T E-inj d = I
+  where
+   E = Σ d ꞉ D , ∥ T d ∥
+   lem : Σ f ꞉ (D → D) , ((x : D) → ∥ T (f x) ∥)
+                       × ((x : D) → ∥ T x ∥ → f x ＝ x)
+   lem = necessary-condition-for-injectivity-of-subtype
+          D
+          (λ x → ∥ T x ∥)
+          (λ x → ∥∥-is-prop)
+     E-inj
+   f : D → D
+   f = pr₁ lem
+   f₁ : ∥ T (f d) ∥
+   f₁ = pr₁ (pr₂ lem) d
+   f₂ : ∥ T d ∥ → f d ＝ d
+   f₂ = pr₂ (pr₂ lem) d
+   I : ∥ (∥ T d ∥ → T d) ∥
+   I = ∥∥-functor II f₁
+    where
+     II : T (f d) → ∥ T d ∥ → T d
+     II t τ = transport T (f₂ τ) t
+
+open import SyntheticHomotopyTheory.RP-infinity pt
+open import UF.Choice
+open world's-simplest-axiom-of-choice fe pt
+
+RP∞-ainjective-implies-WSAC : ainjective-type RP∞ 𝓥 𝓦
+                            → WSAC' 𝓤₀
+RP∞-ainjective-implies-WSAC RP∞-inj =
+ family-has-unspecified-split-support-if-total-space-of-truncation-is-ainjective
+  (𝓤₀ ̇ ) (universes-are-ainjective (ua 𝓤₀)) (λ X → X ≃ 𝟚) RP∞-inj
 
 \end{code}

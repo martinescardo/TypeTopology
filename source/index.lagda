@@ -149,7 +149,6 @@ import BinarySystems.index
 import CantorSchroederBernstein.index
 import Cardinals.index
 import Categories.index
-import Circle.index
 import CoNaturals.index
 import ContinuityAxiom.index
 import Coslice.index
@@ -189,6 +188,7 @@ import Quotient.index
 import Rationals.index
 import Relations.index
 import Slice.index
+import SyntheticHomotopyTheory.index
 import TWA.index
 import Taboos.index
 import TypeTopology.index

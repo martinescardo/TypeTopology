@@ -21,7 +21,7 @@ open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
 
-module Circle.Induction where
+module SyntheticHomotopyTheory.Circle.Induction where
 
 \end{code}
 
@@ -382,8 +382,8 @@ closed under retracts, the claim follows.
 
 \begin{code}
 
-  open import Circle.Integers
-  open import Circle.Integers-Properties
+  open import SyntheticHomotopyTheory.Circle.Integers
+  open import SyntheticHomotopyTheory.Circle.Integers-Properties
 
   open import UF.Univalence
 
