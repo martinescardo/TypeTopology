@@ -244,7 +244,7 @@ Tosun.
    Proceedings of [LICS 2025][LICS25]. October 2025.
 
    https://doi.org/10.1109/LICS65433.2025.00027 \
-   https://arxiv.org/abs/2501.14542
+   https://arxiv.org/abs/2501.14542v4
 
 1. Martin H. Escardo, Bruno da Rocha Paiva, Vincent Rahli and Ayberk Tosun.
    *Internal Effectful Forcing in System T*. [FSCD'2025](https://fscd2025.github.io/).
