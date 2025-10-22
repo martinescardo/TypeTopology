@@ -198,7 +198,8 @@ private
 
 \end{code}
 
-Moved here 22 Oct 2025 from code from 8th October 2025 in the file OptimalPlays.
+Moved here 22 Oct 2025 from code from 8th October 2025 in the file
+OptimalPlays, with some additions.
 
 Utility functions for lists of paths.
 
