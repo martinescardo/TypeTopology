@@ -218,13 +218,13 @@ module _ {X : Type}
  prepend x (xs ∷ xss) = (x :: xs) ∷ prepend x xss
 
  member-of-prepend→ : (x : X)
-                      (xs₀ : Path (Xf x))
+                      (xs : Path (Xf x))
                       (xss : List (Path (Xf x)))
-                    → member xs₀ xss
-                    → member (x :: xs₀) (prepend x xss)
- member-of-prepend→ x xs₀ (xs ∷ xss) in-head = in-head
- member-of-prepend→ x xs₀ (xs ∷ xss) (in-tail m) =
-  in-tail (member-of-prepend→ x xs₀ xss m)
+                    → member xs xss
+                    → member (x :: xs) (prepend x xss)
+ member-of-prepend→ x xs (_ ∷ xss) in-head = in-head
+ member-of-prepend→ x xs (_ ∷ xss) (in-tail m) =
+  in-tail (member-of-prepend→ x xs xss m)
 
  map-prepend : ((x : X) → List (Path (Xf x)))
              → List X
