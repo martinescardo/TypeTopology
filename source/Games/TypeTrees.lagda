@@ -1,4 +1,4 @@
-Martin Escardo, Paulo Oliva, 2-27 July 2021
+Martin Escardo, Paulo Oliva, 2-27 July 2021, with later additions.
 
 We represent the moves of a history-dependent sequential game by a
 dependent-type tree, collected in a type 𝑻.  This is either an empty
@@ -195,5 +195,46 @@ private
  structure'-∷ : (S : Type → 𝓤 ̇ ) (X : Type) (Xf : X → 𝑻)
               → structure' S (X ∷ Xf) ＝ S X × ((x : X) → structure' S (Xf x))
  structure'-∷ S X Xf = refl
+
+\end{code}
+
+Moved here 22 Oct 2025 from code from 8th October 2025 in the file OptimalPlays.
+
+Utility functions for lists of paths.
+
+\begin{code}
+
+open import MLTT.List
+
+module _ {X : Type}
+         {Xf : X → 𝑻}
+       where
+
+ prepend : (x : X)
+         → List (Path (Xf x))
+         → List (Path (X ∷ Xf))
+ prepend x [] = []
+ prepend x (xs ∷ xss) = (x :: xs) ∷ prepend x xss
+
+ map-prepend : ((x : X) → List (Path (Xf x)))
+             → List X
+             → List (List (Path (X ∷ Xf)))
+ map-prepend f [] = []
+ map-prepend f (x ∷ xs) = prepend x (f x) ∷ map-prepend f xs
+
+ map-concat-prepend : ((x : X) → List (Path (Xf x)))
+                    → List X
+                    → List (Path (X ∷ Xf))
+ map-concat-prepend f [] = []
+ map-concat-prepend f (x ∷ xs) = prepend x (f x) ++ map-concat-prepend f xs
+
+list-of-paths : (Xt : 𝑻)
+                (Xt-is-listed : structure listed Xt)
+              → List (Path Xt)
+list-of-paths [] ⟨⟩ = []
+list-of-paths (X ∷ Xf) ((xs , m) , Xf-is-listed) = map-concat-prepend IH xs
+ where
+  IH : (x : X) → List (Path (Xf x))
+  IH x = list-of-paths (Xf x) (Xf-is-listed x)
 
 \end{code}

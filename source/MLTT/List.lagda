@@ -638,3 +638,69 @@ member-of-map→ f xs x in-head = in-head
 member-of-map→ f (_ ∷ xs) x (in-tail m) = in-tail (member-of-map→ f xs x m)
 
 \end{code}
+
+Added 8-22 October by Martin Escardo and Paulo Oliva.
+
+\begin{code}
+
+conditionally-prepend : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                      → (x : X)
+                      → A x + ¬ A x
+                      → List (Σ x ꞉ X , A x)
+                      → List (Σ x ꞉ X , A x)
+conditionally-prepend A x (inl a) ys = (x , a) ∷ ys
+conditionally-prepend A x (inr _) ys = ys
+
+filter' : {X : 𝓤 ̇ }
+          (A : X → 𝓥 ̇ )
+        → ((x : X) → A x + ¬ A x)
+        → List X
+        → List (Σ x ꞉ X , A x)
+filter' A δ []       = []
+filter' A δ (x ∷ xs) = conditionally-prepend A x (δ x) (filter' A δ xs)
+
+filter'-member← : {X : 𝓤 ̇ }
+                  (A : X → 𝓥 ̇ )
+                  (δ : (x : X) → A x + ¬ A x)
+                  (A-is-prop-valued : (x : X) → is-prop (A x))
+                  (y : X)
+                  (xs : List X)
+                  (a : A y)
+                → member y xs
+                → member (y , a) (filter' A δ xs)
+filter'-member← {𝓤} {𝓥} {X} A δ A-is-prop-valued y (x ∷ xs) = h x xs (δ x)
+ where
+  h : (x : X)
+      (xs : List X)
+    → (d : A x + ¬ A x)
+      (a : A y)
+    → member y (x ∷ xs)
+    → member (y , a) (conditionally-prepend A x d (filter' A δ xs))
+  h x xs (inl b) a in-head = II
+   where
+    I : member (y , a) ((y , a) ∷ filter' A δ xs)
+    I = in-head
+
+    II : member (y , a) ((y , b) ∷ filter' A δ xs)
+    II = transport
+          (λ - → member (y , a) ((y , -) ∷ filter' A δ xs))
+          (A-is-prop-valued y a b)
+          I
+  h x (x' ∷ xs) (inl b) a (in-tail m) = in-tail (h x' xs (δ x') a m)
+  h x xs (inr r) a in-head = 𝟘-elim (r a)
+  h x xs (inr x₁) a (in-tail m) = filter'-member← A δ A-is-prop-valued y xs a m
+
+detachable-subtype-of-listed-type-is-listed
+ : {X : Type}
+ → (A : X → Type)
+ → ((x : X) → is-decidable (A x))
+ → ((x : X) → is-prop (A x))
+ → listed X
+ → listed (Σ x ꞉ X , A x)
+detachable-subtype-of-listed-type-is-listed {X} A δ A-is-prop-valued (xs , m)
+ = filter' A δ xs , γ
+ where
+  γ : (σ : Σ x ꞉ X , A x) → member σ (filter' A δ xs)
+  γ (x , a) = filter'-member← A δ A-is-prop-valued x xs a (m x)
+
+\end{code}

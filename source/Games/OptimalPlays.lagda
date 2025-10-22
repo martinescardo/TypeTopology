@@ -90,8 +90,6 @@ being-optimal-move-is-decidable q ϕ ϕf x = R-is-discrete _ _
 
 \end{code}
 
-
-
 We now show that the strategic path of a strategy in subgame perfect
 equilibrium is an optimal play. We start with a lemma that is
 interesting on its own right.
@@ -573,13 +571,13 @@ Each path in the pruned tree is a path in the original tree.
 \begin{code}
 
 inclusion : {Xt : 𝑻}
-            (q : Path Xt → R)
             (ϕt : 𝓚 Xt)
+            (q : Path Xt → R)
           → Path (prune Xt q ϕt)
           → Path Xt
-inclusion {[]} q ⟨⟩ ⟨⟩ = ⟨⟩
-inclusion {X ∷ Xf} q (ϕ :: ϕf) ((x , _) :: xos)
- = x :: inclusion {Xf x} (subpred q x) (ϕf x) xos
+inclusion {[]} ⟨⟩ q ⟨⟩ = ⟨⟩
+inclusion {X ∷ Xf} (ϕ :: ϕf) q ((x , _) :: xos)
+ = x :: inclusion {Xf x} (ϕf x) (subpred q x) xos
 
 \end{code}
 
@@ -588,12 +586,15 @@ The predicate q restricts to a predicate in the pruned tree.
 \begin{code}
 
 restriction : {Xt : 𝑻}
-              (q : Path Xt → R)
               (ϕt : 𝓚 Xt)
+              (q : Path Xt → R)
             → Path (prune Xt q ϕt) → R
-restriction q ϕt = q ∘ inclusion q ϕt
+restriction ϕt q = q ∘ inclusion ϕt q
 
 \end{code}
+
+The restriction operation is not very useful, because it gives a
+constant predicate with the optimal outcome as its value (see below).
 
 The paths in the pruned tree are precisely the optimals plays in the
 original tree.
@@ -604,7 +605,7 @@ lemma→ : {Xt : 𝑻}
          (q : Path Xt → R)
          (ϕt : 𝓚 Xt)
        → (xos : Path (prune Xt q ϕt))
-       → is-optimal-play ϕt q (inclusion q ϕt xos)
+       → is-optimal-play ϕt q (inclusion ϕt q xos)
 lemma→ {[]} q ⟨⟩ ⟨⟩ = ⟨⟩
 lemma→ {X ∷ Xf} q (ϕ :: ϕf) ((x , o) :: xos)
  = o , lemma→ {Xf x} (subpred q x) (ϕf x) xos
@@ -614,13 +615,13 @@ lemma← : {Xt : 𝑻}
          (ϕt : 𝓚 Xt)
          (xs : Path Xt)
        → is-optimal-play ϕt q xs
-       → Σ xos ꞉ Path (prune Xt q ϕt) , inclusion q ϕt xos ＝ xs
+       → Σ xos ꞉ Path (prune Xt q ϕt) , inclusion ϕt q xos ＝ xs
 lemma← {[]} q ⟨⟩ ⟨⟩ ⟨⟩ = ⟨⟩ , refl
 lemma← {X ∷ Xf} q (ϕ :: ϕf) (x :: xs) (o :: os)
  = ((x , o) :: pr₁ IH) , ap (x ::_) (pr₂ IH)
  where
   IH : Σ xos ꞉ Path (prune (Xf x) (subpred q x) (ϕf x))
-             , inclusion (subpred q x) (ϕf x) xos ＝ xs
+             , inclusion (ϕf x) (subpred q x) xos ＝ xs
   IH = lemma← {Xf x} (subpred q x) (ϕf x) xs os
 
 \end{code}
@@ -628,106 +629,26 @@ lemma← {X ∷ Xf} q (ϕ :: ϕf) (x :: xs) (o :: os)
 This gives an alternative way to calculate the list of optimal plays,
 which doesn't use selection functions.
 
-Added 8th October 2025.
+Added 22nd October 2025.
 
-TODO. Move the following general purpose functions on paths and on
-lists to appropriate modules. Also think of better names for the
-functions.
+We prove a remark stated above.
 
 \begin{code}
 
-module _ {X : Type}
-         {Xf : X → 𝑻}
-       where
+restriction-is-constant
+ : {Xt : 𝑻}
+   (ϕt : 𝓚 Xt)
+   (q : Path Xt → R)
+   (xos : Path (prune Xt q ϕt))
+ → restriction ϕt q xos ＝ optimal-outcome (game Xt q ϕt)
+restriction-is-constant {Xt} ϕt q xos
+ = optimal-play-gives-optimal-outcome ϕt q (inclusion ϕt q xos) (lemma→ q ϕt xos)
 
- prepend : (x : X)
-         → List (Path (Xf x))
-         → List (Path (X ∷ Xf))
- prepend x [] = []
- prepend x (xs ∷ xss) = (x :: xs) ∷ prepend x xss
+\end{code}
 
- map-prepend : ((x : X) → List (Path (Xf x)))
-             → List X
-             → List (List (Path (X ∷ Xf)))
- map-prepend f [] = []
- map-prepend f (x ∷ xs) = prepend x (f x) ∷ map-prepend f xs
+Added 8th October 2025.
 
- map-concat-prepend : ((x : X) → List (Path (Xf x)))
-                    → List X
-                    → List (Path (X ∷ Xf))
- map-concat-prepend f [] = []
- map-concat-prepend f (x ∷ xs) = prepend x (f x) ++ map-concat-prepend f xs
-
-
-list-of-paths : (Xt : 𝑻)
-                (Xt-is-listed : structure listed Xt)
-              → List (Path Xt)
-list-of-paths [] ⟨⟩ = []
-list-of-paths (X ∷ Xf) ((xs , m) , Xf-is-listed) = map-concat-prepend IH xs
- where
-  IH : (x : X) → List (Path (Xf x))
-  IH x = list-of-paths (Xf x) (Xf-is-listed x)
-
-conditionally-prepend : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-                      → (x : X)
-                      → A x + ¬ A x
-                      → List (Σ x ꞉ X , A x)
-                      → List (Σ x ꞉ X , A x)
-conditionally-prepend A x (inl a) ys = (x , a) ∷ ys
-conditionally-prepend A x (inr _) ys = ys
-
-
-filter' : {X : 𝓤 ̇ }
-          (A : X → 𝓥 ̇ )
-        → ((x : X) → A x + ¬ A x)
-        → List X
-        → List (Σ x ꞉ X , A x)
-filter' A δ []       = []
-filter' A δ (x ∷ xs) = conditionally-prepend A x (δ x) (filter' A δ xs)
-
-filter'-member← : {X : 𝓤 ̇ }
-                  (A : X → 𝓥 ̇ )
-                  (δ : (x : X) → A x + ¬ A x)
-                  (A-is-prop-valued : (x : X) → is-prop (A x))
-                  (y : X)
-                  (xs : List X)
-                  (a : A y)
-                → member y xs
-                → member (y , a) (filter' A δ xs)
-filter'-member← {𝓤} {𝓥} {X} A δ A-is-prop-valued y (x ∷ xs) = h x xs (δ x)
- where
-  h : (x : X)
-      (xs : List X)
-    → (d : A x + ¬ A x)
-      (a : A y)
-    → member y (x ∷ xs)
-    → member (y , a) (conditionally-prepend A x d (filter' A δ xs))
-  h x xs (inl b) a in-head = II
-   where
-    I : member (y , a) ((y , a) ∷ filter' A δ xs)
-    I = in-head
-
-    II : member (y , a) ((y , b) ∷ filter' A δ xs)
-    II = transport
-          (λ - → member (y , a) ((y , -) ∷ filter' A δ xs))
-          (A-is-prop-valued y a b)
-          I
-  h x (x' ∷ xs) (inl b) a (in-tail m) = in-tail (h x' xs (δ x') a m)
-  h x xs (inr r) a in-head = 𝟘-elim (r a)
-  h x xs (inr x₁) a (in-tail m) = filter'-member← A δ A-is-prop-valued y xs a m
-
-detachable-subtype-of-listed-type-is-listed
- : {X : Type}
- → (A : X → Type)
- → ((x : X) → is-decidable (A x))
- → ((x : X) → is-prop (A x))
- → listed X
- → listed (Σ x ꞉ X , A x)
-detachable-subtype-of-listed-type-is-listed {X} A δ A-is-prop-valued (xs , m)
- = filter' A δ xs , γ
- where
-  γ : (σ : Σ x ꞉ X , A x) → member σ (filter' A δ xs)
-  γ (x , a) = filter'-member← A δ A-is-prop-valued x xs a (m x)
+\begin{code}
 
 prune-is-listed : (Xt : 𝑻)
                   (q : Path Xt → R)
@@ -772,7 +693,7 @@ optimal-plays' {Xt} q ϕt Xt-is-listed = xss
   xss' = list-of-paths Xt' (prune-is-listed Xt q ϕt Xt-is-listed)
 
   xss : List (Path Xt)
-  xss = lmap (inclusion q ϕt) xss'
+  xss = lmap (inclusion ϕt q) xss'
 
 \end{code}
 

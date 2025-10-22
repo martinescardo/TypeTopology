@@ -77,7 +77,6 @@ Added 25 August 2023 by Martin Escardo from the former file UF.Miscelanea.
 
 \begin{code}
 
-
 decidable-types-are-¬¬-stable : {X : 𝓤 ̇ } → is-decidable X → ¬¬-stable X
 decidable-types-are-¬¬-stable (inl x) φ = x
 decidable-types-are-¬¬-stable (inr u) φ = unique-from-𝟘(φ u)
@@ -101,13 +100,14 @@ decidable-types-are-¬¬-stable (inr u) φ = unique-from-𝟘(φ u)
 ¬¬-separated-types-are-Id-collapsible : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ }
                                       → is-¬¬-separated X
                                       → Id-collapsible X
-¬¬-separated-types-are-Id-collapsible fe s = ¬¬-stable-types-are-collapsible fe (s _ _)
+¬¬-separated-types-are-Id-collapsible fe s = ¬¬-stable-types-are-collapsible
+                                              fe (s _ _)
 
 ¬¬-separated-types-are-sets : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ }
                             → is-¬¬-separated X
                             → is-set X
-¬¬-separated-types-are-sets fe s =
- Id-collapsibles-are-sets (¬¬-separated-types-are-Id-collapsible fe s)
+¬¬-separated-types-are-sets fe s = Id-collapsibles-are-sets
+                                    (¬¬-separated-types-are-Id-collapsible fe s)
 
 being-¬¬-separated-is-prop : funext 𝓤 𝓤
                            → {X : 𝓤 ̇ }
@@ -117,7 +117,8 @@ being-¬¬-separated-is-prop {𝓤} fe {X} = prop-criterion f
   f : is-¬¬-separated X → is-prop (is-¬¬-separated X)
   f s = Π-is-prop fe (λ _ →
         Π-is-prop fe (λ _ →
-        Π-is-prop fe (λ _ → ¬¬-separated-types-are-sets (lower-funext 𝓤 𝓤 fe) s)))
+        Π-is-prop fe (λ _ → ¬¬-separated-types-are-sets
+                             (lower-funext 𝓤 𝓤 fe) s)))
 
 to-Ω¬¬-＝ : funext 𝓤 𝓤
           → {p q : Ω 𝓤}
@@ -167,7 +168,8 @@ from-Ω¬¬-＝' e = from-Ω-＝ (from-Ω¬¬-＝ e)
                         (Ω¬¬-is-¬¬-separated (fe 𝓤 𝓤) (pe 𝓤))
 
 Ω¬¬-to-Ω-is-embedding : funext 𝓤 𝓤 → is-embedding (Ω¬¬-to-Ω {𝓤})
-Ω¬¬-to-Ω-is-embedding fe = pr₁-is-embedding λ p → being-¬¬-stable-is-prop fe (holds-is-prop p)
+Ω¬¬-to-Ω-is-embedding fe = pr₁-is-embedding
+                            (λ p → being-¬¬-stable-is-prop fe (holds-is-prop p))
 
 Ω-to-Ω¬¬ : funext 𝓤 𝓤₀ → Ω 𝓤 → Ω¬¬ 𝓤
 Ω-to-Ω¬¬ fe p = ((¬¬ (p holds)) , negations-are-props fe) , ¬-is-¬¬-stable
@@ -210,8 +212,10 @@ module _ (fe : FunExt) (pe : PropExt) where
 
  𝟚-to-Ω¬¬-is-embedding : is-embedding (𝟚-to-Ω¬¬ {𝓤})
  𝟚-to-Ω¬¬-is-embedding _ (₀ , p) (₀ , q) = to-Σ-＝ (refl , Ω¬¬-is-set fe pe p q)
- 𝟚-to-Ω¬¬-is-embedding _ (₀ , p) (₁ , q) = 𝟘-elim (⊥-is-not-⊤ (ap pr₁ p ∙ (ap pr₁ q)⁻¹))
- 𝟚-to-Ω¬¬-is-embedding _ (₁ , p) (₀ , q) = 𝟘-elim (⊥-is-not-⊤ (ap pr₁ q ∙ (ap pr₁ p ⁻¹)))
+ 𝟚-to-Ω¬¬-is-embedding _ (₀ , p) (₁ , q) =
+  𝟘-elim (⊥-is-not-⊤ (ap pr₁ p ∙ (ap pr₁ q)⁻¹))
+ 𝟚-to-Ω¬¬-is-embedding _ (₁ , p) (₀ , q) =
+  𝟘-elim (⊥-is-not-⊤ (ap pr₁ q ∙ (ap pr₁ p ⁻¹)))
  𝟚-to-Ω¬¬-is-embedding _ (₁ , p) (₁ , q) = to-Σ-＝ (refl , Ω¬¬-is-set fe pe p q)
 
  𝟚-to-Ω¬¬-fiber : ((p , s) : Ω¬¬ 𝓤) → fiber 𝟚-to-Ω¬¬ (p , s) ≃ (¬ (p holds) + p holds)
@@ -224,9 +228,11 @@ module _ (fe : FunExt) (pe : PropExt) where
   where
    I = +-cong
         (embedding-criterion-converse' pr₁
-          (pr₁-is-embedding (λ p → being-¬¬-stable-is-prop (fe _ _) (holds-is-prop p))) _ _)
+          (pr₁-is-embedding
+            (λ p → being-¬¬-stable-is-prop (fe _ _) (holds-is-prop p))) _ _)
         (embedding-criterion-converse' pr₁
-          (pr₁-is-embedding (λ p → being-¬¬-stable-is-prop (fe _ _) (holds-is-prop p))) _ _)
+          (pr₁-is-embedding
+            (λ p → being-¬¬-stable-is-prop (fe _ _) (holds-is-prop p))) _ _)
 
    II = +-cong
            (＝-flip ● equal-⊥-≃ (pe _) (fe _ _) p)
@@ -242,9 +248,10 @@ Added 3rd September 2023 by Martin Escardo.
 
 \begin{code}
 
-two-Ω¬¬-props-distinct-from-a-third-are-equal : funext 𝓤 𝓤
-                                              → propext 𝓤
-                                              → (𝕡₀ 𝕡₁ 𝕢 : Ω¬¬ 𝓤) → 𝕡₀ ≠ 𝕢 → 𝕡₁ ≠ 𝕢 → 𝕡₀ ＝ 𝕡₁
+two-Ω¬¬-props-distinct-from-a-third-are-equal
+ : funext 𝓤 𝓤
+ → propext 𝓤
+ → (𝕡₀ 𝕡₁ 𝕢 : Ω¬¬ 𝓤) → 𝕡₀ ≠ 𝕢 → 𝕡₁ ≠ 𝕢 → 𝕡₀ ＝ 𝕡₁
 two-Ω¬¬-props-distinct-from-a-third-are-equal fe pe 𝕡₀ 𝕡₁ 𝕢 ν₀ ν₁ = III
  where
   I : ¬ (Ω¬¬-to-Ω 𝕡₀ ≠ Ω¬¬-to-Ω 𝕡₁)
@@ -270,6 +277,7 @@ Added 3rd April 2025 by Fredrik Bakke
                                                → ¬¬-stable X
                                                → is-decidable X
 ¬¬-stable-weakly-decidable-types-are-decidable (inl nx) ¬¬-elim-X = inr nx
-¬¬-stable-weakly-decidable-types-are-decidable (inr x) ¬¬-elim-X = inl (¬¬-elim-X x)
+¬¬-stable-weakly-decidable-types-are-decidable (inr x) ¬¬-elim-X =
+ inl (¬¬-elim-X x)
 
 \end{code}
