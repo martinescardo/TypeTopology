@@ -280,25 +280,23 @@ list-of-paths : (Xt : 𝑻)
                 (lt : structure listed Xt)
               → List (Path Xt)
 list-of-paths [] ⟨⟩ = [ ⟨⟩ ]
-list-of-paths (X ∷ Xf) ((xs , m) , lf) = concat-map-prepend IH xs
- where
-  IH : (x : X) → List (Path (Xf x))
-  IH x = list-of-paths (Xf x) (lf x)
+list-of-paths (X ∷ Xf) ((xs , m) , lf) =
+ concat-map-prepend (λ x → list-of-paths (Xf x) (lf x)) xs
 
 path-is-member-of-list-of-paths : (Xt : 𝑻)
                                   (lt : structure listed Xt)
                                   (xs : Path Xt)
                                 → member xs (list-of-paths Xt lt)
 path-is-member-of-list-of-paths [] ⟨⟩ ⟨⟩ = in-head
-path-is-member-of-list-of-paths (X ∷ Xf) ((ys , m) , lf) (x₀ :: xs) = I
+path-is-member-of-list-of-paths (X ∷ Xf) ((ys , m) , lf) (x :: xs) = I
  where
   f : (x : X) → List (Path (Xf x))
   f x = list-of-paths (Xf x) (lf x)
 
-  IH : (x : X) (xs : Path (Xf x)) → member xs (f x)
-  IH x = path-is-member-of-list-of-paths (Xf x) (lf x)
+  IH : member xs (f x)
+  IH = path-is-member-of-list-of-paths (Xf x) (lf x) xs
 
-  I : member (x₀ :: xs) (concat-map-prepend f ys)
-  I = member-of-concat-map-prepend→ f x₀ xs ys (m x₀) (IH x₀ xs)
+  I : member (x :: xs) (concat-map-prepend f ys)
+  I = member-of-concat-map-prepend→ f x xs ys (m x) IH
 
 \end{code}
