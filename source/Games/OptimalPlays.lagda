@@ -542,8 +542,6 @@ quantifiers-over-empty-types-are-not-attainable e ϕ (ε , a)
 
 \end{code}
 
-TODO. It is not in general decidable whether a quantifier is attainable.
-
 Added 17th September. We calculate the subtree of the game tree whose
 paths are precisely the optimal plays of the original game.
 
@@ -700,4 +698,55 @@ optimal-plays' {Xt} q ϕt Xt-is-listed = xss
 Notice that this way of computing the optimal plays doesn't need the
 assumption that the quantifiers are attainable.
 
-TODO. Prove that optimal-plays' lists precisely the optimal plays.
+Added 22nd October 2025. We now prove that optimal-plays' lists
+precisely the optimal plays.
+
+\begin{code}
+
+module _ (Xt : 𝑻)
+         (ϕt : 𝓚 Xt)
+         (q : Path Xt → R)
+         (lt : structure listed Xt)
+         (xs : Path Xt)
+       where
+
+ private
+  xss' : List (Path (prune Xt q ϕt))
+  xss' = list-of-paths (prune Xt q ϕt) (prune-is-listed Xt q ϕt lt)
+
+ main-lemma'→ : member xs (optimal-plays' q ϕt lt)
+              → is-optimal-play ϕt q xs
+ main-lemma'→ m = I σ
+  where
+   have-m : member xs (lmap (inclusion ϕt q) xss')
+   have-m = m
+
+   σ : Σ xos ꞉ Path (prune Xt q ϕt) , member xos xss' × (inclusion ϕt q xos ＝ xs)
+   σ = member-of-map← (inclusion ϕt q) xs xss' m
+
+   I : type-of σ → is-optimal-play ϕt q xs
+   I (xos , _ , e) = transport (is-optimal-play ϕt q) e (lemma→ q ϕt xos)
+
+ main-lemma'← : is-optimal-play ϕt q xs
+              → member xs (optimal-plays' q ϕt lt)
+ main-lemma'← o = I σ
+  where
+   σ : Σ xos ꞉ Path (prune Xt q ϕt) , inclusion ϕt q xos ＝ xs
+   σ = lemma← q ϕt xs o
+
+   I : type-of σ → member xs (optimal-plays' q ϕt lt)
+   I (xos , e) = I₂
+    where
+     I₀ : member xos xss'
+     I₀ = path-is-member-of-list-of-paths
+           (prune Xt q ϕt)
+           (prune-is-listed Xt q ϕt lt)
+           xos
+
+     I₁ : member (inclusion ϕt q xos) (lmap (inclusion ϕt q) xss')
+     I₁ = member-of-map→ (inclusion ϕt q) xss' xos I₀
+
+     I₂ : member xs (lmap (inclusion ϕt q) xss')
+     I₂ = transport (λ - → member - (lmap (inclusion ϕt q) xss')) e I₁
+
+\end{code}

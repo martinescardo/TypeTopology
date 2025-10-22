@@ -216,25 +216,89 @@ module _ {X : Type}
  prepend x [] = []
  prepend x (xs ∷ xss) = (x :: xs) ∷ prepend x xss
 
+ member-of-prepend→ : (x : X)
+                      (xs₀ : Path (Xf x))
+                      (xss : List (Path (Xf x)))
+                    → member xs₀ xss
+                    → member (x :: xs₀) (prepend x xss)
+ member-of-prepend→ x xs₀ (xs ∷ xss) in-head = in-head
+ member-of-prepend→ x xs₀ (xs ∷ xss) (in-tail m) =
+  in-tail (member-of-prepend→ x xs₀ xss m)
+
  map-prepend : ((x : X) → List (Path (Xf x)))
              → List X
              → List (List (Path (X ∷ Xf)))
  map-prepend f [] = []
  map-prepend f (x ∷ xs) = prepend x (f x) ∷ map-prepend f xs
 
- map-concat-prepend : ((x : X) → List (Path (Xf x)))
+ member-of-map-prepend→ : (f : (x : X) → List (Path (Xf x)))
+                          (xs : List X)
+                          (x : X)
+                        → member x xs
+                        → member (prepend x (f x)) (map-prepend f xs)
+ member-of-map-prepend→ f (x₀ ∷ xs) x in-head = in-head
+ member-of-map-prepend→ f (x₀ ∷ xs) x (in-tail m) =
+  in-tail (member-of-map-prepend→ f xs x m)
+
+ concat-map-prepend : ((x : X) → List (Path (Xf x)))
                     → List X
                     → List (Path (X ∷ Xf))
- map-concat-prepend f [] = []
- map-concat-prepend f (x ∷ xs) = prepend x (f x) ++ map-concat-prepend f xs
+ concat-map-prepend f [] = []
+ concat-map-prepend f (x ∷ xs) = prepend x (f x) ++ concat-map-prepend f xs
+
+ member-of-concat-map-prepend→ : (f : (x : X) → List (Path (Xf x)))
+                                 (x : X)
+                                 (xs : Path (Xf x))
+                                 (ys : List X)
+                               → member x ys
+                               → member xs (f x)
+                               → member (x :: xs) (concat-map-prepend f ys)
+ member-of-concat-map-prepend→ f x xs (y ∷ ys) in-head n = II
+  where
+   I : member (x :: xs) (prepend x (f x))
+   I = member-of-prepend→ x xs (f x) n
+
+   II : member (x :: xs) (prepend x (f x) ++ concat-map-prepend f ys)
+   II = right-concatenation-preserves-membership
+         (x :: xs)
+         (prepend x (f x))
+         (concat-map-prepend f ys)
+         I
+ member-of-concat-map-prepend→ f x xs (y ∷ ys) (in-tail m) n = I
+  where
+   IH : member (x :: xs) (concat-map-prepend f ys)
+   IH = member-of-concat-map-prepend→ f x xs ys m n
+
+   I : member (x :: xs) (prepend y (f y) ++ concat-map-prepend f ys)
+   I = left-concatenation-preserves-membership
+        (x :: xs)
+        (concat-map-prepend f ys)
+        (prepend y (f y))
+        IH
 
 list-of-paths : (Xt : 𝑻)
-                (Xt-is-listed : structure listed Xt)
+                (lt : structure listed Xt)
               → List (Path Xt)
-list-of-paths [] ⟨⟩ = []
-list-of-paths (X ∷ Xf) ((xs , m) , Xf-is-listed) = map-concat-prepend IH xs
+list-of-paths [] ⟨⟩ = [ ⟨⟩ ]
+list-of-paths (X ∷ Xf) ((xs , m) , lf) = concat-map-prepend IH xs
  where
   IH : (x : X) → List (Path (Xf x))
-  IH x = list-of-paths (Xf x) (Xf-is-listed x)
+  IH x = list-of-paths (Xf x) (lf x)
+
+path-is-member-of-list-of-paths : (Xt : 𝑻)
+                                  (lt : structure listed Xt)
+                                  (xs : Path Xt)
+                                → member xs (list-of-paths Xt lt)
+path-is-member-of-list-of-paths [] ⟨⟩ ⟨⟩ = in-head
+path-is-member-of-list-of-paths (X ∷ Xf) ((ys , m) , lf) (x₀ :: xs) = I
+ where
+  f : (x : X) → List (Path (Xf x))
+  f x = list-of-paths (Xf x) (lf x)
+
+  IH : (x : X) (xs : Path (Xf x)) → member xs (f x)
+  IH x = path-is-member-of-list-of-paths (Xf x) (lf x)
+
+  I : member (x₀ :: xs) (concat-map-prepend f ys)
+  I = member-of-concat-map-prepend→ f x₀ xs ys (m x₀) (IH x₀ xs)
 
 \end{code}
