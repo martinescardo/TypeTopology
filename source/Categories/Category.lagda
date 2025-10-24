@@ -1,218 +1,230 @@
-Jon Sterling, started 16th Dec 2022
+Anna Williams, 17 October 2025
+
+Definitions of:
+ * precategory
+ * category
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.FunExt
+open import MLTT.Spartan hiding (_∘_ ; id)
 
-module Categories.Category (fe : Fun-Ext) where
-
-open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Equiv-FunExt
 open import UF.Sets
 open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.Subsingletons-Properties
+
+module Categories.Category where
 
 \end{code}
 
-We prefer composition in diagrammatic order.
+We start by defining the notion of a precategory.
+This consists of the usual components of a category, which is as follows
+
+- A collection of objects, obj
+- For each pair of objects, A B : obj, a set of homorphisms between A and B
+- For each object A : obj, an identity homorphism (id A) : hom A A
+- A composition operation, ∘, which for objects A B C : obj
+  and homorphisms f : hom A B, g : hom B C gives a new homomorphism in hom A C
+
+with the following axioms
+
+- left-id: For objects A B : obj and morphism f : hom A B, f = f ∘ (id A)
+- right-id: For objects A B : obj and morphism f : hom A B, f = (id B) ∘ f
+- associativity: For objects A B C D : obj and morphisms f : hom A B,
+                 g : hom B C, h : hom C D, we have f ∘ (g ∘ h) = (f ∘ g) ∘ h
 
 \begin{code}
 
-category-structure : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-category-structure 𝓤 𝓥 =
- Σ ob ꞉ (𝓤 ̇ ),
- Σ hom ꞉ (ob → ob → 𝓥 ̇ ),
- Σ idn ꞉ ((A : ob) → hom A A) ,
- ((A B C : ob) (f : hom A B) (g : hom B C) → hom A C)
-
-module category-structure (𝓒 : category-structure 𝓤 𝓥) where
- ob : 𝓤 ̇
- ob = pr₁ 𝓒
-
- hom : ob → ob → 𝓥 ̇
- hom A B = pr₁ (pr₂ 𝓒) A B
-
- idn : (A : ob) → hom A A
- idn A = pr₁ (pr₂ (pr₂ 𝓒)) A
-
- seq : {A B C : ob} (f : hom A B) (g : hom B C) → hom A C
- seq f g = pr₂ (pr₂ (pr₂ 𝓒)) _ _ _ f g
-
- cmp : {A B C : ob} (g : hom B C) (f : hom A B) → hom A C
- cmp f g = seq g f
-
-module category-axiom-statements (𝓒 : category-structure 𝓤 𝓥) where
- open category-structure 𝓒
-
- statement-hom-is-set : 𝓤 ⊔ 𝓥 ̇
- statement-hom-is-set = (A B : ob) → is-set (hom A B)
-
- statement-idn-L : 𝓤 ⊔ 𝓥 ̇
- statement-idn-L = (A B : ob) (f : hom A B) → seq (idn A) f ＝ f
-
- statement-idn-R : 𝓤 ⊔ 𝓥 ̇
- statement-idn-R = (A B : ob) (f : hom A B) → seq f (idn B) ＝ f
-
- statement-assoc : 𝓤 ⊔ 𝓥 ̇
- statement-assoc =
-  (A B C D : ob) (f : hom A B) (g : hom B C) (h : hom C D)
-  → seq f (seq g h) ＝ seq (seq f g) h
-
-
- statement-hom-is-set-is-prop : is-prop statement-hom-is-set
- statement-hom-is-set-is-prop =
-  Π-is-prop fe λ _ →
-  Π-is-prop fe λ _ →
-  being-set-is-prop fe
-
- module _ (hom-is-set : statement-hom-is-set) where
-  statement-idn-L-is-prop : is-prop statement-idn-L
-  statement-idn-L-is-prop =
-   Π-is-prop fe λ _ →
-   Π-is-prop fe λ _ →
-   Π-is-prop fe λ _ →
-   hom-is-set _ _
-
-  statement-idn-R-is-prop : is-prop statement-idn-R
-  statement-idn-R-is-prop =
-   Π-is-prop fe λ _ →
-   Π-is-prop fe λ _ →
-   Π-is-prop fe λ _ →
-   hom-is-set _ _
-
-  statement-assoc-is-prop : is-prop statement-assoc
-  statement-assoc-is-prop =
-   Π-is-prop fe λ _ →
-   Π-is-prop fe λ _ →
-   Π-is-prop fe λ _ →
-   Π-is-prop fe λ _ →
-   Π-is-prop fe λ _ →
-   Π-is-prop fe λ _ →
-   Π-is-prop fe λ _ →
-   hom-is-set _ _
-
- -- TODO: univalence statement
-
--- Precategories are an intermediate notion in univalent 1-category theory.
-module _ (𝓒 : category-structure 𝓤 𝓥) where
- open category-axiom-statements 𝓒
-
- precategory-axioms : 𝓤 ⊔ 𝓥 ̇
- precategory-axioms =
-  statement-hom-is-set
-  × statement-idn-L
-  × statement-idn-R
-  × statement-assoc
-
- precategory-axioms-is-prop : is-prop precategory-axioms
- precategory-axioms-is-prop =
-  Σ-is-prop statement-hom-is-set-is-prop λ hom-is-set →
-  ×-is-prop
-   (statement-idn-L-is-prop hom-is-set)
-   (×-is-prop
-    (statement-idn-R-is-prop hom-is-set)
-    (statement-assoc-is-prop hom-is-set))
-
-
- module precategory-axioms (ax : precategory-axioms) where
-  hom-is-set : statement-hom-is-set
-  hom-is-set = pr₁ ax
-
-  idn-L : statement-idn-L
-  idn-L = pr₁ (pr₂ ax)
-
-  idn-R : statement-idn-R
-  idn-R = pr₁ (pr₂ (pr₂ ax))
-
-  assoc : statement-assoc
-  assoc = pr₂ (pr₂ (pr₂ ax))
-
-record precategory (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
- constructor make
+record Precategory (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
  field
-  str : category-structure 𝓤 𝓥
-  ax : precategory-axioms str
+  obj : 𝓤 ̇
+  hom : obj → obj → 𝓥 ̇
+  hom-is-set : {a b : obj} → is-set (hom a b)
+  
+  id : (a : obj) → hom a a
+  
+  _∘_ : {a b c : obj} → hom b c → hom a b → hom a c
+  
+  left-id : {a b : obj} → (f : hom a b) → f ＝ (id b) ∘ f
+  
+  right-id : {a b : obj} → (f : hom a b) → f ＝ f ∘ (id a)
+  
+  assoc
+   : {a b c d : obj}
+     {f : hom a b}
+     {g : hom b c}
+     {h : hom c d}
+   → h ∘ (g ∘ f) ＝ (h ∘ g) ∘ f
+\end{code}
 
- open category-structure str public
- open precategory-axioms str ax public
+We define instance argument versions of each field of the record so, for
+example, we can write f ∘ g, to mean _∘_ P f g, for a precategory P.
 
-module precategory-as-sum {𝓤 𝓥} where
- to-sum : precategory 𝓤 𝓥 → (Σ 𝓒 ꞉ category-structure 𝓤 𝓥 , precategory-axioms 𝓒)
- to-sum 𝓒 = let open precategory 𝓒 in str , ax
+\begin{code}
 
- from-sum : (Σ 𝓒 ꞉ category-structure 𝓤 𝓥 , precategory-axioms 𝓒) → precategory 𝓤 𝓥
- from-sum 𝓒 = make (pr₁ 𝓒) (pr₂ 𝓒)
+obj : (P : Precategory 𝓤 𝓥) → 𝓤 ̇
+obj = Precategory.obj
 
- to-sum-is-equiv : is-equiv to-sum
- pr₁ (pr₁ to-sum-is-equiv) = from-sum
- pr₂ (pr₁ to-sum-is-equiv) _ = refl
- pr₁ (pr₂ to-sum-is-equiv) = from-sum
- pr₂ (pr₂ to-sum-is-equiv) _ = refl
+hom : {{ P : Precategory 𝓤 𝓥 }} (a b : obj P) → 𝓥 ̇ 
+hom {{P}} = Precategory.hom P
 
-module _ (𝓒 : precategory 𝓤 𝓥) where
- open precategory 𝓒
+_∘_ : {{ P : Precategory 𝓤 𝓥 }} {a b c : obj P} → hom b c → hom a b → hom a c
+_∘_ {{P}} = Precategory._∘_ P
 
- module hom-properties {A B : ob} (f : hom A B) where
+id : {{ P : Precategory 𝓤 𝓥 }} {a : obj P} → hom a a
+id {{P}} {a} = Precategory.id P a
 
-  module _ (g : hom B A) where
-   is-inverse : 𝓥 ̇
-   is-inverse = (seq f g ＝ idn A) × (seq g f ＝ idn B)
+hom-is-set : {{ P : Precategory 𝓤 𝓥 }} {a b : obj P} → is-set (hom a b)
+hom-is-set {{P}} = Precategory.hom-is-set P
 
-   being-inverse-is-prop : is-prop is-inverse
-   being-inverse-is-prop = ×-is-prop (hom-is-set _ _) (hom-is-set _ _)
+left-id
+ : {{ P : Precategory 𝓤 𝓥 }} {a b : obj P} → (f : hom a b) → f ＝ id ∘ f
+left-id {{P}} = Precategory.left-id P
 
-  inverse-is-unique
-   : (g g' : hom B A)
-   → is-inverse g
-   → is-inverse g'
-   → g ＝ g'
-  inverse-is-unique g g' fg fg' =
-   g ＝⟨ idn-R _ _ _ ⁻¹ ⟩
-   seq g (idn _) ＝⟨ ap (seq g) (pr₁ fg' ⁻¹) ⟩
-   seq g (seq f g') ＝⟨ assoc _ _ _ _ _ _ _ ⟩
-   seq (seq g f) g' ＝⟨ ap (λ x → seq x g') (pr₂ fg) ⟩
-   seq (idn _) g' ＝⟨ idn-L _ _ _ ⟩
-   g' ∎
+right-id
+ : {{ P : Precategory 𝓤 𝓥 }} {a b : obj P} → (f : hom a b) → f ＝ f ∘ id
+right-id {{P}} = Precategory.right-id P
 
-  is-iso : 𝓥 ̇
-  is-iso = Σ g ꞉ hom B A , is-inverse g
-
-  is-iso-is-prop : is-prop is-iso
-  is-iso-is-prop (g , fg) (g' , fg') =
-   to-Σ-＝
-    (inverse-is-unique g g' fg fg' ,
-     being-inverse-is-prop _ _ _)
-
- iso : ob → ob → 𝓥 ̇
- iso A B = Σ f ꞉ hom A B , hom-properties.is-iso f
-
- idn-is-iso : {A : ob} → hom-properties.is-iso (idn A)
- pr₁ idn-is-iso = idn _
- pr₁ (pr₂ idn-is-iso) = idn-L _ _ _
- pr₂ (pr₂ idn-is-iso) = idn-L _ _ _
-
- module _ (A B : ob) where
-  ＝-to-iso : A ＝ B → iso A B
-  ＝-to-iso refl = idn A , idn-is-iso
-
- is-univalent-precategory : 𝓤 ⊔ 𝓥 ̇
- is-univalent-precategory = (A B : ob) → is-equiv (＝-to-iso A B)
-
- being-univalent-is-prop : is-prop is-univalent-precategory
- being-univalent-is-prop =
-  Π-is-prop fe λ _ →
-  Π-is-prop fe λ _ →
-  being-equiv-is-prop (λ _ _ → fe) _
-
-category : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-category 𝓤 𝓥 = Σ 𝓒 ꞉ precategory 𝓤 𝓥 , is-univalent-precategory 𝓒
-
-category-to-precategory : category 𝓤 𝓥 → precategory 𝓤 𝓥
-category-to-precategory 𝓒 = pr₁ 𝓒
+assoc
+ : {{ P : Precategory 𝓤 𝓥 }}
+   {a b c d : obj P}
+   {f : hom a b}
+   {g : hom b c}
+   {h : hom c d}
+ → h ∘ (g ∘ f) ＝ (h ∘ g) ∘ f
+assoc {{P}} = Precategory.assoc P
 
 \end{code}
+
+An isomorphism in a category consists of a homomorphism f : hom a b
+and some "inverse" homomorphism g : hom b a, such that g ∘ f = (id a)
+and f ∘ g = (id b).
+
+We first define the type of a given homomorphism being an isomorphism,
+then we define the type of isomorphism between objects of a precategory.
+
+\begin{code}
+
+record Is-Iso {{ P : Precategory 𝓤 𝓥 }} {a b : obj P} (f : hom a b) : 𝓥 ̇ where
+ field
+  inv : hom b a
+  l-inverse : inv ∘ f ＝ id
+  r-inverse : f ∘ inv ＝ id
+
+Cat-Iso : {{ P : Precategory 𝓤 𝓥 }} (a b : obj P) → 𝓥 ̇
+Cat-Iso a b = Σ f ꞉ hom a b , Is-Iso f
+
+\end{code}
+
+We now show that for a given homomorphism, being an isomorphism is a
+(mere) proposition. We argue that inverses are unique, and then since
+the type of homomorphisms between two objects is a set, equality between
+any two homomorphisms is a proposition, so our left and right inverse
+equalities are a proposition.
+
+\begin{code}
+
+-- This might want cleaning up
+-- I feel there is probably a better way of doing this
+is-iso-eq
+ : {{P : Precategory 𝓤 𝓥}} {a b : obj P} {f : hom {{P}} a b} → (x y : Is-Iso f)
+ → (Is-Iso.inv x) ＝ (Is-Iso.inv y)
+ → x ＝ y
+is-iso-eq x y refl = ap₂ p-record l-eq r-eq
+ where
+  l-eq : Is-Iso.l-inverse x ＝ Is-Iso.l-inverse y
+  l-eq = hom-is-set (Is-Iso.l-inverse x) (Is-Iso.l-inverse y)
+
+  r-eq : Is-Iso.r-inverse x ＝ Is-Iso.r-inverse y
+  r-eq = hom-is-set (Is-Iso.r-inverse x) (Is-Iso.r-inverse y)
+
+  p-record = λ l-in r-in → record { inv = Is-Iso.inv x ;
+                                    l-inverse = l-in ;
+                                    r-inverse = r-in }
+
+
+specific-iso-is-prop
+ : {{P : Precategory 𝓤 𝓥}}
+   {a b : obj P}
+ → (f : hom a b)
+ → is-prop (Is-Iso f)
+specific-iso-is-prop {_} {_} {a} {b} f x y = is-iso-eq x y inverse-eq
+ where
+  g : hom b a
+  g = Is-Iso.inv x
+
+  g' : hom b a
+  g' = Is-Iso.inv y
+
+  inverse-eq : Is-Iso.inv x ＝ Is-Iso.inv y
+  inverse-eq = g            ＝⟨ right-id g ⟩
+               g ∘ id       ＝⟨ ap (g ∘_) ((Is-Iso.r-inverse y)⁻¹) ⟩
+               g ∘ (f ∘ g') ＝⟨ assoc ⟩
+               (g ∘ f) ∘ g' ＝⟨ ap (_∘ g') (Is-Iso.l-inverse x) ⟩
+               id ∘ g'      ＝⟨ (left-id g')⁻¹ ⟩
+               g' ∎
+
+\end{code}
+
+We now argue that this means that the type of isomorphisms is a set.
+This follows from the fact that being an isomorphism is a proposition.
+
+\begin{code}
+
+isomorphism-is-set
+ : {{P : Precategory 𝓤 𝓥}}
+   {a b : obj P}
+ → is-set (Cat-Iso a b)
+isomorphism-is-set = Σ-is-set hom-is-set
+                              (λ f → props-are-sets (specific-iso-is-prop f))
+
+\end{code}
+
+We wish to combine the similar notions of equivalence,
+namely the internal equality: a = b and isomorphisms a ≅ b.
+
+We can in fact show that if a = b, then a ≅ b. This is because if
+a = b, then by path induction we need to show that a ≅ a. This is
+simple as we can form an isomophism with the identity homomorphism.
+
+\begin{code}
+
+id-to-iso : {{ A : Precategory 𝓤 𝓥 }} (a b : obj A) → a ＝ b → Cat-Iso a b
+id-to-iso a b refl = id , record { inv = id ;
+                                   l-inverse = id-squared-is-id ;
+                                   r-inverse = id-squared-is-id }
+ where
+  id-squared-is-id : id ∘ id ＝ id
+  id-squared-is-id = (left-id id)⁻¹
+
+\end{code}
+
+To bring into alignment the two different forms of equality, we define a
+category to be a precategory where equality is exactly isomorphism.
+
+\begin{code}
+
+record Category (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇  where
+ field
+  precategory : Precategory 𝓤 𝓥
+  id-equiv-iso : (a b : obj precategory) → (a ＝ b) ≃ Cat-Iso ⦃ precategory ⦄ a b
+
+_ₚ : Category 𝓤 𝓥 → Precategory 𝓤 𝓥
+_ₚ = Category.precategory
+
+\end{code}
+
+We can now show that any category's objects are sets. This is because
+equality between objects is exactly isomorphism, which we know is a set.
+
+\begin{code}
+
+cat-obj-is-1-type : (A : Category 𝓤 𝓥) → (a b : obj (A ₚ)) → is-set (a ＝ b)
+cat-obj-is-1-type A a b = equiv-to-set (Category.id-equiv-iso A a b)
+                                       (isomorphism-is-set {{A ₚ}})
+\end{code}
+

@@ -1,7 +1,8 @@
-Jon Sterling, 16 Dec 2022
+Anna Williams, 17 October 2025
 
-This is a nascent development of some basic 1-category theory from the univalent
-point of view.
+Formalisation of some 1-category theory with univalent foundations.
+Included are basic definitions of categories, functors and
+natural transformations.
 
 \begin{code}
 
@@ -12,6 +13,5 @@ module Categories.index where
 import Categories.Category
 import Categories.Functor
 import Categories.NaturalTransformation
-import Categories.Adjunction
 
 \end{code}
