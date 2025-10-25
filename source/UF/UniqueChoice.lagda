@@ -48,10 +48,10 @@ module _ (pt : propositional-truncations-exist) where
  ∃!-to-∃'! {_} {_} {_} {A} x
   = ∃!-implies-∃ x , ∣ witness-uniqueness A x ∣
 
- ∃'!-to-∃! : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} {p : (x : X) → is-prop (A x)}
+ ∃'!-to-∃! : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} (p : (x : X) → is-prop (A x))
            → Fun-Ext
            → ∃'! A → ∃! A
- ∃'!-to-∃! {_} {_} {X} {A} {p} fe
+ ∃'!-to-∃! {_} {_} {X} {A} p fe
   = uncurry (∥∥-rec₂ (being-singleton-is-prop fe) I)
   where
    I : Σ A → ((x x' : X) → A x → A x' → x ＝ x') → ∃! A
@@ -60,12 +60,12 @@ module _ (pt : propositional-truncations-exist) where
      II : is-central (Σ A) (x , a)
      II (x' , a') = to-subtype-＝ p (u x x' a a')
 
- ∃!-≃-∃'! : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} {p : (x : X) → is-prop (A x)}
+ ∃!-≃-∃'! : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} (p : (x : X) → is-prop (A x))
           → Fun-Ext
           → ∃! A ≃ ∃'! A
- ∃!-≃-∃'! {_} {_} {_} {_} {p} fe
+ ∃!-≃-∃'! p fe
   = logically-equivalent-props-are-equivalent (being-singleton-is-prop fe)
-     ∃'!-is-prop ∃!-to-∃'! (∃'!-to-∃! {_} {_} {_} {_} {p} fe)
+     ∃'!-is-prop ∃!-to-∃'! (∃'!-to-∃! p fe)
 
 \end{code}
 
