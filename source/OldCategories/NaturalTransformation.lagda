@@ -6,11 +6,11 @@ Jon Sterling, started 16th Dec 2022
 
 open import UF.FunExt
 
-module Categories.NaturalTransformation (fe : Fun-Ext) where
+module OldCategories.NaturalTransformation (fe : Fun-Ext) where
 
-open import Categories.Category fe
-open import Categories.Functor fe
 open import MLTT.Spartan
+open import OldCategories.Category fe
+open import OldCategories.Functor fe
 open import UF.Base
 open import UF.Equiv
 open import UF.Sets
