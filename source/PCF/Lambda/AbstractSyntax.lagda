@@ -68,9 +68,9 @@ data PCF : {n : ℕ} (Γ : Context n) (σ : type) → 𝓤₀ ̇ where
         → PCF Γ σ
         → PCF Γ τ
 
- v      : {n : ℕ} {Γ : Context n} {A : type}
-        → Γ ∋ A
-        → PCF Γ A
+ v      : {n : ℕ} {Γ : Context n} {σ : type}
+        → Γ ∋ σ
+        → PCF Γ σ
 
  Fix    : {n : ℕ} {Γ : Context n} {σ : type}
         → PCF Γ (σ ⇒ σ)
