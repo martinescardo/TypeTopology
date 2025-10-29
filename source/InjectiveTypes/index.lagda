@@ -60,6 +60,7 @@ types have been found, including the following:
  * The type of ordinals.
  * The type of iterative multisets.
  * The type of iterative sets.
+ * The type of non-empty types.
  * The type of pointed types.
  * The type of ∞-magmas.
  * The type of pointed ∞-magmas.
@@ -74,6 +75,7 @@ import Ordinals.Injectivity
 import Iterative.Multisets-Addendum
 import Iterative.Sets-Addendum
 import Iterative.Ordinals
+import InjectiveTypes.NonEmptyTypes
 import InjectiveTypes.Sigma
 import InjectiveTypes.MathematicalStructures
 import InjectiveTypes.MathematicalStructuresMoreGeneral
