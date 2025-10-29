@@ -704,3 +704,44 @@ detachable-subtype-of-listed-type-is-listed {X} A δ A-is-prop-valued (xs , m)
   γ (x , a) = filter'-member← A δ A-is-prop-valued x xs a (m x)
 
 \end{code}
+
+Added by Martin Escardo and Paulo Oliva 29th October 2025.
+
+Dependent version of `map`.
+
+\begin{code}
+
+dmap : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → ((x : X) → Y x) → List X → List (Σ x ꞉ X , Y x)
+dmap f []       = []
+dmap f (x ∷ xs) = (x , f x) ∷ dmap f xs
+
+\end{code}
+
+We now discuss the non-dependent special case of the above.
+
+\begin{code}
+
+module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) where
+
+ pr₁-of-dmap : (xs : List X)
+             → xs ＝ map pr₁ (dmap f xs)
+ pr₁-of-dmap [] = refl
+ pr₁-of-dmap (x ∷ xs) = ap (x ∷_) (pr₁-of-dmap xs)
+
+ map-from-dmap : (xs : List X)
+               → map f xs ＝ map pr₂ (dmap f xs)
+ map-from-dmap [] = refl
+ map-from-dmap (x ∷ xs) = ap (f x ∷_) (map-from-dmap xs)
+
+\end{code}
+
+In the non-dependent case, we can define dmap from map.
+
+\begin{code}
+
+ dmap-from-map : (xs : List X)
+               → dmap f xs ＝ map (λ x → x , f x) xs
+ dmap-from-map [] = refl
+ dmap-from-map (x ∷ xs) = ap ((x , f x) ∷_) (dmap-from-map xs)
+
+\end{code}
