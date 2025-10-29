@@ -211,6 +211,15 @@ module _ {X : Type}
          {Xf : X → 𝑻}
        where
 
+\end{code}
+
+The following is like `map (x ::_)`, except that this doesn't type
+check, because the function `x ::_` on paths is dependent.
+
+TODO. Can we define a dependent version of map and use it instead?
+
+\begin{code}
+
  prepend : (x : X)
          → List (Path (Xf x))
          → List (Path (X ∷ Xf))
@@ -225,6 +234,12 @@ module _ {X : Type}
  member-of-prepend→ x xs (_ ∷ xss) in-head = in-head
  member-of-prepend→ x xs (_ ∷ xss) (in-tail m) =
   in-tail (member-of-prepend→ x xs xss m)
+
+\end{code}
+
+Again, map can't be used because of dependency.
+
+\begin{code}
 
  map-prepend : ((x : X) → List (Path (Xf x)))
              → List X
@@ -277,25 +292,25 @@ module _ {X : Type}
         (prepend y (f y))
         IH
 
-list-of-paths : (Xt : 𝑻)
-                (lt : structure listed Xt)
-              → List (Path Xt)
-list-of-paths [] ⟨⟩ = [ ⟨⟩ ]
-list-of-paths (X ∷ Xf) ((xs , m) , lf) =
- concat-map-prepend (λ x → list-of-paths (Xf x) (lf x)) xs
+list-of-all-paths : (Xt : 𝑻)
+                    (lt : structure listed Xt)
+                  → List (Path Xt)
+list-of-all-paths [] ⟨⟩ = [ ⟨⟩ ]
+list-of-all-paths (X ∷ Xf) ((xs , m) , lf) =
+ concat-map-prepend (λ x → list-of-all-paths (Xf x) (lf x)) xs
 
-path-is-member-of-list-of-paths : (Xt : 𝑻)
-                                  (lt : structure listed Xt)
-                                  (xs : Path Xt)
-                                → member xs (list-of-paths Xt lt)
-path-is-member-of-list-of-paths [] ⟨⟩ ⟨⟩ = in-head
-path-is-member-of-list-of-paths (X ∷ Xf) ((ys , m) , lf) (x :: xs) = I
+path-is-member-of-list-of-all-paths : (Xt : 𝑻)
+                                      (lt : structure listed Xt)
+                                      (xs : Path Xt)
+                                    → member xs (list-of-all-paths Xt lt)
+path-is-member-of-list-of-all-paths [] ⟨⟩ ⟨⟩ = in-head
+path-is-member-of-list-of-all-paths (X ∷ Xf) ((ys , m) , lf) (x :: xs) = I
  where
   f : (x : X) → List (Path (Xf x))
-  f x = list-of-paths (Xf x) (lf x)
+  f x = list-of-all-paths (Xf x) (lf x)
 
   IH : member xs (f x)
-  IH = path-is-member-of-list-of-paths (Xf x) (lf x) xs
+  IH = path-is-member-of-list-of-all-paths (Xf x) (lf x) xs
 
   I : member (x :: xs) (concat-map-prepend f ys)
   I = member-of-concat-map-prepend→ f x xs ys (m x) IH

@@ -688,7 +688,7 @@ optimal-plays' {Xt} q ϕt Xt-is-listed = xss
   Xt' = prune Xt q ϕt
 
   xss' : List (Path (prune Xt q ϕt))
-  xss' = list-of-paths Xt' (prune-is-listed Xt q ϕt Xt-is-listed)
+  xss' = list-of-all-paths Xt' (prune-is-listed Xt q ϕt Xt-is-listed)
 
   xss : List (Path Xt)
   xss = lmap (inclusion ϕt q) xss'
@@ -712,7 +712,7 @@ module _ (Xt : 𝑻)
 
  private
   xss' : List (Path (prune Xt q ϕt))
-  xss' = list-of-paths (prune Xt q ϕt) (prune-is-listed Xt q ϕt lt)
+  xss' = list-of-all-paths (prune Xt q ϕt) (prune-is-listed Xt q ϕt lt)
 
  main-lemma'→ : member xs (optimal-plays' q ϕt lt)
               → is-optimal-play ϕt q xs
@@ -721,7 +721,8 @@ module _ (Xt : 𝑻)
    have-m : member xs (lmap (inclusion ϕt q) xss')
    have-m = m
 
-   σ : Σ xos ꞉ Path (prune Xt q ϕt) , member xos xss' × (inclusion ϕt q xos ＝ xs)
+   σ : Σ xos ꞉ Path (prune Xt q ϕt) , member xos xss'
+                                    × (inclusion ϕt q xos ＝ xs)
    σ = member-of-map← (inclusion ϕt q) xs xss' m
 
    I : type-of σ → is-optimal-play ϕt q xs
@@ -738,7 +739,7 @@ module _ (Xt : 𝑻)
    I (xos , e) = I₂
     where
      I₀ : member xos xss'
-     I₀ = path-is-member-of-list-of-paths
+     I₀ = path-is-member-of-list-of-all-paths
            (prune Xt q ϕt)
            (prune-is-listed Xt q ϕt lt)
            xos
