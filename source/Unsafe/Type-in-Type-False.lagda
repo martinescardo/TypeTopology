@@ -42,7 +42,7 @@ module coquand where
    A = e R R
 
    r : A → (A → X)
-   r ((.R , f) , refl) = f
+   r ((R , f) , refl) = f
 
    s : (A → X) → A
    s f = (R , f) , refl
