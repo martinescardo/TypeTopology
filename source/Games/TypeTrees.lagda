@@ -223,10 +223,10 @@ list-of-all-paths : (Xt : 𝑻)
                     (lt : structure listed Xt)
                   → List (Path Xt)
 list-of-all-paths [] ⟨⟩ = [ ⟨⟩ ]
-list-of-all-paths (X ∷ Xf) ((xs , m) , lf) = List-ext (ν IH) xs
+list-of-all-paths (X ∷ Xf) ((xs , m) , lf) = List-ext (ν f) xs
  where
-  IH : (x : X) → List (Path (Xf x))
-  IH x = list-of-all-paths (Xf x) (lf x)
+  f : (x : X) → List (Path (Xf x))
+  f x = list-of-all-paths (Xf x) (lf x)
 
 path-is-member-of-list-of-all-paths : (Xt : 𝑻)
                                       (lt : structure listed Xt)
