@@ -11,7 +11,7 @@ Definitions of:
 open import MLTT.Spartan hiding (_∘_ ; id)
 
 open import UF.Base
-open import UF.Equiv
+open import UF.Equiv hiding (_≅_)
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
@@ -66,37 +66,13 @@ example, we can write f ∘ g, to mean _∘_ P f g, for a precategory P.
 
 \begin{code}
 
+open Precategory {{...}} public hiding (obj ; id)
+
 obj : (P : Precategory 𝓤 𝓥) → 𝓤 ̇
 obj = Precategory.obj
 
-hom : {{ P : Precategory 𝓤 𝓥 }} (a b : obj P) → 𝓥 ̇ 
-hom {{P}} = Precategory.hom P
-
-_∘_ : {{ P : Precategory 𝓤 𝓥 }} {a b c : obj P} → hom b c → hom a b → hom a c
-_∘_ {{P}} = Precategory._∘_ P
-
 id : {{ P : Precategory 𝓤 𝓥 }} {a : obj P} → hom a a
 id {{P}} {a} = Precategory.id P a
-
-hom-is-set : {{ P : Precategory 𝓤 𝓥 }} {a b : obj P} → is-set (hom a b)
-hom-is-set {{P}} = Precategory.hom-is-set P
-
-left-id
- : {{ P : Precategory 𝓤 𝓥 }} {a b : obj P} → (f : hom a b) → f ＝ id ∘ f
-left-id {{P}} = Precategory.left-id P
-
-right-id
- : {{ P : Precategory 𝓤 𝓥 }} {a b : obj P} → (f : hom a b) → f ＝ f ∘ id
-right-id {{P}} = Precategory.right-id P
-
-assoc
- : {{ P : Precategory 𝓤 𝓥 }}
-   {a b c d : obj P}
-   {f : hom a b}
-   {g : hom b c}
-   {h : hom c d}
- → h ∘ (g ∘ f) ＝ (h ∘ g) ∘ f
-assoc {{P}} = Precategory.assoc P
 
 \end{code}
 
@@ -115,8 +91,8 @@ record Is-Iso {{ P : Precategory 𝓤 𝓥 }} {a b : obj P} (f : hom a b) : 𝓥
   l-inverse : inv ∘ f ＝ id
   r-inverse : f ∘ inv ＝ id
 
-Cat-Iso : {{ P : Precategory 𝓤 𝓥 }} (a b : obj P) → 𝓥 ̇
-Cat-Iso a b = Σ f ꞉ hom a b , Is-Iso f
+_≅_ : {{ P : Precategory 𝓤 𝓥 }} (a b : obj P) → 𝓥 ̇
+a ≅ b = Σ f ꞉ hom a b , Is-Iso f
 
 \end{code}
 
@@ -178,7 +154,7 @@ This follows from the fact that being an isomorphism is a proposition.
 isomorphism-is-set
  : {{P : Precategory 𝓤 𝓥}}
    {a b : obj P}
- → is-set (Cat-Iso a b)
+ → is-set (a ≅ b)
 isomorphism-is-set = Σ-is-set hom-is-set
                               (λ f → props-are-sets (specific-iso-is-prop f))
 
@@ -193,7 +169,7 @@ simple as we can form an isomophism with the identity homomorphism.
 
 \begin{code}
 
-id-to-iso : {{ A : Precategory 𝓤 𝓥 }} (a b : obj A) → a ＝ b → Cat-Iso a b
+id-to-iso : {{ A : Precategory 𝓤 𝓥 }} (a b : obj A) → a ＝ b → a ≅ b
 id-to-iso a b refl = id , record { inv = id ;
                                    l-inverse = id-squared-is-id ;
                                    r-inverse = id-squared-is-id }
@@ -211,7 +187,7 @@ category to be a precategory where equality is exactly isomorphism.
 record Category (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇  where
  field
   precategory : Precategory 𝓤 𝓥
-  id-equiv-iso : (a b : obj precategory) → (a ＝ b) ≃ Cat-Iso ⦃ precategory ⦄ a b
+  id-equiv-iso : (a b : obj precategory) → (a ＝ b) ≃ (_≅_ ⦃ precategory ⦄ a b)
 
 _ₚ : Category 𝓤 𝓥 → Precategory 𝓤 𝓥
 _ₚ = Category.precategory

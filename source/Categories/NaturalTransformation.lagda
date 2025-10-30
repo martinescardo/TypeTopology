@@ -14,11 +14,10 @@ open import Categories.Functor
 module Categories.NaturalTransformation where
 
 record NaturalTransformation
- {𝓤 𝓥 𝓦 𝓨 : Universe}
  {A : Precategory 𝓤 𝓥}
- {{B : Precategory 𝓦 𝓨}}
+ {{B : Precategory 𝓦 𝓣}}
  (F G : Functor A B)
- : (𝓤 ⊔ 𝓥 ⊔ 𝓨) ̇  where
+ : (𝓤 ⊔ 𝓥 ⊔ 𝓣) ̇  where
  field
   gamma : (a : obj A) → hom (Functor.Fobj F a) (Functor.Fobj G a)
   natural

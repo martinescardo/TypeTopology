@@ -12,8 +12,8 @@ open import Categories.Category
 
 module Categories.Functor where
 
-record Functor {𝓤 𝓥 𝓦 𝓨 : Universe} (A : Precategory 𝓤 𝓥) (B : Precategory 𝓦 𝓨)
- : (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓨) ̇  where
+record Functor (A : Precategory 𝓤 𝓥) (B : Precategory 𝓦 𝓣)
+ : (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣) ̇  where
  field
   Fobj : obj A → obj B
   Fhom : {a b : obj A} → hom {{A}} a b → hom {{B}} (Fobj a) (Fobj b)
@@ -32,8 +32,8 @@ We now define functor composition.
 
 \begin{code}
 
-_F∘_ : {𝓐 𝓑 𝓤 𝓥 𝓦 𝓨 : Universe} {{A : Precategory 𝓤 𝓥}} {{B : Precategory 𝓦 𝓨}} {{C : Precategory 𝓐 𝓑}} (G : Functor B C) (F : Functor A B) → Functor A C
-_F∘_ {{A}} {{B}} {{C}} G F = record { Fobj = fobj ; Fhom = fhom ; id-pres = id-pres' ; distrib = distrib' }
+_F∘_ : {{A : Precategory 𝓤 𝓥}} {{B : Precategory 𝓦 𝓣}} {C : Precategory 𝓤' 𝓥'} (G : Functor B C) (F : Functor A B) → Functor A C
+_F∘_ {_} {_} {_} {_} {_} {_} {{A}} {{B}} {C} G F = record { Fobj = fobj ; Fhom = fhom ; id-pres = id-pres' ; distrib = distrib' }
  where
   fobj : obj A → obj C
   fobj x = Fobj {{G}} (Fobj {{F}} x)
@@ -51,4 +51,5 @@ _F∘_ {{A}} {{B}} {{C}} G F = record { Fobj = fobj ; Fhom = fhom ; id-pres = id
   distrib' {_} {_} {_} {f} {g} = fhom ((_∘_ {{A}} g) f)                              ＝⟨ ap (Fhom {{G}}) (distrib {{F}}) ⟩
                                  Fhom {{G}} (_∘_{{B}} (Fhom {{F}} g) (Fhom {{F}} f)) ＝⟨ distrib {{G}} ⟩
                                  _∘_{{C}} (fhom g) (fhom f)                          ∎
+
 \end{code}
