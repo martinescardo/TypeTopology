@@ -23,9 +23,9 @@ syntax dependent-Id Y e y₀ y₁ = y₀ ＝⟦ Y , e ⟧ y₁
 dependent-Id-via-transport : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
                              {x₀ x₁ : X}
                              (e : x₀ ＝ x₁)
-                             (y₀ : Y x₀)
-                             (y₁ : Y x₁)
+                             {y₀ : Y x₀}
+                             {y₁ : Y x₁}
                            → (y₀ ＝⟦ Y , e ⟧ y₁) ＝ (transport Y e y₀ ＝ y₁)
-dependent-Id-via-transport Y refl y₀ y₁ = refl
+dependent-Id-via-transport Y refl = refl
 
 \end{code}
