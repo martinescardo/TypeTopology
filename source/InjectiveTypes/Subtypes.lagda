@@ -33,58 +33,77 @@ module _ (D : 𝓤 ̇ )
   s : Σ P → D
   s = pr₁
 
+ endomap-with-values-and-fixed-point-conditions : 𝓤 ⊔ 𝓥 ̇
+ endomap-with-values-and-fixed-point-conditions =
+  Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d)
+
+ canonical-embedding-has-retraction-reformulation
+  : has-retraction s ↔ endomap-with-values-and-fixed-point-conditions
+ canonical-embedding-has-retraction-reformulation = I , II
+  where
+   I : has-retraction s → endomap-with-values-and-fixed-point-conditions
+   I (r , ρ) = f , I₁ , I₂
+    where
+     f : D → D
+     f = s ∘ r
+     I₁ : (d : D) → P (s (r d))
+     I₁ d = pr₂ (r d)
+     I₂ : (d : D) → P d → s (r d) ＝ d
+     I₂ d p = ap pr₁ (ρ (d , p))
+   II : endomap-with-values-and-fixed-point-conditions → has-retraction s
+   II (f , f-I , f-II) = r , ρ
+    where
+     r : D → Σ P
+     r d = (f d , f-I d)
+     ρ : r ∘ s ∼ id
+     ρ (d , p) = to-subtype-＝ P-is-prop-valued (f-II d p)
+
+ subtype-retract-if-endomap-with-values-and-fixed-point-conditions
+  : endomap-with-values-and-fixed-point-conditions
+  → retract (Σ P) of D
+ subtype-retract-if-endomap-with-values-and-fixed-point-conditions h
+  = (pr₁ I , s , pr₂ I)
+   where
+    I : has-retraction s
+    I = rl-implication canonical-embedding-has-retraction-reformulation h
+
+ canonical-embedding-has-retraction-if-subtype-is-ainjective
+  : ainjective-type (Σ P) (𝓥 ⊔ 𝓦) 𝓣
+  → has-retraction s
+ canonical-embedding-has-retraction-if-subtype-is-ainjective {𝓦} {𝓣} Σ-ainj
+  = (retraction ρ , retract-condition ρ)
+   where
+    ρ : retract Σ P of D
+    ρ = embedding-retract' 𝓦
+         (Σ P)
+         D
+         s
+         (pr₁-is-embedding P-is-prop-valued)
+         pr₁-is-small-map
+         Σ-ainj
+
+    _ : s ＝ section ρ
+    _ = refl
+
+ ainjective-subtype-if-retract : ainjective-type D 𝓦 𝓣
+                               → retract (Σ P) of D
+                               → ainjective-type (Σ P) 𝓦 𝓣
+ ainjective-subtype-if-retract = retract-of-ainjective (Σ P) D
+
  necessary-condition-for-injectivity-of-subtype
   : ainjective-type (Σ P) (𝓥 ⊔ 𝓦) 𝓣
-  → Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d)
- necessary-condition-for-injectivity-of-subtype {𝓦} {𝓣} Σ-ainj = f , g , h
-  where
-   ρ : retract Σ P of D
-   ρ = embedding-retract' 𝓦
-        (Σ P)
-        D
-        s
-        (pr₁-is-embedding P-is-prop-valued)
-        pr₁-is-small-map
-        Σ-ainj
-
-   r : D → Σ P
-   r = retraction ρ
-
-   _ : s ＝ section ρ
-   _ = refl
-
-   rs : r ∘ s ∼ id
-   rs = retract-condition ρ
-
-   f : D → D
-   f = s ∘ r
-
-   g : (d : D) → P (f d)
-   g d = pr₂ (r d)
-
-   fg : (d : D) (p : P d) → (f d , g d) ＝ (d , p)
-   fg d p = f d , g d     ＝⟨ refl ⟩
-            r (s (d , p)) ＝⟨ rs (d , p) ⟩
-            (d , p)       ∎
-
-   h : (d : D) → P d → f d ＝ d
-   h d p = ap s (fg d p)
+  → endomap-with-values-and-fixed-point-conditions
+ necessary-condition-for-injectivity-of-subtype {𝓦} {𝓣} =
+    lr-implication canonical-embedding-has-retraction-reformulation
+  ∘ canonical-embedding-has-retraction-if-subtype-is-ainjective {𝓦} {𝓣}
 
  sufficient-condition-for-injectivity-of-subtype
   : ainjective-type D 𝓦 𝓣
-  →  (Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d))
+  → endomap-with-values-and-fixed-point-conditions
   → ainjective-type (Σ P) 𝓦 𝓣
- sufficient-condition-for-injectivity-of-subtype D-ainj (f , g , h)
-  = retract-of-ainjective (Σ P) D D-ainj (r , s , rs)
-  where
-   r : D → Σ P
-   r d = f d , g d
-
-   rs : r ∘ s ∼ id
-   rs (d , p) = r (s (d , p)) ＝⟨ refl ⟩
-                r d           ＝⟨ refl ⟩
-                f d , g d     ＝⟨ to-subtype-＝ P-is-prop-valued (h d p) ⟩
-                d , p         ∎
+ sufficient-condition-for-injectivity-of-subtype D-ainj
+  = ainjective-subtype-if-retract D-ainj
+    ∘ subtype-retract-if-endomap-with-values-and-fixed-point-conditions
 
 \end{code}
 
@@ -117,7 +136,7 @@ module _ (D : 𝓤 ̇ )
 
  necessary-and-sufficient-condition-for-injectivity-of-subtype
   : ainjective-type (Σ P) (𝓥 ⊔ 𝓦) 𝓣
-  ↔ (Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d))
+  ↔ endomap-with-values-and-fixed-point-conditions D P P-is-prop-valued
  necessary-and-sufficient-condition-for-injectivity-of-subtype
   = necessary-condition-for-injectivity-of-subtype D P P-is-prop-valued {𝓦} ,
     sufficient-condition-for-injectivity-of-subtype D P P-is-prop-valued D-ainj
@@ -137,7 +156,7 @@ module _ (D : 𝓤 ⁺ ̇ )
 
  necessary-and-sufficient-condition-for-injectivity-of-subtype-single-universe
   : ainjective-type (Σ P) 𝓤 𝓤
-  ↔ (Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d))
+  ↔ endomap-with-values-and-fixed-point-conditions D P P-is-prop-valued
  necessary-and-sufficient-condition-for-injectivity-of-subtype-single-universe
   = necessary-and-sufficient-condition-for-injectivity-of-subtype
      {𝓤 ⁺} {𝓤} {𝓤} {𝓤}
