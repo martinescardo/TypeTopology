@@ -14,7 +14,7 @@ sequential colimits, it is equivalent to a small type by the results of [1].
     The real projective spaces in homotopy type theory
     LICS'17: Proceedings of the 32nd Annual ACM/IEEE Symposium on Logic in
     Computer Science, Article No.: 86, pp. 1—8, 2017
-    https://doi.org/10.5555/3329995.3330081
+    https://doi.org/10.1109/lics.2017.8005146
     https://arxiv.org/abs/1704.05770
 
 \begin{code}

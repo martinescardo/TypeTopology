@@ -610,20 +610,42 @@ for the lifting monad uses univalence.
 
 \begin{code}
 
+is-𝓛-alg_freely-generated-by_with-insertion-of-generators_eliminating-at_
+ : {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F)
+   (X : 𝓥 ̇ )
+   (ι : X → F)
+   (𝓦 : Universe)
+ → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
+is-𝓛-alg 𝓕 freely-generated-by X with-insertion-of-generators ι eliminating-at 𝓦
+ = {A : 𝓦 ̇ } (i : is-set A) (𝓐 : 𝓛-alg A) (f : X → A)
+      → ∃! (f̅ , _) ꞉ Hom 𝓕 𝓐 , f̅ ∘ ι ∼ f
+
+module _ {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F)
+         (X : 𝓥 ̇ )
+         (ι : X → F)
+         (𝓦 : Universe)
+         (𝓕-is-free : is-𝓛-alg 𝓕 freely-generated-by X
+                                  with-insertion-of-generators ι
+                                  eliminating-at 𝓦)
+         {A : 𝓦 ̇ } (i : is-set A) (𝓐 : 𝓛-alg A) (f : X → A)
+       where
+
+ unique-hom : F → A
+ unique-hom = pr₁ (∃!-witness (𝓕-is-free i 𝓐 f))
+
+ unique-hom-is-hom : is-hom 𝓕 𝓐 unique-hom
+ unique-hom-is-hom = pr₂ (∃!-witness (𝓕-is-free i 𝓐 f))
+
+ unique-hom-is-extesion : unique-hom ∘ ι ∼ f
+ unique-hom-is-extesion = ∃!-is-witness (𝓕-is-free i 𝓐 f)
+
+
 module free-algebras-in-the-category-of-sets
         (pe : Prop-Ext)
         (fe : Fun-Ext)
+        (X : 𝓣 ̇ )
+        (X-is-set : is-set X)
        where
-
- is-𝓛-alg_freely-generated-by_with-insertion-of-generators_eliminating-at_
-  : {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F)
-    (X : 𝓥 ̇ )
-    (ι : X → ⟨ 𝓕 ⟩)
-    (𝓦 : Universe)
-  → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
- is-𝓛-alg 𝓕 freely-generated-by X with-insertion-of-generators ι eliminating-at 𝓦
-  = {A : 𝓦 ̇ } (i : is-set A) (𝓐 : 𝓛-alg A) (f : X → A)
-       → ∃! (f̅ , _) ꞉ Hom 𝓕 𝓐 , f̅ ∘ ι ∼ f
 
 \end{code}
 
@@ -634,141 +656,136 @@ We now construct the canonical free algebra.
 
 \begin{code}
 
+ open import Lifting.UnivalentWildCategory 𝓣 X
+ open import Lifting.IdentityViaSIP 𝓣
+
+ ⨆ : extension-op (𝓛 X)
+ ⨆ {P} P-is-prop φ =
+  (Σ p ꞉ P , is-defined (φ p)) ,
+  (λ (p , d) → value (φ p) d) ,
+  Σ-is-prop P-is-prop (λ p → being-defined-is-prop (φ p))
+
+ free : 𝓛-alg (𝓛 X)
+ free = ⨆ , l₀ , l₁
+  where
+   l₀ : 𝓛-alg-Law₀ ⨆
+   l₀ l@(P , φ , P-is-prop) =
+    ⊑-anti-lemma pe fe fe
+     ((λ (⋆ , p) → p) , (λ _ → refl))
+     (λ p → ⋆ , p)
+
+   l₁ : 𝓛-alg-Law₁ ⨆
+   l₁ P Q i j f =
+    ⊑-anti-lemma pe fe fe
+     ((λ ((p , q) , d) → (p , (q , d))) , (λ _ → refl))
+     (λ (p , (q , d)) → ((p , q), d))
+
+ private
+  𝓕 = free
+
  module _
-         (X : 𝓣 ̇ )
-         (X-is-set : is-set X)
+          {A : 𝓤 ̇ }
+          (A-is-set : is-set A)
+          (𝓐@(∐ , l₀ , l₁) : 𝓛-alg A)
+          (f : X → A)
         where
 
-  open import Lifting.UnivalentWildCategory 𝓣 X
-  open import Lifting.IdentityViaSIP 𝓣
-
-  ⨆ : extension-op (𝓛 X)
-  ⨆ {P} P-is-prop φ =
-   (Σ p ꞉ P , is-defined (φ p)) ,
-   (λ (p , d) → value (φ p) d) ,
-   Σ-is-prop P-is-prop (λ p → being-defined-is-prop (φ p))
-
-  free : 𝓛-alg (𝓛 X)
-  free = ⨆ , l₀ , l₁
-   where
-    l₀ : 𝓛-alg-Law₀ ⨆
-    l₀ l@(P , φ , P-is-prop) =
-     ⊑-anti-lemma pe fe fe
-      ((λ (⋆ , p) → p) , (λ _ → refl))
-      (λ p → ⋆ , p)
-
-    l₁ : 𝓛-alg-Law₁ ⨆
-    l₁ P Q i j f =
-     ⊑-anti-lemma pe fe fe
-      ((λ ((p , q) , d) → (p , (q , d))) , (λ _ → refl))
-      (λ (p , (q , d)) → ((p , q), d))
+  𝓛-extension : (𝓛 X → A)
+  𝓛-extension (P , φ , P-is-prop) = ∐ P-is-prop (f ∘ φ)
 
   private
-   𝓕 = free
+   f̅ = 𝓛-extension
 
-  module _
-           {A : 𝓤 ̇ }
-           (A-is-set : is-set A)
-           (𝓐@(∐ , l₀ , l₁) : 𝓛-alg A)
-           (f : X → A)
-         where
+  𝓛-extension-is-hom : is-hom 𝓕 𝓐 f̅
+  𝓛-extension-is-hom P i φ =
+   l₁ P
+      (λ p → is-defined (φ p))
+      i
+      (λ p → being-defined-is-prop (φ p))
+      (λ (p , d) → f (value (φ p) d))
 
-   𝓛-extension : (𝓛 X → A)
-   𝓛-extension (P , φ , P-is-prop) = ∐ P-is-prop (f ∘ φ)
+  𝓛-extension-extends : f̅ ∘ η ∼ f
+  𝓛-extension-extends x = l₀ (f x)
 
-   private
-    f̅ = 𝓛-extension
+  open import UF.Equiv-FunExt
 
-   𝓛-extension-is-hom : is-hom 𝓕 𝓐 f̅
-   𝓛-extension-is-hom P i φ =
-    l₁ P
-       (λ p → is-defined (φ p))
-       i
-       (λ p → being-defined-is-prop (φ p))
-       (λ (p , d) → f (value (φ p) d))
+  η-fib : 𝓛 X → 𝓣 ̇
+  η-fib l = Σ x ꞉ X , η x ⋍· l
 
-   𝓛-extension-extends : f̅ ∘ η ∼ f
-   𝓛-extension-extends x = l₀ (f x)
+  η-fib-point : (l : 𝓛 X) → η-fib l → X
+  η-fib-point l = pr₁
 
-   open import UF.Equiv-FunExt
+  η-fib-⋍· : (l : 𝓛 X) (ϕ : η-fib l) → η (η-fib-point l ϕ) ⋍· l
+  η-fib-⋍· l = pr₂
 
-   η-fib : 𝓛 X → 𝓣 ̇
-   η-fib l = Σ x ꞉ X , η x ⋍· l
+  η-fib-is-prop : (l : 𝓛 X) → is-prop (η-fib l)
+  η-fib-is-prop l@(P , φ , i) (x , a) (x' , a') = III
+   where
+    I : η x ⋍· η x'
+    I = ⋍·-trans (η x) l (η x') a (⋍·-sym (η x') l a')
 
-   η-fib-point : (l : 𝓛 X) → η-fib l → X
-   η-fib-point l = pr₁
+    II : η x ⋍· η x' → x ＝ x'
+    II (_ , e) = e ⋆
 
-   η-fib-⋍· : (l : 𝓛 X) (ϕ : η-fib l) → η (η-fib-point l ϕ) ⋍· l
-   η-fib-⋍· l = pr₂
+    III : (x , a) ＝ (x' , a')
+    III = to-subtype-＝
+           (λ x → Σ-is-prop
+                   (equivalences-with-props-are-props fe P i 𝟙)
+                   (λ e → Π-is-prop fe (λ ⋆ → X-is-set)))
+           (II I)
 
-   η-fib-is-prop : (l : 𝓛 X) → is-prop (η-fib l)
-   η-fib-is-prop l@(P , φ , i) (x , a) (x' , a') = III
-    where
-     I : η x ⋍· η x'
-     I = ⋍·-trans (η x) l (η x') a (⋍·-sym (η x') l a')
+  η-fib-lemma : (l@(P , φ , i) : 𝓛 X)
+              → l ＝ ⨆ (η-fib-is-prop l) (η ∘ η-fib-point l)
+  η-fib-lemma (P , φ , i) =
+   ⊑-anti-lemma pe fe fe
+    ((λ p → (φ p ,
+             logically-equivalent-props-are-equivalent
+               𝟙-is-prop
+               i
+               (λ ⋆ → p)
+               (λ p → ⋆) ,
+             (λ _ → refl)) ,
+             ⋆) ,
+     (λ _ → refl))
+    λ ((_ , e , _) , ⋆) → ⌜ e ⌝ ⋆
 
-     II : η x ⋍· η x' → x ＝ x'
-     II (_ , e) = e ⋆
+  private
+   H : 𝓣 ⁺ ⊔ 𝓤 ̇
+   H = Σ (h , _) ꞉ Hom 𝓕 𝓐 , h ∘ η ∼ f
 
-     III : (x , a) ＝ (x' , a')
-     III = to-subtype-＝
-            (λ x → Σ-is-prop
-                    (equivalences-with-props-are-props fe P i 𝟙)
-                    (λ e → Π-is-prop fe (λ ⋆ → X-is-set)))
-            (II I)
+  hom-agreement
+   : (((h , _) , _) ((h' , _) , _) : H)
+   → h ∼ h'
+  hom-agreement
+   ((h , i) , e) ((h' , i') , e') l@(P , φ , P-is-prop)
+   = h l                          ＝⟨ I ⟩
+     h (⨆ j (η ∘ η-fib-point l))  ＝⟨ II ⟩
+     ∐ j (h ∘ η ∘ η-fib-point l)  ＝⟨ III ⟩
+     ∐ j (h' ∘ η ∘ η-fib-point l) ＝⟨ II' ⟩
+     h' (⨆ j (η ∘ η-fib-point l)) ＝⟨ I' ⟩
+     h' l                         ∎
+     where
+      j = η-fib-is-prop l
 
-   η-fib-lemma : (l@(P , φ , i) : 𝓛 X)
-               → l ＝ ⨆ (η-fib-is-prop l) (η ∘ η-fib-point l)
-   η-fib-lemma (P , φ , i) =
-    ⊑-anti-lemma pe fe fe
-     ((λ p → (φ p ,
-              logically-equivalent-props-are-equivalent
-                𝟙-is-prop
-                i
-                (λ ⋆ → p)
-                (λ p → ⋆) ,
-              (λ _ → refl)) ,
-              ⋆) ,
-      (λ _ → refl))
-     λ ((_ , e , _) , ⋆) → ⌜ e ⌝ ⋆
+      I   = ap h (η-fib-lemma l)
+      II  = i (η-fib l) j (η ∘ η-fib-point l)
+      III = ap (λ - → ∐ j (- ∘ η-fib-point l)) (dfunext fe (λ x → e x ∙ e' x ⁻¹))
+      II' = (i' (η-fib l) j (η ∘ η-fib-point l))⁻¹
+      I'  = ap h' ((η-fib-lemma l)⁻¹)
 
-   private
-    H : 𝓣 ⁺ ⊔ 𝓤 ̇
-    H = Σ (h , _) ꞉ Hom 𝓕 𝓐 , h ∘ η ∼ f
+  homomorphic-𝓛-extensions-form-a-prop : is-prop H
+  homomorphic-𝓛-extensions-form-a-prop he he'
+   = to-subtype-＝
+      (λ h → Π-is-prop fe (λ x → A-is-set))
+      (to-subtype-＝
+        (being-hom-is-prop fe 𝓕 𝓐 A-is-set)
+        (dfunext fe (hom-agreement he he')))
 
-   hom-agreement
-    : (((h , _) , _) ((h' , _) , _) : H)
-    → h ∼ h'
-   hom-agreement
-    ((h , i) , e) ((h' , i') , e') l@(P , φ , P-is-prop)
-    = h l                          ＝⟨ I ⟩
-      h (⨆ j (η ∘ η-fib-point l))  ＝⟨ II ⟩
-      ∐ j (h ∘ η ∘ η-fib-point l)  ＝⟨ III ⟩
-      ∐ j (h' ∘ η ∘ η-fib-point l) ＝⟨ II' ⟩
-      h' (⨆ j (η ∘ η-fib-point l)) ＝⟨ I' ⟩
-      h' l                         ∎
-      where
-       j = η-fib-is-prop l
-
-       I   = ap h (η-fib-lemma l)
-       II  = i (η-fib l) j (η ∘ η-fib-point l)
-       III = ap (λ - → ∐ j (- ∘ η-fib-point l)) (dfunext fe (λ x → e x ∙ e' x ⁻¹))
-       II' = (i' (η-fib l) j (η ∘ η-fib-point l))⁻¹
-       I'  = ap h' ((η-fib-lemma l)⁻¹)
-
-   homomorphic-𝓛-extensions-form-a-prop : is-prop H
-   homomorphic-𝓛-extensions-form-a-prop he he'
-    = to-subtype-＝
-       (λ h → Π-is-prop fe (λ x → A-is-set))
-       (to-subtype-＝
-         (being-hom-is-prop fe 𝓕 𝓐 A-is-set)
-         (dfunext fe (hom-agreement he he')))
-
-   free-algebra-universal-property : is-singleton H
-   free-algebra-universal-property
-    = pointed-props-are-singletons
-       ((f̅ , 𝓛-extension-is-hom) , 𝓛-extension-extends)
-       homomorphic-𝓛-extensions-form-a-prop
+  free-algebra-universal-property : is-singleton H
+  free-algebra-universal-property
+   = pointed-props-are-singletons
+      ((f̅ , 𝓛-extension-is-hom) , 𝓛-extension-extends)
+      homomorphic-𝓛-extensions-form-a-prop
 
 \end{code}
 
@@ -778,12 +795,10 @@ universe:
 
 \begin{code}
 
- _ : (X : 𝓣 ̇ ) (i : is-set X)
-     {𝓤 : Universe}
-   → is-𝓛-alg (free X i)
-     freely-generated-by X
-     with-insertion-of-generators η
-     eliminating-at 𝓤
+ _ : {𝓤 : Universe}
+   → is-𝓛-alg free freely-generated-by X
+                   with-insertion-of-generators η
+                   eliminating-at 𝓤
  _ = free-algebra-universal-property
 
 \end{code}

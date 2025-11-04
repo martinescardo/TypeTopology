@@ -16,7 +16,7 @@ range over such trees.
 
 module Games.TypeTrees where
 
-open import MonadOnTypes.Monad
+open import MonadOnTypes.Monad hiding (map)
 open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Subsingletons
@@ -199,105 +199,68 @@ private
 \end{code}
 
 Moved here 22 Oct 2025 from code from 8th October 2025 in the file
-OptimalPlays, with some additions.
-
-Utility functions for lists of paths.
+OptimalPlays, with a simplification on 29th October.
 
 \begin{code}
 
 open import MLTT.List
 
-module _ {X : Type}
-         {Xf : X → 𝑻}
-       where
+private
+ ν : {X : Type}
+     {Xf : X → 𝑻}
+   → ((x : X) → List (Path (Xf x)))
+   → (X → List (Path (X ∷ Xf)))
+ ν f x = map (x ::_) (f x)
 
- prepend : (x : X)
-         → List (Path (Xf x))
-         → List (Path (X ∷ Xf))
- prepend x [] = []
- prepend x (xs ∷ xss) = (x :: xs) ∷ prepend x xss
+\end{code}
 
- member-of-prepend→ : (x : X)
-                      (xs : Path (Xf x))
-                      (xss : List (Path (Xf x)))
-                    → member xs xss
-                    → member (x :: xs) (prepend x xss)
- member-of-prepend→ x xs (_ ∷ xss) in-head = in-head
- member-of-prepend→ x xs (_ ∷ xss) (in-tail m) =
-  in-tail (member-of-prepend→ x xs xss m)
+Notice that the above function ν transforms a dependent function into
+a non-dependent one.
 
- map-prepend : ((x : X) → List (Path (Xf x)))
-             → List X
-             → List (List (Path (X ∷ Xf)))
- map-prepend f [] = []
- map-prepend f (x ∷ xs) = prepend x (f x) ∷ map-prepend f xs
+\begin{code}
 
- member-of-map-prepend→ : (f : (x : X) → List (Path (Xf x)))
-                          (xs : List X)
-                          (x : X)
-                        → member x xs
-                        → member (prepend x (f x)) (map-prepend f xs)
- member-of-map-prepend→ f (x₀ ∷ xs) x in-head = in-head
- member-of-map-prepend→ f (x₀ ∷ xs) x (in-tail m) =
-  in-tail (member-of-map-prepend→ f xs x m)
-
- concat-map-prepend : ((x : X) → List (Path (Xf x)))
-                    → List X
-                    → List (Path (X ∷ Xf))
- concat-map-prepend f [] = []
- concat-map-prepend f (x ∷ xs) = prepend x (f x) ++ concat-map-prepend f xs
-
- member-of-concat-map-prepend→ : (f : (x : X) → List (Path (Xf x)))
-                                 (x : X)
-                                 (xs : Path (Xf x))
-                                 (ys : List X)
-                               → member x ys
-                               → member xs (f x)
-                               → member (x :: xs) (concat-map-prepend f ys)
- member-of-concat-map-prepend→ f x xs (y ∷ ys) in-head n = II
-  where
-   I : member (x :: xs) (prepend x (f x))
-   I = member-of-prepend→ x xs (f x) n
-
-   II : member (x :: xs) (prepend x (f x) ++ concat-map-prepend f ys)
-   II = right-concatenation-preserves-membership
-         (x :: xs)
-         (prepend x (f x))
-         (concat-map-prepend f ys)
-         I
- member-of-concat-map-prepend→ f x xs (y ∷ ys) (in-tail m) n = I
-  where
-   IH : member (x :: xs) (concat-map-prepend f ys)
-   IH = member-of-concat-map-prepend→ f x xs ys m n
-
-   I : member (x :: xs) (prepend y (f y) ++ concat-map-prepend f ys)
-   I = left-concatenation-preserves-membership
-        (x :: xs)
-        (concat-map-prepend f ys)
-        (prepend y (f y))
-        IH
-
-list-of-paths : (Xt : 𝑻)
-                (lt : structure listed Xt)
-              → List (Path Xt)
-list-of-paths [] ⟨⟩ = [ ⟨⟩ ]
-list-of-paths (X ∷ Xf) ((xs , m) , lf) =
- concat-map-prepend (λ x → list-of-paths (Xf x) (lf x)) xs
-
-path-is-member-of-list-of-paths : (Xt : 𝑻)
-                                  (lt : structure listed Xt)
-                                  (xs : Path Xt)
-                                → member xs (list-of-paths Xt lt)
-path-is-member-of-list-of-paths [] ⟨⟩ ⟨⟩ = in-head
-path-is-member-of-list-of-paths (X ∷ Xf) ((ys , m) , lf) (x :: xs) = I
+list-of-all-paths : (Xt : 𝑻)
+                    (lt : structure listed Xt)
+                  → List (Path Xt)
+list-of-all-paths [] ⟨⟩ = [ ⟨⟩ ]
+list-of-all-paths (X ∷ Xf) ((xs , m) , lf) = List-ext (ν f) xs
  where
   f : (x : X) → List (Path (Xf x))
-  f x = list-of-paths (Xf x) (lf x)
+  f x = list-of-all-paths (Xf x) (lf x)
+
+path-is-member-of-list-of-all-paths : (Xt : 𝑻)
+                                      (lt : structure listed Xt)
+                                      (xs : Path Xt)
+                                    → member xs (list-of-all-paths Xt lt)
+path-is-member-of-list-of-all-paths [] ⟨⟩ ⟨⟩ = in-head
+path-is-member-of-list-of-all-paths (X ∷ Xf) ((ys , m) , lf) (x :: xs) = III
+ where
+  f : (x : X) → List (Path (Xf x))
+  f x = list-of-all-paths (Xf x) (lf x)
 
   IH : member xs (f x)
-  IH = path-is-member-of-list-of-paths (Xf x) (lf x) xs
+  IH = path-is-member-of-list-of-all-paths (Xf x) (lf x) xs
 
-  I : member (x :: xs) (concat-map-prepend f ys)
-  I = member-of-concat-map-prepend→ f x xs ys (m x) IH
+  I : member  (x :: xs) (ν f x)
+  I = member-of-map→ (x ::_) (f x) xs IH
+
+  II : member (ν f x) (map (ν f) ys)
+  II = member-of-map→ (ν f) ys x (m x)
+
+  III : member (x :: xs) (List-ext (ν f) ys)
+  III = member-of-concat→ (x :: xs) (map (ν f) ys) (ν f x) II I
+
+\end{code}
+
+We are not currently using pmap, but we keep it for the record:
+
+\begin{code}
+
+pmap  : {X : Type}
+        {Xf : X → 𝑻}
+      → ((x : X) → Path (Xf x))
+      → List X
+      → List (Path (X ∷ Xf))
+pmap = dmap
 
 \end{code}

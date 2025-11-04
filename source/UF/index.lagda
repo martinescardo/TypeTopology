@@ -14,6 +14,7 @@ import UF.Connected
 import UF.ConnectedTypes                    -- by [2]
 import UF.CumulativeHierarchy               -- by [1]
 import UF.CumulativeHierarchy-LocallySmall  -- by [1]
+import UF.DependentEquality
 import UF.DiscreteAndSeparated
 import UF.Embeddings
 import UF.Equiv

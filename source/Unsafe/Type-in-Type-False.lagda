@@ -9,8 +9,8 @@ Part 1 (11th October 2018) is based on a well-known argument,
  https://pdfs.semanticscholar.org/f2f3/30b27f1d7ca99c2550f96581a4400c209ef8.pdf
 
 (see also http://www.cs.nott.ac.uk/~psztxa/g53cfr/l20.html/l20.html),
-but phrased in terms of LFPT. See also the module See the module
-LawvereFPT for a formulation and proof that doesn't assume
+but phrased in terms of LFPT (Lawvere's fixed point theorem). See also
+the module LawvereFPT for a formulation and proof that doesn't assume
 type-in-type.
 
 Part 2 (28th September 2018) is based on a recent argument by Ingo
@@ -43,7 +43,7 @@ module coquand where
    A = e R R
 
    r : A → (A → X)
-   r ((.R , f) , refl) = f
+   r ((R , f) , refl) = f
 
    s : (A → X) → A
    s f = (R , f) , refl

@@ -2,6 +2,8 @@ Brendan Hart 2019-2020
 
 We define PCF types and terms, substitution as in PLFA, and the big step semantics.
 
+https://plfa.github.io/
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -66,9 +68,9 @@ data PCF : {n : ℕ} (Γ : Context n) (σ : type) → 𝓤₀ ̇ where
         → PCF Γ σ
         → PCF Γ τ
 
- v      : {n : ℕ} {Γ : Context n} {A : type}
-        → Γ ∋ A
-        → PCF Γ A
+ v      : {n : ℕ} {Γ : Context n} {σ : type}
+        → Γ ∋ σ
+        → PCF Γ σ
 
  Fix    : {n : ℕ} {Γ : Context n} {σ : type}
         → PCF Γ (σ ⇒ σ)

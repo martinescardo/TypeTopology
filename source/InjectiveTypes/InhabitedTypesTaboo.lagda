@@ -57,8 +57,8 @@ indexed over the "non"-injective type Inh.
 
 
 To illustrate the constructive differences between the propositional truncation
-and the double negation, we show ─ in contrast to the above ─ that the type of
-non-empty types *is* injective.
+and the double negation, we point out that the type of non-empty types *is*
+injective, as shown in InjectiveTypes.NonEmptyTypes.
 
 
 References
@@ -244,52 +244,6 @@ unspecified-split-support-gives-projective-propositions uss =
  injectivity-gives-projective-propositions
   (retract-gives-injectivity
     (unspecified-split-support-gives-retract uss))
-
-\end{code}
-
-In contrast to the fact that the type of inhabited types is not in
-general injective, the type of non-empty types *is* always
-injective. Notice how we prove this by establishing Non-Empty as a
-retract of the universe without having to take recourse to a choice
-principle like we did in the construction
-unspecified-split-support-gives-retract.
-
-This also serves to highlight the (constructive) difference(s) between
-propositional truncation and double negation.
-
-An alternative proof of the injectivity of the type of non-empty types
-may be found in InjectiveTypes.MathematicalStrutures.
-
-\begin{code}
-
-Non-Empty : 𝓤 ⁺ ̇
-Non-Empty = Σ X ꞉ 𝓤 ̇ , is-nonempty X
-
-Non-Empty-retract : retract Non-Empty of (𝓤 ̇ )
-Non-Empty-retract = ρ , σ , ρσ
- where
-  ρ : 𝓤 ̇ → Non-Empty
-  ρ X = (¬¬ X → X) , double-negation-elimination-inside-double-negation X
-  σ : Non-Empty → 𝓤 ̇
-  σ = pr₁
-  ρσ : ρ ∘ σ ∼ id
-  ρσ (X , X-non-empty) = to-subtype-＝ (λ Y → negations-are-props fe')
-                                       (eqtoid (ua 𝓤) (¬¬ X → X) X e)
-   where
-    e = (¬¬ X → X) ≃⟨ I ⟩
-        (𝟙{𝓤} → X) ≃⟨ ≃-sym (𝟙→ fe') ⟩
-        X          ■
-     where
-      I = →cong'' fe' fe' (idtoeq (¬¬ X) 𝟙 II)
-       where
-        II : ¬¬ X ＝ 𝟙
-        II = holds-gives-equal-𝟙 pe' (¬¬ X) (negations-are-props fe') X-non-empty
-
-Non-Empty-is-injective : ainjective-type Non-Empty 𝓤 𝓤
-Non-Empty-is-injective =
- retract-of-ainjective Non-Empty (𝓤 ̇ )
-                       (universes-are-ainjective (ua 𝓤))
-                       Non-Empty-retract
 
 \end{code}
 

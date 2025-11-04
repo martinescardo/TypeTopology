@@ -288,6 +288,8 @@ ap₃-refl-right f refl refl = refl
 
 \end{code}
 
+End of addition.
+
 \begin{code}
 
 refl-left-neutral : {X : 𝓤 ̇ } {x y : X} {p : x ＝ y}
