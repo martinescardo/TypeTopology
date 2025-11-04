@@ -9,7 +9,7 @@ Definitions of:
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (_∘_ ; id)
-
+open import Notation.UnderlyingType
 open import UF.Base
 open import UF.Equiv hiding (_≅_)
 open import UF.Sets
@@ -22,20 +22,22 @@ module Categories.Type where
 \end{code}
 
 We start by defining the notion of a precategory.
-This consists of the usual components of a category, which is as follows
+This consists of the usual components of a (set theoretic) category,
+which is as follows:
 
 - A collection of objects, obj
 - For each pair of objects, A B : obj, a set of homorphisms between A and B
 - For each object A : obj, an identity homorphism (id A) : hom A A
 - A composition operation, ∘, which for objects A B C : obj
-  and homorphisms f : hom A B, g : hom B C gives a new homomorphism in hom A C
+  and homorphisms f : hom A B, g : hom B C gives a new homomorphism
+  g ∘ f : hom A C
 
 with the following axioms
 
-- left-id: For objects A B : obj and morphism f : hom A B, f = f ∘ (id A)
-- right-id: For objects A B : obj and morphism f : hom A B, f = (id B) ∘ f
+- left-id: For objects A B : obj and morphism f : hom A B, f ∘ (id A) ＝ f
+- right-id: For objects A B : obj and morphism f : hom A B, (id B) ∘ f ＝ f
 - associativity: For objects A B C D : obj and morphisms f : hom A B,
-                 g : hom B C, h : hom C D, we have f ∘ (g ∘ h) = (f ∘ g) ∘ h
+                 g : hom B C, h : hom C D, we have h ∘ (g ∘ f) ＝ (h ∘ g) ∘ f
 
 \begin{code}
 
@@ -49,9 +51,9 @@ record Precategory (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇  where
   
   _∘_ : {a b c : obj} → hom b c → hom a b → hom a c
   
-  left-id : {a b : obj} → (f : hom a b) → f ＝ id ∘ f
+  left-id : {a b : obj} → (f : hom a b) → id ∘ f ＝ f
   
-  right-id : {a b : obj} → (f : hom a b) → f ＝ f ∘ id
+  right-id : {a b : obj} → (f : hom a b) → f ∘ id ＝ f
   
   assoc : {a b c d : obj}
           {f : hom a b}
@@ -61,8 +63,9 @@ record Precategory (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇  where
 
 \end{code}
 
-We add instance argument versions of each field, with obj
-referencing the category to which the objects belong explicitly.
+We add instance argument versions of each field, apart from
+obj, which we make explicit. We also add a syntax definition
+for composition where the precategory cannot be inferred.
 
 \begin{code}
 
@@ -71,11 +74,20 @@ open Precategory {{...}} public hiding (obj)
 obj : (P : Precategory 𝓤 𝓥) → 𝓤 ̇
 obj = Precategory.obj
 
+pcat-comp : (P : Precategory 𝓤 𝓥)
+          {a b c : obj P}
+          → hom {{P}} b c
+          → hom {{P}} a b
+          → hom {{P}} a c
+pcat-comp P f g = _∘_{{P}} f g
+
+syntax pcat-comp P f g = f ∘[ P ] g
+
 \end{code}
 
 An isomorphism in a category consists of a homomorphism f : hom a b
 and some "inverse" homomorphism g : hom b a, such that g ∘ f = (id a)
-and f ∘ g = (id b).
+and f ∘ g ＝ (id b).
 
 We first define the type of a given homomorphism being an isomorphism,
 then we define the type of isomorphism between objects of a precategory.
@@ -149,11 +161,11 @@ being-iso-is-prop : {{P : Precategory 𝓤 𝓥}}
 being-iso-is-prop f x y = is-iso-eq x y inverse-eq
  where
   inverse-eq : inv x ＝ inv y
-  inverse-eq = inv x                   ＝⟨ right-id (inv x) ⟩
+  inverse-eq = inv x                   ＝⟨ (right-id (inv x))⁻¹ ⟩
                (inv x) ∘ id            ＝⟨ ap ((inv x) ∘_) ((r-inverse y)⁻¹) ⟩
                (inv x) ∘ (f ∘ (inv y)) ＝⟨ assoc ⟩
                ((inv x) ∘ f) ∘ (inv y) ＝⟨ ap (_∘ (inv y)) (l-inverse x) ⟩
-               id ∘ (inv y)            ＝⟨ (left-id (inv y))⁻¹ ⟩
+               id ∘ (inv y)            ＝⟨ left-id (inv y) ⟩
                inv y ∎
 
 \end{code}
@@ -172,10 +184,10 @@ isomorphisms-are-sets = Σ-is-set hom-is-set
 \end{code}
 
 We wish to combine the similar notions of equivalence,
-namely the internal equality: a = b and isomorphisms a ≅ b.
+namely the internal equality: a ＝ b and isomorphisms a ≅ b.
 
-We can in fact show that if a = b, then a ≅ b. This is because if
-a = b, then by path induction we need to show that a ≅ a. This is
+We can in fact show that if a ＝ b, then a ≅ b. This is because if
+a ＝ b, then by path induction we need to show that a ≅ a. This is
 simple as we can form an isomophism with the identity homomorphism.
 
 \begin{code}
@@ -184,11 +196,11 @@ id-to-iso : {{ A : Precategory 𝓤 𝓥 }} (a b : obj A) → a ＝ b → a ≅ 
 id-to-iso {{A}} a b refl = id , (mk-iso id id-comp-id-is-id id-comp-id-is-id)
  where
   id-comp-id-is-id : id ∘ id ＝ id
-  id-comp-id-is-id = (left-id id)⁻¹
+  id-comp-id-is-id = left-id id
 \end{code}
 
 To bring into alignment the two different forms of equality, we define a
-category to be a precategory where equality is exactly isomorphism.
+category to be a precategory where identification is equivalent to isomorphism.
 
 \begin{code}
 
@@ -196,24 +208,26 @@ Category : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
 Category 𝓤 𝓥 = Σ P ꞉ Precategory 𝓤 𝓥 ,
                      ((a b : obj P) → (a ＝ b) ≃ (_≅_ {{P}} a b))
 
--- Try to use notation part to make this read better
-_ₚ : Category 𝓤 𝓥 → Precategory 𝓤 𝓥
-C ₚ = pr₁ C
+instance
+  underlying-type-of-category : {𝓤 𝓥 : Universe}
+                              → Underlying-Type (Category 𝓤 𝓥) (Precategory 𝓤 𝓥)
+  ⟨_⟩ {{underlying-type-of-category}} (P , _) = P
+
 
 id-equiv-iso : (C : Category 𝓤 𝓥)
-             → ((a b : obj (C ₚ))
-             → (a ＝ b) ≃ (_≅_ {{C ₚ}} a b))
+             → ((a b : obj ⟨ C ⟩)
+             → (a ＝ b) ≃ (_≅_ {{⟨ C ⟩}} a b))
 id-equiv-iso C = pr₂ C
 
 \end{code}
 
-We can now show that any category's objects are sets. This is because
+We can now show that the objects of any category is a 1-type. This is because
 equality between objects is exactly isomorphism, which we know is a set.
 
 \begin{code}
 
-cat-obj-is-1-type : (A : Category 𝓤 𝓥) → (a b : obj (A ₚ)) → is-set (a ＝ b)
-cat-obj-is-1-type A a b = equiv-to-set (id-equiv-iso A a b)
-                                       (isomorphisms-are-sets {{A ₚ}})
+cat-objs-are-1-types : (A : Category 𝓤 𝓥) → (a b : obj ⟨ A ⟩) → is-set (a ＝ b)
+cat-objs-are-1-types A a b = equiv-to-set (id-equiv-iso A a b)
+                                       (isomorphisms-are-sets {{⟨ A ⟩}})
 \end{code}
 
