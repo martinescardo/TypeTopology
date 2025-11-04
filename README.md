@@ -41,6 +41,7 @@ Please add yourself the first time you contribute.
 * Alice Laroche
 * Andrew Sneap
 * Andrew Swan
+* Anna Williams
 * Ayberk Tosun
 * Brendan Hart
 * Bruno Paiva
