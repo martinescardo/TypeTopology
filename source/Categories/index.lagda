@@ -10,7 +10,7 @@ natural transformations.
 
 module Categories.index where
 
-import Categories.Category
+import Categories.Type
 import Categories.Functor
 import Categories.NaturalTransformation
 

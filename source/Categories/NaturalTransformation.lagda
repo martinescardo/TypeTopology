@@ -8,21 +8,20 @@ Definition of natural transformation
 
 open import MLTT.Spartan hiding (_∘_ ; id)
 
-open import Categories.Category
+open import Categories.Type
 open import Categories.Functor
 
 module Categories.NaturalTransformation where
 
-record NaturalTransformation
- {A : Precategory 𝓤 𝓥}
- {{B : Precategory 𝓦 𝓣}}
- (F G : Functor A B)
- : (𝓤 ⊔ 𝓥 ⊔ 𝓣) ̇  where
+record NaturalTransformation {A : Precategory 𝓤 𝓥}
+                             {B : Precategory 𝓦 𝓣}
+                             (F G : Functor A B)
+                           : (𝓤 ⊔ 𝓥 ⊔ 𝓣) ̇  where
  field
-  gamma : (a : obj A) → hom (Functor.Fobj F a) (Functor.Fobj G a)
-  natural
-   : (a b : obj A)
-   → (f : hom {{A}} a b)
-   → (Functor.Fhom G f) ∘ (gamma a) ＝ (gamma b) ∘ (Functor.Fhom F f)
+  gamma : (a : obj A) → hom {{B}} (Functor.Fobj F a) (Functor.Fobj G a)
+  natural : (a b : obj A)
+            (f : hom {{A}} a b)
+          → _∘_ {{B}} (Functor.Fhom G f) (gamma a)
+          ＝ _∘_ {{B}} (gamma b) (Functor.Fhom F f)
 
 \end{code}
