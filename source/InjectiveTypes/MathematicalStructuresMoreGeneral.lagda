@@ -959,8 +959,8 @@ injective.
 
 As a first step we show that the collection of types with an R-valued relation
 (for an arbitrary type R, later taken to be ℝ) to be injective.
-
-This mirrors the above construction for the type of graphs.
+We denote this type by Graph' as it generalizes the type Graph of graphs defined
+above. Indeed, the injectivity proof mirrors the above construction for Graph.
 
 \begin{code}
 
@@ -968,18 +968,18 @@ open import UF.Subsingletons-Properties
 
 module _ (R : 𝓥 ̇  ) where
 
- Types-with-R-valued-relations : (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ̇
- Types-with-R-valued-relations 𝓤 = Σ X ꞉ 𝓤 ̇  , (X → X → R)
+ Graph' : (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ̇
+ Graph' 𝓤 = Σ X ꞉ 𝓤 ̇  , (X → X → R)
 
- R-valued-relation-structure : 𝓤 ̇  → 𝓥 ⊔ 𝓤 ̇
- R-valued-relation-structure X = (X → X → R)
+ graph'-structure : 𝓤 ̇  → 𝓥 ⊔ 𝓤 ̇
+ graph'-structure X = (X → X → R)
 
- Types-with-R-valued-relations-Σ-data
-  : compatibility-data (R-valued-relation-structure {𝓤}) universes-are-flabby-Σ
- Types-with-R-valued-relations-Σ-data {𝓤} =
-  Σ-construction R-valued-relation-structure T T-refl c
+ Graph'-Σ-data
+  : compatibility-data (graph'-structure {𝓤}) universes-are-flabby-Σ
+ Graph'-Σ-data {𝓤} =
+  Σ-construction S T T-refl c
    where
-    S = R-valued-relation-structure
+    S = graph'-structure
 
     T : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y
     T 𝕗 μ y y' = μ (⌜ 𝕗 ⌝⁻¹ y) (⌜ 𝕗 ⌝⁻¹ y')
@@ -1009,18 +1009,18 @@ module _ (R : 𝓥 ̇  ) where
     c : compatibility-data-Σ S T T-refl
     c p A = σ p A , rσ p A
 
- ainjectivity-of-Types-with-R-valued-relations
-  : ainjective-type (Types-with-R-valued-relations 𝓤) 𝓤 𝓤
- ainjectivity-of-Types-with-R-valued-relations =
+ ainjectivity-of-Graph'
+  : ainjective-type (Graph' 𝓤) 𝓤 𝓤
+ ainjectivity-of-Graph' =
   ainjectivity-of-type-of-structures
-   R-valued-relation-structure
+   graph'-structure
    universes-are-flabby-Σ
-   Types-with-R-valued-relations-Σ-data
+   Graph'-Σ-data
 
 \end{code}
 
-We now take R = ℝ, the type of Dedekind reals and additionally impose the axioms
-of a metric space.
+We now take R = ℝ, the type of Dedekind reals, and additionally impose the
+axioms of a metric space.
 
 This mirrors the above construction for the type of posets.
 
@@ -1053,23 +1053,23 @@ module _
  Metric-Space-Σ-data =
   compatibility-data-with-axioms
    universes-are-flabby-Σ
-   (R-valued-relation-structure ℝ)
-   (Types-with-R-valued-relations-Σ-data ℝ)
+   (graph'-structure ℝ)
+   (Graph'-Σ-data ℝ)
    metric-axioms
    metric-axioms-is-prop
    axioms-Σ-data
   where
    σ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ )
-     → ((h : p holds) → R-valued-relation-structure ℝ (A h))
-     → R-valued-relation-structure ℝ (Σ A)
+     → ((h : p holds) → graph'-structure ℝ (A h))
+     → graph'-structure ℝ (Σ A)
    σ p A = section-map
-            (ρ (R-valued-relation-structure ℝ) universes-are-flabby-Σ p A)
-            (Types-with-R-valued-relations-Σ-data ℝ p A)
+            (ρ (graph'-structure ℝ) universes-are-flabby-Σ p A)
+            (Graph'-Σ-data ℝ p A)
 
    axioms-Σ-data
     : (p : Ω 𝓤)
       (A : p holds → 𝓤 ̇ )
-      (α : (h : p holds) → R-valued-relation-structure ℝ (A h))
+      (α : (h : p holds) → graph'-structure ℝ (A h))
       (F : (h : p holds) → metric-axioms (A h) (α h))
     → metric-axioms (Σ A) (σ p A α)
    axioms-Σ-data p A α F = I , II , III
@@ -1099,7 +1099,7 @@ module _
                          (e₁ : h₂ ＝ h₁) (e₂ : h₁ ＝ h₁)
                          (e₃ : h₂ ＝ h₂) (e₄ : h₁ ＝ h₂)
                        → α h₁ (transport A e₁ a₂) (transport A e₂ a₁)
-                         ＝ α h₂ (transport A e₃ a₂) (transport A e₄ a₁)
+                       ＝ α h₂ (transport A e₃ a₂) (transport A e₄ a₁)
      generalized-lemma {h₁} {h₂} {a₁} {a₂} refl e₂ e₃ e₄ =
       ap₂ (α h₂)
           ((transport-over-prop' (holds-is-prop p) e₃) ⁻¹)
