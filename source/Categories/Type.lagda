@@ -151,7 +151,8 @@ syntax wildcat-iso W a b = a ≅⟨ W ⟩ b
 
 \end{code}
 
-We now define the notion of a precategory
+We now define the notion of a precategory, this is a wild category, where
+the type homomorphism between two objects is a set.
 
 \begin{code}
 
@@ -185,11 +186,11 @@ hom-is-set {{_ , p}} {a} {b} = p a b
 
 \end{code}
 
-We now show that for a given homomorphism, being an isomorphism is a
-(mere) proposition. We argue that inverses are unique, and then since
-the type of homomorphisms between two objects is a set, equality between
-any two homomorphisms is a proposition, so our left and right inverse
-equalities are a proposition.
+We now show that in a precategory, for a given homomorphism, being an
+isomorphism is a (mere) proposition. We argue that inverses are unique,
+and then since the type of homomorphisms between two objects is a set,
+equality between any two homomorphisms is a proposition, so our left and
+right inverse equalities are a proposition.
 
 \begin{code}
 
@@ -232,8 +233,8 @@ being-iso-is-prop {{P}} {a} {b} f x y = inv-is-lc x y inverse-eq
 
 \end{code}
 
-We now argue that this means that the type of isomorphisms is a set.
-This follows from the fact that being an isomorphism is a proposition.
+We now argue that this means that the type of isomorphisms in a precategory
+is a set. This follows from the fact that being an isomorphism is a proposition.
 
 \begin{code}
 
@@ -254,17 +255,14 @@ simple as we can form an isomophism with the identity homomorphism.
 
 \begin{code}
 
-id-to-iso : {{ P : Precategory 𝓤 𝓥 }}
-            (a b : obj ⟨ P ⟩ )
+id-to-iso : {{ W : WildCategory 𝓤 𝓥 }}
+            (a b : obj W )
           → a ＝ b
-          → a ≅⟨ ⟨ P ⟩ ⟩ b
-id-to-iso {{P}} a b refl = id {{⟨ P ⟩}} , iso
+          → a ≅⟨ W ⟩ b
+id-to-iso a b refl = id , mk-iso id id-comp-id-is-id id-comp-id-is-id
  where
-  iso : is-iso {{⟨ P ⟩}} (id {{⟨ P ⟩}})
-  iso = (mk-iso {{⟨ P ⟩}} (id {{⟨ P ⟩}}) id-comp-id-is-id id-comp-id-is-id)
-   where
-    id-comp-id-is-id : id {{⟨ P ⟩}} ∘⟨ ⟨ P ⟩ ⟩ id {{⟨ P ⟩}} ＝ id {{⟨ P ⟩}}
-    id-comp-id-is-id = left-id {{⟨ P ⟩}} (id {{⟨ P ⟩}})
+  id-comp-id-is-id : id ∘ id ＝ id
+  id-comp-id-is-id = left-id id
 \end{code}
 
 To bring into alignment the two different forms of equality, we define a
@@ -273,14 +271,14 @@ category to be a precategory where identification is equivalent to isomorphism.
 \begin{code}
 
 is-category : (P : Precategory 𝓤 𝓥) → (𝓤 ⊔ 𝓥) ̇ 
-is-category P = (a b : obj ⟨ P ⟩) → is-equiv (id-to-iso {{P}} a b)
+is-category P = (a b : obj ⟨ P ⟩) → is-equiv (id-to-iso {{⟨ P ⟩}} a b)
 
 being-category-is-prop : (P : Precategory 𝓤 𝓥) → is-prop (is-category P)
 being-category-is-prop P x y = Π-is-prop fe (λ x → Π-is-prop fe (I x)) _ _
  where
-  I : (a b : obj ⟨ P ⟩) → is-prop (is-equiv (id-to-iso {{P}} a b))
+  I : (a b : obj ⟨ P ⟩) → is-prop (is-equiv (id-to-iso {{⟨ P ⟩}} a b))
   I a b e e' = being-equiv-is-prop (λ x y → fe {x} {y})
-                                    (id-to-iso {{P}} a b) e e'
+                                    (id-to-iso {{⟨ P ⟩}} a b) e e'
 
 Category : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
 Category 𝓤 𝓥 = Σ P ꞉ Precategory 𝓤 𝓥 , is-category P
