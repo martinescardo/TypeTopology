@@ -620,6 +620,15 @@ is-𝓛-alg 𝓕 freely-generated-by X with-insertion-of-generators ι eliminati
  = {A : 𝓦 ̇ } (i : is-set A) (𝓐 : 𝓛-alg A) (f : X → A)
       → ∃! (f̅ , _) ꞉ Hom 𝓕 𝓐 , f̅ ∘ ι ∼ f
 
+\end{code}
+
+Notice that above definition says that precomposition with ι is an
+equivalence.
+
+We name some projections:
+
+\begin{code}
+
 module _ {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F)
          (X : 𝓥 ̇ )
          (ι : X → F)
@@ -639,6 +648,11 @@ module _ {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F)
  unique-hom-is-extesion : unique-hom ∘ ι ∼ f
  unique-hom-is-extesion = ∃!-is-witness (𝓕-is-free i 𝓐 f)
 
+\end{code}
+
+We now construct the canonical free algebra.
+
+\begin{code}
 
 module free-algebras-in-the-category-of-sets
         (pe : Prop-Ext)
@@ -646,15 +660,6 @@ module free-algebras-in-the-category-of-sets
         (X : 𝓣 ̇ )
         (X-is-set : is-set X)
        where
-
-\end{code}
-
-Notice that above definition says that precomposition with ι is an
-equivalence.
-
-We now construct the canonical free algebra.
-
-\begin{code}
 
  open import Lifting.UnivalentWildCategory 𝓣 X
  open import Lifting.IdentityViaSIP 𝓣
