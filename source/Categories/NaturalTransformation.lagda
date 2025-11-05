@@ -7,11 +7,12 @@ Definition of natural transformation
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (_∘_ ; id)
+open import UF.FunExt
 
-open import Categories.Type
-open import Categories.Functor
+module Categories.NaturalTransformation (fe : Fun-Ext) where
 
-module Categories.NaturalTransformation where
+open import Categories.Type fe
+open import Categories.Functor fe
 
 \end{code}
 
@@ -23,15 +24,15 @@ such that it is natural:
 
 \begin{code}
 
-record NaturalTransformation {A : Precategory 𝓤 𝓥}
-                             {B : Precategory 𝓦 𝓣}
+record NaturalTransformation {A : WildCategory 𝓤 𝓥}
+                             {B : WildCategory 𝓦 𝓣}
                              (F G : Functor A B)
                            : (𝓤 ⊔ 𝓥 ⊔ 𝓣) ̇  where
  field
   gamma : (a : obj A) → hom {{B}} (Functor.Fobj F a) (Functor.Fobj G a)
   natural : {a b : obj A}
             (f : hom {{A}} a b)
-          → (Functor.Fhom G f) ∘[ B ] (gamma a)
-          ＝ (gamma b) ∘[ B ] (Functor.Fhom F f)
+          → (Functor.Fhom G f) ∘⟨ B ⟩ (gamma a)
+          ＝ (gamma b) ∘⟨ B ⟩ (Functor.Fhom F f)
 
 \end{code}
