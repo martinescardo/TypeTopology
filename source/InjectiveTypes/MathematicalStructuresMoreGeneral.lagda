@@ -12,7 +12,8 @@ InjectiveTypes.Sigma, which also arises as a generalization of the
 above original file.
 
 Added 5 November 2025 by Tom de Jong: The type of metric spaces is
-injective and this relies on the generalizations developed here.
+injective and this relies on the generalizations developed here. This
+is the first example that make uses of the added generality of this file.
 
 \begin{code}
 
@@ -121,10 +122,6 @@ universes-are-flabby-Σ : aflabby (𝓤  ̇) 𝓤
 universes-are-flabby-Σ = to-aflabby universes-are-Flabby-Σ
 
 \end{code}
-
-In this file we apply the above constructions only for the case of Π,
-but we include those for Σ for the sake illustration (and perhaps for
-future use).
 
 We now work with an arbitrary notion S of structure on 𝓤. E.g. for
 monoids we will take S X := X → X → X, the type of the multiplication
