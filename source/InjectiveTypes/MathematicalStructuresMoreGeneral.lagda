@@ -1045,7 +1045,7 @@ module _
   renaming (_+_ to _+ℝ_) hiding (_-_)
  open import DedekindReals.Order fe' pe' pt
  open import DedekindReals.Type fe' pe' pt
- open import MetricSpaces.Alternative fe' pe' pt
+ open import MetricSpaces.StandardDefinition fe' pe' pt
 
  Metric-Space-Σ-data : compatibility-data {(𝓤 ⊔ 𝓤₁) ⁺}
                         (λ M → Σ d ꞉ (M → M → ℝ) , metric-axioms M d)
