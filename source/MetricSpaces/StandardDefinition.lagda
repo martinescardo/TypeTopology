@@ -1,7 +1,8 @@
 Tom de Jong, 5 November 2025.
 
-We give a definition of metric spaces using the Dedekind reals, providing an
-alternative to the definition developed by Andrew Sneap in MetricSpaces.Type.
+We give the standard definition of metric spaces using the Dedekind reals, as
+opposed to the alternative definition developed by Andrew Sneap in
+MetricSpaces.Type.
 
 \begin{code}
 
@@ -11,7 +12,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
 
-module MetricSpaces.Alternative
+module MetricSpaces.StandardDefinition
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)

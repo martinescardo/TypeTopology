@@ -6,9 +6,9 @@ Andrew Sneap
 
 module MetricSpaces.index where
 
-import MetricSpaces.Alternative -- by Tom de Jong
-import MetricSpaces.Type
 import MetricSpaces.DedekindReals
 import MetricSpaces.Rationals
+import MetricSpaces.StandardDefinition -- by Tom de Jong
+import MetricSpaces.Type
 
 \end{code}
