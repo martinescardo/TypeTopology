@@ -326,10 +326,9 @@ try to record this explicitly when we do so).
 
 \end{code}
 
-For our examples below, we only need the above functions ρΠ,
-compatibility-data-Π and Π-construction, but we take the opportunity
-to remark that we also have the following, with Π replaced by Σ (for
-which we don't have any application so far).
+For most examples below, we only need the above functions ρΠ,
+compatibility-data-Π and Π-construction, but at least one of them uses
+their Σ versions defined below.
 
 \begin{code}
 
