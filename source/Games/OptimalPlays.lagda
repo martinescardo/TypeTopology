@@ -677,77 +677,80 @@ prune-is-listed (X ∷ Xf) q (ϕ :: ϕf) (X-is-listed , Xf-is-listed) =
                            (ϕf x)
                            (Xf-is-listed x)
 
-optimal-plays' : {Xt : 𝑻}
-                 (q : Path Xt → R)
-                 (ϕt : 𝓚 Xt)
-                 (Xt-is-listed : structure listed Xt)
-               → List (Path Xt)
-optimal-plays' {Xt} q ϕt Xt-is-listed = xss
- where
-  Xt' : 𝑻
-  Xt' = prune Xt q ϕt
+module _ (G@(game Xt q ϕt) : Game)
+         (Xt-is-listed : structure listed Xt)
+       where
 
-  xss' : List (Path (prune Xt q ϕt))
-  xss' = list-of-all-paths Xt' (prune-is-listed Xt q ϕt Xt-is-listed)
+ optimal-plays' : List (Path Xt)
+ optimal-plays' = xss
+  where
+   Xt' : 𝑻
+   Xt' = prune Xt q ϕt
 
-  xss : List (Path Xt)
-  xss = lmap (inclusion ϕt q) xss'
+   xss' : List (Path (prune Xt q ϕt))
+   xss' = list-of-all-paths Xt' (prune-is-listed Xt q ϕt Xt-is-listed)
+
+   xss : List (Path Xt)
+   xss = lmap (inclusion ϕt q) xss'
 
 \end{code}
-
-Notice that this way of computing the optimal plays doesn't need the
-assumption that the quantifiers are attainable.
 
 Added 22nd October 2025. We now prove that optimal-plays' lists
 precisely the optimal plays.
 
 \begin{code}
 
-module _ (Xt : 𝑻)
-         (ϕt : 𝓚 Xt)
-         (q : Path Xt → R)
-         (lt : structure listed Xt)
-         (xs : Path Xt)
-       where
+ module _ (xs : Path Xt)
+        where
 
- private
-  xss' : List (Path (prune Xt q ϕt))
-  xss' = list-of-all-paths (prune Xt q ϕt) (prune-is-listed Xt q ϕt lt)
-
- main-lemma'→ : member xs (optimal-plays' q ϕt lt)
-              → is-optimal-play ϕt q xs
- main-lemma'→ m = I σ
-  where
-   have-m : member xs (lmap (inclusion ϕt q) xss')
-   have-m = m
-
-   σ : Σ xos ꞉ Path (prune Xt q ϕt) , member xos xss'
-                                    × (inclusion ϕt q xos ＝ xs)
-   σ = member-of-map← (inclusion ϕt q) xs xss' m
-
-   I : type-of σ → is-optimal-play ϕt q xs
-   I (xos , _ , e) = transport (is-optimal-play ϕt q) e (lemma→ q ϕt xos)
-
- main-lemma'← : is-optimal-play ϕt q xs
-              → member xs (optimal-plays' q ϕt lt)
- main-lemma'← o = I σ
-  where
-   σ : Σ xos ꞉ Path (prune Xt q ϕt) , inclusion ϕt q xos ＝ xs
-   σ = lemma← q ϕt xs o
-
-   I : type-of σ → member xs (optimal-plays' q ϕt lt)
-   I (xos , e) = I₂
-    where
-     I₀ : member xos xss'
-     I₀ = path-is-member-of-list-of-all-paths
+  private
+   xss' : List (Path (prune Xt q ϕt))
+   xss' = list-of-all-paths
            (prune Xt q ϕt)
-           (prune-is-listed Xt q ϕt lt)
-           xos
+           (prune-is-listed Xt q ϕt Xt-is-listed)
 
-     I₁ : member (inclusion ϕt q xos) (lmap (inclusion ϕt q) xss')
-     I₁ = member-of-map→ (inclusion ϕt q) xss' xos I₀
+  main-lemma'→ : member xs optimal-plays'
+               → is-optimal-play ϕt q xs
+  main-lemma'→ m = I σ
+   where
+    have-m : member xs (lmap (inclusion ϕt q) xss')
+    have-m = m
 
-     I₂ : member xs (lmap (inclusion ϕt q) xss')
-     I₂ = transport (λ - → member - (lmap (inclusion ϕt q) xss')) e I₁
+    σ : Σ xos ꞉ Path (prune Xt q ϕt) , member xos xss'
+                                     × (inclusion ϕt q xos ＝ xs)
+    σ = member-of-map← (inclusion ϕt q) xs xss' m
+
+    I : type-of σ → is-optimal-play ϕt q xs
+    I (xos , _ , e) = transport (is-optimal-play ϕt q) e (lemma→ q ϕt xos)
+
+  main-lemma'← : is-optimal-play ϕt q xs
+               → member xs optimal-plays'
+  main-lemma'← o = I σ
+   where
+    σ : Σ xos ꞉ Path (prune Xt q ϕt) , inclusion ϕt q xos ＝ xs
+    σ = lemma← q ϕt xs o
+
+    I : type-of σ → member xs optimal-plays'
+    I (xos , e) = I₂
+     where
+      I₀ : member xos xss'
+      I₀ = path-is-member-of-list-of-all-paths
+            (prune Xt q ϕt)
+            (prune-is-listed Xt q ϕt Xt-is-listed)
+            xos
+
+      I₁ : member (inclusion ϕt q xos) (lmap (inclusion ϕt q) xss')
+      I₁ = member-of-map→ (inclusion ϕt q) xss' xos I₀
+
+      I₂ : member xs (lmap (inclusion ϕt q) xss')
+      I₂ = transport (λ - → member - (lmap (inclusion ϕt q) xss')) e I₁
 
 \end{code}
+
+Notice that this way of computing the optimal plays doesn't need the
+assumption that the quantifiers are attainable.
+
+In general, there are games where the quantifiers are not attainable,
+so that the "optimal outcome" of a game still exists (the product of
+the quantifiers), but there are no strategies which lead to the
+optimal outcome, so that the list of optimal plays will be empty.

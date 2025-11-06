@@ -6,7 +6,7 @@ types, ∞-magmas, magmas, monoids, groups etc.
 We give a sufficient condition for types of mathematical structures to
 be injective, and we apply it to examples such as the above.
 
-This file generalized InjectiveTypes.MathematicalStructures at the
+This file generalizes InjectiveTypes.MathematicalStructures at the
 cost of perhaps being harder to understand. It relies on the file
 InjectiveTypes.Sigma, which also arises as a generalization of the
 above original file.
