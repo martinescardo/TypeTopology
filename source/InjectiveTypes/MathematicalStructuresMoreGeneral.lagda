@@ -153,7 +153,8 @@ data.
 \end{code}
 
 We will apply this to get our desired examples with ϕ taken to be the
-above canonical Π-flabby structure on the universe.
+above canonical Π-flabby structure on the universe in most cases, and
+at least one with the canonical Σ-flabby structure.
 
 Next we want to simplify working with compatibility data (as defined
 in the module InjectiveTypes.Sigma), where we avoid transports by
