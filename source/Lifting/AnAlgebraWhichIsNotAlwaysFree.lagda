@@ -57,10 +57,8 @@ open import UF.Base
 open import UF.ClassicalLogic
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.Logic
 open import UF.Sets
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe ;
                                            ⊥ to ⊥Ω ;
                                            ⊤ to ⊤Ω)
