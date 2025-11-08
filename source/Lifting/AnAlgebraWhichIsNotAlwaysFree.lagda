@@ -4,7 +4,7 @@ In a boolean 1-topos, every algebra of the lifting monad is a free algebra.
 
 John Sterling [1] asked whether this is the case in *all* toposes.
 
-[1] https://arxiv.org/abs/2312.17023
+[1] https://doi.org/10.48550/arXiv.2312.17023
 
 We show that it isn't.
 
