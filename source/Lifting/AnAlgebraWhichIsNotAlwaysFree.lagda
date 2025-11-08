@@ -243,7 +243,7 @@ conclude so far, however, is that G is nonempty.
 \begin{code}
 
   G-is-nonempty : ¬¬ G
-  G-is-nonempty u = II (I (h⁻¹ ⊥Ω) (h⁻¹ ⊤Ω))
+  G-is-nonempty u = III
    where
     I : is-prop (𝓛 G)
     I (P , φ , i) (Q , ψ , j) = from-⋍ pe fe fe
@@ -253,6 +253,9 @@ conclude so far, however, is that G is nonempty.
 
     II : h⁻¹ ⊥Ω ≠ h⁻¹ ⊤Ω
     II e = ⊥-is-not-⊤ (equivs-are-lc h⁻¹ ⌜ 𝕙 ⌝⁻¹-is-equiv e)
+
+    III : {!𝟘!}
+    III = II (I (h⁻¹ ⊥Ω) (h⁻¹ ⊤Ω))
 
 \end{code}
 
