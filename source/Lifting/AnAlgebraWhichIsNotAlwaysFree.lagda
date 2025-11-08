@@ -308,9 +308,9 @@ explicit description and characterization.
 
 \end{code}
 
-That is, δ is negation.
+That is, the map δ g is negation.
 
-We now apply Higgs Involution Theorem to conclude that δ is an
+We now apply Higgs Involution Theorem to conclude that δ g is an
 involution, as is any automorphism of Ω.
 
 \begin{code}
