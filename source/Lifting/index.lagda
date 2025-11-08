@@ -12,6 +12,7 @@ import Lifting.Algebras
 import Lifting.Construction
 import Lifting.EmbeddingDirectly
 import Lifting.EmbeddingViaSIP
+import Lifting.Identity
 import Lifting.IdentityViaSIP
 import Lifting.Miscelanea                  -- By Tom de Jong 2019
 import Lifting.Miscelanea-PropExt-FunExt   -- By Tom de Jong 2019
