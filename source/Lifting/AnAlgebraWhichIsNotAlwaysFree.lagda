@@ -171,7 +171,7 @@ With this assumption, we conclude that ι : G → Ω is constantly ⊥.
 \begin{code}
 
   ι-is-contanstly-⊥ : (g : G) → ι g ＝ ⊥Ω
-  ι-is-contanstly-⊥ g = IX
+  ι-is-contanstly-⊥ g = VIII
    where
     P : 𝓣 ̇
     P = ι g holds
@@ -201,19 +201,19 @@ With this assumption, we conclude that ι : G → Ω is constantly ⊥.
          (ι g ⇒ ι g) ＝⟨ anything-implies-itself-is-⊤ pe (ι g) ⟩
          ⊤Ω          ∎
 
-    VI = h (⨆ i ϕ) ＝⟨ IV ⟩
-         ⊤Ω        ＝⟨ h-at-⊥-is-⊤ ⁻¹ ⟩
-         h ⊥       ∎
+    V = h (⨆ i ϕ) ＝⟨ IV ⟩
+        ⊤Ω        ＝⟨ h-at-⊥-is-⊤ ⁻¹ ⟩
+        h ⊥       ∎
 
-    VII : ⨆ i ϕ ＝ ⊥
-    VII = equivs-are-lc h h-is-equiv VI
+    VI : ⨆ i ϕ ＝ ⊥
+    VI = equivs-are-lc h h-is-equiv V
 
-    VIII = l     ＝⟨ I ⁻¹ ⟩
-           ⨆ i ϕ ＝⟨ VII ⟩
-           ⊥     ∎
+    VII = l     ＝⟨ I ⁻¹ ⟩
+          ⨆ i ϕ ＝⟨ VI ⟩
+          ⊥     ∎
 
-    IX : ι g ＝ ⊥Ω
-    IX = to-Ω-＝ fe (ap is-defined VIII)
+    VIII : ι g ＝ ⊥Ω
+    VIII = to-Ω-＝ fe (ap is-defined VII)
 
 \end{code}
 
