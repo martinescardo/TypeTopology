@@ -135,7 +135,7 @@ We already know the following, but here is a simpler proof.
 
 \end{code}
 
-In order to reach our conclusions, we need to know an explicit
+In order to reach our conclusions, we need to know a convenient
 definition of h.
 
 \begin{code}
