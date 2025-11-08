@@ -320,8 +320,8 @@ involution, as is any automorphism of Ω.
 
 \end{code}
 
-But the involutivity of δ g says that (p → ⊥) → ⊥ for all p, which
-amounts to the principle of excluded middle.
+But the involutivity of δ g says that ((p ⇒ ⊥) ⇒ ⊥) ⇒ p for all p,
+which amounts to the principle of excluded middle.
 
 \begin{code}
 
