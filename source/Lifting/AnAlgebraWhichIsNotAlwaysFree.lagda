@@ -31,7 +31,7 @@ We show that if this is the case, then
 
  1. G is a subsingleton/proposition/truth value,
  2. the double negation of the principle of excluded middle holds, and
- 3. moreover G ≃ (double negation of the principle of excluded middle).
+ 3. moreover G ≃ (principle of excluded middle).
 
 \begin{code}
 
