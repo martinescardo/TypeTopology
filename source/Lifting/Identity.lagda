@@ -8,8 +8,6 @@ and function extensionality.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.FunExt
-open import UF.Subsingletons
 
 module Lifting.Identity
         (𝓣 : Universe)
@@ -18,15 +16,11 @@ module Lifting.Identity
        where
 
 open import UF.Base
-open import UF.Sets
-open import UF.Sets-Properties
-open import UF.Subsingletons-FunExt
 open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.Univalence
-open import UF.UA-FunExt
-open import UF.StructureIdentityPrinciple
-open import UF.SubtypeClassifier
+open import UF.FunExt
+open import UF.Sets
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open import Lifting.Construction 𝓣
 
