@@ -149,7 +149,7 @@ With this we easily conclude that h maps ⊥ to ⊤.
 
 \end{code}
 
-Now we assume, for the same of concluding the double negation of the
+Now we assume, for the sake of concluding the double negation of the
 principle of excluded middle, that h is an equivalence.
 
 \begin{code}
