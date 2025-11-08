@@ -254,7 +254,7 @@ conclude so far, however, is that G is nonempty.
     II : h⁻¹ ⊥Ω ≠ h⁻¹ ⊤Ω
     II e = ⊥-is-not-⊤ (equivs-are-lc h⁻¹ ⌜ 𝕙 ⌝⁻¹-is-equiv e)
 
-    III : {!𝟘!}
+    III : 𝟘
     III = II (I (h⁻¹ ⊥Ω) (h⁻¹ ⊤Ω))
 
 \end{code}
