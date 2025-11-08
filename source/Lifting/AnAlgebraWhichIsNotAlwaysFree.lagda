@@ -71,7 +71,6 @@ open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe ;
                                            ⊤ to ⊤Ω)
 open import UF.SubtypeClassifier-Properties
 
-open Conjunction
 open Implication fe renaming (¬ₚ_ to ⇁_ ; ¬¬ₚ_ to ⇁⇁_ ; ¬¬¬ₚ_ to ⇁⇁⇁_)
 open Universal fe
 
