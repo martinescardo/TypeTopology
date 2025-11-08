@@ -33,13 +33,6 @@ We show that if this is the case, then
  2. the double negation of the principle of excluded middle holds, and
  3. moreover G ≃ (double negation of the principle of excluded middle).
 
-We conjecture that a stronger result is possible, and we are working
-on it, namely that Ω with the structure map ⨆ = Π is freely generated
-by G if and only if G is a singleton and the topos is boolean.
-
-But, for the moment, as stated above, what we have so far already
-answers Jon Sterling's question in the negative.
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -374,9 +367,9 @@ principle of excluded middle!
 This concludes the proof of all claims made above.
 
 We originally developed some of the above ideas on paper, and then
-more ideas in Agda. Here are some leftovers of the above development,
-which may or may not be useful to answer the question we left open
-above, at the top of this file.
+more ideas in Agda. Here are some leftovers, which ended up not used
+in the proof of the above above claims, but may be interesting in
+their own right.
 
 \begin{code}
 
