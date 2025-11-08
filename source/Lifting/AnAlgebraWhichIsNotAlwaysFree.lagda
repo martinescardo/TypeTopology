@@ -382,9 +382,11 @@ principle of excluded middle!
 This concludes the proof of all claims made above.
 
 We originally developed some of the above ideas on paper, and then
-more ideas in Agda. Here are some leftovers, which ended up not being
-used in the proof of the above above claims, but which may be
-interesting in their own right.
+more ideas here in Agda.
+
+We conclude with some leftovers, which ended up not being used in the
+proof of the above above claims, but which may be interesting in their
+own right.
 
 \begin{code}
 
