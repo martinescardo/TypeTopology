@@ -356,7 +356,7 @@ Because G is nonempty, we conclude that ¬¬ EM holds.
 
 \end{code}
 
-We also have the following:
+We also have the following.
 
 \begin{code}
 
