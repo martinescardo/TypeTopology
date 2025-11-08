@@ -38,6 +38,8 @@ We show that if this is the case, then
 
 So the answer is negative.
 
+The proof uses Higgs Involution Theorem.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
