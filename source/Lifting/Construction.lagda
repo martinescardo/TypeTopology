@@ -44,3 +44,44 @@ Its "undefined" element:
 ⊥ = 𝟘 , unique-from-𝟘 , 𝟘-is-prop
 
 \end{code}
+
+Added 7th November 2025. I don't know why we didn't work with the
+following more natural definition.
+
+\begin{code}
+
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
+
+𝓛' : 𝓤 ̇ → 𝓣 ⁺ ⊔  𝓤 ̇
+𝓛' X = Σ p ꞉ Ω 𝓣 , (p holds → X)
+
+𝓛-is-equiv-to-𝓛' : {X : 𝓤 ̇ } → 𝓛 X ≃ 𝓛' X
+𝓛-is-equiv-to-𝓛' {𝓤} {X} =
+ (Σ P ꞉ 𝓣 ̇ , (P → X) × is-prop P) ≃⟨ Σ-cong (λ P → ×-comm)  ⟩
+ (Σ P ꞉ 𝓣 ̇ , is-prop P × (P → X)) ≃⟨ ≃-sym Σ-assoc ⟩
+ (Σ p ꞉ Ω 𝓣 , (p holds → X))     ■
+
+\end{code}
+
+With this representation, it is easy to prove that 𝓛 X is a set if X is.
+
+\begin{code}
+
+open import UF.FunExt
+
+𝓛-is-set : funext 𝓣 𝓣
+         → funext 𝓣 𝓤
+         → propext 𝓣
+         → {X : 𝓤 ̇ } → is-set X → is-set (𝓛 X)
+𝓛-is-set fe fe' pe X-is-set = equiv-to-set
+                                𝓛-is-equiv-to-𝓛'
+                                (Σ-is-set
+                                  (Ω-is-set fe pe)
+                                  (λ p → Π-is-set fe' λ _ → X-is-set))
+
+\end{code}
