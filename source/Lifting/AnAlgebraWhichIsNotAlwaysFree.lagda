@@ -135,7 +135,7 @@ definition of h.
 
 \end{code}
 
-With this we easily conclude that h maps ⊤ to ⊥.
+With this we easily conclude that h maps ⊥ to ⊤.
 
 \begin{code}
 
