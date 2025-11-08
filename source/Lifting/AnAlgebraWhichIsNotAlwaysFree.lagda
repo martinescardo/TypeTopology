@@ -149,7 +149,7 @@ With this we easily conclude that h maps ⊥ to ⊤.
  h-at-⊥-is-⊤ =
   h ⊥                                  ＝⟨ useful-characterization-of-h ⊥ ⟩
   ⊥Ω ⇒ (Ɐ q ꞉ 𝟘 , ι (unique-from-𝟘 q)) ＝⟨ I ⟩
-  ⊤Ω ∎
+  ⊤Ω                                   ∎
    where
     I = ⊥⇒anything-is-⊤ pe (Ɐ q ꞉ 𝟘 , ι (unique-from-𝟘 q))
 
