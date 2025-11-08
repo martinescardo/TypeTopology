@@ -48,6 +48,14 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Subsingletons
 
+\end{code}
+
+We work with an arbitrary give universe 𝓣, and assume function
+extensionality and propostitional extensionality, which are available
+in any 1-topos.
+
+\begin{code}
+
 module Lifting.AnAlgebraWhichIsNotAlwaysFree
         (𝓣 : Universe)
         (fe : Fun-Ext)
