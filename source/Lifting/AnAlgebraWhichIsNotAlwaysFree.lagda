@@ -164,7 +164,7 @@ principle of excluded middle, that h is an equivalence.
 
 \end{code}
 
-With this assumption, we conclude that the ι : G → Ω is constantly ⊥.
+With this assumption, we conclude that ι : G → Ω is constantly ⊥.
 
 \begin{code}
 
@@ -253,8 +253,8 @@ conclude so far, however, is that G is nonempty.
 
 We already have an equivalence h⁻¹ : Ω → 𝓛 G, but now we look at
 another one, which is in essence the equivalence Ω ≃ 𝓛 𝟙. We don't
-know that G ≃ 𝟙, but we we are given a point of G, we do know this, as
-we already know that G is a proposition.
+know that G ≃ 𝟙, but if we are given a point of G, we do know this, as we
+already know that G is a proposition.
 
 \begin{code}
 
@@ -339,7 +339,7 @@ Because G is nonempty, we conclude that ¬¬ EM holds.
 
 \end{code}
 
-The converse is also true.
+We also have the following:
 
 \begin{code}
 
@@ -348,7 +348,7 @@ The converse is also true.
 
 \end{code}
 
-So now we know what the hypothetical set of generators is. It is the
+So now we know what the hypothetical set G of generators is. It is the
 principle of excluded middle!
 
 \begin{code}
@@ -365,7 +365,7 @@ principle of excluded middle!
 This concludes the proof of all claims made above.
 
 We originally developed some of the above ideas on paper, and then
-more ideas in Agda. Here are some leftovers, which ended up not used
+more ideas in Agda. Here are some leftovers, which ended up not using
 in the proof of the above above claims, but may be interesting in
 their own right.
 
