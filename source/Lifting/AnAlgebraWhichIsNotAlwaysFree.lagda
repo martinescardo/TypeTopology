@@ -1,5 +1,7 @@
 Martin Escardo, Novemeber 2025.
 
+Not all algebras of the partial-map classifier (aka lifting) monad are free.
+
 In a boolean 1-topos, every algebra of the lifting monad is a free algebra.
 
 John Sterling [1] asked whether this is the case in *all* toposes.
