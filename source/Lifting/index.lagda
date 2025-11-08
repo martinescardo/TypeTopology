@@ -22,5 +22,5 @@ import Lifting.Set
 import Lifting.Size
 import Lifting.UnivalentWildCategory
 import Lifting.TwoAlgebrasOnOmega
-
+import Lifting.AnAlgebraWhichIsNotAlwaysFree
 \end{code}
