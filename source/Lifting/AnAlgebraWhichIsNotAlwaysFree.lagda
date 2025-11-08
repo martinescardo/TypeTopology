@@ -269,9 +269,9 @@ conclude so far, however, is that G is nonempty.
 \end{code}
 
 We already have an equivalence h⁻¹ : Ω → 𝓛 G, but now we look at
-another one, which is in essence the equivalence Ω ≃ 𝓛 𝟙. We don't
-know that G ≃ 𝟙, but if we are given a point of G, we do know this, as we
-already know that G is a proposition.
+another one, which is in essence the canonical equivalence Ω ≃ 𝓛 𝟙. We
+don't know that G ≃ 𝟙, but if we are given a point of G, we do know
+this, as we already know that G is a proposition.
 
 \begin{code}
 
