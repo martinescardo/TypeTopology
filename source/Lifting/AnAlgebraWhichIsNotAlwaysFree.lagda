@@ -422,10 +422,10 @@ Now we can use G to produce an element of 𝓛 G.
 
   l₀-partial-charac : (g : G) → l₀ ＝ η g
   l₀-partial-charac g =
-   equivs-are-lc h h-is-equiv (
-    h l₀    ＝⟨ h-at-l₀' ⟩
-    ⊥Ω      ＝⟨ (ι-is-constantly-⊥ g)⁻¹ ⟩
-    ι g     ＝⟨ (h-extends-ι g)⁻¹ ⟩
-    h (η g) ∎)
+   equivs-are-lc h h-is-equiv
+    (h l₀    ＝⟨ h-at-l₀' ⟩
+     ⊥Ω      ＝⟨ (ι-is-constantly-⊥ g)⁻¹ ⟩
+     ι g     ＝⟨ (h-extends-ι g)⁻¹ ⟩
+     h (η g) ∎)
 
 \end{code}
