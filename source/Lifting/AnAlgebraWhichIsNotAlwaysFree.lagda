@@ -110,7 +110,7 @@ and in particular a unique map h : 𝓛 G → Ω extending ι along η.
  h = 𝓛-extension (Ω-is-set fe pe) Π-algebra-on-Ω ι
 
  h-explicitly : h ∼ λ (P , φ , i) → Ɐ p ꞉ P , ι (φ p)
- h-explicitly = λ _ → refl
+ h-explicitly _ = refl
 
  h-is-hom : is-hom free Π-algebra-on-Ω h
  h-is-hom = 𝓛-extension-is-hom (Ω-is-set fe pe) Π-algebra-on-Ω ι
@@ -276,7 +276,7 @@ this, as we already know that G is a proposition.
 \begin{code}
 
   γ : G → Ω ≃ 𝓛 G
-  γ g = qinveq v (u , (λ x → refl) , vu)
+  γ g = qinveq v (u , (λ (_ : Ω) → refl) , vu)
    where
     u : 𝓛 G → Ω
     u (P , φ , i) = (P , i)
