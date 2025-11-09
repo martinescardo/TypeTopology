@@ -204,13 +204,9 @@ constantly ⊥.
         ⊤Ω            ＝⟨  h-at-⊥-is-⊤ ⁻¹ ⟩
         h ⊥           ∎
 
-    II = l                                                       ＝⟨ II₀ ⟩
-         ((P × 𝟙) , (λ (_ : P × 𝟙) → g) , ×-is-prop i 𝟙-is-prop) ＝⟨ refl ⟩
-         ⨆ i ϕ                                                   ＝⟨ II₁ ⟩
-         ⊥                                                       ∎
-        where
-         II₀ = from-⋍ pe fe fe (((λ p → p , ⋆) , pr₁) , (λ _ → refl))
-         II₁ = equivs-are-lc h h-is-equiv I
+    II = l      ＝⟨ from-⋍ pe fe fe (((λ p → p , ⋆) , pr₁) , (λ _ → refl)) ⟩
+         ⨆ i ϕ  ＝⟨ equivs-are-lc h h-is-equiv I ⟩
+         ⊥      ∎
 
     III : ι g ＝ ⊥Ω
     III = to-Ω-＝ fe (ap is-defined II)
