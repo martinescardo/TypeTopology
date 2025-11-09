@@ -79,7 +79,7 @@ open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe ;
                                            ⊤ to ⊤Ω)
 open import UF.SubtypeClassifier-Properties
 
-open Implication fe
+open Implication fe renaming (¬ₚ_ to ⇁_ ; ¬¬ₚ_ to ⇁⇁_ ; ¬¬¬ₚ_ to ⇁⇁⇁_)
 open Universal fe
 
 \end{code}
@@ -184,7 +184,7 @@ constantly ⊥.
 \begin{code}
 
   ι-is-contanstly-⊥ : (g : G) → ι g ＝ ⊥Ω
-  ι-is-contanstly-⊥ g = VIII
+  ι-is-contanstly-⊥ g = III
    where
     P : 𝓣 ̇
     P = ι g holds
@@ -198,35 +198,22 @@ constantly ⊥.
     l : 𝓛 G
     l = (P , (λ (_ : P) → g) , i)
 
-    I = ⨆ i ϕ                                                   ＝⟨ refl ⟩
-        ((P × 𝟙) , (λ (_ : P × 𝟙) → g) , ×-is-prop i 𝟙-is-prop) ＝⟨ I₀ ⟩
-        l                                                       ∎
-         where
-          I₀ = from-⋍ pe fe fe ((pr₁ , (λ p → p , ⋆)) , (λ (_ : P × 𝟙) → refl))
+    I = h (⨆ i ϕ)     ＝⟨ h-is-hom P i (λ _ → η g) ⟩
+        ι g ⇒ h (η g) ＝⟨ ap (ι g ⇒_) (h-extends-ι g) ⟩
+        ι g ⇒ ι g     ＝⟨ anything-implies-itself-is-⊤ pe (ι g) ⟩
+        ⊤Ω            ＝⟨  h-at-⊥-is-⊤ ⁻¹ ⟩
+        h ⊥           ∎
 
-    II : h (⨆ i ϕ) ＝ (ι g ⇒ h (η g))
-    II = h-is-hom P i (λ _ → η g)
+    II = l                                                       ＝⟨ II₀ ⟩
+         ((P × 𝟙) , (λ (_ : P × 𝟙) → g) , ×-is-prop i 𝟙-is-prop) ＝⟨ refl ⟩
+         ⨆ i ϕ                                                   ＝⟨ II₁ ⟩
+         ⊥                                                       ∎
+        where
+         II₀ = from-⋍ pe fe fe (((λ p → p , ⋆) , pr₁) , (λ _ → refl))
+         II₁ = equivs-are-lc h h-is-equiv I
 
-    III : h (⨆ i ϕ) ＝ (ι g ⇒ ι g)
-    III = transport (λ - → h (⨆ i ϕ) ＝ ι g ⇒ -) (h-extends-ι g) II
-
-    IV = h (⨆ i ϕ)   ＝⟨ III ⟩
-         (ι g ⇒ ι g) ＝⟨ anything-implies-itself-is-⊤ pe (ι g) ⟩
-         ⊤Ω          ∎
-
-    V = h (⨆ i ϕ) ＝⟨ IV ⟩
-        ⊤Ω        ＝⟨ h-at-⊥-is-⊤ ⁻¹ ⟩
-        h ⊥       ∎
-
-    VI : ⨆ i ϕ ＝ ⊥
-    VI = equivs-are-lc h h-is-equiv V
-
-    VII = l     ＝⟨ I ⁻¹ ⟩
-          ⨆ i ϕ ＝⟨ VI ⟩
-          ⊥     ∎
-
-    VIII : ι g ＝ ⊥Ω
-    VIII = to-Ω-＝ fe (ap is-defined VII)
+    III : ι g ＝ ⊥Ω
+    III = to-Ω-＝ fe (ap is-defined II)
 
 \end{code}
 
@@ -304,7 +291,7 @@ explicit description and characterization.
   δ-explicitly : (g : G) (p : Ω) → ⌜ δ g ⌝ p ＝ (p ⇒ ι g)
   δ-explicitly g p = refl
 
-  δ-charac : (g : G) → (p : Ω) → ⌜ δ g ⌝ p ＝ (p ⇒ ⊥Ω)
+  δ-charac : (g : G) → (p : Ω) → ⌜ δ g ⌝ p ＝  ⇁ p
   δ-charac g p = transport
                   (λ - → ⌜ δ g ⌝ p ＝ (p ⇒ -))
                   (ι-is-contanstly-⊥ g)
@@ -324,18 +311,18 @@ involution, as is any automorphism of Ω.
 
 \end{code}
 
-But the involutivity of δ g says that ((p ⇒ ⊥) ⇒ ⊥) ⇒ p for all p,
-which amounts to the principle of excluded middle.
+But the involutivity of δ g says that (⇁⇁ p) = p for all p, which
+amounts to the principle of excluded middle.
 
 \begin{code}
 
   G-pointed-gives-excluded-middle : G → EM 𝓣
   G-pointed-gives-excluded-middle g = III
    where
-    I : (p : Ω) → ((p ⇒ ⊥Ω) ⇒ ⊥Ω) ＝ p
+    I : (p : Ω) → (⇁⇁ p) ＝ p
     I p =
-     (p ⇒ ⊥Ω) ⇒ ⊥Ω       ＝⟨ (δ-charac g (p ⇒ ⊥Ω))⁻¹ ⟩
-     ⌜ δ g ⌝ (p ⇒ ⊥Ω)    ＝⟨ ap ⌜ δ g ⌝ ((δ-charac g p)⁻¹) ⟩
+     ⇁⇁ p                ＝⟨ (δ-charac g (p ⇒ ⊥Ω))⁻¹ ⟩
+     ⌜ δ g ⌝ (⇁ p)       ＝⟨ ap ⌜ δ g ⌝ ((δ-charac g p)⁻¹) ⟩
      ⌜ δ g ⌝ (⌜ δ g ⌝ p) ＝⟨ δ-involutive g p ⟩
      p                   ∎
 
@@ -345,7 +332,7 @@ which amounts to the principle of excluded middle.
       ϕ' : (P → 𝟘 {𝓣}) → 𝟘 {𝓣}
       ϕ' u = 𝟘-elim (ϕ (λ p → 𝟘-elim (u p)))
 
-    III : EM 𝓣
+    III : (P : Set 𝓣) → is-prop P →  P + ¬ P
     III = DNE-gives-EM fe II
 
 \end{code}
