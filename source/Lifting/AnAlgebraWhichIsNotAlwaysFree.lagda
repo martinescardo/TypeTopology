@@ -198,7 +198,7 @@ constantly ⊥.
     l : 𝓛 G
     l = (P , (λ (_ : P) → g) , i)
 
-    I = h (⨆ i ϕ)     ＝⟨ h-is-hom P i (λ _ → η g) ⟩
+    I = h (⨆ i ϕ)     ＝⟨ h-is-hom P i ϕ ⟩
         ι g ⇒ h (η g) ＝⟨ ap (ι g ⇒_) (h-extends-ι g) ⟩
         ι g ⇒ ι g     ＝⟨ anything-implies-itself-is-⊤ pe (ι g) ⟩
         ⊤Ω            ＝⟨  h-at-⊥-is-⊤ ⁻¹ ⟩
