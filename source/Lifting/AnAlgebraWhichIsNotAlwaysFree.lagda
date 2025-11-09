@@ -242,7 +242,7 @@ And from this we conclude that the set G has at most one element.
         ι g₁     ＝⟨ (h-extends-ι g₁)⁻¹ ⟩
         h (η g₁) ∎
 
-    II : {!g₀ ＝ g₁!}
+    II : g₀ ＝ g₁
     II = embeddings-are-lc η
           (η-is-embedding pe fe fe fe)
           (equivs-are-lc h h-is-equiv I)
