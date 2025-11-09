@@ -62,6 +62,10 @@ module Lifting.AnAlgebraWhichIsNotAlwaysFree
         (pe : Prop-Ext)
        where
 
+private
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+
 open import Higgs.InvolutionTheorem hiding (Ω)
 open import Lifting.Algebras 𝓣
 open import Lifting.Construction 𝓣
@@ -168,7 +172,7 @@ principle of excluded middle, that h is an equivalence.
 
 \begin{code}
 
- module _ (h-is-equiv : is-equiv h) where
+ module assumption (h-is-equiv : is-equiv h) where
 
   𝕙 : 𝓛 G ≃ Ω
   𝕙 = h , h-is-equiv
@@ -183,8 +187,8 @@ constantly ⊥.
 
 \begin{code}
 
-  ι-is-contanstly-⊥ : (g : G) → ι g ＝ ⊥Ω
-  ι-is-contanstly-⊥ g = III
+  ι-is-constantly-⊥ : (g : G) → ι g ＝ ⊥Ω
+  ι-is-constantly-⊥ g = III
    where
     P : 𝓣 ̇
     P = ι g holds
@@ -221,8 +225,8 @@ And from this we conclude that the set G has at most one element.
   G-is-prop g₀ g₁ = II
    where
     I = h (η g₀) ＝⟨ h-extends-ι g₀ ⟩
-        ι g₀     ＝⟨ ι-is-contanstly-⊥ g₀ ⟩
-        ⊥Ω       ＝⟨ (ι-is-contanstly-⊥ g₁)⁻¹ ⟩
+        ι g₀     ＝⟨ ι-is-constantly-⊥ g₀ ⟩
+        ⊥Ω       ＝⟨ (ι-is-constantly-⊥ g₁)⁻¹ ⟩
         ι g₁     ＝⟨ (h-extends-ι g₁)⁻¹ ⟩
         h (η g₁) ∎
 
@@ -290,7 +294,7 @@ explicit description and characterization.
   δ-charac : (g : G) → (p : Ω) → ⌜ δ g ⌝ p ＝  ⇁ p
   δ-charac g p = transport
                   (λ - → ⌜ δ g ⌝ p ＝ (p ⇒ -))
-                  (ι-is-contanstly-⊥ g)
+                  (ι-is-constantly-⊥ g)
                   (δ-explicitly g p)
 
 \end{code}
@@ -360,7 +364,7 @@ principle of excluded middle!
   G-is-EM : G ≃ EM 𝓣
   G-is-EM = logically-equivalent-props-are-equivalent
              G-is-prop
-             (EM-is-prop (λ 𝓤 𝓥 → fe {𝓤} {𝓥}))
+             (EM-is-prop fe')
              G-pointed-gives-excluded-middle
              excluded-middle-gives-G-pointed
 
@@ -411,7 +415,7 @@ Now we can use G to produce an element of 𝓛 G.
     I f = G-is-nonempty G-is-empty
      where
       G-is-empty : ¬ G
-      G-is-empty g = ⊥-doesnt-hold (transport _holds (ι-is-contanstly-⊥ g) II)
+      G-is-empty g = ⊥-doesnt-hold (transport _holds (ι-is-constantly-⊥ g) II)
        where
         II : ι g holds
         II = f g
@@ -420,7 +424,7 @@ Now we can use G to produce an element of 𝓛 G.
   l₀-partial-charac g =
    equivs-are-lc h h-is-equiv (
     h l₀    ＝⟨ h-at-l₀' ⟩
-    ⊥Ω      ＝⟨ (ι-is-contanstly-⊥ g)⁻¹ ⟩
+    ⊥Ω      ＝⟨ (ι-is-constantly-⊥ g)⁻¹ ⟩
     ι g     ＝⟨ (h-extends-ι g)⁻¹ ⟩
     h (η g) ∎)
 
