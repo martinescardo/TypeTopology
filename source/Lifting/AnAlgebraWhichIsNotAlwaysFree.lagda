@@ -234,15 +234,18 @@ And from this we conclude that the set G has at most one element.
 \begin{code}
 
   G-is-prop : is-prop G
-  G-is-prop g₀ g₁ = embeddings-are-lc η
-                     (η-is-embedding pe fe fe fe)
-                     (equivs-are-lc h h-is-equiv I)
+  G-is-prop g₀ g₁ = II
    where
     I = h (η g₀) ＝⟨ h-extends-ι g₀ ⟩
         ι g₀     ＝⟨ ι-is-contanstly-⊥ g₀ ⟩
         ⊥Ω       ＝⟨ (ι-is-contanstly-⊥ g₁)⁻¹ ⟩
         ι g₁     ＝⟨ (h-extends-ι g₁)⁻¹ ⟩
         h (η g₁) ∎
+
+    II : {!g₀ ＝ g₁!}
+    II = embeddings-are-lc η
+          (η-is-embedding pe fe fe fe)
+          (equivs-are-lc h h-is-equiv I)
 
 \end{code}
 
