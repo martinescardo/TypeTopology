@@ -178,7 +178,8 @@ principle of excluded middle, that h is an equivalence.
 
 \end{code}
 
-With this assumption, we conclude that ι : G → Ω is constantly ⊥.
+With this assumption, we conclude that our assumed map ι : G → Ω is
+constantly ⊥.
 
 \begin{code}
 
