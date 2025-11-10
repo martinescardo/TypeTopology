@@ -737,7 +737,7 @@ Added 6th Feb 2025 by Martin Escardo.
 
 \begin{code}
 
-module local-shoice
+module local-choice
         (pt : propositional-truncations-exist)
         where
 
