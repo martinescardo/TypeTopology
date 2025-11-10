@@ -963,7 +963,7 @@ above. Indeed, the injectivity proof mirrors the above construction for Graph.
 
 open import UF.Subsingletons-Properties
 
-module _ (R : 𝓥 ̇  ) where
+module _ (R : 𝓥 ̇ ) where
 
  Graph' : (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ̇
  Graph' 𝓤 = Σ X ꞉ 𝓤 ̇  , (X → X → R)
