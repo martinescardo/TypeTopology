@@ -1095,12 +1095,12 @@ module _
      d : Σ A → Σ A → ℝ
      d (h₁ , a₁) (h₂ , a₂) = α h₁ (τ a₁) (τ a₂)
 
-     generalized-lemma : {h₁ h₂ : p holds} {a₁ : A h₁} {a₂ : A h₂}
-                         (e₁ : h₂ ＝ h₁) (e₂ : h₁ ＝ h₁)
-                         (e₃ : h₂ ＝ h₂) (e₄ : h₁ ＝ h₂)
-                       → α h₁ (transport A e₁ a₂) (transport A e₂ a₁)
-                       ＝ α h₂ (transport A e₃ a₂) (transport A e₄ a₁)
-     generalized-lemma {h₁} {h₂} {a₁} {a₂} refl e₂ e₃ e₄ =
+     lemma : {h₁ h₂ : p holds} {a₁ : A h₁} {a₂ : A h₂}
+             (e₁ : h₂ ＝ h₁) (e₂ : h₁ ＝ h₁)
+             (e₃ : h₂ ＝ h₂) (e₄ : h₁ ＝ h₂)
+           → α h₁ (transport A e₁ a₂) (transport A e₂ a₁)
+             ＝ α h₂ (transport A e₃ a₂) (transport A e₄ a₁)
+     lemma {h₁} {h₂} {a₁} {a₂} refl e₂ e₃ e₄ =
       ap₂ (α h₂)
           ((transport-over-prop' (holds-is-prop p) e₃) ⁻¹)
           (ap (λ - → transport A - a₁)
@@ -1112,11 +1112,11 @@ module _
 
      dₚ-equals-d-left : {h₁ h₂ : p holds} {a₁ : A h₁} {a₂ : A h₂}
                       → dₚ (τ a₁) a₂ ＝ d (h₁ , a₁) (h₂ , a₂)
-     dₚ-equals-d-left = generalized-lemma i refl i i
+     dₚ-equals-d-left = lemma i refl i i
 
      dₚ-equals-d-right : {h₁ h₂ : p holds} {a₁ : A h₁} {a₂ : A h₂}
                        → dₚ a₁ (τ a₂) ＝ d (h₁ , a₁) (h₂ , a₂)
-     dₚ-equals-d-right = generalized-lemma refl refl i refl
+     dₚ-equals-d-right = lemma refl refl i refl
 
      _ : σ p A α ＝ d
      _ = refl -- Which is crucial for the proof below to work.
@@ -1125,14 +1125,15 @@ module _
      I x@(h₁ , a) y@(h₂ , a') = I₁ , I₂
       where
        I₁ : d x y ＝ 0ℝ → x ＝ y
-       I₁ e = to-Σ-＝ (i , lr-implication (dₚ-reflexive (τ a) a') (dₚ-equals-d-left ∙ e))
+       I₁ e = to-Σ-＝ (i , lr-implication (dₚ-reflexive (τ a) a')
+                                          (dₚ-equals-d-left ∙ e))
        I₂ : x ＝ y → d x y ＝ 0ℝ
        I₂ refl = rl-implication (dₚ-reflexive (τ a) (τ a)) refl
 
      II : symmetry (Σ A) d
      II (h₁ , a₁) (h₂ , a₂) =
       dₚ {h₁} (τ a₁) (τ a₂) ＝⟨ dₚ-symmetric (τ a₁) (τ a₂) ⟩
-      dₚ {h₁} (τ a₂) (τ a₁) ＝⟨ generalized-lemma i i i i ⟩
+      dₚ {h₁} (τ a₂) (τ a₁) ＝⟨ lemma i i i i ⟩
       dₚ {h₂} (τ a₂) (τ a₁) ∎
 
      III : triangle-inequality (Σ A) (σ p A α)
@@ -1147,7 +1148,7 @@ module _
          lem : (e₁ : h₁ ＝ h₂) (e₂ : h₃ ＝ h₂)
              → dₚ {h₂} (transport A e₁ a₁) (transport A e₂ a₃)
                ＝ d (h₁ , a₁) (h₃ , a₃)
-         lem refl refl = generalized-lemma refl refl i i
+         lem refl refl = lemma refl refl i i
 
  ainjectivity-of-Metric-Space
   : ainjective-type (Metric-Space (𝓤₁ ⊔ 𝓤)) (𝓤₁ ⊔ 𝓤) (𝓤₁ ⊔ 𝓤)
