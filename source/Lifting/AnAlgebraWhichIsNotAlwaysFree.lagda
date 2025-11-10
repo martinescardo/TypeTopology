@@ -1,4 +1,4 @@
-Martin Escardo, Novemeber 2025.
+Martin Escardo, 7-8 Novemeber 2025.
 
 Not all algebras of the partial-map classifier (aka lifting) monad are free.
 
