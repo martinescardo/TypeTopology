@@ -12,7 +12,8 @@ InjectiveTypes.Sigma, which also arises as a generalization of the
 above original file.
 
 Added 5 November 2025 by Tom de Jong: The type of metric spaces is
-injective and this relies on the generalizations developed here.
+injective and this relies on the generalizations developed here. This
+is the first example that make uses of the added generality of this file.
 
 \begin{code}
 
@@ -122,10 +123,6 @@ universes-are-flabby-Σ = to-aflabby universes-are-Flabby-Σ
 
 \end{code}
 
-In this file we apply the above constructions only for the case of Π,
-but we include those for Σ for the sake illustration (and perhaps for
-future use).
-
 We now work with an arbitrary notion S of structure on 𝓤. E.g. for
 monoids we will take S X := X → X → X, the type of the multiplication
 operation.
@@ -156,7 +153,8 @@ data.
 \end{code}
 
 We will apply this to get our desired examples with ϕ taken to be the
-above canonical Π-flabby structure on the universe.
+above canonical Π-flabby structure on the universe in most cases, and
+at least one with the canonical Σ-flabby structure.
 
 Next we want to simplify working with compatibility data (as defined
 in the module InjectiveTypes.Sigma), where we avoid transports by
@@ -328,10 +326,9 @@ try to record this explicitly when we do so).
 
 \end{code}
 
-For our examples below, we only need the above functions ρΠ,
-compatibility-data-Π and Π-construction, but we take the opportunity
-to remark that we also have the following, with Π replaced by Σ (for
-which we don't have any application so far).
+For most examples below, we only need the above functions ρΠ,
+compatibility-data-Π and Π-construction, but at least one of them uses
+their Σ versions defined below.
 
 \begin{code}
 
