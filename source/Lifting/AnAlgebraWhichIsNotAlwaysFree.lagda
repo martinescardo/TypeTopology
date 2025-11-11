@@ -86,6 +86,10 @@ open import UF.SubtypeClassifier-Properties
 open Implication fe renaming (¬ₚ_ to ⇁_ ; ¬¬ₚ_ to ⇁⇁_ ; ¬¬¬ₚ_ to ⇁⇁⇁_)
 open Universal fe
 
+private
+ Ω : 𝓣 ⁺ ̇
+ Ω = Ω-of-universe 𝓣
+
 \end{code}
 
 We work with a hypothetical set G of generators, and an inclusion of
