@@ -900,6 +900,9 @@ join-construction paper https://arxiv.org/abs/1701.07538.
 
 \begin{code}
 
+_is-locally_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
+X is-locally 𝓥 small = (x y : X) → (x ＝ y) is 𝓥 small
+
 is-locally-small : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-locally-small X = (x y : X) → is-small (x ＝ y)
 
@@ -923,45 +926,45 @@ General machinery for dealing with local smallness:
 
 \begin{code}
 
-_＝⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
+_＝⟦_⟧_ : {X : 𝓤 ̇ } → X → X is-locally 𝓥 small → X → 𝓥 ̇
 x ＝⟦ ls ⟧ y = resized (x ＝ y) (ls x y)
 
-Id⟦_⟧ : {X : 𝓤 ⁺ ̇ } → is-locally-small X → X → X → 𝓤 ̇
+Id⟦_⟧ : {X : 𝓤 ̇ } → X is-locally 𝓥 small → X → X → 𝓥 ̇
 Id⟦ ls ⟧ x y = x ＝⟦ ls ⟧ y
 
-＝⟦_⟧-gives-＝ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X}
+＝⟦_⟧-gives-＝ : {X : 𝓤 ̇ } (ls : X is-locally 𝓥 small) {x y : X}
                → x ＝⟦ ls ⟧ y → x ＝ y
 ＝⟦ ls ⟧-gives-＝ {x} {y} = ⌜ resizing-condition (ls x y) ⌝
 
-＝-gives-＝⟦_⟧ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X}
+＝-gives-＝⟦_⟧ : {X : 𝓤 ̇ } (ls : X is-locally 𝓥 small) {x y : X}
                → x ＝ y → x ＝⟦ ls ⟧ y
 ＝-gives-＝⟦ ls ⟧ {x} {y} = ⌜ resizing-condition (ls x y) ⌝⁻¹
 
-＝⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x : X} → x ＝⟦ ls ⟧ x
+＝⟦_⟧-refl : {X : 𝓤 ̇ } (ls : X is-locally 𝓥 small) {x : X} → x ＝⟦ ls ⟧ x
 ＝⟦ ls ⟧-refl {x} = ⌜ ≃-sym (resizing-condition (ls x x)) ⌝ refl
 
-＝⟦_⟧-sym : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X}
+＝⟦_⟧-sym : {X : 𝓤 ̇ } (ls : X is-locally 𝓥 small) {x y : X}
           → x ＝⟦ ls ⟧ y
           → y ＝⟦ ls ⟧ x
 ＝⟦ ls ⟧-sym p = ＝-gives-＝⟦ ls ⟧ (＝⟦ ls ⟧-gives-＝ p ⁻¹)
 
-_≠⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
+_≠⟦_⟧_ : {X : 𝓤 ̇ } → X → X is-locally 𝓥 small → X → 𝓥 ̇
 x ≠⟦ ls ⟧ y = ¬ (x ＝⟦ ls ⟧ y)
 
-≠⟦_⟧-irrefl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x : X} → ¬ (x ≠⟦ ls ⟧ x)
+≠⟦_⟧-irrefl : {X : 𝓤 ̇ } (ls : X is-locally 𝓥 small) {x : X} → ¬ (x ≠⟦ ls ⟧ x)
 ≠⟦ ls ⟧-irrefl {x} ν = ν ＝⟦ ls ⟧-refl
 
-≠⟦_⟧-sym : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X}
+≠⟦_⟧-sym : {X : 𝓤 ̇ } (ls : X is-locally 𝓥 small) {x y : X}
          → x ≠⟦ ls ⟧ y
          → y ≠⟦ ls ⟧ x
 ≠⟦ ls ⟧-sym {x} {y} n = λ (p : y ＝⟦ ls ⟧ x) → n (＝⟦ ls ⟧-sym p)
 
-≠-gives-≠⟦_⟧ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X}
+≠-gives-≠⟦_⟧ : {X : 𝓤 ̇ } (ls : X is-locally 𝓥 small) {x y : X}
              → x ≠ y
              → x ≠⟦ ls ⟧ y
 ≠-gives-≠⟦ ls ⟧ = contrapositive ＝⟦ ls ⟧-gives-＝
 
-≠⟦_⟧-gives-≠ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X}
+≠⟦_⟧-gives-≠ : {X : 𝓤 ̇ } (ls : X is-locally 𝓥 small) {x y : X}
              → x ≠⟦ ls ⟧ y → x ≠ y
 ≠⟦ ls ⟧-gives-≠ = contrapositive ＝-gives-＝⟦ ls ⟧
 
@@ -1011,15 +1014,6 @@ subtype-is-locally-small⁻ A-is-prop-valued X-is-ls (x , a) (y , b) = γ
 
 TODO. Generalize the above to resize (the values of) A as well.
 
-We generalize local smallness.
-
-\begin{code}
-
-_is-locally_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
-X is-locally 𝓥 small = (x y : X) → (x ＝ y) is 𝓥 small
-
-\end{code}
-
 Added by Ian Ray 11th September 2024.
 
 If X is 𝓥-small then it is locally 𝓥-small.
@@ -1037,7 +1031,7 @@ small-implies-locally-small X 𝓥 (Y , e) x x' =
 
 \end{code}
 
-Added by Ian Ray 18th August 2025. 
+Added by Ian Ray 18th August 2025.
 
 \begin{code}
 
