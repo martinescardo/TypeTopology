@@ -57,8 +57,9 @@ open import UF.Sets
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
 
-Ω : 𝓣 ⁺ ̇
-Ω = Ω-of-universe 𝓣
+private
+ Ω : 𝓣 ⁺ ̇
+ Ω = Ω-of-universe 𝓣
 
 private
  sum : {P : 𝓣 ̇ } → is-prop P → (P → Ω) → Ω
