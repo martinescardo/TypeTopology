@@ -169,6 +169,9 @@ module _
 
 \end{code}
 
+TODO. The above just be placed in a better home, as it is not specific
+to what we are doing here.
+
 We give names to the projections.
 
 \begin{code}
