@@ -255,7 +255,7 @@ I hadn't looked at Gӧdel-Dummett logic before.
 
 I came across this as follows.
 
-In univalent foundations, the propositional of a type X can be defined as
+In univalent foundations, the propositional truncation of a type X can be defined as
 
    ∥ X ∥ = (P : 𝓤) → is-prop P → (X → P) → P.
 
