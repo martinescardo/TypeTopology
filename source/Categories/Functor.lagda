@@ -7,7 +7,6 @@ Definition of functor
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (_∘_ ; id)
-open import UF.FunExt
 
 module Categories.Functor where
 
