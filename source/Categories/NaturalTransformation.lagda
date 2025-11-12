@@ -9,10 +9,10 @@ Definition of natural transformation
 open import MLTT.Spartan hiding (_∘_ ; id)
 open import UF.FunExt
 
-module Categories.NaturalTransformation (fe : Fun-Ext) where
+module Categories.NaturalTransformation where
 
-open import Categories.Type fe
-open import Categories.Functor fe
+open import Categories.Type
+open import Categories.Functor
 
 \end{code}
 

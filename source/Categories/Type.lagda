@@ -1,7 +1,8 @@
 Anna Williams, 17 October 2025
 
 Definitions of:
- * precategory
+ * wild category
+ * pre category
  * category
 
 \begin{code}
@@ -21,12 +22,12 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 
-module Categories.Type (fe : Fun-Ext) where
+module Categories.Type where
 
 \end{code}
 
 We start by defining the notion of a wild category.
-This consists of the usual components of a (set theoretic) category,
+This consists of the usual components of a category,
 which is as follows:
 
 - A collection of objects, obj
@@ -46,7 +47,7 @@ with the following axioms
 \begin{code}
 
 record WildCategory (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇  where
- constructor make
+ constructor wildcat-make
  field
   obj : 𝓤 ̇
   hom : obj → obj → 𝓥 ̇
@@ -77,16 +78,25 @@ open WildCategory {{...}} public hiding (obj)
 obj : (W : WildCategory 𝓤 𝓥) → 𝓤 ̇
 obj = WildCategory.obj
 
-wildcat-comp : (W : WildCategory 𝓤 𝓥)
+wildcat-comp-explicit : (W : WildCategory 𝓤 𝓥)
           {a b c : obj W}
           → hom {{W}} b c
           → hom {{W}} a b
           → hom {{W}} a c
-wildcat-comp W g f = _∘_{{W}} g f
+wildcat-comp-explicit W g f = _∘_{{W}} g f
 
-syntax wildcat-comp P g f = g ∘⟨ P ⟩ f
+syntax wildcat-comp-explicit P g f = g ∘⟨ P ⟩ f
 
-infixl 5 wildcat-comp
+infixr 5 wildcat-comp-explicit
+
+wildcat-comp : {{W : WildCategory 𝓤 𝓥}}
+               {a b c : obj W}
+             → hom b c
+             → hom a b
+             → hom a c
+wildcat-comp g f = g ∘ f
+
+infixr 5 wildcat-comp
 
 \end{code}
 
@@ -113,22 +123,15 @@ l-inverse : {{ W : WildCategory 𝓤 𝓥 }}
             {a b : obj W}
             {f : hom {{W}} a b}
             (iso : is-iso f)
-          → (inv iso) ∘ f ＝ id 
+          → inv iso ∘ f ＝ id 
 l-inverse iso = pr₁ (pr₂ iso)
 
 r-inverse : {{ W : WildCategory 𝓤 𝓥 }}
             {a b : obj W}
             {f : hom a b}
             (iso : is-iso f)
-          → f ∘ (inv iso) ＝ id
+          → f ∘ inv iso ＝ id
 r-inverse iso = pr₂ (pr₂ iso)
-
-is-inverse : {{ W : WildCategory 𝓤 𝓥 }}
-            {a b : obj W}
-            {f : hom a b}
-            (iso : is-iso f)
-          → ((inv iso) ∘ f ＝ id) × (f ∘ (inv iso) ＝ id)
-is-inverse = pr₂
 
 mk-iso : {{ W : WildCategory 𝓤 𝓥 }}
          {a b : obj W}
@@ -142,12 +145,12 @@ mk-iso inv l-id r-id = (inv , l-id , r-id)
 _≅_ : {{ W : WildCategory 𝓤 𝓥 }} (a b : obj W) → 𝓥 ̇
 a ≅ b = Σ f ꞉ hom a b , is-iso f
 
-wildcat-iso : (W : WildCategory 𝓤 𝓥)
+wildcat-iso-explicit : (W : WildCategory 𝓤 𝓥)
               (a b : obj W)
             → 𝓥 ̇
-wildcat-iso W a b = _≅_ {{W}} a b
+wildcat-iso-explicit W a b = _≅_ {{W}} a b
 
-syntax wildcat-iso W a b = a ≅⟨ W ⟩ b
+syntax wildcat-iso-explicit W a b = a ≅⟨ W ⟩ b
 
 \end{code}
 
@@ -159,10 +162,12 @@ the type homomorphism between two objects is a set.
 is-precategory : (W : WildCategory 𝓤 𝓥) → (𝓤 ⊔ 𝓥) ̇
 is-precategory W = (a b : obj W) → is-set (hom {{W}} a b)
 
-being-precategory-is-prop : (W : WildCategory 𝓤 𝓥) → is-prop (is-precategory W)
-being-precategory-is-prop W p q = Π-is-prop fe
-                                   (λ a → Π-is-prop fe
-                                    (λ b → being-set-is-prop fe)) _ _
+being-precat-is-prop : (fe : Fun-Ext)
+                       (W : WildCategory 𝓤 𝓥)
+                     → is-prop (is-precategory W)
+being-precat-is-prop fe W p q = Π-is-prop fe
+                                 (λ a → Π-is-prop fe
+                                  (λ b → being-set-is-prop fe)) _ _
 
 Precategory : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 Precategory 𝓤 𝓥 = Σ W ꞉ WildCategory 𝓤 𝓥 , is-precategory W
@@ -212,24 +217,25 @@ being-iso-is-prop : {{P : Precategory 𝓤 𝓥}}
                     {a b : obj ⟨ P ⟩}
                     (f : hom {{⟨ P ⟩}} a b)
                   → is-prop (is-iso {{⟨ P ⟩}} f)
-being-iso-is-prop {{P}} {a} {b} f x y = inv-is-lc x y inverse-eq
+being-iso-is-prop {{P}} {a} {b} f x y = inv-is-lc x y (inverse-eq {{⟨ P ⟩}} x y)
  where  
-  inverse-eq : inv {{⟨ P ⟩}} x ＝ inv {{⟨ P ⟩}} y
-  inverse-eq = x⁻¹                               ＝⟨ i ⟩
-               x⁻¹ ∘⟨ ⟨ P ⟩ ⟩ (id {{⟨ P ⟩}})     ＝⟨ ii ⟩
-               x⁻¹ ∘⟨ ⟨ P ⟩ ⟩ (f ∘⟨ ⟨ P ⟩ ⟩ y⁻¹) ＝⟨ iii ⟩
-               (x⁻¹ ∘⟨ ⟨ P ⟩ ⟩ f) ∘⟨ ⟨ P ⟩ ⟩ y⁻¹ ＝⟨ iv ⟩
-               (id {{⟨ P ⟩}}) ∘⟨ ⟨ P ⟩ ⟩ y⁻¹     ＝⟨ v ⟩
-               y⁻¹ ∎
+  inverse-eq : {{W : WildCategory _ _}}
+               {a b : obj W}
+               {f : hom a b}
+               (x y : is-iso f)
+             → inv x ＝ inv y
+  inverse-eq {{W}} {a} {b} {f} x y = inv x               ＝⟨ i ⟩
+                                     inv x ∘ id          ＝⟨ ii ⟩
+                                     inv x ∘ (f ∘ inv y) ＝⟨ iii ⟩
+                                     (inv x ∘ f) ∘ inv y ＝⟨ iv ⟩
+                                     id ∘ inv y          ＝⟨ v ⟩
+                                     inv y               ∎
    where
-    x⁻¹ = inv {{⟨ P ⟩}} x
-    y⁻¹ = inv {{⟨ P ⟩}} y
-
-    i = (right-id {{⟨ P ⟩}} x⁻¹)⁻¹
-    ii = ap (λ y → x⁻¹ ∘⟨ ⟨ P ⟩ ⟩ y) ((r-inverse {{⟨ P ⟩}} y)⁻¹)
-    iii = assoc {{⟨ P ⟩}}
-    iv = ap (λ x → x ∘⟨ ⟨ P ⟩ ⟩ y⁻¹) (l-inverse {{⟨ P ⟩}} x)
-    v = left-id {{⟨ P ⟩}} y⁻¹
+    i   = (right-id (inv x))⁻¹
+    ii  = ap (λ - → inv x ∘ -) (r-inverse y)⁻¹
+    iii = assoc
+    iv  = ap (λ - → - ∘ inv y) (l-inverse x)
+    v   = left-id (inv y)
 
 \end{code}
 
@@ -273,12 +279,14 @@ category to be a precategory where identification is equivalent to isomorphism.
 is-category : (P : Precategory 𝓤 𝓥) → (𝓤 ⊔ 𝓥) ̇ 
 is-category P = (a b : obj ⟨ P ⟩) → is-equiv (id-to-iso {{⟨ P ⟩}} a b)
 
-being-category-is-prop : (P : Precategory 𝓤 𝓥) → is-prop (is-category P)
-being-category-is-prop P x y = Π-is-prop fe (λ x → Π-is-prop fe (I x)) _ _
+being-cat-is-prop : (fe : Fun-Ext)
+                    (P : Precategory 𝓤 𝓥)
+                  → is-prop (is-category P)
+being-cat-is-prop fe P x y = Π-is-prop fe (λ x → Π-is-prop fe (I x)) _ _
  where
   I : (a b : obj ⟨ P ⟩) → is-prop (is-equiv (id-to-iso {{⟨ P ⟩}} a b))
   I a b e e' = being-equiv-is-prop (λ x y → fe {x} {y})
-                                    (id-to-iso {{⟨ P ⟩}} a b) e e'
+                                      (id-to-iso {{⟨ P ⟩}} a b) e e'
 
 Category : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
 Category 𝓤 𝓥 = Σ P ꞉ Precategory 𝓤 𝓥 , is-category P
