@@ -80,7 +80,7 @@ two different ways, each one with a unique structure map making it
 into an algebra, both in the category of sets and in the category of
 dcpos.
 
-[1] John Sterling. Tensorial structure of the lifting doctrine in
+[1] Jon Sterling. Tensorial structure of the lifting doctrine in
     constructive domain theory. Originally 28 Dec 2023, last revised 30
     Jan 2025. https://doi.org/10.48550/arXiv.2312.17023
 
