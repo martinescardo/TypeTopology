@@ -42,7 +42,7 @@ as an open problem.
 
 Discussion added 16 November 2025.
 
-John Sterling [1] previously conjectured that the same is the case for
+Jon Sterling [1] previously conjectured that the same is the case for
 the lifting monad in the category of dcpos [3], namely that there are some
 toposes in which there is an algebra of the lifting monad in the
 category of dcpos which is not free.
