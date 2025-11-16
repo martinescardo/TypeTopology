@@ -3,7 +3,7 @@ the discussion 16 November 2025.
 
 It is well known that in a boolean elementary (1-)topos, every algebra
 of the lifting (aka partial-map classifier) monad is free, and the
-proof is easy.
+proof is easy [1] [2].
 
 We show that not all algebras are free in an arbitrary elementary topos.
 
