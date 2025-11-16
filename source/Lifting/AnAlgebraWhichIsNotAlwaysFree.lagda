@@ -1,4 +1,4 @@
-Martin Escardo, 7-8 Novemeber 2025, with revisions and additions to
+Martin Escardo, 7-8 November 2025, with revisions and additions to
 the discussion 16 November 2025.
 
 It is well known that in a boolean elementary (1-)topos, every algebra
