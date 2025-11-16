@@ -66,7 +66,8 @@ Hence the answer for the category of sets also gives an answer for the
 category of dcpos in any elementary topos.
 
 So the above discussion settles Sterling's conjecture positively, by
-providing an example of a dcpo lifting algebra which is not free.
+providing an example of a dcpo lifting algebra which is not always
+free.
 
 TODO. It would be good to formalize this here.
 
