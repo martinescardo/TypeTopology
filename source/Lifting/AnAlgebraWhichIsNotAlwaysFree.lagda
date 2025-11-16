@@ -349,7 +349,7 @@ explicit description and characterization.
   δ-explicitly : (g : G) (p : Ω) → ⌜ δ g ⌝ p ＝ (p ⇒ ι g)
   δ-explicitly g p = refl
 
-  δ-charac : (g : G) → (p : Ω) → ⌜ δ g ⌝ p ＝  ⇁ p
+  δ-charac : (g : G) → (p : Ω) → ⌜ δ g ⌝ p ＝ ⇁ p
   δ-charac g p = transport
                   (λ - → ⌜ δ g ⌝ p ＝ (p ⇒ -))
                   (ι-is-constantly-⊥ g)
@@ -401,7 +401,7 @@ Because G is nonempty, we conclude that ¬¬ EM holds.
 
   the-double-negation-of-excluded-middle-holds : ¬¬ EM 𝓣
   the-double-negation-of-excluded-middle-holds =
-    ¬¬-functor G-pointed-gives-excluded-middle G-is-nonempty
+   ¬¬-functor G-pointed-gives-excluded-middle G-is-nonempty
 
 \end{code}
 
@@ -431,11 +431,9 @@ principle of excluded middle!
 This concludes the proof of all claims made above.
 
 We originally developed some of the above ideas on paper, and then
-more ideas here in Agda.
-
-We conclude with some leftovers, which ended up not being used in the
-proof of the above above claims, but which may be interesting in their
-own right.
+more ideas here in Agda. We conclude with some leftovers, which ended
+up not being used in the proof of the above above claims, but which
+may be interesting in their own right.
 
 \begin{code}
 
