@@ -331,7 +331,7 @@ this, as we already know that G is a proposition.
     u (P , φ , i) = (P , i)
 
     v : Ω → 𝓛 G
-    v (P , i) = P , (λ z → g) , i
+    v (P , i) = P , (λ _ → g) , i
 
     vu : v ∘ u ∼ id
     vu (P , φ , i) = from-⋍ pe fe fe ((id , id) , (λ p → G-is-prop g (φ p)))
