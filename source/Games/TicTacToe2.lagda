@@ -1,7 +1,6 @@
 Martin Escardo, Paulo Oliva, 2-27 July 2021
 
-Example: Tic-tac-toe. We have two versions. The other version is in
-another file.
+Example: Tic-tac-toe. We have more versions in other files.
 
 \begin{code}
 
