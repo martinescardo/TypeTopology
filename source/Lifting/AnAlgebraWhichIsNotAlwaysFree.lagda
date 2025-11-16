@@ -8,7 +8,7 @@ proof is easy [1] [2].
 We show that not all algebras are free in an arbitrary elementary topos.
 
 An example where the failure occurs is Johnstone's Topological
-topos. More generally, we show that this is the case in any topos in
+Topos. More generally, we show that this is the case in any topos in
 which the negation of the principle of excluded middle holds.
 
 The object Ω of truth values is an algebra in (at least) two ways,
