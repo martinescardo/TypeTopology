@@ -10,7 +10,8 @@ and function extensionality.
 open import MLTT.Spartan
 
 module Lifting.Identity
-        (𝓣 𝓤 : Universe)
+        (𝓣 : Universe)
+        {𝓤 : Universe}
         {X : 𝓤 ̇ }
        where
 
