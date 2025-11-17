@@ -30,8 +30,9 @@ generators.
 We show that if this is the case, then
 
  1. G is a subsingleton/proposition/truth value,
- 2. the double negation of the principle of excluded middle holds, and, moreover,
- 3. G ≃ (principle of excluded middle).
+ 2. the insertion of generators ι : G → Ω is constantly ⊥,
+ 3. the double negation of the principle of excluded middle holds, and, moreover,
+ 4. G ≃ (principle of excluded middle).
 
 The proof uses Higgs Involution Theorem.
 
