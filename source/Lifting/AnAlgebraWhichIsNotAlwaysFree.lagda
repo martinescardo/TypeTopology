@@ -106,7 +106,7 @@ open import UF.Subsingletons
 \end{code}
 
 We work with an arbitrary universe 𝓣, and assume function
-extensionality and propostitional extensionality, which are available
+extensionality and propositional extensionality, which are available
 in any 1-topos.
 
 \begin{code}
@@ -127,7 +127,6 @@ open import Lifting.Construction 𝓣
 open import Lifting.EmbeddingDirectly 𝓣
 open import Lifting.Identity 𝓣
 open import Lifting.TwoAlgebrasOnOmega 𝓣 fe pe
-open import UF.Base
 open import UF.ClassicalLogic
 open import UF.Embeddings
 open import UF.Equiv
@@ -138,7 +137,7 @@ open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe ;
                                            ⊤ to ⊤Ω)
 open import UF.SubtypeClassifier-Properties
 
-open Implication fe renaming (¬ₚ_ to ⇁_ ; ¬¬ₚ_ to ⇁⇁_ ; ¬¬¬ₚ_ to ⇁⇁⇁_)
+open Implication fe renaming (¬ₚ_ to ⇁_ ; ¬¬ₚ_ to ⇁⇁_)
 open Universal fe
 
 private
