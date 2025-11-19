@@ -219,7 +219,7 @@ definition of h.
                               → h l ＝ ((P , i) ⇒ (Ɐ p ꞉ P , ι (φ p)))
  useful-characterization-of-h l@(P , φ , i) =
   h l                           ＝⟨ ap h (every-element-of-𝓛-is-a-join l) ⟩
-  h (⨆ i λ _ → l)              ＝⟨ h-is-hom P i (λ _ → l) ⟩
+  h (⨆ i (λ _ → l))            ＝⟨ h-is-hom P i (λ _ → l) ⟩
   (P , i) ⇒ (Ɐ p ꞉ P , ι (φ p)) ∎
 
 \end{code}
