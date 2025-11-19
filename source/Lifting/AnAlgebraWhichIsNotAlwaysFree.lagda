@@ -97,7 +97,7 @@ dcpos.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
