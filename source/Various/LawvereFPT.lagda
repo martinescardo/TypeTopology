@@ -330,7 +330,7 @@ module surjection-version (pt : propositional-truncations-exist) where
    g (B , p) = retract-version.LFPT-＝ {𝓤} {𝓤} p f
 
  Cantor-theorem-for-universes : (A : 𝓥 ̇ )
-                              → (φ : A → (A → 𝓤 ̇ ))
+                                (φ : A → (A → 𝓤 ̇ ))
                               → ¬ is-surjection φ
  Cantor-theorem-for-universes A r h = γ
   where
@@ -602,8 +602,6 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
 
 \end{code}
 
-See also the module Unsafe.Type-in-Type-False.
-
 Added 12 October 2018. The paper
 
  Thierry Coquand, The paradox of trees in type theory
@@ -754,6 +752,8 @@ And in particular, the successor universe 𝓤 ⁺ is not equivalent to 𝓤:
  Corollary {𝓤} e = Theorem ((𝓤 ̇ ), e)
 
 \end{code}
+
+See also the module Unsafe.Type-in-Type-False.
 
 Added 23rd December 2020, simplified 26th December after a suggestion by
 Mike Shulman.
