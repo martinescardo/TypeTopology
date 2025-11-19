@@ -481,8 +481,23 @@ automorphism, in such a way that the section becomes a homomorphism.
 \begin{code}
 
 is-hom : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → 𝓛-alg A → 𝓛-alg B → (A → B) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ̇
-is-hom {𝓤} {𝓥} {A} {B} (∐ᵃ , _ , _) (∐ᵇ , _ , _) h =
+is-hom {𝓤} {𝓥} {A} {B} (∐ᵃ , _) (∐ᵇ , _) h =
  (P : 𝓣 ̇ ) (i : is-prop P) (φ : P → A) → h (∐ᵃ i φ) ＝ ∐ᵇ i (h ∘ φ)
+
+id-is-hom : {A : 𝓤 ̇ } (𝓐 : 𝓛-alg A)
+          → is-hom 𝓐 𝓐 id
+id-is-hom 𝓐 P i φ = refl
+
+∘-is-hom : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
+           (𝓐 : 𝓛-alg A) (𝓑 : 𝓛-alg B) (𝓒 : 𝓛-alg C)
+           (h : A → B) (k : B → C)
+         → is-hom 𝓐 𝓑 h
+         → is-hom 𝓑 𝓒 k
+         → is-hom 𝓐 𝓒 (k ∘ h)
+∘-is-hom (∐ᵃ , _) (∐ᵇ , _) (∐ᶜ , _) h k h-is-hom k-is-hom P i φ =
+ k (h (∐ᵃ i φ))   ＝⟨ ap k (h-is-hom P i φ) ⟩
+ k (∐ᵇ i (h ∘ φ)) ＝⟨ k-is-hom P i (h ∘ φ) ⟩
+ ∐ᶜ i (k ∘ h ∘ φ) ∎
 
 open import UF.Sets
 
@@ -625,11 +640,10 @@ is-𝓛-alg 𝓕 freely-generated-by X with-insertion-of-generators ι eliminati
 Notice that above definition says that precomposition with ι is an
 equivalence.
 
-We name some projections:
-
 \begin{code}
 
-module _ {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F)
+module free-algebra-eliminators
+         {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F)
          (X : 𝓥 ̇ )
          (ι : X → F)
          (𝓦 : Universe)
@@ -639,14 +653,34 @@ module _ {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F)
          {A : 𝓦 ̇ } (i : is-set A) (𝓐 : 𝓛-alg A) (f : X → A)
        where
 
+ private
+  eu : ∃! (f̅ , _) ꞉ Hom 𝓕 𝓐 , f̅ ∘ ι ∼ f
+  eu = 𝓕-is-free i 𝓐 f
+
  unique-hom : F → A
- unique-hom = pr₁ (∃!-witness (𝓕-is-free i 𝓐 f))
+ unique-hom = pr₁ (∃!-witness eu)
 
  unique-hom-is-hom : is-hom 𝓕 𝓐 unique-hom
- unique-hom-is-hom = pr₂ (∃!-witness (𝓕-is-free i 𝓐 f))
+ unique-hom-is-hom = pr₂ (∃!-witness eu)
 
- unique-hom-is-extesion : unique-hom ∘ ι ∼ f
- unique-hom-is-extesion = ∃!-is-witness (𝓕-is-free i 𝓐 f)
+ unique-hom-is-extension : unique-hom ∘ ι ∼ f
+ unique-hom-is-extension = ∃!-is-witness eu
+
+ at-most-one-extending-hom : is-prop (Σ (f̅ , _) ꞉ Hom 𝓕 𝓐 , f̅ ∘ ι ∼ f)
+ at-most-one-extending-hom = singletons-are-props eu
+
+ at-most-one-extending-hom' : ((h , h-is-hom) (k , k-is-hom) : Hom 𝓕 𝓐)
+                            → h ∘ ι ∼ f
+                            → k ∘ ι ∼ f
+                            → h ∼ k
+ at-most-one-extending-hom' 𝕙@(h , h-is-hom) 𝕜@(k , k-is-hom) p q =
+  happly (ap (pr₁ ∘ pr₁) (at-most-one-extending-hom (𝕙 , p) (𝕜 , q)))
+
+ the-only-hom-extension : ((h , h-is-hom) : Hom 𝓕 𝓐)
+                        → h ∘ ι ∼ f
+                        → h ∼ unique-hom
+ the-only-hom-extension 𝕙@(h , h-is-hom) x =
+  at-most-one-extending-hom' 𝕙 (∃!-witness eu) x unique-hom-is-extension
 
 \end{code}
 
@@ -800,10 +834,10 @@ universe:
 
 \begin{code}
 
- _ : {𝓤 : Universe}
-   → is-𝓛-alg free freely-generated-by X
-                   with-insertion-of-generators η
-                   eliminating-at 𝓤
- _ = free-algebra-universal-property
+ 𝓛-is-free-algebra : {𝓤 : Universe}
+                   → is-𝓛-alg free freely-generated-by X
+                                   with-insertion-of-generators η
+                                   eliminating-at 𝓤
+ 𝓛-is-free-algebra = free-algebra-universal-property
 
 \end{code}
