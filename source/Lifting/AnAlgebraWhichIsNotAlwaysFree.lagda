@@ -225,8 +225,9 @@ With this we easily conclude that h maps ⊥ to ⊤.
 
 \end{code}
 
-Now we assume, for the sake of concluding the double negation of the
-principle of excluded middle, that h is an equivalence.
+Now we assume, for the sake of eventually concluding the that double
+negation of the principle of excluded middle holds, that h is an
+equivalence.
 
 \begin{code}
 

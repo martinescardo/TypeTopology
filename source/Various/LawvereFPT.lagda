@@ -79,7 +79,7 @@ section·-gives-section fe r (s , rs·) = s , λ g → dfunext fe (rs· g)
 
 Lawvere's fixed-point combinator for a type X can be defined if we
 have maps r : A → (A → X) and s : (A → X) → A subject to no
-assumptions, but, no show that it produces a fixed point combinator,
+assumptions, but, to show that it produces a fixed point combinator,
 we will assume that s is a pointwise section of r.
 
 \begin{code}
@@ -241,20 +241,24 @@ it was observed here.
 
  \begin{code}
 
- not-no-fp : (fe : funext 𝓤 𝓤₀) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not fe P)
- not-no-fp {𝓤} fe (P , p) = ¬-no-fp (P holds , q)
-  where
-   q : P holds ＝ ¬ (P holds)
-   q = ap _holds p
+ module _ {𝓤 : Universe} (fe : funext 𝓤 𝓤₀) where
 
- cantor-theorem : funext 𝓤 𝓤₀
-                → (A : 𝓥 ̇ )
-                → (r : A → (A → Ω 𝓤))
-                → ¬ has-section· r
- cantor-theorem {𝓤} fe A r (s , rs) = not-no-fp fe not-fp
-  where
-   not-fp : Σ B ꞉ Ω 𝓤 , B ＝ not fe B
-   not-fp = LFPT· r (s , rs) (not fe)
+  ⇁_ : Ω 𝓤 → Ω 𝓤
+  ⇁_ = not fe
+
+  not-no-fp :  ¬ (Σ P ꞉ Ω 𝓤 , P ＝ ⇁ P)
+  not-no-fp (P , p) = ¬-no-fp (P holds , q)
+   where
+    q : P holds ＝ ¬ (P holds)
+    q = ap _holds p
+
+  cantor-theorem : (A : 𝓥 ̇ )
+                 → (r : A → (A → Ω 𝓤))
+                 → ¬ has-section· r
+  cantor-theorem A r (s , rs) = not-no-fp not-fp
+   where
+    not-fp : Σ B ꞉ Ω 𝓤 , B ＝ ⇁ B
+    not-fp = LFPT· r (s , rs) ⇁_
 
 \end{code}
 
