@@ -253,7 +253,7 @@ generators ι.
 
 \end{code}
 
-All we need to reach our conclusions is that the map h is an
+All we need to reach our desired conclusions is that the map h is an
 equivalence, and so our assumption is slightly stronger than needed.
 
 To conclude this, consider the diagram, where 𝓛 G is freely generated
