@@ -1,0 +1,93 @@
+#!/bin/bash
+
+# run from ~/TypeTopology/source
+
+set -euxo pipefail
+
+# Generate html files and deploy them.
+# This is to be run from TypeTopology/source.
+# It assumes that we want to deploy the html pages at ~/martinescardo.github.io/.
+
+rm -rf html
+agda --highlight-occurrences --html AllModulesIndex.lagda
+
+cd html
+
+cp -a Higgs.index.html UF.HiggsInvolutionTheorem.html
+cp -a CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
+cp -a CoNaturals.index.html CoNaturals.html
+cp -a DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html PCFModules.html
+cp -a Factorial.Law.html UF-Factorial.html
+cp -a Fin.ArithmeticViaEquivalence.html ArithmeticViaEquivalence.html
+cp -a Fin.Type.html Fin.html
+cp -a Fin.UniverseInvariance.html UF-Finiteness-Universe-Invariance.html
+cp -a Fin.index.html Fin-Properties.html
+cp -a Games.FiniteHistoryDependent.html FiniteHistoryDependentGames.html
+cp -a Groups.Free.html FreeGroup.html
+cp -a Groups.Free.html FreeGroupOfLargeLocallySmallSet.html
+cp -a InjectiveTypes.index.html InjectiveTypes.html
+cp -a Locales.AdjointFunctorTheoremForFrames.html AdjointFunctorTheoremForFrames.html
+cp -a Locales.CompactRegular.html CompactRegular.html
+cp -a Locales.Frame.html Frame.html
+cp -a Locales.GaloisConnection.html GaloisConnection.html
+cp -a Locales.HeytingImplication.html HeytingImplication.html
+cp -a NotionsOfDecidability.SemiDecidable.html SemiDecidable.html
+cp -a Ordinals.AdditionProperties.html OrdinalArithmetic-Properties.html
+cp -a Ordinals.BuraliForti.html BuraliForti.html
+cp -a Ordinals.Notions.html Ordinal-Notions.html
+cp -a Ordinals.OrdinalOfOrdinals.html OrdinalOfOrdinals.html
+cp -a Ordinals.WellOrderTransport.html OrdinalsWellOrderTransport.html
+cp -a Ordinals.index.html Ordinals.html
+cp -a Slice.Construction.html Slice.html
+cp -a TypeTopology.ADecidableQuantificationOverTheNaturals.html ADecidableQuantificationOverTheNaturals.html
+cp -a TypeTopology.GenericConvergentSequenceCompactness.html ConvergentSequenceCompactness.html
+cp -a TypeTopology.GenericConvergentSequenceCompactness.html ConvergentSequenceSearchable.html
+cp -a TypeTopology.RicesTheoremForTheUniverse.html RicesTheoremForTheUniverse.html
+cp -a TypeTopology.TheTopologyOfTheUniverse.html TheTopologyOfTheUniverse.html
+cp -a UF.Choice.html UF-Choice.html
+cp -a UF.DiscreteAndSeparated.html DiscreteAndSeparated.html
+cp -a UF.HiggsInvolutionTheorem.html Various.HiggsInvolutionTheorem.html
+cp -a UF.Size.html UF-Size.html
+cp -a UF.UniverseEmbedding.html UniverseEmbedding.html
+cp -a UF.Yoneda.html UF-Yoneda.html
+cp -a UF.index.html UF.html
+cp -a Various.Dedekind.html Dedekind.html
+cp -a Various.HiggsInvolutionTheorem.html HiggsInvolutionTheorem.html
+cp -a Various.LawvereFPT.html LawvereFPT.html
+cp -a Various.Types2019.html Types2019.html
+cp -a Various.UnivalenceFromScratch.html UnivalenceFromScratch.html
+
+# From now on (12th Jan 2023), published things should go to
+# ~/martinescardo.github.io/TypeTopology/Published.* Use symlinks as above to
+# create them. NB. Don't use subdirectories because the links in the
+# symlinked html files may break.
+
+# These are linked to in Tom de Jong's PhD thesis (2022) and duplicates some of
+# the above for consistency.
+cp -a DomainTheory.index.html Published.DomainTheory.index.html
+cp -a DomainTheory.Bilimits.Dinfinity.html Published.DomainTheory.Bilimits.Dinfinity.html
+cp -a DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html Published.DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html
+cp -a Lifting.IdentityViaSIP.html Published.Lifting.IdentityViaSIP.html
+cp -a NotionsOfDecidability.SemiDecidable.html Published.NotionsOfDecidability.SemiDecidable.html
+cp -a Slice.Construction.html Published.Slice.Slice.html
+cp -a Ordinals.BuraliForti.html Published.Ordinals.BuraliForti.html
+cp -a Ordinals.OrdinalOfOrdinals.html Published.Ordinals.OrdinalOfOrdinals.html
+cp -a Ordinals.OrdinalOfOrdinalsSuprema.html Published.Ordinals.OrdinalOfOrdinalsSuprema.html
+cp -a Ordinals.Type.html Published.Ordinals.Type.html
+cp -a TypeTopology.CompactTypes.html Published.TypeTopology.CompactTypes.html
+cp -a TypeTopology.Density.html Published.TypeTopology.Density.html
+cp -a UF.DiscreteAndSeparated.html Published.TypeTopology.DiscreteAndSeparated.html
+cp -a TypeTopology.SimpleTypes.html Published.TypeTopology.SimpleTypes.html
+cp -a Quotient.Large-Variation.html Published.UF.Quotient-F.html
+cp -a Quotient.index.html Published.UF.Quotient.html
+cp -a Quotient.index.html Published.UF.Quotient-Replacement.html
+cp -a Quotient.Large.html Published.UF.Large-Quotient.html
+cp -a Various.Dedekind.html Published.Various.Dedekind.html
+
+# Further links using the Published.* scheme
+# Added by Tom de Jong - 31 March 2023, 18 April 2023
+cp -a UF.Size.html Published.UF.Size.html
+cp -a UF.ImageAndSurjection.html Published.UF.ImageAndSurjection.html
+
+# Added by Tom de Jong on 3 October 2023.
+cp -a PCF.Lambda.index.html Published.PCF.Lambda.index.html
