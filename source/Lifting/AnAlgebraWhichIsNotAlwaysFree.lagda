@@ -591,14 +591,12 @@ consequences-of-Ω∀-being-freely-generated
  ×  is-prop G
  ×  ¬ is-empty G
  ×  ((g : G) → ι g ＝ ⊥Ω)
- ×  (G ↔ EM 𝓣)
  ×  (G ≃ EM 𝓣)
 consequences-of-Ω∀-being-freely-generated G G-is-set ι Ω∀-is-free
  = the-double-negation-of-excluded-middle-holds ,
    G-is-prop ,
    G-is-nonempty ,
    ι-is-constantly-⊥ ,
-   (G-pointed-gives-excluded-middle , excluded-middle-gives-G-pointed) ,
    G-is-EM
  where
   open main-results G G-is-set ι
