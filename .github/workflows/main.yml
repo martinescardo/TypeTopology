@@ -35,16 +35,11 @@ jobs:
 
     - name: Run Agda
       id: typecheck
-      uses: ayberkt/agda-github-action@v5.0
+      uses: ayberkt/agda-github-action@type-topology
       with:
         main-file: AllModulesIndex.lagda
         source-dir: source
         unsafe: true
-
-    - name: Copy Agda.css
-      run: |
-        chmod -R 755 source/html || true
-        cp assets/Agda.css source/html/Agda.css
 
     - name: "Save .agdai files"
       id: cache-agdai-save
