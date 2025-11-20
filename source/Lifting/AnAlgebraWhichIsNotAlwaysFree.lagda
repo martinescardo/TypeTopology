@@ -673,4 +673,5 @@ arbitrary topos.
 (*) Luna Strah provided the following proof: EM in the topos of
 sheaves over a topological space is the interior of the intersection
 of all dense opens, which is the dense open set {1} for the Sierpinski
-space, where 1 is the top point in the specialization order, and so ¬¬ EM is validated in the Sierpinski topos, but EM is not.
+space, where 1 is the top point in the specialization order, and so ¬¬
+EM is validated in the Sierpinski topos, but EM is not.
