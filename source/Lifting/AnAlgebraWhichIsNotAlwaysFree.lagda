@@ -609,7 +609,7 @@ consequences-of-Ω∀-being-freely-generated G G-is-set ι Ω∀-is-free
 Notice that there is some redundancy in the conclusions.
 
 Discussion. For interpreting the above results in a 1-topos, notice
-that toposes validade propositional resizing, and so the two universes
+that toposes validate propositional resizing, and so the two universes
 𝓣 and 𝓣⁺ collapse to a single one, and in fact no universe is needed,
 as the only reason 𝓣⁺ arises is that both Ω and 𝓛 G live in 𝓣⁺, rather
 than 𝓣, in the absence of propositional resizing. However, Agda forces
