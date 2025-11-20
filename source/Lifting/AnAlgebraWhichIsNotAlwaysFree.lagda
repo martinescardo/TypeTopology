@@ -1,5 +1,5 @@
 Martin Escardo, 7-8 November 2025, with revisions and additions to
-the discussion 16 November 2025.
+the discussion 16 and 20 November 2025.
 
 It is well known that in a boolean elementary (1-)topos, every algebra
 of the lifting (aka partial-map classifier) monad is free, and the

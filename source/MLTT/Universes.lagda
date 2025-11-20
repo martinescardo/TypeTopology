@@ -73,7 +73,7 @@ single token.
 Moreover, Agda doesn't require the upperscript dot to have a space
 when it is followed by a closing bracket. Compare
 
-  (X : 𝓤 ̇ )
+  (X : 𝓤 ̇)
 
 and
 
