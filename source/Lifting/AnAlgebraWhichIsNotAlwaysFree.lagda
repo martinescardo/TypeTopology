@@ -642,7 +642,7 @@ than 𝓣, in the absence of propositional resizing. However, Agda forces
 us to work with at least one universe, as opposed to MLTT, although
 this is inessential.
 
-We conclude with some questions.
+We conclude with some questions, under the following assumptions:
 
 \begin{code}
 
