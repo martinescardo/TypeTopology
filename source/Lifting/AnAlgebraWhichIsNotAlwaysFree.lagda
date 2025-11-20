@@ -121,6 +121,8 @@ private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
+ 𝓣⁺ = 𝓣 ⁺
+
 open import Higgs.InvolutionTheorem hiding (Ω)
 open import Lifting.Algebras 𝓣
 open import Lifting.Construction 𝓣
@@ -141,7 +143,7 @@ open Implication fe renaming (¬ₚ_ to ⇁_ ; ¬¬ₚ_ to ⇁⇁_)
 open Universal fe
 
 private
- Ω : 𝓣 ⁺ ̇
+ Ω : 𝓣⁺ ̇
  Ω = Ω-of-universe 𝓣
 
 \end{code}
@@ -251,7 +253,7 @@ generators ι.
  module assumption
          (Ω∀-is-free : Ω∀ is-𝓛-alg-freely-generated-by G
                            with-insertion-of-generators ι
-                           eliminating-at (𝓣 ⁺))
+                           eliminating-at 𝓣⁺)
         where
 
 \end{code}
@@ -283,7 +285,7 @@ h⁻¹ being the unique homomorphism extending η along ι.
 \begin{code}
 
   module E = free-algebra-eliminators
-              Ω∀ G ι (𝓣 ⁺) Ω∀-is-free (𝓛-is-set fe fe pe G-is-set) free η
+              Ω∀ G ι 𝓣⁺ Ω∀-is-free (𝓛-is-set fe fe pe G-is-set) free η
 
   h⁻¹ : Ω → 𝓛 G
   h⁻¹ = E.unique-hom
@@ -313,7 +315,7 @@ h⁻¹ being the unique homomorphism extending η along ι.
            (λ _ → refl)
      where
       open free-algebra-eliminators
-            free G η (𝓣 ⁺) 𝓛-is-free-algebra
+            free G η 𝓣⁺ 𝓛-is-free-algebra
             (𝓛-is-set fe fe pe G-is-set) free η
 
     IV : h ∘ h⁻¹ ∼ id
@@ -326,7 +328,7 @@ h⁻¹ being the unique homomorphism extending η along ι.
           (λ _ → refl)
      where
       open free-algebra-eliminators
-            Ω∀ G ι (𝓣 ⁺) Ω∀-is-free (Ω-is-set fe pe) Ω∀ ι
+            Ω∀ G ι 𝓣⁺ Ω∀-is-free (Ω-is-set fe pe) Ω∀ ι
 
   𝕙 : 𝓛 G ≃ Ω
   𝕙 = h , h-is-equiv
@@ -589,7 +591,7 @@ consequences-of-Ω∀-being-freely-generated
    (ι : G → Ω)
    (Ω∀-is-free : Ω∀ is-𝓛-alg-freely-generated-by G
                     with-insertion-of-generators ι
-                    eliminating-at (𝓣 ⁺))
+                    eliminating-at 𝓣⁺)
  →  ¬¬ EM 𝓣
  ×  is-prop G
  ×  ¬ is-empty G
@@ -629,7 +631,7 @@ module questions
 
  Ω∀-is-free = Ω∀ is-𝓛-alg-freely-generated-by G
                  with-insertion-of-generators ι
-                 eliminating-at (𝓣 ⁺)
+                 eliminating-at 𝓣⁺
 
 \end{code}
 
