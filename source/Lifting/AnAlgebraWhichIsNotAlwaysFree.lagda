@@ -681,7 +681,7 @@ The second question is whether our result can be improved as follows.
 
 \end{code}
 
-That is, any topos in which Ω∀ is free is necessarily boolean.
+That is, any topos in which Ω∀ is free would be necessarily boolean.
 
 \begin{code}
 
