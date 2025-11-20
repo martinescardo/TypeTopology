@@ -113,6 +113,26 @@ _ ≃⟨ d ⟩ e = d ● e
 _■ : (X : 𝓤 ̇ ) → X ≃ X
 _■ = ≃-refl
 
+\end{code}
+
+Added by Carlo Angiuli on November 20, 2025.
+
+Special syntax for definitional steps in equivalence chain reasoning:
+
+\begin{code}
+
+_≃⟨refl⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } → X ≃ Y → X ≃ Y
+_ ≃⟨refl⟩ e = e
+
+_≃⟨by-definition⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } → X ≃ Y → X ≃ Y
+_≃⟨by-definition⟩_ = _≃⟨refl⟩_
+
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 Eqtofun : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → X → Y
 Eqtofun X Y (f , _) = f
 
@@ -908,6 +928,8 @@ infix  0 _≃_
 infix  0 _≅_
 infix  1 _■
 infixr 0 _≃⟨_⟩_
+infixr 0 _≃⟨refl⟩_
+infixr 0 _≃⟨by-definition⟩_
 infixl 2 _●_
 infix  1 ⌜_⌝
 
