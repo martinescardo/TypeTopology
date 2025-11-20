@@ -7,9 +7,10 @@ proof is easy [1] [2].
 
 We show that not all algebras are free in an arbitrary elementary topos.
 
-An example where the failure occurs is Johnstone's Topological
-Topos. More generally, we show that this is the case in any topos in
-which the negation of the principle of excluded middle holds.
+Two examples where the failure occurs are Johnstone's Topological
+Topos and Hyland's Effective Topos. More generally, we show that this
+is the case in any topos in which the negation of the principle of
+excluded middle holds.
 
 The object Ω of truth values is an algebra in (at least) two ways,
 with structure map ⨆ = ∃ and ⨆ = ∀.
