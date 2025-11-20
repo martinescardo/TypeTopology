@@ -584,9 +584,9 @@ consequences-of-Ω∀-being-freely-generated
  : (G : 𝓣 ̇ )
    (G-is-set : is-set G)
    (ι : G → Ω)
-   (Ω∀-is-free :  Ω∀ is-𝓛-alg-freely-generated-by G
-                     with-insertion-of-generators ι
-                     eliminating-at (𝓣 ⁺))
+   (Ω∀-is-free : Ω∀ is-𝓛-alg-freely-generated-by G
+                    with-insertion-of-generators ι
+                    eliminating-at (𝓣 ⁺))
  →  ¬¬ EM 𝓣
  ×  is-prop G
  ×  ¬ is-empty G
