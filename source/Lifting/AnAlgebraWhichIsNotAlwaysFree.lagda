@@ -636,15 +636,25 @@ The first question is whether our result is tight.
 
 \begin{code}
 
- Question₀ = ¬¬ EM 𝓣 → Ω∀-is-free
+ Question₀ = ¬¬ EM 𝓣
+           → Ω∀-is-free
 
+ Question₀-variation₀ = ¬¬ EM 𝓣
+                      → G ≃ EM 𝓣
+                      → Ω∀-is-free
+
+ Question₀-variation₁ = ¬¬ EM 𝓣
+                      → G ≃ EM 𝓣
+                      → ((g : G) → ι g ＝ ⊥Ω)
+                      → Ω∀-is-free
 \end{code}
 
 The second question is whether our result can be improved as follows.
 
 \begin{code}
 
- Question₁ = Ω∀-is-free → EM 𝓣
+ Question₁ = Ω∀-is-free
+           → EM 𝓣
 
 \end{code}
 
