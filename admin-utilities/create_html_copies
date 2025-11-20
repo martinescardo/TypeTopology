@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euxo pipefail
+
 cp -a Higgs.index.html UF.HiggsInvolutionTheorem.html
 cp -a CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
 cp -a CoNaturals.index.html CoNaturals.html
