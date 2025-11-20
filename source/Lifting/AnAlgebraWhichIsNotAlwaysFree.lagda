@@ -52,8 +52,8 @@ We haven't (yet) formalized this here, but we offer an argument to
 prove Sterling's conjecture, based on the above claims (which are
 formalized below).
 
-Anders Kock [2] proved that any algebra is bounded-complete (every
-upper bounded set has a least upper bound).
+Anders Kock [2] proved that any algebra in the category of sets is
+bounded-complete (every upper bounded set has a least upper bound).
 
 Because the lifting algebra Ω with structure map ∀ has a largest
 element, namely ⊥, it is a sup-lattice, and, in particular, directed
