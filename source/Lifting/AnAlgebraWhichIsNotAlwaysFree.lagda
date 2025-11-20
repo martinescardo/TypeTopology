@@ -615,3 +615,49 @@ as the only reason 𝓣⁺ arises is that both Ω and 𝓛 G live in 𝓣⁺, ra
 than 𝓣, in the absence of propositional resizing. However, Agda forces
 us to work with at least one universe, as opposed to MLTT, although
 this is inessential.
+
+We conclude with some questions.
+
+\begin{code}
+
+module questions
+        (G : 𝓣 ̇ )
+        (G-is-set : is-set G)
+        (ι : G → Ω)
+       where
+
+ Ω∀-is-free = Ω∀ is-𝓛-alg-freely-generated-by G
+                 with-insertion-of-generators ι
+                 eliminating-at (𝓣 ⁺)
+
+\end{code}
+
+The first question is whether our result is tight.
+
+\begin{code}
+
+ Question₀ = ¬¬ EM 𝓣 → Ω∀-is-free
+
+\end{code}
+
+The second question is whether our result can be improved as follows.
+
+\begin{code}
+
+ Question₁ = Ω∀-is-free → EM 𝓣
+
+\end{code}
+
+That is, any topos in which Ω∀ is free is necessarily boolean.
+
+\begin{code}
+
+ of-course : Question₀ × Question₁ → (¬¬ EM 𝓣 → EM 𝓣)
+ of-course (q₀ , q₁) = q₁ ∘ q₀
+
+\end{code}
+
+But there are toposes in which ¬¬ EM holds but EM fails (an example,
+communicated to me by Andrew Swan, is the Sierpinski topos), so the
+two questions can't have a positive answer simultaneously in an
+arbitrary topos.
