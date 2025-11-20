@@ -29,7 +29,7 @@ generators.
 
 We show that if this is the case, then
 
- 1. G is a subsingleton/proposition/truth value,
+ 1. G is a non-empty subsingleton/proposition/truth value,
  2. the insertion of generators ι : G → Ω is constantly ⊥,
  3. the double negation of the principle of excluded middle holds, and, moreover,
  4. G ≃ (principle of excluded middle).
@@ -246,9 +246,9 @@ generators ι.
 \begin{code}
 
  module assumption
-         (Ω∀-is-free : is-𝓛-alg Ω∀ freely-generated-by G
-                                    with-insertion-of-generators ι
-                                    eliminating-at (𝓣 ⁺))
+         (Ω∀-is-free : Ω∀ is-𝓛-alg-freely-generated-by G
+                           with-insertion-of-generators ι
+                           eliminating-at (𝓣 ⁺))
         where
 
 \end{code}
@@ -575,3 +575,43 @@ Now we can use G to produce an element of 𝓛 G.
      h (η g) ∎)
 
 \end{code}
+
+We summarize the main results of this file as follows:
+
+\begin{code}
+
+consequences-of-Ω∀-being-freely-generated
+ : (G : 𝓣 ̇ )
+   (G-is-set : is-set G)
+   (ι : G → Ω)
+   (Ω∀-is-free :  Ω∀ is-𝓛-alg-freely-generated-by G
+                     with-insertion-of-generators ι
+                     eliminating-at (𝓣 ⁺))
+ →  ¬¬ EM 𝓣
+ ×  is-prop G
+ ×  ¬ is-empty G
+ ×  ((g : G) → ι g ＝ ⊥Ω)
+ ×  (G ↔ EM 𝓣)
+ ×  (G ≃ EM 𝓣)
+consequences-of-Ω∀-being-freely-generated G G-is-set ι Ω∀-is-free
+ = the-double-negation-of-excluded-middle-holds ,
+   G-is-prop ,
+   G-is-nonempty ,
+   ι-is-constantly-⊥ ,
+   (G-pointed-gives-excluded-middle , excluded-middle-gives-G-pointed) ,
+   G-is-EM
+ where
+  open main-results G G-is-set ι
+  open assumption Ω∀-is-free
+
+\end{code}
+
+Notice that there is some redundancy in the conclusions.
+
+Discussion. For interpreting the above results in a 1-topos, notice
+that toposes validade propositional resizing, and so the two universes
+𝓣 and 𝓣⁺ collapse to a single one, and in fact no universe is needed,
+as the only reason 𝓣⁺ arises is that both Ω and 𝓛 G live in 𝓣⁺, rather
+than 𝓣, in the absence of propositional resizing. However, Agda forces
+us to work with at least one universe, as opposed to MLTT, although
+this is inessential.

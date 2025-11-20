@@ -625,13 +625,16 @@ for the lifting monad uses univalence.
 
 \begin{code}
 
-is-𝓛-alg_freely-generated-by_with-insertion-of-generators_eliminating-at_
+_is-𝓛-alg-freely-generated-by_with-insertion-of-generators_eliminating-at_
  : {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F)
    (X : 𝓥 ̇ )
    (ι : X → F)
    (𝓦 : Universe)
  → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
-is-𝓛-alg 𝓕 freely-generated-by X with-insertion-of-generators ι eliminating-at 𝓦
+
+𝓕 is-𝓛-alg-freely-generated-by X
+   with-insertion-of-generators ι
+   eliminating-at 𝓦
  = {A : 𝓦 ̇ } (i : is-set A) (𝓐 : 𝓛-alg A) (f : X → A)
       → ∃! (f̅ , _) ꞉ Hom 𝓕 𝓐 , f̅ ∘ ι ∼ f
 
@@ -647,9 +650,9 @@ module free-algebra-eliminators
          (X : 𝓥 ̇ )
          (ι : X → F)
          (𝓦 : Universe)
-         (𝓕-is-free : is-𝓛-alg 𝓕 freely-generated-by X
-                                  with-insertion-of-generators ι
-                                  eliminating-at 𝓦)
+         (𝓕-is-free : 𝓕 is-𝓛-alg-freely-generated-by X
+                         with-insertion-of-generators ι
+                         eliminating-at 𝓦)
          {A : 𝓦 ̇ } (i : is-set A) (𝓐 : 𝓛-alg A) (f : X → A)
        where
 
@@ -835,9 +838,9 @@ universe:
 \begin{code}
 
  𝓛-is-free-algebra : {𝓤 : Universe}
-                   → is-𝓛-alg free freely-generated-by X
-                                   with-insertion-of-generators η
-                                   eliminating-at 𝓤
+                   → free is-𝓛-alg-freely-generated-by X
+                           with-insertion-of-generators η
+                           eliminating-at 𝓤
  𝓛-is-free-algebra = free-algebra-universal-property
 
 \end{code}
