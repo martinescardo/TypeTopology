@@ -55,7 +55,7 @@ number addition.
 ℤ[1/2]*-comm ((p , a) , α) ((q , b) , β) = γ
  where
   γ : (((p , a) , α) * ((q , b) , β)) ＝ (((q , b) , β) * ((p , a) , α))
-  γ = ((p , a) , α) * ((q , b) , β)   ＝⟨ refl  ⟩
+  γ = ((p , a) , α) * ((q , b) , β)   ＝⟨refl⟩
       normalise-pos (p ℤ* q , a ℕ+ b) ＝⟨ i ⟩
       normalise-pos (q ℤ* p , b ℕ+ a) ＝⟨refl⟩
       ((q , b) , β) * ((p , a) , α)   ∎

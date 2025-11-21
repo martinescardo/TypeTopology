@@ -645,7 +645,7 @@ select-equiv-with-𝟚-lemma₂ fe {X} (f , i) x₀ = γ (f x₀) x₀ refl
     h ₀ = inverse f i (complement ₀) ＝⟨refl⟩
           inverse f i ₁              ＝⟨ ap (inverse f i) p ⟩
           inverse f i (f x₀)         ＝⟨ inverses-are-retractions f i x₀ ⟩
-          x₀                         ＝⟨ refl  ⟩
+          x₀                         ＝⟨refl⟩
           𝟚-cases x₀ x₁ ₀            ∎
     h ₁ = refl
 

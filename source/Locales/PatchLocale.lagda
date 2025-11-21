@@ -218,14 +218,14 @@ Nuclei are ordered pointwise.
                        → preserves-binary-meets (𝒪 X) (𝒪 X) k holds
                        → preserves-binary-meets (𝒪 X) (𝒪 X) (j ⋏₀ k) holds
  ⋏₀-is-meet-preserving j k ζⱼ ζₖ U V =
-  (j ⋏₀ k) (U ∧[ 𝒪 X ] V)                        ＝⟨ refl  ⟩
+  (j ⋏₀ k) (U ∧[ 𝒪 X ] V)                        ＝⟨refl⟩
   j (U ∧[ 𝒪 X ] V) ∧[ 𝒪 X ] k (U ∧[ 𝒪 X ] V)     ＝⟨ i     ⟩
   (j U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] k (U ∧[ 𝒪 X ] V)   ＝⟨ ii    ⟩
   (j U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] (k U ∧[ 𝒪 X ] k V) ＝⟨ iii   ⟩
   j U ∧[ 𝒪 X ] ((j V ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] k V) ＝⟨ iv    ⟩
   j U ∧[ 𝒪 X ] ((k U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] k V) ＝⟨ v     ⟩
   j U ∧[ 𝒪 X ] (k U ∧[ 𝒪 X ] (j V ∧[ 𝒪 X ] k V)) ＝⟨ vi     ⟩
-  (j U ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] (j V ∧[ 𝒪 X ] k V) ＝⟨ refl  ⟩
+  (j U ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] (j V ∧[ 𝒪 X ] k V) ＝⟨refl⟩
   ((j ⋏₀ k) U) ∧[ 𝒪 X ] ((j ⋏₀ k) V)             ∎
    where
     †   = ∧[ 𝒪 X ]-is-associative (j U) (j V) (k U ∧[ 𝒪 X ] k V) ⁻¹

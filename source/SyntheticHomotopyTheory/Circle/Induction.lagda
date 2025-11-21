@@ -243,7 +243,7 @@ what we do next.
          κ = r-retraction-lemma
          ϕ = p                                                     ＝⟨ I₂    ⟩
              ap pr₁ κ ∙ ap π (to-Σ-＝ (refl , ap-id-is-id loop)) ⁻¹ ＝⟨ II₂   ⟩
-             ap pr₁ κ ∙ refl ⁻¹                                    ＝⟨ refl  ⟩
+             ap pr₁ κ ∙ refl ⁻¹                                    ＝⟨refl⟩
              ap pr₁ κ                                              ＝⟨ III₂  ⟩
              ap pr₁ (ap pr₁ r-comp)                                ＝⟨ IV₂   ⟩
              ap (pr₁ ∘ pr₁) r-comp                                 ∎

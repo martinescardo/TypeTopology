@@ -72,7 +72,7 @@ swap-equation₁ a b i j = γ (j a)
       b              ＝⟨ r ⟩
       a              ∎
   γ (inr n) =
-      swap a b i j b                 ＝⟨ refl   ⟩
+      swap a b i j b                 ＝⟨refl⟩
       patch a b i (patch b a j id) b ＝⟨ patch-equation₁ a b i (patch b a j id) b (≠-sym n) ⟩
       patch b a j id b               ＝⟨ patch-equation₀ b a j id ⟩
       a                              ∎
