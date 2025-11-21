@@ -6,6 +6,10 @@ on:
     branches:
     - master
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   typecheck:
     runs-on: ubuntu-latest
@@ -55,3 +59,23 @@ jobs:
       with:
         name: html
         path: source/html
+
+    - name: Upload GitHub Pages HTML
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: source/html
+
+  deploy:
+    needs: typecheck
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
