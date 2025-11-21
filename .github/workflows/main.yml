@@ -56,6 +56,11 @@ jobs:
         name: html
         path: source/html
 
+    - name: Upload GitHub Pages HTML
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: source/html
+
   deploy:
     environment:
       name: github-pages
