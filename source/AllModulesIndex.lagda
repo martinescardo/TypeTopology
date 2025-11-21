@@ -85,7 +85,7 @@ are coinfective:
 
 An option is *infective* if whenever it is used in one module, it must
 be used in all modules that import module. At the moment, TypeTopology
-infective options are
+infective options are:
 
   --no-termination-check
   --guardedness
