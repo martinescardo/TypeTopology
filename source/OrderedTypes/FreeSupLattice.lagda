@@ -237,7 +237,7 @@ Finally we prove that f♭ is the unique map with the above properties (i) & (ii
     h A               ＝⟨ ap h (express-subset-as-union-of-singletons pe fe X X-is-set A) ⟩
     h (⋃ (η ∘ pr₁))   ＝⟨ p₁ (𝕋 A) (η ∘ pr₁) ⟩
     ⋁ (h ∘ η ∘ pr₁)   ＝⟨ ⋁-transport (h ∘ η ∘ pr₁) (f ∘ pr₁) (λ p → p₂ (pr₁ p)) ⟩
-    ⋁ (f ∘ pr₁)       ＝⟨ refl ⟩
+    ⋁ (f ∘ pr₁)       ＝⟨refl⟩
     f♭ A ∎
 
 \end{code}

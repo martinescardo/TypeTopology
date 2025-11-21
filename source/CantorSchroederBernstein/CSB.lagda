@@ -598,7 +598,7 @@ purpose.
     a (inl γ) = g y , ψ
      where
       ψ : (d : is-decidable (is-g-point (g y))) → H (g y) d ＝ y
-      ψ (inl γ') = H (g y) (inl γ') ＝⟨ by-definition ⟩
+      ψ (inl γ') = H (g y) (inl γ') ＝⟨by-definition⟩
                    g⁻¹ (g y) γ'     ＝⟨ g⁻¹-is-linv y γ' ⟩
                    y                ∎
       ψ (inr ν)  = have ν ∶ ¬ is-g-point (g y)
@@ -618,7 +618,7 @@ purpose.
       ψ : (d : is-decidable (is-g-point x)) → H x d ＝ y
       ψ (inl γ) = have γ ∶ is-g-point x
                   which-is-impossible-by (pr₂ w ∶ ¬ is-g-point x)
-      ψ (inr ν) = H x (inr ν) ＝⟨ by-definition ⟩
+      ψ (inr ν) = H x (inr ν) ＝⟨by-definition⟩
                   f x         ＝⟨ p ⟩
                   y           ∎
 
@@ -937,7 +937,7 @@ is-prop-total-gives-is-prop-each A j i x a a' = t
   q : (x , a) ＝ (x , a')
   q = i (x , a) (x , a')
 
-  t = a                        ＝⟨ by-definition ⟩
+  t = a                        ＝⟨by-definition⟩
       transport A refl       a ＝⟨ ap (- ↦ transport A - a) (j refl (ap pr₁ q)) ⟩
       transport A (ap pr₁ q) a ＝⟨ from-Σ-＝' q ⟩
       a'                       ∎
@@ -1150,7 +1150,7 @@ ulemma {𝓤} fe pe {X} {Y} φ = em
 
     b = inr y                           ＝⟨ r ⁻¹ ⟩
         ⌜ φ P i ⌝ x                     ＝⟨ ap ⌜ φ P i ⌝ a ⟩
-        ⌜ φ P i ⌝ (f (P , i , p))       ＝⟨ by-definition ⟩
+        ⌜ φ P i ⌝ (f (P , i , p))       ＝⟨by-definition⟩
         ⌜ φ P i ⌝ (⌜ φ P i ⌝⁻¹ (inl p)) ＝⟨ ≃-sym-is-rinv (φ P i) (inl p) ⟩
         inl p                           ∎
 

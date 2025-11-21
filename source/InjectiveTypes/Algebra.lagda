@@ -316,7 +316,7 @@ pullabacks (TODO)).
 
    open pullback ⌊ 𝕛 ⌋ h renaming (pullback to A)
 
-   ϕ = A                                  ≃⟨ ≃-refl _ ⟩
+   ϕ = A                                  ≃⟨by-definition⟩
        (Σ z ꞉ X × 𝟙 , ⌊ 𝕛 ⌋ (pr₁ z) ＝ y) ≃⟨ Σ-assoc ⟩
        (Σ x ꞉ X , 𝟙 × (⌊ 𝕛 ⌋ x ＝ y))     ≃⟨ Σ-cong (λ x → 𝟙-lneutral) ⟩
        fiber ⌊ 𝕛 ⌋ y                      ■
@@ -337,11 +337,11 @@ pullabacks (TODO)).
    ⨆ P g = (g ∣ embedding-to-𝟙) ⋆
 
    II = (f ∣ 𝕛) y                                        ＝⟨ by-pbn ⟩
-        ((f ∘ pb₁) ∣ 𝑝𝑏₂) ⋆                              ＝⟨ refl ⟩
+        ((f ∘ pb₁) ∣ 𝑝𝑏₂) ⋆                              ＝⟨refl⟩
         ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ 𝑝𝑏₂) ⋆              ＝⟨ by-I ⟩
-        ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ embedding-to-𝟙) ⋆   ＝⟨ refl ⟩
+        ((f ∘ fiber-point ∘ ⌜ ϕ ⌝) ∣ embedding-to-𝟙) ⋆   ＝⟨refl⟩
         ⨆ (Fiber (𝕛 ⊚ 𝑝𝑟₁) y) (f ∘ fiber-point ∘ ⌜ ϕ ⌝)  ＝⟨ change-of-var ⁻¹ ⟩
-        ⨆ (Fiber 𝕛 y) (f ∘ fiber-point)                  ＝⟨ refl ⟩
+        ⨆ (Fiber 𝕛 y) (f ∘ fiber-point)                  ＝⟨refl⟩
         ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆           ∎
          where
           by-pbn = pbn X Y 𝟙 f 𝕛 h ⋆
@@ -410,13 +410,13 @@ module counter-example-to-general-naturality
    I : f ∘ g ＝ f₀
    I = dfunext fe (λ x → 𝟘-elim x)
 
-   II = ϕ d₀              ＝⟨ refl ⟩
+   II = ϕ d₀              ＝⟨refl⟩
         f ⋆               ＝⟨ (_∣_-is-extension f 𝕛 ⋆)⁻¹ ⟩
-        (f ∣ 𝕛) (⌊ 𝕛 ⌋ ⋆) ＝⟨ refl ⟩
-        (f ∣ 𝕛) ⋆         ＝⟨ refl ⟩
+        (f ∣ 𝕛) (⌊ 𝕛 ⌋ ⋆) ＝⟨refl⟩
+        (f ∣ 𝕛) ⋆         ＝⟨refl⟩
         ((f ∣ 𝕛) ∘ h) ⋆   ＝⟨ p ⋆ ⟩
         ((f ∘ g) ∣ 𝕜) ⋆   ＝⟨ ap (λ - → (- ∣ 𝕜) ⋆) I ⟩
-        (f₀ ∣ 𝕜) ⋆        ＝⟨ refl ⟩
+        (f₀ ∣ 𝕜) ⋆        ＝⟨refl⟩
         d₀                ∎
 
 \end{code}
@@ -515,10 +515,10 @@ natural.
 
 
      II : (f ∣ 𝕛) (h b) ＝ ((f ∘ pb₁) ∣ 𝑝𝑏₂) b
-     II = (f ∣ 𝕛) (h b)                            ＝⟨ refl ⟩
+     II = (f ∣ 𝕛) (h b)                            ＝⟨refl⟩
           ⨆ (Fiber 𝕛 (h b)) (f ∘ fiber-point)      ＝⟨ II₀ ⟩
           ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ fiber-point ∘ ψ)    ＝⟨ II₁ ⟩
-          ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ pb₁ ∘ fiber-point)  ＝⟨ refl ⟩
+          ⨆ (Fiber 𝑝𝑏₂ b) (f ∘ pb₁ ∘ fiber-point)  ＝⟨refl⟩
           ((f ∘ pb₁) ∣ 𝑝𝑏₂) b                      ∎
            where
             II₀ = ⨆-change-of-variable D pe fe ⨆ (f ∘ fiber-point) (ϕ , ψ)
@@ -549,7 +549,7 @@ The round trip ⨆ ↦ _∣_ ↦ ↦ ⨆' is the identity.
    where
     I :  (P : Ω 𝓤) (f : P holds → D) → ⨆ P f ＝ ⨆' P f
     I P f = ⨆ P f                                        ＝⟨ I₀ ⟩
-            ⨆ (Fiber embedding-to-𝟙 ⋆) (f ∘ fiber-point) ＝⟨ refl ⟩
+            ⨆ (Fiber embedding-to-𝟙 ⋆) (f ∘ fiber-point) ＝⟨refl⟩
             ⨆' P f                                       ∎
       where
        I₀ = ⨆-change-of-variable D pe fe ⨆ f ((λ p → p , refl) , fiber-point)
@@ -582,10 +582,10 @@ module _
   → pullback-naturality s
   → flabby-associativity (derived-flabby-structure D s)
  derived-flabby-associativity iassoc pbn P Q f
-  = ⨆ (ΣΩ Q) f                             ＝⟨ refl ⟩
+  = ⨆ (ΣΩ Q) f                             ＝⟨refl⟩
     (f ∣ w) ⋆                              ＝⟨ ap (λ - → (f ∣ -) ⋆) I ⟩
     (f ∣ (v ⊚ u)) ⋆                        ＝⟨ iassoc _ _ _ f u v ⋆ ⟩
-    ((f ∣ u) ∣ v) ⋆                        ＝⟨ refl ⟩
+    ((f ∣ u) ∣ v) ⋆                        ＝⟨refl⟩
     ⨆ P (f ∣ u)                            ＝⟨ ap (⨆ P) (dfunext fe III) ⟩
     ⨆ P (λ p → ⨆ (Q p) (λ q → f (p , q))) ∎
     where
@@ -613,7 +613,7 @@ module _
 
      III : (p : P holds) → (f ∣ u) p ＝ ⨆ (Q p) (λ q → f (p , q))
      III p = (f ∣ u) p                             ＝⟨ II₀ ⟩
-            ((f ∘ fiber-point) ∣ fiber-to-𝟙 u p) ⋆ ＝⟨ refl ⟩
+            ((f ∘ fiber-point) ∣ fiber-to-𝟙 u p) ⋆ ＝⟨refl⟩
             ⨆ (Fiber u p) (f ∘ fiber-point)        ＝⟨ II p ⟩
             ⨆ (Q p) (λ q → f (p , q))              ∎
              where
@@ -638,7 +638,7 @@ We now show that the round trip _∣_ ↦ ⨆ ↦ _∣'_ is the identity.
                → f ∣ 𝕛 ∼ f ∣' 𝕛
  ∣-round-trip' pbn X Y f 𝕛 y =
   (f ∣ 𝕛) y                                 ＝⟨ I ⟩
-  ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆    ＝⟨ refl ⟩
+  ((f ∘ fiber-point) ∣ fiber-to-𝟙 𝕛 y) ⋆    ＝⟨refl⟩
   (f ∣' 𝕛) y                                ∎
   where
    I = pullback-naturality-gives-that-extensions-are-fiberwise

@@ -235,10 +235,10 @@ module general-classifier
     where
      a : pr₁ (A y) ＝ pr₁ (χ (T A) y)
      a = fiber-equiv-＝ A y
-     b = transport green (a ⁻¹) (pr₂ (χ (T A) y))               ＝⟨ refl ⟩
+     b = transport green (a ⁻¹) (pr₂ (χ (T A) y))               ＝⟨refl⟩
          transport green (a ⁻¹) (transport green a (pr₂ (A y))) ＝⟨ i ⟩
          transport green (a ∙ a ⁻¹) (pr₂ (A y))                 ＝⟨ ii ⟩
-         transport green refl (pr₂ (A y))                       ＝⟨ refl ⟩
+         transport green refl (pr₂ (A y))                       ＝⟨refl⟩
          pr₂ (A y)                                              ∎
       where
        i  = (transport-∙ green a (a ⁻¹)) ⁻¹
@@ -261,7 +261,7 @@ module general-classifier
  precomp-with-≃-refl-green-map {X} f g = dfunext fe γ
   where
    γ : (y : Y) → green-maps-are-closed-under-precomp-with-equivs (≃-refl X) g y ＝ g y
-   γ y = green-maps-are-closed-under-precomp-with-equivs (≃-refl X) g y         ＝⟨ refl ⟩
+   γ y = green-maps-are-closed-under-precomp-with-equivs (≃-refl X) g y         ＝⟨refl⟩
          transport green ((eqtoid ua _ _ (≃-refl (fiber f y))) ⁻¹) (g y)        ＝⟨ i ⟩
          g y                                                                    ∎
     where
@@ -315,17 +315,17 @@ module general-classifier
    t₂ = pr₂ (from-Σ-＝ t)
    b : pr₁ (transport B a (f' , g')) ＝ f
    b = pr₁ (transport B a (f' , g')) ＝⟨ t₁ ⟩
-       f' ∘ eqtofun e                ＝⟨ refl ⟩
+       f' ∘ eqtofun e                ＝⟨refl⟩
        f                             ∎
    c : transport green-map b (pr₂ (transport B a (f' , g')))  ＝ g
-   c = transport green-map b (pr₂ (transport B a (f' , g')))  ＝⟨ refl ⟩
+   c = transport green-map b (pr₂ (transport B a (f' , g')))  ＝⟨refl⟩
        transport green-map t₁ (pr₂ (transport B a (f' , g'))) ＝⟨ t₂ ⟩
        green-maps-are-closed-under-precomp-with-equivs e g' ＝⟨ dfunext fe u ⟩
        g ∎
     where
      u : (y : Y) → green-maps-are-closed-under-precomp-with-equivs e g' y ＝ g y
-     u y = green-maps-are-closed-under-precomp-with-equivs e g' y ＝⟨ refl ⟩
-           transport green (p ⁻¹) (g' y)                          ＝⟨ refl ⟩
+     u y = green-maps-are-closed-under-precomp-with-equivs e g' y ＝⟨refl⟩
+           transport green (p ⁻¹) (g' y)                          ＝⟨refl⟩
            transport green (p ⁻¹) (transport green (q ⁻¹) (g y))  ＝⟨ i ⟩
            transport green (q ⁻¹ ∙ p ⁻¹) (g y)                    ＝⟨ ii ⟩
            g y                                                    ∎

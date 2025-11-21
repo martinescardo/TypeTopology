@@ -283,9 +283,9 @@ module IfZeroDenotationalSemantics
          pₛ : (n : ℕ) → value l e ＝ succ n
             → ⦅ifZero⦆₀ a (α i) (value l e) ＝ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
          pₛ n q = ⦅ifZero⦆₀ a (α i) (value l e)         ＝⟨ ⦅1⦆  ⟩
-                  ⦅ifZero⦆₀ a (α i) (succ n)            ＝⟨ refl ⟩
+                  ⦅ifZero⦆₀ a (α i) (succ n)            ＝⟨refl⟩
                   α i                                   ＝⟨ ⦅2⦆  ⟩
-                  ∐ (𝓛ᵈℕ ⁻) δ                           ＝⟨ refl ⟩
+                  ∐ (𝓛ᵈℕ ⁻) δ                           ＝⟨refl⟩
                   ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (succ n)    ＝⟨ ⦅3⦆  ⟩
                   ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ∎
           where
@@ -315,7 +315,7 @@ module IfZeroDenotationalSemantics
          p₀ : value l e ＝ zero
             → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ＝ f l
          p₀ q = ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ＝⟨ ⦅1⦆  ⟩
-                ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) zero        ＝⟨ refl ⟩
+                ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) zero        ＝⟨refl⟩
                 a                                     ＝⟨ ⦅2⦆  ⟩
                 f l                                   ∎
           where

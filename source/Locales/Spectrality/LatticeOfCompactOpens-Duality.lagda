@@ -157,7 +157,7 @@ involves some bureaucracy which we handle below.
  ι-preserves-∨ K₁ K₂ =
   ιₖ (r (K₁ ∨⁻ K₂))                 ＝⟨ Ⅰ    ⟩
   ιₖ (r K₁ ∨ r K₂)                  ＝⟨ Ⅱ    ⟩
-  pr₁ (r K₁) ∨[ 𝒪 X ] pr₁ (r K₂)    ＝⟨ refl ⟩
+  pr₁ (r K₁) ∨[ 𝒪 X ] pr₁ (r K₂)    ＝⟨refl⟩
   ι K₁ ∨[ 𝒪 X ] ι K₂                ∎
    where
     Ⅰ = ap pr₁ (r-preserves-∨ K₁ K₂)
@@ -165,7 +165,7 @@ involves some bureaucracy which we handle below.
 
  ι-preserves-∧ : (K₁ K₂ : 𝒦⁻X) → ι (K₁ ∧⁻ K₂) ＝ ι K₁ ∧[ 𝒪 X ] ι K₂
  ι-preserves-∧ K₁ K₂ =
-  ι (K₁ ∧⁻ K₂)         ＝⟨ refl ⟩
+  ι (K₁ ∧⁻ K₂)         ＝⟨refl⟩
   pr₁ (r (K₁ ∧⁻ K₂))   ＝⟨ Ⅰ    ⟩
   pr₁ (r K₁ ∧L r K₂)   ＝⟨ Ⅱ    ⟩
   ι K₁ ∧[ 𝒪 X ] ι K₂   ∎
@@ -384,10 +384,10 @@ The map `join` preserves binary meets.
  join-preserves-binary-meets : (ℐ 𝒥 : Ideal 𝒦-X⁻)
                              → join (ℐ ∧ᵢ 𝒥) ＝ join ℐ ∧[ 𝒪 X ] join 𝒥
  join-preserves-binary-meets ℐ 𝒥 =
-  join (ℐ ∧ᵢ 𝒥)                                                              ＝⟨ refl ⟩
+  join (ℐ ∧ᵢ 𝒥)                                                              ＝⟨refl⟩
   ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆                                  ＝⟨ Ⅰ    ⟩
   ⋁⟨ ((i , _) , (j , _)) ∶ (_ × _) ⟩ ι i ∧[ 𝒪 X ] ι j                        ＝⟨ Ⅱ    ⟩
-  (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X I ⁆) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X J ⁆) ＝⟨ refl ⟩
+  (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X I ⁆) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X J ⁆) ＝⟨refl⟩
   join ℐ ∧[ 𝒪 X ] join 𝒥 ∎
   where
    I = _∈ⁱ ℐ

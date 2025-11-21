@@ -889,7 +889,7 @@ which can be shown to be a simulation by proving related properties of f̃.
               → f̅ ([ α i , α⁺-Ord ]⟨ α⁺-is-upper-bound i ⟩ x) ＝ f i x
   f̅-behaviour i x =
    f̅ ([ α i , α⁺-Ord ]⟨ α⁺-is-upper-bound i ⟩ x) ＝⟨ e ⟩
-   f̃ (α i ↓ x) (i , x , refl)                    ＝⟨ refl ⟩
+   f̃ (α i ↓ x) (i , x , refl)                    ＝⟨refl⟩
    f i x                                         ∎
     where
      e = (f̅-key-property (α i ↓ x) (i , (x , refl)) ∣ i , x , refl ∣) ⁻¹
@@ -989,7 +989,7 @@ the supremum of α are given by initial segments of some αᵢ.
       → (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁻-is-upper-bound i) x ＝ y)
     h (i , x , e) = (i , x , e')
      where
-      e' = pr₁ (α⁻-is-upper-bound i) x           ＝⟨ refl ⟩
+      e' = pr₁ (α⁻-is-upper-bound i) x           ＝⟨refl⟩
            ⌜ φ ⌝⁻¹ (pr₁ (α⁺-is-upper-bound i) x) ＝⟨ ⦅1⦆ ⟩
            ⌜ φ ⌝⁻¹ (⌜ φ ⌝ y)                     ＝⟨ ⦅2⦆ ⟩
            y                                     ∎
@@ -1010,8 +1010,8 @@ the supremum of α are given by initial segments of some αᵢ.
        ∘ [ α i , α⁻-Ord ]⟨ α⁻-is-upper-bound i ⟩
      ∼ [ α i , β ]⟨ f i ⟩
   α⁻-is-lower-bound-of-upper-bounds-behaviour β f i x =
-   (h ∘ g) x            ＝⟨ refl ⟩
-   (h⁺ ∘ ϕ ∘ g) x       ＝⟨ refl ⟩
+   (h ∘ g) x            ＝⟨refl⟩
+   (h⁺ ∘ ϕ ∘ g) x       ＝⟨refl⟩
    (h⁺ ∘ ϕ ∘ ψ ∘ g⁺) x  ＝⟨ e₁ ⟩
    (h⁺ ∘ g⁺) x          ＝⟨ e₂ ⟩
    [ α i , β ]⟨ f i ⟩ x ∎

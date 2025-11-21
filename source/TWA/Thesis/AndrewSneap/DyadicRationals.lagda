@@ -4,7 +4,7 @@ Note that this file is incomplete.
 
 \begin{code}
 {-# OPTIONS --without-K --safe #-}
-            
+
 open import Integers.Addition renaming (_+_ to _+ℤ_ ; _-_ to _ℤ-_)
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Negation renaming (-_ to ℤ-_)
@@ -14,7 +14,7 @@ open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Properties hiding (double)
-open import Notation.Order 
+open import Notation.Order
 open import UF.Base
 open import UF.FunExt
 open import UF.Subsingletons
@@ -88,7 +88,7 @@ normalise-pos' z (succ n) (inl e)
   e₂ = pr₂ (from-×-＝' q)
   γ : pos (2^ (succ m)) ℤ* k ＝ z
   γ = pos (2^ (succ m)) ℤ* k
-    ＝⟨ refl ⟩
+    ＝⟨refl⟩
       pos (2 ℕ* 2^ m) ℤ* k
     ＝⟨ ap (_ℤ* k) (pos-multiplication-equiv-to-ℕ 2 (2^ m) ⁻¹) ⟩
       pos 2 ℤ* pos (2^ m) ℤ* k
@@ -98,7 +98,7 @@ normalise-pos' z (succ n) (inl e)
       pos 2 ℤ* (z /2')
     ＝⟨ ℤ*-comm (pos 2) (z /2') ⟩
       (z /2') ℤ* pos 2
-    ＝⟨ even-lemma z e ⟩ 
+    ＝⟨ even-lemma z e ⟩
       z ∎
 normalise-pos' z (succ n) (inr o) = 0 , to-×-＝ (ℤ-mult-left-id z) refl
 
@@ -159,7 +159,7 @@ normalise-pos-lemma₁ fe k (succ δ) (inr (δnz , k-odd)) | inl k-even
  = 𝟘-elim (k-even (transport odd (div-by-two k ⁻¹) k-odd))
 ... | inr _ = to-subtype-＝ (λ (z , n) → ℤ[1/2]-cond-is-prop fe z n)
                 (to-×-＝ (div-by-two k) refl)
-                
+
 normalise-pos-lemma₂ : (k : ℤ) (δ : ℕ)
                      → normalise-pos k δ ＝ normalise-pos (k +ℤ k) (succ δ)
 normalise-pos-lemma₂ k δ with even-or-odd? (k +ℤ k)
@@ -179,23 +179,23 @@ normalise-lemma fe k δ 0 p with even-or-odd? (k +ℤ k)
 ... | inr odd = 𝟘-elim (times-two-even' k odd)
 normalise-lemma fe k δ (succ n) p with even-or-odd? (k +ℤ k)
 ... | inl even
- = let y = rec k double n 
-       z = (y +ℤ y) in 
+ = let y = rec k double n
+       z = (y +ℤ y) in
    normalise (z +ℤ z , (succℤ (pos (succ δ) +ℤ pos n)))
      ＝⟨ ap (λ - → normalise (z +ℤ z , succℤ -))
            (distributivity-pos-addition (succ δ) n) ⟩
    normalise (z +ℤ z , succℤ (pos (succ δ +ℕ n)))
-     ＝⟨ refl ⟩
+     ＝⟨refl⟩
    normalise-pos (z +ℤ z) (succ (succ δ +ℕ n))
      ＝⟨ normalise-pos-lemma₂ z (succ δ +ℕ n) ⁻¹ ⟩
    normalise-pos z (succ δ +ℕ n)
-     ＝⟨ refl ⟩
+     ＝⟨refl⟩
    normalise (z , pos (succ δ +ℕ n))
      ＝⟨ ap (λ - → normalise (z , -))
            (distributivity-pos-addition (succ δ) n ⁻¹) ⟩
    normalise (z , pos (succ δ) +ℤ pos n)
      ＝⟨ normalise-lemma fe k δ n p ⟩
-   (k , δ) , p ∎ 
+   (k , δ) , p ∎
 ... | inr odd = 𝟘-elim (times-two-even' k odd)
 
 _<ℤ[1/2]_ _≤ℤ[1/2]_ : ℤ[1/2] → ℤ[1/2] → 𝓤₀ ̇
@@ -204,7 +204,7 @@ _<ℤ[1/2]_ _≤ℤ[1/2]_ : ℤ[1/2] → ℤ[1/2] → 𝓤₀ ̇
 
 <ℤ[1/2]-is-prop : (x y : ℤ[1/2]) → is-prop (x <ℤ[1/2] y)
 <ℤ[1/2]-is-prop ((x , a) , _) ((y , b) , _)
- = ℤ<-is-prop (x ℤ* pos (2^ b)) (y ℤ* pos (2^ a)) 
+ = ℤ<-is-prop (x ℤ* pos (2^ b)) (y ℤ* pos (2^ a))
 
 ≤ℤ[1/2]-is-prop : (x y : ℤ[1/2]) → is-prop (x ≤ℤ[1/2] y)
 ≤ℤ[1/2]-is-prop ((x , a) , _) ((y , b) , _)
@@ -269,7 +269,7 @@ record Dyadics : 𝓤₁ ̇ where
    : (n : ℕ) → ((k , p) : ℤ × ℤ)
    → normalise (k , p) ≤ normalise ((k +pos n) , p)
   normalise-denom-≤
-   : (k : ℕ) (p q : ℤ) → p ≤ q → normalise (pos k , q) ≤ normalise (pos k , p) 
+   : (k : ℕ) (p q : ℤ) → p ≤ q → normalise (pos k , q) ≤ normalise (pos k , p)
   ℤ[1/2]-ordering-property
    : (a b c d : ℤ[1/2]) → (a ℤ[1/2]- b) < (c ℤ[1/2]- d) → (a < c) + (d < b)
   normalise-succ' : (z n : ℤ) → normalise (z , n)
@@ -297,7 +297,7 @@ record Dyadics : 𝓤₁ ̇ where
  ℤ[1/2]≤-< x y z x≤y y<z with ≤-split x y x≤y
  ... | inl x<y = trans x y z x<y y<z
  ... | inr x＝y = transport (_< z) (x＝y ⁻¹) y<z
- 
+
  0<1/2ℤ[1/2] : 0ℤ[1/2] < 1/2ℤ[1/2]
  0<1/2ℤ[1/2] = 0 , refl
 
@@ -307,4 +307,3 @@ record Dyadics : 𝓤₁ ̇ where
  normalise-≤2 : (l r p : ℤ) → l ≤ r → normalise (l , p) ≤ normalise (r , p)
  normalise-≤2 l r p (j , refl) = normalise-≤ j (l , p)
 \end{code}
-

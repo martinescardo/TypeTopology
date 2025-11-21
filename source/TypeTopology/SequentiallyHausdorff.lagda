@@ -70,7 +70,7 @@ no-non-trivial-sequentially-Hausdorff-types-under-WLPO
   I n (inr _) = refl
 
   a : (n : ℕ) →  f (ι n) ＝ g (ι n)
-  a n =  f (ι n) ＝⟨ refl ⟩
+  a n =  f (ι n) ＝⟨refl⟩
          x₀      ＝⟨ (I n (wlpo (ι n)))⁻¹ ⟩
          g (ι n) ∎
 
@@ -79,7 +79,7 @@ no-non-trivial-sequentially-Hausdorff-types-under-WLPO
   II (inr ν) = 𝟘-elim (ν refl)
 
   III : 𝟘
-  III = d (x₀  ＝⟨ refl ⟩
+  III = d (x₀  ＝⟨refl⟩
            f ∞ ＝⟨ X-is-seq-Haus f g a ⟩
            g ∞ ＝⟨ II (wlpo ∞) ⟩
            x₁  ∎)

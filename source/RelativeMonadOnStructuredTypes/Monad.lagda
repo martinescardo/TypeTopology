@@ -170,7 +170,7 @@ module _ (𝕋 : Relative-Monad) where
 
    γ : extᵀ f t ＝ u
    γ = extᵀ f t                        ＝⟨ (ap (λ - → - t) (dfunext fe I))⁻¹ ⟩
-       (f ∘ inverse (ηᵀ {𝓤} {𝟙ₛ}) a) t ＝⟨ refl ⟩
+       (f ∘ inverse (ηᵀ {𝓤} {𝟙ₛ}) a) t ＝⟨refl⟩
        u                               ∎
 
  affine-gives-ext-const : Fun-Ext → is-affine → ext-const
@@ -191,11 +191,11 @@ module _ (𝕋 : Relative-Monad) where
    I : extᵀ h ＝ f
    I = dfunext fe (affine-gives-ext-const' fe a u)
 
-   γ = extᵀ g t             ＝⟨ refl ⟩
+   γ = extᵀ g t             ＝⟨refl⟩
        extᵀ (f ∘ k) t       ＝⟨ ap (λ - → extᵀ (- ∘ k) t) (I ⁻¹) ⟩
        extᵀ (extᵀ h ∘ k) t  ＝⟨ assocᵀ h k t ⟩
        extᵀ h (extᵀ k t)    ＝⟨ ap (λ - → - (extᵀ k t)) I ⟩
-       f (extᵀ k t)         ＝⟨ refl ⟩
+       f (extᵀ k t)         ＝⟨refl⟩
        u                    ∎
 
  ext-const-gives-affine : ext-const → is-affine
@@ -208,9 +208,9 @@ module _ (𝕋 : Relative-Monad) where
    I ⋆ = refl
 
    II : ηᵀ ∘ η⁻¹ ∼ id
-   II t = (ηᵀ ∘ η⁻¹) t        ＝⟨ refl ⟩
+   II t = (ηᵀ ∘ η⁻¹) t        ＝⟨refl⟩
           ηᵀ ⋆                ＝⟨ (ϕ {𝓤} {𝟙ₛ} (ηᵀ ⋆) t)⁻¹ ⟩
-          extᵀ (λ x → ηᵀ ⋆) t ＝⟨ refl ⟩
+          extᵀ (λ x → ηᵀ ⋆) t ＝⟨refl⟩
           extᵀ ηᵀ t           ＝⟨ extᵀ-η t ⟩
           t                   ∎
 
@@ -273,10 +273,10 @@ module relative-α-definitions
   → {𝓧 : 𝕊 𝓤} (f : ⟨ 𝓧 ⟩ → ⟨ 𝓡 ⟩) (t : T 𝓧)
   → extᴬ f t ＝ extᴬ-old f t
  new-agrees-with-old {𝓤} fe {𝓧} f t =
-  extᴬ f t                                   ＝⟨ refl ⟩
+  extᴬ f t                                   ＝⟨refl⟩
   aext 𝓐 f t                                   ＝⟨ I ⟩
   aext 𝓐 (λ x → aext 𝓐 id (ηᵀ (f x))) t        ＝⟨ II ⟩
-  aext 𝓐 (λ x → x) (ext 𝕋 (λ x → η 𝕋 (f x)) t) ＝⟨ refl ⟩
+  aext 𝓐 (λ x → x) (ext 𝕋 (λ x → η 𝕋 (f x)) t) ＝⟨refl⟩
   extᴬ-old f t                               ∎
    where
     I  = ap (λ - → aext 𝓐 - t) (dfunext fe (λ x → (aunit 𝓐 id (f x))⁻¹))

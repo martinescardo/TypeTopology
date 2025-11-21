@@ -59,7 +59,7 @@ module _ (D : 𝓦 ̇ )
  sflabby-extension-property x =
   sflabby-extension (j x)                 ＝⟨ I ⟩
   f (pr₁ (⌜ ρ (j x) ⌝ (⌜ ρ (j x) ⌝⁻¹ w))) ＝⟨ II ⟩
-  f (pr₁ w)                               ＝⟨ refl ⟩
+  f (pr₁ w)                               ＝⟨refl⟩
   f x                                     ∎
   where
    w : fiber j (j x)

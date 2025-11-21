@@ -417,11 +417,11 @@ main-lemma : {Xt : 𝑻} (εt : 𝓙 Xt) (q : Path Xt → R)
            ＝ sequenceᴶ εt q
 main-lemma {[]}     ⟨⟩           q = refl
 main-lemma {X ∷ Xf} εt@(ε :: εf) q =
- strategic-path (selection-strategy (ε :: εf) q) ＝⟨ refl ⟩
+ strategic-path (selection-strategy (ε :: εf) q) ＝⟨refl⟩
  x₀ :: strategic-path (σf x₀)                    ＝⟨ ap (x₀ ::_) IH ⟩
- x₀ :: sequenceᴶ {Xf x₀} (εf x₀) (subpred q x₀)  ＝⟨ refl ⟩
- x₀ :: ν x₀                                      ＝⟨ refl ⟩
- (ε ⊗ᴶ (λ x → sequenceᴶ {Xf x} (εf x))) q        ＝⟨ refl ⟩
+ x₀ :: sequenceᴶ {Xf x₀} (εf x₀) (subpred q x₀)  ＝⟨refl⟩
+ x₀ :: ν x₀                                      ＝⟨refl⟩
+ (ε ⊗ᴶ (λ x → sequenceᴶ {Xf x} (εf x))) q        ＝⟨refl⟩
  sequenceᴶ (ε :: εf) q                           ∎
  where
   ν : (x : X) → Path (Xf x)
@@ -455,7 +455,7 @@ selection-strategy-lemma fe {X ∷ Xf} εt@(ε :: εf) q = γ
   II : x₁ ＝ x₀
   II = ap (λ - → ε (λ x → subpred q x (- x))) (dfunext fe I)
 
-  III = overline ε (λ x → subpred q x (strategic-path (σf x))) ＝⟨ refl ⟩
+  III = overline ε (λ x → subpred q x (strategic-path (σf x))) ＝⟨refl⟩
         subpred q x₁ (strategic-path (σf x₁))                  ＝⟨ IV ⟩
         subpred q x₀ (strategic-path (σf x₀))                  ∎
 

@@ -154,9 +154,9 @@ module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
          (∐ (𝓓 ⁻) (n-family-is-directed α δ (succ n)))
          (iter (succ n) ∘ α)
      k = ∐-is-sup (𝓓 ⁻) (n-family-is-directed α δ (succ n))
-     h = iter (succ n) s                                           ＝⟨ refl ⟩
+     h = iter (succ n) s                                           ＝⟨refl⟩
          [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩ (iter n s)                             ＝⟨ ⦅1⦆  ⟩
-         [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩ (∐ (𝓓 ⁻) (n-family-is-directed α δ n)) ＝⟨ refl ⟩
+         [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩ (∐ (𝓓 ⁻) (n-family-is-directed α δ n)) ＝⟨refl⟩
          ∐ (𝓓 ⁻) (pointwise-family-is-directed (𝓓 ⁻) (𝓓 ⁻) α δ
            (∐ (𝓓 ⁻) (n-family-is-directed α δ n)))                 ＝⟨ ⦅2⦆  ⟩
          ∐ (𝓓 ⁻) (n-family-is-directed α δ (succ n))               ∎

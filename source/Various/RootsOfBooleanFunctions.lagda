@@ -215,7 +215,7 @@ A-property→ : {n : ℕ}
               (f : 𝟚 ^ n → 𝟚)
             → A f ＝ ₁
             → (xs : 𝟚 ^ n) → f xs ＝ ₁
-A-property→ {0}      f p ⟨⟩ = f ⟨⟩        ＝⟨ refl ⟩
+A-property→ {0}      f p ⟨⟩ = f ⟨⟩        ＝⟨refl⟩
                               f (ε {0} f) ＝⟨ p ⟩
                               ₁           ∎
 A-property→ {succ n} f p (x , xs) = II
@@ -426,22 +426,22 @@ concrete f gives the putative root ε f of f:
 
   c₀-property : eval f c₀ ＝ b₀
   c₀-property =
-   eval f c₀                            ＝⟨ refl ⟩
+   eval f c₀                            ＝⟨refl⟩
    (f ∘ cons ₀) (evals f (𝕔𝕠𝕟𝕤s O es))  ＝⟨ I ⟩
    (f ∘ cons ₀) (evals (f ∘ cons ₀) es) ＝⟨ II ⟩
-   (f ∘ cons ₀) (ε (f ∘ cons ₀))        ＝⟨ refl ⟩
+   (f ∘ cons ₀) (ε (f ∘ cons ₀))        ＝⟨refl⟩
    b₀                                   ∎
     where
      I  = ap (f ∘ cons ₀) (𝕔𝕠𝕟𝕤s-behaviour f O es)
      II = ap (f ∘ cons ₀) (IH ₀)
 
   γ : evals f (ε-formula (succ n)) ＝ ε f
-  γ = evals f (ε-formula (succ n))               ＝⟨ refl ⟩
+  γ = evals f (ε-formula (succ n))               ＝⟨refl⟩
       cons (eval f c₀) (evals f (𝕔𝕠𝕟𝕤s c₀ es))   ＝⟨ I ⟩
       cons b₀ (evals f (𝕔𝕠𝕟𝕤s c₀ es))            ＝⟨ II ⟩
       cons b₀ (evals (f ∘ cons (eval f c₀)) es)  ＝⟨ III ⟩
       cons b₀ (evals (f ∘ cons b₀) es)           ＝⟨ IV ⟩
-      cons b₀ (ε (f ∘ cons b₀))                  ＝⟨ refl ⟩
+      cons b₀ (ε (f ∘ cons b₀))                  ＝⟨refl⟩
       ε f                                        ∎
        where
         I   = ap (λ - → cons - (evals f (𝕔𝕠𝕟𝕤s c₀ es))) c₀-property
@@ -624,11 +624,11 @@ unroll-εᵉ-lemma {succ n} {k} f = γ
 
   c₀-property : c₀ ＝ 𝕞𝕒𝕡 f c₁
   c₀-property = (𝕗 ∘ f ∘ cons O) (εᵉ (𝕗 ∘ f ∘ cons O))        ＝⟨ I ⟩
-                (𝕗 ∘ f ∘ cons O) (𝕞𝕒𝕡s (f ∘ cons O) (εᵉ 𝕗))   ＝⟨ refl ⟩
+                (𝕗 ∘ f ∘ cons O) (𝕞𝕒𝕡s (f ∘ cons O) (εᵉ 𝕗))   ＝⟨refl⟩
                 𝕞𝕒𝕡 (f ∘ cons O) (𝕗 (εᵉ 𝕗))                   ＝⟨ II ⟩
-                𝕞𝕒𝕡 f (𝕞𝕒𝕡 (cons O) (𝕗 (εᵉ 𝕗)))               ＝⟨ refl ⟩
+                𝕞𝕒𝕡 f (𝕞𝕒𝕡 (cons O) (𝕗 (εᵉ 𝕗)))               ＝⟨refl⟩
                 𝕞𝕒𝕡 f ((𝕗 ∘ cons O) ((𝕞𝕒𝕡s (cons O) (εᵉ 𝕗)))) ＝⟨ III ⟩
-                𝕞𝕒𝕡 f ((𝕗 ∘ cons O) (εᵉ (𝕗 ∘ cons O)))        ＝⟨ refl ⟩
+                𝕞𝕒𝕡 f ((𝕗 ∘ cons O) (εᵉ (𝕗 ∘ cons O)))        ＝⟨refl⟩
                 𝕞𝕒𝕡 f c₁                                      ∎
    where
      I = ap (𝕗 ∘ f ∘ cons O) (unroll-εᵉ-lemma (f ∘ cons O))
@@ -636,13 +636,13 @@ unroll-εᵉ-lemma {succ n} {k} f = γ
      III = ap (𝕞𝕒𝕡 f ∘ (𝕗 ∘ cons O)) (unroll-εᵉ-lemma (cons O) ⁻¹)
 
   γ :  εᵉ (𝕗 ∘ f) ＝ 𝕞𝕒𝕡s f (εᵉ 𝕗)
-  γ = εᵉ (𝕗 ∘ f) ＝⟨ refl ⟩
+  γ = εᵉ (𝕗 ∘ f) ＝⟨refl⟩
       c₀ , (εᵉ (𝕗 ∘ f ∘ cons c₀))                  ＝⟨ I ⟩
       𝕞𝕒𝕡 f c₁ , (εᵉ (𝕗 ∘ f ∘ cons (𝕞𝕒𝕡 f c₁)))    ＝⟨ II ⟩
       𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s (f ∘ cons (𝕞𝕒𝕡 f c₁)) (εᵉ 𝕗) ＝⟨ III ⟩
       𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s f (𝕞𝕒𝕡s (cons c₁) (εᵉ 𝕗))    ＝⟨ IV ⟩
-      𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s f (εᵉ (𝕗 ∘ cons c₁))         ＝⟨ refl ⟩
-      𝕞𝕒𝕡s f (c₁ , (εᵉ (𝕗 ∘ cons c₁)))             ＝⟨ refl ⟩
+      𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s f (εᵉ (𝕗 ∘ cons c₁))         ＝⟨refl⟩
+      𝕞𝕒𝕡s f (c₁ , (εᵉ (𝕗 ∘ cons c₁)))             ＝⟨refl⟩
       𝕞𝕒𝕡s f (εᵉ 𝕗)                                ∎
    where
     I   = ap (λ x → x , (εᵉ (𝕗 ∘ f ∘ cons x))) c₀-property
@@ -681,13 +681,13 @@ formulas-are-equal (succ n) = γ
     II = ap (𝕗 ∘ cons O ∘ 𝕔𝕠𝕟𝕤s O) (formulas-are-equal n)
 
   γ : ε-formula' (succ n) ＝ ε-formula (succ n)
-  γ = ε-formula' (succ n)            ＝⟨ refl ⟩
-      εᵉ 𝕗                           ＝⟨ refl ⟩
+  γ = ε-formula' (succ n)            ＝⟨refl⟩
+      εᵉ 𝕗                           ＝⟨refl⟩
       c₀ , εᵉ (𝕗 ∘ cons c₀)          ＝⟨ I ⟩
-      c₀ , (𝕔𝕠𝕟𝕤s c₀ (ε-formula' n)) ＝⟨ refl ⟩
+      c₀ , (𝕔𝕠𝕟𝕤s c₀ (ε-formula' n)) ＝⟨refl⟩
       c₀ , (𝕔𝕠𝕟𝕤s c₀ (εᵉ 𝕗))         ＝⟨ II ⟩
       c₀ , (𝕔𝕠𝕟𝕤s c₀ (ε-formula n))  ＝⟨ III ⟩
-      c₁ , (𝕔𝕠𝕟𝕤s c₁ (ε-formula n))  ＝⟨ refl ⟩
+      c₁ , (𝕔𝕠𝕟𝕤s c₁ (ε-formula n))  ＝⟨refl⟩
       ε-formula (succ n) ∎
    where
     I   = ap (c₀ ,_) (unroll-εᵉ c₀)

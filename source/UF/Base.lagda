@@ -626,7 +626,7 @@ transport-after-ap'
  → transport (λ - → s - ＝ s' -) p q ＝ ap s p ⁻¹ ∙ q ∙ ap s' p
 transport-after-ap' refl s s' q =
  q                             ＝⟨ refl-left-neutral ⁻¹ ⟩
- refl ∙ q                      ＝⟨ refl ⟩
+ refl ∙ q                      ＝⟨refl⟩
  ap s refl ⁻¹ ∙ q ∙ ap s' refl ∎
 
 \end{code}

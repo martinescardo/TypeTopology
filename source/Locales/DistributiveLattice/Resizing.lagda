@@ -116,7 +116,7 @@ Now, we do exactly the same thing for the join operation.
  s-preserves-∨ x y =
   s (x ∨ y)                ＝⟨ Ⅰ    ⟩
   s (x ∨ r (s y))          ＝⟨ Ⅱ    ⟩
-  s (r (s x) ∨ r (s y))    ＝⟨ refl ⟩
+  s (r (s x) ∨ r (s y))    ＝⟨refl⟩
   s x ∨ᶜ s y               ∎
    where
     Ⅰ = ap (λ - → s (x ∨ -)) (inverses-are-retractions' e y ⁻¹)
@@ -180,12 +180,12 @@ Associativity laws.
 
  ∧ᶜ-is-associative : (x y z : Aᶜ) → x ∧ᶜ (y ∧ᶜ z) ＝ (x ∧ᶜ y) ∧ᶜ z
  ∧ᶜ-is-associative x y z =
-  x ∧ᶜ (y ∧ᶜ z)                ＝⟨ refl ⟩
+  x ∧ᶜ (y ∧ᶜ z)                ＝⟨refl⟩
   s (r x ∧ r (s (r y ∧ r z)))  ＝⟨ Ⅰ    ⟩
   s (r x ∧ (r y ∧ r z))        ＝⟨ Ⅱ    ⟩
   s ((r x ∧ r y) ∧ r z)        ＝⟨ Ⅲ    ⟩
-  s (r (s (r x ∧ r y)) ∧ r z)  ＝⟨ refl ⟩
-  s (r (s (r x ∧ r y)) ∧ r z)  ＝⟨ refl ⟩
+  s (r (s (r x ∧ r y)) ∧ r z)  ＝⟨refl⟩
+  s (r (s (r x ∧ r y)) ∧ r z)  ＝⟨refl⟩
   (x ∧ᶜ y) ∧ᶜ z                ∎
    where
     Ⅰ = ap (λ - → s (r x ∧ -)) (inverses-are-retractions' e (r y ∧ r z))
@@ -194,12 +194,12 @@ Associativity laws.
 
  ∨ᶜ-associative : (x y z : Aᶜ) → x ∨ᶜ (y ∨ᶜ z) ＝ (x ∨ᶜ y) ∨ᶜ z
  ∨ᶜ-associative x y z =
-  x ∨ᶜ (y ∨ᶜ z)                ＝⟨ refl ⟩
+  x ∨ᶜ (y ∨ᶜ z)                ＝⟨refl⟩
   s (r x ∨ r (s (r y ∨ r z)))  ＝⟨ Ⅰ    ⟩
   s (r x ∨ (r y ∨ r z))        ＝⟨ Ⅱ    ⟩
   s ((r x ∨ r y) ∨ r z)        ＝⟨ Ⅲ    ⟩
-  s (r (s (r x ∨ r y)) ∨ r z)  ＝⟨ refl ⟩
-  s (r (s (r x ∨ r y)) ∨ r z)  ＝⟨ refl ⟩
+  s (r (s (r x ∨ r y)) ∨ r z)  ＝⟨refl⟩
+  s (r (s (r x ∨ r y)) ∨ r z)  ＝⟨refl⟩
   (x ∨ᶜ y) ∨ᶜ z                ∎
    where
     Ⅰ = ap (λ - → s (r x ∨ -)) (inverses-are-retractions' e (r y ∨ r z))
@@ -261,7 +261,7 @@ Absorption laws.
 
  ∨ᶜ-absorptive : (x y : Aᶜ) → x ∨ᶜ (x ∧ᶜ y) ＝ x
  ∨ᶜ-absorptive x y =
-  x ∨ᶜ (x ∧ᶜ y)                 ＝⟨ refl ⟩
+  x ∨ᶜ (x ∧ᶜ y)                 ＝⟨refl⟩
   s (r x ∨ r (s (r x ∧ r y)))   ＝⟨ Ⅰ    ⟩
   s (r x ∨ (r x ∧ r y))         ＝⟨ Ⅱ    ⟩
   s (r x)                       ＝⟨ Ⅲ    ⟩
@@ -279,13 +279,13 @@ Finally, the distributivity law.
 
  distributivityᶜ : (x y z : Aᶜ) → x ∧ᶜ (y ∨ᶜ z) ＝ (x ∧ᶜ y) ∨ᶜ (x ∧ᶜ z)
  distributivityᶜ x y z =
-  x ∧ᶜ (y ∨ᶜ z)                             ＝⟨ refl ⟩
+  x ∧ᶜ (y ∨ᶜ z)                             ＝⟨refl⟩
   s (r x ∧ r (s (r y ∨ r z)))               ＝⟨ Ⅰ    ⟩
   s (r x ∧ (r y ∨ r z))                     ＝⟨ Ⅱ    ⟩
   s ((r x ∧ r y) ∨ (r x ∧ r z))             ＝⟨ Ⅲ    ⟩
   s ((r x ∧ r y) ∨ r (s (r x ∧ r z)))       ＝⟨ Ⅳ    ⟩
-  s (r (s (r x ∧ r y)) ∨ r (s (r x ∧ r z))) ＝⟨ refl ⟩
-  s (r (x ∧ᶜ y) ∨ r (x ∧ᶜ z))               ＝⟨ refl ⟩
+  s (r (s (r x ∧ r y)) ∨ r (s (r x ∧ r z))) ＝⟨refl⟩
+  s (r (x ∧ᶜ y) ∨ r (x ∧ᶜ z))               ＝⟨refl⟩
   (x ∧ᶜ y) ∨ᶜ (x ∧ᶜ z)                      ∎
    where
     Ⅰ = ap (λ - → s (r x ∧ -)) (inverses-are-retractions' e (r y ∨ r z))

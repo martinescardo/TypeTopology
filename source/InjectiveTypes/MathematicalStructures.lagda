@@ -229,11 +229,11 @@ flabby with with respect to the universe 𝓤.
 
      II : (h : p holds) → Π A , s ＝ f h
      II h = Π A , s   ＝⟨ to-Σ-＝ (ϕ h , III) ⟩
-            A h , g h ＝⟨ refl ⟩
+            A h , g h ＝⟨refl⟩
             f h       ∎
       where
-       III = transport S (ϕ h) s ＝⟨ refl ⟩
-             ⌜ e ⌝ s h           ＝⟨ refl ⟩
+       III = transport S (ϕ h) s ＝⟨refl⟩
+             ⌜ e ⌝ s h           ＝⟨refl⟩
              ⌜ e ⌝ (⌜ e ⌝⁻¹ g) h ＝⟨ IV ⟩
              g h                 ∎
         where
@@ -284,9 +284,9 @@ easier to check closure under products using T rather than transport
 
     I : A X (≃-refl X)
     I = T (≃-refl X) s                                ＝⟨ T-refl s ⟩
-        s                                             ＝⟨ refl ⟩
+        s                                             ＝⟨refl⟩
         transport S refl s                            ＝⟨ II ⟩
-        transport S (eqtoid (ua 𝓤) X X (≃-refl X)) s  ＝⟨ refl ⟩
+        transport S (eqtoid (ua 𝓤) X X (≃-refl X)) s  ＝⟨refl⟩
         treq (≃-refl X) s                             ∎
       where
        II = (ap (λ - → transport S - s) (eqtoid-refl (ua 𝓤) X))⁻¹
@@ -310,9 +310,9 @@ equivalently formulated with T:
 
    ρ-and-τ-agree : ρ ∼ τ
    ρ-and-τ-agree s =
-    ρ s                                                     ＝⟨ refl ⟩
+    ρ s                                                     ＝⟨refl⟩
     (λ h → transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) s) ＝⟨ I ⟩
-    (λ h → T (π h) s)                                       ＝⟨ refl ⟩
+    (λ h → T (π h) s)                                       ＝⟨refl⟩
     τ s                                                     ∎
     where
      I = dfunext fe' (λ h → (transport-eqtoid (π h) s)⁻¹)
@@ -408,10 +408,10 @@ guess what T should be.
     where
      I : ∀ α β → τ⁻¹ (τ _·_) α β ＝ α · β
      I α β =
-      (τ⁻¹ ∘ τ) _·_ α β                                                ＝⟨ refl ⟩
+      (τ⁻¹ ∘ τ) _·_ α β                                                ＝⟨refl⟩
       (λ h → ⌜ π h ⌝  (⌜ π h ⌝⁻¹ (⌜ π h ⌝ α) · ⌜ π h ⌝⁻¹ (⌜ π h ⌝ β))) ＝⟨ II ⟩
-      (λ h → ⌜ π h ⌝ (α · β))                                          ＝⟨ refl ⟩
-      (λ h → (α · β) h)                                                ＝⟨ refl ⟩
+      (λ h → ⌜ π h ⌝ (α · β))                                          ＝⟨refl⟩
+      (λ h → (α · β) h)                                                ＝⟨refl⟩
       α · β                                                            ∎
       where
        II = dfunext fe' (λ h →
@@ -421,9 +421,9 @@ guess what T should be.
 
    ε : τ ∘ τ⁻¹ ∼ id
    ε g =
-    τ (τ⁻¹ g)                                                       ＝⟨ refl ⟩
+    τ (τ⁻¹ g)                                                       ＝⟨refl⟩
     (λ h a b → g h (⌜ π h ⌝ (⌜ π h ⌝⁻¹ a)) (⌜ π h ⌝ (⌜ π h ⌝⁻¹ b))) ＝⟨ I ⟩
-    (λ h a b → g h a b)                                             ＝⟨ refl ⟩
+    (λ h a b → g h a b)                                             ＝⟨refl⟩
     g                                                               ∎
      where
       I = dfunext fe' (λ h → dfunext fe' (λ a → dfunext fe' (λ b →
@@ -498,9 +498,9 @@ closure-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂}
 
    η : ρ⁻¹ ∘ ρ ∼ id
    η (s₁ , s₂) =
-    ρ⁻¹ (ρ (s₁ , s₂))                                         ＝⟨ refl ⟩
+    ρ⁻¹ (ρ (s₁ , s₂))                                         ＝⟨refl⟩
     ρ⁻¹ (λ h → transport S (ϕ h) (s₁ , s₂))                   ＝⟨ I ⟩
-    ρ⁻¹ (λ h → transport S₁ (ϕ h) s₁ , transport S₂ (ϕ h) s₂) ＝⟨ refl ⟩
+    ρ⁻¹ (λ h → transport S₁ (ϕ h) s₁ , transport S₂ (ϕ h) s₂) ＝⟨refl⟩
     ρ₁⁻¹ (ρ₁ s₁) , ρ₂⁻¹ (ρ₂ s₂)                               ＝⟨ II ⟩
     (s₁ , s₂)                                                 ∎
      where
@@ -517,11 +517,11 @@ closure-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂}
 
      I : ρ (ρ⁻¹ α) ∼ α
      I h =
-      ρ (ρ⁻¹ α) h                                                 ＝⟨ refl ⟩
+      ρ (ρ⁻¹ α) h                                                 ＝⟨refl⟩
       transport S (ϕ h) (ρ₁⁻¹ α₁ , ρ₂⁻¹ α₂)                       ＝⟨ II ⟩
-      transport S₁ (ϕ h) (ρ₁⁻¹ α₁) , transport S₂ (ϕ h) (ρ₂⁻¹ α₂) ＝⟨ refl ⟩
+      transport S₁ (ϕ h) (ρ₁⁻¹ α₁) , transport S₂ (ϕ h) (ρ₂⁻¹ α₂) ＝⟨refl⟩
       ρ₁ (ρ₁⁻¹ α₁) h , ρ₂ (ρ₂⁻¹ α₂) h                             ＝⟨ III ⟩
-      α₁ h , α₂ h                                                 ＝⟨ refl ⟩
+      α₁ h , α₂ h                                                 ＝⟨refl⟩
       α h                                                         ∎
        where
         II  = transport-× S₁ S₂ (ϕ h)
@@ -601,10 +601,10 @@ closure-under-prop-Π-with-axioms
 
    η : ρₐ⁻¹ ∘ ρₐ ∼ id
    η (s , a) =
-    ρₐ⁻¹ (ρₐ (s , a))                       ＝⟨ refl ⟩
+    ρₐ⁻¹ (ρₐ (s , a))                       ＝⟨refl⟩
     ρₐ⁻¹ (λ h → transport Sₐ (ϕ h) (s , _)) ＝⟨ I ⟩
-    ρₐ⁻¹ (λ h → transport S (ϕ h) s , _)    ＝⟨ refl ⟩
-    ρ⁻¹ (λ h → transport S (ϕ h) s) , _     ＝⟨ refl ⟩
+    ρₐ⁻¹ (λ h → transport S (ϕ h) s , _)    ＝⟨refl⟩
+    ρ⁻¹ (λ h → transport S (ϕ h) s) , _     ＝⟨refl⟩
     ρ⁻¹ (ρ s) , _                           ＝⟨ II ⟩
     (s , a)                                 ∎
      where
@@ -621,12 +621,12 @@ closure-under-prop-Π-with-axioms
 
      I : ρₐ (ρₐ⁻¹ α) ∼ α
      I h =
-      ρₐ (ρₐ⁻¹ α) h                    ＝⟨ refl ⟩
-      ρₐ (ρ⁻¹ α₁ , _) h                ＝⟨ refl ⟩
+      ρₐ (ρₐ⁻¹ α) h                    ＝⟨refl⟩
+      ρₐ (ρ⁻¹ α₁ , _) h                ＝⟨refl⟩
       transport Sₐ (ϕ h) (ρ⁻¹ α₁ , _)  ＝⟨ II ⟩
-      (transport S (ϕ h) (ρ⁻¹ α₁) , _) ＝⟨ refl ⟩
+      (transport S (ϕ h) (ρ⁻¹ α₁) , _) ＝⟨refl⟩
       (ρ (ρ⁻¹ α₁) h , _)               ＝⟨ III ⟩
-      (α₁ h , α₂ h)                    ＝⟨ refl ⟩
+      (α₁ h , α₂ h)                    ＝⟨refl⟩
       α h                              ∎
        where
         II  = transport-Σ S 𝔞 (A h) (ϕ h) (ρ⁻¹ α₁)

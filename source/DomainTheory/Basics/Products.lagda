@@ -504,7 +504,7 @@ Added 3 July 2024 by Tom de Jong.
                            (being-continuous-is-prop 𝓔 (𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂) j)
                            (×-is-prop (Π-is-prop fe (λ e → sethood 𝓓₁))
                                       (Π-is-prop fe (λ e → sethood 𝓓₂))))
-                   (dfunext fe (λ e → k e       ＝⟨ refl ⟩
+                   (dfunext fe (λ e → k e       ＝⟨refl⟩
                                       f e , g e ＝⟨ (eq e ) ⁻¹ ⟩
                                       h e       ∎))
       where

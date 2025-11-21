@@ -123,7 +123,7 @@ distributivity-mult-ℤ₀ x y = ℕ-induction base step
               x + (y + u) + w                     ＝⟨ iv   ⟩
               x + (u + y) + w                     ＝⟨ v    ⟩
               x + u + y + w                       ＝⟨ vi   ⟩
-              x + u + (y + w)                     ＝⟨ refl ⟩
+              x + u + (y + w)                     ＝⟨refl⟩
               x * pos (succ k) + y * pos (succ k) ∎
      where
        u w : ℤ
@@ -156,7 +156,7 @@ distributivity-mult-ℤ₁ x y = ℕ-induction base step
               (- x) + ((- y) + u + w)                         ＝⟨ v    ⟩
               (- x) + (u - y + w)                             ＝⟨ vi   ⟩
               (- x) + (u + ((- y) + w))                       ＝⟨ vii  ⟩
-              (- x) + u + ((- y) + w)                         ＝⟨ refl ⟩
+              (- x) + u + ((- y) + w)                         ＝⟨refl⟩
               (- x) + x * negsucc k + ((- y) + y * negsucc k) ∎
     where
       u w : ℤ
@@ -264,7 +264,7 @@ mult-negation = ℤ-induction base step₁ step₂
   step : (k : ℕ)
        → x * negsucc k        ＝ negsucc k * x
        → x * negsucc (succ k) ＝ negsucc (succ k) * x
-  step k IH = x * negsucc (succ k)             ＝⟨ refl ⟩
+  step k IH = x * negsucc (succ k)             ＝⟨refl⟩
               (- x) + x * negsucc k            ＝⟨ i    ⟩
               (- x) + negsucc k * x            ＝⟨ ii   ⟩
               negsucc 0 * x + negsucc k * x    ＝⟨ iii  ⟩
@@ -424,11 +424,11 @@ pos-times-negative n (succ k) = I IH
   I (m , e) = succ n ℕ+ m , II
    where
     II : pos (succ n) * negsucc (succ k) ＝ negsucc (succ n ℕ+ m)
-    II = pos (succ n) * negsucc (succ k)      ＝⟨ refl ⟩
+    II = pos (succ n) * negsucc (succ k)      ＝⟨refl⟩
          negsucc n + pos (succ n) * negsucc k ＝⟨ i    ⟩
          negsucc n + negsucc m                ＝⟨ ii   ⟩
          - (succℤ (pos (succ n) + pos m))     ＝⟨ iii  ⟩
-         - succℤ (pos (succ n ℕ+ m))          ＝⟨ refl ⟩
+         - succℤ (pos (succ n ℕ+ m))          ＝⟨refl⟩
          negsucc (succ n ℕ+ m)                ∎
      where
       i   = ap (negsucc n +_) e
@@ -484,7 +484,7 @@ product-positive-negative-not-positive (succ a) (succ b) c e₁ = γ I
     γ' (d , e₃) = negsucc-not-pos IV
      where
       III : negsucc z ＝ pos (succ a) * negsucc b
-      III = negsucc z                     ＝⟨ refl ⟩
+      III = negsucc z                     ＝⟨refl⟩
             - pos (succ z)                ＝⟨ i    ⟩
             - pos (succ a ℕ* succ b)      ＝⟨ ii   ⟩
             - pos (succ a) * pos (succ b) ＝⟨ iii  ⟩

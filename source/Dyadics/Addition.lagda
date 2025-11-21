@@ -225,13 +225,13 @@ unsimplified rationals.
   p' = ℤ[1/2]-to-normalise-pos (p , α)
 
   γ : (p , α) + (q , β) + (r , δ) ＝ (p , α) + ((q , β) + (r , δ))
-  γ = (p , α) + (q , β) + (r , δ)              ＝⟨ refl ⟩
+  γ = (p , α) + (q , β) + (r , δ)              ＝⟨refl⟩
       normalise-pos (p +' q) + (r , δ)         ＝⟨ i    ⟩
       normalise-pos (p +' q) + normalise-pos r ＝⟨ ii   ⟩
       normalise-pos ((p +' q) +' r)            ＝⟨ iii  ⟩
       normalise-pos (p +' (q +' r))            ＝⟨ iv   ⟩
       normalise-pos p + normalise-pos (q +' r) ＝⟨ v    ⟩
-      (p , α) + normalise-pos (q +' r)         ＝⟨ refl ⟩
+      (p , α) + normalise-pos (q +' r)         ＝⟨refl⟩
       (p , α) + ((q , β) + (r , δ)) ∎
    where
     i   = ap (λ - → normalise-pos (p +' q) + -) r'
@@ -258,7 +258,7 @@ unsimplified rationals.
 ℤ[1/2]-zero-left-neutral (q , α) = γ
  where
   γ : 0ℤ[1/2] + (q , α) ＝ (q , α)
-  γ = 0ℤ[1/2] + (q , α)                 ＝⟨ refl ⟩
+  γ = 0ℤ[1/2] + (q , α)                 ＝⟨refl⟩
       normalise-pos ((pos 0 , 0) +' q)  ＝⟨ i    ⟩
       normalise-pos q                   ＝⟨ ii   ⟩
       (q , α) ∎
@@ -289,12 +289,12 @@ unsimplified rationals.
   γ = - ((p , a) , α) + ((q , b) , β)                       ＝⟨ i    ⟩
       - ((p , a) , α) + normalise-pos (q , b)               ＝⟨ ii   ⟩
       - normalise-pos (p , a) + normalise-pos (q , b)       ＝⟨ iii  ⟩
-      - normalise-pos ((p , a) +' (q , b))                  ＝⟨ refl ⟩
+      - normalise-pos ((p , a) +' (q , b))                  ＝⟨refl⟩
       - normalise-pos (p * b' ℤ+ q * a' , a ℕ+ b)           ＝⟨ iv   ⟩
       normalise-pos (ℤ- (p * b' ℤ+ q * a') , a ℕ+ b)        ＝⟨ v    ⟩
       normalise-pos ((ℤ- p * b') ℤ+ (ℤ- q * a') , a ℕ+ b)   ＝⟨ vi   ⟩
       normalise-pos ((ℤ- p) * b' ℤ+ (ℤ- q * a') , a ℕ+ b)   ＝⟨ vii  ⟩
-      normalise-pos ((ℤ- p) * b' ℤ+ (ℤ- q) * a' , a ℕ+ b)   ＝⟨ refl ⟩
+      normalise-pos ((ℤ- p) * b' ℤ+ (ℤ- q) * a' , a ℕ+ b)   ＝⟨refl⟩
       normalise-pos ((ℤ- p , a) +' (ℤ- q , b))              ＝⟨ viii ⟩
       normalise-pos (ℤ- p , a) + normalise-pos (ℤ- q , b)   ＝⟨ ix   ⟩
       (- normalise-pos (p , a)) + normalise-pos (ℤ- q , b)  ＝⟨ x    ⟩

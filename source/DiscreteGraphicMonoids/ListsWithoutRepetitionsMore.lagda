@@ -43,11 +43,11 @@ module _
 
  ∉-step : (z x : X) (xs : List X) → z ≠ x → z ∉ xs → z ∉ (x • xs)
  ∉-step z x xs ν μ =
-  ρ (z • x • xs) ＝⟨ refl ⟩
+  ρ (z • x • xs) ＝⟨refl⟩
   z • δ z (x • δ x (ρ xs)) ＝⟨ ap (z •_) (δ-≠ z x (δ x (ρ xs)) ν) ⟩
   z • x • δ z (δ x (ρ xs)) ＝⟨ ap (λ - → z • x • -) (δ-swap z x (ρ xs)) ⟩
   z • x • δ x (δ z (ρ xs)) ＝⟨ ap (λ - → z • x • δ x -) μ' ⟩
-  z • x • δ x (ρ xs)       ＝⟨ refl ⟩
+  z • x • δ x (ρ xs)       ＝⟨refl⟩
   z • ρ (x • xs)           ∎
    where
     μ' : δ z (ρ xs) ＝ ρ xs
@@ -103,10 +103,10 @@ module _
      → Δ (xs ◦ ys) zs ＝ Δ ys (Δ xs zs)
  Δ-∘ [] ys zs = refl
  Δ-∘ (x • xs) ys zs =
-  Δ (x • xs ◦ ys) zs   ＝⟨ refl ⟩
+  Δ (x • xs ◦ ys) zs   ＝⟨refl⟩
   δ x (Δ (xs ◦ ys) zs) ＝⟨ ap (δ x) (Δ-∘ xs ys zs) ⟩
   δ x (Δ ys (Δ xs zs)) ＝⟨ δ-Δ-left x (Δ xs zs) ys ⟩
-  Δ ys (δ x (Δ xs zs)) ＝⟨ refl ⟩
+  Δ ys (δ x (Δ xs zs)) ＝⟨refl⟩
   Δ ys (Δ (x • xs) zs) ∎
 
  δ-Δ-right : (z : X) (xs ys : List X)
@@ -117,18 +117,18 @@ module _
    h : is-decidable (z ＝ y)
      → δ z (Δ (y • ys) xs) ＝ δ z (Δ (δ z (y • ys)) xs)
    h (inl refl) =
-     δ z (Δ (z • ys) xs)       ＝⟨ refl ⟩
+     δ z (Δ (z • ys) xs)       ＝⟨refl⟩
      δ z (δ z (Δ ys xs))       ＝⟨ δ-idemp z (Δ ys xs) ⟩
      δ z (Δ ys xs)             ＝⟨ δ-Δ-right z xs ys ⟩
      δ z (Δ (δ z ys) xs)       ＝⟨ (ap (λ - → δ z ( Δ - xs)) (δ-same z ys))⁻¹ ⟩
      δ z (Δ (δ z (z • ys)) xs) ∎
 
    h (inr u) =
-    δ z (Δ (y • ys) xs)       ＝⟨ refl ⟩
+    δ z (Δ (y • ys) xs)       ＝⟨refl⟩
     δ z (δ y (Δ ys xs))       ＝⟨ δ-swap z y (Δ ys xs) ⟩
     δ y (δ z (Δ ys xs))       ＝⟨ ap (δ y) (δ-Δ-right z xs ys) ⟩
     δ y (δ z (Δ (δ z ys) xs)) ＝⟨ δ-swap y z (Δ (δ z ys) xs) ⟩
-    δ z (δ y (Δ (δ z ys) xs)) ＝⟨ refl ⟩
+    δ z (δ y (Δ (δ z ys) xs)) ＝⟨refl⟩
     δ z (Δ (y • δ z ys) xs)   ＝⟨ (ap (λ - → δ z (Δ - xs)) (δ-≠ z y ys u))⁻¹ ⟩
     δ z (Δ (δ z (y • ys)) xs) ∎
 
@@ -136,11 +136,11 @@ module _
     → ρ (Δ ys xs) ＝ Δ (ρ ys) (ρ xs)
  ρ-Δ xs [] = refl
  ρ-Δ xs (y • ys) =
-  ρ (Δ (y • ys) xs)           ＝⟨ refl ⟩
+  ρ (Δ (y • ys) xs)           ＝⟨refl⟩
   ρ (δ y (Δ ys xs))           ＝⟨ (δ-ρ-swap y (Δ ys xs))⁻¹ ⟩
   δ y (ρ (Δ ys xs))           ＝⟨ ap (δ y) (ρ-Δ xs ys) ⟩
   δ y (Δ (ρ ys) (ρ xs))       ＝⟨ δ-Δ-right y (ρ xs) (ρ ys) ⟩
-  δ y (Δ (δ y (ρ ys)) (ρ xs)) ＝⟨ refl ⟩
+  δ y (Δ (δ y (ρ ys)) (ρ xs)) ＝⟨refl⟩
   Δ (ρ (y • ys)) (ρ xs)       ∎
 
  δ-Δ : (z : X) (xs ys : List X)

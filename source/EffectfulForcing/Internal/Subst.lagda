@@ -659,7 +659,7 @@ weaken-close {σ} {Γ₁} {Γ₂} {Γ₃} (t · t₁) s1 s2 =
  close (weaken, τ (s1 i)) (Subƛ s2)
   ＝⟨ close-weaken (s1 i) (⊆, Γ₂ τ) (Subƛ s2) ⟩
  close (s1 i) (⊆Sub (∈CxtS τ) (Subƛ s2))
-  ＝⟨ refl ⟩
+  ＝⟨refl⟩
  close (s1 i) (Sub⊆ s2 (∈CxtS τ))
   ＝⟨ (weaken-close (s1 i) s2 (⊆, Γ₃ τ)) ⁻¹ ⟩
  weaken, τ (close (s1 i) s2)

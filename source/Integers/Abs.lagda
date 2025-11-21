@@ -71,8 +71,8 @@ abs-over-mult (pos (succ x)) (negsucc b) = I
   I = abs (pos (succ x) * negsucc b)           ＝⟨ i    ⟩
       abs (- ((pos (succ x) * pos (succ b))))  ＝⟨ ii   ⟩
       abs (- pos (succ x ℕ* succ b))           ＝⟨ iii  ⟩
-      abs (pos (succ x ℕ* succ b))             ＝⟨ refl ⟩
-      succ x ℕ* succ b                         ＝⟨ refl ⟩
+      abs (pos (succ x ℕ* succ b))             ＝⟨refl⟩
+      succ x ℕ* succ b                         ＝⟨refl⟩
       abs (pos (succ x)) ℕ* abs (negsucc b)    ∎
    where
     iiₐₚ : pos (succ x) * pos (succ b) ＝ pos (succ x ℕ* succ b)
@@ -86,7 +86,7 @@ abs-over-mult (negsucc x) (pos b) = I
   I = abs (negsucc x * pos b)        ＝⟨ i    ⟩
       abs (- pos (succ x) * pos b)   ＝⟨ ii   ⟩
       abs (- pos (succ x ℕ* b))      ＝⟨ iii  ⟩
-      (succ x) ℕ* b                  ＝⟨ refl ⟩
+      (succ x) ℕ* b                  ＝⟨refl⟩
       abs (negsucc x) ℕ* abs (pos b) ∎
    where
     i   = ap abs (negation-dist-over-mult' (pos (succ x)) (pos b))
@@ -99,7 +99,7 @@ abs-over-mult (negsucc x) (negsucc b) = I
       abs (- negsucc x * pos (succ b) )       ＝⟨ ii   ⟩
       abs (- (- pos (succ x) * pos (succ b))) ＝⟨ iii  ⟩
       abs (pos (succ x) * pos (succ b))       ＝⟨ iv   ⟩
-      (succ x) ℕ* (succ b)                    ＝⟨ refl ⟩
+      (succ x) ℕ* (succ b)                    ＝⟨refl⟩
       abs (negsucc x) ℕ* abs (negsucc b)      ∎
    where
     iiₐₚ : (- pos (succ x)) * pos (succ b) ＝ - pos (succ x) * pos (succ b)
@@ -115,9 +115,9 @@ abs-over-mult' (pos x) (pos y) = I
  where
   I : absℤ (pos x * pos y) ＝ absℤ (pos x) * absℤ (pos y)
   I = absℤ (pos x * pos y)        ＝⟨ i    ⟩
-      absℤ (pos (x ℕ* y))         ＝⟨ refl ⟩
+      absℤ (pos (x ℕ* y))         ＝⟨refl⟩
       pos (x ℕ* y)                ＝⟨ ii   ⟩
-      pos x * pos y               ＝⟨ refl ⟩
+      pos x * pos y               ＝⟨refl⟩
       absℤ (pos x) * absℤ (pos y) ∎
    where
     i = ap absℤ (pos-multiplication-equiv-to-ℕ x y)
@@ -128,9 +128,9 @@ abs-over-mult' (pos x) (negsucc y) = I
   I = absℤ (pos x * negsucc y)        ＝⟨ i    ⟩
       absℤ (- pos x * pos (succ y))   ＝⟨ ii   ⟩
       absℤ (- pos (x ℕ* succ y))      ＝⟨ iii  ⟩
-      absℤ (pos (x ℕ* succ y))        ＝⟨ refl ⟩
+      absℤ (pos (x ℕ* succ y))        ＝⟨refl⟩
       pos (x ℕ* succ y)               ＝⟨ iv   ⟩
-      pos x * pos (succ y)            ＝⟨ refl ⟩
+      pos x * pos (succ y)            ＝⟨refl⟩
       absℤ (pos x) * absℤ (negsucc y) ∎
    where
     i = ap absℤ (negation-dist-over-mult (pos x) (pos (succ y)))
@@ -144,10 +144,10 @@ abs-over-mult' (negsucc x) (pos y) = I
       absℤ (pos y * negsucc x)      ＝⟨ ii   ⟩
       absℤ (- pos y * pos (succ x)) ＝⟨ iii  ⟩
       absℤ (- pos (y ℕ* succ x))    ＝⟨ iv   ⟩
-      absℤ (pos (y ℕ* succ x))      ＝⟨ refl ⟩
+      absℤ (pos (y ℕ* succ x))      ＝⟨refl⟩
       pos (y ℕ* succ x)             ＝⟨ v    ⟩
       pos y * pos (succ x)          ＝⟨ vi   ⟩
-      pos (succ x) * pos y          ＝⟨ refl ⟩
+      pos (succ x) * pos y          ＝⟨refl⟩
       absℤ (negsucc x) * absℤ (pos y) ∎
    where
     i   = ap absℤ (ℤ*-comm (negsucc x) (pos y))
@@ -161,9 +161,9 @@ abs-over-mult' (negsucc x) (negsucc y) = I
   I : absℤ (negsucc x * negsucc y) ＝ absℤ (negsucc x) * absℤ (negsucc y)
   I = absℤ (negsucc x * negsucc y)        ＝⟨ i    ⟩
       absℤ (pos (succ x) * pos (succ y))  ＝⟨ ii   ⟩
-      absℤ (pos (succ x ℕ* succ y))       ＝⟨ refl ⟩
+      absℤ (pos (succ x ℕ* succ y))       ＝⟨refl⟩
       pos (succ x ℕ* succ y)              ＝⟨ iii  ⟩
-      pos (succ x) * pos (succ y)         ＝⟨ refl ⟩
+      pos (succ x) * pos (succ y)         ＝⟨refl⟩
       absℤ (negsucc x) * absℤ (negsucc y) ∎
    where
     i   = ap absℤ (minus-times-minus-is-positive (pos (succ x)) (pos (succ y)))

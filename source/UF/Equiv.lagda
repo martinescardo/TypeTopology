@@ -440,7 +440,7 @@ haes-are-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) = qinvs-are-equivs f (g ,
 id-homotopies-are-natural : {X : 𝓤 ̇ } (h : X → X) (η : h ∼ id) {x : X}
                           → η (h x) ＝ ap h (η x)
 id-homotopies-are-natural h η {x} =
- η (h x)                         ＝⟨ refl ⟩
+ η (h x)                         ＝⟨refl⟩
  η (h x) ∙ refl                  ＝⟨ I ⟩
  η (h x) ∙ (η x ∙ (η x)⁻¹)       ＝⟨ II ⟩
  η (h x) ∙ η x ∙ (η x)⁻¹         ＝⟨ III ⟩
@@ -488,7 +488,7 @@ half-adjoint-condition {𝓤} {𝓥} {X} {Y} f e@((g , ε) , (g' , η)) = τ
         refl ∙ ap f (η' x)                                    ＝⟨ II ⟩
         (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η' x)   ＝⟨ III ⟩
         (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η' x)) ＝⟨ IV ⟩
-        (ε (f (g (f x))))⁻¹ ∙ (ap f (η' (g (f x))) ∙ ε (f x)) ＝⟨ refl ⟩
+        (ε (f (g (f x))))⁻¹ ∙ (ap f (η' (g (f x))) ∙ ε (f x)) ＝⟨refl⟩
         ε' (f x)                                             ∎
          where
           I   = refl-left-neutral ⁻¹
@@ -552,7 +552,7 @@ haes-are-vv-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) y =
     γ : g y ＝ x
     γ = (ap g p)⁻¹ ∙ η x
     q : ap f γ ∙ p ＝ ε y
-    q = ap f γ ∙ p                          ＝⟨ refl ⟩
+    q = ap f γ ∙ p                          ＝⟨refl⟩
         ap f ((ap g p)⁻¹ ∙ η x) ∙ p         ＝⟨ I ⟩
         ap f ((ap g p)⁻¹) ∙ ap f (η x) ∙ p  ＝⟨ II ⟩
         ap f (ap g (p ⁻¹)) ∙ ap f (η x) ∙ p ＝⟨ III ⟩
@@ -561,7 +561,7 @@ haes-are-vv-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) y =
         ε y ∙ ap id (p ⁻¹) ∙ p              ＝⟨ VI ⟩
         ε y ∙ p ⁻¹ ∙ p                      ＝⟨ VII ⟩
         ε y ∙ (p ⁻¹ ∙ p)                    ＝⟨ VIII ⟩
-        ε y ∙ refl                          ＝⟨ refl ⟩
+        ε y ∙ refl                          ＝⟨refl⟩
         ε y                                 ∎
          where
           I    = ap (λ - → - ∙ p) (ap-∙ f ((ap g p)⁻¹) (η x))

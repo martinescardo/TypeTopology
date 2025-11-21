@@ -52,7 +52,7 @@ open import UF.Subsingletons
                            ℕ-induction y₀ g (succ n) ∎
       η : r ∘ s ∼ id
       η (p , K) =
-       r (s (p , K))                                      ＝⟨ refl ⟩
+       r (s (p , K))                                      ＝⟨refl⟩
        (p , λ n → s (p , K) (succ n)
                   ∙ (refl ∙ ap (g n) ((s (p , K) n) ⁻¹))) ＝⟨ φ    ⟩
        (p , K)                                            ∎
@@ -63,7 +63,7 @@ open import UF.Subsingletons
               → s (p , K) (succ n) ∙ (refl ∙ ap (g n) (s (p , K) n ⁻¹))
               ＝ K n
             ψ n = s (p , K) (succ n)
-                    ∙ (refl ∙ ap (g n) (s (p , K) n ⁻¹))   ＝⟨ refl ⟩
+                    ∙ (refl ∙ ap (g n) (s (p , K) n ⁻¹))   ＝⟨refl⟩
                   K n ∙ ap (g n) (s (p , K) n)
                     ∙ (refl ∙ ap (g n) ((s (p , K) n) ⁻¹)) ＝⟨ I    ⟩
                   K n ∙ ap (g n) (s (p , K) n)
@@ -72,7 +72,7 @@ open import UF.Subsingletons
                     ∙ ap (g n) ((s (p , K) n) ⁻¹))         ＝⟨ III  ⟩
                   K n ∙ (ap (g n) (s (p , K) n)
                     ∙ (ap (g n) (s (p , K) n)) ⁻¹)         ＝⟨ IV   ⟩
-                  K n ∙ refl                               ＝⟨ refl ⟩
+                  K n ∙ refl                               ＝⟨refl⟩
                   K n                                      ∎
              where
               I   = ap (K n ∙ ap (g n) (s (p , K) n) ∙_)

@@ -75,11 +75,11 @@ This maps the concatenation operator `_++_` to binary union `_∪_`.
   where
    † = ∅-left-neutral-for-∪ pe fe (finite-join ys) ⁻¹
  finite-join-is-homomorphic (x ∷ xs) ys =
-  finite-join ((x ∷ xs) ++ ys)               ＝⟨ refl ⟩
-  finite-join (x ∷ xs ++ ys)                 ＝⟨ refl ⟩
+  finite-join ((x ∷ xs) ++ ys)               ＝⟨refl⟩
+  finite-join (x ∷ xs ++ ys)                 ＝⟨refl⟩
   ❴ x ❵ ∪ finite-join (xs ++ ys)             ＝⟨ Ⅰ    ⟩
   ❴ x ❵ ∪ (finite-join xs ∪ finite-join ys)  ＝⟨ Ⅱ    ⟩
-  (❴ x ❵ ∪ finite-join xs) ∪ finite-join ys  ＝⟨ refl ⟩
+  (❴ x ❵ ∪ finite-join xs) ∪ finite-join ys  ＝⟨refl⟩
   finite-join (x ∷ xs) ∪ finite-join ys      ∎
    where
     IH = finite-join-is-homomorphic xs ys

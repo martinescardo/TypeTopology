@@ -224,7 +224,7 @@ We now assume functional and propositional extensionality.
   Succ⁺-Pred⁺ : (n⁺ : 𝓝⁺) → Succ⁺ (Pred⁺ n⁺) ＝ n⁺
   Succ⁺-Pred⁺ (n , pos) = to-subtype-＝ being-positive-is-prop I
    where
-    I = Succ (Pred n pos)         ＝⟨ refl ⟩
+    I = Succ (Pred n pos)         ＝⟨refl⟩
         Suc ⊤ (λ _ → Pred n pos)  ＝⟨ II ⟩
         Suc (positive n) (Pred n) ＝⟨ Suc-Pred n ⟩
         n                         ∎
@@ -274,12 +274,12 @@ by 𝓕𝓲𝓷 : 𝓝 → 𝓥.
    IH : 𝓕𝓲𝓷 (ℕ-to-𝓝 n) ≃ Fin n
    IH = Fin-factor n
 
-   I = 𝓕𝓲𝓷 (ℕ-to-𝓝 (succ n))          ≃⟨ ≃-refl _ ⟩
+   I = 𝓕𝓲𝓷 (ℕ-to-𝓝 (succ n))          ≃⟨by-definition⟩
        𝟙 + (Σ h ꞉ 𝟙 , 𝓕𝓲𝓷 (ℕ-to-𝓝 n)) ≃⟨ II  ⟩
        𝟙 + 𝓕𝓲𝓷 (ℕ-to-𝓝 n)             ≃⟨ III ⟩
        𝟙 + Fin n                       ≃⟨ +comm ⟩
        Fin n + 𝟙 {𝓥}                   ≃⟨ IV ⟩
-       Fin n + 𝟙 {𝓤₀}                  ≃⟨ ≃-refl _ ⟩
+       Fin n + 𝟙 {𝓤₀}                  ≃⟨by-definition⟩
        Fin (succ n)                    ■
     where
      II  = +-cong (≃-refl 𝟙) 𝟙-lneutral
@@ -407,7 +407,7 @@ which is different from ℕ-to-𝓝 n for every n : ℕ.
          f' : (n : ℕ) → ℕ-to-𝓝 n ≠ ns h
          f' n e = f (succ n) IV₂
           where
-           IV₂ = Succ (ℕ-to-𝓝 n)        ＝⟨ refl ⟩
+           IV₂ = Succ (ℕ-to-𝓝 n)        ＝⟨refl⟩
                  Suc ⊤ (λ _ → ℕ-to-𝓝 n) ＝⟨ IV₃ ⟩
                  Suc ⊤ (λ _ → ns h)     ＝⟨ IV₄ ⟩
                  Suc p ns               ∎

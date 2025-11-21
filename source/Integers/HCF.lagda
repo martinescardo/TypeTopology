@@ -139,7 +139,7 @@ module Integers.HCF where
           V : pos h ＝ n' * (y + (- q' * x)) + pos b * x
           V = pos h                                            ＝⟨ e₁   ⟩
               r' * x + n' * y                                  ＝⟨ i    ⟩
-              n' * y + r' * x                                  ＝⟨ refl ⟩
+              n' * y + r' * x                                  ＝⟨refl⟩
               n' * (y + pos 0) + r' * x                        ＝⟨ ii   ⟩
               n' * (y + (q' * x + (- q' * x))) + r' * x        ＝⟨ iii  ⟩
               n' * (y + ((- q' * x) + q' * x)) + r' * x        ＝⟨ iv   ⟩

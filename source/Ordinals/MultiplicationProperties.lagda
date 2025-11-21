@@ -855,7 +855,7 @@ simulation-product-decomposition' α β γ (a₀ , a₀-least) 𝕗@(f , f-sim) 
 
    II : (b : ⟨ β ⟩) → g b ＝ pr₂ (f (a₀ , b))
    II b = ap pr₂ (inl-lc (inl (a₀ , g b)   ＝⟨ (g-property a₀ b) ⁻¹ ⟩
-                          f' (a₀ , b)      ＝⟨ refl ⟩
+                          f' (a₀ , b)      ＝⟨refl⟩
                           inl (f (a₀ , b)) ∎))
 
    III : (b : ⟨ β ⟩)
@@ -933,7 +933,7 @@ simulation-product-decomposition {𝓤} {𝓥} α β γ (a₀ , a₀-least)
                  (order-pres (a' , b) (a , b) (inr (refl , q)))
         where
          eq = f  (a' , b)             ＝⟨ IH (a' , b) (inr (refl , q)) ⟩
-              f' (a' , b)             ＝⟨ refl ⟩
+              f' (a' , b)             ＝⟨refl⟩
               (a' , pr₂ (f (a₀ , b))) ＝⟨ ap (a' ,_) (r ⁻¹) ⟩
               (a' , c')               ∎
 \end{code}

@@ -580,7 +580,7 @@ Moreover, it is the unique Scott continuous to do so.
    g I                                           ＝⟨ ⦅1⦆ ⟩
    g (∐ Idl-DCPO δ)                              ＝⟨ ⦅2⦆ ⟩
    ∐ 𝓓 (image-is-directed' Idl-DCPO 𝓓 (g , c) δ) ＝⟨ ⦅3⦆ ⟩
-   ∐ 𝓓 (Idl-mediating-directed I)                ＝⟨ refl ⟩
+   ∐ 𝓓 (Idl-mediating-directed I)                ＝⟨refl⟩
    Idl-mediating-map I                           ∎
     where
      δ : is-Directed Idl-DCPO (↓-of-ideal I)

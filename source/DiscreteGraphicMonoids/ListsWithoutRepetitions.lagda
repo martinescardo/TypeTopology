@@ -67,9 +67,9 @@ than in the proof of these two facts.
 
   δ-＝ : x ＝ y → δ x (y • zs) ＝ δ x zs
   δ-＝ e =
-   δ x (y • zs)             ＝⟨ refl ⟩
+   δ x (y • zs)             ＝⟨refl⟩
    ccons y (d x y) (δ x zs) ＝⟨ ap (λ - → ccons y - (δ x zs)) I ⟩
-   ccons y (inl e) (δ x zs) ＝⟨ refl ⟩
+   ccons y (inl e) (δ x zs) ＝⟨refl⟩
    δ x zs                   ∎
     where
      I : d x y ＝ inl e
@@ -77,9 +77,9 @@ than in the proof of these two facts.
 
   δ-≠ : x ≠ y → δ x (y • zs) ＝ y • δ x zs
   δ-≠ u =
-   δ x (y • zs)             ＝⟨ refl ⟩
+   δ x (y • zs)             ＝⟨refl⟩
    ccons y (d x y) (δ x zs) ＝⟨ ap (λ - → ccons y - (δ x zs)) I ⟩
-   ccons y (inr u) (δ x zs) ＝⟨ refl ⟩
+   ccons y (inr u) (δ x zs) ＝⟨refl⟩
    y • δ x zs               ∎
     where
      I : d x y ＝ inr u
@@ -173,7 +173,7 @@ one.
  δ-ρ-cancel : (x : X) (ys : List X)
             → δ x (ρ (x • ys)) ＝ δ x (ρ ys)
  δ-ρ-cancel x ys =
-  δ x (ρ (x • ys))     ＝⟨ refl ⟩
+  δ x (ρ (x • ys))     ＝⟨refl⟩
   δ x (x • δ x (ρ ys)) ＝⟨ δ-same x (δ x (ρ ys)) ⟩
   δ x (δ x (ρ ys))     ＝⟨ δ-idemp x (ρ ys) ⟩
   δ x (ρ ys)           ∎
@@ -193,11 +193,11 @@ one.
     ρ (δ x ys)           ＝⟨ (ap ρ (δ-same x ys))⁻¹ ⟩
     ρ (δ x (x • ys))     ∎
    h (inr u) =
-    δ x (ρ (y • ys))     ＝⟨ refl ⟩
+    δ x (ρ (y • ys))     ＝⟨refl⟩
     δ x (y • δ y (ρ ys)) ＝⟨ δ-≠ x y (δ y (ρ ys)) u ⟩
     y • δ x (δ y (ρ ys)) ＝⟨ ap (y •_) (δ-swap x y (ρ ys)) ⟩
     y • δ y (δ x (ρ ys)) ＝⟨ ap (λ - → y • δ y -) IH ⟩
-    y • δ y (ρ (δ x ys)) ＝⟨ refl ⟩
+    y • δ y (ρ (δ x ys)) ＝⟨refl⟩
     ρ (y • δ x ys)       ＝⟨ ap ρ ((δ-≠ x y ys u)⁻¹) ⟩
     ρ (δ x (y • ys))     ∎
 
@@ -230,7 +230,7 @@ More generally, we have the following.
     δ z (ρ (δ z xs ◦ ys))       ＝⟨ IH ⟩
     δ z (ρ (xs ◦ ys))           ＝⟨ II ⟩
     δ z (δ z (ρ (xs ◦ ys)))     ＝⟨ III ⟩
-    δ z (z • δ z (ρ (xs ◦ ys))) ＝⟨ refl ⟩
+    δ z (z • δ z (ρ (xs ◦ ys))) ＝⟨refl⟩
     δ z (ρ (z • xs ◦ ys))       ∎
      where
       I   = ap (λ - → δ x (ρ (- ◦ ys))) (δ-same x xs)
@@ -238,13 +238,13 @@ More generally, we have the following.
       III = (δ-same z (δ z (ρ (xs ◦ ys))))⁻¹
    h (inr u) =
     δ z (ρ (δ z (x • xs) ◦ ys))     ＝⟨ I ⟩
-    δ z (ρ (x • δ z xs ◦ ys))       ＝⟨ refl ⟩
+    δ z (ρ (x • δ z xs ◦ ys))       ＝⟨refl⟩
     δ z (x • δ x (ρ (δ z xs ◦ ys))) ＝⟨ II ⟩
     x • δ z (δ x (ρ (δ z xs ◦ ys))) ＝⟨ III ⟩
     x • δ x (δ z (ρ (δ z xs ◦ ys))) ＝⟨ IV ⟩
     x • δ x (δ z (ρ (xs ◦ ys)))     ＝⟨ V ⟩
     x • δ z (δ x (ρ (xs ◦ ys)))     ＝⟨ VI ⟩
-    δ z (x • δ x (ρ (xs ◦ ys)))     ＝⟨ refl ⟩
+    δ z (x • δ x (ρ (xs ◦ ys)))     ＝⟨refl⟩
     δ z (ρ (x • xs ◦ ys))           ∎
      where
       I   = ap (λ - → δ z (ρ (- ◦ ys))) (δ-≠ z x xs u)
@@ -257,10 +257,10 @@ More generally, we have the following.
  ρ-left : (xs ys : List X) → ρ (ρ xs ◦ ys) ＝ ρ (xs ◦ ys)
  ρ-left []       ys = refl
  ρ-left (x • xs) ys =
-  ρ (ρ (x • xs) ◦ ys)           ＝⟨ refl ⟩
+  ρ (ρ (x • xs) ◦ ys)           ＝⟨refl⟩
   x • δ x (ρ (δ x (ρ xs) ◦ ys)) ＝⟨ I ⟩
   x • δ x (ρ (ρ xs ◦ ys))       ＝⟨ II ⟩
-  x • δ x (ρ (xs ◦ ys))         ＝⟨ refl ⟩
+  x • δ x (ρ (xs ◦ ys))         ＝⟨refl⟩
   ρ (x • xs ◦ ys)               ∎
    where
     IH : ρ (ρ xs ◦ ys) ＝ ρ (xs ◦ ys)
@@ -279,9 +279,9 @@ More generally, we have the following.
  ρ-right : (xs ys : List X) → ρ (xs ◦ ρ ys) ＝ ρ (xs ◦ ys)
  ρ-right [] ys = ρ-idemp ys
  ρ-right (x • xs) ys =
-  ρ (x • xs ◦ ρ ys)       ＝⟨ refl ⟩
+  ρ (x • xs ◦ ρ ys)       ＝⟨refl⟩
   x • δ x (ρ (xs ◦ ρ ys)) ＝⟨ ap (λ - → x • δ x -) IH ⟩
-  x • δ x (ρ (xs ◦ ys))   ＝⟨ refl ⟩
+  x • δ x (ρ (xs ◦ ys))   ＝⟨refl⟩
   ρ (x • xs ◦ ys) ∎
   where
    IH : ρ (xs ◦ ρ ys) ＝ ρ (xs ◦ ys)
@@ -398,21 +398,21 @@ The symbol ⊙ can be typed a "\o." or "\odot".
 
  ⊙-assoc : (a b c : List X) → a ⊙ (b ⊙ c) ＝ (a ⊙ b) ⊙ c
  ⊙-assoc a b c =
-  a ⊙ (b ⊙ c)       ＝⟨ refl ⟩
+  a ⊙ (b ⊙ c)       ＝⟨refl⟩
   ρ (a ◦ ρ (b ◦ c)) ＝⟨ ρ-right a (b ◦ c) ⟩
   ρ (a ◦ (b ◦ c))   ＝⟨ ap ρ ((◦-assoc a b c)⁻¹) ⟩
   ρ ((a ◦ b) ◦ c)   ＝⟨ (ρ-left (a ◦ b) c)⁻¹ ⟩
-  ρ (ρ (a ◦ b) ◦ c) ＝⟨ refl ⟩
+  ρ (ρ (a ◦ b) ◦ c) ＝⟨refl⟩
   (a ⊙ b) ⊙ c       ∎
 
  _·_ : List⁻ X → List⁻ X → List⁻ X
  (xs , a) · (ys , b) =
    xs ⊙ ys ,
    (ρ (xs ⊙ ys)         ＝⟨ ap₂ (λ -₁ -₂ → ρ (-₁ ⊙ -₂)) (a ⁻¹) (b ⁻¹) ⟩
-    ρ (ρ xs ⊙ ρ ys)     ＝⟨ refl ⟩
+    ρ (ρ xs ⊙ ρ ys)     ＝⟨refl⟩
     ρ (ρ (ρ xs ◦ ρ ys)) ＝⟨ ρ-idemp (ρ xs ◦ ρ ys) ⟩
     ρ (ρ xs ◦ ρ ys)     ＝⟨ ρ-both xs ys ⟩
-    ρ (xs ◦ ys)         ＝⟨ refl ⟩
+    ρ (xs ◦ ys)         ＝⟨refl⟩
     (xs ⊙ ys)           ∎)
 
  []⁻ : List⁻ X
@@ -442,7 +442,7 @@ The symbol ⊙ can be typed a "\o." or "\odot".
          → ((x • xs) , a) ＝[ List⁻ X ] (η⁻ x · (xs , ρ-tail x xs a))
  ·-lemma x xs a =
   to-List⁻-＝(x • xs         ＝⟨ ap (x •_) (equal-tails a)⁻¹ ⟩
-              x • δ x (ρ xs) ＝⟨ refl ⟩
+              x • δ x (ρ xs) ＝⟨refl⟩
               ι (η⁻ x) ⊙ xs  ∎)
    where
     have-a : ρ (x • xs) ＝ x • xs
@@ -469,14 +469,14 @@ The symbol ⊙ can be typed a "\o." or "\odot".
  []⁻-left-neutral : (𝔁𝓼 : List⁻ X) → []⁻ · 𝔁𝓼 ＝ 𝔁𝓼
  []⁻-left-neutral 𝔁𝓼 =
   to-List⁻-＝
-   (ι ([]⁻ · 𝔁𝓼) ＝⟨ refl ⟩
+   (ι ([]⁻ · 𝔁𝓼) ＝⟨refl⟩
     ρ (ι 𝔁𝓼)     ＝⟨ underlying-list-has-no-reps 𝔁𝓼 ⟩
     ι 𝔁𝓼         ∎)
 
  []⁻-right-neutral : (𝔁𝓼 : List⁻ X) → 𝔁𝓼 · []⁻ ＝ 𝔁𝓼
  []⁻-right-neutral 𝔁𝓼 =
   to-List⁻-＝
-   (ι (𝔁𝓼 · []⁻)  ＝⟨ refl ⟩
+   (ι (𝔁𝓼 · []⁻)  ＝⟨refl⟩
     ρ (ι 𝔁𝓼 ◦ []) ＝⟨ ap ρ (([]-right-neutral (ι 𝔁𝓼))⁻¹) ⟩
     ρ (ι 𝔁𝓼)      ＝⟨ underlying-list-has-no-reps 𝔁𝓼 ⟩
     ι 𝔁𝓼          ∎)
@@ -499,7 +499,7 @@ The symbol ⊙ can be typed a "\o." or "\odot".
    h (inr u) =
     δ z (x • xs ◦ ys)     ＝⟨ δ-≠ z x (xs ◦ ys) u ⟩
     x • δ z (xs ◦ ys)     ＝⟨ ap (x •_) (δ-◦ z xs ys) ⟩
-    x • (δ z xs ◦ δ z ys) ＝⟨ refl ⟩
+    x • (δ z xs ◦ δ z ys) ＝⟨refl⟩
     x • δ z xs ◦ δ z ys   ＝⟨ ap (_◦ δ z ys) ((δ-≠ z x xs u)⁻¹) ⟩
     δ z (x • xs) ◦ δ z ys ∎
 
@@ -511,10 +511,10 @@ The symbol ⊙ can be typed a "\o." or "\odot".
           → δ z (Δ ys xs) ＝ Δ ys (δ z xs)
  δ-Δ-left z xs [] = refl
  δ-Δ-left z xs (x • ys) =
-  δ z (Δ (x • ys) xs) ＝⟨ refl ⟩
+  δ z (Δ (x • ys) xs) ＝⟨refl⟩
   δ z (δ x (Δ ys xs)) ＝⟨ δ-swap z x (Δ ys xs) ⟩
   δ x (δ z (Δ ys xs)) ＝⟨ ap (δ x) (δ-Δ-left z xs ys) ⟩
-  δ x (Δ ys (δ z xs)) ＝⟨ refl ⟩
+  δ x (Δ ys (δ z xs)) ＝⟨refl⟩
   Δ (x • ys) (δ z xs) ∎
 
  []-Δ : (ys : List X) → Δ ys [] ＝ []
@@ -525,22 +525,22 @@ The symbol ⊙ can be typed a "\o." or "\odot".
      → ρ (xs ◦ ys) ＝ ρ xs ◦ Δ xs (ρ ys)
  ρ-◦ [] ys = refl
  ρ-◦ (x • xs) ys =
-  ρ (x • xs ◦ ys)                      ＝⟨ refl ⟩
+  ρ (x • xs ◦ ys)                      ＝⟨refl⟩
   x • δ x (ρ (xs ◦ ys))                ＝⟨ ap (λ - → x • δ x -) (ρ-◦ xs ys) ⟩
   x • δ x (ρ xs ◦ Δ xs (ρ ys ))        ＝⟨ ap (x •_ ) (δ-◦ x (ρ xs) (Δ xs (ρ ys))) ⟩
-  x • (δ x (ρ xs) ◦ δ x (Δ xs (ρ ys))) ＝⟨ refl ⟩
+  x • (δ x (ρ xs) ◦ δ x (Δ xs (ρ ys))) ＝⟨refl⟩
   ρ (x • xs) ◦ (Δ (x • xs) (ρ ys))     ∎
 
  ρ-all : (xs ys : List X) → Δ (xs ◦ ys) (ρ xs) ＝ []
  ρ-all [] ys = []-Δ ys
  ρ-all (x • xs) ys =
-  Δ (x • xs ◦ ys) (ρ (x • xs))       ＝⟨ refl ⟩
+  Δ (x • xs ◦ ys) (ρ (x • xs))       ＝⟨refl⟩
   δ x (Δ (xs ◦ ys) (x • δ x (ρ xs))) ＝⟨ I ⟩
   Δ (xs ◦ ys) (δ x (x • δ x (ρ xs))) ＝⟨ II ⟩
   Δ (xs ◦ ys) (δ x (δ x (ρ xs)))     ＝⟨ III ⟩
   Δ (xs ◦ ys) (δ x (ρ xs))           ＝⟨ IV ⟩
   δ x (Δ (xs ◦ ys) (ρ xs))           ＝⟨ V ⟩
-  δ x []                             ＝⟨ refl ⟩
+  δ x []                             ＝⟨refl⟩
   []                                 ∎
    where
     I   = δ-Δ-left x (x • δ x (ρ xs)) (xs ◦ ys)
@@ -593,7 +593,7 @@ module _ {X : 𝓤 ̇ }
     δ (f z) (map f (δ z (z • xs))) ＝⟨ I ⟩
     δ (f z) (map f (δ z xs))       ＝⟨ IH ⟩
     δ (f z) (map f xs)             ＝⟨ II ⟩
-    δ (f z) (f z • map f xs)       ＝⟨ refl ⟩
+    δ (f z) (f z • map f xs)       ＝⟨refl⟩
     δ (f z) (map f (z • xs))       ∎
      where
       I  = ap (λ - → δ (f z) (map f -)) (δ-same z xs)
@@ -601,9 +601,9 @@ module _ {X : 𝓤 ̇ }
       II = (δ-same (f z) (map f xs))⁻¹
    h (inr u) =
     δ (f z) (map f (δ z (x • xs))) ＝⟨ I ⟩
-    δ (f z) (map f (x • δ z xs))   ＝⟨ refl ⟩
+    δ (f z) (map f (x • δ z xs))   ＝⟨refl⟩
     δ (f z) (f x • map f (δ z xs)) ＝⟨ II ⟩
-    δ (f z) (f x • map f xs)       ＝⟨ refl ⟩
+    δ (f z) (f x • map f xs)       ＝⟨refl⟩
     δ (f z) (map f (x • xs))       ∎
      where
       I = ap (λ - → δ (f z) (map f -)) (δ-≠ z x xs u)
@@ -651,7 +651,7 @@ module _ {X : 𝓤 ̇ }
          δ x (ρ ys) ＝⟨ δ-ρ-swap x ys ⟩
          ρ (δ x ys) ∎
 
-     II = ρ (map f (x • xs))                 ＝⟨ refl ⟩
+     II = ρ (map f (x • xs))                 ＝⟨refl⟩
           f x • δ (f x) (ρ (map f xs))       ＝⟨ III ⟩
           f x • ρ (δ (f x) (map f xs))       ＝⟨ IV ⟩
           f x • ρ (δ (f x) (map f (δ x xs))) ＝⟨ V ⟩
@@ -660,7 +660,7 @@ module _ {X : 𝓤 ̇ }
           f x • ρ (δ (f x) (map f (δ x ys))) ＝⟨ VIII ⟩
           f x • ρ (δ (f x) (map f ys))       ＝⟨ IX ⟩
           f x • δ (f x) (ρ (map f ys))       ＝⟨ XI ⟩
-          f y • δ (f y) (ρ (map f ys))       ＝⟨ refl ⟩
+          f y • δ (f y) (ρ (map f ys))       ＝⟨refl⟩
           ρ (map f (y • ys))                 ∎
        where
         III  = ap (f x •_) (δ-ρ-swap (f x) (map f xs))

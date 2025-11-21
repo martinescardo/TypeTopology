@@ -77,9 +77,9 @@ almost-constantly-eq : {𝓤 𝓥 : Universe}
                      → (y' y : Y)
                      → almost-constantly X-discrete x y' y x ＝ y'
 almost-constantly-eq X-discrete x y' y =
- almost-constantly X-discrete x y' y x               ＝⟨ refl ⟩
+ almost-constantly X-discrete x y' y x               ＝⟨refl⟩
  almost-constantly-inner x y' y x (X-discrete x x)   ＝⟨ I ⟩
- almost-constantly-inner x y' y x (inl refl)         ＝⟨ refl ⟩
+ almost-constantly-inner x y' y x (inl refl)         ＝⟨refl⟩
  y'                                                  ∎
  where
   I : almost-constantly-inner x y' y x (X-discrete x x)
@@ -95,9 +95,9 @@ almost-constantly-neq : {𝓤 𝓥 : Universe}
                       → (x' ≠ x)
                       → almost-constantly X-discrete x' y' y x ＝ y
 almost-constantly-neq X-discrete x' x y' y ν =
- almost-constantly X-discrete x' y' y x               ＝⟨ refl ⟩
+ almost-constantly X-discrete x' y' y x               ＝⟨refl⟩
  almost-constantly-inner x' y' y x (X-discrete x' x)  ＝⟨ I ⟩
- almost-constantly-inner x' y' y x (inr ν)            ＝⟨ refl ⟩
+ almost-constantly-inner x' y' y x (inr ν)            ＝⟨refl⟩
  y                                                    ∎
  where
   I :  almost-constantly-inner x' y' y x (X-discrete x' x)
@@ -179,9 +179,9 @@ at-most-discrete-gives-discrete X Y X-discrete f-ph y y' = V VI
   IV e =
    y                            ＝⟨ II (pr₂ ix₁) (repeat-distinct f₁) ⟩
    f₂ (pr₂ ix₁)                 ＝⟨ ap (f₂ ∘ pr₂) e ⟩
-   f₂ (pr₂ ix₂)                 ＝⟨ refl ⟩
+   f₂ (pr₂ ix₂)                 ＝⟨refl⟩
    f₂ (pr₂ (repeat-indices f₂)) ＝⟨ repeat-is-repeat f₂ ⁻¹ ⟩
-   f₂ (pr₁ (repeat-indices f₂)) ＝⟨ refl ⟩
+   f₂ (pr₁ (repeat-indices f₂)) ＝⟨refl⟩
    f₂ (pr₁ ix₂)                 ＝⟨ ap (f₂ ∘ pr₁) (e ⁻¹) ⟩
    f₂ (pr₁ ix₁)                 ＝⟨ III ⟩
    y'                           ∎
@@ -197,7 +197,7 @@ at-most-discrete-gives-discrete X Y X-discrete f-ph y y' = V VI
 
 We may write the untruncated form of the at-most-2 lemma in this form
 
-\begin{code} 
+\begin{code}
 
 at-most-two-is-pigeonhole
  : {𝓤 : Universe}
@@ -287,4 +287,4 @@ untruncated-at-most-two-iff-em = (FW , BW)
   BW em f g h = II (em f) (em g) (em h)
 
 
-\end{code} 
+\end{code}

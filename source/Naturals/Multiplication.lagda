@@ -116,18 +116,18 @@ mult-commutativity 0        (succ y) = γ
 mult-commutativity (succ x) (succ y) = γ
  where
   γ : succ x * succ y ＝ succ y * succ x
-  γ = succ x * succ y        ＝⟨ refl ⟩
+  γ = succ x * succ y        ＝⟨refl⟩
       succ x + succ x * y    ＝⟨ i    ⟩
-      succ x + y * succ x    ＝⟨ refl ⟩
+      succ x + y * succ x    ＝⟨refl⟩
       succ x + (y + y * x)   ＝⟨ ii   ⟩
       succ (x + (y + y * x)) ＝⟨ iii  ⟩
       succ (x + y + y * x)   ＝⟨ iv   ⟩
       succ (y + x + y * x)   ＝⟨ v    ⟩
       succ (y + x + x * y)   ＝⟨ vi   ⟩
       succ (y + (x + x * y)) ＝⟨ vii  ⟩
-      succ y + (x + x * y)   ＝⟨ refl ⟩
+      succ y + (x + x * y)   ＝⟨refl⟩
       succ y + x * succ y    ＝⟨ viii ⟩
-      succ y + succ y * x    ＝⟨ refl ⟩
+      succ y + succ y * x    ＝⟨refl⟩
       succ y * succ x        ∎
    where
     i    = ap (succ x +_) (mult-commutativity (succ x) y)
@@ -157,12 +157,12 @@ distributivity-mult-over-addition x y = ℕ-induction refl step
        → x * (y + k)      ＝ x * y + x * k
        → x * (y + succ k) ＝ x * y + x * succ k
 
-  step k IH = x * (y + succ k)        ＝⟨ refl ⟩
+  step k IH = x * (y + succ k)        ＝⟨refl⟩
               x + x * (y + k)         ＝⟨ i    ⟩
               x + (x * y + x * k)     ＝⟨ ii   ⟩
               x + (x * k + x * y)     ＝⟨ iii  ⟩
               x + x * k + x * y       ＝⟨ iv   ⟩
-              x * y + (x + x * k)     ＝⟨ refl ⟩
+              x * y + (x + x * k)     ＝⟨refl⟩
               x * y + (x * (succ k))  ∎
    where
     i   = ap (x +_ ) IH

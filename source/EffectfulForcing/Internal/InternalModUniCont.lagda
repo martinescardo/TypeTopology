@@ -206,10 +206,10 @@ max-boolean-question⋆-agreement (D.β φ n) = †
   † : max-boolean-question (prune (D.β φ n))
       ＝ max-boolean-question⋆ (encode (D.β φ n))
   † =
-   max-boolean-question (D.β ((λ j → prune (φ (embedding-𝟚-ℕ j)))) n) ＝⟨ refl ⟩
+   max-boolean-question (D.β ((λ j → prune (φ (embedding-𝟚-ℕ j)))) n) ＝⟨refl⟩
    max n (max n₀  n₁)                                                 ＝⟨ Ⅰ    ⟩
    max n (max n₀⋆ n₁)                                                 ＝⟨ Ⅱ    ⟩
-   max n (max n₀⋆ n₁⋆)                                                ＝⟨ refl ⟩
+   max n (max n₀⋆ n₁⋆)                                                ＝⟨refl⟩
    max-boolean-question⋆ (encode (D.β φ n))                           ∎
 
 max-boolean-questionᵀ-agreement : ⟦ max-boolean-questionᵀ ⟧₀
@@ -236,7 +236,7 @@ main-lemma : (t : 〈〉 ⊢ baire ⇒ ι)
            → ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀
              ＝ max-boolean-question (prune (dialogue-tree t))
 main-lemma t =
- ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀             ＝⟨ refl ⟩
+ ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀             ＝⟨refl⟩
  ⟦ max-boolean-questionᵀ ⟧₀ ⟦ ⌜dialogue-tree⌝ t ⟧₀          ＝⟨ Ⅰ    ⟩
  max-boolean-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀               ＝⟨ Ⅱ    ⟩
  max-boolean-question⋆ (church-encode (dialogue-tree t ))   ＝⟨ Ⅲ    ⟩
@@ -286,11 +286,11 @@ max-boolean-question-is-maximum-mod-of : (d : B ℕ)
                                           ＝ maximumᵤ (mod-of d)
 max-boolean-question-is-maximum-mod-of (D.η n)   = refl
 max-boolean-question-is-maximum-mod-of (D.β φ n) =
- max-boolean-question (prune (D.β φ n))                            ＝⟨ refl ⟩
- max-boolean-question (D.β (λ j → prune (φ (embedding-𝟚-ℕ j))) n)  ＝⟨ refl ⟩
+ max-boolean-question (prune (D.β φ n))                            ＝⟨refl⟩
+ max-boolean-question (D.β (λ j → prune (φ (embedding-𝟚-ℕ j))) n)  ＝⟨refl⟩
  max n (max n₀ n₁)                                                 ＝⟨ Ⅰ    ⟩
  max n (max (maximumᵤ (mod-of (φ 0))) n₁)                          ＝⟨ Ⅱ    ⟩
- max n (max (maximumᵤ (mod-of (φ 0))) (maximumᵤ (mod-of (φ 1))))   ＝⟨ refl ⟩
+ max n (max (maximumᵤ (mod-of (φ 0))) (maximumᵤ (mod-of (φ 1))))   ＝⟨refl⟩
  maximumᵤ (mod-of (D.β φ n))                                       ∎
   where
    Ⅰ   = ap
@@ -334,9 +334,9 @@ agreement-with-restriction : (f : Baire → ℕ) (α : Baire)
                            → (bv : is-boolean-point α)
                            → f α ＝ C-restriction f (to-cantor (α , bv))
 agreement-with-restriction f α bv =
- f α                                   ＝⟨ refl ⟩
+ f α                                   ＝⟨refl⟩
  f′ (α , bv)                           ＝⟨ †    ⟩
- f′ (to-cantor₀ (to-cantor (α , bv)))  ＝⟨ refl ⟩
+ f′ (to-cantor₀ (to-cantor (α , bv)))  ＝⟨refl⟩
  f₀ (to-cantor (α , bv))               ∎
   where
    f₀ : Cantor → ℕ

@@ -504,7 +504,7 @@ Idtofunₒ-eqtoidₒ {𝓤} ua fe {α} {β} e = order-equiv-induction ua fe α P
 
   m : P α (≃ₒ-refl α)
   m = Idtofunₒ (eqtoidₒ ua fe α α (≃ₒ-refl α)) ＝⟨ I ⟩
-      Idtofunₒ {α = α} refl                    ＝⟨ refl ⟩
+      Idtofunₒ {α = α} refl                    ＝⟨refl⟩
       ≃ₒ-to-fun α α (≃ₒ-refl α)                ∎
    where
     I = ap Idtofunₒ (eqtoidₒ-idtoeqₒ ua fe α α refl)

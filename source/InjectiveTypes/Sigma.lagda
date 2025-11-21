@@ -184,11 +184,11 @@ ainjective.
 
      II : (h : p holds) → (extension ϕ p f , a) ＝ f' h
      II h = extension ϕ p f , a ＝⟨ to-Σ-＝ (extends ϕ p f h , III) ⟩
-            f h , g h           ＝⟨ refl ⟩
+            f h , g h           ＝⟨refl⟩
             f' h                ∎
       where
-       III = transport A (extends ϕ p f h) a  ＝⟨ refl ⟩
-             ρ p f a h                        ＝⟨ refl ⟩
+       III = transport A (extends ϕ p f h) a  ＝⟨refl⟩
+             ρ p f a h                        ＝⟨refl⟩
              ρ p f (σ g) h                    ＝⟨ ap (λ - → - h) (η g) ⟩
              g h                              ∎
 
@@ -283,11 +283,11 @@ compatibility-data-× {𝓤} {𝓥₁} {𝓥₂} {𝓦} {X} ϕ {A₁} {A₂}
 
      I : ρ A ϕ p f (σ α) ∼ α
      I h =
-      ρ A ϕ p f (σ α) h                                       ＝⟨ refl ⟩
+      ρ A ϕ p f (σ α) h                                       ＝⟨refl⟩
       transport A (e h) (σ₁ α₁ , σ₂ α₂)                       ＝⟨ II ⟩
-      transport A₁ (e h) (σ₁ α₁) , transport A₂ (e h) (σ₂ α₂) ＝⟨ refl ⟩
+      transport A₁ (e h) (σ₁ α₁) , transport A₂ (e h) (σ₂ α₂) ＝⟨refl⟩
       ρ A₁ ϕ p f (σ₁ α₁) h , ρ A₂ ϕ p f (σ₂ α₂) h             ＝⟨ III ⟩
-      α₁ h , α₂ h                                             ＝⟨ refl ⟩
+      α₁ h , α₂ h                                             ＝⟨refl⟩
       α h                                                     ∎
        where
         e : (h : p holds) → extension ϕ p f ＝ f h
@@ -344,9 +344,9 @@ compatibility-condition-× {𝓤} {𝓥₁} {𝓥₂} {𝓦} {X} ϕ {A₁} {A₂
 
    σρ : σ ∘ ρ A ϕ p f ∼ id
    σρ (a₁ , a₂) =
-    σ (ρ A ϕ p f (a₁ , a₂))                                 ＝⟨ refl ⟩
+    σ (ρ A ϕ p f (a₁ , a₂))                                 ＝⟨refl⟩
     σ (λ h → transport A (e h) (a₁ , a₂))                   ＝⟨ I ⟩
-    σ (λ h → transport A₁ (e h) a₁ , transport A₂ (e h) a₂) ＝⟨ refl ⟩
+    σ (λ h → transport A₁ (e h) a₁ , transport A₂ (e h) a₂) ＝⟨refl⟩
     σ₁ (ρ A₁ ϕ p f a₁) , σ₂ (ρ A₂ ϕ p f a₂)                 ＝⟨ II ⟩
     (a₁ , a₂)                                               ∎
      where
@@ -464,12 +464,12 @@ compatibility-data-with-axioms
 
       I : ρ' (σ' α) ∼ α
       I h =
-       ρ' (σ' α) h                     ＝⟨ refl ⟩
-       ρ' (σ α₁ , τ α) h               ＝⟨ refl ⟩
+       ρ' (σ' α) h                     ＝⟨refl⟩
+       ρ' (σ α₁ , τ α) h               ＝⟨refl⟩
        transport A' (e h) (σ α₁ , τ α) ＝⟨ II ⟩
-       (transport A (e h) (σ α₁) , τ') ＝⟨ refl ⟩
+       (transport A (e h) (σ α₁) , τ') ＝⟨refl⟩
        (ρ A ϕ p f (σ α₁) h , _)        ＝⟨ III ⟩
-       (α₁ h , α₂ h)                   ＝⟨ refl ⟩
+       (α₁ h , α₂ h)                   ＝⟨refl⟩
        α h                             ∎
         where
          e : (h : p holds) → extension ϕ p f ＝ f h
@@ -547,10 +547,10 @@ compatibility-condition-with-axioms
 
     σρ' : σ' ∘ ρ' ∼ id
     σρ' (a , b) =
-     σ' (ρ' (a , b)) ＝⟨ refl ⟩
+     σ' (ρ' (a , b)) ＝⟨refl⟩
      σ' (λ h → transport A' (e h) (a , b)) ＝⟨ I ⟩
-     σ' (λ h → transport A (e h) a , _)    ＝⟨ refl ⟩
-     (σ (λ h → transport A (e h) a) , _)   ＝⟨ refl ⟩
+     σ' (λ h → transport A (e h) a , _)    ＝⟨refl⟩
+     (σ (λ h → transport A (e h) a) , _)   ＝⟨refl⟩
      (σ (ρ A ϕ p f a) , _)                 ＝⟨ II ⟩
      (a , b) ∎
       where

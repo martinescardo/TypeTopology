@@ -1422,9 +1422,9 @@ join-in-frame-equality : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
                        → join-in-frame F S ∼ join-in-frame′ F S
 join-in-frame-equality F S []       = refl
 join-in-frame-equality F S (i ∷ is) =
- join-in-frame F S (i ∷ is)              ＝⟨ refl ⟩
+ join-in-frame F S (i ∷ is)              ＝⟨refl⟩
  (S [ i ]) ∨[ F ] join-in-frame  F S is  ＝⟨ †    ⟩
- (S [ i ]) ∨[ F ] join-in-frame′ F S is  ＝⟨ refl ⟩
+ (S [ i ]) ∨[ F ] join-in-frame′ F S is  ＝⟨refl⟩
  join-in-frame′ F S (i ∷ is)             ∎
   where
    † = ap (λ - → (S [ i ]) ∨[ F ] -) (join-in-frame-equality F S is)
@@ -1445,16 +1445,16 @@ directify-functorial F S@(I , α) = γ
   γ : (is js : List I)
     → directify F S [ is ++ js ]
     ＝ directify F S [ is ] ∨[ F ] directify F S [ js ]
-  γ []       js = directify F S [ [] ++ js ]          ＝⟨ refl ⟩
+  γ []       js = directify F S [ [] ++ js ]          ＝⟨refl⟩
                   directify F S [ js ]                ＝⟨ †    ⟩
                   𝟎[ F ]  ∨[ F ] directify F S [ js ] ∎
                    where
                     † = 𝟎-right-unit-of-∨ F (directify F S [ js ]) ⁻¹
   γ (i ∷ is) js =
-   directify F S [ (i ∷ is) ++ js ]                              ＝⟨ refl ⟩
+   directify F S [ (i ∷ is) ++ js ]                              ＝⟨refl⟩
    α i ∨[ F ] directify F S [ is ++ js ]                         ＝⟨ †    ⟩
    α i ∨[ F ] (directify F S [ is ] ∨[ F ] directify F S [ js ]) ＝⟨ ‡    ⟩
-   (α i ∨[ F ] directify F S [ is ]) ∨[ F ] directify F S [ js ] ＝⟨ refl ⟩
+   (α i ∨[ F ] directify F S [ is ]) ∨[ F ] directify F S [ js ] ＝⟨refl⟩
    directify F S [ i ∷ is ] ∨[ F ] directify F S [ js ]          ∎
     where
      † = ap (λ - → binary-join F (α i) -) (γ is js)

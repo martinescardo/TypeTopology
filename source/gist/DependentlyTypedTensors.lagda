@@ -79,8 +79,8 @@ Vectors are just rank-1 tensors.
    ret ϑ = dfunext fe †
     where
      † : (i : Fin 1 → Fin n) → s (r ϑ) i ＝ ϑ i
-     † i = s (r ϑ) i      ＝⟨ refl ⟩
-           r ϑ (i 𝟎)      ＝⟨ refl ⟩
+     † i = s (r ϑ) i      ＝⟨refl⟩
+           r ϑ (i 𝟎)      ＝⟨refl⟩
            ϑ (λ _ → i 𝟎)  ＝⟨ ‡    ⟩
            ϑ i            ∎
             where
@@ -118,8 +118,8 @@ Matrices are rank-2 tensors.
    ret ϑ = dfunext fe †
     where
      † : (s ∘ r) ϑ ∼ id ϑ
-     † ν = s (r ϑ) ν                    ＝⟨ refl ⟩
-           r ϑ (ν 𝟎 , ν 𝟏)              ＝⟨ refl ⟩
+     † ν = s (r ϑ) ν                    ＝⟨refl⟩
+           r ϑ (ν 𝟎 , ν 𝟏)              ＝⟨refl⟩
            ϑ (doubleton′ (ν 𝟎) (ν 𝟏))   ＝⟨ ‡    ⟩
            ϑ ν                          ∎
             where

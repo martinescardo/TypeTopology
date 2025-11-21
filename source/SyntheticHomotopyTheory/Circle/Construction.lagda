@@ -260,9 +260,9 @@ The corresponding computation rule is a bit more work.
                   ＝ (Tℤ-rec-lemma₁ X x) ⁻¹
                     ∙ (Tℤ-rec-lemma₁ Y (⌜ idtoeq ⟨ X ⟩ ⟨ Y ⟩ (ap ⟨_⟩ e) ⌝ x))
   ap-Tℤ-rec-lemma {X} {Y} refl x =
-   ap Tℤ-rec refl                                     ＝⟨ refl ⟩
+   ap Tℤ-rec refl                                     ＝⟨refl⟩
    refl                                               ＝⟨ γ    ⟩
-   (t X x) ⁻¹ ∙ (t X x)                               ＝⟨ refl ⟩
+   (t X x) ⁻¹ ∙ (t X x)                               ＝⟨refl⟩
    (t X x) ⁻¹ ∙ (t X (⌜ idtoeq ⟨ X ⟩ ⟨ Y ⟩ refl ⌝ x)) ∎
     where
      t : (W : Tℤ) → ⟨ W ⟩ → a ＝ Tℤ-rec W
@@ -287,7 +287,7 @@ The corresponding computation rule is a bit more work.
       where
        γ : idtoeq ℤ ℤ (ap ⟨_⟩ loop) ＝ succ-ℤ-≃
        γ =  idtoeq ℤ ℤ (ap ⟨_⟩ loop)                        ＝⟨ I'   ⟩
-            (pr₁ (ϕ loop)       , pr₁ (pr₂ (ϕ loop)))       ＝⟨ refl ⟩
+            (pr₁ (ϕ loop)       , pr₁ (pr₂ (ϕ loop)))       ＝⟨refl⟩
             (pr₁ (ϕ (ψ loop-≅)) , pr₁ (pr₂ (ϕ (ψ loop-≅)))) ＝⟨ II'  ⟩
             (pr₁ loop-≅         , pr₁ (pr₂ loop-≅))         ∎
              where
@@ -364,7 +364,7 @@ to-Tℤ-＝-comp : (X Y Z : Tℤ) (f : X ≅ Y) (g : Y ≅ Z)
 to-Tℤ-＝-comp X Y Z f g =
  ϕ X Z (≅-comp-Tℤ X Y Z f g)                 ＝⟨ I    ⟩
  ϕ X Z (ψ X Z (p ∙ q))                       ＝⟨ II   ⟩
- p ∙ q                                       ＝⟨ refl ⟩
+ p ∙ q                                       ＝⟨refl⟩
  ϕ X Y f ∙ ϕ Y Z g                           ∎
   where
    ϕ : (X Y : Tℤ) → X ≅ Y → X ＝ Y
@@ -501,10 +501,10 @@ Tℤ-action-lemma X x = Tℤ-action-commutes-with-⟨⟩₂-＝ X x
 Tℤ-action-＝-lemma : (X : Tℤ) (x : ⟨ X ⟩)
                   → Tℤ-action-＝ X (⟨ X ⟩₂ x) ＝ loop ∙ Tℤ-action-＝ X x
 Tℤ-action-＝-lemma X x =
- Tℤ-action-＝ X (⟨ X ⟩₂ x)                                        ＝⟨ refl ⟩
+ Tℤ-action-＝ X (⟨ X ⟩₂ x)                                        ＝⟨refl⟩
  to-Tℤ-＝ base X (Tℤ-action-≅ X (⟨ X ⟩₂ x))                       ＝⟨ I    ⟩
  to-Tℤ-＝ base X (≅-comp-Tℤ base base X loop-≅ (Tℤ-action-≅ X x)) ＝⟨ II   ⟩
- to-Tℤ-＝ base base loop-≅ ∙ to-Tℤ-＝ base X (Tℤ-action-≅ X x)     ＝⟨ refl ⟩
+ to-Tℤ-＝ base base loop-≅ ∙ to-Tℤ-＝ base X (Tℤ-action-≅ X x)     ＝⟨refl⟩
  loop ∙ Tℤ-action-＝ X x                                          ∎
   where
    I  = ap (to-Tℤ-＝ base X) ϕ
@@ -529,10 +529,10 @@ module _
 
  BBG-map-lemma : (X : Tℤ) (x : ⟨ X ⟩)
                → BBG-map X (⟨ X ⟩₂ x) ＝ ap r loop ∙ BBG-map X x
- BBG-map-lemma X x = BBG-map X (⟨ X ⟩₂ x)                      ＝⟨ refl ⟩
+ BBG-map-lemma X x = BBG-map X (⟨ X ⟩₂ x)                      ＝⟨refl⟩
                      ap r (Tℤ-action-＝ X (⟨ X ⟩₂ x))           ＝⟨ I    ⟩
                      ap r (loop ∙ Tℤ-action-＝ X x)             ＝⟨ II   ⟩
-                     ap r loop ∙ ap r (Tℤ-action-＝ X x)        ＝⟨ refl ⟩
+                     ap r loop ∙ ap r (Tℤ-action-＝ X x)        ＝⟨refl⟩
                      ap r loop ∙ BBG-map X x                   ∎
   where
    I  = ap (ap r) (Tℤ-action-＝-lemma X x)

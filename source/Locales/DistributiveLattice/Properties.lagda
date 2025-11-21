@@ -59,10 +59,10 @@ module _ (L : DistributiveLattice 𝓤) where
                         → join-listᵈ xs ∨ join-listᵈ ys ＝ join-listᵈ (xs ++ ys)
  join-list-maps-∨-to-++ []        ys = ∨-unit₁ (join-listᵈ ys)
  join-list-maps-∨-to-++ (x₀ ∷ xs) ys =
-  join-listᵈ (x₀ ∷ xs) ∨ join-listᵈ ys   ＝⟨ refl ⟩
+  join-listᵈ (x₀ ∷ xs) ∨ join-listᵈ ys   ＝⟨refl⟩
   (x₀ ∨ join-listᵈ xs) ∨ join-listᵈ ys   ＝⟨ Ⅰ    ⟩
   x₀ ∨ (join-listᵈ xs ∨ join-listᵈ ys)   ＝⟨ Ⅱ    ⟩
-  x₀ ∨ (join-listᵈ (xs ++ ys))           ＝⟨ refl ⟩
+  x₀ ∨ (join-listᵈ (xs ++ ys))           ＝⟨refl⟩
   join-listᵈ (x₀ ∷ xs ++ ys)             ∎
    where
     Ⅰ = ∨-associative x₀ (join-listᵈ xs) (join-listᵈ ys) ⁻¹
@@ -73,7 +73,7 @@ module _ (L : DistributiveLattice 𝓤) where
                        → y ∧ join-listᵈ xs ＝ join-listᵈ (map (y ∧_) xs)
  finite-distributivity []       y = ∧-annihilator y
  finite-distributivity (x ∷ xs) y =
-  y ∧ join-listᵈ (x ∷ xs)            ＝⟨ refl ⟩
+  y ∧ join-listᵈ (x ∷ xs)            ＝⟨refl⟩
   y ∧ (x ∨ join-listᵈ xs)            ＝⟨ Ⅰ    ⟩
   (y ∧ x) ∨ (y ∧ join-listᵈ xs)      ＝⟨ Ⅱ    ⟩
   join-listᵈ (map (y ∧_) (x ∷ xs))   ∎

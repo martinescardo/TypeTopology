@@ -82,10 +82,10 @@ module _ (fe : funext₀) where
  finite-preservation : (n : ℕ) → ℕ∞-to-ℕ∞' (ι n) ＝ ι n
  finite-preservation 0        = Zero-preservation
  finite-preservation (succ n) =
-  ℕ∞-to-ℕ∞' (ι (succ n))  ＝⟨ refl ⟩
+  ℕ∞-to-ℕ∞' (ι (succ n))  ＝⟨refl⟩
   ℕ∞-to-ℕ∞' (Succ (ι n))  ＝⟨ Succ-preservation (ι n) ⟩
   Succ' (ℕ∞-to-ℕ∞' (ι n)) ＝⟨ ap Succ' (finite-preservation n) ⟩
-  Succ' (ι n)             ＝⟨ refl ⟩
+  Succ' (ι n)             ＝⟨refl⟩
   ι (succ n)              ∎
 
  finite-gives-finite' : (u : ℕ∞') → is-finite (ℕ∞'-to-ℕ∞ u) → is-finite' u

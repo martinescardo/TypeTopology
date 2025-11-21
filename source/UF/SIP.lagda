@@ -233,8 +233,8 @@ module sip-join where
 
     η : (c : A x₀ x₁ × B y₀ y₁) → r (s c) ＝ c
     η (a , b) =
-      r (s (a , b))                               ＝⟨ refl ⟩
-      r (to-×-＝  (f' a) (g' b))                  ＝⟨ refl ⟩
+      r (s (a , b))                               ＝⟨refl⟩
+      r (to-×-＝  (f' a) (g' b))                  ＝⟨refl⟩
       (f x₀ x₁ (ap pr₁ (to-×-＝ (f' a) (g' b))) ,
        g y₀ y₁ (ap pr₂ (to-×-＝ (f' a) (g' b))))  ＝⟨ ii ⟩
       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))           ＝⟨ iii ⟩

@@ -250,7 +250,7 @@ dialogue-tree-correct : (t : T₀ ((ι ⇒ ι) ⇒ ι))
 dialogue-tree-correct t α =
  ⟦ t ⟧₀ α                       ＝⟨ ap (λ f → f ⟨⟩ α) (preservation t α) ⟩
  ⟦ embed t ⟧' α ⟨⟩ α            ＝⟨ main-closed-ground (embed t · Ω) α ⟩
- decode α (B⟦ embed t · Ω ⟧ ⟪⟫) ＝⟨ refl ⟩
+ decode α (B⟦ embed t · Ω ⟧ ⟪⟫) ＝⟨refl⟩
  decode α (dialogue-tree t)     ∎
 
 \end{code}

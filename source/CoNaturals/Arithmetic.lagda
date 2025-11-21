@@ -150,12 +150,12 @@ min-unit v = ap (λ - → - v) h-is-corec
     φ : (v : ℕ∞) → (v ＝ Zero) + (Σ t ꞉ ℕ∞ , v ＝ Succ t) → PRED (h v) ＝ 𝟙+ h (PRED v)
     φ v (inl refl) =
       PRED (min (∞ , Zero))        ＝⟨ ap PRED (min-eq₀ ∞) ⟩
-      PRED Zero                    ＝⟨ refl ⟩
+      PRED Zero                    ＝⟨refl⟩
       𝟙+ h (PRED Zero)             ∎
     φ v (inr (t , refl)) =
       PRED (min (∞ , Succ t)) ＝⟨ ap (λ - → PRED (min (- , Succ t))) (Succ-∞-is-∞ fe₀ ⁻¹) ⟩
       PRED (min (Succ ∞ , Succ t)) ＝⟨ ap PRED (min-eq₂ ∞ t) ⟩
-      PRED (Succ (min (∞ , t)))    ＝⟨ refl ⟩
+      PRED (Succ (min (∞ , t)))    ＝⟨refl⟩
       𝟙+ h (PRED (Succ t))         ∎
   h-is-corec : h ＝ id
   h-is-corec = homomorphism-uniqueness PRED h id h-homomorphism id-homomorphism
@@ -179,11 +179,11 @@ min-idempotent u = ap (λ - → - u) h-is-corec
     φ : {u : ℕ∞} → (u ＝ Zero) + (Σ w ꞉ ℕ∞ , u ＝ Succ w) → PRED (h u) ＝ 𝟙+ h (PRED u)
     φ (inl refl) =
       PRED (min (Zero , Zero))     ＝⟨ ap PRED (min-eq₀ Zero) ⟩
-      PRED Zero                    ＝⟨ refl ⟩
+      PRED Zero                    ＝⟨refl⟩
       𝟙+ h (PRED Zero)             ∎
     φ (inr (w , refl)) =
       PRED (min (Succ w , Succ w)) ＝⟨ ap PRED (min-eq₂ w w) ⟩
-      PRED (Succ (min (w , w)))    ＝⟨ refl ⟩
+      PRED (Succ (min (w , w)))    ＝⟨refl⟩
       𝟙+ h (PRED (Succ w))         ∎
   h-is-corec : h ＝ id
   h-is-corec = homomorphism-uniqueness PRED h id h-homomorphism id-homomorphism
@@ -240,15 +240,15 @@ min-equations-characterize-homomorphisms h eq₀ eq₁ eq₂ = dfunext fe₀ γ
        → PRED (h (u , v)) ＝ 𝟙+ h (κ-min (u , v))
      φ (inl refl) _  =
        PRED (h (Zero , v))            ＝⟨ ap PRED (eq₀ v) ⟩
-       PRED Zero                      ＝⟨ refl ⟩
+       PRED Zero                      ＝⟨refl⟩
        𝟙+ h (κ-min (Zero , v))        ∎
      φ (inr (w , refl)) (inl refl) =
        PRED (h (Succ w , Zero))       ＝⟨ ap PRED (eq₁ w) ⟩
-       PRED Zero                      ＝⟨ refl ⟩
+       PRED Zero                      ＝⟨refl⟩
        𝟙+ h (κ-min (Succ w , Zero))   ∎
      φ (inr (w , refl)) (inr (t , refl)) =
        PRED (h (Succ w , Succ t))     ＝⟨ ap PRED (eq₂ w t) ⟩
-       PRED (Succ (h (w , t)))        ＝⟨ refl ⟩
+       PRED (Succ (h (w , t)))        ＝⟨refl⟩
        𝟙+ h (κ-min (Succ w , Succ t)) ∎
 
 \end{code}
@@ -367,16 +367,16 @@ min-associative u v w = ap (λ - → - (u , v , w)) p
       φ (inr (x , refl)) (inl refl) _ =
         PRED (min (min (Succ x , Zero) , w))        ＝⟨ ap (λ - → PRED (min (- , w))) (min-eq₃ (Succ x)) ⟩
         PRED (min (Zero , w))                       ＝⟨ ap PRED (min-eq₀ w) ⟩
-        PRED Zero                                   ＝⟨ refl ⟩
+        PRED Zero                                   ＝⟨refl⟩
         𝟙+ g (κ (Succ x , Zero , w))                ∎
       φ (inr (x , refl)) (inr (y , refl)) (inl refl) =
         PRED (min (min (Succ x , Succ y) , Zero))   ＝⟨ ap PRED (min-eq₃ (min (Succ x , Succ y))) ⟩
-        PRED Zero                                   ＝⟨ refl ⟩
+        PRED Zero                                   ＝⟨refl⟩
         𝟙+ g (κ (Succ x , Succ y , Zero))           ∎
       φ (inr (x , refl)) (inr (y , refl)) (inr (z , refl)) =
         PRED (min (min (Succ x , Succ y) , Succ z)) ＝⟨ ap (λ - → PRED (min (- , Succ z))) (min-eq₂ x y) ⟩
         PRED (min (Succ (min (x , y)) , Succ z))    ＝⟨ ap PRED (min-eq₂ (min (x , y)) z) ⟩
-        PRED (Succ (min (min (x , y) , z)))         ＝⟨ refl ⟩
+        PRED (Succ (min (min (x , y) , z)))         ＝⟨refl⟩
         𝟙+ g (κ (Succ x , Succ y , Succ z))         ∎
   p : f ＝ g
   p = homomorphism-uniqueness κ f g f-homomorphism g-homomorphism

@@ -262,9 +262,9 @@ wconstant-map-to-set-factors-through-truncation-of-domain
    f' = restriction f ∘ f''
 
    h : f ∼ f' ∘ ∣_∣
-   h x = f x                               ＝⟨ refl ⟩
+   h x = f x                               ＝⟨refl⟩
          restriction f (corestriction f x) ＝⟨ ρ    ⟩
-         restriction f (f'' ∣ x ∣)          ＝⟨ refl ⟩
+         restriction f (f'' ∣ x ∣)          ＝⟨refl⟩
          f' ∣ x ∣                           ∎
     where
      ρ = ap (restriction f) (i (corestriction f x) (f'' ∣ x ∣))
@@ -299,10 +299,10 @@ factor-through-surjection {𝓤} {𝓥} {𝓦} {X} {A}
   h a = pr₁ (σ a) (f-is-surjection a)
 
   H : h ∘ f ∼ g
-  H x = h (f x)                               ＝⟨ refl ⟩
+  H x = h (f x)                               ＝⟨refl⟩
         pr₁ (σ (f x)) (f-is-surjection (f x)) ＝⟨ i ⟩
         pr₁ (σ (f x)) ∣ x , refl ∣             ＝⟨ ii ⟩
-        φ (f x) (x , refl)                    ＝⟨ refl ⟩
+        φ (f x) (x , refl)                    ＝⟨refl⟩
         g x                                   ∎
          where
           i = ap (pr₁ (σ (f x))) (∥∥-is-prop (f-is-surjection (f x)) ∣ x , refl ∣)
@@ -394,7 +394,7 @@ corestriction-of-embedding-is-equivalence f e =
          σ q' = ap pr₁ q'
          η : ρ ∘ σ ∼ id
          η refl = to-Σ-＝ (refl , q)    ＝⟨ ap (λ - → to-Σ-＝ (refl , -)) h ⟩
-                  to-Σ-＝ (refl , refl) ＝⟨ refl ⟩
+                  to-Σ-＝ (refl , refl) ＝⟨refl⟩
                   refl                 ∎
           where
            q : ∣ x , refl ∣ ＝ ∣ x , refl ∣
@@ -427,9 +427,9 @@ surjection-≃-image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                    → is-surjection f
                    → image f ≃ Y
 surjection-≃-image {𝓤} {𝓥} {X} {Y} f s =
- image f                       ≃⟨ ≃-refl _ ⟩
+ image f                       ≃⟨by-definition⟩
  (Σ y ꞉ Y , ∃ x ꞉ X , f x ＝ y) ≃⟨ Σ-cong γ ⟩
- (Σ y ꞉ Y , 𝟙)                 ≃⟨ ≃-refl _ ⟩
+ (Σ y ꞉ Y , 𝟙)                 ≃⟨by-definition⟩
  Y × 𝟙                         ≃⟨ 𝟙-rneutral {𝓥} {𝓥} ⟩
  Y                             ■
   where

@@ -405,7 +405,7 @@ WLPO-gives-noncontinous-map wlpo
 
   f₀ : (n : ℕ) → f (ι n) ＝ 0
   f₀ n =  f (ι n) ＝⟨ ap g (pr₁ p-spec n) ⟩
-          g ₀     ＝⟨ refl ⟩
+          g ₀     ＝⟨refl⟩
           0       ∎
 
   f∞ : (n : ℕ) → f (ι n) ≠ f ∞
@@ -1043,7 +1043,7 @@ eventual-constancy-data-gives-continuous-extension-data g (m , a)
     → Σ (f , _) ꞉ ℕ∞-extensions-of g , m is-modulus-of-continuity-of f
   h g 0        a = ((λ _ → g 0) ,
                     (λ n →  g 0          ＝⟨ (a n)⁻¹ ⟩
-                            g (maxℕ 0 n) ＝⟨ refl ⟩
+                            g (maxℕ 0 n) ＝⟨refl⟩
                             g n          ∎)) ,
                    (λ n → refl)
   h g (succ m) a = I IH
@@ -1060,10 +1060,10 @@ eventual-constancy-data-gives-continuous-extension-data g (m , a)
       f' = ℕ∞-cases fe (g 0) f
 
       e' : (n : ℕ) → f' (ι n) ＝ g n
-      e' 0 = f' (ι 0) ＝⟨ refl ⟩
+      e' 0 = f' (ι 0) ＝⟨refl⟩
              f' Zero  ＝⟨ ℕ∞-cases-Zero fe (g 0) f ⟩
              g 0      ∎
-      e' (succ n) = f' (ι (succ n)) ＝⟨ refl ⟩
+      e' (succ n) = f' (ι (succ n)) ＝⟨refl⟩
                     f' (Succ (ι n)) ＝⟨ ℕ∞-cases-Succ fe (g 0) f (ι n) ⟩
                     f (ι n)         ＝⟨ e n ⟩
                     g (succ n)      ∎
@@ -1382,7 +1382,7 @@ being-modulus-of-constancy-is-decidable-for-all-functions-gives-WLPO ϕ
 
     I₁ : ((n : ℕ) → α n ＝ α 0)
        → (n : ℕ) → ι (α (maxℕ 0 n)) ＝ ι (α 0)
-    I₁ b n = ι (α (maxℕ 0 n)) ＝⟨ refl ⟩
+    I₁ b n = ι (α (maxℕ 0 n)) ＝⟨refl⟩
              ι (α n)          ＝⟨ ap ι (b n) ⟩
              ι (α 0)          ∎
 
@@ -1543,14 +1543,14 @@ all-maps-have-extensions-gives-WLPO a
     ν : ¬ continuous f
     ν (m , m-is-modulus) =
      succ-no-fp m
-      (m                          ＝⟨ refl ⟩
+      (m                          ＝⟨refl⟩
        id m                       ＝⟨ (e m)⁻¹ ⟩
        f (ι m)                    ＝⟨ ap f ((max-idemp fe (ι m))⁻¹) ⟩
        f (max (ι m) (ι m))        ＝⟨ m-is-modulus m ⟩
        f ∞                        ＝⟨ (m-is-modulus (succ m))⁻¹ ⟩
        f (max (ι m) (ι (succ m))) ＝⟨ ap f (max-succ fe m) ⟩
        f (ι (succ m))             ＝⟨ e (succ m) ⟩
-       id (succ m)                ＝⟨ refl ⟩
+       id (succ m)                ＝⟨refl⟩
        succ m                     ∎)
 
 \end{code}
@@ -1686,11 +1686,11 @@ characterization-of-type-of-untruncated-continuous-functions-≃
       ϕ-is-equiv = qinvs-are-equivs ϕ (γ , γϕ , ϕγ)
 
     II =
-     (Σ f ꞉ (ℕ∞ → ℕ) , continuous f)                              ≃⟨ ≃-refl _ ⟩
+     (Σ f ꞉ (ℕ∞ → ℕ) , continuous f)                              ≃⟨by-definition⟩
      (Σ f ꞉ (ℕ∞ → ℕ) , Σ m ꞉ ℕ , m is-modulus-of-continuity-of f) ≃⟨ Σ-flip ⟩
      (Σ m ꞉ ℕ , Σ f ꞉ (ℕ∞ → ℕ) , m is-modulus-of-continuity-of f) ≃⟨ Σ-cong I ⟩
      (Σ m ꞉ ℕ , Σ g ꞉ (ℕ → ℕ) , m is-modulus-of-constancy-of g)   ≃⟨ Σ-flip ⟩
-     (Σ g ꞉ (ℕ → ℕ) , Σ m ꞉ ℕ , m is-modulus-of-constancy-of g)   ≃⟨ ≃-refl _ ⟩
+     (Σ g ꞉ (ℕ → ℕ) , Σ m ꞉ ℕ , m is-modulus-of-constancy-of g)   ≃⟨by-definition⟩
      (Σ g ꞉ (ℕ → ℕ), eventually-constant g)                       ■
 
 \end{code}

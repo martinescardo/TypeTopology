@@ -220,14 +220,14 @@ T-sgpe-lemma : (Xt : 𝑻)
              → is-in-T-sgpe' st ϕt q σt
              → extᴬ q (T-strategic-path st σt) ＝ sequenceᴷ ϕt q
 T-sgpe-lemma [] ⟨⟩ ⟨⟩ q ⟨⟩ ⟨⟩ =
- extᴬ q (T-strategic-path ⟨⟩ ⟨⟩) ＝⟨ refl ⟩
+ extᴬ q (T-strategic-path ⟨⟩ ⟨⟩) ＝⟨refl⟩
  aext 𝓐 q (ηᵀ ⟨⟩)                ＝⟨ unitᴬ q ⟨⟩ ⟩
- q ⟨⟩                            ＝⟨ refl ⟩
+ q ⟨⟩                            ＝⟨refl⟩
  sequenceᴷ ⟨⟩ q                  ∎
 T-sgpe-lemma (X ∷ Xf) ϕt@(ϕ :: ϕf) st@(s :: sf) q σt@(σ :: σf) (h :: t) =
  extᴬ q (T-strategic-path st σt)                               ＝⟨ h ⟩
  ϕ (λ x → extᴬ (subpred q x) (T-strategic-path (sf x) (σf x))) ＝⟨ I ⟩
- ϕ (λ x → sequenceᴷ (ϕf x) (subpred q x))                      ＝⟨ refl ⟩
+ ϕ (λ x → sequenceᴷ (ϕf x) (subpred q x))                      ＝⟨refl⟩
  sequenceᴷ ϕt q                                                ∎
  where
   IH : (x : X)
@@ -290,18 +290,18 @@ mapᵀ-path-head-lemma' : {X : 𝓤 ̇ }
                       → mapᵀ path-head (a ⊗ᵀ b)
                       ＝ extᵀ (λ x → extᵀ (λ _ → ηᵀ x) (b x)) a
 mapᵀ-path-head-lemma' {X} {Xf} s sf a b =
-  mapᵀ path-head (a ⊗ᵀ b)                                  ＝⟨ refl ⟩
-  extᵀ (ηᵀ ∘ path-head) (a ⊗ᵀ b)                           ＝⟨ refl ⟩
-  extᵀ g (a ⊗ᵀ b)                                          ＝⟨ refl ⟩
-  extᵀ g (extᵀ (λ x → mapᵀ (x ::_) (b x)) a)               ＝⟨ refl ⟩
+  mapᵀ path-head (a ⊗ᵀ b)                                  ＝⟨refl⟩
+  extᵀ (ηᵀ ∘ path-head) (a ⊗ᵀ b)                           ＝⟨refl⟩
+  extᵀ g (a ⊗ᵀ b)                                          ＝⟨refl⟩
+  extᵀ g (extᵀ (λ x → mapᵀ (x ::_) (b x)) a)               ＝⟨refl⟩
   extᵀ g (extᵀ (λ x → extᵀ (ηᵀ ∘ (x ::_)) (b x)) a)        ＝⟨ ⦅1⦆ ⟩
-  extᵀ (extᵀ g ∘ (λ x → extᵀ (ηᵀ ∘ (x ::_)) (b x))) a      ＝⟨ refl ⟩
-  extᵀ (extᵀ g ∘ (λ x → extᵀ (f x) (b x))) a               ＝⟨ refl ⟩
-  extᵀ (λ x → extᵀ g (extᵀ (f x) (b x))) a                 ＝⟨ refl ⟩
+  extᵀ (extᵀ g ∘ (λ x → extᵀ (ηᵀ ∘ (x ::_)) (b x))) a      ＝⟨refl⟩
+  extᵀ (extᵀ g ∘ (λ x → extᵀ (f x) (b x))) a               ＝⟨refl⟩
+  extᵀ (λ x → extᵀ g (extᵀ (f x) (b x))) a                 ＝⟨refl⟩
   extᵀ (λ x → (extᵀ g ∘ extᵀ (f x)) (b x)) a               ＝⟨ ⦅2⦆ ⟩
-  extᵀ (λ x → extᵀ (extᵀ g ∘ (f x)) (b x)) a               ＝⟨ refl ⟩
+  extᵀ (λ x → extᵀ (extᵀ g ∘ (f x)) (b x)) a               ＝⟨refl⟩
   extᵀ (λ x → extᵀ (λ xs → extᵀ g (ηᵀ (x :: xs))) (b x)) a ＝⟨ ⦅3⦆ ⟩
-  extᵀ (λ x → extᵀ (λ xs → g (x :: xs)) (b x)) a           ＝⟨ refl ⟩
+  extᵀ (λ x → extᵀ (λ xs → g (x :: xs)) (b x)) a           ＝⟨refl⟩
   extᵀ (λ x → extᵀ (λ _ → ηᵀ x) (b x)) a                   ∎
  where
   g : Path (X ∷ Xf) → T (X , s)
@@ -362,11 +362,11 @@ module _ {𝓧  : 𝕊 𝓤}
  ⊗ᴶᵀ-in-terms-of-⊗ᵀ : (q : ⟨ Σₛ x ꞉ 𝓧 , 𝓨 x ⟩ → T 𝓡)
                     → (ε ⊗ᴶᵀ δ) q ＝ τ q ⊗ᵀ ν q
  ⊗ᴶᵀ-in-terms-of-⊗ᵀ q =
-    (ε ⊗ᴶᵀ δ) q                                          ＝⟨ refl ⟩
+    (ε ⊗ᴶᵀ δ) q                                          ＝⟨refl⟩
     extᴶᵀ (λ x → extᴶᵀ (λ y _ → ηᵀ (x , y)) (δ x)) ε q   ＝⟨ ⦅1⦆ ⟩
-    extᴶᵀ Θ ε q                                          ＝⟨ refl ⟩
+    extᴶᵀ Θ ε q                                          ＝⟨refl⟩
     extᵀ (λ x → Θ x q) (ε (λ x → extᵀ q (Θ x q)))        ＝⟨ ⦅2⦆ ⟩
-    extᵀ (λ x → Θ x q) (τ q)                             ＝⟨ refl ⟩
+    extᵀ (λ x → Θ x q) (τ q)                             ＝⟨refl⟩
     τ q ⊗ᵀ ν q                                           ∎
      where
       Θ : ⟨ 𝓧 ⟩ → JT (Σₛ x ꞉ 𝓧 , 𝓨 x)
@@ -381,7 +381,7 @@ module _ {𝓧  : 𝕊 𝓤}
 
       II : ∀ x → extᵀ q ∘ extᵀ (λ y → ηᵀ (x , y)) ＝ extᵀ (λ y → q (x , y))
       II x = extᵀ q ∘ extᵀ (λ y → ηᵀ (x , y))               ＝⟨ ⦅i⦆ ⟩
-             (λ x' → extᵀ (extᵀ q ∘ (λ y → ηᵀ (x , y))) x') ＝⟨ refl ⟩
+             (λ x' → extᵀ (extᵀ q ∘ (λ y → ηᵀ (x , y))) x') ＝⟨refl⟩
              extᵀ (λ y → ((extᵀ q) ∘ ηᵀ) (x , y))           ＝⟨ ⦅ii⦆ ⟩
              extᵀ (λ y → q (x , y))                         ∎
        where
@@ -436,8 +436,8 @@ T-main-lemma ext-const {X ∷ Xf} st@(s :: sf) εt@(ε :: εf) q = γ
   I = ε (λ x → extᵀ (q' x) (c x))                       ＝⟨ ⦅1⦆ ⟩
       mapᵀ path-head (ε (λ x → extᵀ (q' x) (c x)) ⊗ᵀ c) ＝⟨ ⦅2⦆ ⟩
       mapᵀ path-head (ε (λ x → extᵀ (q' x) (b x)) ⊗ᵀ b) ＝⟨ ⦅3⦆ ⟩
-      mapᵀ path-head ((ε ⊗ᴶᵀ δ) (ηᵀ ∘ q))               ＝⟨ refl ⟩
-      mapᵀ path-head (sequenceᴶᵀ st εt (ηᵀ ∘ q))        ＝⟨ refl ⟩
+      mapᵀ path-head ((ε ⊗ᴶᵀ δ) (ηᵀ ∘ q))               ＝⟨refl⟩
+      mapᵀ path-head (sequenceᴶᵀ st εt (ηᵀ ∘ q))        ＝⟨refl⟩
       σ                                                 ∎
    where
     ⦅1⦆ = (mapᵀ-path-head-lemma s sf (ε (λ x → extᵀ (q' x) (c x))) c ext-const)⁻¹
@@ -447,13 +447,13 @@ T-main-lemma ext-const {X ∷ Xf} st@(s :: sf) εt@(ε :: εf) q = γ
 
   γ : sequenceᴶᵀ st εt (ηᵀ ∘ q)
     ＝ T-strategic-path st (T-selection-strategy st εt q)
-  γ = sequenceᴶᵀ st εt (ηᵀ ∘ q)                          ＝⟨ refl ⟩
+  γ = sequenceᴶᵀ st εt (ηᵀ ∘ q)                          ＝⟨refl⟩
       (ε ⊗ᴶᵀ δ) (ηᵀ ∘ q)                                 ＝⟨ ⦅1⦆ ⟩
       ε (λ x → extᵀ (q' x) (b x)) ⊗ᵀ b                   ＝⟨ ⦅2⦆ ⟩
       (ε (λ x → extᵀ (q' x) (c x)) ⊗ᵀ c)                 ＝⟨ ⦅3⦆ ⟩
-      σ ⊗ᵀ c                                             ＝⟨ refl ⟩
-      σ ⊗ᵀ (λ x → T-strategic-path {Xf x} (sf x) (σf x)) ＝⟨ refl ⟩
-      T-strategic-path st (σ :: σf)                      ＝⟨ refl ⟩
+      σ ⊗ᵀ c                                             ＝⟨refl⟩
+      σ ⊗ᵀ (λ x → T-strategic-path {Xf x} (sf x) (σf x)) ＝⟨refl⟩
+      T-strategic-path st (σ :: σf)                      ＝⟨refl⟩
       T-strategic-path st (T-selection-strategy st εt q) ∎
    where
     ⦅1⦆ = ⊗ᴶᵀ-in-terms-of-⊗ᵀ ε δ (ηᵀ ∘ q)
@@ -509,16 +509,16 @@ T-selection-strategy-lemma
   t = T-strategic-path st (σ :: σf)
 
   III : ε p ＝ σ
-  III = ε p ＝⟨ refl ⟩
-        ε (λ x → mapᵀ (subpred q x) (T-strategic-path (sf x) (σf x))) ＝⟨ refl ⟩
+  III = ε p ＝⟨refl⟩
+        ε (λ x → mapᵀ (subpred q x) (T-strategic-path (sf x) (σf x))) ＝⟨refl⟩
         ε (λ x → mapᵀ (subpred q x) (T-strategic-path (sf x) (T-selection-strategy {Xf x} (sf x) (εf x) (subpred q x)))) ＝⟨ III₀ ⟩
-        ε (λ x → mapᵀ (subpred q x) (sequenceᴶᵀ (sf x) (εf x) (subpred (ηᵀ ∘ q) x))) ＝⟨ refl ⟩
-        ε (λ x → mapᵀ (subpred q x) (ν x)) ＝⟨ refl ⟩
-        ε (λ x → extᵀ (subpred (ηᵀ ∘ q) x) (ν x)) ＝⟨ refl ⟩
+        ε (λ x → mapᵀ (subpred q x) (sequenceᴶᵀ (sf x) (εf x) (subpred (ηᵀ ∘ q) x))) ＝⟨refl⟩
+        ε (λ x → mapᵀ (subpred q x) (ν x)) ＝⟨refl⟩
+        ε (λ x → extᵀ (subpred (ηᵀ ∘ q) x) (ν x)) ＝⟨refl⟩
         τ ＝⟨ III₁ ⟩
         mapᵀ path-head (τ ⊗ᵀ ν) ＝⟨ III₂ ⟩
-        mapᵀ path-head ((ε ⊗ᴶᵀ (λ x → sequenceᴶᵀ (sf x) (εf x))) (ηᵀ ∘ q)) ＝⟨ refl ⟩
-        mapᵀ path-head (sequenceᴶᵀ st εt (ηᵀ ∘ q)) ＝⟨ refl ⟩
+        mapᵀ path-head ((ε ⊗ᴶᵀ (λ x → sequenceᴶᵀ (sf x) (εf x))) (ηᵀ ∘ q)) ＝⟨refl⟩
+        mapᵀ path-head (sequenceᴶᵀ st εt (ηᵀ ∘ q)) ＝⟨refl⟩
         σ ∎
         where
          ν : (x : X) → T (Pathₛ (Xf x) (sf x))
@@ -532,18 +532,18 @@ T-selection-strategy-lemma
          III₂ = ap (mapᵀ path-head) ((⊗ᴶᵀ-in-terms-of-⊗ᵀ {X , s} {𝓤} {λ x → Pathₛ (Xf x) (sf x)} ε (λ x → sequenceᴶᵀ (sf x) (εf x)) (ηᵀ ∘ q)) ⁻¹)
 
   II = α (extᵀ p (ε p)) ＝⟨ II₀ ⟩
-       α (extᵀ p σ) ＝⟨ refl ⟩
-       α (extᵀ (λ x → mapᵀ (subpred q x) (T-strategic-path (sf x) (σf x))) σ) ＝⟨ refl ⟩
+       α (extᵀ p σ) ＝⟨refl⟩
+       α (extᵀ (λ x → mapᵀ (subpred q x) (T-strategic-path (sf x) (σf x))) σ) ＝⟨refl⟩
        α (extᵀ (λ x → extᵀ (ηᵀ ∘ subpred q x) (T-strategic-path (sf x) (σf x))) σ) ＝⟨ II₁ ⟩
-       α (extᵀ (λ x →  extᵀ (λ xs → extᵀ (ηᵀ ∘ q) (ηᵀ (x :: xs))) (T-strategic-path (sf x) (σf x))) σ) ＝⟨ refl ⟩
+       α (extᵀ (λ x →  extᵀ (λ xs → extᵀ (ηᵀ ∘ q) (ηᵀ (x :: xs))) (T-strategic-path (sf x) (σf x))) σ) ＝⟨refl⟩
        α (extᵀ (λ x →  extᵀ (extᵀ (ηᵀ ∘ q) ∘ (λ xs → ηᵀ (x :: xs))) (T-strategic-path (sf x) (σf x))) σ) ＝⟨ II₂ ⟩
-       α (extᵀ (λ x → extᵀ (ηᵀ ∘ q) (extᵀ (λ xs → ηᵀ (x :: xs)) (T-strategic-path (sf x) (σf x)))) σ) ＝⟨ refl ⟩
+       α (extᵀ (λ x → extᵀ (ηᵀ ∘ q) (extᵀ (λ xs → ηᵀ (x :: xs)) (T-strategic-path (sf x) (σf x)))) σ) ＝⟨refl⟩
        α (extᵀ (extᵀ (λ x → ηᵀ (q x)) ∘ (λ x → mapᵀ (λ y → x , y) (T-strategic-path (sf x) (σf x)))) σ) ＝⟨ II₃ ⟩
-       α (extᵀ (ηᵀ ∘ q) (extᵀ (λ x → mapᵀ (λ y → x , y) (T-strategic-path (sf x) (σf x))) σ)) ＝⟨ refl ⟩
-       α (extᵀ (ηᵀ ∘ q) (σ ⊗ᵀ λ x → T-strategic-path (sf x) (σf x))) ＝⟨ refl ⟩
-       α (extᵀ (ηᵀ ∘ q) (T-strategic-path st (σ :: σf))) ＝⟨ refl ⟩
-       α (mapᵀ q (T-strategic-path st (σ :: σf))) ＝⟨ refl ⟩
-       α (mapᵀ q (T-strategic-path st (σ :: σf))) ＝⟨ refl ⟩
+       α (extᵀ (ηᵀ ∘ q) (extᵀ (λ x → mapᵀ (λ y → x , y) (T-strategic-path (sf x) (σf x))) σ)) ＝⟨refl⟩
+       α (extᵀ (ηᵀ ∘ q) (σ ⊗ᵀ λ x → T-strategic-path (sf x) (σf x))) ＝⟨refl⟩
+       α (extᵀ (ηᵀ ∘ q) (T-strategic-path st (σ :: σf))) ＝⟨refl⟩
+       α (mapᵀ q (T-strategic-path st (σ :: σf))) ＝⟨refl⟩
+       α (mapᵀ q (T-strategic-path st (σ :: σf))) ＝⟨refl⟩
        α (mapᵀ q t) ∎
         where
          II₀ = ap (λ - → α (extᵀ p -)) III
@@ -553,10 +553,10 @@ T-selection-strategy-lemma
 
   γ : is-in-T-sgpe' st ϕt q (T-selection-strategy st εt q)
   γ = (extᴬ q (T-strategic-path {X ∷ Xf} st (σ :: σf)) ＝⟨ new-agrees-with-old fe q t ⟩
-       α (mapᵀ q (T-strategic-path {X ∷ Xf} st (σ :: σf))) ＝⟨ refl ⟩
+       α (mapᵀ q (T-strategic-path {X ∷ Xf} st (σ :: σf))) ＝⟨refl⟩
        α (mapᵀ q t) ＝⟨ II ⁻¹ ⟩
        α (extᵀ p (ε p)) ＝⟨ a p ⟩
-       ϕ (α ∘ p) ＝⟨ refl ⟩
+       ϕ (α ∘ p) ＝⟨refl⟩
        ϕ (λ x → α (mapᵀ (subpred q x) (T-strategic-path (sf x) (σf x)))) ＝⟨ ap ϕ ((dfunext fe (λ x → new-agrees-with-old fe (subpred q x) (T-strategic-path (sf x) (σf x))))⁻¹) ⟩
        ϕ (λ x → extᴬ (subpred q x) (T-strategic-path (sf x) (σf x))) ∎) ,
       (λ x → T-selection-strategy-lemma ext-const (sf x) (εf x) (ϕf x) (subpred q x) (af x))

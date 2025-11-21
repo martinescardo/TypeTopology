@@ -347,7 +347,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
     e-after-f-lemma : e ∘ f ∼ sum-to-ordinals α
     e-after-f-lemma (i , x) =
      (r ∘ ⌜ φ ⌝ ∘ ⌜ φ ⌝⁻¹ ∘ c) (i , x) ＝⟨ h    ⟩
-     r (c (i , x))                     ＝⟨ refl ⟩
+     r (c (i , x))                     ＝⟨refl⟩
      sum-to-ordinals α (i , x)         ∎
       where
        h = ap r (inverses-are-sections ⌜ φ ⌝ (⌜⌝-is-equiv φ) (c (i , x)))

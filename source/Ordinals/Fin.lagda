@@ -156,7 +156,7 @@ The construction of finite ordinals preserves addition.
 
  Fin-ordinal-succ' : (n : ℕ) → Fin-ordinal (succ n) ＝ Fin-ordinal n +ₒ 𝟙ₒ
  Fin-ordinal-succ' n =
-  Fin-ordinal (succ n)           ＝⟨ refl ⟩
+  Fin-ordinal (succ n)           ＝⟨refl⟩
   Fin-ordinal (n +ℕ 1)           ＝⟨ Fin-ordinal-+ₒ n 1 ⟩
   Fin-ordinal n +ₒ Fin-ordinal 1 ＝⟨ ap (Fin-ordinal n +ₒ_) Fin-ordinal-one ⟩
   Fin-ordinal n +ₒ 𝟙ₒ            ∎
@@ -229,7 +229,7 @@ is positive.
                  → let n' = succ n
                    in Fin-ordinal (n' ℕ^ m) ＝ Fin-ordinal n' ^ₒ Fin-ordinal m
   Fin-ordinal-^ₒ n zero =
-   Fin-ordinal (succ n ℕ^ zero)             ＝⟨ refl ⟩
+   Fin-ordinal (succ n ℕ^ zero)             ＝⟨refl⟩
    Fin-ordinal 1                            ＝⟨ Fin-ordinal-one ⟩
    𝟙₀                                       ＝⟨ I ⟩
    Fin-ordinal (succ n) ^ₒ 𝟘ₒ               ＝⟨ II ⟩
@@ -238,7 +238,7 @@ is positive.
      I = ^ₒ-satisfies-zero-specification (Fin-ordinal (succ n)) ⁻¹
      II = ap (Fin-ordinal (succ n) ^ₒ_) (Fin-ordinal-zero ⁻¹)
   Fin-ordinal-^ₒ n (succ m) =
-   Fin-ordinal (n' ℕ^ succ m)                        ＝⟨ refl ⟩
+   Fin-ordinal (n' ℕ^ succ m)                        ＝⟨refl⟩
    Fin-ordinal (n' * n' ℕ^ m)                        ＝⟨ I ⟩
    Fin-ordinal (n' ℕ^ m * n')                        ＝⟨ II ⟩
    Fin-ordinal (n' ℕ^ m) ×ₒ Fin-ordinal n'           ＝⟨ III ⟩

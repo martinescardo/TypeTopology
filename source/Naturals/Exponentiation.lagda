@@ -25,7 +25,7 @@ prod-of-powers n a 0        = refl
 prod-of-powers n a (succ b) = I
  where
   I : (n ℕ^ a) * (n ℕ^ succ b) ＝ (n ℕ^ (a + succ b))
-  I = (n ℕ^ a) * (n ℕ^ succ b)  ＝⟨ refl ⟩
+  I = (n ℕ^ a) * (n ℕ^ succ b)  ＝⟨refl⟩
       (n ℕ^ a) * (n * (n ℕ^ b)) ＝⟨ i    ⟩
       (n ℕ^ a) * n * (n ℕ^ b)   ＝⟨ ii   ⟩
       n * n ℕ^ a * n ℕ^ b       ＝⟨ iii  ⟩

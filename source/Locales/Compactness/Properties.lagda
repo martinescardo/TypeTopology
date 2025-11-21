@@ -153,7 +153,7 @@ The function `directify₂` is equal to `directify` as expected.
 
  directify₂-is-equal-to-directify S [] =
   directify₂ S [ [] ]   ＝⟨ Ⅰ    ⟩
-  𝟎[ F ]                ＝⟨ refl ⟩
+  𝟎[ F ]                ＝⟨refl⟩
   directify F S [ [] ]   ∎
    where
 
@@ -167,7 +167,7 @@ The function `directify₂` is equal to `directify` as expected.
  directify₂-is-equal-to-directify S (i ∷ is) =
   directify₂ S [ i ∷ is ]                ＝⟨ Ⅰ    ⟩
   S [ i ] ∨[ F ] directify₂ S [ is ]     ＝⟨ Ⅱ    ⟩
-  S [ i ] ∨[ F ] directify  F S [ is ]   ＝⟨ refl ⟩
+  S [ i ] ∨[ F ] directify  F S [ is ]   ＝⟨refl⟩
   directify F S [ i ∷ is ]               ∎
    where
     open PosetNotation (poset-of F)

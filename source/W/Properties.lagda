@@ -68,9 +68,9 @@ W-centrality fe w@(ssup x f) σ@(ssup x g , refl , u) = IV
   III : (ssup x f , refl , (λ a → ＝ʷ-refl (f a))) ＝ (ssup x g , refl , u)
   III = ap π II
 
-  IV = W-center w                               ＝⟨ refl ⟩
+  IV = W-center w                               ＝⟨refl⟩
        ssup x f , refl , (λ a → ＝ʷ-refl (f a)) ＝⟨ III ⟩
-       ssup x g , refl , u                      ＝⟨ refl ⟩
+       ssup x g , refl , u                      ＝⟨refl⟩
        σ                                        ∎
 
 singleton-typesʷ-are-singletons : Fun-Ext
@@ -189,7 +189,7 @@ W-is-set fe X-is-set {ssup x φ} {ssup x' φ'} = γ
          → to-W-＝ (pr₁ (from-W-＝ p) , dfunext fe (happly (pr₂ (from-W-＝ p)))))
        ∼ id
      h refl =  ap (ssup x) (dfunext fe (happly refl)) ＝⟨ I ⟩
-               ap (ssup x) refl                       ＝⟨ refl ⟩
+               ap (ssup x) refl                       ＝⟨refl⟩
                refl                                   ∎
                 where
                  I = ap (ap (ssup x)) (funext-happly fe φ φ refl)

@@ -466,7 +466,7 @@ wprimrec-primitive-recursive
 wprimrec-primitive-recursive a b f g h (fixa , fixb) (hl , hr)
  = (hL , hR , hl , hr)
  where
-  hL' = h L       ＝⟨ refl ⟩
+  hL' = h L       ＝⟨refl⟩
         h (l L)   ＝⟨ hl L ⟩
         f L (h L) ∎
 
@@ -705,37 +705,37 @@ is-𝓡-function f = 𝕄-caseable 𝕄 (m ∘ f) (r ∘ f)
 preservation-𝓛𝓛 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f)
                 → is-𝓛-function (𝓛 f 𝓵)
 preservation-𝓛𝓛 f 𝓵 𝓻 =
-  l (𝓛 f 𝓵 R)  ＝⟨ refl ⟩
+  l (𝓛 f 𝓵 R)  ＝⟨refl⟩
   l (m (f R))  ＝⟨ ap l 𝓻 ⟩
   l (r (f L))  ＝⟨ (m-l (f L))⁻¹ ⟩
-  m (l (f L))  ＝⟨ refl ⟩
+  m (l (f L))  ＝⟨refl⟩
   m (𝓛 f 𝓵 L)  ∎
 
 preservation-𝓛𝓡 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f)
                 → is-𝓡-function (𝓛 f 𝓵)
 preservation-𝓛𝓡 f 𝓵 𝓻 =
-  m (𝓛 f 𝓵 R) ＝⟨ refl ⟩
+  m (𝓛 f 𝓵 R) ＝⟨refl⟩
   m (m (f R)) ＝⟨ ap m 𝓻 ⟩
   m (r (f L)) ＝⟨ m-r (f L) ⟩
-  r (l (f L)) ＝⟨ refl ⟩
+  r (l (f L)) ＝⟨refl⟩
   r (𝓛 f 𝓵 L) ∎
 
 preservation-𝓡𝓛 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f)
                 → is-𝓛-function (𝓡 f 𝓻)
 preservation-𝓡𝓛 f 𝓵 𝓻 =
-  l (𝓡 f 𝓻 R)      ＝⟨ refl ⟩
+  l (𝓡 f 𝓻 R)      ＝⟨refl⟩
   l (r (f R))      ＝⟨ (m-l (f R))⁻¹ ⟩
   m (l (f R))      ＝⟨ ap m 𝓵 ⟩
-  m (m (f L))      ＝⟨ refl ⟩
+  m (m (f L))      ＝⟨refl⟩
   m (𝓡 f 𝓻 L)      ∎
 
 preservation-𝓡𝓡 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f)
                 → is-𝓡-function (𝓡 f 𝓻)
 preservation-𝓡𝓡 f 𝓵 𝓻 =
-  m (𝓡 f 𝓻 R)  ＝⟨ refl ⟩
+  m (𝓡 f 𝓻 R)  ＝⟨refl⟩
   m (r (f R))  ＝⟨ 𝕄-cases-r (l ∘ r) (r ∘ l) refl (f R) ⟩
   r (l (f R))  ＝⟨ ap r 𝓵 ⟩
-  r (m (f L))  ＝⟨ refl ⟩
+  r (m (f L))  ＝⟨refl⟩
   r (𝓡 f 𝓻 L)  ∎
 
 is-𝓛𝓡-function : (𝕄 → 𝕄) → 𝓤₀ ̇
@@ -861,9 +861,9 @@ module _ (fe  : Fun-Ext) where
                × (l x ⊕ r y ＝ m (x ⊕ y))
  mid-is-hom-l' x y = u , v , w , t
   where
-   α = λ y → l x ⊕ y             ＝⟨ refl ⟩
+   α = λ y → l x ⊕ y             ＝⟨refl⟩
              pr₁ (mid (l x)) y   ＝⟨ happly (ap pr₁ (mid-is-hom-l x)) y ⟩
-             pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y  ＝⟨ refl ⟩
+             pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y  ＝⟨refl⟩
              𝕄-cases (l ∘ (x ⊕_)) (m ∘ (x ⊕_)) (pr₁ (⊕-property x)) y ∎
 
    u = α L
@@ -889,9 +889,9 @@ module _ (fe  : Fun-Ext) where
                × (r x ⊕ r y ＝ r (x ⊕ y))
  mid-is-hom-r' x y = u , v , w , t
   where
-   α = λ y → r x ⊕ y              ＝⟨ refl ⟩
+   α = λ y → r x ⊕ y              ＝⟨refl⟩
              pr₁ (mid (r x)) y    ＝⟨ happly (ap pr₁ (mid-is-hom-r x)) y ⟩
-             pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y ＝⟨ refl ⟩
+             pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y ＝⟨refl⟩
              𝕄-cases (m ∘ (x ⊕_)) (r ∘ (x ⊕_)) (pr₂ (⊕-property x)) y ∎
 
    u = α L

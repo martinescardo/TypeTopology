@@ -65,9 +65,9 @@ This is the main theorem proved in this module.
   a = (α , d)
 
   Dagger₀ : (n : ℕ) → a ＝ ι n → p (ι n) ＝ ₀
-  Dagger₀ 0 r =  p (ι 0)   ＝⟨ refl ⟩
+  Dagger₀ 0 r =  p (ι 0)   ＝⟨refl⟩
                  α 0       ＝⟨ ap (λ - → ι - 0) r ⟩
-                 ι (ι 0) 0 ＝⟨ refl ⟩
+                 ι (ι 0) 0 ＝⟨refl⟩
                  ₀         ∎
   Dagger₀ (succ n) r = p (ι (succ n))          ＝⟨ w ⁻¹ ⟩
                        α (succ n)              ＝⟨ ap (λ - → ι - (succ n)) r ⟩
@@ -79,24 +79,24 @@ This is the main theorem proved in this module.
         ₁                ∎
 
     w = α (succ n)              ＝⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) t ⟩
-        min𝟚 ₁ (p (ι (succ n))) ＝⟨ refl ⟩
+        min𝟚 ₁ (p (ι (succ n))) ＝⟨refl⟩
         p (ι (succ n))          ∎
 
   Dagger₁ : a ＝ ∞ → (n : ℕ) → p (ι n) ＝ ₁
-  Dagger₁ r 0 = p (ι 0) ＝⟨ refl ⟩
+  Dagger₁ r 0 = p (ι 0) ＝⟨refl⟩
                 α 0     ＝⟨ ap (λ - → ι - 0) r ⟩
-                ι ∞ 0   ＝⟨ refl ⟩
+                ι ∞ 0   ＝⟨refl⟩
                 ₁       ∎
   Dagger₁ r (succ n) = p (ι (succ n)) ＝⟨ w ⁻¹ ⟩
                        α (succ n)     ＝⟨ ap (λ - → ι - (succ n)) r ⟩
-                       ι ∞ (succ n)   ＝⟨ refl ⟩
+                       ι ∞ (succ n)   ＝⟨refl⟩
                        ₁              ∎
    where
     s : α n ＝ ₁
     s = ap (λ - → ι - n) r
 
     w = α (succ n)              ＝⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) s ⟩
-        min𝟚 ₁ (p (ι (succ n))) ＝⟨ refl ⟩
+        min𝟚 ₁ (p (ι (succ n))) ＝⟨refl⟩
         p (ι (succ n))          ∎
 
   Lemma₀ : (n : ℕ) → a ＝ ι n → p a ＝ ₀

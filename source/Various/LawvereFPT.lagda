@@ -147,9 +147,9 @@ is a fixed point of f.
    _ = by-definition
 
    p : x ＝ f x
-   p = x         ＝⟨ by-definition ⟩
+   p = x         ＝⟨by-definition⟩
        r (s g) a ＝⟨ rs g a ⟩
-       g a       ＝⟨ by-definition ⟩
+       g a       ＝⟨by-definition⟩
        f x       ∎
 
  LFPT· : {A : 𝓤 ̇ }
@@ -300,9 +300,9 @@ module surjection-version (pt : propositional-truncations-exist) where
      x = φ a a
 
      p : x ＝ f x
-     p = x         ＝⟨ by-definition ⟩
+     p = x         ＝⟨by-definition⟩
          φ a a     ＝⟨ ap (λ - → - a) q ⟩
-         g a       ＝⟨ by-definition ⟩
+         g a       ＝⟨by-definition⟩
          f x       ∎
 
 \end{code}
@@ -661,10 +661,10 @@ module generalized-Coquand where
      s f = σ (R , f) , ap pr₁ (η (R , f))
 
      rs : (f : B → X) → r (s f) ＝ f
-     rs f = r (s f)                                      ＝⟨ refl ⟩
+     rs f = r (s f)                                      ＝⟨refl⟩
             transport H (ap pr₁ (η Rf)) (pr₂ (ρ (σ Rf))) ＝⟨ i ⟩
             transport (H ∘ pr₁) (η Rf)  (pr₂ (ρ (σ Rf))) ＝⟨ ii ⟩
-            pr₂ Rf                                       ＝⟨ refl ⟩
+            pr₂ Rf                                       ＝⟨refl⟩
             f                                            ∎
           where
            Rf : Σ H
@@ -850,10 +850,10 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
       s f = σ p (R , f) , ap pr₁ (η p (R , f))
 
       rs : (f : B → X) → r (s f) ＝ f
-      rs f = r (s f)                                            ＝⟨ refl ⟩
+      rs f = r (s f)                                            ＝⟨refl⟩
              transport H (ap pr₁ (η p Rf)) (pr₂ (ρ p (σ p Rf))) ＝⟨ i ⟩
              transport (H ∘ pr₁) (η p Rf)  (pr₂ (ρ p (σ p Rf))) ＝⟨ ii ⟩
-             pr₂ Rf                                             ＝⟨ refl ⟩
+             pr₂ Rf                                             ＝⟨refl⟩
              f                                                  ∎
            where
             Rf : Σ H

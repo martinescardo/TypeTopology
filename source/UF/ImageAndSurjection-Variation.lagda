@@ -96,7 +96,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
    p : is-prop (image f)
    p = wconstant-maps-to-sets-have-propositional-images X s f c
    γ : (x : X) → f x ＝ restriction f (g ∣ x ∣)
-   γ x = f x                               ＝⟨ refl ⟩
+   γ x = f x                               ＝⟨refl⟩
          restriction f (corestriction f x) ＝⟨ ap (restriction f)
                                               (p (corestriction f x) (g ∣ x ∣)) ⟩
          restriction f (g ∣ x ∣)           ∎
@@ -182,7 +182,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
           σ q' = ap pr₁ q'
           η : ρ ∘ σ ∼ id
           η refl = to-Σ-＝ (refl , q)    ＝⟨ ap (λ - → to-Σ-＝ (refl , -)) h ⟩
-                   to-Σ-＝ (refl , refl) ＝⟨ refl ⟩
+                   to-Σ-＝ (refl , refl) ＝⟨refl⟩
                    refl                 ∎
            where
             q : ∣ x , refl ∣ ＝ ∣ x , refl ∣
@@ -259,9 +259,9 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                     → is-surjection f
                     → image f ≃ Y
  surjection-≃-image {𝓤} {𝓥} {X} {Y} f s =
-  image f                       ≃⟨ ≃-refl _ ⟩
+  image f                       ≃⟨by-definition⟩
   (Σ y ꞉ Y , ∃ x ꞉ X , f x ＝ y) ≃⟨ Σ-cong γ ⟩
-  (Σ y ꞉ Y , 𝟙)                 ≃⟨ ≃-refl _ ⟩
+  (Σ y ꞉ Y , 𝟙)                 ≃⟨by-definition⟩
   Y × 𝟙                         ≃⟨ 𝟙-rneutral {𝓥} {𝓥} ⟩
   Y                             ■
    where

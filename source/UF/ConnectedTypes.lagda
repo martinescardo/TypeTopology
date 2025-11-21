@@ -420,7 +420,7 @@ We show that the n-truncation map is n-connected.
    has-sec {_} P P-trunc = (∥∥ₙ-ind P-trunc , comp-rule)
     where
      comp-rule : dprecomp P ∣_∣[ n ] ∘ ∥∥ₙ-ind P-trunc ∼ id
-     comp-rule h = (dprecomp P ∣_∣[ n ]) (∥∥ₙ-ind P-trunc h) ＝⟨ refl ⟩
+     comp-rule h = (dprecomp P ∣_∣[ n ]) (∥∥ₙ-ind P-trunc h) ＝⟨refl⟩
                    (∥∥ₙ-ind P-trunc h) ∘ ∣_∣[ n ]            ＝⟨ I ⟩
                    h                                         ∎
       where

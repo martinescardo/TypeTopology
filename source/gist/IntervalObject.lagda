@@ -89,9 +89,9 @@ homs-are-Homs (_ , _⊕ᵃ_ , _ , _ , _ , _ , _ , ⨁ᵃ , unfoldingᵃ , _)
         (f (x i) ⊕ᵇ f (⨁ᵃ (j ↦ x (j + succ i))))     ∎
     where
      I₀ = j ↦ (succ j + i   ＝⟨ addition-commutativity (succ j) i ⟩
-               i + succ j   ＝⟨ refl ⟩
+               i + succ j   ＝⟨refl⟩
                succ (i + j) ＝⟨ ap succ (addition-commutativity i j) ⟩
-               succ (j + i) ＝⟨ refl ⟩
+               succ (j + i) ＝⟨refl⟩
                j + succ i   ∎)
 
      I₁ = ap₂ _⊕ᵇ_
@@ -654,7 +654,7 @@ Homomorphisms automatically preserve convex combinations.
 
   ½-combination : (x₀ x₁ : X) → c ½ x₀ x₁ ＝ x₀ ⊞ x₁
   ½-combination x₀ x₁ =
-   c ½ x₀ x₁             ＝⟨ refl ⟩
+   c ½ x₀ x₁             ＝⟨refl⟩
    α̅ x₀ x₁ (𝟎 ⊕ 𝟏)       ＝⟨ α-is-hom 𝓧 x₀ x₁ 𝟎 𝟏 ⟩
    α̅ x₀ x₁ 𝟎 ⊞ α̅ x₀ x₁ 𝟏 ＝⟨ ap₂ _⊞_ (α-law₀ 𝓧 x₀ x₁) (α-law₁ 𝓧 x₀ x₁) ⟩
    x₀ ⊞ x₁               ∎
@@ -700,7 +700,7 @@ Homomorphisms automatically preserve convex combinations.
 
     𝟎-agreement : f 𝟎 ＝ x₀ ⊞ x₁
     𝟎-agreement =
-     f 𝟎                 ＝⟨ refl ⟩
+     f 𝟎                 ＝⟨refl⟩
      α̅ x₀ y₀ 𝟎 ⊞ α̅ x₁ y₁ 𝟎 ＝⟨ I ⟩
      x₀ ⊞ x₁             ∎
       where
@@ -708,7 +708,7 @@ Homomorphisms automatically preserve convex combinations.
 
     𝟏-agreement : f 𝟏 ＝ y₀ ⊞ y₁
     𝟏-agreement =
-     f 𝟏                   ＝⟨ refl ⟩
+     f 𝟏                   ＝⟨refl⟩
      α̅ x₀ y₀ 𝟏 ⊞ α̅ x₁ y₁ 𝟏 ＝⟨ I ⟩
      y₀ ⊞ y₁               ∎
       where
@@ -734,12 +734,12 @@ Homomorphisms automatically preserve convex combinations.
     I : is-hom 𝓘 𝓧 (- ↦ c (𝟏- -) y x)
     I = ∘-is-hom 𝓘 𝓘 𝓧 𝟏- (- ↦ c - y x) (α-is-hom 𝓘 𝟏 𝟎) (α-is-hom 𝓧 y x)
 
-    II₀ = c (𝟏- 𝟎) y x    ＝⟨ refl ⟩
+    II₀ = c (𝟏- 𝟎) y x    ＝⟨refl⟩
           α̅ y x (α̲ 𝟏 𝟎 𝟎) ＝⟨ ap (α̅ y x) (α-law₀ 𝓘 𝟏 𝟎) ⟩
           α̅ y x 𝟏         ＝⟨ α-law₁ 𝓧 y x ⟩
           x               ∎
 
-    II₁ = c (𝟏- 𝟏) y x    ＝⟨ refl ⟩
+    II₁ = c (𝟏- 𝟏) y x    ＝⟨refl⟩
           α̅ y x (α̲ 𝟏 𝟎 𝟏) ＝⟨ ap (α̅ y x) (α-law₁ 𝓘 𝟏 𝟎) ⟩
           α̅ y x 𝟎         ＝⟨ α-law₀ 𝓧 y x ⟩
           y               ∎

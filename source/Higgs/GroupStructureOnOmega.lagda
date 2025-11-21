@@ -64,7 +64,7 @@ lc-monoid-structure-on-Ω-gives-EM O _⊕_ left-neutral right-neutral assoc lc =
   f p = p ⊕ (⊥ ⊕ ⊤)
 
   f-invol : involutive f
-  f-invol p = f (f p)                 ＝⟨ refl ⟩
+  f-invol p = f (f p)                 ＝⟨refl⟩
               (p ⊕ (⊥ ⊕ ⊤)) ⊕ (⊥ ⊕ ⊤) ＝⟨ assoc p (⊥ ⊕ ⊤) (⊥ ⊕ ⊤) ⟩
               p ⊕ ((⊥ ⊕ ⊤) ⊕ (⊥ ⊕ ⊤)) ＝⟨ ap (p ⊕_) (own-inv (⊥ ⊕ ⊤)) ⟩
               p ⊕ O                   ＝⟨ right-neutral p ⟩
@@ -75,13 +75,13 @@ lc-monoid-structure-on-Ω-gives-EM O _⊕_ left-neutral right-neutral assoc lc =
                 (p ⊕ ⊥) ⊕ O       ＝⟨ ap ((p ⊕ ⊥) ⊕_) ((own-inv ⊤)⁻¹) ⟩
                 (p ⊕ ⊥) ⊕ (⊤ ⊕ ⊤) ＝⟨ (assoc (p ⊕ ⊥) ⊤ ⊤)⁻¹ ⟩
                 ((p ⊕ ⊥) ⊕ ⊤) ⊕ ⊤ ＝⟨ ap (_⊕ ⊤) (assoc p ⊥ ⊤) ⟩
-                (p ⊕ (⊥ ⊕ ⊤)) ⊕ ⊤ ＝⟨ refl ⟩
+                (p ⊕ (⊥ ⊕ ⊤)) ⊕ ⊤ ＝⟨refl⟩
                 f p ⊕ ⊤           ＝⟨ ap (_⊕ ⊤) e ⟩
                 ⊤ ⊕ ⊤             ＝⟨ own-inv ⊤ ⟩
                 O                 ∎)
 
   β : (p : Ω) → p ＝ ⊥ → f p ＝ ⊤
-  β p e = f p         ＝⟨ refl ⟩
+  β p e = f p         ＝⟨refl⟩
           p ⊕ (⊥ ⊕ ⊤) ＝⟨ (assoc p ⊥ ⊤)⁻¹ ⟩
           (p ⊕ ⊥) ⊕ ⊤ ＝⟨ ap (λ - → (- ⊕ ⊥) ⊕ ⊤) e ⟩
           (⊥ ⊕ ⊥) ⊕ ⊤ ＝⟨ ap (_⊕ ⊤) (own-inv ⊥) ⟩

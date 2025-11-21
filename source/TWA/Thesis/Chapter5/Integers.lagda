@@ -118,7 +118,7 @@ prod-of-powers n a (succ b) = I
  where
   I : n ℕ^ a ℕ* n ℕ^ succ b ＝ n ℕ^ (a +ℕ succ b)
   I = n ℕ^ a ℕ* n ℕ^ succ b
-        ＝⟨ refl ⟩
+        ＝⟨refl⟩
       n ℕ^ a ℕ* (n ℕ* n ℕ^ b)
         ＝⟨ mult-associativity (n ℕ^ a) n (n ℕ^ b) ⁻¹ ⟩
       n ℕ^ a ℕ* n ℕ* n ℕ^ b
@@ -128,9 +128,9 @@ prod-of-powers n a (succ b) = I
       n ℕ* (n ℕ^ a ℕ* n ℕ^ b)
         ＝⟨ ap (n ℕ*_) (prod-of-powers n a b) ⟩
       n ℕ* n ℕ^ (a +ℕ b)
-        ＝⟨ refl ⟩
+        ＝⟨refl⟩
       n ℕ^ succ (a +ℕ b)
-        ＝⟨ refl ⟩
+        ＝⟨refl⟩
       n ℕ^ (a +ℕ succ b)       ∎
 
 exponents-of-two-ordered : (m : ℕ) → 2 ℕ^ m < 2 ℕ^ (succ m)
@@ -150,7 +150,7 @@ div-by-two' : (k : ℕ) → k +ℕ k /2 ＝ k
 div-by-two' 0 = refl
 div-by-two' (succ k)
  = (succ k +ℕ succ k) /2     ＝⟨ ap _/2 (succ-left k (succ k)) ⟩
-   succ (succ (k +ℕ k)) /2   ＝⟨ refl ⟩
+   succ (succ (k +ℕ k)) /2   ＝⟨refl⟩
    succ ((k +ℕ k) /2)        ＝⟨ ap succ (div-by-two' k) ⟩
    succ k                    ∎
 \end{code}
@@ -421,9 +421,9 @@ times-two-even' (negsucc (succ k)) odd2k
   I : succℤ (succℤ (negsucc (succ k) +ℤ negsucc (succ k)))
     ＝ negsucc k +ℤ negsucc k
   I = succℤ (succℤ (negsucc (succ k) +ℤ negsucc (succ k)))
-        ＝⟨ refl ⟩
+        ＝⟨refl⟩
       succℤ (succℤ (predℤ (negsucc k) +ℤ predℤ (negsucc k)))
-        ＝⟨ refl ⟩
+        ＝⟨refl⟩
       succℤ (succℤ (predℤ (predℤ (negsucc k) +ℤ negsucc k)))
         ＝⟨ ap (λ a → succℤ a)
                (succpredℤ (predℤ (negsucc k) +ℤ negsucc k)) ⟩
@@ -437,15 +437,15 @@ negsucc-lemma
  : (x : ℕ) → negsucc x +ℤ negsucc x ＝ negsucc (x +ℕ succ x)
 negsucc-lemma x
  = negsucc x +ℤ negsucc x
-     ＝⟨ refl ⟩
+     ＝⟨refl⟩
    (ℤ- pos (succ x)) ℤ- pos (succ x)
      ＝⟨ negation-dist (pos (succ x)) (pos (succ x)) ⟩
    ℤ- (pos (succ x) +ℤ pos (succ x))
-     ＝⟨ refl ⟩
+     ＝⟨refl⟩
    ℤ- succℤ (pos (succ x) +ℤ pos x)
      ＝⟨ ap (λ z → ℤ- succℤ z) (distributivity-pos-addition (succ x) x) ⟩
    ℤ- succℤ (pos (succ x +ℕ x))
-     ＝⟨ refl ⟩
+     ＝⟨refl⟩
    negsucc (succ x +ℕ x)
      ＝⟨ ap negsucc (addition-commutativity (succ x) x) ⟩
    negsucc (x +ℕ succ x) ∎
@@ -461,7 +461,7 @@ div-by-two (negsucc x)
  = (negsucc x +ℤ negsucc x) /2'
      ＝⟨ ap _/2' (negsucc-lemma x) ⟩
    negsucc (x +ℕ succ x) /2'
-     ＝⟨ refl ⟩
+     ＝⟨refl⟩
    ℤ- pos (succ (x +ℕ succ x) /2)
      ＝⟨ ap (λ z → ℤ- pos (z /2)) (succ-left x (succ x) ⁻¹) ⟩
    ℤ- pos ((succ x +ℕ succ x) /2)

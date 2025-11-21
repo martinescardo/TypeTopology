@@ -41,10 +41,10 @@ record Monad : Type₁ where
        → {X Y Z : Type} (f : X → Y) (g : Y → Z)
        → map (g ∘ f) ∼ map g ∘ map f
  map-∘ fe f g t =
-  map (g ∘ f) t                               ＝⟨ refl ⟩
+  map (g ∘ f) t                               ＝⟨refl⟩
   ext (λ x → η (g (f x))) t                   ＝⟨ by-unit ⟩
   ext (λ x → ext (λ y → η (g y)) (η (f x))) t ＝⟨ by-assoc ⟩
-  ext (λ x → η (g x)) (ext (λ x → η (f x)) t) ＝⟨ refl ⟩
+  ext (λ x → η (g x)) (ext (λ x → η (f x)) t) ＝⟨refl⟩
   (map g ∘ map f) t                           ∎
    where
     by-unit  = ap (λ - → ext - t)
@@ -57,7 +57,7 @@ record Monad : Type₁ where
  map-∘₃ fe f g h t =
   map (h ∘ g ∘ f) t         ＝⟨ by-functoriality ⟩
   (map (h ∘ g) ∘ map f) t   ＝⟨ again-by-functoriality ⟩
-  (map h ∘ map g) (map f t) ＝⟨ refl ⟩
+  (map h ∘ map g) (map f t) ＝⟨refl⟩
   (map h ∘ map g ∘ map f) t ∎
    where
     by-functoriality  = map-∘ fe f (h ∘ g) t
@@ -72,7 +72,7 @@ record Monad : Type₁ where
  ext-is-μ-map fe f tt =
   ext f tt                  ＝⟨ by-unit ⁻¹ ⟩
   ext (ext id ∘ η ∘ f) tt   ＝⟨ by-assoc ⟩
-  (ext id ∘ ext (η ∘ f)) tt ＝⟨ refl ⟩
+  (ext id ∘ ext (η ∘ f)) tt ＝⟨refl⟩
   (μ ∘ map f) tt            ∎
    where
     by-unit  = ap (λ - → ext (- ∘ f) tt) (dfunext fe (unit id))
@@ -83,15 +83,15 @@ record Monad : Type₁ where
          → μ {X} ∘ map (μ {X}) ∼ μ {X} ∘ μ {T X}
  μ-assoc fe ttt =
   (μ ∘ map μ) ttt       ＝⟨ (ext-is-μ-map fe μ ttt)⁻¹ ⟩
-  ext μ ttt             ＝⟨ refl ⟩
+  ext μ ttt             ＝⟨refl⟩
   ext (ext id ∘ id) ttt ＝⟨ assoc id id ttt ⟩
-  ext id (ext id ttt)   ＝⟨ refl ⟩
+  ext id (ext id ttt)   ＝⟨refl⟩
   (μ ∘ μ) ttt           ∎
 
  η-natural : {X Y : Type} (h : X → Y)
            → map h ∘ η {X} ∼ η {Y} ∘ h
  η-natural h x =
-  map h (η x)               ＝⟨ refl ⟩
+  map h (η x)               ＝⟨refl⟩
   ext (λ x → η (h x)) (η x) ＝⟨ unit (λ x → η (h x)) x ⟩
   η (h x)                   ∎
 
@@ -99,11 +99,11 @@ record Monad : Type₁ where
            → {X Y : Type} (h : X → Y)
            → map h ∘ μ {X}  ∼ μ {Y} ∘ map (map h)
  μ-natural fe h tt =
-  (map h ∘ μ) tt                            ＝⟨ refl ⟩
+  (map h ∘ μ) tt                            ＝⟨refl⟩
   ext (η ∘ h) (ext id tt)                   ＝⟨ by-assoc ⁻¹ ⟩
   ext (ext (η ∘ h)) tt                      ＝⟨ by-unit ⁻¹ ⟩
   ext (λ t → ext id (η (ext (η ∘ h) t))) tt ＝⟨ again-by-assoc ⟩
-  ext id (ext (λ t → η (ext (η ∘ h) t)) tt) ＝⟨ refl ⟩
+  ext id (ext (λ t → η (ext (η ∘ h) t)) tt) ＝⟨refl⟩
   (μ ∘ map (map h)) tt                      ∎
    where
     by-assoc       = assoc (λ x → η (h x)) id tt
@@ -112,14 +112,14 @@ record Monad : Type₁ where
     again-by-assoc = assoc id (λ x → η (ext (η ∘ h) x)) tt
 
  η-unit₀ : {X : Type} → μ {X} ∘ η {T X} ∼ id
- η-unit₀ t = μ (η t)      ＝⟨ refl ⟩
+ η-unit₀ t = μ (η t)      ＝⟨refl⟩
              ext id (η t) ＝⟨ unit id t ⟩
              t            ∎
 
  η-unit₁ : funext₀
          → {X : Type} → μ {X} ∘ map (η {X}) ∼ id
  η-unit₁ fe t =
-  μ (map η t)                    ＝⟨ refl ⟩
+  μ (map η t)                    ＝⟨refl⟩
   ext id (ext (η ∘ η) t)         ＝⟨ by-assoc ⟩
   ext (λ x → ext id (η (η x))) t ＝⟨ by-unit ⟩
   ext η t                        ＝⟨ ext-η t ⟩
@@ -289,7 +289,7 @@ module _ (𝕋 : Monad) where
 
    γ : extᵀ f t ＝ u
    γ = extᵀ f t                   ＝⟨ (ap (λ - → - t) (dfunext fe I))⁻¹ ⟩
-       (f ∘ inverse (ηᵀ {𝟙}) a) t ＝⟨ refl ⟩
+       (f ∘ inverse (ηᵀ {𝟙}) a) t ＝⟨refl⟩
        u                          ∎
 
  affine-gives-ext-const : Fun-Ext → is-affine → ext-const
@@ -310,11 +310,11 @@ module _ (𝕋 : Monad) where
    I : extᵀ h ＝ f
    I = dfunext fe (affine-gives-ext-const' fe a u)
 
-   γ = extᵀ g t             ＝⟨ refl ⟩
+   γ = extᵀ g t             ＝⟨refl⟩
        extᵀ (f ∘ k) t       ＝⟨ ap (λ - → extᵀ (- ∘ k) t) (I ⁻¹) ⟩
        extᵀ (extᵀ h ∘ k) t  ＝⟨ assocᵀ h k t ⟩
        extᵀ h (extᵀ k t)    ＝⟨ ap (λ - → - (extᵀ k t)) I ⟩
-       f (extᵀ k t)         ＝⟨ refl ⟩
+       f (extᵀ k t)         ＝⟨refl⟩
        u                    ∎
 
  ext-const-gives-affine : ext-const → is-affine
@@ -327,9 +327,9 @@ module _ (𝕋 : Monad) where
    I ⋆ = refl
 
    II : ηᵀ ∘ η⁻¹ ∼ id
-   II t = (ηᵀ ∘ η⁻¹) t        ＝⟨ refl ⟩
+   II t = (ηᵀ ∘ η⁻¹) t        ＝⟨refl⟩
           ηᵀ ⋆                ＝⟨ (ϕ {𝟙} (ηᵀ ⋆) t)⁻¹ ⟩
-          extᵀ (λ x → ηᵀ ⋆) t ＝⟨ refl ⟩
+          extᵀ (λ x → ηᵀ ⋆) t ＝⟨refl⟩
           extᵀ ηᵀ t           ＝⟨ extᵀ-η t ⟩
           t                   ∎
 
@@ -365,7 +365,7 @@ record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
  extension-property : {X : Type} (f : X → A)
                     → (extension f) extends f
  extension-property f x =
-  (extension f ∘ ηᵀ) x ＝⟨ refl ⟩
+  (extension f ∘ ηᵀ) x ＝⟨refl⟩
   α (mapᵀ f (ηᵀ x))    ＝⟨ ap α (ηᵀ-natural f x) ⟩
   α (ηᵀ (f x))         ＝⟨ aunit (f x) ⟩
   f x                  ∎
@@ -377,11 +377,11 @@ record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
                   → {X : Type} (f : X → A)
                   → is-hom-from-free (extension f)
  extension-is-hom fe f tt =
-  (extension f ∘ μᵀ) tt           ＝⟨ refl ⟩
+  (extension f ∘ μᵀ) tt           ＝⟨refl⟩
   (α ∘ mapᵀ f ∘ μᵀ) tt            ＝⟨ ap α (μᵀ-natural fe f tt) ⟩
   (α ∘ μᵀ ∘ mapᵀ (mapᵀ f)) tt     ＝⟨ (aassoc (mapᵀ (mapᵀ f) tt))⁻¹ ⟩
   (α ∘ mapᵀ α ∘ mapᵀ (mapᵀ f)) tt ＝⟨ ap α ((mapᵀ-∘ fe (mapᵀ f) α tt)⁻¹) ⟩
-  (α ∘ mapᵀ (α ∘ mapᵀ f)) tt      ＝⟨ refl ⟩
+  (α ∘ mapᵀ (α ∘ mapᵀ f)) tt      ＝⟨refl⟩
   (α ∘ mapᵀ (extension f)) tt     ∎
 
  at-most-one-extension : funext₀
@@ -391,7 +391,7 @@ record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
                        → is-hom-from-free h
                        → g ∼ h
  at-most-one-extension fe g h g-h-agreement g-is-hom h-is-hom tt =
-  g tt                      ＝⟨ refl ⟩
+  g tt                      ＝⟨refl⟩
   (g ∘ id) tt               ＝⟨ by-unit₁ ⁻¹ ⟩
   (g ∘ μᵀ ∘ mapᵀ ηᵀ) tt     ＝⟨ by-g-is-hom ⟩
   (α ∘ mapᵀ g ∘ mapᵀ ηᵀ) tt ＝⟨ by-functoriality ⁻¹ ⟩
@@ -497,9 +497,9 @@ module _ (𝕋 : Monad) where
 
    h-extends-ϕ : h ∘ ηᵀ ∼ ϕ
    h-extends-ϕ x =
-    (h ∘ ηᵀ) x                      ＝⟨ refl ⟩
+    (h ∘ ηᵀ) x                      ＝⟨refl⟩
     (extension 𝓐 g ∘ extᵀ f ∘ ηᵀ) x ＝⟨ ap (extension 𝓐 g) (unitᵀ f x) ⟩
-    (extension 𝓐 g ∘ f) x           ＝⟨ refl ⟩
+    (extension 𝓐 g ∘ f) x           ＝⟨refl⟩
     ϕ x                             ∎
 
    h-is-hom : is-hom (free fe X) 𝓐 h

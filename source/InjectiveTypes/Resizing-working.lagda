@@ -118,7 +118,7 @@ s p ＝ s ⊤
     r d = ¬¬ (d ＝ x₁) , negations-are-props fe'
 
     rs : r ∘ s ∼ id
-    rs p = r (s p)              ＝⟨ refl ⟩
+    rs p = r (s p)              ＝⟨refl⟩
            (¬¬ (s p ＝ x₁) , _) ＝⟨ rs₀ ⟩
            (s p ＝ x₁) , _      ＝⟨ rs₁ ⟩
            p                    ∎

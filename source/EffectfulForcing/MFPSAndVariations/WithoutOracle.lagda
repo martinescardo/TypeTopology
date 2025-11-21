@@ -110,7 +110,7 @@ dialogue-tree-correct : (t : T ((ι ⇒ ι) ⇒ ι))
                       → ⟦ t ⟧ α ＝ dialogue (dialogue-tree t) α
 dialogue-tree-correct t α =
  ⟦ t ⟧ α                      ＝⟨ main-lemma t α α generic lemma ⟩
- dialogue (B⟦ t ⟧ generic) α  ＝⟨ refl ⟩
+ dialogue (B⟦ t ⟧ generic) α  ＝⟨refl⟩
  dialogue (dialogue-tree t) α ∎
   where
    lemma : (n  : ℕ)
@@ -119,7 +119,7 @@ dialogue-tree-correct t α =
          → α n ＝ dialogue (generic n') α
    lemma n n' rn = α n                     ＝⟨ ap α rn ⟩
                    α (dialogue n' α)       ＝⟨ generic-diagram α n' ⟩
-                   decode α (generic n')   ＝⟨ refl ⟩
+                   decode α (generic n')   ＝⟨refl⟩
                    dialogue (generic n') α ∎
 
 eloquence-theorem : (f : Baire → ℕ)

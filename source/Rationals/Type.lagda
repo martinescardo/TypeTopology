@@ -289,9 +289,9 @@ q-has-qn (q , α) =  q , toℚ-to𝔽 (q , α)
   I = equality→equiv (pos 0 , 0) (pos 1 , 0)
 
   γ : pos 0 ＝ pos 1
-  γ = pos 0          ＝⟨ refl ⟩
+  γ = pos 0          ＝⟨refl⟩
       pos 0 ℤ* pos 1 ＝⟨ I e  ⟩
-      pos 1 ℤ* pos 1 ＝⟨ refl ⟩
+      pos 1 ℤ* pos 1 ＝⟨refl⟩
       pos 1          ∎
 
 ℚ-positive-not-zero : (x a : ℕ) → ¬ (toℚ (pos (succ x) , a) ＝ 0ℚ)

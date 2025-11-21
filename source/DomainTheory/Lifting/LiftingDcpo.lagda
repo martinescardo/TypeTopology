@@ -329,7 +329,7 @@ dcpo.
            → value (∐ 𝓛-DCPOₛ δ) q ＝ value (∐ 𝓛-DCPO {I} {α} ε) (⌜ e ⌝ q)
       goal (i , qᵢ) = value (∐ 𝓛-DCPOₛ δ) q                ＝⟨ ⦅1⦆  ⟩
                       value (α i) qᵢ                       ＝⟨ ⦅2⦆  ⟩
-                      ∐ 𝓓 ε'                               ＝⟨ refl ⟩
+                      ∐ 𝓓 ε'                               ＝⟨refl⟩
                       value (∐ 𝓛-DCPO {I} {α} ε) (⌜ e ⌝ q) ∎
        where
         ε' : is-Directed 𝓓 (family-in-dcpo α)

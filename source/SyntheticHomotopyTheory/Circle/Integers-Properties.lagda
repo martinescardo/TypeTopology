@@ -169,7 +169,7 @@ _+ℤ_ (neg n) = (pred-ℤ ^ (succ n))
  (succ-ℤ ^ succ n) (pos m)               ＝⟨ I    ⟩
  (succ-ℤ ^ succ n) ((succ-ℤ ^ succ m) 𝟎) ＝⟨ II   ⟩
  (succ-ℤ ^ succ m) ((succ-ℤ ^ succ n) 𝟎) ＝⟨ III  ⟩
- (succ-ℤ ^ succ m) (pos n)               ＝⟨ refl ⟩
+ (succ-ℤ ^ succ m) (pos n)               ＝⟨refl⟩
  pos m +ℤ pos n                          ∎
   where
    I   = ap (succ-ℤ ^ (succ n)) (pos-is-succ-ℤ-iterated m)
@@ -180,7 +180,7 @@ _+ℤ_ (neg n) = (pred-ℤ ^ (succ n))
  (succ-ℤ ^ succ n) (neg m)               ＝⟨ I   ⟩
  (succ-ℤ ^ succ n) ((pred-ℤ ^ succ m) 𝟎) ＝⟨ II  ⟩
  (pred-ℤ ^ succ m) ((succ-ℤ ^ succ n) 𝟎) ＝⟨ III ⟩
- (pred-ℤ ^ succ m) (pos n)               ＝⟨ refl ⟩
+ (pred-ℤ ^ succ m) (pos n)               ＝⟨refl⟩
  neg m +ℤ pos n                          ∎
   where
    I   = ap (succ-ℤ ^ succ n) (neg-is-pred-ℤ-iterated m)
@@ -191,7 +191,7 @@ _+ℤ_ (neg n) = (pred-ℤ ^ (succ n))
  (pred-ℤ ^ succ n) (pos m)               ＝⟨ I    ⟩
  (pred-ℤ ^ succ n) ((succ-ℤ ^ succ m) 𝟎) ＝⟨ II   ⟩
  (succ-ℤ ^ succ m) ((pred-ℤ ^ succ n) 𝟎) ＝⟨ III  ⟩
- (succ-ℤ ^ succ m) (neg n)               ＝⟨ refl ⟩
+ (succ-ℤ ^ succ m) (neg n)               ＝⟨refl⟩
  pos m +ℤ neg n                          ∎
   where
    I   = ap (pred-ℤ ^ succ n) (pos-is-succ-ℤ-iterated m)
@@ -202,7 +202,7 @@ _+ℤ_ (neg n) = (pred-ℤ ^ (succ n))
  (pred-ℤ ^ succ n) (neg m)               ＝⟨ I    ⟩
  (pred-ℤ ^ succ n) ((pred-ℤ ^ succ m) 𝟎) ＝⟨ II   ⟩
  (pred-ℤ ^ succ m) ((pred-ℤ ^ succ n) 𝟎) ＝⟨ III  ⟩
- (pred-ℤ ^ succ m) (neg n)               ＝⟨ refl ⟩
+ (pred-ℤ ^ succ m) (neg n)               ＝⟨refl⟩
  neg m +ℤ neg n                          ∎
   where
    I   = ap (pred-ℤ ^ succ n) (neg-is-pred-ℤ-iterated m)

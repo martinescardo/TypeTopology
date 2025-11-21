@@ -190,9 +190,9 @@ module ordinals-injectivity-order (ua : Univalence) where
      ⦅b⦆ (x , n , t) = g⁻¹ x , (w , l) , dfunext (fe 𝓤 𝓤) H
       where
        p : g⁻¹ x w ＝ x
-       p = g⁻¹ x w                                     ＝⟨ refl ⟩
+       p = g⁻¹ x w                                     ＝⟨refl⟩
            transport (λ - → ⟨ α (pr₁ -) ⟩) u x         ＝⟨ ⦅0⦆ ⟩
-           transport (λ - → ⟨ α (pr₁ -) ⟩) (𝓻𝓮𝒻𝓵 w) x ＝⟨ refl ⟩
+           transport (λ - → ⟨ α (pr₁ -) ⟩) (𝓻𝓮𝒻𝓵 w) x ＝⟨refl⟩
            x                                           ∎
         where
          ⦅0⦆ = ap (λ - → transport (λ - → ⟨ α (pr₁ -) ⟩) - x) v
@@ -212,7 +212,7 @@ module ordinals-injectivity-order (ua : Univalence) where
 
           ⦅1⦆ = (apd ( f (g⁻¹ x)) q)⁻¹
 
-          ⦅2⦆ = f (g⁻¹ x) w   ＝⟨ refl ⟩
+          ⦅2⦆ = f (g⁻¹ x) w   ＝⟨refl⟩
                 h i (g⁻¹ x w) ＝⟨ ap (h i) p ⟩
                 h i x         ＝⟨ t ⟩
                 γ w           ∎

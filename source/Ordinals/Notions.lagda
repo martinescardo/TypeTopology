@@ -140,7 +140,7 @@ transfinite-induction-behaviour : FunExt
 transfinite-induction-behaviour fe w {𝓦} P f x =
  transfinite-induction w P f x                               ＝⟨ I    ⟩
  f x (λ y l → transfinite-induction' P f y (prev (w x) y l)) ＝⟨ II   ⟩
- f x (λ y l → transfinite-induction' P f y (w y))            ＝⟨ refl ⟩
+ f x (λ y l → transfinite-induction' P f y (w y))            ＝⟨refl⟩
  f x (λ y l → transfinite-induction w P f y)                 ∎
   where
    I = transfinite-induction'-behaviour P f x (w x)

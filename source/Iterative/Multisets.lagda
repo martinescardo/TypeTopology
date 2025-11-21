@@ -219,7 +219,7 @@ to-from-𝕄-＝ = to-from-W-＝
 𝕄-＝'  M@(ssup X φ) N@(ssup Y γ) =
  (ssup X φ ＝ ssup Y γ)              ≃⟨ 𝕄-＝ ⟩
  (Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p) ≃⟨ Σ-cong (λ p → ＝-flip) ⟩
- (Σ p ꞉ X ＝ Y , γ ∘ Idtofun p ＝ φ) ≃⟨ ≃-refl _ ⟩
+ (Σ p ꞉ X ＝ Y , γ ∘ Idtofun p ＝ φ) ≃⟨by-definition⟩
  fiber ((γ ∘_) ∘ Idtofun) φ          ■
 
 \end{code}
@@ -273,9 +273,9 @@ M-centrality ua (ssup X φ) (ssup Y γ , 𝕗 , u) =
     III = ap π II
 
     IV =
-     M-center (ssup X φ)                         ＝⟨ refl ⟩
+     M-center (ssup X φ)                         ＝⟨refl⟩
      ssup X φ , ≃-refl X , (λ x → ≃ᴹ-refl (φ x)) ＝⟨ III ⟩
-     ssup X (γ ∘ ⌜ 𝕗 ⌝) , ≃-refl X , u           ＝⟨ refl ⟩
+     ssup X (γ ∘ ⌜ 𝕗 ⌝) , ≃-refl X , u           ＝⟨refl⟩
      ssup Y γ , 𝕗 , u                            ∎
 
 singleton-typesᴹ-are-singletons : Univalence

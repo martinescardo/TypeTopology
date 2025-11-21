@@ -201,9 +201,9 @@ condition using T rather than transport (see examples below).
 
     I : A X (≃-refl X)
     I = T (≃-refl X) s                                ＝⟨ T-refl s ⟩
-        s                                             ＝⟨ refl ⟩
+        s                                             ＝⟨refl⟩
         transport S refl s                            ＝⟨ II ⟩
-        transport S (eqtoid (ua 𝓤) X X (≃-refl X)) s  ＝⟨ refl ⟩
+        transport S (eqtoid (ua 𝓤) X X (≃-refl X)) s  ＝⟨refl⟩
         treq (≃-refl X) s                             ∎
       where
        II = (ap (λ - → transport S - s) (eqtoid-refl (ua 𝓤) X))⁻¹
@@ -236,10 +236,10 @@ kind, which will be easier to produce in our sample applications.
 
      II : derived-ρ p A ∼ ρ S (to-aflabby ϕ) p A
      II s =
-      derived-ρ p A s                                     ＝⟨ refl ⟩
+      derived-ρ p A s                                     ＝⟨refl⟩
       (λ h → T (ε p A h) s)                               ＝⟨ I₀ ⟩
-      (λ h → treq (ε p A h) s)                            ＝⟨ refl ⟩
-      (λ h → transport S (eqtoid (ua 𝓤) _ _ (ε p A h)) s) ＝⟨ refl ⟩
+      (λ h → treq (ε p A h) s)                            ＝⟨refl⟩
+      (λ h → transport S (eqtoid (ua 𝓤) _ _ (ε p A h)) s) ＝⟨refl⟩
       ρ S (to-aflabby ϕ) p A s                           ∎
       where
        I₀ = dfunext fe' (λ h → T-is-treq (ε p A h) s)
@@ -255,7 +255,7 @@ hypothesis t.
 
 \begin{code}
 
-     _ = section-map (ρ S (to-aflabby ϕ) p A) III  ＝⟨ refl ⟩
+     _ = section-map (ρ S (to-aflabby ϕ) p A) III  ＝⟨refl⟩
          section-map (derived-ρ p A) (t p A)        ∎
 
 \end{code}
@@ -439,9 +439,9 @@ guess what T should be.
 
    rσ : r ∘ σ ∼ id
    rσ g =
-    r (σ g)                                                         ＝⟨ refl ⟩
+    r (σ g)                                                         ＝⟨refl⟩
     (λ h a b → g h (⌜ π h ⌝ (⌜ π h ⌝⁻¹ a)) (⌜ π h ⌝ (⌜ π h ⌝⁻¹ b))) ＝⟨ II ⟩
-    (λ h a b → g h a b)                                             ＝⟨ refl ⟩
+    (λ h a b → g h a b)                                             ＝⟨refl⟩
     g                                                               ∎
      where
       II = dfunext fe' (λ h →
@@ -653,10 +653,10 @@ Fam-Π-data {𝓤} = Π-construction Fam-structure T T-refl c
                  (holds-is-prop p) 𝟙-is-prop unique-to-𝟙 (λ _ → h))
          I₂ = ≃-sym (𝟙→ fe')
 
-      II = r (σ g) h a                            ＝⟨ refl ⟩
-           σ g (⌜ π ⌝⁻¹ a)                        ＝⟨ refl ⟩
+      II = r (σ g) h a                            ＝⟨refl⟩
+           σ g (⌜ π ⌝⁻¹ a)                        ＝⟨refl⟩
            ((h' : p holds) → g h' (⌜ π ⌝⁻¹ a h')) ＝⟨ II₀ ⟩
-           g h (⌜ π ⌝⁻¹ a h)                      ＝⟨ refl ⟩
+           g h (⌜ π ⌝⁻¹ a h)                      ＝⟨refl⟩
            g h (⌜ π ⌝ (⌜ π ⌝⁻¹ a))                ＝⟨ II₁ ⟩
            g h a                                  ∎
             where
@@ -693,7 +693,7 @@ ainjectivity-of-type-of-all-functions {𝓤}
 
   I = (Σ X ꞉ 𝓤 ̇ , Σ Y ꞉ 𝓤 ̇ , (X → Y)) ≃⟨ Σ-flip ⟩
       (Σ Y ꞉ 𝓤 ̇ , Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃⟨ Σ-cong (classification (ua 𝓤) fe') ⟩
-      (Σ Y ꞉ 𝓤 ̇ , (Y → 𝓤 ̇))           ≃⟨ ≃-refl _ ⟩
+      (Σ Y ꞉ 𝓤 ̇ , (Y → 𝓤 ̇))           ≃⟨by-definition⟩
       Fam 𝓤                           ■
 
 \end{code}
@@ -760,10 +760,10 @@ Graph-Π-data {𝓤} =
                  (holds-is-prop p) 𝟙-is-prop unique-to-𝟙 (λ _ → h))
          I₂ = ≃-sym (𝟙→ fe')
 
-      II = r (σ g) h a a'                                         ＝⟨ refl ⟩
-           σ g (⌜ π ⌝⁻¹ a) (⌜ π ⌝⁻¹ a')                           ＝⟨ refl ⟩
+      II = r (σ g) h a a'                                         ＝⟨refl⟩
+           σ g (⌜ π ⌝⁻¹ a) (⌜ π ⌝⁻¹ a')                           ＝⟨refl⟩
            ((h' : p holds) → g h' (⌜ π ⌝⁻¹ a h') (⌜ π ⌝⁻¹ a' h')) ＝⟨ II₀ ⟩
-           g h (⌜ π ⌝⁻¹ a h) (⌜ π ⌝⁻¹ a' h)                       ＝⟨ refl ⟩
+           g h (⌜ π ⌝⁻¹ a h) (⌜ π ⌝⁻¹ a' h)                       ＝⟨refl⟩
            g h (⌜ π ⌝ (⌜ π ⌝⁻¹ a)) (⌜ π ⌝ (⌜ π ⌝⁻¹ a'))           ＝⟨ II₁ ⟩
            g h a a'                                               ∎
             where
