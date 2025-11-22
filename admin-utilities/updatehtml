@@ -10,15 +10,14 @@ set -euxo pipefail
 
 rm -rf html
 agda --highlight-occurrences --html AllModulesIndex.lagda
-rm -f ~/martinescardo.github.io/TypeTopology/*.html # do not delete Agda.css, as it is a modified version
-mv html/*.html ~/martinescardo.github.io/TypeTopology/
-cd ~/martinescardo.github.io/
+rm -f ~/martinescardo.github.io/agda/*.html # do not delete Agda.css, as it is a modified version
+mv html/*.html ~/martinescardo.github.io/agda/
 
 # Now create copies for files that have been moved to other places
 # but are linked from published papers, blogs etc.
 # Symbolic links don't work any more, so we replace "ln -s" by "cp -a"
 
-cd ~/martinescardo.github.io/TypeTopology/
+cd ~/martinescardo.github.io/agda
 
 cp -a Higgs.index.html UF.HiggsInvolutionTheorem.html
 cp -a CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
@@ -101,16 +100,12 @@ cp -a PCF.Lambda.index.html Published.PCF.Lambda.index.html
 
 # git add the above files
 cd ..
-chmod a+r TypeTopology/*
-git add TypeTopology
+chmod a+r agda/*
+git add agda
 
 # Deprecated - agda-new should not be offered as a public link any more,
 # for some years now:
 rm -rf agda-new
-rm -rf agda
-cp -a TypeTopology agda-new
-cp -a TypeTopology agda
-chmod a+r agda-new/*.html
-chmod a+r agda/*.html
+cp -a agda agda-new
+chmod a+r agda-new/*
 git add agda-new
-git add agda
