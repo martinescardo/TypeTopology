@@ -381,34 +381,34 @@ that the principle of excluded middle holds.
 
 \begin{code}
 
- EM-holds : EM 𝓣
- EM-holds = DNE-gives-EM fe DNE-holds
+ DNE-holds : (P : 𝓣 ̇) → is-prop P → ¬¬ P → P
+ DNE-holds P P-is-prop = V
   where
-   DNE-holds : (P : 𝓣 ̇) → is-prop P → ¬¬ P → P
-   DNE-holds P P-is-prop = V
-    where
-     p q : Ω
-     p = (P , P-is-prop)
-     q = is-def (h⁻¹ p)
+   p q : Ω
+   p = (P , P-is-prop)
+   q = is-def (h⁻¹ p)
 
-     Q : 𝓣 ̇
-     Q = q holds
+   Q : 𝓣 ̇
+   Q = q holds
 
-     I = p         ＝⟨ (inverses-are-sections' 𝕙 p)⁻¹ ⟩
-         h (h⁻¹ p) ＝⟨ h-more-explicitly (h⁻¹ p) ⟩
-         ⇁ q       ∎
+   I = p         ＝⟨ (inverses-are-sections' 𝕙 p)⁻¹ ⟩
+       h (h⁻¹ p) ＝⟨ h-more-explicitly (h⁻¹ p) ⟩
+       ⇁ q       ∎
 
-     II : P ＝ (⇁ q) holds
-     II = ap _holds I
+   II : P ＝ (⇁ q) holds
+   II = ap _holds I
 
-     III : P → ¬ Q
-     III g q = 𝟘-elim (idtofun P (Q → 𝟘) II g q)
+   III : P → ¬ Q
+   III g q = 𝟘-elim (idtofun P (Q → 𝟘) II g q)
 
-     IV : ¬ Q → P
-     IV ν = idtofun (Q → 𝟘) P (II ⁻¹) (λ (a : Q) → 𝟘-elim (ν a))
+   IV : ¬ Q → P
+   IV ν = idtofun (Q → 𝟘) P (II ⁻¹) (λ (a : Q) → 𝟘-elim (ν a))
 
-     V : ¬¬ P → P
-     V = negative-types-are-¬¬-stable P (Q , III , IV)
+   V : ¬¬ P → P
+   V = negative-types-are-¬¬-stable P (Q , III , IV)
+
+ EM-holds : (P : 𝓣 ̇) → is-prop P → P + ¬ P
+ EM-holds = DNE-gives-EM fe DNE-holds
 
 \end{code}
 
