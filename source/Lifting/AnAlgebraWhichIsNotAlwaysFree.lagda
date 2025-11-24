@@ -28,9 +28,9 @@ We show that if this is the case, then
  1. the insertion of generators ι : G → Ω is constant with value ⊥.
 
 Jon Sterling [1] previously conjectured that the same is the case for
-the lifting monad in the category of dcpos [3], namely that there are some
-toposes in which there is an algebra of the lifting monad in the
-category of dcpos which is not free.
+the lifting monad in the category of dcpos [3], namely that there are
+some toposes in which there is an algebra of the lifting monad in the
+category of dcpos that is not free.
 
 We haven't (yet) formalized this here, but we offer an argument to
 prove Sterling's conjecture, based on the above claims (which are
@@ -76,8 +76,8 @@ TODO. It would be good to formalize this in TypeTopology.
 
 \end{code}
 
-We import the following unused module (deliberately without opening
-it) for browsing purposes and to prove an addendum, namely that G ≃ 1,
+We import the following unused module, deliberately without opening
+it, for browsing purposes and to prove an addendum, namely that G ≃ 1,
 where the original ideas presented here were obtained in a tortuous
 way, with more information than necessary to obtain the results, which
 may nevertheless be interesting for other purposes.
@@ -102,7 +102,7 @@ open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe ;
                                            ⊤ to ⊤Ω)
 \end{code}
 
-We work with an arbitrary universe 𝓣, and assume function
+We work with an arbitrary type universe 𝓣, and assume function
 extensionality and propositional extensionality, which are available
 in any 1-topos.
 
@@ -353,7 +353,7 @@ constantly ⊥.
 \end{code}
 
 And from this we get the following characterization of h. Recall that
-is-def l is the domain of definition p = (P , i) of the partial
+is-def l is the domain of definition p = (P , i) : Ω of the partial
 element l = (P , φ , i).
 
 \begin{code}
@@ -441,3 +441,5 @@ this addendum, we invoke the results of our blackboard file.
 This shows that the only way Ω∀ can be freely generated is with a set
 of generators G ≃ 𝟙 and inclusion of generators ι constantly ⊥, in
 which case the principle of excluded middle holds.
+
+TODO. Maybe in a future version avoid invoking the blackboard file.
