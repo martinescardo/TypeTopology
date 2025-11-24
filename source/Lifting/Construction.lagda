@@ -11,13 +11,16 @@ open import MLTT.Spartan
 module Lifting.Construction (𝓣 : Universe) where
 
 open import UF.Subsingletons
+open import UF.SubtypeClassifier hiding (⊥)
 
 𝓛 : 𝓤 ̇ → 𝓣 ⁺ ⊔  𝓤 ̇
 𝓛 X = Σ P ꞉ 𝓣 ̇ , (P → X) × is-prop P
 
 is-defined : {X : 𝓤 ̇ } → 𝓛 X → 𝓣 ̇
-
 is-defined (P , φ , i) = P
+
+is-def : {X : 𝓤 ̇ } → 𝓛 X → Ω 𝓣
+is-def (P , φ , i) = (P , i)
 
 being-defined-is-prop : {X : 𝓤 ̇ } (l : 𝓛  X) → is-prop (is-defined l)
 being-defined-is-prop (P , φ , i) = i
