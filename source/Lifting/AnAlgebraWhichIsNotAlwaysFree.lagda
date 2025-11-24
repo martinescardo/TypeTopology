@@ -353,7 +353,8 @@ constantly ⊥.
 \end{code}
 
 And from this we get the following characterization of h. Recall that
-is-def l is the domain of definition of the partial element l.
+is-def l is the domain of definition p = (P , i) of the partial
+element l = (P , φ , i).
 
 \begin{code}
 
@@ -362,7 +363,7 @@ is-def l is the domain of definition of the partial element l.
   where
    I = h l                 ＝⟨ h-explicitly l ⟩
        (Ɐ a ꞉ P , ι (φ a)) ＝⟨ I₀ ⟩
-       (Ɐ a ꞉ P , ⊥Ω)      ＝⟨ refl ⟩
+       (Ɐ a ꞉ P , ⊥Ω)      ＝⟨refl⟩
        ⇁ is-def l ∎
      where
       I₀ = Ω-extensionality pe fe
@@ -384,7 +385,7 @@ that the principle of excluded middle holds.
  EM-holds = DNE-gives-EM fe DNE-holds
   where
    DNE-holds : (P : 𝓣 ̇) → is-prop P → ¬¬ P → P
-   DNE-holds P P-is-prop = VI
+   DNE-holds P P-is-prop = V
     where
      p q : Ω
      p = (P , P-is-prop)
@@ -406,11 +407,8 @@ that the principle of excluded middle holds.
      IV : ¬ Q → P
      IV ν = idtofun (Q → 𝟘) P (II ⁻¹) (λ (a : Q) → 𝟘-elim (ν a))
 
-     V : ¬¬ P → ¬ Q
-     V = three-negations-imply-one ∘ ¬¬-functor III
-
-     VI : ¬¬ P → P
-     VI = IV ∘ V
+     V : ¬¬ P → P
+     V = negative-types-are-¬¬-stable P (Q , III , IV)
 
 \end{code}
 
@@ -440,6 +438,6 @@ this addendum, we invoke the results of our blackboard file.
 
 \end{code}
 
-This shows that the only way Ω∀ can be freely generated is with G ≃ 𝟙
-and ι constantly ⊥ (in which case the principle of excluded middle
-holds).
+This shows that the only way Ω∀ can be freely generated is with a set
+of generators G ≃ 𝟙 and inclusion of generators ι constantly ⊥, in
+which case the principle of excluded middle holds.
