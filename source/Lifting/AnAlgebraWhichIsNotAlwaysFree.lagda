@@ -942,6 +942,8 @@ that the principle of excluded middle holds.
 
 \end{code}
 
+We summarize this as follows.
+
 \begin{code}
 
 stronger-consequence-of-Ω∀-being-freely-generated
