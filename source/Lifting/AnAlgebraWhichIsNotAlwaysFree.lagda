@@ -364,7 +364,7 @@ element l = (P , φ , i).
    I = h l                 ＝⟨ h-explicitly l ⟩
        (Ɐ a ꞉ P , ι (φ a)) ＝⟨ I₀ ⟩
        (Ɐ a ꞉ P , ⊥Ω)      ＝⟨refl⟩
-       ⇁ is-def l ∎
+       ⇁ is-def l          ∎
      where
       I₀ = Ω-extensionality pe fe
             (λ f a → idtofun (ι (φ a) holds) (⊥Ω holds)
