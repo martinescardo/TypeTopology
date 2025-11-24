@@ -72,7 +72,7 @@ TODO. It would be good to formalize this in TypeTopology.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 \end{code}
 
