@@ -838,7 +838,6 @@ the-∀-positive-props-form-a-prop (q , q-is-pos) (q' , q'-is-pos) =
    ⊥Ω ＝⟨ (∀-positive-gives-equal-⊥ q' q'-is-pos)⁻¹ ⟩
    q' ∎)
 
-
 \end{code}
 
 And, moreover, any positive element gives excluded middle. Conversely,
