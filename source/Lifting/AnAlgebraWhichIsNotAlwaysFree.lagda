@@ -743,10 +743,10 @@ open import UF.Base
   I = q-is-pos P P-is-prop
 
   II : ((P → Q) → Q) → (P → Q) ＝ Q
-  II φ = (pe (Π-is-prop fe (λ _ → Q-is-prop))
-                 Q-is-prop
-                 φ
-                 (λ (b : Q) (a : P) → b))
+  II φ = pe (Π-is-prop fe (λ _ → Q-is-prop))
+             Q-is-prop
+             φ
+             (λ (b : Q) (a : P) → b)
 
   III : ((P → Q) → Q) → P
   III φ = I (to-Ω-＝ fe (II φ))
