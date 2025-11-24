@@ -844,3 +844,26 @@ universe:
  𝓛-is-free-algebra = free-algebra-universal-property
 
 \end{code}
+
+Added 23rd Nov 2025. Anders Kock' [1] definition of positive element.
+
+[1] Anders Kock. The constructive lift monad.
+    BRICS Report Series (Aarhus), ISSN 0909-0878 (1995)
+    http://tildeweb.au.dk/au76680/CLM.pdf
+
+\begin{code}
+
+is-positive : {A : 𝓤 ̇ } → 𝓛-alg A → A → 𝓣 ⁺ ⊔ 𝓤 ̇
+is-positive (⨆ , l₀ , l₁) a =
+   (P : 𝓣 ̇ )
+   (i : is-prop P)
+ → ⨆ i (λ (_ : P) → a) ＝ a
+ → P
+
+being-positive-is-prop : Fun-Ext
+                       → {A : 𝓤 ̇ }
+                       → (α : 𝓛-alg A) (a : A)
+                       → is-prop (is-positive α a)
+being-positive-is-prop fe α a = Π₃-is-prop fe (λ _ P-is-prop _ → P-is-prop)
+
+\end{code}
