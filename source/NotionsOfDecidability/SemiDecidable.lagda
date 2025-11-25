@@ -238,8 +238,7 @@ empty-types-are-semidecidable e =
   w : ∃ n ꞉ ℕ , ϕ n ＝ ₁
   w = ∣ 0 , refl ∣
   e : 𝟙 ≃ (∃ n ꞉ ℕ , ϕ n ＝ ₁)
-  e = ≃-sym (lr-implication singletons-are-equiv-to-𝟙
-              (w , (∥∥-is-prop w)))
+  e = ≃-sym (singletons-are-equiv-to-𝟙 (w , (∥∥-is-prop w)))
 
 𝟙-is-semidecidable : is-semidecidable (𝟙 {𝓤})
 𝟙-is-semidecidable = ∣ 𝟙-has-semidecidability-structure ∣
@@ -249,7 +248,7 @@ singletons-have-semidecidability-structure : {X : 𝓤 ̇ }
                                            → semidecidability-structure X
 singletons-have-semidecidability-structure {𝓤} i =
  semidecidability-structure-cong
-  (≃-sym (lr-implication singletons-are-equiv-to-𝟙 i))
+  (≃-sym (singletons-are-equiv-to-𝟙 i))
   (𝟙-has-semidecidability-structure {𝓤})
 
 singletons-are-semidecidable : {X : 𝓤 ̇ } → is-singleton X → is-semidecidable X

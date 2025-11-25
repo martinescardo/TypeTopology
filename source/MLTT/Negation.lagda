@@ -103,6 +103,9 @@ und (φ , γ) w = γ (λ y → φ (λ x → w (x , y)))
 is-negative-type : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-negative-type {𝓤} A = Σ B ꞉ 𝓤 ̇ , (A ↔ ¬ B)
 
+¬¬-stable-types-are-negative : (A : 𝓤 ̇ ) → ¬¬-stable A → is-negative-type A
+¬¬-stable-types-are-negative A s = (¬ A) , ¬¬-intro , s
+
 negative-types-are-¬¬-stable : (A : 𝓤 ̇ ) → is-negative-type A → ¬¬-stable A
 negative-types-are-¬¬-stable A (B , f , g) = III
  where
@@ -114,12 +117,6 @@ negative-types-are-¬¬-stable A (B , f , g) = III
 
   III : ¬¬ A → A
   III = II ∘ three-negations-imply-one ∘ ¬¬-functor I
-
-\end{code}
-
-TODO. The converse is also true: ¬¬-stable types are negative.
-
-\begin{code}
 
 ¬-is-¬¬-stable : {A : 𝓤 ̇ } → ¬¬-stable (¬ A)
 ¬-is-¬¬-stable = three-negations-imply-one
