@@ -28,6 +28,13 @@ jobs:
         echo "github.event.after = ${{ github.event.after }}"
         echo "github.event.pull_request.head.sha = ${{ github.event.pull_request.head.sha }}"
 
+    - name: "Update Agda file and line count"
+      run: |
+        ghc -O3 admin-utilities/CountAgdaFilesAndLines.hs -o count_agda_files_and_lines
+        ./count_agda_files_and_lines
+        rm source/index.lagda
+        mv source/index-updated.lagda source/index.lagda
+
     - name: "Restore cached .agdai files"
       id: cache-agdai-restore
       uses: actions/cache/restore@v4
@@ -58,13 +65,6 @@ jobs:
         ghc: "9.8.4"
         cabal: "none"
         stack: "none"
-
-    - name: "Update Agda file and line count"
-      run: |
-        ghc -O3 admin-utilities/CountAgdaFilesAndLines.hs -o count_agda_files_and_lines
-        ./count_agda_files_and_lines
-        rm source/index.lagda
-        mv source/index-updated.lagda source/index.lagda
 
     - name: Upload HTML
       id: html-upload
