@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   typecheck:
-    runs-on: 9.8.4-bullseye
+    runs-on: ubuntu-latest
     name: Typechecking
     if: github.event.pull_request.draft == false
     steps:
