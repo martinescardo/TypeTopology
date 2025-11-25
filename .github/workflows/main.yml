@@ -34,7 +34,6 @@ jobs:
         ./count_agda_files_and_lines
         rm source/index.lagda
         mv source/index-updated.lagda source/index.lagda
-        cat source/index.lagda
 
     - name: "Add commit data to index.lagda"
       run: |
