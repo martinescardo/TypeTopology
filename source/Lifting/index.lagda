@@ -32,5 +32,4 @@ import Lifting.AnAlgebraWhichIsNotAlwaysFree-blackboard -- (*)
     with a simpler proof. It is still interesting because (1) it has
     additional information, and (2) it illustrates how we use
     TypeTopology as a blackboard to think about mathematical ideas and
-    develop them. More importantly, (3) it is also invoked in
-    Lifting.AnAlgebraWhichIsNotAlwaysFree to prove an addendum.
+    develop them.

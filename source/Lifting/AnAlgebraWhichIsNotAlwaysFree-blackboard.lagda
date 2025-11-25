@@ -1,5 +1,5 @@
-Martin Escardo, 7-8 November 2025, with revisions and additions to
-the discussion 16 and 20 November 2025.
+sMartin Escardo, 7-8 November 2025, with revisions and additions to
+the discussion 16, 20 and 24 November 2025.
 
 ----------------------------------------------------------------------------------
 **Notice** This file is almost superseded by Lifting.AnAlgebraWhichIsNotAlwaysFree,
@@ -7,9 +7,7 @@ which has a stronger result with a simpler proof.
 
 It is still interesting because (1) it has additional information, and
 (2) it illustrates how we use TypeTopology as a blackboard to think
-about mathematical ideas and develop them. More importantly, (3) it is
-also invoked in Lifting.AnAlgebraWhichIsNotAlwaysFree to prove an
-addendum.
+about mathematical ideas and develop them.
 -----------------------------------------------------------------------------------
 
 It is well known that in a boolean elementary (1-)topos, every algebra
