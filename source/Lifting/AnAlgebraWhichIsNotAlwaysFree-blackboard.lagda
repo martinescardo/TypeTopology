@@ -1,4 +1,4 @@
-sMartin Escardo, 7-8 November 2025, with revisions and additions to
+Martin Escardo, 7-8 November 2025, with revisions and additions to
 the discussion 16, 20 and 24 November 2025.
 
 ----------------------------------------------------------------------------------
