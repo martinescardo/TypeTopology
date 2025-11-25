@@ -61,7 +61,7 @@ ukTimeZone = TimeZone 0 False "GMT"
 
 formatLineCount :: LineCount -> String
 formatLineCount lc | lc < 1000000 = show (lc `div` 1000) ++ "K"
-formatLineCount lc                = error "This case is not handled yet"
+formatLineCount _                 = error "This case is not handled yet"
 
 newCountMessageLine1 :: DateString -> FileCount -> String
 newCountMessageLine1 date fc =
