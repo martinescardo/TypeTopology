@@ -44,7 +44,6 @@ totalAgdaLineCount paths = totalAgdaLineCountAux paths 0
     totalAgdaLineCountAux (p:ps) acc = do k <- lineCount p
                                           totalAgdaLineCountAux ps (k+acc)
 
-
 findIndexOfCountLine :: Handle -> IO Int
 findIndexOfCountLine handle = findIndexOfCountLineAux handle 1
   where
