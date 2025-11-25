@@ -64,8 +64,7 @@ jobs:
       uses: haskell/ghcup-setup@v1
       with:
         ghc: "9.8.4"
-        cabal: "none"
-        stack: "none"
+        cabal: "3.12.1"
 
     - name: Upload HTML
       id: html-upload
