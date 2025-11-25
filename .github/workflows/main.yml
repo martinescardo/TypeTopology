@@ -52,6 +52,13 @@ jobs:
         path: _build
         key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.event.after }}
 
+    - name: Setup Haskell (GHC)
+      uses: haskell/ghcup-setup@v1
+      with:
+        ghc: "9.8.4"
+        cabal: "none"
+        stack: "none"
+
     - name: "Update Agda file and line count"
       run: |
         ghc -O3 admin-utilities/CountAgdaFilesAndLines.hs -o count_agda_files_and_lines
