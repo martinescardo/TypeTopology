@@ -30,7 +30,7 @@ l ⋍ m = Σ (f , g) ꞉ (is-defined l ↔ is-defined m) , value l ∼ value m �
 module _ {l@(P , φ , i) m@(Q , ψ , j)  : 𝓛 X} where
 
  to-⋍ : l ＝ m → l ⋍ m
- to-⋍ refl = (id , id) , (λ x → refl)
+ to-⋍ refl = (id , id) , (λ _ → refl)
 
  module _ (pe : propext 𝓣)
           (fe : funext 𝓣 𝓤)
