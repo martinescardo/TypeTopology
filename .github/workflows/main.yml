@@ -61,6 +61,8 @@ jobs:
         path: source/html
 
     - name: Upload GitHub Pages HTML
+      id: html-pages-upload
+      if: github.ref == 'refs/heads/master'
       uses: actions/upload-pages-artifact@v3
       with:
         path: source/html
