@@ -60,12 +60,6 @@ jobs:
         path: _build
         key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.event.after }}
 
-    - name: Setup Haskell (GHC)
-      uses: haskell/ghcup-setup@v1
-      with:
-        ghc: "9.8.4"
-        cabal: "3.12.1"
-
     - name: Upload HTML
       id: html-upload
       if: github.ref == 'refs/heads/master'
