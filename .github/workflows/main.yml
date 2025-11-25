@@ -34,6 +34,7 @@ jobs:
         ./count_agda_files_and_lines
         rm source/index.lagda
         mv source/index-updated.lagda source/index.lagda
+        cat source/index.lagda
 
     - name: "Restore cached .agdai files"
       id: cache-agdai-restore
