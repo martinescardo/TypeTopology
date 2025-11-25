@@ -66,7 +66,7 @@ newCountMessageLine1 :: DateString -> FileCount -> String
 newCountMessageLine1 date fc =
   concat $ [ "   * In our last count, on "
            , date
-           , " this development has "
+           , ", this development has "
            , show fc
            , " Agda" ]
 
