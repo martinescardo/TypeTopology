@@ -320,8 +320,8 @@ h⁻¹ being the unique homomorphism extending η along ι.
 
 \end{code}
 
-Using this, we in turn conclude that our assumed map ι : G → Ω is
-constantly ⊥.
+Using this, we in turn conclude that our assumed insertion of
+generators ι : G → Ω is constantly ⊥.
 
 \begin{code}
 
