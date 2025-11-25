@@ -37,7 +37,7 @@ jobs:
 
     - name: "Add commit data to index.lagda"
       run: |
-        sed -i "14a\\\n \ \ This HTML rendering was auto-generated from commit $(git rev-parse --short HEAD)." source/index.lagda
+        sed -i "14a\\\n \ \ This HTML rendering was auto-generated from commit ${{ github.event.before:0:7 }}." source/index.lagda
         head -20 source/index.lagda
 
     - name: "Restore cached .agdai files"
