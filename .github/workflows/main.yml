@@ -52,6 +52,13 @@ jobs:
         path: _build
         key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.event.after }}
 
+    - name: "Update Agda file and line count"
+      run: |
+        ghc -O3 admin-utilities/CountAgdaFilesAndLines.hs -o count_agda_files_and_lines
+        ./count_agda_files_and_lines
+        rm source/index.lagda
+        mv source/index-updated.lagda source/index.lagda
+
     - name: Upload HTML
       id: html-upload
       if: github.ref == 'refs/heads/master'
