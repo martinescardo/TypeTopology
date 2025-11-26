@@ -340,19 +340,9 @@ doesn't do anything useful anyway.
        ⇁ is-def l          ∎
      where
       I₀ = Ω-extensionality pe fe
-            (λ (f : (a : P) → ι (φ a) holds)
-               (a : P)
-             → idtofun (ι (φ a) holds) (⊥Ω holds)
-                (ap _holds (ι-is-constantly-⊥ (φ a)))
-                (f a))
-            (λ (ν : P → 𝟘)
-               (a : P)
-             → 𝟘-elim (ν a))
+            (λ f a → idtofun _ _ (ap _holds (ι-is-constantly-⊥ (φ a))) (f a))
+            (λ ν a → 𝟘-elim (ν a))
 \end{code}
-
-TODO. The proof I₀ is annoyingly verbose to just replace `ι (φ a)` by
-`⊥Ω` in `Ɐ a ꞉ P , ι (φ a)`, using that fact that they are equal by
-`ι-is-constantly-⊥`.
 
 We say that a type is negative if it is logically equivalent to a
 negated type. A type is negative if and only if it is ¬¬-stable
@@ -453,3 +443,9 @@ as the only reason 𝓣⁺ arises is that both Ω and 𝓛 G live in 𝓣⁺, ra
 than 𝓣, in the absence of propositional resizing. However, Agda forces
 us to work with at least one universe, as opposed to MLTT, although
 this is inessential.
+
+Concluding questions. The above gives *one* example of an algebra
+which if it's free then excluded middle holds. There must be plenty
+more. For example, a product of algebras is an algebra. Is a product
+of free algebras also free? As a second example, the algebras form an
+exponential ideal. Is the algebra X → A free if the algebra A is?
