@@ -471,4 +471,5 @@ exponential ideal. Is the algebra X → A free if the algebra A is?
 
 Speculative question. Is there a nice characterization of the type of
 all algebra structures on Ω? We have two "extreme" ones, namely ∃ and ∀.
-There must be plenty in between.
+There must be plenty in between. What does the type of all of them
+look like?
