@@ -277,8 +277,7 @@ h⁻¹ being the unique homomorphism extending η along ι.
           (λ (_ : G) → by-definition)
     where
      open free-algebra-eliminators
-           𝓛G G η 𝓣⁺ 𝓛-is-free-algebra
-           (𝓛-is-set fe fe pe G-is-set) 𝓛G η
+           𝓛G G η 𝓣⁺ 𝓛-is-free-algebra (𝓛-is-set fe fe pe G-is-set) 𝓛G η
 
    IV : h ∘ h⁻¹ ∼ id
    IV = at-most-one-extending-hom'
