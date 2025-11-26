@@ -305,7 +305,8 @@ g : G, to consider the partial element l : 𝓛 G defined by
  l = (ι g holds , (λ _ → g) , _),
 
 which will prove to be ⊥ : 𝓛 G, and to consider the partial element φ
-of 𝓛 G with domain of definition `ι g holds` and constant value `η g`.
+of 𝓛 G with domain of definition `ι g holds` and constant value `η g`
+for that purpose.
 
 \begin{code}
 
