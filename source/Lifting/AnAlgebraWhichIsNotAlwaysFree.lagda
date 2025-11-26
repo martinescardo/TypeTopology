@@ -55,7 +55,7 @@ So the above discussion settles Sterling's conjecture positively, by
 providing an example of a dcpo lifting algebra which is not always
 free.
 
-TODO. It would be good to formalize this in here TypeTopology.
+TODO. It would be good to formalize this in here in TypeTopology.
 
 [1] Jon Sterling. Tensorial structure of the lifting doctrine in
     constructive domain theory. Originally 28 Dec 2023, last revised 30
