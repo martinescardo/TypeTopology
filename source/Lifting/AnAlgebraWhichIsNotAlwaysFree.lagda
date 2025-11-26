@@ -294,9 +294,9 @@ h⁻¹ being the unique homomorphism extending η along ι.
    III = at-most-one-extending-hom'
           (h⁻¹ ∘ h , I)
           (id , id-is-hom free)
-          (λ l → h⁻¹ (h (η l)) ＝⟨ ap h⁻¹ (h-extends-ι l) ⟩
-                 h⁻¹ (ι l)     ＝⟨ h⁻¹-extends-η l ⟩
-                 η l           ∎)
+          (λ g → h⁻¹ (h (η g)) ＝⟨ ap h⁻¹ (h-extends-ι g) ⟩
+                 h⁻¹ (ι g)     ＝⟨ h⁻¹-extends-η g ⟩
+                 η g           ∎)
           (λ (_ : G) → refl)
     where
      open free-algebra-eliminators
@@ -307,9 +307,9 @@ h⁻¹ being the unique homomorphism extending η along ι.
    IV = at-most-one-extending-hom'
          (h ∘ h⁻¹ , II)
          (id , id-is-hom Ω∀)
-         (λ p → h (h⁻¹ (ι p)) ＝⟨ ap h (h⁻¹-extends-η p) ⟩
-                h (η p)       ＝⟨ h-extends-ι p ⟩
-                ι p           ∎)
+         (λ g → h (h⁻¹ (ι g)) ＝⟨ ap h (h⁻¹-extends-η g) ⟩
+                h (η g)       ＝⟨ h-extends-ι g ⟩
+                ι g           ∎)
          (λ (_ : G) → refl)
     where
      open free-algebra-eliminators
