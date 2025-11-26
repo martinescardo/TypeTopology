@@ -747,4 +747,4 @@ Added 13th March 2024.
 
 \end{code}
 
-TODO. Monad algebras should also be wild-∞-categories.
+TODO. Monad algebras should also be univalent wild-∞-categories.
