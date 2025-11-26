@@ -350,7 +350,7 @@ doesn't do anything useful anyway.
              → 𝟘-elim (ν a))
 \end{code}
 
-TODO. The proof I₀ is annoyingly long to just replace `ι (φ a)` by
+TODO. The proof I₀ is annoyingly verbose to just replace `ι (φ a)` by
 `⊥Ω` in `Ɐ a ꞉ P , ι (φ a)`, using that fact that they are equal by
 `ι-is-constantly-⊥`.
 
