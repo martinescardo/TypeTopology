@@ -325,7 +325,9 @@ generators ι : G → Ω is constantly ⊥.
 
 And from this we get the following characterization of h. Recall that
 is-def l is the domain of definition p = (P , i) : Ω of the partial
-element l = (P , φ , i).
+element l = (P , φ , i). In particular, notice that the value of h l
+doesn't depend on φ : P → G. But we will see that G ≃ 𝟙, so that φ
+doesn't do anything useful anyway.
 
 \begin{code}
 
@@ -347,6 +349,10 @@ element l = (P , φ , i).
                (a : P)
              → 𝟘-elim (ν a))
 \end{code}
+
+TODO. The proof I₀ is annoyingly long to just replace `ι (φ a)` by
+`⊥Ω` in `Ɐ a ꞉ P , ι (φ a)`, using that fact that they are equal by
+`ι-is-constantly-⊥`.
 
 We say that a type is negative if it is logically equivalent to a
 negated type. A type is negative if and only if it is ¬¬-stable
