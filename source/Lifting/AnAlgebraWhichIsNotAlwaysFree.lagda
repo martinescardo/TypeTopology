@@ -468,3 +468,7 @@ which if it's free then excluded middle holds. There must be plenty
 more. For example, a product of algebras is an algebra. Is a product
 of free algebras also free? As a second example, the algebras form an
 exponential ideal. Is the algebra X → A free if the algebra A is?
+
+Speculative question. Is there a nice characterization of the type of
+all algebra structures on Ω? We have two "extreme" ones, namely ∃ and ∀.
+There must be plenty in between.
