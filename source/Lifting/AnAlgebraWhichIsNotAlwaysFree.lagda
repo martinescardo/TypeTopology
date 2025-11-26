@@ -181,7 +181,7 @@ h : 𝓛 G → Ω
 h = 𝓛-extension (Ω-is-set fe pe) Ω∀ ι
 
 h-explicitly : (l@(P , φ , i) : 𝓛 G) → h l ＝ (Ɐ a ꞉ P , ι (φ a))
-h-explicitly _ = refl
+h-explicitly _ = by-definition
 
 h-is-hom : is-hom 𝓛G Ω∀ h
 h-is-hom = 𝓛-extension-is-hom (Ω-is-set fe pe) Ω∀ ι
@@ -190,10 +190,10 @@ h-extends-ι : h ∘ η ∼ ι
 h-extends-ι = 𝓛-extension-extends (Ω-is-set fe pe) Ω∀ ι
 
 h-at-⊥-is-⊤ : h ⊥ ＝ ⊤Ω
-h-at-⊥-is-⊤ = h ⊥                               ＝⟨refl⟩
+h-at-⊥-is-⊤ = h ⊥                               ＝⟨by-definition⟩
               h (𝟘 , unique-from-𝟘 , 𝟘-is-prop) ＝⟨ h-explicitly ⊥ ⟩
               (Ɐ a ꞉ 𝟘 , ι (unique-from-𝟘 a))   ＝⟨ I ⟩
-              (𝟙 , 𝟙-is-prop)                   ＝⟨refl⟩
+              (𝟙 , 𝟙-is-prop)                   ＝⟨by-definition⟩
               ⊤Ω                                ∎
  where
   I = Ω-extensionality pe fe (λ _ → ⋆) (λ (_ : 𝟙) (a : 𝟘) → 𝟘-elim a)
@@ -267,7 +267,7 @@ h⁻¹ being the unique homomorphism extending η along ι.
           (λ g → h⁻¹ (h (η g)) ＝⟨ ap h⁻¹ (h-extends-ι g) ⟩
                  h⁻¹ (ι g)     ＝⟨ h⁻¹-extends-η g ⟩
                  η g           ∎)
-          (λ (_ : G) → refl)
+          (λ (_ : G) → by-definition)
     where
      open free-algebra-eliminators
            𝓛G G η 𝓣⁺ 𝓛-is-free-algebra
@@ -280,7 +280,7 @@ h⁻¹ being the unique homomorphism extending η along ι.
          (λ g → h (h⁻¹ (ι g)) ＝⟨ ap h (h⁻¹-extends-η g) ⟩
                 h (η g)       ＝⟨ h-extends-ι g ⟩
                 ι g           ∎)
-         (λ (_ : G) → refl)
+         (λ (_ : G) → by-definition)
     where
      open free-algebra-eliminators
            Ω∀ G ι 𝓣⁺ Ω∀-is-free (Ω-is-set fe pe) Ω∀ ι
@@ -292,6 +292,14 @@ h⁻¹ being the unique homomorphism extending η along ι.
 
 Using this, we in turn conclude that our assumed insertion of
 generators ι : G → Ω is constantly ⊥.
+
+The trick (or insight, as some people would say) is, given a generator
+g : G, to consider the partial element l : 𝓛 G defined by
+
+ l = (ι g holds , (λ _ → g) , _),
+
+which will prove to be ⊥ : 𝓛 G, and to consider the partial element φ
+of 𝓛 G with domain of definition `ι g holds` and constant value `η g`.
 
 \begin{code}
 
@@ -305,30 +313,33 @@ generators ι : G → Ω is constantly ⊥.
    φ _ = η g
 
    I = h (⨆ i φ)                   ＝⟨ h-is-hom (ι g holds) i φ ⟩
-       (Ɐ a ꞉ ι g holds , h (φ a)) ＝⟨refl⟩
-       (Ɐ _ ꞉ ι g holds , h (η g)) ＝⟨refl⟩
+       (Ɐ a ꞉ ι g holds , h (φ a)) ＝⟨by-definition⟩
+       (Ɐ _ ꞉ ι g holds , h (η g)) ＝⟨by-definition⟩
        ι g ⇒ h (η g)               ＝⟨ ap (ι g ⇒_) (h-extends-ι g) ⟩
        ι g ⇒ ι g                   ＝⟨ anything-implies-itself-is-⊤ pe (ι g) ⟩
        ⊤Ω                          ＝⟨ h-at-⊥-is-⊤ ⁻¹ ⟩
        h ⊥                         ∎
 
    II = (ι g holds , (λ _ → g) , i)       ＝⟨ II₀ ⟩
-        ((ι g holds × 𝟙) , (λ _ → g) , _) ＝⟨refl⟩
+        ((ι g holds × 𝟙) , (λ _ → g) , _) ＝⟨by-definition⟩
         ⨆ i φ                             ＝⟨ equivs-are-lc h h-is-equiv I ⟩
         ⊥                                 ∎
        where
-        II₀ = from-⋍ pe fe fe (((λ p → p , ⋆) , pr₁) , (λ _ → refl))
+        II₀ = from-⋍ pe fe fe (((λ p → p , ⋆) , pr₁) , (λ _ → by-definition))
 
    III : ι g ＝ ⊥Ω
    III = to-Ω-＝ fe (ap is-defined II)
 
 \end{code}
 
-And from this we get the following characterization of h. Recall that
-is-def l is the domain of definition p = (P , i) : Ω of the partial
-element l = (P , φ , i). In particular, notice that the value of h l
-doesn't depend on φ : P → G. But we will see that G ≃ 𝟙, so that φ
-doesn't do anything useful anyway.
+And from this we get the following characterization of h. For this
+purpose, recall that is-def l is the domain of definition p = (P , i) : Ω
+of the partial element l = (P , φ , i). In particular, notice that the
+value of h at the argument l doesn't depend on φ : P → G. But we will
+see that G ≃ 𝟙, so that φ doesn't do anything useful anyway.
+
+The only thing going on in the following proof is that ι (φ a) ＝ ⊥Ω,
+as proved above. The rest is just bureaucracy.
 
 \begin{code}
 
@@ -337,7 +348,7 @@ doesn't do anything useful anyway.
   where
    I = h l                 ＝⟨ h-explicitly l ⟩
        (Ɐ a ꞉ P , ι (φ a)) ＝⟨ I₀ ⟩
-       (Ɐ a ꞉ P , ⊥Ω)      ＝⟨refl⟩
+       (Ɐ a ꞉ P , ⊥Ω)      ＝⟨by-definition⟩
        ⇁ is-def l          ∎
      where
       I₀ = Ω-extensionality pe fe
@@ -365,7 +376,7 @@ which means that the principle of excluded middle holds.
 
    I = p                ＝⟨ (inverses-are-sections' 𝕙 p)⁻¹ ⟩
        h (h⁻¹ p)        ＝⟨ h-more-explicitly (h⁻¹ p) ⟩
-       ⇁ is-def (h⁻¹ p) ＝⟨refl⟩
+       ⇁ is-def (h⁻¹ p) ＝⟨by-definition⟩
        ⇁ q              ∎
 
    II : P ＝ (⇁ q) holds
