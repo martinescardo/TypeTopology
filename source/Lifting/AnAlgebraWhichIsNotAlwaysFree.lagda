@@ -297,27 +297,26 @@ generators ι : G → Ω is constantly ⊥.
  ι-is-constantly-⊥ : (g : G) → ι g ＝ ⊥Ω
  ι-is-constantly-⊥ g = III
   where
-   P : 𝓣 ̇
-   P = ι g holds
-
-   i : is-prop P
+   i : is-prop (ι g holds)
    i = holds-is-prop (ι g)
 
-   ϕ : P → 𝓛 G
-   ϕ _ = η g
+   φ : ι g holds → 𝓛 G
+   φ _ = η g
 
-   l : 𝓛 G
-   l = (P , (λ (_ : P) → g) , i)
+   I = h (⨆ i φ)                   ＝⟨ h-is-hom (ι g holds) i φ ⟩
+       (Ɐ a ꞉ ι g holds , h (φ a)) ＝⟨refl⟩
+       (Ɐ _ ꞉ ι g holds , h (η g)) ＝⟨refl⟩
+       ι g ⇒ h (η g)               ＝⟨ ap (ι g ⇒_) (h-extends-ι g) ⟩
+       ι g ⇒ ι g                   ＝⟨ anything-implies-itself-is-⊤ pe (ι g) ⟩
+       ⊤Ω                          ＝⟨ h-at-⊥-is-⊤ ⁻¹ ⟩
+       h ⊥                         ∎
 
-   I = h (⨆ i ϕ)     ＝⟨ h-is-hom P i ϕ ⟩
-       ι g ⇒ h (η g) ＝⟨ ap (ι g ⇒_) (h-extends-ι g) ⟩
-       ι g ⇒ ι g     ＝⟨ anything-implies-itself-is-⊤ pe (ι g) ⟩
-       ⊤Ω            ＝⟨ h-at-⊥-is-⊤ ⁻¹ ⟩
-       h ⊥           ∎
-
-   II = l      ＝⟨ from-⋍ pe fe fe (((λ p → p , ⋆) , pr₁) , (λ _ → refl)) ⟩
-        ⨆ i ϕ  ＝⟨ equivs-are-lc h h-is-equiv I ⟩
-        ⊥      ∎
+   II = (ι g holds , (λ _ → g) , i)       ＝⟨ II₀ ⟩
+        ((ι g holds × 𝟙) , (λ _ → g) , _) ＝⟨refl⟩
+        ⨆ i φ                             ＝⟨ equivs-are-lc h h-is-equiv I ⟩
+        ⊥                                 ∎
+       where
+        II₀ = from-⋍ pe fe fe (((λ p → p , ⋆) , pr₁) , (λ _ → refl))
 
    III : ι g ＝ ⊥Ω
    III = to-Ω-＝ fe (ap is-defined II)
