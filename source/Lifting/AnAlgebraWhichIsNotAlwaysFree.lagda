@@ -431,7 +431,7 @@ We now record that G isn't arbitrary either: we have that G ≃ 𝟙.
  G-is-pointed : G
  G-is-pointed = DNE-holds G G-is-prop G-is-nonempty
 
- G-is-𝟙 : G ≃ 𝟙 {𝓤}
+ G-is-𝟙 : G ≃ 𝟙 {𝓣}
  G-is-𝟙 = singletons-are-equiv-to-𝟙
            (pointed-props-are-singletons G-is-pointed G-is-prop)
 
