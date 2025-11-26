@@ -363,10 +363,11 @@ as proved above. The rest is just bureaucracy.
 \end{code}
 
 We say that a type is negative if it is logically equivalent to a
-negated type. A type is negative if and only if it is ¬¬-stable
-(because three negations imply one). By the above characterization of h
-and the fact that h is an equivalence, every proposition is negative,
-which means that the principle of excluded middle holds.
+negated type. We have that a type is negative if and only if it is
+¬¬-stable (because three negations imply one). By the above
+characterization of h and the fact that h is an equivalence, every
+proposition is negative, which means that the principle of excluded
+middle holds.
 
 \begin{code}
 
