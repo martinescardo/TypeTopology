@@ -5,7 +5,7 @@ of the lifting (aka partial-map classifier) monad is free, and the
 proof is easy [1][2].
 
 We show that the converse holds, so that every algebra is free if and
-only if the topos is boolean.
+only if the topos is boolean (that is, the principle of excluded middle holds).
 
 The object Ω of truth values is an algebra in (at least) two ways,
 with structure map ⨆ = ∃ and ⨆ = ∀.
