@@ -118,16 +118,15 @@ module Lifting.AnAlgebraWhichIsNotAlwaysFree
         (fe       : Fun-Ext)
         (pe       : Prop-Ext)
         (𝓣        : Universe)
-        (G        : 𝓣 ̇ )
-        (G-is-set : is-set G)
-        (ι        : G → Ω-of-universe 𝓣)
        where
 
 open import Lifting.Algebras 𝓣
 open import Lifting.Construction 𝓣
 open import Lifting.EmbeddingDirectly 𝓣
 open import Lifting.Identity 𝓣
-open import Lifting.TwoAlgebrasOnOmega 𝓣 fe pe renaming (Π-algebra-on-Ω to Ω∀)
+open import Lifting.TwoAlgebrasOnOmega 𝓣 fe pe
+             renaming (Π-algebra-on-Ω to Ω∀)
+             renaming (Σ-algebra-on-Ω to Ω∃)
 open import UF.ClassicalLogic
 open import UF.Embeddings
 open import UF.Equiv
@@ -178,31 +177,37 @@ extending ι along η.
 
 \begin{code}
 
-open free-algebras-in-the-category-of-sets pe fe G G-is-set
+module Ω∀-free-gives-EM
+        (G        : 𝓣 ̇ )
+        (G-is-set : is-set G)
+        (ι        : G → Ω-of-universe 𝓣)
+       where
 
-𝓛G : 𝓛-alg (𝓛 G)
-𝓛G = free
+ open free-algebras-in-the-category-of-sets pe fe G G-is-set
 
-h : 𝓛 G → Ω
-h = 𝓛-extension (Ω-is-set fe pe) Ω∀ ι
+ 𝓛G : 𝓛-alg (𝓛 G)
+ 𝓛G = free
 
-h-explicitly : (l@(P , φ , i) : 𝓛 G) → h l ＝ (Ɐ a ꞉ P , ι (φ a))
-h-explicitly _ = by-definition
+ h : 𝓛 G → Ω
+ h = 𝓛-extension (Ω-is-set fe pe) Ω∀ ι
 
-h-is-hom : is-hom 𝓛G Ω∀ h
-h-is-hom = 𝓛-extension-is-hom (Ω-is-set fe pe) Ω∀ ι
+ h-explicitly : (l@(P , φ , i) : 𝓛 G) → h l ＝ (Ɐ a ꞉ P , ι (φ a))
+ h-explicitly _ = by-definition
 
-h-extends-ι : h ∘ η ∼ ι
-h-extends-ι = 𝓛-extension-extends (Ω-is-set fe pe) Ω∀ ι
+ h-is-hom : is-hom 𝓛G Ω∀ h
+ h-is-hom = 𝓛-extension-is-hom (Ω-is-set fe pe) Ω∀ ι
 
-h-at-⊥-is-⊤ : h ⊥ ＝ ⊤Ω
-h-at-⊥-is-⊤ = h ⊥                               ＝⟨by-definition⟩
-              h (𝟘 , unique-from-𝟘 , 𝟘-is-prop) ＝⟨ h-explicitly ⊥ ⟩
-              (Ɐ a ꞉ 𝟘 , ι (unique-from-𝟘 a))   ＝⟨ I ⟩
-              (𝟙 , 𝟙-is-prop)                   ＝⟨by-definition⟩
-              ⊤Ω                                ∎
- where
-  I = Ω-extensionality pe fe (λ _ → ⋆) (λ (_ : 𝟙) (a : 𝟘) → 𝟘-elim a)
+ h-extends-ι : h ∘ η ∼ ι
+ h-extends-ι = 𝓛-extension-extends (Ω-is-set fe pe) Ω∀ ι
+
+ h-at-⊥-is-⊤ : h ⊥ ＝ ⊤Ω
+ h-at-⊥-is-⊤ = h ⊥                               ＝⟨by-definition⟩
+               h (𝟘 , unique-from-𝟘 , 𝟘-is-prop) ＝⟨ h-explicitly ⊥ ⟩
+               (Ɐ a ꞉ 𝟘 , ι (unique-from-𝟘 a))   ＝⟨ I ⟩
+               (𝟙 , 𝟙-is-prop)                   ＝⟨by-definition⟩
+               ⊤Ω                                ∎
+  where
+   I = Ω-extensionality pe fe (λ _ → ⋆) (λ (_ : 𝟙) (a : 𝟘) → 𝟘-elim a)
 
 \end{code}
 
@@ -211,10 +216,10 @@ generators ι, from which the principle of excluded will follow.
 
 \begin{code}
 
-module _ (Ω∀-is-free : Ω∀ is-𝓛-alg-freely-generated-by G
-                          with-insertion-of-generators ι
-                          eliminating-at 𝓣⁺)
-       where
+ module _ (Ω∀-is-free : Ω∀ is-𝓛-alg-freely-generated-by G
+                           with-insertion-of-generators ι
+                           eliminating-at 𝓣⁺)
+        where
 
 \end{code}
 
@@ -245,54 +250,54 @@ h⁻¹ being the unique homomorphism extending η along ι.
 
 \begin{code}
 
- private
-  module E = free-algebra-eliminators
-              Ω∀ G ι 𝓣⁺ Ω∀-is-free (𝓛-is-set fe fe pe G-is-set) 𝓛G η
+  private
+   module E = free-algebra-eliminators
+               Ω∀ G ι 𝓣⁺ Ω∀-is-free (𝓛-is-set fe fe pe G-is-set) 𝓛G η
 
- h⁻¹ : Ω → 𝓛 G
- h⁻¹ = E.unique-hom
+  h⁻¹ : Ω → 𝓛 G
+  h⁻¹ = E.unique-hom
 
- h-is-equiv : is-equiv h
- h-is-equiv = qinvs-are-equivs h (h⁻¹ , III , IV)
-  where
-   h⁻¹-is-hom : is-hom Ω∀ 𝓛G h⁻¹
-   h⁻¹-is-hom = E.unique-hom-is-hom
+  h-is-equiv : is-equiv h
+  h-is-equiv = qinvs-are-equivs h (h⁻¹ , III , IV)
+   where
+    h⁻¹-is-hom : is-hom Ω∀ 𝓛G h⁻¹
+    h⁻¹-is-hom = E.unique-hom-is-hom
 
-   h⁻¹-extends-η : h⁻¹ ∘ ι ∼ η
-   h⁻¹-extends-η = E.unique-hom-is-extension
+    h⁻¹-extends-η : h⁻¹ ∘ ι ∼ η
+    h⁻¹-extends-η = E.unique-hom-is-extension
 
-   I : is-hom 𝓛G 𝓛G (h⁻¹ ∘ h)
-   I = ∘-is-hom 𝓛G Ω∀ 𝓛G h h⁻¹ h-is-hom h⁻¹-is-hom
+    I : is-hom 𝓛G 𝓛G (h⁻¹ ∘ h)
+    I = ∘-is-hom 𝓛G Ω∀ 𝓛G h h⁻¹ h-is-hom h⁻¹-is-hom
 
-   II : is-hom Ω∀ Ω∀ (h ∘ h⁻¹)
-   II = ∘-is-hom Ω∀ 𝓛G Ω∀ h⁻¹ h h⁻¹-is-hom h-is-hom
+    II : is-hom Ω∀ Ω∀ (h ∘ h⁻¹)
+    II = ∘-is-hom Ω∀ 𝓛G Ω∀ h⁻¹ h h⁻¹-is-hom h-is-hom
 
-   III : h⁻¹ ∘ h ∼ id
-   III = at-most-one-extending-hom'
-          (h⁻¹ ∘ h , I)
-          (id , id-is-hom 𝓛G)
-          (λ g → h⁻¹ (h (η g)) ＝⟨ ap h⁻¹ (h-extends-ι g) ⟩
-                 h⁻¹ (ι g)     ＝⟨ h⁻¹-extends-η g ⟩
-                 η g           ∎)
+    III : h⁻¹ ∘ h ∼ id
+    III = at-most-one-extending-hom'
+           (h⁻¹ ∘ h , I)
+           (id , id-is-hom 𝓛G)
+           (λ g → h⁻¹ (h (η g)) ＝⟨ ap h⁻¹ (h-extends-ι g) ⟩
+                  h⁻¹ (ι g)     ＝⟨ h⁻¹-extends-η g ⟩
+                  η g           ∎)
+           (λ (_ : G) → by-definition)
+     where
+      open free-algebra-eliminators
+            𝓛G G η 𝓣⁺ 𝓛-is-free-algebra (𝓛-is-set fe fe pe G-is-set) 𝓛G η
+
+    IV : h ∘ h⁻¹ ∼ id
+    IV = at-most-one-extending-hom'
+          (h ∘ h⁻¹ , II)
+          (id , id-is-hom Ω∀)
+          (λ g → h (h⁻¹ (ι g)) ＝⟨ ap h (h⁻¹-extends-η g) ⟩
+                 h (η g)       ＝⟨ h-extends-ι g ⟩
+                 ι g           ∎)
           (λ (_ : G) → by-definition)
-    where
-     open free-algebra-eliminators
-           𝓛G G η 𝓣⁺ 𝓛-is-free-algebra (𝓛-is-set fe fe pe G-is-set) 𝓛G η
+     where
+      open free-algebra-eliminators
+            Ω∀ G ι 𝓣⁺ Ω∀-is-free (Ω-is-set fe pe) Ω∀ ι
 
-   IV : h ∘ h⁻¹ ∼ id
-   IV = at-most-one-extending-hom'
-         (h ∘ h⁻¹ , II)
-         (id , id-is-hom Ω∀)
-         (λ g → h (h⁻¹ (ι g)) ＝⟨ ap h (h⁻¹-extends-η g) ⟩
-                h (η g)       ＝⟨ h-extends-ι g ⟩
-                ι g           ∎)
-         (λ (_ : G) → by-definition)
-    where
-     open free-algebra-eliminators
-           Ω∀ G ι 𝓣⁺ Ω∀-is-free (Ω-is-set fe pe) Ω∀ ι
-
- 𝕙 : 𝓛 G ≃ Ω
- 𝕙 = h , h-is-equiv
+  𝕙 : 𝓛 G ≃ Ω
+  𝕙 = h , h-is-equiv
 
 \end{code}
 
@@ -310,32 +315,32 @@ for that purpose.
 
 \begin{code}
 
- ι-is-constantly-⊥ : (g : G) → ι g ＝ ⊥Ω
- ι-is-constantly-⊥ g = III
-  where
-   i : is-prop (ι g holds)
-   i = holds-is-prop (ι g)
+  ι-is-constantly-⊥ : (g : G) → ι g ＝ ⊥Ω
+  ι-is-constantly-⊥ g = III
+   where
+    i : is-prop (ι g holds)
+    i = holds-is-prop (ι g)
 
-   φ : ι g holds → 𝓛 G
-   φ _ = η g
+    φ : ι g holds → 𝓛 G
+    φ _ = η g
 
-   I = h (⨆ i φ)                   ＝⟨ h-is-hom (ι g holds) i φ ⟩
-       (Ɐ a ꞉ ι g holds , h (φ a)) ＝⟨by-definition⟩
-       (Ɐ _ ꞉ ι g holds , h (η g)) ＝⟨by-definition⟩
-       ι g ⇒ h (η g)               ＝⟨ ap (ι g ⇒_) (h-extends-ι g) ⟩
-       ι g ⇒ ι g                   ＝⟨ anything-implies-itself-is-⊤ pe (ι g) ⟩
-       ⊤Ω                          ＝⟨ h-at-⊥-is-⊤ ⁻¹ ⟩
-       h ⊥                         ∎
+    I = h (⨆ i φ)                   ＝⟨ h-is-hom (ι g holds) i φ ⟩
+        (Ɐ a ꞉ ι g holds , h (φ a)) ＝⟨by-definition⟩
+        (Ɐ _ ꞉ ι g holds , h (η g)) ＝⟨by-definition⟩
+        ι g ⇒ h (η g)               ＝⟨ ap (ι g ⇒_) (h-extends-ι g) ⟩
+        ι g ⇒ ι g                   ＝⟨ anything-implies-itself-is-⊤ pe (ι g) ⟩
+        ⊤Ω                          ＝⟨ h-at-⊥-is-⊤ ⁻¹ ⟩
+        h ⊥                         ∎
 
-   II = (ι g holds , (λ _ → g) , i)       ＝⟨ II₀ ⟩
-        ((ι g holds × 𝟙) , (λ _ → g) , _) ＝⟨by-definition⟩
-        ⨆ i φ                             ＝⟨ equivs-are-lc h h-is-equiv I ⟩
-        ⊥                                 ∎
-       where
-        II₀ = from-⋍ pe fe fe (((λ p → p , ⋆) , pr₁) , (λ _ → by-definition))
+    II = (ι g holds , (λ _ → g) , i)       ＝⟨ II₀ ⟩
+         ((ι g holds × 𝟙) , (λ _ → g) , _) ＝⟨by-definition⟩
+         ⨆ i φ                             ＝⟨ equivs-are-lc h h-is-equiv I ⟩
+         ⊥                                 ∎
+        where
+         II₀ = from-⋍ pe fe fe (((λ p → p , ⋆) , pr₁) , (λ _ → by-definition))
 
-   III : ι g ＝ ⊥Ω
-   III = to-Ω-＝ fe (ap is-defined II)
+    III : ι g ＝ ⊥Ω
+    III = to-Ω-＝ fe (ap is-defined II)
 
 \end{code}
 
@@ -350,17 +355,17 @@ as proved above. The rest is just bureaucracy.
 
 \begin{code}
 
- h-more-explicitly : (l : 𝓛 G) → h l ＝ ⇁ is-def l
- h-more-explicitly l@(P , φ , i) = I
-  where
-   I = h l                 ＝⟨ h-explicitly l ⟩
-       (Ɐ a ꞉ P , ι (φ a)) ＝⟨ I₀ ⟩
-       (Ɐ a ꞉ P , ⊥Ω)      ＝⟨by-definition⟩
-       ⇁ is-def l          ∎
-     where
-      I₀ = Ω-extensionality pe fe
-            (λ f a → idtofun _ _ (ap _holds (ι-is-constantly-⊥ (φ a))) (f a))
-            (λ ν a → 𝟘-elim (ν a))
+  h-more-explicitly : (l : 𝓛 G) → h l ＝ ⇁ is-def l
+  h-more-explicitly l@(P , φ , i) = I
+   where
+    I = h l                 ＝⟨ h-explicitly l ⟩
+        (Ɐ a ꞉ P , ι (φ a)) ＝⟨ I₀ ⟩
+        (Ɐ a ꞉ P , ⊥Ω)      ＝⟨by-definition⟩
+        ⇁ is-def l          ∎
+      where
+       I₀ = Ω-extensionality pe fe
+             (λ f a → idtofun _ _ (ap _holds (ι-is-constantly-⊥ (φ a))) (f a))
+             (λ ν a → 𝟘-elim (ν a))
 \end{code}
 
 We say that a type is negative if it is logically equivalent to a
@@ -372,35 +377,35 @@ middle holds.
 
 \begin{code}
 
- DNE-holds : (P : 𝓣 ̇) → is-prop P → ¬¬ P → P
- DNE-holds P P-is-prop = V
-  where
-   p q : Ω
-   p = (P , P-is-prop)
-   q = is-def (h⁻¹ p)
+  DNE-holds : (P : 𝓣 ̇) → is-prop P → ¬¬ P → P
+  DNE-holds P P-is-prop = V
+   where
+    p q : Ω
+    p = (P , P-is-prop)
+    q = is-def (h⁻¹ p)
 
-   Q : 𝓣 ̇
-   Q = q holds
+    Q : 𝓣 ̇
+    Q = q holds
 
-   I = p                ＝⟨ (inverses-are-sections' 𝕙 p)⁻¹ ⟩
-       h (h⁻¹ p)        ＝⟨ h-more-explicitly (h⁻¹ p) ⟩
-       ⇁ is-def (h⁻¹ p) ＝⟨by-definition⟩
-       ⇁ q              ∎
+    I = p                ＝⟨ (inverses-are-sections' 𝕙 p)⁻¹ ⟩
+        h (h⁻¹ p)        ＝⟨ h-more-explicitly (h⁻¹ p) ⟩
+        ⇁ is-def (h⁻¹ p) ＝⟨by-definition⟩
+        ⇁ q              ∎
 
-   II : P ＝ (⇁ q) holds
-   II = ap _holds I
+    II : P ＝ (⇁ q) holds
+    II = ap _holds I
 
-   III : P → ¬ Q
-   III g q = 𝟘-elim (idtofun P (Q → 𝟘) II g q)
+    III : P → ¬ Q
+    III g q = 𝟘-elim (idtofun P (Q → 𝟘) II g q)
 
-   IV : ¬ Q → P
-   IV ν = idtofun (Q → 𝟘) P (II ⁻¹) (λ (b : Q) → 𝟘-elim (ν b))
+    IV : ¬ Q → P
+    IV ν = idtofun (Q → 𝟘) P (II ⁻¹) (λ (b : Q) → 𝟘-elim (ν b))
 
-   V : ¬¬ P → P
-   V = negative-types-are-¬¬-stable P (Q , III , IV)
+    V : ¬¬ P → P
+    V = negative-types-are-¬¬-stable P (Q , III , IV)
 
- EM-holds : (P : 𝓣 ̇) → is-prop P → P + ¬ P
- EM-holds = DNE-gives-EM fe DNE-holds
+  EM-holds : (P : 𝓣 ̇) → is-prop P → P + ¬ P
+  EM-holds = DNE-gives-EM fe DNE-holds
 
 \end{code}
 
@@ -414,42 +419,42 @@ We now record that G isn't arbitrary either: we have that G ≃ 𝟙.
 
 \begin{code}
 
- G-is-prop : is-prop G
- G-is-prop g₀ g₁ = II
-  where
-   I = h (η g₀) ＝⟨ h-extends-ι g₀ ⟩
-       ι g₀     ＝⟨ ι-is-constantly-⊥ g₀ ⟩
-       ⊥Ω       ＝⟨ (ι-is-constantly-⊥ g₁)⁻¹ ⟩
-       ι g₁     ＝⟨ (h-extends-ι g₁)⁻¹ ⟩
-       h (η g₁) ∎
+  G-is-prop : is-prop G
+  G-is-prop g₀ g₁ = II
+   where
+    I = h (η g₀) ＝⟨ h-extends-ι g₀ ⟩
+        ι g₀     ＝⟨ ι-is-constantly-⊥ g₀ ⟩
+        ⊥Ω       ＝⟨ (ι-is-constantly-⊥ g₁)⁻¹ ⟩
+        ι g₁     ＝⟨ (h-extends-ι g₁)⁻¹ ⟩
+        h (η g₁) ∎
 
-   II : g₀ ＝ g₁
-   II = embeddings-are-lc η
-         (η-is-embedding pe fe fe fe)
-         (equivs-are-lc h h-is-equiv I)
+    II : g₀ ＝ g₁
+    II = embeddings-are-lc η
+          (η-is-embedding pe fe fe fe)
+          (equivs-are-lc h h-is-equiv I)
 
- G-is-nonempty : ¬¬ G
- G-is-nonempty G-is-empty = III
-  where
-   I : is-prop (𝓛 G)
-   I (P , φ , i) (Q , ψ , j) =
-    from-⋍ pe fe fe
-     (((λ (a : P) → 𝟘-elim (G-is-empty (φ a))) ,
-       (λ (b : Q) → 𝟘-elim (G-is-empty (ψ b)))) ,
-       (λ (a : P) → 𝟘-elim (G-is-empty (φ a))))
+  G-is-nonempty : ¬¬ G
+  G-is-nonempty G-is-empty = III
+   where
+    I : is-prop (𝓛 G)
+    I (P , φ , i) (Q , ψ , j) =
+     from-⋍ pe fe fe
+      (((λ (a : P) → 𝟘-elim (G-is-empty (φ a))) ,
+        (λ (b : Q) → 𝟘-elim (G-is-empty (ψ b)))) ,
+        (λ (a : P) → 𝟘-elim (G-is-empty (φ a))))
 
-   II : h⁻¹ ⊥Ω ≠ h⁻¹ ⊤Ω
-   II e = ⊥-is-not-⊤ (equivs-are-lc h⁻¹ ⌜ 𝕙 ⌝⁻¹-is-equiv e)
+    II : h⁻¹ ⊥Ω ≠ h⁻¹ ⊤Ω
+    II e = ⊥-is-not-⊤ (equivs-are-lc h⁻¹ ⌜ 𝕙 ⌝⁻¹-is-equiv e)
 
-   III : 𝟘
-   III = II (I (h⁻¹ ⊥Ω) (h⁻¹ ⊤Ω))
+    III : 𝟘
+    III = II (I (h⁻¹ ⊥Ω) (h⁻¹ ⊤Ω))
 
- G-is-pointed : G
- G-is-pointed = DNE-holds G G-is-prop G-is-nonempty
+  G-is-pointed : G
+  G-is-pointed = DNE-holds G G-is-prop G-is-nonempty
 
- G-is-𝟙 : G ≃ 𝟙 {𝓣}
- G-is-𝟙 = singletons-are-equiv-to-𝟙
-           (pointed-props-are-singletons G-is-pointed G-is-prop)
+  G-is-𝟙 : G ≃ 𝟙 {𝓣}
+  G-is-𝟙 = singletons-are-equiv-to-𝟙
+            (pointed-props-are-singletons G-is-pointed G-is-prop)
 
 \end{code}
 
