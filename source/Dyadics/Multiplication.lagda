@@ -55,9 +55,9 @@ number addition.
 ℤ[1/2]*-comm ((p , a) , α) ((q , b) , β) = γ
  where
   γ : (((p , a) , α) * ((q , b) , β)) ＝ (((q , b) , β) * ((p , a) , α))
-  γ = ((p , a) , α) * ((q , b) , β)   ＝⟨ refl  ⟩
+  γ = ((p , a) , α) * ((q , b) , β)   ＝⟨refl⟩
       normalise-pos (p ℤ* q , a ℕ+ b) ＝⟨ i ⟩
-      normalise-pos (q ℤ* p , b ℕ+ a) ＝⟨ refl ⟩
+      normalise-pos (q ℤ* p , b ℕ+ a) ＝⟨refl⟩
       ((q , b) , β) * ((p , a) , α)   ∎
    where
     i = ap normalise-pos (ℤ[1/2]*'-comm (p , a) (q , b))
@@ -138,12 +138,12 @@ multiplication operation.
 ℤ[1/2]*'-assoc (p , a) (q , b) (r , c) = γ
  where
   γ : (p , a) *' (q , b) *' (r , c) ＝ (p , a) *' ((q , b) *' (r , c))
-  γ = (p , a) *' (q , b) *' (r , c)   ＝⟨ refl ⟩
-      (p ℤ* q , a ℕ+ b) *' (r , c)    ＝⟨ refl ⟩
+  γ = (p , a) *' (q , b) *' (r , c)   ＝⟨refl⟩
+      (p ℤ* q , a ℕ+ b) *' (r , c)    ＝⟨refl⟩
       p ℤ* q ℤ* r , a ℕ+ b ℕ+ c       ＝⟨ i    ⟩
       p ℤ* (q ℤ* r) , a ℕ+ b ℕ+ c     ＝⟨ ii   ⟩
-      p ℤ* (q ℤ* r) , a ℕ+ (b ℕ+ c)   ＝⟨ refl ⟩
-      (p , a) *' (q ℤ* r , b ℕ+ c)    ＝⟨ refl ⟩
+      p ℤ* (q ℤ* r) , a ℕ+ (b ℕ+ c)   ＝⟨refl⟩
+      (p , a) *' (q ℤ* r , b ℕ+ c)    ＝⟨refl⟩
       (p , a) *' ((q , b) *' (r , c)) ∎
    where
     i = ap (_, a ℕ+ b ℕ+ c) (ℤ*-assoc p q r)
@@ -160,13 +160,13 @@ same dyadic, and using the above two proofs.
 ℤ[1/2]*-assoc (p , α) (q , β) (r , δ) = γ
  where
   γ : (p , α) * (q , β) * (r , δ) ＝ (p , α) * ((q , β) * (r , δ))
-  γ = (p , α) * (q , β) * (r , δ)              ＝⟨ refl ⟩
+  γ = (p , α) * (q , β) * (r , δ)              ＝⟨refl⟩
       normalise-pos (p *' q) * (r , δ)         ＝⟨ i    ⟩
       normalise-pos (p *' q) * normalise-pos r ＝⟨ ii   ⟩
       normalise-pos ((p *' q) *' r)            ＝⟨ iii  ⟩
       normalise-pos (p *' (q *' r))            ＝⟨ iv   ⟩
       normalise-pos p * normalise-pos (q *' r) ＝⟨ v    ⟩
-      (p , α) * normalise-pos (q *' r)         ＝⟨ refl ⟩
+      (p , α) * normalise-pos (q *' r)         ＝⟨refl⟩
       (p , α) * ((q , β) * (r , δ))            ∎
    where
     i = ap (λ - → (normalise-pos (p *' q)) * -) (ℤ[1/2]-to-normalise-pos (r , δ))
@@ -190,10 +190,10 @@ we prove one side, and the other follows by commutativity.
 
   γ : 0ℤ[1/2] * (p , α) ＝ 0ℤ[1/2]
   γ = 0ℤ[1/2] * (p , α)                           ＝⟨ i    ⟩
-      0ℤ[1/2] * normalise-pos p                   ＝⟨ refl ⟩
+      0ℤ[1/2] * normalise-pos p                   ＝⟨refl⟩
       normalise-pos (pos 0 , 0) * normalise-pos p ＝⟨ ii   ⟩
-      normalise-pos ((pos 0 , 0) *' p)            ＝⟨ refl ⟩
-      normalise-pos ((pos 0 , 0) *' (x , a))      ＝⟨ refl ⟩
+      normalise-pos ((pos 0 , 0) *' p)            ＝⟨refl⟩
+      normalise-pos ((pos 0 , 0) *' (x , a))      ＝⟨refl⟩
       normalise-pos (pos 0 ℤ* x , 0 ℕ+ a)         ＝⟨ iii  ⟩
       normalise-pos (pos 0 , 0 ℕ+ a)              ＝⟨ iv   ⟩
       normalise-pos (pos 0 , a)                   ＝⟨ v    ⟩
@@ -215,7 +215,7 @@ we prove one side, and the other follows by commutativity.
   a = pr₂ p -- denominator of p
 
   I : (pos 1 , 0) *' (x , a) ＝ (x , a)
-  I = (pos 1 , 0) *' (x , a) ＝⟨ refl ⟩
+  I = (pos 1 , 0) *' (x , a) ＝⟨refl⟩
       pos 1 ℤ* x , 0 ℕ+ a    ＝⟨ ap (_, 0 ℕ+ a) (ℤ-mult-left-id x) ⟩
       x , 0 ℕ+ a             ＝⟨ ap (x ,_) (zero-left-neutral a) ⟩
       x , a ∎
@@ -225,7 +225,7 @@ we prove one side, and the other follows by commutativity.
       1ℤ[1/2] * normalise-pos p                   ＝⟨ ii   ⟩
       normalise-pos (pos 1 , 0) * normalise-pos p ＝⟨ iii  ⟩
       normalise-pos ((pos 1 , 0) *' (x , a))      ＝⟨ iv   ⟩
-      normalise-pos (x , a)                       ＝⟨ refl ⟩
+      normalise-pos (x , a)                       ＝⟨refl⟩
       normalise-pos p                             ＝⟨ v    ⟩
       (p , α) ∎
    where

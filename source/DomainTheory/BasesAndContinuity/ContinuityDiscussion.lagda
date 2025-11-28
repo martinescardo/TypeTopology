@@ -178,9 +178,9 @@ module _
    σ (L , L-left-adjoint) =
     to-subtype-＝ being-left-adjoint-to-∐-map-is-prop refl
    τ : f ∘ g ∼ id
-   τ C = f (g C)         ＝⟨ refl ⟩
+   τ C = f (g C)         ＝⟨refl⟩
          ϕ (ψ (f (g C))) ＝⟨ h    ⟩
-         ϕ (ψ C)         ＝⟨ refl ⟩
+         ϕ (ψ C)         ＝⟨refl⟩
          C               ∎
     where
      ϕ : structurally-continuous-Σ 𝓓 → structurally-continuous 𝓓

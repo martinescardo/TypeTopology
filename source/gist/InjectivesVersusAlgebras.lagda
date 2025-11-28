@@ -210,10 +210,10 @@ module _ (𝓤 : Universe)
            → ⨆ a (λ p → ⨆ (b p) (λ q → f (p , q))) ＝ ⨆ c f
  ⨆-assoc' extensions-are-pointwise ua ea P Q a b c f
   = ⨆ a (λ p → ⨆ (b p) (λ q → f (p , q))) ＝⟨ ap (⨆ a) II ⟩
-    ⨆ a (f / u)                           ＝⟨ refl ⟩
+    ⨆ a (f / u)                           ＝⟨refl⟩
     ((f / u) / v) ⋆                       ＝⟨ ea f u v ⋆ ⟩
     (f / (v ∘↪ u)) ⋆                      ＝⟨ ap (λ - → (f / -) ⋆) III ⟩
-    (f / w) ⋆                             ＝⟨ refl ⟩
+    (f / w) ⋆                             ＝⟨refl⟩
     ⨆ c f                                 ∎
       where
        u : Σ Q ↪ P
@@ -247,7 +247,7 @@ module _ (𝓤 : Universe)
        II : (λ p → ⨆ (b p) (λ q → f (p , q))) ＝ f / u
        II = dfunext fe' (λ p →
              ⨆ (b p) (λ q → f (p , q))                  ＝⟨ (I p)⁻¹ ⟩
-             ⨆ (⌊ u ⌋-is-embedding p) (fiber-map f u p) ＝⟨ refl ⟩
+             ⨆ (⌊ u ⌋-is-embedding p) (fiber-map f u p) ＝⟨refl⟩
              (f /̇ u) p                                  ＝⟨ II' p ⟩
              (f / u) p                                  ∎)
               where
@@ -487,10 +487,10 @@ embeddings.
 
   naturality : is-univalent 𝓤 → (b : B) → (f ∣ 𝕛) (h b) ＝ ((f ∘ g) ∣ 𝕜) b
   naturality ua b =
-   (f ∣ 𝕛) (h b)                                       ＝⟨ refl ⟩
+   (f ∣ 𝕛) (h b)                                       ＝⟨refl⟩
    ϕ (fiber j (h b)) (j-is-embedding (h b)) (f ∘ pr₁) ＝⟨ I ⟩
    ϕ (fiber k b) (k-is-embedding b) (f ∘ pr₁ ∘ u)     ＝⟨ II ⟩
-   ϕ (fiber k b) (k-is-embedding b) (f ∘ g ∘ pr₁)     ＝⟨ refl ⟩
+   ϕ (fiber k b) (k-is-embedding b) (f ∘ g ∘ pr₁)     ＝⟨refl⟩
    ((f ∘ g) ∣ 𝕜) b                                     ∎
     where
      u : fiber k b → fiber j (h b)
@@ -640,10 +640,10 @@ The ∞-categorical structure alluded above.
   assocD : {x y z t : D} (α : x ⊑ y) (β : y ⊑ z) (γ : z ⊑ t)
          → α □ (β □ γ) ∼ (α □ β) □ γ
   assocD {x} {y} {z} {t} α β γ a =
-   (α □ (β □ γ)) a    ＝⟨ refl ⟩
+   (α □ (β □ γ)) a    ＝⟨refl⟩
    α a ∙ (β b ∙ γ c)  ＝⟨ (∙assoc (α a) (β b) (γ c))⁻¹ ⟩
    (α a ∙ β b) ∙ γ c  ＝⟨ I ⟩
-   (α a ∙ β b) ∙ γ c' ＝⟨ refl ⟩
+   (α a ∙ β b) ∙ γ c' ＝⟨refl⟩
    ((α □ β) □ γ) a    ∎
     where
      b : δ y

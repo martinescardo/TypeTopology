@@ -103,11 +103,11 @@ p 𝔽> q = q 𝔽< p
     ii = mult-left-cancellable (sc ℕ* sn) (sc ℕ* 0) c i
 
   II : succℤ (pos (pred (sc ℕ* sc ℕ* sn))) ＝ c' ℤ* c' ℤ* n'
-  II = succℤ (pos (pred (sc ℕ* sc ℕ* sn))) ＝⟨ refl ⟩
+  II = succℤ (pos (pred (sc ℕ* sc ℕ* sn))) ＝⟨refl⟩
       pos (succ (pred (sc ℕ* sc ℕ* sn)))   ＝⟨ i    ⟩
       pos (sc ℕ* sc ℕ* sn)                 ＝⟨ ii   ⟩
       pos (sc ℕ* sc) ℤ* pos sn             ＝⟨ iii  ⟩
-      pos (sc) ℤ* pos (sc) ℤ* pos sn       ＝⟨ refl ⟩
+      pos (sc) ℤ* pos (sc) ℤ* pos sn       ＝⟨refl⟩
       c' ℤ* c' ℤ* n'                       ∎
    where
     i   = ap pos (succ-pred' (sc ℕ* sc ℕ* sn) I)
@@ -188,7 +188,7 @@ p 𝔽> q = q 𝔽< p
  where
   α : pos (succ c) ＝ x
   α = pos (succ c)                            ＝⟨ i    ⟩
-      pos 0 ℤ+ pos (succ c)                   ＝⟨ refl ⟩
+      pos 0 ℤ+ pos (succ c)                   ＝⟨refl⟩
       pos 0 ℤ+ succℤ (pos c)                  ＝⟨ ii   ⟩
       succℤ (pos 0 ℤ+ pos c)                  ＝⟨ iii  ⟩
       succℤ (pos 0) ℤ+ pos c                  ＝⟨ iv   ⟩
@@ -202,7 +202,7 @@ p 𝔽> q = q 𝔽< p
 
   β : pos (succ d) ＝ y
   β = pos (succ d)                           ＝⟨ i    ⟩
-      pos 0 ℤ+ pos (succ d)                  ＝⟨ refl ⟩
+      pos 0 ℤ+ pos (succ d)                  ＝⟨refl⟩
       pos 0 ℤ+ succℤ (pos d)                 ＝⟨ ii   ⟩
       succℤ (pos 0 ℤ+ pos d)                 ＝⟨ iii  ⟩
       succℤ (pos 0) ℤ+ pos d                 ＝⟨ iv   ⟩
@@ -221,7 +221,7 @@ p 𝔽> q = q 𝔽< p
        ℤ+ pos (pred (succ c ℕ* succ d))                     ＝⟨ i    ⟩
       succℤ (pos 0) ℤ+ pos (pred (succ c ℕ* succ d))        ＝⟨ ii   ⟩
       succℤ (pos 0 ℤ+ pos (pred (succ c ℕ* succ d)))        ＝⟨ iii  ⟩
-      succℤ (pos (pred (succ c ℕ* succ d)))                 ＝⟨ refl ⟩
+      succℤ (pos (pred (succ c ℕ* succ d)))                 ＝⟨refl⟩
       pos (succ (pred (succ c ℕ* succ d)))                  ＝⟨ iv   ⟩
       pos (succ c ℕ* succ d)                                ＝⟨ v    ⟩
       pos (succ c) ℤ* pos (succ d)                          ＝⟨ vi   ⟩

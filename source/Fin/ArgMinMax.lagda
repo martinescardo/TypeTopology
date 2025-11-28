@@ -320,16 +320,16 @@ argMin₂-is-selection-for-Min₂ (succ i) p =
   (λ (e : p 𝟎 ＝ ₀)
      → p (argMin₂ (succ i) p)        ＝⟨ ap p (𝟚-equality-cases₀ e) ⟩
        p 𝟎                          ＝⟨ e ⟩
-       ₀                            ＝⟨ refl ⟩
+       ₀                            ＝⟨refl⟩
        min𝟚 ₀ (Min₂ i (p ∘ suc))     ＝⟨ ap (λ - → min𝟚 - (Min₂ i (p ∘ suc))) (e ⁻¹) ⟩
-       min𝟚 (p 𝟎) (Min₂ i (p ∘ suc)) ＝⟨ refl ⟩
+       min𝟚 (p 𝟎) (Min₂ i (p ∘ suc)) ＝⟨refl⟩
        Min₂ (succ i) p               ∎)
   (λ (e : p 𝟎 ＝ ₁)
     → p (argMin₂ (succ i) p)        ＝⟨ ap p (𝟚-equality-cases₁ e) ⟩
       p (suc (argMin₂ i (p ∘ suc))) ＝⟨ argMin₂-is-selection-for-Min₂ i (p ∘ suc) ⟩
-      Min₂ i (p ∘ suc)              ＝⟨ refl ⟩
+      Min₂ i (p ∘ suc)              ＝⟨refl⟩
       min𝟚 ₁ (Min₂ i (p ∘ suc))     ＝⟨ ap (λ - → min𝟚 - (Min₂ i (p ∘ suc))) (e ⁻¹) ⟩
-      min𝟚 (p 𝟎) (Min₂ i (p ∘ suc)) ＝⟨ refl ⟩
+      min𝟚 (p 𝟎) (Min₂ i (p ∘ suc)) ＝⟨refl⟩
       Min₂ (succ i) p               ∎)
 
 argMax₂-is-selection-for-Max₂ : (i : ℕ)
@@ -341,16 +341,16 @@ argMax₂-is-selection-for-Max₂ (succ i) p =
   (λ (e : p 𝟎 ＝ ₀)
     → p (argMax₂ (succ i) p)        ＝⟨ ap p (𝟚-equality-cases₀ e) ⟩
       p (suc (argMax₂ i (p ∘ suc))) ＝⟨ argMax₂-is-selection-for-Max₂ i (p ∘ suc) ⟩
-      Max₂ i (p ∘ suc)              ＝⟨ refl ⟩
+      Max₂ i (p ∘ suc)              ＝⟨refl⟩
       max𝟚 ₀ (Max₂ i (p ∘ suc))     ＝⟨ ap (λ - → max𝟚 - (Max₂ i (p ∘ suc))) (e ⁻¹) ⟩
-      max𝟚 (p 𝟎) (Max₂ i (p ∘ suc)) ＝⟨ refl ⟩
+      max𝟚 (p 𝟎) (Max₂ i (p ∘ suc)) ＝⟨refl⟩
       Max₂ (succ i) p               ∎)
   (λ (e : p 𝟎 ＝ ₁)
      → p (argMax₂ (succ i) p)        ＝⟨ ap p (𝟚-equality-cases₁ e) ⟩
        p 𝟎                          ＝⟨ e ⟩
-       ₁                            ＝⟨ refl ⟩
+       ₁                            ＝⟨refl⟩
        max𝟚 ₁ (Max₂ i (p ∘ suc))     ＝⟨ ap (λ - → max𝟚 - (Max₂ i (p ∘ suc))) (e ⁻¹) ⟩
-       max𝟚 (p 𝟎) (Max₂ i (p ∘ suc)) ＝⟨ refl ⟩
+       max𝟚 (p 𝟎) (Max₂ i (p ∘ suc)) ＝⟨refl⟩
        Max₂ (succ i) p               ∎)
 
 \end{code}

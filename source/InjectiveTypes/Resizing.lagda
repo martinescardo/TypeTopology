@@ -198,7 +198,7 @@ small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
     r d = ((d ≠ x₀) , negations-are-props fe') , ¬-is-¬¬-stable
 
     rs : r ∘ s ∼ id
-    rs 𝕡 = r (s 𝕡)              ＝⟨ refl ⟩
+    rs 𝕡 = r (s 𝕡)              ＝⟨refl⟩
            ((s 𝕡 ≠ x₀) , _) , _ ＝⟨ to-Ω¬¬-＝' fe' (VII 𝕡) ⟩
            𝕡                     ∎
 

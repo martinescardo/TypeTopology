@@ -209,7 +209,7 @@ af = qinveq f (g , gf , fg)
 
   fg' : (Xt : 𝕋) (φ : is-[]-free Xt) → f (g (Xt , φ)) ＝ (Xt , φ)
   fg' (X ∷ Xf) φ =
-   (f ∘ g) ((X ∷ Xf) , φ)    ＝⟨ refl ⟩
+   (f ∘ g) ((X ∷ Xf) , φ)    ＝⟨refl⟩
    (X ∷ (pr₁ ∘ h)) , pr₂ ∘ h ＝⟨ I ⟩
    (X ∷ Xf) , φ              ∎
     where
@@ -342,7 +342,7 @@ use of univalence in this file.)
 
 []ᴬ-＝ : {X : 𝓤 ̇ } (Xf : X → 𝔸) → is-empty X → []ᴬ ＝ (X ∷ Xf)
 []ᴬ-＝ {X} Xf e =
- []ᴬ               ＝⟨ refl ⟩
+ []ᴬ               ＝⟨refl⟩
  𝟘 ∷ unique-from-𝟘 ＝⟨ to-𝔸-＝ 𝟘-elim Xf I II ⟩
  (X ∷ Xf)          ∎
   where
@@ -423,7 +423,7 @@ hg = qinveq f (g , gf , fg)
       → f (g (Xt , i)) ＝ (Xt , i)
   fg' []       ⟨⟩      = refl
   fg' (X ∷ Xf) (s , i) =
-   f (g ((X ∷ Xf) , s , i))      ＝⟨ refl ⟩
+   f (g ((X ∷ Xf) , s , i))      ＝⟨refl⟩
    (X ∷ (pr₁ ∘ h)) , s , pr₂ ∘ h ＝⟨ I ⟩
    ((X ∷ Xf) , s , i)            ∎
     where
@@ -442,7 +442,7 @@ hg = qinveq f (g , gf , fg)
   gf' : (Xt : 𝔸) (d : is-hereditarily-decidable Xt)
       → g (f (Xt , d)) ＝ (Xt , d)
   gf' (X ∷ Xf) (inl s , d) =
-   g (f ((X ∷ Xf) , inl s , d))      ＝⟨ refl ⟩
+   g (f ((X ∷ Xf) , inl s , d))      ＝⟨refl⟩
    (X ∷ (pr₁ ∘ h)) , inl s , pr₂ ∘ h ＝⟨ I ⟩
    (X ∷ Xf) , inl s , d              ∎
    where
@@ -456,7 +456,7 @@ hg = qinveq f (g , gf , fg)
            (dfunext fe IH)
 
   gf' (X ∷ Xf) (inr e , d) =
-   g (f ((X ∷ Xf) , inr e , d)) ＝⟨ refl ⟩
+   g (f ((X ∷ Xf) , inr e , d)) ＝⟨refl⟩
    []ᴬ , []ᴬ-is-hd              ＝⟨ II ⟩
    (X ∷ Xf) , inr e , d         ∎
     where
@@ -490,11 +490,11 @@ hg-path (Xt , d) = γ Xt d
   γ : (Xt : 𝔸) (d : is-hereditarily-decidable Xt)
     → 𝔸-Path Xt ≃ 𝔾-Path (⌜ hg ⌝ (Xt , d))
   γ (X ∷ Xf) (inl s , d) =
-   𝔸-Path (X ∷ Xf)                              ≃⟨ ≃-refl _ ⟩
+   𝔸-Path (X ∷ Xf)                              ≃⟨by-definition⟩
    is-empty X + (Σ x ꞉ X , 𝔸-Path (Xf x))       ≃⟨ II ⟩
    𝟘 + (Σ x ꞉ X , 𝔸-Path (Xf x))               ≃⟨ 𝟘-lneutral {𝓤} {𝓤} ⟩
    (Σ x ꞉ X , 𝔸-Path (Xf x))                    ≃⟨ Σ-cong IH ⟩
-   (Σ x ꞉ X , Path (pr₁ (⌜ hg ⌝ (Xf x , d x)))) ≃⟨ ≃-refl _ ⟩
+   (Σ x ꞉ X , Path (pr₁ (⌜ hg ⌝ (Xf x , d x)))) ≃⟨by-definition⟩
    𝔾-Path (⌜ hg ⌝ ((X ∷ Xf) , inl s , d))       ■
    where
     have-s : ∥ X ∥
@@ -509,10 +509,10 @@ hg-path (Xt , d) = γ Xt d
     II = +-cong I (≃-refl _)
 
   γ (X ∷ Xf) (inr e , d) =
-   𝔸-Path (X ∷ Xf)                        ≃⟨ ≃-refl _ ⟩
+   𝔸-Path (X ∷ Xf)                        ≃⟨by-definition⟩
    is-empty X + (Σ x ꞉ X , 𝔸-Path (Xf x)) ≃⟨ III ⟩
    𝟙 + 𝟘                                  ≃⟨ 𝟘-rneutral' {𝓤} {𝓤}⟩
-   𝟙                                      ≃⟨ ≃-refl _ ⟩
+   𝟙                                      ≃⟨by-definition⟩
    Path []                                ■
     where
      have-e : is-empty ∥ X ∥
@@ -607,7 +607,7 @@ prune-path Xt = qinveq (f Xt) (g Xt , gf Xt , fg Xt)
   fg : (Xt : 𝕋) → f Xt ∘ g Xt ∼ id
   fg []       ⟨⟩             = refl
   fg (X ∷ Xf) ((x , p) , xs) =
-   (f (X ∷ Xf) ∘ g (X ∷ Xf)) ((x , p) , xs)        ＝⟨ refl ⟩
+   (f (X ∷ Xf) ∘ g (X ∷ Xf)) ((x , p) , xs)        ＝⟨refl⟩
    ((x , ∣ g (Xf x) xs ∣) , f (Xf x) (g (Xf x) xs)) ＝⟨ I ⟩
    ((x , p) , f (Xf x) (g (Xf x) xs))              ＝⟨ II ⟩
    (x , p) , xs                                    ∎

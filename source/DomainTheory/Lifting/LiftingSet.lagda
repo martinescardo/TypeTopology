@@ -78,10 +78,10 @@ module _ {𝓤 : Universe}
       g : (Σ k ꞉ I , (α i₀ ⊑' α k)
                    × (α i₁ ⊑' α k)) → f (i₀ , d₀) ＝ f (i₁ , d₁)
       g (k , l , m) =
-       f (i₀ , d₀)                             ＝⟨ refl ⟩
+       f (i₀ , d₀)                             ＝⟨refl⟩
        value (α i₀) d₀                         ＝⟨ ＝-of-values-from-＝ (l d₀) ⟩
        value (α k) (＝-to-is-defined (l d₀) d₀) ＝⟨ ＝-of-values-from-＝ ((m d₁) ⁻¹) ⟩
-       value (α i₁) d₁                         ＝⟨ refl ⟩
+       value (α i₁) d₁                         ＝⟨refl⟩
        f (i₁ , d₁)                             ∎
 
  lifting-sup-value : {I : 𝓣 ̇ }
@@ -109,7 +109,7 @@ module _ {𝓤 : Universe}
      f d = ∣ i , d ∣
      v : (d : is-defined (α i)) → value (α i) d ＝ value (lifting-sup α δ) (f d)
      v d = value (α i) d                 ＝⟨ p    ⟩
-           lifting-sup-value α δ (f d)   ＝⟨ refl ⟩
+           lifting-sup-value α δ (f d)   ＝⟨refl⟩
            value (lifting-sup α δ) (f d) ∎
       where
        p = (pr₂ (wconstant-map-to-set-factors-through-truncation-of-domain
@@ -379,7 +379,7 @@ module _
   f̃-is-unique g con str eq (P , ϕ , ρ) = g (P , ϕ , ρ)        ＝⟨ ⦅1⦆  ⟩
                                          g (∐ˢˢ 𝓛X (η ∘ ϕ) ρ) ＝⟨ ⦅2⦆  ⟩
                                          ∐ˢˢ 𝓓 (g ∘ η ∘ ϕ) ρ  ＝⟨ ⦅3⦆  ⟩
-                                         ∐ˢˢ 𝓓 (f ∘ ϕ) ρ      ＝⟨ refl ⟩
+                                         ∐ˢˢ 𝓓 (f ∘ ϕ) ρ      ＝⟨refl⟩
                                          f̃ (P , ϕ , ρ)        ∎
     where
      ⦅1⦆ = ap g (all-partial-elements-are-subsingleton-sups (P , ϕ , ρ))

@@ -220,7 +220,7 @@ module _ (fe : FunExt) (pe : PropExt) where
 
  𝟚-to-Ω¬¬-fiber : ((p , s) : Ω¬¬ 𝓤) → fiber 𝟚-to-Ω¬¬ (p , s) ≃ (¬ (p holds) + p holds)
  𝟚-to-Ω¬¬-fiber {𝓤} 𝕡@(p , s) =
-  fiber (𝟚-to-Ω¬¬ {𝓤}) 𝕡                        ≃⟨ ≃-refl _ ⟩
+  fiber (𝟚-to-Ω¬¬ {𝓤}) 𝕡                        ≃⟨by-definition⟩
   (Σ n ꞉ 𝟚 , 𝟚-to-Ω¬¬ {𝓤} n ＝ 𝕡)              ≃⟨ alternative-+ ⟩
   (𝟚-to-Ω¬¬ ₀ ＝ p , s) + (𝟚-to-Ω¬¬ ₁ ＝ p , s) ≃⟨ I ⟩
   (⊥ ＝ p) + (⊤ ＝ p)                           ≃⟨ II ⟩

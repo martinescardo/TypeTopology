@@ -183,10 +183,10 @@ Next we set out to prove the computation rules for 𝕊¹-induction.
     where
      γ₁ : pr₁ (r x) ＝ pr₁ (ρ x)
      γ₁ = happly r-is-retraction-of-pr₁ x
-     γ₂ = transport A (γ₁ ⁻¹) (pr₂ (ρ x))                  ＝⟨ refl ⟩
+     γ₂ = transport A (γ₁ ⁻¹) (pr₂ (ρ x))                  ＝⟨refl⟩
           transport A (γ₁ ⁻¹) (transport A γ₁ (pr₂ (r x))) ＝⟨ I    ⟩
           transport A (γ₁ ∙ γ₁ ⁻¹) (pr₂ (r x))             ＝⟨ II   ⟩
-          transport A refl (pr₂ (r x))                     ＝⟨ refl ⟩
+          transport A refl (pr₂ (r x))                     ＝⟨refl⟩
           pr₂ (r x)                                        ∎
       where
        I  = (transport-∙ A γ₁ (γ₁ ⁻¹)) ⁻¹
@@ -243,7 +243,7 @@ what we do next.
          κ = r-retraction-lemma
          ϕ = p                                                     ＝⟨ I₂    ⟩
              ap pr₁ κ ∙ ap π (to-Σ-＝ (refl , ap-id-is-id loop)) ⁻¹ ＝⟨ II₂   ⟩
-             ap pr₁ κ ∙ refl ⁻¹                                    ＝⟨ refl  ⟩
+             ap pr₁ κ ∙ refl ⁻¹                                    ＝⟨refl⟩
              ap pr₁ κ                                              ＝⟨ III₂  ⟩
              ap pr₁ (ap pr₁ r-comp)                                ＝⟨ IV₂   ⟩
              ap (pr₁ ∘ pr₁) r-comp                                 ∎
@@ -259,15 +259,15 @@ what we do next.
                    (ap-pr₁-to-Σ-＝ {𝓤} {𝓤} {𝕊¹} {λ - → (- ＝ -)} {_} {_}
                     (refl , ap-id-is-id loop))
            IV₂  = ap-ap pr₁ pr₁ r-comp
-           III₂ = ap pr₁ κ                        ＝⟨ refl ⟩
+           III₂ = ap pr₁ κ                        ＝⟨refl⟩
                   ap pr₁ (κ₁ ∙ (κ₂ ∙ κ₃))         ＝⟨ I'   ⟩
                   ap pr₁ κ₁ ∙ ap pr₁ (κ₂ ∙ κ₃)    ＝⟨ II'  ⟩
                   refl ∙ ap pr₁ (κ₂ ∙ κ₃)         ＝⟨ III' ⟩
                   ap pr₁ (κ₂ ∙ κ₃)                ＝⟨ IV'  ⟩
                   ap pr₁ κ₂ ∙ ap pr₁ κ₃           ＝⟨ V'   ⟩
-                  ap pr₁ κ₂ ∙ refl                ＝⟨ refl ⟩
+                  ap pr₁ κ₂ ∙ refl                ＝⟨refl⟩
                   ap pr₁ κ₂                       ＝⟨ VI'  ⟩
-                  ap (pr₁ ∘ 𝓛-functor pr₁) r-comp ＝⟨ refl ⟩
+                  ap (pr₁ ∘ 𝓛-functor pr₁) r-comp ＝⟨refl⟩
                   ap (pr₁ ∘ pr₁) r-comp           ＝⟨ VII' ⟩
                   ap pr₁ (ap pr₁ r-comp)          ∎
                   where
@@ -418,7 +418,7 @@ closed under retracts, the claim follows.
                                  ＝ succ-ℤ
    transport-code-loop-is-succ-ℤ =
     δ ∘ transport code loop ∘ ε                  ＝⟨ I    ⟩
-    δ ∘ transport id acl ∘ ε                     ＝⟨ refl ⟩
+    δ ∘ transport id acl ∘ ε                     ＝⟨refl⟩
     Idtofun cob ∘ Idtofun acl ∘ Idtofun (cob ⁻¹) ＝⟨ II   ⟩
     Idtofun cob ∘ Idtofun (cob ⁻¹ ∙ acl)         ＝⟨ III  ⟩
     Idtofun (cob ⁻¹ ∙ acl ∙ cob)                 ＝⟨ IV   ⟩
@@ -576,11 +576,11 @@ closed under retracts, the claim follows.
 
     decode-encode : (x : 𝕊¹) (p : base ＝ x) → decode x (encode x p) ＝ p
     decode-encode base refl =
-     decode base (encode base refl)                       ＝⟨ refl ⟩
-     decode base (transport code refl (ℤ-to-code-base 𝟎)) ＝⟨ refl ⟩
+     decode base (encode base refl)                       ＝⟨refl⟩
+     decode base (transport code refl (ℤ-to-code-base 𝟎)) ＝⟨refl⟩
      decode base (ℤ-to-code-base 𝟎)                       ＝⟨ I    ⟩
      loops (code-base-to-ℤ (ℤ-to-code-base 𝟎))            ＝⟨ II   ⟩
-     loops 𝟎                                              ＝⟨ refl ⟩
+     loops 𝟎                                              ＝⟨refl⟩
      refl                                                 ∎
       where
 

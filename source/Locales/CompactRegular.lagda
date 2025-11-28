@@ -2099,7 +2099,7 @@ distributivity-list F x []       = 𝟎-right-annihilator-for-∧ F x
 distributivity-list F x (y ∷ ys) =
  x ∧[ F ] (y ∨[ F ] (⋁ₗ[ F ] ys))                         ＝⟨ Ⅰ    ⟩
  (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] (⋁ₗ[ F ] ys))              ＝⟨ Ⅱ    ⟩
- (x ∧[ F ] y) ∨[ F ] (⋁ₗ[ F ] conjunct-with-list F x ys)  ＝⟨ refl ⟩
+ (x ∧[ F ] y) ∨[ F ] (⋁ₗ[ F ] conjunct-with-list F x ys)  ＝⟨refl⟩
  ⋁ₗ[ F ] (conjunct-with-list F x (y ∷ ys))                ∎
   where
    Ⅰ = binary-distributivity F x y (join-list F ys)
@@ -2119,7 +2119,7 @@ cnf-transform-correct F (x ∷ xs) ys =
  (x ∨[ F ] (⋁ₗ[ F ] xs)) ∧[ F ] (⋁ₗ[ F ] ys)                       ＝⟨ Ⅰ    ⟩
  (x ∧[ F ] (⋁ₗ[ F ] ys)) ∨[ F ] ((⋁ₗ[ F ] xs) ∧[ F ] (⋁ₗ[ F ] ys)) ＝⟨ Ⅱ    ⟩
  (x ∧[ F ] (⋁ₗ[ F ] ys)) ∨[ F ] cnf-transform F xs ys              ＝⟨ Ⅲ    ⟩
- (⋁ₗ[ F ] conjunct-with-list F x ys) ∨[ F ] cnf-transform F xs ys  ＝⟨ refl ⟩
+ (⋁ₗ[ F ] conjunct-with-list F x ys) ∨[ F ] cnf-transform F xs ys  ＝⟨refl⟩
  cnf-transform F (x ∷ xs) ys                                       ∎
   where
    Ⅰ = binary-distributivity-right F
@@ -2215,7 +2215,7 @@ The proof that this satisfies the desired property is given in `†` below.
       † =
        ℬ [ k ] ∨[ F ] ℬ↑ [ ks ]                                        ＝⟨ Ⅰ    ⟩
        ℬ [ k ] ∨[ F ] w                                                ＝⟨ Ⅱ    ⟩
-       (ℬ [ i ] ∧[ F ] ℬ [ j ]) ∨[ F ] w                               ＝⟨ refl ⟩
+       (ℬ [ i ] ∧[ F ] ℬ [ j ]) ∨[ F ] w                               ＝⟨refl⟩
        ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js))) ∎
         where
          Ⅰ = ap (λ - → ℬ [ k ] ∨[ F ] -) r
@@ -2360,11 +2360,11 @@ The desired list of indices is just `ls ++ ks`:
          ℬ↑ [ ls ++ ks ]                                        ＝⟨ Ⅰ    ⟩
          ℬ↑ [ ls ] ∨[ F ] ℬ↑ [ ks ]                             ＝⟨ Ⅱ    ⟩
          w ∨[ F ] ℬ↑ [ ks ]                                     ＝⟨ Ⅲ    ⟩
-         w ∨[ F ] (cnf-transform F ℬ-is ℬ-js)                   ＝⟨ refl ⟩
+         w ∨[ F ] (cnf-transform F ℬ-is ℬ-js)                   ＝⟨refl⟩
          cnf-transform F ((ℬ [_]) <$> (i ∷ is)) ℬ-js            ＝⟨ Ⅳ    ⟩
          (⋁ₗ[ F ] ((ℬ [_]) <$> (i ∷ is))) ∧[ F ] (⋁ₗ[ F ] ℬ-js) ＝⟨ Ⅴ    ⟩
          (ℬ↑ [ i ∷ is ]) ∧[ F ] join-list F ℬ-js                ＝⟨ Ⅵ    ⟩
-         (ℬ↑ [ i ∷ is ]) ∧[ F ] (ℬ↑ [ js ])                     ＝⟨ refl ⟩
+         (ℬ↑ [ i ∷ is ]) ∧[ F ] (ℬ↑ [ js ])                     ＝⟨refl⟩
          (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] (ℬ↑ [ js ])          ∎
           where
            Ⅰ = directify-functorial F ℬ ls ks

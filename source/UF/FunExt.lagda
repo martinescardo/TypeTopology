@@ -103,9 +103,9 @@ ap-funext : {X : 𝓥 ̇ } {Y : 𝓦 ̇ }
             (h : f ∼ g)
             (fe : funext 𝓥 𝓦) (x : X)
           → ap (λ (- : X → Y) → k (- x)) (dfunext fe h) ＝ ap k (h x)
-ap-funext f g k h fe x = ap (λ - → k (- x)) (dfunext fe h)    ＝⟨ refl ⟩
+ap-funext f g k h fe x = ap (λ - → k (- x)) (dfunext fe h)    ＝⟨refl⟩
                          ap (k ∘ (λ - → - x)) (dfunext fe h)  ＝⟨ I ⟩
-                         ap k (ap (λ - → - x) (dfunext fe h)) ＝⟨ refl ⟩
+                         ap k (ap (λ - → - x) (dfunext fe h)) ＝⟨refl⟩
                          ap k (happly (dfunext fe h) x)       ＝⟨ II ⟩
                          ap k (h x)                           ∎
                           where

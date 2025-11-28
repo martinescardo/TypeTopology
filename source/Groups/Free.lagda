@@ -1008,7 +1008,7 @@ The following proofs rely on the above naturality conditions:
      γ s = inv/ (η/∾ s) · η/∾ s ＝⟨ ap (_· η/∾ s) (inv/-natural s) ⟩
            η/∾ (finv s) · η/∾ s ＝⟨ ·-natural (finv s) s ⟩
            η/∾ (finv s ◦ s)     ＝⟨ η/∾-identifies-related-points (finv-left s) ⟩
-           η/∾ []               ＝⟨ refl ⟩
+           η/∾ []               ＝⟨refl⟩
            e/                   ∎
 
    invr/ : (x : FA/∾) → x · inv/ x ＝ e/
@@ -1018,7 +1018,7 @@ The following proofs rely on the above naturality conditions:
      γ s = η/∾ s · inv/ (η/∾ s) ＝⟨ ap (η/∾ s ·_) (inv/-natural s) ⟩
            η/∾ s · η/∾ (finv s) ＝⟨ ·-natural s (finv s) ⟩
            η/∾ (s ◦ finv s)     ＝⟨ η/∾-identifies-related-points (finv-right s) ⟩
-           η/∾ []               ＝⟨ refl ⟩
+           η/∾ []               ＝⟨refl⟩
            e/                   ∎
 
    assoc/ : associative _·_
@@ -1119,13 +1119,13 @@ monoid homomorphism:
     h-is-hom ((₀ , a) • s) t =
      f a * h (s ◦ t)     ＝⟨ ap (f a *_) (h-is-hom s t) ⟩
      f a * (h s * h t)   ＝⟨ (G-assoc (f a) (h s) (h t))⁻¹ ⟩
-     (f a * h s) * h t   ＝⟨ refl ⟩
+     (f a * h s) * h t   ＝⟨refl⟩
      h (₀ , a • s) * h t ∎
 
     h-is-hom (₁ , a • s) t =
      invG (f a) * h (s ◦ t)   ＝⟨ ap (invG (f a) *_) (h-is-hom s t) ⟩
      invG (f a) * (h s * h t) ＝⟨ (G-assoc (invG (f a)) (h s) (h t))⁻¹ ⟩
-     (invG (f a) * h s) * h t ＝⟨ refl ⟩
+     (invG (f a) * h s) * h t ＝⟨refl⟩
      h (₁ , a • s) * h t      ∎
 
 \end{code}
@@ -1188,7 +1188,7 @@ free group:
 
     f̅-triangle : f̅ ∘ ηᴳʳᵖ ∼ f
     f̅-triangle a = f̅ (η/∾ (η a)) ＝⟨ f̅-/triangle (η a) ⟩
-                    h (η a)      ＝⟨ refl ⟩
+                    h (η a)      ＝⟨refl⟩
                     f a * e      ＝⟨ G-rn (f a) ⟩
                     f a          ∎
 
@@ -2004,7 +2004,7 @@ We conclude with a routine applications of the above development.
                       d'
       where
        d' : (a : A) → h (⌜ k ⌝ (η⁻ a)) ＝ f a
-       d' a = h (⌜ k ⌝ (η⁻ a))             ＝⟨ refl ⟩
+       d' a = h (⌜ k ⌝ (η⁻ a))             ＝⟨refl⟩
               h (⌜ k ⌝ (⌜ k ⌝⁻¹ (ηᴳʳᵖ a))) ＝⟨ III ⟩
               h (ηᴳʳᵖ a)                   ＝⟨ d a ⟩
               f a                          ∎

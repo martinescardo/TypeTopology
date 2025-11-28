@@ -69,9 +69,9 @@ emptiness-criterion {𝓤} X = (f , g)
 
   g : σ₀ ＝ σ₁ → ¬ X
   g e x = zero-is-not-one
-           (₀    ＝⟨ refl ⟩
+           (₀    ＝⟨refl⟩
             σ₀ x ＝⟨ happly e x ⟩
-            σ₁ x ＝⟨ refl ⟩
+            σ₁ x ＝⟨refl⟩
             ₁    ∎)
 
 nonemptiness-criterion : (X : 𝓤 ̇ ) → is-nonempty X ↔ (σ₀ ≠ σ₁)
@@ -133,7 +133,7 @@ retraction-of-σ-is-section {𝓤} {P} i ρ h f = IV
    where
     II : f ∼ σ P (f p)
     II q = f q         ＝⟨ ap f (i q p) ⟩
-           f p         ＝⟨ refl ⟩
+           f p         ＝⟨refl⟩
            σ P (f p) q ∎
 
     III : f ＝ σ P (f p)
@@ -352,7 +352,7 @@ thinly-inhabited-wem-lemma X ti = II
     ϕ : ¬¬ X
     ϕ u = zero-is-not-one
            (₀         ＝⟨ (ap (λ - → - (inr u)) I₀)⁻¹ ⟩
-            f (inr u) ＝⟨ refl ⟩
+            f (inr u) ＝⟨refl⟩
             ₁         ∎)
 
   I ₁ e = inl u
@@ -363,7 +363,7 @@ thinly-inhabited-wem-lemma X ti = II
 
     u : ¬ X
     u q = zero-is-not-one
-           (₀         ＝⟨ refl ⟩
+           (₀         ＝⟨refl⟩
             f (inl q) ＝⟨ ap (λ - → - (inl q)) I₁ ⟩
             ₁         ∎)
 
@@ -441,9 +441,9 @@ module retraction-monad where
    u g = ρ (λ x → a x g)
 
    v : u ∘ σ Y ∼ id
-   v n = (u ∘ σ Y) n           ＝⟨ refl ⟩
+   v n = (u ∘ σ Y) n           ＝⟨refl⟩
          ρ (λ x → a x (σ Y n)) ＝⟨ ap ρ (dfunext fe (λ x → b x n)) ⟩
-         ρ (λ _ → n)           ＝⟨ refl ⟩
+         ρ (λ _ → n)           ＝⟨refl⟩
          ρ (σ X n)             ＝⟨ ρσ n ⟩
          n                     ∎
 
@@ -494,8 +494,8 @@ thinly-inhabited-types-are-connected₂ {𝓤} {X} ti x y = I
 
   I : (p : X → 𝟚) → p x ＝ p y
   I p = p x                 ＝⟨ happly ((inverses-are-sections' e p)⁻¹) x ⟩
-        ⌜ e ⌝ (⌜ e ⌝⁻¹ p) x ＝⟨ refl ⟩
-        ⌜ e ⌝⁻¹ p           ＝⟨ refl ⟩
+        ⌜ e ⌝ (⌜ e ⌝⁻¹ p) x ＝⟨refl⟩
+        ⌜ e ⌝⁻¹ p           ＝⟨refl⟩
         ⌜ e ⌝ (⌜ e ⌝⁻¹ p) y ＝⟨ happly (inverses-are-sections' e p) y ⟩
         p y                 ∎
 
@@ -536,8 +536,8 @@ module universe-discussion where
 
    I : (p : X → 𝓤 ̇ ) → p x ＝ p y
    I p = p x                 ＝⟨ happly ((inverses-are-sections' e p)⁻¹) x ⟩
-         ⌜ e ⌝ (⌜ e ⌝⁻¹ p) x ＝⟨ refl ⟩
-         ⌜ e ⌝⁻¹ p           ＝⟨ refl ⟩
+         ⌜ e ⌝ (⌜ e ⌝⁻¹ p) x ＝⟨refl⟩
+         ⌜ e ⌝⁻¹ p           ＝⟨refl⟩
          ⌜ e ⌝ (⌜ e ⌝⁻¹ p) y ＝⟨ happly (inverses-are-sections' e p) y ⟩
          p y                 ∎
 

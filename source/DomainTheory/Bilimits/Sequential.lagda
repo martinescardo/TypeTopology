@@ -171,7 +171,7 @@ Since ε n is a section of π n, so is ε⁺ l of π⁺ l for l : n ≤ m.
                          → π⁺-helper n m k p ∘ ε⁺-helper n m k p ∼ id
  ε⁺-section-of-π⁺-helper n n zero refl x = refl
  ε⁺-section-of-π⁺-helper n m (succ k) refl x =
-  π⁺-helper n m (succ k) refl (ε⁺-helper n m (succ k) refl x) ＝⟨ refl ⟩
+  π⁺-helper n m (succ k) refl (ε⁺-helper n m (succ k) refl x) ＝⟨refl⟩
   π' (π (n +' k) (ε (n +' k) (ε' x)))                         ＝⟨ q ⟩
   π' (id (ε' x))                                              ＝⟨ IH ⟩
   x                                                           ∎
@@ -243,9 +243,9 @@ Since ε and π are continuous, so are ε⁺ and π⁺.
 \begin{code}
 
  ε⁺-id : (n : ℕ) → ε⁺ {n} {n} (≤-refl n) ∼ id
- ε⁺-id n x = ε⁺ {n} {n} (≤-refl n) x      ＝⟨ refl ⟩
+ ε⁺-id n x = ε⁺ {n} {n} (≤-refl n) x      ＝⟨refl⟩
              ε⁺-helper-Σ n n s x          ＝⟨ q    ⟩
-             ε⁺-helper-Σ n n (zero , refl) x ＝⟨ refl ⟩
+             ε⁺-helper-Σ n n (zero , refl) x ＝⟨refl⟩
              x                            ∎
   where
    s : Σ k ꞉ ℕ , n +' k ＝ n
@@ -254,9 +254,9 @@ Since ε and π are continuous, so are ε⁺ and π⁺.
         (left-addition-is-embedding n n s (zero , refl))
 
  π⁺-id : (n : ℕ) → π⁺ {n} {n} (≤-refl n) ∼ id
- π⁺-id n x = π⁺ {n} {n} (≤-refl n) x      ＝⟨ refl ⟩
+ π⁺-id n x = π⁺ {n} {n} (≤-refl n) x      ＝⟨refl⟩
              π⁺-helper-Σ n n s x          ＝⟨ q    ⟩
-             π⁺-helper-Σ n n (zero , refl) x ＝⟨ refl ⟩
+             π⁺-helper-Σ n n (zero , refl) x ＝⟨refl⟩
              x                            ∎
   where
    s : Σ k ꞉ ℕ , n +' k ＝ n
@@ -277,11 +277,11 @@ The most laborious part: composing two ε⁺s is ε⁺ on ≤-trans. And similar
  ε⁺-comp-helper {n} {m} {k} a zero refl refl x = refl
  ε⁺-comp-helper {n} {m} {k} a (succ b) refl refl x =
   ε _ (ε⁺-helper (n +' a) _ b refl (ε⁺-helper n _ a refl x)) ＝⟨ i    ⟩
-  ε _ (ε⁺-helper n (n +' a +' b) (a +' b) p x)               ＝⟨ refl ⟩
+  ε _ (ε⁺-helper n (n +' a +' b) (a +' b) p x)               ＝⟨refl⟩
   ε _ (ε⁺-helper-Σ n (n +' a +' b) (a +' b , p) x)           ＝⟨ ii   ⟩
-  ε _ (ε⁺-helper-Σ n (n +' a +' b) (a +' b , succ-lc p') x)  ＝⟨ refl ⟩
+  ε _ (ε⁺-helper-Σ n (n +' a +' b) (a +' b , succ-lc p') x)  ＝⟨refl⟩
   ε _ (ε⁺-helper n (n +' a +' b) (a +' b) (succ-lc p') x)    ＝⟨ iii  ⟩
-  ε⁺-helper n (n +' a +' succ b) (succ (a +' b)) p' x        ＝⟨ refl ⟩
+  ε⁺-helper n (n +' a +' succ b) (succ (a +' b)) p' x        ＝⟨refl⟩
   ε⁺-helper n (n +' a +' succ b) (a +' succ b) p' x          ∎
    where
     p : n +' (a +' b) ＝ n +' a +' b
@@ -303,11 +303,11 @@ The most laborious part: composing two ε⁺s is ε⁺ on ≤-trans. And similar
  ε⁺-comp : {n m k : ℕ} (l₁ : n ≤ m) (l₂ : m ≤ k)
          → ε⁺ {m} {k} l₂ ∘ ε⁺ {n} {m} l₁ ∼ ε⁺ (≤-trans n m k l₁ l₂)
  ε⁺-comp {n} {m} {k} l₁ l₂ x =
-  ε⁺ {m} {k} l₂ (ε⁺ {n} {m} l₁ x)         ＝⟨ refl ⟩
+  ε⁺ {m} {k} l₂ (ε⁺ {n} {m} l₁ x)         ＝⟨refl⟩
   ε⁺-helper m k b q (ε⁺-helper n m a p x) ＝⟨ i    ⟩
-  ε⁺-helper n k (a +' b) r x              ＝⟨ refl ⟩
+  ε⁺-helper n k (a +' b) r x              ＝⟨refl⟩
   ε⁺-helper-Σ n k (a +' b , r) x        ＝⟨ ii   ⟩
-  ε⁺-helper-Σ n k s x                     ＝⟨ refl ⟩
+  ε⁺-helper-Σ n k s x                     ＝⟨refl⟩
   ε⁺ (≤-trans n m k l₁ l₂) x              ∎
    where
     a : ℕ
@@ -335,9 +335,9 @@ The most laborious part: composing two ε⁺s is ε⁺ on ≤-trans. And similar
  π⁺-comp-helper {n} {m} {k} a zero refl refl x = refl
  π⁺-comp-helper {n} {m} {k} a (succ b) refl refl x =
   π⁺-helper n _ a refl (π⁺-helper (n +' a) _ b refl (π _ x)) ＝⟨ IH   ⟩
-  π⁺-helper n (n +' a +' b) (a +' b) p (π _ x)               ＝⟨ refl ⟩
+  π⁺-helper n (n +' a +' b) (a +' b) p (π _ x)               ＝⟨refl⟩
   π⁺-helper-Σ n (n +' a +' b) (a +' b , p) (π _ x)           ＝⟨ i    ⟩
-  π⁺-helper-Σ n (n +' a +' b) (a +' b , succ-lc p') (π _ x)  ＝⟨ refl ⟩
+  π⁺-helper-Σ n (n +' a +' b) (a +' b , succ-lc p') (π _ x)  ＝⟨refl⟩
   π⁺-helper n (n +' a +' b) (a +' b) (succ-lc p') (π _ x)    ＝⟨ ii ⟩
   π⁺-helper n (n +' a +' succ b) (a +' succ b) p' x          ∎
    where
@@ -356,11 +356,11 @@ The most laborious part: composing two ε⁺s is ε⁺ on ≤-trans. And similar
  π⁺-comp : {n m k : ℕ} (l₁ : n ≤ m) (l₂ : m ≤ k)
          → π⁺ {n} {m} l₁ ∘ π⁺ {m} {k} l₂  ∼ π⁺ (≤-trans n m k l₁ l₂)
  π⁺-comp {n} {m} {k} l₁ l₂ x =
-  π⁺ {n} {m} l₁ (π⁺ {m} {k} l₂ x)         ＝⟨ refl ⟩
+  π⁺ {n} {m} l₁ (π⁺ {m} {k} l₂ x)         ＝⟨refl⟩
   π⁺-helper n m a p (π⁺-helper m k b q x) ＝⟨ i    ⟩
-  π⁺-helper n k (a +' b) r x              ＝⟨ refl ⟩
+  π⁺-helper n k (a +' b) r x              ＝⟨refl⟩
   π⁺-helper-Σ n k (a +' b , r) x          ＝⟨ ii   ⟩
-  π⁺-helper-Σ n k s x                     ＝⟨ refl ⟩
+  π⁺-helper-Σ n k s x                     ＝⟨refl⟩
   π⁺ (≤-trans n m k l₁ l₂) x              ∎
    where
     a : ℕ
@@ -383,10 +383,10 @@ The most laborious part: composing two ε⁺s is ε⁺ on ≤-trans. And similar
 
  ε-in-terms-of-ε⁺ : (n : ℕ) → ε n ∼ ε⁺ {n} {succ n} (≤-succ n)
  ε-in-terms-of-ε⁺ n x =
-  ε n x                               ＝⟨ refl ⟩
-  ε⁺-helper n (succ n) 1 refl x       ＝⟨ refl ⟩
+  ε n x                               ＝⟨refl⟩
+  ε⁺-helper n (succ n) 1 refl x       ＝⟨refl⟩
   ε⁺-helper-Σ n (succ n) (1 , refl) x ＝⟨ p    ⟩
-  ε⁺-helper-Σ n (succ n) s          x ＝⟨ refl ⟩
+  ε⁺-helper-Σ n (succ n) s          x ＝⟨refl⟩
   ε⁺ (≤-succ n) x                     ∎
    where
     s : Σ k ꞉ ℕ , n +' k ＝ succ n
@@ -396,10 +396,10 @@ The most laborious part: composing two ε⁺s is ε⁺ on ≤-trans. And similar
 
  π-in-terms-of-π⁺ : (n : ℕ) → π n ∼ π⁺ {n} {succ n} (≤-succ n)
  π-in-terms-of-π⁺ n x =
-  π n x                               ＝⟨ refl ⟩
-  π⁺-helper n (succ n) 1 refl x       ＝⟨ refl ⟩
+  π n x                               ＝⟨refl⟩
+  π⁺-helper n (succ n) 1 refl x       ＝⟨refl⟩
   π⁺-helper-Σ n (succ n) (1 , refl) x ＝⟨ p ⟩
-  π⁺-helper-Σ n (succ n) s x          ＝⟨ refl ⟩
+  π⁺-helper-Σ n (succ n) s x          ＝⟨refl⟩
   π⁺ (≤-succ n) x                     ∎
    where
     s : Σ k ꞉ ℕ , n +' k ＝ succ n
@@ -444,7 +444,7 @@ Finally, we can open the directed preorder module with the above parameters.
                                → π⁺-helper n m k p ∘ f m ∼ f n
   commute-with-πs-lemma-helper n n zero refl y = refl
   commute-with-πs-lemma-helper n m (succ k) refl y =
-   (π⁺-helper n (n +' succ k) (succ k) refl ∘ f (n +' succ k)) y  ＝⟨ refl ⟩
+   (π⁺-helper n (n +' succ k) (succ k) refl ∘ f (n +' succ k)) y  ＝⟨refl⟩
    (π⁺-helper n (n +' k) k refl ∘ π (n +' k) ∘ f (n +' succ k)) y ＝⟨ q    ⟩
    π⁺-helper n (n +' k) k refl (f (n +' k) y)                     ＝⟨ IH y ⟩
    f n y                                                          ∎
@@ -455,7 +455,7 @@ Finally, we can open the directed preorder module with the above parameters.
 
   commute-with-πs-lemma : (n m : ℕ) (l : n ≤ m)
                         → π⁺ l ∘ f m ∼ f n
-  commute-with-πs-lemma n m l y = π⁺ l (f m y)              ＝⟨ refl ⟩
+  commute-with-πs-lemma n m l y = π⁺ l (f m y)              ＝⟨refl⟩
                                   π⁺-helper-Σ n m s (f m y) ＝⟨ q    ⟩
                                   f n y                     ∎
     where
@@ -473,7 +473,7 @@ Finally, we can open the directed preorder module with the above parameters.
                                → g m ∘ ε⁺-helper n m k p ∼ g n
   commute-with-εs-lemma-helper n n zero refl x = refl
   commute-with-εs-lemma-helper n m (succ k) refl x =
-   (g (succ (n +' k)) ∘ ε⁺-helper n (n +' succ k) (succ k) refl) x  ＝⟨ refl ⟩
+   (g (succ (n +' k)) ∘ ε⁺-helper n (n +' succ k) (succ k) refl) x  ＝⟨refl⟩
    (g (succ (n +' k)) ∘ ε (n +' k) ∘ ε⁺-helper n (n +' k) k refl) x ＝⟨ q    ⟩
    g (n +' k) (ε⁺-helper n (n +' k) k refl x)                       ＝⟨ IH x ⟩
    g n x                                                            ∎
@@ -484,7 +484,7 @@ Finally, we can open the directed preorder module with the above parameters.
 
   commute-with-εs-lemma : (n m : ℕ) (l : n ≤ m)
                         → g m ∘ ε⁺ l ∼ g n
-  commute-with-εs-lemma n m l x = g m (ε⁺ l x)              ＝⟨ refl ⟩
+  commute-with-εs-lemma n m l x = g m (ε⁺ l x)              ＝⟨refl⟩
                                   g m (ε⁺-helper-Σ n m s x) ＝⟨ q ⟩
                                   g n x                     ∎
    where

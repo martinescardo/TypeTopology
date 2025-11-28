@@ -50,10 +50,10 @@ and
 then we would prove that `l ＝ l'` as follows
 
     β : l ＝ l'
-    β = l                 ＝⟨ refl ⟩
+    β = l                 ＝⟨refl⟩
         p ∙ (q ∙ (r ∙ s)) ＝⟨ ap (p ∙_) (∙assoc q r s) ⁻¹ ⟩
         p ∙ ((q ∙ r) ∙ s) ＝⟨ ap (p ∙_) (ap (_∙ s) α) ⟩
-        p ∙ (qr ∙ s)      ＝⟨ refl ⟩
+        p ∙ (qr ∙ s)      ＝⟨refl⟩
         l' ∎
 
 It gets worse with more complex concatenations. The aim of `PathSeq`

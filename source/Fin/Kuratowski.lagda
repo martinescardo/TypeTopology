@@ -395,12 +395,12 @@ no-selection ua ϕ = γ
   r : f p ＝ complement-≃
   r = idtoeq-eqtoid ua 𝟚 𝟚 complement-≃
 
-  s = n                     ＝⟨ refl ⟩
+  s = n                     ＝⟨refl⟩
       ⌜ f refl ⌝⁻¹ n        ＝⟨ (α refl)⁻¹ ⟩
       ϕ 𝟚 ∣ f refl ∣        ＝⟨ ap (ϕ 𝟚) q ⟩
       ϕ 𝟚 ∣ f p ∣           ＝⟨ α p ⟩
       ⌜ f p ⌝⁻¹ n           ＝⟨ ap (λ - → ⌜ - ⌝⁻¹ n) r ⟩
-      ⌜ complement-≃ ⌝⁻¹ n  ＝⟨ refl ⟩
+      ⌜ complement-≃ ⌝⁻¹ n  ＝⟨refl⟩
       complement n          ∎
 
   γ : 𝟘
@@ -591,9 +591,9 @@ select-equiv-with-𝟚-lemma₁ fe {X} x₀ (y , i) (z , j) = V
   I : z ≠ x₀
   I p = zero-is-not-one
          (₀        ＝⟨ (inverses-are-retractions g j ₀)⁻¹ ⟩
-          g' (g ₀) ＝⟨ refl ⟩
+          g' (g ₀) ＝⟨refl⟩
           g' x₀    ＝⟨ ap g' (p ⁻¹) ⟩
-          g' z     ＝⟨ refl ⟩
+          g' z     ＝⟨refl⟩
           g' (g ₁) ＝⟨ inverses-are-retractions g j ₁ ⟩
           ₁        ∎)
 
@@ -606,7 +606,7 @@ select-equiv-with-𝟚-lemma₁ fe {X} x₀ (y , i) (z , j) = V
 
   IV : y ＝ z
   IV = equivs-are-lc f' (inverses-are-equivs f i)
-        (f' y     ＝⟨ refl ⟩
+        (f' y     ＝⟨refl⟩
          f' (f ₁) ＝⟨ inverses-are-retractions f i ₁ ⟩
          ₁        ＝⟨ II (f' z) III ⟩
          f' z     ∎)
@@ -629,7 +629,7 @@ select-equiv-with-𝟚-lemma₂ fe {X} (f , i) x₀ = γ (f x₀) x₀ refl
     h : inverse f i ∼ 𝟚-cases x₀ x₁
     h ₀ = inverse f i ₀      ＝⟨ ap (inverse f i) p ⟩
           inverse f i (f x₀) ＝⟨ inverses-are-retractions f i x₀ ⟩
-          x₀                 ＝⟨ refl ⟩
+          x₀                 ＝⟨refl⟩
           𝟚-cases x₀ x₁ ₀    ∎
     h ₁ = refl
 
@@ -642,10 +642,10 @@ select-equiv-with-𝟚-lemma₂ fe {X} (f , i) x₀ = γ (f x₀) x₀ refl
     x₁ = inverse f i ₀
 
     h : inverse f i ∘ complement ∼ 𝟚-cases x₀ x₁
-    h ₀ = inverse f i (complement ₀) ＝⟨ refl ⟩
+    h ₀ = inverse f i (complement ₀) ＝⟨refl⟩
           inverse f i ₁              ＝⟨ ap (inverse f i) p ⟩
           inverse f i (f x₀)         ＝⟨ inverses-are-retractions f i x₀ ⟩
-          x₀                         ＝⟨ refl  ⟩
+          x₀                         ＝⟨refl⟩
           𝟚-cases x₀ x₁ ₀            ∎
     h ₁ = refl
 

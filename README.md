@@ -45,6 +45,7 @@ Please add yourself the first time you contribute.
 * Ayberk Tosun
 * Brendan Hart
 * Bruno Paiva
+* Carlo Angiuli
 * Chuangjie Xu
 * Cory Knapp
 * Ettore Aldrovandi

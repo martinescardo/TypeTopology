@@ -317,7 +317,7 @@ compute-Rec-Succ {A} {σ} {Γ} a b n s =
  ⟦ close a s ⟧₀
   (η⋆ ⟦ n ⟧₀)
   (rec ⟦ ƛ (weaken, ι (close a s) · (⌜η⌝ · ν₀)) ⟧₀ ⟦ close b s ⟧₀ ⟦ n ⟧₀)
-  ＝⟨ refl ⟩
+  ＝⟨refl⟩
  ⟦ close a s · (⌜η⌝ · n) · Rec (ƛ (weaken, ι (close a s) · (⌜η⌝ · ν₀))) (close b s) n ⟧₀
   ∎
  where

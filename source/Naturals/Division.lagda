@@ -384,7 +384,7 @@ division-is-prop-lemma a d q₀ q₁ r₀ r₁ l₁ e₁ e₂ l₂ = not-less-th
   I : q₀ * succ d + r₀ ＝ q₀ * succ d + (succ k * succ d + r₁)
   I = q₀ * succ d + r₀                     ＝⟨ e₁ ⁻¹ ⟩
       a                                    ＝⟨ e₂    ⟩
-      q₁ + q₁ * d + r₁                     ＝⟨ refl  ⟩
+      q₁ + q₁ * d + r₁                     ＝⟨refl⟩
       q₁ * succ d + r₁                     ＝⟨ i     ⟩
       succ (k + q₀) * succ d + r₁          ＝⟨ ii    ⟩
       (q₀ + succ k) * succ d + r₁          ＝⟨ iii   ⟩

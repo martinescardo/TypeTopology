@@ -413,7 +413,7 @@ Here are two characterizations of the membership relation:
 ∈-behaviour : (A : 𝕍) (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
             → A ∈ 𝕍-ssup X ϕ e ≃ (Σ x ꞉ X , ϕ x ＝ A)
 ∈-behaviour A X ϕ e =
- (A ∈ 𝕍-ssup X ϕ e)                                     ≃⟨ ≃-refl _ ⟩
+ (A ∈ 𝕍-ssup X ϕ e)                                     ≃⟨by-definition⟩
  (Σ x ꞉ X , underlying-mset (ϕ x) ＝ underlying-mset A) ≃⟨ Σ-cong I ⟩
  (Σ x ꞉ X , ϕ x ＝ A)                                   ■
   where
@@ -507,7 +507,7 @@ The following result, implementing the above idea, seems to be new.
      → h (𝕍-ssup X ϕ e) ＝ f X ϕ e (λ x → h (ϕ x))
   IV X ϕ e =
    h A                                                               ＝⟨ III A ⟩
-   f' A (λ x → h (ϕ x))                                              ＝⟨ refl ⟩
+   f' A (λ x → h (ϕ x))                                              ＝⟨refl⟩
    t P                (𝕍-η A)             (f X ϕ e' (λ x → h (ϕ x))) ＝⟨ i ⟩
    t P                (ap (𝕍-ssup X ϕ) p) (f X ϕ e' (λ x → h (ϕ x))) ＝⟨ ii ⟩
    t (P ∘ 𝕍-ssup X ϕ) p                   (f X ϕ e' (λ x → h (ϕ x))) ＝⟨ iii ⟩
@@ -746,8 +746,8 @@ this seems to be a new result.
     f : (A : 𝕍) → ((B : 𝕍) → B ∈ A → (𝕄-to-𝕍 ∘ underlying-mset) B ＝ B)
       → (𝕄-to-𝕍 ∘ underlying-mset) A ＝ A
     f A IH = 𝕄-to-𝕍 Aₘ                                 ＝⟨ I ⟩
-             𝕄-to-𝕍 (ssup (𝕍-root A) (𝕄-forest Aₘ))    ＝⟨ refl ⟩
-             ⋃ (𝕄-to-𝕍 ∘ 𝕄-forest Aₘ)                  ＝⟨ refl ⟩
+             𝕄-to-𝕍 (ssup (𝕍-root A) (𝕄-forest Aₘ))    ＝⟨refl⟩
+             ⋃ (𝕄-to-𝕍 ∘ 𝕄-forest Aₘ)                  ＝⟨refl⟩
              ⋃ (𝕄-to-𝕍 ∘ underlying-mset ∘ 𝕍-forest A) ＝⟨ II ⟩
              ⋃ (𝕍-forest A)                            ＝⟨ ⋃-η A ⟩
              A                                         ∎

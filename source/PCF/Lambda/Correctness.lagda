@@ -42,9 +42,9 @@ canonical-numeral-correctness : {n : ℕ} {Γ : Context n}
                               → pr₁ ⟦ numeral {_} {Γ} k ⟧ₑ d ＝ η k
 canonical-numeral-correctness zero d     = refl
 canonical-numeral-correctness (succ n) d =
- pr₁ ⟦ Succ (numeral n) ⟧ₑ d     ＝⟨ refl ⟩
+ pr₁ ⟦ Succ (numeral n) ⟧ₑ d     ＝⟨refl⟩
  (𝓛̇ succ ∘ pr₁ ⟦ numeral n ⟧ₑ) d ＝⟨ ap (𝓛̇ succ) IH ⟩
- 𝓛̇ succ (η n)                    ＝⟨ refl ⟩
+ 𝓛̇ succ (η n)                    ＝⟨refl⟩
  η (succ n)                      ∎
   where
    IH = canonical-numeral-correctness n d
@@ -94,9 +94,9 @@ correctness-Fix : {n : ℕ} {Γ : Context n} {σ : type}
                 → pr₁ ⟦ M · Fix M ⟧ₑ ∼ pr₁ ⟦ N ⟧ₑ
                 → pr₁ ⟦ Fix M ⟧ₑ ∼ pr₁ ⟦ N ⟧ₑ
 correctness-Fix {_} {_} {σ} M N c d =
- pr₁ ⟦ Fix M ⟧ₑ d                                   ＝⟨ refl ⟩
+ pr₁ ⟦ Fix M ⟧ₑ d                                   ＝⟨refl⟩
  pr₁ (μ ⟦ σ ⟧) (pr₁ ⟦ M ⟧ₑ d)                       ＝⟨ i ⟩
- pr₁ (pr₁ ⟦ M ⟧ₑ d) (pr₁ (μ ⟦ σ ⟧) ( pr₁ ⟦ M ⟧ₑ d)) ＝⟨ refl ⟩
+ pr₁ (pr₁ ⟦ M ⟧ₑ d) (pr₁ (μ ⟦ σ ⟧) ( pr₁ ⟦ M ⟧ₑ d)) ＝⟨refl⟩
  pr₁ ⟦ M · Fix M ⟧ₑ d                               ＝⟨ c d ⟩
  pr₁ ⟦ N ⟧ₑ d                                       ∎
   where
@@ -111,7 +111,7 @@ correctness-· : {n : ℕ} {Γ : Context n} {σ τ : type}
               → pr₁ ⟦ E [ T ] ⟧ₑ ∼ pr₁ ⟦ N ⟧ₑ
               → pr₁ ⟦ M · T ⟧ₑ ∼ pr₁ ⟦ N ⟧ₑ
 correctness-· {_} {Γ} {σ} {τ} M E T N c₁ c₂ d =
- pr₁ ⟦ M · T ⟧ₑ d                    ＝⟨ refl ⟩
+ pr₁ ⟦ M · T ⟧ₑ d                    ＝⟨refl⟩
  pr₁ (pr₁ ⟦ M ⟧ₑ d) (pr₁ ⟦ T ⟧ₑ d)   ＝⟨ i ⟩
  pr₁ (pr₁ ⟦ ƛ E ⟧ₑ d) (pr₁ ⟦ T ⟧ₑ d) ＝⟨ ii ⟩
  pr₁ ⟦ E [ T ] ⟧ₑ d                  ＝⟨ c₂ d ⟩

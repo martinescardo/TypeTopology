@@ -1040,14 +1040,14 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
   β q = (H x) ∙ q
 
   βα : (p : f x ＝ y) → β (α p) ＝ p
-  βα p = β (α p)                ＝⟨ refl ⟩
+  βα p = β (α p)                ＝⟨refl⟩
          (H x) ∙ ((H x) ⁻¹ ∙ p) ＝⟨ (∙assoc (H x) ((H x) ⁻¹) p) ⁻¹ ⟩
          (H x) ∙ (H x) ⁻¹ ∙ p   ＝⟨ ap (λ - → - ∙ p) ((right-inverse (H x)) ⁻¹) ⟩
          refl ∙ p               ＝⟨ refl-left-neutral ⟩
          p                      ∎
 
   αβ : (q : g x ＝ y) → α (β q) ＝ q
-  αβ q = α (β q)                ＝⟨ refl ⟩
+  αβ q = α (β q)                ＝⟨refl⟩
          (H x) ⁻¹ ∙ ((H x) ∙ q) ＝⟨ (∙assoc ((H x) ⁻¹) (H x) q) ⁻¹ ⟩
          (H x) ⁻¹ ∙ (H x) ∙ q   ＝⟨ ap (λ - → - ∙ q) (left-inverse (H x)) ⟩
          refl ∙ q               ＝⟨ refl-left-neutral ⟩
@@ -1068,7 +1068,7 @@ fiber-of-ap-≃' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } (f : A → B)
                  {x y : A} (p : f x ＝ f y)
                → fiber (ap f) p ≃ ((x , refl) ＝[ fiber' f (f x) ] (y , p))
 fiber-of-ap-≃' f {x} {y} p =
- fiber (ap f) p                                              ≃⟨ ≃-refl _ ⟩
+ fiber (ap f) p                                              ≃⟨by-definition⟩
  (Σ e ꞉ x ＝ y , transport (λ - → (f x ＝ f -)) e refl ＝ p) ≃⟨ ≃-sym Σ-＝-≃ ⟩
  ((x , refl) ＝ (y , p))                                     ■
 
@@ -1083,7 +1083,7 @@ fiber-of-ap-≃ f {x} {y} p =
    I : (e : x ＝ y)
      → (ap f e ＝ p) ≃ (transport (λ - → f - ＝ f y) e p ＝ refl)
    I refl = (refl ＝ p)                                   ≃⟨ ＝-flip ⟩
-            (p ＝ refl)                                   ≃⟨ ≃-refl _ ⟩
+            (p ＝ refl)                                   ≃⟨by-definition⟩
             (transport (λ - → f - ＝ f x) refl p ＝ refl) ■
 
 ∙-is-equiv-left : {X : 𝓤 ̇ } {x y z : X} (p : z ＝ x)

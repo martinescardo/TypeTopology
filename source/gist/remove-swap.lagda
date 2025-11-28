@@ -140,9 +140,9 @@ module _ (x y : X) (zs : List X) where
  abstract
   verbose-remove-＝ : x ＝ y → remove x (y ∷ zs) ＝ remove x zs
   verbose-remove-＝ e =
-   remove x (y ∷ zs)             ＝⟨ refl ⟩
+   remove x (y ∷ zs)             ＝⟨refl⟩
    ccons y (d x y) (remove x zs) ＝⟨ ap (λ - → ccons y - (remove x zs)) I ⟩
-   ccons y (inl e) (remove x zs) ＝⟨ refl ⟩
+   ccons y (inl e) (remove x zs) ＝⟨refl⟩
    remove x zs                   ∎
     where
      I : d x y ＝ inl e
@@ -150,9 +150,9 @@ module _ (x y : X) (zs : List X) where
 
   verbose-remove-≠ : x ≠ y → remove x (y ∷ zs) ＝ y ∷ remove x zs
   verbose-remove-≠ u =
-   remove x (y ∷ zs)             ＝⟨ refl ⟩
+   remove x (y ∷ zs)             ＝⟨refl⟩
    ccons y (d x y) (remove x zs) ＝⟨ ap (λ - → ccons y - (remove x zs)) I ⟩
-   ccons y (inr u) (remove x zs) ＝⟨ refl ⟩
+   ccons y (inr u) (remove x zs) ＝⟨refl⟩
    y ∷ remove x zs               ∎
     where
      I : d x y ＝ inr u

@@ -263,10 +263,10 @@ rounded-lemma₀ 0 = refl
 rounded-lemma₀ (succ a) =
  succ (2 ℕ* pred (succ (succ a))) ＝⟨ i    ⟩
  succ (2 ℕ* succ a)               ＝⟨ ii   ⟩
- pred (succ (succ (2 ℕ* succ a))) ＝⟨ refl ⟩
- pred (2 ℕ* succ a ℕ+ 2)          ＝⟨ refl ⟩
+ pred (succ (succ (2 ℕ* succ a))) ＝⟨refl⟩
+ pred (2 ℕ* succ a ℕ+ 2)          ＝⟨refl⟩
  pred (2 ℕ* (succ a) ℕ+ 2 ℕ* 1)   ＝⟨ iii  ⟩
- pred (2 ℕ+ (2 ℕ* (succ a)))      ＝⟨ refl ⟩
+ pred (2 ℕ+ (2 ℕ* (succ a)))      ＝⟨refl⟩
  pred (2 ℕ* succ (succ a))        ∎
   where
    i   = ap (λ - → succ (2 ℕ* -)) (pred-succ (succ a))
@@ -280,8 +280,8 @@ rounded-lemma₀ (succ a) =
   γ = succℤ (pos 0 ℤ* pos (succ y)) ℤ+ pos x ＝⟨ i   ⟩
       succℤ (pos 0) ℤ+ pos x                 ＝⟨ ii   ⟩
       succℤ (pos 0 ℤ+ pos x)                 ＝⟨ iii  ⟩
-      succℤ (pos x)                          ＝⟨ refl ⟩
-      pos (succ x)                           ＝⟨ refl ⟩
+      succℤ (pos x)                          ＝⟨refl⟩
+      pos (succ x)                           ＝⟨refl⟩
       pos (succ x) ℤ* pos 1                  ∎
    where
     i   = ap (λ α → succℤ α ℤ+ pos x) (ℤ-zero-left-base (pos (succ y)))

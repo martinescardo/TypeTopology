@@ -127,12 +127,12 @@ strategic-path-is-optimal-play {X ∷ Xf} ϕt@(ϕ :: ϕf) q σ@(x₀ :: σf) ot@
   IH x = strategic-path-is-optimal-play {Xf x} (ϕf x) (subpred q x) (σf x) (os x)
 
   I : is-optimal-move q ϕ ϕf x₀
-  I = optimal-outcome (game (X ∷ Xf) q (ϕ :: ϕf))                  ＝⟨ refl ⟩
-      sequenceᴷ {X ∷ Xf} (ϕ :: ϕf) q                               ＝⟨ refl ⟩
-      ϕ (λ x → sequenceᴷ (ϕf x) (subpred q x))                     ＝⟨ refl ⟩
+  I = optimal-outcome (game (X ∷ Xf) q (ϕ :: ϕf))                  ＝⟨refl⟩
+      sequenceᴷ {X ∷ Xf} (ϕ :: ϕf) q                               ＝⟨refl⟩
+      ϕ (λ x → sequenceᴷ (ϕf x) (subpred q x))                     ＝⟨refl⟩
       ϕ (λ x → optimal-outcome (game (Xf x) (subpred q x) (ϕf x))) ＝⟨ I₁ ⟩
       ϕ (λ x → subpred q x (strategic-path (σf x)))                ＝⟨ o ⁻¹ ⟩
-      q (strategic-path σ)                                         ＝⟨ refl ⟩
+      q (strategic-path σ)                                         ＝⟨refl⟩
       subpred q x₀ (strategic-path (σf x₀))                        ＝⟨ I₂ ⟩
       optimal-outcome (game (Xf x₀) (subpred q x₀) (ϕf x₀))        ∎
        where
@@ -299,9 +299,9 @@ module _ {X : Type} {Xf : X → 𝑻}
   head⁺ (xt ⊗ᴸ⁺ g)                                              ＝⟨ II ⟩
   head⁺ (concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x :: y) (g x)) xt)) ＝⟨ III ⟩
   head⁺ (head⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x :: y) (g x)) xt))   ＝⟨ IV ⟩
-  head⁺ (lmap⁺ (head⁺ xt ::_) (g (head⁺ xt)))                   ＝⟨ refl ⟩
+  head⁺ (lmap⁺ (head⁺ xt ::_) (g (head⁺ xt)))                   ＝⟨refl⟩
   head⁺ (lmap⁺ (x ::_) (g x))                                   ＝⟨ V ⟩
-  x :: head⁺ (g x)                                              ＝⟨ refl ⟩
+  x :: head⁺ (g x)                                              ＝⟨refl⟩
   x :: xs                                                       ∎
    where
     I   = ap head⁺ (⊗ᴶᵀ-in-terms-of-⊗ᵀ e⁺ d⁺ q fe)
@@ -347,7 +347,7 @@ JT-in-terms-of-K Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af) lt
        q (x :: head⁺ (f x))                               ＝⟨ II₂ ⟩
        p x                                                ＝⟨ II₃ ⟩
        ϕ p                                                ＝⟨ II₄ ⟩
-       ϕ (λ x → path-sequence (𝕂 R) (ϕf x) (subpred q x)) ＝⟨ refl ⟩
+       ϕ (λ x → path-sequence (𝕂 R) (ϕf x) (subpred q x)) ＝⟨refl⟩
        (ϕ ⊗[ 𝕂 R ] (λ x → path-sequence (𝕂 R) (ϕf x))) q  ∎
         where
          II₀ = α-extᵀ-explicitly q ((e⁺ ⊗[ 𝕁𝕋 ] d⁺) q)
@@ -422,7 +422,7 @@ main-lemma→ Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af)
 
   head-is-optimal-move =
    ϕ p                                      ＝⟨ VIII ⟩
-   p x                                      ＝⟨ refl ⟩
+   p x                                      ＝⟨refl⟩
    path-sequence (𝕂 R) (ϕf x) (subpred q x) ∎
     where
      VIII = (εᴸ-property→ X l ϕ p x VII)⁻¹

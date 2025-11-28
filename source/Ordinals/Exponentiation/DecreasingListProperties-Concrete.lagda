@@ -494,8 +494,8 @@ The two maps are inverse to each other.
         (I l (tail-is-decreasing-pr₂ α (β +ₒ γ) (a , inr c) δ))
     I ((a , inl b) ∷ l) δ =
      backward-on-lists (fₗ ((a , inl b) ∷ l)) (fᵣ ((a , inl b) ∷ l)) ＝⟨ II   ⟩
-     backward-on-lists (fₗ (a , inl b ∷ l)) []                       ＝⟨ refl ⟩
-     backward-on-lists ((a , b) ∷ fₗ l) []                           ＝⟨ refl ⟩
+     backward-on-lists (fₗ (a , inl b ∷ l)) []                       ＝⟨refl⟩
+     backward-on-lists ((a , b) ∷ fₗ l) []                           ＝⟨refl⟩
      (a , inl b) ∷ backward-on-lists (fₗ l) []                       ＝⟨ III  ⟩
      (a , inl b) ∷ backward-on-lists (fₗ l) (fᵣ l)                   ＝⟨ IV   ⟩
      ((a , inl b) ∷ l)                                               ∎

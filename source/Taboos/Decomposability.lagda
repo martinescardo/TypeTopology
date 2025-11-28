@@ -107,7 +107,7 @@ decompositions-as-retracts X = Σ-cong I
  where
   I : (f : X → 𝟚) → fiber f ₀ × fiber f ₁ ≃ has-section f
   I f =
-   fiber f ₀ × fiber f ₁                           ≃⟨ ≃-refl _ ⟩
+   fiber f ₀ × fiber f ₁                           ≃⟨by-definition⟩
    (Σ x₀ ꞉ X , f x₀ ＝ ₀) × (Σ x₁ ꞉ X , f x₁ ＝ ₁) ≃⟨ ≃-sym (alternative-× fe') ⟩
    (Π n ꞉ 𝟚 , Σ x ꞉ X , f x ＝ n)                  ≃⟨ ΠΣ-distr-≃ ⟩
    has-section f                                   ■

@@ -251,9 +251,9 @@ of change of variables in ⨆, defined above.
   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → D) (𝕛 : X ↪ Y)
   → f ∣ 𝕛 ∼ f ∣' 𝕛
  derived-injective-structure-operator-lemma pe fe f 𝕛 y
-  = (f ∣ 𝕛) y                                              ＝⟨ refl ⟩
+  = (f ∣ 𝕛) y                                              ＝⟨refl⟩
     ⨆ (Fiber 𝕛 y) (f ∘ fiber-point)                       ＝⟨ I ⟩
-    ⨆ (Fiber (fiber-to-𝟙 𝕛 y) ⋆) (f ∘ fiber-point ∘ h 𝕛 y) ＝⟨ refl ⟩
+    ⨆ (Fiber (fiber-to-𝟙 𝕛 y) ⋆) (f ∘ fiber-point ∘ h 𝕛 y) ＝⟨refl⟩
     (f ∣' 𝕛) y ∎
     where
      I = ⨆-change-of-variable pe fe ⨆ (f ∘ fiber-point) (g 𝕛 y , h 𝕛 y)

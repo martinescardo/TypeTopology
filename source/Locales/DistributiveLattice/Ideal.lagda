@@ -111,9 +111,9 @@ ideal-extensionality : (L : DistributiveLattice 𝓤)
                      → Ideal.I I₁ ⊆ Ideal.I I₂
                      → Ideal.I I₂ ⊆ Ideal.I I₁
                      → I₁ ＝ I₂
-ideal-extensionality L I₁ I₂ φ ψ = I₁                          ＝⟨ refl ⟩
+ideal-extensionality L I₁ I₂ φ ψ = I₁                          ＝⟨refl⟩
                                    to-ideal L (to-ideal₀ L I₁) ＝⟨ † ⟩
-                                   to-ideal L (to-ideal₀ L I₂) ＝⟨ refl ⟩
+                                   to-ideal L (to-ideal₀ L I₂) ＝⟨refl⟩
                                    I₂                          ∎
  where
   open Ideal I₁ renaming (I to I₁′)

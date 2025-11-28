@@ -409,11 +409,11 @@ always an embedding.
      ηᵀ-induction
       (λ t → q' (𝕋-functor j t) ＝ q t)
       (λ t → 𝟚-is-set)
-      (λ x → q' (𝕋-functor j (ηᵀ x))            ＝⟨ refl ⟩
+      (λ x → q' (𝕋-functor j (ηᵀ x))            ＝⟨refl⟩
              extᵀ _ p' (extᵀ _ (ηᵀ ∘ j) (ηᵀ x)) ＝⟨ I x ⟩
              extᵀ _ p' (ηᵀ (j x))               ＝⟨ II x ⟩
              p' (j x)                           ＝⟨ p'-extends-p x ⟩
-             p x                                ＝⟨ refl ⟩
+             p x                                ＝⟨refl⟩
              q (ηᵀ x)                           ∎)
       where
        I  = λ x → ap (extᵀ _ p') (ext-ηᵀ _ (ηᵀ ∘ j) x)
@@ -489,10 +489,10 @@ The following are equivalent for any type D.
 
      f'-extends-f : f' ∘ j ∼ f
      f'-extends-f x =
-      f' (j x)                ＝⟨ refl ⟩
+      f' (j x)                ＝⟨refl⟩
       g' (ηᵀ (j x))           ＝⟨ ap g' ((𝕋-natural j x)⁻¹) ⟩
       g' (𝕋-functor j (ηᵀ x)) ＝⟨ g'-extends-g (ηᵀ x) ⟩
-      g (ηᵀ x)                ＝⟨ refl ⟩
+      g (ηᵀ x)                ＝⟨refl⟩
       extᵀ D-ts f (ηᵀ x)      ＝⟨ ext-ηᵀ D-ts f x ⟩
       f x                     ∎
 

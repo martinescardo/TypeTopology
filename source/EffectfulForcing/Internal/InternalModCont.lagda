@@ -115,12 +115,12 @@ maxᵀ-correct : (m n : ℕ) → ⟦ maxᵀ ⟧₀ m n ＝ max m n
 maxᵀ-correct zero     n        = refl
 maxᵀ-correct (succ m) zero     = refl
 maxᵀ-correct (succ m) (succ n) =
- ⟦ maxᵀ ⟧₀ (succ m) (succ n)                                            ＝⟨ refl ⟩
+ ⟦ maxᵀ ⟧₀ (succ m) (succ n)                                            ＝⟨refl⟩
  ⟦ ifzᵀ ⟧₀ (succ n) (succ m) (succ (⟦ maxᵀ ⟧₀ m (⟦ predᵀ ⟧₀ (succ n)))) ＝⟨ Ⅰ    ⟩
- ifz (succ n) (succ m) (succ (⟦ maxᵀ ⟧₀ m (⟦ predᵀ ⟧₀ (succ n))))       ＝⟨ refl ⟩
- succ (⟦ maxᵀ ⟧₀ m (⟦ predᵀ ⟧₀ (succ n)))                               ＝⟨ refl ⟩
+ ifz (succ n) (succ m) (succ (⟦ maxᵀ ⟧₀ m (⟦ predᵀ ⟧₀ (succ n))))       ＝⟨refl⟩
+ succ (⟦ maxᵀ ⟧₀ m (⟦ predᵀ ⟧₀ (succ n)))                               ＝⟨refl⟩
  succ (⟦ maxᵀ ⟧₀ m (pred (succ n)))                                     ＝⟨ Ⅱ    ⟩
- succ (max m n)                                                         ＝⟨ refl ⟩
+ succ (max m n)                                                         ＝⟨refl⟩
  max (succ m) (succ n)                                                  ∎
   where
    Ⅰ = ifzᵀ-correct (succ n) (succ m) (succ (⟦ maxᵀ ⟧₀ m (⟦ predᵀ ⟧₀ (succ n))))
@@ -229,7 +229,7 @@ main-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : ℕ → ℕ)
            → ⟦ max-questionᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
              ＝ max-question₀ (dialogue-tree t) α
 main-lemma t α =
- ⟦ max-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀ α                 ＝⟨ refl ⟩
+ ⟦ max-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀ α                 ＝⟨refl⟩
  ⟦ max-questionᵀ ⟧₀ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α              ＝⟨ Ⅰ    ⟩
  max-question⋆ (church-encode (dialogue-tree t)) α        ＝⟨ Ⅱ    ⟩
  max-question  (dialogue-tree t) α                        ＝⟨ Ⅲ    ⟩

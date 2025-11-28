@@ -104,7 +104,7 @@ Although a section is not an embedding in general, in this case it is.
 universe-to-𝕄-is-embedding : is-embedding universe-to-𝕄
 universe-to-𝕄-is-embedding M@(ssup Y φ) = II
  where
-  I = fiber universe-to-𝕄 M                                           ≃⟨ ≃-refl _ ⟩
+  I = fiber universe-to-𝕄 M                                           ≃⟨by-definition⟩
       (Σ X ꞉ 𝓤 ̇ , ssup X (λ x → 𝟘ᴹ) ＝ (ssup Y φ))                    ≃⟨ I₀ ⟩
       (Σ X ꞉ 𝓤 ̇ , Σ p ꞉ X ＝ Y , (λ x → 𝟘ᴹ) ＝ φ ∘ Idtofun p)         ≃⟨ I₁ ⟩
       (Σ (X , p) ꞉ (Σ X ꞉ 𝓤 ̇ , X ＝ Y) , (λ x → 𝟘ᴹ) ＝ φ ∘ Idtofun p) ■
@@ -329,7 +329,7 @@ prop-indexed-productᴹ {X} {A} i x₀ = IV
      → Σᴹ (λ x → 𝕄-forest (A x) (g x)) ＝ 𝕄-forest (A x₀) (⌜ 𝕗 ⌝ g)
   II g = Σᴹ (λ x → 𝕄-forest (A x) (g x))   ＝⟨ II₀ ⟩
          Σᴹ (λ x → 𝕄-forest (A x₀) (g x₀)) ＝⟨ II₁ ⟩
-         𝕄-forest (A x₀) (g x₀)            ＝⟨ refl ⟩
+         𝕄-forest (A x₀) (g x₀)            ＝⟨refl⟩
          𝕄-forest (A x₀) (⌜ 𝕗 ⌝ g)         ∎
           where
            II₀ = ap Σᴹ (dfunext fe (λ x → I g x (i x x₀)))

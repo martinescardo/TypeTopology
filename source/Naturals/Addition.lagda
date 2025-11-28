@@ -30,7 +30,7 @@ zero-left-neutral = ℕ-induction base step
    base = refl
 
    step : (n : ℕ) → 0 + n ＝ n → 0 + succ n ＝ succ n
-   step n IH = 0 + succ n   ＝⟨ refl ⟩
+   step n IH = 0 + succ n   ＝⟨refl⟩
                succ (0 + n) ＝⟨ ap succ IH ⟩
                succ n       ∎
 
@@ -38,16 +38,16 @@ addition-associativity : (l n m : ℕ) → (l + n) + m ＝ l + (n + m)
 addition-associativity l n = ℕ-induction base step
   where
    base : (l + n) + 0 ＝ l + (n + 0)
-   base = (l + n) + 0  ＝⟨ refl ⟩
-           l + n       ＝⟨ refl ⟩
+   base = (l + n) + 0  ＝⟨refl⟩
+           l + n       ＝⟨refl⟩
            l + (n + 0) ∎
 
    step : (m : ℕ) → (l + n) + m ＝ l + (n + m)
                   → (l + n) + succ m ＝ l + (n + succ m)
-   step m IH = (l + n) + succ m   ＝⟨ refl ⟩
+   step m IH = (l + n) + succ m   ＝⟨refl⟩
                succ ((l + n) + m) ＝⟨ ap succ IH ⟩
-               succ (l + (n + m)) ＝⟨ refl ⟩
-               l + succ (n + m)   ＝⟨ refl ⟩
+               succ (l + (n + m)) ＝⟨refl⟩
+               l + succ (n + m)   ＝⟨refl⟩
                l + (n + succ m)   ∎
 
 addition-commutativity : (n m : ℕ) → n + m ＝ m + n
@@ -59,7 +59,7 @@ addition-commutativity n = ℕ-induction base step
           0 + n ∎
 
    step : (m : ℕ) → n + m ＝ m + n → n + succ m ＝ succ m + n
-   step m IH = n + succ m   ＝⟨ refl ⟩
+   step m IH = n + succ m   ＝⟨refl⟩
                succ (n + m) ＝⟨ ap succ IH ⟩
                succ (m + n) ＝⟨ lemma₀ (m + n) ⟩
                1 + (m + n)  ＝⟨ (addition-associativity 1 m n)⁻¹ ⟩
@@ -74,7 +74,7 @@ addition-commutativity n = ℕ-induction base step
 
          step₀ : (k : ℕ) → succ k ＝ 1 + k → succ (succ k) ＝ 1 + succ k
          step₀ k IH = succ (succ k) ＝⟨ ap succ IH ⟩
-                      succ (1 + k)  ＝⟨ refl ⟩
+                      succ (1 + k)  ＝⟨refl⟩
                       1 + succ k    ∎
 
 trivial-addition-rearrangement : (x y z : ℕ) → x + y + z ＝ x + z + y

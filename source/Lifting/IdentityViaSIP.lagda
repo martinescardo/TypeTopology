@@ -100,7 +100,7 @@ Added 8th September 2025.
  (e ● e') ,
  (λ p → value l p                  ＝⟨ d p ⟩
         value m (⌜ e ⌝ p)          ＝⟨ d' (⌜ e ⌝ p) ⟩
-        value n (⌜ e' ⌝ (⌜ e ⌝ p)) ＝⟨ refl ⟩
+        value n (⌜ e' ⌝ (⌜ e ⌝ p)) ＝⟨refl⟩
         value n (⌜ e ● e' ⌝ p)     ∎)
 
 \end{code}

@@ -223,13 +223,13 @@ open import Notation.Order
     p x = complement (f ∞ x)
 
     II₀ : ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
-    II₀ = (λ n → p (ι n)                ＝⟨ refl ⟩
+    II₀ = (λ n → p (ι n)                ＝⟨refl⟩
                  complement (f ∞ (ι n)) ＝⟨ ap complement (I₁ n) ⟩
-                 complement ₁           ＝⟨ refl ⟩
+                 complement ₁           ＝⟨refl⟩
                  ₀                      ∎) ,
-           (p ∞                ＝⟨ refl ⟩
+           (p ∞                ＝⟨refl⟩
             complement (f ∞ ∞) ＝⟨ ap complement e ⟩
-            complement ₀       ＝⟨ refl ⟩
+            complement ₀       ＝⟨refl⟩
             ₁                  ∎)
   II ₁ e = basic-discontinuity-taboo p II₁
    where

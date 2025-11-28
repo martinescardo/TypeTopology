@@ -169,7 +169,7 @@ instance
       succℤ (x + (pos α + pos β)) ＝⟨ iii           ⟩
       succℤ (x + pos α + pos β)   ＝⟨ iv            ⟩
       succℤ (x + pos α) + pos β   ＝⟨ v             ⟩
-      x                           ＝⟨ by-definition ⟩
+      x                           ＝⟨by-definition⟩
       x + pos 0                   ∎
    where
     i   = ap (λ - → x + succℤ -) (distributivity-pos-addition α β ⁻¹)
@@ -269,7 +269,7 @@ negative-less-than-positive x y = (x ℕ+ y) , I
   I = succℤ (negsucc x) + pos (x ℕ+ y)        ＝⟨ i    ⟩
       succℤ (negsucc x) + (pos x + pos y)     ＝⟨ ii   ⟩
       succℤ (negsucc x) + pos x + pos y       ＝⟨ iii  ⟩
-      negsucc x + pos (succ x) + pos y        ＝⟨ refl ⟩
+      negsucc x + pos (succ x) + pos y        ＝⟨refl⟩
       (- pos (succ x)) + pos (succ x) + pos y ＝⟨ iv   ⟩
       pos 0 + pos y                           ＝⟨ v    ⟩
       pos y                                   ∎
@@ -288,9 +288,9 @@ negative-less-than-positive x y = (x ℕ+ y) , I
       x + y + ((- y) + pos k) ＝⟨ ii            ⟩
       x + y - y + pos k       ＝⟨ iii           ⟩
       x + (y - y) + pos k     ＝⟨ iv            ⟩
-      x + pos 0 + pos k       ＝⟨ by-definition ⟩
+      x + pos 0 + pos k       ＝⟨by-definition⟩
       x + pos k               ＝⟨ e             ⟩
-      y                       ＝⟨ by-definition ⟩
+      y                       ＝⟨by-definition⟩
       y + pos 0               ＝⟨ v             ⟩
       y + (x - x)             ＝⟨ vi            ⟩
       y + x - x               ∎
@@ -543,7 +543,7 @@ nmco-lemma a b = ℕ-induction base step
       v   = ℤ+-assoc (a + pos k) (- b) (- a)
 
     I : succℤ (b * negsucc 0) + pos k ＝ a * negsucc 0
-    I = succℤ (b * negsucc 0) + pos k    ＝⟨ by-definition ⟩
+    I = succℤ (b * negsucc 0) + pos k    ＝⟨by-definition⟩
         succℤ (- b) + pos k              ＝⟨ i             ⟩
         succℤ ((- b) + pos k)            ＝⟨ ii            ⟩
         succℤ ((- b) + pos k) + pos 0    ＝⟨ iii           ⟩
@@ -555,7 +555,7 @@ nmco-lemma a b = ℕ-induction base step
         b + ((- b) - a)                  ＝⟨ ix            ⟩
         b - b - a                        ＝⟨ x             ⟩
         pos 0 - a                        ＝⟨ xi            ⟩
-        - a                              ＝⟨ by-definition ⟩
+        - a                              ＝⟨by-definition⟩
         a * negsucc 0                    ∎
      where
        i    = ℤ-left-succ (- b) (pos k)

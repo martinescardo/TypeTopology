@@ -511,16 +511,16 @@ to-cantor₀-cancels-to-cantor (α , bv) = to-subtype-＝ being-boolean-point-is
               Ⅰ = ap embedding-𝟚-ℕ (to-bool-lemma₁ α bv i p)
 
    ‡₂ : (i : ℕ) → α i ＝ 1 → embedding-C-B (to-cantor (α , bv)) i ＝ α i
-   ‡₂ i p = embedding-C-B (to-cantor (α , bv)) i ＝⟨ refl ⟩
+   ‡₂ i p = embedding-C-B (to-cantor (α , bv)) i ＝⟨refl⟩
             embedding-𝟚-ℕ (to-bool (α i) (bv i)) ＝⟨ Ⅰ ⟩
-            embedding-𝟚-ℕ ₁                      ＝⟨ refl ⟩
+            embedding-𝟚-ℕ ₁                      ＝⟨refl⟩
             1                                    ＝⟨ p ⁻¹ ⟩
             α i                                  ∎
              where
               Ⅰ = ap embedding-𝟚-ℕ (to-bool-lemma₂ α bv i p)
 
    ‡ : embedding-C-B (to-cantor (α , bv)) ∼ α
-   ‡ i = embedding-C-B (to-cantor (α , bv)) i ＝⟨ refl ⟩
+   ‡ i = embedding-C-B (to-cantor (α , bv)) i ＝⟨refl⟩
          embedding-𝟚-ℕ (to-bool (α i) (bv i)) ＝⟨ Ⅰ    ⟩
          α i                                  ∎
           where
@@ -621,7 +621,7 @@ maximumᵤ′-equivalent-to-maximumᵤ (n ∷ φ) = †
   ‡ =
    max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁))                               ＝⟨ Ⅰ    ⟩
    max (maximumᵤ′ (φ ₀)) (maximumᵤ (φ ₁))                              ＝⟨ Ⅱ    ⟩
-   max (maximumᵤ′ (φ ₀)) (maximumᵤ′ (φ ₁))                             ＝⟨ refl ⟩
+   max (maximumᵤ′ (φ ₀)) (maximumᵤ′ (φ ₁))                             ＝⟨refl⟩
    max (maximum (sequentialize (φ ₀))) (maximum (sequentialize (φ ₁))) ＝⟨ Ⅲ    ⟩
    maximum (sequentialize (φ ₀) ++ sequentialize (φ ₁))                ∎
 

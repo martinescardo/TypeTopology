@@ -85,10 +85,10 @@ s ∙▹ p = s ∙≡ (p ◃∎)
   where
    σ = ([]-∙≡-right-neutral (p ◃∙ s)) ⁻¹
 ≡-to-＝-hom (p ◃∙ s) (q ◃∙ t) =
- [ (p ◃∙ s) ↓] ∙ [ (q ◃∙ t) ↓]  ＝⟨ refl ⟩
+ [ (p ◃∙ s) ↓] ∙ [ (q ◃∙ t) ↓]  ＝⟨refl⟩
  (p ∙ [ s ↓]) ∙ [ (q ◃∙ t) ↓]   ＝⟨ ∙assoc p [ s ↓]  [ q ◃∙ t ↓] ⟩
  p ∙ ([ s ↓] ∙ [ q ◃∙ t ↓])     ＝⟨ ap (p ∙_) (≡-to-＝-hom s (q ◃∙ t)) ⟩
- p ∙ [ s ∙≡  (q ◃∙ t) ↓]         ＝⟨ refl ⟩
+ p ∙ [ s ∙≡  (q ◃∙ t) ↓]         ＝⟨refl⟩
  [ p ◃∙ s ∙≡ q ◃∙ t ↓]           ∎
 
 [↓]-hom = ≡-to-＝-hom

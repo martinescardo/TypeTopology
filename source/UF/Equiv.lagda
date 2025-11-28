@@ -113,6 +113,26 @@ _ ≃⟨ d ⟩ e = d ● e
 _■ : (X : 𝓤 ̇ ) → X ≃ X
 _■ = ≃-refl
 
+\end{code}
+
+Added by Carlo Angiuli on November 20, 2025.
+
+Special syntax for definitional steps in equivalence chain reasoning:
+
+\begin{code}
+
+_≃⟨refl⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } → X ≃ Y → X ≃ Y
+_ ≃⟨refl⟩ e = e
+
+_≃⟨by-definition⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } → X ≃ Y → X ≃ Y
+_≃⟨by-definition⟩_ = _≃⟨refl⟩_
+
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 Eqtofun : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → X → Y
 Eqtofun X Y (f , _) = f
 
@@ -420,7 +440,7 @@ haes-are-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) = qinvs-are-equivs f (g ,
 id-homotopies-are-natural : {X : 𝓤 ̇ } (h : X → X) (η : h ∼ id) {x : X}
                           → η (h x) ＝ ap h (η x)
 id-homotopies-are-natural h η {x} =
- η (h x)                         ＝⟨ refl ⟩
+ η (h x)                         ＝⟨refl⟩
  η (h x) ∙ refl                  ＝⟨ I ⟩
  η (h x) ∙ (η x ∙ (η x)⁻¹)       ＝⟨ II ⟩
  η (h x) ∙ η x ∙ (η x)⁻¹         ＝⟨ III ⟩
@@ -468,7 +488,7 @@ half-adjoint-condition {𝓤} {𝓥} {X} {Y} f e@((g , ε) , (g' , η)) = τ
         refl ∙ ap f (η' x)                                    ＝⟨ II ⟩
         (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η' x)   ＝⟨ III ⟩
         (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η' x)) ＝⟨ IV ⟩
-        (ε (f (g (f x))))⁻¹ ∙ (ap f (η' (g (f x))) ∙ ε (f x)) ＝⟨ refl ⟩
+        (ε (f (g (f x))))⁻¹ ∙ (ap f (η' (g (f x))) ∙ ε (f x)) ＝⟨refl⟩
         ε' (f x)                                             ∎
          where
           I   = refl-left-neutral ⁻¹
@@ -532,7 +552,7 @@ haes-are-vv-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) y =
     γ : g y ＝ x
     γ = (ap g p)⁻¹ ∙ η x
     q : ap f γ ∙ p ＝ ε y
-    q = ap f γ ∙ p                          ＝⟨ refl ⟩
+    q = ap f γ ∙ p                          ＝⟨refl⟩
         ap f ((ap g p)⁻¹ ∙ η x) ∙ p         ＝⟨ I ⟩
         ap f ((ap g p)⁻¹) ∙ ap f (η x) ∙ p  ＝⟨ II ⟩
         ap f (ap g (p ⁻¹)) ∙ ap f (η x) ∙ p ＝⟨ III ⟩
@@ -541,7 +561,7 @@ haes-are-vv-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) y =
         ε y ∙ ap id (p ⁻¹) ∙ p              ＝⟨ VI ⟩
         ε y ∙ p ⁻¹ ∙ p                      ＝⟨ VII ⟩
         ε y ∙ (p ⁻¹ ∙ p)                    ＝⟨ VIII ⟩
-        ε y ∙ refl                          ＝⟨ refl ⟩
+        ε y ∙ refl                          ＝⟨refl⟩
         ε y                                 ∎
          where
           I    = ap (λ - → - ∙ p) (ap-∙ f ((ap g p)⁻¹) (η x))
@@ -602,16 +622,15 @@ And similarly, with similar proof:
 
 \begin{code}
 
-singletons-are-equiv-to-𝟙 : {X : 𝓤 ̇ } → is-singleton X ↔ X ≃ 𝟙 {𝓥}
-singletons-are-equiv-to-𝟙 {𝓤} {𝓥} {X} = f , g
- where
-  f : is-singleton X → X ≃ 𝟙
-  f (x₀ , φ) = unique-to-𝟙 ,
-               (((λ _ → x₀) , (λ x → (𝟙-all-⋆ x)⁻¹)) ,
-                ((λ _ → x₀) , φ))
+singletons-are-equiv-to-𝟙 : {X : 𝓤 ̇ } → is-singleton X → X ≃ 𝟙 {𝓥}
+singletons-are-equiv-to-𝟙 (x₀ , φ) =
+ qinveq
+  unique-to-𝟙
+  ((λ _ → x₀) , (φ , (λ x → (𝟙-all-⋆ x)⁻¹)))
 
-  g : X ≃ 𝟙 → is-singleton X
-  g (f , (s , fs) , (r , rf)) = retract-of-singleton (r , f , rf) 𝟙-is-singleton
+types-equiv-to-𝟙-are-singletons : {X : 𝓤 ̇ } → X ≃ 𝟙 {𝓥} → is-singleton X
+types-equiv-to-𝟙-are-singletons (f , (s , fs) , (r , rf)) =
+ retract-of-singleton (r , f , rf) 𝟙-is-singleton
 
 \end{code}
 
@@ -908,6 +927,8 @@ infix  0 _≃_
 infix  0 _≅_
 infix  1 _■
 infixr 0 _≃⟨_⟩_
+infixr 0 _≃⟨refl⟩_
+infixr 0 _≃⟨by-definition⟩_
 infixl 2 _●_
 infix  1 ⌜_⌝
 

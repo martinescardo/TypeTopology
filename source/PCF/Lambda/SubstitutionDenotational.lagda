@@ -135,7 +135,7 @@ substitution-lemma {_} {_} {m} {Δ} (ƛ {n} {Γ} {σ} {τ} M) f e d g = e₂
            → pr₁ ⟦ v z ⟧ₑ (e , x) ＝ pr₁ ⟦ exts f z ⟧ₑ (d , x)
      new_g     Z     = refl
      new_g {A} (S z) =
-      pr₁ ⟦ v (S {n} {Γ} {A} {σ} z) ⟧ₑ (e , x) ＝⟨ refl ⟩
+      pr₁ ⟦ v (S {n} {Γ} {A} {σ} z) ⟧ₑ (e , x) ＝⟨refl⟩
       pr₁ ⟦ v z ⟧ₑ e                           ＝⟨  g z ⟩
       pr₁ ⟦ f z ⟧ₑ d                           ＝⟨ i ⟩
       pr₁ ⟦ exts f (S z) ⟧ₑ (d , x)            ∎

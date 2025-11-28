@@ -10,14 +10,8 @@ set -euxo pipefail
 
 rm -rf html
 agda --highlight-occurrences --html AllModulesIndex.lagda
-rm -f ~/martinescardo.github.io/agda/*.html # do not delete Agda.css, as it is a modified version
-mv html/*.html ~/martinescardo.github.io/agda/
 
-# Now create copies for files that have been moved to other places
-# but are linked from published papers, blogs etc.
-# Symbolic links don't work any more, so we replace "ln -s" by "cp -a"
-
-cd ~/martinescardo.github.io/agda
+cd html
 
 cp -a Higgs.index.html UF.HiggsInvolutionTheorem.html
 cp -a CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
@@ -97,15 +91,3 @@ cp -a UF.ImageAndSurjection.html Published.UF.ImageAndSurjection.html
 
 # Added by Tom de Jong on 3 October 2023.
 cp -a PCF.Lambda.index.html Published.PCF.Lambda.index.html
-
-# git add the above files
-cd ..
-chmod a+r agda/*
-git add agda
-
-# Deprecated - agda-new should not be offered as a public link any more,
-# for some years now:
-rm -rf agda-new
-cp -a agda agda-new
-chmod a+r agda-new/*
-git add agda-new

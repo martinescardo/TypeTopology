@@ -703,18 +703,18 @@ max-succ fe 0        = refl
 max-succ fe (succ m) =
  max (ι (succ m)) (ι (succ (succ m))) ＝⟨ (max-Succ fe (ι m) (ι (succ m)))⁻¹ ⟩
  Succ (max (ι m) (ι (succ m)))        ＝⟨ ap Succ (max-succ fe m) ⟩
- Succ (ι (succ m))                    ＝⟨ refl ⟩
+ Succ (ι (succ m))                    ＝⟨refl⟩
  ι (succ (succ m))                    ∎
 
 max-fin : funext₀ → (m n : ℕ) → ι (maxℕ m n) ＝ max (ι m) (ι n)
 max-fin fe 0 n = (max0-property (ι n))⁻¹
 max-fin fe (succ m) 0 = max0-property' fe (ι (succ m)) ⁻¹
 max-fin fe (succ m) (succ n) =
- ι (maxℕ (succ m) (succ n))    ＝⟨ refl ⟩
- ι (succ (maxℕ m n))           ＝⟨ refl ⟩
+ ι (maxℕ (succ m) (succ n))    ＝⟨refl⟩
+ ι (succ (maxℕ m n))           ＝⟨refl⟩
  Succ (ι (maxℕ m n))           ＝⟨ ap Succ (max-fin fe m n) ⟩
  Succ (max (ι m) (ι n))        ＝⟨ max-Succ fe (ι m) (ι n) ⟩
- max (Succ (ι m)) (Succ (ι n)) ＝⟨ refl ⟩
+ max (Succ (ι m)) (Succ (ι n)) ＝⟨refl⟩
  max (ι (succ m)) (ι (succ n)) ∎
 
 max-idemp : funext₀ → (u : ℕ∞) → max u u ＝ u

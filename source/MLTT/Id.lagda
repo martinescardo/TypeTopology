@@ -140,6 +140,22 @@ module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
 
 \end{code}
 
+Added by Carlo Angiuli on November 20, 2025.
+
+Special syntax for definitional steps in equality chain reasoning:
+
+\begin{code}
+
+_＝⟨refl⟩_ : {X : 𝓤 ̇ } (x : X) {y : X} → x ＝ y → x ＝ y
+_ ＝⟨refl⟩ p = p
+
+_＝⟨by-definition⟩_ : {X : 𝓤 ̇ } (x : X) {y : X} → x ＝ y → x ＝ y
+_＝⟨by-definition⟩_ = _＝⟨refl⟩_
+
+\end{code}
+
+End of addition.
+
 Fixities:
 
 \begin{code}
@@ -147,6 +163,8 @@ Fixities:
 infix  3  _⁻¹
 infix  1 _∎
 infixr 0 _＝⟨_⟩_
+infixr 0 _＝⟨refl⟩_
+infixr 0 _＝⟨by-definition⟩_
 infixl 2 _∙_
 
 \end{code}

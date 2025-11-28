@@ -48,10 +48,10 @@ assoc-++ (x :: xs) ys zs = ap (x ::_) (assoc-++ xs ys zs)
           → ext' g xs ++ ext' g ys ＝ ext' g (xs ++ ys)
   ext'-++ g [ x ]     ys = refl
   ext'-++ g (x :: xs) ys =
-   ext' g (x :: xs) ++ ext' g ys   ＝⟨ refl ⟩
+   ext' g (x :: xs) ++ ext' g ys   ＝⟨refl⟩
    (g x ++ ext' g xs) ++ ext' g ys ＝⟨ assoc-++ (g x) (ext' g xs) (ext' g ys) ⟩
    g x ++ (ext' g xs ++ ext' g ys) ＝⟨ ap (g x ++_) (ext'-++ g xs ys) ⟩
-   g x ++ ext' g (xs ++ ys)        ＝⟨ refl ⟩
+   g x ++ ext' g (xs ++ ys)        ＝⟨refl⟩
    ext' g (x :: xs ++ ys)          ∎
 
   ext'-η : {X : 𝓤 ̇ } → ext' [_] ∼ 𝑖𝑑 (neList X)
@@ -64,10 +64,10 @@ assoc-++ (x :: xs) ys zs = ap (x ::_) (assoc-++ xs ys zs)
          → ext' (λ - → ext' g (f -)) xs ＝ ext' g (ext' f xs)
   assoc' g f [ x ]     = refl
   assoc' g f (x :: xs) =
-   ext' (λ - → ext' g (f -)) (x :: xs)           ＝⟨ refl ⟩
+   ext' (λ - → ext' g (f -)) (x :: xs)           ＝⟨refl⟩
    ext' g (f x) ++ ext' (λ - → ext' g (f -)) xs  ＝⟨ ap (ext' g (f x) ++_) (assoc' g f xs) ⟩
    ext' g (f x) ++ ext' g (ext' f xs)            ＝⟨ ext'-++ g (f x) (ext' f xs) ⟩
-   ext' g (f x ++ ext' f xs)                     ＝⟨ refl ⟩
+   ext' g (f x ++ ext' f xs)                     ＝⟨refl⟩
    ext' g (ext' f (x :: xs))                     ∎
 
 module neList-definitions where

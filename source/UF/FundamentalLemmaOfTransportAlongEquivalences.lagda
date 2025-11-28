@@ -84,9 +84,9 @@ transport-along-≃-fundamental-lemma {𝓤} {𝓥} S T T-refl {X} {Y} 𝕗 ua s
 
   I : A X (≃-refl X)
   I = T (≃-refl X) s                            ＝⟨ T-refl s ⟩
-      s                                         ＝⟨ refl ⟩
+      s                                         ＝⟨refl⟩
       transport S refl s                        ＝⟨ II ⟩
-      transport S (eqtoid ua X X (≃-refl X)) s  ＝⟨ refl ⟩
+      transport S (eqtoid ua X X (≃-refl X)) s  ＝⟨refl⟩
       transport-along-≃ ua S (≃-refl X) s       ∎
     where
      II = (ap (λ - → transport S - s) (eqtoid-refl ua X))⁻¹

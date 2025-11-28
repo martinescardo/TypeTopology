@@ -6,6 +6,10 @@ on:
     branches:
     - master
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   typecheck:
     runs-on: ubuntu-latest
@@ -15,14 +19,18 @@ jobs:
     - name: "Clone repository"
       uses: actions/checkout@v4
 
-    - name: "Print environment information"
-      shell: bash
+    - name: "Update Agda file and line count"
       run: |
-        echo "github.ref_name = ${{ github.ref_name }}"
-        echo "github.sha = ${{ github.sha }}"
-        echo "github.event.before = ${{ github.event.before }}"
-        echo "github.event.after = ${{ github.event.after }}"
-        echo "github.event.pull_request.head.sha = ${{ github.event.pull_request.head.sha }}"
+        ghc -O3 admin-utilities/CountAgdaFilesAndLines.hs -o count_agda_files_and_lines
+        ./count_agda_files_and_lines
+        rm source/index.lagda
+        mv source/index-updated.lagda source/index.lagda
+
+    - name: "Add commit data to index.lagda"
+      run: |
+        export COMMIT_HASH=$(echo ${{ github.event.after }} | cut -c1-7)
+        sed -i "14a\\\n \ \ This HTML rendering was automatically generated from commit $COMMIT_HASH." source/index.lagda
+        head -20 source/index.lagda
 
     - name: "Restore cached .agdai files"
       id: cache-agdai-restore
@@ -35,7 +43,7 @@ jobs:
 
     - name: Run Agda
       id: typecheck
-      uses: ayberkt/agda-github-action@v5.0
+      uses: ayberkt/agda-github-action@type-topology
       with:
         main-file: AllModulesIndex.lagda
         source-dir: source
@@ -55,3 +63,25 @@ jobs:
       with:
         name: html
         path: source/html
+
+    - name: Upload GitHub Pages HTML
+      id: html-pages-upload
+      if: github.ref == 'refs/heads/master'
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: source/html
+
+  deploy:
+    needs: typecheck
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

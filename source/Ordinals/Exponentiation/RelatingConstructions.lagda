@@ -159,7 +159,7 @@ exponentiation-constructions-agree
  : (α β : Ordinal 𝓤) (h : has-trichotomous-least-element α)
  → exponentiationᴸ α h β ＝ α ^ₒ β
 exponentiation-constructions-agree α β h =
- exponentiationᴸ α h β ＝⟨ refl ⟩
+ exponentiationᴸ α h β ＝⟨refl⟩
  expᴸ[𝟙+ α⁺ ] β        ＝⟨ I ⟩
  (𝟙ₒ +ₒ α⁺) ^ₒ β       ＝⟨ II ⟩
  α ^ₒ β                ∎
@@ -191,7 +191,7 @@ exponentiation-constructions-agree-bis
  : (α β : Ordinal 𝓤) (h : has-trichotomous-least-element α)
  → exponentiationᴸ α h β ＝ α ^ₒ β
 exponentiation-constructions-agree-bis α β h =
- exponentiationᴸ α h β ＝⟨ refl ⟩
+ exponentiationᴸ α h β ＝⟨refl⟩
  expᴸ[𝟙+ α⁺ ] β        ＝⟨ I ⟩
  (𝟙ₒ +ₒ α⁺) ^ₒ β       ＝⟨ II ⟩
  α ^ₒ β                ∎

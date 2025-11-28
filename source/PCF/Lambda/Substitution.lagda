@@ -409,7 +409,7 @@ exts-seq : {n m k : ℕ}
          → (exts f ； exts g) x ＝ exts (f ； g) x
 exts-seq f g  Z    = refl
 exts-seq f g (S x) = subst (exts g) (rename S (f x)) ＝⟨ i ⟩
-                      subst (exts g ∘ S) (f x)       ＝⟨ refl ⟩
+                      subst (exts g ∘ S) (f x)       ＝⟨refl⟩
                       subst (rename S ∘ g) (f x)     ＝⟨ ii ⟩
                       rename S (subst g (f x))       ∎
   where

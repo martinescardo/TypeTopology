@@ -367,9 +367,9 @@ Remove first occurrence:
              → (x == y) ＝ true
              → remove x (y ∷ ys) ＝ ys
  remove-head x y ys q =
-  remove x (y ∷ ys)                          ＝⟨ refl ⟩
+  remove x (y ∷ ys)                          ＝⟨refl⟩
   (if x == y then ys else (y ∷ remove x ys)) ＝⟨ I ⟩
-  (if true then ys else (y ∷ remove x ys))   ＝⟨ refl ⟩
+  (if true then ys else (y ∷ remove x ys))   ＝⟨refl⟩
   ys                                         ∎
    where
     I = ap (λ - → if - then ys else (y ∷ remove x ys)) q
@@ -378,9 +378,9 @@ Remove first occurrence:
              → (x == y) ＝ false
              → remove x (y ∷ ys) ＝ y ∷ remove x ys
  remove-tail x y ys q =
-  remove x (y ∷ ys)                        ＝⟨ refl ⟩
+  remove x (y ∷ ys)                        ＝⟨refl⟩
   if x == y then ys else (y ∷ remove x ys) ＝⟨ I ⟩
-  if false then ys else (y ∷ remove x ys)  ＝⟨ refl ⟩
+  if false then ys else (y ∷ remove x ys)  ＝⟨refl⟩
   y ∷ remove x ys                          ∎
    where
     I  = ap (λ - → if - then ys else (y ∷ remove x ys)) q
@@ -410,7 +410,7 @@ Remove first occurrence:
    h (in-tail (in-tail m)) 0        () false q
    h (in-tail m)           (succ n) p  false q =
     length (remove x (z ∷ zs))  ＝⟨ I ⟩
-    length (z ∷ remove x zs)    ＝⟨ refl ⟩
+    length (z ∷ remove x zs)    ＝⟨refl⟩
     succ (length (remove x zs)) ＝⟨ II ⟩
     succ n                      ∎
      where
@@ -506,10 +506,10 @@ concat-++ : {X : 𝓤 ̇ }
           → concat (xss ++ yss) ＝ concat xss ++ concat yss
 concat-++ [] yss = refl
 concat-++ (xs ∷ xss) yss =
- concat (xs ∷ xss ++ yss)         ＝⟨ refl ⟩
+ concat (xs ∷ xss ++ yss)         ＝⟨refl⟩
  xs ++ concat (xss ++ yss)        ＝⟨ I ⟩
  xs ++ (concat xss ++ concat yss) ＝⟨ II ⟩
- (xs ++ concat xss) ++ concat yss ＝⟨ refl ⟩
+ (xs ++ concat xss) ++ concat yss ＝⟨refl⟩
  concat (xs ∷ xss) ++ concat yss  ∎
   where
    I  = ap (xs ++_) (concat-++ xss yss)
@@ -538,11 +538,11 @@ List-ext-assoc
  → List-ext (λ x → List-ext g (f x)) xs ＝ List-ext g (List-ext f xs)
 List-ext-assoc g f []       = refl
 List-ext-assoc g f (x ∷ xs) =
- List-ext (λ - → List-ext g (f -)) (x ∷ xs)               ＝⟨ refl ⟩
+ List-ext (λ - → List-ext g (f -)) (x ∷ xs)               ＝⟨refl⟩
  List-ext g (f x) ++ List-ext (λ - → List-ext g (f -)) xs ＝⟨ I ⟩
  List-ext g (f x) ++ List-ext g (List-ext f xs)           ＝⟨ II ⟩
  concat (map g (f x) ++ map g (List-ext f xs))            ＝⟨ III ⟩
- List-ext g (f x ++ List-ext f xs)                        ＝⟨ refl ⟩
+ List-ext g (f x ++ List-ext f xs)                        ＝⟨refl⟩
  List-ext g (List-ext f (x ∷ xs))                         ∎
   where
    I   = ap (List-ext g (f x) ++_) (List-ext-assoc g f xs)

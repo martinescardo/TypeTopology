@@ -44,9 +44,9 @@ infixl 33 _+_
 
 𝔽-zero-right-neutral : (q : 𝔽) → q + (pos 0 , 0) ＝ q
 𝔽-zero-right-neutral (x , a)
- = (x , a) + (pos 0 , 0) ＝⟨ refl ⟩
+ = (x , a) + (pos 0 , 0) ＝⟨refl⟩
    x ℤ+ (pos 0 ℤ* pos (succ a)) , a  ＝⟨ i    ⟩
-   x ℤ+ pos 0 , a                    ＝⟨ refl ⟩
+   x ℤ+ pos 0 , a                    ＝⟨refl⟩
    x , a                             ∎
     where
      i =  ap (λ - → x ℤ+ - , a) (ℤ*-comm (pos 0) (pos (succ a)))

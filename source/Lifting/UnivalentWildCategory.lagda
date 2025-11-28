@@ -455,7 +455,7 @@ TODO. This map should be an embedding.
                      being-defined-is-prop l
 \end{code}
 
-We now show that the pre-∞-category 𝓛 X is univalent if the universe 𝓣
+We now show that the wild-∞-category 𝓛 X is univalent if the universe 𝓣
 is univalent and we have enough function extensionality for 𝓣 and 𝓤.
 
 \begin{code}
@@ -747,4 +747,4 @@ Added 13th March 2024.
 
 \end{code}
 
-TODO. Monad algebras should also be wild-∞-categories.
+TODO. Monad algebras should also be univalent wild-∞-categories.

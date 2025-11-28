@@ -115,10 +115,10 @@ module _ (fe : Fun-Ext) where
      → from-Game (to-Game (game' Xt q ϕt)) ＝ game' Xt q ϕt
    h []       q ⟨⟩       = refl
    h (X ∷ Xf) q (ϕ :: ϕf) =
-    from-Game (to-Game (game' (X ∷ Xf) q (ϕ :: ϕf))) ＝⟨ refl ⟩
-    from-Game (branch X ϕ (to-Game ∘ Gf))            ＝⟨ refl ⟩
+    from-Game (to-Game (game' (X ∷ Xf) q (ϕ :: ϕf))) ＝⟨refl⟩
+    from-Game (branch X ϕ (to-Game ∘ Gf))            ＝⟨refl⟩
     branch' X ϕ Hf                                   ＝⟨ I ⟩
-    branch' X ϕ Gf                                   ＝⟨ refl ⟩
+    branch' X ϕ Gf                                   ＝⟨refl⟩
     game' (X ∷ Xf) q (ϕ :: ϕf)                       ∎
     where
      Gf Hf : X → Game'
@@ -134,8 +134,8 @@ module _ (fe : Fun-Ext) where
  to-from-Game : to-Game ∘ from-Game ∼ id
  to-from-Game (leaf x)        = refl
  to-from-Game (branch X ϕ Gf) =
-  to-Game (from-Game (branch X ϕ Gf))    ＝⟨ refl ⟩
-  to-Game (branch' X ϕ (from-Game ∘ Gf)) ＝⟨ refl ⟩
+  to-Game (from-Game (branch X ϕ Gf))    ＝⟨refl⟩
+  to-Game (branch' X ϕ (from-Game ∘ Gf)) ＝⟨refl⟩
   branch X ϕ (to-Game ∘ from-Game ∘ Gf)  ＝⟨ I ⟩
   branch X ϕ Gf                          ∎
   where

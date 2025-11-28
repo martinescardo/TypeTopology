@@ -59,13 +59,13 @@ toℚ-+ p q = equiv→equality (p 𝔽+ q) (p' 𝔽+ q') conclusion
 ℚ+-assoc (p , α) (q , β) (r , δ) = γ
  where
   γ : (p , α) + (q , β) + (r , δ) ＝ (p , α) + ((q , β) + (r , δ))
-  γ = (p , α) + (q , β) + (r , δ)   ＝⟨ refl ⟩
+  γ = (p , α) + (q , β) + (r , δ)   ＝⟨refl⟩
       toℚ (p 𝔽+ q) + (r , δ)        ＝⟨ i    ⟩
       toℚ (p 𝔽+ q) + toℚ r          ＝⟨ ii   ⟩
       toℚ (p 𝔽+ q 𝔽+ r)             ＝⟨ iii  ⟩
       toℚ (p 𝔽+ (q 𝔽+ r))           ＝⟨ iv   ⟩
       toℚ p + toℚ (q 𝔽+ r)          ＝⟨ v    ⟩
-      (p , α) + toℚ (q 𝔽+ r)        ＝⟨ refl ⟩
+      (p , α) + toℚ (q 𝔽+ r)        ＝⟨refl⟩
       (p , α) + ((q , β) + (r , δ)) ∎
    where
     i   = ap (toℚ (p 𝔽+ q) +_) (toℚ-to𝔽 (r , δ))

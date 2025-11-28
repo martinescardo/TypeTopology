@@ -370,7 +370,7 @@ surjective.
                     e≈ ∎
 
         lemma2 : (y : ⟨ Y ⟩) → π≈ (unit Y) ＝ π≈ y
-        lemma2 y = π≈ (unit Y) ＝⟨ refl ⟩
+        lemma2 y = π≈ (unit Y) ＝⟨refl⟩
                    e≈          ＝⟨ (lemma3 (π≈ y)) ⁻¹ ⟩
                    π≈ y        ∎
 

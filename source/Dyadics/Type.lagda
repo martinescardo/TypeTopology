@@ -164,10 +164,10 @@ normalise-pos-even-prev p a ep (p/2 , e) = equality-cases (ℤeven-or-odd p) I I
     → ℤeven-or-odd p ＝ inl even-p
     → normalise-pos (p/2 , a) ＝ normalise-pos (p , succ a)
   I even-p e₂
-   = normalise-pos (p/2 , a)        ＝⟨ refl ⟩
+   = normalise-pos (p/2 , a)        ＝⟨refl⟩
      normalise-pos-lemma p/2 a      ＝⟨ i ⟩
      normalise-pos-lemma p/2' a     ＝⟨ ii ⟩
-     normalise-pos-lemma p (succ a) ＝⟨ refl ⟩
+     normalise-pos-lemma p (succ a) ＝⟨refl⟩
      normalise-pos (p , succ a)     ∎
    where
     p/2' : ℤ
@@ -240,7 +240,7 @@ normalise-pos-info' p  (succ a) = equality-cases (ℤeven-or-odd p) I II
 
         β : succ a ＝ dden (normalise-pos (p , succ a)) + succ k'
         β = succ a                                       ＝⟨ i    ⟩
-             succ (dden (normalise-pos (p/2 , a)) + k')  ＝⟨ refl ⟩
+             succ (dden (normalise-pos (p/2 , a)) + k')  ＝⟨refl⟩
              dden (normalise-pos (p/2 , a)) + succ k'    ＝⟨ ii   ⟩
              dden (normalise-pos (p , succ a)) + succ k' ∎
          where
@@ -391,7 +391,7 @@ infix 0 _≈_
   I : x * pos (2^ (succ n)) ＝ y
   I = x * pos (2^ (succ n)) ＝⟨ e ⟩
       y * pos (2^ m)        ＝⟨ ap (λ - → y * pos (2^ -)) m＝0 ⟩
-      y * pos (2^ 0)        ＝⟨ refl ⟩
+      y * pos (2^ 0)        ＝⟨refl⟩
       y ∎
 
   II : ℤeven (x * pos (2^ (succ n)))
@@ -413,7 +413,7 @@ infix 0 _≈_
       x * pos (2^ (succ n) ℕ* 2)      ＝⟨ iii  ⟩
       x * pos (2^ (succ (succ n)))    ＝⟨ e    ⟩
       y * pos (2^ 1)                  ＝⟨ iv   ⟩
-      y * (pos 2 * pos 1)             ＝⟨ refl ⟩
+      y * (pos 2 * pos 1)             ＝⟨refl⟩
       y * pos (2^ 0) * pos 2          ∎
 
    where

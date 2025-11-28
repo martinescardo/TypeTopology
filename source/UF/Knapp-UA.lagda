@@ -132,11 +132,11 @@ knapps-funext-criterion {𝓤} H D {𝓥} {X} {Y} {f₁} {f₂} h = γ
   π₁-equals-π₂ {X} = isPIE-lc (λ(g : Δ X → X) → g ∘ δ) (preComp-isPIE (δ , D)) (πδ X)
 
   γ : f₁ ＝ f₂
-  γ = f₁                               ＝⟨ refl ⟩
-      (λ x → f₁ x)                     ＝⟨ refl ⟩
+  γ = f₁                               ＝⟨refl⟩
+      (λ x → f₁ x)                     ＝⟨refl⟩
       (λ x → π₁ (f₁ x , f₂ x , h x))   ＝⟨ ap (λ π x → π (f₁ x , f₂ x , h x)) π₁-equals-π₂ ⟩
-      (λ x → π₂ (f₁ x , f₂ x , h x))   ＝⟨ refl ⟩
-      (λ x → f₂ x)                     ＝⟨ refl ⟩
+      (λ x → π₂ (f₁ x , f₂ x , h x))   ＝⟨refl⟩
+      (λ x → f₂ x)                     ＝⟨refl⟩
       f₂                               ∎
 
 knapps-funext-Criterion :

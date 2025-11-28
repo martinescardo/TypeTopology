@@ -87,22 +87,22 @@ Notice that f' preserves the unit my construction.
 
  f'-preserves-mul : (xs ys : List X) → f' (xs ◦ ys) ＝ f' xs ● f' ys
  f'-preserves-mul [] ys =
-  f' ([] ◦ ys)  ＝⟨ refl ⟩
+  f' ([] ◦ ys)  ＝⟨refl⟩
   f' ys         ＝⟨ (●-left-unit (f' ys))⁻¹ ⟩
-  e ● f' ys     ＝⟨ refl ⟩
+  e ● f' ys     ＝⟨refl⟩
   f' [] ● f' ys ∎
  f'-preserves-mul (x • xs) ys =
-  f' (x • xs ◦ ys)      ＝⟨ refl ⟩
+  f' (x • xs ◦ ys)      ＝⟨refl⟩
   f x ● f' (xs ◦ ys)    ＝⟨ ap (f x ●_) (f'-preserves-mul xs ys) ⟩
   f x ● (f' xs ● f' ys) ＝⟨ ●-assoc (f x) (f' xs) (f' ys) ⟩
-  (f x ● f' xs) ● f' ys ＝⟨ refl ⟩
+  (f x ● f' xs) ● f' ys ＝⟨refl⟩
   f' (x • xs) ● f' ys   ∎
 
  f⁻ : List⁻ X → M
  f⁻ = f' ∘ underlying-list
 
  f⁻-triangle : f⁻ ∘ η⁻ ∼ f
- f⁻-triangle x = (f⁻ ∘ η⁻) x ＝⟨ refl ⟩
+ f⁻-triangle x = (f⁻ ∘ η⁻) x ＝⟨refl⟩
                  f x ● e     ＝⟨ ●-right-unit (f x) ⟩
                  f x         ∎
 
@@ -132,15 +132,15 @@ multiplication, but we don't use this fact, although we record it.
  ϕ-preserves-mul : (us vs : List M)
                  → ϕ (us ◦ vs) ＝ ϕ us ● ϕ vs
  ϕ-preserves-mul [] vs =
-  ϕ ([] ◦ vs)   ＝⟨ refl ⟩
+  ϕ ([] ◦ vs)   ＝⟨refl⟩
   ϕ vs          ＝⟨ (●-left-unit (ϕ vs))⁻¹ ⟩
-  (e ● ϕ vs)    ＝⟨ refl ⟩
+  (e ● ϕ vs)    ＝⟨refl⟩
   (ϕ [] ● ϕ vs) ∎
  ϕ-preserves-mul (x • us) vs =
-  ϕ (x • us ◦ vs)   ＝⟨ refl ⟩
+  ϕ (x • us ◦ vs)   ＝⟨refl⟩
   x ● ϕ (us ◦ vs)   ＝⟨ ap (x ●_) (ϕ-preserves-mul us vs) ⟩
   x ● (ϕ us ● ϕ vs) ＝⟨ ●-assoc x (ϕ us) (ϕ vs) ⟩
-  (x ● ϕ us) ● ϕ vs ＝⟨ refl ⟩
+  (x ● ϕ us) ● ϕ vs ＝⟨refl⟩
   ϕ (x • us) ● ϕ vs ∎
 
  ϕ-map-lemma : (xs : List X) → f' xs ＝ ϕ (map f xs)
@@ -168,15 +168,15 @@ M is used directly.
     (u ● v) ● ϕ ws             ＝⟨ ap (_● ϕ ws) ((M-is-graphic u v)⁻¹) ⟩
     ((u ● v) ● u) ● ϕ ws       ＝⟨ (●-assoc (u ● v) u (ϕ ws))⁻¹ ⟩
     (u ● v) ● (u ● ϕ ws)       ＝⟨ (●-assoc u v (u ● ϕ ws))⁻¹ ⟩
-    u ● (v ● (u ● ϕ ws))       ＝⟨ refl ⟩
+    u ● (v ● (u ● ϕ ws))       ＝⟨refl⟩
     u ● (v ● ϕ (u • ws))       ∎
    h (inr ν) =
     u ● (v ● ϕ (δ u (w • ws))) ＝⟨ ap (λ - → u ● (v ● ϕ -)) (δ-≠ u w ws ν) ⟩
-    u ● (v ● ϕ (w • δ u ws))   ＝⟨ refl ⟩
+    u ● (v ● ϕ (w • δ u ws))   ＝⟨refl⟩
     u ● (v ● (w ● ϕ (δ u ws))) ＝⟨ ap (u ●_) (●-assoc v w (ϕ (δ u ws))) ⟩
     u ● ((v ● w) ● ϕ (δ u ws)) ＝⟨ ϕ-δ-lemma' u (v ● w) ws ⟩
     u ● ((v ● w) ● ϕ ws)       ＝⟨ ap (u ●_) ((●-assoc v w (ϕ ws))⁻¹) ⟩
-    u ● (v ● (w ● ϕ ws))       ＝⟨ refl ⟩
+    u ● (v ● (w ● ϕ ws))       ＝⟨refl⟩
     u ● (v ● ϕ (w • ws))       ∎
 
 \end{code}
@@ -205,12 +205,12 @@ We need the following particular case of the above lemma.
      → (vs : List M) → ρ us ＝ ρ vs → ϕ us ＝ ϕ vs
    h [] IH [] e = refl
    h (u • us) IH (v • vs) e =
-    ϕ (u • us)     ＝⟨ refl ⟩
+    ϕ (u • us)     ＝⟨refl⟩
     u ● ϕ us       ＝⟨ (ϕ-δ-lemma u us)⁻¹ ⟩
     u ● ϕ (δ u us) ＝⟨ ap (u ●_) (IH (δ u us) (δ-length u us) (δ v vs) I) ⟩
     u ● ϕ (δ v vs) ＝⟨ ap (_● ϕ (δ v vs)) (equal-heads e) ⟩
     v ● ϕ (δ v vs) ＝⟨ ϕ-δ-lemma v vs ⟩
-    v ● ϕ vs       ＝⟨ refl ⟩
+    v ● ϕ vs       ＝⟨refl⟩
     ϕ (v • vs)     ∎
      where
       have-e : u • δ u (ρ us) ＝ v • δ v (ρ vs)
@@ -246,10 +246,10 @@ We need the following particular case of the above lemma.
  f⁻-preserves-mul : (𝔁𝓼 𝔂𝓼 : List⁻ X)
                   → f⁻ (𝔁𝓼 · 𝔂𝓼) ＝ f⁻ 𝔁𝓼 ● f⁻ 𝔂𝓼
  f⁻-preserves-mul 𝔁𝓼@(xs , a) 𝔂𝓼@(ys , b) =
-  f⁻ (𝔁𝓼 · 𝔂𝓼)      ＝⟨ refl ⟩
+  f⁻ (𝔁𝓼 · 𝔂𝓼)      ＝⟨refl⟩
   f' (ρ (xs ◦ ys)) ＝⟨ f'-ρ-lemma (xs ◦ ys) ⟩
   f' (xs ◦ ys)     ＝⟨ f'-preserves-mul xs ys ⟩
-  f' xs ● f' ys    ＝⟨ refl ⟩
+  f' xs ● f' ys    ＝⟨refl⟩
   f⁻ 𝔁𝓼 ● f⁻ 𝔂𝓼      ∎
 
  f⁻-uniqueness : (h : List⁻ X → M)
@@ -264,14 +264,14 @@ We need the following particular case of the above lemma.
    I [] a =
     h ([] , a) ＝⟨ ap h (to-List⁻-＝ refl) ⟩
     h []⁻      ＝⟨ unit-h ⟩
-    e          ＝⟨ refl ⟩
+    e          ＝⟨refl⟩
     f⁻ ([] , a) ∎
    I (x • xs) a =
     h ((x • xs) , a) ＝⟨ ap h (·-lemma x xs a) ⟩
     h (η⁻ x · 𝔁𝓼)    ＝⟨ comp-h (η⁻ x) 𝔁𝓼 ⟩
     h (η⁻ x) ● h 𝔁𝓼  ＝⟨ ap₂ _●_ (triangle-h x) (I xs b) ⟩
-    f x ● f⁻ 𝔁𝓼      ＝⟨ refl ⟩
-    f x ● f' xs      ＝⟨ refl ⟩
+    f x ● f⁻ 𝔁𝓼      ＝⟨refl⟩
+    f x ● f' xs      ＝⟨refl⟩
     f⁻ ((x • xs) , a) ∎
      where
       b : ρ xs ＝ xs

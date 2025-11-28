@@ -101,7 +101,7 @@ open import UF.Subsingletons
 Σ-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} s i y' = γ (i (x , y'))
  where
   γ : is-decidable ((x , y) ＝ (x , y')) → is-decidable (y ＝ y')
-  γ (inl p) = inl (y                               ＝⟨ refl ⟩
+  γ (inl p) = inl (y                               ＝⟨refl⟩
                    transport Y refl y              ＝⟨ I ⟩
                    transport Y (ap pr₁ p) y        ＝⟨ II ⟩
                    transport (λ - → Y (pr₁ -)) p y ＝⟨ III ⟩
@@ -261,12 +261,12 @@ open import Notation.CanonicalMap hiding ([_])
       p : Σ A → 𝟚
       p (w , c) = p' (w , c) (finite-isolated fe₀ n w)
 
-      e = r a'                   ＝⟨ refl ⟩
+      e = r a'                   ＝⟨refl⟩
           p' (v , a') (inl refl) ＝⟨ e₀ ⟩
           p (v , a')             ＝⟨ e₁ ⟩
           p (u , a)              ＝⟨ e₂ ⟩
           p (v , b)              ＝⟨ e₃ ⟩
-          p' (v , b) (inl refl)  ＝⟨ refl ⟩
+          p' (v , b) (inl refl)  ＝⟨refl⟩
           r b                    ∎
            where
             e₀ = p'-property (v , a') (inl refl) (finite-isolated fe₀ n v)
@@ -360,7 +360,7 @@ replacing isolatedness by weak isolatedness.
   γ : is-decidable ((x , y') ≠ (x , y)) → is-decidable (y' ≠ y)
   γ (inl a) = inl (λ {refl → a refl})
   γ (inr b) = inr (λ (d : y' ≠ y) → b (λ (p : x , y' ＝ x , y)
-   → d (y'                               ＝⟨ refl ⟩
+   → d (y'                               ＝⟨refl⟩
         transport Y refl y'              ＝⟨ I p ⟩
         transport Y (ap pr₁ p) y'        ＝⟨ II p ⟩
         transport (λ - → Y (pr₁ -)) p y' ＝⟨ III p ⟩

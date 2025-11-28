@@ -173,7 +173,7 @@ f-respects-∧ : {𝓦 : Universe} (pe : propext 𝓦)
              → (P Q : Ω 𝓦)
              → f pe A (P ∧ Q) ＝ (f pe A P) ∧[ A ] (f pe A Q)
 f-respects-∧ pe A P Q =
- f pe A (P ∧ Q)                                      ＝⟨ refl ⟩
+ f pe A (P ∧ Q)                                      ＝⟨refl⟩
  ⋁[ A ] ⁅ 𝟏[ A ] ∣ _ ∶ (P ∧ Q) holds ⁆               ＝⟨ i    ⟩
  ⋁[ A ] ⁅ 𝟏[ A ] ∧[ A ] 𝟏[ A ] ∣ _ ∶ (P ∧ Q) holds ⁆ ＝⟨ ii   ⟩
  (f pe A P) ∧[ A ] (f pe A Q)                        ∎

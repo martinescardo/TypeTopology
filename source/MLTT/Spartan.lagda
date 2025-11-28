@@ -16,9 +16,8 @@ open import MLTT.NaturalNumbers  public
 open import MLTT.Plus            public
 open import MLTT.Pi              public
 open import MLTT.Sigma           public
-open import MLTT.Universes       public
 open import MLTT.Id              public
-
-open import Notation.General public
+open import MLTT.Universes       public
+open import Notation.General     public
 
 \end{code}

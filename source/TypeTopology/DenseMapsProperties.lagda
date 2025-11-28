@@ -316,9 +316,9 @@ LFPT¬¬ {𝓤} {𝓥} {A} {X} φ s f = ¬¬-functor γ e
     x = φ a a
 
     p : x ＝ f x
-    p = x         ＝⟨ refl ⟩
+    p = x         ＝⟨refl⟩
         φ a a     ＝⟨ ap (λ - → - a) q ⟩
-        g a       ＝⟨ refl ⟩
+        g a       ＝⟨refl⟩
         f x       ∎
 
 \end{code}

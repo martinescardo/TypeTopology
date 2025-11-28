@@ -65,7 +65,7 @@ private
 
 ε-cantor : (α : ℕ → 𝟚) → γ (ϕ α) ∼ α
 ε-cantor α 0        = complement-involutive (α 0)
-ε-cantor α (succ n) = γ (ϕ α) (succ n)             ＝⟨ refl ⟩
+ε-cantor α (succ n) = γ (ϕ α) (succ n)             ＝⟨refl⟩
                       γ (ϕ α) n ⊕ α n ⊕ α (succ n) ＝⟨ I ⟩
                       α n ⊕ α n ⊕ α (succ n)       ＝⟨ II ⟩
                       α (succ n)                   ∎
@@ -99,7 +99,7 @@ that the following is by four cases without induction.
 
   I = α 0                           ＝⟨ (complement-involutive (α 0))⁻¹ ⟩
       complement (complement (α 0)) ＝⟨ ap complement p ⟩
-      complement ₁                  ＝⟨ refl ⟩
+      complement ₁                  ＝⟨refl⟩
       ₀                             ∎
 
   II : u ＝ Zero
@@ -118,7 +118,7 @@ that the following is by four cases without induction.
 
   I = α 0                           ＝⟨ (complement-involutive (α 0))⁻¹ ⟩
       complement (complement (α 0)) ＝⟨ ap complement q ⟩
-      complement ₁                  ＝⟨ refl ⟩
+      complement ₁                  ＝⟨refl⟩
       ₀                             ∎
 
   II : u ＝ Zero

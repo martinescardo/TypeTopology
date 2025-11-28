@@ -228,7 +228,7 @@ module Diagram
  ρ-in-terms-of-κ : {i j k : I} (lᵢ : i ⊑ k) (lⱼ : j ⊑ k) (x : ⟨ 𝓓 i ⟩)
                  → ρ i j x ＝ κ x (k , lᵢ , lⱼ)
  ρ-in-terms-of-κ {i} {j} {k} lᵢ lⱼ x =
-  ρ i j x                 ＝⟨ refl ⟩
+  ρ i j x                 ＝⟨refl⟩
   ν (I-semidirected i j)  ＝⟨ p ⟩
   ν ∣ (k , lᵢ , lⱼ) ∣     ＝⟨ q ⟩
   κ x (k , lᵢ , lⱼ)       ∎
@@ -267,14 +267,14 @@ module Diagram
    φ j₁ j₂ l = ∥∥-rec (sethood (𝓓 j₁)) γ (I-semidirected i j₂)
     where
      γ : (Σ k ꞉ I , i ⊑ k × j₂ ⊑ k) → π l (σ j₂) ＝ σ j₁
-     γ (k , lᵢ , l₂) = π l (σ j₂)                  ＝⟨ refl ⟩
+     γ (k , lᵢ , l₂) = π l (σ j₂)                  ＝⟨refl⟩
                        π l (ρ i j₂ x)              ＝⟨ e₁   ⟩
-                       π l (κ x (k , lᵢ , l₂))     ＝⟨ refl ⟩
+                       π l (κ x (k , lᵢ , l₂))     ＝⟨refl⟩
                        π l (π l₂ (ε lᵢ x))         ＝⟨ e₂   ⟩
-                       π (⊑-trans l l₂) (ε lᵢ x)   ＝⟨ refl ⟩
-                       π (⊑-trans l l₂) (ε lᵢ x)   ＝⟨ refl ⟩
+                       π (⊑-trans l l₂) (ε lᵢ x)   ＝⟨refl⟩
+                       π (⊑-trans l l₂) (ε lᵢ x)   ＝⟨refl⟩
                        κ x (k , lᵢ , ⊑-trans l l₂) ＝⟨ e₃   ⟩
-                       ρ i j₁ x                    ＝⟨ refl ⟩
+                       ρ i j₁ x                    ＝⟨refl⟩
                        σ j₁                        ∎
       where
        e₁ = ap (π l) (ρ-in-terms-of-κ lᵢ l₂ x)
@@ -289,21 +289,21 @@ module Diagram
     where
      g : (Σ m ꞉ I , j ⊑ m × k ⊑ m) → ⦅ ε∞ j (ε l x) ⦆ k ＝ ⦅ ε∞ i x ⦆ k
      g (m , lⱼ , lₖ) =
-      ⦅ ε∞ j (ε l x) ⦆ k          ＝⟨ refl ⟩
+      ⦅ ε∞ j (ε l x) ⦆ k          ＝⟨refl⟩
       ρ j k (ε l x)               ＝⟨ ρ-in-terms-of-κ lⱼ lₖ (ε l x) ⟩
-      κ (ε l x) (m , lⱼ , lₖ)     ＝⟨ refl ⟩
+      κ (ε l x) (m , lⱼ , lₖ)     ＝⟨refl⟩
       π lₖ (ε lⱼ (ε l x))         ＝⟨ ap (π lₖ) (ε-comp l lⱼ x) ⟩
-      π lₖ (ε (⊑-trans l lⱼ) x)   ＝⟨ refl ⟩
+      π lₖ (ε (⊑-trans l lⱼ) x)   ＝⟨refl⟩
       κ x (m , ⊑-trans l lⱼ , lₖ) ＝⟨ (ρ-in-terms-of-κ (⊑-trans l lⱼ) lₖ x) ⁻¹ ⟩
-      ρ i k x                     ＝⟨ refl ⟩
+      ρ i k x                     ＝⟨refl⟩
       ⦅ ε∞ i x ⦆ k                ∎
 
  ε∞-section-of-π∞ : {i : I} → π∞ i ∘ ε∞ i ∼ id
  ε∞-section-of-π∞ {i} x =
-  π∞ i (ε∞ i x)  ＝⟨ refl ⟩
-  ⦅ ε∞ i x ⦆ i              ＝⟨ refl ⟩
+  π∞ i (ε∞ i x)  ＝⟨refl⟩
+  ⦅ ε∞ i x ⦆ i              ＝⟨refl⟩
   ρ i i x                   ＝⟨ ρ-in-terms-of-κ ⊑-refl ⊑-refl x ⟩
-  κ x (i , ⊑-refl , ⊑-refl) ＝⟨ refl ⟩
+  κ x (i , ⊑-refl , ⊑-refl) ＝⟨refl⟩
   π ⊑-refl (ε ⊑-refl x)     ＝⟨ ε-section-of-π ⊑-refl x ⟩
   x                         ∎
 
@@ -703,7 +703,7 @@ We now show that 𝓓∞ is the colimit of the diagram.
    h (∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ) ＝⟨ e₁ ⟩
    ∐ 𝓔 {I} {λ i → h (ε∞ i (⦅ σ ⦆ i))} δ₁ ＝⟨ e₂ ⟩
    ∐ 𝓔 {I} {λ i → g i (⦅ σ ⦆ i)} δ₂      ＝⟨ e₃ ⟩
-   ∐ 𝓔 {I} {λ i → g i (⦅ σ ⦆ i)} δ₃      ＝⟨ refl ⟩
+   ∐ 𝓔 {I} {λ i → g i (⦅ σ ⦆ i)} δ₃      ＝⟨refl⟩
    colimit-mediating-arrow σ             ∎
     where
      p : (λ i → (h ∘ ε∞ i) (⦅ σ ⦆ i)) ＝ (λ i → g i (⦅ σ ⦆ i))

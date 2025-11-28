@@ -496,7 +496,7 @@ open import UF.PropIndexedPiSigma
 
 Σ-construction : (n : ℕ) (a : Fin n → ℕ)
                → Σ k ꞉ ℕ , Fin k ≃ (Σ i ꞉ Fin n , Fin (a i))
-Σ-construction 0 a = 0 , (Fin 0                    ≃⟨ ≃-refl _ ⟩
+Σ-construction 0 a = 0 , (Fin 0                    ≃⟨by-definition⟩
                          𝟘                        ≃⟨ ≃-sym (empty-indexed-sum-is-𝟘 id) ⟩
                          (Σ i ꞉ 𝟘 , Fin (a i)) ■)
 Σ-construction (succ n) a = g

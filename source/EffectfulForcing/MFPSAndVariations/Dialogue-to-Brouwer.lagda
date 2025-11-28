@@ -104,8 +104,8 @@ induction step:
 
 β'-lemma 0 φ α =
  beval (φ (α 0)) α                                 ＝⟨ I ⟩
- beval (follow (α 0) (φ (α 0))) (λ i → α (succ i)) ＝⟨ refl ⟩
- beval (δ (λ i → follow i (φ i))) α                ＝⟨ refl ⟩
+ beval (follow (α 0) (φ (α 0))) (λ i → α (succ i)) ＝⟨refl⟩
+ beval (δ (λ i → follow i (φ i))) α                ＝⟨refl⟩
  beval (β' φ 0) α                                  ∎
   where
    I = follow-lemma (φ (α 0)) α
@@ -113,8 +113,8 @@ induction step:
 β'-lemma (succ n) φ α =
  beval (φ (α (succ n))) α                                   ＝⟨ I ⟩
  beval (follow (α 0) (φ (α (succ n)))) (λ i → α (succ i))   ＝⟨ II ⟩
- beval (β' (λ j → follow (α 0) (φ j)) n) (λ i → α (succ i)) ＝⟨ refl ⟩
- beval (δ (λ i → β' (λ j → follow i (φ j)) n)) α            ＝⟨ refl ⟩
+ beval (β' (λ j → follow (α 0) (φ j)) n) (λ i → α (succ i)) ＝⟨refl⟩
+ beval (δ (λ i → β' (λ j → follow i (φ j)) n)) α            ＝⟨refl⟩
  beval (β' φ (succ n)) α                                    ∎
   where
    I  = follow-lemma (φ (α (succ n))) α

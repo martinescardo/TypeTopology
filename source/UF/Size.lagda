@@ -932,13 +932,17 @@ x ＝⟦ ls ⟧ y = resized (x ＝ y) (ls x y)
 Id⟦_⟧ : {X : 𝓤 ̇ } → X is-locally 𝓥 small → X → X → 𝓥 ̇
 Id⟦ ls ⟧ x y = x ＝⟦ ls ⟧ y
 
+＝⟦_⟧-≃-＝ : {X : 𝓤 ̇ } (ls : X is-locally 𝓥 small) {x y : X}
+           → (x ＝⟦ ls ⟧ y) ≃ (x ＝ y)
+＝⟦ ls ⟧-≃-＝ {x} {y} = resizing-condition (ls x y)
+
 ＝⟦_⟧-gives-＝ : {X : 𝓤 ̇ } (ls : X is-locally 𝓥 small) {x y : X}
                → x ＝⟦ ls ⟧ y → x ＝ y
-＝⟦ ls ⟧-gives-＝ {x} {y} = ⌜ resizing-condition (ls x y) ⌝
+＝⟦ ls ⟧-gives-＝ = ⌜ ＝⟦ ls ⟧-≃-＝ ⌝
 
 ＝-gives-＝⟦_⟧ : {X : 𝓤 ̇ } (ls : X is-locally 𝓥 small) {x y : X}
                → x ＝ y → x ＝⟦ ls ⟧ y
-＝-gives-＝⟦ ls ⟧ {x} {y} = ⌜ resizing-condition (ls x y) ⌝⁻¹
+＝-gives-＝⟦ ls ⟧ = ⌜ ＝⟦ ls ⟧-≃-＝ ⌝⁻¹
 
 ＝⟦_⟧-refl : {X : 𝓤 ̇ } (ls : X is-locally 𝓥 small) {x : X} → x ＝⟦ ls ⟧ x
 ＝⟦ ls ⟧-refl {x} = ⌜ ≃-sym (resizing-condition (ls x x)) ⌝ refl

@@ -546,7 +546,7 @@ Tail-Cons u π = dfunext fe' (γ u π)
      l = ι (size k)                                              ＝⟨ I ⟩
          Head (₁ ∶∶ Cons (ι n , π ∘ t'))                         ＝⟨ II ⟩
          Succ (Head (tail (₁ ∶∶ Cons (ι n , (λ x → π (t' x)))))) ＝⟨ III ⟩
-         Succ (ι n)                                              ＝⟨ refl ⟩
+         Succ (ι n)                                              ＝⟨refl⟩
          ι (succ n)                                              ∎
           where
            I   = size-property k
@@ -860,9 +860,9 @@ is-D-coalgebra-map {𝓤} {𝓥} {A} {B} α β f = β ∘ f ∼ D-functor f ∘ 
          tailᵇ (f a) (n , (q ∙ p₁)) ＝⟨ ap (tailᵇ (f a)) ((ts p₁ (n , q))⁻¹) ⟩
          (tailᵇ (f a) ∘ transport is-finite p₁) (n , q) ∎)
 
-   I = D-functor f (α a) ＝⟨ refl ⟩
+   I = D-functor f (α a) ＝⟨refl⟩
        (headᵃ a , f ∘ tailᵃ a) ＝⟨ I₀ ⟩
-       (headᵇ (f a) , tailᵇ (f a)) ＝⟨ refl ⟩
+       (headᵇ (f a) , tailᵇ (f a)) ＝⟨refl⟩
        β (f a) ∎
         where
          I₀ = to-D-＝ (headᵃ a) (headᵇ (f a)) (f ∘ tailᵃ a) (tailᵇ (f a)) (p₁ , p₂)

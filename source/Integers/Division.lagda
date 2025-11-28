@@ -111,11 +111,11 @@ TODO : Break apart ℤ-division into 4 subproofs
   f (succ q , 0 , e , l) = negsucc q , 0 , I , l
    where
     I : a' ＝ negsucc q ℤ* pos d'
-    I = a'                         ＝⟨ refl ⟩
+    I = a'                         ＝⟨refl⟩
         - pos (succ a)             ＝⟨ i    ⟩
         - pos (succ q ℕ* d')       ＝⟨ ii   ⟩
         - pos (succ q) ℤ* pos d'   ＝⟨ iii  ⟩
-        (- pos (succ q)) ℤ* pos d' ＝⟨ refl ⟩
+        (- pos (succ q)) ℤ* pos d' ＝⟨refl⟩
         negsucc q ℤ* pos d'        ∎
      where
       i   = ap -_ (ap pos e)
@@ -190,7 +190,7 @@ TODO : Break apart ℤ-division into 4 subproofs
       III l₂ = V , l₂
        where
         IV : - pos (succ r) ＝ k' - pos d'
-        IV = - pos (succ r)               ＝⟨ refl ⟩
+        IV = - pos (succ r)               ＝⟨refl⟩
              negsucc r                    ＝⟨ i    ⟩
              pos 0 + negsucc r            ＝⟨ ii   ⟩
              k' + (- k') + negsucc r      ＝⟨ iii  ⟩

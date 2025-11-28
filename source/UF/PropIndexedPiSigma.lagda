@@ -38,7 +38,7 @@ module _ (a : X) where
     where
      I : Π-proj⁻¹ i (Π-proj f) ∼ f
      I x =
-      Π-proj⁻¹ i (Π-proj f) x   ＝⟨ refl ⟩
+      Π-proj⁻¹ i (Π-proj f) x   ＝⟨refl⟩
       transport Y (i a x) (f a) ＝⟨ II (i x a) ⟩
       f x                       ∎
        where
@@ -49,7 +49,7 @@ module _ (a : X) where
 
    ε : Π-proj ∘ Π-proj⁻¹ i ∼ id
    ε y =
-    (Π-proj ∘ Π-proj⁻¹ i) y ＝⟨ refl ⟩
+    (Π-proj ∘ Π-proj⁻¹ i) y ＝⟨refl⟩
     transport Y (i a a) y   ＝⟨ transport-over-prop i ⟩
     y                       ∎
 
@@ -94,13 +94,13 @@ module _ (a : X) where
   where
    η : (y : Y a) → Σ-in⁻¹ i (Σ-in y) ＝ y
    η y =
-    Σ-in⁻¹ i (Σ-in y)     ＝⟨ refl ⟩
+    Σ-in⁻¹ i (Σ-in y)     ＝⟨refl⟩
     transport Y (i a a) y ＝⟨ transport-over-prop i ⟩
     y                     ∎
 
    ε : (σ : Σ Y) → Σ-in (Σ-in⁻¹ i σ) ＝ σ
    ε (x , y) =
-    Σ-in (Σ-in⁻¹ i (x , y))     ＝⟨ refl ⟩
+    Σ-in (Σ-in⁻¹ i (x , y))     ＝⟨refl⟩
     (a , transport Y (i x a) y) ＝⟨ to-Σ-＝ (i a x , I (i x a)) ⟩
     (x , y)                     ∎
      where

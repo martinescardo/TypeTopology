@@ -23,7 +23,7 @@ https://agda.readthedocs.io/en/latest/tools/command-line-options.html#cmdoption-
 
 https://agda.readthedocs.io/en/latest/tools/command-line-options.html#consistency-checking-options
 
-See the module (2) below for an explanation of the philosophy of
+See the module (1) below for an explanation of the philosophy of
 TypeTopology, and in particular which type theory is adopted.
 
 \begin{code}
@@ -50,7 +50,7 @@ Notice that, currently, all modules use --without-K.
 
 The default options for all modules are (as listed in
 typetopology.agda-lib, which should be taken as the authoritative
-source of information if this list gets obsolete)
+source of information if this list gets obsolete):
 
   --auto-inline
   --exact-split
@@ -85,7 +85,7 @@ are coinfective:
 
 An option is *infective* if whenever it is used in one module, it must
 be used in all modules that import module. At the moment, TypeTopology
-infective options are
+infective options are:
 
   --no-termination-check
   --guardedness

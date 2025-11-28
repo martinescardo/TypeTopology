@@ -816,10 +816,10 @@ The following formulation is exploited in InjectiveTypes.CounterExamples.
     where
      I : X ≃ 𝟚 → Y p ≃ Fin 2
      I e =
-      Y p             ≃⟨ ≃-refl _ ⟩
+      Y p             ≃⟨by-definition⟩
       (X ≃ 𝟚)         ≃⟨ ≃-cong-left fe e ⟩
       (𝟚 ≃ 𝟚)         ≃⟨ ≃-cong fe (𝟚-is-Fin2) 𝟚-is-Fin2 ⟩
-      (Fin 2 ≃ Fin 2) ≃⟨ ≃-refl _ ⟩
+      (Fin 2 ≃ Fin 2) ≃⟨by-definition⟩
       Aut (Fin 2)     ≃⟨ ≃-sym (pr₂ (!construction 2)) ⟩
       Fin 2           ■
 

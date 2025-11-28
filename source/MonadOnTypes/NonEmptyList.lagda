@@ -126,7 +126,7 @@ module List⁺-definitions where
     (yf : (x : X) → List⁺ (Y x))
   → xs ⊗ᴸ⁺ yf ＝ concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x , y) (yf x)) xs)
  ⊗ᴸ⁺-explicitly fe xs yf =
-  xs ⊗ᴸ⁺ yf ＝⟨ refl ⟩
+  xs ⊗ᴸ⁺ yf ＝⟨refl⟩
   extᴸ⁺ (λ x → mapᴸ⁺ (λ y → x , y) (yf x)) xs           ＝⟨ I ⟩
   extᴸ⁺ (λ x → lmap⁺ (λ y → x , y) (yf x)) xs           ＝⟨ II ⟩
   concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x , y) (yf x)) xs) ∎
@@ -143,7 +143,7 @@ module List⁺-definitions where
   → ι (xs ⊗ᴸ⁺ ys) ＝ concat (lmap (λ x → lmap (x ,_) (ι (ys x))) (ι xs))
  ι-⊗ᴸ⁺-explicitly fe xs ys =
    ι (xs ⊗ᴸ⁺ ys)                                             ＝⟨ I ⟩
-   ι (concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x , y) (ys x)) xs)) ＝⟨ refl ⟩
+   ι (concat⁺ (lmap⁺ (λ x → lmap⁺ (λ y → x , y) (ys x)) xs)) ＝⟨refl⟩
    concat (lmap ι (lmap (λ x → lmap⁺ (x ,_) (ys x)) (ι xs))) ＝⟨ II ⟩
    concat (lmap (λ x → lmap (x ,_) (ι (ys x))) (ι xs))       ∎
     where

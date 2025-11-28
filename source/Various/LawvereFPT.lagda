@@ -79,7 +79,7 @@ section·-gives-section fe r (s , rs·) = s , λ g → dfunext fe (rs· g)
 
 Lawvere's fixed-point combinator for a type X can be defined if we
 have maps r : A → (A → X) and s : (A → X) → A subject to no
-assumptions, but, no show that it produces a fixed point combinator,
+assumptions, but, to show that it produces a fixed point combinator,
 we will assume that s is a pointwise section of r.
 
 \begin{code}
@@ -147,9 +147,9 @@ is a fixed point of f.
    _ = by-definition
 
    p : x ＝ f x
-   p = x         ＝⟨ by-definition ⟩
+   p = x         ＝⟨by-definition⟩
        r (s g) a ＝⟨ rs g a ⟩
-       g a       ＝⟨ by-definition ⟩
+       g a       ＝⟨by-definition⟩
        f x       ∎
 
  LFPT· : {A : 𝓤 ̇ }
@@ -241,20 +241,24 @@ it was observed here.
 
  \begin{code}
 
- not-no-fp : (fe : funext 𝓤 𝓤₀) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not fe P)
- not-no-fp {𝓤} fe (P , p) = ¬-no-fp (P holds , q)
-  where
-   q : P holds ＝ ¬ (P holds)
-   q = ap _holds p
+ module _ {𝓤 : Universe} (fe : funext 𝓤 𝓤₀) where
 
- cantor-theorem : funext 𝓤 𝓤₀
-                → (A : 𝓥 ̇ )
-                → (r : A → (A → Ω 𝓤))
-                → ¬ has-section· r
- cantor-theorem {𝓤} fe A r (s , rs) = not-no-fp fe not-fp
-  where
-   not-fp : Σ B ꞉ Ω 𝓤 , B ＝ not fe B
-   not-fp = LFPT· r (s , rs) (not fe)
+  ⇁_ : Ω 𝓤 → Ω 𝓤
+  ⇁_ = not fe
+
+  not-no-fp :  ¬ (Σ P ꞉ Ω 𝓤 , P ＝ ⇁ P)
+  not-no-fp (P , p) = ¬-no-fp (P holds , q)
+   where
+    q : P holds ＝ ¬ (P holds)
+    q = ap _holds p
+
+  cantor-theorem : (A : 𝓥 ̇ )
+                 → (r : A → (A → Ω 𝓤))
+                 → ¬ has-section· r
+  cantor-theorem A r (s , rs) = not-no-fp not-fp
+   where
+    not-fp : Σ B ꞉ Ω 𝓤 , B ＝ ⇁ B
+    not-fp = LFPT· r (s , rs) ⇁_
 
 \end{code}
 
@@ -296,9 +300,9 @@ module surjection-version (pt : propositional-truncations-exist) where
      x = φ a a
 
      p : x ＝ f x
-     p = x         ＝⟨ by-definition ⟩
+     p = x         ＝⟨by-definition⟩
          φ a a     ＝⟨ ap (λ - → - a) q ⟩
-         g a       ＝⟨ by-definition ⟩
+         g a       ＝⟨by-definition⟩
          f x       ∎
 
 \end{code}
@@ -326,7 +330,7 @@ module surjection-version (pt : propositional-truncations-exist) where
    g (B , p) = retract-version.LFPT-＝ {𝓤} {𝓤} p f
 
  Cantor-theorem-for-universes : (A : 𝓥 ̇ )
-                              → (φ : A → (A → 𝓤 ̇ ))
+                                (φ : A → (A → 𝓤 ̇ ))
                               → ¬ is-surjection φ
  Cantor-theorem-for-universes A r h = γ
   where
@@ -598,8 +602,6 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
 
 \end{code}
 
-See also the module Unsafe.Type-in-Type-False.
-
 Added 12 October 2018. The paper
 
  Thierry Coquand, The paradox of trees in type theory
@@ -659,10 +661,10 @@ module generalized-Coquand where
      s f = σ (R , f) , ap pr₁ (η (R , f))
 
      rs : (f : B → X) → r (s f) ＝ f
-     rs f = r (s f)                                      ＝⟨ refl ⟩
+     rs f = r (s f)                                      ＝⟨refl⟩
             transport H (ap pr₁ (η Rf)) (pr₂ (ρ (σ Rf))) ＝⟨ i ⟩
             transport (H ∘ pr₁) (η Rf)  (pr₂ (ρ (σ Rf))) ＝⟨ ii ⟩
-            pr₂ Rf                                       ＝⟨ refl ⟩
+            pr₂ Rf                                       ＝⟨refl⟩
             f                                            ∎
           where
            Rf : Σ H
@@ -750,6 +752,8 @@ And in particular, the successor universe 𝓤 ⁺ is not equivalent to 𝓤:
  Corollary {𝓤} e = Theorem ((𝓤 ̇ ), e)
 
 \end{code}
+
+See also the module Unsafe.Type-in-Type-False.
 
 Added 23rd December 2020, simplified 26th December after a suggestion by
 Mike Shulman.
@@ -846,10 +850,10 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
       s f = σ p (R , f) , ap pr₁ (η p (R , f))
 
       rs : (f : B → X) → r (s f) ＝ f
-      rs f = r (s f)                                            ＝⟨ refl ⟩
+      rs f = r (s f)                                            ＝⟨refl⟩
              transport H (ap pr₁ (η p Rf)) (pr₂ (ρ p (σ p Rf))) ＝⟨ i ⟩
              transport (H ∘ pr₁) (η p Rf)  (pr₂ (ρ p (σ p Rf))) ＝⟨ ii ⟩
-             pr₂ Rf                                             ＝⟨ refl ⟩
+             pr₂ Rf                                             ＝⟨refl⟩
              f                                                  ∎
            where
             Rf : Σ H

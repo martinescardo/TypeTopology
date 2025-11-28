@@ -103,7 +103,7 @@ module _ (fe : funext 𝓤 𝓤) (pe : propext 𝓤) where
 
  𝟚-to-Ω-fiber : (p : Ω 𝓤) → fiber 𝟚-to-Ω p ≃ (¬ (p holds) + p holds)
  𝟚-to-Ω-fiber p =
-  fiber (𝟚-to-Ω {𝓤}) p           ≃⟨ ≃-refl _ ⟩
+  fiber (𝟚-to-Ω {𝓤}) p           ≃⟨by-definition⟩
   (Σ n ꞉ 𝟚 , 𝟚-to-Ω {𝓤} n ＝ p) ≃⟨ I₀ ⟩
   (⊥ ＝ p) + (⊤ ＝ p)            ≃⟨ I₁ ⟩
   (¬ (p holds) + p holds)        ■

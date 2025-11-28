@@ -570,7 +570,7 @@ module _ (fe : funext₀) (α β : 𝟚ᴺ) where
 
  Cantor-swap-swaps∼ : Cantor-swap α ∼ β
  Cantor-swap-swaps∼ i =
-  Cantor-swap α i   ＝⟨ refl ⟩
+  Cantor-swap α i   ＝⟨refl⟩
   (β i ⊕ α i) ⊕ α i ＝⟨ ⊕-assoc {β i} {α i} {α i} ⟩
   β i ⊕ (α i ⊕ α i) ＝⟨ ap (β i ⊕_) (Lemma[b⊕b＝₀] {α i}) ⟩
   β i ⊕ ₀           ＝⟨ ⊕-₀-right-neutral  ⟩

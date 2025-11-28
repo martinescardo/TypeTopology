@@ -89,7 +89,7 @@ module classifier-single-universe (𝓤 : Universe) where
    NB = refl
 
    q = transport (λ - → - → Y) p pr₁ ＝⟨ transport-is-pre-comp' ua e pr₁ ⟩
-       pr₁ ∘ ⌜ e ⌝⁻¹                 ＝⟨ refl ⟩
+       pr₁ ∘ ⌜ e ⌝⁻¹                 ＝⟨refl⟩
        f                             ∎
 
    r : (Σ (fiber f) , pr₁) ＝ (X , f)
@@ -269,7 +269,7 @@ Definition of when the given pair of universes is a classifier,
    NB = refl
 
    q = transport (λ - → - → Y) p pr₁ ＝⟨ transport-is-pre-comp' ua e pr₁ ⟩
-       pr₁ ∘ ⌜ e ⌝⁻¹                 ＝⟨ refl ⟩
+       pr₁ ∘ ⌜ e ⌝⁻¹                 ＝⟨refl⟩
        f                             ∎
 
    r : (Σ (fiber f) , pr₁) ＝ (X , f)
@@ -507,7 +507,7 @@ universe-is-classifier-implies-universe-is-univalent {𝓤} fe⁺ pe c = V
    IV : is-singleton (Σ X ꞉ 𝓤 ̇ , (Y ≃ X))
    IV = equiv-to-singleton
          ((Σ X ꞉ 𝓤 ̇ , (Y ≃ X))                        ≃⟨ IV₀ ⟩
-          (Σ X ꞉ 𝓤 ̇ , (X ≃ Y))                        ≃⟨ ≃-refl _ ⟩
+          (Σ X ꞉ 𝓤 ̇ , (X ≃ Y))                        ≃⟨by-definition⟩
           (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , is-equiv f)     ≃⟨ IV₁ ⟩
           (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , is-vv-equiv f)  ■)
         III

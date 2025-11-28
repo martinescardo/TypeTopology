@@ -699,7 +699,7 @@ purpose.
     a (inl γ) = g y , ψ
      where
       ψ : (d : is-decidable (is-g-point (g y))) → H (g y) d ＝ y
-      ψ (inl γ') = H (g y) (inl γ') ＝⟨ by-definition ⟩
+      ψ (inl γ') = H (g y) (inl γ') ＝⟨by-definition⟩
                    g⁻¹ (g y) γ'     ＝⟨ g⁻¹-is-linv y γ' ⟩
                    y                ∎
       ψ (inr ν)  = have ν ∶ ¬ is-g-point (g y)
@@ -716,7 +716,7 @@ purpose.
       ψ : (d : is-decidable (is-g-point x)) → H x d ＝ y
       ψ (inl γ) = have γ ∶ is-g-point x
                   which-is-impossible-by (pr₂ w ∶ ¬ is-g-point x)
-      ψ (inr ν) = H x (inr ν) ＝⟨ by-definition ⟩
+      ψ (inr ν) = H x (inr ν) ＝⟨by-definition⟩
                   f x         ＝⟨ p ⟩
                   y           ∎
     b : Σ x ꞉ X ,((d : is-decidable (is-g-point x)) → H x d ＝ y)

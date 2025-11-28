@@ -56,11 +56,11 @@ naive-univalence-gives-funext {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ
   π₀-equals-π₁ = is-equiv-lc φ φ-is-equiv πδ
 
   γ : f₀ ＝ f₁
-  γ = f₀                              ＝⟨ refl ⟩
-      (λ x → f₀ x)                    ＝⟨ refl ⟩
+  γ = f₀                              ＝⟨refl⟩
+      (λ x → f₀ x)                    ＝⟨refl⟩
       (λ x → π₀ (f₀ x , f₁ x , h x))  ＝⟨ I ⟩
-      (λ x → π₁ (f₀ x , f₁ x , h x))  ＝⟨ refl ⟩
-      (λ x → f₁ x)                    ＝⟨ refl ⟩
+      (λ x → π₁ (f₀ x , f₁ x , h x))  ＝⟨refl⟩
+      (λ x → f₁ x)                    ＝⟨refl⟩
       f₁                              ∎
        where
         I = ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁
@@ -224,11 +224,11 @@ propositional-univalence-gives-naive-prop-valued-funext
   π₀-equals-π₁ = equivs-are-lc φ φ-is-equiv πδ
 
   γ : f₀ ＝ f₁
-  γ = f₀                              ＝⟨ refl ⟩
-      (λ x → f₀ x)                    ＝⟨ refl ⟩
+  γ = f₀                              ＝⟨refl⟩
+      (λ x → f₀ x)                    ＝⟨refl⟩
       (λ x → π₀ (f₀ x , f₁ x , h x))  ＝⟨ I ⟩
-      (λ x → π₁ (f₀ x , f₁ x , h x))  ＝⟨ refl ⟩
-      (λ x → f₁ x)                    ＝⟨ refl ⟩
+      (λ x → π₁ (f₀ x , f₁ x , h x))  ＝⟨refl⟩
+      (λ x → f₁ x)                    ＝⟨refl⟩
       f₁                              ∎
    where
     h : (x : X) → f₀ x ＝ f₁ x
