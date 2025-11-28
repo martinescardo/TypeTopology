@@ -1,8 +1,8 @@
 Anna Williams, 17 October 2025
 
 Formalisation of some 1-category theory with univalent foundations.
-Included are basic definitions of categories, functors and
-natural transformations.
+Included are definitions of wild categories, precategories,
+(univalent) categories, functors and natural transformations.
 
 \begin{code}
 
