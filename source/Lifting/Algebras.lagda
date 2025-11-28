@@ -719,6 +719,17 @@ module free-algebras-in-the-category-of-sets
                      λ (p , (q , d)) → ((p , q), d)) ,
                     (λ _ → refl))
 
+\end{code}
+
+We rely on the following useful lemma, which says that every element
+of 𝓛 X is a join of positive elements, as in the case after Anders
+Kock (see [1] below), which is interesting in its own right. The
+positive elements of the free algebra 𝓛 X are those of the form η x,
+but we don't need to know this or the definition of positive element
+in order to formulate and prove the following.
+
+\begin{code}
+
  every-element-of-𝓛-is-a-positive-join : (l@(P , φ , i) : 𝓛 X)
                                        → l ＝ ⨆ i (η ∘ φ)
  every-element-of-𝓛-is-a-positive-join l@(P , φ , i) =

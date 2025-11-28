@@ -339,6 +339,13 @@ for that purpose.
         where
          II₀ = from-⋍ pe fe fe (((λ p → p , ⋆) , pr₁) , (λ _ → by-definition))
 
+    II' = (ι g holds , (λ _ → g) , i)       ＝⟨ II₀ ⟩
+         ((ι g holds × 𝟙) , (λ _ → g) , _) ＝⟨by-definition⟩
+         ⨆ i φ                             ＝⟨ equivs-are-lc h h-is-equiv I ⟩
+         ⊥                                 ∎
+        where
+         II₀ = from-⋍ pe fe fe (((λ p → p , ⋆) , pr₁) , (λ _ → by-definition))
+
     III : ι g ＝ ⊥Ω
     III = to-Ω-＝ fe (ap is-defined II)
 
@@ -479,3 +486,63 @@ Speculative question. Is there a nice characterization of the type of
 all algebra structures on Ω? We have two "extreme" ones, namely ∃ and ∀.
 There must be plenty in between. What does the type of all of them
 look like?
+
+\begin{code}
+
+open import UF.PropTrunc
+open import UF.Sets-Properties
+open import UF.Subsingletons-Properties
+
+module freeness-of-products-of-algebras
+        {𝓤 : Universe}
+        (X : 𝓤 ̇ )
+        (pt : propositional-truncations-exist)
+       where
+
+ open PropositionalTruncation pt
+
+ Ωˣ = X → Ω
+
+ A : 𝓛-alg Ωˣ
+ A = Π-is-alg fe (λ (_ : X) → Ω) (λ (_ : X) → Ω∃)
+
+ G' : 𝓣⁺ ⊔ 𝓤 ̇
+ G' = Σ B ꞉ Ωˣ , is-positive A B
+
+ positivity-charac : (B : Ωˣ)
+                   → is-positive  A B ↔ (∃ x ꞉ X , B x holds)
+ positivity-charac B = {!!}
+
+ G : 𝓣 ⁺ ⊔ 𝓤 ̇
+ G = Σ B ꞉ Ωˣ , ∃ x ꞉ X , B x holds
+
+ G-is-set : is-set G
+ G-is-set = Σ-is-set
+             (Π-is-set fe (λ (_ : X) → Ω-is-set fe pe))
+             (λ (_ : Ωˣ) → props-are-sets ∃-is-prop)
+
+ ι : G → Ωˣ
+ ι = pr₁
+
+ ι-is-embedding : is-embedding ι
+ ι-is-embedding = pr₁-is-embedding (λ (_ : Ωˣ) → ∃-is-prop)
+
+\end{code}
+
+       η
+  G ───────→ 𝓛 G
+   ╲          │
+    ╲         │
+     ╲        │
+    ι ╲     h │
+       ╲      │
+        ╲     │
+         ╲    │
+          ╲   ↓
+           ➘  A.
+
+\begin{code}
+
+ open free-algebras-in-the-category-of-sets pe fe G G-is-set
+
+\end{code}
