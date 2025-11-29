@@ -439,6 +439,8 @@ all algebra structures on Ω? We have two "extreme" ones, namely ∃ and ∀.
 There must be plenty in between. What does the type of all of them
 look like?
 
+Getting started answering the speculative questions.
+
 \begin{code}
 
 open import UF.PropTrunc
@@ -468,9 +470,26 @@ module freeness-of-products-of-algebras
  is-pos : Ωˣ → 𝓤 ⊔ 𝓣 ̇
  is-pos B = ∃ x ꞉ X , B x holds
 
+\end{code}
+
+The following is trivial, but the proof will be probably laborious in
+Agda. For the particular type Ωˣ, positivity amounts, rather directly,
+to the impredicative definition of the existential quantifier in
+higher-order logic.
+
+\begin{code}
+
+{-
  positivity-charac : (B : Ωˣ)
                    → is-positive A B ↔ is-pos B
  positivity-charac B = {!!}
+-}
+
+\end{code}
+
+In any case, for the moment we just define
+
+\begin{code}
 
  G : 𝓣 ⁺ ⊔ 𝓤 ̇
  G = Σ B ꞉ Ωˣ , is-pos B
