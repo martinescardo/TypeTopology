@@ -438,3 +438,99 @@ Speculative question. Is there a nice characterization of the type of
 all algebra structures on Ω? We have two "extreme" ones, namely ∃ and ∀.
 There must be plenty in between. What does the type of all of them
 look like?
+
+\begin{code}
+
+open import UF.PropTrunc
+open import UF.Sets-Properties
+open import UF.Subsingletons-Properties
+
+module freeness-of-products-of-algebras
+        {𝓤 : Universe}
+        (X : 𝓤 ̇ )
+        (pt : propositional-truncations-exist)
+       where
+
+ open PropositionalTruncation pt
+
+ Ωˣ : 𝓣 ⁺ ⊔ 𝓤 ̇
+ Ωˣ = X → Ω
+
+ Ωˣ-is-set : is-set Ωˣ
+ Ωˣ-is-set = Π-is-set fe (λ (_ : X) → Ω-is-set fe pe)
+
+ A : 𝓛-alg Ωˣ
+ A = Π-is-alg fe (λ (_ : X) → Ω) (λ (_ : X) → Ω∃)
+
+ G' : 𝓣⁺ ⊔ 𝓤 ̇
+ G' = Σ B ꞉ Ωˣ , is-positive A B
+
+ is-pos : Ωˣ → 𝓤 ⊔ 𝓣 ̇
+ is-pos B = ∃ x ꞉ X , B x holds
+
+ positivity-charac : (B : Ωˣ)
+                   → is-positive A B ↔ is-pos B
+ positivity-charac B = {!!}
+
+ G : 𝓣 ⁺ ⊔ 𝓤 ̇
+ G = Σ B ꞉ Ωˣ , is-pos B
+
+ G-is-set : is-set G
+ G-is-set = Σ-is-set
+             (Π-is-set fe (λ (_ : X) → Ω-is-set fe pe))
+             (λ (_ : Ωˣ) → props-are-sets ∃-is-prop)
+
+ ι : G → Ωˣ
+ ι = pr₁
+
+ ι-is-embedding : is-embedding ι
+ ι-is-embedding = pr₁-is-embedding (λ (_ : Ωˣ) → ∃-is-prop)
+
+\end{code}
+
+       η
+  G ───────→ 𝓛 G
+   ╲          │
+    ╲         │
+     ╲        │
+    ι ╲     h │
+       ╲      │
+        ╲     │
+         ╲    │
+          ╲   ↓
+           ➘  A.
+
+\begin{code}
+
+ open free-algebras-in-the-category-of-sets pe fe G G-is-set
+
+ 𝓛G : 𝓛-alg (𝓛 G)
+ 𝓛G = free
+
+ h : 𝓛 G → Ωˣ
+ h = 𝓛-extension Ωˣ-is-set A ι
+
+ h-explicitly : (l@(P , φ , i) : 𝓛 G)
+              → h l ＝ λ x → E p ꞉ Ω , ι (φ p) x
+ h-explicitly l = by-definition
+
+ h-is-hom : is-hom 𝓛G A h
+ h-is-hom = 𝓛-extension-is-hom Ωˣ-is-set A ι
+
+ h-extends-ι : h ∘ η ∼ ι
+ h-extends-ι = 𝓛-extension-extends Ωˣ-is-set A ι
+
+ module _ (A-is-free : is-free-𝓛-alg A G ι) where
+
+  h-is-equiv : is-equiv h
+  h-is-equiv = unique-hom-is-equiv
+                G (𝓛-is-set fe fe pe G-is-set) Ωˣ-is-set G-is-set
+                η ι 𝓛G A 𝓛-is-free A-is-free
+
+  𝕙 : 𝓛 G ≃ Ωˣ
+  𝕙 = h , h-is-equiv
+
+  h⁻¹ : Ωˣ → 𝓛 G
+  h⁻¹ = ⌜ 𝕙 ⌝⁻¹
+
+\end{code}

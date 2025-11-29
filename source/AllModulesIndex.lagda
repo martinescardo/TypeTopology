@@ -15,7 +15,7 @@
 
 This file hereditarily imports all TypeTopology files. Most of them
 are --safe. All of them are --without-K. See discussion below for
-details, and also the followAning Agda manual entries.
+details, and also the following Agda manual entries.
 
 https://agda.readthedocs.io/en/latest/language/safe-agda.html
 
