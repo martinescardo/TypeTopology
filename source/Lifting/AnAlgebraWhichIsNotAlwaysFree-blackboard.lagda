@@ -140,7 +140,7 @@ open import Lifting.Algebras 𝓣
 open import Lifting.Construction 𝓣
 open import Lifting.EmbeddingDirectly 𝓣
 open import Lifting.Identity 𝓣
-open import Lifting.TwoAlgebrasOnOmega 𝓣 fe pe renaming (Π-algebra-on-Ω to Ω∀)
+open import Lifting.TwoAlgebrasOnOmega 𝓣 fe pe renaming (Π-alg-on-Ω to Ω∀)
 open import UF.ClassicalLogic
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
@@ -265,9 +265,7 @@ generators ι.
 \begin{code}
 
  module assumption
-         (Ω∀-is-free : Ω∀ is-𝓛-alg-freely-generated-by G
-                           with-insertion-of-generators ι
-                           eliminating-at 𝓣⁺)
+         (Ω∀-is-free : is-free-𝓛-alg Ω∀ G ι)
         where
 
 \end{code}
@@ -299,7 +297,7 @@ h⁻¹ being the unique homomorphism extending η along ι.
 \begin{code}
 
   module E = free-algebra-eliminators
-              Ω∀ G ι 𝓣⁺ Ω∀-is-free (𝓛-is-set fe fe pe G-is-set) free η
+              Ω∀ G ι Ω∀-is-free (𝓛-is-set fe fe pe G-is-set) free η
 
   h⁻¹ : Ω → 𝓛 G
   h⁻¹ = E.unique-hom
@@ -329,7 +327,7 @@ h⁻¹ being the unique homomorphism extending η along ι.
            (λ _ → refl)
      where
       open free-algebra-eliminators
-            free G η 𝓣⁺ 𝓛-is-free-algebra
+            free G η 𝓛-is-free
             (𝓛-is-set fe fe pe G-is-set) free η
 
     IV : h ∘ h⁻¹ ∼ id
@@ -342,7 +340,7 @@ h⁻¹ being the unique homomorphism extending η along ι.
           (λ _ → refl)
      where
       open free-algebra-eliminators
-            Ω∀ G ι 𝓣⁺ Ω∀-is-free (Ω-is-set fe pe) Ω∀ ι
+            Ω∀ G ι Ω∀-is-free (Ω-is-set fe pe) Ω∀ ι
 
   𝕙 : 𝓛 G ≃ Ω
   𝕙 = h , h-is-equiv
@@ -608,9 +606,7 @@ consequences-of-Ω∀-being-freely-generated
  : (G : 𝓣 ̇ )
    (G-is-set : is-set G)
    (ι : G → Ω)
-   (Ω∀-is-free : Ω∀ is-𝓛-alg-freely-generated-by G
-                    with-insertion-of-generators ι
-                    eliminating-at 𝓣⁺)
+   (Ω∀-is-free : is-free-𝓛-alg Ω∀ G ι)
  →  ¬¬ EM 𝓣
  ×  is-prop G
  ×  ¬ is-empty G
@@ -636,11 +632,7 @@ is boolean. This is a particular case of the above development.
 
 \begin{code}
 
-corollary
- : Ω∀ is-𝓛-alg-freely-generated-by 𝟙
-       with-insertion-of-generators (λ ⋆ → ⊥Ω)
-       eliminating-at 𝓣⁺
- → EM 𝓣
+corollary : is-free-𝓛-alg Ω∀  𝟙 (λ ⋆ → ⊥Ω) → EM 𝓣
 corollary Ω∀-is-freely-generated-by-⊥
  = G-pointed-gives-excluded-middle ⋆
  where
@@ -668,9 +660,7 @@ module _
        where
 
  private
-  Ω∀-is-free = Ω∀ is-𝓛-alg-freely-generated-by G
-                  with-insertion-of-generators ι
-                  eliminating-at 𝓣⁺
+  Ω∀-is-free = is-free-𝓛-alg Ω∀ G ι
 
 \end{code}
 
@@ -679,23 +669,23 @@ The first question is whether our result is tight.
 \begin{code}
 
  Question₀ = ¬¬ EM 𝓣
-           → Ω∀-is-free
+           → is-free-𝓛-alg Ω∀ G ι
 
  Question₀-variation₀ = ¬¬ EM 𝓣
                       → G ≃ EM 𝓣
-                      → Ω∀-is-free
+                      → is-free-𝓛-alg Ω∀ G ι
 
  Question₀-variation₁ = ¬¬ EM 𝓣
                       → G ≃ EM 𝓣
                       → ((g : G) → ι g ＝ ⊥Ω)
-                      → Ω∀-is-free
+                      → is-free-𝓛-alg Ω∀ G ι
 \end{code}
 
 The second question is whether our result can be improved as follows.
 
 \begin{code}
 
- Question₁ = Ω∀-is-free
+ Question₁ = is-free-𝓛-alg Ω∀ G ι
            → EM 𝓣
 
 \end{code}
@@ -705,8 +695,8 @@ That is, any topos in which Ω∀ is free would be necessarily boolean.
 
 \begin{code}
 
- of-course : Question₀ × Question₁ → (¬¬ EM 𝓣 → EM 𝓣)
- of-course (q₀ , q₁) = q₁ ∘ q₀
+ of-course : Question₀ → Question₁ → (¬¬ EM 𝓣 → EM 𝓣)
+ of-course q₀ q₁ nnem = q₁ (q₀ nnem)
 
 \end{code}
 
@@ -885,9 +875,7 @@ module stronger-result-with-simpler-proof
         (G : 𝓣 ̇ )
         (G-is-set : is-set G)
         (ι : G → Ω)
-        (Ω∀-is-free : Ω∀ is-𝓛-alg-freely-generated-by G
-                         with-insertion-of-generators ι
-                         eliminating-at 𝓣⁺)
+        (Ω∀-is-free : is-free-𝓛-alg Ω∀  G ι)
        where
 
  open main-results G G-is-set ι
@@ -959,9 +947,7 @@ stronger-consequence-of-Ω∀-being-freely-generated
  : (G : 𝓣 ̇ )
    (G-is-set : is-set G)
    (ι : G → Ω)
-   (Ω∀-is-free : Ω∀ is-𝓛-alg-freely-generated-by G
-                    with-insertion-of-generators ι
-                    eliminating-at 𝓣⁺)
+   (Ω∀-is-free : is-free-𝓛-alg Ω∀ G ι)
  → EM 𝓣
 stronger-consequence-of-Ω∀-being-freely-generated G G-is-set ι Ω∀-is-free
  = EM-holds

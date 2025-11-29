@@ -125,8 +125,7 @@ open import Lifting.Construction 𝓣
 open import Lifting.EmbeddingDirectly 𝓣
 open import Lifting.Identity 𝓣
 open import Lifting.TwoAlgebrasOnOmega 𝓣 fe pe
-             renaming (Π-algebra-on-Ω to Ω∀)
-             renaming (Σ-algebra-on-Ω to Ω∃)
+             renaming (Π-alg-on-Ω to Ω∀ ; Σ-alg-on-Ω to Ω∃)
 open import UF.ClassicalLogic
 open import UF.Embeddings
 open import UF.Equiv
@@ -216,10 +215,7 @@ generators ι, from which the principle of excluded will follow.
 
 \begin{code}
 
- module _ (Ω∀-is-free : Ω∀ is-𝓛-alg-freely-generated-by G
-                           with-insertion-of-generators ι
-                           eliminating-at 𝓣⁺)
-        where
+ module _ (Ω∀-is-free : is-free-𝓛-alg Ω∀ G ι) where
 
 \end{code}
 
@@ -250,54 +246,17 @@ h⁻¹ being the unique homomorphism extending η along ι.
 
 \begin{code}
 
-  private
-   module E = free-algebra-eliminators
-               Ω∀ G ι 𝓣⁺ Ω∀-is-free (𝓛-is-set fe fe pe G-is-set) 𝓛G η
-
-  h⁻¹ : Ω → 𝓛 G
-  h⁻¹ = E.unique-hom
-
   h-is-equiv : is-equiv h
-  h-is-equiv = qinvs-are-equivs h (h⁻¹ , III , IV)
-   where
-    h⁻¹-is-hom : is-hom Ω∀ 𝓛G h⁻¹
-    h⁻¹-is-hom = E.unique-hom-is-hom
-
-    h⁻¹-extends-η : h⁻¹ ∘ ι ∼ η
-    h⁻¹-extends-η = E.unique-hom-is-extension
-
-    I : is-hom 𝓛G 𝓛G (h⁻¹ ∘ h)
-    I = ∘-is-hom 𝓛G Ω∀ 𝓛G h h⁻¹ h-is-hom h⁻¹-is-hom
-
-    II : is-hom Ω∀ Ω∀ (h ∘ h⁻¹)
-    II = ∘-is-hom Ω∀ 𝓛G Ω∀ h⁻¹ h h⁻¹-is-hom h-is-hom
-
-    III : h⁻¹ ∘ h ∼ id
-    III = at-most-one-extending-hom'
-           (h⁻¹ ∘ h , I)
-           (id , id-is-hom 𝓛G)
-           (λ g → h⁻¹ (h (η g)) ＝⟨ ap h⁻¹ (h-extends-ι g) ⟩
-                  h⁻¹ (ι g)     ＝⟨ h⁻¹-extends-η g ⟩
-                  η g           ∎)
-           (λ (_ : G) → by-definition)
-     where
-      open free-algebra-eliminators
-            𝓛G G η 𝓣⁺ 𝓛-is-free-algebra (𝓛-is-set fe fe pe G-is-set) 𝓛G η
-
-    IV : h ∘ h⁻¹ ∼ id
-    IV = at-most-one-extending-hom'
-          (h ∘ h⁻¹ , II)
-          (id , id-is-hom Ω∀)
-          (λ g → h (h⁻¹ (ι g)) ＝⟨ ap h (h⁻¹-extends-η g) ⟩
-                 h (η g)       ＝⟨ h-extends-ι g ⟩
-                 ι g           ∎)
-          (λ (_ : G) → by-definition)
-     where
-      open free-algebra-eliminators
-            Ω∀ G ι 𝓣⁺ Ω∀-is-free (Ω-is-set fe pe) Ω∀ ι
+  h-is-equiv = unique-hom-is-equiv G
+                (𝓛-is-set fe fe pe G-is-set) (Ω-is-set fe pe) G-is-set
+                η ι 𝓛G Ω∀ 𝓛-is-free Ω∀-is-free
 
   𝕙 : 𝓛 G ≃ Ω
   𝕙 = h , h-is-equiv
+
+  h⁻¹ : Ω → 𝓛 G
+  h⁻¹ = ⌜ 𝕙 ⌝⁻¹
+
 
 \end{code}
 

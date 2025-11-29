@@ -66,8 +66,8 @@ private
  sum {P} i φ = (Σ p ꞉ P , φ p holds) ,
                (Σ-is-prop i (λ p → holds-is-prop (φ p)))
 
-Σ-algebra-on-Ω : 𝓛-alg Ω
-Σ-algebra-on-Ω = sum , k , ι
+Σ-alg-on-Ω : 𝓛-alg Ω
+Σ-alg-on-Ω = sum , k , ι
  where
   k : (P : Ω) → sum 𝟙-is-prop (λ (_ : 𝟙) → P) ＝ P
   k P = Ω-extensionality' pe fe 𝟙-lneutral
@@ -78,13 +78,19 @@ private
     ＝ sum i (λ p → sum (j p) (λ q → φ (p , q)))
   ι P Q i j φ = Ω-extensionality' pe fe Σ-assoc
 
+E[꞉]-syntax : {p : Ω} → (p holds → Ω) → Ω
+E[꞉]-syntax {p} φ = sum (holds-is-prop p) φ
+
+infixr -1 E[꞉]-syntax
+
+syntax E[꞉]-syntax (λ p → e) = E p ꞉ Ω , e
+
 private
  prod : {P : 𝓣 ̇ } → is-prop P → (P → Ω) → Ω
  prod {P} i φ = (Π p ꞉ P , φ p holds) ,
                  Π-is-prop fe (λ p → holds-is-prop (φ p))
-
-Π-algebra-on-Ω : 𝓛-alg Ω
-Π-algebra-on-Ω = prod , k , ι
+Π-alg-on-Ω : 𝓛-alg Ω
+Π-alg-on-Ω = prod , k , ι
  where
   k : (P : Ω) → prod 𝟙-is-prop (λ (_ : 𝟙) → P) ＝ P
   k P = Ω-extensionality' pe fe (≃-sym (𝟙→ fe))
@@ -111,8 +117,8 @@ private
   II : 𝟘
   II = ⌜ I ⌝⁻¹ ⋆
 
-Σ-and-Π-algebra-on-Ω-disagree : Σ-algebra-on-Ω ≠ Π-algebra-on-Ω
-Σ-and-Π-algebra-on-Ω-disagree e = Σ-and-Π-disagree V
+Σ-and-Π-alg-on-Ω-disagree : Σ-alg-on-Ω ≠ Π-alg-on-Ω
+Σ-and-Π-alg-on-Ω-disagree e = Σ-and-Π-disagree V
   where
    I : (λ {P} → sum {P}) ＝ prod
    I = ap pr₁ e
