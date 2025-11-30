@@ -108,31 +108,31 @@ the type of isomorphisms between objects of a wild category.
 
 \begin{code}
 
-is-iso : {{ W : WildCategory 𝓤 𝓥 }} {a b : obj W} (f : hom a b) → 𝓥 ̇ 
-is-iso {_} {_} {a} {b} f = Σ inv ꞉ hom b a , (inv ∘ f ＝ id) × (f ∘ inv ＝ id)
+is-iso : {{W : WildCategory 𝓤 𝓥}} {a b : obj W} (f : hom {{W}} a b) → 𝓥 ̇ 
+is-iso {{W}} {a} {b} f = Σ inv ꞉ hom b a , (inv ∘⟨ W ⟩ f ＝ id) × (f ∘⟨ W ⟩ inv ＝ id)
 
-inv : {{ W : WildCategory 𝓤 𝓥 }}
+inv : {{W : WildCategory 𝓤 𝓥}}
       {a b : obj W}
       {f : hom a b}
     → is-iso f
     → hom b a
 inv iso = pr₁ iso
 
-l-inv : {{ W : WildCategory 𝓤 𝓥 }}
-            {a b : obj W}
-            {f : hom {{W}} a b}
-            (iso : is-iso f)
-          → inv iso ∘ f ＝ id 
+l-inv : {{W : WildCategory 𝓤 𝓥}}
+        {a b : obj W}
+        {f : hom a b}
+        (iso : is-iso f)
+      → inv iso ∘ f ＝ id 
 l-inv iso = pr₁ (pr₂ iso)
 
-r-inv : {{ W : WildCategory 𝓤 𝓥 }}
-            {a b : obj W}
-            {f : hom a b}
-            (iso : is-iso f)
-          → f ∘ inv iso ＝ id
+r-inv : {{W : WildCategory 𝓤 𝓥 }}
+        {a b : obj W}
+        {f : hom a b}
+        (iso : is-iso f)
+      → f ∘⟨ W ⟩ inv iso ＝ id
 r-inv iso = pr₂ (pr₂ iso)
 
-_≅_ : {{ W : WildCategory 𝓤 𝓥 }} (a b : obj W) → 𝓥 ̇
+_≅_ : {{W : WildCategory 𝓤 𝓥}} (a b : obj W) → 𝓥 ̇
 a ≅ b = Σ f ꞉ hom a b , is-iso f
 
 wildcat-iso-explicit : (W : WildCategory 𝓤 𝓥)
@@ -141,6 +141,18 @@ wildcat-iso-explicit : (W : WildCategory 𝓤 𝓥)
 wildcat-iso-explicit W a b = _≅_ {{W}} a b
 
 syntax wildcat-iso-explicit W a b = a ≅⟨ W ⟩ b
+
+iso : {{W : WildCategory 𝓤 𝓥}}
+      {a b : obj W}
+    → a ≅ b
+    → hom a b
+iso = pr₁
+
+p-is-iso : {{W : WildCategory 𝓤 𝓥}}
+        {a b : obj W}
+        (f : a ≅ b)
+      → Σ g ꞉ hom b a , (g ∘ (iso f) ＝ id) × ((iso f) ∘ g ＝ id)
+p-is-iso = pr₂
 
 \end{code}
 
