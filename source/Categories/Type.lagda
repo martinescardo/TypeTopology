@@ -172,8 +172,8 @@ being-precat-is-prop fe W p q = Π-is-prop fe
                                  (λ a → Π-is-prop fe
                                   (λ b → being-set-is-prop fe)) _ _
 
-PreCategory : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-PreCategory 𝓤 𝓥 = Σ W ꞉ WildCategory 𝓤 𝓥 , is-precategory W
+Precategory : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+Precategory 𝓤 𝓥 = Σ W ꞉ WildCategory 𝓤 𝓥 , is-precategory W
 
 \end{code}
 
@@ -184,10 +184,10 @@ We also define the corresponding projections from a precategory.
 instance
   underlying-wildcategory-of-precategory
    : {𝓤 𝓥 : Universe}
-   → Underlying-Type (PreCategory 𝓤 𝓥) (WildCategory 𝓤 𝓥)
+   → Underlying-Type (Precategory 𝓤 𝓥) (WildCategory 𝓤 𝓥)
   ⟨_⟩ {{underlying-wildcategory-of-precategory}} (P , _) = P
 
-hom-is-set : {{P : PreCategory 𝓤 𝓥}}
+hom-is-set : {{P : Precategory 𝓤 𝓥}}
              {a b : obj ⟨ P ⟩}
            → is-set (hom {{⟨ P ⟩}} a b)
 hom-is-set {{_ , p}} {a} {b} = p a b
@@ -202,7 +202,7 @@ right inverse equalities are a proposition.
 
 \begin{code}
 
-inv-is-lc : {{P : PreCategory 𝓤 𝓥}}
+inv-is-lc : {{P : Precategory 𝓤 𝓥}}
             {a b : obj ⟨ P ⟩}
             {f : hom {{⟨ P ⟩}} a b}
             (x y : is-iso {{⟨ P ⟩}} f)
@@ -216,7 +216,7 @@ inv-is-lc {{P}} x y refl = ap₂ (λ l r → inv {{⟨ P ⟩}} x , l , r) l-eq r
   r-eq : r-inv {{⟨ P ⟩}} x ＝ r-inv {{⟨ P ⟩}} y
   r-eq = hom-is-set (r-inv {{⟨ P ⟩}} x) (r-inv {{⟨ P ⟩}} y)
 
-being-iso-is-prop : {{P : PreCategory 𝓤 𝓥}}
+being-iso-is-prop : {{P : Precategory 𝓤 𝓥}}
                     {a b : obj ⟨ P ⟩}
                     (f : hom {{⟨ P ⟩}} a b)
                   → is-prop (is-iso {{⟨ P ⟩}} f)
@@ -246,7 +246,7 @@ Following this, we can see that the type of isomorphisms is a set.
 
 \begin{code}
 
-isomorphism-type-is-set : {{P : PreCategory 𝓤 𝓥}}
+isomorphism-type-is-set : {{P : Precategory 𝓤 𝓥}}
                           {a b : obj ⟨ P ⟩}
                         → is-set (a ≅⟨ ⟨ P ⟩ ⟩ b)
 isomorphism-type-is-set {{P}} = Σ-is-set hom-is-set
@@ -279,11 +279,11 @@ That is the above map is an equivalence.
 
 \begin{code}
 
-is-category : (P : PreCategory 𝓤 𝓥) → (𝓤 ⊔ 𝓥) ̇ 
+is-category : (P : Precategory 𝓤 𝓥) → (𝓤 ⊔ 𝓥) ̇ 
 is-category P = (a b : obj ⟨ P ⟩) → is-equiv (id-to-iso {{⟨ P ⟩}} a b)
 
 being-cat-is-prop : (fe : Fun-Ext)
-                    (P : PreCategory 𝓤 𝓥)
+                    (P : Precategory 𝓤 𝓥)
                   → is-prop (is-category P)
 being-cat-is-prop fe P x y = Π₂-is-prop fe I _ _
  where
@@ -292,7 +292,7 @@ being-cat-is-prop fe P x y = Π₂-is-prop fe I _ _
                                       (id-to-iso {{⟨ P ⟩}} a b) e e'
 
 Category : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
-Category 𝓤 𝓥 = Σ P ꞉ PreCategory 𝓤 𝓥 , is-category P
+Category 𝓤 𝓥 = Σ P ꞉ Precategory 𝓤 𝓥 , is-category P
 
 \end{code}
 
@@ -303,7 +303,7 @@ Projections from category.
 instance
   underlying-precategory-of-category
    : {𝓤 𝓥 : Universe}
-   → Underlying-Type (Category 𝓤 𝓥) (PreCategory 𝓤 𝓥)
+   → Underlying-Type (Category 𝓤 𝓥) (Precategory 𝓤 𝓥)
   ⟨_⟩ {{underlying-precategory-of-category}} (P , _) = P
 
   underlying-wildcategory-of-category
