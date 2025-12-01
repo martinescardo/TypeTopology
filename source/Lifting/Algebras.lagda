@@ -897,7 +897,7 @@ module _
         (h ∘ h⁻¹ , II)
         (id , id-is-hom β)
         (λ g → h (h⁻¹ (j g)) ＝⟨ ap h (h⁻¹-extends-i g) ⟩
-               h (i g)     ＝⟨ h-extends-j g ⟩
+               h (i g)       ＝⟨ h-extends-j g ⟩
                j g           ∎)
         (λ (_ : G) → by-definition)
    where

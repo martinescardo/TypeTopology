@@ -83,7 +83,7 @@ E[꞉]-syntax {p} φ = sum (holds-is-prop p) φ
 
 infixr -1 E[꞉]-syntax
 
-syntax E[꞉]-syntax (λ p → e) = E p ꞉ Ω , e
+syntax E[꞉]-syntax (λ p → e) = E p , e
 
 private
  prod : {P : 𝓣 ̇ } → is-prop P → (P → Ω) → Ω
