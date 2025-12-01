@@ -257,14 +257,13 @@ h⁻¹ being the unique homomorphism extending η along ι.
   h⁻¹ : Ω → 𝓛 G
   h⁻¹ = ⌜ 𝕙 ⌝⁻¹
 
-
 \end{code}
 
 Using this, we in turn conclude that our assumed insertion of
 generators ι : G → Ω is constantly ⊥.
 
-The trick (or insight, as some people would say) is, given a generator
-g : G, to consider the partial element l : 𝓛 G defined by
+The trick is, given a generator g : G, to consider the partial element l : 𝓛 G
+defined by
 
  l = (ι g holds , (λ _ → g) , _),
 
@@ -479,11 +478,11 @@ higher-order logic.
 
 \begin{code}
 
-{-
+ {-
  positivity-charac : (B : Ωˣ)
                    → is-positive A B ↔ is-pos B
  positivity-charac B = {!!}
--}
+ -}
 
 \end{code}
 
