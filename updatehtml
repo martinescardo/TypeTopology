@@ -1,1 +1,12 @@
-../admin-utilities/updatehtml
+echo "***updatehtml is deprecated.***"
+echo "The html rendering is now automatically produced by a github action."
+
+# time ../admin-utilities/updatehtml
+
+echo "We will instead typecheck the root."
+
+time agda AllModulesIndex.lagda
+
+echo ""
+echo ""
+echo "***Next time remember to not use this script.*** :-)"
