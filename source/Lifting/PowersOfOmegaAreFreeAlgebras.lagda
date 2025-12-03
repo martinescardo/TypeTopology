@@ -155,7 +155,7 @@ that Ωˣ is isomorphic to 𝓛 G as a lifting algebra:
 \begin{code}
 
 h⁻¹ : Ωˣ → 𝓛 G
-h⁻¹ π = is-pos π , (λ i → π , i) , being-pos-is-prop π
+h⁻¹ π = is-pos π , (λ (i : is-pos π) → π , i) , being-pos-is-prop π
 
 h⁻¹-is-section : h ∘ h⁻¹ ∼ id
 h⁻¹-is-section π =
