@@ -258,9 +258,9 @@ h⁻¹-extends-η g = h⁻¹ (ι g)     ＝⟨ ap h⁻¹ (h-extends-ι g ⁻¹) 
 
 \end{code}
 
-This shows that Ωˣ is isomorphic to free algebra 𝓛 G is the category
-of algebras, and hence is itself free, standard (but a bit laborious)
-categorical argument worked out below.
+This shows that Ωˣ is isomorphic to the free algebra 𝓛 G in the
+category of algebras, and hence is itself free, by a standard (but a
+bit laborious) categorical argument worked out below.
 
 \begin{code}
 
@@ -324,4 +324,4 @@ categorical argument worked out below.
 
 Under development. It seems that the same argument shows that products
 of free algebras are themselves free. Nothing special about Ω was used
-here, other than it is a free algebra.
+here, other than that it is a free algebra.
