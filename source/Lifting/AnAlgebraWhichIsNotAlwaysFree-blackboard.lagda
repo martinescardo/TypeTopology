@@ -207,7 +207,10 @@ homomorphism h : 𝓛 G → Ω extending ι along η.
  h-explicitly : h ∼ λ (P , φ , i) → Ɐ a ꞉ P , ι (φ a)
  h-explicitly _ = refl
 
- h-is-hom : is-hom free Ω∀ h
+ 𝓛G : 𝓛-alg (𝓛 G)
+ 𝓛G = canonical-free-algebra
+
+ h-is-hom : is-hom 𝓛G Ω∀ h
  h-is-hom = 𝓛-extension-is-hom (Ω-is-set fe pe) Ω∀ ι
 
  h-extends-ι : h ∘ η ∼ ι
@@ -297,7 +300,8 @@ h⁻¹ being the unique homomorphism extending η along ι.
 \begin{code}
 
   module E = free-algebra-eliminators
-              Ω∀ G ι Ω∀-is-free (𝓛-is-set fe fe pe G-is-set) free η
+              Ω∀ G ι Ω∀-is-free (𝓛-is-set fe fe pe G-is-set)
+              𝓛G η
 
   h⁻¹ : Ω → 𝓛 G
   h⁻¹ = E.unique-hom
@@ -305,30 +309,29 @@ h⁻¹ being the unique homomorphism extending η along ι.
   h-is-equiv : is-equiv h
   h-is-equiv = qinvs-are-equivs h (h⁻¹ , III , IV)
    where
-    h⁻¹-is-hom : is-hom Ω∀ free h⁻¹
+    h⁻¹-is-hom : is-hom Ω∀ 𝓛G h⁻¹
     h⁻¹-is-hom = E.unique-hom-is-hom
 
     h⁻¹-extends-η : h⁻¹ ∘ ι ∼ η
     h⁻¹-extends-η = E.unique-hom-is-extension
 
-    I : is-hom free free (h⁻¹ ∘ h)
-    I = ∘-is-hom free Ω∀ free h h⁻¹ h-is-hom h⁻¹-is-hom
+    I : is-hom 𝓛G 𝓛G (h⁻¹ ∘ h)
+    I = ∘-is-hom 𝓛G Ω∀ 𝓛G h h⁻¹ h-is-hom h⁻¹-is-hom
 
     II : is-hom Ω∀ Ω∀ (h ∘ h⁻¹)
-    II = ∘-is-hom Ω∀ free Ω∀ h⁻¹ h h⁻¹-is-hom h-is-hom
+    II = ∘-is-hom Ω∀ 𝓛G Ω∀ h⁻¹ h h⁻¹-is-hom h-is-hom
 
     III : h⁻¹ ∘ h ∼ id
     III = at-most-one-extending-hom'
            (h⁻¹ ∘ h , I)
-           (id , id-is-hom free)
+           (id , id-is-hom 𝓛G)
            (λ l → h⁻¹ (h (η l)) ＝⟨ ap h⁻¹ (h-extends-ι l) ⟩
                   h⁻¹ (ι l)     ＝⟨ h⁻¹-extends-η l ⟩
                   η l           ∎)
            (λ _ → refl)
      where
-      open free-algebra-eliminators
-            free G η 𝓛-is-free
-            (𝓛-is-set fe fe pe G-is-set) free η
+      open free-algebra-eliminators 𝓛G G η
+           𝓛-is-free (𝓛-is-set fe fe pe G-is-set) 𝓛G η
 
     IV : h ∘ h⁻¹ ∼ id
     IV = at-most-one-extending-hom'

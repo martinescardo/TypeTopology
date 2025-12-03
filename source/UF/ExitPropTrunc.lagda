@@ -19,7 +19,6 @@ Based on [1] and [2].
 module UF.ExitPropTrunc where
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Hedberg
 open import UF.KrausLemma
 open import UF.PropTrunc

@@ -57,7 +57,6 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Sets
 open import UF.Sets-Properties
-open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 
 𝓛' : 𝓤 ̇ → 𝓣 ⁺ ⊔  𝓤 ̇
