@@ -224,6 +224,23 @@ infixr -1 Sigma!
 Note: Σ! is to be avoided, in favour of the contractibility of Σ,
 following univalent mathematics.
 
+We add a new syntax which is analogous to equation or equivalence reasoning
+where we consider functions applied in sequence. We will include both
+compostional and diagrammatic order.
+
+\begin{code}
+
+_→⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → (X → Y) → (Y → Z) → (X → Z)
+_ →⟨ f ⟩ g = g ∘ f
+
+_←⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → (Y → Z) → (X → Y) → (X → Z)
+_ ←⟨ g ⟩ f = g ∘ f
+
+_▢ : (X : 𝓤 ̇ ) → X → X
+X ▢ = id
+
+\end{code}
+
 Fixities:
 
 \begin{code}
