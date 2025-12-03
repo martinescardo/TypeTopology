@@ -361,7 +361,7 @@ only-sharp-is-sharp y@(P , φ , P-is-prop) y-is-sharp = V
 
 \end{code}
 
-The following gives yet another construction of the conatural nunbers.
+The following gives yet another construction of the conatural numbers.
 
 \begin{code}
 
