@@ -185,7 +185,7 @@ module Ω∀-free-gives-EM
  open free-algebras-in-the-category-of-sets pe fe G G-is-set
 
  𝓛G : 𝓛-alg (𝓛 G)
- 𝓛G = free
+ 𝓛G = canonical-free-algebra
 
  h : 𝓛 G → Ω
  h = 𝓛-extension (Ω-is-set fe pe) Ω∀ ι
