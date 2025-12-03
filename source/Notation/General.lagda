@@ -238,7 +238,7 @@ amounts to normal composition but importantly a function A → C. This reflects
 a common mode of proof where one proves C by observing it suffices to prove
 B (and supplying a map from B to C) and then proving B by observing it suffices
 to prove A (and supplying a map from A to B). For this reason we also give a
-notation that reflects 
+notation that allows us to display this type of proof.
 
 \begin{code}
 
