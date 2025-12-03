@@ -454,9 +454,6 @@ open import UF.Sets-Properties
   II : (x ＝ y) × ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q) → (x , f) ＝ (y , g)
   II (refl , ϕ) = ap (x ,_) (dfunext fe (λ r → ϕ r r))
 
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-
 ℕ∞₂-is-¬¬-separated : funext₀ → is-¬¬-separated ℕ∞₂
 ℕ∞₂-is-¬¬-separated fe u@(x , f) v@(y , g) ν = VI
  where

@@ -9,7 +9,6 @@ Perfect images
 
 module CantorSchroederBernstein.PerfectImages where
 
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import TypeTopology.CompactTypes
 open import TypeTopology.DenseMapsProperties
