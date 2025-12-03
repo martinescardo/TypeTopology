@@ -1,6 +1,6 @@
 Martin Escardo 12-14 March 2024.
 
-We construct an embedding of ℕ∞ into ℕ⊥, the lifting on ℕ, or the
+We construct an embedding of ℕ∞ into ℕ⊥, the lifting of ℕ, or the
 flat domain of natural numbers, and prove various properties of it.
 
 We conclude that we can recover ℕ∞ as the subtype of sharp elements of ℕ⊥,
