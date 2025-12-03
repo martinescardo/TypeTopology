@@ -152,6 +152,9 @@ that Ωˣ is isomorphic to 𝓛 G as a lifting algebra:
           ╲  ↓  │
            ➘  Ωˣ.
 
+Defining h⁻¹ in the following way is the only insight in this
+file. The rest is just hard work.
+
 \begin{code}
 
 h⁻¹ : Ωˣ → 𝓛 G
