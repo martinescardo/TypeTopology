@@ -230,9 +230,15 @@ We add a new syntax which is analogous to equation or equivalence reasoning
 where we consider functions applied in sequence. We will include both
 compostional and diagrammatic order.
 
-Notice that reasoning with compositional order
+Notice that reasoning with compositional order with g : B → C and f : A → B
 
  C ∘⟨ g ⟩ B ∘⟨ f ⟩ A ▢
+
+amounts to normal composition but importantly a function A → C. This reflects
+a common mode of proof where one proves C by observing it suffices to prove
+B (and supplying a map from B to C) and then proving B by observing it suffices
+to prove A (and supplying a map from A to B). For this reason we also give a
+notation that reflects 
 
 \begin{code}
 
