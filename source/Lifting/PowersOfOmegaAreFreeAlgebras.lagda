@@ -15,11 +15,11 @@ open import UF.Subsingletons
 open import UF.PropTrunc
 
 module Lifting.PowersOfOmegaAreFreeAlgebras
-        (fe       : Fun-Ext)
-        (pe       : Prop-Ext)
-        (pt       : propositional-truncations-exist)
-        (𝓣        : Universe)
-        (X        : 𝓣 ̇ )
+        (fe : Fun-Ext)
+        (pe : Prop-Ext)
+        (pt : propositional-truncations-exist)
+        (𝓣  : Universe)
+        (X  : 𝓣 ̇ )
        where
 
 open import Lifting.Construction 𝓣
