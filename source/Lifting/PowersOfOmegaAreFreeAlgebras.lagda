@@ -1,6 +1,6 @@
 Martin Escardo, 2nd December 2025.
 
-In any 1-topos, powers of Ω are free algebras.
+In any 1-topos, powers of Ω are free lifting algebras.
 
 The same argument seems to show that products of free algebras are
 free, but this is still under development.
@@ -74,8 +74,8 @@ We let π range over Ωˣ.
 \end{code}
 
 We now consider a notion of positivity for elements of Ω ˣ (which
-agrees with Anders Kock's notion of positivity for this particular
-algebra, but we don't need to know this here).
+agrees with Anders Kock's general notion of positivity for this
+particular algebra, but we don't need to know this here).
 
 \begin{code}
 
