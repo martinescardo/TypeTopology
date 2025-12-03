@@ -78,12 +78,8 @@ private
     ＝ sum i (λ p → sum (j p) (λ q → φ (p , q)))
   ι P Q i j φ = Ω-extensionality' pe fe Σ-assoc
 
-E[꞉]-syntax : {p : Ω} → (p holds → Ω) → Ω
-E[꞉]-syntax {p} φ = sum (holds-is-prop p) φ
-
-infixr -1 E[꞉]-syntax
-
-syntax E[꞉]-syntax (λ p → e) = E p , e
+∑ : {p : Ω} → (p holds → Ω) → Ω
+∑ {p} φ = sum (holds-is-prop p) φ
 
 private
  prod : {P : 𝓣 ̇ } → is-prop P → (P → Ω) → Ω

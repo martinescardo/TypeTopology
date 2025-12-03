@@ -111,6 +111,15 @@ written in more standard mathematical notation as follows:
 𝓛-alg : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg X = Σ ∐ ꞉ extension-op X , 𝓛-alg-Law₀ ∐ × 𝓛-alg-Law₁ ∐
 
+𝓛-alg-structure : {X : 𝓤 ̇ } → 𝓛-alg X → extension-op X
+𝓛-alg-structure (∐ , l₀ , l₁) = ∐
+
+𝓛-alg-law₀ : {X : 𝓤 ̇ } (α : 𝓛-alg X) → 𝓛-alg-Law₀ (𝓛-alg-structure α)
+𝓛-alg-law₀ (∐ , l₀ , l₁) = l₀
+
+𝓛-alg-law₁ : {X : 𝓤 ̇ } (α : 𝓛-alg X) → 𝓛-alg-Law₁ (𝓛-alg-structure α)
+𝓛-alg-law₁ (∐ , l₀ , l₁) = l₁
+
 \end{code}
 
 Before proving that we have an equivalence
