@@ -10,7 +10,6 @@ Ordinals like in the HoTT book and variations.
 
 open import MLTT.Plus-Properties using (+-commutative)
 open import MLTT.Spartan
-open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.ClassicalLogic
 open import UF.FunExt

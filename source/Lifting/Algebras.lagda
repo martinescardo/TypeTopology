@@ -711,8 +711,8 @@ module free-algebras-in-the-category-of-sets
   (λ (p , d) → value (φ p) d) ,
   Σ-is-prop P-is-prop (λ p → being-defined-is-prop (φ p))
 
- free : 𝓛-alg (𝓛 X)
- free = ⨆ , l₀ , l₁
+ canonical-free-algebra : 𝓛-alg (𝓛 X)
+ canonical-free-algebra = ⨆ , l₀ , l₁
   where
    l₀ : 𝓛-alg-Law₀ ⨆
    l₀ l@(P , φ , P-is-prop) =
@@ -741,7 +741,7 @@ in order to formulate and prove the following.
   from-⋍ pe fe fe (((λ (p : P) → p , ⋆) , pr₁) , (λ (_ : P) → refl))
 
  private
-  𝓕 = free
+  𝓕 = canonical-free-algebra
 
  module _
           {𝓥 : Universe}
@@ -815,7 +815,7 @@ universe 𝓥:
 
 \begin{code}
 
- 𝓛-is-free : is-free-𝓛-alg free X η
+ 𝓛-is-free : is-free-𝓛-alg canonical-free-algebra X η
  𝓛-is-free = free-algebra-universal-property
 
 \end{code}

@@ -709,8 +709,6 @@ Graph 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → X → 𝓤 ̇)
 graph-structure : 𝓤 ̇ → 𝓤 ⁺ ̇
 graph-structure {𝓤} X = X → X → 𝓤 ̇
 
-open import UF.EquivalenceExamples
-open import UF.Subsingletons
 
 Graph-Π-data : compatibility-data (graph-structure {𝓤}) universes-are-flabby-Π
 Graph-Π-data {𝓤} =
