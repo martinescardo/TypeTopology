@@ -275,7 +275,7 @@ bit laborious) categorical argument worked out below.
 
   II : (Σ  (f̅ , _) ꞉ Hom 𝓛G       𝓐 , f̅ ∘ η ∼ f)
      → (∃! (f̅̅ , _) ꞉ Hom Ωˣ-𝓛-alg 𝓐 , f̅̅ ∘ ι ∼ f)
-  II ((f̅ , f̅-is-hom) , e) = II₀₂
+  II ((f̅ , f̅-is-hom) , e) = II₁
    where
     f̅̅ : Ωˣ → A
     f̅̅ = f̅ ∘ h⁻¹
@@ -320,8 +320,8 @@ bit laborious) categorical argument worked out below.
                 (λ (fₙ : Ωˣ → A) → Π₃-is-prop fe (λ P i φ → A-is-set))
                 (dfunext fe f₀-agrees-with-f₁))
 
-    II₀₂ : ∃! (f̅̅ , _) ꞉ Hom Ωˣ-𝓛-alg 𝓐 , f̅̅ ∘ ι ∼ f
-    II₀₂ = pointed-props-are-singletons c II₀
+    II₁ : ∃! (f̅̅ , _) ꞉ Hom Ωˣ-𝓛-alg 𝓐 , f̅̅ ∘ ι ∼ f
+    II₁ = pointed-props-are-singletons c II₀
 
 \end{code}
 
