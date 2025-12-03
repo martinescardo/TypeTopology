@@ -40,6 +40,7 @@ jobs:
         key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.event.before }}
         restore-keys: |
           ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-
+          ${{ runner.os }}-agdai-cache-master-
 
     - name: Run Agda
       id: typecheck
