@@ -66,6 +66,9 @@ private
  sum {P} i φ = (Σ p ꞉ P , φ p holds) ,
                (Σ-is-prop i (λ p → holds-is-prop (φ p)))
 
+∑ : {p : Ω} → (p holds → Ω) → Ω
+∑ {p} φ = sum (holds-is-prop p) φ
+
 Σ-alg-on-Ω : 𝓛-alg Ω
 Σ-alg-on-Ω = sum , k , ι
  where
@@ -78,13 +81,14 @@ private
     ＝ sum i (λ p → sum (j p) (λ q → φ (p , q)))
   ι P Q i j φ = Ω-extensionality' pe fe Σ-assoc
 
-∑ : {p : Ω} → (p holds → Ω) → Ω
-∑ {p} φ = sum (holds-is-prop p) φ
-
 private
  prod : {P : 𝓣 ̇ } → is-prop P → (P → Ω) → Ω
  prod {P} i φ = (Π p ꞉ P , φ p holds) ,
                  Π-is-prop fe (λ p → holds-is-prop (φ p))
+
+∏ : {p : Ω} → (p holds → Ω) → Ω
+∏ {p} φ = prod (holds-is-prop p) φ
+
 Π-alg-on-Ω : 𝓛-alg Ω
 Π-alg-on-Ω = prod , k , ι
  where
