@@ -240,6 +240,8 @@ B (and supplying a map from B to C) and then proving B by observing it suffices
 to prove A (and supplying a map from A to B). For this reason we also give a
 notation that allows us to display this type of proof.
 
+(open to suggestions here)
+
 \begin{code}
 
 _⨾⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → (X → Y) → (Y → Z) → (X → Z)
