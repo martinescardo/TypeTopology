@@ -19,7 +19,7 @@ module Lifting.PowersOfOmegaAreFreeAlgebras
         (pe       : Prop-Ext)
         (pt       : propositional-truncations-exist)
         (𝓣        : Universe)
-        (X : 𝓣 ̇ )
+        (X        : 𝓣 ̇ )
        where
 
 open import Lifting.Construction 𝓣
