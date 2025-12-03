@@ -210,7 +210,7 @@ h⁻¹-is-retraction l@(P , φ , i) = II
               (λ (h : ι (φ (f e)) x holds) → f e , h)
 
   II : h⁻¹ (h l) ＝ l
-  II = from-⋍ pe fe fe ((f , g) , (λ s → to-subtype-＝ being-pos-is-prop I))
+  II = from-⋍ pe fe fe ((f , g) , (λ e → to-subtype-＝ being-pos-is-prop (I {e})))
 
 \end{code}
 
