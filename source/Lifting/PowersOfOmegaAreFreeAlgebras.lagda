@@ -48,7 +48,7 @@ open Conjunction
 
 \end{code}
 
-Our objective is to show that the algebra Ωˣ is a free. We know it is
+Our objective is to show that the algebra Ωˣ is free. We know it is
 an algebra because it is a product of copies of the (free) algebra Ω.
 
 \begin{code}
