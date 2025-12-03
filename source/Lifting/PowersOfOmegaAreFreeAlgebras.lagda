@@ -317,7 +317,7 @@ bit laborious) categorical argument worked out below.
       II₀₁ = to-subtype-＝
               (λ σ → Π-is-prop fe (λ (_ : G) → A-is-set))
               (to-subtype-＝
-                (λ (fₙ : Ωˣ → A) → Π₃-is-prop fe (λ P i φ → A-is-set))
+                (λ (_ : Ωˣ → A) → Π₃-is-prop fe (λ P i φ → A-is-set))
                 (dfunext fe f₀-agrees-with-f₁))
 
     II₁ : ∃! (f̅̅ , _) ꞉ Hom Ωˣ-𝓛-alg 𝓐 , f̅̅ ∘ ι ∼ f
