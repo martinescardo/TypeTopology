@@ -188,29 +188,32 @@ module _
  NB₁ = by-definition
 
 h⁻¹-is-retraction : h⁻¹ ∘ h ∼ id
-h⁻¹-is-retraction l@(P , φ , i) = II
+h⁻¹-is-retraction l@(P , φ , i) = V
  where
-  f : (∃ x ꞉ X , Σ p ꞉ P , ι (φ p) x holds) → P
-  f = ∥∥-rec i (λ (x , p , h) → p)
+  I : (∃ x ꞉ X , Σ p ꞉ P , ι (φ p) x holds) → P
+  I = ∥∥-rec i (λ (x , p , h) → p)
 
-  g : P → ∃ x ꞉ X , Σ p ꞉ P , ι (φ p) x holds
-  g p = ∥∥-rec ∃-is-prop (λ (x , h) → ∣ x , p , h ∣) e
+  II : P → ∃ x ꞉ X , Σ p ꞉ P , ι (φ p) x holds
+  II p = ∥∥-rec ∃-is-prop (λ (x , h) → ∣ x , p , h ∣) e
    where
     e : ∃ x ꞉ X , ι (φ p) x holds
     e = ι-is-pos (φ p)
 
-  I : {e : ∃ x ꞉ X , Σ p ꞉ P , ι (φ p) x holds}
-    → (λ x → ∑ (λ (p : P) → ι (φ p) x)) ＝ ι (φ (f e))
-  I {e} = dfunext fe (λ x → to-subtype-＝ (λ _ → being-prop-is-prop fe) (I₀ x))
+  III : {e : ∃ x ꞉ X , Σ p ꞉ P , ι (φ p) x holds}
+      → (λ x → ∑ (λ (p : P) → ι (φ p) x)) ＝ ι (φ (I e))
+  III {e} = dfunext fe (λ x → to-subtype-＝ (λ _ → being-prop-is-prop fe) (I₀ x))
    where
-    I₀ : (x : X) → (Σ p ꞉ P , ι (φ p) x holds) ＝ (ι (φ (f e)) x holds)
+    I₀ : (x : X) → (Σ p ꞉ P , ι (φ p) x holds) ＝ (ι (φ (I e)) x holds)
     I₀ x = pe (Σ-is-prop i (λ p → holds-is-prop (ι (φ p) x)))
-              (holds-is-prop (ι (φ (f e)) x))
-              (λ (p , h) → transport (λ - → ι (φ -) x holds) (i p (f e)) h)
-              (λ (h : ι (φ (f e)) x holds) → f e , h)
+              (holds-is-prop (ι (φ (I e)) x))
+              (λ (p , h) → transport (λ - → ι (φ -) x holds) (i p (I e)) h)
+              (λ (h : ι (φ (I e)) x holds) → I e , h)
 
-  II : h⁻¹ (h l) ＝ l
-  II = from-⋍ pe fe fe ((f , g) , (λ e → to-subtype-＝ being-pos-is-prop (I {e})))
+  IV : value (h⁻¹ (h l)) ∼ (λ x → φ (I x))
+  IV e = to-subtype-＝ being-pos-is-prop (III {e})
+
+  V : h⁻¹ (h l) ＝ l
+  V = from-⋍ pe fe fe ((I , II) , IV)
 
 \end{code}
 
