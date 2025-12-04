@@ -239,7 +239,7 @@ Notice that reasoning in compositional order with g : B → C and f : A → B
 
 amounts to a function A → C (via normal composition), but it appears in the
 'bottom up' direction. This may seem strange at first, as one might expect
-this feature to only be useful in the forward direction, that is in
+this feature to only be useful in the forward direction, that is, in
 diagrammatic order. In fact, the above actually reflects a common mode of proof
 where one proves C by observing it suffices to prove B (and supplying a map
 from B to C) and then proving B by observing it suffices to prove A (and
