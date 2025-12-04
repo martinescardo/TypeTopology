@@ -328,6 +328,13 @@ bit laborious) categorical argument worked out below.
 
 \end{code}
 
+TODO (before the development below). This last theorem
+`Ωˣ-is-free-𝓛-alg` is not specific to our concerns in this file. It is
+a general categorical theorem saying that if an algebra is isomorphic
+to a free algebra, then it is itself free. This should be generalized
+(trivially) and moved to the file `Algebras`, and used here as a
+corollary of what really matters here.
+
 Under development. It seems that the same argument shows that products
 of free algebras are themselves free. Nothing special about Ω was used
 here, other than that it is a free algebra.

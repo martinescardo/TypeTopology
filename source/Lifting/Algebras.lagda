@@ -918,6 +918,10 @@ module _
 
 \end{code}
 
+Added 4th Dec 2025. The following generalizes something that was
+originally in the file PowersOfOmegaAreFreeAlgebras.
+
+
 Added 23rd Nov 2025. Anders Kock' [1] definition of positive element.
 
 [1] Anders Kock. The constructive lift monad.
