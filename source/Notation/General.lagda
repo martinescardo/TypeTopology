@@ -224,23 +224,26 @@ infixr -1 Sigma!
 Note: Σ! is to be avoided, in favour of the contractibility of Σ,
 following univalent mathematics.
 
-Ian Ray 3rd December 2025.
+Ian Ray, 3rd December 2025.
 
 We add a new syntax which is analogous to equation or equivalence reasoning
 where we consider functions applied in sequence. We will include both
 compostional and diagrammatic order.
 
-Notice that reasoning with compositional order with g : B → C and f : A → B
+Notice that reasoning in compositional order with g : B → C and f : A → B
 
- C ∘⟨ g ⟩ B ∘⟨ f ⟩ A ▢
+ C ∘⟨ g ⟩
+ B ∘⟨ f ⟩
+ A ▢
 
-amounts to normal composition but importantly a function A → C. This reflects
-a common mode of proof where one proves C by observing it suffices to prove
-B (and supplying a map from B to C) and then proving B by observing it suffices
-to prove A (and supplying a map from A to B). For this reason we also give a
-notation that allows us to display this type of proof.
-
-(open to suggestions here!)
+amounts to normal composition, but importantly a function A → C in the 'bottom
+up' direction. This may seems strange at first, as one might expect this feature
+to only be useful in the forward direction, that is in diagrammatic order. In
+fact, the above actually reflects a common mode of proof where one proves C by
+observing it suffices to prove B (and supplying a map from B to C) and then
+proving B by observing it suffices to prove A (and supplying a map from A to B).
+For this reason we provide notation that allows us to display proofs of this
+sort.
 
 \begin{code}
 
