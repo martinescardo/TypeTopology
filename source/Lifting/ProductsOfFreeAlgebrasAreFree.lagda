@@ -71,7 +71,6 @@ private
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
 open PropositionalTruncation pt
-open Conjunction
 
 𝓛K : (x : X) → 𝓛-alg (𝓛 (K x))
 𝓛K x = canonical-free-algebra
