@@ -237,7 +237,7 @@ h⁻¹-is-hom P i φ = IV
 
 \end{code}
 
-So the product (A , 𝓐) of free algebras is itself free (with insertion
+So the product (A , 𝓐) of the free algebras is itself free (with insertion
 of generators ι : G → A).
 
 \begin{code}
