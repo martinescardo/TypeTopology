@@ -35,9 +35,9 @@ module Lifting.ProductsOfFreeAlgebrasAreFree
         (fe       : Fun-Ext)
         (pe       : Prop-Ext)
         (pt       : propositional-truncations-exist)
-        (𝓣        : Universe)
+        (𝓣 𝓤      : Universe)
         (X        : 𝓣 ̇ )
-        (K        : X → 𝓣 ̇ )
+        (K        : X → 𝓤 ̇ )
         (K-is-set : (x : X) → is-set (K x))
        where
 
@@ -85,7 +85,7 @@ open Conjunction
 ∑ : (x : X) {p : Ω} → (p holds → 𝓛 (K x)) → 𝓛 (K x)
 ∑ x {p} = 𝓛-alg-structure-map (𝓛K x) (holds-is-prop p)
 
-A : 𝓣 ⁺ ̇
+A : ((𝓣 ⁺) ⊔ 𝓤)  ̇
 A = (x : X) → 𝓛 (K x)
 
 A-is-set : is-set A
@@ -112,7 +112,7 @@ is-pos a = ∃ x ꞉ X , is-defined (a x)
 being-pos-is-prop : (a : A) → is-prop (is-pos a)
 being-pos-is-prop a = ∃-is-prop
 
-G : 𝓣 ⁺ ̇
+G : ((𝓣 ⁺) ⊔ 𝓤) ̇
 G = Σ a ꞉ A , is-pos a
 
 G-is-set : is-set G
