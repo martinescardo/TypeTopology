@@ -35,7 +35,7 @@ module Lifting.ProductsOfFreeAlgebrasAreFree
         (pt       : propositional-truncations-exist)
         (𝓣        : Universe)
         (X        : 𝓣 ̇ )
-        (K        : X → 𝓣 ̇)
+        (K        : X → 𝓣 ̇ )
         (K-is-set : (x : X) → is-set (K x))
        where
 
