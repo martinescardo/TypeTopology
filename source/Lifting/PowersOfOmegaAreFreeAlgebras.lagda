@@ -1,10 +1,11 @@
 Martin Escardo, 2nd December 2025.
 
-In any 1-topos, powers of Ω are free lifting algebras.
+In any 1-topos, powers of Ω are free lifting algebras. This result
+seems to new new.
 
 The same argument directly generalizes to show that products of free
 algebras are free, and this generalization is included in the file
-ProductsOfFreeAlgebras in the parent directory.
+ProductsOfFreeAlgebrasAreFree in the parent directory.
 
 \begin{code}
 
