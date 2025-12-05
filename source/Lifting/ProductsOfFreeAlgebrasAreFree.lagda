@@ -110,9 +110,6 @@ is-pos a = ∃ x ꞉ X , is-defined (a x)
 being-pos-is-prop : (a : A) → is-prop (is-pos a)
 being-pos-is-prop a = ∃-is-prop
 
-is-Pos : A → Ω
-is-Pos a = is-pos a , being-pos-is-prop a
-
 G : 𝓣 ⁺ ̇
 G = Σ a ꞉ A , is-pos a
 
