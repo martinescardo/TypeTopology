@@ -10,7 +10,7 @@ free. This result seems to be new.
 \end{code}
 
 This file generalizes the following file, in a more or less
-straightforward way, whose result also seems to be new, which shows
+straightforward way, whose result also seem to be new, which shows
 that powers of Ω are free lifting algebras.
 
 \begin{code}
