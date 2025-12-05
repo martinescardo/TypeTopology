@@ -45,6 +45,7 @@ module Lifting.ProductsOfFreeAlgebrasAreFree
 
 The sets K x are the generators for the free algebras of which we will
 take the product, which replace Ω ≃ 𝓛 𝟙 in the file mentioned above.
+So, to recover the results of that file, take K _ = 𝟙.
 
 \begin{code}
 
