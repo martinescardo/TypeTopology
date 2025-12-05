@@ -45,9 +45,9 @@ module Lifting.ProductsOfFreeAlgebrasAreFree
 This file also type checks with K : X → 𝓤 for any universe 𝓤 ≤ 𝓣⁺,
 including 𝓤 = 𝓤₀ and 𝓤 = 𝓣⁺, but there is no way to specify this
 constraint in Agda. So if we ever want to use this module with other
-choices of 𝓤 ≤ 𝓣 for particular examples of 𝓤 and 𝓣, we need to repeat
-the code for those choices. This is an argument for adding universe
-constraints.
+choices of 𝓤 ≤ 𝓣⁺ for particular examples of 𝓤 and 𝓣, we need to
+repeat the code for those choices. This is an argument for adding
+universe constraints.
 
 The sets K x are the generators for the free algebras of which we will
 take the product, which replace Ω ≃ 𝓛 𝟙 in the file mentioned above.
