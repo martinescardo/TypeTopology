@@ -918,9 +918,109 @@ module _
 
 \end{code}
 
-Added 4th Dec 2025. The following generalizes something that was
-originally in the file PowersOfOmegaAreFreeAlgebras.
+The following was moved here 5th Dec 2025 from another 2nd Dec 2025
+file.
 
+Any algebra isomorphic to the free algebra 𝓛 G in the category of
+algebras is itself free.
+
+\begin{code}
+
+module _ (pe : Prop-Ext)
+         (fe : Fun-Ext)
+         {A        : 𝓥 ̇ }
+         (A-is-set : is-set A)
+         (G        : 𝓦 ̇ )
+         (G-is-set : is-set G)
+         (ι        : G → A)
+         (𝓐        : 𝓛-alg A)
+       where
+
+ private
+  open free-algebras-in-the-category-of-sets pe fe G G-is-set
+
+  h : 𝓛 G → A
+  h = 𝓛-extension A-is-set 𝓐 ι
+
+  𝓛G : 𝓛-alg (𝓛 G)
+  𝓛G = canonical-free-algebra
+
+ module _ (h⁻¹               : A → 𝓛 G)
+          (h⁻¹-is-section    : h ∘ h⁻¹ ∼ id)
+          (h⁻¹-is-retraction : h⁻¹ ∘ h ∼ id)
+          (h⁻¹-is-hom        : is-hom  𝓐 𝓛G h⁻¹)
+      where
+
+  𝓛-alg-isomorphic-to-free-𝓛-alg-is-itself-free : is-free-𝓛-alg 𝓐 G ι
+  𝓛-alg-isomorphic-to-free-𝓛-alg-is-itself-free {𝓦} {B} B-is-set 𝓑 f = III
+   where
+    h-is-hom : is-hom 𝓛G 𝓐 h
+    h-is-hom = 𝓛-extension-is-hom A-is-set 𝓐 ι
+
+    h-extends-ι : h ∘ η ∼ ι
+    h-extends-ι = 𝓛-extension-extends A-is-set 𝓐 ι
+
+    h⁻¹-extends-η : h⁻¹ ∘ ι ∼ η
+    h⁻¹-extends-η g = h⁻¹ (ι g)     ＝⟨ ap h⁻¹ (h-extends-ι g ⁻¹) ⟩
+                      h⁻¹ (h (η g)) ＝⟨ h⁻¹-is-retraction (η g) ⟩
+                      η g           ∎
+
+    I : ∃! (f̅ , _) ꞉ Hom 𝓛G 𝓑 , f̅ ∘ η ∼ f
+    I = 𝓛-is-free B-is-set 𝓑 f
+
+    II : (Σ  (f̅ , _) ꞉ Hom 𝓛G 𝓑 , f̅ ∘ η ∼ f)
+       → (∃! (f̅̅ , _) ꞉ Hom  𝓐 𝓑 , f̅̅ ∘ ι ∼ f)
+    II ((f̅ , f̅-is-hom) , e) = II₁
+     where
+      f̅̅ : A → B
+      f̅̅ = f̅ ∘ h⁻¹
+
+      f̅̅-is-hom : is-hom 𝓐 𝓑 f̅̅
+      f̅̅-is-hom = ∘-is-hom 𝓐 𝓛G 𝓑 h⁻¹ f̅ h⁻¹-is-hom f̅-is-hom
+
+      e̅ :  f̅̅ ∘ ι ∼ f
+      e̅ g = f̅̅ (ι g)       ＝⟨by-definition⟩
+            f̅ (h⁻¹ (ι g)) ＝⟨ ap f̅ (h⁻¹-extends-η g) ⟩
+            f̅ (η g)       ＝⟨ e g ⟩
+            f g           ∎
+
+      c : Σ (f̅̅ , _) ꞉ Hom 𝓐 𝓑 , f̅̅ ∘ ι ∼ f
+      c = (f̅̅ , f̅̅-is-hom) , e̅
+
+      II₀ : is-prop (type-of c)
+      II₀ ((f₀ , f₀-is-hom) , e₀) ((f₁ , f₁-is-hom) , e₁) = II₀₁
+       where
+        f₀-agrees-with-f₁ : f₀ ∼ f₁
+        f₀-agrees-with-f₁ π =
+         f₀ π           ＝⟨ ap f₀ ((h⁻¹-is-section π)⁻¹) ⟩
+         f₀ (h (h⁻¹ π)) ＝⟨ II₀₀ (h⁻¹ π) ⟩
+         f₁ (h (h⁻¹ π)) ＝⟨ ap f₁ (h⁻¹-is-section π) ⟩
+         f₁ π           ∎
+          where
+           II₀₀ : f₀ ∘ h ∼ f₁ ∘ h
+           II₀₀ = hom-agreement B-is-set 𝓑 f
+                   ((f₀ ∘ h , ∘-is-hom 𝓛G 𝓐 𝓑 h f₀ h-is-hom f₀-is-hom) ,
+                    (λ g → f₀ (h (η g)) ＝⟨ ap f₀ (h-extends-ι g) ⟩
+                           f₀ (ι g)     ＝⟨ e₀ g ⟩
+                           f g          ∎))
+                   ((f₁ ∘ h , ∘-is-hom 𝓛G 𝓐 𝓑 h f₁ h-is-hom f₁-is-hom) ,
+                    (λ g → f₁ (h (η g)) ＝⟨ ap f₁ (h-extends-ι g) ⟩
+                           f₁ (ι g)     ＝⟨ e₁ g ⟩
+                           f g          ∎))
+
+        II₀₁ : ((f₀ , f₀-is-hom) , e₀) ＝ ((f₁ , f₁-is-hom) , e₁)
+        II₀₁ = to-subtype-＝
+                (λ σ → Π-is-prop fe (λ (_ : G) → B-is-set))
+                (to-subtype-＝
+                  (λ (_ : A → B) → Π₃-is-prop fe (λ P i φ → B-is-set))
+                  (dfunext fe f₀-agrees-with-f₁))
+
+      II₁ : ∃! (f̅̅ , _) ꞉ Hom 𝓐 𝓑 , f̅̅ ∘ ι ∼ f
+      II₁ = pointed-props-are-singletons c II₀
+
+    III : ∃! (f̅̅ , _) ꞉ Hom 𝓐 𝓑 , f̅̅ ∘ ι ∼ f
+    III = II (center I)
+\end{code}
 
 Added 23rd Nov 2025. Anders Kock' [1] definition of positive element.
 
