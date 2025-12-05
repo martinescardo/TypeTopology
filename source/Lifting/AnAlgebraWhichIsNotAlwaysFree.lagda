@@ -433,7 +433,7 @@ more. For example, a product of algebras is an algebra. Is a product
 of free algebras also free? As a second example, the algebras form an
 exponential ideal. Is the algebra X → A free if the algebra A is?
 
-These question are answered positively in the following module:
+These questions are answered positively in the following module:
 
 \begin{code}
 
