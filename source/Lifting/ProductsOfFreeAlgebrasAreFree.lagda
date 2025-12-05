@@ -20,7 +20,7 @@ import Lifting.PowersOfOmegaAreFreeAlgebras
 
 Therefore we have decided to remove most of the discussion, to avoid
 repetition. So readers who wish to understand the motivation for
-proving this, and how the proof here works are advised to first look
+proving this, and how the proof here works, are advised to first look
 at the above file.
 
 \begin{code}
