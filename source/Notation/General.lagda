@@ -233,8 +233,8 @@ compostional and diagrammatic order.
 
 Notice that reasoning in compositional order with g : B → C and f : A → B
 
- C ∘⟨ g ⟩
- B ∘⟨ f ⟩
+ C ←⟨ g ⟩
+ B ←⟨ f ⟩
  A ▢
 
 amounts to a function A → C (via normal composition), but it appears in the
@@ -248,11 +248,11 @@ us to display proofs of this sort.
 
 \begin{code}
 
-_⨾⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → (X → Y) → (Y → Z) → (X → Z)
-_ ⨾⟨ f ⟩ g = g ∘ f
+_→⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → (X → Y) → (Y → Z) → (X → Z)
+_ →⟨ f ⟩ g = g ∘ f
 
-_∘⟨_⟩_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ ) → (Y → Z) → (X → Y) → (X → Z)
-_ ∘⟨ g ⟩ f = g ∘ f
+_←⟨_⟩_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ ) → (Y → Z) → (X → Y) → (X → Z)
+_ ←⟨ g ⟩ f = g ∘ f
 
 _suffices-to-show⟨_⟩_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ )
                       → (Y → Z) → (X → Y) → (X → Z)
@@ -262,8 +262,8 @@ _▢ : (X : 𝓤 ̇ ) → X → X
 X ▢ = id
 
 infix  1 _▢
-infixr 0 _⨾⟨_⟩_
-infixr 0 _∘⟨_⟩_
+infixr 0 _→⟨_⟩_
+infixr 0 _←⟨_⟩_
 infixr 0 _suffices-to-show⟨_⟩_
 
 \end{code}
