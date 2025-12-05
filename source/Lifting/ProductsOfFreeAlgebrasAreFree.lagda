@@ -8,8 +8,9 @@ In any 1-topos, products of free lifting algebras are themselves free.
 
 \end{code}
 
-This file generalizes the following file, which shows that powers of Ω
-are free lifting algebras in a more or less straightforward way.
+This file generalizes the following file, in a more or less
+straightforward way, which shows that powers of Ω are free lifting
+algebras.
 
 \begin{code}
 
