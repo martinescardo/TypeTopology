@@ -49,7 +49,7 @@ the code for those choices. This is an argument for adding universe
 constraints.
 
 The sets K x are the generators for the free algebras of which we will
-take the product, which replace Ω in the file mentioned above.
+take the product, which replace Ω ≃ 𝓛 𝟙 in the file mentioned above.
 
 \begin{code}
 
