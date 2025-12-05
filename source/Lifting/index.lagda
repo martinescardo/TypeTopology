@@ -25,6 +25,7 @@ import Lifting.TwoAlgebrasOnOmega
 import Lifting.AnAlgebraWhichIsNotAlwaysFree
 import Lifting.AnAlgebraWhichIsNotAlwaysFree-blackboard -- (*)
 import Lifting.PowersOfOmegaAreFreeAlgebras
+import Lifting.ProductsOfFreeAlgebrasAreFree
 
 \end{code}
 

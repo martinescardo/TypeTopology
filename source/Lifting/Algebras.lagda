@@ -111,13 +111,13 @@ written in more standard mathematical notation as follows:
 𝓛-alg : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg X = Σ ∐ ꞉ extension-op X , 𝓛-alg-Law₀ ∐ × 𝓛-alg-Law₁ ∐
 
-𝓛-alg-structure : {X : 𝓤 ̇ } → 𝓛-alg X → extension-op X
-𝓛-alg-structure (∐ , l₀ , l₁) = ∐
+𝓛-alg-structure-map : {X : 𝓤 ̇ } → 𝓛-alg X → extension-op X
+𝓛-alg-structure-map (∐ , l₀ , l₁) = ∐
 
-𝓛-alg-law₀ : {X : 𝓤 ̇ } (α : 𝓛-alg X) → 𝓛-alg-Law₀ (𝓛-alg-structure α)
+𝓛-alg-law₀ : {X : 𝓤 ̇ } (𝓐 : 𝓛-alg X) → 𝓛-alg-Law₀ (𝓛-alg-structure-map 𝓐)
 𝓛-alg-law₀ (∐ , l₀ , l₁) = l₀
 
-𝓛-alg-law₁ : {X : 𝓤 ̇ } (α : 𝓛-alg X) → 𝓛-alg-Law₁ (𝓛-alg-structure α)
+𝓛-alg-law₁ : {X : 𝓤 ̇ } (𝓐 : 𝓛-alg X) → 𝓛-alg-Law₁ (𝓛-alg-structure-map 𝓐)
 𝓛-alg-law₁ (∐ , l₀ , l₁) = l₁
 
 \end{code}
@@ -424,20 +424,20 @@ operations. More generally:
 Π-is-alg : funext 𝓤 𝓥
          → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
          → ((x : X) → 𝓛-alg (A x)) → 𝓛-alg (Π A)
-Π-is-alg {𝓤} {𝓥} fe {X} A α = ∐· , l₀ , l₁
+Π-is-alg {𝓤} {𝓥} fe {X} A 𝓐 = ∐· , l₀ , l₁
  where
   ∐· : {P : 𝓣 ̇ } → is-prop P → (P → Π A) → Π A
-  ∐· i φ x = ∐ (α x) i (λ p → φ p x)
+  ∐· i φ x = ∐ (𝓐 x) i (λ p → φ p x)
 
   l₀ : (φ : Π A) → ∐· 𝟙-is-prop (λ p → φ) ＝ φ
-  l₀ φ = dfunext fe (λ x → law₀ (α x) (φ x))
+  l₀ φ = dfunext fe (λ x → law₀ (𝓐 x) (φ x))
 
   l₁ : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ )
        (i : is-prop P) (j : (p : P) → is-prop (Q p))
        (φ : Σ Q → Π A)
       → ∐· (Σ-is-prop i j) φ
       ＝ ∐· i (λ p → ∐· (j p) (λ q → φ (p , q)))
-  l₁ P Q i j φ = dfunext fe (λ x → law₁ (α x) P Q i j (λ σ → φ σ x))
+  l₁ P Q i j φ = dfunext fe (λ x → law₁ (𝓐 x) P Q i j (λ σ → φ σ x))
 
 \end{code}
 
@@ -856,20 +856,20 @@ module _
         (G-is-set : is-set G)
         (i : G → A)
         (j : G → B)
-        (α : 𝓛-alg A)
-        (β : 𝓛-alg B)
-        (ϕ : is-free-𝓛-alg α G i)
-        (γ : is-free-𝓛-alg β G j)
+        (𝓐 : 𝓛-alg A)
+        (𝓑 : 𝓛-alg B)
+        (ϕ : is-free-𝓛-alg 𝓐 G i)
+        (γ : is-free-𝓛-alg 𝓑 G j)
      where
 
- module A = free-algebra-eliminators α G i ϕ B-is-set β j
- module B = free-algebra-eliminators β G j γ A-is-set α i
+ module A = free-algebra-eliminators 𝓐 G i ϕ B-is-set 𝓑 j
+ module B = free-algebra-eliminators 𝓑 G j γ A-is-set 𝓐 i
 
  private
   h : A → B
   h = A.unique-hom
 
-  h-is-hom : is-hom α β h
+  h-is-hom : is-hom 𝓐 𝓑 h
   h-is-hom = A.unique-hom-is-hom
 
   h-extends-j : h ∘ i ∼ j
@@ -878,40 +878,40 @@ module _
   h⁻¹ : B → A
   h⁻¹ = B.unique-hom
 
-  h⁻¹-is-hom : is-hom β α h⁻¹
+  h⁻¹-is-hom : is-hom 𝓑 𝓐 h⁻¹
   h⁻¹-is-hom = B.unique-hom-is-hom
 
   h⁻¹-extends-i : h⁻¹ ∘ j ∼ i
   h⁻¹-extends-i = B.unique-hom-is-extension
 
-  I : is-hom α α (h⁻¹ ∘ h)
-  I = ∘-is-hom α β α h h⁻¹ h-is-hom h⁻¹-is-hom
+  I : is-hom 𝓐 𝓐 (h⁻¹ ∘ h)
+  I = ∘-is-hom 𝓐 𝓑 𝓐 h h⁻¹ h-is-hom h⁻¹-is-hom
 
-  II : is-hom β β (h ∘ h⁻¹)
-  II = ∘-is-hom β α β h⁻¹ h h⁻¹-is-hom h-is-hom
+  II : is-hom 𝓑 𝓑 (h ∘ h⁻¹)
+  II = ∘-is-hom 𝓑 𝓐 𝓑 h⁻¹ h h⁻¹-is-hom h-is-hom
 
   III : h⁻¹ ∘ h ∼ id
   III = at-most-one-extending-hom'
          (h⁻¹ ∘ h , I)
-         (id , id-is-hom α)
+         (id , id-is-hom 𝓐)
          (λ g → h⁻¹ (h (i g)) ＝⟨ ap h⁻¹ (h-extends-j g) ⟩
                 h⁻¹ (j g)     ＝⟨ h⁻¹-extends-i g ⟩
                 i g           ∎)
          (λ (_ : G) → by-definition)
    where
     open free-algebra-eliminators
-          α G i ϕ A-is-set α i
+          𝓐 G i ϕ A-is-set 𝓐 i
   IV : h ∘ h⁻¹ ∼ id
   IV = at-most-one-extending-hom'
         (h ∘ h⁻¹ , II)
-        (id , id-is-hom β)
+        (id , id-is-hom 𝓑)
         (λ g → h (h⁻¹ (j g)) ＝⟨ ap h (h⁻¹-extends-i g) ⟩
                h (i g)       ＝⟨ h-extends-j g ⟩
                j g           ∎)
         (λ (_ : G) → by-definition)
    where
     open free-algebra-eliminators
-          β G j γ B-is-set β j
+          𝓑 G j γ B-is-set 𝓑 j
 
  unique-hom-is-equiv : is-equiv h
  unique-hom-is-equiv = qinvs-are-equivs h (h⁻¹ , III , IV)
@@ -1039,8 +1039,8 @@ is-positive (⨆ , l₀ , l₁) a =
 
 being-positive-is-prop : Fun-Ext
                        → {A : 𝓤 ̇ }
-                       → (α : 𝓛-alg A) (a : A)
-                       → is-prop (is-positive α a)
-being-positive-is-prop fe α a = Π₃-is-prop fe (λ _ P-is-prop _ → P-is-prop)
+                       → (𝓐 : 𝓛-alg A)
+                       → (a : A) → is-prop (is-positive 𝓐 a)
+being-positive-is-prop fe 𝓐 a = Π₃-is-prop fe (λ _ P-is-prop _ → P-is-prop)
 
 \end{code}

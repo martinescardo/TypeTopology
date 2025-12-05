@@ -1,9 +1,10 @@
 Martin Escardo, 2nd December 2025.
 
-In any 1-topos, powers of Ω are free algebras.
+In any 1-topos, powers of Ω are free lifting algebras.
 
-The same argument seems to show that products of free algebras are
-free, but this is still under development.
+The same argument directly generalizes to show that products of free
+algebras are free, and this generalization is included in the file
+ProductsOfFreeAlgebras in the parent directory.
 
 \begin{code}
 
@@ -69,7 +70,7 @@ We let π range over Ωˣ.
 Ωˣ-𝓛-alg = Π-is-alg fe (λ (_ : X) → Ω) (λ (_ : X) → Σ-alg-on-Ω)
 
 ∐ : extension-op Ωˣ
-∐ = 𝓛-alg-structure Ωˣ-𝓛-alg
+∐ = 𝓛-alg-structure-map Ωˣ-𝓛-alg
 
 \end{code}
 
@@ -152,10 +153,13 @@ that Ωˣ is isomorphic to 𝓛 G as a lifting algebra:
           ╲  ↓  │
            ➘  Ωˣ.
 
+The only insight in this file is the definition of h⁻¹. Everything
+else is just hard work.
+
 \begin{code}
 
 h⁻¹ : Ωˣ → 𝓛 G
-h⁻¹ π = is-pos π , (λ i → π , i) , being-pos-is-prop π
+h⁻¹ π = is-pos π , (λ (i : is-pos π) → π , i) , being-pos-is-prop π
 
 h⁻¹-is-section : h ∘ h⁻¹ ∼ id
 h⁻¹-is-section π =
@@ -167,7 +171,7 @@ h⁻¹-is-section π =
   where
    I = dfunext fe (λ x → Ω-extensionality pe fe
                           pr₂
-                          (λ (h : π x holds) → ∣ x , h ∣ , h))
+                          (λ (d : π x holds) → ∣ x , d ∣ , d))
 
 \end{code}
 
@@ -191,10 +195,10 @@ h⁻¹-is-retraction : h⁻¹ ∘ h ∼ id
 h⁻¹-is-retraction l@(P , φ , i) = V
  where
   I : (∃ x ꞉ X , Σ p ꞉ P , ι (φ p) x holds) → P
-  I = ∥∥-rec i (λ (x , p , h) → p)
+  I = ∥∥-rec i (λ (x , p , d) → p)
 
   II : P → ∃ x ꞉ X , Σ p ꞉ P , ι (φ p) x holds
-  II p = ∥∥-rec ∃-is-prop (λ (x , h) → ∣ x , p , h ∣) e
+  II p = ∥∥-rec ∃-is-prop (λ (x , d) → ∣ x , p , d ∣) e
    where
     e : ∃ x ꞉ X , ι (φ p) x holds
     e = ι-is-pos (φ p)
@@ -206,8 +210,8 @@ h⁻¹-is-retraction l@(P , φ , i) = V
     I₀ : (x : X) → (Σ p ꞉ P , ι (φ p) x holds) ＝ (ι (φ (I e)) x holds)
     I₀ x = pe (Σ-is-prop i (λ p → holds-is-prop (ι (φ p) x)))
               (holds-is-prop (ι (φ (I e)) x))
-              (λ (p , h) → transport (λ - → ι (φ -) x holds) (i p (I e)) h)
-              (λ (h : ι (φ (I e)) x holds) → I e , h)
+              (λ (p , d) → transport (λ - → ι (φ -) x holds) (i p (I e)) d)
+              (λ (d : ι (φ (I e)) x holds) → I e , d)
 
   IV : value (h⁻¹ (h l)) ∼ (λ x → φ (I x))
   IV e = to-subtype-＝ being-pos-is-prop (III {e})
@@ -217,7 +221,7 @@ h⁻¹-is-retraction l@(P , φ , i) = V
 
 \end{code}
 
-So Ωˣ is equivalent to a free algebra.
+So Ωˣ is equivalent to the underlying type of a free algebra
 
 \begin{code}
 
@@ -234,10 +238,10 @@ h⁻¹-is-hom : is-hom Ωˣ-𝓛-alg 𝓛G h⁻¹
 h⁻¹-is-hom P i φ = IV
  where
   I : (∃ x ꞉ X , Σ p ꞉ P , φ p x holds) → (Σ p ꞉ P , ∃ x ꞉ X , φ p x holds)
-  I = ∥∥-rec (Σ-is-prop i λ _ → ∃-is-prop) (λ (x , p , h) → p , ∣ x , h ∣)
+  I = ∥∥-rec (Σ-is-prop i λ _ → ∃-is-prop) (λ (x , p , d) → p , ∣ x , d ∣)
 
   II : (Σ p ꞉ P , ∃ x ꞉ X , φ p x holds) → (∃ x ꞉ X , Σ p ꞉ P , φ p x holds)
-  II (p , e) = ∥∥-functor (λ (x , h) → x , p , h) e
+  II (p , e) = ∥∥-functor (λ (x , d) → x , p , d) e
 
   III : value (h⁻¹ (∐ i φ)) ∼ (λ x → value (⨆ i (h⁻¹ ∘ φ)) (I x))
   III e = III₁
@@ -256,24 +260,21 @@ h⁻¹-is-hom P i φ = IV
 
 \end{code}
 
-This shows that Ωˣ is isomorphic to the free algebra 𝓛 G in the
-category of algebras, and hence is itself free.
+This shows that Ωˣ equipped with the algebra structure Ωˣ-𝓛-alg is
+isomorphic to the free algebra 𝓛 G in the category of algebras, and
+hence is itself free.
 
 \begin{code}
 
-Ωˣ-is-free-𝓛-alg' : is-free-𝓛-alg Ωˣ-𝓛-alg G ι
-Ωˣ-is-free-𝓛-alg' = 𝓛-alg-isomorphic-to-free-𝓛-alg-is-itself-free pe fe
-                     Ωˣ-is-set
-                     G
-                     G-is-set
-                     ι
-                     Ωˣ-𝓛-alg
-                     h⁻¹
-                     h⁻¹-is-section
-                     h⁻¹-is-retraction
-                     h⁻¹-is-hom
+Ωˣ-is-free-𝓛-alg : is-free-𝓛-alg Ωˣ-𝓛-alg G ι
+Ωˣ-is-free-𝓛-alg = 𝓛-alg-isomorphic-to-free-𝓛-alg-is-itself-free pe fe
+                    Ωˣ-is-set
+                    G
+                    G-is-set
+                    ι
+                    Ωˣ-𝓛-alg
+                    h⁻¹
+                    h⁻¹-is-section
+                    h⁻¹-is-retraction
+                    h⁻¹-is-hom
 \end{code}
-
-Under development. It seems that the same argument shows that products
-of free algebras are themselves free. Nothing special about Ω was used
-here, other than that it is a free algebra.
