@@ -9,9 +9,9 @@ free. This result seems to be new.
 
 \end{code}
 
-This file generalizes the following file, whose result also seems to
-be new, in a more or less straightforward way, which shows that powers
-of Ω are free lifting algebras.
+This file generalizes the following file, in a more or less
+straightforward way, whose result also seems to be new, which shows
+that powers of Ω are free lifting algebras.
 
 \begin{code}
 
