@@ -64,7 +64,7 @@ open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
 private
  𝓣⁺ = 𝓣 ⁺
 
- Ω : 𝓣 ⁺ ̇
+ Ω : 𝓣⁺ ̇
  Ω = Ω-of-universe 𝓣
 
  fe' : FunExt
@@ -81,7 +81,7 @@ open Conjunction
 ∑ : (x : X) {p : Ω} → (p holds → 𝓛 (K x)) → 𝓛 (K x)
 ∑ x {p} = 𝓛-alg-structure-map (𝓛K x) (holds-is-prop p)
 
-A : ((𝓣 ⁺) ⊔ 𝓤)  ̇
+A : 𝓣⁺ ⊔ 𝓤 ̇
 A = (x : X) → 𝓛 (K x)
 
 A-is-set : is-set A
