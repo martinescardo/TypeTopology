@@ -1,6 +1,7 @@
 Martin Escardo, 5th December 2025.
 
-In any 1-topos, products of free lifting algebras are themselves free.
+In any 1-topos, products of free lifting algebras are themselves
+free. This result seems to be new.
 
 \begin{code}
 
@@ -8,9 +9,9 @@ In any 1-topos, products of free lifting algebras are themselves free.
 
 \end{code}
 
-This file generalizes the following file, in a more or less
-straightforward way, which shows that powers of Ω are free lifting
-algebras.
+This file generalizes the following file, whose result also seems to
+be new, in a more or less straightforward way, which shows that powers
+of Ω are free lifting algebras.
 
 \begin{code}
 
@@ -236,8 +237,8 @@ h⁻¹-is-hom P i φ = IV
 
 \end{code}
 
-So the product (A , 𝓐) of the free algebras is itself free (with insertion
-of generators ι : G → A).
+So the product (A , 𝓐) of the free algebras is itself free, with
+insertion of generators ι : G → A.
 
 \begin{code}
 
