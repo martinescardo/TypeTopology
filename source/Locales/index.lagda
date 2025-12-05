@@ -147,7 +147,7 @@ import Locales.Sierpinski.Patch
 import Locales.Sierpinski.Properties
 import Locales.Sierpinski.UniversalProperty
 
-import Locales.SmallBasis                        -- (24)
+import Locales.SmallBasis
 
 import Locales.Stone                             -- (25)
 

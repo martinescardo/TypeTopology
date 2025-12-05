@@ -1,6 +1,6 @@
 Martin Escardo, 2nd December 2025.
 
-In any 1-topos, powers of Ω are free algebras.
+In any 1-topos, powers of Ω are free lifting algebras.
 
 The same argument seems to show that products of free algebras are
 free, but this is still under development.
@@ -73,9 +73,9 @@ We let π range over Ωˣ.
 
 \end{code}
 
-We now consider a notion of positivity for elements of Ω ˣ (which
-agrees with Anders Kock's notion of positivity for this particular
-algebra, but we don't need to know this here).
+We now consider a notion of positivity for elements of Ωˣ (which
+agrees with Anders Kock's general notion of positivity for this
+particular algebra, but we don't need to know this here).
 
 \begin{code}
 
@@ -152,10 +152,13 @@ that Ωˣ is isomorphic to 𝓛 G as a lifting algebra:
           ╲  ↓  │
            ➘  Ωˣ.
 
+Defining h⁻¹ in the following way is the only insight in this
+file. The rest is just hard work.
+
 \begin{code}
 
 h⁻¹ : Ωˣ → 𝓛 G
-h⁻¹ π = is-pos π , (λ i → π , i) , being-pos-is-prop π
+h⁻¹ π = is-pos π , (λ (i : is-pos π) → π , i) , being-pos-is-prop π
 
 h⁻¹-is-section : h ∘ h⁻¹ ∼ id
 h⁻¹-is-section π =
@@ -324,6 +327,13 @@ bit laborious) categorical argument worked out below.
     II₁ = pointed-props-are-singletons c II₀
 
 \end{code}
+
+TODO (before the development below). This last theorem
+`Ωˣ-is-free-𝓛-alg` is not specific to our concerns in this file. It is
+a general categorical theorem saying that if an algebra is isomorphic
+to a free algebra, then it is itself free. This should be generalized
+(trivially) and moved to the file `Algebras`, and used here as a
+corollary of what really matters here.
 
 Under development. It seems that the same argument shows that products
 of free algebras are themselves free. Nothing special about Ω was used
