@@ -19,8 +19,9 @@ import Lifting.PowersOfOmegaAreFreeAlgebras
 \end{code}
 
 Therefore we have decided to remove most of the discussion, to avoid
-repetition. So readers who wish to understand how the proof here works
-are advised to first look at the above file.
+repetition. So readers who wish to understand the motivation for
+proving this, and how the proof here works are advised to first look
+at the above file.
 
 \begin{code}
 
