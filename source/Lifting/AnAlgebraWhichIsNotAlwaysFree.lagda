@@ -430,8 +430,8 @@ this is inessential.
 Concluding questions. The above gives *one* example of an algebra
 which if it's free then excluded middle holds. There must be plenty
 more. For example, a product of algebras is an algebra. Is a product
-of free algebras also free? As a second example, the algebras form an
-exponential ideal. Is the algebra X → A free if the algebra A is?
+of free algebras also free? As a second example, do the algebras form
+an exponential ideal: Is the algebra X → A free if the algebra A is?
 
 These questions are answered positively in the following module:
 
