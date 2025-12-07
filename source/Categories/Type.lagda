@@ -174,11 +174,11 @@ That is the above map is an equivalence.
 
 \begin{code}
 
- is-univalent : (𝓤 ⊔ 𝓥) ̇ 
- is-univalent = (a b : obj) → is-equiv (id-to-iso a b)
+ is-category : (𝓤 ⊔ 𝓥) ̇ 
+ is-category = (a b : obj) → is-equiv (id-to-iso a b)
 
  being-cat-is-prop : (fe : Fun-Ext)
-                   → is-prop (is-univalent)
+                   → is-prop (is-category)
  being-cat-is-prop fe x y = Π₂-is-prop fe I _ _
   where
    I : (a b : obj) → is-prop (is-equiv (id-to-iso a b))
@@ -210,8 +210,8 @@ for composition where the precategory cannot be inferred.
 
 \begin{code}
 
-open WildCategory public using (is-precategory ; is-univalent)
--- open WildCategory {{...}} public hiding (is-precategory ; is-univalent ; obj)
+open WildCategory public using (is-precategory ; is-category)
+-- open WildCategory {{...}} public hiding (is-precategory ; is-category ; obj)
 
 record OBJ {𝓤} {𝓥} (A : 𝓤 ̇ ) (B : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ⁺ ̇  where
  field
@@ -416,7 +416,7 @@ A category is exactly a univalent precategory.
 \begin{code}
 
 Category : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
-Category 𝓤 𝓥 = Σ P ꞉ Precategory 𝓤 𝓥 , is-univalent ⟨ P ⟩
+Category 𝓤 𝓥 = Σ P ꞉ Precategory 𝓤 𝓥 , is-category ⟨ P ⟩
 
 \end{code}
 
@@ -440,7 +440,7 @@ instance
  obj {{catobj}} ((C , _) , _) = WildCategory.obj C
 
 id-to-iso-is-equiv : (C : Category 𝓤 𝓥)
-                   → is-univalent ⟨ C ⟩
+                   → is-category ⟨ C ⟩
 id-to-iso-is-equiv = pr₂
 
 \end{code}
