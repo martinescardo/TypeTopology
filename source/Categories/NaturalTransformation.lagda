@@ -25,13 +25,16 @@ such that it is natural:
 
 record NaturalTransformation {A : WildCategory 𝓤 𝓥}
                              {B : WildCategory 𝓦 𝓣}
-                             (F G : Functor A B)
+                             (F' G' : Functor A B)
                            : (𝓤 ⊔ 𝓥 ⊔ 𝓣) ̇  where
+ open CategoryNotation A
+ open CategoryNotation B
+ open FunctorNotation F' renaming (functor-map to F)
+ open FunctorNotation G' renaming (functor-map to G)
  field
-  gamma : (a : obj A) → hom {{B}} (Functor.Fobj F a) (Functor.Fobj G a)
+  gamma : (a : obj A) → hom (F a) (G a)
   natural : {a b : obj A}
-            (f : hom {{A}} a b)
-          → (Functor.Fhom G f) ∘⟨ B ⟩ (gamma a)
-          ＝ (gamma b) ∘⟨ B ⟩ (Functor.Fhom F f)
+            (f : hom a b)
+          → G f ∘ gamma a ＝ gamma b ∘ F f
 
 \end{code}

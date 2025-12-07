@@ -27,17 +27,65 @@ with the following structure
 
 record Functor (A : WildCategory 𝓤 𝓥) (B : WildCategory 𝓦 𝓣)
  : (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣) ̇  where
- constructor func-make
+ constructor make-functor
+ open CategoryNotation A
+ open CategoryNotation B
  field
   Fobj : obj A → obj B
-  Fhom : {a b : obj A} → hom {{A}} a b → hom {{B}} (Fobj a) (Fobj b)
-  id-pres : (a : obj A) → Fhom (id {{A}} {a}) ＝ id {{B}} {Fobj a}
+  Fhom : {a b : obj A} → hom a b → hom (Fobj a) (Fobj b)
+  id-pres : (a : obj A) → Fhom {a} id ＝ id
   distrib : {a b c : obj A}
-            (g : hom {{A}} b c)
-            (f : hom {{A}} a b)
-          → Fhom (g ∘⟨ A ⟩ f) ＝ (Fhom g) ∘⟨ B ⟩ (Fhom f)
+          (g : hom b c)
+          (f : hom a b)
+        → Fhom (g ∘ f) ＝ (Fhom g) ∘ (Fhom f)
 
-open Functor {{...}} public
+\end{code}
+
+Functor Notation
+
+\begin{code}
+
+record MAP {𝓤 𝓥 : Universe} (A : 𝓤 ̇ ) (B : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
+ field
+  func : A → B
+
+open MAP {{...}} public
+
+record FunctorGen {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
+                       (F : Functor A B) : 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇ where
+ 
+ open CategoryNotation A
+ open CategoryNotation B
+ field 
+  id-pres : (a : obj A) → Functor.Fhom F {a} id ＝ id
+  distrib : {a b c : obj A}
+            (g : hom b c)
+            (f : hom a b)
+          → Functor.Fhom F (g ∘ f)
+          ＝ Functor.Fhom F g ∘ Functor.Fhom F f
+
+open FunctorGen {{...}} public
+
+module FunctorNotation {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
+                       (F : Functor A B) where
+
+ open CategoryNotation A
+ open CategoryNotation B
+
+ instance
+  test : MAP (obj A) (obj B)
+  func {{test}} = Functor.Fobj F
+
+ instance
+  test' : {a b : obj A} → MAP (hom a b) (hom (func a) (func b))
+  func {{test'}} = Functor.Fhom F
+
+ instance
+  test'' : FunctorGen F
+  id-pres {{test''}} = Functor.id-pres F
+  distrib {{test''}} = Functor.distrib F
+
+ functor-map = func
 
 \end{code}
 
@@ -48,38 +96,44 @@ We now define functor composition in the expected way.
 _F∘_ : {A : WildCategory 𝓤 𝓥}
        {B : WildCategory 𝓦 𝓣}
        {C : WildCategory 𝓤' 𝓥'}
-       (G : Functor B C)
-       (F : Functor A B)
+       (G' : Functor B C)
+       (F' : Functor A B)
      → Functor A C
-_F∘_ {_} {_} {_} {_} {_} {_} {A} {B} {C} G F = functor
+_F∘_ {_} {_} {_} {_} {_} {_} {A} {B} {C} G' F' = functor
  where
+  open CategoryNotation A
+  open CategoryNotation B
+  open CategoryNotation C
+  open FunctorNotation F' renaming (functor-map to F)
+  open FunctorNotation G' renaming (functor-map to G)
+  
   fobj : obj A → obj C
-  fobj x = Fobj {{G}} (Fobj {{F}} x)
+  fobj x = G (F x)
 
-  fhom : {a b : obj A} → hom {{A}} a b → hom {{C}} (fobj a) (fobj b)
-  fhom h = Fhom {{G}} (Fhom {{F}} h)
+  fhom : {a b : obj A} → hom a b → hom (fobj a) (fobj b)
+  fhom h = G (F h)
 
   id-eq : (a : obj A)
-        → Fhom {{G}} (Fhom {{F}} (id {{A}})) ＝ id {{C}}
-  id-eq a = Fhom {{G}} (Fhom {{F}} (id {{A}})) ＝⟨ i  ⟩
-            Fhom {{G}} (id {{B}})              ＝⟨ ii ⟩
-            id {{C}}                           ∎
+        → G (F id) ＝ id
+  id-eq a = G (F id) ＝⟨ i  ⟩
+            G id     ＝⟨ ii ⟩
+            id       ∎
    where
-    i  = ap (Fhom {{G}}) (id-pres {{F}} a)
-    ii = id-pres {{G}} (Fobj {{F}} a)
+    i  = ap G (id-pres a)
+    ii = id-pres (F a)
 
   f-distrib : {a b c : obj A}
-              (g : hom {{A}} b c)
-              (f : hom {{A}} a b)
-            → fhom (g ∘⟨ A ⟩ f) ＝ (fhom g) ∘⟨ C ⟩ (fhom f)
-  f-distrib g f = fhom (g ∘⟨ A ⟩ f)                             ＝⟨ i  ⟩
-                  Fhom {{G}} (Fhom {{F}} g ∘⟨ B ⟩ Fhom {{F}} f) ＝⟨ ii ⟩
-                  (fhom g) ∘⟨ C ⟩ (fhom f)                      ∎
+              (g : hom b c)
+              (f : hom a b)
+            → G (F (g ∘ f)) ＝ G (F g) ∘ G (F f)
+  f-distrib g f = G (F (g ∘ f))     ＝⟨ i  ⟩
+                  G (F g ∘ F f)     ＝⟨ ii ⟩
+                  G (F g) ∘ G (F f) ∎
    where
-    i  = ap (Fhom {{G}}) (distrib {{F}} g f)
-    ii = distrib {{G}} (Fhom {{F}} g) (Fhom {{F}} f)
+    i  = ap G (distrib g f)
+    ii = distrib (F g) (F f)
 
   functor : Functor A C
-  functor = func-make fobj fhom id-eq f-distrib
+  functor = make-functor fobj fhom id-eq f-distrib
 
 \end{code}
