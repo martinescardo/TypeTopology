@@ -19,7 +19,7 @@ Definition of a natural transformation in the usual way.
 For two functors, F and G. We have:
 - gamma : for every object in A, a homomorphism, hom (F a) (G a)
 such that it is natural:
-- for objects, f : hom a b, (G f) ∘ (gamma a) ＝ (gamma b) ∘ (F f)
+- for objects, f : hom a b, G f ∘ gamma a ＝ gamma b ∘ F f
 
 \begin{code}
 
@@ -35,8 +35,13 @@ record NaturalTransformation {A : WildCategory 𝓤 𝓥}
   -- Having problems distinguishing between functors on object
   -- and functors on homomorphisms
   gamma : (a : obj A) → hom (F {{fobj}} a) (G {{defn-fobj}} a)
+
+ private
+  γ = gamma
+
+ field
   natural : {a b : obj A}
             (f : hom a b)
-          → G f ∘ gamma a ＝ gamma b ∘ F f
+          → G f ∘ γ a ＝ γ b ∘ F f
 
 \end{code}

@@ -20,8 +20,8 @@ This includes:
 - Fhom, which is a map from homomorphisms of A to homomorphisms of B
 
 with the following structure
-- Fhom (id A) = id (Fobj B)
-- Fhom (g ∘ f) = (Fhom g) ∘ (Fhom f)
+- Fhom id = id
+- Fhom (g ∘ f) = Fhom g ∘ Fhom f
 
 \begin{code}
 
@@ -79,7 +79,8 @@ module FunctorNotation {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
   gen-functor-map {{defn-fobj}} = Functor.Fobj F
 
  instance
-  defn-fhom : {a b : obj A} → FUNCTORMAP (hom a b) (hom (functor-map a) (functor-map b))
+  defn-fhom : {a b : obj A}
+            → FUNCTORMAP (hom a b) (hom (functor-map a) (functor-map b))
   gen-functor-map {{defn-fhom}} = Functor.Fhom F
 
  instance
