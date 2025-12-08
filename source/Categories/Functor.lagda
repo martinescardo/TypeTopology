@@ -45,13 +45,13 @@ Functor Notation
 
 \begin{code}
 
-record MAP {𝓤 𝓥 : Universe} (A : 𝓤 ̇ ) (B : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
+record FUNCTORMAP {𝓤 𝓥 : Universe} (A : 𝓤 ̇ ) (B : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  field
-  func : A → B
+  gen-functor-map : A → B
 
-open MAP {{...}} public
+open FUNCTORMAP {{...}} public
 
-record FunctorGen {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
+record FUNNOTATION {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
                        (F : Functor A B) : 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇ where
  
  open CategoryNotation A
@@ -64,7 +64,7 @@ record FunctorGen {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
           → Functor.Fhom F (g ∘ f)
           ＝ Functor.Fhom F g ∘ Functor.Fhom F f
 
-open FunctorGen {{...}} public
+open FUNNOTATION {{...}} public
 
 module FunctorNotation {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
                        (F : Functor A B) where
@@ -72,20 +72,21 @@ module FunctorNotation {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
  open CategoryNotation A
  open CategoryNotation B
 
- instance
-  test : MAP (obj A) (obj B)
-  func {{test}} = Functor.Fobj F
+ functor-map = gen-functor-map
 
  instance
-  test' : {a b : obj A} → MAP (hom a b) (hom (func a) (func b))
-  func {{test'}} = Functor.Fhom F
+  defn-fobj : FUNCTORMAP (obj A) (obj B)
+  gen-functor-map {{defn-fobj}} = Functor.Fobj F
 
  instance
-  test'' : FunctorGen F
-  id-pres {{test''}} = Functor.id-pres F
-  distrib {{test''}} = Functor.distrib F
+  defn-fhom : {a b : obj A} → FUNCTORMAP (hom a b) (hom (functor-map a) (functor-map b))
+  gen-functor-map {{defn-fhom}} = Functor.Fhom F
 
- functor-map = func
+ instance
+  functor-notation : FUNNOTATION F
+  id-pres {{functor-notation}} = Functor.id-pres F
+  distrib {{functor-notation}} = Functor.distrib F
+
 
 \end{code}
 
