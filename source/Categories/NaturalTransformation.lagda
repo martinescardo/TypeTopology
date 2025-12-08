@@ -29,10 +29,12 @@ record NaturalTransformation {A : WildCategory 𝓤 𝓥}
                            : (𝓤 ⊔ 𝓥 ⊔ 𝓣) ̇  where
  open CategoryNotation A
  open CategoryNotation B
- open FunctorNotation F' renaming (functor-map to F)
+ open FunctorNotation F' renaming (functor-map to F ; test to testF)
  open FunctorNotation G' renaming (functor-map to G)
  field
-  gamma : (a : obj A) → hom (F a) (G a)
+  -- Having problems distinguishing between functors on object
+  -- and functors on homomorphisms
+  gamma : (a : obj A) → hom (F {{testF}} a) (G {{test}} a)
   natural : {a b : obj A}
             (f : hom a b)
           → G f ∘ gamma a ＝ gamma b ∘ F f
