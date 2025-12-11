@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+agda AllModulesIndex.lagda &
+agda ContinuityAxiom/index.lagda &
+agda DiscreteGraphicMonoids/index.lagda &
+agda DomainTheory/index.lagda &
+agda EffectfulForcing/index.lagda &
+agda Games/index.lagda &
+agda GamesMGU/index.lagda &
+agda Groups/index.lagda &
+agda Higgs/index.lagda &
+agda InfinitePigeon/index.agda &
+agda InjectiveTypes/index.lagda &
+agda Locales/index.lagda &
+agda MGS/index.lagda &
+agda Ordinals/index.lagda &
+agda PCF/index.lagda &
+agda TWA/index.lagda &
+agda TypeTopology/index.lagda &
+agda UF/index.lagda &
+agda Various/index.lagda &
+
+wait
