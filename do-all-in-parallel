@@ -1,0 +1,30 @@
+agda UF/index.lagda &
+agda InfinitePigeon/index.agda &
+agda MGS/index.lagda &
+
+wait
+
+agda TWA/index.lagda &
+agda DomainTheory/index.lagda &
+agda GamesMGU/index.lagda &
+agda DiscreteGraphicMonoids/index.lagda &
+agda EffectfulForcing/index.lagda &
+
+wait
+
+agda Groups/index.lagda &
+agda Games/index.lagda &
+agda Higgs/index.lagda &
+agda InjectiveTypes/index.lagda &
+agda Locales/index.lagda &
+
+wait
+
+agda Ordinals/index.lagda &
+agda PCF/index.lagda &
+agda TypeTopology/index.lagda &
+agda Various/index.lagda &
+
+wait
+
+agda AllModulesIndex.lagda
