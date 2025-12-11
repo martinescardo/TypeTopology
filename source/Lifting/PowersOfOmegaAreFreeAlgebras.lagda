@@ -1,9 +1,11 @@
 Martin Escardo, 2nd December 2025.
 
-In any 1-topos, powers of Ω are free lifting algebras.
+In any 1-topos, powers of Ω are free lifting algebras. This result
+seems to new new.
 
-The same argument seems to show that products of free algebras are
-free, but this is still under development.
+The same argument directly generalizes to show that products of free
+algebras are free, and this generalization is included in the file
+ProductsOfFreeAlgebrasAreFree in the parent directory.
 
 \begin{code}
 
@@ -69,13 +71,13 @@ We let π range over Ωˣ.
 Ωˣ-𝓛-alg = Π-is-alg fe (λ (_ : X) → Ω) (λ (_ : X) → Σ-alg-on-Ω)
 
 ∐ : extension-op Ωˣ
-∐ = 𝓛-alg-structure Ωˣ-𝓛-alg
+∐ = 𝓛-alg-structure-map Ωˣ-𝓛-alg
 
 \end{code}
 
-We now consider a notion of positivity for elements of Ωˣ (which
-agrees with Anders Kock's general notion of positivity for this
-particular algebra, but we don't need to know this here).
+We now consider a notion of positivity for elements of Ω ˣ (which
+agrees with Anders Kock's notion of positivity for this particular
+algebra, but we don't need to know this here).
 
 \begin{code}
 
@@ -152,8 +154,8 @@ that Ωˣ is isomorphic to 𝓛 G as a lifting algebra:
           ╲  ↓  │
            ➘  Ωˣ.
 
-Defining h⁻¹ in the following way is the only insight in this
-file. The rest is just hard work.
+The only insight in this file is the definition of h⁻¹. Everything
+else is just hard work.
 
 \begin{code}
 
@@ -170,7 +172,7 @@ h⁻¹-is-section π =
   where
    I = dfunext fe (λ x → Ω-extensionality pe fe
                           pr₂
-                          (λ (h : π x holds) → ∣ x , h ∣ , h))
+                          (λ (d : π x holds) → ∣ x , d ∣ , d))
 
 \end{code}
 
@@ -194,10 +196,10 @@ h⁻¹-is-retraction : h⁻¹ ∘ h ∼ id
 h⁻¹-is-retraction l@(P , φ , i) = V
  where
   I : (∃ x ꞉ X , Σ p ꞉ P , ι (φ p) x holds) → P
-  I = ∥∥-rec i (λ (x , p , h) → p)
+  I = ∥∥-rec i (λ (x , p , d) → p)
 
   II : P → ∃ x ꞉ X , Σ p ꞉ P , ι (φ p) x holds
-  II p = ∥∥-rec ∃-is-prop (λ (x , h) → ∣ x , p , h ∣) e
+  II p = ∥∥-rec ∃-is-prop (λ (x , d) → ∣ x , p , d ∣) e
    where
     e : ∃ x ꞉ X , ι (φ p) x holds
     e = ι-is-pos (φ p)
@@ -209,8 +211,8 @@ h⁻¹-is-retraction l@(P , φ , i) = V
     I₀ : (x : X) → (Σ p ꞉ P , ι (φ p) x holds) ＝ (ι (φ (I e)) x holds)
     I₀ x = pe (Σ-is-prop i (λ p → holds-is-prop (ι (φ p) x)))
               (holds-is-prop (ι (φ (I e)) x))
-              (λ (p , h) → transport (λ - → ι (φ -) x holds) (i p (I e)) h)
-              (λ (h : ι (φ (I e)) x holds) → I e , h)
+              (λ (p , d) → transport (λ - → ι (φ -) x holds) (i p (I e)) d)
+              (λ (d : ι (φ (I e)) x holds) → I e , d)
 
   IV : value (h⁻¹ (h l)) ∼ (λ x → φ (I x))
   IV e = to-subtype-＝ being-pos-is-prop (III {e})
@@ -220,7 +222,7 @@ h⁻¹-is-retraction l@(P , φ , i) = V
 
 \end{code}
 
-So Ωˣ is equivalent to a free algebra.
+So Ωˣ is equivalent to the underlying type of a free algebra
 
 \begin{code}
 
@@ -237,10 +239,10 @@ h⁻¹-is-hom : is-hom Ωˣ-𝓛-alg 𝓛G h⁻¹
 h⁻¹-is-hom P i φ = IV
  where
   I : (∃ x ꞉ X , Σ p ꞉ P , φ p x holds) → (Σ p ꞉ P , ∃ x ꞉ X , φ p x holds)
-  I = ∥∥-rec (Σ-is-prop i λ _ → ∃-is-prop) (λ (x , p , h) → p , ∣ x , h ∣)
+  I = ∥∥-rec (Σ-is-prop i λ _ → ∃-is-prop) (λ (x , p , d) → p , ∣ x , d ∣)
 
   II : (Σ p ꞉ P , ∃ x ꞉ X , φ p x holds) → (∃ x ꞉ X , Σ p ꞉ P , φ p x holds)
-  II (p , e) = ∥∥-functor (λ (x , h) → x , p , h) e
+  II (p , e) = ∥∥-functor (λ (x , d) → x , p , d) e
 
   III : value (h⁻¹ (∐ i φ)) ∼ (λ x → value (⨆ i (h⁻¹ ∘ φ)) (I x))
   III e = III₁
@@ -257,84 +259,23 @@ h⁻¹-is-hom P i φ = IV
   IV : h⁻¹ (∐ i φ) ＝ ⨆ i (h⁻¹ ∘ φ)
   IV = from-⋍ pe fe fe ((I , II) , III)
 
-h⁻¹-extends-η : h⁻¹ ∘ ι ∼ η
-h⁻¹-extends-η g = h⁻¹ (ι g)     ＝⟨ ap h⁻¹ (h-extends-ι g ⁻¹) ⟩
-                  h⁻¹ (h (η g)) ＝⟨ h⁻¹-is-retraction (η g) ⟩
-                  η g           ∎
-
 \end{code}
 
-This shows that Ωˣ is isomorphic to the free algebra 𝓛 G in the
-category of algebras, and hence is itself free, by a standard (but a
-bit laborious) categorical argument worked out below.
+This shows that Ωˣ equipped with the algebra structure Ωˣ-𝓛-alg is
+isomorphic to the free algebra 𝓛 G in the category of algebras, and
+hence is itself free.
 
 \begin{code}
 
 Ωˣ-is-free-𝓛-alg : is-free-𝓛-alg Ωˣ-𝓛-alg G ι
-Ωˣ-is-free-𝓛-alg {𝓦} {A} A-is-set 𝓐 f = II (center I)
- where
-  I : ∃! (f̅ , _) ꞉ Hom 𝓛G 𝓐 , f̅ ∘ η ∼ f
-  I = 𝓛-is-free A-is-set 𝓐 f
-
-  II : (Σ  (f̅ , _) ꞉ Hom 𝓛G       𝓐 , f̅ ∘ η ∼ f)
-     → (∃! (f̅̅ , _) ꞉ Hom Ωˣ-𝓛-alg 𝓐 , f̅̅ ∘ ι ∼ f)
-  II ((f̅ , f̅-is-hom) , e) = II₁
-   where
-    f̅̅ : Ωˣ → A
-    f̅̅ = f̅ ∘ h⁻¹
-
-    f̅̅-is-hom : is-hom Ωˣ-𝓛-alg 𝓐 f̅̅
-    f̅̅-is-hom = ∘-is-hom Ωˣ-𝓛-alg 𝓛G 𝓐 h⁻¹ f̅ h⁻¹-is-hom f̅-is-hom
-
-    e̅ :  f̅̅ ∘ ι ∼ f
-    e̅ g = f̅̅ (ι g)       ＝⟨by-definition⟩
-          f̅ (h⁻¹ (ι g)) ＝⟨ ap f̅ (h⁻¹-extends-η g) ⟩
-          f̅ (η g)       ＝⟨ e g ⟩
-          f g           ∎
-
-    c : Σ (f̅̅ , _) ꞉ Hom Ωˣ-𝓛-alg 𝓐 , f̅̅ ∘ ι ∼ f
-    c = (f̅̅ , f̅̅-is-hom) , e̅
-
-    II₀ : is-prop (type-of c)
-    II₀ ((f₀ , f₀-is-hom) , e₀) ((f₁ , f₁-is-hom) , e₁) = II₀₁
-     where
-      f₀-agrees-with-f₁ : f₀ ∼ f₁
-      f₀-agrees-with-f₁ π =
-       f₀ π           ＝⟨ ap f₀ ((h⁻¹-is-section π)⁻¹) ⟩
-       f₀ (h (h⁻¹ π)) ＝⟨ II₀₀ (h⁻¹ π) ⟩
-       f₁ (h (h⁻¹ π)) ＝⟨ ap f₁ (h⁻¹-is-section π) ⟩
-       f₁ π           ∎
-        where
-         II₀₀ : f₀ ∘ h ∼ f₁ ∘ h
-         II₀₀ = hom-agreement A-is-set 𝓐 f
-                 ((f₀ ∘ h , ∘-is-hom 𝓛G Ωˣ-𝓛-alg 𝓐 h f₀ h-is-hom f₀-is-hom) ,
-                  (λ g → f₀ (h (η g)) ＝⟨ ap f₀ (h-extends-ι g) ⟩
-                         f₀ (ι g)     ＝⟨ e₀ g ⟩
-                         f g          ∎))
-                 ((f₁ ∘ h , ∘-is-hom 𝓛G Ωˣ-𝓛-alg 𝓐 h f₁ h-is-hom f₁-is-hom) ,
-                  (λ g → f₁ (h (η g)) ＝⟨ ap f₁ (h-extends-ι g) ⟩
-                         f₁ (ι g)     ＝⟨ e₁ g ⟩
-                         f g          ∎))
-
-      II₀₁ : ((f₀ , f₀-is-hom) , e₀) ＝ ((f₁ , f₁-is-hom) , e₁)
-      II₀₁ = to-subtype-＝
-              (λ σ → Π-is-prop fe (λ (_ : G) → A-is-set))
-              (to-subtype-＝
-                (λ (_ : Ωˣ → A) → Π₃-is-prop fe (λ P i φ → A-is-set))
-                (dfunext fe f₀-agrees-with-f₁))
-
-    II₁ : ∃! (f̅̅ , _) ꞉ Hom Ωˣ-𝓛-alg 𝓐 , f̅̅ ∘ ι ∼ f
-    II₁ = pointed-props-are-singletons c II₀
-
+Ωˣ-is-free-𝓛-alg = 𝓛-alg-isomorphic-to-free-𝓛-alg-is-itself-free pe fe
+                    Ωˣ-is-set
+                    G
+                    G-is-set
+                    ι
+                    Ωˣ-𝓛-alg
+                    h⁻¹
+                    h⁻¹-is-section
+                    h⁻¹-is-retraction
+                    h⁻¹-is-hom
 \end{code}
-
-TODO (before the development below). This last theorem
-`Ωˣ-is-free-𝓛-alg` is not specific to our concerns in this file. It is
-a general categorical theorem saying that if an algebra is isomorphic
-to a free algebra, then it is itself free. This should be generalized
-(trivially) and moved to the file `Algebras`, and used here as a
-corollary of what really matters here.
-
-Under development. It seems that the same argument shows that products
-of free algebras are themselves free. Nothing special about Ω was used
-here, other than that it is a free algebra.

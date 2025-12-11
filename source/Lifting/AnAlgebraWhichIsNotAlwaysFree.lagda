@@ -55,7 +55,7 @@ So the above discussion settles Sterling's conjecture positively, by
 providing an example of a dcpo lifting algebra which is not always
 free.
 
-TODO. It would be good to formalize this in here in TypeTopology.
+TODO. It would be good to formalize this here in TypeTopology.
 
 [1] Jon Sterling. Tensorial structure of the lifting doctrine in
     constructive domain theory. Originally 28 Dec 2023, last revised 30
@@ -262,8 +262,8 @@ h⁻¹ being the unique homomorphism extending η along ι.
 Using this, we in turn conclude that our assumed insertion of
 generators ι : G → Ω is constantly ⊥.
 
-The trick is, given a generator g : G, to consider the partial element l : 𝓛 G
-defined by
+The trick is, given a generator g : G, to consider the partial element
+l : 𝓛 G defined by
 
  l = (ι g holds , (λ _ → g) , _),
 
@@ -430,8 +430,19 @@ this is inessential.
 Concluding questions. The above gives *one* example of an algebra
 which if it's free then excluded middle holds. There must be plenty
 more. For example, a product of algebras is an algebra. Is a product
-of free algebras also free? As a second example, the algebras form an
-exponential ideal. Is the algebra X → A free if the algebra A is?
+of free algebras also free? As a second example, do the algebras form
+an exponential ideal: Is the algebra X → A free if the algebra A is?
+
+These questions are answered positively in the following module:
+
+\begin{code}
+
+import Lifting.ProductsOfFreeAlgebrasAreFree
+
+\end{code}
+
+So, at present, we have only *one* example of an algebra which is not
+free in all toposes.
 
 Speculative question. Is there a nice characterization of the type of
 all algebra structures on Ω? We have two "extreme" ones, namely ∃ and ∀.
