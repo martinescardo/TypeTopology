@@ -11,6 +11,7 @@ on:
 
 jobs:
   update-count:
+    if: github.repository == 'martinescardo/TypeTopology'
     runs-on: ubuntu-latest
     permissions:
       contents: write
