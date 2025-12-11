@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 agda UF/index.lagda &
 agda InfinitePigeon/index.agda &
 agda MGS/index.lagda &
