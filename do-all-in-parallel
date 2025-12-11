@@ -5,7 +5,7 @@ agda MGS/index.lagda &
 agda EffectfulForcing/index.lagda &
 agda ContinuityAxiom/index.lagda &
 
-wait
+# wait
 
 agda TWA/index.lagda &
 agda DomainTheory/index.lagda &
@@ -14,7 +14,7 @@ agda GamesMGU/index.lagda &
 agda DiscreteGraphicMonoids/index.lagda &
 agda Groups/index.lagda &
 
-wait
+# wait
 
 agda Higgs/index.lagda &
 agda InjectiveTypes/index.lagda &
@@ -24,6 +24,8 @@ agda TypeTopology/index.lagda &
 agda PCF/index.lagda &
 agda Various/index.lagda &
 
-wait
+# wait
 
-agda AllModulesIndex.lagda
+agda AllModulesIndex.lagda &
+
+wait
