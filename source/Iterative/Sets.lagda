@@ -703,7 +703,7 @@ module _ (pt : propositional-truncations-exist) where
      open union-construction 𝓐
      e₁ = Σ-change-of-variable-≃ _ im⁻-≃-im
      e₂ = Σ-change-of-variable-≃ _
-           (singleton-≃-𝟙' (singleton-types'-are-singletons B))
+           (𝟙-≃-singleton (singleton-types'-are-singletons B))
 
 \end{code}
 

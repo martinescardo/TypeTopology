@@ -653,7 +653,7 @@ being-small-is-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
       f (e' , x) = eqtofun (resizing-condition e') x
 
       g : Y → X'
-      g y = (𝟙{𝓥} , singleton-≃-𝟙' (pointed-props-are-singletons y i)) , ⋆
+      g y = (𝟙{𝓥} , 𝟙-≃-singleton (pointed-props-are-singletons y i)) , ⋆
 
 deJong-resizing : (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
 deJong-resizing 𝓤 𝓥 = (Y : 𝓤 ̇ ) → (Y is 𝓥 small) is 𝓥 small
@@ -672,7 +672,7 @@ being-small-is-idempotent-converse
 being-small-is-idempotent-converse ua 𝓤 𝓥 Y r = 𝟙{𝓥} , γ
  where
   γ : 𝟙{𝓥} ≃ (Y is 𝓥 small)
-  γ = singleton-≃-𝟙'
+  γ = 𝟙-≃-singleton
        (pointed-props-are-singletons r (being-small-is-prop ua Y 𝓥))
 
 being-small-is-idempotent-≃ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
@@ -881,7 +881,7 @@ embedded-retract-is-small (r , s , rs) s-is-embedding Y-is-small =
 singletons-have-any-size : {X : 𝓤 ̇ }
                          → is-singleton X
                          → X is 𝓥 small
-singletons-have-any-size i = 𝟙 , singleton-≃-𝟙' i
+singletons-have-any-size i = 𝟙 , 𝟙-≃-singleton i
 
 equivs-have-any-size : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-equiv f
@@ -1125,7 +1125,7 @@ WEM-gives-that-negated-types-are-small {𝓤} {𝓥} fe wem X =
 
   g : ¬¬¬ X → (¬ X) is 𝓥 small
   g h = 𝟙 ,
-        singleton-≃-𝟙'
+        𝟙-≃-singleton
          (pointed-props-are-singletons
            (three-negations-imply-one h)
            (negations-are-props fe))
