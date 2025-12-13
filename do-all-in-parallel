@@ -1,4 +1,26 @@
 #!/usr/bin/env bash
+
+# According to
+#
+# https://agda.zulipchat.com/#narrow/channel/238741-general/topic/How.20safe.20is.20this.3F.20.28Brute-force.20parallelism.2E.29/with/563647851
+#
+# this script is safe in the sense of being immune to race conditions.
+#
+# Currently, as of 2025-12-13, in a Mac M4 Mini (not Pro) with 24GB of ram, running just
+#
+#  $ agda AllModulesIndex.lagda
+#
+# takes 6:00 min.
+#
+# But running this script takes only 3:40min instead.
+#
+# This is useful when we change a file that forces almost all files to be type checked again.
+#
+# I haven't tried it in other operating systems or hardware.
+#
+# Feedback from other users is welcome.
+
+
 agda AllModulesIndex.lagda &
 agda ContinuityAxiom/index.lagda &
 agda DiscreteGraphicMonoids/index.lagda &
