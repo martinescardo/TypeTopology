@@ -222,7 +222,7 @@ h⁻¹-is-retraction l@(P , φ , i) = V
 
 \end{code}
 
-So Ωˣ is equivalent to the underlying type of a free algebra
+So Ωˣ is equivalent to the underlying type of a free algebra.
 
 \begin{code}
 
