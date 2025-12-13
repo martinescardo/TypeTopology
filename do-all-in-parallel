@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This simple-minded script parallelizes the type checking of this repository,
+# significantly reducing the type checking time.
+#
 # According to
 #
 # https://agda.zulipchat.com/#narrow/channel/238741-general/topic/How.20safe.20is.20this.3F.20.28Brute-force.20parallelism.2E.29/with/563647851
