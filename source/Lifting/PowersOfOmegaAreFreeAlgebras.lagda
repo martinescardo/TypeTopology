@@ -75,7 +75,7 @@ We let π range over Ωˣ.
 
 \end{code}
 
-We now consider a notion of positivity for elements of Ω ˣ (which
+We now consider a notion of positivity for elements of Ωˣ (which
 agrees with Anders Kock's notion of positivity for this particular
 algebra, but we don't need to know this here).
 
