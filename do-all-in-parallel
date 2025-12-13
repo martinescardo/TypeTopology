@@ -21,6 +21,7 @@
 # I haven't tried it in other operating systems or hardware.
 #
 # Feedback from users of other hardware and/or operating systems is welcome.
+# (Do a pull request to report it, or contact me diredctly, and I will add it here.)
 
 agda AllModulesIndex.lagda &
 agda ContinuityAxiom/index.lagda &
