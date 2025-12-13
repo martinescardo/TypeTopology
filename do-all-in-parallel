@@ -22,7 +22,6 @@
 #
 # Feedback from users of other hardware and/or operating systems is welcome.
 
-
 agda AllModulesIndex.lagda &
 agda ContinuityAxiom/index.lagda &
 agda DiscreteGraphicMonoids/index.lagda &
