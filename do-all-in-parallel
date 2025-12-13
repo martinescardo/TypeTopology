@@ -20,7 +20,7 @@
 #
 # I haven't tried it in other operating systems or hardware.
 #
-# Feedback from other users is welcome.
+# Feedback from users of other hardware and/or operating systems is welcome.
 
 
 agda AllModulesIndex.lagda &
