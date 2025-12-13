@@ -14,6 +14,8 @@
 #
 # But running this script takes only 3:40min instead.
 #
+# Same time behavior in a MacBook Air M4 with 32GB of ram.
+#
 # This is useful when we change a file that forces almost all files to be type checked again.
 #
 # I haven't tried it in other operating systems or hardware.
