@@ -50,5 +50,5 @@ wait
 
 # I tried adding more index modules above, but this slows things down.
 # The above is a result of trial-and-error to optimize time.
-# It is possible that other choices files to typecheck in parallel  may improve things further.
+# It is possible that other choices of files to typecheck in parallel may improve things further.
 # In any case, whatever the choices, it is important to always include `AllModulesIndex`.
