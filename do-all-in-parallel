@@ -47,7 +47,7 @@
 #    user 18m23s
 #    sys  0m5s
 #
-# So not a significant difference in this case.
+# So not a significant difference in this case. But still a minor improvement.
 
 agda AllModulesIndex.lagda &
 agda ContinuityAxiom/index.lagda &
