@@ -15,7 +15,7 @@
 #
 # takes 6:00 min.
 #
-# But running this script takes only 3:40min instead.
+# But running this script takes only 3:40 min instead.
 #
 # Same time behavior in a MacBook Air M4 with 32GB of ram.
 #
@@ -47,3 +47,7 @@ agda UF/index.lagda &
 agda Various/index.lagda &
 
 wait
+
+# I tried adding more index modules above, but this slows things down.
+# The above is a result of trial-and-error to optimize time.
+# It is possible that other possibilities may improve things further.
