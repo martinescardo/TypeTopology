@@ -17,7 +17,13 @@
 #
 # But running this script takes only 3:40 min instead.
 #
-# Same time behavior in a MacBook Air M4 with 32GB of ram.
+# Run
+#
+#  $ time ../do-all-in-parallel
+#
+# from ~/TypeTopology/source to verify this.
+#
+# I get the same time behavior in a MacBook Air M4 with 32GB of ram.
 #
 # This is useful when we change a file that forces almost all files to be type checked again.
 #
@@ -25,6 +31,23 @@
 #
 # Feedback from users of other hardware and/or operating systems is welcome.
 # (Do a pull request to report it, or contact me directly, and I will add it here.)
+#
+# Added 14th December 2025. I have now tested this in a 2012 Intel
+# machine running Linux (Ubuntu 24.04) with 16GB of ram, namely
+# Intel(R) Core(TM) i5-3570 CPU @ 3.40GHz with four cores.
+#
+#  $ time ../do-all-in-parallel
+#    real 16m28s
+#    user 54m13s
+#    sys  0m29s
+#
+#  $ rm -rf ../_build/
+#  $ time agda AllModulesIndex
+#    real 18m27s
+#    user 18m23s
+#    sys  0m5s
+#
+# So not a significant difference in this case.
 
 agda AllModulesIndex.lagda &
 agda ContinuityAxiom/index.lagda &
