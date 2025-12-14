@@ -48,6 +48,10 @@
 #    sys  0m5s
 #
 # So not a significant difference in this case. But still a minor improvement.
+#
+# I still wonder what happens in more modern Intel machines, and also
+# in Apple's "Pro" and "Max" machines (which I don't own and I don't
+# plan to).
 
 agda AllModulesIndex.lagda &
 agda ContinuityAxiom/index.lagda &
