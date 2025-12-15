@@ -15,7 +15,7 @@ terms of Hydra(n).
 
 {-# OPTIONS --safe --without-K #-}
 
-module Various.Hydra where
+module gist.Hydra where
 
 open import MLTT.Spartan
 open import MLTT.List

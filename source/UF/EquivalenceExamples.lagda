@@ -823,8 +823,8 @@ singleton-≃ i j = (λ _ → center j) , maps-of-singletons-are-equivs _ i j
 singleton-≃-𝟙 : {X : 𝓤 ̇ } → is-singleton X → X ≃ 𝟙 {𝓥}
 singleton-≃-𝟙 i = singleton-≃ i 𝟙-is-singleton
 
-singleton-≃-𝟙' : {X : 𝓤 ̇ } → is-singleton X → 𝟙 {𝓥} ≃ X
-singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
+𝟙-≃-singleton : {X : 𝓤 ̇ } → is-singleton X → 𝟙 {𝓥} ≃ X
+𝟙-≃-singleton = singleton-≃ 𝟙-is-singleton
 
 𝟙-＝-≃ : (P : 𝓤 ̇ )
       → funext 𝓤 𝓤
