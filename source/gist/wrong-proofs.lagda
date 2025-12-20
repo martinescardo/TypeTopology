@@ -19,7 +19,7 @@ wrong-proof₀ false refl = refl
 wrong-proof₀ true refl = refl
 
 wrong-proof₁ : is-set Bool
-wrong-proof₁ {x} {y} p refl = wrong-proof₀ x p
+wrong-proof₁ {x} p refl = wrong-proof₀ x p
 
 wrong-proof₂ : {y z : ℕ} (p : succ y ＝ succ z) → p ＝ ap succ (succ-lc p)
 wrong-proof₂ refl = refl
@@ -36,6 +36,6 @@ wrong-proof₃ (succ x) p =
   I = wrong-proof₃ x (succ-lc p)
 
 wrong-proof₄ : is-set ℕ
-wrong-proof₄ {x} {y} p refl = wrong-proof₃ x p
+wrong-proof₄ {x} p refl = wrong-proof₃ x p
 
 \end{code}
