@@ -3,12 +3,11 @@ Martin Escardo 20 Deceber 2025.
 This is regarding this discussion at mathstodon:
 https://mathstodon.xyz/deck/@MartinEscardo/115751523590095370
 
-The conclusion of the above discussion is that the following proofs are not wrong if you read Jesper Cock's PhD thesis, linked in the above discussion.
+The conclusion of the above discussion is that the following proofs are not wrong if you read Jesper Cockx's PhD thesis, linked in the above discussion.
 
 Apparently, although nobody elaborated on that precisely (as of Sat 20 Dec 17:15 GMT), the following "wrong" proofs translate to the known proofs by the encode-decode method.
 
 I will keep this file as it is, so that the above discussion can be understood in the original context.
-
 
 \begin{code}
 
