@@ -1,3 +1,8 @@
+Martin Escardo 20 Deceber 2025.
+
+This is regarding this discussion at mathstodon:
+https://mathstodon.xyz/deck/@MartinEscardo/115751523590095370
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -5,11 +10,9 @@
 module gist.wrong-proofs where
 
 open import MLTT.Spartan
+open import MLTT.Bool
 open import Naturals.Properties
 open import UF.Sets
-
-data Bool : 𝓤₀ ̇ where
- false true : Bool
 
 wrong-proof₀ : (x : Bool) (p : x ＝ x) → p ＝ refl
 wrong-proof₀ false refl = refl
