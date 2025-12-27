@@ -179,28 +179,33 @@ h⁻¹-is-retraction l@(P , φ , i) = V
       → (λ x → ∑ x (λ (p : P) → ι (φ p) x)) ＝ ι (φ (I e))
   III {e} = dfunext fe (λ x → from-⋍ pe fe fe ((III₀ x  , III₁ x) , III₂ x))
    where
-    III₀ : (x : X) → (Σ p ꞉ P , is-defined (ι (φ p) x)) → is-defined (ι (φ (I e)) x)
-    III₀ x (p , d) = transport (λ - → is-defined (ι (φ -) x)) (i p (I e)) d
+    module _ (x : X) where
 
-    III₁ : (x : X) → is-defined (ι (φ (I e)) x) → (Σ p ꞉ P , is-defined (ι (φ p) x))
-    III₁ x d = I e , d
+     III₀ : (Σ p ꞉ P , is-defined (ι (φ p) x))
+          → is-defined (ι (φ (I e)) x)
+     III₀ (p , d) = transport (λ - → is-defined (ι (φ -) x)) (i p (I e)) d
 
-    III₂ : (x : X) (σ : Σ p ꞉ P , is-defined (ι (φ p) x))
-         → value (∑ x {P , i} (λ (p : P) → ι (φ p) x)) σ ＝ value (ι (φ (I e)) x) (III₀ x σ)
-    III₂ x (p , d) =
-     value (∑ x {P , i} (λ (p : P) → ι (φ p) x)) (p , d) ＝⟨by-definition⟩
-     value (ι (φ p) x) d                                 ＝⟨by-definition⟩
-     ν (p , d)                                           ＝⟨ III₂₀ ⟩
-     ν (I e , III₀ x (p , d))                            ＝⟨by-definition⟩
-     value (ι (φ (I e)) x) (III₀ x (p , d))              ∎
-      where
-       ν : (Σ p ꞉ P , is-defined (ι (φ p) x)) → K x
-       ν (p , d) = value (ι (φ p) x) d
+     III₁ : is-defined (ι (φ (I e)) x)
+          → (Σ p ꞉ P , is-defined (ι (φ p) x))
+     III₁ d = I e , d
 
-       III₂₀ = ap ν (being-defined-is-prop
-                      (∑ x {P , i} (λ (p : P) → ι (φ p) x))
-                      (p , d)
-                      (I e , III₀ x (p , d)))
+     III₂ : (σ : Σ p ꞉ P , is-defined (ι (φ p) x))
+          → value (∑ x {P , i} (λ (p : P) → ι (φ p) x)) σ
+          ＝ value (ι (φ (I e)) x) (III₀ σ)
+     III₂ (p , d) =
+      value (∑ x {P , i} (λ (p : P) → ι (φ p) x)) (p , d) ＝⟨by-definition⟩
+      value (ι (φ p) x) d                                 ＝⟨by-definition⟩
+      ν (p , d)                                           ＝⟨ III₂₀ ⟩
+      ν (I e , III₀ (p , d))                              ＝⟨by-definition⟩
+      value (ι (φ (I e)) x) (III₀ (p , d))                ∎
+       where
+        ν : (Σ p ꞉ P , is-defined (ι (φ p) x)) → K x
+        ν (p , d) = value (ι (φ p) x) d
+
+        III₂₀ = ap ν (being-defined-is-prop
+                       (∑ x {P , i} (λ (p : P) → ι (φ p) x))
+                       (p , d)
+                       (I e , III₀ (p , d)))
 
   IV : value (h⁻¹ (h l)) ∼ (λ x → φ (I x))
   IV e = to-subtype-＝ being-pos-is-prop (III {e})
@@ -214,10 +219,12 @@ A-is-𝓛G = qinveq h⁻¹ (h , h⁻¹-is-section , h⁻¹-is-retraction)
 h⁻¹-is-hom : is-hom 𝓐 𝓛G h⁻¹
 h⁻¹-is-hom P i φ = IV
  where
-  I : (∃ x ꞉ X , Σ p ꞉ P , is-defined (φ p x)) → (Σ p ꞉ P , ∃ x ꞉ X , is-defined (φ p x))
-  I = ∥∥-rec (Σ-is-prop i λ _ → ∃-is-prop) (λ (x , p , d) → p , ∣ x , d ∣)
+  I : (∃ x ꞉ X , Σ p ꞉ P , is-defined (φ p x))
+    → (Σ p ꞉ P , ∃ x ꞉ X , is-defined (φ p x))
+  I = ∥∥-rec (Σ-is-prop i (λ _ → ∃-is-prop)) (λ (x , p , d) → p , ∣ x , d ∣)
 
-  II : (Σ p ꞉ P , ∃ x ꞉ X , is-defined (φ p x)) → (∃ x ꞉ X , Σ p ꞉ P , is-defined (φ p x))
+  II : (Σ p ꞉ P , ∃ x ꞉ X , is-defined (φ p x))
+     → (∃ x ꞉ X , Σ p ꞉ P , is-defined (φ p x))
   II (p , e) = ∥∥-functor (λ (x , d) → x , p , d) e
 
   III : value (h⁻¹ (∐ i φ)) ∼ (λ x → value (⨆ i (h⁻¹ ∘ φ)) (I x))
