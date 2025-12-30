@@ -25,6 +25,7 @@ import Iterative.Multisets-Addendum
 import Iterative.Multisets-HFLO
 import Iterative.Sets-Addendum
 import Iterative.Ordinals-Addendum
+import Iterative.Multisets-IdentificationExample -- by Alice Laroche
 import Iterative.Finite -- by Alice Laroche
 
 \end{code}
