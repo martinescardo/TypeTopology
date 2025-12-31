@@ -82,9 +82,8 @@ do
 done
 
 # We now wait for <delay> seconds, and then launch the compilation of
-# everything. This will take care of safety (again), but, more
-# importantly, it will take care of checking the index files which
-# were deliberately left out in the parallel threads.
+# everything. This will take care checking the index files which were
+# deliberately left out in the parallel threads.
 #
 # The reason for waiting long enough is that all the other threads are
 # typechecking everything already, except the index files.
@@ -96,7 +95,7 @@ done
 
 sleep $2
 
-agda ../AllModulesIndex.lagda
+agda ../AllModulesIndex.lagda &
 
 wait
 
