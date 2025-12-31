@@ -54,7 +54,7 @@ git ls-files "../*agda" \
  > listOfAlmostAllFiles
 
 # We now split this list of files into files of n lines each, where n is
-# the number of lines in this list, divided by the command line argument.
+# the number of lines in this list divided by the command line argument.
 # The resulting files are called x* without a suffix.
 
 n=$(($(cat listOfAlmostAllFiles | wc -l) / $1))
@@ -82,7 +82,7 @@ do
 done
 
 # We now wait for <delay> seconds, and then launch the compilation of
-# everything. This will take care checking the index files which were
+# everything. This will take care of checking the index files which were
 # deliberately left out in the parallel threads.
 #
 # The reason for waiting long enough is that all the other threads are
@@ -97,7 +97,7 @@ sleep $2
 
 agda ../AllModulesIndex.lagda &
 
-wait
+wait # for all threads to finish.
 
 echo "Finished at" >> log
 echo $(date) >> log
