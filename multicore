@@ -25,7 +25,8 @@ then
     exit 1
 fi
 
-echo $(date) > log
+echo "Got started at" > log
+echo $(date) >> log
 
 # Remove the previously existing files created by `split` (see below).
 
@@ -60,7 +61,7 @@ n=$(($(cat listOfAlmostAllFiles | wc -l) / $1))
 
 split -d -l $n < listOfAlmostAllFiles
 
-echo "All required temporary files created." >> log
+echo "All required temporary files created at" >> log
 echo $(date) >> log
 
 # We will not use the --safe flag, deliberately. We also use some
@@ -99,5 +100,5 @@ agda ../AllModulesIndex.lagda
 
 wait
 
-echo "Finished." >> log
+echo "Finished at" >> log
 echo $(date) >> log
