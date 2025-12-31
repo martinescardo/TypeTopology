@@ -39,10 +39,10 @@ import InfinitePigeon.index                 -- (4)
 
 \end{code}
 
-(1) Of --safe modules using --without-K and --level-universe.
-(2) Of modules with --safe and --without-K but --no-level-universe.
-(3) Of unsafe modules.
-(4) Of modules that disable termination check for bar recursion.
+(1) Index of --safe modules using --without-K and --level-universe.
+(2) Index of modules with --safe and --without-K but --no-level-universe.
+(3) Index of unsafe modules.
+(4) Index of modules that disable termination check for bar recursion.
     These modules *should* be safe in some sense, but Agda can't tell this,
     and so the checking needs to be done by mathematicians and/or logicians.
 

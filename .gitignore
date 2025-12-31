@@ -2,6 +2,7 @@ deploy
 agdatomd
 illiterator
 clean
+source/multicore
 source/compileall
 source/working/*
 source/obsolete
