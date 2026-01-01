@@ -25,7 +25,9 @@ then
     exit 1
 fi
 
-echo "Got started at" >> log
+echo "" >> log
+echo "---------------------------------------" >> log
+echo "Got started at with arguments $1 and $2" >> log
 echo $(date) >> log
 
 # Remove the previously existing files created by `split` (see below).
@@ -51,6 +53,12 @@ git ls-files "../*agda" \
  | sed 's:/:.:' \
  | sed 's:/:.:' \
  | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
  > listOfAlmostAllFiles
 
 # We now split this list of files into files of n lines each, where n is
@@ -59,7 +67,7 @@ git ls-files "../*agda" \
 
 n=$(($(cat listOfAlmostAllFiles | wc -l) / $1))
 
-echo "Number of Agda files" >> log
+echo "Number of imports per Agda file" >> log
 echo $n >> log
 
 split -d -l $n < listOfAlmostAllFiles
@@ -94,7 +102,10 @@ done
 # The optimal choice of delay is the total time taken by the above
 # threads minus the time it takes to typecheck AllModulesIndex when
 # everything but the index files is typed checked. Again this should
-# be determined experimentally for your architecture and use case.
+# be determined experimentally for your architecture and use case.  It
+# is safe to use 0 if you don't know how many files will need to be
+# type checked, in which case you may wish to subtract 1 from your
+# experimentally optimal number of threads.
 
 sleep $2
 
@@ -102,5 +113,18 @@ agda ../AllModulesIndex.lagda &
 
 wait # for all threads to finish.
 
+format_time() {
+  ((h=${1}/3600))
+  ((m=(${1}%3600)/60))
+  ((s=${1}%60))
+  printf "%02d:%02d:%02d\n" $h $m $s
+}
+
+echo "Total time $(format_time $SECONDS)"
+
 echo "Finished at" >> log
 echo $(date) >> log
+echo "" >> log
+echo "Total time $(format_time $SECONDS)" >> log
+echo "---------------------------------------" >> log
+echo >> log
