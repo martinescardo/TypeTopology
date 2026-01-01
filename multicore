@@ -25,7 +25,7 @@ then
     exit 1
 fi
 
-echo "Got started at" > log
+echo "Got started at" >> log
 echo $(date) >> log
 
 # Remove the previously existing files created by `split` (see below).
@@ -58,6 +58,9 @@ git ls-files "../*agda" \
 # The resulting files are called x* without a suffix.
 
 n=$(($(cat listOfAlmostAllFiles | wc -l) / $1))
+
+echo "Number of Agda files" >> log
+echo $n >> log
 
 split -d -l $n < listOfAlmostAllFiles
 
