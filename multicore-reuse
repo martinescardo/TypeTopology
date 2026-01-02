@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# Martin Escardo, 31st December 2025.  Script to typecheck
+# TypeTopology fast exploiting multicore.  The difference of this
+# script with the `multicore` script is that we don't regenerate the
+# auxiliary index files and instead use the existing ones. This is
+# intended for when a particularly favourable random selection is
+# found the `multicore` script.
+
+set -Eeo pipefail
+
+if [ `basename $PWD` != "multicore" ] || [ $# != 1 ]
+then
+    echo "This script should be run from the directory TypeTopology/source/multicore."
+    echo "All files in this directory are supposed to be automatically generated and deleted."
+    echo "If you don't have this directory, create it."
+    echo ""
+    echo "Usage:"
+    echo "        $ ../../multicore-reuse <delay>"
+    echo ""
+    echo "where <delay> is how long we wait in seconds until we launch 'agda AllModulesIndex.lagda'"
+    echo "as an additional thread".
+    echo ""
+    exit 1
+fi
+
+echo "" >> log
+echo "-------------------------------------" >> log
+echo "Got started at with delay argument $1" >> log
+echo $(date) >> log
+
+for file in x*.agda
+do
+     agda $file &
+done
+
+sleep $1
+
+agda ../AllModulesIndex.lagda &
+
+wait # for all threads to finish.
+
+format_time() {
+  ((h=${1}/3600))
+  ((m=(${1}%3600)/60))
+  ((s=${1}%60))
+  printf "%02d:%02d:%02d\n" $h $m $s
+}
+
+echo "Total time $(format_time $SECONDS)"
+
+echo "Finished at" >> log
+echo $(date) >> log
+echo "" >> log
+echo "Total time $(format_time $SECONDS)" >> log
+echo "---------------------------------------" >> log
+echo >> log
