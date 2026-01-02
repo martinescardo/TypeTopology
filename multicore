@@ -89,8 +89,11 @@ do
      fileheader="$header\nmodule multicore.$file where"
      newfile="${file}.agda"
      (echo -e $fileheader && cat $file) > $newfile
+     rm $file
      agda $newfile &
 done
+
+rm listOfAlmostAllFiles
 
 # We now wait for <delay> seconds, and then launch the compilation of
 # everything. This will take care of checking the index files which were
