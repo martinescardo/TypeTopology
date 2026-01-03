@@ -30,7 +30,8 @@ specification.
 
 pigeon-program : ₂ℕ →  ℕ  →  ₂  ×  List ℕ
 pigeon-program α m = f(Theorem α m)
- where f : Finite-Pigeonhole α m → ₂ × List ℕ
-       f(∃-intro b (∃-intro s proof)) = (b , list s)
+ where
+  f : Finite-Pigeonhole α m → ₂ × List ℕ
+  f (∃-intro b (∃-intro s proof)) = (b , list s)
 
 \end{code}

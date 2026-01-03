@@ -41,8 +41,8 @@ Definition:
 
 Pigeonhole : {R : Ω} → ₂ℕ → Ω
 Pigeonhole {R} α =
-  ∃ \(b : ₂) → ∃ \(g : ℕ → ℕ) →
-  ∀(i : ℕ) → g i < g(i + 1) ∧ K {R} (α(g i) ≡ b)
+ ∃ \(b : ₂) → ∃ \(g : ℕ → ℕ) →
+ ∀(i : ℕ) → g i < g(i + 1) ∧ K {R} (α(g i) ≡ b)
 
 \end{code}
 
@@ -50,11 +50,8 @@ Theorem:
 
 \end{code}
 
-pigeonhole : {R : Ω} →
-----------
-
-    ∀(α : ₂ℕ) → K(Pigeonhole α)
-
+pigeonhole : {R : Ω}
+           → ∀(α : ₂ℕ) → K(Pigeonhole α)
 pigeonhole {R} α = K-∨-elim case₀ case₁ K-Excluded-Middle
  where
   A : Ω

@@ -46,11 +46,8 @@ Pigeonhole-Lemma : {R : Ω} → ₂ℕ → Ω
 Pigeonhole-Lemma {R} α =
   ∃ \(b : ₂) → ∃ \(f : ℕ → ℕ) → ∀(n : ℕ) → K{R}(α(n + f n + 1) ≡ b)
 
-pigeonhole-lemma : {R : Ω} →
-----------------
-
- ∀(α : ₂ℕ) → K (Pigeonhole-Lemma α)
-
+pigeonhole-lemma : {R : Ω}
+                 → ∀(α : ₂ℕ) → K (Pigeonhole-Lemma α)
 pigeonhole-lemma {R} α =  K-∨-elim case₀ case₁ K-Excluded-Middle
  where
   A : Ω
@@ -127,27 +124,25 @@ Pigeonhole {R} α =
    ∃ \(b : ₂) → ∃ \(g : ℕ → ℕ) →
    ∀(i : ℕ) → g i < g(i + 1) ∧ K {R} (α(g i) ≡ b)
 
-pigeonhole : {R : Ω} →
-----------
-
- ∀(α : ₂ℕ) → K(Pigeonhole α)
-
+pigeonhole : {R : Ω}
+           → ∀(α : ₂ℕ) → K(Pigeonhole α)
 pigeonhole {R} α = K-functor lemma₀ (pigeonhole-lemma {R} α)
  where
-  lemma₀ :
-    (∃ \(b : ₂) → ∃ \(f : ℕ → ℕ) → ∀(n : ℕ) → K(α(n + f n + 1) ≡ b)) →
-     ∃ \(b : ₂) → ∃ \(g : ℕ → ℕ) → ∀(n : ℕ) → g n < g(n + 1) ∧ K {R}(α(g n) ≡ b)
+  lemma₀
+   : (∃ \(b : ₂) → ∃ \(f : ℕ → ℕ) → ∀(n : ℕ) → K(α(n + f n + 1) ≡ b))
+   → ∃ \(b : ₂) → ∃ \(g : ℕ → ℕ) → ∀(n : ℕ) → g n < g(n + 1) ∧ K {R}(α(g n) ≡ b)
   lemma₀ (∃-intro b (∃-intro f h)) =
           ∃-intro b (∃-intro g λ n → ∧-intro (lemma₁ n) (lemma₂ n))
-   where g : ℕ → ℕ
-         g 0 = 0 + f 0 + 1
-         g(succ n) = let m = g n in m + f m + 1
+   where
+    g : ℕ → ℕ
+    g 0 = 0 + f 0 + 1
+    g(succ n) = let m = g n in m + f m + 1
 
-         lemma₁ : ∀(n : ℕ) → g n < g(n + 1)
-         lemma₁ n = less-proof(f(g n))
+    lemma₁ : ∀(n : ℕ) → g n < g(n + 1)
+    lemma₁ n = less-proof(f(g n))
 
-         lemma₂ : ∀(n : ℕ) → K(α(g n) ≡ b)
-         lemma₂ 0 = h 0
-         lemma₂ (succ n) = h(g n)
+    lemma₂ : ∀(n : ℕ) → K(α(g n) ≡ b)
+    lemma₂ 0 = h 0
+    lemma₂ (succ n) = h(g n)
 
 \end{code}

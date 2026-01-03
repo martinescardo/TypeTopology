@@ -40,55 +40,45 @@ This will be a monad morphism:
 
 \begin{code}
 
-J-K :  {R A : Ω} →
----
-       J {R} A → K A
-
+J-K :  {R A : Ω} → J {R} A → K A
 J-K ε p = p(ε p)
 
 \end{code}
 
-
--- Under a (necessary) hypothesis, the following goes in the direction
--- opposite to J-K, but is not a morphism.  (Preservation of the unit
--- fails.)
+Under a (necessary) hypothesis, the following goes in the direction
+opposite to J-K, but is not a morphism.  (Preservation of the unit
+fails.)
 
 \begin{code}
 
-K-J :  {R A : Ω} →
----
-       (R → A) →     -- efq (ex falso quodlibet)
-       K A → J A
-
+K-J : {R A : Ω}
+    → (R → A)   -- efq (ex falso quodlibet)
+    → K A → J A
 K-J efq φ = efq ∘ φ
 
 \end{code}
 
--- Notational conventions:
---
---   +-------------+---------------------+
---   |   proofs of |  are ranged over by |
---   +-------------+---------------------+
---   |     J R A   |    ε                |
---   |     K R A   |    φ                |
---   |     A→R     |    p                |
---   +-------------+---------------------+
---
--- For variables ranging over sequences,
--- we append the suffix "s".
+Notational conventions:
+
+  +-------------+---------------------+
+  |   proofs of |  are ranged over by |
+  +-------------+---------------------+
+  |     J R A   |    ε                |
+  |     K R A   |    φ                |
+  |     A→R     |    p                |
+  +-------------+---------------------+
+
+For variables ranging over sequences,
+we append the suffix "s".
 
 \begin{code}
 
-J-functor : {R A B : Ω} →
----------
-            (A → B) → J {R} A → J B
+J-functor : {R A B : Ω}
+          → (A → B) → J {R} A → J {R} B
+J-functor f ε = λ q → f (ε (q ∘ f))
 
-J-functor f ε = λ q → f(ε(q ∘ f))
-
-K-functor : {R A B : Ω} →
----------
-            (A → B) → K {R} A → K B
-
+K-functor : {R A B : Ω}
+          → (A → B) → K {R} A → K B
 K-functor f φ = λ q → φ(q ∘ f)
 
 \end{code}
@@ -101,17 +91,12 @@ K-functor f φ = λ q → φ(q ∘ f)
 
 \begin{code}
 
-ηJ : {R A : Ω} →
---
-     A → J {R} A
-
+ηJ : {R A : Ω}
+   → A → J {R} A
 ηJ a = λ p → a
 
-
-ηK : {R A : Ω} →
---
-     A → K {R} A
-
+ηK : {R A : Ω}
+   → A → K {R} A
 ηK a = λ p → p a
 
 \end{code}
@@ -124,17 +109,10 @@ K-functor f φ = λ q → φ(q ∘ f)
 
 \begin{code}
 
-μJ : {R A : Ω} →
---
-     J(J A) → J A
-
+μJ : {R A : Ω} → J(J A) → J A
 μJ {R} E = λ p → E (λ ε → J-K {R} ε p) p
 
-
-μK : {R A : Ω} →
---
-     K(K A) → K {R} A
-
+μK : {R A : Ω} → K(K A) → K {R} A
 μK Φ = λ p → Φ (λ φ → φ p)
 
 \end{code}
@@ -152,71 +130,51 @@ that they are equal, and accepts our proof "reflexivity".
 
 \begin{code}
 
-J-functoriality₀ : {R A : Ω} →
-----------------
-                   J-functor id ≡ id {J {R} A}
-
+J-functoriality₀ : {R A : Ω}
+                 → J-functor id ≡ id {J {R} A}
 J-functoriality₀ = reflexivity
 
 
-J-functoriality₁ : {R A B C : Ω} →
-----------------
-                   (f : (A → B)) → (g : (B → C)) →
-                   J-functor {R} (g ∘ f) ≡ (J-functor g) ∘ (J-functor f)
-
+J-functoriality₁ : {R A B C : Ω}
+                   (f : (A → B))
+                   (g : (B → C))
+                 → J-functor {R} (g ∘ f) ≡ J-functor g ∘ J-functor f
 J-functoriality₁ f g = reflexivity
 
-
-J-η-naturality : {R A B : Ω} →
---------------
-                 (f : (A → B)) → (ηJ {R}) ∘ f ≡ (J-functor f) ∘ ηJ
-
+J-η-naturality : {R A B : Ω}
+               → (f : (A → B))
+               → (ηJ {R}) ∘ f ≡ (J-functor f) ∘ ηJ
 J-η-naturality f = reflexivity
 
-
-J-μ-naturality : {R A B : Ω} →
---------------
-   (f : (A → B)) →
-   (μJ {R} {B}) ∘ (J-functor (J-functor f)) ≡ (J-functor f) ∘ (μJ {R})
-
+J-μ-naturality : {R A B : Ω}
+               → (f : (A → B))
+               → μJ {R} {B} ∘ J-functor (J-functor f) ≡ J-functor f ∘ μJ {R}
 J-μ-naturality f = reflexivity
 
-
-J-assoc : {R A : Ω} →
--------
-          (μJ {R} {A}) ∘ (J-functor μJ) ≡ μJ ∘ μJ
-
+J-assoc : {R A : Ω}
+        → μJ {R} {A} ∘ J-functor μJ ≡ μJ ∘ μJ
 J-assoc = reflexivity
 
-
-J-unit₀ : {R A : Ω} →
---------
-           μJ ∘ (J-functor ηJ) ≡ id {J {R} A}
-
+J-unit₀ : {R A : Ω}
+        → μJ ∘ J-functor ηJ ≡ id {J {R} A}
 J-unit₀ = reflexivity
 
-
-J-unit₁ : {R A : Ω} →
---------
-           μJ ∘ ηJ ≡ id {J {R} A}
-
+J-unit₁ : {R A : Ω}
+        → μJ ∘ ηJ ≡ id {J {R} A}
 J-unit₁ = reflexivity
 
+\end{code}
 
--- Digression. Verification that J-K is a monad morphism:
+Digression. Verification that J-K is a monad morphism:
 
+\begin{code}
 
-J-K-morphism₀ : {R A : Ω} →
--------------
-                (J-K {R} {A}) ∘ ηJ ≡ ηK
-
+J-K-morphism₀ : {R A : Ω}
+              → J-K {R} {A} ∘ ηJ ≡ ηK
 J-K-morphism₀ = reflexivity
 
-
-J-K-morphism₁ : {R A : Ω} →
--------------
-                (J-K {R} {A}) ∘ μJ ≡ μK ∘ J-K ∘ (J-functor J-K)
-
+J-K-morphism₁ : {R A : Ω}
+              → J-K {R} {A} ∘ μJ ≡ μK ∘ J-K ∘ J-functor J-K
 J-K-morphism₁ = reflexivity
 
 \end{code}
@@ -229,34 +187,29 @@ J-K-morphism₁ = reflexivity
 
 \begin{code}
 
-J-extend : {R A B : Ω} →
---------
-           (A → J B) → (J A → J B)
-
+J-extend : {R A B : Ω}
+         → (A → J B)
+         → (J A → J B)
 J-extend {R} f = μJ ∘ (J-functor {R} f)
 
-
-observation-J-extend : {R A B : Ω} →
---------------------
-               (f : (A → J {R} B)) → (ε : J A) → (q : (B → R)) →
-
-               J-extend f ε q ≡ f(ε(λ a → q(f a q))) q
-
+observation-J-extend : {R A B : Ω}
+                       (f : (A → J {R} B))
+                       (ε : J A)
+                       (q : (B → R))
+                     →  J-extend f ε q ≡ f(ε(λ a → q(f a q))) q
 observation-J-extend f ε q = reflexivity
 
 
-K-extend : {R A B : Ω} →
---------
-           (A → K B) → (K A → K B)
-
+K-extend : {R A B : Ω}
+         → (A → K B)
+         → (K A → K B)
 K-extend {R} f = μK ∘ (K-functor {R} f)
 
-
-observation-K-extend : {R A B : Ω} →
---------------------
-               (f : (A → K B)) → (φ : K A) → (q : (B → R)) →
-               K-extend f φ q ≡ φ(λ a → f a q)
-
+observation-K-extend : {R A B : Ω}
+                       (f : (A → K B))
+                       (φ : K A)
+                       (q : (B → R))
+                     → K-extend f φ q ≡ φ(λ a → f a q)
 observation-K-extend f φ q = reflexivity
 
 \end{code}
@@ -275,34 +228,26 @@ concretely, they are given by different lambda definitions
 
 \begin{code}
 
-J-strength : {R A₀ A₁ : Ω} →
-----------
-             A₀ ∧ J A₁ → J(A₀ ∧ A₁)
-
+J-strength : {R A₀ A₁ : Ω}
+           → A₀ ∧ J A₁ → J(A₀ ∧ A₁)
 J-strength {R} (∧-intro a₀ ε₁) = J-functor {R} (λ a₁ → ∧-intro a₀ a₁) ε₁
 
-
-observation-J-strength :  {R A₀ A₁ : Ω}
-----------------------
-  (a₀ : A₀) → (ε₁ : J {R} A₁) →
-
-  J-strength (∧-intro a₀ ε₁) ≡ λ p → ∧-intro a₀ (ε₁(λ a₁ → p(∧-intro a₀ a₁)))
-
+observation-J-strength : {R A₀ A₁ : Ω}
+                         (a₀ : A₀)
+                         (ε₁ : J {R} A₁)
+                       → J-strength (∧-intro a₀ ε₁)
+                       ≡ (λ p → ∧-intro a₀ (ε₁(λ a₁ → p(∧-intro a₀ a₁))))
 observation-J-strength a₀ ε₁ = reflexivity
 
-K-strength : {R A₀ A₁ : Ω} →
-----------
-             A₀ ∧ K A₁ → K(A₀ ∧ A₁)
-
+K-strength : {R A₀ A₁ : Ω}
+           → A₀ ∧ K A₁ → K(A₀ ∧ A₁)
 K-strength {R} (∧-intro a₀ φ₁) = K-functor {R} (λ a₁ → ∧-intro a₀ a₁) φ₁
 
-
-observation-K-strength :  {R A₀ A₁ : Ω}
-----------------------
-  (a₀ : A₀) → (φ₁ : K {R} A₁) →
-
-  K-strength (∧-intro a₀ φ₁) ≡ λ p → φ₁(λ a₁ → p(∧-intro a₀ a₁))
-
+observation-K-strength : {R A₀ A₁ : Ω}
+                         (a₀ : A₀)
+                         (φ₁ : K {R} A₁)
+                       → K-strength (∧-intro a₀ φ₁)
+                       ≡ (λ p → φ₁(λ a₁ → p(∧-intro a₀ a₁)))
 observation-K-strength a₀ φ₁ = reflexivity
 
 \end{code}

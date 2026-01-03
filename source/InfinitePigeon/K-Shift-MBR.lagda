@@ -19,10 +19,10 @@ open import InfinitePigeon.Logic
 open import InfinitePigeon.LogicalFacts
 open import InfinitePigeon.Naturals
 
-K-∀-shift-mbr : {R : Ω} {A : ℕ → Ω} →
--------------
-            (∀(n : ℕ) → R → A n) →                   -- efqs,
-            (∀(n : ℕ) → K(A n)) → K(∀(n : ℕ) → A n)  -- shift.
+K-∀-shift-mbr : {R : Ω}
+                {A : ℕ → Ω}
+              → (∀(n : ℕ) → R → A n)                     -- efqs,
+              → (∀(n : ℕ) → K(A n)) → K(∀(n : ℕ) → A n)  -- shift.
 
 K-∀-shift-mbr {R} {A} efqs φs p = mbr {0} (λ ())
   where

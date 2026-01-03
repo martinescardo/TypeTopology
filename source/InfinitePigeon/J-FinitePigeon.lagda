@@ -28,10 +28,9 @@ module) to derive a finite one:
 
 Finite-Pigeonhole : ₂ℕ → ℕ → Ω
 Finite-Pigeonhole α m =
-    ∃ \(b : ₂) → ∃ \(s : smaller(m + 1) → ℕ) →
-                    (∀(n : smaller m) → s(coerce n) < s(fsucc n))
-                  ∧ (∀(n : smaller(m + 1)) → α(s n) ≡ b)
-
+ ∃ \(b : ₂) → ∃ \(s : smaller(m + 1) → ℕ) →
+                 (∀(n : smaller m) → s(coerce n) < s(fsucc n))
+               ∧ (∀(n : smaller(m + 1)) → α(s n) ≡ b)
 
 \end{code}
 
@@ -49,17 +48,15 @@ Finite-Pigeonhole-K {R} α m =
 
 postulate conjecture : {A : Set} → A
 
-finite-pigeonhole-lemma : {R : Ω} →
------------------------
-
- ∀(α : ₂ℕ) → ∀(m : ℕ) → K{R}(Finite-Pigeonhole α m)
-
-
+finite-pigeonhole-lemma : {R : Ω}
+                          (α : ₂ℕ)
+                          (m : ℕ)
+                        → K{R} (Finite-Pigeonhole α m)
 finite-pigeonhole-lemma {R} α m =  K-extend lemma₂ lemma₁
  where
   lemma₀ : Pigeonhole α → Finite-Pigeonhole-K {R} α m
   lemma₀ (∃-intro b (∃-intro g h)) =
-          ∃-intro b (∃-intro s (∧-intro fact₁ fact₃))
+   ∃-intro b (∃-intro s (∧-intro fact₁ fact₃))
     where
       s : smaller(m + 1) → ℕ
       s = restriction g
@@ -85,11 +82,7 @@ finite-pigeonhole-lemma {R} α m =  K-extend lemma₂ lemma₁
          (K-∃-shift(∃-intro b (K-∃-shift(∃-intro s
             (K-strength(∧-intro h (fK-∀-shift k)))))))
 
-Theorem :
--------
-
- ∀(α : ₂ℕ) → ∀(m : ℕ) → Finite-Pigeonhole α m
-
+Theorem : ∀(α : ₂ℕ) → ∀(m : ℕ) → Finite-Pigeonhole α m
 Theorem α m = finite-pigeonhole-lemma {Finite-Pigeonhole α m} α m id
 
 \end{code}

@@ -12,12 +12,10 @@ open import InfinitePigeon.Logic
 open import InfinitePigeon.Naturals
 
 
-K-∀-shift-selection : {R : Ω} {A : ℕ → Ω} →
--------------------
-
-            (∀(n : ℕ) → R → A n) →                   -- efqs,
-            (∀(n : ℕ) → K(A n)) → K(∀(n : ℕ) → A n)  -- shift.
-
+K-∀-shift-selection : {R : Ω}
+                      {A : ℕ → Ω}
+                    → (∀(n : ℕ) → R → A n)                     -- efqs,
+                    → (∀(n : ℕ) → K(A n)) → K(∀(n : ℕ) → A n)  -- shift.
 K-∀-shift-selection efqs φs = J-K(J-∀-shift-selection(λ n → K-J(efqs n) (φs n)))
 
 \end{code}

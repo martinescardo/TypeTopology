@@ -19,14 +19,13 @@ open import InfinitePigeon.LogicalFacts
 open import InfinitePigeon.Naturals
 
 
-J-∀-shift-bbc : {R : Ω} {A : ℕ → Ω} →
--------------
-
-      (∀(n : ℕ) → J(A n)) → J(∀(n : ℕ) → A n)
-
+J-∀-shift-bbc : {R : Ω}
+                {A : ℕ → Ω}
+              → (∀(n : ℕ) → J(A n))
+              → J(∀(n : ℕ) → A n)
 J-∀-shift-bbc {R} {A} ε = bbc
-  where
-   bbc : J {R} (∀(n : ℕ) → A n)
-   bbc p i = ε i (λ x → J-K bbc (p ∘ mapsto {A} i x))
+ where
+  bbc : J {R} (∀(n : ℕ) → A n)
+  bbc p i = ε i (λ x → J-K bbc (p ∘ mapsto {A} i x))
 
 \end{code}

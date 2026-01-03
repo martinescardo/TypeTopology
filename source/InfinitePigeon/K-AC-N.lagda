@@ -28,12 +28,11 @@ open import InfinitePigeon.Naturals
 
 \begin{code}
 
-K-AC-ℕ : {R : Ω} {X : ℕ → Set} {P : (n : ℕ) → X n → Ω} →
--------
-        (∀(n : ℕ) → R → ∃ \(m : X n) → P n m)               -- efqs,
-      → (∀(n : ℕ) → K∃ \(m : X n) → P n m)                  -- premise,
-      → K∃ \(f : ((n : ℕ) → X n)) → ∀(n : ℕ) → P n (f n)    -- conclusion.
-
+K-AC-ℕ
+ : {R : Ω} {X : ℕ → Set} {P : (n : ℕ) → X n → Ω}
+ → (∀(n : ℕ) → R → ∃ \(m : X n) → P n m)               -- efqs,
+ → (∀(n : ℕ) → K∃ \(m : X n) → P n m)                  -- premise,
+ → K∃ \(f : ((n : ℕ) → X n)) → ∀(n : ℕ) → P n (f n)    -- conclusion.
 K-AC-ℕ efqs = (K-functor AC) ∘ (K-∀-shift efqs)
 
 \end{code}

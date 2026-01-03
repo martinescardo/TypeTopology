@@ -28,9 +28,9 @@ module) to derive a finite one:
 
 Finite-Pigeonhole : ₂ℕ → ℕ → Ω
 Finite-Pigeonhole α m =
-    ∃ \(b : ₂) → ∃ \(s : smaller(m + 1) → ℕ) →
-                    (∀(n : smaller m) → s(coerce n) < s(fsucc n))
-                  ∧ (∀(n : smaller(m + 1)) → α(s n) ≡ b)
+ ∃ \(b : ₂) → ∃ \(s : smaller(m + 1) → ℕ) →
+                 (∀(n : smaller m) → s(coerce n) < s(fsucc n))
+               ∧ (∀(n : smaller(m + 1)) → α(s n) ≡ b)
 
 \end{code}
 
@@ -42,38 +42,36 @@ prefixing the equation:
 
 Finite-Pigeonhole-K : {R : Ω} → ₂ℕ → ℕ → Ω
 Finite-Pigeonhole-K {R} α m =
-    ∃ \(b : ₂) → ∃ \(s : smaller(m + 1) → ℕ) →
-                    (∀(n : smaller m) → s(coerce n) < s(fsucc n))
-                  ∧ (∀(n : smaller(m + 1)) → K{R}(α(s n) ≡ b))
+ ∃ \(b : ₂) → ∃ \(s : smaller(m + 1) → ℕ) →
+                 (∀(n : smaller m) → s(coerce n) < s(fsucc n))
+               ∧ (∀(n : smaller(m + 1)) → K{R}(α(s n) ≡ b))
 
 
-finite-pigeonhole-lemma : {R : Ω} →
------------------------
-
- ∀(α : ₂ℕ) → ∀(m : ℕ) → K(Finite-Pigeonhole α m)
-
-
+finite-pigeonhole-lemma : {R : Ω}
+                          (α : ₂ℕ)
+                          (m : ℕ)
+                        → K(Finite-Pigeonhole α m)
 finite-pigeonhole-lemma {R} α m =  K-extend lemma₂ lemma₁
  where
   lemma₀ : Pigeonhole α → Finite-Pigeonhole-K {R} α m
   lemma₀ (∃-intro b (∃-intro g h)) =
           ∃-intro b (∃-intro s (∧-intro fact₁ fact₃))
     where
-      s : smaller(m + 1) → ℕ
-      s = restriction g
+     s : smaller(m + 1) → ℕ
+     s = restriction g
 
-      fact₀ : ∀(n : smaller m) → g(embed n) ≡ s(coerce n)
-      fact₀ n = compositionality g embed-coerce-lemma
+     fact₀ : ∀(n : smaller m) → g(embed n) ≡ s(coerce n)
+     fact₀ n = compositionality g embed-coerce-lemma
 
-      fact₁ : ∀(n : smaller m) → s(coerce n) < s(fsucc n)
-      fact₁ n = binary-predicate-compositionality {ℕ} {ℕ} {_<_}
-                  (fact₀ n) reflexivity (∧-elim₀(h(embed n)))
+     fact₁ : ∀(n : smaller m) → s(coerce n) < s(fsucc n)
+     fact₁ n = binary-predicate-compositionality {ℕ} {ℕ} {_<_}
+                 (fact₀ n) reflexivity (∧-elim₀(h(embed n)))
 
-      fact₂ : ∀(n : smaller(m + 1)) → α(g(embed n)) ≡ b → α(s n) ≡ b
-      fact₂ n = two-things-equal-to-a-third-are-equal reflexivity
+     fact₂ : ∀(n : smaller(m + 1)) → α(g(embed n)) ≡ b → α(s n) ≡ b
+     fact₂ n = two-things-equal-to-a-third-are-equal reflexivity
 
-      fact₃ : ∀(n : smaller(m + 1)) → K(α(s n) ≡ b)
-      fact₃ n = K-functor (fact₂ n) (∧-elim₁(h(embed n)))
+     fact₃ : ∀(n : smaller(m + 1)) → K(α(s n) ≡ b)
+     fact₃ n = K-functor (fact₂ n) (∧-elim₁(h(embed n)))
 
   lemma₁ : K(Finite-Pigeonhole-K α m)
   lemma₁ = K-functor lemma₀ (pigeonhole α)
@@ -81,8 +79,8 @@ finite-pigeonhole-lemma {R} α m =  K-extend lemma₂ lemma₁
   lemma₂ : Finite-Pigeonhole-K α m → K(Finite-Pigeonhole α m)
 
   lemma₂ (∃-intro b (∃-intro s (∧-intro h k))) =
-         K-∃-shift(∃-intro b (K-∃-shift(∃-intro s
-           (K-strength(∧-intro h (fK-∀-shift k))))))
+   K-∃-shift(∃-intro b (K-∃-shift(∃-intro s
+     (K-strength(∧-intro h (fK-∀-shift k))))))
 
 \end{code}
 
@@ -93,14 +91,7 @@ get R if we apply it to the proof id: R→R.
 
 \begin{code}
 
-Theorem :
--------
-
- ∀(α : ₂ℕ) → ∀(m : ℕ) → Finite-Pigeonhole α m
-
+Theorem : ∀(α : ₂ℕ) (m : ℕ) → Finite-Pigeonhole α m
 Theorem α m = finite-pigeonhole-lemma {Finite-Pigeonhole α m} α m id
 
 \end{code}
-
-NB. If we remove the implicit parameter in this call to
-finite-pigeonhole-lemma, Agda infers the required R.

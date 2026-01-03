@@ -20,15 +20,14 @@ open import InfinitePigeon.Logic
 open import InfinitePigeon.Naturals
 
 
-K-∀-shift : {R : Ω} {A : ℕ → Ω} →
----------
-
-   (∀(n : ℕ) → R → A n) →                             -- efqs,
-   (∀(n : ℕ) → K {R} (A n)) → K {R} (∀(n : ℕ) → A n)  -- shift.
+K-∀-shift : {R : Ω}
+            {A : ℕ → Ω}
+          → (∀(n : ℕ) → R → A n)                               -- efqs,
+          → (∀(n : ℕ) → K {R} (A n)) → K {R} (∀(n : ℕ) → A n)  -- shift.
 
 \end{code}
 
-Choose here:
+Choose a definition here for experimentation:
 
 \begin{code}
 

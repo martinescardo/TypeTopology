@@ -23,11 +23,10 @@ Use one of K-∀-shift-bbc or K-∀-shift-mbr or K-∀-shift-selection:
 
 \begin{code}
 
-J-∀-shift : {R : Ω} {A : ℕ → Ω} →
----------
-
-   (∀(n : ℕ) → J(A n)) → J {R} (∀(n : ℕ) → A n)
-
+J-∀-shift : {R : Ω}
+            {A : ℕ → Ω}
+          → (∀(n : ℕ) → J(A n))
+          → J {R} (∀(n : ℕ) → A n)
 J-∀-shift = J-∀-shift-selection     -- ... and here accordingly.
 
 \end{code}

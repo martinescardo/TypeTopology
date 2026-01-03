@@ -26,13 +26,12 @@ Definition given by Escardo and Oliva MSCS2010
 
 \begin{code}
 
-J-∀-shift-selection : {R : Ω} {A : ℕ → Ω} →
--------------------
-
-            (∀(n : ℕ) → J {R} (A n)) → J {R} (∀(n : ℕ) → A n)
-
+J-∀-shift-selection : {R : Ω}
+                      {A : ℕ → Ω}
+                    → (∀(n : ℕ) → J {R} (A n))
+                    → J {R} (∀(n : ℕ) → A n)
 J-∀-shift-selection εs =
-  J-∧-shift'(∧-intro (head εs) (J-∀-shift-selection(tail εs)))
+ J-∧-shift'(∧-intro (head εs) (J-∀-shift-selection(tail εs)))
 
 \end{code}
 
@@ -43,13 +42,14 @@ This is one of definitions given in both LICS2007 and LMCS2008
 
 \begin{code}
 
-prod : {R : Ω} {A : ℕ → Ω} →
-----
-       (∀ (n : ℕ) → J {R} (A n)) → J {R} (∀ (n : ℕ) → A n)
-
+prod : {R : Ω}
+       {A : ℕ → Ω}
+     → (∀ (n : ℕ) → J {R} (A n))
+     → J {R} (∀ (n : ℕ) → A n)
 prod {R} {A} εs p = cons (∧-intro a₀ ((prod {R} (tail εs)) (prefix a₀ p)))
- where a₀ : A O
-       a₀ = head εs (λ a → prefix a p ((prod {R} (tail εs))(prefix a p)))
+ where
+  a₀ : A O
+  a₀ = head εs (λ a → prefix a p ((prod {R} (tail εs))(prefix a p)))
 
 \end{code}
 

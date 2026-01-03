@@ -40,11 +40,8 @@ Pigeonhole {R} α =
    ∀(i : ℕ) → g i < g(i + 1) ∧ K {R} (α(g i) ≡ b)
 
 
-pigeonhole : {R : Ω} →
-----------
-
-    ∀(α : ₂ℕ) → J(Pigeonhole α)
-
+pigeonhole : {R : Ω}
+           → ∀(α : ₂ℕ) → J(Pigeonhole α)
 pigeonhole {R} α = J-∨-elim case₀ case₁ J-Excluded-Middle
  where
   A : Ω
