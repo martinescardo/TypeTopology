@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+
+# Martin Escardo, 31st December 2025.
+# Script to typecheck TypeTopology fast exploiting multicore.
+# This performs better than a Makefile with the appropriate dependencies.
+
+set -Eeo pipefail
+
+if [ `basename $PWD` != "multicore" ] || [ $# != 2 ]
+then
+    echo "This script should be run from the directory TypeTopology/source/multicore."
+    echo "All files in this directory are supposed to be automatically generated and deleted."
+    echo "If you don't have this directory, create it."
+    echo ""
+    echo "Usage:"
+    echo "        $ time ../../multicore <number of desired parallel threads> <delay>"
+    echo ""
+    echo "where <delay> is how long we wait in seconds until we launch 'agda AllModulesIndex.lagda'"
+    echo "as an additional thread".
+    echo ""
+    echo "Needless to say, the optimal numbers depend on both how many cores you have"
+    echo "and how much ram you have available, and it is an art to find the optimal numbers"
+    echo "for your particular architecture, and the number of apps you have open."
+    echo "So this can only be determined experimentally."
+    exit 1
+fi
+
+echo "" >> log
+echo "---------------------------------------" >> log
+echo "Got started at with arguments $1 and $2" >> log
+echo $(date) >> log
+
+# Remove the previously existing files created by `split` (see below).
+
+rm -f x*
+
+# Now create a list of all files which are not index files. Also omit
+# a Cubical file that doesn't typecheck any more due to changes in the
+# cubical Agda library. Importantly, we suffle this list in random
+# order.  We then make this into a list of 'import' commands in the
+# format required by Agda, using 'sed'.
+
+git ls-files "../*agda" \
+ | grep -v Cubical \
+ | grep -v index \
+ | grep -v AllModules \
+ | shuf \
+ | sed 's:.lagda::' \
+ | sed 's:.agda::' \
+ | sed 's:\.\.\/:import :' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ > listOfAlmostAllFiles
+
+# We now split this list of files into files of n lines each, where n is
+# the number of lines in this list divided by the command line argument.
+# The resulting files are called x* without a suffix.
+
+n=$(($(cat listOfAlmostAllFiles | wc -l) / $1))
+
+echo "Number of imports per Agda file" >> log
+echo $n >> log
+
+split -d -l $n < listOfAlmostAllFiles
+
+echo "All required temporary files created at" >> log
+echo $(date) >> log
+
+# We will not use the --safe flag, deliberately. We also use some
+# flags that we *don't* want in all modules. But this is not a
+# problem, because all modules which are meant to be --safe (which is
+# most of the modules) do include the flag explicitly.
+
+header="{-# OPTIONS --without-K --no-level-universe --guardedness #-}"
+
+# We now start type checking these files in parallel.
+
+for file in x*
+do
+     fileheader="$header\nmodule multicore.$file where"
+     newfile="${file}.agda"
+     (echo -e $fileheader && cat $file) > $newfile
+     rm $file
+     agda $newfile &
+done
+
+rm listOfAlmostAllFiles
+
+# We now wait for <delay> seconds, and then launch the compilation of
+# everything. This will take care of checking the index files which were
+# deliberately left out in the parallel threads.
+#
+# The reason for waiting long enough is that all the other threads are
+# typechecking everything already, except the index files.
+#
+# The optimal choice of delay is the total time taken by the above
+# threads minus the time it takes to typecheck AllModulesIndex when
+# everything but the index files is typed checked. Again this should
+# be determined experimentally for your architecture and use case.  It
+# is safe to use 0 if you don't know how many files will need to be
+# type checked, in which case you may wish to subtract 1 from your
+# experimentally optimal number of threads.
+
+sleep $2
+
+agda ../AllModulesIndex.lagda &
+
+wait # for all threads to finish.
+
+format_time() {
+  ((h=${1}/3600))
+  ((m=(${1}%3600)/60))
+  ((s=${1}%60))
+  printf "%02d:%02d:%02d\n" $h $m $s
+}
+
+echo "Total time $(format_time $SECONDS)"
+
+echo "Finished at" >> log
+echo $(date) >> log
+echo "" >> log
+echo "Total time $(format_time $SECONDS)" >> log
+echo "---------------------------------------" >> log
+echo >> log
