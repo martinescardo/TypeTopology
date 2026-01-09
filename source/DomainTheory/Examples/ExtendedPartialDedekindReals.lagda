@@ -59,33 +59,6 @@ module DomainTheory.Examples.ExtendedPartialDedekindReals
   orderedness : (x : 𝓡∞) → are-ordered (L x) (U x)
   orderedness x = pr₂ (pr₂ (pr₂ x))
 
-  -- TODO(?). Move this and the equivalence to Various.Dedekind?
-  roundness : (x : 𝓟 ℚ × 𝓟 ℚ) → 𝓤₀ ̇
-  roundness (L , U) =
-     ((p : ℚ) → p ∈ L ↔ (∃ r ꞉ ℚ , (p < r) × (r ∈ L)))
-   × ((q : ℚ) → q ∈ U ↔ (∃ s ꞉ ℚ , (s < q) × (s ∈ U)))
-
-  roundness-equivalence
-   : ((L , U) : 𝓟 ℚ × 𝓟 ℚ)
-   → is-lower L × is-upper-open L × is-upper U × is-lower-open U
-   ↔ roundness (L , U)
-  roundness-equivalence (L , U) = I , II
-   where
-    I : is-lower L × is-upper-open L × is-upper U × is-lower-open U
-      → roundness (L , U)
-    I (L-low , L-uo , U-up , U-lo) =
-     (λ p → L-uo p ,
-            ∥∥-rec (∈-is-prop L p) (λ (r , l , r-in-L) → L-low r r-in-L p l)) ,
-     (λ q → U-lo q ,
-            ∥∥-rec (∈-is-prop U q) (λ (s , l , s-in-U) → U-up s s-in-U q l))
-    II : roundness (L , U)
-       → is-lower L × is-upper-open L × is-upper U × is-lower-open U
-    II (ρ₁ , ρ₂) =
-     (λ q q-in-L p l → rl-implication (ρ₁ p) ∣ q , l , q-in-L ∣) ,
-     (λ p → lr-implication (ρ₁ p)) ,
-     (λ p p-in-U q l → rl-implication (ρ₂ q) ∣ p , l , p-in-U ∣) ,
-     (λ q → lr-implication (ρ₂ q))
-
   _⊑_ : 𝓡∞ → 𝓡∞ → 𝓤₀ ̇
   x ⊑ y = (L x ⊆ L y) × (U x ⊆ U y)
 
