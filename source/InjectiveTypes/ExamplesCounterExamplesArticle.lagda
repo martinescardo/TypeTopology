@@ -171,7 +171,7 @@ module Lemma-3-7
  Lemma-3-7-ii : section Lemma-3-7-i ＝ j
  Lemma-3-7-ii = refl
 
-module algebras-of-the-lifting-monad
+module Algebras-of-the-lifting-monad
         (𝓣 : Universe)
        where
 
@@ -270,14 +270,14 @@ Proposition-4-1-alt =
    c (P , i) X = m-is-equiv
     where
      m : ¬¬ Π X → Π p ꞉ P , ¬¬ X p
-     m h p = T (Lemma-2-3.Lemma-2-3-i p i) h
+     m h p = T (prop-indexed-product p fe' i) h
      m-is-equiv : is-equiv m
      m-is-equiv = qinvs-are-equivs m
                    (Lemma-4-2 P X i ,
                     (λ _ → negations-are-props fe' _ _) ,
                     (λ _ → Π-is-prop fe' (λ p → negations-are-props fe') _ _))
 
-module carriers-of-pointed-dcpos
+module Carriers-of-pointed-dcpos
         (𝓥 : Universe)
        where
 
@@ -304,7 +304,48 @@ Theorem-4-7 {𝓤} sqe = 𝕍-is-ainjective 𝓤 pt sr
   sr : Set-Replacement pt
   sr = set-replacement-from-set-quotients-and-prop-trunc sqe pt
 
--- TODO: index Sections 4.3—4.6.
+module Types-of-mathematical-structures
+        (S : 𝓤 ̇  → 𝓥 ̇ )
+       where
+
+ Definition-4-8 : 𝓤 ⁺ ⊔ 𝓥 ̇
+ Definition-4-8 = closed-under-prop-Π S
+
+ Lemma-4-9 : closed-under-prop-Π S → aflabby (Σ S) 𝓤
+ Lemma-4-9 = aflabbiness-of-type-of-structured-types S
+
+ module Lemma-4-10
+         (T : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y)
+         (r : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id)
+        where
+
+  open canonical-map' S T r
+
+  Lemma-4-10-i : {X Y : 𝓤 ̇ } (h : X ≃ Y)
+               → T h ∼ treq S h
+  Lemma-4-10-i = transport-eqtoid S T r
+
+  Lemma-4-10-ii
+   : (P : Ω 𝓤) (A : P holds → 𝓤 ̇ ) (s : S (Π A)) (p : P holds)
+   → ρ P A s p ＝ T (π P A p) s
+  Lemma-4-10-ii P A s p = happly (ρ-and-τ-agree P A s) p
+
+Lemma-4-11 : {𝓤 𝓥₁ 𝓥₂ : Universe} (S₁ : 𝓤 ̇ → 𝓥₁ ̇ ) (S₂ : 𝓤 ̇  → 𝓥₂ ̇ )
+           → closed-under-prop-Π S₁
+           → closed-under-prop-Π S₂
+           → closed-under-prop-Π (λ X → S₁ X × S₂ X)
+Lemma-4-11 S₁ S₂ = closure-under-prop-Π-×
+
+Lemma-4-12 : (S : 𝓤 ̇ → 𝓥 ̇) (S-closed : closed-under-prop-Π S)
+             (𝔞 : (X : 𝓤 ̇) → S X → Ω 𝓦)
+           → ((P : Ω 𝓤) (A : P holds → 𝓤 ̇)
+              → (α : (p : P holds) → S (A p))
+              → ((p : P holds) → 𝔞 (A p) (α p) holds)
+              → 𝔞 (Π A) (inverse (canonical-map.ρ S P A) (S-closed P A) α) holds)
+           → closed-under-prop-Π (λ X → Σ s ꞉ S X , 𝔞 X s holds)
+Lemma-4-12 S S-closed 𝔞 =
+ closure-under-prop-Π-with-axioms S S-closed
+  (λ X s → 𝔞 X s holds) (λ X s → holds-is-prop (𝔞 X s))
 
 \end{code}
 
