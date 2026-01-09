@@ -57,13 +57,13 @@ open import UF.Equiv
 open import UF.NotNotStablePropositions
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
+open import UF.SIP-Examples
 open import UF.Size
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
-open import InjectiveTypes.Blackboard fe
+open import InjectiveTypes.Blackboard fe hiding (extension)
 open import InjectiveTypes.CharacterizationViaLifting fe
-open import InjectiveTypes.MathematicalStructures ua
 open import InjectiveTypes.NonEmptyTypes pt ua
 open import InjectiveTypes.OverSmallMaps fe
 open import InjectiveTypes.PointedDcpos fe pt
@@ -262,6 +262,7 @@ Proposition-4-1-alt : ainjective-type (Σ X ꞉ 𝓤 ̇  , ¬¬ X) 𝓤 𝓤
 Proposition-4-1-alt =
  ainjectivity-of-type-of-structures (¬¬_) (Π-closure-criterion ¬¬_ T T-refl c)
   where
+   open import InjectiveTypes.MathematicalStructures ua
    T : {X Y : 𝓤 ̇ } → (X ≃ Y) → ¬¬ X → ¬¬ Y
    T 𝕗 = ¬¬-functor ⌜ 𝕗 ⌝
    T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
@@ -304,9 +305,11 @@ Theorem-4-7 {𝓤} sqe = 𝕍-is-ainjective 𝓤 pt sr
   sr : Set-Replacement pt
   sr = set-replacement-from-set-quotients-and-prop-trunc sqe pt
 
-module Types-of-mathematical-structures
+module Types-of-mathematical-structures-1
         (S : 𝓤 ̇  → 𝓥 ̇ )
        where
+
+ open import InjectiveTypes.MathematicalStructures ua
 
  Definition-4-8 : 𝓤 ⁺ ⊔ 𝓥 ̇
  Definition-4-8 = closed-under-prop-Π S
@@ -330,22 +333,74 @@ module Types-of-mathematical-structures
    → ρ P A s p ＝ T (π P A p) s
   Lemma-4-10-ii P A s p = happly (ρ-and-τ-agree P A s) p
 
-Lemma-4-11 : {𝓤 𝓥₁ 𝓥₂ : Universe} (S₁ : 𝓤 ̇ → 𝓥₁ ̇ ) (S₂ : 𝓤 ̇  → 𝓥₂ ̇ )
-           → closed-under-prop-Π S₁
-           → closed-under-prop-Π S₂
-           → closed-under-prop-Π (λ X → S₁ X × S₂ X)
-Lemma-4-11 S₁ S₂ = closure-under-prop-Π-×
+module Types-of-mathematical-structures-2
+       where
 
-Lemma-4-12 : (S : 𝓤 ̇ → 𝓥 ̇) (S-closed : closed-under-prop-Π S)
-             (𝔞 : (X : 𝓤 ̇) → S X → Ω 𝓦)
-           → ((P : Ω 𝓤) (A : P holds → 𝓤 ̇)
-              → (α : (p : P holds) → S (A p))
-              → ((p : P holds) → 𝔞 (A p) (α p) holds)
-              → 𝔞 (Π A) (inverse (canonical-map.ρ S P A) (S-closed P A) α) holds)
-           → closed-under-prop-Π (λ X → Σ s ꞉ S X , 𝔞 X s holds)
-Lemma-4-12 S S-closed 𝔞 =
- closure-under-prop-Π-with-axioms S S-closed
-  (λ X s → 𝔞 X s holds) (λ X s → holds-is-prop (𝔞 X s))
+ open import InjectiveTypes.MathematicalStructures ua
+
+ Lemma-4-11 : {𝓤 𝓥₁ 𝓥₂ : Universe} (S₁ : 𝓤 ̇ → 𝓥₁ ̇ ) (S₂ : 𝓤 ̇  → 𝓥₂ ̇ )
+            → closed-under-prop-Π S₁
+            → closed-under-prop-Π S₂
+            → closed-under-prop-Π (λ X → S₁ X × S₂ X)
+ Lemma-4-11 S₁ S₂ = closure-under-prop-Π-×
+
+ Lemma-4-12 : (S : 𝓤 ̇ → 𝓥 ̇) (S-closed : closed-under-prop-Π S)
+              (𝔞 : (X : 𝓤 ̇) → S X → Ω 𝓦)
+            → ((P : Ω 𝓤) (A : P holds → 𝓤 ̇)
+               → (α : (p : P holds) → S (A p))
+               → ((p : P holds) → 𝔞 (A p) (α p) holds)
+               → 𝔞 (Π A) (inverse (canonical-map.ρ S P A) (S-closed P A) α) holds)
+            → closed-under-prop-Π (λ X → Σ s ꞉ S X , 𝔞 X s holds)
+ Lemma-4-12 S S-closed 𝔞 =
+  closure-under-prop-Π-with-axioms S S-closed
+   (λ X s → 𝔞 X s holds) (λ X s → holds-is-prop (𝔞 X s))
+
+module Examples-4-13-a where
+ open import InjectiveTypes.MathematicalStructures ua
+
+ [1] : ainjective-type (Pointed-type 𝓤) 𝓤 𝓤
+ [1] = ainjectivity-of-type-of-pointed-types
+
+ [2] : ainjective-type (∞-Magma 𝓤) 𝓤 𝓤
+ [2] = ainjectivity-of-∞-Magma
+
+ [3] : ainjective-type (∞-Magma 𝓤) 𝓤 𝓤
+ [3] = ainjectivity-of-∞-Magma
+
+ [4] : ainjective-type (monoid.Monoid {𝓤}) 𝓤 𝓤
+ [4] = ainjectivity-of-Monoid
+
+ [5] : ainjective-type (group.Group {𝓤}) 𝓤 𝓤
+ [5] = {!!} -- TODO or not?
+
+module Examples-4-13-b where
+ open import InjectiveTypes.MathematicalStructuresMoreGeneral ua
+
+ [6] : ainjective-type (Graph 𝓤) 𝓤 𝓤
+ [6] = ainjectivity-of-Graph
+
+ [7] : ainjective-type (Poset 𝓤) 𝓤 𝓤
+ [7] = ainjectivity-of-Poset
+
+ [8] : ainjective-type (Fam 𝓤) 𝓤 𝓤
+ [8] = ainjectivity-of-Fam
+
+ [9] : ainjective-type (Σ X ꞉ 𝓤 ̇  , Σ Y ꞉ 𝓤 ̇  , (X → Y)) 𝓤 𝓤
+ [9] = ainjectivity-of-type-of-all-functions
+
+module Σ-types
+        (X : 𝓤 ̇ )
+        (A : X → 𝓥 ̇ )
+        (ϕ : aflabby X 𝓦)
+        where
+ open import InjectiveTypes.Sigma fe
+
+ Definition-4-14 : (P : Ω 𝓦) (f : P holds → X)
+                 → A (extension ϕ P f) → Π p ꞉ P holds , A (f p)
+ Definition-4-14 = ρ A ϕ
+
+ Theorem-4-15 : compatibility-data A ϕ → aflabby (Σ A) 𝓦
+ Theorem-4-15 = Σ-is-aflabby A ϕ
 
 \end{code}
 
