@@ -103,25 +103,28 @@ import DomainTheory.Bilimits.Dinfinity  -- (3)
 
 {- Examples
 
-1. The ideal completion of the dyadics is a nice example of a continuous dcpo
+1. The extended partial Dedekind reals as a pointed dcpo.
+   [Added 9 January 2026]
+2. The ideal completion of the dyadics is a nice example of a continuous dcpo
    (with a small basis) that cannot be algebraic as it has no compact elements
    at all.
-2. The lifting of a large proposition P is an algebraic dcpo that has a small
+3. The lifting of a large proposition P is an algebraic dcpo that has a small
    (compact) basis if and only if P is suitably small.
-3. The type Ω of propositions is an example of a pointed algebraic dcpo with
+4. The type Ω of propositions is an example of a pointed algebraic dcpo with
    the booleans giving a small compact basis
-4. The large poset of small ordinals is an example of an algebraic dcpo with no
+5. The large poset of small ordinals is an example of an algebraic dcpo with no
    small compact basis
    [Added 31 May 2024]
-5. The powerset is an examples of a pointed algebraic dcpo with lists giving a
+6. The powerset is an examples of a pointed algebraic dcpo with lists giving a
    small compact basis (through Kuratowski finite subsets)
 -}
 
-import DomainTheory.Examples.IdlDyadics              -- (1)
-import DomainTheory.Examples.LiftingLargeProposition -- (2)
-import DomainTheory.Examples.Omega                   -- (3)
-import DomainTheory.Examples.Ordinals                -- (4)
-import DomainTheory.Examples.Powerset                -- (5)
+import DomainTheory.Examples.ExtendedPartialDedekindReals -- (1)
+import DomainTheory.Examples.IdlDyadics                   -- (2)
+import DomainTheory.Examples.LiftingLargeProposition      -- (3)
+import DomainTheory.Examples.Omega                        -- (4)
+import DomainTheory.Examples.Ordinals                     -- (5)
+import DomainTheory.Examples.Powerset                     -- (6)
 
 {- IdealCompletion
 

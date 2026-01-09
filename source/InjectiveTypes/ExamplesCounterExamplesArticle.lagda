@@ -78,6 +78,8 @@ open import Ordinals.Type
 
 open import Quotient.Type
 
+open import Various.DedekindNonAxiomatic pt fe' pe' using (𝓡∞)
+
 \end{code}
 
 Section 2. Preliminaries
@@ -284,11 +286,10 @@ module carriers-of-pointed-dcpos
  Proposition-4-3 : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → ainjective-type ⟪ 𝓓 ⟫ 𝓥 𝓥
  Proposition-4-3 = pointed-dcpos-are-ainjective-types 𝓥
 
-\end{code}
-
-Example-4-4 is not formalized
-
-\begin{code}
+Example-4-4 : ainjective-type 𝓡∞ 𝓤₀ 𝓤₀
+Example-4-4 = pointed-dcpos-are-ainjective-types 𝓤₀ 𝓡∞-DCPO⊥
+ where
+  open import DomainTheory.Examples.ExtendedPartialDedekindReals pt fe' pe'
 
 Theorem-4-5 : aflabby (𝕄 𝓤) 𝓤
 Theorem-4-5 {𝓤} = 𝕄-is-aflabby-Σ 𝓤
