@@ -68,6 +68,7 @@ open import InjectiveTypes.InhabitedTypesTaboo pt ua
 open import InjectiveTypes.NonEmptyTypes pt ua
 open import InjectiveTypes.OverSmallMaps fe
 open import InjectiveTypes.PointedDcpos fe pt
+open import InjectiveTypes.Subtypes fe
 
 open import Iterative.Multisets
 open import Iterative.Multisets-Addendum ua
@@ -469,6 +470,7 @@ module Mathematical-structures-revisited
        where
  open import InjectiveTypes.MathematicalStructuresMoreGeneral ua
  open import InjectiveTypes.Sigma fe using (compatibility-data)
+ open import MetricSpaces.StandardDefinition fe' pe' pt
 
  Definition-4-20-i : (P : Ω 𝓤) (A : P holds → 𝓤 ̇)
                    → S (Σ A) → Π p ꞉ P holds , S (A p)
@@ -491,9 +493,72 @@ module Mathematical-structures-revisited
  Theorem-4-23 comp =
   Σ-types-1.Theorem-4-15 (𝓤 ̇ ) S universes-are-flabby-Σ (Lemma-4-22 comp)
 
+ Example-4-24-1 : (R : 𝓥 ̇ ) → ainjective-type (Graph' R 𝓤) 𝓤 𝓤
+ Example-4-24-1 R = ainjectivity-of-Graph' R
+
+ Example-4-24-2 : {𝓤 : Universe} → let 𝓥 = 𝓤₁ ⊔ 𝓤 in
+                  ainjective-type (Metric-Space 𝓥) 𝓥 𝓥
+ Example-4-24-2 {𝓤} = ainjectivity-of-Metric-Space pt {𝓤}
+
+Lemma-4-25 : (D : 𝓤 ̇ ) (P : D → 𝓥 ̇ ) → ((d : D) → is-prop (P d))
+           → has-retraction (pr₁ ∶ ((Σ d ꞉ D , P d) → D))
+           ↔ (Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d))
+Lemma-4-25 = canonical-embedding-has-retraction-reformulation
+
+Theorem-4-26
+ : (𝓤 𝓥 𝓦 𝓣 : Universe)
+ → (D : 𝓤 ̇ ) → ainjective-type D (𝓥 ⊔ 𝓦) 𝓣
+ → (P : D → 𝓥 ̇ ) → ((d : D) → is-prop (P d))
+ → (ainjective-type (Σ P) (𝓥 ⊔ 𝓦) 𝓣 ↔ retract (Σ P) of D)
+ × (retract (Σ P) of D ↔ has-retraction (pr₁ ∶ (Σ P → D)))
+ × (has-retraction (pr₁ ∶ (Σ P → D))
+   ↔ (Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d)))
+Theorem-4-26 𝓤 𝓥 𝓦 𝓣 D D-ainj P P-prop =
+ ([3]⇒[2] ∘ [1]⇒[3] , [2]⇒[1]) ,
+ ([1]⇒[3] ∘ [2]⇒[1] , [3]⇒[2]) ,
+ [3]⇔[4]
+  where
+   [1]⇒[3] : ainjective-type (Σ P) (𝓥 ⊔ 𝓦) 𝓣 → has-retraction (pr₁ ∶ (Σ P → D))
+   [1]⇒[3] =
+    canonical-embedding-has-retraction-if-subtype-is-ainjective D P P-prop {𝓦}
+   [3]⇒[2] : has-retraction (pr₁ ∶ (Σ P → D)) → retract (Σ P) of D
+   [3]⇒[2] (s , ρ) = (s , pr₁ , ρ)
+   [3]⇔[4] : has-retraction (-id (Sigma D P → D) (λ r → pr₁ r))
+           ↔ (Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d))
+   [3]⇔[4] = Lemma-4-25 D P P-prop
+   [2]⇒[1] : retract (Σ P) of D → ainjective-type (Σ P) (𝓥 ⊔ 𝓦) 𝓣
+   [2]⇒[1] = ainjective-subtype-if-retract D P P-prop D-ainj
+
+Lemma-4-27 : (D : 𝓤 ̇ ) → ainjective-type D 𝓦 𝓣
+           → (P : D → 𝓥 ̇ ) → ((d : D) → is-prop (P d))
+           → retract (Σ P) of D → ainjective-type (Σ P) 𝓦 𝓣
+Lemma-4-27 D D-ainj P P-prop = ainjective-subtype-if-retract D P P-prop D-ainj
+
+Corollary-4-28 : (D : 𝓤 ⁺ ̇ ) → ainjective-type D 𝓤 𝓤
+               → (P : D → 𝓤 ̇ ) → ((d : D) → is-prop (P d))
+               → ainjective-type (Σ d ꞉ D , P d) 𝓤 𝓤
+               ↔ retract (Σ P) of D
+Corollary-4-28 {𝓤} D D-ainj P P-prop =
+ pr₁ (Theorem-4-26 (𝓤 ⁺) 𝓤 𝓤 𝓤 D D-ainj P P-prop)
+
+module Corollary-4-29 where
+ open import Modal.Subuniverse
+
+ Corollary-4-29 : (P : subuniverse 𝓤 𝓥) → subuniverse-is-reflective P
+                → ainjective-type (subuniverse-member P) 𝓤 𝓤
+ Corollary-4-29 {𝓤} {𝓥} ℙ@(P , P-prop) P-reflective =
+  sufficient-condition-for-injectivity-of-subtype
+   (𝓤 ̇ ) P P-prop (universes-are-ainjective-Π' (ua 𝓤))
+   (○ , ○-is-modal , I)
+  where
+   open import Modal.ReflectiveSubuniverse ℙ P-reflective
+   I : (A : 𝓤 ̇) → P A → ○ A ＝ A
+   I A A-modal = eqtoid (ua 𝓤) (○ A) A
+                  (≃-sym (η A , is-modal-gives-η-is-equiv fe' A A-modal))
+
 \end{code}
 
-Section 4.7. Models of generalized algebraic theories is not formalized.
+Section 4.7. ´Models of generalized algebraic theories´ is not formalized.
 This concludes Section 4.
 
 Section 5. Weak excluded middle and De Morgan's Law
