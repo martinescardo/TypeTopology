@@ -501,7 +501,8 @@ and a few more:
 
 \begin{code}
 
-module _ (ℚ-density         : (p r : ℚ) → p < r → Σ q ꞉ ℚ , (p < q) × (q < r))
+module ℚ-assumptions
+         (ℚ-density         : (p r : ℚ) → p < r → Σ q ꞉ ℚ , (p < q) × (q < r))
          (ℚ-transitivity    : (p q r : ℚ) → p < q → q < r → p < r)
          (ℚ-order-criterion : (p q : ℚ) → q ≮ p → p ≠ q → p < q)
          (ℚ-cotransitivity  : (p q r : ℚ) → p < r → (p < q) ∨ (q < r))
@@ -1864,11 +1865,50 @@ If we drop the inhabitation conditions, the endpoints can be ±∞:
              × (is-upper U × is-lower-open U)
              × are-ordered L U)
 
+\end{code}
+
+Added 9 January 2026 by Tom de Jong.
+Note that an alternative formulation of the axioms is given by the following.
+
+\begin{code}
+
+ roundness : (x : 𝓟 ℚ × 𝓟 ℚ) → 𝓤 ̇
+ roundness (L , U) =
+    ((p : ℚ) → p ∈ L ↔ (∃ r ꞉ ℚ , (p < r) × (r ∈ L)))
+  × ((q : ℚ) → q ∈ U ↔ (∃ s ꞉ ℚ , (s < q) × (s ∈ U)))
+
+ roundness-equivalence
+  : ((L , U) : 𝓟 ℚ × 𝓟 ℚ)
+  → is-lower L × is-upper-open L × is-upper U × is-lower-open U
+  ↔ roundness (L , U)
+ roundness-equivalence (L , U) = I , II
+  where
+   I : is-lower L × is-upper-open L × is-upper U × is-lower-open U
+     → roundness (L , U)
+   I (L-low , L-uo , U-up , U-lo) =
+    (λ p → L-uo p ,
+           ∥∥-rec (∈-is-prop L p) (λ (r , l , r-in-L) → L-low r r-in-L p l)) ,
+    (λ q → U-lo q ,
+           ∥∥-rec (∈-is-prop U q) (λ (s , l , s-in-U) → U-up s s-in-U q l))
+   II : roundness (L , U)
+      → is-lower L × is-upper-open L × is-upper U × is-lower-open U
+   II (ρ₁ , ρ₂) =
+    (λ q q-in-L p l → rl-implication (ρ₁ p) ∣ q , l , q-in-L ∣) ,
+    (λ p → lr-implication (ρ₁ p)) ,
+    (λ p p-in-U q l → rl-implication (ρ₂ q) ∣ p , l , p-in-U ∣) ,
+    (λ q → lr-implication (ρ₂ q))
+
+\end{code}
+
+End of addition.
+
+\begin{code}
+
  𝓡-to-𝓡∞ : 𝓡 → 𝓡∞
  𝓡-to-𝓡∞ (((L , _ , Ll , Lo) , (U , _ , Uu , Uo)) , o) = (L , U) , (Ll , Lo) , (Uu , Uo) , o
 
- ⊥𝓡 : 𝓡∞
- ⊥𝓡 = (∅ , ∅) , ((λ _ ()) , (λ _ ())) , ((λ _ ()) , (λ _ ())) , (λ p q ())
+ ⊥𝓡∞ : 𝓡∞
+ ⊥𝓡∞ = (∅ , ∅) , ((λ _ ()) , (λ _ ())) , ((λ _ ()) , (λ _ ())) , (λ p q ())
 
  instance
   canonical-map-𝓡-to-𝓡∞ : Canonical-Map 𝓡 𝓡∞
@@ -1884,6 +1924,16 @@ If we drop the inhabitation conditions, the endpoints can be ±∞:
    I = ap₂ (λ i k → (((L , i , Ll , Lo) , U , k , Uu , Uo) , o) , refl)
            (being-inhabited-is-prop L i j)
            (being-inhabited-is-prop U k l)
+
+ 𝓡∞-is-set : is-set 𝓡∞
+ 𝓡∞-is-set = subsets-of-sets-are-sets (𝓟 ℚ × 𝓟 ℚ) _
+              (×-is-set (𝓟-is-set' fe pe) (𝓟-is-set' fe pe))
+              (λ {(L , U)} → ×₃-is-prop
+                              (×-is-prop (being-lower-is-prop L)
+                                         (being-upper-open-is-prop L))
+                              (×-is-prop (being-upper-is-prop U)
+                                         (being-lower-open-is-prop U))
+                             (being-ordered-is-prop L U))
 
 \end{code}
 
