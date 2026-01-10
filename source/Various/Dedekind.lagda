@@ -338,8 +338,8 @@ at-most-one-upper-section (L , _)
   γ = to-subtype-＝
        being-upper-real-is-prop
        (any-two-upper-sections-are-equal L U₀ U₁
-           (U₀-is-lower-open , lu₀-ordered , lu₀-located)
-           (U₁-is-lower-open , lu₁-ordered , lu₁-located))
+        (U₀-is-lower-open , lu₀-ordered , lu₀-located)
+        (U₁-is-lower-open , lu₁-ordered , lu₁-located))
 
 \end{code}
 
@@ -406,11 +406,9 @@ is-dedekind-section (L , U) = is-inhabited L × is-lower L × is-upper-open L
 
 
 NB₁ : ℝ ≃ (Σ (L , R) ꞉ 𝓟 ℚ × 𝓟 ℚ , is-dedekind-section (L , R))
-
 NB₁ = qinveq
        (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
          → ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l))
-
        ((λ ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l)
          → ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)) ,
         (λ _ → refl) ,
@@ -457,10 +455,9 @@ ordered-located-gives-upper L U LU-ordered LU-located = γ
 
 
 NB₂ : ℝ ≃ (Σ (L , U) ꞉ 𝓟 ℚ × 𝓟 ℚ
-                , is-inhabited L × is-upper-open L
-                × is-inhabited U × is-lower-open U
-                × are-ordered L U × are-located L U)
-
+                     , is-inhabited L × is-upper-open L
+                     × is-inhabited U × is-lower-open U
+                     × are-ordered L U × are-located L U)
 NB₂ = qinveq
        (λ ((L , Li , _ , Lo) , (U , Ui , _ , Uo) , o , l)
          → ((L , U) , Li , Lo , Ui , Uo , o , l))
@@ -568,32 +565,32 @@ found in the literature:
 \begin{code}
 
  NB₃ : ℝ ≃ (Σ (L , U) ꞉ 𝓟 ℚ × 𝓟 ℚ
-                 , is-inhabited L × is-lower L × is-upper-open L
-                 × is-inhabited U × is-upper U × is-lower-open U
-                 × are-disjoint L U × are-located L U)
-
- NB₃ = qinveq
-        (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
-          → ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , disjoint-criterion L U o , l))
-        ((λ ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , d , l)
-          → ((L , Li , Ll , Lo) ,
-             (U , Ui , Uu , Uo) ,
-             ordered-criterion L U Ll d , l)) ,
-         (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
-          → to-subtype-＝ being-dedekind-is-prop
-             (to-subtype-＝ being-lower-real-is-prop
-               refl)) ,
-         (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
-          → to-subtype-＝ (λ (L , U) → ×₈-is-prop
-                                       (being-inhabited-is-prop L)
-                                       (being-lower-is-prop L)
-                                       (being-upper-open-is-prop L)
-                                       (being-inhabited-is-prop U)
-                                       (being-upper-is-prop U)
-                                       (being-lower-open-is-prop U)
-                                       (being-disjoint-is-prop fe L U)
-                                       (being-located-is-prop L U))
-            refl))
+                      , is-inhabited L × is-lower L × is-upper-open L
+                      × is-inhabited U × is-upper U × is-lower-open U
+                      × are-disjoint L U × are-located L U)
+ NB₃ =
+  qinveq
+   (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
+     → ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , disjoint-criterion L U o , l))
+   ((λ ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , d , l)
+     → ((L , Li , Ll , Lo) ,
+        (U , Ui , Uu , Uo) ,
+        ordered-criterion L U Ll d , l)) ,
+    (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
+     → to-subtype-＝ being-dedekind-is-prop
+        (to-subtype-＝ being-lower-real-is-prop
+          refl)) ,
+    (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
+     → to-subtype-＝ (λ (L , U) → ×₈-is-prop
+                                  (being-inhabited-is-prop L)
+                                  (being-lower-is-prop L)
+                                  (being-upper-open-is-prop L)
+                                  (being-inhabited-is-prop U)
+                                  (being-upper-is-prop U)
+                                  (being-lower-open-is-prop U)
+                                  (being-disjoint-is-prop fe L U)
+                                  (being-located-is-prop L U))
+       refl))
 
 \end{code}
 
@@ -629,9 +626,9 @@ The Dedekind and Troelstra conditions are equivalent:
 
  dedekind-gives-troelstra : (l : ℝᴸ) → is-dedekind l → is-troelstra l
  dedekind-gives-troelstra l@(L , _ , _ , _)
-                           ((U , U-inhabited , _ , _) ,
-                            LU-ordered ,
-                            LU-located) = γ
+                          ((U , U-inhabited , _ , _) ,
+                           LU-ordered ,
+                           LU-located) = γ
   where
    bounded : (∃ s ꞉ ℚ , s ∉ L)
    bounded = ∥∥-functor f U-inhabited
@@ -849,7 +846,7 @@ proposition, then so is A + ¬ A, and thus A + ¬ A is equivalent to A ∨ ¬ A.
 
  LEM-gives-locatedness : LEM → ((L , _) : ℝᴸ) → is-located L
  LEM-gives-locatedness
-   lem l@(L , L-inhabited , L-lower , L-upper-open) r s ℓ = γ δ
+  lem l@(L , L-inhabited , L-lower , L-upper-open) r s ℓ = γ δ
   where
    δ : (s ∈ L) + (s ∉ L)
    δ = lem (s ∈ L) (∈-is-prop L s)
@@ -881,9 +878,9 @@ lower reals:
  infty-is-lower-real = ∣ 𝟎 , ⋆ ∣ ,
                        (λ _ _ _ _ → ⋆) ,
                        (λ p ⋆ → ∥∥-rec
-                                  ∃-is-prop
-                                  (λ (q , i) → ∣ q , i , ⋆ ∣)
-                                  (ℚ-is-upper-open p))
+                                 ∃-is-prop
+                                 (λ (q , i) → ∣ q , i , ⋆ ∣)
+                                 (ℚ-is-upper-open p))
 
  infty-is-not-bounded-above : ¬ is-bounded-above infty
  infty-is-not-bounded-above bounded =
@@ -1651,7 +1648,7 @@ upper bound of the family x.
    _≤_ {{order-F-ℝ}} x y = (i : 𝐼) → x i ≤ y
 
   ≤-F-ℝ-is-prop-valued : (x : F) (y : ℝ)
-                           → is-prop (x ≤ y)
+                       → is-prop (x ≤ y)
   ≤-F-ℝ-is-prop-valued x y = Π-is-prop fe (λ i → ≤₀-is-prop-valued (x i) y)
 
   _has-lub_ : F → ℝ → 𝓤⁺ ̇
