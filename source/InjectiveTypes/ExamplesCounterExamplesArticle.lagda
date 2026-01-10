@@ -52,6 +52,7 @@ private
  pe' {𝓤} = pe 𝓤
 
 open import UF.Base
+open import UF.ClassicalLogic
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.NotNotStablePropositions
@@ -565,7 +566,56 @@ Section 5. Weak excluded middle and De Morgan's Law
 
 \begin{code}
 
--- TODO
+Lemma-5-1 : (A : 𝓤 ̇ ) (B : 𝓥 ̇ )
+          → is-prop (A + B) ↔ is-prop A × is-prop B × ¬ (A × B)
+Lemma-5-1 A B =
+ (λ k → pr₁ (I k) , pr₁ (pr₂ (I k)) , λ (a , b) → pr₂ (pr₂ (I k)) a b) ,
+ (λ (i , j , ν) → +-is-prop i j (λ a b → ν (a , b)))
+  where
+   I : is-prop (A + B) → is-prop A × is-prop B × (A → B → 𝟘)
+   I = sum-of-contradictory-props'-converse
+
+Theorem-5-2-i
+ : (WEM 𝓤 ↔ typal-WEM 𝓤)
+ × (typal-WEM 𝓤 ↔ De-Morgan pt 𝓤)
+ × (De-Morgan pt 𝓤 ↔ typal-De-Morgan pt 𝓤)
+ × (typal-De-Morgan pt 𝓤 ↔ untruncated-De-Morgan 𝓤)
+ × (untruncated-De-Morgan 𝓤 ↔ untruncated-typal-De-Morgan 𝓤)
+Theorem-5-2-i {𝓤} =
+ ([1]⇒[2] , [3]⇒[1] ∘ [5]⇒[3] ∘ [6]⇒[5] ∘ [2]⇒[6]) ,
+ ([5]⇒[3] ∘ [6]⇒[5] ∘ [2]⇒[6] , [1]⇒[2] ∘ [3]⇒[1]) ,
+ ([6]⇒[4] ∘ [2]⇒[6] ∘ [1]⇒[2] ∘ [3]⇒[1] , [4]⇒[3]) ,
+ ([6]⇒[5] ∘ [2]⇒[6] ∘ [1]⇒[2] ∘ [3]⇒[1] ∘ [4]⇒[3] ,
+  [6]⇒[4] ∘ [2]⇒[6] ∘ [1]⇒[2] ∘ [3]⇒[1] ∘ [5]⇒[3]) ,
+ ([2]⇒[6] ∘ [1]⇒[2] ∘ [3]⇒[1] ∘ [5]⇒[3] , [6]⇒[5])
+ where
+  [1]⇒[2] : WEM 𝓤 → typal-WEM 𝓤
+  [1]⇒[2] = WEM-gives-typal-WEM fe'
+  [2]⇒[6] : typal-WEM 𝓤 → untruncated-typal-De-Morgan 𝓤
+  [2]⇒[6] = typal-WEM-gives-untruncated-typal-De-Morgan
+  [6]⇒[4] : untruncated-typal-De-Morgan 𝓤 → typal-De-Morgan pt 𝓤
+  [6]⇒[4] = untruncated-typal-De-Morgan-gives-typal-De-Morgan pt
+  [6]⇒[5] : untruncated-typal-De-Morgan 𝓤 → untruncated-De-Morgan 𝓤
+  [6]⇒[5] = untruncated-typal-De-Morgan-gives-untruncated-De-Morgan
+  [5]⇒[3] : untruncated-De-Morgan 𝓤 → De-Morgan pt 𝓤
+  [5]⇒[3] = untruncated-De-Morgan-gives-De-Morgan pt
+  [4]⇒[3] : typal-De-Morgan pt 𝓤 → De-Morgan pt 𝓤
+  [4]⇒[3] = typal-De-Morgan-gives-De-Morgan pt
+  [3]⇒[1] : De-Morgan pt 𝓤 → WEM 𝓤
+  [3]⇒[1] = De-Morgan-gives-WEM pt fe'
+
+Theorem-5-2-ii : is-prop (WEM 𝓤)
+               × is-prop (typal-WEM 𝓤)
+               × is-prop (De-Morgan pt 𝓤)
+               × is-prop (typal-De-Morgan pt 𝓤)
+Theorem-5-2-ii = WEM-is-prop fe ,
+                 typal-WEM-is-prop fe ,
+                 De-Morgan-is-prop pt fe ,
+                 typal-De-Morgan-is-prop pt fe
+
+Lemma-5-3 : (δ : untruncated-De-Morgan 𝓤)
+          → Σ δ' ꞉ untruncated-De-Morgan 𝓤 , δ' ≠ δ
+Lemma-5-3 = untruncated-De-Morgan-has-at-least-two-witnesses-if-it-has-one fe'
 
 \end{code}
 
