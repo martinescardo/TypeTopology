@@ -462,6 +462,34 @@ module Σ-types-2 where
   → compatibility-condition (λ x → Σ a ꞉ A x , B x a) ϕ
  Lemma-4-19-ii = compatibility-condition-with-axioms
 
+module Mathematical-structures-revisited
+         (S : 𝓤 ̇  → 𝓥 ̇ )
+         (T : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y)
+         (r : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id)
+       where
+ open import InjectiveTypes.MathematicalStructuresMoreGeneral ua
+ open import InjectiveTypes.Sigma fe using (compatibility-data)
+
+ Definition-4-20-i : (P : Ω 𝓤) (A : P holds → 𝓤 ̇)
+                   → S (Σ A) → Π p ꞉ P holds , S (A p)
+ Definition-4-20-i = ρΣ S T r
+
+ Definition-4-20-ii : (P : Ω 𝓤) (A : P holds → 𝓤 ̇)
+                      (s : S (Σ A)) (p : P holds)
+                    → Definition-4-20-i P A s p ＝ T (≃-sym (Σ-𝕚𝕟 P p)) s
+ Definition-4-20-ii P A s p = refl
+
+ Definition-4-21 : 𝓤 ⁺ ⊔ 𝓥 ̇
+ Definition-4-21 = compatibility-data-Σ S T r
+
+ Lemma-4-22 : compatibility-data-Σ S T r
+            → compatibility-data S universes-are-flabby-Σ
+ Lemma-4-22 = Σ-construction S T r
+
+ Theorem-4-23 : compatibility-data-Σ S T r
+              → aflabby (Σ X ꞉ 𝓤 ̇  , S X) 𝓤
+ Theorem-4-23 comp =
+  Σ-types-1.Theorem-4-15 (𝓤 ̇ ) S universes-are-flabby-Σ (Lemma-4-22 comp)
 
 \end{code}
 
