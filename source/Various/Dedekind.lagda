@@ -501,7 +501,8 @@ and a few more:
 
 \begin{code}
 
-module _ (ℚ-density         : (p r : ℚ) → p < r → Σ q ꞉ ℚ , (p < q) × (q < r))
+module ℚ-assumptions
+         (ℚ-density         : (p r : ℚ) → p < r → Σ q ꞉ ℚ , (p < q) × (q < r))
          (ℚ-transitivity    : (p q r : ℚ) → p < q → q < r → p < r)
          (ℚ-order-criterion : (p q : ℚ) → q ≮ p → p ≠ q → p < q)
          (ℚ-cotransitivity  : (p q r : ℚ) → p < r → (p < q) ∨ (q < r))
