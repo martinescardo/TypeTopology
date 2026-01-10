@@ -64,6 +64,7 @@ open import UF.SubtypeClassifier
 
 open import InjectiveTypes.Blackboard fe hiding (extension)
 open import InjectiveTypes.CharacterizationViaLifting fe
+open import InjectiveTypes.InhabitedTypesTaboo pt ua
 open import InjectiveTypes.NonEmptyTypes pt ua
 open import InjectiveTypes.OverSmallMaps fe
 open import InjectiveTypes.PointedDcpos fe pt
@@ -388,7 +389,7 @@ module Examples-4-13-b where
  [9] : ainjective-type (Σ X ꞉ 𝓤 ̇  , Σ Y ꞉ 𝓤 ̇  , (X → Y)) 𝓤 𝓤
  [9] = ainjectivity-of-type-of-all-functions
 
-module Σ-types
+module Σ-types-1
         (X : 𝓤 ̇ )
         (A : X → 𝓥 ̇ )
         (ϕ : aflabby X 𝓦)
@@ -399,8 +400,68 @@ module Σ-types
                  → A (extension ϕ P f) → Π p ꞉ P holds , A (f p)
  Definition-4-14 = ρ A ϕ
 
- Theorem-4-15 : compatibility-data A ϕ → aflabby (Σ A) 𝓦
+ Theorem-4-15 : compatibility-data A ϕ → aflabby (Σ x ꞉ X , A x) 𝓦
  Theorem-4-15 = Σ-is-aflabby A ϕ
+
+ Corollary-4-16 : ((x : X) → is-prop (A x))
+                → ((P : Ω 𝓦) (f : P holds → X)
+                      → (Π p ꞉ P holds , A (f p)) → A (extension ϕ P f))
+                → aflabby (Σ x ꞉ X , A x) 𝓦
+ Corollary-4-16 = subtype-is-aflabby A ϕ
+
+ Proposition-4-17
+  : {𝓤 : Universe}
+  → Σ X ꞉ 𝓤 ⁺ ̇
+    , Σ A ꞉ (X → 𝓤 ̇ ) , ainjective-type (Σ x ꞉ X , A x) 𝓤 𝓤
+                      × (ainjective-type X 𝓤 𝓤 → Propositions-Are-Projective 𝓤)
+ Proposition-4-17 {𝓤} =
+  example-of-injective-sum-whose-index-type-may-not-be-injective 𝓤
+
+module Σ-types-2 where
+ open import InjectiveTypes.Sigma fe
+
+ Lemma-4-18-i : {𝓤 𝓥₁ 𝓥₂ 𝓦 : Universe} {X : 𝓤 ̇} (ϕ : aflabby X 𝓦)
+                {A₁ : X → 𝓥₁ ̇} {A₂ : X → 𝓥₂ ̇}
+              → compatibility-data A₁ ϕ
+              → compatibility-data A₂ ϕ
+              → compatibility-data (λ x → A₁ x × A₂ x) ϕ
+ Lemma-4-18-i = compatibility-data-×
+
+ Lemma-4-18-ii : {𝓤 𝓥₁ 𝓥₂ 𝓦 : Universe} {X : 𝓤 ̇} (ϕ : aflabby X 𝓦)
+                 {A₁ : X → 𝓥₁ ̇} {A₂ : X → 𝓥₂ ̇}
+               → compatibility-condition A₁ ϕ
+               → compatibility-condition A₂ ϕ
+               → compatibility-condition (λ x → A₁ x × A₂ x) ϕ
+ Lemma-4-18-ii = compatibility-condition-×
+
+ Lemma-4-19-i
+  : {X : 𝓤 ̇ } (ϕ : aflabby X 𝓥) (A : X → 𝓦 ̇ )
+    (ρ-has-section : compatibility-data A ϕ)
+    (B : (x : X ) → A x → 𝓥 ̇ )
+    (B-is-prop-valued : (x : X) (a : A x) → is-prop (B x a))
+    (B-is-closed-under-extension
+      : (p : Ω 𝓥 )
+        (f : p holds → X)
+      → (α : (h : p holds) → A (f h))
+      → ((h : p holds) → B (f h) (α h))
+      → B (extension ϕ p f) (section-map (ρ A ϕ p f) (ρ-has-section p f) α))
+  → compatibility-data (λ x → Σ a ꞉ A x , B x a) ϕ
+ Lemma-4-19-i = compatibility-data-with-axioms
+
+ Lemma-4-19-ii
+  : {X : 𝓤 ̇ } (ϕ : aflabby X 𝓥) (A : X → 𝓦 ̇ )
+    (ρ-is-equiv : compatibility-condition A ϕ)
+    (B : (x : X ) → A x → 𝓥 ̇ )
+    (B-is-prop-valued : (x : X) (a : A x) → is-prop (B x a))
+    (B-is-closed-under-extension
+      : (p : Ω 𝓥 )
+        (f : p holds → X)
+      → (α : (h : p holds) → A (f h))
+      → ((h : p holds) → B (f h) (α h))
+      → B (extension ϕ p f) (inverse (ρ A ϕ p f) (ρ-is-equiv p f) α))
+  → compatibility-condition (λ x → Σ a ꞉ A x , B x a) ϕ
+ Lemma-4-19-ii = compatibility-condition-with-axioms
+
 
 \end{code}
 
