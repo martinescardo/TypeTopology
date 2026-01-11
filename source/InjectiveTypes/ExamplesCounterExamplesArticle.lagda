@@ -71,6 +71,7 @@ open import InjectiveTypes.InhabitedTypesTaboo pt ua
 open import InjectiveTypes.NonEmptyTypes pt ua
 open import InjectiveTypes.OverSmallMaps fe
 open import InjectiveTypes.PointedDcpos fe pt
+open import InjectiveTypes.Resizing ua pt
 open import InjectiveTypes.Subtypes fe
 
 open import Iterative.Multisets
@@ -86,6 +87,8 @@ open import Taboos.Decomposability fe
 open decomposability pt
 open decomposability-bis pt
 open import Taboos.WLPO
+open import TypeTopology.SimpleTypes fe pt
+open import TypeTopology.TotallySeparated
 
 open import Quotient.Type
 
@@ -744,5 +747,51 @@ Corollary-7-8 {𝓤} =
  (λ wem → Theorem-7-7-2 wem (𝓤 ̇ )
                         (universes-are-locally-small (ua 𝓤))
                         universe-has-two-distinct-points)
+
+Corollary-7-9 : (X : 𝓤₀ ̇) → simple-type₂ X
+              → ainjective-type X 𝓤 𝓤 → typal-WEM 𝓤
+Corollary-7-9 = simple-type₂-injective-gives-WEM
+
+Theorem-7-10 : (X : 𝓤 ̇ ) → Tight-Apartness X 𝓥 × ¬ (is-subsingleton X)
+             → ainjective-type X 𝓣 𝓦 → ¬¬ typal-WEM 𝓣
+Theorem-7-10 X (ta , ns) ainj =
+ non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM
+  (X , ns , ainj , ta)
+
+Proposition-7-11 : (X : 𝓤 ̇ ) → is-totally-separated X × ¬ (is-subsingleton X)
+                 → ainjective-type X 𝓣 𝓦 → ¬¬ typal-WEM 𝓣
+Proposition-7-11 X (ts , ns) ainj =
+ non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM pe' (X , ns , ts , ainj)
+
+Proposition-7-11-alt : (X : 𝓤 ̇ ) → is-totally-separated X × ¬ (is-subsingleton X)
+                     → ainjective-type X 𝓣 𝓦 → ¬¬ typal-WEM 𝓣
+Proposition-7-11-alt X (ts , ns) ainj =
+ non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM' (X , ns , ts , ainj)
+
+Theorem-7-12 : retracts-of-small-types-are-small
+             → (D : 𝓤 ̇ )
+             → ainjective-type D (𝓤 ⊔ 𝓥) 𝓦
+             → has-two-distinct-points D
+             → is-small (Ω¬¬ 𝓤)
+Theorem-7-12 {𝓤} {𝓥} {𝓦} =
+ small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤} {𝓥} {𝓦}
+
+Theorem-7-13
+ : (ainjective-type (Inhabited 𝓤) 𝓤 𝓤 ↔ retract (Inhabited 𝓤) of (𝓤 ̇ ))
+ × (retract (Inhabited 𝓤) of (𝓤 ̇ ) ↔ Propositions-Are-Projective 𝓤)
+ × (Propositions-Are-Projective 𝓤 ↔ Unspecified-Split-Support 𝓤)
+Theorem-7-13 {𝓤} =
+ ({!!} , {!!}) ,
+ ({!!} , {!!}) ,
+ {!!} , {!!}
+ where
+  [4]⇒[2] : Unspecified-Split-Support 𝓤 → retract (Inhabited 𝓤) of (𝓤 ̇ )
+  [4]⇒[2] = unspecified-split-support-gives-retract 𝓤
+  [2]⇒[1] : retract (Inhabited 𝓤) of (𝓤 ̇ ) → ainjective-type (Inhabited 𝓤) 𝓤 𝓤
+  [2]⇒[1] = retract-gives-injectivity 𝓤
+  [1]⇒[3] : ainjective-type (Inhabited 𝓤) 𝓤 𝓤 → Propositions-Are-Projective 𝓤
+  [1]⇒[3] = injectivity-gives-projective-propositions 𝓤
+  [3]⇒[4] : Propositions-Are-Projective 𝓤 → Unspecified-Split-Support 𝓤
+  [3]⇒[4] = projective-propositions-gives-unspecified-split-support 𝓤
 
 \end{code}
