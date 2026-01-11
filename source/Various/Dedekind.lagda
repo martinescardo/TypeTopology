@@ -237,7 +237,6 @@ order-lemma L U L' U'
   γ : q ∈ U
   γ = ∥∥-rec (∈-is-prop U q) II I
 
-
 order-lemma-converse : (L U L' U' : 𝓟 ℚ)
                      → is-upper-open L
                      → are-located L' U'
