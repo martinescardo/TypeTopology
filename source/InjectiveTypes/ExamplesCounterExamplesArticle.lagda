@@ -56,6 +56,8 @@ open import Apartness.Definition
 open import Apartness.Properties pt
 open Apartness pt
 
+open import UF.Choice
+open world's-simplest-axiom-of-choice fe pt
 open import CoNaturals.Type
 open import DedekindReals.Type fe' pe' pt
 open import DedekindReals.Order fe' pe' pt renaming (_♯_ to _♯ℝ_)
@@ -82,6 +84,10 @@ open import Iterative.Sets-Addendum ua
 open import Ordinals.Injectivity
 open import Ordinals.Type
 
+open import Quotient.Type
+
+open import SyntheticHomotopyTheory.RP-infinity pt
+
 open import Taboos.BasicDiscontinuity fe'
 open import Taboos.Decomposability fe
 open decomposability pt
@@ -90,12 +96,12 @@ open import Taboos.WLPO
 open import TypeTopology.SimpleTypes fe pt
 open import TypeTopology.TotallySeparated
 
-open import Quotient.Type
-
 open import UF.Base
 open import UF.ClassicalLogic
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.ExitPropTrunc
+open split-support-and-collapsibility pt
 open import UF.NotNotStablePropositions
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
@@ -781,9 +787,9 @@ Theorem-7-13
  × (retract (Inhabited 𝓤) of (𝓤 ̇ ) ↔ Propositions-Are-Projective 𝓤)
  × (Propositions-Are-Projective 𝓤 ↔ Unspecified-Split-Support 𝓤)
 Theorem-7-13 {𝓤} =
- ({!!} , {!!}) ,
- ({!!} , {!!}) ,
- {!!} , {!!}
+ ([4]⇒[2] ∘ [3]⇒[4] ∘ [1]⇒[3] , [2]⇒[1]) ,
+ ([1]⇒[3] ∘ [2]⇒[1] , [4]⇒[2] ∘ [3]⇒[4]) ,
+ ([3]⇒[4] , [1]⇒[3] ∘ [2]⇒[1] ∘ [4]⇒[2])
  where
   [4]⇒[2] : Unspecified-Split-Support 𝓤 → retract (Inhabited 𝓤) of (𝓤 ̇ )
   [4]⇒[2] = unspecified-split-support-gives-retract 𝓤
@@ -793,5 +799,21 @@ Theorem-7-13 {𝓤} =
   [1]⇒[3] = injectivity-gives-projective-propositions 𝓤
   [3]⇒[4] : Propositions-Are-Projective 𝓤 → Unspecified-Split-Support 𝓤
   [3]⇒[4] = projective-propositions-gives-unspecified-split-support 𝓤
+
+Lemma-7-14 : (D : 𝓤 ̇ ) → ainjective-type D 𝓥 𝓦 → (T : D → 𝓣 ̇ )
+           → ainjective-type (Σ d ꞉ D , ∥ T d ∥) (𝓣 ⊔ 𝓥') 𝓦'
+           → (d : D) → ∥ has-split-support (T d) ∥
+Lemma-7-14 {𝓤} {𝓥} {𝓦} {𝓣} {𝓥'} {𝓦'} =
+ family-has-unspecified-split-support-if-total-space-of-truncation-is-ainjective
+  {𝓤} {𝓥} {𝓦} {𝓣} {𝓥'} {𝓦'}
+
+Lemma-7-15 : WSAC 𝓤 𝓤 ≃ ((X : 𝓤 ̇ ) → ∥ has-split-support (X ≃ 𝟚) ∥)
+Lemma-7-15 = WSAC-equivalent-formulations
+
+NB : ((X : 𝓤 ̇ ) → ∥ has-split-support (X ≃ 𝟚) ∥) ＝ WSAC' 𝓤
+NB = refl
+
+Theorem-7-16 : ainjective-type ℝP∞ 𝓥 𝓦 → WSAC' 𝓤₀
+Theorem-7-16 = ℝP∞-ainjective-implies-WSAC
 
 \end{code}
