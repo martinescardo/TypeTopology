@@ -157,6 +157,17 @@ pr₂ (generic-precomp-η-is-equiv-gives-η-is-section A h) =
 
 \end{code}
 
+The converse of η-is-equiv-gives-is-modal, added 10 January 2025 by Tom de Jong.
+
+\begin{code}
+
+is-modal-gives-η-is-equiv : funext 𝓤 𝓤 → (A : 𝓤 ̇ ) → is-modal A → is-equiv (η A)
+is-modal-gives-η-is-equiv fe A A-modal =
+ η-is-section-gives-is-equiv fe A
+  (generic-precomp-η-is-equiv-gives-η-is-section A (precomp-η-is-equiv A-modal))
+
+\end{code}
+
 The following is Lemma 5.1.18 of Egbert Rijke's thesis.
 
 \begin{code}
