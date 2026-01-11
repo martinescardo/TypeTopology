@@ -38,6 +38,8 @@ open import UF.FunExt
 open import UF.Subsingletons
 open import UF.UA-FunExt
 
+open PropositionalTruncation pt
+
 private
  fe : FunExt
  fe = Univalence-gives-FunExt ua
@@ -50,18 +52,6 @@ private
 
  pe' : Prop-Ext
  pe' {𝓤} = pe 𝓤
-
-open import UF.Base
-open import UF.ClassicalLogic
-open import UF.Embeddings
-open import UF.Equiv
-open import UF.NotNotStablePropositions
-open import UF.PropIndexedPiSigma
-open import UF.Retracts
-open import UF.SIP-Examples
-open import UF.Size
-open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier
 
 open import InjectiveTypes.Blackboard fe hiding (extension)
 open import InjectiveTypes.CharacterizationViaLifting fe
@@ -79,7 +69,23 @@ open import Iterative.Sets-Addendum ua
 open import Ordinals.Injectivity
 open import Ordinals.Type
 
+open import Taboos.Decomposability fe
+open decomposability pt
+open decomposability-bis pt
+
 open import Quotient.Type
+
+open import UF.Base
+open import UF.ClassicalLogic
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.NotNotStablePropositions
+open import UF.PropIndexedPiSigma
+open import UF.Retracts
+open import UF.SIP-Examples
+open import UF.Size
+open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
 
 open import Various.DedekindNonAxiomatic pt fe' pe' using (𝓡∞)
 
@@ -373,8 +379,8 @@ module Examples-4-13-a where
  [4] : ainjective-type (monoid.Monoid {𝓤}) 𝓤 𝓤
  [4] = ainjectivity-of-Monoid
 
- [5] : ainjective-type (group.Group {𝓤}) 𝓤 𝓤
- [5] = {!!} -- TODO or not?
+ -- [5] : ainjective-type (group.Group {𝓤}) 𝓤 𝓤
+ -- [5] = {!!} -- TODO or not?
 
 module Examples-4-13-b where
  open import InjectiveTypes.MathematicalStructuresMoreGeneral ua
@@ -623,7 +629,48 @@ Section 6. A Rice-like theorem for injective types
 
 \begin{code}
 
--- TODO
+Definition-6-1 : 𝓤 ̇  → 𝓤 ̇
+Definition-6-1 = decomposition
+
+Lemma-6-2 : (X : 𝓤 ̇ ) → (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , Y ₀ + Y ₁ ≃ X) ≃ (X → 𝟚)
+Lemma-6-2 {𝓤} = decomposition-lemma (ua 𝓤)
+
+Remark-6-3 : (X : 𝓤 ̇ )
+           → (decomposition X ≃ (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X) × Y ₀ × Y ₁))
+           × (decomposition X ≃ retract 𝟚 of X)
+Remark-6-3 {𝓤} X = decompositions-agree (ua 𝓤) X ,
+                   decompositions-as-retracts X
+
+Proposition-6-4 : typal-WEM 𝓤 → (X : 𝓤 ̇ )
+                → has-two-distinct-points X → decomposition X
+Proposition-6-4 = WEM-gives-decomposition-of-two-pointed-types
+
+Definition-6-5-i : {𝓤 𝓥 : Universe} → (X : 𝓥 ̇ ) → X → X → 𝓤 ⁺ ⊔ 𝓥 ̇
+Definition-6-5-i {𝓤} {𝓥} X = Ω-Path {𝓥} {X} 𝓤
+
+Definition-6-5-ii : {𝓤 𝓥 : Universe} → (X : 𝓥 ̇ ) → 𝓤 ⁺ ⊔ 𝓥 ̇
+Definition-6-5-ii {𝓤} {𝓥} = has-Ω-paths 𝓤
+
+Lemma-6-6 : decomposition (Ω 𝓤) → typal-WEM 𝓤
+Lemma-6-6 = decomposition-of-Ω-gives-WEM pe'
+
+Lemma-6-7 : (X : 𝓤 ̇ ) → decomposition X → has-Ω-paths 𝓥 X → typal-WEM 𝓥
+Lemma-6-7 X = decomposition-of-type-with-Ω-paths-gives-WEM pe' {X}
+
+Lemma-6-8 : (D : 𝓤 ̇ ) → ainjective-type D 𝓤₀ (𝓦 ⁺) → has-Ω-paths 𝓦 D
+Lemma-6-8 = ainjective-types-have-Ω-paths-naive pe'
+
+Lemma-6-9 : (D : 𝓤 ̇ ) → ainjective-type D 𝓥 𝓦 → has-Ω-paths 𝓥 D
+Lemma-6-9 = ainjective-types-have-Ω-paths pe'
+
+Theorem-6-10 : (D : 𝓤 ̇ ) → ainjective-type D 𝓥 𝓦 → decomposition D → typal-WEM 𝓥
+Theorem-6-10 = decomposition-of-ainjective-type-gives-WEM pe'
+
+Proposition-6-11 : (D : 𝓤 ̇ ) → ainjective-type D 𝓤 𝓥
+                 → has-two-distinct-points D
+                 → decomposable D ↔ decomposition D
+Proposition-6-11 D ainj htdp =
+ ainjective-type-decomposability-gives-decomposition pe' D ainj htdp , ∣_∣
 
 \end{code}
 
