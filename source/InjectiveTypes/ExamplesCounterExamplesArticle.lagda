@@ -32,7 +32,6 @@ module InjectiveTypes.ExamplesCounterExamplesArticle
        where
 
 open import MLTT.Spartan
-open import Notation.General
 
 open import UF.FunExt
 open import UF.Subsingletons
@@ -53,8 +52,21 @@ private
  pe' : Prop-Ext
  pe' {𝓤} = pe 𝓤
 
+open import Apartness.Definition
+open import Apartness.Properties pt
+open Apartness pt
+
+open import CoNaturals.Type
+open import DedekindReals.Type fe' pe' pt
+open import DedekindReals.Order fe' pe' pt renaming (_♯_ to _♯ℝ_)
+
+open import Notation.CanonicalMap
+open import Notation.General
+open import Notation.Order
+
 open import InjectiveTypes.Blackboard fe hiding (extension)
 open import InjectiveTypes.CharacterizationViaLifting fe
+open import InjectiveTypes.CounterExamples ua pt
 open import InjectiveTypes.InhabitedTypesTaboo pt ua
 open import InjectiveTypes.NonEmptyTypes pt ua
 open import InjectiveTypes.OverSmallMaps fe
@@ -69,9 +81,11 @@ open import Iterative.Sets-Addendum ua
 open import Ordinals.Injectivity
 open import Ordinals.Type
 
+open import Taboos.BasicDiscontinuity fe'
 open import Taboos.Decomposability fe
 open decomposability pt
 open decomposability-bis pt
+open import Taboos.WLPO
 
 open import Quotient.Type
 
@@ -678,6 +692,57 @@ Section 7. Counterexamples
 
 \begin{code}
 
--- TODO
+Counterexample-7-1 : ainjective-type 𝟚 𝓤 𝓤 ↔ typal-WEM 𝓤
+Counterexample-7-1 = 𝟚-ainjective-gives-WEM , WEM-gives-𝟚-ainjective
+
+Lemma-7-2 : WLPO ↔ (Σ f ꞉ (ℕ∞ → ℕ∞) , ((n : ℕ) → f (ι n) ＝ ι 0) × (f ∞ ＝ ι 1))
+Lemma-7-2 = WLPO-is-discontinuous' ,
+            (λ (f , p) → basic-discontinuity-taboo' f p)
+
+Counterexample-7-3-1 : ainjective-type ℕ∞ 𝓤₀ 𝓤₀ → WLPO
+Counterexample-7-3-1 = ℕ∞-injective-gives-WLPO
+
+Counterexample-7-3-2 : ainjective-type ℕ∞ 𝓤 𝓥 → typal-WEM 𝓤
+Counterexample-7-3-2 = ℕ∞-injective-gives-WEM
+
+Counterexample-7-4-1 : ainjective-type ℝ 𝓤₁ 𝓤₁
+                     → Σ H ꞉ (ℝ → ℝ) ,
+                           ((x : ℝ) → (x < 0ℝ → H x ＝ 0ℝ)
+                                    × (x ≥ 0ℝ → H x ＝ 1ℝ))
+Counterexample-7-4-1 = ℝ-ainjective-gives-Heaviside-function
+
+Counterexample-7-4-2 : ainjective-type ℝ 𝓤 𝓥 → typal-WEM 𝓤
+Counterexample-7-4-2 = ℝ-ainjective-gives-WEM
+
+Definition-7-5 : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
+Definition-7-5 = Nontrivial-Apartness
+
+Theorem-7-6 : (X : 𝓤 ̇ )
+            → ainjective-type X 𝓣 𝓦
+            → Nontrivial-Apartness X 𝓥
+            → typal-WEM 𝓣
+Theorem-7-6 X = ainjective-type-with-non-trivial-apartness-gives-WEM
+
+Theorem-7-7-1 : typal-WEM 𝓤 → (X : 𝓤 ̇ )
+              → has-two-distinct-points X
+              → Nontrivial-Apartness X 𝓤
+Theorem-7-7-1 wem X htdp =
+ WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
+  fe' {X} htdp wem
+
+Theorem-7-7-2 : typal-WEM 𝓤 → (X : 𝓤 ⁺ ̇ )
+              → is-locally-small X
+              → has-two-distinct-points X
+              → Nontrivial-Apartness X 𝓤
+Theorem-7-7-2 wem X X-loc-small htdp =
+ WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
+  fe' X-loc-small htdp wem
+
+Corollary-7-8 : Nontrivial-Apartness (𝓤 ̇ ) 𝓤 ↔ typal-WEM 𝓤
+Corollary-7-8 {𝓤} =
+ Theorem-7-6 (𝓤 ̇ ) (universes-are-ainjective-Π' (ua 𝓤)) ,
+ (λ wem → Theorem-7-7-2 wem (𝓤 ̇ )
+                        (universes-are-locally-small (ua 𝓤))
+                        universe-has-two-distinct-points)
 
 \end{code}
