@@ -1,9 +1,9 @@
 Tom de Jong, 20 October 2025
 
-We define the infinite dimensional real projective space RP∞ as the connected
+We define the infinite dimensional real projective space ℝP∞ as the connected
 component of the booleans. This is motivated by [1], where Buchholtz and Rijke
-define RP∞ as a sequential colimit of finite dimensional real projective spaces
-and then prove that RP∞ is equivalent to the connected component of the booleans
+define ℝP∞ as a sequential colimit of finite dimensional real projective spaces
+and then prove that ℝP∞ is equivalent to the connected component of the booleans
 (called the type of 0-sphere bundles in [1]).
 
 The advantage of the definition adopted here is that it is very simple to state,
@@ -34,14 +34,14 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Univalence
 
-RP∞ : 𝓤₁ ̇
-RP∞ = Σ X ꞉ 𝓤₀ ̇  , ∥ X ≃ 𝟚 ∥
+ℝP∞ : 𝓤₁ ̇
+ℝP∞ = Σ X ꞉ 𝓤₀ ̇  , ∥ X ≃ 𝟚 ∥
 
-RP∞' : 𝓤₁ ̇
-RP∞' = Σ X ꞉ 𝓤₀ ̇  , ∥ X ＝ 𝟚 ∥
+ℝP∞' : 𝓤₁ ̇
+ℝP∞' = Σ X ꞉ 𝓤₀ ̇  , ∥ X ＝ 𝟚 ∥
 
-RP∞-equivalent-formulations : is-univalent 𝓤₀ → RP∞ ≃ RP∞'
-RP∞-equivalent-formulations ua =
+ℝP∞-equivalent-formulations : is-univalent 𝓤₀ → ℝP∞ ≃ ℝP∞'
+ℝP∞-equivalent-formulations ua =
  Σ-cong (λ X → ∥∥-cong pt (≃-sym (univalence-≃ ua X 𝟚)))
 
 \end{code}

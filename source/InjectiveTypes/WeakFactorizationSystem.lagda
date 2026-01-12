@@ -1,4 +1,5 @@
 Tom de Jong, 22 May 2025
+A weak factorization system of embeddings and fiberwise injective maps
 
 An anonymous reviewer of our TYPES abstract [1] suggested that some of our
 results could be generalized to weak factorization systems. Here we consider a
