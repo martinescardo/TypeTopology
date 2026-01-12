@@ -3,6 +3,20 @@ Martin Escardo and Paulo Oliva, 2-27 July 2021, with more additions later.
 Refactored and slightly improved October 2022, and then again in April
 2023 with many additions.
 
+
+In this folder we work in the first universe 𝓤₀, also called type. In the folder GamesMGU, we work with more general universes. However, this folder should be kept, because we have published papers that work with the less general universe assignment and point to this folder. Going forward, however, we should only work in GamesMGU, and the folder Games should be frozen, except for minor corrections of typos etc., or clarification.
+
+TODO. Maybe the following can be deleted, as they haven't been submitted for publication yet:
+
+ * Games.alpha-beta
+ * Games.FiniteHistoryDependentMonadic
+
+But this new file
+
+ * Games.OptimalPlays
+
+doesn't yet have the generalized universes, and maybe we should generalize them and move the file to GamesMGU.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
