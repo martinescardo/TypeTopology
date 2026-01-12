@@ -11,7 +11,7 @@ remarks of our paper
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-} -- --lossy-unification (TODO)
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 \end{code}
 
@@ -127,7 +127,7 @@ Lemma-2-2 : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : (x : X) → A x → 𝓦 ̇ )
             ＝ transport A p a , transportd A B a p b
 Lemma-2-2 A B x y a b p = transport-Σ A B y p a {b}
 
-module Lemma-2-3
+module _
         {X : 𝓤 ̇ } (a : X) {Y : X → 𝓥 ̇ } (i : is-prop X)
        where
 
@@ -189,7 +189,7 @@ Lemma-3-6 : {𝓦 𝓤 𝓥 𝓣₀ 𝓣₁ 𝓣₂ : Universe}
 Lemma-3-6 {𝓦} {𝓤} {𝓥} {𝓣₀} {𝓣₁} {𝓣₂} D ainj X Y j =
  ainjectivity-over-small-maps 𝓣₁ D ainj j
 
-module Lemma-3-7
+module _
         {𝓤 𝓥 𝓣₀ 𝓣₁ 𝓣₂ : Universe}
         (D : 𝓤 ̇ ) (ainj : ainjective-type D (𝓣₀ ⊔ 𝓣₁) 𝓣₂)
         (Y : 𝓥 ̇ ) (j : D → Y)
@@ -203,7 +203,7 @@ module Lemma-3-7
  Lemma-3-7-ii : section Lemma-3-7-i ＝ j
  Lemma-3-7-ii = refl
 
-module Algebras-of-the-lifting-monad
+module _
         (𝓣 : Universe)
        where
 
@@ -310,7 +310,7 @@ Proposition-4-1-alt =
                     (λ _ → negations-are-props fe' _ _) ,
                     (λ _ → Π-is-prop fe' (λ p → negations-are-props fe') _ _))
 
-module Carriers-of-pointed-dcpos
+module _
         (𝓥 : Universe)
        where
 
@@ -337,7 +337,7 @@ Theorem-4-7 {𝓤} sqe = 𝕍-is-ainjective 𝓤 pt sr
   sr : Set-Replacement pt
   sr = set-replacement-from-set-quotients-and-prop-trunc sqe pt
 
-module Types-of-mathematical-structures-1
+module _
         (S : 𝓤 ̇  → 𝓥 ̇ )
        where
 
@@ -349,7 +349,7 @@ module Types-of-mathematical-structures-1
  Lemma-4-9 : closed-under-prop-Π S → aflabby (Σ S) 𝓤
  Lemma-4-9 = aflabbiness-of-type-of-structured-types S
 
- module Lemma-4-10
+ module _
          (T : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y)
          (r : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id)
         where
@@ -365,7 +365,7 @@ module Types-of-mathematical-structures-1
    → ρ P A s p ＝ T (π P A p) s
   Lemma-4-10-ii P A s p = happly (ρ-and-τ-agree P A s) p
 
-module Types-of-mathematical-structures-2
+module _
        where
 
  open import InjectiveTypes.MathematicalStructures ua
@@ -420,7 +420,7 @@ module Examples-4-13-b where
  [9] : ainjective-type (Σ X ꞉ 𝓤 ̇  , Σ Y ꞉ 𝓤 ̇  , (X → Y)) 𝓤 𝓤
  [9] = ainjectivity-of-type-of-all-functions
 
-module Σ-types-1
+module _
         (X : 𝓤 ̇ )
         (A : X → 𝓥 ̇ )
         (ϕ : aflabby X 𝓦)
@@ -448,7 +448,7 @@ module Σ-types-1
  Proposition-4-17 {𝓤} =
   example-of-injective-sum-whose-index-type-may-not-be-injective 𝓤
 
-module Σ-types-2 where
+module _ where
  open import InjectiveTypes.Sigma fe
 
  Lemma-4-18-i : {𝓤 𝓥₁ 𝓥₂ 𝓦 : Universe} {X : 𝓤 ̇} (ϕ : aflabby X 𝓦)
@@ -493,7 +493,7 @@ module Σ-types-2 where
   → compatibility-condition (λ x → Σ a ꞉ A x , B x a) ϕ
  Lemma-4-19-ii = compatibility-condition-with-axioms
 
-module Mathematical-structures-revisited
+module _
          (S : 𝓤 ̇  → 𝓥 ̇ )
          (T : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y)
          (r : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id)
@@ -521,7 +521,7 @@ module Mathematical-structures-revisited
  Theorem-4-23 : compatibility-data-Σ S T r
               → aflabby (Σ X ꞉ 𝓤 ̇  , S X) 𝓤
  Theorem-4-23 comp =
-  Σ-types-1.Theorem-4-15 (𝓤 ̇ ) S universes-are-flabby-Σ (Lemma-4-22 comp)
+  Theorem-4-15 (𝓤 ̇ ) S universes-are-flabby-Σ (Lemma-4-22 comp)
 
  Example-4-24-1 : (R : 𝓥 ̇ ) → ainjective-type (Graph' R 𝓤) 𝓤 𝓤
  Example-4-24-1 R = ainjectivity-of-Graph' R
@@ -571,7 +571,7 @@ Corollary-4-28 : (D : 𝓤 ⁺ ̇ ) → ainjective-type D 𝓤 𝓤
 Corollary-4-28 {𝓤} D D-ainj P P-prop =
  pr₁ (Theorem-4-26 (𝓤 ⁺) 𝓤 𝓤 𝓤 D D-ainj P P-prop)
 
-module Corollary-4-29 where
+module _ where
  open import Modal.Subuniverse
 
  Corollary-4-29 : (P : subuniverse 𝓤 𝓥) → subuniverse-is-reflective P
