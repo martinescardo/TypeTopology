@@ -402,8 +402,8 @@ module Examples-4-13-a where
  [4] : ainjective-type (monoid.Monoid {𝓤}) 𝓤 𝓤
  [4] = ainjectivity-of-Monoid
 
- -- [5] : ainjective-type (group.Group {𝓤}) 𝓤 𝓤
- -- [5] = {!!} -- TODO or not?
+ [5] : ainjective-type (group.Group {𝓤}) 𝓤 𝓤
+ [5] = ainjectivity-of-Group
 
 module Examples-4-13-b where
  open import InjectiveTypes.MathematicalStructuresMoreGeneral ua
