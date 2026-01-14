@@ -246,8 +246,8 @@ reader monad, to speed-up the computation of the optimal play.
    𝓡 : Algebra (Reader AB) R
    𝓡 = record {
          structure-map = λ (t : AB → R) → t (-∞ , ∞) ;
-         unit = λ x → refl ;
-         assoc = λ x → refl
+         aunit = λ _ → refl ;
+         aassoc = λ _ → refl
        }
 
    ρ : T R → R

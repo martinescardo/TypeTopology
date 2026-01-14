@@ -13,6 +13,7 @@ monad, we have ℓ 𝓤 = 𝓤, but for the powerset monad we have ℓ 𝓤 = �
 module MonadOnTypesMGU.index where
 
 import MonadOnTypesMGU.J             -- Selection monad.
+import MonadOnTypesMGU.J-transf      -- Selection monad.
 import MonadOnTypesMGU.K             -- Continuation (or quantifier) monad.
 import MonadOnTypesMGU.JK            -- Relationship between the two mondas.
 import MonadOnTypesMGU.Monad         -- (Automatically strong, wild) monads on suitable types.

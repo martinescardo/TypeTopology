@@ -49,3 +49,5 @@ module J-definitions (R : Type) where
 
  mapᴶ : {X Y : Type} → (X → Y) → J X → J Y
  mapᴶ = map (𝕁 R)
+
+\end{code}

@@ -38,7 +38,8 @@ record Monad : Type₁ where
  map-id = ext-η
 
  map-∘ : funext₀
-       → {X Y Z : Type} (f : X → Y) (g : Y → Z)
+       → {X Y Z : Type}
+         (f : X → Y) (g : Y → Z)
        → map (g ∘ f) ∼ map g ∘ map f
  map-∘ fe f g t =
   map (g ∘ f) t                               ＝⟨refl⟩
@@ -142,6 +143,8 @@ tensor : (𝕋 : Monad) {X : Type} {Y : X → Type}
        → functor 𝕋 (Σ x ꞉ X , Y x)
 tensor 𝕋 = _⊗_ 𝕋
 
+syntax tensor 𝕋 t f = t ⊗[ 𝕋 ] f
+
 \end{code}
 
 TODO. Is "tensor" an appropriate terminology? Would (left)
@@ -151,8 +154,6 @@ convolution, in the sense of Day, be better?
     https://ncatlab.org/nlab/show/Day+convolution
 
 \begin{code}
-
-syntax tensor 𝕋 t f = t ⊗[ 𝕋 ] f
 
 𝕀𝕕 : Monad
 𝕀𝕕 = record {
@@ -214,6 +215,9 @@ module T-definitions (𝕋 : Monad) where
 
  μᵀ : {X : Type} → T (T X) → T X
  μᵀ = μ 𝕋
+
+ μᵀ-assoc : funext₀ → {X : Type} → μᵀ ∘ mapᵀ μᵀ ∼ μᵀ ∘ μᵀ
+ μᵀ-assoc = μ-assoc 𝕋
 
  μᵀ-natural : funext₀
             → {X Y : Type} (h : X → Y)
@@ -424,6 +428,12 @@ record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
 
 open Algebra public
 
+\end{code}
+
+Free algebras.
+
+\begin{code}
+
 module _ (𝕋 : Monad) where
 
  open T-definitions 𝕋
@@ -433,7 +443,7 @@ module _ (𝕋 : Monad) where
   record {
    structure-map = μᵀ ;
    aunit         = ηᵀ-unit₀ ;
-   aassoc        = μ-assoc 𝕋 fe
+   aassoc        = μᵀ-assoc fe
   }
 
  is-hom : {A B : Type}
@@ -542,7 +552,8 @@ module α-definitions
  α-extᵀ-unit = extension-property 𝓐
 
  α-extᵀ-assoc : funext₀
-              → {X Y : Type} (g : Y → A) (f : X → T Y)
+              → {X Y : Type}
+                (g : Y → A) (f : X → T Y)
               → α-extᵀ (α-extᵀ g ∘ f) ∼ α-extᵀ g ∘ extᵀ f
  α-extᵀ-assoc = extension-assoc 𝕋 𝓐
 
