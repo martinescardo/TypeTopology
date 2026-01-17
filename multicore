@@ -3,6 +3,8 @@
 # Martin Escardo, 31st December 2025.
 # Script to typecheck TypeTopology fast exploiting multicore.
 # This performs better than a Makefile with the appropriate dependencies.
+#
+# See also the script multicore-reuse
 
 set -Eeo pipefail
 

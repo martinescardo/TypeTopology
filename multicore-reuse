@@ -5,7 +5,9 @@
 # script with the `multicore` script is that we don't regenerate the
 # auxiliary index files and instead use the existing ones. This is
 # intended for when a particularly favourable random selection is
-# found the `multicore` script.
+# found by the `multicore` script.
+#
+# For an explanation of the delay argument, see the script multicore.
 
 set -Eeo pipefail
 
