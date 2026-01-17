@@ -897,8 +897,9 @@ Shulman's results are formalized in the Coq-HoTT library
 Here we formalize Theorem 2.13 of our paper, but take Shulman's construction as
 an hypothesis, rather than porting the whole proof from Coq to Agda.
 
-Note that Shulman's construction relies on function extensionality, so we
-include that as an assumption.
+Note that Shulman's construction relies only on function extensionality (which
+can be checked in Rocq and is also claimed in Shulman's paper), so we include
+that as an assumption.
 
 Also note that Shulman's Theorem 5.3 is in fact more general than we consider
 here: it applies to any quasi-idempotent f. By Lemma 3.6, any retraction r with
@@ -917,13 +918,13 @@ Shulman's-Splitting-Construction =
    Σ ρ' ꞉ retract A of X , section ρ' ∘ retraction ρ' ∼ f
 
 retracts-of-small-types-are-small
- : Shulman's-Splitting-Construction
- → Fun-Ext
+ : Fun-Ext
+ → Shulman's-Splitting-Construction
  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
  → retract Y of X
  → X is 𝓦 small
  → Y is 𝓦 small
-retracts-of-small-types-are-small {𝓤} {𝓥} {𝓦} ssc fe {X} {Y} ρ₀ (X' , φ) = A , ψ
+retracts-of-small-types-are-small {𝓤} {𝓥} {𝓦} fe ssc {X} {Y} ρ₀ (X' , φ) = A , ψ
  where
   ρ : retract Y of X'
   ρ = retracts-compose (≃-gives-▷ φ) ρ₀

@@ -96,8 +96,8 @@ open import InjectiveTypes.OverSmallMaps fe
 
 \end{code}
 
-In the below we use the fact that retracts of small types are small, which in
-turn relies on a construction of Mike Shulman, called
+Below we use the fact that retracts of small types are small, which in turn
+relies on a construction of Mike Shulman, called
 Shulman's-Splitting-Construction here, see UF.Size for more details.
 
 \begin{code}
@@ -178,7 +178,7 @@ small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
     ρ = r , s , rs
 
     Ω¬¬-is-small : Ω¬¬ 𝓤 is 𝓤 small
-    Ω¬¬-is-small = retracts-of-small-types-are-small ssc fe' ρ (native-size D)
+    Ω¬¬-is-small = retracts-of-small-types-are-small fe' ssc ρ (native-size D)
 
 \end{code}
 
