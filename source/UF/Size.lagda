@@ -900,6 +900,11 @@ an hypothesis, rather than porting the whole proof from Coq to Agda.
 Note that Shulman's construction relies on function extensionality, so we
 include that as an assumption.
 
+Also note that Shulman's Theorem 5.3 is in fact more general than we consider
+here: it applies to any quasi-idempotent f. By Lemma 3.6, any retraction r with
+section s determines a quasi-idempotent f via f := s ∘ r which is enough for
+purposes.
+
 \begin{code}
 
 Shulman's-Splitting-Construction : 𝓤ω
