@@ -774,7 +774,7 @@ Proposition-7-11-alt : (X : 𝓤 ̇ ) → is-totally-separated X × ¬ (is-subsi
 Proposition-7-11-alt X (ts , ns) ainj =
  non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM' (X , ns , ts , ainj)
 
-Theorem-7-12 : retracts-of-small-types-are-small
+Theorem-7-12 : Shulman's-Splitting-Construction
              → (D : 𝓤 ̇ )
              → ainjective-type D (𝓤 ⊔ 𝓥) 𝓦
              → has-two-distinct-points D
