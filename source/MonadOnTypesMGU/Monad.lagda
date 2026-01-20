@@ -8,24 +8,27 @@ universe 𝓤⁺, we take ℓ 𝓤 = 𝓤⁺, but for the list monad we take
 ℓ 𝓤 = 𝓤. For the J and K monads with answer type R : 𝓦,
 we have ℓ 𝓤 = 𝓤 ⊔ 𝓦.
 
-It is the use of ℓ below that requires the flag --no-level-universe.
-Perhaps we will instead make ℓ into a parameter to avoid that.
-
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Equiv
 open import UF.FunExt
 
+\end{code}
+
+In the following definition, it works to make ℓ into a field, but this requires
+the pragma --no-level-universe, which we don't want to use. In fact, our code originally did have ℓ as a field, using that pragma.
+
+\begin{code}
+
 module MonadOnTypesMGU.Monad where
 
-record Monad : 𝓤ω where
+record Monad {ℓ : Universe → Universe} : 𝓤ω where
  constructor
   monad
  field
-  ℓ       : Universe → Universe
   functor : {𝓤 : Universe} → 𝓤 ̇ → ℓ 𝓤 ̇
 
  private
@@ -35,7 +38,8 @@ record Monad : 𝓤ω where
   η       : {𝓤 : Universe} {X : 𝓤 ̇ } → X → T X
   ext     : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → T Y) → T X → T Y
   ext-η   : {𝓤 : Universe} {X : 𝓤 ̇ } → ext (η {𝓤} {X}) ∼ 𝑖𝑑 (T X)
-  unit    : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → T Y) (x : X) → ext f (η x) ＝ f x
+  unit    : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → T Y) (x : X)
+          → ext f (η x) ＝ f x
   assoc   : {𝓤 𝓥 𝓦 : Universe}
             {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
             (g : Y → T Z) (f : X → T Y) (t : T X)
@@ -151,7 +155,8 @@ record Monad : 𝓤ω where
 
 open Monad public
 
-tensor : (𝕋 : Monad) → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+tensor : {ℓ : Universe → Universe} (𝕋 : Monad {ℓ})
+       → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
        → functor 𝕋 X
        → ((x : X) → functor 𝕋 (Y x))
        → functor 𝕋 (Σ x ꞉ X , Y x)
@@ -171,7 +176,6 @@ convolution, in the sense of Day, be better?
 
 𝕀𝕕 : Monad
 𝕀𝕕 = record {
-      ℓ       = id ;
       functor = id ;
       η       = id ;
       ext     = id ;
@@ -181,9 +185,9 @@ convolution, in the sense of Day, be better?
     }
 
 𝕀𝕕⊗ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-      (x : X)
-      (f : (x : X) → (Y x))
-    → x ⊗[ 𝕀𝕕 ] f ＝ x , f x
+     (x : X)
+     (f : (x : X) → (Y x))
+   → x ⊗[ 𝕀𝕕 ] f ＝ x , f x
 𝕀𝕕⊗ x f = refl
 
 \end{code}
@@ -192,10 +196,10 @@ If we want to call a monad T, then we can use the following module:
 
 \begin{code}
 
-module T-definitions (𝕋 : Monad) where
+module T-definitions {ℓ : Universe → Universe} (𝕋 : Monad {ℓ}) where
 
  ℓᵀ : Universe → Universe
- ℓᵀ = ℓ 𝕋
+ ℓᵀ = ℓ
 
  T : 𝓤 ̇ → ℓᵀ 𝓤 ̇
  T {𝓤} = functor 𝕋
@@ -286,7 +290,7 @@ https://doi.org/10.1016/0168-0072(94)90020-5
 
 \begin{code}
 
-module _ (𝕋 : Monad) where
+module _ {ℓ : Universe → Universe} (𝕋 : Monad {ℓ}) where
 
  open T-definitions 𝕋
 
@@ -368,7 +372,7 @@ Monad algebras.
 
 \begin{code}
 
-record Algebra (𝕋 : Monad) (A : 𝓦 ̇ ) : 𝓤ω where
+record Algebra {ℓ : Universe → Universe} (𝕋 : Monad {ℓ}) (A : 𝓦 ̇ ) : 𝓤ω where
 
  open T-definitions 𝕋
 
@@ -456,7 +460,7 @@ Free algebras.
 
 \begin{code}
 
-module _ (𝕋 : Monad) where
+module _ {ℓ : Universe → Universe} (𝕋 : Monad {ℓ}) where
 
  open T-definitions 𝕋
 
@@ -548,7 +552,8 @@ If we want to call an algebra (literally) α, we can used this module:
 \begin{code}
 
 module α-definitions
-        (𝕋 : Monad)
+        {ℓ : Universe → Universe}
+        (𝕋 : Monad {ℓ})
         {𝓦₀ : Universe}
         (A : 𝓦₀ ̇ )
         (𝓐 : Algebra 𝕋 A)

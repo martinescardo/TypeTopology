@@ -38,7 +38,7 @@ pruning in the file GamesExperimental2.alpha-beta).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MonadOnTypesMGU.J
 open import MonadOnTypesMGU.K
@@ -59,7 +59,8 @@ In our of our main examples, ρ will be "finite linear order structure".
 module GamesMGU.FiniteHistoryDependentRelativeMonadic
         (fe : Fun-Ext)
         {{ρ : 𝟙-Σ-structure}}
-        (𝕋 : Relative-Monad)
+        {ℓ : Universe → Universe}
+        (𝕋 : Relative-Monad {ℓ})
         {𝓤 𝓦₀ : Universe}
         (𝓡 : let open 𝟙-Σ-structure ρ in
               𝕊 𝓦₀)
@@ -119,10 +120,10 @@ structure' F [] ⟨⟩ = 𝟙
 structure' F (X ∷ Xf) (s :: sf)
  = F (X , s) × ((x : X) → structure' F (Xf x) (sf x))
 
-𝓙𝓣 : (Xt : 𝑻) → structure S Xt → ℓ 𝕋 𝓦₀ ⊔ ℓ 𝕋 𝓤 ⊔ 𝓤 ̇
+𝓙𝓣 : (Xt : 𝑻) → structure S Xt → ℓ 𝓦₀ ⊔ ℓ 𝓤 ⊔ 𝓤 ̇
 𝓙𝓣 = structure' JT
 
-𝓚𝓣 : (Xt : 𝑻) → structure S Xt → ℓ 𝕋 𝓦₀ ⊔ 𝓦₀ ⊔ 𝓤 ̇
+𝓚𝓣 : (Xt : 𝑻) → structure S Xt → ℓ 𝓦₀ ⊔ 𝓦₀ ⊔ 𝓤 ̇
 𝓚𝓣 = structure' KT
 
 \end{code}
@@ -146,14 +147,14 @@ Pathₛ Xt st = Path Xt , Path-structure st
 
 \end{code}
 
-The following enriches a games with structure on the sets of moves,
+The following enriches a game with structure on the sets of moves,
 e.g. finite linear orders.
 
 \begin{code}
 
-module _ (𝕄 : Relative-Monad) where
+module _ {ℓ : Universe → Universe} (𝕄 : Relative-Monad {ℓ}) where
 
- M : 𝕊 𝓤 → ℓ 𝕄 𝓤 ̇
+ M : 𝕊 𝓤 → ℓ 𝓤 ̇
  M = functor 𝕄
 
  path-sequenceₛ : {Xt : 𝑻} (st : structure S Xt)
@@ -166,7 +167,7 @@ module _ (𝕄 : Relative-Monad) where
 sequenceᴶᵀ : {Xt : 𝑻} (st : structure S Xt) → 𝓙𝓣 Xt st → JT (Pathₛ Xt st)
 sequenceᴶᵀ = path-sequenceₛ 𝕁𝕋
 
-T-Strategy : (Xt : 𝑻) (st : structure S Xt)  → ℓ 𝕋 𝓤 ⊔ 𝓤 ̇
+T-Strategy : (Xt : 𝑻) (st : structure S Xt)  → ℓ 𝓤 ⊔ 𝓤 ̇
 T-Strategy = structure' T
 
 T-strategic-path : {Xt : 𝑻} (st : structure S Xt)
@@ -185,11 +186,11 @@ is-in-T-equilibrium {X} {Xf} st@(s , sf) q ϕ σt@(σ :: σf)  =
  ＝ ϕ (λ x → extᴬ (subpred q x) (T-strategic-path (sf x) (σf x)))
 
 is-in-T-sgpe' : {Xt : 𝑻}
-               (st : structure S Xt)
-             → 𝓚 Xt
-             → (Path Xt → R)
-             → T-Strategy Xt st
-             → 𝓤 ⊔ 𝓦₀ ̇
+                (st : structure S Xt)
+              → 𝓚 Xt
+              → (Path Xt → R)
+              → T-Strategy Xt st
+              → 𝓤 ⊔ 𝓦₀ ̇
 is-in-T-sgpe' {[]}     st          ⟨⟩        q ⟨⟩           = 𝟙
 is-in-T-sgpe' {X ∷ Xf} st@(s , sf) (ϕ :: ϕf) q σt@(σ :: σf) =
     is-in-T-equilibrium st q ϕ σt
@@ -410,7 +411,8 @@ T-main-lemma
    (st : structure S Xt)
    (εt : 𝓙𝓣 Xt st)
    (q : Path Xt → R)
- → sequenceᴶᵀ st εt (ηᵀ ∘ q) ＝ T-strategic-path st (T-selection-strategy st εt q)
+ → sequenceᴶᵀ st εt (ηᵀ ∘ q) ＝ T-strategic-path st
+                                 (T-selection-strategy st εt q)
 T-main-lemma ext-const {[]}     ⟨⟩           ⟨⟩           q = refl
 T-main-lemma ext-const {X ∷ Xf} st@(s :: sf) εt@(ε :: εf) q = γ
  where
@@ -471,7 +473,11 @@ Overlineᴬ {[]}     ⟨⟩        = ⟨⟩
 Overlineᴬ {X ∷ Xf} (ε :: εf) = overlineᴬ ε :: λ x → Overlineᴬ  {Xf x} (εf x)
 -}
 
-[_]_Attainsᴬ_ : {Xt : 𝑻} (st : structure S Xt) → 𝓙𝓣 Xt st → 𝓚 Xt → ℓ 𝕋 𝓦₀ ⊔ 𝓤 ⊔ 𝓦₀ ̇
+[_]_Attainsᴬ_ : {Xt : 𝑻}
+                (st : structure S Xt)
+              → 𝓙𝓣 Xt st
+              → 𝓚 Xt
+              → ℓ 𝓦₀ ⊔ 𝓤 ⊔ 𝓦₀ ̇
 [_]_Attainsᴬ_ {[]}     ⟨⟩        ⟨⟩        ⟨⟩        = 𝟙
 [_]_Attainsᴬ_ {X ∷ Xf} (s :: sf) (ε :: εf) (ϕ :: ϕf) =
  (ε attainsᴬ ϕ) × ((x : X) → [ sf x ] (εf x) Attainsᴬ (ϕf x))
@@ -527,9 +533,12 @@ T-selection-strategy-lemma
          τ : T (X , s)
          τ = ε (λ x → extᵀ (subpred (ηᵀ ∘ q) x) (ν x))
 
-         III₀ = ap (λ - → ε (λ x → mapᵀ (subpred q x) (- x))) (dfunext fe (λ x → (T-main-lemma ext-const (sf x) (εf x) (subpred q x))⁻¹))
+         III₀ = ap (λ - → ε (λ x → mapᵀ (subpred q x) (- x)))
+                   (dfunext fe (λ x → (T-main-lemma ext-const
+                                        (sf x) (εf x) (subpred q x))⁻¹))
          III₁ = (mapᵀ-path-head-lemma s sf τ ν ext-const)⁻¹
-         III₂ = ap (mapᵀ path-head) ((⊗ᴶᵀ-in-terms-of-⊗ᵀ {X , s} {𝓤} {λ x → Pathₛ (Xf x) (sf x)} ε (λ x → sequenceᴶᵀ (sf x) (εf x)) (ηᵀ ∘ q)) ⁻¹)
+         III₂ = ap (mapᵀ path-head)
+                   ((⊗ᴶᵀ-in-terms-of-⊗ᵀ {X , s} {𝓤} {λ x → Pathₛ (Xf x) (sf x)} ε (λ x → sequenceᴶᵀ (sf x) (εf x)) (ηᵀ ∘ q)) ⁻¹)
 
   II = α (extᵀ p (ε p)) ＝⟨ II₀ ⟩
        α (extᵀ p σ) ＝⟨refl⟩

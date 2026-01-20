@@ -165,6 +165,7 @@ import Factorial.index
 import Field.index
 import Fin.index
 import Games.index
+import GamesMGU.index         -- Will eventually subsume the previous.
 import Groups.index
 import Higgs.index
 import InjectiveTypes.index
@@ -177,6 +178,7 @@ import MLTT.index
 import MetricSpaces.index
 import Modal.index
 import MonadOnTypes.index
+import MonadOnTypesMGU.index  -- Will eventually subsume the previous.
 import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index
@@ -187,6 +189,7 @@ import PathSequences.index
 import Quotient.index
 import Rationals.index
 import Relations.index
+import RelativeMonadOnStructuredTypes.index
 import Slice.index
 import SyntheticHomotopyTheory.index
 import TWA.index

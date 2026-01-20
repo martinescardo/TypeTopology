@@ -39,7 +39,7 @@ We assume a given type R of outcomes for games as a module parameter.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K  #-}
 
 open import MLTT.Spartan hiding (J)
 

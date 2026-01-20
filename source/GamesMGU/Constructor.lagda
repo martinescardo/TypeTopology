@@ -4,7 +4,7 @@ This module has functions to build games.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 

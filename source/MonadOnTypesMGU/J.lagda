@@ -3,7 +3,7 @@ generalized in March 2024.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -16,9 +16,8 @@ private
  variable
   𝓦₀ : Universe
 
-𝕁 : 𝓦₀ ̇ → Monad
+𝕁 : 𝓦₀ ̇ → Monad {λ 𝓤 → 𝓦₀ ⊔ 𝓤}
 𝕁 {𝓦₀} R = record {
- ℓ       = λ 𝓤 → 𝓦₀ ⊔ 𝓤 ;
  functor = λ X → (X → R) → X ;
  η       = λ x p → x ;
  ext     = λ f ε p → f (ε (λ x → p (f x p))) p ;

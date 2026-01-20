@@ -2,7 +2,7 @@ Martin Escardo, Paulo Oliva, May 2024
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Notation.General
 open import MLTT.Spartan
@@ -16,9 +16,8 @@ module RelativeMonadOnStructuredTypes.Monad
 
 open 𝟙-Σ-structure ρ
 
-record Relative-Monad : 𝓤ω where
+record Relative-Monad {ℓ : Universe → Universe} : 𝓤ω where
  field
-  ℓ       : Universe → Universe
   functor : {𝓤 : Universe}
           → 𝕊 𝓤 → ℓ 𝓤 ̇
   η       : {𝓤 : Universe} {𝓧 : 𝕊 𝓤}
@@ -60,7 +59,8 @@ convolution, in the sense of Day, be better?
 
 \begin{code}
 
-tensorᵣ : (𝕋 : Relative-Monad)
+tensorᵣ : {ℓ : Universe → Universe}
+          (𝕋 : Relative-Monad {ℓ})
           {𝓧 : 𝕊 𝓤} {𝓨 : ⟨ 𝓧 ⟩ → 𝕊 𝓥}
         → functor 𝕋 𝓧
         → ((x : ⟨ 𝓧 ⟩) → functor 𝕋 (𝓨 x))
@@ -76,10 +76,13 @@ module:
 
 \begin{code}
 
-module relative-T-definitions (𝕋 : Relative-Monad) where
+module relative-T-definitions
+        {ℓ : Universe → Universe}
+        (𝕋 : Relative-Monad {ℓ})
+       where
 
  T : {𝓤 : Universe}
-   → 𝕊 𝓤 → (ℓ 𝕋 𝓤) ̇
+   → 𝕊 𝓤 → ℓ 𝓤 ̇
  T {𝓤} = functor 𝕋
 
  ηᵀ : {𝓧 : 𝕊 𝓤}
@@ -138,7 +141,9 @@ https://doi.org/10.1016/0168-0072(94)90020-5
 
 \begin{code}
 
-module _ (𝕋 : Relative-Monad) where
+module _ {ℓ : Universe → Universe}
+         (𝕋 : Relative-Monad {ℓ})
+       where
 
  open relative-T-definitions 𝕋
 
@@ -223,7 +228,11 @@ Relative-Monad algebras.
 
 \begin{code}
 
-record Relative-Algebra {𝓦₀ : Universe} (𝕋 : Relative-Monad) (R : 𝓦₀ ̇ ) : 𝓤ω where
+record Relative-Algebra
+        {𝓦₀ : Universe}
+        {ℓ : Universe → Universe}
+        (𝕋 : Relative-Monad {ℓ})
+        (R : 𝓦₀ ̇ ) : 𝓤ω where
  field
   aext     : {𝓤 : Universe} {𝓧 : 𝕊 𝓤}
            → (⟨ 𝓧 ⟩ → R)
@@ -248,10 +257,11 @@ If we want to call an algebra (literally) α, we can used this module:
 \begin{code}
 
 module relative-α-definitions
-        (𝕋 : Relative-Monad)
+        {ℓ : Universe → Universe}
+        (𝕋 : Relative-Monad {ℓ})
         {𝓦₀ : Universe}
         (𝓡 : 𝕊 𝓦₀)
-        (𝓐 : Relative-Algebra {𝓦₀} 𝕋 ⟨ 𝓡 ⟩)
+        (𝓐 : Relative-Algebra {𝓦₀} {ℓ} 𝕋 ⟨ 𝓡 ⟩)
        where
 
  open relative-T-definitions 𝕋
@@ -285,7 +295,7 @@ module relative-α-definitions
  unitᴬ : {𝓧 : 𝕊 𝓤}
          (f : ⟨ 𝓧 ⟩ → ⟨ 𝓡 ⟩)
          (x : ⟨ 𝓧 ⟩)
-       → aext {𝓦₀} {𝕋} {⟨ 𝓡 ⟩} 𝓐 {𝓤} {𝓧} f (ηᵀ x) ＝ f x
+       → aext 𝓐 {𝓤} {𝓧} f (ηᵀ x) ＝ f x
  unitᴬ = aunit 𝓐
 
 \end{code}
@@ -294,11 +304,15 @@ Free algebras.
 
 \begin{code}
 
-module _ {𝓣₀ : Universe} (𝕋 : Relative-Monad) (𝓐 : 𝕊 𝓣₀) where
+module _ {𝓣₀ : Universe}
+         {ℓ : Universe → Universe}
+         (𝕋 : Relative-Monad {ℓ})
+         (𝓐 : 𝕊 𝓣₀)
+       where
 
  open relative-T-definitions 𝕋
 
- free-relative-algebra : Relative-Algebra {ℓ 𝕋 𝓣₀} 𝕋 (T 𝓐)
+ free-relative-algebra : Relative-Algebra 𝕋 (T 𝓐)
  free-relative-algebra =
   record {
     aext   = extᵀ

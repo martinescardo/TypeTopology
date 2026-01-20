@@ -5,7 +5,7 @@ history dependent game.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 module GamesMGU.TicTacToe0 where
 

@@ -12,7 +12,7 @@ range over such trees.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -137,7 +137,10 @@ consider a version on paths of a tree instead:
 
 \begin{code}
 
-path-sequence : (𝓣 : Monad) {Xt : 𝑻} → structure (functor 𝓣) Xt → functor 𝓣 (Path Xt)
+path-sequence : {ℓ : Universe → Universe} (𝓣 : Monad {ℓ})
+                {Xt : 𝑻}
+              → structure (functor 𝓣) Xt
+              → functor 𝓣 (Path Xt)
 path-sequence 𝓣 {[]}     ⟨⟩        = η 𝓣 ⟨⟩
 path-sequence 𝓣 {X ∷ Xf} (t :: tf) = t ⊗[ 𝓣 ] (λ x → path-sequence 𝓣 {Xf x} (tf x))
 

@@ -5,7 +5,7 @@ Examples of type trees.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 module GamesMGU.Examples where
 

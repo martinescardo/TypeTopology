@@ -24,7 +24,7 @@ don't need to be endofunctors, in the sense of [1].
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 module RelativeMonadOnStructuredTypes.index where
 

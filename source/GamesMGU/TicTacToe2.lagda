@@ -5,7 +5,7 @@ another file.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-exact-split --no-level-universe #-}
+{-# OPTIONS --safe --without-K --no-exact-split #-}
 
 
 module GamesMGU.TicTacToe2 where

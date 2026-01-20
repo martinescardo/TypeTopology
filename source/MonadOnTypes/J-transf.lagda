@@ -15,45 +15,48 @@ open import UF.FunExt
 open import MonadOnTypes.Monad
 
 𝕁-transf : Fun-Ext → Monad → Type → Monad
-𝕁-transf fe 𝓣 R = monad JT ηᴶᵀ extᴶᵀ extᴶᵀ-η unitᴶᵀ assocᴶᵀ
+𝕁-transf fe 𝕋 R = monad JT ηᴶᵀ extᴶᵀ extᴶᵀ-η unitᴶᵀ assocᴶᵀ
  where
- T = functor 𝓣
+  open T-definitions 𝕋
 
- JT : Type → Type
- JT X = (X → T R) → T X
+  JT : Type → Type
+  JT X = (X → T R) → T X
 
- ηᴶᵀ : {X : Type} → X → JT X
- ηᴶᵀ = λ x p → η 𝓣 x
+  ηᴶᵀ : {X : Type} → X → JT X
+  ηᴶᵀ = λ x p → ηᵀ x
 
- extᴶᵀ : {X Y : Type} → (X → JT Y) → JT X → JT Y
- extᴶᵀ f ε p = ext 𝓣 (λ x → f x p) (ε (λ x → ext 𝓣 p (f x p)))
+  extᴶᵀ : {X Y : Type} → (X → JT Y) → JT X → JT Y
+  extᴶᵀ f ε p = extᵀ (λ x → f x p) (ε (λ x → extᵀ p (f x p)))
 
- extᴶᵀ-η : {X : Type} → extᴶᵀ (ηᴶᵀ {X}) ∼ 𝑖𝑑 (JT X)
- extᴶᵀ-η ε = dfunext fe λ p →
-  ext 𝓣 (η 𝓣) (ε (λ x → ext 𝓣 p (η 𝓣 x))) ＝⟨ ext-η 𝓣 _ ⟩
-  ε (λ x → ext 𝓣 p (η 𝓣 x))               ＝⟨ ap ε (dfunext fe (unit 𝓣 _)) ⟩
-  ε p                                     ∎
+  extᴶᵀ-η : {X : Type} → extᴶᵀ (ηᴶᵀ {X}) ∼ 𝑖𝑑 (JT X)
+  extᴶᵀ-η ε = dfunext fe λ p →
+   extᵀ ηᵀ (ε (λ x → extᵀ p (ηᵀ x))) ＝⟨ extᵀ-η _ ⟩
+   ε (λ x → extᵀ p (ηᵀ x))           ＝⟨ ap ε (dfunext fe (unitᵀ _)) ⟩
+   ε p                               ∎
 
- unitᴶᵀ : {X Y : Type} (f : X → JT Y) (x : X) → extᴶᵀ f (ηᴶᵀ x) ＝ f x
- unitᴶᵀ f x = dfunext fe (λ p → unit 𝓣 (λ x → f x p) x)
+  unitᴶᵀ : {X Y : Type} (f : X → JT Y) (x : X)
+         → extᴶᵀ f (ηᴶᵀ x) ＝ f x
+  unitᴶᵀ f x = dfunext fe (λ p → unitᵀ (λ x → f x p) x)
 
- assocᴶᵀ : {X Y Z : Type} (g : Y → JT Z) (f : X → JT Y) (ε : JT X)
-        → extᴶᵀ (λ x → extᴶᵀ g (f x)) ε ＝ extᴶᵀ g (extᴶᵀ f ε)
- assocᴶᵀ g f ε = dfunext fe γ
-  where
-   γ : ∀ p → extᴶᵀ (λ x → extᴶᵀ g (f x)) ε p ＝ extᴶᵀ g (extᴶᵀ f ε) p
-   γ p =
-    extᴶᵀ (λ x → extᴶᵀ g (f x)) ε p                 ＝⟨refl⟩
-    𝕖 (λ x → 𝕖 𝕘 (𝕗 x)) (ε (λ x → 𝕖 p (𝕖 𝕘 (𝕗 x)))) ＝⟨ assoc 𝓣 _ _ _ ⟩
-    𝕖 𝕘 (𝕖 𝕗 (ε (λ x → 𝕖 p (𝕖 𝕘 (𝕗 x)))))           ＝⟨ again-by-assoc ⟩
-    𝕖 𝕘 (𝕖 𝕗 (ε (λ x → 𝕖 (λ y → 𝕖 p (𝕘 y)) (𝕗 x)))) ＝⟨refl⟩
-    extᴶᵀ g (extᴶᵀ f ε) p ∎
-     where
-      𝕖 = ext 𝓣
-      𝕘 = λ y → g y p
-      𝕗 = λ x → f x (λ y → 𝕖 p (𝕘 y))
-      again-by-assoc = ap (λ - → 𝕖 𝕘 (𝕖 𝕗 (ε -)))
-                          (dfunext fe (λ x → (assoc 𝓣 _ _ _)⁻¹))
+  assocᴶᵀ : {X Y Z : Type}
+            (g : Y → JT Z) (f : X → JT Y)
+            (ε : JT X)
+         → extᴶᵀ (λ x → extᴶᵀ g (f x)) ε ＝ extᴶᵀ g (extᴶᵀ f ε)
+  assocᴶᵀ g f ε = dfunext fe γ
+   where
+    γ : ∀ p → extᴶᵀ (λ x → extᴶᵀ g (f x)) ε p ＝ extᴶᵀ g (extᴶᵀ f ε) p
+    γ p =
+     extᴶᵀ (λ x → extᴶᵀ g (f x)) ε p                ＝⟨refl⟩
+     𝕖 (λ x → 𝕖 𝕘 (𝕗 x)) (ε (λ x → 𝕖 p (𝕖 𝕘 (𝕗 x)))) ＝⟨ assocᵀ _ _ _ ⟩
+     𝕖 𝕘 (𝕖 𝕗 (ε (λ x → 𝕖 p (𝕖 𝕘 (𝕗 x)))))           ＝⟨ again-by-assoc ⟩
+     𝕖 𝕘 (𝕖 𝕗 (ε (λ x → 𝕖 (λ y → 𝕖 p (𝕘 y)) (𝕗 x)))) ＝⟨refl⟩
+     extᴶᵀ g (extᴶᵀ f ε) p ∎
+      where
+       𝕖 = extᵀ
+       𝕘 = λ y → g y p
+       𝕗 = λ x → f x (λ y → 𝕖 p (𝕘 y))
+       again-by-assoc = ap (λ - → 𝕖 𝕘 (𝕖 𝕗 (ε -)))
+                           (dfunext fe (λ x → (assocᵀ _ _ _)⁻¹))
 
 𝕁' : Fun-Ext → Type → Monad
 𝕁' fe = 𝕁-transf fe 𝕀𝕕

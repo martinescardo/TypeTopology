@@ -1,6 +1,6 @@
 Martin Escardo and Paulo Oliva, 2-27 July 2021,
 
-Same as Games but with more general universes (MGU), and also using the flag --no-level-universe.
+Same as Games but with more general universes (MGU).
 
 The main novelty here, for now, is FiniteHistoryDependentRelativeMonadic, which works with relative
 monads on structured types, so that e.g. we can work with the affine
@@ -8,7 +8,7 @@ monad of non-empty lists without repetitions for some applications.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 module GamesMGU.index where
 

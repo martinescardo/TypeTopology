@@ -4,7 +4,7 @@ Non-empty list monad.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -27,9 +27,8 @@ assoc-++ : {X : 𝓤 ̇ } (xs ys zs : neList X) → (xs ++ ys) ++ zs ＝ xs ++ (
 assoc-++ [ x ]     ys zs = refl
 assoc-++ (x :: xs) ys zs = ap (x ::_) (assoc-++ xs ys zs)
 
-𝕃⁺ : Monad
+𝕃⁺ : Monad {λ 𝓤 → 𝓤}
 𝕃⁺ = record {
- ℓ       = id ;
  functor = neList ;
  η       = [_] ;
  ext     = ext' ;

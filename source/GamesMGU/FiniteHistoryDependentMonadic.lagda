@@ -38,7 +38,7 @@ pruning in the file GamesMGU.alpha-beta).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MonadOnTypesMGU.Monad
 open import MonadOnTypesMGU.J-transf
@@ -48,7 +48,8 @@ open import UF.FunExt
 
 module GamesMGU.FiniteHistoryDependentMonadic
         (fe : Fun-Ext)
-        (𝕋 : Monad)
+        {ℓ : Universe → Universe}
+        (𝕋 : Monad {ℓ})
         {𝓤 𝓦₀ : Universe}
         (R : 𝓦₀ ̇ )
         (𝓐 : Algebra 𝕋 R)
@@ -73,16 +74,16 @@ The types of trees with JT and KT structure.
 
 \begin{code}
 
-𝓙𝓣 : 𝑻 → ℓ 𝕋 𝓦₀ ⊔ ℓ 𝕋 𝓤 ⊔ 𝓤 ̇
+𝓙𝓣 : 𝑻 → ℓ 𝓤 ⊔ ℓ 𝓦₀ ⊔ 𝓤 ̇
 𝓙𝓣 = structure JT
 
-𝓚𝓣 : 𝑻 → ℓ 𝕋 𝓦₀ ⊔ 𝓦₀ ⊔ 𝓤 ̇
+𝓚𝓣 : 𝑻 → ℓ 𝓦₀ ⊔ 𝓤 ⊔ 𝓦₀ ̇
 𝓚𝓣 = structure KT
 
 sequenceᴶᵀ : {Xt : 𝑻} → 𝓙𝓣 Xt → JT (Path Xt)
 sequenceᴶᵀ = path-sequence 𝕁𝕋
 
-T-Strategy : 𝑻 → ℓ 𝕋 𝓤 ⊔ 𝓤 ̇
+T-Strategy : 𝑻 → ℓ 𝓤 ⊔ 𝓤 ̇
 T-Strategy = structure T
 
 T-strategic-path : {Xt : 𝑻} → T-Strategy Xt → T (Path Xt)
@@ -350,7 +351,7 @@ Is α-Overlineᵀ useful?
 α-Overlineᵀ {X ∷ Xf} (ε :: εf) = α-overlineᵀ ε :: λ x → α-Overlineᵀ  {Xf x} (εf x)
 -}
 
-_Attainsᵀ_ : {Xt : 𝑻} → 𝓙𝓣 Xt → 𝓚 Xt → ℓ 𝕋 𝓦₀ ⊔ 𝓤 ⊔ 𝓦₀ ̇
+_Attainsᵀ_ : {Xt : 𝑻} → 𝓙𝓣 Xt → 𝓚 Xt → ℓ 𝓦₀ ⊔ 𝓤 ⊔ 𝓦₀ ̇
 _Attainsᵀ_  {[]}     ⟨⟩        ⟨⟩       = 𝟙
 _Attainsᵀ_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε α-attainsᵀ ϕ)
                                         × ((x : X) → (εf x) Attainsᵀ (ϕf x))
