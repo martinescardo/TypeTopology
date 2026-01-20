@@ -18,33 +18,37 @@ open 𝟙-Σ-structure ρ
 
 record Relative-Monad {ℓ : Universe → Universe} : 𝓤ω where
  field
-  functor : {𝓤 : Universe}
-          → 𝕊 𝓤 → ℓ 𝓤 ̇
+  functor : {𝓤 : Universe} → 𝕊 𝓤 → ℓ 𝓤 ̇
+
+ private
+  T = functor
+
+ field
   η       : {𝓤 : Universe} {𝓧 : 𝕊 𝓤}
-          → ⟨ 𝓧 ⟩ → functor 𝓧
+          → ⟨ 𝓧 ⟩ → T 𝓧
   ext     : {𝓤 𝓥 : Universe} {𝓧 : 𝕊 𝓤} {𝓨 : 𝕊 𝓥}
-          → (⟨ 𝓧 ⟩ → functor 𝓨)
-          → functor 𝓧 → functor 𝓨
+          → (⟨ 𝓧 ⟩ → T 𝓨)
+          → T 𝓧 → T 𝓨
   ext-η   : {𝓤 : Universe} {𝓧 : 𝕊 𝓤}
-          → ext (η {𝓤} {𝓧}) ∼ 𝑖𝑑 (functor 𝓧)
+          → ext (η {𝓤} {𝓧}) ∼ 𝑖𝑑 (T 𝓧)
   unit    : {𝓤 𝓥 : Universe} {𝓧 : 𝕊 𝓤} {𝓨 : 𝕊 𝓥}
-            (f : ⟨ 𝓧 ⟩ → functor 𝓨)
+            (f : ⟨ 𝓧 ⟩ → T 𝓨)
             (x : ⟨ 𝓧 ⟩)
           → ext {𝓤} {𝓥} {𝓧} {𝓨} f (η x) ＝ f x
   assoc   : {𝓤 𝓥 𝓦 : Universe}
             {𝓧 : 𝕊 𝓤} {𝓨 : 𝕊 𝓥} {𝓩 : 𝕊 𝓦}
-            (g : ⟨ 𝓨 ⟩ → functor 𝓩)
-            (f : ⟨ 𝓧 ⟩ → functor 𝓨)
-            (t : functor 𝓧)
+            (g : ⟨ 𝓨 ⟩ → T 𝓩)
+            (f : ⟨ 𝓧 ⟩ → T 𝓨)
+            (t : T 𝓧)
           → ext (λ x → ext g (f x)) t ＝ ext g (ext f t)
 
- map : {𝓧 : 𝕊 𝓤} {𝓨 : 𝕊 𝓥} → (⟨ 𝓧 ⟩ → ⟨ 𝓨 ⟩) → functor 𝓧 → functor 𝓨
+ map : {𝓧 : 𝕊 𝓤} {𝓨 : 𝕊 𝓥} → (⟨ 𝓧 ⟩ → ⟨ 𝓨 ⟩) → T 𝓧 → T 𝓨
  map f = ext (η ∘ f)
 
  _⊗ᵣ_ : {𝓧 : 𝕊 𝓤} {𝓨 : ⟨ 𝓧 ⟩ → 𝕊 𝓥}
-      → functor 𝓧
-      → ((x : ⟨ 𝓧 ⟩) → functor (𝓨 x))
-      → functor (Σₛ x ꞉ 𝓧 , 𝓨 x)
+      → T 𝓧
+      → ((x : ⟨ 𝓧 ⟩) → T (𝓨 x))
+      → T (Σₛ x ꞉ 𝓧 , 𝓨 x)
  t ⊗ᵣ f = ext (λ x → map (λ y → x , y) (f x)) t
 
 open Relative-Monad public
@@ -76,7 +80,7 @@ module:
 
 \begin{code}
 
-module relative-T-definitions
+module T-definitions
         {ℓ : Universe → Universe}
         (𝕋 : Relative-Monad {ℓ})
        where
