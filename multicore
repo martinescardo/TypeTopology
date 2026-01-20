@@ -1,30 +1,50 @@
 #!/usr/bin/env bash
 
-# Martin Escardo, 31st December 2025.
+# Martin Escardo, 31st December 2025, improved 20th Jan 2025.
 # Script to typecheck TypeTopology fast exploiting multicore.
-# This performs better than a Makefile with the appropriate dependencies.
 #
-# See also the script multicore-reuse
+# This performs better than a makefile with the appropriate dependencies
+# (see `generateMakefile.hs` in TypeTopology/admin-utilies).
+#
+# See also the script `multicore-reuse`.
 
 set -Eeo pipefail
 
+# Unchecked assumptions:
+#
+#  $1 is an integer >= 2 (number of initial threads)
+#  $2 is an integer >= 0 (time in seconds until the index-checking thread starts)
+
+# Temporary files and directories used by this script:
+#
+#   x*            # They are used to create the x*.agda files below.
+#   x*.agda       # We type check these files in parallel.
+#   last/         # Keeps previous x*.agda files.
+#   secondLast/   # Copy of previous last/
+#   thirdLast/    # Copy of previous secondLast/
+#   log           # Grows forever - delete it if you want to start again.
+
 if [ `basename $PWD` != "multicore" ] || [ $# != 2 ]
 then
-    echo "This script should be run from the directory TypeTopology/source/multicore."
-    echo "All files in this directory are supposed to be automatically generated and deleted."
-    echo "If you don't have this directory, create it."
-    echo ""
-    echo "Usage:"
-    echo "        $ time ../../multicore <number of desired parallel threads> <delay>"
-    echo ""
-    echo "where <delay> is how long we wait in seconds until we launch 'agda AllModulesIndex.lagda'"
-    echo "as an additional thread".
-    echo ""
-    echo "Needless to say, the optimal numbers depend on both how many cores you have"
-    echo "and how much ram you have available, and it is an art to find the optimal numbers"
-    echo "for your particular architecture, and the number of apps you have open."
-    echo "So this can only be determined experimentally."
-    exit 1
+ echo "This script should be run from the directory TypeTopology/source/multicore."
+ echo "All files in this directory are automatically generated and deleted."
+ echo "If you don't have this directory, create it."
+ echo ""
+ echo "Usage:"
+ echo "        $ ../../multicore <number of desired parallel threads> <delay>"
+ echo ""
+ echo "where <delay> is how long we wait in seconds until we launch"
+ echo "'agda AllModulesIndex.lagda' as an additional thread".
+ echo ""
+ echo "Needless to say, the optimal numbers depend on how many cores you have"
+ echo "how much ram you have available, your ram bandwith,"
+ echo "the number of apps you have open, how many Agda files are already typechecked,"
+ echo "and much more, and so it is an art to find the optimal numbers your use case."
+ echo "So this can be determined only experimentally."
+ echo ""
+ echo "We recommend setting the delay to zeri if you expect very few files"
+ echo "to need to be type checked again".
+ exit 1
 fi
 
 echo "" >> log
@@ -32,15 +52,25 @@ echo "---------------------------------------" >> log
 echo "Got started at with arguments $1 and $2" >> log
 echo $(date) >> log
 
-# Remove the previously existing files created by `split` (see below).
+# Save the previously existing files x*.agda created by this
+# script. This is so that if a particularly fast random splitting is
+# found (see below), then we can reuse it with the script
+# `multicore-reuse`. We only backup the last three attempts, which gives
+# us four saved attempts in total.
 
-rm -f x*
+mkdir -p last
+mkdir -p secondlast
+rm -rf thirdLast
+mv secondLast thirdLast
+mv last secondLast
+mkdir last
+mv x*.agda last/
 
 # Now create a list of all files which are not index files. Also omit
 # a Cubical file that doesn't typecheck any more due to changes in the
 # cubical Agda library. Importantly, we suffle this list in random
-# order.  We then make this into a list of 'import' commands in the
-# format required by Agda, using 'sed'.
+# order using `shuf`.  We then make this into a list of 'import'
+# commands in the format required by Agda, using 'sed'.
 
 git ls-files "../*agda" \
  | grep -v Cubical \
@@ -63,7 +93,7 @@ git ls-files "../*agda" \
  | sed 's:/:.:' \
  > listOfAlmostAllFiles
 
-# We now split this list of files into files of n lines each, where n is
+# We now split this file into files of n lines each, where n is
 # the number of lines in this list divided by the command line argument.
 # The resulting files are called x* without a suffix.
 
@@ -74,8 +104,20 @@ echo $n >> log
 
 split -d -l $n < listOfAlmostAllFiles
 
+# We want to have exactly $1 files. So we add the last file to the
+# second last one, and delete the last one.
+
+lastFile=$(ls x* | tail -1)
+secondLastFile=$(ls x*| tail -2 | head -1)
+
+cat $lastFile >> $secondLastFile
+rm $lastFile
+
 echo "All required temporary files created at" >> log
 echo $(date) >> log
+
+# Well, actually almost all. The Agda files are created in the
+# following for-loop.
 
 # We will not use the --safe flag, deliberately. We also use some
 # flags that we *don't* want in all modules. But this is not a
@@ -107,10 +149,11 @@ rm listOfAlmostAllFiles
 # The optimal choice of delay is the total time taken by the above
 # threads minus the time it takes to typecheck AllModulesIndex when
 # everything but the index files is typed checked. Again this should
-# be determined experimentally for your architecture and use case.  It
-# is safe to use 0 if you don't know how many files will need to be
-# type checked, in which case you may wish to subtract 1 from your
-# experimentally optimal number of threads.
+# be determined experimentally for your architecture and use case.
+#
+# It is safe to use 0 for the delay if you don't know how many files
+# will need to be type checked, in which case you may wish to subtract
+# 1 from your experimentally optimal number of threads.
 
 sleep $2
 
