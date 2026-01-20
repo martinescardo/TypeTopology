@@ -10,7 +10,7 @@ open import MLTT.Spartan hiding (J)
 
 module MonadOnTypes.NonEmptyList where
 
-open import MonadOnTypes.Monad
+open import MonadOnTypes.Construction
 open import MLTT.List renaming (map to lmap ; map-∘ to lmap-∘)
 open import Notation.CanonicalMap
 open import UF.Subsingletons

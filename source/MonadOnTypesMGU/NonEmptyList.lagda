@@ -10,7 +10,7 @@ open import MLTT.Spartan hiding (J)
 
 module MonadOnTypesMGU.NonEmptyList where
 
-open import MonadOnTypesMGU.Monad
+open import MonadOnTypesMGU.Construction
 
 data neList (X : 𝓤 ̇ ) : 𝓤 ̇ where
  [_]  : X → neList X

@@ -29,7 +29,7 @@ don't need to be endofunctors, in the sense of [1].
 module RelativeMonadOnStructuredTypes.index where
 
 import RelativeMonadOnStructuredTypes.OneSigmaStructure -- (1)
-import RelativeMonadOnStructuredTypes.Monad             -- (2)
+import RelativeMonadOnStructuredTypes.Construction      -- (2)
 import RelativeMonadOnStructuredTypes.NELWR             -- (3)
 import RelativeMonadOnStructuredTypes.J-transf          -- (4)
 

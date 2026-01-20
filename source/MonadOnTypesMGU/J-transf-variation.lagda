@@ -14,7 +14,7 @@ open import MLTT.Spartan hiding (J)
 module MonadOnTypesMGU.J-transf-variation where
 
 open import UF.FunExt
-open import MonadOnTypesMGU.Monad
+open import MonadOnTypesMGU.Construction
 
 private
  variable

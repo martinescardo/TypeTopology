@@ -33,7 +33,7 @@ open import MonadOnTypes.J-transf-variation
 open import MonadOnTypes.JK
 open import MonadOnTypes.K
 open import MonadOnTypes.List
-open import MonadOnTypes.Monad
+open import MonadOnTypes.Construction
 open import MonadOnTypes.NonEmptyList
 open import Notation.CanonicalMap
 open import UF.Base

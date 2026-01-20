@@ -41,7 +41,8 @@ pruning in the file Games.alpha-beta).
 {-# OPTIONS --safe --without-K #-}
 
 open import Games.TypeTrees
-open import MonadOnTypes.Monad
+open import MonadOnTypes.Construction
+
 open import MonadOnTypes.J-transf
 open import MonadOnTypes.K
 open import MLTT.Spartan hiding (J)

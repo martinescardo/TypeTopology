@@ -42,9 +42,9 @@ pruning in the file GamesExperimental2.alpha-beta).
 
 open import MonadOnTypesMGU.J
 open import MonadOnTypesMGU.K
-open import MonadOnTypesMGU.Monad hiding (ext-const)
+open import MonadOnTypesMGU.Construction hiding (ext-const)
 open import RelativeMonadOnStructuredTypes.OneSigmaStructure
-open import RelativeMonadOnStructuredTypes.Monad
+open import RelativeMonadOnStructuredTypes.Construction
 open import MLTT.Spartan hiding (J)
 open import UF.Base
 open import UF.Equiv

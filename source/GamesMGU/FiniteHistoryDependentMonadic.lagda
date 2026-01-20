@@ -40,7 +40,7 @@ pruning in the file GamesMGU.alpha-beta).
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MonadOnTypesMGU.Monad
+open import MonadOnTypesMGU.Construction
 open import MonadOnTypesMGU.J-transf
 open import MonadOnTypesMGU.K
 open import MLTT.Spartan hiding (J)

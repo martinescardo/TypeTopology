@@ -203,7 +203,7 @@ reader monad, to speed-up the computation of the optimal play.
   module _ (fe : Fun-Ext) (-∞ ∞ : R) where
 
    open import MonadOnTypesMGU.Reader
-   open import MonadOnTypesMGU.Monad
+   open import MonadOnTypesMGU.Construction
 
    AB = R × R
 
@@ -357,7 +357,7 @@ quantifiers with the reader monad to incorporate alpha-beta pruning.
              (λ (_ : s ≥ r) → r)
 
   open import MonadOnTypesMGU.Reader
-  open import MonadOnTypesMGU.Monad
+  open import MonadOnTypesMGU.Construction
 
   AB = R × R
 

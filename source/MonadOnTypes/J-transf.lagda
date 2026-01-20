@@ -12,7 +12,7 @@ open import MLTT.Spartan hiding (J)
 module MonadOnTypes.J-transf where
 
 open import UF.FunExt
-open import MonadOnTypes.Monad
+open import MonadOnTypes.Construction
 
 𝕁-transf : Fun-Ext → Monad → Type → Monad
 𝕁-transf fe 𝕋 R = monad JT ηᴶᵀ extᴶᵀ extᴶᵀ-η unitᴶᵀ assocᴶᵀ

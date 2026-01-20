@@ -8,7 +8,7 @@ The list monad.
 
 module MonadOnTypes.List where
 
-open import MonadOnTypes.Monad
+open import MonadOnTypes.Construction
 open import MLTT.Spartan hiding (J)
 open import MLTT.List hiding (map)
 

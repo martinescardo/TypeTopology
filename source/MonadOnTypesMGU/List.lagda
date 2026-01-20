@@ -10,7 +10,7 @@ Generalized universes Jan 2026.
 
 module MonadOnTypesMGU.List where
 
-open import MonadOnTypesMGU.Monad
+open import MonadOnTypesMGU.Construction
 open import MLTT.Spartan hiding (J)
 open import MLTT.List hiding (map)
 

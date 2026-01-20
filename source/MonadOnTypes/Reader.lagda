@@ -8,7 +8,7 @@ open import MLTT.Spartan hiding (J)
 
 module MonadOnTypes.Reader where
 
-open import MonadOnTypes.Monad
+open import MonadOnTypes.Construction
 
 Reader : Type → Monad
 Reader A = record {

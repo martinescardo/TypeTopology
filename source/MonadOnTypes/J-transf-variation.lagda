@@ -12,7 +12,7 @@ open import MLTT.Spartan hiding (J)
 module MonadOnTypes.J-transf-variation where
 
 open import UF.FunExt
-open import MonadOnTypes.Monad
+open import MonadOnTypes.Construction
 
 𝕁-transf : Fun-Ext
          → (𝕋 : Monad)

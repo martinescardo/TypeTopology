@@ -8,7 +8,7 @@ open import MLTT.Spartan hiding (J)
 
 module MonadOnTypes.K where
 
-open import MonadOnTypes.Monad
+open import MonadOnTypes.Construction
 
 𝕂 : Type → Monad
 𝕂 R = record {

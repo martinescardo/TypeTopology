@@ -9,7 +9,7 @@ open import MLTT.Spartan hiding (J)
 module MonadOnTypes.J where
 
 open import UF.FunExt
-open import MonadOnTypes.Monad
+open import MonadOnTypes.Construction
 
 𝕁 : Type → Monad
 𝕁 R = record {

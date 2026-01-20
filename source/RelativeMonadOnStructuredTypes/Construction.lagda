@@ -10,7 +10,7 @@ open import UF.Equiv
 open import UF.FunExt
 open import RelativeMonadOnStructuredTypes.OneSigmaStructure
 
-module RelativeMonadOnStructuredTypes.Monad
+module RelativeMonadOnStructuredTypes.Construction
         {{ρ : 𝟙-Σ-structure}}
        where
 
@@ -80,7 +80,7 @@ module:
 
 \begin{code}
 
-module T-definitions
+module relative-T-definitions
         {ℓ : Universe → Universe}
         (𝕋 : Relative-Monad {ℓ})
        where
