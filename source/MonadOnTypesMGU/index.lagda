@@ -17,6 +17,7 @@ import MonadOnTypesMGU.J-transf           -- A selection monad transformer.
 import MonadOnTypesMGU.J-transf-variation -- Selection monad transformer
 import MonadOnTypesMGU.K                  -- Continuation (or quantifier) monad.
 import MonadOnTypesMGU.JK                 -- Relationship between the two monads.
+import MonadOnTypesMGU.List
 import MonadOnTypesMGU.Monad              -- (Automatically strong, wild) monads on types.
 import MonadOnTypesMGU.Reader
 import MonadOnTypesMGU.NonEmptyList
