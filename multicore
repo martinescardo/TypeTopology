@@ -72,7 +72,7 @@ n=$(($(cat listOfAlmostAllFiles | wc -l) / $1))
 echo "Approximate number of imports per Agda file" >> log
 echo $n >> log
 
-split -d -n $1 < listOfAlmostAllFiles
+split -d -l $n < listOfAlmostAllFiles
 
 echo "All required temporary files created at" >> log
 echo $(date) >> log
