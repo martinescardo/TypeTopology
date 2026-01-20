@@ -16,11 +16,11 @@ range over such trees.
 
 open import MLTT.Spartan
 
-module GamesMGU.TypeTrees
+module Games.TypeTrees
         {𝓤 : Universe}
        where
 
-open import MonadOnTypesMGU.Construction
+open import MonadOnTypes.Construction
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

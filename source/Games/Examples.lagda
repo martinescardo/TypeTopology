@@ -7,13 +7,13 @@ Examples of type trees.
 
 {-# OPTIONS --safe --without-K #-}
 
-module GamesMGU.Examples where
+module Games.Examples where
 
 open import MLTT.Spartan hiding (J)
 open import MLTT.Fin
-open import GamesMGU.TypeTrees
-open import MonadOnTypesMGU.J
-open import MonadOnTypesMGU.K
+open import Games.TypeTrees
+open import MonadOnTypes.J
+open import MonadOnTypes.K
 
 module permutations where
 
@@ -40,7 +40,7 @@ open import UF.FunExt
 module search (fe : Fun-Ext) where
 
  open import MLTT.Athenian
- open import GamesMGU.FiniteHistoryDependent {𝓤₀} {𝓤₀} Bool
+ open import Games.FiniteHistoryDependent {𝓤₀} {𝓤₀} Bool
 
  open J-definitions Bool
 

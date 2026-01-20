@@ -8,9 +8,9 @@ Generalized universes Jan 2026.
 
 {-# OPTIONS --safe --without-K #-}
 
-module MonadOnTypesMGU.List where
+module MonadOnTypes.List where
 
-open import MonadOnTypesMGU.Construction
+open import MonadOnTypes.Construction
 open import MLTT.Spartan hiding (J)
 open import MLTT.List hiding (map)
 

@@ -7,16 +7,16 @@ history dependent game.
 
 {-# OPTIONS --safe --without-K #-}
 
-module GamesMGU.TicTacToe0 where
+module Games.TicTacToe0 where
 
 open import Fin.ArgMinMax
 open import Fin.Topology
 open import Fin.Type
-open import GamesMGU.TypeTrees
+open import Games.TypeTrees
 open import MLTT.Athenian
 open import MLTT.Spartan hiding (J)
-open import MonadOnTypesMGU.J
-open import MonadOnTypesMGU.K
+open import MonadOnTypes.J
+open import MonadOnTypes.K
 open import TypeTopology.CompactTypes
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.DiscreteAndSeparated
@@ -30,8 +30,8 @@ The type of outcomes:
 R : 𝓤₀ ̇
 R = Fin 3
 
-open import GamesMGU.FiniteHistoryDependent {𝓤₀} {𝓤₀} R
-open import MonadOnTypesMGU.JK
+open import Games.FiniteHistoryDependent {𝓤₀} {𝓤₀} R
+open import MonadOnTypes.JK
 
 \end{code}
 

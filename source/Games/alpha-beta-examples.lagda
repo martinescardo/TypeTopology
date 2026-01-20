@@ -43,7 +43,7 @@ We now define standard minimax games.
 
 \begin{code}
 
-module GamesMGU.alpha-beta-examples where
+module Games.alpha-beta-examples where
 
 open import MLTT.Athenian
 open import MLTT.Fin
@@ -59,7 +59,7 @@ https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
 module example-from-wikipedia where
 
- open import GamesMGU.alpha-beta {𝓤₀} {𝓤₀} ℕ _<ℕ_ <-decidable public
+ open import Games.alpha-beta {𝓤₀} {𝓤₀} ℕ _<ℕ_ <-decidable public
 
  wikipedia-tree : 𝑻
  wikipedia-tree =
@@ -167,7 +167,7 @@ Two versions of tic-tac-toe.
 
 module tic-tac-toe where
 
- open import GamesMGU.alpha-beta {𝓤₀} {𝓤₀} ℕ _<ℕ_ <-decidable
+ open import Games.alpha-beta {𝓤₀} {𝓤₀} ℕ _<ℕ_ <-decidable
 
  module _ {X : 𝓤₀ ̇ }
         where

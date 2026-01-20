@@ -40,9 +40,9 @@ pruning in the file GamesExperimental2.alpha-beta).
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MonadOnTypesMGU.J
-open import MonadOnTypesMGU.K
-open import MonadOnTypesMGU.Construction hiding (ext-const)
+open import MonadOnTypes.J
+open import MonadOnTypes.K
+open import MonadOnTypes.Construction hiding (ext-const)
 open import RelativeMonadOnStructuredTypes.OneSigmaStructure
 open import RelativeMonadOnStructuredTypes.Construction
 open import MLTT.Spartan hiding (J)
@@ -56,7 +56,7 @@ In our of our main examples, ρ will be "finite linear order structure".
 
 \begin{code}
 
-module GamesMGU.FiniteHistoryDependentRelativeMonadic
+module Games.FiniteHistoryDependentRelativeMonadic
         (fe : Fun-Ext)
         {{ρ : 𝟙-Σ-structure}}
         {ℓ : Universe → Universe}
@@ -70,7 +70,7 @@ module GamesMGU.FiniteHistoryDependentRelativeMonadic
 
 open 𝟙-Σ-structure ρ
 
-open import GamesMGU.TypeTrees {𝓤}
+open import Games.TypeTrees {𝓤}
 
 private
  R = ⟨ 𝓡 ⟩
@@ -81,7 +81,7 @@ Question. Why do we need the following import?
 
 \begin{code}
 
-open import GamesMGU.FiniteHistoryDependent {𝓤} {𝓦₀} R
+open import Games.FiniteHistoryDependent {𝓤} {𝓦₀} R
      using (𝓚 ; Game ; game ; sequenceᴷ ; optimal-outcome)
 
 open Game

@@ -11,10 +11,10 @@ Further further modified January 2026 to make universes more general.
 
 open import MLTT.Spartan hiding (J)
 
-module MonadOnTypesMGU.J-transf-variation where
+module MonadOnTypes.J-transf-variation where
 
 open import UF.FunExt
-open import MonadOnTypesMGU.Construction
+open import MonadOnTypes.Construction
 
 private
  variable
@@ -86,7 +86,7 @@ module JT-definitions
         (fe : Fun-Ext)
        where
 
- open import MonadOnTypesMGU.K
+ open import MonadOnTypes.K
 
  open T-definitions 𝕋
  open K-definitions R

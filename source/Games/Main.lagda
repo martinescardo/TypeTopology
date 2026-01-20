@@ -16,7 +16,7 @@ The Haskell code is generated in TypeTopology/source/MAlonzo.
 
 {-# OPTIONS --without-K #-}
 
-module GamesMGU.Main where
+module Games.Main where
 
 open import Unsafe.Haskell
 

@@ -7,9 +7,9 @@ generalized in March 2024.
 
 open import MLTT.Spartan hiding (J)
 
-module MonadOnTypesMGU.K where
+module MonadOnTypes.K where
 
-open import MonadOnTypesMGU.Construction
+open import MonadOnTypes.Construction
 
 private
  variable

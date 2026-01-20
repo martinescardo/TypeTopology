@@ -39,7 +39,7 @@ We work with an arbitrary universe 𝓤.
 
 open import MLTT.Spartan
 
-module GamesMGU.Discussion
+module Games.Discussion
         {𝓤 : Universe}
         (ua : Univalence)
         (pt : propositional-truncations-exist)
@@ -64,7 +64,7 @@ fe = Univalence-gives-Fun-Ext ua
 \end{code}
 
 To make this file self-contained, we will repeat some definitions of
-the module GamesMGU.TypeTrees. We import the module here, but using
+the module Games.TypeTrees. We import the module here, but using
 nothing, so that the reader can click at the link to see what is
 there.
 
@@ -704,7 +704,7 @@ of the original development using 𝕋 is that it works in pure MLTT,
 whereas the approach using 𝔾 or ℍ requires propositional truncation
 and function extensionality.
 
-We now show how the file GamesMGU.FiniteHistoryDependent could have been
+We now show how the file Games.FiniteHistoryDependent could have been
 written using ℍ instead of 𝕋, for the sake of illustration, including
 a few of the original definitions with 𝕋 alongside the required
 modification needed to use ℍ instead:
@@ -713,7 +713,7 @@ modification needed to use ℍ instead:
 
 module illustration (R : 𝓤 ̇ ) where
 
- open import MonadOnTypesMGU.K
+ open import MonadOnTypes.K
 
  open K-definitions R
 
@@ -908,7 +908,7 @@ So Conway's games allow only win-or-lose. In particular, there is no
 draw, such as in tic-tac-toe or chess. Or outcomes more general than
 win, draw or lose, such as in poker.
 
-Our conception of game, defined in GamesMGU.FiniteHistoryDependent,
+Our conception of game, defined in Games.FiniteHistoryDependent,
 allows for two-person games of the above kind, but in general is
 defined for multiple-person games, with outcomes (or "pay offs") in
 any type, for example the real numbes.

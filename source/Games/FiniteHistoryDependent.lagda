@@ -43,15 +43,15 @@ We assume a given type R of outcomes for games as a module parameter.
 
 open import MLTT.Spartan hiding (J)
 
-module GamesMGU.FiniteHistoryDependent
+module Games.FiniteHistoryDependent
         {𝓤 𝓦₀ : Universe}
         (R : 𝓦₀ ̇ )
        where
 
-open import MonadOnTypesMGU.Construction
-open import MonadOnTypesMGU.J
-open import MonadOnTypesMGU.K
-open import MonadOnTypesMGU.JK
+open import MonadOnTypes.Construction
+open import MonadOnTypes.J
+open import MonadOnTypes.K
+open import MonadOnTypes.JK
 open import UF.Base
 open import UF.FunExt
 
@@ -65,7 +65,7 @@ to represent the above kind of game:
 
 \begin{code}
 
-open import GamesMGU.TypeTrees {𝓤}
+open import Games.TypeTrees {𝓤}
 
 \end{code}
 

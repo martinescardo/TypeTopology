@@ -86,7 +86,7 @@ module relative-JT-definitions
         (fe : Fun-Ext)
        where
 
- open import MonadOnTypesMGU.K
+ open import MonadOnTypes.K
 
  open relative-T-definitions 𝕋
  open relative-α-definitions 𝕋 𝓡 𝓐

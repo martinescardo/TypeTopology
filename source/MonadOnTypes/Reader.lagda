@@ -7,9 +7,9 @@ generalized in March 2024.
 
 open import MLTT.Spartan hiding (J)
 
-module MonadOnTypesMGU.Reader where
+module MonadOnTypes.Reader where
 
-open import MonadOnTypesMGU.Construction
+open import MonadOnTypes.Construction
 
 Reader : {𝓦₀ : Universe} → 𝓦₀ ̇ → Monad {λ 𝓤 → 𝓦₀ ⊔ 𝓤}
 Reader {𝓦₀} A = record {

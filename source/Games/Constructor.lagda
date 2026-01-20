@@ -8,17 +8,17 @@ This module has functions to build games.
 
 open import MLTT.Spartan hiding (J)
 
-module GamesMGU.Constructor
+module Games.Constructor
         {𝓤 𝓦₀ : Universe}
         (R : 𝓦₀ ̇ )
        where
 
 open import UF.FunExt
 
-open import GamesMGU.TypeTrees {𝓤}
-open import GamesMGU.FiniteHistoryDependent {𝓤} {𝓦₀} R
-open import MonadOnTypesMGU.J
-open import MonadOnTypesMGU.JK
+open import Games.TypeTrees {𝓤}
+open import Games.FiniteHistoryDependent {𝓤} {𝓦₀} R
+open import MonadOnTypes.J
+open import MonadOnTypes.JK
 
 open J-definitions R
 

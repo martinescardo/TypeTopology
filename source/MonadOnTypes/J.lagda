@@ -7,10 +7,10 @@ generalized in March 2024.
 
 open import MLTT.Spartan hiding (J)
 
-module MonadOnTypesMGU.J where
+module MonadOnTypes.J where
 
 open import UF.FunExt
-open import MonadOnTypesMGU.Construction
+open import MonadOnTypes.Construction
 
 private
  variable
