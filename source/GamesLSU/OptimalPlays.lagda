@@ -20,21 +20,21 @@ discreteness).
 
 \begin{code}
 
-module Games.OptimalPlays
+module GamesLSU.OptimalPlays
         (fe : Fun-Ext)
         (R  : Type)
         (R-is-discrete : is-discrete R)
        where
 
-open import Games.FiniteHistoryDependent R
-open import Games.TypeTrees
+open import GamesLSU.FiniteHistoryDependent R
+open import GamesLSU.TypeTrees
 open import MLTT.List hiding ([_]) renaming (map to lmap)
-open import MonadOnTypes.J-transf-variation
-open import MonadOnTypes.JK
-open import MonadOnTypes.K
-open import MonadOnTypes.List
-open import MonadOnTypes.Construction
-open import MonadOnTypes.NonEmptyList
+open import MonadOnTypesLSU.J-transf-variation
+open import MonadOnTypesLSU.JK
+open import MonadOnTypesLSU.K
+open import MonadOnTypesLSU.List
+open import MonadOnTypesLSU.Construction
+open import MonadOnTypesLSU.NonEmptyList
 open import Notation.CanonicalMap
 open import UF.Base
 open import UF.Subsingletons

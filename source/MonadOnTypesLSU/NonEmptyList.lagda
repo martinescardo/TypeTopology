@@ -8,9 +8,9 @@ Non-empty list monad.
 
 open import MLTT.Spartan hiding (J)
 
-module MonadOnTypes.NonEmptyList where
+module MonadOnTypesLSU.NonEmptyList where
 
-open import MonadOnTypes.Construction
+open import MonadOnTypesLSU.Construction
 open import MLTT.List renaming (map to lmap ; map-∘ to lmap-∘)
 open import Notation.CanonicalMap
 open import UF.Subsingletons

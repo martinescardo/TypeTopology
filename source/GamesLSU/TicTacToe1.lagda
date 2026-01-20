@@ -11,7 +11,7 @@ TODO. Organaze this module better, following the organization of TicTacToe0.
 
 
 
-module Games.TicTacToe1 where
+module GamesLSU.TicTacToe1 where
 
 open import Fin.ArgMinMax
 open import Fin.Topology
@@ -25,9 +25,9 @@ open import UF.DiscreteAndSeparated
 𝟛 : Type
 𝟛 = Fin 3
 
-open import Games.FiniteHistoryDependent 𝟛
-open import Games.Constructor 𝟛
-open import MonadOnTypes.J
+open import GamesLSU.FiniteHistoryDependent 𝟛
+open import GamesLSU.Constructor 𝟛
+open import MonadOnTypesLSU.J
 
 tic-tac-toe₁ : Game
 tic-tac-toe₁ = build-Game draw Board transition 9 board₀

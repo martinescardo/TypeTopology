@@ -8,9 +8,9 @@ Non-empty list monad.
 
 open import MLTT.Spartan hiding (J)
 
-module MonadOnTypes.NonEmptyListOriginal where
+module MonadOnTypesLSU.NonEmptyListOriginal where
 
-open import MonadOnTypes.Construction
+open import MonadOnTypesLSU.Construction
 
 data neList (X : Type) : Type where
  [_]  : X → neList X

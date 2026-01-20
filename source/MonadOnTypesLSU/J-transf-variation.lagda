@@ -9,10 +9,10 @@ algebra α : T R → R, we define a new monad JT X := (X → R) → T X.
 
 open import MLTT.Spartan hiding (J)
 
-module MonadOnTypes.J-transf-variation where
+module MonadOnTypesLSU.J-transf-variation where
 
 open import UF.FunExt
-open import MonadOnTypes.Construction
+open import MonadOnTypesLSU.Construction
 
 𝕁-transf : Fun-Ext
          → (𝕋 : Monad)
@@ -77,7 +77,7 @@ module JT-definitions
         (fe : Fun-Ext)
        where
 
- open import MonadOnTypes.K
+ open import MonadOnTypesLSU.K
 
  open T-definitions 𝕋
  open K-definitions R

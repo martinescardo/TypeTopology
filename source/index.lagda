@@ -164,8 +164,8 @@ import EffectfulForcing.index
 import Factorial.index
 import Field.index
 import Fin.index
-import Games.index
-import GamesMGU.index         -- Will eventually subsume the previous.
+import GamesLSU.index
+import GamesMGU.index         -- Will eventually becomes Games.index
 import Groups.index
 import Higgs.index
 import InjectiveTypes.index
@@ -177,8 +177,8 @@ import MGS.index
 import MLTT.index
 import MetricSpaces.index
 import Modal.index
-import MonadOnTypes.index
-import MonadOnTypesMGU.index  -- Will eventually subsume the previous.
+import MonadOnTypesLSU.index
+import MonadOnTypesMGU.index  -- Will eventually become MonadOnTypes.index
 import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index

@@ -14,9 +14,9 @@ range over such trees.
 
 {-# OPTIONS --safe --without-K #-}
 
-module Games.TypeTrees where
+module GamesLSU.TypeTrees where
 
-open import MonadOnTypes.Construction hiding (map)
+open import MonadOnTypesLSU.Construction hiding (map)
 open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Subsingletons

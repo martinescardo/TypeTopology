@@ -6,9 +6,9 @@ The list monad.
 
 {-# OPTIONS --safe --without-K #-}
 
-module MonadOnTypes.List where
+module MonadOnTypesLSU.List where
 
-open import MonadOnTypes.Construction
+open import MonadOnTypesLSU.Construction
 open import MLTT.Spartan hiding (J)
 open import MLTT.List hiding (map)
 

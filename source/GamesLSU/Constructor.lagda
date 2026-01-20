@@ -8,14 +8,14 @@ This module has functions to build games.
 
 open import MLTT.Spartan hiding (J)
 
-module Games.Constructor (R : Type) where
+module GamesLSU.Constructor (R : Type) where
 
 open import UF.FunExt
 
-open import Games.TypeTrees
-open import Games.FiniteHistoryDependent R
-open import MonadOnTypes.J
-open import MonadOnTypes.JK
+open import GamesLSU.TypeTrees
+open import GamesLSU.FiniteHistoryDependent R
+open import MonadOnTypesLSU.J
+open import MonadOnTypesLSU.JK
 
 open J-definitions R
 

@@ -6,10 +6,10 @@ Martin Escardo, Paulo Oliva, 2023
 
 open import MLTT.Spartan hiding (J)
 
-module MonadOnTypes.J where
+module MonadOnTypesLSU.J where
 
 open import UF.FunExt
-open import MonadOnTypes.Construction
+open import MonadOnTypesLSU.Construction
 
 𝕁 : Type → Monad
 𝕁 R = record {

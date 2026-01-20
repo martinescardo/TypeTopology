@@ -6,9 +6,9 @@ Martin Escardo, Paulo Oliva, 2023
 
 open import MLTT.Spartan hiding (J)
 
-module MonadOnTypes.Reader where
+module MonadOnTypesLSU.Reader where
 
-open import MonadOnTypes.Construction
+open import MonadOnTypesLSU.Construction
 
 Reader : Type → Monad
 Reader A = record {

@@ -15,7 +15,7 @@ moment the proofs are in "blackboard" style (improvised proofs that
 work) rather than "article" style (proofs written in a more
 presentable way).
 
-This generalizes (but also uses) the file Games.FiniteHistoryDependent
+This generalizes (but also uses) the file GamesLSU.FiniteHistoryDependent
 with a monad parameter 𝓣. When 𝓣 is the identity monad 𝕀𝕕, the
 original development is obtained. We apply the selection-monad
 transformer 𝕁-transf to 𝓣. Notice, however, that the definition of
@@ -24,12 +24,12 @@ game is the same. See [1] for background.
 The main examples of 𝓣 we have in mind are the powerset monad (for the
 Herbrand Functional Interpretation [2]), probability distribution
 monads (for mixed strategies) and the reader monad (for alpha-beta
-pruning in the file Games.alpha-beta).
+pruning in the file GamesLSU.alpha-beta).
 
 [1] M. Escardo and P. Oliva.
     Higher-order Games with Dependent Types (2023)
     https://doi.org/10.1016/j.tcs.2023.114111
-    Available in TypeTopology at Games.FiniteHistoryDependent.
+    Available in TypeTopology at GamesLSU.FiniteHistoryDependent.
 
 [2] M. Escardo and P. Oliva.
     The Herbrand functional interpretation of the double negation shift (2017)
@@ -40,22 +40,22 @@ pruning in the file Games.alpha-beta).
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Games.TypeTrees
-open import MonadOnTypes.Construction
+open import GamesLSU.TypeTrees
+open import MonadOnTypesLSU.Construction
 
-open import MonadOnTypes.J-transf
-open import MonadOnTypes.K
+open import MonadOnTypesLSU.J-transf
+open import MonadOnTypesLSU.K
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
 
-module Games.FiniteHistoryDependentMonadic
+module GamesLSU.FiniteHistoryDependentMonadic
         (fe : Fun-Ext)
         (𝕋  : Monad)
         (R  : Type)
         (𝓐  : Algebra 𝕋 R)
  where
 
-open import Games.FiniteHistoryDependent R
+open import GamesLSU.FiniteHistoryDependent R
      using (𝓚 ; Game ; game ; sequenceᴷ ; optimal-outcome)
 
 open Game
@@ -177,10 +177,10 @@ T-selection-strategy {X ∷ Xf} εt@(ε :: εf) q = σ :: σf
 \end{code}
 
 For the next technical lemma, we need the monad T to satisfy the
-condition extᵀ-const defined in MonadOnTypes.Monads, which says that the
+condition extᵀ-const defined in MonadOnTypesLSU.Monads, which says that the
 Kleisli extension of a constant function is itself constant. Ohad
 Kammar pointed out to us that this condition is equivalent to the
-monad being affine. A proof is included in the module MonadOnTypes.Monad.
+monad being affine. A proof is included in the module MonadOnTypesLSU.Monad.
 
 TODO. Explain the intuition of the condition extᵀ-const and
 equivalents.

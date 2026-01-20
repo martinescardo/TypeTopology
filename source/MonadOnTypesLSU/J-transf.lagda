@@ -9,10 +9,10 @@ monad JT X := (X → T R) → T X.
 
 open import MLTT.Spartan hiding (J)
 
-module MonadOnTypes.J-transf where
+module MonadOnTypesLSU.J-transf where
 
 open import UF.FunExt
-open import MonadOnTypes.Construction
+open import MonadOnTypesLSU.Construction
 
 𝕁-transf : Fun-Ext → Monad → Type → Monad
 𝕁-transf fe 𝕋 R = monad JT ηᴶᵀ extᴶᵀ extᴶᵀ-η unitᴶᵀ assocᴶᵀ
@@ -67,7 +67,7 @@ module JT-definitions
         (fe : Fun-Ext)
        where
 
- open import MonadOnTypes.K
+ open import MonadOnTypesLSU.K
 
  open T-definitions 𝕋
  open K-definitions R
@@ -103,7 +103,7 @@ module JT-algebra-definitions
         (fe : Fun-Ext)
        where
 
- open import MonadOnTypes.K
+ open import MonadOnTypesLSU.K
 
  open T-definitions 𝕋
  open K-definitions R

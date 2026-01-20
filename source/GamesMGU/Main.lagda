@@ -16,7 +16,7 @@ The Haskell code is generated in TypeTopology/source/MAlonzo.
 
 {-# OPTIONS --without-K #-}
 
-module Games.Main where
+module GamesMGU.Main where
 
 open import Unsafe.Haskell
 
@@ -31,7 +31,7 @@ main : IO ⊤
 main = putStrLn (showℕ (Fin-to-ℕ r))
 -}
 
-open import Games.alpha-beta
+open import GamesLSU.alpha-beta
 
 main₀ : IO Unit
 main₀ = putStrLn (showListℕ test⋆)

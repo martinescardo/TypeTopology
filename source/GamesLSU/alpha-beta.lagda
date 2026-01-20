@@ -5,7 +5,7 @@ the end of this file with the various possibilities offered here.
 
 We incorporate alpha-beta pruning to our previous work on finite
 history-dependent games using the selection and continuous monads (in
-the module Games.FiniteHistoryDependent). But we do much more than
+the module GamesLSU.FiniteHistoryDependent). But we do much more than
 just that.
 
 We define a minimax game (R , Xt, q , ϕt) to be a two-player game with
@@ -35,10 +35,10 @@ correctness. (But we don't prove efficiency theorems.)
 
 open import MLTT.Spartan hiding (J)
 open import MLTT.Fin
-open import Games.FiniteHistoryDependent
-open import Games.TypeTrees
-open import MonadOnTypes.K
-open import MonadOnTypes.J
+open import GamesLSU.FiniteHistoryDependent
+open import GamesLSU.TypeTrees
+open import MonadOnTypesLSU.K
+open import MonadOnTypesLSU.J
 open import MLTT.Athenian
 open import UF.FunExt
 
@@ -50,7 +50,7 @@ We now define standard minimax games.
 
 \begin{code}
 
-module Games.alpha-beta where
+module GamesLSU.alpha-beta where
 
 module minimax
         (R : Type)
@@ -199,8 +199,8 @@ reader monad, to speed-up the computation of the optimal play.
 
  module _ (fe : Fun-Ext) (-∞ ∞ : R) where
 
-  open import MonadOnTypes.Reader
-  open import MonadOnTypes.Construction
+  open import MonadOnTypesLSU.Reader
+  open import MonadOnTypesLSU.Construction
 
   AB = R × R
 
@@ -250,7 +250,7 @@ reader monad, to speed-up the computation of the optimal play.
   ρ : T R → R
   ρ = structure-map 𝓡
 
-  open import Games.FiniteHistoryDependentMonadic
+  open import GamesLSU.FiniteHistoryDependentMonadic
                fe
                (Reader AB)
                R
@@ -465,8 +465,8 @@ module minimax⋆
             (λ (_ : s < r) → s)
             (λ (_ : s ≥ r) → r)
 
- open import MonadOnTypes.Reader
- open import MonadOnTypes.Construction
+ open import MonadOnTypesLSU.Reader
+ open import MonadOnTypesLSU.Construction
 
  AB = R × R
 

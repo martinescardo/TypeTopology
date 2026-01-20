@@ -7,7 +7,7 @@ Example: Tic-tac-toe. We have more versions in other files.
 {-# OPTIONS --safe --without-K --no-exact-split #-}
 
 
-module Games.TicTacToe2 where
+module GamesLSU.TicTacToe2 where
 
 open import MLTT.Spartan hiding (J)
 open import MLTT.Fin
@@ -15,10 +15,10 @@ open import MLTT.Fin
 data 𝟛 : Type where
  O-wins draw X-wins : 𝟛
 
-open import Games.Constructor 𝟛
-open import Games.FiniteHistoryDependent 𝟛
-open import Games.TypeTrees
-open import MonadOnTypes.J
+open import GamesLSU.Constructor 𝟛
+open import GamesLSU.FiniteHistoryDependent 𝟛
+open import GamesLSU.TypeTrees
+open import MonadOnTypesLSU.J
 open import MLTT.Athenian
 
 open list-util

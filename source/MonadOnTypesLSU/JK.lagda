@@ -6,10 +6,10 @@ Martin Escardo, Paulo Oliva, 2023
 
 open import MLTT.Spartan hiding (J)
 
-module MonadOnTypes.JK where
+module MonadOnTypesLSU.JK where
 
-open import MonadOnTypes.J
-open import MonadOnTypes.K
+open import MonadOnTypesLSU.J
+open import MonadOnTypesLSU.K
 
 module JK (R : Type) where
 

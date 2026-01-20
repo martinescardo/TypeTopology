@@ -10,17 +10,17 @@ definitions of games.
 
 open import MLTT.Spartan hiding (J)
 
-module Games.Alternative (R : Type) where
+module GamesLSU.Alternative (R : Type) where
 
 open import UF.Equiv
 open import UF.FunExt
 
-open import Games.TypeTrees
-open import Games.FiniteHistoryDependent R
+open import GamesLSU.TypeTrees
+open import GamesLSU.FiniteHistoryDependent R
              renaming (Game to Game' ;
                        game to game')
 
-open import MonadOnTypes.K
+open import MonadOnTypesLSU.K
 
 open K-definitions R
 
