@@ -111,7 +111,6 @@ if [ `ls x*.agda | wc -l` != $1 ]
 then
  lastFile=$(ls x* | tail -1)
  secondLastFile=$(ls x*| tail -2 | head -1)
-
  cat $lastFile >> $secondLastFile
  rm $lastFile
 fi
