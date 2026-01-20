@@ -69,10 +69,10 @@ git ls-files "../*agda" \
 
 n=$(($(cat listOfAlmostAllFiles | wc -l) / $1))
 
-echo "Number of imports per Agda file" >> log
+echo "Approximate number of imports per Agda file" >> log
 echo $n >> log
 
-split -d -l $n < listOfAlmostAllFiles
+split -d -n $1 < listOfAlmostAllFiles
 
 echo "All required temporary files created at" >> log
 echo $(date) >> log
