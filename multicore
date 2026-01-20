@@ -105,13 +105,16 @@ echo $n >> log
 split -d -l $n < listOfAlmostAllFiles
 
 # We want to have exactly $1 files. So we add the last file to the
-# second last one, and delete the last one.
+# second last one, if necessary, and delete the last one.
 
-lastFile=$(ls x* | tail -1)
-secondLastFile=$(ls x*| tail -2 | head -1)
+if [ `ls x*.agda | wc -l` != $1 ]
+then
+ lastFile=$(ls x* | tail -1)
+ secondLastFile=$(ls x*| tail -2 | head -1)
 
-cat $lastFile >> $secondLastFile
-rm $lastFile
+ cat $lastFile >> $secondLastFile
+ rm $lastFile
+fi
 
 echo "All required temporary files created at" >> log
 echo $(date) >> log
