@@ -44,9 +44,9 @@ hidden-swap {𝓤} {X} s = VII
     I₀ : x ≠ ⌜ 𝕘 ⌝⁻¹ (complement (⌜ 𝕘 ⌝ x))
     I₀ p = complement-no-fp (⌜ 𝕘 ⌝ x) I₁
      where
-      I₁ = ⌜ 𝕘 ⌝ x                                 ＝⟨ ap ⌜ 𝕘 ⌝ p ⟩
-            ⌜ 𝕘 ⌝ (⌜ 𝕘 ⌝⁻¹ (complement (⌜ 𝕘 ⌝ x))) ＝⟨ I₂ ⟩
-            (complement (⌜ 𝕘 ⌝ x))                 ∎
+      I₁ = ⌜ 𝕘 ⌝ x                                ＝⟨ ap ⌜ 𝕘 ⌝ p ⟩
+           ⌜ 𝕘 ⌝ (⌜ 𝕘 ⌝⁻¹ (complement (⌜ 𝕘 ⌝ x))) ＝⟨ I₂ ⟩
+           (complement (⌜ 𝕘 ⌝ x))                 ∎
             where
              I₂ = inverses-are-sections ⌜ 𝕘 ⌝ ⌜ 𝕘 ⌝-is-equiv _
 
