@@ -64,7 +64,8 @@ rm -rf thirdLast
 mv secondLast thirdLast
 mv last secondLast
 mkdir last
-mv x*.agda last/
+cp x*.agda last/
+rm -f x*.agda
 
 # Now create a list of all files which are not index files. Also omit
 # a Cubical file that doesn't typecheck any more due to changes in the
@@ -110,7 +111,7 @@ split -d -l $n < listOfAlmostAllFiles
 if [ `ls x*.agda | wc -l` != $1 ]
 then
  lastFile=$(ls x* | tail -1)
- secondLastFile=$(ls x*| tail -2 | head -1)
+ secondLastFile=$(ls x* | tail -2 | head -1)
  cat $lastFile >> $secondLastFile
  rm $lastFile
 fi
