@@ -119,6 +119,3 @@ hidden-swap-corollary {𝓤} {X} s = I (hidden-swap s)
 
 The above is a solution to exercises proposed on
 https://mathstodon.xyz/@MartinEscardo/110991799307299727
-
-An independent solution by github user Seiryn21 is at
-https://gist.github.com/Seiryn21/4173b1ee0b88be7b5a6054ac3222c8e1
