@@ -41,13 +41,13 @@ then
  echo "the number of apps you have open, how many Agda files are already"
  echo "type checked, and much more, and so it is an art to find the optimal"
  echo "numbers for your use case. So this can be determined only experimentally."
- echo ""
+ echo
  echo "We recommend setting the delay to zero if you expect very few files"
  echo "to need to be type checked again".
  exit 1
 fi
 
-echo "" >> log
+echo >> log
 echo "---------------------------------------" >> log
 echo "Got started at with arguments $1 and $2" >> log
 echo $(date) >> log
@@ -64,7 +64,7 @@ rm -rf thirdLast
 mv secondLast thirdLast
 mv last secondLast
 mkdir last
-echo "" > x.agda
+echo > x.agda
 cp x*.agda last/
 rm -f x*.agda
 
@@ -182,7 +182,7 @@ echo "Total time $(format_time $SECONDS)"
 
 echo "Finished at" >> log
 echo $(date) >> log
-echo "" >> log
+echo >> log
 echo "Total time $(format_time $SECONDS)" >> log
 echo "---------------------------------------" >> log
 echo >> log
