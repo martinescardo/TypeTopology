@@ -52,11 +52,11 @@ echo "---------------------------------------" >> log
 echo "Got started at with arguments $1 and $2" >> log
 echo $(date) >> log
 
-# Save the previously existing files x*.agda created by this
+# We now save the previously existing files x*.agda created by this
 # script. This is so that if a particularly fast random splitting is
 # found (see below), then we can reuse it with the script
-# `multicore-reuse`. We only backup the last three attempts, which gives
-# us four saved attempts in total.
+# `multicore-reuse`. We only backup the last three attempts, which
+# gives us four saved attempts in total.
 
 mkdir -p last
 mkdir -p secondlast
