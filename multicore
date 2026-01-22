@@ -126,7 +126,9 @@ echo $(date) >> log
 # We will not use the --safe flag, deliberately. We also use some
 # flags that we *don't* want in all modules. But this is not a
 # problem, because all modules which are meant to be --safe (which is
-# most of the modules) do include the flag explicitly.
+# most of the modules) do include the flag explicitly. Moreover,
+# `AllModulesIndex`, launched after the delay, takes care of that in
+# any case.
 
 header="{-# OPTIONS --without-K --guardedness #-}"
 
