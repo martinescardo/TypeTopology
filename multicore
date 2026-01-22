@@ -64,7 +64,7 @@ rm -rf thirdLast
 mv secondLast thirdLast
 mv last secondLast
 mkdir last
-echo "" > x99.agda
+echo "" > x.agda
 cp x*.agda last/
 rm -f x*.agda
 
@@ -143,9 +143,9 @@ done
 
 rm listOfAlmostAllFiles
 
-# We now wait for <delay> seconds, and then launch the compilation of
-# everything. This will take care of checking the index files which were
-# deliberately left out in the parallel threads.
+# We now wait for <delay> seconds, and then launch the type checking
+# of everything. This will take care of checking the index files which
+# were deliberately left out in the parallel threads.
 #
 # The reason for waiting long enough is that all the other threads are
 # typechecking everything already, except the index files.
