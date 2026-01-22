@@ -15,11 +15,12 @@ open import Categories.Functor
 
 \end{code}
 
-Definition of a natural transformation in the usual way.
+The definition of a natural transformation is in the usual way.
+
 For two functors, F and G. We have:
-- gamma : for every object in A, a homomorphism, hom (F a) (G a)
-such that it is natural:
-- for objects, f : hom a b, G f ∘ gamma a ＝ gamma b ∘ F f
+* gamma : for every object in A, a homomorphism, hom (F a) (G a), and
+* a proof that this is natural: for objects, f : hom a b,
+  G f ∘ gamma a ＝ gamma b ∘ F f
 
 \begin{code}
 
@@ -32,8 +33,6 @@ record NaturalTransformation {A : WildCategory 𝓤 𝓥}
  open FunctorNotation F' renaming (functor-map to F ; defn-fobj to fobj)
  open FunctorNotation G' renaming (functor-map to G)
  field
-  -- Having problems distinguishing between functors on object
-  -- and functors on homomorphisms
   gamma : (a : obj A) → hom (F {{fobj}} a) (G {{defn-fobj}} a)
 
  private

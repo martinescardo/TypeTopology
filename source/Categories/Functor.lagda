@@ -14,14 +14,14 @@ open import Categories.Type
 
 \end{code}
 
-We define a functor from precategory A to precategory B as is usual.
-This includes:
-- Fobj, which is a map from objects of A to objects of B
-- Fhom, which is a map from homomorphisms of A to homomorphisms of B
+We define a functor from precategory A to precategory B as is usual. This
+includes,
+* Fobj, a map from objects of A to objects of B, and
+* Fhom, a map from homomorphisms of A to homomorphisms of B.
 
-with the following structure
-- Fhom id = id
-- Fhom (g ∘ f) = Fhom g ∘ Fhom f
+With the following structure
+* Fhom id = id, and
+* Fhom (g ∘ f) = Fhom g ∘ Fhom f.
 
 \begin{code}
 
@@ -33,15 +33,18 @@ record Functor (A : WildCategory 𝓤 𝓥) (B : WildCategory 𝓦 𝓣)
  field
   Fobj : obj A → obj B
   Fhom : {a b : obj A} → hom a b → hom (Fobj a) (Fobj b)
-  id-pres : (a : obj A) → Fhom {a} id ＝ id
-  distrib : {a b c : obj A}
-          (g : hom b c)
-          (f : hom a b)
-        → Fhom (g ∘ f) ＝ (Fhom g) ∘ (Fhom f)
+  id-preserved : (a : obj A) → Fhom {a} id ＝ id
+  distributes : {a b c : obj A}
+                (g : hom b c)
+                (f : hom a b)
+              → Fhom (g ∘ f) ＝ (Fhom g) ∘ (Fhom f)
 
 \end{code}
 
-Functor Notation
+We define some functor notation in the style of category notation. To
+use this for some functor F, we write
+"open FunctorNotation F renaming (functor-map to F')" where F' is the name
+we want to use for the functor.
 
 \begin{code}
 
@@ -57,12 +60,12 @@ record FUNNOTATION {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
  open CategoryNotation A
  open CategoryNotation B
  field 
-  id-pres : (a : obj A) → Functor.Fhom F {a} id ＝ id
-  distrib : {a b c : obj A}
-            (g : hom b c)
-            (f : hom a b)
-          → Functor.Fhom F (g ∘ f)
-          ＝ Functor.Fhom F g ∘ Functor.Fhom F f
+  id-preserved : (a : obj A) → Functor.Fhom F {a} id ＝ id
+  distributes : {a b c : obj A}
+                (g : hom b c)
+                (f : hom a b)
+              → Functor.Fhom F (g ∘ f)
+              ＝ Functor.Fhom F g ∘ Functor.Fhom F f
 
 open FUNNOTATION {{...}} public
 

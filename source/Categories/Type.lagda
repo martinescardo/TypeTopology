@@ -1,13 +1,12 @@
 Anna Williams, 17 October 2025
 
-Definitions of:
- * wild category
- * pre category
- * category
+Definitions of
+ * wild category,
+ * precategory, and
+ * category.
 
-We follow the naming conventions of the HoTT Book.
-The properties of the different types of category
-are given in the table below.
+We follow the naming conventions of the HoTT Book. The properties of the
+different types of category are given in the table below.
 
                 ┌──────┬──────┬────────────┐
                 │ obj  │ hom  │ univalence │ 
@@ -39,23 +38,21 @@ module Categories.Type where
 
 \end{code}
 
-We start by defining the notion of a wild category.
-This consists of the usual components of a category,
-which is as follows:
+We start by defining a wild category. This consists of the usual components of a
+category, which is as follows.
 
-- A collection of objects, obj,
-- for each pair of objects, A B : obj, a type of homorphism between A and B,
-- for each object A : obj, an identity homorphism (id A) : hom A A, and
-- a composition operation, ∘, which for objects A B C : obj
-  and homorphisms f : hom A B, g : hom B C gives a new homomorphism
-  g ∘ f : hom A C.
+* A collection of objects, obj,
+* for each pair of objects, A B : obj, a homomorphism between A and B, hom A B,
+* for each object A : obj, an identity homomorphism id A : hom A A, and
+* a composition operation, ∘, which for objects A B C : obj and homomorphisms
+  f : hom A B, g : hom B C gives a new homomorphism, g ∘ f : hom A C.
 
-Such that the following axioms hold:
+Such that the following axioms hold.
 
-- left-id, for objects A B : obj and morphism f : hom A B, f ∘ id ＝ f,
-- right-id, for objects A B : obj and morphism f : hom A B, id ∘ f ＝ f, and
-- associativity, for objects A B C D : obj and morphisms f : hom A B,
-                 g : hom B C, h : hom C D, we have h ∘ (g ∘ f) ＝ (h ∘ g) ∘ f.
+* left-id: for objects A B : obj and morphism f : hom A B, f ∘ id ＝ f,
+* right-id: for objects A B : obj and morphism f : hom A B, id ∘ f ＝ f, and
+* associativity: for objects A B C D : obj and morphisms f : hom A B,
+                 g : hom B C, h : hom C D, h ∘ (g ∘ f) ＝ (h ∘ g) ∘ f.
 
 \begin{code}
 
@@ -80,10 +77,9 @@ record WildCategory (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇  where
 
 \end{code}
 
-We define the property of being a precategory.
-This is exactly a wild category where the homs are sets.
-We define the notion of a precategory later (outside of the record).
-This can be property can be shown to be a proposition.
+We can now define the property of being a precategory. This is exactly a wild
+category where the homs are sets. We define precategories later (outside of the
+record).
 
 \begin{code}
 
@@ -96,12 +92,11 @@ This can be property can be shown to be a proposition.
 
 \end{code}
 
-An isomorphism in a category consists of a homomorphism f : hom a b
-and some "inverse" homomorphism g : hom b a, such that g ∘ f = id
-and f ∘ g ＝ id.
+An isomorphism in a category consists of a homomorphism, f : hom a b, and some
+"inverse" homomorphism, g : hom b a, such that g ∘ f = id and f ∘ g ＝ id.
 
-We first define the property of being an isomorphism and then define
-the type of isomorphisms between objects of a wild category.
+We first define the property of being an isomorphism and then define the type of
+isomorphisms between objects of a wild category.
 
 \begin{code}
 
@@ -164,13 +159,12 @@ We can show that two inverses for a given isomorphism must be equal.
 
 \end{code}
 
-We can in fact show that if a ＝ b, then a ≅ b. This is because if
-a ＝ b, then by path induction we need to show that a ≅ a. This can
-easily be constructed as follows. This map is typically called id-to-iso
+We can easily show that if a ＝ b, then a ≅ b. This is because if a ＝ b, then
+by path induction we need to show that a ≅ a. This can be constructed as
+follows.
 
 \begin{code}
 
- -- not sure why I have to add the implict argument here?
  id-comp-id-is-id : {a : obj} → id ∘ id ＝ id {a}
  id-comp-id-is-id = left-id id
 
@@ -181,12 +175,13 @@ easily be constructed as follows. This map is typically called id-to-iso
 
 \end{code}
 
-We wish to combine the similar notions of equivalence,
-namely the internal equality: a ＝ b and isomorphisms a ≅ b.
+We wish to combine the similar notions of equivalence, namely the internal
+equality: a ＝ b and isomorphisms a ≅ b.
 
 To bring into alignment the two different forms of equality, we define the
 property of being a category, where identification is equivalent to isomorphism.
-That is the above map is an equivalence.
+That is the above map is an equivalence. We define category outside of the
+record similarly to precategory.
 
 \begin{code}
 
@@ -202,9 +197,10 @@ That is the above map is an equivalence.
 
 \end{code}
 
-We define an object notation such that we can write
-obj W, obj P and obj C where W, P and C are wild categories,
-precategories and categories respectively.
+We define an object notation such that we can write obj W, obj P and obj C where
+W, P and C are wild categories, precategories and categories respectively.
+
+This works similarly to the method used in Notation.UnderlyingType.
 
 \begin{code}
 
@@ -223,10 +219,13 @@ instance
 
 \end{code}
 
-We define some notation for categories. This way, if we are working
-with categories C and D. We can simply write
-"open CategoryNotation C" and
+We now define some notation for categories. This way, if we are working with
+wild categories C and D. We can simply write "open CategoryNotation C" and 
 "open CategoryNotation D" to have all operations available.
+
+This works similarly to Notation.UnderlyingType, where we define records for
+each different field. We then define instances of each of the fields we want
+specific to the wild category used as input.
 
 \begin{code}
 
@@ -330,7 +329,7 @@ module CategoryNotation {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) wher
 
 \end{code}
 
-We can now define the notion of a precategory.
+We now define the notion of a precategory.
 
 \begin{code}
 
@@ -405,7 +404,7 @@ Category 𝓤 𝓥 = Σ P ꞉ Precategory 𝓤 𝓥 , is-category ⟨ P ⟩
 
 \end{code}
 
-Projections from category.
+Projections from a category.
 
 \begin{code}
 
