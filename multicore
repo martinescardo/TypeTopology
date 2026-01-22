@@ -96,7 +96,7 @@ git ls-files "../*agda" \
  > listOfAlmostAllFiles
 
 # We now split this file into files of n lines each, where n is
-# the number of lines in this list divided by the command line argument.
+# the number of lines in this list divided by $1.
 # The resulting files are called x* without a suffix.
 
 n=$(($(cat listOfAlmostAllFiles | wc -l) / $1))
