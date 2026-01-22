@@ -64,6 +64,7 @@ rm -rf thirdLast
 mv secondLast thirdLast
 mv last secondLast
 mkdir last
+echo "" > x99.agda
 cp x*.agda last/
 rm -f x*.agda
 
@@ -108,7 +109,7 @@ split -d -l $n < listOfAlmostAllFiles
 # We want to have exactly $1 files. So we add the last file to the
 # second last one, if necessary, and delete the last one.
 
-if [ `ls x*.agda | wc -l` != $1 ]
+if [ `ls x* | wc -l` != $1 ]
 then
  lastFile=$(ls x* | tail -1)
  secondLastFile=$(ls x* | tail -2 | head -1)
