@@ -37,7 +37,7 @@ then
  echo "'agda AllModulesIndex.lagda' as an additional thread".
  echo ""
  echo "Needless to say, the optimal numbers depend on how many cores you have"
- echo "how much ram you have available, your ram bandwith,"
+ echo "how much ram you have available, your ram bandwidth,"
  echo "the number of apps you have open, how many Agda files are already"
  echo " typechecked, and much more, and so it is an art to find the optimal"
  echo "numbers for your use case. So this can be determined only experimentally."
