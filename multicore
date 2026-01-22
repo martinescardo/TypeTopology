@@ -68,7 +68,7 @@ echo "" > x99.agda
 cp x*.agda last/
 rm -f x*.agda
 
-# Now create a list of all files which are not index files. Also omit
+# Now create a list of all files which are not index files. We also omit
 # a Cubical file that doesn't typecheck any more due to changes in the
 # cubical Agda library. Importantly, we suffle this list in random
 # order using `shuf`.  We then make this into a list of 'import'
@@ -77,7 +77,7 @@ rm -f x*.agda
 git ls-files "../*agda" \
  | grep -v Cubical \
  | grep -v index \
- | grep -v AllModules \
+ | grep -v AllModulesIndex \
  | shuf \
  | sed 's:.lagda::' \
  | sed 's:.agda::' \
@@ -128,7 +128,7 @@ echo $(date) >> log
 # problem, because all modules which are meant to be --safe (which is
 # most of the modules) do include the flag explicitly.
 
-header="{-# OPTIONS --without-K --no-level-universe --guardedness #-}"
+header="{-# OPTIONS --without-K --guardedness #-}"
 
 # We now start type checking these files in parallel.
 
