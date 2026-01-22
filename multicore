@@ -71,7 +71,7 @@ rm -f x*.agda
 # We now create a list of all files which are not index files. We also omit
 # a cubical file that doesn't typecheck any more due to changes in the
 # cubical Agda library. Importantly, we suffle this list in random
-# order using `shuf`.  We then make this into a list of 'import'
+# order using `shuf`. We then make this into a list of 'import'
 # commands in the format required by Agda, using 'sed'.
 
 git ls-files "../*agda" \
@@ -144,6 +144,10 @@ do
 done
 
 rm listOfAlmostAllFiles
+
+# At this point, all the files x<number>.agda remain available,
+# e.g. for the purposes of `multicore-reuse` or for you to have a look
+# at.
 
 # We now wait for <delay> seconds, and then launch the type checking
 # of everything. This will take care of checking the index files which
