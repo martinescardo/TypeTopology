@@ -62,11 +62,12 @@ cp x*.agda last/
 rm last/x.agda
 rm -f x*.agda
 
-# We now create a list of all files which are not index files. We also omit
-# a cubical file that doesn't typecheck any more due to changes in the
-# cubical Agda library. Importantly, we suffle this list in random
-# order using `shuf`. We then make this into a list of 'import'
-# commands in the format required by Agda, using 'sed'.
+# We now create a list of all files which are not index files. We also
+# omit a cubical file that doesn't typecheck any more due to changes
+# in the cubical Agda library. Importantly, for the sake of *expected*
+# efficiency, we suffle this list in random order using `shuf`. We
+# then make this into a list of 'import' commands in the format
+# required by Agda, using 'sed'.
 
 git ls-files "../*agda" \
  | grep -v Cubical \
