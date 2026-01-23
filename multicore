@@ -12,7 +12,7 @@ set -Eeo pipefail
 
 # Unchecked assumptions:
 #
-#  $1 is an integer >= 2 (number of initial threads)
+#  $1 is an integer >= 2 (number of threads)
 
 # Temporary files and directories used by this script:
 #
