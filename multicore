@@ -165,6 +165,7 @@ format_time() {
   printf "%02d:%02d:%02d\n" $h $m $s
 }
 
+echo "Done now" >> log
 echo "Total time $(format_time $SECONDS)"
 
 echo "Finished at" >> log
