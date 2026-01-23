@@ -41,8 +41,8 @@ then
 fi
 
 echo >> log
-echo "--------------------------------" >> log
-echo "Got started at with arguments $1" >> log
+echo "-------------------------------" >> log
+echo "Got started at with argument $1" >> log
 echo $(date) >> log
 
 # We now save the previously existing files x*.agda created by this
