@@ -13,7 +13,6 @@ set -Eeo pipefail
 # Unchecked assumptions:
 #
 #  $1 is an integer >= 2 (number of initial threads)
-#  $2 is an integer >= 0 (time in seconds until the index-checking thread starts)
 
 # Temporary files and directories used by this script:
 #
@@ -24,32 +23,26 @@ set -Eeo pipefail
 #   thirdLast/    # Copy of previous secondLast/
 #   log           # Grows forever - delete it if you want to start again.
 
-if [ `basename $PWD` != "multicore" ] || [ $# != 2 ]
+if [ `basename $PWD` != "multicore" ] || [ $# != 1 ]
 then
  echo "This script should be run from the directory TypeTopology/source/multicore."
  echo "All files in this directory are automatically generated and deleted."
  echo "If you don't have this directory, create it."
  echo ""
  echo "Usage:"
- echo "        $ ../../multicore <number of desired parallel threads> <delay>"
+ echo "        $ ../../multicore <number of desired parallel threads>"
  echo ""
- echo "where <delay> is how long we wait in seconds until we launch"
- echo "'agda AllModulesIndex.lagda' as an additional thread".
- echo ""
- echo "Needless to say, the optimal numbers depend on how many cores you have"
+ echo "Needless to say, the optimal number depends on how many cores you have"
  echo "how much ram you have available, your ram bandwidth,"
  echo "the number of apps you have open, how many Agda files are already"
  echo "type checked, and much more, and so it is an art to find the optimal"
- echo "numbers for your use case. So this can be determined only experimentally."
- echo
- echo "We recommend setting the delay to zero if you expect very few files"
- echo "to need to be type checked again".
+ echo "number for your use case. So this can be determined only experimentally."
  exit 1
 fi
 
 echo >> log
-echo "---------------------------------------" >> log
-echo "Got started at with arguments $1 and $2" >> log
+echo "--------------------------------" >> log
+echo "Got started at with arguments $1" >> log
 echo $(date) >> log
 
 # We now save the previously existing files x*.agda created by this
@@ -66,6 +59,7 @@ mv last secondLast
 mkdir last
 echo > x.agda
 cp x*.agda last/
+rm last/x.agda
 rm -f x*.agda
 
 # We now create a list of all files which are not index files. We also omit
@@ -149,27 +143,19 @@ rm listOfAlmostAllFiles
 # e.g. for the purposes of `multicore-reuse` or for you to have a look
 # at.
 
-# We now wait for <delay> seconds, and then launch the type checking
-# of everything. This will take care of checking the index files which
-# were deliberately left out in the parallel threads.
-#
-# The reason for waiting long enough is that all the other threads are
-# typechecking everything already, except the index files.
-#
-# The optimal choice of delay is the total time taken by the above
-# threads minus the time it takes to typecheck AllModulesIndex when
-# everything but the index files is typed checked. Again this should
-# be determined experimentally for your architecture and use case.
-#
-# It is safe to use 0 for the delay if you don't know how many files
-# will need to be type checked, in which case you may wish to subtract
-# 1 from your experimentally optimal number of threads.
+# We now wait for all threads to finish, and then launch the type
+# checking of everything. This will take care of checking the index
+# files which were deliberately left out in the parallel threads.
 
-sleep $2
+wait
+
+echo "Finished everything except index files at" >> log
+echo $(date) >> log
+echo >> log
 
 agda ../AllModulesIndex.lagda &
 
-wait # for all threads to finish.
+wait
 
 format_time() {
   ((h=${1}/3600))
@@ -184,5 +170,5 @@ echo "Finished at" >> log
 echo $(date) >> log
 echo >> log
 echo "Total time $(format_time $SECONDS)" >> log
-echo "---------------------------------------" >> log
+echo "--------------------------------" >> log
 echo >> log

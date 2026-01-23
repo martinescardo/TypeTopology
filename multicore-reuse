@@ -11,17 +11,14 @@
 
 set -Eeo pipefail
 
-if [ `basename $PWD` != "multicore" ] || [ $# != 1 ]
+if [ `basename $PWD` != "multicore" ] || [ $# != 0 ]
 then
     echo "This script should be run from the directory TypeTopology/source/multicore."
     echo "All files in this directory are supposed to be automatically generated and deleted."
     echo "If you don't have this directory, create it."
     echo ""
     echo "Usage:"
-    echo "        $ ../../multicore-reuse <delay>"
-    echo ""
-    echo "where <delay> is how long we wait in seconds until we launch 'agda AllModulesIndex.lagda'"
-    echo "as an additional thread".
+    echo "        $ ../../multicore-reuse"
     echo ""
     exit 1
 fi
@@ -36,7 +33,7 @@ do
      agda $file &
 done
 
-sleep $1
+wait
 
 agda ../AllModulesIndex.lagda &
 
