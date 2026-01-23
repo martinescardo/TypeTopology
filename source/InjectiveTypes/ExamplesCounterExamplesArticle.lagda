@@ -7,7 +7,7 @@ remarks of our paper
    Tom de Jong and Martín Hötzel Escardó
    Examples and counterexamples of injective types
    January 2026
-   https://arxiv.org/abs/TODO
+   https://arxiv.org/abs/2601.12536
 
 \begin{code}
 
