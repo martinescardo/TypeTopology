@@ -29,7 +29,7 @@ import Games.Alternative                           -- (10)
 
    We define and briefly study "dependent type trees", which are
    closely related to Peter Aczels W-type of CZF sets, and which we use
-   to define games in (1).
+   to define games in (1) below.
 
    [0] Peter Aczel. "The Type Theoretic Interpretation of Constructive Set
        Theory". Studies in Logic and the Foundations of Mathematics, Volume
