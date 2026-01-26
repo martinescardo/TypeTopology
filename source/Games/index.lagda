@@ -71,7 +71,7 @@ import Games.Alternative                           -- (10)
 
    It turns out that (4) needs affine monads on types, but we are able
    to construct examples of such monads on only certain types,
-   e.g. types with decidable equality (for the affine monad of lists
+   e.g. types with decidable equality (for the affine monad of nonempty lists
    without repetitions). For this purpose, we rework (4) above using
    "relative monads on structured types".
 
