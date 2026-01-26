@@ -6,7 +6,8 @@ can have a type X in a universe 𝓤 with T X in a universe ℓ 𝓤. For
 example, for the list monad, we have ℓ 𝓤 = 𝓤, but for the powerset
 monad we have ℓ 𝓤 = 𝓤⁺.
 
-They are wild because we don't consider coherence conditions in the sense of HoTT/UF or higher category theory.
+They are wild because we don't consider coherence conditions in the
+sense of HoTT/UF or higher category theory.
 
 \begin{code}
 

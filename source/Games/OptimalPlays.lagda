@@ -474,10 +474,29 @@ main-lemma← Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af)
 
   I : p ＝ p'
   I = dfunext fe
-       (λ x → (JT-in-terms-of-K (Xf x) (ϕf x) (subpred q x) (εf x) (af x) (lf x))⁻¹)
+       (λ x → (JT-in-terms-of-K
+                (Xf x)
+                (ϕf x)
+                (subpred q x)
+                (εf x)
+                (af x)
+                (lf x))⁻¹)
+
+  II = p' x ＝⟨ ap (λ - → - x) (I ⁻¹) ⟩
+       p x  ＝⟨ om ⁻¹ ⟩
+       ϕ p  ＝⟨ ap ϕ I ⟩
+       ϕ p' ∎
+
+\end{code}
+
+A better proof would be
 
   II : p' x ＝ ϕ p'
   II = transport (λ - → - x ＝ ϕ -) I (om ⁻¹)
+
+But this increases the type checking time by 10s in a Mac Mini M4.
+
+\begin{code}
 
   III : member x (ι t)
   III = εᴸ-property← X l ϕ p' x II
