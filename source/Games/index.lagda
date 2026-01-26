@@ -65,8 +65,7 @@ import Games.Alternative                           -- (10)
 4. FiniteHistoryDependentMonadic.
 
    This is work in progress, where the idea is to eventually use this
-   for considering for rational players playing against irrational
-   players.
+   for considering rational players playing against irrational players.
 
 5. FiniteHistoryDependentRelativeMonadic.
 
@@ -91,8 +90,8 @@ import Games.Alternative                           -- (10)
 
 8. alpha-beta.
 
-   This implements alpha-beta and more for efficiency for
-   e.g. tic-tac-toe.  However, it doesn't yet include correctness
+   This implements alpha-beta and more for efficiency, as exemplified
+   by e.g. tic-tac-toe.  However, it doesn't yet include correctness
    proofs, although what needs to be proved is indicated in the file.
 
 9. OptimalPlays.
