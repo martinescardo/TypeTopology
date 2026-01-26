@@ -42,7 +42,7 @@ pruning in the file GamesExperimental2.alpha-beta).
 
 open import MonadOnTypes.J
 open import MonadOnTypes.K
-open import MonadOnTypes.Construction hiding (ext-const)
+open import MonadOnTypes.Definition hiding (ext-const)
 open import RelativeMonadOnStructuredTypes.OneSigmaStructure
 open import RelativeMonadOnStructuredTypes.Construction
 open import MLTT.Spartan hiding (J)

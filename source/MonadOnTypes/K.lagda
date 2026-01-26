@@ -9,7 +9,7 @@ open import MLTT.Spartan hiding (J)
 
 module MonadOnTypes.K where
 
-open import MonadOnTypes.Construction
+open import MonadOnTypes.Definition
 
 private
  variable

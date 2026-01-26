@@ -33,11 +33,11 @@ module Games.OptimalPlays
 open import Games.FiniteHistoryDependent {𝓤} {𝓦₀} R
 open import Games.TypeTrees {𝓤}
 open import MLTT.List hiding ([_]) renaming (map to lmap)
+open import MonadOnTypes.Definition
 open import MonadOnTypes.J-transf-variation
 open import MonadOnTypes.JK
 open import MonadOnTypes.K
 open import MonadOnTypes.List
-open import MonadOnTypes.Construction
 open import MonadOnTypes.NonEmptyList
 open import Notation.CanonicalMap
 open import UF.Base

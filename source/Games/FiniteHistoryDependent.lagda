@@ -48,7 +48,7 @@ module Games.FiniteHistoryDependent
         (R : 𝓦₀ ̇ )
        where
 
-open import MonadOnTypes.Construction
+open import MonadOnTypes.Definition
 open import MonadOnTypes.J
 open import MonadOnTypes.K
 open import MonadOnTypes.JK

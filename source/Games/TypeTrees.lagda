@@ -20,7 +20,7 @@ module Games.TypeTrees
         {𝓤 : Universe}
        where
 
-open import MonadOnTypes.Construction hiding (map)
+open import MonadOnTypes.Definition hiding (map)
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

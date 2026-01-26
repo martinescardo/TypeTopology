@@ -15,13 +15,13 @@ sense of HoTT/UF or higher category theory.
 
 module MonadOnTypes.index where
 
+import MonadOnTypes.Definition         -- (Automatically strong, wild) monads on types.
 import MonadOnTypes.J                  -- Selection monad.
 import MonadOnTypes.J-transf           -- A selection monad transformer.
 import MonadOnTypes.J-transf-variation -- Selection monad transformer
 import MonadOnTypes.K                  -- Continuation (or quantifier) monad.
 import MonadOnTypes.JK                 -- Relationship between the two monads.
 import MonadOnTypes.List
-import MonadOnTypes.Construction       -- (Automatically strong, wild) monads on types.
 import MonadOnTypes.Reader
 import MonadOnTypes.NonEmptyList
 

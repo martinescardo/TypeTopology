@@ -10,7 +10,7 @@ open import MLTT.Spartan hiding (J)
 module MonadOnTypes.J where
 
 open import UF.FunExt
-open import MonadOnTypes.Construction
+open import MonadOnTypes.Definition
 
 private
  variable

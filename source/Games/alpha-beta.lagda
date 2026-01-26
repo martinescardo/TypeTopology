@@ -199,7 +199,7 @@ reader monad, to speed-up the computation of the optimal play.
  module _ (fe : Fun-Ext) (-∞ ∞ : R) where
 
   open import MonadOnTypes.Reader
-  open import MonadOnTypes.Construction
+  open import MonadOnTypes.Definition
 
   AB = R × R
 
@@ -469,7 +469,7 @@ module minimax⋆
             (λ (_ : s ≥ r) → r)
 
  open import MonadOnTypes.Reader
- open import MonadOnTypes.Construction
+ open import MonadOnTypes.Definition
 
  AB = R × R
 

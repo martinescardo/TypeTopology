@@ -9,7 +9,7 @@ open import MLTT.Spartan hiding (J)
 
 module MonadOnTypes.Reader where
 
-open import MonadOnTypes.Construction
+open import MonadOnTypes.Definition
 
 Reader : {𝓦₀ : Universe} → 𝓦₀ ̇ → Monad {λ 𝓤 → 𝓦₀ ⊔ 𝓤}
 Reader {𝓦₀} A = record {

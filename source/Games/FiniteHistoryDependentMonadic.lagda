@@ -40,7 +40,7 @@ pruning in the file Games.alpha-beta).
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MonadOnTypes.Construction
+open import MonadOnTypes.Definition
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
 
@@ -182,7 +182,7 @@ condition extᵀ-const defined in MonadOnTypesLSU.Monads, which says
 that the Kleisli extension of a constant function is itself
 constant. Ohad Kammar pointed out to us that this condition is
 equivalent to the monad being affine. A proof is included in the
-module MonadOnTypes.Construction.
+module MonadOnTypes.Definition.
 
 TODO. Explain the intuition of the condition extᵀ-const and
 equivalents.

@@ -23,7 +23,7 @@ the pragma --no-level-universe, which we don't want to use. In fact, our code or
 
 \begin{code}
 
-module MonadOnTypes.Construction where
+module MonadOnTypes.Definition where
 
 record Monad {ℓ : Universe → Universe} : 𝓤ω where
  constructor
