@@ -22,28 +22,28 @@ We thank Jonas Frey for giving us this reference:
 
 module DiscreteGraphicMonoids.index where
 
-import DiscreteGraphicMonoids.Type
-import DiscreteGraphicMonoids.ListsWithoutRepetitions
-import DiscreteGraphicMonoids.LWRDGM
-import DiscreteGraphicMonoids.Free
-import DiscreteGraphicMonoids.Monad
-import DiscreteGraphicMonoids.AffineMonad
-import DiscreteGraphicMonoids.ListsWithoutRepetitionsMore
+import DiscreteGraphicMonoids.Type                         -- (1)
+import DiscreteGraphicMonoids.ListsWithoutRepetitions      -- (2)
+import DiscreteGraphicMonoids.LWRDGM                       -- (3)
+import DiscreteGraphicMonoids.Free                         -- (4)
+import DiscreteGraphicMonoids.Monad                        -- (5)
+import DiscreteGraphicMonoids.AffineMonad                  -- (6)
+import DiscreteGraphicMonoids.ListsWithoutRepetitionsMore  -- (7)
 
 \end{code}
 
-1. The module Type defines the type of discrete graphic monoids.
+1. The module `Type` defines the type of discrete graphic monoids.
 
-2. The module ListsWithoutRepetitions investigates lists without
+2. The module `ListsWithoutRepetitions` investigates lists without
    repetitions over discrete types.
 
-3. The module LWRDGM shows that lists without repetitions over a
+3. The module `LWRDGM` shows that lists without repetitions over a
    discrete type form a discrete graphic monoid.
 
-4. The module Free shows that lists without repetitions over a discrete
-   type form the free discrete graphic monoid.
+4. The module `Free` shows that lists without repetitions over a
+   discrete type form the free discrete graphic monoid.
 
-5. The module Monad uses this, in a standard way, to show that lists
+5. The module `Monad` uses this, in a standard way, to show that lists
    without repetitions form a monad. (TODO. The algebras of the monad
    are, up to equivalence, the graphic monoids, again in a standard
    way.)
@@ -52,5 +52,5 @@ import DiscreteGraphicMonoids.ListsWithoutRepetitionsMore
    repetitions form an affine submonad of the above.
 
 7. The module ListsWithoutRepetitionsMore includes additional facts
-   about lists without repetitions that are not needed for our main
-   results.
+   about lists without repetitions that ended up not being needed for
+   our main results, but may aid understanding.
