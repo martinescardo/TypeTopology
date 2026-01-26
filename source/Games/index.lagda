@@ -21,7 +21,7 @@ import Games.TicTacToe1              -- Like TicTacToe0 but using Games.Construc
 import Games.TicTacToe2              -- More efficient and less elegant version.
 import Games.TypeTrees               -- Dependent type trees.
 import Games.alpha-beta              -- alpha-beta and more for efficiency.
-import GamesLSU.OptimalPlays         -- Computes the list of all optimal plays of a game.
+import Games.OptimalPlays         -- Computes the list of all optimal plays of a game.
 import Games.Discussion
 -- import Games.Main
 

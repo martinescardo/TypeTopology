@@ -165,7 +165,6 @@ import Factorial.index
 import Field.index
 import Fin.index
 import Games.index
-import GamesLSU.index         -- Will be eventually deleted.
 import Groups.index
 import Higgs.index
 import InjectiveTypes.index
@@ -178,7 +177,6 @@ import MLTT.index
 import MetricSpaces.index
 import Modal.index
 import MonadOnTypes.index
-import MonadOnTypesLSU.index  -- Will be eventually deleted.
 import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index
