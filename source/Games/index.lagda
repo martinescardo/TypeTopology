@@ -37,7 +37,6 @@ import Games.Alternative                           -- (10)
 
    More references are given in the file (2).
 
-
 1. FiniteHistoryDependent.
 
    Theory of finite history dependent games, as presented in the paper
