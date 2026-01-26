@@ -39,7 +39,7 @@ We assume a given type R of outcomes for games as a module parameter.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-} --
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -113,8 +113,8 @@ quantifier tree ϕt and an outcome function q:
 record Game : Type₁ where
  constructor game
  field
-  game-tree : 𝑻
-  payoff-function  : Path game-tree → R
+  game-tree       : 𝑻
+  payoff-function : Path game-tree → R
   quantifier-tree : 𝓚 game-tree
 
 open Game public
@@ -495,11 +495,13 @@ selection-strategy-theorem fe εt ϕt q a = III
   III = transport (λ - → is-in-sgpe - q (selection-strategy εt q)) I II
 
 
-Selection-Strategy-Theorem : Fun-Ext
-                           → (G@(game Xt q ϕt) : Game) (εt : 𝓙 Xt)
-                           → εt Attains ϕt
-                           → is-optimal G (selection-strategy εt q)
-Selection-Strategy-Theorem fe (game Xt ϕt q) εt = selection-strategy-theorem fe εt q ϕt
+Selection-Strategy-Theorem
+ : Fun-Ext
+ → (G@(game Xt q ϕt) : Game) (εt : 𝓙 Xt)
+ → εt Attains ϕt
+ → is-optimal G (selection-strategy εt q)
+Selection-Strategy-Theorem fe (game Xt ϕt q) εt
+ = selection-strategy-theorem fe εt q ϕt
 
 \end{code}
 

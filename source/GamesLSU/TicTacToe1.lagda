@@ -7,9 +7,7 @@ TODO. Organaze this module better, following the organization of TicTacToe0.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-} --
-
-
+{-# OPTIONS --safe --without-K #-}
 
 module GamesLSU.TicTacToe1 where
 

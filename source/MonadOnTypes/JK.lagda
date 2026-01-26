@@ -32,7 +32,12 @@ module JK (R : 𝓦₀ ̇ ) where
  _attains_ : {X : 𝓤 ̇ } → J X → K X → 𝓦₀ ⊔ 𝓤 ̇
  ε attains ϕ = overline ε ∼ ϕ
 
+ is-attainable : {X : 𝓤 ̇ } → K X → 𝓦₀ ⊔ 𝓤 ̇
+ is-attainable {𝓤} {X} ϕ = Σ ε ꞉ J X , (ε attains ϕ)
+
 \end{code}
+
+Notice that attainability is data in general, rather than property, as a quantifier can have many selection functions.
 
 TODO. Show that overline is a monad morphism.
 

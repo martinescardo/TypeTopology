@@ -33,24 +33,22 @@ correctness. (But we don't prove efficiency theorems.)
 
 {-# OPTIONS --safe --without-K --no-exact-split #-}
 
-open import MLTT.Spartan hiding (J)
-open import MLTT.Fin
-open import GamesLSU.FiniteHistoryDependent
-open import GamesLSU.TypeTrees
-open import MonadOnTypesLSU.K
-open import MonadOnTypesLSU.J
-open import MLTT.Athenian
-open import UF.FunExt
-
 \end{code}
-
-Part 0.
 
 We now define standard minimax games.
 
 \begin{code}
 
 module GamesLSU.alpha-beta where
+
+open import GamesLSU.FiniteHistoryDependent
+open import GamesLSU.TypeTrees
+open import MLTT.Athenian
+open import MLTT.Fin
+open import MLTT.Spartan hiding (J)
+open import MonadOnTypesLSU.J
+open import MonadOnTypesLSU.K
+open import UF.FunExt
 
 module minimax
         (R : Type)

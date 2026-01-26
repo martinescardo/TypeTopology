@@ -71,7 +71,6 @@ module search (fe : Fun-Ext) where
 
 module another-game-representation (R : Type) where
 
-
  open K-definitions R
 
  data GameK : Type₁ where

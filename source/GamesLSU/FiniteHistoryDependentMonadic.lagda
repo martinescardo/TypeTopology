@@ -40,11 +40,7 @@ pruning in the file GamesLSU.alpha-beta).
 
 {-# OPTIONS --safe --without-K #-}
 
-open import GamesLSU.TypeTrees
 open import MonadOnTypesLSU.Construction
-
-open import MonadOnTypesLSU.J-transf
-open import MonadOnTypesLSU.K
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
 
@@ -55,13 +51,17 @@ module GamesLSU.FiniteHistoryDependentMonadic
         (𝓐  : Algebra 𝕋 R)
  where
 
+fext : DN-funext 𝓤₀ 𝓤₀
+fext = dfunext fe
+
+open import GamesLSU.TypeTrees
 open import GamesLSU.FiniteHistoryDependent R
      using (𝓚 ; Game ; game ; sequenceᴷ ; optimal-outcome)
 
 open Game
 
-fext : DN-funext 𝓤₀ 𝓤₀
-fext = dfunext fe
+open import MonadOnTypesLSU.J-transf
+open import MonadOnTypesLSU.K
 
 open K-definitions R
 open T-definitions 𝕋
@@ -532,16 +532,4 @@ T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
      j (inl ⟨⟩) ,
      (λ x → II {Xf x} (ϕf x) (subpred q x) (σf x) (λ xs → j (inr (x :: xs))))
 
-
-{-
-T-sgpe-equiv : (G : Game) (σ : T-Strategy (Xt G))
-             → is-in-T-sgpe G σ ↔ is-in-T-sgpe₂ G σ
-T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
-
-is-in-subgame-perfect-equilibrium : (G : Game) → 𝓙𝓣 (Xt G) → Type
-is-in-subgame-perfect-equilibrium G εt =
-
- (xs : pPath (Xt G)) → is-in-head-equilibrium (subgame G xs) (sub𝓙𝓣 εt xs)
-
--}
 \end{code}

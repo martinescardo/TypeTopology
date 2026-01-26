@@ -152,11 +152,14 @@ tic-tac-toe₂ = Game-from-GameJ tic-tac-toe₂J
 t₂ : 𝟛
 t₂ = optimal-outcome tic-tac-toe₂
 
-s₂ : Path (Xt tic-tac-toe₂)
-s₂ = strategic-path (selection-strategy (selections tic-tac-toe₂J) (q tic-tac-toe₂))
+s₂ : Path (game-tree tic-tac-toe₂)
+s₂ = strategic-path
+      (selection-strategy
+        (selections tic-tac-toe₂J)
+        (payoff-function tic-tac-toe₂))
 
-u₂ : Path (Xt tic-tac-toe₂)
-u₂ = sequenceᴶ (selections tic-tac-toe₂J) (q tic-tac-toe₂)
+u₂ : Path (game-tree tic-tac-toe₂)
+u₂ = sequenceᴶ (selections tic-tac-toe₂J) (payoff-function tic-tac-toe₂)
 
 l₂ : ℕ
 l₂ = plength s₂

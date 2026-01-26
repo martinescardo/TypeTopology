@@ -116,9 +116,9 @@ quantifier tree ϕt and an outcome function q:
 record Game : 𝓤 ⁺ ⊔ 𝓦₀ ̇ where
  constructor game
  field
-  Xt : 𝑻
-  q  : Path Xt → R
-  ϕt : 𝓚 Xt
+  game-tree       : 𝑻
+  payoff-function : Path game-tree → R
+  quantifier-tree : 𝓚 game-tree
 
 open Game public
 
@@ -243,7 +243,7 @@ is in subgame perfect equilibrium.
 
 \begin{code}
 
-is-optimal : (G : Game) (σ : Strategy (Xt G)) → 𝓤 ⊔ 𝓦₀ ̇
+is-optimal : (G : Game) (σ : Strategy (game-tree G)) → 𝓤 ⊔ 𝓦₀ ̇
 is-optimal (game Xt ϕt q) σ = is-in-sgpe {Xt} q ϕt σ
 
 \end{code}
@@ -284,9 +284,9 @@ This can be reformulated as follows in terms of the type of games:
 \begin{code}
 
 optimality-theorem : Fun-Ext
-                   → (G : Game) (σ : Strategy (Xt G))
+                   → (G@(game Xt q ϕt) : Game) (σ : Strategy Xt)
                    → is-optimal G σ
-                   → q G (strategic-path σ) ＝ optimal-outcome G
+                   → q (strategic-path σ) ＝ optimal-outcome G
 optimality-theorem fe (game Xt ϕt q) = sgpe-lemma fe Xt q ϕt
 
 \end{code}
@@ -498,11 +498,13 @@ selection-strategy-theorem fe εt ϕt q a = III
   III = transport (λ - → is-in-sgpe - q (selection-strategy εt q)) I II
 
 
-Selection-Strategy-Theorem : Fun-Ext
-                           → (G : Game) (εt : 𝓙 (Xt G))
-                           → εt Attains (ϕt G)
-                           → is-optimal G (selection-strategy εt (q G))
-Selection-Strategy-Theorem fe (game Xt ϕt q) εt = selection-strategy-theorem fe εt q ϕt
+Selection-Strategy-Theorem
+ : Fun-Ext
+ → (G@(game Xt q ϕt) : Game) (εt : 𝓙 Xt)
+ → εt Attains ϕt
+ → is-optimal G (selection-strategy εt q)
+Selection-Strategy-Theorem fe (game Xt ϕt q) εt
+ = selection-strategy-theorem fe εt q ϕt
 
 \end{code}
 
@@ -510,18 +512,19 @@ Added 27th August 2023 after the above was submitted for publication.
 
 \begin{code}
 
-selection-strategy-corollary : Fun-Ext
-                             → (G : Game) (εt : 𝓙 (Xt G))
-                             → εt Attains (ϕt G)
-                             → q G (sequenceᴶ εt (q G)) ＝ optimal-outcome G
-selection-strategy-corollary fe G εt a =
- q G (sequenceᴶ εt (q G))                           ＝⟨ I ⟩
- q G (strategic-path (selection-strategy εt (q G))) ＝⟨ II ⟩
- optimal-outcome G                                  ∎
+selection-strategy-corollary
+ : Fun-Ext
+ → (G@(game Xt q ϕt) : Game) (εt : 𝓙 Xt)
+ → εt Attains ϕt
+ → q (sequenceᴶ εt q) ＝ optimal-outcome G
+selection-strategy-corollary fe G@(game Xt q ϕt) εt a =
+ q (sequenceᴶ εt q)                           ＝⟨ I ⟩
+ q (strategic-path (selection-strategy εt q)) ＝⟨ II ⟩
+ optimal-outcome G                            ∎
   where
-   I  = ap (q G) ((main-lemma εt (q G))⁻¹)
-   II = sgpe-lemma fe (Xt G) (ϕt G) (q G)
-         (selection-strategy εt (q G))
+   I  = ap q ((main-lemma εt q)⁻¹)
+   II = sgpe-lemma fe Xt ϕt q
+         (selection-strategy εt q)
          (Selection-Strategy-Theorem fe G εt a)
 
 \end{code}

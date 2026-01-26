@@ -279,19 +279,19 @@ module relative-α-definitions
  extᴬ : {𝓧 : 𝕊 𝓤} → (⟨ 𝓧 ⟩ → ⟨ 𝓡 ⟩) → T 𝓧 → ⟨ 𝓡 ⟩
  extᴬ = aext 𝓐
 
- extᴬ-old : {𝓧 : 𝕊 𝓤} → (⟨ 𝓧 ⟩ → ⟨ 𝓡 ⟩) → T 𝓧 → ⟨ 𝓡 ⟩
- extᴬ-old q = α ∘ mapᵀ q
+ extᴬ-alternative : {𝓧 : 𝕊 𝓤} → (⟨ 𝓧 ⟩ → ⟨ 𝓡 ⟩) → T 𝓧 → ⟨ 𝓡 ⟩
+ extᴬ-alternative q = α ∘ mapᵀ q
 
- new-agrees-with-old
+ extᴬ-agreement
   : funext 𝓤 𝓦₀
   → {𝓧 : 𝕊 𝓤} (f : ⟨ 𝓧 ⟩ → ⟨ 𝓡 ⟩) (t : T 𝓧)
-  → extᴬ f t ＝ extᴬ-old f t
- new-agrees-with-old {𝓤} fe {𝓧} f t =
-  extᴬ f t                                   ＝⟨refl⟩
+  → extᴬ f t ＝ extᴬ-alternative f t
+ extᴬ-agreement {𝓤} fe {𝓧} f t =
+  extᴬ f t                                     ＝⟨refl⟩
   aext 𝓐 f t                                   ＝⟨ I ⟩
   aext 𝓐 (λ x → aext 𝓐 id (ηᵀ (f x))) t        ＝⟨ II ⟩
   aext 𝓐 (λ x → x) (ext 𝕋 (λ x → η 𝕋 (f x)) t) ＝⟨refl⟩
-  extᴬ-old f t                               ∎
+  extᴬ-alternative f t                         ∎
    where
     I  = ap (λ - → aext 𝓐 - t) (dfunext fe (λ x → (aunit 𝓐 id (f x))⁻¹))
     II = aassoc 𝓐 id (ηᵀ ∘ f) t

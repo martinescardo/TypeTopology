@@ -1,10 +1,12 @@
-Martin Escardo and Paulo Oliva, originally 2-27 July 2021, with the
-generalization performed in March 2024.
+Martin Escardo and Paulo Oliva, originally 2-27 July 2021, with
+generalizations and additions 2024-2026.
 
-Same as MonadOnTypes but with more general universes (MGU), so that we
+(Wild) monads on types, with a parameter ℓ : Universe → Universe, so that we
 can have a type X in a universe 𝓤 with T X in a universe ℓ 𝓤. For
 example, for the list monad, we have ℓ 𝓤 = 𝓤, but for the powerset
 monad we have ℓ 𝓤 = 𝓤⁺.
+
+They are wild because we don't consider coherence conditions in the sense of HoTT/UF or higher category theory.
 
 \begin{code}
 

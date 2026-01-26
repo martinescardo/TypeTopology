@@ -1,4 +1,4 @@
-Martin Escardo, Paulo Oliva, March 2024
+Martin Escardo, Paulo Oliva, 2023 - 2024
 
 (Strong, wild) universe-polymorphic monads on types.
 
@@ -202,7 +202,7 @@ module T-definitions {ℓ : Universe → Universe} (𝕋 : Monad {ℓ}) where
  ℓᵀ = ℓ
 
  T : 𝓤 ̇ → ℓᵀ 𝓤 ̇
- T {𝓤} = functor 𝕋
+ T = functor 𝕋
 
  ηᵀ : {X : 𝓤 ̇ } → X → T X
  ηᵀ = η 𝕋

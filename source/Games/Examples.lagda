@@ -71,7 +71,6 @@ module search (fe : Fun-Ext) where
 
 module another-game-representation {𝓤 𝓦₀ : Universe} (R : 𝓦₀ ̇ ) where
 
-
  open K-definitions R
 
  data GameK {𝓤 : Universe} : 𝓤 ⁺ ⊔ 𝓦₀ ̇ where

@@ -1,6 +1,6 @@
 Martin Escardo, Paulo Oliva, 2023
 
-A J monad transformer that give a monad T and a type R produces a new
+A J monad transformer that given a monad T and a type R produces a new
 monad JT X := (X → T R) → T X.
 
 \begin{code}
