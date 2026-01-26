@@ -1,9 +1,8 @@
 Martin Escardo, Paulo Oliva, December 2024, modified from a 2023 file.
+Further further modified January 2026 to make universes more general.
 
 A variation of the J monad transformer. Starting with a monad T and an
-algebra α : T R → R, we define a new monad JT X := (X → R) → T X.
-
-Further further modified January 2026 to make universes more general.
+algebra structure on R, we define a new monad JT X := (X → R) → T X.
 
 \begin{code}
 
