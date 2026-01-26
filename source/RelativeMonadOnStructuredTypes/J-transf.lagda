@@ -16,7 +16,7 @@ module RelativeMonadOnStructuredTypes.J-transf
 open 𝟙-Σ-structure ρ
 
 open import UF.FunExt
-open import RelativeMonadOnStructuredTypes.Construction
+open import RelativeMonadOnStructuredTypes.Definition
 
 private
  variable

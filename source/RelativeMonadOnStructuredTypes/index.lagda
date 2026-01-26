@@ -28,8 +28,8 @@ don't need to be endofunctors, in the sense of [1].
 
 module RelativeMonadOnStructuredTypes.index where
 
-import RelativeMonadOnStructuredTypes.OneSigmaStructure -- (1)
-import RelativeMonadOnStructuredTypes.Construction      -- (2)
+import RelativeMonadOnStructuredTypes.OneSigmaStructure -- (2)
+import RelativeMonadOnStructuredTypes.Definition        -- (1)
 import RelativeMonadOnStructuredTypes.NELWR             -- (3)
 import RelativeMonadOnStructuredTypes.J-transf          -- (4)
 
@@ -39,7 +39,7 @@ import RelativeMonadOnStructuredTypes.J-transf          -- (4)
     required to be closed under 𝟙 and Σ.
 
  2. This defines relative monads on types equipped with the structure
-    defined in (1).  Because we also want to eventually consider
+    defined in (1) above. Because we also want to eventually consider
     relative monads such as e.g. non-empty powersets over types with
     some structure, which changes universe level, our monads are
     parametrized by a function ℓ : Universe → Universe (this requires

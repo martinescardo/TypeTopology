@@ -44,7 +44,7 @@ open import MonadOnTypes.J
 open import MonadOnTypes.K
 open import MonadOnTypes.Definition hiding (ext-const)
 open import RelativeMonadOnStructuredTypes.OneSigmaStructure
-open import RelativeMonadOnStructuredTypes.Construction
+open import RelativeMonadOnStructuredTypes.Definition
 open import MLTT.Spartan hiding (J)
 open import UF.Base
 open import UF.Equiv

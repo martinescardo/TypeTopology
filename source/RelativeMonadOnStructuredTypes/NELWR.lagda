@@ -13,7 +13,7 @@ open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.FunExt
 open import RelativeMonadOnStructuredTypes.OneSigmaStructure
-open import RelativeMonadOnStructuredTypes.Construction {{discrete-𝟙-Σ-structure}}
+open import RelativeMonadOnStructuredTypes.Definition {{discrete-𝟙-Σ-structure}}
 
 module RelativeMonadOnStructuredTypes.NELWR
         (fe : Fun-Ext)

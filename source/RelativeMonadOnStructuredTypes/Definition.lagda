@@ -10,7 +10,7 @@ open import UF.Equiv
 open import UF.FunExt
 open import RelativeMonadOnStructuredTypes.OneSigmaStructure
 
-module RelativeMonadOnStructuredTypes.Construction
+module RelativeMonadOnStructuredTypes.Definition
         {{ρ : 𝟙-Σ-structure}}
        where
 
