@@ -2,10 +2,12 @@ Martin Escardo and Paulo Oliva, April 2024
 
 Following Lawvere [1], we show that lists without repetitions over a
 discrete type form the free discrete graphic monoid, where a monoid is
-called graphic if it satisfies the identity xyx=xy.
+called *graphic* if it satisfies the identity xyx=xy.
 
 From this we conclude, in a standard way, that lists without
-repetitions form a monad.
+repetitions form a monad. Moreover, this monad is affine, which is the
+whole point of this exercise, for applications to game theory, in
+another folder.
 
 We thank Jonas Frey for giving us this reference:
 
