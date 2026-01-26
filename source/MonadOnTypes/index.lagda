@@ -18,11 +18,11 @@ module MonadOnTypes.index where
 import MonadOnTypes.Definition         -- (Automatically strong, wild) monads on types.
 import MonadOnTypes.J                  -- Selection monad.
 import MonadOnTypes.J-transf           -- A selection monad transformer.
-import MonadOnTypes.J-transf-variation -- Selection monad transformer
+import MonadOnTypes.J-transf-variation -- More general selection monad transformer
 import MonadOnTypes.K                  -- Continuation (or quantifier) monad.
 import MonadOnTypes.JK                 -- Relationship between the two monads.
-import MonadOnTypes.List
-import MonadOnTypes.Reader
-import MonadOnTypes.NonEmptyList
+import MonadOnTypes.List               -- The list monad.
+import MonadOnTypes.NonEmptyList       -- The monad of non-empty lists.
+import MonadOnTypes.Reader             -- The reader monad.
 
 \end{code}
