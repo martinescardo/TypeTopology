@@ -115,3 +115,14 @@ import Games.Alternative                           -- (10)
     It is imported from Unsafe.index, which in turn is imported by
     AllModulesIndex, to make sure it is always type checked by the
     github action.
+
+
+The above files depend on the following:
+
+\begin{code}
+
+import DiscreteGraphicMonoids.index
+import MonadOnTypes.index
+import RelativeMonadOnStructuredTypes.index
+
+\end{code}

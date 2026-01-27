@@ -50,9 +50,9 @@ import DiscreteGraphicMonoids.ListsWithoutRepetitionsMore  -- (7)
    are, up to equivalence, the graphic monoids, again in a standard
    way.)
 
-6. The module AffineMonad shows that non-empty lists without
+6. The module `AffineMonad` shows that non-empty lists without
    repetitions form an affine submonad of the above.
 
-7. The module ListsWithoutRepetitionsMore includes additional facts
+7. The module `ListsWithoutRepetitionsMore` includes additional facts
    about lists without repetitions that ended up not being needed for
    our main results, but may aid understanding.
