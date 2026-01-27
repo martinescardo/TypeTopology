@@ -4,7 +4,7 @@ This file is mostly for efficiency. See the tests with tic-tac-toe at
 the end of this file with the various possibilities offered here.
 
 We incorporate alpha-beta pruning to our previous work on finite
-history-dependent games using the selection and continuous monads (in
+history-dependent games using the selection and continuation monads (in
 the module Games.FiniteHistoryDependent). But we do much more than
 just that.
 
