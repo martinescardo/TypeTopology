@@ -136,7 +136,7 @@ do
      (echo -e $fileheader && cat $file) > $newfile
      rm $file
      agda $newfile &
-     sleep 3
+#     sleep 3
 done
 
 rm listOfAlmostAllFiles
