@@ -25,7 +25,7 @@ import Games.Alternative                           -- (10)
 
 \end{code}
 
-0. TypesTrees.
+0. TypeTrees.
 
    We define and briefly study "dependent type trees", which are
    closely related to Peter Aczels W-type of CZF sets, and which we use
