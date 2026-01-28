@@ -30,7 +30,8 @@ echo $(date) >> log
 
 for file in x*.agda
 do
-     agda $file &
+    agda $file &
+    sleep 3
 done
 
 wait
