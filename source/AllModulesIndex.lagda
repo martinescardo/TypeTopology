@@ -1,4 +1,4 @@
-   TypeTopology
+3   TypeTopology
 
    Various new theorems in
    constructive univalent mathematics
@@ -28,21 +28,17 @@ TypeTopology, and in particular which type theory is adopted.
 
 \begin{code}
 
-{-# OPTIONS --without-K --no-level-universe --guardedness #-}
+{-# OPTIONS --without-K --guardedness #-}
 
 import index                                -- (1)
-import GamesMGU.index                       -- (2)
-import MonadOnTypesMGU.index                -- (2)
-import RelativeMonadOnStructuredTypes.index -- (2)
-import Unsafe.index                         -- (3)
-import InfinitePigeon.index                 -- (4)
+import Unsafe.index                         -- (2)
+import InfinitePigeon.index                 -- (3)
 
 \end{code}
 
-(1) Of --safe modules using --without-K and --level-universe.
-(2) Of modules with --safe and --without-K but --no-level-universe.
-(3) Of unsafe modules.
-(4) Of modules that disable termination check for bar recursion.
+(1) Index of --safe modules using --without-K and --level-universe.
+(2) Index of unsafe modules. Requires --guardedness for some modules.
+(3) Index of modules that disable termination check for bar recursion.
     These modules *should* be safe in some sense, but Agda can't tell this,
     and so the checking needs to be done by mathematicians and/or logicians.
 

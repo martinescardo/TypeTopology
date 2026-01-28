@@ -44,9 +44,9 @@ hidden-swap {𝓤} {X} s = VII
     I₀ : x ≠ ⌜ 𝕘 ⌝⁻¹ (complement (⌜ 𝕘 ⌝ x))
     I₀ p = complement-no-fp (⌜ 𝕘 ⌝ x) I₁
      where
-      I₁ = ⌜ 𝕘 ⌝ x                                 ＝⟨ ap ⌜ 𝕘 ⌝ p ⟩
-            ⌜ 𝕘 ⌝ (⌜ 𝕘 ⌝⁻¹ (complement (⌜ 𝕘 ⌝ x))) ＝⟨ I₂ ⟩
-            (complement (⌜ 𝕘 ⌝ x))                 ∎
+      I₁ = ⌜ 𝕘 ⌝ x                                ＝⟨ ap ⌜ 𝕘 ⌝ p ⟩
+           ⌜ 𝕘 ⌝ (⌜ 𝕘 ⌝⁻¹ (complement (⌜ 𝕘 ⌝ x))) ＝⟨ I₂ ⟩
+           (complement (⌜ 𝕘 ⌝ x))                 ∎
             where
              I₂ = inverses-are-sections ⌜ 𝕘 ⌝ ⌜ 𝕘 ⌝-is-equiv _
 
@@ -119,6 +119,3 @@ hidden-swap-corollary {𝓤} {X} s = I (hidden-swap s)
 
 The above is a solution to exercises proposed on
 https://mathstodon.xyz/@MartinEscardo/110991799307299727
-
-An independent solution by github user Seiryn21 is at
-https://gist.github.com/Seiryn21/4173b1ee0b88be7b5a6054ac3222c8e1

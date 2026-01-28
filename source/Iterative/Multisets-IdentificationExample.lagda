@@ -17,7 +17,7 @@ module Iterative.Multisets-IdentificationExample
        where
 
 open import Iterative.Multisets 𝓤₀
-open import Iterative.Multisets-Addendum ua 𝓤₀
+open import Iterative.Multisets-Addendum ua 𝓤₀ hiding (𝟚ᴹ)
 open import MLTT.Two
 open import UF.Equiv
 open import UF.EquivalenceExamples

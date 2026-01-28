@@ -7,7 +7,7 @@ on:
     - master
 
 concurrency:
-  group: "pages"
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -40,6 +40,7 @@ jobs:
         key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.event.before }}
         restore-keys: |
           ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-
+          ${{ runner.os }}-agdai-cache-master-
 
     - name: Run Agda
       id: typecheck
@@ -58,7 +59,7 @@ jobs:
 
     - name: Upload HTML
       id: html-upload
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master' && github.repository == 'martinescardo/TypeTopology'
       uses: actions/upload-artifact@v4
       with:
         name: html
@@ -66,7 +67,7 @@ jobs:
 
     - name: Upload GitHub Pages HTML
       id: html-pages-upload
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master' && github.repository == 'martinescardo/TypeTopology'
       uses: actions/upload-pages-artifact@v3
       with:
         path: source/html
@@ -80,7 +81,7 @@ jobs:
     permissions:
       pages: write
       id-token: write
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' && github.repository == 'martinescardo/TypeTopology'
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

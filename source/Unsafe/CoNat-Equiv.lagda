@@ -14,10 +14,8 @@ open import CoNaturals.Type
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
-open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
-open import TypeTopology.Cantor
 
 \end{code}
 

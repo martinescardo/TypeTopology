@@ -67,11 +67,8 @@ module Naturals.ExitTruncation where
 open import MLTT.Spartan
 open import Naturals.Order
 open import Notation.Order
-open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
-open import UF.DiscreteAndSeparated
 open import UF.Hedberg
-open import UF.KrausLemma
 open import UF.ExitPropTrunc
 open import UF.PropTrunc
 open import UF.Subsingletons

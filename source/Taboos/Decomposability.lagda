@@ -499,11 +499,11 @@ A naive application of injectivity gives the following:
 
 \begin{code}
 
-ainjective-types-have-Ω-Paths-naive : propext 𝓦
+ainjective-types-have-Ω-paths-naive : propext 𝓦
                                     → (D : 𝓤 ̇ )
                                     → ainjective-type D 𝓤₀ (𝓦 ⁺)
                                     → has-Ω-paths 𝓦 D
-ainjective-types-have-Ω-Paths-naive {𝓦} {𝓤} pe D D-ainj x₀ x₁ = II I
+ainjective-types-have-Ω-paths-naive {𝓦} {𝓤} pe D D-ainj x₀ x₁ = II I
  where
   f : 𝟚 → D
   f ₀ = x₀
@@ -529,11 +529,11 @@ and to that of the type of ordinals, and more examples like these.
 
 \begin{code}
 
-ainjective-types-have-Ω-Paths : propext 𝓥
+ainjective-types-have-Ω-paths : propext 𝓥
                               → (D : 𝓤 ̇ )
                               → ainjective-type D 𝓥 𝓦
                               → has-Ω-paths 𝓥 D
-ainjective-types-have-Ω-Paths {𝓥} {𝓤} {𝓦} pe D D-ainj x₀ x₁ = II I
+ainjective-types-have-Ω-paths {𝓥} {𝓤} {𝓦} pe D D-ainj x₀ x₁ = II I
  where
   f : 𝟚 → D
   f ₀ = x₀
@@ -561,7 +561,7 @@ decomposition-of-ainjective-type-gives-WEM
   decomposition-of-type-with-Ω-paths-gives-WEM
    pe
    D-decomp
-   (ainjective-types-have-Ω-Paths {𝓥} {𝓤} {𝓦} pe D D-ainj)
+   (ainjective-types-have-Ω-paths {𝓥} {𝓤} {𝓦} pe D D-ainj)
 
 \end{code}
 

@@ -111,6 +111,15 @@ written in more standard mathematical notation as follows:
 𝓛-alg : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg X = Σ ∐ ꞉ extension-op X , 𝓛-alg-Law₀ ∐ × 𝓛-alg-Law₁ ∐
 
+𝓛-alg-structure-map : {X : 𝓤 ̇ } → 𝓛-alg X → extension-op X
+𝓛-alg-structure-map (∐ , l₀ , l₁) = ∐
+
+𝓛-alg-law₀ : {X : 𝓤 ̇ } (𝓐 : 𝓛-alg X) → 𝓛-alg-Law₀ (𝓛-alg-structure-map 𝓐)
+𝓛-alg-law₀ (∐ , l₀ , l₁) = l₀
+
+𝓛-alg-law₁ : {X : 𝓤 ̇ } (𝓐 : 𝓛-alg X) → 𝓛-alg-Law₁ (𝓛-alg-structure-map 𝓐)
+𝓛-alg-law₁ (∐ , l₀ , l₁) = l₁
+
 \end{code}
 
 Before proving that we have an equivalence
@@ -415,20 +424,20 @@ operations. More generally:
 Π-is-alg : funext 𝓤 𝓥
          → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
          → ((x : X) → 𝓛-alg (A x)) → 𝓛-alg (Π A)
-Π-is-alg {𝓤} {𝓥} fe {X} A α = ∐· , l₀ , l₁
+Π-is-alg {𝓤} {𝓥} fe {X} A 𝓐 = ∐· , l₀ , l₁
  where
   ∐· : {P : 𝓣 ̇ } → is-prop P → (P → Π A) → Π A
-  ∐· i φ x = ∐ (α x) i (λ p → φ p x)
+  ∐· i φ x = ∐ (𝓐 x) i (λ p → φ p x)
 
   l₀ : (φ : Π A) → ∐· 𝟙-is-prop (λ p → φ) ＝ φ
-  l₀ φ = dfunext fe (λ x → law₀ (α x) (φ x))
+  l₀ φ = dfunext fe (λ x → law₀ (𝓐 x) (φ x))
 
   l₁ : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ )
        (i : is-prop P) (j : (p : P) → is-prop (Q p))
        (φ : Σ Q → Π A)
       → ∐· (Σ-is-prop i j) φ
       ＝ ∐· i (λ p → ∐· (j p) (λ q → φ (p , q)))
-  l₁ P Q i j φ = dfunext fe (λ x → law₁ (α x) P Q i j (λ σ → φ σ x))
+  l₁ P Q i j φ = dfunext fe (λ x → law₁ (𝓐 x) P Q i j (λ σ → φ σ x))
 
 \end{code}
 
@@ -626,18 +635,13 @@ for the lifting monad uses univalence.
 
 \begin{code}
 
-_is-𝓛-alg-freely-generated-by_with-insertion-of-generators_eliminating-at_
- : {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F)
-   (X : 𝓥 ̇ )
-   (ι : X → F)
-   (𝓦 : Universe)
- → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
-
-𝓕 is-𝓛-alg-freely-generated-by X
-   with-insertion-of-generators ι
-   eliminating-at 𝓦
- = {A : 𝓦 ̇ } (i : is-set A) (𝓐 : 𝓛-alg A) (f : X → A)
-      → ∃! (f̅ , _) ꞉ Hom 𝓕 𝓐 , f̅ ∘ ι ∼ f
+is-free-𝓛-alg : {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F) (X : 𝓥 ̇ ) (ι : X → F) → 𝓤ω
+is-free-𝓛-alg 𝓕 X ι = {𝓦 : Universe}
+                       {A : 𝓦 ̇ }
+                       (i : is-set A)
+                       (𝓐 : 𝓛-alg A)
+                       (f : X → A)
+                     → ∃! (f̅ , _) ꞉ Hom 𝓕 𝓐 , f̅ ∘ ι ∼ f
 
 \end{code}
 
@@ -647,14 +651,15 @@ equivalence.
 \begin{code}
 
 module free-algebra-eliminators
-         {F : 𝓤 ̇ } (𝓕 : 𝓛-alg F)
+         {F : 𝓤 ̇ }
+         (𝓕 : 𝓛-alg F)
          (X : 𝓥 ̇ )
          (ι : X → F)
-         (𝓦 : Universe)
-         (𝓕-is-free : 𝓕 is-𝓛-alg-freely-generated-by X
-                         with-insertion-of-generators ι
-                         eliminating-at 𝓦)
-         {A : 𝓦 ̇ } (i : is-set A) (𝓐 : 𝓛-alg A) (f : X → A)
+         (𝓕-is-free : is-free-𝓛-alg 𝓕 X ι)
+         {A : 𝓦 ̇ }
+         (i : is-set A)
+         (𝓐 : 𝓛-alg A)
+         (f : X → A)
        where
 
  private
@@ -706,8 +711,8 @@ module free-algebras-in-the-category-of-sets
   (λ (p , d) → value (φ p) d) ,
   Σ-is-prop P-is-prop (λ p → being-defined-is-prop (φ p))
 
- free : 𝓛-alg (𝓛 X)
- free = ⨆ , l₀ , l₁
+ canonical-free-algebra : 𝓛-alg (𝓛 X)
+ canonical-free-algebra = ⨆ , l₀ , l₁
   where
    l₀ : 𝓛-alg-Law₀ ⨆
    l₀ l@(P , φ , P-is-prop) =
@@ -719,13 +724,24 @@ module free-algebras-in-the-category-of-sets
                      λ (p , (q , d)) → ((p , q), d)) ,
                     (λ _ → refl))
 
+\end{code}
+
+We rely on the following useful lemma, which says that every element
+of 𝓛 X is a join of positive elements, as in the case after Anders
+Kock (see [1] below), and which is interesting in its own right. The
+positive elements of the free algebra 𝓛 X are those of the form η x,
+but we don't need to know this or the definition of positive element
+in order to formulate and prove the following.
+
+\begin{code}
+
  every-element-of-𝓛-is-a-positive-join : (l@(P , φ , i) : 𝓛 X)
                                        → l ＝ ⨆ i (η ∘ φ)
  every-element-of-𝓛-is-a-positive-join l@(P , φ , i) =
   from-⋍ pe fe fe (((λ (p : P) → p , ⋆) , pr₁) , (λ (_ : P) → refl))
 
  private
-  𝓕 = free
+  𝓕 = canonical-free-algebra
 
  module _
           {𝓥 : Universe}
@@ -799,12 +815,211 @@ universe 𝓥:
 
 \begin{code}
 
- 𝓛-is-free-algebra : {𝓥 : Universe}
-                   → free is-𝓛-alg-freely-generated-by X
-                           with-insertion-of-generators η
-                           eliminating-at 𝓥
- 𝓛-is-free-algebra = free-algebra-universal-property
+ 𝓛-is-free : is-free-𝓛-alg canonical-free-algebra X η
+ 𝓛-is-free = free-algebra-universal-property
 
+\end{code}
+
+Moved from AnAlgebraWhichIsNotAlwaysFree 29th Nov 2025. If two
+algebras A and B are freely generated by the same set of generators,
+they are canonically equivalent.
+
+       i
+  G ────────→ A
+   ╲         │ ↑
+    ╲        │ │
+     ╲       │ │
+    j ╲    h │ │ h⁻¹
+       ╲     │ │
+        ╲    │ │
+         ╲   │ │
+          ╲  ↓ │
+           ➘  B
+
+The proof is a standard categorical argument. The homomorphism h is
+the unique homomorphic extension of j along i, and the homomorphism
+h⁻¹ is the unique homomorphisc extension of i along j. But also the
+composites h ∘ h⁻¹ : A → A and h⁻¹ ∘ h : B → B are the unique
+homomorphisms extending the identity function along i and j
+respectively, and so, because the identity functions are respectively
+such a homomorphisms, we conclude that both composites agree with the
+respective identity functions.
+
+\begin{code}
+
+module _
+        {A : 𝓤 ̇ }
+        {B : 𝓥 ̇ }
+        (G : 𝓦 ̇ )
+        (A-is-set : is-set A)
+        (B-is-set : is-set B)
+        (G-is-set : is-set G)
+        (i : G → A)
+        (j : G → B)
+        (𝓐 : 𝓛-alg A)
+        (𝓑 : 𝓛-alg B)
+        (ϕ : is-free-𝓛-alg 𝓐 G i)
+        (γ : is-free-𝓛-alg 𝓑 G j)
+     where
+
+ module A = free-algebra-eliminators 𝓐 G i ϕ B-is-set 𝓑 j
+ module B = free-algebra-eliminators 𝓑 G j γ A-is-set 𝓐 i
+
+ private
+  h : A → B
+  h = A.unique-hom
+
+  h-is-hom : is-hom 𝓐 𝓑 h
+  h-is-hom = A.unique-hom-is-hom
+
+  h-extends-j : h ∘ i ∼ j
+  h-extends-j = A.unique-hom-is-extension
+
+  h⁻¹ : B → A
+  h⁻¹ = B.unique-hom
+
+  h⁻¹-is-hom : is-hom 𝓑 𝓐 h⁻¹
+  h⁻¹-is-hom = B.unique-hom-is-hom
+
+  h⁻¹-extends-i : h⁻¹ ∘ j ∼ i
+  h⁻¹-extends-i = B.unique-hom-is-extension
+
+  I : is-hom 𝓐 𝓐 (h⁻¹ ∘ h)
+  I = ∘-is-hom 𝓐 𝓑 𝓐 h h⁻¹ h-is-hom h⁻¹-is-hom
+
+  II : is-hom 𝓑 𝓑 (h ∘ h⁻¹)
+  II = ∘-is-hom 𝓑 𝓐 𝓑 h⁻¹ h h⁻¹-is-hom h-is-hom
+
+  III : h⁻¹ ∘ h ∼ id
+  III = at-most-one-extending-hom'
+         (h⁻¹ ∘ h , I)
+         (id , id-is-hom 𝓐)
+         (λ g → h⁻¹ (h (i g)) ＝⟨ ap h⁻¹ (h-extends-j g) ⟩
+                h⁻¹ (j g)     ＝⟨ h⁻¹-extends-i g ⟩
+                i g           ∎)
+         (λ (_ : G) → by-definition)
+   where
+    open free-algebra-eliminators
+          𝓐 G i ϕ A-is-set 𝓐 i
+  IV : h ∘ h⁻¹ ∼ id
+  IV = at-most-one-extending-hom'
+        (h ∘ h⁻¹ , II)
+        (id , id-is-hom 𝓑)
+        (λ g → h (h⁻¹ (j g)) ＝⟨ ap h (h⁻¹-extends-i g) ⟩
+               h (i g)       ＝⟨ h-extends-j g ⟩
+               j g           ∎)
+        (λ (_ : G) → by-definition)
+   where
+    open free-algebra-eliminators
+          𝓑 G j γ B-is-set 𝓑 j
+
+ unique-hom-is-equiv : is-equiv h
+ unique-hom-is-equiv = qinvs-are-equivs h (h⁻¹ , III , IV)
+
+\end{code}
+
+The following was moved here 5th Dec 2025 from another 2nd Dec 2025
+file.
+
+Any algebra isomorphic to the free algebra 𝓛 G in the category of
+algebras is itself free.
+
+\begin{code}
+
+module _ (pe : Prop-Ext)
+         (fe : Fun-Ext)
+         {A        : 𝓥 ̇ }
+         (A-is-set : is-set A)
+         (G        : 𝓦 ̇ )
+         (G-is-set : is-set G)
+         (ι        : G → A)
+         (𝓐        : 𝓛-alg A)
+       where
+
+ private
+  open free-algebras-in-the-category-of-sets pe fe G G-is-set
+
+  h : 𝓛 G → A
+  h = 𝓛-extension A-is-set 𝓐 ι
+
+  𝓛G : 𝓛-alg (𝓛 G)
+  𝓛G = canonical-free-algebra
+
+ module _ (h⁻¹               : A → 𝓛 G)
+          (h⁻¹-is-section    : h ∘ h⁻¹ ∼ id)
+          (h⁻¹-is-retraction : h⁻¹ ∘ h ∼ id)
+          (h⁻¹-is-hom        : is-hom  𝓐 𝓛G h⁻¹)
+      where
+
+  𝓛-alg-isomorphic-to-free-𝓛-alg-is-itself-free : is-free-𝓛-alg 𝓐 G ι
+  𝓛-alg-isomorphic-to-free-𝓛-alg-is-itself-free {𝓦} {B} B-is-set 𝓑 f = III
+   where
+    h-is-hom : is-hom 𝓛G 𝓐 h
+    h-is-hom = 𝓛-extension-is-hom A-is-set 𝓐 ι
+
+    h-extends-ι : h ∘ η ∼ ι
+    h-extends-ι = 𝓛-extension-extends A-is-set 𝓐 ι
+
+    h⁻¹-extends-η : h⁻¹ ∘ ι ∼ η
+    h⁻¹-extends-η g = h⁻¹ (ι g)     ＝⟨ ap h⁻¹ (h-extends-ι g ⁻¹) ⟩
+                      h⁻¹ (h (η g)) ＝⟨ h⁻¹-is-retraction (η g) ⟩
+                      η g           ∎
+
+    I : ∃! (f̅ , _) ꞉ Hom 𝓛G 𝓑 , f̅ ∘ η ∼ f
+    I = 𝓛-is-free B-is-set 𝓑 f
+
+    II : (Σ  (f̅ , _) ꞉ Hom 𝓛G 𝓑 , f̅ ∘ η ∼ f)
+       → (∃! (f̅̅ , _) ꞉ Hom  𝓐 𝓑 , f̅̅ ∘ ι ∼ f)
+    II ((f̅ , f̅-is-hom) , e) = II₁
+     where
+      f̅̅ : A → B
+      f̅̅ = f̅ ∘ h⁻¹
+
+      f̅̅-is-hom : is-hom 𝓐 𝓑 f̅̅
+      f̅̅-is-hom = ∘-is-hom 𝓐 𝓛G 𝓑 h⁻¹ f̅ h⁻¹-is-hom f̅-is-hom
+
+      e̅ :  f̅̅ ∘ ι ∼ f
+      e̅ g = f̅̅ (ι g)       ＝⟨by-definition⟩
+            f̅ (h⁻¹ (ι g)) ＝⟨ ap f̅ (h⁻¹-extends-η g) ⟩
+            f̅ (η g)       ＝⟨ e g ⟩
+            f g           ∎
+
+      c : Σ (f̅̅ , _) ꞉ Hom 𝓐 𝓑 , f̅̅ ∘ ι ∼ f
+      c = (f̅̅ , f̅̅-is-hom) , e̅
+
+      II₀ : is-prop (type-of c)
+      II₀ ((f₀ , f₀-is-hom) , e₀) ((f₁ , f₁-is-hom) , e₁) = II₀₁
+       where
+        f₀-agrees-with-f₁ : f₀ ∼ f₁
+        f₀-agrees-with-f₁ π =
+         f₀ π           ＝⟨ ap f₀ ((h⁻¹-is-section π)⁻¹) ⟩
+         f₀ (h (h⁻¹ π)) ＝⟨ II₀₀ (h⁻¹ π) ⟩
+         f₁ (h (h⁻¹ π)) ＝⟨ ap f₁ (h⁻¹-is-section π) ⟩
+         f₁ π           ∎
+          where
+           II₀₀ : f₀ ∘ h ∼ f₁ ∘ h
+           II₀₀ = hom-agreement B-is-set 𝓑 f
+                   ((f₀ ∘ h , ∘-is-hom 𝓛G 𝓐 𝓑 h f₀ h-is-hom f₀-is-hom) ,
+                    (λ g → f₀ (h (η g)) ＝⟨ ap f₀ (h-extends-ι g) ⟩
+                           f₀ (ι g)     ＝⟨ e₀ g ⟩
+                           f g          ∎))
+                   ((f₁ ∘ h , ∘-is-hom 𝓛G 𝓐 𝓑 h f₁ h-is-hom f₁-is-hom) ,
+                    (λ g → f₁ (h (η g)) ＝⟨ ap f₁ (h-extends-ι g) ⟩
+                           f₁ (ι g)     ＝⟨ e₁ g ⟩
+                           f g          ∎))
+
+        II₀₁ : ((f₀ , f₀-is-hom) , e₀) ＝ ((f₁ , f₁-is-hom) , e₁)
+        II₀₁ = to-subtype-＝
+                (λ σ → Π-is-prop fe (λ (_ : G) → B-is-set))
+                (to-subtype-＝
+                  (λ (_ : A → B) → Π₃-is-prop fe (λ P i φ → B-is-set))
+                  (dfunext fe f₀-agrees-with-f₁))
+
+      II₁ : ∃! (f̅̅ , _) ꞉ Hom 𝓐 𝓑 , f̅̅ ∘ ι ∼ f
+      II₁ = pointed-props-are-singletons c II₀
+
+    III : ∃! (f̅̅ , _) ꞉ Hom 𝓐 𝓑 , f̅̅ ∘ ι ∼ f
+    III = II (center I)
 \end{code}
 
 Added 23rd Nov 2025. Anders Kock' [1] definition of positive element.
@@ -824,8 +1039,8 @@ is-positive (⨆ , l₀ , l₁) a =
 
 being-positive-is-prop : Fun-Ext
                        → {A : 𝓤 ̇ }
-                       → (α : 𝓛-alg A) (a : A)
-                       → is-prop (is-positive α a)
-being-positive-is-prop fe α a = Π₃-is-prop fe (λ _ P-is-prop _ → P-is-prop)
+                       → (𝓐 : 𝓛-alg A)
+                       → (a : A) → is-prop (is-positive 𝓐 a)
+being-positive-is-prop fe 𝓐 a = Π₃-is-prop fe (λ _ P-is-prop _ → P-is-prop)
 
 \end{code}

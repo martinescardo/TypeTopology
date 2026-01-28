@@ -8,6 +8,9 @@ See the file InjectiveTypes.Article for an explanation of the role of
 the file InjectiveTypes.Blackboard, and, more importantly, for an
 explanation of the published paper.
 
+Since then we have produced a second paper (January 2026), see the file
+ExamplesCounterExamplesArticle.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -16,6 +19,7 @@ module InjectiveTypes.index where
 
 import InjectiveTypes.Article
 import InjectiveTypes.Blackboard
+import InjectiveTypes.ExamplesCounterExamplesArticle
 
 \end{code}
 

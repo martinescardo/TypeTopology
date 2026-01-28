@@ -27,10 +27,10 @@ The type of outcomes:
 
 \begin{code}
 
-R : Type
+R : 𝓤₀ ̇
 R = Fin 3
 
-open import Games.FiniteHistoryDependent R
+open import Games.FiniteHistoryDependent {𝓤₀} {𝓤₀} R
 open import MonadOnTypes.JK
 
 \end{code}
@@ -51,7 +51,7 @@ but in this case it is convenient to do so:
 
 \begin{code}
 
-data Player : Type where
+data Player : 𝓤₀ ̇ where
  X O : Player
 
 opponent : Player → Player
@@ -114,7 +114,7 @@ The type of moves in a board:
 
 \begin{code}
 
-Move : Board → Type
+Move : Board → 𝓤₀ ̇
 Move (_ , A) = Σ g ꞉ Grid , A g ＝ Nothing
 
 \end{code}
@@ -196,7 +196,7 @@ Selection functions for players, namely argmin for X and argmax for O:
 
 open J-definitions R
 
-selection : (p : Player) {M : Type} → M → is-Compact M {𝓤₀} → J M
+selection : (p : Player) {M : 𝓤 ̇ } → M → is-Compact M {𝓤₀} → J M
 selection X m κ p = pr₁ (compact-argmin p κ m)
 selection O m κ p = pr₁ (compact-argmax p κ m)
 
@@ -209,7 +209,7 @@ And their derived quantifiers:
 open K-definitions R
 open JK R
 
-quantifier : Player → {M : Type} → is-Compact M → is-decidable M → K M
+quantifier : Player → {M : 𝓤 ̇ } → is-Compact M → is-decidable M → K M
 quantifier p κ (inl m) = overline (selection p m κ)
 quantifier p κ (inr _) = λ _ → draw
 

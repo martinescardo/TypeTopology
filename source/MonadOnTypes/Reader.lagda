@@ -1,4 +1,5 @@
-Martin Escardo, Paulo Oliva, 2023
+Martin Escardo, Paulo Oliva, originally 2023, with universes
+generalized in March 2024.
 
 \begin{code}
 
@@ -8,16 +9,16 @@ open import MLTT.Spartan hiding (J)
 
 module MonadOnTypes.Reader where
 
-open import MonadOnTypes.Monad
+open import MonadOnTypes.Definition
 
-Reader : Type → Monad
-Reader A = record {
+Reader : {𝓦₀ : Universe} → 𝓦₀ ̇ → Monad {λ 𝓤 → 𝓦₀ ⊔ 𝓤}
+Reader {𝓦₀} A = record {
             functor = λ X → A → X ;
-            η     = λ x _ → x ;
-            ext   = λ f ρ a → f (ρ a) a ;
-            ext-η = λ x → refl ;
-            unit  = λ f x → refl ;
-            assoc = λ g f x → refl
+            η       = λ x _ → x ;
+            ext     = λ f ρ a → f (ρ a) a ;
+            ext-η   = λ x → refl ;
+            unit    = λ f x → refl ;
+            assoc   = λ g f x → refl
           }
 
 \end{code}

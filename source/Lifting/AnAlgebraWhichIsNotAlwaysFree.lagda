@@ -55,7 +55,7 @@ So the above discussion settles Sterling's conjecture positively, by
 providing an example of a dcpo lifting algebra which is not always
 free.
 
-TODO. It would be good to formalize this in here in TypeTopology.
+TODO. It would be good to formalize this here in TypeTopology.
 
 [1] Jon Sterling. Tensorial structure of the lifting doctrine in
     constructive domain theory. Originally 28 Dec 2023, last revised 30
@@ -125,8 +125,7 @@ open import Lifting.Construction 𝓣
 open import Lifting.EmbeddingDirectly 𝓣
 open import Lifting.Identity 𝓣
 open import Lifting.TwoAlgebrasOnOmega 𝓣 fe pe
-             renaming (Π-algebra-on-Ω to Ω∀)
-             renaming (Σ-algebra-on-Ω to Ω∃)
+             renaming (Π-alg-on-Ω to Ω∀ ; Σ-alg-on-Ω to Ω∃)
 open import UF.ClassicalLogic
 open import UF.Embeddings
 open import UF.Equiv
@@ -186,7 +185,7 @@ module Ω∀-free-gives-EM
  open free-algebras-in-the-category-of-sets pe fe G G-is-set
 
  𝓛G : 𝓛-alg (𝓛 G)
- 𝓛G = free
+ 𝓛G = canonical-free-algebra
 
  h : 𝓛 G → Ω
  h = 𝓛-extension (Ω-is-set fe pe) Ω∀ ι
@@ -216,10 +215,7 @@ generators ι, from which the principle of excluded will follow.
 
 \begin{code}
 
- module _ (Ω∀-is-free : Ω∀ is-𝓛-alg-freely-generated-by G
-                           with-insertion-of-generators ι
-                           eliminating-at 𝓣⁺)
-        where
+ module _ (Ω∀-is-free : is-free-𝓛-alg Ω∀ G ι) where
 
 \end{code}
 
@@ -250,62 +246,24 @@ h⁻¹ being the unique homomorphism extending η along ι.
 
 \begin{code}
 
-  private
-   module E = free-algebra-eliminators
-               Ω∀ G ι 𝓣⁺ Ω∀-is-free (𝓛-is-set fe fe pe G-is-set) 𝓛G η
-
-  h⁻¹ : Ω → 𝓛 G
-  h⁻¹ = E.unique-hom
-
   h-is-equiv : is-equiv h
-  h-is-equiv = qinvs-are-equivs h (h⁻¹ , III , IV)
-   where
-    h⁻¹-is-hom : is-hom Ω∀ 𝓛G h⁻¹
-    h⁻¹-is-hom = E.unique-hom-is-hom
-
-    h⁻¹-extends-η : h⁻¹ ∘ ι ∼ η
-    h⁻¹-extends-η = E.unique-hom-is-extension
-
-    I : is-hom 𝓛G 𝓛G (h⁻¹ ∘ h)
-    I = ∘-is-hom 𝓛G Ω∀ 𝓛G h h⁻¹ h-is-hom h⁻¹-is-hom
-
-    II : is-hom Ω∀ Ω∀ (h ∘ h⁻¹)
-    II = ∘-is-hom Ω∀ 𝓛G Ω∀ h⁻¹ h h⁻¹-is-hom h-is-hom
-
-    III : h⁻¹ ∘ h ∼ id
-    III = at-most-one-extending-hom'
-           (h⁻¹ ∘ h , I)
-           (id , id-is-hom 𝓛G)
-           (λ g → h⁻¹ (h (η g)) ＝⟨ ap h⁻¹ (h-extends-ι g) ⟩
-                  h⁻¹ (ι g)     ＝⟨ h⁻¹-extends-η g ⟩
-                  η g           ∎)
-           (λ (_ : G) → by-definition)
-     where
-      open free-algebra-eliminators
-            𝓛G G η 𝓣⁺ 𝓛-is-free-algebra (𝓛-is-set fe fe pe G-is-set) 𝓛G η
-
-    IV : h ∘ h⁻¹ ∼ id
-    IV = at-most-one-extending-hom'
-          (h ∘ h⁻¹ , II)
-          (id , id-is-hom Ω∀)
-          (λ g → h (h⁻¹ (ι g)) ＝⟨ ap h (h⁻¹-extends-η g) ⟩
-                 h (η g)       ＝⟨ h-extends-ι g ⟩
-                 ι g           ∎)
-          (λ (_ : G) → by-definition)
-     where
-      open free-algebra-eliminators
-            Ω∀ G ι 𝓣⁺ Ω∀-is-free (Ω-is-set fe pe) Ω∀ ι
+  h-is-equiv = unique-hom-is-equiv G
+                (𝓛-is-set fe fe pe G-is-set) (Ω-is-set fe pe) G-is-set
+                η ι 𝓛G Ω∀ 𝓛-is-free Ω∀-is-free
 
   𝕙 : 𝓛 G ≃ Ω
   𝕙 = h , h-is-equiv
+
+  h⁻¹ : Ω → 𝓛 G
+  h⁻¹ = ⌜ 𝕙 ⌝⁻¹
 
 \end{code}
 
 Using this, we in turn conclude that our assumed insertion of
 generators ι : G → Ω is constantly ⊥.
 
-The trick (or insight, as some people would say) is, given a generator
-g : G, to consider the partial element l : 𝓛 G defined by
+The trick is, given a generator g : G, to consider the partial element
+l : 𝓛 G defined by
 
  l = (ι g holds , (λ _ → g) , _),
 
@@ -472,8 +430,19 @@ this is inessential.
 Concluding questions. The above gives *one* example of an algebra
 which if it's free then excluded middle holds. There must be plenty
 more. For example, a product of algebras is an algebra. Is a product
-of free algebras also free? As a second example, the algebras form an
-exponential ideal. Is the algebra X → A free if the algebra A is?
+of free algebras also free? As a second example, do the algebras form
+an exponential ideal: Is the algebra X → A free if the algebra A is?
+
+These questions are answered positively in the following module:
+
+\begin{code}
+
+import Lifting.ProductsOfFreeAlgebrasAreFree
+
+\end{code}
+
+So, at present, we have only *one* example of an algebra which is not
+free in all toposes.
 
 Speculative question. Is there a nice characterization of the type of
 all algebra structures on Ω? We have two "extreme" ones, namely ∃ and ∀.

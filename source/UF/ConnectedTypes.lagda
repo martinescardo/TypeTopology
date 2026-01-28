@@ -286,7 +286,7 @@ quantification issue.
        (X → Y)          ■
     where
      I : 𝟙 {𝓤} ≃ ∥ X ∥[ n ]
-     I = singleton-≃-𝟙' X-conn
+     I = 𝟙-≃-singleton X-conn
    observation : consts X Y ＝ ⌜ e ⌝
    observation = refl
 

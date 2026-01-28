@@ -19,7 +19,6 @@ open import UF.Equiv
 open import UF.FunExt
 open import UF.Hedberg
 open import UF.HedbergApplications
-open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
 open import UF.SubtypeClassifier

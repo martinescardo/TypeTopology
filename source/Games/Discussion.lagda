@@ -1,4 +1,4 @@
-Martin Escardo, Paulo Oliva, 7-22 June 2023
+sSetMartin Escardo, Paulo Oliva, 7-22 June 2023
 
 We relate our game trees to Aczel's W type of CZF sets in various ways.
 
@@ -33,12 +33,19 @@ extensionality for proving properties of the constructions. For the
 purposes of this discussion we further assume univalence and the
 existence of propositional truncations (https://homotopytypetheory.org/book/).
 
+We work with an arbitrary universe 𝓤.
+
 \begin{code}
 
+open import MLTT.Spartan
+
 module Games.Discussion
+        {𝓤 : Universe}
         (ua : Univalence)
         (pt : propositional-truncations-exist)
        where
+
+𝓤⁺ = 𝓤 ⁺
 
 open PropositionalTruncation pt
 
@@ -63,7 +70,6 @@ there.
 
 \begin{code}
 
-open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -71,6 +77,7 @@ open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import NotionsOfDecidability.Decidable
+
 \end{code}
 
 The following is the type of type trees, whose nodes X represent the
@@ -79,9 +86,9 @@ represent the endings of the game.
 
 \begin{code}
 
-data 𝕋 : Type₁ where
+data 𝕋 : 𝓤⁺ ̇ where
  []  : 𝕋
- _∷_ : (X : Type) (Xf : X → 𝕋) → 𝕋
+ _∷_ : (X : 𝓤 ̇ ) (Xf : X → 𝕋) → 𝕋
 
 \end{code}
 
@@ -90,7 +97,7 @@ full plays in a game.
 
 \begin{code}
 
-Path : 𝕋 → Type
+Path : 𝕋 → 𝓤 ̇
 Path []       = 𝟙
 Path (X ∷ Xf) = Σ x ꞉ X , Path (Xf x)
 
@@ -122,12 +129,12 @@ To begin with, there are no paths with the original definition in
 
 \begin{code}
 
-is-[]-free : 𝕋 → Type
+is-[]-free : 𝕋 → 𝓤 ̇
 is-[]-free []       = 𝟘
 is-[]-free (X ∷ Xf) = (x : X) → is-[]-free (Xf x)
 
 []-free-trees-have-no-paths : (Xt : 𝕋) → is-[]-free Xt → is-empty (Path Xt)
-[]-free-trees-have-no-paths []       φ ⟨⟩        = φ
+[]-free-trees-have-no-paths []       φ ⟨⟩        = 𝟘-elim φ
 []-free-trees-have-no-paths (X ∷ Xf) φ (x , xs) = []-free-trees-have-no-paths (Xf x) (φ x) xs
 
 \end{code}
@@ -139,8 +146,8 @@ without the "superfluous" base case [].
 
 \begin{code}
 
-data 𝔸 : Type₁ where
- _∷_ : (X : Type) (Xf : X → 𝔸) → 𝔸
+data 𝔸 : 𝓤⁺ ̇ where
+ _∷_ : (X : 𝓤 ̇ ) (Xf : X → 𝔸) → 𝔸
 
 \end{code}
 
@@ -152,7 +159,7 @@ Their paths can be defined as follows.
 
 \begin{code}
 
-𝔸-Path : 𝔸 → Type
+𝔸-Path : 𝔸 → 𝓤 ̇
 𝔸-Path (X ∷ Xf) = is-empty X + (Σ x ꞉ X , 𝔸-Path (Xf x))
 
 \end{code}
@@ -169,7 +176,7 @@ Of course, the type 𝔸 is isomorphic to the subtype of 𝕋 consisting of
 
 \begin{code}
 
-𝔽 : Type₁
+𝔽 : 𝓤⁺ ̇
 𝔽 = Σ Xt ꞉ 𝕋 , is-[]-free Xt
 
 \end{code}
@@ -241,7 +248,7 @@ them *hereditarily inhabited*.
 
 \begin{code}
 
-is-hereditarily-inhabited : 𝕋 → Type
+is-hereditarily-inhabited : 𝕋 → 𝓤 ̇
 is-hereditarily-inhabited []       = 𝟙
 is-hereditarily-inhabited (X ∷ Xf) =
  ∥ X ∥ × ((x : X) → is-hereditarily-inhabited (Xf x))
@@ -264,7 +271,7 @@ standing for "good" or "game".
 
 \begin{code}
 
-𝔾 : Type₁
+𝔾 : 𝓤⁺ ̇
 𝔾 = Σ Xt ꞉ 𝕋 , is-hereditarily-inhabited Xt
 
 \end{code}
@@ -273,7 +280,7 @@ This type is isomorphic to a subtype ℍ of 𝔸 defined as follows.
 
 \begin{code}
 
-is-hereditarily-decidable : 𝔸 → Type
+is-hereditarily-decidable : 𝔸 → 𝓤 ̇
 is-hereditarily-decidable (X ∷ Xf) = (is-decidable ∥ X ∥)
                                    × ((x : X) → is-hereditarily-decidable (Xf x))
 
@@ -284,7 +291,7 @@ being-hereditarily-decidable-is-prop (X ∷ Xf) =
   (+-is-prop ∥∥-is-prop (negations-are-props fe) ¬¬-intro)
   (Π-is-prop fe (λ x → being-hereditarily-decidable-is-prop (Xf x)))
 
-ℍ : Type₁
+ℍ : 𝓤⁺ ̇
 ℍ = Σ Xt ꞉ 𝔸 , is-hereditarily-decidable Xt
 
 \end{code}
@@ -299,7 +306,7 @@ First we define the leaves of 𝔸 trees.
 []ᴬ = 𝟘 ∷ unique-from-𝟘
 
 []ᴬ-is-hd : is-hereditarily-decidable []ᴬ
-[]ᴬ-is-hd = inr (∥∥-rec 𝟘-is-prop id) , (λ x → 𝟘-elim x)
+[]ᴬ-is-hd = inr (∥∥-rec 𝟘-is-prop 𝟘-elim) , (λ x → 𝟘-elim x)
 
 \end{code}
 
@@ -318,7 +325,7 @@ function X → Y (which is automatically an isomorphism).
 
 \begin{code}
 
-to-𝔸-＝ : {X Y : Type}
+to-𝔸-＝ : {X Y : 𝓤 ̇ }
           (Xf : X → 𝔸) (Yf : Y → 𝔸)
           (p : X ＝ Y)
         → Xf ＝ Yf ∘ Idtofun p
@@ -333,14 +340,14 @@ use of univalence in this file.)
 
 \begin{code}
 
-[]ᴬ-＝ : {X : Type} (Xf : X → 𝔸) → is-empty X → []ᴬ ＝ (X ∷ Xf)
+[]ᴬ-＝ : {X : 𝓤 ̇ } (Xf : X → 𝔸) → is-empty X → []ᴬ ＝ (X ∷ Xf)
 []ᴬ-＝ {X} Xf e =
  []ᴬ               ＝⟨refl⟩
  𝟘 ∷ unique-from-𝟘 ＝⟨ to-𝔸-＝ 𝟘-elim Xf I II ⟩
  (X ∷ Xf)          ∎
   where
    I : 𝟘 ＝ X
-   I = eqtoid (ua 𝓤₀) 𝟘 X (≃-sym (empty-≃-𝟘 e))
+   I = eqtoid (ua 𝓤) 𝟘 X (≃-sym (empty-≃-𝟘 e))
 
    II : unique-from-𝟘 ＝ Xf ∘ Idtofun I
    II = dfunext fe (λ (x : 𝟘) → 𝟘-elim x)
@@ -471,10 +478,10 @@ construction).
 
 \begin{code}
 
-ℍ-Path : ℍ → Type
+ℍ-Path : ℍ → 𝓤 ̇
 ℍ-Path (Xt , _) = 𝔸-Path Xt
 
-𝔾-Path : 𝔾 → Type
+𝔾-Path : 𝔾 → 𝓤 ̇
 𝔾-Path (Xt , _) = Path Xt
 
 hg-path : (h : ℍ) → ℍ-Path h ≃ 𝔾-Path (⌜ hg ⌝ h)
@@ -485,7 +492,7 @@ hg-path (Xt , d) = γ Xt d
   γ (X ∷ Xf) (inl s , d) =
    𝔸-Path (X ∷ Xf)                              ≃⟨by-definition⟩
    is-empty X + (Σ x ꞉ X , 𝔸-Path (Xf x))       ≃⟨ II ⟩
-   𝟘 + (Σ x ꞉ X , 𝔸-Path (Xf x))               ≃⟨ 𝟘-lneutral {𝓤₀} {𝓤₀} ⟩
+   𝟘 + (Σ x ꞉ X , 𝔸-Path (Xf x))               ≃⟨ 𝟘-lneutral {𝓤} {𝓤} ⟩
    (Σ x ꞉ X , 𝔸-Path (Xf x))                    ≃⟨ Σ-cong IH ⟩
    (Σ x ꞉ X , Path (pr₁ (⌜ hg ⌝ (Xf x , d x)))) ≃⟨by-definition⟩
    𝔾-Path (⌜ hg ⌝ ((X ∷ Xf) , inl s , d))       ■
@@ -504,7 +511,7 @@ hg-path (Xt , d) = γ Xt d
   γ (X ∷ Xf) (inr e , d) =
    𝔸-Path (X ∷ Xf)                        ≃⟨by-definition⟩
    is-empty X + (Σ x ꞉ X , 𝔸-Path (Xf x)) ≃⟨ III ⟩
-   𝟙 + 𝟘                                  ≃⟨ 𝟘-rneutral' {𝓤₀} {𝓤₀}⟩
+   𝟙 + 𝟘                                  ≃⟨ 𝟘-rneutral' {𝓤} {𝓤}⟩
    𝟙                                      ≃⟨by-definition⟩
    Path []                                ■
     where
@@ -546,7 +553,7 @@ tree must be hereditarily inhabited.
 
 \begin{code}
 
-Strategy : 𝕋 -> Type
+Strategy : 𝕋 -> 𝓤 ̇
 Strategy [] = 𝟙
 Strategy (X ∷ Xf) = X × ((x : X) → Strategy (Xf x))
 
@@ -564,7 +571,7 @@ isomorphic copy ℍ of 𝔾.
 
 \begin{code}
 
-Strategy' : ℍ -> Type
+Strategy' : ℍ -> 𝓤 ̇
 Strategy' ((X ∷ Xf) , inr _ , _) = 𝟙
 Strategy' ((X ∷ Xf) , inl _ , h) = X × ((x : X) → Strategy' (Xf x , h x))
 
@@ -642,7 +649,7 @@ leaf [] in the tree Xt.
 
 \begin{code}
 
-has-at-least-one-[] : 𝕋 → Type
+has-at-least-one-[] : 𝕋 → 𝓤 ̇
 has-at-least-one-[] []       = 𝟙
 has-at-least-one-[] (X ∷ Xf) = ∃ x ꞉ X , has-at-least-one-[] (Xf x)
 
@@ -704,21 +711,21 @@ modification needed to use ℍ instead:
 
 \begin{code}
 
-module illustration (R : Type) where
+module illustration (R : 𝓤 ̇ ) where
 
  open import MonadOnTypes.K
 
  open K-definitions R
 
- Path' : ℍ → Type
+ Path' : ℍ → 𝓤 ̇
  Path' ((X ∷ Xf) , inr _ , _) = 𝟙
  Path' ((X ∷ Xf) , inl _ , h) = Σ x ꞉ X , Path' (Xf x , h x)
 
- 𝓚 : 𝕋 → Type
+ 𝓚 : 𝕋 → 𝓤 ̇
  𝓚 []       = 𝟙
  𝓚 (X ∷ Xf) = K X × ((x : X) → 𝓚 (Xf x))
 
- 𝓚' : ℍ → Type
+ 𝓚' : ℍ → 𝓤 ̇
  𝓚' ((X ∷ Xf) , inr _ , _) = 𝟙
  𝓚' ((X ∷ Xf) , inl _ , h) = K X × ((x : X) → 𝓚' (Xf x , h x))
 
@@ -748,7 +755,7 @@ To illustrate the richness of 𝔸 and 𝕋, we now show how to embed the
 type of all ordinals into 𝔸, and then some kinds of ordinals in 𝔾, following
 
    Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie
-   Xu. *Set-Theoretic and Type-Theoretic Ordinals Coincide.*
+   Xu. *Set-Theoretic and ? ̇ -Theoretic Ordinals Coincide.*
    To appear at LICS 2023, June 2023.
 
    https://arxiv.org/abs/2301.10696
@@ -762,10 +769,10 @@ open import Ordinals.Type
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Underlying
 
-Ord-to-𝔸 : Ordinal 𝓤₀ → 𝔸
+Ord-to-𝔸 : Ordinal 𝓤 → 𝔸
 Ord-to-𝔸 = transfinite-recursion-on-OO 𝔸 (λ α f → ⟨ α ⟩ ∷ f)
 
-Ord-to-𝔸-behaviour : (α : Ordinal 𝓤₀)
+Ord-to-𝔸-behaviour : (α : Ordinal 𝓤)
                    → Ord-to-𝔸 α ＝ (⟨ α ⟩ ∷ λ (a : ⟨ α ⟩) → Ord-to-𝔸 (α ↓ a))
 Ord-to-𝔸-behaviour = transfinite-recursion-on-OO-behaviour 𝔸 (λ α f → ⟨ α ⟩ ∷ f)
 
@@ -776,7 +783,7 @@ hereditarily decidable in the following sense.
 
 \begin{code}
 
-is-hereditarily-decidableₒ : Ordinal 𝓤₀ → Type
+is-hereditarily-decidableₒ : Ordinal 𝓤 → 𝓤 ̇
 is-hereditarily-decidableₒ α = is-decidable ∥ ⟨ α ⟩ ∥
                              × ((a : ⟨ α ⟩) → is-decidable ∥ ⟨ α ↓ a ⟩ ∥)
 \end{code}
@@ -785,12 +792,12 @@ Notice that the above definition doesn't use induction.
 
 \begin{code}
 
-hereditarily-decidable→ : (α : Ordinal 𝓤₀)
+hereditarily-decidable→ : (α : Ordinal 𝓤)
                         → is-hereditarily-decidableₒ α
                         → is-hereditarily-decidable (Ord-to-𝔸 α)
 hereditarily-decidable→ = transfinite-induction-on-OO _ ϕ
  where
-  ϕ : (α : Ordinal 𝓤₀)
+  ϕ : (α : Ordinal 𝓤)
     → ((a : ⟨ α ⟩) → is-hereditarily-decidableₒ (α ↓ a)
                    → is-hereditarily-decidable (Ord-to-𝔸 (α ↓ a)))
     → is-hereditarily-decidableₒ α → is-hereditarily-decidable (Ord-to-𝔸 α)
@@ -821,12 +828,12 @@ hereditarily-decidable→ = transfinite-induction-on-OO _ ϕ
     IV : is-hereditarily-decidable (Ord-to-𝔸 α)
     IV = transport is-hereditarily-decidable ((Ord-to-𝔸-behaviour α)⁻¹) III
 
-hereditarily-decidable← : (α : Ordinal 𝓤₀)
+hereditarily-decidable← : (α : Ordinal 𝓤)
                         → is-hereditarily-decidable (Ord-to-𝔸 α)
                         → is-hereditarily-decidableₒ α
 hereditarily-decidable← = transfinite-induction-on-OO _ ϕ
  where
-  ϕ : (α : Ordinal 𝓤₀)
+  ϕ : (α : Ordinal 𝓤)
     → ((a : ⟨ α ⟩) → is-hereditarily-decidable (Ord-to-𝔸 (α ↓ a))
                    → is-hereditarily-decidableₒ (α ↓ a))
     → is-hereditarily-decidable (Ord-to-𝔸 α) → is-hereditarily-decidableₒ α
@@ -856,7 +863,7 @@ element.
 
 \begin{code}
 
-Ord-to-𝔾 : (α : Ordinal 𝓤₀) → is-hereditarily-decidableₒ α → 𝔾
+Ord-to-𝔾 : (α : Ordinal 𝓤) → is-hereditarily-decidableₒ α → 𝔾
 Ord-to-𝔾 α g = ⌜ hg ⌝ (Ord-to-𝔸 α , hereditarily-decidable→ α g)
 
 \end{code}
@@ -887,8 +894,8 @@ definition of (material) set.
 
 \begin{code}
 
-data ℂ : Type₁ where
- conway : (L R : Type) (Lf : L → ℂ) (Rf : R → ℂ) → ℂ
+data ℂ : 𝓤⁺ ̇ where
+ conway : (L R : 𝓤 ̇ ) (Lf : L → ℂ) (Rf : R → ℂ) → ℂ
 
 \end{code}
 
@@ -924,7 +931,7 @@ Aczel's 𝕎-type using hereditary embeddings is due to Håkon Gylterud.
 
 open import UF.Embeddings
 
-is-CZF-set : 𝔸 → Type₁
+is-CZF-set : 𝔸 → 𝓤⁺ ̇
 is-CZF-set (X ∷ Xf) = is-embedding Xf × ((x : X) → is-CZF-set (Xf x))
 
 \end{code}

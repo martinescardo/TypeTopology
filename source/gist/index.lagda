@@ -18,5 +18,7 @@ import gist.multiset-addendum-question
 import gist.not-an-apartness
 import gist.remove-swap
 import gist.transport-discussion
+import gist.Hydra                      -- by Alice Laroche
+import gist.wrong-proofs
 
 \end{code}

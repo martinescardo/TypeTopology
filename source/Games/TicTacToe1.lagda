@@ -7,9 +7,7 @@ TODO. Organaze this module better, following the organization of TicTacToe0.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-} --
-
-
+{-# OPTIONS --safe --without-K #-}
 
 module Games.TicTacToe1 where
 
@@ -22,17 +20,17 @@ open import TypeTopology.CompactTypes
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.DiscreteAndSeparated
 
-𝟛 : Type
+𝟛 : 𝓤₀ ̇
 𝟛 = Fin 3
 
-open import Games.FiniteHistoryDependent 𝟛
-open import Games.Constructor 𝟛
+open import Games.FiniteHistoryDependent {𝓤₀} {𝓤₀} 𝟛
+open import Games.Constructor {𝓤₀} {𝓤₀} 𝟛
 open import MonadOnTypes.J
 
 tic-tac-toe₁ : Game
 tic-tac-toe₁ = build-Game draw Board transition 9 board₀
  where
-  data Player : Type where
+  data Player : 𝓤₀ ̇ where
    X O : Player
 
   opponent : Player → Player
@@ -93,7 +91,7 @@ Convention: in a board (p , A), p is the opponent of the the current player.
   board₀ : Board
   board₀ = X , (λ _ → Nothing)
 
-  Move : Board → Type
+  Move : Board → 𝓤₀ ̇
   Move (_ , A) = Σ g ꞉ Grid , A g ＝ Nothing
 
   Move-decidable : (b : Board) → is-decidable (Move b)
@@ -125,12 +123,12 @@ Convention: in a board (p , A), p is the opponent of the the current player.
   play : (b : Board) → Move b → Board
   play (p , A) m = opponent p , update p A m
 
-  transition : Board → 𝟛 + (Σ M ꞉ Type , (M → Board) × J M)
+  transition : Board → 𝟛 + (Σ M ꞉ 𝓤₀ ̇ , (M → Board) × J M)
   transition b@(p , A) = f b (wins p A)
    where
     f : (b : Board)
       → Bool
-      → 𝟛 + (Σ M ꞉ Type , (M → Board) × J M)
+      → 𝟛 + (Σ M ꞉ 𝓤₀ ̇ , (M → Board) × J M)
     f (p , A) true  = inl (value p)
     f b       false = Cases (Move-decidable b)
                        (λ (m : Move b)

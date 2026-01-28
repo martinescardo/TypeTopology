@@ -183,6 +183,30 @@ basic-discontinuity-taboo' f (f₀ , f₁) = VI
           (λ (p : ι 0 ＝ f u) → inr (I u (p ⁻¹)))
           (λ (ν : ι 0 ≠ f u) → inl (II u (≠-sym ν)))
 
+WLPO-is-discontinuous' : WLPO
+                       → Σ p ꞉ (ℕ∞ → ℕ∞), basic-discontinuity' p
+WLPO-is-discontinuous' wlpo = II
+ where
+  inc : 𝟚 → ℕ
+  inc = 𝟚-cases 0 1
+  I : Σ g ꞉ (ℕ∞ → 𝟚) , ((n : ℕ) → g (ι n) ＝ ₀) × (g ∞ ＝ ₁)
+  I = WLPO-is-discontinuous wlpo
+  q = pr₁ I
+  q₀ = pr₁ (pr₂ I)
+  q₁ = pr₂ (pr₂ I)
+  p : ℕ∞ → ℕ∞
+  p = ι ∘ inc ∘ q
+  p₀ : (n : ℕ) → p (ι n) ＝ ι 0
+  p₀ n = ι (inc (q (ι n))) ＝⟨ ap (ι ∘ inc) (q₀ n) ⟩
+         ι (inc ₀)         ＝⟨ refl ⟩
+         ι 0               ∎
+  p₁ : p ∞ ＝ ι 1
+  p₁ = ι (inc (q ∞)) ＝⟨ ap (ι ∘ inc) q₁ ⟩
+       ι (inc ₁)     ＝⟨ refl ⟩
+       ι 1           ∎
+  II : Σ p ꞉ (ℕ∞ → ℕ∞) , ((n : ℕ) → p (ι n) ＝ ι 0) × (p ∞ ＝ ι 1)
+  II = p , p₀ , p₁
+
 \end{code}
 
 Added 13th November 2023.

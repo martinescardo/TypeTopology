@@ -169,8 +169,6 @@ module Universal (fe : Fun-Ext) where
 
 module Implication (fe : Fun-Ext) where
 
- open Universal fe
-
  infixr 3 _⇒_
 
  _⇒_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)

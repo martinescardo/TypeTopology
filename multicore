@@ -1,0 +1,176 @@
+#!/usr/bin/env bash
+
+# Martin Escardo, 31st December 2025, improved 20th Jan 2025.
+# Script to typecheck TypeTopology fast exploiting multicore.
+#
+# This performs better than a makefile with the appropriate dependencies
+# (see `generateMakefile.hs` in TypeTopology/admin-utilies).
+#
+# See also the script `multicore-reuse`.
+
+set -Eeo pipefail
+
+# Unchecked assumptions:
+#
+#  $1 is an integer >= 2 (number of threads)
+
+# Temporary files and directories used by this script:
+#
+#   x*            # They are used to create the x*.agda files below.
+#   x*.agda       # We type check these files in parallel.
+#   last/         # Keeps previous x*.agda files.
+#   secondLast/   # Copy of previous last/
+#   thirdLast/    # Copy of previous secondLast/
+#   log           # Grows forever - delete it if you want to start again.
+
+if [ `basename $PWD` != "multicore" ] || [ $# != 1 ]
+then
+ echo "This script should be run from the directory TypeTopology/source/multicore."
+ echo "All files in this directory are automatically generated and deleted."
+ echo "If you don't have this directory, create it."
+ echo ""
+ echo "Usage:"
+ echo "        $ ../../multicore <number of desired parallel threads>"
+ echo ""
+ echo "Needless to say, the optimal number depends on how many cores you have"
+ echo "how much ram you have available, your ram bandwidth,"
+ echo "the number of apps you have open, how many Agda files are already"
+ echo "type checked, and much more, and so it is an art to find the optimal"
+ echo "number for your use case. So this can be determined only experimentally."
+ exit 1
+fi
+
+echo >> log
+echo "-------------------------------" >> log
+echo "Got started at with argument $1" >> log
+echo $(date) >> log
+
+# We now save the previously existing files x*.agda created by this
+# script. This is so that if a particularly fast random splitting is
+# found (see below), then we can reuse it with the script
+# `multicore-reuse`. We only backup the last three attempts, which
+# gives us four saved attempts in total.
+
+mkdir -p last
+mkdir -p secondlast
+rm -rf thirdLast
+mv secondLast thirdLast
+mv last secondLast
+mkdir last
+echo > x.agda
+cp x*.agda last/
+rm last/x.agda
+rm -f x*.agda
+
+# We now create a list of all files which are not index files. We also
+# omit a cubical file that doesn't typecheck any more due to changes
+# in the cubical Agda library. Importantly, for the sake of *expected*
+# efficiency, we suffle this list in random order using `shuf`. We
+# then make this into a list of 'import' commands in the format
+# required by Agda, using 'sed'.
+
+git ls-files "../*agda" \
+ | grep -v Cubical \
+ | grep -v index \
+ | grep -v AllModulesIndex \
+ | shuf \
+ | sed 's:.lagda::' \
+ | sed 's:.agda::' \
+ | sed 's:\.\.\/:import :' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ | sed 's:/:.:' \
+ > listOfAlmostAllFiles
+
+# We now split this file into files of n lines each, where n is
+# the number of lines in this list divided by $1.
+# The resulting files are called x* without a suffix.
+
+n=$(($(cat listOfAlmostAllFiles | wc -l) / $1))
+
+echo "Approximate number of imports per Agda file" >> log
+echo $n >> log
+
+split -d -l $n < listOfAlmostAllFiles
+
+# We want to have exactly $1 files. So we add the last file to the
+# second last one, if necessary, and delete the last one.
+
+if [ `ls x* | wc -l` != $1 ]
+then
+ lastFile=$(ls x* | tail -1)
+ secondLastFile=$(ls x* | tail -2 | head -1)
+ cat $lastFile >> $secondLastFile
+ rm $lastFile
+fi
+
+echo "All required temporary files created at" >> log
+echo $(date) >> log
+
+# Well, actually almost all. The Agda files are created in the
+# following for-loop.
+
+# We will not use the --safe flag, deliberately. We also use some
+# flags that we *don't* want in all modules. But this is not a
+# problem, because all modules which are meant to be --safe (which is
+# most of the modules) do include the flag explicitly. Moreover,
+# `AllModulesIndex`, launched after all threads below finish, takes
+# care of that in any case.
+
+header="{-# OPTIONS --without-K --guardedness #-}"
+
+# We now start type checking these files in parallel.
+
+for file in x*
+do
+     fileheader="$header\nmodule multicore.$file where"
+     newfile="${file}.agda"
+     (echo -e $fileheader && cat $file) > $newfile
+     rm $file
+     agda $newfile &
+done
+
+rm listOfAlmostAllFiles
+
+# At this point, all the files x<number>.agda remain available,
+# e.g. for the purposes of `multicore-reuse` or for you to have a look
+# at.
+
+# We now wait for all threads to finish, and then launch the type
+# checking of everything. This will take care of checking the index
+# files which were deliberately left out in the parallel threads.
+
+wait
+
+echo "Finished everything except index files at" >> log
+echo $(date) >> log
+echo >> log
+
+agda ../AllModulesIndex.lagda &
+
+wait
+
+format_time() {
+  ((h=${1}/3600))
+  ((m=(${1}%3600)/60))
+  ((s=${1}%60))
+  printf "%02d:%02d:%02d\n" $h $m $s
+}
+
+echo "Done now" >> log
+echo "Total time $(format_time $SECONDS)"
+
+echo "Finished at" >> log
+echo $(date) >> log
+echo >> log
+echo "Total time $(format_time $SECONDS)" >> log
+echo "--------------------------------" >> log
+echo >> log

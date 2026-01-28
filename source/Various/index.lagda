@@ -8,8 +8,8 @@ module Various.index where
 
 import Various.CantorTheoremForEmbeddings -- by Jon Sterling
 import Various.Dedekind
+import Various.DedekindNonAxiomatic
 import Various.DummettDisjunction
-import Various.Hydra                      -- by Alice Laroche
 import Various.LawvereFPT
 import Various.Lumsdaine
 import Various.NatIsSetWithoutUniverse    -- by Evan Cavallo

@@ -462,7 +462,7 @@ Aut-of-prop-is-singleton P i = ≃-refl P , h
 factorial-base-generalized : (P : 𝓤 ̇ )
                            → is-prop P
                            → 𝟙 {𝓥} ≃ Aut P
-factorial-base-generalized P i = singleton-≃-𝟙' (Aut-of-prop-is-singleton P i)
+factorial-base-generalized P i = 𝟙-≃-singleton (Aut-of-prop-is-singleton P i)
 
 propositional-factorial : (P : 𝓤 ̇ )
                         → is-prop P

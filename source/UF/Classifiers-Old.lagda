@@ -466,7 +466,7 @@ module singleton-classifier
       ψ = qinveq unique-to-𝟙 ((λ _ → 𝟙 , 𝟙-is-singleton) , (a , 𝟙-is-prop ⋆))
        where
        a : (p : Σ (λ v → is-singleton v)) → 𝟙 , 𝟙-is-singleton ＝ p
-       a (X , s) = to-Σ-＝ (eqtoid ua 𝟙 X (singleton-≃-𝟙' s) ,
+       a (X , s) = to-Σ-＝ (eqtoid ua 𝟙 X (𝟙-≃-singleton s) ,
                            being-singleton-is-prop fe _ s)
 
 open import UF.PropTrunc

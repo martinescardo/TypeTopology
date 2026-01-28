@@ -14,7 +14,6 @@ open import UF.FunExt
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.Yoneda
-open import UF.Singleton-Properties
 open import UF.Subsingletons
 open import UF.Retracts
 

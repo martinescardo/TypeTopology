@@ -691,13 +691,13 @@ filter'-member← {𝓤} {𝓥} {X} A δ A-is-prop-valued y (x ∷ xs) = h x xs 
   h x xs (inr x₁) a (in-tail m) = filter'-member← A δ A-is-prop-valued y xs a m
 
 detachable-subtype-of-listed-type-is-listed
- : {X : Type}
- → (A : X → Type)
+ : {X : 𝓤 ̇ }
+ → (A : X → 𝓥 ̇ )
  → ((x : X) → is-decidable (A x))
  → ((x : X) → is-prop (A x))
  → listed X
  → listed (Σ x ꞉ X , A x)
-detachable-subtype-of-listed-type-is-listed {X} A δ A-is-prop-valued (xs , m)
+detachable-subtype-of-listed-type-is-listed {𝓤} {𝓥} {X} A δ A-is-prop-valued (xs , m)
  = filter' A δ xs , γ
  where
   γ : (σ : Σ x ꞉ X , A x) → member σ (filter' A δ xs)

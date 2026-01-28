@@ -1,4 +1,4 @@
-Martin Escardo, Paulo Oliva, 2-27 July 2021
+Martin Escardo, Paulo Oliva, 2-27 July 2021.
 
 The following paper is based on this file:
 
@@ -39,13 +39,16 @@ We assume a given type R of outcomes for games as a module parameter.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-} --
+{-# OPTIONS --safe --without-K  #-}
 
 open import MLTT.Spartan hiding (J)
 
-module Games.FiniteHistoryDependent (R : Type) where
+module Games.FiniteHistoryDependent
+        {𝓤 𝓦₀ : Universe}
+        (R : 𝓦₀ ̇ )
+       where
 
-open import MonadOnTypes.Monad
+open import MonadOnTypes.Definition
 open import MonadOnTypes.J
 open import MonadOnTypes.K
 open import MonadOnTypes.JK
@@ -62,7 +65,7 @@ to represent the above kind of game:
 
 \begin{code}
 
-open import Games.TypeTrees
+open import Games.TypeTrees {𝓤}
 
 \end{code}
 
@@ -78,10 +81,10 @@ quantifiers over X.
 
 \begin{code}
 
-𝓚 : 𝑻 → Type
+𝓚 : 𝑻 → 𝓤 ⊔ 𝓦₀ ̇
 𝓚 = structure K
 
-remark-𝓚 : {X : Type} {Xf : X → 𝑻}
+remark-𝓚 : {X : 𝓤 ̇ } {Xf : X → 𝑻}
          → (𝓚 []       ＝ 𝟙)
          × (𝓚 (X ∷ Xf) ＝ K X × ((x : X) → 𝓚 (Xf x)))
 remark-𝓚 = refl , refl
@@ -110,11 +113,11 @@ quantifier tree ϕt and an outcome function q:
 
 \begin{code}
 
-record Game : Type₁ where
+record Game : 𝓤 ⁺ ⊔ 𝓦₀ ̇ where
  constructor game
  field
-  game-tree : 𝑻
-  payoff-function  : Path game-tree → R
+  game-tree       : 𝑻
+  payoff-function : Path game-tree → R
   quantifier-tree : 𝓚 game-tree
 
 open Game public
@@ -130,7 +133,7 @@ quantifiers applied to the outcome function (Theorem 3.1 of [1]).
 \begin{code}
 
 optimal-outcome : Game → R
-optimal-outcome (game Xt q ϕt) = sequenceᴷ {Xt} ϕt q
+optimal-outcome (game Xt q ϕt) = sequenceᴷ ϕt q
 
 \end{code}
 
@@ -139,10 +142,10 @@ Definition 4 of [1]:
 
 \begin{code}
 
-Strategy : 𝑻 → Type
+Strategy : 𝑻 → 𝓤 ̇
 Strategy = structure id
 
-remark-Strategy : {X : Type} {Xf : X → 𝑻}
+remark-Strategy : {X : 𝓤 ̇ } {Xf : X → 𝑻}
                 → (Strategy []       ＝ 𝟙)
                 × (Strategy (X ∷ Xf) ＝ X × ((x : X) → Strategy (Xf x)))
 remark-Strategy = refl , refl
@@ -162,7 +165,7 @@ We get a path in the tree by following any given strategy:
 strategic-path : {Xt : 𝑻} → Strategy Xt → Path Xt
 strategic-path = path-sequence 𝕀𝕕
 
-remark-strategic-path : {X : Type} {Xf : X → 𝑻} {x : X}
+remark-strategic-path : {X : 𝓤 ̇ } {Xf : X → 𝑻} {x : X}
                         {σf : (x : X) → Strategy (Xf x)}
                       → (strategic-path {[]}     ⟨⟩        ＝ ⟨⟩)
                       × (strategic-path {X ∷ Xf} (x :: σf) ＝ x :: strategic-path (σf x))
@@ -197,15 +200,15 @@ is convenient to define this notion by induction on the game tree Xt:
 
 \begin{code}
 
-is-in-equilibrium : {X : Type} {Xf : X → 𝑻}
+is-in-equilibrium : {X : 𝓤 ̇ } {Xf : X → 𝑻}
                     (q : (Σ x ꞉ X , Path (Xf x)) → R)
                     (ϕ : K X)
                   → Strategy (X ∷ Xf)
-                  → Type
+                  → 𝓦₀ ̇
 is-in-equilibrium {X} {Xf} q ϕ σt@(x₀ :: σf)  =
  subpred q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → subpred q x (strategic-path (σf x)))
 
-is-in-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → Type
+is-in-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → 𝓤 ⊔ 𝓦₀ ̇
 is-in-sgpe {[]}     ⟨⟩        q ⟨⟩            = 𝟙
 is-in-sgpe {X ∷ Xf} (ϕ :: ϕf) q σt@(x₀ :: σf) =
    is-in-equilibrium q ϕ σt
@@ -240,7 +243,7 @@ is in subgame perfect equilibrium.
 
 \begin{code}
 
-is-optimal : (G : Game) (σ : Strategy (game-tree G)) → Type
+is-optimal : (G : Game) (σ : Strategy (game-tree G)) → 𝓤 ⊔ 𝓦₀ ̇
 is-optimal (game Xt ϕt q) σ = is-in-sgpe {Xt} q ϕt σ
 
 \end{code}
@@ -297,10 +300,10 @@ in another module.
 
 \begin{code}
 
-𝓙 : 𝑻 → Type
+𝓙 : 𝑻 → 𝓦₀ ⊔ 𝓤 ̇
 𝓙 = structure J
 
-remark-𝓙 : {X : Type} {Xf : X → 𝑻}
+remark-𝓙 : {X : 𝓤 ̇ } {Xf : X → 𝑻}
          → (𝓙 [] ＝ 𝟙)
          × (𝓙 (X ∷ Xf) ＝ J X × ((x : X) → 𝓙 (Xf x)))
 remark-𝓙 = refl , refl
@@ -356,10 +359,10 @@ obvious way, by induction:
 
 open JK R
 
-_Attains_ : {Xt : 𝑻} → 𝓙 Xt → 𝓚 Xt → Type
+_Attains_ : {Xt : 𝑻} → 𝓙 Xt → 𝓚 Xt → 𝓤 ⊔ 𝓦₀ ̇
 _Attains_ {[]}     ⟨⟩        ⟨⟩        = 𝟙
 _Attains_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε attains ϕ)
-                                       × ((x : X) → (εf x) Attains (ϕf x))
+                                           × ((x : X) → (εf x) Attains (ϕf x))
 
 \end{code}
 
@@ -495,11 +498,13 @@ selection-strategy-theorem fe εt ϕt q a = III
   III = transport (λ - → is-in-sgpe - q (selection-strategy εt q)) I II
 
 
-Selection-Strategy-Theorem : Fun-Ext
-                           → (G@(game Xt q ϕt) : Game) (εt : 𝓙 Xt)
-                           → εt Attains ϕt
-                           → is-optimal G (selection-strategy εt q)
-Selection-Strategy-Theorem fe (game Xt ϕt q) εt = selection-strategy-theorem fe εt q ϕt
+Selection-Strategy-Theorem
+ : Fun-Ext
+ → (G@(game Xt q ϕt) : Game) (εt : 𝓙 Xt)
+ → εt Attains ϕt
+ → is-optimal G (selection-strategy εt q)
+Selection-Strategy-Theorem fe (game Xt ϕt q) εt
+ = selection-strategy-theorem fe εt q ϕt
 
 \end{code}
 
