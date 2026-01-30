@@ -4,18 +4,17 @@ The structure identity principle (SIP), coined by Peter Aczel, allows an
 treatment of identificiation in Univalent Foundations that, with much care,
 escapes "transport hell". Many have formulated there own terminology and
 approach to SIP (including Egbert Rijke in "Introduction to Homotopy Type
-Theory"; Martin Escardo see files: StructureIdentityPrinciple, Yoneda and
-SigmaIdentity; as well as many others!) In recent times, some have
-considered 'reflexive graphs' as a more systematic approach to SIP (see
-"Using Displayed Univalent Graphs to Formalize Higher Groups in Univalent
-Foundations" by Johannes Schipp von Branitz and Ulrik Buchholtz,
+Theory" see doi:10.1017/9781108933568, arXiv:2212.11082; Martin Escardo see
+files: SIP, Yoneda and SigmaIdentity; as well as many others!) In recent
+times, some have considered 'reflexive graphs' as a more modular approach to
+SIP (see "Using Displayed Univalent Graphs to Formalize Higher Groups in
+Univalent Foundations" by Johannes Schipp von Branitz and Ulrik Buchholtz,
 https://ulrikbuchholtz.dk/durgs.pdf; and "Reflexive graph lenses in univalent
 foundations" by Jonathan Sterling, https://doi.org/10.48550/arXiv.2404.07854).
 
-This folder on (displayed) (univalent) reflexive graphs will provide background
-following Sterling and provide an outline for characterizing the identity type
-of structures in a principled way using (displayed) (univalent) reflexive
-graphs.
+Here we will explore the foundation of the theory of (displayed) (univalent)
+reflexive graphs following Sterling. We will also provide multiple examples
+that outline the reflexive graph approach to SIP.
 
 \begin{code}
 
@@ -23,6 +22,6 @@ graphs.
 
 module ReflexiveGraphs.index where
 
-import ReflexiveGraphs.ReflexiveGraphs
+import ReflexiveGraphs.Type
 
 \end{code}

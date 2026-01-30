@@ -186,6 +186,7 @@ import PCF.index
 import PathSequences.index
 import Quotient.index
 import Rationals.index
+import ReflexiveGraphs.index
 import Relations.index
 import Slice.index
 import SyntheticHomotopyTheory.index
