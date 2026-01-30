@@ -6,12 +6,13 @@ Definition of natural transformation
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan hiding (_∘_ ; id)
+open import MLTT.Spartan hiding (id)
+open import Categories.Wild
+open import Categories.Notation
+open import Categories.Functor
 
 module Categories.NaturalTransformation where
 
-open import Categories.Type
-open import Categories.Functor
 
 \end{code}
 
@@ -41,7 +42,7 @@ record NaturalTransformation {A : WildCategory 𝓤 𝓥}
  field
   natural : {a b : obj A}
             (f : hom a b)
-          → G f ∘ γ a ＝ γ b ∘ F f
+          → G f ○ γ a ＝ γ b ○ F f
 
 \end{code}
 
@@ -69,7 +70,7 @@ record NatNotation {A : WildCategory 𝓤 𝓥}
  field
   natural : {a b : obj A}
             (f : hom a b)
-          → G f ∘ γ a ＝ γ b ∘ F f
+          → G f ○ γ a ＝ γ b ○ F f
 
 open NatNotation {{...}} public
 

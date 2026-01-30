@@ -6,11 +6,11 @@ Definition of functor
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan hiding (_∘_ ; id)
+open import MLTT.Spartan hiding (id)
+open import Categories.Notation
+open import Categories.Wild
 
 module Categories.Functor where
-
-open import Categories.Type
 
 \end{code}
 
@@ -37,7 +37,7 @@ record Functor (A : WildCategory 𝓤 𝓥) (B : WildCategory 𝓦 𝓣)
   distributes : {a b c : obj A}
                 (g : hom b c)
                 (f : hom a b)
-              → Fhom (g ∘ f) ＝ (Fhom g) ∘ (Fhom f)
+              → Fhom (g ○ f) ＝ (Fhom g) ○ (Fhom f)
 
 \end{code}
 
@@ -64,8 +64,8 @@ record FUNNOTATION {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
   distributes : {a b c : obj A}
                 (g : hom b c)
                 (f : hom a b)
-              → Functor.Fhom F (g ∘ f)
-              ＝ Functor.Fhom F g ∘ Functor.Fhom F f
+              → Functor.Fhom F (g ○ f)
+              ＝ Functor.Fhom F g ○ Functor.Fhom F f
 
 open FUNNOTATION {{...}} public
 
@@ -130,10 +130,10 @@ _F∘_ {_} {_} {_} {_} {_} {_} {A} {B} {C} G' F' = functor
   f-distrib : {a b c : obj A}
               (g : hom b c)
               (f : hom a b)
-            → G (F (g ∘ f)) ＝ G (F g) ∘ G (F f)
-  f-distrib g f = G (F (g ∘ f))     ＝⟨ i  ⟩
-                  G (F g ∘ F f)     ＝⟨ ii ⟩
-                  G (F g) ∘ G (F f) ∎
+            → G (F (g ○ f)) ＝ G (F g) ○ G (F f)
+  f-distrib g f = G (F (g ○ f))     ＝⟨ i  ⟩
+                  G (F g ○ F f)     ＝⟨ ii ⟩
+                  G (F g) ○ G (F f) ∎
    where
     i  = ap G (distributes g f)
     ii = distributes (F g) (F f)
