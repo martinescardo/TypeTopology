@@ -20,8 +20,8 @@ module Categories.Wild where
 
 \end{code}
 
-We start by defining a wild category[1]. This consists of the usual components of a
-category, which is as follows.
+We start by defining a wild category [1]. This consists of the usual components 
+of a category, which is as follows.
 
 * A collection of objects, obj,
 
@@ -42,8 +42,8 @@ Such that the following axioms hold.
                  g : hom B C, h : hom C D, h ○ (g ○ f) ＝ (h ○ g) ○ f.
 
 
-[[ [1] Perhaps give the following reference for wild category.
-https://arxiv.org/abs/1707.03693]]
+[1] Capriotti, Paolo and Nicolai Kraus (2017). Univalent Higher Categories via
+Complete Semi-Segal Type. https://arxiv.org/abs/1707.03693.
 
 \begin{code}
 
@@ -65,21 +65,6 @@ record WildCategory (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇  where
           (g : hom b c)
           (h : hom c d)
         → h ○ (g ○ f) ＝ (h ○ g) ○ f
-
-\end{code}
-
-We can now define the property of being a precategory. This is exactly a wild
-category where the homs are sets. We define precategories later (outside of the
-record). [[Anna: Move this into Pre.lagda]]
-
-\begin{code}
-
- is-precategory : (𝓤 ⊔ 𝓥) ̇
- is-precategory = (a b : obj) → is-set (hom a b)
-
- being-precat-is-prop : (fe : Fun-Ext)
-                      → is-prop (is-precategory)
- being-precat-is-prop fe = Π₂-is-prop fe (λ _ _ → being-set-is-prop fe)
 
 \end{code}
 
@@ -160,55 +145,5 @@ follows.
            → a ＝ b
            → a ≅ b
  id-to-iso a b refl = id , id , id-is-left-neutral id , id-is-left-neutral id
-
-\end{code}
-
-We wish to combine the similar notions of equivalence, namely the internal
-equality: a ＝ b and isomorphisms a ≅ b.
-
-To bring into alignment the two different forms of equality, we define the
-property of being a category, where identification is equivalent to isomorphism.
-That is the above map is an equivalence. We define category outside of the
-record similarly to precategory. [[Anna: Move this into Univalent.lagda]]
-
-\begin{code}
-
- is-category : (𝓤 ⊔ 𝓥) ̇
- is-category = (a b : obj) → is-equiv (id-to-iso a b)
-
- being-cat-is-prop : (fe : Fun-Ext)
-                   → is-prop (is-category)
- being-cat-is-prop fe x y = Π₂-is-prop fe I _ _
-  where
-   I : (a b : obj) → is-prop (is-equiv (id-to-iso a b))
-   I a b = being-equiv-is-prop (λ x y → fe {x} {y}) (id-to-iso a b)
-
-
-open WildCategory public using
-                                (is-precategory
-                               ; being-precat-is-prop
-                               ; is-category
-                               ; being-cat-is-prop)
-
-
-\end{code}
-
-We define an object notation such that we can write obj W, obj P and obj C where
-W, P and C are wild categories, precategories and categories respectively.
-
-This works similarly to the method used in Notation.UnderlyingType.
-
-\begin{code}
-
-record OBJ {𝓤} {𝓥} (A : 𝓤 ̇ ) (B : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ⁺ ̇  where
- field
-  obj : A → B
-
-open OBJ {{...}} public
-
-
-instance
- wildcatobj : {𝓤 𝓥 : Universe} → OBJ (WildCategory 𝓤 𝓥) (𝓤 ̇ )
- obj {{wildcatobj}} = WildCategory.obj
 
 \end{code}

@@ -1,15 +1,17 @@
-Anna Williams 29/01
+Anna Williams 29 January 2026
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Categories.Notation
+open import Categories.Notation.Wild
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Base
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
+open import UF.FunExt
 
 open import Notation.UnderlyingType
 open import MLTT.Spartan
@@ -19,7 +21,24 @@ module Categories.Pre where
 
 \end{code}
 
-We now define the notion of a precategory.
+We can now define the property of being a precategory. This is exactly a wild
+category where the homs are sets.
+
+\begin{code}
+
+module _ {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) where
+ open WildCategoryNotation W
+
+ is-precategory : (𝓤 ⊔ 𝓥) ̇
+ is-precategory = (a b : obj W) → is-set (hom a b)
+
+ being-precat-is-prop : (fe : Fun-Ext)
+                      → is-prop (is-precategory)
+ being-precat-is-prop fe = Π₂-is-prop fe (λ _ _ → being-set-is-prop fe)
+
+\end{code}
+
+We can now define the notion of a precategory.
 
 \begin{code}
 
@@ -52,7 +71,7 @@ right inverse equalities are a proposition.
 \begin{code}
 
 module _ (P : Precategory 𝓤 𝓥) where
- open CategoryNotation ⟨ P ⟩
+ open WildCategoryNotation ⟨ P ⟩
 
  inverses-are-lc : {a b : obj P}
                    {f : hom a b}

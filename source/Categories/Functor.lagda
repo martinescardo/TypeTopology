@@ -7,14 +7,14 @@ Definition of functor
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (id)
-open import Categories.Notation
+open import Categories.Notation.Wild
 open import Categories.Wild
 
 module Categories.Functor where
 
 \end{code}
 
-We define a functor from precategory A to precategory B as is usual. This
+We define a functor from wild category A to wild category B as is usual. This
 includes,
 * Fobj, a map from objects of A to objects of B, and
 * Fhom, a map from homomorphisms of A to homomorphisms of B.
@@ -28,8 +28,8 @@ With the following structure
 record Functor (A : WildCategory 𝓤 𝓥) (B : WildCategory 𝓦 𝓣)
  : (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣) ̇  where
  constructor make-functor
- open CategoryNotation A
- open CategoryNotation B
+ open WildCategoryNotation A
+ open WildCategoryNotation B
  field
   Fobj : obj A → obj B
   Fhom : {a b : obj A} → hom a b → hom (Fobj a) (Fobj b)
@@ -57,8 +57,8 @@ open FUNCTORMAP {{...}} public
 record FUNNOTATION {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
                        (F : Functor A B) : 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇ where
  
- open CategoryNotation A
- open CategoryNotation B
+ open WildCategoryNotation A
+ open WildCategoryNotation B
  field 
   id-preserved : (a : obj A) → Functor.Fhom F {a} id ＝ id
   distributes : {a b c : obj A}
@@ -72,8 +72,8 @@ open FUNNOTATION {{...}} public
 module FunctorNotation {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
                        (F : Functor A B) where
 
- open CategoryNotation A
- open CategoryNotation B
+ open WildCategoryNotation A
+ open WildCategoryNotation B
 
  functor-map = gen-functor-map
 
@@ -106,9 +106,9 @@ _F∘_ : {A : WildCategory 𝓤 𝓥}
      → Functor A C
 _F∘_ {_} {_} {_} {_} {_} {_} {A} {B} {C} G' F' = functor
  where
-  open CategoryNotation A
-  open CategoryNotation B
-  open CategoryNotation C
+  open WildCategoryNotation A
+  open WildCategoryNotation B
+  open WildCategoryNotation C
   open FunctorNotation F' renaming (functor-map to F)
   open FunctorNotation G' renaming (functor-map to G)
   

@@ -8,7 +8,7 @@ Definition of natural transformation
 
 open import MLTT.Spartan hiding (id)
 open import Categories.Wild
-open import Categories.Notation
+open import Categories.Notation.Wild
 open import Categories.Functor
 
 module Categories.NaturalTransformation where
@@ -29,8 +29,8 @@ record NaturalTransformation {A : WildCategory 𝓤 𝓥}
                              {B : WildCategory 𝓦 𝓣}
                              (F' G' : Functor A B)
                            : (𝓤 ⊔ 𝓥 ⊔ 𝓣) ̇  where
- open CategoryNotation A
- open CategoryNotation B
+ open WildCategoryNotation A
+ open WildCategoryNotation B
  open FunctorNotation F' renaming (functor-map to F ; fobj to Fobj)
  open FunctorNotation G' renaming (functor-map to G ; fobj to Gobj)
  field
@@ -56,8 +56,8 @@ record NatNotation {A : WildCategory 𝓤 𝓥}
                         {F' G' : Functor A B}
                         (μ : NaturalTransformation F' G')
                    : (𝓤 ⊔ 𝓥 ⊔ 𝓣) ̇  where
- open CategoryNotation A
- open CategoryNotation B
+ open WildCategoryNotation A
+ open WildCategoryNotation B
  open FunctorNotation F' renaming (functor-map to F ; fobj to Fobj)
  open FunctorNotation G' renaming (functor-map to G ; fobj to Gobj)
 
@@ -78,8 +78,8 @@ module NaturalTNotation {A : WildCategory 𝓤 𝓥}
                         {B : WildCategory 𝓦 𝓣}
                         {F' G' : Functor A B}
                         (μ : NaturalTransformation F' G') where
- open CategoryNotation A
- open CategoryNotation B
+ open WildCategoryNotation A
+ open WildCategoryNotation B
  open FunctorNotation F' renaming (functor-map to F ; fobj to Fobj)
  open FunctorNotation G' renaming (functor-map to G ; fobj to Gobj)
 

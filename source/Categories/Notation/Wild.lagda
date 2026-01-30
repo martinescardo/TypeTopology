@@ -1,4 +1,4 @@
-Anna Williams 29/01
+Anna Williams 29 January 2026
 
 \begin{code}
 
@@ -7,13 +7,32 @@ Anna Williams 29/01
 open import MLTT.Spartan hiding (id)
 open import Categories.Wild
 
-module Categories.Notation where
+module Categories.Notation.Wild where
+
+\end{code}
+
+We define an object notation such that we can write obj W, obj P and obj C where
+W, P and C are wild categories, precategories and categories respectively.
+
+This works similarly to the method used in Notation.UnderlyingType.
+
+\begin{code}
+
+record OBJ {𝓤} {𝓥} (A : 𝓤 ̇ ) (B : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ⁺ ̇  where
+ field
+  obj : A → B
+
+open OBJ {{...}} public
+
+instance
+ wildcatobj : {𝓤 𝓥 : Universe} → OBJ (WildCategory 𝓤 𝓥) (𝓤 ̇ )
+ obj {{wildcatobj}} = WildCategory.obj
 
 \end{code}
 
 We now define some notation for categories. This way, if we are working with
-wild categories C and D. We can simply write "open CategoryNotation C" and
-"open CategoryNotation D" to have all operations available.
+wild categories C and D. We can simply write "open WildCategoryNotation C" and
+"open WildCategoryNotation D" to have all operations available.
 
 This works similarly to Notation.UnderlyingType, where we define records for
 each different field. We then define instances of each of the fields we want
@@ -98,7 +117,8 @@ module _ {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) where
    underlying-morphism-is-isomorphism : {a b : obj W}
                                         (f : a ≅ b)
                                       → Σ f⁻¹ ꞉ hom b a
-                                        , (f⁻¹ ○ ⌜ f ⌝ ＝ id) × (⌜ f ⌝ ○ f⁻¹ ＝ id)
+                                        , (f⁻¹ ○ ⌜ f ⌝ ＝ id)
+                                        × (⌜ f ⌝ ○ f⁻¹ ＝ id)
 
    id-to-iso : (a b : obj W)
              → a ＝ b
@@ -106,7 +126,7 @@ module _ {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) where
 
  open CATNotation {{...}} public
 
-module CategoryNotation {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) where
+module WildCategoryNotation {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) where
  instance
   wildcathomnotation : HOM W
   hom {{wildcathomnotation}} = WildCategory.hom W
@@ -132,4 +152,3 @@ module CategoryNotation {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) wher
   id-to-iso {{wildcatnotation}} = WildCategory.id-to-iso W
 
 \end{code}
-

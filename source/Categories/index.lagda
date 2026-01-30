@@ -17,12 +17,12 @@ Definitions of
  * precategory, and
  * category.
 
-We follow the naming conventions of the HoTT Book [1]. The properties of the
+We follow the naming conventions of the HoTT Book [1] and [2]. The properties of the
 different types of category are given in the table below.
 
-[[Add full reference to the HoTT Book, like HoTT Book [1], and the add the full reference
-from here https://homotopytypetheory.org/book/]]
+[1] The Univalent Foundations Program (2013), Homotopy Type Theory: Univalent Foundations of Mathematics. Institute for Advanced Study: https://homotopytypetheory.org/book.
 
+[2] Capriotti, Paolo and Nicolai Kraus (2017). Univalent Higher Categories via Complete Semi-Segal Type. https://arxiv.org/abs/1707.03693.
 
                 ┌──────┬──────┬────────────┐
                 │ obj  │ hom  │ univalence │
@@ -40,7 +40,13 @@ import Categories.Wild
 import Categories.Pre
 import Categories.Univalent
 
-import Categories.Notation
+\end{code}
+
+Notation for working with categories
+
+\begin{code}
+
+import Categories.Notation.index
 
 import Categories.Functor
 import Categories.NaturalTransformation
