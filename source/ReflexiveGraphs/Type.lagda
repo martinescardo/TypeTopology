@@ -21,8 +21,8 @@ reflexivity datum.
 
 module _ (𝓤 𝓥 : Universe) where
 
- refl-graph : (𝓤 ⊔ 𝓥)⁺ ̇
- refl-graph = Σ A ꞉ 𝓤 ̇ , Σ R ꞉ (A → A → 𝓥 ̇) , ((x : A) → R x x)
+ Refl-Graph : (𝓤 ⊔ 𝓥)⁺ ̇
+ Refl-Graph = Σ A ꞉ 𝓤 ̇ , Σ R ꞉ (A → A → 𝓥 ̇) , ((x : A) → R x x)
 
 \end{code}
 
@@ -31,15 +31,15 @@ the components of a reflexive graph.
 
 \begin{code}
 
-⟨_⟩ : refl-graph 𝓤 𝓥 → 𝓤 ̇
+⟨_⟩ : Refl-Graph 𝓤 𝓥 → 𝓤 ̇
 ⟨ (A , _) ⟩ = A
 
-edge-rel : (𝓐 : refl-graph 𝓤 𝓥) → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → 𝓥 ̇
+edge-rel : (𝓐 : Refl-Graph 𝓤 𝓥) → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → 𝓥 ̇
 edge-rel (_ , R , _) = R
 
 syntax edge-rel 𝓐 x y = x ≈⟨ 𝓐 ⟩ y
 
-≈-refl : (𝓐 : refl-graph 𝓤 𝓥) → (x : ⟨ 𝓐 ⟩) → x ≈⟨ 𝓐 ⟩ x
+≈-refl : (𝓐 : Refl-Graph 𝓤 𝓥) → (x : ⟨ 𝓐 ⟩) → x ≈⟨ 𝓐 ⟩ x
 ≈-refl (_ , _ , r) x = r x
 
 \end{code}
@@ -51,7 +51,7 @@ may prove to be important in the future...
 
 \begin{code}
 
-refl-graph-hom : (𝓐 : refl-graph 𝓤 𝓥) (𝓐' : refl-graph 𝓤' 𝓥')
+refl-graph-hom : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓐' : Refl-Graph 𝓤' 𝓥')
                → 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ̇
 refl-graph-hom 𝓐 𝓐'
  = Σ F ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓐' ⟩) ,
@@ -59,7 +59,7 @@ refl-graph-hom 𝓐 𝓐'
      ((x : ⟨ 𝓐 ⟩) → F' x x (≈-refl 𝓐 x) ＝ ≈-refl 𝓐' (F x))
 
 record refl-graph-hom-record
- (𝓐 : refl-graph 𝓤 𝓥) (𝓐' : refl-graph 𝓤' 𝓥') : 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ̇ where
+ (𝓐 : Refl-Graph 𝓤 𝓥) (𝓐' : Refl-Graph 𝓤' 𝓥') : 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ̇ where
  field
   func : ⟨ 𝓐 ⟩ → ⟨ 𝓐' ⟩
   pres-≈ : (x y : ⟨ 𝓐 ⟩) → x ≈⟨ 𝓐 ⟩ y → func x ≈⟨ 𝓐' ⟩ func y
