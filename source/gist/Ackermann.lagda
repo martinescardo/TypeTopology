@@ -123,7 +123,7 @@ The following is the step function for the recursion.
 \end{code}
 
 Notice that σ is *not* recursively defined. We now define B by
-transfinite recursion on ω². Notice also the swapping of the
+transfinite recursion on ω² using this. Notice the swapping of the
 arguments.
 
 \begin{code}
