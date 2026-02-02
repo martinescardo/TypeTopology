@@ -83,7 +83,7 @@ Abbreviation for the underlying order of ω².
 
 \begin{code}
 
- _<_ : ⟨ ω² ⟩ →  ⟨ ω² ⟩ → 𝓤₀ ̇
+ _<_ : ⟨ ω² ⟩ → ⟨ ω² ⟩ → 𝓤₀ ̇
  s < t = s ≺⟨ ω² ⟩ t
 
 \end{code}
