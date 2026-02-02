@@ -123,7 +123,7 @@ The following is the step function for the recursion.
 \end{code}
 
 Notice that σ is *not* recursively defined. We now define B by
-transfinite induction on ω². Notice also the swapping of the
+transfinite recursion on ω². Notice also the swapping of the
 arguments.
 
 \begin{code}
@@ -149,5 +149,16 @@ follows directly by the unfolding behaviour of transfinite recursion.
 
  Ackermann-equation₂ : (m n : ℕ) → B (succ m) (succ n) ＝ B m (B (succ m) n)
  Ackermann-equation₂ m n = unfold (succ m) (succ n)
+
+\end{code}
+
+We observe that this computes, despite the assumption of function
+extensionality, which is only used to prove the correctness of the
+function.
+
+\begin{code}
+
+ _ : B 3 4 ＝ 125
+ _ = refl
 
 \end{code}
