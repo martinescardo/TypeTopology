@@ -68,8 +68,8 @@ with an encoding of ordinals similar to the von Neumann encoding
 
 \end{code}
 
-Multiplication _×ₒ_ of ordinals is given by lexicographic order of the
-cartesian product of the underlying types. In particular, the
+Multiplication _×ₒ_ of ordinals is given by the lexicographic order of
+the cartesian product of the underlying types. In particular, the
 underlying set of ω² is the following, by construction.
 
 \begin{code}
@@ -94,8 +94,8 @@ below), the following two properties hold.
 
 \begin{code}
 
- increase-left : (m n : ℕ) → (m , n) < (succ m , n)
- increase-left m n = inr (refl , <-succ m)
+ inscreases-left : (m n : ℕ) → (m , n) < (succ m , n)
+ inscreases-left m n = inr (refl , <-succ m)
 
  increases-right : (m n m' : ℕ) → (m , n) < (m' , succ n)
  increases-right m n m' = inl (<-succ n)
@@ -115,7 +115,7 @@ The following is the step function for the recursion.
  σ (succ n , succ m) f = f (f (n , succ m) II , m) III
   where
    II : (n , succ m) < (succ n , succ m)
-   II = increase-left n (succ m)
+   II = inscreases-left n (succ m)
 
    III : (f (n , succ m) II , m) < (succ n , succ m)
    III = increases-right (f (n , succ m) II) m (succ n)
