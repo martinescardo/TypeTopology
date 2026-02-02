@@ -134,21 +134,21 @@ arguments.
 \end{code}
 
 Finally, we show that B satisfies the same equations as A. This
-follows directly by the unfolding behaviour of transfinite recursion.
+follows directly from the unfolding behaviour of transfinite recursion.
 
 \begin{code}
 
- unfold : (m n : ℕ) → B m n ＝ σ (n , m) (λ (n' , m') _ → B m' n')
- unfold m n = Transfinite-recursion-behaviour fe ω² σ (n , m)
+ B-behaviour : (m n : ℕ) → B m n ＝ σ (n , m) (λ (n' , m') _ → B m' n')
+ B-behaviour m n = Transfinite-recursion-behaviour fe ω² σ (n , m)
 
  Ackermann-equation₀ : (n : ℕ) → B 0 n ＝ succ n
- Ackermann-equation₀ n = unfold 0 n
+ Ackermann-equation₀ n = B-behaviour 0 n
 
  Ackermann-equation₁ : (m : ℕ) → B (succ m) 0 ＝ B m 1
- Ackermann-equation₁ m = unfold (succ m) 0
+ Ackermann-equation₁ m = B-behaviour (succ m) 0
 
  Ackermann-equation₂ : (m n : ℕ) → B (succ m) (succ n) ＝ B m (B (succ m) n)
- Ackermann-equation₂ m n = unfold (succ m) (succ n)
+ Ackermann-equation₂ m n = B-behaviour (succ m) (succ n)
 
 \end{code}
 
