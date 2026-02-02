@@ -4,7 +4,7 @@ The structure identity principle (SIP), coined by Peter Aczel, allows an
 treatment of identificiation in Univalent Foundations that, with much care,
 escapes "transport hell". Many have formulated there own terminology and
 approach to SIP (including Egbert Rijke in "Introduction to Homotopy Type
-Theory" see doi:10.1017/9781108933568, arXiv:2212.11082; Martin Escardo see
+Theory" see doi:10.1017/9781108933568, arXiv:2212.11082; Martin Escardo in
 files: UF/SIP, UF/Yoneda and UF/SigmaIdentity; as well as many others!) In
 recent times, some have considered 'reflexive graphs' as a more modular
 approach to SIP (see "Using Displayed Univalent Graphs to Formalize Higher
