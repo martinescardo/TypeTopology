@@ -11,7 +11,7 @@ remarks of our paper
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 \end{code}
 

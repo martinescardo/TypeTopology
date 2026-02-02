@@ -6,7 +6,7 @@ order values and 𝓥 for the families which have suprema.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Equiv

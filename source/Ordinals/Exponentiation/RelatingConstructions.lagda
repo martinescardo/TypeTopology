@@ -5,7 +5,7 @@ We relate the abstract and concrete constructions of ordinal exponentiation.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.PropTrunc

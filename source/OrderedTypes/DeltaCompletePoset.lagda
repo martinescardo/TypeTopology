@@ -9,7 +9,7 @@ URL: https://arxiv.org/abs/2301.12405
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 open import UF.PropTrunc
