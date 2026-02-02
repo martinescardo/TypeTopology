@@ -11,6 +11,7 @@ are eventually moved to the main (old or new) folders.
 module gist.index where
 
 import gist.2-injective-types
+import gist.Ackermann
 import gist.DependentlyTypedTensors
 import gist.Hydra                      -- by Alice Laroche
 import gist.InjectivesVersusAlgebras
@@ -20,6 +21,5 @@ import gist.not-an-apartness
 import gist.remove-swap
 import gist.transport-discussion
 import gist.wrong-proofs
-import gist.Ackermann
 
 \end{code}
