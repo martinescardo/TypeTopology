@@ -1,6 +1,6 @@
 Martin Escardo, 2nd February 2026.
 
-This is regarding this thread [1]. We give a definition of the
+This is regarding the discussion thread [1]. We give a definition of the
 Ackermann function by induction on the ordinal ω².
 
 [1] https://mathstodon.xyz/deck/@cxandru@types.pl/115984233527105134
