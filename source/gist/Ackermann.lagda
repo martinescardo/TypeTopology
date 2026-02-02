@@ -94,8 +94,8 @@ below), the following two properties hold.
 
 \begin{code}
 
- inscreases-left : (m n : ℕ) → (m , n) < (succ m , n)
- inscreases-left m n = inr (refl , <-succ m)
+ increases-left : (m n : ℕ) → (m , n) < (succ m , n)
+ increases-left m n = inr (refl , <-succ m)
 
  increases-right : (m n m' : ℕ) → (m , n) < (m' , succ n)
  increases-right m n m' = inl (<-succ n)
@@ -115,7 +115,7 @@ The following is the step function for the recursion.
  σ (succ n , succ m) f = f (f (n , succ m) II , m) III
   where
    II : (n , succ m) < (succ n , succ m)
-   II = inscreases-left n (succ m)
+   II = increases-left n (succ m)
 
    III : (f (n , succ m) II , m) < (succ n , succ m)
    III = increases-right (f (n , succ m) II) m (succ n)
