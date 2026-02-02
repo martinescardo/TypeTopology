@@ -1,5 +1,7 @@
 Ian Ray. 28th August 2025.
 
+Minor changes and merged into TypeToplogy in February 2026.
+
 We give the definition of reflexive graph here following Jonathan Sterling's
 treatment in "Reflexive graph lenses in univalent foundations"
 (see https://doi.org/10.48550/arXiv.2404.07854).
