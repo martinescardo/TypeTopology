@@ -18,10 +18,6 @@ open 𝟙-Σ-structure ρ
 open import UF.FunExt
 open import RelativeMonadOnStructuredTypes.Definition
 
-private
- variable
-  𝓦₀ : Universe
-
 𝕁-transf : Fun-Ext
          → {ℓ : Universe → Universe}
          → Relative-Monad {ℓ}

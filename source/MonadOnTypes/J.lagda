@@ -12,10 +12,6 @@ module MonadOnTypes.J where
 open import UF.FunExt
 open import MonadOnTypes.Definition
 
-private
- variable
-  𝓦₀ : Universe
-
 𝕁 : 𝓦₀ ̇ → Monad {λ 𝓤 → 𝓦₀ ⊔ 𝓤}
 𝕁 {𝓦₀} R = record {
  functor = λ X → (X → R) → X ;

@@ -354,9 +354,6 @@ module sip-join where
    γ = universal-fiberwise-equiv C (w u v) (x₀ , y₀) τ
 
 
- variable
-  𝓥₀ 𝓥₁ 𝓦₀ 𝓦₁ : Universe
-
  open sip
 
  ⟪_⟫ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }

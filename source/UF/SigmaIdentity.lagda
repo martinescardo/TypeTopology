@@ -311,9 +311,6 @@ module Σ-identity-join where
    γ : (z : X × Y) → is-equiv (r z)
    γ = nats-with-sections-are-equivs (x₀ , y₀) r (λ z → (s z , η z))
 
- variable
-  𝓥₀ 𝓥₁ 𝓦₀ 𝓦₁ : Universe
-
  open Σ-identity
 
  module _ {X : 𝓤 ̇ }

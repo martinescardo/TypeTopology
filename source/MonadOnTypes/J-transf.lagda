@@ -14,10 +14,6 @@ module MonadOnTypes.J-transf where
 open import UF.FunExt
 open import MonadOnTypes.Definition
 
-private
- variable
-  𝓦₀ : Universe
-
 𝕁-transf : Fun-Ext
          → {ℓ : Universe → Universe}
          → Monad {ℓ}

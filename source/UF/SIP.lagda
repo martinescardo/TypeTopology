@@ -249,9 +249,6 @@ module sip-join where
    γ : (z : X × Y) → is-equiv (r z)
    γ = nats-with-sections-are-equivs (x₀ , y₀) r (λ z → (s z , η z))
 
- variable
-  𝓥₀ 𝓥₁ 𝓦₀ 𝓦₁ : Universe
-
  open sip
 
  ⟪_⟫ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }

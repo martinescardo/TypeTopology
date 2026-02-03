@@ -136,7 +136,11 @@ open import Agda.Primitive public
           )
 
 variable
- 𝓤 𝓥 𝓦 𝓣 𝓤' 𝓥' 𝓦' 𝓣' : Universe
+ 𝓤 𝓥 𝓦 𝓣
+  𝓤' 𝓥' 𝓦' 𝓣'
+  𝓥₀ 𝓦₀ 𝓣₀
+  𝓥₁ 𝓦₁ 𝓣₁
+  𝓥₂ 𝓦₂ 𝓣₂ : Universe
 
 \end{code}
 

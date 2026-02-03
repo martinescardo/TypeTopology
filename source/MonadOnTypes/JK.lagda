@@ -12,10 +12,6 @@ module MonadOnTypes.JK where
 open import MonadOnTypes.J
 open import MonadOnTypes.K
 
-private
- variable
-  𝓦₀ : Universe
-
 module JK (R : 𝓦₀ ̇ ) where
 
  open J-definitions R

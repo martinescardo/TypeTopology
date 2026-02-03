@@ -11,10 +11,6 @@ module MonadOnTypes.K where
 
 open import MonadOnTypes.Definition
 
-private
- variable
-  𝓦₀ : Universe
-
 𝕂 : 𝓦₀ ̇ → Monad {λ 𝓤 → 𝓦₀ ⊔ 𝓤}
 𝕂 {𝓦₀} R = record {
        functor = λ X → (X → R) → R ;
