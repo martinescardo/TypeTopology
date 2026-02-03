@@ -127,7 +127,7 @@ below.
 
 Notice that σ is *not* recursively defined. We now define B by
 transfinite recursion on ω² using this. Notice the swapping of the
-arguments.
+arguments (alluded to above).
 
 \begin{code}
 
