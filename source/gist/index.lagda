@@ -12,11 +12,7 @@ module gist.index where
 
 import gist.2-injective-types
 import gist.Ackermann
-<<<<<<< HEAD
-import gist.Categories.index
-=======
 import gist.Categories.index           -- by Jon Sterling
->>>>>>> upstream/master
 import gist.DependentlyTypedTensors
 import gist.Hydra                      -- by Alice Laroche
 import gist.InjectivesVersusAlgebras

@@ -179,7 +179,6 @@ import MonadOnTypes.index
 import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index
-import OldCategories.index
 import OrderedTypes.index
 import Ordinals.index
 import PCF.index

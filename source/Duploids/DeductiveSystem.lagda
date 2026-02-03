@@ -21,6 +21,7 @@ open import UF.Equiv
 open import MLTT.Spartan
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+
 open import gist.Categories.Category fe
 
 deductive-system-structure : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇

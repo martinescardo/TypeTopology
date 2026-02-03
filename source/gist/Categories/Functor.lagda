@@ -3,6 +3,7 @@ Jon Sterling, started 16th Dec 2022
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
+
 open import UF.FunExt
 
 module gist.Categories.Functor (fe : Fun-Ext) where
@@ -168,5 +169,3 @@ module composite-functor
 
  fun : functor 𝓒 𝓔
  fun = make str ax
-
-\end{code}

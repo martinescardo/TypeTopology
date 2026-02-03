@@ -10,7 +10,6 @@ module gist.Categories.NaturalTransformation (fe : Fun-Ext) where
 
 open import gist.Categories.Category fe
 open import gist.Categories.Functor fe
-
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
@@ -441,4 +440,5 @@ module
     (dfunext fe λ A →
      𝓕.seq (𝓕.idn _) (𝓕.idn _) ＝⟨ 𝓕.idn-L _ _ _ ⟩
      𝓕.idn _ ∎)
+
 \end{code}

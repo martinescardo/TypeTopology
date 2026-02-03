@@ -25,6 +25,7 @@ open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
+
 open import gist.Categories.Category fe
 open import Duploids.DeductiveSystem fe
 
