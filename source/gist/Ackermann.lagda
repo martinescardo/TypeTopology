@@ -148,7 +148,7 @@ follows directly from the unfolding behaviour of transfinite recursion.
  Ackermann-equation₁ : (m : ℕ)   → B (succ m) 0        ＝ B m 1
  Ackermann-equation₂ : (m n : ℕ) → B (succ m) (succ n) ＝ B m (B (succ m) n)
 
- Ackermann-equation₀ n   = B-behaviour 0 n
+ Ackermann-equation₀ n   = B-behaviour 0        n
  Ackermann-equation₁ m   = B-behaviour (succ m) 0
  Ackermann-equation₂ m n = B-behaviour (succ m) (succ n)
 
