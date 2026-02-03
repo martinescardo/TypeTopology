@@ -30,8 +30,10 @@ record FUNCTORMAP {𝓤 𝓥 : Universe} (A : 𝓤 ̇ ) (B : 𝓥 ̇ ) : 𝓤 �
 
 open FUNCTORMAP {{...}} public
 
-record FUNNOTATION {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
-                       (F : Functor A B) : 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇ where
+record FUNNOTATION {A : WildCategory 𝓤 𝓥}
+                   {B : WildCategory 𝓦 𝓣}
+                   (F : Functor A B)
+                 : 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇ where
  
  open WildCategoryNotation A
  open WildCategoryNotation B
@@ -45,7 +47,8 @@ record FUNNOTATION {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
 
 open FUNNOTATION {{...}} public
 
-module FunctorNotation {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣}
+module FunctorNotation {A : WildCategory 𝓤 𝓥}
+                       {B : WildCategory 𝓦 𝓣}
                        (F : Functor A B) where
 
  open WildCategoryNotation A
