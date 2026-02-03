@@ -35,7 +35,9 @@ We want to show, because somebody asked [1], that such a function can
 be defined by transfinite induction on ω². We will define a function B
 of the same type as A that satisfies the same equations.
 
-We assume function extensionality.
+We assume function extensionality (which, as illustrated at the very
+end of this file, doesn't impair the computational behaviour of our
+definition).
 
 \begin{code}
 
