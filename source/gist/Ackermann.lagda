@@ -59,8 +59,8 @@ We work with ordinals as defined in [3].
 \end{code}
 
 But see also the following link, which is not used here, which works
-with an encoding of ordinals similar to the von Neumann encoding
-(check the references there).
+with an encoding of ordinals similar to the von Neumann encoding,
+shown to be equivalent to the one we use (check the references there).
 
 \begin{code}
 
