@@ -154,9 +154,9 @@ follows directly from the unfolding behaviour of transfinite recursion.
 
 \end{code}
 
-To conclude, we observe that this computes, despite the assumption of
-function extensionality, which is only used to prove the correctness
-of the function.
+To conclude, we observe that this computes, by giving an example,
+despite the assumption of function extensionality, which is only used
+to prove the correctness of the function.
 
 \begin{code}
 
