@@ -14,7 +14,6 @@ open import Categories.Functor
 
 module Categories.NaturalTransformation where
 
-
 \end{code}
 
 The definition of a natural transformation is in the usual way.

@@ -94,13 +94,11 @@ module _ {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) where
          {f : hom a b}
        → inverse f
        → hom b a
-
   
    at-most-one-inverse : {a b : obj W}
                          {f : hom a b}
                          (𝕘 𝕙 : inverse f)
                        → ⌞ 𝕘 ⌟ ＝ ⌞ 𝕙 ⌟
-
 
    ⌞_⌟-is-left-inverse : {a b : obj W}
                          {f : hom a b}
