@@ -74,7 +74,7 @@ underlying set of ω² is the following, by construction.
 
 \begin{code}
 
- _ : ⟨ ω² ⟩ ＝ (ℕ × ℕ)
+ _ : ⟨ ω² ⟩ ＝ ℕ × ℕ
  _ = refl
 
 \end{code}
@@ -88,9 +88,9 @@ Abbreviation for the underlying order of ω².
 
 \end{code}
 
-Because this is the lexicographic order (with the right component as
-the most significant one, which is what causes the swapping phenomenon
-below), the following two properties hold.
+Because this is the lexicographic order on ℕ × ℕ (with the right
+component as the most significant one, which is what causes the
+swapping phenomenon below), the following two properties hold.
 
 \begin{code}
 
@@ -102,7 +102,8 @@ below), the following two properties hold.
 
 \end{code}
 
-The following is the step function for the recursion.
+The following is the step function for the recursive definition given
+below.
 
 \begin{code}
 
@@ -152,9 +153,9 @@ follows directly from the unfolding behaviour of transfinite recursion.
 
 \end{code}
 
-We observe that this computes, despite the assumption of function
-extensionality, which is only used to prove the correctness of the
-function.
+To conclude, we observe that this computes, despite the assumption of
+function extensionality, which is only used to prove the correctness
+of the function.
 
 \begin{code}
 
