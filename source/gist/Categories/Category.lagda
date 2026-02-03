@@ -6,7 +6,7 @@ Jon Sterling, started 16th Dec 2022
 
 open import UF.FunExt
 
-module OldCategories.Category (fe : Fun-Ext) where
+module gist.Categories.Category (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import UF.Base
