@@ -44,7 +44,7 @@ module _ {𝓤 𝓥 : Universe} (P : Precategory 𝓤 𝓥) where
  being-cat-is-prop fe x y = Π₂-is-prop fe I _ _
   where
    I : (a b : obj P) → is-prop (is-equiv (id-to-iso a b))
-   I a b = being-equiv-is-prop (λ x y → fe {x} {y}) (id-to-iso a b)
+   I a b = being-equiv-is-prop (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) (id-to-iso a b)
 
 \end{code}
 
@@ -67,15 +67,15 @@ instance
  obj {{catobj}} ((C , _) , _) = WildCategory.obj C
 
 instance
-  underlying-precategory-of-category
-   : {𝓤 𝓥 : Universe}
-   → Underlying-Type (Category 𝓤 𝓥) (Precategory 𝓤 𝓥)
-  ⟨_⟩ {{underlying-precategory-of-category}} (P , _) = P
+ underlying-precategory-of-category
+  : {𝓤 𝓥 : Universe}
+  → Underlying-Type (Category 𝓤 𝓥) (Precategory 𝓤 𝓥)
+ ⟨_⟩ {{underlying-precategory-of-category}} (P , _) = P
 
-  underlying-wildcategory-of-category
-   : {𝓤 𝓥 : Universe}
-   → Underlying-Type (Category 𝓤 𝓥) (WildCategory 𝓤 𝓥)
-  ⟨_⟩ {{underlying-wildcategory-of-category}} ((W , _) , _) = W
+ underlying-wildcategory-of-category
+  : {𝓤 𝓥 : Universe}
+  → Underlying-Type (Category 𝓤 𝓥) (WildCategory 𝓤 𝓥)
+ ⟨_⟩ {{underlying-wildcategory-of-category}} ((W , _) , _) = W
 
 
 id-to-iso-is-equiv : (C : Category 𝓤 𝓥)
@@ -91,8 +91,9 @@ forms a set.
 \begin{code}
 
 cat-objs-form-a-1-type : (C : Category 𝓤 𝓥) → (a b : obj C) → is-set (a ＝ b)
-cat-objs-form-a-1-type C a b = equiv-to-set id-equiv-iso
-                                          (isomorphism-type-is-set ⟨ C ⟩)
+cat-objs-form-a-1-type C a b = equiv-to-set
+                                id-equiv-iso
+                                (isomorphism-type-is-set ⟨ C ⟩)
  where
   open PrecategoryNotation ⟨ C ⟩
   id-equiv-iso : (a ＝ b) ≃ a ≅ b

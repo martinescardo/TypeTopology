@@ -84,21 +84,21 @@ module _ (P : Precategory 𝓤 𝓥) where
 
  inverses-are-lc : {a b : obj P}
                    {f : hom a b}
-                   (x y : is-iso f)
-                 → ⌜ x ⌝⁻¹ ＝ ⌜ y ⌝⁻¹
-                 → x ＝ y
- inverses-are-lc x y refl = ap₂ (λ l r → ⌜ x ⌝⁻¹ , l , r) l-eq r-eq
+                   (i j : inverse f)
+                 → ⌞ i ⌟ ＝ ⌞ j ⌟
+                 → i ＝ j
+ inverses-are-lc i j refl = ap₂ (λ l r → ⌞ i ⌟ , l , r) l-eq r-eq
   where
-   l-eq : ⌜ x ⌝⁻¹-is-left-inverse ＝ ⌜ y ⌝⁻¹-is-left-inverse
-   l-eq = hom-is-set P ⌜ x ⌝⁻¹-is-left-inverse ⌜ y ⌝⁻¹-is-left-inverse
+   l-eq : ⌞ i ⌟-is-left-inverse ＝ ⌞ j ⌟-is-left-inverse
+   l-eq = hom-is-set P ⌞ i ⌟-is-left-inverse ⌞ j ⌟-is-left-inverse
 
-   r-eq : ⌜ x ⌝⁻¹-is-right-inverse ＝ ⌜ y ⌝⁻¹-is-right-inverse
-   r-eq = hom-is-set P ⌜ x ⌝⁻¹-is-right-inverse ⌜ y ⌝⁻¹-is-right-inverse
+   r-eq : ⌞ i ⌟-is-right-inverse ＝ ⌞ j ⌟-is-right-inverse
+   r-eq = hom-is-set P ⌞ i ⌟-is-right-inverse ⌞ j ⌟-is-right-inverse
 
  being-iso-is-prop : {a b : obj P}
                      (f : hom a b)
-                   → is-prop (is-iso f)
- being-iso-is-prop f x y = inverses-are-lc x y (at-most-one-inverse x y)
+                   → is-prop (inverse f)
+ being-iso-is-prop f i j = inverses-are-lc i j (at-most-one-inverse i j)
 
 \end{code}
 

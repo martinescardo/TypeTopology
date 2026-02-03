@@ -26,7 +26,7 @@ _F∘_ : {A : WildCategory 𝓤 𝓥}
        (G' : Functor B C)
        (F' : Functor A B)
      → Functor A C
-_F∘_ {_} {_} {_} {_} {_} {_} {A} {B} {C} G' F' = functor
+_F∘_ {_} {_} {_} {_} {_} {_} {A} {B} {C} G' F' = combined-functor
  where
   open WildCategoryNotation A
   open WildCategoryNotation B
@@ -35,10 +35,10 @@ _F∘_ {_} {_} {_} {_} {_} {_} {A} {B} {C} G' F' = functor
   open FunctorNotation G' renaming (functor-map to G)
   
   F₀ : obj A → obj C
-  F₀ x = G (F x)
+  F₀ a = G (F a)
 
   F₁ : {a b : obj A} → hom a b → hom (F₀ a) (F₀ b)
-  F₁ h = G (F h)
+  F₁ f = G (F f)
 
   id-eq : (a : obj A)
         → G (F 𝒊𝒅) ＝ 𝒊𝒅
@@ -60,7 +60,7 @@ _F∘_ {_} {_} {_} {_} {_} {_} {A} {B} {C} G' F' = functor
     i  = ap G (distributivity g f)
     ii = distributivity (F g) (F f)
 
-  functor : Functor A C
-  functor = make-functor F₀ F₁ id-eq f-distrib
+  combined-functor : Functor A C
+  combined-functor = functor F₀ F₁ id-eq f-distrib
 
 \end{code}

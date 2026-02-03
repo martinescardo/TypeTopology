@@ -17,22 +17,22 @@ module Categories.Functor where
 We define a functor from wild category A to wild category B in the usual way.
 This includes,
 
-* F₀, a map from obj A to obj B, and
+ * F₀, a map from obj A to obj B, and
 
-* F₁, a map from hom A to hom B.
+ * F₁, a map from hom A to hom B.
 
 With the following structure
 
-* id-preserved: F₀ id = id, and
+ * id-preserved: F₀ id = id, and
 
-* distributivity: F₁ (g ∘ f) = F₁ g ∘ F₁ f.
+ * distributivity: F₁ (g ∘ f) = F₁ g ∘ F₁ f.
 
 \begin{code}
 
 record Functor (A : WildCategory 𝓤 𝓥)
                (B : WildCategory 𝓦 𝓣)
-             : (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣) ̇  where
- constructor make-functor
+             : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇  where
+ constructor functor
 
  open WildCategoryNotation A
  open WildCategoryNotation B
@@ -47,6 +47,6 @@ record Functor (A : WildCategory 𝓤 𝓥)
   distributivity : {a b c : obj A}
                    (g : hom b c)
                    (f : hom a b)
-                 → F₁ (g ○ f) ＝ (F₁ g) ○ (F₁ f)
+                 → F₁ (g ○ f) ＝ F₁ g ○ F₁ f
 
 \end{code}

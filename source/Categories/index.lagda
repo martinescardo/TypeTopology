@@ -15,13 +15,6 @@ module Categories.index where
 We follow the naming conventions of the HoTT Book [1] and [2]. The properties of
 the different types of category are given in the table below.
 
-[1] The Univalent Foundations Program (2013), Homotopy Type Theory: Univalent
-Foundations of Mathematics. Institute for Advanced Study:
-https://homotopytypetheory.org/book.
-
-[2] Capriotti, Paolo and Nicolai Kraus (2017). Univalent Higher Categories via
-Complete Semi-Segal Type. https://arxiv.org/abs/1707.03693.
-
                 ┌──────┬──────┬────────────┐
                 │ obj  │ hom  │ univalence │
 ┌───────────────┼──────┼──────┼────────────┤
@@ -31,6 +24,13 @@ Complete Semi-Segal Type. https://arxiv.org/abs/1707.03693.
 ├───────────────┼──────┼──────┼────────────┤
 │ category      │ type │ set  │ yes        │
 └───────────────┴──────┴──────┴────────────┘
+
+[1] The Univalent Foundations Program (2013), Homotopy Type Theory: Univalent
+Foundations of Mathematics. Institute for Advanced Study:
+https://homotopytypetheory.org/book.
+
+[2] Capriotti, Paolo and Nicolai Kraus (2017). Univalent Higher Categories via
+Complete Semi-Segal Type. https://arxiv.org/abs/1707.03693.
 
 \begin{code}
 
@@ -42,24 +42,18 @@ import Categories.Functor
 import Categories.Functor-Composition
 import Categories.NaturalTransformation
 
+import Categories.Notation.index
+
 \end{code}
 
-Notation for working with categories, we use this so that we can write the
-following and have the category fields be public.
+The above defines notation for working with categories, we use this so that
+we can write the following and have the category fields be public.
 
 `open WildCategoryNotation C`
 `open PrecategoryNotation C`
 `open CategoryNotation C`
-
 `open FunctorNotation F renaming (functor-map to F')`
-
 `open NaturalTNotation N`
 
 We use this notation throughout the definitions, so for more concrete examples
 please look there.
-
-\begin{code}
-
-import Categories.Notation.index
-
-\end{code}

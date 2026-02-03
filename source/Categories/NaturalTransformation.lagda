@@ -21,10 +21,10 @@ The definition of a natural transformation is in the usual way.
 
 For two functors, F : A → B and G : A → B. We have:
 
-* gamma : for every object, a : obj, there exists γ : hom (F a) (G a), and
+ * gamma : for every object, a : obj, there exists γ : hom (F a) (G a), and
 
-* a proof of naturality: for objects, a b : obj A, and homomorphism, f : hom a b,
-  we have that G f ∘ gamma a ＝ gamma b ∘ F f.
+ * a proof of naturality: for objects, a b : obj A, and homomorphism, f : hom a b,
+   we have that G f ∘ gamma a ＝ gamma b ∘ F f.
 
 \begin{code}
 

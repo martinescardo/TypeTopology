@@ -88,26 +88,29 @@ module _ {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) where
            (h : hom c d)
          → h ○ (g ○ f) ＝ (h ○ g) ○ f
 
-   is-iso : {a b : obj W} (f : hom a b) → 𝓥 ̇
+   inverse : {a b : obj W} (f : hom a b) → 𝓥 ̇
 
-   ⌜_⌝⁻¹ : {a b : obj W}
-           {f : hom a b}
-         → is-iso f
-         → hom b a
+   ⌞_⌟ : {a b : obj W}
+         {f : hom a b}
+       → inverse f
+       → hom b a
 
-   ⌜_⌝⁻¹-is-left-inverse : {a b : obj W}
-                           {f : hom a b}
-                           (iso : is-iso f)
-                         → ⌜ iso ⌝⁻¹ ○ f ＝ 𝒊𝒅
+  
+   at-most-one-inverse : {a b : obj W}
+                         {f : hom a b}
+                         (𝕘 𝕙 : inverse f)
+                       → ⌞ 𝕘 ⌟ ＝ ⌞ 𝕙 ⌟
 
-   ⌜_⌝⁻¹-is-right-inverse : {a b : obj W}
-                            {f : hom a b}
-                            (iso : is-iso f)
-                          → f ○ ⌜ iso ⌝⁻¹ ＝ 𝒊𝒅
 
-   at-most-one-inverse : {a b : obj W} {f : hom a b}
-                (x y : is-iso f)
-              → ⌜ x ⌝⁻¹ ＝ ⌜ y ⌝⁻¹
+   ⌞_⌟-is-left-inverse : {a b : obj W}
+                         {f : hom a b}
+                         (𝕗⁻¹ : inverse f)
+                       → ⌞ 𝕗⁻¹ ⌟ ○ f ＝ 𝒊𝒅
+
+   ⌞_⌟-is-right-inverse : {a b : obj W}
+                          {f : hom a b}
+                          (𝕗⁻¹ : inverse f)
+                        → f ○ ⌞ 𝕗⁻¹ ⌟ ＝ 𝒊𝒅
 
    _≅_ : (a b : obj W) → 𝓥 ̇
    ⌜_⌝ : {a b : obj W}
@@ -142,10 +145,10 @@ module WildCategoryNotation {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) 
   𝒊𝒅-is-left-neutral {{wildcatnotation}} = WildCategory.𝒊𝒅-is-left-neutral W
   𝒊𝒅-is-right-neutral {{wildcatnotation}} = WildCategory.𝒊𝒅-is-right-neutral W
   assoc {{wildcatnotation}} = WildCategory.assoc W
-  is-iso {{wildcatnotation}} = WildCategory.is-iso W
-  ⌜_⌝⁻¹ {{wildcatnotation}} = WildCategory.⌜_⌝⁻¹ W
-  ⌜_⌝⁻¹-is-left-inverse {{wildcatnotation}} = WildCategory.⌜_⌝⁻¹-is-left-inverse W
-  ⌜_⌝⁻¹-is-right-inverse {{wildcatnotation}} = WildCategory.⌜_⌝⁻¹-is-right-inverse W
+  inverse {{wildcatnotation}} = WildCategory.inverse W
+  ⌞_⌟ {{wildcatnotation}} = WildCategory.⌞_⌟ W
+  ⌞_⌟-is-left-inverse {{wildcatnotation}} = WildCategory.⌞_⌟-is-left-inverse W
+  ⌞_⌟-is-right-inverse {{wildcatnotation}} = WildCategory.⌞_⌟-is-right-inverse W
   at-most-one-inverse {{wildcatnotation}} = WildCategory.at-most-one-inverse W
   _≅_ {{wildcatnotation}} = WildCategory._≅_ W
   ⌜_⌝ {{wildcatnotation}} = WildCategory.⌜_⌝ W
