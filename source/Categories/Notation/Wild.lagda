@@ -122,6 +122,7 @@ module _ {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) where
                                       → Σ f⁻¹ ꞉ hom b a
                                         , (f⁻¹ ○ ⌜ f ⌝ ＝ 𝒊𝒅)
                                         × (⌜ f ⌝ ○ f⁻¹ ＝ 𝒊𝒅)
+                                        
 
    id-to-iso : (a b : obj W)
              → a ＝ b
