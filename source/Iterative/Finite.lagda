@@ -2,7 +2,7 @@ Alice Laroche , 26th September 2023
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -47,8 +47,8 @@ open import Iterative.Ordinals ua 𝓤
   I = to-subtype-＝ being-iset-is-prop p
 
   II : is-transitive-iset v₁
-  II = transport is-transitive-iset I 𝟘ⱽ-is-transitive-iset 
-  
+  II = transport is-transitive-iset I 𝟘ⱽ-is-transitive-iset
+
 𝟙ⱽ-is-iordinal : is-iterative-ordinal 𝟙ⱽ
 𝟙ⱽ-is-iordinal = 𝟙ⱽ-is-transitive-iset , 𝟙ⱽ-has-transitive-members
 

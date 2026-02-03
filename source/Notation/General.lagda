@@ -261,10 +261,8 @@ _ suffices-to-show⟨ g ⟩ f = g ∘ f
 _▢ : (X : 𝓤 ̇ ) → X → X
 X ▢ = id
 
-infix  1 _▢
-infixr 0 _→⟨_⟩_
-infixr 0 _←⟨_⟩_
-infixr 0 _suffices-to-show⟨_⟩_
+by-instance-resolution : {X : 𝓤 ̇ } → {{X}} → X
+by-instance-resolution  {{x}} = x
 
 \end{code}
 
@@ -274,5 +272,9 @@ Fixities:
 
 infixl -1 -id
 infix -1 _↔_
+infixr 0 _→⟨_⟩_
+infixr 0 _←⟨_⟩_
+infixr 0 _suffices-to-show⟨_⟩_
+infix  1 _▢
 
 \end{code}

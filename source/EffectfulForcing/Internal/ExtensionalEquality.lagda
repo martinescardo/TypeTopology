@@ -7,7 +7,7 @@ date-started: 2023-11-08
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.Internal.ExtensionalEquality where
 

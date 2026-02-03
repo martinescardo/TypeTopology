@@ -4,7 +4,7 @@ With additions in April 2025, notably (9) below.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Ordinals.Exponentiation.index where
 

@@ -4,7 +4,7 @@ Constructing the two element poset.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -42,7 +42,7 @@ open import Locales.Frame pt fe hiding (𝟚; ₀; ₁)
       2-ord-is-transitive ₀ y z p q = ⋆
       2-ord-is-transitive ₁ ₁ ₁ p q = ⋆
 
-    2-ord-is-antisymmetric : is-antisymmetric 2-ord 
+    2-ord-is-antisymmetric : is-antisymmetric 2-ord
     2-ord-is-antisymmetric {₀} {₀} p q = refl
     2-ord-is-antisymmetric {₁} {₁} p q = refl
 

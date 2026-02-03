@@ -10,7 +10,7 @@ library to TypeTopology.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.Equiv

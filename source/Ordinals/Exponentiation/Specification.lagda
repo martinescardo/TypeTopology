@@ -8,7 +8,7 @@ immediately follow from those specifications.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.PropTrunc
 open import UF.Size

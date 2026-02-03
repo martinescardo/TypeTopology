@@ -93,7 +93,6 @@ module Arithmetic where
 module Arithmetic' where
 
   _+_  _×_ : ℕ → ℕ → ℕ
-
   x + y = h y
    where
     h : ℕ → ℕ
