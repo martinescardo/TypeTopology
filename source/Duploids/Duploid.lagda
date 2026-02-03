@@ -43,8 +43,8 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Subsingletons
 
-open import Categories.Category fe
-open import Categories.Functor fe
+open import gist.Categories.Category fe
+open import gist.Categories.Functor fe
 open import Duploids.DeductiveSystem fe
 open import Duploids.Preduploid fe pt
 

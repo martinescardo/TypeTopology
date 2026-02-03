@@ -7,11 +7,11 @@ point of view.
 
 {-# OPTIONS --safe --without-K #-}
 
-module Categories.index where
+module gist.Categories.index where
 
-import Categories.Category
-import Categories.Functor
-import Categories.NaturalTransformation
-import Categories.Adjunction
+import gist.Categories.Category
+import gist.Categories.Functor
+import gist.Categories.NaturalTransformation
+import gist.Categories.Adjunction
 
 \end{code}

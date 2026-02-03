@@ -6,14 +6,14 @@ Jon Sterling, started 18th Dec 2022
 
 open import UF.FunExt
 
-module Categories.Adjunction (fe : Fun-Ext) where
+module gist.Categories.Adjunction (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import UF.Subsingletons
 
-open import Categories.Category fe
-open import Categories.Functor fe
-open import Categories.NaturalTransformation fe
+open import gist.Categories.Category fe
+open import gist.Categories.Functor fe
+open import gist.Categories.NaturalTransformation fe
 
 module adjunction-of-precategories (𝓒 : precategory 𝓤 𝓥) (𝓓 : precategory 𝓤' 𝓥') where
  open functor-of-precategories

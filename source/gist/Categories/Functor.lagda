@@ -6,14 +6,14 @@ Jon Sterling, started 16th Dec 2022
 
 open import UF.FunExt
 
-module Categories.Functor (fe : Fun-Ext) where
+module gist.Categories.Functor (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import UF.Equiv
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Categories.Category fe
+open import gist.Categories.Category fe
 
 module functor-of-precategories (𝓒 : precategory 𝓤 𝓥) (𝓓 : precategory 𝓤' 𝓥') where
  private
