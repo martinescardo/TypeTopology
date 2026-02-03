@@ -144,7 +144,7 @@ follows directly from the unfolding behaviour of transfinite recursion.
  B-behaviour : (m n : ℕ) → B m n ＝ σ (n , m) (λ (n' , m') _ → B m' n')
  B-behaviour m n = Transfinite-recursion-behaviour fe ω² σ (n , m)
 
- Ackermann-equation₀ : (n : ℕ)   → B 0 n               ＝ succ n
+ Ackermann-equation₀ : (n : ℕ)   → B 0        n        ＝ succ n
  Ackermann-equation₁ : (m : ℕ)   → B (succ m) 0        ＝ B m 1
  Ackermann-equation₂ : (m n : ℕ) → B (succ m) (succ n) ＝ B m (B (succ m) n)
 
