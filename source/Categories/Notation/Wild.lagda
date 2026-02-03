@@ -53,13 +53,13 @@ module _ {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) where
 
  record ID : 𝓥 ⁺ ⊔ 𝓤 ̇  where
   field
-   id : {a : obj W} → hom a a
+   𝒊𝒅 : {a : obj W} → hom a a
 
  open ID {{...}} public
 
  instance
   defnid : ID
-  id {{defnid}} = WildCategory.id W
+  𝒊𝒅 {{defnid}} = WildCategory.𝒊𝒅 W
 
  record COMP : 𝓤 ⊔ 𝓥 ̇  where
   field
@@ -76,11 +76,11 @@ module _ {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) where
 
  record CATNotation : 𝓥 ⁺ ⊔ 𝓤 ̇   where
   field
-   id-is-left-neutral : {a b : obj W} (f : hom a b)
-           → id ○ f ＝ f
+   𝒊𝒅-is-left-neutral : {a b : obj W} (f : hom a b)
+           → 𝒊𝒅 ○ f ＝ f
            
-   id-is-right-neutral : {a b : obj W} (f : hom a b)
-            → f ○ id ＝ f
+   𝒊𝒅-is-right-neutral : {a b : obj W} (f : hom a b)
+            → f ○ 𝒊𝒅 ＝ f
             
    assoc : {a b c d : obj W}
            (f : hom a b)
@@ -98,12 +98,12 @@ module _ {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) where
    ⌜_⌝⁻¹-is-left-inverse : {a b : obj W}
                            {f : hom a b}
                            (iso : is-iso f)
-                         → ⌜ iso ⌝⁻¹ ○ f ＝ id
+                         → ⌜ iso ⌝⁻¹ ○ f ＝ 𝒊𝒅
 
    ⌜_⌝⁻¹-is-right-inverse : {a b : obj W}
                             {f : hom a b}
                             (iso : is-iso f)
-                          → f ○ ⌜ iso ⌝⁻¹ ＝ id
+                          → f ○ ⌜ iso ⌝⁻¹ ＝ 𝒊𝒅
 
    at-most-one-inverse : {a b : obj W} {f : hom a b}
                 (x y : is-iso f)
@@ -117,8 +117,9 @@ module _ {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) where
    underlying-morphism-is-isomorphism : {a b : obj W}
                                         (f : a ≅ b)
                                       → Σ f⁻¹ ꞉ hom b a
-                                        , (f⁻¹ ○ ⌜ f ⌝ ＝ id)
-                                        × (⌜ f ⌝ ○ f⁻¹ ＝ id)
+                                        , (f⁻¹ ○ ⌜ f ⌝ ＝ 𝒊𝒅)
+                                        × (⌜ f ⌝ ○ f⁻¹ ＝ 𝒊𝒅)
+                                        
 
    id-to-iso : (a b : obj W)
              → a ＝ b
@@ -132,14 +133,14 @@ module WildCategoryNotation {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) 
   hom {{wildcathomnotation}} = WildCategory.hom W
 
   wildcatidnotation : ID W
-  id {{wildcatidnotation}} = WildCategory.id W
+  𝒊𝒅 {{wildcatidnotation}} = WildCategory.𝒊𝒅 W
 
   wildcatcompnotation : COMP W
   _○_ {{wildcatcompnotation}} = WildCategory._○_ W
 
   wildcatnotation : CATNotation W
-  id-is-left-neutral {{wildcatnotation}} = WildCategory.id-is-left-neutral W
-  id-is-right-neutral {{wildcatnotation}} = WildCategory.id-is-right-neutral W
+  𝒊𝒅-is-left-neutral {{wildcatnotation}} = WildCategory.𝒊𝒅-is-left-neutral W
+  𝒊𝒅-is-right-neutral {{wildcatnotation}} = WildCategory.𝒊𝒅-is-right-neutral W
   assoc {{wildcatnotation}} = WildCategory.assoc W
   is-iso {{wildcatnotation}} = WildCategory.is-iso W
   ⌜_⌝⁻¹ {{wildcatnotation}} = WildCategory.⌜_⌝⁻¹ W

@@ -1,5 +1,7 @@
 Anna Williams 29 January 2026
 
+Definition of precategory.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -21,8 +23,8 @@ module Categories.Pre where
 
 \end{code}
 
-We can now define the property of being a precategory. This is exactly a wild
-category where the homs are sets.
+Precategories are exactly wild categories where the homs are sets. This
+property is given by the below.
 
 \begin{code}
 
@@ -44,6 +46,13 @@ We can now define the notion of a precategory.
 
 Precategory : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 Precategory 𝓤 𝓥 = Σ W ꞉ WildCategory 𝓤 𝓥 , is-precategory W
+
+\end{code}
+
+This gives the object notation for precategories and projections from the
+sigma type.
+
+\begin{code}
 
 instance
  precatobj : {𝓤 𝓥 : Universe} → OBJ (Precategory 𝓤 𝓥) (𝓤 ̇ )

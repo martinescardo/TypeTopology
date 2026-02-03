@@ -1,13 +1,15 @@
 Anna Williams, 17 October 2025
 
+Definition of Wild Category.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan hiding (id)
+open import MLTT.Spartan
 open import Notation.UnderlyingType
 open import UF.Base
-open import UF.Equiv hiding (_≅_ ; _≅⟨_⟩_ ; ⌜_⌝ ; ⌜_⌝⁻¹)
+open import UF.Equiv hiding (_≅_ ; ⌜_⌝ ; ⌜_⌝⁻¹)
 open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.Sets
@@ -52,13 +54,13 @@ record WildCategory (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇  where
  field
   obj : 𝓤 ̇
   hom : obj → obj → 𝓥 ̇
-  id : {a : obj} → hom a a
-
+  𝒊𝒅 : {a : obj} → hom a a
+  
   _○_ : {a b c : obj} → hom b c → hom a b → hom a c
 
-  id-is-left-neutral : {a b : obj} (f : hom a b) → id ○ f ＝ f
+  𝒊𝒅-is-left-neutral : {a b : obj} (f : hom a b) → 𝒊𝒅 ○ f ＝ f
   
-  id-is-right-neutral : {a b : obj} (f : hom a b) → f ○ id ＝ f
+  𝒊𝒅-is-right-neutral : {a b : obj} (f : hom a b) → f ○ 𝒊𝒅 ＝ f
 
   assoc : {a b c d : obj}
           (f : hom a b)
@@ -77,7 +79,7 @@ isomorphisms between objects of a wild category.
 \begin{code}
 
  is-iso : {a b : obj} (f : hom a b) → 𝓥 ̇
- is-iso {a} {b} f = Σ f⁻¹ ꞉ hom b a , (f⁻¹ ○ f ＝ id) × (f ○ f⁻¹ ＝ id)
+ is-iso {a} {b} f = Σ f⁻¹ ꞉ hom b a , (f⁻¹ ○ f ＝ 𝒊𝒅) × (f ○ f⁻¹ ＝ 𝒊𝒅)
 
  ⌜_⌝⁻¹ : {a b : obj}
          {f : hom a b}
@@ -88,13 +90,13 @@ isomorphisms between objects of a wild category.
  ⌜_⌝⁻¹-is-left-inverse : {a b : obj}
                          {f : hom a b}
                          (iso : is-iso f)
-                       → ⌜ iso ⌝⁻¹ ○ f ＝ id
+                       → ⌜ iso ⌝⁻¹ ○ f ＝ 𝒊𝒅
  ⌜ iso ⌝⁻¹-is-left-inverse = pr₁ (pr₂ iso)
 
  ⌜_⌝⁻¹-is-right-inverse : {a b : obj}
                           {f : hom a b}
                           (iso : is-iso f)
-                        → f ○ ⌜ iso ⌝⁻¹ ＝ id
+                        → f ○ ⌜ iso ⌝⁻¹ ＝ 𝒊𝒅
  ⌜ iso ⌝⁻¹-is-right-inverse = pr₂ (pr₂ iso)
 
  _≅_ : (a b : obj) → 𝓥 ̇
@@ -107,7 +109,7 @@ isomorphisms between objects of a wild category.
 
  underlying-morphism-is-isomorphism : {a b : obj}
                      (f : a ≅ b)
-                   → Σ f⁻¹ ꞉ hom b a , (f⁻¹ ○ ⌜ f ⌝ ＝ id) × (⌜ f ⌝ ○ f⁻¹ ＝ id)
+                   → Σ f⁻¹ ꞉ hom b a , (f⁻¹ ○ ⌜ f ⌝ ＝ 𝒊𝒅) × (⌜ f ⌝ ○ f⁻¹ ＝ 𝒊𝒅)
  underlying-morphism-is-isomorphism = pr₂
 
 \end{code}
@@ -121,17 +123,17 @@ We can show that two inverses for a given isomorphism must be equal.
                        (x y : is-iso f)
                      → ⌜ x ⌝⁻¹ ＝ ⌜ y ⌝⁻¹
  at-most-one-inverse {a} {b} {f} x y = ⌜ x ⌝⁻¹                 ＝⟨ i ⟩
-                                       ⌜ x ⌝⁻¹ ○ id            ＝⟨ ii ⟩
+                                       ⌜ x ⌝⁻¹ ○ 𝒊𝒅            ＝⟨ ii ⟩
                                        ⌜ x ⌝⁻¹ ○ (f ○ ⌜ y ⌝⁻¹) ＝⟨ iii ⟩
                                        (⌜ x ⌝⁻¹ ○ f) ○ ⌜ y ⌝⁻¹ ＝⟨ iv ⟩
-                                       id ○ ⌜ y ⌝⁻¹            ＝⟨ v ⟩
+                                       𝒊𝒅 ○ ⌜ y ⌝⁻¹            ＝⟨ v ⟩
                                        ⌜ y ⌝⁻¹                 ∎
   where
-   i   = (id-is-right-neutral ⌜ x ⌝⁻¹)⁻¹
+   i   = (𝒊𝒅-is-right-neutral ⌜ x ⌝⁻¹)⁻¹
    ii  = ap (⌜ x ⌝⁻¹ ○_) (⌜ y ⌝⁻¹-is-right-inverse)⁻¹
    iii = assoc _ _ _
    iv  = ap (_○ ⌜ y ⌝⁻¹) ⌜ x ⌝⁻¹-is-left-inverse
-   v   = id-is-left-neutral ⌜ y ⌝⁻¹
+   v   = 𝒊𝒅-is-left-neutral ⌜ y ⌝⁻¹
 
 \end{code}
 
@@ -144,6 +146,6 @@ follows.
  id-to-iso : (a b : obj)
            → a ＝ b
            → a ≅ b
- id-to-iso a b refl = id , id , id-is-left-neutral id , id-is-left-neutral id
+ id-to-iso a b refl = 𝒊𝒅 , 𝒊𝒅 , 𝒊𝒅-is-left-neutral 𝒊𝒅 , 𝒊𝒅-is-left-neutral 𝒊𝒅
 
 \end{code}

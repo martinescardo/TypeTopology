@@ -1,12 +1,14 @@
 Anna Williams 29 January 2026
 
+Definition of a (univalent) category.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
 open import UF.Sets
 open import UF.Sets-Properties
-open import UF.Equiv hiding (_≅_ ; _≅⟨_⟩_)
+open import UF.Equiv hiding (_≅_)
 open import UF.Equiv-FunExt
 open import MLTT.Spartan
 open import Categories.Wild
@@ -55,9 +57,14 @@ Category 𝓤 𝓥 = Σ P ꞉ Precategory 𝓤 𝓥 , is-category P
 
 \end{code}
 
-Projections from a category.
+We now define the object notation for a category and the projections from
+the sigma type.
 
 \begin{code}
+
+instance
+ catobj : {𝓤 𝓥 : Universe} → OBJ (Category 𝓤 𝓥) (𝓤 ̇ )
+ obj {{catobj}} ((C , _) , _) = WildCategory.obj C
 
 instance
   underlying-precategory-of-category
@@ -74,10 +81,6 @@ instance
 id-to-iso-is-equiv : (C : Category 𝓤 𝓥)
                    → is-category ⟨ C ⟩
 id-to-iso-is-equiv = pr₂
-
-instance
- catobj : {𝓤 𝓥 : Universe} → OBJ (Category 𝓤 𝓥) (𝓤 ̇ )
- obj {{catobj}} ((C , _) , _) = WildCategory.obj C
 
 \end{code}
 

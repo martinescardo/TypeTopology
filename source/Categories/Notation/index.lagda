@@ -12,4 +12,7 @@ import Categories.Notation.Wild
 import Categories.Notation.Pre
 import Categories.Notation.Univalent
 
+import Categories.Notation.Functor
+import Categories.Notation.NaturalTransformation
+
 \end{code}
