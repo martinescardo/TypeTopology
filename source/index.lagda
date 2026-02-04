@@ -148,6 +148,7 @@ import Apartness.index
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Cardinals.index
+import Categories.index
 import CoNaturals.index
 import ContinuityAxiom.index
 import Coslice.index
