@@ -2,7 +2,7 @@ Martin Escardo, Paulo Oliva, May 2024
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Notation.General
 open import MLTT.Spartan
@@ -10,42 +10,45 @@ open import UF.Equiv
 open import UF.FunExt
 open import RelativeMonadOnStructuredTypes.OneSigmaStructure
 
-module RelativeMonadOnStructuredTypes.Monad
+module RelativeMonadOnStructuredTypes.Definition
         {{ρ : 𝟙-Σ-structure}}
        where
 
 open 𝟙-Σ-structure ρ
 
-record Relative-Monad : 𝓤ω where
+record Relative-Monad {ℓ : Universe → Universe} : 𝓤ω where
  field
-  ℓ       : Universe → Universe
-  functor : {𝓤 : Universe}
-          → 𝕊 𝓤 → ℓ 𝓤 ̇
+  functor : {𝓤 : Universe} → 𝕊 𝓤 → ℓ 𝓤 ̇
+
+ private
+  T = functor
+
+ field
   η       : {𝓤 : Universe} {𝓧 : 𝕊 𝓤}
-          → ⟨ 𝓧 ⟩ → functor 𝓧
+          → ⟨ 𝓧 ⟩ → T 𝓧
   ext     : {𝓤 𝓥 : Universe} {𝓧 : 𝕊 𝓤} {𝓨 : 𝕊 𝓥}
-          → (⟨ 𝓧 ⟩ → functor 𝓨)
-          → functor 𝓧 → functor 𝓨
+          → (⟨ 𝓧 ⟩ → T 𝓨)
+          → T 𝓧 → T 𝓨
   ext-η   : {𝓤 : Universe} {𝓧 : 𝕊 𝓤}
-          → ext (η {𝓤} {𝓧}) ∼ 𝑖𝑑 (functor 𝓧)
+          → ext (η {𝓤} {𝓧}) ∼ 𝑖𝑑 (T 𝓧)
   unit    : {𝓤 𝓥 : Universe} {𝓧 : 𝕊 𝓤} {𝓨 : 𝕊 𝓥}
-            (f : ⟨ 𝓧 ⟩ → functor 𝓨)
+            (f : ⟨ 𝓧 ⟩ → T 𝓨)
             (x : ⟨ 𝓧 ⟩)
           → ext {𝓤} {𝓥} {𝓧} {𝓨} f (η x) ＝ f x
   assoc   : {𝓤 𝓥 𝓦 : Universe}
             {𝓧 : 𝕊 𝓤} {𝓨 : 𝕊 𝓥} {𝓩 : 𝕊 𝓦}
-            (g : ⟨ 𝓨 ⟩ → functor 𝓩)
-            (f : ⟨ 𝓧 ⟩ → functor 𝓨)
-            (t : functor 𝓧)
+            (g : ⟨ 𝓨 ⟩ → T 𝓩)
+            (f : ⟨ 𝓧 ⟩ → T 𝓨)
+            (t : T 𝓧)
           → ext (λ x → ext g (f x)) t ＝ ext g (ext f t)
 
- map : {𝓧 : 𝕊 𝓤} {𝓨 : 𝕊 𝓥} → (⟨ 𝓧 ⟩ → ⟨ 𝓨 ⟩) → functor 𝓧 → functor 𝓨
+ map : {𝓧 : 𝕊 𝓤} {𝓨 : 𝕊 𝓥} → (⟨ 𝓧 ⟩ → ⟨ 𝓨 ⟩) → T 𝓧 → T 𝓨
  map f = ext (η ∘ f)
 
  _⊗ᵣ_ : {𝓧 : 𝕊 𝓤} {𝓨 : ⟨ 𝓧 ⟩ → 𝕊 𝓥}
-      → functor 𝓧
-      → ((x : ⟨ 𝓧 ⟩) → functor (𝓨 x))
-      → functor (Σₛ x ꞉ 𝓧 , 𝓨 x)
+      → T 𝓧
+      → ((x : ⟨ 𝓧 ⟩) → T (𝓨 x))
+      → T (Σₛ x ꞉ 𝓧 , 𝓨 x)
  t ⊗ᵣ f = ext (λ x → map (λ y → x , y) (f x)) t
 
 open Relative-Monad public
@@ -60,7 +63,8 @@ convolution, in the sense of Day, be better?
 
 \begin{code}
 
-tensorᵣ : (𝕋 : Relative-Monad)
+tensorᵣ : {ℓ : Universe → Universe}
+          (𝕋 : Relative-Monad {ℓ})
           {𝓧 : 𝕊 𝓤} {𝓨 : ⟨ 𝓧 ⟩ → 𝕊 𝓥}
         → functor 𝕋 𝓧
         → ((x : ⟨ 𝓧 ⟩) → functor 𝕋 (𝓨 x))
@@ -76,10 +80,13 @@ module:
 
 \begin{code}
 
-module relative-T-definitions (𝕋 : Relative-Monad) where
+module relative-T-definitions
+        {ℓ : Universe → Universe}
+        (𝕋 : Relative-Monad {ℓ})
+       where
 
  T : {𝓤 : Universe}
-   → 𝕊 𝓤 → (ℓ 𝕋 𝓤) ̇
+   → 𝕊 𝓤 → ℓ 𝓤 ̇
  T {𝓤} = functor 𝕋
 
  ηᵀ : {𝓧 : 𝕊 𝓤}
@@ -138,7 +145,9 @@ https://doi.org/10.1016/0168-0072(94)90020-5
 
 \begin{code}
 
-module _ (𝕋 : Relative-Monad) where
+module _ {ℓ : Universe → Universe}
+         (𝕋 : Relative-Monad {ℓ})
+       where
 
  open relative-T-definitions 𝕋
 
@@ -223,7 +232,11 @@ Relative-Monad algebras.
 
 \begin{code}
 
-record Relative-Algebra {𝓦₀ : Universe} (𝕋 : Relative-Monad) (R : 𝓦₀ ̇ ) : 𝓤ω where
+record Relative-Algebra
+        {𝓦₀ : Universe}
+        {ℓ : Universe → Universe}
+        (𝕋 : Relative-Monad {ℓ})
+        (R : 𝓦₀ ̇ ) : 𝓤ω where
  field
   aext     : {𝓤 : Universe} {𝓧 : 𝕊 𝓤}
            → (⟨ 𝓧 ⟩ → R)
@@ -248,10 +261,11 @@ If we want to call an algebra (literally) α, we can used this module:
 \begin{code}
 
 module relative-α-definitions
-        (𝕋 : Relative-Monad)
+        {ℓ : Universe → Universe}
+        (𝕋 : Relative-Monad {ℓ})
         {𝓦₀ : Universe}
         (𝓡 : 𝕊 𝓦₀)
-        (𝓐 : Relative-Algebra {𝓦₀} 𝕋 ⟨ 𝓡 ⟩)
+        (𝓐 : Relative-Algebra {𝓦₀} {ℓ} 𝕋 ⟨ 𝓡 ⟩)
        where
 
  open relative-T-definitions 𝕋
@@ -265,19 +279,19 @@ module relative-α-definitions
  extᴬ : {𝓧 : 𝕊 𝓤} → (⟨ 𝓧 ⟩ → ⟨ 𝓡 ⟩) → T 𝓧 → ⟨ 𝓡 ⟩
  extᴬ = aext 𝓐
 
- extᴬ-old : {𝓧 : 𝕊 𝓤} → (⟨ 𝓧 ⟩ → ⟨ 𝓡 ⟩) → T 𝓧 → ⟨ 𝓡 ⟩
- extᴬ-old q = α ∘ mapᵀ q
+ extᴬ-alternative : {𝓧 : 𝕊 𝓤} → (⟨ 𝓧 ⟩ → ⟨ 𝓡 ⟩) → T 𝓧 → ⟨ 𝓡 ⟩
+ extᴬ-alternative q = α ∘ mapᵀ q
 
- new-agrees-with-old
+ extᴬ-agreement
   : funext 𝓤 𝓦₀
   → {𝓧 : 𝕊 𝓤} (f : ⟨ 𝓧 ⟩ → ⟨ 𝓡 ⟩) (t : T 𝓧)
-  → extᴬ f t ＝ extᴬ-old f t
- new-agrees-with-old {𝓤} fe {𝓧} f t =
-  extᴬ f t                                   ＝⟨refl⟩
+  → extᴬ f t ＝ extᴬ-alternative f t
+ extᴬ-agreement {𝓤} fe {𝓧} f t =
+  extᴬ f t                                     ＝⟨refl⟩
   aext 𝓐 f t                                   ＝⟨ I ⟩
   aext 𝓐 (λ x → aext 𝓐 id (ηᵀ (f x))) t        ＝⟨ II ⟩
   aext 𝓐 (λ x → x) (ext 𝕋 (λ x → η 𝕋 (f x)) t) ＝⟨refl⟩
-  extᴬ-old f t                               ∎
+  extᴬ-alternative f t                         ∎
    where
     I  = ap (λ - → aext 𝓐 - t) (dfunext fe (λ x → (aunit 𝓐 id (f x))⁻¹))
     II = aassoc 𝓐 id (ηᵀ ∘ f) t
@@ -285,7 +299,7 @@ module relative-α-definitions
  unitᴬ : {𝓧 : 𝕊 𝓤}
          (f : ⟨ 𝓧 ⟩ → ⟨ 𝓡 ⟩)
          (x : ⟨ 𝓧 ⟩)
-       → aext {𝓦₀} {𝕋} {⟨ 𝓡 ⟩} 𝓐 {𝓤} {𝓧} f (ηᵀ x) ＝ f x
+       → aext 𝓐 {𝓤} {𝓧} f (ηᵀ x) ＝ f x
  unitᴬ = aunit 𝓐
 
 \end{code}
@@ -294,11 +308,15 @@ Free algebras.
 
 \begin{code}
 
-module _ {𝓣₀ : Universe} (𝕋 : Relative-Monad) (𝓐 : 𝕊 𝓣₀) where
+module _ {𝓣₀ : Universe}
+         {ℓ : Universe → Universe}
+         (𝕋 : Relative-Monad {ℓ})
+         (𝓐 : 𝕊 𝓣₀)
+       where
 
  open relative-T-definitions 𝕋
 
- free-relative-algebra : Relative-Algebra {ℓ 𝕋 𝓣₀} 𝕋 (T 𝓐)
+ free-relative-algebra : Relative-Algebra 𝕋 (T 𝓐)
  free-relative-algebra =
   record {
     aext   = extᵀ

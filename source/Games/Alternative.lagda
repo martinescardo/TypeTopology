@@ -10,13 +10,16 @@ definitions of games.
 
 open import MLTT.Spartan hiding (J)
 
-module Games.Alternative (R : Type) where
+module Games.Alternative
+        {𝓤 𝓦₀ : Universe}
+        (R : 𝓦₀ ̇ )
+       where
 
 open import UF.Equiv
 open import UF.FunExt
 
-open import Games.TypeTrees
-open import Games.FiniteHistoryDependent R
+open import Games.TypeTrees {𝓤}
+open import Games.FiniteHistoryDependent {𝓤} R
              renaming (Game to Game' ;
                        game to game')
 
@@ -24,14 +27,14 @@ open import MonadOnTypes.K
 
 open K-definitions R
 
-data Game : Type₁ where
+data Game : 𝓤 ⁺ ⊔ 𝓦₀ ̇  where
  leaf   : R → Game
- branch : (X : Type) → K X → (X → Game) → Game
+ branch : (X : 𝓤 ̇ ) → K X → (X → Game) → Game
 
 leaf' : R → Game'
 leaf' r = game' [] (λ ⟨⟩ → r) ⟨⟩
 
-branch' : (X : Type) → K X → (X → Game') → Game'
+branch' : (X : 𝓤 ̇ ) → K X → (X → Game') → Game'
 branch' X ϕ Gf = game' (X ∷ (game-tree ∘ Gf))
                        (λ (x :: xs) → payoff-function (Gf x) xs)
                        (ϕ :: (quantifier-tree ∘ Gf))
@@ -62,13 +65,16 @@ to-Game are the following:
 
 \begin{code}
 
-to-Game-base
- : (q : Path [] → R)
- → to-Game (game' [] q ⟨⟩) ＝ leaf (q ⟨⟩)
+to-Game-base : (q : Path [] → R)
+             → to-Game (game' [] q ⟨⟩) ＝ leaf (q ⟨⟩)
 to-Game-base q = refl
 
 to-Game-step
- : (X : Type) (Xf : X → 𝑻) (ϕ : K X) (ϕf : (x : X) → 𝓚 (Xf x)) (q : Path (X ∷ Xf) → R)
+ : (X : 𝓤 ̇ )
+   (Xf : X → 𝑻)
+   (ϕ : K X)
+   (ϕf : (x : X) → 𝓚 (Xf x))
+   (q : Path (X ∷ Xf) → R)
  → to-Game (game' (X ∷ Xf) q (ϕ :: ϕf))
  ＝ branch X ϕ (λ x → to-Game (game' (Xf x) (subpred q x) (ϕf x)))
 to-Game-step X Xf ϕ ϕf q = refl
@@ -84,7 +90,7 @@ to-Game-base' : (r : R) → to-Game (leaf' r) ＝ leaf r
 to-Game-base' r = refl
 
 module _
-         (X : Type)
+         (X : 𝓤 ̇ )
          (Xf : X → 𝑻)
          (ϕ : K X)
          (ϕf : (x : X) → 𝓚 (Xf x))

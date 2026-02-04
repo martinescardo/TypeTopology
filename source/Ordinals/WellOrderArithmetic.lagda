@@ -230,7 +230,9 @@ Multiplication. Cartesian product with the lexicographic order.
 Fredrik Nordvall Forsberg, 3 November 2023: Changed order of multiplication to
 reverse lexicographic order to adhere to the standard convention.
 
-Martin Escardo 13th September 2024. But notice that for sums we can't do this swap, due to type dependency, and hence *swapped* mulplication is a particular case of ordinal sum.
+Martin Escardo 13th September 2024. But notice that for sums we can't
+do this swap, due to type dependency, and hence *swapped* mulplication
+is a particular case of ordinal sum.
 
 \begin{code}
 

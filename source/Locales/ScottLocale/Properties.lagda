@@ -7,7 +7,7 @@ dates-updated: [2024-03-16]
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 open import Slice.Family

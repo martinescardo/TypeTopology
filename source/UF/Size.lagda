@@ -872,6 +872,102 @@ embedded-retract-is-small : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 embedded-retract-is-small (r , s , rs) s-is-embedding Y-is-small =
  section-embedding-size-contravariance s s-is-embedding (r , rs) Y-is-small
 
+\end{code}
+
+Added 17 January 2026 by Tom de Jong, after a discussion with Martín Escardó.
+
+The embedding condition in the above lemma is actually redundant: small types
+are closed under general retracts. This is Theorem 2.13 of
+
+ Tom de Jong and Martín Hötzel Escardó.
+ On Small Types in Univalent Foundations.
+ Logical Methods in Computer Science, 19(2):8:1─8:33, 2023.
+ https://doi.org/10.46298/lmcs-19(2:8)2023
+
+which uses Lemma 3.6 and the construction in the proof of Theorem 5.3 of
+
+ Michael Shulman.
+ Idempotents in intensional type theory.
+ Logical Methods in Computer Science, 12(3):9:1–9:24, 2016.
+ https://doi.org/10.2168/LMCS-12(3:9)2016
+
+Shulman's results are formalized in the Coq-HoTT library
+(https://github.com/HoTT/Coq-HoTT, see theories/Idempotents.v).
+
+Here we formalize Theorem 2.13 of our paper, but take Shulman's construction as
+an hypothesis, rather than porting the whole proof from Coq to Agda.
+
+Note that Shulman's construction relies only on function extensionality (which
+can be checked in Rocq and is also claimed in Shulman's paper), so we include
+that as an assumption.
+
+Also note that Shulman's Theorem 5.3 is in fact more general than we consider
+here: it applies to any quasi-idempotent f. By Lemma 3.6, any retraction r with
+section s determines a quasi-idempotent f via f := s ∘ r which is enough for
+purposes.
+
+\begin{code}
+
+Shulman's-Splitting-Construction : 𝓤ω
+Shulman's-Splitting-Construction =
+ Fun-Ext
+ → {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (ρ : retract Y of X)
+ → let f = section ρ ∘ retraction ρ in
+   let A = Σ a ꞉ (ℕ → X) , Π n ꞉ ℕ , f (a (succ n)) ＝ a n in
+   Σ ρ' ꞉ retract A of X , section ρ' ∘ retraction ρ' ∼ f
+
+retracts-of-small-types-are-small
+ : Fun-Ext
+ → Shulman's-Splitting-Construction
+ → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → retract Y of X
+ → X is 𝓦 small
+ → Y is 𝓦 small
+retracts-of-small-types-are-small {𝓤} {𝓥} {𝓦} fe ssc {X} {Y} ρ₀ (X' , φ) = A , ψ
+ where
+  ρ : retract Y of X'
+  ρ = retracts-compose (≃-gives-▷ φ) ρ₀
+  r : X' → Y
+  r = retraction ρ
+  s : Y → X'
+  s = section ρ
+
+  f : (x : X') → X'
+  f = s ∘ r
+  A : 𝓦 ̇
+  A = Σ a ꞉ (ℕ → X') , Π n ꞉ ℕ , f (a (succ n)) ＝ a n
+  shulman-splitting : Σ ρ' ꞉ retract A of X' , section ρ' ∘ retraction ρ' ∼ f
+  shulman-splitting = ssc fe ρ
+
+  ρ' = pr₁ shulman-splitting
+  r' : X' → A
+  r' = retraction ρ'
+  s' : A → X'
+  s' = section ρ'
+  eq : s' ∘ r' ∼ s ∘ r
+  eq = pr₂ shulman-splitting
+
+  ψ : A ≃ Y
+  ψ = r ∘ s' , qinvs-are-equivs (r ∘ s') (r' ∘ s , I , II)
+   where
+    I : r' ∘ s ∘ r ∘ s' ∼ id
+    I a = (r' ∘ s ∘ r ∘ s') a   ＝⟨ ap r' ((eq (s' a)) ⁻¹) ⟩
+          (r' ∘ s' ∘ r' ∘ s') a ＝⟨ retract-condition ρ' (r' (s' a)) ⟩
+          (r' ∘ s') a           ＝⟨ retract-condition ρ' a ⟩
+          a                     ∎
+    II : r ∘ s' ∘ r' ∘ s ∼ id
+    II y = (r ∘ s' ∘ r' ∘ s) y ＝⟨ ap r (eq (s y)) ⟩
+           (r ∘ s ∘ r ∘ s) y   ＝⟨ retract-condition ρ (r (s y)) ⟩
+           (r ∘ s) y           ＝⟨ retract-condition ρ y ⟩
+           y                   ∎
+
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 ≃-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                       → X ≃ Y
                       → Y is 𝓦 small

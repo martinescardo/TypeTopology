@@ -1,31 +1,33 @@
 Martin Escardo, Paulo Oliva, March - April 2023
 
+We got started writing the proofs 27th January 2026.
+
 This file is mostly for efficiency. See the tests with tic-tac-toe at
 the end of this file with the various possibilities offered here.
 
 We incorporate alpha-beta pruning to our previous work on finite
-history-dependent games using the selection and continuous monads (in
+history-dependent games using the selection and continuation monads (in
 the module Games.FiniteHistoryDependent). But we do much more than
 just that.
 
 We define a minimax game (R , Xt, q , ϕt) to be a two-player game with
 alternating quantifiers min and max (or max and min).
 
-Part 0 (module minimax). In order to make the calculation of the
+Part 1 (module minimax). In order to make the calculation of the
 optimal outcome more efficient, we assume that the types of moves in
 the game tree Xt are listed. Moreover, we add alpha-beta pruned
 selection functions (indicated by the symbol "†").
 
-Part 1. We transform such a minimax game G into a game G' so that we
+Part 2. We transform such a minimax game G into a game G' so that we
 can read off optimal *plays* of G from optimal *outcomes* of G'. This
 requires the construction of a new R' and new quantifiers max' and
 min', and a proof that optimal outcomes of G' give optimal plays of G.
 
-Part 2. We then add α-β-pruning to G', to get a game G⋆, by further
+Part 3. We then add α-β-pruning to G', to get a game G⋆, by further
 modifying min' and max' to get min⋆ and max⋆, but keeping R' the
 same. This requires a proof that G' and G⋆ have the same optimal
 outcome. Of course, the α-β-pruning is done for the sake of
-efficiency. By combining this with Part 1, we obtain an efficient way
+efficiency. By combining this with Part 2, we obtain an efficient way
 to play the original game G optimally, with a proof of
 correctness. (But we don't prove efficiency theorems.)
 
@@ -33,18 +35,7 @@ correctness. (But we don't prove efficiency theorems.)
 
 {-# OPTIONS --safe --without-K --no-exact-split #-}
 
-open import MLTT.Spartan hiding (J)
-open import MLTT.Fin
-open import Games.FiniteHistoryDependent
-open import Games.TypeTrees
-open import MonadOnTypes.K
-open import MonadOnTypes.J
-open import MLTT.Athenian
-open import UF.FunExt
-
 \end{code}
-
-Part 0.
 
 We now define standard minimax games.
 
@@ -52,16 +43,38 @@ We now define standard minimax games.
 
 module Games.alpha-beta where
 
+import Games.FiniteHistoryDependent
+open import Games.TypeTrees
+open import MLTT.Athenian
+open import MLTT.Fin
+open import MLTT.Spartan hiding (J)
+open import MonadOnTypes.J
+open import MonadOnTypes.K
+open import UF.FunExt
+
+\end{code}
+
+TODO. Usually we have R in a separate universe 𝓦₀. Can we do this here?
+
+Instead of assuming below that Xt is listed, we could have assumed
+that each node of Xt is a searchable type, but this seems to be more
+inefficient.
+
+\begin{code}
+
 module minimax
-        (R : Type)
-        (_<_ : R → R → Type)
+        {𝓤 𝓥 : Universe}
+        (R : 𝓤 ̇ )
+        (_<_ : R → R → 𝓥 ̇ )
         (δ : (r s : R) → is-decidable (r < s))
-        (Xt : 𝑻)
+        (Xt : 𝑻 {𝓤})
         (Xt-is-listed⁺ : structure listed⁺ Xt)
         (q : Path Xt → R)
        where
 
- _≥_ : R → R → Type
+ open Games.FiniteHistoryDependent {𝓤} {𝓤} R
+
+ _≥_ : R → R → 𝓥 ̇
  r ≥ s = ¬ (r < s)
 
 \end{code}
@@ -83,37 +96,37 @@ data given as module parameter.
 
 \end{code}
 
-Part 0.
+Part 1. Traditional minimax.
 
 \begin{code}
 
  open K-definitions R
 
- Min Max : {X : Type} → listed⁺ X → K X
+ Min Max : {X : 𝓤 ̇ } → listed⁺ X → K X
  Min (x₀ , xs , _) p = foldr (λ x → min (p x)) (p x₀) xs
  Max (x₀ , xs , _) p = foldr (λ x → max (p x)) (p x₀) xs
 
 \end{code}
 
 TODO. Min and Max do indeed compute the minimum and maximum
-value of p : X → R (easy).
+value of p : X → R (easy, but we will need to assume that the given order is linear).
 
-We now label the give tree Xt with the above Min and Max quantifiers
+We now label the given tree Xt with the above Min and Max quantifiers
 in an alternating fashion.
 
 \begin{code}
 
  minmax maxmin : (Xt : 𝑻)
                → structure listed⁺ Xt
-               → 𝓚 R Xt
+               → 𝓚 Xt
  minmax []       ⟨⟩        = ⟨⟩
  minmax (X ∷ Xf) (ℓ :: ss) = Min ℓ :: (λ x → maxmin (Xf x) (ss x))
 
  maxmin []       ⟨⟩        = ⟨⟩
  maxmin (X ∷ Xf) (ℓ :: ss) = Max ℓ :: (λ x → minmax (Xf x) (ss x))
 
- G-quantifiers : 𝓚 R Xt
- G-quantifiers = maxmin Xt Xt-is-listed⁺
+ G-quantifier-tree : 𝓚 Xt
+ G-quantifier-tree = maxmin Xt Xt-is-listed⁺
 
 \end{code}
 
@@ -121,8 +134,8 @@ And with this we get the desired maxmin game.
 
 \begin{code}
 
- G : Game R
- G = game Xt q G-quantifiers
+ G : Game
+ G = game Xt q G-quantifier-tree
 
 \end{code}
 
@@ -130,7 +143,7 @@ Now we define selection functions for this game.
 
 \begin{code}
 
- argmin argmax : {X : Type} → (X → R) → X → X → X
+ argmin argmax : {X : 𝓤 ̇ } → (X → R) → X → X → X
 
  argmin p x m = Cases (δ (p x) (p m))
                  (λ (_ : p x < p m) → x)
@@ -142,7 +155,7 @@ Now we define selection functions for this game.
 
  open J-definitions R
 
- ArgMin ArgMax : {X : Type} → listed⁺ X → J X
+ ArgMin ArgMax : {X : 𝓤 ̇ } → listed⁺ X → J X
  ArgMin (x₀ , xs , _) p = foldr (argmin p) x₀ xs
  ArgMax (x₀ , xs , _) p = foldr (argmax p) x₀ xs
 
@@ -158,21 +171,21 @@ quantifiers in an alternating fashion.
 
  argminmax argmaxmin : (Xt : 𝑻)
                      → structure listed⁺ Xt
-                     → 𝓙 R Xt
+                     → 𝓙 Xt
  argminmax []       ⟨⟩        = ⟨⟩
  argminmax (X ∷ Xf) (ℓ :: ℓf) = ArgMin ℓ :: (λ x → argmaxmin (Xf x) (ℓf x))
 
  argmaxmin []       ⟨⟩        = ⟨⟩
  argmaxmin (X ∷ Xf) (ℓ :: ℓf) = ArgMax ℓ :: (λ x → argminmax (Xf x) (ℓf x))
 
- G-selections : 𝓙 R Xt
- G-selections = argmaxmin Xt Xt-is-listed⁺
+ G-selection-tree : 𝓙 Xt
+ G-selection-tree = argmaxmin Xt Xt-is-listed⁺
 
- G-strategy : Strategy R Xt
- G-strategy = selection-strategy R G-selections q
+ G-strategy : Strategy Xt
+ G-strategy = selection-strategy G-selection-tree q
 
  optimal-play : Path Xt
- optimal-play = sequenceᴶ R G-selections q
+ optimal-play = sequenceᴶ G-selection-tree q
 
 \end{code}
 
@@ -180,15 +193,15 @@ TODO. Prove the lemma formulated as an assumption of the above module (easy).
 
 \begin{code}
 
- module _ (lemma : _Attains_ R G-selections G-quantifiers)
+ module _ (lemma : G-selection-tree Attains  G-quantifier-tree)
           (fe : Fun-Ext)
         where
 
-  theorem : is-optimal R G (selection-strategy R G-selections q)
-  theorem = Selection-Strategy-Theorem R fe G G-selections lemma
+  theorem : is-optimal G (selection-strategy G-selection-tree q)
+  theorem = Selection-Strategy-Theorem fe G G-selection-tree lemma
 
-  corollary : q optimal-play ＝ optimal-outcome R G
-  corollary = selection-strategy-corollary R fe G G-selections lemma
+  corollary : q optimal-play ＝ optimal-outcome G
+  corollary = selection-strategy-corollary fe G G-selection-tree lemma
 
 \end{code}
 
@@ -200,11 +213,11 @@ reader monad, to speed-up the computation of the optimal play.
  module _ (fe : Fun-Ext) (-∞ ∞ : R) where
 
   open import MonadOnTypes.Reader
-  open import MonadOnTypes.Monad
+  open import MonadOnTypes.Definition
 
   AB = R × R
 
-  T : Type → Type
+  T : 𝓤 ̇ → 𝓤 ̇
   T = functor (Reader AB)
 
   private
@@ -214,7 +227,7 @@ reader monad, to speed-up the computation of the optimal play.
   q† : Path Xt → T R
   q† xs (α , β) = q xs
 
-  ArgMin† ArgMax† : {X : Type} → List X → X → R → (X → T R) → T X
+  ArgMin† ArgMax† : {X : 𝓤 ̇ } → List X → X → R → (X → T R) → T X
 
   ArgMin† []       x₀ r p (α , β) = x₀
   ArgMin† (x ∷ xs) x₀ r p (α , β) =
@@ -243,8 +256,8 @@ reader monad, to speed-up the computation of the optimal play.
   𝓡 : Algebra (Reader AB) R
   𝓡 = record {
         structure-map = λ (t : AB → R) → t (-∞ , ∞) ;
-        aunit = λ x → refl ;
-        aassoc = λ x → refl
+        aunit = λ _ → refl ;
+        aassoc = λ _ → refl
       }
 
   ρ : T R → R
@@ -253,6 +266,8 @@ reader monad, to speed-up the computation of the optimal play.
   open import Games.FiniteHistoryDependentMonadic
                fe
                (Reader AB)
+               {𝓤}
+               {𝓤}
                R
                𝓡
 
@@ -269,11 +284,11 @@ reader monad, to speed-up the computation of the optimal play.
    (λ (p : X → T R) → ArgMax† xs x₀ (ρ (p x₀)) p)
    :: (λ x → argminmax† (Xf x) (ss x))
 
-  G-selections† : 𝓙𝓣 Xt
-  G-selections† = argmaxmin† Xt Xt-is-listed⁺
+  G-selection-tree† : 𝓙𝓣 Xt
+  G-selection-tree† = argmaxmin† Xt Xt-is-listed⁺
 
   optimal-play† : Path Xt
-  optimal-play† = sequenceᴶᵀ G-selections† q† (-∞ , ∞)
+  optimal-play† = sequenceᴶᵀ G-selection-tree† q† (-∞ , ∞)
 
 \end{code}
 
@@ -284,88 +299,97 @@ https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
 \begin{code}
 
-wikipedia-tree : 𝑻
-wikipedia-tree =
- Fin 3 ∷
-  λ _ → Fin 2 ∷
-         λ _ → Fin 2 ∷
-                λ _ → Fin 3 ∷
-                       λ _ → []
+module example₁ where
+
+ R = ℕ
+
+ open Games.FiniteHistoryDependent public
+
+ wikipedia-tree : 𝑻
+ wikipedia-tree =
+  Fin 3 ∷
+   λ _ → Fin 2 ∷
+          λ _ → Fin 2 ∷
+                 λ _ → Fin 3 ∷
+                        λ _ → []
 
 
-wikipedia-tree-is-listed⁺ : structure listed⁺ wikipedia-tree
-wikipedia-tree-is-listed⁺ =
- Fin-listed⁺ 2 ,
-  λ _ → Fin-listed⁺ 1 ,
-         λ _ → Fin-listed⁺ 1 ,
-                λ _ → Fin-listed⁺ 2 ,
-                       λ _ → ⟨⟩
+ wikipedia-tree-is-listed⁺ : structure listed⁺ wikipedia-tree
+ wikipedia-tree-is-listed⁺ =
+  Fin-listed⁺ 2 ,
+   λ _ → Fin-listed⁺ 1 ,
+          λ _ → Fin-listed⁺ 1 ,
+                 λ _ → Fin-listed⁺ 2 ,
+                        λ _ → ⟨⟩
 
-wikipedia-q : Path wikipedia-tree → ℕ
-wikipedia-q (𝟎 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩) = 5
-wikipedia-q (𝟎 , 𝟎 , 𝟎 , _ , ⟨⟩) = 6
-wikipedia-q (𝟎 , 𝟎 , 𝟏 , 𝟎 , ⟨⟩) = 7
-wikipedia-q (𝟎 , 𝟎 , 𝟏 , 𝟏 , ⟨⟩) = 4
-wikipedia-q (𝟎 , 𝟎 , 𝟏 , 𝟐 , ⟨⟩) = 5
-wikipedia-q (𝟎 , 𝟏 , _ , _ , ⟨⟩) = 3
-wikipedia-q (𝟏 , 𝟎 , 𝟎 , _ , ⟨⟩) = 6
-wikipedia-q (𝟏 , 𝟎 , 𝟏 , 𝟎 , ⟨⟩) = 6
-wikipedia-q (𝟏 , 𝟎 , 𝟏 , _ , ⟨⟩) = 9
-wikipedia-q (𝟏 , 𝟏 , _ , _ , ⟨⟩) = 7
-wikipedia-q (𝟐 , 𝟎 , _ , _ , ⟨⟩) = 5
-wikipedia-q (𝟐 , _ , _ , _ , ⟨⟩) = 9
+ wikipedia-q : Path wikipedia-tree → R
+ wikipedia-q (𝟎 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩) = 5
+ wikipedia-q (𝟎 , 𝟎 , 𝟎 , _ , ⟨⟩) = 6
+ wikipedia-q (𝟎 , 𝟎 , 𝟏 , 𝟎 , ⟨⟩) = 7
+ wikipedia-q (𝟎 , 𝟎 , 𝟏 , 𝟏 , ⟨⟩) = 4
+ wikipedia-q (𝟎 , 𝟎 , 𝟏 , 𝟐 , ⟨⟩) = 5
+ wikipedia-q (𝟎 , 𝟏 , _ , _ , ⟨⟩) = 3
+ wikipedia-q (𝟏 , 𝟎 , 𝟎 , _ , ⟨⟩) = 6
+ wikipedia-q (𝟏 , 𝟎 , 𝟏 , 𝟎 , ⟨⟩) = 6
+ wikipedia-q (𝟏 , 𝟎 , 𝟏 , _ , ⟨⟩) = 9
+ wikipedia-q (𝟏 , 𝟏 , _ , _ , ⟨⟩) = 7
+ wikipedia-q (𝟐 , 𝟎 , _ , _ , ⟨⟩) = 5
+ wikipedia-q (𝟐 , _ , _ , _ , ⟨⟩) = 9
 
-module _ where
+ module _ where
 
- open import Naturals.Order
- open minimax
-       ℕ
-       _<ℕ_
-       <-decidable
-       wikipedia-tree
-       wikipedia-tree-is-listed⁺
-       wikipedia-q
+  open import Naturals.Order
+  open minimax
+        R
+        _<ℕ_
+        <-decidable
+        wikipedia-tree
+        wikipedia-tree-is-listed⁺
+        wikipedia-q
 
- wikipedia-G : Game ℕ
- wikipedia-G = G
+  wikipedia-G : Game R
+  wikipedia-G = G
 
- wikipedia-optimal-play : Path wikipedia-tree
- wikipedia-optimal-play = optimal-play
+  wikipedia-optimal-play : Path wikipedia-tree
+  wikipedia-optimal-play = optimal-play
 
-wikipedia-optimal-outcome : ℕ
-wikipedia-optimal-outcome = optimal-outcome ℕ wikipedia-G
+ wikipedia-optimal-outcome : R
+ wikipedia-optimal-outcome = optimal-outcome R wikipedia-G
 
-wikipedia-optimal-outcome＝ : wikipedia-optimal-outcome ＝ 6
-wikipedia-optimal-outcome＝ = refl
+ wikipedia-optimal-outcome＝ : wikipedia-optimal-outcome ＝ 6
+ wikipedia-optimal-outcome＝ = refl
 
-{- Comment out because it is slow:
+ {- Comment out because it is slow:
 
-wikipedia-optimal-play＝ : wikipedia-optimal-play ＝ (𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
-wikipedia-optimal-play＝ = refl
--}
+ wikipedia-optimal-play＝ : wikipedia-optimal-play ＝ (𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
+ wikipedia-optimal-play＝ = refl
+ -}
 
 \end{code}
 
-Part 1.
-
-Now we define G' which computes optimal strategies using quantifiers
-with a modification of the outcome type to include paths.
+Part 2. Now we define G' which computes optimal strategies using
+quantifiers with a modification of the outcome type to include
+paths. This uses the product of quantifiers rather than the product of
+selection functions, which is more efficient.
 
 \begin{code}
 
 module minimax'
-        (R : Type)
-        (_<_ : R → R → Type)
+        {𝓤 𝓥 : Universe}
+        (R : 𝓤 ̇ )
+        (_<_ : R → R → 𝓥 ̇ )
         (δ : (r s : R) → is-decidable (r < s))
         (Xt : 𝑻)
         (Xt-is-listed⁺ : structure listed⁺ Xt)
         (q : Path Xt → R)
        where
 
- _≥_ : R → R → Type
+ open Games.FiniteHistoryDependent
+
+ _≥_ : R → R → 𝓥 ̇
  r ≥ s = ¬ (r < s)
 
- R' : Type
+ R' : 𝓤 ̇
  R' = R × Path Xt
 
  q' : Path Xt → R'
@@ -383,7 +407,7 @@ module minimax'
 
  open K-definitions R'
 
- Min' Max' : {X : Type} → listed⁺ X → K X
+ Min' Max' : {X : 𝓤 ̇ } → listed⁺ X → K X
  Min' (x₀ , xs , _) p = foldr (λ x → min' (p x)) (p x₀) xs
  Max' (x₀ , xs , _) p = foldr (λ x → max' (p x)) (p x₀) xs
 
@@ -404,55 +428,62 @@ module minimax'
 
   open minimax R _<_ δ Xt Xt-is-listed⁺ q
 
-  theorem' : optimal-outcome R' G'
-           ＝ (K-sequence R (maxmin Xt Xt-is-listed⁺) q ,
-              sequenceᴶ R (argmaxmin Xt Xt-is-listed⁺) q)
+  theorem' : optimal-outcome R' G' ＝ (sequenceᴷ R (maxmin Xt Xt-is-listed⁺) q ,
+                                       sequenceᴶ R (argmaxmin Xt Xt-is-listed⁺) q)
   theorem' = {!!}
+
 -}
 
 \end{code}
 
-Example from Wikipedia again.
+Example from Wikipedia continued.
 
 \begin{code}
 
-wikipedia-G' : Game (ℕ × Path wikipedia-tree)
-wikipedia-G' = G'
- where
-  open import Naturals.Order
-  open minimax'
-        ℕ
-        _<ℕ_
-        <-decidable
-        wikipedia-tree
-        wikipedia-tree-is-listed⁺
-        wikipedia-q
+module example₂ where
 
-wikipedia-optimal-outcome' : ℕ × Path wikipedia-tree
-wikipedia-optimal-outcome' = optimal-outcome (ℕ × Path wikipedia-tree) wikipedia-G'
+ open example₁
 
-wikipedia-optimal-outcome＝' : wikipedia-optimal-outcome' ＝ (6 , 𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
-wikipedia-optimal-outcome＝' = refl
+ wikipedia-G' : Game (R × Path wikipedia-tree)
+ wikipedia-G' = G'
+  where
+   open import Naturals.Order
+   open minimax'
+         ℕ
+         _<ℕ_
+         <-decidable
+         wikipedia-tree
+         wikipedia-tree-is-listed⁺
+         wikipedia-q
+
+ wikipedia-optimal-outcome' : R × Path wikipedia-tree
+ wikipedia-optimal-outcome' = optimal-outcome (ℕ × Path wikipedia-tree) wikipedia-G'
+
+ wikipedia-optimal-outcome＝' : wikipedia-optimal-outcome' ＝ (6 , 𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
+ wikipedia-optimal-outcome＝' = refl
 
 \end{code}
 
-Now we define G⋆ which again using quantifiers, rather than selection
+Part 3. Now we define G⋆, which again uses quantifiers, rather than selection
 functions, to compute optimal strategies, but now using monadic
 quantifiers with the reader monad to incorporate alpha-beta pruning.
 
 \begin{code}
 
 module minimax⋆
-        (R : Type)
+        {𝓤 : Universe}
+        (R : 𝓤 ̇ )
         (-∞ ∞ : R)
-        (_<_ : R → R → Type)
+        (_<_ : R → R → 𝓥 ̇ )
         (δ : (r s : R) → is-decidable (r < s))
         (Xt : 𝑻)
         (Xt-is-listed⁺ : structure listed⁺ Xt)
         (q : Path Xt → R)
        where
 
- _≥_ : R → R → Type
+ open Games.FiniteHistoryDependent
+
+ _≥_ : R → R → 𝓥 ̇
  r ≥ s = ¬ (r < s)
 
  max min : R → R → R
@@ -466,11 +497,11 @@ module minimax⋆
             (λ (_ : s ≥ r) → r)
 
  open import MonadOnTypes.Reader
- open import MonadOnTypes.Monad
+ open import MonadOnTypes.Definition
 
  AB = R × R
 
- R⋆ : Type
+ R⋆ : 𝓤 ̇
  R⋆ = functor (Reader AB) (R × Path Xt)
 
  private
@@ -529,7 +560,7 @@ module minimax⋆
  G⋆ : Game R⋆
  G⋆ = game Xt q⋆ (maxmin⋆ Xt Xt-is-listed⁺)
 
-{- TODO.
+ {- TODO.
 
  module _ where
 
@@ -541,34 +572,52 @@ module minimax⋆
   theorem⋆₂ : q (pr₂ (optimal-outcome R⋆ G⋆ (-∞ , ∞)))
            ＝ pr₁ (optimal-outcome R⋆ G⋆ (-∞ , ∞))
   theorem⋆₂ = {!!}
--}
 
-wikipedia-G⋆ : Game (ℕ × ℕ → ℕ × Path wikipedia-tree)
-wikipedia-G⋆ = G⋆
- where
-  open import Naturals.Order
-  open minimax⋆
-        ℕ
-        0 10
-        _<ℕ_
-        <-decidable
-        wikipedia-tree
-        wikipedia-tree-is-listed⁺
-        wikipedia-q
+  -}
 
-wikipedia-optimal-outcome⋆ : ℕ × ℕ → ℕ × Path wikipedia-tree
-wikipedia-optimal-outcome⋆ = optimal-outcome (ℕ × ℕ → ℕ × Path wikipedia-tree) wikipedia-G⋆
+\end{code}
 
-wikipedia-optimal-outcome＝⋆ : wikipedia-optimal-outcome⋆ (0 , 10)
-                            ＝ (6 , 𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
-wikipedia-optimal-outcome＝⋆ = refl
+Wikipedia example continued
 
-module _ {X : Type}
+\begin{code}
+
+module example₃ where
+
+ open example₁
+
+ wikipedia-G⋆ : Game (ℕ × ℕ → ℕ × Path wikipedia-tree)
+ wikipedia-G⋆ = G⋆
+  where
+   open import Naturals.Order
+   open minimax⋆
+         ℕ
+         0 10
+         _<ℕ_
+         <-decidable
+         wikipedia-tree
+         wikipedia-tree-is-listed⁺
+         wikipedia-q
+
+ wikipedia-optimal-outcome⋆ : ℕ × ℕ → ℕ × Path wikipedia-tree
+ wikipedia-optimal-outcome⋆ = optimal-outcome (ℕ × ℕ → ℕ × Path wikipedia-tree) wikipedia-G⋆
+
+ wikipedia-optimal-outcome＝⋆ : wikipedia-optimal-outcome⋆ (0 , 10)
+                             ＝ (6 , 𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
+ wikipedia-optimal-outcome＝⋆ = refl
+
+\end{code}
+
+We now define permutation trees, used below for tic-tac-toe.
+
+\begin{code}
+
+module _ {𝓤 : Universe}
+         {X : 𝓤 ̇ }
        where
 
  open list-util
 
- perm-tree : {n : ℕ} → Vector' X n → 𝑻
+ perm-tree : {n : ℕ} → Vector' X n → 𝑻 {𝓤}
  perm-tree {0}        ([] , _) = []
  perm-tree {succ n} v@(xs , _) = type-from-list xs
                                ∷ λ (_ , m) → perm-tree {n} (delete v m)
@@ -581,11 +630,23 @@ module _ {X : Type}
                                                 :: λ (_ , m) → perm-tree-is-listed⁺ {n}
                                                                 (delete (xs , p) m)
 
-module tic-tac-toe where
+\end{code}
+
+First version of tic-tac-toe.
+
+\begin{code}
+
+module tic-tac-toe₁ where
 
  open list-util {𝓤₀} {ℕ}
 
- Move = ℕ -- We use 0 , ⋯ , 8 only
+\end{code}
+
+We use 0 , ⋯ , 8 only in the type of moves.
+
+\begin{code}
+
+ Move = ℕ
 
  all-moves : Vector' Move 9
  all-moves = (0 ∷ 1 ∷ 2 ∷ 3 ∷ 4 ∷ 5 ∷ 6 ∷ 7 ∷ 8 ∷ []) , refl
@@ -596,8 +657,23 @@ module tic-tac-toe where
  TTT-tree-is-listed⁺ : structure listed⁺ TTT-tree
  TTT-tree-is-listed⁺ = perm-tree-is-listed⁺ all-moves
 
- R      = ℕ -- We use 0 (minimizer player wins) , 1 (draw) , 2 (maximizer player wins)
- Board  = List Move × List Move -- Moves of maximizer, respectively minimizer, player so far
+\end{code}
+
+We use 0 (minimizer player wins) , 1 (draw) , 2 (maximizer player wins) in R.
+
+\begin{code}
+
+ R = ℕ
+
+ open Games.FiniteHistoryDependent
+
+\end{code}
+
+Moves of maximizer, respectively minimizer, player so far
+
+\begin{code}
+
+ Board  = List Move × List Move
 
  initial-board : Board
  initial-board = [] , []
@@ -617,7 +693,7 @@ module tic-tac-toe where
  value : Board → R
  value (x , o) = if wins x then 2 else if wins o then 0 else 1
 
- data Player : Type where
+ data Player : 𝓤₀ ̇ where
   X O : Player
 
  maximizing-player : Player
@@ -718,7 +794,7 @@ module tic-tac-toe where
          TTT-tree-is-listed⁺
          TTT-q
 
-module tic-tac-toe-variation where
+module tic-tac-toe₂ where
 
  open list-util {𝓤₀} {ℕ}
 
@@ -736,7 +812,7 @@ module tic-tac-toe-variation where
  TTT-tree-is-listed⁺ : structure listed⁺ TTT-tree
  TTT-tree-is-listed⁺ = perm-tree-is-listed⁺ all-moves
 
- data Player : Type where
+ data Player : 𝓤₀  ̇  where
   X O : Player
 
  opponent : Player → Player
@@ -746,7 +822,15 @@ module tic-tac-toe-variation where
  maximizing-player : Player
  maximizing-player = X
 
- R      = ℕ -- We use 0 (minimizer player wins) , 1 (draw) , 2 (maximizer player wins)
+\end{code}
+
+We use 0 (minimizer player wins) , 1 (draw) , 2 (maximizer player wins) in the type R.
+
+\begin{code}
+
+ R = ℕ
+ open Games.FiniteHistoryDependent
+
  Grid   = Move
  Matrix = Grid → Maybe Player
  Board  = Player × Matrix
@@ -859,7 +943,10 @@ module tic-tac-toe-variation where
 
 \end{code}
 
+We now perform some experiments.
+
 Slow. 28 minutes in a MacBook Air M1
+
  TTT-optimal-outcome＝⋆ : TTT-optimal-outcome⋆
                        ＝ (1 , ((0 :: in-head)
                             :: ((4 :: in-tail (in-tail (in-tail in-head)))
@@ -882,7 +969,7 @@ algorithm with quantifiers:
 test : ℕ -- 22.7 seconds with `agda --compile` on a Mac M2
 test = TTT-optimal-outcome
  where
-  open tic-tac-toe
+  open tic-tac-toe₁
 
 \end{code}
 
@@ -894,7 +981,7 @@ the tic-tac-toe board:
 -test : ℕ -- 22.6 seconds with `agda --compile` on a Mac M2
 -test = TTT-optimal-outcome
  where
-  open tic-tac-toe-variation
+  open tic-tac-toe₂
 
 \end{code}
 
@@ -906,7 +993,7 @@ without any optimization:
 testo : List ℕ -- It didn't finish in 7 hours  with `agda --compile` on a Mac M2
 testo = remove-proofs _ all-moves TTT-optimal-play
  where
-  open tic-tac-toe
+  open tic-tac-toe₁
 
 \end{code}
 
@@ -919,7 +1006,7 @@ new technique introduced in this file:
 test† : Fun-Ext → List ℕ -- 15 seconds with `agda --compile` on a Mac M2
 test† fe = remove-proofs _ all-moves (TTT-optimal-play† fe)
  where
-  open tic-tac-toe
+  open tic-tac-toe₁
 
 \end{code}
 
@@ -931,7 +1018,7 @@ technique introduced in this file:
 test' : List ℕ -- 22.7 seconds with `agda --compile` on a Mac M2
 test' = remove-proofs _ all-moves (pr₂ TTT-optimal-outcome')
  where
-  open tic-tac-toe
+  open tic-tac-toe₁
 
 \end{code}
 
@@ -943,7 +1030,7 @@ tic-tac-toe board:
 -test' : List (ℕ × ℕ) -- 27.7 seconds with `agda --compile` on a Mac M2
 -test' = remove-proofs _ all-moves (pr₂ TTT-optimal-outcome')
  where
-  open tic-tac-toe-variation
+  open tic-tac-toe₂
 
 \end{code}
 
@@ -956,7 +1043,7 @@ alpha-beta prunning, which is also a new thing in this file:
 test⋆ : List ℕ -- 2.8 seconds with `agda --compile` on a Mac M2
 test⋆ = remove-proofs _ all-moves (pr₂ TTT-optimal-outcome⋆)
  where
-  open tic-tac-toe
+  open tic-tac-toe₁
 
 \end{code}
 
@@ -968,7 +1055,7 @@ the tic-tac-toe board:
 -test⋆ : List (ℕ × ℕ) -- 3.3 seconds with `agda --compile` on a Mac M2
 -test⋆ = remove-proofs _ all-moves (pr₂ TTT-optimal-outcome⋆)
  where
-  open tic-tac-toe-variation
+  open tic-tac-toe₂
 
 \end{code}
 

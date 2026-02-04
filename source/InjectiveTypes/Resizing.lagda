@@ -96,48 +96,20 @@ open import InjectiveTypes.OverSmallMaps fe
 
 \end{code}
 
-The fact that retracts of small types are small is proved in Theorem
-2.13 of
-
- Tom de Jong and Martín Hötzel Escardó.
- On Small Types in Univalent Foundations.
- Logical Methods in Computer Science, 19(2):8:1─8:33, 2023.
- https://doi.org/10.46298/lmcs-19(2:8)2023
-
-This uses Lemma 3.6 and the construction in the proof of Theorem 5.3
-of
-
- Michael Shulman.
- Idempotents in intensional type theory.
- Logical Methods in Computer Science, 12(3):9:1–9:24, 2016.
- https://doi.org/10.2168/LMCS-12(3:9)2016
-
-But we haven't proved it in TypeTopology yet, and so we assume it as a
-hypothesis.
-
-TODO. Formalize the proof of the following
-`retracts-of-small-types-are-small` hypothesis, which is provided in the
-above two papers.
+Below we use the fact that retracts of small types are small, which in turn
+relies on a construction of Mike Shulman, called
+Shulman's-Splitting-Construction here, see UF.Size for more details.
 
 \begin{code}
 
-retracts-of-small-types-are-small : 𝓤ω
-retracts-of-small-types-are-small =
-   {𝓤 𝓥 𝓦 : Universe}
-   {X : 𝓤 ̇ }
- → {Y : 𝓥 ̇ }
- → retract Y of X
- → X is 𝓦 small
- → Y is 𝓦 small
-
 small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
- : retracts-of-small-types-are-small
+ : Shulman's-Splitting-Construction
  → (D : 𝓤 ̇ )
  → ainjective-type D (𝓤 ⊔ 𝓥) 𝓦
  → has-two-distinct-points D
  → Ω¬¬ 𝓤 is 𝓤 small
 small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
- {𝓤} {𝓥} {𝓦} small-retracts D D-ainj ((x₀ , x₁) , distinct) = II I
+ {𝓤} {𝓥} {𝓦} ssc D D-ainj ((x₀ , x₁) , distinct) = II I
  where
   f : 𝟚 → D
   f ₀ = x₀
@@ -206,7 +178,7 @@ small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
     ρ = r , s , rs
 
     Ω¬¬-is-small : Ω¬¬ 𝓤 is 𝓤 small
-    Ω¬¬-is-small = small-retracts ρ (native-size D)
+    Ω¬¬-is-small = retracts-of-small-types-are-small fe' ssc ρ (native-size D)
 
 \end{code}
 
@@ -218,7 +190,7 @@ distinct points, other than in models that validate Ω¬¬ 𝓤₀ resizing
 \begin{code}
 
 small₀-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
- : retracts-of-small-types-are-small
+ : Shulman's-Splitting-Construction
  → (D : 𝓤₀ ̇ )
  → ainjective-type D 𝓤₀ 𝓤₀
  → has-two-distinct-points D
@@ -234,7 +206,7 @@ bigger doesn't help:
 \begin{code}
 
 small₁-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
- : retracts-of-small-types-are-small
+ : Shulman's-Splitting-Construction
  → (D : 𝓤₀ ̇ )
  → ainjective-type D 𝓥 𝓦
  → has-two-distinct-points D
@@ -268,7 +240,7 @@ and in particular e.g.
 \begin{code}
 
 module Ω¬¬-resizing-examples
-        (small-retracts : retracts-of-small-types-are-small)
+        (ssc : Shulman's-Splitting-Construction)
        where
 
  open import Iterative.Multisets
@@ -295,7 +267,7 @@ module Ω¬¬-resizing-examples
            → Ω¬¬ (𝓤 ⁺) is 𝓤 ⁺ small
  𝓤-example {𝓤} {𝓥} {𝓦} ainj =
   small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓥} {𝓦}
-   small-retracts
+   ssc
    (𝓤 ̇ )
    ainj
    ((𝟘 {𝓤} , 𝟙 {𝓤}) , 𝟘-is-not-𝟙)
@@ -315,7 +287,7 @@ module Ω¬¬-resizing-examples
            → Ω¬¬ (𝓤 ⁺) is 𝓤 ⁺ small
  Ω-example {𝓤} {𝓦} ainj =
   small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
-   small-retracts
+   ssc
    (Ω 𝓤)
    ainj
    ((⊥ , ⊤) , ⊥-is-not-⊤)
@@ -329,7 +301,7 @@ module Ω¬¬-resizing-examples
              → Ω¬¬ (𝓤 ⁺) is 𝓤 ⁺ small
  Ω¬¬-example {𝓤} {𝓦} ainj =
   small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
-   small-retracts
+   ssc
    (Ω¬¬ 𝓤)
    ainj
    ((⊥Ω¬¬ , ⊤Ω¬¬) , ⊥Ω¬¬-is-not-⊤Ω¬¬)
@@ -341,7 +313,7 @@ module Ω¬¬-resizing-examples
                  → Ω¬¬ (𝓤 ⁺) is 𝓤 ⁺ small
  Ordinal-example {𝓤} {𝓦} ainj =
   small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
-   small-retracts
+   ssc
    (Ordinal 𝓤)
    ainj
    ((𝟘ₒ , 𝟙ₒ) , 𝟘ₒ-is-not-𝟙ₒ)
@@ -353,7 +325,7 @@ module Ω¬¬-resizing-examples
                   → Ω¬¬ (𝓤 ⁺) is 𝓤 ⁺ small
  Multiset-example {𝓤} {𝓦} ainj =
   small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
-   small-retracts
+   ssc
    (𝕄 𝓤)
    ainj
    ((𝟘ᴹ 𝓤 , 𝟙ᴹ 𝓤) , 𝟘ᴹ-is-not-𝟙ᴹ 𝓤)
@@ -365,7 +337,7 @@ module Ω¬¬-resizing-examples
                        → Ω¬¬ (𝓤 ⁺) is 𝓤 ⁺ small
  Iterative-set-example {𝓤} {𝓦} ainj =
   small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
-   small-retracts
+   ssc
    (𝕍 𝓤)
    ainj
    ((𝟘ⱽ 𝓤 , 𝟙ⱽ 𝓤) , 𝟘ⱽ-is-not-𝟙ⱽ 𝓤)

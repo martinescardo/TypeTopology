@@ -38,13 +38,13 @@ pruning in the file GamesExperimental2.alpha-beta).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-level-universe #-}
+{-# OPTIONS --safe --without-K #-}
 
-open import MonadOnTypesMGU.J
-open import MonadOnTypesMGU.K
-open import MonadOnTypesMGU.Monad hiding (ext-const)
+open import MonadOnTypes.J
+open import MonadOnTypes.K
+open import MonadOnTypes.Definition hiding (ext-const)
 open import RelativeMonadOnStructuredTypes.OneSigmaStructure
-open import RelativeMonadOnStructuredTypes.Monad
+open import RelativeMonadOnStructuredTypes.Definition
 open import MLTT.Spartan hiding (J)
 open import UF.Base
 open import UF.Equiv
@@ -56,10 +56,11 @@ In our of our main examples, ρ will be "finite linear order structure".
 
 \begin{code}
 
-module GamesMGU.FiniteHistoryDependentRelativeMonadic
+module Games.FiniteHistoryDependentRelativeMonadic
         (fe : Fun-Ext)
         {{ρ : 𝟙-Σ-structure}}
-        (𝕋 : Relative-Monad)
+        {ℓ : Universe → Universe}
+        (𝕋 : Relative-Monad {ℓ})
         {𝓤 𝓦₀ : Universe}
         (𝓡 : let open 𝟙-Σ-structure ρ in
               𝕊 𝓦₀)
@@ -69,7 +70,7 @@ module GamesMGU.FiniteHistoryDependentRelativeMonadic
 
 open 𝟙-Σ-structure ρ
 
-open import GamesMGU.TypeTrees {𝓤}
+open import Games.TypeTrees {𝓤}
 
 private
  R = ⟨ 𝓡 ⟩
@@ -80,7 +81,7 @@ Question. Why do we need the following import?
 
 \begin{code}
 
-open import GamesMGU.FiniteHistoryDependent {𝓤} {𝓦₀} R
+open import Games.FiniteHistoryDependent {𝓤} {𝓦₀} R
      using (𝓚 ; Game ; game ; sequenceᴷ ; optimal-outcome)
 
 open Game
@@ -119,10 +120,10 @@ structure' F [] ⟨⟩ = 𝟙
 structure' F (X ∷ Xf) (s :: sf)
  = F (X , s) × ((x : X) → structure' F (Xf x) (sf x))
 
-𝓙𝓣 : (Xt : 𝑻) → structure S Xt → ℓ 𝕋 𝓦₀ ⊔ ℓ 𝕋 𝓤 ⊔ 𝓤 ̇
+𝓙𝓣 : (Xt : 𝑻) → structure S Xt → ℓ 𝓦₀ ⊔ ℓ 𝓤 ⊔ 𝓤 ̇
 𝓙𝓣 = structure' JT
 
-𝓚𝓣 : (Xt : 𝑻) → structure S Xt → ℓ 𝕋 𝓦₀ ⊔ 𝓦₀ ⊔ 𝓤 ̇
+𝓚𝓣 : (Xt : 𝑻) → structure S Xt → ℓ 𝓦₀ ⊔ 𝓦₀ ⊔ 𝓤 ̇
 𝓚𝓣 = structure' KT
 
 \end{code}
@@ -146,14 +147,14 @@ Pathₛ Xt st = Path Xt , Path-structure st
 
 \end{code}
 
-The following enriches a games with structure on the sets of moves,
+The following enriches a game with structure on the sets of moves,
 e.g. finite linear orders.
 
 \begin{code}
 
-module _ (𝕄 : Relative-Monad) where
+module _ {ℓ : Universe → Universe} (𝕄 : Relative-Monad {ℓ}) where
 
- M : 𝕊 𝓤 → ℓ 𝕄 𝓤 ̇
+ M : 𝕊 𝓤 → ℓ 𝓤 ̇
  M = functor 𝕄
 
  path-sequenceₛ : {Xt : 𝑻} (st : structure S Xt)
@@ -166,7 +167,7 @@ module _ (𝕄 : Relative-Monad) where
 sequenceᴶᵀ : {Xt : 𝑻} (st : structure S Xt) → 𝓙𝓣 Xt st → JT (Pathₛ Xt st)
 sequenceᴶᵀ = path-sequenceₛ 𝕁𝕋
 
-T-Strategy : (Xt : 𝑻) (st : structure S Xt)  → ℓ 𝕋 𝓤 ⊔ 𝓤 ̇
+T-Strategy : (Xt : 𝑻) (st : structure S Xt)  → ℓ 𝓤 ⊔ 𝓤 ̇
 T-Strategy = structure' T
 
 T-strategic-path : {Xt : 𝑻} (st : structure S Xt)
@@ -185,18 +186,18 @@ is-in-T-equilibrium {X} {Xf} st@(s , sf) q ϕ σt@(σ :: σf)  =
  ＝ ϕ (λ x → extᴬ (subpred q x) (T-strategic-path (sf x) (σf x)))
 
 is-in-T-sgpe' : {Xt : 𝑻}
-               (st : structure S Xt)
-             → 𝓚 Xt
-             → (Path Xt → R)
-             → T-Strategy Xt st
-             → 𝓤 ⊔ 𝓦₀ ̇
+                (st : structure S Xt)
+              → 𝓚 Xt
+              → (Path Xt → R)
+              → T-Strategy Xt st
+              → 𝓤 ⊔ 𝓦₀ ̇
 is-in-T-sgpe' {[]}     st          ⟨⟩        q ⟨⟩           = 𝟙
 is-in-T-sgpe' {X ∷ Xf} st@(s , sf) (ϕ :: ϕf) q σt@(σ :: σf) =
     is-in-T-equilibrium st q ϕ σt
   × ((x : X) → is-in-T-sgpe' {Xf x} (sf x) (ϕf x) (subpred q x) (σf x))
 
-is-in-T-sgpe : (G : Game) (st : structure S (Xt G))
-             → T-Strategy (Xt G) st
+is-in-T-sgpe : (G : Game) (st : structure S (game-tree G))
+             → T-Strategy (game-tree G) st
              → 𝓤 ⊔ 𝓦₀ ̇
 is-in-T-sgpe (game Xt q ϕt) st = is-in-T-sgpe' {Xt} st ϕt q
 
@@ -245,10 +246,10 @@ This can be reformulated as follows in terms of the type of games:
 
 T-equilibrium-theorem
  : (G : Game)
-   (st : structure S (Xt G))
-   (σt : T-Strategy (Xt G) st)
+   (st : structure S (game-tree G))
+   (σt : T-Strategy (game-tree G) st)
  → is-in-T-sgpe G st σt
- → extᴬ (q G) (T-strategic-path st σt) ＝ optimal-outcome G
+ → extᴬ (payoff-function G) (T-strategic-path st σt) ＝ optimal-outcome G
 T-equilibrium-theorem (game Xt q ϕt) st = T-sgpe-lemma Xt ϕt st q
 
 \end{code}
@@ -318,7 +319,8 @@ mapᵀ-path-head-lemma' {X} {Xf} s sf a b =
 
   ⦅1⦆ = (assocᵀ g (λ x → extᵀ (f x) (b x)) a)⁻¹
   ⦅2⦆ = ap (λ - → extᵀ - a) (dfunext fe I)
-  ⦅3⦆ = ap (λ - →  extᵀ (λ x → extᵀ (- x) (b x)) a) (dfunext fe (λ x → dfunext fe (II x)))
+  ⦅3⦆ = ap (λ - →  extᵀ (λ x → extᵀ (- x) (b x)) a)
+           (dfunext fe (λ x → dfunext fe (II x)))
 
 mapᵀ-path-head-lemma : {X : 𝓤 ̇ }
                        {Xf : X → 𝑻}
@@ -374,8 +376,10 @@ module _ {𝓧  : 𝕊 𝓤}
 
       I : (λ x → extᴶᵀ (λ y _ → ηᵀ (x , y)) (δ x)) ＝ Θ
       I = dfunext fe (λ x →
-          dfunext fe (λ r → ap (λ - → extᵀ (λ y → ηᵀ (x , y)) (δ x (λ y → - (x , y))))
-                         (dfunext fe (unitᵀ r))))
+          dfunext fe (λ r → ap (λ - → extᵀ
+                                       (λ y → ηᵀ (x , y))
+                                       (δ x (λ y → - (x , y))))
+                               (dfunext fe (unitᵀ r))))
 
       ⦅1⦆ = ap (λ - → extᴶᵀ - ε q) I
 
@@ -410,7 +414,8 @@ T-main-lemma
    (st : structure S Xt)
    (εt : 𝓙𝓣 Xt st)
    (q : Path Xt → R)
- → sequenceᴶᵀ st εt (ηᵀ ∘ q) ＝ T-strategic-path st (T-selection-strategy st εt q)
+ → sequenceᴶᵀ st εt (ηᵀ ∘ q) ＝ T-strategic-path st
+                                 (T-selection-strategy st εt q)
 T-main-lemma ext-const {[]}     ⟨⟩           ⟨⟩           q = refl
 T-main-lemma ext-const {X ∷ Xf} st@(s :: sf) εt@(ε :: εf) q = γ
  where
@@ -460,18 +465,11 @@ T-main-lemma ext-const {X ∷ Xf} st@(s :: sf) εt@(ε :: εf) q = γ
     ⦅2⦆ = ap (λ - → ε (λ x → extᵀ (q' x) (- x)) ⊗ᵀ -) (dfunext fe IH)
     ⦅3⦆ = ap (_⊗ᵀ c) I
 
-\end{code}
-
-Is α-Overlineᵀ useful?
-
-\begin{code}
-{-
-Overlineᴬ : {Xt : 𝑻} (st : structure S Xt) → 𝓙𝓣 Xt st → 𝓚𝓣 Xt
-Overlineᴬ {[]}     ⟨⟩        = ⟨⟩
-Overlineᴬ {X ∷ Xf} (ε :: εf) = overlineᴬ ε :: λ x → Overlineᴬ  {Xf x} (εf x)
--}
-
-[_]_Attainsᴬ_ : {Xt : 𝑻} (st : structure S Xt) → 𝓙𝓣 Xt st → 𝓚 Xt → ℓ 𝕋 𝓦₀ ⊔ 𝓤 ⊔ 𝓦₀ ̇
+[_]_Attainsᴬ_ : {Xt : 𝑻}
+                (st : structure S Xt)
+              → 𝓙𝓣 Xt st
+              → 𝓚 Xt
+              → ℓ 𝓦₀ ⊔ 𝓤 ⊔ 𝓦₀ ̇
 [_]_Attainsᴬ_ {[]}     ⟨⟩        ⟨⟩        ⟨⟩        = 𝟙
 [_]_Attainsᴬ_ {X ∷ Xf} (s :: sf) (ε :: εf) (ϕ :: ϕf) =
  (ε attainsᴬ ϕ) × ((x : X) → [ sf x ] (εf x) Attainsᴬ (ϕf x))
@@ -499,8 +497,11 @@ T-selection-strategy-lemma
   σ : T (X , s)
   σ = mapᵀ path-head (sequenceᴶᵀ st εt (ηᵀ ∘ q))
 
+  T-sp : (x : X) → T (Pathₛ (Xf x) (sf x))
+  T-sp x = T-strategic-path (sf x) (σf x)
+
   p : X → T 𝓡
-  p x = mapᵀ (subpred q x) (T-strategic-path (sf x) (σf x))
+  p x = mapᵀ (subpred q x) (T-sp x)
 
   have-a' : α (extᵀ p (ε p)) ＝ ϕ (α ∘ p)
   have-a' = a p
@@ -509,67 +510,110 @@ T-selection-strategy-lemma
   t = T-strategic-path st (σ :: σf)
 
   III : ε p ＝ σ
-  III = ε p ＝⟨refl⟩
-        ε (λ x → mapᵀ (subpred q x) (T-strategic-path (sf x) (σf x))) ＝⟨refl⟩
-        ε (λ x → mapᵀ (subpred q x) (T-strategic-path (sf x) (T-selection-strategy {Xf x} (sf x) (εf x) (subpred q x)))) ＝⟨ III₀ ⟩
-        ε (λ x → mapᵀ (subpred q x) (sequenceᴶᵀ (sf x) (εf x) (subpred (ηᵀ ∘ q) x))) ＝⟨refl⟩
-        ε (λ x → mapᵀ (subpred q x) (ν x)) ＝⟨refl⟩
-        ε (λ x → extᵀ (subpred (ηᵀ ∘ q) x) (ν x)) ＝⟨refl⟩
-        τ ＝⟨ III₁ ⟩
-        mapᵀ path-head (τ ⊗ᵀ ν) ＝⟨ III₂ ⟩
-        mapᵀ path-head ((ε ⊗ᴶᵀ (λ x → sequenceᴶᵀ (sf x) (εf x))) (ηᵀ ∘ q)) ＝⟨refl⟩
-        mapᵀ path-head (sequenceᴶᵀ st εt (ηᵀ ∘ q)) ＝⟨refl⟩
+  III = ε p
+      ＝⟨refl⟩
+        ε (λ x → mapᵀ (subpred q x) (T-sp x))
+      ＝⟨refl⟩
+        ε (λ x → mapᵀ
+                  (subpred q x)
+                  (T-strategic-path
+                    (sf x)
+                    (T-selection-strategy {Xf x} (sf x) (εf x) (subpred q x))))
+      ＝⟨ III₀ ⟩
+        ε (λ x → mapᵀ
+                  (subpred q x)
+                  (sequenceᴶᵀ (sf x) (εf x) (subpred (ηᵀ ∘ q) x)))
+      ＝⟨refl⟩
+        ε (λ x → mapᵀ (subpred q x) (ν x))
+      ＝⟨refl⟩
+        ε (λ x → extᵀ (subpred (ηᵀ ∘ q) x) (ν x))
+      ＝⟨refl⟩
+        τ
+      ＝⟨ III₁ ⟩
+        mapᵀ path-head (τ ⊗ᵀ ν)
+      ＝⟨ III₂ ⟩
+        mapᵀ path-head ((ε ⊗ᴶᵀ (λ x → sequenceᴶᵀ (sf x) (εf x))) (ηᵀ ∘ q))
+      ＝⟨refl⟩
+        mapᵀ path-head (sequenceᴶᵀ st εt (ηᵀ ∘ q))
+      ＝⟨refl⟩
         σ ∎
-        where
-         ν : (x : X) → T (Pathₛ (Xf x) (sf x))
-         ν x = sequenceᴶᵀ (sf x) (εf x) (subpred (ηᵀ ∘ q) x)
+      where
+       ν : (x : X) → T (Pathₛ (Xf x) (sf x))
+       ν x = sequenceᴶᵀ (sf x) (εf x) (subpred (ηᵀ ∘ q) x)
 
-         τ : T (X , s)
-         τ = ε (λ x → extᵀ (subpred (ηᵀ ∘ q) x) (ν x))
+       τ : T (X , s)
+       τ = ε (λ x → extᵀ (subpred (ηᵀ ∘ q) x) (ν x))
 
-         III₀ = ap (λ - → ε (λ x → mapᵀ (subpred q x) (- x))) (dfunext fe (λ x → (T-main-lemma ext-const (sf x) (εf x) (subpred q x))⁻¹))
-         III₁ = (mapᵀ-path-head-lemma s sf τ ν ext-const)⁻¹
-         III₂ = ap (mapᵀ path-head) ((⊗ᴶᵀ-in-terms-of-⊗ᵀ {X , s} {𝓤} {λ x → Pathₛ (Xf x) (sf x)} ε (λ x → sequenceᴶᵀ (sf x) (εf x)) (ηᵀ ∘ q)) ⁻¹)
+       III₀ = ap (λ - → ε (λ x → mapᵀ (subpred q x) (- x)))
+                 (dfunext fe (λ x → (T-main-lemma ext-const
+                                      (sf x) (εf x) (subpred q x))⁻¹))
+       III₁ = (mapᵀ-path-head-lemma s sf τ ν ext-const)⁻¹
+       III₂ = ap (mapᵀ path-head)
+                 ((⊗ᴶᵀ-in-terms-of-⊗ᵀ
+                    {X , s}
+                    {𝓤}
+                    {λ x → Pathₛ (Xf x) (sf x)}
+                    ε
+                    (λ x → sequenceᴶᵀ (sf x) (εf x))
+                    (ηᵀ ∘ q))⁻¹)
 
-  II = α (extᵀ p (ε p)) ＝⟨ II₀ ⟩
-       α (extᵀ p σ) ＝⟨refl⟩
-       α (extᵀ (λ x → mapᵀ (subpred q x) (T-strategic-path (sf x) (σf x))) σ) ＝⟨refl⟩
-       α (extᵀ (λ x → extᵀ (ηᵀ ∘ subpred q x) (T-strategic-path (sf x) (σf x))) σ) ＝⟨ II₁ ⟩
-       α (extᵀ (λ x →  extᵀ (λ xs → extᵀ (ηᵀ ∘ q) (ηᵀ (x :: xs))) (T-strategic-path (sf x) (σf x))) σ) ＝⟨refl⟩
-       α (extᵀ (λ x →  extᵀ (extᵀ (ηᵀ ∘ q) ∘ (λ xs → ηᵀ (x :: xs))) (T-strategic-path (sf x) (σf x))) σ) ＝⟨ II₂ ⟩
-       α (extᵀ (λ x → extᵀ (ηᵀ ∘ q) (extᵀ (λ xs → ηᵀ (x :: xs)) (T-strategic-path (sf x) (σf x)))) σ) ＝⟨refl⟩
-       α (extᵀ (extᵀ (λ x → ηᵀ (q x)) ∘ (λ x → mapᵀ (λ y → x , y) (T-strategic-path (sf x) (σf x)))) σ) ＝⟨ II₃ ⟩
-       α (extᵀ (ηᵀ ∘ q) (extᵀ (λ x → mapᵀ (λ y → x , y) (T-strategic-path (sf x) (σf x))) σ)) ＝⟨refl⟩
-       α (extᵀ (ηᵀ ∘ q) (σ ⊗ᵀ λ x → T-strategic-path (sf x) (σf x))) ＝⟨refl⟩
-       α (extᵀ (ηᵀ ∘ q) (T-strategic-path st (σ :: σf))) ＝⟨refl⟩
-       α (mapᵀ q (T-strategic-path st (σ :: σf))) ＝⟨refl⟩
-       α (mapᵀ q (T-strategic-path st (σ :: σf))) ＝⟨refl⟩
+  II = α (extᵀ p (ε p))
+     ＝⟨ II₀ ⟩
+       α (extᵀ p σ)
+     ＝⟨refl⟩
+       α (extᵀ (λ x → mapᵀ (subpred q x) (T-sp x)) σ)
+     ＝⟨refl⟩
+       α (extᵀ (λ x → extᵀ (ηᵀ ∘ subpred q x) (T-sp x)) σ)
+     ＝⟨ II₁ ⟩
+       α (extᵀ (λ x →  extᵀ (λ xs → extᵀ (ηᵀ ∘ q) (ηᵀ (x :: xs))) (T-sp x)) σ)
+     ＝⟨refl⟩
+       α (extᵀ (λ x →  extᵀ (extᵀ (ηᵀ ∘ q) ∘ (λ xs → ηᵀ (x :: xs))) (T-sp x)) σ)
+     ＝⟨ II₂ ⟩
+       α (extᵀ (λ x → extᵀ (ηᵀ ∘ q) (extᵀ (λ xs → ηᵀ (x :: xs)) (T-sp x))) σ)
+     ＝⟨refl⟩
+       α (extᵀ (extᵀ (λ x → ηᵀ (q x)) ∘ (λ x → mapᵀ (λ y → x , y) (T-sp x))) σ)
+     ＝⟨ II₃ ⟩
+       α (extᵀ (ηᵀ ∘ q) (extᵀ (λ x → mapᵀ (λ y → x , y) (T-sp x)) σ))
+     ＝⟨refl⟩
+       α (extᵀ (ηᵀ ∘ q) (σ ⊗ᵀ λ x → T-sp x))
+     ＝⟨refl⟩
+       α (extᵀ (ηᵀ ∘ q) t)
+     ＝⟨refl⟩
        α (mapᵀ q t) ∎
-        where
-         II₀ = ap (λ - → α (extᵀ p -)) III
-         II₁ = ap (λ - → α (extᵀ (λ x →  extᵀ (λ xs → - x xs) (T-strategic-path (sf x) (σf x))) σ)) (dfunext fe (λ x → dfunext fe (λ xs → (unitᵀ (ηᵀ ∘ q) (x :: xs))⁻¹)))
-         II₂ = ap (λ - → α (extᵀ (λ x → - x) σ)) (dfunext fe (λ x → assocᵀ (ηᵀ ∘ q) (λ xs → ηᵀ (x :: xs)) (T-strategic-path (sf x) (σf x))))
-         II₃ = ap α (assocᵀ (ηᵀ ∘ q) (λ x → mapᵀ (λ y → x , y) (T-strategic-path (sf x) (σf x))) σ)
+     where
+      II₀ = ap (λ - → α (extᵀ p -)) III
+      II₁ = ap (λ - → α (extᵀ (λ x →  extᵀ (λ xs → - x xs) (T-sp x)) σ))
+               (dfunext fe (λ x →
+                dfunext fe (λ xs → (unitᵀ (ηᵀ ∘ q) (x :: xs))⁻¹)))
+      II₂ = ap (λ - → α (extᵀ (λ x → - x) σ))
+               (dfunext fe (λ x → assocᵀ
+                                   (ηᵀ ∘ q)
+                                   (λ xs → ηᵀ (x :: xs))
+                                   (T-sp x)))
+      II₃ = ap α (assocᵀ (ηᵀ ∘ q) (λ x → mapᵀ (λ y → x , y) (T-sp x)) σ)
 
   γ : is-in-T-sgpe' st ϕt q (T-selection-strategy st εt q)
-  γ = (extᴬ q (T-strategic-path {X ∷ Xf} st (σ :: σf)) ＝⟨ new-agrees-with-old fe q t ⟩
-       α (mapᵀ q (T-strategic-path {X ∷ Xf} st (σ :: σf))) ＝⟨refl⟩
-       α (mapᵀ q t) ＝⟨ II ⁻¹ ⟩
-       α (extᵀ p (ε p)) ＝⟨ a p ⟩
-       ϕ (α ∘ p) ＝⟨refl⟩
-       ϕ (λ x → α (mapᵀ (subpred q x) (T-strategic-path (sf x) (σf x)))) ＝⟨ ap ϕ ((dfunext fe (λ x → new-agrees-with-old fe (subpred q x) (T-strategic-path (sf x) (σf x))))⁻¹) ⟩
-       ϕ (λ x → extᴬ (subpred q x) (T-strategic-path (sf x) (σf x))) ∎) ,
+  γ = (extᴬ q t                                  ＝⟨ extᴬ-agreement fe q t ⟩
+       α (mapᵀ q t)                              ＝⟨ II ⁻¹ ⟩
+       α (extᵀ p (ε p))                          ＝⟨ a p ⟩
+       ϕ (α ∘ p)                                 ＝⟨refl⟩
+       ϕ (λ x → α (mapᵀ (subpred q x) (T-sp x))) ＝⟨ γ₀ ⟩
+       ϕ (λ x → extᴬ (subpred q x) (T-sp x))     ∎) ,
       (λ x → T-selection-strategy-lemma ext-const (sf x) (εf x) (ϕf x) (subpred q x) (af x))
+   where
+    γ₀ = ap ϕ ((dfunext fe (λ x → extᴬ-agreement fe (subpred q x) (T-sp x)))⁻¹)
 
-main-theorem : ext-const 𝕋
-             → (G : Game)
-               (st : structure S (Xt G))
-               (εt : 𝓙𝓣 (Xt G) st)
-             → [ st ] εt Attainsᴬ (ϕt G)
-             → is-in-T-sgpe G st (T-selection-strategy st εt (q G))
-main-theorem ext-const G st εt = T-selection-strategy-lemma ext-const st εt (ϕt G) (q G)
+main-theorem
+ : ext-const 𝕋
+ → (G@(game Xt q ϕt) : Game)
+   (st : structure S Xt)
+   (εt : 𝓙𝓣 Xt st)
+ → [ st ] εt Attainsᴬ ϕt
+ → is-in-T-sgpe G st (T-selection-strategy st εt q)
+main-theorem ext-const G@(game Xt q ϕt) st εt
+ = T-selection-strategy-lemma ext-const st εt ϕt q
 
 \end{code}
 
-Notice that the definition of T-selection-strategy st εt (q G) doesn't
-use the algebra 𝓐, but its correctness specification does.
+Notice that the definition of T-selection-strategy st εt q doesn't use
+the algebra 𝓐, but its correctness specification does.

@@ -10,7 +10,7 @@ not just recursion, but induction.
 https://doi.org/10.23638/LMCS-16(1:2)2020
 
 \begin{code}
-{-# OPTIONS --safe --without-K --exact-split --auto-inline #-}
+{-# OPTIONS --safe --without-K --auto-inline #-}
 
 open import MLTT.Spartan
 open import UF.Base

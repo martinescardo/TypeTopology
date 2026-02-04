@@ -557,9 +557,9 @@ open import SyntheticHomotopyTheory.RP-infinity pt
 open import UF.Choice
 open world's-simplest-axiom-of-choice fe pt
 
-RP∞-ainjective-implies-WSAC : ainjective-type RP∞ 𝓥 𝓦
+ℝP∞-ainjective-implies-WSAC : ainjective-type ℝP∞ 𝓥 𝓦
                             → WSAC' 𝓤₀
-RP∞-ainjective-implies-WSAC RP∞-inj =
+ℝP∞-ainjective-implies-WSAC RP∞-inj =
  family-has-unspecified-split-support-if-total-space-of-truncation-is-ainjective
   (𝓤₀ ̇ ) (universes-are-ainjective (ua 𝓤₀)) (λ X → X ≃ 𝟚) RP∞-inj
 

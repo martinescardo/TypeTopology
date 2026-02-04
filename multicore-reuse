@@ -5,21 +5,20 @@
 # script with the `multicore` script is that we don't regenerate the
 # auxiliary index files and instead use the existing ones. This is
 # intended for when a particularly favourable random selection is
-# found the `multicore` script.
+# found by the `multicore` script.
+#
+# For an explanation of the delay argument, see the script multicore.
 
 set -Eeo pipefail
 
-if [ `basename $PWD` != "multicore" ] || [ $# != 1 ]
+if [ `basename $PWD` != "multicore" ] || [ $# != 0 ]
 then
     echo "This script should be run from the directory TypeTopology/source/multicore."
     echo "All files in this directory are supposed to be automatically generated and deleted."
     echo "If you don't have this directory, create it."
     echo ""
     echo "Usage:"
-    echo "        $ ../../multicore-reuse <delay>"
-    echo ""
-    echo "where <delay> is how long we wait in seconds until we launch 'agda AllModulesIndex.lagda'"
-    echo "as an additional thread".
+    echo "        $ ../../multicore-reuse"
     echo ""
     exit 1
 fi
@@ -31,10 +30,11 @@ echo $(date) >> log
 
 for file in x*.agda
 do
-     agda $file &
+    agda $file &
+#    sleep 3
 done
 
-sleep $1
+wait
 
 agda ../AllModulesIndex.lagda &
 

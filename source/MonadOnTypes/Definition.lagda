@@ -1,6 +1,12 @@
-Martin Escardo, Paulo Oliva, 2023 with many additions Decemnber 2024
+Martin Escardo, Paulo Oliva, 2023 - 2024
 
-(Strong, wild) monads on types.
+(Strong, wild) universe-polymorphic monads on types.
+
+We use ℓ : Universe → Universe to control the functor part. E.g. for
+the powerset monad, as the powerset of a type in 𝓤 lands in the next
+universe 𝓤⁺, we take ℓ 𝓤 = 𝓤⁺, but for the list monad we take
+ℓ 𝓤 = 𝓤. For the J and K monads with answer type R : 𝓦,
+we have ℓ 𝓤 = 𝓤 ⊔ 𝓦.
 
 \begin{code}
 
@@ -10,35 +16,44 @@ open import MLTT.Spartan
 open import UF.Equiv
 open import UF.FunExt
 
-module MonadOnTypes.Monad where
+\end{code}
 
-record Monad : Type₁ where
+In the following definition, it works to make ℓ into a field, but this requires
+the pragma --no-level-universe, which we don't want to use. In fact, our code originally did have ℓ as a field, using that pragma.
 
+\begin{code}
+
+module MonadOnTypes.Definition where
+
+record Monad {ℓ : Universe → Universe} : 𝓤ω where
  constructor
   monad
-
  field
-  functor : Type → Type
+  functor : {𝓤 : Universe} → 𝓤 ̇ → ℓ 𝓤 ̇
 
  private
   T = functor
 
  field
-  η       : {X : Type} → X → T X
-  ext     : {X Y : Type} → (X → T Y) → T X → T Y
-  ext-η   : {X : Type} → ext (η {X}) ∼ 𝑖𝑑 (T X)
-  unit    : {X Y : Type} (f : X → T Y) → ext f ∘ η ∼ f
-  assoc   : {X Y Z : Type} (g : Y → T Z) (f : X → T Y)
-          → ext (ext g ∘ f) ∼ ext g ∘ ext f
+  η       : {𝓤 : Universe} {X : 𝓤 ̇ } → X → T X
+  ext     : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → T Y) → T X → T Y
+  ext-η   : {𝓤 : Universe} {X : 𝓤 ̇ } → ext (η {𝓤} {X}) ∼ 𝑖𝑑 (T X)
+  unit    : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → T Y) (x : X)
+          → ext f (η x) ＝ f x
+  assoc   : {𝓤 𝓥 𝓦 : Universe}
+            {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+            (g : Y → T Z) (f : X → T Y) (t : T X)
+          → ext (λ x → ext g (f x)) t ＝ ext g (ext f t)
 
- map : {X Y : Type} → (X → Y) → T X → T Y
+ map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → T X → T Y
  map f = ext (η ∘ f)
 
- map-id : {X : Type} → map (𝑖𝑑 X) ∼ 𝑖𝑑 (T X)
+ map-id : {X : 𝓤 ̇ } → map (𝑖𝑑 X) ∼ 𝑖𝑑 (T X)
  map-id = ext-η
 
- map-∘ : funext₀
-       → {X Y Z : Type} (f : X → Y) (g : Y → Z)
+ map-∘ : Fun-Ext
+       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+         (f : X → Y) (g : Y → Z)
        → map (g ∘ f) ∼ map g ∘ map f
  map-∘ fe f g t =
   map (g ∘ f) t                               ＝⟨refl⟩
@@ -51,23 +66,25 @@ record Monad : Type₁ where
                   (dfunext fe (λ x → (unit (λ y → η (g y)) (f x))⁻¹))
     by-assoc = assoc (λ x → η (g x)) (λ x → η (f x)) t
 
- map-∘₃ : funext₀
-       → {X Y Z T : Type} (f : X → Y) (g : Y → Z) (h : Z → T)
+ map-∘₃ : Fun-Ext
+       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
+         (f : X → Y) (g : Y → Z) (h : Z → T)
        → map (h ∘ g ∘ f) ∼ map h ∘ map g ∘ map f
  map-∘₃ fe f g h t =
-  map (h ∘ g ∘ f) t         ＝⟨ by-functoriality ⟩
+  map (h ∘ g ∘ f) t         ＝⟨ by-Tiality ⟩
   (map (h ∘ g) ∘ map f) t   ＝⟨ again-by-functoriality ⟩
   (map h ∘ map g) (map f t) ＝⟨refl⟩
   (map h ∘ map g ∘ map f) t ∎
    where
-    by-functoriality  = map-∘ fe f (h ∘ g) t
+    by-Tiality  = map-∘ fe f (h ∘ g) t
     again-by-functoriality = ap (λ - → (- ∘ map f) t) (dfunext fe (map-∘ fe g h))
 
- μ : {X : Type} → T (T X) → T X
+ μ : {X : 𝓤 ̇ } → T (T X) → T X
  μ = ext id
 
- ext-is-μ-map : funext₀
-              → {X Y : Type} (f : X → T Y)
+ ext-is-μ-map : Fun-Ext
+              → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                (f : X → T Y)
               → ext f ∼ μ ∘ map f
  ext-is-μ-map fe f tt =
   ext f tt                  ＝⟨ by-unit ⁻¹ ⟩
@@ -78,9 +95,9 @@ record Monad : Type₁ where
     by-unit  = ap (λ - → ext (- ∘ f) tt) (dfunext fe (unit id))
     by-assoc = assoc id (η ∘ f) tt
 
- μ-assoc : funext₀
-         → {X : Type}
-         → μ {X} ∘ map (μ {X}) ∼ μ {X} ∘ μ {T X}
+ μ-assoc : Fun-Ext
+         → {X : 𝓤 ̇ }
+         → μ {𝓤} {X} ∘ map (μ {𝓤} {X}) ∼ μ {𝓤} {X} ∘ μ {ℓ 𝓤} {T X}
  μ-assoc fe ttt =
   (μ ∘ map μ) ttt       ＝⟨ (ext-is-μ-map fe μ ttt)⁻¹ ⟩
   ext μ ttt             ＝⟨refl⟩
@@ -88,16 +105,18 @@ record Monad : Type₁ where
   ext id (ext id ttt)   ＝⟨refl⟩
   (μ ∘ μ) ttt           ∎
 
- η-natural : {X Y : Type} (h : X → Y)
-           → map h ∘ η {X} ∼ η {Y} ∘ h
+ η-natural : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+             (h : X → Y)
+           → map h ∘ η {𝓤} {X} ∼ η {𝓥} {Y} ∘ h
  η-natural h x =
   map h (η x)               ＝⟨refl⟩
   ext (λ x → η (h x)) (η x) ＝⟨ unit (λ x → η (h x)) x ⟩
   η (h x)                   ∎
 
- μ-natural : funext₀
-           → {X Y : Type} (h : X → Y)
-           → map h ∘ μ {X}  ∼ μ {Y} ∘ map (map h)
+ μ-natural : Fun-Ext
+           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+             (h : X → Y)
+           → map h ∘ μ {𝓤} {X}  ∼ μ {𝓥} {Y} ∘ map (map h)
  μ-natural fe h tt =
   (map h ∘ μ) tt                            ＝⟨refl⟩
   ext (η ∘ h) (ext id tt)                   ＝⟨ by-assoc ⁻¹ ⟩
@@ -111,13 +130,13 @@ record Monad : Type₁ where
                         (dfunext fe (λ t → unit id (ext (η ∘ h) t)))
     again-by-assoc = assoc id (λ x → η (ext (η ∘ h) x)) tt
 
- η-unit₀ : {X : Type} → μ {X} ∘ η {T X} ∼ id
+ η-unit₀ : {X : 𝓤 ̇ } → μ {𝓤} {X} ∘ η {ℓ 𝓤} {T X} ∼ id
  η-unit₀ t = μ (η t)      ＝⟨refl⟩
              ext id (η t) ＝⟨ unit id t ⟩
              t            ∎
 
- η-unit₁ : funext₀
-         → {X : Type} → μ {X} ∘ map (η {X}) ∼ id
+ η-unit₁ : Fun-Ext
+         → {X : 𝓤 ̇ } → μ {𝓤} {X} ∘ map (η {𝓤} {X}) ∼ id
  η-unit₁ fe t =
   μ (map η t)                    ＝⟨refl⟩
   ext id (ext (η ∘ η) t)         ＝⟨ by-assoc ⟩
@@ -128,7 +147,7 @@ record Monad : Type₁ where
     by-assoc = (assoc id (λ x → η (η x)) t)⁻¹
     by-unit  = ap (λ - → ext - t) (dfunext fe (λ x → unit id (η x)))
 
- _⊗_ : {X : Type} {Y : X → Type}
+ _⊗_ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
      → T X
      → ((x : X) → T (Y x))
      → T (Σ x ꞉ X , Y x)
@@ -136,11 +155,14 @@ record Monad : Type₁ where
 
 open Monad public
 
-tensor : (𝕋 : Monad) {X : Type} {Y : X → Type}
+tensor : {ℓ : Universe → Universe} (𝕋 : Monad {ℓ})
+       → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
        → functor 𝕋 X
        → ((x : X) → functor 𝕋 (Y x))
        → functor 𝕋 (Σ x ꞉ X , Y x)
 tensor 𝕋 = _⊗_ 𝕋
+
+syntax tensor 𝕋 t f = t ⊗[ 𝕋 ] f
 
 \end{code}
 
@@ -152,8 +174,6 @@ convolution, in the sense of Day, be better?
 
 \begin{code}
 
-syntax tensor 𝕋 t f = t ⊗[ 𝕋 ] f
-
 𝕀𝕕 : Monad
 𝕀𝕕 = record {
       functor = id ;
@@ -164,10 +184,10 @@ syntax tensor 𝕋 t f = t ⊗[ 𝕋 ] f
       assoc   = λ g f x → refl
     }
 
-𝕀𝕕⊗ : {X : Type} {Y : X → Type}
-      (x : X)
-      (f : (x : X) → (Y x))
-    → x ⊗[ 𝕀𝕕 ] f ＝ x , f x
+𝕀𝕕⊗ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+     (x : X)
+     (f : (x : X) → (Y x))
+   → x ⊗[ 𝕀𝕕 ] f ＝ x , f x
 𝕀𝕕⊗ x f = refl
 
 \end{code}
@@ -176,58 +196,68 @@ If we want to call a monad T, then we can use the following module:
 
 \begin{code}
 
-module T-definitions (𝕋 : Monad) where
+module T-definitions {ℓ : Universe → Universe} (𝕋 : Monad {ℓ}) where
 
- T : Type → Type
+ ℓᵀ : Universe → Universe
+ ℓᵀ = ℓ
+
+ T : 𝓤 ̇ → ℓᵀ 𝓤 ̇
  T = functor 𝕋
 
- ηᵀ : {X : Type} → X → T X
+ ηᵀ : {X : 𝓤 ̇ } → X → T X
  ηᵀ = η 𝕋
 
- extᵀ : {X Y : Type} → (X → T Y) → T X → T Y
+ extᵀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → T Y) → T X → T Y
  extᵀ = ext 𝕋
 
- extᵀ-η : {X : Type} → extᵀ (ηᵀ {X}) ∼ 𝑖𝑑 (T X)
+ extᵀ-η : {X : 𝓤 ̇ } → extᵀ (ηᵀ {𝓤} {X}) ∼ 𝑖𝑑 (T X)
  extᵀ-η = ext-η 𝕋
 
- unitᵀ : {X Y : Type} (f : X → T Y) → extᵀ f ∘ ηᵀ ∼ f
+ unitᵀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → T Y) → extᵀ f ∘ ηᵀ ∼ f
  unitᵀ = unit 𝕋
 
- assocᵀ : {X Y Z : Type} (g : Y → T Z) (f : X → T Y)
+ assocᵀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+          (g : Y → T Z) (f : X → T Y)
         → extᵀ (extᵀ g ∘ f) ∼ extᵀ g ∘ extᵀ f
  assocᵀ = assoc 𝕋
 
- mapᵀ : {X Y : Type} → (X → Y) → T X → T Y
+ mapᵀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → T X → T Y
  mapᵀ = map 𝕋
 
- mapᵀ-id : {X : Type} → mapᵀ (𝑖𝑑 X) ∼ 𝑖𝑑 (T X)
+ mapᵀ-id : {X : 𝓤 ̇ } → mapᵀ (𝑖𝑑 X) ∼ 𝑖𝑑 (T X)
  mapᵀ-id = map-id 𝕋
 
- mapᵀ-∘ : funext₀
-        → {X Y Z : Type} (f : X → Y) (g : Y → Z)
+ mapᵀ-∘ : Fun-Ext
+        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+          (f : X → Y) (g : Y → Z)
         → mapᵀ (g ∘ f) ∼ mapᵀ g ∘ mapᵀ f
  mapᵀ-∘ = map-∘ 𝕋
 
- ηᵀ-natural : {X Y : Type} (f : X → Y)
+ ηᵀ-natural : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              (f : X → Y)
            → mapᵀ f ∘ ηᵀ ∼ ηᵀ ∘ f
  ηᵀ-natural = η-natural 𝕋
 
- μᵀ : {X : Type} → T (T X) → T X
+ μᵀ : {X : 𝓤 ̇ } → T (T X) → T X
  μᵀ = μ 𝕋
 
- μᵀ-natural : funext₀
-            → {X Y : Type} (h : X → Y)
-            → mapᵀ h ∘ μᵀ {X}  ∼ μᵀ {Y} ∘ mapᵀ (mapᵀ h)
+ μᵀ-assoc : Fun-Ext → {X : 𝓤 ̇ } → μᵀ ∘ mapᵀ μᵀ ∼ μᵀ ∘ μᵀ
+ μᵀ-assoc = μ-assoc 𝕋
+
+ μᵀ-natural : Fun-Ext
+            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              (h : X → Y)
+            → mapᵀ h ∘ μᵀ {𝓤} {X}  ∼ μᵀ {𝓥} {Y} ∘ mapᵀ (mapᵀ h)
  μᵀ-natural = μ-natural 𝕋
 
- ηᵀ-unit₀ : {X : Type} → μᵀ {X} ∘ ηᵀ {T X} ∼ id
+ ηᵀ-unit₀ : {X : 𝓤 ̇ } → μᵀ {𝓤} {X} ∘ ηᵀ {ℓᵀ 𝓤} {T X} ∼ id
  ηᵀ-unit₀ = η-unit₀ 𝕋
 
- ηᵀ-unit₁ : funext₀
-         → {X : Type} → μᵀ {X} ∘ mapᵀ (ηᵀ {X}) ∼ id
+ ηᵀ-unit₁ : Fun-Ext
+         → {X : 𝓤 ̇ } → μᵀ {𝓤} {X} ∘ mapᵀ (ηᵀ {𝓤} {X}) ∼ id
  ηᵀ-unit₁ = η-unit₁ 𝕋
 
- _⊗ᵀ_ : {X : Type} {Y : X → Type}
+ _⊗ᵀ_ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
       → T X
       → ((x : X) → T (Y x))
       → T (Σ x ꞉ X , Y x)
@@ -260,26 +290,26 @@ https://doi.org/10.1016/0168-0072(94)90020-5
 
 \begin{code}
 
-module _ (𝕋 : Monad) where
+module _ {ℓ : Universe → Universe} (𝕋 : Monad {ℓ}) where
 
  open T-definitions 𝕋
 
- is-affine : Type
- is-affine = is-equiv (ηᵀ {𝟙})
+ is-affine : (𝓤 : Universe) → ℓᵀ 𝓤 ⊔ 𝓤 ̇
+ is-affine 𝓤 = is-equiv (ηᵀ {𝓤} {𝟙})
 
- ext-const' : Type → Type₁
- ext-const' X = {Y : Type} (u : T Y)
+ ext-const' : 𝓤 ̇ → 𝓤ω
+ ext-const' X = {𝓥 : Universe} {Y : 𝓥 ̇ } (u : T Y)
               → extᵀ (λ (x : X) → u) ∼ λ (t : T X) → u
 
- ext-const : Type₁
- ext-const = {X : Type} → ext-const' X
+ ext-const : 𝓤ω
+ ext-const = {𝓤 : Universe} {X : 𝓤 ̇ } → ext-const' X
 
- affine-gives-ext-const' : Fun-Ext → is-affine → ext-const' 𝟙
- affine-gives-ext-const' fe a {Y} u t = γ
+ affine-gives-ext-const' : Fun-Ext → is-affine 𝓤 → ext-const' 𝟙
+ affine-gives-ext-const' {𝓤} fe a {Y} u t = γ
   where
    f = λ (x : 𝟙) → u
 
-   I : f ∘ inverse (ηᵀ {𝟙}) a ∼ extᵀ f
+   I : f ∘ inverse (ηᵀ {𝓤} {𝟙}) a ∼ extᵀ f
    I s = (f ∘ inverse ηᵀ a) s         ＝⟨ I₀ ⟩
          extᵀ f (ηᵀ (inverse ηᵀ a s)) ＝⟨ I₁ ⟩
          extᵀ f s                     ∎
@@ -289,11 +319,11 @@ module _ (𝕋 : Monad) where
 
    γ : extᵀ f t ＝ u
    γ = extᵀ f t                   ＝⟨ (ap (λ - → - t) (dfunext fe I))⁻¹ ⟩
-       (f ∘ inverse (ηᵀ {𝟙}) a) t ＝⟨refl⟩
+       (f ∘ inverse (ηᵀ {𝓤} {𝟙}) a) t ＝⟨refl⟩
        u                          ∎
 
- affine-gives-ext-const : Fun-Ext → is-affine → ext-const
- affine-gives-ext-const fe a {X} {Y} u t = γ
+ affine-gives-ext-const : Fun-Ext → ({𝓤 : Universe} → is-affine 𝓤) → ext-const
+ affine-gives-ext-const fe a {𝓤} {X} {𝓥} {Y} u t = γ
   where
    g : X → T Y
    g _ = u
@@ -305,7 +335,7 @@ module _ (𝕋 : Monad) where
    h _ = u
 
    k : X → T 𝟙
-   k = ηᵀ {𝟙} ∘ unique-to-𝟙
+   k = ηᵀ {𝓤} {𝟙} ∘ unique-to-𝟙
 
    I : extᵀ h ＝ f
    I = dfunext fe (affine-gives-ext-const' fe a u)
@@ -317,8 +347,8 @@ module _ (𝕋 : Monad) where
        f (extᵀ k t)         ＝⟨refl⟩
        u                    ∎
 
- ext-const-gives-affine : ext-const → is-affine
- ext-const-gives-affine ϕ = γ
+ ext-const-gives-affine : ext-const → is-affine 𝓤
+ ext-const-gives-affine {𝓤} ϕ = γ
   where
    η⁻¹ : T 𝟙 → 𝟙
    η⁻¹ t = ⋆
@@ -328,12 +358,12 @@ module _ (𝕋 : Monad) where
 
    II : ηᵀ ∘ η⁻¹ ∼ id
    II t = (ηᵀ ∘ η⁻¹) t        ＝⟨refl⟩
-          ηᵀ ⋆                ＝⟨ (ϕ {𝟙} (ηᵀ ⋆) t)⁻¹ ⟩
+          ηᵀ ⋆                ＝⟨ (ϕ {𝓤} {𝟙} (ηᵀ ⋆) t)⁻¹ ⟩
           extᵀ (λ x → ηᵀ ⋆) t ＝⟨refl⟩
           extᵀ ηᵀ t           ＝⟨ extᵀ-η t ⟩
           t                   ∎
 
-   γ : is-equiv (ηᵀ {𝟙})
+   γ : is-equiv (ηᵀ {𝓤} {𝟙})
    γ = qinvs-are-equivs ηᵀ (η⁻¹ , I , II)
 
 \end{code}
@@ -342,7 +372,7 @@ Monad algebras.
 
 \begin{code}
 
-record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
+record Algebra {ℓ : Universe → Universe} (𝕋 : Monad {ℓ}) (A : 𝓦 ̇ ) : 𝓤ω where
 
  open T-definitions 𝕋
 
@@ -353,16 +383,16 @@ record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
   α = structure-map
 
  field
-  aunit         : α ∘ ηᵀ ∼ id
-  aassoc        : α ∘ extᵀ (ηᵀ ∘ α) ∼ α ∘ extᵀ id
+  aunit  : α ∘ η 𝕋 ∼ id
+  aassoc : α ∘ extᵀ (ηᵀ ∘ α) ∼ α ∘ extᵀ id
 
- extension : {X : Type} → (X → A) → T X → A
+ extension : {X : 𝓤 ̇ } → (X → A) → T X → A
  extension f = α ∘ mapᵀ f
 
- _extends_ : {X : Type} → (T X → A) → (X → A) → Type
+ _extends_ : {X : 𝓤 ̇ } → (T X → A) → (X → A) → 𝓦 ⊔ 𝓤 ̇
  g extends f = g ∘ ηᵀ ∼ f
 
- extension-property : {X : Type} (f : X → A)
+ extension-property : {X : 𝓤 ̇ } (f : X → A)
                     → (extension f) extends f
  extension-property f x =
   (extension f ∘ ηᵀ) x ＝⟨refl⟩
@@ -370,11 +400,11 @@ record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
   α (ηᵀ (f x))         ＝⟨ aunit (f x) ⟩
   f x                  ∎
 
- is-hom-from-free : {X : Type} → (T X → A) → Type
+ is-hom-from-free : {X : 𝓤 ̇ } → (T X → A) → 𝓦 ⊔ ℓᵀ (ℓᵀ 𝓤) ̇
  is-hom-from-free h = h ∘ μᵀ ∼ α ∘ mapᵀ h
 
- extension-is-hom : funext₀
-                  → {X : Type} (f : X → A)
+ extension-is-hom : Fun-Ext
+                  → {X : 𝓤 ̇ } (f : X → A)
                   → is-hom-from-free (extension f)
  extension-is-hom fe f tt =
   (extension f ∘ μᵀ) tt           ＝⟨refl⟩
@@ -384,8 +414,8 @@ record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
   (α ∘ mapᵀ (α ∘ mapᵀ f)) tt      ＝⟨refl⟩
   (α ∘ mapᵀ (extension f)) tt     ∎
 
- at-most-one-extension : funext₀
-                       → {X : Type} (g h : T X → A)
+ at-most-one-extension : Fun-Ext
+                       → {X : 𝓤 ̇ } (g h : T X → A)
                        → g ∘ ηᵀ ∼ h ∘ ηᵀ
                        → is-hom-from-free g
                        → is-hom-from-free h
@@ -409,8 +439,8 @@ record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
     by-h-is-hom = h-is-hom (mapᵀ ηᵀ tt)
     by-unit₁-again = ap h (ηᵀ-unit₁ fe tt)
 
- extension-uniqueness : funext₀
-                      → {X : Type} (f : X → A) (h : T X → A)
+ extension-uniqueness : Fun-Ext
+                      → {X : 𝓤 ̇ } (f : X → A) (h : T X → A)
                       → h extends f
                       → is-hom-from-free h
                       → extension f ∼ h
@@ -424,30 +454,36 @@ record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
 
 open Algebra public
 
-module _ (𝕋 : Monad) where
+\end{code}
+
+Free algebras.
+
+\begin{code}
+
+module _ {ℓ : Universe → Universe} (𝕋 : Monad {ℓ}) where
 
  open T-definitions 𝕋
 
- free : funext₀ → (X : Type) → Algebra 𝕋 (T X)
+ free : Fun-Ext → (X : 𝓤 ̇ ) → Algebra 𝕋 (T X)
  free fe X =
   record {
    structure-map = μᵀ ;
    aunit         = ηᵀ-unit₀ ;
-   aassoc        = μ-assoc 𝕋 fe
+   aassoc        = μᵀ-assoc fe
   }
 
- is-hom : {A B : Type}
+ is-hom : {A : 𝓥 ̇ } {B : 𝓦 ̇ }
           (𝓐 : Algebra 𝕋 A)
           (𝓑 : Algebra 𝕋 B)
         → (A → B)
-        → Type
+        → ℓᵀ 𝓥 ⊔ 𝓦 ̇
  is-hom 𝓐 𝓑 h = h ∘ α ∼ β ∘ mapᵀ h
   where
    α = structure-map 𝓐
    β = structure-map 𝓑
 
- monad-extension-is-hom : (fe : funext₀)
-                          {X Y : Type}
+ monad-extension-is-hom : (fe : Fun-Ext)
+                          {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                           (f : X → T Y)
                         → is-hom (free fe X) (free fe Y) (extᵀ f)
  monad-extension-is-hom fe {X} {Y} f tt =
@@ -460,8 +496,8 @@ module _ (𝕋 : Monad) where
     again-by-ext-is-μ-map = ap (λ - → (μᵀ ∘ mapᵀ -) tt)
                                (dfunext fe (ext-is-μ-map 𝕋 fe f))
 
- hom-∘ : funext₀
-       → {A B C : Type}
+ hom-∘ : Fun-Ext
+       → {A : 𝓥 ̇ } {B : 𝓦 ̇ } {C : 𝓣 ̇ }
          (𝓐 : Algebra 𝕋 A)
          (𝓑 : Algebra 𝕋 B)
          (𝓒 : Algebra 𝕋 C)
@@ -480,13 +516,13 @@ module _ (𝕋 : Monad) where
     β = structure-map 𝓑
     γ = structure-map 𝓒
 
- extension-assoc : {A : Type}
+ extension-assoc : {A : 𝓦 ̇ }
                    (𝓐 : Algebra 𝕋 A)
-                 → funext₀
-                 → {X Y : Type}
+                 → Fun-Ext
+                 → {X : 𝓤  ̇} {Y : 𝓥 ̇ }
                    (g : Y → A) (f : X → T Y)
                  → extension 𝓐 (extension 𝓐 g ∘ f) ∼ extension 𝓐 g ∘ extᵀ f
- extension-assoc {A} 𝓐 fe {X} {Y} g f =
+ extension-assoc {𝓦} {𝓤} {𝓥} {A} 𝓐 fe {X} {Y} g f =
   extension-uniqueness 𝓐 fe ϕ h h-extends-ϕ h-is-hom
   where
    ϕ : X → A
@@ -507,15 +543,19 @@ module _ (𝕋 : Monad) where
                (free fe X) (free fe Y) 𝓐
                (extᵀ f) (extension 𝓐 g)
                (monad-extension-is-hom fe f) (extension-is-hom 𝓐 fe g)
+
+
 \end{code}
 
-If we want to call an algebra (literally) α, we can use this module:
+If we want to call an algebra (literally) α, we can used this module:
 
 \begin{code}
 
 module α-definitions
-        (𝕋 : Monad)
-        (A : Type)
+        {ℓ : Universe → Universe}
+        (𝕋 : Monad {ℓ})
+        {𝓦₀ : Universe}
+        (A : 𝓦₀ ̇ )
         (𝓐 : Algebra 𝕋 A)
        where
 
@@ -533,20 +573,21 @@ module α-definitions
  α-assocᵀ' : α ∘ mapᵀ α ∼ α ∘ μᵀ
  α-assocᵀ' = α-assocᵀ
 
- α-extᵀ : {X : Type} → (X → A) → T X → A
- α-extᵀ = extension 𝓐
+ α-extᵀ : {X : 𝓤 ̇ } → (X → A) → T X → A
+ α-extᵀ q = α ∘ mapᵀ q
 
- α-extᵀ-unit : {X : Type}
+ α-extᵀ-unit : {X : 𝓤 ̇ }
                (f : X → A)
              → α-extᵀ f ∘ ηᵀ ∼ f
  α-extᵀ-unit = extension-property 𝓐
 
- α-extᵀ-assoc : funext₀
-              → {X Y : Type} (g : Y → A) (f : X → T Y)
+ α-extᵀ-assoc : Fun-Ext
+              → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                (g : Y → A) (f : X → T Y)
               → α-extᵀ (α-extᵀ g ∘ f) ∼ α-extᵀ g ∘ extᵀ f
  α-extᵀ-assoc = extension-assoc 𝕋 𝓐
 
- α-curryᵀ : {X : Type} {Y : X → Type}
+ α-curryᵀ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
           → ((Σ x ꞉ X , Y x) → A)
           → (x : X) → T (Y x) → A
  α-curryᵀ q x = α-extᵀ (curry q x)

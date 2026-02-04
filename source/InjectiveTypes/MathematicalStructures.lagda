@@ -723,6 +723,79 @@ then show that the type of groups is injective using the above
 technique. I expect this to be entirely routine as the example of
 monoids.
 
+This example is implemented by Tom de Jong on 12 January 2026.
+
+\begin{code}
+
+open group
+
+Group-is-closed-under-prop-Π
+ : closed-under-prop-Π {𝓤}
+    (λ X → Σ ((_·_ , e) , a) ꞉ group-structure X , group-axiom X (_·_ , e))
+Group-is-closed-under-prop-Π {𝓤} = III
+ where
+  open canonical-map group-structure
+  ι : {X : 𝓤 ̇ } → group-structure X → monoid-structure X
+  ι ((_·_ , e) , a) = (_·_ , e)
+
+  ρ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ )
+      → ((h : p holds) → group-structure (A h)) → group-structure (Π A)
+  ρ⁻¹ p A = inverse (ρ p A) (Monoid-is-closed-under-prop-Π p A)
+
+  axiom-closed-under-prop-Π
+    : (p : Ω 𝓤)
+      (A : p holds → 𝓤 ̇ )
+      (α : (h : p holds) → group-structure (A h))
+      (F : (h : p holds) → group-axiom (A h) (ι (α h)))
+    → group-axiom (Π A) (ι (ρ⁻¹ p A α))
+  axiom-closed-under-prop-Π p A α F f = f⁻¹ , I , II
+   where
+    _∗_ : {h : p holds} → A h → A h → A h
+    _∗_ {h} = pr₁ (ι (α h))
+
+    _·_ : Π A → Π A → Π A
+    (f · g) h = f h ∗ g h
+
+    e : {h : p holds} → A h
+    e {h} = pr₂ (ι (α h))
+
+    𝕖 : Π A
+    𝕖 h = e
+
+    inver : {h : p holds} → A h → A h
+    inver {h} x = pr₁ (F h x)
+
+    right-inver : {h : p holds} (x : A h) → x ∗ inver x ＝ e
+    right-inver {h} x = pr₁ (pr₂ (F h x))
+
+    left-inver : {h : p holds} (x : A h) → inver x ∗ x ＝ e
+    left-inver {h} x = pr₂ (pr₂ (F h x))
+
+    f⁻¹ : Π A
+    f⁻¹ h = inver (f h)
+
+    I : f · f⁻¹ ＝ 𝕖
+    I = dfunext fe' (λ h → right-inver (f h))
+
+    II : f⁻¹ · f ＝ 𝕖
+    II = dfunext fe' (λ h → left-inver (f h))
+
+  III : closed-under-prop-Π {𝓤} (λ X → Σ s ꞉ group-structure X , group-axiom X (ι s))
+  III =  closure-under-prop-Π-with-axioms
+          group-structure
+          Monoid-is-closed-under-prop-Π
+          (λ X s → group-axiom X (ι s))
+          (group-axiom-is-prop fe')
+          axiom-closed-under-prop-Π
+
+ainjectivity-of-Group : ainjective-type (Group {𝓤}) 𝓤 𝓤
+ainjectivity-of-Group =
+ ainjectivity-of-type-of-structures
+  (λ X → Σ ((_·_ , e) , a) ꞉ group-structure X , group-axiom X ((_·_ , e)))
+  Group-is-closed-under-prop-Π
+
+\end{code}
+
 TODO. More techniques are needed to show that the type of 1-categories
 would be injective. This is more interesting.
 

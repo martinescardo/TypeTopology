@@ -19,7 +19,7 @@ Id = _＝_
 
 Jbased : {X : 𝓤 ̇ } (x : X) (A : (y : X) → x ＝ y → 𝓥 ̇ )
        → A x refl → (y : X) (r : x ＝ y) → A y r
-Jbased x A b .x refl = b
+Jbased x A b x refl = b
 
 J : {X : 𝓤 ̇ } (A : (x y : X) → x ＝ y → 𝓥 ̇ )
   → ((x : X) → A x x refl) → {x y : X} (r : x ＝ y) → A x y r

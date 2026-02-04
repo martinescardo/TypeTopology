@@ -33,7 +33,7 @@ endomap f : L → L. If there exists a bounded abstract inductive definition
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Equiv

@@ -9,7 +9,7 @@ Continuation of the development in `InternalModCont` towards uniform continuity.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 open import UF.Retracts

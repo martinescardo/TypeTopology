@@ -9,7 +9,7 @@ selection functions.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan hiding (J)
+open import MLTT.Spartan hiding (𝓤 ; J)
 open import UF.FunExt
 open import UF.DiscreteAndSeparated
 
@@ -22,18 +22,22 @@ discreteness).
 
 module Games.OptimalPlays
         (fe : Fun-Ext)
-        (R  : Type)
+        {𝓥 𝓦₀  : Universe}
+        (R : 𝓦₀ ̇ )
         (R-is-discrete : is-discrete R)
        where
 
-open import Games.FiniteHistoryDependent R
-open import Games.TypeTrees
+𝓤 : Universe
+𝓤 = 𝓥 ⊔ 𝓦₀
+
+open import Games.FiniteHistoryDependent {𝓤} {𝓦₀} R
+open import Games.TypeTrees {𝓤}
 open import MLTT.List hiding ([_]) renaming (map to lmap)
+open import MonadOnTypes.Definition
 open import MonadOnTypes.J-transf-variation
 open import MonadOnTypes.JK
 open import MonadOnTypes.K
 open import MonadOnTypes.List
-open import MonadOnTypes.Monad
 open import MonadOnTypes.NonEmptyList
 open import Notation.CanonicalMap
 open import UF.Base
@@ -47,18 +51,18 @@ The following are the main two notions considered in this file.
 
 \begin{code}
 
-is-optimal-move : {X : Type}
+is-optimal-move : {X : 𝓤 ̇ }
                   {Xf : X → 𝑻}
                   (q : (Σ x ꞉ X , Path (Xf x)) → R)
                   (ϕ : K X)
                   (ϕf : (x : X) → 𝓚 (Xf x))
                 → X
-                → Type
+                → 𝓦₀ ̇
 is-optimal-move {X} {Xf} q ϕ ϕf x =
  optimal-outcome (game (X ∷ Xf) q (ϕ :: ϕf))
  ＝ optimal-outcome (game (Xf x) (subpred q x) (ϕf x))
 
-is-optimal-play : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → Path Xt → Type
+is-optimal-play : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → Path Xt → 𝓦₀ ̇
 is-optimal-play {[]}     ⟨⟩        q ⟨⟩        = 𝟙
 is-optimal-play {X ∷ Xf} (ϕ :: ϕf) q (x :: xs) =
    is-optimal-move {X} {Xf} q ϕ ϕf x
@@ -70,7 +74,7 @@ Being an optimal move is a decidable proposition.
 
 \begin{code}
 
-being-optimal-move-is-prop : {X : Type}
+being-optimal-move-is-prop : {X : 𝓤 ̇ }
                              {Xf : X → 𝑻}
                              (q : (Σ x ꞉ X , Path (Xf x)) → R)
                              (ϕ : K X)
@@ -79,7 +83,7 @@ being-optimal-move-is-prop : {X : Type}
                            → is-prop (is-optimal-move q ϕ ϕf x)
 being-optimal-move-is-prop q ϕ ϕf x = discrete-types-are-sets R-is-discrete
 
-being-optimal-move-is-decidable : {X : Type}
+being-optimal-move-is-decidable : {X : 𝓤 ̇ }
                                   {Xf : X → 𝑻}
                                   (q : (Σ x ꞉ X , Path (Xf x)) → R)
                                   (ϕ : K X)
@@ -182,7 +186,7 @@ work with JT defined as follows.
 
 \begin{code}
 
-JT-remark : JT ＝ λ X → (X → R) → List⁺ X
+JT-remark : JT {𝓤} ＝ λ X → (X → R) → List⁺ X
 JT-remark = by-definition
 
 \end{code}
@@ -193,7 +197,7 @@ characterized as follows.
 
 \begin{code}
 
-α-extᵀ-explicitly : {X : Type} (p : X → R) (t : List⁺ X)
+α-extᵀ-explicitly : {X : 𝓤 ̇ } (p : X → R) (t : List⁺ X)
                   → α-extᵀ p t ＝ p (head⁺ t)
 α-extᵀ-explicitly p ((x ∷ _) :: _) = refl
 
@@ -209,13 +213,13 @@ include the distinguished element).
 
 \begin{code}
 
-module _ (X : Type)
+module _ (X : 𝓤 ̇ )
          (X-is-listed⁺@(x₀ , xs , μ) : listed⁺ X)
          (ϕ : (X → R) → R)
       where
 
  private
-  A : (X → R) → X → Type
+  A : (X → R) → X → 𝓦₀ ̇
   A p x = p x ＝ ϕ p
 
   δA : (p : X → R) (x : X) → is-decidable (A p x)
@@ -250,7 +254,7 @@ quantifiers.
 
 \begin{code}
 
-𝓙𝓣 : 𝑻 → Type
+𝓙𝓣 : 𝑻 → 𝓤 ̇
 𝓙𝓣 = structure JT
 
 εt⁺ : (Xt : 𝑻)
@@ -271,7 +275,7 @@ We now prove a couple of technical lemmas.
 
 \begin{code}
 
-module _ {X : Type} {Xf : X → 𝑻}
+module _ {X : 𝓤 ̇ } {Xf : X → 𝑻}
          (e⁺ : JT X)
          (d⁺ : (x : X) → JT (Path (Xf x)))
          (q : Path (X ∷ Xf)  → R)
@@ -470,10 +474,29 @@ main-lemma← Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af)
 
   I : p ＝ p'
   I = dfunext fe
-       (λ x → (JT-in-terms-of-K (Xf x) (ϕf x) (subpred q x) (εf x) (af x) (lf x))⁻¹)
+       (λ x → (JT-in-terms-of-K
+                (Xf x)
+                (ϕf x)
+                (subpred q x)
+                (εf x)
+                (af x)
+                (lf x))⁻¹)
+
+  II = p' x ＝⟨ ap (λ - → - x) (I ⁻¹) ⟩
+       p x  ＝⟨ om ⁻¹ ⟩
+       ϕ p  ＝⟨ ap ϕ I ⟩
+       ϕ p' ∎
+
+\end{code}
+
+A better proof would be
 
   II : p' x ＝ ϕ p'
   II = transport (λ - → - x ＝ ϕ -) I (om ⁻¹)
+
+But this increases the type checking time by 10s in a Mac Mini M4.
+
+\begin{code}
 
   III : member x (ι t)
   III = εᴸ-property← X l ϕ p' x II
@@ -533,7 +556,7 @@ Added 24th September 2025.
 \begin{code}
 
 quantifiers-over-empty-types-are-not-attainable
- : {X : Type}
+ : {X : 𝓤 ̇ }
  → is-empty X
  → (ϕ : K X)
  → ¬ is-attainable ϕ
@@ -657,7 +680,7 @@ prune-is-listed [] q ϕt ⟨⟩ = ⟨⟩
 prune-is-listed (X ∷ Xf) q (ϕ :: ϕf) (X-is-listed , Xf-is-listed) =
  X'-is-listed :: Xf'-is-listed
  where
-  X' : Type
+  X' : 𝓤 ̇
   X' = Σ x ꞉ X , is-optimal-move q ϕ ϕf x
 
   X'-is-listed : listed X'

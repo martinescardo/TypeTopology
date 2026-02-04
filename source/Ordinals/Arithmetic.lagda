@@ -119,6 +119,10 @@ infixl 7 _×ₒ_
                        𝟙ₒ-is-trichotomous
                        𝟙ₒ-is-trichotomous
 
+ω² : Ord
+ω² = ω ×ₒ ω
+
+
 prop-indexed-product : {P : 𝓤 ̇ }
                      → is-prop P
                      → (P → Ordinal 𝓥)
