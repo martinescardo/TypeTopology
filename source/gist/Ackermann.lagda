@@ -155,8 +155,7 @@ follows directly from the unfolding behaviour of transfinite recursion.
 \end{code}
 
 To conclude, we observe that this computes, despite the assumption of
-function extensionality, by giving an example, which is only used to
-prove the correctness of the function.
+function extensionality, by giving an example.
 
 \begin{code}
 
@@ -164,3 +163,11 @@ prove the correctness of the function.
  _ = refl
 
 \end{code}
+
+Function extensionality is used, indirectly, only in order to prove
+that B satisfies the required equations.
+
+Additionally, notice that function extensionality was never used
+explicitly in this module. It was only used as a parameter for the
+imported modules. This illustrates how functional extensionality is
+useful for modularity.
