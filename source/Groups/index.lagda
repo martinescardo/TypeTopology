@@ -15,6 +15,7 @@ import Groups.GroupActions    -- by [3]
 import Groups.Homomorphisms   -- by [3]
 import Groups.Image           -- by [3]
 import Groups.Kernel          -- by [3]
+import Groups.ModularGroup.index -- by [4]
 import Groups.Opposite        -- by [3]
 import Groups.Quotient        -- by [3]
 import Groups.Symmetric       -- by [1]
@@ -26,3 +27,4 @@ import Groups.Triv            -- by [3]
 [1] Martin Escardo
 [2] Bezem, Coquand, Dybjer and Escardo
 [3] Ettore Aldrovandi and Keri D'Angelo
+[4] Lane Biocini
