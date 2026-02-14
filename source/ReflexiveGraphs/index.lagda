@@ -24,5 +24,6 @@ that outline the reflexive graph approach to SIP.
 module ReflexiveGraphs.index where
 
 import ReflexiveGraphs.Type
+import ReflexiveGraphs.UnivalentReflexiveGraphs 
 
 \end{code}
