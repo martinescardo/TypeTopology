@@ -252,9 +252,8 @@ As announced, identifying the ordinals 𝟚₀ and 𝟚ₒ' contradicts the K-ax
 
 \end{code}
 
-In particular, antisymmetry of the simulation partial order contradicts the
-K-axiom.
-Note that we copied the definition of the simulation partial order ⊴ here from
+In particular, antisymmetry of the simulation preorder contradicts the K-axiom.
+Note that we copied the definition of the simulation preorder ⊴ here from
 Ordinals.OrdinalOfOrdinals since that module assumes univalence which we wish to
 avoid here.
 
