@@ -38,59 +38,71 @@ module _ (𝓐 : Refl-Graph 𝓤 𝓥) where
        → 𝓤 ⊔ 𝓥 ̇ 
  cofan x = Σ y ꞉ ⟨ 𝓐 ⟩ , y ≈⟨ 𝓐 ⟩ x
 
+\end{code}
+
+We show that propositional fans imply propositional cofans and vice versa.
+The crux of the proofs is to observe that if (y , s) : cofan x for some x then
+(x , s) : fan y, the rest amounts to shuffling data with in sigma types.
+
+It is worth noting that the proofs that follow were originally discovered as
+a string of equivalences, but to witness the equivalence requires function
+extensionality. The underlying maps of the equivalences are sufficient for the
+proof to go through and thus we are able to avoid unnecessary appeals to
+function extensionality. 
+
+\begin{code}
+
  prop-fan-to-cofan : ((x : ⟨ 𝓐 ⟩) → is-prop (fan x))
                    → ((x : ⟨ 𝓐 ⟩) → is-prop (cofan x))
  prop-fan-to-cofan fan-prop = I ∼-refl
   where
-   I = ((x : ⟨ 𝓐 ⟩) → is-prop (cofan x))
-         suffices-to-show⟨ id ⟩
-       ((x : ⟨ 𝓐 ⟩) → ((y , s) (y' , t) : cofan x) → (y , s) ＝ (y' , t))
-         suffices-to-show⟨ (λ f x (y , s) (y' , t) → f x y s y' t) ⟩ 
-       ((x y : ⟨ 𝓐 ⟩) (s : y ≈⟨ 𝓐 ⟩ x) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
-         → (y , s) ＝ (y' , t))
-         suffices-to-show⟨ (λ f x y → f y x) ⟩
-       ((y x : ⟨ 𝓐 ⟩) (s : y ≈⟨ 𝓐 ⟩ x) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
-         → (y , s) ＝ (y' , t))
-         suffices-to-show⟨ (λ f y x s y' t → f y (x , s) y' t) ⟩
-       ((y : ⟨ 𝓐 ⟩) ((x , s) : fan y) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
-         → (y , s) ＝ (y' , t))
-         suffices-to-show⟨
-          (λ f y → Π-proj⁻¹ (y , ≈-refl 𝓐 y) (fan-prop y) (f y)) ⟩
-       ((y y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t))
-         suffices-to-show⟨ (λ f y' y → f y y') ⟩
-       ((y' y : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t))
-         suffices-to-show⟨ (λ f y' y t → f y' (y , t)) ⟩
-       ((y' : ⟨ 𝓐 ⟩) ((y , t) : fan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))
-         suffices-to-show⟨
-          (λ _ y' → Π-proj⁻¹ (y' , ≈-refl 𝓐 y') (fan-prop y') refl) ⟩
-       ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y'))  ▢
+   I =
+    ((x : ⟨ 𝓐 ⟩) → is-prop (cofan x))                                  ←⟨ id ⟩
+    ((x : ⟨ 𝓐 ⟩) → ((y , s) (y' , t) : cofan x) → (y , s) ＝ (y' , t)) ←⟨ II ⟩ 
+    ((x y : ⟨ 𝓐 ⟩) (s : y ≈⟨ 𝓐 ⟩ x) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
+      → (y , s) ＝ (y' , t))                                           ←⟨ III ⟩
+    ((y x : ⟨ 𝓐 ⟩) (s : y ≈⟨ 𝓐 ⟩ x) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
+      → (y , s) ＝ (y' , t))                                           ←⟨ IV ⟩
+    ((y : ⟨ 𝓐 ⟩) ((x , s) : fan y) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
+      → (y , s) ＝ (y' , t))                                           ←⟨ V ⟩
+    ((y y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VI ⟩
+    ((y' y : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VII ⟩
+    ((y' : ⟨ 𝓐 ⟩) ((y , t) : fan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))   ←⟨ VIII ⟩
+    ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y'))  ▢
+    where
+     II = (λ f x (y , s) (y' , t) → f x y s y' t)
+     III = (λ f x y → f y x)
+     IV = (λ f y x s y' t → f y (x , s) y' t)
+     V = (λ f y → Π-proj⁻¹ (y , ≈-refl 𝓐 y) (fan-prop y) (f y))
+     VI = (λ f y' y → f y y')
+     VII = (λ f y' y t → f y' (y , t))
+     VIII = (λ _ y' → Π-proj⁻¹ (y' , ≈-refl 𝓐 y') (fan-prop y') refl)
 
  prop-cofan-to-fan : ((x : ⟨ 𝓐 ⟩) → is-prop (cofan x))
                    → ((x : ⟨ 𝓐 ⟩) → is-prop (fan x))
  prop-cofan-to-fan co-prop = I ∼-refl
   where
-   I = ((x : ⟨ 𝓐 ⟩) → is-prop (fan x))
-         suffices-to-show⟨ id ⟩
-       ((x : ⟨ 𝓐 ⟩) → ((y , s) (y' , t) : fan x) → (y , s) ＝ (y' , t))
-         suffices-to-show⟨ (λ f x (y , s) (y' , t) → f x y s y' t) ⟩ 
-       ((x y : ⟨ 𝓐 ⟩) (s : x ≈⟨ 𝓐 ⟩ y) (y' : ⟨ 𝓐 ⟩) (t : x ≈⟨ 𝓐 ⟩ y')
-         → (y , s) ＝ (y' , t))
-         suffices-to-show⟨ (λ f x y → f y x) ⟩
-       ((y x : ⟨ 𝓐 ⟩) (s : x ≈⟨ 𝓐 ⟩ y) (y' : ⟨ 𝓐 ⟩) (t : x ≈⟨ 𝓐 ⟩ y')
-         → (y , s) ＝ (y' , t))
-         suffices-to-show⟨ (λ f y x s y' t → f y (x , s) y' t) ⟩
-       ((y : ⟨ 𝓐 ⟩) ((x , s) : cofan y) (y' : ⟨ 𝓐 ⟩) (t : x ≈⟨ 𝓐 ⟩ y')
-         → (y , s) ＝ (y' , t))
-         suffices-to-show⟨
-          (λ f y → Π-proj⁻¹ (y , ≈-refl 𝓐 y) (co-prop y) (f y)) ⟩
-       ((y y' : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))
-         suffices-to-show⟨ (λ f y y' → f y' y) ⟩
-       ((y' y : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))
-         suffices-to-show⟨ (λ f y' y t → f y' (y , t)) ⟩
-       ((y' : ⟨ 𝓐 ⟩) ((y , t) : cofan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))
-         suffices-to-show⟨
-          (λ _ y' → Π-proj⁻¹ (y' , ≈-refl 𝓐 y') (co-prop y') refl) ⟩
-       ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y'))  ▢
+   I =
+    ((x : ⟨ 𝓐 ⟩) → is-prop (fan x))                                    ←⟨ id ⟩
+    ((x : ⟨ 𝓐 ⟩) → ((y , s) (y' , t) : fan x) → (y , s) ＝ (y' , t))   ←⟨ II ⟩ 
+    ((x y : ⟨ 𝓐 ⟩) (s : x ≈⟨ 𝓐 ⟩ y) (y' : ⟨ 𝓐 ⟩) (t : x ≈⟨ 𝓐 ⟩ y')
+      → (y , s) ＝ (y' , t))                                           ←⟨ III ⟩
+    ((y x : ⟨ 𝓐 ⟩) (s : x ≈⟨ 𝓐 ⟩ y) (y' : ⟨ 𝓐 ⟩) (t : x ≈⟨ 𝓐 ⟩ y')
+      → (y , s) ＝ (y' , t))                                           ←⟨ IV ⟩
+    ((y : ⟨ 𝓐 ⟩) ((x , s) : cofan y) (y' : ⟨ 𝓐 ⟩) (t : x ≈⟨ 𝓐 ⟩ y')
+      → (y , s) ＝ (y' , t))                                           ←⟨ V ⟩
+    ((y y' : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VI ⟩
+    ((y' y : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VII ⟩
+    ((y' : ⟨ 𝓐 ⟩) ((y , t) : cofan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VIII ⟩
+    ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y'))  ▢
+    where
+     II = (λ f x (y , s) (y' , t) → f x y s y' t)
+     III = (λ f x y → f y x)
+     IV = (λ f y x s y' t → f y (x , s) y' t)
+     V = (λ f y → Π-proj⁻¹ (y , ≈-refl 𝓐 y) (co-prop y) (f y))
+     VI = (λ f y y' → f y' y)
+     VII = (λ f y' y t → f y' (y , t))
+     VIII = (λ _ y' → Π-proj⁻¹ (y' , ≈-refl 𝓐 y') (co-prop y') refl)
 
  contr-fan-to-prop : ((x : ⟨ 𝓐 ⟩) → is-contr (fan x))
                    → ((x : ⟨ 𝓐 ⟩) → is-prop (fan x))
