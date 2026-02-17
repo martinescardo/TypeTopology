@@ -11,15 +11,13 @@ uniformly continuous predicates. In this module, we generalise this to types
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
-open import TypeTopology.TotallySeparated
 open import TypeTopology.CompactTypes
 open import UF.FunExt
 
-module TypeTopology.UniformSearch (X : 𝓤  ̇ )(fe : funext 𝓤₀ 𝓤) (κ : compact∙ X) where
+module TypeTopology.UniformSearch (X : 𝓤 ̇ )(fe : funext 𝓤₀ 𝓤) (κ : is-compact∙ X) where
 
 \end{code}
 
@@ -53,7 +51,7 @@ cons-head-tail α = dfunext fe h
 
 \begin{code}
 
-_＝⟦_⟧_ : (ℕ → X) → ℕ → (ℕ → X) → 𝓤  ̇
+_＝⟦_⟧_ : (ℕ → X) → ℕ → (ℕ → X) → 𝓤 ̇
 𝓊 ＝⟦ zero   ⟧ 𝓋 = 𝟙
 𝓊 ＝⟦ succ n ⟧ 𝓋 = (head 𝓊 ＝ head 𝓋) × (tail 𝓊 ＝⟦ n ⟧ tail 𝓋 )
 
@@ -64,10 +62,10 @@ localy constancy.
 
 \begin{code}
 
-_is-a-mod-of-lc-of_ : ℕ → ((ℕ → X) → 𝟚) → 𝓤  ̇
+_is-a-mod-of-lc-of_ : ℕ → ((ℕ → X) → 𝟚) → 𝓤 ̇
 n is-a-mod-of-lc-of p = (𝓊 𝓋 : ℕ → X) → 𝓊 ＝⟦ n ⟧ 𝓋 → p 𝓊 ＝ p 𝓋
 
-is-locally-constant : ((ℕ → X) → 𝟚) → 𝓤  ̇
+is-locally-constant : ((ℕ → X) → 𝟚) → 𝓤 ̇
 is-locally-constant p = Σ n ꞉ ℕ , n is-a-mod-of-lc-of p
 
 \end{code}
@@ -89,7 +87,7 @@ Since `X` is assumed to be `compact∙` it must be pointed. Call this point `x�
 \begin{code}
 
 x₀ : X
-x₀ = compact∙-gives-pointed κ
+x₀ = compact∙-types-are-pointed κ
 
 \end{code}
 
@@ -97,8 +95,8 @@ There must be a selection functional `ϵₓ` for `X`:
 
 \begin{code}
 
-X-is-compact∙' : compact∙' X
-X-is-compact∙' = compact∙-gives-compact∙' κ
+X-is-compact∙' : is-compact∙' X
+X-is-compact∙' = compact∙-types-are-compact∙' κ
 
 ϵₓ : (X → 𝟚) → X
 ϵₓ = pr₁ X-is-compact∙'

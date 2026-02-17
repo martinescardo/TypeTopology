@@ -9,24 +9,26 @@ be eventually constant (which we don't postulate).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
 
-module Taboos.BasicDiscontinuity (fe : FunExt) where
+module Taboos.BasicDiscontinuity (fe : funext₀) where
 
+open import CoNaturals.Type
 
-open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
-open import CoNaturals.GenericConvergentSequence
-open import Taboos.WLPO
+open import MLTT.Two-Properties
 open import Notation.CanonicalMap
+open import Taboos.WLPO
 
 basic-discontinuity : (ℕ∞ → 𝟚) → 𝓤₀ ̇
 basic-discontinuity p = ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
 
-basic-discontinuity-taboo : (p : ℕ∞ → 𝟚) → basic-discontinuity p → WLPO
+basic-discontinuity-taboo : (p : ℕ∞ → 𝟚)
+                          → basic-discontinuity p
+                          → WLPO
 basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
  where
   fact₀ : u ＝ ∞ → p u ＝ ₁
@@ -50,7 +52,7 @@ basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
                                  ₁       ∎)
 
   lemma₁ : p u ＝ ₁ → (u ＝ ∞) + (u ≠ ∞)
-  lemma₁ t = inl (not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (fact₃ t))
+  lemma₁ t = inl (not-finite-is-∞ fe (fact₃ t))
 
 \end{code}
 
@@ -60,7 +62,8 @@ of type ℕ∞ → 𝟚.
 
 \begin{code}
 
-WLPO-is-discontinuous : WLPO → Σ p ꞉ (ℕ∞ → 𝟚), basic-discontinuity p
+WLPO-is-discontinuous : WLPO
+                      → Σ p ꞉ (ℕ∞ → 𝟚), basic-discontinuity p
 WLPO-is-discontinuous f = p , (d , d∞)
  where
   p : ℕ∞ → 𝟚
@@ -92,26 +95,175 @@ WLPO-is-discontinuous f = p , (d , d∞)
 
 \end{code}
 
-If two 𝟚-valued functions defined on ℕ∞ agree at ℕ, they have to agree
-at ∞ too, unless WLPO holds:
+If two discrete-valued functions defined on ℕ∞ agree, they have to
+agree at ∞ too, unless WLPO holds:
 
 \begin{code}
 
-disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ＝ q (ι n)) → p ∞ ≠ q ∞ → WLPO
-disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
+open import NotionsOfDecidability.Decidable
+open import UF.DiscreteAndSeparated
+
+module _ {D : 𝓤 ̇ } (d : is-discrete D) where
+
+ disagreement-taboo' : (p q : ℕ∞ → D)
+                     → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                     → p ∞ ≠ q ∞
+                     → WLPO
+ disagreement-taboo' p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
+  where
+   A : ℕ∞ → 𝓤 ̇
+   A u = p u ＝ q u
+
+   δ : (u : ℕ∞) → is-decidable (p u ＝ q u)
+   δ u = d (p u) (q u)
+
+   r : ℕ∞ → 𝟚
+   r = characteristic-map A δ
+
+   r-lemma : (n : ℕ) → r (ι n) ＝ ₀
+   r-lemma n = characteristic-map-property₀-back A δ (ι n) (f n)
+
+   r-lemma∞ : r ∞ ＝ ₁
+   r-lemma∞ = characteristic-map-property₁-back A δ ∞ (λ a → g a)
+
+ agreement-cotaboo' : ¬ WLPO
+                    → (p q : ℕ∞ → D)
+                    → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                    → p ∞ ＝ q ∞
+ agreement-cotaboo' φ p q f = discrete-is-¬¬-separated d (p ∞) (q ∞)
+                               (contrapositive (disagreement-taboo' p q f) φ)
+
+disagreement-taboo : (p q : ℕ∞ → 𝟚)
+                   → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                   → p ∞ ≠ q ∞
+                   → WLPO
+disagreement-taboo = disagreement-taboo' 𝟚-is-discrete
+
+agreement-cotaboo : ¬ WLPO
+                  → (p q : ℕ∞ → 𝟚)
+                  → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                  → p ∞ ＝ q ∞
+agreement-cotaboo = agreement-cotaboo' 𝟚-is-discrete
+
+\end{code}
+
+Added 23rd August 2023. Variation.
+
+\begin{code}
+
+basic-discontinuity' : (ℕ∞ → ℕ∞) → 𝓤₀ ̇
+basic-discontinuity' f = ((n : ℕ) → f (ι n) ＝ ι 0) × (f ∞ ＝ ι 1)
+
+basic-discontinuity-taboo' : (f : ℕ∞ → ℕ∞)
+                           → basic-discontinuity' f
+                           → WLPO
+basic-discontinuity-taboo' f (f₀ , f₁) = VI
  where
-  r : ℕ∞ → 𝟚
-  r u = (p u) ⊕ (q u)
+  I : (u : ℕ∞) → f u ＝ ι 0 → u ≠ ∞
+  I u p q = Zero-not-Succ
+             (ι 0 ＝⟨ p ⁻¹ ⟩
+              f u ＝⟨ ap f q ⟩
+              f ∞ ＝⟨ f₁ ⟩
+              ι 1 ∎)
 
-  r-lemma : (n : ℕ) → r (ι n) ＝ ₀
-  r-lemma n = Lemma[b＝c→b⊕c＝₀] (f n)
+  II : (u : ℕ∞) → f u ≠ ι 0 → u ＝ ∞
+  II u ν = not-finite-is-∞ fe III
+   where
+    III : (n : ℕ) → u ≠ ι n
+    III n refl = V IV
+     where
+      IV : f (ι n) ＝ ι 0
+      IV = f₀ n
 
-  r-lemma∞ : r ∞ ＝ ₁
-  r-lemma∞ = Lemma[b≠c→b⊕c＝₁] g
+      V : f (ι n) ≠ ι 0
+      V = ν
 
-open import TypeTopology.DiscreteAndSeparated
+  VI : WLPO
+  VI u = Cases (finite-isolated fe 0 (f u))
+          (λ (p : ι 0 ＝ f u) → inr (I u (p ⁻¹)))
+          (λ (ν : ι 0 ≠ f u) → inl (II u (≠-sym ν)))
 
-agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ＝ q (ι n)) → p ∞ ＝ q ∞
-agreement-cotaboo φ p q f = 𝟚-is-¬¬-separated (p ∞) (q ∞) (contrapositive (disagreement-taboo p q f) φ)
+WLPO-is-discontinuous' : WLPO
+                       → Σ p ꞉ (ℕ∞ → ℕ∞), basic-discontinuity' p
+WLPO-is-discontinuous' wlpo = II
+ where
+  inc : 𝟚 → ℕ
+  inc = 𝟚-cases 0 1
+  I : Σ g ꞉ (ℕ∞ → 𝟚) , ((n : ℕ) → g (ι n) ＝ ₀) × (g ∞ ＝ ₁)
+  I = WLPO-is-discontinuous wlpo
+  q = pr₁ I
+  q₀ = pr₁ (pr₂ I)
+  q₁ = pr₂ (pr₂ I)
+  p : ℕ∞ → ℕ∞
+  p = ι ∘ inc ∘ q
+  p₀ : (n : ℕ) → p (ι n) ＝ ι 0
+  p₀ n = ι (inc (q (ι n))) ＝⟨ ap (ι ∘ inc) (q₀ n) ⟩
+         ι (inc ₀)         ＝⟨ refl ⟩
+         ι 0               ∎
+  p₁ : p ∞ ＝ ι 1
+  p₁ = ι (inc (q ∞)) ＝⟨ ap (ι ∘ inc) q₁ ⟩
+       ι (inc ₁)     ＝⟨ refl ⟩
+       ι 1           ∎
+  II : Σ p ꞉ (ℕ∞ → ℕ∞) , ((n : ℕ) → p (ι n) ＝ ι 0) × (p ∞ ＝ ι 1)
+  II = p , p₀ , p₁
+
+\end{code}
+
+Added 13th November 2023.
+
+\begin{code}
+
+open import Notation.Order
+
+ℕ∞-linearity-taboo : ((u v : ℕ∞) → (u ≼ v) + (v ≼ u))
+                   → WLPO
+ℕ∞-linearity-taboo δ = III
+ where
+  g : (u v : ℕ∞) → (u ≼ v) + (v ≼ u) → 𝟚
+  g u v (inl _) = ₀
+  g u v (inr _) = ₁
+
+  f : ℕ∞ → ℕ∞ → 𝟚
+  f u v = g u v (δ u v)
+
+  I₀ : (n : ℕ) → f (ι n) ∞ ＝ ₀
+  I₀ n = a (δ (ι n) ∞)
+   where
+    a : (d : (ι n ≼ ∞) + (∞ ≼ ι n)) → g (ι n) ∞ d ＝ ₀
+    a (inl _) = refl
+    a (inr ℓ) = 𝟘-elim (≼-gives-not-≺ ∞ (ι n) ℓ (∞-≺-largest n))
+
+  I₁ : (n : ℕ) → f ∞ (ι n) ＝ ₁
+  I₁ n = b (δ ∞ (ι n))
+   where
+    b : (d : (∞ ≼ ι n) + (ι n ≼ ∞)) → g ∞ (ι n) d ＝ ₁
+    b (inl ℓ) = 𝟘-elim (≼-gives-not-≺ ∞ (ι n) ℓ (∞-≺-largest n))
+    b (inr _) = refl
+
+  II : (b : 𝟚) → f ∞ ∞ ＝ b → WLPO
+  II ₀ e = basic-discontinuity-taboo p II₀
+   where
+    p : ℕ∞ → 𝟚
+    p x = complement (f ∞ x)
+
+    II₀ : ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
+    II₀ = (λ n → p (ι n)                ＝⟨refl⟩
+                 complement (f ∞ (ι n)) ＝⟨ ap complement (I₁ n) ⟩
+                 complement ₁           ＝⟨refl⟩
+                 ₀                      ∎) ,
+           (p ∞                ＝⟨refl⟩
+            complement (f ∞ ∞) ＝⟨ ap complement e ⟩
+            complement ₀       ＝⟨refl⟩
+            ₁                  ∎)
+  II ₁ e = basic-discontinuity-taboo p II₁
+   where
+    p : ℕ∞ → 𝟚
+    p x = f x ∞
+
+    II₁ : ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
+    II₁ = I₀ , e
+
+  III : WLPO
+  III = II (f ∞ ∞) refl
 
 \end{code}

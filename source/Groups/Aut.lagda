@@ -11,19 +11,17 @@ We assume functional extensionality at level 𝓤.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
+open import Groups.Type renaming (_≅_ to _≣_)
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
-open import UF.Subsingletons
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.Subsingletons-FunExt
-open import UF.Retracts
-
-open import Groups.Type renaming (_≅_ to _≣_)
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons-Properties
 
 module Groups.Aut where
 

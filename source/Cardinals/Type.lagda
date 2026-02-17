@@ -2,16 +2,14 @@ Jon Sterling, 25th March 2023.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.SetTrunc
-open import UF.Subsingletons
 
 module Cardinals.Type (st : set-truncations-exist) where
 
-open import UF.Embeddings
-open import UF.Subsingletons-FunExt
+open import UF.Sets
 
 import UF.Logic
 

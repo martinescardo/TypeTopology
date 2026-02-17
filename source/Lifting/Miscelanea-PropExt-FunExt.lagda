@@ -7,9 +7,13 @@ on full univalence.
 Moreover, there are some lemmas on the Kleisli extension for the lifting monad.
 In particular, (η ∘ f) ♯ is pointwise equal to 𝓛̇ f.
 
+Added 22 June 2024.
+Excluded middle holds if and only if the lifting discretely adds a single point,
+viz. 𝓛 X ≃ 𝟙 + X.
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -21,15 +25,23 @@ module Lifting.Miscelanea-PropExt-FunExt
         (fe : Fun-Ext)
        where
 
-open import UF.Base
-open import UF.Equiv
-open import UF.Retracts
-open import UF.Subsingletons-FunExt
-
-open import Lifting.Lifting 𝓣
+open import Lifting.Construction 𝓣
 open import Lifting.IdentityViaSIP 𝓣
 open import Lifting.Miscelanea 𝓣
 open import Lifting.Monad 𝓣
+
+open import NotionsOfDecidability.DecidableClassifier
+
+open import UF.Base
+open import UF.ClassicalLogic
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
+open import UF.SubtypeClassifier hiding (⊥)
 
 \end{code}
 
@@ -42,7 +54,7 @@ module _ {𝓤 : Universe}
          {X : 𝓤 ̇ }
        where
 
- open import Lifting.UnivalentPrecategory 𝓣 X
+ open import Lifting.UnivalentWildCategory 𝓣 X
 
  lifting-of-set-is-set : is-set X → is-set (𝓛 X)
  lifting-of-set-is-set i {l} {m} p q  = retract-of-prop r j p q
@@ -110,9 +122,18 @@ module _ {𝓤 : Universe}
  ⊑'-prop-valued s {l} {m} =
   Π-is-prop fe λ (d : is-defined l) → lifting-of-set-is-set s
 
+ not-defined-⊥-＝ : {l : 𝓛 X} → ¬ (is-defined l) → l ＝ ⊥
+ not-defined-⊥-＝ {l} nd =
+  ⊑-anti pe fe fe
+         (((λ d → 𝟘-elim (nd d)) , (λ d → 𝟘-elim (nd d))) ,
+         𝟘-elim , 𝟘-induction)
+
  is-defined-η-＝ : {l : 𝓛 X} (d : is-defined l) → l ＝ η (value l d)
  is-defined-η-＝ {l} d =
   ⊑-to-⊑' ((λ _ → ⋆) , λ (e : is-defined l) → value-is-constant l e d) d
+
+ ＝-to-⋍ : {l m : 𝓛 X} → l ＝ m → l ⋍ m
+ ＝-to-⋍ {l} {m} refl = ≃-refl (is-defined l) , refl
 
  ⋍-to-＝ : {l m : 𝓛 X} → l ⋍ m → l ＝ m
  ⋍-to-＝ {l} {m} (deq , veq) = ⊑-anti pe fe fe (a , b)
@@ -148,7 +169,7 @@ module _ {𝓤 : Universe}
   (f ♯) (η (value l d)) ＝⟨ ⋍-to-＝ (Kleisli-Law₁ f (value l d)) ⟩
   f (value l d)         ∎
 
- open import Lifting.UnivalentPrecategory 𝓣 Y
+ open import Lifting.UnivalentWildCategory 𝓣 Y
 
  𝓛̇-♯-∼ : (f : X → Y) → (η ∘ f) ♯ ∼ 𝓛̇ f
  𝓛̇-♯-∼ f l = ⊑-anti pe fe fe (a , b)
@@ -169,5 +190,56 @@ module _ {𝓤 : Universe}
      s : (d : is-defined (𝓛̇ f l))
        → value (𝓛̇ f l) d ＝ value (((η ∘ f) ♯) l) (r d)
      s d = refl
+
+\end{code}
+
+Added 22 June 2024.
+Excluded middle holds if and only if the lifting discretely adds a single point,
+viz. 𝓛 X ≃ 𝟙 + X.
+
+\begin{code}
+
+lifting-of-𝟙-is-Ω : 𝓛 (𝟙{𝓤}) ≃ Ω 𝓣
+lifting-of-𝟙-is-Ω =
+ 𝓛 𝟙                         ≃⟨ Σ-cong (λ P → ×-cong (→𝟙 fe) 𝕚𝕕) ⟩
+ (Σ P ꞉ 𝓣 ̇ , 𝟙 × is-prop P) ≃⟨ Σ-cong (λ P → 𝟙-lneutral) ⟩
+ Ω 𝓣                         ■
+
+EM-gives-classical-lifting : (X : 𝓤 ̇ ) → EM 𝓣 → 𝓛 X ≃ (𝟙{𝓤} + X)
+EM-gives-classical-lifting {𝓤} X em =
+ 𝓛 X                                 ≃⟨ I   ⟩
+ (Σ P ꞉ 𝓣 ̇ , is-prop P × (P → X))   ≃⟨ II  ⟩
+ (Σ P ꞉ Ω 𝓣 , (P holds → X))         ≃⟨ III ⟩
+ (Σ b ꞉ 𝟚 , (ι b holds → X))         ≃⟨ IV  ⟩
+ (Σ b ꞉ 𝟙 + 𝟙 , (ι (e b) holds → X)) ≃⟨ V   ⟩
+ (𝟙 × (𝟘 → X)) + (𝟙 × (𝟙 → X))       ≃⟨ VI  ⟩
+ (𝟘 → X) + (𝟙 → X)                   ≃⟨ VII ⟩
+ (𝟙 + X)                             ■
+  where
+   ι : 𝟚 → Ω 𝓣
+   ι = inclusion-of-booleans
+   e : 𝟙{𝓤} + 𝟙{𝓤} → 𝟚
+   e = ⌜ 𝟚-≃-𝟙+𝟙 ⌝⁻¹
+
+   I   = Σ-cong (λ _ → ×-comm)
+   II  = ≃-sym Σ-assoc
+   III = ≃-sym (Σ-change-of-variable-≃ _
+                 (EM-gives-𝟚-is-the-type-of-propositions fe pe em))
+   IV  = ≃-sym (Σ-change-of-variable-≃ _ (≃-sym 𝟚-≃-𝟙+𝟙))
+   V   = ≃-sym (Σ+-split 𝟙 𝟙 (λ b → ι (e b) holds → X))
+   VI  = +-cong 𝟙-lneutral 𝟙-lneutral
+   VII = +-cong (≃-sym (𝟘→ fe)) (≃-sym (𝟙→ fe))
+
+classical-lifting-of-𝟙-gives-EM : 𝓛 (𝟙{𝓤}) ≃ (𝟙{𝓤} + 𝟙{𝓤}) → EM 𝓣
+classical-lifting-of-𝟙-gives-EM e =
+ 𝟚-is-the-type-of-propositions-gives-EM fe pe I
+  where
+   I = 𝟚     ≃⟨ 𝟚-≃-𝟙+𝟙 ⟩
+       𝟙 + 𝟙 ≃⟨ ≃-sym e ⟩
+       𝓛 𝟙   ≃⟨ lifting-of-𝟙-is-Ω ⟩
+       Ω 𝓣   ■
+
+classical-lifting-gives-EM : ((X : 𝓤 ̇ ) → 𝓛 X ≃ 𝟙{𝓤} + X) → EM 𝓣
+classical-lifting-gives-EM h = classical-lifting-of-𝟙-gives-EM (h 𝟙)
 
 \end{code}

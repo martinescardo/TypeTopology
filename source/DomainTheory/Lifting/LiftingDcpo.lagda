@@ -9,7 +9,7 @@ least element to X when viewed as a discretely-ordered dcpo.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -27,18 +27,18 @@ module DomainTheory.Lifting.LiftingDcpo
 open PropositionalTruncation pt
 
 open import UF.Equiv
-open import UF.ImageAndSurjection pt
-open import UF.Miscelanea
+open import UF.EquivalenceExamples
+open import UF.Sets
 open import UF.Subsingletons-FunExt
 
-open import Lifting.Lifting 𝓥 hiding (⊥)
+open import Lifting.Construction 𝓥 hiding (⊥)
 open import Lifting.IdentityViaSIP 𝓥
 open import Lifting.Miscelanea 𝓥
 open import Lifting.Miscelanea-PropExt-FunExt 𝓥 pe fe
                                              renaming ( ⊑'-to-⊑ to ⊑'-to-⊑''
                                                       ; ⊑-to-⊑' to ⊑''-to-⊑')
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.Pointed pt fe 𝓥
@@ -95,10 +95,10 @@ module freely-add-⊥
       where
        lemma = ＝-to-⊑ 𝓓 (value-is-constant k (g (⌜ e ⌝ p)) p)
 
- family-in-dcpo : {I : 𝓥 ̇  } (α : I → 𝓛D) → (Σ i ꞉ I , is-defined (α i)) → ⟨ 𝓓 ⟩
+ family-in-dcpo : {I : 𝓥 ̇ } (α : I → 𝓛D) → (Σ i ꞉ I , is-defined (α i)) → ⟨ 𝓓 ⟩
  family-in-dcpo {I} α (i , p) = value (α i) p
 
- family-in-dcpo-is-semidirected : {I : 𝓥 ̇  } (α : I → 𝓛D)
+ family-in-dcpo-is-semidirected : {I : 𝓥 ̇ } (α : I → 𝓛D)
                                 → is-semidirected _⊑_ α
                                 → is-semidirected (underlying-order 𝓓)
                                    (family-in-dcpo α)
@@ -117,7 +117,7 @@ module freely-add-⊥
        where
         lemma = ＝-to-⊑ 𝓓 (value-is-constant (α k) (g pⱼ) (f pᵢ))
 
- family-in-dcpo-is-directed : {I : 𝓥 ̇  } (α : I → 𝓛D)
+ family-in-dcpo-is-directed : {I : 𝓥 ̇ } (α : I → 𝓛D)
                             → is-directed _⊑_ α
                             → ∃ i ꞉ I , is-defined (α i)
                             → is-Directed 𝓓 (family-in-dcpo α)
@@ -172,6 +172,21 @@ module freely-add-⊥
 
 \end{code}
 
+Added 3 July 2024 (but known much earlier of course).
+
+\begin{code}
+
+ 𝓛-DCPO-is-locally-small : is-locally-small 𝓓 → is-locally-small 𝓛-DCPO
+ 𝓛-DCPO-is-locally-small ls =
+  record { _⊑ₛ_ = _≼_ ;
+           ⊑ₛ-≃-⊑ = Σ-cong (λ f → Π-cong fe fe (λ p → ⊑ₛ-≃-⊑))}
+  where
+   open is-locally-small ls
+   _≼_ : 𝓛D → 𝓛D → 𝓥 ̇
+   (P , φ , _) ≼ (Q , ψ , _) = Σ f ꞉ (P → Q) , ((p : P) → φ p ⊑ₛ ψ (f p))
+
+\end{code}
+
 Of course, the map η from the dcpo to the lifted dcpo should be Scott
 continuous.
 
@@ -201,7 +216,7 @@ continuous.
  𝓛-order-lemma : {k l : 𝓛D} → k ⊑' l → k ⊑ l
  𝓛-order-lemma {k} {l} k-below-l = (pr₁ claim , (λ p → ＝-to-⊑ 𝓓 (pr₂ claim p)))
   where
-   open import Lifting.UnivalentPrecategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
+   open import Lifting.UnivalentWildCategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
    claim : k ⊑'' l
    claim = ⊑'-to-⊑'' k-below-l
 
@@ -286,7 +301,7 @@ dcpo.
                    → is-monotone 𝓛-DCPOₛ (𝓔 ⁻) g
   𝓛-monotone-lemma g g-mon k l k-below-l = g-mon k l (𝓛-order-lemma k-below-l)
 
-  𝓛-directed-lemma : {I : 𝓥 ̇  } {α : I → 𝓛D}
+  𝓛-directed-lemma : {I : 𝓥 ̇ } {α : I → 𝓛D}
                    → is-Directed 𝓛-DCPOₛ α
                    → is-Directed 𝓛-DCPO α
   𝓛-directed-lemma {I} {α} δ = (inhabited-if-Directed 𝓛-DCPOₛ α δ , σ)
@@ -298,7 +313,7 @@ dcpo.
         → (Σ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k))
       γ (k , u , v) = (k , 𝓛-order-lemma u , 𝓛-order-lemma v)
 
-  𝓛-sup-lemma : {I : 𝓥 ̇  } {α : I → 𝓛D} (δ : is-Directed 𝓛-DCPOₛ α)
+  𝓛-sup-lemma : {I : 𝓥 ̇ } {α : I → 𝓛D} (δ : is-Directed 𝓛-DCPOₛ α)
               → ∐ 𝓛-DCPOₛ δ ＝ ∐ 𝓛-DCPO {I} {α} (𝓛-directed-lemma δ)
   𝓛-sup-lemma {I} {α} δ = ⋍-to-＝ (e , dfunext fe γ)
    where
@@ -314,7 +329,7 @@ dcpo.
            → value (∐ 𝓛-DCPOₛ δ) q ＝ value (∐ 𝓛-DCPO {I} {α} ε) (⌜ e ⌝ q)
       goal (i , qᵢ) = value (∐ 𝓛-DCPOₛ δ) q                ＝⟨ ⦅1⦆  ⟩
                       value (α i) qᵢ                       ＝⟨ ⦅2⦆  ⟩
-                      ∐ 𝓓 ε'                               ＝⟨ refl ⟩
+                      ∐ 𝓓 ε'                               ＝⟨refl⟩
                       value (∐ 𝓛-DCPO {I} {α} ε) (⌜ e ⌝ q) ∎
        where
         ε' : is-Directed 𝓓 (family-in-dcpo α)

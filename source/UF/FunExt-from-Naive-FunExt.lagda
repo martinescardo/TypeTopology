@@ -15,7 +15,7 @@ Point 2. is already proved in UF.Equiv-Funext.lagda
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.FunExt-from-Naive-FunExt where
 
@@ -23,7 +23,6 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.FunExt
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
 open import UF.Yoneda
 open import UF.Subsingletons

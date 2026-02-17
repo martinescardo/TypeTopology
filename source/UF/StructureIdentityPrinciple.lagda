@@ -31,14 +31,16 @@ Contents:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Univalence
 open import UF.Yoneda
-open import UF.EquivalenceExamples
 
 module UF.StructureIdentityPrinciple where
 
@@ -313,7 +315,6 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  open import UF.FunExt
  open import UF.UA-FunExt
- open import UF.EquivalenceExamples
 
  fe : funext 𝓤 𝓤
  fe = univalence-gives-funext ua
@@ -643,7 +644,7 @@ And now we are ready to apply gsip-with-axioms to our situation:
                          × (f (unit A') ＝ unit B')})
        (λ A' → refl , refl)
        (λ X m n υ → to-×-＝ (pr₁ υ) (pr₂ υ))
-       (λ { A' m (refl , refl) → refl })
+       (λ { A' m (refl , refl) → refl})
 
  fact : (A B : Monoid)
       → (A ＝ B)
@@ -672,7 +673,7 @@ possibly axioms for them, before we know they form (∞-)categories, and
 even if they don't.
 
 Another example that should be accounted for by the methods developed
-here is identity of ordinals (in the module ), which
+here is identity of ordinals (in the module), which
 is what prompted us to think about the subject of this module.
 
 Added 8th December 2018. I came across a situation where the universe

@@ -7,7 +7,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.Partial-Functions where
 
@@ -32,7 +32,7 @@ _[_,_] :  {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defin
 (R , s) [ x , (a , r)] = a
 
 _＝ₖ_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → Πₚ A → 𝓤 ⊔ 𝓥 ̇
-f ＝ₖ g = ∀ x → (is-defined f x ⇔ is-defined g x)
+f ＝ₖ g = ∀ x → (is-defined f x ↔ is-defined g x)
              × ((i : is-defined f x) (j : is-defined g x) → f [ x , i ] ＝ g [ x , j ])
 
 module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where

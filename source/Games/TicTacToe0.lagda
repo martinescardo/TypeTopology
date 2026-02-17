@@ -5,22 +5,21 @@ history dependent game.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Games.TicTacToe0 where
 
-open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
-
-open import MLTT.Spartan hiding (J)
-open import MLTT.Athenian
-            hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
-open import Fin.Type
-open import Fin.Topology
 open import Fin.ArgMinMax
-
+open import Fin.Topology
+open import Fin.Type
 open import Games.TypeTrees
+open import MLTT.Athenian
+open import MLTT.Spartan hiding (J)
+open import MonadOnTypes.J
+open import MonadOnTypes.K
+open import TypeTopology.CompactTypes
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import UF.DiscreteAndSeparated
 
 \end{code}
 
@@ -28,10 +27,11 @@ The type of outcomes:
 
 \begin{code}
 
-R : Type
+R : 𝓤₀ ̇
 R = Fin 3
 
-open import Games.FiniteHistoryDependent R
+open import Games.FiniteHistoryDependent {𝓤₀} {𝓤₀} R
+open import MonadOnTypes.JK
 
 \end{code}
 
@@ -51,7 +51,7 @@ but in this case it is convenient to do so:
 
 \begin{code}
 
-data Player : Type where
+data Player : 𝓤₀ ̇ where
  X O : Player
 
 opponent : Player → Player
@@ -114,7 +114,7 @@ The type of moves in a board:
 
 \begin{code}
 
-Move : Board → Type
+Move : Board → 𝓤₀ ̇
 Move (_ , A) = Σ g ꞉ Grid , A g ＝ Nothing
 
 \end{code}
@@ -129,15 +129,15 @@ quantification.
 Grid-is-discrete : is-discrete Grid
 Grid-is-discrete = ×-is-discrete Fin-is-discrete Fin-is-discrete
 
-Grid-compact : Compact Grid {𝓤₀}
-Grid-compact = ×-Compact Fin-Compact Fin-Compact
+Grid-compact : is-Compact Grid {𝓤₀}
+Grid-compact = ×-is-Compact Fin-Compact Fin-Compact
 
-Move-decidable : (b : Board) → decidable (Move b)
+Move-decidable : (b : Board) → is-decidable (Move b)
 Move-decidable (_ , A) = Grid-compact
                           (λ g → A g ＝ Nothing)
                           (λ g → Nothing-is-isolated' (A g))
 
-Move-compact : (b : Board) → Compact (Move b)
+Move-compact : (b : Board) → is-Compact (Move b)
 Move-compact (x , A) = complemented-subset-of-compact-type
                         Grid-compact
                         (λ g → Nothing-is-isolated' (A g))
@@ -168,7 +168,7 @@ The game tree, with a bound on which we perform induction:
 
 \begin{code}
 
-tree : Board → ℕ → 𝕋
+tree : Board → ℕ → 𝑻
 tree b         0        = []
 tree b@(p , A) (succ k) with wins (opponent p) A | Move-decidable b
 ...                        | true  | _     = []
@@ -194,7 +194,9 @@ Selection functions for players, namely argmin for X and argmax for O:
 
 \begin{code}
 
-selection : (p : Player) {M : Type} → M → Compact M {𝓤₀} → J M
+open J-definitions R
+
+selection : (p : Player) {M : 𝓤 ̇ } → M → is-Compact M {𝓤₀} → J M
 selection X m κ p = pr₁ (compact-argmin p κ m)
 selection O m κ p = pr₁ (compact-argmax p κ m)
 
@@ -204,7 +206,10 @@ And their derived quantifiers:
 
 \begin{code}
 
-quantifier : Player → {M : Type} → Compact M → decidable M → K M
+open K-definitions R
+open JK R
+
+quantifier : Player → {M : 𝓤 ̇ } → is-Compact M → is-decidable M → K M
 quantifier p κ (inl m) = overline (selection p m κ)
 quantifier p κ (inr _) = λ _ → draw
 
@@ -250,7 +255,7 @@ selections b@(p , A) (succ k) with wins (opponent p) A | Move-decidable b
 ... | false | inr _  = ⟨⟩
 
 
-p : Path (Xt tic-tac-toe)
-p = J-sequence (selections board₀ 9) (q tic-tac-toe)
+p : Path (game-tree tic-tac-toe)
+p = sequenceᴶ (selections board₀ 9) (payoff-function tic-tac-toe)
 
 \end{code}

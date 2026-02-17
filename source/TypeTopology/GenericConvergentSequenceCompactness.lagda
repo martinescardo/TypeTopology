@@ -14,19 +14,19 @@ searchable, which amounts to Theorem-3·6 of the paper
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
 
 module TypeTopology.GenericConvergentSequenceCompactness (fe : funext 𝓤₀ 𝓤₀) where
 
+open import CoNaturals.Type
 open import MLTT.Two-Properties
-open import UF.PropTrunc
-open import CoNaturals.GenericConvergentSequence
 open import Notation.CanonicalMap
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.CompactTypes
+open import UF.DiscreteAndSeparated
+open import UF.PropTrunc
 
 \end{code}
 
@@ -37,8 +37,8 @@ We recall the main notions defined in the above imported modules:
 private
  module recall {X : 𝓤 ̇ } where
 
-  recall₀ : compact∙ X    ＝ (Π p ꞉ (X → 𝟚) , Σ x₀ ꞉ X , (p x₀ ＝ ₁ → Π x ꞉ X , p x ＝ ₁))
-  recall₁ : compact  X    ＝ (Π p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁))
+  recall₀ : is-compact∙ X ＝ (Π p ꞉ (X → 𝟚) , Σ x₀ ꞉ X , (p x₀ ＝ ₁ → Π x ꞉ X , p x ＝ ₁))
+  recall₁ : is-compact  X ＝ (Π p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁))
   recall₂ : is-discrete X ＝ ((x y : X) → (x ＝ y) + (x ≠ y))
 
   recall₀ = by-definition
@@ -51,7 +51,7 @@ This is the main theorem proved in this module.
 
 \begin{code}
 
-ℕ∞-compact∙ : compact∙ ℕ∞
+ℕ∞-compact∙ : is-compact∙ ℕ∞
 ℕ∞-compact∙ p = a , Lemma
  where
   α : ℕ → 𝟚
@@ -65,11 +65,10 @@ This is the main theorem proved in this module.
   a = (α , d)
 
   Dagger₀ : (n : ℕ) → a ＝ ι n → p (ι n) ＝ ₀
-  Dagger₀ 0 r =  p (ι 0)   ＝⟨ refl ⟩
+  Dagger₀ 0 r =  p (ι 0)   ＝⟨refl⟩
                  α 0       ＝⟨ ap (λ - → ι - 0) r ⟩
-                 ι (ι 0) 0 ＝⟨ refl ⟩
+                 ι (ι 0) 0 ＝⟨refl⟩
                  ₀         ∎
-
   Dagger₀ (succ n) r = p (ι (succ n))          ＝⟨ w ⁻¹ ⟩
                        α (succ n)              ＝⟨ ap (λ - → ι - (succ n)) r ⟩
                        ι (ι (succ n)) (succ n) ＝⟨ ℕ-to-ℕ∞-diagonal₀ n ⟩
@@ -80,25 +79,24 @@ This is the main theorem proved in this module.
         ₁                ∎
 
     w = α (succ n)              ＝⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) t ⟩
-        min𝟚 ₁ (p (ι (succ n))) ＝⟨ refl ⟩
+        min𝟚 ₁ (p (ι (succ n))) ＝⟨refl⟩
         p (ι (succ n))          ∎
 
   Dagger₁ : a ＝ ∞ → (n : ℕ) → p (ι n) ＝ ₁
-  Dagger₁ r 0 = p (ι 0) ＝⟨ refl ⟩
+  Dagger₁ r 0 = p (ι 0) ＝⟨refl⟩
                 α 0     ＝⟨ ap (λ - → ι - 0) r ⟩
-                ι ∞ 0   ＝⟨ refl ⟩
+                ι ∞ 0   ＝⟨refl⟩
                 ₁       ∎
   Dagger₁ r (succ n) = p (ι (succ n)) ＝⟨ w ⁻¹ ⟩
                        α (succ n)     ＝⟨ ap (λ - → ι - (succ n)) r ⟩
-                       ι ∞ (succ n)   ＝⟨ refl ⟩
+                       ι ∞ (succ n)   ＝⟨refl⟩
                        ₁              ∎
    where
     s : α n ＝ ₁
     s = ap (λ - → ι - n) r
 
-    w : α (succ n) ＝ p (ι (succ n))
     w = α (succ n)              ＝⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) s ⟩
-        min𝟚 ₁ (p (ι (succ n))) ＝⟨ refl ⟩
+        min𝟚 ₁ (p (ι (succ n))) ＝⟨refl⟩
         p (ι (succ n))          ∎
 
   Lemma₀ : (n : ℕ) → a ＝ ι n → p a ＝ ₀
@@ -129,26 +127,32 @@ Corollaries:
 
 \begin{code}
 
-ℕ∞-compact : compact ℕ∞
-ℕ∞-compact = compact∙-gives-compact ℕ∞-compact∙
+ℕ∞-compact : is-compact ℕ∞
+ℕ∞-compact = compact∙-types-are-compact ℕ∞-compact∙
 
-ℕ∞-Compact : Compact ℕ∞ {𝓤}
-ℕ∞-Compact = compact-gives-Compact ℕ∞-compact
+ℕ∞-Compact : is-Compact ℕ∞ {𝓤}
+ℕ∞-Compact = compact-types-are-Compact ℕ∞-compact
+
+ℕ∞-Π-Compact : is-Π-Compact ℕ∞ {𝓤}
+ℕ∞-Π-Compact = Σ-Compact-types-are-Π-Compact ℕ∞ ℕ∞-Compact
+
+ℕ∞-Compact∙ : is-Compact∙ ℕ∞ {𝓤}
+ℕ∞-Compact∙ = Compact-pointed-gives-Compact∙ ℕ∞-Compact ∞
 
 ℕ∞→ℕ-is-discrete : is-discrete (ℕ∞ → ℕ)
-ℕ∞→ℕ-is-discrete = compact-discrete-discrete fe ℕ∞-compact (λ u → ℕ-is-discrete)
+ℕ∞→ℕ-is-discrete = discrete-to-power-compact-is-discrete fe ℕ∞-compact (λ u → ℕ-is-discrete)
 
 ℕ∞→𝟚-is-discrete : is-discrete (ℕ∞ → 𝟚)
-ℕ∞→𝟚-is-discrete = compact-discrete-discrete fe ℕ∞-compact (λ u → 𝟚-is-discrete)
+ℕ∞→𝟚-is-discrete = discrete-to-power-compact-is-discrete fe ℕ∞-compact (λ u → 𝟚-is-discrete)
 
 module _ (fe' : FunExt) (pt : propositional-truncations-exist) where
 
  open import TypeTopology.WeaklyCompactTypes fe' pt
 
- ℕ∞-is-∃-compact : ∃-compact ℕ∞
+ ℕ∞-is-∃-compact : is-∃-compact ℕ∞
  ℕ∞-is-∃-compact = compact-types-are-∃-compact ℕ∞-compact
 
- ℕ∞-is-Π-compact : Π-compact ℕ∞
- ℕ∞-is-Π-compact = ∃-compact-gives-Π-compact ℕ∞-is-∃-compact
+ ℕ∞-is-Π-compact : is-Π-compact ℕ∞
+ ℕ∞-is-Π-compact = ∃-compact-types-are-Π-compact ℕ∞-is-∃-compact
 
 \end{code}

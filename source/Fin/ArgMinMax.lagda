@@ -2,26 +2,21 @@ Martin Escardo and Paulo Oliva, October 2021.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Fin.ArgMinMax where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
 
 open import Fin.Embeddings
 open import Fin.Order
-open import Fin.Properties
 open import Fin.Topology
 open import Fin.Type
-open import MLTT.Plus-Properties
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_+_)
 open import MLTT.SpartanList
 open import Naturals.Order
 open import Notation.Order
 open import NotionsOfDecidability.Complemented
 open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
-open import UF.Equiv
 
 \end{code}
 
@@ -30,8 +25,8 @@ greatest element.
 
 \begin{code}
 
-Fin-wf : {n : ℕ} (A : Fin n → 𝓤  ̇ ) (r₀ : Fin n)
-       → complemented A
+Fin-wf : {n : ℕ} (A : Fin n → 𝓤 ̇ ) (r₀ : Fin n)
+       → is-complemented A
        → A r₀
        → Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → r ≤ s)
 Fin-wf {𝓤} {succ n} A 𝟎 d a = 𝟎 , a , λ s a' → ⟨⟩
@@ -58,13 +53,13 @@ Fin-wf {𝓤} {succ n} A (suc r₀) d a = γ
        (λ a₀ → 𝟎 , a₀ , λ s a' → ⟨⟩)
        (λ (ν : ¬ A 𝟎) → suc r , b , l ν)
 
-Fin-co-wf : {n : ℕ} (A : Fin n → 𝓤  ̇ ) (r₀ : Fin n)
-          → complemented A
+Fin-co-wf : {n : ℕ} (A : Fin n → 𝓤 ̇ ) (r₀ : Fin n)
+          → is-complemented A
           → A r₀
           → Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → s ≤ r)
 Fin-co-wf {𝓤} {succ n} A 𝟎 d a = γ
  where
-  δ : decidable (Σ i ꞉ Fin n , A (suc i))
+  δ : is-decidable (Σ i ꞉ Fin n , A (suc i))
   δ = Fin-Compact (A ∘ suc) (d ∘ suc)
 
   Γ = Σ r ꞉ Fin (succ n) , A r × ((s : Fin (succ n)) → A s → s ≤ r)
@@ -107,19 +102,19 @@ Fin-co-wf {𝓤} {succ n} A (suc x) d a = suc (pr₁ IH) , pr₁ (pr₂ IH) , h
   h 𝟎       b = ⋆
   h (suc x) b = pr₂ (pr₂ IH) x b
 
-compact-argmax : {X : 𝓤  ̇ } {n : ℕ } (p : X → Fin n)
-               → Compact X
+compact-argmax : {X : 𝓤 ̇ } {n : ℕ} (p : X → Fin n)
+               → is-Compact X
                → X
                → Σ x ꞉ X , ((y : X) → p y ≤ p x)
 compact-argmax {𝓤} {X} {n} p κ x₀ = II I
  where
-  A : Fin n → 𝓤  ̇
+  A : Fin n → 𝓤 ̇
   A r = Σ x ꞉ X , p x ＝ r
 
   a₀ : A (p x₀)
   a₀ = x₀ , refl
 
-  δ : complemented A
+  δ : is-complemented A
   δ r = κ (λ x → p x ＝ r) (λ x → Fin-is-discrete (p x) r)
 
   I : Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → s ≤ r)
@@ -128,19 +123,19 @@ compact-argmax {𝓤} {X} {n} p κ x₀ = II I
   II : type-of I → Σ x ꞉ X , ((y : X) → p y ≤ p x)
   II (.(p y) , ((y , refl) , ϕ)) = y , (λ y → ϕ (p y) (y , refl))
 
-compact-argmin : {X : 𝓤  ̇ } {n : ℕ } (p : X → Fin n)
-               → Compact X
+compact-argmin : {X : 𝓤 ̇ } {n : ℕ} (p : X → Fin n)
+               → is-Compact X
                → X
                → Σ x ꞉ X , ((y : X) → p x ≤ p y)
 compact-argmin {𝓤} {X} {n} p κ x₀ = II I
  where
-  A : Fin n → 𝓤  ̇
+  A : Fin n → 𝓤 ̇
   A r = Σ x ꞉ X , p x ＝ r
 
   a₀ : A (p x₀)
   a₀ = x₀ , refl
 
-  δ : complemented A
+  δ : is-complemented A
   δ r = κ (λ x → p x ＝ r) (λ x → Fin-is-discrete (p x) r)
 
   I : Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → r ≤ s)
@@ -166,7 +161,7 @@ Fin-argmin {succ a} p = γ
   γ : Σ x' ꞉ Fin (succ (succ a)) , ((y : Fin (succ (succ a))) → p x' ≤ p y)
   γ = h (≤-decidable ⟦ p 𝟎 ⟧ ⟦ p (suc x) ⟧)
    where
-    h : decidable (p 𝟎 ≤ p (suc x)) → type-of γ
+    h : is-decidable (p 𝟎 ≤ p (suc x)) → type-of γ
     h (inl l) = 𝟎 , α
      where
       α : (y : (Fin (succ (succ a)))) → p 𝟎 ≤ p y
@@ -203,7 +198,7 @@ Fin-argmax {succ a} p = γ
   γ : Σ x' ꞉ Fin (succ (succ a)) , ((y : Fin (succ (succ a))) → p y ≤ p x')
   γ = h (≤-decidable ⟦ p (suc x) ⟧ ⟦ p 𝟎 ⟧)
    where
-    h : decidable (p (suc x) ≤ p 𝟎) → type-of γ
+    h : is-decidable (p (suc x) ≤ p 𝟎) → type-of γ
     h (inl l) = 𝟎 , α
      where
       α : (y : (Fin (succ (succ a)))) → p y ≤ p 𝟎
@@ -283,4 +278,79 @@ argmax'-correct {succ a} p y = h y
     l : p (suc x) ≤ p γ
     l = {!!}
 -}
+
+\end{code}
+
+Added 11th September 2024. Simplified and more efficient version for
+the boolean-valued case.
+
+\begin{code}
+
+open import MLTT.Two-Properties
+open import Naturals.Addition
+
+Min₂ : (i : ℕ) → (Fin (i + 1) → 𝟚) → 𝟚
+Min₂ 0        p = p 𝟎
+Min₂ (succ i) p = min𝟚 (p 𝟎) (Min₂ i (p ∘ suc))
+
+Max₂ : (i : ℕ) → (Fin (i + 1) → 𝟚) → 𝟚
+Max₂ 0        p = p 𝟎
+Max₂ (succ i) p = max𝟚 (p 𝟎) (Max₂ i (p ∘ suc))
+
+argMin₂ : (i : ℕ) → (Fin (i + 1) → 𝟚) → Fin (i + 1)
+argMin₂ 0        p = 𝟎
+argMin₂ (succ i) p =
+ 𝟚-equality-cases
+  (λ (_ : p 𝟎 ＝ ₀) → 𝟎)
+  (λ (_ : p 𝟎 ＝ ₁) → suc (argMin₂ i (p ∘ suc)))
+
+argMax₂ : (i : ℕ) → (Fin (i + 1) → 𝟚) → Fin (i + 1)
+argMax₂ 0        p = 𝟎
+argMax₂ (succ i) p =
+ 𝟚-equality-cases
+  (λ (_ : p 𝟎 ＝ ₀) → suc (argMax₂ i (p ∘ suc)))
+  (λ (_ : p 𝟎 ＝ ₁) → 𝟎)
+
+argMin₂-is-selection-for-Min₂ : (i : ℕ)
+                                (p : Fin (i + 1) → 𝟚)
+                              → p (argMin₂ i p) ＝ Min₂ i p
+argMin₂-is-selection-for-Min₂ 0        p = refl
+argMin₂-is-selection-for-Min₂ (succ i) p =
+ 𝟚-equality-cases
+  (λ (e : p 𝟎 ＝ ₀)
+     → p (argMin₂ (succ i) p)        ＝⟨ ap p (𝟚-equality-cases₀ e) ⟩
+       p 𝟎                          ＝⟨ e ⟩
+       ₀                            ＝⟨refl⟩
+       min𝟚 ₀ (Min₂ i (p ∘ suc))     ＝⟨ ap (λ - → min𝟚 - (Min₂ i (p ∘ suc))) (e ⁻¹) ⟩
+       min𝟚 (p 𝟎) (Min₂ i (p ∘ suc)) ＝⟨refl⟩
+       Min₂ (succ i) p               ∎)
+  (λ (e : p 𝟎 ＝ ₁)
+    → p (argMin₂ (succ i) p)        ＝⟨ ap p (𝟚-equality-cases₁ e) ⟩
+      p (suc (argMin₂ i (p ∘ suc))) ＝⟨ argMin₂-is-selection-for-Min₂ i (p ∘ suc) ⟩
+      Min₂ i (p ∘ suc)              ＝⟨refl⟩
+      min𝟚 ₁ (Min₂ i (p ∘ suc))     ＝⟨ ap (λ - → min𝟚 - (Min₂ i (p ∘ suc))) (e ⁻¹) ⟩
+      min𝟚 (p 𝟎) (Min₂ i (p ∘ suc)) ＝⟨refl⟩
+      Min₂ (succ i) p               ∎)
+
+argMax₂-is-selection-for-Max₂ : (i : ℕ)
+                                (p : Fin (i + 1) → 𝟚)
+                              → p (argMax₂ i p) ＝ Max₂ i p
+argMax₂-is-selection-for-Max₂ 0        p = refl
+argMax₂-is-selection-for-Max₂ (succ i) p =
+ 𝟚-equality-cases
+  (λ (e : p 𝟎 ＝ ₀)
+    → p (argMax₂ (succ i) p)        ＝⟨ ap p (𝟚-equality-cases₀ e) ⟩
+      p (suc (argMax₂ i (p ∘ suc))) ＝⟨ argMax₂-is-selection-for-Max₂ i (p ∘ suc) ⟩
+      Max₂ i (p ∘ suc)              ＝⟨refl⟩
+      max𝟚 ₀ (Max₂ i (p ∘ suc))     ＝⟨ ap (λ - → max𝟚 - (Max₂ i (p ∘ suc))) (e ⁻¹) ⟩
+      max𝟚 (p 𝟎) (Max₂ i (p ∘ suc)) ＝⟨refl⟩
+      Max₂ (succ i) p               ∎)
+  (λ (e : p 𝟎 ＝ ₁)
+     → p (argMax₂ (succ i) p)        ＝⟨ ap p (𝟚-equality-cases₁ e) ⟩
+       p 𝟎                          ＝⟨ e ⟩
+       ₁                            ＝⟨refl⟩
+       max𝟚 ₁ (Max₂ i (p ∘ suc))     ＝⟨ ap (λ - → max𝟚 - (Max₂ i (p ∘ suc))) (e ⁻¹) ⟩
+       max𝟚 (p 𝟎) (Max₂ i (p ∘ suc)) ＝⟨refl⟩
+       Max₂ (succ i) p               ∎)
+
 \end{code}

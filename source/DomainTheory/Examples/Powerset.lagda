@@ -10,19 +10,20 @@ finite subsets.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
+open import UF.Sets
 
 module DomainTheory.Examples.Powerset
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
-        {X : 𝓤 ̇  }
+        {X : 𝓤 ̇ }
         (X-is-set : is-set X)
        where
 
@@ -32,9 +33,8 @@ open import UF.Equiv
 open import UF.ImageAndSurjection pt
 open import UF.Powerset
 open import UF.Powerset-Fin pt
-open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
 
-open import Posets.Poset fe
 
 open binary-unions-of-subsets pt
 open canonical-map-from-lists-to-subsets X-is-set
@@ -199,7 +199,7 @@ compact-if-Kuratowski-finite-subset A k = lemma (A , k)
   ; ⊑ᴮ-is-small      = λ A l → (κ l ⊆ A , ≃-refl (κ l ⊆ A))
   ; ↓ᴮ-is-directed   = κ⁺-is-directed
   ; ↓ᴮ-is-sup        = κ⁺-sup
-  }
+ }
 
 𝓟-has-specified-small-compact-basis : has-specified-small-compact-basis 𝓟-DCPO
 𝓟-has-specified-small-compact-basis = (List X , κ , κ-is-small-compact-basis)

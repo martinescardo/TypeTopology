@@ -1,4 +1,4 @@
-Martin Escardo, 2 May 2014.
+Martin Escardo, 2 May 2014, based on an idea from 2011.
 
 Squashed sum.
 
@@ -6,34 +6,33 @@ See remarks below for an explanation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
 
-module TypeTopology.SquashedSum (fe : FunExt) where -- move this to compact types
+module TypeTopology.SquashedSum (fe : FunExt) where
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀
  fe₀ = fe 𝓤₀ 𝓤₀
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap hiding ([_])
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.ExtendedSumCompact fe
 open import TypeTopology.GenericConvergentSequenceCompactness fe₀
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Miscelanea
 open import UF.PairFun
-open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 
 \end{code}
 
@@ -59,14 +58,34 @@ X n is compact then so is its squashed sum Σ¹ X.
 Σ¹ X = Σ (X / ι)
 
 Σ¹-compact∙ : (X : ℕ → 𝓤 ̇ )
-            → ((n : ℕ) → compact∙(X n))
-            → compact∙(Σ¹ X)
+            → ((n : ℕ) → is-compact∙(X n))
+            → is-compact∙(Σ¹ X)
 Σ¹-compact∙ X ε = extended-sum-compact∙
                    ℕ-to-ℕ∞
                    (ℕ-to-ℕ∞-is-embedding fe₀)
                    ε
                    ℕ∞-compact∙
 \end{code}
+
+Added 20th December 2023.
+
+\begin{code}
+
+open import TypeTopology.TotallySeparated
+
+Σ¹-is-totally-separated : (X : ℕ → 𝓤 ̇ )
+                        → ((n : ℕ) → is-totally-separated (X n))
+                        → is-totally-separated (Σ¹ X)
+Σ¹-is-totally-separated {𝓤} X τ =
+ Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop
+  fe₀
+  (X / ι)
+  (/-is-totally-separated fe ι X τ)
+  (λ g f → dfunext (fe 𝓤₀ 𝓤) (λ (φ : is-finite ∞) → 𝟘-elim (is-infinite-∞ φ)))
+
+\end{code}
+
+End of addition.
 
 Added 26 July 2018 (implementing ideas of several years ago).
 
@@ -323,7 +342,7 @@ We don't need this for the moment:
 \begin{code}
 
 ι𝟙-over-extension : {X : ℕ → 𝓤 ̇ } (u : ℕ∞)
-                      → ((X / over) / ι𝟙) u ≃ (X / ι) u
+                  → ((X / over) / ι𝟙) u ≃ (X / ι) u
 ι𝟙-over-extension = iterated-extension over ι𝟙
 
 \end{code}
@@ -458,7 +477,9 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- extension-compact∙ : {X : ℕ → 𝓤₀ ̇ } → ((n : ℕ) → compact∙(X n)) → (u : ℕ∞) → compact∙(X [ u ])
+ extension-compact∙ : {X : ℕ → 𝓤₀ ̇ }
+                    → ((n : ℕ) → is-compact∙(X n))
+                    → (u : ℕ∞) → is-compact∙(X [ u ])
  extension-compact∙ {X} ε u p = y₀ , lemma
   where
    Y : 𝓤₀ ̇
@@ -507,8 +528,8 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- Σᴵ-compact∙ : {X : ℕ → 𝓤₀ ̇ } → ((n : ℕ) → compact∙(X n)) → compact∙(Σᴵ X)
- Σᴵ-compact∙ {X} f = Σ-compact∙ ℕ∞-compact∙ (extension-compact∙ {X} f)
+ Σᴵ-compact∙ : {X : ℕ → 𝓤₀ ̇ } → ((n : ℕ) → is-compact∙(X n)) → is-compact∙(Σᴵ X)
+ Σᴵ-compact∙ {X} f = Σ-is-compact∙ ℕ∞-compact∙ (extension-compact∙ {X} f)
 
 \end{code}
 

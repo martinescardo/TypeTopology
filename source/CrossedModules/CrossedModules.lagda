@@ -9,22 +9,23 @@ Revision July 1, 2022
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding ( ₀ ; ₁)
 open import UF.PropTrunc
-open import UF.ImageAndSurjection
 open import UF.FunExt
 open import UF.Subsingletons
 
 open import Groups.Type
 open import Groups.Homomorphisms
 open import Groups.Kernel
-open import Groups.Image
 open import Groups.Cokernel
 
+open import Quotient.Type
+
 module CrossedModules.CrossedModules
-  where
+        (sq : set-quotients-exist)
+       where
 
 \end{code}
 
@@ -191,7 +192,6 @@ module homotopygroups {G : CrossedModule {𝓤} {𝓥}} (pt : propositional-trun
 
 
   π₀ : Group _
-  π₀ = cokernel-gr (G ₁) (G ₀) (∂ G) (is-∂ G) ∂-has-norm-im
-
+  π₀ = cokernel-gr sq ((G ₁)) (G ₀) (∂ G) (is-∂ G) ∂-has-norm-im
 
 \end{code}

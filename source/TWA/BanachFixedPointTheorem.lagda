@@ -4,19 +4,16 @@ A version of the Banach fixed-point theorem for ultracloseness spaces.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
 module TWA.BanachFixedPointTheorem (fe : FunExt) where
 
 open import MLTT.Spartan
-open import CoNaturals.GenericConvergentSequence hiding (min)
-open import CoNaturals.Arithmetic fe
+open import CoNaturals.Type hiding (min)
 open import TWA.Closeness fe
 open import Naturals.Order
-open import UF.Miscelanea
-open import Naturals.Properties
 open import Notation.Order
 open import Notation.CanonicalMap
 
@@ -99,7 +96,7 @@ with the usual convention that 2^{-∞} = 0. The converse is not always
 possible. But, if (X,d) is ultrametric, then we can define a cometric
 c from d by
 
- c(x,y) = sup { n:ℕ∞ | d(x,y)<2^{-n} }.
+ c(x,y) = sup { n:ℕ∞ | d(x,y)<2^{-n}}.
 
 So, to translate the definition of contractibility to metric to
 cometric, we need:

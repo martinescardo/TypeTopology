@@ -402,7 +402,7 @@ the inhabitedness of the type is-univalent(𝓤) is undecided.
     cannot distinguish concrete isomorphic types such as X:=ℕ and
     Y:=ℕ×ℕ by a property P: 𝓤→𝓤 such that P(X) holds but P(Y) doesn't.
     This is because, being isomorphic, X and Y are equivalent. But
-    then univalence implies Id(X,Y), which in turn implies P(X) ⇔ P(Y)
+    then univalence implies Id(X,Y), which in turn implies P(X) ↔ P(Y)
     using J.  Because univalence is consistent, it follows that for
     any given concrete P: 𝓤→𝓤, it is impossible to prove that P(X)
     holds but P(Y) doesn't.
@@ -493,7 +493,7 @@ is written 𝓤 ⊔ 𝓥, to avoid subscripts.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Various.UnivalenceFromScratch where
 

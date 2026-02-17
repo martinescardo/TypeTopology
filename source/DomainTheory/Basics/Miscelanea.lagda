@@ -15,10 +15,12 @@ Table of contents
    retracts.
  * Lemmas involving (joins of) cofinal directed families.
  * Reindexing directed families.
+ * Suprema of ω-chains (added 23 June 2024).
+ * Subdcpo induced by a subset/property (added 18th Feb 2024 by Martin Escardo).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -36,11 +38,14 @@ private
 
 open PropositionalTruncation pt
 
+open import UF.Base
 open import UF.Equiv
+open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.Size hiding (is-small ; is-locally-small)
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.UniverseEmbedding
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 
@@ -61,10 +66,25 @@ Some preliminary basic lemmas.
         β i   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε i ]
         ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
 
+∐-independent-of-directedness-witness : (𝓓 : DCPO {𝓤} {𝓣})
+                                        {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
+                                        (δ ε : is-Directed 𝓓 α)
+                                      → ∐ 𝓓 δ ＝ ∐ 𝓓 ε
+∐-independent-of-directedness-witness 𝓓 {I} {α} δ ε = ap (∐ 𝓓) p
+ where
+  p : δ ＝ ε
+  p = being-directed-is-prop (underlying-order 𝓓) α δ ε
+
 ∐-family-＝ : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
              (p : α ＝ β) (δ : is-Directed 𝓓 α)
            → ∐ 𝓓 {I} {α} δ ＝ ∐ 𝓓 {I} {β} (transport (is-Directed 𝓓) p δ)
 ∐-family-＝ 𝓓 {I} {α} {α} refl δ = refl
+
+∐-family-＝' : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
+              (h : α ∼ β) (δ : is-Directed 𝓓 α) (ε : is-Directed 𝓓 β)
+            → ∐ 𝓓 {I} {α} δ ＝ ∐ 𝓓 {I} {β} ε
+∐-family-＝' 𝓓 {I} {α} {β} h δ ε =
+ ∐-family-＝ 𝓓 (dfunext fe h) δ ∙ ∐-independent-of-directedness-witness 𝓓 _ ε
 
 to-continuous-function-＝ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                            {f g : DCPO[ 𝓓 , 𝓔 ]}
@@ -79,18 +99,13 @@ to-continuous-function-＝ 𝓓 𝓔 h =
 ＝-to-⊒ : (𝓓 : DCPO {𝓤} {𝓣}) {x y : ⟨ 𝓓 ⟩} → y ＝ x → x ⊑⟨ 𝓓 ⟩ y
 ＝-to-⊒ 𝓓 p = ＝-to-⊑ 𝓓 (p ⁻¹)
 
-∐-independent-of-directedness-witness : (𝓓 : DCPO {𝓤} {𝓣})
-                                        {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
-                                        (δ ε : is-Directed 𝓓 α)
-                                      → ∐ 𝓓 δ ＝ ∐ 𝓓 ε
-∐-independent-of-directedness-witness 𝓓 {I} {α} δ ε = ap (∐ 𝓓) p
- where
-  p : δ ＝ ε
-  p = being-directed-is-prop (underlying-order 𝓓) α δ ε
-
 is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
             → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
 is-monotone 𝓓 𝓔 f = (x y : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ y → f x ⊑⟨ 𝓔 ⟩ f y
+
+is-inflationary : (𝓓 : DCPO {𝓤} {𝓣})
+                → (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩) → 𝓤 ⊔ 𝓣 ̇
+is-inflationary 𝓓 f = (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ f x
 
 \end{code}
 
@@ -241,6 +256,9 @@ constant-functions-are-continuous 𝓓 𝓔 {e} I α δ = u , v
 id-is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) → is-monotone 𝓓 𝓓 id
 id-is-monotone 𝓓 x y l = l
 
+id-is-inflationary : (𝓓 : DCPO {𝓤} {𝓣}) → is-inflationary 𝓓 id
+id-is-inflationary = reflexivity
+
 id-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) → is-continuous 𝓓 𝓓 id
 id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) γ
  where
@@ -248,6 +266,20 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
     → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (image-is-directed 𝓓 𝓓 (λ x y l → l) δ)
   γ I α δ = ＝-to-⊑ 𝓓 (∐-independent-of-directedness-witness 𝓓
              δ (image-is-directed 𝓓 𝓓 (λ x y l → l) δ))
+
+∘-is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (𝓔' : DCPO {𝓦} {𝓦'})
+                  (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (g : ⟨ 𝓔 ⟩ → ⟨ 𝓔' ⟩)
+                → is-monotone 𝓓 𝓔 f
+                → is-monotone 𝓔 𝓔' g
+                → is-monotone 𝓓 𝓔' (g ∘ f)
+∘-is-monotone 𝓓 𝓔 𝓔' f g mf mg x y l = mg (f x) (f y) (mf x y l)
+
+∘-is-inflationary : (𝓓 : DCPO {𝓤} {𝓣})
+                  (f g : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩)
+                → is-inflationary 𝓓 f
+                → is-inflationary 𝓓 g
+                → is-inflationary 𝓓 (g ∘ f)
+∘-is-inflationary 𝓓 f g if ig x = transitivity 𝓓 x (f x) (g (f x)) (if x) (ig (f x))
 
 ∘-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (𝓔' : DCPO {𝓦} {𝓦'})
                   (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (g : ⟨ 𝓔 ⟩ → ⟨ 𝓔' ⟩)
@@ -261,7 +293,7 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
   mg : is-monotone 𝓔 𝓔' g
   mg = monotone-if-continuous 𝓔 𝓔' (g , cg)
   m : is-monotone 𝓓 𝓔' (g ∘ f)
-  m x y l = mg (f x) (f y) (mf x y l)
+  m = ∘-is-monotone 𝓓 𝓔 𝓔' f g mf mg
   ψ : (I : 𝓥 ̇ )(α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
     → g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩ ∐ 𝓔' (image-is-directed 𝓓 𝓔' m δ)
   ψ I α δ = g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩[ l₁ ]
@@ -319,6 +351,206 @@ _≃ᵈᶜᵖᵒ_ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) �
               × is-continuous 𝓓 𝓔 f
               × is-continuous 𝓔 𝓓 g
 
+≃ᵈᶜᵖᵒ-inv : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+          → 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+          → 𝓔 ≃ᵈᶜᵖᵒ 𝓓
+≃ᵈᶜᵖᵒ-inv 𝓓 𝓔 (f , g , s , r , cf , cg) = (g , f , r , s , cg , cf)
+
+\end{code}
+
+Added 20-25 March 2025 by Tom de Jong, following a discussion with Martin Escardo.
+
+For use with the structure identity principle (SIP) it's convenient to know that
+the type of dcpo isomorphisms is equivalent to the type order-equivs of order
+preserving and reflecting equivalences.
+
+\begin{code}
+
+is-order-reflecting : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                    → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                    → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
+is-order-reflecting 𝓓 𝓔 f = (x x' : ⟨ 𝓓 ⟩) → f x ⊑⟨ 𝓔 ⟩ f x' → x ⊑⟨ 𝓓 ⟩ x'
+
+is-order-equiv : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+               → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+               → 𝓤 ⊔ 𝓤' ⊔ 𝓣 ⊔ 𝓣' ̇
+is-order-equiv 𝓓 𝓔 f = is-equiv f × is-monotone 𝓓 𝓔 f × is-order-reflecting 𝓓 𝓔 f
+
+being-order-equiv-is-prop : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                            (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                          → is-prop (is-order-equiv 𝓓 𝓔 f)
+being-order-equiv-is-prop 𝓓 𝓔 f =
+ ×₃-is-prop (being-equiv-is-prop fe' f)
+            (Π₃-is-prop fe λ x x' _ → prop-valuedness 𝓔 (f x) (f x'))
+            (Π₃-is-prop fe λ x x' _ → prop-valuedness 𝓓 x x')
+
+order-equivs : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) → 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+order-equivs 𝓓 𝓔 = Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) , is-order-equiv 𝓓 𝓔 f
+
+\end{code}
+
+To relate order equivalences to isomorphisms of dcpos we will need the following
+three basic observations.
+
+\begin{code}
+
+inverse-of-order-equiv-is-order-equiv : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                                      → (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                                      → (𝕖@(e , _) : is-order-equiv 𝓓 𝓔 f)
+                                      → is-order-equiv 𝓔 𝓓 (inverse f e)
+inverse-of-order-equiv-is-order-equiv 𝓓 𝓔 f
+ (f-equiv , f-monotone , f-order-reflecting) = I , II , III
+ where
+  g : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩
+  g = inverse f f-equiv
+  I : is-equiv g
+  I = inverses-are-equivs f f-equiv
+  II : is-monotone 𝓔 𝓓 g
+  II y y' l =
+   f-order-reflecting (g y) (g y')
+                      (transport₂ (underlying-order 𝓔)
+                                  ((inverses-are-sections f f-equiv y) ⁻¹)
+                                  ((inverses-are-sections f f-equiv y') ⁻¹)
+                                  l)
+  III : is-order-reflecting 𝓔 𝓓 g
+  III y y' l =
+   transport₂ (underlying-order 𝓔)
+              (inverses-are-sections f f-equiv y)
+              (inverses-are-sections f f-equiv y')
+              (f-monotone (g y) (g y') l)
+
+monotone-map-with-monotone-inverse-is-order-reflecting
+ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+   (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (e : is-equiv f)
+ → is-monotone 𝓓 𝓔 f
+ → is-monotone 𝓔 𝓓 (inverse f e)
+ → is-order-reflecting 𝓓 𝓔 f
+monotone-map-with-monotone-inverse-is-order-reflecting
+ 𝓓 𝓔 f e f-monotone f-inv-monotone x x' l =
+  transport₂ (underlying-order 𝓓)
+             (inverses-are-retractions f e x)
+             (inverses-are-retractions f e x')
+             (f-inv-monotone (f x) (f x') l)
+
+order-equivs-are-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                            → (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                            → is-order-equiv 𝓓 𝓔 f
+                            → is-continuous 𝓓 𝓔 f
+order-equivs-are-continuous 𝓓 𝓔 f 𝕖@(f-equiv , f-monotone , f-order-reflecting) =
+ continuity-criterion 𝓓 𝓔 f f-monotone cont-condition
+  where
+   g : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩
+   g = inverse f f-equiv
+
+   g-order-reflecting : is-order-reflecting 𝓔 𝓓 g
+   g-order-reflecting = pr₂ (pr₂ (inverse-of-order-equiv-is-order-equiv 𝓓 𝓔 f 𝕖))
+
+   cont-condition : (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+                  → f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 (image-is-directed 𝓓 𝓔 f-monotone δ)
+   cont-condition I α δ =
+    g-order-reflecting (f (∐ 𝓓 δ))
+                       (∐ 𝓔 ε)
+                       (transport⁻¹ (λ - → - ⊑⟨ 𝓓 ⟩ g (∐ 𝓔 ε))
+                                    (inverses-are-retractions f f-equiv (∐ 𝓓 δ))
+                                    ineq)
+    where
+     ε : is-Directed 𝓔 (f ∘ α)
+     ε = image-is-directed 𝓓 𝓔 f-monotone δ
+     ineq : ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ g (∐ 𝓔 ε)
+     ineq = ∐-is-lowerbound-of-upperbounds 𝓓 δ (g (∐ 𝓔 ε)) ub
+      where
+       ub : (i : I) → α i ⊑⟨ 𝓓 ⟩ g (∐ 𝓔 ε)
+       ub i = f-order-reflecting (α i) (g (∐ 𝓔 ε))
+               (transport⁻¹ (λ - → f (α i) ⊑⟨ 𝓔 ⟩ -)
+                            (inverses-are-sections f f-equiv (∐ 𝓔 ε))
+                            (∐-is-upperbound 𝓔 ε i))
+\end{code}
+
+We are now ready to show that the identity type between two dcpos 𝓓 and 𝓔 is
+equivalent to type of isomorphisms between 𝓓 and 𝓔.
+
+\begin{code}
+
+open import UF.Univalence
+
+characterization-of-DCPO-＝ : Univalence
+                            → (𝓓 𝓔 : DCPO {𝓤} {𝓣}) → (𝓓 ＝ 𝓔) ≃ 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+characterization-of-DCPO-＝ {𝓤} {𝓣} ua 𝓓 𝓔 =
+ (𝓓 ＝ 𝓔)                                                            ≃⟨ I ⟩
+ (Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+   , is-equiv f × ((x x' : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ x' ＝ f x ⊑⟨ 𝓔 ⟩ f x')) ≃⟨ II ⟩
+ (Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) , is-order-equiv 𝓓 𝓔 f)                      ≃⟨ III ⟩
+ (Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) , Σ e ꞉ is-equiv f
+                        , is-continuous 𝓓 𝓔 f
+                        × is-continuous 𝓔 𝓓 (inverse f e))           ≃⟨ IV ⟩
+ 𝓓 ≃ᵈᶜᵖᵒ 𝓔                                                           ■
+  where
+   I = characterization-of-M-＝' ua 𝓓 𝓔
+    where
+     open import UF.SIP-Examples
+     open generalized-metric-space
+           (𝓣 ̇  )
+           (λ (D : 𝓤 ̇  ) (_⊑_ : D → D → 𝓣 ̇  ) → dcpo-axioms _⊑_)
+           (λ D → dcpo-axioms-is-prop)
+   II =
+    Σ-cong
+     (λ f → logically-equivalent-props-are-equivalent
+             (×-is-prop (being-equiv-is-prop fe' f)
+                        (Π₂-is-prop fe
+                          (λ x x' → identifications-with-props-are-props
+                                     (univalence-gives-propext (ua 𝓣))
+                                     fe
+                                     (f x ⊑⟨ 𝓔 ⟩ f x')
+                                     (prop-valuedness 𝓔 (f x) (f x'))
+                                     (x ⊑⟨ 𝓓 ⟩ x'))))
+             (being-order-equiv-is-prop 𝓓 𝓔 f)
+             (λ (e , p) → e ,
+                          (λ x x' → Idtofun (p x x')) ,
+                          (λ x x' → Idtofun⁻¹ (p x x')))
+             (λ (e , m , r) → e ,
+                              (λ x x' → univalence-gives-propext
+                                         (ua 𝓣)
+                                         (prop-valuedness 𝓓 x x')
+                                         (prop-valuedness 𝓔 (f x) (f x'))
+                                         (m x x')
+                                         (r x x'))))
+   III =
+    Σ-cong
+     (λ f → logically-equivalent-props-are-equivalent
+             (being-order-equiv-is-prop 𝓓 𝓔 f)
+             (Σ-is-prop
+               (being-equiv-is-prop fe' f)
+               (λ e → ×-is-prop
+                       (being-continuous-is-prop 𝓓 𝓔 f)
+                       (being-continuous-is-prop 𝓔 𝓓 (inverse f e))))
+             (λ (e , m , r) → e ,
+                              order-equivs-are-continuous 𝓓 𝓔 f (e , m , r) ,
+                              order-equivs-are-continuous 𝓔 𝓓
+                               (inverse f e)
+                               (inverse-of-order-equiv-is-order-equiv 𝓓 𝓔 f
+                                 (e , m , r)))
+             (λ (e , f-cont , f-inv-cont) →
+               e ,
+               monotone-if-continuous 𝓓 𝓔 (f , f-cont) ,
+               monotone-map-with-monotone-inverse-is-order-reflecting 𝓓 𝓔 f e
+                (monotone-if-continuous 𝓓 𝓔 (f , f-cont))
+                (monotone-if-continuous 𝓔 𝓓 (inverse f e , f-inv-cont))))
+   IV = Σ-cong (λ f → Σ-change-of-variable _ ⌜ ϕ f ⌝ (⌜⌝-is-equiv (ϕ f))
+                      ● Σ-change-of-variable _ ⌜ Σ-assoc ⌝⁻¹ (⌜⌝⁻¹-is-equiv Σ-assoc)
+                      ● Σ-assoc
+                      ● Σ-assoc)
+    where
+     ϕ : (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → is-equiv f ≃ qinv f
+     ϕ f = is-equiv-≃-qinv fe f (sethood 𝓓)
+
+\end{code}
+
+End of addition.
+
+We now define embedding-projection pairs.
+
+\begin{code}
+
 is-deflation : (𝓓 : DCPO {𝓤} {𝓣}) → DCPO[ 𝓓 , 𝓓 ] → 𝓤 ⊔ 𝓣 ̇
 is-deflation 𝓓 f = (x : ⟨ 𝓓 ⟩) → [ 𝓓 , 𝓓 ]⟨ f ⟩ x ⊑⟨ 𝓓 ⟩ x
 
@@ -328,9 +560,17 @@ is-continuous-retract : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}
                       → 𝓤 ̇
 is-continuous-retract 𝓓 𝓔 (σ , _) (ρ , _) = (x : ⟨ 𝓓 ⟩) → ρ (σ x) ＝ x
 
+is-embedding-projection-pair : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                             → DCPO[ 𝓓 , 𝓔 ]
+                             → DCPO[ 𝓔 , 𝓓 ]
+                             → 𝓤 ⊔ 𝓤' ⊔ 𝓣' ̇
+is-embedding-projection-pair 𝓓 𝓔 𝕤@(s , cs) 𝕣@(r , cr) =
+   is-continuous-retract 𝓓 𝓔 𝕤 𝕣
+ × is-deflation 𝓔 (s ∘ r , ∘-is-continuous 𝓔 𝓓 𝓔 r s cr cs)
+
 record _continuous-retract-of_
         (𝓓 : DCPO {𝓤} {𝓣})
-        (𝓔 : DCPO {𝓤'} {𝓣'}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇  where
+        (𝓔 : DCPO {𝓤'} {𝓣'}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇ where
   field
    s : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
    r : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩
@@ -344,6 +584,19 @@ record _continuous-retract-of_
   𝕣 : DCPO[ 𝓔 , 𝓓 ]
   𝕣 = r , r-is-continuous
 
+≃ᵈᶜᵖᵒ-to-continuous-retract : (𝓓 : DCPO {𝓤} {𝓣})
+                              (𝓔 : DCPO {𝓤'} {𝓣'})
+                            → 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+                            → 𝓓 continuous-retract-of 𝓔
+≃ᵈᶜᵖᵒ-to-continuous-retract 𝓓 𝓔 (f , g , s , r , cf , cg) =
+ record
+  { s = f
+  ; r = g
+  ; s-section-of-r = s
+  ; s-is-continuous = cf
+  ; r-is-continuous = cg
+ }
+
 is-embedding-projection : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                         → DCPO[ 𝓓 , 𝓔 ]
                         → DCPO[ 𝓔 , 𝓓 ]
@@ -353,7 +606,7 @@ is-embedding-projection 𝓓 𝓔 ε π =
 
 record embedding-projection-pair-between
         (𝓓 : DCPO {𝓤} {𝓣})
-        (𝓔 : DCPO {𝓤'} {𝓣'}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇  where
+        (𝓔 : DCPO {𝓤'} {𝓣'}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇ where
   field
    e : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
    p : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩
@@ -368,6 +621,19 @@ record embedding-projection-pair-between
   𝕡 : DCPO[ 𝓔 , 𝓓 ]
   𝕡 = p , p-is-continuous
 
+≃ᵈᶜᵖᵒ-to-embedding-projection-pair : (𝓓 : DCPO {𝓤} {𝓣})
+                                     (𝓔 : DCPO {𝓤'} {𝓣'})
+                                   → 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+                                   → embedding-projection-pair-between 𝓓 𝓔
+≃ᵈᶜᵖᵒ-to-embedding-projection-pair 𝓓 𝓔 (f , g , s , r , cf , cg) =
+ record
+  { e = f
+  ; p = g
+  ; e-section-of-p = s
+  ; e-p-deflation = λ y → ＝-to-⊑ 𝓔 (r y)
+  ; e-is-continuous = cf
+  ; p-is-continuous = cg
+ }
 
 \end{code}
 
@@ -386,19 +652,19 @@ relations.
 
 \begin{code}
 
-is-small : (X : 𝓤 ̇  ) → 𝓥 ⁺ ⊔ 𝓤 ̇
+is-small : (X : 𝓤 ̇ ) → 𝓥 ⁺ ⊔ 𝓤 ̇
 is-small X = X is 𝓥 small
 
-small-binary-relation-equivalence : {X : 𝓤 ̇  } {Y : 𝓦 ̇  } {R : X → Y → 𝓣 ̇  }
+small-binary-relation-equivalence : {X : 𝓤 ̇ } {Y : 𝓦 ̇ } {R : X → Y → 𝓣 ̇ }
                                   → ((x : X) (y : Y) → is-small (R x y))
-                                  ≃ (Σ Rₛ ꞉ (X → Y → 𝓥 ̇  ) ,
+                                  ≃ (Σ Rₛ ꞉ (X → Y → 𝓥 ̇ ) ,
                                       ((x : X) (y : Y) → Rₛ x y ≃ R x y))
 small-binary-relation-equivalence {𝓤} {𝓦} {𝓣} {X} {Y} {R} =
  ((x : X) (y : Y)    → is-small (R x y))                            ≃⟨ I   ⟩
  ((((x , y) : X × Y) → is-small (R x y)))                           ≃⟨ II  ⟩
- (Σ R' ꞉ (X × Y → 𝓥 ̇  ) , (((x , y) : X × Y) → R' (x , y) ≃ R x y)) ≃⟨ III ⟩
- (Σ R' ꞉ (X × Y → 𝓥 ̇  ) , ((x : X) (y : Y) → R' (x , y) ≃ R x y))   ≃⟨ IV  ⟩
- (Σ Rₛ ꞉ (X → Y → 𝓥 ̇  ) , ((x : X) (y : Y) → Rₛ x y ≃ R x y))       ■
+ (Σ R' ꞉ (X × Y → 𝓥 ̇ ) , (((x , y) : X × Y) → R' (x , y) ≃ R x y)) ≃⟨ III ⟩
+ (Σ R' ꞉ (X × Y → 𝓥 ̇ ) , ((x : X) (y : Y) → R' (x , y) ≃ R x y))   ≃⟨ IV  ⟩
+ (Σ Rₛ ꞉ (X → Y → 𝓥 ̇ ) , ((x : X) (y : Y) → Rₛ x y ≃ R x y))       ■
   where
    φ : {𝓤 𝓥 𝓦 : Universe}
        {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ x ꞉ X , Y x) → 𝓦 ̇ }
@@ -414,7 +680,7 @@ module _
         (𝓓 : DCPO {𝓤} {𝓣})
        where
 
- record is-locally-small : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+ record is-locally-small : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ where
   field
    _⊑ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
    ⊑ₛ-≃-⊑ : {x y : ⟨ 𝓓 ⟩} → x ⊑ₛ y ≃ x ⊑⟨ 𝓓 ⟩ y
@@ -453,7 +719,7 @@ alternative definitions of local smallness and proving their equivalence.
 
  is-locally-small-Σ : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  is-locally-small-Σ =
-   Σ _⊑ₛ_ ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇  ) , ((x y : ⟨ 𝓓 ⟩) → (x ⊑ₛ y) ≃ (x ⊑⟨ 𝓓 ⟩ y))
+   Σ _⊑ₛ_ ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇ ) , ((x y : ⟨ 𝓓 ⟩) → (x ⊑ₛ y) ≃ (x ⊑⟨ 𝓓 ⟩ y))
 
  is-locally-small-record-equivalence : is-locally-small ≃ is-locally-small-Σ
  is-locally-small-record-equivalence = qinveq f (g , (λ _ → refl) , (λ _ → refl))
@@ -463,7 +729,7 @@ alternative definitions of local smallness and proving their equivalence.
     where
      open is-locally-small ls
    g : is-locally-small-Σ → is-locally-small
-   g ls = record { _⊑ₛ_ = pr₁ ls ; ⊑ₛ-≃-⊑ = (λ {x} {y} → pr₂ ls x y) }
+   g ls = record { _⊑ₛ_ = pr₁ ls ; ⊑ₛ-≃-⊑ = (λ {x} {y} → pr₂ ls x y)}
 
  is-locally-small' : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  is-locally-small' = (x y : ⟨ 𝓓 ⟩) → is-small (x ⊑⟨ 𝓓 ⟩ y)
@@ -475,7 +741,7 @@ alternative definitions of local smallness and proving their equivalence.
  being-locally-small'-is-prop : PropExt → is-prop is-locally-small'
  being-locally-small'-is-prop pe =
   Π₂-is-prop fe (λ x y → prop-being-small-is-prop pe fe'
-                          (x ⊑⟨ 𝓓 ⟩ y) (prop-valuedness 𝓓 x y) 𝓥)
+                          (x ⊑⟨ 𝓓 ⟩ y) (prop-valuedness 𝓓 x y))
 
  being-locally-small-is-prop : PropExt → is-prop is-locally-small
  being-locally-small-is-prop pe =
@@ -527,7 +793,7 @@ Moving on from local smallness, we present a few useful lemmas on cofinality and
 
 \begin{code}
 
-semidirected-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓦 ̇  }
+semidirected-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓦 ̇ }
                             (α : I → ⟨ 𝓓 ⟩) (β : J → ⟨ 𝓓 ⟩)
                           → ((i : I) → ∃ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
                           → ((j : J) → ∃ i ꞉ I , β j ⊑⟨ 𝓓 ⟩ α i)
@@ -556,7 +822,7 @@ semidirected-if-bicofinal 𝓓 {I} {J} α β α-cofinal-in-β β-cofinal-in-α �
                          α i  ⊑⟨ 𝓓 ⟩[ w ]
                          β j  ∎⟨ 𝓓 ⟩))
 
-directed-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓦 ̇  }
+directed-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓦 ̇ }
                         {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
                       → ((i : I) → ∃ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
                       → ((j : J) → ∃ i ꞉ I , β j ⊑⟨ 𝓓 ⟩ α i)
@@ -571,7 +837,7 @@ directed-if-bicofinal 𝓓 {I} {J} {α} {β} κ₁ κ₂ δ =
      ϕ : I → ∥ J ∥
      ϕ i = ∥∥-functor pr₁ (κ₁ i)
 
-∐-⊑-if-cofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓥 ̇  }
+∐-⊑-if-cofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓥 ̇ }
                  {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
                → ((i : I) → ∃ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
                → (δ : is-Directed 𝓓 α)
@@ -589,7 +855,7 @@ directed-if-bicofinal 𝓓 {I} {J} {α} {β} κ₁ κ₂ δ =
                  β j   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε j ]
                  ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
 
-∐-＝-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓥 ̇  }
+∐-＝-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓥 ̇ }
                    {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
                  → ((i : I) → ∃ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
                  → ((j : J) → ∃ i ꞉ I , β j ⊑⟨ 𝓓 ⟩ α i)
@@ -610,7 +876,7 @@ supremum, which is what we prove here.
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
-        {I : 𝓦 ̇  } {J : 𝓦' ̇  }
+        {I : 𝓦 ̇ } {J : 𝓦' ̇ }
         (ρ : I ≃ J)
         (α : I → ⟨ 𝓓 ⟩)
        where
@@ -664,5 +930,118 @@ module _
        ⦅1⦆ = ＝-to-⊒ 𝓓
              (ap α (inverses-are-retractions ⌜ ρ ⌝ (⌜⌝-is-equiv ρ) i))
        ⦅2⦆ = y-is-ub (⌜ ρ ⌝ i)
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        {I : 𝓦 ̇ } {J : 𝓦' ̇ }
+        (ρ : I ≃ J)
+        (α : I → ⟨ 𝓓 ⟩)
+       where
+
+ sup-reindexed-family : (x : ⟨ 𝓓 ⟩)
+                      → is-sup (underlying-order 𝓓) x (reindexed-family 𝓓 ρ α)
+                      → is-sup (underlying-order 𝓓) x α
+ sup-reindexed-family x x-is-sup =
+  transport (is-sup (underlying-order 𝓓) x) (dfunext fe h)
+            (reindexed-family-sup 𝓓 (≃-sym ρ) β x x-is-sup)
+   where
+    β = reindexed-family 𝓓 ρ α
+    h : reindexed-family 𝓓 (≃-sym ρ) β ∼ α
+    h i = (α ∘ ⌜ ρ ⌝⁻¹ ∘ ⌜ ≃-sym ρ ⌝⁻¹) i ＝⟨ e₁ ⟩
+          (α ∘ ⌜ ρ ⌝⁻¹ ∘ ⌜ ρ ⌝) i         ＝⟨ e₂ ⟩
+          α i                             ∎
+     where
+      e₁ = ap (λ - → (α ∘ ⌜ ρ ⌝⁻¹ ∘ -) i)
+              (inversion-involutive ⌜ ρ ⌝ (⌜⌝-is-equiv ρ))
+      e₂ = ap α (inverses-are-retractions' ρ i)
+
+\end{code}
+
+Added 23 June 2024.
+All dcpos (regardless of the universe level for index families) are ω-complete.
+
+\begin{code}
+
+dcpos-are-ω-complete : (𝓓 : DCPO {𝓤} {𝓣})
+                     → is-ω-complete (underlying-order 𝓓)
+dcpos-are-ω-complete 𝓓 α α-is-ω-chain = s , s-is-sup
+ where
+  ℕ' : 𝓥 ̇
+  ℕ' = Lift 𝓥 ℕ
+  ρ : ℕ ≃ Lift 𝓥 ℕ
+  ρ = ≃-Lift 𝓥 ℕ
+  δ : is-Directed 𝓓 (reindexed-family 𝓓 (≃-Lift 𝓥 ℕ) α)
+  δ = reindexed-family-is-directed 𝓓 ρ α (ω-chains-are-Directed 𝓓 α α-is-ω-chain)
+  s : ⟨ 𝓓 ⟩
+  s = ∐ 𝓓 δ
+  s-is-sup : is-sup (underlying-order 𝓓) s α
+  s-is-sup = sup-reindexed-family 𝓓 ρ α s (∐-is-sup 𝓓 δ)
+
+\end{code}
+
+Added 18th Feb 2024 by Martin Escardo. Subdcpo induced by a subset /
+property.
+
+\begin{code}
+
+is-closed-under-directed-sups : (𝓓 : DCPO {𝓤} {𝓣})
+                              → (⟨ 𝓓 ⟩ → 𝓦 ̇ )
+                              → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦 ̇
+is-closed-under-directed-sups {𝓤} {𝓣} 𝓓 P =
+    {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+  → ((i : I) → P (α i))
+  → P (∐ 𝓓 δ)
+
+open import UF.Sets-Properties
+
+module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+         (P : ⟨ 𝓓 ⟩ → 𝓦 ̇ )
+         (P-is-prop-valued : (x : ⟨ 𝓓 ⟩) → is-prop (P x))
+         (P-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 P)
+       where
+
+ subdcpo : DCPO {𝓤 ⊔ 𝓦} {𝓣}
+ subdcpo =
+  (Σ x ꞉ ⟨ 𝓓 ⟩ , P x) ,
+  (λ (x , _) (y , _) → x ⊑⟨ 𝓓 ⟩ y) ,
+  (subsets-of-sets-are-sets ⟨ 𝓓 ⟩ P (sethood 𝓓) (P-is-prop-valued _) ,
+   (λ _ _ → prop-valuedness 𝓓 _ _) ,
+   (λ _ → reflexivity 𝓓 _) ,
+   (λ (x , _) (y , _) (z , _) → transitivity 𝓓 x y z) ,
+   (λ (x , _) (y , _) l m → to-subtype-＝
+                             P-is-prop-valued
+                             (antisymmetry 𝓓 x y l m))) ,
+  (λ I α δ → (∐ 𝓓 {I} {pr₁ ∘ α} δ ,
+              P-is-closed-under-directed-sups (pr₁ ∘ α) δ (pr₂ ∘ α)) ,
+             ∐-is-upperbound 𝓓 δ ,
+             (λ (x , _) → ∐-is-lowerbound-of-upperbounds 𝓓 δ x))
+
+ subdcpo-inclusion : ⟨ subdcpo ⟩ → ⟨ 𝓓 ⟩
+ subdcpo-inclusion = pr₁
+
+ subdcpo-satisfies-property : (σ : ⟨ subdcpo ⟩) → P (subdcpo-inclusion σ)
+ subdcpo-satisfies-property = pr₂
+
+open import UF.SubtypeClassifier
+
+is-closed-under-directed-supsₚ : (𝓓 : DCPO {𝓤} {𝓣})
+                               → (⟨ 𝓓 ⟩ → Ω 𝓦)
+                               → Ω (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦)
+is-closed-under-directed-supsₚ {𝓤} {𝓣} 𝓓 P =
+ is-closed-under-directed-sups 𝓓 (λ x → P x holds) ,
+ implicit-Π-is-prop fe (λ I → Π₃-is-prop fe (λ α δ c → holds-is-prop (P (∐ 𝓓 δ))))
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (P : ⟨ 𝓓 ⟩ → Ω 𝓦)
+        (P-is-closed-under-directed-supsₚ : is-closed-under-directed-supsₚ 𝓓 P holds)
+       where
+
+ subdcpoₚ : DCPO {𝓤 ⊔ 𝓦} {𝓣}
+ subdcpoₚ = subdcpo 𝓓
+            (λ x → P x holds)
+            (λ x → holds-is-prop (P x))
+            P-is-closed-under-directed-supsₚ
 
 \end{code}

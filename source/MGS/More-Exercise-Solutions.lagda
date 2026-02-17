@@ -5,7 +5,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.More-Exercise-Solutions where
 
@@ -52,7 +52,7 @@ module ℕ-more where
                        (≤-gives-≼ x y) (≼-gives-≤ x y)
 
 the-subsingletons-are-the-subtypes-of-a-singleton : (X : 𝓤 ̇ )
-                                                  → is-subsingleton X ⇔ (X ↪ 𝟙)
+                                                  → is-subsingleton X ↔ (X ↪ 𝟙)
 the-subsingletons-are-the-subtypes-of-a-singleton X = φ , ψ
  where
   i : is-subsingleton X → is-embedding (!𝟙' X)
@@ -81,7 +81,7 @@ the-subsingletons-are-the-subtypes-of-a-singleton' : propext 𝓤 → global-dfu
                                                    → is-subsingleton X ＝ (X ↪ 𝟙)
 the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
  where
-  a : is-subsingleton X ⇔ (X ↪ 𝟙)
+  a : is-subsingleton X ↔ (X ↪ 𝟙)
   a = the-subsingletons-are-the-subtypes-of-a-singleton X
 
   b : is-subsingleton (X ↪ 𝟙)
@@ -187,7 +187,7 @@ DNE-gives-EM : dfunext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 EM-gives-DNE : EM 𝓤 → DNE 𝓤
 
 SN : ∀ 𝓤 → 𝓤 ⁺ ̇
-SN 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → Σ X ꞉ 𝓤 ̇ , P ⇔ ¬ X
+SN 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → Σ X ꞉ 𝓤 ̇ , P ↔ ¬ X
 
 SN-gives-DNE : SN 𝓤 → DNE 𝓤
 

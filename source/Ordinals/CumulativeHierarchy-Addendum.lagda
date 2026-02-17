@@ -45,7 +45,7 @@ is equivalent to the image of f : A → 𝕍 (with A : 𝓤), which is a small t
 to equivalence thanks to the fact that 𝕍 is locally small.
 
 (This general fact on small images of maps into locally small sets is recorded
-in the module set-replacement-construction in the file UF/Quotient.lagda.)
+in the module set-replacement-construction in the file Quotient.GivesSetReplacement.)
 
 Specifically, the image of f is equivalent to the set quotient A/~ where ~
 relates two elements if f identifies them. We then prove that
@@ -64,7 +64,7 @@ because the type (Σ y ꞉ 𝕍 , y ∈ x) of elements contained in x is a large
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 
@@ -77,15 +77,18 @@ module Ordinals.CumulativeHierarchy-Addendum
         (𝓤 : Universe)
        where
 
+open import Quotient.Type hiding (is-prop-valued)
+open import Quotient.GivesSetReplacement
+
 open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.ImageAndSurjection pt
 open import UF.Size
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Quotient hiding (is-prop-valued)
 open import UF.UA-FunExt
 
 open PropositionalTruncation pt
@@ -172,7 +175,7 @@ ordinal x is a (large) type theoretic ordinal when ordered by membership.
       h : (y : 𝕍)
         → ((u : 𝕍) → u ∈ y → (m : u ∈ x) → is-accessible _∈ₓ_ (u , m))
         → (m : y ∈ x) → is-accessible _∈ₓ_ (y , m)
-      h y IH m = step (λ (u , u-in-x) u-in-y → IH u u-in-y u-in-x)
+      h y IH m = acc (λ (u , u-in-x) u-in-y → IH u u-in-y u-in-x)
 
   𝕋xᵒʳᵈ : Ordinal (𝓤 ⁺)
   𝕋xᵒʳᵈ = 𝕋x , _∈ₓ_ , ∈ₓ-is-prop-valued , ∈ₓ-is-well-founded
@@ -225,7 +228,7 @@ because y ∈ 𝕍-set f if and only if y is in the image of f.
    x = 𝕍-set f
 
   open total-space-of-an-element-of-𝕍 x σ
-  open set-quotients-exist sq
+  open general-set-quotients-exist sq
 
   𝕋x-≃-image-f : 𝕋x ≃ image f
   𝕋x-≃-image-f = Σ-cong h
@@ -280,7 +283,7 @@ equivalent to a large one. We do *not* use resizing axioms.
          (f : A → 𝕍)
         where
 
-  open set-quotients-exist sq
+  open general-set-quotients-exist sq
   open extending-relations-to-quotient fe pe
 
   _~_ : A → A → 𝓤 ⁺ ̇
@@ -304,7 +307,7 @@ equivalent to a large one. We do *not* use resizing axioms.
     ρ : {a b a' b' : A}
       → a ~ a' → b ~ b' → f a ∈[Ω] f b ＝ f a' ∈[Ω] f b'
     ρ {a} {b} {a'} {b'} e e' =
-     Ω-extensionality fe pe (transport₂ _∈_ e e')
+     Ω-extensionality pe fe (transport₂ _∈_ e e')
                             (transport₂ _∈_ (e ⁻¹) (e' ⁻¹))
 
   _≺_ : A/~ → A/~ → 𝓤 ⁺ ̇
@@ -364,7 +367,7 @@ equivalent to a large one. We do *not* use resizing axioms.
            h (c , refl) = ≺-to-∈ (t [ c ] (∈-to-≺ m))
 
   ≺-is-well-founded : is-well-founded _≺_
-  ≺-is-well-founded = /-induction ~EqRel acc-is-prop acc
+  ≺-is-well-founded = /-induction ~EqRel acc-is-prop acc''
    where
     acc-is-prop : (x : A/~) → is-prop (is-accessible _≺_ x)
     acc-is-prop = accessibility-is-prop _≺_ fe'
@@ -375,12 +378,12 @@ equivalent to a large one. We do *not* use resizing axioms.
         → ((y : 𝕍) → y ∈ x → (a : A) → f a ＝ y → is-accessible _≺_ [ a ])
         → (a : A) → f a ＝ x → is-accessible _≺_ [ a ]
       h x IH a refl =
-       step (/-induction ~EqRel (λ _ → Π-is-prop fe (λ _ → acc-is-prop _)) α)
+       acc (/-induction ~EqRel (λ _ → Π-is-prop fe (λ _ → acc-is-prop _)) α)
         where
          α : (b : A) → [ b ] ≺ [ a ] → is-accessible _≺_ [ b ]
          α b m = IH (f b) (≺-to-∈ m) b refl
-    acc : (a : A) → is-accessible _≺_ [ a ]
-    acc a = acc' (f a) a refl
+    acc'' : (a : A) → is-accessible _≺_ [ a ]
+    acc'' a = acc' (f a) a refl
 
   module quotient-as-ordinal
           (σ : is-set-theoretic-ordinal (𝕍-set f))

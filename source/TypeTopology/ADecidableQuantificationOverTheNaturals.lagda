@@ -1,31 +1,34 @@
 Chuangjie Xu, 2012.
 
 This is an Agda formalization of Theorem 8.2 of the extended version
-of Escardo's paper "Infinite sets that satisfy the principle of
-omniscience in all varieties of constructive mathematics", Journal of
-Symbolic Logic, volume 78, number 3, September 2013, pages 764-784.
+of [1].
 
 The theorem says that, for any p : ℕ∞ → 𝟚, the proposition
 (n : ℕ) → p (ι n) ＝ ₁ is decidable where ι : ℕ → ∞ is the inclusion.
 
+[1] Martin Escardo. Infinite sets that satisfy the principle of
+    omniscience in all varieties of constructive mathematics, Journal
+    of Symbolic Logic, volume 78, number 3, September 2013, pages
+    764-784.
+
+    https://doi.org/10.2178/jsl.7803040
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
 
 module TypeTopology.ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀ 𝓤₀) where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
-open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.GenericConvergentSequenceCompactness fe
-open import UF.PropTrunc
+open import UF.DiscreteAndSeparated
 
 Lemma-8·1 : (p : ℕ∞ → 𝟚) → (Σ x ꞉ ℕ∞ , (x ≠ ∞) × (p x ＝ ₀))
                          + ((n : ℕ) → p (ι n) ＝ ₁)
@@ -89,19 +92,26 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
     q = pr₁ f
 
     g : (Σ y ꞉ ℕ∞ , q y ＝ ₀) + ((y : ℕ∞) → q y ＝ ₁)
-     → (Σ y ꞉ ℕ∞ , p y ≠ p (Succ y)) + ((y : ℕ∞) → p y ＝ p (Succ y))
+      → (Σ y ꞉ ℕ∞ , p y ≠ p (Succ y)) + ((y : ℕ∞) → p y ＝ p (Succ y))
     g (inl (y , r)) = inl (y , (pr₁ (pr₂ f y) r))
     g (inr h ) = inr (λ y → discrete-is-¬¬-separated
                              𝟚-is-discrete
                              (p y) (p (Succ y))
                              (pr₂ (pr₂ f y) (h y)))
 
+\end{code}
+
+TODO. The name of the following fact is that of the reference [1]
+above. It deserves a better name, or at least a better synonym.
+
+\begin{code}
+
 abstract
- Theorem-8·2 : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p (ι n) ＝ ₁)
+ Theorem-8·2 : (p : ℕ∞ → 𝟚) → is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
  Theorem-8·2 p = cases claim₀ claim₁ (Lemma-8·1 p)
   where
-   claim₀ : (Σ x ꞉ ℕ∞ , (x ≠ ∞) × (p x ＝ ₀)) →
-             decidable ((n : ℕ) → p (ι n) ＝ ₁)
+   claim₀ : (Σ x ꞉ ℕ∞ , (x ≠ ∞) × (p x ＝ ₀))
+          → is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
    claim₀ e = inr c₁
     where
      x : ℕ∞
@@ -116,7 +126,7 @@ abstract
        d : (n : ℕ) → x ≠ ι n
        d n r = equal-₀-different-from-₁ (pr₂ (pr₂ e)) (ap p r ∙ g n)
 
-   claim₁ : ((n : ℕ) → p (ι n) ＝ ₁) → decidable ((n : ℕ) → p (ι n) ＝ ₁)
+   claim₁ : ((n : ℕ) → p (ι n) ＝ ₁) → is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
    claim₁ f = inl f
 
 \end{code}
@@ -127,7 +137,7 @@ Some examples:
 
 module examples where
 
-    to-ℕ : {A : 𝓤 ̇ } → decidable A → ℕ
+    to-ℕ : {A : 𝓤 ̇ } → is-decidable A → ℕ
     to-ℕ (inl _) = 0
     to-ℕ (inr _) = 1
 
@@ -181,7 +191,8 @@ module examples where
     p₄ : ℕ∞ → 𝟚
     p₄ (α , _) = α 5 == α 100
 
-    to-something : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p (ι n) ＝ ₁) → (p (ι 17) ＝ ₁) + ℕ
+    to-something : (p : ℕ∞ → 𝟚)
+                 → is-decidable ((n : ℕ) → p (ι n) ＝ ₁) → (p (ι 17) ＝ ₁) + ℕ
     to-something p (inl f) = inl (f 17)
     to-something p (inr _) = inr 1070
 
@@ -192,3 +203,33 @@ module examples where
 
     Despite the fact that we use function extensionality, eval pi
     evaluates to a numeral for i=0,...,4.
+
+
+Added by Martin Escardo 5th September 2024. The following version is
+more convenient in practice.
+
+\begin{code}
+
+
+abstract
+ Theorem-8·2' : (A : ℕ∞ → 𝓤 ̇ )
+              → is-complemented A
+              → is-decidable ((n : ℕ) → A (ι n))
+ Theorem-8·2' {𝓤} A δ = IV
+  where
+   p : ℕ∞ → 𝟚
+   p = complement ∘ characteristic-map A δ
+
+   I : is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
+   I = Theorem-8·2 p
+
+   II : ((n : ℕ) → p (ι n) ＝ ₁) → (n : ℕ) → A (ι n)
+   II b n = characteristic-map-property₀ A δ (ι n) (complement₁ (b n))
+
+   III : ((n : ℕ) → A (ι n)) → (n : ℕ) → p (ι n) ＝ ₁
+   III a n = complement₁-back (characteristic-map-property₀-back A δ (ι n) (a n))
+
+   IV : is-decidable ((n : ℕ) → A (ι n))
+   IV = map-decidable II III I
+
+\end{code}

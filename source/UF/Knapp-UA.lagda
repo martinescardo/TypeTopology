@@ -11,14 +11,12 @@ the univalence of the universe U, namely
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Knapp-UA where
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.Univalence
@@ -134,11 +132,11 @@ knapps-funext-criterion {𝓤} H D {𝓥} {X} {Y} {f₁} {f₂} h = γ
   π₁-equals-π₂ {X} = isPIE-lc (λ(g : Δ X → X) → g ∘ δ) (preComp-isPIE (δ , D)) (πδ X)
 
   γ : f₁ ＝ f₂
-  γ = f₁                               ＝⟨ refl ⟩
-      (λ x → f₁ x)                     ＝⟨ refl ⟩
+  γ = f₁                               ＝⟨refl⟩
+      (λ x → f₁ x)                     ＝⟨refl⟩
       (λ x → π₁ (f₁ x , f₂ x , h x))   ＝⟨ ap (λ π x → π (f₁ x , f₂ x , h x)) π₁-equals-π₂ ⟩
-      (λ x → π₂ (f₁ x , f₂ x , h x))   ＝⟨ refl ⟩
-      (λ x → f₂ x)                     ＝⟨ refl ⟩
+      (λ x → π₂ (f₁ x , f₂ x , h x))   ＝⟨refl⟩
+      (λ x → f₂ x)                     ＝⟨refl⟩
       f₂                               ∎
 
 knapps-funext-Criterion :
@@ -202,7 +200,7 @@ see from the proof, we can replace qinv by is-equiv:
 
 UA-characterization :
                      ((X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → fiber (transport id) f)
-                   ⇔ is-univalent 𝓤
+                   ↔ is-univalent 𝓤
 UA-characterization {𝓤} = (forth , back)
  where
   forth : ((X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → Σ p ꞉ X ＝ Y , transport id p ＝ f) → is-univalent 𝓤

@@ -35,12 +35,12 @@ On 22/07/18 06:17, Michael Shulman wrote:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
 open import UF.FunExt
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Subsingletons
 
 module Ordinals.ShulmanTaboo
        (fe : FunExt)
@@ -53,8 +53,9 @@ open import Ordinals.Notions
 open import Ordinals.Underlying
 
 open import UF.Base
+open import UF.ClassicalLogic
+open import UF.SubtypeClassifier
 open import UF.Subsingletons-FunExt
-open import UF.ExcludedMiddle
 
 fe₀ : funext 𝓤₀ 𝓤₀
 fe₀ = fe 𝓤₀ 𝓤₀
@@ -116,7 +117,7 @@ shulmans-taboo e = DNE-gives-EM fe₀ δ
 
 \end{code}
 
-TODO: Use this to show that if the sum of any ordinal-indexed family
+TODO. Use this to show that if the sum of any ordinal-indexed family
 of ordinals is an ordinal under the lexicographic ordering, then
 excluded middle holds, as explained in the message quoted
 above. (Routine, tedious.)

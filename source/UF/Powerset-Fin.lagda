@@ -1,11 +1,11 @@
 Tom de Jong, 24 January 2022
 (Based on code from FreeJoinSemiLattice.lagda written 18-24 December 2020.)
 
-TODO: Comment
+TODO. Comment.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -22,7 +22,8 @@ open import Fin.Type
 open import Fin.Kuratowski pt
 
 open import MLTT.List
-open import Posets.JoinSemiLattices
+open import Notation.UnderlyingType
+open import OrderedTypes.JoinSemiLattices
 
 open import UF.Base
 open import UF.Equiv
@@ -31,8 +32,9 @@ open import UF.FunExt
 open import UF.Lower-FunExt
 open import UF.ImageAndSurjection pt
 open import UF.Powerset
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 open binary-unions-of-subsets pt
 
@@ -49,7 +51,7 @@ is-Kuratowski-finite-subset A = is-Kuratowski-finite (𝕋 A)
   σ (x , x-in-emptyset) = 𝟘-elim x-in-emptyset
 
 module _
-        {X : 𝓤 ̇  }
+        {X : 𝓤 ̇ }
         (X-is-set : is-set X)
        where
 
@@ -66,7 +68,7 @@ module _
 
 \end{code}
 
-We proceed by that Kuratowski finite subsets are closed under binary unions.
+We proceed to show that Kuratowski finite subsets are closed under binary unions.
 
 \begin{code}
 
@@ -149,15 +151,16 @@ FreeJoinSemiLattice.lagda.)
 
 \begin{code}
 
-𝓚 : (X : 𝓤 ̇  ) → 𝓤 ⁺ ̇
+𝓚 : (X : 𝓤 ̇ ) → 𝓤 ⁺ ̇
 𝓚 X = Σ A ꞉ 𝓟 X , is-Kuratowski-finite-subset A
 
 module _
-        {X : 𝓤 ̇  }
+        {X : 𝓤 ̇ }
        where
 
- ⟨_⟩ : 𝓚 X → 𝓟 X
- ⟨_⟩ = pr₁
+ instance
+  underlying-type-of-𝓚 : Underlying-Type (𝓚 X) (𝓟 X)
+  ⟨_⟩ {{underlying-type-of-𝓚}} (A , _) = A
 
  ⟨_⟩₂ : (A : 𝓚 X) → is-Kuratowski-finite-subset ⟨ A ⟩
  ⟨_⟩₂ = pr₂
@@ -234,7 +237,7 @@ We are now ready to prove that the Kuratowski finite subsets are a join-semilatt
 module _
         (pe : propext 𝓤)
         (fe : funext 𝓤 (𝓤 ⁺))
-        (X : 𝓤 ̇  )
+        (X : 𝓤 ̇ )
        where
 
  𝓚-join-semilattice : JoinSemiLattice (𝓤 ⁺) 𝓤
@@ -252,7 +255,7 @@ module _
    ∨-is-upperbound₁               = ∪[𝓚]-is-upperbound₁;
    ∨-is-upperbound₂               = ∪[𝓚]-is-upperbound₂;
    ∨-is-lowerbound-of-upperbounds = ∪[𝓚]-is-lowerbound-of-upperbounds
-  }
+   }
 
 \end{code}
 
@@ -295,7 +298,7 @@ proving a general induction principle for Kuratowski finite subsets.
         ν k x refl = 𝕋-to-membership ⟨ A ⟩ (e k)
 
   Kuratowski-finite-subset-induction :
-     (Q : 𝓚 X → 𝓣 ̇  )
+     (Q : 𝓚 X → 𝓣 ̇ )
    → ((A : 𝓚 X) → is-prop (Q A))
    → Q (∅[𝓚])
    → ((x : X) → Q (❴ x ❵[𝓚]))
@@ -329,7 +332,7 @@ that its image is exactly the type of Kuratowski finite powersets of X.
 \begin{code}
 
 module canonical-map-from-lists-to-subsets
-        {X : 𝓤 ̇  }
+        {X : 𝓤 ̇ }
         (X-is-set : is-set X)
        where
 

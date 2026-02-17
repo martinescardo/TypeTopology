@@ -9,9 +9,14 @@ verbally to me.
 The preunivalence axiom is a common generalization of the univalence
 axiom and the K axiom.
 
+The strong preunivalence axiom is a variant that was stated by Fredrik Bakke
+in the agda-unimath in February 2025 [2].
+
+[2] https://unimath.github.io/agda-unimath/foundation.strong-preunivalence.html
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.PreUnivalence where
 
@@ -19,6 +24,11 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.Equiv-FunExt
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Retracts
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.Univalence
 
@@ -41,9 +51,61 @@ K-gives-preunivalence : K-axiom 𝓤
                       → K-axiom (𝓤 ⁺)
                       → is-preunivalent 𝓤
 K-gives-preunivalence {𝓤} k k' X Y e (p , _) (p' , _) =
- to-subtype-＝ (λ _ → k (X ≃ Y)) (k' (𝓤  ̇ )p p')
+ to-subtype-＝ (λ _ → k (X ≃ Y)) (k' (𝓤 ̇ )p p')
 
 K-gives-Preunivalence : K-Axiom → Preunivalence
 K-gives-Preunivalence k 𝓤 = K-gives-preunivalence (k 𝓤) (k (𝓤 ⁺))
+
+\end{code}
+
+Added by Evan Cavallo on 13th March 2025. The strong preunivalence axiom and the
+fact that it implies the preunivalence axiom are due to Fredrik Bakke.
+
+\begin{code}
+
+is-strong-preunivalent : ∀ 𝓤 𝓥 → Set (𝓤 ⁺ ⊔ 𝓥 ⁺)
+is-strong-preunivalent 𝓤 𝓥 = (X : 𝓤 ̇ ) → is-set (Σ Y ꞉ 𝓥 ̇  , X ≃ Y)
+
+strong-preunivalence-gives-preunivalence : is-strong-preunivalent 𝓤 𝓤
+                                         → is-preunivalent 𝓤
+strong-preunivalence-gives-preunivalence spua X =
+ NatΣ-is-embedding-converse (X ＝_) (X ≃_) (idtoeq X)
+  (maps-of-props-into-sets-are-embeddings
+   (NatΣ (idtoeq X))
+    (singleton-types-are-props X)
+     (spua X))
+
+funext-and-preunivalence-give-strong-preunivalence : funext 𝓤 𝓤
+                                                   → funext 𝓥 𝓤
+                                                   → funext 𝓥 𝓥
+                                                   → is-preunivalent 𝓥
+                                                   → is-strong-preunivalent 𝓤 𝓥
+funext-and-preunivalence-give-strong-preunivalence
+ {𝓤} {𝓥} feuu fevu fevv preua X {Y , α} {Y' , α'} =
+ retract-of-prop
+  (to-Σ-＝ , from-Σ-＝ , tofrom-Σ-＝)
+   (equiv-to-prop
+    (Σ-cong λ p →
+     (_ , ∙-is-equiv-left (transport-eq p)) ● shift-equiv α (idtoeq _ _ p) α')
+    (preua _ _ (≃-sym α ● α')))
+ where
+  transport-eq : (p : Y ＝ Y') → α ● idtoeq Y Y' p ＝ transport (X ≃_) p α
+  transport-eq refl = ≃-refl-right' fevu fevv feuu α
+
+  shift-equiv : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓥 ̇ }
+              → (e : A ≃ B) (e' : B ≃ C) (e'' : A ≃ C)
+              → (e ● e' ＝ e'') ≃ (e' ＝ ≃-sym e ● e'')
+  shift-equiv e e' e'' =
+   (e ● e' ＝ e'')
+    ≃⟨ _ , ap-is-equiv (≃-sym e ●_) (pr₂ q) ⟩
+   (≃-sym e ● (e ● e') ＝ ≃-sym e ● e'')
+    ≃⟨ ＝-cong-l _ _ (≃-assoc' fevv fevv fevv (≃-sym e) e e') ⟩
+   ((≃-sym e ● e) ● e' ＝ ≃-sym e ● e'')
+    ≃⟨ ＝-cong-l _ _ (ap (_● e') (≃-sym-left-inverse' fevv e)) ⟩
+   (≃-refl _ ● e' ＝ ≃-sym e ● e'')
+    ≃⟨ ＝-cong-l _ _ (≃-refl-left' fevv fevv fevv e') ⟩
+   (e' ＝ ≃-sym e ● e'') ■
+   where
+    q = ≃-cong-left' fevu fevv feuu fevv fevv e
 
 \end{code}

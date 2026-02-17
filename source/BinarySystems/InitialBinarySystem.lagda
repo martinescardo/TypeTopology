@@ -19,11 +19,13 @@ quotients - it just happens to have the quotient we want.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module BinarySystems.InitialBinarySystem where
 
 open import MLTT.Spartan
+open import UF.Sets-Properties
+open import UF.Subsingletons-Properties
 
 data 𝔹 : 𝓤₀ ̇ where
  L R : 𝔹
@@ -267,7 +269,10 @@ first universe 𝓤₀.
 
 \begin{code}
 
-open import UF.Subsingletons hiding (center) renaming (⊥Ω to ⊥ ; ⊤Ω to ⊤)
+open import UF.Hedberg
+open import UF.Sets
+open import UF.SubtypeClassifier
+open import UF.Subsingletons hiding (center)
 
 χ : 𝔹 → 𝔹 → Ω₀
 χ L    L      = ⊤
@@ -854,7 +859,7 @@ wprimrec-primitive-recursive : {A : 𝓤 ̇ } (a b : A) (f g : 𝕄 → A → A)
                              → is-wprimrec f g h → primitive-recursive a b f g h
 wprimrec-primitive-recursive a b f g h (fixa , fixb) (hl , hr) = (hL , hR , hl , hr)
  where
-  hL' = h Left          ＝⟨ refl ⟩
+  hL' = h Left          ＝⟨refl⟩
         h (left Left)   ＝⟨ hl Left ⟩
         f Left (h Left) ∎
 
@@ -1146,7 +1151,6 @@ We now need to assume function extensionality.
 
 open import UF.Base
 open import UF.FunExt
-open import UF.Subsingletons-FunExt
 
 module _ (fe  : Fun-Ext) where
 
@@ -1244,9 +1248,9 @@ module _ (fe  : Fun-Ext) where
                × (left x ⊕ right y ＝ center (x ⊕ y))
  mid-is-hom-l' x y = u , v , w , t
   where
-   α = λ y → left x ⊕ y           ＝⟨ refl ⟩
+   α = λ y → left x ⊕ y           ＝⟨refl⟩
              pr₁ (mid (left x)) y ＝⟨ happly (ap pr₁ (mid-is-hom-l x)) y ⟩
-             pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y   ＝⟨ refl ⟩
+             pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y   ＝⟨refl⟩
              𝕄𝕄-cases (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (pr₁ (⊕-property x)) y ∎
 
    u = α Left      ∙ 𝕄-cases-L (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x))
@@ -1264,9 +1268,9 @@ module _ (fe  : Fun-Ext) where
                × (right x ⊕ right y ＝ right  (x ⊕ y))
  mid-is-hom-r' x y = u , v , w , t
   where
-   α = λ y → right x ⊕ y           ＝⟨ refl ⟩
+   α = λ y → right x ⊕ y           ＝⟨refl⟩
              pr₁ (mid (right x)) y ＝⟨ happly (ap pr₁ (mid-is-hom-r x)) y ⟩
-             pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y   ＝⟨ refl ⟩
+             pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y   ＝⟨refl⟩
              𝕄𝕄-cases (center ∘ (x ⊕_)) (right ∘ (x ⊕_)) (pr₂ (⊕-property x)) y ∎
 
    u = α Right ∙ 𝕄-cases-R (center ∘ (x ⊕_)) (right ∘ (x ⊕_)) (𝕄-is-set , pr₂ (⊕-property x))

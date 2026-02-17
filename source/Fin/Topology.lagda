@@ -7,27 +7,25 @@ using the corresponding properties for (finite) types.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Fin.Topology where
-
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
 
 open import Fin.Bishop
 open import Fin.Properties
 open import Fin.Type
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.SpartanList
-open import Notation.Order
 open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.Miscelanea
-open import UF.PropTrunc
-open import UF.ExcludedMiddle
-open import UF.FunExt
 open import UF.EquivalenceExamples
+open import UF.ClassicalLogic
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Sets
+open import UF.SubtypeClassifier
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 \end{code}
@@ -37,7 +35,7 @@ Recall that a type is discrete if it has decidable equality.
 \begin{code}
 
 Fin-is-discrete : {n : ℕ} → is-discrete (Fin n)
-Fin-is-discrete {0     } = 𝟘-is-discrete
+Fin-is-discrete {0    } = 𝟘-is-discrete
 Fin-is-discrete {succ n} = +-is-discrete (Fin-is-discrete {n}) 𝟙-is-discrete
 
 Fin-is-set : {n : ℕ} → is-set (Fin n)
@@ -49,16 +47,16 @@ The type Fin n is compact, or exhaustively searchable.
 
 \begin{code}
 
-Fin-Compact : {n : ℕ} → Compact (Fin n) {𝓤}
-Fin-Compact {𝓤} {0}      = 𝟘-Compact
-Fin-Compact {𝓤} {succ n} = +-Compact (Fin-Compact {𝓤} {n}) 𝟙-Compact
+Fin-Compact : {n : ℕ} → is-Compact (Fin n) {𝓤}
+Fin-Compact {𝓤} {0}      = 𝟘-is-Compact
+Fin-Compact {𝓤} {succ n} = +-is-Compact (Fin-Compact {𝓤} {n}) 𝟙-is-Compact
 
 
-Fin-Π-Compact : (n : ℕ) → Π-Compact (Fin n) {𝓤}
-Fin-Π-Compact n = Σ-Compact-gives-Π-Compact (Fin n) Fin-Compact
+Fin-Π-Compact : (n : ℕ) → is-Π-Compact (Fin n) {𝓤}
+Fin-Π-Compact n = Σ-Compact-types-are-Π-Compact (Fin n) Fin-Compact
 
 
-Fin-Compact∙ : (n : ℕ) → Compact∙ (Fin (succ n)) {𝓤}
+Fin-Compact∙ : (n : ℕ) → is-Compact∙ (Fin (succ n)) {𝓤}
 Fin-Compact∙ n = Compact-pointed-gives-Compact∙ Fin-Compact 𝟎
 
 \end{code}
@@ -73,18 +71,18 @@ If the type X i is compact for every i : Fin n, then the product type
 
 
 finite-product-compact : (n : ℕ) (X : Fin n → 𝓤 ̇ )
-                       → ((i : Fin n) → Compact (X i) {𝓤})
-                       → Compact (vec n X) {𝓤}
+                       → ((i : Fin n) → is-Compact (X i) {𝓤})
+                       → is-Compact (vec n X) {𝓤}
 
-finite-product-compact zero     X c = 𝟙-Compact
-finite-product-compact (succ n) X c = ×-Compact
+finite-product-compact zero     X c = 𝟙-is-Compact
+finite-product-compact (succ n) X c = ×-is-Compact
                                        (c 𝟎)
                                        (finite-product-compact n (X ∘ suc) (c ∘ suc))
 
 finitely-indexed-product-compact : funext 𝓤₀ 𝓤
                                  → (n : ℕ) (X : Fin n → 𝓤 ̇ )
-                                 → ((i : Fin n) → Compact (X i))
-                                 → Compact ((i : Fin n) → X i)
+                                 → ((i : Fin n) → is-Compact (X i))
+                                 → is-Compact ((i : Fin n) → X i)
 
 finitely-indexed-product-compact fe n X c = Compact-closed-under-≃
                                             (vec-≃ fe n)
@@ -102,11 +100,11 @@ module _ (pt : propositional-truncations-exist) where
  open CompactTypesPT pt
  open finiteness pt
 
- finite-∥Compact∥ : {X : 𝓤 ̇ } → is-finite X → ∥ Compact X {𝓥} ∥
+ finite-∥Compact∥ : {X : 𝓤 ̇ } → is-finite X → ∥ is-Compact X {𝓥} ∥
  finite-∥Compact∥ {𝓤} {𝓥} {X} (n , α) =
   ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) Fin-Compact) α
 
- finite-types-are-∃-Compact : Fun-Ext → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X {𝓥}
+ finite-types-are-∃-Compact : Fun-Ext → {X : 𝓤 ̇ } → is-finite X → is-∃-Compact X {𝓥}
  finite-types-are-∃-Compact fe φ = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ φ)
 
 \end{code}
@@ -128,14 +126,14 @@ Finite types are discrete and hence sets:
                                     → {P : 𝓤 ̇ }
                                     → is-prop P
                                     → is-finite P
-                                    → decidable P
+                                    → is-decidable P
  finite-propositions-are-decidable' fe i j =
   ∃-Compact-propositions-are-decidable i (finite-types-are-∃-Compact fe j)
 
  finite-propositions-are-decidable : {P : 𝓤 ̇ }
                                    → is-prop P
                                    → is-finite P
-                                   → decidable P
+                                   → is-decidable P
  finite-propositions-are-decidable {𝓤} {P} i (0 , s) = inr γ
   where
    γ : P → 𝟘

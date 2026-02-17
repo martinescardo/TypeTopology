@@ -1,0 +1,49 @@
+name: Update file and line count
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'source/**/*.agda'
+      - 'source/**/*.lagda'
+      - '!source/index.lagda'
+
+jobs:
+  update-count:
+    if: github.repository == 'martinescardo/TypeTopology'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+
+      - name: Check if bot committed in last 6 hours
+        id: check-recent
+        run: |
+          LAST_BOT_COMMIT=$(git log --author="github-actions\[bot\]" --since="6 hours ago" --oneline | head -1)
+          if [ -n "$LAST_BOT_COMMIT" ]; then
+            echo "File and line count was updated in the last 6 hours: $LAST_BOT_COMMIT"
+            echo "should_skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "No update to file and line count in the last 6 hours. Proceeding to update..."
+            echo "should_skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Compile and run count script
+        if: steps.check-recent.outputs.should_skip != 'true'
+        run: |
+          ghc -O3 admin-utilities/CountAgdaFilesAndLines.hs -o count_agda_files_and_lines
+          ./count_agda_files_and_lines
+          rm source/index.lagda
+          mv source/index-updated.lagda source/index.lagda
+
+      - name: Commit and push if changed
+        if: steps.check-recent.outputs.should_skip != 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update Agda file and line count"
+          file_pattern: "source/index.lagda"

@@ -2,20 +2,19 @@ Martin Escardo, January 2018, May 2020
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Dominance.Decidable where
 
 open import Dominance.Definition
 open import MLTT.Spartan
-open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 decidable-dominance : Fun-Ext → Dominance {𝓤} {𝓤}
-decidable-dominance fe = (λ P → is-prop P × decidable P) ,
+decidable-dominance fe = (λ P → is-prop P × is-decidable P) ,
                          (λ P → Σ-is-prop
                                    (being-prop-is-prop fe)
                                    (decidability-of-prop-is-prop fe)) ,

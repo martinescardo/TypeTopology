@@ -2,21 +2,23 @@ Martin Escardo, started 5th May 2018
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Naturals.Order where
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_^_)
 
-open import Ordinals.Notions
-open import UF.Subsingletons
 open import Naturals.Addition renaming (_+_ to _+'_)
+open import Naturals.AbsoluteDifference
 open import Naturals.Properties
 open import Notation.Order
+open import Ordinals.Notions
+open import UF.DiscreteAndSeparated
+open import UF.Subsingletons
 
 _≤ℕ_ : ℕ → ℕ → 𝓤₀ ̇
-zero ≤ℕ n        = 𝟙
-succ m ≤ℕ zero   = 𝟘
+0    ≤ℕ n        = 𝟙
+succ m ≤ℕ 0      = 𝟘
 succ m ≤ℕ succ n = m ≤ℕ n
 
 instance
@@ -24,42 +26,44 @@ instance
  _≤_ {{Order-ℕ-ℕ}} = _≤ℕ_
 
 ≤-is-prop-valued : (m n : ℕ) → is-prop (m ≤ n)
-≤-is-prop-valued zero     n        = 𝟙-is-prop
-≤-is-prop-valued (succ m) zero     = 𝟘-is-prop
+≤-is-prop-valued 0        n        = 𝟙-is-prop
+≤-is-prop-valued (succ m) 0        = 𝟘-is-prop
 ≤-is-prop-valued (succ m) (succ n) = ≤-is-prop-valued m n
 
 open import UF.Base
-open import UF.Miscelanea
 
 right-addition-is-embedding : (m n : ℕ) → is-prop (Σ k ꞉ ℕ , k +' m ＝ n)
-right-addition-is-embedding zero n (.n , refl) (.n , refl) = refl
-right-addition-is-embedding (succ m) zero (k , p) (k' , p') = 𝟘-elim (positive-not-zero (k +' m) p)
-right-addition-is-embedding (succ m) (succ n) (k , p) (k' , p') = to-Σ-＝ (ap pr₁ IH , ℕ-is-set _ _)
+right-addition-is-embedding 0        n        (n , refl) (n , refl) = refl
+right-addition-is-embedding (succ m) 0        (k , p)    (k' , p')  =
+  𝟘-elim (positive-not-zero (k +' m) p)
+right-addition-is-embedding (succ m) (succ n) (k , p)    (k' , p') =
+ to-Σ-＝ (ap pr₁ IH , ℕ-is-set _ _)
  where
   IH : k , succ-lc p ＝ k' , succ-lc p'
   IH = right-addition-is-embedding m n (k , succ-lc p) (k' , succ-lc p')
 
 subtraction : (m n : ℕ) → m ≤ n → Σ k ꞉ ℕ , k +' m ＝ n
-subtraction zero n l = n , refl
-subtraction (succ m) zero l = 𝟘-elim l
+subtraction 0        n        l = n , refl
+subtraction (succ m) 0        l = 𝟘-elim l
 subtraction (succ m) (succ n) l = pr₁ IH , ap succ (pr₂ IH)
  where
   IH : Σ k ꞉ ℕ , k +' m ＝ n
   IH = subtraction m n l
 
 cosubtraction : (m n : ℕ) → (Σ k ꞉ ℕ , k +' m ＝ n) → m ≤ n
-cosubtraction zero n (.n , refl) = ⋆
-cosubtraction (succ m) zero (k , p) = positive-not-zero (k +' m) p
-cosubtraction (succ m) (succ .(k +' m)) (k , refl) = cosubtraction m (k +' m) (k , refl)
+cosubtraction 0        n                (.n , refl) = ⋆
+cosubtraction (succ m) 0                (k , p) = positive-not-zero (k +' m) p
+cosubtraction (succ m) (succ .(k +' m)) (k , refl) =
+ cosubtraction m (k +' m) (k , refl)
 
-zero-least : (n : ℕ) → zero ≤ n
+zero-least : (n : ℕ) → 0 ≤ n
 zero-least n = ⋆
 
-zero-least' : (n : ℕ) → ¬ (succ n ≤ zero)
+zero-least' : (n : ℕ) → ¬ (succ n ≤ 0)
 zero-least' n l = l
 
-zero-least'' : (n : ℕ) → n ≤ zero → n ＝ zero
-zero-least'' zero l = refl
+zero-least'' : (n : ℕ) → n ≤ 0 → n ＝ 0
+zero-least'' 0 l = refl
 
 succ-monotone : (m n : ℕ) → m ≤ n → succ m ≤ succ n
 succ-monotone m n l = l
@@ -68,43 +72,45 @@ succ-order-injective : (m n : ℕ) → succ m ≤ succ n → m ≤ n
 succ-order-injective m n l = l
 
 ≤-induction : (P : (m n : ℕ) (l : m ≤ n) → 𝓤 ̇ )
-            → ((n : ℕ) → P zero n (zero-least n))
-            → ((m n : ℕ) (l : m ≤ n) → P m n l → P (succ m) (succ n) (succ-monotone m n l))
+            → ((n : ℕ) → P 0 n (zero-least n))
+            → ((m n : ℕ) (l : m ≤ n)
+                    → P m n l
+                    → P (succ m) (succ n) (succ-monotone m n l))
             → (m n : ℕ) (l : m ≤ n) → P m n l
-≤-induction P b f zero n ⋆            = b n
-≤-induction P b f (succ m) zero l     = 𝟘-elim l
+≤-induction P b f 0    n ⋆            = b n
+≤-induction P b f (succ m) 0    l     = 𝟘-elim l
 ≤-induction P b f (succ m) (succ n) l = f m n l (≤-induction P b f m n l)
 
 succ≤＝ : (m n : ℕ) → (succ m ≤ succ n) ＝ (m ≤ n)
 succ≤＝ m n = refl
 
 ≤-refl : (n : ℕ) → n ≤ n
-≤-refl zero     = ⋆
+≤-refl 0        = ⋆
 ≤-refl (succ n) = ≤-refl n
 
 ≤-trans : (l m n : ℕ) → l ≤ m → m ≤ n → l ≤ n
-≤-trans zero m n p q = ⋆
-≤-trans (succ l) zero n p q = 𝟘-elim p
-≤-trans (succ l) (succ m) zero p q = 𝟘-elim q
+≤-trans 0    m n p q = ⋆
+≤-trans (succ l) 0    n p q = 𝟘-elim p
+≤-trans (succ l) (succ m) 0    p q = 𝟘-elim q
 ≤-trans (succ l) (succ m) (succ n) p q = ≤-trans l m n p q
 
 ≤-anti : (m n : ℕ) → m ≤ n → n ≤ m → m ＝ n
-≤-anti zero zero p q = refl
-≤-anti zero (succ n) p q = 𝟘-elim q
-≤-anti (succ m) zero p q = 𝟘-elim p
+≤-anti 0    0    p q = refl
+≤-anti 0    (succ n) p q = 𝟘-elim q
+≤-anti (succ m) 0    p q = 𝟘-elim p
 ≤-anti (succ m) (succ n) p q = ap succ (≤-anti m n p q)
 
 ≤-succ : (n : ℕ) → n ≤ succ n
-≤-succ zero     = ⋆
+≤-succ 0        = ⋆
 ≤-succ (succ n) = ≤-succ n
 
-unique-least : (n : ℕ) → n ≤ zero → n ＝ zero
-unique-least zero l = refl
+unique-least : (n : ℕ) → n ≤ 0 → n ＝ 0
+unique-least 0    l = refl
 unique-least (succ n) l = 𝟘-elim l
 
 ≤-split : (m n : ℕ) → m ≤ succ n → (m ≤ n) + (m ＝ succ n)
-≤-split zero n l = inl l
-≤-split (succ m) zero l = inr (ap succ (unique-least m l))
+≤-split 0    n l = inl l
+≤-split (succ m) 0    l = inr (ap succ (unique-least m l))
 ≤-split (succ m) (succ n) l = cases inl (inr ∘ (ap succ)) (≤-split m n l)
 
 ≤-join : (m n : ℕ) → (m ≤ n) + (m ＝ succ n) → m ≤ succ n
@@ -115,7 +121,7 @@ unique-least (succ n) l = 𝟘-elim l
 ≤-down m n l u = cases id (λ p → 𝟘-elim (u p)) (≤-split m n l)
 
 ≤-+ : (m n : ℕ) → (m ≤ m +' n)
-≤-+ m zero     = ≤-refl m
+≤-+ m 0        = ≤-refl m
 ≤-+ m (succ n) = ≤-join m (m +' n) (inl IH)
  where
   IH : m ≤ m +' n
@@ -138,16 +144,19 @@ instance
 <-succ = ≤-refl
 
 not-less-than-itself : (n : ℕ) → ¬ (n < n)
-not-less-than-itself zero l = l
+not-less-than-itself 0    l = l
 not-less-than-itself (succ n) l = not-less-than-itself n l
 
 not-less-bigger-or-equal : (m n : ℕ) → ¬ (n < m) → n ≥ m
-not-less-bigger-or-equal zero n u = zero-least n
-not-less-bigger-or-equal (succ m) zero = ¬¬-intro (zero-least m)
+not-less-bigger-or-equal 0        n        = λ _ → zero-least n
+not-less-bigger-or-equal (succ m) 0        = ¬¬-intro (zero-least m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
 bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬ (n < m)
-bigger-or-equal-not-less m n l u = not-less-than-itself n (≤-trans (succ n) m n u l)
+bigger-or-equal-not-less m n l u = not-less-than-itself n γ
+ where
+  γ : succ n ≤ n
+  γ = ≤-trans (succ n) m n u l
 
 less-not-bigger-or-equal : (m n : ℕ) → m < n → ¬ (n ≤ m)
 less-not-bigger-or-equal m n l u = bigger-or-equal-not-less n m u l
@@ -181,13 +190,13 @@ Added 20th June 2018:
 <-trans l m n u v = ≤-trans (succ l) m n u (<-coarser-than-≤ m n v)
 
 <-split : (m n : ℕ) → m < succ n → (m < n) + (m ＝ n)
-<-split m zero     l = inr (unique-least m l)
+<-split m 0        l = inr (unique-least m l)
 <-split m (succ n) l = ≤-split m n l
 
 regress : (P : ℕ → 𝓤 ̇ )
         → ((n : ℕ) → P (succ n) → P n)
         → (n m : ℕ) → m ≤ n → P n → P m
-regress P ρ zero m l p = transport⁻¹ P (unique-least m l) p
+regress P ρ 0    m l p = transport⁻¹ P (unique-least m l) p
 regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
                                    (λ (r : m ＝ succ n) → transport⁻¹ P r p)
                                    (≤-split m n l)
@@ -196,8 +205,8 @@ regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
   IH = regress P ρ n
 
 <-is-well-founded : (m : ℕ) → is-accessible _<_ m
-<-is-well-founded zero     = step (λ y l → unique-from-𝟘 l)
-<-is-well-founded (succ m) = step (τ (<-is-well-founded m))
+<-is-well-founded 0        = acc (λ y l → unique-from-𝟘 l)
+<-is-well-founded (succ m) = acc (τ (<-is-well-founded m))
  where
   τ : is-accessible _<_ m → (n : ℕ) → n < succ m → is-accessible _<_ n
   τ a n u = cases (λ (v : n < m) → prev _<_ a n v)
@@ -209,11 +218,48 @@ course-of-values-induction : (P : ℕ → 𝓤 ̇ )
                            → (n : ℕ) → P n
 course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 
+course-of-values-induction-on-value-of-function
+ : {X : 𝓤 ̇ }
+   (f : X → ℕ)
+   (P : X → 𝓥 ̇ )
+ → ((x : X) → ((y : X) → f y < f x → P y) → P x)
+ → (x : X) → P x
+course-of-values-induction-on-value-of-function
+ {𝓤} {𝓥} {X} f P h x = II (f x) x refl
+ where
+  A : ℕ → 𝓤 ⊔ 𝓥 ̇
+  A n = (x : X) → f x ＝ n → P x
+
+  I : (n : ℕ) → ((m : ℕ) → m < n → A m) → A n
+  I .(f x) g x refl = h x (λ y l → g (f y) l y refl)
+
+  II : (n : ℕ) → A n
+  II = course-of-values-induction A I
+
+\end{code}
+
+TODO. Also add plain induction on the values of a function.
+
+TODO. Notice that this proof of course-of-values induction uses the
+accessibility predicate. From a foundational point of view, this is a
+too powerful tool - an indexed W-type. In fact, this is not
+needed. The course-of-values-induction theorem can be proved in MLTT
+with only natural numbers and without universes, identity types, of W
+types (indexed or not) other than the natural numbers.
+
+\begin{code}
+
 <-is-extensional : is-extensional _<_
-<-is-extensional zero     zero     f g = refl
-<-is-extensional zero     (succ n) f g = unique-from-𝟘 (g zero (zero-least n))
-<-is-extensional (succ m) (zero)   f g = unique-from-𝟘 (f zero (zero-least m))
-<-is-extensional (succ m) (succ n) f g = ap succ (≤-anti m n (f m (≤-refl m)) (g n (≤-refl n)))
+<-is-extensional 0        0        f g = refl
+<-is-extensional 0        (succ n) f g = unique-from-𝟘 (g 0    (zero-least n))
+<-is-extensional (succ m) (0   )   f g = unique-from-𝟘 (f 0    (zero-least m))
+<-is-extensional (succ m) (succ n) f g = ap succ (≤-anti m n γ₁ γ₂)
+ where
+  γ₁ : m ≤ n
+  γ₁ = f m (≤-refl m)
+
+  γ₂ : n ≤ m
+  γ₂ = g n (≤-refl n)
 
 ℕ-ordinal : is-well-order _<_
 ℕ-ordinal = <-is-prop-valued , <-is-well-founded , <-is-extensional , <-trans
@@ -225,9 +271,9 @@ Induction on z, then x, then y:
 \begin{code}
 
 ℕ-cotransitive : cotransitive _<_
-ℕ-cotransitive zero     y        zero     l = inr l
-ℕ-cotransitive (succ x) y        zero     l = inr (≤-trans 1 (succ(succ x)) y ⋆ l)
-ℕ-cotransitive zero     (succ y) (succ z) l = inl (zero-least y)
+ℕ-cotransitive 0        y        0        l = inr l
+ℕ-cotransitive (succ x) y        0        l = inr (≤-trans 1 (succ(succ x)) y ⋆ l)
+ℕ-cotransitive 0        (succ y) (succ z) l = inl (zero-least y)
 ℕ-cotransitive (succ x) (succ y) (succ z) l = γ IH
  where
   IH : (x < z) + (z < y)
@@ -242,15 +288,14 @@ Added December 2019.
 
 \begin{code}
 
-open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.Complemented
 
-≤-decidable : (m n : ℕ ) → decidable (m ≤ n)
-≤-decidable zero     n        = inl (zero-least n)
-≤-decidable (succ m) zero     = inr (zero-least' m)
+≤-decidable : (m n : ℕ ) → is-decidable (m ≤ n)
+≤-decidable 0        n        = inl (zero-least n)
+≤-decidable (succ m) 0        = inr (zero-least' m)
 ≤-decidable (succ m) (succ n) = ≤-decidable m n
 
-<-decidable : (m n : ℕ ) → decidable (m < n)
+<-decidable : (m n : ℕ ) → is-decidable (m < n)
 <-decidable m n = ≤-decidable (succ m) n
 
 \end{code}
@@ -259,9 +304,11 @@ Bounded minimization (added 14th December 2019):
 
 \begin{code}
 
-βμ : (A : ℕ → 𝓤 ̇ ) → complemented A
-  → (k : ℕ) → (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n))
-            + ((n : ℕ) → A n → n ≥ k)
+βμ : (A : ℕ → 𝓤 ̇ )
+  → is-complemented A
+  → (k : ℕ)
+  → (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n))
+  + ((n : ℕ) → A n → n ≥ k)
 
 βμ A δ 0 = inr (λ n a → zero-least n)
 βμ A δ (succ k) = γ
@@ -308,7 +355,7 @@ bounded minimization:
 Σμ : (ℕ → 𝓤 ̇ ) → 𝓤 ̇
 Σμ A = Σ m ꞉ ℕ , A m × ((n : ℕ) → A n → m ≤ n)
 
-least-from-given : (A : ℕ → 𝓤 ̇ ) → complemented A → Σ A → Σμ A
+least-from-given : (A : ℕ → 𝓤 ̇ ) → is-complemented A → Σ A → Σμ A
 least-from-given A δ (k , a) = γ
  where
   f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → Σμ A
@@ -327,52 +374,58 @@ least-from-given A δ (k , a) = γ
 open import Naturals.Addition renaming (_+_ to _∔_)
 
 max : ℕ → ℕ → ℕ
-max zero     n        = n
-max (succ m) zero     = succ m
+max 0        n        = n
+max (succ m) 0        = succ m
 max (succ m) (succ n) = succ (max m n)
 
 max-idemp : (x : ℕ) → max x x ＝ x
-max-idemp zero     = refl
+max-idemp 0        = refl
 max-idemp (succ x) = ap succ (max-idemp x)
 
 max-comm : (m n : ℕ) → max m n ＝ max n m
-max-comm zero     zero     = refl
-max-comm zero     (succ n) = refl
-max-comm (succ m) zero     = refl
+max-comm 0        0        = refl
+max-comm 0        (succ n) = refl
+max-comm (succ m) 0        = refl
 max-comm (succ m) (succ n) = ap succ (max-comm m n)
 
 max-assoc : (x y z : ℕ) → max (max x y) z ＝ max x (max y z)
-max-assoc zero     y        z        = refl
-max-assoc (succ x) zero     z        = refl
-max-assoc (succ x) (succ y) zero     = refl
+max-assoc 0        y        z        = refl
+max-assoc (succ x) 0        z        = refl
+max-assoc (succ x) (succ y) 0        = refl
 max-assoc (succ x) (succ y) (succ z) = ap succ (max-assoc x y z)
 
 max-ord→ : (x y : ℕ) → x ≤ y → max x y ＝ y
-max-ord→ zero     y        le = refl
-max-ord→ (succ x) zero     le = 𝟘-elim le
+max-ord→ 0        y        le = refl
+max-ord→ (succ x) 0        le = 𝟘-elim le
 max-ord→ (succ x) (succ y) le = ap succ (max-ord→ x y le)
 
 max-ord← : (x y : ℕ) → max x y ＝ y → x ≤ y
-max-ord← zero     y        p = ⋆
-max-ord← (succ x) zero     p = 𝟘-elim (positive-not-zero x p)
+max-ord← 0        y        p = ⋆
+max-ord← (succ x) 0        p = 𝟘-elim (positive-not-zero x p)
 max-ord← (succ x) (succ y) p = max-ord← x y (succ-lc p)
 
 max-≤-upper-bound : (m n : ℕ) → m ≤ max m n
-max-≤-upper-bound zero     n        = ⋆
-max-≤-upper-bound (succ m) zero     = ≤-refl m
+max-≤-upper-bound 0        n        = ⋆
+max-≤-upper-bound (succ m) 0        = ≤-refl m
 max-≤-upper-bound (succ m) (succ n) = max-≤-upper-bound m n
 
+max-≤-upper-bound' : (m n : ℕ) → m ≤ max n m
+max-≤-upper-bound' 0    n = ⋆
+max-≤-upper-bound' (succ m) 0    = ≤-refl m
+max-≤-upper-bound' (succ m) (succ n) = max-≤-upper-bound' m n
+
 minus : (m n : ℕ) → n ≤ m → ℕ
-minus zero     n        le = zero
-minus (succ m) zero     ⋆  = succ m
+minus 0        n        le = 0
+minus (succ m) 0        ⋆  = succ m
 minus (succ m) (succ n) le = minus m n le
 
 minus-property : (m n : ℕ) (le : n ≤ m) → minus m n le ∔ n ＝ m
-minus-property zero     zero     ⋆  = refl
-minus-property (succ m) zero     ⋆  = refl
+minus-property 0        0        ⋆  = refl
+minus-property (succ m) 0        ⋆  = refl
 minus-property (succ m) (succ n) le = ap succ (minus-property m n le)
 
-max-minus-property : (m n : ℕ) → minus (max m n) m (max-≤-upper-bound m n) ∔ m ＝ max m n
+max-minus-property : (m n : ℕ)
+                   → minus (max m n) m (max-≤-upper-bound m n) ∔ m ＝ max m n
 max-minus-property m n = minus-property (max m n) m (max-≤-upper-bound m n)
 
 \end{code}
@@ -381,10 +434,10 @@ Tom de Jong, 5 November 2021.
 
 \begin{code}
 
-<-trichotomous : (n m : ℕ) → n < m + (n ＝ m) + m < n
-<-trichotomous zero     zero     = inr (inl refl)
-<-trichotomous zero     (succ m) = inl ⋆
-<-trichotomous (succ n) zero     = inr (inr ⋆)
+<-trichotomous : (n m : ℕ) → (n < m) + (n ＝ m) + (m < n)
+<-trichotomous 0        0        = inr (inl refl)
+<-trichotomous 0        (succ m) = inl ⋆
+<-trichotomous (succ n) 0        = inr (inr ⋆)
 <-trichotomous (succ n) (succ m) = γ IH
  where
   γ : (n < m) + (n ＝ m) + (m < n)
@@ -399,7 +452,8 @@ Tom de Jong, 5 November 2021.
 \end{code}
 
 Added 12/05/2020 by Andrew Sneap.
-Following are proofs of common properties of strict and non-strict order of Natural Numbers.
+Following are proofs of common properties of strict and non-strict order of
+Natural Numbers.
 
 \begin{code}
 
@@ -426,12 +480,25 @@ Following are proofs of common properties of strict and non-strict order of Natu
 ≤-n-monotone-right x y (succ n) l = ≤-n-monotone-right x y n l
 
 ≤-n-monotone-left : (x y z : ℕ) → x ≤ y → (z +' x) ≤ (z +' y)
-≤-n-monotone-left x y z l
- = transport₂ _≤_ (addition-commutativity x z) (addition-commutativity y z) (≤-n-monotone-right x y z l)
+≤-n-monotone-left x y z l = transport₂ _≤_ γ₁ γ₂ γ₃
+  where
+   γ₁ : x ∔ z ＝ z ∔ x
+   γ₁ = addition-commutativity x z
+
+   γ₂ : y ∔ z ＝ z ∔ y
+   γ₂ = addition-commutativity y z
+
+   γ₃ : x ∔ z ≤ y ∔ z
+   γ₃ = ≤-n-monotone-right x y z l
 
 ≤-adding : (x y u v : ℕ) → x ≤ y → u ≤ v → (x +' u) ≤ (y +' v)
-≤-adding x y u v l₁ l₂
- = ≤-trans (x +' u) (y +' u) (y +' v) (≤-n-monotone-right x y u l₁) (≤-n-monotone-left u v y l₂)
+≤-adding x y u v l₁ l₂ = ≤-trans (x +' u) (y +' u) (y +' v) γ₁ γ₂
+ where
+  γ₁ : x ∔ u ≤ y ∔ u
+  γ₁ = ≤-n-monotone-right x y u l₁
+
+  γ₂ : y ∔ u ≤ y ∔ v
+  γ₂ = ≤-n-monotone-left u v y l₂
 
 <-succ-monotone : (x y : ℕ) → x < y → succ x < succ y
 <-succ-monotone x y = id
@@ -441,12 +508,25 @@ Following are proofs of common properties of strict and non-strict order of Natu
 <-n-monotone-right x y (succ z) l = <-n-monotone-right x y z l
 
 <-n-monotone-left : (x y z : ℕ) → x < y → (z +' x) < (z +' y)
-<-n-monotone-left x y z l
- = transport₂ _<_ (addition-commutativity x z) (addition-commutativity y z) (<-n-monotone-right x y z l)
+<-n-monotone-left x y z l = transport₂ _<_ γ₁ γ₂ γ₃
+ where
+  γ₁ : x ∔ z ＝ z ∔ x
+  γ₁ = addition-commutativity x z
+
+  γ₂ : y ∔ z ＝ z ∔ y
+  γ₂ = addition-commutativity y z
+
+  γ₃ : x ∔ z < y ∔ z
+  γ₃ = <-n-monotone-right x y z l
 
 <-adding : (x y u v : ℕ) → x < y → u < v → (x +' u) < (y +' v)
-<-adding x y u v l₁ l₂
- = <-trans (x +' u) (y +' u) (y +' v) (<-n-monotone-right x y u l₁) (<-n-monotone-left u v y l₂)
+<-adding x y u v l₁ l₂ = <-trans (x +' u) (y +' u) (y +' v) γ₁ γ₂
+ where
+  γ₁ : x ∔ u < y ∔ u
+  γ₁ = <-n-monotone-right x y u l₁
+
+  γ₂ : y ∔ u < y ∔ v
+  γ₂ = <-n-monotone-left u v y l₂
 
 <-+ : (x y z : ℕ) → x < y → x < y +' z
 <-+ x y z l₁ = ≤-trans (succ x) y (y +' z) l₁ l₂
@@ -458,20 +538,24 @@ equal-gives-less-than-or-equal : (x y : ℕ) → x ＝ y → x ≤ y
 equal-gives-less-than-or-equal x y p = transport (_≤ y) (p ⁻¹) (≤-refl y)
 
 less-than-not-equal : (x y : ℕ) → x < y → ¬ (x ＝ y)
-less-than-not-equal x y r p = less-not-bigger-or-equal x y r (equal-gives-less-than-or-equal y x (p ⁻¹))
+less-than-not-equal x y r p = less-not-bigger-or-equal x y r γ
+ where
+  γ : y ≤ x
+  γ = equal-gives-less-than-or-equal y x (p ⁻¹)
 
-less-than-one-is-zero : (x : ℕ) → x < 1 → x ＝ 0
-less-than-one-is-zero 0        l = refl
-less-than-one-is-zero (succ x) l = 𝟘-elim l
+less-than-one-is-0 : (x : ℕ) → x < 1 → x ＝ 0
+less-than-one-is-0 0        l = refl
+less-than-one-is-0 (succ x) l = 𝟘-elim l
 
-not-less-or-equal-is-bigger : (x y : ℕ) → ¬(x ≤ y) → y < x
+not-less-or-equal-is-bigger : (x y : ℕ) → ¬ (x ≤ y) → y < x
 not-less-or-equal-is-bigger 0        y        l = l (zero-least y)
 not-less-or-equal-is-bigger (succ x) 0        l = zero-least x
-not-less-or-equal-is-bigger (succ x) (succ y) l = not-less-or-equal-is-bigger x y l
+not-less-or-equal-is-bigger (succ x) (succ y) l
+ = not-less-or-equal-is-bigger x y l
 
 ≤-dichotomous : (x y : ℕ) → (x ≤ y) + (y ≤ x)
-≤-dichotomous zero     y        = inl ⋆
-≤-dichotomous (succ x) zero     = inr ⋆
+≤-dichotomous 0        y        = inl ⋆
+≤-dichotomous (succ x) 0        = inr ⋆
 ≤-dichotomous (succ x) (succ y) = ≤-dichotomous x y
 
 ≥-dichotomy : (x y : ℕ) → (x ≥ y) + (x ≤ y)
@@ -488,19 +572,12 @@ subtraction' (succ x) (succ y) l = pr₁ IH , ap succ (pr₂ IH)
   IH = subtraction' x y l
 
 subtraction'' : (x y : ℕ) → x < y → Σ z ꞉ ℕ , (succ z +' x ＝ y)
-subtraction'' 0        0        l = 𝟘-elim l
+subtraction'' x 0               l = 𝟘-elim l
 subtraction'' 0        (succ y) l = y , refl
-subtraction'' (succ x) 0        l = 𝟘-elim l
-subtraction'' (succ x) (succ y) l = z , ap succ e
+subtraction'' (succ x) (succ y) l = pr₁ IH , ap succ (pr₂ IH)
  where
-  I : Σ z ꞉ ℕ , succ z +' x ＝ y
-  I = subtraction'' x y l
-
-  z : ℕ
-  z = pr₁ I
-
-  e : succ z +' x ＝ y
-  e = pr₂ I
+  IH : Σ z ꞉ ℕ , (succ z +' x ＝ y)
+  IH = subtraction'' x y l
 
 order-split : (x y : ℕ) → (x < y) + (x ≥ y)
 order-split 0        0        = inr (zero-least 0)
@@ -508,10 +585,12 @@ order-split 0        (succ y) = inl (zero-least (succ y))
 order-split (succ x) 0        = inr (zero-least (succ x))
 order-split (succ x) (succ y) = order-split x y
 
-least-element-unique : {A : ℕ → 𝓤 ̇ } → (σ : complemented A)
-                                     → ((α , αₚ) : Σ k ꞉ ℕ , A k × ((z : ℕ) → A z → k ≤ z))
-                                     → ((β , βₚ) : Σ n ꞉ ℕ , A n × ((z : ℕ) → A z → n ≤ z))
-                                     → α ＝ β
+least-element-unique : {A : ℕ → 𝓤 ̇ }
+                     → (σ : is-complemented A)
+                     → ((α , αₚ) : Σ k ꞉ ℕ , A k × ((z : ℕ) → A z → k ≤ z))
+                     → ((β , βₚ) : Σ n ꞉ ℕ , A n × ((z : ℕ) → A z → n ≤ z))
+                     → α ＝ β
+
 least-element-unique σ (α , α₀ , α₁) (β , β₀ , β₁) = ≤-anti α β I II
  where
   I : α ≤ β
@@ -520,10 +599,14 @@ least-element-unique σ (α , α₀ , α₁) (β , β₀ , β₁) = ≤-anti α 
   II : β ≤ α
   II = β₁ α α₀
 
-least-element-unique' : {A : ℕ → 𝓤 ̇ } → (σ : complemented A)
-                                      → (x y : ℕ)
-                                      → (δ : Σ A) → x ＝ pr₁ (least-from-given A σ δ) → y ＝ pr₁ (least-from-given A σ δ)
-                                      → x ＝ y
+least-element-unique' : {A : ℕ → 𝓤 ̇ }
+                      → (σ : is-complemented A)
+                      → (x y : ℕ)
+                      → (δ : Σ A)
+                      → x ＝ pr₁ (least-from-given A σ δ)
+                      → y ＝ pr₁ (least-from-given A σ δ)
+                      → x ＝ y
+
 least-element-unique' σ x y δ e₁ e₂ = e₁ ∙ e₂ ⁻¹
 
 \end{code}
@@ -532,82 +615,110 @@ The following section provides an algorithm for bounded maximisation
 of decidable propositions on Natural numbers, similar to the algorithm
 for bounded-minimisation above.
 
-The strategy is simple.
+We want to prove the following:
 
+Given a complemented predicate A on naturals numbers and strict upper bound k,
+either there exists a maximal element m such that m < k , A m holds and
+(∀ n , A n → n ≤ m), or our predicate only holds for n ≥ k.
+
+Proof:
+ We proceed by induction on the upper bound. Given an upper bound of 0, we
+ are done, because there are no natural numbers less than 0.
+
+ Now we consider the induction hypothesis that our statement is true for an upper
+ bound k. We consider each case.
+
+ Case 1: We have some maximal element m such that A m holds, with m < k.
+ Since A is decidable, we find that either A k holds, or it doesn't. If it holds,
+ then have a new maximal element A k, with k < k + 1.
+
+ Case 2: The predicate does not hold for any m < k. Again, we inspect A k. If it
+ holds, then we have found a maximal (and the only) element m < k + 1. Otherwise,
+ the statement does not hold for any n is our range.
+
+Also given are the types of maximal element m : ℕ such that A m holds, given an
+upper bound k
 
 \begin{code}
 
-bounded-maximisation : (A : ℕ → 𝓤 ̇ )→ complemented A
+maximal-element : (A : ℕ → 𝓤 ̇ ) → (k : ℕ) → 𝓤 ̇
+maximal-element A k
+ = Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
+
+maximal-element' : (A : ℕ → 𝓤 ̇ ) → (k : ℕ) → 𝓤 ̇
+maximal-element' A k
+ = Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))
+
+no-maximal-element : (A : ℕ → 𝓤 ̇ ) → (k : ℕ) → 𝓤 ̇
+no-maximal-element A k = (n : ℕ) → A n → n ≥ k
+
+no-maximal-element' : (A : ℕ → 𝓤 ̇ ) → (k : ℕ) → 𝓤 ̇
+no-maximal-element' A k = (n : ℕ) → A n → k < n
+
+bounded-maximisation : (A : ℕ → 𝓤 ̇ )
+                     → is-complemented A
                      → (k : ℕ)
-                     → (Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))) + ((n : ℕ) → A n → n ≥ k)
-bounded-maximisation A δ zero = inr (λ n _ → zero-least n)
-bounded-maximisation A δ (succ k) = f (bounded-maximisation A δ k)
+                     → maximal-element A k + no-maximal-element A k
+bounded-maximisation A δ 0        = inr (λ n _ → zero-least n)
+bounded-maximisation A δ (succ k) = γ (δ k) (bounded-maximisation A δ k)
  where
-  conclusion = (Σ m ꞉ ℕ , (m < succ k) × A m × ((n : ℕ) → n < succ k → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ succ k)
+  γ : A k + ¬ A k
+   → maximal-element A k + no-maximal-element A k
+   → maximal-element A (succ k) + no-maximal-element A (succ k)
 
-  f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → n < k → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ k)
-    → conclusion
-  f (inl (m , l , a , ψ)) = g (δ k)
+  -- Case 1
+  γ (inl Ak)  (inl (m , l , Am , ψ)) = inl (k , <-succ k , Ak , ψ')
    where
-    g : A k + ¬ A k → conclusion
-    g (inl k-holds) = inl (k , ((<-succ k) , (k-holds , ψ')))
-     where
-       ψ' : (n : ℕ) → n < succ k → A n → n ≤ k
-       ψ' n z a' = z
-    g (inr k-fails) = inl (m , ((<-trans m k (succ k) l (<-succ k)) , a , ψ'))
-     where
-      ψ' : (n : ℕ) → n < succ k → A n → n ≤ m
-      ψ' n z a' = ψ n (ρ (<-split n k z)) a'
-       where
-        ρ : (n < k) + (n ＝ k) → n < k
-        ρ (inl r) = r
-        ρ (inr r) = 𝟘-elim (k-fails (transport (λ - → A -) r a'))
-  f (inr ω) = g (δ k)
+   ψ' : (n : ℕ) → n < succ k → A n → n ≤ k
+   ψ' n l' An = l'
+  γ (inr ¬Ak) (inl (m , l , Am , ψ)) = inl (m , l' , Am , ψ')
    where
-    g : A k + ¬ A k → conclusion
-    g (inl k-holds) = inl (k , (<-succ k , k-holds , (λ z l a' → l)))
-    g (inr k-fails) = inr ψ
+    l' : m < succ k
+    l' = <-trans m k (succ k) l (<-succ k)
+    ψ' : (n : ℕ) → n < succ k → A n → n < succ m
+    ψ' n l' An = ρ (<-split n k l')
      where
-      ψ : (n : ℕ) → A n → n ≥ succ k
-      ψ n n-holds = τ (<-split k n (ω n n-holds))
-       where
-        τ : (k < n) + (k ＝ n) → n ≥ succ k
-        τ (inr w) = 𝟘-elim (k-fails (transport (λ - → A -) (w ⁻¹) n-holds))
-        τ (inl w) = w
+      ρ : (n < k) + (n ＝ k) → n < succ m
+      ρ (inl l'') = ψ n l'' An
+      ρ (inr e)   = 𝟘-elim (¬Ak (transport A e An))
 
-bounded-maximisation' : (A : ℕ → 𝓤 ̇ )→ complemented A
-   → (k : ℕ)
-   → (Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))) + ((n : ℕ) → A n → k < n)
-bounded-maximisation' A δ k = result (bounded-maximisation A δ k) (δ k)
+  -- Case 2
+  γ (inl Ak)  (inr ω)  = inl (k , <-succ k , Ak , ψ)
+   where
+    ψ : (n : ℕ) → n < succ k → A n → n ≤ k
+    ψ n l An = l
+  γ (inr ¬Ak) (inr ψ) = inr ψ'
+   where
+    ψ' : (n : ℕ) → A n → n ≥ succ k
+    ψ' n An = ρ (<-split k n (ψ n An))
+     where
+      ρ : (k < n) + (k ＝ n) → n ≥ succ k
+      ρ (inl l') = l'
+      ρ (inr e)  = 𝟘-elim (¬Ak (transport A (e ⁻¹) An))
+
+\end{code}
+
+We can use the above result to prove the same statement for inclusive order.
+
+\begin{code}
+
+bounded-maximisation' : (A : ℕ → 𝓤 ̇ )
+                      → is-complemented A
+                      → (k : ℕ)
+                      → maximal-element' A k + no-maximal-element' A k
+bounded-maximisation' A δ k = bounded-maximisation A δ (succ k)
+
+no-maximal-lemma : (A : ℕ → 𝓤 ̇ )
+                 → (k : ℕ)
+                 → no-maximal-element A k
+                 → ¬ maximal-element A k
+no-maximal-lemma A k ω (m , l , Am , ψ) = not-less-than-itself k β
  where
-  result : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → n < k → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ k) → A k + ¬ A k
-         → (Σ m ꞉ ℕ , (m ≤ k) × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m)) + ((n : ℕ) → A n → k < n)
-  result (inl z) (inl k-holds) = inl (k , (≤-refl k , (k-holds , (λ _ t _ → t))))
-  result (inr z) (inl k-holds) = inl (k , ≤-refl k , k-holds , (λ _ t _ → t))
-  result (inl (m , l , a , ψ)) (inr k-fails) = inl (m , (<-coarser-than-≤ m k l) , a , g)
-   where
-    g : (n : ℕ) → n ≤ k → A n → n ≤ m
-    g n l' a' = ψ n (h (<-split n k l')) a'
-     where
-      h : (n < k) + (n ＝ k) → n < k
-      h (inl j) = j
-      h (inr j) = 𝟘-elim (k-fails (transport (λ - → A -) j a'))
-  result (inr z) (inr k-fails) = inr f
-   where
-    f : (n : ℕ) → A n → k < n
-    f n a = g (<-split k n (z n a))
-     where
-      g : (k < n) + (k ＝ n) → k < n
-      g (inl j) = j
-      g (inr j) = 𝟘-elim (k-fails (transport (λ - → A -) (j ⁻¹) a))
+  α : k ≤ m
+  α = ω m Am
 
--- type of maximal element m : ℕ such that A m holds, given an upper bound
-
-maximal-element : (A : ℕ → 𝓤 ̇ )→ (k : ℕ) → 𝓤 ̇
-maximal-element A k = Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
-
-maximal-element' : (A : ℕ → 𝓤 ̇ )→ (k : ℕ) → 𝓤 ̇
-maximal-element' A k = Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))
+  β : k < k
+  β = ≤-<-trans k m k α l
 
 \end{code}
 
@@ -617,19 +728,31 @@ which the property holds. Of course, we must provide an upper bound.
 
 \begin{code}
 
-maximal-from-given : (A : ℕ → 𝓤 ̇ )→ (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k < b → maximal-element A b
-maximal-from-given A b δ (k , a) = f (bounded-maximisation A δ b)
+maximal-from-given : (A : ℕ → 𝓤 ̇ )
+                   → (b : ℕ)
+                   → is-complemented A
+                   → Σ k ꞉ ℕ , A k × k < b
+                   → maximal-element A b
+maximal-from-given A b δ (k , Ak , l) = Cases (bounded-maximisation A δ b) γ₁ γ₂
  where
-  f : (Σ m ꞉ ℕ , (m < b) × A m × ((n : ℕ) → n < b → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ b) → maximal-element A b
-  f (inl x) = x
-  f (inr x) = 𝟘-elim (less-not-bigger-or-equal k b (pr₂ a) (x k (pr₁ a)))
+  γ₁ : maximal-element A b → maximal-element A b
+  γ₁ = id
 
-maximal-from-given' : (A : ℕ → 𝓤 ̇ )→ (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k ≤ b → maximal-element' A b
-maximal-from-given' A b δ (k , a , c) = f (bounded-maximisation' A δ b)
- where
-  f : (Σ m ꞉ ℕ , (m ≤ b) × A m × ((n : ℕ) → n ≤ b → A n → n ≤ m)) + ((n : ℕ) → A n → b < n) → maximal-element' A b
-  f (inr x) = 𝟘-elim (bigger-or-equal-not-less k b c (x k a))
-  f (inl x) = x
+  γ₂ : no-maximal-element A b → maximal-element A b
+  γ₂ ω = 𝟘-elim (not-less-than-itself b β)
+   where
+    α : b ≤ k
+    α = ω k Ak
+
+    β : b < b
+    β = ≤-<-trans b k b α l
+
+maximal-from-given' : (A : ℕ → 𝓤 ̇ )
+                    → (b : ℕ)
+                    → is-complemented A
+                    → Σ k ꞉ ℕ , A k × k ≤ b
+                    → maximal-element' A b
+maximal-from-given' A b = maximal-from-given A (succ b)
 
 \end{code}
 
@@ -648,10 +771,13 @@ open import Naturals.Multiplication
 
 multiplication-preserves-order : (m n k : ℕ) → m ≤ n → m * k ≤ n * k
 multiplication-preserves-order m n 0        l = zero-least 0
-multiplication-preserves-order m n (succ k) l = ≤-adding m n (m * k) (n * k) l IH
+multiplication-preserves-order m n (succ k) l = γ
  where
   IH : m * k ≤ n * k
   IH = multiplication-preserves-order m n k l
+
+  γ : m * (succ k) ≤ n * (succ k)
+  γ = ≤-adding m n (m * k) (n * k) l IH
 
 \end{code}
 
@@ -662,9 +788,30 @@ proof.
 
 \begin{code}
 
-multiplication-preserves-strict-order : (m n k : ℕ) → m < n → m * succ k < n * succ k
+multiplication-preserves-strict-order : (m n k : ℕ)
+                                      → m < n
+                                      → m * succ k < n * succ k
 multiplication-preserves-strict-order m n 0        l = l
-multiplication-preserves-strict-order m n (succ k) l = <-adding m n (m * succ k) (n * succ k) l (multiplication-preserves-strict-order m n k l)
+multiplication-preserves-strict-order m n (succ k) l = γ
+ where
+  IH : m * succ k < n * succ k
+  IH = multiplication-preserves-strict-order m n k l
+
+  γ : m * succ (succ k) < n * succ (succ k)
+  γ = <-adding m n (m * succ k) (n * succ k) l IH
+
+\end{code}
+
+A variation added by Fredrik Nordvall Forsberg on 11 October 2025.
+
+\begin{code}
+
+multiplication-preserves-strict-order' : (m n k : ℕ)
+                                       → m < n
+                                       → 0 < k
+                                       → m * k < n * k
+multiplication-preserves-strict-order' m n (succ k) l p =
+ multiplication-preserves-strict-order m n k l
 
 \end{code}
 
@@ -676,21 +823,171 @@ A similar proof for strict order is sometimes useful.
 \begin{code}
 
 product-order-cancellable : (x y z : ℕ) → x * (succ y) ≤ z → x ≤ z
-product-order-cancellable x 0        z l = l
-product-order-cancellable x (succ y) z l = ≤-trans x (x * succ (succ y)) z (≤-+ x (x * succ y)) l
+product-order-cancellable x 0        z   = id
+product-order-cancellable x (succ y) z l = γ
+ where
+  I : x ≤ x ∔ x * succ y
+  I = ≤-+ x (x * succ y)
+
+  γ : x ≤ z
+  γ = ≤-trans x (x * succ (succ y)) z I l
 
 less-than-pos-mult : (x y z : ℕ) → x < y → x < y * succ z
 less-than-pos-mult x y z l = <-+ x y (y * z) l
 
 \end{code}
 
-{-
-course-of-values-induction-modified : (P : ℕ → 𝓤 ̇ )
-                                    → ((n : ℕ) → (Σ m ꞉ ℕ , m < n × (P m → P n)))
-                                    → (n : ℕ) → P n
-course-of-values-induction-modified P step = course-of-values-induction P step'
+Lane Biocini, 07 September 2023
+
+Here we define some order lemmas for the Absolute Difference operation
+and then prove the analog of the triangle inequality for the Natural
+Numbers under it.
+
+Slight refactoring on 12 October 2023
+
+\begin{code}
+
+≤-diff : (x y : ℕ) → ∣ x - y ∣ ≤ x +' y
+≤-diff x        0        = ≤-refl x
+≤-diff 0        (succ y) = ≤-+' 0    y
+≤-diff (succ x) (succ y) = γ
  where
-  step' : (n : ℕ) → ((m : ℕ) → m < n → P m) → P n
-  step' n f with step n
-  ... | n , m , ooop = ooop (f n m)
--}
+  Γ : (x +' y) ≤ (succ x +' y)
+  Γ = ≤-trans (x +' y) (succ (x +' y)) (succ x +' y)
+       (≤-succ (x +' y))
+       (equal-gives-less-than-or-equal (succ (x +' y)) (succ x +' y)
+         (succ-left x y ⁻¹))
+
+  γ : ∣ x - y ∣ ≤ succ (succ x +' y)
+  γ = ≤-trans₂ ∣ x - y ∣ (x +' y) (succ x +' y) (succ (succ x +' y))
+       (≤-diff x y) Γ (≤-succ (succ x +' y))
+
+≤-diff-minus : (x y : ℕ) → x ≤ y +' ∣ y - x ∣
+≤-diff-minus 0    y = ⋆
+≤-diff-minus (succ x) 0    = ≤-+' 0    x
+≤-diff-minus (succ x) (succ y) = γ
+ where
+  Γ : x ≤ (y +' ∣ y - x ∣)
+  Γ = ≤-diff-minus x y
+
+  γ : succ x ≤ (succ y +' ∣ y - x ∣)
+  γ = ≤-trans (succ x) (succ (y +' ∣ y - x ∣)) (succ y +' ∣ y - x ∣)
+       (succ-monotone x (y +' ∣ y - x ∣) Γ)
+       (equal-gives-less-than-or-equal
+        (succ (y +' ∣ y - x ∣)) (succ y +' ∣ y - x ∣)
+        (succ-left y ∣ y - x ∣ ⁻¹))
+
+≤-diff-plus : (x y : ℕ) → x ≤ (∣ x - y ∣ +' y)
+≤-diff-plus 0        y        = ⋆
+≤-diff-plus (succ x) 0        = ≤-refl x
+≤-diff-plus (succ x) (succ y) = ≤-diff-plus x y
+
+triangle-inequality : (x y z : ℕ) → ∣ x - z ∣ ≤ ∣ x - y ∣ +' ∣ y - z ∣
+triangle-inequality 0    y z =
+ ≤-trans₂ ∣ 0 - z ∣ z (y +' ∣ y - z ∣) (∣ 0 - y ∣ +' ∣ y - z ∣) Γ α γ
+  where
+   Γ : ∣ 0 - z ∣ ≤ z
+   Γ = equal-gives-less-than-or-equal ∣ 0 - z ∣ z (minus-nothing z)
+
+   α : z ≤ (y +' ∣ y - z ∣)
+   α = ≤-diff-minus z y
+
+   β : y ≤ ∣ 0 - y ∣
+   β = equal-gives-less-than-or-equal y ∣ 0 - y ∣ (minus-nothing y ⁻¹)
+
+   γ : (y +' ∣ y - z ∣) ≤ (∣ 0 - y ∣ +' ∣ y - z ∣)
+   γ = ≤-adding y ∣ 0 - y ∣ ∣ y - z ∣ ∣ y - z ∣ β (≤-refl ∣ y - z ∣)
+triangle-inequality (succ x) 0    0        = ≤-refl x
+triangle-inequality (succ x) 0    (succ z) =
+ ≤-trans₂ ∣ x - z ∣ (x +' z) (succ (x +' z)) (succ (succ x +' z))
+      (≤-diff x z)
+      (≤-succ (x +' z))
+      (≤-trans (x +' z) (succ (x +' z)) (succ x +' z) (≤-succ (x +' z)) α )
+  where
+   α : succ (x +' z) ≤ (succ x +' z)
+   α = equal-gives-less-than-or-equal (succ (x +' z)) (succ x +' z)
+        (succ-left x z ⁻¹)
+triangle-inequality (succ x) (succ y) 0        = ≤-diff-plus x y
+triangle-inequality (succ x) (succ y) (succ z) = triangle-inequality x y z
+
+\end{code}
+
+Lane Biocini, 18 September 2023
+
+Another lemma for Absolute Difference
+
+\begin{code}
+triangle-inequality-bound : (a b : ℕ) → ¬ (succ (a +' b) ≤ ∣ a - b ∣)
+triangle-inequality-bound a b l = not-less-than-itself (a +' b) γ
+ where
+  Γ : ∣ a - b ∣ ≤ a +' b
+  Γ = ≤-diff a b
+
+  γ : succ (a +' b) ≤ (a +' b)
+  γ = ≤-trans (succ (a +' b)) ∣ a - b ∣ (a +' b) l Γ
+
+triangle-inequality-bound' : (a b : ℕ) → ¬ (succ (succ a +' b) ≤ ∣ a - b ∣)
+triangle-inequality-bound' a b l = triangle-inequality-bound a b γ
+ where
+  Γ : succ (a +' b) ≤ succ a +' b
+  Γ = equal-gives-less-than-or-equal (succ (a +' b)) (succ a +' b)
+   (succ-left a b ⁻¹)
+
+  γ : succ (a +' b) ≤ ∣ a - b ∣
+  γ = ≤-trans₂ (succ (a +' b)) (succ a +' b) (succ (succ a +' b)) ∣ a - b ∣
+       Γ (≤-succ (succ a +' b) ) l
+\end{code}
+
+Added 26 September 2025 by Fredrik Nordvall Forsberg.
+
+\begin{code}
+
+double-reflects-≤ : {x y : ℕ} → double x ≤ double y → x ≤ y
+double-reflects-≤ {zero} {y} _ = ⋆
+double-reflects-≤ {succ x} {succ y} p = double-reflects-≤ {x} {y} p
+
+double-reflects-< : {x y : ℕ} → double x < double y → x < y
+double-reflects-< {zero} {succ y} _ = ⋆
+double-reflects-< {succ x} {succ y} p = double-reflects-< {x} {y} p
+
+\end{code}
+
+Added 11 October 2025 by Fredrik Nordvall Forsberg.
+
+\begin{code}
+
+open import Naturals.Exponentiation renaming (_ℕ^_ to _^_)
+
+exponential-positive-if-base-positive : (n m : ℕ) → 0 < n → 0 < n ^ m
+exponential-positive-if-base-positive n zero _ = ⋆
+exponential-positive-if-base-positive n@(succ n') (succ m) l = II
+ where
+  IH : 0 < (n ^ m)
+  IH = exponential-positive-if-base-positive n m l
+
+  I : 0 < (n ^ m) * n
+  I = less-than-pos-mult 0 (n ^ m) n' IH
+
+  II : 0 < n * (n ^ m)
+  II = transport (0 <_) (mult-commutativity (n ^ m) n) I
+
+exponent-smaller-than-exponential-for-base-at-least-two : (n k : ℕ)
+                                                        → 2 ≤ k
+                                                        → n ≤ (k ^ n)
+exponent-smaller-than-exponential-for-base-at-least-two zero k _ = ⋆
+exponent-smaller-than-exponential-for-base-at-least-two
+ (succ n) k@(succ (succ k')) l = ≤-<-trans n (1 * k ^ n) (k * (k ^ n)) I III
+  where
+   IH : n ≤ (k ^ n)
+   IH = exponent-smaller-than-exponential-for-base-at-least-two n k l
+
+   I : n ≤ 1 * k ^ n
+   I = transport⁻¹ (n ≤_) (mult-left-id (k ^ n)) IH
+
+   II : 0 < k ^ n
+   II = exponential-positive-if-base-positive k n ⋆
+
+   III : 1 * (k ^ n) < k * (k ^ n)
+   III = multiplication-preserves-strict-order' 1 k (k ^ n) ⋆ II
+
+\end{code}

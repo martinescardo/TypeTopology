@@ -15,7 +15,7 @@ Ind-completion is a preorder and not a poset is seen to be important there.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -29,11 +29,11 @@ module DomainTheory.BasesAndContinuity.IndCompletion
 
 open PropositionalTruncation pt
 
-open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Sets
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
@@ -44,7 +44,7 @@ module Ind-completion
        where
 
  Ind : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- Ind = Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-Directed 𝓓 α
+ Ind = Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-Directed 𝓓 α
 
  index-of-underlying-family : Ind → 𝓥 ̇
  index-of-underlying-family = pr₁
@@ -78,7 +78,7 @@ We now construct directed suprema of 𝓥-small families in Ind.
 
 \begin{code}
 
- Ind-∐ : {I : 𝓥 ̇  } (𝓐 : I → Ind)
+ Ind-∐ : {I : 𝓥 ̇ } (𝓐 : I → Ind)
        → is-directed _≲_ 𝓐
        → Ind
  Ind-∐ {I} 𝓐 (I-inhabited , 𝓐-semidirected) =
@@ -127,16 +127,16 @@ We now construct directed suprema of 𝓥-small families in Ind.
                                   β (i  , jⁱ₂) ⊑⟨ 𝓓 ⟩[ w₂ ]
                                   β (i  , j)   ∎⟨ 𝓓 ⟩))
 
- Ind-∐-is-directed : {I : 𝓥 ̇  } (𝓐 : I → Ind) (δ : is-directed _≲_ 𝓐)
+ Ind-∐-is-directed : {I : 𝓥 ̇ } (𝓐 : I → Ind) (δ : is-directed _≲_ 𝓐)
                    → is-Directed 𝓓 (underlying-family (Ind-∐ 𝓐 δ))
  Ind-∐-is-directed 𝓐 δ = pr₂ (pr₂ (Ind-∐ 𝓐 δ))
 
- Ind-∐-is-upperbound : {I : 𝓥 ̇  } (𝓐 : I → Ind) (δ : is-directed _≲_ 𝓐)
+ Ind-∐-is-upperbound : {I : 𝓥 ̇ } (𝓐 : I → Ind) (δ : is-directed _≲_ 𝓐)
                      → is-upperbound _≲_ (Ind-∐ 𝓐 δ) 𝓐
  Ind-∐-is-upperbound 𝓐 δ i j =
   ∣ (i , j) , reflexivity 𝓓 (pr₁ (pr₂ (𝓐 i)) j) ∣
 
- Ind-∐-is-lowerbound-of-upperbounds : {I : 𝓥 ̇  } (𝓐 : I → Ind)
+ Ind-∐-is-lowerbound-of-upperbounds : {I : 𝓥 ̇ } (𝓐 : I → Ind)
                                       (δ : is-directed _≲_ 𝓐)
                                     → is-lowerbound-of-upperbounds _≲_
                                        (Ind-∐ 𝓐 δ) 𝓐
@@ -152,7 +152,7 @@ monotone map from Ind to 𝓓.
  ∐-map : Ind → ⟨ 𝓓 ⟩
  ∐-map (I , α , δ) = ∐ 𝓓 δ
 
- ≲-to-⊑-of-∐ : {I J : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
+ ≲-to-⊑-of-∐ : {I J : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
                (δ : is-Directed 𝓓 α) (ε : is-Directed 𝓓 β)
              → (I , α , δ) ≲ (J , β , ε)
              → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
@@ -194,12 +194,12 @@ left adjunct to x for every x : D.
 \begin{code}
 
  _is-left-adjunct-to_ : Ind → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- α is-left-adjunct-to x = (β : Ind) → (α ≲ β) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map β)
+ α is-left-adjunct-to x = (β : Ind) → (α ≲ β) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map β)
 
  being-left-adjunct-to-is-prop : (σ : Ind) (x : ⟨ 𝓓 ⟩)
                                → is-prop (σ is-left-adjunct-to x)
  being-left-adjunct-to-is-prop σ x =
-  Π-is-prop fe (λ τ → ⇔-is-prop fe fe (≲-is-prop-valued σ τ)
+  Π-is-prop fe (λ τ → ↔-is-prop fe fe (≲-is-prop-valued σ τ)
                                       (prop-valuedness 𝓓 x (∐-map τ)))
 
  left-adjoint-to-∐-map : (⟨ 𝓓 ⟩ → Ind) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
@@ -222,6 +222,16 @@ and the way-below relation.
 
  _approximates_ : Ind → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  (I , α , δ) approximates x = (∐ 𝓓 δ ＝ x) × ((i : I) → α i ≪⟨ 𝓓 ⟩ x)
+
+ approximates-to-∐-＝ : {(I , α , δ) : Ind} {x : ⟨ 𝓓 ⟩}
+                      → (I , α , δ) approximates x
+                      → ∐ 𝓓 δ ＝ x
+ approximates-to-∐-＝ = pr₁
+
+ approximates-to-≪ : {(I , α , δ) : Ind} {x : ⟨ 𝓓 ⟩}
+                   → (I , α , δ) approximates x
+                   → ((i : I) → α i ≪⟨ 𝓓 ⟩ x)
+ approximates-to-≪ = pr₂
 
  approximates-is-prop : (σ : Ind) (x : ⟨ 𝓓 ⟩) → is-prop (σ approximates x)
  approximates-is-prop σ x =
@@ -273,10 +283,7 @@ and the way-below relation.
                                         → is-approximating L
                                         ≃ left-adjoint-to-∐-map L
  left-adjoint-to-∐-map-characterization L =
-  Π-cong fe fe ⟨ 𝓓 ⟩
-   (λ x → (L x) approximates x)
-   (λ x → (L x) is-left-adjunct-to x)
-   (λ x → approximate-left-adjunct-to-≃ (L x) x)
+  Π-cong fe fe (λ x → approximate-left-adjunct-to-≃ (L x) x)
 
 \end{code}
 
@@ -326,7 +333,7 @@ module Ind-completion-poset-reflection
 
  open Ind-completion 𝓓
 
- open import Posets.PosetReflection pt fe pe
+ open import OrderedTypes.PosetReflection pt fe pe
  open poset-reflection Ind _≲_ ≲-is-prop-valued ≲-is-reflexive ≲-is-transitive public
 
  Ind/≈ : 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
@@ -352,7 +359,7 @@ module Ind-completion-poset-reflection
  left-adjoint-to-∐-map/ : (⟨ 𝓓 ⟩ → Ind/≈)
                         → 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
  left-adjoint-to-∐-map/ L' =
-  (x : ⟨ 𝓓 ⟩) (α' : Ind/≈) → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α')
+  (x : ⟨ 𝓓 ⟩) (α' : Ind/≈) → (L' x ≤ α') ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α')
 
  being-left-adjoint-to-∐-map/-is-prop : (L' : ⟨ 𝓓 ⟩ → Ind/≈)
                                       → is-prop (left-adjoint-to-∐-map/ L')

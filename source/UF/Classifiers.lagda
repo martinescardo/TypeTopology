@@ -1,6 +1,6 @@
 Martin Escardo 8th May 2020.
 
-An old version of this file is at UF.Classifiers-Old.
+An obsolete, clumsy version of this file is at UF.Classifiers-Old.
 
 This version is ported from the Midlands Graduate School 2019 lecture notes
 
@@ -14,11 +14,11 @@ September 2022.
    * Ω 𝓤 is the embedding classifier.
    * The type of pointed types is the retraction classifier.
    * The type inhabited types is the surjection classifier.
-   * The fiber of Σ are non-dependent function types.
+   * The fibers of Σ are non-dependent function types.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Classifiers where
 
@@ -26,14 +26,16 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Univalence
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Powerset hiding (𝕋)
 open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Powerset hiding (𝕋)
 open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.SubtypeClassifier
+open import UF.UA-FunExt
+open import UF.Univalence
 
 \end{code}
 
@@ -87,7 +89,7 @@ module classifier-single-universe (𝓤 : Universe) where
    NB = refl
 
    q = transport (λ - → - → Y) p pr₁ ＝⟨ transport-is-pre-comp' ua e pr₁ ⟩
-       pr₁ ∘ ⌜ e ⌝⁻¹                 ＝⟨ refl ⟩
+       pr₁ ∘ ⌜ e ⌝⁻¹                 ＝⟨refl⟩
        f                             ∎
 
    r : (Σ (fiber f) , pr₁) ＝ (X , f)
@@ -121,7 +123,8 @@ module classifier-single-universe (𝓤 : Universe) where
 
  classification : is-univalent 𝓤
                 → funext 𝓤 (𝓤 ⁺)
-                → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
+                → (Y : 𝓤 ̇ )
+                → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
  classification ua fe Y = χ Y , universes-are-classifiers ua fe Y
 
 module special-classifier-single-universe (𝓤 : Universe) where
@@ -158,7 +161,8 @@ module special-classifier-single-universe (𝓤 : Universe) where
                     → funext 𝓤 (𝓤 ⁺)
                     → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                     → is-equiv (χ-special P Y)
- χ-special-is-equiv ua fe P Y = classifier-gives-special-classifier (universes-are-classifiers ua fe) P Y
+ χ-special-is-equiv ua fe P Y = classifier-gives-special-classifier
+                                 (universes-are-classifiers ua fe) P Y
 
  special-classification : is-univalent 𝓤
                         → funext 𝓤 (𝓤 ⁺)
@@ -187,9 +191,9 @@ module retraction-classifier (𝓤 : Universe) where
  retraction-classifier : Univalence
                        → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
  retraction-classifier ua Y =
-  retractions-into Y                                              ≃⟨ i ⟩
-  ((𝓤 /[ id ] Y))                                                 ≃⟨ ii ⟩
-  (Y → pointed-types 𝓤)                                           ■
+  retractions-into Y     ≃⟨ i ⟩
+  ((𝓤 /[ id ] Y))        ≃⟨ ii ⟩
+  (Y → pointed-types 𝓤)  ■
   where
    i  = ≃-sym (Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)))
    ii = special-classification (ua 𝓤)
@@ -265,7 +269,7 @@ Definition of when the given pair of universes is a classifier,
    NB = refl
 
    q = transport (λ - → - → Y) p pr₁ ＝⟨ transport-is-pre-comp' ua e pr₁ ⟩
-       pr₁ ∘ ⌜ e ⌝⁻¹                 ＝⟨ refl ⟩
+       pr₁ ∘ ⌜ e ⌝⁻¹                 ＝⟨refl⟩
        f                             ∎
 
    r : (Σ (fiber f) , pr₁) ＝ (X , f)
@@ -299,7 +303,8 @@ Definition of when the given pair of universes is a classifier,
 
  classification : is-univalent (𝓤 ⊔ 𝓥)
                 → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
-                → (Y : 𝓤 ̇ ) → (𝓤 ⊔ 𝓥) / Y ≃ (Y → 𝓤 ⊔ 𝓥 ̇ )
+                → (Y : 𝓤 ̇ )
+                → (𝓤 ⊔ 𝓥) / Y ≃ (Y → 𝓤 ⊔ 𝓥 ̇ )
  classification ua fe Y = χ Y , universes-are-classifiers ua fe Y
 
 \end{code}
@@ -361,7 +366,7 @@ The subtype classifier with general universes:
 Ω-is-subtype-classifier' : is-univalent (𝓤 ⊔ 𝓥)
                          → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
                          → (Y : 𝓤 ̇ )
-                         → Subtypes' (𝓤 ⊔ 𝓥) Y ≃ (Y → Ω (𝓤 ⊔ 𝓥))
+                         → Subtype' (𝓤 ⊔ 𝓥) Y ≃ (Y → Ω (𝓤 ⊔ 𝓥))
 Ω-is-subtype-classifier' {𝓤} {𝓥} ua fe = special-classification ua fe
                                           is-subsingleton
  where
@@ -370,10 +375,10 @@ The subtype classifier with general universes:
 Ω-is-subtype-classifier : is-univalent 𝓤
                         → funext 𝓤 (𝓤 ⁺)
                         → (Y : 𝓤 ̇ )
-                        → Subtypes Y ≃ (Y → Ω 𝓤)
+                        → Subtype Y ≃ (Y → Ω 𝓤)
 Ω-is-subtype-classifier {𝓤} = Ω-is-subtype-classifier' {𝓤} {𝓤}
 
-subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (Subtypes' (𝓤 ⊔ 𝓥) Y)
+subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (Subtype' (𝓤 ⊔ 𝓥) Y)
 subtypes-form-set {𝓤} {𝓥} ua Y =
  equiv-to-set
   (Ω-is-subtype-classifier' {𝓤} {𝓥}
@@ -426,9 +431,9 @@ September. Here is an application of the above.
   V   = Σ-cong (λ Z → ×-cong (≃-Sym' fe fe fe fe) (≃-refl (Z → Y)))
   VI  = ≃-sym Σ-assoc
   VII = prop-indexed-sum
+         (X , ≃-refl X)
          (singletons-are-props
            (univalence-via-singletons→ ua X))
-         (X , ≃-refl X)
 
 private
  ∑ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
@@ -443,9 +448,82 @@ more general universes in the following:
 
 Σ-fibers : is-univalent 𝓤
          → funext 𝓤 (𝓤 ⁺)
-         → {X : 𝓤 ̇ } {Y : 𝓤 ̇ }
+         → {X Y : 𝓤 ̇ }
          → fiber (∑ Y) X ≃ (X → Y)
 Σ-fibers {𝓤} ua fe⁺ {X} {Y} =
   (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ＝ X) ≃⟨ Σ-cong (λ A → univalence-≃ ua (Σ A) X) ⟩
   (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ≃ X)  ≃⟨ Σ-fibers-≃ {𝓤} {𝓤} ua fe⁺ ⟩
   (X → Y)                       ■
+
+\end{code}
+
+Added 22nd June 2025 by Martin Escardo, from an old draft.
+
+If a universe 𝓤 is a classifier, then it is univalent, assuming
+function extensionality from functions from with domains in 𝓤 and
+codomain in 𝓤⁺, and also assuming extensionality for propositions in
+the universe 𝓤.
+
+\begin{code}
+
+open import UF.Equiv-FunExt
+open import UF.Lower-FunExt
+open import UF.Subsingletons-FunExt
+open import UF.Yoneda
+open import UF.Singleton-Properties
+
+open classifier-single-universe
+
+universe-is-classifier-implies-universe-is-univalent
+ : funext 𝓤 (𝓤 ⁺)
+ → propext 𝓤
+ → universe-is-classifier 𝓤
+ → is-univalent 𝓤
+universe-is-classifier-implies-universe-is-univalent {𝓤} fe⁺ pe c = V
+ where
+  fe : funext 𝓤 𝓤
+  fe = lower-funext 𝓤 (𝓤 ⁺) fe⁺
+
+  open special-classifier 𝓤 𝓤 𝓤
+
+  P : 𝓤 ̇ → 𝓤 ̇
+  P = is-singleton
+
+  module _ (Y : 𝓤 ̇ ) where
+
+   I : (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → P (fiber f y))) ≃ (Y → Σ P)
+   I = χ-special P Y , classifier-gives-special-classifier c P Y
+
+   _ : (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → P (fiber f y)))
+    ＝ (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , is-vv-equiv f)
+   _ = refl
+
+   II : is-singleton (Y → Σ P)
+   II = Π-is-singleton fe⁺ (λ _ → the-singletons-form-a-singleton-type fe pe)
+
+   III : is-singleton (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , is-vv-equiv f)
+   III = equiv-to-singleton I II
+
+   IV : is-singleton (Σ X ꞉ 𝓤 ̇ , (Y ≃ X))
+   IV = equiv-to-singleton
+         ((Σ X ꞉ 𝓤 ̇ , (Y ≃ X))                        ≃⟨ IV₀ ⟩
+          (Σ X ꞉ 𝓤 ̇ , (X ≃ Y))                        ≃⟨by-definition⟩
+          (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , is-equiv f)     ≃⟨ IV₁ ⟩
+          (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , is-vv-equiv f)  ■)
+        III
+         where
+          IV₀ = Σ-cong (λ X → ≃-sym (≃-flip' fe fe fe fe))
+          IV₁ = Σ-cong (λ X →
+                Σ-cong (λ f →
+                 logically-equivalent-props-are-equivalent
+                  (being-equiv-is-prop'' fe f)
+                  (being-vv-equiv-is-prop' fe fe f)
+                  (equivs-are-vv-equivs f)
+                  (vv-equivs-are-equivs f)))
+
+  V : is-univalent 𝓤
+  V = univalence-via-singletons← IV
+
+\end{code}
+
+Question. Is it possible to remove the extensionality assumptions?

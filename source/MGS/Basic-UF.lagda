@@ -7,7 +7,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.Basic-UF where
 
@@ -48,7 +48,7 @@ pointed-subsingletons-are-singletons : (X : 𝓤 ̇ )
 pointed-subsingletons-are-singletons X x s = (x , s x)
 
 singleton-iff-pointed-and-subsingleton : {X : 𝓤 ̇ }
-                                       → is-singleton X ⇔ (X × is-subsingleton X)
+                                       → is-singleton X ↔ (X × is-subsingleton X)
 
 singleton-iff-pointed-and-subsingleton {𝓤} {X} = (a , b)
  where
@@ -154,7 +154,7 @@ module monoids where
  associative _·_ = ∀ x y z → (x · y) · z ＝ x · (y · z)
 
  Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
- Monoid 𝓤 = Σ X ꞉ 𝓤  ̇ , is-set X
+ Monoid 𝓤 = Σ X ꞉ 𝓤 ̇ , is-set X
                       × (Σ · ꞉ (X → X → X) , (Σ e ꞉ X , (left-neutral e ·)
                                                       × (right-neutral e ·)
                                                       × (associative ·)))
@@ -265,17 +265,16 @@ transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
 transport-× A B (refl _) = refl _
 
 transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
-             {x : X} (a : A x) ((a' , b) : Σ a ꞉ A x , B x a) {y : X} (p : x ＝ y)
-           → B x a' → B y (transport A p a')
+             {x : X}  (a : A x) {y : X} (p : x ＝ y)
+           → B x a → B y (transport A p a)
 
-transportd A B a σ (refl y) = id
+transportd A B a (refl x) = id
 
 transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
-              {x : X} (y : X) (p : x ＝ y) (a : A x) {(a' , b) : Σ a ꞉ A x , B x a}
+              {x : X} (y : X) (p : x ＝ y) (a : A x) {b : B x a}
+            → transport (λ x → Σ y ꞉ A x , B x y) p (a , b)
+            ＝ transport A p a , transportd A B a p b
 
-            → transport (λ x → Σ y ꞉ A x , B x y) p (a' , b)
-            ＝ transport A p a' , transportd A B a (a' , b) p b
-
-transport-Σ A B {x} x (refl x) a {σ} = refl σ
+transport-Σ A B {x} x (refl x) a {b} = refl (a , b)
 
 \end{code}

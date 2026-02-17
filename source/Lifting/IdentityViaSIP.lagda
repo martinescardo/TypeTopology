@@ -5,7 +5,7 @@ identity principle.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -25,7 +25,7 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.StructureIdentityPrinciple
 
-open import Lifting.Lifting 𝓣
+open import Lifting.Construction 𝓣
 
 _⋍_ : 𝓛 X → 𝓛 X → 𝓣 ⊔ 𝓤 ̇
 l ⋍ m = Σ e ꞉ is-defined l ≃ is-defined m , value l ＝ value m ∘ ⌜ e ⌝
@@ -56,9 +56,51 @@ pointwise equality, and hence we also consider:
 _⋍·_ : 𝓛 X → 𝓛 X → 𝓣 ⊔ 𝓤 ̇
 l ⋍· m = Σ e ꞉ is-defined l ≃ is-defined m , value l ∼ value m ∘ ⌜ e ⌝
 
+is-defined-⋍· : (l m : 𝓛 X)
+              → l ⋍· m → is-defined l ≃ is-defined m
+is-defined-⋍· l m = pr₁
+
+value-⋍· : (l m : 𝓛 X) (𝕗 : l ⋍· m)
+         → value l ∼ (λ x → value m (⌜ is-defined-⋍· l m 𝕗 ⌝ x))
+value-⋍· l m = pr₂
+
+Id-to-⋍· : (l m : 𝓛 X) → (l ＝ m) → (l ⋍· m)
+Id-to-⋍· l m refl = (≃-refl (is-defined l)) , (λ x → refl)
+
 𝓛-Id· : is-univalent 𝓣
       → funext 𝓣 𝓤
       → (l m : 𝓛 X) → (l ＝ m) ≃ (l ⋍· m)
-𝓛-Id· ua fe l m = (𝓛-Id ua l m) ● (Σ-cong (λ e → ≃-funext fe (value l) (value m ∘ ⌜ e ⌝)))
+𝓛-Id· ua fe l m = (𝓛-Id ua l m)
+                ● (Σ-cong (λ e → ≃-funext fe (value l) (value m ∘ ⌜ e ⌝)))
+
+⋍·-gives-＝ : is-univalent 𝓣
+           → funext 𝓣 𝓤
+           → {l m : 𝓛 X} → (l ⋍· m) → l ＝ m
+⋍·-gives-＝ ua fe = ⌜ 𝓛-Id· ua fe _ _ ⌝⁻¹
+
+\end{code}
+
+Added 8th September 2025.
+
+\begin{code}
+
+⋍·-refl : (l : 𝓛 X) → l ⋍· l
+⋍·-refl l = ≃-refl _ , ∼-refl
+
+⋍·-sym : (l m : 𝓛 X) → l ⋍· m → m ⋍· l
+⋍·-sym l m (e , d) =
+ ≃-sym e ,
+ λ p →
+  value m p                   ＝⟨ ap (value m) ((inverses-are-sections' e p)⁻¹) ⟩
+  value m (⌜ e ⌝ (⌜ e ⌝⁻¹ p)) ＝⟨ (d (⌜ e ⌝⁻¹ p))⁻¹ ⟩
+  value l (⌜ e ⌝⁻¹ p)         ∎
+
+⋍·-trans : (l m n : 𝓛 X) → l ⋍· m → m ⋍· n → l ⋍· n
+⋍·-trans l m n (e , d) (e' , d') =
+ (e ● e') ,
+ (λ p → value l p                  ＝⟨ d p ⟩
+        value m (⌜ e ⌝ p)          ＝⟨ d' (⌜ e ⌝ p) ⟩
+        value n (⌜ e' ⌝ (⌜ e ⌝ p)) ＝⟨refl⟩
+        value n (⌜ e ● e' ⌝ p)     ∎)
 
 \end{code}

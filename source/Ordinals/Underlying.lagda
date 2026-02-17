@@ -5,14 +5,14 @@ of ordinals.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Ordinals.Underlying where
 
 open import MLTT.Spartan
 open import Ordinals.Notions
 
-record Underlying {𝓤} (O : 𝓤 ⁺ ̇ ) : 𝓤 ⁺ ̇  where
+record Underlying {𝓤} (O : 𝓤 ⁺ ̇ ) : 𝓤 ⁺ ̇ where
  field
   ⟨_⟩              : O → 𝓤 ̇
   underlying-order : (α : O) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇

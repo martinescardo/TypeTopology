@@ -2,7 +2,7 @@ Martin Escardo, 6th December 2018
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -17,7 +17,7 @@ open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
 
-open import Slice.Slice 𝓣
+open import Slice.Construction 𝓣
 open import Slice.IdentityViaSIP 𝓣
 
 \end{code}

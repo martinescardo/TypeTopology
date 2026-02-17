@@ -17,7 +17,7 @@ cumbersome and (2) requires much work in other modules.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
@@ -28,7 +28,7 @@ module Ordinals.ToppedArithmetic
 open import UF.Subsingletons
 
 open import MLTT.Spartan
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import TypeTopology.SquashedSum fe
 open import Notation.CanonicalMap
 
@@ -143,14 +143,15 @@ Added 4th May 2022.
 \begin{code}
 
 module Omega {𝓤} (pe : propext 𝓤) where
+
  open import Ordinals.OrdinalOfTruthValues fe 𝓤 pe
  open import Ordinals.Notions
- open import UF.Subsingletons-FunExt
+ open import UF.SubtypeClassifier
 
  Ωᵒ : Ordinalᵀ (𝓤 ⁺)
- Ωᵒ = Ωₒ , ⊤Ω , h
+ Ωᵒ = Ωₒ , ⊤ , h
   where
-   h : is-top (underlying-order Ωₒ) ⊤Ω
+   h : is-top (underlying-order Ωₒ) ⊤
    h y (p , _) = ⊥-is-not-⊤ (p ⁻¹)
 
 \end{code}

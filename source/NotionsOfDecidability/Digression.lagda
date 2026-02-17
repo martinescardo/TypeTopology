@@ -4,7 +4,7 @@ Based on this discussion: https://twitter.com/EgbertRijke/status/142944386845029
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module NotionsOfDecidability.Digression where
 
@@ -13,7 +13,7 @@ open import MLTT.Spartan
 open import UF.Equiv
 
 T : 𝓤 ̇ → 𝓤 ̇
-T = decidable
+T = is-decidable
 
 η : (X : 𝓤 ̇ ) → X → T X
 η X = inl

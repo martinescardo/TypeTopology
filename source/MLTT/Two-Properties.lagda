@@ -5,14 +5,17 @@ in the module SpartanMLTT. Here we develop some general machinery.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Two-Properties where
 
 open import MLTT.Spartan
 open import MLTT.Unit-Properties
+open import Naturals.Properties
+open import Notation.CanonicalMap
 open import Notation.Order
-
+open import UF.FunExt
+open import UF.Retracts
 open import UF.Subsingletons
 
 𝟚-Cases : {A : 𝓤 ̇ } → 𝟚 → A → A → A
@@ -22,12 +25,20 @@ open import UF.Subsingletons
 𝟚-equality-cases {𝓤} {A} {₀} f₀ f₁ = f₀ refl
 𝟚-equality-cases {𝓤} {A} {₁} f₀ f₁ = f₁ refl
 
-𝟚-equality-cases₀ : {A : 𝓤 ̇ } {b : 𝟚} {f₀ : b ＝ ₀ → A} {f₁ : b ＝ ₁ → A}
-                  → (p : b ＝ ₀) → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ＝ f₀ p
-𝟚-equality-cases₀ {𝓤} {A} {.₀} refl = refl
+𝟚-equality-cases₀ : {A : 𝓤 ̇ }
+                    {b : 𝟚}
+                    {f₀ : b ＝ ₀ → A}
+                    {f₁ : b ＝ ₁ → A}
+                    (p : b ＝ ₀)
+                  → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ＝ f₀ p
+𝟚-equality-cases₀ {𝓤} {A} {₀} refl = refl
 
-𝟚-equality-cases₁ : {A : 𝓤 ̇ } {b : 𝟚} {f₀ : b ＝ ₀ → A} {f₁ : b ＝ ₁ → A}
-                  → (p : b ＝ ₁) → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ＝ f₁ p
+𝟚-equality-cases₁ : {A : 𝓤 ̇ }
+                    {b : 𝟚}
+                    {f₀ : b ＝ ₀ → A}
+                    {f₁ : b ＝ ₁ → A}
+                    (p : b ＝ ₁)
+                  → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ＝ f₁ p
 𝟚-equality-cases₁ {𝓤} {A} {.₁} refl = refl
 
 𝟚-equality-cases' : {A₀ A₁ : 𝓤 ̇ } {b : 𝟚} → (b ＝ ₀ → A₀) → (b ＝ ₁ → A₁) → A₀ + A₁
@@ -44,8 +55,10 @@ open import UF.Subsingletons
 
 𝟚-things-distinct-from-a-third-are-equal : (x y z : 𝟚) → x ≠ z → y ≠ z → x ＝ y
 𝟚-things-distinct-from-a-third-are-equal ₀ ₀ z u v = refl
-𝟚-things-distinct-from-a-third-are-equal ₀ ₁ z u v = 𝟘-elim (𝟚-excluded-third z (≠-sym u) (≠-sym v))
-𝟚-things-distinct-from-a-third-are-equal ₁ ₀ z u v = 𝟘-elim (𝟚-excluded-third z (≠-sym v) (≠-sym u))
+𝟚-things-distinct-from-a-third-are-equal ₀ ₁ z u v =
+ 𝟘-elim (𝟚-excluded-third z (≠-sym u) (≠-sym v))
+𝟚-things-distinct-from-a-third-are-equal ₁ ₀ z u v =
+ 𝟘-elim (𝟚-excluded-third z (≠-sym v) (≠-sym u))
 𝟚-things-distinct-from-a-third-are-equal ₁ ₁ z u v = refl
 
 one-is-not-zero : ₁ ≠ ₀
@@ -80,10 +93,12 @@ equal-₀-different-from-₁ : {b : 𝟚} → b ＝ ₀ → b ≠ ₁
 equal-₀-different-from-₁ r s = zero-is-not-one (r ⁻¹ ∙ s)
 
 [a＝₁→b＝₁]-gives-[b＝₀→a＝₀] : {a b : 𝟚} → (a ＝ ₁ → b ＝ ₁) → b ＝ ₀ → a ＝ ₀
-[a＝₁→b＝₁]-gives-[b＝₀→a＝₀] f = different-from-₁-equal-₀ ∘ (contrapositive f) ∘ equal-₀-different-from-₁
+[a＝₁→b＝₁]-gives-[b＝₀→a＝₀] f =
+ different-from-₁-equal-₀ ∘ (contrapositive f) ∘ equal-₀-different-from-₁
 
 [a＝₀→b＝₀]-gives-[b＝₁→a＝₁] : {a b : 𝟚} → (a ＝ ₀ → b ＝ ₀) → b ＝ ₁ → a ＝ ₁
-[a＝₀→b＝₀]-gives-[b＝₁→a＝₁] f = different-from-₀-equal-₁ ∘ (contrapositive f) ∘ equal-₁-different-from-₀
+[a＝₀→b＝₀]-gives-[b＝₁→a＝₁] f =
+ different-from-₀-equal-₁ ∘ (contrapositive f) ∘ equal-₁-different-from-₀
 
 \end{code}
 
@@ -102,6 +117,12 @@ complement-no-fp ₁ p = 𝟘-elim (one-is-not-zero p)
 complement-involutive : (b : 𝟚) → complement (complement b) ＝ b
 complement-involutive ₀ = refl
 complement-involutive ₁ = refl
+
+complement-lc : (b c : 𝟚) → complement b ＝ complement c → b ＝ c
+complement-lc ₀ ₀ refl = refl
+complement-lc ₀ ₁ p    = p ⁻¹
+complement-lc ₁ ₀ p    = p ⁻¹
+complement-lc ₁ ₁ refl = refl
 
 eq𝟚 : 𝟚 → 𝟚 → 𝟚
 eq𝟚 ₀ n = complement n
@@ -148,19 +169,22 @@ instance
 ≤₂-is-prop-valued {₁} {₀} = 𝟘-is-prop
 ≤₂-is-prop-valued {₁} {₁} = 𝟙-is-prop
 
-<₂-criterion : {a b : 𝟚} → (a ＝ ₀) → (b ＝ ₁) → a <₂ b
+<₂-criterion : {a b : 𝟚} → (a ＝ ₀) → (b ＝ ₁) → a < b
 <₂-criterion {₀} {₁} refl refl = ⋆
 
-<₂-criterion-converse : {a b : 𝟚} → a <₂ b → (a ＝ ₀) × (b ＝ ₁)
+<₂-criterion-converse : {a b : 𝟚} → a < b → (a ＝ ₀) × (b ＝ ₁)
 <₂-criterion-converse {₀} {₁} l = refl , refl
 
-≤₂-criterion : {a b : 𝟚} → (a ＝ ₁ → b ＝ ₁) → a ≤₂ b
+≤₂-criterion : {a b : 𝟚} → (a ＝ ₁ → b ＝ ₁) → a ≤ b
 ≤₂-criterion {₀} {b} f = ⋆
 ≤₂-criterion {₁} {₀} f = 𝟘-elim (zero-is-not-one (f refl))
 ≤₂-criterion {₁} {₁} f = ⋆
 
-≤₂-criterion-converse : {a b : 𝟚} → a ≤₂ b → a ＝ ₁ → b ＝ ₁
+≤₂-criterion-converse : {a b : 𝟚} → a ≤ b → a ＝ ₁ → b ＝ ₁
 ≤₂-criterion-converse {₁} {₁} l refl = refl
+
+₀-smallest : {a b : 𝟚} → a ≤ b → b ＝ ₀ → a ＝ ₀
+₀-smallest {₀} {b} l refl = refl
 
 <₂-gives-≤₂ : {a b : 𝟚} → a < b → a ≤ b
 <₂-gives-≤₂ {₀} {₀} ()
@@ -229,6 +253,20 @@ min𝟚 : 𝟚 → 𝟚 → 𝟚
 min𝟚 ₀ b = ₀
 min𝟚 ₁ b = b
 
+min𝟚-comm : (b c : 𝟚) → min𝟚 b c ＝ min𝟚 c b
+min𝟚-comm ₀ ₀ = refl
+min𝟚-comm ₀ ₁ = refl
+min𝟚-comm ₁ ₀ = refl
+min𝟚-comm ₁ ₁ = refl
+
+min𝟚-idemp : (b : 𝟚) → min𝟚 b b ＝ b
+min𝟚-idemp ₀ = refl
+min𝟚-idemp ₁ = refl
+
+min𝟚-property₀ : (b : 𝟚) → min𝟚 b ₀ ＝ ₀
+min𝟚-property₀ ₀ = refl
+min𝟚-property₀ ₁ = refl
+
 min𝟚-preserves-≤ : {a b a' b' : 𝟚} → a ≤ a' → b ≤ b' → min𝟚 a b ≤ min𝟚 a' b'
 min𝟚-preserves-≤ {₀} {b} {a'} {b'} l m = l
 min𝟚-preserves-≤ {₁} {b} {₁}  {b'} l m = m
@@ -272,6 +310,16 @@ lemma[min𝟚ab＝₀] {₁} {b} p = inr p
 max𝟚 : 𝟚 → 𝟚 → 𝟚
 max𝟚 ₀ b = b
 max𝟚 ₁ b = ₁
+
+max𝟚-comm : (b c : 𝟚) → max𝟚 b c ＝ max𝟚 c b
+max𝟚-comm ₀ ₀ = refl
+max𝟚-comm ₀ ₁ = refl
+max𝟚-comm ₁ ₀ = refl
+max𝟚-comm ₁ ₁ = refl
+
+max𝟚-idemp : (b : 𝟚) → max𝟚 b b ＝ b
+max𝟚-idemp ₀ = refl
+max𝟚-idemp ₁ = refl
 
 max𝟚-lemma : {a b : 𝟚} → max𝟚 a b ＝ ₁ → (a ＝ ₁) + (b ＝ ₁)
 max𝟚-lemma {₀} r = inr r
@@ -340,6 +388,25 @@ Lemma[b≠c→b⊕c＝₁] = different-from-₀-equal-₁ ∘ (contrapositive Le
 Lemma[b⊕c＝₁→b≠c] : {b c : 𝟚} → b ⊕ c ＝ ₁ → b ≠ c
 Lemma[b⊕c＝₁→b≠c] = (contrapositive Lemma[b＝c→b⊕c＝₀]) ∘ equal-₁-different-from-₀
 
+complement₀ : {a : 𝟚} → complement a ＝ ₀ → a ＝ ₁
+complement₀ {₁} refl = refl
+
+complement₁ : {a : 𝟚} → complement a ＝ ₁ → a ＝ ₀
+complement₁ {₀} refl = refl
+
+complement₁-back : {a : 𝟚} → a ＝ ₀ → complement a ＝ ₁
+complement₁-back {₀} refl = refl
+
+complement₀-back : {a : 𝟚} → a ＝ ₁ → complement a ＝ ₀
+complement₀-back {₁} refl = refl
+
+complement-one-gives-argument-not-one : {a : 𝟚} → complement a ＝ ₁ → a ≠ ₁
+complement-one-gives-argument-not-one {₀} _ = zero-is-not-one
+
+argument-not-one-gives-complement-one : {a : 𝟚} → a ≠ ₁ → complement a ＝ ₁
+argument-not-one-gives-complement-one {₀} ν = refl
+argument-not-one-gives-complement-one {₁} ν = 𝟘-elim (ν refl)
+
 complement-left : {b c : 𝟚} → complement b ≤ c → complement c ≤ b
 complement-left {₀} {₁} l = ⋆
 complement-left {₁} {₀} l = ⋆
@@ -364,6 +431,11 @@ complement-both-right {₁} {₁} l = ⋆
 ⊕-involutive {₀} {b} = refl
 ⊕-involutive {₁} {b} = complement-involutive b
 
+⊕-assoc : {a b c : 𝟚} → (a ⊕ b) ⊕ c ＝ a ⊕ (b ⊕ c)
+⊕-assoc {₀} {b} {c} = refl
+⊕-assoc {₁} {₀} {c} = refl
+⊕-assoc {₁} {₁} {c} = (complement-involutive c)⁻¹
+
 ⊕-property₁ : {a b : 𝟚} (g : a ≥ b)
             → a ⊕ b ＝ ₁ → (a ＝ ₁) × (b ＝ ₀)
 ⊕-property₁ {₀} {₀} g ()
@@ -381,15 +453,6 @@ complement-both-right {₁} {₁} l = ⋆
 
 ⊕-intro₁₁ : {a b : 𝟚} → a ＝ ₁ → b ＝ ₁ → a ⊕ b ＝ ₀
 ⊕-intro₁₁ {₁} {₁} p q = refl
-
-complement-intro₀ : {a : 𝟚} → a ＝ ₀ → complement a ＝ ₁
-complement-intro₀ {₀} p = refl
-
-complement-one-gives-argument-not-one : {a : 𝟚} → complement a ＝ ₁ → a ≠ ₁
-complement-one-gives-argument-not-one {₀} _ = zero-is-not-one
-
-complement-intro₁ : {a : 𝟚} → a ＝ ₁ → complement a ＝ ₀
-complement-intro₁ {₁} p = refl
 
 ⊕-₀-right-neutral : {a : 𝟚} → a ⊕ ₀ ＝ a
 ⊕-₀-right-neutral {₀} = refl
@@ -411,8 +474,57 @@ complement-intro₁ {₁} p = refl
 ≤₂-remove-left ₀ b = id
 ≤₂-remove-left ₁ b = λ _ → ₁-top
 
-\end{code}
+Lemma[b＝₀+b＝₁] : {b : 𝟚} → (b ＝ ₀) + (b ＝ ₁)
+Lemma[b＝₀+b＝₁] {₀} = inl refl
+Lemma[b＝₀+b＝₁] {₁} = inr refl
 
+Lemma[b≠₀→b＝₁] : {b : 𝟚} → ¬ (b ＝ ₀) → b ＝ ₁
+Lemma[b≠₀→b＝₁] {₀} f = 𝟘-elim (f refl)
+Lemma[b≠₀→b＝₁] {₁} f = refl
+
+Lemma[b≠₁→b＝₀] : {b : 𝟚} → ¬ (b ＝ ₁) → b ＝ ₀
+Lemma[b≠₁→b＝₀] {₀} f = refl
+Lemma[b≠₁→b＝₀] {₁} f = 𝟘-elim (f refl)
+
+𝟚-to-ℕ : 𝟚 → ℕ
+𝟚-to-ℕ ₀ = 0
+𝟚-to-ℕ ₁ = 1
+
+instance
+ Canonical-Map-𝟚-ℕ : Canonical-Map 𝟚 ℕ
+ ι {{Canonical-Map-𝟚-ℕ}} = 𝟚-to-ℕ
+
+𝟚-to-ℕ-is-lc : left-cancellable 𝟚-to-ℕ
+𝟚-to-ℕ-is-lc {₀} {₀} refl = refl
+𝟚-to-ℕ-is-lc {₀} {₁} r    = 𝟘-elim (positive-not-zero 0 (r ⁻¹))
+𝟚-to-ℕ-is-lc {₁} {₀} r    = 𝟘-elim (positive-not-zero 0 r)
+𝟚-to-ℕ-is-lc {₁} {₁} refl = refl
+
+C-B-embedding : (ℕ → 𝟚) → (ℕ → ℕ)
+C-B-embedding α = 𝟚-to-ℕ ∘ α
+
+C-B-embedding-is-lc : funext 𝓤₀ 𝓤₀ → left-cancellable C-B-embedding
+C-B-embedding-is-lc fe {α} {β} p = dfunext fe h
+ where
+  h : (n : ℕ) → α n ＝ β n
+  h n = 𝟚-to-ℕ-is-lc (ap (λ - → - n) p)
+
+𝟚-retract-of-ℕ : retract 𝟚 of ℕ
+𝟚-retract-of-ℕ = r , s , rs
+ where
+  r : ℕ → 𝟚
+  r 0        = ₀
+  r (succ n) = ₁
+
+  s : 𝟚 → ℕ
+  s ₀ = 0
+  s ₁ = 1
+
+  rs : r ∘ s ∼ id
+  rs ₀ = refl
+  rs ₁ = refl
+
+\end{code}
 
 Fixities and precedences:
 

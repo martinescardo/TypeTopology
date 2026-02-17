@@ -31,16 +31,21 @@ implies choice.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
 open import UF.Base hiding (_≈_)
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -50,14 +55,14 @@ module Ordinals.WellOrderingTaboo
        where
 
 module _
-        {X : 𝓤 ̇  } (_≺_ : X → X → 𝓣 ̇  )
+        {X : 𝓤 ̇ } (_≺_ : X → X → 𝓣 ̇ )
        where
 
  extensionality-for-minimal-elements : 𝓤 ⊔ 𝓣 ̇
  extensionality-for-minimal-elements = (x y : X)
                                      → ((a : X) → ¬ (a ≺ x))
                                      → ((a : X) → ¬ (a ≺ y))
-                                     → ((a : X) → a ≺ x ⇔ a ≺ y) → x ＝ y
+                                     → ((a : X) → a ≺ x ↔ a ≺ y) → x ＝ y
 
 \end{code}
 
@@ -91,7 +96,7 @@ explicit.
  at-most-one-minimal-elt-if-extensionality-for-minimal-elts
   ext (x , x-min) (y , y-min) = goal
    where
-    claim : (a : X) → (a ≺ x) ⇔ (a ≺ y)
+    claim : (a : X) → (a ≺ x) ↔ (a ≺ y)
     claim a = (I , II)
      where
       I : a ≺ x → a ≺ y
@@ -303,8 +308,10 @@ module swan'
 
  open import MLTT.Two-Properties
 
- open import UF.Large-Quotient pt fe pe
- open import UF.ImageAndSurjection pt
+ open import Quotient.Type
+ open import Quotient.Large pt fe pe
+
+ open general-set-quotients-exist large-set-quotients
 
  _≈_ : 𝟚 → 𝟚 → 𝓤 ̇
  x ≈ y = (x ＝ y) ∨ P
@@ -333,11 +340,11 @@ module swan'
      ϕ (inr p)  = inr p
    γ (inr p) _ = ∣ inr p ∣
 
- open quotient 𝟚 _≈_
-  ≈-is-prop-valued ≈-is-reflexive ≈-is-symmetric ≈-is-transitive
+ ≋ : EqRel 𝟚
+ ≋ = (_≈_ , ≈-is-prop-valued , ≈-is-reflexive , ≈-is-symmetric , ≈-is-transitive)
 
  S : 𝓤 ⁺ ̇
- S = X/≈
+ S = 𝟚 / ≋
 
  module _
          (_≺_ : S → S → 𝓣 ̇ )
@@ -346,54 +353,54 @@ module swan'
         where
 
   S-is-set : is-set S
-  S-is-set = X/≈-is-set
+  S-is-set = /-is-set ≋
 
-  quotient-lemma : (x : S) → (x ＝ η ₀) ∨ (x ＝ η ₁)
-  quotient-lemma x = ∥∥-functor γ (η-surjection x)
+  quotient-lemma : (x : S) → (x ＝ η/ ≋ ₀) ∨ (x ＝ η/ ≋ ₁)
+  quotient-lemma x = ∥∥-functor γ (η/-is-surjection ≋ pt x)
    where
-    γ : (Σ i ꞉ 𝟚 , η i ＝ x)
-      → (x ＝ η ₀) + (x ＝ η ₁)
+    γ : (Σ i ꞉ 𝟚 , η/ ≋ i ＝ x)
+      → (x ＝ η/ ≋ ₀) + (x ＝ η/ ≋ ₁)
     γ (₀ , e) = inl (e ⁻¹)
     γ (₁ , e) = inr (e ⁻¹)
 
-  η₀-minimal : (x : S) → ¬ (x ≺ η ₀)
+  η₀-minimal : (x : S) → ¬ (x ≺ η/ ≋ ₀)
   η₀-minimal x h = ∥∥-rec 𝟘-is-prop γ (quotient-lemma x)
    where
-    γ : (x ＝ η ₀) + (x ＝ η ₁) → 𝟘
-    γ (inl refl) = ≺-irreflexive (η ₀) h
+    γ : (x ＝ η/ ≋ ₀) + (x ＝ η/ ≋ ₁) → 𝟘
+    γ (inl refl) = ≺-irreflexive (η/ ≋ ₀) h
     γ (inr refl) = P-is-not-false ϕ
      where
       ϕ : ¬ P
-      ϕ p = ≺-irreflexive (η ₀) (transport (_≺ (η ₀)) claim h)
+      ϕ p = ≺-irreflexive (η/ ≋ ₀) (transport (_≺ (η/ ≋ ₀)) claim h)
        where
-        claim : η ₁ ＝ η ₀
-        claim = η-equiv-equal ∣ inr p ∣
+        claim : η/ ≋ ₁ ＝ η/ ≋ ₀
+        claim = η/-identifies-related-points ≋ ∣ inr p ∣
 
-  η₁-minimal : (x : S) → ¬ (x ≺ η ₁)
+  η₁-minimal : (x : S) → ¬ (x ≺ η/ ≋ ₁)
   η₁-minimal x h = ∥∥-rec 𝟘-is-prop γ (quotient-lemma x)
    where
-    γ : (x ＝ η ₀) + (x ＝ η ₁) → 𝟘
-    γ (inr refl) = ≺-irreflexive (η ₁) h
+    γ : (x ＝ η/ ≋ ₀) + (x ＝ η/ ≋ ₁) → 𝟘
+    γ (inr refl) = ≺-irreflexive (η/ ≋ ₁) h
     γ (inl refl) = P-is-not-false ϕ
      where
       ϕ : ¬ P
-      ϕ p = ≺-irreflexive (η ₁) (transport (_≺ (η ₁)) claim h)
+      ϕ p = ≺-irreflexive (η/ ≋ ₁) (transport (_≺ (η/ ≋ ₁)) claim h)
        where
-        claim : η ₀ ＝ η ₁
-        claim = η-equiv-equal ∣ inr p ∣
+        claim : η/ ≋ ₀ ＝ η/ ≋ ₁
+        claim = η/-identifies-related-points ≋ ∣ inr p ∣
 
-  ≈-identifies-₀-and-₁ : η ₀ ＝ η ₁
+  ≈-identifies-₀-and-₁ : η/ ≋ ₀ ＝ η/ ≋ ₁
   ≈-identifies-₀-and-₁ = goal
    where
-    claim : (η ₀ , η₀-minimal) ＝ (η ₁ , η₁-minimal)
+    claim : (η/ ≋ ₀ , η₀-minimal) ＝ (η/ ≋ ₁ , η₁-minimal)
     claim = at-most-one-minimal-elt-if-extensionality-for-minimal-elts
-             _≺_ ≺-minimally-extensional (η ₀ , η₀-minimal) (η ₁ , η₁-minimal)
-    goal : η ₀ ＝ η ₁
+             _≺_ ≺-minimally-extensional (η/ ≋ ₀ , η₀-minimal) (η/ ≋ ₁ , η₁-minimal)
+    goal : η/ ≋ ₀ ＝ η/ ≋ ₁
     goal = ap pr₁ claim
 
   P-must-hold : P
   P-must-hold =
-   ∥∥-rec P-is-prop γ (η-equal-equiv ≈-identifies-₀-and-₁)
+   ∥∥-rec P-is-prop γ (large-effective-set-quotients ≋ ≈-identifies-₀-and-₁)
     where
      γ : (₀ ＝ ₁) + P → P
      γ (inl e) = 𝟘-elim (zero-is-not-one e)
@@ -481,11 +488,15 @@ module ClassicalWellOrder
                           × is-uniquely-trichotomous
                           × inhabited-has-minimal
 
+  classical-well-orders-are-uniquely-trichotomous
+   : is-classical-well-order → is-uniquely-trichotomous
+  classical-well-orders-are-uniquely-trichotomous = pr₁ ∘ pr₂
+
 \end{code}
 
 Assuming excluded middle (for 𝓤 ⊔ 𝓣), we show
 
- _≺_ is a classical well-order ⇔ _≺_ is an inductive well-order.
+ _≺_ is a classical well-order ↔ _≺_ is an inductive well-order.
 
 A remark on well-order-gives-minimal (see below) is in order.
   It may seem that it repeats nonempty-has-minimal in OrdinalNotions.lagda, but
@@ -572,7 +583,7 @@ A remark on well-order-gives-minimal (see below) is in order.
        x-minimal : (y : X) → B y → ¬ (y ≺ x)
        x-minimal = pr₂ (pr₂ m)
        x-acc : is-accessible x
-       x-acc = step ϕ
+       x-acc = acc ϕ
         where
          ε : (y : X) → y ≺ x → ¬¬ (is-accessible y)
          ε y l y-not-acc = x-minimal y y-not-acc l
@@ -605,7 +616,6 @@ with a fairly direct proof.
 
 \begin{code}
 
- open import UF.Miscelanea
  open import MLTT.Two-Properties
  open import UF.UniverseEmbedding
 
@@ -727,7 +737,7 @@ OrdinalsWellOrderTransport.lagda.)
      wf : is-well-founded _≺_
      wf = transfinite-induction-converse _≺_ ω
       where
-       ω : Well-founded _≺_
+       ω : is-Well-founded _≺_
        ω P h x = transfinite-induction _≺'_ wf' P' h' (ι x)
         where
          P' : X' → 𝓤 ⊔ 𝓣 ̇
@@ -766,7 +776,6 @@ module _
         (pt : propositional-truncations-exist)
        where
 
- open import UF.Retracts
  open import UF.Choice
 
  open Univalent-Choice (λ _ _ → fe) pt
@@ -777,9 +786,9 @@ module _
  open InductiveWellOrder pt
 
  classical-well-ordering-implies-ac : classical-well-order-on-every-set (𝓤 ⊔ 𝓣) 𝓣
-                                    → AC {𝓤 ⊔ 𝓣} {𝓤 ⊔ 𝓣}
+                                    → AC₀ {𝓤 ⊔ 𝓣} {𝓤 ⊔ 𝓣}
  classical-well-ordering-implies-ac {𝓤} {𝓣} CWO =
-  AC₁-gives-AC (AC₂-gives-AC₁ γ)
+  AC₁-gives-AC₀ (AC₂-gives-AC₁ γ)
    where
     γ : (X : 𝓤 ⊔ 𝓣 ̇ ) (Y : X → 𝓤 ⊔ 𝓣 ̇ )
       → is-set X
@@ -804,20 +813,20 @@ module _
          y' = pr₂ (pr₁ m)
 
  classical-well-ordering-implies-ac-corollary :
-   classical-well-order-on-every-set 𝓤 𝓤 → AC {𝓤} {𝓤}
+   classical-well-order-on-every-set 𝓤 𝓤 → AC₀ {𝓤} {𝓤}
  classical-well-ordering-implies-ac-corollary {𝓤} =
    classical-well-ordering-implies-ac {𝓤} {𝓤}
 
  inductive-well-ordering-implies-ac :
   inductive-well-order-on-every-set ((𝓤 ⁺) ⊔ (𝓣 ⁺)) 𝓣
-  → AC {𝓤 ⊔ 𝓣} {𝓤 ⊔ 𝓣}
+  → AC₀ {𝓤 ⊔ 𝓣} {𝓤 ⊔ 𝓣}
  inductive-well-ordering-implies-ac {𝓤} {𝓣} =
      classical-well-ordering-implies-ac {𝓤} {𝓣}
    ∘ inductive-well-ordering-implies-classical-well-ordering
 
  inductive-well-ordering-implies-ac-corollary :
    inductive-well-order-on-every-set (𝓤 ⁺) 𝓤
-   → AC {𝓤} {𝓤}
+   → AC₀ {𝓤} {𝓤}
  inductive-well-ordering-implies-ac-corollary {𝓤} =
    inductive-well-ordering-implies-ac {𝓤} {𝓤}
 

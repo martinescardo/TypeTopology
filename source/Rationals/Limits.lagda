@@ -6,340 +6,429 @@ and that 1/(n+1) converges to 0.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Notation.Order
 open import UF.Base
-open import UF.Equiv
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.PropTrunc
-
 open import Rationals.Type
 open import Rationals.Addition
 open import Rationals.Abs
-open import Rationals.MinMax
 open import Rationals.Multiplication
 open import Rationals.Negation
 open import Rationals.Order
-
-open import Naturals.Order renaming (max to ℕ-max ; max-comm to ℕ-max-comm)
+open import Rationals.Positive hiding (_+_ ; _*_)
+open import Rationals.FractionsOrder
+open import Rationals.FractionsOperations renaming (_*_ to _𝔽*_) hiding (abs ; -_ ; _+_)
+open import Naturals.Addition renaming (_+_ to _ℕ+_)
+open import Naturals.Division
+open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
+open import Naturals.Order
+open import Naturals.Properties
+open import Integers.Type hiding (abs)
+open import Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
+open import Integers.Order
+open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 
 module Rationals.Limits
         (fe : Fun-Ext)
-        (pt : propositional-truncations-exist)
         (pe : Prop-Ext)
+        (pt : propositional-truncations-exist)
  where
 
-open import MetricSpaces.Rationals fe pt pe
-open import MetricSpaces.Definition pt fe pe
+open import MetricSpaces.Rationals fe pe pt
 
-_limit-of_ : (L : ℚ) → (f : ℕ → ℚ) → 𝓤₀ ̇
-L limit-of f = ∀ (ε : ℚ) → 0ℚ < ε
-                         → Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → ℚ-metric (f n) L < ε)
+_⟶_ : (f : ℕ → ℚ) → (L : ℚ) → 𝓤₀ ̇
+f ⟶ L = (ε₊@(ε , _) : ℚ₊) → Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → abs (f n - L) < ε)
 
 sandwich-theorem : (L : ℚ)
                  → (f g h : ℕ → ℚ)
-                 → (Σ k ꞉ ℕ , ((k' : ℕ) → k ≤ k' → f k' ≤ g k' × g k' ≤ h k'))
-                 → L limit-of f
-                 → L limit-of h
-                 → L limit-of g
-sandwich-theorem L f g h (k , k-greater) lim-f lim-h = lim-g
+                 → Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → f n ≤ g n ≤ h n)
+                 → f ⟶ L
+                 → h ⟶ L
+                 → g ⟶ L
+sandwich-theorem L f g h (N , α) f⟶L h⟶L = γ
  where
-  lim-g : L limit-of g
-  lim-g ε l = getN's (lim-f ε l) (lim-h ε l)
+  γ : g ⟶ L
+  γ ε₊@(ε , _) = γ' (f⟶L ε₊) (h⟶L ε₊)
    where
-    getN's : Σ N₁ ꞉ ℕ , ((n : ℕ) → N₁ ≤ n → ℚ-metric (f n) L < ε)
-           → Σ N₂ ꞉ ℕ , ((n : ℕ) → N₂ ≤ n → ℚ-metric (h n) L < ε)
-           → Σ N ꞉ ℕ  , ((n : ℕ) → N  ≤ n → ℚ-metric (g n) L < ε)
-    getN's (N₁ , f-close) (N₂ , h-close) = N , g-close
+    γ' : Σ N₁ ꞉ ℕ , ((n : ℕ) → N₁ ≤ n → abs (f n - L) < ε)
+       → Σ N₂ ꞉ ℕ , ((n : ℕ) → N₂ ≤ n → abs (h n - L) < ε)
+       → Σ M ꞉ ℕ , ((n : ℕ) → M ≤ n → abs (g n - L) < ε)
+    γ' (N₁ , β) (N₂ , δ) = M , γ''
      where
-      N : ℕ
-      N = ℕ-max (ℕ-max N₁ N₂) k
+      M : ℕ
+      M = max (max N₁ N₂) N
 
-      N₁-small : N₁ ≤ ℕ-max N₁ N₂
-      N₁-small = max-≤-upper-bound N₁ N₂
+      I : N ≤ M
+      I = max-≤-upper-bound' N (max N₁ N₂)
 
-      N₂-small : N₂ ≤ ℕ-max N₁ N₂
-      N₂-small = transport (N₂ ≤_) (ℕ-max-comm N₂ N₁) (max-≤-upper-bound N₂ N₁)
+      II : N₁ ≤ max N₁ N₂
+      II = max-≤-upper-bound N₁ N₂
 
-      N₁N₂-small : ℕ-max N₁ N₂ ≤ ℕ-max (ℕ-max N₁ N₂) k
-      N₁N₂-small = max-≤-upper-bound (ℕ-max N₁ N₂) k
+      III : N₂ ≤ max N₁ N₂
+      III = max-≤-upper-bound' N₂ N₁
 
-      k-small : k ≤ ℕ-max (ℕ-max N₁ N₂) k
-      k-small = transport (k ≤_) (ℕ-max-comm k (ℕ-max N₁ N₂)) (max-≤-upper-bound k (ℕ-max N₁ N₂))
+      IV : max N₁ N₂ ≤ M
+      IV = max-≤-upper-bound (max N₁ N₂) N
 
-      α : (f N ≤ g N) × (g N ≤ h N)
-      α = k-greater N k-small
+      V : N₁ ≤ M
+      V = ≤-trans N₁ (max N₁ N₂) M II IV
 
-      g-close : (n : ℕ) → ℕ-max (ℕ-max N₁ N₂) k ≤ n → ℚ-metric (g n) L < ε
-      g-close n less = obtain-inequalities (ℚ-abs-<-unpack fe (f n - L) ε f-close') (ℚ-abs-<-unpack fe (h n - L) ε h-close')
+      VI : N₂ ≤ M
+      VI = ≤-trans N₂ (max N₁ N₂) M III IV
+
+      γ'' : (n : ℕ) → max (max N₁ N₂) N ≤ n → abs (g n - L) < ε
+      γ'' n l = ℚ<-to-abs (g n - L) ε (γ₁ , γ₂)
        where
-        f-close' : ℚ-metric (f n) L < ε
-        f-close' = f-close n (≤-trans N₁ N n (≤-trans N₁ (ℕ-max N₁ N₂) N N₁-small N₁N₂-small) less)
-        h-close' : ℚ-metric (h n) L < ε
-        h-close' = h-close n (≤-trans N₂ N n (≤-trans N₂ (ℕ-max N₁ N₂) N N₂-small N₁N₂-small) less)
+        VII : - ε < f n - L < ε
+        VII = ℚ-abs-<-unpack (f n - L) ε (β n (≤-trans N₁ M n V l))
 
-        obtain-inequalities : - ε < f n - L × f n - L < ε
-                            → - ε < h n - L × h n - L < ε
-                            → ℚ-metric (g n) L < ε
-        obtain-inequalities (l₁ , l₂) (l₃ , l₄) = ℚ<-to-abs fe (g n - L) ε (I , II)
-         where
-          k-greater' : f n ≤ g n × g n ≤ h n
-          k-greater' = k-greater n (≤-trans k N n k-small less)
+        VIII : - ε < h n - L < ε
+        VIII = ℚ-abs-<-unpack (h n - L) ε (δ n (≤-trans N₂ M n VI l))
 
-          I : - ε < g n - L
-          I = ℚ<-≤-trans fe (- ε) (f n - L) (g n - L) l₁ (ℚ≤-addition-preserves-order fe (f n) (g n) (- L) (pr₁ k-greater'))
-          II : g n - L < ε
-          II = ℚ≤-<-trans fe (g n - L) (h n - L) ε (ℚ≤-addition-preserves-order fe (g n) (h n) (- L) (pr₂ k-greater')) l₄
+        l₁ : f n ≤ g n ≤ h n
+        l₁ = α n (≤-trans N (max (max N₁ N₂) N) n I l)
+
+        IX : f n - L ≤ g n - L
+        IX = ℚ≤-addition-preserves-order (f n) (g n) (- L) (pr₁ l₁)
+
+        X : g n - L ≤ h n - L
+        X = ℚ≤-addition-preserves-order (g n) (h n) (- L) (pr₂ l₁)
+
+        γ₁ : - ε < g n - L
+        γ₁ = ℚ<-≤-trans (- ε) (f n - L) (g n - L) (pr₁ VII) IX
+
+        γ₂ : g n - L < ε
+        γ₂ = ℚ≤-<-trans (g n - L) (h n - L) ε X (pr₂ VIII)
 
 0f : ℕ → ℚ
 0f _ = 0ℚ
 
-0f-converges : 0ℚ limit-of 0f
-0f-converges ε l = 0 , f-conv
- where
-  f-conv : (n : ℕ) → 0 ≤ n → ℚ-metric (0f n) 0ℚ < ε
-  f-conv n less = transport (_< ε) I l
-   where
-    I : ℚ-metric (0f n) 0ℚ ＝ 0ℚ
-    I = ℚ-metric (0f n) 0ℚ    ＝⟨ by-definition ⟩
-        abs (0ℚ - 0ℚ)         ＝⟨ by-definition ⟩
-        abs 0ℚ                ＝⟨ by-definition ⟩
-        0ℚ ∎
+0f-converges : 0f ⟶ 0ℚ
+0f-converges ε₊@(ε , 0<ε) = 0 , (λ n _ → 0<ε)
 
 constant-sequence : (q : ℚ) → (n : ℕ) → ℚ
 constant-sequence q n = q
 
-constant-sequence-converges : (q : ℚ) → q limit-of (constant-sequence q)
-constant-sequence-converges q ε l = 0 , (λ n l₂ → transport (_< ε) I l)
+constant-sequence-converges : (q : ℚ) → (constant-sequence q) ⟶ q
+constant-sequence-converges q (ε , 0<ε) = 0 , γ
  where
-  I : 0ℚ ＝ ℚ-metric q q
-  I = ℚ-self-dist fe q ⁻¹
-
-open import Integers.Type hiding (abs)
-open import Rationals.FractionsOrder
-open import Rationals.FractionsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_ ; -_ to ℚₙ-_ ; abs to ℚₙ-abs)
-
-open import Notation.CanonicalMap
-
-embedding-ℕ-to-ℚ : ℕ → ℚ
-embedding-ℕ-to-ℚ n = toℚ (pos n , 0)
-
-embedding-1/ℕ-to-ℚ : ℕ → ℚ
-embedding-1/ℕ-to-ℚ n = toℚ (pos 1 , n)
-
-open import Naturals.Division
-open import Naturals.Addition renaming (_+_ to _ℕ+_)
-open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import Naturals.Properties
-open import Integers.Multiplication renaming (_*_ to _ℤ*_)
-open import Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
-open import Integers.Order
-
-positive-order-flip : (m n a b : ℕ) → ((pos (succ m)) , a) ℚₙ< ((pos (succ n)) , b)
-                                    → ((pos (succ a)) , m) ℚₙ> ((pos (succ b)) , n)
-positive-order-flip m n a b l = transport₂ _<_ I II l
- where
-  I : pos (succ m) ℤ* pos (succ b) ＝ pos (succ b) ℤ* pos (succ m)
-  I = (ℤ*-comm (pos (succ m)) (pos (succ b)))
-
-  II : pos (succ n) ℤ* pos (succ a) ＝ pos (succ a) ℤ* pos (succ n)
-  II = (ℤ*-comm (pos (succ n)) (pos (succ a)))
-
-open import Rationals.Fractions
-
-⟨1/sn⟩-converges : 0ℚ limit-of ⟨1/sn⟩
-⟨1/sn⟩-converges ((pos 0 , a) , ε)        l = 𝟘-elim (ℚ<-not-itself 0ℚ (transport (0ℚ <_) (numerator-zero-is-zero fe ((pos 0 , a) , ε) refl) l))
-⟨1/sn⟩-converges ((negsucc x , a) , ε)    l = 𝟘-elim (negative-not-greater-than-zero x a l)
-⟨1/sn⟩-converges ((pos (succ x) , a) , ε) l = q ℕ+ 1 , conclusion
- where
-  rough-N : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (succ a ＝ q ℕ* succ x ℕ+ r) × r < succ x
-  rough-N = division (succ a) x
-  q = pr₁ rough-N
-  r = pr₁ (pr₂ rough-N)
-
-  γ : succ a < succ x ℕ* (q ℕ+ 1)
-  γ = transport₂ _<_ ii iii i
+  γ : (n : ℕ) → 0 ≤ n → abs (constant-sequence q n - q) < ε
+  γ n _ = transport (_< ε) I 0<ε
    where
-    i : q ℕ* succ x ℕ+ r < q ℕ* succ x ℕ+ succ x
-    i = <-n-monotone-left r (succ x) (q ℕ* succ x) (pr₂ (pr₂ (pr₂ rough-N)))
+    I : 0ℚ ＝ abs (constant-sequence q n - q)
+    I = ℚ-zero-dist q ⁻¹
 
-    ii : q ℕ* succ x ℕ+ r ＝ succ a
-    ii = pr₁ (pr₂ (pr₂ rough-N)) ⁻¹
+⟨2/3⟩^_ : ℕ → ℚ
+⟨2/3⟩^ 0         = toℚ (pos 1 , 0)
+⟨2/3⟩^ (succ n)  = rec 2/3 (_* 2/3) n
 
-    iii : q ℕ* succ x ℕ+ succ x ＝ succ x ℕ* (q ℕ+ 1)
-    iii = q ℕ* succ x ℕ+ succ x      ＝⟨ ap₂ _ℕ+_ (mult-commutativity q (succ x)) (mult-right-id (succ x) ⁻¹) ⟩
-          succ x ℕ* q ℕ+ succ x ℕ* 1 ＝⟨ distributivity-mult-over-addition (succ x) q 1 ⁻¹                         ⟩
-          succ x ℕ* (q ℕ+ 1)         ∎
-  ζ : pos (succ a) < pos (succ x ℕ* (q ℕ+ 1))
-  ζ = ℕ-order-respects-ℤ-order (succ a) (succ x ℕ* (q ℕ+ 1)) γ
-
-  conclusion : (n : ℕ) → q ℕ+ 1 ≤ n → ℚ-metric (⟨1/sn⟩ n) 0ℚ < ((pos (succ x) , a) , ε)
-  conclusion 0 l' = 𝟘-elim l'
-  conclusion (succ n) l' = IV
-   where
-     I : pos (succ q) ≤ pos (succ n)
-     I = ℕ≤-to-ℤ≤ (succ q) (succ n) l'
-
-     II : (pos (succ a) , x) ℚₙ< (pos (succ n) , 0)
-     II = β (ℤ≤-split (pos (succ q)) (pos (succ n)) I)
-      where
-       τ : pos (succ x ℕ* (q ℕ+ 1)) ＝ pos (succ q) ℤ* pos (succ x)
-       τ = pos (succ x ℕ* (q ℕ+ 1))     ＝⟨ pos-multiplication-equiv-to-ℕ (succ x) (q ℕ+ 1) ⁻¹ ⟩
-           pos (succ x) ℤ* pos (q ℕ+ 1) ＝⟨ by-definition                                      ⟩
-           pos (succ x) ℤ* pos (succ q) ＝⟨ ℤ*-comm (pos (succ x)) (pos (succ q))              ⟩
-           pos (succ q) ℤ* pos (succ x) ∎
-       α : pos (succ a) ℤ* pos 1 < pos (succ q) ℤ* pos (succ x)
-       α = transport₂ _<_ (ℤ-mult-right-id (pos (succ a))) τ ζ
-       β : pos (succ q) < pos (succ n) ∔ (pos (succ q) ＝ pos (succ n)) → (pos (succ a) , x) ℚₙ< (pos (succ n) , 0)
-       β (inl less) = ℚₙ<-trans (pos (succ a) , x) (pos (succ q) , 0) (pos (succ n) , 0) α less
-       β (inr equal) = transport (λ - → (pos (succ a) , x) ℚₙ< (- , 0)) equal α
-
-     III : (pos (succ x) , a) ℚₙ> (pos 1 , n)
-     III = positive-order-flip a n x 0 II
-
-     IV : abs (toℚ ((pos 1) , n) - 0ℚ) < ((pos (succ x) , a) , ε)
-     IV = transport (_< ((pos (succ x) , a) , ε)) i iv
-      where
-       i : toℚ (pos 1 , n) ＝ abs (toℚ ((pos 1) , n) - 0ℚ)
-       i = toℚ (pos 1 , n)                               ＝⟨ by-definition                                                ⟩
-           toℚ (ℚₙ-abs (pos 1 , n))                      ＝⟨ toℚ-abs fe (pos 1 , n) ⁻¹                                     ⟩
-           abs (toℚ (pos 1 , n))                         ＝⟨ ap (λ - → abs (toℚ -)) (ℚₙ-zero-right-neutral (pos 1 , n) ⁻¹) ⟩
-           abs (toℚ ((pos 1 , n) ℚₙ+ (pos 0 , 0)))       ＝⟨ by-definition                                                 ⟩
-           abs (toℚ ((pos 1 , n) ℚₙ+ (ℚₙ- (pos 0 , 0)))) ＝⟨ ap abs (toℚ-subtraction fe (pos 1 , n) (pos 0 , 0) ⁻¹)        ⟩
-           abs (toℚ (pos 1 , n) - 0ℚ)                   ∎
-
-       ii : toℚ (pos 1 , n) < toℚ (pos (succ x) , a)
-       ii = toℚ-< (pos 1 , n) (pos (succ x) , a) III
-
-       iii : (pos (succ x) , a) , ε ＝ toℚ (pos (succ x) , a)
-       iii = toℚ-toℚₙ fe ((pos (succ x) , a) , ε)
-
-       iv : toℚ (pos 1 , n) < ((pos (succ x) , a) , ε)
-       iv = transport (toℚ (pos 1 , n) <_) (iii ⁻¹) ii
-
-limits-lemma : (k : ℕ) → ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) ℚₙ≤ (pos 1 , succ (succ k))
-limits-lemma k = k , I
- where
-  I : pos 2 ℤ* pos (succ (succ (succ k))) ℤ+ pos k ＝ pos 1 ℤ* pos (succ (pred (succ (succ k) ℕ* 3)))
-  I = pos 2 ℤ* pos (succ (succ (succ k))) ℤ+ pos k ＝⟨ by-definition                                                          ⟩
-      pos 2 ℤ* pos (k ℕ+ 3) ℤ+ pos k                  ＝⟨ ℤ+-comm (pos 2 ℤ* pos (k ℕ+ 3)) (pos k)                                ⟩
-      pos k ℤ+ pos 2 ℤ* pos (k ℕ+ 3)                  ＝⟨ ap (λ z → pos k ℤ+ pos 2 ℤ* z) (distributivity-pos-addition k 3 ⁻¹)        ⟩
-      pos k ℤ+ pos 2 ℤ* (pos k ℤ+ pos 3)              ＝⟨ ap (pos k ℤ+_) (distributivity-mult-over-ℤ' (pos k) (pos 3) (pos 2))   ⟩
-      pos k ℤ+ (pos 2 ℤ* pos k ℤ+ pos 6)              ＝⟨ ℤ+-assoc (pos k) (pos 2 ℤ* pos k) (pos 6) ⁻¹                           ⟩
-      pos k ℤ+ pos 2 ℤ* pos k ℤ+ pos 6                ＝⟨ ap (λ z → z ℤ+ pos 2 ℤ* pos k ℤ+ pos 6) (ℤ-mult-left-id (pos k) ⁻¹)    ⟩
-      pos 1 ℤ* pos k ℤ+ pos 2 ℤ* pos k ℤ+ pos 6       ＝⟨ ap (_ℤ+ pos 6) (distributivity-mult-over-ℤ (pos 1) (pos 2) (pos k) ⁻¹) ⟩
-      (pos 3) ℤ* pos k ℤ+ pos 6                       ＝⟨ ap (_ℤ+ pos 6) (ℤ*-comm (pos 3) (pos k))                               ⟩
-      pos k ℤ* pos 3 ℤ+ pos 6                         ＝⟨ distributivity-mult-over-ℤ (pos k) (pos 2) (pos 3) ⁻¹                  ⟩
-      (pos k ℤ+ pos 2) ℤ* pos 3                       ＝⟨ ap (_ℤ* pos 3) (distributivity-pos-addition k 2)                           ⟩
-      pos (k ℕ+ 2) ℤ* pos 3                           ＝⟨ by-definition                                                          ⟩
-      pos (succ (succ k)) ℤ* pos 3                    ＝⟨ denom-setup (succ k) 2 ⁻¹                                              ⟩
-      pos (succ (pred (succ (succ k) ℕ* 3)))          ＝⟨ ℤ-mult-left-id (pos (succ (pred (succ (succ k) ℕ* 3)))) ⁻¹             ⟩
-      pos 1 ℤ* pos (succ (pred (succ (succ k) ℕ* 3))) ∎
-
-
-
-4/9<1/2 : (⟨2/3⟩^ succ (succ 0)) ≤ℚ ⟨1/sn⟩ (succ (succ 0))
-4/9<1/2 =  transport (_≤ℚ toℚ (pos 1 , 1)) (toℚ-* fe (pos 2 , 2) (pos 2 , 2)) (toℚ-≤ (pos 4 , 8) (pos 1 , 1) (1 , refl))
-
-⟨2/3⟩^n-squeezed : Σ N ꞉ ℕ  , ((n : ℕ) → N ≤ n → (0f n ≤ (⟨2/3⟩^ n)) × (⟨2/3⟩^ n) ≤ ⟨1/sn⟩ n)
-⟨2/3⟩^n-squeezed = 1 , I
- where
-  γ : 0ℚ ≤ 2/3
-  γ = toℚ-≤ (pos 0 , 0) (pos 2 , 2) (2 , by-definition)
-  I  : (n : ℕ) → 1 ≤ n → (0f n ≤ (⟨2/3⟩^ n)) × ((⟨2/3⟩^ n) ≤ ⟨1/sn⟩ n)
-  I 0 l = 𝟘-elim l
-  I (succ n) l = II , III
-   where
-    II : 0ℚ ≤ (⟨2/3⟩^ succ n)
-    II = induction base step n
-     where
-      base : 0ℚ ≤ (⟨2/3⟩^ succ 0)
-      base = toℚ-≤ (pos 0 , 0) (pos 2 , 2) (2 , refl)
-      step : (k : ℕ) → 0ℚ ≤ (⟨2/3⟩^ succ k) → 0ℚ ≤ (⟨2/3⟩^ succ (succ k))
-      step k IH = i
-       where
-        i : (0ℚ * 2/3) ≤ ((⟨2/3⟩^ succ k) * 2/3)
-        i = ℚ≤-pos-multiplication-preserves-order' fe 0ℚ (⟨2/3⟩^ (succ k)) 2/3 IH γ
-
-    III : (⟨2/3⟩^ succ n) ≤ ⟨1/sn⟩ (succ n)
-    III = induction base step n
-     where
-      base : (⟨2/3⟩^ succ 0) ≤ ⟨1/sn⟩ (succ 0)
-      base = toℚ-≤ (pos 2 , 2) (pos 1 , 0) (1 , refl)
-      step : (k : ℕ)
-           → (⟨2/3⟩^ succ k) ≤ ⟨1/sn⟩ (succ k)
-           → (⟨2/3⟩^ succ (succ k)) ≤ ⟨1/sn⟩ (succ (succ k))
-      step 0 IH = goal
-       where
-        abstract
-         goal : (⟨2/3⟩^ succ (succ 0)) ≤ℚ ⟨1/sn⟩ (succ (succ 0))
-         goal = 4/9<1/2
-      step (succ k) IH = ℚ≤-trans fe (((⟨2/3⟩^ succ (succ k)) * 2/3)) ((⟨1/n⟩ (succ k) * 2/3)) (⟨1/n⟩ (succ (succ k))) i ii
-       where
-        i : ((⟨2/3⟩^ succ (succ k)) * 2/3) ≤ (⟨1/n⟩ (succ k) * 2/3)
-        i = ℚ≤-pos-multiplication-preserves-order' fe (⟨2/3⟩^ (succ (succ k))) (⟨1/n⟩ (succ k)) 2/3 IH γ
-        ii : (⟨1/n⟩ (succ k) * 2/3) ≤ ⟨1/n⟩ (succ (succ k))
-        ii = transport (_≤ ⟨1/n⟩ (succ (succ k))) (iii ⁻¹) iv
-         where
-          abstract
-           iii : (⟨1/n⟩ (succ k)) * 2/3 ＝ toℚ ((pos 1 , succ k) ℚₙ* (pos 2 , 2))
-           iii = toℚ-* fe (pos 1 , succ k) (pos 2 , 2) ⁻¹
-           iv : toℚ ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) ≤ℚ ⟨1/n⟩ (succ (succ k))
-           iv = toℚ-≤ ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) (pos 1 , succ (succ k)) (limits-lemma k)
-
-⟨2/3⟩^n-converges : 0ℚ limit-of ⟨2/3⟩^_
-⟨2/3⟩^n-converges = sandwich-theorem 0ℚ 0f ⟨2/3⟩^_ ⟨1/sn⟩ ⟨2/3⟩^n-squeezed 0f-converges ⟨1/sn⟩-converges
+⟨2/3⟩-to-mult : (n : ℕ) → ⟨2/3⟩^ (succ n) ＝ (⟨2/3⟩^ n) * 2/3
+⟨2/3⟩-to-mult 0 = refl
+⟨2/3⟩-to-mult (succ n) = refl
 
 ⟨2/3⟩^n-positive : (n : ℕ) → 0ℚ < (⟨2/3⟩^ n)
 ⟨2/3⟩^n-positive 0 = 0 , refl
-⟨2/3⟩^n-positive (succ n) = transport (0ℚ <_) III II
+⟨2/3⟩^n-positive (succ n) = transport (0ℚ <_) γ II
  where
   I : 0ℚ < (⟨2/3⟩^ n)
   I = ⟨2/3⟩^n-positive n
+
   II : 0ℚ < (⟨2/3⟩^ n) * 2/3
   II = ℚ<-pos-multiplication-preserves-order (⟨2/3⟩^ n) 2/3 I (1 , refl)
-  III : (⟨2/3⟩^ n) * 2/3 ＝ (⟨2/3⟩^ (succ n))
-  III = ⟨2/3⟩-to-mult fe n ⁻¹
 
-\end{code}
+  γ : (⟨2/3⟩^ n) * 2/3 ＝ (⟨2/3⟩^ (succ n))
+  γ = ⟨2/3⟩-to-mult n ⁻¹
 
-We want to have a universal property for dependent types
-
-\begin{code}
-{-
-dependent-type-universal-property : {X : 𝓤 ̇ } → (A B : X → 𝓤 ̇ )→ ((x : X) → A x × B x) → ((x : X) → A x) × ((x : X) → B x)
-dependent-type-universal-property A B f = (λ x → pr₁ (f x)) , (λ x → pr₂ (f x))
-
-open import UF.Subsingletons-FunExt
-
-dependent-type-universal-property-equivalence : {X : 𝓤 ̇ } → (A B : X → 𝓤 ̇ )→ ((x : X) → A x × B x) ≃ ((x : X) → A x) × ((x : X) → B x)
-dependent-type-universal-property-equivalence A B = dependent-type-universal-property A B , ((I , II) , III , IV)
+⟨2/3⟩-all-positive : (n : ℕ) → 0ℚ ≤ (⟨2/3⟩^ n)
+⟨2/3⟩-all-positive n = γ
  where
-  I : (∀ x → A x) × (∀ x → B x) → ∀ x → A x × B x
-  I (f , g) x = f x , g x
-  II : dependent-type-universal-property A B ∘ I ∼ id
-  II _ = refl
-  III : (∀ x → A x) × (∀ x → B x) → ∀ x → A x × B x
-  III (f , g) x = f x , g x
-  IV : III ∘ dependent-type-universal-property A B ∼ id
-  IV _ = refl
--}
+  I : 0ℚ < (⟨2/3⟩^ n)
+  I = ⟨2/3⟩^n-positive n
 
-generalised-dependent-type-universal-property : {X : 𝓤 ̇ } → (A : X → 𝓤 ̇ )→ (P : (x : X) → A x → 𝓤 ̇)
-                                                          → (∀ x → Σ a ꞉ A x , P x a)
-                                                          → Σ g ꞉ ((x : X) → A x) , ((x : X) → P x (g x))
-generalised-dependent-type-universal-property A P f = (λ x → pr₁ (f x)) , λ x → pr₂ (f x)
+  γ : 0ℚ ≤ (⟨2/3⟩^ n)
+  γ = ℚ<-coarser-than-≤ 0ℚ (⟨2/3⟩^ n) I
 
-RationalsCauchySequence : (S : ℕ → ℚ) → 𝓤₀ ̇
-RationalsCauchySequence = cauchy-sequence ℚ ℚ-metric-space
+⟨1/n⟩ : ℕ → ℚ
+⟨1/n⟩ n = toℚ (pos 1 , n)
 
-open import Rationals.Addition
+⟨1/sn⟩ : ℕ → ℚ
+⟨1/sn⟩ 0 = 1ℚ
+⟨1/sn⟩ (succ n) = ⟨1/n⟩ n
 
-every-point-in-ℚ-is-limit-point : (q : ℚ) → Σ S ꞉ (ℕ → ℚ) , (q limit-of S)
-every-point-in-ℚ-is-limit-point q = (constant-sequence q) , (constant-sequence-converges q)
+⟨1/n⟩-1 : ⟨1/n⟩ 0 ＝ 1ℚ
+⟨1/n⟩-1 = refl
+
+⟨1/n⟩-1/2 : ⟨1/n⟩ 1 ＝ 1/2
+⟨1/n⟩-1/2 = refl
+
+⟨1/2⟩^_ : ℕ → ℚ
+⟨1/2⟩^ 0         = toℚ (pos 1 , 0)
+⟨1/2⟩^ (succ n)  = rec (1/2) (_* 1/2) n
+
+⟨1/sn⟩-converges-lemma : (a n x q r : ℕ)
+                       → succ a ＝ q ℕ* succ x ℕ+ r
+                       → r < succ x
+                       → succ q ≤ succ n
+                       → pos (succ a) < pos (succ n) ℤ* pos (succ x)
+⟨1/sn⟩-converges-lemma a n x q r e l₁ l₂ = γ
+ where
+  x' = succ x
+  q' = succ q
+  a' = succ a
+  n' = succ n
+
+  I : pos r < pos x'
+  I = ℕ-order-respects-ℤ-order r x' l₁
+
+  II : pos (q ℕ* x') ℤ+ pos r < pos (q ℕ* x') ℤ+ pos x'
+  II = ℤ<-adding-left (pos r) (pos x') (pos (q ℕ* x')) I
+
+  III : pos (q ℕ* x') ℤ+ pos r ＝ pos a'
+  III = pos (q ℕ* x') ℤ+ pos r ＝⟨ distributivity-pos-addition (q ℕ* x') r ⟩
+        pos (q ℕ* x' ℕ+ r)     ＝⟨ ap pos (e ⁻¹)                           ⟩
+        pos a'               ∎
+
+  IV : pos (q ℕ* x') ℤ+ pos x' ＝ pos q' ℤ* pos x'
+  IV = pos (q ℕ* x') ℤ+ pos x' ＝⟨ i   ⟩
+       pos x' ℤ+ pos (q ℕ* x') ＝⟨ ii  ⟩
+       pos x' ℤ+ pos (x' ℕ* q) ＝⟨ iii ⟩
+       pos x' ℤ* pos q'        ＝⟨ iv  ⟩
+       pos q' ℤ* pos x'        ∎
+   where
+    i   = ℤ+-comm (pos (q ℕ* x')) (pos x')
+    ii  = ap (λ ■ → pos x' ℤ+ (pos ■)) (mult-commutativity q x')
+    iii = ap (pos x' ℤ+_) (pos-multiplication-equiv-to-ℕ x' q ⁻¹)
+    iv  = ℤ*-comm (pos x') (pos q')
+
+  V : pos a' < pos q' ℤ* pos x'
+  V = transport₂ _<_ III IV II
+
+  VI : pos q' ≤ pos n'
+  VI = ℕ≤-to-ℤ≤ q' n' l₂
+
+  VII : pos q' ℤ* pos x' ≤ pos n' ℤ* pos x'
+  VII = positive-multiplication-preserves-order' (pos q') (pos n') (pos x') ⋆ VI
+
+  γ : pos a' < pos n' ℤ* pos x'
+  γ = ℤ<-≤-trans (pos a') (pos q' ℤ* pos x') (pos n' ℤ* pos x') V VII
+
+⟨1/sn⟩-converges : ⟨1/sn⟩ ⟶ 0ℚ
+⟨1/sn⟩-converges (ε@((pos 0 , a) , p) , 0<ε) = 𝟘-elim γ
+ where
+  I : ε ＝ 0ℚ
+  I = numerator-zero-is-zero ((pos 0 , a) , p) refl
+
+  II : 0ℚ < 0ℚ
+  II = transport (0ℚ <_) I 0<ε
+
+  γ : 𝟘
+  γ = ℚ<-irrefl 0ℚ II
+⟨1/sn⟩-converges ε₊@(((negsucc x , a) , p) , 0<ε) = 𝟘-elim γ
+ where
+  γ : 𝟘
+  γ = negative-not-greater-than-zero x a 0<ε
+⟨1/sn⟩-converges ε₊@(((pos (succ x) , a) , p) , 0<ε) = γ (division (succ a) x)
+ where
+  γ : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (succ a ＝ q ℕ* succ x ℕ+ r) × (r < succ x)
+    → Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → abs (⟨1/sn⟩ n - 0ℚ) < ε₊)
+  γ (q , r , e , l₁) = succ q , γ'
+   where
+    γ' : (n : ℕ)
+       → succ q < succ n
+       → abs (⟨1/sn⟩ n - 0ℚ) <ℚ ((pos (succ x) , a) , p)
+    γ' 0 l₂ = 𝟘-elim l₂
+    γ' (succ n) l₂ = γ''
+     where
+      I : pos 0 ＝ pos 0 ℤ* pos (succ n)
+      I = ℤ-zero-left-base (pos (succ n)) ⁻¹
+
+      II : pos 0 ℤ* pos (succ n) < pos 1
+      II = transport (_< pos 1) I (0 , refl)
+
+      III : 0ℚ < toℚ (pos 1 , n)
+      III = toℚ-< (pos 0 , 0) (pos 1 , n) II
+
+      IV : toℚ (pos 1 , n) ＝ abs (⟨1/n⟩ n + 0ℚ)
+      IV = toℚ (pos 1 , n)       ＝⟨ i  ⟩
+           abs (toℚ (pos 1 , n)) ＝⟨ ii ⟩
+           abs (⟨1/n⟩ n + 0ℚ)    ∎
+       where
+        i  = abs-of-pos-is-pos' (toℚ (pos 1 , n)) III ⁻¹
+        ii = ap abs (ℚ-zero-right-neutral (⟨1/n⟩ n)) ⁻¹
+
+      V : toℚ (pos (succ x) , a) ＝ ((pos (succ x) , a) , p)
+      V = toℚ-to𝔽 ((pos (succ x) , a) , p) ⁻¹
+
+      VI : pos (succ a) < pos (succ n) ℤ* pos (succ x)
+      VI = ⟨1/sn⟩-converges-lemma a n x q r e l₁ l₂
+
+      VII : (pos 1 , n) 𝔽< (pos (succ x) , a)
+      VII = positive-order-flip a n x 0 VI
+
+      VIII : toℚ (pos 1 , n) < toℚ (pos (succ x) , a)
+      VIII = toℚ-< (pos 1 , n) (pos (succ x) , a) VII
+
+      γ'' : abs (⟨1/n⟩ n - 0ℚ) <ℚ ((pos (succ x) , a) , p)
+      γ'' = transport₂ _<_ IV V VIII
+
+⟨1/sn⟩-bounds-⟨2/3⟩-lemma : (n : ℕ)
+                          → (⟨1/sn⟩ (succ (succ n))) * 2/3
+                          ≤ ⟨1/sn⟩ (succ (succ (succ n)))
+⟨1/sn⟩-bounds-⟨2/3⟩-lemma n = γ
+ where
+  n+2 = succ (succ n)
+  n+3 = succ (n+2)
+
+  1' = pos 1
+  2' = pos 2
+  3' = pos 3
+  6' = pos 6
+  n' = pos n
+
+  I : 2' ℤ* n' ℤ+ 6' ＝ 2' ℤ* pos (n ℕ+ 3)
+  I = 2' ℤ* n' ℤ+ 6'      ＝⟨ distributivity-mult-over-ℤ' n' 3' 2' ⁻¹       ⟩
+      2' ℤ* (n' ℤ+ 3')    ＝⟨ ap (2' ℤ*_) (distributivity-pos-addition n 3) ⟩
+      2' ℤ* pos (n ℕ+ 3)  ∎
+
+  II : 3' ℤ* n' ℤ+ 6' ＝ 1' ℤ* pos (succ (pred (n+2 ℕ* 3)))
+  II = 3' ℤ* n' ℤ+ 6'                     ＝⟨ i   ⟩
+       pos (3 ℕ* n) ℤ+ 6'                 ＝⟨ ii  ⟩
+       pos (3 ℕ* n ℕ+ 6)                  ＝⟨ iii ⟩
+       pos (3 ℕ* n+2)                     ＝⟨ iv  ⟩
+       pos (n+2 ℕ* 3)                     ＝⟨ v   ⟩
+       pos (succ (pred (n+2 ℕ* 3)))       ＝⟨ vi  ⟩
+       1' ℤ* pos (succ (pred (n+2 ℕ* 3))) ∎
+   where
+    i   = ap (_ℤ+ 6') (pos-multiplication-equiv-to-ℕ 3 n)
+    ii  = distributivity-pos-addition (3 ℕ* n) 6
+    iii = ap pos (distributivity-mult-over-addition 3 n 2 ⁻¹)
+    iv  = ap pos (mult-commutativity 3 n+2)
+    v   = ap pos (succ-pred-multiplication (succ n) 2)
+    vi  = ℤ-mult-left-id _ ⁻¹
+
+  III : pos 0 ≤ n'
+  III = ℤ-zero-least-pos n
+
+  IV : 2' ℤ* n' ≤ 3' ℤ* n'
+  IV = ℤ*-multiplication-order 2' 3' n' III (1 , refl)
+
+  V : 2' ℤ* n' ℤ+ 6' ≤ 3' ℤ* n' ℤ+ 6'
+  V = ℤ≤-adding' (2' ℤ* n') (3' ℤ* n') 6' IV
+
+  VI : 2' ℤ* pos n+3 ≤ 1' ℤ* pos (succ (pred (n+2 ℕ* 3)))
+  VI = transport₂ _≤_ I II V
+
+  VII : toℚ ((1' , succ n) 𝔽* (2' , 2)) ≤ toℚ (1' , n+2)
+  VII = toℚ-≤ ((1' , succ n) 𝔽* (2' , 2)) (1' , n+2) VI
+
+  VIII : toℚ ((1' , succ n) 𝔽* (2' , 2)) ＝ toℚ (1' , succ n) * 2/3
+  VIII = toℚ-* (1' , succ n) (2' , 2)
+
+  γ : (⟨1/sn⟩ n+2) * 2/3 ≤ ⟨1/sn⟩ n+3
+  γ = transport (_≤ ⟨1/sn⟩ n+3) VIII VII
+
+⟨1/sn⟩-bounds-⟨2/3⟩ : (n : ℕ) → (⟨2/3⟩^ n) ≤ ⟨1/sn⟩ n
+⟨1/sn⟩-bounds-⟨2/3⟩ = ℕ-induction base step
+ where
+  base : 1ℚ ≤ 1ℚ
+  base = 0 , refl
+
+  step : (n : ℕ) → (⟨2/3⟩^ n) ≤ (⟨1/sn⟩ n) → (⟨2/3⟩^ succ n) ≤ ⟨1/sn⟩ (succ n)
+  step 0 IH = 1 , refl
+  step 1 IH = 1 , refl
+  step (succ (succ n)) IH = γ
+   where
+    S₁⦅n+2⦆ = ⟨2/3⟩^ (succ (succ n))
+    S₁⦅n+3⦆ = ⟨2/3⟩^ (succ (succ (succ n)))
+    S₂⦅n+2⦆ = ⟨1/sn⟩ (succ (succ n))
+    S₂⦅n+3⦆ = ⟨1/sn⟩ (succ (succ (succ n)))
+
+    I : S₁⦅n+2⦆ * 2/3 ≤ S₂⦅n+2⦆ * 2/3
+    I = ℚ≤-pos-multiplication-preserves-order' S₁⦅n+2⦆ S₂⦅n+2⦆  2/3 IH (2 , refl)
+
+    II : S₂⦅n+2⦆ * 2/3 ≤ S₂⦅n+3⦆
+    II = ⟨1/sn⟩-bounds-⟨2/3⟩-lemma n
+
+    γ : S₁⦅n+3⦆ ≤ S₂⦅n+3⦆
+    γ = ℚ≤-trans (S₁⦅n+2⦆ * 2/3) (S₂⦅n+2⦆ * 2/3) S₂⦅n+3⦆ I II
+
+⟨2/3⟩^n-squeezed : Σ N ꞉ ℕ  , ((n : ℕ) → (N ≤ n) → (0f n ≤ ⟨2/3⟩^ n ≤ ⟨1/sn⟩ n))
+⟨2/3⟩^n-squeezed = 1 , γ
+ where
+  γ : (n : ℕ) → 1 ≤ n → (0f n ≤ ⟨2/3⟩^ n ≤ ⟨1/sn⟩ n)
+  γ n l = γ₁ , γ₂
+   where
+    γ₁ : 0ℚ ≤ (⟨2/3⟩^ n)
+    γ₁ = ⟨2/3⟩-all-positive n
+
+    γ₂ : (⟨2/3⟩^ n) ≤ (⟨1/sn⟩ n)
+    γ₂ = ⟨1/sn⟩-bounds-⟨2/3⟩ n
+
+⟨2/3⟩^n-converges : ⟨2/3⟩^_ ⟶ 0ℚ
+⟨2/3⟩^n-converges =
+ sandwich-theorem
+  0ℚ 0f ⟨2/3⟩^_ ⟨1/sn⟩
+   ⟨2/3⟩^n-squeezed
+   0f-converges
+   ⟨1/sn⟩-converges
+
+⟨2/3⟩^n<ε : (ε : ℚ₊) → Σ n ꞉ ℕ , (⟨2/3⟩^ n) < ε
+⟨2/3⟩^n<ε ε = γ (⟨2/3⟩^n-converges ε)
+ where
+  γ : Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → abs ((⟨2/3⟩^ n) - 0ℚ) < ε)
+    → Σ n ꞉ ℕ , (⟨2/3⟩^ n) < ε
+  γ (N , f) = N , γ'
+   where
+    I : abs ((⟨2/3⟩^ N) - 0ℚ) < ε
+    I = f N (≤-refl N)
+
+    II : 0ℚ < (⟨2/3⟩^ N)
+    II = ⟨2/3⟩^n-positive N
+
+    III : abs ((⟨2/3⟩^ N) - 0ℚ) ＝ ⟨2/3⟩^ N
+    III = abs ((⟨2/3⟩^ N) + 0ℚ) ＝⟨ ap abs (ℚ-zero-right-neutral (⟨2/3⟩^ N)) ⟩
+          abs (⟨2/3⟩^ N)        ＝⟨ abs-of-pos-is-pos' (⟨2/3⟩^ N) II         ⟩
+          (⟨2/3⟩^ N)            ∎
+
+    γ' : (⟨2/3⟩^ N) < ε
+    γ' = transport (_< ε) III I
+
+⟨2/3⟩^n<ε-consequence : (ε (p , _) : ℚ₊) → Σ n ꞉ ℕ , (⟨2/3⟩^ n) * p < ε
+⟨2/3⟩^n<ε-consequence (ε , 0<ε) (p , 0<p) = γ (⟨2/3⟩^n<ε (ε * p' , 0<εp'))
+ where
+  p-not-zero : ¬ (p ＝ 0ℚ)
+  p-not-zero = ℚ<-positive-not-zero p 0<p
+
+  p' : ℚ
+  p' = ℚ*-inv p p-not-zero
+
+  0<p' : 0ℚ < p'
+  0<p' = ℚ-inv-preserves-pos p 0<p p-not-zero
+
+  0<εp' : 0ℚ < ε * p'
+  0<εp' = ℚ<-pos-multiplication-preserves-order ε p' 0<ε 0<p'
+
+  γ : Σ n ꞉ ℕ , (⟨2/3⟩^ n) < ε * p'
+    → Σ n ꞉ ℕ , (⟨2/3⟩^ n) * p < ε
+  γ (n , l) = n , γ'
+   where
+    I : (⟨2/3⟩^ n) * p < ε * p' * p
+    I = ℚ<-pos-multiplication-preserves-order' (⟨2/3⟩^ n) (ε * p') p l 0<p
+
+    II : ε * p' * p ＝ ε
+    II = ε * p' * p   ＝⟨ ℚ*-assoc ε p' p                             ⟩
+         ε * (p' * p) ＝⟨ ap (ε *_) (ℚ*-comm p' p)                    ⟩
+         ε * (p * p') ＝⟨ ap (ε *_) (ℚ*-inverse-product p p-not-zero) ⟩
+         ε * 1ℚ       ＝⟨ ℚ-mult-right-id ε                           ⟩
+         ε            ∎
+
+    γ' : (⟨2/3⟩^ n) * p < ε
+    γ' = transport ((⟨2/3⟩^ n) * p <_) II I
 
 \end{code}

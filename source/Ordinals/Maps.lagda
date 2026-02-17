@@ -4,28 +4,21 @@ Various maps of ordinals, including equivalences.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
-open import UF.Univalence
 
 module Ordinals.Maps where
 
 open import MLTT.Spartan
-open import Notation.CanonicalMap
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Equiv-FunExt
-open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
-open import UF.Yoneda
 
 \end{code}
 
@@ -142,7 +135,7 @@ simulations-are-lc α β f (i , p) = γ
     → is-accessible (underlying-order α) y
     → f x ＝ f y
     → x ＝ y
-  φ x y (step s) (step t) r = Extensionality α x y g h
+  φ x y (acc s) (acc t) r = Extensionality α x y g h
    where
     g : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
     g u l = d
@@ -176,6 +169,15 @@ simulations-are-lc α β f (i , p) = γ
 
   γ : left-cancellable f
   γ {x} {y} = φ x y (Well-foundedness α x) (Well-foundedness α y)
+
+simulations-are-embeddings : FunExt
+                           → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                             (f : ⟨ α ⟩ → ⟨ β ⟩)
+                           → is-simulation α β f
+                           → is-embedding f
+simulations-are-embeddings fe α β f s = lc-maps-into-sets-are-embeddings f
+                                         (simulations-are-lc α β f s)
+                                         (underlying-type-is-set fe β)
 
 being-initial-segment-is-prop : Fun-Ext
                               → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
@@ -218,7 +220,7 @@ being-simulation-is-prop fe α β f =
   (being-initial-segment-is-prop fe α β f ,
    (λ _ → being-order-preserving-is-prop fe α β f))
 
-lc-initial-segments-are-order-reflecting : (α β : Ordinal 𝓤)
+lc-initial-segments-are-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                            (f : ⟨ α ⟩ → ⟨ β ⟩)
                                          → is-initial-segment α β f
                                          → left-cancellable f
@@ -231,7 +233,7 @@ lc-initial-segments-are-order-reflecting α β f i c x y l = m
   m : x ≺⟨ α ⟩ y
   m = transport (λ - → - ≺⟨ α ⟩ y) (c (pr₂ (pr₂ a))) (pr₁ (pr₂ a))
 
-simulations-are-order-reflecting : (α β : Ordinal 𝓤)
+simulations-are-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                    (f : ⟨ α ⟩ → ⟨ β ⟩)
                                  → is-simulation α β f
                                  → is-order-reflecting α β f
@@ -239,7 +241,7 @@ simulations-are-order-reflecting α β f (i , p) =
  lc-initial-segments-are-order-reflecting α β f i
   (simulations-are-lc α β f (i , p))
 
-order-embeddings-are-lc : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
+order-embeddings-are-lc : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                         → is-order-embedding α β f
                         → left-cancellable f
 order-embeddings-are-lc α β f (p , r) {x} {y} s = γ
@@ -268,7 +270,7 @@ order-embeddings-are-lc α β f (p , r) {x} {y} s = γ
   γ = Extensionality α x y a b
 
 order-embedings-are-embeddings : FunExt
-                               → (α β : Ordinal 𝓤)
+                               → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                  (f : ⟨ α ⟩ → ⟨ β ⟩)
                                → is-order-embedding α β f
                                → is-embedding f
@@ -277,7 +279,7 @@ order-embedings-are-embeddings fe α β f (p , r) =
    (order-embeddings-are-lc α β f (p , r))
    (underlying-type-is-set fe β)
 
-simulations-are-monotone : (α β : Ordinal 𝓤)
+simulations-are-monotone : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                            (f : ⟨ α ⟩ → ⟨ β ⟩)
                          → is-simulation α β f
                          → is-monotone α β f
@@ -313,7 +315,7 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = γ
   φ : ∀ x
     → is-accessible (underlying-order α) x
     → f x ＝ f' x
-  φ x (step u) = Extensionality β (f x) (f' x) a b
+  φ x (acc u) = Extensionality β (f x) (f' x) a b
    where
     IH : ∀ y → y ≺⟨ α ⟩ x → f y ＝ f' y
     IH y l = φ y (u y l)
@@ -455,7 +457,7 @@ module _ (pt : propositional-truncations-exist)
      → is-accessible (underlying-order α) y
      → f x ＝ f y
      → x ＝ y
-   φ x y (step s) (step t) r = Extensionality α x y g h
+   φ x y (acc s) (acc t) r = Extensionality α x y g h
     where
      g : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
      g u l = ∥∥-rec (Prop-valuedness α u y) b (i y (f u) a)
@@ -512,4 +514,36 @@ module _ (pt : propositional-truncations-exist)
 
        ⦅2⦆ : z ＝ z'
        ⦅2⦆ = simulations-are-lc' α β f (i , p) (e ∙ e' ⁻¹)
+\end{code}
+
+Added 11 December 2024 by Tom de Jong.
+
+\begin{code}
+
+order-reflecting-partial-surjections-are-initial-segments
+ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
+ → is-order-reflecting α β f
+ → ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → b ≺⟨ β ⟩ f a → Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b)
+ → is-initial-segment α β f
+order-reflecting-partial-surjections-are-initial-segments
+ α β f f-order-reflec σ a b l = pr₁ (σ a b l) , k , pr₂ (σ a b l)
+ where
+  a' : ⟨ α ⟩
+  a' = pr₁ (σ a b l)
+  e : f a' ＝ b
+  e = pr₂ (σ a b l)
+  k : a' ≺⟨ α ⟩ a
+  k = f-order-reflec a' a (transport⁻¹ (λ - → - ≺⟨ β ⟩ f a) e l)
+
+order-preserving-and-reflecting-partial-surjections-are-simulations :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
+ → is-order-preserving α β f
+ → is-order-reflecting α β f
+ → ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → b ≺⟨ β ⟩ f a → Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b)
+ → is-simulation α β f
+order-preserving-and-reflecting-partial-surjections-are-simulations
+ α β f f-op f-or σ =
+  order-reflecting-partial-surjections-are-initial-segments α β f f-or σ ,
+  f-op
+
 \end{code}

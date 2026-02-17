@@ -10,7 +10,7 @@ a depolarized deductive system is the same thing as a precategory.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
@@ -20,12 +20,10 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
 open import UF.PropTrunc
-open import UF.Retracts
-open import UF.hlevels
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Categories.Category fe
+open import gist.Categories.Category fe
 open import Duploids.DeductiveSystem fe
 
 module _ (𝓓 : deductive-system 𝓤 𝓥) where

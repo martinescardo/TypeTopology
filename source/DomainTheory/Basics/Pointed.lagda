@@ -12,7 +12,7 @@ and that these are preserved by maps that are both strict and Scott continuous.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -81,6 +81,15 @@ is-strict : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
           → 𝓤' ̇
 is-strict 𝓓 𝓔 f = f (⊥ 𝓓) ＝ ⊥ 𝓔
 
+∘-is-strict : {𝓤'' 𝓣'' : Universe}
+              (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+              (𝓔' : DCPO⊥ {𝓤''} {𝓣''})
+              (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫) (g : ⟪ 𝓔 ⟫ → ⟪ 𝓔' ⟫)
+            → is-strict 𝓓 𝓔 f
+            → is-strict 𝓔 𝓔' g
+            → is-strict 𝓓 𝓔' (g ∘ f)
+∘-is-strict 𝓓 𝓔 𝓔' f g sf sg = ap g sf ∙ sg
+
 being-strict-is-prop : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
                        (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
                      → is-prop (is-strict 𝓓 𝓔 f)
@@ -108,6 +117,11 @@ _≃ᵈᶜᵖᵒ⊥_ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {�
                × is-continuous (𝓔 ⁻) (𝓓 ⁻) g
                × is-strict 𝓓 𝓔 f
                × is-strict 𝓔 𝓓 g
+
+≃ᵈᶜᵖᵒ⊥-to-≃ᵈᶜᵖᵒ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+                → 𝓓 ≃ᵈᶜᵖᵒ⊥ 𝓔 → (𝓓 ⁻) ≃ᵈᶜᵖᵒ (𝓔 ⁻)
+≃ᵈᶜᵖᵒ⊥-to-≃ᵈᶜᵖᵒ 𝓓 𝓔 (f , g , s , r , cf , cg , sf , sg) =
+ f , g , s , r , cf , cg
 
 ≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
                 → (𝓓 ⁻) ≃ᵈᶜᵖᵒ (𝓔 ⁻) → 𝓓 ≃ᵈᶜᵖᵒ⊥ 𝓔
@@ -205,6 +219,26 @@ semidirected-complete-if-pointed 𝓓 {I} {α} σ = x , x-is-sup
   x = ∐ (𝓓 ⁻) δ
   x-is-sup : is-sup (underlying-order (𝓓 ⁻)) x α
   x-is-sup = adding-⊥-reflects-sup 𝓓 α x (∐-is-sup (𝓓 ⁻) δ)
+
+pointed-if-semidirected-complete : (𝓓 : DCPO {𝓤} {𝓣})
+                                 → ({I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
+                                       → is-semidirected (underlying-order 𝓓) α
+                                       → has-sup (underlying-order 𝓓) α)
+                                 → has-least (underlying-order 𝓓)
+pointed-if-semidirected-complete 𝓓 c = x , x-is-least
+ where
+  α : 𝟘 → ⟨ 𝓓 ⟩
+  α = 𝟘-elim
+  σ : is-semidirected (underlying-order 𝓓) α
+  σ = 𝟘-induction
+  x : ⟨ 𝓓 ⟩
+  x = the-sup (underlying-order 𝓓) (c σ)
+  x-is-least : is-least (underlying-order 𝓓) x
+  x-is-least y =
+   sup-is-lowerbound-of-upperbounds
+    (underlying-order 𝓓)
+    (sup-property (underlying-order 𝓓) (c σ))
+    y 𝟘-induction
 
 ∐ˢᵈ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
     → is-semidirected (underlying-order (𝓓 ⁻)) α → ⟪ 𝓓 ⟫
@@ -337,5 +371,16 @@ preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
              → α ＝ β
              → ∐ˢˢ 𝓓 α ρ ＝ ∐ˢˢ 𝓓 β ρ
 ∐ˢˢ-family-＝ 𝓓 ρ refl = refl
+
+∐ˢˢ-＝-if-domain-holds : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ }
+                         {α : I → ⟪ 𝓓 ⟫} (ρ : is-prop I)
+                       → (i : I) → ∐ˢˢ 𝓓 α ρ ＝ α i
+∐ˢˢ-＝-if-domain-holds 𝓓 {I} {α} ρ i =
+ antisymmetry (𝓓 ⁻) (∐ˢˢ 𝓓 α ρ) (α i)
+  (∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 α ρ (α i) l)
+  (∐ˢˢ-is-upperbound 𝓓 α ρ i)
+   where
+    l : (j : I) → α j ⊑⟪ 𝓓 ⟫ α i
+    l j = transport (λ - → α - ⊑⟪ 𝓓 ⟫ α i) (ρ i j) (reflexivity (𝓓 ⁻) (α i))
 
 \end{code}

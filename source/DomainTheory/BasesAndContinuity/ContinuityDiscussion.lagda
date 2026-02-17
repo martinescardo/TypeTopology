@@ -10,9 +10,9 @@ Johnstone and André Joyal, we discuss the notions
 (1) and (2) are defined in Continuity.lagda and (3) is defined and examined here.
 The notions (1)-(3) have the following shapes:
 
-(1)   Π (x : D) →   Σ I : 𝓥 ̇  , Σ α : I → D , α is-directed × ... × ...
-(2) ∥ Π (x : D) →   Σ I : 𝓥 ̇  , Σ α : I → D , α is-directed × ... × ... ∥
-(3)   Π (x : D) → ∥ Σ I : 𝓥 ̇  , Σ α : I → D , α is-directed × ... × ... ∥
+(1)   Π (x : D) →   Σ I : 𝓥 ̇ , Σ α : I → D , α is-directed × ... × ...
+(2) ∥ Π (x : D) →   Σ I : 𝓥 ̇ , Σ α : I → D , α is-directed × ... × ... ∥
+(3)   Π (x : D) → ∥ Σ I : 𝓥 ̇ , Σ α : I → D , α is-directed × ... × ... ∥
 
 So (2) and (3) are propositions, but (1) isn't. We illustrate (1)-(3) by
 discussion them in terms of left adjoints. In these discussions, the
@@ -36,7 +36,7 @@ pseudocontinuity.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -53,6 +53,7 @@ open PropositionalTruncation pt
 open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
+open import UF.Hedberg
 open import UF.ImageAndSurjection pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -75,7 +76,7 @@ using Σ-types.
 structurally-continuous-Σ : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 structurally-continuous-Σ 𝓓 =
    (x : ⟨ 𝓓 ⟩)
- → Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
+ → Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
                                  × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x)
 
 
@@ -101,7 +102,7 @@ structurally-continuous-from-Σ 𝓓 C' =
   ; approximating-family-is-directed  = λ x → pr₁ (pr₂ (pr₂ (pr₂ (C' x))))
   ; approximating-family-is-way-below = λ x → pr₁ (pr₂ (pr₂ (C' x)))
   ; approximating-family-∐-＝          = λ x → pr₂ (pr₂ (pr₂ (pr₂ (C' x))))
-  }
+ }
 
 structurally-continuous-≃ : (𝓓 : DCPO {𝓤} {𝓣})
                           → structurally-continuous 𝓓
@@ -141,7 +142,7 @@ module _
    ; approximating-family-is-directed  = λ x → pr₂ (pr₂ (L x))
    ; approximating-family-is-way-below = λ x → pr₂ (L-is-approximating x)
    ; approximating-family-∐-＝          = λ x → pr₁ (L-is-approximating x)
-   }
+  }
    where
     L-is-approximating : is-approximating L
     L-is-approximating = ⌜ left-adjoint-to-∐-map-characterization L ⌝⁻¹ L-left-adjoint
@@ -177,9 +178,9 @@ module _
    σ (L , L-left-adjoint) =
     to-subtype-＝ being-left-adjoint-to-∐-map-is-prop refl
    τ : f ∘ g ∼ id
-   τ C = f (g C)         ＝⟨ refl ⟩
+   τ C = f (g C)         ＝⟨refl⟩
          ϕ (ψ (f (g C))) ＝⟨ h    ⟩
-         ϕ (ψ C)         ＝⟨ refl ⟩
+         ϕ (ψ C)         ＝⟨refl⟩
          C               ∎
     where
      ϕ : structurally-continuous-Σ 𝓓 → structurally-continuous 𝓓
@@ -232,7 +233,7 @@ trying to mimick the proof in Continuity.lagda.
 is-pseudocontinuous-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-pseudocontinuous-dcpo 𝓓 =
    (x : ⟨ 𝓓 ⟩)
- → ∥ Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
+ → ∥ Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
                                    × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x) ∥
 
 being-pseudocontinuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
@@ -268,11 +269,15 @@ module _
         (𝓓 : DCPO {𝓤} {𝓣})
        where
 
+ open import Quotient.Type
+ open import Quotient.Large pt fe pe
+ open general-set-quotients-exist large-set-quotients
+
  open Ind-completion 𝓓
  open Ind-completion-poset-reflection pe 𝓓
 
  ⊑-∐-map/-lemma : {x : ⟨ 𝓓 ⟩} {σ : Ind}
-               → (x ⊑⟨ 𝓓 ⟩ ∐-map σ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η σ))
+               → (x ⊑⟨ 𝓓 ⟩ ∐-map σ) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η σ))
  ⊑-∐-map/-lemma {x} {σ} = transport (λ - → x ⊑⟨ 𝓓 ⟩ -) ((∐-map/-triangle σ) ⁻¹)
                        , transport (λ - → x ⊑⟨ 𝓓 ⟩ -) (∐-map/-triangle σ)
 
@@ -282,7 +287,7 @@ module _
   where
    module construction (x : ⟨ 𝓓 ⟩) where
     str-cont : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-    str-cont = (Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩)
+    str-cont = (Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → ⟨ 𝓓 ⟩)
                           , is-way-upperbound 𝓓 x α
                           × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x))
     κ : str-cont → Ind
@@ -291,7 +296,7 @@ module _
     κ-gives-approximating-family (I , α , α-wb-x , (δ , ∐α-is-x)) =
      ∐α-is-x , α-wb-x
 
-    ladj : (σ : str-cont) (τ : Ind) → (κ σ ≲ τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map τ)
+    ladj : (σ : str-cont) (τ : Ind) → (κ σ ≲ τ) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map τ)
     ladj σ τ = left-adjunct-to-if-approximates
                 (κ σ) x (κ-gives-approximating-family σ) τ
 
@@ -318,23 +323,23 @@ module _
     where
      open construction x
      adj-condition-is-prop : (τ' : Ind/≈)
-                           → is-prop ((L x ≤ τ') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ τ'))
+                           → is-prop ((L x ≤ τ') ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ τ'))
      adj-condition-is-prop τ' =
       (×-is-prop (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map/ τ')))
                  (Π-is-prop fe (λ _ → ≤-is-prop-valued (L x) τ')))
-     lemma : (σ : str-cont) (τ' : Ind/≈) → ((L x ≤ τ') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ τ'))
-     lemma σ = /-induction adj-condition-is-prop L-is-ladj'
+     lemma : (σ : str-cont) (τ' : Ind/≈) → ((L x ≤ τ') ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ τ'))
+     lemma σ = /-induction ≋ adj-condition-is-prop L-is-ladj'
       where
        L-is-ladj' : (τ : Ind)
-                  → (L x ≤ η τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ))
-       L-is-ladj' τ = ⇔-trans ⦅1⦆ ⦅2⦆
+                  → (L x ≤ η τ) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ))
+       L-is-ladj' τ = ↔-trans ⦅1⦆ ⦅2⦆
         where
-         ⦅2⦆ : (κ σ ≲ τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ))
-         ⦅2⦆ = ⇔-trans (ladj σ τ) (⊑-∐-map/-lemma)
-         ⦅1⦆ : (L x ≤ η τ) ⇔ (κ σ ≲ τ)
-         ⦅1⦆ = ⇔-trans s (⇔-sym η-⇔-order)
+         ⦅2⦆ : (κ σ ≲ τ) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ))
+         ⦅2⦆ = ↔-trans (ladj σ τ) (⊑-∐-map/-lemma)
+         ⦅1⦆ : (L x ≤ η τ) ↔ (κ σ ≲ τ)
+         ⦅1⦆ = ↔-trans s (↔-sym η-↔-order)
           where
-           s : (L x ≤ η τ) ⇔ (η (κ σ) ≤ η τ)
+           s : (L x ≤ η τ) ↔ (η (κ σ) ≤ η τ)
            s = transport (_≤ η τ) e , transport (_≤ η τ) (e ⁻¹)
             where
              e : L x ＝ η (κ σ)
@@ -349,15 +354,15 @@ module _
   ∥∥-functor lemma (η-is-surjection (L x))
    where
     lemma : (Σ σ ꞉ Ind , η σ ＝ L x)
-          → Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
+          → Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
                                           × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x)
     lemma (σ@(I , α , δ) , e) = I , α , pr₂ approx , (δ , pr₁ approx)
      where
-      ladj : (τ : Ind) → (σ ≲ τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map τ)
-      ladj τ = ⇔-trans (⇔-trans η-⇔-order ladj') (⇔-sym ⊑-∐-map/-lemma)
+      ladj : (τ : Ind) → (σ ≲ τ) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map τ)
+      ladj τ = ↔-trans (↔-trans η-↔-order ladj') (↔-sym ⊑-∐-map/-lemma)
        where
-        ladj' : (η σ ≤ η τ) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ)
-        ladj' = transport (λ - → (- ≤ η τ) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ)) (e ⁻¹)
+        ladj' : (η σ ≤ η τ) ↔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ)
+        ladj' = transport (λ - → (- ≤ η τ) ↔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ)) (e ⁻¹)
                  (L-is-left-adjoint x (η τ))
       approx : (∐ 𝓓 δ ＝ x) × is-way-upperbound 𝓓 x α
       approx = approximates-if-left-adjunct-to σ x ladj

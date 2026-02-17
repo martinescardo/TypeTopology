@@ -8,7 +8,7 @@ generalization.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Classifiers-Old where
 
@@ -22,6 +22,7 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.FunExt
 open import UF.Embeddings
+open import UF.SubtypeClassifier
 
 module type-classifier
         {𝓤 : Universe}
@@ -173,11 +174,11 @@ The examples are obtained by specialising to a specific property green:
 
  * A type is green exactly if it is inhabited.
    Then a map is green exactly if it is a surjection.
-   (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ X → Y , is-surjection f )) ≃ (Y → (Σ X ꞉ 𝓤 ̇  , ∥ X ∥))
+   (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ X → Y , is-surjection f )) ≃ (Y → (Σ X ꞉ 𝓤 ̇ , ∥ X ∥))
 
  * A type is green exactly if it is pointed.
    Then a map is green exactly if it is a retraction.
-   (Σ X ꞉ 𝓤 ̇ , Y ◁ X) ≃ (Y → (Σ X ꞉ 𝓤 ̇  , X))
+   (Σ X ꞉ 𝓤 ̇ , Y ◁ X) ≃ (Y → (Σ X ꞉ 𝓤 ̇ , X))
 
 \begin{code}
 
@@ -234,10 +235,10 @@ module general-classifier
     where
      a : pr₁ (A y) ＝ pr₁ (χ (T A) y)
      a = fiber-equiv-＝ A y
-     b = transport green (a ⁻¹) (pr₂ (χ (T A) y))               ＝⟨ refl ⟩
+     b = transport green (a ⁻¹) (pr₂ (χ (T A) y))               ＝⟨refl⟩
          transport green (a ⁻¹) (transport green a (pr₂ (A y))) ＝⟨ i ⟩
          transport green (a ∙ a ⁻¹) (pr₂ (A y))                 ＝⟨ ii ⟩
-         transport green refl (pr₂ (A y))                       ＝⟨ refl ⟩
+         transport green refl (pr₂ (A y))                       ＝⟨refl⟩
          pr₂ (A y)                                              ∎
       where
        i  = (transport-∙ green a (a ⁻¹)) ⁻¹
@@ -260,7 +261,7 @@ module general-classifier
  precomp-with-≃-refl-green-map {X} f g = dfunext fe γ
   where
    γ : (y : Y) → green-maps-are-closed-under-precomp-with-equivs (≃-refl X) g y ＝ g y
-   γ y = green-maps-are-closed-under-precomp-with-equivs (≃-refl X) g y         ＝⟨ refl ⟩
+   γ y = green-maps-are-closed-under-precomp-with-equivs (≃-refl X) g y         ＝⟨refl⟩
          transport green ((eqtoid ua _ _ (≃-refl (fiber f y))) ⁻¹) (g y)        ＝⟨ i ⟩
          g y                                                                    ∎
     where
@@ -314,17 +315,17 @@ module general-classifier
    t₂ = pr₂ (from-Σ-＝ t)
    b : pr₁ (transport B a (f' , g')) ＝ f
    b = pr₁ (transport B a (f' , g')) ＝⟨ t₁ ⟩
-       f' ∘ eqtofun e                ＝⟨ refl ⟩
+       f' ∘ eqtofun e                ＝⟨refl⟩
        f                             ∎
    c : transport green-map b (pr₂ (transport B a (f' , g')))  ＝ g
-   c = transport green-map b (pr₂ (transport B a (f' , g')))  ＝⟨ refl ⟩
+   c = transport green-map b (pr₂ (transport B a (f' , g')))  ＝⟨refl⟩
        transport green-map t₁ (pr₂ (transport B a (f' , g'))) ＝⟨ t₂ ⟩
        green-maps-are-closed-under-precomp-with-equivs e g' ＝⟨ dfunext fe u ⟩
        g ∎
     where
      u : (y : Y) → green-maps-are-closed-under-precomp-with-equivs e g' y ＝ g y
-     u y = green-maps-are-closed-under-precomp-with-equivs e g' y ＝⟨ refl ⟩
-           transport green (p ⁻¹) (g' y)                          ＝⟨ refl ⟩
+     u y = green-maps-are-closed-under-precomp-with-equivs e g' y ＝⟨refl⟩
+           transport green (p ⁻¹) (g' y)                          ＝⟨refl⟩
            transport green (p ⁻¹) (transport green (q ⁻¹) (g y))  ＝⟨ i ⟩
            transport green (q ⁻¹ ∙ p ⁻¹) (g y)                    ＝⟨ ii ⟩
            g y                                                    ∎
@@ -465,7 +466,7 @@ module singleton-classifier
       ψ = qinveq unique-to-𝟙 ((λ _ → 𝟙 , 𝟙-is-singleton) , (a , 𝟙-is-prop ⋆))
        where
        a : (p : Σ (λ v → is-singleton v)) → 𝟙 , 𝟙-is-singleton ＝ p
-       a (X , s) = to-Σ-＝ (eqtoid ua 𝟙 X (singleton-≃-𝟙' s) ,
+       a (X , s) = to-Σ-＝ (eqtoid ua 𝟙 X (𝟙-≃-singleton s) ,
                            being-singleton-is-prop fe _ s)
 
 open import UF.PropTrunc
@@ -499,7 +500,7 @@ module pointed-classifier
  open general-classifier (univalence-gives-funext ua) fe' ua Y (λ (X : 𝓤 ̇ ) → X)
 
  pointed-classification-equivalence :
-  (Σ X ꞉ 𝓤 ̇ , Y ◁ X) ≃ (Y → (Σ X ꞉ 𝓤 ̇  , X))
+  (Σ X ꞉ 𝓤 ̇ , Y ◁ X) ≃ (Y → (Σ X ꞉ 𝓤 ̇ , X))
  pointed-classification-equivalence =
   (Σ X ꞉ 𝓤 ̇ , Y ◁ X)                                  ≃⟨ i ⟩
   (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ (X → Y) , ((y : Y) → fiber f y))) ≃⟨ ii ⟩

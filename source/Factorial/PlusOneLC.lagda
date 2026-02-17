@@ -10,14 +10,14 @@ from 21 March 2018 is included at the end.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Factorial.PlusOneLC where
 
 open import Factorial.Swap
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Retracts
 
@@ -106,7 +106,7 @@ X ∖ a = Σ x ꞉ X , x ≠ a
 
 open import UF.FunExt
 
-module old (fe : FunExt) where
+module _ (fe : FunExt) where
 
  open import UF.Base
  open import UF.Subsingletons-FunExt
@@ -128,7 +128,9 @@ module old (fe : FunExt) where
    ε : g ∘ f ∼ id
    ε x = refl
 
- remove-points : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → qinv f → (a : X) → X ∖ a ≃ Y ∖ (f a)
+ remove-points : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+               → qinv f
+               → (a : X) → X ∖ a ≃ Y ∖ (f a)
  remove-points {𝓤} {𝓥} {X} {Y} f (g , ε , η) a = qinveq f' (g' , ε' , η')
   where
    f' : X ∖ a → Y ∖ (f a)
@@ -143,14 +145,16 @@ module old (fe : FunExt) where
    η' : f' ∘ g' ∼ id
    η' (y , _) = to-Σ-＝ (η y , negations-are-props (fe 𝓥 𝓤₀) _ _)
 
- add-one-and-remove-isolated-point : {Y : 𝓥 ̇ } (z : Y + 𝟙) → is-isolated z → ((Y + 𝟙) ∖ z) ≃ Y
+ add-one-and-remove-isolated-point : {Y : 𝓥 ̇ } (z : Y + 𝟙)
+                                   → is-isolated z
+                                   → ((Y + 𝟙) ∖ z) ≃ Y
  add-one-and-remove-isolated-point {𝓥} {Y} (inl b) i = qinveq f (g , ε , η)
   where
    f : (Y + 𝟙) ∖ (inl b) → Y
    f (inl y , u) = y
    f (inr ⋆ , u) = b
 
-   g' : (y : Y) → decidable (inl b ＝ inl y) → (Y + 𝟙) ∖ (inl b)
+   g' : (y : Y) → is-decidable (inl b ＝ inl y) → (Y + 𝟙) ∖ (inl b)
    g' y (inl p) = (inr ⋆ , +disjoint')
    g' y (inr u) = (inl y , contrapositive (_⁻¹) u)
 
@@ -212,7 +216,7 @@ remove-and-add-isolated-point : funext 𝓤 𝓤₀
                               → X ≃ (X ∖ x₀ + 𝟙 {𝓥})
 remove-and-add-isolated-point fe {X} x₀ ι = qinveq f (g , ε , η)
  where
-  ϕ : (x : X) → decidable (x₀ ＝ x) → X ∖ x₀ + 𝟙
+  ϕ : (x : X) → is-decidable (x₀ ＝ x) → X ∖ x₀ + 𝟙
   ϕ x (inl p) = inr ⋆
   ϕ x (inr ν) = inl (x , (λ (p : x ＝ x₀) → ν (p ⁻¹)))
 
@@ -223,7 +227,7 @@ remove-and-add-isolated-point fe {X} x₀ ι = qinveq f (g , ε , η)
   g (inl (x , _)) = x
   g (inr ⋆) = x₀
 
-  η' : (y : X ∖ x₀ + 𝟙) (d : decidable (x₀ ＝ g y)) → ϕ (g y) d ＝ y
+  η' : (y : X ∖ x₀ + 𝟙) (d : is-decidable (x₀ ＝ g y)) → ϕ (g y) d ＝ y
   η' (inl (x , ν)) (inl q) = 𝟘-elim (ν (q ⁻¹))
   η' (inl (x , ν)) (inr _) = ap (λ - → inl (x , -)) (negations-are-props fe _ _)
   η' (inr ⋆) (inl p)       = refl
@@ -232,7 +236,7 @@ remove-and-add-isolated-point fe {X} x₀ ι = qinveq f (g , ε , η)
   η : f ∘ g ∼ id
   η y = η' y (ι (g y))
 
-  ε' : (x : X) (d : decidable (x₀ ＝ x)) → g (ϕ x d) ＝ x
+  ε' : (x : X) (d : is-decidable (x₀ ＝ x)) → g (ϕ x d) ＝ x
   ε' x (inl p) = p
   ε' x (inr ν) = refl
 

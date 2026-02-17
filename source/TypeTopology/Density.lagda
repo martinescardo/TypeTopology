@@ -5,17 +5,16 @@ A function is dense if the complement of its image is empty. Maybe
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module TypeTopology.Density where
 
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
-
 open import UF.Base
+open import UF.DiscreteAndSeparated
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.Retracts
-open import UF.Embeddings
 
 is-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-dense {𝓤} {𝓥} {X} {Y} f = ¬ (Σ y ꞉ Y , ¬ (Σ x ꞉ X , f x ＝ y))
@@ -79,6 +78,9 @@ module _ {𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } where
 
  equivs-are-dense : (f : X → Y) → is-equiv f → is-dense f
  equivs-are-dense f e = retraction-is-dense f (equivs-have-sections f e)
+
+ equivs-are-dense' : (f : X ≃ Y) → is-dense ⌜ f ⌝
+ equivs-are-dense' (f , e) = equivs-are-dense f e
 
  equiv-dense-embedding : X ≃ Y → X ↪ᵈ Y
  equiv-dense-embedding e = ⌜ e ⌝ ,

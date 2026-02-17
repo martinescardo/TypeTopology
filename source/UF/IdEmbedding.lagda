@@ -1,5 +1,7 @@
 Martin Escardo, 2015, formalized December 2017.
 
+My MGS'2019 have a better development of this.
+
 Id : X → (X → U) is an embedding assuming functional extensionality,
 and either univalence or K, in fact the Yoneda Embedding.
 
@@ -47,23 +49,25 @@ idea (*) in the weakened form discussed above.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.IdEmbedding where
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.FunExt
-open import UF.Lower-FunExt
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
-open import UF.Embeddings
-open import UF.Yoneda
+open import UF.FunExt
 open import UF.LeftCancellable
+open import UF.Lower-FunExt
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Univalence
-open import UF.EquivalenceExamples
+open import UF.Yoneda
 
 \end{code}
 

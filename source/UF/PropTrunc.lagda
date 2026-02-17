@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.PropTrunc where
 
@@ -36,11 +36,13 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
 
  open propositional-truncations-exist pt public
 
+ exit-∥∥ : {P : 𝓤 ̇ } → is-prop P → ∥ P ∥ → P
+ exit-∥∥ i = ∥∥-rec i id
+
  ∥∥-induction : {X : 𝓤 ̇ } {P : ∥ X ∥ → 𝓥 ̇ }
              → ((s : ∥ X ∥) → is-prop (P s))
              → ((x : X) → P ∣ x ∣)
              → (s : ∥ X ∥) → P s
-
  ∥∥-induction {𝓤} {𝓥} {X} {P} i f s = φ' s
   where
    φ : X → P s
@@ -48,19 +50,19 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
    φ' : ∥ X ∥ → P s
    φ' = ∥∥-rec (i s) φ
 
-
  is-singleton'-is-prop : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop (is-prop X × ∥ X ∥)
  is-singleton'-is-prop fe = Σ-is-prop (being-prop-is-prop fe) (λ _ → ∥∥-is-prop)
 
- the-singletons-are-the-inhabited-propositions : {X : 𝓤 ̇ }
-                                               → is-singleton X ⇔ is-prop X × ∥ X ∥
+ the-singletons-are-the-inhabited-propositions
+  : {X : 𝓤 ̇ }
+  → is-singleton X ↔ is-prop X × ∥ X ∥
  the-singletons-are-the-inhabited-propositions {𝓤} {X} = f , g
   where
    f : is-singleton X → is-prop X × ∥ X ∥
    f (x , φ) = singletons-are-props (x , φ) , ∣ x ∣
 
    g : is-prop X × ∥ X ∥ → is-singleton X
-   g (i , s) = ∥∥-rec i id s , i (∥∥-rec i id s)
+   g (i , s) = exit-∥∥ i s , i (exit-∥∥ i s)
 
  ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
  ∥∥-functor f = ∥∥-rec ∥∥-is-prop (λ x → ∣ f x ∣)
@@ -72,6 +74,10 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  ∥∥-functor₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
              → (X → Y → Z) → ∥ X ∥ → ∥ Y ∥ → ∥ Z ∥
  ∥∥-functor₂ f s t = ∥∥-rec ∥∥-is-prop (λ x → ∥∥-functor (f x) t) s
+
+ ∥∥-functor₃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
+             → (X → Y → Z → T) → ∥ X ∥ → ∥ Y ∥ → ∥ Z ∥ → ∥ T ∥
+ ∥∥-functor₃ f s t u = ∥∥-rec ∥∥-is-prop (λ x → ∥∥-functor₂ (f x) t u) s
 
  ∃ : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
  ∃ Y = ∥ Σ Y ∥
@@ -90,6 +96,14 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
 
  infixr -1 Exists
  infixr -1 ¬Exists
+
+ remove-truncation-inside-∃ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                            → (∃ x ꞉ X , ∥ Y x ∥)
+                            → (∃ x ꞉ X , Y x)
+ remove-truncation-inside-∃ =
+  ∥∥-rec ∃-is-prop
+   (λ (x , s) → ∥∥-rec ∃-is-prop
+                 (λ y → ∣ x , y ∣) s)
 
  Nat∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → ∃ A → ∃ B
  Nat∃ ζ = ∥∥-functor (NatΣ ζ)
@@ -112,6 +126,10 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
            → (Q → S)
            → P ∨ Q → R ∨ S
  ∨-functor f g = ∥∥-functor (+functor f g)
+
+ ∨-flip : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
+        → P ∨ Q → Q ∨ P
+ ∨-flip = ∥∥-functor (cases inr inl)
 
  left-fails-gives-right-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
                               → is-prop Q
@@ -144,11 +162,17 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  empty-is-uninhabited v = ∥∥-rec 𝟘-is-prop v
 
  binary-choice : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
- binary-choice s t = ∥∥-rec ∥∥-is-prop (λ x → ∥∥-rec ∥∥-is-prop (λ y → ∣ x , y ∣) t) s
+ binary-choice s t = ∥∥-rec
+                      ∥∥-is-prop
+                      (λ x → ∥∥-rec ∥∥-is-prop (λ y → ∣ x , y ∣) t)
+                      s
 
  prop-is-equivalent-to-its-truncation : {X : 𝓤 ̇ } → is-prop X → ∥ X ∥ ≃ X
  prop-is-equivalent-to-its-truncation i =
-  logically-equivalent-props-are-equivalent ∥∥-is-prop i (∥∥-rec i id) ∣_∣
+  logically-equivalent-props-are-equivalent ∥∥-is-prop i (exit-∥∥ i) ∣_∣
+
+ equiv-to-own-truncation-implies-prop : {X : 𝓤 ̇ } → X ≃ ∥ X ∥  → is-prop X
+ equiv-to-own-truncation-implies-prop {𝓤} {X} e = equiv-to-prop e ∥∥-is-prop
 
  not-exists₀-implies-forall₁ : {X : 𝓤 ̇ } (p : X → 𝟚)
                              → ¬ (∃ x ꞉ X , p x ＝ ₀)

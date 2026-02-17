@@ -5,7 +5,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.Subsingleton-Truncation where
 
@@ -140,7 +140,7 @@ module basic-truncation-development
   ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
   ∥∥-functor f = ∥∥-recursion ∥∥-is-subsingleton (λ x → ∣ f x ∣)
 
-  ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ⇔ is-inhabited X
+  ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ↔ is-inhabited X
   ∥∥-agrees-with-inhabitation X = a , b
    where
     a : ∥ X ∥ → is-inhabited X
@@ -242,7 +242,7 @@ module basic-truncation-development
 
   singleton-iff-inhabited-subsingleton : (X : 𝓤 ̇ )
                                        → is-singleton X
-                                       ⇔ (∥ X ∥ × is-subsingleton X)
+                                       ↔ (∥ X ∥ × is-subsingleton X)
 
   singleton-iff-inhabited-subsingleton X =
 
@@ -252,7 +252,7 @@ module basic-truncation-development
 
   equiv-iff-embedding-and-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                      →  is-equiv f
-                                     ⇔ (is-embedding f × is-surjection f)
+                                     ↔ (is-embedding f × is-surjection f)
 
   equiv-iff-embedding-and-surjection f = (a , b)
    where

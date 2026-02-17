@@ -4,7 +4,7 @@ Based on Egbert Rijke's "Introduction to Homotopy Type Theory".
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.IdentitySystems where
 
@@ -17,11 +17,20 @@ open import UF.Retracts
 open import UF.Subsingletons
 open import UF.PairFun as PairFun
 
-record Has-Id-Sys {𝓦} (A : 𝓤 ̇ ) (a : A) (fam : A → 𝓦 ̇) : 𝓤ω where
+record Has-Id-Sys {𝓦} (A : 𝓤 ̇ ) (a : A) (fam : A → 𝓦 ̇ ) : 𝓤ω where
  field
   ctr : fam a
-  ind : {𝓥 : Universe} (P : (x : A) (q : fam x) → 𝓥 ̇) (p : P a ctr) (x : A) (q : fam x) → P x q
-  ind-β : {𝓥 : Universe} (P : (x : A) (q : fam x) → 𝓥 ̇) (p : P a ctr) → ind P p a ctr ＝ p
+  ind : {𝓥 : Universe}
+        (P : (x : A) (q : fam x) → 𝓥 ̇ )
+        (p : P a ctr)
+        (x : A)
+        (q : fam x)
+      → P x q
+  ind-β : {𝓥 : Universe}
+          (P : (x : A)
+          (q : fam x) → 𝓥 ̇ )
+          (p : P a ctr)
+        → ind P p a ctr ＝ p
 
  to-＝ : (x : A) → fam x → a ＝ x
  to-＝ = ind _ refl
@@ -40,70 +49,67 @@ record Has-Id-Sys {𝓦} (A : 𝓤 ̇ ) (a : A) (fam : A → 𝓦 ̇) : 𝓤ω w
 
 record Id-Sys 𝓦 (A : 𝓤 ̇ ) (a : A) : 𝓤ω where
  field
-  fam : A → 𝓦  ̇
+  fam : A → 𝓦 ̇
   sys : Has-Id-Sys A a fam
  open Has-Id-Sys sys public
-
 
 Unbiased-Id-Sys : Universe → 𝓤 ̇ → 𝓤ω
 Unbiased-Id-Sys 𝓦 A = (a : A) → Id-Sys 𝓦 A a
 
-
 module from-path-characterization
-  {A : 𝓤 ̇ }
-  (Q : A → A → 𝓤 ̇ )
-  (H : {x y : A} → (x ＝ y) ≃ Q x y)
-  (a : A)
- where
-  open Id-Sys
-  open Has-Id-Sys
+        {A : 𝓤 ̇ }
+        (Q : A → A → 𝓤 ̇ )
+        (H : {x y : A} → (x ＝ y) ≃ Q x y)
+        (a : A)
+       where
+ open Id-Sys
+ open Has-Id-Sys
 
-  private
-   Q-refl : {x : A} → Q x x
-   Q-refl = eqtofun H refl
+ private
+  Q-refl : {x : A} → Q x x
+  Q-refl = eqtofun H refl
 
-   aux
-    : (P : (x : A) (q : Q a x) → 𝓥 ̇ )
-    → (p : P a Q-refl)
-    → (x : A)
-    → (q : a ＝ x)
-    → P x (eqtofun H q)
-   aux P p x refl = p
+  aux
+   : (P : (x : A) (q : Q a x) → 𝓥 ̇ )
+   → (p : P a Q-refl)
+   → (x : A)
+   → (q : a ＝ x)
+   → P x (eqtofun H q)
+  aux P p x refl = p
 
-  id-sys : Id-Sys 𝓤 A a
-  fam id-sys = Q a
-  ctr (sys id-sys) = Q-refl
-  ind (sys id-sys) P p x q =
-   transport (P x)
-    (inverses-are-sections _ (eqtofun- H) q)
-    (aux P p x (back-eqtofun H q))
-  ind-β (sys id-sys) P p =
-   ap gen
-    (Aux-is-prop
-     (back-eqtofun H Q-refl ,
-      inverses-are-sections _ (eqtofun- H)  Q-refl)
-     (refl , refl))
-   where
-    Aux = Σ ϕ ꞉ a ＝ a , eqtofun H ϕ ＝ Q-refl
+ id-sys : Id-Sys 𝓤 A a
+ fam id-sys = Q a
+ ctr (sys id-sys) = Q-refl
+ ind (sys id-sys) P p x q =
+  transport (P x)
+   (inverses-are-sections _ (eqtofun- H) q)
+   (aux P p x (back-eqtofun H q))
+ ind-β (sys id-sys) P p =
+  ap gen
+   (Aux-is-prop
+    (back-eqtofun H Q-refl ,
+     inverses-are-sections _ (eqtofun- H)  Q-refl)
+    (refl , refl))
+  where
+   Aux = Σ ϕ ꞉ a ＝ a , eqtofun H ϕ ＝ Q-refl
 
-    Aux-singl : singleton-type' refl ≃ Aux
-    Aux-singl =
-     pair-fun-equiv (≃-refl (a ＝ a)) λ ϕ →
-     ap (eqtofun H) ,
-     embedding-gives-embedding' _
-      (equivs-are-embeddings _ (eqtofun- H))
-      ϕ
-      refl
+   Aux-singl : singleton-type' refl ≃ Aux
+   Aux-singl =
+    pair-fun-equiv (≃-refl (a ＝ a)) λ ϕ →
+    ap (eqtofun H) ,
+    embedding-gives-embedding' _
+     (equivs-are-embeddings _ (eqtofun- H))
+     ϕ
+     refl
 
-    Aux-is-prop : is-prop Aux
-    Aux-is-prop =
-     retract-of-prop
-      (≃-gives-◁ (≃-sym Aux-singl))
-      (singleton-types'-are-props refl)
+   Aux-is-prop : is-prop Aux
+   Aux-is-prop =
+    retract-of-prop
+     (≃-gives-◁ (≃-sym Aux-singl))
+     (singleton-types'-are-props refl)
 
-    gen : Aux → P a Q-refl
-    gen (ϕ , ψ ) = transport (P a) ψ (aux P p a ϕ)
-
+   gen : Aux → P a Q-refl
+   gen (ϕ , ψ) = transport (P a) ψ (aux P p a ϕ)
 
 module _ 𝓦 𝓦' (A : 𝓤 ̇ ) (B : A → 𝓥 ̇ ) where
  record Dep-Id-Sys {a : A} ([a] : Id-Sys 𝓦 A a) (b : B a) : 𝓤ω where
@@ -135,7 +141,11 @@ module _
   ind (sys pair-id-sys) P p =
    λ (x , y) (ϕ , ψ) → aux x ϕ y ψ
    where
-    aux : (x : A) (ϕ : [a].fam x) (y : B x) (ψ : [b].fam x ϕ y) → P (x , y) (ϕ , ψ)
+    aux : (x : A)
+          (ϕ : [a].fam x)
+          (y : B x)
+          (ψ : [b].fam x ϕ y)
+        → P (x , y) (ϕ , ψ)
     aux = [a].ind _ ([b].ind _ p)
   ind-β (sys pair-id-sys) P p =
    happly (happly ([a].ind-β _ _) b) [b].ctr ∙ [b].ind-β _ _

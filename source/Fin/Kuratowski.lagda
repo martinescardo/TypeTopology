@@ -2,7 +2,7 @@ Martin Escardo, 8th April 2021.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.PropTrunc
 
@@ -16,25 +16,28 @@ open import Fin.Type
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
-open import UF.Miscelanea
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.ImageAndSurjection pt
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.Univalence
 open import UF.UniverseEmbedding
 
+open CompactTypesPT pt
 open PropositionalTruncation pt
 open finiteness pt
-open import UF.ImageAndSurjection pt
-open CompactTypesPT pt
 
 is-Kuratowski-finite : 𝓤 ̇ → 𝓤 ̇
 is-Kuratowski-finite X = ∃ n ꞉ ℕ , Fin n ↠ X
@@ -48,16 +51,16 @@ being-Kuratowski-finite-is-prop = ∃-is-prop
 Kuratowski-finite-types-are-∃-compact : Fun-Ext
                                       → {X : 𝓤 ̇ }
                                       → is-Kuratowski-finite X
-                                      → ∃-Compact X {𝓤}
+                                      → is-∃-Compact X {𝓤}
 Kuratowski-finite-types-are-∃-compact fe {X} i = γ
  where
-  α : Kuratowski-data X → Compact X
+  α : Kuratowski-data X → is-Compact X
   α (n , f , s) = surjection-Compact f fe s Fin-Compact
 
-  β : ∥ Compact X ∥
+  β : ∥ is-Compact X ∥
   β = ∥∥-functor α i
 
-  γ : ∃-Compact X
+  γ : is-∃-Compact X
   γ = ∥Compact∥-gives-∃-Compact fe β
 
 finite-types-are-Kuratowski-finite : {X : 𝓤 ̇ }
@@ -94,13 +97,13 @@ dkf-lemma {𝓤} fe {X} δ (n , 𝕗) = γ X δ n 𝕗
     A : Fin n → 𝓤 ̇
     A j = f (suc j) ＝ f 𝟎
 
-    Δ : decidable (Σ A)
+    Δ : is-decidable (Σ A)
     Δ = Fin-Compact A (λ j → δ (f (suc j)) (f 𝟎))
 
     g : Fin n → X
     g i = f (suc i)
 
-    I : decidable (Σ A) → finite-linear-order X
+    I : is-decidable (Σ A) → finite-linear-order X
     I (inl (j , p)) = IH
      where
       II : (x : X) → (Σ i ꞉ Fin (succ n) , f i ＝ x) → (Σ i ꞉ Fin n , g i ＝ x)
@@ -234,11 +237,11 @@ doubletons-are-Kuratowki-finite x₀ x₁ = ∣ 2 , doubleton-map x₀ x₁ , do
 
 decidable-equality-gives-doubleton-finite : {X : 𝓤 ̇ } (x₀ x₁ : X)
                                           → is-set X
-                                          → decidable (x₀ ＝ x₁)
-                                          → is-finite (Σ x ꞉ X , (x ＝ x₀) ∨ (x ＝ x₁))
+                                          → is-decidable (x₀ ＝ x₁)
+                                          → is-finite (doubleton x₀ x₁)
 decidable-equality-gives-doubleton-finite x₀ x₁ X-is-set δ = γ δ
  where
-  γ : decidable (x₀ ＝ x₁) → is-finite (doubleton x₀ x₁)
+  γ : is-decidable (x₀ ＝ x₁) → is-finite (doubleton x₀ x₁)
   γ (inl p) = 1 , ∣ singleton-≃ m l ∣
    where
     l : is-singleton (Fin 1)
@@ -280,14 +283,14 @@ decidable-equality-gives-doubleton-finite x₀ x₁ X-is-set δ = γ δ
 doubleton-finite-gives-decidable-equality : funext 𝓤 𝓤₀
                                           → {X : 𝓤 ̇ } (x₀ x₁ : X)
                                           → is-set X
-                                          → is-finite (Σ x ꞉ X , (x ＝ x₀) ∨ (x ＝ x₁))
-                                          → decidable (x₀ ＝ x₁)
+                                          → is-finite (doubleton x₀ x₁)
+                                          → is-decidable (x₀ ＝ x₁)
 doubleton-finite-gives-decidable-equality fe x₀ x₁ X-is-set ϕ = δ
  where
-  γ : is-finite (doubleton x₀ x₁) → decidable (x₀ ＝ x₁)
+  γ : is-finite (doubleton x₀ x₁) → is-decidable (x₀ ＝ x₁)
   γ (0 , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) α s
    where
-    α : doubleton x₀ x₁ ≃ 𝟘 → decidable (x₀ ＝ x₁)
+    α : doubleton x₀ x₁ ≃ 𝟘 → is-decidable (x₀ ＝ x₁)
     α (g , i) = 𝟘-elim (g (x₀ , ∣ inl refl ∣))
 
   γ (1 , s) = inl (∥∥-rec X-is-set β s)
@@ -296,24 +299,29 @@ doubleton-finite-gives-decidable-equality fe x₀ x₁ X-is-set ϕ = δ
     α 𝟎 𝟎 = refl
 
     β : doubleton x₀ x₁ ≃ Fin 1 → x₀ ＝ x₁
-    β (g , i) = ap pr₁ (equivs-are-lc g i (α (g (doubleton-map x₀ x₁ 𝟎)) (g (doubleton-map x₀ x₁ 𝟏))))
+    β (g , i) = ap pr₁ (equivs-are-lc g i
+                         (α (g (doubleton-map x₀ x₁ 𝟎))
+                         (g (doubleton-map x₀ x₁ 𝟏))))
 
   γ (succ (succ n) , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) f s
    where
-    f : doubleton x₀ x₁ ≃ Fin (succ (succ n)) → decidable (x₀ ＝ x₁)
+    f : doubleton x₀ x₁ ≃ Fin (succ (succ n)) → is-decidable (x₀ ＝ x₁)
     f (g , i) = β
      where
       h : x₀ ＝ x₁ → doubleton-map x₀ x₁ 𝟎 ＝ doubleton-map x₀ x₁ 𝟏
       h = to-subtype-＝ (λ _ → ∨-is-prop)
 
-      α : decidable (g (doubleton-map x₀ x₁ 𝟎) ＝ g (doubleton-map x₀ x₁ 𝟏)) → decidable (x₀ ＝ x₁)
+      α : is-decidable (g (doubleton-map x₀ x₁ 𝟎) ＝ g (doubleton-map x₀ x₁ 𝟏))
+        → is-decidable (x₀ ＝ x₁)
       α (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
       α (inr ν) = inr (contrapositive (λ p → ap g (h p)) ν)
 
-      β : decidable (x₀ ＝ x₁)
-      β = α (Fin-is-discrete (g (doubleton-map x₀ x₁ 𝟎)) (g (doubleton-map x₀ x₁ 𝟏)))
+      β : is-decidable (x₀ ＝ x₁)
+      β = α (Fin-is-discrete
+              (g (doubleton-map x₀ x₁ 𝟎))
+              (g (doubleton-map x₀ x₁ 𝟏)))
 
-  δ : decidable (x₀ ＝ x₁)
+  δ : is-decidable (x₀ ＝ x₁)
   δ = γ ϕ
 
 all-K-finite-types-finite-gives-all-sets-discrete :
@@ -387,12 +395,12 @@ no-selection ua ϕ = γ
   r : f p ＝ complement-≃
   r = idtoeq-eqtoid ua 𝟚 𝟚 complement-≃
 
-  s = n                     ＝⟨ refl ⟩
+  s = n                     ＝⟨refl⟩
       ⌜ f refl ⌝⁻¹ n        ＝⟨ (α refl)⁻¹ ⟩
       ϕ 𝟚 ∣ f refl ∣        ＝⟨ ap (ϕ 𝟚) q ⟩
       ϕ 𝟚 ∣ f p ∣           ＝⟨ α p ⟩
       ⌜ f p ⌝⁻¹ n           ＝⟨ ap (λ - → ⌜ - ⌝⁻¹ n) r ⟩
-      ⌜ complement-≃ ⌝⁻¹ n  ＝⟨ refl ⟩
+      ⌜ complement-≃ ⌝⁻¹ n  ＝⟨refl⟩
       complement n          ∎
 
   γ : 𝟘
@@ -583,9 +591,9 @@ select-equiv-with-𝟚-lemma₁ fe {X} x₀ (y , i) (z , j) = V
   I : z ≠ x₀
   I p = zero-is-not-one
          (₀        ＝⟨ (inverses-are-retractions g j ₀)⁻¹ ⟩
-          g' (g ₀) ＝⟨ refl ⟩
+          g' (g ₀) ＝⟨refl⟩
           g' x₀    ＝⟨ ap g' (p ⁻¹) ⟩
-          g' z     ＝⟨ refl ⟩
+          g' z     ＝⟨refl⟩
           g' (g ₁) ＝⟨ inverses-are-retractions g j ₁ ⟩
           ₁        ∎)
 
@@ -598,7 +606,7 @@ select-equiv-with-𝟚-lemma₁ fe {X} x₀ (y , i) (z , j) = V
 
   IV : y ＝ z
   IV = equivs-are-lc f' (inverses-are-equivs f i)
-        (f' y     ＝⟨ refl ⟩
+        (f' y     ＝⟨refl⟩
          f' (f ₁) ＝⟨ inverses-are-retractions f i ₁ ⟩
          ₁        ＝⟨ II (f' z) III ⟩
          f' z     ∎)
@@ -621,7 +629,7 @@ select-equiv-with-𝟚-lemma₂ fe {X} (f , i) x₀ = γ (f x₀) x₀ refl
     h : inverse f i ∼ 𝟚-cases x₀ x₁
     h ₀ = inverse f i ₀      ＝⟨ ap (inverse f i) p ⟩
           inverse f i (f x₀) ＝⟨ inverses-are-retractions f i x₀ ⟩
-          x₀                 ＝⟨ refl ⟩
+          x₀                 ＝⟨refl⟩
           𝟚-cases x₀ x₁ ₀    ∎
     h ₁ = refl
 
@@ -634,10 +642,10 @@ select-equiv-with-𝟚-lemma₂ fe {X} (f , i) x₀ = γ (f x₀) x₀ refl
     x₁ = inverse f i ₀
 
     h : inverse f i ∘ complement ∼ 𝟚-cases x₀ x₁
-    h ₀ = inverse f i (complement ₀) ＝⟨ refl ⟩
+    h ₀ = inverse f i (complement ₀) ＝⟨refl⟩
           inverse f i ₁              ＝⟨ ap (inverse f i) p ⟩
           inverse f i (f x₀)         ＝⟨ inverses-are-retractions f i x₀ ⟩
-          x₀                         ＝⟨ refl  ⟩
+          x₀                         ＝⟨refl⟩
           𝟚-cases x₀ x₁ ₀            ∎
     h ₁ = refl
 
@@ -674,7 +682,7 @@ equivalent):
 select-equiv-with-𝟚-theorem : FunExt
                             → {X : 𝓤 ̇ }
                             → (∥ X ≃ 𝟚 ∥ → X ≃ 𝟚)
-                            ⇔ (∥ X ≃ 𝟚 ∥ → X)
+                            ↔ (∥ X ≃ 𝟚 ∥ → X)
 select-equiv-with-𝟚-theorem fe {X} = α , β
  where
   α : (∥ X ≃ 𝟚 ∥ → X ≃ 𝟚) → ∥ X ≃ 𝟚 ∥ → X

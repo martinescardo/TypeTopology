@@ -8,7 +8,7 @@ The construction of D∞ is based on Scott's "Continuous lattices"
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 \end{code}
 
@@ -44,6 +44,7 @@ module DomainTheory.Bilimits.Dinfinity
 open PropositionalTruncation pt
 
 open import UF.Base
+open import UF.Subsingletons-Properties
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀
@@ -220,6 +221,7 @@ open SequentialDiagram
       ε-section-of-π
       ε-is-continuous
       π-is-continuous
+     public
 
 π-exp-to-succ : (n : ℕ) → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ → ⟨ 𝓓 (succ n) ⟩
 π-exp-to-succ n f = DCPO-∘₃ (𝓓 n) 𝓓∞ 𝓓∞ (𝓓 n) (ε∞' n) f (π∞' n)
@@ -250,7 +252,7 @@ open SequentialDiagram
          (ε∞' (succ n)) (f , c) (π∞' (succ n))
     γ : ([ 𝓓 n , 𝓓 n ]⟨ π (succ n) h ⟩) ∼ π∞ n ∘ f ∘ ε∞ n
     γ x = [ 𝓓 n , 𝓓 n ]⟨ (π (succ n) h) ⟩ x                       ＝⟨ e₁   ⟩
-          (π n ∘ [ 𝓓 (succ n) , 𝓓 (succ n) ]⟨ h ⟩ ∘ ε n) x        ＝⟨ refl ⟩
+          (π n ∘ [ 𝓓 (succ n) , 𝓓 (succ n) ]⟨ h ⟩ ∘ ε n) x        ＝⟨refl⟩
           (π n ∘ π∞ (succ n) ∘ f') x                              ＝⟨ e₂   ⟩
           (π⁺ {n} {succ n} (≤-succ n) ∘ π∞ (succ n) ∘ f') x       ＝⟨ e₃   ⟩
           (π∞ n ∘ f ∘ ε∞ (succ n) ∘ ε n) x                        ＝⟨ e₄   ⟩
@@ -317,13 +319,13 @@ isomorphism.
     ε-exp₂ : ⟨ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟩
     ε-exp₂ = [ 𝓓∞ , 𝓓∞ ]⟨ ε-exp (succ n) (f , c) ⟩
     γ : ε-exp₁ ∼ ε-exp₂
-    γ σ = ε-exp₁ σ                                                ＝⟨ refl ⟩
+    γ σ = ε-exp₁ σ                                                ＝⟨refl⟩
           (ε∞ (succ n) ∘ ε n ∘ h) σ                               ＝⟨ e₁   ⟩
           (ε∞ (succ n) ∘ ε⁺ {n} {succ n} (≤-succ n) ∘ h) σ        ＝⟨ e₂   ⟩
-          (ε∞ n ∘ h) σ                                            ＝⟨ refl ⟩
+          (ε∞ n ∘ h) σ                                            ＝⟨refl⟩
           (ε∞ n ∘ f ∘ π n ∘ π∞ (succ n)) σ                        ＝⟨ e₃ ⟩
           (ε∞ n ∘ f ∘ π⁺ {n} {succ n} (≤-succ n) ∘ π∞ (succ n)) σ ＝⟨ e₄ ⟩
-          (ε∞ n ∘ f ∘ π∞ n) σ                                     ＝⟨ refl ⟩
+          (ε∞ n ∘ f ∘ π∞ n) σ                                     ＝⟨refl⟩
           ε-exp₂ σ                                                ∎
      where
       h : ⟨ 𝓓∞ ⟩ → ⟨ 𝓓 n ⟩
@@ -680,10 +682,10 @@ of π-exp∞.
       where
        γ' : f n n ∼ g n n
        γ' σ =
-        f n n σ                                                        ＝⟨ refl ⟩
+        f n n σ                                                        ＝⟨refl⟩
         (ε∞ n ∘ [ 𝓓 n , 𝓓 n ]⟨ π∞ (succ n) (ε∞ (succ n) ψ) ⟩ ∘ π∞ n) σ ＝⟨ q'   ⟩
-        (ε∞ n ∘ [ 𝓓 n , 𝓓 n ]⟨ ψ ⟩ ∘ π∞ n) σ                           ＝⟨ refl ⟩
-        (ε∞ n ∘ π∞ n ∘ ϕ ∘ ε∞ n ∘ π∞ n) σ                              ＝⟨ refl ⟩
+        (ε∞ n ∘ [ 𝓓 n , 𝓓 n ]⟨ ψ ⟩ ∘ π∞ n) σ                           ＝⟨refl⟩
+        (ε∞ n ∘ π∞ n ∘ ϕ ∘ ε∞ n ∘ π∞ n) σ                              ＝⟨refl⟩
         g n n σ ∎
          where
           ψ : DCPO[ 𝓓 n , 𝓓 n ]
@@ -839,8 +841,8 @@ the pointed exponential (𝓓∞⊥ ⟹ᵈᶜᵖᵒ⊥ 𝓓∞⊥), which we pro
   f : ⟨ 𝓓 (succ n) ⟩ → ⟨ 𝓓 (succ n) ⟩
   f = [ 𝓓 (succ n) , 𝓓 (succ n) ]⟨ f' ⟩
   γ : [ 𝓓 n , 𝓓 n ]⟨ π (succ n) f' ⟩ ∼ [ 𝓓 n , 𝓓 n ]⟨ ⊥ (𝓓⊥ (succ n)) ⟩
-  γ x = [ 𝓓 n , 𝓓 n ]⟨ π (succ n) f' ⟩ x   ＝⟨ refl ⟩
-        (π n ∘ f ∘ ε n) x                  ＝⟨ refl ⟩
+  γ x = [ 𝓓 n , 𝓓 n ]⟨ π (succ n) f' ⟩ x   ＝⟨refl⟩
+        (π n ∘ f ∘ ε n) x                  ＝⟨refl⟩
         π n (⊥ (𝓓⊥ (succ n)))              ＝⟨ IH ⟩
         [ 𝓓 n , 𝓓 n ]⟨ ⊥ (𝓓⊥ (succ n)) ⟩ x ∎
    where
@@ -851,7 +853,7 @@ the pointed exponential (𝓓∞⊥ ⟹ᵈᶜᵖᵒ⊥ 𝓓∞⊥), which we pro
                     → is-strict (𝓓⊥ m) (𝓓⊥ n) (π⁺-helper n m k p)
 π⁺-is-strict-helper n n zero refl = refl
 π⁺-is-strict-helper n m (succ k) refl =
- π⁺-helper n m (succ k) refl (⊥ (𝓓⊥ m))              ＝⟨ refl ⟩
+ π⁺-helper n m (succ k) refl (⊥ (𝓓⊥ m))              ＝⟨refl⟩
  π⁺-helper n (n +' k) k refl (π (n +' k) (⊥ (𝓓⊥ m))) ＝⟨ q    ⟩
  π⁺-helper n (n +' k) k refl (⊥ (𝓓⊥ (n +' k)))       ＝⟨ IH   ⟩
  ⊥ (𝓓⊥ n)                                            ∎
@@ -940,10 +942,9 @@ open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤₀
   γ zero     = 𝓛-has-specified-small-compact-basis (props-are-sets 𝟙-is-prop)
   γ (succ n) = exponential-has-specified-small-compact-basis
                 (𝓓 n) (𝓓⊥ n)
-                (locally-small-if-small-compact-basis
-                  (𝓓 n) β β-is-compact-small-basis)
+                (𝓓s-are-sup-complete n)
                 B B β β β-is-compact-small-basis β-is-compact-small-basis
-                (𝓓s-are-sup-complete n) pe
+                pe
    where
     IH : has-specified-small-compact-basis (𝓓 n)
     IH = γ n

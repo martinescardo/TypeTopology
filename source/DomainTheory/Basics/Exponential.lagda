@@ -9,7 +9,7 @@ useful when proving that exponentials of sup-complete dcpos are algebraic.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -25,13 +25,15 @@ open PropositionalTruncation pt
 
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Sets
+open import UF.Sets-Properties
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.Pointed pt fe 𝓥
 open import DomainTheory.Basics.SupComplete pt fe 𝓥
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 
 module _ (𝓓 : DCPO {𝓤} {𝓣})
          (𝓔 : DCPO {𝓤'} {𝓣'})
@@ -237,7 +239,7 @@ DCPO-∘-is-continuous₂ 𝓓 𝓔 𝓔' g I α δ =
       ψ : (x : ⟨ 𝓓 ⟩)
         → [ 𝓔 , 𝓔' ]⟨ g ⟩ ([ 𝓓 , 𝓔 ]⟨ ∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ ⟩ x)
         ＝ ∐ 𝓔' (pointwise-family-is-directed 𝓓 𝓔' β ε x)
-      ψ x = [ 𝓔 , 𝓔' ]⟨ g ⟩ ([ 𝓓 , 𝓔 ]⟨ ∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ ⟩ x) ＝⟨ refl ⟩
+      ψ x = [ 𝓔 , 𝓔' ]⟨ g ⟩ ([ 𝓓 , 𝓔 ]⟨ ∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ ⟩ x) ＝⟨refl⟩
             [ 𝓔 , 𝓔' ]⟨ g ⟩ (∐ 𝓔 ε')                                 ＝⟨ e₁ ⟩
             ∐ 𝓔' ε''                                                 ＝⟨ e₂ ⟩
             ∐ 𝓔' (pointwise-family-is-directed 𝓓 𝓔' β ε x)           ∎
@@ -277,7 +279,7 @@ module _
 
  open is-sup-complete 𝓔-is-sup-complete
 
- sup-of-continuous-functions : {I : 𝓥 ̇  } → (I → DCPO[ 𝓓 , 𝓔 ]) → DCPO[ 𝓓 , 𝓔 ]
+ sup-of-continuous-functions : {I : 𝓥 ̇ } → (I → DCPO[ 𝓓 , 𝓔 ]) → DCPO[ 𝓓 , 𝓔 ]
  sup-of-continuous-functions {I} α = (f , c)
   where
    f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
@@ -327,9 +329,9 @@ module _
   record
    { ⋁        = λ {I} α → sup-of-continuous-functions α
    ; ⋁-is-sup = λ {I} → lemma
-   }
+  }
    where
-    lemma : {I : 𝓥 ̇  } (α : I → DCPO[ 𝓓 , 𝓔 ])
+    lemma : {I : 𝓥 ̇ } (α : I → DCPO[ 𝓓 , 𝓔 ])
           → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
              (sup-of-continuous-functions α) α
     lemma {I} α = (ub , lb-of-ubs)

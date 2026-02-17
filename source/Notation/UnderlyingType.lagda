@@ -1,18 +1,18 @@
 Martin Escardo 6th May 2022
 
-Type-class for notation for underlying types of ordered sets.
+Type-class for notation for underlying things.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Notation.UnderlyingType where
 
 open import MLTT.Spartan
 
-record Underlying-Type {𝓤} (X : 𝓤 ̇ ) (𝓥 : Universe) : 𝓤 ⊔ 𝓥 ⁺ ̇  where
+record Underlying-Type {𝓤} {𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ⁺ ̇ where
  field
-  ⟨_⟩ : X → 𝓥 ̇
+  ⟨_⟩ : X → Y
 
 open Underlying-Type {{...}} public
 

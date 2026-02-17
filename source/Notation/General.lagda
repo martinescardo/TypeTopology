@@ -1,8 +1,10 @@
+Martin Escardo.
+
 General terminology and notation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Notation.General where
 
@@ -12,8 +14,45 @@ open import MLTT.Universes
 open import MLTT.Id
 open import MLTT.Negation public
 
+\end{code}
+
+The notation `Type 𝓤` should be avoided in favour of `𝓤 ̇`, but some
+module do use it.
+
+\begin{code}
+
 Type  = Set
 Type₁ = Set₁
+
+fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
+fiber f y = Σ x ꞉ domain f , f x ＝ y
+
+to-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X)
+         → fiber f (f x)
+to-fiber f x = x , refl
+
+fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} → fiber f y → X
+fiber-point = pr₁
+
+fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} (w : fiber f y)
+                     → f (fiber-point w) ＝ y
+fiber-identification = pr₂
+
+each-fiber-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              → (X → Y)
+              → (𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇ )
+              → 𝓥 ⊔ 𝓦 ̇
+each-fiber-of f P = ∀ y → P (fiber f y)
+
+fix : {X : 𝓤 ̇ } → (f : X → X) → 𝓤 ̇
+fix f = Σ x ꞉ domain f , x ＝ f x
+
+from-fix : {X : 𝓤 ̇ } (f : X → X) → fix f → X
+from-fix f = pr₁
+
+from-fix-is-fixed : {X : 𝓤 ̇ } (f : X → X) (φ : fix f)
+                  → from-fix f φ ＝ f (from-fix f φ)
+from-fix-is-fixed f = pr₂
 
 reflexive : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 reflexive R = ∀ x → R x x
@@ -42,6 +81,9 @@ right-neutral e _·_ = ∀ x → x · e ＝ x
 associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 associative _·_ = ∀ x y z → (x · y) · z ＝ x · (y · z)
 
+associative' : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+associative' _·_ = ∀ x y z → x · (y · z) ＝ (x · y) · z
+
 commutative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 commutative _·_ = ∀ x y → (x · y) ＝ (y · x)
 
@@ -56,24 +98,24 @@ right-cancellable f = {𝓦 : Universe} {Z : 𝓦 ̇ } (g h : codomain f → Z)
                     → g ∘ f ∼ h ∘ f
                     → g ∼ h
 
-_⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-A ⇔ B = (A → B) × (B → A)
+_↔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+A ↔ B = (A → B) × (B → A)
 
-lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (X → Y)
+lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↔ Y) → (X → Y)
 lr-implication = pr₁
 
-rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (Y → X)
+rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↔ Y) → (Y → X)
 rl-implication = pr₂
 
-⇔-sym : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } → X ⇔ Y → Y ⇔ X
-⇔-sym (f , g) = (g , f)
+↔-sym : {X : 𝓤' ̇ } {Y : 𝓥' ̇ } → X ↔ Y → Y ↔ X
+↔-sym (f , g) = (g , f)
 
-⇔-trans : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } {Z : 𝓦' ̇  }
-        → X ⇔ Y → Y ⇔ Z → X ⇔ Z
-⇔-trans (f , g) (h , k) = (h ∘ f , g ∘ k)
+↔-trans : {X : 𝓤' ̇ } {Y : 𝓥' ̇ } {Z : 𝓦' ̇ }
+        → X ↔ Y → Y ↔ Z → X ↔ Z
+↔-trans (f , g) (h , k) = (h ∘ f , g ∘ k)
 
-⇔-refl : {X : 𝓤' ̇  } → X ⇔ X
-⇔-refl = (id , id)
+↔-refl : {X : 𝓤' ̇ } → X ↔ X
+↔-refl = (id , id)
 
 \end{code}
 
@@ -182,11 +224,57 @@ infixr -1 Sigma!
 Note: Σ! is to be avoided, in favour of the contractibility of Σ,
 following univalent mathematics.
 
+Ian Ray, 3rd December 2025.
+
+We add a new syntax where we reason with functions chained in sequence which is
+analogous to reasoning by chains of equations or equivalences (see
+MLTT/Id.lagda and UF/Equiv.lagda to review these ideas). We will include both
+compostional and diagrammatic order.
+
+Notice that reasoning in compositional order with g : B → C and f : A → B
+
+ C ←⟨ g ⟩
+ B ←⟨ f ⟩
+ A ▢
+
+amounts to a function A → C (via normal composition), but it appears in the
+'bottom up' direction. This may seem strange at first, as one might expect
+this feature to only be useful in the forward direction, that is, in
+diagrammatic order. In fact, the above actually reflects a common mode of proof
+where one proves C by observing it suffices to prove B (and supplying a map
+from B to C) and then proving B by observing it suffices to prove A (and
+supplying a map from A to B). For this reason we provide notation that allows
+us to display proofs of this sort.
+
+\begin{code}
+
+_→⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → (X → Y) → (Y → Z) → (X → Z)
+_ →⟨ f ⟩ g = g ∘ f
+
+_←⟨_⟩_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ ) → (Y → Z) → (X → Y) → (X → Z)
+_ ←⟨ g ⟩ f = g ∘ f
+
+_suffices-to-show⟨_⟩_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ )
+                      → (Y → Z) → (X → Y) → (X → Z)
+_ suffices-to-show⟨ g ⟩ f = g ∘ f
+
+_▢ : (X : 𝓤 ̇ ) → X → X
+X ▢ = id
+
+by-instance-resolution : {X : 𝓤 ̇ } → {{X}} → X
+by-instance-resolution  {{x}} = x
+
+\end{code}
+
 Fixities:
 
 \begin{code}
 
 infixl -1 -id
-infix -1 _⇔_
+infix -1 _↔_
+infixr 0 _→⟨_⟩_
+infixr 0 _←⟨_⟩_
+infixr 0 _suffices-to-show⟨_⟩_
+infix  1 _▢
 
 \end{code}

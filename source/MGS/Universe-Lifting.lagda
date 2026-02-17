@@ -7,14 +7,14 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.Universe-Lifting where
 
 open import MGS.Equivalence-Constructions
 open import MGS.Embeddings public
 
-record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
+record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  constructor
   lift
  field
@@ -352,6 +352,6 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
   q : A (Lift 𝓥 X) ＝ A (Lift 𝓤 Y)
   q = ap A p
 
-global-≃-ap ua = global-≃-ap' ua id
+global-≃-ap ua = global-≃-ap' ua (λ 𝓤 → 𝓤)
 
 \end{code}

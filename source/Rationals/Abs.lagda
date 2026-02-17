@@ -4,23 +4,18 @@ In this file I define the absolute value for rational numbers,
 and prove properties of the absolute value.
 
 \begin{code}
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Notation.Order
-open import UF.FunExt
 open import UF.Base hiding (_≈_)
-open import UF.Subsingletons
-
 open import Integers.Abs
-open import Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
 open import Integers.Type hiding (abs)
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Order
-open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Rationals.Fractions
-open import Rationals.FractionsOperations renaming (abs to ℚₙ-abs) renaming (-_ to ℚₙ-_) hiding (_+_) hiding (_*_)
+open import Rationals.FractionsOperations renaming (abs to 𝔽-abs) renaming (-_ to 𝔽-_) hiding (_+_) hiding (_*_)
 open import Rationals.Type
 open import Rationals.Addition
 open import Rationals.Negation
@@ -30,367 +25,435 @@ open import Rationals.Multiplication
 module Rationals.Abs where
 
 abs : ℚ → ℚ
-abs (q , _) = toℚ (ℚₙ-abs q)
+abs (q , _) = toℚ (𝔽-abs q)
 
 ℚ-abs-zero : 0ℚ ＝ abs 0ℚ
 ℚ-abs-zero = by-definition
 
-toℚ-abs : Fun-Ext → (q : ℚₙ) → abs (toℚ q) ＝ toℚ (ℚₙ-abs q)
-toℚ-abs fe (x , a) = conclusion
+toℚ-abs : (q : 𝔽) → abs (toℚ q) ＝ toℚ (𝔽-abs q)
+toℚ-abs (x , a) = equiv→equality (𝔽-abs (x' , a')) (𝔽-abs (x , a)) γ
  where
-  rational-q : Σ ((x' , a') , lxp) ꞉ ℚ , Σ h ꞉ ℕ , (x ＝ pos (succ h) ℤ* x') × (succ a ＝ succ h ℕ* succ a')
-  rational-q = toℚlemma (x , a)
-  lx : ℚ
-  lx = pr₁ rational-q
-  x' : ℤ
-  x' = pr₁ (pr₁ lx)
-  a' : ℕ
-  a' = pr₂ (pr₁ lx)
-  lxp = pr₂ lx
-  h = pr₁ (pr₂ (rational-q))
-  e₁ : succ a ＝ succ h ℕ* succ a'
-  e₁ = pr₂ (pr₂ (pr₂ rational-q))
-  e₂ : x ＝ pos (succ h) ℤ* x'
-  e₂ = pr₁ (pr₂ (pr₂ rational-q))
+  x'  = numℚ (x , a)
+  a'  = dnomℚ (x , a)
+  h   = hcf𝔽 (x , a)
+  pa  = (pos ∘ succ) a
+  pa' = (pos ∘ succ) a'
+  ph  = (pos ∘ succ) h
 
-  sa = succ a
-  psa = pos (succ a)
-  sh = succ h
-  psh = pos (succ h)
-  sa' = succ a'
-  psa' = pos (succ a')
+  γ' : ph ℤ* (absℤ x' ℤ* pa) ＝ ph ℤ* (absℤ x ℤ* pa')
+  γ' = ph ℤ* (absℤ x' ℤ* pa)    ＝⟨ ℤ*-assoc ph (absℤ x') pa ⁻¹               ⟩
+       ph ℤ* absℤ x' ℤ* pa      ＝⟨ refl                                      ⟩
+       absℤ ph ℤ* absℤ x' ℤ* pa ＝⟨ ap (_ℤ* pa) (abs-over-mult' ph x' ⁻¹)     ⟩
+       absℤ (ph ℤ* x') ℤ* pa    ＝⟨ ap (λ - → absℤ - ℤ* pa) (numr (x , a) ⁻¹) ⟩
+       absℤ x ℤ* pa             ＝⟨ ℤ*-comm (absℤ x) pa                       ⟩
+       pa ℤ* absℤ x             ＝⟨ ap (_ℤ* absℤ x) (dnomrP' (x , a))         ⟩
+       ph ℤ* pa' ℤ* absℤ x      ＝⟨ ℤ*-assoc ph pa' (absℤ x)                  ⟩
+       ph ℤ* (pa' ℤ* absℤ x)    ＝⟨ ap (ph ℤ*_) (ℤ*-comm pa' (absℤ x))        ⟩
+       ph ℤ* (absℤ x ℤ* pa')    ∎
 
-  helper : ℚₙ-abs (x' , a') ≈ ℚₙ-abs (x , a) → toℚ (ℚₙ-abs (x' , a')) ＝ toℚ (ℚₙ-abs (x , a))
-  helper = equiv→equality fe (ℚₙ-abs (x' , a')) (ℚₙ-abs (x , a))
+  γ : 𝔽-abs (x' , a') ≈ 𝔽-abs (x , a)
+  γ = ℤ-mult-left-cancellable (absℤ x' ℤ* pa) (absℤ x ℤ* pa') ph id γ'
 
-  I : ℚₙ-abs (x' , a') ≈ ℚₙ-abs (x , a)
-  I = ℤ-mult-left-cancellable (absℤ x' ℤ* psa) (absℤ x ℤ* psa') psh id II
-   where
-    II : psh ℤ* (absℤ x' ℤ* psa) ＝ psh ℤ* (absℤ x ℤ* psa')
-    II = psh ℤ* (absℤ x' ℤ* psa)       ＝⟨ ℤ*-assoc psh (absℤ x') psa ⁻¹                             ⟩
-         psh ℤ* absℤ x' ℤ* psa         ＝⟨ by-definition                                             ⟩
-         absℤ psh ℤ* absℤ x' ℤ* psa    ＝⟨ ap (_ℤ* psa) (abs-over-mult' psh x' ⁻¹)                   ⟩
-         absℤ (psh ℤ* x') ℤ* psa       ＝⟨ ap (λ z → absℤ z ℤ* psa) (e₂ ⁻¹)                          ⟩
-         absℤ x ℤ* psa                 ＝⟨ ap (λ z → absℤ x ℤ* pos z) e₁                             ⟩
-         absℤ x ℤ* pos (sh ℕ* sa')     ＝⟨ ap (absℤ x ℤ*_) (pos-multiplication-equiv-to-ℕ sh sa' ⁻¹) ⟩
-         absℤ x ℤ* (psh ℤ* psa')       ＝⟨ ℤ-mult-rearrangement''' (absℤ x) psh psa'                 ⟩
-         psh ℤ* (absℤ x ℤ* psa')       ∎
+abs-of-pos-is-pos : (p : ℚ) → 0ℚ ≤ p → abs p ＝ p
+abs-of-pos-is-pos ((pos x , a) , α) l = toℚ-to𝔽 ((pos x , a) , α) ⁻¹
+abs-of-pos-is-pos ((negsucc x , a) , α) l = 𝟘-elim (ℚ-num-neg-not-pos x a α l)
 
-  conclusion : abs (toℚ (x , a)) ＝ toℚ (ℚₙ-abs (x , a))
-  conclusion = helper I
+abs-of-pos-is-pos' : (p : ℚ) → 0ℚ < p → abs p ＝ p
+abs-of-pos-is-pos' p l = abs-of-pos-is-pos p (ℚ<-coarser-than-≤ 0ℚ p l)
 
-abs-of-pos-is-pos : Fun-Ext → (p : ℚ) → 0ℚ ≤ p → abs p ＝ p
-abs-of-pos-is-pos fe ((pos x , a) , α) l = I
+ℚ-abs-neg-equals-pos : (q : ℚ) → abs q ＝ abs (- q)
+ℚ-abs-neg-equals-pos (q , p) = γ
  where
-  I : abs ((pos x , a) , α) ＝ (pos x , a) , α
-  I = abs ((pos x , a) , α)    ＝⟨ by-definition ⟩
-      toℚ (ℚₙ-abs (pos x , a)) ＝⟨ by-definition ⟩
-      toℚ (pos x , a)          ＝⟨ toℚ-toℚₙ fe ((pos x , a) , α) ⁻¹ ⟩
-      ((pos x , a) , α) ∎
-abs-of-pos-is-pos fe ((negsucc x , a) , α) l = 𝟘-elim (III II)
- where
-  I : pos 0 ℤ* pos (succ a) ≤ negsucc x ℤ* pos 1
-  I = l
-  II : pos 0 ≤ negsucc x
-  II = transport₂ _≤_ (ℤ-zero-left-base (pos (succ a))) (ℤ-zero-right-neutral (negsucc x)) I
-  III : ¬ (pos 0 ≤ negsucc x)
-  III (k , e) = pos-not-negsucc (ℤ-zero-left-neutral (pos k) ⁻¹ ∙ e)
+  I : 𝔽-abs q ≈ 𝔽-abs (𝔽- q) → toℚ (𝔽-abs q) ＝ toℚ (𝔽-abs (𝔽- q))
+  I = equiv→equality (𝔽-abs q) (𝔽-abs (𝔽- q))
 
-abs-of-pos-is-pos' : Fun-Ext → (p : ℚ) → 0ℚ < p → abs p ＝ p
-abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p l)
+  II : 𝔽-abs q ≈ 𝔽-abs (𝔽- q)
+  II = 𝔽-abs-neg-equals-pos q
 
-ℚ-abs-neg-equals-pos : Fun-Ext → (q : ℚ) → abs q ＝ abs (- q)
-ℚ-abs-neg-equals-pos fe (q , p) = conclusion
- where
-  helper : ℚₙ-abs q ≈ ℚₙ-abs (ℚₙ- q) → toℚ (ℚₙ-abs q) ＝ toℚ (ℚₙ-abs (ℚₙ- q))
-  helper = equiv→equality fe (ℚₙ-abs q) (ℚₙ-abs (ℚₙ- q))
+  γ : abs (q , p) ＝ abs (- (q , p))
+  γ = abs (q , p)        ＝⟨ by-definition     ⟩
+      toℚ (𝔽-abs q)      ＝⟨ I II              ⟩
+      toℚ (𝔽-abs (𝔽- q)) ＝⟨ toℚ-abs (𝔽- q) ⁻¹ ⟩
+      abs (toℚ (𝔽- q))   ＝⟨ by-definition     ⟩
+      abs (- (q , p))    ∎
 
-  I : ℚₙ-abs q ≈ ℚₙ-abs (ℚₙ- q)
-  I = ℚₙ-abs-neg-equals-pos q
-
-  conclusion : abs (q , p) ＝ abs (- (q , p))
-  conclusion = abs (q , p)           ＝⟨ by-definition ⟩
-               toℚ (ℚₙ-abs q)         ＝⟨ helper I ⟩
-               toℚ (ℚₙ-abs (ℚₙ- q))   ＝⟨ toℚ-abs fe (ℚₙ- q) ⁻¹ ⟩
-               abs (toℚ (ℚₙ- q))      ＝⟨ by-definition ⟩
-               abs (- (q , p)) ∎
-
-ℚ-abs-inverse : Fun-Ext → (q : ℚ) → (abs q ＝ q) ∔ (abs q ＝ - q)
-ℚ-abs-inverse fe ((pos x , a) , q) = inl conclusion
- where
-  I : (pos x , a) ≈ toℚₙ (toℚ (pos x , a))
-  I = ≈-toℚ (pos x , a)
-  II : Σ (x' , a') ꞉ ℚₙ , ((pos x , a) , q ＝ toℚ (x' , a'))
-  II = q-has-qn fe ((pos x , a) , q)
-  x' = pr₁ (pr₁ II)
-  a' = pr₂ (pr₁ II)
-
-  helper : (pos x , a) ≈ (x' , a') → toℚ (pos x , a) ＝ toℚ (x' , a')
-  helper = equiv→equality fe (pos x , a) (x' , a')
-
-  III : (pos x , a) ≈ (x' , a')
-  III = refl
-
-  conclusion : abs ((pos x , a) , q) ＝ (pos x , a) , q
-  conclusion = abs ((pos x , a) , q)   ＝⟨ by-definition ⟩
-               toℚ (pos x , a)         ＝⟨ helper III ⟩
-               toℚ (x' , a')           ＝⟨ pr₂ II ⁻¹ ⟩
-               (pos x , a) , q         ∎
-ℚ-abs-inverse fe ((negsucc x , a) , q) = inr conclusion
- where
-  conclusion : abs ((negsucc x , a) , q) ＝ - ((negsucc x , a) , q)
-  conclusion = abs ((negsucc x , a) , q)     ＝⟨ by-definition ⟩
-               toℚ ((absℤ (negsucc x)) , a)  ＝⟨ by-definition ⟩
-               toℚ (pos (succ x) , a)        ＝⟨ by-definition ⟩
-               toℚ (ℚₙ- (negsucc x , a))     ＝⟨ by-definition ⟩
-               - ((negsucc x , a) , q)      ∎
-
-ℚ-positive-not-zero : Fun-Ext → (x a : ℕ) → ¬ (toℚ (pos (succ x) , a) ＝ 0ℚ)
-ℚ-positive-not-zero fe x a e = pos-succ-not-zero x III
- where
-  I : (pos (succ x) , a) ≈ (pos 0 , 0)
-  I = equality→equiv fe (pos (succ x) , a) (pos 0 , 0) e
-
-  II : pos (succ x) ℤ* pos 1 ＝ pos 0 ℤ* pos (succ a)
-  II = I
-
-  III : pos (succ x) ＝ pos 0
-  III = pos (succ x)            ＝⟨ by-definition ⟩
-        pos (succ x) ℤ* (pos 1) ＝⟨ II ⟩
-        pos 0 ℤ* pos (succ a)   ＝⟨ ℤ-zero-left-base (pos (succ a))  ⟩
-        pos 0 ∎
-
+ℚ-abs-inverse : (q : ℚ) → (abs q ＝ q) ∔ (abs q ＝ - q)
+ℚ-abs-inverse ((pos x , a) , q)     = inl (toℚ-to𝔽 ((pos x , a) , q) ⁻¹)
+ℚ-abs-inverse ((negsucc x , a) , q) = inr refl
 
 ℚ-abs-is-positive : (q : ℚ) → 0ℚ ≤ abs q
-ℚ-abs-is-positive ((pos zero , a) , _)     = 0 , I
+ℚ-abs-is-positive ((pos zero , a) , _)     = 0 , refl
+ℚ-abs-is-positive ((pos (succ x) , a) , q) = γ
  where
-  I : pos 0 ℤ* pos 0 ℤ+ pos 0 ＝ pos 0 ℤ* pos (succ 0)
-  I = pos 0 ℤ* pos 0 ℤ+ pos 0 ＝⟨ by-definition ⟩
-      pos 0 ℤ* pos 0          ＝⟨ by-definition ⟩
-      pos 0                   ＝⟨ by-definition ⟩
-      pos 0 ℤ* pos 1          ∎
-ℚ-abs-is-positive ((pos (succ x) , a) , q) = ℚ<-coarser-than-≤ 0ℚ (abs ((pos (succ x) , a) , q)) (ℚ-zero-less-than-positive x a)
-ℚ-abs-is-positive ((negsucc x , a) , q)    = ℚ<-coarser-than-≤ 0ℚ (abs (((negsucc x , a) , q))) (ℚ-zero-less-than-positive x a)
+  I : 0ℚ < toℚ (pos (succ x) , a)
+  I = ℚ-zero-less-than-positive x a
 
-ℚ-abs-zero-is-zero : Fun-Ext → (q : ℚ) → abs q ＝ 0ℚ → q ＝ 0ℚ
-ℚ-abs-zero-is-zero fe ((pos 0 , a) , p) e = numerator-zero-is-zero fe ((pos 0 , a) , p) refl
-ℚ-abs-zero-is-zero fe ((pos (succ x) , a) , p) e = 𝟘-elim (ℚ-positive-not-zero fe x a e)
-ℚ-abs-zero-is-zero fe ((negsucc x , a) , p) e = 𝟘-elim (ℚ-positive-not-zero fe x a e)
-
-ℚ-abs-≤ : Fun-Ext → (q : ℚ) → (- (abs q) ≤ q) × (q ≤ abs q)
-ℚ-abs-≤ fe q = locate-q (ℚ-abs-inverse fe q)
+  γ : 0ℚ ≤ abs ((pos (succ x) , a) , q)
+  γ = ℚ<-coarser-than-≤ 0ℚ (abs ((pos (succ x) , a) , q)) I
+ℚ-abs-is-positive ((negsucc x , a) , q) = γ
  where
-  i : 0ℚ ≤ abs q
-  i = ℚ-abs-is-positive q
-  ii : 0ℚ - abs q ≤ abs q - abs q
-  ii = ℚ≤-addition-preserves-order fe 0ℚ (abs q) (- abs q) i
-  iii : - abs q ≤ 0ℚ
-  iii = transport₂ _≤_ (ℚ-zero-left-neutral fe (- abs q)) (ℚ-inverse-sum-to-zero fe (abs q)) ii
-  iv : - abs q ≤ abs q
-  iv = ℚ≤-trans fe (- abs q) 0ℚ (abs q) iii i
+  I : 0ℚ < abs ((negsucc x , a) , q)
+  I = ℚ-zero-less-than-positive x a
 
-  locate-q : (abs q ＝ q) ∔ (abs q ＝ - q) → - abs q ≤ q × q ≤ abs q
-  locate-q (inl e) = I , II
-   where
-    I : - abs q ≤ q
-    I = transport (- abs q ≤_) e iv
+  γ : 0ℚ ≤ abs ((negsucc x , a) , q)
+  γ = ℚ<-coarser-than-≤ 0ℚ (abs (((negsucc x , a) , q))) I
 
-    II : q ≤ abs q
-    II = transport (q ≤_) (e ⁻¹) (ℚ≤-refl q)
-  locate-q (inr r) = I , II
-   where
-    α : q ＝ - abs q
-    α = q         ＝⟨ ℚ-minus-minus fe q ⟩
-        - (- q)   ＝⟨ ap -_ (r ⁻¹) ⟩
-        - abs q   ∎
-
-    I : - abs q ≤ q
-    I = transport (_≤ q) α (ℚ≤-refl q)
-
-    II : q ≤ abs q
-    II = transport (_≤ abs q) (α ⁻¹) iv
-
-ℚ-abs-≤-unpack : Fun-Ext → (q ε : ℚ) → abs q ≤ ε → (- ε ≤ q) × (q ≤ ε)
-ℚ-abs-≤-unpack fe q ε l = locate-q (ℚ-abs-inverse fe q)
+ℚ-abs-zero-is-zero : (q : ℚ) → abs q ＝ 0ℚ → q ＝ 0ℚ
+ℚ-abs-zero-is-zero ((pos 0 , a) , p) e = γ
  where
-  abs-q-positive : 0ℚ ≤ abs q
-  abs-q-positive = ℚ-abs-is-positive q
+  γ : (pos 0 , a) , p ＝ 0ℚ
+  γ = numerator-zero-is-zero ((pos 0 , a) , p) refl
+ℚ-abs-zero-is-zero ((pos (succ x) , a) , p) e = 𝟘-elim γ
+ where
+  γ : 𝟘
+  γ = ℚ-positive-not-zero x a e
+ℚ-abs-zero-is-zero ((negsucc x , a) , p) e = 𝟘-elim (ℚ-positive-not-zero x a e)
 
-  ε-positive : 0ℚ ≤ ε
-  ε-positive = ℚ≤-trans fe 0ℚ (abs q) ε abs-q-positive l
+ℚ-abs-≤ : (q : ℚ) → (- abs q ≤ q) × (q ≤ abs q)
+ℚ-abs-≤ q = cases γ₁ γ₂ (ℚ-abs-inverse q)
+ where
+  I : 0ℚ ≤ abs q
+  I = ℚ-abs-is-positive q
 
-  neg-epsilon-negative : - ε ≤ 0ℚ
-  neg-epsilon-negative = ℚ≤-swap fe 0ℚ ε ε-positive
+  II : - abs q ≤ 0ℚ
+  II = ℚ≤-swap 0ℚ (abs q) I
 
-  locate-q : (abs q ＝ q) ∔ (abs q ＝ - q) → - ε ≤ q × q ≤ ε
-  locate-q (inl i) = ℚ≤-trans fe (- ε) 0ℚ q neg-epsilon-negative (transport (0ℚ ≤_) i abs-q-positive) , (transport (_≤ ε) i l)
-  locate-q (inr i) = transport (- ε ≤_) (ℚ-minus-minus fe q ⁻¹) β , ℚ≤-trans fe q 0ℚ ε δ ε-positive
+  III : - abs q ≤ abs q
+  III = ℚ≤-trans (- abs q) 0ℚ (abs q) II I
+
+  γ₁ : abs q ＝ q → (- abs q ≤ q) × (q ≤ abs q)
+  γ₁ e = l , r
    where
-    α : - q ≤ ε
-    α = transport (_≤ ε) i l
-    β : - ε ≤ - (- q)
-    β = ℚ≤-swap fe (- q) ε α
-    γ : - (- q) ≤ 0ℚ
-    γ = transport (λ z → - z ≤ 0ℚ) i (ℚ≤-swap fe 0ℚ (abs q) abs-q-positive)
-    δ : q ≤ 0ℚ
-    δ = transport (_≤ 0ℚ) (ℚ-minus-minus fe q ⁻¹) γ
+    l : - abs q ≤ q
+    l = transport (- abs q ≤_) e III
 
-ℚ≤-to-abs : Fun-Ext → (x y : ℚ) → (- y ≤ x) × (x ≤ y) → abs x ≤ y
-ℚ≤-to-abs fe x y (l₁ , l₂) = I (ℚ-abs-inverse fe x)
+    r : q ≤ abs q
+    r = transport (q ≤_) (e ⁻¹) (ℚ≤-refl q)
+
+  γ₂ : abs q ＝ - q → (- abs q ≤ q) × (q ≤ abs q)
+  γ₂ e = l , r
+   where
+    IV : q ＝ - abs q
+    IV = q       ＝⟨ ℚ-minus-minus q ⟩
+         - (- q) ＝⟨ ap -_ (e ⁻¹) ⟩
+         - abs q ∎
+
+    l : - abs q ≤ q
+    l = transport (_≤ q) IV (ℚ≤-refl q)
+
+    r : q ≤ abs q
+    r = transport (_≤ abs q) (IV ⁻¹) III
+
+ℚ≤-to-abs : (x y : ℚ) → (- y ≤ x) × (x ≤ y) → abs x ≤ y
+ℚ≤-to-abs x y (l₁ , l₂) = γ (ℚ-abs-inverse x)
  where
   α : - x ≤ - (- y)
-  α = ℚ≤-swap fe (- y) x l₁
-  I : (abs x ＝ x) ∔ (abs x ＝ - x) → abs x ≤ y
-  I (inl l) = transport (_≤ y) (l ⁻¹) l₂
-  I (inr r) = transport₂ _≤_ (r ⁻¹) (ℚ-minus-minus fe y ⁻¹) α
+  α = ℚ≤-swap (- y) x l₁
 
-ℚ<-to-abs : Fun-Ext → (x y : ℚ) → (- y < x) × (x < y) → abs x < y
-ℚ<-to-abs fe x y (l₁ , l₂) = II (ℚ≤-split fe (abs x) y I)
+  γ : (abs x ＝ x) ∔ (abs x ＝ - x) → abs x ≤ y
+  γ (inl l) = transport (_≤ y) (l ⁻¹) l₂
+  γ (inr r) = transport₂ _≤_ (r ⁻¹) (ℚ-minus-minus y ⁻¹) α
+
+ℚ<-to-abs : (x y : ℚ) → (- y < x) × (x < y) → abs x < y
+ℚ<-to-abs x y (l₁ , l₂) = γ
  where
-  I : abs x ≤ y
-  I = ℚ≤-to-abs fe x y (ℚ<-coarser-than-≤ (- y) x l₁ , ℚ<-coarser-than-≤ x y l₂)
-  II : abs x < y ∔ (abs x ＝ y) → abs x < y
-  II (inl l) = l
-  II (inr r) = III (ℚ-abs-inverse fe x)
-   where
+  I : - y ≤ x
+  I = ℚ<-coarser-than-≤ (- y) x l₁
 
-    III : (abs x ＝ x) ∔ (abs x ＝ - x) → abs x < y
-    III (inl s) = 𝟘-elim (ℚ<-not-itself x (transport (x <_) (r ⁻¹ ∙ s) l₂))
-    III (inr s) = 𝟘-elim (ℚ<-not-itself x (transport (_< x) IV l₁))
+  II : x ≤ y
+  II = ℚ<-coarser-than-≤ x y l₂
+
+  III : abs x ≤ y
+  III = ℚ≤-to-abs x y (I , II)
+
+  IV : abs x < y → abs x < y
+  IV = id
+
+  V : abs x ＝ y → abs x < y
+  V e = 𝟘-elim (cases Vγ₁ Vγ₂ (ℚ-abs-inverse x))
+   where
+    Vγ₁ : ¬ (abs x ＝ x)
+    Vγ₁ e' = ℚ<-irrefl x (transport (x <_) (e ⁻¹ ∙ e') l₂)
+
+    Vγ₂ : ¬ (abs x ＝ - x)
+    Vγ₂ e' = ℚ<-irrefl x (transport (_< x) VI l₁)
      where
-      IV : - y ＝ x
-      IV = - y     ＝⟨ ap -_ (r ⁻¹ ∙ s) ⟩
-           - (- x) ＝⟨ ℚ-minus-minus fe x ⁻¹ ⟩
-           x ∎
+      VI : - y ＝ x
+      VI = - y     ＝⟨ ap -_ (e ⁻¹)       ⟩
+           - abs x ＝⟨ ap -_ e'           ⟩
+           - (- x) ＝⟨ ℚ-minus-minus x ⁻¹ ⟩
+           x       ∎
 
-ℚ-abs-<-unpack :  Fun-Ext → (q ε : ℚ) → abs q < ε → (- ε < q) × (q < ε)
-ℚ-abs-<-unpack fe q ε l = locate-q (ℚ-abs-inverse fe q)
+  γ : abs x < y
+  γ = cases IV V (ℚ≤-split (abs x) y III)
+
+ℚ-abs-<-unpack :  (q ε : ℚ) → abs q < ε → (- ε < q) × (q < ε)
+ℚ-abs-<-unpack q ε o = cases γ₁ γ₂ (ℚ-abs-inverse q)
  where
-  abs-q-positive : 0ℚ ≤ abs q
-  abs-q-positive = ℚ-abs-is-positive q
+  I : 0ℚ ≤ abs q
+  I = ℚ-abs-is-positive q
 
-  ε-positive : 0ℚ < ε
-  ε-positive = ℚ≤-<-trans fe 0ℚ (abs q) ε abs-q-positive l
+  II : 0ℚ < ε
+  II = ℚ≤-<-trans 0ℚ (abs q) ε I o
 
-  neg-epsilon-negative : - ε < 0ℚ
-  neg-epsilon-negative = ℚ<-swap fe 0ℚ ε ε-positive
+  III : - ε < 0ℚ
+  III = ℚ<-swap 0ℚ ε II
 
-  locate-q : (abs q ＝ q) ∔ (abs q ＝ - q) → - ε < q × q < ε
-  locate-q (inl i) = ℚ<-≤-trans fe (- ε) 0ℚ q neg-epsilon-negative (transport (0ℚ ≤_) i abs-q-positive) , (transport (_< ε) i l)
-  locate-q (inr i) = transport (- ε <_) (ℚ-minus-minus fe q ⁻¹) β , ℚ≤-<-trans fe q 0ℚ ε δ ε-positive
+  IV : - ε < abs q
+  IV = ℚ<-≤-trans (- ε) 0ℚ (abs q) III I
+
+  γ₁ : abs q ＝ q → (- ε < q) × (q < ε)
+  γ₁ e = l , r
    where
-    α : - q < ε
-    α = transport (_< ε) i l
-    β : - ε < - (- q)
-    β = ℚ<-swap fe (- q) ε α
-    γ : - (- q) ≤ 0ℚ
-    γ = transport (λ z → - z ≤ 0ℚ) i (ℚ≤-swap fe 0ℚ (abs q) abs-q-positive)
-    δ : q ≤ 0ℚ
-    δ = transport (_≤ 0ℚ) (ℚ-minus-minus fe q ⁻¹) γ
+    l : - ε < q
+    l = transport (- ε <_) e IV
 
-ℚ-triangle-inequality : Fun-Ext → (x y : ℚ) → abs (x + y) ≤ abs x + abs y
-ℚ-triangle-inequality fe x y = ℚ≤-to-abs fe (x + y) (abs x + abs y) (I (ℚ-abs-≤ fe x) (ℚ-abs-≤ fe y))
+    r : q < ε
+    r = transport (_< ε) e o
+
+  γ₂ : abs q ＝ - q → (- ε < q) × (q < ε)
+  γ₂ e = l , r
+   where
+    α : q ＝ - abs q
+    α = q       ＝⟨ ℚ-minus-minus q ⟩
+        - (- q) ＝⟨ ap -_ (e ⁻¹)    ⟩
+        - abs q ∎
+
+    l : - ε < q
+    l = transport (- ε <_) (α ⁻¹) (ℚ<-swap (abs q) ε o)
+
+    r : q < ε
+    r = ℚ<-swap''' q ε (transport (- ε <_) e IV)
+
+ℚ-abs-≤-unpack : (q ε : ℚ) → abs q ≤ ε → (- ε ≤ q) × (q ≤ ε)
+ℚ-abs-≤-unpack q ε l' = cases γ₁ γ₂ (ℚ-abs-inverse q)
  where
-  I : - (abs x) ≤ x × x ≤ abs x → - abs y ≤ y × y ≤ abs y → - (abs x + abs y) ≤ x + y × x + y ≤ abs x + abs y
-  I (l₁ , l₂) (l₃ , l₄) = transport (_≤ x + y) γ α , β
-   where
-    α : (- abs x) - abs y ≤ x + y
-    α = ℚ≤-adding fe (- abs x) x (- abs y) y l₁ l₃
-    γ : (- abs x) - abs y ＝ - (abs x + abs y)
-    γ = ℚ-minus-dist fe (abs x) (abs y)
-    β : x + y ≤ abs x + abs y
-    β = ℚ≤-adding fe x (abs x) y (abs y) l₂ l₄
+  I : 0ℚ ≤ abs q
+  I = ℚ-abs-is-positive q
 
-pos-abs-no-increase : Fun-Ext → (q ε : ℚ) → (0ℚ < q) × (q < ε) → abs q < ε
-pos-abs-no-increase fe q ε (l₁ , l₂) = IV
+  II : 0ℚ ≤ ε
+  II = ℚ≤-trans 0ℚ (abs q) ε I l'
+
+  III : - ε ≤ 0ℚ
+  III = ℚ≤-swap 0ℚ ε II
+
+  IV : - ε ≤ abs q
+  IV = ℚ≤-trans (- ε) 0ℚ (abs q) III I
+
+  γ₁ : abs q ＝ q → (- ε ≤ q) × (q ≤ ε)
+  γ₁ e = l , r
+   where
+    l : - ε ≤ q
+    l = transport (- ε ≤_) e IV
+
+    r : q ≤ ε
+    r = transport (_≤ ε) e l'
+
+  γ₂ : abs q ＝ - q → (- ε ≤ q) × (q ≤ ε)
+  γ₂ e = l , r
+   where
+    α : q ＝ - abs q
+    α = q       ＝⟨ ℚ-minus-minus q ⟩
+        - (- q) ＝⟨ ap -_ (e ⁻¹)    ⟩
+        - abs q ∎
+
+    l : - ε ≤ q
+    l = transport (- ε ≤_) (α ⁻¹) (ℚ≤-swap (abs q) ε l')
+
+    r : q ≤ ε
+    r = ℚ≤-swap''' q ε (transport (- ε ≤_) e IV)
+
+ℚ-triangle-inequality : (x y : ℚ) → abs (x + y) ≤ abs x + abs y
+ℚ-triangle-inequality x y = ℚ≤-to-abs (x + y) (abs x + abs y) (γ I II)
+ where
+  I : - abs x ≤ x ≤ abs x
+  I = ℚ-abs-≤ x
+
+  II : - abs y ≤ y ≤ abs y
+  II = ℚ-abs-≤ y
+
+  γ : - abs x ≤ x ≤ abs x
+    → - abs y ≤ y ≤ abs y
+    → - (abs x + abs y) ≤ x + y ≤ abs x + abs y
+  γ (l₁ , l₂) (l₃ , l₄) = (transport (_≤ x + y) IV III) , V
+   where
+    III : (- abs x) - abs y ≤ x + y
+    III = ℚ≤-adding (- abs x) x (- abs y) y l₁ l₃
+
+    IV : (- abs x) - abs y ＝ - (abs x + abs y)
+    IV = ℚ-minus-dist (abs x) (abs y)
+
+    V : x + y ≤ abs x + abs y
+    V = ℚ≤-adding x (abs x) y (abs y) l₂ l₄
+
+ℚ-triangle-inequality' : (x y z : ℚ) → abs (x - z) ≤ abs (x - y) + abs (y - z)
+ℚ-triangle-inequality' x y z = γ
+ where
+  I : x - z ＝ x - y + (y - z)
+  I = ℚ-add-zero x (- z) y
+
+  II : abs (x - z) ＝ abs (x - y + (y - z))
+  II = ap abs I
+
+  III : abs (x - y + (y - z)) ≤ abs (x - y) + abs (y - z)
+  III = ℚ-triangle-inequality (x - y) (y - z)
+
+  γ : abs (x - z) ≤ abs (x - y) + abs (y - z)
+  γ = transport (_≤ abs (x - y) + abs (y - z)) (II ⁻¹) III
+
+pos-abs-no-increase : (q ε : ℚ) → (0ℚ < q) × (q < ε) → abs q < ε
+pos-abs-no-increase q ε (l₁ , l₂) = γ
  where
   I : 0ℚ < ε
   I = ℚ<-trans 0ℚ q ε l₁ l₂
-  II : - ε < 0ℚ
-  II = transport (- ε <_) ℚ-minus-zero-is-zero i
-   where
-    i : - ε < - 0ℚ
-    i = ℚ<-swap fe 0ℚ ε I
+
+  II : - ε < - 0ℚ
+  II = ℚ<-swap 0ℚ ε I
+
   III : - ε < q
   III = ℚ<-trans (- ε) 0ℚ q II l₁
-  IV : abs q < ε
-  IV = ℚ<-to-abs fe q ε (III , l₂)
 
-abs-mult : Fun-Ext → (x y : ℚ) → abs x * abs y ＝ abs (x * y)
-abs-mult fe x y = case-split (ℚ-dichotomous' fe x 0ℚ) (ℚ-dichotomous' fe y 0ℚ)
+  γ : abs q < ε
+  γ = ℚ<-to-abs q ε (III , l₂)
+
+abs-mult : (x y : ℚ) → abs x * abs y ＝ abs (x * y)
+abs-mult x y = γ (ℚ-dichotomous' x 0ℚ) (ℚ-dichotomous' y 0ℚ)
  where
-  case1 : 0ℚ ≤ x → 0ℚ ≤ y → abs x * abs y ＝ abs (x * y)
-  case1 l₁ l₂ = abs x * abs y  ＝⟨ ap (_* abs y) (abs-of-pos-is-pos fe x l₁)                                         ⟩
-                x * abs y      ＝⟨ ap (x *_) (abs-of-pos-is-pos fe y l₂)                                             ⟩
-                x * y          ＝⟨ abs-of-pos-is-pos fe (x * y) (ℚ≤-pos-multiplication-preserves-order x y l₁ l₂) ⁻¹ ⟩
-                abs (x * y)    ∎
-
-  case2 : (0ℚ > x) → (0ℚ > y) → abs x * abs y ＝ abs (x * y)
-  case2 l₁ l₂ = goal
+  γ₁ : 0ℚ ≤ x → 0ℚ ≤ y → abs x * abs y ＝ abs (x * y)
+  γ₁ l₁ l₂ = abs x * abs y  ＝⟨ ap (_* abs y) (abs-of-pos-is-pos x l₁) ⟩
+                x * abs y   ＝⟨ ap (x *_) (abs-of-pos-is-pos y l₂)     ⟩
+                x * y       ＝⟨ abs-of-pos-is-pos (x * y) I ⁻¹         ⟩
+                abs (x * y) ∎
    where
-    0<-x : 0ℚ < - x
-    0<-x = ℚ<-swap'' fe x l₁
-    0<-y : 0ℚ < - y
-    0<-y = ℚ<-swap'' fe y l₂
+    I : 0ℚ ≤ x * y
+    I = ℚ≤-pos-multiplication-preserves-order x y l₁ l₂
 
-    remove-negatives : (- x) * (- y) ＝ x * y
-    remove-negatives = (- x) * (- y)     ＝⟨ ℚ-negation-dist-over-mult fe x (- y)        ⟩
-                       - x * (- y)       ＝⟨ ap -_ (ℚ*-comm x (- y))                     ⟩
-                       - (- y) * x       ＝⟨ ap -_ (ℚ-negation-dist-over-mult fe y x)    ⟩
-                       - (- y * x)       ＝⟨ ℚ-minus-minus fe (y * x) ⁻¹                 ⟩
-                       y * x             ＝⟨ ℚ*-comm y x                                 ⟩
-                       x * y             ∎
-
-    0<x*y : 0ℚ < x * y
-    0<x*y = transport (0ℚ <_) remove-negatives (ℚ<-pos-multiplication-preserves-order (- x) (- y) 0<-x 0<-y)
-
-    goal : abs x * abs y ＝ abs (x * y)
-    goal = abs x * abs y     ＝⟨ ap (_* abs y) (ℚ-abs-neg-equals-pos fe x)        ⟩
-           abs (- x) * abs y ＝⟨ ap (_* abs y) (abs-of-pos-is-pos' fe (- x) 0<-x) ⟩
-           (- x) * abs y     ＝⟨ ap ((- x) *_) (ℚ-abs-neg-equals-pos fe y)        ⟩
-           (- x) * abs (- y) ＝⟨ ap ((- x) *_) (abs-of-pos-is-pos' fe (- y) 0<-y) ⟩
-           (- x) * (- y)     ＝⟨ remove-negatives                                 ⟩
-           x * y             ＝⟨ abs-of-pos-is-pos' fe (x * y) 0<x*y ⁻¹           ⟩
-           abs (x * y)       ∎
-
-  case3 : (a b : ℚ) → 0ℚ ≤ a → b < 0ℚ → abs a * abs b ＝ abs (a * b)
-  case3 a b l₁ l₂ = abs a * abs b ＝⟨ ap (_* abs b) (abs-of-pos-is-pos fe a l₁)                   ⟩
-                    a * abs b     ＝⟨ ap (a *_) (ℚ-abs-neg-equals-pos fe b)                       ⟩
-                    a * abs (- b) ＝⟨ ap (a *_) (abs-of-pos-is-pos' fe (- b) (ℚ<-swap'' fe b l₂)) ⟩
-                    a * (- b)     ＝⟨ ℚ*-comm a (- b)                                             ⟩
-                    (- b) * a     ＝⟨ ℚ-negation-dist-over-mult fe b a                            ⟩
-                    - b * a       ＝⟨ ap -_ (ℚ*-comm b a)                                         ⟩
-                    - a * b       ＝⟨ abs-of-pos-is-pos fe (- a * b) (ℚ≤-swap' fe (a * b) I) ⁻¹   ⟩
-                    abs (- a * b) ＝⟨ ℚ-abs-neg-equals-pos fe (a * b) ⁻¹                          ⟩
-                    abs (a * b)   ∎
-
+  γ₂ : (0ℚ > x) → (0ℚ > y) → abs x * abs y ＝ abs (x * y)
+  γ₂ l₁ l₂ = VI
    where
-    first : 0ℚ ≤ - b
-    first = ℚ≤-swap' fe b (ℚ<-coarser-than-≤ b 0ℚ l₂)
-    second : 0ℚ ≤ a * (- b)
-    second = ℚ≤-pos-multiplication-preserves-order a (- b) l₁ first
-    third : - (a * (- b)) ≤ - 0ℚ
-    third = ℚ≤-swap fe 0ℚ (a * (- b)) second
-    I : a * b ≤ 0ℚ
-    I = transport₂ _≤_ II ℚ-minus-zero-is-zero third
-     where
-      II : - (a * (- b)) ＝ a * b
-      II = - a * (- b) ＝⟨ ap -_ (ℚ*-comm a (- b))                     ⟩
-           - (- b) * a ＝⟨ ap -_ (ℚ-negation-dist-over-mult fe b a)    ⟩
-           - (- b * a) ＝⟨ ℚ-minus-minus fe (b * a) ⁻¹                 ⟩
-           b * a       ＝⟨ ℚ*-comm b a                                 ⟩
-           a * b       ∎
+    I : 0ℚ < - x
+    I = ℚ<-swap'' x l₁
 
-  case-split : x < 0ℚ ∔ 0ℚ ≤ x → y < 0ℚ ∔ 0ℚ ≤ y → abs x * abs y ＝ abs (x * y)
-  case-split (inl l₁) (inl l₂) = case2 l₁ l₂
-  case-split (inl l₁) (inr l₂) = goal
+    II : 0ℚ < - y
+    II = ℚ<-swap'' y l₂
+
+    III : (- x) * (- y) ＝ x * y
+    III = (- x) * (- y) ＝⟨ ℚ-negation-dist-over-mult x (- y)     ⟩
+          - x * (- y)   ＝⟨ ap -_ (ℚ*-comm x (- y))               ⟩
+          - (- y) * x   ＝⟨ ap -_ (ℚ-negation-dist-over-mult y x) ⟩
+          - (- y * x)   ＝⟨ ℚ-minus-minus (y * x) ⁻¹              ⟩
+          y * x         ＝⟨ ℚ*-comm y x                           ⟩
+          x * y         ∎
+
+    IV : 0ℚ < (- x) * (- y)
+    IV = ℚ<-pos-multiplication-preserves-order (- x) (- y) I II
+
+    V : 0ℚ < x * y
+    V = transport (0ℚ <_) III IV
+
+    VI : abs x * abs y ＝ abs (x * y)
+    VI = abs x * abs y     ＝⟨ ap (_* abs y) (ℚ-abs-neg-equals-pos x)      ⟩
+         abs (- x) * abs y ＝⟨ ap (_* abs y) (abs-of-pos-is-pos' (- x) I)  ⟩
+         (- x) * abs y     ＝⟨ ap ((- x) *_) (ℚ-abs-neg-equals-pos y)      ⟩
+         (- x) * abs (- y) ＝⟨ ap ((- x) *_) (abs-of-pos-is-pos' (- y) II) ⟩
+         (- x) * (- y)     ＝⟨ III                                         ⟩
+         x * y             ＝⟨ abs-of-pos-is-pos' (x * y) V ⁻¹             ⟩
+         abs (x * y)       ∎
+
+  γ₃ : (a b : ℚ) → 0ℚ ≤ a → b < 0ℚ → abs a * abs b ＝ abs (a * b)
+  γ₃ a b l₁ l₂ =
+   abs a * abs b ＝⟨ ap (_* abs b) (abs-of-pos-is-pos a l₁)                ⟩
+   a * abs b     ＝⟨ ap (a *_) (ℚ-abs-neg-equals-pos b)                    ⟩
+   a * abs (- b) ＝⟨ ap (a *_) (abs-of-pos-is-pos' (- b) (ℚ<-swap'' b l₂)) ⟩
+   a * (- b)     ＝⟨ ℚ*-comm a (- b)                                       ⟩
+   (- b) * a     ＝⟨ ℚ-negation-dist-over-mult b a                         ⟩
+   - b * a       ＝⟨ ap -_ (ℚ*-comm b a)                                   ⟩
+   - a * b       ＝⟨ abs-of-pos-is-pos (- a * b) (ℚ≤-swap' (a * b) V) ⁻¹   ⟩
+   abs (- a * b) ＝⟨ ℚ-abs-neg-equals-pos (a * b) ⁻¹                       ⟩
+   abs (a * b)   ∎
    where
-    goal : abs x * abs y ＝ abs (x * y)
-    goal = abs x * abs y ＝⟨ ℚ*-comm (abs x) (abs y) ⟩
-           abs y * abs x ＝⟨ case3 y x l₂ l₁         ⟩
-           abs (y * x)   ＝⟨ ap abs (ℚ*-comm y x)    ⟩
-           abs (x * y)   ∎
-  case-split (inr l₁) (inl l₂) = case3 x y l₁ l₂
-  case-split (inr l₁) (inr l₂) = case1 l₁ l₂
+    I : 0ℚ ≤ - b
+    I = ℚ≤-swap' b (ℚ<-coarser-than-≤ b 0ℚ l₂)
+
+    II : 0ℚ ≤ a * (- b)
+    II = ℚ≤-pos-multiplication-preserves-order a (- b) l₁ I
+
+    III : - (a * (- b)) ≤ - 0ℚ
+    III = ℚ≤-swap 0ℚ (a * (- b)) II
+
+    IV : - (a * (- b)) ＝ a * b
+    IV = - a * (- b) ＝⟨ ap -_ (ℚ*-comm a (- b))               ⟩
+        - (- b) * a  ＝⟨ ap -_ (ℚ-negation-dist-over-mult b a) ⟩
+        - (- b * a)  ＝⟨ ℚ-minus-minus (b * a) ⁻¹              ⟩
+        b * a        ＝⟨ ℚ*-comm b a                           ⟩
+        a * b        ∎
+
+    V : a * b ≤ 0ℚ
+    V = transport₂ _≤_ IV ℚ-minus-zero-is-zero III
+
+  γ₄ : x < 0ℚ → 0ℚ ≤ y → abs x * abs y ＝ abs (x * y)
+  γ₄ l₁ l₂ = abs x * abs y ＝⟨ ℚ*-comm (abs x) (abs y) ⟩
+             abs y * abs x ＝⟨ γ₃ y x l₂ l₁            ⟩
+             abs (y * x)   ＝⟨ ap abs (ℚ*-comm y x)    ⟩
+             abs (x * y)   ∎
+
+  γ : x < 0ℚ ∔ 0ℚ ≤ x → y < 0ℚ ∔ 0ℚ ≤ y → abs x * abs y ＝ abs (x * y)
+  γ (inl l₁) (inl l₂) = γ₂ l₁ l₂
+  γ (inl l₁) (inr l₂) = γ₄ l₁ l₂
+  γ (inr l₁) (inl l₂) = γ₃ x y l₁ l₂
+  γ (inr l₁) (inr l₂) = γ₁ l₁ l₂
+
+ℚ≤-abs-neg : (p : ℚ) → - abs p ≤ abs p
+ℚ≤-abs-neg p = γ (ℚ-abs-≤ p)
+ where
+  γ : - abs p ≤ p ≤ abs p → - abs p ≤ abs p
+  γ (l₁ , l₂) = ℚ≤-trans (- abs p) p (abs p) l₁ l₂
+
+ℚ≤-abs-all : (p : ℚ) → p ≤ abs p
+ℚ≤-abs-all p = pr₂ (ℚ-abs-≤ p)
+
+abs-comm : (p q : ℚ) → abs (p - q) ＝ abs (q - p)
+abs-comm p q = γ
+ where
+  γ : abs (p - q) ＝ abs (q - p)
+  γ = abs (p - q)         ＝⟨ ℚ-abs-neg-equals-pos (p - q)                ⟩
+      abs (- (p - q))     ＝⟨ ap (λ z → abs (- z)) (ℚ+-comm p (- q))      ⟩
+      abs (- ((- q) + p)) ＝⟨ ap abs (ℚ-minus-dist (- q) p ⁻¹)            ⟩
+      abs ((- (- q)) - p) ＝⟨ ap (λ z → abs (z - p)) (ℚ-minus-minus q ⁻¹) ⟩
+      abs (q - p)         ∎
+
+ℚ<-to-abs' : (p q : ℚ) → p < q → abs (p - q) ＝ q - p
+ℚ<-to-abs' p q l = γ
+ where
+  I : 0ℚ < q - p
+  I = ℚ<-difference-positive p q l
+
+  γ : abs (p - q) ＝ q - p
+  γ = abs (p - q) ＝⟨ abs-comm p q                  ⟩
+      abs (q - p) ＝⟨ abs-of-pos-is-pos' (q -  p) I ⟩
+      q - p       ∎
+
+ℚ≤-to-abs' : (p q : ℚ) → p ≤ q → abs (p - q) ＝ q - p
+ℚ≤-to-abs' p q l = γ
+ where
+  I : 0ℚ ≤ q - p
+  I = ℚ≤-difference-positive p q l
+
+  γ : abs (p - q) ＝ q - p
+  γ = abs (p - q) ＝⟨ abs-comm p q                 ⟩
+      abs (q - p) ＝⟨ abs-of-pos-is-pos (q - p) I  ⟩
+      q - p       ∎
+
+ℚ-abs-≤-pos : (p q : ℚ) → p ≤ q → 0ℚ < p → 0ℚ < q → abs p ≤ abs q
+ℚ-abs-≤-pos p q l 0<p 0<q = γ
+ where
+  I : p ＝ abs p
+  I = abs-of-pos-is-pos p (ℚ<-coarser-than-≤ 0ℚ p 0<p) ⁻¹
+
+  II : q ＝ abs q
+  II = abs-of-pos-is-pos q (ℚ<-coarser-than-≤ 0ℚ q 0<q) ⁻¹
+
+  γ : abs p ≤ abs q
+  γ = transport₂ _≤_ I II l
 
 \end{code}

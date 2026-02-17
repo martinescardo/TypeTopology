@@ -10,24 +10,19 @@ the (non-associative) composition operation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
 module Duploids.DeductiveSystem (fe : Fun-Ext) where
 
-open import UF.Base
 open import UF.Equiv
-open import UF.PropTrunc
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Logic
-open import UF.Lower-FunExt
 
-open import Categories.Category fe
+open import gist.Categories.Category fe
 
 deductive-system-structure : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 deductive-system-structure 𝓤 𝓥 = category-structure 𝓤 𝓥
@@ -108,7 +103,7 @@ module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓
 
  module _ {A B : ob} (f : A ⊢ B) where
-  is-thunkable : 𝓤 ⊔ 𝓥  ̇
+  is-thunkable : 𝓤 ⊔ 𝓥 ̇
   is-thunkable =
    (C D : ob) (g : B ⊢ C) (h : C ⊢ D)
    → cut (cut f g) h ＝ cut f (cut g h)

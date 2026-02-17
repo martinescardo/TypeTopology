@@ -11,14 +11,16 @@ We look at
 Their definitions are given below verbally and in Agda.
 
 We work in a spartan univalent type theory with Π, Σ, +, Id, 𝟘, 𝟙, ℕ,
-perhaps W-types, propositional-truncation, univalence, universes. Most
-of the time full univalence is not needed - propositional and
-functional extenstionality suffice. Sometimes we also consider
+perhaps W-types, universes, propositional-truncation, propositional
+extensionality and function extensionality - univalence is not
+needed. Most of the time full univalence is not needed - propositional
+and functional extenstionality suffice. Sometimes we also consider
 propositional resizing, as an explicit assumption each time it is
 used.
 
 The above notions don't seem to be definable in our spartan univalent
-type theory. Their specifications are as follows:
+type theory (but they are definable with higher-inductive
+types). Their specifications are as follows:
 
   * Quasidecidable propositions.
 
@@ -37,36 +39,39 @@ type theory. Their specifications are as follows:
 
     A σ-sup-lattice has an empty join ⊥ and countable joins ⋁ with
     homomorphisms that preserve them. It automatically has binary
-    joins, which are automatically preserved by homomorphisms.
+    joins, which are automatically preserved by homomorphisms, and the
+    generator is automatically the maximum element.
 
 We have:
 
- * Quasidecidable propositions exist (the precise definition of
-   their existence is given below)  if and only if the free
-   σ-sup-lattice on one generator exists.
+  * The type of quasidecidable propositions exists if and only if the
+    free σ-sup-lattice on one generator exists.
 
-   The quasidecidable propositions form a dominance.
+    The quasidecidable propositions form a dominance.
 
- * The free σ-sup-lattice on one generator, if it exists, is also the
-   initial σ-frame.
+  * The free σ-sup-lattice on one generator, if it exists, is also the
+    initial σ-frame.
 
-   We have that σ-sup-lattice homomorphisms from the free
-   σ-sup-lattice on one generator into a σ-frame qua σ-sup-lattice
-   automatically preserve finite meets and hence are σ-frame
-   homomorphisms.
+    We have that σ-sup-lattice homomorphisms from the free
+    σ-sup-lattice on one generator into a σ-frame qua σ-sup-lattice
+    automatically preserve finite meets and hence are σ-frame
+    homomorphisms.
 
-* Assuming that the free σ-sup-lattice on one generator exists, we
-  have that σ-sup-lattices (and hence σ-frames) have joins of families
-  indexed by quasidecidable propositions.
+  * Assuming that the free σ-sup-lattice on one generator exists, we
+    have that σ-sup-lattices (and hence σ-frames) have joins of
+    families indexed by quasidecidable propositions.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Sets
 open import UF.Subsingletons
+open import UF.SubtypeClassifier renaming (⊥ to ⊥Ω ; ⊤ to ⊤Ω)
+open import UF.SubtypeClassifier-Properties
 
 \end{code}
 
@@ -75,6 +80,7 @@ the existence of propositional truncations, as explicit hypotheses for
 this file.
 
 \begin{code}
+
 module NotionsOfDecidability.QuasiDecidable
         (fe  : Fun-Ext)
         (pe  : Prop-Ext)
@@ -83,9 +89,11 @@ module NotionsOfDecidability.QuasiDecidable
 
 open import UF.Size
 
-import Posets.Frame
-import Posets.sigma-frame
-import Posets.sigma-sup-lattice
+import OrderedTypes.Frame
+import OrderedTypes.sigma-frame
+import OrderedTypes.sigma-sup-lattice
+
+open PropositionalTruncation pt
 
 \end{code}
 
@@ -118,10 +126,7 @@ record quasidecidable-propositions-exist (𝓣 𝓚 : Universe) : 𝓤ω where
  constructor
   quasidecidable-propositions
 
- open PropositionalTruncation pt
-
  field
-
   is-quasidecidable : 𝓣 ̇ → 𝓚 ̇
 
   being-quasidecidable-is-prop : ∀ P → is-prop (is-quasidecidable P)
@@ -130,22 +135,24 @@ record quasidecidable-propositions-exist (𝓣 𝓚 : Universe) : 𝓤ω where
 
   𝟙-is-quasidecidable : is-quasidecidable 𝟙
 
-  quasidecidable-closed-under-ω-joins :
-      (P : ℕ → 𝓣 ̇ )
-    → ((n : ℕ) → is-quasidecidable (P n))
-    → is-quasidecidable (∃ n ꞉ ℕ , P n)
+  quasidecidable-closed-under-ω-joins
+   : (P : ℕ → 𝓣 ̇ )
+   → ((n : ℕ) → is-quasidecidable (P n))
+   → is-quasidecidable (∃ n ꞉ ℕ , P n)
 
-  quasidecidable-induction : ∀ {𝓤}
-      (F : 𝓣 ̇ → 𝓤 ̇ )
-    → ((P : 𝓣 ̇ ) → is-prop (F P))
-    → F 𝟘
-    → F 𝟙
-    → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
-    → (P : 𝓣 ̇ ) → is-quasidecidable P → F P
+  quasidecidable-induction
+   : ∀ {𝓤}
+     (F : 𝓣 ̇ → 𝓤 ̇ )
+   → ((P : 𝓣 ̇ ) → is-prop (F P))
+   → F 𝟘
+   → F 𝟙
+   → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
+   → (P : 𝓣 ̇ ) → is-quasidecidable P → F P
 
 \end{code}
 
-(It follows automatically that quasidecidable types are propositions - see below.)
+(It follows automatically that quasidecidable types are propositions -
+see below.)
 
 We also formulate the existence of the initial σ-frame as a record.
 
@@ -155,14 +162,17 @@ record initial-σ-frame-exists (𝓣 : Universe) : 𝓤ω where
  constructor
   initial-σ-frame
 
- open Posets.sigma-frame fe
+ open OrderedTypes.sigma-frame fe
+
  field
   𝓐 : σ-Frame 𝓣
-  𝓐-is-initial : {𝓤 : Universe} (𝓑 : σ-Frame 𝓤) → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐 𝓑 f
+  𝓐-is-initial : {𝓤 : Universe} (𝓑 : σ-Frame 𝓤)
+               → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐 𝓑 f
 
 \end{code}
 
-And finally the existence of the free σ-sup-lattice on one generator:
+And finally the existence of the free σ-sup-lattice on one generator,
+called ⊤ (because it will be automatically the top element).
 
 \begin{code}
 
@@ -170,7 +180,7 @@ record free-σ-SupLat-on-one-generator-exists (𝓣 𝓚 : Universe) : 𝓤ω wh
  constructor
   free-σ-SupLat-on-one-generator
 
- open Posets.sigma-sup-lattice fe
+ open OrderedTypes.sigma-sup-lattice fe
 
  field
   𝓐 : σ-SupLat 𝓣 𝓚
@@ -218,25 +228,21 @@ types other than propositional truncation?
 
 \begin{code}
 
-open PropositionalTruncation pt
-
 open import UF.Base
-open import UF.Subsingletons-FunExt
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
-open import UF.Univalence
-open import UF.UA-FunExt
 open import UF.EquivalenceExamples
-open import UF.Yoneda
-open import UF.Embeddings
 open import UF.Powerset
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
+open import UF.Yoneda
 
-open import NotionsOfDecidability.Decidable
 open import Dominance.Definition
 
 \end{code}
 
-Before considering quasidecidable propositions, we review
+Digression. Before considering quasidecidable propositions, we review
 semidecidable ones.
 
 A proposition is semidecidable if it is a countable join of decidable
@@ -244,7 +250,8 @@ propositions. See the paper
 https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
 by Martin Escardo and Cory Knapp.
 
-NB. Semidecidable propositions are called Rosolini propositions in the above reference.
+NB. Semidecidable propositions are called Rosolini propositions in the
+above reference.
 
 \begin{code}
 
@@ -259,7 +266,9 @@ propositions:
 \begin{code}
 
 is-semidecidable' : 𝓤 ̇ → 𝓤 ⁺ ̇
-is-semidecidable' {𝓤} X = ∃ A ꞉ (ℕ → 𝓤 ̇ ), ((n : ℕ) → decidable (A n)) × (X ≃ (∃ n ꞉ ℕ , A n))
+is-semidecidable' {𝓤} X = ∃ A ꞉ (ℕ → 𝓤 ̇ )
+                              , ((n : ℕ) → is-decidable (A n))
+                              × (X ≃ (∃ n ꞉ ℕ , A n))
 
 \end{code}
 
@@ -271,20 +280,34 @@ The following shows that we need to truncate, because the Cantor type
 semidecidability-data : 𝓤 ̇ → 𝓤 ̇
 semidecidability-data X = Σ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)
 
-totality-of-semidecidability-data : is-univalent 𝓤₀
-                                  → (Σ X ꞉ 𝓤₀ ̇ , semidecidability-data X) ≃ (ℕ → 𝟚)
-totality-of-semidecidability-data ua =
+module only-use-of-univalence-in-this-file where
 
-  (Σ X ꞉ 𝓤₀ ̇ , Σ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)) ≃⟨ i ⟩
-  (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)) ≃⟨ ii ⟩
-  (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , (∃ n ꞉ ℕ , α n ＝ ₁) ≃ X) ≃⟨ iii ⟩
-  (ℕ → 𝟚) × 𝟙 {𝓤₀}                                     ≃⟨ iv ⟩
-  (ℕ → 𝟚)                                              ■
- where
-  i   = Σ-flip
-  ii  = Σ-cong (λ α → Σ-cong (λ X → ≃-Sym'' (univalence-gives-funext ua)))
-  iii = Σ-cong (λ α → singleton-≃-𝟙 (univalence-via-singletons→ ua (∃ n ꞉ ℕ , α n ＝ ₁)))
-  iv  = 𝟙-rneutral
+ open import UF.Univalence
+
+ totality-of-semidecidability-data
+  : is-univalent 𝓤₀
+  → (Σ X ꞉ 𝓤₀ ̇ , semidecidability-data X) ≃ (ℕ → 𝟚)
+ totality-of-semidecidability-data ua =
+
+   (Σ X ꞉ 𝓤₀ ̇ , Σ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)) ≃⟨ i ⟩
+   (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)) ≃⟨ ii ⟩
+   (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , (∃ n ꞉ ℕ , α n ＝ ₁) ≃ X) ≃⟨ iii ⟩
+   (ℕ → 𝟚) × 𝟙 {𝓤₀}                                      ≃⟨ iv ⟩
+   (ℕ → 𝟚)                                               ■
+  where
+   i   = Σ-flip
+   ii  = Σ-cong (λ α → Σ-cong (λ X → ≃-Sym'' (univalence-gives-funext ua)))
+   iii = Σ-cong (λ α → singleton-≃-𝟙
+                        (univalence-via-singletons→
+                          ua
+                          (∃ n ꞉ ℕ , α n ＝ ₁)))
+   iv  = 𝟙-rneutral
+
+\end{code}
+
+End of module only-use-of-univalence-in-this-file.
+
+\begin{code}
 
 𝓢 : 𝓤₁ ̇
 𝓢 = Σ X ꞉ 𝓤₀ ̇ , is-semidecidable X
@@ -293,6 +316,8 @@ totality-of-semidecidability-data ua =
 
 The type 𝓢 of semidecidable propositions is not a σ-frame unless we
 have enough countable choice - see the Escardo-Knapp reference above.
+
+End of digression.
 
 The set of quasidecidable propositions, if it exists, is the smallest
 collection of propositions containing 𝟘 and 𝟙 and closed under
@@ -309,7 +334,7 @@ types in this collection are automatically propositions. The
 minimality condition of the collection amounts to an induction
 principle.
 
-We recall the above convention:
+We recall the above conventions:
 
   * 𝓣 is the universe where the quasidecidable truth values live.
 
@@ -317,7 +342,7 @@ We recall the above convention:
 
   * 𝓚 is the universe where the knowledge they are quasidecidable lives.
 
-    Typically 𝓚 will be 𝓣 or 𝓣 ⁺
+    Typically 𝓚 will be 𝓣 or 𝓣⁺.
 
 \begin{code}
 
@@ -361,22 +386,27 @@ We collect the quasidecidable propositions in the type 𝓠:
  being-true-is-prop : (𝕡 : 𝓠) → is-prop (𝕡 is-true)
  being-true-is-prop (P , i) = quasidecidable-types-are-props P i
 
- 𝓠→Ω : 𝓠 → Ω 𝓣
- 𝓠→Ω (P , i) = P , quasidecidable-types-are-props P i
+ 𝓠-to-Ω : 𝓠 → Ω 𝓣
+ 𝓠-to-Ω (P , i) = P , quasidecidable-types-are-props P i
 
- 𝓠→Ω-is-embedding : is-embedding 𝓠→Ω
- 𝓠→Ω-is-embedding = NatΣ-is-embedding is-quasidecidable is-prop ζ ζ-is-embedding
+ 𝓠-to-Ω-is-embedding : is-embedding 𝓠-to-Ω
+ 𝓠-to-Ω-is-embedding = NatΣ-is-embedding
+                        is-quasidecidable
+                        is-prop
+                        ζ
+                        ζ-is-embedding
   where
    ζ : (P : 𝓣 ̇ ) → is-quasidecidable P → is-prop P
    ζ = quasidecidable-types-are-props
 
    ζ-is-embedding : (P : 𝓣 ̇ ) → is-embedding (ζ P)
    ζ-is-embedding P = maps-of-props-are-embeddings (ζ P)
-                       (being-quasidecidable-is-prop P) (being-prop-is-prop fe)
+                       (being-quasidecidable-is-prop P)
+                       (being-prop-is-prop fe)
 
  𝓠-is-set : is-set 𝓠
- 𝓠-is-set = subtypes-of-sets-are-sets 𝓠→Ω
-             𝓠→Ω-is-embedding
+ 𝓠-is-set = subtypes-of-sets-are-sets 𝓠-to-Ω
+             𝓠-to-Ω-is-embedding
              (Ω-is-set fe pe)
 
  ⊥ : 𝓠
@@ -387,9 +417,9 @@ We collect the quasidecidable propositions in the type 𝓠:
 
  ⋁ : (ℕ → 𝓠) → 𝓠
  ⋁ 𝕡 = (∃ n ꞉ ℕ , 𝕡 n is-true) ,
-        quasidecidable-closed-under-ω-joins
-          (λ n → 𝕡 n is-true)
-          (λ n → being-true-is-quasidecidable (𝕡 n))
+       quasidecidable-closed-under-ω-joins
+        (λ n → 𝕡 n is-true)
+        (λ n → being-true-is-quasidecidable (𝕡 n))
 
 \end{code}
 
@@ -404,7 +434,6 @@ ways.
              → G ⊤
              → ((𝕡 : ℕ → 𝓠) → ((n : ℕ) → G (𝕡 n)) → G (⋁ 𝕡))
              → (𝕡 : 𝓠) → G 𝕡
-
  𝓠-induction {𝓤} G G-is-prop-valued g₀ g₁ gω (P , i) = γ
   where
    F :  𝓣 ̇ → 𝓚 ⊔ 𝓤 ̇
@@ -446,7 +475,6 @@ ways.
               → ⊤ ∈ 𝓖
               → ((𝕡 : ℕ → 𝓠) → ((n : ℕ) → 𝕡 n ∈ 𝓖) → ⋁ 𝕡 ∈ 𝓖)
               → (𝕡 : 𝓠) → 𝕡 ∈ 𝓖
-
  𝓠-induction' {𝓤} 𝓖 = 𝓠-induction (λ 𝕡 → pr₁ (𝓖 𝕡)) (λ 𝕡 → pr₂ (𝓖 𝕡))
 
 \end{code}
@@ -457,20 +485,21 @@ closure under binary products (that is, conjunctions, or meets):
 
 \begin{code}
 
- quasidecidable-closed-under-× :
-     (P : 𝓣 ̇ )
-   → is-quasidecidable P
-   → (Q : 𝓣 ̇ )
-   → (P → is-quasidecidable Q)
-   → is-quasidecidable (P × Q)
-
- quasidecidable-closed-under-× = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
+ quasidecidable-types-form-a-dominance
+  : (P : 𝓣 ̇ )
+  → is-quasidecidable P
+  → (Q : 𝓣 ̇ )
+  → (P → is-quasidecidable Q)
+  → is-quasidecidable (P × Q)
+ quasidecidable-types-form-a-dominance
+  = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
   where
    F : 𝓣 ̇ → 𝓣 ⁺ ⊔ 𝓚 ̇
    F P = (Q : 𝓣 ̇ ) → (P → is-quasidecidable Q) → is-quasidecidable (P × Q)
 
    F-is-prop-valued : (P : 𝓣 ̇ ) → is-prop (F P)
-   F-is-prop-valued P = Π₂-is-prop fe (λ Q _ → being-quasidecidable-is-prop (P × Q))
+   F-is-prop-valued P = Π₂-is-prop fe
+                         (λ Q _ → being-quasidecidable-is-prop (P × Q))
 
    F₀ : F 𝟘
    F₀ Q φ = transport is-quasidecidable r 𝟘-is-quasidecidable
@@ -516,9 +545,11 @@ closure under binary products (that is, conjunctions, or meets):
 
      r : (∃ n ꞉ ℕ , P n × Q) ＝ ((∃ n ꞉ ℕ , P n) × Q)
      r = pe ∃-is-prop
-            (×-prop-criterion ((λ _ → ∃-is-prop) ,
-                               (λ e → quasidecidable-types-are-props Q (φ e))))
-            c d
+            (×-prop-criterion
+              ((λ _ → ∃-is-prop) ,
+              (λ e → quasidecidable-types-are-props Q (φ e))))
+            c
+            d
 
      γ : is-quasidecidable ((∃ n ꞉ ℕ , P n) × Q)
      γ = transport is-quasidecidable r b
@@ -530,16 +561,16 @@ by quasidecidable propositions:
 
 \begin{code}
 
- quasidecidable-closed-under-Σ :
-     (P : 𝓣 ̇ )
-   → (Q : P → 𝓣 ̇ )
-   → is-quasidecidable P
-   → ((p : P) → is-quasidecidable (Q p))
-   → is-quasidecidable (Σ Q)
-
- quasidecidable-closed-under-Σ = D3-and-D5'-give-D5 pe is-quasidecidable
-                                  (quasidecidable-types-are-props)
-                                  (λ P Q' i → quasidecidable-closed-under-× P i Q')
+ quasidecidable-closed-under-Σ
+  : (P : 𝓣 ̇ )
+  → (Q : P → 𝓣 ̇ )
+  → is-quasidecidable P
+  → ((p : P) → is-quasidecidable (Q p))
+  → is-quasidecidable (Σ Q)
+ quasidecidable-closed-under-Σ
+  = D3-and-D5'-give-D5 pe is-quasidecidable
+     (quasidecidable-types-are-props)
+     (λ P Q' i → quasidecidable-types-form-a-dominance P i Q')
 
 \end{code}
 
@@ -553,7 +584,6 @@ propositions, and propositions are closed under Σ:
     → is-quasidecidable P
     → ((p : P) → is-quasidecidable (Q p))
     → Σ Q ≃ ∃ Q
-
  NB P Q i j = logically-equivalent-props-are-equivalent
                k
                ∃-is-prop
@@ -561,7 +591,9 @@ propositions, and propositions are closed under Σ:
                (∥∥-rec k id)
   where
    k : is-prop (Σ Q)
-   k = quasidecidable-types-are-props (Σ Q) (quasidecidable-closed-under-Σ P Q i j)
+   k = quasidecidable-types-are-props
+        (Σ Q)
+        (quasidecidable-closed-under-Σ P Q i j)
 
 \end{code}
 
@@ -595,8 +627,8 @@ We now give the quasidecidable propositions the structure of a
 
  ≤-antisym : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → 𝕢 ≤ 𝕡 → 𝕡 ＝ 𝕢
  ≤-antisym 𝕡 𝕢 l m = to-subtype-＝
-                        being-quasidecidable-is-prop
-                        (pe (being-true-is-prop 𝕡) (being-true-is-prop 𝕢) l m)
+                      being-quasidecidable-is-prop
+                      (pe (being-true-is-prop 𝕡) (being-true-is-prop 𝕢) l m)
 
  ⊥-is-minimum : (𝕡 : 𝓠) → ⊥ ≤ 𝕡
  ⊥-is-minimum 𝕡 = unique-from-𝟘
@@ -618,12 +650,12 @@ We now give the quasidecidable propositions the structure of a
 
 \end{code}
 
-Putting these axioms together we get the σ-frame of quasidecidable
-propositions:
+Putting these axioms together we get the σ-sup-lattice of
+quasidecidable propositions:
 
 \begin{code}
 
- open import Posets.sigma-sup-lattice fe
+ open import OrderedTypes.sigma-sup-lattice fe
 
  QD : σ-SupLat (𝓣 ⁺ ⊔ 𝓚) 𝓣
  QD = 𝓠 ,
@@ -639,7 +671,9 @@ propositions:
 
 \end{code}
 
-We now show that QD is the free σ-sup lattice over one generator.
+We now show that QD is the free σ-sup-lattice on one generator. For
+this purpose, we assume that we are give a σ-sup-lattice 𝓐 with a
+distinguished element t.
 
 \begin{code}
 
@@ -665,7 +699,7 @@ notational convenience:
 
 \end{code}
 
-And then again by 𝓠-induction, there is at most one homomorphism from
+And then, again by 𝓠-induction, there is at most one homomorphism from
 𝓠 to 𝓐:
 
 \begin{code}
@@ -676,7 +710,6 @@ And then again by 𝓠-induction, there is at most one homomorphism from
                   → g ⊤ ＝ t
                   → h ⊤ ＝ t
                   → g ＝ h
-
   at-most-one-hom g h (g⊥ , g⋁) (h⊥ , h⋁) g⊤ h⊤ = dfunext fe r
    where
     i₀ = g ⊥ ＝⟨ g⊥ ⟩
@@ -700,17 +733,16 @@ And then again by 𝓠-induction, there is at most one homomorphism from
 
 The condition in the conclusion of the following lemma says that the
 element a : A is the least upper bound of the (weakly) constant family
-λ (p : P) → ⊤'.  Because least upper bounds are unique when they
+λ (p : P) → t.  Because least upper bounds are unique when they
 exist, the type in the conclusion of the lemma is a proposition. This
 is crucial because the induction principle can be applied to
-prop-valued predicates only.
+proposition-valued predicates only.
 
 \begin{code}
 
   freeness-lemma : (P : 𝓣 ̇ )
                  → is-quasidecidable P
                  → Σ a ꞉ A , (P → t ≤' a) × ((u : A) → (P → t ≤' u) → a ≤' u)
-
   freeness-lemma = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
    where
     F : 𝓣 ̇ → 𝓣 ⊔ 𝓤 ⊔ 𝓥 ̇
@@ -806,12 +838,12 @@ homomorphism, and are all we need for that purpose.
       where
        φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → t ≤' ⋁' (n ↦ f (𝕡 n))
        φ' (n , p) = ⟨ 𝓐 ⟩-trans t (f (𝕡 n)) (⋁' (n ↦ f (𝕡 n))) r s
-         where
-          r : t ≤' f (𝕡 n)
-          r = α (𝕡 n) p
+        where
+         r : t ≤' f (𝕡 n)
+         r = α (𝕡 n) p
 
-          s : f (𝕡 n) ≤' ⋁' (n ↦ f (𝕡 n))
-          s = ⟨ 𝓐 ⟩-⋁-is-ub (n ↦ f (𝕡 n)) n
+         s : f (𝕡 n) ≤' ⋁' (n ↦ f (𝕡 n))
+         s = ⟨ 𝓐 ⟩-⋁-is-ub (n ↦ f (𝕡 n)) n
 
        φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → t ≤' ⋁' (n ↦ f (𝕡 n))
        φ = ∥∥-rec (⟨ 𝓐 ⟩-order-is-prop-valued _ _) φ'
@@ -841,10 +873,10 @@ And then we are done:
                             × (f ⊤ ＝ t)
     γ = (f , f-is-hom , f⊤) ,
         (λ (g , g-is-hom , g⊤) → to-subtype-＝
-                                   (λ f → ×-is-prop
-                                           (being-σ-suplat-hom-is-prop QD 𝓐 f)
-                                           ⟨ 𝓐 ⟩-is-set)
-                                   (at-most-one-hom f g f-is-hom g-is-hom f⊤ g⊤))
+                                  (λ f → ×-is-prop
+                                          (being-σ-suplat-hom-is-prop QD 𝓐 f)
+                                          ⟨ 𝓐 ⟩-is-set)
+                                  (at-most-one-hom f g f-is-hom g-is-hom f⊤ g⊤))
 \end{code}
 
 This concludes the module hypothetical-quasidecidability.
@@ -854,8 +886,6 @@ proposition. But can we define or construct it? Yes if, for example,
 propositional resizing is available:
 
 \begin{code}
-
-open import UF.Size
 
 module quasidecidability-construction-from-resizing
         (𝓣 𝓚 : Universe)
@@ -883,14 +913,16 @@ closure condition:
  QD-closed-types {𝓤} {𝓥} A = closure-condition , i
   where
    closure-condition : 𝓤 ⁺ ⊔ 𝓥 ̇
-   closure-condition = (𝟘 ∈ A)
-                     × (𝟙 ∈ A)
-                     × ((P : ℕ → 𝓤 ̇ ) → ((n : ℕ) → P n ∈ A) → (∃ n ꞉ ℕ , P n) ∈ A)
+   closure-condition =
+      (𝟘 ∈ A)
+    × (𝟙 ∈ A)
+    × ((P : ℕ → 𝓤 ̇ ) → ((n : ℕ) → P n ∈ A) → (∃ n ꞉ ℕ , P n) ∈ A)
 
    i : is-prop closure-condition
-   i = ×₃-is-prop (∈-is-prop A 𝟘)
-                  (∈-is-prop A 𝟙)
-                  (Π₂-is-prop fe (λ P _ → ∈-is-prop A (∃ n ꞉ ℕ , P n)))
+   i = ×₃-is-prop
+        (∈-is-prop A 𝟘)
+        (∈-is-prop A 𝟙)
+        (Π₂-is-prop fe (λ P _ → ∈-is-prop A (∃ n ꞉ ℕ , P n)))
 
  is-quasidecidable : 𝓣 ̇ → 𝓚 ̇
  is-quasidecidable P = P ∈ ⋂ QD-closed-types
@@ -907,7 +939,6 @@ closure condition:
  quasidecidable-closed-under-ω-joins : (P : ℕ → 𝓣 ̇ )
                                      → ((n : ℕ) → is-quasidecidable (P n))
                                      → is-quasidecidable (∃ n ꞉ ℕ , P n)
-
  quasidecidable-closed-under-ω-joins P φ = to-⋂ QD-closed-types (∃ P) vi
   where
    i : (n : ℕ) → P n ∈ ⋂ QD-closed-types
@@ -933,15 +964,15 @@ case to this particular case.
 
 \begin{code}
 
- quasidecidable-induction₀ :
-     (F : 𝓣 ̇ → 𝓚 ̇ )
-   → ((P : 𝓣 ̇ ) → is-prop (F P))
-   → F 𝟘
-   → F 𝟙
-   → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
-   → (P : 𝓣 ̇ ) →  is-quasidecidable P → F P
-
- quasidecidable-induction₀ F F-is-prop-valued F₀ F₁ Fω P P-is-quasidecidable = γ
+ quasidecidable-induction₀
+  : (F : 𝓣 ̇ → 𝓚 ̇ )
+  → ((P : 𝓣 ̇ ) → is-prop (F P))
+  → F 𝟘
+  → F 𝟙
+  → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
+  → (P : 𝓣 ̇ ) →  is-quasidecidable P → F P
+ quasidecidable-induction₀ F F-is-prop-valued F₀ F₁ Fω P P-is-quasidecidable
+  = γ
   where
    A : (P : 𝓣 ̇ ) → Ω 𝓚
    A P = F P , F-is-prop-valued P
@@ -966,36 +997,42 @@ values in any universe 𝓤 rather than the universe 𝓚 as above.
 
 \begin{code}
 
- quasidecidable-induction :
-     (F : 𝓣 ̇ → 𝓤 ̇ )
-   → ((P : 𝓣 ̇ ) → is-prop (F P))
-   → F 𝟘
-   → F 𝟙
-   → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
-   → (P : 𝓣 ̇ ) → is-quasidecidable P → F P
-
- quasidecidable-induction {𝓤} F F-is-prop-valued F₀ F₁ Fω P P-is-quasidecidable = γ
+ quasidecidable-induction
+  : {𝓤 : Universe}
+    (F : 𝓣 ̇ → 𝓤 ̇ )
+  → ((P : 𝓣 ̇ ) → is-prop (F P))
+  → F 𝟘
+  → F 𝟙
+  → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
+  → (P : 𝓣 ̇ ) → is-quasidecidable P → F P
+ quasidecidable-induction {𝓤} F F-is-prop F₀ F₁ Fω P P-is-quasidecidable = γ
   where
-    i = F-is-prop-valued
+   i = F-is-prop
 
-    F' : 𝓣 ̇ → 𝓚 ̇
-    F' P = resize ρ (F P) (i P)
+   F' : 𝓣 ̇ → 𝓚 ̇
+   F' P = resize ρ (F P) (i P)
 
-    i' : (P : 𝓣 ̇ ) → is-prop (F' P)
-    i' P = resize-is-prop ρ (F P) (i P)
+   i' : (P : 𝓣 ̇ ) → is-prop (F' P)
+   i' P = resize-is-prop ρ (F P) (i P)
 
-    δ : F' P
-    δ = quasidecidable-induction₀
-         F'
-         i'
-         (to-resize ρ (F 𝟘) (i 𝟘) F₀)
-         (to-resize ρ (F 𝟙) (i 𝟙) F₁)
-         (λ P Q → to-resize ρ (F (∃ P)) (i (∃ P)) (Fω P (λ n → from-resize ρ (F (P n)) (i (P n)) (Q n))))
-         P
-         P-is-quasidecidable
+   δ : F' P
+   δ = quasidecidable-induction₀
+        F'
+        i'
+        (to-resize ρ (F 𝟘) (i 𝟘) F₀)
+        (to-resize ρ (F 𝟙) (i 𝟙) F₁)
+        (λ P Q → to-resize ρ
+                  (F (∃ P))
+                  (i (∃ P))
+                  (Fω P (λ n → from-resize ρ
+                                (F (P n))
+                                (i (P n))
+                                (Q n))))
+        P
+        P-is-quasidecidable
 
-    γ : F P
-    γ = from-resize ρ (F P) (i P) δ
+   γ : F P
+   γ = from-resize ρ (F P) (i P) δ
 
 \end{code}
 
@@ -1005,25 +1042,25 @@ quasidecidable propositions to the above hypothetical development.
 
 \begin{code}
 
- open Posets.sigma-sup-lattice fe
+ open OrderedTypes.sigma-sup-lattice fe
 
- free-σ-suplat-on-one-generator-exists :
-
-  Σ 𝓐 ꞉ σ-SupLat (𝓣 ⁺ ⊔ 𝓚) 𝓣 ,
-  Σ t ꞉ ⟨ 𝓐 ⟩ ,
-      ((𝓑 : σ-SupLat 𝓤 𝓥) (u : ⟨ 𝓑 ⟩) → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
-                                                               × (f t ＝ u))
-
- free-σ-suplat-on-one-generator-exists {𝓤} {𝓥} = QD , ⊤ , QD-is-free-σ-SupLat
+ free-σ-suplat-on-one-generator-exists
+  : Σ 𝓐 ꞉ σ-SupLat (𝓣 ⁺ ⊔ 𝓚) 𝓣
+  , Σ t ꞉ ⟨ 𝓐 ⟩
+  , ((𝓑 : σ-SupLat 𝓤 𝓥) (u : ⟨ 𝓑 ⟩)
+        → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
+                                  × (f t ＝ u))
+ free-σ-suplat-on-one-generator-exists {𝓤} {𝓥}
+  = QD , ⊤ , QD-is-free-σ-SupLat
   where
    open hypothetical-quasidecidability
-          (quasidecidable-propositions
-             is-quasidecidable
-             being-quasidecidable-is-prop
-             𝟘-is-quasidecidable
-             𝟙-is-quasidecidable
-             quasidecidable-closed-under-ω-joins
-             quasidecidable-induction)
+         (quasidecidable-propositions
+           is-quasidecidable
+           being-quasidecidable-is-prop
+           𝟘-is-quasidecidable
+           𝟙-is-quasidecidable
+           quasidecidable-closed-under-ω-joins
+           quasidecidable-induction)
 
 \end{code}
 
@@ -1032,8 +1069,8 @@ This concludes the module quasidecidability-construction-from-resizing.
 The initial σ-frame can also be constructed as a higher-inductive
 type, as is well known.
 
-The initial σ-sup-lattice is automatically the initial σ-frame. This
-is shown below.
+The σ-sup-lattice on one generator is automatically the initial
+σ-frame. This is shown below.
 
 TODO. Write in Agda some of the proofs of the above reference with
 Cory Knapp, particularly regarding choice. E.g. the semidecidable
@@ -1045,26 +1082,26 @@ only if the quasidecidable propositions are semidecidable. This is not
 in the paper, but the methods of proof of the paper should apply more
 or less directly.
 
-To think about. Can we construct the collection of quasidecidable
+Question. Can we construct the collection of quasidecidable
 propositions without resizing and without higher-inductive types other
 than propositional truncation?
 
-We now explore the consequences of the hypothetical existence of an
+We now explore the consequences of the hypothetical existence of a
 free σ-sup-lattice on one generator ⊤.
 
 \begin{code}
 
 module hypothetical-free-σ-SupLat-on-one-generator where
 
- open import Posets.sigma-sup-lattice fe
+ open import OrderedTypes.sigma-sup-lattice fe
 
- module assumption
-        {𝓣 𝓚 : Universe}
-        (𝓐 : σ-SupLat 𝓣 𝓚)
-        (⊤ : ⟨ 𝓐 ⟩)
-        (𝓐-free : {𝓥 𝓦 : Universe} (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩)
-                → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
-                                         × (f ⊤ ＝ t))
+ module assumptions
+         {𝓣 𝓚 : Universe}
+         (𝓐 : σ-SupLat 𝓣 𝓚)
+         (⊤ : ⟨ 𝓐 ⟩)
+         (𝓐-free : {𝓥 𝓦 : Universe} (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩)
+                 → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
+                                          × (f ⊤ ＝ t))
         where
 
 \end{code}
@@ -1081,7 +1118,7 @@ We first introduce some abbreviations:
   _≤_ : A → A → 𝓚 ̇
   a ≤ b = a ≤⟨ 𝓐 ⟩ b
 
-  σ-rec : (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩) → ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩
+  σ-rec : (𝓑 : σ-SupLat 𝓥 𝓦) → ⟨ 𝓑 ⟩ → ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩
   σ-rec 𝓑 t = pr₁ (center (𝓐-free 𝓑 t))
 
   σ-rec-is-hom : (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩)
@@ -1114,8 +1151,11 @@ We first introduce some abbreviations:
                   → f ⊤ ＝ t
                   → g ⊤ ＝ t
                   → f ＝ g
-  at-most-one-hom 𝓑 t f g i j p q = ap pr₁ (singletons-are-props (𝓐-free 𝓑 t) (f , i , p) (g , j , q))
-
+  at-most-one-hom 𝓑 t f g i j p q = ap pr₁
+                                       (singletons-are-props
+                                         (𝓐-free 𝓑 t)
+                                         (f , i , p)
+                                         (g , j , q))
 \end{code}
 
 We now establish the induction principle for the free σ-sup-lattice on
@@ -1128,7 +1168,7 @@ want to prove.
               → ((a : A) → is-prop (P a))
               → P ⊤
               → P ⊥
-              → ((a : (ℕ → A)) → ((n : ℕ) → P (a n)) → P (⋁ a))
+              → ((a : ℕ → A) → ((n : ℕ) → P (a n)) → P (⋁ a))
               → (a : A) → P a
   σ-induction {𝓥} P P-is-prop-valued ⊤-closure ⊥-closure ⋁-closure = γ
    where
@@ -1145,15 +1185,18 @@ want to prove.
     (a , _) ≤' (b , _) = a ≤ b
 
     𝓑 : σ-SupLat (𝓣 ⊔ 𝓥) 𝓚
-    𝓑 = X , (⊥' , ⋁') ,
-         _≤'_ ,
-         (λ (a , _) (b , _) → ⟨ 𝓐 ⟩-order-is-prop-valued a b) ,
-         (λ (a , _) → ⟨ 𝓐 ⟩-refl a) ,
-         (λ (a , _) (b , _) (c , _) → ⟨ 𝓐 ⟩-trans a b c) ,
-         (λ (a , _) (b , _) l m → to-subtype-＝ P-is-prop-valued (⟨ 𝓐 ⟩-antisym a b l m)) ,
-         (λ (a , _) → ⟨ 𝓐 ⟩-⊥-is-minimum a) ,
-         (λ x n → ⟨ 𝓐 ⟩-⋁-is-ub (pr₁ ∘ x) n) ,
-         (λ x (u , _) φ → ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (pr₁ ∘ x) u φ)
+    𝓑 = X ,
+        (⊥' , ⋁') ,
+        _≤'_ ,
+        (λ (a , _) (b , _) → ⟨ 𝓐 ⟩-order-is-prop-valued a b) ,
+        (λ (a , _) → ⟨ 𝓐 ⟩-refl a) ,
+        (λ (a , _) (b , _) (c , _) → ⟨ 𝓐 ⟩-trans a b c) ,
+        (λ (a , _) (b , _) l m → to-subtype-＝
+                                  P-is-prop-valued
+                                  (⟨ 𝓐 ⟩-antisym a b l m)) ,
+        (λ (a , _) → ⟨ 𝓐 ⟩-⊥-is-minimum a) ,
+        (λ x n → ⟨ 𝓐 ⟩-⋁-is-ub (pr₁ ∘ x) n) ,
+        (λ x (u , _) φ → ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (pr₁ ∘ x) u φ)
 
     g : X → A
     g = pr₁
@@ -1201,10 +1244,10 @@ We use the following little lemma a couple of times:
 
   ⋁-⊤ : (a : ℕ → A) (n : ℕ) → a n ＝ ⊤ → ⋁ a ＝ ⊤
   ⋁-⊤ a n p = ⟨ 𝓐 ⟩-antisym (⋁ a) ⊤
-                         (⊤-is-maximum (⋁ a))
-                         (⟨ 𝓐 ⟩-trans ⊤ (a n) (⋁ a)
-                                (⟨ 𝓐 ⟩-＝-gives-≤ (p ⁻¹))
-                                (⟨ 𝓐 ⟩-⋁-is-ub a n))
+                   (⊤-is-maximum (⋁ a))
+                   (⟨ 𝓐 ⟩-trans ⊤ (a n) (⋁ a)
+                          (⟨ 𝓐 ⟩-＝-gives-≤ (p ⁻¹))
+                          (⟨ 𝓐 ⟩-⋁-is-ub a n))
 \end{code}
 
 We now characterize σ-rec as a least upper bound, or join. We first
@@ -1218,17 +1261,26 @@ define joins and their basic properties:
 
   syntax join-of 𝓑 f x = x is-the-join-of f on 𝓑
 
-  being-join-is-prop : (𝓑 : σ-SupLat 𝓥 𝓦) {I : 𝓦' ̇ } (x : ⟨ 𝓑 ⟩) (f : I → ⟨ 𝓑 ⟩)
+  being-join-is-prop : (𝓑 : σ-SupLat 𝓥 𝓦)
+                       {I : 𝓦' ̇ }
+                       (x : ⟨ 𝓑 ⟩)
+                       (f : I → ⟨ 𝓑 ⟩)
                      → is-prop (x is-the-join-of f on 𝓑)
   being-join-is-prop 𝓑 x f = ×-is-prop
-                              (Π-is-prop fe (λ i → ⟨ 𝓑 ⟩-order-is-prop-valued (f i) x))
-                              (Π₂-is-prop fe λ u _ → ⟨ 𝓑 ⟩-order-is-prop-valued x u)
+                              (Π-is-prop fe
+                                (λ i → ⟨ 𝓑 ⟩-order-is-prop-valued (f i) x))
+                              (Π₂-is-prop fe
+                                (λ u _ → ⟨ 𝓑 ⟩-order-is-prop-valued x u))
 
-  at-most-one-join : (𝓑 : σ-SupLat 𝓥 𝓦) {I : 𝓦' ̇ } (x x' : ⟨ 𝓑 ⟩) (f : I → ⟨ 𝓑 ⟩)
+  at-most-one-join : (𝓑 : σ-SupLat 𝓥 𝓦)
+                     {I : 𝓦' ̇ }
+                     (x x' : ⟨ 𝓑 ⟩)
+                     (f : I → ⟨ 𝓑 ⟩)
                    → x  is-the-join-of f on 𝓑
                    → x' is-the-join-of f on 𝓑
                    → x ＝ x'
-  at-most-one-join 𝓑 x x' f (α , β) (α' , β') = ⟨ 𝓑 ⟩-antisym x x' (β x' α') (β' x α)
+  at-most-one-join 𝓑 x x' f (α , β) (α' , β') =
+   ⟨ 𝓑 ⟩-antisym x x' (β x' α') (β' x α)
 
 \end{code}
 
@@ -1259,10 +1311,16 @@ least upper bound of the weakly constant family λ (_ : a ＝ ⊤) → t:
          a
      where
       β⊤ : (u : ⟨ 𝓑 ⟩) → (⊤ ＝ ⊤ → t ≤⟨ 𝓑 ⟩ u) → h ⊤ ≤⟨ 𝓑 ⟩ u
-      β⊤ u φ = transport (λ - → - ≤⟨ 𝓑 ⟩ u) ((σ-rec-⊤ 𝓑 t )⁻¹) (φ refl)
+      β⊤ u φ = transport
+                (λ - → - ≤⟨ 𝓑 ⟩ u)
+                ((σ-rec-⊤ 𝓑 t )⁻¹)
+                (φ refl)
 
       β⊥ : (u : ⟨ 𝓑 ⟩) → (⊥ ＝ ⊤ → t ≤⟨ 𝓑 ⟩ u) → h ⊥ ≤⟨ 𝓑 ⟩ u
-      β⊥ u φ = transport (λ - → - ≤⟨ 𝓑 ⟩ u) ((σ-rec-⊥ 𝓑 t)⁻¹) (⟨ 𝓑 ⟩-⊥-is-minimum u)
+      β⊥ u φ = transport
+                (λ - → - ≤⟨ 𝓑 ⟩ u)
+                ((σ-rec-⊥ 𝓑 t)⁻¹)
+                (⟨ 𝓑 ⟩-⊥-is-minimum u)
 
       β⋁ : (c : ℕ → A)
          → ((n : ℕ) (u : ⟨ 𝓑 ⟩) → (c n ＝ ⊤ → t ≤⟨ 𝓑 ⟩ u) → h (c n) ≤⟨ 𝓑 ⟩ u)
@@ -1270,8 +1328,10 @@ least upper bound of the weakly constant family λ (_ : a ＝ ⊤) → t:
       β⋁ c ψ u φ = transport (λ - → - ≤⟨ 𝓑 ⟩ u) ((σ-rec-⋁ 𝓑 t c)⁻¹) γ
        where
         γ : ⋁⟨ 𝓑 ⟩ (h ∘ c) ≤⟨ 𝓑 ⟩ u
-        γ = ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs (h ∘ c) u (λ n → ψ n u (λ (p : c n ＝ ⊤) → φ (⋁-⊤ c n p)))
-
+        γ = ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs
+                 (h ∘ c)
+                 u
+                 (λ n → ψ n u (λ (p : c n ＝ ⊤) → φ (⋁-⊤ c n p)))
 
   σ-rec-is-ub : (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩) (a : A)
               → a ＝ ⊤ → t ≤⟨ 𝓑 ⟩ σ-rec 𝓑 t a
@@ -1283,13 +1343,18 @@ least upper bound of the weakly constant family λ (_ : a ＝ ⊤) → t:
 
 \end{code}
 
-Such joins are absolute, in the sense that they are preserved by all homomorphisms:
+Such joins are absolute, in the sense that they are preserved by all
+homomorphisms:
 
 \begin{code}
 
-  σ-suplat-homs-preserve-σ-rec : (𝓑 : σ-SupLat 𝓥 𝓦) (𝓒 : σ-SupLat 𝓣' 𝓥') (f : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+  σ-suplat-homs-preserve-σ-rec : (𝓑 : σ-SupLat 𝓥 𝓦)
+                                 (𝓒 : σ-SupLat 𝓣' 𝓥')
+                                 (f : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
                                → is-σ-suplat-hom 𝓑 𝓒 f
-                               → (t : ⟨ 𝓑 ⟩) (a : A) → f (σ-rec 𝓑 t a) ＝ σ-rec 𝓒 (f t) a
+                               → (t : ⟨ 𝓑 ⟩)
+                                 (a : A)
+                               → f (σ-rec 𝓑 t a) ＝ σ-rec 𝓒 (f t) a
   σ-suplat-homs-preserve-σ-rec 𝓑 𝓒 f i t = happly γ
    where
     composite-is-hom : is-σ-suplat-hom 𝓐 𝓒 (f ∘ σ-rec 𝓑 t)
@@ -1312,12 +1377,14 @@ In particular, σ-rec preserves σ-rec:
 
   σ-rec-preserves-σ-rec : (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩) (a b : A)
                         → σ-rec 𝓑 t (σ-rec 𝓐 a b) ＝ σ-rec 𝓑 (σ-rec 𝓑 t a) b
-  σ-rec-preserves-σ-rec 𝓑 t a b = σ-suplat-homs-preserve-σ-rec 𝓐 𝓑
-                                    (σ-rec 𝓑 t) (σ-rec-is-hom 𝓑 t) a b
+  σ-rec-preserves-σ-rec 𝓑 t = σ-suplat-homs-preserve-σ-rec 𝓐 𝓑
+                               (σ-rec 𝓑 t)
+                               (σ-rec-is-hom 𝓑 t)
+
 \end{code}
 
-We now derive the existence of binary meets in the initial
-σ-sup-lattice 𝓐 from the above kind of joins.
+We now derive the existence of binary meets in σ-sup-lattice 𝓐 on one
+generator ⊤ from the above kind of joins.
 
 \begin{code}
 
@@ -1339,7 +1406,8 @@ We now derive the existence of binary meets in the initial
   ∧-associative = σ-rec-preserves-σ-rec 𝓐
 
   ∧-is-lb-left : (a b : A) → a ∧ b ≤ a
-  ∧-is-lb-left a b = σ-rec-is-lb-of-ubs 𝓐 a b a (λ (_ : b ＝ ⊤) → ⟨ 𝓐 ⟩-refl a)
+  ∧-is-lb-left a b = σ-rec-is-lb-of-ubs 𝓐 a b a
+                      (λ (_ : b ＝ ⊤) → ⟨ 𝓐 ⟩-refl a)
 
   ∧-is-lb-right : (a b : A) → a ∧ b ≤ b
   ∧-is-lb-right a b = σ-rec-is-lb-of-ubs 𝓐 a b b
@@ -1355,7 +1423,8 @@ One step needs σ-induction:
   ∧-is-ub-of-lbs : (a b c : A) → c ≤ a → c ≤ b → c ≤ a ∧ b
   ∧-is-ub-of-lbs a b = σ-induction
                         (λ c → c ≤ a → c ≤ b → c ≤ a ∧ b)
-                        (λ c → Π₂-is-prop fe (λ _ _ → ⟨ 𝓐 ⟩-order-is-prop-valued c (a ∧ b)))
+                        (λ c → Π₂-is-prop fe
+                                (λ _ _ → ⟨ 𝓐 ⟩-order-is-prop-valued c (a ∧ b)))
                         p⊤
                         p⊥
                         p⋁
@@ -1365,6 +1434,7 @@ One step needs σ-induction:
      where
       i : b ＝ ⊤
       i = ⟨ 𝓐 ⟩-antisym _ _ (⊤-is-maximum b) m
+
       ii : a ≤ a ∧ b
       ii = σ-rec-is-ub 𝓐 a b i
 
@@ -1377,8 +1447,8 @@ One step needs σ-induction:
        → ⋁ d ≤ b
        → ⋁ d ≤ (a ∧ b)
     p⋁ d φ l m = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs d (a ∧ b)
-                       (λ n → φ n (⟨ 𝓐 ⟩-trans (d n) _ a (⟨ 𝓐 ⟩-⋁-is-ub d n) l)
-                                  (⟨ 𝓐 ⟩-trans (d n) _ b (⟨ 𝓐 ⟩-⋁-is-ub d n) m))
+                      (λ n → φ n (⟨ 𝓐 ⟩-trans (d n) _ a (⟨ 𝓐 ⟩-⋁-is-ub d n) l)
+                                 (⟨ 𝓐 ⟩-trans (d n) _ b (⟨ 𝓐 ⟩-⋁-is-ub d n) m))
 
   ∧-idempotent : (a : A) → a ∧ a ＝ a
   ∧-idempotent a = ⟨ 𝓐 ⟩-antisym _ _ l m
@@ -1415,11 +1485,11 @@ The intrinsic order coincides with the ∧-semilattice order:
 
 \end{code}
 
-We now show that the initial σ-suplat is also the initial σ-frame. The
-following renaming is annoying.
+We now show that the the σ-suplat on one generator is also the initial
+σ-frame. The following renaming is annoying.
 
 \begin{code}
-  open Posets.sigma-frame fe
+  open OrderedTypes.sigma-frame fe
         hiding (order)
         renaming
          (⟨_⟩ to ⟨_⟩' ;
@@ -1436,8 +1506,8 @@ following renaming is annoying.
           ⟨_⟩-⋁-is-ub to ⟨_⟩'-⋁-is-ub ;
           ⟨_⟩-⋁-is-lb-of-ubs to ⟨_⟩'-⋁-is-lb-of-ubs)
 
-  𝓐-qua-σ-frame : σ-Frame 𝓣
-  𝓐-qua-σ-frame = A ,
+  A-qua-σ-frame : σ-Frame 𝓣
+  A-qua-σ-frame = A ,
                   (⊤ , _∧_ , ⊥ , ⋁) ,
                   ⟨ 𝓐 ⟩-is-set ,
                   ∧-idempotent ,
@@ -1446,12 +1516,15 @@ following renaming is annoying.
                   (λ a → ∧-commutative ⊥ a ∙ meet⊥ a) ,
                   meet⊤ ,
                   meet⋁ ,
-                  (λ a n → from-≤ (a n) (⋁ a) (⟨ 𝓐 ⟩-⋁-is-ub a n)) ,
-                  (λ a u φ → from-≤ (⋁ a) u (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a u (λ n → to-≤ (a n) u (φ n))))
+                  (λ a n → from-≤ (a n) (⋁ a)
+                            (⟨ 𝓐 ⟩-⋁-is-ub a n)) ,
+                  (λ a u φ → from-≤ (⋁ a) u
+                              (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a u
+                                    (λ n → to-≤ (a n) u (φ n))))
 
-  𝓐-qua-σ-frame-is-initial : (𝓑 : σ-Frame 𝓥)
-                           → ∃! f ꞉ (A → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 f
-  𝓐-qua-σ-frame-is-initial {𝓥} 𝓑 = γ
+  A-qua-σ-frame-is-initial : (𝓑 : σ-Frame 𝓥)
+                           → ∃! f ꞉ (A → ⟨ 𝓑 ⟩), is-σ-frame-hom A-qua-σ-frame 𝓑 f
+  A-qua-σ-frame-is-initial {𝓥} 𝓑 = γ
    where
     B = ⟨ 𝓑 ⟩
 
@@ -1478,49 +1551,72 @@ following renaming is annoying.
                        f⊥
                        f⋁
      where
-      f⊤ = f (a ∧ ⊤)  ＝⟨ ap f (meet⊤ a) ⟩
-           f a        ＝⟨ (⟨ 𝓑 ⟩'-⊤-maximum (f a))⁻¹ ⟩
-           f a ∧' ⊤'  ＝⟨ ap (f a ∧'_) ((σ-rec-⊤ 𝓑-qua-σ-suplat ⊤')⁻¹) ⟩
+      f⊤ = f (a ∧ ⊤)  ＝⟨ I ⟩
+           f a        ＝⟨ II ⟩
+           f a ∧' ⊤'  ＝⟨ III ⟩
            f a ∧' f ⊤ ∎
+            where
+             I   = ap f (meet⊤ a)
+             II  = (⟨ 𝓑 ⟩'-⊤-maximum (f a))⁻¹
+             III = ap (f a ∧'_) ((σ-rec-⊤ 𝓑-qua-σ-suplat ⊤')⁻¹)
 
-      f⊥ = f (a ∧ ⊥)      ＝⟨ ap f (meet⊥ a)           ⟩
-           f ⊥            ＝⟨ σ-suplat-hom-⊥ 𝓐 𝓑-qua-σ-suplat f f-is-hom ⟩
-           ⊥⟨ 𝓑 ⟩'        ＝⟨ (⟨ 𝓑 ⟩'-⊥-minimum (f a))⁻¹ ⟩
-           ⊥⟨ 𝓑 ⟩' ∧' f a ＝⟨ ap (λ - → - ∧' f a) ((σ-suplat-hom-⊥ 𝓐 𝓑-qua-σ-suplat f f-is-hom)⁻¹) ⟩
-           f ⊥ ∧' f a     ＝⟨ ⟨ 𝓑 ⟩-commutativity (f ⊥) (f a) ⟩
+      f⊥ = f (a ∧ ⊥)      ＝⟨ I ⟩
+           f ⊥            ＝⟨ II ⟩
+           ⊥⟨ 𝓑 ⟩'        ＝⟨ III ⟩
+           ⊥⟨ 𝓑 ⟩' ∧' f a ＝⟨ IV ⟩
+           f ⊥ ∧' f a     ＝⟨ V ⟩
            f a ∧' f ⊥     ∎
+            where
+             I   = ap f (meet⊥ a)
+             II  = σ-suplat-hom-⊥ 𝓐 𝓑-qua-σ-suplat f f-is-hom
+             III = (⟨ 𝓑 ⟩'-⊥-minimum (f a))⁻¹
+             IV  = ap (λ - → - ∧' f a)
+                      ((σ-suplat-hom-⊥ 𝓐 𝓑-qua-σ-suplat f f-is-hom)⁻¹)
+             V   = ⟨ 𝓑 ⟩-commutativity (f ⊥) (f a)
 
       f⋁ = λ c p →
-           f (a ∧ ⋁ c)                    ＝⟨ ap f (meet⋁ a c) ⟩
-           f (⋁ (n ↦ a ∧ c n))            ＝⟨ σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom (λ n → a ∧ c n) ⟩
-           ⋁⟨ 𝓑 ⟩' (n ↦ f (a ∧ c n))      ＝⟨ ap ⋁⟨ 𝓑 ⟩' (dfunext fe p) ⟩
-           ⋁⟨ 𝓑 ⟩' (n ↦ f a ∧' f (c n))   ＝⟨ (⟨ 𝓑 ⟩-distributivity (f a) (λ n → f (c n)))⁻¹ ⟩
-           f a ∧' ⋁⟨ 𝓑 ⟩' (λ n → f (c n)) ＝⟨ ap (f a ∧'_) ((σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom c)⁻¹) ⟩
+           f (a ∧ ⋁ c)                    ＝⟨ I c ⟩
+           f (⋁ (n ↦ a ∧ c n))            ＝⟨ II c ⟩
+           ⋁⟨ 𝓑 ⟩' (n ↦ f (a ∧ c n))      ＝⟨ III c p ⟩
+           ⋁⟨ 𝓑 ⟩' (n ↦ f a ∧' f (c n))   ＝⟨ IV c ⟩
+           f a ∧' ⋁⟨ 𝓑 ⟩' (λ n → f (c n)) ＝⟨ V c ⟩
            f a ∧' f (⋁ c)                 ∎
+            where
+             I   = λ c → ap f (meet⋁ a c)
+             II  = λ c → σ-suplat-hom-⋁
+                          𝓐
+                          𝓑-qua-σ-suplat
+                          f
+                          f-is-hom
+                          (λ n → a ∧ c n)
+             III = λ c p → ap ⋁⟨ 𝓑 ⟩' (dfunext fe p)
+             IV  = λ c → (⟨ 𝓑 ⟩-distributivity (f a) (λ n → f (c n)))⁻¹
+             V   = λ c → ap (f a ∧'_)
+                            ((σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom c)⁻¹)
 
-    f-is-hom' : is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 f
+    f-is-hom' : is-σ-frame-hom A-qua-σ-frame 𝓑 f
     f-is-hom' = σ-rec-⊤ 𝓑-qua-σ-suplat ⊤' ,
                 f-preserves-∧ ,
                 σ-suplat-hom-⊥ 𝓐 𝓑-qua-σ-suplat f f-is-hom ,
                 σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom
 
     forget : (g : A → B)
-           → is-σ-frame-hom  𝓐-qua-σ-frame 𝓑              g
+           → is-σ-frame-hom  A-qua-σ-frame 𝓑              g
            → is-σ-suplat-hom 𝓐             𝓑-qua-σ-suplat g
     forget g (i , ii , iii , iv) = (iii , iv)
 
-    f-uniqueness : (g : A → B) → is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 g → f ＝ g
+    f-uniqueness : (g : A → B) → is-σ-frame-hom A-qua-σ-frame 𝓑 g → f ＝ g
     f-uniqueness g g-is-hom' = at-most-one-hom 𝓑-qua-σ-suplat ⊤' f g
-                                 f-is-hom
-                                 (forget g g-is-hom')
-                                 (σ-rec-⊤ 𝓑-qua-σ-suplat ⊤')
-                                 (σ-frame-hom-⊤ 𝓐-qua-σ-frame 𝓑 g g-is-hom')
+                                f-is-hom
+                                (forget g g-is-hom')
+                                (σ-rec-⊤ 𝓑-qua-σ-suplat ⊤')
+                                (σ-frame-hom-⊤ A-qua-σ-frame 𝓑 g g-is-hom')
 
-    γ : ∃! f ꞉ (A → B), is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 f
+    γ : ∃! f ꞉ (A → B), is-σ-frame-hom A-qua-σ-frame 𝓑 f
     γ = (f , f-is-hom') ,
         (λ (g , g-is-hom') → to-subtype-＝
-                               (being-σ-frame-hom-is-prop 𝓐-qua-σ-frame 𝓑)
-                               (f-uniqueness g g-is-hom'))
+                              (being-σ-frame-hom-is-prop A-qua-σ-frame 𝓑)
+                              (f-uniqueness g g-is-hom'))
 \end{code}
 
 We now regard the type of propositions as a σ-sup-lattice:
@@ -1528,10 +1624,10 @@ We now regard the type of propositions as a σ-sup-lattice:
 \begin{code}
 
   Ω-qua-σ-Frame : σ-Frame (𝓣 ⁺)
-  Ω-qua-σ-Frame = Posets.sigma-frame.Ω-qua-σ-frame fe pe pt
+  Ω-qua-σ-Frame = OrderedTypes.sigma-frame.Ω-qua-σ-frame fe pe pt
 
   Ω-qua-σ-SupLat : σ-SupLat (𝓣 ⁺) (𝓣 ⁺)
-  Ω-qua-σ-SupLat = Posets.sigma-frame.Ω-qua-σ-suplat fe pe pt
+  Ω-qua-σ-SupLat = OrderedTypes.sigma-frame.Ω-qua-σ-suplat fe pe pt
 
   private
    ⊥'   = ⊥⟨ Ω-qua-σ-SupLat ⟩
@@ -1617,7 +1713,10 @@ point-free topological terms, this says that τ is dense):
       q : ⊥' ＝ ⊤'
       q = (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom)⁻¹ ∙ p
 
-    i⋁ : (a : ℕ → A) → ((n : ℕ) → τ (a n) ＝ ⊤' → a n ＝ ⊤) → τ (⋁ a) ＝ ⊤' → ⋁ a ＝ ⊤
+    i⋁ : (a : ℕ → A)
+       → ((n : ℕ) → τ (a n) ＝ ⊤' → a n ＝ ⊤)
+       → τ (⋁ a) ＝ ⊤'
+       → ⋁ a ＝ ⊤
     i⋁ a φ p = ∥∥-rec ⟨ 𝓐 ⟩-is-set iii ii
      where
       i : ⋁' (τ ∘ a) ＝ ⊤'
@@ -1649,8 +1748,8 @@ top elements.
 
 \begin{code}
 
-  𝓐-is-σ-super-compact : (a : ℕ → A) → ⋁ a ＝ ⊤ → ∃ n ꞉ ℕ , a n ＝ ⊤
-  𝓐-is-σ-super-compact a p = vi
+  𝓐-is-σ-supercompact : (a : ℕ → A) → ⋁ a ＝ ⊤ → ∃ n ꞉ ℕ , a n ＝ ⊤
+  𝓐-is-σ-supercompact a p = vi
    where
     i = ⋁' (τ ∘ a) ＝⟨ (σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom a)⁻¹ ⟩
         τ (⋁ a)    ＝⟨ ap τ p ⟩
@@ -1684,9 +1783,9 @@ function):
 
   τ-charac← : (a : A) → a ＝ ⊤ → τ a holds
   τ-charac← a p = equal-⊤-gives-holds (τ a)
-                        (τ a ＝⟨ ap τ p ⟩
-                         τ ⊤ ＝⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤' ⟩
-                         ⊤'  ∎)
+                   (τ a ＝⟨ ap τ p ⟩
+                    τ ⊤ ＝⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤' ⟩
+                    ⊤'  ∎)
 
   τ-charac' : (a : A) → τ a holds ＝ (a ＝ ⊤)
   τ-charac' a = pe (holds-is-prop (τ a)) ⟨ 𝓐 ⟩-is-set (τ-charac→ a) (τ-charac← a)
@@ -1719,12 +1818,15 @@ The following criterion for a ≤ b will be useful:
        → (b : A)
        → (⋁ a ＝ ⊤ → b ＝ ⊤)
        → ⋁ a ≤ b
-    i⋁ a φ b ψ = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a b (λ n → φ n b (λ (p : a n ＝ ⊤) → ψ (⋁-⊤ a n p)))
+    i⋁ a φ b ψ = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a b
+                      (λ n → φ n b (λ (p : a n ＝ ⊤) → ψ (⋁-⊤ a n p)))
 
   ≤-criterion-converse : (a b : A) → a ≤ b → (a ＝ ⊤ → b ＝ ⊤)
-  ≤-criterion-converse a b l p = ⟨ 𝓐 ⟩-antisym _ _
-                                      (⊤-is-maximum b)
-                                      (⟨ 𝓐 ⟩-trans _ _ _ (⟨ 𝓐 ⟩-＝-gives-≤ (p ⁻¹)) l)
+  ≤-criterion-converse a b l p =
+   ⟨ 𝓐 ⟩-antisym _ _
+        (⊤-is-maximum b)
+        (⟨ 𝓐 ⟩-trans _ _ _ (⟨ 𝓐 ⟩-＝-gives-≤ (p ⁻¹)) l)
+
 \end{code}
 
 The map τ reflects order and hence is left-cancellable, and therefore
@@ -1737,7 +1839,7 @@ a set:
   τ-order-lc a b l = iv
    where
     i : τ a holds → τ b holds
-    i = Posets.Frame.from-≤Ω fe pe pt {𝓣} {τ a} {τ b} l
+    i = OrderedTypes.Frame.from-≤Ω fe pe pt {𝓣} {τ a} {τ b} l
 
     ii : τ a ＝ ⊤' → τ b ＝ ⊤'
     ii p = holds-gives-equal-⊤ pe fe (τ b) (i (equal-⊤-gives-holds (τ a) p))
@@ -1783,8 +1885,15 @@ Hence the composite τ-holds is an embedding of A into the universe 𝓣:
 
 Using this we define the notion of quasidecidability and its required
 properties. We define the quasidecidability of the type P to be the
-type fiber τ-holds P, which amounts to the type Σ a ꞉ A , (τ a holds ＝ P) by
-construction:
+type
+
+  fiber τ-holds P,
+
+which amounts to the type
+
+  Σ a ꞉ A , (τ a holds ＝ P)
+
+by construction:
 
 \begin{code}
 
@@ -1795,19 +1904,24 @@ construction:
   being-quasidecidable-is-prop = τ-holds-is-embedding
 
   quasidecidable-types-are-props : ∀ P → is-quasidecidable P → is-prop P
-  quasidecidable-types-are-props P (a , p) = transport is-prop p (holds-is-prop (τ a))
+  quasidecidable-types-are-props P (a , p) =
+   transport is-prop p (holds-is-prop (τ a))
 
   𝟘-is-quasidecidable : is-quasidecidable 𝟘
   𝟘-is-quasidecidable = ⊥ ,
-                        (τ ⊥ holds ＝⟨ ap _holds (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom) ⟩
-                         ⊥' holds  ＝⟨ ⊥-holds-is-𝟘 ⟩
+                        (τ ⊥ holds ＝⟨ I ⟩
+                         ⊥' holds  ＝⟨ II ⟩
                          𝟘         ∎)
+                          where
+                           I  = ap _holds
+                                   (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom)
+                           II = ⊥-holds-is-𝟘
 
   𝟙-is-quasidecidable : is-quasidecidable 𝟙
   𝟙-is-quasidecidable = ⊤ , ap _holds (σ-rec-⊤ Ω-qua-σ-SupLat ⊤')
 
-  quasidecidable-closed-under-ω-joins :
-     (P : ℕ → 𝓣 ̇ )
+  quasidecidable-closed-under-ω-joins
+   : (P : ℕ → 𝓣 ̇ )
    → ((n : ℕ) → is-quasidecidable (P n))
    → is-quasidecidable (∃ n ꞉ ℕ , P n)
   quasidecidable-closed-under-ω-joins P φ = vii
@@ -1815,10 +1929,13 @@ construction:
     i : (n : ℕ) → τ-holds (fiber-point (φ n)) ＝ P n
     i n = fiber-identification (φ n)
 
-    ii : (n : ℕ) → τ (fiber-point (φ n)) ＝ P n , quasidecidable-types-are-props (P n) (φ n)
+    ii : (n : ℕ)
+       → τ (fiber-point (φ n))
+       ＝ (P n , quasidecidable-types-are-props (P n) (φ n))
     ii n = to-subtype-＝ (λ _ → being-prop-is-prop fe) (i n)
 
-    iii : τ (⋁ (n ↦ fiber-point (φ n))) ＝ ⋁' (λ n → P n , quasidecidable-types-are-props (P n) (φ n))
+    iii : τ (⋁ (n ↦ fiber-point (φ n)))
+        ＝ ⋁' (λ n → P n , quasidecidable-types-are-props (P n) (φ n))
     iii = τ (⋁ (n ↦ fiber-point (φ n)))                               ＝⟨ iv ⟩
           ⋁' (n ↦ τ (fiber-point (φ n)))                              ＝⟨ v ⟩
           ⋁' (n ↦ (P n , quasidecidable-types-are-props (P n) (φ n))) ∎
@@ -1847,6 +1964,28 @@ Then we get quasidecidable induction by σ-induction:
    → (P : 𝓣 ̇ ) → is-quasidecidable P → F P
   quasidecidable-induction {𝓥} F i F₀ F₁ Fω P (a , r) = γ a P r
    where
+    γ⊤ : (P : 𝓣 ̇ ) → τ ⊤ holds ＝ P → F P
+    γ⊤ P s = transport F (t ⁻¹ ∙ s) F₁
+     where
+      t : τ ⊤ holds ＝ 𝟙
+      t = ap _holds (σ-rec-⊤ Ω-qua-σ-SupLat ⊤')
+
+    γ⊥ : (P : 𝓣 ̇ ) → τ ⊥ holds ＝ P → F P
+    γ⊥ P s = transport F (t ⁻¹ ∙ s) F₀
+     where
+      t : τ ⊥ holds ＝ 𝟘
+      t = ap _holds (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom) ∙ ⊥-holds-is-𝟘
+
+    γ⋁ : (a : ℕ → A)
+       → ((n : ℕ) (P : 𝓣 ̇ ) → (τ (a n) holds) ＝ P → F P)
+       → (P : 𝓣 ̇ ) → (τ (⋁ a) holds) ＝ P → F P
+    γ⋁ a φ P s = transport F (t ⁻¹ ∙ s) (Fω (λ n → τ (a n) holds) ψ)
+     where
+      t : τ (⋁ a) holds ＝ (∃ n ꞉ ℕ , τ (a n) holds)
+      t = ap _holds (σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom a)
+      ψ : (n : ℕ) → F (τ (a n) holds)
+      ψ n = φ n (τ (a n) holds) refl
+
     γ : (a : A) (P : 𝓣 ̇ ) → τ a holds ＝ P → F P
     γ = σ-induction
          (λ a → (P : 𝓣 ̇ ) → τ a holds ＝ P → F P)
@@ -1854,28 +1993,6 @@ Then we get quasidecidable induction by σ-induction:
          γ⊤
          γ⊥
          γ⋁
-     where
-      γ⊤ : (P : 𝓣 ̇ ) → τ ⊤ holds ＝ P → F P
-      γ⊤ P s = transport F (t ⁻¹ ∙ s) F₁
-       where
-        t : τ ⊤ holds ＝ 𝟙
-        t = ap _holds (σ-rec-⊤ Ω-qua-σ-SupLat ⊤')
-
-      γ⊥ : (P : 𝓣 ̇ ) → τ ⊥ holds ＝ P → F P
-      γ⊥ P s = transport F (t ⁻¹ ∙ s) F₀
-       where
-        t : τ ⊥ holds ＝ 𝟘
-        t = ap _holds (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom) ∙ ⊥-holds-is-𝟘
-
-      γ⋁ : (a : ℕ → A)
-         → ((n : ℕ) (P : 𝓣 ̇ ) → (τ (a n) holds) ＝ P → F P)
-         → (P : 𝓣 ̇ ) → (τ (⋁ a) holds) ＝ P → F P
-      γ⋁ a φ P s = transport F (t ⁻¹ ∙ s) (Fω (λ n → τ (a n) holds) ψ)
-       where
-        t : τ (⋁ a) holds ＝ (∃ n ꞉ ℕ , τ (a n) holds)
-        t = ap _holds (σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom a)
-        ψ : (n : ℕ) → F (τ (a n) holds)
-        ψ n = φ n (τ (a n) holds) refl
 
 \end{code}
 
@@ -1884,16 +2001,14 @@ application of the submodule hypothetical-quasidecidability.
 
 \begin{code}
 
-  quasidecidable-closed-under-Σ :
-      (P : 𝓣 ̇ )
-    → (Q : P → 𝓣 ̇ )
-    → is-quasidecidable P
-    → ((p : P) → is-quasidecidable (Q p))
-    → is-quasidecidable (Σ Q)
-
-  quasidecidable-closed-under-Σ =
-
-    hypothetical-quasidecidability.quasidecidable-closed-under-Σ
+  quasidecidable-closed-under-Σ
+   : (P : 𝓣 ̇ )
+   → (Q : P → 𝓣 ̇ )
+   → is-quasidecidable P
+   → ((p : P) → is-quasidecidable (Q p))
+   → is-quasidecidable (Σ Q)
+  quasidecidable-closed-under-Σ
+   = hypothetical-quasidecidability.quasidecidable-closed-under-Σ
       (quasidecidable-propositions
          is-quasidecidable
          being-quasidecidable-is-prop
@@ -1909,8 +2024,9 @@ of this.
 
 \begin{code}
 
-  dependent-binary-meet : (a : A) (b : τ a holds → A)
-                        → Σ c ꞉ A , (τ c holds) ＝ (Σ h ꞉ τ a holds , τ (b h) holds)
+  dependent-binary-meet
+   : (a : A) (b : τ a holds → A)
+   → Σ c ꞉ A , (τ c holds ＝ (Σ h ꞉ τ a holds , τ (b h) holds))
   dependent-binary-meet a b = quasidecidable-closed-under-Σ
                                (τ a holds)
                                (λ h → τ (b h) holds)
@@ -1924,7 +2040,7 @@ The following just applies back-and-forth the characterization of
 \begin{code}
 
   dependent-binary-meet' : (a : A) (b : a ＝ ⊤ → A)
-                         → Σ c ꞉ A , (c ＝ ⊤ ⇔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
+                         → Σ c ꞉ A , (c ＝ ⊤ ↔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
   dependent-binary-meet' a b = f σ
    where
     b' : τ a holds → A
@@ -1934,7 +2050,7 @@ The following just applies back-and-forth the characterization of
     σ = dependent-binary-meet a b'
 
     f : (Σ c ꞉ A , (τ c holds) ＝ (Σ h ꞉ τ a holds , τ (b' h) holds))
-      → Σ c ꞉ A , ((c ＝ ⊤) ⇔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
+      → Σ c ꞉ A , ((c ＝ ⊤) ↔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
     f ( c , q) = c , g , h
      where
       g : c ＝ ⊤ → Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤
@@ -1945,7 +2061,9 @@ The following just applies back-and-forth the characterization of
 
       h : (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤) → c ＝ ⊤
       h (p , s) = τ-charac→ c
-                   (Idtofun (q ⁻¹) (τ-charac← a p , τ-charac← (b' (τ-charac← a p))
+                   (Idtofun
+                     (q ⁻¹)
+                     (τ-charac← a p , τ-charac← (b' (τ-charac← a p))
                      (transport (λ - → b - ＝ ⊤) (⟨ 𝓐 ⟩-is-set _ _) s)))
 \end{code}
 
@@ -1957,21 +2075,22 @@ We can replace the bi-implication by an equality:
                           → Σ c ꞉ A , ((c ＝ ⊤) ＝ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
   dependent-binary-meet'' a b = f (dependent-binary-meet' a b)
    where
-    f : (Σ c ꞉ A , (c ＝ ⊤ ⇔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤)))
+    f : (Σ c ꞉ A , (c ＝ ⊤ ↔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤)))
       → Σ c ꞉ A , ((c ＝ ⊤) ＝ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
     f (c , g , h) = c , ⌜ prop-univalent-≃ pe fe (c ＝ ⊤) (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤)
                            (Σ-is-prop ⟨ 𝓐 ⟩-is-set (λ p → ⟨ 𝓐 ⟩-is-set)) ⌝⁻¹
-                              (logically-equivalent-props-are-equivalent
-                                 ⟨ 𝓐 ⟩-is-set
-                                 (Σ-is-prop ⟨ 𝓐 ⟩-is-set (λ p → ⟨ 𝓐 ⟩-is-set)) g h)
+                          (logically-equivalent-props-are-equivalent
+                             ⟨ 𝓐 ⟩-is-set
+                             (Σ-is-prop
+                               ⟨ 𝓐 ⟩-is-set
+                               (λ p → ⟨ 𝓐 ⟩-is-set)) g h)
 \end{code}
 
 The non-dependent special case:
 
 \begin{code}
 
-  binary-meet : (a b : A) → Σ c ꞉ A , (c ＝ ⊤ ⇔ ((a ＝ ⊤) × (b ＝ ⊤)))
-
+  binary-meet : (a b : A) → Σ c ꞉ A , (c ＝ ⊤ ↔ ((a ＝ ⊤) × (b ＝ ⊤)))
   binary-meet a b = dependent-binary-meet' a (λ _ → b)
 
 \end{code}
@@ -1982,7 +2101,7 @@ meets:
 \begin{code}
 
   binary-meet'-is-∧ : (a b c : A)
-                    → (c ＝ ⊤ ⇔ ((a ＝ ⊤) × (b ＝ ⊤)))
+                    → (c ＝ ⊤ ↔ ((a ＝ ⊤) × (b ＝ ⊤)))
                     → c ＝ a ∧ b
   binary-meet'-is-∧ a b c (f , g) = viii
    where
@@ -2038,8 +2157,8 @@ meets:
     F-is-prop-valued P = Π-is-prop fe
                           (λ f (b , i) (b' , i')
                              → to-subtype-＝
-                                 (λ b → being-join-is-prop 𝓑 b f)
-                                 (at-most-one-join 𝓑 b b' f i i'))
+                                (λ b → being-join-is-prop 𝓑 b f)
+                                (at-most-one-join 𝓑 b b' f i i'))
 
     F₀ : F 𝟘
     F₀ f = ⊥⟨ 𝓑 ⟩ , (λ (i : 𝟘) → 𝟘-elim i) , λ u ψ → ⟨ 𝓑 ⟩-⊥-is-minimum u
@@ -2080,6 +2199,12 @@ meets:
         l : (n : ℕ) → b n ≤⟨ 𝓑 ⟩ u
         l n = β n u (λ p → ψ ∣ n , p ∣)
 
+\end{code}
+
+We repackage the above.
+
+\begin{code}
+
   module _ {𝓥 𝓦 : Universe}
            (𝓑 : σ-SupLat 𝓥 𝓦)
            (P : 𝓣 ̇ )
@@ -2096,6 +2221,14 @@ meets:
     sup-is-lb-of-ubs : (u : ⟨ 𝓑 ⟩) → ((p : P) → f p ≤⟨ 𝓑 ⟩ u) → sup ≤⟨ 𝓑 ⟩ u
     sup-is-lb-of-ubs = pr₂ (pr₂ (σ-suplats-have-quasidecidable-joins 𝓑 P i f))
 
+\end{code}
+
+We say that a map is a q-embedding if its fibers are all
+quasidecidable. We define three versions of the same definition to
+help Agda to solve constraints.
+
+\begin{code}
+
   is-q-embedding : {X : 𝓣 ̇ } {Y : 𝓣 ̇ } → (X → Y) → 𝓣 ⁺ ̇
   is-q-embedding f = ∀ y → is-quasidecidable (fiber f y)
 
@@ -2105,12 +2238,21 @@ meets:
   is-q-embeddingr : {X : 𝓤₀ ̇ } {Y : 𝓣 ̇ } → (X → Y) → 𝓣 ⁺ ̇
   is-q-embeddingr f = ∀ y → is-quasidecidable (fiber f y)
 
-  σ-suplats-have-quasidecidable-joins' : (𝓑 : σ-SupLat 𝓥 𝓦) {I : 𝓣 ̇ }
-                                       → (f : I → ℕ)
-                                       → is-q-embeddingl f
-                                       → (b : ℕ → ⟨ 𝓑 ⟩)
-                                       → Σ c ꞉ ⟨ 𝓑 ⟩ , (c is-the-join-of (b ∘ f) on 𝓑)
-  σ-suplats-have-quasidecidable-joins' {𝓥} {𝓦} 𝓑 {I} f q b = c , α , β
+\end{code}
+
+The following generalizes the existence of quasidecidable-indexed
+joins.
+
+\begin{code}
+
+  σ-suplats-have-quasidecidable-joins'
+   : (𝓑 : σ-SupLat 𝓥 𝓦) {I : 𝓣 ̇ }
+   → (f : I → ℕ)
+   → is-q-embeddingl f
+   → (b : ℕ → ⟨ 𝓑 ⟩)
+   → Σ c ꞉ ⟨ 𝓑 ⟩ , (c is-the-join-of (b ∘ f) on 𝓑)
+  σ-suplats-have-quasidecidable-joins' {𝓥} {𝓦} 𝓑 {I} f q b
+   = c , α , β
    where
     g : I → ⟨ 𝓑 ⟩
     g = b ∘ f
@@ -2143,9 +2285,15 @@ meets:
       l₀ = ⟨ 𝓑 ⟩-⋁-is-ub b' (f i)
 
       l₁ : g' (f i) (δ (f i) (i , refl)) ≤⟨ 𝓑 ⟩ b' (f i)
-      l₁ = sup-is-ub 𝓑 (τ (a (f i)) holds) (a (f i) , refl) (g' (f i)) (δ (f i) (i , refl))
+      l₁ = sup-is-ub 𝓑
+            (τ (a (f i)) holds)
+            (a (f i) , refl)
+            (g' (f i))
+            (δ (f i)
+            (i , refl))
 
-      r : g' (f i) (δ (f i) (i , refl)) ＝ b (f (pr₁ (γ (f i) (δ (f i) (i , refl)))))
+      r : g' (f i) (δ (f i) (i , refl))
+        ＝ b (f (pr₁ (γ (f i) (δ (f i) (i , refl)))))
       r = refl
 
       s : b (f (pr₁ (γ (f i) (δ (f i) (i , refl))))) ＝ b (f i)
@@ -2180,7 +2328,8 @@ quasidecidability:
   is-quasidecidable₀ : 𝓣 ̇ → 𝓣 ̇
   is-quasidecidable₀ = is-quasidecidable' {𝓣}
 
-  quasidecidability-resizing : (P : 𝓣 ̇ ) → is-quasidecidable P ≃ is-quasidecidable₀ P
+  quasidecidability-resizing : (P : 𝓣 ̇ )
+                             → is-quasidecidable P ≃ is-quasidecidable₀ P
   quasidecidability-resizing P = Σ-cong e
    where
     e : (a : A) → (τ a holds ＝ P) ≃ (τ a holds ≃ P)
@@ -2188,8 +2337,8 @@ quasidecidability:
 
   being-quasidecidable₀-is-prop : (P : 𝓣 ̇ ) → is-prop (is-quasidecidable₀ P)
   being-quasidecidable₀-is-prop P = equiv-to-prop
-                                      (≃-sym (quasidecidability-resizing P))
-                                      (being-quasidecidable-is-prop P)
+                                     (≃-sym (quasidecidability-resizing P))
+                                     (being-quasidecidable-is-prop P)
 
   𝟘-is-quasidecidable₀ : is-quasidecidable₀ 𝟘
   𝟘-is-quasidecidable₀ = ⌜ quasidecidability-resizing 𝟘 ⌝ 𝟘-is-quasidecidable
@@ -2197,25 +2346,26 @@ quasidecidability:
   𝟙-is-quasidecidable₀ : is-quasidecidable₀ 𝟙
   𝟙-is-quasidecidable₀ = ⌜ quasidecidability-resizing 𝟙 ⌝ 𝟙-is-quasidecidable
 
-  quasidecidable₀-closed-under-ω-joins :
-     (P : ℕ → 𝓣 ̇ )
+  quasidecidable₀-closed-under-ω-joins
+   : (P : ℕ → 𝓣 ̇ )
    → ((n : ℕ) → is-quasidecidable₀ (P n))
    → is-quasidecidable₀ (∃ n ꞉ ℕ , P n)
-  quasidecidable₀-closed-under-ω-joins P φ = ⌜ quasidecidability-resizing (∃ n ꞉ ℕ , P n) ⌝
-                                               (quasidecidable-closed-under-ω-joins P φ')
+  quasidecidable₀-closed-under-ω-joins P φ =
+   ⌜ quasidecidability-resizing (∃ n ꞉ ℕ , P n) ⌝
+    (quasidecidable-closed-under-ω-joins P φ')
    where
     φ' : (n : ℕ) → is-quasidecidable (P n)
     φ' n = ⌜ quasidecidability-resizing (P n) ⌝⁻¹ (φ n)
 
-  quasidecidable₀-induction :
-     (F : 𝓣 ̇ → 𝓥 ̇ )
+  quasidecidable₀-induction
+   : (F : 𝓣 ̇ → 𝓥 ̇ )
    → ((P : 𝓣 ̇ ) → is-prop (F P))
    → F 𝟘
    → F 𝟙
    → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
    → (P : 𝓣 ̇ ) → is-quasidecidable₀ P → F P
-  quasidecidable₀-induction F i F₀ F₁ Fω P q = quasidecidable-induction F i F₀ F₁ Fω
-                                                P (⌜ quasidecidability-resizing P ⌝⁻¹ q)
+  quasidecidable₀-induction F i F₀ F₁ Fω P q
+   = quasidecidable-induction F i F₀ F₁ Fω P (⌜ quasidecidability-resizing P ⌝⁻¹ q)
 
 \end{code}
 
@@ -2229,47 +2379,47 @@ theorem₁ {𝓣} {𝓤} q = free-σ-SupLat-on-one-generator QD ⊤ QD-is-free-�
  where
   open quasidecidable-propositions-exist q
   open hypothetical-quasidecidability {𝓣} {𝓤}
-         (quasidecidable-propositions
-            is-quasidecidable
-            being-quasidecidable-is-prop
-            𝟘-is-quasidecidable
-            𝟙-is-quasidecidable
-            quasidecidable-closed-under-ω-joins
-            quasidecidable-induction)
+        (quasidecidable-propositions
+          is-quasidecidable
+          being-quasidecidable-is-prop
+          𝟘-is-quasidecidable
+          𝟙-is-quasidecidable
+          quasidecidable-closed-under-ω-joins
+          quasidecidable-induction)
 
 theorem₂ {𝓣} {𝓤} f = quasidecidable-propositions
-                        is-quasidecidable₀
-                        being-quasidecidable₀-is-prop
-                        𝟘-is-quasidecidable₀
-                        𝟙-is-quasidecidable₀
-                        quasidecidable₀-closed-under-ω-joins
-                        quasidecidable₀-induction
+                       is-quasidecidable₀
+                       being-quasidecidable₀-is-prop
+                       𝟘-is-quasidecidable₀
+                       𝟙-is-quasidecidable₀
+                       quasidecidable₀-closed-under-ω-joins
+                       quasidecidable₀-induction
  where
   open free-σ-SupLat-on-one-generator-exists f
   open hypothetical-free-σ-SupLat-on-one-generator
-  open assumption {𝓣} {𝓤} 𝓐 ⊤ 𝓐-free
+  open assumptions {𝓣} {𝓤} 𝓐 ⊤ 𝓐-free
 
-theorem₃ {𝓣} {𝓚} f = initial-σ-frame 𝓐-qua-σ-frame 𝓐-qua-σ-frame-is-initial
+theorem₃ {𝓣} {𝓚} f = initial-σ-frame A-qua-σ-frame A-qua-σ-frame-is-initial
  where
   open free-σ-SupLat-on-one-generator-exists f
   open hypothetical-free-σ-SupLat-on-one-generator
-  open assumption {𝓣} {𝓚} 𝓐 ⊤ 𝓐-free
+  open assumptions {𝓣} {𝓚} 𝓐 ⊤ 𝓐-free
 
 theorem₄ {𝓣} {𝓚} ρ = quasidecidable-propositions
-                        is-quasidecidable
-                        being-quasidecidable-is-prop
-                        𝟘-is-quasidecidable
-                        𝟙-is-quasidecidable
-                        quasidecidable-closed-under-ω-joins
-                        quasidecidable-induction
+                       is-quasidecidable
+                       being-quasidecidable-is-prop
+                       𝟘-is-quasidecidable
+                       𝟙-is-quasidecidable
+                       quasidecidable-closed-under-ω-joins
+                       quasidecidable-induction
  where
   open quasidecidability-construction-from-resizing 𝓣 𝓚 ρ
 
 \end{code}
 
-TODO:
+TODO.
 
-  ⋆ Very little here has to do with the nature of the type ℕ. We never
+  * Very little here has to do with the nature of the type ℕ. We never
     used zero, successor, or induction! (But they are used in another
     module to construct binary joins, which are not used here.) Any
     indexing type replacing ℕ works in the above development, with the
@@ -2278,7 +2428,7 @@ TODO:
     indexing types, but this would require a modification of the above
     development.)
 
-  ⋆ Define, by induction (or as a W-type) a type similar to the
+  * Define, by induction (or as a W-type) a type similar to the
     Brouwer ordinals, with two constructors 0 and 1 and a formal
     ℕ-indexed sup operation. We have a unique map to the initial
     σ-sup-lattice that transforms formal sups into sups and maps 0 to

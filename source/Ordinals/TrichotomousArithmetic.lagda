@@ -4,7 +4,7 @@ Arithmetic for trichotomous ordinals.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
@@ -12,7 +12,6 @@ module Ordinals.TrichotomousArithmetic
         (fe : FunExt)
        where
 
-open import UF.Subsingletons
 
 open import MLTT.Spartan
 open import Notation.CanonicalMap

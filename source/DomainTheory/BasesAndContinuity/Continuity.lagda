@@ -10,7 +10,7 @@ continuous is preserved by taking continuous retracts.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -24,7 +24,6 @@ module DomainTheory.BasesAndContinuity.Continuity
 
 open PropositionalTruncation pt
 
-open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 
@@ -40,8 +39,8 @@ open import DomainTheory.BasesAndContinuity.IndCompletion pt fe 𝓥
 \end{code}
 
 We first define an untruncated, non-propositional, version of continuity for
-dcpos, which we call structural continuity. The notion of a continuous dcpo will
-then be given by truncating the type expressing its structural continuity.
+dcpos, which we call continuity data. The notion of a continuous dcpo will
+then be given by truncating the type of continuity data.
 
 The motivation for our definition of continuity is discussed in
 ContinuityDiscussion.lagda.
@@ -51,7 +50,7 @@ having to add them as boilerplate.
 
 \begin{code}
 
-record structurally-continuous (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+record continuity-data  (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ where
  field
   index-of-approximating-family : ⟨ 𝓓 ⟩ → 𝓥 ̇
   approximating-family : (x : ⟨ 𝓓 ⟩)
@@ -72,6 +71,27 @@ record structurally-continuous (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 �
                           → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (approximating-family-is-directed x)
  approximating-family-∐-⊒ x = ＝-to-⊒ 𝓓 (approximating-family-∐-＝ x)
 
+\end{code}
+
+NB. We previously used the terminology "structural continuity" instead of
+"continuity data".
+
+We now prefer the latter because the word "structure" suggests that we are
+interested in preserving this data, but we are not. (E.g., preserving this data
+would mean preserving the way-below relation which Scott continuous functions
+rarely do, ruling out constant functions with non-compact values for example.)
+We only want to stress that we are not dealing with a property and the word
+"data" is better for this.
+
+At the moment the code and its comments still use the old terminology, so for
+now we have following aliases, although in the future we will likely update the
+terminology throughout the development.
+
+\begin{code}
+
+module structurally-continuous = continuity-data
+structurally-continuous = continuity-data
+
 is-continuous-dcpo : DCPO {𝓤} {𝓣} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-continuous-dcpo 𝓓 = ∥ structurally-continuous 𝓓 ∥
 
@@ -81,12 +101,37 @@ being-continuous-dcpo-is-prop 𝓓 = ∥∥-is-prop
 
 \end{code}
 
-Similarly, we define when a dcpo is (structurally) algebraic where the
+Added 25 March 2025 by Tom de Jong following a discussion with Martin Escardo.
+
+In particular, two continuous dcpos are equal precisely when they are
+isomorphic.
+
+\begin{code}
+
+open import UF.Univalence
+
+characterization-of-continuous-DCPO-＝ : Univalence
+                                       → (𝓓 𝓔 : DCPO {𝓤} {𝓣})
+                                       → (c₁ : is-continuous-dcpo 𝓓)
+                                       → (c₂ : is-continuous-dcpo 𝓔)
+                                       → ((𝓓 , c₁) ＝ (𝓔 , c₂)) ≃ (𝓓 ≃ᵈᶜᵖᵒ 𝓔)
+characterization-of-continuous-DCPO-＝ ua 𝓓 𝓔 c₁ c₂ =
+ ((𝓓 , c₁) ＝ (𝓔 , c₂)) ≃⟨ I ⟩
+ (𝓓 ＝ 𝓔)               ≃⟨ II ⟩
+ (𝓓 ≃ᵈᶜᵖᵒ 𝓔)            ■
+  where
+   open import UF.Embeddings using (to-subtype-＝-≃)
+   I  = ≃-sym (to-subtype-＝-≃ being-continuous-dcpo-is-prop)
+   II = characterization-of-DCPO-＝ ua 𝓓 𝓔
+
+\end{code}
+
+Similarly, we define when a dcpo has algebraicity data where the
 approximating family is required to consist of compact elements.
 
 \begin{code}
 
-record structurally-algebraic (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+record algebraicity-data (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ where
  field
   index-of-compact-family : ⟨ 𝓓 ⟩ → 𝓥 ̇
   compact-family : (x : ⟨ 𝓓 ⟩) → (index-of-compact-family x) → ⟨ 𝓓 ⟩
@@ -94,6 +139,32 @@ record structurally-algebraic (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 �
   compact-family-is-compact : (x : ⟨ 𝓓 ⟩) (i : index-of-compact-family x)
                             → is-compact 𝓓 (compact-family x i)
   compact-family-∐-＝ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (compact-family-is-directed x) ＝ x
+
+ compact-family-is-upperbound : (x : ⟨ 𝓓 ⟩)
+                              → is-upperbound (underlying-order 𝓓)
+                                              x (compact-family x)
+ compact-family-is-upperbound x i =
+  compact-family x i                 ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+  ∐ 𝓓 (compact-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+  x                                  ∎⟨ 𝓓 ⟩
+   where
+    ⦅1⦆ = ∐-is-upperbound 𝓓 (compact-family-is-directed x) i
+    ⦅2⦆ = ＝-to-⊑ 𝓓 (compact-family-∐-＝ x)
+
+\end{code}
+
+NB. We previously used the terminology "structural algebraicity" instead of
+"algebraicity data". Again, we now prefer the latter for the reasons explained
+above in the other comment on terminology.
+
+At the moment the code and its comments still use the old terminology, so for
+now we have following aliases, although in the future we will likely update the
+terminology throughout the development.
+
+\begin{code}
+
+module structurally-algebraic = algebraicity-data
+structurally-algebraic = algebraicity-data
 
 is-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-algebraic-dcpo 𝓓 = ∥ structurally-algebraic 𝓓 ∥
@@ -108,18 +179,12 @@ structurally-continuous-if-structurally-algebraic 𝓓 sa =
   ; approximating-family-is-directed  = compact-family-is-directed
   ; approximating-family-is-way-below = γ
   ; approximating-family-∐-＝          = compact-family-∐-＝
-  }
+ }
   where
    open structurally-algebraic sa
    γ : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (compact-family x)
-   γ x i = ≪-⊑-to-≪ 𝓓 (compact-family-is-compact x i) l
-    where
-     l = compact-family x i                 ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-         ∐ 𝓓 (compact-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-         x                                  ∎⟨ 𝓓 ⟩
-      where
-       ⦅1⦆ = ∐-is-upperbound 𝓓 (compact-family-is-directed x) i
-       ⦅2⦆ = ＝-to-⊑ 𝓓 (compact-family-∐-＝ x)
+   γ x i = ≪-⊑-to-≪ 𝓓 (compact-family-is-compact x i)
+                      (compact-family-is-upperbound x i)
 
 is-continuous-dcpo-if-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣})
                                      → is-algebraic-dcpo 𝓓
@@ -414,7 +479,7 @@ module _
       I = index-of-approximating-family x
       α : I → ⟨ 𝓓 ⟩
       α = approximating-family x
-      ψ = (∀ (i : I) → α i ≪ₛ     y) ≃⟨ Π-cong fe fe I _ _ (λ i → ≪ₛ-≃-≪) ⟩
+      ψ = (∀ (i : I) → α i ≪ₛ     y) ≃⟨ Π-cong fe fe (λ i → ≪ₛ-≃-≪) ⟩
           (∀ (i : I) → α i ≪⟨ 𝓓 ⟩ y) ≃⟨ e ⟩
           x ⊑⟨ 𝓓 ⟩ y                 ■
        where
@@ -431,19 +496,20 @@ module _
 
  open import UF.Size hiding (is-small ; is-locally-small)
 
- ≪-is-small-valued : is-locally-small 𝓓
-                   → (x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)
- ≪-is-small-valued ls x y = ∥∥-rec p (λ C → ≪-is-small-valued-str 𝓓 C ls x y) c
-  where
-   p : is-prop (is-small (x ≪⟨ 𝓓 ⟩ y))
-   p = prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
-        (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓) 𝓥
+ abstract -- for performance
+  ≪-is-small-valued : is-locally-small 𝓓
+                    → (x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)
+  ≪-is-small-valued ls x y = ∥∥-rec p (λ C → ≪-is-small-valued-str 𝓓 C ls x y) c
+   where
+    p : is-prop (is-small (x ≪⟨ 𝓓 ⟩ y))
+    p = prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
+         (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓)
 
- ≪-is-small-valued-converse : ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
-                            → is-locally-small 𝓓
- ≪-is-small-valued-converse ws =
-  ∥∥-rec (being-locally-small-is-prop 𝓓 (λ _ → pe))
-   (λ C → ≪-is-small-valued-str-converse 𝓓 C ws) c
+  ≪-is-small-valued-converse : ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
+                             → is-locally-small 𝓓
+  ≪-is-small-valued-converse ws =
+   ∥∥-rec (being-locally-small-is-prop 𝓓 (λ _ → pe))
+    (λ C → ≪-is-small-valued-str-converse 𝓓 C ws) c
 
 \end{code}
 
@@ -471,7 +537,7 @@ module _
    ; approximating-family-is-directed  = lemma₁
    ; approximating-family-is-way-below = lemma₂
    ; approximating-family-∐-＝          = lemma₃
-   }
+  }
    where
     open structurally-continuous C
     α : (y : ⟨ 𝓔 ⟩) → index-of-approximating-family y → ⟨ 𝓔 ⟩
@@ -498,5 +564,52 @@ module _
                                                     → is-continuous-dcpo 𝓓
  continuity-of-dcpo-preserved-by-continuous-retract =
   ∥∥-functor structural-continuity-of-dcpo-preserved-by-continuous-retract
+
+\end{code}
+
+Added 8 July 2024.
+
+The purpose of the following construction is to show that structural continuity
+is not a property of a dcpo.
+
+\begin{code}
+
+structurally-continuous-+-construction :
+  (𝓓 : DCPO {𝓤} {𝓣})
+ → structurally-continuous 𝓓
+ → structurally-continuous 𝓓
+structurally-continuous-+-construction 𝓓 sc =
+ record
+  { index-of-approximating-family = λ x → I x + I x
+  ; approximating-family = [α,α]
+  ; approximating-family-is-directed = δ'
+  ; approximating-family-is-way-below = wb'
+  ; approximating-family-∐-＝ = eq'
+ }
+  where
+   open structurally-continuous sc
+         renaming (index-of-approximating-family to I ;
+                   approximating-family to α ;
+                   approximating-family-is-directed to δ ;
+                   approximating-family-is-way-below to wb ;
+                   approximating-family-∐-＝ to eq)
+   [α,α] : (x : ⟨ 𝓓 ⟩) → I x + I x → ⟨ 𝓓 ⟩
+   [α,α] x = cases (α x) (α x)
+
+   lemma₁ : {x : ⟨ 𝓓 ⟩} (i : I x) → ∃ j ꞉ I x + I x , α x i ⊑⟨ 𝓓 ⟩ [α,α] x j
+   lemma₁ {x} i = ∣ inl i , reflexivity 𝓓 (α x i) ∣
+   lemma₂ : {x : ⟨ 𝓓 ⟩} (j : I x + I x) → ∃ i ꞉ I x , [α,α] x j ⊑⟨ 𝓓 ⟩ α x i
+   lemma₂ {x} (inl i) = ∣ i , reflexivity 𝓓 (α x i) ∣
+   lemma₂ {x} (inr i) = ∣ i , reflexivity 𝓓 (α x i) ∣
+
+   δ' : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 ([α,α] x)
+   δ' x = directed-if-bicofinal 𝓓 lemma₁ lemma₂ (δ x)
+
+   wb' : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x ([α,α] x)
+   wb' x (inl i) = wb x i
+   wb' x (inr i) = wb x i
+
+   eq' : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (δ' x) ＝ x
+   eq' x = ∐-＝-if-bicofinal 𝓓 lemma₂ lemma₁ (δ' x) (δ x) ∙ eq x
 
 \end{code}

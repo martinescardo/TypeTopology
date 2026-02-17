@@ -15,12 +15,11 @@ propositions, or subsingletons, as in HoTT/UF.)
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.UniverseEmbedding where
 
 open import MLTT.Spartan
-
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
@@ -28,8 +27,9 @@ open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Lower-FunExt
 open import UF.PairFun
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.Univalence
 
@@ -99,8 +99,8 @@ Lift'-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift' 𝓥 X ≃ X
 Lift'-≃ 𝓥 X = 𝟘-rneutral'
 
 Lift'-is-embedding : Univalence → is-embedding (Lift' {𝓤} 𝓥)
-Lift'-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 (𝓤 ⊔ 𝓥)
-                                  (Lift' 𝓥) (Lift'-≃ 𝓥)
+Lift'-is-embedding {𝓤} {𝓥} ua =
+ universe-embeddings-are-embeddings ua 𝓤 (𝓤 ⊔ 𝓥) (Lift' 𝓥) (Lift'-≃ 𝓥)
 \end{code}
 
 The following embedding has better definitional properties:
@@ -160,6 +160,9 @@ prop-fiber-criterion : PropExt
                      → is-prop (fiber f Q)
 prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
  where
+  _ : f P ＝ Q
+  _ = r
+
   k : is-prop (f P)
   k = transport⁻¹ is-prop r j
 
@@ -172,7 +175,7 @@ prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
         (X ≃ P)      ≃⟨ ≃-sym (prop-univalent-≃ (pe 𝓤) (fe 𝓤 𝓤) X P l) ⟩
         (X ＝ P)      ■
 
-  b : (Σ X ꞉ 𝓤 ̇ , f X ＝ f P) ≃ (Σ X ꞉ 𝓤 ̇  , X ＝ P)
+  b : (Σ X ꞉ 𝓤 ̇ , f X ＝ f P) ≃ (Σ X ꞉ 𝓤 ̇ , X ＝ P)
   b = Σ-cong a
 
   c : is-prop (Σ X ꞉ 𝓤 ̇ , f X ＝ f P)
@@ -187,7 +190,8 @@ prop-fiber-Lift : PropExt
                 → is-prop Q
                 → is-prop (fiber (Lift 𝓥) Q)
 prop-fiber-Lift {𝓤} {𝓥} pe fe = prop-fiber-criterion pe fe 𝓤 (𝓤 ⊔ 𝓥)
-                                  (Lift {𝓤} 𝓥) (Lift-is-universe-embedding 𝓥)
+                                  (Lift {𝓤} 𝓥)
+                                  (Lift-is-universe-embedding 𝓥)
 \end{code}
 
 Taken from the MGS'2019 lecture notes (22 December 2020):
@@ -237,7 +241,7 @@ global-≃-ap : Univalence
             → (A : global-property-of-types)
             → cumulative A
             → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
-global-≃-ap ua = global-≃-ap' ua id
+global-≃-ap ua = global-≃-ap' ua (λ 𝓤 → 𝓤)
 
 global-≃-ap⁺ : Univalence
             → (A : global-property-of-types⁺)
@@ -265,10 +269,11 @@ Lift-hSet 𝓥 = pair-fun (Lift 𝓥) (Lift-is-set 𝓥)
 Lift-is-set-is-embedding : funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                          → (X : 𝓤 ̇ )
                          → is-embedding (Lift-is-set 𝓥 X)
-Lift-is-set-is-embedding {𝓤} {𝓥} fe X = maps-of-props-are-embeddings
-                                         (Lift-is-set 𝓥 X)
-                                         (being-set-is-prop (lower-funext 𝓥 𝓥 fe))
-                                         (being-set-is-prop fe)
+Lift-is-set-is-embedding {𝓤} {𝓥} fe X =
+ maps-of-props-are-embeddings
+ (Lift-is-set 𝓥 X)
+ (being-set-is-prop (lower-funext 𝓥 𝓥 fe))
+ (being-set-is-prop fe)
 
 Lift-hSet-is-embedding : Univalence → is-embedding (Lift-hSet {𝓤} 𝓥)
 Lift-hSet-is-embedding {𝓤} {𝓥} ua =
@@ -284,7 +289,7 @@ is-hSet-embedding {𝓤} {𝓥} f = (𝓧 : hSet 𝓤) → underlying-set (f �
                                              ≃ underlying-set 𝓧
 
 at-most-one-hSet-embedding : Univalence
-                           → (f g : hSet 𝓤 → hSet 𝓥 )
+                           → (f g : hSet 𝓤 → hSet 𝓥)
                            → is-hSet-embedding f
                            → is-hSet-embedding g
                            → f ＝ g
@@ -302,7 +307,7 @@ at-most-one-hSet-embedding {𝓤} {𝓥} ua f g i j = p
   p = dfunext (Univalence-gives-FunExt ua (𝓤 ⁺) (𝓥 ⁺)) H
 
 the-only-hSet-embedding-is-Lift-hSet : Univalence
-                                     → (f : hSet 𝓤 → hSet (𝓤 ⊔ 𝓥 ))
+                                     → (f : hSet 𝓤 → hSet (𝓤 ⊔ 𝓥))
                                      → is-hSet-embedding f
                                      → f ＝ Lift-hSet 𝓥
 the-only-hSet-embedding-is-Lift-hSet {𝓤} {𝓥} ua f i =
@@ -311,7 +316,7 @@ the-only-hSet-embedding-is-Lift-hSet {𝓤} {𝓥} ua f i =
   (λ 𝓧 → Lift-is-universe-embedding 𝓥 (underlying-set 𝓧))
 
 hSet-embeddings-are-embeddings : Univalence
-                               → (f : hSet 𝓤 → hSet (𝓤 ⊔ 𝓥 ))
+                               → (f : hSet 𝓤 → hSet (𝓤 ⊔ 𝓥))
                                → is-hSet-embedding f
                                → is-embedding f
 hSet-embeddings-are-embeddings {𝓤} {𝓥} ua f i =

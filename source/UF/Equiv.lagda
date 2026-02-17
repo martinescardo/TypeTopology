@@ -1,14 +1,18 @@
+Martin Escardo
+
+Notion of equivalence and its basic properties.
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Equiv where
 
 open import MLTT.Spartan
-open import UF.Base
-open import UF.Subsingletons
-open import UF.Retracts
 open import MLTT.Unit-Properties
+open import UF.Base
+open import UF.Retracts
+open import UF.Subsingletons
 
 \end{code}
 
@@ -21,7 +25,8 @@ is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-equiv f = has-section f × is-section f
 
 inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-        → is-equiv f → (Y → X)
+        → is-equiv f
+        → (Y → X)
 inverse f = pr₁ ∘ pr₁
 
 equivs-have-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -41,7 +46,8 @@ section-retraction-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 section-retraction-equiv f hr hs = (hr , hs)
 
 equivs-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-              → is-equiv f → left-cancellable f
+              → is-equiv f
+              → left-cancellable f
 equivs-are-lc f e = sections-are-lc f (equivs-are-sections f e)
 
 _≃_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
@@ -56,12 +62,16 @@ id-is-equiv X = (id , λ x → refl) , (id , λ x → refl)
 ≃-refl : (X : 𝓤 ̇ ) → X ≃ X
 ≃-refl X = id , id-is-equiv X
 
+𝕚𝕕 : {X : 𝓤 ̇ } → X ≃ X
+𝕚𝕕 = ≃-refl _
+
 ∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {f' : Y → Z}
            → is-equiv f
            → is-equiv f'
            → is-equiv (f' ∘ f)
-∘-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} ((g , fg) , (h , hf)) ((g' , fg') , (h' , hf')) =
- (g ∘ g' , fg'') , (h ∘ h' , hf'')
+∘-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'}
+           ((g , fg) , (h , hf))
+           ((g' , fg') , (h' , hf')) = (g ∘ g' , fg'') , (h ∘ h' , hf'')
  where
   fg'' : (z : Z) → f' (f (g (g' z))) ＝ z
   fg'' z =  ap f' (fg (g' z)) ∙ fg' z
@@ -103,6 +113,26 @@ _ ≃⟨ d ⟩ e = d ● e
 _■ : (X : 𝓤 ̇ ) → X ≃ X
 _■ = ≃-refl
 
+\end{code}
+
+Added by Carlo Angiuli on November 20, 2025.
+
+Special syntax for definitional steps in equivalence chain reasoning:
+
+\begin{code}
+
+_≃⟨refl⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } → X ≃ Y → X ≃ Y
+_ ≃⟨refl⟩ e = e
+
+_≃⟨by-definition⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } → X ≃ Y → X ≃ Y
+_≃⟨by-definition⟩_ = _≃⟨refl⟩_
+
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 Eqtofun : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → X → Y
 Eqtofun X Y (f , _) = f
 
@@ -143,6 +173,9 @@ eqtoeq-agreement {𝓤} X _ refl = refl
 idtofun : (X Y : 𝓤 ̇ ) → X ＝ Y → X → Y
 idtofun X Y p = ⌜ idtoeq X Y p ⌝
 
+idtofun' : {X Y : 𝓤 ̇ } → X ＝ Y → X → Y
+idtofun' = idtofun _ _
+
 idtofun-agreement : (X Y : 𝓤 ̇ ) (p : X ＝ Y) → idtofun X Y p ＝ Idtofun p
 idtofun-agreement X Y refl = refl
 
@@ -165,29 +198,49 @@ invertible f = Σ g ꞉ (codomain f → domain f), (g ∘ f ∼ id) × (f ∘ g 
 
 qinv = invertible
 
+inverses-are-retractions : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
+                         → inverse f e ∘ f ∼ id
+inverses-are-retractions f ((g , ε) , (g' , η)) = η'
+ where
+  η' : g ∘ f ∼ id
+  η' x = g (f x)          ＝⟨ (η (g (f x)))⁻¹ ⟩
+         g' (f (g (f x))) ＝⟨ ap g' (ε (f x)) ⟩
+         g' (f x)         ＝⟨ η x ⟩
+         x                ∎
+
+inverses-are-retractions' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕗 : X ≃ Y)
+                          → ⌜ 𝕗 ⌝⁻¹ ∘ ⌜ 𝕗 ⌝  ∼ id
+inverses-are-retractions' (f , e) = inverses-are-retractions f e
+
 equivs-are-qinvs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                  → is-equiv f
                  → qinv f
-equivs-are-qinvs {𝓤} {𝓥} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
- where
-  sf : (x : X) → s (f x) ＝ x
-  sf x = s (f x)         ＝⟨ (rf (s (f x)))⁻¹ ⟩
-         r (f (s (f x))) ＝⟨ ap r (fs (f x)) ⟩
-         r (f x)         ＝⟨ rf x ⟩
-         x               ∎
+equivs-are-qinvs {𝓤} {𝓥} {X} {Y} f e@((g , ε) , (g' , η)) =
+ g , inverses-are-retractions f e , ε
+
+naive-inverses-are-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                              (f : X → Y) (e : is-equiv f)
+                            → f ∘ inverse f e ∼ id
+naive-inverses-are-sections f ((g' , ε) , (g , η)) = ε
 
 inverses-are-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                       → f ∘ inverse f e ∼ id
-inverses-are-sections f ((s , fs) , (r , rf)) = fs
+inverses-are-sections f e@((g , ε) , (g' , η)) = ε'
+ where
+  ε' : f ∘ g ∼ id
+  ε' y = f (g y)         ＝⟨ (ε (f (g y)))⁻¹ ⟩
+         f (g (f (g y))) ＝⟨ ap f (inverses-are-retractions f e (g y)) ⟩
+         f (g y)         ＝⟨ ε y ⟩
+         y               ∎
 
-inverses-are-retractions : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                         → inverse f e ∘ f ∼ id
-inverses-are-retractions f e = pr₁ (pr₂ (equivs-are-qinvs f e))
+inverses-are-sections' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕗 : X ≃ Y)
+                      → ⌜ 𝕗 ⌝ ∘ ⌜ 𝕗 ⌝⁻¹  ∼ id
+inverses-are-sections' (f , e) = inverses-are-sections f e
 
 inverses-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                     → is-equiv (inverse f e)
-
-inverses-are-equivs f e = (f , inverses-are-retractions f e) , (f , inverses-are-sections f e)
+inverses-are-equivs f e = (f , inverses-are-retractions f e) ,
+                          (f , inverses-are-sections f e)
 
 ⌜⌝⁻¹-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv ⌜ e ⌝⁻¹
 ⌜⌝⁻¹-is-equiv (f , i) = inverses-are-equivs f i
@@ -213,9 +266,9 @@ qinveq : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → qinv f → X ≃ Y
 qinveq f q = (f , qinvs-are-equivs f q)
 
 lc-split-surjections-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                               → left-cancellable f
-                               → ((y : Y) → Σ x ꞉ X , f x ＝ y)
-                               → is-equiv f
+                                → left-cancellable f
+                                → ((y : Y) → Σ x ꞉ X , f x ＝ y)
+                                → is-equiv f
 lc-split-surjections-are-equivs f l s = qinvs-are-equivs f (g , η , ε)
  where
   g : codomain f → domain f
@@ -229,6 +282,13 @@ lc-split-surjections-are-equivs f l s = qinvs-are-equivs f (g , η , ε)
    where
     p : f (g (f x)) ＝ f x
     p = ε (f x)
+
+lc-retractions-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                          → left-cancellable f
+                          → has-section f
+                          → is-equiv f
+lc-retractions-are-equivs f lc-f (s , H) =
+ lc-split-surjections-are-equivs f lc-f (λ y → s y , H y)
 
 ≃-sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  → X ≃ Y → Y ≃ X
 ≃-sym {𝓤} {𝓥} {X} {Y} (f , e) = inverse f e , inverses-are-equivs f e
@@ -256,14 +316,21 @@ Id-retract-r p = ≃-gives-▷ (idtoeq (lhs p) (rhs p) p)
 equiv-to-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y ≃ X → is-prop X → is-prop Y
 equiv-to-prop e = retract-of-prop (≃-gives-◁ e)
 
-equiv-to-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y ≃ X → is-singleton X → is-singleton Y
+equiv-to-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                   → Y ≃ X
+                   → is-singleton X
+                   → is-singleton Y
 equiv-to-singleton e = retract-of-singleton (≃-gives-◁ e)
 
-equiv-to-singleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-singleton X → is-singleton Y
+equiv-to-singleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                    → X ≃ Y
+                    → is-singleton X
+                    → is-singleton Y
 equiv-to-singleton' e = retract-of-singleton (≃-gives-▷ e)
 
-pt-pf-equiv : {X : 𝓤 ̇ } (x : X) → singleton-type x ≃ singleton-type' x
-pt-pf-equiv x = f , ((g , fg) , (g , gf))
+singleton-types-are-equivalent : {X : 𝓤 ̇ } (x : X)
+                               → singleton-type x ≃ singleton-type' x
+singleton-types-are-equivalent x = f , ((g , fg) , (g , gf))
  where
   f : singleton-type x → singleton-type' x
   f (y , p) = y , (p ⁻¹)
@@ -277,45 +344,39 @@ pt-pf-equiv x = f , ((g , fg) , (g , gf))
   gf : g ∘ f ∼ id
   gf (y , p) = ap (λ - → y , -) (⁻¹-involutive p)
 
-singleton-types'-are-singletons : {X : 𝓤 ̇ } (x : X) → is-singleton (singleton-type' x)
-singleton-types'-are-singletons x = retract-of-singleton
-                                     (pr₁ (pt-pf-equiv x) ,
-                                     (pr₁ (pr₂ ((pt-pf-equiv x)))))
-                                     (singleton-types-are-singletons x)
+singleton-types'-are-singletons : {X : 𝓤 ̇ } (x : X)
+                                → is-singleton (singleton-type' x)
+singleton-types'-are-singletons x =
+ retract-of-singleton
+  (≃-gives-▷ (singleton-types-are-equivalent x))
+  (singleton-types-are-singletons x)
 
 singleton-types'-are-props : {X : 𝓤 ̇ } (x : X) → is-prop (singleton-type' x)
-singleton-types'-are-props x = singletons-are-props (singleton-types'-are-singletons x)
-
-\end{code}
-
-Equivalence of transports.
-
-\begin{code}
+singleton-types'-are-props x =
+ singletons-are-props (singleton-types'-are-singletons x)
 
 transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ＝ y)
                       → is-equiv (transport A p)
 transports-are-equivs refl = id-is-equiv _
 
+transports-are-equivs' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ＝ y)
+                      → is-equiv (transport A p)
+transports-are-equivs' A refl = id-is-equiv _
+
+transport-≃ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ＝ y)
+            → A x ≃ A y
+transport-≃ A p = transport A p , transports-are-equivs p
+
 back-transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ＝ y)
                            → is-equiv (transport⁻¹ A p)
 back-transports-are-equivs p = transports-are-equivs (p ⁻¹)
 
-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
-fiber f y = Σ x ꞉ domain f , f x ＝ y
-
-fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} → fiber f y → X
-fiber-point = pr₁
-
-fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} (w : fiber f y)
-                     → f (fiber-point w) ＝ y
-fiber-identification = pr₂
-
 is-vv-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-vv-equiv f = ∀ y → is-singleton (fiber f y)
+is-vv-equiv f = each-fiber-of f is-singleton
 
-is-vv-equiv-NB : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-               → is-vv-equiv f ＝ (Π y ꞉ Y , ∃! x ꞉ X , f x ＝ y)
-is-vv-equiv-NB f = refl
+_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+  → is-vv-equiv f ＝ (Π y ꞉ Y , ∃! x ꞉ X , f x ＝ y)
+_ = λ f → refl
 
 vv-equivs-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-vv-equiv f
@@ -342,6 +403,9 @@ vv-equivs-are-equivs {𝓤} {𝓥} {X} {Y} f φ = (g , fg) , (g , gf)
 
   gf : (x : X) → g (f x) ＝ x
   gf x = ap pr₁ (e x)
+
+id-is-vv-equiv : (X : 𝓤 ̇ ) → is-vv-equiv (id {𝓤} {X})
+id-is-vv-equiv X y = (y , refl) , (λ where (.y , refl) → refl)
 
 fiber' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
 fiber' f y = Σ x ꞉ domain f , y ＝ f x
@@ -376,7 +440,7 @@ haes-are-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) = qinvs-are-equivs f (g ,
 id-homotopies-are-natural : {X : 𝓤 ̇ } (h : X → X) (η : h ∼ id) {x : X}
                           → η (h x) ＝ ap h (η x)
 id-homotopies-are-natural h η {x} =
- η (h x)                         ＝⟨ refl ⟩
+ η (h x)                         ＝⟨refl⟩
  η (h x) ∙ refl                  ＝⟨ I ⟩
  η (h x) ∙ (η x ∙ (η x)⁻¹)       ＝⟨ II ⟩
  η (h x) ∙ η x ∙ (η x)⁻¹         ＝⟨ III ⟩
@@ -388,51 +452,63 @@ id-homotopies-are-natural h η {x} =
    III = ap (λ - → η (h x) ∙ - ∙ (η x)⁻¹) ((ap-id-is-id' (η x)))
    IV  = homotopies-are-natural' h id η {h x} {x} {η x}
 
-qinvs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-               → qinv f
-               → is-hae f
-qinvs-are-haes {𝓤} {𝓥} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
+half-adjoint-condition
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+   (f : X → Y)
+   (e : is-equiv f)
+   (x : X)
+ → ap f (inverses-are-retractions f e x) ＝ inverses-are-sections f e (f x)
+half-adjoint-condition {𝓤} {𝓥} {X} {Y} f e@((g , ε) , (g' , η)) = τ
  where
+  η' : g ∘ f ∼ id
+  η' = inverses-are-retractions f e
+
   ε' : f ∘ g ∼ id
-  ε' y = f (g y)         ＝⟨ (ε (f (g y)))⁻¹ ⟩
-         f (g (f (g y))) ＝⟨ ap f (η (g y)) ⟩
-         f (g y)         ＝⟨ ε y ⟩
-         y               ∎
+  ε' = inverses-are-sections f e
 
-  a : (x : X) → η (g (f x)) ＝ ap g (ap f (η x))
-  a x = η (g (f x))       ＝⟨ id-homotopies-are-natural (g ∘ f) η ⟩
-        ap (g ∘ f) (η x)  ＝⟨ (ap-ap f g (η x))⁻¹ ⟩
-        ap g (ap f (η x)) ∎
+  a : (x : X) → η' (g (f x)) ＝ ap g (ap f (η' x))
+  a x = η' (g (f x))       ＝⟨ id-homotopies-are-natural (g ∘ f) η' ⟩
+        ap (g ∘ f) (η' x)  ＝⟨ (ap-ap f g (η' x))⁻¹ ⟩
+        ap g (ap f (η' x)) ∎
 
-  b : (x : X) → ap f (η (g (f x))) ∙ ε (f x) ＝ ε (f (g (f x))) ∙ ap f (η x)
-  b x = ap f (η (g (f x))) ∙ ε (f x)         ＝⟨ I ⟩
-        ap f (ap g (ap f (η x))) ∙ ε (f x)   ＝⟨ II ⟩
-        ap (f ∘ g) (ap f (η x)) ∙ ε (f x)    ＝⟨ III ⟩
-        ε (f (g (f x))) ∙ ap id (ap f (η x)) ＝⟨ IV ⟩
-        ε (f (g (f x))) ∙ ap f (η x)         ∎
+  b : (x : X) → ap f (η' (g (f x))) ∙ ε (f x) ＝ ε (f (g (f x))) ∙ ap f (η' x)
+  b x = ap f (η' (g (f x))) ∙ ε (f x)         ＝⟨ I ⟩
+        ap f (ap g (ap f (η' x))) ∙ ε (f x)   ＝⟨ II ⟩
+        ap (f ∘ g) (ap f (η' x)) ∙ ε (f x)    ＝⟨ III ⟩
+        ε (f (g (f x))) ∙ ap id (ap f (η' x)) ＝⟨ IV ⟩
+        ε (f (g (f x))) ∙ ap f (η' x)         ∎
          where
           I   = ap (λ - → - ∙ ε (f x)) (ap (ap f) (a x))
-          II  = ap (λ - → - ∙ ε (f x)) (ap-ap g f (ap f (η x)))
-          III = (homotopies-are-natural (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹
-          IV  = ap (λ - → ε (f (g (f x))) ∙ -) (ap-ap f id (η x))
+          II  = ap (λ - → - ∙ ε (f x)) (ap-ap g f (ap f (η' x)))
+          III = (homotopies-are-natural (f ∘ g) id ε {_} {_} {ap f (η' x)})⁻¹
+          IV  = ap (λ - → ε (f (g (f x))) ∙ -) (ap-ap f id (η' x))
 
-  τ : (x : X) → ap f (η x) ＝ ε' (f x)
-  τ x = ap f (η x)                                           ＝⟨ I ⟩
-        refl ∙ ap f (η x)                                    ＝⟨ II ⟩
-        (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ＝⟨ III ⟩
-        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ＝⟨ IV ⟩
-        (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ＝⟨ refl ⟩
+  τ : (x : X) → ap f (η' x) ＝ ε' (f x)
+  τ x = ap f (η' x)                                           ＝⟨ I ⟩
+        refl ∙ ap f (η' x)                                    ＝⟨ II ⟩
+        (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η' x)   ＝⟨ III ⟩
+        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η' x)) ＝⟨ IV ⟩
+        (ε (f (g (f x))))⁻¹ ∙ (ap f (η' (g (f x))) ∙ ε (f x)) ＝⟨refl⟩
         ε' (f x)                                             ∎
          where
           I   = refl-left-neutral ⁻¹
-          II  = ap (λ - → - ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹)
-          III = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x))
+          II  = ap (λ - → - ∙ ap f (η' x)) ((trans-sym (ε (f (g (f x)))))⁻¹)
+          III = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η' x))
           IV  = ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (b x)⁻¹
 
 equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-equiv f
                 → is-hae f
-equivs-are-haes f e = qinvs-are-haes f (equivs-are-qinvs f e)
+equivs-are-haes {𝓤} {𝓥} {X} {Y} f e@((g , ε) , (g' , η)) =
+ inverse f e ,
+ inverses-are-retractions f e ,
+ inverses-are-sections f e ,
+ half-adjoint-condition f e
+
+qinvs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+               → qinv f
+               → is-hae f
+qinvs-are-haes {𝓤} {𝓥} {X} {Y} f = equivs-are-haes f ∘ qinvs-are-equivs f
 
 \end{code}
 
@@ -441,18 +517,23 @@ but a proof by path induction is direct:
 
 \begin{code}
 
-identifications-in-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                            (y : Y) (x x' : X) (p : f x ＝ y) (p' : f x' ＝ y)
-                          → (Σ γ ꞉ x ＝ x' , ap f γ ∙ p' ＝ p)
-                          → (x , p) ＝ (x' , p')
-identifications-in-fibers f . (f x) x x refl p' (refl , r) = g
+identifications-in-fibers
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+   (f : X → Y)
+   (y : Y)
+   (x x' : X)
+   (p  : f x ＝ y)
+   (p' : f x' ＝ y)
+ → (Σ γ ꞉ x ＝ x' , ap f γ ∙ p' ＝ p)
+ → (x , p) ＝ (x' , p')
+identifications-in-fibers f .(f x) x x refl p' (refl , r) = g
  where
   g : x , refl ＝ x , p'
   g = ap (λ - → (x , -)) (r ⁻¹ ∙ refl-left-neutral)
 
 \end{code}
 
-Using this we see that half adjoint equivalences have singleton fibers:
+Using this we see that half adjoint equivalences have singleton fibers.
 
 \begin{code}
 
@@ -471,7 +552,7 @@ haes-are-vv-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) y =
     γ : g y ＝ x
     γ = (ap g p)⁻¹ ∙ η x
     q : ap f γ ∙ p ＝ ε y
-    q = ap f γ ∙ p                          ＝⟨ refl ⟩
+    q = ap f γ ∙ p                          ＝⟨refl⟩
         ap f ((ap g p)⁻¹ ∙ η x) ∙ p         ＝⟨ I ⟩
         ap f ((ap g p)⁻¹) ∙ ap f (η x) ∙ p  ＝⟨ II ⟩
         ap f (ap g (p ⁻¹)) ∙ ap f (η x) ∙ p ＝⟨ III ⟩
@@ -480,14 +561,15 @@ haes-are-vv-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) y =
         ε y ∙ ap id (p ⁻¹) ∙ p              ＝⟨ VI ⟩
         ε y ∙ p ⁻¹ ∙ p                      ＝⟨ VII ⟩
         ε y ∙ (p ⁻¹ ∙ p)                    ＝⟨ VIII ⟩
-        ε y ∙ refl                          ＝⟨ refl ⟩
+        ε y ∙ refl                          ＝⟨refl⟩
         ε y                                 ∎
          where
           I    = ap (λ - → - ∙ p) (ap-∙ f ((ap g p)⁻¹) (η x))
           II   = ap (λ - → ap f - ∙ ap f (η x) ∙ p) (ap-sym g p)
           III  = ap (λ - → ap f (ap g (p ⁻¹)) ∙ - ∙ p) (τ x)
           IV   = ap (λ - → - ∙ ε (f x) ∙ p) (ap-ap g f (p ⁻¹))
-          V    = ap (λ - → - ∙ p) (homotopies-are-natural (f ∘ g) id ε {y} {f x} {p ⁻¹})⁻¹
+          V    = ap (λ - → - ∙ p)
+                    (homotopies-are-natural (f ∘ g) id ε {y} {f x} {p ⁻¹})⁻¹
           VI   = ap (λ - → ε y ∙ - ∙ p) (ap-id-is-id (p ⁻¹))
           VII  = ∙assoc (ε y) (p ⁻¹) p
           VIII = ap (λ - → ε y ∙ -) (trans-sym p)
@@ -523,30 +605,32 @@ equiv-can-assume-pointed-codomain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                   → is-vv-equiv f
 equiv-can-assume-pointed-codomain f φ y = φ y y
 
-maps-to-𝟘-are-equivs : {X : 𝓤 ̇ } (f : ¬ X) → is-vv-equiv f
+maps-to-𝟘-are-equivs : {X : 𝓤 ̇ } (f : X → 𝟘 {𝓥}) → is-vv-equiv f
 maps-to-𝟘-are-equivs f = equiv-can-assume-pointed-codomain f 𝟘-elim
 
-negations-are-equiv-to-𝟘 : {X : 𝓤 ̇ } → is-empty X ⇔ X ≃ 𝟘
+negations-are-equiv-to-𝟘 : {X : 𝓤 ̇ } → is-empty X ↔ X ≃ 𝟘
 negations-are-equiv-to-𝟘 =
- (λ f → f , vv-equivs-are-equivs f (maps-to-𝟘-are-equivs f)), pr₁
+ (λ f → f , vv-equivs-are-equivs f (maps-to-𝟘-are-equivs f)) ,
+ eqtofun
 
 \end{code}
 
 Then with functional and propositional extensionality, which follow
-from univalence, we conclude that ¬X = (X ≃ 0) = (X ＝ 0).
+from univalence, we conclude that ¬ X = (X ≃ 0) = (X ＝ 0).
 
-And similarly, with similar a observation:
+And similarly, with similar proof:
 
 \begin{code}
 
-singletons-are-equiv-to-𝟙 : {X : 𝓤 ̇ } → is-singleton X ⇔ X ≃ 𝟙 {𝓥}
-singletons-are-equiv-to-𝟙 {𝓤} {𝓥} {X} = forth , back
- where
-  forth : is-singleton X → X ≃ 𝟙
-  forth (x₀ , φ) = unique-to-𝟙 , (((λ _ → x₀) , (λ x → (𝟙-all-⋆ x)⁻¹)) , ((λ _ → x₀) , φ))
+singletons-are-equiv-to-𝟙 : {X : 𝓤 ̇ } → is-singleton X → X ≃ 𝟙 {𝓥}
+singletons-are-equiv-to-𝟙 (x₀ , φ) =
+ qinveq
+  unique-to-𝟙
+  ((λ _ → x₀) , (φ , (λ x → (𝟙-all-⋆ x)⁻¹)))
 
-  back : X ≃ 𝟙 → is-singleton X
-  back (f , (s , fs) , (r , rf)) = retract-of-singleton (r , f , rf) 𝟙-is-singleton
+types-equiv-to-𝟙-are-singletons : {X : 𝓤 ̇ } → X ≃ 𝟙 {𝓥} → is-singleton X
+types-equiv-to-𝟙-are-singletons (f , (s , fs) , (r , rf)) =
+ retract-of-singleton (r , f , rf) 𝟙-is-singleton
 
 \end{code}
 
@@ -555,13 +639,23 @@ have:
 
 \begin{code}
 
-from-identifications-in-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                 (y : Y) (x x' : X) (p : f x ＝ y) (p' : f x' ＝ y)
-                               → (x , p) ＝ (x' , p') → Σ γ ꞉ x ＝ x' , ap f γ ∙ p' ＝ p
+from-identifications-in-fibers
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+   (f : X → Y)
+   (y : Y)
+   (x x' : X)
+   (p : f x ＝ y)
+   (p' : f x' ＝ y)
+ → (x , p) ＝ (x' , p')
+ → Σ γ ꞉ x ＝ x' , ap f γ ∙ p' ＝ p
 from-identifications-in-fibers f .(f x) x x refl refl refl = refl , refl
 
-η-pif : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-        (y : Y) (x x' : X) (p : f x ＝ y) (p' : f x' ＝ y)
+η-pif : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+        (f : X → Y)
+        (y : Y)
+        (x x' : X)
+        (p : f x ＝ y)
+        (p' : f x' ＝ y)
       → from-identifications-in-fibers f y x x' p p'
          ∘ identifications-in-fibers f y x x' p p'
       ∼ id
@@ -569,14 +663,19 @@ from-identifications-in-fibers f .(f x) x x refl refl refl = refl , refl
 
 \end{code}
 
-Then the following is a consequence of natural-section-is-section,
-but also has a direct proof by path induction:
+Then the following is a consequence of natural-section-is-section, but
+also has a direct proof by path induction:
 
 \begin{code}
-ε-pif : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-        (y : Y) (x x' : X) (p : f x ＝ y) (p' : f x' ＝ y)
+ε-pif : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+        (f : X → Y)
+        (y : Y)
+        (x x' : X)
+        (p : f x ＝ y)
+        (p' : f x' ＝ y)
       → identifications-in-fibers f y x x' p p'
-         ∘ from-identifications-in-fibers f y x x' p p' ∼ id
+         ∘ from-identifications-in-fibers f y x x' p p'
+      ∼ id
 ε-pif f .(f x) x x refl refl refl = refl
 
 pr₁-is-vv-equiv : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
@@ -604,7 +703,7 @@ pr₁-is-equiv X Y iss = vv-equivs-are-equivs pr₁ (pr₁-is-vv-equiv X Y iss)
 pr₁-is-vv-equiv-converse : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                          → is-vv-equiv (pr₁ {𝓤} {𝓥} {X} {A})
                          → ((x : X) → is-singleton (A x))
-pr₁-is-vv-equiv-converse {𝓤} {𝓥} {X} {A} isv x = retract-of-singleton (r , s , rs) (isv x)
+pr₁-is-vv-equiv-converse {𝓤} {𝓥} {X} {A} isv x = γ
   where
     f : Σ A → X
     f = pr₁ {𝓤} {𝓥} {X} {A}
@@ -618,13 +717,16 @@ pr₁-is-vv-equiv-converse {𝓤} {𝓥} {X} {A} isv x = retract-of-singleton (r
     rs : (a : A x) → r (s a) ＝ a
     rs a = refl
 
-logically-equivalent-props-give-is-equiv : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
-                                         → is-prop P
-                                         → is-prop Q
-                                         → (f : P → Q)
-                                         → (Q → P)
-                                         → is-equiv f
-logically-equivalent-props-give-is-equiv i j f g =
+    γ : is-singleton (A x)
+    γ = retract-of-singleton (r , s , rs) (isv x)
+
+logical-equivs-of-props-are-equivs : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
+                                   → is-prop P
+                                   → is-prop Q
+                                   → (f : P → Q)
+                                   → (Q → P)
+                                   → is-equiv f
+logical-equivs-of-props-are-equivs i j f g =
   qinvs-are-equivs f (g , (λ x → i (g (f x)) x) ,
                           (λ x → j (f (g x)) x))
 
@@ -635,14 +737,8 @@ logically-equivalent-props-are-equivalent : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
                                           → (Q → P)
                                           → P ≃ Q
 logically-equivalent-props-are-equivalent i j f g =
-  (f , logically-equivalent-props-give-is-equiv i j f g)
+  (f , logical-equivs-of-props-are-equivs i j f g)
 
-equiv-to-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-             → X ≃ Y
-             → is-set Y
-             → is-set X
-equiv-to-set e = subtypes-of-sets-are-sets' ⌜ e ⌝
-                  (equivs-are-lc ⌜ e ⌝ (⌜⌝-is-equiv e))
 \end{code}
 
 5th March 2019. A more direct proof that quasi-invertible maps
@@ -650,10 +746,10 @@ are Voevodky equivalences (have contractible fibers).
 
 \begin{code}
 
-qinv-is-vv-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                 → qinv f
-                 → is-vv-equiv f
-qinv-is-vv-equiv {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
+qinvs-are-vv-equivs' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                     → qinv f
+                     → is-vv-equiv f
+qinvs-are-vv-equivs' {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
  where
   a : (y : Y) → (f (g y) ＝ y₀) ◁ (y ＝ y₀)
   a y = r , s , rs
@@ -672,10 +768,10 @@ qinv-is-vv-equiv {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
 
   b : fiber f y₀ ◁ singleton-type' y₀
   b = (Σ x ꞉ X , f x ＝ y₀)     ◁⟨ Σ-reindex-retract g (f , η) ⟩
-      (Σ y ꞉ Y , f (g y) ＝ y₀) ◁⟨ Σ-retract (λ y → f (g y) ＝ y₀) (λ y → y ＝ y₀) a ⟩
+      (Σ y ꞉ Y , f (g y) ＝ y₀) ◁⟨ Σ-retract (λ y → f (g y) ＝ y₀) (_＝ y₀) a ⟩
       (Σ y ꞉ Y , y ＝ y₀)       ◀
 
-  γ : is-contr (fiber f y₀)
+  γ : is-singleton (fiber f y₀)
   γ = retract-of-singleton b (singleton-types'-are-singletons y₀)
 
 maps-of-singletons-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -687,7 +783,8 @@ maps-of-singletons-are-equivs f (c , φ) (d , γ) =
                      x   ∎)) ,
  ((λ y → c) , φ)
 
-is-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+is-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
+                   → Nat A B → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 is-fiberwise-equiv τ = ∀ x → is-equiv (τ x)
 
 \end{code}
@@ -716,7 +813,7 @@ id-qinv X = id , (λ x → refl) , (λ x → refl)
 ∘-qinv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} = γ
  where
    γ : qinv f → qinv f' → qinv (f' ∘ f)
-   γ (g , gf , fg) (g' , gf' , fg') = (g ∘ g' , gf'' , fg'' )
+   γ (g , gf , fg) (g' , gf' , fg') = (g ∘ g' , gf'' , fg'')
     where
      fg'' : (z : Z) → f' (f (g (g' z))) ＝ z
      fg'' z =  ap f' (fg (g' z)) ∙ fg' z
@@ -735,6 +832,93 @@ _◾ = ≅-refl
 
 \end{code}
 
+Added by Tom de Jong, November 2021.
+
+\begin{code}
+
+≃-2-out-of-3-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                   → {f : X → Y} {g : Y → Z}
+                   → is-equiv f
+                   → is-equiv (g ∘ f)
+                   → is-equiv g
+≃-2-out-of-3-right {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
+ equiv-closed-under-∼ (g ∘ f ∘ f⁻¹) g k h
+  where
+   𝕗 : X ≃ Y
+   𝕗 = (f , i)
+
+   f⁻¹ : Y → X
+   f⁻¹ = ⌜ 𝕗 ⌝⁻¹
+
+   k : is-equiv (g ∘ f ∘ f⁻¹)
+   k = ∘-is-equiv (⌜⌝⁻¹-is-equiv 𝕗) j
+
+   h : g ∼ g ∘ f ∘ f⁻¹
+   h y = ap g ((≃-sym-is-rinv 𝕗 y) ⁻¹)
+
+≃-2-out-of-3-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                  → {f : X → Y} {g : Y → Z}
+                  → is-equiv g
+                  → is-equiv (g ∘ f)
+                  → is-equiv f
+≃-2-out-of-3-left {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
+ equiv-closed-under-∼ (g⁻¹ ∘ g ∘ f) f k h
+  where
+   𝕘 : Y ≃ Z
+   𝕘 = (g , i)
+
+   g⁻¹ : Z → Y
+   g⁻¹ = ⌜ 𝕘 ⌝⁻¹
+
+   k : is-equiv (g⁻¹ ∘ g ∘ f)
+   k = ∘-is-equiv j (⌜⌝⁻¹-is-equiv 𝕘)
+
+   h : f ∼ g⁻¹ ∘ g ∘ f
+   h x = (≃-sym-is-linv 𝕘 (f x)) ⁻¹
+
+\end{code}
+
+Added by Martin Escardo 2nd November 2023.
+
+\begin{code}
+
+involutions-are-equivs : {X : 𝓤 ̇ }
+                       → (f : X → X)
+                       → involutive f
+                       → is-equiv f
+involutions-are-equivs f f-involutive =
+ qinvs-are-equivs f (f , f-involutive , f-involutive)
+
+involution-swap : {X : 𝓤 ̇ } (f : X → X)
+                → involutive f
+                → {x y : X}
+                → f x ＝ y
+                → f y ＝ x
+involution-swap f f-involutive {x} {y} e =
+ f y     ＝⟨ ap f (e ⁻¹) ⟩
+ f (f x) ＝⟨ f-involutive x ⟩
+ x       ∎
+
+open import UF.Sets
+
+involution-swap-≃ : {X : 𝓤 ̇ } (f : X → X)
+                  → involutive f
+                  → is-set X
+                  → {x y : X}
+                  → (f x ＝ y) ≃ (f y ＝ x)
+involution-swap-≃ f f-involutive X-is-set {x} {y} =
+ qinveq (involution-swap f f-involutive {x} {y})
+        (involution-swap f f-involutive {y} {x},
+         I y x ,
+         I x y)
+ where
+  I : ∀ a b →  involution-swap f f-involutive {a} {b}
+            ∘ (involution-swap f f-involutive {b} {a})
+            ∼ id
+  I a b e = X-is-set _ _
+
+\end{code}
+
 Associativities and precedences.
 
 \begin{code}
@@ -743,6 +927,9 @@ infix  0 _≃_
 infix  0 _≅_
 infix  1 _■
 infixr 0 _≃⟨_⟩_
+infixr 0 _≃⟨refl⟩_
+infixr 0 _≃⟨by-definition⟩_
 infixl 2 _●_
 infix  1 ⌜_⌝
+
 \end{code}

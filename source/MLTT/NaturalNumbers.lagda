@@ -2,7 +2,7 @@ Natural numbers
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.NaturalNumbers where
 
@@ -16,8 +16,8 @@ rec x f (succ n) = f(rec x f n)
 _^_ : {X : 𝓤 ̇ } → (X → X) → ℕ → (X → X)
 (f ^ n) x = rec x f n
 
-induction : {A : ℕ → 𝓤 ̇ } → A 0 → ((k : ℕ) → A k → A(succ k)) → (n : ℕ) → A n
-induction base step 0 = base
-induction base step (succ n) = step n (induction base step n)
+ℕ-induction : {A : ℕ → 𝓤 ̇ } → A 0 → ((k : ℕ) → A k → A(succ k)) → (n : ℕ) → A n
+ℕ-induction base step 0 = base
+ℕ-induction base step (succ n) = step n (ℕ-induction base step n)
 
 \end{code}

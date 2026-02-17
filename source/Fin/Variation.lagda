@@ -2,11 +2,10 @@ Martin Escardo, 2nd December 2019
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Fin.Variation where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
 
 open import Fin.Type
 open import MLTT.Spartan

@@ -50,7 +50,7 @@ required to be
 
     2. transitive,
 
-    3. extensional (any two points with same lower set are the same),
+    3. extensional (any two points with same predecessors are the same),
 
     4. well founded (every element is accessible, or, equivalently,
        the principle of transfinite induction holds).
@@ -112,7 +112,7 @@ Agda formulation of the Burali-Forti argument and its corollaries
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 \end{code}
 
@@ -126,22 +126,24 @@ module Ordinals.BuraliForti
        (ua : Univalence)
        where
 
-open import UF.Base
 open import UF.Subsingletons
 open import UF.Retracts
 open import UF.Equiv hiding (_≅_)
-open import UF.EquivalenceExamples
 open import UF.UniverseEmbedding
 open import UF.UA-FunExt
 open import UF.FunExt
 open import UF.Size
 
 private
+
  fe : FunExt
  fe = Univalence-gives-FunExt ua
 
  fe' : Fun-Ext
  fe' = Univalence-gives-Fun-Ext ua
+
+ pe : Prop-Ext
+ pe = Univalence-gives-Prop-Ext ua
 
 open import MLTT.Spartan
 
@@ -317,6 +319,8 @@ where
 is derived from the fact that Lift 𝓥 X ≃ X using i : is-set X.
 
 \begin{code}
+
+open import UF.Sets
 
 Lift-hSet-doesnt-have-section : ¬ has-section (Lift-hSet {𝓤} (𝓤 ⁺))
 Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
@@ -530,7 +534,7 @@ Monoids:
 
 \begin{code}
 
- open import Ordinals.Arithmetic-Properties ua
+ open import Ordinals.AdditionProperties ua
 
  monoid-structure : 𝓤 ̇ → 𝓤 ̇
  monoid-structure X = (X → X → X) × X
@@ -603,13 +607,13 @@ We need to assume that propositional truncations exist.
 \begin{code}
 
 open import Groups.Type
-open import Groups.FreeOverLargeLocallySmallSet
+open import Groups.Large
 open import UF.PropTrunc
 
 module _ (pt : propositional-truncations-exist) where
 
  there-is-a-large-group : Σ F ꞉ Group (𝓤 ⁺) , ((G : Group 𝓤) → ¬ (G ≅ F))
- there-is-a-large-group {𝓤} = large-group-with-no-small-copy pt ua
+ there-is-a-large-group {𝓤} = large-group-with-no-small-copy fe' pe pt
                                (Ordinal 𝓤 ,
                                 (the-type-of-ordinals-is-a-set (ua 𝓤) fe') ,
                                 the-type-of-ordinals-is-large ,

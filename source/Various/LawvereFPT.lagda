@@ -15,13 +15,11 @@ extensions of MLTT, or hypotheses, such as propositional truncation.
 Many other things have been added since the above abstract was
 written.
 
-On 25th March 2023, Jon Sterling added a proof of Cantor's theorem stated for
-embeddings from the powerset of A onto A. This proof uses function
-extensionality, propositional extensionality, and propositional resizing.
+See also the file Various.CantorTheoremForEmbeddings by Jon Sterling.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Various.LawvereFPT where
 
@@ -31,14 +29,90 @@ open import MLTT.Two-Properties
 open import Naturals.Properties
 
 open import UF.Base
-open import UF.Embeddings
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Retracts
-open import UF.Equiv
-open import UF.Miscelanea
-open import UF.FunExt
-open import UF.Size
+
+\end{code}
+
+We will use the decoration "·" for pointwise versions of notions and
+constructions (for example, we can read "has-section· r" defined below
+as saying that r has a pointwise section).
+
+\begin{code}
+
+_is-section·-of_ : {A : 𝓤 ̇ } {X : 𝓥 ̇ } → ((A → X) → A) → (A → (A → X)) → 𝓤 ⊔ 𝓥 ̇
+s is-section·-of r  = ∀ g a → r (s g) a ＝ g a
+
+\end{code}
+
+The following pointwise weakening of split surjection is sufficient to
+prove LFPT and allows us to avoid function extensionality in its
+applications:
+
+\begin{code}
+
+has-section· : {A : 𝓤 ̇ } {X : 𝓥 ̇ } → (A → (A → X)) → 𝓤 ⊔ 𝓥 ̇
+has-section· r = Σ s ꞉ (codomain r → domain r) , s is-section·-of r
+
+section-gives-section· : {A : 𝓤 ̇ }
+                         {X : 𝓥 ̇ }
+                         (r : A → (A → X))
+                       → has-section r
+                       → has-section· r
+section-gives-section· r (s , rs) = s , λ g a → ap (λ - → - a) (rs g)
+
+section·-gives-section : funext 𝓤 𝓥
+                       → {A : 𝓤 ̇ }
+                         {X : 𝓥 ̇ }
+                         (r : A → (A → X))
+                       → has-section· r
+                       → has-section r
+section·-gives-section fe r (s , rs·) = s , λ g → dfunext fe (rs· g)
+
+\end{code}
+
+Lawvere's fixed-point combinator for a type X can be defined if we
+have maps r : A → (A → X) and s : (A → X) → A subject to no
+assumptions, but, to show that it produces a fixed point combinator,
+we will assume that s is a pointwise section of r.
+
+\begin{code}
+
+lfix : {A : 𝓤 ̇ }
+       {X : 𝓥 ̇ }
+     → (A → (A → X))
+     → ((A → X) → A)
+     → (X → X) → X
+lfix r s f = r (s (λ a → f (r a a))) (s (λ a → f (r a a)))
+
+\end{code}
+
+Notice the similarity with the usual fixed-point combinator Y of the
+untyped λ-calculus.
+
+The intuitionistic proof of ¬ (A ↔ ¬ A) is the particular case of lfix
+with X = 𝟘 and f = id.
+
+\begin{code}
+
+not-equivalent-to-own-negation'' : {A : 𝓤 ̇ } → ¬ (A ↔ ¬ A)
+not-equivalent-to-own-negation'' (r , s) = lfix r s id
+
+_ : {A : 𝓤 ̇ } → not-equivalent-to-own-negation'' {𝓤} {A}
+              ＝ not-equivalent-to-own-negation   {𝓤} {A}
+_ = by-definition
+
+\end{code}
+
+We now consider the retract version of LFP.
+
+\begin{code}
 
 designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
 designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ＝ f x
@@ -47,40 +121,18 @@ module retract-version where
 
 \end{code}
 
-The following pointwise weakening of split surjection is sufficient to
-prove LFPT and allows us to avoid function extensionality in its
-applications:
-
-We will use the decoration "·" for pointwise versions of notions and
-constructions (for example, we can read "has-section· r" as saying
-that r has a pointwise section).
+If r and s form a pointwise section-retraction pair, then lfix r s f
+is a fixed point of f.
 
 \begin{code}
 
- has-section· : {A : 𝓤 ̇ } {X : 𝓥 ̇ } → (A → (A → X)) → 𝓤 ⊔ 𝓥 ̇
- has-section· r = Σ s ꞉ (codomain r → domain r) , ∀ g a → r (s g) a ＝ g a
-
- section-gives-section· : {A : 𝓤 ̇ }
-                          {X : 𝓥 ̇ }
-                          (r : A → (A → X))
-                        → has-section r
-                        → has-section· r
- section-gives-section· r (s , rs) = s , λ g a → ap (λ - → - a) (rs g)
-
- section·-gives-section : funext 𝓤 𝓥
-                        → {A : 𝓤 ̇ }
-                          {X : 𝓥 ̇ }
-                          (r : A → (A → X))
-                        → has-section· r
-                        → has-section r
- section·-gives-section fe r (s , rs·) = s , λ g → dfunext fe (rs· g)
-
- LFPT· : {A : 𝓤 ̇ }
-         {X : 𝓥 ̇ }
-         (r : A → (A → X))
-       → has-section· r
-       → designated-fixed-point-property X
- LFPT· {𝓤} {𝓥} {A} {X} r (s , rs) f = x , p
+ lfix-is-fixed-point : {A : 𝓤 ̇ }
+                       {X : 𝓥 ̇ }
+                       (r : A → (A → X))
+                     → (s : (A → X) → A)
+                     → s is-section·-of r
+                     → (f : X → X) → lfix r s f ＝ f (lfix r s f)
+ lfix-is-fixed-point {𝓤} {𝓥} {A} {X} r s rs f = p
   where
    g : A → X
    g a = f (r a a)
@@ -91,11 +143,21 @@ that r has a pointwise section).
    x : X
    x = r a a
 
+   _ : x ＝ lfix r s f
+   _ = by-definition
+
    p : x ＝ f x
-   p = x         ＝⟨ refl ⟩
+   p = x         ＝⟨by-definition⟩
        r (s g) a ＝⟨ rs g a ⟩
-       g a       ＝⟨ refl ⟩
+       g a       ＝⟨by-definition⟩
        f x       ∎
+
+ LFPT· : {A : 𝓤 ̇ }
+         {X : 𝓥 ̇ }
+         (r : A → (A → X))
+       → has-section· r
+       → designated-fixed-point-property X
+ LFPT· {𝓤} {𝓥} {A} {X} r (s , rs) f = lfix r s f , lfix-is-fixed-point r s rs f
 
  LFPT : {A : 𝓤 ̇ }
         {X : 𝓥 ̇ }
@@ -116,7 +178,9 @@ that r has a pointwise section).
 
  \end{code}
 
-As a simple application, it follows that negation doesn't have fixed points:
+As a simple application, it follows that negation doesn't have fixed
+points. This is a new observation, which was added to the nLab after
+it was observed here.
 
  \begin{code}
 
@@ -177,89 +241,26 @@ As a simple application, it follows that negation doesn't have fixed points:
 
  \begin{code}
 
- open import UF.Subsingletons
- open import UF.Subsingletons-FunExt
+ module _ {𝓤 : Universe} (fe : funext 𝓤 𝓤₀) where
 
- not-no-fp : (fe : funext 𝓤 𝓤₀) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not fe P)
- not-no-fp {𝓤} fe (P , p) = ¬-no-fp (P holds , q)
-  where
-   q : P holds ＝ ¬ (P holds)
-   q = ap _holds p
+  ⇁_ : Ω 𝓤 → Ω 𝓤
+  ⇁_ = not fe
 
- cantor-theorem : funext 𝓤 𝓤₀
-                → (A : 𝓥 ̇ )
-                → (r : A → (A → Ω 𝓤))
-                → ¬ has-section· r
- cantor-theorem {𝓤} fe A r (s , rs) = not-no-fp fe not-fp
-  where
-   not-fp : Σ B ꞉ Ω 𝓤 , B ＝ not fe B
-   not-fp = LFPT· r (s , rs) (not fe)
+  not-no-fp :  ¬ (Σ P ꞉ Ω 𝓤 , P ＝ ⇁ P)
+  not-no-fp (P , p) = ¬-no-fp (P holds , q)
+   where
+    q : P holds ＝ ¬ (P holds)
+    q = ap _holds p
 
-\end{code}
-
-Addition by Jon Sterling 25th March 2023.
-
-Assuming function extensionality, propositional extensionality, and
-propositional resizing, we may further prove the statement of Cantor's theorem
-from embeddings. Our argument follows Taylor's Practical Foundations of
-Mathematics, via the nLab: https://ncatlab.org/nlab/show/Cantor%27s+theorem.
-
-\begin{code}
-
- cantor-theorem-for-embeddings
-  : FunExt
-  → PropExt
-  → Propositional-Resizing
-  → (A : 𝓤 ̇ )
-  → (ϕ : (A → Ω₀) → A)
-  → ¬ is-embedding ϕ
- cantor-theorem-for-embeddings {𝓤} fe pe psz A ϕ ϕ-emb =
-  cantor-theorem (fe _ _) A retr retr-has-section
-  where
-
-   retr-large : A → (A → Ω (𝓤₀ ⁺ ⊔ 𝓤))
-   pr₁ (retr-large a b) = Π U ꞉ (A → Ω₀) , (ϕ U ＝ a → U b holds)
-   pr₂ (retr-large a b) =
-    Π-is-prop (fe _ _) λ U →
-    Π-is-prop (fe _ _) λ _ →
-    holds-is-prop (U b)
-
-   retr : A → (A → Ω₀)
-   pr₁ (retr a b) =
-    resize psz
-     (retr-large a b holds)
-     (holds-is-prop (retr-large a b))
-   pr₂ (retr a b) =
-    resize-is-prop psz
-     (retr-large a b holds)
-     (holds-is-prop (retr-large a b))
-
-   retr-has-section : has-section· retr
-   pr₁ retr-has-section U = ϕ U
-   pr₂ retr-has-section U a =
-    to-Σ-＝ (lem·0 , being-prop-is-prop (fe 𝓤₀ 𝓤₀) _ _)
-    where
-     fwd : retr-large (ϕ U) a holds → U a holds
-     fwd p = p U refl
-
-     bwd : U a holds → retr-large (ϕ U) a holds
-     bwd p V q =
-      transport⁻¹
-       (λ W → W a holds)
-       (embeddings-are-lc ϕ ϕ-emb q)
-       p
-
-     lem·0 : resize psz (retr-large (ϕ U) a holds) _ ＝ U a holds
-     lem·0 =
-      pe 𝓤₀
-       (resize-is-prop psz _ _)
-       (holds-is-prop (U a))
-       (fwd ∘ from-resize psz _ _)
-       (to-resize psz _ _ ∘ bwd)
+  cantor-theorem : (A : 𝓥 ̇ )
+                 → (r : A → (A → Ω 𝓤))
+                 → ¬ has-section· r
+  cantor-theorem A r (s , rs) = not-no-fp not-fp
+   where
+    not-fp : Σ B ꞉ Ω 𝓤 , B ＝ ⇁ B
+    not-fp = LFPT· r (s , rs) ⇁_
 
 \end{code}
-
-End of addition by Jon Sterling.
 
 The original LFPT has surjection, rather than retraction, as an
 assumption. The retraction version can be formulated and proved in
@@ -299,9 +300,9 @@ module surjection-version (pt : propositional-truncations-exist) where
      x = φ a a
 
      p : x ＝ f x
-     p = x         ＝⟨ refl ⟩
+     p = x         ＝⟨by-definition⟩
          φ a a     ＝⟨ ap (λ - → - a) q ⟩
-         g a       ＝⟨ refl ⟩
+         g a       ＝⟨by-definition⟩
          f x       ∎
 
 \end{code}
@@ -322,14 +323,14 @@ module surjection-version (pt : propositional-truncations-exist) where
                               → (X : 𝓤 ̇ ) → existential-fixed-point-property X
  cantor-theorem-for-universes {𝓥} {𝓤} A φ s X f = ∥∥-functor g t
   where
-   t : ∃ B ꞉ 𝓤 ̇  , B ＝ (B → X)
+   t : ∃ B ꞉ 𝓤 ̇ , B ＝ (B → X)
    t = LFPT φ s (λ B → B → X)
 
    g : (Σ B ꞉ 𝓤 ̇ , B ＝ (B → X)) → Σ x ꞉ X , x ＝ f x
    g (B , p) = retract-version.LFPT-＝ {𝓤} {𝓤} p f
 
  Cantor-theorem-for-universes : (A : 𝓥 ̇ )
-                              → (φ : A → (A → 𝓤 ̇ ))
+                                (φ : A → (A → 𝓤 ̇ ))
                               → ¬ is-surjection φ
  Cantor-theorem-for-universes A r h = γ
   where
@@ -357,8 +358,6 @@ module surjection-version (pt : propositional-truncations-exist) where
  (ℕ → ℕ) are uncountable:
 
  \begin{code}
-
- open import MLTT.Two
 
  cantor-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → 𝟚)), is-surjection φ)
  cantor-uncountable (φ , s) = γ
@@ -390,7 +389,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
- open import TypeTopology.DiscreteAndSeparated
+ open import UF.DiscreteAndSeparated
 
  Π-projection-has-section : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                             (x₀ : X)
@@ -488,7 +487,6 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
- open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : funext 𝓥 ((𝓤 ⊔ 𝓦)⁺)
                           → funext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦)
@@ -498,7 +496,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
                             (a₀ : A)
                           → is-h-isolated a₀
                           → has-section (λ (f : (a : A) → X a → Ω (𝓤 ⊔ 𝓦)) → f a₀)
- Π-projection-has-section {𝓥} {𝓤} {𝓦} fe fe' pe {A} {X} a₀ ish = s , rs
+ Π-projection-has-section {𝓥} {𝓤} {𝓦} fe fe' pe {A} {X} a₀ ishi = s , rs
   where
    s : (X a₀ → Ω (𝓤 ⊔ 𝓦)) → ((a : A) → X a → Ω (𝓤 ⊔ 𝓦))
    s φ a x = (∃ p ꞉ a ＝ a₀ , φ (transport X p x) holds) , ∥∥-is-prop
@@ -513,7 +511,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
        f (p , h) = transport _holds t h
         where
          r : p ＝ refl
-         r = ish p refl
+         r = ishi p refl
 
          t : φ (transport X p x₀) ＝ φ x₀
          t = ap (λ - → φ (transport X - x₀)) r
@@ -604,8 +602,6 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
 
 \end{code}
 
-See also http://www.cs.bham.ac.uk/~mhe/TypeTopology/Type-in-Type-False.html
-
 Added 12 October 2018. The paper
 
  Thierry Coquand, The paradox of trees in type theory
@@ -628,7 +624,7 @@ of Lemma₀ by a second application of LFPT.
 
 \begin{code}
 
-module GeneralizedCoquand where
+module generalized-Coquand where
 
  Lemma₀ : (A : 𝓤 ̇ )
           (T : A → 𝓤 ̇ )
@@ -639,13 +635,13 @@ module GeneralizedCoquand where
         → 𝟘
  Lemma₀ {𝓤} A T S ρ σ η = γ
   where
-   open import MLTT.W
+   open import W.Type
 
    𝕎 : 𝓤 ̇
    𝕎 = W A T
 
    α : 𝕎 → (𝕎 → 𝓤 ̇ )
-   α (sup _ φ) = fiber φ
+   α (ssup _ φ) = fiber φ
 
    module _ (X : 𝓤 ̇ ) where
 
@@ -653,7 +649,7 @@ module GeneralizedCoquand where
      H w = α w w → X
 
      R : 𝕎
-     R = sup (S (Σ H)) (pr₁ ∘ ρ)
+     R = ssup (S (Σ H)) (pr₁ ∘ ρ)
 
      B : 𝓤 ̇
      B = α R R
@@ -665,10 +661,10 @@ module GeneralizedCoquand where
      s f = σ (R , f) , ap pr₁ (η (R , f))
 
      rs : (f : B → X) → r (s f) ＝ f
-     rs f = r (s f)                                      ＝⟨ refl ⟩
+     rs f = r (s f)                                      ＝⟨refl⟩
             transport H (ap pr₁ (η Rf)) (pr₂ (ρ (σ Rf))) ＝⟨ i ⟩
             transport (H ∘ pr₁) (η Rf)  (pr₂ (ρ (σ Rf))) ＝⟨ ii ⟩
-            pr₂ Rf                                       ＝⟨ refl ⟩
+            pr₂ Rf                                       ＝⟨refl⟩
             f                                            ∎
           where
            Rf : Σ H
@@ -757,6 +753,8 @@ And in particular, the successor universe 𝓤 ⁺ is not equivalent to 𝓤:
 
 \end{code}
 
+See also the module Unsafe.Type-in-Type-False.
+
 Added 23rd December 2020, simplified 26th December after a suggestion by
 Mike Shulman.
 
@@ -795,7 +793,7 @@ Further generalization, where we intend to use P = is-set.
 
 \begin{code}
 
-open import MLTT.W
+open import W.Type
 
 module Coquand-further-generalized (𝓤 𝓥 : Universe)
          (P : 𝓤 ̇ → 𝓥 ̇ )
@@ -827,7 +825,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
     𝕎 = W A T
 
     α : 𝕎 → (𝕎 → 𝓤 ̇ )
-    α (sup _ φ) = fiber φ
+    α (ssup _ φ) = fiber φ
 
     module _ (X : 𝓤 ̇ ) (X-is-P : P X) where
 
@@ -840,7 +838,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
             (λ w → P-exponential-ideal X (α w w) X-is-P)
 
       R : 𝕎
-      R = sup (S (Σ H) p) (pr₁ ∘ ρ p)
+      R = ssup (S (Σ H) p) (pr₁ ∘ ρ p)
 
       B : 𝓤 ̇
       B = α R R
@@ -852,10 +850,10 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
       s f = σ p (R , f) , ap pr₁ (η p (R , f))
 
       rs : (f : B → X) → r (s f) ＝ f
-      rs f = r (s f)                                            ＝⟨ refl ⟩
+      rs f = r (s f)                                            ＝⟨refl⟩
              transport H (ap pr₁ (η p Rf)) (pr₂ (ρ p (σ p Rf))) ＝⟨ i ⟩
              transport (H ∘ pr₁) (η p Rf)  (pr₂ (ρ p (σ p Rf))) ＝⟨ ii ⟩
-             pr₂ Rf                                             ＝⟨ refl ⟩
+             pr₂ Rf                                             ＝⟨refl⟩
              f                                                  ∎
            where
             Rf : Σ H
@@ -923,7 +921,7 @@ extensionality:
 
 \begin{code}
 
-open import MLTT.W-Properties
+open import W.Properties
 
 silly-theorem : funext 𝓤 𝓤 → ¬ (Σ A ꞉ 𝓤 ̇ , is-set A × (hSet 𝓤 ≃ A))
 silly-theorem {𝓤} fe (A , A-is-set , e) =
@@ -934,7 +932,7 @@ silly-theorem {𝓤} fe (A , A-is-set , e) =
   𝟘-is-set
   (λ X Y X-is-set → Π-is-set fe (λ _ → X-is-set))
   (λ X Y → Σ-is-set)
-  (λ X X-is-set → W-is-set fe)
+  (λ X X-is-set → W-is-set X X-is-set fe)
   ((A , A-is-set) , e)
 
 \end{code}
@@ -954,42 +952,7 @@ sillier-theorem {𝓤} fe (A , A-is-prop , e) =
   𝟘-is-prop
   (λ X Y X-is-prop → Π-is-prop fe (λ _ → X-is-prop))
   (λ X Y → Σ-is-prop)
-  (λ X X-is-set → W-is-prop fe)
+  (λ X X-is-set → W-is-prop X X-is-set fe)
   ((A , A-is-prop) , e)
 
 \end{code}
-
-What we (Bezem, Coquand, Dybjer, Escardo) really want to prove is that
-
-  ¬ (Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A), (†)
-
-without requiring that A is a set.
-
-Marc Bezem wants this:
-
-  ¬ (Σ A ꞉ 𝓤 ̇ , ∥ 𝓤 ∥₀ ≃ A).  (††)
-
-Does it follow from this that
-
-  ¬ (Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A)?
-
-What does follow from (††) is that the inclusion hSet 𝓤 → hSet (𝓤 ⁺) is
-not an equivalence, which is what we want. So (††) implies (†).
-
-Thierry Coquand asks: does the following help:
-
-\begin{code}
-
-Gylterud : 𝓤 ⁺ ̇
-Gylterud {𝓤} = W (hSet 𝓤) pr₁
-
-\end{code}
-
-Intuitively, this is the groupoid of multisets. This occurs in Håkon
-Gylterud's PhD thesis (Multisets in Type Theory, 2016).
-
-Tonny Hurkens has a different way to get a contradiction from
-type-in-type, that maybe can be adapted to get what we want.
-
-Some of these questions are answered in the module BuraliForti
-(December 2020).

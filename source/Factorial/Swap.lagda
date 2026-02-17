@@ -4,15 +4,13 @@ The swap automorphism.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Factorial.Swap where
 
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.Miscelanea
 
 \end{code}
 
@@ -74,7 +72,7 @@ swap-equation₁ a b i j = γ (j a)
       b              ＝⟨ r ⟩
       a              ∎
   γ (inr n) =
-      swap a b i j b                 ＝⟨ refl   ⟩
+      swap a b i j b                 ＝⟨refl⟩
       patch a b i (patch b a j id) b ＝⟨ patch-equation₁ a b i (patch b a j id) b (≠-sym n) ⟩
       patch b a j id b               ＝⟨ patch-equation₀ b a j id ⟩
       a                              ∎
@@ -82,7 +80,7 @@ swap-equation₁ a b i j = γ (j a)
 swap-equation₂ : {X : 𝓤 ̇ } (a b : X) (i : is-isolated a) (j : is-isolated b)
                → (x : X) → a ≠ x → b ≠ x → swap a b i j x ＝ x
 swap-equation₂ a b i j x m n =
-  swap a b i j x                 ＝⟨ refl ⟩
+  swap a b i j x                 ＝⟨refl⟩
   patch a b i (patch b a j id) x ＝⟨ patch-equation₁ a b i (patch b a j id) x m ⟩
   patch b a j id x               ＝⟨ patch-equation₁ b a j id x n ⟩
   x                              ∎

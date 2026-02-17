@@ -7,14 +7,12 @@ August 28, 2021
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Subsingletons
 open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.Retracts
 open import UF.Embeddings
 open import UF.PropTrunc
 open import Groups.Type renaming (_≅_ to _≣_)
@@ -97,12 +95,12 @@ triv-kernel-implies-inj-hom is x p = ap pr₁ u
     k = x , p
 
     u : k ＝ unit ( kernel X Y f isf )
-    u = to-Σ-＝ ((ap pr₁ (pr₂ (pr₁ (pr₁ (is))) k) ⁻¹) , (group-is-set Y _ _))
+    u = to-Σ-＝ ((ap pr₁ (pr₂ (pr₁ (pr₁ (is))) k) ⁻¹) , (groups-are-sets Y _ _))
 
 
 inj-hom-has-triv-kernel : is-injective-hom → has-triv-kernel
 pr₁ (pr₁ (inj-hom-has-triv-kernel is)) = (triv-terminal (kernel X Y f isf))
-                                       , (λ { (x , p) → to-Σ-＝ (((is x p) ⁻¹) , group-is-set Y _ _ )})
+                                       , (λ { (x , p) → to-Σ-＝ (((is x p) ⁻¹) , groups-are-sets Y _ _ )})
 pr₂ (pr₁ (inj-hom-has-triv-kernel is)) = (triv-terminal (kernel X Y f isf))
                                        , (λ x → refl)
 pr₂ (inj-hom-has-triv-kernel is) = triv-initial-is-hom {𝓥 = 𝓤 ⊔ 𝓥} (kernel X Y f isf)
@@ -111,7 +109,7 @@ pr₂ (inj-hom-has-triv-kernel is) = triv-initial-is-hom {𝓥 = 𝓤 ⊔ 𝓥} 
 
 inj-hom-has-contractible-kernel : is-injective-hom → is-singleton (⟨ kernel X Y f isf ⟩)
 pr₁ (inj-hom-has-contractible-kernel is) = unit (kernel X Y f isf)
-pr₂ (inj-hom-has-contractible-kernel is) (x , p) = to-Σ-＝ (((is x p) ⁻¹) , (group-is-set Y _ _))
+pr₂ (inj-hom-has-contractible-kernel is) (x , p) = to-Σ-＝ (((is x p) ⁻¹) , (groups-are-sets Y _ _))
 
 inj-hom-has-triv-kernel₁ : is-injective-hom → has-triv-kernel
 inj-hom-has-triv-kernel₁ is = pr₂ (group-is-singl-is-triv' (kernel X Y f isf) i)
@@ -129,7 +127,7 @@ inj-hom-is-embedding : is-injective-hom → is-embedding f
 inj-hom-is-embedding is = lc-maps-into-sets-are-embeddings
                         f
                         (inj-hom-is-lc is)
-                        (group-is-set Y)
+                        (groups-are-sets Y)
 
 embedding-carrier-implies-inj-hom : is-embedding f → is-injective-hom
 embedding-carrier-implies-inj-hom is = lc-hom-is-inj (embeddings-are-lc f is)

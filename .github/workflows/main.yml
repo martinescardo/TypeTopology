@@ -6,17 +6,83 @@ on:
     branches:
     - master
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   typecheck:
     runs-on: ubuntu-latest
     name: Typechecking
+    if: github.event.pull_request.draft == false
     steps:
     - name: "Clone repository"
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+
+    - name: "Update Agda file and line count"
+      run: |
+        ghc -O3 admin-utilities/CountAgdaFilesAndLines.hs -o count_agda_files_and_lines
+        ./count_agda_files_and_lines
+        rm source/index.lagda
+        mv source/index-updated.lagda source/index.lagda
+
+    - name: "Add commit data to index.lagda"
+      run: |
+        export COMMIT_HASH=$(echo ${{ github.event.after }} | cut -c1-7)
+        sed -i "14a\\\n \ \ This HTML rendering was automatically generated from commit $COMMIT_HASH." source/index.lagda
+        head -20 source/index.lagda
+
+    - name: "Restore cached .agdai files"
+      id: cache-agdai-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: _build
+        key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.event.before }}
+        restore-keys: |
+          ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-
+          ${{ runner.os }}-agdai-cache-master-
+
     - name: Run Agda
       id: typecheck
-      uses: ayberkt/agda-github-action@v3.1
+      uses: ayberkt/agda-github-action@type-topology
       with:
         main-file: AllModulesIndex.lagda
         source-dir: source
         unsafe: true
+
+    - name: "Save .agdai files"
+      id: cache-agdai-save
+      uses: actions/cache/save@v4
+      with:
+        path: _build
+        key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.event.after }}
+
+    - name: Upload HTML
+      id: html-upload
+      if: github.ref == 'refs/heads/master' && github.repository == 'martinescardo/TypeTopology'
+      uses: actions/upload-artifact@v4
+      with:
+        name: html
+        path: source/html
+
+    - name: Upload GitHub Pages HTML
+      id: html-pages-upload
+      if: github.ref == 'refs/heads/master' && github.repository == 'martinescardo/TypeTopology'
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: source/html
+
+  deploy:
+    needs: typecheck
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    if: github.ref == 'refs/heads/master' && github.repository == 'martinescardo/TypeTopology'
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

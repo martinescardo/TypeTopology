@@ -2,14 +2,15 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Slice.index where
 
-import Slice.Slice
+import Slice.Construction
 import Slice.Algebras
 import Slice.Embedding
 import Slice.IdentityViaSIP
 import Slice.Monad
+import Slice.Family
 
 \end{code}

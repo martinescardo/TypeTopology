@@ -2,7 +2,7 @@ Tom de Jong, 1 and 4 April 2022.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Ordinals.Taboos where
 
@@ -13,10 +13,10 @@ open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import TypeTopology.DiscreteAndSeparated hiding (𝟚-is-discrete)
+open import UF.DiscreteAndSeparated hiding (𝟚-is-discrete)
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
@@ -55,7 +55,7 @@ module suprema-of-ordinals-assumptions
  Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete :
   (𝓤 : Universe) → 𝓤 ⁺ ̇
  Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete 𝓤 =
-  (I : 𝓤 ̇  ) → is-discrete I → (α : I → Ordinal 𝓤)
+  (I : 𝓤 ̇ ) → is-discrete I → (α : I → Ordinal 𝓤)
              → ((i : I) → is-trichotomous-order (underlying-order (α i)))
              → is-discrete ⟨ sup α ⟩
 
@@ -97,7 +97,7 @@ proposition P, which is equivalent to excluded middle.
 \begin{code}
 
 module discrete-trichotomous-taboo-construction
-        (P : 𝓤 ̇  )
+        (P : 𝓤 ̇ )
        where
 
  _≺_ : 𝟚 {𝓤} → 𝟚 {𝓤} → 𝓤 ̇
@@ -123,11 +123,11 @@ module discrete-trichotomous-taboo-construction
  ≺-well-founded-lemma ₁ l = 𝟘-elim l
 
  ≺-is-well-founded : is-well-founded _≺_
- ≺-is-well-founded ₀ = step ≺-well-founded-lemma
- ≺-is-well-founded ₁ = step γ
+ ≺-is-well-founded ₀ = acc ≺-well-founded-lemma
+ ≺-is-well-founded ₁ = acc γ
   where
    γ : (y : 𝟚) → y ≺ ₁ → is-accessible _≺_ y
-   γ ₀ l = step ≺-well-founded-lemma
+   γ ₀ l = acc ≺-well-founded-lemma
 
  ≺-is-extensional : ¬¬ P → is-extensional _≺_
  ≺-is-extensional h ₀ ₀ u v = refl
@@ -145,7 +145,7 @@ module discrete-trichotomous-taboo-construction
  𝟚≺-ordinal i h = 𝟚 , _≺_ , ≺-is-prop-valued i   , ≺-is-well-founded
                           , ≺-is-extensional h , ≺-is-transitive
 
- ≺-trichotomous-characterization : is-trichotomous-order _≺_ ⇔ P
+ ≺-trichotomous-characterization : is-trichotomous-order _≺_ ↔ P
  ≺-trichotomous-characterization = ⦅⇒⦆ , ⦅⇐⦆
   where
    ⦅⇐⦆ : P → is-trichotomous-order _≺_
@@ -203,7 +203,7 @@ module _
  open import Ordinals.WellOrderArithmetic
 
  module discrete-sup-taboo-construction-I
-         (P : 𝓤 ̇  )
+         (P : 𝓤 ̇ )
          (P-is-prop : is-prop P)
         where
 
@@ -237,8 +237,6 @@ module _
   fe = Univalence-gives-FunExt ua
 
  open import NotionsOfDecidability.Decidable
- open import NotionsOfDecidability.DecidableClassifier
- open import NotionsOfDecidability.Complemented
 
  open import Ordinals.Arithmetic fe
  open import Ordinals.OrdinalOfOrdinals ua
@@ -248,7 +246,7 @@ module _
  open import UF.ImageAndSurjection pt
 
  module discrete-sup-taboo-construction-II
-          (P : 𝓤 ̇  )
+          (P : 𝓤 ̇ )
           (P-is-prop : is-prop P)
          where
 
@@ -327,8 +325,8 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
   fact-III : (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆) → P
   fact-III e = fact-I (≃ₒ-to-fun⁻¹ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆) e (inl ⋆ , ⋆))
 
-  decidability-if-sup-of-α-discrete : is-discrete ⟨ sup α ⟩ → decidable P
-  decidability-if-sup-of-α-discrete δ = decidable-⇔ (fact-III , fact-II) dec
+  decidability-if-sup-of-α-discrete : is-discrete ⟨ sup α ⟩ → is-decidable P
+  decidability-if-sup-of-α-discrete δ = decidable-↔ (fact-III , fact-II) dec
    where
     r : image (sum-to-ordinals α) → Ordinal 𝓤
     r = restriction (sum-to-ordinals α)
@@ -349,12 +347,12 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
     e-after-f-lemma : e ∘ f ∼ sum-to-ordinals α
     e-after-f-lemma (i , x) =
      (r ∘ ⌜ φ ⌝ ∘ ⌜ φ ⌝⁻¹ ∘ c) (i , x) ＝⟨ h    ⟩
-     r (c (i , x))                     ＝⟨ refl ⟩
+     r (c (i , x))                     ＝⟨refl⟩
      sum-to-ordinals α (i , x)         ∎
       where
        h = ap r (inverses-are-sections ⌜ φ ⌝ (⌜⌝-is-equiv φ) (c (i , x)))
 
-    dec : decidable ((α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆))
+    dec : is-decidable ((α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆))
     dec = decidable-cong γ (δ (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
      where
       γ = (f (₀ , inr ⋆)     ＝  f (₁ , inr ⋆))     ≃⟨ ⦅1⦆ ⟩

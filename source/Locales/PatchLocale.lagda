@@ -4,17 +4,20 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.Spartan
-open import UF.Base
-open import UF.PropTrunc
-open import UF.FunExt
-open import UF.Univalence
-open import UF.UA-FunExt
-open import UF.EquivalenceExamples
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
+open import MLTT.Spartan
+open import Slice.Family
+open import UF.Base
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Size
+open import UF.SubtypeClassifier
+open import UF.UA-FunExt
+open import UF.Univalence
 
 \end{code}
 
@@ -23,17 +26,23 @@ open import MLTT.Pi
 module Locales.PatchLocale
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
+        (sr : Set-Replacement pt)
        where
 
-open import UF.Subsingletons
+open import Locales.Compactness.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
+open import Locales.Frame pt fe
+open import Locales.Nucleus pt fe
+open import Locales.SmallBasis pt fe sr
+open import Locales.Spectrality.SpectralLocale pt fe
 open import UF.Logic
-open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
-open import Locales.Frame pt fe hiding (is-directed)
+open import UF.Subsingletons
 
 open AllCombinators pt fe
+open FrameHomomorphismProperties
+open FrameHomomorphisms hiding (fun; fun-syntax)
 open PropositionalTruncation pt
-open import Locales.Nucleus pt fe
-open import Locales.CompactRegular pt fe
 
 \end{code}
 
@@ -43,7 +52,7 @@ We fix a locale `X` for the remainder of this module.
 
 open Locale
 
-module PatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) holds) where
+module PatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral X holds) where
 
  _≤_ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ → Ω 𝓥
  U ≤ V = U ≤[ poset-of (𝒪 X) ] V
@@ -100,6 +109,13 @@ A nucleus is called perfect iff it is Scott-continuous:
      → is-prop ((is-nucleus (𝒪 X) j ∧ is-perfect j) holds)
    γ j = holds-is-prop (is-nucleus (𝒪 X) j ∧ is-perfect j)
 
+ perfect-nuclei-eq-inverse : (𝒿 𝓀 : Perfect-Nucleus) → 𝒿 ＝ 𝓀 → 𝒿 $_ ∼ 𝓀 $_
+ perfect-nuclei-eq-inverse 𝒿 𝓀 p =
+  transport (λ - → 𝒿 $_ ∼ - $_) p λ _ → refl
+   where
+    † : 𝒿 .pr₁ ＝ 𝓀 .pr₁
+    † = pr₁ (from-Σ-＝ p)
+
 \end{code}
 
 Nuclei are ordered pointwise.
@@ -107,7 +123,7 @@ Nuclei are ordered pointwise.
 \begin{code}
 
  _≼₀_ : (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → Ω (𝓤 ⊔ 𝓥)
- _≼₀_ j k = Ɐ U ∶ ⟨ 𝒪 X ⟩ , (j U) ≤[ poset-of (𝒪 X) ] (k U)
+ _≼₀_ j k = Ɐ U ꞉ ⟨ 𝒪 X ⟩ , (j U) ≤[ poset-of (𝒪 X) ] (k U)
 
  _≼₁_ : Prenucleus (𝒪 X) → Prenucleus (𝒪 X) → Ω (𝓤 ⊔ 𝓥)
  𝒿 ≼₁ 𝓀 = pr₁ 𝒿 ≼₀ pr₁ 𝓀
@@ -202,14 +218,14 @@ Nuclei are ordered pointwise.
                        → preserves-binary-meets (𝒪 X) (𝒪 X) k holds
                        → preserves-binary-meets (𝒪 X) (𝒪 X) (j ⋏₀ k) holds
  ⋏₀-is-meet-preserving j k ζⱼ ζₖ U V =
-  (j ⋏₀ k) (U ∧[ 𝒪 X ] V)                        ＝⟨ refl  ⟩
+  (j ⋏₀ k) (U ∧[ 𝒪 X ] V)                        ＝⟨refl⟩
   j (U ∧[ 𝒪 X ] V) ∧[ 𝒪 X ] k (U ∧[ 𝒪 X ] V)     ＝⟨ i     ⟩
   (j U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] k (U ∧[ 𝒪 X ] V)   ＝⟨ ii    ⟩
   (j U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] (k U ∧[ 𝒪 X ] k V) ＝⟨ iii   ⟩
   j U ∧[ 𝒪 X ] ((j V ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] k V) ＝⟨ iv    ⟩
   j U ∧[ 𝒪 X ] ((k U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] k V) ＝⟨ v     ⟩
   j U ∧[ 𝒪 X ] (k U ∧[ 𝒪 X ] (j V ∧[ 𝒪 X ] k V)) ＝⟨ vi     ⟩
-  (j U ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] (j V ∧[ 𝒪 X ] k V) ＝⟨ refl  ⟩
+  (j U ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] (j V ∧[ 𝒪 X ] k V) ＝⟨refl⟩
   ((j ⋏₀ k) U) ∧[ 𝒪 X ] ((j ⋏₀ k) V)             ∎
    where
     †   = ∧[ 𝒪 X ]-is-associative (j U) (j V) (k U ∧[ 𝒪 X ] k V) ⁻¹
@@ -257,7 +273,7 @@ Nuclei are ordered pointwise.
            i  = ∧[ 𝒪 X ]-left-monotone  (μj (S [ l ] , ⋁[ 𝒪 X ] S) †)
            ii = ∧[ 𝒪 X ]-right-monotone (μk (S [ l ] , ⋁[ 𝒪 X ] S) ‡)
 
-   γ : (Ɐ (u , _) ∶ upper-bound ⁅ (j ⋏₀ k) s ∣ s ε S ⁆ ,
+   γ : (Ɐ (u , _) ꞉ upper-bound ⁅ (j ⋏₀ k) s ∣ s ε S ⁆ ,
          (j ⋏₀ k) (⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] u) holds
    γ 𝓊@(u , _) =
     (j ⋏₀ k) (⋁[ 𝒪 X ] S)                                           ＝⟨ refl ⟩ₚ
@@ -335,7 +351,7 @@ Nuclei are ordered pointwise.
 \section{Construction of the join}
 
 The construction of the join is the nontrivial component of this development.
-Given a family `S ∶＝ { fᵢ : A → A | i ∶ I }` of endofunctions on some type `A`,
+Given a family `S ∶＝ { fᵢ : A → A | i ∶ I}` of endofunctions on some type `A`,
 and a list `i₀, …, iₙ` of indices (of type `I`), the function `sequence gives
 the composition of all `fᵢₙ ∘ ⋯ ∘ fᵢ₀`:
 
@@ -360,7 +376,7 @@ a given family:
 The first lemma we prove about `𝔡𝔦𝔯` is the fact that, given a family
 
 ```
-S ∶＝ { jᵢ : 𝒪 X → 𝒪 X ∣ i ∶ I }
+S ∶＝ { jᵢ : 𝒪 X → 𝒪 X ∣ i ∶ I}
 ```
 
 of prenuclei, `sequence S is` is a prenuclei for any given list `is : List I` of
@@ -369,8 +385,8 @@ indices.
 \begin{code}
 
  𝔡𝔦𝔯-prenuclei : (K : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩))
-                → (Ɐ i ∶ index K , is-prenucleus (𝒪 X) (K [ i ])) holds
-                → (Ɐ is ∶ List (index K) , is-prenucleus (𝒪 X) (𝔡𝔦𝔯 K [ is ])) holds
+                → (Ɐ i ꞉ index K , is-prenucleus (𝒪 X) (K [ i ])) holds
+                → (Ɐ is ꞉ List (index K) , is-prenucleus (𝒪 X) (𝔡𝔦𝔯 K [ is ])) holds
  𝔡𝔦𝔯-prenuclei K ϑ []       = pr₂ (nucleus-pre (𝒪 X) (identity-nucleus (𝒪 X)))
  𝔡𝔦𝔯-prenuclei K ϑ (j ∷ js) = n₁ , n₂
   where
@@ -388,7 +404,7 @@ indices.
             ii = pr₁ IH ((K [ j ]) x)
 
    n₂ : preserves-binary-meets (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K [ j ∷ js ]) holds
-   n₂ x y = (𝔡𝔦𝔯 K [ j ∷ js ]) (x ∧[ 𝒪 X ] y)                   ＝⟨ refl ⟩
+   n₂ x y = (𝔡𝔦𝔯 K [ j ∷ js ]) (x ∧[ 𝒪 X ] y)                   ＝⟨refl⟩
             (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) (x ∧[ 𝒪 X ] y))           ＝⟨ i    ⟩
             (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) x ∧[ 𝒪 X ] (K [ j ]) y)   ＝⟨ ii   ⟩
             (𝔡𝔦𝔯 K [ j ∷ js ]) x ∧[ 𝒪 X ] (𝔡𝔦𝔯 K [ j ∷ js ]) y  ∎
@@ -459,9 +475,9 @@ indices.
 \begin{code}
 
  ^*-scott-continuous : (K : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩))
-                     → (Ɐ i ∶ index K ,
+                     → (Ɐ i ꞉ index K ,
                          is-scott-continuous (𝒪 X) (𝒪 X) (K [ i ])) holds
-                     → (Ɐ is ∶ List (index K) ,
+                     → (Ɐ is ꞉ List (index K) ,
                          is-scott-continuous (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K [ is ])) holds
  ^*-scott-continuous K ϑ []       = id-is-scott-continuous (𝒪 X)
  ^*-scott-continuous K ϑ (i ∷ is) = ∘-of-scott-cont-is-scott-cont (𝒪 X) (𝒪 X) (𝒪 X)
@@ -517,7 +533,7 @@ The definition of the join:
    K₀ : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
    K₀ = ⁅ pr₁ j ∣ j ε K ⁆
 
-   ϑ : (Ɐ i ∶ index K₀ , is-scott-continuous (𝒪 X) (𝒪 X) (K₀ [ i ])) holds
+   ϑ : (Ɐ i ꞉ index K₀ , is-scott-continuous (𝒪 X) (𝒪 X) (K₀ [ i ])) holds
    ϑ i = pr₂ (pr₂ (K [ i ]))
 
    K₁ : Fam 𝓦 (Nucleus (𝒪 X))
@@ -543,7 +559,7 @@ The definition of the join:
         (^**-functorial K₁ is js U)
         (⋁[ 𝒪 X ]-upper _ (is ++ js))
 
-      δ : is-directed (poset-of (𝒪 X)) ⁅ pr₁ α U ∣ α ε K₁ ^* ⁆ holds
+      δ : is-directed (𝒪 X) ⁅ pr₁ α U ∣ α ε K₁ ^* ⁆ holds
       δ = (^*-inhabited K₁) , γ
            where
             γ : _
@@ -570,7 +586,7 @@ The definition of the join:
 
    n₃ : preserves-binary-meets (𝒪 X) (𝒪 X) (join K₀) holds
    n₃ U V =
-    join K₀ (U ∧[ 𝒪 X ] V)                                                 ＝⟨ refl ⟩
+    join K₀ (U ∧[ 𝒪 X ] V)                                                 ＝⟨refl⟩
     ⋁ ⁅ α (U ∧[ 𝒪 X ] V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                                    ＝⟨ i    ⟩
     ⋁ ⁅ (α U) ∧[ 𝒪 X ] (α V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                                ＝⟨ ii   ⟩
     ⋁ ⁅ (𝔡𝔦𝔯 K₀ [ is ]) U ∧[ 𝒪 X ] (𝔡𝔦𝔯 K₀ [ js ]) V ∣ (is , js) ∶ _ × _ ⁆ ＝⟨ iii  ⟩
@@ -619,7 +635,7 @@ The definition of the join:
     where
      T = ⁅ join K₀ s ∣ s ε S ⁆
      ※ : join K₀ (⋁ S) ＝ ⋁ ⁅ join K₀ s ∣ s ε S ⁆
-     ※ = join K₀ (⋁ S)                         ＝⟨ refl ⟩
+     ※ = join K₀ (⋁ S)                         ＝⟨refl⟩
          ⋁ ⁅ α (⋁ S) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆            ＝⟨ i    ⟩
          ⋁ ⁅ ⋁ ⁅ α s ∣ s ε S ⁆ ∣ α ε 𝔡𝔦𝔯 K₀ ⁆  ＝⟨ ii   ⟩
          ⋁ ⁅ join K₀ s ∣ s ε S ⁆               ∎
@@ -661,13 +677,13 @@ The definition of the join:
           † : (𝟏 (⋁[ 𝒪 X ] S) is-an-upper-bound-of ⁅ 𝟏[ 𝒪 X ] ∣ _ ε S ⁆) holds
           † i = 𝟏-is-top (𝒪 X) 𝟏[ 𝒪 X ]
 
-          ‡ : (Ɐ (u , _) ∶ upper-bound ⁅ 𝟏[ 𝒪 X ] ∣ _ ε S ⁆ , 𝟏[ 𝒪 X ] ≤[ P ] u) holds
+          ‡ : (Ɐ (u , _) ꞉ upper-bound ⁅ 𝟏[ 𝒪 X ] ∣ _ ε S ⁆ , 𝟏[ 𝒪 X ] ≤[ P ] u) holds
           ‡ (u , φ) = ∥∥-rec (holds-is-prop (𝟏[ 𝒪 X ] ≤[ P ] u)) φ (pr₁ δ)
 
  𝟏ₚ-is-top : Meets.is-top (λ 𝒿 𝓀 → 𝒿 ≼ 𝓀) 𝟏ₚ holds
  𝟏ₚ-is-top 𝒿 U = 𝟏-is-top (𝒪 X) (𝒿 $ U)
 
- ⋏-is-meet : (Ɐ (𝒿 , 𝓀) ∶ Perfect-Nucleus × Perfect-Nucleus ,
+ ⋏-is-meet : (Ɐ (𝒿 , 𝓀) ꞉ Perfect-Nucleus × Perfect-Nucleus ,
                Meets._is-glb-of_ _≼_ (𝒿 ⋏ 𝓀) (𝒿 , 𝓀)) holds
  ⋏-is-meet (𝒿 , 𝓀) = β , γ
   where
@@ -675,10 +691,10 @@ The definition of the join:
    β = (λ U → ∧[ 𝒪 X ]-lower₁ (𝒿 $ U) (𝓀 $ U))
      , (λ U → ∧[ 𝒪 X ]-lower₂ (𝒿 $ U) (𝓀 $ U))
 
-   γ : (Ɐ (𝒾 , _) ∶ (Meets.lower-bound _≼_ (𝒿 , 𝓀)) , 𝒾 ≼ (𝒿 ⋏ 𝓀)) holds
+   γ : (Ɐ (𝒾 , _) ꞉ (Meets.lower-bound _≼_ (𝒿 , 𝓀)) , 𝒾 ≼ (𝒿 ⋏ 𝓀)) holds
    γ (𝒾 , φ , ϑ) U = ∧[ 𝒪 X ]-greatest (𝒿 $ U) (𝓀 $ U) (𝒾 $ U) (φ U) (ϑ U)
 
- ⋁ₙ-is-join : (Ɐ K ∶ Fam 𝓦 Perfect-Nucleus , Joins._is-lub-of_ _≼_ (⋁ₙ K) K) holds
+ ⋁ₙ-is-join : (Ɐ K ꞉ Fam 𝓦 Perfect-Nucleus , Joins._is-lub-of_ _≼_ (⋁ₙ K) K) holds
  ⋁ₙ-is-join K = β , γ
   where
    K₀ : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
@@ -690,8 +706,8 @@ The definition of the join:
    β : Joins._is-an-upper-bound-of_ _≼_ (⋁ₙ K) K holds
    β i U = ⋁[ 𝒪 X ]-upper ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (i ∷ [])
 
-   γ : (Ɐ (𝒾 , _) ∶ Joins.upper-bound _≼_ K , (⋁ₙ K) ≼ 𝒾) holds
-   γ (𝓀@(k , (n₁ , n₂ , n₃) , ζ) , φ) U =
+   γ : (Ɐ (𝒾 , _) ꞉ Joins.upper-bound _≼_ K , (⋁ₙ K) ≼ 𝒾) holds
+   γ (𝓀@(k , (n₁ , n₂ , n₃) , _) , φ) U =
     ⋁[ 𝒪 X ]-least ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (𝓀 $ U , λ is → † is U)
      where
       open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
@@ -831,8 +847,8 @@ when proving distributivity.
     𝒦₀ = ⁅ pr₁ j ∣ j ε 𝒦 ⁆
 
     γ : (U : ⟨ 𝒪 X ⟩) → (𝒿 ⋏ (⋁ₙ 𝒦)) $ U ＝ (⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆) $ U
-    γ U = ((𝒿 ⋏ (⋁ₙ 𝒦)) $ U)                               ＝⟨ refl ⟩
-          (𝒿 $ U) ∧[ 𝒪 X ] ((⋁ₙ 𝒦) $ U)                    ＝⟨ refl ⟩
+    γ U = ((𝒿 ⋏ (⋁ₙ 𝒦)) $ U)                               ＝⟨refl⟩
+          (𝒿 $ U) ∧[ 𝒪 X ] ((⋁ₙ 𝒦) $ U)                    ＝⟨refl⟩
           (𝒿 $ U) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ α U ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆) ＝⟨ i    ⟩
           ⋁[ 𝒪 X ] ⁅ (𝒿 $ U) ∧[ 𝒪 X ] α U ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆   ＝⟨ ii   ⟩
           (⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆) $ U                       ∎
@@ -873,8 +889,8 @@ when proving distributivity.
                                , 𝟏ₚ-is-top
                                , ⋏-is-meet
                                , ⋁ₙ-is-join
-                               , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦 }
-                }
+                               , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦}
+               }
 
 \end{code}
 
@@ -882,13 +898,16 @@ when proving distributivity.
 
 \begin{code}
 
-module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (𝒪 X)) where
+module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X) where
 
  ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩
- ℬ = basisₛ (𝒪 X) σᴰ
+ ℬ = basisₛ X σᴰ
 
- ℬ-is-basis : is-basis-for (𝒪 X) ℬ
- ℬ-is-basis = pr₁ (pr₁ (pr₂ σᴰ))
+ ℬₖ : Fam 𝓦 (Σ C ꞉ ⟨ 𝒪 X ⟩ , is-compact-open X C holds)
+ ℬₖ = index ℬ , λ i → ℬ [ i ] , pr₁ (pr₂ (pr₂ σᴰ)) i
+
+ ℬ-is-basis : basis-forᴰ (𝒪 X) ℬ
+ ℬ-is-basis = basisₛ-is-basis X σᴰ
 
  cover : (U : ⟨ 𝒪 X ⟩) → Fam 𝓦 ⟨ 𝒪 X ⟩
  cover U =
@@ -897,15 +916,22 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
   in
    ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
 
- covers-are-directed : (U : ⟨ 𝒪 X ⟩)
-                     → is-directed (poset-of (𝒪 X)) (cover U) holds
- covers-are-directed = pr₂ (pr₁ (pr₂ σᴰ))
+ covers-are-directed′ : (U : ⟨ 𝒪 X ⟩)
+                     → is-directed (𝒪 X) (cover U) holds
+ covers-are-directed′ = basisₛ-covers-are-directed X σᴰ
 
- open PatchConstruction X ∣ σᴰ ∣ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
+ X-is-spectral : is-spectral X holds
+ X-is-spectral = spectralᴰ-gives-spectrality X σᴰ
+
+ open PatchConstruction X X-is-spectral renaming (Perfect-Nucleus
+                                                   to Perfect-Nucleus-on-X)
 
  _≼ᵏ_ : Perfect-Nucleus-on-X → Perfect-Nucleus-on-X → Ω (𝓥 ⊔ 𝓦)
  _≼ᵏ_ (j , ζⱼ) (k , ζₖ) =
-  Ɐ i ∶ index ℬ , j (ℬ [ i ]) ≤[ poset-of (𝒪 X) ] k (ℬ [ i ])
+  Ɐ i ꞉ index ℬ , j (ℬ [ i ]) ≤[ poset-of (𝒪 X) ] k (ℬ [ i ])
+
+ _＝ᵏ_ : Perfect-Nucleus-on-X → Perfect-Nucleus-on-X → Ω (𝓥 ⊔ 𝓦)
+ _＝ᵏ_ 𝒿@(j , ζⱼ) 𝓀@(k , ζₖ) = (𝒿 ≼ᵏ 𝓀) ∧ (𝓀 ≼ᵏ 𝒿)
 
  open Meets (λ 𝒿 𝓀 → 𝒿 ≼ᵏ 𝓀)
   using ()
@@ -929,10 +955,10 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
     open PosetReasoning (poset-of (𝒪 X))
 
     𝒥 : Fam 𝓦 (index ℬ)
-    𝒥 = covering-index-family (𝒪 X) ℬ (pr₁ (pr₁ (pr₂ σᴰ))) U
+    𝒥 = cover-indexₛ X σᴰ U
 
-    δ : is-directed (poset-of (𝒪 X)) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
-    δ = covers-are-directed U
+    δ : is-directed (𝒪 X) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
+    δ = covers-are-directed′ U
 
     i   = ap j (covers (𝒪 X) ℬ ℬ-is-basis U)
     ii  = scott-continuous-join-eq (𝒪 X) (𝒪 X) j ζⱼ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ
@@ -944,7 +970,7 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
     iv  = scott-continuous-join-eq (𝒪 X) (𝒪 X) k ζₖ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ ⁻¹
     v   = ap k (covers (𝒪 X) ℬ ℬ-is-basis U) ⁻¹
 
- ≼-iff-≼ᵏ : (𝒿 𝓀 : Perfect-Nucleus-on-X) → (𝒿 ≼ 𝓀 ↔ 𝒿 ≼ᵏ 𝓀) holds
+ ≼-iff-≼ᵏ : (𝒿 𝓀 : Perfect-Nucleus-on-X) → (𝒿 ≼ 𝓀 ⇔ 𝒿 ≼ᵏ 𝓀) holds
  ≼-iff-≼ᵏ 𝒿 𝓀 = ≼-implies-≼ᵏ 𝒿 𝓀 , ≼ᵏ-implies-≼ 𝒿 𝓀
 
  ≼ᵏ-is-reflexive : is-reflexive _≼ᵏ_ holds
@@ -989,7 +1015,7 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
       β₂ : ((𝒿 ⋏ 𝓀) ≼ 𝓀) holds
       β₂ = pr₂ (pr₁ (⋏-is-meet (𝒿 , 𝓀)))
 
-   γ : (Ɐ (𝒾 , _) ∶ (Meets.lower-bound _≼ᵏ_ (𝒿 , 𝓀)) , 𝒾 ≼ᵏ (𝒿 ⋏ 𝓀)) holds
+   γ : (Ɐ (𝒾 , _) ꞉ (Meets.lower-bound _≼ᵏ_ (𝒿 , 𝓀)) , 𝒾 ≼ᵏ (𝒿 ⋏ 𝓀)) holds
    γ (𝒾 , φ , ψ) = ≼-implies-≼ᵏ 𝒾 (𝒿 ⋏ 𝓀) δ
     where
      † = pr₂ (⋏-is-meet (𝒿 , 𝓀))
@@ -997,7 +1023,7 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
      δ : (𝒾 ≼ (𝒿 ⋏ 𝓀)) holds
      δ = † (𝒾 , ≼ᵏ-implies-≼ 𝒾 𝒿 φ , ≼ᵏ-implies-≼ 𝒾 𝓀 ψ)
 
- ⋁ₙ-is-joinₖ : (Ɐ K ∶ Fam 𝓦 Perfect-Nucleus-on-X , Joins._is-lub-of_ _≼ᵏ_ (⋁ₙ K) K) holds
+ ⋁ₙ-is-joinₖ : (Ɐ K ꞉ Fam 𝓦 Perfect-Nucleus-on-X , Joins._is-lub-of_ _≼ᵏ_ (⋁ₙ K) K) holds
  ⋁ₙ-is-joinₖ 𝒦 = β , γ
   where
    β : (_≼ᵏ_ Joins.is-an-upper-bound-of ⋁ₙ 𝒦) 𝒦 holds
@@ -1006,7 +1032,7 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
      † : ((𝒦 [ i ]) ≼ ⋁ₙ 𝒦) holds
      † = pr₁ (⋁ₙ-is-join 𝒦) i
 
-   γ : (Ɐ (𝒾 , _) ∶ Joins.upper-bound _≼ᵏ_ 𝒦 , (⋁ₙ 𝒦) ≼ᵏ 𝒾) holds
+   γ : (Ɐ (𝒾 , _) ꞉ Joins.upper-bound _≼ᵏ_ 𝒦 , (⋁ₙ 𝒦) ≼ᵏ 𝒾) holds
    γ (𝒾 , φ) = ≼-implies-≼ᵏ (⋁ₙ 𝒦) 𝒾 (pr₂ (⋁ₙ-is-join 𝒦) (𝒾 , †))
     where
      † : (_≼_ Joins.is-an-upper-bound-of 𝒾) 𝒦 holds
@@ -1017,10 +1043,11 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
                      ; frame-str-of = (_≼ᵏ_ , 𝟏ₚ , _⋏_ , ⋁ₙ)
                      , (≼ᵏ-is-preorder , ≼ᵏ-is-antisymmetric)
                      , 𝟏ₚ-is-topₖ
-                     , (λ { (𝒿 , 𝓀) → ⋏-is-meetₖ 𝒿 𝓀 })
+                     , (λ { (𝒿 , 𝓀) → ⋏-is-meetₖ 𝒿 𝓀})
                      , ⋁ₙ-is-joinₖ
-                     , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦 }
-                     }
+                     , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦}
+                    }
+
 
  𝟎-is-id : 𝟎[ 𝒪 SmallPatch ] $_ ∼ id
  𝟎-is-id U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡

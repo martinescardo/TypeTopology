@@ -2,11 +2,10 @@ Martin Escardo, 2014.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Fin.Type where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
 
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
@@ -38,9 +37,16 @@ clarity in definitions by pattern matching:
 \begin{code}
 
 pattern 𝟎     = inr ⋆
-pattern 𝟏     = inl (inr ⋆)
-pattern 𝟐     = inl (inl (inr ⋆))
 pattern suc i = inl i
+pattern 𝟏     = suc 𝟎
+pattern 𝟐     = suc 𝟏
+pattern 𝟑     = suc 𝟐
+pattern 𝟒     = suc 𝟑
+pattern 𝟓     = suc 𝟒
+pattern 𝟔     = suc 𝟓
+pattern 𝟕     = suc 𝟔
+pattern 𝟖     = suc 𝟕
+pattern 𝟗     = suc 𝟖
 
 \end{code}
 

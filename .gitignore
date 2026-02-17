@@ -2,6 +2,7 @@ deploy
 agdatomd
 illiterator
 clean
+source/multicore
 source/compileall
 source/working/*
 source/obsolete
@@ -20,7 +21,9 @@ m
 c
 b
 e
+eq
+equiv
+html/*
 source/html/*
 *.DS_Store
 #*
-

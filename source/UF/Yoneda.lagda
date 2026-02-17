@@ -1,24 +1,39 @@
+Martin Escardo, before 2018.
+
+A better version is in MGS.Yoneda, but currently we are using this one.
+
+We consider "natural transformations" Nat A B (defined elsewhere) and
+the Yoneda-machinery for them as discussed in
+http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html (2015).
+
+See also
+
+[1] Egbert Rijke, Introduction to Homotopy Type Theory, 2022.
+    https://doi.org/10.48550/arXiv.2212.11082
+
+[2] Egbert Rijke, Introduction to Homotopy Type Theory, 2012. Master Thesis.
+    https://hottheory.files.wordpress.com/2012/08/hott2.pdf (Section 2.8).
+
+[3] Egbert Rijke, A type-theoretical Yoneda Lemma, 2012.
+    http://homotopytypetheory.org/2012/05/02/a-type-theoretical-yoneda-lemma/
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Yoneda where
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Retracts
 open import UF.Equiv
-open import UF.FunExt
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Retracts
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 \end{code}
-
-We now consider "natural transformations" Nat A B (defined elsewhere)
-and the Yoneda-machinery for them as discussed in
-http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html
 
 The Yoneda element induced by a natural transformation:
 
@@ -130,14 +145,14 @@ Yoneda-equivalence = yoneda-equivalence
 
 \end{code}
 
-Next we observe that "only elements", or centers of contraction, are
-universal elements in the sense of category theory.
+Next we observe that centers of contraction are universal elements in
+the sense of category theory.
 
 \begin{code}
 
 is-universal-element-of : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → Σ A → 𝓤 ⊔ 𝓥 ̇
 is-universal-element-of {𝓤} {𝓥} {X} A (x , a) =
-  (y : X) (b : A y) → Σ p ꞉ x ＝ y , yoneda-nat x A a y p ＝ b
+ (y : X) (b : A y) → Σ p ꞉ x ＝ y , yoneda-nat x A a y p ＝ b
 
 universal-element-is-central : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ : Σ A)
                              → is-universal-element-of A σ
@@ -151,9 +166,9 @@ central-point-is-universal A (x , a) φ y b = from-Σ-＝ (φ(y , b))
 
 \end{code}
 
-The following says that if the pair (x,a) is a universal element, then
-the natural transformation it induces (namely yoneda-nat x a)
-has a section and a retraction (which can be taken to be the same
+The following says that if the pair (x , a) is a universal element,
+then the natural transformation it induces (namely yoneda-nat x a) has
+a section and a retraction (which can be taken to be the same
 function), and hence is an equivalence. Here having a section or
 retraction is data not property in general, but it is in some cases
 considered below.
@@ -192,7 +207,8 @@ equivalent to η being a natural retraction, and we start with it:
 
 Yoneda-section-forth : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                        (x : X) (η : Nat (Id x) A)
-                     → ∃! A → (y : X) → has-section (η y)
+                     → ∃! A
+                     → (y : X) → has-section (η y)
 Yoneda-section-forth {𝓤} {𝓥} {X} {A} x η i y = g
  where
   u : is-universal-element-of A (x , yoneda-elem x A η)
@@ -204,26 +220,34 @@ Yoneda-section-forth {𝓤} {𝓥} {X} {A} x η i y = g
   h = yoneda-lemma x A η y
 
   g : has-section (η y)
-  g = has-section-closed-under-∼' (universality-section x (yoneda-elem x A η) u y) h
+  g = has-section-closed-under-∼'
+       (universality-section x (yoneda-elem x A η) u y)
+       h
 
 Yoneda-section-back : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)
-                    → ((y : X) → has-section (η y)) → ∃! A
+                    → ((y : X) → has-section (η y))
+                    → ∃! A
 Yoneda-section-back {𝓤} {𝓥} {X} {A} x η φ = c
  where
   h : ∀ y → yoneda-nat x A (yoneda-elem x A η) y ∼ η y
   h = yoneda-lemma x A η
 
   g : ∀ y → has-section (yoneda-nat x A (yoneda-elem x A η) y)
-  g y = has-section-closed-under-∼ (η y) (yoneda-nat x A (yoneda-elem x A η) y) (φ y) (h y)
+  g y = has-section-closed-under-∼
+         (η y)
+         (yoneda-nat x A (yoneda-elem x A η) y)
+         (φ y)
+         (h y)
 
   u : is-universal-element-of A (x , yoneda-elem x A η)
   u = section-universality x (yoneda-elem x A η) g
 
   c : ∃! A
-  c = (x , yoneda-elem x A η) , (universal-element-is-central (x , yoneda-elem x A η) u)
+  c = (x , yoneda-elem x A η) ,
+      universal-element-is-central (x , yoneda-elem x A η) u
 
 Yoneda-section : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)
-               → ∃! A ⇔ ((y : X) → has-section (η y))
+               → ∃! A ↔ ((y : X) → has-section (η y))
 Yoneda-section x η = Yoneda-section-forth x η , Yoneda-section-back x η
 
 \end{code}
@@ -236,7 +260,7 @@ equiv-adj : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
             (f : X → Y)
             (g : Y → X)
             (η : (x : X) (y : Y) → f x ＝ y → g y ＝ x)
-          → ((x : X) (y : Y) → has-section (η x y)) ⇔ is-vv-equiv g
+          → ((x : X) (y : Y) → has-section (η x y)) ↔ is-vv-equiv g
 equiv-adj f g η = (λ i x → Yoneda-section-back (f x) (η x) (i x)) ,
                   (λ φ x → Yoneda-section-forth (f x) (η x) (φ x))
 
@@ -263,7 +287,7 @@ is-vv-equiv-has-adj {𝓤} {𝓥} {X} {Y} g isv = f , η , hass
   gf = pr₂ (pr₁ (vv-equivs-are-equivs g isv))
 
   η : (x : X) (y : Y) → f x ＝ y → g y ＝ x
-  η x y p = transport (λ - → g - ＝ x) p (gf x )
+  η x y p = transport (λ - → g - ＝ x) p (gf x)
 
   hass : (x : X) (y : Y) → has-section (η x y)
   hass x = Yoneda-section-forth (f x) (η x) (isv x)
@@ -276,8 +300,9 @@ has-adj-is-vv-equiv g (f , η , hass) x =
 
 \end{code}
 
-A natural transformation of the above kind is an equivalence iff it has a section,
-as shown in https://github.com/HoTT/book/issues/718#issuecomment-65378867:
+A natural transformation of the above kind is an equivalence iff it
+has a section, as shown in
+https://github.com/HoTT/book/issues/718#issuecomment-65378867:
 
 \begin{code}
 
@@ -287,7 +312,7 @@ Hedberg-lemma : {X : 𝓤 ̇ }
                 (y : X)
                 (p : x ＝ y)
               → η x refl ∙ p ＝ η y p
-Hedberg-lemma x η = yoneda-lemma x (Id x) η
+Hedberg-lemma x = yoneda-lemma x (Id x)
 
 idemp-is-id : {X : 𝓤 ̇ }
               {x : X}
@@ -352,10 +377,12 @@ nat-having-section-is-prop {𝓤} {𝓥} fe {X} x η φ = Π-is-prop (fe 𝓤 (�
    γ y = retractions-have-at-most-one-section fe (η y)
           (nat-retraction-is-section x η φ y)
 
-nats-with-sections-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)
-                              → ((y : X) → has-section(η y))
-                              → is-fiberwise-equiv η
-nats-with-sections-are-equivs x η hs y = (hs y , nat-retraction-is-section x η hs y)
+nats-with-sections-are-equivs
+ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)
+ → ((y : X) → has-section(η y))
+ → is-fiberwise-equiv η
+nats-with-sections-are-equivs x η hs y = hs y ,
+                                         nat-retraction-is-section x η hs y
 
 \end{code}
 
@@ -373,12 +400,14 @@ universality-equiv {𝓤} {𝓥} {X} {A} x a u = nats-with-sections-are-equivs x
 
 equiv-universality : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                      (x : X) (a : A x)
-                   → is-fiberwise-equiv (yoneda-nat x A a )
+                   → is-fiberwise-equiv (yoneda-nat x A a)
                    → is-universal-element-of A (x , a)
 equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 
-Yoneda-Theorem-forth : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)
-                     → ∃! A → is-fiberwise-equiv η
+Yoneda-Theorem-forth : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                       (x : X) (η : Nat (Id x) A)
+                     → ∃! A
+                     → is-fiberwise-equiv η
 Yoneda-Theorem-forth x η i = nats-with-sections-are-equivs x η
                               (Yoneda-section-forth x η i)
 
@@ -389,8 +418,10 @@ Here is another proof, from the MGS'2019 lecture notes
 
 \begin{code}
 
-Yoneda-Theorem-forth' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) (η : Nat (Id x) A)
-                      → ∃! A → is-fiberwise-equiv η
+Yoneda-Theorem-forth' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                        (x : X) (η : Nat (Id x) A)
+                      → ∃! A
+                      → is-fiberwise-equiv η
 Yoneda-Theorem-forth' {𝓤} {𝓥} {X} A x η u = γ
  where
   g : singleton-type x → Σ A
@@ -426,7 +457,7 @@ fiberwise-equiv-criterion' A x e = fiberwise-equiv-criterion A x
 
 \end{code}
 
-This says that is there is any fiberwise equivalence whatsoever (or
+This says that if there is any fiberwise equivalence whatsoever (or
 even just a fiberwise retraction), then any natural transformation is
 a fiberwise equivalence.
 
@@ -439,6 +470,10 @@ Yoneda-Theorem-back : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
 Yoneda-Theorem-back x η φ = Yoneda-section-back x η (λ y → pr₁(φ y))
 
 \end{code}
+
+Egbert Rijke, in his book [1], refers to Yoneda-Theorem-forth and
+Yoneda-Theorem-back as "the fundamental theorem of identity types".
+See also his master thesis [2] and his blog post [3].
 
 Next we conclude that a presheaf A is representable iff Σ A is a
 singleton.
@@ -457,8 +492,7 @@ singleton-representable : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
 singleton-representable {𝓤} {𝓥} {X} {A} ((x , a) , cc) =
   x ,
   yoneda-nat x A a ,
-  Yoneda-Theorem-forth x (yoneda-nat x A a) ((x , a) ,
-  cc)
+  Yoneda-Theorem-forth x (yoneda-nat x A a) ((x , a) , cc)
 
 representable-singleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                         → is-representable A
@@ -471,9 +505,10 @@ We also have the following corollaries:
 
 \begin{code}
 
-is-vv-equiv-has-adj' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : Y → X)
-                     → is-vv-equiv g
-                     → Σ f ꞉ (X → Y) , ((x : X) (y : Y) → (f x ＝ y) ≃ (g y ＝ x))
+is-vv-equiv-has-adj'
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : Y → X)
+ → is-vv-equiv g
+ → Σ f ꞉ (X → Y) , ((x : X) (y : Y) → (f x ＝ y) ≃ (g y ＝ x))
 is-vv-equiv-has-adj' g φ = pr₁ γ ,
                            λ x y → pr₁ (pr₂ γ) x y ,
                                    nats-with-sections-are-equivs
@@ -482,11 +517,12 @@ is-vv-equiv-has-adj' g φ = pr₁ γ ,
   γ : has-adj g
   γ = is-vv-equiv-has-adj g φ
 
-has-adj-is-vv-equiv' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : Y → X)
-                     → (Σ f ꞉ (X → Y) , ((x : X) (y : Y) → (f x ＝ y) ≃ (g y ＝ x)))
-                     → is-vv-equiv g
+has-adj-is-vv-equiv'
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : Y → X)
+ → (Σ f ꞉ (X → Y) , ((x : X) (y : Y) → (f x ＝ y) ≃ (g y ＝ x)))
+ → is-vv-equiv g
 has-adj-is-vv-equiv' g (f , ψ) =
- has-adj-is-vv-equiv g (f , (λ x y → pr₁(ψ x y)) , (λ x y → pr₁(pr₂(ψ x y))))
+ has-adj-is-vv-equiv g (f , (λ x y → pr₁ (ψ x y)) , (λ x y → pr₁ (pr₂(ψ x y))))
 
 \end{code}
 
@@ -496,14 +532,16 @@ extensionality holds (happly is an equivalence).
 
 \begin{code}
 
-funext-via-singletons :
-    ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
-  → ((x : X) → is-singleton (Y x)) → is-singleton (Π Y))
-  → funext 𝓤 𝓥
+funext-via-singletons
+ : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+       → ((x : X) → is-singleton (Y x)) → is-singleton (Π Y))
+ → funext 𝓤 𝓥
 funext-via-singletons {𝓤} {𝓥} φ {X} {Y} f = γ
  where
   c : is-singleton (Π x ꞉ X , Σ y ꞉ Y x , f x ＝ y)
-  c = φ X (λ x → Σ y ꞉ Y x , f x ＝ y) (λ x → singleton-types-are-singletons (f x))
+  c = φ X
+        (λ x → Σ y ꞉ Y x , f x ＝ y)
+        (λ x → singleton-types-are-singletons (f x))
 
   A : Π Y → 𝓤 ⊔ 𝓥 ̇
   A g = (x : X) → f x ＝ g x
@@ -538,18 +576,19 @@ and the proof given here via Yoneda was announced on 12th May 2015
 
 open import UF.Univalence
 
-univalence-via-singletons→ : is-univalent 𝓤 → (X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y
+univalence-via-singletons→ : is-univalent 𝓤 → (X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇ , X ≃ Y
 univalence-via-singletons→ ua X = representable-singleton (X , (idtoeq X , ua X))
 
-univalence-via-singletons← : ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y) → is-univalent 𝓤
+univalence-via-singletons← : ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇ , X ≃ Y) → is-univalent 𝓤
 univalence-via-singletons← φ X = universality-equiv X (≃-refl X)
                                   (central-point-is-universal
                                     (X ≃_)
                                     (X , ≃-refl X)
                                     (singletons-are-props (φ X) (X , ≃-refl X)))
 
-univalence-via-singletons : is-univalent 𝓤 ⇔ ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y)
-univalence-via-singletons = (univalence-via-singletons→ , univalence-via-singletons←)
+univalence-via-singletons : is-univalent 𝓤 ↔ ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇ , X ≃ Y)
+univalence-via-singletons = univalence-via-singletons→ ,
+                            univalence-via-singletons←
 
 \end{code}
 
@@ -569,10 +608,10 @@ yoneda-elem-lc : {X : 𝓤 ̇ } {x : X} {A : X → 𝓥 ̇ }
                  (η θ : Nat (Id x) A)
                → yoneda-elem x A η ＝ yoneda-elem x A θ → η ≈ θ
 yoneda-elem-lc {𝓤} {𝓥} {X} {x} {A} η θ q y p =
-  η y p                                ＝⟨ (yoneda-lemma x A η y p)⁻¹ ⟩
+  η y p                                  ＝⟨ (yoneda-lemma x A η y p)⁻¹ ⟩
   yoneda-nat x A (yoneda-elem x A η) y p ＝⟨ ap (λ - → yoneda-nat x A - y p) q ⟩
   yoneda-nat x A (yoneda-elem x A θ) y p ＝⟨ yoneda-lemma x A θ y p ⟩
-  θ y p ∎
+  θ y p                                  ∎
 
 Yoneda-elem-lc : {X : 𝓤 ̇ } {x : X} {A : X → 𝓥 ̇ }
                  (η θ : (y : X) → x ＝ y → A y)
@@ -626,7 +665,7 @@ yoneda-lemma-Id : {X : 𝓤 ̇ } (x {y} : X)
                   (η : Nat (Id y) (Id x))
                   (z : X)
                   (p : y ＝ z)
-                → (yoneda-elem-Id x η) ∙ p ＝ η z p
+                → yoneda-elem-Id x η ∙ p ＝ η z p
 yoneda-lemma-Id x {y} = yoneda-lemma y (Id x)
 
 Yoneda-lemma-Id : {X : 𝓤 ̇ }
@@ -655,9 +694,8 @@ Yoneda-const = yoneda-const
 \end{code}
 
 The following is traditionally proved by induction on the identity
-type (as articulated by Jbased or J in the module UF.MLTT.Spartan), but
-here we use the Yoneda machinery instead, again for the sake of
-illustration.
+type (as articulated by Jbased or J), but here we use the Yoneda
+machinery instead, again for the sake of illustration.
 
 \begin{code}
 
@@ -680,7 +718,8 @@ private
 
  Jbased'' : {X : 𝓤 ̇ } (x : X) (A : singleton-type x → 𝓥 ̇ )
           → A (x , refl) → Π A
- Jbased'' x A a w = yoneda-nat (x , refl) A a w (singleton-types-are-singletons' w)
+ Jbased'' x A a w =
+  yoneda-nat (x , refl) A a w (singleton-types-are-singletons' w)
 
  Jbased' : {X : 𝓤 ̇ } (x : X) (B : (y : X) → x ＝ y → 𝓥 ̇ )
          → B x refl → (y : X) → Π (B y)
@@ -698,7 +737,7 @@ refl-left-neutral-bis : {X : 𝓤 ̇ }
                         {p : x ＝ y}
                       → refl ∙ p ＝ p
 refl-left-neutral-bis {𝓤} {X} {x} {y} {p} =
- yoneda-lemma x (Id x) (λ y p → p) y p
+ yoneda-lemma x (Id x) (λ y → id) y p
 
 ⁻¹-involutive-bis : {X : 𝓤 ̇ }
                     {x y : X}

@@ -1,6 +1,56 @@
 # Contribution Guidelines
 
-We always appreciate contributions in the form of pull requests. In this
+Welcome to TypeTopology!
+
+We always appreciate contributions in the form of pull requests.
+
+1. However, if you have something to add or modify, please in the first
+instance ask Martin Escardo and Tom de Jong, in a joint email message
+to their academic email addresses, where to add your contribution or
+modifications, before you make a pull request.
+
+1. Because the objective of TypeTopology is not to merely record existing
+mathematics, but to create new mathematics (read [the index
+file](source/index.lagda), and also [Papers
+resulting from
+TypeTopology](README.md#publications-resulting-from-typetopology)), it
+is not OK to attempt to modify somebody else's files without their explicit
+permission given in advance, before any pull request is made. These people may be working on a paper for publication, and it is not OK to jump in without their consent.
+
+1. By default, if you have a new original contribution, it should first
+go to the [gist](source/gist) folder, in a new subfolder there, and
+once we are fully done with your pull request and merged it, we may find a better
+home for it (and we are open for your suggestions to where to place it).
+
+1. But you may also be just adding already existing mathematics, and this
+is rather welcome (we need lots of missing things in order to carry out the new things we want to do!). You should discuss with Martin Escardo and Tom de
+Jong where to add it.
+
+1. An important point is that we don't want to
+have just **one** proof, e.g. the "best proof". We want to have all
+known proofs. So, if you add a new, better (in your opinion) proof,
+don't delete the previous one (but you are invited to write in a
+comment how your new proof improves the old ones).
+
+1. Below, we try to explain the style we adopt in TypeTopology. But we are not comprehensive enough. So first study how we write and typeset code in practice, to avoid unnecessary interactions during pull-request reviews.
+
+1. Most importantly, the objective of `TypeTopology` is to explain mathematics to *people* and not just *computers*. So write *plenty* of comments in your contributions, just as you would in your papers submitted for publication.
+
+1. We recognize, in view of the previous remark, that non-academics would like to contribute too, and they are most welcome to do so. In fact, a number of non-academics have already contributed, and we are very happy they did, and we would like to encourage everyone to join and contribute.
+
+1. And, please, do abide by the [code of conduct](CODE-OF-CONDUCT.md). So far we haven't had any problem whatsoever, and we want to keep it that way.
+
+1. **Important rule.** Everybody who contributes must add their given or adopted name to the file or place of contribution, together with the date of contribution. If in doubt, see how we do it in practice. If your contribution is in the middle of a file, then add "Added by `name` on `date`", then your contribution, then "End of addition"  (again, see how we do it in practice). We want everybody who contributes to get explicit credit. We also want to have an explicitly visible historical record.
+
+1. Any new file in an existing folder must be imported by the index file in that folder. Any new folder must have a new index file that is imported by the index of the parent folder. This has two purposes: (1) make sure that the github action checks *all* files for correctness, and, more importantly, (2) make sure that a human navigating the html rendering of `TypeTopology` can eventually reach any existing file starting from [AllModulesIndex](http://cs.bham.ac.uk/~mhe/TypeTopologyAllModulesIndex.html).
+
+# TODO
+
+The following is very old and should be revised and expanded when we have time. But for the moment please stick to it. You will learn further unwritten guidelines when you submit a pull request - apologies.
+
+# Conventions
+
+In this
 document, we provide a list of conventions and practices that we expect
 `TypeTopology` contributors to follow.
 
@@ -52,16 +102,37 @@ document, we provide a list of conventions and practices that we expect
 - We use [`.lagda` files][4] with `\begin{code}` and `\end{code}` blocks. There
   are some plans to migrate all files to `.lagda.md`, but until this happens,
   we'll continue to use `.lagda` for the sake of consistency.
+- Our convention is to leave blank lines after `\begin{code}` and before
+  `\end{code}`. In other words, your code should look like
+  ```text
+  \begin{code}
+
+  <code goes here>
+
+  \end{code}
+  ```
 - Comments and discussions in files are encouraged. Ideally, files should follow
   a literate programming in style.
-- All modules should use the flags `--safe` and `--without-K`, and if possible,
-  `--exact-split` and `--auto-inline.` Any modules that use unsafe features
-  should be placed under the directory `Unsafe` and should be imported from
-  `Unsafe/index.lagda`.
+- All modules should use the flags `--safe` and `--without-K`. Any modules that
+  use unsafe features should be placed under the directory `Unsafe` and should
+  be imported from `Unsafe/index.lagda`.
 - For `Σ` types, we use the notation `Σ x ꞉ A , B x`. Note that the colon
   character here is `꞉` (the Unicode symbol `MODIFIER LETTER COLON`) and **not**
   `∶` (i.e. the Unicode symbol `RATIO`), which is what you get by typing `\:` in
   Agda mode. To get the former, you have to type `\:4`
+- Avoid `with` clauses when defining functions.
+- In the index files, whose purposes are to import modules in subdirectories,
+  make sure to _alphabetically sort_ the `import` lines. This is preferable in
+  all modules but it is a rule only for index files.
+- When the type signature for a function `foo : A → B → C → D` goes over the
+  character limit of 80 characters, break and indent it as:
+  ```
+  foo
+   : A
+   → B
+   → C
+   → D
+  ```
 
 [1]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html
 [2]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/DomainTheory.Basics.Dcpo.html

@@ -4,7 +4,7 @@ This file needs reorganization and clean-up.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Base where
 
@@ -108,6 +108,24 @@ transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
             ＝ (transport A p (pr₁ c) , transport B p (pr₂ c))
 transport-× A B refl = refl
 
+transport-×₄ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (C : X → 𝓣 ̇ ) (D : X → 𝓣' ̇ )
+               {x y : X} {(a , b , c , d) : A x × B x × C x × D x} (p : x ＝ y)
+             → transport (λ x → A x × B x × C x × D x) p (a , b , c , d)
+             ＝ (transport A p a , transport B p b , transport C p c , transport D p d)
+transport-×₄ _ _ _ _ refl = refl
+
+transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+             {x : X}  (a : A x) {y : X} (p : x ＝ y)
+           → B x a
+           → B y (transport A p a)
+transportd A B a refl = id
+
+transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+              {x : X} (y : X) (p : x ＝ y) (a : A x) {b : B x a}
+            → transport (λ - → Σ a ꞉ A - , B - a) p (a , b)
+            ＝ transport A p a , transportd A B a p b
+transport-Σ A B {x} x refl a = refl
+
 transport-∙ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
               {x y z : X} (q : x ＝ y) (p : y ＝ z) {a : A x}
             → transport A (q ∙ p) a ＝ transport A p (transport A q a)
@@ -204,6 +222,76 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x
     → f x₀ y₀ ＝ f x₁ y₁
 ap₂ f refl refl = refl
 
+\end{code}
+
+Added by Ettore Aldrovandi, Sun Sep 24 00:35:12 UTC 2023
+
+\begin{code}
+
+ap₂-refl-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x : X} {y₀ y₁ : Y}
+                (q : y₀ ＝ y₁)
+              → ap₂ f refl q ＝ ap (f x) q
+ap₂-refl-left f refl = refl
+
+ap₂-refl-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x₁ : X} {y : Y}
+                (p : x₀ ＝ x₁)
+              → ap₂ f p refl ＝ ap (λ v → f v y) p
+ap₂-refl-right f refl = refl
+
+ap₂-∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x₁ x₂ : X} {y₀ y₁ y₂ : Y}
+        (p₀ : x₀ ＝ x₁) (p₁ : x₁ ＝ x₂)
+        (q₀ : y₀ ＝ y₁) (q₁ :  y₁ ＝ y₂)
+      → ap₂ f (p₀ ∙ p₁) (q₀ ∙ q₁) ＝ ap₂ f p₀ q₀ ∙ ap₂ f p₁ q₁
+ap₂-∙ f refl refl refl refl = refl
+
+\end{code}
+
+
+\begin{code}
+
+ap₃ : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+      (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y₀ y₁ : Y}
+    → w₀ ＝ w₁ → x₀ ＝ x₁ → y₀ ＝ y₁ → f w₀ x₀ y₀ ＝ f w₁ x₁ y₁
+ap₃ f refl refl refl = refl
+
+\end{code}
+
+Added by Ettore Aldrovandi, Sun Sep 24 00:35:12 UTC 2023
+
+\begin{code}
+
+ap₃-∙ : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+        (f : W → X → Y → Z) {w₀ w₁ w₂ : W} {x₀ x₁ x₂ : X} {y₀ y₁ y₂ : Y}
+        (r₀ : w₀ ＝ w₁) (r₁ : w₁ ＝ w₂)
+        (p₀ : x₀ ＝ x₁) (p₁ : x₁ ＝ x₂)
+        (q₀ : y₀ ＝ y₁) (q₁ :  y₁ ＝ y₂)
+      → ap₃ f (r₀ ∙ r₁) (p₀ ∙ p₁) (q₀ ∙ q₁) ＝ ap₃ f r₀ p₀ q₀ ∙ ap₃ f r₁ p₁ q₁
+ap₃-∙ f refl refl refl refl refl refl = refl
+
+ap₃-refl-left : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                (f : W → X → Y → Z) {w : W} {x₀ x₁ : X} {y₀ y₁ : Y}
+                (p : x₀ ＝ x₁) (q : y₀ ＝ y₁)
+              → ap₃ f refl p q ＝ ap₂ (f w) p q
+ap₃-refl-left f refl refl = refl
+
+ap₃-refl-mid : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+               (f : W → X → Y → Z) {w₀ w₁ : W} {x : X} {y₀ y₁ : Y}
+               (r : w₀ ＝ w₁) (q : y₀ ＝ y₁)
+              → ap₃ f r refl q ＝ ap₂ (λ w y → f w x y) r q
+ap₃-refl-mid f refl refl = refl
+
+ap₃-refl-right : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+               (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y : Y}
+               (r : w₀ ＝ w₁) (p : x₀ ＝ x₁)
+              → ap₃ f r p refl ＝ ap₂ (λ w x → f w x y) r p
+ap₃-refl-right f refl refl = refl
+
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 refl-left-neutral : {X : 𝓤 ̇ } {x y : X} {p : x ＝ y}
                   → refl ∙ p ＝ p
 refl-left-neutral {𝓤} {X} {x} {_} {refl} = refl
@@ -220,6 +308,12 @@ happly' f g p x = ap (λ - → - x) p
 
 happly : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ＝ g → f ∼ g
 happly = happly' _ _
+
+implicit-happly : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                  {f g : {x : X} → A x}
+                → (λ {x} → f {x}) ＝ g
+                → (x : X) → f {x} ＝ g {x}
+implicit-happly {𝓤} {𝓥} {X} {A} {f} {g} p x = ap (λ - → - {x}) p
 
 sym-is-inverse : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y)
                → refl ＝ p ⁻¹ ∙ p
@@ -241,6 +335,13 @@ left-inverse {𝓤} {X} {x} {y} refl = refl
 
 right-inverse : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y) → refl ＝ p ∙ p ⁻¹
 right-inverse {𝓤} {X} {x} {y} refl = refl
+
+cancel-right
+ : {X : 𝓤 ̇ } {x y z : X}
+ → (p : x ＝ y) (q : x ＝ y) (r : y ＝ z)
+ → p ∙ r ＝ q ∙ r
+ → p ＝ q
+cancel-right refl refl refl refl = refl
 
 cancel-left : {X : 𝓤 ̇ } {x y z : X} {p : x ＝ y} {q r : y ＝ z}
             → p ∙ q ＝ p ∙ r
@@ -336,8 +437,8 @@ from-Σ-＝ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {σ τ : Σ Y} (r : σ ＝ τ)
 from-Σ-＝ r = (ap pr₁ r , from-Σ-＝' r)
 
 to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-       → (Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
-       → σ ＝ τ
+        → (Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
+        → σ ＝ τ
 to-Σ-＝ (refl , refl) = refl
 
 ap-pr₁-to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
@@ -346,8 +447,8 @@ ap-pr₁-to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
 ap-pr₁-to-Σ-＝ (refl , refl) = refl
 
 to-Σ-＝' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y y' : Y x}
-        → y ＝ y'
-        → (x , y) ＝[ Σ Y ] (x , y')
+         → y ＝ y'
+         → (x , y) ＝[ Σ Y ] (x , y')
 to-Σ-＝' {𝓤} {𝓥} {X} {Y} {x} = ap (λ - → (x , -))
 
 fromto-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
@@ -357,7 +458,7 @@ fromto-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
 fromto-Σ-＝ (refl , refl) = refl
 
 tofrom-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A} (r : σ ＝ τ)
-           → to-Σ-＝ (from-Σ-＝ r) ＝ r
+            → to-Σ-＝ (from-Σ-＝ r) ＝ r
 tofrom-Σ-＝ refl = refl
 
 ap-pr₁-to-×-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
@@ -403,5 +504,129 @@ transport-along-→ : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) (Z : X → 𝓦 ̇ )
                   → transport (λ - → (Y - → Z -)) p f
                   ＝ transport Z p ∘ f ∘ transport Y (p ⁻¹)
 transport-along-→ Y Z refl f = refl
+
+\end{code}
+
+Added by Ettore Aldrovandi
+September 19, 2022:
+
+\begin{code}
+
+ap-refl : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x : X}
+        → ap f (𝓻𝓮𝒻𝓵 x) ＝ 𝓻𝓮𝒻𝓵 (f x)
+ap-refl f = refl
+
+\end{code}
+
+Added by Ian Ray 18th Jan 2025
+
+\begin{code}
+
+apd-to-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x x' : X} (p : x ＝ x')
+          → apd f p ＝ transport-const p ∙ ap f p
+apd-to-ap f refl = refl
+
+apd-from-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x x' : X} (p : x ＝ x')
+            → ap f p ＝ transport-const p ⁻¹ ∙ apd f p
+apd-from-ap f refl = refl
+
+\end{code}
+
+We will also add some helpful path algebra lemmas. Note that pattern matching
+is not helpful here since the path concatenation by definition associates to
+the left: l ∙ q ∙ s ≡ (l ∙ q) ∙ s (where ≡ is definitional). So, as you will
+see below, we have to reassociate before applying on the left.
+
+\begin{code}
+
+ap-on-left-is-assoc : {X : 𝓤 ̇ } {x y z z' w : X} (l : x ＝ y)
+                      {p : y ＝ z} {q : y ＝ z'} {r : z ＝ w} {s : z' ＝ w}
+                    → p ∙ r ＝ q ∙ s
+                    → (l ∙ p) ∙ r ＝ (l ∙ q) ∙ s
+ap-on-left-is-assoc l {p} {q} {r} {s} α = l ∙ p ∙ r   ＝⟨ ∙assoc l p r ⟩
+                                          l ∙ (p ∙ r) ＝⟨ ap (l ∙_) α ⟩
+                                          l ∙ (q ∙ s) ＝⟨ ∙assoc l q s ⁻¹ ⟩
+                                          l ∙ q ∙ s   ∎
+
+ap-on-left-is-assoc' : {X : 𝓤 ̇ } {x y z z' : X} (l : x ＝ y)
+                       (p : y ＝ z') (q : y ＝ z) (s : z ＝ z')
+                     → p ＝ q ∙ s
+                     → l ∙ p ＝ (l ∙ q) ∙ s
+ap-on-left-is-assoc' l p q s α = l ∙ p        ＝⟨ ap (l ∙_) α ⟩
+                                 l ∙ (q ∙ s)  ＝⟨ ∙assoc l q s ⁻¹ ⟩
+                                 l ∙ q ∙ s    ∎
+
+ap-on-left-is-assoc'' : {X : 𝓤 ̇ } {x y z z' : X} (l : x ＝ y)
+                        (p : y ＝ z) (q : y ＝ z') (s : z ＝ z')
+                      → p ∙ s ＝ q
+                      → (l ∙ p) ∙ s ＝ l ∙ q
+ap-on-left-is-assoc'' l p q s α =
+ ap-on-left-is-assoc' l q p s (α ⁻¹) ⁻¹
+
+ap-left-inverse : {X : 𝓤 ̇ } {x y z : X} (l : x ＝ y)
+                  {p : x ＝ z} {q : y ＝ z}
+                → p ＝ l ∙ q
+                → l ⁻¹ ∙ p ＝ q
+ap-left-inverse l {p} {q} α =
+ l ⁻¹ ∙ p     ＝⟨ ap-on-left-is-assoc' (l ⁻¹) p l q α ⟩
+ l ⁻¹ ∙ l ∙ q ＝⟨ ap (_∙ q) (left-inverse l) ⟩
+ refl ∙ q     ＝⟨ refl-left-neutral ⟩
+ q            ∎
+
+ap-left-inverse' : {X : 𝓤 ̇ } {x y z : X} (l : x ＝ y)
+                   {p : x ＝ z} {q : y ＝ z}
+                 → l ⁻¹ ∙ p ＝ q
+                 → p ＝ l ∙ q
+ap-left-inverse' l {p} {q} α =
+ p            ＝⟨ refl-left-neutral ⁻¹ ⟩
+ refl ∙ p     ＝⟨ ap (_∙ p) (sym-is-inverse' l) ⟩
+ l ∙ l ⁻¹ ∙ p ＝⟨ ap-on-left-is-assoc'' l (l ⁻¹) q p α ⟩
+ l ∙ q        ∎
+
+ap-right-inverse : {X : 𝓤 ̇ } {x y z : X} (r : y ＝ z)
+                   {p : x ＝ z} {q : x ＝ y}
+                 → p ＝ q ∙ r
+                 → p ∙ r ⁻¹ ＝ q
+ap-right-inverse refl α = α
+
+ap-right-inverse' : {X : 𝓤 ̇ } {x y z : X} (r : y ＝ z)
+                    {p : x ＝ z} {q : x ＝ y}
+                  → p ∙ r ⁻¹ ＝ q
+                  → p ＝ q ∙ r
+ap-right-inverse' refl α = α
+
+\end{code}
+
+We will also add a result that says:
+given two maps, a path in the domain and a path in the codomain between the
+maps at the left endpoint then applying one map to the domain path and
+transporting along that path at the codomain path is the same as following the
+codomain path and applying the other map to the domain path.
+(this may already exist!)
+
+\begin{code}
+
+transport-after-ap
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X}
+ → (p : x ＝ x')
+ → (s s' : X → Y)
+ → (q : s x ＝ s' x)
+ → ap s p ∙ transport (λ - → s - ＝ s' -) p q ＝ q ∙ ap s' p
+transport-after-ap refl s s' q =
+ ap s refl ∙ q  ＝⟨ ap (_∙ q) (ap-refl s) ⟩
+ refl ∙ q       ＝⟨ refl-left-neutral ⟩
+ q ∙ refl       ＝⟨ ap (q ∙_) (ap-refl s') ⟩
+ q ∙ ap s' refl ∎
+
+transport-after-ap'
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X}
+ → (p : x ＝ x')
+ → (s s' : X → Y)
+ → (q : s x ＝ s' x)
+ → transport (λ - → s - ＝ s' -) p q ＝ ap s p ⁻¹ ∙ q ∙ ap s' p
+transport-after-ap' refl s s' q =
+ q                             ＝⟨ refl-left-neutral ⁻¹ ⟩
+ refl ∙ q                      ＝⟨refl⟩
+ ap s refl ⁻¹ ∙ q ∙ ap s' refl ∎
 
 \end{code}

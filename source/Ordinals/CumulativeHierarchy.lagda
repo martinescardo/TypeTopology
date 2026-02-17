@@ -82,7 +82,7 @@ References
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 
@@ -181,7 +181,7 @@ theoretic ordinal.
  𝕍ᵒʳᵈ-is-subtype : {x y : 𝕍ᵒʳᵈ} → pr₁ x ＝ pr₁ y → x ＝ y
  𝕍ᵒʳᵈ-is-subtype = to-subtype-＝ (λ _ → being-set-theoretic-ordinal-is-prop)
 
- _∈ᵒʳᵈ_ : 𝕍ᵒʳᵈ → 𝕍ᵒʳᵈ → 𝓤 ⁺  ̇
+ _∈ᵒʳᵈ_ : 𝕍ᵒʳᵈ → 𝕍ᵒʳᵈ → 𝓤 ⁺ ̇
  _∈ᵒʳᵈ_ (x , _) (y , _) = x ∈ y
 
  ∈ᵒʳᵈ-is-extensional : is-extensional _∈ᵒʳᵈ_
@@ -199,12 +199,12 @@ theoretic ordinal.
  ∈-is-well-founded : is-well-founded _∈_
  ∈-is-well-founded = ∈-induction (is-accessible _∈_)
                                  (λ x → accessibility-is-prop _∈_ fe' x)
-                                 (λ x IH → step IH)
+                                 (λ x IH → acc IH)
 
  ∈ᵒʳᵈ-is-well-founded : is-well-founded _∈ᵒʳᵈ_
  ∈ᵒʳᵈ-is-well-founded = transfinite-induction-converse _∈ᵒʳᵈ_ W
   where
-   W : Well-founded _∈ᵒʳᵈ_
+   W : is-Well-founded _∈ᵒʳᵈ_
    W P IH = (λ (x , σ) → Q-holds-everywhere x σ)
     where
      Q : 𝕍 → 𝓤 ⁺ ̇
@@ -400,16 +400,17 @@ an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
 \begin{code}
 
  open import Ordinals.Arithmetic fe'
- open import Ordinals.Arithmetic-Properties ua hiding (lemma₁ ; lemma₂)
+ open import Ordinals.AdditionProperties ua
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
- open import UF.Quotient hiding (is-prop-valued)
+ open import Quotient.Type hiding (is-prop-valued)
+ open import Quotient.GivesSetReplacement
 
  module 𝕍-to-Ord-construction
          (sq : set-quotients-exist)
         where
 
-  open suprema pt (set-replacement-from-set-quotients sq pt)
+  open suprema pt (set-replacement-from-set-quotients-and-prop-trunc sq pt)
 
   private
    𝕍-to-Ord-aux : {A : 𝓤 ̇ } → (A → 𝕍) → (A → Ord) → Ord
@@ -517,7 +518,7 @@ ordinals is crucial in proving one of the inequalities.
                       f a ∎
             where
              ⦅e⦆ : c a ↓ inr ⋆ ＝ 𝕍-to-Ord (f a)
-             ⦅e⦆ = +ₒ-𝟙ₒ-↓-right (𝕍-to-Ord (f a))
+             ⦅e⦆ = successor-lemma-right (𝕍-to-Ord (f a))
 
            lemma₂ : (a : A) → Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝ f a
            lemma₂ a = Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝⟨ ap Ord-to-𝕍 ⦅e⦆ ⟩

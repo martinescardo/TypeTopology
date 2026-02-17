@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Finds any definition of the word specified in the parameter.
+# Call from TypeTopology/source.
+
+# Example:
+# $ ../findexactdef is-prop
+
+set -Eeo pipefail
+
+param="$1"
+
+regex="^[[:space:]]*${param} :"
+
+# This means newline followed by zero or more spaces, followed by the
+# specified word, followed by " :".
+
+git ls-files . | grep agda | xargs grep -E "$regex"

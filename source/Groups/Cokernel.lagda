@@ -19,33 +19,30 @@ TODO: adapt to use (small) quotients defined in UF-Quotient
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base hiding (_≈_)
+open import Quotient.Type
 open import UF.Subsingletons
 open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.Retracts
-open import UF.Embeddings
 open import UF.FunExt
 open import UF.PropTrunc
 
 module Groups.Cokernel
         (pt  : propositional-truncations-exist)
         (fe  : Fun-Ext)
-        (pe  : Prop-Ext)
+        (pe : Prop-Ext)
+        (sq : set-quotients-exist)
        where
 
-open import UF.ImageAndSurjection pt
-open import UF.Large-Quotient pt fe pe
+open general-set-quotients-exist sq
 
-open import Groups.Type renaming (_≅_ to _≣_)
-open import Groups.Triv
-open import Groups.Kernel
-open import Groups.Image
 open import Groups.Homomorphisms
-open import Groups.Quotient pt fe pe
+open import Groups.Quotient pt fe sq
+open import Groups.Triv
+open import Groups.Type renaming (_≅_ to _≣_)
+open import Quotient.Effectivity
+open import UF.ImageAndSurjection pt
 
 \end{code}
 
@@ -333,7 +330,7 @@ Then having a trivial cokernel is equivalent to f : X → Y being
 surjective.
 
 \begin{code}
-    has-triv-coker : (𝓤 ⁺) ⊔ (𝓥 ⁺) ̇
+    has-triv-coker : 𝓤 ⊔ (𝓥 ⁺) ̇
     has-triv-coker = is-iso (cokernel-gr) (triv {𝓤 ⊔ 𝓥 ⁺}) (triv-terminal cokernel-gr)
 
     triv-coker-implies-surj-hom : has-triv-coker → is-surjective-hom X Y f isf pt
@@ -373,10 +370,11 @@ surjective.
                     e≈ ∎
 
         lemma2 : (y : ⟨ Y ⟩) → π≈ (unit Y) ＝ π≈ y
-        lemma2 y = π≈ (unit Y) ＝⟨ refl ⟩
+        lemma2 y = π≈ (unit Y) ＝⟨refl⟩
                    e≈          ＝⟨ (lemma3 (π≈ y)) ⁻¹ ⟩
                    π≈ y        ∎
 
         lemma1 : (y : ⟨ Y ⟩) → e⟨ Y ⟩ ≈ y
-        lemma1 y = η/-relates-identified-points ≋ (lemma2 y)
+        lemma1 y = effectivity fe pe sq ≋ (lemma2 y)
+
 \end{code}

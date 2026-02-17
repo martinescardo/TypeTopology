@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Fin.index where
 
@@ -10,6 +10,7 @@ import Fin.ArgMinMax
 import Fin.ArithmeticViaEquivalence
 import Fin.Bishop
 import Fin.Choice
+import Fin.Dedekind
 import Fin.Embeddings
 import Fin.Kuratowski
 import Fin.Omega

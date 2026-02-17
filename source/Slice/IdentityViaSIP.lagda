@@ -2,7 +2,7 @@ Martin Escardo, 6th December 2018
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -22,7 +22,7 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.StructureIdentityPrinciple
 
-open import Slice.Slice 𝓣
+open import Slice.Construction 𝓣
 
 _⋍_ : 𝓕 X → 𝓕 X → 𝓣 ⊔ 𝓤 ̇
 l ⋍ m = Σ e ꞉ source l ≃ source m , family l ＝ family m ∘ ⌜ e ⌝

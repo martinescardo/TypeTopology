@@ -2,16 +2,13 @@ Andrew Sneap, 7 February 2021
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Subsingletons
-open import Notation.Order
 
-open import Field.Axioms
 
 module Field.DedekindReals
          (fe : Fun-Ext)
@@ -19,16 +16,15 @@ module Field.DedekindReals
          (pe : Prop-Ext)
  where
 
-open import DedekindReals.Type pe pt fe
-open import DedekindReals.Order pe pt fe
+
 {-
-DedekindRealsField : Field-structure ℝ { 𝓤₀ }
+DedekindRealsField : Field-structure ℝ { 𝓤₀}
 DedekindRealsField = ({!!} , {!!} , _♯_) , ℝ-is-set , {!!} , {!!} , {!!} , {!!} , {!!} , (0ℝ , 1ℝ) , ℝ-zero-apart-from-one , {!!} , {!!} , {!!} , {!!}
 
-DedekindRealsOrderedField : Ordered-field-structure { 𝓤₁ } { 𝓤₀ } { 𝓤₀ } ℝ DedekindRealsField
+DedekindRealsOrderedField : Ordered-field-structure { 𝓤₁} { 𝓤₀} { 𝓤₀} ℝ DedekindRealsField
 DedekindRealsOrderedField = _<ℝ_ , {!!} , {!!}
 
-DedekindRealsOrderedField' : Ordered-Field 𝓤₁ { 𝓤₀ } { 𝓤₀ }
+DedekindRealsOrderedField' : Ordered-Field 𝓤₁ { 𝓤₀} { 𝓤₀}
 DedekindRealsOrderedField' = (ℝ , DedekindRealsField) , DedekindRealsOrderedField
 
 DedekindRealsArchimedeanOrderedField : ArchimedeanOrderedField 𝓤₁

@@ -2,7 +2,7 @@ Andrew Sneap, 17 February 2022
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Exponentiation
@@ -11,7 +11,6 @@ open import Integers.Type
 open import Integers.Exponentiation
 open import Integers.Multiplication
 open import Integers.Order
-open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Notation.Order
 open import UF.Base
 

@@ -1,7 +1,7 @@
 Martin Escardo 7th November 2018.
 
-(Strong) 'Monad' structure on 𝓛.
-Again the proofs are simplified by the use of SIP.
+(Strong) wild monad structure on 𝓛.  Again the proofs are simplified
+by the use of SIP.
 
 We prove the laws for the various notions of equality because
 different ones are more convenient in different situations, and
@@ -10,7 +10,7 @@ or univalence).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -18,16 +18,13 @@ module Lifting.Monad
         (𝓣 : Universe)
        where
 
-open import UF.Base
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Univalence
-open import UF.UA-FunExt
 
-open import Lifting.Lifting 𝓣
+open import Lifting.Construction 𝓣
 open import Lifting.IdentityViaSIP 𝓣
 
 \end{code}
@@ -41,7 +38,7 @@ Constructions:
 
 _♯ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → 𝓛 Y) → (𝓛 X → 𝓛 Y)
 _♯ f (P , φ , i) = (Σ p ꞉ P , is-defined (f (φ p))) ,
-                    (λ σ → value (f (φ (pr₁ σ))) (pr₂ σ)) ,
+                    (λ (p , d) → value (f (φ p)) d) ,
                     Σ-is-prop i (λ p → being-defined-is-prop (f (φ p)))
 
 μ : {X : 𝓤 ̇ } → 𝓛 (𝓛 X) → 𝓛 X
@@ -154,6 +151,11 @@ _×_:
 𝓛-m : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → 𝓛 X × 𝓛 Y → 𝓛 (X × Y)
 𝓛-m (l , m) = ((λ x → curry 𝓛-σ x m)♯) l
 
+𝓛-m-explicitly : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                 (n@((P , φ , i), (Q , γ , j)) : 𝓛 X × 𝓛 Y)
+               → 𝓛-m n ＝ (P × Q) , (λ (p , q) → φ p , γ q) , ×-is-prop i j
+𝓛-m-explicitly _ = refl
+
 \end{code}
 
 TODO. Write down and prove the strength laws.
@@ -169,7 +171,7 @@ Kleisli-Law₀ (P , φ) = 𝟙-rneutral , refl
 Kleisli-Law₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓛 Y) (x : X) → (f ♯) (η x) ⋍ f x
 Kleisli-Law₁ f x = 𝟙-lneutral , refl
 
-Kleisli-Law₂ : {X : 𝓥 ̇ } {Y : 𝓦 ̇ } {Z : 𝓣 ̇ } (f : X → 𝓛 Y) (g : Y → 𝓛 Z) (l : 𝓛 X)
+Kleisli-Law₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → 𝓛 Y) (g : Y → 𝓛 Z) (l : 𝓛 X)
              → (g ♯ ∘ f ♯) l ⋍ ((g ♯ ∘ f)♯) l
 Kleisli-Law₂ f g l = Σ-assoc , refl
 

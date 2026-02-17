@@ -1,0 +1,2487 @@
+%     Continuity of Gödel's system T definable functionals      
+%     via effectful forcing
+%
+%     Martin Escardo 
+%
+%     24-31 July 2012, updated 3 August 2012, 21 and 28 Feb 2013 and 6 Mar 2013.
+%
+%     This file proof-checks in Agda version 2.3.2. 
+%
+%     (NB. With earlier versions of Agda this file has unsolved metas
+%      arising from the definition B = D ℕ ℕ.)
+%
+% This is a literate Agda file that generates latex, pdf and html.
+% Search for "code" to find the agda code.
+%
+% This is best viewed as http://www.cs.bham.ac.uk/~mhe/dialogue/dialogue.pdf
+% in the form of an article.
+%
+% The source file is http://www.cs.bham.ac.uk/~mhe/dialogue/dialogue.lagda
+% You are probably browsing http://www.cs.bham.ac.uk/~mhe/dialogue/dialogue.html
+
+\documentclass{entcs} \usepackage{prentcsmacro}
+\usepackage{graphicx}
+\sloppy
+% The following is enclosed to allow easy detection of differences in
+% ascii coding.
+% Upper-case    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+% Lower-case    a b c d e f g h i j k l m n o p q r s t u v w x y z
+% Digits        0 1 2 3 4 5 6 7 8 9
+% Exclamation   !           Double quote "          Hash (number) #
+% Dollar        $           Percent      %          Ampersand     &
+% Acute accent  '           Left paren   (          Right paren   )
+% Asterisk      *           Plus         +          Comma         ,
+% Minus         -           Point        .          Solidus       /
+% Colon         :           Semicolon    ;          Less than     <
+% Equals        =           Greater than >          Question mark ?
+% At            @           Left bracket [          Backslash     \
+% Right bracket ]           Circumflex   ^          Underscore    _
+% Grave accent  `           Left brace   {          Vertical bar  |
+% Right brace   }           Tilde        ~
+
+
+% ----------------------------------------------------------------------
+% Some useful commands when doing highlightning of Agda code in LaTeX.
+% ----------------------------------------------------------------------
+%
+
+% This is actually agda.sty provided by the agda distribution,
+% suitably modified an extended for our purposes, and included here to
+% avoid hassle for the editors of the MFPS proceedings.
+
+\newcommand{\AgdaC}[1]{\mbox{#1}} 
+
+\usepackage{ifxetex, xcolor, polytable}
+
+% XeLaTeX
+\ifxetex
+    \usepackage{polyglossia}
+    \usepackage{fontspec}
+    \usepackage[]{unicode-math}
+
+% pdfLaTeX
+\else
+    \usepackage{bbm, ucs, amsfonts, amssymb, stmaryrd} % mhe
+    \usepackage[safe]{tipa} % See page 12 of the tipa manual for what
+                            % safe does.
+
+    % FIX: This doesn't seem to help solve the pipe problem?
+    % http://tex.stackexchange.com/questions/1774/how-to-insert-pipe-symbol-in-latex
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8x]{inputenc}
+
+    % FIX: Complete the list and send it upstream to the ucs package devs.
+    \DeclareUnicodeCharacter{951}{$\eta$} % mhe
+    \DeclareUnicodeCharacter{937}{$\Omega$} % mhe
+    \DeclareUnicodeCharacter{931}{$\Sigma$} % mhe
+    \DeclareUnicodeCharacter{928}{$\Pi$} % mhe
+    \DeclareUnicodeCharacter{945}{$\alpha$} % mhe
+    \DeclareUnicodeCharacter{960}{$\pi$} % mhe
+    \DeclareUnicodeCharacter{963}{$\sigma$} % mhe
+    \DeclareUnicodeCharacter{964}{$\tau$} % mhe
+    \DeclareUnicodeCharacter{961}{$\rho$} % mhe
+    \DeclareUnicodeCharacter{10214}{$\llbracket$} % mhe (stmaryrd)
+    \DeclareUnicodeCharacter{10215}{$\rrbracket$} % mhe (stmaryrd)
+    \DeclareUnicodeCharacter{9657}{$\triangleright$}
+    \DeclareUnicodeCharacter{8759}{::}
+    \DeclareUnicodeCharacter{8263}{$?\!?$}
+    \DeclareUnicodeCharacter{737} {$^l$}  % FIX: Ugly, apparently ^r is
+                                          % defined, I can't find the
+                                          % definition though.
+    \DeclareUnicodeCharacter{8718}{$\blacksquare$}
+    \DeclareUnicodeCharacter{8255}{$\_$} % FIX: Couldn't find \undertie.
+    \DeclareUnicodeCharacter{9667}{$\triangleleft$}
+    \DeclareUnicodeCharacter{10218}{$\langle\!\langle$}
+    \DeclareUnicodeCharacter{10219}{$\rangle\!\rangle$}
+\fi
+
+% ----------------------------------------------------------------------
+% Font styles.
+
+% Default font style.
+\newcommand{\AgdaFontStyle}[1]{\textsf{#1}}
+
+% String font style.
+\newcommand{\AgdaStringFontStyle}[1]{\texttt{#1}}
+
+% Comment font style.
+\newcommand{\AgdaCommentFontStyle}[1]{\texttt{#1}}
+
+% Bounded variables font style.
+\newcommand{\AgdaBoundFontStyle}[1]{\textit{#1}}
+
+% ----------------------------------------------------------------------
+% Colours.
+
+% Aspect colours.
+\definecolor{AgdaComment}      {HTML}{B22222}
+\definecolor{AgdaKeyword}      {HTML}{CD6600}
+\definecolor{AgdaString}       {HTML}{B22222}
+\definecolor{AgdaNumber}       {HTML}{A020F0}
+\definecolor{AgdaSymbol}       {HTML}{181818} % was {404040} % mhe
+\definecolor{AgdaPrimitiveType}{HTML}{0000CD}
+\definecolor{AgdaOperator}     {HTML}{000000}
+
+% NameKind colours.
+\definecolor{AgdaBound}                 {HTML}{000000}
+\definecolor{AgdaInductiveConstructor}  {HTML}{008B00}
+\definecolor{AgdaCoinductiveConstructor}{HTML}{8B7500}
+\definecolor{AgdaDatatype}              {HTML}{0000CD}
+\definecolor{AgdaField}                 {HTML}{EE1289}
+\definecolor{AgdaFunction}              {HTML}{0000CD}
+\definecolor{AgdaModule}                {HTML}{A020F0}
+\definecolor{AgdaPostulate}             {HTML}{0000CD}
+\definecolor{AgdaPrimitive}             {HTML}{0000CD}
+\definecolor{AgdaRecord}                {HTML}{0000CD}
+
+% Other aspect colours.
+\definecolor{AgdaDottedPattern}     {HTML}{000000}
+\definecolor{AgdaUnsolvedMeta}      {HTML}{FFFF00}
+\definecolor{AgdaTerminationProblem}{HTML}{FFA07A}
+\definecolor{AgdaIncompletePattern} {HTML}{F5DEB3}
+\definecolor{AgdaError}             {HTML}{FF0000}
+
+% Misc.
+\definecolor{AgdaHole}              {HTML}{9DFF9D}
+
+% ----------------------------------------------------------------------
+% Commands.
+
+% Aspect commands.
+\newcommand{\AgdaComment}     [1]
+    {\AgdaCommentFontStyle{\textcolor{AgdaComment}{#1}}}
+\newcommand{\AgdaKeyword}     [1]
+    {\AgdaFontStyle{\textcolor{AgdaKeyword}{#1}}}
+\newcommand{\AgdaString}      [1]{\AgdaStringFontStyle{\textcolor{AgdaString}{#1}}}
+\newcommand{\AgdaNumber}      [1]{\textcolor{AgdaNumber}{#1}}
+\newcommand{\AgdaSymbol}      [1]{\textcolor{AgdaSymbol}{#1}}
+\newcommand{\AgdaPrimitiveType}[1]
+    {\AgdaFontStyle{\textcolor{AgdaPrimitiveType}{#1}}}
+\newcommand{\AgdaOperator}    [1]{\textcolor{AgdaOperator}{#1}}
+
+% NameKind commands.
+\newcommand{\AgdaBound}    [1]{\AgdaBoundFontStyle{\textcolor{AgdaBound}{#1}}}
+\newcommand{\AgdaInductiveConstructor}[1]
+    {\AgdaFontStyle{\textcolor{AgdaInductiveConstructor}{#1}}}
+\newcommand{\AgdaCoinductiveConstructor}[1]
+    {\AgdaFontStyle{\textcolor{AgdaCoinductiveConstructor}{#1}}}
+\newcommand{\AgdaDatatype} [1]{\AgdaFontStyle{\textcolor{AgdaDatatype}{#1}}}
+\newcommand{\AgdaField}    [1]{\AgdaFontStyle{\textcolor{AgdaField}{#1}}}
+\newcommand{\AgdaFunction} [1]{\AgdaFontStyle{\textcolor{AgdaFunction}{#1}}}
+\newcommand{\AgdaModule}   [1]{\AgdaFontStyle{\textcolor{AgdaModule}{#1}}}
+\newcommand{\AgdaPostulate}[1]{\AgdaFontStyle{\textcolor{AgdaPostulate}{#1}}}
+\newcommand{\AgdaPrimitive}[1]{\AgdaFontStyle{\textcolor{AgdaPrimitive}{#1}}}
+\newcommand{\AgdaRecord}   [1]{\AgdaFontStyle{\textcolor{AgdaRecord}{#1}}}
+
+% Other aspect commands.
+\newcommand{\AgdaDottedPattern}     [1]{\textcolor{AgdaDottedPattern}{#1}}
+\newcommand{\AgdaUnsolvedMeta}      [1]
+    {\AgdaFontStyle{\colorbox{AgdaUnsolvedMeta}{#1}}}
+\newcommand{\AgdaTerminationProblem}[1]
+    {\AgdaFontStyle{\colorbox{AgdaTerminationProblem}{#1}}}
+\newcommand{\AgdaIncompletePattern} [1]{\colorbox{AgdaIncompletePattern}{#1}}
+\newcommand{\AgdaError}             [1]
+    {\AgdaFontStyle{\textcolor{AgdaError}{\underline{#1}}}}
+
+% Misc.
+\newcommand{\AgdaHole}[1]{\colorbox{AgdaHole}{#1}}
+\long\def\AgdaHide#1{} % Used to hide code from LaTeX.
+
+\newcommand{\AgdaIndent}[1]{\quad}
+
+% ----------------------------------------------------------------------
+% The code environment.
+
+% \newcommand{\AgdaCodeStyle}{}
+\newcommand{\AgdaCodeStyle}{\small}
+
+\ifdefined\mathindent
+  {}
+\else
+  \newdimen\mathindent\mathindent\leftmargini
+\fi
+
+\newenvironment{code}% modified by mhe
+{\noindent\AgdaCodeStyle\pboxed}%
+{\endpboxed\par\noindent%
+\ignorespacesafterend}
+
+% Default column for polytable.
+\defaultcolumn{l}
+% End of Agda.sty.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage[english]{babel}
+\usepackage{diagrams}
+
+\def\lastname{Escardo} % should be Escard\'o but this generates "Escard" in the pdf (entcs style's fault).
+\begin{document}
+\begin{frontmatter}
+  \title{Continuity of G\"odel's system T definable functionals via effectful forcing}
+  \author{Mart\'\i{n} Escard\'o\thanksref{myemail}}
+  \address{School of Computer Science\\ University of Birmingham \\
+    Birmingham, England} \thanks[myemail]{Email: \href{mailto:m.escardo@cs.bham.ac.uk} {\texttt{\normalshape m.escardo@cs.bham.ac.uk}}}
+
+\begin{abstract} 
+
+   It is well-known that the Gödel's system T definable functions
+   \AgdaC{(ℕ → ℕ) → ℕ} are continuous, and that their restrictions
+   from the Baire type \AgdaC{(ℕ → ℕ)} to the Cantor type \AgdaC{(ℕ →
+   2)} are uniformly continuous. We offer a new, relatively short and
+   self-contained proof. The main technical idea is a concrete notion
+   of generic element that doesn't rely on forcing, Kripke semantics
+   or sheaves, which seems to be related to generic effects in
+   programming.  The proof uses standard techniques from programming
+   language semantics, such as dialogues, monads, and logical
+   relations. We write this proof in intensional Martin-Löf type
+   theory (MLTT) from scratch, in Agda notation. Because MLTT has a
+   computational interpretation and Agda can be seen as a programming
+   language, we can run our proof to compute moduli of (uniform)
+   continuity of T-definable functions.
+
+\end{abstract}
+\begin{keyword}
+   Gödel's system T, continuity, uniform continuity, Baire space,
+   Cantor space, intensional Martin-Löf theory, Agda, dialogue,
+   semantics, logical relation.
+\end{keyword}
+\end{frontmatter}
+
+\section{Introduction} \label{formulation}
+
+This is a relatively short, and self-contained, proof of the
+well-known fact that any function \AgdaC{$f$ : (ℕ → ℕ) → ℕ} that is
+definable in Gödel's system T is continuous, and that its restriction
+from the Baire type \AgdaC{(ℕ → ℕ)} to the Cantor type \AgdaC{(ℕ → 2)}
+is uniformly continuous~\cite{MR0325352,beeson}. We believe the proof
+is new, although it is related to previous work discussed below.  The
+main technical idea is a concrete notion of generic element that
+doesn't rely on forcing, Kripke semantics or sheaves, which seems to
+be related to generic effects in
+programming~\cite{Plotkin03algebraicoperations}.  Several well-known
+ideas from logic, computation, constructive mathematics and
+programming-language semantics naturally appear here, in a relatively
+simple, self-contained, and hopefully appealing, development.
+
+The idea is to represent a function \AgdaC{$f$ : (ℕ → ℕ) → ℕ} by a
+well-founded dialogue tree, and extract continuity information about
+$f$ from this tree. To calculate such a tree from a system T term
+\AgdaC{$t$: (ι ⇒ ι) ⇒ ι} denoting $f$, we work with an auxiliary
+interpretation of system T, which gives a function \AgdaC{$\tilde{f}$
+: $(\tilde{\mathbb{N}}$ → $\tilde{\mathbb{N}})$ →
+$\tilde{\mathbb{N}}$}, where $\tilde{\mathbb{N}}$ is the set of
+dialogue trees. Applying $\tilde{f}$ to a certain \emph{generic
+sequence} $\tilde{\mathbb{N}}$ → $\tilde{\mathbb{N}}$, the desired
+dialogue tree is obtained. We now explain this idea in more detail.
+
+In the set-theoretical model of system T, the ground type ι is
+interpreted as the set ℕ of natural numbers, and if the types σ and τ
+are interpreted as sets~$X$ and $Y$, then the type σ ⇒ τ is
+interpreted as the set of all functions \AgdaC{$X$ → $Y$}. We consider
+an auxiliary model that replaces the interpretation of the ground
+type by the set $\tilde{\mathbb{N}}$, but keeps the interpretation of
+⇒ as the formation of the set of all functions. In this 
+model, the zero constant is interpreted by a suitable element
+$\tilde{0}$ of $\tilde{\mathbb{N}}$, the successor constant is
+interpreted by a function $\tilde{\mathbb{N}}$ → $\tilde{\mathbb{N}}$,
+and each iteration combinator is interpreted by a function
+($X$ → $X$) → $X$ → $\tilde{\mathbb{N}}$ → $X$. An element of the set
+$\tilde{\mathbb{N}}$ is a well-founded dialogue tree that describes
+the computation of a natural number relative to an unspecified oracle
+\AgdaC{α : ℕ → ℕ}. An internal node is labeled by a natural number
+representing a query to the oracle, and has countably many branches
+corresponding to the possible answers. Each leaf is labeled by a
+natural number and represents a possible outcome of the computation.
+These dialogues represent computations in the sense of
+Kleene~\cite{KleeneSC:rfqftI}.
+
+If a particular oracle \AgdaC{α : ℕ → ℕ} is given, we get a natural
+number from any \AgdaC{$d \in \tilde{\mathbb{N}}$} via a
+decodification function
+\begin{quote}
+  decode : (ℕ → ℕ) → $\tilde{\mathbb{N}}$ → ℕ. 
+\end{quote} 
+It turns out that there is a function
+\begin{quote}
+  generic : $\tilde{\mathbb{N}}$ → $\tilde{\mathbb{N}}$
+\end{quote}
+that can be regarded as a \emph{generic sequence} in the sense that,
+for any particular sequence \AgdaC{α : ℕ → ℕ},
+
+\begin{small}
+\begin{diagram}[small]
+\tilde{\mathbb{N}} & \rTo^{\text{generic}} & \tilde{\mathbb{N}} \\
+\dTo^{\text{decode α}} & & \dTo_{\text{decode α}} \\
+\text{ℕ} & \rTo_{\text{α}} & \text{ℕ}.
+\end{diagram}
+\end{small}
+
+\noindent That is, the generic sequence codes any concrete sequence
+\AgdaC{α}, provided the sequence α itself is used as the concrete
+oracle for decodification. The idea is that the application of the
+function \AgdaC{generic} to a dialogue tree adds a new layer of
+choices at its leaves.
+
+Next we show that for any given term \AgdaC{$t$ : (ι ⇒ ι) ⇒ ι} denoting a
+function \AgdaC{$f$ : (ℕ → ℕ) → ℕ} in the standard interpretation and
+\AgdaC{$\tilde{f}$ : $(\tilde{\mathbb{N}}$ → $\tilde{\mathbb{N}})$ →
+$\tilde{\mathbb{N}}$} in the dialogue interpretation, we have that
+\begin{quote} \AgdaC{$f$ α = decode α ($\tilde{f}$ generic).}  \end{quote}
+This is proved by establishing a logical
+relation between the set-theoretic and dialogue models.
+Thus we can compute a dialogue tree of $f$ by applying $\tilde{f}$ to
+the generic sequence. 
+
+The set $\tilde{\mathbb{N}}$ is constructed as \AgdaC{B ℕ} for a
+suitable dialogue monad B. Then the interpretation of the constant
+zero is η 0 where η is the unit of the monad, the interpretation of
+the successor constant is given by functoriality as \AgdaC{B succ},
+and the interpretation of the primitive recursion constant is given by
+the Kleisli extension of its standard interpretation. The object part
+\AgdaC{B $X$} of the monad is inductively defined by the constructors
+\begin{quote} η : $X$ → B $X$, \\ β : (ℕ → B $X$) → ℕ → B $X$,
+\end{quote} where η constructs leaves and β constructs a tree β φ $n$
+given countably many trees φ and a label~$n$. With $X$ = ℕ, we have β
+η : ℕ → B ℕ, and the generic sequence is the Kleisli extension of β η.
+Thus, the generic sequence seems to be a sort of \emph{generic effect}
+in the sense of~\cite{Plotkin03algebraicoperations}. Notice that our
+interpretation is a call-by-name version of Moggi's
+semantics. 
+
+Using this, it follows that if a function \AgdaC{$f$ : (ℕ → ℕ) → ℕ} is
+the set-theoretical interpretation of some system T term \AgdaC{$t$ :
+(ι ⇒ ι) ⇒ ι}, then it is continuous and its restriction to \AgdaC{ℕ →
+2} is uniformly continuous, where $2$ is the set with elements $0$ and
+$1$. The reason is that a dialogue produces an answer after finitely
+many queries, because it is well-founded, and that a dialogue tree for
+a function \AgdaC{$(ℕ → 2) → ℕ$} is finite, because it is finitely
+branching. Recall that continuity means that, for any sequence of
+integers \AgdaC{α : ℕ → ℕ}, there is \AgdaC{$m$ : ℕ}, called a modulus
+of continuity of $f$ at the point~α, such that any sequence
+\AgdaC{α$'$} that agrees with α at the first $m$ positions gives the
+same result, that is, \AgdaC{$f$ α = $f$ α$'$}.  Uniform continuity
+means that there is \AgdaC{$m$ : ℕ}, called a modulus of uniform
+continuity of $f$ on \AgdaC{ℕ → 2}, such that any two binary sequences
+α and α$'$ that agree at the first $m$ positions give the same result.
+
+
+Our arguments are constructive, and we write the full proof from
+scratch in intensional Martin-Löf type theory (MLTT), in Agda
+notation~\cite{bove:dybjer}, without the use of libraries.  We don't
+assume previous familiarity with Agda, but we do require rudimentary
+knowledge of MLTT.  The Agda source file for this
+program/proof~\cite{escardo:dialogue} is written in Knuth's
+\emph{literate} style, which automatically generates the \LaTeX\ file
+that produces this article. Agda both checks proofs and can run them.
+Notice that MLTT or Agda cannot prove or disprove that all functions
+\AgdaC{(ℕ → ℕ) → ℕ} are continuous, as they are compatible with both
+classical and constructive mathematics, like Bishop
+mathematics~\cite{bishop:foundations}. The theorem here is that
+certain functions \AgdaC{(ℕ → ℕ) → ℕ} are continuous: those that can
+be defined in system~T.
+
+\noindent{\itshape\bfseries Related work.}
+The idea of computing continuity information by applying a function
+to effectful arguments goes back to Longley~\cite{Longley99whenis},
+who passes exceptions to the function. A similar approach is
+described in an example given by Bauer and Pretnar~\cite{bauer:pretnar}.
+
+The idea of working with computation trees is of course very old,
+going back to Brouwer~\cite{beeson} in intuitionistic mathematics, and
+to Kleene~\cite{KleeneSC:rfqftI} in computability theory in the form
+of dialogues, where the input is referred to as an
+oracle. Howard~\cite{Howard(80)} derives computation trees for system
+T, by operational methods, by successively reducing a term so that
+each time an oracle given by a free variable of type ι ⇒ ι is
+queried, countably many branches of the computation are created,
+corresponding to the possible answers given by the oracle.
+Hancock and Setzer use variations of dialogue trees to describe
+interactive computation in type
+theory~\cite{DBLP:conf/csl/HancockS00} (see also~\cite{Hancock_representationsof}).
+
+Our work is directly inspired by Coquand and Jaber's work on forcing
+in type
+theory~\cite{Coquand:2010:NFT:1839560.1839564,DBLP:series/leus/CoquandJ12}. Like
+Howard, they derive computation trees by operational methods. They
+extend dependent type theory with a constant for a generic element,
+and then decorate judgements with subscripts that keep track of
+approximation information about the generic element as the
+computations proceed (similarly to \cite{MR0325352}). 
+In this way they extract continuity information. 
+They prove the termination and soundness of this
+modification of type theory using Tait's computability method, which
+here is manifested as a logical relation between our two models. They
+also provide a Haskell implementation for the system~T case as an
+appendix, which uses a monad that is the composition of the list monad
+(for nondeterminism) and of the state monad. Their Haskell program
+implements a normalization procedure with bookkeeping information,
+tracked by the monad, that produces computation trees. Because they
+only account for uniform continuity in their Haskell implementation,
+such trees are finite. They describe their work as a computational
+interpretation of forcing and continuity as presented in
+Beeson~\cite{beeson}. 
+The difference is that 
+their approach is syntactical whereas ours is semantical,
+and the reader may sense an analogy with normalization by
+evaluation. Notice that these arguments only show that the
+\emph{definable} functions are continuous. To get a constructive model
+in which \emph{all} functions are continuous, they work with iterated
+forcing, which is related to our recent work~\cite{escardo:xu}, but
+this is another story.
+
+\noindent {\itshape\bfseries Organization.}
+(\ref{section:formal})~Formal proof in Agda.
+(\ref{section:informal})~Informal, rigorous proof.
+
+\noindent {\itshape\bfseries Acknowledgements.}  I benefitted from remarks on a
+previous version of this paper by Thierry Coquand, Dan Ghica, Achim Jung,
+Chuangjie~Xu, and the anonymous referees. 
+
+\section{Proof in Martin-L\"of type theory in Agda notation}
+\label{section:formal}
+
+\subsection{Agda preliminaries} \label{section:preliminaries} 
+
+The purpose of this subsection is two-fold: (1) To develop a tiny Agda
+library for use in the following sections, and (2) to briefly explain
+Agda notation~\cite{bove:dybjer} for MLTT. We assume rudimentary
+knowledge of (intensional) Martin-L\"of type theory and the BHK
+interpretation of the quantifiers as products Π and sums~Σ. We don't
+use any feature of Agda that goes beyond standard MLTT. If we were
+trying to be purist, we would use W-types rather than some of our
+inductive definitions using the Agda keyword \emph{data}. Notice that
+the coloured text in the electronic version of this paper is the Agda
+code.
+
+The universe of all types is denoted by Set, and types are called
+sets (this is a universe \`a la Russell).  Products \AgdaC{Π} are
+denoted by \AgdaC{∀} in Agda. 
+% Any Agda file, has to be a named module:
+\AgdaHide{ % I don't think I am hiding anything else.
+\begin{code}\>\<%
+\\
+\>\AgdaKeyword{module} \AgdaModule{dialogue} \AgdaKeyword{where}\<%
+\\
+\>\<\end{code}
+}
+Consider the definition of the (interpretation of) the standard
+combinators:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{Ķ} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaBound{Y} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaBound{X} \AgdaSymbol{→} \AgdaBound{Y} \AgdaSymbol{→} \AgdaBound{X}\<%
+\\
+\>\AgdaFunction{Ķ} \AgdaBound{x} \AgdaBound{y} \AgdaSymbol{=} \AgdaBound{x}\<%
+\\
+\>\AgdaFunction{Ş} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaBound{Y} \AgdaBound{Z} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaBound{X} \AgdaSymbol{→} \AgdaBound{Y} \AgdaSymbol{→} \AgdaBound{Z}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaBound{X} \AgdaSymbol{→} \AgdaBound{Y}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{X} \AgdaSymbol{→} \AgdaBound{Z}\<%
+\\
+\>\AgdaFunction{Ş} \AgdaBound{f} \AgdaBound{g} \AgdaBound{x} \AgdaSymbol{=} \AgdaBound{f} \AgdaBound{x} \AgdaSymbol{(}\AgdaBound{g} \AgdaBound{x}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+  The curly braces around the set variables indicate that these are
+implicit parameters, to be inferred by Agda whenever \AgdaC{Ķ} and \AgdaC{Ş} are
+used. If Agda fails to uniquely infer the missing arguments, one has
+to write e.g.\ \AgdaC{$Ķ$ \{$X$\} \{$Y$\} $x$ $y$} rather than the
+abbreviated form \AgdaC{$Ķ$ $x$ $y$}. The following should be
+self-explanatory:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{\_∘\_} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaBound{Y} \AgdaBound{Z} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaBound{Y} \AgdaSymbol{→} \AgdaBound{Z}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaBound{X} \AgdaSymbol{→} \AgdaBound{Y}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaBound{X} \AgdaSymbol{→} \AgdaBound{Z}\AgdaSymbol{)}\<%
+\\
+\>\AgdaBound{g} \AgdaFunction{∘} \AgdaBound{f} \AgdaSymbol{=} \AgdaSymbol{λ} \AgdaBound{x} \AgdaSymbol{→} \AgdaBound{g}\AgdaSymbol{(}\AgdaBound{f} \AgdaBound{x}\AgdaSymbol{)}\<%
+\\
+%
+\\
+\>\AgdaKeyword{data} \AgdaDatatype{ℕ} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaKeyword{where} \<[19]%
+\>[19]\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{zero} \AgdaSymbol{:} \AgdaDatatype{ℕ} \<[24]%
+\>[24]\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{succ} \AgdaSymbol{:} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaDatatype{ℕ} \<[21]%
+\>[21]\<%
+\\
+\>\AgdaFunction{rec} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaBound{X} \AgdaSymbol{→} \AgdaBound{X}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{X} \AgdaSymbol{→} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaBound{X}\<%
+\\
+\>\AgdaFunction{rec} \AgdaBound{f} \AgdaBound{x} \<[9]%
+\>[9]\AgdaInductiveConstructor{zero} \<[17]%
+\>[17]\AgdaSymbol{=} \AgdaBound{x}\<%
+\\
+\>\AgdaFunction{rec} \AgdaBound{f} \AgdaBound{x} \AgdaSymbol{(}\AgdaInductiveConstructor{succ} \AgdaBound{n}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaBound{f}\AgdaSymbol{(}\AgdaFunction{rec} \AgdaBound{f} \AgdaBound{x} \AgdaBound{n}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+Agda has a termination checker that verifies that recursions are
+well-founded, and hence all functions are total. We also need types of
+binary digits, finite lists, and finite binary trees:
+
+\begin{code}\>\<%
+\\
+\>\AgdaKeyword{data} \AgdaDatatype{ℕ₂} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{₀} \AgdaInductiveConstructor{₁} \AgdaSymbol{:} \AgdaDatatype{ℕ₂}\<%
+\\
+%
+\\
+\>\AgdaKeyword{data} \AgdaDatatype{List} \AgdaSymbol{(}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{)} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{[]} \<[12]%
+\>[12]\AgdaSymbol{:} \AgdaDatatype{List} \AgdaBound{X}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{\_∷\_} \AgdaSymbol{:} \AgdaBound{X} \AgdaSymbol{→} \AgdaDatatype{List} \AgdaBound{X} \AgdaSymbol{→} \AgdaDatatype{List} \AgdaBound{X}\<%
+\\
+%
+\\
+\>\AgdaKeyword{data} \AgdaDatatype{Tree} \AgdaSymbol{(}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{)} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{empty} \AgdaSymbol{:} \AgdaDatatype{Tree} \AgdaBound{X}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{branch} \AgdaSymbol{:} \AgdaBound{X} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaDatatype{ℕ₂} \AgdaSymbol{→} \AgdaDatatype{Tree} \AgdaBound{X}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaDatatype{Tree} \AgdaBound{X}\<%
+\\
+\>\<\end{code}
+Sums are not built-in and hence need to be defined:
+
+\begin{code}\>\<%
+\\
+\>\AgdaKeyword{data} \AgdaDatatype{Σ} \AgdaSymbol{\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{(}\AgdaBound{Y} \AgdaSymbol{:} \AgdaBound{X} \AgdaSymbol{→} \AgdaPrimitiveType{Set}\AgdaSymbol{)} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{\_,\_} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{x} \AgdaSymbol{:} \AgdaBound{X}\AgdaSymbol{)(}\AgdaBound{y} \AgdaSymbol{:} \AgdaBound{Y} \AgdaBound{x}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaDatatype{Σ} \AgdaSymbol{\{}\AgdaBound{X}\AgdaSymbol{\}} \AgdaBound{Y}\<%
+\\
+\>\<\end{code}
+The definition says that an element of \AgdaC{Σ \{$X$\} $Y$} is a pair
+\AgdaC{($x$,$y$)} with \AgdaC{$x$ : $X$} and \AgdaC{$y$ : $Y$ $x$}.
+Notice that comma is not a reserved symbol: we define it as a binary
+operator to construct dependent pairs.  Because \AgdaC{$Y$ = λ($x$ : $X$) →
+$Y$ $x$} if one assumes the η-law, and because the first argument is
+implicit, we can write \AgdaC{Σ $\{X\}$ $Y$} as \AgdaC{Σ Y} or \AgdaC{Σ
+\char`\\($x$ : $X$) → $Y$ $x$}, where backslash is the same thing as
+lambda. We will use backslash exclusively for sums. 
+% (And hope it will be as invisible as possible.)
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{π₀} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{\{}\AgdaBound{Y} \AgdaSymbol{:} \AgdaBound{X} \AgdaSymbol{→} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaDatatype{Σ} \AgdaSymbol{	\textbackslash(}\AgdaBound{x} \AgdaSymbol{:} \AgdaBound{X}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{Y} \AgdaBound{x}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{X}\<%
+\\
+\>\AgdaFunction{π₀}\AgdaSymbol{(}\AgdaBound{x} \AgdaInductiveConstructor{,} \AgdaBound{y}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaBound{x}\<%
+\\
+\>\AgdaFunction{π₁} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{\{}\AgdaBound{Y} \AgdaSymbol{:} \AgdaBound{X} \AgdaSymbol{→} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{∀(}\AgdaBound{t} \AgdaSymbol{:} \AgdaDatatype{Σ} \AgdaSymbol{	\textbackslash(}\AgdaBound{x} \AgdaSymbol{:} \AgdaBound{X}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{Y} \AgdaBound{x}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{Y}\AgdaSymbol{(}\AgdaFunction{π₀} \AgdaBound{t}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{π₁}\AgdaSymbol{(}\AgdaBound{x} \AgdaInductiveConstructor{,} \AgdaBound{y}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaBound{y}\<%
+\\
+\>\<\end{code}
+The identity type \AgdaC{Id $X$ $x$ $y$} is written
+\AgdaC{$x$ ≡ $y$} with \AgdaC{$X$} implicit, and is inductively
+defined as ``the least reflexive relation'':
+
+\begin{code}\>\<%
+\\
+\>\AgdaKeyword{data} \AgdaDatatype{\_≡\_} \AgdaSymbol{\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{:} \AgdaBound{X} \AgdaSymbol{→} \AgdaBound{X} \AgdaSymbol{→} \AgdaPrimitiveType{Set} \AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{refl} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{x} \AgdaSymbol{:} \AgdaBound{X}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaBound{x} \AgdaDatatype{≡} \AgdaBound{x}\<%
+\\
+%
+\\
+\>\AgdaFunction{sym} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{∀\{}\AgdaBound{x} \AgdaBound{y} \AgdaSymbol{:} \AgdaBound{X}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaBound{x} \AgdaDatatype{≡} \AgdaBound{y} \AgdaSymbol{→} \AgdaBound{y} \AgdaDatatype{≡} \AgdaBound{x}\<%
+\\
+\>\AgdaFunction{sym} \AgdaInductiveConstructor{refl} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{trans} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{∀\{}\AgdaBound{x} \AgdaBound{y} \AgdaBound{z} \AgdaSymbol{:} \AgdaBound{X}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaBound{x} \AgdaDatatype{≡} \AgdaBound{y} \AgdaSymbol{→} \AgdaBound{y} \AgdaDatatype{≡} \AgdaBound{z} \AgdaSymbol{→} \AgdaBound{x} \AgdaDatatype{≡} \AgdaBound{z}\<%
+\\
+\>\AgdaFunction{trans} \AgdaInductiveConstructor{refl} \AgdaInductiveConstructor{refl} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{cong} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaBound{Y} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{∀(}\AgdaBound{f} \AgdaSymbol{:} \AgdaBound{X} \AgdaSymbol{→} \AgdaBound{Y}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaSymbol{∀\{}\AgdaBound{x₀} \AgdaBound{x₁} \AgdaSymbol{:} \AgdaBound{X}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaBound{x₀} \AgdaDatatype{≡} \AgdaBound{x₁} \AgdaSymbol{→} \AgdaBound{f} \AgdaBound{x₀} \AgdaDatatype{≡} \AgdaBound{f} \AgdaBound{x₁}\<%
+\\
+\>\AgdaFunction{cong} \AgdaBound{f} \AgdaInductiveConstructor{refl} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{cong₂} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaBound{Y} \AgdaBound{Z} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{∀(}\AgdaBound{f} \AgdaSymbol{:} \AgdaBound{X} \AgdaSymbol{→} \AgdaBound{Y} \AgdaSymbol{→} \AgdaBound{Z}\AgdaSymbol{)} \<[42]%
+\>[42]\<%
+\\
+\>[2]\AgdaIndent{6}{}\<[6]%
+\>[6]\AgdaSymbol{→} \AgdaSymbol{∀\{}\AgdaBound{x₀} \AgdaBound{x₁} \AgdaSymbol{:} \AgdaBound{X}\AgdaSymbol{\}\{}\AgdaBound{y₀} \AgdaBound{y₁} \AgdaSymbol{:} \AgdaBound{Y}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaBound{x₀} \AgdaDatatype{≡} \AgdaBound{x₁} \AgdaSymbol{→} \AgdaBound{y₀} \AgdaDatatype{≡} \AgdaBound{y₁} \AgdaSymbol{→} \AgdaBound{f} \AgdaBound{x₀} \AgdaBound{y₀} \AgdaDatatype{≡} \AgdaBound{f} \AgdaBound{x₁} \AgdaBound{y₁}\<%
+\\
+\>\AgdaFunction{cong₂} \AgdaBound{f} \AgdaInductiveConstructor{refl} \AgdaInductiveConstructor{refl} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\<\end{code}
+
+\subsection{Dialogues and continuity} \label{section:dialogues:continuity}
+
+We consider the computation of functionals \AgdaC{($X$ → $Y$) → $Z$}
+with dialogue trees. We work with the following inductively defined
+type of (well founded) dialogue trees indexed by three types $X$, $Y$
+and $Z$. These are $Y$-branching trees with $X$-labeled internal nodes
+and $Z$-labeled leaves:
+
+\begin{code}\>\<%
+\\
+\>\AgdaKeyword{data} \AgdaDatatype{D} \AgdaSymbol{(}\AgdaBound{X} \AgdaBound{Y} \AgdaBound{Z} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{)} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaKeyword{where} \<[33]%
+\>[33]\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{η} \AgdaSymbol{:} \AgdaBound{Z} \AgdaSymbol{→} \AgdaDatatype{D} \AgdaBound{X} \AgdaBound{Y} \AgdaBound{Z}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{β} \AgdaSymbol{:} \AgdaSymbol{(}\AgdaBound{Y} \AgdaSymbol{→} \AgdaDatatype{D} \AgdaBound{X} \AgdaBound{Y} \AgdaBound{Z}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{X} \AgdaSymbol{→} \AgdaDatatype{D} \AgdaBound{X} \AgdaBound{Y} \AgdaBound{Z}\<%
+\\
+\>\<\end{code}
+A leaf is written \AgdaC{η $z$}, and it gives the final answer $z$ (η will
+be the unit of a monad).  A forest is a $Y$-indexed family φ of
+trees. Given such a forest \AgdaC{φ} and \AgdaC{$x$ : $X$}, we can build a
+new tree \AgdaC{β φ $x$} whose root is labeled by $x$, which has a subtree
+\AgdaC{φ $y$} for each \AgdaC{$y$ : $Y$}. We can imagine \AgdaC{$x$ : $X$} as
+query, for which an oracle α gives some intermediate answer
+\AgdaC{$y$ = α $x$ : Y}. After this answer~\AgdaC{$y$}, we move to the
+subtree \AgdaC{φ $y$}, and the dialogue proceeds in this way, until a
+leaf with the final answer is reached:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{dialogue} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaBound{Y} \AgdaBound{Z} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{D} \AgdaBound{X} \AgdaBound{Y} \AgdaBound{Z} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaBound{X} \AgdaSymbol{→} \AgdaBound{Y}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{Z}\<%
+\\
+\>\AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaInductiveConstructor{η} \AgdaBound{z}\AgdaSymbol{)} \<[17]%
+\>[17]\AgdaBound{α} \AgdaSymbol{=} \AgdaBound{z}\<%
+\\
+\>\AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaInductiveConstructor{β} \AgdaBound{φ} \AgdaBound{x}\AgdaSymbol{)} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ}\AgdaSymbol{(}\AgdaBound{α} \AgdaBound{x}\AgdaSymbol{))} \AgdaBound{α}\<%
+\\
+\>\<\end{code}
+We say that a function \AgdaC{($X$ → $Y$) → $Z$} is \emph{eloquent} if
+it is computed by some dialogue:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{eloquent} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaBound{Y} \AgdaBound{Z} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{((}\AgdaBound{X} \AgdaSymbol{→} \AgdaBound{Y}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{Z}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaPrimitiveType{Set}\<%
+\\
+\>\AgdaFunction{eloquent} \AgdaBound{f} \AgdaSymbol{=} \AgdaDatatype{Σ} \AgdaSymbol{	\textbackslash}\AgdaBound{d} \AgdaSymbol{→} \AgdaSymbol{∀} \AgdaBound{α} \AgdaSymbol{→} \AgdaFunction{dialogue} \AgdaBound{d} \AgdaBound{α} \AgdaDatatype{≡} \AgdaBound{f} \AgdaBound{α}\<%
+\\
+\>\<\end{code}
+Here we are interested in the case \AgdaC{$X$=$Y$=$Z$=ℕ}.
+Think of functions \AgdaC{α : ℕ → ℕ} as sequences of natural
+numbers. The set of such sequences is called the Baire space:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{Baire} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\<%
+\\
+\>\AgdaFunction{Baire} \AgdaSymbol{=} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaDatatype{ℕ}\<%
+\\
+\>\<\end{code}
+Functions \AgdaC{Baire → ℕ} are coded by a particular kind of dialogue trees,
+namely \AgdaC{B ℕ} where B is defined as follows:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{B} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaSymbol{→} \AgdaPrimitiveType{Set}\<%
+\\
+\>\AgdaFunction{B} \AgdaSymbol{=} \AgdaDatatype{D} \AgdaDatatype{ℕ} \AgdaDatatype{ℕ}\<%
+\\
+\>\<\end{code}
+We work with a refined version of continuity, which gives more
+information than the traditional notion introduced in
+Section~\ref{formulation}, where the modulus of continuity is a finite
+list of indices rather than an upper bound for the indices. The
+agreement relation determined by a list of indices is inductively
+defined as follows, where \AgdaC{\AgdaC{α ≡[ $s$ ] α$'$}} says that
+the sequences \AgdaC{α} and \AgdaC{α$'$} agree at the indices
+collected in the list \AgdaC{$s$}:
+
+\begin{enumerate}
+\item \AgdaC{α ≡[ [] ] α$'$},
+\item \AgdaC{α $i$ ≡ α$'$ $i$ → α ≡[ $s$ ] α$'$ → α ≡[ $i$ ∷ $s$ ] α$'$}.
+\end{enumerate}
+We write this inductive definition as follows in Agda, where we give
+the name~[] to the proof of the first clause and the name ∷ to the
+proof of the second clause, that is, using the same constructor names
+as for the inductively defined type of lists:
+
+\begin{code}\>\<%
+\\
+\>\AgdaKeyword{data} \AgdaDatatype{\_≡[\_]\_} \AgdaSymbol{\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{:} \AgdaSymbol{(}\AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaBound{X}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaDatatype{List} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaBound{X}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaPrimitiveType{Set} \AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{[]} \<[6]%
+\>[6]\AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{α} \AgdaBound{α'} \AgdaSymbol{:} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaBound{X}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[} \AgdaInductiveConstructor{[]} \AgdaDatatype{]} \AgdaBound{α'} \<[39]%
+\>[39]\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{\_∷\_} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{α} \AgdaBound{α'} \AgdaSymbol{:} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaBound{X}\AgdaSymbol{\}\{}\AgdaBound{i} \AgdaSymbol{:} \AgdaDatatype{ℕ}\AgdaSymbol{\}\{}\AgdaBound{s} \AgdaSymbol{:} \AgdaDatatype{List} \AgdaDatatype{ℕ}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaBound{α} \AgdaBound{i} \AgdaDatatype{≡} \AgdaBound{α'} \AgdaBound{i} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[} \AgdaBound{s} \AgdaDatatype{]} \AgdaBound{α'} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[} \AgdaBound{i} \AgdaInductiveConstructor{∷} \AgdaBound{s} \AgdaDatatype{]} \AgdaBound{α'}\<%
+\\
+%
+\\
+\>\AgdaFunction{continuous} \AgdaSymbol{:} \AgdaSymbol{(}\AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaPrimitiveType{Set}\<%
+\\
+\>\AgdaFunction{continuous} \AgdaBound{f} \AgdaSymbol{=} \AgdaSymbol{∀(}\AgdaBound{α} \AgdaSymbol{:} \AgdaFunction{Baire}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaDatatype{Σ} \AgdaSymbol{	\textbackslash(}\AgdaBound{s} \AgdaSymbol{:} \AgdaDatatype{List} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaSymbol{∀(}\AgdaBound{α'} \AgdaSymbol{:} \AgdaFunction{Baire}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[} \AgdaBound{s} \AgdaDatatype{]} \AgdaBound{α'} \AgdaSymbol{→} \AgdaBound{f} \AgdaBound{α} \AgdaDatatype{≡} \AgdaBound{f} \AgdaBound{α'}\<%
+\\
+\>\<\end{code}
+It is an easy exercise, left to the reader, to produce an Agda proof
+that this refined notion of continuity implies the traditional notion
+of continuity, by taking the maximum value of the list~$s$.
+Functions defined by dialogues are continuous, because a dialogue
+produces an answer after finitely many queries:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{dialogue-continuity} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{d} \AgdaSymbol{:} \AgdaFunction{B} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{continuous}\AgdaSymbol{(}\AgdaFunction{dialogue} \AgdaBound{d}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{dialogue-continuity} \AgdaSymbol{(}\AgdaInductiveConstructor{η} \AgdaBound{n}\AgdaSymbol{)} \AgdaBound{α} \AgdaSymbol{=} \AgdaSymbol{(}\AgdaInductiveConstructor{[]} \AgdaInductiveConstructor{,} \AgdaFunction{lemma}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaKeyword{where}\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{lemma} \AgdaSymbol{:} \AgdaSymbol{∀} \AgdaBound{α'} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[} \AgdaInductiveConstructor{[]} \AgdaDatatype{]} \AgdaBound{α'} \AgdaSymbol{→} \AgdaBound{n} \AgdaDatatype{≡} \AgdaBound{n} \<[40]%
+\>[40]\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{lemma} \AgdaBound{α'} \AgdaBound{r} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{dialogue-continuity} \AgdaSymbol{(}\AgdaInductiveConstructor{β} \AgdaBound{φ} \AgdaBound{i}\AgdaSymbol{)} \AgdaBound{α} \AgdaSymbol{=} \AgdaSymbol{((}\AgdaBound{i} \AgdaInductiveConstructor{∷} \AgdaFunction{s}\AgdaSymbol{)} \AgdaInductiveConstructor{,} \AgdaFunction{lemma}\AgdaSymbol{)} \<[50]%
+\>[50]\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{IH} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{i} \AgdaSymbol{:} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{continuous}\AgdaSymbol{(}\AgdaFunction{dialogue}\AgdaSymbol{(}\AgdaBound{φ}\AgdaSymbol{(}\AgdaBound{α} \AgdaBound{i}\AgdaSymbol{)))}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{IH} \AgdaBound{i} \AgdaSymbol{=} \AgdaFunction{dialogue-continuity} \AgdaSymbol{(}\AgdaBound{φ}\AgdaSymbol{(}\AgdaBound{α} \AgdaBound{i}\AgdaSymbol{))}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{s} \AgdaSymbol{:} \AgdaDatatype{List} \AgdaDatatype{ℕ}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{s} \AgdaSymbol{=} \AgdaFunction{π₀}\AgdaSymbol{(}\AgdaFunction{IH} \AgdaBound{i} \AgdaBound{α}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim₀} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{α'} \AgdaSymbol{:} \AgdaFunction{Baire}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[} \AgdaFunction{s} \AgdaDatatype{]} \AgdaBound{α'} \AgdaSymbol{→} \AgdaFunction{dialogue}\AgdaSymbol{(}\AgdaBound{φ}\AgdaSymbol{(}\AgdaBound{α} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{dialogue}\AgdaSymbol{(}\AgdaBound{φ}\AgdaSymbol{(}\AgdaBound{α} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α'}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim₀} \AgdaSymbol{=} \AgdaFunction{π₁}\AgdaSymbol{(}\AgdaFunction{IH} \AgdaBound{i} \AgdaBound{α}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim₁} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{α'} \AgdaSymbol{:} \AgdaFunction{Baire}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{α} \AgdaBound{i} \AgdaDatatype{≡} \AgdaBound{α'} \AgdaBound{i} \AgdaSymbol{→} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ} \AgdaSymbol{(}\AgdaBound{α} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α'} \AgdaDatatype{≡} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ} \AgdaSymbol{(}\AgdaBound{α'} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α'}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim₁} \AgdaBound{α'} \AgdaBound{r} \AgdaSymbol{=} \AgdaFunction{cong} \AgdaSymbol{(λ} \AgdaBound{n} \AgdaSymbol{→} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ} \AgdaBound{n}\AgdaSymbol{)} \AgdaBound{α'}\AgdaSymbol{)} \AgdaBound{r}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{lemma} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{α'} \AgdaSymbol{:} \AgdaFunction{Baire}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[} \AgdaBound{i} \AgdaInductiveConstructor{∷} \AgdaFunction{s} \AgdaDatatype{]} \AgdaBound{α'} \<[45]%
+\>[45]\AgdaSymbol{→} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ}\AgdaSymbol{(}\AgdaBound{α} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{dialogue}\AgdaSymbol{(}\AgdaBound{φ} \AgdaSymbol{(}\AgdaBound{α'} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α'}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{lemma} \AgdaBound{α'} \AgdaSymbol{(}\AgdaBound{r} \AgdaInductiveConstructor{∷} \AgdaBound{rs}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaFunction{trans} \AgdaSymbol{(}\AgdaFunction{claim₀} \AgdaBound{α'} \AgdaBound{rs}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{claim₁} \AgdaBound{α'} \AgdaBound{r}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+
+\noindent This formal proof is informally explained as follows. We show that  
+\begin{quote}
+  ∀($d$ : B ℕ) → continuous(dialogue $d$)
+\end{quote}
+by induction on $d$. Expanding the definition,
+this amounts to,  using Agda notation,
+\begin{quote}
+  ∀ $d$ → ∀ α → Σ \char`\\$s$ → ∀ α$'$ → α ≡[ $s$ ] α$'$ → dialogue $d$ α ≡ dialogue $d$ α$'$.
+\end{quote}
+For the base case $d$ = η $n$, the definition of the function dialogue gives \AgdaC{dialogue $d$ α = $n$}, and so we must show that, for any α, 
+\begin{quote}
+  Σ \char`\\$s$ → ∀ α$'$ → α ≡[ $s$ ] α$'$ → $n$ ≡ $n$.
+\end{quote}
+We can take $s = []$ and then we are done, because $n$ ≡ $n$ by reflexivity. 
+This is what the first equation of the formal proof says. 
+Thus notice that Agda, in accordance with MLTT, silently expands definitions by reduction to normal form.
+For the induction step $d$ = β φ $i$, expanding the definition of the dialogue function, what we need to prove is that, for an arbitrary α, 
+\begin{quote}
+  Σ \char`\\$s'$ → ∀ α$'$ → α ≡[ $s'$ ] α$'$ → dialogue (φ(α $i$)) α ≡ dialogue (φ α$'$ $i$) α$'$.
+\end{quote}
+The induction hypothesis is \AgdaC{∀($i$ : ℕ) → continuous(dialogue(φ(α $i$)))},
+which gives, for any $i$ and our arbitrary α,
+\begin{quote}
+Σ \char`\\$s$ → ∀ α$'$ → α ≡[ $s$ ] α$'$ → dialogue(φ(α $i$)) α = dialogue(φ(α $i$)) α$'$.
+\end{quote}
+Using the two projections π₀ and π₁ we get $s$ and a proof that
+\begin{quote}
+∀ α$'$ → α ≡[ $s$ ] α$'$ → dialogue(φ(α $i$)) α = dialogue(φ(α $i$)) α$'$.
+\end{quote}
+Hence we can take $s'$ = $i$ ∷ $s$, and the desired conclusion holds
+substituting equals for equals (with cong) using transitivity and the
+definition α $i$ ≡ α$'$ $i$ → α ≡[ $s$ ] α$'$ → α ≡[ $i$ ∷ $s$ ]
+α$'$. This amounts to the second equation of the proof, where in the
+pattern of the proof of the lemma we have $r$ : α $i$ ≡ α$'$ $i$ and
+$rs$ : α ≡[ $s$ ] α$'$.
+
+~
+
+We need the following technical lemma because it is not provable in
+intensional MLTT that any two functions are equal if they are
+pointwise equal. The proof is admitedly written in a rather
+laconic form. The point is that the notion of continuity depends only
+on the values of the function, and the hypothesis says that the two
+functions have the same values. Notice that the axiom of function
+extensionality (any two pointwise equal functions are equal) is not
+false but rather not provable or disprovable, and is consistent~\cite{HoTTbook}.
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{continuity-extensional} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{f} \AgdaBound{g} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaSymbol{(∀} \AgdaBound{α} \AgdaSymbol{→} \AgdaBound{f} \AgdaBound{α} \AgdaDatatype{≡} \AgdaBound{g} \AgdaBound{α}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{continuous} \AgdaBound{f} \AgdaSymbol{→} \AgdaFunction{continuous} \AgdaBound{g}\<%
+\\
+\>\AgdaFunction{continuity-extensional} \AgdaBound{f} \AgdaBound{g} \AgdaBound{t} \AgdaBound{c} \AgdaBound{α} \AgdaSymbol{=} \AgdaSymbol{(}\AgdaFunction{π₀}\AgdaSymbol{(}\AgdaBound{c} \AgdaBound{α}\AgdaSymbol{)} \AgdaInductiveConstructor{,} \AgdaSymbol{(λ} \AgdaBound{α'} \AgdaBound{r} \AgdaSymbol{→} \AgdaFunction{trans} \AgdaSymbol{(}\AgdaFunction{sym} \AgdaSymbol{(}\AgdaBound{t} \AgdaBound{α}\AgdaSymbol{))} \AgdaSymbol{(}\AgdaFunction{trans} \AgdaSymbol{(}\AgdaFunction{π₁}\AgdaSymbol{(}\AgdaBound{c} \AgdaBound{α}\AgdaSymbol{)} \AgdaBound{α'} \AgdaBound{r}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{t} \AgdaBound{α'}\AgdaSymbol{))))}\<%
+\\
+\>\AgdaFunction{eloquent-is-continuous} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{f} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{eloquent} \AgdaBound{f} \AgdaSymbol{→} \AgdaFunction{continuous} \AgdaBound{f}\<%
+\\
+\>\AgdaFunction{eloquent-is-continuous} \AgdaBound{f} \AgdaSymbol{(}\AgdaBound{d} \AgdaInductiveConstructor{,} \AgdaBound{e}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaFunction{continuity-extensional} \AgdaSymbol{(}\AgdaFunction{dialogue} \AgdaBound{d}\AgdaSymbol{)} \AgdaBound{f} \AgdaBound{e} \AgdaSymbol{(}\AgdaFunction{dialogue-continuity} \AgdaBound{d}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+
+The development for uniform continuity is similar to the above, with
+the crucial difference that a dialogue tree in C ℕ is finite:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{Cantor} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\<%
+\\
+\>\AgdaFunction{Cantor} \AgdaSymbol{=} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaDatatype{ℕ₂}\<%
+\\
+\>\AgdaFunction{C} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaSymbol{→} \AgdaPrimitiveType{Set}\<%
+\\
+\>\AgdaFunction{C} \AgdaSymbol{=} \AgdaDatatype{D} \AgdaDatatype{ℕ} \AgdaDatatype{ℕ₂}\<%
+\\
+\>\<\end{code}
+We work with a refined version of uniform continuity (cf.\
+Section~\ref{formulation}), where the modulus is a finite binary tree
+\AgdaC{$s$} of indices rather than an upper bound of the indices. We
+could have worked with a list of indices, but the proofs are shorter
+and more direct using trees. The agreement relation defined by a tree
+of indices is inductively defined as follows, where α ≡[[ $s$ ]] α$'$
+says that α and~α$'$ agree at the positions collected in the tree~$s$:
+
+\begin{code}\>\<%
+\\
+\>\AgdaKeyword{data} \AgdaDatatype{\_≡[[\_]]\_} \AgdaSymbol{\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{:} \AgdaSymbol{(}\AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaBound{X}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaDatatype{Tree} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaBound{X}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaPrimitiveType{Set} \AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{empty} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{α} \AgdaBound{α'} \AgdaSymbol{:} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaBound{X}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[[} \AgdaInductiveConstructor{empty} \AgdaDatatype{]]} \AgdaBound{α'} \<[46]%
+\>[46]\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{branch} \AgdaSymbol{:} \<[11]%
+\>[11]\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaSymbol{∀\{}\AgdaBound{α} \AgdaBound{α'} \AgdaSymbol{:} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaBound{X}\AgdaSymbol{\}\{}\AgdaBound{i} \AgdaSymbol{:} \AgdaDatatype{ℕ}\AgdaSymbol{\}\{}\AgdaBound{s} \AgdaSymbol{:} \AgdaDatatype{ℕ₂} \AgdaSymbol{→} \AgdaDatatype{Tree} \AgdaDatatype{ℕ}\AgdaSymbol{\}} \<[44]%
+\>[44]\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaSymbol{→} \AgdaBound{α} \AgdaBound{i} \AgdaDatatype{≡} \AgdaBound{α'} \AgdaBound{i} \AgdaSymbol{→} \AgdaSymbol{(∀(}\AgdaBound{j} \AgdaSymbol{:} \AgdaDatatype{ℕ₂}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[[} \AgdaBound{s} \AgdaBound{j} \AgdaDatatype{]]} \AgdaBound{α'}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[[} \AgdaInductiveConstructor{branch} \AgdaBound{i} \AgdaBound{s} \AgdaDatatype{]]} \AgdaBound{α'}\<%
+\\
+\>\<\end{code}
+Again we are using the same constructor names as for the type of trees.
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{uniformly-continuous} \AgdaSymbol{:} \AgdaSymbol{(}\AgdaFunction{Cantor} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaPrimitiveType{Set}\<%
+\\
+\>\AgdaFunction{uniformly-continuous} \AgdaBound{f} \AgdaSymbol{=} \AgdaDatatype{Σ} \AgdaSymbol{	\textbackslash(}\AgdaBound{s} \AgdaSymbol{:} \AgdaDatatype{Tree} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaSymbol{∀(}\AgdaBound{α} \AgdaBound{α'} \AgdaSymbol{:} \AgdaFunction{Cantor}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[[} \AgdaBound{s} \AgdaDatatype{]]} \AgdaBound{α'} \AgdaSymbol{→} \AgdaBound{f} \AgdaBound{α} \AgdaDatatype{≡} \AgdaBound{f} \AgdaBound{α'}\<%
+\\
+%
+\\
+\>\AgdaFunction{dialogue-UC} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{d} \AgdaSymbol{:} \AgdaFunction{C} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{uniformly-continuous}\AgdaSymbol{(}\AgdaFunction{dialogue} \AgdaBound{d}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{dialogue-UC} \AgdaSymbol{(}\AgdaInductiveConstructor{η} \AgdaBound{n}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaSymbol{(}\AgdaInductiveConstructor{empty} \AgdaInductiveConstructor{,} \AgdaSymbol{λ} \AgdaBound{α} \AgdaBound{α'} \AgdaBound{n} \AgdaSymbol{→} \AgdaInductiveConstructor{refl}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{dialogue-UC} \AgdaSymbol{(}\AgdaInductiveConstructor{β} \AgdaBound{φ} \AgdaBound{i}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaSymbol{(}\AgdaInductiveConstructor{branch} \AgdaBound{i} \AgdaFunction{s} \AgdaInductiveConstructor{,} \AgdaFunction{lemma}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{IH} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{j} \AgdaSymbol{:} \AgdaDatatype{ℕ₂}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{uniformly-continuous}\AgdaSymbol{(}\AgdaFunction{dialogue}\AgdaSymbol{(}\AgdaBound{φ} \AgdaBound{j}\AgdaSymbol{))}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{IH} \AgdaBound{j} \AgdaSymbol{=} \AgdaFunction{dialogue-UC} \AgdaSymbol{(}\AgdaBound{φ} \AgdaBound{j}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{s} \AgdaSymbol{:} \AgdaDatatype{ℕ₂} \AgdaSymbol{→} \AgdaDatatype{Tree} \AgdaDatatype{ℕ}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{s} \AgdaBound{j} \AgdaSymbol{=} \AgdaFunction{π₀}\AgdaSymbol{(}\AgdaFunction{IH} \AgdaBound{j}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim} \AgdaSymbol{:} \AgdaSymbol{∀} \AgdaBound{j} \AgdaBound{α} \AgdaBound{α'} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[[} \AgdaFunction{s} \AgdaBound{j} \AgdaDatatype{]]} \AgdaBound{α'} \AgdaSymbol{→} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ} \AgdaBound{j}\AgdaSymbol{)} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ} \AgdaBound{j}\AgdaSymbol{)} \AgdaBound{α'}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim} \AgdaBound{j} \AgdaSymbol{=} \AgdaFunction{π₁}\AgdaSymbol{(}\AgdaFunction{IH} \AgdaBound{j}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{lemma} \AgdaSymbol{:} \AgdaSymbol{∀} \AgdaBound{α} \AgdaBound{α'} \AgdaSymbol{→} \AgdaBound{α} \AgdaDatatype{≡[[} \AgdaInductiveConstructor{branch} \AgdaBound{i} \AgdaFunction{s} \AgdaDatatype{]]} \AgdaBound{α'} \AgdaSymbol{→} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ} \AgdaSymbol{(}\AgdaBound{α} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ} \AgdaSymbol{(}\AgdaBound{α'} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α'} \<[92]%
+\>[92]\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{lemma} \AgdaBound{α} \AgdaBound{α'} \AgdaSymbol{(}\AgdaInductiveConstructor{branch} \AgdaBound{r} \AgdaBound{l}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaFunction{trans} \AgdaFunction{fact₀} \AgdaFunction{fact₁} \<[48]%
+\>[48]\<%
+\\
+\>[4]\AgdaIndent{6}{}\<[6]%
+\>[6]\AgdaKeyword{where}\<%
+\\
+\>[6]\AgdaIndent{8}{}\<[8]%
+\>[8]\AgdaFunction{fact₀} \AgdaSymbol{:} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ} \AgdaSymbol{(}\AgdaBound{α} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ} \AgdaSymbol{(}\AgdaBound{α'} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α} \<[61]%
+\>[61]\<%
+\\
+\>[6]\AgdaIndent{8}{}\<[8]%
+\>[8]\AgdaFunction{fact₀} \AgdaSymbol{=} \AgdaFunction{cong} \AgdaSymbol{(λ} \AgdaBound{j} \AgdaSymbol{→} \AgdaFunction{dialogue}\AgdaSymbol{(}\AgdaBound{φ} \AgdaBound{j}\AgdaSymbol{)} \AgdaBound{α}\AgdaSymbol{)} \AgdaBound{r}\<%
+\\
+\>[6]\AgdaIndent{8}{}\<[8]%
+\>[8]\AgdaFunction{fact₁} \AgdaSymbol{:} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ} \AgdaSymbol{(}\AgdaBound{α'} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaBound{φ} \AgdaSymbol{(}\AgdaBound{α'} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α'}\<%
+\\
+\>[6]\AgdaIndent{8}{}\<[8]%
+\>[8]\AgdaFunction{fact₁} \AgdaSymbol{=} \AgdaFunction{claim} \AgdaSymbol{(}\AgdaBound{α'} \AgdaBound{i}\AgdaSymbol{)} \AgdaBound{α} \AgdaBound{α'} \AgdaSymbol{(}\AgdaBound{l}\AgdaSymbol{(}\AgdaBound{α'} \AgdaBound{i}\AgdaSymbol{))}\<%
+\\
+%
+\\
+\>\AgdaFunction{UC-extensional} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{f} \AgdaBound{g} \AgdaSymbol{:} \AgdaFunction{Cantor} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaSymbol{(∀(}\AgdaBound{α} \AgdaSymbol{:} \AgdaFunction{Cantor}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{f} \AgdaBound{α} \AgdaDatatype{≡} \AgdaBound{g} \AgdaBound{α}\AgdaSymbol{)} \<[67]%
+\>[67]\<%
+\\
+\>[8]\AgdaIndent{14}{}\<[14]%
+\>[14]\AgdaSymbol{→} \AgdaFunction{uniformly-continuous} \AgdaBound{f} \AgdaSymbol{→} \AgdaFunction{uniformly-continuous} \AgdaBound{g}\<%
+\\
+\>\AgdaFunction{UC-extensional} \AgdaBound{f} \AgdaBound{g} \AgdaBound{t} \AgdaSymbol{(}\AgdaBound{u} \AgdaInductiveConstructor{,} \AgdaBound{c}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaSymbol{(}\AgdaBound{u} \AgdaInductiveConstructor{,} \AgdaSymbol{(λ} \AgdaBound{α} \AgdaBound{α'} \AgdaBound{r} \AgdaSymbol{→} \AgdaFunction{trans} \AgdaSymbol{(}\AgdaFunction{sym} \AgdaSymbol{(}\AgdaBound{t} \AgdaBound{α}\AgdaSymbol{))} \AgdaSymbol{(}\AgdaFunction{trans} \AgdaSymbol{(}\AgdaBound{c} \AgdaBound{α} \AgdaBound{α'} \AgdaBound{r}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{t} \AgdaBound{α'}\AgdaSymbol{))))}\<%
+\\
+%
+\\
+\>\AgdaFunction{eloquent-is-UC} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{f} \AgdaSymbol{:} \AgdaFunction{Cantor} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{eloquent} \AgdaBound{f} \AgdaSymbol{→} \AgdaFunction{uniformly-continuous} \AgdaBound{f}\<%
+\\
+\>\AgdaFunction{eloquent-is-UC} \AgdaBound{f} \AgdaSymbol{(}\AgdaBound{d} \AgdaInductiveConstructor{,} \AgdaBound{e}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaFunction{UC-extensional} \AgdaSymbol{(}\AgdaFunction{dialogue} \AgdaBound{d}\AgdaSymbol{)} \AgdaBound{f} \AgdaBound{e} \AgdaSymbol{(}\AgdaFunction{dialogue-UC} \AgdaBound{d}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+We finish this section by showing that the restriction of an eloquent
+function \AgdaC{$f$ : Baire → ℕ} to the Cantor type is also eloquent. We first
+define a pruning function from \AgdaC{B ℕ} to \AgdaC{C ℕ} that implements restriction:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{embed-ℕ₂-ℕ} \AgdaSymbol{:} \AgdaDatatype{ℕ₂} \AgdaSymbol{→} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{embed-ℕ₂-ℕ} \AgdaInductiveConstructor{₀} \AgdaSymbol{=} \AgdaInductiveConstructor{zero}\<%
+\\
+\>\AgdaFunction{embed-ℕ₂-ℕ} \AgdaInductiveConstructor{₁} \AgdaSymbol{=} \AgdaInductiveConstructor{succ} \AgdaInductiveConstructor{zero}\<%
+\\
+%
+\\
+\>\AgdaFunction{embed-C-B} \AgdaSymbol{:} \AgdaFunction{Cantor} \AgdaSymbol{→} \AgdaFunction{Baire}\<%
+\\
+\>\AgdaFunction{embed-C-B} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{embed-ℕ₂-ℕ} \AgdaFunction{∘} \AgdaBound{α} \<[29]%
+\>[29]\<%
+\\
+\>[5]\AgdaIndent{1}{}\<[1]%
+\>[1]\<%
+\\
+\>\AgdaFunction{C-restriction} \AgdaSymbol{:} \AgdaSymbol{(}\AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaFunction{Cantor} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{C-restriction} \AgdaBound{f} \AgdaSymbol{=} \AgdaBound{f} \AgdaFunction{∘} \AgdaFunction{embed-C-B}\<%
+\\
+%
+\\
+\>\AgdaFunction{prune} \AgdaSymbol{:} \AgdaFunction{B} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaFunction{C} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{prune} \AgdaSymbol{(}\AgdaInductiveConstructor{η} \AgdaBound{n}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaInductiveConstructor{η} \AgdaBound{n}\<%
+\\
+\>\AgdaFunction{prune} \AgdaSymbol{(}\AgdaInductiveConstructor{β} \AgdaBound{φ} \AgdaBound{i}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaInductiveConstructor{β} \AgdaSymbol{(λ} \AgdaBound{j} \AgdaSymbol{→} \AgdaFunction{prune}\AgdaSymbol{(}\AgdaBound{φ}\AgdaSymbol{(}\AgdaFunction{embed-ℕ₂-ℕ} \AgdaBound{j}\AgdaSymbol{)))} \AgdaBound{i}\<%
+\\
+%
+\\
+\>\AgdaFunction{prune-behaviour} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{d} \AgdaSymbol{:} \AgdaFunction{B} \AgdaDatatype{ℕ}\AgdaSymbol{)(}\AgdaBound{α} \AgdaSymbol{:} \AgdaFunction{Cantor}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{dialogue} \AgdaSymbol{(}\AgdaFunction{prune} \AgdaBound{d}\AgdaSymbol{)} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{C-restriction}\AgdaSymbol{(}\AgdaFunction{dialogue} \AgdaBound{d}\AgdaSymbol{)} \AgdaBound{α} \<[94]%
+\>[94]\<%
+\\
+\>\AgdaFunction{prune-behaviour} \AgdaSymbol{(}\AgdaInductiveConstructor{η} \AgdaBound{n}\AgdaSymbol{)} \<[24]%
+\>[24]\AgdaBound{α} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{prune-behaviour} \AgdaSymbol{(}\AgdaInductiveConstructor{β} \AgdaBound{φ} \AgdaBound{n}\AgdaSymbol{)} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{prune-behaviour} \AgdaSymbol{(}\AgdaBound{φ}\AgdaSymbol{(}\AgdaFunction{embed-ℕ₂-ℕ}\AgdaSymbol{(}\AgdaBound{α} \AgdaBound{n}\AgdaSymbol{)))} \AgdaBound{α}\<%
+\\
+%
+\\
+\>\AgdaFunction{eloquent-restriction} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{f} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{eloquent} \AgdaBound{f} \AgdaSymbol{→} \AgdaFunction{eloquent}\AgdaSymbol{(}\AgdaFunction{C-restriction} \AgdaBound{f}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{eloquent-restriction} \AgdaBound{f} \AgdaSymbol{(}\AgdaBound{d} \AgdaInductiveConstructor{,} \AgdaBound{c}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaSymbol{(}\AgdaFunction{prune} \AgdaBound{d} \AgdaInductiveConstructor{,} \AgdaSymbol{λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaFunction{trans} \AgdaSymbol{(}\AgdaFunction{prune-behaviour} \AgdaBound{d} \AgdaBound{α}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{c} \AgdaSymbol{(}\AgdaFunction{embed-C-B} \AgdaBound{α}\AgdaSymbol{)))} \<[97]%
+\>[97]\<%
+\\
+\>\<\end{code}
+
+\subsection{Gödel's system T extended with an oracle} \label{section:oracle}
+
+For simplicity, we work with system \AgdaC{T} in its original
+combinatory form. This is no loss of generality, because both the
+combinatory and the lambda-calculus forms define the same elements of
+the set-theoretical model, and here we are interested in the
+continuity of the definable functionals.  The system T type
+expressions and terms are inductively defined as follows:
+
+\begin{code}\>\<%
+\\
+\>\AgdaKeyword{data} \AgdaDatatype{type} \AgdaSymbol{:} \AgdaPrimitiveType{Set} \AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{ι} \<[13]%
+\>[13]\AgdaSymbol{:} \AgdaDatatype{type}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{\_⇒\_} \AgdaSymbol{:} \AgdaDatatype{type} \AgdaSymbol{→} \AgdaDatatype{type} \AgdaSymbol{→} \AgdaDatatype{type}\<%
+\\
+%
+\\
+\>\AgdaKeyword{data} \AgdaDatatype{T} \AgdaSymbol{:} \AgdaSymbol{(}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaPrimitiveType{Set} \AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{Zero} \<[9]%
+\>[9]\AgdaSymbol{:} \AgdaDatatype{T} \AgdaInductiveConstructor{ι}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{Succ} \<[9]%
+\>[9]\AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{Rec} \<[7]%
+\>[7]\AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \<[25]%
+\>[25]\AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{σ}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaBound{σ}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{K} \<[7]%
+\>[7]\AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaBound{τ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \<[25]%
+\>[25]\AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ} \AgdaInductiveConstructor{⇒} \AgdaBound{σ}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{S} \<[7]%
+\>[7]\AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{ρ} \AgdaBound{σ} \AgdaBound{τ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaBound{ρ} \AgdaInductiveConstructor{⇒} \AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaSymbol{(}\AgdaBound{ρ} \AgdaInductiveConstructor{⇒} \AgdaBound{σ}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaBound{ρ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{\_·\_} \<[7]%
+\>[7]\AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaBound{τ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \<[25]%
+\>[25]\AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaDatatype{T} \AgdaBound{σ} \AgdaSymbol{→} \AgdaDatatype{T} \AgdaBound{τ}\<%
+\\
+%
+\\
+\>\AgdaKeyword{infixr} \AgdaNumber{1} \_⇒\_\<%
+\\
+\>\AgdaKeyword{infixl} \AgdaNumber{1} \_·\_\<%
+\\
+\>\<\end{code}
+Notice that there are five constants (or combinators) and one binary
+constructor (application). Notice also that one can build only
+well-typed terms.  The set-theoretical interpretation of type
+expressions and terms is given by
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{Set⟦\_⟧} \AgdaSymbol{:} \AgdaDatatype{type} \AgdaSymbol{→} \AgdaPrimitiveType{Set}\<%
+\\
+\>\AgdaFunction{Set⟦} \AgdaInductiveConstructor{ι} \AgdaFunction{⟧} \AgdaSymbol{=} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ} \AgdaFunction{⟧} \AgdaSymbol{=} \AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaFunction{⟧} \AgdaSymbol{→} \AgdaFunction{Set⟦} \AgdaBound{τ} \AgdaFunction{⟧}\<%
+\\
+\>\<\end{code}
+
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{⟦\_⟧} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{T} \AgdaBound{σ} \AgdaSymbol{→} \AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaInductiveConstructor{Zero} \AgdaFunction{⟧} \<[10]%
+\>[10]\AgdaSymbol{=} \AgdaInductiveConstructor{zero}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaInductiveConstructor{Succ} \AgdaFunction{⟧} \<[10]%
+\>[10]\AgdaSymbol{=} \AgdaInductiveConstructor{succ}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaInductiveConstructor{Rec} \AgdaFunction{⟧} \<[10]%
+\>[10]\AgdaSymbol{=} \AgdaFunction{rec}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaInductiveConstructor{K} \AgdaFunction{⟧} \<[10]%
+\>[10]\AgdaSymbol{=} \AgdaFunction{Ķ}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaInductiveConstructor{S} \AgdaFunction{⟧} \<[10]%
+\>[10]\AgdaSymbol{=} \AgdaFunction{Ş}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaBound{t} \AgdaInductiveConstructor{·} \AgdaBound{u} \AgdaFunction{⟧} \<[12]%
+\>[12]\AgdaSymbol{=} \AgdaFunction{⟦} \AgdaBound{t} \AgdaFunction{⟧} \AgdaFunction{⟦} \AgdaBound{u} \AgdaFunction{⟧} \<[26]%
+\>[26]\<%
+\\
+\>\<\end{code}
+An element of the set-theoretical model is called T-definable if
+there is a T-term denoting it:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{T-definable} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaFunction{⟧} \AgdaSymbol{→} \AgdaPrimitiveType{Set}\<%
+\\
+\>\AgdaFunction{T-definable} \AgdaBound{x} \AgdaSymbol{=} \AgdaDatatype{Σ} \AgdaSymbol{	\textbackslash}\AgdaBound{t} \AgdaSymbol{→} \AgdaFunction{⟦} \AgdaBound{t} \AgdaFunction{⟧} \AgdaDatatype{≡} \AgdaBound{x}\<%
+\\
+\>\<\end{code}
+As discussed above, the main theorem, proved in the last subsection, is
+that every \AgdaC{T}-definable function \AgdaC{Baire → ℕ} is
+continuous. The system \AgdaC{T} type of such functionals is \AgdaC{(ι
+⇒ ι) ⇒ ι}.  
+
+We also consider system T extended with a formal oracle \AgdaC{Ω : ι ⇒
+ι}:
+
+\begin{code}\>\<%
+\\
+\>\AgdaKeyword{data} \AgdaDatatype{TΩ} \AgdaSymbol{:} \AgdaSymbol{(}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaPrimitiveType{Set} \AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{Ω} \<[7]%
+\>[7]\AgdaSymbol{:} \AgdaDatatype{TΩ}\AgdaSymbol{(}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{Zero} \<[9]%
+\>[9]\AgdaSymbol{:} \AgdaDatatype{TΩ} \AgdaInductiveConstructor{ι}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{Succ} \<[9]%
+\>[9]\AgdaSymbol{:} \AgdaDatatype{TΩ}\AgdaSymbol{(}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{Rec} \<[7]%
+\>[7]\AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \<[25]%
+\>[25]\AgdaSymbol{→} \AgdaDatatype{TΩ}\AgdaSymbol{((}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{σ}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaBound{σ}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{K} \<[7]%
+\>[7]\AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaBound{τ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \<[25]%
+\>[25]\AgdaSymbol{→} \AgdaDatatype{TΩ}\AgdaSymbol{(}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ} \AgdaInductiveConstructor{⇒} \AgdaBound{σ}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{S} \<[7]%
+\>[7]\AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{ρ} \AgdaBound{σ} \AgdaBound{τ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{TΩ}\AgdaSymbol{((}\AgdaBound{ρ} \AgdaInductiveConstructor{⇒} \AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaSymbol{(}\AgdaBound{ρ} \AgdaInductiveConstructor{⇒} \AgdaBound{σ}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaBound{ρ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaInductiveConstructor{\_·\_} \<[7]%
+\>[7]\AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaBound{τ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \<[25]%
+\>[25]\AgdaSymbol{→} \AgdaDatatype{TΩ}\AgdaSymbol{(}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaDatatype{TΩ} \AgdaBound{σ} \AgdaSymbol{→} \AgdaDatatype{TΩ} \AgdaBound{τ}\<%
+\\
+\>\<\end{code}
+In the standard set-theoretical interpretation, the oracle can be
+thought of as a free variable ranging over elements of the
+interpretation Baire of the type expression \AgdaC{ι ⇒ ι}:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{⟦\_⟧'} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{TΩ} \AgdaBound{σ} \AgdaSymbol{→} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaInductiveConstructor{Ω} \AgdaFunction{⟧'} \<[11]%
+\>[11]\AgdaBound{α} \AgdaSymbol{=} \AgdaBound{α}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaInductiveConstructor{Zero} \AgdaFunction{⟧'} \<[11]%
+\>[11]\AgdaBound{α} \AgdaSymbol{=} \AgdaInductiveConstructor{zero}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaInductiveConstructor{Succ} \AgdaFunction{⟧'} \<[11]%
+\>[11]\AgdaBound{α} \AgdaSymbol{=} \AgdaInductiveConstructor{succ}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaInductiveConstructor{Rec} \AgdaFunction{⟧'} \<[11]%
+\>[11]\AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{rec}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaInductiveConstructor{K} \AgdaFunction{⟧'} \<[11]%
+\>[11]\AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{Ķ}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaInductiveConstructor{S} \AgdaFunction{⟧'} \<[11]%
+\>[11]\AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{Ş}\<%
+\\
+\>\AgdaFunction{⟦} \AgdaBound{t} \AgdaInductiveConstructor{·} \AgdaBound{u} \AgdaFunction{⟧'} \<[15]%
+\>[15]\AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{⟦} \AgdaBound{t} \AgdaFunction{⟧'} \AgdaBound{α} \AgdaSymbol{(}\AgdaFunction{⟦} \AgdaBound{u} \AgdaFunction{⟧'} \AgdaBound{α}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+To regard TΩ as an extension of T we need to work with an
+embedding:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{embed} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{T} \AgdaBound{σ} \AgdaSymbol{→} \AgdaDatatype{TΩ} \AgdaBound{σ}\<%
+\\
+\>\AgdaFunction{embed} \AgdaInductiveConstructor{Zero} \AgdaSymbol{=} \AgdaInductiveConstructor{Zero}\<%
+\\
+\>\AgdaFunction{embed} \AgdaInductiveConstructor{Succ} \AgdaSymbol{=} \AgdaInductiveConstructor{Succ}\<%
+\\
+\>\AgdaFunction{embed} \AgdaInductiveConstructor{Rec} \AgdaSymbol{=} \AgdaInductiveConstructor{Rec}\<%
+\\
+\>\AgdaFunction{embed} \AgdaInductiveConstructor{K} \AgdaSymbol{=} \AgdaInductiveConstructor{K}\<%
+\\
+\>\AgdaFunction{embed} \AgdaInductiveConstructor{S} \AgdaSymbol{=} \AgdaInductiveConstructor{S}\<%
+\\
+\>\AgdaFunction{embed} \AgdaSymbol{(}\AgdaBound{t} \AgdaInductiveConstructor{·} \AgdaBound{u}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaSymbol{(}\AgdaFunction{embed} \AgdaBound{t}\AgdaSymbol{)} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaFunction{embed} \AgdaBound{u}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+
+\subsection{The dialogue interpretation of system \AgdaC{T}} \label{section:dialogue:interpretation}
+
+We now consider an auxiliary interpretation of system T extended with
+an oracle in order to show that the original T-definable functions
+Baire → ℕ are continuous.  In the alternative semantics, types are
+interpreted as the underlying objects of certain algebras of the
+dialogue monad. The ground type is interpreted as the free algebra of
+the standard interpretation, and function types as function sets.  For
+the sake of brevity, we will include only the parts of the definition
+of the monad that we actually need for our purposes.
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{kleisli-extension} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaBound{Y} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaBound{X} \AgdaSymbol{→} \AgdaFunction{B} \AgdaBound{Y}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{B} \AgdaBound{X} \AgdaSymbol{→} \AgdaFunction{B} \AgdaBound{Y}\<%
+\\
+\>\AgdaFunction{kleisli-extension} \AgdaBound{f} \AgdaSymbol{(}\AgdaInductiveConstructor{η} \AgdaBound{x}\AgdaSymbol{)} \<[28]%
+\>[28]\AgdaSymbol{=} \AgdaBound{f} \AgdaBound{x}\<%
+\\
+\>\AgdaFunction{kleisli-extension} \AgdaBound{f} \AgdaSymbol{(}\AgdaInductiveConstructor{β} \AgdaBound{φ} \AgdaBound{i}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaInductiveConstructor{β} \AgdaSymbol{(λ} \AgdaBound{j} \AgdaSymbol{→} \AgdaFunction{kleisli-extension} \AgdaBound{f} \AgdaSymbol{(}\AgdaBound{φ} \AgdaBound{j}\AgdaSymbol{))} \AgdaBound{i}\<%
+\\
+%
+\\
+\>\AgdaFunction{B-functor} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaBound{Y} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaBound{X} \AgdaSymbol{→} \AgdaBound{Y}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{B} \AgdaBound{X} \AgdaSymbol{→} \AgdaFunction{B} \AgdaBound{Y}\<%
+\\
+\>\AgdaFunction{B-functor} \AgdaBound{f} \AgdaSymbol{=} \AgdaFunction{kleisli-extension}\AgdaSymbol{(}\AgdaInductiveConstructor{η} \AgdaFunction{∘} \AgdaBound{f}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+The following two lemmas are crucial. We first swap the two arguments
+of the dialogue function to have the view that from an element of the
+Baire type we get a B-algebra \AgdaC{B $X$ → $X$} for any \AgdaC{$X$}:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{decode} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaFunction{B} \AgdaBound{X} \AgdaSymbol{→} \AgdaBound{X}\<%
+\\
+\>\AgdaFunction{decode} \AgdaBound{α} \AgdaBound{d} \AgdaSymbol{=} \AgdaFunction{dialogue} \AgdaBound{d} \AgdaBound{α}\<%
+\\
+\>\<\end{code}
+The decodification map is natural for any oracle α : Baire:
+%
+%                  B g
+%         B X --------------> B Y
+%          |                   |
+% decode α |                   | decode α
+%          |                   |
+%          v                   v
+%          X ----------------> Y
+%                   g
+%
+
+\begin{small}
+\begin{diagram}[small]
+\text{B $X$} & \rTo^{\text{B $g$}} & \text{B $Y$} \\
+\dTo^{\text{decode α}} & & \dTo_{\text{decode α}} \\
+X & \rTo_{g} & Y.
+\end{diagram}
+\end{small}
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{decode-α-is-natural} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaBound{Y} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}(}\AgdaBound{g} \AgdaSymbol{:} \AgdaBound{X} \AgdaSymbol{→} \AgdaBound{Y}\AgdaSymbol{)(}\AgdaBound{d} \AgdaSymbol{:} \AgdaFunction{B} \AgdaBound{X}\AgdaSymbol{)(}\AgdaBound{α} \AgdaSymbol{:} \AgdaFunction{Baire}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{g}\AgdaSymbol{(}\AgdaFunction{decode} \AgdaBound{α} \AgdaBound{d}\AgdaSymbol{)} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaFunction{B-functor} \AgdaBound{g} \AgdaBound{d}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{decode-α-is-natural} \AgdaBound{g} \AgdaSymbol{(}\AgdaInductiveConstructor{η} \AgdaBound{x}\AgdaSymbol{)} \<[30]%
+\>[30]\AgdaBound{α} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{decode-α-is-natural} \AgdaBound{g} \AgdaSymbol{(}\AgdaInductiveConstructor{β} \AgdaBound{φ} \AgdaBound{i}\AgdaSymbol{)} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{decode-α-is-natural} \AgdaBound{g} \AgdaSymbol{(}\AgdaBound{φ}\AgdaSymbol{(}\AgdaBound{α} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α}\<%
+\\
+\>\<\end{code}
+The following diagram commutes for any \AgdaC{$f$ : $X$ → B $Y$}:
+%
+%                 kleisli-extension f                          
+%            B X ---------------------> B Y
+%             |                          |
+%   decode α  |                          | decode α
+%             |                          |
+%             V                          |
+%             X ---------> BY ---------> Y
+%                 f           decode α
+
+\begin{small}
+\begin{diagram}[small]
+\text{B $X$} & \rTo^{\text{~~~~~~~~~~~~kleisli-extension $f$}} & & & \text{B $Y$} \\
+\dTo^{\text{decode α}} & & & & \dTo_{\text{decode α}} \\
+X & \rTo_{f} & \text{B $Y$} & \rTo_{\text{decode α}} & Y.
+\end{diagram}
+\end{small}
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{decode-kleisli-extension} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaBound{Y} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}(}\AgdaBound{f} \AgdaSymbol{:} \AgdaBound{X} \AgdaSymbol{→} \AgdaFunction{B} \AgdaBound{Y}\AgdaSymbol{)(}\AgdaBound{d} \AgdaSymbol{:} \AgdaFunction{B} \AgdaBound{X}\AgdaSymbol{)(}\AgdaBound{α} \AgdaSymbol{:} \AgdaFunction{Baire}\AgdaSymbol{)} \<[73]%
+\>[73]\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaSymbol{→} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{f}\AgdaSymbol{(}\AgdaFunction{decode} \AgdaBound{α} \AgdaBound{d}\AgdaSymbol{))} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaFunction{kleisli-extension} \AgdaBound{f} \AgdaBound{d}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{decode-kleisli-extension} \AgdaBound{f} \AgdaSymbol{(}\AgdaInductiveConstructor{η} \AgdaBound{x}\AgdaSymbol{)} \<[35]%
+\>[35]\AgdaBound{α} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{decode-kleisli-extension} \AgdaBound{f} \AgdaSymbol{(}\AgdaInductiveConstructor{β} \AgdaBound{φ} \AgdaBound{i}\AgdaSymbol{)} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{decode-kleisli-extension} \AgdaBound{f} \AgdaSymbol{(}\AgdaBound{φ}\AgdaSymbol{(}\AgdaBound{α} \AgdaBound{i}\AgdaSymbol{))} \AgdaBound{α}\<%
+\\
+\>\<\end{code}
+System TΩ type expressions are interpreted as the underlying sets of
+certain algebras of the dialogue monad. The base type is interpreted
+as the underlying set of the free algebra of the standard interpretation, and function types
+are interpreted as sets of functions,
+exploiting the fact that algebras are exponential ideals (if $Y$ is
+the underlying object of an algebra, then so is the set of all
+functions $X$ → $Y$ for any $X$, with the pointwise structure).
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{B-Set⟦\_⟧} \AgdaSymbol{:} \AgdaDatatype{type} \AgdaSymbol{→} \AgdaPrimitiveType{Set}\<%
+\\
+\>\AgdaFunction{B-Set⟦} \AgdaInductiveConstructor{ι} \AgdaFunction{⟧} \AgdaSymbol{=} \AgdaFunction{B}\AgdaSymbol{(}\AgdaFunction{Set⟦} \AgdaInductiveConstructor{ι} \AgdaFunction{⟧}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ} \AgdaFunction{⟧} \AgdaSymbol{=} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧} \AgdaSymbol{→} \AgdaFunction{B-Set⟦} \AgdaBound{τ} \AgdaFunction{⟧}\<%
+\\
+\>\<\end{code}
+According to the official definition of an algebra of a monad, to show
+that a set $X$ is the underlying object of an algebra one must provide a
+structure map \AgdaC{B $X$ → $X$}. Alternatively, which is more
+convenient for us, one can provide a generalized Kleisli extension
+operator, defined as follows, where the base case is just Kleisli
+extension, and the induction step is pointwise extension:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{Kleisli-extension} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaBound{X} \AgdaSymbol{→} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{B} \AgdaBound{X} \AgdaSymbol{→} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\<%
+\\
+\>\AgdaFunction{Kleisli-extension} \AgdaSymbol{\{}\AgdaBound{X}\AgdaSymbol{\}} \AgdaSymbol{\{}\AgdaInductiveConstructor{ι}\AgdaSymbol{\}} \AgdaSymbol{=} \AgdaFunction{kleisli-extension}\<%
+\\
+\>\AgdaFunction{Kleisli-extension} \AgdaSymbol{\{}\AgdaBound{X}\AgdaSymbol{\}} \AgdaSymbol{\{}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ}\AgdaSymbol{\}} \AgdaSymbol{=} \AgdaSymbol{λ} \AgdaBound{g} \AgdaBound{d} \AgdaBound{s} \AgdaSymbol{→} \AgdaFunction{Kleisli-extension} \AgdaSymbol{\{}\AgdaBound{X}\AgdaSymbol{\}} \AgdaSymbol{\{}\AgdaBound{τ}\AgdaSymbol{\}} \AgdaSymbol{(λ} \AgdaBound{x} \AgdaSymbol{→} \AgdaBound{g} \AgdaBound{x} \AgdaBound{s}\AgdaSymbol{)} \AgdaBound{d} \<[84]%
+\>[84]\<%
+\\
+\>\<\end{code}
+With this we can now define the dialogue interpretation of system TΩ.
+The generic element of the Baire type under this 
+interpretation will interpret the Baire oracle Ω:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{generic} \AgdaSymbol{:} \AgdaFunction{B} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaFunction{B} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{generic} \AgdaSymbol{=} \AgdaFunction{kleisli-extension}\AgdaSymbol{(}\AgdaInductiveConstructor{β} \AgdaInductiveConstructor{η}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+As discussed in Section~\ref{formulation},
+the crucial property of the generic element is this:
+% the following diagram commutes for any \AgdaC{α : Baire}:
+%
+%                 generic
+%          B ℕ ------------> B ℕ
+%           |                 |
+%           |                 |
+%  decode α |                 | decode α
+%           |                 |
+%           |                 |
+%           v                 v
+%           ℕ --------------> ℕ
+%                    α           
+
+\begin{small}
+\begin{diagram}[small]
+\text{B ℕ} & \rTo^{\text{generic}} & \text{B ℕ} \\
+\dTo^{\text{decode α}} & & \dTo_{\text{decode α}} \\
+\text{ℕ} & \rTo_{\text{α}} & \text{ℕ}.
+\end{diagram}
+\end{small}
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{generic-diagram} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{α} \AgdaSymbol{:} \AgdaFunction{Baire}\AgdaSymbol{)(}\AgdaBound{d} \AgdaSymbol{:} \AgdaFunction{B} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{α}\AgdaSymbol{(}\AgdaFunction{decode} \AgdaBound{α} \AgdaBound{d}\AgdaSymbol{)} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaFunction{generic} \AgdaBound{d}\AgdaSymbol{)} \<[79]%
+\>[79]\<%
+\\
+\>\AgdaFunction{generic-diagram} \AgdaBound{α} \AgdaSymbol{(}\AgdaInductiveConstructor{η} \AgdaBound{n}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{generic-diagram} \AgdaBound{α} \AgdaSymbol{(}\AgdaInductiveConstructor{β} \AgdaBound{φ} \AgdaBound{n}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaFunction{generic-diagram} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{φ}\AgdaSymbol{(}\AgdaBound{α} \AgdaBound{n}\AgdaSymbol{))}\<%
+\\
+\>\<\end{code}
+The alternative interpretations of zero and successor are obvious:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{zero'} \AgdaSymbol{:} \AgdaFunction{B} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{zero'} \AgdaSymbol{=} \AgdaInductiveConstructor{η} \AgdaInductiveConstructor{zero}\<%
+\\
+\>\AgdaFunction{succ'} \AgdaSymbol{:} \AgdaFunction{B} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaFunction{B} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{succ'} \AgdaSymbol{=} \AgdaFunction{B-functor} \AgdaInductiveConstructor{succ}\<%
+\\
+\>\<\end{code}
+And the interpretation of the primitive recursion combinator again
+uses Kleisli extension in an obvious way:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{rec'} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧} \AgdaSymbol{→} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧} \AgdaSymbol{→} \AgdaFunction{B} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\<%
+\\
+\>\AgdaFunction{rec'} \AgdaBound{f} \AgdaBound{x} \AgdaSymbol{=} \AgdaFunction{Kleisli-extension}\AgdaSymbol{(}\AgdaFunction{rec} \AgdaBound{f} \AgdaBound{x}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+This gives the  dialogue interpretation. Notice that the interpretations
+of K, S and application are standard. This is because we interpret
+function types as sets of functions:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{B⟦\_⟧} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{TΩ} \AgdaBound{σ} \AgdaSymbol{→} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\<%
+\\
+\>\AgdaFunction{B⟦} \AgdaInductiveConstructor{Ω} \AgdaFunction{⟧} \<[11]%
+\>[11]\AgdaSymbol{=} \AgdaFunction{generic}\<%
+\\
+\>\AgdaFunction{B⟦} \AgdaInductiveConstructor{Zero} \AgdaFunction{⟧} \<[11]%
+\>[11]\AgdaSymbol{=} \AgdaFunction{zero'}\<%
+\\
+\>\AgdaFunction{B⟦} \AgdaInductiveConstructor{Succ} \AgdaFunction{⟧} \<[11]%
+\>[11]\AgdaSymbol{=} \AgdaFunction{succ'}\<%
+\\
+\>\AgdaFunction{B⟦} \AgdaInductiveConstructor{Rec} \AgdaFunction{⟧} \<[11]%
+\>[11]\AgdaSymbol{=} \AgdaFunction{rec'}\<%
+\\
+\>\AgdaFunction{B⟦} \AgdaInductiveConstructor{K} \AgdaFunction{⟧} \<[11]%
+\>[11]\AgdaSymbol{=} \AgdaFunction{Ķ}\<%
+\\
+\>\AgdaFunction{B⟦} \AgdaInductiveConstructor{S} \AgdaFunction{⟧} \<[11]%
+\>[11]\AgdaSymbol{=} \AgdaFunction{Ş}\<%
+\\
+\>\AgdaFunction{B⟦} \AgdaBound{t} \AgdaInductiveConstructor{·} \AgdaBound{u} \AgdaFunction{⟧} \<[13]%
+\>[13]\AgdaSymbol{=} \AgdaFunction{B⟦} \AgdaBound{t} \AgdaFunction{⟧} \AgdaSymbol{(}\AgdaFunction{B⟦} \AgdaBound{u} \AgdaFunction{⟧}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+This semantics gives the desired dialogue trees:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{dialogue-tree} \AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{B} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{dialogue-tree} \AgdaBound{t} \AgdaSymbol{=} \AgdaFunction{B⟦} \AgdaSymbol{(}\AgdaFunction{embed} \AgdaBound{t}\AgdaSymbol{)} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{Ω} \AgdaFunction{⟧}\<%
+\\
+\>\<\end{code}
+
+\noindent
+The remainder of the development is the formulation and proof of the
+correctness of the dialogue-tree function.  We conclude this section
+with the trivial proof that the embedding of T into TΩ preserves the
+standard interpretation and furthermore is independent of oracles:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{preservation} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{∀(}\AgdaBound{t} \AgdaSymbol{:} \AgdaDatatype{T} \AgdaBound{σ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaSymbol{∀(}\AgdaBound{α} \AgdaSymbol{:} \AgdaFunction{Baire}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{⟦} \AgdaBound{t} \AgdaFunction{⟧} \AgdaDatatype{≡} \AgdaFunction{⟦} \AgdaFunction{embed} \AgdaBound{t} \AgdaFunction{⟧'} \AgdaBound{α}\<%
+\\
+\>\AgdaFunction{preservation} \AgdaInductiveConstructor{Zero} \AgdaBound{α} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{preservation} \AgdaInductiveConstructor{Succ} \AgdaBound{α} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{preservation} \AgdaInductiveConstructor{Rec} \AgdaBound{α} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{preservation} \AgdaInductiveConstructor{K} \AgdaBound{α} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{preservation} \AgdaInductiveConstructor{S} \AgdaBound{α} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{preservation} \AgdaSymbol{(}\AgdaBound{t} \AgdaInductiveConstructor{·} \AgdaBound{u}\AgdaSymbol{)} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{cong₂} \AgdaSymbol{(λ} \AgdaBound{f} \AgdaBound{x} \AgdaSymbol{→} \AgdaBound{f} \AgdaBound{x}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{preservation} \AgdaBound{t} \AgdaBound{α}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{preservation} \AgdaBound{u} \AgdaBound{α}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+
+\subsection{Relating the two models} \label{section:logical:relation}
+
+The main lemma is that for any term \AgdaC{$t$ : TΩ ι}, 
+\begin{quote}
+  ⟦ $t$ ⟧$'$ α ≡ decode α (B⟦ $t$ ⟧).
+\end{quote}
+We use the following logical relation to prove this:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{R} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaSymbol{(}\AgdaFunction{Baire} \AgdaSymbol{→} \AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧} \AgdaSymbol{→} \AgdaPrimitiveType{Set}\<%
+\\
+%
+\\
+\>\AgdaFunction{R} \AgdaSymbol{\{}\AgdaInductiveConstructor{ι}\AgdaSymbol{\}} \AgdaBound{n} \AgdaBound{n'} \AgdaSymbol{=} \<[13]%
+\>[13]\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaSymbol{∀(}\AgdaBound{α} \AgdaSymbol{:} \AgdaFunction{Baire}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaBound{n} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaBound{n'}\<%
+\\
+%
+\\
+\>\AgdaFunction{R} \AgdaSymbol{\{}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ}\AgdaSymbol{\}} \AgdaBound{f} \AgdaBound{f'} \AgdaSymbol{=} \<[17]%
+\>[17]\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaSymbol{∀(}\AgdaBound{x} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\AgdaSymbol{)(}\AgdaBound{x'} \AgdaSymbol{:} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{R} \AgdaSymbol{\{}\AgdaBound{σ}\AgdaSymbol{\}} \AgdaBound{x} \AgdaBound{x'} \AgdaSymbol{→} \AgdaFunction{R} \AgdaSymbol{\{}\AgdaBound{τ}\AgdaSymbol{\}} \AgdaSymbol{(λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaBound{f} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{x} \AgdaBound{α}\AgdaSymbol{))} \AgdaSymbol{(}\AgdaBound{f'} \AgdaBound{x'}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+We need a (fairly general) technical lemma, which is used for
+constants with an interpretation using the Kleisli-extension
+operator. In our case, this is just the recursion combinator.  The
+proof is by induction on type expressions, crucially relying on the lemma
+\emph{decode-kleisli-extension}, but is routine otherwise:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{R-kleisli-lemma} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{)(}\AgdaBound{g} \AgdaSymbol{:} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\AgdaSymbol{)(}\AgdaBound{g'} \AgdaSymbol{:} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaSymbol{→} \AgdaSymbol{(∀(}\AgdaBound{k} \AgdaSymbol{:} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{R} \AgdaSymbol{(}\AgdaBound{g} \AgdaBound{k}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{g'} \AgdaBound{k}\AgdaSymbol{))} \<[32]%
+\>[32]\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaSymbol{→} \AgdaSymbol{∀(}\AgdaBound{n} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)(}\AgdaBound{n'} \AgdaSymbol{:} \AgdaFunction{B} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{R} \AgdaBound{n} \AgdaBound{n'} \AgdaSymbol{→} \AgdaFunction{R} \AgdaSymbol{(λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaBound{g} \AgdaSymbol{(}\AgdaBound{n} \AgdaBound{α}\AgdaSymbol{)} \AgdaBound{α}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{Kleisli-extension} \AgdaBound{g'} \AgdaBound{n'}\AgdaSymbol{)}\<%
+\\
+%
+\\
+\>\AgdaFunction{R-kleisli-lemma} \AgdaInductiveConstructor{ι} \AgdaBound{g} \AgdaBound{g'} \AgdaBound{rg} \AgdaBound{n} \AgdaBound{n'} \AgdaBound{rn} \AgdaSymbol{=} \AgdaSymbol{λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaFunction{trans} \AgdaSymbol{(}\AgdaFunction{fact₃} \AgdaBound{α}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{fact₀} \AgdaBound{α}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaKeyword{where}\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{fact₀} \AgdaSymbol{:} \AgdaSymbol{∀} \AgdaBound{α} \AgdaSymbol{→} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{g'} \AgdaSymbol{(}\AgdaFunction{decode} \AgdaBound{α} \AgdaBound{n'}\AgdaSymbol{))} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaFunction{kleisli-extension} \AgdaBound{g'} \AgdaBound{n'}\AgdaSymbol{)} \<[83]%
+\>[83]\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{fact₀} \AgdaSymbol{=} \AgdaFunction{decode-kleisli-extension} \AgdaBound{g'} \AgdaBound{n'}\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{fact₁} \AgdaSymbol{:} \AgdaSymbol{∀} \AgdaBound{α} \AgdaSymbol{→} \AgdaBound{g} \AgdaSymbol{(}\AgdaBound{n} \AgdaBound{α}\AgdaSymbol{)} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{g'}\AgdaSymbol{(}\AgdaBound{n} \AgdaBound{α}\AgdaSymbol{))}\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{fact₁} \AgdaBound{α} \AgdaSymbol{=} \AgdaBound{rg} \AgdaSymbol{(}\AgdaBound{n} \AgdaBound{α}\AgdaSymbol{)} \AgdaBound{α} \<[25]%
+\>[25]\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{fact₂} \AgdaSymbol{:} \AgdaSymbol{∀} \AgdaBound{α} \AgdaSymbol{→} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{g'} \AgdaSymbol{(}\AgdaBound{n} \AgdaBound{α}\AgdaSymbol{))} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{g'} \AgdaSymbol{(}\AgdaFunction{decode} \AgdaBound{α} \AgdaBound{n'}\AgdaSymbol{))}\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{fact₂} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{cong} \AgdaSymbol{(λ} \AgdaBound{k} \AgdaSymbol{→} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{g'} \AgdaBound{k}\AgdaSymbol{))} \AgdaSymbol{(}\AgdaBound{rn} \AgdaBound{α}\AgdaSymbol{)}\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{fact₃} \AgdaSymbol{:} \AgdaSymbol{∀} \AgdaBound{α} \AgdaSymbol{→} \AgdaBound{g} \AgdaSymbol{(}\AgdaBound{n} \AgdaBound{α}\AgdaSymbol{)} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{g'} \AgdaSymbol{(}\AgdaFunction{decode} \AgdaBound{α} \AgdaBound{n'}\AgdaSymbol{))}\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{fact₃} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{trans} \AgdaSymbol{(}\AgdaFunction{fact₁} \AgdaBound{α}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{fact₂} \AgdaBound{α}\AgdaSymbol{)}\<%
+\\
+%
+\\
+\>\AgdaFunction{R-kleisli-lemma} \AgdaSymbol{(}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ}\AgdaSymbol{)} \AgdaBound{g} \AgdaBound{g'} \AgdaBound{rg} \AgdaBound{n} \AgdaBound{n'} \AgdaBound{rn} \<[40]%
+\>[40]\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaSymbol{=} \AgdaSymbol{λ} \AgdaBound{y} \AgdaBound{y'} \AgdaBound{ry} \AgdaSymbol{→} \AgdaFunction{R-kleisli-lemma} \AgdaBound{τ} \AgdaSymbol{(λ} \AgdaBound{k} \AgdaBound{α} \AgdaSymbol{→} \AgdaBound{g} \AgdaBound{k} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{y} \AgdaBound{α}\AgdaSymbol{))} \AgdaSymbol{(λ} \AgdaBound{k} \AgdaSymbol{→} \AgdaBound{g'} \AgdaBound{k} \AgdaBound{y'}\AgdaSymbol{)} \AgdaSymbol{(λ} \AgdaBound{k} \AgdaSymbol{→} \AgdaBound{rg} \AgdaBound{k} \AgdaBound{y} \AgdaBound{y'} \AgdaBound{ry}\AgdaSymbol{)} \AgdaBound{n} \AgdaBound{n'} \AgdaBound{rn} \<[101]%
+\>[101]\<%
+\\
+\>\<\end{code}
+The proof of the main lemma is by induction on terms, crucially
+relying on the lemmas \emph{generic-diagram} (for the term
+\AgdaC{Ω}), \emph{decode-is-natural} (for the term \AgdaC{Succ}) and
+\emph{R-kleisli-lemma} (for the term \AgdaC{Rec}). The terms \AgdaC{K}
+and \AgdaC{S} are routine (but laborious and difficult to get right in
+an informal calculation), and so is the induction step for
+application:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{main-lemma} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}(}\AgdaBound{t} \AgdaSymbol{:} \AgdaDatatype{TΩ} \AgdaBound{σ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{R} \AgdaFunction{⟦} \AgdaBound{t} \AgdaFunction{⟧'} \AgdaSymbol{(}\AgdaFunction{B⟦} \AgdaBound{t} \AgdaFunction{⟧}\AgdaSymbol{)}\<%
+\\
+%
+\\
+\>\AgdaFunction{main-lemma} \AgdaInductiveConstructor{Ω} \AgdaSymbol{=} \AgdaFunction{lemma}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaKeyword{where} \<[8]%
+\>[8]\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim} \AgdaSymbol{:} \AgdaSymbol{∀} \AgdaBound{α} \AgdaBound{n} \AgdaBound{n'} \AgdaSymbol{→} \AgdaBound{n} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{dialogue} \AgdaBound{n'} \AgdaBound{α} \AgdaSymbol{→} \AgdaBound{α}\AgdaSymbol{(}\AgdaBound{n} \AgdaBound{α}\AgdaSymbol{)} \AgdaDatatype{≡} \AgdaBound{α}\AgdaSymbol{(}\AgdaFunction{decode} \AgdaBound{α} \AgdaBound{n'}\AgdaSymbol{)}\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim} \AgdaBound{α} \AgdaBound{n} \AgdaBound{n'} \AgdaBound{s} \AgdaSymbol{=} \AgdaFunction{cong} \AgdaBound{α} \AgdaBound{s} \<[30]%
+\>[30]\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{lemma} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{n} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)(}\AgdaBound{n'} \AgdaSymbol{:} \AgdaFunction{B} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaSymbol{(∀} \AgdaBound{α} \AgdaSymbol{→} \AgdaBound{n} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaBound{n'}\AgdaSymbol{)} \<[67]%
+\>[67]\<%
+\\
+\>[4]\AgdaIndent{10}{}\<[10]%
+\>[10]\AgdaSymbol{→} \AgdaSymbol{∀} \AgdaBound{α} \AgdaSymbol{→} \AgdaBound{α}\AgdaSymbol{(}\AgdaBound{n} \AgdaBound{α}\AgdaSymbol{)} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaFunction{generic} \AgdaBound{n'}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{lemma} \AgdaBound{n} \AgdaBound{n'} \AgdaBound{rn} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{trans} \AgdaSymbol{(}\AgdaFunction{claim} \AgdaBound{α} \AgdaBound{n} \AgdaBound{n'} \AgdaSymbol{(}\AgdaBound{rn} \AgdaBound{α}\AgdaSymbol{))} \AgdaSymbol{(}\AgdaFunction{generic-diagram} \AgdaBound{α} \AgdaBound{n'}\AgdaSymbol{)} \<[73]%
+\>[73]\<%
+\\
+%
+\\
+\>\AgdaFunction{main-lemma} \AgdaInductiveConstructor{Zero} \AgdaSymbol{=} \AgdaSymbol{λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{main-lemma} \AgdaInductiveConstructor{Succ} \AgdaSymbol{=} \AgdaFunction{lemma}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaKeyword{where} \<[8]%
+\>[8]\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim} \AgdaSymbol{:} \AgdaSymbol{∀} \AgdaBound{α} \AgdaBound{n} \AgdaBound{n'} \AgdaSymbol{→} \AgdaBound{n} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{dialogue} \AgdaBound{n'} \AgdaBound{α} \AgdaSymbol{→} \AgdaInductiveConstructor{succ}\AgdaSymbol{(}\AgdaBound{n} \AgdaBound{α}\AgdaSymbol{)} \AgdaDatatype{≡} \AgdaInductiveConstructor{succ}\AgdaSymbol{(}\AgdaFunction{decode} \AgdaBound{α} \AgdaBound{n'}\AgdaSymbol{)}\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim} \AgdaBound{α} \AgdaBound{n} \AgdaBound{n'} \AgdaBound{s} \AgdaSymbol{=} \AgdaFunction{cong} \AgdaInductiveConstructor{succ} \AgdaBound{s} \<[34]%
+\>[34]\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{lemma} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{n} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)(}\AgdaBound{n'} \AgdaSymbol{:} \AgdaFunction{B} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaSymbol{(∀} \AgdaBound{α} \AgdaSymbol{→} \AgdaBound{n} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaBound{n'}\AgdaSymbol{)}\<%
+\\
+\>[4]\AgdaIndent{10}{}\<[10]%
+\>[10]\AgdaSymbol{→} \AgdaSymbol{∀} \AgdaBound{α} \AgdaSymbol{→} \AgdaInductiveConstructor{succ} \AgdaSymbol{(}\AgdaBound{n} \AgdaBound{α}\AgdaSymbol{)} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaFunction{B-functor} \AgdaInductiveConstructor{succ} \AgdaBound{n'}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{lemma} \AgdaBound{n} \AgdaBound{n'} \AgdaBound{rn} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{trans} \AgdaSymbol{(}\AgdaFunction{claim} \AgdaBound{α} \AgdaBound{n} \AgdaBound{n'} \AgdaSymbol{(}\AgdaBound{rn} \AgdaBound{α}\AgdaSymbol{))} \AgdaSymbol{(}\AgdaFunction{decode-α-is-natural} \AgdaInductiveConstructor{succ} \AgdaBound{n'} \AgdaBound{α}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{main-lemma} \AgdaSymbol{\{(}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaSymbol{.}\AgdaBound{σ}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaSymbol{.}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaSymbol{.}\AgdaBound{σ}\AgdaSymbol{\}} \AgdaInductiveConstructor{Rec} \AgdaSymbol{=} \AgdaFunction{lemma}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaKeyword{where}\<%
+\\
+\>[2]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{lemma} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{f} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaFunction{⟧} \AgdaSymbol{→} \AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\AgdaSymbol{)(}\AgdaBound{f'} \AgdaSymbol{:} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧} \AgdaSymbol{→} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{R} \AgdaSymbol{\{}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{σ}\AgdaSymbol{\}} \AgdaBound{f} \AgdaBound{f'} \<[94]%
+\>[94]\<%
+\\
+\>[4]\AgdaIndent{6}{}\<[6]%
+\>[6]\AgdaSymbol{→} \AgdaSymbol{∀(}\AgdaBound{x} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\AgdaSymbol{)(}\AgdaBound{x'} \AgdaSymbol{:} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\AgdaSymbol{)} \<[49]%
+\>[49]\<%
+\\
+\>[4]\AgdaIndent{6}{}\<[6]%
+\>[6]\AgdaSymbol{→} \AgdaFunction{R} \AgdaSymbol{\{}\AgdaBound{σ}\AgdaSymbol{\}} \AgdaBound{x} \AgdaBound{x'} \AgdaSymbol{→} \AgdaSymbol{∀(}\AgdaBound{n} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)(}\AgdaBound{n'} \AgdaSymbol{:} \AgdaFunction{B} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{R} \AgdaSymbol{\{}\AgdaInductiveConstructor{ι}\AgdaSymbol{\}} \AgdaBound{n} \AgdaBound{n'}\<%
+\\
+\>[4]\AgdaIndent{6}{}\<[6]%
+\>[6]\AgdaSymbol{→} \AgdaFunction{R} \AgdaSymbol{\{}\AgdaBound{σ}\AgdaSymbol{\}} \AgdaSymbol{(λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaFunction{rec} \AgdaSymbol{(}\AgdaBound{f} \AgdaBound{α}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{x} \AgdaBound{α}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{n} \AgdaBound{α}\AgdaSymbol{))} \AgdaSymbol{(}\AgdaFunction{Kleisli-extension}\AgdaSymbol{(}\AgdaFunction{rec} \AgdaBound{f'} \AgdaBound{x'}\AgdaSymbol{)} \AgdaBound{n'}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{lemma} \AgdaBound{f} \AgdaBound{f'} \AgdaBound{rf} \AgdaBound{x} \AgdaBound{x'} \AgdaBound{rx} \AgdaSymbol{=} \AgdaFunction{R-kleisli-lemma} \AgdaBound{σ} \AgdaFunction{g} \AgdaFunction{g'} \AgdaFunction{rg}\<%
+\\
+\>[0]\AgdaIndent{6}{}\<[6]%
+\>[6]\AgdaKeyword{where}\<%
+\\
+\>[6]\AgdaIndent{8}{}\<[8]%
+\>[8]\AgdaFunction{g} \AgdaSymbol{:} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\<%
+\\
+\>[6]\AgdaIndent{8}{}\<[8]%
+\>[8]\AgdaFunction{g} \AgdaBound{k} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{rec} \AgdaSymbol{(}\AgdaBound{f} \AgdaBound{α}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{x} \AgdaBound{α}\AgdaSymbol{)} \AgdaBound{k}\<%
+\\
+\>[6]\AgdaIndent{8}{}\<[8]%
+\>[8]\AgdaFunction{g'} \AgdaSymbol{:} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaFunction{B-Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\<%
+\\
+\>[6]\AgdaIndent{8}{}\<[8]%
+\>[8]\AgdaFunction{g'} \AgdaBound{k} \AgdaSymbol{=} \AgdaFunction{rec} \AgdaBound{f'} \AgdaBound{x'} \AgdaBound{k}\<%
+\\
+\>[6]\AgdaIndent{8}{}\<[8]%
+\>[8]\AgdaFunction{rg} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{k} \AgdaSymbol{:} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{R} \AgdaSymbol{(}\AgdaFunction{g} \AgdaBound{k}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{g'} \AgdaBound{k}\AgdaSymbol{)}\<%
+\\
+\>[6]\AgdaIndent{8}{}\<[8]%
+\>[8]\AgdaFunction{rg} \AgdaInductiveConstructor{zero} \AgdaSymbol{=} \AgdaBound{rx} \<[22]%
+\>[22]\<%
+\\
+\>[6]\AgdaIndent{8}{}\<[8]%
+\>[8]\AgdaFunction{rg} \AgdaSymbol{(}\AgdaInductiveConstructor{succ} \AgdaBound{k}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaBound{rf} \AgdaSymbol{(}\AgdaFunction{g} \AgdaBound{k}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{g'} \AgdaBound{k}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{rg} \AgdaBound{k}\AgdaSymbol{)}\<%
+\\
+%
+\\
+\>\AgdaFunction{main-lemma} \AgdaInductiveConstructor{K} \AgdaSymbol{=} \AgdaSymbol{λ} \AgdaBound{x} \AgdaBound{x'} \AgdaBound{rx} \AgdaBound{y} \AgdaBound{y'} \AgdaBound{ry} \AgdaSymbol{→} \AgdaBound{rx} \<[38]%
+\>[38]\<%
+\\
+%
+\\
+\>\AgdaFunction{main-lemma} \AgdaInductiveConstructor{S} \AgdaSymbol{=} \AgdaSymbol{λ} \AgdaBound{f} \AgdaBound{f'} \AgdaBound{rf} \AgdaBound{g} \AgdaBound{g'} \AgdaBound{rg} \AgdaBound{x} \AgdaBound{x'} \AgdaBound{rx} \AgdaSymbol{→} \AgdaBound{rf} \AgdaBound{x} \AgdaBound{x'} \AgdaBound{rx} \AgdaSymbol{(λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaBound{g} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{x} \AgdaBound{α}\AgdaSymbol{))} \AgdaSymbol{(}\AgdaBound{g'} \AgdaBound{x'}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{rg} \AgdaBound{x} \AgdaBound{x'} \AgdaBound{rx}\AgdaSymbol{)} \<[93]%
+\>[93]\<%
+\\
+%
+\\
+\>\AgdaFunction{main-lemma} \AgdaSymbol{(}\AgdaBound{t} \AgdaInductiveConstructor{·} \AgdaBound{u}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaFunction{main-lemma} \AgdaBound{t} \AgdaFunction{⟦} \AgdaBound{u} \AgdaFunction{⟧'} \AgdaFunction{B⟦} \AgdaBound{u} \AgdaFunction{⟧} \AgdaSymbol{(}\AgdaFunction{main-lemma} \AgdaBound{u}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+This gives the correctness of the dialogue-tree function defined
+above: the standard interpretation of a term is computed by
+its dialogue tree.
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{dialogue-tree-correct} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{t} \AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{))(}\AgdaBound{α} \AgdaSymbol{:} \AgdaFunction{Baire}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{⟦} \AgdaBound{t} \AgdaFunction{⟧} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaFunction{dialogue-tree} \AgdaBound{t}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{dialogue-tree-correct} \AgdaBound{t} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{trans} \AgdaFunction{claim₀} \AgdaFunction{claim₁}\<%
+\\
+\>[0]\AgdaIndent{2}{}\<[2]%
+\>[2]\AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim₀} \AgdaSymbol{:} \AgdaFunction{⟦} \AgdaBound{t} \AgdaFunction{⟧} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{⟦} \AgdaSymbol{(}\AgdaFunction{embed} \AgdaBound{t}\AgdaSymbol{)} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{Ω} \AgdaFunction{⟧'} \AgdaBound{α}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim₀} \AgdaSymbol{=} \AgdaFunction{cong} \AgdaSymbol{(λ} \AgdaBound{g} \AgdaSymbol{→} \AgdaBound{g} \AgdaBound{α}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{preservation} \AgdaBound{t} \AgdaBound{α}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim₁} \AgdaSymbol{:} \AgdaFunction{⟦} \AgdaSymbol{(}\AgdaFunction{embed} \AgdaBound{t}\AgdaSymbol{)} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{Ω} \AgdaFunction{⟧'} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{decode} \AgdaBound{α} \AgdaSymbol{(}\AgdaFunction{dialogue-tree} \AgdaBound{t}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaIndent{4}{}\<[4]%
+\>[4]\AgdaFunction{claim₁} \AgdaSymbol{=} \AgdaFunction{main-lemma} \AgdaSymbol{((}\AgdaFunction{embed} \AgdaBound{t}\AgdaSymbol{)} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{Ω}\AgdaSymbol{)} \AgdaBound{α}\<%
+\\
+\>\<\end{code}
+
+\noindent The desired result follows directly from this:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{eloquence-theorem} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{f} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{T-definable} \AgdaBound{f} \AgdaSymbol{→} \AgdaFunction{eloquent} \AgdaBound{f}\<%
+\\
+\>\AgdaFunction{eloquence-theorem} \AgdaBound{f} \AgdaSymbol{(}\AgdaBound{t} \AgdaInductiveConstructor{,} \AgdaBound{r}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaSymbol{(}\AgdaFunction{dialogue-tree} \AgdaBound{t} \AgdaInductiveConstructor{,} \AgdaSymbol{λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaFunction{trans}\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSymbol{(}\AgdaFunction{dialogue-tree-correct} \AgdaBound{t} \AgdaBound{α}\AgdaSymbol{))(}\AgdaFunction{cong}\AgdaSymbol{(λ} \AgdaBound{g} \AgdaSymbol{→} \AgdaBound{g} \AgdaBound{α}\AgdaSymbol{)} \AgdaBound{r}\AgdaSymbol{))}\<%
+\\
+%
+\\
+\>\AgdaFunction{corollary₀} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{f} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{T-definable} \AgdaBound{f} \AgdaSymbol{→} \AgdaFunction{continuous} \AgdaBound{f}\<%
+\\
+\>\AgdaFunction{corollary₀} \AgdaBound{f} \AgdaBound{d} \AgdaSymbol{=} \AgdaFunction{eloquent-is-continuous} \AgdaBound{f} \AgdaSymbol{(}\AgdaFunction{eloquence-theorem} \AgdaBound{f} \AgdaBound{d}\AgdaSymbol{)}\<%
+\\
+%
+\\
+\>\AgdaFunction{corollary₁} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{f} \AgdaSymbol{:} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{ℕ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{T-definable} \AgdaBound{f} \AgdaSymbol{→} \AgdaFunction{uniformly-continuous}\AgdaSymbol{(}\AgdaFunction{C-restriction} \AgdaBound{f}\AgdaSymbol{)} \<[86]%
+\>[86]\<%
+\\
+\>\AgdaFunction{corollary₁} \AgdaBound{f} \AgdaBound{d} \AgdaSymbol{=} \AgdaFunction{eloquent-is-UC} \AgdaSymbol{(}\AgdaFunction{C-restriction} \AgdaBound{f}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{eloquent-restriction} \AgdaBound{f} \AgdaSymbol{(}\AgdaFunction{eloquence-theorem} \AgdaBound{f} \AgdaBound{d}\AgdaSymbol{))}\<%
+\\
+\>\<\end{code} 
+
+\noindent This concludes the full, self-contained, MLTT proof in Agda
+notation, given from scratch. Because MLTT proofs are programs, we can
+run the two corollaries to compute moduli of (uniform) continuity of
+T-definable functions.  Because MLTT itself has an interpretation in
+ZF(C), in which types are sets in the sense of classical mathematics,
+the results of this paper hold in classical mathematics too.  Because
+the \LaTeX\ source for this article~\cite{escardo:dialogue} is
+simultaneously an Agda file that type-checks, the readers don't need
+to check the routine details of the proofs themselves, provided they
+trust the minimal core of Agda used here, and can instead concentrate
+on the interesting details of the constructions and proofs. One can
+envisage a future in which it will be easier to write (constructive
+and non-constructive) formal proofs than informal, rigorous proofs,
+letting our minds concentrate on the insights. This is certainly a
+provocative statement. But, in fact, the proof presented here was
+directly written in its formal form, without an informal draft other
+than a mental picture starting from the idea of generic sequence as
+described in the introduction, with some rudimentary help by Agda to
+perform the routine steps. Tactic-based systems such as e.g.\ Coq
+provide much more help, which in some instances can be considered as
+non-routine even if ultimately they are based on algorithms. But our
+principal motivation for writing this formal proof in an MLTT or
+realizability based computer system such as NuPrl, Coq, Lego, Agda,
+Minlog etc.\ is that mentioned above, that the proof is literally a
+program too, and hence can be used to compute moduli of (uniform)
+continuity, without the need to write a separate algorithm based on an
+informal, rigorous proof, as it is usually currently done, including
+by ourselves in previous work.
+
+Having said that, it is useful to have a self-contained informal
+rigorous proof, which we include in the next section. Before that,
+we conclude this section by running our formal constructive proof for
+the purposes of illustration.
+
+\subsection{Experiments} \label{section:experiments}
+
+To illustrate the concrete sense in which the above formal proof is
+constructive, we develop some experiments. These experiments are not
+meant to indicate the usefulness of the theorem proved above. They
+merely make clear that the theorems do have a concrete computational
+content.
+
+First of all, given a term \AgdaC{$t$ : (ι ⇒ ι) ⇒ ι}, we can compute
+its modulus of (uniform) continuity.
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{mod-cont} \AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{Baire} \AgdaSymbol{→} \AgdaDatatype{List} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{mod-cont} \AgdaBound{t} \AgdaBound{α} \AgdaSymbol{=} \AgdaFunction{π₀}\AgdaSymbol{(}\AgdaFunction{corollary₀} \AgdaFunction{⟦} \AgdaBound{t} \AgdaFunction{⟧} \AgdaSymbol{(}\AgdaBound{t} \AgdaInductiveConstructor{,} \AgdaInductiveConstructor{refl}\AgdaSymbol{)} \AgdaBound{α}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{mod-cont-obs} \AgdaSymbol{:} \AgdaSymbol{∀(}\AgdaBound{t} \AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{))(}\AgdaBound{α} \AgdaSymbol{:} \AgdaFunction{Baire}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaFunction{mod-cont} \AgdaBound{t} \AgdaBound{α} \AgdaDatatype{≡} \AgdaFunction{π₀}\AgdaSymbol{(}\AgdaFunction{dialogue-continuity} \AgdaSymbol{(}\AgdaFunction{dialogue-tree} \AgdaBound{t}\AgdaSymbol{)} \AgdaBound{α}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{mod-cont-obs} \AgdaBound{t} \AgdaBound{α} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+%
+\\
+\>\AgdaKeyword{infixl} \AgdaNumber{0} \_∷\_\<%
+\\
+\>\AgdaKeyword{infixl} \AgdaNumber{1} \_++\_\<%
+\\
+\>\AgdaFunction{\_++\_} \AgdaSymbol{:} \AgdaSymbol{\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{List} \AgdaBound{X} \AgdaSymbol{→} \AgdaDatatype{List} \AgdaBound{X} \AgdaSymbol{→} \AgdaDatatype{List} \AgdaBound{X}\<%
+\\
+\>\AgdaInductiveConstructor{[]} \AgdaFunction{++} \AgdaBound{u} \AgdaSymbol{=} \AgdaBound{u}\<%
+\\
+\>\AgdaSymbol{(}\AgdaBound{x} \AgdaInductiveConstructor{∷} \AgdaBound{t}\AgdaSymbol{)} \AgdaFunction{++} \AgdaBound{u} \AgdaSymbol{=} \AgdaBound{x} \AgdaInductiveConstructor{∷} \AgdaBound{t} \AgdaFunction{++} \AgdaBound{u}\<%
+\\
+\>\AgdaFunction{flatten} \AgdaSymbol{:} \AgdaSymbol{\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{Tree} \AgdaBound{X} \AgdaSymbol{→} \AgdaDatatype{List} \AgdaBound{X}\<%
+\\
+\>\AgdaFunction{flatten} \AgdaInductiveConstructor{empty} \AgdaSymbol{=} \AgdaInductiveConstructor{[]}\<%
+\\
+\>\AgdaFunction{flatten} \AgdaSymbol{(}\AgdaInductiveConstructor{branch} \AgdaBound{x} \AgdaBound{t}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaBound{x} \AgdaInductiveConstructor{∷} \AgdaFunction{flatten}\AgdaSymbol{(}\AgdaBound{t} \AgdaInductiveConstructor{₀}\AgdaSymbol{)} \AgdaFunction{++} \AgdaFunction{flatten}\AgdaSymbol{(}\AgdaBound{t} \AgdaInductiveConstructor{₁}\AgdaSymbol{)}\<%
+\\
+%
+\\
+\>\AgdaFunction{mod-unif} \AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaDatatype{List} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{mod-unif} \AgdaBound{t} \AgdaSymbol{=} \AgdaFunction{flatten}\AgdaSymbol{(}\AgdaFunction{π₀} \AgdaSymbol{(}\AgdaFunction{corollary₁} \AgdaFunction{⟦} \AgdaBound{t} \AgdaFunction{⟧} \AgdaSymbol{(}\AgdaBound{t} \AgdaInductiveConstructor{,} \AgdaInductiveConstructor{refl}\AgdaSymbol{)))}\<%
+\\
+\>\<\end{code}
+The following Agda declaration allows us to write e.g.\ $3$ rather than
+\AgdaC{succ(succ(succ zero))}:
+
+\begin{code}\>\<%
+\\
+\>\AgdaSymbol{\{-\#} \AgdaKeyword{BUILTIN} NATURAL \AgdaDatatype{ℕ} \AgdaSymbol{\#-\}}\<%
+\\
+\>\AgdaSymbol{\{-\#} \AgdaKeyword{BUILTIN} ZERO \AgdaInductiveConstructor{zero} \AgdaSymbol{\#-\}}\<%
+\\
+\>\AgdaSymbol{\{-\#} \AgdaKeyword{BUILTIN} SUC \AgdaInductiveConstructor{succ} \AgdaSymbol{\#-\}}\<%
+\\
+\>\<\end{code}
+A difficulty we face is that it is not easy to write system T
+programs in the combinatory version of system~T. Hence we start by
+developing some machinery.
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{I} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{σ}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{I} \AgdaSymbol{\{}\AgdaBound{σ}\AgdaSymbol{\}} \AgdaSymbol{=} \AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{K} \AgdaSymbol{\{}\AgdaBound{σ}\AgdaSymbol{\}} \AgdaSymbol{\{}\AgdaBound{σ}\AgdaSymbol{\})}\<%
+\\
+\>\AgdaFunction{I-behaviour} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{σ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}\{}\AgdaBound{x} \AgdaSymbol{:} \AgdaFunction{Set⟦} \AgdaBound{σ} \AgdaFunction{⟧}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaFunction{⟦} \AgdaFunction{I} \AgdaFunction{⟧} \AgdaBound{x} \AgdaDatatype{≡} \AgdaBound{x}\<%
+\\
+\>\AgdaFunction{I-behaviour} \AgdaSymbol{=} \AgdaInductiveConstructor{refl} \<[19]%
+\>[19]\<%
+\\
+%
+\\
+\>\AgdaFunction{number} \AgdaSymbol{:} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaDatatype{T} \AgdaInductiveConstructor{ι}\<%
+\\
+\>\AgdaFunction{number} \AgdaInductiveConstructor{zero} \AgdaSymbol{=} \AgdaInductiveConstructor{Zero}\<%
+\\
+\>\AgdaFunction{number} \AgdaSymbol{(}\AgdaInductiveConstructor{succ} \AgdaBound{n}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaInductiveConstructor{Succ} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaFunction{number} \AgdaBound{n}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+Here is our first example:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{t₀} \AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{t₀} \AgdaSymbol{=} \AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaFunction{number} \AgdaNumber{17}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{t₀-interpretation} \AgdaSymbol{:} \AgdaFunction{⟦} \AgdaFunction{t₀} \AgdaFunction{⟧} \AgdaDatatype{≡} \AgdaSymbol{λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaNumber{17}\<%
+\\
+\>\AgdaFunction{t₀-interpretation} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{example₀} \AgdaFunction{example₀'} \AgdaSymbol{:} \AgdaDatatype{List} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{example₀} \AgdaSymbol{=} \AgdaFunction{mod-cont} \AgdaFunction{t₀} \AgdaSymbol{(λ} \AgdaBound{i} \AgdaSymbol{→} \AgdaBound{i}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{example₀'} \AgdaSymbol{=} \AgdaFunction{mod-unif} \AgdaFunction{t₀}\<%
+\\
+\>\<\end{code} 
+These examples both evaluate to [].  To provide more sophisticated
+examples, we work with an impoverished context γ that allows us to
+consider just one free variable v, which is represented by the I
+combinator:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{v} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{γ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaBound{γ} \AgdaInductiveConstructor{⇒} \AgdaBound{γ}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{v} \AgdaSymbol{=} \AgdaFunction{I}\<%
+\\
+\>\<\end{code}
+Application for such a context amounts to the S combinator:
+
+\begin{code}\>\<%
+\\
+\>\AgdaKeyword{infixl} \AgdaNumber{1} \_•\_\<%
+\\
+\>\AgdaFunction{\_•\_} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{γ} \AgdaBound{σ} \AgdaBound{τ} \AgdaSymbol{:} \AgdaDatatype{type}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaBound{γ} \AgdaInductiveConstructor{⇒} \AgdaBound{σ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaBound{γ} \AgdaInductiveConstructor{⇒} \AgdaBound{σ}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaBound{γ} \AgdaInductiveConstructor{⇒} \AgdaBound{τ}\AgdaSymbol{)}\<%
+\\
+\>\AgdaBound{f} \AgdaFunction{•} \AgdaBound{x} \AgdaSymbol{=} \AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaBound{f} \AgdaInductiveConstructor{·} \AgdaBound{x} \<[18]%
+\>[18]\<%
+\\
+%
+\\
+\>\AgdaFunction{Number} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{γ}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaBound{γ} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{Number} \AgdaBound{n} \AgdaSymbol{=} \AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaFunction{number} \AgdaBound{n}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+Here is an example:
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{t₁} \AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{t₁} \AgdaSymbol{=} \AgdaFunction{v} \AgdaFunction{•} \AgdaSymbol{(}\AgdaFunction{Number} \AgdaNumber{17}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{t₁-interpretation} \AgdaSymbol{:} \AgdaFunction{⟦} \AgdaFunction{t₁} \AgdaFunction{⟧} \AgdaDatatype{≡} \AgdaSymbol{λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaBound{α} \AgdaNumber{17}\<%
+\\
+\>\AgdaFunction{t₁-interpretation} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{example₁} \AgdaSymbol{:} \AgdaDatatype{List} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{example₁} \AgdaSymbol{=} \AgdaFunction{mod-unif} \AgdaFunction{t₁}\<%
+\\
+\>\<\end{code}
+This evaluates to 17 ∷ [].
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{t₂} \AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{t₂} \AgdaSymbol{=} \AgdaInductiveConstructor{Rec} \AgdaFunction{•} \AgdaFunction{t₁} \AgdaFunction{•} \AgdaFunction{t₁}\<%
+\\
+\>\AgdaFunction{t₂-interpretation} \AgdaSymbol{:} \AgdaFunction{⟦} \AgdaFunction{t₂} \AgdaFunction{⟧} \AgdaDatatype{≡} \AgdaSymbol{λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaFunction{rec} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{17}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{17}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{t₂-interpretation} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{example₂} \AgdaFunction{example₂'} \AgdaSymbol{:} \AgdaDatatype{List} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{example₂} \AgdaSymbol{=} \AgdaFunction{mod-unif} \AgdaFunction{t₂}\<%
+\\
+\>\AgdaFunction{example₂'} \AgdaSymbol{=} \AgdaFunction{mod-cont} \AgdaFunction{t₂} \AgdaSymbol{(λ} \AgdaBound{i} \AgdaSymbol{→} \AgdaBound{i}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+These examples evaluate to 17 ∷ 17 ∷ 17 ∷ 0 ∷ 1 ∷ []
+and to a list whose members are all 17.
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{Add} \AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{Add} \AgdaSymbol{=} \AgdaInductiveConstructor{Rec} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{Succ}\<%
+\\
+\>\AgdaKeyword{infixl} \AgdaNumber{0} \_+\_\<%
+\\
+\>\AgdaFunction{\_+\_} \AgdaSymbol{:} \AgdaSymbol{∀\{}\AgdaBound{γ}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaBound{γ} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaBound{γ} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaSymbol{→} \AgdaDatatype{T}\AgdaSymbol{(}\AgdaBound{γ} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)}\<%
+\\
+\>\AgdaBound{x} \AgdaFunction{+} \AgdaBound{y} \AgdaSymbol{=} \AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaFunction{Add} \AgdaFunction{•} \AgdaBound{x} \AgdaFunction{•} \AgdaBound{y}\<%
+\\
+%
+\\
+\>\AgdaFunction{t₃} \AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{t₃} \AgdaSymbol{=} \AgdaInductiveConstructor{Rec} \AgdaFunction{•} \AgdaSymbol{(}\AgdaFunction{v} \AgdaFunction{•} \AgdaFunction{Number} \AgdaNumber{1}\AgdaSymbol{)} \AgdaFunction{•} \AgdaSymbol{(}\AgdaFunction{v} \AgdaFunction{•} \AgdaFunction{Number} \AgdaNumber{2} \AgdaFunction{+} \AgdaFunction{v} \AgdaFunction{•} \AgdaFunction{Number} \AgdaNumber{3}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{t₃-interpretation} \AgdaSymbol{:} \AgdaFunction{⟦} \AgdaFunction{t₃} \AgdaFunction{⟧} \AgdaDatatype{≡} \AgdaSymbol{λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaFunction{rec} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{1}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{rec} \AgdaInductiveConstructor{succ} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{2}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{3}\AgdaSymbol{))}\<%
+\\
+\>\AgdaFunction{t₃-interpretation} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{example₃} \AgdaFunction{example₃'} \AgdaSymbol{:} \AgdaDatatype{List} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{example₃} \AgdaSymbol{=} \AgdaFunction{mod-cont} \AgdaFunction{t₃} \AgdaInductiveConstructor{succ}\<%
+\\
+\>\AgdaFunction{example₃'} \AgdaSymbol{=} \AgdaFunction{mod-unif} \AgdaFunction{t₃}\<%
+\\
+\>\<\end{code}
+These examples evaluate to 3 ∷ 2 ∷ 1 ∷ 2 ∷ 3 ∷ 4 ∷ 5 ∷ 6 ∷ 7 ∷ 8 ∷ []
+and 3 ∷ 2 ∷ 1 ∷ 1 ∷ 0 ∷ 1 ∷ 2 ∷ 1 ∷ 0 ∷ 1 ∷ 1 ∷ 0 ∷ 0 ∷ 1 ∷ 1 ∷ 0 ∷ 1 ∷ [].
+
+\begin{code}\>\<%
+\\
+\>\AgdaFunction{length} \AgdaSymbol{:} \AgdaSymbol{\{}\AgdaBound{X} \AgdaSymbol{:} \AgdaPrimitiveType{Set}\AgdaSymbol{\}} \AgdaSymbol{→} \AgdaDatatype{List} \AgdaBound{X} \AgdaSymbol{→} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{length} \AgdaInductiveConstructor{[]} \AgdaSymbol{=} \AgdaNumber{0}\<%
+\\
+\>\AgdaFunction{length} \AgdaSymbol{(}\AgdaBound{x} \AgdaInductiveConstructor{∷} \AgdaBound{s}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaInductiveConstructor{succ}\AgdaSymbol{(}\AgdaFunction{length} \AgdaBound{s}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{max} \AgdaSymbol{:} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{max} \AgdaInductiveConstructor{0} \AgdaBound{x} \AgdaSymbol{=} \AgdaBound{x}\<%
+\\
+\>\AgdaFunction{max} \AgdaBound{x} \AgdaInductiveConstructor{0} \AgdaSymbol{=} \AgdaBound{x}\<%
+\\
+\>\AgdaFunction{max} \AgdaSymbol{(}\AgdaInductiveConstructor{succ} \AgdaBound{x}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaInductiveConstructor{succ} \AgdaBound{y}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaInductiveConstructor{succ}\AgdaSymbol{(}\AgdaFunction{max} \AgdaBound{x} \AgdaBound{y}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{Max} \AgdaSymbol{:} \AgdaDatatype{List} \AgdaDatatype{ℕ} \AgdaSymbol{→} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{Max} \AgdaInductiveConstructor{[]} \AgdaSymbol{=} \AgdaNumber{0}\<%
+\\
+\>\AgdaFunction{Max} \AgdaSymbol{(}\AgdaBound{x} \AgdaInductiveConstructor{∷} \AgdaBound{s}\AgdaSymbol{)} \AgdaSymbol{=} \AgdaFunction{max} \AgdaBound{x} \AgdaSymbol{(}\AgdaFunction{Max} \AgdaBound{s}\AgdaSymbol{)}\<%
+\\
+%
+\\
+\>\AgdaFunction{t₄} \AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{t₄} \AgdaSymbol{=} \AgdaInductiveConstructor{Rec} \AgdaFunction{•} \AgdaSymbol{((}\AgdaFunction{v} \AgdaFunction{•} \AgdaSymbol{(}\AgdaFunction{v} \AgdaFunction{•} \AgdaFunction{Number} \AgdaNumber{2}\AgdaSymbol{))} \AgdaFunction{+} \AgdaSymbol{(}\AgdaFunction{v} \AgdaFunction{•} \AgdaFunction{Number} \AgdaNumber{3}\AgdaSymbol{))} \AgdaFunction{•} \AgdaFunction{t₃}\<%
+\\
+\>\AgdaFunction{t₄-interpretation} \AgdaSymbol{:} \AgdaFunction{⟦} \AgdaFunction{t₄} \AgdaFunction{⟧} \AgdaDatatype{≡} \AgdaSymbol{λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaFunction{rec} \AgdaBound{α} \AgdaSymbol{(}\AgdaFunction{rec} \AgdaInductiveConstructor{succ} \AgdaSymbol{(}\AgdaBound{α} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{2}\AgdaSymbol{))} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{3}\AgdaSymbol{))} \AgdaSymbol{(}\AgdaFunction{rec} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{1}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{rec} \AgdaInductiveConstructor{succ} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{2}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{3}\AgdaSymbol{)))}\<%
+\\
+\>\AgdaFunction{t₄-interpretation} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{example₄} \AgdaFunction{example₄'} \AgdaSymbol{:} \AgdaDatatype{ℕ}\<%
+\\
+\>\AgdaFunction{example₄} \AgdaSymbol{=} \AgdaFunction{length}\AgdaSymbol{(}\AgdaFunction{mod-unif} \AgdaFunction{t₄}\AgdaSymbol{)}\<%
+\\
+\>\AgdaFunction{example₄'} \AgdaSymbol{=} \AgdaFunction{Max}\AgdaSymbol{(}\AgdaFunction{mod-unif} \AgdaFunction{t₄}\AgdaSymbol{)}\<%
+\\
+\>\<\end{code}
+These examples evaluate to 215 and 3.
+
+\begin{code}\>\>[0]\AgdaIndent{1}{}\<[1]%
+\>[1]\<%
+\\
+\>\AgdaFunction{t₅} \AgdaSymbol{:} \AgdaDatatype{T}\AgdaSymbol{((}\AgdaInductiveConstructor{ι} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \AgdaInductiveConstructor{⇒} \AgdaInductiveConstructor{ι}\AgdaSymbol{)} \<[20]%
+\>[20]\<%
+\\
+\>\AgdaFunction{t₅} \AgdaSymbol{=} \AgdaInductiveConstructor{Rec} \AgdaFunction{•} \AgdaSymbol{(}\AgdaFunction{v} \AgdaFunction{•} \AgdaSymbol{(}\AgdaFunction{v} \AgdaFunction{•} \AgdaFunction{t₂} \AgdaFunction{+} \AgdaFunction{t₄}\AgdaSymbol{))} \AgdaFunction{•} \AgdaSymbol{(}\AgdaFunction{v} \AgdaFunction{•} \AgdaFunction{Number} \AgdaNumber{2}\AgdaSymbol{)} \<[48]%
+\>[48]\<%
+\\
+\>\AgdaFunction{t₅-explicitly} \AgdaSymbol{:} \AgdaFunction{t₅} \AgdaDatatype{≡} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{Rec} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaFunction{I} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{Rec} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{Succ}\AgdaSymbol{))} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaFunction{I} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{Rec} \AgdaInductiveConstructor{·}\<%
+\\
+\>[0]\AgdaIndent{21}{}\<[21]%
+\>[21]\AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaFunction{I} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaFunction{number} \AgdaNumber{17}\AgdaSymbol{))))}\AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaFunction{I} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaFunction{number} \AgdaNumber{17}\AgdaSymbol{))))))} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{Rec} \AgdaInductiveConstructor{·} \<[100]%
+\>[100]\<%
+\\
+\>[0]\AgdaIndent{21}{}\<[21]%
+\>[21]\AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{Rec} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{Succ}\AgdaSymbol{))} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaFunction{I} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaFunction{I} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaFunction{number} \AgdaNumber{2}\AgdaSymbol{)))))} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaFunction{I} \AgdaInductiveConstructor{·} \<[101]%
+\>[101]\<%
+\\
+\>[0]\AgdaIndent{21}{}\<[21]%
+\>[21]\AgdaSymbol{(}\AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaFunction{number} \AgdaNumber{3}\AgdaSymbol{)))))} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{Rec} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaFunction{I} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaFunction{number} \AgdaNumber{1}\AgdaSymbol{))))} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·}\<%
+\\
+\>[0]\AgdaIndent{21}{}\<[21]%
+\>[21]\AgdaSymbol{(}\AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{Rec} \AgdaInductiveConstructor{·} \AgdaInductiveConstructor{Succ}\AgdaSymbol{))} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaFunction{I} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaFunction{number} \AgdaNumber{2}\AgdaSymbol{))))} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaFunction{I} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaFunction{number} \AgdaNumber{3}\AgdaSymbol{)))))))))} \AgdaInductiveConstructor{·} \<[107]%
+\>[107]\<%
+\\
+\>[0]\AgdaIndent{21}{}\<[21]%
+\>[21]\AgdaSymbol{(}\AgdaInductiveConstructor{S} \AgdaInductiveConstructor{·} \AgdaFunction{I} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaInductiveConstructor{K} \AgdaInductiveConstructor{·} \AgdaSymbol{(}\AgdaFunction{number} \AgdaNumber{2}\AgdaSymbol{))))} \<[49]%
+\>[49]\<%
+\\
+\>\AgdaFunction{t₅-explicitly} \AgdaSymbol{=} \AgdaInductiveConstructor{refl}\<%
+\\
+\>\AgdaFunction{t₅-interpretation} \AgdaSymbol{:} \AgdaFunction{⟦} \AgdaFunction{t₅} \AgdaFunction{⟧} \AgdaDatatype{≡} \AgdaSymbol{λ} \AgdaBound{α} \AgdaSymbol{→} \AgdaFunction{rec} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{α}\AgdaSymbol{(}\AgdaFunction{rec} \AgdaInductiveConstructor{succ} \AgdaSymbol{(}\AgdaBound{α}\AgdaSymbol{(}\AgdaFunction{rec} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{17}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{17}\AgdaSymbol{)))} \AgdaSymbol{(}\AgdaFunction{rec} \AgdaBound{α} \AgdaSymbol{(}\AgdaFunction{rec} \AgdaInductiveConstructor{succ} \AgdaSymbol{(}\AgdaBound{α} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{2}\AgdaSymbol{))} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{3}\AgdaSymbol{))} \<[112]%
+\>[112]\<%
+\\
+\>[21]\AgdaIndent{34}{}\<[34]%
+\>[34]\AgdaSymbol{(}\AgdaFunction{rec} \AgdaBound{α} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{1}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaFunction{rec} \AgdaInductiveConstructor{succ} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{2}\AgdaSymbol{)} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{3}\AgdaSymbol{))))))} \AgdaSymbol{(}\AgdaBound{α} \AgdaNumber{2}\AgdaSymbol{)} \<[80]%
+\>[80]\<%
+\\
+\>\AgdaFunction{t₅-interpretation} \AgdaSymbol{=} \AgdaInductiveConstructor{refl} \<[25]%
+\>[25]\<%
+\\
+\>\AgdaFunction{example₅} \AgdaFunction{example₅'} \AgdaFunction{example₅''} \AgdaSymbol{:} \AgdaDatatype{ℕ} \<[34]%
+\>[34]\<%
+\\
+\>\AgdaFunction{example₅} \AgdaSymbol{=} \AgdaFunction{length}\AgdaSymbol{(}\AgdaFunction{mod-unif} \AgdaFunction{t₅}\AgdaSymbol{)} \<[31]%
+\>[31]\<%
+\\
+\>\AgdaFunction{example₅'} \AgdaSymbol{=} \AgdaFunction{Max}\AgdaSymbol{(}\AgdaFunction{mod-unif} \AgdaFunction{t₅}\AgdaSymbol{)} \<[29]%
+\>[29]\<%
+\\
+\>\AgdaFunction{example₅''} \AgdaSymbol{=} \AgdaFunction{Max}\AgdaSymbol{(}\AgdaFunction{mod-cont} \AgdaFunction{t₅} \AgdaInductiveConstructor{succ}\AgdaSymbol{)} \<[35]%
+\>[35]\<%
+\\
+\>\<\end{code} 
+These examples evaluate to 15551, 17 and 57.  All evaluations reported
+above are instantaneous, except this last set, which takes about a
+minute in a low-end netbook. The use of Church encoding of dialogue
+trees produces a dramatic performance
+improvement~\cite{escardo:dialogue}, with an instantaneous answer in
+these examples, because Klesli extension and the functor don't need to
+walk through trees to be performed.
+
+\section{Informal, rigorous proof} \label{section:informal}
+
+\newcommand{\decode}{\operatorname{decode}}
+\newcommand{\generic}{\operatorname{generic}}
+\newcommand{\T}{\operatorname{T}}
+\newcommand{\D}{\operatorname{D}}
+\newcommand{\B}{\operatorname{B}}
+\newcommand{\To}{\Rightarrow}
+\newcommand{\Zero}{\operatorname{\mathtt{Zero}}}
+\newcommand{\Succ}{\operatorname{\mathtt{Succ}}}
+\newcommand{\Rec}{\operatorname{\mathtt{Rec}}}
+\newcommand{\K}{\operatorname{\mathtt{K}}}
+\renewcommand{\SS}{\operatorname{\mathtt{S}}}
+\newcommand{\interp}[1]{\llbracket #1 \rrbracket}
+\newcommand{\binterp}[1]{{\scriptstyle \B}\llbracket #1 \rrbracket}
+\newcommand{\N}{\mathbb{N}}
+
+We now provide a self-contained, informal, rigorous version of the
+formal proof given above, in a foundationally neutral exposition.
+
+We work with the combinatory version of (the term language of)
+G\"odel's system~$\T$. We have a ground type~$\iota$ and a right-associative
+type formation operation $-\To-$. Every term as a unique type. We have
+the constants \begin{enumerate} \item $\Zero \colon \iota$.  \item
+$\Succ \colon \iota \To \iota$.  \item $\Rec_{\sigma} \colon (\sigma
+\To \sigma) \To \sigma \To \iota \To \sigma$.  \item $\K_{\sigma,\tau}
+\colon \sigma \To \tau \To \sigma$.  \item $\SS_{\rho,\sigma,\tau}
+\colon (\rho \To \sigma \To \tau) \To (\rho \To \sigma) \To \rho \To
+\tau$.  \end{enumerate} We omit the subscripts when they can be
+uniquely inferred from the context.  If $t \colon \sigma \To \tau$ and
+$u \colon \tau$ are terms, then so is $tu \colon \tau$, with the
+convention that this application operation is left associative. 
+Write $\T_\sigma$ for the set of terms of type~$\sigma$.
+
+In the \emph{standard interpretation}, we map a type expression $\sigma$ to a set
+$\interp{\sigma}$ and a term $t \colon \sigma$ to an element
+$\interp{t} \in \interp{\sigma}$. These interpretations
+are defined by induction as follows:
+\begin{gather*}
+\interp{\iota}  = \N, 
+\qquad \interp{\sigma \To \tau} = \interp{\tau}^{\interp{\sigma}} = ({\interp{\sigma}} \to \interp{\tau}) \,\,\text{(set of all functions $\interp{\sigma} \to \interp{\tau}$)}, \\[1ex]
+\interp{\Zero} = 0,
+\qquad \interp{\Succ} n = n+1,
+\qquad \interp{\Rec} f x n  = f^n(x), \\[1ex]
+\interp{\K} x y = x,
+\qquad \interp{\SS} f g x = fx(gx),
+\qquad \interp{tu} = \interp{t}(\interp{u}).
+\end{gather*}
+For any given three sets $X,Y,Z$, the set $\D X Y Z$ of \emph{dialogue trees}
+is inductively defined as follows:
+\begin{enumerate}
+\item A leaf labeled by an element $z \in Z$ is a dialogue tree, written $\eta z$.
+\item If $\phi \colon Y \to \D X Y Z$ is a $Y$-indexed family of dialogue trees and $x \in X$, then the tree with root labeled by $x$ and with one branch leading to the subtree $\phi y$ for each $y \in Y$  is also a dialogue tree, written $\beta \phi x$.   
+\end{enumerate}
+Such trees are well founded, meaning that every path from the root to
+a leaf is finite.  The above notation gives functions
+\begin{eqnarray*}
+  \eta & \colon & Z \to \D X Y Z, \\
+  \beta & \colon & (Y \to \D X Y Z) \to X \to \D X Y Z.
+\end{eqnarray*}
+Dialogue trees describe ``computations'' of functions $f \colon Y^X
+\to Z$.  Leaves give answers, and labels of internal nodes are queries
+to an ``oracle'' $\alpha \in Y^X$, the argument of the function~$f$.
+For any dialogue tree $d \in \D X Y Z$, we inductively define a function $f_d \colon
+Y^X \to Z$ by
+\[
+f_{\eta z}(\alpha) = z, 
+\qquad 
+f_{\beta \phi x}(\alpha) = f_{\phi(\alpha x)}(\alpha).
+\]
+The functions $Y^X \to Z$ that arise in this way are called
+\emph{eloquent}. Notice that the oracle $\alpha$ is queried
+finitely many times in this computation, because a dialogue tree is
+well founded. Hence the function $f = f_d \colon Y^X \to Z$
+satisfies
+\[
+\forall \alpha \in Y^X \quad \exists \text{finite $S \subseteq X$ } \quad \forall \alpha' \in Y^X, \alpha =_S \alpha' \implies f\alpha=f\alpha',
+\]
+where $\alpha =_S \alpha'$ is a shorthand for $\forall x \in
+S, \alpha x = \alpha'x$. When $X=Y=Z=\N$, this amounts to
+continuity in the product topology of $\N^\N$ with $\N$ discrete,
+which gives the Baire space. 
+
+For $Y$ finite and $X,Z$ arbitrary, the dialogue tree is finitely
+branching and hence finite by well-foundedness (or directly by
+induction), and so the set of potential queries to the oracle is
+finite, so that, for any $f = f_d \colon Y^X \to Z$ with~$Y$ finite,
+\[
+\exists \text{finite $S \subseteq X$ } \forall \alpha,\alpha' \in Y^X, \quad
+\alpha =_S \alpha' \implies f\alpha =f \alpha'.
+\]
+When $Y=2=\{0,1\}$ and $X=Z=\N$, this amounts to
+(uniform) continuity in the product topology of $2^\N$ with $2$ discrete,
+which gives the Cantor space.
+
+Clearly, any $\N$-branching tree $d \in \D \N \N \N$ can be pruned to
+a $2$-branching tree $d' \in \D \N 2 \N$ so that $f_{d'} : 2^\N \to
+\N$ is the restriction of $f_d \colon \N^\N \to \N$ from sequences to
+binary sequences.  Hence if we show that every $\T$-definable function
+$\N^\N \to \N$ is eloquent, we conclude that every $\T$-definable
+function $\N^\N \to \N$ is continuous and its restriction to $2^\N$ is
+uniformly continuous. For this purpose, we consider an auxiliary
+model of system $\T$.
+
+Define $\B X = \D \N \N X$. We remark that although $\B$ is the object
+part of a monad, as discussed in the introduction, it is not necessary
+to know this for the purposes of this proof. The data given below do
+obey the required laws to get a monad, but the details are left to the
+interested reader.
+
+For any function $f \colon X \to \B Y$,
+inductively define $f^\sharp \colon \B X \to \B Y$ by
+\begin{eqnarray*}
+  f^\sharp(\eta x) &=& f x, \\
+  f^\sharp(\beta \phi i) &=& \beta(\lambda j.f^\sharp(\phi j)) i.
+\end{eqnarray*}
+This says that the tree $f^\sharp(d)$ is $d$ with each leaf labeled by $x$
+replaced by the subtree $f x$, with no changes to the internal nodes. 
+Given $f \colon X \to Y$, we define $f \colon \B X \to \B Y$ by
+\[
+\B f = (\eta \circ f)^\sharp.
+\]
+Hence $\B f(d)$ replaces each label $x$ of a leaf of $d$ by the
+label $f(x)$, and we have the naturality condition
+\begin{diagram}[small]
+\B X & \rTo^{\B f} & \B Y \\
+\uTo^{\eta} & & \uTo_{\eta} \\
+X & \rTo_{f} & Y.
+\end{diagram}
+For each $\alpha \in \N^\N$ and any set $X$, define a
+map $\decode_\alpha \colon \B X \to X$ by
+\[
+\decode_\alpha (d) = f_d(\alpha).
+\]
+Then, by definition, $\decode_\alpha(\eta x) = x$, and hence the
+naturality of $\eta$ gives that of $\decode_\alpha$:
+\begin{equation} \label{decode-is-natural}
+\begin{diagram}[small]
+\B X & \rTo^{\B f} & \B Y \\
+\dTo^{\decode_\alpha} & & \dTo_{\decode_\alpha} \\
+X & \rTo_{f} & Y.
+\end{diagram}
+\end{equation}
+It is also easy to see, by induction on dialogue trees, that
+\begin{equation} \label{decode:kleisli:extension}
+\begin{diagram}[small]
+\B X & & \rTo^{f^\sharp} & & \B Y \\
+\dTo^{\decode_\alpha} & & & & \dTo_{\decode_\alpha} \\
+X & \rTo_{f} & \B Y & \rTo_{\decode_\alpha} & Y.
+\end{diagram}
+\end{equation}
+Now define 
+\begin{eqnarray*}
+\generic & \colon & \B \N \to \B \N \\
+\generic & = & (\beta \eta)^\sharp.
+\end{eqnarray*}
+Because $\beta \colon (\N \to \B \N) \to \N \to \B \N$ and $\eta
+\colon \N \to \B \N$, 
+the function $\generic$ is well defined. Its crucial property is that
+\begin{equation} \label{generic:diagram}
+\begin{diagram}[small]
+\B \N & \rTo^{\generic} & \B \N \\
+\dTo^{\decode_\alpha} & & \dTo_{\decode_\alpha} \\
+\N & \rTo_{\alpha} & \N.
+\end{diagram}
+\end{equation}
+The proof that
+\[
+\decode_\alpha(\generic d) = \alpha(\decode_\alpha d)
+\]
+is straightforward by induction on $d$.
+
+Now define the $\B$-interpretation of types as follows:
+\begin{gather*}
+\binterp{\iota}  = \B(\interp{\iota}) = \B \N, \qquad
+\qquad \binterp{\sigma \To \tau} =  \binterp{\tau}^{\binterp{\sigma}}.
+\end{gather*}
+For any type $\sigma$ and $f \colon X \to \binterp{\sigma}$, define
+$f^\sharp \colon \B X \to \binterp{\sigma}$ by induction on $\sigma$,
+where the base case $\sigma = \iota$ is given by the above definition,
+and the induction step $\sigma = (\rho \To \tau)$ is given pointwise as
+\[
+f^\sharp d y = (\lambda x. f x y)^\sharp d.
+\]
+Notice that $f \colon X \to \binterp{\rho} \to \binterp{\tau}$ and
+$f^\sharp \colon \B X \to \binterp{\rho} \to \binterp{\tau}$.
+
+Next extend system $\T$ with a new constant $\Omega \colon \iota \To
+\iota$, a formal oracle, and define the $\B$-interpretation of terms
+as follows:
+\begin{gather*}
+\binterp{\Omega} = \generic,
+\quad \binterp{\Zero} = \eta 0,
+\quad \binterp{\Succ} = \B(\lambda n.n+1),
+\quad \binterp{\Rec}  f x = (\lambda n.f^n(x))^\sharp, \\[1ex]
+\binterp{\K} x y = x,
+\qquad \binterp{\SS} f g x = fx(gx),
+\qquad \binterp{tu} = \binterp{t}(\binterp{u}).
+\end{gather*}
+We also need to consider the standard interpretation of system $\T$
+extended with the oracle $\Omega$. We treat the oracle as a free
+variable, as hence the value of this free variable has to be provided
+to define the interpretation:
+\begin{gather*}
+\interp{\Omega} \alpha = \alpha,
+\qquad \interp{\Zero} \alpha = 0,
+\qquad \interp{\Succ} \alpha n = n+1,
+\qquad \interp{\Rec} \alpha f x n  = f^n(x), \\[1ex]
+\interp{\K} \alpha x y = x,
+\qquad \interp{\SS} \alpha f g x = fx(gx),
+\qquad \interp{tu} \alpha  = \interp{t}\alpha (\interp{u} \alpha).
+\end{gather*}
+We claim that for any term $t \colon \iota$,
+\[
+  \interp{t} \alpha = \decode_\alpha (\binterp{t}).
+\]
+To prove this, we work with a logical relation $R_\sigma$ between 
+functions $\N^\N \to \interp{\sigma}$ and elements of 
+$\binterp{\sigma}$ by induction on $\sigma$.
+For any $n \colon \N^\N \to \N$ and $n' \in \B \N$, we define
+\[ R_\iota n n' \iff \forall \alpha, n \alpha = \decode_\alpha n', \]
+and, for any $f \colon \N^\N \to \interp{\sigma} \to \interp{\tau}$ 
+and $f' \colon \binterp{\sigma} \to \binterp{\tau}$, we define
+\[ R_{\sigma \to \tau} f f' \iff 
+  \forall x \colon \N^\N \to \interp{\sigma}, \,\, \forall x' : \binterp{\sigma}, \,\, R_{\sigma} x x' \to R_\tau (\lambda \alpha, f \alpha (x \alpha)) (f' x').\]
+We need a technical lemma for
+dealing with the dialogue interpretation of $\Rec$:
+\begin{claim} \label{R:kleisli:claim}
+For all $g \colon \N  \to \N^\N \to \binterp{\sigma}$ and $g' \colon \N \to \binterp{\sigma}$, if
+\[
+\forall k \in \N, \,\, R_{\sigma} (g k) (g' k),
+\]
+then
+$
+\forall n \colon \N^\N \to \N, \,\, \forall n' \in \B \N, \,\, R_{\iota} n n' \to
+R_{\sigma} (\lambda \alpha \to g (n \alpha) \alpha) (g' n')^\sharp.
+$
+\end{claim}
+The proof is straightforward by induction on types, using
+diagram~\ref{decode:kleisli:extension}.
+
+\begin{claim}
+  $R_\sigma \, \interp{t} \, (\binterp{t})$ for every term $t \colon \sigma$.
+\end{claim}
+The proof is by induction on terms, using diagram~\ref{generic:diagram} 
+for the term~$\Omega$, diagram~\ref{decode-is-natural} for the term~$\Succ$, 
+and Claim~\ref{R:kleisli:claim} for the term~$\Rec$. The terms~$\K$ and~$\SS$ are
+immediate but perhaps laborious, and the induction step, namely term
+application, is easy.  This gives, in particular:
+\begin{claim}
+  For every term $t \colon (\iota \To \iota) \To \iota$, we have
+  $ \interp{t} \alpha = \decode_\alpha (\binterp{t\Omega}).$
+\end{claim}
+It follows that every $\T$-definable function $f \colon \N^\N \to \N$ is
+eloquent, with dialogue tree given by $\binterp{t\Omega}$, where $t \colon (\iota \To \iota) \To \iota$ 
+is any term denoting~$f$,
+and hence continuous, with uniformly continuous restriction to~$2^\N$.
+
+\section{Discussion, questions and conjectures}
+
+It may not be apparent from the informal proof of
+Section~\ref{section:informal} that the argument is constructive, but
+Section~\ref{section:formal} provides a constructive rendering in
+Martin-L\"of type theory.  We emphasize that our proof doesn't invoke
+the Fan Theorem~\cite{MR0325352,beeson} or any constructively
+contentious axiom.
+
+We have deliberately chosen system T in its combinatory form as the
+simplest and most memorable non-trivial higher-type language to
+illustrate the essence of the technique proposed here. It is clearly
+routine (as well as interesting and useful) to apply the technique to
+a number of well-known extensions of the simply-typed
+lambda-calculus. But, for instance, at the time of writing, dependent
+types seem to require further thought, particularly in the presence of
+universes. Can one, e.g.\ (generalize and) apply the technique
+developed here to show that all MLTT definable functions \AgdaC{(ℕ →
+ℕ) → ℕ} are continuous, and that their restrictions to \AgdaC{(ℕ → 2)}
+are uniformly continuous, in the main versions of (intensional) MLTT?
+More ambitiously, does the technique apply to Homotopy Type
+Theory~\cite{HoTTbook}?
+
+As pointed out by one of the anonymous referees, the syntactical
+techniques of~\cite{MR0325352} give more information: for any term $t$
+of type $(\iota \Rightarrow \iota) \Rightarrow \iota$ one can
+construct a term $m : (\iota \Rightarrow \iota) \Rightarrow \iota$
+such that $m$ internalizes the modulus of continuity of $t$. We
+adapted our technique to achieve this, as reported
+in~\cite{escardo:dialogue}, by working with Church encodings of
+dialogue trees defined within system~T, and turning our semantical
+interpretation into a compositional translation of system~T into
+itself. A corollary is that the dialogue trees of T-definable
+functions \AgdaC{(ℕ → ℕ) → ℕ}, being themselves T-definable, have
+height smaller than $\epsilon_0$.
+
+
+
+% \bibliographystyle{plain}
+% \bibliography{references}
+
+\begin{thebibliography}{10}
+
+\bibitem{bauer:pretnar}
+A.~Bauer and M.~Pretnar.
+\newblock Programming with algebraic effects and handlers.
+\newblock Submitted for publication, 2012.
+
+\bibitem{beeson}
+M.J. Beeson.
+\newblock {\em Foundations of Constructive Mathematics}.
+\newblock Springer, 1985.
+
+\bibitem{bishop:foundations}
+E.~Bishop.
+\newblock {\em Foundations of constructive analysis}.
+\newblock McGraw-Hill Book Co., New York, 1967.
+
+\bibitem{bove:dybjer}
+A.~Bove and P.~Dybjer.
+\newblock Dependent types at work.
+\newblock {\em Proceedings of Language Engineering and Rigorous Software
+  Development, LNCS}, 5520:57--99, 2009.
+
+\bibitem{Coquand:2010:NFT:1839560.1839564}
+T.~Coquand and G.~Jaber.
+\newblock A note on forcing and type theory.
+\newblock {\em Fundam. Inf.}, 100(1-4):43--52, January 2010.
+
+\bibitem{DBLP:series/leus/CoquandJ12}
+T.~Coquand and G.~Jaber.
+\newblock A computational interpretation of forcing in type theory.
+\newblock In {\em Epistemology versus Ontology}, pages 203--213. Springer,
+  2012.
+
+\bibitem{escardo:dialogue}
+M.H. Escard\'o.
+\newblock Continuity of {G}\"odel's system {T} definable functionals via
+  effectful forcing.
+\newblock Agda proof at \url{http://www.cs.bham.ac.uk/~mhe/dialogue/}, July
+  2012.
+
+\bibitem{Hancock_representationsof}
+P.~Hancock, D.~Pattinson, and N.~Ghani.
+\newblock Representations of stream processors using nested fixed points.
+\newblock In {\em Logical Methods in Computer Science}, page 2009.
+
+\bibitem{Howard(80)}
+W.~A. Howard.
+\newblock Ordinal analysis of terms of finite type.
+\newblock {\em The Journal of Symbolic Logic}, 45:493--504, 1980.
+
+\bibitem{KleeneSC:rfqftI}
+S.C. Kleene.
+\newblock Recursive functionals and quantifiers of finite types {I}.
+\newblock {\em Trans.\ Amer.\ Math.\ Soc}, 91, 1959.
+
+\bibitem{Longley99whenis}
+J.~Longley.
+\newblock When is a functional program not a functional program?
+\newblock In {\em Proceedings of Fourth ACM SIGPLAN International Conference on
+  Functional Programming}, pages 1--7. ACM Press, 1999.
+
+\bibitem{DBLP:conf/csl/HancockS00}
+P.Hancock and A.~Setzer.
+\newblock Interactive programs in dependent type theory.
+\newblock In {\em CSL}, pages 317--331, 2000.
+
+\bibitem{Plotkin03algebraicoperations}
+G.~Plotkin and J.~Power.
+\newblock Algebraic operations and generic effects.
+\newblock {\em Applied Categorical Structures}, 11, 2003.
+
+\bibitem{HoTTbook}
+The Univalent~Foundations Program.
+\newblock Homotopy type theory: Univalent foundations of mathematics.
+\newblock Technical report, Institute for Advanced Study, 2013.
+
+\bibitem{MR0325352}
+A.~S. Troelstra, editor.
+\newblock {\em Metamathematical investigation of intuitionistic arithmetic and
+  analysis}.
+\newblock Lecture Notes in Mathematics, Vol. 344. Springer-Verlag, Berlin,
+  1973.
+
+\bibitem{escardo:xu}
+C.~Xu and M.H. Escard\'o.
+\newblock A constructive model of uniform continuity.
+\newblock To appear in TLCA, 2013.
+
+\end{thebibliography}
+
+
+\end{document}

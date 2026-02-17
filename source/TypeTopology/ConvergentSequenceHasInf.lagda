@@ -7,7 +7,7 @@ witnesses can be found.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 open import MLTT.Spartan
@@ -15,11 +15,11 @@ open import MLTT.Spartan
 module TypeTopology.ConvergentSequenceHasInf (fe₀ : funext 𝓤₀ 𝓤₀) where
 
 
+open import CoNaturals.Type
 open import MLTT.Two-Properties
-open import TypeTopology.InfProperty
-open import CoNaturals.GenericConvergentSequence
-open import Notation.Order
 open import Notation.CanonicalMap
+open import Notation.Order
+open import Ordinals.InfProperty
 
 ℕ∞-has-inf : has-inf _≼_
 ℕ∞-has-inf p = a , putative-root-lemma , lower-bound-lemma , uborlb-lemma
@@ -110,8 +110,8 @@ open import Notation.CanonicalMap
 
   lower-bound-lemma u r (succ n) s = lemma
    where
-    remark : min𝟚 (ι a n) (p (ι (succ n))) ＝ ₁
-    remark = s
+    _ : min𝟚 (ι a n) (p (ι (succ n))) ＝ ₁
+    _ = s
 
     IH : ι a n ＝ ₁ → ι u n ＝ ₁
     IH = lower-bound-lemma u r n

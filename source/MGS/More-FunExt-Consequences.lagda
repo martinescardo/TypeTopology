@@ -7,7 +7,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.More-FunExt-Consequences where
 
@@ -199,6 +199,59 @@ precomp-invertible fe fe' {X} {Y} {Z} f (g , η , ε) = (g' , η' , ε')
 
   ε' : (k : X → Z) → f' (g' k) ＝ k
   ε' k = fe' (λ x → ap k (η x))
+
+dprecomp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+         → Π A → Π (A ∘ f)
+
+dprecomp A f = _∘ f
+
+dprecomp-is-equiv : dfunext 𝓤 𝓦
+                  → dfunext 𝓥 𝓦
+                  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                  → is-equiv f
+                  → is-equiv (dprecomp A f)
+
+dprecomp-is-equiv fe fe' {X} {Y} A f i = invertibles-are-equivs φ (ψ , ψφ , φψ)
+ where
+  g = inverse f i
+  η = inverses-are-retractions f i
+  ε = inverses-are-sections f i
+
+  τ : (x : X) → ap f (η x) ＝ ε (f x)
+  τ = half-adjoint-condition f i
+
+  φ : Π A → Π (A ∘ f)
+  φ = dprecomp A f
+
+  ψ : Π (A ∘ f) → Π A
+  ψ k y = transport A (ε y) (k (g y))
+
+  φψ₀ : (k : Π (A ∘ f)) (x : X) → transport A (ε (f x)) (k (g (f x))) ＝ k x
+  φψ₀ k x = transport A (ε (f x))   (k (g (f x))) ＝⟨ a ⟩
+            transport A (ap f (η x))(k (g (f x))) ＝⟨ b ⟩
+            transport (A ∘ f) (η x) (k (g (f x))) ＝⟨ c ⟩
+            k x                                   ∎
+    where
+     a = ap (λ - → transport A - (k (g (f x)))) ((τ x)⁻¹)
+     b = (transport-ap A f (η x) (k (g (f x))))⁻¹
+     c = apd k (η x)
+
+  φψ : φ ∘ ψ ∼ id
+  φψ k = fe (φψ₀ k)
+
+  ψφ₀ : (h : Π A) (y : Y) → transport A (ε y) (h (f (g y))) ＝ h y
+  ψφ₀ h y = apd h (ε y)
+
+  ψφ : ψ ∘ φ ∼ id
+  ψφ h = fe' (ψφ₀ h)
+
+Π-change-of-variable : dfunext 𝓤 𝓦
+                     → dfunext 𝓥 𝓦
+                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                     → is-equiv f
+                     → (Π y ꞉ Y , A y) ≃ (Π x ꞉ X , A (f x))
+
+Π-change-of-variable fe fe' A f i = dprecomp A f , dprecomp-is-equiv fe fe' A f i
 
 at-most-one-section : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥
                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)

@@ -21,19 +21,17 @@ This is vestigial. The proof that group-axioms is prop is in Groups.Type
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Groups.Type-Supplement where
---open import SpartanMLTT
-open import MLTT.Spartan
-open import UF.Base
-open import UF.Subsingletons
-open import UF.FunExt
-open import UF.Subsingletons-FunExt
-open import UF.Equiv hiding (_≅_ ; ≅-refl)
+
 open import Groups.Type hiding (group-axioms-is-prop)
-
-
+open import MLTT.Spartan
+open import UF.FunExt
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 \end{code}
 
@@ -76,7 +74,7 @@ group-axiom₁ : (X : 𝓤 ̇ )→ monoid-structure X → 𝓤 ̇
 group-axiom₁ X (_·_ , e) = (x : X) → Σ x' ꞉ X , (x' · x ＝ e) × (x · x' ＝ e)
 
 group-axiom₁-is-prop : funext 𝓤 𝓤
-                     → (X : 𝓤 ̇)
+                     → (X : 𝓤 ̇ )
                      → (s : group-structure₁ X)
                      → is-prop (group-axiom₁ X (pr₁ s))
 group-axiom₁-is-prop fe X ((_·_ , e) , m) = γ
@@ -99,20 +97,20 @@ group-axiom₁-is-prop fe X ((_·_ , e) , m) = γ
 Conversion between the two types of group axioms.
 
 \begin{code}
-group-axiom₁→axioms : (X : 𝓤 ̇)
+group-axiom₁→axioms : (X : 𝓤 ̇ )
                     → (s : group-structure₁ X)
                     → (γ : group-axiom₁ X (pr₁ s))
                     → group-axioms X (pr₁ (pr₁ s))
 group-axiom₁→axioms X ((_·_ , e) , (i , l , r , a)) γ = i , a , (e , (l , (r , γ)))
 
-group-axioms→axiom₁ : (X : 𝓤 ̇)
+group-axioms→axiom₁ : (X : 𝓤 ̇ )
                     → (_·_ : group-structure X)
                     → (s : group-axioms X _·_)
                     → group-structure₁ X → group-axiom₁ X (monoid-structure-of (X , _·_ , s))
 group-axioms→axiom₁ X _·_ (i , a , e , l , r , γ) = λ { _ → γ}
 
 -- just to be clear
-group-axioms→axiom₁' : (X : 𝓤 ̇)
+group-axioms→axiom₁' : (X : 𝓤 ̇ )
                      → (_·_ : group-structure X)
                      → (s : group-axioms X _·_)
                      → group-structure₁ X × group-axiom₁ X (monoid-structure-of (X , _·_ , s))
@@ -127,7 +125,7 @@ proposition. This ought to be in Groups.lagda.
 \begin{code}
 
 group-axioms-is-prop : funext 𝓤 𝓤
-                     → (X : 𝓤 ̇)
+                     → (X : 𝓤 ̇ )
                      → (_·_ : group-structure X)
                      → is-prop (group-axioms X _·_)
 group-axioms-is-prop fe X _·_ s = γ s

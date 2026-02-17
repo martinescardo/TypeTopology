@@ -17,7 +17,7 @@ induces a map from the ideal completion to the dcpo.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -35,6 +35,7 @@ module DomainTheory.IdealCompletion.Properties
 
 open import UF.Equiv
 open import UF.Powerset
+open import UF.Subsingletons-FunExt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
@@ -117,7 +118,7 @@ module Idl-Properties
  ↓-is-monotone : {x y : X} → x ≺ y → ↓ x ⊑⟨ Idl-DCPO ⟩ ↓ y
  ↓-is-monotone {x} {y} l _ m = ≺-trans m l
 
- Idl-sups-from-powerset : {𝓐 : 𝓥 ̇  } (α : 𝓐 → Idl) (I : Idl)
+ Idl-sups-from-powerset : {𝓐 : 𝓥 ̇ } (α : 𝓐 → Idl) (I : Idl)
                         → is-sup _⊆_ (carrier I) (carrier ∘ α)
                         → is-sup _⊑_ I α
  Idl-sups-from-powerset {𝓐} α I I-is-sup = (ub , lb-of-ubs)
@@ -136,15 +137,50 @@ _≺_ takes values in 𝓥.
 
 \begin{code}
 
+record abstract-basis : 𝓥 ⁺ ̇ where
+ field
+  basis-carrier : 𝓥 ̇
+  _≺_ : basis-carrier → basis-carrier → 𝓥 ̇
+  ≺-prop-valued : {x y : basis-carrier} → is-prop (x ≺ y)
+  ≺-trans : {x y z : basis-carrier} → x ≺ y → y ≺ z → x ≺ z
+  INT₀ : (x : basis-carrier) → ∃ y ꞉ basis-carrier , y ≺ x
+  INT₂ : {y₀ y₁ x : basis-carrier} → y₀ ≺ x → y₁ ≺ x
+       → ∃ z ꞉ basis-carrier , y₀ ≺ z × y₁ ≺ z × z ≺ x
+
+record reflexive-abstract-basis : 𝓥 ⁺ ̇ where
+ field
+  basis-carrier : 𝓥 ̇
+  _≺_ : basis-carrier → basis-carrier → 𝓥 ̇
+  ≺-prop-valued : {x y : basis-carrier} → is-prop (x ≺ y)
+  ≺-trans : {x y z : basis-carrier} → x ≺ y → y ≺ z → x ≺ z
+  ≺-refl : {x : basis-carrier} → x ≺ x
+
+ INT₀ : (x : basis-carrier) → ∃ y ꞉ basis-carrier , y ≺ x
+ INT₀ = reflexivity-implies-INT₀ _≺_ ≺-refl
+
+ INT₂ : {y₀ y₁ x : basis-carrier} → y₀ ≺ x → y₁ ≺ x
+       → ∃ z ꞉ basis-carrier , y₀ ≺ z × y₁ ≺ z × z ≺ x
+ INT₂ = reflexivity-implies-INT₂ _≺_ ≺-refl
+
+reflexive-abstract-basis-to-abstract-basis : reflexive-abstract-basis
+                                           → abstract-basis
+reflexive-abstract-basis-to-abstract-basis rab =
+ record
+  { basis-carrier = basis-carrier
+  ; _≺_ = _≺_
+  ; ≺-prop-valued = ≺-prop-valued
+  ; ≺-trans = ≺-trans
+  ; INT₀ = INT₀
+  ; INT₂ = INT₂
+ }
+  where
+   open reflexive-abstract-basis rab
+
 module Ideals-of-small-abstract-basis
-        {X : 𝓥 ̇ }
-        (_≺_ : X → X → 𝓥 ̇ )
-        (≺-prop-valued : {x y : X} → is-prop (x ≺ y))
-        (INT₂ : {y₀ y₁ x : X} → y₀ ≺ x → y₁ ≺ x
-              → ∃ z ꞉ X , y₀ ≺ z × y₁ ≺ z × z ≺ x)
-        (INT₀ : (x : X) → ∃ y ꞉ X , y ≺ x)
-        (≺-trans : {x y z : X} → x ≺ y → y ≺ z → x ≺ z)
+        (abs-basis : abstract-basis)
        where
+
+ open abstract-basis abs-basis renaming (basis-carrier to X)
 
  open Ideals {𝓥} {𝓥} {X} _≺_ ≺-prop-valued INT₂ INT₀ ≺-trans public
  open Idl-Properties {𝓥} {𝓥} {X} _≺_ ≺-prop-valued INT₂ INT₀ ≺-trans public
@@ -303,9 +339,10 @@ ideal.
               → x ∈ᵢ I → ↓ x ⊑ I
  ↓⊑-criterion I x x-in-I = ≪-to-⊑ Idl-DCPO {↓ x} {I} (↓≪-criterion I x x-in-I)
 
- ↓⊑-criterion-converse : reflexive _≺_
-                       → (I : Idl) (x : X) → ↓ x ⊑ I → x ∈ᵢ I
- ↓⊑-criterion-converse r I x ↓x-below-I = ↓x-below-I x (r x)
+ ↓⊑-criterion-converse : (I : Idl) (x : X)
+                       → x ≺ x
+                       → ↓ x ⊑ I → x ∈ᵢ I
+ ↓⊑-criterion-converse I x r ↓x-below-I = ↓x-below-I x r
 
 \end{code}
 
@@ -380,7 +417,7 @@ continuous dcpo.
    ≪ᴮ-is-small    = λ I x → (↓ x ≪ₛ I) , e (↓ x) I;
    ↡ᴮ-is-directed = ↓-Idl-inclusion-is-directed;
    ↡ᴮ-is-sup      = ↓-Idl-inclusion-sup
-  }
+   }
    where
     _≪ₛ_ : Idl → Idl → 𝓥 ̇
     I ≪ₛ J = ∃ x ꞉ X , (x ∈ᵢ J) × I ⊑⟨ Idl-DCPO ⟩ ↓ x
@@ -407,21 +444,22 @@ compact basis, as we prove now.
 
 \begin{code}
 
+ ↓-is-compact : (x : X) → x ≺ x → is-compact Idl-DCPO (↓ x)
+ ↓-is-compact x r 𝓘 α δ x-below-∐α =
+  ∥∥-functor h (x-below-∐α x r)
+   where
+    h : (Σ i ꞉ 𝓘 , x ∈ᵢ α i)
+      → Σ i ꞉ 𝓘 , ↓ x ⊑ α i
+    h (i , x-in-αᵢ) = (i , ↓⊑-criterion (α i) x x-in-αᵢ)
+
  module _
          (≺-is-reflexive : (x : X) → x ≺ x)
         where
 
-  ↓-is-compact : (x : X) → is-compact Idl-DCPO (↓ x)
-  ↓-is-compact x 𝓘 α δ x-below-∐α =
-   ∥∥-functor h (x-below-∐α x (≺-is-reflexive x))
-    where
-     h : (Σ i ꞉ 𝓘 , x ∈ᵢ α i)
-       → Σ i ꞉ 𝓘 , ↓ x ⊑ α i
-     h (i , x-in-αᵢ) = (i , ↓⊑-criterion (α i) x x-in-αᵢ)
-
   ↓-is-small-compact-basis : is-small-compact-basis Idl-DCPO ↓_
   ↓-is-small-compact-basis =
-   small-and-compact-basis Idl-DCPO ↓_ ↓-is-small-basis ↓-is-compact
+   small-and-compact-basis Idl-DCPO ↓_ ↓-is-small-basis
+                           (λ x → ↓-is-compact x (≺-is-reflexive x))
 
   Idl-has-specified-small-compact-basis : has-specified-small-compact-basis Idl-DCPO
   Idl-has-specified-small-compact-basis = (X , ↓_ , ↓-is-small-compact-basis)
@@ -524,5 +562,45 @@ If _≺_ is reflexive, then the mediating map makes the obvious triangle commute
         g (y , l) = f-is-monotone l
       b : f x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
       b = ∐-is-upperbound 𝓓 δ (x , r x)
+
+\end{code}
+
+Added 24 June 2024.
+
+Moreover, it is the unique Scott continuous to do so.
+
+\begin{code}
+
+  Idl-mediating-map-is-unique' : reflexive _≺_
+                               → (g : Idl → ⟨ 𝓓 ⟩)
+                               → is-continuous Idl-DCPO 𝓓 g
+                               → g ∘ ↓_ ∼ f
+                               → g ∼ Idl-mediating-map
+  Idl-mediating-map-is-unique' r g c h I =
+   g I                                           ＝⟨ ⦅1⦆ ⟩
+   g (∐ Idl-DCPO δ)                              ＝⟨ ⦅2⦆ ⟩
+   ∐ 𝓓 (image-is-directed' Idl-DCPO 𝓓 (g , c) δ) ＝⟨ ⦅3⦆ ⟩
+   ∐ 𝓓 (Idl-mediating-directed I)                ＝⟨refl⟩
+   Idl-mediating-map I                           ∎
+    where
+     δ : is-Directed Idl-DCPO (↓-of-ideal I)
+     δ = ↓-of-ideal-is-directed I
+
+     ⦅1⦆ = ap g (Idl-∐-＝ I)
+     ⦅2⦆ = continuous-∐-＝ Idl-DCPO 𝓓 (g , c) δ
+     ⦅3⦆ = ∐-family-＝' 𝓓 (λ (b , _) → h b)
+                       (image-is-directed' Idl-DCPO 𝓓 (g , c) δ)
+                       (Idl-mediating-directed I)
+
+  Idl-mediating-map-is-unique : reflexive _≺_
+                              → ∃! f̅ ꞉ DCPO[ Idl-DCPO , 𝓓 ] ,
+                                   [ Idl-DCPO , 𝓓 ]⟨ f̅ ⟩ ∘ ↓_ ∼ f
+  Idl-mediating-map-is-unique r =
+   ((Idl-mediating-map , Idl-mediating-map-is-continuous) ,
+    Idl-mediating-map-commutes r) ,
+    (λ ((g , c) , h) → to-subtype-＝
+                        (λ _ → Π-is-prop fe (λ _ → sethood 𝓓))
+                        (to-continuous-function-＝ Idl-DCPO 𝓓
+                          (∼-sym (Idl-mediating-map-is-unique' r g c h))))
 
 \end{code}

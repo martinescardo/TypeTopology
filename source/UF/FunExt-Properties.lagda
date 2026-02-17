@@ -4,7 +4,7 @@ Properties of function extensionality.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.FunExt-Properties where
 
@@ -16,7 +16,6 @@ open import UF.Equiv-FunExt
 open import UF.Yoneda
 open import UF.Subsingletons
 open import UF.Retracts
-open import UF.EquivalenceExamples
 
 \end{code}
 
@@ -73,3 +72,68 @@ naive-funext-gives-funext₀ : naive-funext 𝓤 𝓤 → funext 𝓤 𝓤₀
 naive-funext-gives-funext₀ fe = naive-funext-gives-funext' fe fe
 
 \end{code}
+
+Added by Evan Cavallo on 13th March 2025.
+
+The equivalence extensionality axiom is the restriction of function
+extensionality to equivalences. By an argument similar to the proof of function
+extensionality from univalence, it implies full function extensionality.
+
+\begin{code}
+
+equivext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
+equivext 𝓤 𝓥 =
+ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α β : X ≃ Y)
+ → is-equiv (λ (p : α ＝ β) → happly (ap ⌜_⌝ p))
+
+equivext-gives-funext : equivext 𝓤 𝓤 → funext 𝓤 𝓤
+equivext-gives-funext {𝓤} ee =
+ funext-via-singletons main
+ where
+  promote : (A : 𝓤 ̇ ) {X Y : 𝓤 ̇ } → X ≃ Y → (A ≃ X) ≃ (A ≃ Y)
+  promote A α =
+   qinveq
+    (_● α)
+    ( (_● ≃-sym α)
+    , (λ β → inverse _ (ee _ _) (inverses-are-retractions _ (pr₂ α) ∘ ⌜ β ⌝))
+    , (λ γ → inverse _ (ee _ _) (inverses-are-sections _ (pr₂ α) ∘ ⌜ γ ⌝)))
+
+  module _ (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ ) (cY : (x : X) → is-singleton (Y x)) where
+   π : (Σ Y) ≃ X
+   π =
+    qinveq
+     pr₁
+     ( (λ x → x , pr₁ (cY x))
+     , (λ (x , y) → to-Σ-＝ (refl , pr₂ (cY x) y))
+     , ∼-refl)
+
+   sec : Π Y → fiber ⌜ promote X π ⌝ 𝕚𝕕
+   sec f =
+    ( qinveq
+       (λ x → x , f x)
+       ( pr₁
+       , ∼-refl
+       , (λ (x , y) → to-Σ-＝ (refl , singletons-are-props (cY x) _ _)))
+    , inverse _ (ee _ _) ∼-refl)
+
+   ret : fiber ⌜ promote X π ⌝ 𝕚𝕕 → Π Y
+   ret (α , p) x = transport Y (happly (ap ⌜_⌝ p) x) (pr₂ (pr₁ α x))
+
+   inv : ret ∘ sec ∼ id
+   inv f =
+    ap (λ h → λ x → transport Y (h x) (pr₂ (pr₁ α x))) cancel
+     where
+      α = pr₁ (sec f)
+      p = pr₂ (sec f)
+
+      cancel : happly (ap ⌜_⌝ p) ＝ ∼-refl
+      cancel = inverses-are-sections _ (ee _ _) (∼-refl)
+
+   main : is-singleton (Π Y)
+   main = retract-of-singleton
+           (ret , sec , inv)
+           (equivs-are-vv-equivs _ (pr₂ (promote X π)) 𝕚𝕕)
+
+\end{code}
+
+End of addition.

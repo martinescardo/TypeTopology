@@ -4,7 +4,7 @@ Equivalence of ordinals.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import Ordinals.Maps
@@ -19,9 +19,10 @@ open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PreSIP-Examples
 open import UF.PreUnivalence
+open import UF.PropTrunc
+open import UF.Sets
 open import UF.Size
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Univalence
 open import UF.Yoneda
 
@@ -263,6 +264,39 @@ UAₒ {𝓤} ua fe α = nats-with-sections-are-equivs α
     → idtoeqₒ α β (eqtoidₒ ua fe α β e) ＝ e
   η β e = ≃ₒ-is-prop-valued fe α β (idtoeqₒ α β (eqtoidₒ ua fe α β e)) e
 
+idtoeqₒ-eqtoidₒ : (ua : is-univalent 𝓤)
+                 → (fe : Fun-Ext)
+                 → (α β : Ordinal 𝓤) → (e : α ≃ₒ β)
+                 → idtoeqₒ α β (eqtoidₒ ua fe α β e) ＝ e
+idtoeqₒ-eqtoidₒ ua fe α β =
+ inverses-are-sections (idtoeqₒ α β) (UAₒ ua fe α β)
+
+eqtoidₒ-idtoeqₒ : (ua : is-univalent 𝓤)
+                 → (fe : Fun-Ext)
+                 → (α β : Ordinal 𝓤) → (p : α ＝ β)
+                 → eqtoidₒ ua fe α β (idtoeqₒ α β p) ＝ p
+eqtoidₒ-idtoeqₒ ua fe α β =
+ inverses-are-retractions (idtoeqₒ α β) (UAₒ ua fe α β)
+
+order-equiv-induction : is-univalent 𝓤
+                      → Fun-Ext
+                      → (α : Ordinal 𝓤)
+                      → (P : (β : Ordinal 𝓤) → (α ≃ₒ β) → 𝓥 ̇ )
+                      → P α (≃ₒ-refl α)
+                      → (β : Ordinal 𝓤)
+                      → (e : α ≃ₒ β)
+                      → P β e
+order-equiv-induction {𝓤} ua fe α P m β e = III
+ where
+  I : (β : Ordinal 𝓤) → (e : α ＝ β) → P β (idtoeqₒ α β e)
+  I = Jbased α (λ β e → P β (idtoeqₒ α β e)) m
+
+  II : P β (idtoeqₒ α β (eqtoidₒ ua fe α β e))
+  II = I β (eqtoidₒ ua fe α β e)
+
+  III : P β e
+  III = transport (P β) (idtoeqₒ-eqtoidₒ ua fe α β e) II
+
 the-type-of-ordinals-is-a-set : is-univalent 𝓤
                               → Fun-Ext
                               → is-set (Ordinal 𝓤)
@@ -325,7 +359,7 @@ Added 25th Feb 2023. Alternative definition of ordinal equivalence
 _≃ₐ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ≃ₐ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
              , is-equiv f
-             × ((x x' : ⟨ α ⟩) → x ≺⟨ α ⟩ x' ⇔ f x ≺⟨ β ⟩ f x')
+             × ((x x' : ⟨ α ⟩) → x ≺⟨ α ⟩ x' ↔ f x ≺⟨ β ⟩ f x')
 
 ≃ₐ-coincides-with-≃ₒ : FunExt
                      → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
@@ -333,7 +367,7 @@ _≃ₐ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 ≃ₐ-coincides-with-≃ₒ fe α β =
  (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
       , is-equiv f
-      × ((x x' : ⟨ α ⟩) → x ≺⟨ α ⟩ x' ⇔ f x ≺⟨ β ⟩ f x')) ≃⟨ I ⟩
+      × ((x x' : ⟨ α ⟩) → x ≺⟨ α ⟩ x' ↔ f x ≺⟨ β ⟩ f x')) ≃⟨ I ⟩
 
  (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
       , is-equiv f
@@ -430,170 +464,98 @@ idtoeqₒ-embedding-really-is-idtoeqₒ' pua fe α β =
 
 \end{code}
 
-Added 26 March 2023 by Tom de Jong, following a discussion with Nicolai Kraus on
-24 March 2023.
+For convenience, we add the special case of Idtofun for ordinals.
 
-We show that having an identification of the ordinals (𝟚 , ₀ ≺ ₁) and
-(𝟚 , ₁ ≺ ₀) contradicts the K-axiom.
-
-It follows that pre-univalence cannot be sufficient to show that the simulation
-ordering on the type of ordinals is antisymmetric: The ordinals (𝟚 , ₀ ≺ ₁) and
-(𝟚 , ₁ ≺ ₀) are equivalent, while pre-univalence is derivable from the K-axiom.
-
-  α ＝ β ----> ⟨ α ⟩ ＝ ⟨ β ⟩
-    |                |
-    |                |
-    v                v
-  α ≃ₒ β ----> ⟨ α ⟩ ≃ ⟨ β ⟩
-
+Added 11 December 2024 by Fredrik Nordvall Forsberg and Tom de Jong.
 
 \begin{code}
 
-private
+Idtofunₒ : {α β : Ordinal 𝓤} → α ＝ β → ⟨ α ⟩ → ⟨ β ⟩
+Idtofunₒ = transport ⟨_⟩
 
- idtoeqₒ-naturality : (α β : Ordinal 𝓤) → (p : α ＝ β)
-                    → idtoeq ⟨ α ⟩ ⟨ β ⟩ (ap ⟨_⟩ p)
-                    ＝ ≃ₒ-gives-≃ α β (idtoeqₒ α β p)
- idtoeqₒ-naturality α β refl = refl
+Idtofunₒ-retraction : {α β : Ordinal 𝓤} (e : α ＝ β)
+                    → Idtofunₒ e ∘ Idtofunₒ (e ⁻¹) ∼ id
+Idtofunₒ-retraction refl _ = refl
 
- 𝟚ₒ : Ordinal 𝓤₀
- 𝟚ₒ = 𝟚 , (_≺_ , p , w , e , t)
+Idtofunₒ-section : {α β : Ordinal 𝓤} (e : α ＝ β)
+                 → Idtofunₒ (e ⁻¹) ∘ Idtofunₒ e ∼ id
+Idtofunₒ-section refl _ = refl
+
+Idtofunₒ-is-order-equiv : {α β : Ordinal 𝓤} (e : α ＝ β)
+                        → is-order-equiv α β (Idtofunₒ e)
+Idtofunₒ-is-order-equiv {𝓤} {α} refl =
+ id-order-preserving , (id-is-equiv ⟨ α ⟩ , id-order-preserving)
   where
-   _≺_ : 𝟚 → 𝟚 → 𝓤₀ ̇
-   ₀ ≺ ₀ = 𝟘
-   ₀ ≺ ₁ = 𝟙
-   ₁ ≺ ₀ = 𝟘
-   ₁ ≺ ₁ = 𝟘
-   p : is-prop-valued _≺_
-   p ₀ ₀ = 𝟘-is-prop
-   p ₀ ₁ = 𝟙-is-prop
-   p ₁ ₀ = 𝟘-is-prop
-   p ₁ ₁ = 𝟘-is-prop
-   w : is-well-founded _≺_
-   w ₀ = step a
-    where
-     a : (y : 𝟚) → y ≺ ₀ → is-accessible _≺_ y
-     a ₀ l = 𝟘-elim l
-     a ₁ l = 𝟘-elim l
-   w ₁ = step a
-    where
-     a : (y : 𝟚) → y ≺ ₁ → is-accessible _≺_ y
-     a ₀ l = w ₀
-     a ₁ l = 𝟘-elim l
-   e : is-extensional _≺_
-   e ₀ ₀ u v = refl
-   e ₀ ₁ u v = 𝟘-elim (v ₀ ⋆)
-   e ₁ ₀ u v = 𝟘-elim (u ₀ ⋆)
-   e ₁ ₁ u v = refl
-   t : is-transitive _≺_
-   t ₀ ₀ ₀ k l = l
-   t ₀ ₁ ₀ k l = l
-   t ₁ ₀ ₀ k l = l
-   t ₁ ₁ ₀ k l = l
-   t ₀ ₀ ₁ k l = l
-   t ₀ ₁ ₁ k l = k
-   t ₁ ₀ ₁ k l = k
-   t ₁ ₁ ₁ k l = l
+   id-order-preserving : is-order-preserving α α id
+   id-order-preserving x y l = l
 
- 𝟚ₒ' : Ordinal 𝓤₀
- 𝟚ₒ' = 𝟚 , (_≺_ , p , w , e , t)
-  where
-   _≺_ : 𝟚 → 𝟚 → 𝓤₀ ̇
-   ₀ ≺ ₀ = 𝟘
-   ₀ ≺ ₁ = 𝟘
-   ₁ ≺ ₀ = 𝟙
-   ₁ ≺ ₁ = 𝟘
-   p : is-prop-valued _≺_
-   p ₀ ₀ = 𝟘-is-prop
-   p ₀ ₁ = 𝟘-is-prop
-   p ₁ ₀ = 𝟙-is-prop
-   p ₁ ₁ = 𝟘-is-prop
-   w : is-well-founded _≺_
-   w ₀ = step a
-    where
-     a : (y : 𝟚) → y ≺ ₀ → is-accessible _≺_ y
-     a ₀ l = 𝟘-elim l
-     a ₁ l = w ₁
-   w ₁ = step a
-    where
-     a : (y : 𝟚) → y ≺ ₁ → is-accessible _≺_ y
-     a ₀ l = 𝟘-elim l
-     a ₁ l = 𝟘-elim l
-   e : is-extensional _≺_
-   e ₀ ₀ u v = refl
-   e ₀ ₁ u v = 𝟘-elim (u ₁ ⋆)
-   e ₁ ₀ u v = 𝟘-elim (v ₁ ⋆)
-   e ₁ ₁ u v = refl
-   t : is-transitive _≺_
-   t ₀ ₀ ₀ k l = l
-   t ₀ ₁ ₀ k l = k
-   t ₁ ₀ ₀ k l = ⋆
-   t ₁ ₁ ₀ k l = l
-   t ₀ ₀ ₁ k l = l
-   t ₀ ₁ ₁ k l = l
-   t ₁ ₀ ₁ k l = l
-   t ₁ ₁ ₁ k l = l
+Idtofunₒ-is-simulation : {α β : Ordinal 𝓤} (e : α ＝ β)
+                       → is-simulation α β (Idtofunₒ e)
+Idtofunₒ-is-simulation {𝓤} {α} {β} e =
+ order-equivs-are-simulations α β (Idtofunₒ e) (Idtofunₒ-is-order-equiv e)
 
- open import MLTT.Two-Properties
+Idtofunₒ-eqtoidₒ : (ua : is-univalent 𝓤) (fe : Fun-Ext)
+                   {α β : Ordinal 𝓤} (e : α ≃ₒ β)
+                 → Idtofunₒ (eqtoidₒ ua fe α β e) ＝ ≃ₒ-to-fun α β e
+Idtofunₒ-eqtoidₒ {𝓤} ua fe {α} {β} e = order-equiv-induction ua fe α P m β e
+ where
+  P : (β : Ordinal 𝓤) → α ≃ₒ β → 𝓤 ̇
+  P β e = Idtofunₒ (eqtoidₒ ua fe α β e) ＝ ≃ₒ-to-fun α β e
 
- 𝟚ₒ-≃ₒ-𝟚ₒ' : 𝟚ₒ ≃ₒ 𝟚ₒ'
- 𝟚ₒ-≃ₒ-𝟚ₒ' = f , f-preserves-order , f-is-equiv , f-preserves-order'
-  where
-   f : 𝟚 → 𝟚
-   f = complement
-   f-preserves-order : is-order-preserving 𝟚ₒ 𝟚ₒ' f
-   f-preserves-order ₀ ₁ l = l
-   f-preserves-order ₀ ₀ l = 𝟘-elim l
-   f-preserves-order ₁ ₀ l = 𝟘-elim l
-   f-preserves-order ₁ ₁ l = 𝟘-elim l
-   f-is-equiv : is-equiv f
-   f-is-equiv = qinvs-are-equivs f (f , complement-involutive , complement-involutive)
-   f-preserves-order' : is-order-preserving 𝟚ₒ' 𝟚ₒ f
-   f-preserves-order' ₀ ₀ l = 𝟘-elim l
-   f-preserves-order' ₀ ₁ l = 𝟘-elim l
-   f-preserves-order' ₁ ₀ l = l
-   f-preserves-order' ₁ ₁ l = 𝟘-elim l
+  m : P α (≃ₒ-refl α)
+  m = Idtofunₒ (eqtoidₒ ua fe α α (≃ₒ-refl α)) ＝⟨ I ⟩
+      Idtofunₒ {α = α} refl                    ＝⟨refl⟩
+      ≃ₒ-to-fun α α (≃ₒ-refl α)                ∎
+   where
+    I = ap Idtofunₒ (eqtoidₒ-idtoeqₒ ua fe α α refl)
 
- complement-is-the-only-ordinal-equivalence-of-𝟚 : (e : 𝟚ₒ ≃ₒ 𝟚ₒ')
-                                                 → ≃ₒ-to-fun 𝟚ₒ 𝟚ₒ' e ∼ complement
- complement-is-the-only-ordinal-equivalence-of-𝟚 e ₀ = different-from-₀-equal-₁ h
-  where
-   f : 𝟚 → 𝟚
-   f = ≃ₒ-to-fun 𝟚ₒ 𝟚ₒ' e
-   h : ≃ₒ-to-fun 𝟚ₒ 𝟚ₒ' e ₀ ≠ ₀
-   h p = l' (f ₁) (order-equivs-are-order-preserving 𝟚ₒ 𝟚ₒ' (≃ₒ-to-fun-is-order-equiv 𝟚ₒ 𝟚ₒ' e) ₀ ₁ ⋆)
-    where
-     l : (b : 𝟚) → ¬ (₀ ≺⟨ 𝟚ₒ' ⟩ b)
-     l ₀ l = 𝟘-elim l
-     l ₁ l = 𝟘-elim l
-     l' : (b : 𝟚) → ¬ (f ₀ ≺⟨ 𝟚ₒ' ⟩ b)
-     l' b = idtofun _ _ (ap (λ - → ¬ (- ≺⟨ 𝟚ₒ' ⟩ b)) (p ⁻¹)) (l b)
- complement-is-the-only-ordinal-equivalence-of-𝟚 e ₁ = different-from-₁-equal-₀ h
-  where
-   f : 𝟚 → 𝟚
-   f = ≃ₒ-to-fun 𝟚ₒ 𝟚ₒ' e
-   h : ≃ₒ-to-fun 𝟚ₒ 𝟚ₒ' e ₁ ≠ ₁
-   h p = l' (f ₀) (order-equivs-are-order-preserving 𝟚ₒ 𝟚ₒ' (≃ₒ-to-fun-is-order-equiv 𝟚ₒ 𝟚ₒ' e) ₀ ₁ ⋆)
-    where
-     l : (b : 𝟚) → ¬ (b ≺⟨ 𝟚ₒ' ⟩ ₁)
-     l ₀ l = 𝟘-elim l
-     l ₁ l = 𝟘-elim l
-     l' : (b : 𝟚) → ¬ (b ≺⟨ 𝟚ₒ' ⟩ f ₁)
-     l' b = idtofun _ _ (ap (λ - → ¬ (b ≺⟨ 𝟚ₒ' ⟩ -)) (p ⁻¹)) (l b)
+\end{code}
 
- identification-of-𝟚ₒ-and-𝟚ₒ'-contradicts-K : 𝟚ₒ ＝ 𝟚ₒ' → ¬ K-axiom 𝓤₁
- identification-of-𝟚ₒ-and-𝟚ₒ'-contradicts-K pₒ K = p-is-not-refl (K (𝓤₀ ̇  ) p refl)
-  where
-   p : 𝟚 ＝ 𝟚
-   p = ap ⟨_⟩ pₒ
-   f : 𝟚 ≃ 𝟚
-   f = idtoeq 𝟚 𝟚 p
-   p-is-not-refl : ¬ (p ＝ refl)
-   p-is-not-refl e = zero-is-not-one (₀                     ＝⟨ refl ⟩
-                                      ⌜ idtoeq 𝟚 𝟚 refl ⌝ ₀ ＝⟨ ap (λ - → ⌜ idtoeq 𝟚 𝟚 - ⌝ ₀) (e ⁻¹) ⟩
-                                      ⌜ f ⌝ ₀               ＝⟨ ap (λ - → ⌜ - ⌝ ₀) (idtoeqₒ-naturality 𝟚ₒ 𝟚ₒ' pₒ) ⟩
-                                      ⌜ ≃ₒ-gives-≃ 𝟚ₒ 𝟚ₒ' (idtoeqₒ 𝟚ₒ 𝟚ₒ' pₒ) ⌝ ₀ ＝⟨ refl ⟩
-                                      ≃ₒ-to-fun 𝟚ₒ 𝟚ₒ' (idtoeqₒ 𝟚ₒ 𝟚ₒ' pₒ) ₀ ＝⟨ complement-is-the-only-ordinal-equivalence-of-𝟚 (idtoeqₒ 𝟚ₒ 𝟚ₒ' pₒ) ₀ ⟩
-                                      ₁                     ∎)
+Originally formalized by Fredrik Nordvall Forsberg. Moved here and refactored
+with a shorter proof by Tom de Jong on 18 December 2024.
+
+Surjective simulations are equivalences of ordinals.
+
+\begin{code}
+
+module _
+        (pt : propositional-truncations-exist)
+       where
+
+ open import UF.ImageAndSurjection pt
+
+ surjective-simulations-are-order-equivs : FunExt
+                                         → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                         → (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                         → is-simulation α β f
+                                         → is-surjection f
+                                         → is-order-equiv α β f
+ surjective-simulations-are-order-equivs fe α β f f-sim f-surj =
+  order-preserving-reflecting-equivs-are-order-equivs α β f
+   (surjective-embeddings-are-equivs f
+     (simulations-are-embeddings fe α β f f-sim)
+     f-surj)
+   (simulations-are-order-preserving α β f f-sim)
+   (simulations-are-order-reflecting α β f f-sim)
+
+ surjective-simulation-gives-＝ : Fun-Ext
+                                → is-univalent 𝓤
+                                → (α β : Ordinal 𝓤)
+                                → (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                → is-simulation α β f
+                                → is-surjection f
+                                → α ＝ β
+ surjective-simulation-gives-＝ fe ua α β f f-sim f-surj =
+  eqtoidₒ ua fe α β
+   (f ,
+    surjective-simulations-are-order-equivs (λ _ _ → fe) α β f f-sim f-surj)
+
+\end{code}
+
+Associativities and precedences.
+
+\begin{code}
+
+infix 0 _≃ₒ_
 
 \end{code}

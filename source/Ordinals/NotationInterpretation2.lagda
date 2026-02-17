@@ -25,7 +25,7 @@ There is an embedding ι : Δ ν → Κ ν which is order preserving and
 reflecting, and whose image has empty complement. The assumption that
 it is a bijection implies LPO.
 
-This extends and generalizes OrdinalNotationInterpretation1.lagda, for
+This extends and generalizes OrdinalNotationInterpretation1, for
 which slides for a talk are available at
 https://www.cs.bham.ac.uk/~mhe/.talks/csl2022.pdf which may well serve
 as an introduction to this file. The main difference is that the
@@ -38,7 +38,7 @@ This is a draft version that needs polishing and more explanation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -48,42 +48,39 @@ module Ordinals.NotationInterpretation2 (fe : FunExt) where
 private
  fe₀ = fe 𝓤₀ 𝓤₀
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Naturals.Binary hiding (_+_)
 open import Notation.CanonicalMap hiding (ι)
 open import Ordinals.Arithmetic fe
 open import Ordinals.Closure fe
 open import Ordinals.Equivalence
+open import Ordinals.InfProperty
 open import Ordinals.Injectivity
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import Taboos.LPO fe
+open import Taboos.LPO
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
-open import TypeTopology.ConvergentSequenceHasInf
 open import TypeTopology.Density
-open import TypeTopology.DiscreteAndSeparated
-open import TypeTopology.InfProperty
+open import TypeTopology.FailureOfTotalSeparatedness
+open import TypeTopology.LimitPoints
 open import TypeTopology.PropInfTychonoff fe
-open import TypeTopology.PropTychonoff fe
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
-open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Miscelanea
 open import UF.PairFun
 open import UF.Retracts
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 \end{code}
 
 We define E and Δ by simultaneous induction. The type Ordᵀ is that of
 ordinals with a top element (classically, successor ordinals). Recall
-that ⟪ α ⟫ is the underlying type of α : Ordᵀ.
+that ⟨ α ⟩ is the underlying type of α : Ordᵀ.
 
 \begin{code}
 
@@ -105,8 +102,8 @@ data E where
 
 \end{code}
 
-All ordinals in the image of Δ are retracts of ℕ (and hence
-countable).
+The underlying sets of all ordinals in the image of Δ are retracts of
+ℕ and hence countable.
 
 \begin{code}
 
@@ -115,8 +112,9 @@ countable).
 Δ-retract-of-ℕ ⌜ω+𝟙⌝       = ≃-gives-◁ ℕ-plus-𝟙
 Δ-retract-of-ℕ (ν₀ ⌜+⌝ ν₁) = Σ-retract-of-ℕ
                               retract-𝟙+𝟙-of-ℕ
-                              (dep-cases (λ _ → Δ-retract-of-ℕ ν₀)
-                                         (λ _ → Δ-retract-of-ℕ ν₁))
+                              (dep-cases
+                                (λ _ → Δ-retract-of-ℕ ν₀)
+                                (λ _ → Δ-retract-of-ℕ ν₁))
 Δ-retract-of-ℕ (ν₀ ⌜×⌝ ν₁) = Σ-retract-of-ℕ
                               (Δ-retract-of-ℕ ν₀)
                               (λ _ → Δ-retract-of-ℕ ν₁)
@@ -125,7 +123,8 @@ countable).
                               (λ x → Δ-retract-of-ℕ (A x))
 \end{code}
 
-Hence all ordinals in the image of Δ are discrete (have decidable equality):
+Hence all ordinals in the image of Δ are discrete (have decidable
+equality).
 
 \begin{code}
 
@@ -134,7 +133,8 @@ Hence all ordinals in the image of Δ are discrete (have decidable equality):
 
 \end{code}
 
-A stronger result is that the ordinals in the image of Δ are trichotomous:
+A stronger result is that the ordinals in the image of Δ are
+trichotomous:
 
 \begin{code}
 
@@ -142,14 +142,14 @@ A stronger result is that the ordinals in the image of Δ are trichotomous:
 Δ-is-trichotomous ⌜𝟙⌝         = 𝟙ₒ-is-trichotomous
 Δ-is-trichotomous ⌜ω+𝟙⌝       = succₒ-is-trichotomous ω ω-is-trichotomous
 Δ-is-trichotomous (ν₀ ⌜+⌝ ν₁) = +ᵒ-is-trichotomous (Δ ν₀) (Δ ν₁)
-                                  (Δ-is-trichotomous ν₀)
-                                  (Δ-is-trichotomous ν₁)
+                                 (Δ-is-trichotomous ν₀)
+                                 (Δ-is-trichotomous ν₁)
 Δ-is-trichotomous (ν₀ ⌜×⌝ ν₁) = ×ᵒ-is-trichotomous (Δ ν₀) (Δ ν₁)
-                                  (Δ-is-trichotomous ν₀)
-                                  (Δ-is-trichotomous ν₁)
+                                 (Δ-is-trichotomous ν₀)
+                                 (Δ-is-trichotomous ν₁)
 Δ-is-trichotomous (⌜Σ⌝ ν A)   = ∑-is-trichotomous (Δ ν) (Δ ∘ A)
                                  (Δ-is-trichotomous ν)
-                                 (λ x → Δ-is-trichotomous (A x))
+                                 (Δ-is-trichotomous ∘ A)
 \end{code}
 
 Now we define Κ, ι, ι-is-embedding by simultaneous induction.
@@ -162,7 +162,7 @@ Now we define Κ, ι, ι-is-embedding by simultaneous induction.
 
 \end{code}
 
-Before completing the induction, we define the following abbreviation:
+Before completing the induction, we define the following abbreviation.
 
 \begin{code}
 
@@ -172,7 +172,7 @@ j ν = ι ν , ι-is-embedding ν
 \end{code}
 
 We use the following auxiliary extension constructions, illustrated by
-this diagram:
+this diagram
 
                    ι ν
           ⟨ Δ ν ⟩  ⟶ ⟨ Κ ν ⟩
@@ -191,18 +191,18 @@ See the files ToppedOrdinalArithmetic and InjectiveTypes for details.
 open topped-ordinals-injectivity fe
 
 𝓚 : (ν : E) → (⟨ Δ ν ⟩ → E) → ⟨ Κ ν ⟩ → Ordᵀ
-𝓚 ν A = (Κ ∘ A) ↗ (ι ν , ι-is-embedding ν)
+𝓚 ν A = (Κ ∘ A) ↗ j ν
 
 \end{code}
 
 Explicitly, the underlying set of this ordinal is given as follows in
-the file InjectiveTypes:
+the file InjectiveTypes.
 
 \begin{code}
 
-underlying-set-of-𝓚 : (ν : E) (A : ⟨ Δ ν ⟩ → E) (y : ⟨ Κ ν ⟩)
-                    → ⟨ 𝓚 ν A y ⟩ ＝ (Π (x , _) ꞉ fiber (ι ν) y , ⟨ Κ (A x) ⟩)
-underlying-set-of-𝓚 ν A y = refl
+_ : (ν : E) (A : ⟨ Δ ν ⟩ → E) (y : ⟨ Κ ν ⟩)
+  → ⟨ 𝓚 ν A y ⟩ ＝ (Π (x , _) ꞉ fiber (ι ν) y , ⟨ Κ (A x) ⟩)
+_ = λ ν A y → refl
 
 \end{code}
 
@@ -213,7 +213,7 @@ The above gives an extension up to ordinal equivalence
 module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
 
  ϕ : (x : ⟨ Δ ν ⟩) → [ 𝓚 ν A (ι ν x) ] ≃ₒ [ Κ (A x) ]
- ϕ = ↗-property (Κ ∘ A) (j ν)
+ ϕ = ↗-propertyₒ (Κ ∘ A) (j ν)
 
  φ : (x : ⟨ Δ ν ⟩) → ⟨ 𝓚 ν A (ι ν x) ⟩ → ⟨ Κ (A x) ⟩
  φ x = ≃ₒ-to-fun [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)
@@ -226,6 +226,9 @@ module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
 
  γ-is-equiv : (x : ⟨ Δ ν ⟩) → is-equiv (γ x)
  γ-is-equiv x = ≃ₒ-to-fun⁻¹-is-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)
+
+ Γ : (x : ⟨ Δ ν ⟩) → ⟨ Κ (A x) ⟩ ≃ ⟨ 𝓚 ν A (ι ν x) ⟩
+ Γ x = γ x , γ-is-equiv x
 
 Κ ⌜𝟙⌝         = 𝟙ᵒ
 Κ ⌜ω+𝟙⌝       = ℕ∞ᵒ
@@ -247,8 +250,9 @@ module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
                               id
                               (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
                               id-is-embedding
-                              (dep-cases (λ _ → ι-is-embedding ν₀)
-                                         (λ _ → ι-is-embedding ν₁))
+                              (dep-cases
+                                (λ _ → ι-is-embedding ν₀)
+                                (λ _ → ι-is-embedding ν₁))
 ι-is-embedding (ν₀ ⌜×⌝ ν₁) = pair-fun-is-embedding _ _
                               (ι-is-embedding ν₀)
                               (λ _ → ι-is-embedding ν₁)
@@ -256,7 +260,7 @@ module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
                               (ι-is-embedding ν)
                               (λ x → ∘-is-embedding
                                       (ι-is-embedding (A x))
-                                      (equivs-are-embeddings (γ x) (γ-is-equiv x)))
+                                      (equivs-are-embeddings' (Γ x)))
  where
   open Κ-extension ν A
 
@@ -265,8 +269,9 @@ module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
 This completes the definitions of Κ, ι and ι-is-embedding.
 
 The important fact about the Κ interpretation is that the ordinals in
-its image have the least element property for complemented subsets, and,
-in particular, they are compact.
+its image have the least element property for non-empty complemented
+subsets, and, in particular, they are compact, and more generally infs
+of arbitrary complemented subsets.
 
 \begin{code}
 
@@ -299,7 +304,6 @@ module _ (pe : propext 𝓤₀) where
    ∑-has-infs-of-complemented-subsets pe (Κ ν) (𝓚 ν A)
      (K-has-infs-of-complemented-subsets ν)
      (𝓚-has-infs-of-complemented-subsets ν A)
-
  𝓚-has-infs-of-complemented-subsets ν A x =
    prop-inf-tychonoff
     (ι-is-embedding ν x)
@@ -309,28 +313,29 @@ module _ (pe : propext 𝓤₀) where
 \end{code}
 
 And, as discussed above, as a corollary we get that the ordinals in
-the image of Κ are compact:
+the image of Κ are compact.
 
 \begin{code}
 
  Κ-Compact : {𝓥 : Universe} (ν : E)
-           → Compact ⟨ Κ ν ⟩ {𝓥}
+           → is-Compact ⟨ Κ ν ⟩ {𝓥}
  Κ-Compact ν = has-inf-gives-Compact _ (K-has-infs-of-complemented-subsets ν)
 
  𝓚-Compact : {𝓥 : Universe} (ν : E) (A : ⟨ Δ ν ⟩ → E) (x : ⟨ Κ ν ⟩)
-            → Compact ⟨ 𝓚 ν A x ⟩ {𝓥}
- 𝓚-Compact ν A x = has-inf-gives-Compact _ (𝓚-has-infs-of-complemented-subsets ν A x)
+            → is-Compact ⟨ 𝓚 ν A x ⟩ {𝓥}
+ 𝓚-Compact ν A x = has-inf-gives-Compact _
+                     (𝓚-has-infs-of-complemented-subsets ν A x)
 
 \end{code}
 
 The embedding of the Δ interpretation into the Κ interpretation is
 order-preserving, order-reflecting, and dense (its image has empty
-complement):
+complement).
 
 \begin{code}
 
 ι-is-order-preserving : (ν : E) (x y : ⟨ Δ ν ⟩)
-                      →     x ≺⟨ Δ ν ⟩     y
+                      → x ≺⟨ Δ ν ⟩ y
                       → ι ν x ≺⟨ Κ ν ⟩ ι ν y
 ι-is-order-preserving ⌜𝟙⌝         = λ x y l → l
 ι-is-order-preserving ⌜ω+𝟙⌝       = ι𝟙ᵒ-is-order-preserving
@@ -342,8 +347,9 @@ complement):
                                      id
                                      (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
                                      (λ x y l → l)
-                                     (dep-cases (λ _ → ι-is-order-preserving ν₀)
-                                                (λ _ → ι-is-order-preserving ν₁))
+                                     (dep-cases
+                                       (λ _ → ι-is-order-preserving ν₀)
+                                       (λ _ → ι-is-order-preserving ν₁))
 ι-is-order-preserving (ν₀ ⌜×⌝ ν₁) = pair-fun-is-order-preserving
                                      (Δ ν₀)
                                      (Κ ν₀)
@@ -366,25 +372,29 @@ complement):
   open Κ-extension ν A
 
   IH : (x : ⟨ Δ ν ⟩) (y z : ⟨ Δ (A x) ⟩)
-     →         y ≺⟨ Δ (A x) ⟩ z
+     → y ≺⟨ Δ (A x) ⟩ z
      → ι (A x) y ≺⟨ Κ (A x) ⟩ ι (A x) z
   IH x = ι-is-order-preserving (A x)
 
   f : (x : ⟨ Δ ν ⟩) (y z : ⟨ Δ (A x) ⟩)
-    → ι (A x) y        ≺⟨ Κ (A x) ⟩        ι (A x) z
+    → ι (A x) y ≺⟨ Κ (A x) ⟩ ι (A x) z
     →  γ x (ι (A x) y) ≺⟨ 𝓚 ν A (ι ν x) ⟩ γ x (ι (A x) z)
-  f x y z = inverses-of-order-equivs-are-order-preserving [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ]
-             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)) _ _
+  f x y z = inverses-of-order-equivs-are-order-preserving
+             [ 𝓚 ν A (ι ν x) ]
+             [ Κ (A x) ]
+             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x))
+             (ι (A x) y)
+             (ι (A x) z)
 
   g : (x : ⟨ Δ ν ⟩) (y z : ⟨ Δ (A x) ⟩)
-    → y               ≺⟨ Δ (A x) ⟩        z
+    → y ≺⟨ Δ (A x) ⟩ z
     → γ x (ι (A x) y) ≺⟨ 𝓚 ν A (ι ν x) ⟩ γ x (ι (A x) z)
   g x y z l = f x y z (IH x y z l)
 
 
 ι-is-order-reflecting : (ν : E) (x y : ⟨ Δ ν ⟩)
                       → ι ν x ≺⟨ Κ ν ⟩ ι ν y
-                      →     x ≺⟨ Δ ν ⟩     y
+                      → x ≺⟨ Δ ν ⟩ y
 ι-is-order-reflecting ⌜𝟙⌝        = λ x y l → l
 ι-is-order-reflecting ⌜ω+𝟙⌝      = ι𝟙ᵒ-is-order-reflecting
 ι-is-order-reflecting (ν₀ ⌜+⌝ ν₁) =  pair-fun-is-order-reflecting
@@ -396,8 +406,9 @@ complement):
                                       (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
                                       (λ x y l → l)
                                       id-is-embedding
-                                      (dep-cases (λ _ → ι-is-order-reflecting ν₀)
-                                                 (λ _ → ι-is-order-reflecting ν₁))
+                                      (dep-cases
+                                        (λ _ → ι-is-order-reflecting ν₀)
+                                        (λ _ → ι-is-order-reflecting ν₁))
 ι-is-order-reflecting (ν₀ ⌜×⌝ ν₁) = pair-fun-is-order-reflecting
                                      (Δ ν₀)
                                      (Κ ν₀)
@@ -423,18 +434,22 @@ complement):
 
   IH : (x : ⟨ Δ ν ⟩) (y z : ⟨ Δ (A x) ⟩)
      → ι (A x) y ≺⟨ Κ (A x) ⟩ ι (A x) z
-     →         y ≺⟨ Δ (A x) ⟩         z
+     → y ≺⟨ Δ (A x) ⟩ z
   IH x = ι-is-order-reflecting (A x)
 
   f : (x : ⟨ Δ ν ⟩) (y z : ⟨ Δ (A x) ⟩)
     → γ x (ι (A x) y) ≺⟨ 𝓚 ν A (ι ν x) ⟩ γ x (ι (A x) z)
-    → ι (A x) y       ≺⟨ Κ (A x)   ⟩      ι (A x) z
-  f x y z = inverses-of-order-equivs-are-order-reflecting [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ]
-             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)) _ _
+    → ι (A x) y ≺⟨ Κ (A x) ⟩ ι (A x) z
+  f x y z = inverses-of-order-equivs-are-order-reflecting
+             [ 𝓚 ν A (ι ν x) ]
+             [ Κ (A x) ]
+             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x))
+             (ι (A x) y)
+             (ι (A x) z)
 
   g : (x : ⟨ Δ ν ⟩) (y z : ⟨ Δ (A x) ⟩)
     → γ x (ι (A x) y) ≺⟨ 𝓚 ν A (ι ν x) ⟩ γ x (ι (A x) z)
-    → y               ≺⟨ Δ (A x)   ⟩      z
+    → y ≺⟨ Δ (A x) ⟩ z
   g x y z l = IH x y z (f x y z l)
 
 
@@ -455,29 +470,13 @@ complement):
                           (ι-is-dense ν)
                           (λ x → comp-is-dense
                                   (ι-is-dense (A x))
-                                  (equivs-are-dense
-                                    (γ x)
-                                    (γ-is-equiv x)))
+                                  (equivs-are-dense' (Γ x)))
  where
   open Κ-extension ν A
 
 \end{code}
 
-We define limit points as follows:
-
-\begin{code}
-
-private
- recall-notion-of-isolatedness  : {X : 𝓤 ̇ } (x : X)
-                                → is-isolated x ＝ ((y : X) → decidable (x ＝ y))
- recall-notion-of-isolatedness x = refl
-
-is-limit-point : {X : 𝓤 ̇ } → X → 𝓤 ̇
-is-limit-point x = is-isolated x → WLPO
-
-\end{code}
-
-The characteristic function of limit points:
+The characteristic function of topological limit points.
 
 \begin{code}
 
@@ -536,10 +535,12 @@ module _ (pe : propext 𝓤₀) where
  ℓ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
  ℓ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit ν₀ x₀ p
                                          (Σ-isolated-right
-                                           (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
+                                           (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                           i)
  ℓ-limit (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = ℓ-limit ν₁ x₁ p
                                          (Σ-isolated-right
-                                           (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
+                                           (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                           i)
  ℓ-limit (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
    Cases (max𝟚-lemma p)
     (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit ν₀ x₀ p₀ (×-isolated-left i))
@@ -566,7 +567,7 @@ module _ (pe : propext 𝓤₀) where
 
  isolatedness-decision' : ¬ WLPO
                         → (ν : E) (x : ⟨ Δ ν ⟩)
-                        → decidable (is-isolated (ι ν x))
+                        → is-decidable (is-isolated (ι ν x))
  isolatedness-decision' f ν x =
    Cases (isolatedness-decision ν x)
     inl
@@ -574,39 +575,74 @@ module _ (pe : propext 𝓤₀) where
 
 \end{code}
 
+Added 14th October 2024. Actually we have that a stronger property of
+limit point holds.
+
+\begin{code}
+
+ ℓ-limit⁺ : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point⁺ (ι ν x)
+ ℓ-limit⁺ ⌜ω+𝟙⌝ (inr x) p i = ∞-is-a-limit-point⁺-of-ℕ∞ fe₀ i
+ ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit⁺ ν₀ x₀ p
+                                          (Σ-weakly-isolated-right
+                                            (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                            i)
+ ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = ℓ-limit⁺ ν₁ x₁ p
+                                          (Σ-weakly-isolated-right
+                                            (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                            i)
+ ℓ-limit⁺ (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
+   Cases (max𝟚-lemma p)
+    (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit⁺ ν₀ x₀ p₀ (×-weakly-isolated-left i))
+    (λ (p₁ : ℓ ν₁ x₁ ＝ ₁) → ℓ-limit⁺ ν₁ x₁ p₁ (×-weakly-isolated-right i))
+ ℓ-limit⁺ (⌜Σ⌝ ν A)   (x , y)      p i =
+   Cases (max𝟚-lemma p)
+    (λ (p₀ : ℓ ν x ＝ ₁)
+           → ℓ-limit⁺ ν x p₀ (Σ-weakly-isolated-left (𝓚-Compact pe ν A) i))
+    (λ (p₁ : ℓ (A x) y ＝ ₁)
+           → ℓ-limit⁺ (A x) y p₁
+              (equivs-reflect-weak-isolatedness
+                (Γ x)
+                (ι (A x) y)
+                (Σ-weakly-isolated-right
+                  (underlying-type-is-setᵀ fe (Κ ν)) i)))
+  where
+   open Κ-extension ν A
+
+\end{code}
+
+End of addition and back to the past.
+
 We conclude with some impossibility results.
 
 \begin{code}
 
-ι-is-equiv-gives-LPO : ((ν : E) → is-equiv (ι ν))
-                     → LPO
+ι-is-equiv-gives-LPO : ((ν : E) → is-equiv (ι ν)) → LPO
 ι-is-equiv-gives-LPO f = ι𝟙-is-equiv-gives-LPO (f ⌜ω+𝟙⌝)
 
-LPO-gives-ι-is-equiv : LPO
-                     → (ν : E) → is-equiv (ι ν)
+LPO-gives-ι-is-equiv : LPO → (ν : E) → is-equiv (ι ν)
 LPO-gives-ι-is-equiv lpo ⌜𝟙⌝         = id-is-equiv 𝟙
-LPO-gives-ι-is-equiv lpo ⌜ω+𝟙⌝       = LPO-gives-ι𝟙-is-equiv lpo
+LPO-gives-ι-is-equiv lpo ⌜ω+𝟙⌝       = LPO-gives-ι𝟙-is-equiv fe₀ lpo
 LPO-gives-ι-is-equiv lpo (ν₀ ⌜+⌝ ν₁) = pair-fun-is-equiv
-                                          id
-                                          (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
-                                          (id-is-equiv (𝟙 + 𝟙))
-                                          (dep-cases
-                                            (λ _ → LPO-gives-ι-is-equiv lpo ν₀)
-                                            (λ _ → LPO-gives-ι-is-equiv lpo ν₁))
+                                        id
+                                        (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
+                                        (id-is-equiv (𝟙 + 𝟙))
+                                        (dep-cases
+                                          (λ _ → LPO-gives-ι-is-equiv lpo ν₀)
+                                          (λ _ → LPO-gives-ι-is-equiv lpo ν₁))
 LPO-gives-ι-is-equiv lpo (ν₀ ⌜×⌝ ν₁) = pair-fun-is-equiv _ _
-                                          (LPO-gives-ι-is-equiv lpo ν₀)
-                                          (λ _ → LPO-gives-ι-is-equiv lpo ν₁)
+                                        (LPO-gives-ι-is-equiv lpo ν₀)
+                                        (λ _ → LPO-gives-ι-is-equiv lpo ν₁)
 LPO-gives-ι-is-equiv lpo (⌜Σ⌝ ν A)   = pair-fun-is-equiv
-                                          (ι ν)
-                                          (λ x → γ x ∘ ι (A x))
-                                          (LPO-gives-ι-is-equiv lpo ν)
-                                          (λ x → ∘-is-equiv
-                                                  (LPO-gives-ι-is-equiv lpo (A x))
-                                                  (γ-is-equiv x))
+                                        (ι ν)
+                                        (λ x → γ x ∘ ι (A x))
+                                        (LPO-gives-ι-is-equiv lpo ν)
+                                        (λ x → ∘-is-equiv
+                                                (LPO-gives-ι-is-equiv lpo (A x))
+                                                (γ-is-equiv x))
  where
   open Κ-extension ν A
 
-ι-is-equiv-iff-LPO : ((ν : E) → is-equiv (ι ν)) ⇔ LPO
+ι-is-equiv-iff-LPO : ((ν : E) → is-equiv (ι ν)) ↔ LPO
 ι-is-equiv-iff-LPO = ι-is-equiv-gives-LPO , LPO-gives-ι-is-equiv
 
 \end{code}
@@ -615,25 +651,27 @@ We also have the following:
 
 \begin{code}
 
-ι-has-section-gives-Κ-discrete : (ν : E) → has-section (ι ν) → is-discrete ⟨ Κ ν ⟩
+ι-has-section-gives-Κ-discrete : (ν : E)
+                               → has-section (ι ν)
+                               → is-discrete ⟨ Κ ν ⟩
 ι-has-section-gives-Κ-discrete ν (θ , ιθ) = lc-maps-reflect-discreteness θ
-                                              (sections-are-lc θ (ι ν , ιθ))
-                                              (Δ-is-discrete ν)
+                                             (sections-are-lc θ (ι ν , ιθ))
+                                             (Δ-is-discrete ν)
 
 ι-is-equiv-gives-Κ-discrete : (ν : E) → is-equiv (ι ν) → is-discrete ⟨ Κ ν ⟩
 ι-is-equiv-gives-Κ-discrete ν e = ι-has-section-gives-Κ-discrete ν
                                    (equivs-have-sections (ι ν) e)
 
-LPO-gives-Κ-discrete : LPO
-                     → (ν : E) → is-discrete ⟨ Κ ν ⟩
+LPO-gives-Κ-discrete : LPO → (ν : E) → is-discrete ⟨ Κ ν ⟩
 LPO-gives-Κ-discrete lpo ν = ι-is-equiv-gives-Κ-discrete ν
                               (LPO-gives-ι-is-equiv lpo ν)
 
-Κ-discrete-gives-WLPO : ((ν : E) → is-discrete ⟨ Κ ν ⟩)
-                      → WLPO
+Κ-discrete-gives-WLPO : ((ν : E) → is-discrete ⟨ Κ ν ⟩) → WLPO
 Κ-discrete-gives-WLPO f = ℕ∞-discrete-gives-WLPO (f ⌜ω+𝟙⌝)
 
 \end{code}
+
+We close with some open questions.
 
 TODO. Can we close the gap between the last two facts? The difficulty
 that arises here is similar to the following.
@@ -645,18 +683,30 @@ Let P be a proposition and assume function extensionality.
 (1) If (P → 𝟚) has decidable equality, then ¬ P is decidable.
 
 It doesn't seem to be possible to reverse any of the implications (0)
-and (1), so that the proposition "(P -> 2) has decidable equality"
+and (1), so that the proposition "(P → 2) has decidable equality"
 seems to be strictly between "P is decidable" and "¬P is decidable".
 
-This is discussed in the file Taboos.P2.
+This is discussed in the following module.
+
+\begin{code}
+
+import Taboos.P2
+
+\end{code}
 
 TODO. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do have
-(ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in OrdinalOfOrdinals, submodule ℕ∞-in-Ord.
+(ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in the following module.
+
+\begin{code}
+
+import Ordinals.ConvergentSequence
+
+\end{code}
 
 TODO. Define an element x of an ordinal to be trisolated if for every
 y we have that y ≺ x or x ＝ y or x ≺ y.  Notice that trisolated
 elements are isolated. Define an ordinal to be trichotomous if every
-element is trisolated. (1) Δ ν should be trichotomous. (2) We should have:
+element is trisolated. We should have the following:
 
 ℓ-trisolated : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₀ → is-trisolated (ι ν x)
 
@@ -669,3 +719,8 @@ the component 𝟙ₒ to x.
 
 TODO. Suprema of compact ordinals are compact. (This follows directly
 from the constructions in the file OrdinalOfOrdinalsSupremum.)
+
+TODO. Are the ordinals in the image of K totally separated?
+
+TODO. The map ℓ should also be the characteristic function of
+ordinal-limit points.

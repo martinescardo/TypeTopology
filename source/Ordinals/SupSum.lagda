@@ -1,6 +1,7 @@
 Martin Escardo, 2-4 May 2022
 
-Roughly, we show that, for any family β of ordinals indexed by ordinals,
+Roughly, we show the following chain of implications, for any family β
+of ordinals indexed by ordinals,
 
     EM → sup β ⊴ ∑ β → WEM
 
@@ -19,7 +20,7 @@ Other local assumptions belonging to HoTT/UF are discussed below.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
 
@@ -29,13 +30,12 @@ module Ordinals.SupSum
 
 open import MLTT.Spartan
 open import Notation.CanonicalMap
-open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
@@ -94,7 +94,7 @@ module sup-bounded-by-sum-under-em
      fop y z l = inr (refl , l)
 
      m : β x ≼ ∑ α β
-     m = order-preserving-gives-≼ em (β x) (∑ α β) (f , fop)
+     m = EM-implies-order-preserving-gives-≼ em (β x) (∑ α β) (f , fop)
 
 \end{code}
 
@@ -107,7 +107,8 @@ universe 𝓤, that is, the ordinals that have a largest element.
  open import Ordinals.ToppedType fe
  open import Ordinals.ToppedArithmetic fe renaming (∑ to ∑ᵀ)
 
- sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
+ sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤)
+                       (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
                      → sup (λ x → [ υ x ]) ⊴ [ ∑ᵀ τ υ ]
  sup-bounded-by-sumᵀ τ υ = sup-bounded-by-sum [ τ ] (λ x → [ υ x ])
 
@@ -134,15 +135,15 @@ module _ {𝓤 : Universe}
  open import Ordinals.ToppedArithmetic fe
  open suprema pt sr
 
- sup-bounded-by-sum-gives-WEM :
-    ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
-        → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ])
-  → {𝓤 : Universe} → WEM 𝓤
+ sup-bounded-by-sum-gives-WEM
+  : ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
+         → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ])
+  → {𝓤 : Universe} → typal-WEM 𝓤
  sup-bounded-by-sum-gives-WEM ϕ {𝓤} = γ
   where
    open import Ordinals.OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
    open Omega (pe 𝓤)
-   open import Ordinals.Arithmetic-Properties ua
+   open import Ordinals.AdditionProperties ua
 
    τ = 𝟚ᵒ
 
@@ -164,7 +165,7 @@ module _ {𝓤 : Universe}
    q : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ)
    q = transport (Ωₒ ⊴_) p o
 
-   γ : WEM 𝓤
+   γ : typal-WEM 𝓤
    γ = ⊴-add-taboo q
 
 \end{code}
@@ -173,7 +174,7 @@ Added 21st May 2022. Unfortunately, the above is not very useful in
 the generality it is proved. The reason is that in other modules we
 have sups and sums constructed under different assumptions, and
 although the assumptions are propositions and hence we can transport
-using propositional extensionality, this becomes to cumbersome to even
+using propositional extensionality, this becomes too cumbersome to even
 write down, let alone prove. Hence we will repeat the above (short)
 code with the two assumptions we need.
 
@@ -204,7 +205,7 @@ module _ {𝓤 : Universe}
      fop y z l = inr (refl , l)
 
      m : [ υ x ] ≼ [ ∑ τ υ ]
-     m = order-preserving-gives-≼ em [ υ x ] [ ∑ τ υ ] (f , fop)
+     m = EM-implies-order-preserving-gives-≼ em [ υ x ] [ ∑ τ υ ] (f , fop)
 
    γ : sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ]
    γ = sup-is-lower-bound-of-upper-bounds (λ x → [ υ x ]) [ ∑ τ υ ] bound
@@ -226,7 +227,7 @@ module _ {𝓤 : Universe}
      fop y z l = inr (refl , l)
 
      m : [ υ x ] ≼ [ ∑³ τ υ ]
-     m = order-preserving-gives-≼ em [ υ x ] [ ∑³ τ υ ] (f , fop)
+     m = EM-implies-order-preserving-gives-≼ em [ υ x ] [ ∑³ τ υ ] (f , fop)
 
    γ : sup (λ x → [ υ x ]) ⊴ [ ∑³ τ υ ]
    γ = sup-is-lower-bound-of-upper-bounds (λ x → [ υ x ]) [ ∑³ τ υ ] bound

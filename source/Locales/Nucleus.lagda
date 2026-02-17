@@ -4,11 +4,9 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
-open import UF.PropTrunc
 open import UF.FunExt
 open import UF.PropTrunc
 
@@ -17,23 +15,27 @@ module Locales.Nucleus
         (fe : Fun-Ext)
        where
 
-open import UF.Subsingletons
-open import UF.Logic
-open import UF.Subsingletons-FunExt
-
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
+open import UF.Logic
+open import UF.Subsingletons
+open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
+open FrameHomomorphismProperties
+open FrameHomomorphisms
+open Locale
 
 \end{code}
 
 \begin{code}
 
 is-inflationary : (L : Frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
-is-inflationary L j = Ɐ x ∶ ⟨ L ⟩ , x ≤[ poset-of L ] j x
+is-inflationary L j = Ɐ x ꞉ ⟨ L ⟩ , x ≤[ poset-of L ] j x
 
 is-idempotent : (L : Frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
-is-idempotent L j = Ɐ x ∶ ⟨ L ⟩ , j (j x) ≤[ poset-of L ] j x
+is-idempotent L j = Ɐ x ꞉ ⟨ L ⟩ , j (j x) ≤[ poset-of L ] j x
 
 is-nucleus : (L : Frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
 is-nucleus {𝓤 = 𝓤} {𝓥} {𝓦} F j = 𝓃₁ ∧  𝓃₂ ∧ 𝓃₃
@@ -100,6 +102,12 @@ is-prenucleus L j = is-inflationary L j  ∧ preserves-binary-meets L L j
 Prenucleus : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥) ̇
 Prenucleus L = Σ j ꞉ (⟨ L ⟩ → ⟨ L ⟩) , is-prenucleus L j holds
 
+prenucleus-eq : (F : Frame 𝓤 𝓥 𝓦) (𝒿 𝓀 : Prenucleus F)
+              → ((x : ⟨ F ⟩) → 𝒿 .pr₁ x ＝ 𝓀 .pr₁ x)
+              → 𝒿 ＝ 𝓀
+prenucleus-eq F 𝒿 𝓀 φ =
+ to-subtype-＝ (λ - → holds-is-prop (is-prenucleus F -)) (dfunext fe φ)
+
 module PrenucleusApplicationSyntax (L : Frame 𝓤 𝓥 𝓦) where
 
  _$ₚ_ : Prenucleus L → ⟨ L ⟩ → ⟨ L ⟩
@@ -154,13 +162,13 @@ nuclei-are-idempotent L 𝒿@(j , _) x = ≤-is-antisymmetric (poset-of L) β γ
 
 prenucleus-property₁ : (L : Frame 𝓤 𝓥 𝓦)
                      → ((j , _) (k , _) : Prenucleus L)
-                     → (Ɐ x ∶ ⟨ L ⟩ , j x ≤[ poset-of L ] (j ∘ k) x) holds
+                     → (Ɐ x ꞉ ⟨ L ⟩ , j x ≤[ poset-of L ] (j ∘ k) x) holds
 prenucleus-property₁ L (j , _ , μj) (k , ζ , _) x =
  meet-preserving-implies-monotone L L j μj (x , k x) (ζ x)
 
 prenucleus-property₂ : (L : Frame 𝓤 𝓥 𝓦)
                      → ((j , _) (k , _) : Prenucleus L)
-                     → (Ɐ x ∶ ⟨ L ⟩ , k x ≤[ poset-of L ] (j ∘ k) x) holds
+                     → (Ɐ x ꞉ ⟨ L ⟩ , k x ≤[ poset-of L ] (j ∘ k) x) holds
 prenucleus-property₂ L (j , ζj , _) (k , _) x = ζj (k x)
 
 \end{code}
@@ -191,5 +199,57 @@ prenucleus-property₂ L (j , ζj , _) (k , _) x = ζj (k x)
 ∨-is-nucleus L x = ∨-is-inflationary L x
                  , ∨-is-idempotent L x
                  , ∨-preserves-binary-meets L x
+
+closed-nucleus : (X : Locale 𝓤 𝓥 𝓦) (U : ⟨ 𝒪 X ⟩) → Nucleus (𝒪 X)
+closed-nucleus X U = (λ - → U ∨[ 𝒪 X ] -) , ∨-is-nucleus (𝒪 X) U
+
+\end{code}
+
+\begin{code}
+
+open import Locales.HeytingImplication pt fe
+open Locale
+
+module NucleusHeytingImplicationLaw (X : Locale 𝓤 𝓥 𝓥)
+                                    (𝒷 : has-basis (𝒪 X) holds)
+                                    (𝒿 : Nucleus (𝒪 X))
+                                     where
+
+ open HeytingImplicationConstruction X 𝒷
+
+ private
+  j = pr₁ 𝒿
+
+ nucleus-heyting-implication-law : (U V : ⟨ 𝒪 X ⟩)
+                                 → (U ==> j V) ＝ j U ==> j V
+ nucleus-heyting-implication-law U V =
+  ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    ♣ : (((U ==> j V) ∧[ 𝒪 X ] j U) ≤[ poset-of (𝒪 X) ] j V) holds
+    ♣ = (U ==> j V)   ∧[ 𝒪 X ] j U     ≤⟨ Ⅰ  ⟩
+        j (U ==> j V) ∧[ 𝒪 X ] j U     ＝⟨ Ⅱ ⟩ₚ
+        j ((U ==> j V) ∧[ 𝒪 X ] U)     ≤⟨ Ⅲ ⟩
+        j (j V)                        ≤⟨ Ⅳ ⟩
+        j V                           ■
+         where
+          Ⅰ = ∧[ 𝒪 X ]-left-monotone (𝓃₁ (𝒪 X) 𝒿 (U ==> j V))
+          Ⅱ = 𝓃₃ (𝒪 X) 𝒿 (U ==> j V) U ⁻¹
+          Ⅲ = nuclei-are-monotone (𝒪 X) 𝒿 (_ , _) (mp-right U (j V))
+          Ⅳ = 𝓃₂ (𝒪 X) 𝒿 V
+
+    ♥ = (j U ==> j V) ∧[ 𝒪 X ] U       ≤⟨ Ⅰ ⟩
+        (j U ==> j V) ∧[ 𝒪 X ] j U     ≤⟨ Ⅱ ⟩
+        j V ■
+         where
+          Ⅰ = ∧[ 𝒪 X ]-right-monotone (𝓃₁ (𝒪 X) 𝒿 U)
+          Ⅱ = mp-right (j U) (j V)
+
+    † : ((U ==> j V) ≤[ poset-of (𝒪 X) ] (j U ==> j V)) holds
+    † = heyting-implication₁ (j U) (j V) (U ==> j V) ♣
+
+    ‡ : ((j U ==> j V) ≤[ poset-of (𝒪 X) ] (U ==> j V)) holds
+    ‡ = heyting-implication₁ U (j V) (j U ==> j V) ♥
 
 \end{code}

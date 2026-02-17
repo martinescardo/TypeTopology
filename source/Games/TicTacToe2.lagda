@@ -5,21 +5,22 @@ another file.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
+{-# OPTIONS --safe --without-K --no-exact-split #-}
 
 
 module Games.TicTacToe2 where
 
 open import MLTT.Spartan hiding (J)
+open import MLTT.Fin
 
 data 𝟛 : Type where
  O-wins draw X-wins : 𝟛
 
-open import Games.Constructor 𝟛
-open import Games.FiniteHistoryDependent 𝟛
-open import Games.TypeTrees
+open import Games.Constructor {𝓤₀} {𝓤₀} 𝟛
+open import Games.FiniteHistoryDependent {𝓤₀} {𝓤₀} 𝟛
+open import Games.TypeTrees {𝓤₀}
+open import MonadOnTypes.J
 open import MLTT.Athenian
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 open list-util
 
@@ -31,12 +32,12 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
   flip draw   = draw
   flip X-wins = O-wins
 
-  data Player : Type where
+  data Player : 𝓤₀ ̇ where
    O X : Player
 
   Cell = Fin 9
 
-  record Board : Type where
+  record Board : 𝓤₀ ̇ where
    pattern
    constructor board
    field
@@ -69,7 +70,7 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
   board₀ : Board
   board₀ = board X (list-Fin 9) [] []
 
-  Move : List Cell → Type
+  Move : List Cell → 𝓤₀ ̇
   Move xs = Σ c ꞉ Cell , ((c is-in xs) ＝ true)
 
 \end{code}
@@ -123,6 +124,8 @@ predicate q:
       k X-wins = y , a
       k r      = g vs b
 
+  open J-definitions 𝟛
+
   argmin : (m : Cell) (ms : List Cell) → 𝟛 → (Move (m ∷ ms) → 𝟛) → Move (m ∷ ms)
   argmin m ms r q = argmax m ms (flip r) (λ xs → flip (q xs))
 
@@ -135,7 +138,7 @@ predicate q:
   play (board X as xs os) (c , e) = board O (remove c as) (insert c xs) os
   play (board O as xs os) (c , e) = board X (remove c as) xs            (insert c os)
 
-  transition : Board → 𝟛 + (Σ M ꞉ Type , (M → Board) × J M)
+  transition : Board → 𝟛 + (Σ M ꞉ 𝓤₀ ̇ , (M → Board) × J M)
   transition b@(board next as xs os) =
    if wins b
    then inl (opponent-wins next)
@@ -149,11 +152,14 @@ tic-tac-toe₂ = Game-from-GameJ tic-tac-toe₂J
 t₂ : 𝟛
 t₂ = optimal-outcome tic-tac-toe₂
 
-s₂ : Path (Xt tic-tac-toe₂)
-s₂ = strategic-path (selection-strategy (selections tic-tac-toe₂J) (q tic-tac-toe₂))
+s₂ : Path (game-tree tic-tac-toe₂)
+s₂ = strategic-path
+      (selection-strategy
+        (selections tic-tac-toe₂J)
+        (payoff-function tic-tac-toe₂))
 
-u₂ : Path (Xt tic-tac-toe₂)
-u₂ = J-sequence (selections tic-tac-toe₂J) (q tic-tac-toe₂)
+u₂ : Path (game-tree tic-tac-toe₂)
+u₂ = sequenceᴶ (selections tic-tac-toe₂J) (payoff-function tic-tac-toe₂)
 
 l₂ : ℕ
 l₂ = plength s₂
@@ -174,7 +180,6 @@ l₂-test = refl
 
 {- slow
 
-open import Athenian
 
 u₂-test : s₂ ＝ (𝟎 :: refl)
            :: ((𝟒 :: refl)

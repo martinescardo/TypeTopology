@@ -1,5 +1,6 @@
 Tom de Jong, 31 January - 4 February 2022.
 Material moved to separate file on 11 June 2022.
+Updated with sup-complete ideal completion on 27 June 2024.
 
 Suppose we are given a continuous dcpo D with small basis β : B → D. We show
 that D is a continuous retract of the ideal completion Idl(B,⊑) which is an
@@ -24,7 +25,7 @@ Idl(B,⊑) and analogous remarks apply in this case.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -46,12 +47,12 @@ open import UF.Powerset
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.SupComplete pt fe 𝓥
 open import DomainTheory.Basics.WayBelow pt fe 𝓥
 
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
 
-open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
 open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥
 
 open PropositionalTruncation pt
@@ -70,7 +71,7 @@ module so that we can conveniently reuse them.
 
 module Idl-retract-common
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (β-is-small-basis : is-small-basis 𝓓 β)
        where
@@ -95,7 +96,7 @@ Scott continuous here.
  ↡ᴮ-is-monotone x y x-below-y b b-way-below-x =
   ≪ᴮ-to-≪ᴮₛ (≪-⊑-to-≪ 𝓓 (≪ᴮₛ-to-≪ᴮ b-way-below-x) x-below-y)
 
- ↡ᴮ-is-continuous : {I : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
+ ↡ᴮ-is-continuous : {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
                   → is-sup _⊆_ (↡ᴮ-subset (∐ 𝓓 δ)) (↡ᴮ-subset ∘ α)
  ↡ᴮ-is-continuous {I} {α} δ = (ub , lb-of-ubs)
   where
@@ -191,7 +192,7 @@ semidirected and lower-closed.
 \begin{code}
 
  module _
-         (_≺_ : B → B → 𝓥 ̇  )
+         (_≺_ : B → B → 𝓥 ̇ )
         where
 
   ↡ᴮ-lowerset-criterion : (x : ⟨ 𝓓 ⟩)
@@ -225,7 +226,7 @@ we have an embedding-projection pair) of an algebraic dcpo, namely of Idl(B,⊑)
 
 module Idl-continuous-retract-of-algebraic
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (β-is-small-basis : is-small-basis 𝓓 β)
        where
@@ -249,12 +250,20 @@ module Idl-continuous-retract-of-algebraic
  ⊑ᴮ-is-transitive u v = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹
                          (transitivity 𝓓 _ _ _ (⌜ ⊑ᴮ-≃-⊑ ⌝ u) (⌜ ⊑ᴮ-≃-⊑ ⌝ v))
 
- open Ideals-of-small-abstract-basis {B} _⊑ᴮ_
-        ⊑ᴮ-is-prop-valued
-        (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-        (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-        ⊑ᴮ-is-transitive
-      public
+ ⊑ᴮ-reflexive-abstract-basis : reflexive-abstract-basis
+ ⊑ᴮ-reflexive-abstract-basis = record
+                                { basis-carrier = B
+                                ; _≺_ = _⊑ᴮ_
+                                ; ≺-prop-valued = ⊑ᴮ-is-prop-valued
+                                ; ≺-trans = ⊑ᴮ-is-transitive
+                                ; ≺-refl = ⊑ᴮ-is-reflexive
+                               }
+
+ ⊑ᴮ-abstract-basis : abstract-basis
+ ⊑ᴮ-abstract-basis = reflexive-abstract-basis-to-abstract-basis
+                      ⊑ᴮ-reflexive-abstract-basis
+
+ open Ideals-of-small-abstract-basis ⊑ᴮ-abstract-basis public
  open Idl-retract-common 𝓓 β β-is-small-basis public
  open Idl-mediating 𝓓 β ⌜ ⊑ᴮ-≃-⊑ ⌝ public
 
@@ -309,7 +318,7 @@ module Idl-continuous-retract-of-algebraic
    ; s-section-of-r  = retract-condition Idl-retract
    ; s-is-continuous = to-Idl-is-continuous
    ; r-is-continuous = from-Idl-is-continuous
-   }
+  }
 
  Idl-embedding-projection-pair : embedding-projection-pair-between 𝓓 Idl-DCPO
  Idl-embedding-projection-pair =
@@ -320,10 +329,164 @@ module Idl-continuous-retract-of-algebraic
     ; e-p-deflation   = Idl-deflation
     ; e-is-continuous = to-Idl-is-continuous
     ; p-is-continuous = from-Idl-is-continuous
-    }
+   }
 
  Idl-is-algebraic : is-algebraic-dcpo Idl-DCPO
  Idl-is-algebraic = Idl-is-algebraic-dcpo (λ b → ⊑ᴮ-is-reflexive)
+
+\end{code}
+
+Added 27 June 2024.
+Taking the ideal completion of a small basis closed under finite joins of a
+sup-complete dcpo yields another sup-complete dcpo.
+
+\begin{code}
+
+ module _
+         (fj : has-finite-joins 𝓓)
+         (bfj : basis-has-finite-joins 𝓓 β β-is-small-basis fj)
+        where
+
+  open basis-has-finite-joins bfj
+  open has-finite-joins fj
+
+  ideals-contain-⊥ : (I : Idl) → ⊥ᴮ ∈ᵢ I
+  ideals-contain-⊥ I =
+   ∥∥-rec (∈-is-prop (carrier I) ⊥ᴮ) h
+          (ideals-are-inhabited (carrier I) (ideality I))
+    where
+     h : (Σ b ꞉ B , b ∈ carrier I) → ⊥ᴮ ∈ carrier I
+     h (b , b-in-I) = ideals-are-lowersets (carrier I) (ideality I) ⊥ᴮ b
+                       (⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (⊥ᴮ-is-least _))
+                       b-in-I
+
+  ideals-are-closed-under-∨ : (I : Idl) {a b : B}
+                            → a ∈ᵢ I → b ∈ᵢ I → a ∨ᴮ b ∈ᵢ I
+  ideals-are-closed-under-∨ I {a} {b} a-in-I b-in-I =
+   ∥∥-rec (∈-is-prop (carrier I) (a ∨ᴮ b)) h
+          (ideals-are-semidirected (carrier I) (ideality I) a b a-in-I b-in-I)
+    where
+     h : (Σ c ꞉ B , c ∈ᵢ I × (a ⊑ᴮ c) × (b ⊑ᴮ c)) → a ∨ᴮ b ∈ᵢ I
+     h (c , c-in-I , u , v) =
+      ideals-are-lowersets (carrier I) (ideality I)
+                           (a ∨ᴮ b) c
+                           (⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (∨ᴮ-is-lowerbound-of-upperbounds
+                                           (⌜ ⊑ᴮ-≃-⊑ ⌝ u) (⌜ ⊑ᴮ-≃-⊑ ⌝ v)))
+                           c-in-I
+
+  Idl-is-sup-complete-if-basis-has-finite-joins' : is-sup-complete Idl-DCPO
+  Idl-is-sup-complete-if-basis-has-finite-joins' =
+   dcpo-with-finite-joins-is-sup-complete Idl-DCPO γ
+    where
+     ⊥Idl : Idl
+     ⊥Idl = (λ b → b ⊑ᴮ ⊥ᴮ , ⊑ᴮ-is-prop-valued) ,
+            (λ b c b-below-c c-below-⊥ → ⊑ᴮ-is-transitive b-below-c c-below-⊥) ,
+            ∣ ⊥ᴮ , ⊑ᴮ-is-reflexive ∣ ,
+            (λ b c b-below-⊥ c-below-⊥ → ∣ ⊥ᴮ , ⊑ᴮ-is-reflexive ,
+                                           b-below-⊥ , c-below-⊥ ∣)
+
+     ⊥Idl-is-least : is-least (underlying-order Idl-DCPO) ⊥Idl
+     ⊥Idl-is-least I b b-below-⊥ =
+      ideals-are-lowersets (carrier I) (ideality I)
+                           b ⊥ᴮ b-below-⊥ (ideals-contain-⊥ I)
+
+     _∨Idl_ : Idl → Idl → Idl
+     I ∨Idl J = K , K-is-lowerset , K-is-inhabited , K-is-semidirected
+      where
+       K : 𝓟 B
+       K b = ∥ (Σ c ꞉ B , Σ d ꞉ B , c ∈ᵢ I × d ∈ᵢ J × (b ⊑ᴮ (c ∨ᴮ d))) ∥ ,
+             ∥∥-is-prop
+
+       K-is-lowerset : is-lowerset K
+       K-is-lowerset b₁ b₂ b₁-below-b₂ =
+        ∥∥-functor
+         (λ (c , d , c-in-I , d-in-J , b₂-below-join)
+           → (c , d , c-in-I , d-in-J ,
+              ⊑ᴮ-is-transitive b₁-below-b₂ b₂-below-join))
+
+       K-is-inhabited : is-inhabited-set K
+       K-is-inhabited = ∣ ⊥ᴮ , ∣ ⊥ᴮ , ⊥ᴮ ,
+                                 ideals-contain-⊥ I , ideals-contain-⊥ J ,
+                                 ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (⊥ᴮ-is-least _) ∣ ∣
+
+       K-is-semidirected : is-semidirected-set K
+       K-is-semidirected b₁ b₂ = ∥∥-functor₂ h
+        where
+         h : (Σ c₁ ꞉ B , Σ d₁ ꞉ B , c₁ ∈ᵢ I × d₁ ∈ᵢ J × (b₁ ⊑ᴮ c₁ ∨ᴮ d₁))
+           → (Σ c₂ ꞉ B , Σ d₂ ꞉ B , c₂ ∈ᵢ I × d₂ ∈ᵢ J × (b₂ ⊑ᴮ c₂ ∨ᴮ d₂))
+           → Σ b ꞉ B , b ∈ K × (b₁ ⊑ᴮ b) × (b₂ ⊑ᴮ b)
+         h (c₁ , d₁ , c₁-in-I , d₁-in-J , u)
+           (c₂ , d₂ , c₂-in-I , d₂-in-J , v) = b₁ ∨ᴮ b₂ ,
+                                               join-in-K ,
+                                               ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ ∨ᴮ-is-upperbound₁ ,
+                                               ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ ∨ᴮ-is-upperbound₂
+          where
+           join-in-K : b₁ ∨ᴮ b₂ ∈ K
+           join-in-K = ∣ c₁ ∨ᴮ c₂ , d₁ ∨ᴮ d₂ ,
+                         ideals-are-closed-under-∨ I c₁-in-I c₂-in-I ,
+                         ideals-are-closed-under-∨ J d₁-in-J d₂-in-J ,
+                         ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (∨ᴮ-is-lowerbound-of-upperbounds ⦅1⦆ ⦅2⦆) ∣
+            where
+             ⦅1⦆ = β b₁                        ⊑⟨ 𝓓 ⟩[ ⌜ ⊑ᴮ-≃-⊑ ⌝ u ]
+                  β (c₁ ∨ᴮ d₁)                 ⊑⟨ 𝓓 ⟩[ w ]
+                  β ((c₁ ∨ᴮ c₂) ∨ᴮ (d₁ ∨ᴮ d₂)) ∎⟨ 𝓓 ⟩
+              where
+               w = ∨ᴮ-is-lowerbound-of-upperbounds
+                    (transitivity 𝓓 _ _ _ ∨ᴮ-is-upperbound₁ ∨ᴮ-is-upperbound₁)
+                    (transitivity 𝓓 _ _ _ ∨ᴮ-is-upperbound₁ ∨ᴮ-is-upperbound₂)
+             ⦅2⦆ = β b₂                        ⊑⟨ 𝓓 ⟩[ ⌜ ⊑ᴮ-≃-⊑ ⌝ v ]
+                  β (c₂ ∨ᴮ d₂)                 ⊑⟨ 𝓓 ⟩[ w ]
+                  β ((c₁ ∨ᴮ c₂) ∨ᴮ (d₁ ∨ᴮ d₂)) ∎⟨ 𝓓 ⟩
+              where
+               w = ∨ᴮ-is-lowerbound-of-upperbounds
+                    (transitivity 𝓓 _ _ _ ∨ᴮ-is-upperbound₂ ∨ᴮ-is-upperbound₁)
+                    (transitivity 𝓓 _ _ _ ∨ᴮ-is-upperbound₂ ∨ᴮ-is-upperbound₂)
+
+     ∨Idl-is-sup : (I J : Idl)
+                 → is-sup (underlying-order Idl-DCPO) (I ∨Idl J)
+                          (∨-family Idl-DCPO I J)
+     ∨Idl-is-sup I J = ub , lb-of-ubs
+      where
+       ub : is-upperbound (underlying-order Idl-DCPO) (I ∨Idl J)
+                          (∨-family Idl-DCPO I J)
+       ub (inl _) b b-in-I = ∣ b , ⊥ᴮ , b-in-I , ideals-contain-⊥ J ,
+                               ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ ∨ᴮ-is-upperbound₁ ∣
+       ub (inr _) c c-in-J = ∣ ⊥ᴮ , c , ideals-contain-⊥ I , c-in-J ,
+                               ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ ∨ᴮ-is-upperbound₂ ∣
+       lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order Idl-DCPO)
+                    (I ∨Idl J) (∨-family Idl-DCPO I J)
+       lb-of-ubs L L-ub b b-in-join =
+        ∥∥-rec (∈-is-prop (carrier L) b) h b-in-join
+         where
+          h : (Σ c ꞉ B , Σ d ꞉ B , (c ∈ᵢ I) × (d ∈ᵢ J) × (b ⊑ᴮ c ∨ᴮ d))
+            → b ∈ carrier L
+          h (c , d , c-in-I , d-in-J , p) =
+           ideals-are-lowersets (carrier L) (ideality L) b (c ∨ᴮ d) p
+            (ideals-are-closed-under-∨ L
+              (L-ub (inl ⋆) c c-in-I) (L-ub (inr ⋆) d d-in-J))
+
+     γ : has-finite-joins Idl-DCPO
+     γ = record
+          { ⊥          = ⊥Idl ;
+            ⊥-is-least = ⊥Idl-is-least ;
+            _∨_        = _∨Idl_ ;
+            ∨-is-sup   = ∨Idl-is-sup
+         }
+
+\end{code}
+
+Repackaged, we get the desired result:
+
+\begin{code}
+
+ Idl-is-sup-complete-if-basis-has-finite-joins :
+    (c : is-sup-complete 𝓓)
+  → basis-has-finite-joins 𝓓 β β-is-small-basis
+                           (sup-complete-dcpo-has-finite-joins 𝓓 c)
+  → is-sup-complete Idl-DCPO
+ Idl-is-sup-complete-if-basis-has-finite-joins c =
+  Idl-is-sup-complete-if-basis-has-finite-joins'
+   (sup-complete-dcpo-has-finite-joins 𝓓 c)
 
 \end{code}
 
@@ -334,7 +497,7 @@ consider Idl(B,≪) which is isomorphic to D.
 
 module Idl-continuous
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (β-is-small-basis : is-small-basis 𝓓 β)
        where
@@ -373,12 +536,17 @@ module Idl-continuous
       → (Σ c ꞉ B , (b₁ ≺ c) × (b₂ ≺ c) × (c ≺ b))
     h (c , u , v , w) = (c , ⌜ ≺-≃-≪ ⌝⁻¹ u , ⌜ ≺-≃-≪ ⌝⁻¹ v , ⌜ ≺-≃-≪ ⌝⁻¹ w)
 
- open Ideals-of-small-abstract-basis {B}  _≺_
-                                     ≺-is-prop-valued
-                                     ≺-INT₂
-                                     ≺-INT₀
-                                     ≺-is-transitive
+ ≪-abstract-basis : abstract-basis
+ ≪-abstract-basis = record
+                     { basis-carrier = B
+                     ; _≺_ = _≺_
+                     ; ≺-prop-valued = ≺-is-prop-valued
+                     ; ≺-trans = ≺-is-transitive
+                     ; INT₀ = ≺-INT₀
+                     ; INT₂ = ≺-INT₂
+                    }
 
+ open Ideals-of-small-abstract-basis ≪-abstract-basis
  open Idl-retract-common 𝓓 β β-is-small-basis
  open Idl-mediating 𝓓 β (≪-to-⊑ 𝓓 ∘ ⌜ ≺-≃-≪ ⌝)
 
@@ -444,7 +612,7 @@ Idl(B,⊑) is isomorphic to D.
 
 module Idl-algebraic
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (β-is-small-compact-basis : is-small-compact-basis 𝓓 β)
        where
@@ -468,5 +636,98 @@ module Idl-algebraic
        where
         condition : (b : B) → b ∈ᵢ I → ∃ c ꞉ B , c ∈ᵢ I × (β b ≪⟨ 𝓓 ⟩ β c)
         condition b b-in-I = ∣ b , b-in-I , basis-is-compact b ∣
+
+\end{code}
+
+Added 8 July 2024.
+
+We summarise the above in three logical characterisations.
+
+\begin{code}
+
+open Ideals-of-small-abstract-basis
+
+has-specified-small-basis-iff-to-ideal-completion :
+   (𝓓 : DCPO {𝓤} {𝓣})
+ → has-specified-small-basis 𝓓
+ ↔ (Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab))
+has-specified-small-basis-iff-to-ideal-completion 𝓓 = I , II
+ where
+  open Idl-continuous
+  I : has-specified-small-basis 𝓓
+    → Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab)
+  I (B , β , β-is-small-basis) = ≪-abstract-basis 𝓓 β β-is-small-basis ,
+                                 Idl-≃ 𝓓 β β-is-small-basis
+  II : (Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab))
+     → has-specified-small-basis 𝓓
+  II (ab , iso) = small-basis-from-≃ᵈᶜᵖᵒ pe
+                   (Idl-DCPO ab) 𝓓
+                   (≃ᵈᶜᵖᵒ-inv 𝓓 (Idl-DCPO ab) iso)
+                   (Idl-has-specified-small-basis ab)
+
+
+private
+ ρ = reflexive-abstract-basis-to-abstract-basis
+
+has-specified-small-compact-basis-reflexive-ideal-completion :
+   (𝓓 : DCPO {𝓤} {𝓣})
+ → has-specified-small-compact-basis 𝓓
+ ↔ (Σ rab ꞉ reflexive-abstract-basis ,
+          (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab)))
+has-specified-small-compact-basis-reflexive-ideal-completion 𝓓 = I , II
+ where
+  open Idl-algebraic
+  open Idl-continuous-retract-of-algebraic
+       hiding (Idl-DCPO ; Idl-has-specified-small-compact-basis)
+
+  I : has-specified-small-compact-basis 𝓓
+    → Σ rab ꞉ reflexive-abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab))
+  I (B , β , β-is-small-compact-basis) =
+   ⊑ᴮ-reflexive-abstract-basis 𝓓 β β-sb ,
+   Idl-≃ 𝓓 β β-is-small-compact-basis
+    where
+     β-sb = compact-basis-is-basis 𝓓 β β-is-small-compact-basis
+
+  II : (Σ rab ꞉ reflexive-abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab)))
+     → has-specified-small-compact-basis 𝓓
+  II (rab , iso) =
+   small-compact-basis-from-≃ᵈᶜᵖᵒ pe
+    (Idl-DCPO (ρ rab)) 𝓓
+    (≃ᵈᶜᵖᵒ-inv 𝓓 (Idl-DCPO (ρ rab)) iso)
+    (Idl-has-specified-small-compact-basis (ρ rab) (λ b → ≺-refl))
+    where
+     open reflexive-abstract-basis rab
+
+has-specified-small-basis-iff-retract-of-dcpo-with-small-compact-basis :
+   (𝓓 : DCPO {𝓤} {𝓣})
+  → has-specified-small-basis 𝓓
+  ↔ (Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} , has-specified-small-compact-basis 𝓔
+                           × 𝓓 continuous-retract-of 𝓔)
+has-specified-small-basis-iff-retract-of-dcpo-with-small-compact-basis 𝓓 = I , II
+ where
+  open Idl-algebraic
+  open Idl-continuous-retract-of-algebraic
+       hiding (Idl-DCPO ; Idl-has-specified-small-compact-basis)
+
+  I : has-specified-small-basis 𝓓
+    → Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} , has-specified-small-compact-basis 𝓔
+                           × 𝓓 continuous-retract-of 𝓔
+  I (B , β , β-sb) = Idl-DCPO ab ,
+                     Idl-has-specified-small-compact-basis ab
+                      (λ b → ⊑ᴮ-is-reflexive 𝓓 β β-sb) ,
+                     Idl-continuous-retract 𝓓 β β-sb
+   where
+    ab : abstract-basis
+    ab = ⊑ᴮ-abstract-basis 𝓓 β β-sb
+
+  II : (Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} , has-specified-small-compact-basis 𝓔
+                             × 𝓓 continuous-retract-of 𝓔)
+     → has-specified-small-basis 𝓓
+  II (𝓔 , (B , β , β-scb) , cr) =
+   B , r ∘ β ,
+   small-basis-from-continuous-retract pe 𝓓 𝓔 cr β
+                                       (compact-basis-is-basis 𝓔 β β-scb)
+    where
+     open _continuous-retract-of_ cr
 
 \end{code}

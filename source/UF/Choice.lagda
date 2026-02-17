@@ -1,5 +1,7 @@
 Martin Escardo 7 May 2014, 10 Oct 2014, 25 January 2018, 17 December 2022.
 
+Several equivalent formulations of the axiom of choice in HoTT/UF.
+
 We first look at choice as in the HoTT book a little bit more
 abstractly, where for the HoTT book we take T X = ∥ X ∥. It also makes
 sense to consider T = ¬¬, in connection with the double-negation
@@ -29,25 +31,51 @@ univalent axiom, and, moreover, gives that
 (one can secretly reveal secrets always), which is equivalent to
 choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 
+And there are also a number of other equivalent formulations of the
+axiom of choice, of which the following seems to be new:
+
+  Under the presence of propositional extensionality, the axiom of
+  choice is equivalent to the conjunction of the principle of excluded
+  middle and the double negation shift (DNS) for *sets* rather than
+  propositions.
+
+Here DNS is
+
+    (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+  → is-set X
+  → ((x : X) → is-set (A x))
+  → (Π x ꞉ X , ¬¬ A x)
+  → ¬¬ (Π x ꞉ X , A x)
+
+All implications and logical equivalences here are proved in a spartan
+(intensional) MLTT extended with the existence propositional
+truncations (formulated in the language of MLTT).
+
+Notice that we cannot apply excluded middle to A x, because, by
+assumption, it is a set, and excluded middle applies to propositions
+(types with at most one element).
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
-
-open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
-open import UF.Base
-open import UF.Equiv
-open import UF.ExcludedMiddle
-open import UF.FunExt
-open import UF.LeftCancellable
-open import UF.Miscelanea
-open import UF.Powerset
-open import UF.PropTrunc
-open import UF.Retracts
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
-open import UF.Subsingletons-FunExt
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Choice where
+
+open import MLTT.Spartan
+open import UF.Base
+open import UF.ClassicalLogic
+open import UF.DiscreteAndSeparated
+open import UF.FunExt
+open import UF.LeftCancellable
+open import UF.Powerset
+open import UF.PropTrunc
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 module Shift
         (T : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇ )
@@ -64,8 +92,8 @@ We observe that this is equivalent to
 
     T (Π x ꞉ X , T (A x) → A x)
 
-This generalizes the T-condition that the double negation shift is
-equivalent to
+This generalizes the fact that the double negation shift is equivalent
+to
 
    ¬¬ (Π x ꞉ X , A x + ¬ (A x))
 
@@ -76,10 +104,13 @@ or
 \begin{code}
 
  Shift : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- Shift {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → (Π x ꞉ X , T (A x)) → T (Π x ꞉ X , A x)
+ Shift {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+               → (Π x ꞉ X , T (A x))
+               → T (Π x ꞉ X , A x)
 
  Shift' : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- Shift' {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → T (Π x ꞉ X , (T (A x) → A x))
+ Shift' {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+                → T (Π x ꞉ X , (T (A x) → A x))
 
  Shift-gives-Shift' : Shift {𝓤} {𝓤} → Shift' {𝓤} {𝓤}
  Shift-gives-Shift' {𝓤} s X A = s X (λ x → T (A x) → A x) (λ x → F s (A x))
@@ -139,7 +170,7 @@ module TChoice
 
 January 2018.
 
-We now formalize the examples discussed above, which give
+We now implement the examples discussed above, which give
 characterizations choice as in the HoTT book, which we refer to as
 Univalent Choice.
 
@@ -159,8 +190,8 @@ module Univalent-Choice
        (λ Y-is-set → Π-is-set (fe _ _) (λ _ → Y-is-set))
        (props-are-sets ∥∥-is-prop)
 
- AC : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥) ⁺ ̇
- AC {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (P : (x : X) → A x → 𝓥 ̇ )
+ AC₀ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥) ⁺ ̇
+ AC₀ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (P : (x : X) → A x → 𝓥 ̇ )
              → is-set X
              → ((x : X) → is-set (A x))
              → ((x : X) (a : A x) → is-prop (P x a))
@@ -181,26 +212,30 @@ module Univalent-Choice
               → ∥(Π x ꞉ X , (∥ A x ∥ → A x))∥
 
  Axiom-of-Choice Axiom-of-Choice₁ Axiom-of-Choice₂ : 𝓤ω
- Axiom-of-Choice  = {𝓤 𝓥 : Universe} → AC  {𝓤} {𝓥}
+ Axiom-of-Choice  = {𝓤 𝓥 : Universe} → AC₀  {𝓤} {𝓥}
  Axiom-of-Choice₁ = {𝓤 𝓥 : Universe} → AC₁ {𝓤} {𝓥}
  Axiom-of-Choice₂ = {𝓤 𝓥 : Universe} → AC₂ {𝓤} {𝓥}
 
- AC-gives-AC₁ : AC {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
- AC-gives-AC₁ ac X A i j f = h
+ AC₀-gives-AC₁ : AC₀ {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
+ AC₀-gives-AC₁ ac X A i j f = h
   where
    g : ∃ f ꞉ Π A , (X → 𝟙)
-   g = ac X A (λ x a → 𝟙) i j (λ x a → 𝟙-is-prop) (λ x → ∥∥-functor (λ z → z , ⋆) (f x))
+   g = ac X A
+        (λ x a → 𝟙)
+        i
+        j (
+        λ x a → 𝟙-is-prop)
+        (λ x → ∥∥-functor (λ z → z , ⋆)
+        (f x))
 
    h : ∥ Π A ∥
    h = ∥∥-functor pr₁ g
 
- AC₁-gives-AC : AC₁ {𝓤} {𝓥} → AC {𝓤} {𝓥}
- AC₁-gives-AC ac₁ X A P s t i f = ∥∥-functor ΠΣ-distr g
+ AC₁-gives-AC₀ : AC₁ {𝓤} {𝓥} → AC₀ {𝓤} {𝓥}
+ AC₁-gives-AC₀ ac₁ X A P s t i f = ∥∥-functor ΠΣ-distr g
   where
    g : ∥(Π x ꞉ X , Σ a ꞉ A x , P x a)∥
-   g = ac₁
-        X
-        (λ x → Σ a ꞉ A x , P x a)
+   g = ac₁ X (λ x → Σ a ꞉ A x , P x a)
         s
         (λ x → subsets-of-sets-are-sets (A x) (P x) (t x) (λ {a} → i x a))
         f
@@ -224,7 +259,7 @@ function extensionality, AC is equivalent to EM × DNS.
 What if we don't (necessarily) have the quotient 𝟚/P for an arbitrary
 proposition P?  We get from AC that all sets have decidable
 equality. This is because the quotient 𝟚/(a₀＝a₁), for two points a₀
-and a₁ of a set X can be constructed as the image of the map a:𝟚→X
+and a₁ of a set X can be constructed as the image of the map a : 𝟚 → X
 with values a ₀ = a₀ and a ₁ = a₁.
 
 \begin{code}
@@ -238,9 +273,15 @@ module ExcludedMiddle
  open Univalent-Choice fe pt
  open import UF.ImageAndSurjection pt
 
+\end{code}
+
+I originally proved this on 1st April 2013.
+
+\begin{code}
+
  decidability-lemma : {X : 𝓤 ̇ } (a : 𝟚 → X)
                     → ((x : X) → (∃ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
-                    → decidable (a ₀ ＝ a ₁)
+                    → is-decidable (a ₀ ＝ a ₁)
  decidability-lemma a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    r : 𝟚 → image a
@@ -273,7 +314,7 @@ module ExcludedMiddle
    s-a : {i j : 𝟚} → s(r i) ＝ s(r j) → a i ＝ a j
    s-a p = r-a (s-lc p)
 
-   claim : decidable (s(r ₀) ＝ s(r ₁)) → decidable (a ₀ ＝ a ₁)
+   claim : is-decidable (s(r ₀) ＝ s(r ₁)) → is-decidable (a ₀ ＝ a ₁)
    claim (inl p) = inl (s-a p)
    claim (inr u) = inr (contrapositive a-s u)
 
@@ -281,15 +322,15 @@ module ExcludedMiddle
                      → is-set X
                      → (a : 𝟚 → X)
                      → ∥((x : X) → (∃ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)∥
-                     → decidable (a ₀ ＝ a ₁)
+                     → is-decidable (a ₀ ＝ a ₁)
  decidability-lemma₂ i a =
   ∥∥-rec (decidability-of-prop-is-prop (fe _ _) i) (decidability-lemma a)
 
- ac-renders-all-sets-discrete' : AC {𝓤} {𝓤}
-                               → (X : 𝓤 ̇ )
-                               → is-set X
-                               → (a : 𝟚 → X) → decidable (a ₀ ＝ a ₁)
- ac-renders-all-sets-discrete' {𝓤} ac X i a =
+ AC₀-renders-all-sets-discrete' : AC₀ {𝓤} {𝓤}
+                                → (X : 𝓤 ̇ )
+                                → is-set X
+                                → (a : 𝟚 → X) → is-decidable (a ₀ ＝ a ₁)
+ AC₀-renders-all-sets-discrete' {𝓤} ac X i a =
   decidability-lemma₂ i a (ac₂ X A i j)
   where
    A : X → 𝓤 ̇
@@ -299,25 +340,25 @@ module ExcludedMiddle
    j x = subsets-of-sets-are-sets 𝟚 (λ i → a i ＝ x) 𝟚-is-set i
 
    ac₂ : AC₂ {𝓤} {𝓤}
-   ac₂ = AC₁-gives-AC₂ (AC-gives-AC₁ ac)
+   ac₂ = AC₁-gives-AC₂ (AC₀-gives-AC₁ ac)
 
- ac-renders-all-sets-discrete : AC {𝓤} {𝓤}
-                              → (X : 𝓤 ̇ )
-                              → is-set X
-                              → (a₀ a₁ : X) → decidable (a₀ ＝ a₁)
- ac-renders-all-sets-discrete {𝓤} ac X isx a₀ a₁ =
-  ac-renders-all-sets-discrete' {𝓤} ac X isx (𝟚-cases a₀ a₁)
+ AC₀-renders-all-sets-discrete : AC₀ {𝓤} {𝓤}
+                               → (X : 𝓤 ̇ )
+                               → is-set X
+                               → (a₀ a₁ : X) → is-decidable (a₀ ＝ a₁)
+ AC₀-renders-all-sets-discrete {𝓤} ac X isx a₀ a₁ =
+  AC₀-renders-all-sets-discrete' {𝓤} ac X isx (𝟚-cases a₀ a₁)
 
- AC-gives-EM : PropExt → AC {𝓤 ⁺} {𝓤 ⁺} → EM 𝓤
- AC-gives-EM {𝓤} pe ac =
+ AC₀-gives-EM : PropExt → AC₀ {𝓤 ⁺} {𝓤 ⁺} → EM 𝓤
+ AC₀-gives-EM {𝓤} pe ac =
   Ω-discrete-gives-EM (fe _ _) (pe _)
-   (ac-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
-     (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
+   (AC₀-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
+                                  (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
 
  Choice-gives-Excluded-Middle : PropExt
                               → Axiom-of-Choice
                               → Excluded-Middle
- Choice-gives-Excluded-Middle pe ac {𝓤} = AC-gives-EM {𝓤} pe (ac {𝓤 ⁺})
+ Choice-gives-Excluded-Middle pe ac {𝓤} = AC₀-gives-EM {𝓤} pe (ac {𝓤 ⁺})
 
 \end{code}
 
@@ -332,11 +373,13 @@ families of sets.
 
 If we assume choice for 𝓤₁ we get excluded middle at 𝓤₀. This is
 because the quotient 𝟚/P, for a proposition P in 𝓤₀, exists in 𝓤₁. In
-fact, it is the image of the map 𝟚→Prop that sends ₀ to 𝟙 and ₁ to P,
+fact, it is the image of the map 𝟚 → Ω that sends ₀ to 𝟙 and ₁ to P,
 because (𝟙＝P)＝P.
 
-Now, assuming excluded middle, choice is equivalent to the double
-negation shift.
+Now, choice is equivalent to the conjunction of the principle of
+excluded middle and the double negation shift for families of sets
+with arbitrary index set, written DNS₀, which amounts to saying that
+products of non-empty sets are non-empty.
 
 \begin{code}
 
@@ -349,15 +392,15 @@ module DNS
  open Univalent-Choice fe pt
  open ExcludedMiddle pt fe
 
- DNS : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- DNS {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
-              → is-set X
-              → ((x : X) → is-set (A x))
-              → (Π x ꞉ X , ¬¬ A x)
-              → ¬¬ (Π x ꞉ X , A x)
+ DNS₀ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
+ DNS₀ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+               → is-set X
+               → ((x : X) → is-set (A x))
+               → (Π x ꞉ X , ¬¬ A x)
+               → ¬¬ (Π x ꞉ X , A x)
 
- Double-Negation-Shift : 𝓤ω
- Double-Negation-Shift = {𝓤 𝓥 : Universe} → DNS {𝓤} {𝓥}
+ Double-Negation-Shift₀ : 𝓤ω
+ Double-Negation-Shift₀ = {𝓤 𝓥 : Universe} → DNS₀ {𝓤} {𝓥}
 
  private
   α : {X : 𝓤 ̇ } → ∥ X ∥ → ¬¬ X
@@ -372,31 +415,32 @@ module DNS
   δ : {𝓤 𝓥 : Universe} → {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-set A → is-set (X → A)
   δ {𝓤} {𝓥} A-is-set = Π-is-set (fe _ _) (λ _ → A-is-set)
 
- EM-and-AC₁-give-DNS : EM 𝓥 → AC₁ {𝓤} {𝓥} → DNS {𝓤} {𝓥}
- EM-and-AC₁-give-DNS em ac X A i j f = α (ac X A i j (λ x → β em (f x)))
+ EM-and-AC₁-give-DNS₀ : EM 𝓥 → AC₁ {𝓤} {𝓥} → DNS₀ {𝓤} {𝓥}
+ EM-and-AC₁-give-DNS₀ em ac X A i j f = α (ac X A i j (λ x → β em (f x)))
 
- EM-and-DNS-give-AC₁ : EM (𝓤 ⊔ 𝓥) → DNS {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
- EM-and-DNS-give-AC₁ em dns X A i j g = β em (dns X A i j (λ x → α (g x)))
+ EM-and-DNS₀-give-AC₁ : EM (𝓤 ⊔ 𝓥) → DNS₀ {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
+ EM-and-DNS₀-give-AC₁ em dns X A i j g = β em (dns X A i j (λ x → α (g x)))
 
 \end{code}
 
-DNS for prop-valued A, written DNS' below, is equivalent to the double
-negation of the (universally quantified) principle of excluded middle.
+DNS for prop-valued families, written DNS₋₁ below, is implies by DNS₀
+and is equivalent to the double negation of the (universally
+quantified) principle of excluded middle.
 
 \begin{code}
 
- DNS' : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- DNS' {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+ DNS₋₁ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
+ DNS₋₁ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
                → is-set X
                → ((x : X) → is-prop (A x))
                → (Π x ꞉ X , ¬¬ A x)
                → ¬¬ (Π x ꞉ X , A x)
 
- DNS-gives-DNS' : DNS {𝓤} {𝓥} → DNS' {𝓤} {𝓥}
- DNS-gives-DNS' dns X A i j = dns X A i (λ x → props-are-sets (j x))
+ DNS₀-gives-DNS₋₁ : DNS₀ {𝓤} {𝓥} → DNS₋₁ {𝓤} {𝓥}
+ DNS₀-gives-DNS₋₁ dns X A i j = dns X A i (λ x → props-are-sets (j x))
 
- DNS'-gives-¬¬EM : propext 𝓤 → DNS' {𝓤 ⁺} {𝓤} → ¬¬ EM 𝓤
- DNS'-gives-¬¬EM {𝓤} pe dns' = ¬¬-functor (λ f P i → f (P , i)) I
+ DNS₋₁-gives-¬¬EM : propext 𝓤 → DNS₋₁ {𝓤 ⁺} {𝓤} → ¬¬ EM 𝓤
+ DNS₋₁-gives-¬¬EM {𝓤} pe dns' = ¬¬-functor (λ f P i → f (P , i)) I
   where
    A : Ω 𝓤 → 𝓤 ̇
    A (P , i) = P + ¬ P
@@ -412,8 +456,8 @@ negation of the (universally quantified) principle of excluded middle.
         (λ (P , i) → decidability-of-prop-is-prop (fe _ _) i)
         (λ _ → fake-¬¬-EM)
 
- ¬¬EM-gives-DNS' : ¬¬ EM 𝓤 → DNS' {𝓤} {𝓤}
- ¬¬EM-gives-DNS' {𝓤} nnem X A X-is-set A-is-prop-valued f = ¬¬-functor g nnem
+ ¬¬EM-gives-DNS₋₁ : ¬¬ EM 𝓤 → DNS₋₁ {𝓤} {𝓤}
+ ¬¬EM-gives-DNS₋₁ {𝓤} nnem X A X-is-set A-is-prop-valued f = ¬¬-functor g nnem
   where
    g : EM 𝓤 → (x : X) → A x
    g em x = EM-gives-DNE em (A x) (A-is-prop-valued x) (f x)
@@ -423,31 +467,31 @@ negation of the (universally quantified) principle of excluded middle.
 In the presence of propositional extensionality, the axiom of choice
 is equivalent to the conjunction of the principle of excluded middle
 and the double negation shift for set-valued (rather than prop-valued)
-predicates:
+predicates, which seems to be a new result:
 
 \begin{code}
 
  Choice-gives-Double-Negation-Shift : PropExt
                                     → Axiom-of-Choice₁
-                                    → Double-Negation-Shift
+                                    → Double-Negation-Shift₀
  Choice-gives-Double-Negation-Shift pe ac {𝓤} {𝓥} = III
   where
    em : Excluded-Middle
-   em = AC-gives-EM pe (AC₁-gives-AC ac)
+   em = AC₀-gives-EM pe (AC₁-gives-AC₀ ac)
 
 
-   III : DNS {𝓤} {𝓥}
-   III = EM-and-AC₁-give-DNS em ac
+   III : DNS₀ {𝓤} {𝓥}
+   III = EM-and-AC₁-give-DNS₀ em ac
 
  Double-Negation-Shift-gives-Choice : Excluded-Middle
-                                    → Double-Negation-Shift
+                                    → Double-Negation-Shift₀
                                     → Axiom-of-Choice₁
  Double-Negation-Shift-gives-Choice em dns {𝓤} {𝓥} =
-  EM-and-DNS-give-AC₁ em (dns {𝓤} {𝓥})
+  EM-and-DNS₀-give-AC₁ em (dns {𝓤} {𝓥})
 
 \end{code}
 
-And here is an equivalent variant of DNS:
+And here is an equivalent variant of DNS₀:
 
 \begin{code}
 
@@ -459,11 +503,11 @@ And here is an equivalent variant of DNS:
 
  open TChoice
 
- DNS-gives-DNA : DNS {𝓤} {𝓤} → DNA {𝓤} {𝓥}
- DNS-gives-DNA = TAC-gives-TAC' ¬¬_ ¬¬-functor is-set δ γ
+ DNS₀-gives-DNA : DNS₀ {𝓤} {𝓤} → DNA {𝓤} {𝓥}
+ DNS₀-gives-DNA = TAC-gives-TAC' ¬¬_ ¬¬-functor is-set δ γ
 
- DNA-gives-DNS : DNA {𝓤} {𝓥} → DNS {𝓤} {𝓤}
- DNA-gives-DNS = TAC'-gives-TAC ¬¬_ ¬¬-functor is-set δ γ
+ DNA-gives-DNS₀ : DNA {𝓤} {𝓥} → DNS₀ {𝓤} {𝓤}
+ DNA-gives-DNS₀ = TAC'-gives-TAC ¬¬_ ¬¬-functor is-set δ γ
 
 \end{code}
 
@@ -488,8 +532,8 @@ module choice-functions
  AC₃ : {𝓤 : Universe} → 𝓤 ⁺ ̇
  AC₃ {𝓤} = (X : 𝓤 ̇ ) → is-set X → Choice-Function X
 
- AC-gives-AC₃ : {𝓤 : Universe} → AC {𝓤 ⁺} {𝓤} → AC₃ {𝓤}
- AC-gives-AC₃ ac X X-is-set =
+ AC₀-gives-AC₃ : {𝓤 : Universe} → AC₀ {𝓤 ⁺} {𝓤} → AC₃ {𝓤}
+ AC₀-gives-AC₃ ac X X-is-set =
   ac (𝓟⁺ X)
      (λ (𝓐 : 𝓟⁺ X) → X)
      (λ ((A , i) : 𝓟⁺ X) (x : X) → x ∈ A)
@@ -540,17 +584,17 @@ module choice-functions
      → ∥(Π x ꞉ X , A x)∥
    V g = ∥∥-functor (II g) I
 
- AC₃-gives-AC : {𝓤 𝓥 : Universe} → AC₃ {𝓤 ⊔ 𝓥} → AC {𝓤} {𝓥}
- AC₃-gives-AC ac₃ = AC₁-gives-AC (AC₃-gives-AC₁ ac₃)
+ AC₃-gives-AC₀ : {𝓤 𝓥 : Universe} → AC₃ {𝓤 ⊔ 𝓥} → AC₀ {𝓤} {𝓥}
+ AC₃-gives-AC₀ ac₃ = AC₁-gives-AC₀ (AC₃-gives-AC₁ ac₃)
 
  Axiom-of-Choice₃ : 𝓤ω
  Axiom-of-Choice₃ = {𝓤 : Universe} → AC₃ {𝓤}
 
  Choice-gives-Choice₃ : Axiom-of-Choice → Axiom-of-Choice₃
- Choice-gives-Choice₃ c {𝓤} = AC-gives-AC₃ {𝓤} (c {𝓤 ⁺} {𝓤})
+ Choice-gives-Choice₃ c {𝓤} = AC₀-gives-AC₃ {𝓤} (c {𝓤 ⁺} {𝓤})
 
  Choice₃-gives-Choice : Axiom-of-Choice₃ → Axiom-of-Choice
- Choice₃-gives-Choice c {𝓤} {𝓥} = AC₃-gives-AC {𝓤} {𝓥} (c {𝓤 ⊔ 𝓥})
+ Choice₃-gives-Choice c {𝓤} {𝓥} = AC₃-gives-AC₀ {𝓤} {𝓥} (c {𝓤 ⊔ 𝓥})
 
  Choice-Function⁻ : 𝓤 ̇ → 𝓤 ⁺ ̇
  Choice-Function⁻ X = ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
@@ -576,13 +620,12 @@ module choice-functions
       → X
       → (Σ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A))
    II (ε⁺ , f) x = ε , ε-behaviour
-
     where
-     ε' : (A : 𝓟 X) → decidable (is-inhabited A) → X
+     ε' : (A : 𝓟 X) → is-decidable (is-inhabited A) → X
      ε' A (inl i) = ε⁺ (A , i)
      ε' A (inr ν) = x
 
-     d : (A : 𝓟 X) → decidable (is-inhabited A)
+     d : (A : 𝓟 X) → is-decidable (is-inhabited A)
      d A = em (is-inhabited A) (being-inhabited-is-prop A)
 
      ε : 𝓟 X → X
@@ -590,7 +633,7 @@ module choice-functions
 
      ε'-behaviour : (A : 𝓟 X)
                   → is-inhabited A
-                  → (δ : decidable (is-inhabited A))
+                  → (δ : is-decidable (is-inhabited A))
                   →  ε' A δ ∈ A
      ε'-behaviour A _ (inl j) = f A j
      ε'-behaviour A i (inr ν) = 𝟘-elim (ν i)
@@ -603,8 +646,8 @@ module choice-functions
 
  Choice-gives-Choice₄ : Axiom-of-Choice → Axiom-of-Choice₄
  Choice-gives-Choice₄ ac X X-is-set = improve-choice-function
-                                       (AC-gives-EM pe ac)
-                                       (AC-gives-AC₃ ac X X-is-set)
+                                       (AC₀-gives-EM pe ac)
+                                       (AC₀-gives-AC₃ ac X X-is-set)
 \end{code}
 
 End of addition.
@@ -618,9 +661,10 @@ module Observation
         (fe : FunExt)
         where
 
- decidability-observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
-                          → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
-                          → decidable (a ₀ ＝ a ₁)
+ decidability-observation
+  : {X : 𝓤 ̇ } (a : 𝟚 → X)
+  → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
+  → is-decidable (a ₀ ＝ a ₁)
  decidability-observation {𝓤} {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    Y = Σ x ꞉ X , ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x)
@@ -655,8 +699,162 @@ module Observation
    s-a : {i j : 𝟚} → s(r i) ＝ s(r j) → a i ＝ a j
    s-a p = r-a (s-lc p)
 
-   claim : decidable (s(r ₀) ＝ s(r ₁)) → decidable (a ₀ ＝ a ₁)
+   claim : is-decidable (s(r ₀) ＝ s(r ₁)) → is-decidable (a ₀ ＝ a ₁)
    claim (inl p) = inl (s-a p)
    claim (inr u) = inr (λ p → u (a-s p))
+
+\end{code}
+
+Added Friday 8th September 2023.
+
+The axiom of propositional choice from
+https://doi.org/10.23638/LMCS-13(1:15)2017
+
+\begin{code}
+
+module Propositional-Choice
+        (pt : propositional-truncations-exist)
+        where
+
+ open PropositionalTruncation pt
+
+ PAC : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
+ PAC {𝓤} {𝓥} = (P : 𝓤 ̇ ) (Y : P → 𝓥 ̇ )
+              → is-prop P
+              → (Π p ꞉ P , ∥ Y p ∥)
+              → ∥(Π p ꞉ P , Y p)∥
+
+\end{code}
+
+Notice that we don't require that this is a family of sets. Notice
+also that excluded middle implies PAC. For more information, see
+Theorem 7.7 of the above reference.
+
+TODO. Add these and more facts about this. Some of them can be adapted
+from this Agda file: https://www.cs.bham.ac.uk/~mhe/GeneralizedHedberg/html/GeneralizedHedberg.html
+
+Added 6th Feb 2025 by Martin Escardo.
+
+\begin{code}
+
+module local-choice
+        (pt : propositional-truncations-exist)
+        where
+
+ open PropositionalTruncation pt
+
+ AC : (𝓦 : Universe) → 𝓤 ̇  → 𝓥 ̇  → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+ AC {𝓤} {𝓥} 𝓦 X Y = (P : X → Y → 𝓦 ̇ )
+                    → ((x : X) (y : Y) → is-prop (P x y))
+                    → ((x : X) → ∃ y ꞉ Y , P x y)
+                    → ∃ f ꞉ (X → Y) , ((x : X) → P x (f x))
+
+\end{code}
+
+Added 20 October 2025 by Tom de Jong.
+
+If we restrict the family Y in the axiom of propositional choice (PAC) to be a
+family of doubletons, then we get the "world's simplest axiom choice" (WSAC), as
+introduced, and shown to fail in some toposes, by Fourman and Ščedrov in [1].
+
+[1] M. P. Fourman and A. Ščedrov
+    The "world's simplest axiom of choice" fails
+    manuscripta mathematica, volume 38, pp. 325—332, 1982
+    https://doi.org/10.1007/BF01170929
+
+We consider two formulations of WSAC and prove them to be equivalent.
+
+\begin{code}
+
+module world's-simplest-axiom-of-choice
+        (fe : FunExt)
+        (pt : propositional-truncations-exist)
+        where
+
+ open import Fin.ArithmeticViaEquivalence
+ open import Fin.Bishop
+ open import Fin.Kuratowski pt
+ open import Fin.Type
+ open import UF.Equiv
+ open import UF.Equiv-FunExt
+ open import UF.ExitPropTrunc
+ open import UF.PropIndexedPiSigma
+
+ open PropositionalTruncation pt
+ open exponentiation-and-factorial fe
+ open finiteness pt
+ open split-support-and-collapsibility pt
+
+ WSAC : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
+ WSAC 𝓤 𝓥 = (P : 𝓤 ̇ ) (Y : P → 𝓥 ̇ )
+            → is-prop P
+            → ((p : P) → Y p has-cardinality 2)
+            → ∥ Π Y ∥
+
+ world's-simplest-axiom-of-choice = WSAC
+
+\end{code}
+
+The following formulation is exploited in InjectiveTypes.CounterExamples.
+
+\begin{code}
+
+ WSAC' : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ WSAC' 𝓤 = (X : 𝓤 ̇ ) → ∥ has-split-support (X ≃ 𝟚) ∥
+
+ WSAC-implies-WSAC' : WSAC 𝓤 𝓤 → WSAC' 𝓤
+ WSAC-implies-WSAC' {𝓤} wsac X = wsac P Y P-is-prop Y-doubletons
+  where
+   P : 𝓤 ̇
+   P = ∥ X ≃ 𝟚 ∥
+   Y : P → 𝓤 ̇
+   Y _ = X ≃ 𝟚
+   P-is-prop : is-prop P
+   P-is-prop = ∥∥-is-prop
+   Y-doubletons : (p : P) → Y p has-cardinality 2
+   Y-doubletons p = ∥∥-functor I p
+    where
+     I : X ≃ 𝟚 → Y p ≃ Fin 2
+     I e =
+      Y p             ≃⟨by-definition⟩
+      (X ≃ 𝟚)         ≃⟨ ≃-cong-left fe e ⟩
+      (𝟚 ≃ 𝟚)         ≃⟨ ≃-cong fe (𝟚-is-Fin2) 𝟚-is-Fin2 ⟩
+      (Fin 2 ≃ Fin 2) ≃⟨by-definition⟩
+      Aut (Fin 2)     ≃⟨ ≃-sym (pr₂ (!construction 2)) ⟩
+      Fin 2           ■
+
+ WSAC'-implies-WSAC : WSAC' 𝓤 → WSAC 𝓤 𝓤
+ WSAC'-implies-WSAC {𝓤} wsac' P Y P-is-prop Y-doubletons =
+  ∥∥-functor I (wsac' (Π Y))
+    where
+     I : has-split-support (Π Y ≃ 𝟚) → Π Y
+     I h p = II (h' III)
+      where
+       e : Π Y ≃ Y p
+       e = prop-indexed-product p (fe 𝓤 𝓤) P-is-prop
+       h' : has-split-support (Y p ≃ 𝟚)
+       h' t = I₂
+        where
+         𝕗 : (Π Y ≃ 𝟚) ≃ (Y p ≃ 𝟚)
+         𝕗 = ≃-cong-left fe e
+         I₁ : Π Y ≃ 𝟚
+         I₁ = h (∥∥-functor ⌜ 𝕗 ⌝⁻¹ t)
+         I₂ : Y p ≃ 𝟚
+         I₂ = ⌜ 𝕗 ⌝ I₁
+       II : Y p ≃ 𝟚 → Y p
+       II f = ⌜ f ⌝⁻¹ ₀
+       III : ∥ Y p ≃ 𝟚 ∥
+       III = ∥∥-functor III' (Y-doubletons p)
+        where
+         III' : Y p ≃ Fin 2 → Y p ≃ 𝟚
+         III' = ⌜ ≃-cong-right fe (≃-sym 𝟚-is-Fin2) ⌝
+
+ WSAC-equivalent-formulations : WSAC 𝓤 𝓤 ≃ WSAC' 𝓤
+ WSAC-equivalent-formulations =
+  logically-equivalent-props-are-equivalent
+   (Π₄-is-prop (fe _ _) (λ _ _ _ _ → ∥∥-is-prop))
+   (Π-is-prop (fe _ _) (λ _ → ∥∥-is-prop))
+   WSAC-implies-WSAC'
+   WSAC'-implies-WSAC
 
 \end{code}

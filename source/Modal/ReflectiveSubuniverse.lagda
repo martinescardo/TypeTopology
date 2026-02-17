@@ -4,18 +4,16 @@ Much of this file is based on the proofs from Egbert Rijke's PhD thesis.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Subsingletons
 open import UF.Base
 open import UF.FunExt
 open import UF.Equiv
 open import UF.Retracts
 open import UF.Embeddings
-open import UF.EquivalenceExamples
 import UF.PairFun as PairFun
-import Slice.Slice as Slice
+import Slice.Construction as Slice
 
 open import Modal.Subuniverse
 open import Modal.Homotopy
@@ -63,7 +61,7 @@ pr₂ (precomp-η-equiv B-modal) =
  precomp-η-is-equiv B-modal
 
 ○-rec
- : (A B : 𝓤 ̇)
+ : (A B : 𝓤 ̇ )
  → (B-modal : is-modal B)
  → (A → B)
  → (○ A → B)
@@ -71,7 +69,7 @@ pr₂ (precomp-η-equiv B-modal) =
  inverse _ (precomp-η-is-equiv B-modal)
 
 ○-rec-compute-pointsfree
- : (A B : 𝓤 ̇)
+ : (A B : 𝓤 ̇ )
  → (B-modal : is-modal B)
  → (f : A → B)
  → ○-rec A B B-modal f ∘ η A ＝ f
@@ -79,7 +77,7 @@ pr₂ (precomp-η-equiv B-modal) =
  inverses-are-sections _ (precomp-η-is-equiv B-modal) f
 
 ○-rec-compute
- : (A B : 𝓤 ̇)
+ : (A B : 𝓤 ̇ )
  → (B-modal : is-modal B)
  → (f : A → B)
  → (x : A)
@@ -88,7 +86,7 @@ pr₂ (precomp-η-equiv B-modal) =
  happly (○-rec-compute-pointsfree _ _ _ _)
 
 ○-rec-ext
- : (A B : 𝓤 ̇)
+ : (A B : 𝓤 ̇ )
  → (B-modal : is-modal B)
  → (f g : ○ A → B)
  → (f ∘ η A) ＝ (g ∘ η A)
@@ -100,7 +98,7 @@ pr₂ (precomp-η-equiv B-modal) =
   H = inverses-are-retractions _ (precomp-η-is-equiv B-modal)
 
 ○-rec-ext-beta
- : (A B : 𝓤 ̇)
+ : (A B : 𝓤 ̇ )
  → (B-modal : is-modal B)
  → (f : ○ A → B)
  → ○-rec-ext A B B-modal f f refl ＝ refl
@@ -116,7 +114,7 @@ pr₂ (precomp-η-equiv B-modal) =
 
 η-is-section-gives-has-section
  : (fe : funext 𝓤 𝓤)
- → (A : 𝓤 ̇)
+ → (A : 𝓤 ̇ )
  → is-section (η A)
  → has-section (η A)
 pr₁ (η-is-section-gives-has-section fe A η-is-section) =
@@ -130,7 +128,7 @@ pr₂ (η-is-section-gives-has-section fe A η-is-section) =
 
 η-is-section-gives-is-equiv
  : (fe : funext 𝓤 𝓤)
- → (A : 𝓤 ̇)
+ → (A : 𝓤 ̇ )
  → is-section (η A)
  → is-equiv (η A)
 pr₁ (η-is-section-gives-is-equiv fe A η-is-section) =
@@ -140,7 +138,7 @@ pr₂ (η-is-section-gives-is-equiv fe A η-is-section) =
 
 η-is-equiv-gives-is-modal
  : (P-is-replete : subuniverse-is-replete P)
- → (A : 𝓤 ̇)
+ → (A : 𝓤 ̇ )
  → is-equiv (η A)
  → is-modal A
 η-is-equiv-gives-is-modal P-is-replete A η-is-equiv =
@@ -149,13 +147,24 @@ pr₂ (η-is-section-gives-is-equiv fe A η-is-section) =
   (○-is-modal A)
 
 generic-precomp-η-is-equiv-gives-η-is-section
- : (A : 𝓤 ̇)
+ : (A : 𝓤 ̇ )
  → is-equiv (precomp-η A A)
  → is-section (η A)
 pr₁ (generic-precomp-η-is-equiv-gives-η-is-section A h) =
  inverse _ h id
 pr₂ (generic-precomp-η-is-equiv-gives-η-is-section A h) =
  happly (inverses-are-sections _ h id)
+
+\end{code}
+
+The converse of η-is-equiv-gives-is-modal, added 10 January 2025 by Tom de Jong.
+
+\begin{code}
+
+is-modal-gives-η-is-equiv : funext 𝓤 𝓤 → (A : 𝓤 ̇ ) → is-modal A → is-equiv (η A)
+is-modal-gives-η-is-equiv fe A A-modal =
+ η-is-section-gives-is-equiv fe A
+  (generic-precomp-η-is-equiv-gives-η-is-section A (precomp-η-is-equiv A-modal))
 
 \end{code}
 
@@ -218,7 +227,7 @@ both function extensionality and repleteness of the subuniverse.
 \begin{code}
 module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
  retracts-of-modal-types-are-modal
-  : (E B : 𝓤 ̇)
+  : (E B : 𝓤 ̇ )
   → retract B of E
   → is-modal E
   → is-modal B
@@ -252,8 +261,8 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
    (○-is-modal 𝟙)
 
  products-of-modal-types-are-modal
-  : (A : 𝓤 ̇)
-  → (B : A → 𝓤 ̇)
+  : (A : 𝓤 ̇ )
+  → (B : A → 𝓤 ̇ )
   → (B-modal : Π x ꞉ A , is-modal (B x))
   → is-modal (Π B)
  products-of-modal-types-are-modal A B B-modal =
@@ -270,7 +279,7 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
     ○-rec-compute (Π B) (B x) (B-modal x) (λ - → - x) f
 
  pullbacks-of-modal-types-are-modal
-  : (A B X : 𝓤 ̇)
+  : (A B X : 𝓤 ̇ )
   → (A-modal : is-modal A)
   → (B-modal : is-modal B)
   → (X-modal : is-modal X)
@@ -303,7 +312,7 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
     homotopy-precomp-η-equiv fe C X X-modal (f ∘ hA) (g ∘ hB)
 
  id-types-of-modal-types-are-modal
-  : (A : 𝓤 ̇)
+  : (A : 𝓤 ̇ )
   → (u v : A)
   → (A-modal : is-modal A)
   → is-modal (u ＝ v)

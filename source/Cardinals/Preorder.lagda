@@ -2,18 +2,14 @@ Jon Sterling, 25th March 2023.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Retracts
 open import UF.SetTrunc
-open import UF.Size
 open import UF.Subsingletons
-import Various.LawvereFPT as LFTP
 
 module Cardinals.Preorder
  (fe : FunExt)
@@ -23,7 +19,12 @@ module Cardinals.Preorder
  where
 
 open import UF.Embeddings
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import Cardinals.Type st
 
 import UF.Logic
@@ -118,12 +119,8 @@ module _ {A : hSet 𝓤} {B : hSet 𝓥} where
 
 
 module _ {𝓤} where
- ⊥ : Ω 𝓤
- pr₁ ⊥ = 𝟘
- pr₂ ⊥ = 𝟘-is-prop
-
  Ω¬_ : Ω 𝓤 → Ω 𝓤
- Ω¬ ϕ = ϕ ⇒ ⊥
+ Ω¬ ϕ = ϕ ⇒ ⊥ {𝓤}
 
 _<_ : Card 𝓤 → Card 𝓥 → Ω (𝓤 ⊔ 𝓥)
 α < β = (α ≤ β) ∧ (Ω¬ (β ≤ α))

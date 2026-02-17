@@ -24,7 +24,7 @@ definitions of the initial binary system.
 
 \begin{code}
 
-{-# OPTIONS --safe --no-sized-types --no-guardedness --auto-inline --cubical--auto-inline #-}
+{-# OPTIONS --safe --cubical#-}
 
 module BinarySystems.CubicalBinarySystem where
 
@@ -290,7 +290,7 @@ path-construction : {X : Type ℓ}
                     (p : x ＝ y)
                   → PathP (λ i → x ＝ p i) (𝑟𝒆𝑓𝑙 x ∙ 𝑟𝒆𝑓𝑙 x) (p ∙ 𝑟𝒆𝑓𝑙 y)
 path-construction x y p i j = hcomp (λ k → λ { (j = i0) → x
-                                             ; (j = i1) → p i })
+                                             ; (j = i1) → p i})
                                     (p (i ∧ j))
 
 fixed-point-construction : {X : Type ℓ}
@@ -300,7 +300,7 @@ fixed-point-construction : {X : Type ℓ}
                          → PathP (λ i → x ＝ p i) (𝑟𝒆𝑓𝑙 x) (p ∙ 𝑟𝒆𝑓𝑙 (f x))
 fixed-point-construction x f p i j = hcomp (λ k → λ { (i = i0) → x
                                                     ; (j = i0) → x
-                                                    ; (j = i1) → p i })
+                                                    ; (j = i1) → p i})
                                            (p (i ∧ j))
 \end{code}
 
@@ -724,7 +724,7 @@ path-lemma : {X : Type ℓ}
            → PathP (λ i → h (p i) ＝ a) (cong h p ∙ q) q
 path-lemma h p q i j = hcomp (λ k → λ { (i = i1) → q (j ∧ k)
                                       ; (j = i0) → h (p i)
-                                      ; (j = i1) → q k })
+                                      ; (j = i1) → q k})
                              (h (p (i ∨ j)))
 
 compatible-higher : {X : Type ℓ}

@@ -6,18 +6,18 @@ Ordinals like in the HoTT book and variations.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
-
-open import UF.Base
-open import UF.Subsingletons
-open import UF.FunExt
-open import UF.Subsingletons-FunExt
-open import UF.ExcludedMiddle
-open import UF.PropTrunc
 open import MLTT.Plus-Properties using (+-commutative)
+open import MLTT.Spartan
+open import UF.DiscreteAndSeparated
+open import UF.ClassicalLogic
+open import UF.FunExt
+open import UF.HedbergApplications
+open import UF.PropTrunc
+open import UF.Sets
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 module Ordinals.Notions
         {𝓤 𝓥 : Universe}
@@ -29,25 +29,25 @@ is-prop-valued : 𝓤 ⊔ 𝓥 ̇
 is-prop-valued = (x y : X) → is-prop (x < y)
 
 data is-accessible : X → 𝓤 ⊔ 𝓥 ̇ where
- step : {x : X} → ((y : X) → y < x → is-accessible y) → is-accessible x
+ acc : {x : X} → ((y : X) → y < x → is-accessible y) → is-accessible x
 
 accessible-induction : (P : (x : X) → is-accessible x → 𝓦 ̇ )
                      → ((x : X) (σ : (y : X) → y < x → is-accessible y)
                          → ((y : X) (l : y < x) → P y (σ y l))
-                         → P x (step σ))
+                         → P x (acc σ))
                      → (x : X) (a : is-accessible x) → P x a
 accessible-induction P f = h
   where
    h : (x : X) (a : is-accessible x) → P x a
-   h x (step σ) = f x σ (λ y l → h y (σ y l))
+   h x (acc σ) = f x σ (λ y l → h y (σ y l))
 
 prev : {x : X}
      → is-accessible x
      → (y : X) → y < x → is-accessible y
-prev (step a) = a
+prev (acc a) = a
 
 prev-behaviour : (x : X) (a : is-accessible x)
-               → step (prev a) ＝ a
+               → acc (prev a) ＝ a
 prev-behaviour = accessible-induction _ (λ _ _ _ → refl)
 
 transfinite-induction' :  (P : X → 𝓦 ̇ )
@@ -70,7 +70,7 @@ transfinite-induction'-behaviour :
    (x : X) (a : is-accessible x)
  → transfinite-induction' P f x a
    ＝ f x (λ y l → transfinite-induction' P f y (prev a y l))
-transfinite-induction'-behaviour P f x (step σ) = refl
+transfinite-induction'-behaviour P f x (acc σ) = refl
 
 \end{code}
 
@@ -81,20 +81,20 @@ End of addition.
 is-well-founded : 𝓤 ⊔ 𝓥 ̇
 is-well-founded = (x : X) → is-accessible x
 
-Well-founded : 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
-Well-founded {𝓦} = (P : X → 𝓦 ̇ )
-                 → ((x : X) → ((y : X) → y < x → P y) → P x)
-                 → (x : X) → P x
+is-Well-founded : 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
+is-Well-founded {𝓦} = (P : X → 𝓦 ̇ )
+                    → ((x : X) → ((x' : X) → x' < x → P x') → P x)
+                    → (x : X) → P x
 
-transfinite-induction : is-well-founded → ∀ {𝓦} → Well-founded {𝓦}
+transfinite-induction : is-well-founded → ∀ {𝓦} → is-Well-founded {𝓦}
 transfinite-induction w P f x = transfinite-induction' P f x (w x)
 
-transfinite-induction-converse : Well-founded {𝓤 ⊔ 𝓥} → is-well-founded
-transfinite-induction-converse φ = φ is-accessible (λ _ → step)
+transfinite-induction-converse : is-Well-founded {𝓤 ⊔ 𝓥} → is-well-founded
+transfinite-induction-converse φ = φ is-accessible (λ _ → acc)
 
 transfinite-recursion : is-well-founded
                       → ∀ {𝓦} {Y : 𝓦 ̇ }
-                      → ((x : X) → ((y : X) → y < x → Y) → Y)
+                      → ((x : X) → ((x' : X) → x' < x → Y) → Y)
                       → X → Y
 transfinite-recursion w {𝓦} {Y} = transfinite-induction w (λ x → Y)
 
@@ -107,10 +107,10 @@ accessibility-is-prop fe = accessible-induction P φ
 
   φ : (x : X) (σ : (y : X) → y < x → is-accessible y)
     → ((y : X) (l : y < x) (a : is-accessible y) → σ y l ＝ a)
-    → (b : is-accessible x) → step σ ＝ b
-  φ x σ IH b = step σ ＝⟨ i ⟩
-               step τ ＝⟨ prev-behaviour x b ⟩
-               b      ∎
+    → (b : is-accessible x) → acc σ ＝ b
+  φ x σ IH b = acc σ ＝⟨ i ⟩
+               acc τ ＝⟨ prev-behaviour x b ⟩
+               b     ∎
    where
     τ : (y : X) → y < x → is-accessible y
     τ = prev b
@@ -118,7 +118,7 @@ accessibility-is-prop fe = accessible-induction P φ
     h :  (y : X) (l : y < x) → σ y l ＝ τ y l
     h y l = IH y l (τ y l)
 
-    i = ap step
+    i = ap acc
            (dfunext (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ y → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥)) (h y)))
 
 \end{code}
@@ -129,7 +129,8 @@ use in other constructions.
 
 \begin{code}
 
-transfinite-induction-behaviour : FunExt → (w : is-well-founded)
+transfinite-induction-behaviour : FunExt
+                                → (w : is-well-founded)
                                   {𝓦 : Universe} (P : X → 𝓦 ̇ )
                                   (f : (x : X) → ((y : X) → y < x → P y) → P x)
                                   (x : X)
@@ -138,7 +139,7 @@ transfinite-induction-behaviour : FunExt → (w : is-well-founded)
 transfinite-induction-behaviour fe w {𝓦} P f x =
  transfinite-induction w P f x                               ＝⟨ I    ⟩
  f x (λ y l → transfinite-induction' P f y (prev (w x) y l)) ＝⟨ II   ⟩
- f x (λ y l → transfinite-induction' P f y (w y))            ＝⟨ refl ⟩
+ f x (λ y l → transfinite-induction' P f y (w y))            ＝⟨refl⟩
  f x (λ y l → transfinite-induction w P f y)                 ∎
   where
    I = transfinite-induction'-behaviour P f x (w x)
@@ -168,6 +169,15 @@ End of addition.
 is-transitive : 𝓤 ⊔ 𝓥 ̇
 is-transitive = (x y z : X) → x < y → y < z → x < z
 
+is-irreflexive : 𝓤 ⊔ 𝓥 ̇
+is-irreflexive = (x : X) → ¬ (x < x)
+
+is-irreflexive' : 𝓤 ⊔ 𝓥 ̇
+is-irreflexive' = {x y : X} → x ＝ y → ¬ (x < y)
+
+is-irreflexive'-if-irreflexive : is-irreflexive → is-irreflexive'
+is-irreflexive'-if-irreflexive ir {x} {_} refl = ir x
+
 private
   _≼_ : X → X → 𝓤 ⊔ 𝓥 ̇
   x ≼ y = ∀ u → u < x → u < y
@@ -178,10 +188,13 @@ extensional-po-is-prop-valued : FunExt
                               → is-prop-valued
                               → (x y : X) → is-prop (x ≼ y)
 extensional-po-is-prop-valued fe isp x y =
-  Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) (λ u l → isp u y)
+ Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) (λ u l → isp u y)
 
 ≼-refl : {x : X} → x ≼ x
 ≼-refl u l = l
+
+≼-refl-＝ : {x y : X} → x ＝ y → x ≼ y
+≼-refl-＝ refl = ≼-refl
 
 ≼-trans : {x y z : X} → x ≼ y → y ≼ z → x ≼ z
 ≼-trans f g u l = g u (f u l)
@@ -190,7 +203,7 @@ is-extensional : 𝓤 ⊔ 𝓥 ̇
 is-extensional = (x y : X) → x ≼ y → y ≼ x → x ＝ y
 
 is-extensional' : 𝓤 ⊔ 𝓥 ̇
-is-extensional' = (x y : X) → ((u : X) → (u < x) ⇔ (u < y)) → x ＝ y
+is-extensional' = (x y : X) → ((u : X) → (u < x) ↔ (u < y)) → x ＝ y
 
 extensional-gives-extensional' : is-extensional → is-extensional'
 extensional-gives-extensional' e x y f = e x y
@@ -234,22 +247,9 @@ extensionally-ordered-types-are-sets : FunExt
                                      → is-prop-valued
                                      → is-extensional
                                      → is-set X
-extensionally-ordered-types-are-sets fe isp e = γ
- where
-  f : {x y :  X} → x ＝ y → x ＝ y
-  f {x} {y} p = e x y (transport (x ≼_) p (≼-refl {x}))
-                      (transport (_≼ x) p (≼-refl {x}))
-
-  ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ＝ e x y l' m'
-  ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y)
-                                     (extensional-po-is-prop-valued fe isp x y l l')
-                                     (extensional-po-is-prop-valued fe isp y x m m')
-
-  κ : {x y : X} → wconstant (f {x} {y})
-  κ p q = ec
-
-  γ : is-set X
-  γ = Id-collapsibles-are-sets (f , κ)
+extensionally-ordered-types-are-sets fe isp =
+ type-with-prop-valued-refl-antisym-rel-is-set
+  _≼_ (extensional-po-is-prop-valued fe isp) (λ x → ≼-refl {x})
 
 well-ordered-types-are-sets : FunExt → is-well-order → is-set X
 well-ordered-types-are-sets fe (p , w , e , t) =
@@ -272,7 +272,7 @@ being-well-order-is-prop : FunExt → is-prop is-well-order
 being-well-order-is-prop fe = prop-criterion γ
  where
   γ : is-well-order → is-prop is-well-order
-  γ o = ×₄-is-prop (Π₂-is-prop ((λ {𝓤} {𝓥} → fe 𝓤 𝓥))
+  γ o = ×₄-is-prop (Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
                       (λ x y → being-prop-is-prop (fe 𝓥 𝓥)))
                    (well-foundedness-is-prop fe)
                    (extensionality-is-prop fe (prop-valuedness o))
@@ -287,7 +287,7 @@ private
 
 <-gives-≾  : (x : X)
            → is-accessible x
-           → (y : X) → y < x → y ≾ x
+          → (y : X) → y < x → y ≾ x
 <-gives-≾ = transfinite-induction'
                      (λ x → (y : X) → y < x → y ≾ x)
                      (λ x f y l m → f y l x m l)
@@ -348,7 +348,7 @@ no-minimal-is-empty : is-well-founded
 no-minimal-is-empty w A s (x , a₀) = γ
  where
   g : (x : X) → is-accessible x → ¬ (A x)
-  g x (step σ) ν = δ
+  g x (acc σ) ν = δ
    where
     h : ¬¬ (Σ y ꞉ X , (y < x) × A y)
     h = s x ν
@@ -656,7 +656,6 @@ module _
    fe : FunExt
    fe 𝓤 𝓥 = f-e
 
-   open import UF.PropTrunc
    open PropositionalTruncation pt
 
    lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
@@ -702,7 +701,7 @@ is written down in Agda by Martin Escardo on the same date:
 \begin{code}
 
 is-decidable-order : 𝓤 ⊔ 𝓥 ̇
-is-decidable-order = (x y : X) → decidable (x < y)
+is-decidable-order = (x y : X) → is-decidable (x < y)
 
 trichotomy-from-decidable-order : is-transitive
                                 → is-extensional
@@ -761,7 +760,7 @@ decidable-order-from-trichotomy : is-transitive
                                 → is-decidable-order
 decidable-order-from-trichotomy t w τ = γ
  where
-  γ : (x y : X) → decidable (x < y)
+  γ : (x y : X) → is-decidable (x < y)
   γ x y = f (τ x y)
    where
     f : (x < y) + (x ＝ y) + (y < x) → (x < y) + ¬ (x < y)
@@ -770,20 +769,25 @@ decidable-order-from-trichotomy t w τ = γ
     f (inr (inr l)) = inr (λ (m : x < y) → irreflexive x (w x) (t x y x m l))
 
 decidable-order-iff-trichotomy : is-well-order
-                               → is-trichotomous-order ⇔ is-decidable-order
+                               → is-trichotomous-order ↔ is-decidable-order
 decidable-order-iff-trichotomy (_ , w , e , t) =
  decidable-order-from-trichotomy t w ,
  trichotomy-from-decidable-order t e w
 
 \end{code}
 
-Paul also remarks that the result can be strengthened as follows: A
-transitive well-founded relation is trichotomous iff it is both
+Paul Levy also remarks that the result can be strengthened as follows:
+A transitive well-founded relation is trichotomous iff it is both
 extensional and decidable. TODO. Write this down in Agda.
 
 End of 16th November 2022 addition.
 
+Remark (added 30th January 2025). Paul Levy found that this was already
+known by Robin Grayson in his 1978 PhD thesis, page 93.
+https://ora.ox.ac.uk/objects/uuid:3a88ef78-7a3e-4b98-83ac-467a00cf3311
+
 \begin{code}
+
 not-<-gives-≼ : funext (𝓤 ⊔ 𝓥) 𝓤₀
               → excluded-middle (𝓤 ⊔ 𝓥)
               → is-well-order
@@ -796,10 +800,10 @@ not-<-gives-≼ fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
   γ (inr (inr m)) ν = <-gives-≼ t m
 
 ≼-or-> : funext (𝓤 ⊔ 𝓥) 𝓤₀
-       → excluded-middle (𝓤 ⊔ 𝓥)
+       → excluded-middle 𝓥
        → is-well-order
        → (x y : X) → (x ≼ y) + y < x
-≼-or-> fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
+≼-or-> fe em wo@(p , w , e , t) x y = γ (trichotomy₃ em wo x y)
  where
   γ : (x < y) + (x ＝ y) + (y < x) → (x ≼ y) + (y < x)
   γ (inl l)       = inl (<-gives-≼ t l)
@@ -897,7 +901,6 @@ module _ (fe : Fun-Ext)
 
  module _ (pt : propositional-truncations-exist) where
 
-  open import UF.PropTrunc
   open PropositionalTruncation pt
 
   nonempty-has-minimal : is-well-order
@@ -958,8 +961,6 @@ is-well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p 
 
 well-founded-Wellfounded₂ : is-well-founded → is-well-founded₂
 well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ＝ ₁)
-
-open import UF.Miscelanea
 
 being-well-founded₂-is-prop : FunExt → is-prop is-well-founded₂
 being-well-founded₂-is-prop fe = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)

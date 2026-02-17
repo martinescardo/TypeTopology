@@ -13,7 +13,7 @@ https://www.cs.bham.ac.uk/~mhe/.talks/map2011/
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
@@ -22,6 +22,7 @@ module TWA.Escardo-Simpson-LICS2001 (fe : FunExt) where
 open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import Naturals.Sequence fe
+open import UF.Sets
 open import UF.Subsingletons public
 
 \end{code}
@@ -31,8 +32,7 @@ as well as a specific property about equality of streams under some arithmetic.
 
 \begin{code}
 
-associative' idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-associative'     _∙_ = ∀ a b c   → a ∙ (b ∙ c)       ＝ (a ∙ b) ∙ c
+idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 idempotent       _∙_ = ∀ a       → a ∙ a             ＝ a
 transpositional  _∙_ = ∀ a b c d → (a ∙ b) ∙ (c ∙ d) ＝ (a ∙ c) ∙ (b ∙ d)
 

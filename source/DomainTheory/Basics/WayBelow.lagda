@@ -13,7 +13,7 @@ Contents
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -39,7 +39,7 @@ way-below 𝓓 x y = (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 
                 → y ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
                 → ∃ i ꞉ I , x ⊑⟨ 𝓓 ⟩ α i
 
-is-way-upperbound : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇  } (x : ⟨ 𝓓 ⟩) (α : I → ⟨ 𝓓 ⟩)
+is-way-upperbound : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } (x : ⟨ 𝓓 ⟩) (α : I → ⟨ 𝓓 ⟩)
                   → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-way-upperbound 𝓓 {I} x α = (i : I) → α i ≪⟨ 𝓓 ⟩ x
 
@@ -151,6 +151,9 @@ module _ where
   where
    h : I → Σ i ꞉ I , ⊥ 𝓓 ⊑⟪ 𝓓 ⟫ α i
    h i = (i , ⊥-is-least 𝓓 (α i))
+
+ ⊥-≪ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (x : ⟪ 𝓓 ⟫) → ⊥ 𝓓 ≪⟨ 𝓓 ⁻ ⟩ x
+ ⊥-≪ 𝓓 x = ≪-⊑-to-≪ (𝓓 ⁻) (⊥-is-compact 𝓓) (⊥-is-least 𝓓 x)
 
 binary-join-is-compact : (𝓓 : DCPO {𝓤} {𝓣}) {x y z : ⟨ 𝓓 ⟩}
                        → x ⊑⟨ 𝓓 ⟩ z → y ⊑⟨ 𝓓 ⟩ z
@@ -279,7 +282,7 @@ module _
            ; s-section-of-r = π-ε-retraction
            ; s-is-continuous = ε-is-continuous
            ; r-is-continuous = π-is-continuous
-           }
+          }
 
  embeddings-reflect-compactness : (x : ⟨ 𝓓 ⟩)
                                 → is-compact 𝓔 (ε x)

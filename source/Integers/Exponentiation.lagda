@@ -2,13 +2,12 @@ Andrew Sneap
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import Integers.Addition
 open import Integers.Multiplication
 open import Integers.Type
 open import Naturals.Exponentiation

@@ -114,17 +114,17 @@ them, so to speak. This is Rice's Theorem for the universe U.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
 module TypeTopology.TheTopologyOfTheUniverse (fe : FunExt) where
 
-open import MLTT.Spartan
-open import UF.Equiv
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import InjectiveTypes.Blackboard fe
+open import MLTT.Spartan
 open import Notation.CanonicalMap
+open import UF.Equiv
 
 \end{code}
 

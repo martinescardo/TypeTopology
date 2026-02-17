@@ -7,17 +7,16 @@ July 1, 2021
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 
-open import MLTT.Spartan
-open import MLTT.Unit-Properties
-open import UF.Base
-open import UF.Subsingletons
-open import UF.Equiv
-open import UF.Retracts
-open import UF.Embeddings
 open import Groups.Type
+open import MLTT.Spartan
+open import UF.Base
+open import UF.Embeddings
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons-Properties
 
 \end{code}
 
@@ -50,21 +49,21 @@ module _ (A : Group 𝓤) (B : Group 𝓥)
                                                   e⟨ B ⟩ ∎
 
       is-set-k : is-set K
-      is-set-k = Σ-is-set (group-is-set A) λ a → props-are-sets (group-is-set B)
+      is-set-k = Σ-is-set (groups-are-sets A) λ a → props-are-sets (groups-are-sets B)
 
 
       assoc-k : associative group-structure-k
-      assoc-k (a , p) (a₁ , p₁) (a₂ , p₂) = to-Σ-＝ ((assoc A a a₁ a₂) , group-is-set B _ _)
+      assoc-k (a , p) (a₁ , p₁) (a₂ , p₂) = to-Σ-＝ ((assoc A a a₁ a₂) , groups-are-sets B _ _)
 
       unit-k : K
       pr₁ unit-k = e⟨ A ⟩
       pr₂ unit-k = homs-preserve-unit A B f isf
 
       left-neutral-k : left-neutral unit-k group-structure-k
-      left-neutral-k (a , p) = to-Σ-＝ ((unit-left A a) , (group-is-set B _ _))
+      left-neutral-k (a , p) = to-Σ-＝ ((unit-left A a) , (groups-are-sets B _ _))
 
       right-neutral-k : right-neutral unit-k group-structure-k
-      right-neutral-k (a , p) = to-Σ-＝ ((unit-right A a) , (group-is-set B _ _))
+      right-neutral-k (a , p) = to-Σ-＝ ((unit-right A a) , (groups-are-sets B _ _))
 
       inv-k : K → K
       pr₁ (inv-k (a , p)) = inv A a
@@ -75,10 +74,10 @@ module _ (A : Group 𝓤) (B : Group 𝓥)
                              unit B ∎
 
       inv-left-k : (x : K) → group-structure-k (inv-k x) x ＝ unit-k
-      inv-left-k (a , p) = to-Σ-＝ ((inv-left A a) , (group-is-set B _ _))
+      inv-left-k (a , p) = to-Σ-＝ ((inv-left A a) , (groups-are-sets B _ _))
 
       inv-right-k : (x : K) → group-structure-k x (inv-k x) ＝ unit-k
-      inv-right-k (a , p) = to-Σ-＝ ((inv-right A a) , (group-is-set B _ _))
+      inv-right-k (a , p) = to-Σ-＝ ((inv-right A a) , (groups-are-sets B _ _))
 
 
   -- Canonical map from the kernel
@@ -91,11 +90,11 @@ module _ (A : Group 𝓤) (B : Group 𝓥)
 
   -- Canonical map is left cancellable
   kernel-map-is-lc : left-cancellable kernel-map
-  kernel-map-is-lc {a , p} {a' , p'} u = to-Σ-＝ (u , (group-is-set B _ _))
+  kernel-map-is-lc {a , p} {a' , p'} u = to-Σ-＝ (u , (groups-are-sets B _ _))
 
   -- Canonical map is an embedding
   kernel-map-is-embedding : is-embedding kernel-map
-  kernel-map-is-embedding = lc-maps-into-sets-are-embeddings kernel-map kernel-map-is-lc (group-is-set A)
+  kernel-map-is-embedding = lc-maps-into-sets-are-embeddings kernel-map kernel-map-is-lc (groups-are-sets A)
 
   -- Kernel is normal
   kernel-is-normal : ⟨ A ⟩ → ⟨ kernel ⟩ → ⟨ kernel ⟩
@@ -130,7 +129,7 @@ extra axioms
   kernel-universal-map-is-hom : (G : Group 𝓦) (u : ⟨ G ⟩ → ⟨ A ⟩) (isu : is-hom G A u)
                               → (γ : (g : ⟨ G ⟩) → f (u g) ＝ e⟨ B ⟩)
                               → is-hom G kernel (kernel-universal-map G u isu γ)
-  kernel-universal-map-is-hom G u isu γ {x} {y} = to-Σ-＝ (isu , group-is-set B _ _)
+  kernel-universal-map-is-hom G u isu γ {x} {y} = to-Σ-＝ (isu , groups-are-sets B _ _)
 
 
   {-

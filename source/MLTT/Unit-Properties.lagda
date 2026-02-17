@@ -2,11 +2,10 @@ One-element type properties.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Unit-Properties where
 
-open import MLTT.Universes
 open import MLTT.Unit
 open import MLTT.Empty
 open import MLTT.Id

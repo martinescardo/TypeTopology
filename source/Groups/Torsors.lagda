@@ -11,7 +11,7 @@ TODO: Variable reorganization.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 
 open import MLTT.Spartan
@@ -20,12 +20,9 @@ open import UF.Subsingletons
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Embeddings
-open import UF.Univalence
 open import UF.Equiv-FunExt
 open import UF.FunExt
-open import UF.UA-FunExt
 open import UF.Subsingletons-FunExt
-open import UF.Retracts
 open import UF.PropTrunc
 
 open import Groups.Type renaming (_≅_ to _≣_)
@@ -50,7 +47,7 @@ any x : X the right-multiplication map λ g → g · x is an equivalence.
 
 open PropositionalTruncation pt
 
-is-torsor : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤  ̇
+is-torsor : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤 ̇
 is-torsor G (X , a) = ∥ X ∥ ×
                     ((x : X) → is-equiv (right-mult G (X , a) x))
 
@@ -78,7 +75,7 @@ is-torsor₁-is-prop G 𝕏 = ×-is-prop (∥∥-is-prop)
 
 torsor→torsor₁ : {G : Group 𝓤} (𝕏 : G Sets)
                → is-torsor G 𝕏 → is-torsor₁ G 𝕏
-torsor→torsor₁ {G = G } (X , a) (n , e) = n , ee
+torsor→torsor₁ {G = G} (X , a) (n , e) = n , ee
   where
     ee : is-equiv (mult G (X , a))
     ee = (u , ε) , v , η
@@ -148,7 +145,7 @@ torsor₁→torsor {G = G} (X , a) (n , e) = n , ee
             q : g , x ＝ v (r g) , x
             q = g , x                        ＝⟨ li-e (g , x) ⁻¹ ⟩
                 li (m (g , x))               ＝⟨ ap li (γ g) ⟩
-                li (r g , x)                 ＝⟨ refl ⟩
+                li (r g , x)                 ＝⟨refl⟩
                 v (r g) , pr₂ (li (r g , x)) ＝⟨ ap (λ z → v (r g) , z) p ⟩
                 v (r g) , x ∎
 \end{code}
@@ -264,7 +261,7 @@ torsor-rinv-mult-is-right-inverse G X (y , x) =  q ⁻¹
     q = y , x                      ＝⟨ e-ri (y , x) ⁻¹ ⟩
         m (ri (y , x))             ＝⟨ ap m refl ⟩
         m (u y , pr₂ (ri (y , x))) ＝⟨ ap (λ v → m (u y , v)) p ⟩
-        m (u y , x)                ＝⟨ refl ⟩
+        m (u y , x)                ＝⟨refl⟩
         r (u y) , x ∎
 
 
@@ -295,7 +292,7 @@ torsor-linv-mult-is-left-inverse G X (g , x) = q ⁻¹
     q : g , x ＝ v (r g) , x
     q = g , x                        ＝⟨ li-e (g , x) ⁻¹ ⟩
         li (m (g , x))               ＝⟨ ap li (refl) ⟩
-        li (r g , x)                 ＝⟨ refl ⟩
+        li (r g , x)                 ＝⟨refl⟩
         v (r g) , pr₂ (li (r g , x)) ＝⟨ ap (λ z → v (r g) , z) p ⟩
         v (r g) , x ∎
 
@@ -379,7 +376,7 @@ torsor-division G X y x = (g , ap pr₁ u) ,
       i : (h : ⟨ G ⟩) (p : action-op G (pr₁ X) h x ＝ y) → m (g , x) ＝ m (h , x)
       i h p = m (g , x)                   ＝⟨ to-×-＝ (ap pr₁ u) refl ⟩
               y , x                       ＝⟨ to-×-＝ (p ⁻¹) refl ⟩
-              action-op G (pr₁ X) h x , x ＝⟨ refl ⟩
+              action-op G (pr₁ X) h x , x ＝⟨refl⟩
               m (h , x) ∎
 
       ii : (h : ⟨ G ⟩) (p : action-op G (pr₁ X) h x ＝ y) → g , x ＝ h , x
@@ -428,9 +425,9 @@ torsor-map-is-equiv {G} {𝕏 , tx} {𝕐 , ty} (f , is) = ∥∥-rec (being-equ
        ry = right-mult G 𝕐 (f x₀)
 
        h : f ∘ rx ∼ ry ∘ id
-       h g = f (rx g)   ＝⟨ refl ⟩
+       h g = f (rx g)   ＝⟨refl⟩
              f (g · x₀) ＝⟨ is g x₀ ⟩
-             g * (f x₀) ＝⟨ refl ⟩
+             g * (f x₀) ＝⟨refl⟩
              ry g ∎
 
        i : is-equiv (f ∘ rx)
@@ -447,7 +444,7 @@ Hom : {G : Group 𝓤} → Tors G → Tors G → 𝓤 ̇
 Hom {G} X Y = Action-Map G (pr₁ X) (pr₁ Y)
 
 trivial-torsor : (G : Group 𝓤) → Tors G
-trivial-torsor G = (⟨ G ⟩ , ((multiplication G) , ((group-is-set G) , ((assoc G) , (unit-left G))))) ,
+trivial-torsor G = (⟨ G ⟩ , ((multiplication G) , ((groups-are-sets G) , ((assoc G) , (unit-left G))))) ,
                    (∣ unit G ∣ , λ x → qinvs-are-equivs  (λ a → a ·⟨ G ⟩ x)
                                        ((λ a → a ·⟨ G ⟩ (inv G x)) ,
                                      ((λ a → ((a ·⟨ G ⟩ x) ·⟨ G ⟩ (inv G x) ＝⟨ assoc G _ _ _ ⟩
@@ -708,11 +705,11 @@ right-multiplication map of G on itself.
 
     j-equivariance₁-pointwise : (φ : Hom {G} X X) (x : ⟨ pr₁ X ⟩)
                               → (pr₁ φ) ∘ (t x) ∼ (t x) ∘ (ρ (j φ x))
-    j-equivariance₁-pointwise φ x g = f (t x g)             ＝⟨ refl ⟩
+    j-equivariance₁-pointwise φ x g = f (t x g)             ＝⟨refl⟩
                                       f (g · x)             ＝⟨ i g x ⟩
                                       g · (f x)             ＝⟨ ap (λ v → g · v) l ⁻¹  ⟩
                                       g · ((j φ x) · x)     ＝⟨ (action-assoc G 𝕏 _ _ _ ) ⁻¹ ⟩
-                                      (g ·⟨ G ⟩ (j φ x)) · x ＝⟨ refl ⟩
+                                      (g ·⟨ G ⟩ (j φ x)) · x ＝⟨refl⟩
                                       t x (ρ (j φ x) g) ∎
       where
         𝕏 : Action G

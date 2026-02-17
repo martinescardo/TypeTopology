@@ -2,7 +2,7 @@ Martin Escardo 31 Jan 2019
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -10,17 +10,13 @@ module Slice.Algebras
         (𝓣 : Universe)
        where
 
-open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
 
-open import Slice.Slice 𝓣
-open import Slice.IdentityViaSIP 𝓣
+open import Slice.Construction 𝓣
 open import Slice.Monad 𝓣
 
 double-𝓕-charac : (X : 𝓤 ̇ )
@@ -46,7 +42,6 @@ joinop X = {I : 𝓣 ̇ } → (I → X) → X
 𝓕-alg-Law₁ : {X : 𝓤 ̇ } → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓕-alg-Law₁ {𝓤} {X} ∐ = (I : 𝓣 ̇ ) (J : I → 𝓣 ̇ ) (f : Σ J → X)
                      → ∐ f ＝ ∐ (λ i → ∐ (λ j → f (i , j)))
-
 
 𝓕-alg : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓕-alg X = Σ ∐ ꞉ joinop X , 𝓕-alg-Law₀ ∐ × 𝓕-alg-Law₁ ∐
@@ -90,14 +85,15 @@ law₁ (∐ , κ , ι) = ι
   s : 𝓕 X → X
   s (I , f) = ∐ f
   assoc : s ∘ μ ∼ s ∘ 𝓕̇ s
-  assoc (I , g) = ι I (pr₁ ∘ g) λ { (i , j) → pr₂ (g i) j }
+  assoc (I , g) = ι I (pr₁ ∘ g) λ { (i , j) → pr₂ (g i) j}
 
 𝓕-alg-charac : {X : 𝓤 ̇ } → 𝓕-algebra X ≃ 𝓕-alg X
 𝓕-alg-charac = qinveq 𝓕-algebra-gives-alg (𝓕-alg-gives-algebra , ((λ _ → refl) , (λ _ → refl)))
 
 Π-is-alg : funext 𝓤 𝓥
          → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-         → ((x : X) → 𝓕-alg (A x)) → 𝓕-alg (Π A)
+         → ((x : X) → 𝓕-alg (A x))
+         → 𝓕-alg (Π A)
 Π-is-alg {𝓤} {𝓥} fe {X} A α = ∐· , l₀ , l₁
  where
   ∐· : {I : 𝓣 ̇ } → (I → Π A) → Π A

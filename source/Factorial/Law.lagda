@@ -12,7 +12,7 @@ is the type of automorphisms of the type X.
 
 This is proved by Danielsson in
 
- http://www.cse.chalmers.se/~nad/listings/equality/Function-universe.html#[⊤⊎↔⊤⊎]↔[⊤⊎×↔]
+ http://www.cse.chalmers.se/~nad/listings/equality/Function-universe.html#[⊤⊎↔⊤⊎]⇔[⊤⊎×↔]
 
 See also Coquand's
 
@@ -45,7 +45,7 @@ But if P is a proposition, then
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
@@ -61,20 +61,18 @@ module Factorial.Law (fe : FunExt) where
 open import Factorial.Swap
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.Miscelanea
 open import UF.Retracts
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 \end{code}
 
-We refer to set of isolated points as the co derived set (for
+We refer to the set of isolated points as the co derived set (for
 complement of the derived set, in the sense of Cantor, consisting of
 the limit points, i.e. non-isolated points).
 
@@ -251,7 +249,7 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
    ε : φ ∘ γ ∼ id
    ε ((f , i) , p) = to-Σ-＝
                       (to-subtype-＝ (being-equiv-is-prop fe) r ,
-                      isolated-is-h-isolated (f (inr ⋆))
+                      isolated-points-are-h-isolated (f (inr ⋆))
                        (equivs-preserve-isolatedness f i (inr ⋆) new-point-is-isolated) _ p)
     where
      s : f ∼ pr₁ (pr₁ ((φ ∘ γ) ((f , i) , p)))
@@ -352,7 +350,7 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
      m = equivs-preserve-isolatedness f j (inr ⋆) new-point-is-isolated
 
      n : {t : Y+𝟙} → is-prop (f (inr ⋆) ＝ t)
-     n = isolated-is-h-isolated (f (inr ⋆)) m
+     n = isolated-points-are-h-isolated (f (inr ⋆)) m
 
      o : f' , j' ＝ f , j
      o = to-subtype-＝ (being-equiv-is-prop fe) (dfunext (fe _ _) h)
@@ -410,13 +408,13 @@ discrete-factorial X d = γ
 perfect-factorial : (X : 𝓤 ̇ )
                   → is-perfect X
                   → Aut X ≃ Aut (X + 𝟙)
-perfect-factorial X i =
+perfect-factorial {𝓤} X i =
   Aut X                          ≃⟨ I ⟩
   𝟙 × Aut X                      ≃⟨ II ⟩
   co-derived-set (X + 𝟙) × Aut X ≃⟨ III ⟩
   Aut (X + 𝟙)                    ■
    where
-    I   =  ≃-sym (𝟙-lneutral {universe-of X} {universe-of X})
+    I   =  ≃-sym (𝟙-lneutral {𝓤} {𝓤})
     II  = ×-cong (≃-sym (singleton-≃-𝟙 (perfect-coderived-singleton X i))) (≃-refl (Aut X))
     III = general-factorial X
 
@@ -464,7 +462,7 @@ Aut-of-prop-is-singleton P i = ≃-refl P , h
 factorial-base-generalized : (P : 𝓤 ̇ )
                            → is-prop P
                            → 𝟙 {𝓥} ≃ Aut P
-factorial-base-generalized P i = singleton-≃-𝟙' (Aut-of-prop-is-singleton P i)
+factorial-base-generalized P i = 𝟙-≃-singleton (Aut-of-prop-is-singleton P i)
 
 propositional-factorial : (P : 𝓤 ̇ )
                         → is-prop P

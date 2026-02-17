@@ -6,7 +6,7 @@ structure identity principle.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -19,7 +19,7 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
 
-open import Lifting.Lifting 𝓣
+open import Lifting.Construction 𝓣
 
 \end{code}
 
@@ -146,4 +146,5 @@ two embeddings:
   is-embedding
   (η-composite fe fe'')
   (∘-is-embedding (κ-is-embedding pe fe fe') (𝓚→𝓛-is-embedding fe X))
+
 \end{code}

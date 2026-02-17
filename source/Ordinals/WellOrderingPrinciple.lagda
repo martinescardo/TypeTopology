@@ -11,7 +11,7 @@ of ordinals agree.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 open import NotionsOfDecidability.Decidable
@@ -22,14 +22,15 @@ open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
 open import UF.Choice
+open import UF.ClassicalLogic
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.Logic
 open import UF.Powerset
 open import UF.PropTrunc
+open import UF.Sets
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -76,8 +77,8 @@ open import Ordinals.WellOrderingTaboo fe' pe
 open InductiveWellOrder pt
 open PropositionalTruncation pt
 open UF.Choice.ExcludedMiddle pt fe
-open UF.Choice.choice-functions pt pe' fe
 open UF.Choice.Univalent-Choice fe pt
+open UF.Choice.choice-functions pt pe' fe
 
 \end{code}
 
@@ -111,26 +112,26 @@ open import UF.ImageAndSurjection pt
 open UF.Powerset.inhabited-subsets pt
 open UF.Logic.AllCombinators pt fe'
 
-choice-function-gives-well-ordering :
-
-        Excluded-Middle
-      → {X : 𝓤 ̇ }
-      → is-set X
-      → (Σ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A))
-      → Σ _<_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _<_)
-
+choice-function-gives-well-ordering
+ : Excluded-Middle
+ → {X : 𝓤 ̇ }
+ → is-set X
+ → (Σ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A))
+ → Σ _<_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _<_)
 choice-function-gives-well-ordering {𝓤} em {X} X-is-set (ε , ε-behaviour) = W
  where
 
 \end{code}
 
 We first define a function f : Ordinal 𝓤 → X by transfinite recursion
-as follows:
+as follows, where the idea is to pick the elements of X, one by one,
+using the choice functions, assigning ordinals to them, according to
+when they are picked.
 
 \begin{code}
 
    ϕ : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X
-   ϕ α s = ε ⁅ x ꞉ X ∣ Ɐ a ∶ ⟨ α ⟩ , s a ≢ x ⁆
+   ϕ α s = ε ⁅ x ꞉ X ∣ Ɐ a ꞉ ⟨ α ⟩ , s a ≢ x ⁆
 
    f : Ordinal 𝓤 → X
    f = transfinite-recursion-on-OO X ϕ
@@ -146,7 +147,7 @@ with this we can specify the recursive behaviour of f as follows:
 \begin{code}
 
    A : Ordinal 𝓤 → 𝓟 X
-   A α = ⁅ x ꞉ X ∣ Ɐ a ∶ ⟨ α ⟩ , f (α ↓ a) ≢ x ⁆
+   A α = ⁅ x ꞉ X ∣ Ɐ a ꞉ ⟨ α ⟩ , f (α ↓ a) ≢ x ⁆
 
    f-behaviour : (α : Ordinal 𝓤) → f α ＝ ε (A α)
    f-behaviour = transfinite-recursion-on-OO-behaviour X ϕ
@@ -157,7 +158,10 @@ The following properties of f should be self-explanatory:
 
 \begin{code}
 
-   f-lemma : (α : Ordinal 𝓤) → is-inhabited (A α) → (β : Ordinal 𝓤) → β ⊲ α → f α ≠ f β
+   f-lemma : (α : Ordinal 𝓤)
+           → is-inhabited (A α)
+           → (β : Ordinal 𝓤)
+           → β ⊲ α → f α ≠ f β
    f-lemma α i β (a , refl) p = III
     where
      I = ε (A α)   ＝⟨ (f-behaviour α)⁻¹ ⟩
@@ -176,7 +180,8 @@ The following properties of f should be self-explanatory:
                           → is-inhabited (A β)
                           → α ≠ β
                           → f α ≠ f β
-   f-is-conditionally-1-1 α β i j ν = I (trichotomy _⊲_ fe' em ⊲-is-well-order α β)
+   f-is-conditionally-1-1 α β i j ν = I (trichotomy _⊲_ fe' em
+                                          ⊲-is-well-order α β)
     where
      I : (α ⊲ β) + (α ＝ β) + (β ⊲ α) → f α ≠ f β
      I (inl l)       = ≠-sym (f-lemma β j α l)
@@ -260,7 +265,7 @@ assuming.
      II = not-Π-implies-∃-not pt em (λ x → being-inhabited-is-prop (A x)) I
 
      III : ∃ α ꞉ Ordinal 𝓤 , is-empty-subset (A α)
-     III = Nat∃ (λ α → non-inhabited-subsets-are-empty (A α)) II
+     III = Nat∃ (λ α → uninhabited-subsets-are-empty (A α)) II
 
 \end{code}
 
@@ -269,9 +274,10 @@ such α, which we will call α₀:
 
 \begin{code}
 
-   A-is-eventually-empty : Σ α₀ ꞉ Ordinal 𝓤
-                                , is-empty-subset (A α₀)
-                                × ((α : Ordinal 𝓤) → is-empty-subset (A α) → α₀ ≼ α)
+   A-is-eventually-empty
+    : Σ α₀ ꞉ Ordinal 𝓤
+           , is-empty-subset (A α₀)
+           × ((α : Ordinal 𝓤) → is-empty-subset (A α) → α₀ ≼ α)
    A-is-eventually-empty = nonempty-has-minimal _⊲_ fe' em pt ⊲-is-well-order _
                             (λ α → being-empty-subset-is-prop fe' (A α))
                             A-is-somewhere-empty
@@ -323,10 +329,15 @@ desired result:
    f₀-is-embedding = lc-maps-into-sets-are-embeddings f₀ f₀-lc X-is-set
 
    f₀-is-equiv : is-equiv f₀
-   f₀-is-equiv = surjective-embeddings-are-equivs f₀ f₀-is-embedding f₀-is-surjection
+   f₀-is-equiv = surjective-embeddings-are-equivs f₀
+                  f₀-is-embedding
+                  f₀-is-surjection
 
    structure-equiv : OrdinalStructure ⟨ α₀ ⟩ ≃ OrdinalStructure X
-   structure-equiv = transport-ordinal-structure (ua 𝓤) ⟨ α₀ ⟩ X (f₀ , f₀-is-equiv)
+   structure-equiv = transport-ordinal-structure (ua 𝓤)
+                      ⟨ α₀ ⟩
+                      X
+                      (f₀ , f₀-is-equiv)
 
 \end{code}
 
@@ -341,10 +352,10 @@ And our desired results follows directly from this:
 
 Using this we can prove the main theorem stated above, and restated
 below, as follows. We first obtain a choice function conditionally to
-the inhabitedness of X from the axiom of choice, and also the
-principle of excluded middle. We then use excluded middle to check
-whether X is inhabited. If it is, we apply the above lemma. Otherwise
-it is empty and hence clearly well-ordered.
+the inhabitation of X from the axiom of choice. We then use excluded
+middle, which follows from choice, to check whether X is inhabited. If
+it is, we apply the above lemma. Otherwise it is empty and hence
+clearly well-ordered.
 
 \begin{code}
 
@@ -356,7 +367,8 @@ choice-gives-well-ordering = restatement
               → ∃ _<_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _<_)
   restatement ac {𝓤} {X} X-is-set = III
    where
-    choice-function : ∥ X ∥ → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
+    choice-function : ∥ X ∥
+                    → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
     choice-function = Choice-gives-Choice₄ ac X X-is-set
 
     em : Excluded-Middle
@@ -379,15 +391,14 @@ We now prove the converse of the main theorem.
 
 \begin{code}
 
-well-ordering-gives-choice-function :
-
-        Excluded-Middle
-      → {X : 𝓤 ̇ }
-      → is-set X
-      → Σ _<_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _<_)
-      → (Σ ε ꞉ (𝓟⁺ X → X) , ((𝓐 : 𝓟⁺ X) → ε 𝓐 ∈⁺ 𝓐))
-
-well-ordering-gives-choice-function {𝓤} em {X} X-is-set (_<_ , w) = ε , ε-behaviour
+well-ordering-gives-choice-function
+ : Excluded-Middle
+ → {X : 𝓤 ̇ }
+ → is-set X
+ → Σ _<_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _<_)
+ → (Σ ε ꞉ (𝓟⁺ X → X) , ((𝓐 : 𝓟⁺ X) → ε 𝓐 ∈⁺ 𝓐))
+well-ordering-gives-choice-function {𝓤} em {X} X-is-set (_<_ , w) =
+  ε , ε-behaviour
  where
   μ : (𝓐 : 𝓟⁺ X) → Σ x₀ ꞉ X , (x₀ ∈⁺ 𝓐) × _
   μ (A , i) = nonempty-has-minimal _<_ fe' em pt w (_∈ A) (∈-is-prop A) i
@@ -411,7 +422,7 @@ well-ordering-gives-choice = restatement
                     (well-ordering-gives-choice-function em X-is-set)
                     (w X-is-set)
 
-    II : AC {𝓤} {𝓥}
-    II = AC₃-gives-AC I
+    II : AC₀ {𝓤} {𝓥}
+    II = AC₃-gives-AC₀ I
 
 \end{code}

@@ -9,8 +9,8 @@ Part 1 (11th October 2018) is based on a well-known argument,
  https://pdfs.semanticscholar.org/f2f3/30b27f1d7ca99c2550f96581a4400c209ef8.pdf
 
 (see also http://www.cs.nott.ac.uk/~psztxa/g53cfr/l20.html/l20.html),
-but phrased in terms of LFPT. See also the module See the module
-LawvereFPT for a formulation and proof that doesn't assume
+but phrased in terms of LFPT (Lawvere's fixed point theorem). See also
+the module LawvereFPT for a formulation and proof that doesn't assume
 type-in-type.
 
 Part 2 (28th September 2018) is based on a recent argument by Ingo
@@ -18,7 +18,7 @@ Blechschmidt. See also the module LawvereFPT.
 
 \begin{code}
 
-{-# OPTIONS --without-K --type-in-type --exact-split #-}
+{-# OPTIONS --without-K --type-in-type #-}
 
 module Unsafe.Type-in-Type-False where
 
@@ -32,6 +32,7 @@ module coquand where
   where
    data 𝕎 : Set where
     sup : (T : Set) → (T → 𝕎) → 𝕎
+
    e : 𝕎 → 𝕎 → Set
    e (sup T φ) w = Σ t ꞉ T , φ t ＝ w
 
@@ -42,7 +43,7 @@ module coquand where
    A = e R R
 
    r : A → (A → X)
-   r ((.R , f) , refl) = f
+   r ((R , f) , refl) = f
 
    s : (A → X) → A
    s f = (R , f) , refl
@@ -69,7 +70,7 @@ s is a definitional section of the function r):
 \end{code}
 
 Part 2. As mentioned above, this is an application of work of Ingo
-Blechschmidt (see the module LavwereFPT) to show that type-in-type,
+Blechschmidt (see the module LawvereFPT) to show that type-in-type,
 Streicher's K-axiom, functional and propositional extensionality are
 together impossible.
 
@@ -382,7 +383,7 @@ module blechschmidt where
 
      γ : (x₀ : X A₀) → (∥(Σ p ꞉ A₀ ＝ A₀ , φ (transport X p x₀) holds)∥ , ∥∥-is-prop) ＝ φ x₀
      γ x₀ = to-Σ-＝ (propext ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
-                    being-prop-is-prop (holds-is-prop _) (holds-is-prop (φ x₀)) )
+                    being-prop-is-prop (holds-is-prop _) (holds-is-prop (φ x₀)))
 
  \end{code}
 

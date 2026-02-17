@@ -2,18 +2,16 @@ Andrew Sneap, 17 February 2022
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Integers.Type
 open import Integers.Exponentiation
 open import Integers.Multiplication
 open import Integers.Order
 open import Integers.Parity
-open import Rationals.Fractions hiding (_≈_ ; ≈-sym ; ≈-trans ; ≈-refl)
-open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
-open import Rationals.Type
+open import Integers.Type
+open import MLTT.Plus-Properties
 open import Naturals.Addition
 open import Naturals.Division
 open import Naturals.Exponentiation
@@ -23,12 +21,13 @@ open import Naturals.Order
 open import Naturals.Parity
 open import Naturals.Properties
 open import Notation.Order
-open import MLTT.Plus-Properties
-open import UF.Base hiding (_≈_)
-open import UF.Miscelanea
-open import UF.Subsingletons
-open import TypeTopology.DiscreteAndSeparated
+open import Rationals.Fractions hiding (_≈_ ; ≈-sym ; ≈-trans ; ≈-refl)
+open import Rationals.Type
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import UF.Base hiding (_≈_)
+open import UF.DiscreteAndSeparated
+open import UF.Sets
+open import UF.Subsingletons
 
 module Dyadics.Type where
 
@@ -58,14 +57,7 @@ is-ℤ[1/2]-is-prop z n = +-is-prop ℕ-is-set II I
   II = ×-is-prop (<-is-prop-valued 0 n) (ℤodd-is-prop z)
 
 is-ℤ[1/2]-is-discrete : ((z , n) : ℤ × ℕ) → is-discrete (is-ℤ[1/2] z n)
-is-ℤ[1/2]-is-discrete (z , n) = +-is-discrete I II
- where
-  I : is-discrete (n ＝ 0)
-  I x y = inl (ℕ-is-set x y)
-
-  II : is-discrete (n > 0 × ℤodd z)
-  II = ×-is-discrete (λ x y → inl (<-is-prop-valued 0 n x y))
-                     (λ x y → inl (ℤodd-is-prop z x y))
+is-ℤ[1/2]-is-discrete (z , n) = props-are-discrete (is-ℤ[1/2]-is-prop z n)
 
 ℤ[1/2] : 𝓤₀ ̇
 ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , is-ℤ[1/2] z n
@@ -172,10 +164,10 @@ normalise-pos-even-prev p a ep (p/2 , e) = equality-cases (ℤeven-or-odd p) I I
     → ℤeven-or-odd p ＝ inl even-p
     → normalise-pos (p/2 , a) ＝ normalise-pos (p , succ a)
   I even-p e₂
-   = normalise-pos (p/2 , a)        ＝⟨ refl ⟩
+   = normalise-pos (p/2 , a)        ＝⟨refl⟩
      normalise-pos-lemma p/2 a      ＝⟨ i ⟩
      normalise-pos-lemma p/2' a     ＝⟨ ii ⟩
-     normalise-pos-lemma p (succ a) ＝⟨ refl ⟩
+     normalise-pos-lemma p (succ a) ＝⟨refl⟩
      normalise-pos (p , succ a)     ∎
    where
     p/2' : ℤ
@@ -248,7 +240,7 @@ normalise-pos-info' p  (succ a) = equality-cases (ℤeven-or-odd p) I II
 
         β : succ a ＝ dden (normalise-pos (p , succ a)) + succ k'
         β = succ a                                       ＝⟨ i    ⟩
-             succ (dden (normalise-pos (p/2 , a)) + k')  ＝⟨ refl ⟩
+             succ (dden (normalise-pos (p/2 , a)) + k')  ＝⟨refl⟩
              dden (normalise-pos (p/2 , a)) + succ k'    ＝⟨ ii   ⟩
              dden (normalise-pos (p , succ a)) + succ k' ∎
          where
@@ -347,9 +339,9 @@ _≈'_ : (p q : ℤ × ℕ) → 𝓤₀ ̇
 
   I : x * p' * m' ＝ z * n' * m'
   I = x * p' * m' ＝⟨ ℤ-mult-rearrangement x p' m' ⟩
-      x * m' * p' ＝⟨ ap (_* p') e₁ ⟩
+      x * m' * p' ＝⟨ ap (_* p') e₁                ⟩
       y * n' * p' ＝⟨ ℤ-mult-rearrangement y n' p' ⟩
-      y * p' * n' ＝⟨ ap (_* n') e₂ ⟩
+      y * p' * n' ＝⟨ ap (_* n') e₂                ⟩
       z * m' * n' ＝⟨ ℤ-mult-rearrangement z m' n' ⟩
       z * n' * m' ∎
 
@@ -399,7 +391,7 @@ infix 0 _≈_
   I : x * pos (2^ (succ n)) ＝ y
   I = x * pos (2^ (succ n)) ＝⟨ e ⟩
       y * pos (2^ m)        ＝⟨ ap (λ - → y * pos (2^ -)) m＝0 ⟩
-      y * pos (2^ 0)        ＝⟨ refl ⟩
+      y * pos (2^ 0)        ＝⟨refl⟩
       y ∎
 
   II : ℤeven (x * pos (2^ (succ n)))
@@ -421,7 +413,7 @@ infix 0 _≈_
       x * pos (2^ (succ n) ℕ* 2)      ＝⟨ iii  ⟩
       x * pos (2^ (succ (succ n)))    ＝⟨ e    ⟩
       y * pos (2^ 1)                  ＝⟨ iv   ⟩
-      y * (pos 2 * pos 1)             ＝⟨ refl ⟩
+      y * (pos 2 * pos 1)             ＝⟨refl⟩
       y * pos (2^ 0) * pos 2          ∎
 
    where
@@ -627,7 +619,7 @@ The following proofs relate dyadic rationals to rationals.
 ℤ[1/2]-lt-lemma : (x : ℤ) (n : ℕ)
                 → ℤodd x
                 → is-in-lowest-terms (x , pred (2^ (succ n)))
-ℤ[1/2]-lt-lemma x n ox = (γ₁ , γ₂) , γ₃
+ℤ[1/2]-lt-lemma x n ox = coprime-to-coprime' _ _ γ₄
  where
   n' = 2^ (succ n)
 
@@ -648,6 +640,9 @@ The following proofs relate dyadic rationals to rationals.
 
     III : is-common-divisor d (abs x) n' → d ∣ 1
     III (d|x , d|n') = odd-power-of-two-coprime d (abs x) (succ n) ox d|x d|n'
+
+  γ₄ : is-in-lowest-terms' (x , pred (2^ (succ n)))
+  γ₄ = (γ₁ , γ₂) , γ₃
 
 ℤ[1/2]-to-ℚ : ℤ[1/2] → ℚ
 ℤ[1/2]-to-ℚ ((x , n)      , inl n＝0)       = (x , 0) , (denom-zero-lt x)

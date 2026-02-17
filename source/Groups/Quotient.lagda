@@ -20,27 +20,22 @@ TODO: adapt to use (small) quotients defined in UF-Quotient
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base hiding (_≈_)
-open import UF.Subsingletons
-open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.Retracts
-open import UF.Embeddings
+open import Quotient.Type
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Subsingletons-FunExt
+open import UF.Sets
 
 module Groups.Quotient
         (pt  : propositional-truncations-exist)
         (fe  : Fun-Ext)
-        (pe  : Prop-Ext)
+        (sq : set-quotients-exist)
        where
 
+open general-set-quotients-exist sq
 open import UF.ImageAndSurjection pt
-open import UF.Large-Quotient pt fe pe
 
 open import Groups.Type renaming (_≅_ to _≣_)
 
@@ -140,8 +135,6 @@ closer to general facts about equivalence relations.
         III : (x' ·⟨ X ⟩ (y ·⟨ X ⟩  y')) ≈ ((x' ·⟨ X ⟩ y) ·⟨ X ⟩  y')
         III = id-implies-related ((assoc X _ _ _) ⁻¹)
 
-    open quotient -- pt fe pe ⟨ X ⟩ _≈_ ≈p ≈r ≈s ≈t
-
     quotient-gr : Group _
     quotient-gr = X≈ , _·_ , is-set-X≈ , assoc≈ , e≈ , ln≈ , rn≈ , λ x → inv≈ x , (inv-left≈ x , inv-right≈ x)
       where
@@ -152,7 +145,7 @@ closer to general facts about equivalence relations.
         π≈ = η/ ≋
 
         π≈-is-surjection : is-surjection π≈
-        π≈-is-surjection = η/-is-surjection ≋
+        π≈-is-surjection = η/-is-surjection ≋ pt
 
         _·_ : group-structure X≈
         _·_ = extension₂/ ≋ (multiplication X) binop-cong
@@ -161,25 +154,24 @@ closer to general facts about equivalence relations.
         ·-natural = λ x y → naturality₂/ ≋ (multiplication X) binop-cong x y
 
         is-set-X≈ : is-set X≈
-        is-set-X≈ = quotient-is-set (_≈_ , ≈p , ≈r , ≈s , ≈t)
+        is-set-X≈ = /-is-set ≋
 
         assoc≈ : associative _·_
-        assoc≈ = /-induction₃ ≋ (λ x' y' z' → is-set-X≈) γ
-          where
-                               γ : (s t z : ⟨ X ⟩) → ((π≈ s · π≈ t) · π≈ z) ＝ (π≈ s · (π≈ t · π≈ z))
-                               γ s t z = ((π≈ s · π≈ t) · π≈ z)   ＝⟨ ap (λ v → v · π≈ z) (·-natural s t) ⟩
-                                         π≈ (s ·⟨ X ⟩ t) · π≈ z    ＝⟨ ·-natural (s ·⟨ X ⟩ t) z ⟩
-                                         π≈ ((s ·⟨ X ⟩ t) ·⟨ X ⟩ z) ＝⟨ ap π≈ (assoc X s t z) ⟩
-                                         π≈ (s ·⟨ X ⟩ (t ·⟨ X ⟩ z)) ＝⟨ ·-natural s (t ·⟨ X ⟩ z) ⁻¹ ⟩
-                                         π≈ s · π≈ (t ·⟨ X ⟩ z)    ＝⟨ ap (λ v → π≈ s · v) (·-natural t  z ⁻¹) ⟩
-                                         (π≈ s · (π≈ t · π≈ z)) ∎
-
+        assoc≈ = /-induction₃ fe ≋ (λ x' y' z' → is-set-X≈) γ
+         where
+          γ : (s t z : ⟨ X ⟩) → ((π≈ s · π≈ t) · π≈ z) ＝ (π≈ s · (π≈ t · π≈ z))
+          γ s t z = ((π≈ s · π≈ t) · π≈ z)   ＝⟨ ap (λ v → v · π≈ z) (·-natural s t) ⟩
+                    π≈ (s ·⟨ X ⟩ t) · π≈ z    ＝⟨ ·-natural (s ·⟨ X ⟩ t) z ⟩
+                    π≈ ((s ·⟨ X ⟩ t) ·⟨ X ⟩ z) ＝⟨ ap π≈ (assoc X s t z) ⟩
+                    π≈ (s ·⟨ X ⟩ (t ·⟨ X ⟩ z)) ＝⟨ ·-natural s (t ·⟨ X ⟩ z) ⁻¹ ⟩
+                    π≈ s · π≈ (t ·⟨ X ⟩ z)    ＝⟨ ap (λ v → π≈ s · v) (·-natural t  z ⁻¹) ⟩
+                    (π≈ s · (π≈ t · π≈ z)) ∎
 
         e≈ : X≈
         e≈ = π≈ (unit X)
 
         ln≈ : left-neutral e≈ _·_
-        ln≈ = /-induction' ≋ (λ x → quotient-is-set ≋) γ
+        ln≈ = /-induction ≋ (λ _ → /-is-set ≋) γ
           where
             γ : (x : ⟨ X ⟩) → π≈ (unit X) · π≈ x ＝ π≈ x
             γ x = π≈ (unit X) · π≈ x     ＝⟨ ·-natural (unit X) x ⟩
@@ -187,7 +179,7 @@ closer to general facts about equivalence relations.
                   π≈ x ∎
 
         rn≈ : right-neutral e≈ _·_
-        rn≈ = /-induction' ≋ (λ x → quotient-is-set ≋) γ
+        rn≈ = /-induction ≋ (λ _ → /-is-set ≋) γ
           where
             γ : (x : ⟨ X ⟩) → π≈ x · π≈ (unit X) ＝ π≈ x
             γ x = π≈ x · π≈ (unit X)     ＝⟨ ·-natural x (unit X) ⟩
@@ -198,7 +190,7 @@ closer to general facts about equivalence relations.
         inv≈ = extension₁/ ≋ (inv X) inv-cong
 
         inv-left≈ : (x : X≈) → (inv≈ x · x) ＝ e≈
-        inv-left≈ = /-induction' ≋ (λ x → quotient-is-set ≋) γ
+        inv-left≈ = /-induction ≋ (λ _ → /-is-set ≋) γ
           where
             γ : (x : ⟨ X ⟩) → (inv≈ (π≈ x) · π≈ x) ＝ e≈
             γ x = inv≈ (π≈ x) · π≈ x   ＝⟨ ap (λ v → v · π≈ x) (naturality/ ≋ (inv X) inv-cong x) ⟩
@@ -207,7 +199,7 @@ closer to general facts about equivalence relations.
                   e≈ ∎
 
         inv-right≈ : (x : X≈) → (x · inv≈ x) ＝ e≈
-        inv-right≈ = /-induction' ≋ (λ x → quotient-is-set ≋) γ
+        inv-right≈ = /-induction ≋ (λ _ → /-is-set ≋) γ
           where
             γ : (x : ⟨ X ⟩) → (π≈ x · inv≈ (π≈ x)) ＝ e≈
             γ x = π≈ x · inv≈ (π≈ x)   ＝⟨ ap (λ v → π≈ x · v) (naturality/ ≋ (inv X) inv-cong x) ⟩
@@ -251,7 +243,7 @@ So we prove the map in the universality triangle is a homomorphism.
              where
 
       φ≈ : ⟨ quotient-gr ⟩ → ⟨ G ⟩
-      φ≈ = mediating-map/ ≋ (group-is-set G) φ p
+      φ≈ = mediating-map/ ≋ (groups-are-sets G) φ p
 
       mediating-map-is-hom : is-hom quotient-gr G φ≈
       mediating-map-is-hom {x} {y} = δ x y
@@ -274,6 +266,6 @@ So we prove the map in the universality triangle is a homomorphism.
                   φ≈ (π≈ s) ·⟨ G ⟩ φ≈ (π≈ t) ∎
 
           δ : (x y : X≈) → φ≈ (x ·⟨ quotient-gr ⟩ y) ＝ (φ≈ x) ·⟨ G ⟩ (φ≈ y)
-          δ = /-induction₂ ≋ (λ x' y' → group-is-set G) γ
+          δ = /-induction₂ fe ≋ (λ x' y' → groups-are-sets G) γ
 
 \end{code}

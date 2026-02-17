@@ -2,12 +2,11 @@ Properties of the disjoint sum _+_ of types.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Plus-Properties where
 
 open import MLTT.Plus
-open import MLTT.Universes
 open import MLTT.Negation
 open import MLTT.Id
 open import MLTT.Empty
@@ -57,7 +56,6 @@ Right-fails-gives-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → P + Q → ¬ Q 
 Right-fails-gives-left-holds (inl p) u = p
 Right-fails-gives-left-holds (inr q) u = 𝟘-elim (u q)
 
-open import MLTT.Unit
 open import MLTT.Sigma
 open import Notation.General
 
@@ -78,5 +76,9 @@ inl-preservation {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} f p l x = γ x (f (inl x)) 
          → (X → A) → (Y → B) → X + Y → A + B
 +functor f g (inl x) = inl (f x)
 +functor f g (inr y) = inr (g y)
+
++functor₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {X' : 𝓤' ̇ } {Y' : 𝓥' ̇ } {Z' : 𝓦' ̇ }
+          → (X → X') → (Y → Y') → (Z → Z') → X + Y + Z → X' + Y' + Z'
++functor₂ f g h = +functor f (+functor g h)
 
 \end{code}

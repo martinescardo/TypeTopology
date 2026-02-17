@@ -4,16 +4,23 @@ This module has functions to build games.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 
-module Games.Constructor (R : Type) where
+module Games.Constructor
+        {𝓤 𝓦₀ : Universe}
+        (R : 𝓦₀ ̇ )
+       where
 
 open import UF.FunExt
 
-open import Games.TypeTrees
-open import Games.FiniteHistoryDependent R
+open import Games.TypeTrees {𝓤}
+open import Games.FiniteHistoryDependent {𝓤} {𝓦₀} R
+open import MonadOnTypes.J
+open import MonadOnTypes.JK
+
+open J-definitions R
 
 \end{code}
 
@@ -23,11 +30,11 @@ than to give a game directly.
 
 \begin{code}
 
-data GameJ : Type₁ where
+data GameJ : 𝓤 ⁺ ⊔ 𝓦₀ ̇ where
  leaf   : R → GameJ
- branch : (X : Type) (Xf : X → GameJ) (ε : J X) → GameJ
+ branch : (X : 𝓤 ̇ ) (Xf : X → GameJ) (ε : J X) → GameJ
 
-dtt : GameJ → 𝕋
+dtt : GameJ → 𝑻
 dtt (leaf x)        = []
 dtt (branch X Xf ε) = X ∷ λ x → dtt (Xf x)
 
@@ -38,6 +45,8 @@ predicate (branch X Xf ε) (x :: xs) = predicate (Xf x) xs
 selections : (Γ : GameJ) → 𝓙 (dtt Γ)
 selections (leaf r)        = ⟨⟩
 selections (branch X Xf ε) = ε :: (λ x → selections (Xf x))
+
+open JK R
 
 quantifiers : (Γ : GameJ) → 𝓚 (dtt Γ)
 quantifiers (leaf r)        = ⟨⟩
@@ -54,7 +63,7 @@ Selection-Strategy-TheoremJ : Fun-Ext
                             → is-optimal (Game-from-GameJ Γ) (strategyJ Γ)
 Selection-Strategy-TheoremJ fe Γ = γ
  where
-  δ : (Γ : GameJ) → (selections Γ) are-selections-of (quantifiers Γ)
+  δ : (Γ : GameJ) → (selections Γ) Attains (quantifiers Γ)
   δ (leaf r)        = ⟨⟩
   δ (branch X Xf ε) = (λ p → refl) , (λ x → δ (Xf x))
 
@@ -69,8 +78,8 @@ in a convenient way.
 \begin{code}
 
 build-GameJ : (r     : R)
-              (Board : Type)
-              (τ     : Board → R + (Σ M ꞉ Type , (M → Board) × J M))
+              (Board : 𝓥 ̇ )
+              (τ     : Board → R + (Σ M ꞉ 𝓤 ̇ , (M → Board) × J M))
               (n     : ℕ)
               (b     : Board)
             → GameJ
@@ -80,7 +89,7 @@ build-GameJ r Board τ n b = h n b
   h 0        b = leaf r
   h (succ n) b = g (τ b)
    where
-    g : (f : R + (Σ M ꞉ Type , (M → Board) × J M)) → GameJ
+    g : (f : R + (Σ M ꞉ 𝓤 ̇ , (M → Board) × J M)) → GameJ
     g (inl r)              = leaf r
     g (inr (M , play , ε)) = branch M Xf ε
      where
@@ -88,8 +97,8 @@ build-GameJ r Board τ n b = h n b
       Xf m = h n (play m)
 
 build-Game : (r  : R)
-             (Board : Type)
-             (τ     : Board → R + (Σ M ꞉ Type , (M → Board) × J M))
+             (Board : 𝓥 ̇ )
+             (τ     : Board → R + (Σ M ꞉ 𝓤 ̇ , (M → Board) × J M))
              (n     : ℕ)
              (b     : Board)
            → Game

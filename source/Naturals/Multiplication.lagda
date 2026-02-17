@@ -6,14 +6,13 @@ standard properties of multiplication.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Addition
 open import Naturals.Properties
 
-open import UF.Base
 
 module Naturals.Multiplication where
 
@@ -30,6 +29,9 @@ x * succ y = x + x * y
 infixl 32 _*_
 
 {-# BUILTIN NATTIMES _*_ #-}
+
+_*ᴸ_ : (x y : ℕ) → ℕ
+x *ᴸ y = y * x
 
 \end{code}
 
@@ -50,7 +52,7 @@ zero-right-base : (x : ℕ) → x * 0 ＝ 0
 zero-right-base x = refl
 
 zero-left-base : (x : ℕ) → 0 * x ＝ 0
-zero-left-base = induction refl step
+zero-left-base = ℕ-induction refl step
  where
   step : (x : ℕ)
        → 0 * x     ＝ 0
@@ -71,7 +73,7 @@ mult-right-id : (x : ℕ) → x * 1 ＝ x
 mult-right-id x = refl
 
 mult-left-id : (x : ℕ) → 1 * x ＝ x
-mult-left-id = induction base step
+mult-left-id = ℕ-induction base step
  where
   base : 1 * 0 ＝ 0
   base = refl
@@ -105,22 +107,37 @@ addition, equational reasoning proves commutativity of multiplication.
 
 mult-commutativity : (x y : ℕ) → x * y ＝ y * x
 mult-commutativity x        0        = zero-left-base x ⁻¹
-mult-commutativity 0        (succ y) = 0 * succ y    ＝⟨ zero-left-base (succ y)  ⟩
-                                       0             ＝⟨ zero-right-base (succ y) ⟩
-                                       succ y * 0    ∎
-mult-commutativity (succ x) (succ y) = succ x * succ y        ＝⟨ refl ⟩
-                                       succ x + succ x * y    ＝⟨ ap (succ x +_) (mult-commutativity (succ x) y) ⟩
-                                       succ x + y * succ x    ＝⟨ refl ⟩
-                                       succ x + (y + y * x)   ＝⟨ succ-left x (y + y * x) ⟩
-                                       succ (x + (y + y * x)) ＝⟨ ap succ (addition-associativity x y (y * x) ⁻¹) ⟩
-                                       succ (x + y + y * x)   ＝⟨ ap (λ - → succ (- + y * x)) (addition-commutativity x y) ⟩
-                                       succ (y + x + y * x)   ＝⟨ ap (λ - → succ (y + x + -)) (mult-commutativity y x) ⟩
-                                       succ (y + x + x * y)   ＝⟨ ap succ (addition-associativity y x (x * y)) ⟩
-                                       succ (y + (x + x * y)) ＝⟨ succ-left y (x + x * y) ⁻¹ ⟩
-                                       succ y + (x + x * y)   ＝⟨ refl ⟩
-                                       succ y + x * succ y    ＝⟨ ap (succ y +_) (mult-commutativity (succ y) x ⁻¹) ⟩
-                                       succ y + succ y * x    ＝⟨ refl ⟩
-                                       succ y * succ x        ∎
+mult-commutativity 0        (succ y) = γ
+ where
+  γ : 0 * succ y ＝ succ y * 0
+  γ = 0 * succ y    ＝⟨ zero-left-base (succ y)  ⟩
+      0             ＝⟨ zero-right-base (succ y) ⟩
+      succ y * 0    ∎
+mult-commutativity (succ x) (succ y) = γ
+ where
+  γ : succ x * succ y ＝ succ y * succ x
+  γ = succ x * succ y        ＝⟨refl⟩
+      succ x + succ x * y    ＝⟨ i    ⟩
+      succ x + y * succ x    ＝⟨refl⟩
+      succ x + (y + y * x)   ＝⟨ ii   ⟩
+      succ (x + (y + y * x)) ＝⟨ iii  ⟩
+      succ (x + y + y * x)   ＝⟨ iv   ⟩
+      succ (y + x + y * x)   ＝⟨ v    ⟩
+      succ (y + x + x * y)   ＝⟨ vi   ⟩
+      succ (y + (x + x * y)) ＝⟨ vii  ⟩
+      succ y + (x + x * y)   ＝⟨refl⟩
+      succ y + x * succ y    ＝⟨ viii ⟩
+      succ y + succ y * x    ＝⟨refl⟩
+      succ y * succ x        ∎
+   where
+    i    = ap (succ x +_) (mult-commutativity (succ x) y)
+    ii   = succ-left x (y + y * x)
+    iii  = ap succ (addition-associativity x y (y * x) ⁻¹)
+    iv   = ap (λ - → succ (- + y * x)) (addition-commutativity x y)
+    v    = ap (λ - → succ (y + x + -)) (mult-commutativity y x)
+    vi   = ap succ (addition-associativity y x (x * y))
+    vii  = succ-left y (x + x * y) ⁻¹
+    viii = ap (succ y +_) (mult-commutativity (succ y) x ⁻¹)
 
 \end{code}
 
@@ -134,19 +151,24 @@ proof is clear by observing the chain of equations.
 \begin{code}
 
 distributivity-mult-over-addition : (x y z : ℕ) → x * (y + z) ＝ x * y + x * z
-distributivity-mult-over-addition x y = induction refl step
+distributivity-mult-over-addition x y = ℕ-induction refl step
  where
   step : (k : ℕ)
        → x * (y + k)      ＝ x * y + x * k
        → x * (y + succ k) ＝ x * y + x * succ k
 
-  step k IH = x * (y + succ k)        ＝⟨ refl                                                ⟩
-              x + x * (y + k)         ＝⟨ ap (x +_ ) IH                                       ⟩
-              x + (x * y + x * k)     ＝⟨ ap (x +_ ) (addition-commutativity (x * y) (x * k)) ⟩
-              x + (x * k + x * y)     ＝⟨ addition-associativity x (x * k) (x * y) ⁻¹         ⟩
-              x + x * k + x * y       ＝⟨ addition-commutativity (x + x * k) (x * y)          ⟩
-              x * y + (x + x * k)     ＝⟨ refl                                                ⟩
+  step k IH = x * (y + succ k)        ＝⟨refl⟩
+              x + x * (y + k)         ＝⟨ i    ⟩
+              x + (x * y + x * k)     ＝⟨ ii   ⟩
+              x + (x * k + x * y)     ＝⟨ iii  ⟩
+              x + x * k + x * y       ＝⟨ iv   ⟩
+              x * y + (x + x * k)     ＝⟨refl⟩
               x * y + (x * (succ k))  ∎
+   where
+    i   = ap (x +_ ) IH
+    ii  = ap (x +_ ) (addition-commutativity (x * y) (x * k))
+    iii = addition-associativity x (x * k) (x * y) ⁻¹
+    iv  = addition-commutativity (x + x * k) (x * y)
 
 \end{code}
 
@@ -172,14 +194,15 @@ there are certainly different ways to prove it.
 
 mult-associativity : (x y z : ℕ) → (x * y) * z ＝ x * (y * z)
 mult-associativity x y 0        = refl
-mult-associativity x y (succ z) = x * y * succ z       ＝⟨ refl                                             ⟩
-                                   x * y + x * y * z   ＝⟨ ap (x * y +_) (mult-associativity x y z)         ⟩
-                                   x * y + x * (y * z) ＝⟨ distributivity-mult-over-addition x y (y * z) ⁻¹ ⟩
-                                   x * (y + y * z)     ＝⟨ refl                                             ⟩
-                                   x * (y * succ z)    ∎
+mult-associativity x y (succ z)
+ = x * y * succ z      ＝⟨ refl                                             ⟩
+   x * y + x * y * z   ＝⟨ ap (x * y +_) (mult-associativity x y z)         ⟩
+   x * y + x * (y * z) ＝⟨ distributivity-mult-over-addition x y (y * z) ⁻¹ ⟩
+   x * (y + y * z)     ＝⟨ refl                                             ⟩
+   x * (y * succ z)    ∎
 
 pos-mult-is-succ : (x y : ℕ) → Σ z ꞉ ℕ , succ z ＝ succ x * succ y
-pos-mult-is-succ x = induction base step
+pos-mult-is-succ x = ℕ-induction base step
  where
   base : Σ z ꞉ ℕ , succ z ＝ succ x * 1
   base = x , refl
@@ -212,24 +235,54 @@ by commutativity of multiplication.
 
 \begin{code}
 
+mult-left-cancellable-lemma : (x y : ℕ)
+                            → ¬ (succ (succ x) * 0 ＝ succ (succ x) * (succ y))
+mult-left-cancellable-lemma x y e = γ
+ where
+  I : succ (succ x + succ (succ x) * y) ＝ succ (succ x) + succ (succ x) * y
+  I = succ-left (succ x) (succ (succ x) * y) ⁻¹
+
+  II : succ (succ x + succ (succ x) * y) ＝ 0
+  II = succ (succ x + succ (succ x) * y) ＝⟨ I    ⟩
+       succ (succ x) + succ (succ x) * y ＝⟨ e ⁻¹ ⟩
+       succ (succ x) * 0                 ∎
+
+  γ : 𝟘
+  γ = positive-not-zero (succ x + succ (succ x) * y) II
+
 mult-left-cancellable : (x y z : ℕ) → succ z * x ＝ succ z * y → x ＝ y
-mult-left-cancellable x        y        0        e = mult-commutativity x 1 ∙ e ∙ mult-commutativity 1 y
-mult-left-cancellable 0        0        (succ z) e = refl
-mult-left-cancellable 0        (succ y) (succ z) e = 𝟘-elim (positive-not-zero (succ z + succ (succ z) * y) (succ-left (succ z) (succ (succ z) * y) ⁻¹ ∙ e ⁻¹))
-mult-left-cancellable (succ x) 0        (succ z) e = 𝟘-elim (positive-not-zero (succ z + succ (succ z) * x) (succ-left (succ z) (succ (succ z) * x) ⁻¹ ∙ e))
+mult-left-cancellable x y 0 e = γ
+ where
+  γ : x ＝ y
+  γ = x     ＝⟨ mult-left-id x ⁻¹ ⟩
+      1 * x ＝⟨ e                 ⟩
+      1 * y ＝⟨ mult-left-id y    ⟩
+      y     ∎
+mult-left-cancellable 0 0 (succ z) e = refl
+mult-left-cancellable 0 (succ y) (succ z) e
+ = 𝟘-elim (mult-left-cancellable-lemma z y e)
+mult-left-cancellable (succ x) 0 (succ z) e
+ = 𝟘-elim (mult-left-cancellable-lemma z x (e ⁻¹))
 mult-left-cancellable (succ x) (succ y) (succ z) e = ap succ (IH I)
  where
   IH : succ (succ z) * x ＝ succ (succ z) * y → x ＝ y
   IH = mult-left-cancellable x y (succ z)
   I : succ (succ z) * x ＝ succ (succ z) * y
-  I = addition-left-cancellable (succ (succ z) * x) (succ (succ z) * y) (succ (succ z)) e
+  I = addition-left-cancellable _ _ _ e
 
 mult-right-cancellable : (x y z : ℕ) → (x * succ z) ＝ (y * succ z) → x ＝ y
-mult-right-cancellable x y z e = mult-left-cancellable x y z (mult-commutativity (succ z) x ∙ e ∙ mult-commutativity y (succ z))
+mult-right-cancellable x y z e = mult-left-cancellable x y z γ
+ where
+  γ : succ z * x ＝ succ z * y
+  γ = succ z * x ＝⟨ mult-commutativity (succ z) x ⟩
+      x * succ z ＝⟨ e                             ⟩
+      y * succ z ＝⟨ mult-commutativity y (succ z) ⟩
+      succ z * y ∎
 
 \end{code}
 
-Now we have two lemmas which will be useful later. The first is that multiplication of positive numbers is not 0.
+Now we have two lemmas which will be useful later. The first is that
+multiplication of positive numbers is not 0.
 
 The idea is that succ x * succ y ＝ succ x + succ x * y
                                  ＝ succ (x + succ x * y)
@@ -243,9 +296,21 @@ succ-pred in many proofs.
 
 ℕ-positive-multiplication-not-zero : (x y : ℕ) → ¬ (succ x * succ y ＝ 0)
 ℕ-positive-multiplication-not-zero x 0        e = positive-not-zero x e
-ℕ-positive-multiplication-not-zero x (succ y) e = positive-not-zero (x + succ x * succ y) (succ-left x (succ x * succ y) ⁻¹ ∙ e)
+ℕ-positive-multiplication-not-zero x (succ y) e = γ
+ where
+  I : succ (x + succ x * succ y) ＝ 0
+  I = succ (x + succ x * succ y) ＝⟨ succ-left x (succ x * succ y) ⁻¹ ⟩
+      succ x + succ x * succ y   ＝⟨ e                                ⟩
+      0                          ∎
 
-succ-pred-multiplication : (x y : ℕ) → succ x * succ y ＝ succ (pred (succ x * succ y))
-succ-pred-multiplication x y = succ-pred' (succ x * succ y) (ℕ-positive-multiplication-not-zero x y) ⁻¹
+  γ : 𝟘
+  γ = positive-not-zero (x + succ x * succ y) I
+
+succ-pred-multiplication : (x y : ℕ)
+                         → succ x * succ y ＝ succ (pred (succ x * succ y))
+succ-pred-multiplication x y = succ-pred' (succ x * succ y) γ ⁻¹
+ where
+  γ : ¬ (succ x * succ y ＝ 0)
+  γ = ℕ-positive-multiplication-not-zero x y
 
 \end{code}

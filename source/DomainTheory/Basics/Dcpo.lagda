@@ -10,12 +10,14 @@ dcpos.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Sets
+open import UF.SubtypeClassifier
 
 module DomainTheory.Basics.Dcpo
         (pt : propositional-truncations-exist)
@@ -28,14 +30,18 @@ open PropositionalTruncation pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Posets.Poset fe
+open import Naturals.Addition renaming (_+_ to _+'_)
+open import Naturals.Order
+open import Notation.Order
+
+open import OrderedTypes.Poset fe
 
 module _ {𝓤 𝓣 : Universe}
          {D : 𝓤 ̇ }
          (_⊑_ : D → D → 𝓣 ̇ )
        where
 
- open PosetAxioms _⊑_
+ open PosetAxioms
 
  is-upperbound : {I : 𝓦 ̇ } (u : D) (α : I → D) → 𝓦 ⊔ 𝓣 ̇
  is-upperbound u α = (i : domain α) → α i ⊑ u
@@ -69,7 +75,7 @@ module _ {𝓤 𝓣 : Universe}
  is-inhabited : (X : 𝓦 ̇ ) → 𝓦 ̇
  is-inhabited = ∥_∥
 
- is-semidirected : {I : 𝓦 ̇  } → (I → D) → 𝓦 ⊔ 𝓣 ̇
+ is-semidirected : {I : 𝓦 ̇ } → (I → D) → 𝓦 ⊔ 𝓣 ̇
  is-semidirected {𝓦} {I} α = (i j : I) → ∃ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k)
 
  is-directed : {I : 𝓦 ̇ } → (I → D) → 𝓦 ⊔ 𝓣 ̇
@@ -85,17 +91,18 @@ module _ {𝓤 𝓣 : Universe}
  being-inhabited-is-prop : {I : 𝓦 ̇ } → is-prop (is-inhabited I)
  being-inhabited-is-prop = ∥∥-is-prop
 
- being-semidirected-is-prop : {I : 𝓦 ̇  } (α : I → D) → is-prop (is-semidirected α)
+ being-semidirected-is-prop : {I : 𝓦 ̇ } (α : I → D) → is-prop (is-semidirected α)
  being-semidirected-is-prop α = Π₂-is-prop fe (λ i j → ∥∥-is-prop)
 
  being-directed-is-prop : {I : 𝓦 ̇ } (α : I → D) → is-prop (is-directed α)
  being-directed-is-prop α =
   ×-is-prop being-inhabited-is-prop (being-semidirected-is-prop α)
 
- is-directed-complete : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣  ̇
+ is-directed-complete : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣 ̇
  is-directed-complete = (I : 𝓥 ̇ ) (α : I → D) → is-directed α → has-sup α
 
- is-sup-is-prop : poset-axioms → {I : 𝓦 ̇ } (d : D) (α : I → D)
+ is-sup-is-prop : poset-axioms _⊑_
+                → {I : 𝓦 ̇ } (d : D) (α : I → D)
                 → is-prop (is-sup d α)
  is-sup-is-prop (s , p , r , t , a) {I} d α = γ
   where
@@ -103,7 +110,7 @@ module _ {𝓤 𝓣 : Universe}
    γ = ×-is-prop (Π-is-prop fe (λ i → p (α i) d))
                  (Π₂-is-prop fe (λ x l → p d x))
 
- sups-are-unique : poset-axioms
+ sups-are-unique : poset-axioms _⊑_
                  → {I : 𝓦 ̇ } (α : I → D) {x y : D}
                  → is-sup x α → is-sup y α → x ＝ y
  sups-are-unique (s , p , r , t , a) {I} α {x} {y} x-is-sup y-is-sup =
@@ -111,14 +118,15 @@ module _ {𝓤 𝓣 : Universe}
    (sup-is-lowerbound-of-upperbounds x-is-sup y (sup-is-upperbound y-is-sup))
    (sup-is-lowerbound-of-upperbounds y-is-sup x (sup-is-upperbound x-is-sup))
 
- having-sup-is-prop : poset-axioms → {I : 𝓦 ̇ } (α : I → D)
+ having-sup-is-prop : poset-axioms _⊑_
+                    → {I : 𝓦 ̇ } (α : I → D)
                     → is-prop (has-sup α)
  having-sup-is-prop ax {I} α σ τ =
   to-subtype-＝ (λ x → is-sup-is-prop ax x α)
                (sups-are-unique ax α (pr₂ σ) (pr₂ τ))
 
  dcpo-axioms : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣 ̇
- dcpo-axioms = poset-axioms × is-directed-complete
+ dcpo-axioms = poset-axioms _⊑_ × is-directed-complete
 
  being-directed-complete-is-prop : dcpo-axioms → is-prop is-directed-complete
  being-directed-complete-is-prop a =
@@ -128,7 +136,7 @@ module _ {𝓤 𝓣 : Universe}
  dcpo-axioms-is-prop = prop-criterion γ
   where
    γ : dcpo-axioms → is-prop dcpo-axioms
-   γ a = ×-is-prop poset-axioms-is-prop
+   γ a = ×-is-prop (poset-axioms-is-prop _⊑_)
                    (being-directed-complete-is-prop a)
 
 \end{code}
@@ -145,6 +153,50 @@ following definitions.
  has-least = Σ x ꞉ D , is-least x
 
 \end{code}
+
+Added 23 June 2024.
+
+\begin{code}
+
+ is-ω-chain : (ℕ → D) → 𝓣 ̇
+ is-ω-chain α = (n : ℕ) → α n ⊑ α (succ n)
+
+ is-ω-complete : 𝓤 ⊔ 𝓣 ̇
+ is-ω-complete = (α : ℕ → D) → is-ω-chain α → has-sup α
+
+ module _
+         (⊑-refl : is-reflexive _⊑_)
+         (⊑-trans : is-transitive _⊑_)
+         (α : ℕ → D)
+        where
+
+  ω-chains-increase : is-ω-chain α
+                    → (n m : ℕ) → n ≤ m → α n ⊑ α m
+  ω-chains-increase c n 0        l =
+   transport⁻¹ (λ - → α - ⊑ α 0) (unique-least n l) (⊑-refl (α 0))
+  ω-chains-increase c n (succ m) l = I (≤-split n m l)
+   where
+    I : n ≤ m + (n ＝ succ m) → α n ⊑ α (succ m)
+    I (inl k) = ⊑-trans (α n) (α m) (α (succ m)) (ω-chains-increase c n m k) (c m)
+    I (inr refl) = ⊑-refl (α (succ m))
+
+  ω-chains-are-directed : is-ω-chain α → is-directed α
+  ω-chains-are-directed c = ∣ 0 ∣ , I
+   where
+    I : is-semidirected α
+    I n m = ∣ n +' m , II , III ∣
+     where
+      II : α n ⊑ α (n +' m)
+      II = ω-chains-increase c n (n +' m)
+            (cosubtraction n (n +' m) (m , (addition-commutativity m n)))
+      III : α m ⊑ α (n +' m)
+      III = ω-chains-increase c m (n +' m)
+             (cosubtraction m (n +' m) (n , refl))
+
+\end{code}
+
+End of addition.
+
 
 We have now developed enough material to define dcpos and we introduce some
 convenient projections.
@@ -172,6 +224,9 @@ module _ {𝓤 𝓣 : Universe} where
  axioms-of-dcpo : (𝓓 : DCPO) → dcpo-axioms (underlying-order 𝓓)
  axioms-of-dcpo (D , _⊑_ , d) = d
 
+ poset-axioms-of-dcpo : (𝓓 : DCPO) → poset-axioms (underlying-order 𝓓)
+ poset-axioms-of-dcpo (D , _⊑_ , d) = pr₁ d
+
  sethood : (𝓓 : DCPO) → is-set ⟨ 𝓓 ⟩
  sethood (D , _⊑_ , (s  , p  , r  , t  , a)  , c ) = s
 
@@ -186,6 +241,22 @@ module _ {𝓤 𝓣 : Universe} where
 
  antisymmetry : (𝓓 : DCPO) → is-antisymmetric (underlying-order 𝓓)
  antisymmetry (D , _⊑_ , (s  , p  , r  , t  , a)  , c ) = a
+
+\end{code}
+
+Added by Ayberk Tosun on 2024-04-19.
+
+To work with the combinators in `UF.Logic`, it is convenient to have a version
+of equality on domain elements that is packaged up with the proof that it is
+a proposition.
+
+\begin{code}
+
+ dcpo-equalityₚ : (𝓓 : DCPO) → ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → Ω 𝓤
+ dcpo-equalityₚ 𝓓 x y = (x ＝ y) , sethood 𝓓
+
+ syntax dcpo-equalityₚ 𝓓 x y = x ＝ₚ[ 𝓓 ] y
+ infix 2 dcpo-equalityₚ
 
 \end{code}
 
@@ -225,6 +296,9 @@ z = transitivity 𝓓 a c d z' w
  syntax reflexivity 𝓓 x = x ∎⟨ 𝓓 ⟩
  infix 1 reflexivity
 
+ has-bottom : DCPO → 𝓤 ⊔ 𝓣 ̇
+ has-bottom 𝓓 = has-least (underlying-order 𝓓)
+
 \end{code}
 
 Next, we introduce ∐-notation for the supremum of a directed family in a dcpo.
@@ -249,6 +323,12 @@ Next, we introduce ∐-notation for the supremum of a directed family in a dcpo.
                           → is-Directed 𝓓 α
                           → is-Semidirected 𝓓 α
  semidirected-if-Directed 𝓓 α = pr₂
+
+ ω-chains-are-Directed : (𝓓 : DCPO) (α : ℕ → ⟨ 𝓓 ⟩)
+                       → is-ω-chain (underlying-order 𝓓) α
+                       → is-Directed 𝓓 α
+ ω-chains-are-Directed 𝓓 α =
+  ω-chains-are-directed (underlying-order 𝓓) (reflexivity 𝓓) (transitivity 𝓓) α
 
  ∐ : (𝓓 : DCPO) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} → is-Directed 𝓓 α → ⟨ 𝓓 ⟩
  ∐ 𝓓 {I} {α} δ = pr₁ (directed-completeness 𝓓 I α δ)

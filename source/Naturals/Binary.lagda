@@ -37,16 +37,16 @@ Applications:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Naturals.Binary where
 
-open import MLTT.Spartan renaming (_+_ to _∔_)
+open import MLTT.Spartan renaming (_+_ to _∔_) hiding (ℕ-induction)
 open import Naturals.Properties
 open import UF.Equiv
 open import UF.Base
 open import UF.EquivalenceExamples
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
 
 \end{code}
 
@@ -228,7 +228,7 @@ height-examples = refl , refl , refl , refl , refl , refl , refl , refl , refl ,
                   refl , refl , refl , refl , refl , refl , refl , refl , refl
 \end{code}
 
-The above diagrams give the following equations for the functino height.
+The above diagrams give the following equations for the function height.
 
 \begin{code}
 
@@ -237,18 +237,18 @@ height-equation₀ = refl
 
 height-equationₗ : (n : ℕ) → height (left n) ＝ succ (height n)
 height-equationₗ n =
- height (left n)        ＝⟨ refl ⟩
+ height (left n)        ＝⟨refl⟩
  size (binary (left n)) ＝⟨ ap size (ldiagram n) ⟩
- size (L (binary n))    ＝⟨ refl ⟩
- succ (size (binary n)) ＝⟨ refl ⟩
+ size (L (binary n))    ＝⟨refl⟩
+ succ (size (binary n)) ＝⟨refl⟩
  succ (height n)        ∎
 
 height-equationᵣ : (n : ℕ) → height (right n) ＝ succ (height n)
 height-equationᵣ n =
- height (right n)       ＝⟨ refl ⟩
+ height (right n)       ＝⟨refl⟩
  size (binary (right n))＝⟨ ap size (rdiagram n) ⟩
- size (R (binary n))    ＝⟨ refl ⟩
- succ (size (binary n)) ＝⟨ refl ⟩
+ size (R (binary n))    ＝⟨refl⟩
+ succ (size (binary n)) ＝⟨refl⟩
  succ (height n)        ∎
 
 
@@ -257,14 +257,6 @@ height-equationᵣ n =
 We now show that height (2ⁿ-1) ＝ n.
 
 \begin{code}
-
-double power2 : ℕ → ℕ
-
-double 0        = 0
-double (succ n) = succ (succ (double n))
-
-power2 0        = 1
-power2 (succ n) = double (power2 n)
 
 height-power2-equation : (n : ℕ) → height (pred (power2 n)) ＝ n
 height-power2-equation n = VI
@@ -285,8 +277,8 @@ height-power2-equation n = VI
   III 0        = refl
   III (succ n) = succ-lc p
    where
-    p = succ (succ (powerl (succ n))) ＝⟨ refl ⟩
-        succ (succ (left (powerl n))) ＝⟨ refl ⟩
+    p = succ (succ (powerl (succ n))) ＝⟨refl⟩
+        succ (succ (left (powerl n))) ＝⟨refl⟩
         left (succ (powerl n))        ＝⟨ ap left (III n) ⟩
         left (power2 n)               ＝⟨ II n ⟩
         succ (power2 (succ n))        ∎
@@ -297,7 +289,7 @@ height-power2-equation n = VI
   V : (n : ℕ) → height (powerl n) ＝ n
   V 0        = refl
   V (succ n) =
-   height (powerl (succ n)) ＝⟨ refl ⟩
+   height (powerl (succ n)) ＝⟨refl⟩
    height (left (powerl n)) ＝⟨ height-equationₗ (powerl n) ⟩
    succ (height (powerl n)) ＝⟨ ap succ (V n) ⟩
    succ n                   ∎
@@ -366,7 +358,7 @@ unary-induction-on-𝔹 {𝓤} {B} b f = h
 
 \end{code}
 
-The following is the counter-part of the above, but with a more
+The following is the counterpart of the above, but with a more
 informative conclusion. Not only the hypotheses
 
      a : A 0
@@ -431,23 +423,23 @@ Binary-induction-on-ℕ A a f g = h , refl , IIIa , IIIb
 
   IIa : (n : ℕ) → τ (A ∘ unary) (ldiagram n) (𝕙 (left n)) ＝ 𝒇 (binary n) (𝕙 n)
   IIa n =
-   τ (A ∘ unary) (ldiagram n) (𝕙 (left n))          ＝⟨ refl ⟩
+   τ (A ∘ unary) (ldiagram n) (𝕙 (left n))          ＝⟨refl⟩
    τ (A ∘ unary) (ldiagram n) (𝒉 (binary (left n))) ＝⟨ apd 𝒉 (ldiagram n) ⟩
-   𝒉 (L (binary n))                                 ＝⟨ refl ⟩
-   𝒇 (binary n) (𝒉 (binary n))                      ＝⟨ refl ⟩
+   𝒉 (L (binary n))                                 ＝⟨refl⟩
+   𝒇 (binary n) (𝒉 (binary n))                      ＝⟨refl⟩
    𝒇 (binary n) (𝕙 n)                               ∎
 
   IIIa : (n : ℕ) → h (left n) ＝ f n (h n)
   IIIa n =
-   h (left n)                                                                ＝⟨ refl ⟩
+   h (left n)                                                                ＝⟨refl⟩
    τ A (unary-binary (left n)) (𝕙 (left n))                                  ＝⟨ by-Ia ⟩
    τ A (ap unary (ldiagram n) ∙ ap left (unary-binary n)) (𝕙 (left n))       ＝⟨ by-transport-∙ ⟩
    τ A (ap left (unary-binary n)) (τ A (ap unary (ldiagram n)) (𝕙 (left n))) ＝⟨ by-transport-ap ⟩
    τ A (ap left (unary-binary n)) (τ (A ∘ unary) (ldiagram n) (𝕙 (left n)))  ＝⟨ by-IIa ⟩
-   τ A (ap left (unary-binary n)) (𝒇 (binary n) (𝕙 n))                       ＝⟨ refl ⟩
+   τ A (ap left (unary-binary n)) (𝒇 (binary n) (𝕙 n))                       ＝⟨refl⟩
    τ A (ap left (unary-binary n)) (f (unary (binary n)) (𝕙 n))               ＝⟨ by-transport-ap-again ⟩
    τ (A ∘ left) (unary-binary n) (f (unary (binary n)) (𝕙 n))                ＝⟨ by-naturality ⟩
-   f n (τ A (unary-binary n) (𝕙 n))                                          ＝⟨ refl ⟩
+   f n (τ A (unary-binary n) (𝕙 n))                                          ＝⟨refl⟩
    f n (h n)                                                                 ∎
     where
      by-Ia                 = ap (λ - → τ A - (𝕙 (left n))) (Ia n)
@@ -468,23 +460,23 @@ By symmetry, the proof is concluded. But we have to write the symmetric argument
 
   IIb : (n : ℕ) → τ (A ∘ unary) (rdiagram n) (𝕙 (right n)) ＝ 𝒈 (binary n) (𝕙 n)
   IIb n =
-   τ (A ∘ unary) (rdiagram n) (𝕙 (right n))          ＝⟨ refl ⟩
+   τ (A ∘ unary) (rdiagram n) (𝕙 (right n))          ＝⟨refl⟩
    τ (A ∘ unary) (rdiagram n) (𝒉 (binary (right n))) ＝⟨ apd 𝒉 (rdiagram n) ⟩
-   𝒉 (R (binary n))                                  ＝⟨ refl ⟩
-   𝒈 (binary n) (𝒉 (binary n))                       ＝⟨ refl ⟩
+   𝒉 (R (binary n))                                  ＝⟨refl⟩
+   𝒈 (binary n) (𝒉 (binary n))                       ＝⟨refl⟩
    𝒈 (binary n) (𝕙 n)                                ∎
 
   IIIb : (n : ℕ) → h (right n) ＝ g n (h n)
   IIIb n =
-   h (right n)                                                                 ＝⟨ refl ⟩
+   h (right n)                                                                 ＝⟨refl⟩
    τ A (unary-binary (right n)) (𝕙 (right n))                                  ＝⟨ by-Ib ⟩
    τ A (ap unary (rdiagram n) ∙ ap right (unary-binary n)) (𝕙 (right n))       ＝⟨ by-transport-∙ ⟩
    τ A (ap right (unary-binary n)) (τ A (ap unary (rdiagram n)) (𝕙 (right n))) ＝⟨ by-transport-ap ⟩
    τ A (ap right (unary-binary n)) (τ (A ∘ unary) (rdiagram n) (𝕙 (right n)))  ＝⟨ by-IIb ⟩
-   τ A (ap right (unary-binary n)) (𝒈 (binary n) (𝕙 n))                        ＝⟨ refl ⟩
+   τ A (ap right (unary-binary n)) (𝒈 (binary n) (𝕙 n))                        ＝⟨refl⟩
    τ A (ap right (unary-binary n)) (g (unary (binary n)) (𝕙 n))                ＝⟨ by-transport-ap-again ⟩
    τ (A ∘ right) (unary-binary n) (g (unary (binary n)) (𝕙 n))                 ＝⟨ by-naturarity ⟩
-   g n (τ A (unary-binary n) (𝕙 n))                                            ＝⟨ refl ⟩
+   g n (τ A (unary-binary n) (𝕙 n))                                            ＝⟨refl⟩
    g n (h n)                                                                   ∎
     where
      by-Ib                 = ap (λ - → τ A - (𝕙 (right n))) (Ib n)
@@ -632,9 +624,9 @@ pair'-lemma (L b) =
  L (pair' (first' b) (unary (second' b)))    ＝⟨ ap L (pair'-lemma b) ⟩
  L b                                         ∎
 pair'-lemma (R b) =
- pair' (first' (R b)) (unary (second' (R b))) ＝⟨ refl ⟩
+ pair' (first' (R b)) (unary (second' (R b))) ＝⟨refl⟩
  pair' 0 (unary (Succ b))                     ＝⟨ ap (pair' 0) (sdiagram b) ⟩
- pair' 0 (succ (unary b))                     ＝⟨ refl ⟩
+ pair' 0 (succ (unary b))                     ＝⟨refl⟩
  R (binary (unary b))                         ＝⟨ ap R (binary-unary b) ⟩
  R b                                          ∎
 
@@ -647,14 +639,14 @@ second = unary ∘ second' ∘ binary
 
 first-pair : (n k : ℕ) → first (pair (n , k)) ＝ n
 first-pair n k =
- first (pair (n , k))                ＝⟨ refl ⟩
+ first (pair (n , k))                ＝⟨refl⟩
  first' (binary (unary (pair' n k))) ＝⟨ ap first' (binary-unary (pair' n k)) ⟩
  first' (pair' n k)                  ＝⟨ first'-lemma n k ⟩
  n                                   ∎
 
 second-pair : (n k : ℕ) → second (pair (n , k)) ＝ k
 second-pair n k =
- second (pair (n , k))                        ＝⟨ refl ⟩
+ second (pair (n , k))                        ＝⟨refl⟩
  unary (second' (binary (unary (pair' n k)))) ＝⟨ ap (unary ∘ second') (binary-unary (pair' n k)) ⟩
  unary (second' (pair' n k))                  ＝⟨ ap unary (second'-lemma n k) ⟩
  unary (binary k)                             ＝⟨ unary-binary k ⟩
@@ -665,14 +657,14 @@ riap m = (first m , second m)
 
 pair-riap : (m : ℕ) → pair (riap m) ＝ m
 pair-riap m =
- pair (riap m)                                                  ＝⟨ refl ⟩
+ pair (riap m)                                                  ＝⟨refl⟩
  unary (pair' (first' (binary m)) (unary (second' (binary m)))) ＝⟨ ap unary (pair'-lemma (binary m)) ⟩
  unary (binary m)                                               ＝⟨ unary-binary m ⟩
  m                                                              ∎
 
 riap-pair : (z : ℕ × ℕ) → riap (pair z) ＝ z
 riap-pair (n , k) =
- riap (pair (n , k))                            ＝⟨ refl ⟩
+ riap (pair (n , k))                            ＝⟨refl⟩
  (first (pair (n , k)) , second (pair (n , k))) ＝⟨ to-×-＝ (first-pair n k) (second-pair n k) ⟩
  n , k                                          ∎
 
@@ -780,10 +772,10 @@ Double-lemma (R m) = ap R (Double-lemma m)
 ddiagram : (n : ℕ) → binary (double n) ＝ Double (binary n)
 ddiagram 0        = refl
 ddiagram (succ n) =
- binary (double (succ n))        ＝⟨ refl ⟩
+ binary (double (succ n))        ＝⟨refl⟩
  Succ (Succ (binary (double n))) ＝⟨ ap (Succ ∘ Succ) (ddiagram n) ⟩
  Succ (Succ (Double (binary n))) ＝⟨ Double-lemma (binary n) ⟩
- Double (Succ (binary n))        ＝⟨ refl ⟩
+ Double (Succ (binary n))        ＝⟨refl⟩
  Double (binary (succ n))        ∎
 
 \end{code}
@@ -819,10 +811,10 @@ R x  +♭  R y  = R (Succ (x +♭ y))
 +diagram : ∀ m n → binary (m + n) ＝ binary m +♭ binary n
 +diagram m 0        = refl
 +diagram m (succ n) =
- binary (m + succ n)         ＝⟨ refl ⟩
+ binary (m + succ n)         ＝⟨refl⟩
  Succ (binary (m + n))       ＝⟨ ap Succ (+diagram m n) ⟩
  Succ (binary m +♭ binary n) ＝⟨ +♭-lemma (binary m) (binary n) ⟩
- binary m +♭ Succ (binary n) ＝⟨ refl ⟩
+ binary m +♭ Succ (binary n) ＝⟨refl⟩
  binary m +♭ binary (succ n) ∎
 
 \end{code}

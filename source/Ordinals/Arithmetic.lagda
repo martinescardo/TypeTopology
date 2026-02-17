@@ -4,7 +4,7 @@ Some operations and constructions on ordinals.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
@@ -12,13 +12,14 @@ module Ordinals.Arithmetic
         (fe : FunExt)
        where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Spartan
 open import Naturals.Order
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Ordinals.WellOrderArithmetic
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 
 prop-ordinal : (P : 𝓤 ̇ ) → is-prop P → Ordinal 𝓤
@@ -38,14 +39,17 @@ Here the subscript is the letter "o":
 \begin{code}
 
 𝟘ₒ 𝟙ₒ : {𝓤 : Universe} → Ordinal 𝓤
-𝟘ₒ = Ω-to-ordinal ⊥Ω
-𝟙ₒ = Ω-to-ordinal ⊤Ω
+𝟘ₒ = Ω-to-ordinal ⊥
+𝟙ₒ = Ω-to-ordinal ⊤
+
+𝟘ₒ-is-not-𝟙ₒ : 𝟘ₒ {𝓤} ≠ 𝟙ₒ {𝓤}
+𝟘ₒ-is-not-𝟙ₒ e = 𝟘-is-not-𝟙 (ap ⟨_⟩ e)
 
 𝟘ₒ-is-trichotomous : is-trichotomous (𝟘ₒ {𝓤})
-𝟘ₒ-is-trichotomous = prop-ordinal-is-trichotomous ⊥Ω
+𝟘ₒ-is-trichotomous = prop-ordinal-is-trichotomous ⊥
 
 𝟙ₒ-is-trichotomous : is-trichotomous (𝟙ₒ {𝓤})
-𝟙ₒ-is-trichotomous = prop-ordinal-is-trichotomous ⊤Ω
+𝟙ₒ-is-trichotomous = prop-ordinal-is-trichotomous ⊤
 
 \end{code}
 
@@ -95,6 +99,9 @@ _×ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
                                  times.order _<_ _≺_ ,
                                  times.well-order _<_ _≺_ fe o p
 
+infixl 6 _+ₒ_
+infixl 7 _×ₒ_
+
 ×ₒ-is-trichotomous : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                    → is-trichotomous α
                    → is-trichotomous β
@@ -104,10 +111,17 @@ _×ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
 𝟚ₒ : {𝓤 : Universe} → Ordinal 𝓤
 𝟚ₒ = 𝟙ₒ +ₒ 𝟙ₒ
 
+𝟛ₒ : {𝓤 : Universe} → Ordinal 𝓤
+𝟛ₒ = 𝟚ₒ +ₒ 𝟙ₒ
+
 𝟚ₒ-is-trichotomous : is-trichotomous (𝟚ₒ {𝓤})
 𝟚ₒ-is-trichotomous = +ₒ-is-trichotomous 𝟙ₒ 𝟙ₒ
                        𝟙ₒ-is-trichotomous
                        𝟙ₒ-is-trichotomous
+
+ω² : Ord
+ω² = ω ×ₒ ω
+
 
 prop-indexed-product : {P : 𝓤 ̇ }
                      → is-prop P
@@ -150,13 +164,13 @@ right-is-not-smaller α (inr ⋆) l = 𝟘-elim l
 Added 3rd May 2022. Sums of ordinals indexed by ordinals don't always
 exist. See the module OrdinalsShulmanTaboo. They do exist for
 trichotomous and cotransitive ordinals. See the module
-OrdinalsWellOrderArithmetic. Notice that trichotomy implies
+Ordinals.WellOrderArithmetic. Notice that trichotomy implies
 cotransitivity. See the module OrdinalNotions. Both trichotomy and
 cotransitivity are implied by excluded middle.
 
 \begin{code}
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 module sums-assuming-EM (em : EM 𝓤) where
 
@@ -165,7 +179,7 @@ module sums-assuming-EM (em : EM 𝓤) where
                        Sum.order  ,
                        Sum.well-order o (λ x → is-well-ordered (β x))
   where
-   _≺_ : {x : X} → ⟨ β x ⟩ → ⟨ β x ⟩ → 𝓤  ̇
+   _≺_ : {x : X} → ⟨ β x ⟩ → ⟨ β x ⟩ → 𝓤 ̇
    y ≺ z = y ≺⟨ β _ ⟩ z
 
    module Sum = sum-cotransitive fe _<_ _≺_ (em-gives-cotrans _<_ fe em (is-well-ordered α))
@@ -179,3 +193,15 @@ inhabited ordinal. In fact, consider the ordinal P + 𝟙 where P is a
 proposition. Then if we can find a least element of this ordinal, we
 can decide whether P or ¬ P. Similarly, we can't find a top element,
 unless excluded middle holds, by considering the ordinal 𝟙 + P.
+
+Added 12 November 2024 by Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg
+and Chuangjie Xu.
+
+\begin{code}
+
+[_]ₒ : (n : ℕ) → Ordinal 𝓤
+[ 0 ]ₒ = 𝟘ₒ
+[ 1 ]ₒ = 𝟙ₒ
+[ succ n@(succ m) ]ₒ = [ n ]ₒ +ₒ 𝟙ₒ
+
+\end{code}

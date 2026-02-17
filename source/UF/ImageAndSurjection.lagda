@@ -2,7 +2,7 @@ Martin Escardo.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.PropTrunc
 
@@ -14,9 +14,13 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 
 \end{code}
 
@@ -55,6 +59,12 @@ restrictions-are-embeddings f = pr₁-is-embedding (λ y → ∥∥-is-prop)
 
 is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-surjection f = ∀ y → y ∈image f
+
+being-surjection-is-prop : FunExt
+                         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                         → is-prop (is-surjection f)
+being-surjection-is-prop fe f = Π-is-prop (fe _ _) (λ y → being-in-the-image-is-prop y f)
+
 
 corestrictions-are-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                → is-surjection (corestriction f)
@@ -107,7 +117,7 @@ surjective-embeddings-are-equivs f e s =
 
 vv-equiv-iff-embedding-and-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                       → is-vv-equiv f
-                                      ⇔ is-embedding f × is-surjection f
+                                      ↔ is-embedding f × is-surjection f
 vv-equiv-iff-embedding-and-surjection f =
   (λ i → vv-equivs-are-embeddings f i , vv-equivs-are-surjections f i) ,
   (λ (e , s) → surjective-embeddings-are-vv-equivs f e s)
@@ -252,9 +262,9 @@ wconstant-map-to-set-factors-through-truncation-of-domain
    f' = restriction f ∘ f''
 
    h : f ∼ f' ∘ ∣_∣
-   h x = f x                               ＝⟨ refl ⟩
+   h x = f x                               ＝⟨refl⟩
          restriction f (corestriction f x) ＝⟨ ρ    ⟩
-         restriction f (f'' ∣ x ∣)          ＝⟨ refl ⟩
+         restriction f (f'' ∣ x ∣)          ＝⟨refl⟩
          f' ∣ x ∣                           ∎
     where
      ρ = ap (restriction f) (i (corestriction f x) (f'' ∣ x ∣))
@@ -289,10 +299,10 @@ factor-through-surjection {𝓤} {𝓥} {𝓦} {X} {A}
   h a = pr₁ (σ a) (f-is-surjection a)
 
   H : h ∘ f ∼ g
-  H x = h (f x)                               ＝⟨ refl ⟩
+  H x = h (f x)                               ＝⟨refl⟩
         pr₁ (σ (f x)) (f-is-surjection (f x)) ＝⟨ i ⟩
         pr₁ (σ (f x)) ∣ x , refl ∣             ＝⟨ ii ⟩
-        φ (f x) (x , refl)                    ＝⟨ refl ⟩
+        φ (f x) (x , refl)                    ＝⟨refl⟩
         g x                                   ∎
          where
           i = ap (pr₁ (σ (f x))) (∥∥-is-prop (f-is-surjection (f x)) ∣ x , refl ∣)
@@ -355,9 +365,7 @@ factor-through-image fe f  B-is-set g g-respects-f =
 
 \end{code}
 
-The following was marked as a TODO by Martin:
-  A map is an embedding iff its corestriction is an equivalence.
-It was done by Tom de Jong on 4 December 2020.
+Added by Tom de Jong on 4 December 2020.
 
 \begin{code}
 
@@ -386,7 +394,7 @@ corestriction-of-embedding-is-equivalence f e =
          σ q' = ap pr₁ q'
          η : ρ ∘ σ ∼ id
          η refl = to-Σ-＝ (refl , q)    ＝⟨ ap (λ - → to-Σ-＝ (refl , -)) h ⟩
-                  to-Σ-＝ (refl , refl) ＝⟨ refl ⟩
+                  to-Σ-＝ (refl , refl) ＝⟨refl⟩
                   refl                 ∎
           where
            q : ∣ x , refl ∣ ＝ ∣ x , refl ∣
@@ -419,9 +427,9 @@ surjection-≃-image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                    → is-surjection f
                    → image f ≃ Y
 surjection-≃-image {𝓤} {𝓥} {X} {Y} f s =
- image f                       ≃⟨ ≃-refl _ ⟩
+ image f                       ≃⟨by-definition⟩
  (Σ y ꞉ Y , ∃ x ꞉ X , f x ＝ y) ≃⟨ Σ-cong γ ⟩
- (Σ y ꞉ Y , 𝟙)                 ≃⟨ ≃-refl _ ⟩
+ (Σ y ꞉ Y , 𝟙)                 ≃⟨by-definition⟩
  Y × 𝟙                         ≃⟨ 𝟙-rneutral {𝓥} {𝓥} ⟩
  Y                             ■
   where

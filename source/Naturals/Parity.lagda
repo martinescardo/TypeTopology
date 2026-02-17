@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition
@@ -46,7 +46,10 @@ even-or-odd 1               = inr ⋆
 even-or-odd (succ (succ n)) = even-or-odd n
 
 even-or-odd-is-prop : (n : ℕ) → is-prop (even n ∔ odd n)
-even-or-odd-is-prop n = +-is-prop (even-is-prop n) (odd-is-prop n) (even-not-odd n)
+even-or-odd-is-prop n =  γ
+ where
+  γ : is-prop (even n ∔ odd n)
+  γ = +-is-prop (even-is-prop n) (odd-is-prop n) (even-not-odd n)
 
 succ-even-is-odd : (n : ℕ) → even n → odd (succ n)
 succ-even-is-odd n = id
@@ -119,7 +122,10 @@ even*odd n (succ (succ m)) even-n odd-m = even+even n (n + n * m) even-n I
   I = even+even n (n * m) even-n IH
 
 odd*even : (n m : ℕ) → odd n → even m → even (n * m)
-odd*even n m odd-n even-m = transport even (mult-commutativity m n) (even*odd m n even-m odd-n)
+odd*even n m odd-n even-m = γ
+ where
+  γ : even (n * m)
+  γ = transport even (mult-commutativity m n) (even*odd m n even-m odd-n)
 
 multiple-of-two-even-lemma : (n k : ℕ) → n ＝ 2 * k → even n
 multiple-of-two-even-lemma n 0               e = transport even (e ⁻¹) ⋆
@@ -175,38 +181,68 @@ times-even-is-even m n em = I (even-or-odd n)
   I (inr on) = even*odd m n em on
 
 times-even-is-even' : (m n  : ℕ) → even n → even (m * n)
-times-even-is-even' m n en = transport even (mult-commutativity n m) (times-even-is-even n m en)
+times-even-is-even' m n en = γ
+ where
+  γ : even (m * n)
+  γ = transport even (mult-commutativity n m) (times-even-is-even n m en)
 
 only-odd-divides-odd : (d n : ℕ) → odd n → d ∣ n → odd d
 only-odd-divides-odd d n on (k , e) = I (even-or-odd d) (even-or-odd k)
  where
   I : even d ∔ odd d → even k ∔ odd k → odd d
   I (inr od) _        = od
-  I (inl ed) (inl ek) = 𝟘-elim (even-not-odd n (transport even e (even*even d k ed ek)) on)
-  I (inl ed) (inr ok) = 𝟘-elim (even-not-odd n (transport even e (even*odd d k ed ok)) on)
+  I (inl ed) (inl ek) = 𝟘-elim γ
+   where
+    en : even n
+    en = transport even e (even*even d k ed ek)
+
+    γ : 𝟘
+    γ = even-not-odd n en on
+
+  I (inl ed) (inr ok) = 𝟘-elim γ
+   where
+    en : even n
+    en = transport even e (even*odd d k ed ok)
+
+    γ : 𝟘
+    γ = even-not-odd n en on
 
 2-exponents-even : (n : ℕ) → even (2^ (succ n))
 2-exponents-even 0        = ⋆    -- 2 even
 2-exponents-even (succ n) = even*even 2 (2^ (succ n)) ⋆ (2-exponents-even n)
 
 odd-factors-of-2-exponents : (d n : ℕ) → d ∣ 2^ n → odd d → d ＝ 1
-odd-factors-of-2-exponents d 0        (k , e) od = product-one-gives-one d k e
-odd-factors-of-2-exponents d (succ n) (k , e) od = I (even-or-odd k)
+odd-factors-of-2-exponents d 0        (k , e) od = left-factor-one d k e
+odd-factors-of-2-exponents d (succ n) (k , e) od = Cases (even-or-odd k) γ₁ γ₂
  where
-  I : even k ∔ odd k → d ＝ 1
-  I (inr ok) = 𝟘-elim (even-not-odd (2^ (succ n)) (2-exponents-even n) (transport odd e (odd*odd d k od ok)))
-  I (inl ek) = III (even-is-multiple-of-two k ek)
+  I : even (2^ (succ n))
+  I = 2-exponents-even n
+
+  γ₁ : even k → d ＝ 1
+  γ₁ ek = II (even-is-multiple-of-two k ek)
    where
-    III : Σ k' ꞉ ℕ , k ＝ 2 * k' → d ＝ 1
-    III (k' , e') = odd-factors-of-2-exponents d n (k' , mult-left-cancellable (d * k') (2^ n) 1 II) od
+    II : Σ k' ꞉ ℕ , k ＝ 2 * k' → d ＝ 1
+    II (k' , e') = odd-factors-of-2-exponents d n γ₃ od
      where
-      II : 2 * (d * k') ＝ 2 * 2^ n
-      II = 2 * (d * k') ＝⟨ mult-commutativity 2 (d * k') ⟩
-           d * k' * 2   ＝⟨ mult-associativity d k' 2 ⟩
-           d * (k' * 2) ＝⟨ ap (d *_) (mult-commutativity k' 2) ⟩
-           d * (2 * k') ＝⟨ ap (d *_) (e' ⁻¹) ⟩
-           d * k        ＝⟨ e ⟩
-           2 * 2^ n ∎
+      III : 2 * (d * k') ＝ 2 * 2^ n
+      III = 2 * (d * k') ＝⟨ mult-commutativity 2 (d * k')       ⟩
+            d * k' * 2   ＝⟨ mult-associativity d k' 2           ⟩
+            d * (k' * 2) ＝⟨ ap (d *_) (mult-commutativity k' 2) ⟩
+            d * (2 * k') ＝⟨ ap (d *_) (e' ⁻¹)                   ⟩
+            d * k        ＝⟨ e                                   ⟩
+            2 * 2^ n     ∎
+
+      IV : d * k' ＝ 2^ n
+      IV = mult-left-cancellable (d * k') (2^ n) 1 III
+
+      γ₃ : d ∣ 2^ n
+      γ₃ = k' , IV
+
+  γ₂ : odd k → d ＝ 1
+  γ₂ ok = 𝟘-elim (even-not-odd (2^ (succ n)) I II)
+   where
+    II : odd (2^ (succ n))
+    II = transport odd e (odd*odd d k od ok)
 
 factors-of-2-exponents : (d n : ℕ) → d ∣ 2^ n → (d ＝ 1) ∔ even d
 factors-of-2-exponents d n d|2^n = I (even-or-odd d)
@@ -216,11 +252,19 @@ factors-of-2-exponents d n d|2^n = I (even-or-odd d)
   I (inr od) = inl (odd-factors-of-2-exponents d n d|2^n od)
 
 odd-power-of-two-coprime : (d x n : ℕ) → odd x → d ∣ x → d ∣ 2^ n → d ∣ 1
-odd-power-of-two-coprime d x n ox d|x d|2^n = I (factors-of-2-exponents d n d|2^n) (only-odd-divides-odd d x ox d|x)
+odd-power-of-two-coprime d x n ox d|x d|2^n = Cases α γ₁ γ₂
  where
-  I : (d ＝ 1) ∔ even d → odd d → d ∣ 1
-  I (inl d＝1) od = 1 , d＝1
-  I (inr ed)   od = 𝟘-elim (odd-not-even d od ed)
+  α : (d ＝ 1) ∔ even d
+  α = factors-of-2-exponents d n d|2^n
+
+  od : odd d
+  od = only-odd-divides-odd d x ox d|x
+
+  γ₁ : d ＝ 1 → d ∣ 1
+  γ₁ e = 1 , e
+
+  γ₂ : even d → d ∣ 1
+  γ₂ ed = 𝟘-elim (odd-not-even d od ed)
 
 even-transport : (z : ℕ) → (ez : even z) (p : even z ∔ odd z) → p ＝ inl ez
 even-transport z ez (inl ez') = ap inl (even-is-prop z ez' ez)
@@ -229,5 +273,35 @@ even-transport z ez (inr oz)  = 𝟘-elim (even-not-odd z ez oz)
 odd-transport : (z : ℕ) → (oz : odd z) (p : even z ∔ odd z) → p ＝ inr oz
 odd-transport z oz (inl ez)  = 𝟘-elim (even-not-odd z ez oz)
 odd-transport z oz (inr oz') = ap inr (odd-is-prop z oz' oz)
+
+\end{code}
+
+Sometimes the following definitions and constructions are useful:
+
+\begin{code}
+
+is-even' is-odd' : ℕ → 𝓤₀ ̇
+is-even' n = Σ k ꞉ ℕ ,  double k ＝ n
+is-odd'  n = Σ k ꞉ ℕ , sdouble k ＝ n
+
+even-or-odd' : (n : ℕ) → is-even' n ∔ is-odd' n
+even-or-odd' 0        = inl (0 , refl)
+even-or-odd' (succ n) =
+ Cases (even-or-odd' n)
+  (λ ((k , e) : is-even' n)
+              → inr (k , ap succ e))
+  (λ ((k , e) : is-odd' n)
+              → inl (succ k , ap succ e))
+
+even-not-odd' : (n k : ℕ) → ¬ (double n ＝ sdouble k)
+even-not-odd' 0        k e = zero-not-positive (double k) e
+even-not-odd' (succ n) k e = even-not-odd' k n ((succ-lc e)⁻¹)
+
+not-even-and-odd' : (n : ℕ) → ¬ (is-even' n × is-odd' n)
+not-even-and-odd' n ((k , e) , (k' , e')) =
+ even-not-odd' k k'
+  (double k   ＝⟨ e ⟩
+   n          ＝⟨ e' ⁻¹ ⟩
+   sdouble k' ∎)
 
 \end{code}

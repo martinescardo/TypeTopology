@@ -5,7 +5,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.Quotient where
 
@@ -48,7 +48,7 @@ module quotient
  equiv-rel : X → (X → Ω 𝓥)
  equiv-rel x y = (x ≈ y) , ≈p x y
 
- X/≈ : 𝓥 ⁺ ⊔ 𝓤  ̇
+ X/≈ : 𝓥 ⁺ ⊔ 𝓤 ̇
  X/≈ = image equiv-rel
 
  X/≈-is-set : is-set X/≈

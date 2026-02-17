@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -9,7 +9,6 @@ open import Integers.Addition
 open import Integers.Type
 open import Integers.Multiplication
 open import Integers.Negation
-open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Parity
 open import Naturals.Properties
@@ -182,7 +181,7 @@ evenℕ-to-ℤ' 0        = id
 evenℕ-to-ℤ' (succ n) = id
 
 ℤmultiple-of-two-even-lemma-pos : (n : ℤ) (k : ℕ) → n ＝ pos 2 * pos k → ℤeven n
-ℤmultiple-of-two-even-lemma-pos (pos n) k e = induction base step k
+ℤmultiple-of-two-even-lemma-pos (pos n) k e = ℕ-induction base step k
  where
   base : even n
   base = multiple-of-two-even-lemma n k I
@@ -195,7 +194,7 @@ evenℕ-to-ℤ' (succ n) = id
 
 ℤmultiple-of-two-even-lemma-neg : (n : ℤ) → (k : ℕ) → n ＝ pos 2 * negsucc k → ℤeven n
 ℤmultiple-of-two-even-lemma-neg (pos n)     k e = 𝟘-elim (pos-not-negsucc (e ∙ pr₂ (pos-times-negative 1 k)))
-ℤmultiple-of-two-even-lemma-neg (negsucc n) k e = induction base step k
+ℤmultiple-of-two-even-lemma-neg (negsucc n) k e = ℕ-induction base step k
  where
   base : even (succ n)
   base = II

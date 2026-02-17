@@ -10,7 +10,7 @@ ordinal, (4) the type of ordinals is locally small.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
 
@@ -24,7 +24,9 @@ open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
+open import Ordinals.WellOrderTransport
 open import UF.Base
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
@@ -38,6 +40,8 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
+open import Ordinals.Arithmetic fe
+
 \end{code}
 
 The simulations make the ordinals into a poset:
@@ -46,6 +50,25 @@ The simulations make the ordinals into a poset:
 
 _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ⊴ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-simulation α β f
+
+is-⊴-preserving : (Ordinal 𝓤 → Ordinal 𝓥) → 𝓤 ⁺ ⊔ 𝓥 ̇
+is-⊴-preserving {𝓤} {𝓥} f = (α β : Ordinal 𝓤) → α ⊴ β → f α ⊴ f β
+
+is-⊴-reflecting : (Ordinal 𝓤 → Ordinal 𝓥) → 𝓤 ⁺ ⊔ 𝓥 ̇
+is-⊴-reflecting {𝓤} {𝓥} f = (α β : Ordinal 𝓤) → f α ⊴ f β → α ⊴ β
+
+[_,_]⟨_⟩ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ⊴ β → ⟨ α ⟩ → ⟨ β ⟩
+[ α , β ]⟨ f ⟩ = pr₁ f
+
+[_,_]⟨_⟩-is-simulation : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : α ⊴ β)
+                       → is-simulation α β [ α , β ]⟨ f ⟩
+[_,_]⟨_⟩-is-simulation α β f = pr₂ f
+
+⊴-gives-↪ : (α : Ordinal 𝓤)
+            (β : Ordinal 𝓥)
+          → α ⊴ β
+          → ⟨ α ⟩ ↪ ⟨ β ⟩
+⊴-gives-↪ α β (f , s) = f , simulations-are-embeddings fe α β f s
 
 ⊴-is-prop-valued : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → is-prop (α ⊴ β)
 ⊴-is-prop-valued {𝓤} {𝓥} α β (f , s) (g , t) =
@@ -57,6 +80,9 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 ⊴-refl α = id ,
            (λ x z l → z , l , refl) ,
            (λ x y l → l)
+
+＝-to-⊴ : (α β : Ordinal 𝓤) → α ＝ β → α ⊴ β
+＝-to-⊴ α β refl = ⊴-refl α
 
 ⊴-trans : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
         → α ⊴ β → β ⊴ γ → α ⊴ γ
@@ -80,7 +106,7 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 ≃ₒ-to-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → α ⊴ β
 ≃ₒ-to-⊴ α β (f , e) = (f , order-equivs-are-simulations α β f e)
 
-ordinal-equiv-gives-bisimilarity : (α β : Ordinal 𝓤)
+ordinal-equiv-gives-bisimilarity : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                  → α ≃ₒ β
                                  → (α ⊴ β) × (β ⊴ α)
 ordinal-equiv-gives-bisimilarity α β (f , p , e , q) = γ
@@ -95,7 +121,7 @@ ordinal-equiv-gives-bisimilarity α β (f , p , e , q) = γ
   γ = (f , order-equivs-are-simulations α β f (p , e , q)) ,
       (g , order-equivs-are-simulations β α g (q , d , p))
 
-bisimilarity-gives-ordinal-equiv : (α β : Ordinal 𝓤)
+bisimilarity-gives-ordinal-equiv : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                  → α ⊴ β
                                  → β ⊴ α
                                  → α ≃ₒ β
@@ -151,7 +177,7 @@ _↓_ : (α : Ordinal 𝓤) → ⟨ α ⟩ → Ordinal 𝓤
     f : ∀ x
       → is-accessible (underlying-order α) x
       → ∀ l → is-accessible _<_ (x , l)
-    f x (step s) l = step (λ σ m → f (pr₁ σ) (s (pr₁ σ) m) (pr₂ σ))
+    f x (acc s) l = acc (λ σ m → f (pr₁ σ) (s (pr₁ σ) m) (pr₂ σ))
 
   e : is-extensional _<_
   e (x , l) (y , m) f g =
@@ -187,6 +213,13 @@ segment-⊴ : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
           → (α ↓ a) ⊴ α
 segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
 
+segment-inclusion-lc : (α : Ordinal 𝓤) {a : ⟨ α ⟩}
+                     → left-cancellable (segment-inclusion α a)
+segment-inclusion-lc α {a} =
+ simulations-are-lc (α ↓ a) α
+  (segment-inclusion α a)
+  (segment-inclusion-is-simulation α a)
+
 ↓-⊴-lc : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
        → (α ↓ a) ⊴ (α ↓ b )
        → a ≼⟨ α ⟩ b
@@ -218,8 +251,14 @@ segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
      → a ＝ b
 ↓-lc α a b p =
  Extensionality α a b
-  (↓-⊴-lc α a b (transport      (λ - → (α ↓ a) ⊴ -) p (⊴-refl (α ↓ a))))
+  (↓-⊴-lc α a b (transport   (λ - → (α ↓ a) ⊴ -) p (⊴-refl (α ↓ a))))
   (↓-⊴-lc α b a (transport⁻¹ (λ - → (α ↓ b) ⊴ -) p (⊴-refl (α ↓ b))))
+
+↓-is-embedding : (α : Ordinal 𝓤) → is-embedding (α ↓_)
+↓-is-embedding α = lc-maps-into-sets-are-embeddings
+                    (α ↓_)
+                    (↓-lc α _ _)
+                    (the-type-of-ordinals-is-a-set (ua _) fe')
 
 \end{code}
 
@@ -261,7 +300,6 @@ _⊲⁻_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 
 ⊲-is-equivalent-to-⊲⁻ : (α β : Ordinal 𝓤) → (α ⊲ β) ≃ (α ⊲⁻ β)
 ⊲-is-equivalent-to-⊲⁻ α β = Σ-cong (λ (b : ⟨ β ⟩) → UAₒ-≃ (ua _) fe' α (β ↓ b))
-
 \end{code}
 
 Back to the past.
@@ -355,7 +393,7 @@ It remains to show that _⊲_ is a well-order:
   f : (a : ⟨ α ⟩)
     → is-accessible (underlying-order α) a
     → is-accessible _⊲_ (α ↓ a)
-  f a (step s) = step g
+  f a (acc s) = acc g
    where
     IH : (b : ⟨ α ⟩) → b ≺⟨ α ⟩ a → is-accessible _⊲_ (α ↓ b)
     IH b l = f b (s b l)
@@ -367,7 +405,7 @@ It remains to show that _⊲_ is a well-order:
       q = p ∙ iterated-↓ α a b l
 
 ⊲-is-well-founded : is-well-founded (_⊲_ {𝓤})
-⊲-is-well-founded {𝓤} α = step g
+⊲-is-well-founded {𝓤} α = acc g
  where
   g : (β : Ordinal 𝓤) → β ⊲ α → is-accessible _⊲_ β
   g β (b , p) = transport⁻¹ (is-accessible _⊲_) p (↓-accessible α b)
@@ -475,6 +513,16 @@ ordinals-in-OO-are-embedded-in-OO {𝓤} α = (λ x → α ↓ x) , i , ↓-pres
  where
   i : is-initial-segment α (OO 𝓤) (λ x → α ↓ x)
   i x β ((u , l) , p) = u , l , ((p ∙ iterated-↓ α x u l)⁻¹)
+
+OO-⊴-next-OO : OO 𝓤 ⊴ OO (𝓤 ⁺)
+OO-⊴-next-OO {𝓤} = ordinals-in-OO-are-embedded-in-OO (OO 𝓤)
+
+ordinals-are-embedded-in-Ordinal : (α : Ordinal 𝓤) → ⟨ α ⟩ ↪ Ordinal 𝓤
+ordinals-are-embedded-in-Ordinal {𝓤} α = ⊴-gives-↪ α (OO 𝓤)
+                                          (ordinals-in-OO-are-embedded-in-OO α)
+
+Ordinal-embedded-in-next-Ordinal : Ordinal 𝓤 ↪ Ordinal (𝓤 ⁺)
+Ordinal-embedded-in-next-Ordinal {𝓤} = ordinals-are-embedded-in-Ordinal (OO 𝓤)
 
 \end{code}
 
@@ -683,6 +731,17 @@ to-⊴ α β ϕ = g
 
 \end{code}
 
+Added 9 September 2024 by Tom de Jong and Fredrik Nordvall Forsberg.
+
+\begin{code}
+
+⊲-⊴-gives-⊲ : (α β γ : Ordinal 𝓤) → α ⊲ β → β ⊴ γ → α ⊲ γ
+⊲-⊴-gives-⊲ α β γ l k = ≼-trans _⊲_ (⊴-gives-≼ β γ k) (≼-refl _⊲_) α l
+
+\end{code}
+
+End of addition.
+
 Transfinite induction on the ordinal of ordinals:
 
 \begin{code}
@@ -748,7 +807,7 @@ non-empty-classically-has-minimal-element {𝓤} α n = iv
 
 NB-minimal : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
            →  ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x)
-           ⇔  ((x : ⟨ α ⟩) → a ≼⟨ α ⟩ x)
+           ↔  ((x : ⟨ α ⟩) → a ≼⟨ α ⟩ x)
 NB-minimal α a = f , g
  where
   f : ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x) → ((x : ⟨ α ⟩) → a ≼⟨ α ⟩ x)
@@ -791,20 +850,78 @@ order-preserving-gives-not-⊲ {𝓤} α β σ (x₀ , refl) = γ σ
     κ = no-minimal-is-empty' (underlying-order α) (Well-foundedness α)
          A d (x₀ , 0 , refl)
 
-open import UF.ExcludedMiddle
+⊴-gives-not-⊲ : (α β : Ordinal 𝓤) → α ⊴ β → ¬ (β ⊲ α)
+⊴-gives-not-⊲ α β (f , f-sim) =
+ order-preserving-gives-not-⊲ α β
+  (f , simulations-are-order-preserving α β f f-sim)
 
-order-preserving-gives-≼ : EM (𝓤 ⁺)
+open import UF.ClassicalLogic
+
+EM-implies-order-preserving-gives-≼ : EM 𝓤
                          → (α β : Ordinal 𝓤)
                          → (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f)
                          → α ≼ β
-order-preserving-gives-≼ em α β σ = δ
+EM-implies-order-preserving-gives-≼ em α β σ = δ
  where
-  γ : (α ≼ β) + (β ⊲ α) → α ≼ β
-  γ (inl l) = l
-  γ (inr m) = 𝟘-elim (order-preserving-gives-not-⊲ α β σ m)
+  γ : (∀ u → u ⊲⁻ α → u ⊲⁻ β) + (β ⊲⁻ α) → α ≼ β
+  γ (inl l) γ p = ⌜ ⊲-is-equivalent-to-⊲⁻ γ β ⌝⁻¹ (l γ (⌜ ⊲-is-equivalent-to-⊲⁻ γ α ⌝ p))
+  γ (inr m) = 𝟘-elim (order-preserving-gives-not-⊲ α β σ (⌜ ⊲-is-equivalent-to-⊲⁻ β α ⌝⁻¹ m))
+
+  ⊲⁻-is-well-order : is-well-order {𝓤 ⁺} {𝓤} _⊲⁻_
+  ⊲⁻-is-well-order {𝓤} = order-transfer-lemma₃.well-order→ fe (Ordinal 𝓤) _⊲_ _⊲⁻_
+                                                           ⊲-is-equivalent-to-⊲⁻
+                                                           ⊲-is-well-order
 
   δ : α ≼ β
-  δ = γ (≼-or-> _⊲_ fe' em ⊲-is-well-order α β)
+  δ = γ (≼-or-> _⊲⁻_ fe' em ⊲⁻-is-well-order α β)
+
+\end{code}
+
+Added 19 November 2024 by Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu
+and Tom de Jong.
+
+In fact order preserving maps can be upgraded to inequalities if and
+only if excluded middle holds.
+
+\begin{code}
+
+order-preserving-gives-≼-implies-EM :
+   ((α β : Ordinal 𝓤)
+         → Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f
+         → α ≼ β)
+ → EM 𝓤
+order-preserving-gives-≼-implies-EM h P P-is-prop = II (g ⋆) refl
+ where
+  open import MLTT.Plus-Properties
+
+  α = 𝟙ₒ
+  Pₒ = prop-ordinal P P-is-prop
+  β = Pₒ +ₒ 𝟙ₒ
+
+  f : ⟨ α ⟩ → ⟨ β ⟩
+  f ⋆ = inr ⋆
+
+  f-is-order-preserving : is-order-preserving α β f
+  f-is-order-preserving ⋆ ⋆ = 𝟘-elim
+
+  𝕘 : α ⊴ β
+  𝕘 = ≼-gives-⊴ α β (h α β (f , f-is-order-preserving))
+  g = [ α , β ]⟨ 𝕘 ⟩
+
+  inl-p-is-least : (p : P) → is-least β (inl p)
+  inl-p-is-least p (inl _) (inl _) l = l
+  inl-p-is-least p (inl _) (inr _) l = l
+  inl-p-is-least p (inr _) (inl _) l = ⋆
+  inl-p-is-least p (inr _) (inr _) l = l
+
+  I : (p : P) → g ⋆ ＝ inl p
+  I p = simulations-preserve-least α β ⋆ (inl p)
+         g ([ α , β ]⟨ 𝕘 ⟩-is-simulation)
+         (λ ⋆ ⋆ → 𝟘-elim) (inl-p-is-least p)
+
+  II : (y : ⟨ β ⟩) → g ⋆ ＝ y → P + ¬ P
+  II (inl p) e = inl p
+  II (inr ⋆) e = inr (λ p → +disjoint ((I p) ⁻¹ ∙ e))
 
 \end{code}
 
@@ -819,6 +936,11 @@ simulations-preserve-↓ : (α β : Ordinal 𝓤) ((f , _) : α ⊴ β)
                        → ((a : ⟨ α ⟩) → α ↓ a ＝ β ↓ f a)
 simulations-preserve-↓ α β 𝕗 a = pr₂ (from-≼ (⊴-gives-≼ α β 𝕗) a)
 
+Idtofunₒ-↓-lemma : {α β : Ordinal 𝓤} {a : ⟨ α ⟩}
+                   (e : α ＝ β)
+                 → α ↓ a ＝ β ↓ Idtofunₒ e a
+Idtofunₒ-↓-lemma refl = refl
+
 \end{code}
 
 Added 31 October 2022 by Tom de Jong.
@@ -828,25 +950,256 @@ for use in other constructions.
 
 \begin{code}
 
-transfinite-induction-on-OO-behaviour :
-   (P : Ordinal 𝓤 → 𝓥 ̇ )
- → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
- → (α : Ordinal 𝓤) → transfinite-induction-on-OO P f α
-                   ＝ f α (λ a → transfinite-induction-on-OO P f (α ↓ a))
-transfinite-induction-on-OO-behaviour {𝓤} {𝓥} P f =
- Transfinite-induction-behaviour fe (OO 𝓤) P f'
-  where
-   f' : (α : Ordinal 𝓤)
-      → ((α' : Ordinal 𝓤) → α' ⊲ α → P α')
-      → P α
-   f' α g = f α (λ a → g (α ↓ a) (a , refl))
+abstract
+ transfinite-induction-on-OO-behaviour :
+    (P : Ordinal 𝓤 → 𝓥 ̇ )
+  → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
+  → (α : Ordinal 𝓤)
+  → transfinite-induction-on-OO P f α
+    ＝ f α (λ a → transfinite-induction-on-OO P f (α ↓ a))
+ transfinite-induction-on-OO-behaviour {𝓤} {𝓥} P f =
+  Transfinite-induction-behaviour fe (OO 𝓤) P f'
+   where
+    f' : (α : Ordinal 𝓤)
+       → ((α' : Ordinal 𝓤) → α' ⊲ α → P α')
+       → P α
+    f' α g = f α (λ a → g (α ↓ a) (a , refl))
 
-transfinite-recursion-on-OO-behaviour :
+ transfinite-recursion-on-OO-behaviour :
+    (X : 𝓥 ̇ )
+  → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
+  → (α : Ordinal 𝓤)
+  → transfinite-recursion-on-OO X f α
+    ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
+ transfinite-recursion-on-OO-behaviour X f =
+  transfinite-induction-on-OO-behaviour (λ _ → X) f
+
+ transfinite-recursion-on-OO-bundled :
+    (X : 𝓥 ̇ )
+  → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
+  → Σ r ꞉ (Ordinal 𝓤 → X) , ((α : Ordinal 𝓤) → r α ＝ f α (λ a → r (α ↓ a)))
+ transfinite-recursion-on-OO-bundled X f =
+  transfinite-recursion-on-OO X f , transfinite-recursion-on-OO-behaviour X f
+
+\end{code}
+
+Added 1st June 2023 by Martin Escardo.
+
+\begin{code}
+
+definition-by-transfinite-recursion-on-OO :
    (X : 𝓥 ̇ )
  → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
- → (α : Ordinal 𝓤) → transfinite-recursion-on-OO X f α
-                   ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
-transfinite-recursion-on-OO-behaviour X f =
- transfinite-induction-on-OO-behaviour (λ _ → X) f
+ → Σ h ꞉ (Ordinal 𝓤 → X) , (∀ α → h α ＝ f α (λ a → h (α ↓ a)))
+definition-by-transfinite-recursion-on-OO X f =
+ transfinite-recursion-on-OO X f  ,
+ transfinite-recursion-on-OO-behaviour X f
+
+definition-by-transfinite-induction-on-OO :
+   (X : Ordinal 𝓤 → 𝓥 ̇ )
+ → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → X (α ↓ a)) → X α)
+ → Σ h ꞉ ((α : Ordinal 𝓤) → X α) , (∀ α → h α ＝ f α (λ a → h (α ↓ a)))
+definition-by-transfinite-induction-on-OO X f =
+ transfinite-induction-on-OO X f  ,
+ transfinite-induction-on-OO-behaviour X f
+
+\end{code}
+
+Added 4 June 2024 at the Hausdorff Reseach Institute for Mathematics (HIM).
+By Tom de Jong and Fredrik Nordvall Forsberg.
+
+Given simulations
+  f : α ⊴ γ and g : β ⊴ γ
+and points a : α and b : β we have
+  f a ≼ g b   ⇔   α ↓ a ⊴ β ↓ b,
+and
+  f a ＝ g b   ⇔   α ↓ a ≃ₒ β ↓ b.
+
+\begin{code}
+
+initial-segments-⊴-gives-simulations-pointwise-≼ :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+   (f : α ⊴ γ) (g : β ⊴ γ)
+   (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+ → (α ↓ a) ⊴ (β ↓ b)
+ → [ α , γ ]⟨ f ⟩ a ≼⟨ γ ⟩ [ β , γ ]⟨ g ⟩ b
+initial-segments-⊴-gives-simulations-pointwise-≼
+ α β γ 𝕗@(f , f-sim) 𝕘@(g , g-sim) a b 𝕖@(e , e-sim) c c-below-fa = V
+ where
+  I : Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a × (f x ＝ c)
+  I = simulations-are-initial-segments α γ f f-sim a c c-below-fa
+  x : ⟨ α ⟩
+  x = pr₁ I
+  x-below-a : x ≺⟨ α ⟩ a
+  x-below-a = pr₁ (pr₂ I)
+  fx-equals-c : f x ＝ c
+  fx-equals-c = pr₂ (pr₂ I)
+
+  II : ⟨ β ↓ b ⟩
+  II = e (x , x-below-a)
+  y : ⟨ β ⟩
+  y = pr₁ II
+  y-below-b : y ≺⟨ β ⟩ b
+  y-below-b = pr₂ II
+
+\end{code}
+
+  We now prove that f x ＝ g y by considering the necessarily commutative
+  diagram of simulations
+
+    α ↓ a   ⊴   β ↓ b
+      ⊴           ⊴
+      α           β
+        ⊴ᶠ     ᵍ⊵
+            γ
+
+\begin{code}
+
+  III : f x ＝ g y
+  III = ap (λ - → pr₁ - (x , x-below-a)) sim-commute
+   where
+    sim-commute :
+        ⊴-trans (α ↓ a) α γ (segment-⊴ α a) 𝕗
+     ＝ ⊴-trans (α ↓ a) (β ↓ b) γ 𝕖 (⊴-trans (β ↓ b) β γ (segment-⊴ β b) 𝕘)
+    sim-commute =
+     ⊴-is-prop-valued (α ↓ a) γ
+      (⊴-trans (α ↓ a) α γ (segment-⊴ α a) 𝕗)
+      (⊴-trans (α ↓ a) (β ↓ b) γ 𝕖 (⊴-trans (β ↓ b) β γ (segment-⊴ β b) 𝕘))
+
+  IV : c ＝ g y
+  IV = fx-equals-c ⁻¹ ∙ III
+
+  V : c ≺⟨ γ ⟩ g b
+  V = transport⁻¹ (λ - → - ≺⟨ γ ⟩ g b) IV
+                  (simulations-are-order-preserving β γ g g-sim y b y-below-b)
+
+isomorphic-initial-segments-gives-simulations-pointwise-equal :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+   (f : α ⊴ γ) (g : β ⊴ γ)
+   (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+ → (α ↓ a) ≃ₒ (β ↓ b)
+ → (pr₁ f) a ＝ (pr₁ g) b
+isomorphic-initial-segments-gives-simulations-pointwise-equal α β γ f g a b e =
+ Extensionality γ (pr₁ f a) (pr₁ g b) I II
+  where
+   I : pr₁ f a ≼⟨ γ ⟩ pr₁ g b
+   I = initial-segments-⊴-gives-simulations-pointwise-≼ α β γ f g a b
+        (≃ₒ-to-⊴ (α ↓ a) (β ↓ b) e)
+   II : pr₁ g b ≼⟨ γ ⟩ pr₁ f a
+   II = initial-segments-⊴-gives-simulations-pointwise-≼ β α γ g f b a
+         (≃ₒ-to-⊴ (β ↓ b) (α ↓ a) (≃ₒ-sym (α ↓ a) (β ↓ b) e))
+
+\end{code}
+
+We illustrate the above lemmas by showing that they generalize the
+left-cancellability of taking initial segments (which was already proved above).
+
+\begin{code}
+
+↓-⊴-lc-bis : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
+           → (α ↓ a) ⊴ (α ↓ b )
+           → a ≼⟨ α ⟩ b
+↓-⊴-lc-bis α =
+ initial-segments-⊴-gives-simulations-pointwise-≼ α α α (⊴-refl α) (⊴-refl α)
+
+↓-lc-bis : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
+         → (α ↓ a) ≃ₒ (α ↓ b )
+         → a ＝ b
+↓-lc-bis α =
+ isomorphic-initial-segments-gives-simulations-pointwise-equal α α α
+  (⊴-refl α) (⊴-refl α)
+
+\end{code}
+
+We now prove the converses to the above lemmas.
+
+\begin{code}
+
+simulations-pointwise-≼-gives-initial-segments-⊴ :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+   (f : α ⊴ γ) (g : β ⊴ γ)
+   (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+ → (pr₁ f) a ≼⟨ γ ⟩ (pr₁ g) b
+ → (α ↓ a) ⊴ (β ↓ b)
+simulations-pointwise-≼-gives-initial-segments-⊴
+ α β γ 𝕗@(f , f-sim) 𝕘@(g , g-sim) a b fa-below-gb = h ,
+                                                     h-intial-segment ,
+                                                     h-order-preserving
+  where
+   h-prelim : (x : ⟨ α ⟩)
+            → x ≺⟨ α ⟩ a
+            → Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ b) × (g y ＝ f x)
+   h-prelim x l = simulations-are-initial-segments β γ g g-sim b (f x) l'
+    where
+     l' : f x ≺⟨ γ ⟩ g b
+     l' = fa-below-gb (f x) (simulations-are-order-preserving α γ f f-sim x a l)
+
+   h : ⟨ α ↓ a ⟩ → ⟨ β ↓ b ⟩
+   h (x , l) = (pr₁ (h-prelim x l) , pr₁ (pr₂ (h-prelim x l)))
+   h̅ : ⟨ α ↓ a ⟩ → ⟨ β ⟩
+   h̅ = segment-inclusion β b ∘ h
+
+   h-eq : (x : ⟨ α ⟩) (l : x ≺⟨ α ⟩ a)
+        → g (h̅ (x , l)) ＝ f x
+   h-eq x l = pr₂ (pr₂ (h-prelim x l))
+
+   h-order-preserving : is-order-preserving (α ↓ a) (β ↓ b) h
+   h-order-preserving (x , l) (y , k) x-below-y = III
+    where
+     I : f x ≺⟨ γ ⟩ f y
+     I = simulations-are-order-preserving α γ f f-sim x y x-below-y
+     II : g (h̅ (x , l)) ≺⟨ γ ⟩ g (h̅ (y , k))
+     II = transport₂⁻¹ (underlying-order γ) (h-eq x l) (h-eq y k) I
+     III : h̅ (x , l) ≺⟨ β ⟩ h̅ (y , k)
+     III = simulations-are-order-reflecting β γ g g-sim
+                                            (h̅ (x , l)) (h̅ (y , k)) II
+
+   h-intial-segment : is-initial-segment (α ↓ a) (β ↓ b) h
+   h-intial-segment (x , l) (y , k) y-below-hx = (x' , IV) , x'-below-x , V
+    where
+     I : g y ≺⟨ γ ⟩ g (h̅ (x , l))
+     I = simulations-are-order-preserving β γ g g-sim y (h̅ (x , l)) y-below-hx
+     II : g y ≺⟨ γ ⟩ f x
+     II = transport (λ - → g y ≺⟨ γ ⟩ -) (h-eq x l) I
+     III : Σ x' ꞉ ⟨ α ⟩ , x' ≺⟨ α ⟩ x × (f x' ＝ g y)
+     III = simulations-are-initial-segments α γ f f-sim x (g y) II
+     x' : ⟨ α ⟩
+     x' = pr₁ III
+     x'-below-x : x' ≺⟨ α ⟩ x
+     x'-below-x = pr₁ (pr₂ III)
+     IV : x' ≺⟨ α ⟩ a
+     IV = Transitivity α x' x a x'-below-x l
+     V : h (x' , IV) ＝ y , k
+     V = to-subtype-＝ (λ _ → Prop-valuedness β _ b)
+                       (simulations-are-lc β γ g g-sim
+                                           (g (h̅ (x' , IV)) ＝⟨ h-eq x' IV ⟩
+                                            f x'            ＝⟨ pr₂ (pr₂ III) ⟩
+                                            g y             ∎))
+
+simulations-pointwise-equal-gives-isomorphic-initial-segments :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+   (f : α ⊴ γ) (g : β ⊴ γ)
+   (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+ → (pr₁ f) a ＝ (pr₁ g) b
+ → (α ↓ a) ≃ₒ (β ↓ b)
+simulations-pointwise-equal-gives-isomorphic-initial-segments α β γ f g a b eq =
+ bisimilarity-gives-ordinal-equiv (α ↓ a) (β ↓ b) I II
+  where
+   I : (α ↓ a) ⊴ (β ↓ b)
+   I = simulations-pointwise-≼-gives-initial-segments-⊴ α β γ f g a b
+        (≼-refl-＝ (underlying-order γ) eq)
+   II : (β ↓ b) ⊴ (α ↓ a)
+   II = simulations-pointwise-≼-gives-initial-segments-⊴ β α γ g f b a
+         (≼-refl-＝ (underlying-order γ) (eq ⁻¹))
+
+\end{code}
+
+Fixities and precedences
+
+\begin{code}
+
+infix 4 _⊲_
+infix 4 _⊴_
+infixl 5 _↓_
 
 \end{code}

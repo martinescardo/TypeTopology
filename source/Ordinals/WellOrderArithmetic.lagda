@@ -6,7 +6,7 @@ still use the terminology "ordinal" here.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Ordinals.WellOrderArithmetic where
 
@@ -14,8 +14,10 @@ open import MLTT.Spartan hiding (transitive)
 open import Ordinals.Notions
 
 open import UF.Base
-open import UF.Subsingletons
 open import UF.FunExt
+open import UF.Sets
+open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 
 \end{code}
 
@@ -46,7 +48,7 @@ module prop
  transitive x y z a = 𝟘-elim a
 
  well-founded : is-well-founded _<_
- well-founded x = step (λ y a → 𝟘-elim a)
+ well-founded x = acc (λ y a → 𝟘-elim a)
 
  well-order : is-well-order _<_
  well-order = prop-valued , well-founded , extensional , transitive
@@ -103,10 +105,14 @@ and then adapt the following definitions.
              → is-extensional _<_
              → is-extensional _≺_
              → is-extensional _⊏_
- extensional w e e' (inl x) (inl x') f g = ap inl (e x x' (f ∘ inl) (g ∘ inl))
- extensional w e e' (inl x) (inr y') f g = 𝟘-elim (irreflexive _<_ x (w x) (g (inl x) ⋆))
- extensional w e e' (inr y) (inl x') f g = 𝟘-elim (irreflexive _<_ x' (w x') (f (inl x') ⋆))
- extensional w e e' (inr y) (inr y') f g = ap inr (e' y y' (f ∘ inr) (g ∘ inr))
+ extensional w e e' (inl x) (inl x') f g =
+  ap inl (e x x' (f ∘ inl) (g ∘ inl))
+ extensional w e e' (inl x) (inr y') f g =
+  𝟘-elim (irreflexive _<_ x (w x) (g (inl x) ⋆))
+ extensional w e e' (inr y) (inl x') f g =
+  𝟘-elim (irreflexive _<_ x' (w x') (f (inl x') ⋆))
+ extensional w e e' (inr y) (inr y') f g =
+  ap inr (e' y y' (f ∘ inr) (g ∘ inr))
 
  transitive : is-transitive _<_
             → is-transitive _≺_
@@ -125,14 +131,14 @@ and then adapt the following definitions.
  well-founded w w' = g
   where
    φ : (x : X) → is-accessible _<_ x → is-accessible _⊏_ (inl x)
-   φ x (step σ) = step τ
+   φ x (acc σ) = acc τ
     where
      τ : (s : X + Y) → s ⊏ inl x → is-accessible _⊏_ s
      τ (inl x') l = φ x' (σ x' l)
      τ (inr y') l = 𝟘-elim l
 
    γ : (y : Y) → is-accessible _≺_ y → is-accessible _⊏_ (inr y)
-   γ y (step σ) = step τ
+   γ y (acc σ) = acc τ
     where
      τ : (s : X + Y) → s ⊏ inr y → is-accessible _⊏_ s
      τ (inl x)  l = φ x (w x)
@@ -145,10 +151,8 @@ and then adapt the following definitions.
  well-order : is-well-order _<_
             → is-well-order _≺_
             → is-well-order _⊏_
- well-order (p , w , e , t) (p' , w' , e' , t') = prop-valued p p' ,
-                                                  well-founded w w' ,
-                                                  extensional w e e' ,
-                                                  transitive t t'
+ well-order (p , w , e , t) (p' , w' , e' , t') =
+  prop-valued p p' , well-founded w w' , extensional w e e' , transitive t t'
 
  top-preservation : has-top _≺_ → has-top _⊏_
  top-preservation (y , f) = inr y , g
@@ -223,6 +227,13 @@ module successor
 
 Multiplication. Cartesian product with the lexicographic order.
 
+Fredrik Nordvall Forsberg, 3 November 2023: Changed order of multiplication to
+reverse lexicographic order to adhere to the standard convention.
+
+Martin Escardo 13th September 2024. But notice that for sums we can't
+do this swap, due to type dependency, and hence *swapped* mulplication
+is a particular case of ordinal sum.
+
 \begin{code}
 
 module times
@@ -234,8 +245,8 @@ module times
        where
 
  private
-  _⊏_ : X × Y → X × Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
-  (a , b) ⊏ (x , y) = (a < x) + ((a ＝ x) × (b ≺ y))
+  _⊏_ : X × Y → X × Y → 𝓣 ⊔ 𝓥 ⊔ 𝓦 ̇
+  (a , b) ⊏ (x , y) = (b ≺ y) + ((b ＝ y) × (a < x))
 
  order = _⊏_
 
@@ -247,21 +258,25 @@ module times
    P : X × Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
    P = is-accessible _⊏_
 
-   γ : (x : X) → ((x' : X) → x' < x → (y' : Y) → P (x' , y')) → (y : Y) → P (x , y)
-   γ x s = transfinite-induction _≺_ w' (λ y → P (x , y)) (λ y f → step (ψ y f))
+   γ : (y : Y)
+     → ((y' : Y) → y' ≺ y → (x' : X) → P (x' , y'))
+     → (x : X) → P (x , y)
+   γ y s = transfinite-induction _<_ w (λ x → P (x , y)) (λ x f → acc (ψ x f))
     where
-     ψ : (y : Y) → ((y' : Y) → y' ≺ y → P (x , y')) → (z' : X × Y) → z' ⊏ (x , y) → P z'
-     ψ y f (x' , y') (inl l) = s x' l y'
-     ψ y f (x' , y') (inr (r , m)) = transport⁻¹ P p α
+     ψ : (x : X)
+       → ((x' : X) → x' < x → P (x' , y))
+       → (z' : X × Y) → z' ⊏ (x , y) → P z'
+     ψ x f (x' , y') (inl l) = s y' l x'
+     ψ x f (x' , y') (inr (r , m)) = transport⁻¹ P p α
       where
-       α : P (x , y')
-       α = f y' m
+       α : P (x' , y)
+       α = f x' m
 
-       p : (x' , y') ＝ (x , y')
-       p = to-×-＝ r refl
+       p : (x' , y') ＝ (x' , y)
+       p = to-×-＝ refl r
 
    φ : (x : X) (y : Y) → P (x , y)
-   φ = transfinite-induction _<_ w (λ x → (y : Y) → P (x , y)) γ
+   φ x y = transfinite-induction _≺_ w' (λ y → (x : X) → P (x , y)) γ y x
 
  transitive : is-transitive _<_
             → is-transitive _≺_
@@ -269,10 +284,10 @@ module times
  transitive t t' (a , b) (x , y) (u , v) = f
   where
    f : (a , b) ⊏ (x , y) → (x , y) ⊏ (u , v) → (a , b) ⊏ (u , v)
-   f (inl l)       (inl m)          = inl (t _ _ _ l m)
-   f (inl l)       (inr (q , m))    = inl (transport (λ - → a < -) q l)
-   f (inr (r , l)) (inl m)          = inl (transport⁻¹ (λ - → - < u) r m)
-   f (inr (r , l)) (inr (refl , m)) = inr (r , (t' _ _ _ l m))
+   f (inl l)       (inl m)          = inl (t' _ _ _ l m)
+   f (inl l)       (inr (q , m))    = inl (transport (λ - → b ≺ -) q l)
+   f (inr (r , l)) (inl m)          = inl (transport⁻¹ (λ - → - ≺ v) r m)
+   f (inr (r , l)) (inr (refl , m)) = inr (r , (t _ _ _ l m))
 
  extensional : is-well-founded _<_
              → is-well-founded _≺_
@@ -282,85 +297,95 @@ module times
  extensional w w' e e' (a , b) (x , y) f g = to-×-＝ p q
   where
    f' : (u : X) → u < a → u < x
-   f' u l = Cases (f (u , y) (inl l))
-             (λ (m : u < x) → m)
-             (λ (σ : (u ＝ x) × (y ≺ y)) → 𝟘-elim (irreflexive _≺_ y (w' y) (pr₂ σ)))
+   f' u l = Cases (f (u , b) (inr (refl , l)))
+             (λ (m : b ≺ y)
+                → 𝟘-elim (irreflexive _<_ a (w a)
+                           (Cases (g (a , b) (inl m))
+                             (λ (n : b ≺ b)
+                                → 𝟘-elim (irreflexive _≺_ b (w' b) n))
+                             (λ (σ : (b ＝ b) × (a < a))
+                                → 𝟘-elim (irreflexive _<_ a (w a) (pr₂ σ))))))
+             (λ (σ : (b ＝ y) × (u < x)) → pr₂ σ)
 
    g' : (u : X) → u < x → u < a
-   g' u l = Cases (g ((u , b)) (inl l))
-             (λ (m : u < a) → m)
-             (λ (σ : (u ＝ a) × (b ≺ b)) → 𝟘-elim (irreflexive _≺_ b (w' b) (pr₂ σ)))
+   g' u l = Cases (g (u , y) (inr (refl , l)))
+             (λ (m : y ≺ b)
+                → Cases (f (x , y) (inl m))
+                   (λ (m : y ≺ y) → 𝟘-elim (irreflexive _≺_ y (w' y) m))
+                   (λ (σ : (y ＝ y) × (x < x))
+                      → 𝟘-elim (irreflexive _<_ x (w x) (pr₂ σ))))
+             (λ (σ : (y ＝ b) × (u < a)) → pr₂ σ)
 
    p : a ＝ x
    p = e a x f' g'
 
    f'' : (v : Y) → v ≺ b → v ≺ y
-   f'' v l = Cases (f (a , v) (inr (refl , l)))
-              (λ (m : a < x)
-                 → 𝟘-elim (irreflexive _≺_ b (w' b)
-                             (Cases (g (a , b) (inl m))
-                              (λ (n : a < a) → 𝟘-elim (irreflexive _<_ a (w a) n))
-                              (λ (σ : (a ＝ a) × (b ≺ b)) → 𝟘-elim (irreflexive _≺_ b (w' b) (pr₂ σ))))))
-              (λ (σ : (a ＝ x) × (v ≺ y))
-                 → pr₂ σ)
+   f'' v l = Cases (f (x , v) (inl l))
+              (λ (m : v ≺ y) → m)
+              (λ (σ : (v ＝ y) × (x < x))
+                 → 𝟘-elim (irreflexive _<_ x (w x) (pr₂ σ)))
 
    g'' : (v : Y) → v ≺ y → v ≺ b
-   g'' v l = Cases (g (x , v) (inr (refl , l)))
-              (λ (m : x < a)
-                 → Cases (f (x , y) (inl m))
-                     (λ (m : x < x)
-                        → 𝟘-elim (irreflexive _<_ x (w x) m))
-                     (λ (σ : (x ＝ x) × (y ≺ y))
-                        → 𝟘-elim (irreflexive _≺_ y (w' y) (pr₂ σ))))
-              (λ (σ : (x ＝ a) × (v ≺ b))
-                 → pr₂ σ)
+   g'' v l = Cases (g (a , v) (inl l))
+              (λ (m : v ≺ b) → m)
+              (λ (σ : (v ＝ b) × (a < a))
+                 → 𝟘-elim (irreflexive _<_ a (w a) (pr₂ σ)))
 
    q : b ＝ y
    q = e' b y f'' g''
+
+ prop-valued : is-set Y
+             → is-prop-valued _<_
+             → is-prop-valued _≺_
+             → is-irreflexive _≺_
+             → is-prop-valued _⊏_
+ prop-valued s p p' i (a , b) (x , y) (inl l) (inl m) =
+  ap inl (p' b y l m)
+ prop-valued s p p' i (a , b) (x , y) (inl l) (inr (u , m)) =
+  𝟘-elim (i y (transport (λ - → - ≺ y) u l))
+ prop-valued s p p' i (a , b) (x , y) (inr (r , l)) (inl m) =
+  𝟘-elim (i y ((transport (λ - → - ≺ y) r m)))
+ prop-valued s p p' i (a , b) (x , y) (inr (r , l)) (inr (u , m)) =
+  ap inr (to-×-＝ (s r u) (p a x l m))
 
  well-order : FunExt
             → is-well-order _<_
             → is-well-order _≺_
             → is-well-order _⊏_
- well-order fe (p , w , e , t) (p' , w' , e' , t') = prop-valued ,
-                                                     well-founded w w' ,
-                                                     extensional w w' e e' ,
-                                                     transitive t t'
-  where
-   prop-valued : is-prop-valued _⊏_
-   prop-valued (a , b) (x , y) (inl l) (inl m) =
-     ap inl (p a x l m)
-   prop-valued (a , b) (x , y) (inl l) (inr (s , m)) =
-     𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → - < x) s l))
-   prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
-     𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → - < x) r m))
-   prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-     ap inr (to-×-＝ (well-ordered-types-are-sets _<_ fe (p , w , e , t) r s) (p' b y l m))
+ well-order fe (p , w , e , t) wo'@(p' , w' , e' , t') =
+  prop-valued (well-ordered-types-are-sets _≺_ fe wo')
+              p
+              p'
+              (λ x → irreflexive _≺_ x (w' x)) ,
+  well-founded w w' ,
+  extensional w w' e e' ,
+  transitive t t'
+
 
  top-preservation : has-top _<_ → has-top _≺_ → has-top _⊏_
  top-preservation (x , f) (y , g) = (x , y) , h
   where
    h : (z : X × Y) → ¬ ((x , y) ⊏ z)
-   h (x' , y') (inl l) = f x' l
-   h (x' , y') (inr (r , l)) = g y' l
+   h (x' , y') (inl l) = g y' l
+   h (x' , y') (inr (r , l)) = f x' l
 
  tricho : {x : X} {y : Y}
         → is-trichotomous-element _<_ x
         → is-trichotomous-element _≺_ y
         → is-trichotomous-element _⊏_ (x , y)
  tricho {x} {y} t u (x' , y') =
-  Cases (t x')
-   (λ (l : x < x') → inl (inl l))
+  Cases (u y')
+   (λ (l : y ≺ y') → inl (inl l))
    (cases
-     (λ (p : x ＝ x')
-        → Cases (u y')
-           (λ (l : y ≺ y')
+     (λ (p : y ＝ y')
+        → Cases (t x')
+           (λ (l : x < x')
               → inl (inr (p , l)))
            (cases
-             (λ (q : y ＝ y')
-                → inr (inl (to-×-＝ p q)))
-             (λ (l : y' ≺ y) → inr (inr (inr ((p ⁻¹) , l))))))
-     (λ (l : x' < x) → inr (inr (inl l))))
+             (λ (q : x ＝ x')
+                → inr (inl (to-×-＝ q p)))
+             (λ (l : x' < x) → inr (inr (inr ((p ⁻¹) , l))))))
+     (λ (l : y' ≺ y) → inr (inr (inl l))))
 
  trichotomy-preservation : is-trichotomous-order _<_
                          → is-trichotomous-order _≺_
@@ -389,7 +414,7 @@ retract-accessible _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
   P = λ x → is-accessible _≺_ (r x)
 
   γ : ∀ x → (∀ x' → x' < x → is-accessible _≺_ (r x')) → is-accessible _≺_ (r x)
-  γ x τ = step σ
+  γ x τ = acc σ
    where
     σ : ∀ y → y ≺ r x → is-accessible _≺_ y
     σ y l = transport (is-accessible _≺_) (η y) m
@@ -433,7 +458,6 @@ constructed in the module UF.PropIndexedPiSigma:
 
 \begin{code}
 
- open import UF.Equiv
  open import UF.PropIndexedPiSigma
 
  private
@@ -444,12 +468,14 @@ constructed in the module UF.PropIndexedPiSigma:
   ψ p x q = transport X (P-is-prop p q) x
 
   η : (p : P) (u : Π X) → ψ p (φ p u) ＝ u
-  η p = pr₂ (pr₂ (pr₂ (prop-indexed-product fe P-is-prop p)))
+  η p = pr₂ (pr₂ (pr₂ (prop-indexed-product p fe P-is-prop)))
 
   ε : (p : P) (x : X p) → φ p (ψ p x) ＝ x
-  ε p = pr₂ (pr₁ (pr₂ (prop-indexed-product fe P-is-prop p)))
+  ε p = pr₂ (pr₁ (pr₂ (prop-indexed-product p fe P-is-prop)))
 
 \end{code}
+
+TODO. Get rid of the projections above. There are more meaningful names for them.
 
 The order on the product is constructed as follows from the order in
 the components:
@@ -562,7 +588,7 @@ lemma.
 
  well-founded : ((p : P) → is-well-founded (_<_ {p}))
               → is-well-founded _≺_
- well-founded w u = step σ
+ well-founded w u = acc σ
   where
    σ : (v : Π X) → v ≺ u → is-accessible _≺_ v
    σ v (p , l) = d
@@ -650,7 +676,7 @@ module sum
      → (y : Y x) → P (x , y)
    γ x s = transfinite-induction _≺_ (w' x)
             (λ y → P (x , y))
-            (λ y f → step (ψ y f))
+            (λ y f → acc (ψ y f))
     where
      ψ : (y : Y x)
        → ((y' : Y x) → y' ≺ y → P (x , y'))
@@ -685,14 +711,14 @@ module sum
              → ((x : X) → is-prop-valued (_≺_ {x}))
              → is-prop-valued _⊏_
  prop-valued fe p w e f (a , b) (x , y) (inl l) (inl m) =
-   ap inl (p a x l m)
+  ap inl (p a x l m)
  prop-valued fe p w e f (a , b) (x , y) (inl l) (inr (s , m)) =
-   𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → - < x) s l))
+  𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → - < x) s l))
  prop-valued fe p w e f (a , b) (x , y) (inr (r , l)) (inl m) =
-   𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → - < x) r m))
+  𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → - < x) r m))
  prop-valued fe p _ e f (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-   ap inr (to-Σ-＝ (extensionally-ordered-types-are-sets _<_ fe p e r s ,
-                     (f x (transport Y s b) y _ m)))
+  ap inr (to-Σ-＝ (extensionally-ordered-types-are-sets _<_ fe p e r s ,
+                    (f x (transport Y s b) y _ m)))
 
  tricho : {x : X} {y : Y x}
         → is-trichotomous-element _<_ x
@@ -709,12 +735,15 @@ module sum
            (cases
              (λ (q : y ＝ transport⁻¹ Y p y')
                 → inr (inl (to-Σ-＝
-                             (p , (transport Y p y                    ＝⟨ ap (transport Y p) q ⟩
-                                   transport Y p (transport⁻¹ Y p y') ＝⟨ back-and-forth-transport p ⟩
+                             (p , (transport Y p y                    ＝⟨ I p q ⟩
+                                   transport Y p (transport⁻¹ Y p y') ＝⟨ II p ⟩
                                    y'                                 ∎
                                       )))))
              (λ (l : transport⁻¹ Y p y' ≺ y) → inr (inr (inr ((p ⁻¹) , l))))))
      (λ (l : x' < x) → inr (inr (inl l))))
+      where
+       I  = λ p → ap (transport Y p)
+       II = back-and-forth-transport
 
  trichotomy-preservation : is-trichotomous-order _<_
                          → ((x : X) → is-trichotomous-order (_≺_ {x}))
@@ -725,8 +754,8 @@ module sum
 
 The above trichotomy preservation added 19th April 2022.
 
-We know how to prove extensionality either assuming top elements or
-assuming cotransitivity. We do this in the following two modules.
+We know show how to prove extensionality either assuming top elements
+or assuming cotransitivity. We do this in the following two modules.
 
 \begin{code}
 
@@ -739,7 +768,7 @@ module sum-top
         (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇ )
         (top : Π Y)
         (ist : (x : X) → is-top _≺_ (top x))
-      where
+       where
 
  open sum {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _<_  _≺_ public
 
@@ -773,27 +802,30 @@ module sum-top
    p =  e a x f' g'
 
    f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y
-   f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-right-rel _≺_ a x b v p l)))
-              (λ (l : x < x)
-                 → 𝟘-elim (irreflexive _<_ x (w x) l))
-              (λ (σ : Σ r ꞉ x ＝ x , transport Y r v ≺ y)
-                 → φ σ)
-              where
-               φ : (σ : Σ r ꞉ x ＝ x , transport Y r v ≺ y) → v ≺ y
-               φ (r , l) = transport
-                            (λ - → transport Y - v ≺ y)
-                            (extensionally-ordered-types-are-sets _<_ fe ispv e r refl)
-                            l
+   f'' v l =
+    Cases (f (x , v) (inr ((p ⁻¹) , transport-right-rel _≺_ a x b v p l)))
+     (λ (l : x < x)
+        → 𝟘-elim (irreflexive _<_ x (w x) l))
+     (λ (σ : Σ r ꞉ x ＝ x , transport Y r v ≺ y)
+        → φ σ)
+     where
+      φ : (σ : Σ r ꞉ x ＝ x , transport Y r v ≺ y) → v ≺ y
+      φ (r , l) =
+       transport
+        (λ - → transport Y - v ≺ y)
+        (extensionally-ordered-types-are-sets _<_ fe ispv e r refl)
+        l
 
    g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
-   g'' u m = Cases (g (x , u) (inr (refl , m)))
-              (λ (l : x < a)
-                 → 𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → x < -) p l)))
-              (λ (σ : Σ r ꞉ x ＝ a , transport Y r u ≺ b)
-                 → transport
-                     (λ - → u ≺ transport Y - b)
-                     (extensionally-ordered-types-are-sets _<_ fe ispv e ((pr₁ σ)⁻¹) p)
-                     (transport-left-rel _≺_ a x b u (pr₁ σ) (pr₂ σ)))
+   g'' u m =
+    Cases (g (x , u) (inr (refl , m)))
+     (λ (l : x < a)
+        → 𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → x < -) p l)))
+     (λ (σ : Σ r ꞉ x ＝ a , transport Y r u ≺ b)
+        → transport
+            (λ - → u ≺ transport Y - b)
+            (extensionally-ordered-types-are-sets _<_ fe ispv e ((pr₁ σ)⁻¹) p)
+            (transport-left-rel _≺_ a x b u (pr₁ σ) (pr₂ σ)))
 
    q : transport Y p b ＝ y
    q = e' x (transport Y p b) y f'' g''
@@ -801,15 +833,16 @@ module sum-top
  well-order : is-well-order _<_
             → ((x : X) → is-well-order (_≺_ {x}))
             → is-well-order _⊏_
- well-order (p , w , e , t) f = prop-valued fe p w e (λ x → prop-valuedness _≺_ (f x)) ,
-                                well-founded w (λ x → well-foundedness _≺_ (f x)) ,
-                                extensional
-                                  (prop-valuedness _<_ (p , w , e , t))
-                                     w
-                                     (λ x → well-foundedness _≺_ (f x))
-                                     e
-                                     (λ x → extensionality _≺_ (f x)) ,
-                                transitive t (λ x → transitivity _≺_ (f x))
+ well-order (p , w , e , t) f =
+  prop-valued fe p w e (λ x → prop-valuedness _≺_ (f x)) ,
+  well-founded w (λ x → well-foundedness _≺_ (f x)) ,
+  extensional
+    (prop-valuedness _<_ (p , w , e , t))
+       w
+       (λ x → well-foundedness _≺_ (f x))
+       e
+       (λ x → extensionality _≺_ (f x)) ,
+  transitive t (λ x → transitivity _≺_ (f x))
 
  top-preservation : has-top _<_ → has-top _⊏_
  top-preservation (x , f) = (x , top x) , g
@@ -820,9 +853,11 @@ module sum-top
 
 \end{code}
 
-\begin{code}
+We can prove extensionality from cotransitivity, but this doesn't seem
+to be very useful, as cotransivitiy doesn't have good preservation
+properties.
 
-open import TypeTopology.DiscreteAndSeparated
+\begin{code}
 
 module sum-cotransitive
         (fe : FunExt)
@@ -869,29 +904,31 @@ module sum-cotransitive
    p =  e a x f' g'
 
    f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y
-   f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-right-rel _≺_ a x b v p l)))
-              (λ (l : x < x)
-                 → 𝟘-elim (irreflexive _<_ x (w x) l))
-              (λ (σ : Σ r ꞉ x ＝ x , transport Y r v ≺ y)
-                 → φ σ)
-              where
-               φ : (σ : Σ r ꞉ x ＝ x , transport Y r v ≺ y) → v ≺ y
-               φ (r , l) = transport
-                            (λ r → transport Y r v ≺ y)
-                            (extensionally-ordered-types-are-sets _<_ fe
-                              ispv e r refl)
-                            l
+   f'' v l =
+    Cases (f (x , v) (inr ((p ⁻¹) , transport-right-rel _≺_ a x b v p l)))
+     (λ (l : x < x)
+        → 𝟘-elim (irreflexive _<_ x (w x) l))
+     (λ (σ : Σ r ꞉ x ＝ x , transport Y r v ≺ y)
+        → φ σ)
+     where
+      φ : (σ : Σ r ꞉ x ＝ x , transport Y r v ≺ y) → v ≺ y
+      φ (r , l) = transport
+                   (λ r → transport Y r v ≺ y)
+                   (extensionally-ordered-types-are-sets _<_ fe
+                     ispv e r refl)
+                   l
 
    g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
-   g'' u m = Cases (g (x , u) (inr (refl , m)))
-              (λ (l : x < a)
-                 → 𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → x < -) p l)))
-              (λ (σ : Σ r ꞉ x ＝ a , transport Y r u ≺ b)
-                 → transport
-                     (λ - → u ≺ transport Y - b)
-                     (extensionally-ordered-types-are-sets _<_ fe
-                       ispv e ((pr₁ σ)⁻¹) p)
-                     (transport-left-rel _≺_ a x b u (pr₁ σ) (pr₂ σ)))
+   g'' u m =
+    Cases (g (x , u) (inr (refl , m)))
+     (λ (l : x < a)
+        → 𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → x < -) p l)))
+     (λ (σ : Σ r ꞉ x ＝ a , transport Y r u ≺ b)
+        → transport
+            (λ - → u ≺ transport Y - b)
+            (extensionally-ordered-types-are-sets _<_ fe
+              ispv e ((pr₁ σ)⁻¹) p)
+            (transport-left-rel _≺_ a x b u (pr₁ σ) (pr₂ σ)))
 
    q : transport Y p b ＝ y
    q = e' x (transport Y p b) y f'' g''
@@ -900,15 +937,15 @@ module sum-cotransitive
             → ((x : X) → is-well-order (_≺_ {x}))
             → is-well-order _⊏_
  well-order (p , w , e , t) f =
-   prop-valued fe p w e (λ x → prop-valuedness _≺_ (f x)) ,
-   well-founded w (λ x → well-foundedness _≺_ (f x)) ,
-   extensional
-     (prop-valuedness _<_ (p , w , e , t))
-     w
-     (λ x → well-foundedness _≺_ (f x))
-     e
-     (λ x → extensionality _≺_ (f x)) ,
-   transitive t (λ x → transitivity _≺_ (f x))
+  prop-valued fe p w e (λ x → prop-valuedness _≺_ (f x)) ,
+  well-founded w (λ x → well-foundedness _≺_ (f x)) ,
+  extensional
+    (prop-valuedness _<_ (p , w , e , t))
+    w
+    (λ x → well-foundedness _≺_ (f x))
+    e
+    (λ x → extensionality _≺_ (f x)) ,
+  transitive t (λ x → transitivity _≺_ (f x))
 
 \end{code}
 
@@ -938,7 +975,6 @@ but the constructions still work.
 \begin{code}
 
 open import UF.Embeddings
-open import UF.Equiv
 
 module extension
         (fe : FunExt)
@@ -972,11 +1008,11 @@ module extension
 
  top-preservation : ((x : X) → has-top (_<_ {x})) → has-top _≺_
  top-preservation f = φ , g
-   where
-    φ : (p : fiber j a) → Y (pr₁ p)
-    φ (x , r) = pr₁ (f x)
+  where
+   φ : (p : fiber j a) → Y (pr₁ p)
+   φ (x , r) = pr₁ (f x)
 
-    g : (ψ : (Y / j) a) → ¬ (φ ≺ ψ)
-    g ψ ((x , r) , l) = pr₂ (f x) (ψ (x , r)) l
+   g : (ψ : (Y / j) a) → ¬ (φ ≺ ψ)
+   g ψ ((x , r) , l) = pr₂ (f x) (ψ (x , r)) l
 
 \end{code}

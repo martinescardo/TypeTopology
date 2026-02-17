@@ -2,14 +2,13 @@ Martin Escardo 2011.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
 module Naturals.Sequence (fe : FunExt) where
 
 open import MLTT.Spartan hiding (_+_)
-open import UF.Base
 open import UF.Retracts
 open import Naturals.Addition
 

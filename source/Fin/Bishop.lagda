@@ -2,7 +2,7 @@ Martin Escardo, 8th December 2019.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Fin.Bishop where
 
@@ -10,11 +10,11 @@ open import Fin.Properties
 open import Fin.Type
 open import MLTT.Spartan
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.UA-FunExt
@@ -38,11 +38,32 @@ finite-linear-order X = Σ n ꞉ ℕ , X ≃ Fin n
 
 \end{code}
 
-Exercise: If X ≃ Fin n, then the type Finite X has n! elements (solved
-elsewhere in TypeTopology).
+There are two ways of making 𝟙 + 𝟙 into a linear order. We choose the
+following one.
 
 \begin{code}
 
+𝟙+𝟙-natural-finite-linear-order : finite-linear-order (𝟙 {𝓤} + 𝟙 {𝓤})
+𝟙+𝟙-natural-finite-linear-order {𝓤} = 2 , g
+ where
+  f : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ (𝟘 {𝓤₀} + 𝟙 {𝓤₀}) + 𝟙 {𝓤₀}
+  f = +-cong 𝟘-lneutral'' one-𝟙-only
+
+  f' : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ Fin 2
+  f' = f
+
+  g : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ Fin 2
+  g = +comm ● f'
+
+  observation : (⌜ g ⌝ (inl ⋆) ＝ 𝟎) × (⌜ g ⌝ (inr ⋆) ＝ 𝟏)
+  observation = refl , refl
+
+\end{code}
+
+Exercise: If X ≃ Fin n, then the type finite-linear-order X has n! elements (solved
+elsewhere in TypeTopology).
+
+\begin{code}
 
 type-of-linear-orders-is-ℕ : Univalence → (Σ X ꞉ 𝓤 ̇ , finite-linear-order X) ≃ ℕ
 type-of-linear-orders-is-ℕ {𝓤} ua =

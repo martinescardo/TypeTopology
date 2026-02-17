@@ -18,24 +18,22 @@ Torsors are in their own file Torsos.lagda
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
-
-open import MLTT.Spartan
-open import UF.Base hiding (_≈_)
-open import UF.Subsingletons
-open import UF.Powerset
-open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.Embeddings
-open import UF.Univalence
-open import UF.Equiv-FunExt
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.Subsingletons-FunExt
-open import UF.Retracts
-open import UF.Classifiers
+{-# OPTIONS --safe --without-K #-}
 
 open import Groups.Type renaming (_≅_ to _≣_)
+open import MLTT.Spartan
+open import UF.Base hiding (_≈_)
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Equiv-FunExt
+open import UF.FunExt
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
+open import UF.UA-FunExt
+open import UF.Univalence
 
 module Groups.GroupActions where
 
@@ -44,7 +42,7 @@ module _ (G : Group 𝓤) where
   action-structure : 𝓤 ̇ → 𝓤 ̇
   action-structure X = ⟨ G ⟩ → X → X
 
-  action-axioms : (X : 𝓤 ̇ )→ action-structure X → 𝓤 ̇
+  action-axioms : (X : 𝓤 ̇ ) → action-structure X → 𝓤 ̇
   action-axioms X _·_ = is-set X ×
                         ((g h : ⟨ G ⟩)(x : X) → (g ·⟨ G ⟩ h) · x ＝ g · (h · x)) ×
                         ((x : X) → (unit G) · x ＝ x)
@@ -166,7 +164,7 @@ and the Action-structure is a set.
 
 \begin{code}
   action-axioms-is-prop : funext 𝓤 𝓤
-                        → (X : 𝓤 ̇)
+                        → (X : 𝓤 ̇ )
                         → (_·_ : action-structure X)
                         → is-prop (action-axioms X _·_)
   action-axioms-is-prop fe X _·_ s = γ s
@@ -184,7 +182,7 @@ and the Action-structure is a set.
 
 
   Action-structure-is-set : funext 𝓤 𝓤
-                          → (X : 𝓤 ̇)
+                          → (X : 𝓤 ̇ )
                           → is-set (Action-structure X)
   Action-structure-is-set fe X {s} = γ {s}
     where
@@ -253,7 +251,7 @@ structures.
                      is-equivariant 𝕏 𝕐 (idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p)
   pr₁ (＝-is-equivariant fe (X , as) (.X , .as) refl) refl = λ g x → refl
   pr₂ (＝-is-equivariant fe (X , as) (.X , as') refl) =
-    logically-equivalent-props-give-is-equiv
+    logical-equivs-of-props-are-equivs
       is (is-equivariant-is-prop fe ((X , as)) (X , as') id)
         (pr₁ (＝-is-equivariant fe (X , as) (X , as') refl))
         λ i → to-Σ-＝ ((γ i) , (action-axioms-is-prop fe X _·'_ _ _))
@@ -274,7 +272,7 @@ The above function is called is_equivariant_identity in UniMath.
 
 \begin{code}
 
-  Action-Map : (𝕏 𝕐 : Action) → 𝓤  ̇
+  Action-Map : (𝕏 𝕐 : Action) → 𝓤 ̇
   Action-Map 𝕏 𝕐 = Σ f ꞉ (⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩) , is-equivariant 𝕏 𝕐 f
 
   underlying-function : (𝕏 𝕐 : Action) (u : Action-Map 𝕏 𝕐) → ⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩

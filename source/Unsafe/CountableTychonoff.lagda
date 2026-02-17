@@ -7,7 +7,7 @@ indication of termination.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --auto-inline #-}
+{-# OPTIONS --without-K #-}
 
 open import UF.FunExt
 
@@ -18,9 +18,9 @@ open import Naturals.Sequence fe
 open import TypeTopology.CompactTypes
 
 binary-Tychonoff' : {X : ℕ → 𝓤 ̇ }
-                  → compact∙ (X 0)
-                  → compact∙ ((n : ℕ) → X (succ n))
-                  → compact∙ ((n : ℕ) → X n)
+                  → is-compact∙ (X 0)
+                  → is-compact∙ ((n : ℕ) → X (succ n))
+                  → is-compact∙ ((n : ℕ) → X n)
 
 binary-Tychonoff' ε δ = retractions-preserve-compactness
                          cons-has-section'
@@ -53,8 +53,8 @@ checker enabled.) (I plan to actually write down this proof in Agda.)
 
 {-# TERMINATING #-}
 countable-Tychonoff : {X : ℕ → 𝓤 ̇ }
-                    → ((n : ℕ) → compact∙ (X n))
-                    → compact∙ ((n : ℕ) → X n)
+                    → ((n : ℕ) → is-compact∙ (X n))
+                    → is-compact∙ ((n : ℕ) → X n)
 countable-Tychonoff {X} ε = binary-Tychonoff' (head ε) (countable-Tychonoff (tail ε))
 
 \end{code}

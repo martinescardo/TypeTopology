@@ -5,7 +5,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.Choice where
 
@@ -49,7 +49,7 @@ vvfunext-gives-unique-choice vv X A R s = c
 unique-choice-gives-vvfunext : Unique-Choice 𝓤 𝓥 𝓥 → vvfunext 𝓤 𝓥
 unique-choice-gives-vvfunext {𝓤} {𝓥} uc {X} {A} φ = γ
  where
-  R : (x : X) → A x → 𝓥  ̇
+  R : (x : X) → A x → 𝓥 ̇
   R x a = A x
 
   s' : (x : X) → is-singleton (A x × A x)
@@ -81,8 +81,8 @@ unique-choice-gives-hfunext {𝓤} {𝓥} uc = →hfunext γ
     e : (x : X) → ∃! a ꞉ A x , f x ＝ a
     e x = singleton-types'-are-singletons (A x) (f x)
 
-unique-choice⇔vvfunext : Unique-Choice 𝓤 𝓥 𝓥 ⇔ vvfunext 𝓤 𝓥
-unique-choice⇔vvfunext = unique-choice-gives-vvfunext ,
+unique-choice↔vvfunext : Unique-Choice 𝓤 𝓥 𝓥 ↔ vvfunext 𝓤 𝓥
+unique-choice↔vvfunext = unique-choice-gives-vvfunext ,
                          vvfunext-gives-unique-choice
 
 module _ (hfe : global-hfunext) where

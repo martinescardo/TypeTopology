@@ -1,10 +1,10 @@
-Left cancellable maps.
+Martin Escardo.
 
-The definition is given in UF.Base. Here we prove things about them.
+Properties of left cancellable maps.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.LeftCancellable where
 
@@ -30,7 +30,8 @@ is-equiv-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
             → left-cancellable f
 is-equiv-lc f (_ , hasr) = section-lc f hasr
 
-left-cancellable-closed-under-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
+left-cancellable-closed-under-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                                  (f : X → Y) (g : Y → Z)
                                 → left-cancellable f
                                 → left-cancellable g
                                 → left-cancellable (g ∘ f)
@@ -39,7 +40,8 @@ left-cancellable-closed-under-∘ f g lcf lcg = lcf ∘ lcg
 NatΣ-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } (f : Nat A B)
         → ((x : X) → left-cancellable(f x))
         → left-cancellable (NatΣ f)
-NatΣ-lc {𝓤} {𝓥} {𝓦} {X} {A} {B} f flc {x , a} {x' , a'} p = to-Σ-＝ (ap pr₁ p , γ)
+NatΣ-lc {𝓤} {𝓥} {𝓦} {X} {A} {B} f flc {x , a} {x' , a'} p =
+ to-Σ-＝ (ap pr₁ p , γ)
  where
   γ : transport A (ap pr₁ p) a ＝ a'
   γ = flc x' (f x' (transport A (ap pr₁ p) a) ＝⟨ nat-transport f (ap pr₁ p) ⟩

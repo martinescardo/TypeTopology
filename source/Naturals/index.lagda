@@ -1,21 +1,22 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Naturals.index where
 
-import Naturals.Sequence
+import Naturals.AbsoluteDifference
 import Naturals.Addition
 import Naturals.Binary
+import Naturals.Division
+import Naturals.ExitTruncation
+import Naturals.Exponentiation
+import Naturals.HCF
+import Naturals.Multiplication
 import Naturals.Order
+import Naturals.Parity
 import Naturals.Properties
 import Naturals.RootsTruncation
+import Naturals.Sequence
 import Naturals.UniversalProperty
-import Naturals.Division
-import Naturals.Multiplication
-import Naturals.HCF
-import Naturals.Parity
-import Naturals.Exponentiation
-
 
 \end{code}

@@ -30,7 +30,7 @@ the comonad respectively.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 open import UF.PropTrunc
@@ -42,10 +42,9 @@ open PropositionalTruncation pt
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
-open import Categories.Category fe
-open import Categories.Functor fe
+open import gist.Categories.Category fe
+open import gist.Categories.Functor fe
 open import Duploids.DeductiveSystem fe
 open import Duploids.Preduploid fe pt
 
