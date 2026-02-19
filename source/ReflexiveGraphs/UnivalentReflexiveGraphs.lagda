@@ -64,11 +64,11 @@ extensionality.
     ((y x : ⟨ 𝓐 ⟩) (s : y ≈⟨ 𝓐 ⟩ x) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
       → (y , s) ＝ (y' , t))                                           ←⟨ IV ⟩
     ((y : ⟨ 𝓐 ⟩) ((x , s) : fan y) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
-      → (y , s) ＝ (y' , t))                                           ←⟨ V ⟩
-    ((y y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VI ⟩
-    ((y' y : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VII ⟩
-    ((y' : ⟨ 𝓐 ⟩) ((y , t) : fan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))   ←⟨ VIII ⟩
-    ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y'))▢
+      → (y , s) ＝ (y' , t))                                          ←⟨ V ⟩
+    ((y y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VI ⟩
+    ((y' y : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VII ⟩
+    ((y' : ⟨ 𝓐 ⟩) ((y , t) : fan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VIII ⟩
+    ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y')) ▢
     where
      II = (λ f x (y , s) (y' , t) → f x y s y' t)
      III = (λ f x y → f y x)
@@ -91,10 +91,10 @@ extensionality.
       → (y , s) ＝ (y' , t))                                           ←⟨ IV ⟩
     ((y : ⟨ 𝓐 ⟩) ((x , s) : cofan y) (y' : ⟨ 𝓐 ⟩) (t : x ≈⟨ 𝓐 ⟩ y')
       → (y , s) ＝ (y' , t))                                           ←⟨ V ⟩
-    ((y y' : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VI ⟩
-    ((y' y : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VII ⟩
-    ((y' : ⟨ 𝓐 ⟩) ((y , t) : cofan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VIII ⟩
-    ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y'))▢
+    ((y y' : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VI ⟩
+    ((y' y : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VII ⟩
+    ((y' : ⟨ 𝓐 ⟩) ((y , t) : cofan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))←⟨ VIII ⟩
+    ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y')) ▢
     where
      II = (λ f x (y , s) (y' , t) → f x y s y' t)
      III = (λ f x y → f y x)
