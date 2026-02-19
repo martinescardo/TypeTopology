@@ -42,13 +42,13 @@ module _ (𝓐 : Refl-Graph 𝓤 𝓥) where
 
 We show that propositional fans imply propositional cofans and vice versa.
 The crux of the proofs is to observe that if (y , s) : cofan x for some x then
-(x , s) : fan y, the rest amounts to shuffling data with in sigma types.
+(x , s) : fan y, the rest amounts to shuffling data within sigma types.
 
 It is worth noting that the proofs that follow were originally discovered as
 a string of equivalences, but to witness the equivalence requires function
 extensionality. The underlying maps of the equivalences are sufficient for the
-proof to go through and thus we are able to avoid unnecessary appeals to
-function extensionality. 
+proof to go through and thus we are able to avoid appeals to function
+extensionality. 
 
 \begin{code}
 
@@ -68,7 +68,7 @@ function extensionality.
     ((y y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VI ⟩
     ((y' y : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VII ⟩
     ((y' : ⟨ 𝓐 ⟩) ((y , t) : fan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))   ←⟨ VIII ⟩
-    ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y'))  ▢
+    ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y'))▢
     where
      II = (λ f x (y , s) (y' , t) → f x y s y' t)
      III = (λ f x y → f y x)
@@ -94,7 +94,7 @@ function extensionality.
     ((y y' : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VI ⟩
     ((y' y : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VII ⟩
     ((y' : ⟨ 𝓐 ⟩) ((y , t) : cofan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VIII ⟩
-    ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y'))  ▢
+    ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y'))▢
     where
      II = (λ f x (y , s) (y' , t) → f x y s y' t)
      III = (λ f x y → f y x)
@@ -148,11 +148,11 @@ If each fan is propositional then id-to-edge is an equivalence.
 \begin{code}
 
  private
-  helper-edge-to-id : (x y : ⟨ 𝓐 ⟩)
+  helper-edge-to-id : {x y : ⟨ 𝓐 ⟩}
                     → (p : x ≈⟨ 𝓐 ⟩ y)
                     → (x , ≈-refl 𝓐 x) ＝ (y , p)
                     → x ＝ y
-  helper-edge-to-id x .x .(≈-refl 𝓐 x) refl = refl
+  helper-edge-to-id {x} {.x} .(≈-refl 𝓐 x) refl = refl
 
  module _ (prop-fans : ((x : ⟨ 𝓐 ⟩) → is-prop (fan x))) where
 
@@ -160,20 +160,18 @@ If each fan is propositional then id-to-edge is an equivalence.
                        → x ≈⟨ 𝓐 ⟩ y
                        → x ＝ y
   prop-fans-edge-to-id x y p
-   = helper-edge-to-id x y p (prop-fans x (x , ≈-refl 𝓐 x) (y , p))
+   = helper-edge-to-id p (prop-fans x (x , ≈-refl 𝓐 x) (y , p))
 
   prop-fans-gives-retraction : (x y : ⟨ 𝓐 ⟩)
                              → has-retraction id-to-edge
-  prop-fans-gives-retraction x y
-   = (prop-fans-edge-to-id x y , II x y)
+  prop-fans-gives-retraction x y = (prop-fans-edge-to-id x y , II x y)
    where
     I : (x : ⟨ 𝓐 ⟩) → prop-fans x (x , ≈-refl 𝓐 x) (x , ≈-refl 𝓐 x) ＝ refl
     I x = props-are-sets (prop-fans x)
            (prop-fans x (x , ≈-refl 𝓐 x) (x , ≈-refl 𝓐 x)) refl
     II : (x y : ⟨ 𝓐 ⟩) (p : x ＝ y)
-       → (prop-fans-edge-to-id x y)
-          (id-to-edge p) ＝ p
-    II x .x refl = ap (helper-edge-to-id x x (≈-refl 𝓐 x)) (I x)
+       → prop-fans-edge-to-id x y (id-to-edge p) ＝ p
+    II x .x refl = ap (helper-edge-to-id (≈-refl 𝓐 x)) (I x)
 
   id-are-retracts-of-edges : (x y : ⟨ 𝓐 ⟩)
                            → retract (x ＝ y) of (x ≈⟨ 𝓐 ⟩ y)
@@ -187,7 +185,7 @@ If each fan is propositional then id-to-edge is an equivalence.
    = (prop-fans-edge-to-id x y , II)
    where
     I : (p : x ≈⟨ 𝓐 ⟩ y) (ϕ : (x , ≈-refl 𝓐 x) ＝ (y , p))
-      → id-to-edge (helper-edge-to-id x y p ϕ) ＝ p
+      → id-to-edge (helper-edge-to-id p ϕ) ＝ p
     I p refl = refl
     II : (p : x ≈⟨ 𝓐 ⟩ y)
        → id-to-edge (prop-fans-edge-to-id x y p) ＝ p
@@ -197,12 +195,6 @@ If each fan is propositional then id-to-edge is an equivalence.
                            → retract (x ≈⟨ 𝓐 ⟩ y) of (x ＝ y)
   edges-are-retracts-of-id x y
    = (id-to-edge , prop-fans-gives-section x y)
-
-\end{code}
-
-Now we show that id-to-edge is an equiv iff all fans are propositional.
-
-\begin{code}
 
  id-to-edge-equiv-implies-prop-fans : ((x y : ⟨ 𝓐 ⟩) → is-equiv id-to-edge)
                                     → ((x : ⟨ 𝓐 ⟩) → is-prop (fan x))
@@ -288,17 +280,21 @@ TODO: show they are also equivalent.
 
 \begin{code}
 
-univalence-implies-edge-induction : {𝓐 : Refl-Graph 𝓤 𝓥}
-                                  → is-univalent-refl-graph 𝓐
-                                  → (P : (x y : ⟨ 𝓐 ⟩) → (x ≈⟨ 𝓐 ⟩ y) → 𝓣 ̇)
-                                  → ((x : ⟨ 𝓐 ⟩) → P x x (≈-refl 𝓐 x))
-                                  → (x y : ⟨ 𝓐 ⟩)
-                                  → (p : x ≈⟨ 𝓐 ⟩ y)
-                                  → P x y p
-univalence-implies-edge-induction {𝓤} {𝓥} {𝓣} {𝓐} ua P R x y p
- = I (ua x (x , ≈-refl 𝓐 x) (y , p))
- where
-  I : (x , ≈-refl 𝓐 x) ＝ (y , p) → P x y p
-  I refl = R x  
+module _ (𝓐 : Refl-Graph 𝓤 𝓥) where
+
+ edge-induction : 𝓤ω
+ edge-induction = {𝓣 : Universe} (P : (x y : ⟨ 𝓐 ⟩) → (x ≈⟨ 𝓐 ⟩ y) → 𝓣 ̇)
+                → ((x : ⟨ 𝓐 ⟩) → P x x (≈-refl 𝓐 x))
+                → (x y : ⟨ 𝓐 ⟩)
+                → (p : x ≈⟨ 𝓐 ⟩ y)
+                → P x y p
+
+ univalence-implies-edge-induction : is-univalent-refl-graph 𝓐
+                                   → edge-induction
+ univalence-implies-edge-induction ua P R x y p
+  = I (ua x (x , ≈-refl 𝓐 x) (y , p))
+  where
+   I : (x , ≈-refl 𝓐 x) ＝ (y , p) → P x y p
+   I refl = R x  
 
 \end{code}
