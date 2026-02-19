@@ -64,7 +64,7 @@ extensionality.
     ((y x : ⟨ 𝓐 ⟩) (s : y ≈⟨ 𝓐 ⟩ x) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
       → (y , s) ＝ (y' , t))                                           ←⟨ IV ⟩
     ((y : ⟨ 𝓐 ⟩) ((x , s) : fan y) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
-      → (y , s) ＝ (y' , t))                                          ←⟨ V ⟩
+      → (y , s) ＝ (y' , t))                                           ←⟨ V ⟩
     ((y y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VI ⟩
     ((y' y : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VII ⟩
     ((y' : ⟨ 𝓐 ⟩) ((y , t) : fan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VIII ⟩
