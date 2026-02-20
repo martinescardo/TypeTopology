@@ -38,10 +38,10 @@ record NaturalTransformation {A : WildCategory 𝓤 𝓥}
  open FunctorNotation G' renaming (functor-map to G ; fobj to Gobj)
 
  field
-  gamma : (a : obj A) → hom (F {{Fobj}} a) (G {{Gobj}} a)
+  transf : (a : obj A) → hom (F {{Fobj}} a) (G {{Gobj}} a)
 
  private
-  γ = gamma
+  γ = transf
 
  field
   natural : {a b : obj A}
