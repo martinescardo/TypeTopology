@@ -21,7 +21,7 @@ open import UF.Subsingletons-FunExt
 
 module Categories.Univalent where
 
- \end{code}
+\end{code}
 
 We wish to combine the similar notions of equivalence, namely the internal
 equality, a ＝ b, and isomorphisms, a ≅ b.
