@@ -57,25 +57,25 @@ extensionality.
  prop-fan-to-cofan fan-prop = I ∼-refl
   where
    I =
-    ((x : ⟨ 𝓐 ⟩) → is-prop (cofan x))                                  ←⟨ id ⟩
-    ((x : ⟨ 𝓐 ⟩) → ((y , s) (y' , t) : cofan x) → (y , s) ＝ (y' , t)) ←⟨ II ⟩ 
+    ((x : ⟨ 𝓐 ⟩) → is-prop (cofan x))                                   ←⟨ id ⟩
+    ((x : ⟨ 𝓐 ⟩) → ((y , s) (y' , t) : cofan x) → (y , s) ＝ (y' , t))  ←⟨ II ⟩
     ((x y : ⟨ 𝓐 ⟩) (s : y ≈⟨ 𝓐 ⟩ x) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
-      → (y , s) ＝ (y' , t))                                           ←⟨ III ⟩
+      → (y , s) ＝ (y' , t))                                            ←⟨ III ⟩
     ((y x : ⟨ 𝓐 ⟩) (s : y ≈⟨ 𝓐 ⟩ x) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
-      → (y , s) ＝ (y' , t))                                           ←⟨ IV ⟩
+      → (y , s) ＝ (y' , t))                                            ←⟨ IV ⟩
     ((y : ⟨ 𝓐 ⟩) ((x , s) : fan y) (y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ x)
-      → (y , s) ＝ (y' , t))                                           ←⟨ V ⟩
-    ((y y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VI ⟩
-    ((y' y : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VII ⟩
-    ((y' : ⟨ 𝓐 ⟩) ((y , t) : fan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VIII ⟩
+      → (y , s) ＝ (y' , t))                                            ←⟨ V ⟩
+    ((y y' : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t))   ←⟨ VI ⟩
+    ((y' y : ⟨ 𝓐 ⟩) (t : y' ≈⟨ 𝓐 ⟩ y) → (y , ≈-refl 𝓐 y) ＝ (y' , t))   ←⟨ VII ⟩
+    ((y' : ⟨ 𝓐 ⟩) ((y , t) : fan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))    ←⟨ VIII ⟩
     ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y')) ▢
     where
-     II = (λ f x (y , s) (y' , t) → f x y s y' t)
-     III = (λ f x y → f y x)
-     IV = (λ f y x s y' t → f y (x , s) y' t)
-     V = (λ f y → Π-proj⁻¹ (y , ≈-refl 𝓐 y) (fan-prop y) (f y))
-     VI = (λ f y' y → f y y')
-     VII = (λ f y' y t → f y' (y , t))
+     II   = (λ f x (y , s) (y' , t) → f x y s y' t)
+     III  = (λ f x y → f y x)
+     IV   = (λ f y x s y' t → f y (x , s) y' t)
+     V    = (λ f y → Π-proj⁻¹ (y , ≈-refl 𝓐 y) (fan-prop y) (f y))
+     VI   = (λ f y' y → f y y')
+     VII  = (λ f y' y t → f y' (y , t))
      VIII = (λ _ y' → Π-proj⁻¹ (y' , ≈-refl 𝓐 y') (fan-prop y') refl)
 
  prop-cofan-to-fan : ((x : ⟨ 𝓐 ⟩) → is-prop (cofan x))
@@ -83,25 +83,25 @@ extensionality.
  prop-cofan-to-fan co-prop = I ∼-refl
   where
    I =
-    ((x : ⟨ 𝓐 ⟩) → is-prop (fan x))                                    ←⟨ id ⟩
-    ((x : ⟨ 𝓐 ⟩) → ((y , s) (y' , t) : fan x) → (y , s) ＝ (y' , t))   ←⟨ II ⟩ 
+    ((x : ⟨ 𝓐 ⟩) → is-prop (fan x))                                     ←⟨ id ⟩
+    ((x : ⟨ 𝓐 ⟩) → ((y , s) (y' , t) : fan x) → (y , s) ＝ (y' , t))    ←⟨ II ⟩
     ((x y : ⟨ 𝓐 ⟩) (s : x ≈⟨ 𝓐 ⟩ y) (y' : ⟨ 𝓐 ⟩) (t : x ≈⟨ 𝓐 ⟩ y')
-      → (y , s) ＝ (y' , t))                                           ←⟨ III ⟩
+      → (y , s) ＝ (y' , t))                                            ←⟨ III ⟩
     ((y x : ⟨ 𝓐 ⟩) (s : x ≈⟨ 𝓐 ⟩ y) (y' : ⟨ 𝓐 ⟩) (t : x ≈⟨ 𝓐 ⟩ y')
-      → (y , s) ＝ (y' , t))                                           ←⟨ IV ⟩
+      → (y , s) ＝ (y' , t))                                            ←⟨ IV ⟩
     ((y : ⟨ 𝓐 ⟩) ((x , s) : cofan y) (y' : ⟨ 𝓐 ⟩) (t : x ≈⟨ 𝓐 ⟩ y')
-      → (y , s) ＝ (y' , t))                                           ←⟨ V ⟩
-    ((y y' : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VI ⟩
-    ((y' y : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t)) ←⟨ VII ⟩
-    ((y' : ⟨ 𝓐 ⟩) ((y , t) : cofan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))←⟨ VIII ⟩
+      → (y , s) ＝ (y' , t))                                            ←⟨ V ⟩
+    ((y y' : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))   ←⟨ VI ⟩
+    ((y' y : ⟨ 𝓐 ⟩) (t : y ≈⟨ 𝓐 ⟩ y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))   ←⟨ VII ⟩
+    ((y' : ⟨ 𝓐 ⟩) ((y , t) : cofan y') → (y , ≈-refl 𝓐 y) ＝ (y' , t))  ←⟨ VIII ⟩
     ((y' : ⟨ 𝓐 ⟩) → (y' , ≈-refl 𝓐 y') ＝[ fan y' ] (y' , ≈-refl 𝓐 y')) ▢
     where
-     II = (λ f x (y , s) (y' , t) → f x y s y' t)
-     III = (λ f x y → f y x)
-     IV = (λ f y x s y' t → f y (x , s) y' t)
-     V = (λ f y → Π-proj⁻¹ (y , ≈-refl 𝓐 y) (co-prop y) (f y))
-     VI = (λ f y y' → f y' y)
-     VII = (λ f y' y t → f y' (y , t))
+     II   = (λ f x (y , s) (y' , t) → f x y s y' t)
+     III  = (λ f x y → f y x)
+     IV   = (λ f y x s y' t → f y (x , s) y' t)
+     V    = (λ f y → Π-proj⁻¹ (y , ≈-refl 𝓐 y) (co-prop y) (f y))
+     VI   = (λ f y y' → f y' y)
+     VII  = (λ f y' y t → f y' (y , t))
      VIII = (λ _ y' → Π-proj⁻¹ (y' , ≈-refl 𝓐 y') (co-prop y') refl)
 
  contr-fan-to-prop : ((x : ⟨ 𝓐 ⟩) → is-contr (fan x))
