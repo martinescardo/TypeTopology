@@ -154,47 +154,45 @@ If each fan is propositional then id-to-edge is an equivalence.
                     → x ＝ y
   helper-edge-to-id {x} {.x} .(≈-refl 𝓐 x) refl = refl
 
- module _ (prop-fans : ((x : ⟨ 𝓐 ⟩) → is-prop (fan x))) where
+ module _
+         (prop-fans : ((x : ⟨ 𝓐 ⟩) → is-prop (fan x)))
+         (x y : ⟨ 𝓐 ⟩)
+        where
 
-  prop-fans-edge-to-id : (x y : ⟨ 𝓐 ⟩)
-                       → x ≈⟨ 𝓐 ⟩ y
+  prop-fans-edge-to-id : x ≈⟨ 𝓐 ⟩ y
                        → x ＝ y
-  prop-fans-edge-to-id x y p
+  prop-fans-edge-to-id p
    = helper-edge-to-id p (prop-fans x (x , ≈-refl 𝓐 x) (y , p))
 
-  prop-fans-gives-retraction : (x y : ⟨ 𝓐 ⟩)
-                             → has-retraction id-to-edge
-  prop-fans-gives-retraction x y = (prop-fans-edge-to-id x y , II x y)
+  prop-fans-gives-retraction : has-retraction id-to-edge
+  prop-fans-gives-retraction = (prop-fans-edge-to-id , II)
    where
-    I : (x : ⟨ 𝓐 ⟩) → prop-fans x (x , ≈-refl 𝓐 x) (x , ≈-refl 𝓐 x) ＝ refl
-    I x = props-are-sets (prop-fans x)
-           (prop-fans x (x , ≈-refl 𝓐 x) (x , ≈-refl 𝓐 x)) refl
-    II : (x y : ⟨ 𝓐 ⟩) (p : x ＝ y)
-       → prop-fans-edge-to-id x y (id-to-edge p) ＝ p
-    II x .x refl = ap (helper-edge-to-id (≈-refl 𝓐 x)) (I x)
+    I : prop-fans x (x , ≈-refl 𝓐 x) (x , ≈-refl 𝓐 x) ＝ refl
+    I = props-are-sets (prop-fans x)
+         (prop-fans x (x , ≈-refl 𝓐 x) (x , ≈-refl 𝓐 x)) refl
+    II : (p : x ＝ y)
+       → prop-fans-edge-to-id (id-to-edge p) ＝ p
+    II refl = ap (helper-edge-to-id (≈-refl 𝓐 x)) I
 
-  id-are-retracts-of-edges : (x y : ⟨ 𝓐 ⟩)
-                           → retract (x ＝ y) of (x ≈⟨ 𝓐 ⟩ y)
-  id-are-retracts-of-edges x y
-   = (prop-fans-edge-to-id x y , id-to-edge ,
-      retraction-equation (id-to-edge) (prop-fans-gives-retraction x y))
+  id-are-retracts-of-edges : retract (x ＝ y) of (x ≈⟨ 𝓐 ⟩ y)
+  id-are-retracts-of-edges
+   = (prop-fans-edge-to-id , id-to-edge ,
+      retraction-equation id-to-edge prop-fans-gives-retraction)
 
-  prop-fans-gives-section : (x y : ⟨ 𝓐 ⟩)
-                          → has-section id-to-edge
-  prop-fans-gives-section x y
-   = (prop-fans-edge-to-id x y , II)
+  prop-fans-gives-section : has-section id-to-edge
+  prop-fans-gives-section
+   = (prop-fans-edge-to-id , II)
    where
     I : (p : x ≈⟨ 𝓐 ⟩ y) (ϕ : (x , ≈-refl 𝓐 x) ＝ (y , p))
       → id-to-edge (helper-edge-to-id p ϕ) ＝ p
     I p refl = refl
     II : (p : x ≈⟨ 𝓐 ⟩ y)
-       → id-to-edge (prop-fans-edge-to-id x y p) ＝ p
+       → id-to-edge (prop-fans-edge-to-id p) ＝ p
     II p = I p (prop-fans x (x , ≈-refl 𝓐 x) (y , p))
 
-  edges-are-retracts-of-id : (x y : ⟨ 𝓐 ⟩)
-                           → retract (x ≈⟨ 𝓐 ⟩ y) of (x ＝ y)
-  edges-are-retracts-of-id x y
-   = (id-to-edge , prop-fans-gives-section x y)
+  edges-are-retracts-of-id : retract (x ≈⟨ 𝓐 ⟩ y) of (x ＝ y)
+  edges-are-retracts-of-id
+   = (id-to-edge , prop-fans-gives-section)
 
  id-to-edge-equiv-implies-prop-fans : ((x y : ⟨ 𝓐 ⟩) → is-equiv id-to-edge)
                                     → ((x : ⟨ 𝓐 ⟩) → is-prop (fan x))
