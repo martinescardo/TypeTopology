@@ -31,11 +31,11 @@ open import ReflexiveGraphs.Type
 module _ (𝓐 : Refl-Graph 𝓤 𝓥) where
 
  fan : ⟨ 𝓐 ⟩
-     → 𝓤 ⊔ 𝓥 ̇ 
+     → 𝓤 ⊔ 𝓥 ̇
  fan x = Σ y ꞉ ⟨ 𝓐 ⟩ , x ≈⟨ 𝓐 ⟩ y
 
  cofan : ⟨ 𝓐 ⟩
-       → 𝓤 ⊔ 𝓥 ̇ 
+       → 𝓤 ⊔ 𝓥 ̇
  cofan x = Σ y ꞉ ⟨ 𝓐 ⟩ , y ≈⟨ 𝓐 ⟩ x
 
 \end{code}
@@ -48,7 +48,7 @@ It is worth noting that the proofs that follow were originally discovered as
 a string of equivalences, but to witness the equivalence requires function
 extensionality. The underlying maps of the equivalences are sufficient for the
 proof to go through and thus we are able to avoid appeals to function
-extensionality. 
+extensionality.
 
 \begin{code}
 
@@ -208,7 +208,7 @@ If each fan is propositional then id-to-edge is an equivalence.
   → ((x y : ⟨ 𝓐 ⟩) → is-equiv id-to-edge)
  prop-fans-implies-id-to-edge-equiv prop-fans x y
   = (prop-fans-gives-section prop-fans x y ,
-      prop-fans-gives-retraction prop-fans x y) 
+      prop-fans-gives-retraction prop-fans x y)
 
 \end{code}
 
@@ -217,7 +217,7 @@ one could use any of the equivalent characterizations.
 
 \begin{code}
 
-is-univalent-refl-graph : (𝓐 : Refl-Graph 𝓤 𝓥) → 𝓤 ⊔ 𝓥 ̇ 
+is-univalent-refl-graph : (𝓐 : Refl-Graph 𝓤 𝓥) → 𝓤 ⊔ 𝓥 ̇
 is-univalent-refl-graph 𝓐 = (x : ⟨ 𝓐 ⟩) → is-prop (fan 𝓐 x)
 
 Univalent-Refl-Graph : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
@@ -244,7 +244,7 @@ underlying-refl-graph : (𝓐 : Univalent-Refl-Graph 𝓤 𝓥)
                       → Refl-Graph 𝓤 𝓥
 underlying-refl-graph (𝓐 , _) = 𝓐
 
-syntax underlying-refl-graph 𝓐 = 𝓐 /ᵤ 
+syntax underlying-refl-graph 𝓐 = 𝓐 /ᵤ
 
 underlying-refl-graph-is-univalent : (𝓐 : Univalent-Refl-Graph 𝓤 𝓥)
                                    → is-univalent-refl-graph (𝓐 /ᵤ)
@@ -293,6 +293,6 @@ module _ (𝓐 : Refl-Graph 𝓤 𝓥) where
   = I (ua x (x , ≈-refl 𝓐 x) (y , p))
   where
    I : (x , ≈-refl 𝓐 x) ＝ (y , p) → P x y p
-   I refl = R x  
+   I refl = R x
 
 \end{code}
