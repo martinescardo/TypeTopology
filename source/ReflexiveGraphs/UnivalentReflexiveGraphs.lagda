@@ -152,7 +152,7 @@ If each fan is propositional then id-to-edge is an equivalence.
                     → (p : x ≈⟨ 𝓐 ⟩ y)
                     → (x , ≈-refl 𝓐 x) ＝ (y , p)
                     → x ＝ y
-  helper-edge-to-id {x} {.x} .(≈-refl 𝓐 x) refl = refl
+  helper-edge-to-id _ refl = refl
 
  module _
          (prop-fans : ((x : ⟨ 𝓐 ⟩) → is-prop (fan x)))
