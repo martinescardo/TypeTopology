@@ -21,6 +21,7 @@ import gist.multiset-addendum-question
 import gist.not-an-apartness
 import gist.remove-swap
 import gist.transport-discussion
+import gist.ThereAreNoHigherSemilattices
 import gist.wrong-proofs
 
 \end{code}
