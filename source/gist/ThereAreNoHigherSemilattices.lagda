@@ -112,7 +112,7 @@ eq-congr refl refl p = p
 
 When h = refl the square collapses to a point and the loop is unchanged:
 
-    a ══ p ══ a
+    a ═══ p ══ a
     ║          ║
     h          h    ↝   a ══ refl ══ a
     ║          ║
@@ -173,7 +173,7 @@ eq-congr-sq refl refl refl = refl
 
 \end{code}
 
-We now how that equality congruence is natural.
+We now know that equality congruence is natural.
 
 The cleanest expression is a commutative square whose nodes are
 path spaces and whose edges are "apply congruence with":
