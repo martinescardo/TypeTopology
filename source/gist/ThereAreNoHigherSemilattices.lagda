@@ -221,10 +221,10 @@ and then to the induced (ha', hb').
 eq-congr-nat : {A : Type} {a b x y : A}
                (ha : a ＝ a) (hb : b ＝ b) (hax : a ＝ x) (hby : b ＝ y)
                (p : a ＝ b)
-              → eq-congr hax hby (eq-congr ha hb p)
-              ＝ eq-congr
-                  (eq-congr hax hax ha) (eq-congr hby hby hb)
-                  (eq-congr hax hby p)
+             → eq-congr hax hby (eq-congr ha hb p)
+             ＝ eq-congr
+                 (eq-congr hax hax ha) (eq-congr hby hby hb)
+                 (eq-congr hax hby p)
 eq-congr-nat ha hb refl refl p = refl
 
 \end{code}
@@ -470,10 +470,8 @@ and using ⋆-idemp.
 
 \end{code}
 
-Swapping act-l and act-r; deducing act-l ＝ act-r
-─────────────────────────────────────────────────
-
-act-swap follows from comm-loop via the splitting ⋆-in-terms-of-∙:
+`act-swap` defined below follows from comm-loop via the splitting
+⋆-in-terms-of-∙:
 
   act-l p ∙ act-r q
     ＝ p ⋆ q              (by ⋆-in-terms-of-∙)
