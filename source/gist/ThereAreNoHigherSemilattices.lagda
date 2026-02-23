@@ -637,7 +637,8 @@ parenthesization.
 
 \end{code}
 
-We strip assoc-self using commutativity of ΩA and the square identity:
+We strip assoc-self using the commutativity of ΩA and the square
+identity:
 
   assoc-self ∙ ⋆-assoc'  ＝  (p ⋆ q) ⋆ r ∙ assoc-self
 
@@ -710,4 +711,4 @@ This shows A is a set.
 
 \end{code}
 
-Which shows that A is a set, or homotopy 0-type, as we wished.
+Which shows that A is a set, or a homotopy 0-type, as we wished.
