@@ -459,7 +459,7 @@ and using ⋆-idemp.
 
 \end{code}
 
-THe function `act-swap` defined below follows from comm-loop via the
+The function `act-swap` defined below follows from comm-loop via the
 splitting ⋆-in-terms-of-∙:
 
   act-l p ∙ act-r q
