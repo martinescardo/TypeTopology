@@ -19,7 +19,7 @@ are, for suitably defined act-l and act-r,
   (i)   p ⋆ p ＝ p                             (⋆-idemp)
   (ii)  p ⋆ q ＝ act-l p ∙ act-r q             (⋆-in-terms-of-∙)
   (iii) p ⋆ q ＝ q ⋆ p                         (comm-loop)
-  (iv)  act-l p ＝ act-r p                     (act-l＝act-r)
+  (iv)  act-l p ＝ act-r p                     (only-one-act)
   (v)   act-l p ∙ act-l p ＝ p                 (⋆-idemp-lr)
   (vi)  act-l p ∙ act-l q ＝ act-l q ∙ act-l p (comm-lr)
 
