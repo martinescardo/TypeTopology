@@ -8,7 +8,7 @@ David's Agda file [1].
 [1] David Wärn. https://dwarn.se/agda/Idem.html , 17 February 2026.
     (See also https://mathstodon.xyz/deck/@dwarn/116091515645003634)
 
-I add some diagrams and some explanation, and rename some things,
+I add some diagrams and some explanations, and rename some things,
 which I hope are correct and what David intended.
 
 Proof sketch (formalized in the anonymous module at the very end of
@@ -125,7 +125,7 @@ eq-congr-refl refl = refl
 
 \end{code}
 
-Equality Congruence distributes over path concatenation:
+Equality congruence distributes over path concatenation:
 
     a ══ p ══ b ══ q ═══ c
     ║         ║          ║
@@ -155,7 +155,7 @@ eq-congr-sym {hax = refl} {hby = refl} refl = refl
 
 \end{code}
 
-We now construct a square identity.
+We now construct a square congruence identity.
 
 Going right-then-down equals going down-then-right:
 
@@ -173,7 +173,7 @@ eq-congr-sq refl refl refl = refl
 
 \end{code}
 
-We now know that equality congruence is natural.
+We now show that equality congruence is natural.
 
 The cleanest expression is a commutative square whose nodes are
 path spaces and whose edges are "apply congruence with":
@@ -458,8 +458,8 @@ and using ⋆-idemp.
 
 \end{code}
 
-`act-swap` defined below follows from comm-loop via the splitting
-⋆-in-terms-of-∙:
+THe function `act-swap` defined below follows from comm-loop via the
+splitting ⋆-in-terms-of-∙:
 
   act-l p ∙ act-r q
     ＝ p ⋆ q              (by ⋆-in-terms-of-∙)
@@ -555,7 +555,7 @@ The path assoc-self is the loop
     x₀*(x₀*x₀) ═ (by idem-triple-r)
     x₀
 
-that witnesses the path between the two strategies.  Equality
+that witnesses the path between the two constructions.  Equality
 congruence with assoc-self gives ⋆-assoc'.  Since ΩA is commutative
 (loop-comm) and the equality congruence witness satisfies the square
 identity (eq-congr-sq), we can use ∙-cancel to strip assoc-self and
@@ -698,8 +698,8 @@ Every loop is trivial:
 
   p  ＝  act-l p ∙ act-l p  ＝  refl ∙ refl  ＝  refl.
 
-(The first step is ⋆-idemp-lr backwards; the second is act-l-trivial.)
-This shows A is a set.
+The first step is ⋆-idemp-lr backwards, and the second is
+act-l-trivial. This shows A is a set, as we wished.
 
 \begin{code}
 
@@ -710,5 +710,3 @@ This shows A is a set.
    ∙ ∙refl refl
 
 \end{code}
-
-Which shows that A is a set, or a homotopy 0-type, as we wished.
