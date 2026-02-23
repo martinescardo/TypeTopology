@@ -54,8 +54,7 @@ open import Agda.Primitive renaming (Set to Type)
 
 \end{code}
 
-Basic path combinators
-──────────────────────
+Basic path combinators.
 
 \begin{code}
 
