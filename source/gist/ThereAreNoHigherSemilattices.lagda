@@ -129,7 +129,7 @@ eq-congr-refl refl = refl
 
 Equality Congruence distributes over path concatenation:
 
-    a ══ p ══ b ══ q ══ c
+    a ══ p ══ b ══ q ═══ c
     ║         ║          ║
    h₁        h₂         h3
     ║         ║          ║
@@ -417,8 +417,9 @@ pointwise idempotence of *.  For any p : a ＝ b:
 Commutativity of _⋆_
 ────────────────────
 
-Strategy: use the commutativity of * as a base-point-preserving loop
-comm-self : x₀ ＝ x₀, and show that equality congruence by it swaps _⋆_.
+We use the commutativity of * as a base-point-preserving loop
+comm-self : x₀ ＝ x₀, and show that equality congruence by it swaps
+_⋆_.
 
 comm-loop-raw builds the following stacked rectangle:
 
