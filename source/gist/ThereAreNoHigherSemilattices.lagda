@@ -21,7 +21,7 @@ are, for suitably defined act-l and act-r,
   (iii) p ⋆ q ＝ q ⋆ p                         (comm-loop)
   (iv)  act-l p ＝ act-r p                     (only-one-act)
   (v)   act-l p ∙ act-l p ＝ p                 (⋆-idemp-lr)
-  (vi)  act-l p ∙ act-l q ＝ act-l q ∙ act-l p (comm-lr)
+  (vi)  act-l p ∙ act-l q ＝ act-l q ∙ act-l p (comm-l)
 
 An Eckmann–Hilton argument using (v) and (vi) gives:
 
@@ -501,13 +501,13 @@ commutative.
 We now know
 
   (v)  act-l p ∙ act-l p ＝ p                  (using act-l ＝ act-r)
-  (vi) act-l p ∙ act-l q ＝ act-l q ∙ act-l p  (comm-lr, using act-swap)
+  (vi) act-l p ∙ act-l q ＝ act-l q ∙ act-l p  (comm-l, using act-swap)
 
 Then
 
   p ∙ q
    ＝ (act-l p ∙ act-l p) ∙ (act-l q ∙ act-l q) (by ⋆-idemp-lr twice)
-   ＝ (act-l q ∙ act-l q) ∙ (act-l p ∙ act-l p) (by comm₂, using comm-lr)
+   ＝ (act-l q ∙ act-l q) ∙ (act-l p ∙ act-l p) (by comm₂, using comm-l)
    ＝ q ∙ p
 
 \begin{code}
@@ -517,8 +517,8 @@ Then
    ap (act-l p ∙_) (only-one-act p)
    ∙ eq-congr (⋆-in-terms-of-∙ p p) refl (⋆-idemp p)
 
-  comm-lr : (p q : ΩA) → act-l p ∙ act-l q ＝ act-l q ∙ act-l p
-  comm-lr p q =
+  comm-l : (p q : ΩA) → act-l p ∙ act-l q ＝ act-l q ∙ act-l p
+  comm-l p q =
    eq-congr
     (ap (act-l p ∙_) (sym (only-one-act q)))
     (ap (act-l q ∙_) (sym (only-one-act p)))
@@ -529,7 +529,7 @@ Then
    eq-congr
     (ap₂ _∙_ (⋆-idemp-lr p) (⋆-idemp-lr q))
     (ap₂ _∙_ (⋆-idemp-lr q) (⋆-idemp-lr p))
-    (comm₂ (comm-lr p q))
+    (comm₂ (comm-l p q))
 
 \end{code}
 
