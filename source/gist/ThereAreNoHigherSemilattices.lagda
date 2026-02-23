@@ -654,7 +654,7 @@ We strip assoc-self using commutativity of ΩA and the square identity:
 
 We now conclude that every loop is trivial.
 
-Step 1 — act-l is idempotent:
+act-l is idempotent:
 
   act-l (act-l p)
    ＝ act-l (p ⋆ refl)    (by ⋆-refl)
@@ -674,13 +674,13 @@ Step 1 — act-l is idempotent:
 
 \end{code}
 
-Step 2 — act-l p ＝ refl.
+act-l p ＝ refl.
 
   act-l p ∙ act-l p
    ＝ act-l (act-l p) ∙ act-l (act-l p)   (act-l-idem twice)
    ＝ act-l p                             (⋆-idemp-lr)
 
-so act-l p acts as a right-identity on itself; left-cancel to get refl.
+So act-l p acts as a right-identity on itself; left-cancel to get refl.
 
 \begin{code}
 
@@ -693,7 +693,7 @@ so act-l p acts as a right-identity on itself; left-cancel to get refl.
 
 \end{code}
 
-Step 3 — every loop is trivial:
+Every loop is trivial:
 
   p  ＝  act-l p ∙ act-l p  ＝  refl ∙ refl  ＝  refl.
 
@@ -709,3 +709,5 @@ This shows A is a set.
    ∙ ∙refl refl
 
 \end{code}
+
+Which shows that A is a set, or homotopy 0-type, as we wished.
