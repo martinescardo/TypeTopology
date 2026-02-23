@@ -8,8 +8,9 @@ David's Agda file [1].
 [1] David Wärn. https://dwarn.se/agda/Idem.html , 17 February 2026.
     (See also https://mathstodon.xyz/deck/@dwarn/116091515645003634)
 
-I add some diagrams and some explanations, and rename some things,
-which I hope are correct and what David intended.
+I add, in the discussion of the formal definitions and proofs, some
+diagrams and some explanations, and rename some things, which I hope
+are correct and what David intended.
 
 Proof sketch (formalized in the anonymous module at the very end of
 this file). Fix a type A and an x₀ : A, and write ΩA = (x₀ ＝ x₀). An
