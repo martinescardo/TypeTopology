@@ -89,8 +89,7 @@ refl∙ refl = refl
 
 \end{code}
 
-Equality (or path) congruence
-─────────────────────────────
+We now define a notion of equality (or path) congruence.
 
 `eq-congr h₁ h₂ p` transports a path p : a ＝ b across a commutative
 square to obtain a path x ＝ y:
@@ -145,8 +144,7 @@ eq-congr-∙ {h₁ = refl} {h₂ = refl} {h3 = refl} p q = refl
 
 \end{code}
 
-Inverting an equality congruence
-────────────────────────────────
+Equality congruence is invertible.
 
 \begin{code}
 
@@ -158,8 +156,7 @@ eq-congr-sym {hax = refl} {hby = refl} refl = refl
 
 \end{code}
 
-The square identity
-───────────────────
+We now construct a square identity.
 
 Going right-then-down equals going down-then-right:
 
@@ -177,8 +174,7 @@ eq-congr-sq refl refl refl = refl
 
 \end{code}
 
-Naturality of equality congruence
-─────────────────────────────────
+We now how that equality congruence is natural.
 
 The cleanest expression is a commutative square whose nodes are
 path spaces and whose edges are "apply congruence with":
@@ -250,9 +246,6 @@ Left-cancellation of path concatenation.
 
 \end{code}
 
-Eckmann–Hilton
-──────────────
-
 The standard Eckmann–Hilton argument shows that two binary operations
 on a set that share a unit and interchange with each other must
 coincide and be commutative. Here we only need one piece of that
@@ -291,11 +284,10 @@ comm₂ {p = p} {q = q} h =
 
 \end{code}
 
-Main theorem
-────────────
+We now come to the main theorem.
 
-We fix a type A with an associative, commutative, idempotent operation,
-and a base-point x₀.
+We fix a type A with an associative, commutative, idempotent
+operation, and a base-point x₀.
 
 \begin{code}
 
@@ -312,9 +304,6 @@ module _
   ΩA = x₀ ＝ x₀
 
 \end{code}
-
-*-paths and _⋆_
-───────────────
 
 The operation * acts on paths componentwise:
 
@@ -373,6 +362,8 @@ It splits as act-l p ∙ act-r q:
       ║                    ║                      ║
      x₀ ═════ act-l p ════ x₀ ═════ act-r q ═════ x₀
 
+With this we have that _*_ induces an operation _⋆_ on loops.
+
 \begin{code}
 
   _⋆_ : ΩA → ΩA → ΩA
@@ -391,8 +382,7 @@ It splits as act-l p ∙ act-r q:
 
 \end{code}
 
-Idempotence of _⋆_
-──────────────────
+We now show that _⋆_ is idempotent.
 
 When both arguments are equal, *-paths p p reduces to p via the
 pointwise idempotence of *.  For any p : a ＝ b:
@@ -414,8 +404,7 @@ pointwise idempotence of *.  For any p : a ＝ b:
 
 \end{code}
 
-Commutativity of _⋆_
-────────────────────
+Next, we show that _⋆_ is commutative.
 
 We use the commutativity of * as a base-point-preserving loop
 comm-self : x₀ ＝ x₀, and show that equality congruence by it swaps
@@ -506,8 +495,8 @@ To deduce act-l ＝ act-r, specialize to q = refl:
 
 \end{code}
 
-Eckmann–Hilton: loop concatenation is commutative
-─────────────────────────────────────────────────
+Using a Eckmann–Hilton argument, we show that loop concatenation is
+commutative.
 
 We now know
 
@@ -544,8 +533,7 @@ Then
 
 \end{code}
 
-Associativity of _⋆_
-────────────────────
+We now show that _⋆_ is associative.
 
 assoc-paths says that * acts functorially on 2×1 grids of paths:
 
@@ -665,8 +653,7 @@ We strip assoc-self using commutativity of ΩA and the square identity:
 
 \end{code}
 
-Conclusion: every loop is trivial
-─────────────────────────────────
+We now conclude that every loop is trivial.
 
 Step 1 — act-l is idempotent:
 
