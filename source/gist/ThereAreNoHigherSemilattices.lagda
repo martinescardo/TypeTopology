@@ -194,13 +194,13 @@ edges are hax and hby:
 
         a ══ ha ══ a
        ╱║           ║╲
-    hax ║           ║  hax
-     ╱  p           p'  ╲
-    x   ║           ║    x
-    ║   b ══ hb ══ b     ║
-    ║  ╱           ╲     ║
-    ║ hby          hby   ║
-    ╲╱               ╲  ╱
+    hax ║           ║ hax
+     ╱  p           p' ╲
+    x   ║           ║   x
+    ║   b ══ hb ══ b    ║
+    ║  ╱            ╲   ║
+    ║ hby           hby ║
+    ╲╱                ╲╱
      y ═════ hb' ═════ y
 
   where  p  = eq-congr hax hby p      (front face)
