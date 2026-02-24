@@ -310,7 +310,7 @@ The operation * acts on paths componentwise:
 
     a₁ ══ p ══ a₂       b₁ ══ q ══ b₂
 
-                                         ↝   a₁*b₁ ══ *-paths p q ══ a₂*b₂.
+                                         ↝   a₁*b₁ ══ p ★ q ══ a₂*b₂.
 
 It also splits into a left part followed by a right part:
 
@@ -318,12 +318,12 @@ It also splits into a left part followed by a right part:
 
 \begin{code}
 
-  *-paths : {a₁ a₂ b₁ b₂ : A} → a₁ ＝ a₂ → b₁ ＝ b₂ → a₁ * b₁ ＝ a₂ * b₂
-  *-paths = ap₂ _*_
+  _★_ : {a₁ a₂ b₁ b₂ : A} → a₁ ＝ a₂ → b₁ ＝ b₂ → a₁ * b₁ ＝ a₂ * b₂
+  _★_ = ap₂ _*_
 
-  *-paths＝∙ : {a₁ a₂ b₁ b₂ : A} (p : a₁ ＝ a₂) (q : b₁ ＝ b₂)
-             → *-paths p q ＝ ap (_* b₁) p ∙ ap (a₂ *_) q
-  *-paths＝∙ refl refl = refl
+  ★-in-terms-of-∙ : {a₁ a₂ b₁ b₂ : A} (p : a₁ ＝ a₂) (q : b₁ ＝ b₂)
+                  → p ★ q ＝ ap (_* b₁) p ∙ ap (a₂ *_) q
+  ★-in-terms-of-∙ refl refl = refl
 
 \end{code}
 
@@ -345,15 +345,15 @@ a loop at x₀:
 
 \end{code}
 
-Given loops p, q : x₀ ＝ x₀, form the loop at x₀*x₀ via *-paths, then
+Given loops p, q : x₀ ＝ x₀, we form the loop at x₀*x₀ via _★_, then
 reduce it:
 
-    x₀*x₀ ═══ *-paths p q ═══ x₀*x₀
+    x₀*x₀ ══════ p ★ q ══════ x₀*x₀
       ║                         ║
-   idem x₀                    idem x₀
+    idem x₀                   idem x₀
       ║                         ║
      x₀ ═══════════════════════ x₀
-               p ⋆ q
+                p ⋆ q
 
 It splits as act-l p ∙ act-r q:
 
@@ -363,12 +363,12 @@ It splits as act-l p ∙ act-r q:
       ║                    ║                      ║
      x₀ ═════ act-l p ════ x₀ ═════ act-r q ═════ x₀
 
-With this we have that _*_ induces an operation _⋆_ on loops.
+With this we have that _★_ induces an operation _⋆_ on loops.
 
 \begin{code}
 
   _⋆_ : ΩA → ΩA → ΩA
-  p ⋆ q = reduce (*-paths p q)
+  p ⋆ q = reduce (p ★ q)
 
   act-l : ΩA → ΩA
   act-l p = reduce (ap (_* x₀) p)
@@ -378,50 +378,49 @@ With this we have that _*_ induces an operation _⋆_ on loops.
 
   ⋆-in-terms-of-∙ : (p q : ΩA) → p ⋆ q ＝ act-l p ∙ act-r q
   ⋆-in-terms-of-∙ p q =
-   ap reduce (*-paths＝∙ _ _)
+   ap reduce (★-in-terms-of-∙ _ _)
    ∙ eq-congr-∙ (ap (_* x₀) p) (ap (x₀ *_) q)
 
 \end{code}
 
 We now show that _⋆_ is idempotent.
 
-When both arguments are equal, *-paths p p reduces to p via the
-pointwise idempotence of *.  For any p : a ＝ b,
+When both arguments are equal, p ★ p reduces to p via the
+pointwise idempotence of *, for any p : a ＝ b:
 
-    a*a ══ *-paths p p ══ b*b
-     ║                     ║
-   idem a                idem b
-     ║                     ║
-     a ══════════ p ══════ b
+    a*a ══════ p ★ p ═════ b*b
+     ║                      ║
+   idem a                 idem b
+     ║                      ║
+     a ═════════ p ════════ b
 
 \begin{code}
 
-  idem-paths : {a b : A} (p : a ＝ b)
-             → eq-congr (idem a) (idem b) (*-paths p p) ＝ p
-  idem-paths refl = eq-congr-refl (idem _)
+  ★-idemp : {a b : A} (p : a ＝ b)
+          → eq-congr (idem a) (idem b) (p ★ p) ＝ p
+  ★-idemp refl = eq-congr-refl (idem _)
 
   ⋆-idemp : (p : ΩA) → p ⋆ p ＝ p
-  ⋆-idemp = idem-paths
+  ⋆-idemp = ★-idemp
 
 \end{code}
 
 Next, we show that _⋆_ is commutative.
 
 We use the commutativity of * as a base-point-preserving loop
-comm-self : x₀ ＝ x₀, and show that equality congruence by it swaps
-_⋆_.
+comm-self : x₀ ＝ x₀, and show that equality congruence by it swaps _⋆_.
 
 comm-loop-raw builds the following stacked rectangle:
 
-    x₀*x₀ ═══ *-paths p q ════ x₀*x₀   (top, before reduce)
-      ║                          ║
-   comm x₀ x₀              comm x₀ x₀  (side paths via commutativity)
-      ║                          ║
-    x₀*x₀ ════ *-paths q p ═══ x₀*x₀   (comm-paths flips the args)
-      ║                          ║
-   idem x₀                  idem x₀
-      ║                          ║
-     x₀ ══════ q ⋆ p ═══════════ x₀
+    x₀*x₀ ═══ p ★ q ════ x₀*x₀  (top, before reduce)
+      ║                    ║
+ comm x₀ x₀         comm x₀ x₀  (side paths via commutativity)
+      ║                    ║
+    x₀*x₀ ═══ q ★ p ═══ x₀*x₀   (comm-paths flips the args)
+      ║                    ║
+    idem x₀              idem x₀
+      ║                    ║
+     x₀ ═════ q ⋆ p ══════ x₀
 
 Stacking the rectangles gives
 
@@ -434,7 +433,7 @@ and using ⋆-idemp.
 \begin{code}
 
   comm-paths : {a b x y : A} (p : a ＝ x) (q : b ＝ y)
-             → eq-congr (comm a b) (comm x y) (*-paths p q) ＝ *-paths q p
+             → eq-congr (comm a b) (comm x y) (p ★ q) ＝ q ★ p
   comm-paths refl refl = eq-congr-refl _
 
   comm-self : ΩA
@@ -444,7 +443,7 @@ and using ⋆-idemp.
                 → eq-congr comm-self comm-self (p ⋆ q) ＝ q ⋆ p
   comm-loop-raw p q =
     eq-congr
-     (eq-congr-nat (comm x₀ x₀) (comm x₀ x₀) (idem x₀) (idem x₀) (*-paths p q))
+     (eq-congr-nat (comm x₀ x₀) (comm x₀ x₀) (idem x₀) (idem x₀) (p ★ q))
      refl
      (ap reduce (comm-paths p q))
 
@@ -538,11 +537,11 @@ We now show that _⋆_ is associative.
 
 assoc-paths says that * acts functorially on 2×1 grids of paths:
 
-    (a*b)*c ══ *-paths (*-paths p q) r ══ (x*y)*z
-        ║                                     ║
-   assoc a b c                           assoc x y z
-        ║                                     ║
-    a*(b*c) ══ *-paths p (*-paths q r) ══ x*(y*z)
+    (a*b)*c ══ (p ★ q) ★ r ══ (x*y)*z
+        ║                         ║
+   assoc a b c               assoc x y z
+        ║                         ║
+    a*(b*c) ══ p ★ (q ★ r) ══ x*(y*z)
 
 We compare two reductions of the triple self-product x₀*x₀*x₀, one
 for each parenthesization:
@@ -566,25 +565,25 @@ obtain ⋆-assoc.
 \begin{code}
 
   assoc-paths : {a b c x y z : A} (p : a ＝ x) (q : b ＝ y) (r : c ＝ z)
-              → eq-congr (assoc a b c) (assoc x y z) (*-paths (*-paths p q) r)
-              ＝ *-paths p (*-paths q r)
+              → eq-congr (assoc a b c) (assoc x y z) ((p ★ q) ★ r)
+              ＝ p ★ (q ★ r)
   assoc-paths refl refl refl = eq-congr-refl _
 
   idem-triple-l : (x₀ * x₀) * x₀ ＝ x₀
-  idem-triple-l = *-paths (idem x₀) refl ∙ idem x₀
+  idem-triple-l = (idem x₀ ★  refl) ∙ idem x₀
 
   idem-triple-r : x₀ * (x₀ * x₀) ＝ x₀
-  idem-triple-r = *-paths refl (idem x₀) ∙ idem x₀
+  idem-triple-r = (refl ★ idem x₀) ∙ idem x₀
 
 \end{code}
 
 We now have, recorded as triple-fold-l,
 
-  (a*b)*d ════════════ *-paths (*-paths p q) r ════════════════════════ (a*b)*d
-     ║                                                                     ║
- *-paths hab refl ∙ hcd                                   *-paths hab refl ∙ hcd
-     ║                                                                     ║
-     e ══ eq-congr hcd hcd (*-paths (eq-congr hab hab (*-paths p q)) r) ══ e
+  (a*b)*d ════════════ (p ★ q) ★ r ════════════════════════ (a*b)*d
+     ║                                                         ║
+(hab ★refl) ∙ hcd                                         (hab ★ refl) ∙ hcd
+     ║                                                         ║
+     e ══ eq-congr hcd hcd ((eq-congr hab hab (p ★ q)) ★ r) ══ e
 
 And we have that triple-fold-r does the same for the right-associated
 parenthesization.
@@ -594,28 +593,34 @@ parenthesization.
   triple-fold-l : {a b c d e : A} (hab : a * b ＝ c) (hcd : c * d ＝ e)
                   (p : a ＝ a) (q : b ＝ b) (r : d ＝ d)
                 → eq-congr
-                   (*-paths hab refl ∙ hcd)
-                   (*-paths hab refl ∙ hcd)
-                   (*-paths (*-paths p q) r)
-                ＝ eq-congr hcd hcd (*-paths (eq-congr hab hab (*-paths p q)) r)
+                   ((hab ★ refl) ∙ hcd)
+                   ((hab ★ refl) ∙ hcd)
+                   ((p ★ q) ★ r)
+                ＝ eq-congr
+                    hcd
+                    hcd
+                    (eq-congr hab hab (p ★ q) ★ r)
   triple-fold-l refl refl p q r = refl
 
   triple-fold-r : {a b c d e : A} (hab : a * b ＝ c) (hcd : d * c ＝ e)
                   (p : a ＝ a) (q : b ＝ b) (r : d ＝ d)
                 → eq-congr
-                   (*-paths refl hab ∙ hcd)
-                   (*-paths refl hab ∙ hcd)
-                   (*-paths r (*-paths p q))
-                ＝ eq-congr hcd hcd (*-paths r (eq-congr hab hab (*-paths p q)))
+                   ((refl ★ hab) ∙ hcd)
+                   ((refl ★ hab) ∙ hcd)
+                   (r ★ (p ★ q))
+                ＝ eq-congr
+                    hcd
+                    hcd
+                    (r ★ eq-congr hab hab (p ★ q))
   triple-fold-r refl refl p q r = refl
 
   loop-triple-l : (p q r : ΩA)
-                → eq-congr idem-triple-l idem-triple-l (*-paths (*-paths p q) r)
+                → eq-congr idem-triple-l idem-triple-l ((p ★ q) ★ r)
                 ＝ (p ⋆ q) ⋆ r
   loop-triple-l p q r = triple-fold-l (idem x₀) (idem x₀) p q r
 
   loop-triple-r : (p q r : ΩA)
-                → eq-congr idem-triple-r idem-triple-r (*-paths p (*-paths q r))
+                → eq-congr idem-triple-r idem-triple-r (p ★ (q ★ r))
                 ＝ p ⋆ (q ⋆ r)
   loop-triple-r p q r = triple-fold-r (idem x₀) (idem x₀) q r p
 
