@@ -6,7 +6,6 @@ Martin Escardo
 
 module Fin.index where
 
-import Fin.ArgMinMax
 import Fin.ArithmeticViaEquivalence
 import Fin.Bishop
 import Fin.Choice

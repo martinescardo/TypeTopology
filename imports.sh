@@ -82,7 +82,7 @@ check_imports() {
   cluster=$(dirname $file)
 
   # And with '.' instead of '/'
-  clustermod=$(echo $cluster | ${sed_cmd} 's/\//./')
+  clustermod=$(echo $cluster | ${sed_cmd} 's/\//./g')
 
   # Get the (relative) module name
   modname=$(basename $file | ${sed_cmd} 's/.lagda$//')
