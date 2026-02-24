@@ -196,7 +196,7 @@ edges are hax and hby:
        ╱║           ║╲
     hax ║           ║ hax
      ╱  p           p' ╲
-    x   ║           ║   x
+    x   ║           ║    x
     ║   b ══  hb ══ b    ║
     ║  ╱             ╲   ║
     ║ hby           hby  ║
