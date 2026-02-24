@@ -219,7 +219,8 @@ eq-congr-nat : {A : Type} {a b x y : A}
                (p : a ＝ b)
              → eq-congr hax hby (eq-congr ha hb p)
              ＝ eq-congr
-                 (eq-congr hax hax ha) (eq-congr hby hby hb)
+                 (eq-congr hax hax ha)
+                 (eq-congr hby hby hb)
                  (eq-congr hax hby p)
 eq-congr-nat ha hb refl refl p = refl
 
@@ -297,7 +298,7 @@ module _
          (idem  : (a : A) → a * a ＝ a)
          (comm  : (a b : A) → a * b ＝ b * a)
          (assoc : (a b c : A) → (a * b) * c ＝ a * (b * c))
-         (x₀   : A)
+         (x₀    : A)
        where
 
   ΩA : Type
@@ -385,7 +386,7 @@ With this we have that _*_ induces an operation _⋆_ on loops.
 We now show that _⋆_ is idempotent.
 
 When both arguments are equal, *-paths p p reduces to p via the
-pointwise idempotence of *.  For any p : a ＝ b:
+pointwise idempotence of *.  For any p : a ＝ b,
 
     a*a ══ *-paths p p ══ b*b
      ║                     ║
@@ -467,7 +468,7 @@ splitting ⋆-in-terms-of-∙:
     ＝ q ⋆ p              (by comm-loop)
     ＝ act-l q ∙ act-r p
 
-To deduce act-l ＝ act-r, specialize to q = refl:
+To deduce act-l ＝ act-r, we specialize to q = refl:
 
   act-l p ∙ act-r refl ＝ act-l refl ∙ act-r p
       act-l p ∙ refl  ＝ refl ∙ act-r p
@@ -549,7 +550,7 @@ for each parenthesization:
     (x₀*x₀)*x₀ ══ idem-triple-l ══ x₀
     x₀*(x₀*x₀) ══ idem-triple-r ══ x₀
 
-The path assoc-self is the loop
+The function path assoc-self is the loop
 
     x₀         ═ (by sym idem-triple-l)
     (x₀*x₀)*x₀ ═ (by assoc)
@@ -592,14 +593,18 @@ parenthesization.
 
   triple-fold-l : {a b c d e : A} (hab : a * b ＝ c) (hcd : c * d ＝ e)
                   (p : a ＝ a) (q : b ＝ b) (r : d ＝ d)
-                → eq-congr (*-paths hab refl ∙ hcd) (*-paths hab refl ∙ hcd)
+                → eq-congr
+                   (*-paths hab refl ∙ hcd)
+                   (*-paths hab refl ∙ hcd)
                    (*-paths (*-paths p q) r)
                 ＝ eq-congr hcd hcd (*-paths (eq-congr hab hab (*-paths p q)) r)
   triple-fold-l refl refl p q r = refl
 
   triple-fold-r : {a b c d e : A} (hab : a * b ＝ c) (hcd : d * c ＝ e)
                   (p : a ＝ a) (q : b ＝ b) (r : d ＝ d)
-                → eq-congr (*-paths refl hab ∙ hcd) (*-paths refl hab ∙ hcd)
+                → eq-congr
+                   (*-paths refl hab ∙ hcd)
+                   (*-paths refl hab ∙ hcd)
                    (*-paths r (*-paths p q))
                 ＝ eq-congr hcd hcd (*-paths r (eq-congr hab hab (*-paths p q)))
   triple-fold-r refl refl p q r = refl
@@ -682,7 +687,8 @@ act-l p ＝ refl.
    ＝ act-l (act-l p) ∙ act-l (act-l p)   (act-l-idem twice)
    ＝ act-l p                             (act-l-idemp)
 
-So act-l p acts as a right-identity on itself; left-cancel to get refl.
+So act-l p acts as a right-identity on itself, and we can left-cancel
+to get refl.
 
 \begin{code}
 
