@@ -96,7 +96,7 @@ square to obtain a path x ＝ y:
 
     a ════ p ═════ b
     ║              ║
-   h₁             h₂
+   h₁              h₂
     ║              ║
     x ════════════ y
            ?
@@ -130,17 +130,17 @@ Equality congruence distributes over path concatenation:
 
     a ══ p ══ b ══ q ═══ c
     ║         ║          ║
-   h₁        h₂         h3
+   h₁        h₂          h₃
     ║         ║          ║
     x ═══════ y ════════ z
 
 \begin{code}
 
 eq-congr-∙ : {A : Type} {a b c x y z : A}
-             {h₁ : a ＝ x} {h₂ : b ＝ y} {h3 : c ＝ z}
+             {h₁ : a ＝ x} {h₂ : b ＝ y} {h₃ : c ＝ z}
              (p : a ＝ b) (q : b ＝ c)
-           → eq-congr h₁ h3 (p ∙ q) ＝ eq-congr h₁ h₂ p ∙ eq-congr h₂ h3 q
-eq-congr-∙ {h₁ = refl} {h₂ = refl} {h3 = refl} p q = refl
+           → eq-congr h₁ h₃ (p ∙ q) ＝ eq-congr h₁ h₂ p ∙ eq-congr h₂ h₃ q
+eq-congr-∙ {h₁ = refl} {h₂ = refl} {h₃ = refl} p q = refl
 
 \end{code}
 
@@ -394,7 +394,7 @@ pointwise idempotence of *.  For any p : a ＝ b,
      ║                     ║
      a ══════════ p ══════ b
 
-\begin{code}#
+\begin{code}
 
   idem-paths : {a b : A} (p : a ＝ b)
              → eq-congr (idem a) (idem b) (*-paths p p) ＝ p
@@ -706,7 +706,8 @@ Every loop is trivial:
   p  ＝  act-l p ∙ act-l p  ＝  refl ∙ refl  ＝  refl.
 
 The first step is act-l-idemp backwards, and the second is
-act-l-trivial. This shows that the type A is a set, as we wished.
+act-l-trivial. This shows that the type A is a set, as we wished to
+know.
 
 \begin{code}
 
