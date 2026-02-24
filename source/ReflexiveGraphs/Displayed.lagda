@@ -1,6 +1,12 @@
 Ian Ray. 28th August 2025.
 
-We define displayed reflexive graphs (see Sterling, Ulrik, etc.)
+We define displayed reflexive graphs (see index for references to Sterling,
+Buchholtz, etc.)
+
+A displayed reflexive graph (defined over a reflexive graph) consists of a
+type family on the carrier of the underlying reflexive graph together with
+an edge relation that is defined over an edge from the underlying reflexive
+graph and a reflexivity datum.
 
 \begin{code}
 
