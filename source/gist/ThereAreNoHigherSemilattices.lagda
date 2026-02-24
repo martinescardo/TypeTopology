@@ -700,7 +700,7 @@ Every loop is trivial:
   p  ＝  act-l p ∙ act-l p  ＝  refl ∙ refl  ＝  refl.
 
 The first step is act-l-idemp backwards, and the second is
-act-l-trivial. This shows A is a set, as we wished.
+act-l-trivial. This shows that the type A is a set, as we wished.
 
 \begin{code}
 
