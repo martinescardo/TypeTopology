@@ -22,7 +22,8 @@ module _ (𝓣 𝓦 : Universe) where
 
 \end{code}
 
-More boiler plate
+Just as with reflexive graphs we will add some boiler plate and syntax to work
+more easily with displayed reflexive graphs.
 
 \begin{code}
 
