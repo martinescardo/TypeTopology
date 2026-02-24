@@ -496,7 +496,7 @@ To deduce act-l ＝ act-r, we specialize to q = refl:
 
 \end{code}
 
-Using a Eckmann–Hilton argument, we show that loop concatenation is
+Using an Eckmann–Hilton argument, we show that loop concatenation is
 commutative.
 
 We now know
