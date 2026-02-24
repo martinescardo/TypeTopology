@@ -24,11 +24,11 @@ are, for suitably defined act-l and act-r,
   (v)   act-l p ∙ act-l p ＝ p                 (act-l-idemp)
   (vi)  act-l p ∙ act-l q ＝ act-l q ∙ act-l p (comm-l)
 
-An Eckmann–Hilton argument using (v) and (vi) gives:
+An Eckmann–Hilton argument using (v) and (vi) gives the following:
 
   (vii) p ∙ q ＝ q ∙ p                         (loop-comm)
 
-Finally, using the associativity of *:
+Finally, using the associativity of *, we get that
 
   (viii) act-l (act-l p) ＝ act-l p            (act-l-idem)
   (ix)   act-l p ＝ refl                       (act-l-trivial)
