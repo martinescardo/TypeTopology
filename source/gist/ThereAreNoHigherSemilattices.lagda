@@ -189,7 +189,7 @@ congruence with (hax, hby)                  congruence with (hax, hby)
          hb' = eq-congr hby hby hb.
 
 The geometric intuition is a cube in A, where the top and bottom faces
-record the ha/hb loops and their conjugates ha'/hb', and the vertical
+record the ha/hb loops and their congruences ha'/hb', and the vertical
 edges are hax and hby:
 
         a ══ ha ══ a
