@@ -328,13 +328,13 @@ It also splits into a left part followed by a right part:
 The function `reduce` uses idempotence to turn a loop at x₀ * x₀ into
 a loop at x₀:
 
-        idem x₀                              idem x₀
-   x₀ ════════ x₀*x₀                  x₀*x₀ ══════════ x₀
-   ║               ║                    ↑               ↑
-   ?       p       ?     (sym)          ║               ║  (sym)
-   ║               ║                    ║               ║
-   x₀ ════════ x₀*x₀                   x₀ ═══════════ x₀*x₀
-        idem x₀                             idem x₀
+       idem x₀
+   x₀ ════════ x₀*x₀
+   ║             ║
+   ║             ║
+   ║             ║
+   x₀ ════════ x₀*x₀
+       idem x₀
 
 \begin{code}
 
@@ -351,13 +351,13 @@ reduce it:
     idem x₀                   idem x₀
       ║                         ║
      x₀ ═══════════════════════ x₀
-                p ⋆ q
+                 p ⋆ q
 
 It splits as act-l p ∙ act-r q:
 
     x₀*x₀ ═ ap(-*x₀) p ═ x₀*x₀ ═ ap(x₀*-) q ═══ x₀*x₀
       ║                    ║                      ║
-    idem                 idem                   idem
+    idem x₀              idem x₀                idem x₀
       ║                    ║                      ║
      x₀ ═════ act-l p ════ x₀ ═════ act-r q ═════ x₀
 
@@ -383,8 +383,8 @@ With this we have that _★_ induces an operation _⋆_ on loops.
 
 We now show that _⋆_ is idempotent.
 
-When both arguments are equal, p ★ p reduces to p via the
-pointwise idempotence of *, for any p : a ＝ b:
+When both arguments are equal, p ★ p reduces to p via the idempotence
+of *, for any p : a ＝ b:
 
     a*a ══════ p ★ p ═════ b*b
      ║                      ║
@@ -410,11 +410,11 @@ comm-self : x₀ ＝ x₀, and show that equality congruence by it swaps _⋆_.
 
 comm-loop-raw builds the following stacked rectangle:
 
-    x₀*x₀ ═══ p ★ q ════ x₀*x₀  (top, before reduce)
+    x₀*x₀ ═══ p ★ q ════ x₀*x₀       (top, before reduce)
       ║                    ║
- comm x₀ x₀         comm x₀ x₀  (side paths via commutativity)
+    comm x₀ x₀           comm x₀ x₀  (side paths via commutativity)
       ║                    ║
-    x₀*x₀ ═══ q ★ p ═══ x₀*x₀   (comm-paths flips the args)
+    x₀*x₀ ═══ q ★ p ════ x₀*x₀       (comm-paths flips the args)
       ║                    ║
     idem x₀              idem x₀
       ║                    ║
@@ -533,7 +533,8 @@ Then
 
 We now show that _⋆_ is associative.
 
-assoc-paths says that * acts functorially on 2×1 grids of paths:
+The function assoc-paths defined below says that * acts functorially
+on 2×1 grids of paths:
 
     (a*b)*c ══ (p ★ q) ★ r ══ (x*y)*z
         ║                         ║
@@ -697,10 +698,15 @@ to get refl.
 
   act-l-trivial : (p : ΩA) → act-l p ＝ refl
   act-l-trivial p =
-   ∙-cancel (act-l p) (act-l p) refl
-    ((ap₂ _∙_ (sym (act-l-idem p)) (sym (act-l-idem p))
-       ∙ act-l-idemp (act-l p))
-       ∙ sym (∙refl (act-l p)))
+   ∙-cancel
+    (act-l p)
+    (act-l p)
+    refl
+    ((ap₂ _∙_
+          (sym (act-l-idem p))
+          (sym (act-l-idem p))
+      ∙ act-l-idemp (act-l p))
+      ∙ sym (∙refl (act-l p)))
 
 \end{code}
 
