@@ -21,7 +21,7 @@ are, for suitably defined act-l and act-r,
   (ii)  p ⋆ q ＝ act-l p ∙ act-r q             (⋆-in-terms-of-∙)
   (iii) p ⋆ q ＝ q ⋆ p                         (comm-loop)
   (iv)  act-l p ＝ act-r p                     (only-one-act)
-  (v)   act-l p ∙ act-l p ＝ p                 (⋆-idemp-lr)
+  (v)   act-l p ∙ act-l p ＝ p                 (act-l-idemp)
   (vi)  act-l p ∙ act-l q ＝ act-l q ∙ act-l p (comm-l)
 
 An Eckmann–Hilton argument using (v) and (vi) gives:
@@ -422,7 +422,7 @@ comm-loop-raw builds the following stacked rectangle:
       ║                          ║
      x₀ ══════ q ⋆ p ═══════════ x₀
 
-Stacking the rectangles gives:
+Stacking the rectangles gives
 
   eq-congr comm-self comm-self (p ⋆ q) ＝ q ⋆ p.
 
@@ -506,14 +506,14 @@ We now know
 Then
 
   p ∙ q
-   ＝ (act-l p ∙ act-l p) ∙ (act-l q ∙ act-l q) (by ⋆-idemp-lr twice)
+   ＝ (act-l p ∙ act-l p) ∙ (act-l q ∙ act-l q) (by act-l-idemp twice)
    ＝ (act-l q ∙ act-l q) ∙ (act-l p ∙ act-l p) (by comm₂, using comm-l)
    ＝ q ∙ p
 
 \begin{code}
 
-  ⋆-idemp-lr : (p : ΩA) → act-l p ∙ act-l p ＝ p
-  ⋆-idemp-lr p =
+  act-l-idemp : (p : ΩA) → act-l p ∙ act-l p ＝ p
+  act-l-idemp p =
    ap (act-l p ∙_) (only-one-act p)
    ∙ eq-congr (⋆-in-terms-of-∙ p p) refl (⋆-idemp p)
 
@@ -527,8 +527,8 @@ Then
   loop-comm : (p q : ΩA) → p ∙ q ＝ q ∙ p
   loop-comm p q =
    eq-congr
-    (ap₂ _∙_ (⋆-idemp-lr p) (⋆-idemp-lr q))
-    (ap₂ _∙_ (⋆-idemp-lr q) (⋆-idemp-lr p))
+    (ap₂ _∙_ (act-l-idemp p) (act-l-idemp q))
+    (ap₂ _∙_ (act-l-idemp q) (act-l-idemp p))
     (comm₂ (comm-l p q))
 
 \end{code}
@@ -680,7 +680,7 @@ act-l p ＝ refl.
 
   act-l p ∙ act-l p
    ＝ act-l (act-l p) ∙ act-l (act-l p)   (act-l-idem twice)
-   ＝ act-l p                             (⋆-idemp-lr)
+   ＝ act-l p                             (act-l-idemp)
 
 So act-l p acts as a right-identity on itself; left-cancel to get refl.
 
@@ -690,7 +690,7 @@ So act-l p acts as a right-identity on itself; left-cancel to get refl.
   act-l-trivial p =
    ∙-cancel (act-l p) (act-l p) refl
     ((ap₂ _∙_ (sym (act-l-idem p)) (sym (act-l-idem p))
-       ∙ ⋆-idemp-lr (act-l p))
+       ∙ act-l-idemp (act-l p))
        ∙ sym (∙refl (act-l p)))
 
 \end{code}
@@ -699,14 +699,14 @@ Every loop is trivial:
 
   p  ＝  act-l p ∙ act-l p  ＝  refl ∙ refl  ＝  refl.
 
-The first step is ⋆-idemp-lr backwards, and the second is
+The first step is act-l-idemp backwards, and the second is
 act-l-trivial. This shows A is a set, as we wished.
 
 \begin{code}
 
   Ω-null : (p : x₀ ＝ x₀) → p ＝ refl
   Ω-null p =
-   sym (⋆-idemp-lr p)
+   sym (act-l-idemp p)
    ∙ ap₂ _∙_ (act-l-trivial p) (act-l-trivial p)
    ∙ ∙refl refl
 
