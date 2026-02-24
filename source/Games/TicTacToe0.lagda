@@ -9,10 +9,10 @@ history dependent game.
 
 module Games.TicTacToe0 where
 
-open import Fin.ArgMinMax
 open import Fin.Topology
 open import Fin.Type
 open import Games.TypeTrees
+open import Games.ArgMinMax
 open import MLTT.Athenian
 open import MLTT.Spartan hiding (J)
 open import MonadOnTypes.J
