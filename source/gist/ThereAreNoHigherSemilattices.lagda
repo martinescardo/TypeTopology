@@ -199,7 +199,7 @@ edges are hax and hby:
     x   ║           ║   x
     ║   b ══ hb ══ b    ║
     ║  ╱            ╲   ║
-    ║ hby           hby ║
+    ║ hby          hby  ║
     ╲╱                ╲╱
      y ═════ hb' ═════ y
 
