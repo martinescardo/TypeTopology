@@ -11,7 +11,7 @@ TODO. Organaze this module better, following the organization of TicTacToe0.
 
 module Games.TicTacToe1 where
 
-open import Fin.ArgMinMax
+open import Games.ArgMinMax
 open import Fin.Topology
 open import Fin.Type
 open import MLTT.Athenian

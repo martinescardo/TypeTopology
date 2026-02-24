@@ -4,7 +4,7 @@ Martin Escardo and Paulo Oliva, October 2021.
 
 {-# OPTIONS --safe --without-K #-}
 
-module Fin.ArgMinMax where
+module Games.ArgMinMax where
 
 
 open import Fin.Embeddings

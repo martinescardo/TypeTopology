@@ -21,6 +21,7 @@ import Ordinals.Equivalence
 import Ordinals.Exponentiation.index          -- by [2]
 import Ordinals.Fin                           -- by [5] with additions by [2]
 import Ordinals.Indecomposable
+import Ordinals.IdentifyingEquivalentOrdinals -- by [3]
 import Ordinals.InfProperty
 import Ordinals.Injectivity
 import Ordinals.LexicographicCompactness

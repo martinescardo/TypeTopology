@@ -112,3 +112,28 @@ being-set-is-prop {𝓤} fe {X} = h
   γ = retract-of-prop b a
 
 \end{code}
+
+Added 20th February 2026 by Anna Williams
+
+\begin{code}
+
+Π₂-is-set
+ : Fun-Ext
+ → {X : 𝓤 ̇ }
+   {Y : X → 𝓥 ̇ }
+   {Z : (x : X) → Y x → 𝓦 ̇ }
+ → ((x : X) (y : Y x) → is-set (Z x y))
+ → is-set ((x : X) (y : Y x) → Z x y)
+Π₂-is-set fe i = Π-is-set fe (λ x → Π-is-set fe (i x))
+
+Π₃-is-set
+ : Fun-Ext
+ → {X : 𝓤 ̇ }
+   {Y : X → 𝓥 ̇ }
+   {Z : (x : X) → Y x → 𝓦 ̇ }
+   {T : (x : X) → (y : Y x) → (z : Z x y) → 𝓣 ̇ }
+ → ((x : X) (y : Y x) (z : Z x y) → is-set (T x y z))
+ → is-set ((x : X) (y : Y x) (z : Z x y) → T x y z)
+Π₃-is-set fe i = Π-is-set fe (λ x → Π₂-is-set fe (i x))
+
+\end{code}

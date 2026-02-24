@@ -7,29 +7,27 @@ generalized in March 2024.
 
 open import MLTT.Spartan hiding (J)
 
-module MonadOnTypes.JK where
+module MonadOnTypes.JK (R : 𝓦₀ ̇ ) where
 
 open import MonadOnTypes.J
 open import MonadOnTypes.K
 
-module JK (R : 𝓦₀ ̇ ) where
+open J-definitions R
+open K-definitions R
 
- open J-definitions R
- open K-definitions R
+overline : {X : 𝓤 ̇ } → J X → K X
+overline ε = λ p → p (ε p)
 
- overline : {X : 𝓤 ̇ } → J X → K X
- overline ε = λ p → p (ε p)
+overline-theorem : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                   (ε : J X) (δ : (x : X) → J (Y x))
+                 → overline (ε ⊗ᴶ δ) ∼ overline ε ⊗ᴷ (λ x → overline (δ x))
+overline-theorem ε δ q = refl
 
- overline-theorem : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                    (ε : J X) (δ : (x : X) → J (Y x))
-                  → overline (ε ⊗ᴶ δ) ∼ overline ε ⊗ᴷ (λ x → overline (δ x))
- overline-theorem ε δ q = refl
+_attains_ : {X : 𝓤 ̇ } → J X → K X → 𝓦₀ ⊔ 𝓤 ̇
+ε attains ϕ = overline ε ∼ ϕ
 
- _attains_ : {X : 𝓤 ̇ } → J X → K X → 𝓦₀ ⊔ 𝓤 ̇
- ε attains ϕ = overline ε ∼ ϕ
-
- is-attainable : {X : 𝓤 ̇ } → K X → 𝓦₀ ⊔ 𝓤 ̇
- is-attainable {𝓤} {X} ϕ = Σ ε ꞉ J X , (ε attains ϕ)
+is-attainable : {X : 𝓤 ̇ } → K X → 𝓦₀ ⊔ 𝓤 ̇
+is-attainable {𝓤} {X} ϕ = Σ ε ꞉ J X , (ε attains ϕ)
 
 \end{code}
 
