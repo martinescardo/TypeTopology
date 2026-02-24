@@ -94,7 +94,7 @@ We now define a notion of equality (or path) congruence.
 `eq-congr h₁ h₂ p` transports a path p : a ＝ b across a commutative
 square to obtain a path x ＝ y:
 
-    a ════ p ═════ b
+    a ═════ p ════ b
     ║              ║
    h₁              h₂
     ║              ║
@@ -160,11 +160,11 @@ We now construct a square congruence identity.
 
 Going right-then-down equals going down-then-right:
 
-    a ══ p ══  b
-    ║          ║
-    q          r
-    ║          ║
-    x ════════ y
+    a ══ p ══ b
+    ║         ║
+    q         r
+    ║         ║
+    x ═══════ y
 
 \begin{code}
 
@@ -205,12 +205,10 @@ edges are hax and hby:
 
   where  p  = eq-congr hax hby p      (front face)
          p' = eq-congr hax hby        (back face)
-              (eq-congr ha hb p).
+               (eq-congr ha hb p).
 
 Naturality says that the front face and back face of the cube give the
-same path x ＝ y, that is, it doesn't matter whether we apply
-congruence first by (ha, hb) and then by (hax, hby), or first to (hax, hby)
-and then to the induced (ha', hb').
+same path x ＝ y.
 
 \begin{code}
 
@@ -260,8 +258,6 @@ The key calculation rearranges a 2×2 grid of tiles:
   │  q   │  q   │     │  p   │  p   │
   └──────┴──────┘     └──────┴──────┘
 
-Concretely,
-
   p∙p∙q∙q = p∙(p∙q)∙q ＝ p∙(q∙p)∙q = (p∙q)∙(p∙q)
           ＝ (q∙p)∙(q∙p) = q∙(p∙q)∙p ＝ q∙(q∙p)∙p = q∙q∙p∙p.
 
@@ -277,7 +273,9 @@ assoc₄ {p = refl} {q = refl} {r = refl} {s = refl} = refl
 comm₂ : {A : Type} {a : A} {p q : a ＝ a} (h : p ∙ q ＝ q ∙ p)
       → (p ∙ p) ∙ (q ∙ q) ＝ (q ∙ q) ∙ (p ∙ p)
 comm₂ {p = p} {q = q} h =
- eq-congr (sym assoc₄) (sym assoc₄)
+ eq-congr
+  (sym assoc₄)
+  (sym assoc₄)
   (eq-congr
     (ap (λ x → p ∙ x ∙ q) (sym h))
     (ap (λ x → q ∙ x ∙ p) h)
@@ -579,11 +577,11 @@ obtain ⋆-assoc.
 
 We now have, recorded as triple-fold-l,
 
-  (a*b)*d ════════════ (p ★ q) ★ r ════════════════════════ (a*b)*d
-     ║                                                         ║
-(hab ★refl) ∙ hcd                                         (hab ★ refl) ∙ hcd
-     ║                                                         ║
-     e ══ eq-congr hcd hcd ((eq-congr hab hab (p ★ q)) ★ r) ══ e
+  (a*b)*d ════════════ (p ★ q) ★ r ══════════════════════ (a*b)*d
+     ║                                                       ║
+(hab ★refl) ∙ hcd                                       (hab ★ refl) ∙ hcd
+     ║                                                       ║
+     e ══ eq-congr hcd hcd (eq-congr hab hab (p ★ q) ★ r) ══ e
 
 And we have that triple-fold-r does the same for the right-associated
 parenthesization.
