@@ -557,7 +557,7 @@ The function path assoc-self is the loop
     x₀
 
 that witnesses the path between the two constructions.  Equality
-congruence with assoc-self gives ⋆-assoc'.  Since ΩA is commutative
+congruence with assoc-self gives ⋆-assoc-raw.  Since ΩA is commutative
 (loop-comm) and the equality congruence witness satisfies the square
 identity (eq-congr-sq), we can use ∙-cancel to strip assoc-self and
 obtain ⋆-assoc.
@@ -627,10 +627,10 @@ parenthesization.
   assoc-self : ΩA
   assoc-self = sym idem-triple-l ∙ (assoc x₀ x₀ x₀ ∙ idem-triple-r)
 
-  ⋆-assoc' : (p q r : ΩA)
-           → eq-congr assoc-self assoc-self ((p ⋆ q) ⋆ r)
-           ＝ p ⋆ (q ⋆ r)
-  ⋆-assoc' p q r =
+  ⋆-assoc-raw : (p q r : ΩA)
+              → eq-congr assoc-self assoc-self ((p ⋆ q) ⋆ r)
+              ＝ p ⋆ (q ⋆ r)
+  ⋆-assoc-raw p q r =
    eq-congr
     (sym (congr-∙ (assoc x₀ x₀ x₀) idem-triple-r _ idem-triple-r _)
       ∙ sym (congr-∙ (sym idem-triple-l) _ _ _ _))
@@ -651,7 +651,7 @@ parenthesization.
 We strip assoc-self using the commutativity of ΩA and the square
 identity:
 
-  assoc-self ∙ ⋆-assoc'  ＝  (p ⋆ q) ⋆ r ∙ assoc-self
+  assoc-self ∙ ⋆-assoc-raw  ＝  (p ⋆ q) ⋆ r ∙ assoc-self
 
 (by eq-congr-sq once we know loop-comm).
 
@@ -660,7 +660,7 @@ identity:
   ⋆-assoc : (p q r : ΩA) → (p ⋆ q) ⋆ r ＝ p ⋆ (q ⋆ r)
   ⋆-assoc p q r =
    ∙-cancel assoc-self _ _ (loop-comm _ _ ∙ sym (eq-congr-sq _ _ _))
-   ∙ ⋆-assoc' p q r
+   ∙ ⋆-assoc-raw p q r
 
 \end{code}
 
