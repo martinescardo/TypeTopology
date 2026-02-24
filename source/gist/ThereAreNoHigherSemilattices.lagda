@@ -36,8 +36,9 @@ Finally, using the associativity of *, we get that
 
 In the spirit of the original file [1], we make this file
 self-contained, without importing any TypeTopology file, to show that
-a relatively short argument in a Spartan MLTT is possible. (We also
-don't use universe polymorphism.)
+a relatively short argument in a rather Spartan MLTT is possible - we
+only need Π-types and identity types. (We also don't use universe
+polymorphism.)
 
 \begin{code}
 
