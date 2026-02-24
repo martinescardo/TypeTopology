@@ -192,16 +192,16 @@ The geometric intuition is a cube in A, where the top and bottom faces
 record the ha/hb loops and their congruences ha'/hb', and the vertical
 edges are hax and hby:
 
-        a ══ ha ══ a
+        a ══  ha ══ a
        ╱║           ║╲
     hax ║           ║ hax
      ╱  p           p' ╲
     x   ║           ║   x
-    ║   b ══ hb ══ b    ║
-    ║  ╱            ╲   ║
-    ║ hby          hby  ║
-    ╲╱                ╲╱
-     y ═════ hb' ═════ y
+    ║   b ══  hb ══ b    ║
+    ║  ╱             ╲   ║
+    ║ hby           hby  ║
+    ║╱                 ╲ ║
+    y ══════  hb' ══════ y
 
   where  p  = eq-congr hax hby p      (front face)
          p' = eq-congr hax hby        (back face)
