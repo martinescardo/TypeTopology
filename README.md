@@ -21,7 +21,7 @@ page.
  1. [Code of conduct](https://github.com/martinescardo/TypeTopology/blob/master/CODE-OF-CONDUCT.md)
  1. [Contributing](https://github.com/martinescardo/TypeTopology/blob/master/CONTRIBUTING.md)
 
-    (These guidelines need reworking. But, generally, see how we write things in TypeTopology, and try to immitate our style, although departures from our style may some times be acceptable.)
+    (These guidelines need reworking. But, generally, see how we write things in TypeTopology, and try to immitate our style, although departures from our style may some times be acceptable, if they are implicitly or explicitly justified.)
 
 
 ## How to cite
