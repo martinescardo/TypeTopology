@@ -1,4 +1,6 @@
-# Various new theorems in constructive univalent mathematics written in Agda
+# TypeTopology
+
+## Various new theorems in constructive univalent mathematics written in Agda
 
 This development was started by Martin Escardo at around 2010 as an `svn` project, and
 transferred to `github` Monday 5th February 2018.
