@@ -77,9 +77,7 @@ sym : {A : Type} {a b : A} → a ＝ b → b ＝ a
 sym refl = refl
 
 ap₂ : {A B C : Type} (f : A → B → C) {a₁ a₂ : A} {b₁ b₂ : B}
-    → a₁ ＝ a₂
-    → b₁ ＝ b₂
-    → f a₁ b₁ ＝ f a₂ b₂
+    → a₁ ＝ a₂ → b₁ ＝ b₂ → f a₁ b₁ ＝ f a₂ b₂
 ap₂ f refl refl = refl
 
 ∙refl : {A : Type} {a b : A} (p : a ＝ b) → p ∙ refl ＝ p
@@ -149,7 +147,8 @@ Equality congruence is invertible.
 
 \begin{code}
 
-eq-congr-sym : {A : Type} {a b x y : A} {hax : a ＝ x} {hby : b ＝ y}
+eq-congr-sym : {A : Type} {a b x y : A}
+               {hax : a ＝ x} {hby : b ＝ y}
                {p : a ＝ b} {q : x ＝ y}
              → eq-congr hax hby p ＝ q
              → p ＝ eq-congr (sym hax) (sym hby) q
@@ -169,7 +168,8 @@ Going right-then-down equals going down-then-right:
 
 \begin{code}
 
-eq-congr-sq : {A : Type} {a b x y : A} (p : a ＝ b) (q : a ＝ x) (r : b ＝ y)
+eq-congr-sq : {A : Type} {a b x y : A}
+              (p : a ＝ b) (q : a ＝ x) (r : b ＝ y)
             → q ∙ eq-congr q r p ＝ p ∙ r
 eq-congr-sq refl refl refl = refl
 
@@ -229,10 +229,10 @@ Equality congruence by a composite path equals iterated congruence.
 
 \begin{code}
 
-congr-∙ : {A : Type} {a b u v x y : A}
-          (l₁ : a ＝ u) (l₂ : u ＝ x) (r₁ : b ＝ v) (r₂ : v ＝ y) (p : a ＝ b)
-        → eq-congr (l₁ ∙ l₂) (r₁ ∙ r₂) p ＝ eq-congr l₂ r₂ (eq-congr l₁ r₁ p)
-congr-∙ refl refl refl refl p = refl
+iter-congr : {A : Type} {a b u v x y : A}
+             (l₁ : a ＝ u) (l₂ : u ＝ x) (r₁ : b ＝ v) (r₂ : v ＝ y) (p : a ＝ b)
+           → eq-congr (l₁ ∙ l₂) (r₁ ∙ r₂) p ＝ eq-congr l₂ r₂ (eq-congr l₁ r₁ p)
+iter-congr refl refl refl refl p = refl
 
 \end{code}
 
@@ -632,8 +632,8 @@ parenthesization.
               ＝ p ⋆ (q ⋆ r)
   ⋆-assoc-raw p q r =
    eq-congr
-    (sym (congr-∙ (assoc x₀ x₀ x₀) idem-triple-r _ idem-triple-r _)
-      ∙ sym (congr-∙ (sym idem-triple-l) _ _ _ _))
+    (sym (iter-congr (assoc x₀ x₀ x₀) idem-triple-r _ idem-triple-r _)
+      ∙ sym (iter-congr (sym idem-triple-l) _ _ _ _))
     (loop-triple-r p q r)
     (ap (eq-congr idem-triple-r idem-triple-r)
       (ap (eq-congr (assoc x₀ x₀ x₀) _)

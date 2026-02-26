@@ -11,6 +11,14 @@ code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html) is hosted at
 [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/index.html)'s institutional web
 page.
 
+## Table of contents
+
+ 1. [How to cite](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
+ 1. [Root of the development](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-of-the-development)
+ 1. [Current contributors in alphabetical order of first name](https://github.com/martinescardo/TypeTopology/blob/master/README.md#current-contributors-in-alphabetical-order-of-first-name)
+ 1. [Publications resulting from TypeTopology](https://github.com/martinescardo/TypeTopology/blob/master/README.md#publications-resulting-from-typetopology)
+
+
 ## How to cite
 
 You can use the following BibTeX entry to cite `TypeTopology`:
@@ -36,7 +44,7 @@ only your name as author.
 
 ## Current contributors in alphabetical order of first name
 
-Please add yourself the first time you contribute.
+Please add yourself the first time you contribute. Use your adopted name, and not necessarily your given name, at your discretion.
 
 * Alice Laroche
 * Andrew Sneap
