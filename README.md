@@ -13,8 +13,8 @@ page.
 
 ## Table of contents
 
- 1. [How to cite](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
- 1. [Root of the development](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-of-the-development)
+ 1. [How to cite TypeTopology](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
+ 1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-of-the-development)
  1. [Current contributors in alphabetical order of first name](https://github.com/martinescardo/TypeTopology/blob/master/README.md#current-contributors-in-alphabetical-order-of-first-name)
  1. [Publications resulting from TypeTopology](https://github.com/martinescardo/TypeTopology/blob/master/README.md#publications-resulting-from-typetopology)
 
@@ -35,7 +35,7 @@ You can use the following BibTeX entry to cite `TypeTopology`:
 If you are citing only your own files, then create a different bibtex file with
 only your name as author.
 
-## Root of the development
+## Root Agda files
 
  * [source/index.lagda](source/index.lagda) (only `--safe` modules).
  * [source/AllModulesIndex.lagda](source/AllModulesIndex.lagda) (including
