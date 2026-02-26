@@ -1,6 +1,6 @@
 # Various new theorems in constructive univalent mathematics written in Agda
 
-This development was started by Martin Escardo in 2010 as an `svn` project, and
+This development was started by Martin Escardo at around 2010 as an `svn` project, and
 transferred to `github` Monday 5th February 2018.
 
 If you contribute, please add your full (legal or adopted) name and date
@@ -17,6 +17,11 @@ page.
  1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-of-the-development)
  1. [Current contributors in alphabetical order of first name](https://github.com/martinescardo/TypeTopology/blob/master/README.md#current-contributors-in-alphabetical-order-of-first-name)
  1. [Publications resulting from TypeTopology](https://github.com/martinescardo/TypeTopology/blob/master/README.md#publications-resulting-from-typetopology)
+ 1. [Statement of inclusion](https://github.com/martinescardo/TypeTopology/blob/master/STATEMENT-OF-INCLUSION.md)
+ 1. [Code of conduct](https://github.com/martinescardo/TypeTopology/blob/master/CODE-OF-CONDUCT.md)
+ 1. [Contributing](https://github.com/martinescardo/TypeTopology/blob/master/CONTRIBUTING.md)
+
+    (These guidelines need reworking. But, generally, see how we write things in TypeTopology, and try to immitate our style, although departures from our style may some times be acceptable.)
 
 
 ## How to cite
