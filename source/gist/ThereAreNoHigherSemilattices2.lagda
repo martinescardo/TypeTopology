@@ -137,7 +137,8 @@ conjugate-loops-agree refl q =
 
 This completes our basic library.
 
-The following lemma is invoked at the very end.
+We extract two criteria from [1] for the loop space to be trivial. The second
+lemma is invoked at the very end.
 
 \begin{code}
 
@@ -167,6 +168,48 @@ module pointed-type
          refl ∙ refl ＝⟨ ap₂ _∙_ (sym II) (sym II) ⟩
          f p ∙ f p   ＝⟨ f-self-concat p ⟩
          p           ∎
+
+\end{code}
+
+The loop space is trivial if it can be equipped with a binary operation ⋆ such that
+- it has an interchange law: (p ⋆ q) ∙ (r ⋆ s) ＝ (p ∙ r) ⋆ (q ∙ s);
+- it is idempotent, commutative and associative.
+
+\begin{code}
+
+ trivial-Ω-multiplication-criterion
+  : (_⋆_ : ΩA → ΩA → ΩA)
+  → ((p q r s : ΩA) → (p ⋆ q) ∙ (r ⋆ s) ＝ (p ∙ r) ⋆ (q ∙ s))
+  → ((p : ΩA) → p ⋆ p ＝ p)
+  → ((p q : ΩA) → p ⋆ q ＝ q ⋆ p)
+  → ((p q r : ΩA) → p ⋆ (q ⋆ r) ＝ (p ⋆ q) ⋆ r)
+  → (p : ΩA) → p ＝ refl
+ trivial-Ω-multiplication-criterion
+  _⋆_ ⋆-interchange-∙ ⋆-idem ⋆-comm ⋆-assoc =
+  trivial-Ω-endomap-criterion f f-idempotent f-self-concat-is-id
+   where
+    f : ΩA → ΩA
+    f p = p ⋆ refl
+
+    f-idempotent : (p : ΩA) → f (f p) ＝ f p
+    f-idempotent p =
+     f (f p)           ＝⟨ refl ⟩
+     (f p) ⋆ refl      ＝⟨ refl ⟩
+     (p ⋆ refl) ⋆ refl ＝⟨ sym (⋆-assoc p refl refl) ⟩
+     p ⋆ (refl ⋆ refl) ＝⟨ ap (p ⋆_) (⋆-idem refl) ⟩
+     p ⋆ refl          ＝⟨ refl ⟩
+     f p               ∎
+
+    f-self-concat-is-id : (p : ΩA) → f p ∙ f p ＝ p
+    f-self-concat-is-id p =
+     f p ∙ f p               ＝⟨ refl ⟩
+     (p ⋆ refl) ∙ (p ⋆ refl) ＝⟨ I ⟩
+     (p ⋆ refl) ∙ (refl ⋆ p) ＝⟨ ⋆-interchange-∙ p refl refl p ⟩
+     (p ∙ refl) ⋆ (refl ∙ p) ＝⟨ ap₂ _⋆_ (∙refl p) (refl∙ p) ⟩
+     p ⋆ p                   ＝⟨ ⋆-idem p ⟩
+     p                       ∎
+      where
+       I = ap ((p ⋆ refl) ∙_) (⋆-comm p refl)
 
 \end{code}
 
@@ -257,7 +300,7 @@ restricted to loops yet, so that this has a (trivial) proof by path induction.
  idempotentency-of-* : Type
  idempotentency-of-* = (a : A) → a * a ＝ a
 
- module _
+ module idempotent
          (*-idem : idempotentency-of-*)
         where
 
@@ -274,7 +317,7 @@ this operation by ＊Ω.
 
 \begin{code}
 
-  module _
+  module pointed
           (a₀ : A)
          where
 
@@ -469,43 +512,9 @@ The rebracketing convention follows that of ＊-assoc.
 \end{code}
 
 To recap: given an idempotent, commutative and associative operation * on a
-pointed type A, we obtained an idempotent, commutative and associative
-operation ＊Ω on ΩA.
-
-If we now fix one of the arguments of ＊Ω to be refl (we take the right argument
-here, but taking the left would have worked as well), we obtain a map that fits
-the trivial-Ω-endomap-criterion introduced near the top of this file.
-
-\begin{code}
-
-   f : ΩA → ΩA
-   f p = p ＊Ω refl
-
-   f-idempotent : associativity-of-*
-                → (p : ΩA) → f (f p) ＝ f p
-   f-idempotent *-assoc p =
-    f (f p)               ＝⟨ refl ⟩
-    (f p) ＊Ω refl        ＝⟨ refl ⟩
-    (p ＊Ω refl) ＊Ω refl ＝⟨ sym (＊Ω-associative *-assoc p refl refl) ⟩
-    p ＊Ω (refl ＊Ω refl) ＝⟨ ap (p ＊Ω_) ＊Ω-refl ⟩
-    p ＊Ω refl            ＝⟨ refl ⟩
-    f p                   ∎
-
-   f-self-concat-is-id : commutativity-of-*
-                       → (p : ΩA) → f p ∙ f p ＝ p
-   f-self-concat-is-id *-comm p =
-    f p ∙ f p                   ＝⟨ refl ⟩
-    (p ＊Ω refl) ∙ (p ＊Ω refl) ＝⟨ I ⟩
-    (p ＊Ω refl) ∙ (refl ＊Ω p) ＝⟨ ＊Ω-interchange-∙ p refl refl p ⟩
-    ((p ∙ refl) ＊Ω (refl ∙ p)) ＝⟨ ap₂ _＊Ω_ (∙refl p) (refl∙ p) ⟩
-    p ＊Ω p                     ＝⟨ ＊Ω-idempotent p ⟩
-    p                           ∎
-     where
-      I = ap ((p ＊Ω refl) ∙_) (＊Ω-commutative *-comm p refl)
-
-\end{code}
-
-Indeed, here is the final result as announced at the very top of this file.
+pointed type A, we obtained an idempotent, commutative and associative operation
+＊Ω on ΩA. Moreover, ＊Ω satisfies the interchange law, so that we can prove the
+result claimed at the top by the trivial-Ω-multiplication-criterion lemma.
 
 \begin{code}
 
@@ -517,11 +526,15 @@ Indeed, here is the final result as announced at the very top of this file.
         where
 
   open pointed-type A a₀
+  open idempotent *-idem
+  open pointed a₀
 
   ΩA-is-trivial : (p : ΩA) → p ＝ refl
-  ΩA-is-trivial = trivial-Ω-endomap-criterion
-                   (f *-idem a₀)
-                   (f-idempotent *-idem a₀ *-assoc)
-                   (f-self-concat-is-id *-idem a₀ *-comm)
+  ΩA-is-trivial = trivial-Ω-multiplication-criterion
+                   _＊Ω_
+                   ＊Ω-interchange-∙
+                   ＊Ω-idempotent
+                   (＊Ω-commutative *-comm)
+                   (＊Ω-associative *-assoc)
 
 \end{code}
