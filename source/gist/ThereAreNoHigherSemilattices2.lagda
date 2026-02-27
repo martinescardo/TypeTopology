@@ -1,3 +1,18 @@
+Tom de Jong, 25—27 February 2026.
+
+This is the result of my own attempt to understand David Wärn's Agda
+formalization [1] which proves that any type equipped with a binary operation
+that is associative, commutative and idempotent must be a set, cf. Martin
+Escardo's version [2].
+
+[1] David Wärn. https://dwarn.se/agda/Idem.html, 17 February 2026.
+    (See also https://mathstodon.xyz/deck/@dwarn/116091515645003634.)
+
+[2] Martin Escardo. gist.ThereAreNoHigherSemilattices.lagda, 23 February 2026.
+
+Like [1] and [2], this file is completely self-contained with the basics taken
+from [2].
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -16,7 +31,12 @@ infixr 20 _∙_
 _∙_ : {A : Type} {a b c : A} → a ＝ b → b ＝ c → a ＝ c
 refl ∙ refl = refl
 
---- For notational convenience only
+\end{code}
+
+For readability, we introduce the standard combinators for equational reasoning.
+
+\begin{code}
+
 _＝⟨_⟩_ : {X : Type} (x : X) {y z : X} → x ＝ y → y ＝ z → x ＝ z
 _ ＝⟨ p ⟩ q = p ∙ q
 
@@ -25,7 +45,6 @@ _∎ _ = refl
 
 infix  1 _∎
 infixr 0 _＝⟨_⟩_
-----
 
 sym : {A : Type} {a b : A} → a ＝ b → b ＝ a
 sym refl = refl
@@ -67,6 +86,12 @@ eq-congr-nat : {A : Type} {a b x y : A}
                  (eq-congr hax hby p)
 eq-congr-nat ha hb refl refl p = refl
 
+\end{code}
+
+A variation of the above that was not needed in [2]:
+
+\begin{code}
+
 eq-congr-nat' : {A : Type} {a b x y : A}
                 (hab : a ＝ b) (hax : a ＝ x) (hby : b ＝ y)
                 (p : a ＝ a)
@@ -90,6 +115,9 @@ congr-∙ refl refl refl refl p = refl
 
 \end{code}
 
+In what follows we will often take the first two arguments of eq-congr to be the
+same which amounts to conjugating a loop as we show here for good measure.
+
 \begin{code}
 
 conjugate-loop : {A : Type} {a b : A} → a ＝ b → a ＝ a → b ＝ b
@@ -106,6 +134,10 @@ conjugate-loops-agree refl q =
  refl ∙ q ∙ refl ∎
 
 \end{code}
+
+This completes our basic library.
+
+The following lemma is invoked at the very end.
 
 \begin{code}
 
@@ -138,6 +170,10 @@ module pointed-type
 
 \end{code}
 
+Now suppose we have a type A with a binary operation _*_. The operation induces
+an action on paths that we denote by _＊_. Note that this ＊ is not quite a
+binary operation in the sense that it is not of type X → X → X for some X.
+
 \begin{code}
 
 module _
@@ -154,6 +190,11 @@ module _
  ＊-interchange-∙ refl refl refl refl = refl
 
 \end{code}
+
+We will need the following lemmas about applying ＊ when one of its arguments is
+of the form "eq-congr u v (p ＊ q)". Of course, the point is to state these
+lemmas in sufficient generality so that they follow trivially from path
+induction.
 
 \begin{code}
 
@@ -173,6 +214,9 @@ module _
 
 \end{code}
 
+If * is commutative/associative, then so is ＊ up to eq-congr which is necessary
+to make things type check as ＊ is a dependent function.
+
 \begin{code}
 
  commutativity-of-* : Type
@@ -187,17 +231,26 @@ module _
          → p ＊ q ＝ eq-congr (*-comm b a) (*-comm b' a') (q ＊ p)
  ＊-comm *-comm refl refl = sym (eq-congr-refl (*-comm _ _))
 
- -- TODO. Explain why this way round
- ＊-assoc : (*-assoc : associativity-of-*)
-            {a a' b b' c c' : A}
-            (p : a ＝ a') (q : b ＝ b') (r : c ＝ c')
-          → p ＊ (q ＊ r)
-            ＝ eq-congr (*-assoc a b c)
-                        (*-assoc a' b' c')
-                        ((p ＊ q) ＊ r)
+\end{code}
+
+One may expect associativity to go from (p ＊ q) ＊ r to p ＊ (q ＊ r) in line
+with associativity-of-*, but we go with the following to avoid having to invert
+paths.
+
+\begin{code}
+
+ ＊-assoc
+  : (*-assoc : associativity-of-*)
+    {a a' b b' c c' : A}
+    (p : a ＝ a') (q : b ＝ b') (r : c ＝ c')
+  → p ＊ (q ＊ r) ＝ eq-congr (*-assoc a b c) (*-assoc a' b' c') ((p ＊ q) ＊ r)
  ＊-assoc *-assoc refl refl refl = sym (eq-congr-refl (*-assoc _ _ _))
 
 \end{code}
+
+If * is idempotent, then we can define an operation ＊' on paths from a to b.
+This operation is again idempotent, and it is crucial here that we have not
+restricted to loops yet, so that this has a (trivial) proof by path induction.
 
 \begin{code}
 
@@ -215,6 +268,9 @@ module _
   ＊'-idempotent refl = eq-congr-refl (*-idem _)
 
 \end{code}
+
+We now assume that A has a point a₀ and we restrict ＊' to loops on a₀, denoting
+this operation by ＊Ω.
 
 \begin{code}
 
@@ -253,6 +309,13 @@ module _
       II = ap (conjugate-loop ι) (＊-interchange-∙ p q r s)
 
 \end{code}
+
+Assuming that * is commutative, we wish to show that ＊Ω is commutative.
+The strategy for this is to
+  (1) prove that this holds up to conjugating by some appropriately choosen
+      (i.e. reverse engineered) loop γ;
+  (2) using idempotency of ＊Ω, prove that conjugating by γ is the identity;
+  (3) conclude that ＊Ω is commutative (with no conjugation).
 
 \begin{code}
 
@@ -300,6 +363,17 @@ module _
 
 \end{code}
 
+Assuming that * is associative, we wish to show that ＊Ω is associative.
+The strategy for this is like for commutativity above:
+  (1) prove that ＊Ω is associative up to conjugating by some appropriately
+      choosen (i.e. reverse engineered) loop α;
+  (2) using idempotency of ＊Ω, prove that conjugating by α is the identity;
+  (3) conclude that ＊Ω is commutative (with no conjugation).
+
+Compared the proof for commutativity, there are two more steps here, namely to
+show that (p ＊Ω q) ＊Ω r can be expressed as ((p ＊ q) ＊ r) up to conjugation,
+and similarly for the other bracketing.
+
 \begin{code}
 
    module _
@@ -312,10 +386,10 @@ module _
     ι₂ : a₀ * (a₀ * a₀) ＝ a₀
     ι₂ = (refl ＊ ι) ∙ ι
 
-    -- TODO: Rename
-    ＊Ω-in-terms-of-＊₁ : (p q r : ΩA)
-                        → (p ＊Ω q) ＊Ω r ＝ conjugate-loop ι₁ ((p ＊ q) ＊ r)
-    ＊Ω-in-terms-of-＊₁ p q r =
+    ＊Ω-is-＊-up-to-conjugation₁
+     : (p q r : ΩA)
+     → (p ＊Ω q) ＊Ω r ＝ conjugate-loop ι₁ ((p ＊ q) ＊ r)
+    ＊Ω-is-＊-up-to-conjugation₁ p q r =
      (p ＊Ω q) ＊Ω r                                               ＝⟨ refl ⟩
      conjugate-loop ι (conjugate-loop ι (p ＊ q) ＊ r)             ＝⟨ I    ⟩
      conjugate-loop ι (conjugate-loop (ι ＊ refl) ((p ＊ q) ＊ r)) ＝⟨ II   ⟩
@@ -325,9 +399,10 @@ module _
        I  = ap (conjugate-loop ι) (＊-eq-congr-left ι ι p q r)
        II = sym (congr-∙ (ι ＊ refl) ι (ι ＊ refl) ι ((p ＊ q) ＊ r))
 
-    ＊Ω-in-terms-of-＊₂ : (p q r : ΩA)
-                        → p ＊Ω (q ＊Ω r) ＝ conjugate-loop ι₂ (p ＊ (q ＊ r))
-    ＊Ω-in-terms-of-＊₂ p q r =
+    ＊Ω-is-＊-up-to-conjugation₂
+     : (p q r : ΩA)
+     → p ＊Ω (q ＊Ω r) ＝ conjugate-loop ι₂ (p ＊ (q ＊ r))
+    ＊Ω-is-＊-up-to-conjugation₂ p q r =
      p ＊Ω (q ＊Ω r)                                               ＝⟨ refl ⟩
      conjugate-loop ι (p ＊ conjugate-loop ι (q ＊ r))             ＝⟨ I    ⟩
      conjugate-loop ι (conjugate-loop (refl ＊ ι) (p ＊ (q ＊ r))) ＝⟨ II   ⟩
@@ -340,7 +415,12 @@ module _
     α : a₀ ＝ a₀
     α = eq-congr ι₁ ι₂ (*-assoc a₀ a₀ a₀)
 
-    -- TODO: We follow the order of ＊-assoc
+\end{code}
+
+The rebracketing convention follows that of ＊-assoc.
+
+\begin{code}
+
     ＊Ω-associative-up-to-conjugation
      : (p q r : ΩA)
      → p ＊Ω (q ＊Ω r) ＝ conjugate-loop α ((p ＊Ω q) ＊Ω r)
@@ -357,10 +437,10 @@ module _
      conjugate-loop α ((p ＊Ω q) ＊Ω r)                    ∎
       where
        α₀ = *-assoc a₀ a₀ a₀
-       I = ＊Ω-in-terms-of-＊₂ p q r
+       I = ＊Ω-is-＊-up-to-conjugation₂ p q r
        II = ap (conjugate-loop ι₂) (＊-assoc *-assoc p q r)
        III = eq-congr-nat' α₀ ι₁ ι₂ ((p ＊ q) ＊ r)
-       IV = ap (conjugate-loop α) (sym (＊Ω-in-terms-of-＊₁ p q r))
+       IV = ap (conjugate-loop α) (sym (＊Ω-is-＊-up-to-conjugation₁ p q r))
 
     conjugate-loop-assoc-is-id : (p : ΩA) → conjugate-loop α p ＝ p
     conjugate-loop-assoc-is-id p =
@@ -388,7 +468,13 @@ module _
 
 \end{code}
 
-TODO: Recap ＊Ω commutative, associative, idempotent operation on ΩA
+To recap: given an idempotent, commutative and associative operation * on a
+pointed type A, we obtained an idempotent, commutative and associative
+operation ＊Ω on ΩA.
+
+If we now fix one of the arguments of ＊Ω to be refl (we take the right argument
+here, but taking the left would have worked as well), we obtain a map that fits
+the trivial-Ω-endomap-criterion introduced near the top of this file.
 
 \begin{code}
 
@@ -418,6 +504,8 @@ TODO: Recap ＊Ω commutative, associative, idempotent operation on ΩA
       I = ap ((p ＊Ω refl) ∙_) (＊Ω-commutative *-comm p refl)
 
 \end{code}
+
+Indeed, here is the final result as announced at the very top of this file.
 
 \begin{code}
 
