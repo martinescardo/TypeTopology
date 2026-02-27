@@ -10,7 +10,11 @@ David's Agda file [1].
 
 I add, in the discussion of the formal definitions and proofs, some
 diagrams and some explanations, and rename some things, which I hope
-are correct and what David intended.
+are correct and what David intended. You may wish to also have a look
+at yet another version [2].
+
+[3] Tom de Jong. gist.ThereAreNoHigherSemilattices2.lagda,
+    25-27 February 2026.
 
 Proof sketch (formalized in the anonymous module at the very end of
 this file). Fix a type A and an x₀ : A, and write ΩA = (x₀ ＝ x₀). An
