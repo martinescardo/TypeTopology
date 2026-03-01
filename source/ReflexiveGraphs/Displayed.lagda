@@ -1,12 +1,13 @@
 Ian Ray. 28th August 2025.
 
+Minor changes and merged into TypeToplogy in March 2026.
+
 We define displayed reflexive graphs (see index for references to Sterling,
 Buchholtz, etc.)
 
-A displayed reflexive graph (defined over a reflexive graph) consists of a
-type family on the carrier of the underlying reflexive graph together with
-an edge relation that is defined over an edge from the underlying reflexive
-graph and a reflexivity datum.
+Given a reflexive graph (A , ≈), a displayed reflexive graph over A
+consists of a type family B : A → Type together with an reflexive relation
+≈ₚ : B x → B y → Type, for every x, y : A and p : x ≈ y.
 
 \begin{code}
 
@@ -33,26 +34,26 @@ more easily with displayed reflexive graphs.
 
 \begin{code}
 
-module _ {𝓐 : Refl-Graph 𝓤 𝓥} where
+module _ {𝓐 : Refl-Graph 𝓤 𝓥} where 
 
- [_] : Displayed-Refl-Graph 𝓣 𝓦 𝓐 → ⟨ 𝓐 ⟩ → 𝓣 ̇
- [ (B , _) ] = B
+ ⟪_⟫ : Displayed-Refl-Graph 𝓣 𝓦 𝓐 → ⟨ 𝓐 ⟩ → 𝓣 ̇
+ ⟪ (B , _) ⟫ = B
 
  displayed-edge-rel : (𝓑 : Displayed-Refl-Graph 𝓣 𝓦 𝓐)
                     → {x y : ⟨ 𝓐 ⟩} (p : x ≈⟨ 𝓐 ⟩ y)
-                    → [ 𝓑 ] x → [ 𝓑 ] y → 𝓦 ̇
+                    → ⟪ 𝓑 ⟫ x → ⟪ 𝓑 ⟫ y → 𝓦 ̇
  displayed-edge-rel (_ , R , _) = R
 
  syntax displayed-edge-rel 𝓑 p u v = u ≈⟨ 𝓑 ﹐ p ⟩ v
 
  ≈-disp-refl : (𝓑 : Displayed-Refl-Graph 𝓣 𝓦 𝓐)
-             → {x : ⟨ 𝓐 ⟩} (u : [ 𝓑 ] x)
+             → {x : ⟨ 𝓐 ⟩} (u : ⟪ 𝓑 ⟫ x)
              → u ≈⟨ 𝓑 ﹐ ≈-refl 𝓐 x ⟩ u 
  ≈-disp-refl (_ , _ , r) u = r u
  
 \end{code}
 
-We show that the components of a displayed reflexive graph is itself a
+We show that the component of a displayed reflexive graph is itself a
 reflexive graph.
 
 \begin{code}
@@ -61,9 +62,9 @@ reflexive graph.
                       → ⟨ 𝓐 ⟩
                       → Refl-Graph 𝓣 𝓦
  component-refl-graph 𝓑 x
-  = ([ 𝓑 ] x , displayed-edge-rel 𝓑 (≈-refl 𝓐 x) , ≈-disp-refl 𝓑)
+  = (⟪ 𝓑 ⟫ x , displayed-edge-rel 𝓑 (≈-refl 𝓐 x) , ≈-disp-refl 𝓑)
 
- syntax component-refl-graph 𝓑 x = ⋖ 𝓑 ⋗ x
+ syntax component-refl-graph 𝓑 x = [ 𝓑 ] x
 
 \end{code}
 
@@ -78,11 +79,11 @@ displayed-refl-graph-hom : {𝓐 : Refl-Graph 𝓤 𝓥} {𝓐' : Refl-Graph �
                          → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ⊔ 𝓦 ⊔ 𝓣' ⊔ 𝓦' ̇
 displayed-refl-graph-hom {_} {_} {_} {_} {_} {_} {_} {_} {𝓐} {𝓐'}
  (F₀ , F₁ , Fᵣ) 𝓑 𝓑'
- = Σ G ꞉ ((x : ⟨ 𝓐 ⟩) → [ 𝓑 ] x → [ 𝓑' ] (F₀ x)) ,
-    Σ G' ꞉ ((x y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) (u : [ 𝓑 ] x) (v : [ 𝓑 ] y)
+ = Σ G ꞉ ((x : ⟨ 𝓐 ⟩) → ⟪ 𝓑 ⟫ x → ⟪ 𝓑' ⟫ (F₀ x)) ,
+    Σ G' ꞉ ((x y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) (u : ⟪ 𝓑 ⟫ x) (v : ⟪ 𝓑 ⟫ y)
          → u ≈⟨ 𝓑 ﹐ p ⟩ v
          → (G x u) ≈⟨ 𝓑' ﹐ (F₁ x y p) ⟩ (G y v)) ,
-     ((x : ⟨ 𝓐 ⟩) (u : [ 𝓑 ] x)
+     ((x : ⟨ 𝓐 ⟩) (u : ⟪ 𝓑 ⟫ x)
          → G' x x (≈-refl 𝓐 x) u u (≈-disp-refl 𝓑 u)
          ＝ transport (λ - → (G x u) ≈⟨ 𝓑' ﹐ - ⟩ (G x u))
              (Fᵣ x ⁻¹) (≈-disp-refl 𝓑' (G x u)))
