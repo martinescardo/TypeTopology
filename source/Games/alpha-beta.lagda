@@ -116,9 +116,6 @@ Now we define selection functions for this game.
 
 \end{code}
 
-TODO. Show that ArgMin and ArgMax are selection functions for the
-quantifiers Min and Max (easy).
-
 We now label the give tree Xt with the above ArgMin and ArgMax
 quantifiers in an alternating fashion.
 
@@ -141,13 +138,6 @@ quantifiers in an alternating fashion.
 
  optimal-play : Path Xt
  optimal-play = sequenceᴶ G-selection-tree q
-
-\end{code}
-
-TODO. Prove the lemma formulated as an assumption of the following
-module (easy).
-
-\begin{code}
 
  lemma : G-selection-tree Attains G-quantifier-tree
  lemma = I Xt Xt-is-listed⁺
