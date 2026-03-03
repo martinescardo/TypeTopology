@@ -289,6 +289,14 @@ Tosun.
 
    https://doi.org/10.48550/arxiv.2601.12536
 
+1. Ayberk Tosun. *Constructive and Predicative Locale Theory in Univalent
+   Foundations*. PhD thesis. School of Computer Science, University of
+   Birmingham, UK. Submitted: 30 November 2024; accepted: 3 June 2025.
+
+   https://etheses.bham.ac.uk/id/eprint/16416/
+   Updated versions: \
+   https://arxiv.org/abs/2603.01308
+
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
 [LICS21]: https://easyconferences.eu/lics2021/
