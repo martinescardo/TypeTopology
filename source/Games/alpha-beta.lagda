@@ -73,9 +73,7 @@ module minimax
        where
 
  open Games.FiniteHistoryDependent {𝓤} {𝓤} R
-
- _≥_ : R → R → 𝓥 ̇
- r ≥ s = ¬ (r < s)
+ open import MonadOnTypes.JK R
 
 \end{code}
 
@@ -84,15 +82,6 @@ data given as module parameter.
 
 \begin{code}
 
- max min : R → R → R
-
- max r s = Cases (δ r s)
-            (λ (_ : r < s) → s)
-            (λ (_ : r ≥ s) → r)
-
- min r s = Cases (δ s r)
-            (λ (_ : s < r) → s)
-            (λ (_ : s ≥ r) → r)
 
 \end{code}
 
@@ -102,9 +91,7 @@ Part 1. Traditional minimax.
 
  open K-definitions R
 
- Min Max : {X : 𝓤 ̇ } → listed⁺ X → K X
- Min (x₀ , xs , _) p = foldr (λ x → min (p x)) (p x₀) xs
- Max (x₀ , xs , _) p = foldr (λ x → max (p x)) (p x₀) xs
+ open import Games.ArgMinMax-Listed {𝓤} {𝓥} R _<_ δ
 
 \end{code}
 
@@ -143,21 +130,6 @@ Now we define selection functions for this game.
 
 \begin{code}
 
- argmin argmax : {X : 𝓤 ̇ } → (X → R) → X → X → X
-
- argmin p x m = Cases (δ (p x) (p m))
-                 (λ (_ : p x < p m) → x)
-                 (λ (_ : p x ≥ p m) → m)
-
- argmax p x m = Cases (δ (p m) (p x))
-                 (λ (_ : p m < p x) → x)
-                 (λ (_ : p m ≥ p x) → m)
-
- open J-definitions R
-
- ArgMin ArgMax : {X : 𝓤 ̇ } → listed⁺ X → J X
- ArgMin (x₀ , xs , _) p = foldr (argmin p) x₀ xs
- ArgMax (x₀ , xs , _) p = foldr (argmax p) x₀ xs
 
 \end{code}
 
@@ -189,13 +161,29 @@ quantifiers in an alternating fashion.
 
 \end{code}
 
-TODO. Prove the lemma formulated as an assumption of the above module (easy).
+TODO. Prove the lemma formulated as an assumption of the following
+module (easy).
 
 \begin{code}
 
- module _ (lemma : G-selection-tree Attains  G-quantifier-tree)
-          (fe : Fun-Ext)
-        where
+ lemma : G-selection-tree Attains G-quantifier-tree
+ lemma = I Xt Xt-is-listed⁺
+  where
+   I : (Xt : 𝑻 {𝓤})
+       (Xt-is-listed⁺ : structure listed⁺ Xt)
+     → (argmaxmin Xt Xt-is-listed⁺) Attains (maxmin Xt Xt-is-listed⁺)
+
+   II : (Xt : 𝑻 {𝓤})
+        (Xt-is-listed⁺ : structure listed⁺ Xt)
+      → (argminmax Xt Xt-is-listed⁺) Attains (minmax Xt Xt-is-listed⁺)
+
+   I  []       ⟨⟩        = ⋆
+   I  (X ∷ Xf) (ℓ :: ℓf) = ArgMax-spec ℓ , (λ x → II (Xf x) (ℓf x))
+
+   II []       ⟨⟩        = ⋆
+   II (X ∷ Xf) (ℓ :: ℓf) = ArgMin-spec ℓ , (λ x → I (Xf x) (ℓf x))
+
+ module _ (fe : Fun-Ext) where
 
   theorem : is-optimal G (selection-strategy G-selection-tree q)
   theorem = Selection-Strategy-Theorem fe G G-selection-tree lemma

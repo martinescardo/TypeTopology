@@ -16,6 +16,7 @@ import Games.FiniteHistoryDependentMonadic         -- (4)
 import Games.FiniteHistoryDependentRelativeMonadic -- (5)
 import Games.Constructor                           -- (6)
 import Games.ArgMinMax
+import Games.ArgMinMax-Listed
 import Games.TicTacToe0                            -- (7)
 import Games.TicTacToe1                            -- (7)
 import Games.TicTacToe2                            -- (7)
