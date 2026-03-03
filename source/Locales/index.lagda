@@ -1,5 +1,20 @@
 Ayberk Tosun.
 
+─────────────────────────────────────────────────────────────────────
+This formalization accompanies Ayberk Tosun's PhD thesis:
+  Constructive and Predicative Locale Theory in Univalent Foundations
+  Ayberk Tosun
+  School of Computer Science, University of Birmingham
+  https://etheses.bham.ac.uk/id/eprint/16416/
+
+  Updated versions:
+  https://arxiv.org/abs/2603.01308
+
+  Submitted: 30 November 2024
+  Defended:  27 February 2025
+  Accepted:   3 June     2025
+─────────────────────────────────────────────────────────────────────
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
