@@ -60,6 +60,8 @@ Instead of assuming below that Xt is listed, we could have assumed
 that each node of Xt is a searchable type, but this seems to be more
 inefficient.
 
+Part 1. Traditional minimax.
+
 \begin{code}
 
 module minimax
@@ -74,29 +76,10 @@ module minimax
 
  open Games.FiniteHistoryDependent {𝓤} {𝓤} R
  open import MonadOnTypes.JK R
-
-\end{code}
-
-After defining min and max, we can define the given game G from the
-data given as module parameter.
-
-\begin{code}
-
-
-\end{code}
-
-Part 1. Traditional minimax.
-
-\begin{code}
-
  open K-definitions R
-
  open import Games.ArgMinMax-Listed {𝓤} {𝓥} R _<_ δ
 
 \end{code}
-
-TODO. Min and Max do indeed compute the minimum and maximum
-value of p : X → R (easy, but we will need to assume that the given order is linear).
 
 We now label the given tree Xt with the above Min and Max quantifiers
 in an alternating fashion.
