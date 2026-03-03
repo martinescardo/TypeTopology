@@ -101,7 +101,12 @@ private
                                                  ＝ 𝟙 , (λ _ → 2) , 𝟙-is-prop
  ⟦t₂⟧-is-a-triple-representing-a-partial-element = refl
 
-  -- We let Agda compute the witness (indicated by _) that ⟦ t₂ ⟧ₑ is total.
+\end{code}
+
+We let Agda compute the witness (indicated by _) that ⟦ t₂ ⟧ₑ is total.
+
+\begin{code}
+
  compute-the-value-of-⟦t₂⟧ : value ⟦ t₂ ⟧ₑ _ ＝ 2
  compute-the-value-of-⟦t₂⟧ = refl
 
@@ -110,17 +115,18 @@ private
 By computational adequacy (see the comments at the top of this file) and the
 computation above, the term t₂ reduces to the numeral ⌜ 2 ⌝ in PCF.
 
+The term t₃ encodes the program [λ x . (if (0 == x) then 2 else (pred 5)) 3].
+Notice how the extent of the partial element is no longer given by 𝟙 but, as a
+consequence of the constructions in our model, by the product 𝟙 × 𝟙.
+
+We let Agda compute the witness (indicated by _) that the type 𝟙 × 𝟙 is a
+proposition.
+
 \begin{code}
 
- -- t₃ encodes the program [λ x . (if (0 == x) then 2 else (pred 5)) 3]
  t₃ : PCF ι
  t₃ = ifZero · ⌜ 2 ⌝ · (Pred · ⌜ 5 ⌝) · ⌜ 3 ⌝
 
- -- Notice how the extent of the partial element is no longer given by 𝟙 but, as
- -- a consequence of the constructions in our model, by the product 𝟙 × 𝟙.
- --
- -- We let Agda compute the witness (indicated by _) that the type 𝟙 × 𝟙 is a
- -- proposition.
  ⟦t₃⟧-is-a-triple-representing-a-partial-element : ⟦ t₃ ⟧ₑ
                                                  ＝ (𝟙 × 𝟙) , (λ _ → 4) , _
  ⟦t₃⟧-is-a-triple-representing-a-partial-element = refl
@@ -191,15 +197,19 @@ it is a consequence of applying the more general constructions.
  t₆-is-defined : is-defined ⟦ t₆ ⟧ₑ
  t₆-is-defined = ∣ ′ 1 , ⋆ ∣
 
- -- The below computation does not work, because extracting the value employs
- -- the fact that we can factor a certain map through the proposition truncation
- -- and the truncation is assumed axiomatically in our development.
- -- I would expect it to work in Cubical Agda though.
+\end{code}
 
- -- compute-the-value-of-⟦t₆⟧ : value ⟦ t₆ ⟧ₑ t₆-is-defined ＝ 0
- -- compute-the-value-of-⟦t₆⟧ = refl
+The below computation does not work, because extracting the value employs the
+fact that we can factor a certain map through the proposition truncation and the
+truncation is assumed axiomatically in our development. I would expect it to
+work in Cubical Agda though.
 
- -- But it is provable of course.
+ compute-the-value-of-⟦t₆⟧ : value ⟦ t₆ ⟧ₑ t₆-is-defined ＝ 0
+ compute-the-value-of-⟦t₆⟧ = refl
+
+But it is provable of course:
+
+\begin{code}
 
  value-of-⟦t₆⟧ₑ : value ⟦ t₆ ⟧ₑ t₆-is-defined ＝ 0
  value-of-⟦t₆⟧ₑ = ＝-of-values-from-＝ (eq ⁻¹)
@@ -207,13 +217,17 @@ it is a consequence of applying the more general constructions.
    eq : η 0 ＝ ⟦ t₆ ⟧ₑ
    eq = family-defined-somewhere-sup-＝ ℕ-is-set _ (′ 1) ⋆
 
+\end{code}
+
+The interpretation of t₇ is equal to ⊥, because it is the least fixed point of
+the identity on ⟦ ι ⟧, but the issue is that iter is defined by pattern
+matching, so while each application iter n is equal to 𝟘, we cannot
+definitionally replace it by 𝟘.
+
+\begin{code}
+
  t₇ : PCF ι
  t₇ = Fix · (I {ι})
-
- -- The interpretation of t₇ is equal to ⊥, because it is the least fixed point
- -- of the identity on ⟦ ι ⟧, but the issue is that iter is defined by pattern
- -- matching, so while each application iter n is equal to 𝟘, we cannot
- -- definitionally replace it by 𝟘.
 
  t₇-note₁ : is-defined ⟦ t₇ ⟧ₑ
             ＝ (∃ n ꞉ ℕ' , is-defined (iter ⟦ ι ⟧ (n ′) ⟦ I ⟧ₑ))
@@ -226,13 +240,16 @@ it is a consequence of applying the more general constructions.
  t₇-note₃ : (n : ℕ') → is-defined (iter ⟦ ι ⟧ (n ′) ⟦ I ⟧ₑ) ＝ 𝟘
  t₇-note₃ n = t₇-note₂ (n ′)
 
- -- But this fails (of course)
+\end{code}
 
- -- t₇-note₄ : (n : ℕ') → is-defined (iter ⟦ ι ⟧ (n ′) ⟦ I ⟧ₑ) ＝ 𝟘
- -- t₇-note₄ n = refl
+But the following fails:
+ t₇-note₄ : (n : ℕ') → is-defined (iter ⟦ ι ⟧ (n ′) ⟦ I ⟧ₑ) ＝ 𝟘
+ t₇-note₄ n = refl
 
- -- Therefore we cannot simply compute is-defined ⟦ t₇ ⟧ₑ to be
- -- (Σ n ꞉ ℕ' , 𝟘), i.e. ℕ' × 𝟘, which is equivalent to 𝟘 of course.
+Therefore we cannot simply compute is-defined ⟦ t₇ ⟧ₑ to be (Σ n ꞉ ℕ' , 𝟘),
+i.e. ℕ' × 𝟘, which is equivalent to 𝟘 of course.
+
+\begin{code}
 
  ⟦t₇⟧-is-not-defined : ¬ (is-defined ⟦ t₇ ⟧ₑ)
  ⟦t₇⟧-is-not-defined = ∥∥-rec 𝟘-is-prop h
