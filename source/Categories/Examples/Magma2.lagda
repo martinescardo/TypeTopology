@@ -9,16 +9,16 @@ The Category of Magmas
 open import Categories.Wild
 open import Categories.Pre 
 open import Categories.Univalent
-open import Categories.Notation.Wild hiding (⌜_⌝)
+open import Categories.Notation.Wild hiding (inverse ; ⌜_⌝)
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Equiv hiding (_≅_) renaming (inverse to e-inverse)
+open import UF.Equiv hiding (_≅_)
 open import UF.FunExt
 open import UF.Retracts
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.SIP
-open import UF.SIP-Examples
+open import UF.SIP
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
@@ -27,6 +27,7 @@ open import UF.Univalence
 module Categories.Examples.Magma where
 
 module _ {𝓤 : Universe} (fe : Fun-Ext) where
+
  Magma-structure : 𝓤 ̇  → 𝓤 ̇ 
  Magma-structure X = (X → X → X) × is-set X
 
@@ -109,9 +110,44 @@ We now show that this is a precategory
 
 \end{code}
 
-We show that Magmas have univalence, piggybacking off the SIP example.
+We show that Magmas have univalence
 
 \begin{code}
+
+ open sip
+
+ sns-data : SNS Magma-structure 𝓤
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (A B : Magma) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
+   ι (X , _·_ , _)
+     (Y , _*_ , _)
+     (f , _) = ((x y : X) → f (x · y) ＝ (f x) * (f y))
+
+   ρ : (A : Magma) → ι A A (≃-refl ⟨ A ⟩)
+   ρ A x y = refl
+
+   h : {X : 𝓤 ̇ }
+       (s t : Magma-structure X)
+     → ι (X , s) (X , t) (≃-refl _) ◁ (s ＝ t)
+   h {X} (_·_ , sX) (_*_ , sX') = forwards , (backwards , retract)
+    where
+     forwards = (λ p x y → ap (λ - → - x y) (ap pr₁ p))
+
+     backwards = λ p → to-×-＝ (dfunext fe
+                                λ x → dfunext fe
+                                 λ y → p x y)
+                               (being-set-is-prop fe sX sX')
+
+     retract = λ i → dfunext fe
+                      λ x → dfunext fe
+                       λ y → sX _ _
+
+   θ : {X : 𝓤 ̇ }
+       (a b : Magma-structure X)
+     → is-equiv (canonical-map ι ρ a b)
+
+   θ {X} = canonical-map-equiv-criterion' ι ρ h
 
  inverse' : {a b : 𝓤 ̇ }
             {f : a → b}
@@ -122,25 +158,25 @@ We show that Magmas have univalence, piggybacking off the SIP example.
  inv-eq : {a b : 𝓤 ̇ }
           {f : a → b}
           (e : is-equiv f)
-        → e-inverse f e  ＝ inverse' e
+        → inverse f e  ＝ inverse' e
  inv-eq {_} {_} {f}
-        ((g , gp) , (g' , gp')) = e-inverse _ (fe _ _)
+        ((g , gp) , (g' , gp')) = inverse _ (fe _ _)
                                   λ x → g x          ＝⟨ (gp' (g x))⁻¹ ⟩
                                         g' (f (g x)) ＝⟨ ap g' (gp x) ⟩
                                         g' x         ∎
 
  sns-equiv-iso : (A B : Magma)
-               → (A magma.≅ B) ≃ (A ≅ B)
+               → (A ≃[ sns-data ] B) ≃ (A ≅ B)
  sns-equiv-iso A@(a , _·_ , sA) B@(b , _*_ , sB) = toiso
                                                  , (fromiso , left)
                                                  , (fromiso , right)
   where
-   toiso : A magma.≅ B → A ≅ B
+   toiso : A ≃[ sns-data ] B → A ≅ B
    toiso (f , e@((g , gp) , (g' , gp')) , fp)
-         = (f , λ x y → ap (λ - → - x y) fp)
+         = (f , fp)
          , (g , hom-prop-for-inv)
-         , (to-subtype-＝ left-prop (e-inverse _ (fe _ _) left-inv))
-         , to-subtype-＝ right-prop (e-inverse _ (fe _ _) gp)
+         , (to-subtype-＝ left-prop (inverse _ (fe _ _) left-inv))
+         , to-subtype-＝ right-prop (inverse _ (fe _ _) gp)
     where
      hom-prop-for-inv : (x y : b) → g (x * y) ＝ (g x · g y)
      hom-prop-for-inv x y = g (x * y)             ＝⟨ i ⟩
@@ -151,7 +187,7 @@ We show that Magmas have univalence, piggybacking off the SIP example.
       where
        i   = ap (λ - → g (- * y)) (gp x)⁻¹
        ii  = ap (λ - → g (f (g x) * -)) (gp y)⁻¹
-       iii = ap g ((λ x y → ap (λ - → - x y) fp) (g x) (g y))⁻¹
+       iii = ap g (fp (g x) (g y))⁻¹
        iv  = g (f (g x · g y)) ＝⟨ ap _ (inv-eq e) ⟩
              g' (f (g x · g y)) ＝⟨ gp' (g x · g y) ⟩
              g x · g y ∎
@@ -164,29 +200,27 @@ We show that Magmas have univalence, piggybacking off the SIP example.
                   g' (f x) ＝⟨ gp' x ⟩
                   x ∎
      
-   fromiso : A ≅ B → A magma.≅ B
+   fromiso : A ≅ B → A ≃[ sns-data ] B
    fromiso ((f , fp) , (g , gp) , lg , rg) = f
                                              , ((g , λ x → ap (λ - → - x)
                                                               (ap pr₁ rg))
                                                , g , λ x → ap (λ - → - x)
                                                               (ap pr₁ lg))
-                                             , dfunext fe (λ x → dfunext fe (λ y → fp x y))
+                                             , fp
 
-   left : toiso ∘ fromiso ∼ id
-   left e@((f , fp) , (g , gp) , lg , rg) = to-Σ-＝ (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl
-                                                , to-Σ-＝ (at-most-one-inverse {_} {_} {_} {A} {B} {(f , fp)} (test' (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl) test) ((g , gp) , lg , rg)
-                                                , to-×-＝ (hom-is-set MagmaPrecategory {A} {A} _ _)
-                                                          (hom-is-set MagmaPrecategory {B} {B} _ _)))
+   left : (λ x → toiso (fromiso x)) ∼ (λ x → x)
+   left ((f , fp) , (g , gp) , lg , rg) = to-Σ-＝ (refl , is-iso-eq)
     where
-     test : inverse {_} {_} {_} {A} {B} (toiso (fromiso ((f , fp) , (g , gp) , lg , rg)) .pr₁)
-     test = pr₂ ((toiso ∘ fromiso) e)
+     inv-eq' = (to-subtype-＝ (λ _ → Π₂-is-prop fe λ _ _ → sA) refl)
 
-     test' : (e : (toiso (fromiso ((f , fp) , (g , gp) , lg , rg)) .pr₁) ＝ (f , fp)) → inverse {_} {_} {_} {A} {B} (toiso (fromiso ((f , fp) , (g , gp) , lg , rg)) .pr₁) → inverse {_} {_} {_} {A} {B} (f , fp)
-     test' e first = transport (inverse {_} {_} {_} {A} {B}) e first
+     left-id-eq = hom-is-set MagmaPrecategory {A} {A} _ _
+     right-id-eq = hom-is-set MagmaPrecategory {B} {B} _ _
+     axiom-equalities = to-×-＝ left-id-eq right-id-eq
+     is-iso-eq = to-Σ-＝ (inv-eq' , axiom-equalities)
    
-   right : fromiso ∘ toiso ∼ id
+   right : (λ x → fromiso (toiso x)) ∼ (λ x → x)
    right (f , e@((g , gp) , (g' , gp')) , fp) = to-Σ-＝ (refl
-                                                     , (to-×-＝ equiv-eq (Π₂-is-set fe (λ _ _ → sB) _ _)))
+                                                     , (to-×-＝ equiv-eq refl))
     where
      equiv-eq = (to-×-＝
                  (to-subtype-＝ (λ p → Π-is-prop fe λ y → sB) refl)
@@ -196,7 +230,7 @@ We show that Magmas have univalence, piggybacking off the SIP example.
                              → (A B : Magma)
                              → (A ＝ B) ≃ (A ≅ B)
  characterization-of-magma-＝ ua A B = ≃-comp
-                                       (magma.characterization-of-Magma-＝ ua A B)
+                                       (characterization-of-＝ ua sns-data A B)
                                        (sns-equiv-iso A B)
 
 \end{code}
