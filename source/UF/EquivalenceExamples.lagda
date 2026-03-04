@@ -1144,29 +1144,27 @@ to equality on the base type.
 
 \begin{code}
 
-subtype-equiv : {X : 𝓤 ̇ }
-                (P : X → 𝓥 ̇ )
-              → (Π x ꞉ X , is-prop (P x))
-              → (x y : Σ P)
-              → (x ＝ y) ≃ (pr₁ x ＝ pr₁ y)
-subtype-equiv {_} {_} {X} P p (x , px) (y , py) = forwards , ((backwards , p-has-section) , (backwards , p-is-section))
+subtype-＝-≃-pr₁-＝ : {X : 𝓤 ̇ }
+                     (P : X → 𝓥 ̇ )
+                   → ((x : X) → is-prop (P x))
+                   → (x y : Σ P)
+                   → (x ＝ y) ≃ (pr₁ x ＝ pr₁ y)
+subtype-＝-≃-pr₁-＝ {_} {_} {X} P p (x , Px) (y , Py)
+ = qinveq f (f⁻¹ , (f-is-section , f-has-section))
  where
-  h : {x : X} {px px' : P x} → px ＝ px' → x , px ＝ x , px'
-  h refl = refl
+  f : (x , Px) ＝ (y , Py) → x ＝ y
+  f refl = refl
 
-  forwards : (x , px) ＝ (y , py) → x ＝ y
-  forwards refl = refl
+  f⁻¹ : x ＝ y → (x , Px) ＝ (y , Py)
+  f⁻¹ refl = to-Σ-＝' (p x Px Py)
 
-  backwards : x ＝ y → (x , px) ＝ (y , py)
-  backwards refl = h (p x px py)
-
-  p-has-section : forwards ∘ backwards ∼ id
-  p-has-section refl = t (p x px py)
+  f-has-section : f ∘ f⁻¹ ∼ id
+  f-has-section refl = t (p x Px Py)
    where
-    t : px ＝ py → (forwards ∘ backwards) refl ＝ id refl
-    t refl = ap (forwards ∘ h) (props-are-sets (p x) (p x px px) refl)
+    t : Px ＝ Py → (f ∘ f⁻¹) refl ＝ refl
+    t refl = ap (f ∘ to-Σ-＝') (props-are-sets (p x) (p x Px Px) refl)
 
-  p-is-section : backwards ∘ forwards ∼ id
-  p-is-section refl = ap h (props-are-sets (p x) (p x px px) refl)
+  f-is-section : f⁻¹ ∘ f ∼ id
+  f-is-section refl = ap to-Σ-＝' (props-are-sets (p x) (p x Px Px) refl)
 
 \end{code}

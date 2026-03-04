@@ -13,6 +13,7 @@ open import Categories.Notation.Wild hiding (⌜_⌝)
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv hiding (_≅_) renaming (inverse to e-inverse)
+open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Sets
@@ -26,8 +27,8 @@ module Categories.Examples.Set where
 
 \end{code}
 
-First we define Sets under a given universe 𝓤. We first define sets, which is a
-type A, such that for all a b : A, a ＝ b is a proposition.
+First we define Sets under a given universe 𝓤. We first define the property of being a set
+(note that we define this with explicit arguments here) and then the type of sets.
 
 \begin{code}
 
@@ -40,7 +41,8 @@ module _ {𝓤 : Universe} where
 
 \end{code}
 
-We can now easily define the wild category of sets.
+We can now define the wild category of sets in the expected way. This is where
+the homs are exactly functions between the underlying type of the sets.
 
 \begin{code}
 
@@ -57,7 +59,8 @@ We can now easily define the wild category of sets.
 
 \end{code}
 
-We can now define the precategory of sets.
+We can now define the precategory of sets. Notably the homs are sets
+since the underlying type of the codomain is a set.
 
 \begin{code}
 
@@ -65,27 +68,28 @@ We can now define the precategory of sets.
  SetPrecategory fe = (SetWildCategory , set-is-precategory)
   where
    set-is-precategory : is-precategory SetWildCategory
-   set-is-precategory (X , sX) (Y , sY) {x} {y}
-    = Π-is-set fe (λ _ → sY _ _) {x} {y}
+   set-is-precategory (X , sX) (Y , sY)
+    = Π-is-set fe (λ _ → sY _ _)
 
 \end{code}
 
-And finally the category of sets. Notice that this proof can also
-be done using SIP.
+To now show this is a category, we show that identification between sets
+corresponds with isomorphism of objects in the wild category. Notice that
+we can also prove this using SIP.
 
 \begin{code}
 
  id-equiv-iso : (ua : is-univalent 𝓤)
-       (fe : Fun-Ext)
-       (A B : Sets)
-     → (A ＝ B) ≃ (A ≅ B)
+                (fe : Fun-Ext)
+                (A B : Sets)
+              → (A ＝ B) ≃ (A ≅ B)
  id-equiv-iso ua fe (X , sX) (Y , sY) = ((X , sX) ＝ (Y , sY)) ≃⟨ i ⟩
                                         (X ＝ Y)               ≃⟨ ii ⟩
                                         (X ≃ Y)                ≃⟨ iii ⟩
                                         (X , sX) ≅ (Y , sY)    ■
   where
    i : (X , sX ＝ Y , sY) ≃ (X ＝ Y)
-   i = subtype-equiv is-set-explicit (λ _ → Π₂-is-prop fe
+   i = subtype-＝-≃-pr₁-＝ is-set-explicit (λ _ → Π₂-is-prop fe
                                       (λ x y → being-prop-is-prop fe))
                                        (X , sX) (Y , sY)
 
@@ -93,57 +97,33 @@ be done using SIP.
    ii = idtoeq X Y , ua X Y
 
    iii : (X ≃ Y) ≃ (X , sX) ≅ (Y , sY)
-   iii = Σ-cong equiv-equiv-iso
+   iii = Σ-cong equiv-≃-inverse
     where
-     qinv-equiv-iso : (f : X → Y)
+     qinv-≃-inverse : (f : X → Y)
                     → qinv f ≃ inverse {_} {_} {_} {X , sX} {Y , sY} f
-     qinv-equiv-iso f = forwards , ((backwards , left) , (backwards , right))
+     qinv-≃-inverse f = qinveq g (g⁻¹ , g-is-section , g-has-section)
       where
-       forwards : qinv f → inverse {_} {_} {_} {X , sX} {Y , sY} f
-       forwards (g , lg , rg) = g , (dfunext fe lg , dfunext fe rg)
+       g : qinv f → inverse {_} {_} {_} {X , sX} {Y , sY} f
+       g (h , lh , rh) = h , (dfunext fe lh , dfunext fe rh)
 
-       backwards : inverse {_} {_} {_} {X , sX} {Y , sY} f → qinv f
-       backwards (g , lg , rg) = g
-                               , (λ x → ap (λ - → - x) lg)
-                               , λ y → ap (λ - → - y) rg
+       g⁻¹ : inverse {_} {_} {_} {X , sX} {Y , sY} f → qinv f
+       g⁻¹ (h , lh , rh) = h
+                               , (λ x → ap (λ - → - x) lh)
+                               , λ y → ap (λ - → - y) rh
 
-       left : (λ x → forwards (backwards x)) ∼ id
-       left (g , lg , rg) = to-Σ-＝ (refl
+       g-is-section : g⁻¹ ∘ g ∼ id
+       g-is-section (h , lh , rh) = to-Σ-＝ (refl
+                                   , (to-×-＝ (dfunext fe (λ x → sX _ _ _ _))
+                                              (dfunext fe (λ y → sY _ _ _ _))))
+                                             
+       g-has-section : g ∘ g⁻¹ ∼ id
+       g-has-section (h , lh , rh) = to-Σ-＝ (refl
                                   , (to-×-＝ (Π-is-set fe (λ x → sX _ _) _ _)
                                              (Π-is-set fe (λ y → sY _ _) _ _)))
 
-       right : (λ x → backwards (forwards x)) ∼ id
-       right (g , lg , rg) = to-Σ-＝ (refl
-                                   , (to-×-＝ (dfunext fe (λ x → sX _ _ _ _))
-                                              (dfunext fe (λ y → sY _ _ _ _))))
-
-     is-equiv-equiv-qinv : (f : X → Y) → is-equiv f ≃ qinv f
-     is-equiv-equiv-qinv f = (equivs-are-qinvs f)
-                           , (qinvs-are-equivs f , left)
-                           , (qinvs-are-equivs f , right)
-      where
-       left : (λ x → equivs-are-qinvs f (qinvs-are-equivs f x)) ∼ (λ x → x)
-       left e@(g , gl , gr) = to-Σ-＝ (refl
-                                    , (to-×-＝ (dfunext fe (λ x → sX _ _ _ _))
-                                               refl))
-
-       right : (λ x → qinvs-are-equivs f (equivs-are-qinvs f x)) ∼ (λ x → x)
-       right e@((g , gp) , (g' , gp'))
-        = to-×-＝ refl (to-Σ-＝ (equality , (dfunext fe λ x → sX _ _ _ _)))
-        where
-         equality : g ＝ g'
-         equality = g          ＝⟨ refl ⟩
-                    id ∘ g     ＝⟨ I ⟩
-                    g' ∘ f ∘ g ＝⟨ II ⟩
-                    g' ∘ id    ＝⟨ refl ⟩
-                    g'         ∎
-          where
-           I = e-inverse _ (fe _ _) (λ x → (gp' (g x))⁻¹)
-           II = e-inverse _ (fe _ _) (λ x → ap g' (gp x))
-
-     equiv-equiv-iso : (f : X → Y)
+     equiv-≃-inverse : (f : X → Y)
                      → is-equiv f ≃ inverse {_} {_} {_} {X , sX} {Y , sY} f
-     equiv-equiv-iso f = ≃-comp (is-equiv-equiv-qinv f) (qinv-equiv-iso f)
+     equiv-≃-inverse f = ≃-comp (is-equiv-≃-qinv fe f (sX _ _)) (qinv-≃-inverse f)
 
 \end{code}
 
@@ -154,21 +134,20 @@ We can finally prove that Set forms a category.
  SetCategory : (ua : is-univalent 𝓤)
                (fe : Fun-Ext)
              → Category (𝓤 ⁺) 𝓤
- SetCategory ua fe = SetPrecategory fe , univalence-property
+ SetCategory ua fe = SetPrecategory fe , set-is-category
   where
-   h : (a b : obj SetWildCategory) → id-to-iso a b ∼ ⌜ id-equiv-iso ua fe a b ⌝
-   h (a , sA) b refl
-    = to-Σ-＝ (refl
-            , (to-Σ-＝ (refl
-                     , to-×-＝ (Π-is-set fe (λ x → sA _ _) _ _)
-                               (Π-is-set fe (λ x → sA _ _) _ _))))
+   pointwise-equal : (a b : obj SetWildCategory)
+                   → id-to-iso a b ∼ ⌜ id-equiv-iso ua fe a b ⌝
+   pointwise-equal (a , sA) b refl
+    = to-Σ-＝ (refl , (to-Σ-＝ (refl , to-×-＝ (Π-is-set fe (λ x → sA _ _) _ _)
+                                              (Π-is-set fe (λ x → sA _ _) _ _))))
 
-   univalence-property : is-category (SetPrecategory fe)
-   univalence-property a b
+   set-is-category : is-category (SetPrecategory fe)
+   set-is-category a b
     = equiv-closed-under-∼ ⌜ id-equiv-iso ua fe a b ⌝
                            (id-to-iso a b)
                            (pr₂ (id-equiv-iso ua fe a b))
-                           (h a b)
+                           (pointwise-equal a b)
 
 \end{code}
 

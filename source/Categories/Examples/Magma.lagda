@@ -18,6 +18,7 @@ open import UF.Retracts
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.SIP
+open import UF.SIP
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
@@ -26,8 +27,17 @@ open import UF.Univalence
 module Categories.Examples.Magma where
 
 module _ {𝓤 : Universe} (fe : Fun-Ext) where
+
+ Magma-structure : 𝓤 ̇  → 𝓤 ̇ 
+ Magma-structure X = (X → X → X) × is-set X
+
  Magma : 𝓤 ⁺ ̇
- Magma = Σ X ꞉ 𝓤 ̇ , (X → X → X) × is-set X
+ Magma = Σ X ꞉ 𝓤 ̇ , Magma-structure X
+
+ magma-hom : (a b : Magma) → 𝓤 ̇
+ magma-hom (X , _·_ , _)
+           (Y , _*_ , _)
+  = Σ f ꞉ (X → Y) , ((x y : X) → f (x · y) ＝ f x * f y)
 
  MagmaWildCategory : WildCategory (𝓤 ⁺) 𝓤
  MagmaWildCategory = wildcategory Magma
@@ -39,11 +49,6 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) where
                                   λ {a} {b} {c} {d}
                                     → magma-assoc {a} {b} {c} {d}
   where
-   magma-hom : (a b : Magma) → 𝓤 ̇
-   magma-hom (X , _·_ , _)
-             (Y , _*_ , _)
-    = Σ f ꞉ (X → Y) , ((x y : X) → f (x · y) ＝ f x * f y)
-
    magma-id : {a : Magma} → magma-hom a a
    magma-id = id , λ x y → refl
 
@@ -55,12 +60,12 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) where
               {Y , _*_ , _}
               {Z , _∙_ , _}
               (f , fp)
-              (g , gp) = f ∘ g , property-comp
+              (g , gp) = f ∘ g , composition-property
     where
-     property-comp : (x y : X) → (f ∘ g) (x · y) ＝ (f ∘ g) x ∙ (f ∘ g) y
-     property-comp x y = (f ∘ g) (x · y)       ＝⟨ ap f (gp x y) ⟩
-                         f (g x * g y)         ＝⟨ fp (g x) (g y) ⟩
-                         (f ∘ g) x ∙ (f ∘ g) y ∎
+     composition-property : (x y : X) → (f ∘ g) (x · y) ＝ (f ∘ g) x ∙ (f ∘ g) y
+     composition-property x y = (f ∘ g) (x · y)       ＝⟨ ap f (gp x y) ⟩
+                                f (g x * g y)         ＝⟨ fp (g x) (g y) ⟩
+                                (f ∘ g) x ∙ (f ∘ g) y ∎
 
    left-id-neutral : {a b : Magma}
                      (f : magma-hom a b)
@@ -111,14 +116,6 @@ We show that Magmas have univalence
 
  open sip
 
- Magma-structure : 𝓤 ̇  → 𝓤 ̇ 
- Magma-structure X = (X → X → X) × is-set X
-
-
- Magma-hom-pres : (a b : Magma) (f : pr₁ a → pr₁ b) → 𝓤 ̇
- Magma-hom-pres (X , _·_ , _)
-                (Y , _*_ , _) f = ((x y : X) → f (x · y) ＝ (f x) * (f y))
-
  sns-data : SNS Magma-structure 𝓤
  sns-data = (ι , ρ , θ)
   where
@@ -145,7 +142,6 @@ We show that Magmas have univalence
      retract = λ i → dfunext fe
                       λ x → dfunext fe
                        λ y → sX _ _
-
 
    θ : {X : 𝓤 ̇ }
        (a b : Magma-structure X)
@@ -249,12 +245,17 @@ And finally show that this is a category.
    eq : (A B : Magma)
       → id-to-iso A B
       ∼ ⌜ characterization-of-magma-＝ ua A B ⌝
-   eq A@(a , _·_ , sA) B@(b , _*_ , sB) refl = to-Σ-＝ (refl , is-iso-equality)
+   eq A@(a , _·_ , sA) B@(b , _*_ , sB) refl = to-Σ-＝ (refl , underlying-equality)
     where
      inv-eq' = to-subtype-＝ (λ f → Π₂-is-prop fe (λ _ _ → sB)) refl
+
+
      left-inv = hom-is-set MagmaPrecategory {A} {A} _ _
      right-inv = hom-is-set MagmaPrecategory {A} {A} _ _
-     is-iso-equality = to-Σ-＝ (inv-eq' , to-×-＝ left-inv right-inv)
+
+     underlying-equality : underlying-morphism-is-isomorphism {_} {_} {_} {A} {B} ((id-to-iso A B) refl)
+                         ＝ underlying-morphism-is-isomorphism {_} {_} {_} {A} {B} (⌜ characterization-of-magma-＝ ua A B ⌝ refl) 
+     underlying-equality = to-Σ-＝ (inv-eq' , to-×-＝ left-inv right-inv)
 
    is-cat : is-category MagmaPrecategory
    is-cat A B = equiv-closed-under-∼ ⌜ characterization-of-magma-＝ ua A B ⌝
