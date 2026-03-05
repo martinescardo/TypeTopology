@@ -107,8 +107,8 @@ We now show that this is a precategory
 
 \end{code}
 
-We show that Magmas have univalence, using the SIP example for Magmas. To do this,
-we show that the notion of isomorphism for the sip example is equivalent
+We show that Magmas have univalence, using the SIP example for Magmas. To do
+this, we show that the notion of isomorphism for the sip example is equivalent
 to that of isomorphism in the magma wild category.
 
 \begin{code}
@@ -156,15 +156,19 @@ to that of isomorphism in the magma wild category.
    is-section : toiso ∘ fromiso ∼ id
    is-section e@((f , fp) , (g , gp) , lg , rg)
     = to-Σ-＝ (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl
-    , to-Σ-＝ (at-most-one-inverse {_} {_} {_} {A} {B} {(f , fp)} to-from-inv id-inv
+    , to-Σ-＝ (at-most-one-inverse {_} {_} {_} {A} {B} {(f , fp)}
+                to-from-inv id-inv
     , to-×-＝ (hom-is-set MagmaPrecategory {A} {A} _ _)
               (hom-is-set MagmaPrecategory {B} {B} _ _)))
     where
-     isomorphism = ⌜_⌝' {_} {_} {_} {A} {B} ((toiso ∘ fromiso) ((f , fp) , (g , gp) , lg , rg))
+     isomorphism = ⌜_⌝' {_} {_} {_} {A} {B} ((toiso ∘ fromiso)
+                                             ((f , fp) , (g , gp) , lg , rg))
      iso-inverse = inverse {_} {_} {_} {A} {B}
 
      isomorphism-is-iso : iso-inverse isomorphism
-     isomorphism-is-iso = underlying-morphism-is-isomorphism {_} {_} {_} {A} {B} ((toiso ∘ fromiso) e)
+     isomorphism-is-iso
+      = underlying-morphism-is-isomorphism {_} {_} {_} {A} {B}
+                                           ((toiso ∘ fromiso) e)
 
      isomorphism-equality : (e : isomorphism ＝ f , fp)
                           → iso-inverse isomorphism
@@ -172,12 +176,16 @@ to that of isomorphism in the magma wild category.
      isomorphism-equality e first = transport iso-inverse e first
 
      to-from-inv id-inv : iso-inverse (f , fp)
-     to-from-inv = isomorphism-equality (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl) isomorphism-is-iso
+     to-from-inv = isomorphism-equality
+                    (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB))
+                                   refl)
+                    isomorphism-is-iso
      id-inv = ((g , gp) , lg , rg)
    
    has-section : fromiso ∘ toiso ∼ id
-   has-section (f , e@((g , gp) , (g' , gp')) , fp) = to-Σ-＝ (refl
-                                                     , (to-×-＝ is-equiv-f-＝ (Π₂-is-set fe (λ _ _ → sB) _ _)))
+   has-section (f , e@((g , gp) , (g' , gp')) , fp)
+    = to-Σ-＝ (refl
+            , (to-×-＝ is-equiv-f-＝ (Π₂-is-set fe (λ _ _ → sB) _ _)))
     where
      is-equiv-f-＝ = (to-×-＝
                  (to-subtype-＝ (λ p → Π-is-prop fe λ y → sB) refl)
@@ -208,21 +216,26 @@ And finally show that this is a category.
    pointwise-eq : (A B : Magma)
       → id-to-iso A B
       ∼ ⌜ characterization-of-magma-＝ ua A B ⌝
-   pointwise-eq A@(a , _·_ , sA) B@(b , _*_ , sB) refl = to-Σ-＝ (refl , underlying-equality)
+   pointwise-eq A@(a , _·_ , sA) B@(b , _*_ , sB) refl
+    = to-Σ-＝ (refl , underlying-equality)
     where
      inv-eq' = to-subtype-＝ (λ f → Π₂-is-prop fe (λ _ _ → sB)) refl
 
      left-inv = hom-is-set MagmaPrecategory {A} {A} _ _
      right-inv = hom-is-set MagmaPrecategory {A} {A} _ _
+    
+     underlying-is-iso = underlying-morphism-is-isomorphism {_} {_} {_} {A} {B}
 
-     underlying-equality : underlying-morphism-is-isomorphism {_} {_} {_} {A} {B} ((id-to-iso A B) refl)
-                         ＝ underlying-morphism-is-isomorphism {_} {_} {_} {A} {B} (⌜ characterization-of-magma-＝ ua A B ⌝ refl) 
+     underlying-equality : underlying-is-iso ((id-to-iso A B) refl)
+                         ＝ underlying-is-iso 
+                            (⌜ characterization-of-magma-＝ ua A B ⌝ refl) 
      underlying-equality = to-Σ-＝ (inv-eq' , to-×-＝ left-inv right-inv)
 
    is-cat : is-category MagmaPrecategory
-   is-cat A B = equiv-closed-under-∼ ⌜ characterization-of-magma-＝ ua A B ⌝
-                                     (id-to-iso A B)
-                                     ⌜ characterization-of-magma-＝ ua A B ⌝-is-equiv
-                                     (pointwise-eq A B)
+   is-cat A B = equiv-closed-under-∼
+                 ⌜ characterization-of-magma-＝ ua A B ⌝
+                 (id-to-iso A B)
+                 ⌜ characterization-of-magma-＝ ua A B ⌝-is-equiv
+                 (pointwise-eq A B)
 
 \end{code}
