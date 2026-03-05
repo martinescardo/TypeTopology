@@ -25,8 +25,9 @@ module Categories.Examples.Set where
 
 \end{code}
 
-First we define Sets under a given universe 𝓤. We first define the property of being a set
-(note that we define this with explicit arguments here) and then the type of sets.
+First we define Sets under a given universe 𝓤. We first define the property of
+being a set ,note that we define this with explicit arguments here, and then the
+type of sets.
 
 \begin{code}
 
@@ -39,7 +40,7 @@ module _ {𝓤 : Universe} where
 
 \end{code}
 
-We can now define the wild category of sets in the expected way. This is where
+We define the wild category of sets in the expected way. This is where
 the homs are exactly functions between the underlying type of the sets.
 
 \begin{code}
@@ -57,8 +58,8 @@ the homs are exactly functions between the underlying type of the sets.
 
 \end{code}
 
-We can now define the precategory of sets. Notably the homs are sets
-since the underlying type of the codomain is a set.
+We now define the precategory of sets. Notably, the homs are sets since the
+underlying type of the codomain is a set.
 
 \begin{code}
 
@@ -87,9 +88,10 @@ we can also prove this using SIP.
                                         (X , sX) ≅ (Y , sY)    ■
   where
    i : (X , sX ＝ Y , sY) ≃ (X ＝ Y)
-   i = subtype-＝-≃-pr₁-＝ is-set-explicit (λ _ → Π₂-is-prop fe
-                                      (λ x y → being-prop-is-prop fe))
-                                       (X , sX) (Y , sY)
+   i = subtype-＝-≃-pr₁-＝ is-set-explicit
+                            (λ _ → Π₂-is-prop fe
+                                    (λ x y → being-prop-is-prop fe))
+                            (X , sX) (Y , sY)
 
    ii : (X ＝ Y) ≃ (X ≃ Y)
    ii = idtoeq X Y , ua X Y
@@ -121,7 +123,9 @@ we can also prove this using SIP.
 
      equiv-≃-inverse : (f : X → Y)
                      → is-equiv f ≃ inverse {_} {_} {_} {X , sX} {Y , sY} f
-     equiv-≃-inverse f = ≃-comp (is-equiv-≃-qinv fe f (sX _ _)) (qinv-≃-inverse f)
+     equiv-≃-inverse f = ≃-comp
+                          (is-equiv-≃-qinv fe f (sX _ _))
+                          (qinv-≃-inverse f)
 
 \end{code}
 
@@ -137,14 +141,16 @@ We can finally prove that Set forms a category.
    pointwise-equal : (a b : obj SetWildCategory)
                    → id-to-iso a b ∼ ⌜ id-equiv-iso ua fe a b ⌝
    pointwise-equal (a , sA) b refl
-    = to-Σ-＝ (refl , (to-Σ-＝ (refl , to-×-＝ (Π-is-set fe (λ x → sA _ _) _ _)
-                                              (Π-is-set fe (λ x → sA _ _) _ _))))
+    = to-Σ-＝ (refl
+            , (to-Σ-＝ (refl
+                     , to-×-＝ (Π-is-set fe (λ x → sA _ _) _ _)
+                               (Π-is-set fe (λ x → sA _ _) _ _))))
 
    set-is-category : is-category (SetPrecategory fe)
    set-is-category a b
     = equiv-closed-under-∼ ⌜ id-equiv-iso ua fe a b ⌝
                            (id-to-iso a b)
-                           (pr₂ (id-equiv-iso ua fe a b))
+                           (⌜ id-equiv-iso ua fe a b ⌝-is-equiv)
                            (pointwise-equal a b)
 
 \end{code}

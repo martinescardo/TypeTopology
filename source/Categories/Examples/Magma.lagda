@@ -24,17 +24,15 @@ open import UF.Univalence
 
 module Categories.Examples.Magma where
 
+\end{code}
+
+We start by defining the Wild Category of Magmas, using the defintion
+of Magma from the SIP example for Magma.
+
+\begin{code}
+
 module _ {𝓤 : Universe} (fe : Fun-Ext) where
- Magma-structure : 𝓤 ̇  → 𝓤 ̇ 
- Magma-structure X = (X → X → X) × is-set X
-
- Magma : 𝓤 ⁺ ̇
- Magma = Σ X ꞉ 𝓤 ̇ , Magma-structure X
-
- magma-hom : (a b : Magma) → 𝓤 ̇
- magma-hom (X , _·_ , _)
-           (Y , _*_ , _)
-  = Σ f ꞉ (X → Y) , ((x y : X) → f (x · y) ＝ f x * f y)
+ open magma renaming (_≅_ to _M≅_)
 
  MagmaWildCategory : WildCategory (𝓤 ⁺) 𝓤
  MagmaWildCategory = wildcategory Magma
@@ -46,6 +44,11 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) where
                                   λ {a} {b} {c} {d}
                                     → magma-assoc {a} {b} {c} {d}
   where
+   magma-hom : (a b : Magma) → 𝓤 ̇
+   magma-hom (X , _·_ , _)
+             (Y , _*_ , _)
+    = Σ f ꞉ (X → Y) , ((x y : X) → f (x · y) ＝ f x * f y)
+
    magma-id : {a : Magma} → magma-hom a a
    magma-id = id , λ x y → refl
 
@@ -57,26 +60,24 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) where
               {Y , _*_ , _}
               {Z , _∙_ , _}
               (f , fp)
-              (g , gp) = f ∘ g , composition-property
+              (g , gp) = f ∘ g , ∘-preserves-property
     where
-     composition-property : (x y : X) → (f ∘ g) (x · y) ＝ (f ∘ g) x ∙ (f ∘ g) y
-     composition-property x y = (f ∘ g) (x · y)       ＝⟨ ap f (gp x y) ⟩
+     ∘-preserves-property : (x y : X) → (f ∘ g) (x · y) ＝ (f ∘ g) x ∙ (f ∘ g) y
+     ∘-preserves-property x y = (f ∘ g) (x · y)       ＝⟨ ap f (gp x y) ⟩
                                 f (g x * g y)         ＝⟨ fp (g x) (g y) ⟩
                                 (f ∘ g) x ∙ (f ∘ g) y ∎
 
    left-id-neutral : {a b : Magma}
                      (f : magma-hom a b)
                    → magma-comp {a} {b} {b} (magma-id {b}) f ＝ f
-   left-id-neutral {_} {_ , _ , sY} (f , pf) = to-Σ-＝ (refl , prop-equality)
-    where
-     prop-equality = dfunext fe (λ x → dfunext fe (λ y → sY _ _))
+   left-id-neutral {_} {_ , _ , sB} (f , pf)
+    = to-Σ-＝ (refl , dfunext fe (λ x → dfunext fe (λ y → sB _ _)))
 
    right-id-neutral : {a b : Magma}
                       (f : magma-hom a b)
                     → magma-comp {a} {a} {b} f (magma-id {a}) ＝ f
-   right-id-neutral {_} {_ , _ , sY} (f , pf) = to-Σ-＝ (refl , prop-equality)
-    where
-     prop-equality = dfunext fe (λ x → dfunext fe (λ y → sY _ _))
+   right-id-neutral {_} {_ , _ , sB} (f , pf)
+    = to-Σ-＝ (refl , dfunext fe (λ x → dfunext fe (λ y → sB _ _)))
 
    magma-assoc : {a b c d : Magma}
                  (f : magma-hom a b)
@@ -84,10 +85,8 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) where
                  (h : magma-hom c d)
                → magma-comp {a} {c} {d} h (magma-comp {a} {b} {c} g f)
                ＝ magma-comp {a} {b} {d} (magma-comp {b} {c} {d} h g) f
-   magma-assoc {_} {_} {_} {_ , _ , S}
-               (f , pf) (g , pg) (h , ph) = to-Σ-＝ (refl , prop-equality)
-    where
-     prop-equality = dfunext fe (λ x → dfunext fe (λ y → S _ _))
+   magma-assoc {_} {_} {_} {_ , _ , sD} (f , pf) (g , pg) (h , ph)
+    = to-Σ-＝ (refl , dfunext fe (λ x → dfunext fe (λ y → sD _ _)))
 
  open WildCategoryNotation MagmaWildCategory
 
@@ -101,39 +100,24 @@ We now show that this is a precategory
  MagmaPrecategory = MagmaWildCategory , is-pre
   where
    is-pre : is-precategory MagmaWildCategory
-   is-pre (_ , _ , sX) (_ , _ , sY) = Σ-is-set (Π-is-set fe (λ _ → sY))
-                                                λ f → Π₂-is-set fe
-                                                  λ x y → props-are-sets sY
+   is-pre (_ , _ , sX) (_ , _ , sY)
+    = Σ-is-set (Π-is-set fe (λ _ → sY))
+       λ f → Π₂-is-set fe
+         λ x y → props-are-sets sY
 
 \end{code}
 
-We show that Magmas have univalence, piggybacking off the SIP example.
+We show that Magmas have univalence, piggybacking off the SIP example for Magmas.
 
 \begin{code}
 
- inverse' : {a b : 𝓤 ̇ }
-            {f : a → b}
-            (e : is-equiv f)
-          → (b → a)
- inverse' = pr₁ ∘ pr₂
-
- inv-eq : {a b : 𝓤 ̇ }
-          {f : a → b}
-          (e : is-equiv f)
-        → e-inverse f e  ＝ inverse' e
- inv-eq {_} {_} {f}
-        ((g , gp) , (g' , gp')) = e-inverse _ (fe _ _)
-                                  λ x → g x          ＝⟨ (gp' (g x))⁻¹ ⟩
-                                        g' (f (g x)) ＝⟨ ap g' (gp x) ⟩
-                                        g' x         ∎
-
  sns-equiv-iso : (A B : Magma)
-               → (A magma.≅ B) ≃ (A ≅ B)
+               → (A M≅ B) ≃ (A ≅ B)
  sns-equiv-iso A@(a , _·_ , sA) B@(b , _*_ , sB) = toiso
                                                  , (fromiso , left)
                                                  , (fromiso , right)
   where
-   toiso : A magma.≅ B → A ≅ B
+   toiso : A M≅ B → A ≅ B
    toiso (f , e@((g , gp) , (g' , gp')) , fp)
          = (f , λ x y → ap (λ - → - x y) fp)
          , (g , hom-prop-for-inv)
@@ -150,25 +134,22 @@ We show that Magmas have univalence, piggybacking off the SIP example.
        i   = ap (λ - → g (- * y)) (gp x)⁻¹
        ii  = ap (λ - → g (f (g x) * -)) (gp y)⁻¹
        iii = ap g ((λ x y → ap (λ - → - x y) fp) (g x) (g y))⁻¹
-       iv  = g (f (g x · g y)) ＝⟨ ap _ (inv-eq e) ⟩
-             g' (f (g x · g y)) ＝⟨ gp' (g x · g y) ⟩
-             g x · g y ∎
+       iv  = inverses-are-retractions f e (g x · g y)
 
      left-prop = (λ _ → Π₂-is-prop fe (λ _ _ → sA))
      right-prop = (λ _ → Π₂-is-prop fe (λ _ _ → sB))
      
      left-inv : (λ x → g (f x)) ∼ (λ x → x)
-     left-inv x = g (f x)  ＝⟨ ap (λ - → - (f x)) (inv-eq e) ⟩
-                  g' (f x) ＝⟨ gp' x ⟩
-                  x ∎
+     left-inv = inverses-are-retractions f e
      
-   fromiso : A ≅ B → A magma.≅ B
+   fromiso : A ≅ B → A M≅ B
    fromiso ((f , fp) , (g , gp) , lg , rg) = f
                                              , ((g , λ x → ap (λ - → - x)
                                                               (ap pr₁ rg))
                                                , g , λ x → ap (λ - → - x)
                                                               (ap pr₁ lg))
-                                             , dfunext fe (λ x → dfunext fe (λ y → fp x y))
+                                             , dfunext fe (λ x → dfunext fe
+                                                          (λ y → fp x y))
 
    left : toiso ∘ fromiso ∼ id
    left e@((f , fp) , (g , gp) , lg , rg) = to-Σ-＝ (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl
@@ -188,13 +169,18 @@ We show that Magmas have univalence, piggybacking off the SIP example.
     where
      equiv-eq = (to-×-＝
                  (to-subtype-＝ (λ p → Π-is-prop fe λ y → sB) refl)
-                 (to-subtype-＝ (λ p → Π-is-prop fe λ y → sA) (inv-eq e)))
+                 (to-subtype-＝ (λ p → Π-is-prop fe λ y → sA) invs-eq))
+
+      where
+       invs-eq = dfunext fe λ b → g b            ＝⟨ (gp' (g b))⁻¹ ⟩
+                                  (g' ∘ f ∘ g) b ＝⟨ ap g' (gp b) ⟩
+                                  g' b           ∎
 
  characterization-of-magma-＝ : is-univalent 𝓤
                              → (A B : Magma)
                              → (A ＝ B) ≃ (A ≅ B)
  characterization-of-magma-＝ ua A B = ≃-comp
-                                       (magma.characterization-of-Magma-＝ ua A B)
+                                       (characterization-of-Magma-＝ ua A B)
                                        (sns-equiv-iso A B)
 
 \end{code}
