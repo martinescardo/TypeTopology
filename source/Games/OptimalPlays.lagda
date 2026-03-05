@@ -35,7 +35,7 @@ open import Games.TypeTrees {𝓤}
 open import MLTT.List hiding ([_]) renaming (map to lmap)
 open import MonadOnTypes.Definition
 open import MonadOnTypes.J-transf-variation
-open import MonadOnTypes.JK
+open import MonadOnTypes.JK R
 open import MonadOnTypes.K
 open import MonadOnTypes.List
 open import MonadOnTypes.NonEmptyList
@@ -177,7 +177,6 @@ x · y = x. Concretely, this amounts to the following construction.
 open T-definitions 𝕃⁺
 open α-definitions 𝕃⁺ R 𝓐
 open JT-definitions 𝕃⁺ R 𝓐 fe
-open JK R
 
 \end{code}
 

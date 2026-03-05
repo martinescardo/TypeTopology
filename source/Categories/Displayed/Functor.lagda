@@ -36,6 +36,7 @@ record DisplayedFunctor {P : Precategory 𝓦 𝓣}
  open FunctorNotation F' renaming (functor-map to F)
  open DisplayedPrecategoryNotation D
  open DisplayedPrecategoryNotation D'
+
  field
   F₀ : {p : obj P}
      → obj[ p ]

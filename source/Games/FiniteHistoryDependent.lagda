@@ -51,7 +51,7 @@ module Games.FiniteHistoryDependent
 open import MonadOnTypes.Definition
 open import MonadOnTypes.J
 open import MonadOnTypes.K
-open import MonadOnTypes.JK
+open import MonadOnTypes.JK R
 open import UF.Base
 open import UF.FunExt
 
@@ -356,8 +356,6 @@ We generalize it to selection-function and quantifier trees in the
 obvious way, by induction:
 
 \begin{code}
-
-open JK R
 
 _Attains_ : {Xt : 𝑻} → 𝓙 Xt → 𝓚 Xt → 𝓤 ⊔ 𝓦₀ ̇
 _Attains_ {[]}     ⟨⟩        ⟨⟩        = 𝟙

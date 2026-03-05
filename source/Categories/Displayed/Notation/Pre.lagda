@@ -134,7 +134,6 @@ module _ {𝓤 𝓥 : Universe}
           → 𝓥 ̇
  open DNotation {{...}} public
 
-
 module DisplayedPrecategoryNotation {𝓦 𝓣 : Universe}
                                     {P : Precategory 𝓦 𝓣}
                                     (D : DisplayedPrecategory 𝓤 𝓥 P) where

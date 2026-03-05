@@ -19,5 +19,4 @@ module DisplayedCategoryNotation {𝓤 𝓥 : Universe}
                        (D : DisplayedCategory 𝓦 𝓣 P) where
  open DisplayedPrecategoryNotation ⟨ D ⟩ public
 
-
 \end{code}

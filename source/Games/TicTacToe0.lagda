@@ -9,10 +9,10 @@ history dependent game.
 
 module Games.TicTacToe0 where
 
-open import Fin.ArgMinMax
 open import Fin.Topology
 open import Fin.Type
 open import Games.TypeTrees
+open import Games.ArgMinMax
 open import MLTT.Athenian
 open import MLTT.Spartan hiding (J)
 open import MonadOnTypes.J
@@ -31,7 +31,7 @@ R : 𝓤₀ ̇
 R = Fin 3
 
 open import Games.FiniteHistoryDependent {𝓤₀} {𝓤₀} R
-open import MonadOnTypes.JK
+open import MonadOnTypes.JK R
 
 \end{code}
 
@@ -207,7 +207,6 @@ And their derived quantifiers:
 \begin{code}
 
 open K-definitions R
-open JK R
 
 quantifier : Player → {M : 𝓤 ̇ } → is-Compact M → is-decidable M → K M
 quantifier p κ (inl m) = overline (selection p m κ)
