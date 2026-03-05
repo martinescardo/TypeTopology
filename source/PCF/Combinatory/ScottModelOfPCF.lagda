@@ -38,6 +38,7 @@ module PCF.Combinatory.ScottModelOfPCF
 open PropositionalTruncation pt
 
 open import Naturals.Properties
+open import UF.Base
 open import UF.DiscreteAndSeparated
 
 open import PCF.Combinatory.PCF pt
@@ -51,7 +52,9 @@ open IfZeroDenotationalSemantics pe
 
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 
-open import Lifting.Construction 𝓤₀
+open import Lifting.Construction 𝓤₀ renaming (⊥ to 𝓛⊥)
+open import Lifting.Miscelanea 𝓤₀
+open import Lifting.Miscelanea-PropExt-FunExt 𝓤₀ pe fe
 open import Lifting.Monad 𝓤₀ hiding (μ)
 
 ⟦_⟧ : type → DCPO⊥ {𝓤₁} {𝓤₁}
@@ -98,7 +101,12 @@ private
                                                  ＝ 𝟙 , (λ _ → 2) , 𝟙-is-prop
  ⟦t₂⟧-is-a-triple-representing-a-partial-element = refl
 
-  -- We let Agda compute the witness (indicated by _) that ⟦ t₂ ⟧ₑ is total.
+\end{code}
+
+We let Agda compute the witness (indicated by _) that ⟦ t₂ ⟧ₑ is total.
+
+\begin{code}
+
  compute-the-value-of-⟦t₂⟧ : value ⟦ t₂ ⟧ₑ _ ＝ 2
  compute-the-value-of-⟦t₂⟧ = refl
 
@@ -107,17 +115,18 @@ private
 By computational adequacy (see the comments at the top of this file) and the
 computation above, the term t₂ reduces to the numeral ⌜ 2 ⌝ in PCF.
 
+The term t₃ encodes the program [λ x . (if (0 == x) then 2 else (pred 5)) 3].
+Notice how the extent of the partial element is no longer given by 𝟙 but, as a
+consequence of the constructions in our model, by the product 𝟙 × 𝟙.
+
+We let Agda compute the witness (indicated by _) that the type 𝟙 × 𝟙 is a
+proposition.
+
 \begin{code}
 
- -- t₃ encodes the program [λ x . (if (0 == x) then 2 else (pred 5)) 3]
  t₃ : PCF ι
  t₃ = ifZero · ⌜ 2 ⌝ · (Pred · ⌜ 5 ⌝) · ⌜ 3 ⌝
 
- -- Notice how the extent of the partial element is no longer given by 𝟙 but, as
- -- a consequence of the constructions in our model, by the product 𝟙 × 𝟙.
- --
- -- We let Agda compute the witness (indicated by _) that the type 𝟙 × 𝟙 is a
- -- proposition.
  ⟦t₃⟧-is-a-triple-representing-a-partial-element : ⟦ t₃ ⟧ₑ
                                                  ＝ (𝟙 × 𝟙) , (λ _ → 4) , _
  ⟦t₃⟧-is-a-triple-representing-a-partial-element = refl
@@ -150,28 +159,105 @@ definition I = S · K · K.
 
 \end{code}
 
-Finally, here are two examples that use the Fix combinator where Agda cannot
-normalise the term within reasonable time, which is why these lines are
-commented out.
+Finally, here are two examples that use the Fix combinator. We explain why we
+can't quite compute results in these examples.
+Note that this has been updated on 3 March 2026 by Tom de Jong. I am grateful to
+Cass Alexandru for questions that led to these updates.
 
 \begin{code}
+
  t₆ : PCF ι
  t₆ = Fix · (K · ⌜ 0 ⌝)
 
- -- The value of ⟦ t₆ ⟧ is 0, but the computation takes an unreasonable amount
- -- of time.
- --
- -- compute-the-value-of-⟦t₆⟧ : value ⟦ t₆ ⟧ₑ _ = 0
- -- compute-the-value-of-⟦t₆⟧ = refl
+\end{code}
+
+Recall that least fixed points are constructed by iterating an endomap and
+starting with ⊥. In the general case of a 𝓥-dcpo we need to lift the type of
+natural numbers to a copy in 𝓥, which is why we have the type ℕ' below. Of
+course, since we are dealing with 𝓤₀-dcpos this lifing is unnecessary here, but
+it is a consequence of applying the more general constructions.
+
+\begin{code}
+
+ open import UF.UniverseEmbedding
+ ℕ' : 𝓤₀ ̇
+ ℕ' = Lift 𝓤₀ ℕ
+ _′ : ℕ' → ℕ
+ _′ = lower
+ ′_ : ℕ → ℕ'
+ ′_ = lift 𝓤₀
+
+ t₆-note₁ : is-defined ⟦ t₆ ⟧ₑ
+            ＝ (∃ n ꞉ ℕ' , is-defined (iter ⟦ ι ⟧ (n ′) ⟦ K · ⌜ 0 ⌝ ⟧ₑ))
+ t₆-note₁ = refl
+
+ t₆-note₂ : (n : ℕ') → iter ⟦ ι ⟧ (succ (n ′)) ⟦ K · ⌜ 0 ⌝ ⟧ₑ ＝ η 0
+ t₆-note₂ _ = refl
+
+ t₆-is-defined : is-defined ⟦ t₆ ⟧ₑ
+ t₆-is-defined = ∣ ′ 1 , ⋆ ∣
+
+\end{code}
+
+The below computation does not work, because extracting the value employs the
+fact that we can factor a certain map through the proposition truncation and the
+truncation is assumed axiomatically in our development. I would expect it to
+work in Cubical Agda though.
+
+ compute-the-value-of-⟦t₆⟧ : value ⟦ t₆ ⟧ₑ t₆-is-defined ＝ 0
+ compute-the-value-of-⟦t₆⟧ = refl
+
+But it is provable of course:
+
+\begin{code}
+
+ value-of-⟦t₆⟧ₑ : value ⟦ t₆ ⟧ₑ t₆-is-defined ＝ 0
+ value-of-⟦t₆⟧ₑ = ＝-of-values-from-＝ (eq ⁻¹)
+  where
+   eq : η 0 ＝ ⟦ t₆ ⟧ₑ
+   eq = family-defined-somewhere-sup-＝ ℕ-is-set _ (′ 1) ⋆
+
+\end{code}
+
+The interpretation of t₇ is equal to ⊥, because it is the least fixed point of
+the identity on ⟦ ι ⟧, but the issue is that iter is defined by pattern
+matching, so while each application iter n is equal to 𝟘, we cannot
+definitionally replace it by 𝟘.
+
+\begin{code}
 
  t₇ : PCF ι
  t₇ = Fix · (I {ι})
 
- -- The interpretation of t₇ is equal to ⊥, because it is the least fixed point
- -- of the identity on ⟦ ι ⟧, but Agda cannot normalise (is-defined (⟦ t₇ ⟧ₑ) in
- -- reasonable time.
- --
- -- ⟦t₇⟧-is-not-defined : ¬ (is-defined ⟦ t₇ ⟧ₑ)
- -- ⟦t₇⟧-is-not-defined = {!!}
+ t₇-note₁ : is-defined ⟦ t₇ ⟧ₑ
+            ＝ (∃ n ꞉ ℕ' , is-defined (iter ⟦ ι ⟧ (n ′) ⟦ I ⟧ₑ))
+ t₇-note₁ = refl
+
+ t₇-note₂ : (n : ℕ) → is-defined (iter ⟦ ι ⟧ n ⟦ I ⟧ₑ) ＝ 𝟘
+ t₇-note₂ zero     = refl
+ t₇-note₂ (succ n) = t₇-note₂ n
+
+ t₇-note₃ : (n : ℕ') → is-defined (iter ⟦ ι ⟧ (n ′) ⟦ I ⟧ₑ) ＝ 𝟘
+ t₇-note₃ n = t₇-note₂ (n ′)
+
+\end{code}
+
+But the following fails:
+ t₇-note₄ : (n : ℕ') → is-defined (iter ⟦ ι ⟧ (n ′) ⟦ I ⟧ₑ) ＝ 𝟘
+ t₇-note₄ n = refl
+
+Therefore we cannot simply compute is-defined ⟦ t₇ ⟧ₑ to be (Σ n ꞉ ℕ' , 𝟘),
+i.e. ℕ' × 𝟘, which is equivalent to 𝟘 of course.
+
+\begin{code}
+
+ ⟦t₇⟧-is-not-defined : ¬ (is-defined ⟦ t₇ ⟧ₑ)
+ ⟦t₇⟧-is-not-defined = ∥∥-rec 𝟘-is-prop h
+  where
+   h : (Σ n ꞉ ℕ' , is-defined (iter ⟦ ι ⟧ (n ′) ⟦ I ⟧ₑ)) → 𝟘
+   h (n , d) = Idtofun (t₇-note₃ n) d
+
+ ⟦t₇⟧-is-⊥ : ⟦ t₇ ⟧ₑ ＝ 𝓛⊥
+ ⟦t₇⟧-is-⊥ = not-defined-⊥-＝ ⟦t₇⟧-is-not-defined
 
 \end{code}
