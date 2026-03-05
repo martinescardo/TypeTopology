@@ -61,7 +61,7 @@ module _ {𝓤 : Universe} {fe : Fun-Ext} where
 
 \end{code}
 
-We now defined the category of magmas.
+We now define the category of magmas.
 
 \begin{code}
 
