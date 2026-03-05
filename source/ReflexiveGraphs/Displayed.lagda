@@ -53,7 +53,7 @@ module _ {𝓐 : Refl-Graph 𝓤 𝓥} where
  
 \end{code}
 
-We show that the component of a displayed reflexive graph is itself a
+We show that each component of a displayed reflexive graph is itself a
 reflexive graph.
 
 \begin{code}
