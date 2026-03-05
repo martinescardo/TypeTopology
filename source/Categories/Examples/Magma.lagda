@@ -9,7 +9,7 @@ The Category of Magmas
 open import Categories.Wild
 open import Categories.Pre 
 open import Categories.Univalent
-open import Categories.Notation.Wild hiding (⌜_⌝)
+open import Categories.Notation.Wild renaming (⌜_⌝ to ⌜_⌝')
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv hiding (_≅_) renaming (inverse to e-inverse)
@@ -26,7 +26,7 @@ module Categories.Examples.Magma where
 
 \end{code}
 
-We start by defining the Wild Category of Magmas, using the defintion
+We start by defining the Wild Category of Magmas, using the definition
 of Magma from the SIP example for Magma.
 
 \begin{code}
@@ -107,71 +107,84 @@ We now show that this is a precategory
 
 \end{code}
 
-We show that Magmas have univalence, piggybacking off the SIP example for Magmas.
+We show that Magmas have univalence, using the SIP example for Magmas. To do this,
+we show that the notion of isomorphism for the sip example is equivalent
+to that of isomorphism in the magma wild category.
 
 \begin{code}
 
  sns-equiv-iso : (A B : Magma)
                → (A M≅ B) ≃ (A ≅ B)
- sns-equiv-iso A@(a , _·_ , sA) B@(b , _*_ , sB) = toiso
-                                                 , (fromiso , left)
-                                                 , (fromiso , right)
+ sns-equiv-iso A@(a , _·_ , sA) B@(b , _*_ , sB)
+  = qinveq toiso (fromiso , has-section , is-section)
   where
    toiso : A M≅ B → A ≅ B
    toiso (f , e@((g , gp) , (g' , gp')) , fp)
          = (f , λ x y → ap (λ - → - x y) fp)
-         , (g , hom-prop-for-inv)
-         , (to-subtype-＝ left-prop (e-inverse _ (fe _ _) left-inv))
-         , to-subtype-＝ right-prop (e-inverse _ (fe _ _) gp)
+         , (g , g-is-hom)
+         , to-subtype-＝ left-is-prop (e-inverse _ (fe _ _) left-inv)
+         , to-subtype-＝ right-is-prop (e-inverse _ (fe _ _) gp)
     where
-     hom-prop-for-inv : (x y : b) → g (x * y) ＝ (g x · g y)
-     hom-prop-for-inv x y = g (x * y)             ＝⟨ i ⟩
-                            g (f (g x) * y)       ＝⟨ ii ⟩
-                            g (f (g x) * f (g y)) ＝⟨ iii ⟩
-                            g (f (g x · g y))     ＝⟨ iv ⟩
-                            g x · g y             ∎
+     g-is-hom : (x y : b) → g (x * y) ＝ (g x · g y)
+     g-is-hom x y = g (x * y)             ＝⟨ i ⟩
+                    g (f (g x) * y)       ＝⟨ ii ⟩
+                    g (f (g x) * f (g y)) ＝⟨ iii ⟩
+                    g (f (g x · g y))     ＝⟨ iv ⟩
+                    g x · g y             ∎
       where
        i   = ap (λ - → g (- * y)) (gp x)⁻¹
        ii  = ap (λ - → g (f (g x) * -)) (gp y)⁻¹
        iii = ap g ((λ x y → ap (λ - → - x y) fp) (g x) (g y))⁻¹
        iv  = inverses-are-retractions f e (g x · g y)
 
-     left-prop = (λ _ → Π₂-is-prop fe (λ _ _ → sA))
-     right-prop = (λ _ → Π₂-is-prop fe (λ _ _ → sB))
+     left-is-prop = (λ _ → Π₂-is-prop fe (λ _ _ → sA))
+     right-is-prop = (λ _ → Π₂-is-prop fe (λ _ _ → sB))
      
      left-inv : (λ x → g (f x)) ∼ (λ x → x)
      left-inv = inverses-are-retractions f e
      
    fromiso : A ≅ B → A M≅ B
-   fromiso ((f , fp) , (g , gp) , lg , rg) = f
-                                             , ((g , λ x → ap (λ - → - x)
-                                                              (ap pr₁ rg))
-                                               , g , λ x → ap (λ - → - x)
-                                                              (ap pr₁ lg))
-                                             , dfunext fe (λ x → dfunext fe
-                                                          (λ y → fp x y))
+   fromiso ((f , fp) , (g , gp) , lg , rg)
+    = f
+    , f-is-equiv
+    , dfunext fe (λ x → dfunext fe (λ y → fp x y))
 
-   left : toiso ∘ fromiso ∼ id
-   left e@((f , fp) , (g , gp) , lg , rg) = to-Σ-＝ (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl
-                                                , to-Σ-＝ (at-most-one-inverse {_} {_} {_} {A} {B} {(f , fp)} (test' (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl) test) ((g , gp) , lg , rg)
-                                                , to-×-＝ (hom-is-set MagmaPrecategory {A} {A} _ _)
-                                                          (hom-is-set MagmaPrecategory {B} {B} _ _)))
     where
-     test : inverse {_} {_} {_} {A} {B} (toiso (fromiso ((f , fp) , (g , gp) , lg , rg)) .pr₁)
-     test = pr₂ ((toiso ∘ fromiso) e)
+     f-is-equiv = (g , λ x → ap (λ - → - x) (ap pr₁ rg))
+                , (g , λ x → ap (λ - → - x) (ap pr₁ lg))
 
-     test' : (e : (toiso (fromiso ((f , fp) , (g , gp) , lg , rg)) .pr₁) ＝ (f , fp)) → inverse {_} {_} {_} {A} {B} (toiso (fromiso ((f , fp) , (g , gp) , lg , rg)) .pr₁) → inverse {_} {_} {_} {A} {B} (f , fp)
-     test' e first = transport (inverse {_} {_} {_} {A} {B}) e first
+   is-section : toiso ∘ fromiso ∼ id
+   is-section e@((f , fp) , (g , gp) , lg , rg)
+    = to-Σ-＝ (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl
+    , to-Σ-＝ (at-most-one-inverse {_} {_} {_} {A} {B} {(f , fp)} to-from-inv id-inv
+    , to-×-＝ (hom-is-set MagmaPrecategory {A} {A} _ _)
+              (hom-is-set MagmaPrecategory {B} {B} _ _)))
+    where
+     isomorphism = ⌜_⌝' {_} {_} {_} {A} {B} ((toiso ∘ fromiso) ((f , fp) , (g , gp) , lg , rg))
+     iso-inverse = inverse {_} {_} {_} {A} {B}
+
+     isomorphism-is-iso : iso-inverse isomorphism
+     isomorphism-is-iso = underlying-morphism-is-isomorphism {_} {_} {_} {A} {B} ((toiso ∘ fromiso) e)
+
+     isomorphism-equality : (e : isomorphism ＝ f , fp)
+                          → iso-inverse isomorphism
+                          → iso-inverse (f , fp)
+     isomorphism-equality e first = transport iso-inverse e first
+
+     to-from-inv id-inv : iso-inverse (f , fp)
+     to-from-inv = isomorphism-equality (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl) isomorphism-is-iso
+     id-inv = ((g , gp) , lg , rg)
    
-   right : fromiso ∘ toiso ∼ id
-   right (f , e@((g , gp) , (g' , gp')) , fp) = to-Σ-＝ (refl
-                                                     , (to-×-＝ equiv-eq (Π₂-is-set fe (λ _ _ → sB) _ _)))
+   has-section : fromiso ∘ toiso ∼ id
+   has-section (f , e@((g , gp) , (g' , gp')) , fp) = to-Σ-＝ (refl
+                                                     , (to-×-＝ is-equiv-f-＝ (Π₂-is-set fe (λ _ _ → sB) _ _)))
     where
-     equiv-eq = (to-×-＝
+     is-equiv-f-＝ = (to-×-＝
                  (to-subtype-＝ (λ p → Π-is-prop fe λ y → sB) refl)
                  (to-subtype-＝ (λ p → Π-is-prop fe λ y → sA) invs-eq))
 
       where
+       invs-eq : g ＝ g'
        invs-eq = dfunext fe λ b → g b            ＝⟨ (gp' (g b))⁻¹ ⟩
                                   (g' ∘ f ∘ g) b ＝⟨ ap g' (gp b) ⟩
                                   g' b           ∎
@@ -192,13 +205,12 @@ And finally show that this is a category.
  MagmaCategory : is-univalent 𝓤 → Category (𝓤 ⁺) 𝓤
  MagmaCategory ua = MagmaPrecategory , is-cat
   where
-   eq : (A B : Magma)
+   pointwise-eq : (A B : Magma)
       → id-to-iso A B
       ∼ ⌜ characterization-of-magma-＝ ua A B ⌝
-   eq A@(a , _·_ , sA) B@(b , _*_ , sB) refl = to-Σ-＝ (refl , underlying-equality)
+   pointwise-eq A@(a , _·_ , sA) B@(b , _*_ , sB) refl = to-Σ-＝ (refl , underlying-equality)
     where
      inv-eq' = to-subtype-＝ (λ f → Π₂-is-prop fe (λ _ _ → sB)) refl
-
 
      left-inv = hom-is-set MagmaPrecategory {A} {A} _ _
      right-inv = hom-is-set MagmaPrecategory {A} {A} _ _
@@ -210,7 +222,7 @@ And finally show that this is a category.
    is-cat : is-category MagmaPrecategory
    is-cat A B = equiv-closed-under-∼ ⌜ characterization-of-magma-＝ ua A B ⌝
                                      (id-to-iso A B)
-                                     (pr₂ (characterization-of-magma-＝ ua A B))
-                                     (eq A B)
+                                     ⌜ characterization-of-magma-＝ ua A B ⌝-is-equiv
+                                     (pointwise-eq A B)
 
 \end{code}
