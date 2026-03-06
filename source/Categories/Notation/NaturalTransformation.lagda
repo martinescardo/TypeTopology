@@ -50,10 +50,13 @@ module NaturalTNotation {A : WildCategory 𝓤 𝓥}
                         {B : WildCategory 𝓦 𝓣}
                         {F' G' : Functor A B}
                         (μ : NaturalTransformation F' G') where
+
  open WildCategoryNotation A
  open WildCategoryNotation B
  open FunctorNotation F' renaming (functor-map to F ; fobj to Fobj)
  open FunctorNotation G' renaming (functor-map to G ; fobj to Gobj)
+
+ natural-map = transf
 
  instance
   nat-notation : NatNotation μ

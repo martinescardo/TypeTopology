@@ -64,3 +64,22 @@ _F∘_ {_} {_} {_} {_} {_} {_} {A} {B} {C} G' F' = combined-functor
   combined-functor = functor F₀ F₁ id-eq f-distrib
 
 \end{code}
+
+Composition with the identity functor does nothing.
+
+\begin{code}
+
+id-left-neutral-F∘ : {A : WildCategory 𝓤 𝓥}
+                     {B : WildCategory 𝓦 𝓣}
+                     {F : Functor A B}
+                   → (id-functor B) F∘ F ＝ F
+id-left-neutral-F∘ = {!!}
+
+id-right-neutral-F∘ : {A : WildCategory 𝓤 𝓥}
+                      {B : WildCategory 𝓦 𝓣}
+                      {F : Functor A B}
+                    → F F∘ (id-functor A) ＝ F
+id-right-neutral-F∘ = {!!}
+
+
+\end{code}

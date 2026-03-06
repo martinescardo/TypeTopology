@@ -6,7 +6,7 @@ Definition of functor.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan hiding (id)
+open import MLTT.Spartan
 open import Categories.Notation.Wild
 open import Categories.Wild
 
@@ -48,5 +48,14 @@ record Functor (A : WildCategory 𝓤 𝓥)
                    (g : hom b c)
                    (f : hom a b)
                  → F₁ (g ◦ f) ＝ F₁ g ◦ F₁ f
+
+\end{code}
+
+We can easily define the identity functor.
+
+\begin{code}
+
+id-functor : (W : WildCategory 𝓤 𝓥) → Functor W W
+id-functor W = functor id id (λ _ → refl) λ _ _ → refl
 
 \end{code}

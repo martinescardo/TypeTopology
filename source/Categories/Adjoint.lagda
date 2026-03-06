@@ -13,6 +13,9 @@ open import Categories.Functor
 open import Categories.Functor-Composition
 open import Categories.NaturalTransformation
 
+open import Categories.Notation.Functor
+open import Categories.Notation.NaturalTransformation
+
 module Categories.Adjoint where
 
 \end{code}
@@ -24,13 +27,15 @@ Blah
 record LeftAdjoint {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣} (F : Functor A B) : {!!} where
  field
   G : Functor B A
-  unit : NaturalTransformation {!id-functor A!} (G F∘ F)
-  counit : NaturalTransformation (F F∘ G) {!id-functor B!}
+  unit : NaturalTransformation (id-functor A) (G F∘ F)
+  counit : NaturalTransformation (F F∘ G) (id-functor B)
 
- 
+ private
+  η = unit
+  ε = counit
   
  field
-  first-axiom : (unit F) F∘ (F counit) ＝ {!id-functor F!}
-  second-axiom : (G unit) F∘ (counit G) ＝ {!id-functor G!}
+  first-axiom : ({!ε · F!} N∘ {!F ·' η!}) ＝ id-natural-transformation F
+  second-axiom : {!(G ·' ε)!} N∘ {!(η · G)!} ＝ id-natural-transformation G
 
 \end{code}
