@@ -14,10 +14,9 @@ open import Categories.Displayed.Notation.Pre
 
 module Categories.Displayed.Notation.Univalent where
 
-module DispCatNotation {𝓤 𝓥 : Universe}
+module DisplayedCategoryNotation {𝓤 𝓥 : Universe}
                        {P : Precategory 𝓤 𝓥}
                        (D : DisplayedCategory 𝓦 𝓣 P) where
- open DispPrecatNotation ⟨ D ⟩ public
-
+ open DisplayedPrecategoryNotation ⟨ D ⟩ public
 
 \end{code}

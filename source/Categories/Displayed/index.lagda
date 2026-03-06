@@ -19,5 +19,6 @@ import Categories.Displayed.Total
 import Categories.Displayed.Functor
 
 import Categories.Displayed.Notation.index
+import Categories.Displayed.Examples.index
 
 \end{code}
