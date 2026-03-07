@@ -63,7 +63,7 @@
      control safety and, to the extent this is currently possible, to
      control which type theory is used.
 
-   * In our last count, on 2026-03-03, this development has 878 Agda
+   * In our last count, on 2026-03-06, this development has 884 Agda
      files with 263K lines of code, including comments and blank
      lines.
 
