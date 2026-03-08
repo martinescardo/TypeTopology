@@ -23,9 +23,12 @@ module Locales.index where
 
 \end{code}
 
-\section{Basics}
+\section{Basic point-free topology}
 
-Basics of frames and quite a bit of order theory.
+The code under this section corresponds roughly to Chapter 3 of the thesis.
+
+The `Locales.Frame` module contains the preliminary definitions related to
+the theory of frames.
 
 \begin{code}
 
@@ -61,6 +64,15 @@ Compact opens.
 import Locales.Compactness.Definition
 import Locales.Compactness.Properties
 import Locales.Compactness.CharacterizationOfCompactLocales
+
+\end{code}
+
+The way-below relation.
+
+\begin{code}
+
+import Locales.WayBelowRelation.Definition
+import Locales.WayBelowRelation.Properties
 
 \end{code}
 
@@ -169,10 +181,6 @@ import Locales.Spectrality.SpectralLocale        -- (29)
 import Locales.Spectrality.SpectralMap           -- (30)
 
 import Locales.Spectrality.SpectralityOfOmega    -- (31)
-
-import Locales.WayBelowRelation.Definition       -- (32)
-
-import Locales.WayBelowRelation.Properties       -- (33)
 
 -- with contribution by Igor Arrieta
 import Locales.UniversalPropertyOfPatch          -- (34)
