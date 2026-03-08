@@ -35,7 +35,7 @@ open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame                      pt fe
-open import Locales.GaloisConnection           pt fe
+open import Locales.PosetalAdjunction           pt fe
 open import Locales.HeytingComplementation     pt fe sr
 open import Locales.HeytingImplication         pt fe
 open import Locales.Nucleus                    pt fe
