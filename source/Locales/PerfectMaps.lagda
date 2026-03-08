@@ -15,7 +15,7 @@ open import Locales.Compactness.Definition pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
-open import Locales.GaloisConnection pt fe
+open import Locales.PosetalAdjunction pt fe
 open import Locales.Spectrality.Properties     pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.WayBelowRelation.Definition pt fe

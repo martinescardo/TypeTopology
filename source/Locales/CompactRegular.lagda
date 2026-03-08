@@ -31,7 +31,7 @@ open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
-open import Locales.GaloisConnection pt fe
+open import Locales.PosetalAdjunction pt fe
 
 \end{code}
 

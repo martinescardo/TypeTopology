@@ -14,7 +14,7 @@ module Locales.HeytingImplication
          where
 
 open import Locales.Frame pt fe
-open import Locales.GaloisConnection pt fe
+open import Locales.PosetalAdjunction pt fe
 open import UF.Logic
 open import UF.SubtypeClassifier
 
