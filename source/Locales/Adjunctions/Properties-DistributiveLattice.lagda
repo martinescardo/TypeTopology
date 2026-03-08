@@ -25,7 +25,7 @@ module Locales.Adjunctions.Properties-DistributiveLattice
 open import Locales.Adjunctions.Properties pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.Frame pt fe
-open import Locales.GaloisConnection pt fe
+open import Locales.PosetalAdjunction pt fe
 open import UF.Logic
 open import UF.SubtypeClassifier
 
