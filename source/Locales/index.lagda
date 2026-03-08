@@ -336,7 +336,7 @@ import Locales.ScottLocale.ScottLocalesOfScottDomains    -- (4)
 The modules below contain:
 
   1. Scott continuity
-  2. Characterisation of continuity
+  2. Characterization of continuity
   3. Classification of Scott opens
 
 \begin{code}
