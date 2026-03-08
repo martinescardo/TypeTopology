@@ -96,25 +96,25 @@ import Locales.DiscreteLocale.Two-Properties
 
 \begin{code}
 
-import Locales.AdjointFunctorTheoremForFrames    -- (1)
+import Locales.AdjointFunctorTheoremForFrames
 import Locales.Adjunctions.Properties
 import Locales.Adjunctions.Properties-DistributiveLattice
 
-import Locales.BooleanAlgebra                    -- (2)
+import Locales.BooleanAlgebra
 
-import Locales.CharacterisationOfContinuity      -- (3)
+import Locales.CharacterisationOfContinuity
 
-import Locales.ClassificationOfScottOpens        -- (4)
+import Locales.ClassificationOfScottOpens
 
-import Locales.Clopen                            -- (5)
+import Locales.Clopen
 
 -- ↓ DEPRECATED DO NOT USE ↓ --
-import Locales.CompactRegular                    -- (6)
+import Locales.CompactRegular
 -- ↑ DEPRECATED DO NOT USE ↑ --
 
-import Locales.Compactness.Definition            -- (7)
+import Locales.Compactness.Definition
 
-import Locales.Complements                       -- (8)
+import Locales.Complements
 
 -- Distributive lattices
 import Locales.DistributiveLattice.Definition
@@ -129,38 +129,38 @@ import Locales.DistributiveLattice.Spectrum
 import Locales.DistributiveLattice.Spectrum-Properties
 
 
-import Locales.GaloisConnection                  -- (10)
+import Locales.GaloisConnection
 
-import Locales.HeytingComplementation            -- (11)
+import Locales.HeytingComplementation
 
-import Locales.HeytingImplication                -- (12)
+import Locales.HeytingImplication
 
-import Locales.InitialFrame                      -- (13)
+import Locales.InitialFrame
 
-import Locales.NotationalConventions             -- (14)
+import Locales.NotationalConventions
 
-import Locales.Nucleus                           -- (15)
+import Locales.Nucleus
 import Locales.NucleusImage
 
-import Locales.PatchLocale                       -- (16)
+import Locales.PatchLocale
 
-import Locales.PatchOfOmega                      -- (17)
+import Locales.PatchOfOmega
 
-import Locales.PatchProperties                   -- (18)
+import Locales.PatchProperties
 
-import Locales.PerfectMaps                       -- (19)
+import Locales.PerfectMaps
 
-import Locales.Regular                           -- (20)
+import Locales.Regular
 
-import Locales.ScottContinuity                   -- (21)
+import Locales.ScottContinuity
 
-import Locales.ScottLocale.Definition            -- (22)
+import Locales.ScottLocale.Definition
 
 import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos
 import Locales.ScottLocale.ScottLocalesOfScottDomains
 import Locales.ScottLocale.Properties
 
-import Locales.Sierpinski                        -- (23)
+import Locales.Sierpinski
 import Locales.Sierpinski.Definition
 import Locales.Sierpinski.Patch
 import Locales.Sierpinski.Properties
@@ -168,31 +168,31 @@ import Locales.Sierpinski.UniversalProperty
 
 import Locales.SmallBasis
 
-import Locales.Stone                             -- (25)
+import Locales.Stone
 
-import Locales.StoneImpliesSpectral              -- (26)
+import Locales.StoneImpliesSpectral
 
-import Locales.WellInside                        -- (27)
+import Locales.WellInside
 
-import Locales.ZeroDimensionality                -- (28)
+import Locales.ZeroDimensionality
 
-import Locales.Spectrality.SpectralLocale        -- (29)
+import Locales.Spectrality.SpectralLocale
 
-import Locales.Spectrality.SpectralMap           -- (30)
+import Locales.Spectrality.SpectralMap
 
-import Locales.Spectrality.SpectralityOfOmega    -- (31)
+import Locales.Spectrality.SpectralityOfOmega
 
 -- with contribution by Igor Arrieta
-import Locales.UniversalPropertyOfPatch          -- (34)
+import Locales.UniversalPropertyOfPatch
 
-import Locales.Spectrality.BasisDirectification  -- (35)
+import Locales.Spectrality.BasisDirectification
 
 import Locales.Spectrality.LatticeOfCompactOpens
 import Locales.Spectrality.LatticeOfCompactOpens-Duality
 import Locales.Spectrality.SpectralMapToLatticeHomomorphism
 
-import Locales.Point.Definition                  -- (36)
-import Locales.Point.Properties                  -- (37)
+import Locales.Point.Definition
+import Locales.Point.Properties
 import Locales.Point.SpectralPoint-Definition
 
 import Locales.TerminalLocale.Properties
