@@ -26,7 +26,7 @@ open import Locales.Adjunctions.Properties-DistributiveLattice pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.Frame pt fe
-open import Locales.GaloisConnection pt fe
+open import Locales.PosetalAdjunction pt fe
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
