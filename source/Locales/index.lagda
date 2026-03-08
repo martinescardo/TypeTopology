@@ -162,17 +162,15 @@ import Locales.PosetalAdjunction                           -- (6)
 
 The modules below contain:
 
-  1. The Sierpinski locale
-  2. Definition of the Sierpinski locale
-  3. Properties of the Sierpinski locale
-  4. Universal property of the Sierpinski locale
+  1. Definition of the Sierpinski locale
+  2. Properties of the Sierpinski locale
+  3. Universal property of the Sierpinski locale
 
 \begin{code}
 
-import Locales.Sierpinski                    -- (1)
-import Locales.Sierpinski.Definition         -- (2)
-import Locales.Sierpinski.Properties         -- (3)
-import Locales.Sierpinski.UniversalProperty  -- (4)
+import Locales.Sierpinski.Definition         -- (1)
+import Locales.Sierpinski.Properties         -- (2)
+import Locales.Sierpinski.UniversalProperty  -- (3)
 
 \end{code}
 
