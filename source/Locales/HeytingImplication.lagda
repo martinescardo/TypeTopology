@@ -54,7 +54,7 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
   L   = 𝒪 X
   Lₚ  = poset-of (𝒪 X)
 
- open GaloisConnectionBetween
+ open PosetalAdjunctionBetween
  open AdjointFunctorTheorem X X 𝒷
 
  ∧-right-preserves-joins : (U : ⟨ 𝒪 X ⟩)

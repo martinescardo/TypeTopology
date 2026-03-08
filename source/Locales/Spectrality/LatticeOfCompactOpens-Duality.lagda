@@ -606,7 +606,7 @@ Adjoint Functor Theorem for frames.
 
  ϕ-is-left-adjoint-of-join
   : let
-     open GaloisConnectionBetween (poset-of (𝒪 X)) poset-of-ideals
+     open PosetalAdjunctionBetween (poset-of (𝒪 X)) poset-of-ideals
     in
      (ϕₘ ⊣ joinₘ) holds
  ϕ-is-left-adjoint-of-join =
@@ -621,7 +621,7 @@ Adjoint Functor Theorem for frames.
 
  ϕ-is-right-adjoint-to-join
   : let
-     open GaloisConnectionBetween poset-of-ideals (poset-of (𝒪 X))
+     open PosetalAdjunctionBetween poset-of-ideals (poset-of (𝒪 X))
     in
      (joinₘ ⊣ ϕₘ) holds
  ϕ-is-right-adjoint-to-join =

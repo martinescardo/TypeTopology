@@ -449,10 +449,10 @@ Some horrible import bureaucracy below 😬
             f₊-preserves-binary-meets to f₊-preserves-binary-meetsₓ;
             adjunction-inequality-forward to adjunction-inequality-forwardₓ;
             adjunction-inequality-backward to adjunction-inequality-backwardₓ)
- open GaloisConnectionBetween (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X))
- open GaloisConnectionBetween (poset-of (𝒪 X)) (poset-of (𝒪 A))
+ open PosetalAdjunctionBetween (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X))
+ open PosetalAdjunctionBetween (poset-of (𝒪 X)) (poset-of (𝒪 A))
   using () renaming (counit to counitₓ)
- open GaloisConnectionBetween (poset-of (𝒪 A)) (poset-of (𝒪 X))
+ open PosetalAdjunctionBetween (poset-of (𝒪 A)) (poset-of (𝒪 X))
   using () renaming (counit to counitₐ)
 
 \end{code}

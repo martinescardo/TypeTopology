@@ -42,7 +42,7 @@ module Properties-Of-Posetal-Adjunctions-on-Distributive-Lattices
         (L : DistributiveLattice 𝓥)
        where
 
- open GaloisConnectionBetween (poset-ofᵈ K) (poset-ofᵈ L)
+ open PosetalAdjunctionBetween (poset-ofᵈ K) (poset-ofᵈ L)
  open Some-Properties-Of-Posetal-Adjunctions
 
 \end{code}

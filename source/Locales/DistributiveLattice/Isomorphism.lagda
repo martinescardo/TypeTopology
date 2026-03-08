@@ -211,8 +211,8 @@ Therefore, they preserve finite meets and finite joins.
 \begin{code}
 
  open AdjointFunctorTheorem
- open GaloisConnectionBetween (poset-ofᵈ L) (poset-ofᵈ K) renaming (_⊣_ to _⊣₁_)
- open GaloisConnectionBetween (poset-ofᵈ K) (poset-ofᵈ L) renaming (_⊣_ to _⊣₂_)
+ open PosetalAdjunctionBetween (poset-ofᵈ L) (poset-ofᵈ K) renaming (_⊣_ to _⊣₁_)
+ open PosetalAdjunctionBetween (poset-ofᵈ K) (poset-ofᵈ L) renaming (_⊣_ to _⊣₂_)
 
  to-isomorphismᵈᵣ : Isomorphism₀ → Isomorphismᵈᵣ K L
  to-isomorphismᵈᵣ (e , (μ₁ , μ₂)) =

@@ -1324,7 +1324,7 @@ Scott-continuous.
                              → (𝒻 ⋆∙ U ≪[ 𝒪 X ] 𝒻 ⋆∙ V) holds
  perfect-preserves-way-below f φ U V ϑ S δ p = γ
   where
-   open GaloisConnectionBetween (poset-of (𝒪 Y)) (poset-of (𝒪 X))
+   open PosetalAdjunctionBetween (poset-of (𝒪 Y)) (poset-of (𝒪 X))
    open PosetReasoning (poset-of (𝒪 Y))
 
    T : Fam 𝓥 ⟨ 𝒪 Y ⟩

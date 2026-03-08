@@ -27,7 +27,7 @@ open AllCombinators pt fe
 
 \begin{code}
 
-module GaloisConnectionBetween (P : Poset 𝓤 𝓥) (Q : Poset 𝓤' 𝓥') where
+module PosetalAdjunctionBetween (P : Poset 𝓤 𝓥) (Q : Poset 𝓤' 𝓥') where
 
 \end{code}
 

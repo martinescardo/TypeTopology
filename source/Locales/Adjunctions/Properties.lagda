@@ -46,7 +46,7 @@ module Some-Properties-Of-Posetal-Adjunctions
         (Q : Poset 𝓤' 𝓥')
        where
 
- open GaloisConnectionBetween P Q
+ open PosetalAdjunctionBetween P Q
 
 \end{code}
 
