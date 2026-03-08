@@ -67,12 +67,15 @@ import Locales.ContinuousMap.Homeomorphism-Properties     -- (6)
 
 \end{code}
 
-Sublocales and nuclei.
+The `Sublocale` subdirectory contains:
+
+  1. Definition of the notion of nucleus
+  2. Properties of the image of a nucleus
 
 \begin{code}
 
-import Locales.Nucleus
-import Locales.NucleusImage
+import Locales.Sublocale.Nucleus      -- (1)
+import Locales.Sublocale.NucleusImage -- (2)
 
 \end{code}
 

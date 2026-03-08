@@ -38,7 +38,7 @@ open import Locales.Frame                      pt fe
 open import Locales.PosetalAdjunction           pt fe
 open import Locales.HeytingComplementation     pt fe sr
 open import Locales.HeytingImplication         pt fe
-open import Locales.Nucleus                    pt fe
+open import Locales.Sublocale.Nucleus           pt fe
 open import Locales.PatchLocale                pt fe sr
 open import Locales.PatchProperties            pt fe sr
 open import Locales.PerfectMaps                pt fe
