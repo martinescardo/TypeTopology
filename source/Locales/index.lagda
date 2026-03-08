@@ -151,7 +151,7 @@ import Locales.Adjunctions.Properties                     -- (2)
 import Locales.Adjunctions.Properties-DistributiveLattice -- (3)
 import Locales.HeytingImplication                         -- (4)
 import Locales.HeytingComplementation                     -- (5)
-import Locales.GaloisConnection                           -- (6)
+import Locales.PosetalAdjunction                           -- (6)
 
 \end{code}
 
