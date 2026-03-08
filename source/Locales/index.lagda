@@ -142,7 +142,7 @@ The modules below contain:
   3. Adjunction properties specialized to distributive lattices
   4. Heyting implication
   5. Heyting complementation
-  6. Galois connections
+  6. Posetal adjunctions
 
 \begin{code}
 
