@@ -52,18 +52,20 @@ The `ContinuousMap` subdirectory contains:
   2. Properties of frame homomorphisms
   3. Definition of continuous maps of locales
   4. Properties of continuous maps
-  5. Definition of locale homeomorphisms
-  6. Properties of homeomorphisms, including the characterization of the
+  5. Definition of frame isomorphisms
+  6. Definition of locale homeomorphisms
+  7. Properties of homeomorphisms, including the characterization of the
      identity type for locales
 
 \begin{code}
 
-import Locales.ContinuousMap.FrameHomomorphism-Definition -- (1)
-import Locales.ContinuousMap.FrameHomomorphism-Properties -- (2)
-import Locales.ContinuousMap.Definition                   -- (3)
-import Locales.ContinuousMap.Properties                   -- (4)
-import Locales.ContinuousMap.Homeomorphism-Definition     -- (5)
-import Locales.ContinuousMap.Homeomorphism-Properties     -- (6)
+import Locales.ContinuousMap.FrameHomomorphism-Definition  -- (1)
+import Locales.ContinuousMap.FrameHomomorphism-Properties  -- (2)
+import Locales.ContinuousMap.Definition                    -- (3)
+import Locales.ContinuousMap.Properties                    -- (4)
+import Locales.ContinuousMap.FrameIsomorphism-Definition   -- (5)
+import Locales.ContinuousMap.Homeomorphism-Definition      -- (6)
+import Locales.ContinuousMap.Homeomorphism-Properties      -- (7)
 
 \end{code}
 
@@ -187,6 +189,7 @@ The modules below contain:
   3. Spectrality of the locale of opens of a discrete space
   4. Directification of bases
   5. The lattice of compact opens
+  6. Properties of spectral locales
 
 \begin{code}
 
@@ -195,6 +198,7 @@ import Locales.Spectrality.SpectralMap            -- (2)
 import Locales.Spectrality.SpectralityOfOmega     -- (3)
 import Locales.Spectrality.BasisDirectification   -- (4)
 import Locales.Spectrality.LatticeOfCompactOpens  -- (5)
+import Locales.Spectrality.Properties             -- (6)
 
 \end{code}
 
@@ -206,13 +210,14 @@ The modules below contain:
   2. Σ-type-based definition of distributive lattices
   3. Homomorphisms of distributive lattices
   4. Ideals of distributive lattices
-  5. Isomorphisms of distributive lattices
-  6. Properties of distributive lattice isomorphisms
-  7. Basic properties of distributive lattices
-  8. Resizing for distributive lattices
-  9. Spectrum of a distributive lattice
-  10. Properties of the distributive-lattice spectrum
-  11. Structure identity principle for distributive lattices
+  5. Properties of ideals of distributive lattices
+  6. Isomorphisms of distributive lattices
+  7. Properties of distributive lattice isomorphisms
+  8. Basic properties of distributive lattices
+  9. Resizing for distributive lattices
+  10. Spectrum of a distributive lattice
+  11. Properties of the distributive-lattice spectrum
+  12. Structure identity principle for distributive lattices
 
 \begin{code}
 
@@ -220,13 +225,14 @@ import Locales.DistributiveLattice.Definition             -- (1)
 import Locales.DistributiveLattice.Definition-SigmaBased  -- (2)
 import Locales.DistributiveLattice.Homomorphism           -- (3)
 import Locales.DistributiveLattice.Ideal                  -- (4)
-import Locales.DistributiveLattice.Isomorphism            -- (5)
-import Locales.DistributiveLattice.Isomorphism-Properties -- (6)
-import Locales.DistributiveLattice.Properties             -- (7)
-import Locales.DistributiveLattice.Resizing               -- (8)
-import Locales.DistributiveLattice.Spectrum               -- (9)
-import Locales.DistributiveLattice.Spectrum-Properties    -- (10)
-import Locales.SIP.DistributiveLatticeSIP                 -- (11)
+import Locales.DistributiveLattice.Ideal-Properties       -- (5)
+import Locales.DistributiveLattice.Isomorphism            -- (6)
+import Locales.DistributiveLattice.Isomorphism-Properties -- (7)
+import Locales.DistributiveLattice.Properties             -- (8)
+import Locales.DistributiveLattice.Resizing               -- (9)
+import Locales.DistributiveLattice.Spectrum               -- (10)
+import Locales.DistributiveLattice.Spectrum-Properties    -- (11)
+import Locales.SIP.DistributiveLatticeSIP                 -- (12)
 
 \end{code}
 
@@ -382,12 +388,14 @@ import Locales.LawsonLocale.PointsOfPatch                           -- (3)
 The modules below contain:
 
   1. Notational conventions for spectral locales
-  2. Directed families on posets
+  2. Directed families
+  3. Directed families on posets
 
 \begin{code}
 
 import Locales.NotationalConventions  -- (1)
-import Locales.DirectedFamily-Poset   -- (2)
+import Locales.DirectedFamily         -- (2)
+import Locales.DirectedFamily-Poset   -- (3)
 
 \end{code}
 
