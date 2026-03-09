@@ -20,7 +20,7 @@ cp -a InjectiveTypes.index.html InjectiveTypes.html
 cp -a Locales.AdjointFunctorTheoremForFrames.html AdjointFunctorTheoremForFrames.html
 cp -a Locales.CompactRegular.html CompactRegular.html
 cp -a Locales.Frame.html Frame.html
-cp -a Locales.GaloisConnection.html GaloisConnection.html
+cp -a Locales.PosetalAdjunction.html GaloisConnection.html
 cp -a Locales.HeytingImplication.html HeytingImplication.html
 cp -a NotionsOfDecidability.SemiDecidable.html SemiDecidable.html
 cp -a Ordinals.AdditionProperties.html OrdinalArithmetic-Properties.html
