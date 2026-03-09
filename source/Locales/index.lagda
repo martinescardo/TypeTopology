@@ -1,4 +1,6 @@
-Ayberk Tosun.
+---
+author: Ayberk Tosun
+---
 
 ─────────────────────────────────────────────────────────────────────
 This formalization accompanies Ayberk Tosun's PhD thesis:
