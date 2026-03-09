@@ -25,6 +25,32 @@ module Locales.index where
 
 \end{code}
 
+\section{Table of contents}
+
+* Basic point-free topology
+  - Terminal locale
+  - Sierpiński locale
+  - The discrete locale
+  - Continuous maps and frame homomorphisms
+  - Sublocales and nuclei
+  - Compactness and the way-below relation
+  - Clopens and the well-inside relation
+  - Bases
+  - Adjoint functor theorem for frames
+* Spectral and Stone locales
+  - Spectral locales
+  - Distributive lattices
+  - Zero-dimensional and regular locales
+  - Stone locales
+  - Stone duality
+* The patch locale
+  - Examples of patch
+* Point-free topology of domains
+  - Construction of the Scott locale
+  - Scott continuity
+  - Spectral points of the Scott locale
+* Miscellaneous
+
 \section{Basic point-free topology}
 
 The code under this section corresponds roughly to Chapter 3 of the thesis.
