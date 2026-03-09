@@ -4,7 +4,7 @@
    -------------------------------------------------------------
 
    Martin Escardo and collaborators,
-   2010--2025--∞, continuously evolving.
+   2010--2026--∞, continuously evolving.
 
    https://www.cs.bham.ac.uk/~mhe/
    https://www.cs.bham.ac.uk/~mhe/TypeTopology/
