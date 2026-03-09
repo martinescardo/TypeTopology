@@ -29,8 +29,7 @@ module Locales.index where
 
 The code under this section corresponds roughly to Chapter 3 of the thesis.
 
-The `Locales.Frame` module contains the preliminary definitions related to
-the theory of frames.
+The `Locales.Frame` module contains preliminary definitions of locale theory.
 
 \begin{code}
 
@@ -39,14 +38,55 @@ import Locales.SIP.FrameSIP
 
 \end{code}
 
-\subsection{Basic examples of locales}
+\subsection{Terminal locale}
+
+The modules below contain:
+
+  1. Definition of the initial frame (i.e. the terminal locale)
+  2. Properties of the terminal locale.
 
 \begin{code}
 
-import Locales.InitialFrame
-import Locales.TerminalLocale.Properties
+import Locales.InitialFrame              -- (1)
+import Locales.TerminalLocale.Properties -- (2)
 
 \end{code}
+
+\subsection{Sierpiński locale}
+
+The modules below contain:
+
+  1. Definition of the Sierpinski locale
+  2. Properties of the Sierpinski locale
+  3. Universal property of the Sierpinski locale
+
+\begin{code}
+
+import Locales.Sierpinski.Definition         -- (1)
+import Locales.Sierpinski.Properties         -- (2)
+import Locales.Sierpinski.UniversalProperty  -- (3)
+
+\end{code}
+
+\subsection{The discrete locale}
+
+The modules below contain:
+
+  1. Definition of the discrete locale over a set
+  2. Construction of a directed basis for the discrete locale
+  3. The discrete locale on the type of Booleans
+  4. Properties of the discrete locale on the type of Booleans
+
+\begin{code}
+
+import Locales.DiscreteLocale.Definition     -- (1)
+import Locales.DiscreteLocale.Basis          -- (2)
+import Locales.DiscreteLocale.Two            -- (3)
+import Locales.DiscreteLocale.Two-Properties -- (4)
+
+\end{code}
+
+\subsection{Continuous maps and frame homomorphisms}
 
 The `ContinuousMap` subdirectory contains:
 
@@ -71,6 +111,8 @@ import Locales.ContinuousMap.Homeomorphism-Properties      -- (7)
 
 \end{code}
 
+\subsection{Sublocales and nuclei}
+
 The `Sublocale` subdirectory contains:
 
   1. Definition of the notion of nucleus along with some properties
@@ -83,50 +125,52 @@ import Locales.Sublocale.NucleusImage -- (2)
 
 \end{code}
 
+\subsection{Compactness and the way-below relation}
+
 Compact opens.
+
+The modules below contain:
+
+  1. Definition of compact opens
+  2. Properties of compact opens
+  3. Characterization of compact locales
 
 \begin{code}
 
-import Locales.Compactness.Definition
-import Locales.Compactness.Properties
-import Locales.Compactness.CharacterizationOfCompactLocales
+import Locales.Compactness.Definition                        -- (1)
+import Locales.Compactness.Properties                        -- (2)
+import Locales.Compactness.CharacterizationOfCompactLocales  -- (3)
 
 \end{code}
 
 The way-below relation.
 
-\begin{code}
+The modules below contain:
 
-import Locales.WayBelowRelation.Definition
-import Locales.WayBelowRelation.Properties
-
-\end{code}
-
-Clopens and the well-inside relation.
+  1. Definition of the way-below relation
+  2. Properties of the way-below relation
 
 \begin{code}
 
-import Locales.Clopen
-import Locales.Complements
-import Locales.WellInside
+import Locales.WayBelowRelation.Definition  -- (1)
+import Locales.WayBelowRelation.Properties  -- (2)
 
 \end{code}
 
-\subsection{The discrete locale}
+\subsection{Clopens and the well-inside relation}
 
 The modules below contain:
 
-  1. Definition of the discrete locale over a set
-  2. Construction of a directed basis for the discrete locale
-  3. The discrete locale on the type of Booleans
-  4. Properties of the discrete locale on the type of Booleans
+  1. Definition of clopens via Boolean complements, and basic closure properties
+  2. Boolean complementation in frames, including preservation by frame
+     homomorphisms
+  3. Definition of the well-inside relation and basic order-theoretic properties
 
 \begin{code}
 
-import Locales.DiscreteLocale.Definition     -- (1)
-import Locales.DiscreteLocale.Basis          -- (2)
-import Locales.DiscreteLocale.Two            -- (3)
-import Locales.DiscreteLocale.Two-Properties -- (4)
+import Locales.Clopen        -- (1)
+import Locales.Complements   -- (2)
+import Locales.WellInside    -- (3)
 
 \end{code}
 
@@ -144,63 +188,47 @@ import Locales.SmallBasis
 
 The modules below contain:
 
-  1. The adjoint functor theorem for frames
-  2. General properties of adjunctions
-  3. Adjunction properties specialized to distributive lattices
-  4. Heyting implication
-  5. Heyting complementation
-  6. Posetal adjunctions
+  1. Definition of posetal adjunctions
+  2. General properties of adjunctions in the posetal setting
+  3. Posetal adjoint functor theorem for frames
+  4. Adjunction properties specialized to distributive lattices
+  5. Heyting implication
+  6. Heyting complementation
 
 \begin{code}
 
-import Locales.AdjointFunctorTheoremForFrames             -- (1)
+import Locales.PosetalAdjunction                          -- (1)
 import Locales.Adjunctions.Properties                     -- (2)
-import Locales.Adjunctions.Properties-DistributiveLattice -- (3)
-import Locales.HeytingImplication                         -- (4)
-import Locales.HeytingComplementation                     -- (5)
-import Locales.PosetalAdjunction                           -- (6)
-
-\end{code}
-
-\subsection{The Sierpinski locale}
-
-The modules below contain:
-
-  1. Definition of the Sierpinski locale
-  2. Properties of the Sierpinski locale
-  3. Universal property of the Sierpinski locale
-
-\begin{code}
-
-import Locales.Sierpinski.Definition         -- (1)
-import Locales.Sierpinski.Properties         -- (2)
-import Locales.Sierpinski.UniversalProperty  -- (3)
+import Locales.AdjointFunctorTheoremForFrames             -- (3)
+import Locales.Adjunctions.Properties-DistributiveLattice -- (4)
+import Locales.HeytingImplication                         -- (5)
+import Locales.HeytingComplementation                     -- (6)
 
 \end{code}
 
 \section{Spectral and Stone locales}
 
-This section corresponds roughly to Chapter 4 of the thesis.
+his section corresponds roughly to Chapter 4 of the thesis.
 
 \subsection{Spectral locales}
 
 The modules below contain:
 
   1. Definition of spectral locales
-  2. Definition of spectral maps
-  3. Spectrality of the locale of opens of a discrete space
-  4. Directification of bases
-  5. The lattice of compact opens
-  6. Properties of spectral locales
+  2. Properties of spectral locales
+  3. Definition of spectral maps
+  4. Spectrality of the terminal locale
+  5. Directification of bases
+  6. Lattice of compact opens
 
 \begin{code}
 
 import Locales.Spectrality.SpectralLocale         -- (1)
-import Locales.Spectrality.SpectralMap            -- (2)
-import Locales.Spectrality.SpectralityOfOmega     -- (3)
-import Locales.Spectrality.BasisDirectification   -- (4)
-import Locales.Spectrality.LatticeOfCompactOpens  -- (5)
-import Locales.Spectrality.Properties             -- (6)
+import Locales.Spectrality.Properties             -- (2)
+import Locales.Spectrality.SpectralMap            -- (3)
+import Locales.Spectrality.SpectralityOfOmega     -- (4)
+import Locales.Spectrality.BasisDirectification   -- (5)
+import Locales.Spectrality.LatticeOfCompactOpens  -- (6)
 
 \end{code}
 
@@ -208,29 +236,29 @@ import Locales.Spectrality.Properties             -- (6)
 
 The modules below contain:
 
-  1. Definition of distributive lattices
-  2. Σ-type-based definition of distributive lattices
-  3. Homomorphisms of distributive lattices
-  4. Ideals of distributive lattices
-  5. Properties of ideals of distributive lattices
-  6. Isomorphisms of distributive lattices
-  7. Properties of distributive lattice isomorphisms
-  8. Basic properties of distributive lattices
-  9. Resizing for distributive lattices
+  1.  Definition of distributive lattices
+  2.  Σ-type-based definition of distributive lattices
+  3.  Basic properties of distributive lattices
+  4.  Homomorphisms of distributive lattices
+  5.  Isomorphisms of distributive lattices
+  6.  Properties of distributive lattice isomorphisms
+  7.  Ideals of distributive lattices
+  8.  Properties of ideals of distributive lattices
+  9.  Resizing for distributive lattices
   10. Spectrum of a distributive lattice
-  11. Properties of the distributive-lattice spectrum
+  11. Properties of the frame of ideals over a distributive lattice
   12. Structure identity principle for distributive lattices
 
 \begin{code}
 
 import Locales.DistributiveLattice.Definition             -- (1)
 import Locales.DistributiveLattice.Definition-SigmaBased  -- (2)
-import Locales.DistributiveLattice.Homomorphism           -- (3)
-import Locales.DistributiveLattice.Ideal                  -- (4)
-import Locales.DistributiveLattice.Ideal-Properties       -- (5)
-import Locales.DistributiveLattice.Isomorphism            -- (6)
-import Locales.DistributiveLattice.Isomorphism-Properties -- (7)
-import Locales.DistributiveLattice.Properties             -- (8)
+import Locales.DistributiveLattice.Properties             -- (3)
+import Locales.DistributiveLattice.Homomorphism           -- (4)
+import Locales.DistributiveLattice.Isomorphism            -- (5)
+import Locales.DistributiveLattice.Isomorphism-Properties -- (6)
+import Locales.DistributiveLattice.Ideal                  -- (7)
+import Locales.DistributiveLattice.Ideal-Properties       -- (8)
 import Locales.DistributiveLattice.Resizing               -- (9)
 import Locales.DistributiveLattice.Spectrum               -- (10)
 import Locales.DistributiveLattice.Spectrum-Properties    -- (11)
@@ -242,8 +270,8 @@ import Locales.SIP.DistributiveLatticeSIP                 -- (12)
 
 The modules below contain:
 
-  1. Regular locales
-  2. Zero-dimensional locales
+  1. Definition of regular locales and some properties
+  2. Definition of zero-dimensional locale and some properties
 
 \begin{code}
 
@@ -272,7 +300,7 @@ import Locales.StoneImpliesSpectral -- (3)
 
 The modules below contain:
 
-  1. Lattice-duality results for compact opens
+  1. Lattice duality for compact opens
   2. The map from spectral maps to lattice homomorphisms
   3. Perfect maps in the spectral setting
   4. Stone duality for spectral locales
@@ -290,7 +318,8 @@ import Locales.StoneDuality.ForSpectralLocales               -- (4)
 
 The modules below contain:
 
-  1. Construction of the patch locale
+  1. Construction of the patch locale (following Escardó's construction from
+     previous work)
   2. Properties of the patch locale
   3. The universal property of the patch locale (with contributions by
      Igor Arrieta)
@@ -357,9 +386,9 @@ import Locales.ClassificationOfScottOpens    -- (3)
 
 The modules below contain:
 
-  1. Definition of points of a locale
+  1. Definition of the notion of point of a locale
   2. Properties of points
-  3. Definition of spectral points
+  3. Definition of spectral point
 
 \begin{code}
 
@@ -368,8 +397,6 @@ import Locales.Point.Properties                -- (2)
 import Locales.Point.SpectralPoint-Definition  -- (3)
 
 \end{code}
-
-\subsection{Spectral points coincide with the points of patch}
 
 The modules below contain:
 
