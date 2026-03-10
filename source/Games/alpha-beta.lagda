@@ -77,7 +77,8 @@ module minimax
  open Games.FiniteHistoryDependent {𝓤} {𝓤} R
  open import MonadOnTypes.JK R
  open K-definitions R
- open import Games.ArgMinMax-Listed {𝓤} {𝓥} R _<_ δ
+ open import Games.ArgMinMax
+ open ArgMinMax-Listed {𝓤} {𝓥} R _<_ δ
 
 \end{code}
 
