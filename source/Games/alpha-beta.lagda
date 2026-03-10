@@ -140,22 +140,23 @@ quantifiers in an alternating fashion.
  optimal-play : Path Xt
  optimal-play = sequenceᴶ G-selection-tree q
 
- lemma : G-selection-tree Attains G-quantifier-tree
- lemma = I Xt Xt-is-listed⁺
-  where
-   I : (Xt : 𝑻 {𝓤})
-       (Xt-is-listed⁺ : structure listed⁺ Xt)
-     → (argmaxmin Xt Xt-is-listed⁺) Attains (maxmin Xt Xt-is-listed⁺)
-
-   II : (Xt : 𝑻 {𝓤})
+ private
+  lemma : G-selection-tree Attains G-quantifier-tree
+  lemma = I Xt Xt-is-listed⁺
+   where
+    I : (Xt : 𝑻 {𝓤})
         (Xt-is-listed⁺ : structure listed⁺ Xt)
-      → (argminmax Xt Xt-is-listed⁺) Attains (minmax Xt Xt-is-listed⁺)
+      → (argmaxmin Xt Xt-is-listed⁺) Attains (maxmin Xt Xt-is-listed⁺)
 
-   I  []       ⟨⟩        = ⋆
-   I  (X ∷ Xf) (ℓ :: ℓf) = ArgMax-spec ℓ , (λ x → II (Xf x) (ℓf x))
+    II : (Xt : 𝑻 {𝓤})
+         (Xt-is-listed⁺ : structure listed⁺ Xt)
+       → (argminmax Xt Xt-is-listed⁺) Attains (minmax Xt Xt-is-listed⁺)
 
-   II []       ⟨⟩        = ⋆
-   II (X ∷ Xf) (ℓ :: ℓf) = ArgMin-spec ℓ , (λ x → I (Xf x) (ℓf x))
+    I  []       ⟨⟩        = ⋆
+    I  (X ∷ Xf) (ℓ :: ℓf) = ArgMax-spec ℓ , (λ x → II (Xf x) (ℓf x))
+
+    II []       ⟨⟩        = ⋆
+    II (X ∷ Xf) (ℓ :: ℓf) = ArgMin-spec ℓ , (λ x → I (Xf x) (ℓf x))
 
  module _ (fe : Fun-Ext) where
 
@@ -254,7 +255,7 @@ reader monad, to speed-up the computation of the optimal play.
 
 \end{code}
 
-TODO. Formulate and prove the correctness of the the optimal-play†.
+TODO. Formulate and prove the correctness of the optimal-play†.
 
 Example from Wikipedia:
 https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
