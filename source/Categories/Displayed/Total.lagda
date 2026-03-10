@@ -100,16 +100,23 @@ TotalCategory {_} {_} {_} {_} {C} D = (TotalPrecategory ⟨ D ⟩) , is-cat
 
         F⁻¹ : ((a , x) ≅ (b , y)) → (Σ f ꞉ a ≅ b , x ≅[ f ] y)
         F⁻¹ ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = (f , f⁻¹ , ap pr₁ p , ap pr₁ q)
-                                           , (𝕗 , 𝕗⁻¹ , {!!} , {!!})
+                                           , (𝕗 , 𝕗⁻¹ , snd-eq-left , snd-eq-right)
+         where
+          snd-eq-left : 𝕗⁻¹ ○ 𝕗 ＝⟦ (λ - → hom[ - ] _ _) , ap pr₁ p ⟧ D-𝒊𝒅
+          snd-eq-left = (Idtofun ((dependent-Id-via-transport (λ - → hom[ - ] _ _) (ap pr₁ p))⁻¹)) (pr₂ (from-Σ-＝ p))
+
+          snd-eq-right : 𝕗 ○ 𝕗⁻¹ ＝⟦ (λ - → hom[ - ] _ _) , ap pr₁ q ⟧ D-𝒊𝒅
+          snd-eq-right = (Idtofun ((dependent-Id-via-transport (λ - → hom[ - ] _ _) (ap pr₁ q))⁻¹)) (pr₂ (from-Σ-＝ q))
 
         P : F⁻¹ ∘ F ∼ id
         P ((f , f⁻¹ , p , q)
          , (𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = to-Σ-＝ (to-Σ-＝ (refl , to-Σ-＝ (refl , to-×-＝ (hom-is-set ⟨ C ⟩ _ _)
                                                                                (hom-is-set ⟨ C ⟩ _ _)))
-                                      , to-Σ-＝ ({!!} , to-Σ-＝ ({!!} , to-×-＝ {!!} {!!})))
+                                      , to-Σ-＝ ({!!} , to-Σ-＝ ({!!} , to-×-＝ {!hom[-]-is-set _ _!} {!!})))
 
         Q : F ∘ F⁻¹ ∼ id
-        Q ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = to-Σ-＝ (refl , to-Σ-＝ (refl , to-×-＝ {!!} {!!}))
+        Q ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = to-Σ-＝ (refl , to-Σ-＝ (refl , to-×-＝ (hom-is-set (TotalPrecategory ⟨ D ⟩) _ _)
+                                                                                  (hom-is-set (TotalPrecategory ⟨ D ⟩) _ _)))
 
       i = Σ-＝-≃
       ii = Σ-cong inter
@@ -117,6 +124,6 @@ TotalCategory {_} {_} {_} {_} {C} D = (TotalPrecategory ⟨ D ⟩) , is-cat
       iv = total-iso-join
 
     pointwise-equal : id-to-iso (a , x) (b , y) ∼ ⌜ thing ⌝
-    pointwise-equal refl = {!!}
+    pointwise-equal refl = refl
       
 \end{code}
