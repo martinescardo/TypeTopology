@@ -109,10 +109,18 @@ TotalCategory {_} {_} {_} {_} {C} D = (TotalPrecategory ⟨ D ⟩) , is-cat
           snd-eq-right = (Idtofun ((dependent-Id-via-transport (λ - → hom[ - ] _ _) (ap pr₁ q))⁻¹)) (pr₂ (from-Σ-＝ q))
 
         P : F⁻¹ ∘ F ∼ id
-        P ((f , f⁻¹ , p , q)
-         , (𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = to-Σ-＝ (to-Σ-＝ (refl , to-Σ-＝ (refl , to-×-＝ (hom-is-set ⟨ C ⟩ _ _)
-                                                                               (hom-is-set ⟨ C ⟩ _ _)))
-                                      , to-Σ-＝ ({!!} , to-Σ-＝ ({!!} , to-×-＝ {!hom[-]-is-set _ _!} {!!})))
+        P e@((f , f⁻¹ , p , q)
+         , (𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = to-Σ-＝ (parti
+                                      , to-Σ-＝ (I , to-Σ-＝ (II , to-×-＝ {!hom[-]-is-set _ _!} {!!})))
+         where
+          parti = to-Σ-＝ (refl , to-Σ-＝ (refl , to-×-＝ (hom-is-set ⟨ C ⟩ _ _) (hom-is-set ⟨ C ⟩ _ _)))
+
+          I : pr₁ (transport (λ - → x ≅[ - ] y) parti (pr₂ ((F⁻¹ ∘ F) e))) ＝ 𝕗
+          I = {!!}
+
+          II : pr₁ (transport (D-inverse (f , f⁻¹ , p , q)) I (pr₂ (transport (λ - → x ≅[ - ] y) parti (pr₂ ((F⁻¹ ∘ F) e))))) ＝ 𝕗⁻¹
+          II = {!!}
+
 
         Q : F ∘ F⁻¹ ∼ id
         Q ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = to-Σ-＝ (refl , to-Σ-＝ (refl , to-×-＝ (hom-is-set (TotalPrecategory ⟨ D ⟩) _ _)
