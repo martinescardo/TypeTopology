@@ -10,7 +10,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
 
-module Locales.Nucleus
+module Locales.Sublocale.Nucleus
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where

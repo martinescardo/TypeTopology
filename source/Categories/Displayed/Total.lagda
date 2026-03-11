@@ -33,7 +33,7 @@ TotalPrecategory {𝓤} {𝓥} {𝓦} {𝓨} {P} D = (total-wild-category
                                           , total-is-precategory)
  where
   open PrecategoryNotation P
-  open DispPrecatNotation D
+  open DisplayedPrecategoryNotation D
 
   total-wild-category : WildCategory (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓨)
   total-wild-category = wildcategory
@@ -56,4 +56,3 @@ TotalPrecategory {𝓤} {𝓥} {𝓦} {𝓨} {P} D = (total-wild-category
   total-is-precategory _ _ = Σ-is-set (hom-is-set P) (λ _ → hom[-]-is-set)
 
 \end{code}
-

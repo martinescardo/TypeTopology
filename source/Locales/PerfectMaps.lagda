@@ -15,7 +15,7 @@ open import Locales.Compactness.Definition pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
-open import Locales.GaloisConnection pt fe
+open import Locales.PosetalAdjunction pt fe
 open import Locales.Spectrality.Properties     pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.WayBelowRelation.Definition pt fe
@@ -73,7 +73,7 @@ Perfect maps preserve the way below relation.
                              → (𝒻 ⋆∙ U ≪[ 𝒪 X ] 𝒻 ⋆∙ V) holds
  perfect-preserves-way-below f φ U V ϑ S δ p = γ
   where
-   open GaloisConnectionBetween (poset-of (𝒪 Y)) (poset-of (𝒪 X))
+   open PosetalAdjunctionBetween (poset-of (𝒪 Y)) (poset-of (𝒪 X))
    open PosetReasoning (poset-of (𝒪 Y))
 
    T : Fam 𝓥 ⟨ 𝒪 Y ⟩
@@ -149,7 +149,7 @@ Perfect maps preserve the way below relation.
    (φ S δ ⁻¹)
    (⋁[ 𝒪 Y ]-upper ⁅ h V ∣ V ε S ⁆ , ⋁[ 𝒪 Y ]-least ⁅ h V ∣ V ε S ⁆)
 
- open GaloisConnectionBetween (poset-of (𝒪 Y)) (poset-of (𝒪 X))
+ open PosetalAdjunctionBetween (poset-of (𝒪 Y)) (poset-of (𝒪 X))
 
  spectral-maps-are-perfect : is-spectral Y holds
                            → (f : X ─c→ Y)
