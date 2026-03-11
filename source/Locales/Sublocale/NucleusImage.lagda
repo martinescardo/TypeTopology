@@ -12,7 +12,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
 
-module Locales.NucleusImage
+module Locales.Sublocale.NucleusImage
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where
@@ -20,7 +20,7 @@ module Locales.NucleusImage
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
-open import Locales.Nucleus pt fe
+open import Locales.Sublocale.Nucleus pt fe
 open import UF.Equiv
 open import UF.ImageAndSurjection pt
 open import UF.Logic

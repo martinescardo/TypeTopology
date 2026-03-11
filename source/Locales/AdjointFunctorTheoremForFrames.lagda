@@ -23,7 +23,7 @@ module Locales.AdjointFunctorTheoremForFrames
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
-open import Locales.GaloisConnection pt fe
+open import Locales.PosetalAdjunction pt fe
 open import Slice.Family
 open import UF.Logic
 
@@ -49,7 +49,7 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
   𝒪Xₚ = poset-of (𝒪 X)
   𝒪Yₚ = poset-of (𝒪 Y)
 
- open GaloisConnectionBetween 𝒪Yₚ 𝒪Xₚ
+ open PosetalAdjunctionBetween 𝒪Yₚ 𝒪Xₚ
 
  aft-forward : (f : 𝒪Yₚ ─m→ 𝒪Xₚ)
              → has-right-adjoint f

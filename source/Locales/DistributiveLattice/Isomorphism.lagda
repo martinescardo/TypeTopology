@@ -26,7 +26,7 @@ open import Locales.Adjunctions.Properties-DistributiveLattice pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.Frame pt fe
-open import Locales.GaloisConnection pt fe
+open import Locales.PosetalAdjunction pt fe
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
@@ -211,8 +211,8 @@ Therefore, they preserve finite meets and finite joins.
 \begin{code}
 
  open AdjointFunctorTheorem
- open GaloisConnectionBetween (poset-ofᵈ L) (poset-ofᵈ K) renaming (_⊣_ to _⊣₁_)
- open GaloisConnectionBetween (poset-ofᵈ K) (poset-ofᵈ L) renaming (_⊣_ to _⊣₂_)
+ open PosetalAdjunctionBetween (poset-ofᵈ L) (poset-ofᵈ K) renaming (_⊣_ to _⊣₁_)
+ open PosetalAdjunctionBetween (poset-ofᵈ K) (poset-ofᵈ L) renaming (_⊣_ to _⊣₂_)
 
  to-isomorphismᵈᵣ : Isomorphism₀ → Isomorphismᵈᵣ K L
  to-isomorphismᵈᵣ (e , (μ₁ , μ₂)) =

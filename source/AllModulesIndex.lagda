@@ -4,7 +4,7 @@
    constructive univalent mathematics
    written in Agda
 
-   Martin Escardo and collaborators, 2010--2025--∞
+   Martin Escardo and collaborators, 2010--2026--∞
    Continuously evolving.
 
    https://www.cs.bham.ac.uk/~mhe/TypeTopology/

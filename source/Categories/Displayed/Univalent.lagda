@@ -30,7 +30,7 @@ the notion of id-to-iso for displayed precategories.
 
 module _ {P : Precategory 𝓤 𝓥} (D : DisplayedPrecategory 𝓦 𝓣 P) where
  open PrecategoryNotation P
- open DispPrecatNotation D
+ open DisplayedPrecategoryNotation D
 
  D-id-to-iso : {a b : obj P}
                (e : a ＝ b)

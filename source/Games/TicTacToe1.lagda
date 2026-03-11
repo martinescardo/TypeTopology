@@ -106,6 +106,7 @@ Convention: in a board (p , A), p is the opponent of the the current player.
                           (λ g → Nothing-is-h-isolated' (A g))
 
   open J-definitions 𝟛
+  open ArgMinMax-Compact-Fin
 
   selection : (b : Board) → Move b → J (Move b)
   selection b@(X , A) m p = pr₁ (compact-argmax p (Move-compact b) m)

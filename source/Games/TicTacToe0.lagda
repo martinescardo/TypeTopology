@@ -195,6 +195,7 @@ Selection functions for players, namely argmin for X and argmax for O:
 \begin{code}
 
 open J-definitions R
+open ArgMinMax-Compact-Fin
 
 selection : (p : Player) {M : 𝓤 ̇ } → M → is-Compact M {𝓤₀} → J M
 selection X m κ p = pr₁ (compact-argmin p κ m)
