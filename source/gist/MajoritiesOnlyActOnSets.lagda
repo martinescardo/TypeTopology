@@ -13,7 +13,7 @@ treatment here [2, 3]; Wärn's theorem is an analogue of Taylor's Theorem 6.2.
 [1] Walter Taylor. Varieties obeying homotopy laws. Can. J. Math., XXIX(3):
     498–527, 1977. https://doi.org/10.4153/CJM-1977-054-9.
 [2] Martin Escardo. gist.ThereAreNoHigherSemilattices.lagda, 23 February 2026.
-[3] Tom de Jong. gist.ThereAreNoHigherSemilattices.lagda, 25—27 February 2026.
+[3] Tom de Jong. gist.ThereAreNoHigherSemilattices2.lagda, 25—27 February 2026.
 
 Taylor studied varieties of topological algebras, and how the equations
 influence homotopy of the corresponding spaces. The results about semilattices
@@ -57,14 +57,16 @@ can be argued equationally as follows:
 
   1 = 1 * 1 = m(1, 1, x) * m(x, 1, 1) = m(x, 1, x) = x
 
-We will use an analogous computation to show that if a majority acts on a
-type, then the type is a set. The fact that this second step is an algebraic
-(equational) argument makes it more amenable for type theory.
+where 1 is the neutral element of the group.  We will use an analogous
+computation to show that if a majority acts on a type, then the type is a set.
+The fact that this second step is an algebraic (equational) argument makes it
+more amenable for type theory.
 
 We will start where Martin left off with proving that there are no higher
 semilattices:
 
 \begin{code}
+
 {-# OPTIONS --safe --without-K #-}
 module gist.MajoritiesOnlyActOnSets where
 
@@ -77,12 +79,14 @@ ap₃ : {A B C D : Type} (f : A → B → C → D) {a₁ a₂ : A} {b₁ b₂ : 
     → c₁ ＝ c₂
     → f a₁ b₁ c₁ ＝ f a₂ b₂ c₂
 ap₃ f refl refl refl = refl
+
 \end{code}
 
 We will work with a type M with a single ternary idempotent operation m,
 satisfying the majority identities.
 
 \begin{code}
+
 module _
          (M   : Type)
          (m   : M → M → M → M)
@@ -91,13 +95,17 @@ module _
          (eq₂ : (a b : M) → m a a b ＝ a)
          (m₀  : M)
        where
+
 \end{code}
 
 We start with the action of `m` on the paths.
 
 \begin{code}
+
  m' : {x₀ x₁ x₂ y₀ y₁ y₂ : M}
-    → x₀ ＝ y₀ → x₁ ＝ y₁ → x₂ ＝ y₂
+    → x₀ ＝ y₀
+    → x₁ ＝ y₁
+    → x₂ ＝ y₂
     → m x₀ x₁ x₂ ＝ m y₀ y₁ y₂
  m' = ap₃ m
 
@@ -106,6 +114,7 @@ We start with the action of `m` on the paths.
 
  ΩM' : Type
  ΩM' = m m₀ m₀ m₀ ＝ m m₀ m₀ m₀
+
 \end{code}
 
 This action restricts to:
@@ -117,12 +126,14 @@ homomorphism (from the third power of ΩM' to ΩM). In fact, the statement is
 about the whole action of m', not just the restriction.
 
 \begin{code}
+
  m'-is-homo : {x₀ x₁ x₂ y₀ y₁ y₂ z₀ z₁ z₂ : M}
-            → (p₀ : x₀ ＝ y₀) →  (q₀ : y₀ ＝ z₀)
-            → (p₁ : x₁ ＝ y₁) →  (q₁ : y₁ ＝ z₁)
-            → (p₂ : x₂ ＝ y₂) →  (q₂ : y₂ ＝ z₂)
+              (p₀ : x₀ ＝ y₀) (q₀ : y₀ ＝ z₀)
+              (p₁ : x₁ ＝ y₁) (q₁ : y₁ ＝ z₁)
+              (p₂ : x₂ ＝ y₂) (q₂ : y₂ ＝ z₂)
             → (m' p₀ p₁ p₂) ∙ (m' q₀ q₁ q₂) ＝ m' (p₀ ∙ q₀) (p₁ ∙ q₁) (p₂ ∙ q₂)
  m'-is-homo refl refl refl refl refl refl = refl
+
 \end{code}
 
 Now, the interesting part of the proof starts. The general strategy follows
@@ -157,6 +168,7 @@ respectively. Although, it should be noted that this is a vast oversimplifica-
 tion.
 
 \begin{code}
+
  refl₀ : ΩM
  refl₀ = refl
 
@@ -169,6 +181,7 @@ tion.
 
   simplify-arguments : m' (p ∙ refl) (refl ∙ refl) (refl ∙ p) ＝ m' p refl p
   simplify-arguments = ap₃ m' (∙refl p) refl (refl∙ p)
+
 \end{code}
 
 The next step is to show that the edges collapse to refl, p, and refl,
@@ -187,15 +200,18 @@ three different proofs of that fact, so we have to be careful about which one
 to use here — it has to agree with the equation, i.e., idem₁ = eq₁ m₀ m₀.
 
 \begin{code}
+
  idem₁ : m m₀ m₀ m₀ ＝ m₀
  idem₁ = eq₁ m₀ m₀
 
  side₁-is-p : (p : ΩM) → eq-congr idem₁ idem₁ (m' p refl₀ p) ＝ p
  side₁-is-p p = eq₁' p refl where
   eq₁' : {a b c d : M}
-       → (p : a ＝ b) → (q : c ＝ d)
+       → (p : a ＝ b)
+       → (q : c ＝ d)
        → eq-congr (eq₁ a c) (eq₁ b d) (m' p q p) ＝ p
   eq₁' {a} {_} {c} {_} refl refl = eq-congr-refl (eq₁ a c)
+
 \end{code}
 
 We could repeat the same argument for the other two equations, but the problem
@@ -211,6 +227,7 @@ denote it by reflₘ. Similarly, we show m' refl refl p ＝ refl. This helps us
 avoid problems with conjugation since conjugation fixes refl.
 
 \begin{code}
+
  reflₘ : ΩM'
  reflₘ = refl
 
@@ -220,8 +237,9 @@ avoid problems with conjugation since conjugation fixes refl.
   idem₀ = sym (eq₀ m₀ m₀)
 
   eq₀' : {a b c d : M}
-          → (p : a ＝ b) → (q : c ＝ d)
-          → (m' q p p) ＝ eq-congr (sym (eq₀ a c)) (sym (eq₀ b d)) p
+       → (p : a ＝ b)
+       → (q : c ＝ d)
+       → (m' q p p) ＝ eq-congr (sym (eq₀ a c)) (sym (eq₀ b d)) p
   eq₀' {a} {_} {c} {_} refl refl = sym (eq-congr-refl (sym (eq₀ a c)))
 
   use-eq₀ : (m' p refl₀ refl₀) ＝ eq-congr idem₀ idem₀ refl₀
@@ -233,21 +251,25 @@ avoid problems with conjugation since conjugation fixes refl.
   idem₂ = sym (eq₂ m₀ m₀)
 
   eq₂' : {a b c d : M}
-          → (p : a ＝ b) → (q : c ＝ d)
-          → (m' p p q) ＝ eq-congr (sym (eq₂ a c)) (sym (eq₂ b d)) p
+       → (p : a ＝ b)
+       → (q : c ＝ d)
+       → (m' p p q) ＝ eq-congr (sym (eq₂ a c)) (sym (eq₂ b d)) p
   eq₂' {a} {_} {c} {_} refl refl = sym (eq-congr-refl (sym (eq₂ a c)))
 
   use-eq₂ : (m' refl₀ refl₀ p) ＝ eq-congr idem₂ idem₂ refl₀
   use-eq₂ = eq₂' refl₀ p
+
 \end{code}
 
 With these two equations and the triangle, we can derive the following identity,
 which gets us almost there.
 
 \begin{code}
+
  almost-there : (p : ΩM) → reflₘ ＝ (m' p refl₀ p)
- almost-there p = x ∙ (triangle p) where
-  x = ap₂ _∙_ (sym (side₀-is-refl p)) (sym (side₂-is-refl p))
+ almost-there p = long-way-is-refl ∙ (triangle p) where
+  long-way-is-refl = ap₂ _∙_ (sym (side₀-is-refl p)) (sym (side₂-is-refl p))
+
 \end{code}
 
 Finally, the almost-there statement tells us that there is a homotopy between
@@ -255,8 +277,10 @@ the upper side of the square and refl. By conjugating this homotopy by idem₁,
 we can transport it to the required refl₀ ＝ p.
 
 \begin{code}
+
  M-is-set : (p : ΩM) → refl ＝ p
  M-is-set p = sym (eq-congr-refl idem₁) ∙ conjugate ∙ (side₁-is-p p) where
   conjugate : eq-congr idem₁ idem₁ reflₘ ＝ eq-congr idem₁ idem₁ (m' p refl₀ p)
   conjugate = (ap (eq-congr idem₁ idem₁) (almost-there p))
+
 \end{code}
