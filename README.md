@@ -70,6 +70,7 @@ Please add yourself the first time you contribute. Use your adopted name, and no
 * Ian Ray
 * Igor Arrieta (ii)
 * J. A. Carr
+* Jakub Opršal
 * Jon Sterling
 * Kelton OBrien
 * Keri D'Angelo
