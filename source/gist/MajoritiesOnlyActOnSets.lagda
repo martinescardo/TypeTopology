@@ -28,7 +28,7 @@ A typical example is the lattice term:
 
   m(x, y, z) = (x ∧ y) ∨ (x ∧ z) ∨ (y ∧ z)
 
-It might appear that this result about majority is theorefore covered by the
+It might appear that this result about majority is therefore covered by the
 result about semilattices, but in fact both are incomparable. There are algebras
 that have a semilattice term, but no majority, and algebras that have a majority
 but no semilattice. This file also serves as a proof-of-concept for providing a
@@ -41,9 +41,9 @@ For types, we rephrase majority equations as witnessing Π types
   Π{x, y : A} m(y, x, x) ＝ x
 
 In this file, I prove that if a type A is equipped with a ternary operation m
-such that the above three types are inhabitted, the type is a set.
+such that the above three types are inhabited, the type is a set.
 
-Let me first start with sketching an outline of the proof of the analoguous
+Let me first start with sketching an outline of the proof of the analogous
 statement for topological spaces with a majority operation. It consists of two
 steps:
 
@@ -57,7 +57,7 @@ can be argued equationally as follows:
 
   1 = 1 * 1 = m(1, 1, x) * m(x, 1, 1) = m(x, 1, x) = x
 
-where 1 is the neutral element of the group.  We will use an analogous
+where 1 is the neutral element of the group. We will use an analogous
 computation to show that if a majority acts on a type, then the type is a set.
 The fact that this second step is an algebraic (equational) argument makes it
 more amenable for type theory.
@@ -87,8 +87,7 @@ satisfying the majority identities.
 
 \begin{code}
 
-module _
-         (M   : Type)
+module _ (M   : Type)
          (m   : M → M → M → M)
          (eq₀ : (a b : M) → m b a a ＝ a)
          (eq₁ : (a b : M) → m a b a ＝ a)
@@ -174,13 +173,14 @@ tion.
 
  triangle : (p : ΩM)
           → (m' p refl₀ refl₀) ∙ (m' refl₀ refl₀ p) ＝ (m' p refl₀ p)
- triangle p = homomorphism ∙ simplify-arguments where
-  homomorphism : (m' p refl refl) ∙ (m' refl refl p)
-                 ＝ m'(p ∙ refl) (refl ∙ refl) (refl ∙ p)
-  homomorphism = m'-is-homo p refl refl refl refl p
+ triangle p = homomorphism ∙ simplify-arguments
+  where
+   homomorphism : (m' p refl refl) ∙ (m' refl refl p)
+                ＝ m'(p ∙ refl) (refl ∙ refl) (refl ∙ p)
+   homomorphism = m'-is-homo p refl refl refl refl p
 
-  simplify-arguments : m' (p ∙ refl) (refl ∙ refl) (refl ∙ p) ＝ m' p refl p
-  simplify-arguments = ap₃ m' (∙refl p) refl (refl∙ p)
+   simplify-arguments : m' (p ∙ refl) (refl ∙ refl) (refl ∙ p) ＝ m' p refl p
+   simplify-arguments = ap₃ m' (∙refl p) refl (refl∙ p)
 
 \end{code}
 
@@ -205,12 +205,13 @@ to use here — it has to agree with the equation, i.e., idem₁ = eq₁ m₀ m�
  idem₁ = eq₁ m₀ m₀
 
  side₁-is-p : (p : ΩM) → eq-congr idem₁ idem₁ (m' p refl₀ p) ＝ p
- side₁-is-p p = eq₁' p refl where
-  eq₁' : {a b c d : M}
-       → (p : a ＝ b)
-       → (q : c ＝ d)
-       → eq-congr (eq₁ a c) (eq₁ b d) (m' p q p) ＝ p
-  eq₁' {a} {_} {c} {_} refl refl = eq-congr-refl (eq₁ a c)
+ side₁-is-p p = eq₁' p refl
+  where
+   eq₁' : {a b c d : M}
+        → (p : a ＝ b)
+        → (q : c ＝ d)
+        → eq-congr (eq₁ a c) (eq₁ b d) (m' p q p) ＝ p
+   eq₁' {a} {_} {c} {_} refl refl = eq-congr-refl (eq₁ a c)
 
 \end{code}
 
@@ -232,32 +233,34 @@ avoid problems with conjugation since conjugation fixes refl.
  reflₘ = refl
 
  side₀-is-refl : (p : ΩM) → (m' p refl₀ refl₀) ＝ reflₘ
- side₀-is-refl p = use-eq₀ ∙ (eq-congr-refl idem₀) where
-  idem₀ : m₀ ＝ m m₀ m₀ m₀
-  idem₀ = sym (eq₀ m₀ m₀)
+ side₀-is-refl p = use-eq₀ ∙ (eq-congr-refl idem₀)
+  where
+   idem₀ : m₀ ＝ m m₀ m₀ m₀
+   idem₀ = sym (eq₀ m₀ m₀)
 
-  eq₀' : {a b c d : M}
-       → (p : a ＝ b)
-       → (q : c ＝ d)
-       → (m' q p p) ＝ eq-congr (sym (eq₀ a c)) (sym (eq₀ b d)) p
-  eq₀' {a} {_} {c} {_} refl refl = sym (eq-congr-refl (sym (eq₀ a c)))
+   eq₀' : {a b c d : M}
+        → (p : a ＝ b)
+        → (q : c ＝ d)
+        → (m' q p p) ＝ eq-congr (sym (eq₀ a c)) (sym (eq₀ b d)) p
+   eq₀' {a} {_} {c} {_} refl refl = sym (eq-congr-refl (sym (eq₀ a c)))
 
-  use-eq₀ : (m' p refl₀ refl₀) ＝ eq-congr idem₀ idem₀ refl₀
-  use-eq₀ = eq₀' refl₀ p
+   use-eq₀ : (m' p refl₀ refl₀) ＝ eq-congr idem₀ idem₀ refl₀
+   use-eq₀ = eq₀' refl₀ p
 
  side₂-is-refl : (p : ΩM) → (m' refl₀ refl₀ p) ＝ reflₘ
- side₂-is-refl p = use-eq₂ ∙ (eq-congr-refl idem₂) where
-  idem₂ : m₀ ＝ m m₀ m₀ m₀
-  idem₂ = sym (eq₂ m₀ m₀)
+ side₂-is-refl p = use-eq₂ ∙ (eq-congr-refl idem₂)
+  where
+   idem₂ : m₀ ＝ m m₀ m₀ m₀
+   idem₂ = sym (eq₂ m₀ m₀)
 
-  eq₂' : {a b c d : M}
-       → (p : a ＝ b)
-       → (q : c ＝ d)
-       → (m' p p q) ＝ eq-congr (sym (eq₂ a c)) (sym (eq₂ b d)) p
-  eq₂' {a} {_} {c} {_} refl refl = sym (eq-congr-refl (sym (eq₂ a c)))
+   eq₂' : {a b c d : M}
+        → (p : a ＝ b)
+        → (q : c ＝ d)
+        → (m' p p q) ＝ eq-congr (sym (eq₂ a c)) (sym (eq₂ b d)) p
+   eq₂' {a} {_} {c} {_} refl refl = sym (eq-congr-refl (sym (eq₂ a c)))
 
-  use-eq₂ : (m' refl₀ refl₀ p) ＝ eq-congr idem₂ idem₂ refl₀
-  use-eq₂ = eq₂' refl₀ p
+   use-eq₂ : (m' refl₀ refl₀ p) ＝ eq-congr idem₂ idem₂ refl₀
+   use-eq₂ = eq₂' refl₀ p
 
 \end{code}
 
@@ -267,8 +270,9 @@ which gets us almost there.
 \begin{code}
 
  almost-there : (p : ΩM) → reflₘ ＝ (m' p refl₀ p)
- almost-there p = long-way-is-refl ∙ (triangle p) where
-  long-way-is-refl = ap₂ _∙_ (sym (side₀-is-refl p)) (sym (side₂-is-refl p))
+ almost-there p =
+  ap₂ _∙_ (sym (side₀-is-refl p)) (sym (side₂-is-refl p))
+  ∙ (triangle p)
 
 \end{code}
 
@@ -279,8 +283,9 @@ we can transport it to the required refl₀ ＝ p.
 \begin{code}
 
  M-is-set : (p : ΩM) → refl ＝ p
- M-is-set p = sym (eq-congr-refl idem₁) ∙ conjugate ∙ (side₁-is-p p) where
-  conjugate : eq-congr idem₁ idem₁ reflₘ ＝ eq-congr idem₁ idem₁ (m' p refl₀ p)
-  conjugate = (ap (eq-congr idem₁ idem₁) (almost-there p))
+ M-is-set p = sym (eq-congr-refl idem₁) ∙ conjugate ∙ (side₁-is-p p)
+  where
+   conjugate : eq-congr idem₁ idem₁ reflₘ ＝ eq-congr idem₁ idem₁ (m' p refl₀ p)
+   conjugate = (ap (eq-congr idem₁ idem₁) (almost-there p))
 
 \end{code}
