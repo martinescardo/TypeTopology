@@ -24,7 +24,9 @@ We postulate function extensionality.
 postulate fe : DN-funext 𝓤₀ 𝓤₀
 -------------------------------
 
+open import C-Space.Preliminaries.Booleans.Functions using (if)
 open import C-Space.Preliminaries.Sequence
+open import C-Space.Syntax.SystemTWithFan
 open import C-Space.UsingFunExt.DiscreteSpace fe
 open import C-Space.UsingFunExt.YonedaLemma fe
 open import C-Space.UsingFunExt.Fan fe
@@ -49,8 +51,8 @@ F₀ is constant, though it looks at the 1st bit of input.
 
 \begin{code}
 
-F₀ : {n : ℕ} {Γ : Cxt n} → Tm Γ ((Ⓝ ⇨ ②) ⇨ Ⓝ)
-F₀ = LAM (IF ◦ (VAR zero ◦ ZERO) ◦ ZERO ◦ ZERO)
+F₀ : {Γ : Cxt} → Tm Γ ((Ⓝ ⇨ ②) ⇨ Ⓝ)
+F₀ = LAM (IF · (VAR zero · ZERO) · ZERO · ZERO)
 
 F₀-interpretation : ⟦ F₀ ⟧ ＝ λ α → if (α 0) 0 0
 F₀-interpretation = refl

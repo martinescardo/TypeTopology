@@ -72,7 +72,7 @@ show the following:
     hpropositions.
 
 (2) If two continuous maps in the Kleene-Kreisel hierarchy are
-    pointwise equal, the they are identical morphisms.
+    pointwise equal, then they are identical morphisms.
 
 \begin{code}
 

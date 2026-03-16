@@ -1,4 +1,4 @@
-Chuangjie Xu 2025
+Chuangjie Xu 2025 (ported to TypeTopology in 2025)
 
 By adding a suitable probe axiom, the double negation of function
 extensionality becomes sufficient for developing the theory of C-spaces.

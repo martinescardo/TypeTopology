@@ -9,17 +9,18 @@ open import UF.FunExt using (DN-funext)
 
 module C-Space.UsingFunExt.DiscreteSpace (fe : DN-funext 𝓤₀ 𝓤₀) where
 
-open import UF.Base
-open import UF.Sets
-open import UF.DiscreteAndSeparated
 open import Naturals.Addition
 open import Naturals.Properties
+open import UF.Base
+open import UF.DiscreteAndSeparated
+open import UF.Sets
 
-open import C-Space.Preliminaries.Sequence
-open import C-Space.Preliminaries.Naturals.Order
-open import C-Space.Preliminaries.FunExt fe
-open import C-Space.UniformContinuity
 open import C-Space.Coverage
+open import C-Space.Preliminaries.Booleans.Functions using (if)
+open import C-Space.Preliminaries.FunExt fe
+open import C-Space.Preliminaries.Naturals.Order
+open import C-Space.Preliminaries.Sequence
+open import C-Space.UniformContinuity
 open import C-Space.UsingFunExt.Space
 open import C-Space.UsingFunExt.CartesianClosedness fe
 
@@ -149,9 +150,6 @@ The coproduct 1 + 1:
 
 Lemma[discrete-𝟚Space] : (X : Space) → ∀(f : 𝟚 → U X) → continuous 𝟚Space X f
 Lemma[discrete-𝟚Space] X f = Lemma[discreteness] 𝟚 𝟚-is-discrete X f
-
-if : {A : Set} → 𝟚 → A → A → A
-if b a₀ a₁ = 𝟚-cases a₀ a₁ b
 
 continuous-if : (A : Space) → Map 𝟚Space (A ⇒ A ⇒ A)
 continuous-if A = IF , c-IF

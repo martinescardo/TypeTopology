@@ -20,7 +20,7 @@ open import C-Space.UsingFunExt.Coproduct fe
 
 \end{code}
 
-Indisrecte C-spaces
+Indiscrete C-spaces
 
 \begin{code}
 

@@ -1,4 +1,4 @@
-Chuangjie Xu 2025
+Chuangjie Xu 2015 (ported to TypeTopology in 2025)
 
 Without extending the probe axioms, the development of C-spaces depends on
 function extensionality, which is not derivable in spartan MLTT.
@@ -55,7 +55,7 @@ Validate the uniform-continuity principle in various theories via C-spaces
 
 import C-Space.UsingFunExt.TdefinableFunctionsAreUC
 import C-Space.UsingFunExt.UCinT
-import C-Space.UsingFunExt.UCinHAo
+import C-Space.UsingFunExt.UCinHAOmega
 import C-Space.UsingFunExt.ValidatingUCviaLCCC
 
 \end{code}

@@ -2,7 +2,7 @@ Chuangjie Xu 2025
 
 This module serves as a small entry point to the C-space development.
 The constructions were originally developed in the PhD thesis of Chuangjie Xu (2015),
-and were ssubsequently revised and ported to the TypeTopology project in 2025.
+and were subsequently revised and ported to the TypeTopology project in 2025.
 
 \begin{code}
 

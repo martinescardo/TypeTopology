@@ -30,7 +30,7 @@ Infinite sequences are defined as functions:
 
 \end{code}
 
-Finite sequences are defined as vectros:
+Finite sequences are defined as vectors:
 
 \begin{code}
 
