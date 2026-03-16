@@ -7,8 +7,8 @@ THEOREM. (Taylor, 1977)
   A topological algebra with a ternary majority operation is homotopically
   weak-equivalent to a discrete set.
 
-This is inspired by earlier result of David Wärn about semilattices and its
-treatment here [2, 3]; Wärn's theorem is an analogue of Taylor's Theorem 6.2.
+This is inspired by David Wärn's result about semilattices and its treatment
+here [2, 3]; Wärn's theorem is an analogue of Taylor's Theorem 6.2.
 
 [1] Walter Taylor. Varieties obeying homotopy laws. Can. J. Math., XXIX(3):
     498–527, 1977. https://doi.org/10.4153/CJM-1977-054-9.
@@ -119,7 +119,7 @@ We start with the action of `m` on the paths.
 
 This action restricts to:
 
-m' : ΩM → ΩM → ΩM → ΩM'.
+  m' : ΩM → ΩM → ΩM → ΩM'.
 
 Which is how we will mostly use it. We will need that this action is a group
 homomorphism (from the third power of ΩM to ΩM'). In fact, the statement is
