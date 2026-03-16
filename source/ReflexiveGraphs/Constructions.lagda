@@ -47,11 +47,12 @@ reflexive graph.
 
 \begin{code}
 
-proj-refl-graph : {𝓐 : Refl-Graph 𝓤 𝓥} (𝓑 : Displayed-Refl-Graph 𝓣 𝓦 𝓐)
-                → Refl-Graph-Hom (𝓐 ﹐ 𝓑) 𝓐
-proj-refl-graph 𝓑 = (pr₁ , (λ t t' → pr₁) , ∼-refl)
+total-refl-graph-projection
+ : {𝓐 : Refl-Graph 𝓤 𝓥} (𝓑 : Displayed-Refl-Graph 𝓣 𝓦 𝓐)
+ → Refl-Graph-Hom (𝓐 ﹐ 𝓑) 𝓐
+total-refl-graph-projection 𝓑 = (pr₁ , (λ t t' → pr₁) , ∼-refl)
 
-syntax proj-refl-graph 𝓑 = π 𝓑
+syntax total-refl-graph-projection 𝓑 = π 𝓑
 
 \end{code}
 
@@ -59,22 +60,22 @@ We define the binary product and binary sums of reflexive graphs.
 
 \begin{code}
 
-binary-prod-refl-graph : Refl-Graph 𝓤 𝓥
-                       → Refl-Graph 𝓤' 𝓥'
-                       → Refl-Graph (𝓤 ⊔ 𝓤') (𝓥 ⊔ 𝓥')
-binary-prod-refl-graph {𝓤} {𝓥} {𝓤'} {𝓥'} 𝓐 𝓐' = ((⟨ 𝓐 ⟩ × ⟨ 𝓐' ⟩) , I , II)
+refl-graph-× : Refl-Graph 𝓤 𝓥
+             → Refl-Graph 𝓤' 𝓥'
+             → Refl-Graph (𝓤 ⊔ 𝓤') (𝓥 ⊔ 𝓥')
+refl-graph-× {𝓤} {𝓥} {𝓤'} {𝓥'} 𝓐 𝓐' = ((⟨ 𝓐 ⟩ × ⟨ 𝓐' ⟩) , I , II)
  where
   I : ⟨ 𝓐 ⟩ × ⟨ 𝓐' ⟩ → ⟨ 𝓐 ⟩ × ⟨ 𝓐' ⟩ → 𝓥 ⊔ 𝓥' ̇
   I (x , x') (y , y') = (x ≈⟨ 𝓐 ⟩ y) × (x' ≈⟨ 𝓐' ⟩ y')
   II : (t : ⟨ 𝓐 ⟩ × ⟨ 𝓐' ⟩) → I t t
   II (x , x') = (≈-refl 𝓐 x , ≈-refl 𝓐' x')
 
-syntax binary-prod-refl-graph 𝓐 𝓐' = 𝓐 ⊗ 𝓐'
+syntax refl-graph-× 𝓐 𝓐' = 𝓐 ⊗ 𝓐'
 
-binary-sum-refl-graph : Refl-Graph 𝓤 𝓥
-                      → Refl-Graph 𝓤' 𝓥'
-                      → Refl-Graph (𝓤 ⊔ 𝓤') (𝓥 ⊔ 𝓥')
-binary-sum-refl-graph {𝓤} {𝓥} {𝓤'} {𝓥'} 𝓐 𝓐' = ((⟨ 𝓐 ⟩ + ⟨ 𝓐' ⟩) , I , II)
+refl-graph-+ : Refl-Graph 𝓤 𝓥
+             → Refl-Graph 𝓤' 𝓥'
+             → Refl-Graph (𝓤 ⊔ 𝓤') (𝓥 ⊔ 𝓥')
+refl-graph-+ {𝓤} {𝓥} {𝓤'} {𝓥'} 𝓐 𝓐' = ((⟨ 𝓐 ⟩ + ⟨ 𝓐' ⟩) , I , II)
  where
   I : ⟨ 𝓐 ⟩ + ⟨ 𝓐' ⟩ → ⟨ 𝓐 ⟩ + ⟨ 𝓐' ⟩ → 𝓥 ⊔ 𝓥' ̇
   I (inl x) (inl y) = Lift 𝓥' (x ≈⟨ 𝓐 ⟩ y)
@@ -85,7 +86,7 @@ binary-sum-refl-graph {𝓤} {𝓥} {𝓤'} {𝓥'} 𝓐 𝓐' = ((⟨ 𝓐 ⟩ 
   II (inl x) = lift 𝓥' (≈-refl 𝓐 x)
   II (inr x) = lift 𝓥 (≈-refl 𝓐' x)
 
-syntax binary-sum-refl-graph 𝓐 𝓐' = 𝓐 ⊕ 𝓐'
+syntax refl-graph-+ 𝓐 𝓐' = 𝓐 ⊕ 𝓐'
 
 \end{code}
 
@@ -93,10 +94,10 @@ Of course, we can generalize to products of reflexive graphs as follows.
 
 \begin{code}
 
-prod-refl-graphs : (A : 𝓤' ̇)
-                 → (A → Refl-Graph 𝓤 𝓥)
-                 → Refl-Graph (𝓤' ⊔ 𝓤) (𝓤' ⊔ 𝓥)
-prod-refl-graphs {𝓤'} {𝓤} {𝓥} A 𝓑
+refl-graph-Π : (A : 𝓤' ̇)
+             → (A → Refl-Graph 𝓤 𝓥)
+             → Refl-Graph (𝓤' ⊔ 𝓤) (𝓤' ⊔ 𝓥)
+refl-graph-Π {𝓤'} {𝓤} {𝓥} A 𝓑
  = (((x : A) → ⟨ 𝓑 x ⟩) , I , II)
  where
   I : ((x : A) → ⟨ 𝓑 x ⟩)
@@ -106,7 +107,7 @@ prod-refl-graphs {𝓤'} {𝓤} {𝓥} A 𝓑
   II : (f : (x : A) → ⟨ 𝓑 x ⟩) → I f f
   II f x = ≈-refl (𝓑 x) (f x)
 
-syntax prod-refl-graphs A (λ x → 𝓑) = ∏ x ˸ A , 𝓑
+syntax refl-graph-Π A (λ x → 𝓑) = ∏ x ˸ A , 𝓑
 
 \end{code}
 
@@ -114,10 +115,10 @@ We define the coproduct of reflexive graphs in terms of sigma types.
 
 \begin{code}
 
-coprod-refl-graphs : (A : 𝓤' ̇)
-                   → (A → Refl-Graph 𝓤 𝓥)
-                   → Refl-Graph (𝓤' ⊔ 𝓤) (𝓤' ⊔ 𝓥)
-coprod-refl-graphs {𝓤'} {𝓤} {𝓥} A 𝓑
+refl-graph-Σ : (A : 𝓤' ̇)
+             → (A → Refl-Graph 𝓤 𝓥)
+             → Refl-Graph (𝓤' ⊔ 𝓤) (𝓤' ⊔ 𝓥)
+refl-graph-Σ {𝓤'} {𝓤} {𝓥} A 𝓑
  = ((Σ x ꞉ A , ⟨ 𝓑 x ⟩) , I , II)
  where
   I : Σ x ꞉ A , ⟨ 𝓑 x ⟩
@@ -128,7 +129,7 @@ coprod-refl-graphs {𝓤'} {𝓤} {𝓥} A 𝓑
   II : (t : Σ x ꞉ A , ⟨ 𝓑 x ⟩) → I t t
   II (a , b) = (refl , ≈-refl (𝓑 a) b)
 
-syntax coprod-refl-graphs A (λ x → 𝓑) = ∐ x ˸ A , 𝓑
+syntax refl-graph-Σ A (λ x → 𝓑) = ∐ x ˸ A , 𝓑
 
 \end{code}
 
@@ -156,15 +157,13 @@ On the other end of the extreme we have the codiscrete reflexive graph.
 
 \begin{code}
 
-discrete-reflexive-graph : 𝓤 ̇
-                         → Refl-Graph 𝓤 𝓤
+discrete-reflexive-graph : 𝓤 ̇ → Refl-Graph 𝓤 𝓤
 discrete-reflexive-graph A = (A , _＝_ , ∼-refl)
 
 syntax discrete-reflexive-graph A = Δ A
 
-codiscrete-reflexive-graph : 𝓤 ̇
-                           → Refl-Graph 𝓤 𝓤
-codiscrete-reflexive-graph A = (A , (λ - → λ - → 𝟙) , λ - → ⋆)
+codiscrete-reflexive-graph : 𝓤 ̇ → Refl-Graph 𝓤 𝓤
+codiscrete-reflexive-graph A = (A , (λ _ _ → 𝟙) , λ _ → ⋆)
 
 \end{code}
 
@@ -185,32 +184,33 @@ constant-displayed-reflexive-graph {𝓤} {𝓥} {𝓤'} {𝓥'} 𝓐 𝓑 = (I 
 syntax constant-displayed-reflexive-graph 𝓐 𝓑 = 𝓐 * 𝓑
 
 private
- observation0 : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓑 : Refl-Graph 𝓤' 𝓥')
+ observation₁ : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓑 : Refl-Graph 𝓤' 𝓥')
               → (x : ⟨ 𝓐 ⟩)
               → [ 𝓐 * 𝓑 ] x ＝ 𝓑 
- observation0 𝓐 𝓑 x = refl
+ observation₁ 𝓐 𝓑 x = refl
 
- observation1 : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓑 : Refl-Graph 𝓤' 𝓥')
+ observation₂ : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓑 : Refl-Graph 𝓤' 𝓥')
               → 𝓐 ﹐ (𝓐 * 𝓑) ＝ 𝓐 ⊗ 𝓑
- observation1 𝓐 𝓑 = refl
+ observation₂ 𝓐 𝓑 = refl
 
 \end{code}
 
-We can give a reflexive-graph structure to subsets.
+We can retstrict a reflexive graph structure to a subset of the carrier of a
+reflexive graph.
 
 \begin{code}
 
-sub-refl-graph : (𝓐 : Refl-Graph 𝓤 𝓥) 
-               → 𝓟 {𝓣} ⟨ 𝓐 ⟩
-               → Refl-Graph (𝓤 ⊔ 𝓣) 𝓥
-sub-refl-graph {𝓤} {𝓥} {𝓣} 𝓐 S = (𝕋 S , I , II)
+refl-graph-⊆ : (𝓐 : Refl-Graph 𝓤 𝓥) 
+             → 𝓟 {𝓣} ⟨ 𝓐 ⟩
+             → Refl-Graph (𝓤 ⊔ 𝓣) 𝓥
+refl-graph-⊆ {𝓤} {𝓥} {𝓣} 𝓐 S = (𝕋 S , I , II)
  where
   I : 𝕋 S → 𝕋 S → 𝓥 ̇
   I (x , _) (y , _) = x ≈⟨ 𝓐 ⟩ y
   II : (p : 𝕋 S) → I p p
   II (x , _) = ≈-refl 𝓐 x
 
-syntax sub-refl-graph 𝓐 S = x ∶ 𝓐 ∣ S x
+syntax refl-graph-⊆ 𝓐 S = x ∶ 𝓐 ∣ S x
 
 \end{code}
 
@@ -227,9 +227,9 @@ opposite-refl-graph {𝓤} {𝓥} 𝓐 = (⟨ 𝓐 ⟩ , I , ≈-refl 𝓐)
 syntax opposite-refl-graph 𝓐 = 𝓐 ᵒᵖ
 
 private
- observation2 : (𝓐 : Refl-Graph 𝓤 𝓥)
+ observation₃ : (𝓐 : Refl-Graph 𝓤 𝓥)
               → (𝓐 ᵒᵖ) ᵒᵖ ＝ 𝓐
- observation2 𝓐 = refl
+ observation₃ 𝓐 = refl
 
 opposite-displayed-refl-graph
  : (𝓐 : Refl-Graph 𝓤 𝓥)
@@ -244,14 +244,14 @@ opposite-displayed-refl-graph {_} {_} {_} {𝓦} 𝓐 𝓑 = (⟪ 𝓑 ⟫ , I ,
 syntax opposite-displayed-refl-graph 𝓐 𝓑 = 𝓑 ᵒᵖ at 𝓐
 
 private
- observation3
+ observation₄
   : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓑 : Displayed-Refl-Graph 𝓣 𝓦 𝓐)
   → (𝓑 ᵒᵖ at 𝓐) ᵒᵖ at (𝓐 ᵒᵖ) ＝ 𝓑
- observation3 𝓐 𝓑 = refl
+ observation₄ 𝓐 𝓑 = refl
 
 \end{code}
 
-We can iterate displayed reflexive graphs.
+We can define the resrtiction of an iterated displayed reflexive graphs.
 
 \begin{code}
 
