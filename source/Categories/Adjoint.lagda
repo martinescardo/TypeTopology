@@ -8,7 +8,10 @@ Definition of adjoint.
 
 open import MLTT.Spartan
 
-open import Categories.Wild
+open import UF.FunExt
+open import Notation.UnderlyingType
+
+open import Categories.Pre
 open import Categories.Functor
 open import Categories.Functor-Composition
 open import Categories.NaturalTransformation
@@ -24,7 +27,7 @@ Blah
 
 \begin{code}
 
-record LeftAdjoint {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣} (F : Functor A B) : {!!} where
+record LeftAdjoint {A : Precategory 𝓤 𝓥} {B : Precategory 𝓦 𝓣} (F : Functor A B) (fe : Fun-Ext) : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇ where
  field
   G : Functor B A
   unit : NaturalTransformation (id-functor A) (G F∘ F)
@@ -33,9 +36,19 @@ record LeftAdjoint {A : WildCategory 𝓤 𝓥} {B : WildCategory 𝓦 𝓣} (F 
  private
   η = unit
   ε = counit
+
+ private
+  εF =  transport (NaturalTransformation ((F F∘ G) F∘ F)) (id-left-neutral-F∘ F fe) (ε · F)
+  Fη = transport (NaturalTransformation F) (assoc-F∘ F G F fe) (transport (λ - → NaturalTransformation - (F F∘ (G F∘ F))) (id-right-neutral-F∘  F fe) (F ·' η))
   
  field
-  first-axiom : ({!ε · F!} N∘ {!F ·' η!}) ＝ id-natural-transformation F
-  second-axiom : {!(G ·' ε)!} N∘ {!(η · G)!} ＝ id-natural-transformation G
+  first-axiom : εF N∘ Fη ＝ id-natural-transformation F
+
+ private
+  Gε = transport (NaturalTransformation (G F∘ (F F∘ G))) (id-right-neutral-F∘ G fe) (G ·' ε)
+  ηG = transport (NaturalTransformation G) ((assoc-F∘ G F G fe)⁻¹) (transport (λ - → NaturalTransformation - ((G F∘ F) F∘ G)) (id-left-neutral-F∘ G fe) (η · G))
+
+ field
+  second-axiom : Gε N∘ ηG ＝ id-natural-transformation G
 
 \end{code}
