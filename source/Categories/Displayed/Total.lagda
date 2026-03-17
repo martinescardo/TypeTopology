@@ -32,106 +32,111 @@ object in the displayed precategory. That is, the objects are of the form
 
 \begin{code}
 
-TotalPrecategory : {𝓦 𝓨 : Universe}
-                   {P : Precategory 𝓤 𝓥}
-                   (D : DisplayedPrecategory 𝓦 𝓨 P)
-                 → Precategory (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓨)
-TotalPrecategory {𝓤} {𝓥} {𝓦} {𝓨} {P} D = (total-wild-category
-                                          , total-is-precategory)
- where
-  open PrecategoryNotation P
-  open DisplayedPrecategoryNotation D
 
-  total-wild-category : WildCategory (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓨)
-  total-wild-category = wildcategory
-                       (Σ p ꞉ obj P , obj[ p ])
-                       (λ (a , x) (b , y) → Σ f ꞉ hom a b , hom[ f ] x y)
-                       (𝒊𝒅 , D-𝒊𝒅)
-                       (λ (g , 𝕘) (f , 𝕗) → g ◦ f , 𝕘 ○ 𝕗)
-                       (λ (f , 𝕗) → to-Σ-＝ (𝒊𝒅-is-left-neutral f
-                                            , Idtofun (dep-id _ _)
-                                               (D-𝒊𝒅-is-left-neutral 𝕗)))
-                       (λ (f , 𝕗) → to-Σ-＝ (𝒊𝒅-is-right-neutral f
-                                            , Idtofun (dep-id _ _)
-                                               (D-𝒊𝒅-is-right-neutral 𝕗)))
-                       (λ f g h → to-Σ-＝ (assoc _ _ _
-                                          , Idtofun (dep-id _ _) D-assoc))
-   where
-    dep-id = dependent-Id-via-transport
+ap₂-ish : {A B C : 𝓤 ̇ } → (f : A → B → C) → {x x' : A} → {y : B} → (e : x ＝ x') → f x y ＝ f x' y
+ap₂-ish f refl = refl
 
-  total-is-precategory : is-precategory total-wild-category
-  total-is-precategory _ _ = Σ-is-set (hom-is-set P) (λ _ → hom[-]-is-set)
+module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
 
-TotalCategory : {C : Category 𝓤 𝓥}
-                (D : DisplayedCategory 𝓦 𝓣 ⟨ C ⟩)
-              → Category (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣)
-TotalCategory {_} {_} {_} {_} {C} D = (TotalPrecategory ⟨ D ⟩) , is-cat
- where
-  open CategoryNotation C
-  open DisplayedCategoryNotation D
-  open PrecategoryNotation (TotalPrecategory ⟨ D ⟩)
+ TotalPrecategory : {P : Precategory 𝓤 𝓥}
+                    (D : DisplayedPrecategory 𝓦 𝓣 P)
+                  → Precategory (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣)
+ TotalPrecategory {P} D = (total-wild-category
+                                           , total-is-precategory)
+  where
+   open PrecategoryNotation P
+   open DisplayedPrecategoryNotation D
 
-  is-cat : is-category (TotalPrecategory ⟨ D ⟩)
-  is-cat (a , x) (b , y) = equiv-closed-under-∼ ⌜ thing ⌝
-                                                (id-to-iso (a , x) (b , y))
-                                                ⌜ thing ⌝-is-equiv
-                                                pointwise-equal
-   where
-    thing : ((a , x) ＝ (b , y)) ≃ ((a , x) ≅ (b , y))
-    thing = ((a , x) ＝ (b , y))                       ≃⟨ i ⟩
-            ((Σ e ꞉ a ＝ b , transport _ e x ＝ y))    ≃⟨ ii ⟩
-            (Σ e ꞉ a ＝ b , x ≅[ id-to-iso a b e ] y)  ≃⟨ iii ⟩
-            (Σ f ꞉ a ≅ b , x ≅[ f ] y)                ≃⟨ iv ⟩
-            ((a , x) ≅ (b , y))                       ■
-     where
-      inter : (e : a ＝ b)
-            → (transport obj[_] e x ＝ y) ≃ x ≅[ id-to-iso a b e ] y
-      inter refl = (D-id-to-iso ⟨ D ⟩ refl x y) , D-id-to-iso-is-equiv D refl x y
+   total-wild-category : WildCategory (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣)
+   total-wild-category = wildcategory
+                        (Σ p ꞉ obj P , obj[ p ])
+                        (λ (a , x) (b , y) → Σ f ꞉ hom a b , hom[ f ] x y)
+                        (𝒊𝒅 , D-𝒊𝒅)
+                        (λ (g , 𝕘) (f , 𝕗) → g ◦ f , 𝕘 ○ 𝕗)
+                        (λ (f , 𝕗) → to-Σ-＝ (𝒊𝒅-is-left-neutral f
+                                             , Idtofun (dep-id _ _)
+                                                (D-𝒊𝒅-is-left-neutral 𝕗)))
+                        (λ (f , 𝕗) → to-Σ-＝ (𝒊𝒅-is-right-neutral f
+                                             , Idtofun (dep-id _ _)
+                                                (D-𝒊𝒅-is-right-neutral 𝕗)))
+                        (λ f g h → to-Σ-＝ (assoc _ _ _
+                                           , Idtofun (dep-id _ _) D-assoc))
+    where
+     dep-id = dependent-Id-via-transport
 
-      total-iso-join : (Σ f ꞉ a ≅ b , x ≅[ f ] y) ≃ ((a , x) ≅ (b , y))
-      total-iso-join = qinveq F (F⁻¹ , P , Q)
-       where
-        F : (Σ f ꞉ a ≅ b , x ≅[ f ] y) → ((a , x) ≅ (b , y))
-        F ((f , f⁻¹ , p , q)
-         , (𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = (f , 𝕗)
-                             , (f⁻¹ , 𝕗⁻¹)
-                             , to-Σ-＝ (p , Idtofun (dependent-Id-via-transport (λ - → hom[ - ] x x) p) 𝕡)
-                             , to-Σ-＝ (q , Idtofun (dependent-Id-via-transport (λ - → hom[ - ] y y) q) 𝕢)
+   total-is-precategory : is-precategory total-wild-category
+   total-is-precategory _ _ = Σ-is-set (hom-is-set P) (λ _ → hom[-]-is-set)
 
-        F⁻¹ : ((a , x) ≅ (b , y)) → (Σ f ꞉ a ≅ b , x ≅[ f ] y)
-        F⁻¹ ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = (f , f⁻¹ , ap pr₁ p , ap pr₁ q)
-                                           , (𝕗 , 𝕗⁻¹ , snd-eq-left , snd-eq-right)
-         where
-          snd-eq-left : 𝕗⁻¹ ○ 𝕗 ＝⟦ (λ - → hom[ - ] _ _) , ap pr₁ p ⟧ D-𝒊𝒅
-          snd-eq-left = (Idtofun ((dependent-Id-via-transport (λ - → hom[ - ] _ _) (ap pr₁ p))⁻¹)) (pr₂ (from-Σ-＝ p))
+ TotalCategory : {C : Category 𝓤 𝓥}
+                 (D : DisplayedCategory 𝓦 𝓣 ⟨ C ⟩)
+               → Category {!!} {!!}
+ TotalCategory {C} D = (TotalPrecategory ⟨ D ⟩) , is-cat
+  where
+   open CategoryNotation C
+   open DisplayedCategoryNotation D
+   open PrecategoryNotation (TotalPrecategory ⟨ D ⟩)
 
-          snd-eq-right : 𝕗 ○ 𝕗⁻¹ ＝⟦ (λ - → hom[ - ] _ _) , ap pr₁ q ⟧ D-𝒊𝒅
-          snd-eq-right = (Idtofun ((dependent-Id-via-transport (λ - → hom[ - ] _ _) (ap pr₁ q))⁻¹)) (pr₂ (from-Σ-＝ q))
+   is-cat : is-category (TotalPrecategory ⟨ D ⟩)
+   is-cat (a , x) (b , y) = equiv-closed-under-∼ ⌜ thing ⌝
+                                                 (id-to-iso (a , x) (b , y))
+                                                 ⌜ thing ⌝-is-equiv
+                                                 pointwise-equal
+    where
+     thing : ((a , x) ＝ (b , y)) ≃ ((a , x) ≅ (b , y))
+     thing = ((a , x) ＝ (b , y))                       ≃⟨ i ⟩
+             ((Σ e ꞉ a ＝ b , transport _ e x ＝ y))    ≃⟨ ii ⟩
+             (Σ e ꞉ a ＝ b , x ≅[ id-to-iso a b e ] y)  ≃⟨ iii ⟩
+             (Σ f ꞉ a ≅ b , x ≅[ f ] y)                ≃⟨ iv ⟩
+             ((a , x) ≅ (b , y))                       ■
+      where
+       inter : (e : a ＝ b)
+             → (transport obj[_] e x ＝ y) ≃ x ≅[ id-to-iso a b e ] y
+       inter refl = (D-id-to-iso ⟨ D ⟩ refl x y) , D-id-to-iso-is-equiv D refl x y
 
-        P : F⁻¹ ∘ F ∼ id
-        P e@((f , f⁻¹ , p , q)
-         , (𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = to-Σ-＝ (parti
-                                      , to-Σ-＝ (I , to-Σ-＝ (II , to-×-＝ {!hom[-]-is-set _ _!} {!!})))
-         where
-          parti = to-Σ-＝ (refl , to-Σ-＝ (refl , to-×-＝ (hom-is-set ⟨ C ⟩ _ _) (hom-is-set ⟨ C ⟩ _ _)))
+       total-iso-join : (Σ f ꞉ a ≅ b , x ≅[ f ] y) ≃ ((a , x) ≅ (b , y))
+       total-iso-join = qinveq F (F⁻¹ , P , Q)
+        where
+         F : (Σ f ꞉ a ≅ b , x ≅[ f ] y) → ((a , x) ≅ (b , y))
+         F ((f , f⁻¹ , p , q)
+          , (𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = (f , 𝕗)
+                              , (f⁻¹ , 𝕗⁻¹)
+                              , to-Σ-＝ (p , Idtofun (dependent-Id-via-transport (λ - → hom[ - ] x x) p) 𝕡)
+                              , to-Σ-＝ (q , Idtofun (dependent-Id-via-transport (λ - → hom[ - ] y y) q) 𝕢)
 
-          I : pr₁ (transport (λ - → x ≅[ - ] y) parti (pr₂ ((F⁻¹ ∘ F) e))) ＝ 𝕗
-          I = {!!}
+         F⁻¹ : ((a , x) ≅ (b , y)) → (Σ f ꞉ a ≅ b , x ≅[ f ] y)
+         F⁻¹ ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = (f , f⁻¹ , ap pr₁ p , ap pr₁ q)
+                                            , (𝕗 , 𝕗⁻¹ , snd-eq-left , snd-eq-right)
+          where
+           snd-eq-left : 𝕗⁻¹ ○ 𝕗 ＝⟦ (λ - → hom[ - ] _ _) , ap pr₁ p ⟧ D-𝒊𝒅
+           snd-eq-left = (Idtofun ((dependent-Id-via-transport (λ - → hom[ - ] _ _) (ap pr₁ p))⁻¹)) (pr₂ (from-Σ-＝ p))
 
-          II : pr₁ (transport (D-inverse (f , f⁻¹ , p , q)) I (pr₂ (transport (λ - → x ≅[ - ] y) parti (pr₂ ((F⁻¹ ∘ F) e))))) ＝ 𝕗⁻¹
-          II = {!!}
+           snd-eq-right : 𝕗 ○ 𝕗⁻¹ ＝⟦ (λ - → hom[ - ] _ _) , ap pr₁ q ⟧ D-𝒊𝒅
+           snd-eq-right = (Idtofun ((dependent-Id-via-transport (λ - → hom[ - ] _ _) (ap pr₁ q))⁻¹)) (pr₂ (from-Σ-＝ q))
 
+         P : F⁻¹ ∘ F ∼ id
+         P e@((f , f⁻¹ , p , q)
+          , d-iso@(𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = to-Σ-＝ (to-≅-＝ ⟨ C ⟩ refl , {!!})
+          where
+           lem : {x y : obj C}
+                 {xx : obj[ x ]}
+                 {yy : obj[ y ]}
+                 {f f' : x ≅ y}
+                 (e : f ＝ f')
+                 (ff : xx ≅[ f ] yy)
+               → pr₁ (transport (λ - → xx ≅[ - ] yy) e ff) ＝ transport _ (ap pr₁ e) (pr₁ ff)
+           lem refl _ = refl
 
-        Q : F ∘ F⁻¹ ∼ id
-        Q ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = to-Σ-＝ (refl , to-Σ-＝ (refl , to-×-＝ (hom-is-set (TotalPrecategory ⟨ D ⟩) _ _)
-                                                                                  (hom-is-set (TotalPrecategory ⟨ D ⟩) _ _)))
+         Q : F ∘ F⁻¹ ∼ id
+         Q ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = to-Σ-＝ (refl , to-Σ-＝ (refl , to-×-＝ (hom-is-set (TotalPrecategory ⟨ D ⟩) _ _)
+                                                                                   (hom-is-set (TotalPrecategory ⟨ D ⟩) _ _)))
 
-      i = Σ-＝-≃
-      ii = Σ-cong inter
-      iii = Σ-change-of-variable (λ - → (x ≅[ - ] y)) (id-to-iso a b) (id-to-iso-is-equiv C a b)
-      iv = total-iso-join
+       i = Σ-＝-≃
+       ii = Σ-cong inter
+       iii = Σ-change-of-variable (λ - → (x ≅[ - ] y)) (id-to-iso a b) (id-to-iso-is-equiv C a b)
 
-    pointwise-equal : id-to-iso (a , x) (b , y) ∼ ⌜ thing ⌝
-    pointwise-equal refl = refl
-      
+       iv = total-iso-join
+
+     pointwise-equal : id-to-iso (a , x) (b , y) ∼ ⌜ thing ⌝
+     pointwise-equal refl = refl
+
 \end{code}

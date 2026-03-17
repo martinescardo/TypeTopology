@@ -112,3 +112,16 @@ Following this, we can see that the type of isomorphisms is a set.
                                     (λ f → props-are-sets (being-iso-is-prop f))
 
 \end{code}
+
+Furthermore, we can show that equivalence of isomorphisms is based on equality
+of the chosen morphism.
+
+\begin{code}
+
+ to-≅-＝ : {a b : obj P}
+                      → {f f' : a ≅ b}
+                      → ⌜ f ⌝ ＝ ⌜ f' ⌝
+                      → f ＝ f'
+ to-≅-＝ = to-subtype-＝ being-iso-is-prop
+
+\end{code}

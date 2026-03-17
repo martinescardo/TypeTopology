@@ -40,7 +40,7 @@ module _ {𝓤 𝓥 : Universe}
   d-obj-m : DOBJ D
   obj[_] {{d-obj-m}} = DisplayedPrecategory.obj[_] D
 
- record DHOM  : ((𝓦 ⊔ 𝓣) ⊔ (𝓤 ⊔ 𝓥))⁺ ̇  where
+ record DHOM  : (𝓦 ⊔ 𝓣 ⊔ 𝓤 ⊔ 𝓥)⁺ ̇  where
   field
    hom[_] : {a b : obj P} → hom a b → obj[ a ] → obj[ b ] → 𝓥 ̇
 

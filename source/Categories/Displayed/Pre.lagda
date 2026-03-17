@@ -7,8 +7,10 @@ Definition of a displayed category.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
+open import UF.Base
 open import UF.DependentEquality
 open import UF.Sets
+open import UF.Subsingletons
 open import Categories.Pre
 open import Categories.Notation.Pre
 
@@ -139,3 +141,45 @@ We can now define a displayed version of isomorphism between objects.
  x ≅[ f ] y = Σ 𝕗 ꞉ hom[ ⌜ f ⌝ ] x y , D-inverse f 𝕗
 
 \end{code}
+
+We show that being an isomorphism is a proposition.
+
+\begin{code}
+
+ D-inverse-is-lc : {a b : obj P}
+                   {x : obj[ a ]}
+                   {y : obj[ b ]}
+                   (f : a ≅ b)
+                   (𝕗 : hom[ ⌜ f ⌝ ] x y)
+                   (𝕚 𝕛 : D-inverse f 𝕗)
+                 → pr₁ 𝕚 ＝ pr₁ 𝕛
+                 → 𝕚 ＝ 𝕛
+ D-inverse-is-lc {_} {_} {x} {y} f 𝕗 𝕚 𝕛 = to-subtype-＝ rest-prop 
+  where
+   f⁻¹ = underlying-morphism-is-isomorphism f
+
+   rest-prop : (𝕗⁻¹ : hom[ ⌞ f⁻¹ ⌟ ] y x) → is-prop ((𝕗⁻¹ ○ 𝕗 ＝⟦ (λ - → hom[ - ] x x) , ⌞ f⁻¹ ⌟-is-left-inverse ⟧ D-𝒊𝒅)
+                                                   × (𝕗 ○ 𝕗⁻¹ ＝⟦ (λ - → hom[ - ] y y) , ⌞ f⁻¹ ⌟-is-right-inverse ⟧ D-𝒊𝒅))
+   rest-prop 𝕗⁻¹ = ×-is-prop (λ _ _ → {!!}) (λ _ _ → {!!}) -- hom[-]-is-set
+
+ being-D-iso-is-prop : {a b : obj P}
+                       {x : obj[ a ]}
+                       {y : obj[ b ]}
+                       (f : a ≅ b)
+                       (𝕗 : hom[ ⌜ f ⌝ ] x y)
+                     → is-prop (D-inverse f 𝕗)
+ being-D-iso-is-prop {_} {_} {x} {y} f 𝕗 𝕗⁻¹ 𝕘⁻¹ = D-inverse-is-lc f 𝕗 𝕗⁻¹ 𝕘⁻¹ {!!}
+  where
+
+   f⁻¹ = underlying-morphism-is-isomorphism f
+
+   eq : pr₁ 𝕗⁻¹ ＝⟦ (λ - → hom[ - ] y x) , at-most-one-inverse f⁻¹ f⁻¹ ⟧ pr₁ 𝕘⁻¹
+   eq = (pr₁ 𝕗⁻¹)                     ＝⟦⟧⟨ (D-𝒊𝒅-is-right-neutral (pr₁ 𝕗⁻¹))⁻¹' ⟩
+        ((pr₁ 𝕗⁻¹) ○ D-𝒊𝒅)            ＝⟦⟧⟨ dep-ap ((pr₁ 𝕗⁻¹) ○_) (pr₂ (pr₂ 𝕘⁻¹))⁻¹' ⟩
+        ((pr₁ 𝕗⁻¹) ○ (𝕗 ○ (pr₁ 𝕘⁻¹))) ＝⟦⟧⟨ D-assoc ⟩
+        ((pr₁ 𝕗⁻¹ ○ 𝕗) ○ (pr₁ 𝕘⁻¹))   ＝⟦⟧⟨ dep-ap (_○ (pr₁ 𝕘⁻¹)) ((pr₁ (pr₂ 𝕗⁻¹))) ⟩
+        (D-𝒊𝒅 ○ (pr₁ 𝕘⁻¹))            ＝⟦⟧⟨ D-𝒊𝒅-is-left-neutral (pr₁ 𝕘⁻¹) ⟩
+        (pr₁ 𝕘⁻¹)                     ⟦⟧∎  
+
+\end{code}
+ 
