@@ -16,7 +16,7 @@ page.
 ## Table of contents
 
  1. [How to cite this repository](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
- 1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-of-the-development)
+ 1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-agda-files)
  1. [Current contributors](https://github.com/martinescardo/TypeTopology/blob/master/README.md#current-contributors-in-alphabetical-order-of-first-name)
  1. [Academic publications resulting from TypeTopology](https://github.com/martinescardo/TypeTopology/blob/master/README.md#publications-resulting-from-typetopology)
  1. [Statement of inclusion](https://github.com/martinescardo/TypeTopology/blob/master/STATEMENT-OF-INCLUSION.md)
