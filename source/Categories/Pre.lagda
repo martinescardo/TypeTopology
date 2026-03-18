@@ -119,9 +119,9 @@ of the chosen morphism.
 \begin{code}
 
  to-≅-＝ : {a b : obj P}
-                      → {f f' : a ≅ b}
-                      → ⌜ f ⌝ ＝ ⌜ f' ⌝
-                      → f ＝ f'
+         → {f f' : a ≅ b}
+         → ⌜ f ⌝ ＝ ⌜ f' ⌝
+         → f ＝ f'
  to-≅-＝ = to-subtype-＝ being-iso-is-prop
 
 \end{code}

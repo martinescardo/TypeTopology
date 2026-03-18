@@ -32,9 +32,6 @@ object in the displayed precategory. That is, the objects are of the form
 
 \begin{code}
 
-ap₂-ish : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ } → (f : A → B → C) → {x x' : A} → {y : B} → (e : x ＝ x') → f x y ＝ f x' y
-ap₂-ish f refl = refl
-
 module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
 
  TotalPrecategory : {P : Precategory 𝓤 𝓥}
@@ -64,6 +61,13 @@ module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
    total-is-precategory : is-precategory total-wild-category
    total-is-precategory _ _ = Σ-is-set (hom-is-set P) (λ _ → hom[-]-is-set)
 
+\end{code}
+
+We now show that if we have a category and a displayed category, the total category
+formed of these is a category.
+
+\begin{code}
+
  TotalCategory : {C : Category 𝓤 𝓥}
                  (D : DisplayedCategory 𝓦 𝓣 ⟨ C ⟩)
                → Category (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣)
@@ -74,81 +78,83 @@ module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
    open PrecategoryNotation (TotalPrecategory ⟨ D ⟩)
 
    is-cat : is-category (TotalPrecategory ⟨ D ⟩)
-   is-cat (a , x) (b , y) = equiv-closed-under-∼ ⌜ thing ⌝
+   is-cat (a , x) (b , y) = equiv-closed-under-∼ ⌜ univalence ⌝
                                                  (id-to-iso (a , x) (b , y))
-                                                 ⌜ thing ⌝-is-equiv
-                                                 pointwise-equal
+                                                 ⌜ univalence ⌝-is-equiv
+                                                 pointwise-equality
     where
-     thing : ((a , x) ＝ (b , y)) ≃ ((a , x) ≅ (b , y))
-     thing = ((a , x) ＝ (b , y))                       ≃⟨ i ⟩
-             ((Σ e ꞉ a ＝ b , transport _ e x ＝ y))    ≃⟨ ii ⟩
-             (Σ e ꞉ a ＝ b , x ≅[ id-to-iso a b e ] y)  ≃⟨ iii ⟩
-             (Σ f ꞉ a ≅ b , x ≅[ f ] y)                ≃⟨ iv ⟩
-             end                       ■
+     univalence : ((a , x) ＝ (b , y)) ≃ ((a , x) ≅ (b , y))
+     univalence = ((a , x) ＝ (b , y))                      ≃⟨ i ⟩
+                  ((Σ e ꞉ a ＝ b , transport _ e x ＝ y))   ≃⟨ ii ⟩
+                  (Σ e ꞉ a ＝ b , x ≅[ id-to-iso a b e ] y) ≃⟨ iii ⟩
+                  (Σ f ꞉ a ≅ b , x ≅[ f ] y)                ≃⟨ iv ⟩
+                  total-isomorphism                         ■
       where
-       end : 𝓥 ⊔ 𝓣 ̇ 
-       end = ((a , x) ≅ (b , y))
-
-       inter : (e : a ＝ b)
-             → (transport obj[_] e x ＝ y) ≃ x ≅[ id-to-iso a b e ] y
-       inter refl = (D-id-to-iso ⟨ D ⟩ refl x y) , D-id-to-iso-is-equiv D refl x y
-
-       total-iso-join : (Σ f ꞉ a ≅ b , x ≅[ f ] y) ≃ ((a , x) ≅ (b , y))
-       total-iso-join = qinveq F (F⁻¹ , P , Q)
-        where
-         F : (Σ f ꞉ a ≅ b , x ≅[ f ] y) → ((a , x) ≅ (b , y))
-         F ((f , f⁻¹ , p , q)
-          , (𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = (f , 𝕗)
-                              , (f⁻¹ , 𝕗⁻¹)
-                              , to-Σ-＝ (p , transport-from-dependent-Id 𝕡)
-                              , to-Σ-＝ (q , transport-from-dependent-Id 𝕢)
-
-         F⁻¹ : ((a , x) ≅ (b , y)) → (Σ f ꞉ a ≅ b , x ≅[ f ] y)
-         F⁻¹ ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = (f , f⁻¹ , ap pr₁ p , ap pr₁ q)
-                                            , (𝕗 , 𝕗⁻¹ , snd-eq-left , snd-eq-right)
-          where
-           snd-eq-left : 𝕗⁻¹ ○ 𝕗 ＝⟦ (λ - → hom[ - ] _ _) , ap pr₁ p ⟧ D-𝒊𝒅
-           snd-eq-left = dependent-Id-from-transport (pr₂ (from-Σ-＝ p))
-
-           snd-eq-right : 𝕗 ○ 𝕗⁻¹ ＝⟦ (λ - → hom[ - ] _ _) , ap pr₁ q ⟧ D-𝒊𝒅
-           snd-eq-right = dependent-Id-from-transport (pr₂ (from-Σ-＝ q))
-
-         P : F⁻¹ ∘ F ∼ id
-         P e@(iso@(f , f⁻¹ , p , q)
-          , d-iso@(𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = to-Σ-＝ (to-≅-＝ ⟨ C ⟩ refl , disp-eq)
-          where
-           f-eq = to-≅-＝ ⟨ C ⟩ {_} {_} {_} {iso} refl
-
-           lem : {x y : obj C}
-                 {xx : obj[ x ]}
-                 {yy : obj[ y ]}
-                 {f f' : x ≅ y}
-                 (e : f ＝ f')
-                 (ff : xx ≅[ f ] yy)
-               → pr₁ (transport (λ - → xx ≅[ - ] yy) e ff) ＝ transport _ (ap pr₁ e) (pr₁ ff)
-           lem refl _ = refl
-           
-           eq : pr₁ (transport (λ - → x ≅[ - ] y) f-eq (pr₂ ((F⁻¹ ∘ F) e))) ＝ 𝕗
-           eq = pr₁ (transport (λ - → x ≅[ - ] y) f-eq (pr₂ ((F⁻¹ ∘ F) e)))            ＝⟨ lem f-eq _ ⟩
-                transport (λ - → hom[ - ] x y) (ap pr₁ f-eq) (pr₁ (pr₂ ((F⁻¹ ∘ F) e))) ＝⟨ p' ⟩
-                𝕗 ∎
-            where
-             p' : transport (λ - → hom[ - ] x y) (ap pr₁ f-eq) (pr₁ (pr₂ ((F⁻¹ ∘ F) e))) ＝ transport {_} {_} {hom a b} (λ - → hom[ - ] x y) refl (pr₁ (pr₂ ((F⁻¹ ∘ F) e)))
-             p' = ap₂-ish (transport (λ - → hom[ - ] x y)) (hom-is-set ⟨ C ⟩ (ap pr₁ f-eq) refl)
-
-           disp-eq : transport (λ - → x ≅[ - ] y) (to-≅-＝ (C .pr₁) refl) (pr₂ ((F⁻¹ ∘ F) e)) ＝ d-iso
-           disp-eq = DisplayedPrecategory.to-≅[-]-＝ ⟨ D ⟩ (transport (λ - → x ≅[ - ] y) (to-≅-＝ (C .pr₁) refl) (pr₂ ((F⁻¹ ∘ F) e))) d-iso eq
-           
-         Q : F ∘ F⁻¹ ∼ id
-         Q ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = to-Σ-＝ (refl , to-Σ-＝ (refl , to-×-＝ (hom-is-set (TotalPrecategory ⟨ D ⟩) _ _)
-                                                                                   (hom-is-set (TotalPrecategory ⟨ D ⟩) _ _)))
+       total-isomorphism : 𝓥 ⊔ 𝓣 ̇
+       total-isomorphism = ((a , x) ≅ (b , y))
 
        i = Σ-＝-≃
        ii = Σ-cong inter
+        where
+         inter : (e : a ＝ b)
+             → (transport obj[_] e x ＝ y) ≃ x ≅[ id-to-iso a b e ] y
+         inter refl = (D-id-to-iso ⟨ D ⟩ refl x y) , D-id-to-iso-is-equiv D refl x y
+
        iii = Σ-change-of-variable (λ - → (x ≅[ - ] y)) (id-to-iso a b) (id-to-iso-is-equiv C a b)
        iv = total-iso-join
+        where
+         total-iso-join : (Σ f ꞉ a ≅ b , x ≅[ f ] y) ≃ ((a , x) ≅ (b , y))
+         total-iso-join = qinveq F (F⁻¹ , P , Q)
+          where
+           F : (Σ f ꞉ a ≅ b , x ≅[ f ] y) → ((a , x) ≅ (b , y))
+           F ((f , f⁻¹ , p , q)
+            , (𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = (f , 𝕗)
+                                , (f⁻¹ , 𝕗⁻¹)
+                                , to-Σ-＝ (p , transport-from-dependent-Id 𝕡)
+                                , to-Σ-＝ (q , transport-from-dependent-Id 𝕢)
 
-     pointwise-equal : id-to-iso (a , x) (b , y) ∼ ⌜ thing ⌝
-     pointwise-equal refl = refl
+           F⁻¹ : ((a , x) ≅ (b , y)) → (Σ f ꞉ a ≅ b , x ≅[ f ] y)
+           F⁻¹ ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = (f , f⁻¹ , ap pr₁ p , ap pr₁ q)
+                                              , (𝕗 , 𝕗⁻¹ , snd-eq-left , snd-eq-right)
+            where
+             snd-eq-left : 𝕗⁻¹ ○ 𝕗 ＝⟦ (λ - → hom[ - ] _ _) , ap pr₁ p ⟧ D-𝒊𝒅
+             snd-eq-left = dependent-Id-from-transport (pr₂ (from-Σ-＝ p))
+
+             snd-eq-right : 𝕗 ○ 𝕗⁻¹ ＝⟦ (λ - → hom[ - ] _ _) , ap pr₁ q ⟧ D-𝒊𝒅
+             snd-eq-right = dependent-Id-from-transport (pr₂ (from-Σ-＝ q))
+
+           P : F⁻¹ ∘ F ∼ id
+           P e@(iso@(f , f⁻¹ , p , q)
+            , d-iso@(𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = to-Σ-＝ (f-eq , disp-eq)
+            where
+             f-eq = to-≅-＝ ⟨ C ⟩ {_} {_} {_} {iso} refl
+
+             lem : {x y : obj C}
+                   {xx : obj[ x ]}
+                   {yy : obj[ y ]}
+                   {f f' : x ≅ y}
+                   (e : f ＝ f')
+                   (ff : xx ≅[ f ] yy)
+                 → pr₁ (transport (λ - → xx ≅[ - ] yy) e ff) ＝ transport _ (ap pr₁ e) (pr₁ ff)
+             lem refl _ = refl
+
+             eq : pr₁ (transport (λ - → x ≅[ - ] y) f-eq (pr₂ ((F⁻¹ ∘ F) e))) ＝ 𝕗
+             eq = pr₁ (transport (λ - → x ≅[ - ] y) f-eq (pr₂ ((F⁻¹ ∘ F) e)))            ＝⟨ lem f-eq _ ⟩
+                  transport (λ - → hom[ - ] x y) (ap pr₁ f-eq) (pr₁ (pr₂ ((F⁻¹ ∘ F) e))) ＝⟨ p' ⟩
+                  𝕗 ∎
+              where
+               p' : transport (λ - → hom[ - ] x y) (ap pr₁ f-eq) (pr₁ (pr₂ ((F⁻¹ ∘ F) e))) ＝ transport {_} {_} {hom a b} (λ - → hom[ - ] x y) refl (pr₁ (pr₂ ((F⁻¹ ∘ F) e)))
+               p' = ap₂ (transport (λ - → hom[ - ] x y)) (hom-is-set ⟨ C ⟩ (ap pr₁ f-eq) refl) refl
+
+
+             disp-eq : transport (λ - → x ≅[ - ] y) (to-≅-＝ ⟨ C ⟩ refl) (pr₂ ((F⁻¹ ∘ F) e)) ＝ d-iso
+             disp-eq = to-≅[-]-＝ ⟨ D ⟩ eq
+
+           Q : F ∘ F⁻¹ ∼ id
+           Q ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = to-≅-＝ (TotalPrecategory ⟨ D ⟩) refl
+
+     pointwise-equality : id-to-iso (a , x) (b , y)
+                        ∼ ⌜ univalence ⌝
+     pointwise-equality refl = refl
 
 \end{code}

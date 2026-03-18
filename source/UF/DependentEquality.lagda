@@ -6,6 +6,7 @@ Martin Escardo, 31st October 2025.
 
 module UF.DependentEquality where
 
+open import UF.Base
 open import MLTT.Spartan
 
 dependent-Id : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
@@ -36,48 +37,54 @@ Chaining of equalities.
 
 \begin{code}
 
-cong-e : {X : 𝓤 ̇ }
-         {Y : X → 𝓥 ̇ }
-         {x₀ x₁ x₂ : X}
-         {e : x₀ ＝ x₁}
-         {e' : x₁ ＝ x₂}
-         {a : Y x₀}
-         {b : Y x₁}
-         {c : Y x₂}
-       → a ＝⟦ Y , e ⟧ b
-       → b ＝⟦ Y , e' ⟧ c
-       → a ＝⟦ Y , e ∙ e' ⟧ c
-cong-e {_} {_} {_} {_} {_} {_} {_} {refl} {refl} {_} E E' = E ∙ E'
+_⟦∙⟧_ : {X : 𝓤 ̇ }
+                 {Y : X → 𝓥 ̇ }
+                 {x₀ x₁ x₂ : X}
+                 {e : x₀ ＝ x₁}
+                 {e' : x₁ ＝ x₂}
+                 {a : Y x₀}
+                 {b : Y x₁}
+                 {c : Y x₂}
+               → a ＝⟦ Y , e ⟧ b
+               → b ＝⟦ Y , e' ⟧ c
+               → a ＝⟦ Y , e ∙ e' ⟧ c
+_⟦∙⟧_ {_} {_} {_} {_} {_} {_} {_} {refl} {refl} {_} E E' = E ∙ E'
 
 
-_＝⟦⟧⟨_⟩_ : {X : 𝓤 ̇ }
-               {Y : X → 𝓥 ̇ }
-               {x₀ x₁ x₂ : X}
-               {e : x₀ ＝ x₁}
-               {e' : x₁ ＝ x₂}
-               (a : Y x₀)
-               {b : Y x₁}
-               {c : Y x₂}
-             → a ＝⟦ Y , e ⟧ b
-             → b ＝⟦ Y , e' ⟧ c
-             → a ＝⟦ Y , e ∙ e' ⟧ c
-_＝⟦⟧⟨_⟩_ _ = cong-e
+_＝⟦⟨_⟩⟧_ : {X : 𝓤 ̇ }
+            {Y : X → 𝓥 ̇ }
+            {x₀ x₁ x₂ : X}
+            {e : x₀ ＝ x₁}
+            {e' : x₁ ＝ x₂}
+            (a : Y x₀)
+            {b : Y x₁}
+            {c : Y x₂}
+          → a ＝⟦ Y , e ⟧ b
+          → b ＝⟦ Y , e' ⟧ c
+          → a ＝⟦ Y , e ∙ e' ⟧ c
+a ＝⟦⟨ p ⟩⟧ q = p ⟦∙⟧ q
 
-_⟦⟧∎ : {X : 𝓤 ̇ }
-       (a : X)
-     → a ＝⟦ id , refl ⟧ a
-_⟦⟧∎ _ = refl
+\end{code}
 
-_⁻¹' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x₀ x₁ : X} {e : x₀ ＝ x₁} {a : Y x₀} {b : Y x₁}
+Symmetry of dependent equality.
+
+\begin{code}
+
+dep-sym : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x₀ x₁ : X} {e : x₀ ＝ x₁} {a : Y x₀} {b : Y x₁}
      → a ＝⟦ Y , e ⟧ b
      → b ＝⟦ Y , e ⁻¹ ⟧ a
-_⁻¹' {_} {_} {_} {_} {_} {_} {refl} refl = refl
+dep-sym {_} {_} {_} {_} {_} {_} {refl} refl = refl
 
+\end{code}
 
-dep-ap : {X : 𝓤' ̇ }
-         {Y : X → 𝓥' ̇ }
-         {Z : 𝓦' ̇ }
-         {A : Z → 𝓣' ̇ }
+Applying function to dependent equality.
+
+\begin{code}
+
+dep-ap : {X : 𝓤 ̇ }
+         {Y : X → 𝓥 ̇ }
+         {Z : 𝓦 ̇ }
+         {A : Z → 𝓣 ̇ }
          {x₀ x₁ : X}
          {e : x₀ ＝ x₁}
          {E : X → Z}
@@ -88,6 +95,12 @@ dep-ap : {X : 𝓤' ̇ }
        → f a ＝⟦ A , ap E e ⟧ f b
 dep-ap {_} {_} {_} {_} {_} {_} {_} {_} {_} {_} {refl} f eq = ap f eq
 
+\end{code}
+
+Equality of dependent equalities.
+
+\begin{code}
+
 to-dep-＝ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
             {x₀ x₁ : X}
             {e : x₀ ＝ x₁} {a : Y x₀}
@@ -97,6 +110,39 @@ to-dep-＝ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
           → p ＝ q
 to-dep-＝ {_} {_} {_} {_} {_} {_} {refl} l = l
 
-infix  3  _⁻¹'
-infix  1 _⟦⟧∎
-infixr 0 _＝⟦⟧⟨_⟩_
+\end{code}
+
+To show a dependent equality holds, it is sufficient to show that the
+transport version holds. Likewise, we can show transport from dependent
+equality.
+
+\begin{code}
+
+dependent-Id-from-transport : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                              {x₀ x₁ : X}
+                              {e : x₀ ＝ x₁}
+                              {a : Y x₀}
+                              {b : Y x₁}
+                            → transport Y e a ＝ b
+                            → a ＝⟦ Y , e ⟧ b
+dependent-Id-from-transport = Idtofun ((dependent-Id-via-transport _ _)⁻¹)
+
+transport-from-dependent-Id : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                              {x₀ x₁ : X}
+                              {e : x₀ ＝ x₁}
+                              {a : Y x₀}
+                              {b : Y x₁}
+                            → a ＝⟦ Y , e ⟧ b
+                            → transport Y e a ＝ b
+transport-from-dependent-Id = Idtofun (dependent-Id-via-transport _ _)
+
+\end{code}
+
+Define fixites.
+
+\begin{code}
+
+infix  3 dep-sym
+infixr 0 _＝⟦⟨_⟩⟧_
+
+\end{code}

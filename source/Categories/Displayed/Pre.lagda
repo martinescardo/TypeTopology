@@ -113,6 +113,17 @@ record DisplayedPrecategory (𝓦 𝓣 : Universe)
           ＝⟦ hom[-] x w , assoc f g h ⟧
             (𝕙 ○ 𝕘) ○ 𝕗
 
+ dep-hom-is-set : {a b : obj P}
+                  {f : hom a b}
+                  {g : hom a b}
+                  {x : obj[ a ]}
+                  {y : obj[ b ]}
+                → {i : hom[ f ] x y}
+                → {j : hom[ g ] x y}
+                → {e : f ＝ g}
+                → is-prop (i ＝⟦ hom[-] x y , e ⟧ j)
+ dep-hom-is-set = to-dep-＝ hom[-]-is-set
+
 \end{code}
 
 We can now define a displayed version of isomorphism between objects.
@@ -149,49 +160,51 @@ We show that being an isomorphism is a proposition.
  D-inverse-is-lc : {a b : obj P}
                    {x : obj[ a ]}
                    {y : obj[ b ]}
-                   (f : a ≅ b)
-                   (𝕗 : hom[ ⌜ f ⌝ ] x y)
-                   (𝕚 𝕛 : D-inverse f 𝕗)
+                   {f : a ≅ b}
+                   {𝕗 : hom[ ⌜ f ⌝ ] x y}
+                   {𝕚 𝕛 : D-inverse f 𝕗}
                  → pr₁ 𝕚 ＝ pr₁ 𝕛
                  → 𝕚 ＝ 𝕛
- D-inverse-is-lc {_} {_} {x} {y} f 𝕗 𝕚 𝕛 = to-subtype-＝ rest-prop 
+ D-inverse-is-lc {_} {_} {x} {y} e = to-subtype-＝ (λ _ → ×-is-prop dep-hom-is-set dep-hom-is-set) e
+     
+ at-most-one-D-inverse : {a b : obj P}
+                         {x : obj[ a ]}
+                         {y : obj[ b ]}
+                         {f : a ≅ b}
+                         {𝕗 : hom[ ⌜ f ⌝ ] x y}
+                         (𝕘 𝕙 : D-inverse f 𝕗)
+                       → pr₁ 𝕘 ＝ pr₁ 𝕙
+ at-most-one-D-inverse {_} {_} {x} {y} {f} {𝕗} 𝕘 𝕙 = transport (λ - → _ ＝⟦ _ , - ⟧ _) (hom-is-set P _ _) inverse-dependent-equal
   where
    f⁻¹ = underlying-morphism-is-isomorphism f
 
-   rest-prop : (𝕗⁻¹ : hom[ ⌞ f⁻¹ ⌟ ] y x) → is-prop ((𝕗⁻¹ ○ 𝕗 ＝⟦ (λ - → hom[ - ] x x) , ⌞ f⁻¹ ⌟-is-left-inverse ⟧ D-𝒊𝒅)
-                                                   × (𝕗 ○ 𝕗⁻¹ ＝⟦ (λ - → hom[ - ] y y) , ⌞ f⁻¹ ⌟-is-right-inverse ⟧ D-𝒊𝒅))
-   rest-prop 𝕗⁻¹ = ×-is-prop (to-dep-＝ λ i j → hom[-]-is-set _ _) (to-dep-＝ λ i j → hom[-]-is-set _ _)
-     
+   inverse-dependent-equal : pr₁ 𝕘 ＝⟦ (λ - → hom[ - ] y x) , at-most-one-inverse f⁻¹ f⁻¹ ⟧ pr₁ 𝕙
+   inverse-dependent-equal = (pr₁ 𝕘)                     ＝⟦⟨ dep-sym (D-𝒊𝒅-is-right-neutral (pr₁ 𝕘)) ⟩⟧
+                             ((pr₁ 𝕘) ○ D-𝒊𝒅)            ＝⟦⟨ dep-sym (dep-ap ((pr₁ 𝕘) ○_) (pr₂ (pr₂ 𝕙))) ⟩⟧
+                             ((pr₁ 𝕘) ○ (𝕗 ○ (pr₁ 𝕙)))   ＝⟦⟨ D-assoc ⟩⟧
+                             ((pr₁ 𝕘 ○ 𝕗) ○ (pr₁ 𝕙))     ＝⟦⟨ dep-ap (_○ (pr₁ 𝕙)) ((pr₁ (pr₂ 𝕘))) ⟩⟧
+                             (D-𝒊𝒅 ○ (pr₁ 𝕙))            ＝⟦⟨ D-𝒊𝒅-is-left-neutral (pr₁ 𝕙) ⟩⟧
+                             (pr₁ 𝕙)                     ∎
+
+
  being-D-iso-is-prop : {a b : obj P}
                        {x : obj[ a ]}
                        {y : obj[ b ]}
                        {f : a ≅ b}
                        (𝕗 : hom[ ⌜ f ⌝ ] x y)
                      → is-prop (D-inverse f 𝕗)
- being-D-iso-is-prop {_} {_} {x} {y} {f} 𝕗 𝕗⁻¹ 𝕘⁻¹ = D-inverse-is-lc f 𝕗 𝕗⁻¹ 𝕘⁻¹ (transport (λ - → _ ＝⟦ _ , - ⟧ _) t eq)
-  where
-
-   f⁻¹ = underlying-morphism-is-isomorphism f
-
-   t : at-most-one-inverse f⁻¹ f⁻¹ ＝ refl
-   t = hom-is-set P _ _
-
-   eq : pr₁ 𝕗⁻¹ ＝⟦ (λ - → hom[ - ] y x) , at-most-one-inverse f⁻¹ f⁻¹ ⟧ pr₁ 𝕘⁻¹
-   eq = (pr₁ 𝕗⁻¹)                     ＝⟦⟧⟨ (D-𝒊𝒅-is-right-neutral (pr₁ 𝕗⁻¹))⁻¹' ⟩
-        ((pr₁ 𝕗⁻¹) ○ D-𝒊𝒅)            ＝⟦⟧⟨ dep-ap ((pr₁ 𝕗⁻¹) ○_) (pr₂ (pr₂ 𝕘⁻¹))⁻¹' ⟩
-        ((pr₁ 𝕗⁻¹) ○ (𝕗 ○ (pr₁ 𝕘⁻¹))) ＝⟦⟧⟨ D-assoc ⟩
-        ((pr₁ 𝕗⁻¹ ○ 𝕗) ○ (pr₁ 𝕘⁻¹))   ＝⟦⟧⟨ dep-ap (_○ (pr₁ 𝕘⁻¹)) ((pr₁ (pr₂ 𝕗⁻¹))) ⟩
-        (D-𝒊𝒅 ○ (pr₁ 𝕘⁻¹))            ＝⟦⟧⟨ D-𝒊𝒅-is-left-neutral (pr₁ 𝕘⁻¹) ⟩
-        (pr₁ 𝕘⁻¹)                     ⟦⟧∎  
+ being-D-iso-is-prop {_} {_} {x} {y} {f} 𝕗 𝕘 𝕙 = D-inverse-is-lc (at-most-one-D-inverse 𝕘 𝕙)
 
  to-≅[-]-＝ : {a b : obj P}
               {x : obj[ a ]}
               {y : obj[ b ]}
               {f : a ≅ b}
-              (𝕗 𝕗' : x ≅[ f ] y)
+              {𝕗 𝕗' : x ≅[ f ] y}
             → pr₁ 𝕗 ＝ pr₁ 𝕗'
             → 𝕗 ＝ 𝕗'
- to-≅[-]-＝ 𝕗 𝕗' = to-subtype-＝ being-D-iso-is-prop
+ to-≅[-]-＝ = to-subtype-＝ being-D-iso-is-prop
+
+open DisplayedPrecategory public using (to-≅[-]-＝ ; being-D-iso-is-prop ; at-most-one-D-inverse)
 
 \end{code}
  
