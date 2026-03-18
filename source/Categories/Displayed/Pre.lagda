@@ -165,7 +165,8 @@ We show that being an isomorphism is a proposition.
                    {𝕚 𝕛 : D-inverse f 𝕗}
                  → pr₁ 𝕚 ＝ pr₁ 𝕛
                  → 𝕚 ＝ 𝕛
- D-inverse-is-lc {_} {_} {x} {y} e = to-subtype-＝ (λ _ → ×-is-prop dep-hom-is-set dep-hom-is-set) e
+ D-inverse-is-lc {_} {_} {x} {y} e
+  = to-subtype-＝ (λ _ → ×-is-prop dep-hom-is-set dep-hom-is-set) e
      
  at-most-one-D-inverse : {a b : obj P}
                          {x : obj[ a ]}
@@ -174,18 +175,24 @@ We show that being an isomorphism is a proposition.
                          {𝕗 : hom[ ⌜ f ⌝ ] x y}
                          (𝕘 𝕙 : D-inverse f 𝕗)
                        → pr₁ 𝕘 ＝ pr₁ 𝕙
- at-most-one-D-inverse {_} {_} {x} {y} {f} {𝕗} 𝕘 𝕙 = transport (λ - → _ ＝⟦ _ , - ⟧ _) (hom-is-set P _ _) inverse-dependent-equal
+ at-most-one-D-inverse {_} {_} {x} {y} {f} {𝕗} 𝕘 𝕙
+  = transport (λ - → _ ＝⟦ _ , - ⟧ _) (hom-is-set P _ _) inv-eq
   where
    f⁻¹ = underlying-morphism-is-isomorphism f
 
-   inverse-dependent-equal : pr₁ 𝕘 ＝⟦ (λ - → hom[ - ] y x) , at-most-one-inverse f⁻¹ f⁻¹ ⟧ pr₁ 𝕙
-   inverse-dependent-equal = (pr₁ 𝕘)                     ＝⟦⟨ dep-sym (D-𝒊𝒅-is-right-neutral (pr₁ 𝕘)) ⟩⟧
-                             ((pr₁ 𝕘) ○ D-𝒊𝒅)            ＝⟦⟨ dep-sym (dep-ap ((pr₁ 𝕘) ○_) (pr₂ (pr₂ 𝕙))) ⟩⟧
-                             ((pr₁ 𝕘) ○ (𝕗 ○ (pr₁ 𝕙)))   ＝⟦⟨ D-assoc ⟩⟧
-                             ((pr₁ 𝕘 ○ 𝕗) ○ (pr₁ 𝕙))     ＝⟦⟨ dep-ap (_○ (pr₁ 𝕙)) ((pr₁ (pr₂ 𝕘))) ⟩⟧
-                             (D-𝒊𝒅 ○ (pr₁ 𝕙))            ＝⟦⟨ D-𝒊𝒅-is-left-neutral (pr₁ 𝕙) ⟩⟧
-                             (pr₁ 𝕙)                     ∎
-
+   inv-eq : pr₁ 𝕘 ＝⟦ (λ - → hom[ - ] y x) , at-most-one-inverse f⁻¹ f⁻¹ ⟧ pr₁ 𝕙
+   inv-eq = (pr₁ 𝕘)                     ＝⟦⟨ I ⟩⟧
+            ((pr₁ 𝕘) ○ D-𝒊𝒅)            ＝⟦⟨ II ⟩⟧
+            ((pr₁ 𝕘) ○ (𝕗 ○ (pr₁ 𝕙)))   ＝⟦⟨ III ⟩⟧
+            ((pr₁ 𝕘 ○ 𝕗) ○ (pr₁ 𝕙))     ＝⟦⟨ IV ⟩⟧
+            (D-𝒊𝒅 ○ (pr₁ 𝕙))            ＝⟦⟨ V ⟩⟧
+            (pr₁ 𝕙)                     ∎
+    where
+     I = dep-sym (D-𝒊𝒅-is-right-neutral (pr₁ 𝕘))
+     II = dep-sym (dep-ap ((pr₁ 𝕘) ○_) (pr₂ (pr₂ 𝕙)))
+     III = D-assoc
+     IV = dep-ap (_○ (pr₁ 𝕙)) ((pr₁ (pr₂ 𝕘)))
+     V = D-𝒊𝒅-is-left-neutral (pr₁ 𝕙)
 
  being-D-iso-is-prop : {a b : obj P}
                        {x : obj[ a ]}
@@ -193,7 +200,15 @@ We show that being an isomorphism is a proposition.
                        {f : a ≅ b}
                        (𝕗 : hom[ ⌜ f ⌝ ] x y)
                      → is-prop (D-inverse f 𝕗)
- being-D-iso-is-prop {_} {_} {x} {y} {f} 𝕗 𝕘 𝕙 = D-inverse-is-lc (at-most-one-D-inverse 𝕘 𝕙)
+ being-D-iso-is-prop {_} {_} {x} {y} {f} 𝕗 𝕘 𝕙
+  = D-inverse-is-lc (at-most-one-D-inverse 𝕘 𝕙)
+
+\end{code}
+
+Using this, we can define equality of displayed isomorphisms based upon equality
+of the underlying morphism.
+
+\begin{code}
 
  to-≅[-]-＝ : {a b : obj P}
               {x : obj[ a ]}
@@ -204,7 +219,9 @@ We show that being an isomorphism is a proposition.
             → 𝕗 ＝ 𝕗'
  to-≅[-]-＝ = to-subtype-＝ being-D-iso-is-prop
 
-open DisplayedPrecategory public using (to-≅[-]-＝ ; being-D-iso-is-prop ; at-most-one-D-inverse)
+open DisplayedPrecategory public using (to-≅[-]-＝
+                                      ; being-D-iso-is-prop
+                                      ; at-most-one-D-inverse)
 
 \end{code}
  

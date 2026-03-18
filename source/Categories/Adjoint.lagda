@@ -23,11 +23,14 @@ module Categories.Adjoint where
 
 \end{code}
 
-Blah
+We define a left adjoint. This consists of ...
 
 \begin{code}
 
-record LeftAdjoint {A : Precategory 𝓤 𝓥} {B : Precategory 𝓦 𝓣} (F : Functor A B) (fe : Fun-Ext) : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇ where
+record LeftAdjoint {A : Precategory 𝓤 𝓥}
+                   {B : Precategory 𝓦 𝓣}
+                   (F : Functor A B)
+                   (fe : Fun-Ext) : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇ where
  field
   G : Functor B A
   unit : NaturalTransformation (id-functor A) (G F∘ F)
@@ -38,17 +41,28 @@ record LeftAdjoint {A : Precategory 𝓤 𝓥} {B : Precategory 𝓦 𝓣} (F : 
   ε = counit
 
  private
-  εF =  transport (NaturalTransformation ((F F∘ G) F∘ F)) (id-left-neutral-F∘ F fe) (ε · F)
-  Fη = transport (NaturalTransformation F) (assoc-F∘ F G F fe) (transport (λ - → NaturalTransformation - (F F∘ (G F∘ F))) (id-right-neutral-F∘  F fe) (F ·' η))
-  
+  εF =  transport (NaturalTransformation ((F F∘ G) F∘ F))
+                  (id-left-neutral-F∘ fe F)
+                  (ε · F)
+
+  Fη = transport (NaturalTransformation F)
+                 (assoc-F∘ fe F G F)
+                 (transport (λ - → NaturalTransformation - (F F∘ (G F∘ F)))
+                            (id-right-neutral-F∘ fe F)
+                            (F ·' η))
+
+  Gε = transport (NaturalTransformation (G F∘ (F F∘ G)))
+                 (id-right-neutral-F∘ fe G)
+                 (G ·' ε)
+
+  ηG = transport (NaturalTransformation G)
+                 ((assoc-F∘ fe G F G)⁻¹)
+                 (transport (λ - → NaturalTransformation - ((G F∘ F) F∘ G))
+                            (id-left-neutral-F∘ fe G)
+                            (η · G))
+
  field
   first-axiom : εF N∘ Fη ＝ id-natural-transformation F
-
- private
-  Gε = transport (NaturalTransformation (G F∘ (F F∘ G))) (id-right-neutral-F∘ G fe) (G ·' ε)
-  ηG = transport (NaturalTransformation G) ((assoc-F∘ G F G fe)⁻¹) (transport (λ - → NaturalTransformation - ((G F∘ F) F∘ G)) (id-left-neutral-F∘ G fe) (η · G))
-
- field
   second-axiom : Gε N∘ ηG ＝ id-natural-transformation G
 
 \end{code}

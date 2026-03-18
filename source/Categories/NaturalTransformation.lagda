@@ -23,8 +23,8 @@ For two functors, F : A → B and G : A → B. We have:
 
  * gamma : for every object, a : obj, there exists γ : hom (F a) (G a), and
 
- * a proof of naturality: for objects, a b : obj A, and homomorphism, f : hom a b,
-   we have that G f ∘ gamma a ＝ gamma b ∘ F f.
+ * a proof of naturality: for objects, a b : obj A, and homomorphism,
+   f : hom a b, we have that G f ∘ gamma a ＝ gamma b ∘ F f.
 
 \begin{code}
 
@@ -32,6 +32,8 @@ record NaturalTransformation {A : Precategory 𝓤 𝓥}
                              {B : Precategory 𝓦 𝓣}
                              (F' G' : Functor A B)
                            : (𝓤 ⊔ 𝓥 ⊔ 𝓣) ̇  where
+ constructor nat-trans
+ 
  open PrecategoryNotation A
  open PrecategoryNotation B
 
@@ -51,12 +53,16 @@ record NaturalTransformation {A : Precategory 𝓤 𝓥}
 
 \end{code}
 
-Identity natural transformation
+The identity natural transformation.
 
 \begin{code}
 
-id-natural-transformation : {A : Precategory 𝓤 𝓥} {B : Precategory 𝓦 𝓣} (F : Functor A B) → NaturalTransformation F F
-id-natural-transformation {_} {_} {_} {_} {A} {B} F' = record { transf = λ _ → 𝒊𝒅 ; natural = inter }
+id-natural-transformation : {A : Precategory 𝓤 𝓥}
+                            {B : Precategory 𝓦 𝓣}
+                            (F : Functor A B)
+                          → NaturalTransformation F F
+id-natural-transformation {_} {_} {_} {_} {A} {B} F'
+ = record { transf = λ _ → 𝒊𝒅 ; natural = inter }
  where
   open PrecategoryNotation A
   open PrecategoryNotation B
@@ -69,64 +75,60 @@ id-natural-transformation {_} {_} {_} {_} {A} {B} F' = record { transf = λ _ �
 
 \end{code}
 
-Natural transformation thingy
+Natural transformation composition with a functor.
 
 \begin{code}
 
-_·_ : {A : Precategory 𝓤 𝓥}
-      {B : Precategory 𝓦 𝓣}
-      {C : Precategory 𝓤' 𝓥'}
-      {G H : Functor B C}
-    → NaturalTransformation G H
-    → (F : Functor A B)
-    → NaturalTransformation (G F∘ F) (H F∘ F)
-_·_ {_} {_} {_} {_} {_} {_} {A} {B} {C} {G'} {H'}
-    N F' = record { transf = μ ∘ F
-                  ; natural = nat-condition }
- where
-  open FunctorNotation F' renaming (functor-map to F)
-  open FunctorNotation G' renaming (functor-map to G)
-  open FunctorNotation H' renaming (functor-map to H)
-  open PrecategoryNotation A
-  open PrecategoryNotation C
+module _ {A : Precategory 𝓤 𝓥}
+         {B : Precategory 𝓦 𝓣}
+         {C : Precategory 𝓤' 𝓥'} where
+ open PrecategoryNotation A
+ open PrecategoryNotation B
+ open PrecategoryNotation C
 
-  μ = NaturalTransformation.transf N
-  naturality = NaturalTransformation.natural N 
+ _·_ : {G H : Functor B C}
+     → NaturalTransformation G H
+     → (F : Functor A B)
+     → NaturalTransformation (G F∘ F) (H F∘ F)
+ _·_ {G'} {H'} N F' = nat-trans (μ ∘ F) nat-condition
+  where
+   open FunctorNotation F' renaming (functor-map to F)
+   open FunctorNotation G' renaming (functor-map to G)
+   open FunctorNotation H' renaming (functor-map to H)
 
-  nat-condition : {a b : obj A}
-                  (f : hom a b)
-                → H (F f) ◦ μ (F a) ＝ μ (F b) ◦ G (F f)
-  nat-condition f = naturality (F f)
+   μ = NaturalTransformation.transf N
+   naturality = NaturalTransformation.natural N 
+
+   nat-condition : {a b : obj A}
+                   (f : hom a b)
+                 → H (F f) ◦ μ (F a) ＝ μ (F b) ◦ G (F f)
+   nat-condition f = naturality (F f)
 
 
-_·'_ : {A : Precategory 𝓤 𝓥}
-      {B : Precategory 𝓦 𝓣}
-      {C : Precategory 𝓤' 𝓥'}
-      {G H : Functor A B}
-    → (F : Functor B C)
-    → NaturalTransformation G H
-    → NaturalTransformation (F F∘ G) (F F∘ H)
-_·'_ {_} {_} {_} {_} {_} {_} {A} {B} {C} {G'} {H'}
-    F' N = record { transf = λ a → F (μ a) 
-                  ; natural = nat-condition }
- where
-  open FunctorNotation F' renaming (functor-map to F)
-  open FunctorNotation G' renaming (functor-map to G)
-  open FunctorNotation H' renaming (functor-map to H)
-  open PrecategoryNotation A
-  open PrecategoryNotation B
-  open PrecategoryNotation C
+ _·'_ : {G H : Functor A B}
+     → (F : Functor B C)
+     → NaturalTransformation G H
+     → NaturalTransformation (F F∘ G) (F F∘ H)
+ _·'_ {G'} {H'} F' N = nat-trans (λ a → F (μ a)) nat-condition
+  where
+   open FunctorNotation F' renaming (functor-map to F)
+   open FunctorNotation G' renaming (functor-map to G)
+   open FunctorNotation H' renaming (functor-map to H)
 
-  μ = NaturalTransformation.transf N
-  naturality = NaturalTransformation.natural N 
+   μ = NaturalTransformation.transf N
+   naturality = NaturalTransformation.natural N 
 
-  nat-condition : {a b : obj A}
-                  (f : hom a b)
-                → F (H f) ◦ F (μ a) ＝ F (μ b) ◦ F (G f)
-  nat-condition {a} {b} f = F (H f) ◦ F (μ a) ＝⟨ (distributivity (H f) (μ a))⁻¹ ⟩
-                            F (H f ◦ μ a)     ＝⟨ ap F (naturality f) ⟩
-                            F (μ b ◦ G f)     ＝⟨ distributivity (μ b) (G f) ⟩
-                            F (μ b) ◦ F (G f) ∎
+   nat-condition : {a b : obj A}
+                   (f : hom a b)
+                 → F (H f) ◦ F (μ a) ＝ F (μ b) ◦ F (G f)
+   nat-condition {a} {b} f = F (H f) ◦ F (μ a) ＝⟨ I ⟩
+                             F (H f ◦ μ a)     ＝⟨ II ⟩
+                             F (μ b ◦ G f)     ＝⟨ III ⟩
+                             F (μ b) ◦ F (G f) ∎
+    where
+     I = (distributivity (H f) (μ a))⁻¹
+     II = ap F (naturality f)
+     III = distributivity (μ b) (G f)
 
 \end{code}
 
@@ -140,9 +142,8 @@ _N∘_ : {A : Precategory 𝓤 𝓥}
      → NaturalTransformation G H
      → NaturalTransformation F G
      → NaturalTransformation F H
-_N∘_ {_} {_} {_} {_} {A} {B} {F'} {G'} {H'}
-     N M = record { transf = λ a → (μ a) ◦ (ε a)
-                  ; natural = naturality }
+_N∘_ {_} {_} {_} {_} {A} {B} {F'} {G'} {H'} N M
+ = nat-trans (λ a → (μ a) ◦ (ε a)) naturality
  where
   open PrecategoryNotation A
   open PrecategoryNotation B

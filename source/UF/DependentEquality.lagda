@@ -9,7 +9,8 @@ module UF.DependentEquality where
 open import UF.Base
 open import MLTT.Spartan
 
-dependent-Id : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
+dependent-Id : {X : 𝓤 ̇ }
+               (Y : X → 𝓥 ̇ )
                {x₀ x₁ : X}
              → x₀ ＝ x₁
              → Y x₀
@@ -21,7 +22,8 @@ infix -1 dependent-Id
 
 syntax dependent-Id Y e y₀ y₁ = y₀ ＝⟦ Y , e ⟧ y₁
 
-dependent-Id-via-transport : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
+dependent-Id-via-transport : {X : 𝓤 ̇ }
+                             (Y : X → 𝓥 ̇ )
                              {x₀ x₁ : X}
                              (e : x₀ ＝ x₁)
                              {y₀ : Y x₀}
@@ -38,16 +40,16 @@ Chaining of equalities.
 \begin{code}
 
 _⟦∙⟧_ : {X : 𝓤 ̇ }
-                 {Y : X → 𝓥 ̇ }
-                 {x₀ x₁ x₂ : X}
-                 {e : x₀ ＝ x₁}
-                 {e' : x₁ ＝ x₂}
-                 {a : Y x₀}
-                 {b : Y x₁}
-                 {c : Y x₂}
-               → a ＝⟦ Y , e ⟧ b
-               → b ＝⟦ Y , e' ⟧ c
-               → a ＝⟦ Y , e ∙ e' ⟧ c
+        {Y : X → 𝓥 ̇ }
+        {x₀ x₁ x₂ : X}
+        {e : x₀ ＝ x₁}
+        {e' : x₁ ＝ x₂}
+        {a : Y x₀}
+        {b : Y x₁}
+        {c : Y x₂}
+      → a ＝⟦ Y , e ⟧ b
+      → b ＝⟦ Y , e' ⟧ c
+      → a ＝⟦ Y , e ∙ e' ⟧ c
 _⟦∙⟧_ {_} {_} {_} {_} {_} {_} {_} {refl} {refl} {_} E E' = E ∙ E'
 
 
@@ -70,14 +72,19 @@ Symmetry of dependent equality.
 
 \begin{code}
 
-dep-sym : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x₀ x₁ : X} {e : x₀ ＝ x₁} {a : Y x₀} {b : Y x₁}
-     → a ＝⟦ Y , e ⟧ b
-     → b ＝⟦ Y , e ⁻¹ ⟧ a
+dep-sym : {X : 𝓤 ̇ }
+          {Y : X → 𝓥 ̇ }
+          {x₀ x₁ : X}
+          {e : x₀ ＝ x₁}
+          {a : Y x₀}
+          {b : Y x₁}
+        → a ＝⟦ Y , e ⟧ b
+        → b ＝⟦ Y , e ⁻¹ ⟧ a
 dep-sym {_} {_} {_} {_} {_} {_} {refl} refl = refl
 
 \end{code}
 
-Applying function to dependent equality.
+ap defined for dependent equality.
 
 \begin{code}
 
@@ -118,7 +125,8 @@ equality.
 
 \begin{code}
 
-dependent-Id-from-transport : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+dependent-Id-from-transport : {X : 𝓤 ̇ }
+                              {Y : X → 𝓥 ̇ }
                               {x₀ x₁ : X}
                               {e : x₀ ＝ x₁}
                               {a : Y x₀}
@@ -127,7 +135,8 @@ dependent-Id-from-transport : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                             → a ＝⟦ Y , e ⟧ b
 dependent-Id-from-transport = Idtofun ((dependent-Id-via-transport _ _)⁻¹)
 
-transport-from-dependent-Id : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+transport-from-dependent-Id : {X : 𝓤 ̇ }
+                              {Y : X → 𝓥 ̇ }
                               {x₀ x₁ : X}
                               {e : x₀ ＝ x₁}
                               {a : Y x₀}

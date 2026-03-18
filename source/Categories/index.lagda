@@ -60,7 +60,7 @@ we can write the following and have the category fields be public.
 We use this notation throughout the definitions, so for more concrete examples
 please look there.
 
-Displayed Categories
+Displayed Categories.
 
 \begin{code}
 
