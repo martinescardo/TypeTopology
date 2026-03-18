@@ -4,7 +4,7 @@
    -------------------------------------------------------------
 
    Martin Escardo and collaborators,
-   2010--2025--∞, continuously evolving.
+   2010--2026--∞, continuously evolving.
 
    https://www.cs.bham.ac.uk/~mhe/
    https://www.cs.bham.ac.uk/~mhe/TypeTopology/
@@ -63,8 +63,8 @@
      control safety and, to the extent this is currently possible, to
      control which type theory is used.
 
-   * In our last count, on 2026-03-06, this development has 884 Agda
-     files with 263K lines of code, including comments and blank
+   * In our last count, on 2026-03-17, this development has 884 Agda
+     files with 264K lines of code, including comments and blank
      lines.
 
 Philosophy of the repository

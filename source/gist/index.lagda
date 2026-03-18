@@ -23,6 +23,7 @@ import gist.remove-swap
 import gist.transport-discussion
 import gist.ThereAreNoHigherSemilattices
 import gist.ThereAreNoHigherSemilattices2 -- by Tom de Jong
+import gist.MajoritiesOnlyActOnSets       -- by Jakub Opršal
 import gist.wrong-proofs
 
 \end{code}

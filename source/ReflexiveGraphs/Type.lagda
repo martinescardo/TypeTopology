@@ -53,14 +53,14 @@ may prove to be important in the future...
 
 \begin{code}
 
-refl-graph-hom : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓐' : Refl-Graph 𝓤' 𝓥')
+Refl-Graph-Hom : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓐' : Refl-Graph 𝓤' 𝓥')
                → 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ̇
-refl-graph-hom 𝓐 𝓐'
+Refl-Graph-Hom 𝓐 𝓐'
  = Σ F ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓐' ⟩) ,
     Σ F' ꞉ ((x y : ⟨ 𝓐 ⟩) → x ≈⟨ 𝓐 ⟩ y → F x ≈⟨ 𝓐' ⟩ F y) ,
      ((x : ⟨ 𝓐 ⟩) → F' x x (≈-refl 𝓐 x) ＝ ≈-refl 𝓐' (F x))
 
-record refl-graph-hom-record
+record Refl-Graph-Hom-record
  (𝓐 : Refl-Graph 𝓤 𝓥) (𝓐' : Refl-Graph 𝓤' 𝓥') : 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ̇ where
  field
   func : ⟨ 𝓐 ⟩ → ⟨ 𝓐' ⟩

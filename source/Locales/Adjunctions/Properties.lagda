@@ -6,7 +6,7 @@ date-started: 2024-05-20
 
 Many facts about posetal adjunctions have previously been recorded in modules
 
-  - `Locales.GaloisConnection`, and
+  - `Locales.PosetalAdjunction`, and
   - `Locales.AdjointFunctorTheoremForFrames`.
 
 This is a new module in which I will be factoring out some of these facts and
@@ -29,7 +29,7 @@ module Locales.Adjunctions.Properties
 
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
-open import Locales.GaloisConnection pt fe
+open import Locales.PosetalAdjunction pt fe
 open import UF.Logic
 open import UF.SubtypeClassifier
 
@@ -46,7 +46,7 @@ module Some-Properties-Of-Posetal-Adjunctions
         (Q : Poset 𝓤' 𝓥')
        where
 
- open GaloisConnectionBetween P Q
+ open PosetalAdjunctionBetween P Q
 
 \end{code}
 

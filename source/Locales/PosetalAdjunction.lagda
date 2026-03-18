@@ -1,5 +1,7 @@
 Ayberk Tosun, 28 February 2022.
 
+This module was originally called `GaloisConnection.lagda`.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -9,7 +11,7 @@ open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
 
-module Locales.GaloisConnection
+module Locales.PosetalAdjunction
          (pt : propositional-truncations-exist)
          (fe : Fun-Ext)
          where
@@ -25,7 +27,7 @@ open AllCombinators pt fe
 
 \begin{code}
 
-module GaloisConnectionBetween (P : Poset 𝓤 𝓥) (Q : Poset 𝓤' 𝓥') where
+module PosetalAdjunctionBetween (P : Poset 𝓤 𝓥) (Q : Poset 𝓤' 𝓥') where
 
 \end{code}
 
