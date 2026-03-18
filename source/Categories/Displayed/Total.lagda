@@ -53,15 +53,13 @@ module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
                         (𝒊𝒅 , D-𝒊𝒅)
                         (λ (g , 𝕘) (f , 𝕗) → g ◦ f , 𝕘 ○ 𝕗)
                         (λ (f , 𝕗) → to-Σ-＝ (𝒊𝒅-is-left-neutral f
-                                             , Idtofun (dep-id _ _)
+                                             , transport-from-dependent-Id
                                                 (D-𝒊𝒅-is-left-neutral 𝕗)))
                         (λ (f , 𝕗) → to-Σ-＝ (𝒊𝒅-is-right-neutral f
-                                             , Idtofun (dep-id _ _)
+                                             , transport-from-dependent-Id
                                                 (D-𝒊𝒅-is-right-neutral 𝕗)))
                         (λ f g h → to-Σ-＝ (assoc _ _ _
-                                           , Idtofun (dep-id _ _) D-assoc))
-    where
-     dep-id = dependent-Id-via-transport
+                                           , transport-from-dependent-Id D-assoc))
 
    total-is-precategory : is-precategory total-wild-category
    total-is-precategory _ _ = Σ-is-set (hom-is-set P) (λ _ → hom[-]-is-set)
@@ -102,18 +100,18 @@ module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
          F ((f , f⁻¹ , p , q)
           , (𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = (f , 𝕗)
                               , (f⁻¹ , 𝕗⁻¹)
-                              , to-Σ-＝ (p , Idtofun (dependent-Id-via-transport (λ - → hom[ - ] x x) p) 𝕡)
-                              , to-Σ-＝ (q , Idtofun (dependent-Id-via-transport (λ - → hom[ - ] y y) q) 𝕢)
+                              , to-Σ-＝ (p , transport-from-dependent-Id 𝕡)
+                              , to-Σ-＝ (q , transport-from-dependent-Id 𝕢)
 
          F⁻¹ : ((a , x) ≅ (b , y)) → (Σ f ꞉ a ≅ b , x ≅[ f ] y)
          F⁻¹ ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = (f , f⁻¹ , ap pr₁ p , ap pr₁ q)
                                             , (𝕗 , 𝕗⁻¹ , snd-eq-left , snd-eq-right)
           where
            snd-eq-left : 𝕗⁻¹ ○ 𝕗 ＝⟦ (λ - → hom[ - ] _ _) , ap pr₁ p ⟧ D-𝒊𝒅
-           snd-eq-left = (Idtofun ((dependent-Id-via-transport (λ - → hom[ - ] _ _) (ap pr₁ p))⁻¹)) (pr₂ (from-Σ-＝ p))
+           snd-eq-left = dependent-Id-from-transport (pr₂ (from-Σ-＝ p))
 
            snd-eq-right : 𝕗 ○ 𝕗⁻¹ ＝⟦ (λ - → hom[ - ] _ _) , ap pr₁ q ⟧ D-𝒊𝒅
-           snd-eq-right = (Idtofun ((dependent-Id-via-transport (λ - → hom[ - ] _ _) (ap pr₁ q))⁻¹)) (pr₂ (from-Σ-＝ q))
+           snd-eq-right = dependent-Id-from-transport (pr₂ (from-Σ-＝ q))
 
          P : F⁻¹ ∘ F ∼ id
          P e@(iso@(f , f⁻¹ , p , q)
