@@ -88,6 +88,15 @@ dep-ap : {X : 𝓤' ̇ }
        → f a ＝⟦ A , ap E e ⟧ f b
 dep-ap {_} {_} {_} {_} {_} {_} {_} {_} {_} {_} {refl} f eq = ap f eq
 
+to-dep-＝ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+            {x₀ x₁ : X}
+            {e : x₀ ＝ x₁} {a : Y x₀}
+            {b : Y x₁}
+          → ((i j : transport Y e a ＝ b) → i ＝ j)
+          → (p q : a ＝⟦ Y , e ⟧ b)
+          → p ＝ q
+to-dep-＝ {_} {_} {_} {_} {_} {_} {refl} l = l
+
 infix  3  _⁻¹'
 infix  1 _⟦⟧∎
 infixr 0 _＝⟦⟧⟨_⟩_

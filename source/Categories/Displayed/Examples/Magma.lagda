@@ -14,8 +14,10 @@ open import UF.FunExt
 open import UF.Sets-Properties
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
+open import UF.Univalence
 open import Notation.UnderlyingType
 open import Categories.Pre
+open import Categories.Univalent
 open import Categories.Notation.Pre
 open import Categories.Examples.Set
 open import Categories.Examples.Magma
@@ -109,5 +111,9 @@ We now define the displayed category of magmas.
      is-section : iso-to-id ∘ (D-id-to-iso DispPreMagma refl _·_ _*_)
                 ∼ id
      is-section _ = Π₂-is-set fe (λ x y → sA _ _) _ _
+
+
+ TotCatMagma : (ua : is-univalent 𝓤) → Category (𝓤 ⁺) 𝓤
+ TotCatMagma ua = TotalCategory {_} {_} {_} {_} {SetCategory ua fe} DispCatMagma
 
 \end{code}

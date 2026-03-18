@@ -160,18 +160,21 @@ We show that being an isomorphism is a proposition.
 
    rest-prop : (𝕗⁻¹ : hom[ ⌞ f⁻¹ ⌟ ] y x) → is-prop ((𝕗⁻¹ ○ 𝕗 ＝⟦ (λ - → hom[ - ] x x) , ⌞ f⁻¹ ⌟-is-left-inverse ⟧ D-𝒊𝒅)
                                                    × (𝕗 ○ 𝕗⁻¹ ＝⟦ (λ - → hom[ - ] y y) , ⌞ f⁻¹ ⌟-is-right-inverse ⟧ D-𝒊𝒅))
-   rest-prop 𝕗⁻¹ = ×-is-prop (λ _ _ → {!!}) (λ _ _ → {!!}) -- hom[-]-is-set
-
+   rest-prop 𝕗⁻¹ = ×-is-prop (to-dep-＝ λ i j → hom[-]-is-set _ _) (to-dep-＝ λ i j → hom[-]-is-set _ _)
+     
  being-D-iso-is-prop : {a b : obj P}
                        {x : obj[ a ]}
                        {y : obj[ b ]}
-                       (f : a ≅ b)
+                       {f : a ≅ b}
                        (𝕗 : hom[ ⌜ f ⌝ ] x y)
                      → is-prop (D-inverse f 𝕗)
- being-D-iso-is-prop {_} {_} {x} {y} f 𝕗 𝕗⁻¹ 𝕘⁻¹ = D-inverse-is-lc f 𝕗 𝕗⁻¹ 𝕘⁻¹ {!!}
+ being-D-iso-is-prop {_} {_} {x} {y} {f} 𝕗 𝕗⁻¹ 𝕘⁻¹ = D-inverse-is-lc f 𝕗 𝕗⁻¹ 𝕘⁻¹ (transport (λ - → _ ＝⟦ _ , - ⟧ _) t eq)
   where
 
    f⁻¹ = underlying-morphism-is-isomorphism f
+
+   t : at-most-one-inverse f⁻¹ f⁻¹ ＝ refl
+   t = hom-is-set P _ _
 
    eq : pr₁ 𝕗⁻¹ ＝⟦ (λ - → hom[ - ] y x) , at-most-one-inverse f⁻¹ f⁻¹ ⟧ pr₁ 𝕘⁻¹
    eq = (pr₁ 𝕗⁻¹)                     ＝⟦⟧⟨ (D-𝒊𝒅-is-right-neutral (pr₁ 𝕗⁻¹))⁻¹' ⟩
@@ -180,6 +183,15 @@ We show that being an isomorphism is a proposition.
         ((pr₁ 𝕗⁻¹ ○ 𝕗) ○ (pr₁ 𝕘⁻¹))   ＝⟦⟧⟨ dep-ap (_○ (pr₁ 𝕘⁻¹)) ((pr₁ (pr₂ 𝕗⁻¹))) ⟩
         (D-𝒊𝒅 ○ (pr₁ 𝕘⁻¹))            ＝⟦⟧⟨ D-𝒊𝒅-is-left-neutral (pr₁ 𝕘⁻¹) ⟩
         (pr₁ 𝕘⁻¹)                     ⟦⟧∎  
+
+ to-≅[-]-＝ : {a b : obj P}
+              {x : obj[ a ]}
+              {y : obj[ b ]}
+              {f : a ≅ b}
+              (𝕗 𝕗' : x ≅[ f ] y)
+            → pr₁ 𝕗 ＝ pr₁ 𝕗'
+            → 𝕗 ＝ 𝕗'
+ to-≅[-]-＝ 𝕗 𝕗' = to-subtype-＝ being-D-iso-is-prop
 
 \end{code}
  

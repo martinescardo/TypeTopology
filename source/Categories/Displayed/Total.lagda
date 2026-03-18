@@ -32,8 +32,7 @@ object in the displayed precategory. That is, the objects are of the form
 
 \begin{code}
 
-
-ap₂-ish : {A B C : 𝓤 ̇ } → (f : A → B → C) → {x x' : A} → {y : B} → (e : x ＝ x') → f x y ＝ f x' y
+ap₂-ish : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ } → (f : A → B → C) → {x x' : A} → {y : B} → (e : x ＝ x') → f x y ＝ f x' y
 ap₂-ish f refl = refl
 
 module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
@@ -69,7 +68,7 @@ module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
 
  TotalCategory : {C : Category 𝓤 𝓥}
                  (D : DisplayedCategory 𝓦 𝓣 ⟨ C ⟩)
-               → Category {!!} {!!}
+               → Category (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣)
  TotalCategory {C} D = (TotalPrecategory ⟨ D ⟩) , is-cat
   where
    open CategoryNotation C
@@ -83,11 +82,14 @@ module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
                                                  pointwise-equal
     where
      thing : ((a , x) ＝ (b , y)) ≃ ((a , x) ≅ (b , y))
-     thing = ((a , x) ＝ (b , y))                       ≃⟨ i ⟩
+     thing = ≃-comp i (≃-comp ii (≃-comp iii iv))
+
+    {-
+             ((a , x) ＝ (b , y))                       ≃⟨ i ⟩
              ((Σ e ꞉ a ＝ b , transport _ e x ＝ y))    ≃⟨ ii ⟩
              (Σ e ꞉ a ＝ b , x ≅[ id-to-iso a b e ] y)  ≃⟨ iii ⟩
              (Σ f ꞉ a ≅ b , x ≅[ f ] y)                ≃⟨ iv ⟩
-             ((a , x) ≅ (b , y))                       ■
+             ((a , x) ≅ (b , y))                       ■ -}
       where
        inter : (e : a ＝ b)
              → (transport obj[_] e x ＝ y) ≃ x ≅[ id-to-iso a b e ] y
@@ -114,9 +116,11 @@ module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
            snd-eq-right = (Idtofun ((dependent-Id-via-transport (λ - → hom[ - ] _ _) (ap pr₁ q))⁻¹)) (pr₂ (from-Σ-＝ q))
 
          P : F⁻¹ ∘ F ∼ id
-         P e@((f , f⁻¹ , p , q)
-          , d-iso@(𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = to-Σ-＝ (to-≅-＝ ⟨ C ⟩ refl , {!!})
+         P e@(iso@(f , f⁻¹ , p , q)
+          , d-iso@(𝕗 , 𝕗⁻¹ , 𝕡 , 𝕢)) = to-Σ-＝ (to-≅-＝ ⟨ C ⟩ refl , disp-eq)
           where
+           f-eq = to-≅-＝ ⟨ C ⟩ {_} {_} {_} {iso} refl
+
            lem : {x y : obj C}
                  {xx : obj[ x ]}
                  {yy : obj[ y ]}
@@ -125,7 +129,18 @@ module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
                  (ff : xx ≅[ f ] yy)
                → pr₁ (transport (λ - → xx ≅[ - ] yy) e ff) ＝ transport _ (ap pr₁ e) (pr₁ ff)
            lem refl _ = refl
+           
+           eq : pr₁ (transport (λ - → x ≅[ - ] y) f-eq (pr₂ ((F⁻¹ ∘ F) e))) ＝ 𝕗
+           eq = pr₁ (transport (λ - → x ≅[ - ] y) f-eq (pr₂ ((F⁻¹ ∘ F) e)))            ＝⟨ lem f-eq _ ⟩
+                transport (λ - → hom[ - ] x y) (ap pr₁ f-eq) (pr₁ (pr₂ ((F⁻¹ ∘ F) e))) ＝⟨ p' ⟩
+                𝕗 ∎
+            where
+             p' : transport (λ - → hom[ - ] x y) (ap pr₁ f-eq) (pr₁ (pr₂ ((F⁻¹ ∘ F) e))) ＝ transport {_} {_} {hom a b} (λ - → hom[ - ] x y) refl (pr₁ (pr₂ ((F⁻¹ ∘ F) e)))
+             p' = ap₂-ish (transport (λ - → hom[ - ] x y)) (hom-is-set ⟨ C ⟩ (ap pr₁ f-eq) refl)
 
+           disp-eq : transport (λ - → x ≅[ - ] y) (to-≅-＝ (C .pr₁) refl) (pr₂ ((F⁻¹ ∘ F) e)) ＝ d-iso
+           disp-eq = DisplayedPrecategory.to-≅[-]-＝ ⟨ D ⟩ (transport (λ - → x ≅[ - ] y) (to-≅-＝ (C .pr₁) refl) (pr₂ ((F⁻¹ ∘ F) e))) d-iso eq
+           
          Q : F ∘ F⁻¹ ∼ id
          Q ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = to-Σ-＝ (refl , to-Σ-＝ (refl , to-×-＝ (hom-is-set (TotalPrecategory ⟨ D ⟩) _ _)
                                                                                    (hom-is-set (TotalPrecategory ⟨ D ⟩) _ _)))
@@ -133,7 +148,6 @@ module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
        i = Σ-＝-≃
        ii = Σ-cong inter
        iii = Σ-change-of-variable (λ - → (x ≅[ - ] y)) (id-to-iso a b) (id-to-iso-is-equiv C a b)
-
        iv = total-iso-join
 
      pointwise-equal : id-to-iso (a , x) (b , y) ∼ ⌜ thing ⌝
