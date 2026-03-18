@@ -81,7 +81,7 @@ module _
                                        → conjugate-loop γ (f p p) ＝ p)
          (left-nilpotent               : (p : Ωᵃ) → f p refl ＝ refl)
          (right-nilpotent              : (q : Ωᵃ) → f refl q ＝ refl)
-         (interchange                  : (p q r s : Ωᵃ)
+         (homomorphism                 : (p q r s : Ωᵃ)
                                        → f (p ∙ r) (q ∙ s) ＝ f p q ∙ f r s)
         where
 
@@ -94,7 +94,7 @@ module _
    refl                    ∎
     where
      I   = sym (ap₂ f (refl-right-neutral p) (refl-left-neutral p))
-     II  = interchange p refl refl p
+     II  = homomorphism p refl refl p
      III = ap₂ _∙_ (left-nilpotent p) (right-nilpotent p)
 
   Ω-trivial : (p : Ωᵃ) → p ＝ refl
