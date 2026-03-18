@@ -153,6 +153,7 @@ import CoNaturals.index
 import ContinuityAxiom.index
 import Coslice.index
 import CrossedModules.index
+import C-Spaces.index
 import DedekindReals.index
 import DiscreteGraphicMonoids.index
 import DomainTheory.index
