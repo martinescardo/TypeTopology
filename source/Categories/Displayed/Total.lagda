@@ -82,15 +82,15 @@ module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
                                                  pointwise-equal
     where
      thing : ((a , x) ＝ (b , y)) ≃ ((a , x) ≅ (b , y))
-     thing = ≃-comp i (≃-comp ii (≃-comp iii iv))
-
-    {-
-             ((a , x) ＝ (b , y))                       ≃⟨ i ⟩
+     thing = ((a , x) ＝ (b , y))                       ≃⟨ i ⟩
              ((Σ e ꞉ a ＝ b , transport _ e x ＝ y))    ≃⟨ ii ⟩
              (Σ e ꞉ a ＝ b , x ≅[ id-to-iso a b e ] y)  ≃⟨ iii ⟩
              (Σ f ꞉ a ≅ b , x ≅[ f ] y)                ≃⟨ iv ⟩
-             ((a , x) ≅ (b , y))                       ■ -}
+             end                       ■
       where
+       end : 𝓥 ⊔ 𝓣 ̇ 
+       end = ((a , x) ≅ (b , y))
+
        inter : (e : a ＝ b)
              → (transport obj[_] e x ＝ y) ≃ x ≅[ id-to-iso a b e ] y
        inter refl = (D-id-to-iso ⟨ D ⟩ refl x y) , D-id-to-iso-is-equiv D refl x y
