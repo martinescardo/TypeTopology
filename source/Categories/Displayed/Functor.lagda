@@ -28,7 +28,7 @@ map between the base precategories which lie below the displayed precategories.
 
 record DisplayedFunctor {P : Precategory 𝓦 𝓣}
                         {P' : Precategory 𝓦' 𝓣'}
-                        (F' : Functor ⟨ P ⟩ ⟨ P' ⟩)
+                        (F' : Functor P P')
                         (D : DisplayedPrecategory 𝓤 𝓥 P)
                         (D' : DisplayedPrecategory 𝓤' 𝓥' P')
                       : (𝓦 ⊔ 𝓣 ⊔ 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥') ̇  where

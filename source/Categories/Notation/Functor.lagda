@@ -7,9 +7,9 @@ Notation for working with functors.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import Categories.Wild
+open import Categories.Pre
 open import Categories.Functor
-open import Categories.Notation.Wild
+open import Categories.Notation.Pre
 
 module Categories.Notation.Functor where
 
@@ -30,29 +30,29 @@ record FUNCTORMAP {𝓤 𝓥 : Universe} (A : 𝓤 ̇ ) (B : 𝓥 ̇ ) : 𝓤 �
 
 open FUNCTORMAP {{...}} public
 
-record FUNNOTATION {A : WildCategory 𝓤 𝓥}
-                   {B : WildCategory 𝓦 𝓣}
+record FUNNOTATION {A : Precategory 𝓤 𝓥}
+                   {B : Precategory 𝓦 𝓣}
                    (F : Functor A B)
                  : 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇ where
  
- open WildCategoryNotation A
- open WildCategoryNotation B
+ open PrecategoryNotation A
+ open PrecategoryNotation B
  field 
   id-preserved : (a : obj A) → Functor.F₁ F {a} 𝒊𝒅 ＝ 𝒊𝒅
   distributivity : {a b c : obj A}
-                (g : hom b c)
-                (f : hom a b)
-              → Functor.F₁ F (g ◦ f)
-              ＝ Functor.F₁ F g ◦ Functor.F₁ F f
+                   (g : hom b c)
+                   (f : hom a b)
+                 → Functor.F₁ F (g ◦ f)
+                 ＝ Functor.F₁ F g ◦ Functor.F₁ F f
 
 open FUNNOTATION {{...}} public
 
-module FunctorNotation {A : WildCategory 𝓤 𝓥}
-                       {B : WildCategory 𝓦 𝓣}
+module FunctorNotation {A : Precategory 𝓤 𝓥}
+                       {B : Precategory 𝓦 𝓣}
                        (F : Functor A B) where
 
- open WildCategoryNotation A
- open WildCategoryNotation B
+ open PrecategoryNotation A
+ open PrecategoryNotation B
 
  functor-map = gen-functor-map
 
