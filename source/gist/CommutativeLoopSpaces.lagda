@@ -15,7 +15,8 @@ general statement). Jakub also has a later rephrasing of the (simpler) argument
 as [Lemma 2.12, 2].
 
 Another (different?) proof is given by David Wärn as part of a MathOverflow
-answer: https://mathoverflow.net/a/496927
+answer (https://mathoverflow.net/a/496927) and formalized as
+https://dwarn.se/agda/Idem.html.
 But I did not distill this from his formalization when I wrote
 gist.ThereAreNoHigherSemilattices2 (where David's formalization is referenced).
 
