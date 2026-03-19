@@ -119,10 +119,10 @@ We start with the action of `m` on the paths.
 
 This action restricts to:
 
-m' : ΩM' → ΩM' → ΩM' → ΩM.
+m' : ΩM → ΩM → ΩM → ΩM'.
 
 Which is how we will mostly use it. We will need that this action is a group
-homomorphism (from the third power of ΩM' to ΩM). In fact, the statement is
+homomorphism (from the third power of ΩM to ΩM'). In fact, the statement is
 about the whole action of m', not just the restriction.
 
 \begin{code}
