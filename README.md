@@ -135,6 +135,13 @@ Tosun.
 
    https://doi.org/10.4230/LIPIcs.TLCA.2015.153
 
+
+1. Chuangjie Xu. *A Continuous Computational Interpretation of Type Theories*.
+   PhD thesis, School of Computer Science, University of
+   Birmingham, UK, 2015.
+
+   https://cj-xu.github.io/ContinuityType/xu-thesis.pdf
+
 1. Martín H. Escardó and T. Streicher. *The intrinsic topology of
    Martin-Löf universes.* [Annals of Pure and Applied
    Logic](https://www.sciencedirect.com/journal/annals-of-pure-and-applied-logic),

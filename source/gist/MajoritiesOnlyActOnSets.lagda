@@ -87,7 +87,8 @@ satisfying the majority identities.
 
 \begin{code}
 
-module _ (M   : Type)
+module type-with-majority
+         (M   : Type)
          (m   : M → M → M → M)
          (eq₀ : (a b : M) → m b a a ＝ a)
          (eq₁ : (a b : M) → m a b a ＝ a)
