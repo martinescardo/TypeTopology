@@ -63,8 +63,8 @@
      control safety and, to the extent this is currently possible, to
      control which type theory is used.
 
-   * In our last count, on 2026-03-11, this development has 882 Agda
-     files with 264K lines of code, including comments and blank
+   * In our last count, on 2026-03-19, this development has 921 Agda
+     files with 271K lines of code, including comments and blank
      lines.
 
 Philosophy of the repository
@@ -153,6 +153,7 @@ import CoNaturals.index
 import ContinuityAxiom.index
 import Coslice.index
 import CrossedModules.index
+import C-Spaces.index
 import DedekindReals.index
 import DiscreteGraphicMonoids.index
 import DomainTheory.index
