@@ -160,7 +160,8 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) where
 
    is-section : toiso ∘ fromiso ∼ id
    is-section e@((f , fp) , (g , gp) , lg , rg)
-    = to-≅-＝ {_} {_} {_} {A} {B} (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl)
+    = to-≅-＝ {_} {_} {_} {A} {B}
+              (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl)
    
    has-section : fromiso ∘ toiso ∼ id
    has-section (f , e@((g , gp) , (g' , gp')) , fp)

@@ -26,8 +26,8 @@ module Categories.Examples.Set where
 \end{code}
 
 First we define Sets under a given universe 𝓤. We first define the property of
-being a set ,note that we define this with explicit arguments here, and then the
-type of sets.
+being a set, note that we define this with explicit arguments here, and then
+the type of sets.
 
 \begin{code}
 

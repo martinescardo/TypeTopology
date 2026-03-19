@@ -162,7 +162,9 @@ category formed of these is a category.
 
        i = Σ-＝-≃
        ii = Σ-cong transport-equiv-iso
-       iii = Σ-change-of-variable (λ - → (x ≅[ - ] y)) (id-to-iso a b) (id-to-iso-is-equiv C a b)
+       iii = Σ-change-of-variable (λ - → (x ≅[ - ] y))
+                                  (id-to-iso a b)
+                                  (id-to-iso-is-equiv C a b)
        iv = total-iso-join ⟨ D ⟩
 
      pointwise-equality : id-to-iso (a , x) (b , y)

@@ -149,7 +149,8 @@ module WildCategoryNotation {𝓤 𝓥 : Universe} (W : WildCategory 𝓤 𝓥) 
   at-most-one-inverse {{wildcatnotation}} = WildCategory.at-most-one-inverse W
   _≅_ {{wildcatnotation}} = WildCategory._≅_ W
   ⌜_⌝ {{wildcatnotation}} = WildCategory.⌜_⌝ W
-  underlying-morphism-is-isomorphism {{wildcatnotation}} = WildCategory.underlying-morphism-is-isomorphism W
+  underlying-morphism-is-isomorphism {{wildcatnotation}}
+   = WildCategory.underlying-morphism-is-isomorphism W
   id-to-iso {{wildcatnotation}} = WildCategory.id-to-iso W
 
 \end{code}

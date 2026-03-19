@@ -160,7 +160,10 @@ module _ {𝓤 𝓥 : Universe}
            {f : a ≅ b}
            {𝕗 : hom[ ⌜ f ⌝ ] x y}
          → (𝕗⁻¹ : D-inverse f 𝕗)
-         → D-⌞ 𝕗⁻¹ ⌟  ○ 𝕗 ＝⟦ (λ - → hom[ - ] x x) , ⌞ underlying-morphism-is-isomorphism f ⌟-is-left-inverse ⟧ D-𝒊𝒅
+         → D-⌞ 𝕗⁻¹ ⌟  ○ 𝕗
+         ＝⟦ (λ - → hom[ - ] x x)
+           , ⌞ underlying-morphism-is-isomorphism f ⌟-is-left-inverse ⟧
+           D-𝒊𝒅
 
    D-⌞_⌟-is-right-inverse : {a  b : obj P}
            {x : obj[ a ]}
@@ -168,7 +171,10 @@ module _ {𝓤 𝓥 : Universe}
            {f : a ≅ b}
            {𝕗 : hom[ ⌜ f ⌝ ] x y}
          → (𝕗⁻¹ : D-inverse f 𝕗)
-         → 𝕗 ○ D-⌞ 𝕗⁻¹ ⌟ ＝⟦ (λ - → hom[ - ] y y) , ⌞ underlying-morphism-is-isomorphism f ⌟-is-right-inverse ⟧ D-𝒊𝒅
+         → 𝕗 ○ D-⌞ 𝕗⁻¹ ⌟
+         ＝⟦ (λ - → hom[ - ] y y)
+           , ⌞ underlying-morphism-is-isomorphism f ⌟-is-right-inverse ⟧
+           D-𝒊𝒅
    to-≅[-]-＝ : {a b : obj P}
                 {x : obj[ a ]}
                 {y : obj[ b ]}
