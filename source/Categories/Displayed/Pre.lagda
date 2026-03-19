@@ -151,6 +151,55 @@ We can now define a displayed version of isomorphism between objects.
         → 𝓣 ̇
  x ≅[ f ] y = Σ 𝕗 ꞉ hom[ ⌜ f ⌝ ] x y , D-inverse f 𝕗
 
+ D-⌜_⌝ : {a b : obj P}
+         {x : obj[ a ]}
+         {f : a ≅ b}
+         {y : obj[ b ]}
+       → x ≅[ f ] y
+       → hom[ ⌜ f ⌝ ] x y
+ D-⌜_⌝ = pr₁
+
+ D-morphism-is-isomorphism : {a b : obj P}
+                             {x : obj[ a ]}
+                             {f : a ≅ b}
+                             {y : obj[ b ]}
+                           → (𝕗 : x ≅[ f ] y)
+                           → D-inverse f D-⌜ 𝕗 ⌝
+ D-morphism-is-isomorphism = pr₂
+
+ D-⌞_⌟ : {a  b : obj P}
+         {x : obj[ a ]}
+         {y : obj[ b ]}
+         {f : a ≅ b}
+         {𝕗 : hom[ ⌜ f ⌝ ] x y}
+       → D-inverse f 𝕗
+       → hom[ ⌞ underlying-morphism-is-isomorphism f ⌟ ] y x
+ D-⌞_⌟ = pr₁
+
+ D-⌞_⌟-is-left-inverse : {a  b : obj P}
+         {x : obj[ a ]}
+         {y : obj[ b ]}
+         {f : a ≅ b}
+         {𝕗 : hom[ ⌜ f ⌝ ] x y}
+       → (𝕗⁻¹ : D-inverse f 𝕗)
+       → D-⌞ 𝕗⁻¹ ⌟  ○ 𝕗
+       ＝⟦ hom[-] x x ,
+           ⌞ underlying-morphism-is-isomorphism f ⌟-is-left-inverse ⟧
+         D-𝒊𝒅
+ D-⌞_⌟-is-left-inverse 𝕗⁻¹ = pr₁ (pr₂ 𝕗⁻¹)
+
+ D-⌞_⌟-is-right-inverse : {a  b : obj P}
+         {x : obj[ a ]}
+         {y : obj[ b ]}
+         {f : a ≅ b}
+         {𝕗 : hom[ ⌜ f ⌝ ] x y}
+       → (𝕗⁻¹ : D-inverse f 𝕗)
+       → 𝕗 ○ D-⌞ 𝕗⁻¹ ⌟
+       ＝⟦ hom[-] y y ,
+           ⌞ underlying-morphism-is-isomorphism f ⌟-is-right-inverse ⟧
+         D-𝒊𝒅
+ D-⌞_⌟-is-right-inverse 𝕗⁻¹ = pr₂ (pr₂ 𝕗⁻¹)
+
 \end{code}
 
 We show that being an isomorphism is a proposition.
@@ -163,7 +212,7 @@ We show that being an isomorphism is a proposition.
                    {f : a ≅ b}
                    {𝕗 : hom[ ⌜ f ⌝ ] x y}
                    {𝕚 𝕛 : D-inverse f 𝕗}
-                 → pr₁ 𝕚 ＝ pr₁ 𝕛
+                 → D-⌞ 𝕚 ⌟ ＝ D-⌞ 𝕛 ⌟
                  → 𝕚 ＝ 𝕛
  D-inverse-is-lc {_} {_} {x} {y} e
   = to-subtype-＝ (λ _ → ×-is-prop dep-hom-is-set dep-hom-is-set) e
@@ -174,25 +223,27 @@ We show that being an isomorphism is a proposition.
                          {f : a ≅ b}
                          {𝕗 : hom[ ⌜ f ⌝ ] x y}
                          (𝕘 𝕙 : D-inverse f 𝕗)
-                       → pr₁ 𝕘 ＝ pr₁ 𝕙
+                       → D-⌞ 𝕘 ⌟ ＝ D-⌞ 𝕙 ⌟
  at-most-one-D-inverse {_} {_} {x} {y} {f} {𝕗} 𝕘 𝕙
   = transport (λ - → _ ＝⟦ _ , - ⟧ _) (hom-is-set P _ _) inv-eq
   where
    f⁻¹ = underlying-morphism-is-isomorphism f
 
-   inv-eq : pr₁ 𝕘 ＝⟦ (λ - → hom[ - ] y x) , at-most-one-inverse f⁻¹ f⁻¹ ⟧ pr₁ 𝕙
-   inv-eq = (pr₁ 𝕘)                     ＝⟦⟨ I ⟩⟧
-            ((pr₁ 𝕘) ○ D-𝒊𝒅)            ＝⟦⟨ II ⟩⟧
-            ((pr₁ 𝕘) ○ (𝕗 ○ (pr₁ 𝕙)))   ＝⟦⟨ III ⟩⟧
-            ((pr₁ 𝕘 ○ 𝕗) ○ (pr₁ 𝕙))     ＝⟦⟨ IV ⟩⟧
-            (D-𝒊𝒅 ○ (pr₁ 𝕙))            ＝⟦⟨ V ⟩⟧
-            (pr₁ 𝕙)                     ∎
+   inv-eq : D-⌞ 𝕘 ⌟
+          ＝⟦ (λ - → hom[ - ] y x) , at-most-one-inverse f⁻¹ f⁻¹ ⟧
+            D-⌞ 𝕙 ⌟
+   inv-eq = D-⌞ 𝕘 ⌟                   ＝⟦⟨ I ⟩⟧
+            D-⌞ 𝕘 ⌟ ○ D-𝒊𝒅            ＝⟦⟨ II ⟩⟧
+            D-⌞ 𝕘 ⌟ ○ (𝕗 ○ D-⌞ 𝕙 ⌟)   ＝⟦⟨ III ⟩⟧
+            (D-⌞ 𝕘 ⌟ ○ 𝕗) ○ D-⌞ 𝕙 ⌟   ＝⟦⟨ IV ⟩⟧
+            D-𝒊𝒅 ○ D-⌞ 𝕙 ⌟            ＝⟦⟨ V ⟩⟧
+            D-⌞ 𝕙 ⌟                   ∎
     where
-     I = dep-sym (D-𝒊𝒅-is-right-neutral (pr₁ 𝕘))
-     II = dep-sym (dep-ap ((pr₁ 𝕘) ○_) (pr₂ (pr₂ 𝕙)))
+     I = dep-sym (D-𝒊𝒅-is-right-neutral D-⌞ 𝕘 ⌟)
+     II = dep-sym (dep-ap (D-⌞ 𝕘 ⌟ ○_) D-⌞ 𝕙 ⌟-is-right-inverse)
      III = D-assoc
-     IV = dep-ap (_○ (pr₁ 𝕙)) ((pr₁ (pr₂ 𝕘)))
-     V = D-𝒊𝒅-is-left-neutral (pr₁ 𝕙)
+     IV = dep-ap (_○ D-⌞ 𝕙 ⌟) (D-⌞ 𝕘 ⌟-is-left-inverse)
+     V = D-𝒊𝒅-is-left-neutral D-⌞ 𝕙 ⌟
 
  being-D-iso-is-prop : {a b : obj P}
                        {x : obj[ a ]}
@@ -215,12 +266,11 @@ of the underlying morphism.
               {y : obj[ b ]}
               {f : a ≅ b}
               {𝕗 𝕗' : x ≅[ f ] y}
-            → pr₁ 𝕗 ＝ pr₁ 𝕗'
+            → D-⌜ 𝕗 ⌝ ＝ D-⌜ 𝕗' ⌝
             → 𝕗 ＝ 𝕗'
  to-≅[-]-＝ = to-subtype-＝ being-D-iso-is-prop
 
-open DisplayedPrecategory public using (to-≅[-]-＝
-                                      ; being-D-iso-is-prop
+open DisplayedPrecategory public using (being-D-iso-is-prop
                                       ; at-most-one-D-inverse)
 
 \end{code}

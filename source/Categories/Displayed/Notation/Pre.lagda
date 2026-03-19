@@ -132,6 +132,51 @@ module _ {𝓤 𝓥 : Universe}
             (f : a ≅ b)
             (y : obj[ b ])
           → 𝓥 ̇
+   D-⌜_⌝ : {a b : obj P}
+           {x : obj[ a ]}
+           {f : a ≅ b}
+           {y : obj[ b ]}
+         → x ≅[ f ] y
+         → hom[ ⌜ f ⌝ ] x y
+
+   D-morphism-is-isomorphism : {a b : obj P}
+                               {x : obj[ a ]}
+                               {f : a ≅ b}
+                               {y : obj[ b ]}
+                             → (𝕗 : x ≅[ f ] y)
+                             → D-inverse f D-⌜ 𝕗 ⌝
+
+   D-⌞_⌟ : {a  b : obj P}
+           {x : obj[ a ]}
+           {y : obj[ b ]}
+           {f : a ≅ b}
+           {𝕗 : hom[ ⌜ f ⌝ ] x y}
+         → D-inverse f 𝕗
+         → hom[ ⌞ underlying-morphism-is-isomorphism f ⌟ ] y x
+
+   D-⌞_⌟-is-left-inverse : {a  b : obj P}
+           {x : obj[ a ]}
+           {y : obj[ b ]}
+           {f : a ≅ b}
+           {𝕗 : hom[ ⌜ f ⌝ ] x y}
+         → (𝕗⁻¹ : D-inverse f 𝕗)
+         → D-⌞ 𝕗⁻¹ ⌟  ○ 𝕗 ＝⟦ (λ - → hom[ - ] x x) , ⌞ underlying-morphism-is-isomorphism f ⌟-is-left-inverse ⟧ D-𝒊𝒅
+
+   D-⌞_⌟-is-right-inverse : {a  b : obj P}
+           {x : obj[ a ]}
+           {y : obj[ b ]}
+           {f : a ≅ b}
+           {𝕗 : hom[ ⌜ f ⌝ ] x y}
+         → (𝕗⁻¹ : D-inverse f 𝕗)
+         → 𝕗 ○ D-⌞ 𝕗⁻¹ ⌟ ＝⟦ (λ - → hom[ - ] y y) , ⌞ underlying-morphism-is-isomorphism f ⌟-is-right-inverse ⟧ D-𝒊𝒅
+   to-≅[-]-＝ : {a b : obj P}
+                {x : obj[ a ]}
+                {y : obj[ b ]}
+                {f : a ≅ b}
+                {𝕗 𝕗' : x ≅[ f ] y}
+              → D-⌜ 𝕗 ⌝ ＝ D-⌜ 𝕗' ⌝
+              → 𝕗 ＝ 𝕗'
+       
  open DNotation {{...}} public
 
 module DisplayedPrecategoryNotation {𝓦 𝓣 : Universe}
@@ -163,5 +208,14 @@ module DisplayedPrecategoryNotation {𝓦 𝓣 : Universe}
   D-assoc {{d-notation}} = DisplayedPrecategory.D-assoc D
   D-inverse {{d-notation}} = DisplayedPrecategory.D-inverse D
   _≅[_]_ {{d-notation}} = DisplayedPrecategory._≅[_]_ D
+  D-⌜_⌝ {{d-notation}} = DisplayedPrecategory.D-⌜_⌝ D
+  D-⌞_⌟ {{d-notation}} = DisplayedPrecategory.D-⌞_⌟ D
+  D-⌞_⌟-is-left-inverse {{d-notation}}
+   = DisplayedPrecategory.D-⌞_⌟-is-left-inverse D
+  D-⌞_⌟-is-right-inverse {{d-notation}}
+   = DisplayedPrecategory.D-⌞_⌟-is-right-inverse D
+  D-morphism-is-isomorphism {{d-notation}}
+   = DisplayedPrecategory.D-morphism-is-isomorphism D
+  to-≅[-]-＝ {{d-notation}} = DisplayedPrecategory.to-≅[-]-＝ D
   
 \end{code}

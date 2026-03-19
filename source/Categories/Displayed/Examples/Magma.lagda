@@ -86,6 +86,7 @@ We now define the displayed category of magmas.
  DispCatMagma : DisplayedCategory 𝓤 𝓤 (SetPrecategory fe)
  DispCatMagma = DispPreMagma , λ {a} {b} e x y → is-disp-cat a b e x y
   where
+
    is-disp-cat : (a : obj (SetPrecategory fe))
                  (b : obj (SetPrecategory fe))
                  (e : a ＝ b)
@@ -103,7 +104,7 @@ We now define the displayed category of magmas.
      has-section : (D-id-to-iso DispPreMagma refl _·_ _*_) ∘ iso-to-id
                  ∼ id
      has-section _
-      = to-≅[-]-＝ DispPreMagma {a} {a} (Π₂-is-prop fe (λ x y → sA _ _) _ _)
+      = to-≅[-]-＝ {_} {_} {_} {_} {_} {_} {a} {a} (Π₂-is-prop fe (λ x y → sA _ _) _ _)
 
      is-section : iso-to-id ∘ (D-id-to-iso DispPreMagma refl _·_ _*_)
                 ∼ id
