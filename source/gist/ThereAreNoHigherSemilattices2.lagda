@@ -13,6 +13,10 @@ Escardo's version [2].
 Like [1] and [2], this file is completely self-contained with the basics taken
 from [2].
 
+As David pointed out to me, this proof is slightly different from his in that I
+do not use commutativity of path composition to prove associativity of the
+operation on loop spaces.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}

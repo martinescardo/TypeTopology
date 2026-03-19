@@ -16,7 +16,7 @@ page.
 ## Table of contents
 
  1. [How to cite this repository](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
- 1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-of-the-development)
+ 1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-agda-files)
  1. [Current contributors](https://github.com/martinescardo/TypeTopology/blob/master/README.md#current-contributors-in-alphabetical-order-of-first-name)
  1. [Academic publications resulting from TypeTopology](https://github.com/martinescardo/TypeTopology/blob/master/README.md#publications-resulting-from-typetopology)
  1. [Statement of inclusion](https://github.com/martinescardo/TypeTopology/blob/master/STATEMENT-OF-INCLUSION.md)
@@ -70,6 +70,7 @@ Please add yourself the first time you contribute. Use your adopted name, and no
 * Ian Ray
 * Igor Arrieta (ii)
 * J. A. Carr
+* Jakub Opršal
 * Jon Sterling
 * Kelton OBrien
 * Keri D'Angelo
@@ -133,6 +134,13 @@ Tosun.
    Calculi and Applications (TLCA 2015)](https://drops.dagstuhl.de/opus/portals/lipics/index.php?semnr=15006).
 
    https://doi.org/10.4230/LIPIcs.TLCA.2015.153
+
+
+1. Chuangjie Xu. *A Continuous Computational Interpretation of Type Theories*.
+   PhD thesis, School of Computer Science, University of
+   Birmingham, UK, 2015.
+
+   https://cj-xu.github.io/ContinuityType/xu-thesis.pdf
 
 1. Martín H. Escardó and T. Streicher. *The intrinsic topology of
    Martin-Löf universes.* [Annals of Pure and Applied

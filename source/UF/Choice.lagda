@@ -223,10 +223,9 @@ module Univalent-Choice
    g = ac X A
         (λ x a → 𝟙)
         i
-        j (
-        λ x a → 𝟙-is-prop)
-        (λ x → ∥∥-functor (λ z → z , ⋆)
-        (f x))
+        j
+        (λ x a → 𝟙-is-prop)
+        (λ x → ∥∥-functor (λ z → z , ⋆) (f x))
 
    h : ∥ Π A ∥
    h = ∥∥-functor pr₁ g
