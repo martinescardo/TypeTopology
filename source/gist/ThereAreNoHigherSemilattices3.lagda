@@ -30,6 +30,13 @@ ap₃ : {A B C D : Type} {a a' : A} {b b' : B} {c c' : C}
     → (f a b c ＝ f a' b' c')  
 ap₃ f refl refl refl = refl
 
+ap₃-homo : {A B C D : Type} (f : A → B → C → D)
+           {a a' a'' : A} (p : a ＝ a') (p' : a' ＝ a'')
+           {b b' b'' : B} (q : b ＝ b') (q' : b' ＝ b'')
+           {c c' c'' : C} (r : c ＝ c') (r' : c' ＝ c'')
+         → ap₃ f p q r ∙ ap₃ f p' q' r' ＝ ap₃ f (p ∙ p') (q ∙ q') (r ∙ r')
+ap₃-homo f refl refl refl refl refl refl = refl
+
 \end{code}
 
 This sets up our type theory. Now to actual work.
@@ -45,15 +52,9 @@ module taylor-type
  conjugate : {a b : A} → a ＝ b → a ＝ a → b ＝ b
  conjugate refl p = p
 
- eq-cong : {a b c d : A} → a ＝ b → c ＝ d → a ＝ c → b ＝ d
- eq-cong refl refl p = p
-
- eq-cong-refl : {a b : A} → (p : a ＝ b) → eq-cong p p refl ＝ refl
- eq-cong-refl refl = refl
-
- conj-is-eq-cong :  {a b : A} → {q : a ＝ b} → {p : a ＝ a}
-                 → conjugate q p ＝ eq-cong q q p
- conj-is-eq-cong {q = refl} = refl
+ conj-is-eq-cong :  {a b : A} → (q : a ＝ b) → (p : a ＝ a)
+                 → conjugate q p ＝ eq-congr q q p
+ conj-is-eq-cong refl p = refl
 
  conj-refl : {a b : A} → {q : a ＝ b} → conjugate q refl ＝ refl
  conj-refl {q = refl} = refl
@@ -85,6 +86,37 @@ show that they satisfy all height 1 equations of the original ones.
      → ΩA → ΩA → ΩA → ΩA
  (f ^ φ) x₀ x₁ x₂ = conjugate φ (ap₃ f x₀ x₁ x₂)
 
+ ^homo : (f : A → A → A → A)
+       → (φ : f a₀ a₀ a₀ ＝ a₀)
+       → (p p' q q' r r' : ΩA)
+       → (f ^ φ) p q r ∙ (f ^ φ) p' q' r' ＝ (f ^ φ) (p ∙ p') (q ∙ q') (r ∙ r')
+ ^homo f φ p p' q q' r r' =
+  (f ^ φ) p q r ∙ (f ^ φ) p' q' r'                                ＝⟨ refl ⟩
+  conjugate φ (ap₃ f p q r) ∙ conjugate φ (ap₃ f p' q' r')        ＝⟨ I ⟩
+  conjugate φ (ap₃ f p q r ∙ ap₃ f p' q' r')                      ＝⟨ II ⟩
+  conjugate φ (ap₃ f (p ∙ p') (q ∙ q') (r ∙ r'))                  ＝⟨ refl ⟩
+  (f ^ φ) (p ∙ p') (q ∙ q') (r ∙ r') ∎
+   where
+    I' : (p₀ p₁ : f a₀ a₀ a₀ ＝ f a₀ a₀ a₀)
+      → conjugate φ p₀ ∙ conjugate φ p₁ ＝ conjugate φ (p₀ ∙ p₁)
+    I' p₀ p₁ =
+     conjugate φ p₀ ∙ conjugate φ p₁      ＝⟨ I ⟩
+     eq-congr φ φ p₀ ∙ eq-congr φ φ p₁    ＝⟨ sym (eq-congr-∙ p₀ p₁) ⟩
+     eq-congr φ φ (p₀ ∙ p₁)               ＝⟨ sym (conj-is-eq-cong φ (p₀ ∙ p₁)) ⟩
+     conjugate φ (p₀ ∙ p₁) ∎
+      where
+       I = ap₂ _∙_ (conj-is-eq-cong φ p₀) (conj-is-eq-cong φ p₁)
+
+    I = I' (ap₃ f p q r) (ap₃ f p' q' r') 
+
+    II' : ap₃ f p q r ∙ ap₃ f p' q' r' ＝ ap₃ f (p ∙ p') (q ∙ q') (r ∙ r')
+    II' = ap₃-homo f p p' q q' r r'
+
+    II : conjugate φ (ap₃ f p q r ∙ ap₃ f p' q' r') ＝
+      conjugate φ (ap₃ f (p ∙ p') (q ∙ q') (r ∙ r'))
+    II =  ap (λ h → conjugate φ h) II'
+     
+
  module lift₃ (f g : A → A → A → A)
               (φ   : f a₀ a₀ a₀ ＝ a₀)
               (γ   : g a₀ a₀ a₀ ＝ a₀)
@@ -106,12 +138,12 @@ show that they satisfy all height 1 equations of the original ones.
     I = ap (conjugate φ) I'
      where
       I' : (ap₃ f) p p q ＝ conjugate ε ((ap₃ g) p p q)
-      I' = eq-lift p q ∙ sym (conj-is-eq-cong {q = ε} {p = (ap₃ g) p p q})
+      I' = eq-lift p q ∙ sym (conj-is-eq-cong ε (ap₃ g p p q))
        where
        eq-lift : {a b c d : A} (p₀ : a ＝ b) (p₁ : c ＝ d)
          → (ap₃ f) p₀ p₀ p₁
-         ＝ eq-cong (sym (eq a c)) (sym (eq b d)) ((ap₃ g) p₀ p₀ p₁)
-       eq-lift {a = a} {c = c} refl refl = sym (eq-cong-refl (sym (eq a c)))
+         ＝ eq-congr (sym (eq a c)) (sym (eq b d)) ((ap₃ g) p₀ p₀ p₁)
+       eq-lift {a = a} {c = c} refl refl = sym (eq-congr-refl (sym (eq a c)))
 
     II : conjugate φ (conjugate ε (ap₃ g p p q))
        ＝ conjugate (ε ∙ φ) (ap₃ g p p q)
@@ -204,35 +236,41 @@ The other equations are lifted analoguously.
   p₁ x _ _ = x
   p₂ _ x _ = x
 
+  ap₃-p₁ : {a a' b b' c c' : A}
+           (q₁ : a ＝ a') (q₂ : b ＝ b') (q₃ : c ＝ c')
+         → ap₃ p₁ q₁ q₂ q₃ ＝ q₁
+  ap₃-p₁ refl refl refl = refl
+
+  ap₃-p₂ : {a a' b b' c c' : A}
+           (q₁ : a ＝ a') (q₂ : b ＝ b') (q₃ : c ＝ c')
+         → ap₃ p₂ q₁ q₂ q₃ ＝ q₂
+  ap₃-p₂ refl refl refl = refl
+
   open lift₁ m p₂ μ refl eq₁ renaming (eq^ to eq^₁)
   open lift₂ m p₁ μ refl eq₂ renaming (eq^ to eq^₂)
   open lift₃ m p₁ μ refl eq₃ renaming (eq^ to eq^₃)
 
   is-set : (p : ΩA) → p ＝ refl
   is-set p =
-    p                                   ＝⟨ sym I ⟩
+    p                                   ＝⟨ sym (ap₃-p₂ refl p p) ⟩
+    ap₃ p₂ refl p p                     ＝⟨ sym (eq^₁ p refl) ⟩ 
     m^ refl p p                         ＝⟨ II ⟩
     m^ refl (p ∙ refl) (refl ∙ p)       ＝⟨ III ⟩
     m^ refl p refl ∙ m^ refl refl p     ＝⟨ IV ⟩
-    refl          ∎
+    refl                                ∎
    where
-    I : m^ refl p p ＝ p
-    I = m^ refl p p            ＝⟨ eq^₁ p refl ⟩
-        ap₃ p₂ refl p p        ＝⟨ p₂-duh p ⟩ 
-        p ∎
-     where 
-      p₂-duh : {a a' b b' c c' : A}
-              {q₁ : a ＝ a'} (q₂ : b ＝ b') {q₃ : c ＝ c'}
-            → ap₃ p₂ q₁ q₂ q₃ ＝ q₂
-      p₂-duh {q₁ = refl} refl {q₃ = refl} = refl
+    II  = ap₃ m^ refl (sym (∙refl p)) (sym (refl∙ p))
+    III = sym (^homo m μ refl refl p refl refl p)
+    IV  = ap₂ _∙_ IV' IV''
+     where
+      IV' = m^ refl p refl          ＝⟨ eq^₂ refl p ⟩
+            (p₁ ^ refl) refl p refl ＝⟨ refl ⟩
+            ap₃ p₁ refl p refl      ＝⟨ ap₃-p₁ refl p refl ⟩ 
+            refl
 
-    II : m^ refl p p ＝ m^ refl (p ∙ refl) (refl ∙ p)
-    II = ap₃ m^ refl (sym (∙refl p)) (sym (refl∙ p))
-
-    III : m^ refl (p ∙ refl) (refl ∙ p) ＝ m^ refl p refl ∙ m^ refl refl p
-    III = {!   !} -- m^-homomorphism
-
-    IV : m^ refl p refl ∙ m^ refl refl p ＝ refl ∙ refl
-    IV = ap₂ _∙_ {!   !} {!   !}
+      IV'' = m^ refl refl p          ＝⟨ eq^₃ refl p ⟩
+             (p₁ ^ refl) refl refl p ＝⟨ refl ⟩
+             ap₃ p₁ refl refl p      ＝⟨ ap₃-p₁ refl refl p ⟩ 
+             refl
      
 \end{code}
