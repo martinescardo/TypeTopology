@@ -39,24 +39,24 @@ record DisplayedFunctor {P : Precategory 𝓦 𝓣}
 
  field
   F₀ : {p : obj P}
-     → obj[ p ]
-     → obj[ F p ]
+     → obj[ p ] D
+     → obj[ F p ] D'
   F₁ : {a b : obj P}
        {f : hom a b}
-       {x : obj[ a ]}
-       {y : obj[ b ]}
+       {x : obj[ a ] D}
+       {y : obj[ b ] D}
      → hom[ f ] x y
      → hom[ F f ] (F₀ x) (F₀ y)
 
   disp-id-preserved : {c : obj P}
-                      {a : obj[ c ]}
+                      {a : obj[ c ] D}
                     → F₁ D-𝒊𝒅
                     ＝⟦ (λ - → hom[ - ] (F₀ a) (F₀ a)) , id-preserved c ⟧
                       D-𝒊𝒅
   disp-distrib : {a b c : obj P}
-                 {x : obj[ a ]}
-                 {y : obj[ b ]}
-                 {z : obj[ c ]}
+                 {x : obj[ a ] D}
+                 {y : obj[ b ] D}
+                 {z : obj[ c ] D}
                  {f : hom a b}
                  {g : hom b c}
                  {𝕗 : hom[ f ] x y}

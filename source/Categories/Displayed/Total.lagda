@@ -45,7 +45,7 @@ module _ {𝓤 𝓥 𝓦 𝓣 : Universe} where
 
    total-wild-category : WildCategory (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣)
    total-wild-category = wildcategory
-                        (Σ p ꞉ obj P , obj[ p ])
+                        (Σ p ꞉ obj P , obj[ p ] D)
                         (λ (a , x) (b , y) → Σ f ꞉ hom a b , hom[ f ] x y)
                         (𝒊𝒅 , D-𝒊𝒅)
                         (λ (g , 𝕘) (f , 𝕗) → g ◦ f , 𝕘 ○ 𝕗)
@@ -73,7 +73,7 @@ category formed of these is a category.
   open PrecategoryNotation (TotalPrecategory D)
   open DisplayedPrecategoryNotation D
   
-  total-iso-join :  {a b : obj P} {x : obj[ a ]} {y : obj[ b ]}
+  total-iso-join :  {a b : obj P} {x : obj[ a ] D} {y : obj[ b ] D}
                  → (Σ f ꞉ a ≅ b , x ≅[ f ] y) ≃ ((a , x) ≅ (b , y))
   total-iso-join {a} {b} {x} {y} = qinveq F (F⁻¹ , has-section , is-section)
    where
@@ -100,14 +100,14 @@ category formed of these is a category.
      where
       f-eq = to-≅-＝ refl
 
-      lem : {x y : obj P}
-            {xx : obj[ x ]}
-            {yy : obj[ y ]}
-            {f f' : x ≅ y}
+      lem : {a b : obj P}
+            {x : obj[ a ] D}
+            {y : obj[ b ] D}
+            {f f' : a ≅ b}
             (e : f ＝ f')
-            (ff : xx ≅[ f ] yy)
-          → pr₁ (transport (λ - → xx ≅[ - ] yy) e ff)
-          ＝ transport _ (ap pr₁ e) (pr₁ ff)
+            (𝕗 : x ≅[ f ] y)
+          → pr₁ (transport (λ - → x ≅[ - ] y) e 𝕗)
+          ＝ transport _ (ap pr₁ e) (pr₁ 𝕗)
       lem refl _ = refl
 
       𝕗' = (pr₂ ((F⁻¹ ∘ F) e))
@@ -155,7 +155,7 @@ category formed of these is a category.
        total-isomorphism = ((a , x) ≅ (b , y))
 
        transport-equiv-iso : (e : a ＝ b)
-                           → (transport obj[_] e x ＝ y)
+                           → (transport (λ - → obj[ - ] D) e x ＝ y)
                            ≃ x ≅[ id-to-iso a b e ] y
        transport-equiv-iso refl = (D-id-to-iso ⟨ D ⟩ refl x y)
                                 , D-id-to-iso-is-equiv D refl x y

@@ -90,15 +90,15 @@ We now define the displayed category of magmas.
    is-disp-cat : (a : obj (SetPrecategory fe))
                  (b : obj (SetPrecategory fe))
                  (e : a ＝ b)
-                 (x : obj[ a ])
-                 (y : obj[ b ])
+                 (x : obj[ a ] DispPreMagma)
+                 (y : obj[ b ] DispPreMagma)
                → is-equiv (D-id-to-iso DispPreMagma {a} {b} e x y)
    is-disp-cat a@(A , sA) b refl _·_ _*_ = (iso-to-id , has-section) 
                                          , (iso-to-id , is-section)
     where
      iso-to-id : _≅[_]_ {_} {_} {_} {_} {_} {_} {a} {a}
                  _·_ (id , id , refl , refl) _*_
-              → dependent-Id obj[_] {a} refl _·_ _*_
+              → dependent-Id (λ - → obj[ - ] DispPreMagma) {a} refl _·_ _*_
      iso-to-id (f , _) = dfunext fe λ x → dfunext fe λ y → f x y
 
      has-section : (D-id-to-iso DispPreMagma refl _·_ _*_) ∘ iso-to-id

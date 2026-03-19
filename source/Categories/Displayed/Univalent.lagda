@@ -34,9 +34,9 @@ module _ {P : Precategory 𝓤 𝓥} (D : DisplayedPrecategory 𝓦 𝓣 P) wher
 
  D-id-to-iso : {a b : obj P}
                (e : a ＝ b)
-               (x : obj[ a ])
-               (y : obj[ b ])
-             → x ＝⟦ obj[_] , e ⟧ y
+               (x : obj[ a ] D)
+               (y : obj[ b ] D)
+             → x ＝⟦ (λ - → obj[ - ] D) , e ⟧ y
              → x ≅[ id-to-iso a b e ] y
  D-id-to-iso refl x _ refl = D-𝒊𝒅 , D-𝒊𝒅 , h , h
   where
@@ -53,8 +53,8 @@ category.
  is-displayed-category : (𝓤 ⊔ 𝓦 ⊔ 𝓣) ̇
  is-displayed-category = {a b : obj P}
                          (e : a ＝ b)
-                         (x : obj[ a ])
-                         (y : obj[ b ])
+                         (x : obj[ a ] D)
+                         (y : obj[ b ] D)
                        → is-equiv (D-id-to-iso e x y)
 
  is-displayed-category-is-prop : (fe : Fun-Ext)
@@ -64,8 +64,8 @@ category.
   where
    I : (a b : obj P)
        (e : a ＝ b)
-       (x : obj[ a ])
-       (y : obj[ b ])
+       (x : obj[ a ] D)
+       (y : obj[ b ] D)
      → is-prop (is-equiv (D-id-to-iso e x y))
    I a b e x y = being-equiv-is-prop (λ 𝓤 𝓥 → fe {𝓤} {𝓥})
                                      (D-id-to-iso e x y)
