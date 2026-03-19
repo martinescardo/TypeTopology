@@ -79,7 +79,7 @@ right inverse equalities are a proposition.
 
 \begin{code}
 
-module _ (P : Precategory 𝓤 𝓥) where
+module isomorphism-properties (P : Precategory 𝓤 𝓥) where
  open WildCategoryNotation ⟨ P ⟩
 
  inverses-are-lc : {a b : obj P}
@@ -123,5 +123,7 @@ of the chosen morphism.
          → ⌜ f ⌝ ＝ ⌜ f' ⌝
          → f ＝ f'
  to-≅-＝ = to-subtype-＝ being-iso-is-prop
+
+open isomorphism-properties public hiding (to-≅-＝)
 
 \end{code}

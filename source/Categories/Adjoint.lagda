@@ -23,7 +23,19 @@ module Categories.Adjoint where
 
 \end{code}
 
-We define a left adjoint. This consists of ...
+A functor F : A → B is left adjoint [1], if there exists
+ - a functor G : B → A,
+ - a natural transformation η : id A → GF, the unit, and
+ - a natual transformation ε : FG → id B, the counit.
+
+Such that
+
+ - (εF)(Fη) = id F, and
+ - (Gε)(ηG) = id G.
+
+[1] The Univalent Foundations Program (2013), Homotopy Type Theory: Univalent
+Foundations of Mathematics. Institute for Advanced Study:
+https://homotopytypetheory.org/book.
 
 \begin{code}
 

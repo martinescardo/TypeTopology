@@ -10,6 +10,7 @@ open import Categories.Wild
 open import Categories.Pre 
 open import Categories.Univalent
 open import Categories.Notation.Wild renaming (⌜_⌝ to ⌜_⌝')
+open import Categories.Notation.Pre renaming (⌜_⌝ to ⌜_⌝')
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv hiding (_≅_) renaming (inverse to e-inverse)
@@ -113,6 +114,10 @@ to that of isomorphism in the magma wild category.
 
 \begin{code}
 
+module _ {𝓤 : Universe} (fe : Fun-Ext) where
+ open magma renaming (_≅_ to _M≅_)
+ open PrecategoryNotation (MagmaPrecategory {𝓤} fe)
+
  sns-equiv-iso : (A B : Magma)
                → (A M≅ B) ≃ (A ≅ B)
  sns-equiv-iso A@(a , _·_ , sA) B@(b , _*_ , sB)
@@ -155,7 +160,7 @@ to that of isomorphism in the magma wild category.
 
    is-section : toiso ∘ fromiso ∼ id
    is-section e@((f , fp) , (g , gp) , lg , rg)
-    = to-≅-＝ MagmaPrecategory {A} {B} (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl)
+    = to-≅-＝ {_} {_} {_} {A} {B} (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl)
    
    has-section : fromiso ∘ toiso ∼ id
    has-section (f , e@((g , gp) , (g' , gp')) , fp)
@@ -186,7 +191,7 @@ And finally show that this is a category.
 \begin{code}
 
  MagmaCategory : is-univalent 𝓤 → Category (𝓤 ⁺) 𝓤
- MagmaCategory ua = MagmaPrecategory , is-cat
+ MagmaCategory ua = (MagmaPrecategory fe) , is-cat
   where
    pointwise-eq : (A B : Magma)
       → id-to-iso A B
@@ -196,8 +201,8 @@ And finally show that this is a category.
     where
      inv-eq' = to-subtype-＝ (λ f → Π₂-is-prop fe (λ _ _ → sB)) refl
 
-     left-inv = hom-is-set MagmaPrecategory {A} {A} _ _
-     right-inv = hom-is-set MagmaPrecategory {A} {A} _ _
+     left-inv = hom-is-set (MagmaPrecategory fe) {A} {A} _ _
+     right-inv = hom-is-set (MagmaPrecategory fe) {A} {A} _ _
     
      underlying-is-iso = underlying-morphism-is-isomorphism {_} {_} {_} {A} {B}
 
@@ -206,7 +211,7 @@ And finally show that this is a category.
                             (⌜ characterization-of-magma-＝ ua A B ⌝ refl) 
      underlying-equality = to-Σ-＝ (inv-eq' , to-×-＝ left-inv right-inv)
 
-   is-cat : is-category MagmaPrecategory
+   is-cat : is-category (MagmaPrecategory fe)
    is-cat A B = equiv-closed-under-∼
                  ⌜ characterization-of-magma-＝ ua A B ⌝
                  (id-to-iso A B)
