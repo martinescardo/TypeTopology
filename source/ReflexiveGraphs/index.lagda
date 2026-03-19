@@ -23,6 +23,7 @@ that outline the reflexive graph approach to SIP.
 
 module ReflexiveGraphs.index where
 
+import ReflexiveGraphs.Constructions
 import ReflexiveGraphs.Displayed
 import ReflexiveGraphs.Type
 import ReflexiveGraphs.Univalent
