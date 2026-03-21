@@ -8,14 +8,6 @@ LEMMA (Taylor, 1977).
   non-trivial idempotent Maltsev condition, then π₁(X, x₀) is Abelian for all
   x₀ ∈ X.
 
-I will start with a simple example of a ternary weak near-unanimity:
-
-    w(x, x, y) = w(x, y, x) = w(y, x, x)
-    w(x, x, x) = x
-
-As before, we use the same starting point. I will start developping a general
-framework of ternary operations in this file.
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -23,8 +15,26 @@ module gist.TaylorsLemma where
 
 open import MLTT.Spartan
 
-sym : {A : Type} {a b : A} → a ＝ b → b ＝ a
-sym refl = refl
+sym : {A : Type} {a b : A} → (a ＝ b) → (b ＝ a)
+sym = _⁻¹
+
+sym-lcancel : {A : Type} {a b : A} (p : a ＝ b)
+            → sym p ∙ p ＝ refl
+sym-lcancel refl = refl
+
+sym-rcancel : {A : Type} {a b : A} (p : a ＝ b)
+            → p ∙ sym p ＝ refl
+sym-rcancel refl = refl
+
+∙-assoc : {A : Type} {a b c d : A} (p : a ＝ b) (q : b ＝ c) (r : c ＝ d)
+        → p ∙ (q ∙ r) ＝ (p ∙ q) ∙ r
+∙-assoc p refl refl = refl
+
+refl∙ : {A : Type} {a b : A} (q : a ＝ b) → refl ∙ q ＝ q
+refl∙ refl = refl
+
+refl' : {A : Type} → (a : A) → a ＝ a
+refl' a = refl
 
 ap₃ : {A B C D : Type} (f : A → B → C → D) {a₁ a₂ : A} {b₁ b₂ : B} {c₁ c₂ : C}
     → a₁ ＝ a₂
@@ -43,10 +53,37 @@ ap₃-homo : {A B C D : Type}
            ＝ (ap₃ f) (pa ∙ qa) (pb ∙ qb) (pc ∙ qc)
 ap₃-homo f {a₁ = a} {b₁ = b} {c₁ = c} refl refl refl refl refl refl = refl
 
+ap₃-sym : {A B C D : Type}
+          (f : A → B → C → D)
+          {a a' : A} {b b' : B} {c c' : C}
+          (p : a ＝ a')
+          (q : b ＝ b')
+          (r : c ＝ c')
+        → sym (ap₃ f p q r) ＝ ap₃ f (sym p) (sym q) (sym r)
+ap₃-sym f refl refl refl = refl
+       
+
+_%_ : {A : Type} {a b : A}
+    → (q : a ＝ b) → (p : a ＝ a) → b ＝ b
+q % p = (sym q) ∙ p ∙ q
+
+refl-% : {A : Type} {a : A} (p : a ＝ a) → refl % p ＝ p
+refl-% p =
+  sym refl ∙ p ∙ refl ＝⟨ refl ⟩
+  sym refl ∙ p        ＝⟨ ap (λ x → x ∙ p) refl ⟩
+  refl ∙ p            ＝⟨ refl∙ p ⟩
+  p ∎
+
+%-refl : {A : Type} {a : A} (p : a ＝ a) → p % refl ＝ refl
+%-refl p =
+  sym p ∙ refl ∙ p ＝⟨ refl ⟩
+  sym p ∙ p        ＝⟨ sym-lcancel p ⟩
+  refl ∎
+
 \end{code}
 
 The binary case is solved in Tom de Jong's [CommutativeLoopSpaces]. But I will
-include the sketch here since this technique will be necessary for the $n$-ary
+include the sketch here since this technique will be necessary for the ternary
 case. Prove that ap₂ f is onto using the rectangle
 
   f a a ==idem== a ==idem== f a a
@@ -55,75 +92,173 @@ case. Prove that ap₂ f is onto using the rectangle
     |            |            |
   f a a ==idem== a ==idem== f a a
 
-Where q' = q^idem. And the fact that top and bottom simplifies to refl.
-Then use the usual Taylor's argument for binary operations
-
- f q refl ∙ f p p ＝ f q refl ∙ f refl p ∙ f p refl
-                  ＝ f refl p ∙ f q refl ∙ symf ∙ f refl p ∙ sym symf
-                  ＝ f refl p ∙ f q refl ∙ f symf' ∙ f refl p ∙ f (sym symf')
-                  ＝ f refl p ∙ f q refl ∙ f refl p^symf'
-                  ＝ f refl p ∙ f refl p^symf' ∙ f q refl
-                  ＝ f refl p ∙ f refl p^symf' ∙ f q refl
-                  ＝ f p p ∙ f q refl
-
-And repeat for f refl q.
+where q' is chosen so that the left square commutes, and the fact that top and
+bottom simplifies to refl.
 
 \begin{code}
 
-module _ {D    : Type}
-         (w    : D → D → D → D)
-         (idem : (x : D) → w x x x ＝ x)
-         (eq₀  : (x y : D) → w x x y ＝ w y x x) -- do I need eq₀ a a ＝ refl ??
-         (eq₁  : (x y : D) → w y x x ＝ w x y x)
-         (eq₂  : (x y : D) → w x y x ＝ w x x y)
-         {a₀   : D}
-         where 
+module ternary-idempotent
+       {A    : Type}
+       (f    : A → A → A → A)
+       (idem : (x : A) → f x x x ＝ x)
+       where 
 
- ΩD ΩDʷ : Type
- ΩD  = a₀ ＝ a₀
- ΩDʷ = w a₀ a₀ a₀ ＝ w a₀ a₀ a₀
+ idem^ : {a b : A}
+       → (p : a ＝ b)
+       → ap₃ f p p p ∙ idem b ＝ idem a ∙ p
+ idem^ {a} refl = refl∙ (idem a) 
 
- w' : ΩD → ΩD → ΩD → ΩDʷ
- w' = ap₃ w
+ ap₃-onto : {a : A}
+         → (p : f a a a ＝ f a a a)
+         → Σ λ p' → ap₃ f p' p' p' ＝ p
+ ap₃-onto {a} p = p' , hp
+   where
+    p' : a ＝ a
+    p' = (idem a) % p
 
- pre-commutes₀ : {p₀ p₁ p₂ : ΩD}
-           → (w' refl p₁ p₂) ∙ (w' p₀ refl refl)
-             ＝ (w' p₀ refl refl) ∙ (w' refl p₁ p₂)
- pre-commutes₀ {p₀} {p₁} {p₂} = left ∙ sym right
-  where
-   refl∙ : (p : a₀ ＝ a₀) → refl ∙ p ＝ p
-   refl∙ p = (sym (∙-agrees-with-∙' refl p))
-
-   left : (w' refl p₁ p₂) ∙ (w' p₀ refl refl) ＝ w' p₀ p₁ p₂
-   left = ap₃-homo w refl p₀ p₁ refl p₂ refl
-          ∙ ap₃ w' (refl∙ p₀) refl refl
-   right : (w' p₀ refl refl) ∙ (w' refl p₁ p₂) ＝ w' p₀ p₁ p₂
-   right = ap₃-homo w p₀ refl refl p₁ refl p₂
-           ∙ ap₃ w' refl (refl∙ p₁) (refl∙ p₂)
-  
- commutes₀ : {p₀ q₀ q₁ q₂ : ΩD}
-           → (w' q₀ q₁ q₂) ∙ (w' p₀ refl refl)
-             ＝ (w' p₀ refl refl) ∙ (w' q₀ q₁ q₂)
- commutes₀ {p₀} {q₀} {q₁} {q₂} = {!   !}
-   -- x : Σ r₁ ∶ ΩD , Σ r₂ ∶ ΩD , w' q₀ q₁ q₂ ＝ w' refl r₁ r₂
-   -- x = {!   !}
+    hp : ap₃ f p' p' p' ＝ p
+    hp = ap₃ f p' p' p' ∙ refl          ＝⟨ I ⟩
+         ap₃ f p' p' p' ∙ (ι ∙ ι')      ＝⟨ II ⟩
+         (ap₃ f p' p' p' ∙ ι) ∙ ι'      ＝⟨ III ⟩
+         (ι ∙ p')             ∙ ι'      ＝⟨ refl ⟩
+         ι ∙ ((ι' ∙ p) ∙ ι) ∙ ι'        ＝⟨ IV ⟩
+         (ι ∙ (ι' ∙ p)) ∙ ι ∙ ι'        ＝⟨ V ⟩
+         (ι ∙ (ι' ∙ p)) ∙ (ι ∙ ι')      ＝⟨ VI ⟩
+         ι ∙ (ι' ∙ p)                   ＝⟨ VII ⟩
+         (ι ∙ ι') ∙ p                   ＝⟨ VIII ⟩
+         refl ∙ p                       ＝⟨ refl∙ p ⟩
+         p ∎
+     where
+      ι = idem a
+      ι' = sym ι
+      I = ap (λ q → ap₃ f p' p' p' ∙ q) (sym (sym-rcancel ι))
+      II = ∙-assoc (ap₃ f p' p' p') ι ι'
+      III = ap (λ q → q ∙ ι') (idem^ p')
+      IV = ap (λ q → q ∙ ι') (∙-assoc ι (ι' ∙ p) ι)
+      V = sym (∙-assoc (ι ∙ (ι' ∙ p)) ι ι')
+      VI = ap (λ q → (ι ∙ (ι' ∙ p)) ∙ q) (sym-rcancel ι)
+      VII = ∙-assoc ι ι' p
+      VIII = ap (λ q → q ∙ p) (sym-rcancel ι)
    
 \end{code}
 
+Now, we get to the fun part! I will show Taylor's lemma for ternary idempotent
+weak near-unanimity, which is an operation w : A → A → A → A, s.t.,
 
- pre-lemma : (p₀ p₁ p₂ : ΩD)
-             (q₀ q₁ q₂ : ΩD)
-           → (w' p₀ p₁ p₂) ∙ (w' q₀ q₁ q₂) ＝ (w' q₀ q₁ q₂) ∙ (w' p₀ p₁ p₂)
- pre-lemma p₀ p₁ p₂ q₀ q₁ q₂ = {!   !}
+  w x x y = w x y x = w y x x.
 
- taylors-lemma : (p : ΩD) → (q : ΩD) → p ∙ q ＝ q ∙ p
- taylors-lemma p q = (ap₂ _∙_ (sym (w'-idem p)) (sym (w'-idem q)))
-                   ∙ (sym (eq-congr-∙ (w' p p p) (w' q q q)))
-                   ∙ (ap (eq-congr (idem a₀) (idem a₀)) (pre-lemma p p p q q q))
-                   ∙ eq-congr-∙ (w' q q q) (w' p p p)
-                   ∙ (ap₂ _∙_ (w'-idem q) (w'-idem p))
+\begin{code}
+
+module ternary-wnu (A    : Type)
+                   (w    : A → A → A → A)
+                   (idem : (a : A) → w a a a ＝ a)
+                   (wnu₁ : (a b : A) → w a a b ＝ w b a a)
+                   (wnu₂ : (a b : A) → w a a b ＝ w a b a)
+                   where
+
+ w^ : {a : A} → a ＝ a → a ＝ a → a ＝ a → w a a a ＝ w a a a
+ w^ = ap₃ w
+
+ base-1 : {a : A}
+        → (p₀ p₁ p₂ : a ＝ a)
+        → w^ p₀ refl refl ∙ w^ refl p₁ p₂ ＝ w^ refl p₁ p₂ ∙ w^ p₀ refl refl
+ base-1 p₀ p₁ p₂ =
+  w^ p₀ refl refl ∙ w^ refl p₁ p₂         ＝⟨ I ⟩
+  w^ (p₀ ∙ refl) (refl ∙ p₁) (refl ∙ p₂)  ＝⟨ ap₃ w^ refl (refl∙ p₁) (refl∙ p₂) ⟩
+  w^ p₀ p₁ p₂                             ＝⟨ sym (ap₃ w^ (refl∙ p₀) refl refl) ⟩
+  w^ (refl ∙ p₀) (p₁ ∙ refl) (p₂ ∙ refl)  ＝⟨ IV ⟩
+  w^ refl p₁ p₂ ∙ w^ p₀ refl refl ∎
+   where
+    I = ap₃-homo w p₀ refl refl p₁ refl p₂
+    IV = sym (ap₃-homo w refl p₀ p₁ refl p₂ refl)
+ 
+ open ternary-idempotent w idem 
+
+ wnu₁^ : {a a' b b' : A}
+       → (p : a ＝ a') (q : b ＝ b')
+       → ap₃ w p p q ∙ wnu₁ a' b' ＝ wnu₁ a b ∙ ap₃ w q p p
+ wnu₁^ {a = a} {b = b} refl refl = refl∙ (wnu₁ a b)
+ 
+ everything-is-^1 : {a : A} (q : a ＝ a)
+                  → Σ λ q' → Σ λ q'' → w^ q q q ＝ w^ refl q' q''
+ everything-is-^1 {a} q = q' , q'' , eq
   where
-   w'-idem : {a b : D}
-           → (p₀ : a ＝ b)
-           → eq-congr (idem a) (idem b) ((ap₃ w) p₀ p₀ p₀) ＝ p₀
-   w'-idem {a} refl = eq-congr-refl (idem a)
+   e = pr₁ (ap₃-onto (wnu₁ a a))
+   he : w^ e e e ＝ wnu₁ a a
+   he = pr₂ (ap₃-onto (wnu₁ a a))
+
+   eq' : w^ q q refl ＝ w^ refl (e ∙ q ∙ sym e) (e ∙ q ∙ sym e)
+   eq' = w^ q q refl                                ＝⟨ I ⟩
+        w^ q q refl ∙ (ε ∙ ε')                     ＝⟨ II ⟩
+        (w^ q q refl ∙ ε) ∙ ε'                     ＝⟨ III ⟩
+        (ε ∙ w^ refl q q) ∙ ε'                     ＝⟨ IV ⟩
+        w^ e e e ∙ w^ refl q q ∙ sym (w^ e e e)    ＝⟨ V ⟩
+        w^ e e e ∙ w^ refl q q ∙ w^ e' e' e'       ＝⟨ VI ⟩
+        w^ e (e ∙ q) (e ∙ q)   ∙ w^ e' e' e'       ＝⟨ VII ⟩
+        w^ (e ∙ e') (e ∙ q ∙ e') (e ∙ q ∙ e')      ＝⟨ VIII ⟩
+        w^ refl  (e ∙ q ∙ e') (e ∙ q ∙ e')      ∎
+    where
+     ε = wnu₁ a a
+     ε' = sym ε
+     e' = sym e
+
+     I = ap (λ p → w^ q q refl ∙ p) (sym (sym-rcancel ε))
+     II = ∙-assoc (w^ q q refl) ε ε'
+     III = ap (λ p → p ∙ ε') (wnu₁^ q refl)
+     IV = ap (λ p → p ∙ w^ refl q q ∙ sym p) (sym he)
+     V = ap (λ p → w^ e e e ∙ w^ refl q q ∙ p) (ap₃-sym w e e e)
+     VI = ap (λ p → p ∙ w^ e' e' e') (ap₃-homo w e refl e q e q)
+     VII = ap₃-homo w e e' (e ∙ q) e' (e ∙ q) e'
+     VIII = ap (λ p → w^ p (e ∙ q ∙ e') (e ∙ q ∙ e')) (sym-rcancel e)
+
+   q' = e ∙ q ∙ sym e
+   q'' = e ∙ q ∙ sym e ∙ q
+   eq : w^ q q q ＝ w^ refl q' q''
+   eq = w^ q q q                             ＝⟨ I ⟩
+        w^ (q ∙ refl) (q ∙ refl) (refl ∙ q)  ＝⟨ II ⟩
+        w^ q q refl ∙ w^ refl refl q         ＝⟨ III ⟩
+        w^ refl q' q' ∙ w^ refl refl q       ＝⟨ IV ⟩
+        w^ refl (q' ∙ refl) (q' ∙ q)         ＝⟨ refl ⟩
+        w^ refl q' q''    ∎
+    where
+     I = sym (ap₃ w^ refl refl (refl∙ q))
+     II = sym (ap₃-homo w q refl q refl refl q)
+     III = ap (λ p → p ∙ w^ refl refl q) eq'
+     IV = ap₃-homo w refl refl q' refl q' q
+ 
+ commutes₁ : {a : A}
+           → (p q : a ＝ a)
+           → (w^ p refl refl ∙ w^ q q q ＝ w^ q q q ∙ w^ p refl refl)
+ commutes₁ p q = 
+  w^ p refl refl ∙ w^ q q q                        ＝⟨ I ⟩ 
+  w^ p refl refl ∙ w^ refl q' q''                  ＝⟨ base-1 p q' q'' ⟩ 
+  w^ refl q' q'' ∙ w^ p refl refl                  ＝⟨ II ⟩
+  w^ q q q       ∙ w^ p refl refl                  ∎
+   where
+    q'  = pr₁ (everything-is-^1 q)
+    q'' = pr₁ (pr₂ (everything-is-^1 q))
+    he : w^ q q q ＝ w^ refl q' q''
+    he  = pr₂ (pr₂ (everything-is-^1 q))
+
+    I = ap (λ x → w^ p refl refl ∙ x) he
+    II = sym (ap (λ x → x ∙ w^ p refl refl) he)
+ 
+ pre-lemma : {a : A}
+           → (p q : a ＝ a)
+           → w^ p p p ∙ w^ q q q ＝ w^ q q q ∙ w^ p p p
+ pre-lemma p q = {!   !}
+
+ taylors-lemma : {a : A} → (p q : a ＝ a) → p ∙ q ＝ q ∙ p
+ taylors-lemma p q = {!   !}
+
+\end{code}
+
+
+
+
+BEWARE SOME OLD CODE BELOW!
+
+
+
+
+
