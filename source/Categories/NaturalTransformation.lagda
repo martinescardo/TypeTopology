@@ -62,7 +62,7 @@ id-natural-transformation : {A : Precategory 𝓤 𝓥}
                             (F : Functor A B)
                           → NaturalTransformation F F
 id-natural-transformation {_} {_} {_} {_} {A} {B} F'
- = record { transf = λ _ → 𝒊𝒅 ; natural = inter }
+ = nat-trans (λ _ → 𝒊𝒅) inter
  where
   open PrecategoryNotation A
   open PrecategoryNotation B
