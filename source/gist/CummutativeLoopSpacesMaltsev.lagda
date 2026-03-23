@@ -7,11 +7,37 @@ lemma.
 
 {-# OPTIONS --safe --without-K #-}
 
-module gist.MaltsevMakesLoopsCommute where
+module gist.CummutativeLoopSpacesMaltsev where
 
 open import Agda.Primitive renaming (Set to Type)
 open import gist.ThereAreNoHigherSemilattices2
-open import gist.ThereAreNoHigherSemilattices3
+
+∙-lcancel : {A : Type} {a b c : A} {p : a ＝ b} {q q' : b ＝ c}
+          → p ∙ q ＝ p ∙ q'
+          → q ＝ q'
+∙-lcancel {p = refl} {q} {q'} h = sym (refl∙ q) ∙ h ∙ (refl∙ q')
+
+sym-cancel-l : {A : Type} {a b : A} (p : a ＝ b) → refl ＝ p ∙ sym p
+sym-cancel-l refl = refl
+
+sym-cancel-r : {A : Type} {a b : A} (p : a ＝ b) → sym p ∙ p ＝ refl
+sym-cancel-r refl = refl
+
+∙-assoc :  {A : Type} {a b c d : A} (p : a ＝ b) (q : b ＝ c) (r : c ＝ d)
+        → (p ∙ q) ∙ r ＝ p ∙ (q ∙ r)
+∙-assoc refl refl refl = refl
+
+ap₃ : {A B C D : Type} {a a' : A} {b b' : B} {c c' : C}
+      (f : A → B → C → D) (p : a ＝ a') (q : b ＝ b') (r : c ＝ c')
+    → (f a b c ＝ f a' b' c')  
+ap₃ f refl refl refl = refl
+
+ap₃-homo : {A B C D : Type} (f : A → B → C → D)
+           {a a' a'' : A} (p : a ＝ a') (p' : a' ＝ a'')
+           {b b' b'' : B} (q : b ＝ b') (q' : b' ＝ b'')
+           {c c' c'' : C} (r : c ＝ c') (r' : c' ＝ c'')
+         → ap₃ f p q r ∙ ap₃ f p' q' r' ＝ ap₃ f (p ∙ p') (q ∙ q') (r ∙ r')
+ap₃-homo f refl refl refl refl refl refl = refl
 
 eq-congr-∙' : {A : Type} {a a' a'' b b' b'' : A}
               (h₁ : a' ＝ a'') (h₂ : b' ＝ b'')
@@ -19,9 +45,6 @@ eq-congr-∙' : {A : Type} {a a' a'' b b' b'' : A}
               (p : a ＝ b)
             → eq-congr h₁ h₂ (eq-congr h₃ h₄ p) ＝ eq-congr (h₃ ∙ h₁) (h₄ ∙ h₂) p
 eq-congr-∙' refl refl refl refl p = refl
-
-sym-cancel-r : {A : Type} {a b : A} (p : a ＝ b) → sym p ∙ p ＝ refl
-sym-cancel-r refl = refl
 
 module maltsev-operation
        (A   : Type)
