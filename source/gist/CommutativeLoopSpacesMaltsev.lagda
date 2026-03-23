@@ -11,11 +11,14 @@ module gist.CummutativeLoopSpacesMaltsev where
 
 open import Agda.Primitive renaming (Set to Type)
 open import gist.ThereAreNoHigherSemilattices2
+ using (_＝_; refl; ap; ap₂;
+  _∙_; sym; refl∙; ∙refl; _＝⟨_⟩_; _∎;
+  eq-congr; eq-congr-∙; eq-congr-refl;
+  module pointed-type)
 
-∙-lcancel : {A : Type} {a b c : A} {p : a ＝ b} {q q' : b ＝ c}
-          → p ∙ q ＝ p ∙ q'
-          → q ＝ q'
-∙-lcancel {p = refl} {q} {q'} h = sym (refl∙ q) ∙ h ∙ (refl∙ q')
+∙-assoc :  {A : Type} {a b c d : A} (p : a ＝ b) (q : b ＝ c) (r : c ＝ d)
+        → (p ∙ q) ∙ r ＝ p ∙ (q ∙ r)
+∙-assoc refl refl refl = refl
 
 sym-cancel-l : {A : Type} {a b : A} (p : a ＝ b) → refl ＝ p ∙ sym p
 sym-cancel-l refl = refl
@@ -23,9 +26,10 @@ sym-cancel-l refl = refl
 sym-cancel-r : {A : Type} {a b : A} (p : a ＝ b) → sym p ∙ p ＝ refl
 sym-cancel-r refl = refl
 
-∙-assoc :  {A : Type} {a b c d : A} (p : a ＝ b) (q : b ＝ c) (r : c ＝ d)
-        → (p ∙ q) ∙ r ＝ p ∙ (q ∙ r)
-∙-assoc refl refl refl = refl
+∙-lcancel : {A : Type} {a b c : A} {p : a ＝ b} {q q' : b ＝ c}
+          → p ∙ q ＝ p ∙ q'
+          → q ＝ q'
+∙-lcancel {p = refl} {q} {q'} h = sym (refl∙ q) ∙ h ∙ (refl∙ q')
 
 ap₃ : {A B C D : Type} {a a' : A} {b b' : B} {c c' : C}
       (f : A → B → C → D) (p : a ＝ a') (q : b ＝ b') (r : c ＝ c')

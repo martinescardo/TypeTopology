@@ -112,6 +112,16 @@ eq-cong-refl : {A : Type} {a a' : A} (q : a ＝ a')
              → eq-cong q q refl ＝ refl
 eq-cong-refl refl = refl
 
+eq-cong-ap : {A B C D : Type}
+             (f : A → B → C → D)
+             {a a' a'' a''' : A} {b b' b'' b''' : B} {c c' c'' c''' : C}
+             (qa : a' ＝ a) (qa' : a'' ＝ a''') (pa : a' ＝ a'')
+             (qb : b' ＝ b) (qb' : b'' ＝ b''') (pb : b' ＝ b'')
+             (qc : c' ＝ c) (qc' : c'' ＝ c''') (pc : c' ＝ c'')
+           → eq-cong (ap₃ f qa qb qc) (ap₃ f qa' qb' qc') (ap₃ f pa pb pc)
+             ＝ ap₃ f (eq-cong qa qa' pa) (eq-cong qb qb' pb) (eq-cong qc qc' pc)
+eq-cong-ap f refl refl pa refl refl pb refl refl pc = refl
+
 \end{code}
 
 The binary case is solved in Tom de Jong's [CommutativeLoopSpaces]. But I will
@@ -181,7 +191,6 @@ weak near-unanimity, which is an operation w : A → A → A → A, s.t.,
 
 \begin{code}
 
-
 module ternary-wnu (A    : Type)
                    (w    : A → A → A → A)
                    (idem : (a : A) → w a a a ＝ a)
@@ -232,9 +241,9 @@ module ternary-wnu (A    : Type)
        → ap₃ w p p q ∙ wnu₁ a' b' ＝ wnu₁ a b ∙ ap₃ w q p p
  wnu₁^ {a = a} {b = b} refl refl = refl∙ (wnu₁ a b)
  
- everything-is-^1 : {a : A} (q : a ＝ a)
+ reduce₁ : {a : A} (q : a ＝ a)
                   → Σ λ q' → Σ λ q'' → w^ q q q ＝ w^ refl q' q''
- everything-is-^1 {a} q = q' , q'' , eq
+ reduce₁ {a} q = q' , q'' , eq
   where
    e = pr₁ (ap₃-onto (wnu₁ a a))
    he : w^ e e e ＝ wnu₁ a a
@@ -288,13 +297,53 @@ module ternary-wnu (A    : Type)
   w^ refl q' q'' ∙ w^ p refl refl                  ＝⟨ II ⟩
   w^ q q q       ∙ w^ p refl refl                  ∎
    where
-    q'  = pr₁ (everything-is-^1 q)
-    q'' = pr₁ (pr₂ (everything-is-^1 q))
+    q'  = pr₁ (reduce₁ q)
+    q'' = pr₁ (pr₂ (reduce₁ q))
     he : w^ q q q ＝ w^ refl q' q''
-    he  = pr₂ (pr₂ (everything-is-^1 q))
+    he  = pr₂ (pr₂ (reduce₁ q))
 
     I = ap (λ x → w^ p refl refl ∙ x) he
     II = sym (ap (λ x → x ∙ w^ p refl refl) he)
+
+ wnu₂^ : {a a' b b' : A} (p : a ＝ b) (p' : a' ＝ b')
+       →  ap₃ w p p' p ＝ eq-cong (wnu₂ a a') (wnu₂ b b') (ap₃ w p p p')
+ wnu₂^ refl refl = sym (eq-cong-refl (wnu₂ _ _))
+
+
+ reduce₂ : {a : A} (q : a ＝ a)
+         → Σ λ q' → Σ λ q'' → ap₃ w q q q ＝ ap₃ w q' refl q''
+ reduce₂ {a} q = q , q'' , hq
+  where
+   e : a ＝ a
+   e = pr₁ (ap₃-onto (wnu₂ a a))
+
+   he : wnu₂ a a ＝ ap₃ w e e e
+   he = sym (pr₂ (ap₃-onto (wnu₂ a a)))
+
+   q'' = q ∙ (eq-cong e e q)
+
+   part-1 : ap₃ w refl q refl ＝ ap₃ w refl refl (eq-cong e e q)
+   part-1 = 
+    ap₃ w refl q refl                                           ＝⟨ wnu₂^ refl q ⟩
+    eq-cong (wnu₂ a a) (wnu₂ a a) (ap₃ w refl refl q)           ＝⟨ II ⟩
+    eq-cong (ap₃ w e e e) (ap₃ w e e e) (ap₃ w refl refl q)     ＝⟨ III ⟩
+    ap₃ w (eq-cong e e refl) (eq-cong e e refl) (eq-cong e e q) ＝⟨ IV ⟩
+    ap₃ w refl refl (eq-cong e e q) ∎
+     where
+      II = ap (λ x → eq-cong x x (ap₃ w refl refl q)) he
+      III = eq-cong-ap w e e refl e e refl e e q
+      IV = ap₂ (λ x y → ap₃ w x x y) (eq-cong-refl e) refl
+
+   hq : ap₃ w q q q ＝ ap₃ w q refl q''
+   hq = 
+    ap₃ w q q q                                       ＝⟨ I ⟩ 
+    ap₃ w q refl q ∙ ap₃ w refl q refl                ＝⟨ II ⟩ 
+    ap₃ w q refl q ∙ ap₃ w refl refl (eq-cong e e q)  ＝⟨ III ⟩ 
+    ap₃ w q refl q'' ∎
+     where
+      I = ap₃-homo' w q refl refl q q refl refl (sym (refl∙ q)) refl
+      II = ap (λ x → ap₃ w q refl q ∙ x) part-1
+      III = sym (ap₃-homo' w q refl refl refl q (eq-cong e e q) refl refl refl)
   
  commutes₂ : {a : A}
            → (p q : a ＝ a)
@@ -305,19 +354,59 @@ module ternary-wnu (A    : Type)
   w^ q' refl q'' ∙ w^ refl p refl             ＝⟨ II ⟩
   w^ q q q       ∙ w^ refl p refl             ∎
    where
-    e = pr₁ (ap₃-onto (wnu₂ a a))
-    q'  = e ∙ q ∙ sym e ∙ q
-    q'' = e ∙ q ∙ sym e
-    he : w^ q q q ＝ w^ q' refl q''
-    he  = {!   !}
+    q'  = pr₁ (reduce₂ q)
+    q'' = pr₁ (pr₂ (reduce₂ q))
+    hq  = pr₂ (pr₂ (reduce₂ q))
 
-    I = rap-∙ (w^ refl p refl) he
-    II = lap-∙ (w^ refl p refl) (sym he) 
+    I = rap-∙ (w^ refl p refl) hq
+    II = lap-∙ (w^ refl p refl) (sym hq) 
+
+ reduce₃ : {a : A} (q : a ＝ a)
+         → Σ λ q' → Σ λ q'' → ap₃ w q q q ＝ ap₃ w q' q'' refl
+ reduce₃ {a} q = (eq-cong e e q) , (q ∙ (eq-cong e e q)) , hq
+  where
+   e : a ＝ a
+   e = pr₁ (ap₃-onto (wnu₂ a a))
+
+   he : wnu₂ a a ＝ ap₃ w e e e
+   he = sym (pr₂ (ap₃-onto (wnu₂ a a)))
+
+   part-1 : ap₃ w q refl q ＝ ap₃ w (eq-cong e e q) (eq-cong e e q) refl
+   part-1 = 
+    ap₃ w q refl q                                           ＝⟨ wnu₂^ q refl ⟩
+    eq-cong (wnu₂ a a) (wnu₂ a a) (ap₃ w q q refl)           ＝⟨ II ⟩
+    eq-cong (ap₃ w e e e) (ap₃ w e e e) (ap₃ w q q refl)     ＝⟨ III ⟩
+    ap₃ w (eq-cong e e q) (eq-cong e e q) (eq-cong e e refl) ＝⟨ IV ⟩
+    ap₃ w (eq-cong e e q) (eq-cong e e q) refl ∎
+     where
+      II = ap (λ x → eq-cong x x (ap₃ w q q refl)) he
+      III = eq-cong-ap w e e q e e q e e refl
+      IV = ap₂ (λ x y → ap₃ w x x y) refl (eq-cong-refl e)
+
+   hq : ap₃ w q q q ＝ ap₃ w (eq-cong e e q) (q ∙ eq-cong e e q) refl
+   hq = 
+    ap₃ w q q q                                                     ＝⟨ I ⟩ 
+    ap₃ w refl q refl ∙ ap₃ w q refl q                              ＝⟨ II ⟩ 
+    ap₃ w refl q refl ∙ ap₃ w (eq-cong e e q) (eq-cong e e q) refl  ＝⟨ III ⟩ 
+    ap₃ w (eq-cong e e q) (q ∙ (eq-cong e e q)) refl ∎
+     where
+      I = ap₃-homo' w refl q q refl refl q (sym (refl∙ q)) refl (sym (refl∙ q))
+      II = ap (λ x → ap₃ w refl q refl ∙ x) part-1
+      III = sym (ap₃-homo' w refl (eq-cong e e q) q (eq-cong e e q) refl refl
+                             (sym (refl∙ (eq-cong e e q))) refl refl)
 
  commutes₃ : {a : A}
            → (p q : a ＝ a)
            → (w^ refl refl p ∙ w^ q q q ＝ w^ q q q ∙ w^ refl refl p)
- commutes₃ = {!   !} -- wlog the same as commutes₁
+ commutes₃ p q =
+  w^ refl refl p ∙ w^ q q q        ＝⟨ ap (λ x → w^ refl refl p ∙ x) hq ⟩  
+  w^ refl refl p ∙ w^ q' q'' refl  ＝⟨ base-3 q' q'' p ⟩
+  w^ q' q'' refl ∙ w^ refl refl p  ＝⟨ ap (λ x → x ∙ w^ refl refl p) (sym hq) ⟩
+  w^ q q q       ∙ w^ refl refl p  ∎
+   where
+    q'  = pr₁ (reduce₃ q)
+    q'' = pr₁ (pr₂ (reduce₃ q))
+    hq  = pr₂ (pr₂ (reduce₃ q))
 
  ap₃-homo-w^ : {a : A} {p q r : a ＝ a} {p' q' r' p'' q'' r'' : a ＝ a}
                (p^ : p ＝ p' ∙ p'') (q^ : q ＝ q' ∙ q'') (r^ : r ＝ r' ∙ r'')
