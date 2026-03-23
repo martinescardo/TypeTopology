@@ -122,6 +122,13 @@ eq-cong-ap : {A B C D : Type}
              ＝ ap₃ f (eq-cong qa qa' pa) (eq-cong qb qb' pb) (eq-cong qc qc' pc)
 eq-cong-ap f refl refl pa refl refl pb refl refl pc = refl
 
+eq-cong-cancel : {A : Type} {a a' b b' : A} {p q : a ＝ a'}
+               → (h₁ : a ＝ b)
+               → (h₂ : a' ＝ b')
+               → eq-cong h₁ h₂ p ＝ eq-cong h₁ h₂ q
+               → p ＝ q
+eq-cong-cancel refl refl h = h
+
 \end{code}
 
 The binary case is solved in Tom de Jong's [CommutativeLoopSpaces]. But I will
@@ -147,40 +154,16 @@ module ternary-idempotent
 
  idem^ : {a b : A}
        → (p : a ＝ b)
-       → ap₃ f p p p ∙ idem b ＝ idem a ∙ p
- idem^ {a} refl = refl∙ (idem a) 
+       → eq-cong (idem a) (idem b) (ap₃ f p p p) ＝ p
+ idem^ refl = eq-cong-refl (idem _)
 
  ap₃-onto : {a : A}
          → (p : f a a a ＝ f a a a)
          → Σ λ p' → ap₃ f p' p' p' ＝ p
  ap₃-onto {a} p = p' , hp
-   where
-    p' : a ＝ a
-    p' = sym (idem a) ∙ p ∙ idem a
-
-    hp : ap₃ f p' p' p' ＝ p
-    hp = ap₃ f p' p' p' ∙ refl          ＝⟨ I ⟩
-         ap₃ f p' p' p' ∙ (ι ∙ ι')      ＝⟨ II ⟩
-         (ap₃ f p' p' p' ∙ ι) ∙ ι'      ＝⟨ III ⟩
-         (ι ∙ p')             ∙ ι'      ＝⟨ refl ⟩
-         ι ∙ ((ι' ∙ p) ∙ ι) ∙ ι'        ＝⟨ IV ⟩
-         (ι ∙ (ι' ∙ p)) ∙ ι ∙ ι'        ＝⟨ V ⟩
-         (ι ∙ (ι' ∙ p)) ∙ (ι ∙ ι')      ＝⟨ VI ⟩
-         ι ∙ (ι' ∙ p)                   ＝⟨ VII ⟩
-         (ι ∙ ι') ∙ p                   ＝⟨ VIII ⟩
-         refl ∙ p                       ＝⟨ refl∙ p ⟩
-         p ∎
-     where
-      ι = idem a
-      ι' = sym ι
-      I = ap (λ q → ap₃ f p' p' p' ∙ q) (sym (sym-rcancel ι))
-      II = ∙-assoc (ap₃ f p' p' p') ι ι'
-      III = ap (λ q → q ∙ ι') (idem^ p')
-      IV = ap (λ q → q ∙ ι') (∙-assoc ι (ι' ∙ p) ι)
-      V = sym (∙-assoc (ι ∙ (ι' ∙ p)) ι ι')
-      VI = ap (λ q → (ι ∙ (ι' ∙ p)) ∙ q) (sym-rcancel ι)
-      VII = ∙-assoc ι ι' p
-      VIII = ap (λ q → q ∙ p) (sym-rcancel ι)
+  where
+   p' = eq-cong (idem a) (idem a) p
+   hp = eq-cong-cancel (idem a) (idem a) (idem^ p')
    
 \end{code}
 
@@ -240,9 +223,13 @@ module ternary-wnu (A    : Type)
        → (p : a ＝ a') (q : b ＝ b')
        → ap₃ w p p q ∙ wnu₁ a' b' ＝ wnu₁ a b ∙ ap₃ w q p p
  wnu₁^ {a = a} {b = b} refl refl = refl∙ (wnu₁ a b)
+
+ wnu₂^ : {a a' b b' : A} (p : a ＝ b) (p' : a' ＝ b')
+       →  ap₃ w p p' p ＝ eq-cong (wnu₂ a a') (wnu₂ b b') (ap₃ w p p p')
+ wnu₂^ refl refl = sym (eq-cong-refl (wnu₂ _ _))
  
  reduce₁ : {a : A} (q : a ＝ a)
-                  → Σ λ q' → Σ λ q'' → w^ q q q ＝ w^ refl q' q''
+         → Σ λ q' → Σ λ q'' → w^ q q q ＝ w^ refl q' q''
  reduce₁ {a} q = q' , q'' , eq
   where
    e = pr₁ (ap₃-onto (wnu₁ a a))
@@ -305,11 +292,6 @@ module ternary-wnu (A    : Type)
     I = ap (λ x → w^ p refl refl ∙ x) he
     II = sym (ap (λ x → x ∙ w^ p refl refl) he)
 
- wnu₂^ : {a a' b b' : A} (p : a ＝ b) (p' : a' ＝ b')
-       →  ap₃ w p p' p ＝ eq-cong (wnu₂ a a') (wnu₂ b b') (ap₃ w p p p')
- wnu₂^ refl refl = sym (eq-cong-refl (wnu₂ _ _))
-
-
  reduce₂ : {a : A} (q : a ＝ a)
          → Σ λ q' → Σ λ q'' → ap₃ w q q q ＝ ap₃ w q' refl q''
  reduce₂ {a} q = q , q'' , hq
@@ -322,8 +304,8 @@ module ternary-wnu (A    : Type)
 
    q'' = q ∙ (eq-cong e e q)
 
-   part-1 : ap₃ w refl q refl ＝ ap₃ w refl refl (eq-cong e e q)
-   part-1 = 
+   use-wnu₂ : ap₃ w refl q refl ＝ ap₃ w refl refl (eq-cong e e q)
+   use-wnu₂ = 
     ap₃ w refl q refl                                           ＝⟨ wnu₂^ refl q ⟩
     eq-cong (wnu₂ a a) (wnu₂ a a) (ap₃ w refl refl q)           ＝⟨ II ⟩
     eq-cong (ap₃ w e e e) (ap₃ w e e e) (ap₃ w refl refl q)     ＝⟨ III ⟩
@@ -342,7 +324,7 @@ module ternary-wnu (A    : Type)
     ap₃ w q refl q'' ∎
      where
       I = ap₃-homo' w q refl refl q q refl refl (sym (refl∙ q)) refl
-      II = ap (λ x → ap₃ w q refl q ∙ x) part-1
+      II = ap (λ x → ap₃ w q refl q ∙ x) use-wnu₂
       III = sym (ap₃-homo' w q refl refl refl q (eq-cong e e q) refl refl refl)
   
  commutes₂ : {a : A}
@@ -371,8 +353,8 @@ module ternary-wnu (A    : Type)
    he : wnu₂ a a ＝ ap₃ w e e e
    he = sym (pr₂ (ap₃-onto (wnu₂ a a)))
 
-   part-1 : ap₃ w q refl q ＝ ap₃ w (eq-cong e e q) (eq-cong e e q) refl
-   part-1 = 
+   use-wnu₂' : ap₃ w q refl q ＝ ap₃ w (eq-cong e e q) (eq-cong e e q) refl
+   use-wnu₂' = 
     ap₃ w q refl q                                           ＝⟨ wnu₂^ q refl ⟩
     eq-cong (wnu₂ a a) (wnu₂ a a) (ap₃ w q q refl)           ＝⟨ II ⟩
     eq-cong (ap₃ w e e e) (ap₃ w e e e) (ap₃ w q q refl)     ＝⟨ III ⟩
@@ -391,7 +373,7 @@ module ternary-wnu (A    : Type)
     ap₃ w (eq-cong e e q) (q ∙ (eq-cong e e q)) refl ∎
      where
       I = ap₃-homo' w refl q q refl refl q (sym (refl∙ q)) refl (sym (refl∙ q))
-      II = ap (λ x → ap₃ w refl q refl ∙ x) part-1
+      II = ap (λ x → ap₃ w refl q refl ∙ x) use-wnu₂'
       III = sym (ap₃-homo' w refl (eq-cong e e q) q (eq-cong e e q) refl refl
                              (sym (refl∙ (eq-cong e e q))) refl refl)
 
