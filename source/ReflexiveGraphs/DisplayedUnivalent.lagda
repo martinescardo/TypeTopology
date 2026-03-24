@@ -1,5 +1,7 @@
 Ian Ray. 3rd September 2025.
 
+Slight modifications made in March 2026 before merging into TypeTopology.
+
 We define what it means for displayed reflexive graph to be univalent
 (see the index for reference to Sterling, Buchholtz, etc.)
 
@@ -10,8 +12,6 @@ We define what it means for displayed reflexive graph to be univalent
 module ReflexiveGraphs.DisplayedUnivalent where
 
 open import MLTT.Spartan
-open import UF.Equiv
-open import UF.Subsingletons
 open import ReflexiveGraphs.Displayed
 open import ReflexiveGraphs.Type
 open import ReflexiveGraphs.Univalent
