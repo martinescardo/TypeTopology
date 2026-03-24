@@ -42,7 +42,7 @@ import EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer         -- By Mart
    with a standard semantics, together with its relation to the system without
    oracles.
 
- * The file Continuity defined the Baire type and a notion of
+ * The file Continuity defines the Baire type and a notion of
    continuity for functions from it to the type of natural numbers, and
    the Cantor type and a notion of uniform continuity
 
