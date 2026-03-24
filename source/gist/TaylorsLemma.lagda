@@ -1,4 +1,4 @@
-Jakub Opršal, 15 Mar 2026.
+Jakub Opršal, 15–24 Mar 2026.
 
 I want to explore another of Taylor's result in this file. Namely the following
 lemma.
@@ -7,6 +7,16 @@ LEMMA (Taylor, 1977).
   Let X be a topological space with an n-ary operation t satysfying a
   non-trivial idempotent Maltsev condition, then π₁(X, x₀) is Abelian for all
   x₀ ∈ X.
+
+This file explores a ternary case of Taylor's operation that is sufficiently
+general that simplifications, like those for majority and Maltsev operations,
+would not apply here.
+
+The equations are called *ternary weak near-unanimity*. Briefly, they can be described as similar to majority, except that the three substitutions do not return a projection, but just a same value depending on both x and y, i.e.,
+
+  w (x, x, y) = w (x, y, x) = w(y, x, x)
+
+Let us start setting up basic tools for working with paths.
 
 \begin{code}
 
@@ -75,7 +85,6 @@ ap₃-homo : {A B C D : Type}
            ＝ (ap₃ f) (pa ∙ qa) (pb ∙ qb) (pc ∙ qc)
 ap₃-homo f {a₁ = a} {b₁ = b} {c₁ = c} refl refl refl refl refl refl = refl
 
-
 ap₃-homo' : {A B C D : Type}
              (f : A → B → C → D)
              {a₁ a₂ a₃ : A} {b₁ b₂ b₃ : B} {c₁ c₂ c₃ : C}
@@ -131,9 +140,9 @@ eq-cong-cancel refl refl h = h
 
 \end{code}
 
-The binary case is solved in Tom de Jong's [CommutativeLoopSpaces]. But I will
-include the sketch here since this technique will be necessary for the ternary
-case. Prove that ap₂ f is onto using the rectangle
+The binary case is solved in Tom de Jong's [gist.CommutativeLoopSpaces]. But I
+will include the sketch here since this technique will be necessary for the
+ternary case. Prove that ap₂ f is onto using the rectangle
 
   f a a ==idem== a ==idem== f a a
     |            |            |
@@ -158,8 +167,8 @@ module ternary-idempotent
  idem^ refl = eq-cong-refl (idem _)
 
  ap₃-onto : {a : A}
-         → (p : f a a a ＝ f a a a)
-         → Σ λ p' → ap₃ f p' p' p' ＝ p
+          → (p : f a a a ＝ f a a a)
+          → Σ λ p' → ap₃ f p' p' p' ＝ p
  ap₃-onto {a} p = p' , hp
   where
    p' = eq-cong (idem a) (idem a) p
@@ -167,10 +176,7 @@ module ternary-idempotent
 
 \end{code}
 
-Now, we get to the fun part! I will show Taylor's lemma for ternary idempotent
-weak near-unanimity, which is an operation w : A → A → A → A, s.t.,
-
-  w x x y = w x y x = w y x x.
+Now, we get to the fun part!
 
 \begin{code}
 
@@ -306,12 +312,13 @@ module ternary-wnu (A    : Type)
 
    use-wnu₂ : ap₃ w refl q refl ＝ ap₃ w refl refl (eq-cong e e q)
    use-wnu₂ =
-    ap₃ w refl q refl                                           ＝⟨ wnu₂^ refl q ⟩
+    ap₃ w refl q refl                                           ＝⟨ I ⟩
     eq-cong (wnu₂ a a) (wnu₂ a a) (ap₃ w refl refl q)           ＝⟨ II ⟩
     eq-cong (ap₃ w e e e) (ap₃ w e e e) (ap₃ w refl refl q)     ＝⟨ III ⟩
     ap₃ w (eq-cong e e refl) (eq-cong e e refl) (eq-cong e e q) ＝⟨ IV ⟩
     ap₃ w refl refl (eq-cong e e q) ∎
      where
+      I = wnu₂^ refl q
       II = ap (λ x → eq-cong x x (ap₃ w refl refl q)) he
       III = eq-cong-ap w e e refl e e refl e e q
       IV = ap₂ (λ x y → ap₃ w x x y) (eq-cong-refl e) refl
