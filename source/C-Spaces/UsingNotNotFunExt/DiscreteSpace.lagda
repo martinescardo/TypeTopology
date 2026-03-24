@@ -366,7 +366,7 @@ Lemma[Map-discrete] X Y d h (f , cf) (g , cg) ex = ¬¬-kleisli claim ¬¬e₀
       claim₁ = Φg₁ p pX (φf p pX) (Φf₀ p pX)
     ¬¬eφ : ¬¬ (φf ＝ φg)
     ¬¬eφ = fe² epx
-        -----
+          -----
 
     claim-E : φf ＝ φg → ¬¬ (CF ＝ CG)
     claim-E eφ = ¬¬to-Σ-＝ (eφ , eΦ)

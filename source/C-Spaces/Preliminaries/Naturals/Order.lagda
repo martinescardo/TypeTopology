@@ -1,5 +1,10 @@
 Chuangjie Xu 2015 (ported to TypeTopology in 2025)
 
+This module develops the basic order theory of the natural numbers needed in
+the C-space formalization. It introduces the relations `≤` and `<`, proves a
+collection of elementary lemmas about them, and records a few auxiliary
+constructions such as maxima and least witnesses.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --no-exact-split #-}
@@ -12,6 +17,11 @@ open import UF.Subsingletons
 open import Naturals.Addition
 open import Naturals.Properties
 
+\end{code}
+
+Orders on natural numbers
+
+\begin{code}
 
 infix 30 _≤_
 infix 30 _<_
@@ -169,6 +179,6 @@ re-pair : {P : ℕ → Set} → Σ-min P → Σ P
 re-pair (n , p , _) = (n , p)
 
 Σ-min-＝ : {P : ℕ → Set}{w₀ w₁ : Σ-min P} → w₀ ＝ w₁ → re-pair w₀ ＝ re-pair w₁
-Σ-min-＝ {P} {w} {.w} refl = refl
+Σ-min-＝ refl = refl
 
 \end{code}

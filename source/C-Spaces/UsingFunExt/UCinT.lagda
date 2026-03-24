@@ -36,7 +36,11 @@ open import C-Spaces.UsingFunExt.TdefinableFunctionsAreUC fe
 
 \end{code}
 
-Interpretation of the syntax of System T with Fan into C-spaces:
+Interpretation of the syntax
+
+We interpret terms of the extended System T in the category of C-spaces. Each
+term in context is sent to a continuous map from the semantic context to the
+semantic type.
 
 \begin{code}
 
@@ -55,8 +59,15 @@ Interpretation of the syntax of System T with Fan into C-spaces:
 ⟦ _·_ {Γ} {σ} {τ} M N ⟧ᵐ  = continuous-app ⟦ Γ ⟧ᶜ ⟦ σ ⟧ʸ ⟦ τ ⟧ʸ ⟦ M ⟧ᵐ ⟦ N ⟧ᵐ
 ⟦ FAN {Γ} ⟧ᵐ              = continuous-constant ⟦ Γ ⟧ᶜ ⟦ ((Ⓝ ⇨ ②) ⇨ Ⓝ) ⇨ Ⓝ ⟧ʸ fan
 
--- Formula semantics: a formula in context Γ is interpreted as a predicate on
--- semantic environments ρ : U ⟦ Γ ⟧ᶜ.
+\end{code}
+
+Formula semantics
+
+A formula in context `Γ` is interpreted as a predicate on semantic
+environments `ρ : U ⟦ Γ ⟧ᶜ`.
+
+\begin{code}
+
 ⟦_⟧ᶠ : {Γ : Cxt} → Fml Γ → U ⟦ Γ ⟧ᶜ → Set
 ⟦ t == u ⟧ᶠ ρ = pr₁ ⟦ t ⟧ᵐ ρ ＝ pr₁ ⟦ u ⟧ᵐ ρ
 ⟦ φ ∧∧ ψ ⟧ᶠ ρ = (⟦ φ ⟧ᶠ ρ) × (⟦ ψ ⟧ᶠ ρ)
@@ -64,7 +75,9 @@ Interpretation of the syntax of System T with Fan into C-spaces:
 
 \end{code}
 
-We say a formula is validated by the model if
+Validation
+
+A formula is validated by the model if it holds for every semantic environment.
 
 \begin{code}
 
@@ -73,18 +86,19 @@ _is-validated : {Γ : Cxt} → Fml Γ → Set
 
 \end{code}
 
-The uniform-continuity principle is validated by the model:
+Validation of Uniform Continuity
+
+The formula `Principle[UC]` says that if two binary sequences agree on their
+first `FAN(F)` bits, then the functional `F` takes the same value on them.
 
 Given an environment `ρ`, the assumption `EN` says that the interpreted term
-`A＝⟦FAN•F⟧B` evaluates to `⊤`. Unfolding the recursor shows that the
-interpreted sequences agree on the first `fan f` bits; `fan-behaviour` then
-gives equality of the values of `f` on those sequences.
+`A＝⟦FAN•F⟧B` evaluates to `⊤`. Unfolding the recursor defining this term shows
+that the interpreted sequences agree on the first `fan f` bits. The theorem
+`fan-behaviour` can then be applied to conclude that `f α ＝ f β`.
 
 \begin{code}
 
 Theorem : Principle[UC] is-validated
-       -- ∀ ρ, if A and B agree on their first FAN(F) bits at ρ, then
-       -- the interpreted function F takes the same value on A and B.
 Theorem ρ EN = fan-behaviour f α β en
  where
   -- The function and the two sequences named by the distinguished variables in
