@@ -97,7 +97,7 @@ ap₃-sym : {A B C D : Type}
           (r : c ＝ c')
         → sym (ap₃ f p q r) ＝ ap₃ f (sym p) (sym q) (sym r)
 ap₃-sym f refl refl refl = refl
-       
+
 eq-cong : {A : Type} {a a' b b' : A}
         → (a ＝ a') → (b ＝ b') → (a ＝ b) → (a' ＝ b')
 eq-cong refl refl p = p
@@ -150,7 +150,7 @@ module ternary-idempotent
        {A    : Type}
        (f    : A → A → A → A)
        (idem : (x : A) → f x x x ＝ x)
-       where 
+       where
 
  idem^ : {a b : A}
        → (p : a ＝ b)
@@ -164,7 +164,7 @@ module ternary-idempotent
   where
    p' = eq-cong (idem a) (idem a) p
    hp = eq-cong-cancel (idem a) (idem a) (idem^ p')
-   
+
 \end{code}
 
 Now, we get to the fun part! I will show Taylor's lemma for ternary idempotent
@@ -187,7 +187,7 @@ module ternary-wnu (A    : Type)
  base-1 : {a : A}
         → (p₀ p₁ p₂ : a ＝ a)
         → w^ p₀ refl refl ∙ w^ refl p₁ p₂ ＝ w^ refl p₁ p₂ ∙ w^ p₀ refl refl
- base-1 p₀ p₁ p₂ = 
+ base-1 p₀ p₁ p₂ =
   w^ p₀ refl refl ∙ w^ refl p₁ p₂    ＝⟨ sym I ⟩
   w^ p₀ p₁ p₂                        ＝⟨ II ⟩
   w^ refl p₁ p₂ ∙ w^ p₀ refl refl ∎
@@ -198,7 +198,7 @@ module ternary-wnu (A    : Type)
  base-2 : {a : A}
         → (p₀ p₁ p₂ : a ＝ a)
         → w^ refl p₁ refl ∙ w^ p₀ refl p₂ ＝ w^ p₀ refl p₂ ∙ w^ refl p₁ refl
- base-2 p₀ p₁ p₂ = 
+ base-2 p₀ p₁ p₂ =
   w^ refl p₁ refl ∙ w^ p₀ refl p₂    ＝⟨ sym I ⟩
   w^ p₀ p₁ p₂                        ＝⟨ II ⟩
   w^ p₀ refl p₂ ∙ w^ refl p₁ refl ∎
@@ -209,15 +209,15 @@ module ternary-wnu (A    : Type)
  base-3 : {a : A}
         → (p₀ p₁ p₂ : a ＝ a)
         → w^ refl refl p₂ ∙ w^ p₀ p₁ refl ＝ w^ p₀ p₁ refl ∙ w^ refl refl p₂
- base-3 p₀ p₁ p₂ = 
+ base-3 p₀ p₁ p₂ =
   w^ refl refl p₂ ∙ w^ p₀ p₁ refl    ＝⟨ sym I ⟩
   w^ p₀ p₁ p₂                        ＝⟨ II ⟩
   w^ p₀ p₁ refl ∙ w^ refl refl p₂ ∎
    where
     I = ap₃-homo' w refl p₀ refl p₁ p₂ refl (sym (refl∙ p₀)) (sym (refl∙ p₁)) refl
     II = ap₃-homo' w p₀ refl p₁ refl refl p₂ refl refl (sym (refl∙ p₂))
- 
- open ternary-idempotent w idem 
+
+ open ternary-idempotent w idem
 
  wnu₁^ : {a a' b b' : A}
        → (p : a ＝ a') (q : b ＝ b')
@@ -227,7 +227,7 @@ module ternary-wnu (A    : Type)
  wnu₂^ : {a a' b b' : A} (p : a ＝ b) (p' : a' ＝ b')
        →  ap₃ w p p' p ＝ eq-cong (wnu₂ a a') (wnu₂ b b') (ap₃ w p p p')
  wnu₂^ refl refl = sym (eq-cong-refl (wnu₂ _ _))
- 
+
  reduce₁ : {a : A} (q : a ＝ a)
          → Σ λ q' → Σ λ q'' → w^ q q q ＝ w^ refl q' q''
  reduce₁ {a} q = q' , q'' , eq
@@ -274,13 +274,13 @@ module ternary-wnu (A    : Type)
      II = sym (ap₃-homo w q refl q refl refl q)
      III = ap (λ p → p ∙ w^ refl refl q) eq'
      IV = ap₃-homo w refl refl q' refl q' q
- 
+
  commutes₁ : {a : A}
            → (p q : a ＝ a)
            → (w^ p refl refl ∙ w^ q q q ＝ w^ q q q ∙ w^ p refl refl)
- commutes₁ p q = 
-  w^ p refl refl ∙ w^ q q q                        ＝⟨ I ⟩ 
-  w^ p refl refl ∙ w^ refl q' q''                  ＝⟨ base-1 p q' q'' ⟩ 
+ commutes₁ p q =
+  w^ p refl refl ∙ w^ q q q                        ＝⟨ I ⟩
+  w^ p refl refl ∙ w^ refl q' q''                  ＝⟨ base-1 p q' q'' ⟩
   w^ refl q' q'' ∙ w^ p refl refl                  ＝⟨ II ⟩
   w^ q q q       ∙ w^ p refl refl                  ∎
    where
@@ -305,7 +305,7 @@ module ternary-wnu (A    : Type)
    q'' = q ∙ (eq-cong e e q)
 
    use-wnu₂ : ap₃ w refl q refl ＝ ap₃ w refl refl (eq-cong e e q)
-   use-wnu₂ = 
+   use-wnu₂ =
     ap₃ w refl q refl                                           ＝⟨ wnu₂^ refl q ⟩
     eq-cong (wnu₂ a a) (wnu₂ a a) (ap₃ w refl refl q)           ＝⟨ II ⟩
     eq-cong (ap₃ w e e e) (ap₃ w e e e) (ap₃ w refl refl q)     ＝⟨ III ⟩
@@ -317,21 +317,21 @@ module ternary-wnu (A    : Type)
       IV = ap₂ (λ x y → ap₃ w x x y) (eq-cong-refl e) refl
 
    hq : ap₃ w q q q ＝ ap₃ w q refl q''
-   hq = 
-    ap₃ w q q q                                       ＝⟨ I ⟩ 
-    ap₃ w q refl q ∙ ap₃ w refl q refl                ＝⟨ II ⟩ 
-    ap₃ w q refl q ∙ ap₃ w refl refl (eq-cong e e q)  ＝⟨ III ⟩ 
+   hq =
+    ap₃ w q q q                                       ＝⟨ I ⟩
+    ap₃ w q refl q ∙ ap₃ w refl q refl                ＝⟨ II ⟩
+    ap₃ w q refl q ∙ ap₃ w refl refl (eq-cong e e q)  ＝⟨ III ⟩
     ap₃ w q refl q'' ∎
      where
       I = ap₃-homo' w q refl refl q q refl refl (sym (refl∙ q)) refl
       II = ap (λ x → ap₃ w q refl q ∙ x) use-wnu₂
       III = sym (ap₃-homo' w q refl refl refl q (eq-cong e e q) refl refl refl)
-  
+
  commutes₂ : {a : A}
            → (p q : a ＝ a)
            → (w^ refl p refl ∙ w^ q q q ＝ w^ q q q ∙ w^ refl p refl)
- commutes₂ {a} p q = 
-  w^ refl p refl ∙ w^ q q q                   ＝⟨ I ⟩ 
+ commutes₂ {a} p q =
+  w^ refl p refl ∙ w^ q q q                   ＝⟨ I ⟩
   w^ refl p refl ∙ w^ q' refl q''             ＝⟨ base-2 q' p q'' ⟩
   w^ q' refl q'' ∙ w^ refl p refl             ＝⟨ II ⟩
   w^ q q q       ∙ w^ refl p refl             ∎
@@ -341,7 +341,7 @@ module ternary-wnu (A    : Type)
     hq  = pr₂ (pr₂ (reduce₂ q))
 
     I = rap-∙ (w^ refl p refl) hq
-    II = lap-∙ (w^ refl p refl) (sym hq) 
+    II = lap-∙ (w^ refl p refl) (sym hq)
 
  reduce₃ : {a : A} (q : a ＝ a)
          → Σ λ q' → Σ λ q'' → ap₃ w q q q ＝ ap₃ w q' q'' refl
@@ -354,7 +354,7 @@ module ternary-wnu (A    : Type)
    he = sym (pr₂ (ap₃-onto (wnu₂ a a)))
 
    use-wnu₂' : ap₃ w q refl q ＝ ap₃ w (eq-cong e e q) (eq-cong e e q) refl
-   use-wnu₂' = 
+   use-wnu₂' =
     ap₃ w q refl q                                           ＝⟨ wnu₂^ q refl ⟩
     eq-cong (wnu₂ a a) (wnu₂ a a) (ap₃ w q q refl)           ＝⟨ II ⟩
     eq-cong (ap₃ w e e e) (ap₃ w e e e) (ap₃ w q q refl)     ＝⟨ III ⟩
@@ -366,10 +366,10 @@ module ternary-wnu (A    : Type)
       IV = ap₂ (λ x y → ap₃ w x x y) refl (eq-cong-refl e)
 
    hq : ap₃ w q q q ＝ ap₃ w (eq-cong e e q) (q ∙ eq-cong e e q) refl
-   hq = 
-    ap₃ w q q q                                                     ＝⟨ I ⟩ 
-    ap₃ w refl q refl ∙ ap₃ w q refl q                              ＝⟨ II ⟩ 
-    ap₃ w refl q refl ∙ ap₃ w (eq-cong e e q) (eq-cong e e q) refl  ＝⟨ III ⟩ 
+   hq =
+    ap₃ w q q q                                                     ＝⟨ I ⟩
+    ap₃ w refl q refl ∙ ap₃ w q refl q                              ＝⟨ II ⟩
+    ap₃ w refl q refl ∙ ap₃ w (eq-cong e e q) (eq-cong e e q) refl  ＝⟨ III ⟩
     ap₃ w (eq-cong e e q) (q ∙ (eq-cong e e q)) refl ∎
      where
       I = ap₃-homo' w refl q q refl refl q (sym (refl∙ q)) refl (sym (refl∙ q))
@@ -381,7 +381,7 @@ module ternary-wnu (A    : Type)
            → (p q : a ＝ a)
            → (w^ refl refl p ∙ w^ q q q ＝ w^ q q q ∙ w^ refl refl p)
  commutes₃ p q =
-  w^ refl refl p ∙ w^ q q q        ＝⟨ ap (λ x → w^ refl refl p ∙ x) hq ⟩  
+  w^ refl refl p ∙ w^ q q q        ＝⟨ ap (λ x → w^ refl refl p ∙ x) hq ⟩
   w^ refl refl p ∙ w^ q' q'' refl  ＝⟨ base-3 q' q'' p ⟩
   w^ q' q'' refl ∙ w^ refl refl p  ＝⟨ ap (λ x → x ∙ w^ refl refl p) (sym hq) ⟩
   w^ q q q       ∙ w^ refl refl p  ∎
@@ -394,7 +394,7 @@ module ternary-wnu (A    : Type)
                (p^ : p ＝ p' ∙ p'') (q^ : q ＝ q' ∙ q'') (r^ : r ＝ r' ∙ r'')
              → w^ p q r ＝ w^ p' q' r' ∙ w^ p'' q'' r''
  ap₃-homo-w^ {a} {p} {q} {r} {p'} {q'} {r'} {p''} {q''} {r''} p^ q^ r^ =
-  w^ p q r                            ＝⟨ ap₃ w^ p^ q^ r^ ⟩ 
+  w^ p q r                            ＝⟨ ap₃ w^ p^ q^ r^ ⟩
   w^ (p' ∙ p'') (q' ∙ q'') (r' ∙ r'') ＝⟨ sym (ap₃-homo w p' p'' q' q'' r' r'') ⟩
   w^ p' q' r' ∙ w^ p'' q'' r''        ∎
 
@@ -430,13 +430,13 @@ module ternary-wnu (A    : Type)
                      (∙-assoc (w^ refl refl p) (w^ refl p refl) (w^ q q q)))
     IVb = map-∙ (w^ refl refl p) (commutes₂ p q) (w^ p refl refl)
     IVc = lap-∙ (w^ p refl refl)
-                (∙-assoc (w^ refl refl p) (w^ q q q) (w^ refl p refl))    
+                (∙-assoc (w^ refl refl p) (w^ q q q) (w^ refl p refl))
     Va = sym (∙-assoc (w^ refl refl p ∙ w^ q q q)
                       (w^ refl p refl)
                       (w^ p refl refl))
     Vb = sym (rap-∙ (w^ refl refl p ∙ w^ q q q)
                     (ap₃-homo-w^ {p'' = p} refl∙p refl refl))
-    VI = lap-∙ (w^ p p refl) (commutes₃ p q)   
+    VI = lap-∙ (w^ p p refl) (commutes₃ p q)
     VII = sym (∙-assoc (w^ q q q) (w^ refl refl p) (w^ p p refl))
     VIII = rap-∙ (w^ q q q) (ap₃-homo-w^ {p'' = p} {q'' = p} refl∙p refl∙p refl)
 
@@ -455,7 +455,7 @@ module ternary-wnu (A    : Type)
     dissolve p' q' = eq-cong-∙ {q = idem a} {q' = idem a} {q'' = idem a}
                                (w^ p' p' p') (w^ q' q' q')
                    ∙ ap₂ _∙_ (Ωw-idem p') (Ωw-idem q')
-  
+
     apply-pre-lemma = ap (λ x → eq-cong (idem a) (idem a) x) (pre-lemma p q)
 
 \end{code}

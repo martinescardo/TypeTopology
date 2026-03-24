@@ -33,7 +33,7 @@ sym-cancel-r refl = refl
 
 ap₃ : {A B C D : Type} {a a' : A} {b b' : B} {c c' : C}
       (f : A → B → C → D) (p : a ＝ a') (q : b ＝ b') (r : c ＝ c')
-    → (f a b c ＝ f a' b' c')  
+    → (f a b c ＝ f a' b' c')
 ap₃ f refl refl refl = refl
 
 ap₃-homo : {A B C D : Type} (f : A → B → C → D)
@@ -84,7 +84,7 @@ This is again based on Taylor's outline:
   → ap₃ μ p rfl₀ rfl₀ ∙ ap₃ μ rfl₀ rfl₀ q ＝ ap₃ μ rfl₀ rfl₀ q ∙ ap₃ μ p rfl₀ rfl₀
  simple-case p q =
   ap₃ μ p refl refl ∙ ap₃ μ refl refl q                    ＝⟨ I ⟩
-  ap₃ μ (p ∙ refl) (refl ∙ refl) (refl ∙ q)                ＝⟨ II ⟩ 
+  ap₃ μ (p ∙ refl) (refl ∙ refl) (refl ∙ q)                ＝⟨ II ⟩
   ap₃ μ p refl q                                           ＝⟨ III ⟩
   ap₃ μ (refl ∙ p) (refl ∙ refl) (q ∙ refl)                ＝⟨ IV ⟩
   ap₃ μ refl refl q ∙ ap₃ μ p refl refl                    ∎
@@ -135,16 +135,16 @@ This is again based on Taylor's outline:
 
    group-eq₀ : ε ∙ sym ε ∙ ι ＝ ι
    group-eq₀ =
-    ε ∙ (sym ε ∙ ι) ＝⟨ sym (∙-assoc ε (sym ε) ι) ⟩ 
-    (ε ∙ sym ε) ∙ ι ＝⟨ ap (λ x → x ∙ ι) (sym (sym-cancel-l ε)) ⟩ 
-    refl ∙ ι        ＝⟨ refl∙ ι ⟩ 
+    ε ∙ (sym ε ∙ ι) ＝⟨ sym (∙-assoc ε (sym ε) ι) ⟩
+    (ε ∙ sym ε) ∙ ι ＝⟨ ap (λ x → x ∙ ι) (sym (sym-cancel-l ε)) ⟩
+    refl ∙ ι        ＝⟨ refl∙ ι ⟩
     ι               ∎
 
    group-eq₁ : (sym ι ∙ ε) ∙ sym ε ∙ ι ＝ refl
    group-eq₁ =
-    (sym ι ∙ ε) ∙ (sym ε ∙ ι) ＝⟨ ∙-assoc (sym ι) ε (sym ε ∙ ι) ⟩ 
+    (sym ι ∙ ε) ∙ (sym ε ∙ ι) ＝⟨ ∙-assoc (sym ι) ε (sym ε ∙ ι) ⟩
     sym ι ∙ (ε ∙ (sym ε ∙ ι)) ＝⟨ ap (λ x → sym ι ∙ x) group-eq₀ ⟩
-    sym ι ∙ ι                 ＝⟨ sym-cancel-r ι ⟩ 
+    sym ι ∙ ι                 ＝⟨ sym-cancel-r ι ⟩
     refl ∎
 
    I = sym(ap₂ (λ x y → eq-congr x y q) group-eq₁ group-eq₁)
@@ -165,6 +165,6 @@ This is again based on Taylor's outline:
     I = ap₂ _∙_ (expand₂ p) (expand₁ q)
     II = simple-case-Ω (magic p) q
     III = sym (ap₂ _∙_ (expand₁ q) (expand₂ p))
-   
+
 \end{code}
-   
+
