@@ -42,7 +42,7 @@ open import UF.Sets-Properties
 open import UF.Univalence
 open import UF.Yoneda
 
-module UF.StructureIdentityPrinciple where
+module deprecated.StructureIdentityPrinciple where
 
 \end{code}
 

@@ -20,7 +20,7 @@ open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
-open import UF.StructureIdentityPrinciple
+open import deprecated.StructureIdentityPrinciple
 
 open import Slice.Construction 𝓣
 
