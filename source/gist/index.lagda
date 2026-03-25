@@ -12,7 +12,6 @@ module gist.index where
 
 import gist.2-injective-types
 import gist.Ackermann
-import gist.Categories.index              -- by Jon Sterling
 import gist.CommutativeLoopSpaces         -- by Tom de Jong
 import gist.DependentlyTypedTensors
 import gist.Hydra                         -- by Alice Laroche

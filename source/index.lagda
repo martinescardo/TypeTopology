@@ -199,6 +199,7 @@ import UF.index
 import Various.index
 import W.index
 import WildCategories.index
+import deprecated.index
 import gist.index
 
 \end{code}

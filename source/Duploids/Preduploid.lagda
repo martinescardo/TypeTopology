@@ -26,7 +26,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 
-open import gist.Categories.Category fe
+open import deprecated.Categories.Category fe
 open import Duploids.DeductiveSystem fe
 
 module _ (𝓓 : deductive-system 𝓤 𝓥) where
