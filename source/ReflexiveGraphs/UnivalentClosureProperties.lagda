@@ -42,6 +42,37 @@ univalence-closed-under-opposite' : (𝓐 : Refl-Graph 𝓤 𝓥)
                                   → is-univalent-refl-graph 𝓐
 univalence-closed-under-opposite' 𝓐 = univalence-closed-under-opposite (𝓐 ᵒᵖ)
 
+\end{code}
+
+Conceptually, showing that a total reflexive graph is univalent when the base
+reflexive graph and the displayed reflexive graph over it are both univalent
+is easy enough.
+
+Let (x,y) be a term of ⟨ 𝓐 ﹐ 𝓑 ⟩, that is x : ⟨ 𝓐 ⟩ and y : ⟪ 𝓑 ⟫ x. By the
+definition of univalence it suffices to show that any two fans of (x,y) are
+equal. If we unpack the definition of a fan of the total reflexive graph 𝓐 ﹐ 𝓑
+we get the following data:
+terms x₀, x₁ : ⟨ 𝓐 ⟩ with edges p₀ : x ≈⟨ 𝓐 ⟩ x₀ and p₁ : x ≈⟨ 𝓐 ⟩ x₁ and terms
+y₀ : ⟪ 𝓑 ⟫ x₀ and y₁ : ⟪ 𝓑 ⟫ x₁ with displayed edges q₀ : y ≈⟨ 𝓑 ⸴ p₀ ⟩ y₀ and
+q₁ : y ≈⟨ 𝓑 ⸴ p₁ ⟩ y₁.
+So we must show
+ ((x₀ , y₀) , (p₀ , q₀)) ＝ ((x₁ , y₁) , (p₁ , q₁)).
+As 𝓐 is univalent the edges p₀ and p₁ are contractible and it suffices to show
+ ((x , y₀) , (≈-refl , q₀)) ＝ ((x , y₁) , (≈-refl , q₁)).
+Now y₀ and y₁ are in the same fiber ⟪ 𝓑 ⟫ x so by univalence of 𝓑 the displayed
+edges q₀ and q₁ are contractible and it suffices to show
+ ((x , y) , (≈-refl , ≈-disp-refl)) ＝ ((x , y) , (≈-refl , ≈-disp-refl))
+which holds by refl.
+
+Unfortunately, mimicking this proof in agda would require shuffling sigma types
+(which can be rather annoying) and would ultimately lead to a (more tedious)
+version of what was quite clearly outlined above. Instead we have found a less
+clear but more direct proof using path induction which anticipates the
+propositonal fans guarenteed by univalence. In fact, this technique is used
+again at other points in this file.
+
+\begin{code}
+
 univalence-closed-under-total
  : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓑 : Displayed-Refl-Graph 𝓣 𝓦 𝓐)
  → is-univalent-refl-graph 𝓐
