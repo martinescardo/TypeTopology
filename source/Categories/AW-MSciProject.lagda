@@ -34,7 +34,7 @@ open import Categories.Displayed.Total
 
 open import Categories.Displayed.Notation.Pre
 
-module AW.index where
+module Categories.AW-MSciProject where
 
 open import MLTT.Spartan
 open import Notation.UnderlyingType
