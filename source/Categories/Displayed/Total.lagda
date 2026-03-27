@@ -127,48 +127,5 @@ category formed of these is a category.
 
     is-section : F ∘ F⁻¹ ∼ id
     is-section ((f , 𝕗) , (f⁻¹ , 𝕗⁻¹) , p , q) = to-≅-＝ refl
-
-
- TotalCategory : {C : Category 𝓤 𝓥}
-                 (D : DisplayedCategory 𝓦 𝓣 ⟨ C ⟩)
-               → Category (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣)
- TotalCategory {C} D = (TotalPrecategory ⟨ D ⟩) , is-cat
-  where
-   open CategoryNotation C
-   open DisplayedCategoryNotation D
-   open PrecategoryNotation (TotalPrecategory ⟨ D ⟩)
-
-   is-cat : is-category (TotalPrecategory ⟨ D ⟩)
-   is-cat (a , x) (b , y) = equiv-closed-under-∼ ⌜ univalence ⌝
-                                                 (id-to-iso (a , x) (b , y))
-                                                 ⌜ univalence ⌝-is-equiv
-                                                 pointwise-equality
-    where
-     univalence : ((a , x) ＝ (b , y)) ≃ ((a , x) ≅ (b , y))
-     univalence = ((a , x) ＝ (b , y))                      ≃⟨ i ⟩
-                  ((Σ e ꞉ a ＝ b , transport _ e x ＝ y))   ≃⟨ ii ⟩
-                  (Σ e ꞉ a ＝ b , x ≅[ id-to-iso a b e ] y) ≃⟨ iii ⟩
-                  (Σ f ꞉ a ≅ b , x ≅[ f ] y)                ≃⟨ iv ⟩
-                  total-isomorphism                         ■
-      where
-       total-isomorphism : 𝓥 ⊔ 𝓣 ̇
-       total-isomorphism = ((a , x) ≅ (b , y))
-
-       transport-equiv-iso : (e : a ＝ b)
-                           → (transport (λ - → obj[ - ] D) e x ＝ y)
-                           ≃ x ≅[ id-to-iso a b e ] y
-       transport-equiv-iso refl = (D-id-to-iso ⟨ D ⟩ refl x y)
-                                , D-id-to-iso-is-equiv D refl x y
-
-       i = Σ-＝-≃
-       ii = Σ-cong transport-equiv-iso
-       iii = Σ-change-of-variable (λ - → (x ≅[ - ] y))
-                                  (id-to-iso a b)
-                                  (id-to-iso-is-equiv C a b)
-       iv = total-iso-join ⟨ D ⟩
-
-     pointwise-equality : id-to-iso (a , x) (b , y)
-                         ∼ ⌜ univalence ⌝
-     pointwise-equality refl = refl
-
+    
 \end{code}
