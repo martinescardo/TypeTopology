@@ -111,8 +111,4 @@ We now define the displayed category of magmas.
                 ∼ id
      is-section _ = Π₂-is-set fe (λ x y → sA _ _) _ _
 
-
- TotCatMagma : (ua : is-univalent 𝓤) → Category (𝓤 ⁺) 𝓤
- TotCatMagma ua = TotalCategory {_} {_} {_} {_} {SetCategory ua fe} DispCatMagma
-
 \end{code}
