@@ -160,8 +160,32 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) where
 
    is-section : toiso ∘ fromiso ∼ id
    is-section e@((f , fp) , (g , gp) , lg , rg)
-    = to-≅-＝ {_} {_} {_} {A} {B}
-              (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl)
+    = to-Σ-＝ (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl
+    , to-Σ-＝ (at-most-one-inverse {_} {_} {_} {A} {B} {(f , fp)}
+                to-from-inv id-inv
+    , to-×-＝ (hom-is-set (MagmaPrecategory fe) {A} {A} _ _)
+              (hom-is-set (MagmaPrecategory fe) {B} {B} _ _)))
+    where
+     isomorphism = ⌜_⌝' {_} {_} {_} {A} {B} ((toiso ∘ fromiso)
+                                             ((f , fp) , (g , gp) , lg , rg))
+     iso-inverse = inverse {_} {_} {_} {A} {B}
+
+     isomorphism-is-iso : iso-inverse isomorphism
+     isomorphism-is-iso
+      = underlying-morphism-is-isomorphism {_} {_} {_} {A} {B}
+                                           ((toiso ∘ fromiso) e)
+
+     isomorphism-equality : (e : isomorphism ＝ f , fp)
+                          → iso-inverse isomorphism
+                          → iso-inverse (f , fp)
+     isomorphism-equality e first = transport iso-inverse e first
+
+     to-from-inv id-inv : iso-inverse (f , fp)
+     to-from-inv = isomorphism-equality
+                    (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB))
+                                   refl)
+                    isomorphism-is-iso
+     id-inv = ((g , gp) , lg , rg)
    
    has-section : fromiso ∘ toiso ∼ id
    has-section (f , e@((g , gp) , (g' , gp')) , fp)

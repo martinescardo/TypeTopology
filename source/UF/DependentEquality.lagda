@@ -6,7 +6,6 @@ Martin Escardo, 31st October 2025.
 
 module UF.DependentEquality where
 
-open import UF.Base
 open import MLTT.Spartan
 
 dependent-Id : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
