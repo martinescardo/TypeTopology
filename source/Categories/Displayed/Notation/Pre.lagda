@@ -22,27 +22,24 @@ categories.
 
 \begin{code}
 
-record DOBJ {𝓤 𝓥 : Universe}
-            {P : Precategory 𝓦 𝓣}
-            (D : DisplayedPrecategory 𝓤 𝓥 P)
-          : ((𝓦 ⊔ 𝓣) ⊔ (𝓤 ⊔ 𝓥))⁺ ̇  where
+record DOBJ (A : 𝓤 ̇ ) (B : 𝓥 ̇ ) (C : 𝓦 ̇ ) : (𝓤 ⊔ 𝓥 ⊔ 𝓦) ̇ where
  field
-  obj[_] : obj P → 𝓤 ̇
+  obj[_] : A → B → C
 
 open DOBJ {{...}} public
+
+instance
+ d-pre-obj : {P : Precategory 𝓦 𝓣} → DOBJ (obj P) (DisplayedPrecategory 𝓤 𝓥 P) (𝓤 ̇ )
+ obj[_] {{d-pre-obj}} = λ a b → DisplayedPrecategory.obj[ b ] a
 
 module _ {𝓤 𝓥 : Universe}
          {P : Precategory 𝓦 𝓣}
          (D : DisplayedPrecategory 𝓤 𝓥 P) where
  open PrecategoryNotation P
 
- instance
-  d-obj-m : DOBJ D
-  obj[_] {{d-obj-m}} = DisplayedPrecategory.obj[_] D
-
- record DHOM  : ((𝓦 ⊔ 𝓣) ⊔ (𝓤 ⊔ 𝓥))⁺ ̇  where
+ record DHOM  : (𝓦 ⊔ 𝓣 ⊔ 𝓤 ⊔ 𝓥)⁺ ̇  where
   field
-   hom[_] : {a b : obj P} → hom a b → obj[ a ] → obj[ b ] → 𝓥 ̇
+   hom[_] : {a b : obj P} → hom a b → obj[ a ] D → obj[ b ] D → 𝓥 ̇
 
  open DHOM {{...}} public
 
@@ -55,9 +52,9 @@ module _ {𝓤 𝓥 : Universe}
    _○_ : {a b c : obj P}
          {g : hom b c}
          {f : hom a b}
-         {x : obj[ a ]}
-         {y : obj[ b ]}
-         {z : obj[ c ]}
+         {x : obj[ a ] D}
+         {y : obj[ b ] D}
+         {z : obj[ c ] D}
        → hom[ g ] y z
        → hom[ f ] x y
        → hom[ g ◦ f ] x z
@@ -67,7 +64,7 @@ module _ {𝓤 𝓥 : Universe}
  record DID : ((𝓦 ⊔ 𝓣) ⊔ (𝓤 ⊔ 𝓥))⁺ ̇  where
   field
    D-𝒊𝒅 : {p : obj P}
-          {x : obj[ p ]}
+          {x : obj[ p ] D}
         → hom[ 𝒊𝒅 ] x x
 
  open DID {{...}} public
@@ -84,14 +81,14 @@ module _ {𝓤 𝓥 : Universe}
   field
    hom[-]-is-set : {a b : obj P}
                    {f : hom a b}
-                   {x : obj[ a ]}
-                   {y : obj[ b ]}
+                   {x : obj[ a ] D}
+                   {y : obj[ b ] D}
                  → is-set (hom[ f ] x y)
                  
    D-𝒊𝒅-is-right-neutral : {a b : obj P}
                   {f : hom a b}
-                  {x : obj[ a ]}
-                  {y : obj[ b ]}
+                  {x : obj[ a ] D}
+                  {y : obj[ b ] D}
                   (𝕗 : hom[ f ] x y)
                 → 𝕗 ○ D-𝒊𝒅
                 ＝⟦ (λ - → hom[ - ] x y) , 𝒊𝒅-is-right-neutral f ⟧
@@ -99,8 +96,8 @@ module _ {𝓤 𝓥 : Universe}
 
    D-𝒊𝒅-is-left-neutral : {a b : obj P}
                  {f : hom a b}
-                 {x : obj[ a ]}
-                 {y : obj[ b ]}
+                 {x : obj[ a ] D}
+                 {y : obj[ b ] D}
                  (𝕗 : hom[ f ] x y)
                → D-𝒊𝒅 ○ 𝕗
                ＝⟦ (λ - → hom[ - ] x y) , 𝒊𝒅-is-left-neutral f ⟧
@@ -110,10 +107,10 @@ module _ {𝓤 𝓥 : Universe}
              {f : hom a b}
              {g : hom b c}
              {h : hom c d}
-             {x : obj[ a ]}
-             {y : obj[ b ]}
-             {z : obj[ c ]}
-             {w : obj[ d ]}
+             {x : obj[ a ] D}
+             {y : obj[ b ] D}
+             {z : obj[ c ] D}
+             {w : obj[ d ] D}
              {𝕗 : hom[ f ] x y}
              {𝕘 : hom[ g ] y z}
              {𝕙 : hom[ h ] z w}
@@ -122,25 +119,72 @@ module _ {𝓤 𝓥 : Universe}
              (𝕙 ○ 𝕘) ○ 𝕗
 
    D-inverse : {a b : obj P}
-               {x : obj[ a ]}
-               {y : obj[ b ]}
+               {x : obj[ a ] D}
+               {y : obj[ b ] D}
                (f : a ≅ b)
                (𝕗 : hom[ ⌜ f ⌝ ] x y)
              → 𝓥 ̇
    _≅[_]_ : {a b : obj P}
-            (x : obj[ a ])
+            (x : obj[ a ] D)
             (f : a ≅ b)
-            (y : obj[ b ])
+            (y : obj[ b ] D)
           → 𝓥 ̇
+   D-⌜_⌝ : {a b : obj P}
+           {x : obj[ a ] D}
+           {f : a ≅ b}
+           {y : obj[ b ] D}
+         → x ≅[ f ] y
+         → hom[ ⌜ f ⌝ ] x y
+
+   D-morphism-is-isomorphism : {a b : obj P}
+                               {x : obj[ a ] D}
+                               {f : a ≅ b}
+                               {y : obj[ b ] D}
+                             → (𝕗 : x ≅[ f ] y)
+                             → D-inverse f D-⌜ 𝕗 ⌝
+
+   D-⌞_⌟ : {a  b : obj P}
+           {x : obj[ a ] D}
+           {y : obj[ b ] D}
+           {f : a ≅ b}
+           {𝕗 : hom[ ⌜ f ⌝ ] x y}
+         → D-inverse f 𝕗
+         → hom[ ⌞ underlying-morphism-is-isomorphism f ⌟ ] y x
+
+   D-⌞_⌟-is-left-inverse : {a  b : obj P}
+           {x : obj[ a ] D}
+           {y : obj[ b ] D}
+           {f : a ≅ b}
+           {𝕗 : hom[ ⌜ f ⌝ ] x y}
+         → (𝕗⁻¹ : D-inverse f 𝕗)
+         → D-⌞ 𝕗⁻¹ ⌟  ○ 𝕗
+         ＝⟦ (λ - → hom[ - ] x x)
+           , ⌞ underlying-morphism-is-isomorphism f ⌟-is-left-inverse ⟧
+           D-𝒊𝒅
+
+   D-⌞_⌟-is-right-inverse : {a  b : obj P}
+           {x : obj[ a ] D}
+           {y : obj[ b ] D}
+           {f : a ≅ b}
+           {𝕗 : hom[ ⌜ f ⌝ ] x y}
+         → (𝕗⁻¹ : D-inverse f 𝕗)
+         → 𝕗 ○ D-⌞ 𝕗⁻¹ ⌟
+         ＝⟦ (λ - → hom[ - ] y y)
+           , ⌞ underlying-morphism-is-isomorphism f ⌟-is-right-inverse ⟧
+           D-𝒊𝒅
+   to-≅[-]-＝ : {a b : obj P}
+                {x : obj[ a ] D}
+                {y : obj[ b ] D}
+                {f : a ≅ b}
+                {𝕗 𝕗' : x ≅[ f ] y}
+              → D-⌜ 𝕗 ⌝ ＝ D-⌜ 𝕗' ⌝
+              → 𝕗 ＝ 𝕗'
+       
  open DNotation {{...}} public
 
 module DisplayedPrecategoryNotation {𝓦 𝓣 : Universe}
                                     {P : Precategory 𝓦 𝓣}
                                     (D : DisplayedPrecategory 𝓤 𝓥 P) where
- instance
-  d-obj : DOBJ D
-  obj[_] {{d-obj}} = DisplayedPrecategory.obj[_] D
-  
  instance
   d-hom : DHOM D
   hom[_] {{d-hom}} = DisplayedPrecategory.hom[_] D
@@ -163,5 +207,14 @@ module DisplayedPrecategoryNotation {𝓦 𝓣 : Universe}
   D-assoc {{d-notation}} = DisplayedPrecategory.D-assoc D
   D-inverse {{d-notation}} = DisplayedPrecategory.D-inverse D
   _≅[_]_ {{d-notation}} = DisplayedPrecategory._≅[_]_ D
+  D-⌜_⌝ {{d-notation}} = DisplayedPrecategory.D-⌜_⌝ D
+  D-⌞_⌟ {{d-notation}} = DisplayedPrecategory.D-⌞_⌟ D
+  D-⌞_⌟-is-left-inverse {{d-notation}}
+   = DisplayedPrecategory.D-⌞_⌟-is-left-inverse D
+  D-⌞_⌟-is-right-inverse {{d-notation}}
+   = DisplayedPrecategory.D-⌞_⌟-is-right-inverse D
+  D-morphism-is-isomorphism {{d-notation}}
+   = DisplayedPrecategory.D-morphism-is-isomorphism D
+  to-≅[-]-＝ {{d-notation}} = DisplayedPrecategory.to-≅[-]-＝ D
   
 \end{code}

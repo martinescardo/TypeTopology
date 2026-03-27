@@ -14,8 +14,10 @@ open import UF.FunExt
 open import UF.Sets-Properties
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
+open import UF.Univalence
 open import Notation.UnderlyingType
 open import Categories.Pre
+open import Categories.Univalent
 open import Categories.Notation.Pre
 open import Categories.Examples.Set
 open import Categories.Examples.Magma
@@ -84,30 +86,33 @@ We now define the displayed category of magmas.
  DispCatMagma : DisplayedCategory 𝓤 𝓤 (SetPrecategory fe)
  DispCatMagma = DispPreMagma , λ {a} {b} e x y → is-disp-cat a b e x y
   where
+
    is-disp-cat : (a : obj (SetPrecategory fe))
                  (b : obj (SetPrecategory fe))
                  (e : a ＝ b)
-                 (x : obj[ a ])
-                 (y : obj[ b ])
+                 (x : obj[ a ] DispPreMagma)
+                 (y : obj[ b ] DispPreMagma)
                → is-equiv (D-id-to-iso DispPreMagma {a} {b} e x y)
    is-disp-cat a@(A , sA) b refl _·_ _*_ = (iso-to-id , has-section) 
                                          , (iso-to-id , is-section)
     where
      iso-to-id : _≅[_]_ {_} {_} {_} {_} {_} {_} {a} {a}
                  _·_ (id , id , refl , refl) _*_
-              → dependent-Id obj[_] {a} refl _·_ _*_
+              → dependent-Id (λ - → obj[ - ] DispPreMagma) {a} refl _·_ _*_
      iso-to-id (f , _) = dfunext fe λ x → dfunext fe λ y → f x y
 
      has-section : (D-id-to-iso DispPreMagma refl _·_ _*_) ∘ iso-to-id
                  ∼ id
      has-section _
-      = to-Σ-＝ (Π₂-is-prop fe (λ x y → sA _ _) _ _
-      , to-Σ-＝ ((Π₂-is-prop fe (λ x y → sA _ _) _ _)
-      , to-×-＝ (Π₂-is-set fe (λ x y → props-are-sets (sA _ _)) _ _)
-                (Π₂-is-set fe (λ x y → props-are-sets (sA _ _)) _ _)))
+      = to-≅[-]-＝ {_} {_} {_} {_} {_} {_} {a} {a}
+                   (Π₂-is-prop fe (λ x y → sA _ _) _ _)
 
      is-section : iso-to-id ∘ (D-id-to-iso DispPreMagma refl _·_ _*_)
                 ∼ id
      is-section _ = Π₂-is-set fe (λ x y → sA _ _) _ _
+
+
+ TotCatMagma : (ua : is-univalent 𝓤) → Category (𝓤 ⁺) 𝓤
+ TotCatMagma ua = TotalCategory {_} {_} {_} {_} {SetCategory ua fe} DispCatMagma
 
 \end{code}

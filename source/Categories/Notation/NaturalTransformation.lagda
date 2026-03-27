@@ -8,10 +8,10 @@ Notation for working with natural transformations.
 
 open import MLTT.Spartan
 
-open import Categories.Wild
+open import Categories.Pre
 open import Categories.NaturalTransformation
 open import Categories.Functor
-open import Categories.Notation.Wild
+open import Categories.Notation.Pre
 open import Categories.Notation.Functor
 
 module Categories.Notation.NaturalTransformation where
@@ -23,13 +23,13 @@ and Functor Notation for natural transformations.
 
 \begin{code}
 
-record NatNotation {A : WildCategory 𝓤 𝓥}
-                   {B : WildCategory 𝓦 𝓣}
+record NatNotation {A : Precategory 𝓤 𝓥}
+                   {B : Precategory 𝓦 𝓣}
                    {F' G' : Functor A B}
                    (μ : NaturalTransformation F' G')
                  : (𝓤 ⊔ 𝓥 ⊔ 𝓣) ̇  where
- open WildCategoryNotation A
- open WildCategoryNotation B
+ open PrecategoryNotation A
+ open PrecategoryNotation B
  open FunctorNotation F' renaming (functor-map to F ; fobj to Fobj)
  open FunctorNotation G' renaming (functor-map to G ; fobj to Gobj)
 
@@ -46,14 +46,17 @@ record NatNotation {A : WildCategory 𝓤 𝓥}
 
 open NatNotation {{...}} public
 
-module NaturalTNotation {A : WildCategory 𝓤 𝓥}
-                        {B : WildCategory 𝓦 𝓣}
+module NaturalTNotation {A : Precategory 𝓤 𝓥}
+                        {B : Precategory 𝓦 𝓣}
                         {F' G' : Functor A B}
                         (μ : NaturalTransformation F' G') where
- open WildCategoryNotation A
- open WildCategoryNotation B
+
+ open PrecategoryNotation A
+ open PrecategoryNotation B
  open FunctorNotation F' renaming (functor-map to F ; fobj to Fobj)
  open FunctorNotation G' renaming (functor-map to G ; fobj to Gobj)
+
+ natural-map = transf
 
  instance
   nat-notation : NatNotation μ
