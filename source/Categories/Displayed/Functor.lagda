@@ -12,6 +12,7 @@ open import UF.DependentEquality
 open import Categories.Pre
 open import Categories.Functor
 open import Categories.Notation.Wild
+open import Categories.Notation.Pre
 open import Categories.Notation.Functor
 open import Categories.Displayed.Pre
 open import Categories.Displayed.Notation.Pre

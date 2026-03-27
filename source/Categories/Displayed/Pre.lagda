@@ -7,10 +7,8 @@ Definition of a displayed category.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.DependentEquality
 open import UF.Sets
-open import UF.Subsingletons
 open import Categories.Pre
 open import Categories.Notation.Pre
 
@@ -141,4 +139,3 @@ We can now define a displayed version of isomorphism between objects.
  x ≅[ f ] y = Σ 𝕗 ꞉ hom[ ⌜ f ⌝ ] x y , D-inverse f 𝕗
 
 \end{code}
- 
