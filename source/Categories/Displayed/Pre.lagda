@@ -7,10 +7,8 @@ Definition of a displayed category.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.DependentEquality
 open import UF.Sets
-open import UF.Subsingletons
 open import Categories.Pre
 open import Categories.Notation.Pre
 

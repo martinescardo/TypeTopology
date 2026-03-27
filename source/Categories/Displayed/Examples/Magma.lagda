@@ -14,10 +14,8 @@ open import UF.FunExt
 open import UF.Sets-Properties
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
-open import UF.Univalence
 open import Notation.UnderlyingType
 open import Categories.Pre
-open import Categories.Univalent
 open import Categories.Notation.Pre
 open import Categories.Examples.Set
 open import Categories.Examples.Magma
