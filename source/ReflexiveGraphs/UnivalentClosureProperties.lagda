@@ -104,6 +104,12 @@ univalence-closed-under-total 𝓐 𝓑 ua-𝓐 ua-𝓑
  (x , y) ((x₀ , y₀) , (p₀ , q₀)) ((x₁ , y₁) , (p₁ , q₁))
  = total-fans-prop-lemma 𝓐 𝓑 ua-𝓐 ua-𝓑 x y (x₀ , p₀) (x₁ , p₁) y₀ q₀ y₁ q₁
 
+\end{code}
+
+The remaining closure conditions are relatively straightforward.
+
+\begin{code}
+
 univalence-closed-under-constant
  : (𝓐 : Refl-Graph 𝓤 𝓥)
  → (𝓑 : Refl-Graph 𝓤' 𝓥')
