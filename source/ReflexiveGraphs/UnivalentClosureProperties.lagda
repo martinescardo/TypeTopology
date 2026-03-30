@@ -16,6 +16,7 @@ open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
+open import UF.PropIndexedPiSigma
 open import UF.Powerset-MultiUniverse
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -64,41 +65,44 @@ edges q₀ and q₁ are contractible and it suffices to show
  ((x , y) , (≈-refl , ≈-disp-refl)) ＝ ((x , y) , (≈-refl , ≈-disp-refl))
 which holds by refl.
 
-Unfortunately, mimicking this proof in agda would require shuffling sigma types
-(which can be rather annoying) and would ultimately lead to a (more tedious)
-version of what was quite clearly outlined above. Instead we have found a less
-clear but more direct proof using path induction which anticipates the
-propositonal fans guarenteed by univalence. In fact, this technique is used
-again at other points in this file.
+We will mimick this proof, to some degree, with the following lemmas. Note the
+essential use of PropIndexedPiSigma.lagda.
 
 \begin{code}
+
+total-component-fans-prop-lemma
+ : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓑 : Displayed-Refl-Graph 𝓣 𝓦 𝓐)
+ → is-displayed-univalent-refl-graph 𝓐 𝓑
+ → (x : ⟨ 𝓐 ⟩) (y : ⟪ 𝓑 ⟫ x)
+ → ((y₀ , q₀) (y₁ , q₁) : fan ([ 𝓑 ] x) y)
+ → (((x , y₀) , (_ , q₀)) ＝[ fan (𝓐 ﹐ 𝓑) (x , y) ] ((x , y₁) , (_ , q₁)))
+total-component-fans-prop-lemma 𝓐 𝓑 ua-𝓑 x y
+ = Π-proj⁻¹ (y , ≈-refl ([ 𝓑 ] x) y) (ua-𝓑 x y)
+    (Π-proj⁻¹ (y , ≈-refl ([ 𝓑 ] x) y) (ua-𝓑 x y) refl)
+
+total-fans-prop-lemma
+ : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓑 : Displayed-Refl-Graph 𝓣 𝓦 𝓐)
+ → is-univalent-refl-graph 𝓐
+ → is-displayed-univalent-refl-graph 𝓐 𝓑
+ → (x : ⟨ 𝓐 ⟩) (y : ⟪ 𝓑 ⟫ x)
+ → ((x₀ , p₀) : fan 𝓐 x) ((x₁ , p₁) : fan 𝓐 x)
+ → (y₀ : ⟪ 𝓑 ⟫ x₀) (q₀ : y ≈⟨ 𝓑 ⸴ p₀ ⟩ y₀)
+ → (y₁ : ⟪ 𝓑 ⟫ x₁) (q₁ : y ≈⟨ 𝓑 ⸴ p₁ ⟩ y₁)
+ → (((x₀ , y₀) , (p₀ , q₀)) ＝[ fan (𝓐 ﹐ 𝓑) (x , y) ] ((x₁ , y₁) , (p₁ , q₁)))
+total-fans-prop-lemma 𝓐 𝓑 ua-𝓐 ua-𝓑 x y
+ = Π-proj⁻¹ (x , ≈-refl 𝓐 x) (ua-𝓐 x)
+    (Π-proj⁻¹ (x , ≈-refl 𝓐 x) (ua-𝓐 x)
+     (λ y₀ q₀ y₁ q₁
+       → total-component-fans-prop-lemma 𝓐 𝓑 ua-𝓑 x y (y₀ , q₀) (y₁ , q₁)))
 
 univalence-closed-under-total
  : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓑 : Displayed-Refl-Graph 𝓣 𝓦 𝓐)
  → is-univalent-refl-graph 𝓐
  → is-displayed-univalent-refl-graph 𝓐 𝓑
  → is-univalent-refl-graph (𝓐 ﹐ 𝓑)
-univalence-closed-under-total 𝓐 𝓑 𝓐-ua 𝓑-ua  = III 
- where
-  I : {x x' x'' : ⟨ 𝓐 ⟩} {p' : x ≈⟨ 𝓐 ⟩ x'} {p'' : x ≈⟨ 𝓐 ⟩ x''}
-      {y : ⟪ 𝓑 ⟫ x} {y' : ⟪ 𝓑 ⟫ x'} {y'' : ⟪ 𝓑 ⟫ x''}
-      {q' : y ≈⟨ 𝓑 ⸴ p' ⟩ y'} {q'' : y ≈⟨ 𝓑 ⸴ p'' ⟩ y''}
-    → ((x' , p') , y' , q') ＝ ((x'' , p'') , y'' , q'')
-    → ((x' , y') , p' , q') ＝ ((x'' , y'') , p'' , q'')
-  I refl = refl
-  II : {x x' x'' : ⟨ 𝓐 ⟩} {p' : x ≈⟨ 𝓐 ⟩ x'} {p'' : x ≈⟨ 𝓐 ⟩ x''}
-       {y : ⟪ 𝓑 ⟫ x} {y' : ⟪ 𝓑 ⟫ x'} {y'' : ⟪ 𝓑 ⟫ x''}
-       {q' : y ≈⟨ 𝓑 ⸴ p' ⟩ y'} {q'' : y ≈⟨ 𝓑 ⸴ p'' ⟩ y''}
-     → (α : (x' , p') ＝ (x'' , p''))
-     → (β : (x , ≈-refl 𝓐 x) ＝ (x' , p'))
-     → transport (λ (a , b) → Σ v ꞉ ⟪ 𝓑 ⟫ a , y ≈⟨ 𝓑 ⸴ b ⟩ v) α (y' , q')
-      ＝ (y'' , q'')
-  II {x} {_} {_} {_} {_} {y} {y'} {y''} {q'} {q''} refl refl
-   = 𝓑-ua x y (y' , q') (y'' , q'')
-  III : (u : ⟨ 𝓐 ﹐ 𝓑 ⟩) → is-prop (fan (𝓐 ﹐ 𝓑) u)
-  III (x , y) ((x' , y') , (p' , q')) ((x'' , y'') , (p'' , q''))
-   = I (to-Σ-＝ (𝓐-ua x (x' , p') (x'' , p'') ,
-      II (𝓐-ua x (x' , p') (x'' , p'')) (𝓐-ua x (x , ≈-refl 𝓐 x) (x' , p'))))
+univalence-closed-under-total 𝓐 𝓑 ua-𝓐 ua-𝓑
+ (x , y) ((x₀ , y₀) , (p₀ , q₀)) ((x₁ , y₁) , (p₁ , q₁))
+ = total-fans-prop-lemma 𝓐 𝓑 ua-𝓐 ua-𝓑 x y (x₀ , p₀) (x₁ , p₁) y₀ q₀ y₁ q₁
 
 univalence-closed-under-constant
  : (𝓐 : Refl-Graph 𝓤 𝓥)
@@ -112,15 +116,15 @@ univalence-closed-under-binary-product
  → is-univalent-refl-graph 𝓐
  → is-univalent-refl-graph 𝓐'
  → is-univalent-refl-graph (𝓐 ⊗ 𝓐')
-univalence-closed-under-binary-product 𝓐 𝓐' 𝓐-ua 𝓐'-ua
- = univalence-closed-under-total 𝓐 (𝓐 * 𝓐') 𝓐-ua
-    (univalence-closed-under-constant 𝓐 𝓐' 𝓐'-ua)
+univalence-closed-under-binary-product 𝓐 𝓐' ua-𝓐 ua-𝓐'
+ = univalence-closed-under-total 𝓐 (𝓐 * 𝓐') ua-𝓐
+    (univalence-closed-under-constant 𝓐 𝓐' ua-𝓐')
 
 univalence-closed-under-product : Fun-Ext
                                 → (A : 𝓤' ̇) (𝓑 : A → Refl-Graph 𝓤 𝓥)
                                 → ((x : A) → is-univalent-refl-graph (𝓑 x))
                                 → is-univalent-refl-graph (∏ x ˸ A , (𝓑 x))
-univalence-closed-under-product fe A 𝓑 𝓑-ua = III
+univalence-closed-under-product fe A 𝓑 ua-𝓑 = III
  where
   I : (f : ⟨ ∏ x ˸ A , (𝓑 x) ⟩)
     → fan (∏ x ˸ A , (𝓑 x)) f ≃ ((x : A) → fan (𝓑 x) (f x))
@@ -132,37 +136,33 @@ univalence-closed-under-product fe A 𝓑 𝓑-ua = III
    where
     II = ≃-sym ΠΣ-distr-≃
   III : (f : ⟨ ∏ x ˸ A , (𝓑 x) ⟩) → is-prop (fan (∏ x ˸ A , (𝓑 x)) f)
-  III f = equiv-to-prop (I f) (Π-is-prop fe (λ x → 𝓑-ua x (f x)))
+  III f = equiv-to-prop (I f) (Π-is-prop fe (λ x → ua-𝓑 x (f x)))
 
 univalence-closed-under-cotensor : Fun-Ext
                                  → (A : 𝓤' ̇) (𝓑 : Refl-Graph 𝓤 𝓥)
                                  → is-univalent-refl-graph 𝓑
                                  → is-univalent-refl-graph (A ➙ 𝓑)
-univalence-closed-under-cotensor fe A 𝓑 𝓑-ua
- = univalence-closed-under-product fe A (λ - → 𝓑) (λ - → 𝓑-ua)
+univalence-closed-under-cotensor fe A 𝓑 ua-𝓑
+ = univalence-closed-under-product fe A (λ - → 𝓑) (λ - → ua-𝓑)
 
 univalence-closed-under-coproduct : (A : 𝓤' ̇) (𝓑 : A → Refl-Graph 𝓤 𝓥)
                                   → ((x : A) → is-univalent-refl-graph (𝓑 x))
                                   → is-univalent-refl-graph (∐ x ˸ A , (𝓑 x))
-univalence-closed-under-coproduct A 𝓑 𝓑-ua (x , y)
+univalence-closed-under-coproduct A 𝓑 ua-𝓑 (x , y)
  ((.x , y₀) , refl , q₀) ((.x , y₁) , refl , q₁)
- = I y₀ y₁ q₀ q₁ (𝓑-ua x y (y , ≈-refl (𝓑 x) y) (y₀ , q₀))
-    (𝓑-ua x y (y , ≈-refl (𝓑 x) y) (y₁ , q₁))
+ = II (y₀ , q₀) (y₁ , q₁)
  where
-  I : (y' y'' : ⟨ 𝓑 x ⟩)
-    → (q' : y ≈⟨ 𝓑 x ⟩ y')
-    → (q'' : y ≈⟨ 𝓑 x ⟩ y'')
-    → (y , ≈-refl (𝓑 x) y) ＝ (y' , q')
-    → (y , ≈-refl (𝓑 x) y) ＝ (y'' , q'')
-    → ((x , y') , (refl , q'))
-     ＝[ fan (∐ x ˸ A , (𝓑 x)) (x , y) ] ((x , y'') , (refl , q''))
-  I y' y'' q' q'' refl refl = refl
+  I = fan (∐ x ˸ A , (𝓑 x)) (x , y)
+  II : ((y' , q') (y'' , q'') : fan (𝓑 x) y)
+     → ((x , y') , (refl , q')) ＝[ I ] ((x , y'') , (refl , q''))
+  II = Π-proj⁻¹ (y , ≈-refl (𝓑 x) y) (ua-𝓑 x y)
+        (Π-proj⁻¹ (y , ≈-refl (𝓑 x) y) (ua-𝓑 x y) refl)
 
 univalence-closed-under-tensor : (A : 𝓤' ̇) (𝓑 : Refl-Graph 𝓤 𝓥)
                                → is-univalent-refl-graph 𝓑
                                → is-univalent-refl-graph (∐ _ ˸ A , 𝓑)
-univalence-closed-under-tensor A 𝓑 𝓑-ua
- = univalence-closed-under-coproduct A (λ - → 𝓑) (λ - → 𝓑-ua)
+univalence-closed-under-tensor A 𝓑 ua-𝓑
+ = univalence-closed-under-coproduct A (λ - → 𝓑) (λ - → ua-𝓑)
 
 discrete-refl-graph-is-univalent
  : (A : 𝓤' ̇)
@@ -181,15 +181,15 @@ codiscrete-refl-graph-is-univalent-implies-prop
  : (A : 𝓤' ̇)
  → is-univalent-refl-graph (codiscrete-reflexive-graph A)
  → is-prop A
-codiscrete-refl-graph-is-univalent-implies-prop A codis-A-ua x y
- = ap pr₁ (codis-A-ua x (x , ⋆) (y , ⋆))
+codiscrete-refl-graph-is-univalent-implies-prop A ua-codis-A x y
+ = ap pr₁ (ua-codis-A x (x , ⋆) (y , ⋆))
 
 univalence-closed-under-subgraph : (𝓐 : Refl-Graph 𝓤 𝓥) 
                                  → (S : 𝓟 {𝓣} ⟨ 𝓐 ⟩)
                                  → is-univalent-refl-graph 𝓐
                                  → is-univalent-refl-graph (x ∶ 𝓐 ∣ S x)
-univalence-closed-under-subgraph 𝓐 S 𝓐-ua (x , s) ((x' , r) , p) ((y' , t) , q)
- = I (𝓐-ua x (x , ≈-refl 𝓐 x) (x' , p)) (𝓐-ua x (x , ≈-refl 𝓐 x) (y' , q))
+univalence-closed-under-subgraph 𝓐 S ua-𝓐 (x , s) ((x' , r) , p) ((y' , t) , q)
+ = I (ua-𝓐 x (x , ≈-refl 𝓐 x) (x' , p)) (ua-𝓐 x (x , ≈-refl 𝓐 x) (y' , q))
  where
   I : ((x , ≈-refl 𝓐 x) ＝ (x' , p))
     → ((x , ≈-refl 𝓐 x) ＝ (y' , q))
