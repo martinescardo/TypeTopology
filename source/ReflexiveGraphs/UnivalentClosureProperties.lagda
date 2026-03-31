@@ -2,7 +2,7 @@ Ian Ray. 28th August 2025.
 
 Minor changes and merged into TypeToplogy in March 2026.
 
-We observe the closure properties of univalent (displayed) reflexive graphs
+We observe some closure properties of univalent reflexive graphs
 (see index for references to Sterling, Buchholtz, etc.)
 
 \begin{code}
@@ -29,22 +29,6 @@ open import ReflexiveGraphs.Univalent
 
 \end{code}
 
-We record closure properties of univalent (displayed) reflexive graphs.
-
-\begin{code}
-
-univalence-closed-under-opposite : (𝓐 : Refl-Graph 𝓤 𝓥)
-                                 → is-univalent-refl-graph 𝓐
-                                 → is-univalent-refl-graph (𝓐 ᵒᵖ)
-univalence-closed-under-opposite 𝓐 𝓐-ua = prop-fan-to-cofan 𝓐 𝓐-ua
-
-univalence-closed-under-opposite' : (𝓐 : Refl-Graph 𝓤 𝓥)
-                                  → is-univalent-refl-graph (𝓐 ᵒᵖ)
-                                  → is-univalent-refl-graph 𝓐
-univalence-closed-under-opposite' 𝓐 = univalence-closed-under-opposite (𝓐 ᵒᵖ)
-
-\end{code}
-
 Conceptually, showing that a total reflexive graph is univalent when the base
 reflexive graph and the displayed reflexive graph over it are both univalent
 is easy enough.
@@ -65,8 +49,10 @@ edges q₀ and q₁ are contractible and it suffices to show
  ((x , y) , (≈-refl , ≈-disp-refl)) ＝ ((x , y) , (≈-refl , ≈-disp-refl))
 which holds by refl.
 
-We will mimick this proof, to some degree, with the following lemmas. Note the
-essential use of PropIndexedPiSigma.lagda.
+There are two important steps in this proof where we 'contract away' edges
+using the univalence assumption, and the latter step depends on the former.
+So we will record these steps in two lemmas. Note the essential use of the
+file PropIndexedPiSigma.lagda.
 
 \begin{code}
 
@@ -109,6 +95,16 @@ univalence-closed-under-total 𝓐 𝓑 ua-𝓐 ua-𝓑
 The remaining closure conditions are relatively straightforward.
 
 \begin{code}
+
+univalence-closed-under-opposite : (𝓐 : Refl-Graph 𝓤 𝓥)
+                                 → is-univalent-refl-graph 𝓐
+                                 → is-univalent-refl-graph (𝓐 ᵒᵖ)
+univalence-closed-under-opposite 𝓐 𝓐-ua = prop-fan-to-cofan 𝓐 𝓐-ua
+
+univalence-closed-under-opposite' : (𝓐 : Refl-Graph 𝓤 𝓥)
+                                  → is-univalent-refl-graph (𝓐 ᵒᵖ)
+                                  → is-univalent-refl-graph 𝓐
+univalence-closed-under-opposite' 𝓐 = univalence-closed-under-opposite (𝓐 ᵒᵖ)
 
 univalence-closed-under-constant
  : (𝓐 : Refl-Graph 𝓤 𝓥)
