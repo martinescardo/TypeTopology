@@ -64,6 +64,13 @@ eq-cong-sq : {A : Type} {a a' b b' : A} (h₁ : a ＝ a') (h₂ : b ＝ b') (p :
           → h₁ ∙ eq-cong h₁ h₂ p ＝ p ∙ h₂
 eq-cong-sq refl refl p = (refl∙ p)
 
+\end{code}
+
+The goal is to prove that the type is a set. Again, we do this by applying
+our ternary operations on the same triangles as in the case of majority. Let us define this triangle from a single ternary idempotent operation.
+
+\begin{code}
+
 module ternary-idempotent (A : Type)
                           (f : A → A → A → A)
                           (idem : (x : A) → f x x x ＝ x)
@@ -89,6 +96,60 @@ module ternary-idempotent (A : Type)
 
 \end{code}
 
+Next, we build a framework for lifting equations to the action on loops. To be
+able to do this, we will need that loops commute.
+
+\begin{code}
+
+module equation^ (A : Type)
+                 (s t    : A → A → A → A)
+                 (idem-s : (x : A) → s x x x ＝ x)
+                 (idem-t : (x : A) → t x x x ＝ x)
+                 (loops-commute : {a : A} (p q : a ＝ a) → p ∙ q ＝ q ∙ p)
+                 where
+
+ open ternary-idempotent A s idem-s renaming (Ωf to Ωs)
+ open ternary-idempotent A t idem-t renaming (Ωf to Ωt)
+
+ conjugation-triv : {a : A} (g : a ＝ a) (p : a ＝ a)
+                  → eq-cong g g p ＝ p
+ conjugation-triv g p = ∙-cancel g (eq-cong-sq g g p ∙ loops-commute p g)
+
+ one-eq-cong : {a b c : A} (p : a ＝ a) (q : b ＝ b)
+               (h₀ : a ＝ b) (h₁ : a ＝ c) (h₂ : b ＝ c)
+             → eq-cong h₀ h₀ p ＝ q
+             → eq-cong h₁ h₁ p ＝ eq-cong h₂ h₂ q
+ one-eq-cong p q refl h₁ refl eq = conjugation-triv h₁ p ∙ eq
+
+ Ωeq₁ : ((x y : A) → s x y y ＝ t x y y)
+      → {a : A} (p q : a ＝ a)
+      → Ωs p q q ＝ Ωt p q q
+ Ωeq₁ eq {a} p q = one-eq-cong _ _ (eq a a) (idem-s a) (idem-t a) (eq^ p q)
+  where
+   eq^ : {a a' b b' : A} (p : a ＝ a') (q : b ＝ b')
+        → eq-cong (eq a b) (eq a' b') (ap₃ s p q q) ＝ ap₃ t p q q
+   eq^ refl refl = eq-cong-refl (eq _ _)
+
+ Ωeq₂ : ((x y : A) → s x y x ＝ t x y x)
+      → {a : A} (p q : a ＝ a)
+      → Ωs p q p ＝ Ωt p q p
+ Ωeq₂ eq {a} p q = one-eq-cong _ _ (eq a a) (idem-s a) (idem-t a) (eq^ p q)
+  where
+   eq^ : {a a' b b' : A} (p : a ＝ a') (q : b ＝ b')
+        → eq-cong (eq a b) (eq a' b') (ap₃ s p q p) ＝ ap₃ t p q p
+   eq^ refl refl = eq-cong-refl (eq _ _)
+
+ Ωeq₃ : ((x y : A) → s x x y ＝ t x x y)
+      → {a : A} (p q : a ＝ a)
+      → Ωs p p q ＝ Ωt p p q
+ Ωeq₃ eq {a} p q = one-eq-cong _ _ (eq a a) (idem-s a) (idem-t a) (eq^ p q)
+  where
+   eq^ : {a a' b b' : A} (p : a ＝ a') (q : b ＝ b')
+        → eq-cong (eq a b) (eq a' b') (ap₃ s p p q) ＝ ap₃ t p p q
+   eq^ refl refl = eq-cong-refl (eq _ _)
+
+\end{code}
+
 Now, we can properly work with Willard's equations. I write down the simplest
 non-trivial case with two ternary operations s and t.
 
@@ -107,14 +168,23 @@ module simple-willard (A     : Type)
                       (loops-commute : {a : A} (p q : a ＝ a) → p ∙ q ＝ q ∙ p)
                       where
 
+ open ternary-idempotent A s (λ x → start x x)
+                         renaming (Ωf to Ωs; triangle to triangle-s)
+ open ternary-idempotent A t (λ x → end x x)
+                         renaming (Ωf to Ωt; triangle to triangle-t)
+ open equation^ A s t (λ x → start x x) (λ x → end x x) loops-commute
+                using (Ωeq₁ ; Ωeq₂)
+
+ Ωst₀ : {a : A} → (p q : a ＝ a) → Ωs p q q ＝ Ωt p q q
+ Ωst₀ = Ωeq₁ st₀
+
+ Ωst₁ : {a : A} → (p q : a ＝ a) → Ωs p q p ＝ Ωt p q p
+ Ωst₁ = Ωeq₂ st₁
+
 \end{code}
 
-The goal is to prove that the type is a set. Again, we do this by applying both
-s and t on the same triangles as in the case of majority. The next step is to
-glue the triangles together.
-
-Here's a drawing:
-
+Having lifted the linear equations, we can start gluing triangles together, as
+follows:
             p
         * ----- *
        / \  t  /
@@ -129,42 +199,7 @@ where
   p₁ ＝ Ωs p refl p    = Ωt p refl p
   p₂ ＝ Ωs p refl refl = Ωt p refl refl
 
-Let us lift the equations now. For that we will need commuting loops.
-
-\begin{code}
-
- open ternary-idempotent A s (λ x → start x x)
-                         renaming (Ωf to Ωs; triangle to triangleₛ)
- open ternary-idempotent A t (λ x → end x x)
-                         renaming (Ωf to Ωt; triangle to triangleₜ)
-
- conjugation-triv : {a : A} (g : a ＝ a) (p : a ＝ a)
-                  → eq-cong g g p ＝ p
- conjugation-triv g p = ∙-cancel g (eq-cong-sq g g p ∙ loops-commute p g)
-
- one-eq-cong : {a b c : A} (p : a ＝ a) (q : b ＝ b)
-               (h₀ : a ＝ b) (h₁ : a ＝ c) (h₂ : b ＝ c)
-             → eq-cong h₀ h₀ p ＝ q
-             → eq-cong h₁ h₁ p ＝ eq-cong h₂ h₂ q
- one-eq-cong p q refl h₁ refl eq = conjugation-triv h₁ p ∙ eq
-
- Ωst₀ : {a : A} → (p q : a ＝ a) → Ωs p q q ＝ Ωt p q q
- Ωst₀ {a} p q = one-eq-cong _ _ (st₀ a a) (start a a) (end a a) (st₀^ p q)
-  where
-   st₀^ : {a a' b b' : A} (p : a ＝ a') (q : b ＝ b')
-        → eq-cong (st₀ a b) (st₀ a' b') (ap₃ s p q q) ＝ ap₃ t p q q
-   st₀^ refl refl = eq-cong-refl (st₀ _ _)
-
- Ωst₁ : {a : A} → (p q : a ＝ a) → Ωs p q p ＝ Ωt p q p
- Ωst₁ {a} p q = one-eq-cong _ _ (st₁ a a) (start a a) (end a a) (st₁^ p q)
-  where
-   st₁^ : {a a' b b' : A} (p : a ＝ a') (q : b ＝ b')
-        → eq-cong (st₁ a b) (st₁ a' b') (ap₃ s p q p) ＝ ap₃ t p q p
-   st₁^ refl refl = eq-cong-refl (st₁ _ _)
-
-\end{code}
-
-Finally, beign able to lift all equations, we can just start gluing triangles together, e.g., as follows.
+We essentially obtain a closed shape with boudary p ∙ refl, which will consequently show that p ＝ refl.
 
 \begin{code}
 
@@ -185,10 +220,10 @@ Finally, beign able to lift all equations, we can just start gluing triangles to
 
     glue : Ωs p refl refl ∙ Ωs refl refl p ＝ Ωs p refl refl ∙ Ωt refl refl p
     glue =
-      Ωs p refl refl ∙ Ωs refl refl p ＝⟨ triangleₛ p ⟩
+      Ωs p refl refl ∙ Ωs refl refl p ＝⟨ triangle-s p ⟩
       Ωs p refl p                     ＝⟨ Ωst₁ p refl ⟩
-      Ωt p refl p                     ＝⟨ sym (triangleₜ p) ⟩
-      Ωt p refl refl ∙ Ωt refl refl p ＝⟨ ap (λ x → x ∙  Ωt refl refl p)
+      Ωt p refl p                     ＝⟨ sym (triangle-t p) ⟩
+      Ωt p refl refl ∙ Ωt refl refl p ＝⟨ ap (λ x → x ∙ Ωt refl refl p)
                                             (sym (Ωst₀ p refl)) ⟩
       Ωs p refl refl ∙ Ωt refl refl p ∎
 
