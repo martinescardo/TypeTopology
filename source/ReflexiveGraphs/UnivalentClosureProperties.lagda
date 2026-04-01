@@ -105,27 +105,27 @@ univalence-closed-under-op-op : (𝓐 : Refl-Graph 𝓤 𝓥)
                               → is-univalent-refl-graph 𝓐
 univalence-closed-under-op-op 𝓐 = univalence-closed-under-op (𝓐 ᵒᵖ)
 
-univalence-closed-under-*
+univalence-closed-under-constant
  : (𝓐 : Refl-Graph 𝓤 𝓥)
  → (𝓑 : Refl-Graph 𝓤' 𝓥')
  → is-univalent-refl-graph 𝓑 
  → is-displayed-univalent-refl-graph 𝓐 (𝓐 * 𝓑)
-univalence-closed-under-* 𝓐 𝓑 ua-𝓑 x = ua-𝓑
+univalence-closed-under-constant 𝓐 𝓑 ua-𝓑 x = ua-𝓑
     
-univalence-closed-under-⊗
+univalence-closed-under-×
  : (𝓐 : Refl-Graph 𝓤 𝓥) (𝓐' : Refl-Graph 𝓤' 𝓥')
  → is-univalent-refl-graph 𝓐
  → is-univalent-refl-graph 𝓐'
  → is-univalent-refl-graph (𝓐 ⊗ 𝓐')
-univalence-closed-under-⊗ 𝓐 𝓐' ua-𝓐 ua-𝓐'
+univalence-closed-under-× 𝓐 𝓐' ua-𝓐 ua-𝓐'
  = univalence-closed-under-total 𝓐 (𝓐 * 𝓐') ua-𝓐
-    (univalence-closed-under-* 𝓐 𝓐' ua-𝓐')
+    (univalence-closed-under-constant 𝓐 𝓐' ua-𝓐')
 
-univalence-closed-under-∏ : Fun-Ext
+univalence-closed-under-Π : Fun-Ext
                           → (A : 𝓤' ̇) (𝓑 : A → Refl-Graph 𝓤 𝓥)
                           → ((x : A) → is-univalent-refl-graph (𝓑 x))
                           → is-univalent-refl-graph (∏ x ˸ A , (𝓑 x))
-univalence-closed-under-∏ fe A 𝓑 ua-𝓑 = III
+univalence-closed-under-Π fe A 𝓑 ua-𝓑 = III
  where
   I : (f : ⟨ ∏ x ˸ A , (𝓑 x) ⟩)
     → fan (∏ x ˸ A , (𝓑 x)) f ≃ ((x : A) → fan (𝓑 x) (f x))
@@ -139,17 +139,17 @@ univalence-closed-under-∏ fe A 𝓑 ua-𝓑 = III
   III : (f : ⟨ ∏ x ˸ A , (𝓑 x) ⟩) → is-prop (fan (∏ x ˸ A , (𝓑 x)) f)
   III f = equiv-to-prop (I f) (Π-is-prop fe (λ x → ua-𝓑 x (f x)))
 
-univalence-closed-under-➙ : Fun-Ext
+univalence-closed-under-cotensor : Fun-Ext
                           → (A : 𝓤' ̇) (𝓑 : Refl-Graph 𝓤 𝓥)
                           → is-univalent-refl-graph 𝓑
                           → is-univalent-refl-graph (A ➙ 𝓑)
-univalence-closed-under-➙ fe A 𝓑 ua-𝓑
- = univalence-closed-under-∏ fe A (λ - → 𝓑) (λ - → ua-𝓑)
+univalence-closed-under-cotensor fe A 𝓑 ua-𝓑
+ = univalence-closed-under-Π fe A (λ - → 𝓑) (λ - → ua-𝓑)
 
-univalence-closed-under-∐ : (A : 𝓤' ̇) (𝓑 : A → Refl-Graph 𝓤 𝓥)
+univalence-closed-under-Σ : (A : 𝓤' ̇) (𝓑 : A → Refl-Graph 𝓤 𝓥)
                           → ((x : A) → is-univalent-refl-graph (𝓑 x))
                           → is-univalent-refl-graph (∐ x ˸ A , (𝓑 x))
-univalence-closed-under-∐ A 𝓑 ua-𝓑 (x , y)
+univalence-closed-under-Σ A 𝓑 ua-𝓑 (x , y)
  ((.x , y₀) , refl , q₀) ((.x , y₁) , refl , q₁)
  = II (y₀ , q₀) (y₁ , q₁)
  where
@@ -163,7 +163,7 @@ univalence-closed-under-tensor : (A : 𝓤' ̇) (𝓑 : Refl-Graph 𝓤 𝓥)
                                → is-univalent-refl-graph 𝓑
                                → is-univalent-refl-graph (∐ _ ˸ A , 𝓑)
 univalence-closed-under-tensor A 𝓑 ua-𝓑
- = univalence-closed-under-∐ A (λ - → 𝓑) (λ - → ua-𝓑)
+ = univalence-closed-under-Σ A (λ - → 𝓑) (λ - → ua-𝓑)
 
 discrete-refl-graph-is-univalent : (A : 𝓤' ̇) → is-univalent-refl-graph (Δ A)
 discrete-refl-graph-is-univalent A x
