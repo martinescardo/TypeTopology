@@ -7,7 +7,7 @@ lemma.
 
 {-# OPTIONS --safe --without-K #-}
 
-module gist.CommutativeLoopSpacesMaltsev where
+module AlgebraicStructuresForcingSethood.Maltsev where
 
 open import Agda.Primitive renaming (Set to Type)
 open import gist.ThereAreNoHigherSemilattices2

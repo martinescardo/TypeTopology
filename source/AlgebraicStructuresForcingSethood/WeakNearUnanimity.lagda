@@ -21,7 +21,7 @@ Let us start setting up basic tools for working with paths.
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
-module gist.TaylorsLemma where
+module AlgebraicStructuresForcingSethood.WeakNearUnanimity where
 
 open import MLTT.Spartan
 

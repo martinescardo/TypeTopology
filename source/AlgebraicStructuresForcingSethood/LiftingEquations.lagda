@@ -30,7 +30,7 @@ that the arity is extensional.
 open import MLTT.Spartan
 open import UF.Equiv
 
-module gist.LiftingEquations where
+module AlgebraicStructuresForcingSethood.LiftingEquations where
 
 happly : {A : Type} {B : A → Type}
        → {f g : (a : A) → B a}

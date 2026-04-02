@@ -10,7 +10,7 @@ involving p and refl.
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
-module gist.WillardsEquations where
+module AlgebraicStructuresForcingSethood.WillardsEquations where
 
 open import MLTT.Spartan
 
