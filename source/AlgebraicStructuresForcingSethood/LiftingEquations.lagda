@@ -77,13 +77,14 @@ eq-cong-sq refl refl p = (refl∙ p)
 
 \end{code}
 
-Next, we start lifting operations. To make an N-ary function f act on loops as an N-ary function, we will need that:
+Next, we start lifting operations. To make an N-ary function f act on loops as
+an N-ary function, we will need that:
 
 1. f is idempotent, i.e., f (λ _ → a) ＝ a;
 2. functions with domain N are extensional.
 
-The second point is needed since ap f naturally acts on paths over functions N →
-A, rather than N-tuples of paths.
+The second point is needed since ap f naturally acts on paths over functions N
+→ A, rather than N-tuples of paths.
 
 \begin{code}
 

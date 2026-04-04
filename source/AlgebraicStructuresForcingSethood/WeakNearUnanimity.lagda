@@ -1,7 +1,7 @@
-Jakub Opršal, 15–24 Mar 2026.
+Jakub Opršal, 15–24 March 2026.
 
-I want to explore another of Taylor's result in this file. Namely the following
-lemma.
+In this file, I want to explore another of Taylor's results from [1]. Namely,
+the following lemma.
 
 LEMMA (Taylor, 1977).
   Let X be a topological space with an n-ary operation t satysfying a
@@ -12,9 +12,30 @@ This file explores a ternary case of Taylor's operation that is sufficiently
 general that simplifications, like those for majority and Maltsev operations,
 would not apply here.
 
-The equations are called *ternary weak near-unanimity*. Briefly, they can be described as similar to majority, except that the three substitutions do not return a projection, but just a same value depending on both x and y, i.e.,
+The equations are called *ternary weak near-unanimity*. Briefly, they can be
+described as similar to majority, except that the three substitutions do not
+necesarily return a projection, but just a same value depending on both x and
+y, i.e.,
 
   w (x, x, y) = w (x, y, x) = w(y, x, x)
+
+It should be also noted that [2] contains a simple special case of Taylor's
+equation, namely the binary case.
+
+The proof here follows roughly the line that we outlined in [Lemma 2.12, 3],
+although I need to prove that certain 'subgrupoids' are normal, which is not
+necessary in the case of topological algebras with strictly idempotent
+operations. Curiosly, this fact was noted in Taylor's original paper [1].
+
+[1] Walter Taylor. Varieties obeying homotopy laws. Can. J. Math., XXIX(3):
+    498–527, 1977. https://doi.org/10.4153/CJM-1977-054-9.
+[2] Tom de Jong. gist.CommutativeLoopSpaces.lagda, 18 March 2026.
+[3] Sebastian Meyer and Jakub Opršal. A topological proof of the Hell–Nešetřil
+    dichotomy. https://arxiv.org/abs/2409.12627v2
+
+WARNING!  I have used this exercise to learn some intricacies of Agda, so the
+ code below is quite rough. I am leaving it as is, with proofs of symmetric
+ cases being quite distict, for the record of my progress with Agda.
 
 Let us start setting up basic tools for working with paths.
 
@@ -127,8 +148,8 @@ eq-cong-ap : {A B C D : Type}
              (qa : a' ＝ a) (qa' : a'' ＝ a''') (pa : a' ＝ a'')
              (qb : b' ＝ b) (qb' : b'' ＝ b''') (pb : b' ＝ b'')
              (qc : c' ＝ c) (qc' : c'' ＝ c''') (pc : c' ＝ c'')
-           → eq-cong (ap₃ f qa qb qc) (ap₃ f qa' qb' qc') (ap₃ f pa pb pc)
-             ＝ ap₃ f (eq-cong qa qa' pa) (eq-cong qb qb' pb) (eq-cong qc qc' pc)
+           → eq-cong (ap₃ f qa qb qc) (ap₃ f qa' qb' qc') (ap₃ f pa pb pc) ＝
+             ap₃ f (eq-cong qa qa' pa) (eq-cong qb qb' pb) (eq-cong qc qc' pc)
 eq-cong-ap f refl refl pa refl refl pb refl refl pc = refl
 
 eq-cong-cancel : {A : Type} {a a' b b' : A} {p q : a ＝ a'}
@@ -140,9 +161,13 @@ eq-cong-cancel refl refl h = h
 
 \end{code}
 
-The binary case is solved in Tom de Jong's [gist.CommutativeLoopSpaces]. But I
-will include the sketch here since this technique will be necessary for the
-ternary case. Prove that ap₂ f is onto using the rectangle
+We will need to use that `ap f` is onto in the sense that every path
+
+  q : f a a ＝ f a a
+
+is of the form ap f q' q' q' for a suitably chosen q' : a ＝ a. This is done
+similarly as what Tom de Jong did in the binary case [2]; I will use a
+rectangle like this:
 
   f a a ==idem== a ==idem== f a a
     |            |            |
@@ -150,8 +175,8 @@ ternary case. Prove that ap₂ f is onto using the rectangle
     |            |            |
   f a a ==idem== a ==idem== f a a
 
-where q' is chosen so that the left square commutes, and the fact that top and
-bottom simplifies to refl.
+where q' is chosen so that the left square commutes. The required equality
+`q = ap f q' q'` follows from the fact that top and bottom simplifies to refl.
 
 \begin{code}
 
@@ -176,7 +201,11 @@ module ternary-idempotent
 
 \end{code}
 
-Now, we get to the fun part!
+Now, we get to the fun part! The key idea is that for any binary operation f,
+elements of the form `ap f p refl` and `ap f refl q` commute. We apply this for
+three different binary operations defined from `w`. Furthermore, we use
+Taylor's identies to smuggle the last part through by equating it to an element
+that commutes.
 
 \begin{code}
 

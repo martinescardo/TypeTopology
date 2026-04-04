@@ -3,9 +3,15 @@ Jakub Opršal, 24 Mar 2026.
 THEOREM.
   Any type with ternary operations satisfying Willard equations is a set.
 
-We start with some library for ternary idempotent functions. We will work with
-triangles obtained by applying the ternary operation on the three triangles
-involving p and refl.
+TODO:
+- Sketch of the proof
+- references
+
+[1] Willard, 2000.
+[2] Taylor, 1977.
+[3] Jakub Opršal, AlgebraicStructuresForcingSethood.WeakNearUnanimity.
+
+We start with some library for ternary idempotent functions.
 
 \begin{code}
 
@@ -14,14 +20,16 @@ module AlgebraicStructuresForcingSethood.WillardsEquations where
 
 open import MLTT.Spartan
 
-sym : {A : Type} {a b : A} → (a ＝ b) → (b ＝ a)
-sym = _⁻¹
+sym : {A : Type} {a b : A} → a ＝ b → b ＝ a
+sym = _⁻¹       -- I will use sym for inverting paths
 
 refl∙ : {A : Type} {a b : A} (q : a ＝ b) → refl ∙ q ＝ q
 refl∙ refl = refl
 
-∙-cancel : {A : Type} {a b c : A} (q : a ＝ b) {p p' : b ＝ c} → q ∙ p ＝ q ∙ p' → p ＝ p'
-∙-cancel refl {p = p} {p' = p'} h = sym (refl∙ p) ∙ h ∙ (refl∙ p')
+∙-cancel : {A : Type} {a b c : A} (q : a ＝ b) {p p' : b ＝ c}
+         → q ∙ p ＝ q ∙ p'
+         → p ＝ p'
+∙-cancel refl {p} {p'} h = sym (refl∙ p) ∙ h ∙ (refl∙ p')
 
 ap₂ : {A B C : Type} (f : A → B → C) {a₁ a₂ : A} {b₁ b₂ : B}
     → a₁ ＝ a₂
@@ -36,43 +44,49 @@ ap₃ : {A B C D : Type} (f : A → B → C → D) {a₁ a₂ : A} {b₁ b₂ : 
     → f a₁ b₁ c₁ ＝ f a₂ b₂ c₂
 ap₃ f refl refl refl = refl
 
-ap₃-homo : {A B C D : Type}
-           (f : A → B → C → D)
+ap₃-homo : {A B C D : Type} (f : A → B → C → D)
            {a₁ a₂ a₃ : A} {b₁ b₂ b₃ : B} {c₁ c₂ c₃ : C}
            (pa : a₁ ＝ a₂) (qa : a₂ ＝ a₃)
            (pb : b₁ ＝ b₂) (qb : b₂ ＝ b₃)
            (pc : c₁ ＝ c₂) (qc : c₂ ＝ c₃)
-         → ((ap₃ f) pa pb pc) ∙ ((ap₃ f) qa qb qc)
-           ＝ (ap₃ f) (pa ∙ qa) (pb ∙ qb) (pc ∙ qc)
-ap₃-homo f {a₁ = a} {b₁ = b} {c₁ = c} refl refl refl refl refl refl = refl
+         → ap₃ f pa pb pc ∙ ap₃ f qa qb qc ＝ ap₃ f (pa ∙ qa) (pb ∙ qb) (pc ∙ qc)
+ap₃-homo f refl refl refl refl refl refl = refl
 
-eq-cong : {A : Type} {a a' b b' : A}
-        → (a ＝ a') → (b ＝ b') → (a ＝ b) → (a' ＝ b')
+eq-cong : {A : Type} {a a' b b' : A} → a ＝ a' → b ＝ b' → a ＝ b → a' ＝ b'
 eq-cong refl refl p = p
 
 eq-cong-∙ : {A : Type} {a a' b b' c c' : A}
-            {q : a ＝ a'} {q' : b ＝ b'} {q'' : c ＝ c'}
-            (p : a ＝ b) (r : b ＝ c)
+          → {q : a ＝ a'}
+          → {q' : b ＝ b'}
+          → {q'' : c ＝ c'}
+          → (p : a ＝ b)
+          → (r : b ＝ c)
           → eq-cong q q'' (p ∙ r) ＝ eq-cong q q' p ∙ eq-cong q' q'' r
 eq-cong-∙ {q = refl} {q' = refl} {q'' = refl} p r = refl
 
-eq-cong-refl : {A : Type} {a a' : A} (q : a ＝ a')
-             → eq-cong q q refl ＝ refl
+eq-cong-refl : {A : Type} {a a' : A} (q : a ＝ a') → eq-cong q q refl ＝ refl
 eq-cong-refl refl = refl
 
 eq-cong-sq : {A : Type} {a a' b b' : A} (h₁ : a ＝ a') (h₂ : b ＝ b') (p : a ＝ b)
-          → h₁ ∙ eq-cong h₁ h₂ p ＝ p ∙ h₂
+           → h₁ ∙ eq-cong h₁ h₂ p ＝ p ∙ h₂
 eq-cong-sq refl refl p = (refl∙ p)
 
 \end{code}
 
-The goal is to prove that the type is a set. Again, we do this by applying
-our ternary operations on the same triangles as in the case of majority. Let us define this triangle from a single ternary idempotent operation.
+The core idea of the proof is that each ternary operation f gives us a
+commuting triangle of paths:
+
+                   *
+                  / \
+  Ωf refl p refl /   \ Ωf refl refl p
+                /  f  \
+               * ----- *
+              Ωf p refl p
 
 \begin{code}
 
-module ternary-idempotent (A : Type)
-                          (f : A → A → A → A)
+module ternary-idempotent (A    : Type)
+                          (f    : A → A → A → A)
                           (idem : (x : A) → f x x x ＝ x)
                           where
 
@@ -151,16 +165,14 @@ module equation^ (A : Type)
 \end{code}
 
 Now, we can properly work with Willard's equations. I write down the simplest
-non-trivial case with two ternary operations s and t.
-
-I am assuming here that the paths of the type commute. I believe I can prove it
-by a similar technique as in the file gist.TaylorsLemma, but it involves a 9-ary
-operation, and it might be easier to write the fully general case.
+non-trivial case with two ternary operations s and t. The point I want to make
+here is that the same technique would also apply to any more complicated
+Willard's equations.
 
 \begin{code}
 
-module simple-willard (A     : Type)
-                      (s t   : A → A → A → A)
+module simple-willard (A : Type)
+                      (s t : A → A → A → A)
                       (start : (x y : A) → s x x y ＝ x)
                       (st₀   : (x y : A) → s x y y ＝ t x y y)
                       (st₁   : (x y : A) → s x y x ＝ t x y x)
@@ -169,11 +181,11 @@ module simple-willard (A     : Type)
                       where
 
  open ternary-idempotent A s (λ x → start x x)
-                         renaming (Ωf to Ωs; triangle to triangle-s)
+  renaming (Ωf to Ωs; triangle to triangle-s)
  open ternary-idempotent A t (λ x → end x x)
-                         renaming (Ωf to Ωt; triangle to triangle-t)
+  renaming (Ωf to Ωt; triangle to triangle-t)
  open equation^ A s t (λ x → start x x) (λ x → end x x) loops-commute
-                using (Ωeq₁ ; Ωeq₂)
+  using (Ωeq₁ ; Ωeq₂)
 
  Ωst₀ : {a : A} → (p q : a ＝ a) → Ωs p q q ＝ Ωt p q q
  Ωst₀ = Ωeq₁ st₀
@@ -183,23 +195,25 @@ module simple-willard (A     : Type)
 
 \end{code}
 
-Having lifted the linear equations, we can start gluing triangles together, as
-follows:
+Willard's equations, and the above lifting lemma allow us to glue the triangles
+together to get a shape with boundary p ∙ refl. For example, the simplest case
+considered in this file consists of two operations s and t, and hence two
+triangles glued as follows:
+
             p
         * ----- *
        / \  t  /
- refl /   \   / p₁
+ refl /   \   / p₂
      /  s  \ /
     * ----- *
-        p₁
+        p₂
 
-In other words:
-  p₂ ∙ p ＝ p₁ ＝ p₂ ∙ refl
-where
-  p₁ ＝ Ωs p refl p    = Ωt p refl p
-  p₂ ＝ Ωs p refl refl = Ωt p refl refl
+In other words, we can prove that:
 
-We essentially obtain a closed shape with boudary p ∙ refl, which will consequently show that p ＝ refl.
+  p₂ ∙ refl ＝ Ωs p refl p = Ωt p refl p ＝ p₂ ∙ p
+
+where p₂ ＝ Ωs p refl refl = Ωt p refl refl. We may then cancel p₂ and derive
+the required refl = p.
 
 \begin{code}
 
@@ -224,16 +238,30 @@ We essentially obtain a closed shape with boudary p ∙ refl, which will consequ
       Ωs p refl p                     ＝⟨ Ωst₁ p refl ⟩
       Ωt p refl p                     ＝⟨ sym (triangle-t p) ⟩
       Ωt p refl refl ∙ Ωt refl refl p ＝⟨ ap (λ x → x ∙ Ωt refl refl p)
-                                            (sym (Ωst₀ p refl)) ⟩
+                                             (sym (Ωst₀ p refl)) ⟩
       Ωs p refl refl ∙ Ωt refl refl p ∎
 
 \end{code}
 
-Leaving the proof that this has a Taylor term at the end. From this, I could
-theoretically derive that the loops commute using a similar technique as in
-[gist.TaylorsLemma].
+
+APPENDIX. Taylor term from Willard's term.
+
+The rest of this code shows how to derive existence of a Taylor operation from
+the above Willard operations. This is to justify the assumption that loops
+commute, which could theoretically be proved by the same method as in [3]. Note
+this is a variation on a trick from Taylor's paper [2].
+
+The core idea is to create one term `taylor` (in this case of arity 3 * 3 = 9),
+such that
+
+ taylor x x x y y y z z z = s x y z
+ taylor x y z x y z x y z = t x y z
+
+and then show that this term satisfies enough identities to be considered a
+Taylor term, and hence imply that loops commute.
 
 \begin{code}
+
  idemₛ : (x : A) → s x x x ＝ x
  idemₛ x = start x x
 
@@ -280,4 +308,5 @@ theoretically derive that the loops commute using a similar technique as in
   x                        ＝⟨ sym (start x y) ⟩
   s x x y                  ＝⟨ sym (ap₃ s (idemₜ x) (idemₜ x) (idemₜ y)) ⟩
   taylor x x x x x x y y y ∎
+
 \end{code}
