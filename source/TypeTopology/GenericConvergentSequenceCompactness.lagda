@@ -37,9 +37,14 @@ We recall the main notions defined in the above imported modules:
 private
  module recall {X : 𝓤 ̇ } where
 
-  recall₀ : is-compact∙ X ＝ (Π p ꞉ (X → 𝟚) , Σ x₀ ꞉ X , (p x₀ ＝ ₁ → Π x ꞉ X , p x ＝ ₁))
-  recall₁ : is-compact  X ＝ (Π p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁))
-  recall₂ : is-discrete X ＝ ((x y : X) → (x ＝ y) + (x ≠ y))
+  recall₀ : is-compact∙ X
+          ＝ (Π p ꞉ (X → 𝟚) , Σ x₀ ꞉ X , (p x₀ ＝ ₁ → Π x ꞉ X , p x ＝ ₁))
+
+  recall₁ : is-compact  X
+          ＝ (Π p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁))
+
+  recall₂ : is-discrete X
+          ＝ ((x y : X) → (x ＝ y) + (x ≠ y))
 
   recall₀ = by-definition
   recall₁ = by-definition
@@ -140,10 +145,12 @@ Corollaries:
 ℕ∞-Compact∙ = Compact-pointed-gives-Compact∙ ℕ∞-Compact ∞
 
 ℕ∞→ℕ-is-discrete : is-discrete (ℕ∞ → ℕ)
-ℕ∞→ℕ-is-discrete = discrete-to-power-compact-is-discrete fe ℕ∞-compact (λ u → ℕ-is-discrete)
+ℕ∞→ℕ-is-discrete = discrete-to-power-compact-is-discrete
+                    fe ℕ∞-compact (λ u → ℕ-is-discrete)
 
 ℕ∞→𝟚-is-discrete : is-discrete (ℕ∞ → 𝟚)
-ℕ∞→𝟚-is-discrete = discrete-to-power-compact-is-discrete fe ℕ∞-compact (λ u → 𝟚-is-discrete)
+ℕ∞→𝟚-is-discrete = discrete-to-power-compact-is-discrete
+                    fe ℕ∞-compact (λ u → 𝟚-is-discrete)
 
 module _ (fe' : FunExt) (pt : propositional-truncations-exist) where
 

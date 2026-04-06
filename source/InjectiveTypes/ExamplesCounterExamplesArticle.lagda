@@ -396,8 +396,8 @@ module Examples-4-13-a where
  [2] : ainjective-type (∞-Magma 𝓤) 𝓤 𝓤
  [2] = ainjectivity-of-∞-Magma
 
- [3] : ainjective-type (∞-Magma 𝓤) 𝓤 𝓤
- [3] = ainjectivity-of-∞-Magma
+ [3] : ainjective-type (∞-Magma∙ 𝓤) 𝓤 𝓤
+ [3] = ainjectivity-of-∞-Magma∙
 
  [4] : ainjective-type (monoid.Monoid {𝓤}) 𝓤 𝓤
  [4] = ainjectivity-of-Monoid

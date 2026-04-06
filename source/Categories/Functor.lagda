@@ -6,9 +6,9 @@ Definition of functor.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan hiding (id)
-open import Categories.Notation.Wild
-open import Categories.Wild
+open import MLTT.Spartan
+open import Categories.Notation.Pre
+open import Categories.Pre
 
 module Categories.Functor where
 
@@ -29,13 +29,13 @@ With the following structure
 
 \begin{code}
 
-record Functor (A : WildCategory 𝓤 𝓥)
-               (B : WildCategory 𝓦 𝓣)
+record Functor (A : Precategory 𝓤 𝓥)
+               (B : Precategory 𝓦 𝓣)
              : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇  where
  constructor functor
 
- open WildCategoryNotation A
- open WildCategoryNotation B
+ open PrecategoryNotation A
+ open PrecategoryNotation B
 
  field
   F₀ : obj A → obj B
@@ -48,5 +48,14 @@ record Functor (A : WildCategory 𝓤 𝓥)
                    (g : hom b c)
                    (f : hom a b)
                  → F₁ (g ◦ f) ＝ F₁ g ◦ F₁ f
+
+\end{code}
+
+We can easily define the identity functor.
+
+\begin{code}
+
+id-functor : (W : Precategory 𝓤 𝓥) → Functor W W
+id-functor W = functor id id (λ _ → refl) λ _ _ → refl
 
 \end{code}

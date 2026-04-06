@@ -30,7 +30,7 @@ open import Ordinals.ToppedType fe
 open import Ordinals.Underlying
 open import TypeTopology.CompactTypes
 open import TypeTopology.ConvergentSequenceHasInf
-open import TypeTopology.PropInfTychonoff
+open import TypeTopology.MicroInfTychonoff
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import TypeTopology.SquashedCantor fe
 open import TypeTopology.SquashedSum fe
@@ -617,7 +617,7 @@ get rid of this at some point, here and in the other files.
  where
   a : (x : ⟨ ℕ∞ᵒ ⟩) → has-infs-of-complemented-subsets
                        ((τ ↗ embedding-ℕ-to-ℕ∞ fe₀) x)
-  a x = prop-inf-tychonoff fe
+  a x = micro-inf-tychonoff fe
          (ℕ-to-ℕ∞-is-embedding fe₀ x)
          (λ {w} x y → x ≺⟨ τ (pr₁ w) ⟩ y)
          (λ w → ε (pr₁ w))

@@ -1,8 +1,8 @@
 Andrew Swan, started 13th February 2024
 
 We demonstrate the upwards absoluteness of compactness, by using it to
-give an alternative proof of the propositional Tychonoff theorem (as
-proved in the module TypeTopology.PropTychonoff).
+give an alternative proof of the Micro Tychonoff theorem (as proved in
+the module TypeTopology.MicroTychonoff).
 
 \begin{code}
 

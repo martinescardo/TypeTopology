@@ -26,8 +26,8 @@ import TypeTopology.ExtendedSumCompact
 import TypeTopology.FailureOfTotalSeparatedness
 import TypeTopology.GenericConvergentSequenceCompactness
 import TypeTopology.LimitPoints
-import TypeTopology.PropInfTychonoff
-import TypeTopology.PropTychonoff
+import TypeTopology.MicroInfTychonoff
+import TypeTopology.MicroTychonoff
 import TypeTopology.RicesTheoremForTheUniverse
 import TypeTopology.SequentiallyHausdorff
 import TypeTopology.SigmaDiscreteAndTotallySeparated

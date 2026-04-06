@@ -19,7 +19,7 @@ open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.FailureOfTotalSeparatedness
 open import TypeTopology.GenericConvergentSequenceCompactness
-open import TypeTopology.PropTychonoff
+open import TypeTopology.MicroTychonoff
 open import TypeTopology.TotallySeparated
 open import UF.Base
 open import UF.DiscreteAndSeparated
@@ -202,7 +202,7 @@ Even compact totally separated types fail to be closed under Σ:
     (τ ℕ∞ (λ u → u ＝ ∞ → 𝟚)
        (ℕ∞-compact fe₀)
        (λ _ → compact∙-types-are-compact
-               (prop-tychonoff fe₀ (ℕ∞-is-set fe₀) (λ _ → 𝟚-is-compact∙)))
+               (micro-tychonoff fe₀ (ℕ∞-is-set fe₀) (λ _ → 𝟚-is-compact∙)))
        (ℕ∞-is-totally-separated fe₀)
        (λ u → Π-is-totally-separated fe₀ (λ _ → 𝟚-is-totally-separated)))
 

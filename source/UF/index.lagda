@@ -69,7 +69,6 @@ import UF.Singleton-Properties       -- by [2]
 import UF.Size
 import UF.Size-TruncatedConnected    -- by [2]
 import UF.SmallnessProperties
-import UF.StructureIdentityPrinciple -- Obsolete but keep. Use UF.SIP instead
 import UF.Subsingletons
 import UF.Subsingletons-FunExt
 import UF.Subsingletons-Properties

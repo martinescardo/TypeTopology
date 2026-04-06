@@ -67,7 +67,7 @@ open import TypeTopology.CompactTypes
 open import TypeTopology.Density
 open import TypeTopology.FailureOfTotalSeparatedness
 open import TypeTopology.LimitPoints
-open import TypeTopology.PropInfTychonoff fe
+open import TypeTopology.MicroInfTychonoff fe
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
@@ -305,7 +305,7 @@ module _ (pe : propext 𝓤₀) where
      (K-has-infs-of-complemented-subsets ν)
      (𝓚-has-infs-of-complemented-subsets ν A)
  𝓚-has-infs-of-complemented-subsets ν A x =
-   prop-inf-tychonoff
+   micro-inf-tychonoff
     (ι-is-embedding ν x)
     (λ {(x , _)} y z → y ≺⟨ Κ (A x) ⟩ z)
     (λ (x , _) → K-has-infs-of-complemented-subsets (A x))

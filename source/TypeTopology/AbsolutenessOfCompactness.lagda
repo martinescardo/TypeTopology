@@ -1,7 +1,7 @@
 Andrew Swan, February 7th 2024
 
 This is a generalisation of some of the results by Martín Escardó in
-TypeTopology.PropTychonoff, based on the observation that for
+TypeTopology.MicroTychonoff, based on the observation that for
 propositions P, the functor sending A to P → A is a
 modality. Modalities of this form are an important special case and
 they have a name; they are *open modalities* (Example 1.7 in
@@ -146,7 +146,7 @@ have the converse direction. However, we will be able to show that
 compact implies weak internal compact.
 
 This weaker notion will also be useful for making the connection with
-the results of TypeTopology.PropTychonoff clear. To do this, we will
+the results of TypeTopology.MicroTychonoff clear. To do this, we will
 also look at the type obtained by simply applying the modality to the
 statement that A is compact. We will be able to show ○ (is-compact∙ A)
 → is-weak-internal-compact∙, but not the same implication for just

@@ -79,7 +79,7 @@ right inverse equalities are a proposition.
 
 \begin{code}
 
-module _ (P : Precategory 𝓤 𝓥) where
+module isomorphism-properties (P : Precategory 𝓤 𝓥) where
  open WildCategoryNotation ⟨ P ⟩
 
  inverses-are-lc : {a b : obj P}
@@ -110,5 +110,20 @@ Following this, we can see that the type of isomorphisms is a set.
                          → is-set (a ≅ b)
  isomorphism-type-is-set = Σ-is-set (hom-is-set P)
                                     (λ f → props-are-sets (being-iso-is-prop f))
+
+\end{code}
+
+Furthermore, we can show that equivalence of isomorphisms is based on equality
+of the chosen morphism.
+
+\begin{code}
+
+ to-≅-＝ : {a b : obj P}
+         → {f f' : a ≅ b}
+         → ⌜ f ⌝ ＝ ⌜ f' ⌝
+         → f ＝ f'
+ to-≅-＝ = to-subtype-＝ being-iso-is-prop
+
+open isomorphism-properties public hiding (to-≅-＝)
 
 \end{code}
