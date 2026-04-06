@@ -28,5 +28,6 @@ import ReflexiveGraphs.Displayed
 import ReflexiveGraphs.DisplayedUnivalent
 import ReflexiveGraphs.Type
 import ReflexiveGraphs.Univalent
+import ReflexiveGraphs.UnivalentFamilies
 
 \end{code}
