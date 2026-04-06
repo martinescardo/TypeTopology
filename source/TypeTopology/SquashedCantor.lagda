@@ -47,11 +47,11 @@ family λ (_ : ℕ) → X.
 
 \begin{code}
 
-D : 𝓤 ̇ → 𝓤 ̇
-D X = Σ u ꞉ ℕ∞ , (is-finite u → X)
+𝔻 : 𝓤 ̇ → 𝓤 ̇
+𝔻 X = Σ u ꞉ ℕ∞ , (is-finite u → X)
 
 private
- remark₁ : (X : 𝓤 ̇ ) → D X ＝ Σ¹ λ (_ : ℕ) → X
+ remark₁ : (X : 𝓤 ̇ ) → 𝔻 X ＝ Σ¹ λ (_ : ℕ) → X
  remark₁ X = refl
 
 Cantor : 𝓤₀ ̇
@@ -74,7 +74,7 @@ Exercises left to the reader (they are not needed so far):
 \begin{code}
 
 private
- remark₂ : D Cantor ＝ (Σ u ꞉ ℕ∞ , Cantor[ u ])
+ remark₂ : 𝔻 Cantor ＝ (Σ u ꞉ ℕ∞ , Cantor[ u ])
  remark₂ = refl
 
 transport-Cantor : {u v : ℕ∞} (p : u ＝ v) → Cantor[ u ] → Cantor[ v ]
@@ -141,7 +141,7 @@ We now define functions
 
    Head : Cantor → ℕ∞
    Tail : (α : Cantor) → Cantor[ Head α ]
-   Cons : D Cantor → Cantor
+   Cons : 𝔻 Cantor → Cantor
 
 such that for all u : ℕ∞ and π : Cantor[ u ],
 
@@ -271,17 +271,17 @@ inverse Cons for ⟨Head , Tail⟩:
 
 \begin{code}
 
-head-step : D Cantor → 𝟚
+head-step : 𝔻 Cantor → 𝟚
 head-step (u , π) = 𝟚-equality-cases
                      (λ (z : is-Zero u)     → head (π (Zero-is-finite' fe' u z)))
                      (λ (p : is-positive u) → ₁)
 
-tail-step : D Cantor → D Cantor
+tail-step : 𝔻 Cantor → 𝔻 Cantor
 tail-step (u , π) = 𝟚-equality-cases
                      (λ (z : is-Zero u)     → u , tail ∘ π)
                      (λ (p : is-positive u) → Pred u , π ∘ is-finite-up' fe' u)
 
-Κ : D Cantor → Cantor
+Κ : 𝔻 Cantor → Cantor
 Κ = seq-corec head-step tail-step
 
 head-Κ-Zero : (π : Cantor[ Zero ])
@@ -356,7 +356,7 @@ defined from it is:
 
 \begin{code}
 
-Cons : D Cantor → Cantor
+Cons : 𝔻 Cantor → Cantor
 Cons (u , π) = Κ (u , λ (φ : is-finite u) → ₀ ∶∶ π φ)
 
 to-Cons-＝ : ({u v} w : ℕ∞)
@@ -587,15 +587,15 @@ Hence Cons is left invertible, or has a section:
 
 \begin{code}
 
-Snoc : Cantor → D Cantor
+Snoc : Cantor → 𝔻 Cantor
 Snoc α = (Head α , Tail α)
 
-Snoc-Cons : (d : D Cantor) → Snoc (Cons d) ＝ d
+Snoc-Cons : (d : 𝔻 Cantor) → Snoc (Cons d) ＝ d
 Snoc-Cons (u , π) = to-Σ-＝ (Head-Cons u π , Tail-Cons' u π)
 
 
-D-Cantor-retract-of-Cantor : retract (D Cantor) of Cantor
-D-Cantor-retract-of-Cantor = Snoc , Cons , Snoc-Cons
+𝔻-Cantor-retract-of-Cantor : retract (𝔻 Cantor) of Cantor
+𝔻-Cantor-retract-of-Cantor = Snoc , Cons , Snoc-Cons
 
 \end{code}
 
@@ -618,7 +618,7 @@ of showing that our searchable ordinals are totally separated.
   r = Σ-retract (X / ι) ((λ _ → Cantor) / ι) s
 
   γ : retract Σ¹ X of Cantor
-  γ = retracts-compose D-Cantor-retract-of-Cantor r
+  γ = retracts-compose 𝔻-Cantor-retract-of-Cantor r
 
 \end{code}
 
@@ -736,11 +736,11 @@ The delay monad structure.
 
 \begin{code}
 
-ηD : {X : 𝓤 ̇ } → X → D X
-ηD x = (Zero , λ _ → x)
+η𝔻 : {X : 𝓤 ̇ } → X → 𝔻 X
+η𝔻 x = (Zero , λ _ → x)
 
-δD : {X : 𝓤 ̇ } → D X → D X
-δD (u , f) = (Succ u , f ∘ is-finite-down u)
+δ𝔻 : {X : 𝓤 ̇ } → 𝔻 X → 𝔻 X
+δ𝔻 (u , f) = (Succ u , f ∘ is-finite-down u)
 
 \end{code}
 
@@ -750,10 +750,10 @@ Preservation of total separatedness.
 
 open import TypeTopology.TotallySeparated
 
-D-is-totally-separated : (X : 𝓤 ̇ )
+𝔻-is-totally-separated : (X : 𝓤 ̇ )
                        → is-totally-separated X
-                       → is-totally-separated (D X)
-D-is-totally-separated X τ = Σ¹-is-totally-separated (λ _ → X) (λ _ → τ)
+                       → is-totally-separated (𝔻 X)
+𝔻-is-totally-separated X τ = Σ¹-is-totally-separated (λ _ → X) (λ _ → τ)
 
 \end{code}
 
@@ -761,54 +761,54 @@ Added 9th January 2024.
 
 \begin{code}
 
-D-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+𝔻-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
           → (X → Y)
-          → (D X → D Y)
-D-functor f (u , π) = (u , f ∘ π)
+          → (𝔻 X → 𝔻 Y)
+𝔻-functor f (u , π) = (u , f ∘ π)
 
-D-functor-id : {X : 𝓤 ̇ }
-             → D-functor (𝑖𝑑 X) ∼ 𝑖𝑑 (D X)
-D-functor-id d = refl
+𝔻-functor-id : {X : 𝓤 ̇ }
+             → 𝔻-functor (𝑖𝑑 X) ∼ 𝑖𝑑 (𝔻 X)
+𝔻-functor-id d = refl
 
-D-functor-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+𝔻-functor-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
               (f : X → Y) (g : Y → Z)
-            → D-functor (g ∘ f) ＝ D-functor g ∘ D-functor f
-D-functor-∘ f g = refl
+            → 𝔻-functor (g ∘ f) ＝ 𝔻-functor g ∘ 𝔻-functor f
+𝔻-functor-∘ f g = refl
 
-D-functor-id-＝ : {X : 𝓤 ̇ }
-               → D-functor (𝑖𝑑 X) ＝ 𝑖𝑑 (D X)
-D-functor-id-＝ = refl
+𝔻-functor-id-＝ : {X : 𝓤 ̇ }
+               → 𝔻-functor (𝑖𝑑 X) ＝ 𝑖𝑑 (𝔻 X)
+𝔻-functor-id-＝ = refl
 
-D-functor-∘-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+𝔻-functor-∘-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                 (f : X → Y) (g : Y → Z)
-               → D-functor (g ∘ f) ＝ D-functor g ∘ D-functor f
-D-functor-∘-＝ f g = refl
+               → 𝔻-functor (g ∘ f) ＝ 𝔻-functor g ∘ 𝔻-functor f
+𝔻-functor-∘-＝ f g = refl
 
 open import UF.Sets
 open import UF.Sets-Properties
 
-D-is-set : {X : 𝓤 ̇ }
+𝔻-is-set : {X : 𝓤 ̇ }
          → is-set X
-         → is-set (D X)
-D-is-set {𝓤} {X} X-is-set = Σ-is-set
+         → is-set (𝔻 X)
+𝔻-is-set {𝓤} {X} X-is-set = Σ-is-set
                              (ℕ∞-is-set fe')
                              (λ u → Π-is-set fe' (λ φ → X-is-set))
 
-to-D-＝ : {X : 𝓤 ̇ }
+to-𝔻-＝ : {X : 𝓤 ̇ }
           (u u' : ℕ∞)
           (π  : is-finite u  → X)
           (π' : is-finite u' → X)
         → (Σ p ꞉ u ＝ u' , π ＝ π' ∘ transport is-finite p)
-        → (u , π) ＝[ D X ] (u' , π')
-to-D-＝ {𝓤} {X} u u π π (refl , refl) = refl
+        → (u , π) ＝[ 𝔻 X ] (u' , π')
+to-𝔻-＝ {𝓤} {X} u u π π (refl , refl) = refl
 
-from-D-＝ : {X : 𝓤 ̇ }
+from-𝔻-＝ : {X : 𝓤 ̇ }
             (u u' : ℕ∞)
             (π  : is-finite u  → X)
             (π' : is-finite u' → X)
-          → (u , π) ＝[ D X ] (u' , π')
+          → (u , π) ＝[ 𝔻 X ] (u' , π')
           → Σ p ꞉ u ＝ u' , (π ＝ π' ∘ transport is-finite p)
-from-D-＝ {𝓤} {X} u u π π refl = (refl , refl)
+from-𝔻-＝ {𝓤} {X} u u π π refl = (refl , refl)
 
 \end{code}
 
@@ -816,12 +816,12 @@ This is something I am thinking about:
 
 \begin{code}
 {-
-is-D-coalgebra-map : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-                     (a : A → D A)
-                     (b : B → D B)
+is-𝔻-coalgebra-map : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                     (a : A → 𝔻 A)
+                     (b : B → 𝔻 B)
                    → (A → B)
                    → 𝓤 ⊔ 𝓥 ̇
-is-D-coalgebra-map {𝓤} {𝓥} {A} {B} α β f = β ∘ f ∼ D-functor f ∘ α
+is-𝔻-coalgebra-map {𝓤} {𝓥} {A} {B} α β f = β ∘ f ∼ 𝔻-functor f ∘ α
  where
   headᵃ : A → ℕ∞
   headᵃ = pr₁ ∘ α
@@ -860,12 +860,12 @@ is-D-coalgebra-map {𝓤} {𝓥} {A} {B} α β f = β ∘ f ∼ D-functor f ∘ 
          tailᵇ (f a) (n , (q ∙ p₁)) ＝⟨ ap (tailᵇ (f a)) ((ts p₁ (n , q))⁻¹) ⟩
          (tailᵇ (f a) ∘ transport is-finite p₁) (n , q) ∎)
 
-   I = D-functor f (α a) ＝⟨refl⟩
+   I = 𝔻-functor f (α a) ＝⟨refl⟩
        (headᵃ a , f ∘ tailᵃ a) ＝⟨ I₀ ⟩
        (headᵇ (f a) , tailᵇ (f a)) ＝⟨refl⟩
        β (f a) ∎
         where
-         I₀ = to-D-＝ (headᵃ a) (headᵇ (f a)) (f ∘ tailᵃ a) (tailᵇ (f a)) (p₁ , p₂)
+         I₀ = to-𝔻-＝ (headᵃ a) (headᵇ (f a)) (f ∘ tailᵃ a) (tailᵇ (f a)) (p₁ , p₂)
 -}
 
 \end{code}
