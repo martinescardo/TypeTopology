@@ -29,5 +29,6 @@ import ReflexiveGraphs.DisplayedUnivalent
 import ReflexiveGraphs.Type
 import ReflexiveGraphs.Univalent
 import ReflexiveGraphs.UnivalentClosureProperties
+import ReflexiveGraphs.UnivalentFamilies
 
 \end{code}
