@@ -495,7 +495,7 @@ module _ (pt : propositional-truncations-exist)
                           (sum-to-sup-is-surjection (extension (𝓢 ∘ ν)))
                           (Σ-is-compact∙
                             (ℕ∞-compact∙ fe₀)
-                            (λ u → prop-tychonoff (fe 𝓤₀ 𝓤₀)
+                            (λ u → micro-tychonoff (fe 𝓤₀ 𝓤₀)
                                     (ℕ-to-ℕ∞-is-embedding fe₀ u)
                                     (λ (i , _) → 𝓢-compact∙ (ν i))))
 
