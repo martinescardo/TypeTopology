@@ -1,7 +1,7 @@
 Martin Escardo 28 July 2018
 
-Adapted from the module TypeTopology.PropTychnoff to take order into
-account. The file PropTychonoff has many comments, but this one
+Adapted from the module TypeTopology.MicroTychnoff to take order into
+account. The file MicrosTychonoff has many comments, but this one
 doesn't.
 
 \begin{code}
@@ -11,7 +11,7 @@ doesn't.
 open import MLTT.Spartan
 open import UF.FunExt
 
-module TypeTopology.PropInfTychonoff (fe : FunExt) where
+module TypeTopology.MicroInfTychonoff (fe : FunExt) where
 
 open import MLTT.Two-Properties
 open import Ordinals.InfProperty
@@ -19,12 +19,12 @@ open import UF.Subsingletons
 open import UF.PropIndexedPiSigma
 open import UF.Equiv
 
-prop-inf-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                   → is-prop X
-                   → (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
-                   → ((x : X) → has-inf (λ (y y' : Y x) → ¬ (y' ≺ y)))
-                   → has-inf (λ (φ γ : Π Y) → ¬ (Σ x ꞉ X , γ x ≺ φ x))
-prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} X-is-prop _≺_ ε p =
+micro-inf-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                    → is-prop X
+                    → (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
+                    → ((x : X) → has-inf (λ (y y' : Y x) → ¬ (y' ≺ y)))
+                    → has-inf (λ (φ γ : Π Y) → ¬ (Σ x ꞉ X , γ x ≺ φ x))
+micro-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} X-is-prop _≺_ ε p =
  φ₀ , φ₀-is-conditional-root , a , b
  where
   _≼_ : {x : X} → Y x → Y x → 𝓦 ̇

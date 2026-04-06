@@ -1,5 +1,7 @@
 Martin Escardo 29 April 2014.
 
+Micro-Tychonoff Theorem.
+
 A proposition-indexed product of pointed compact sets is itself
 compact. But the assumption that a proposition-indexed product of
 compact sets is compact gives weak excluded middle (negative
@@ -40,7 +42,7 @@ The point is that
 
 open import MLTT.Spartan
 
-module TypeTopology.PropTychonoff where
+module TypeTopology.MicroTychonoff where
 
 open import MLTT.Two-Properties
 open import TypeTopology.CompactTypes
@@ -49,12 +51,12 @@ open import UF.FunExt
 open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
 
-prop-tychonoff : funext 𝓤 𝓥
-               → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-               → is-prop X
-               → ((x : X) → is-compact∙ (Y x))
-               → is-compact∙ (Π Y)
-prop-tychonoff {𝓤} {𝓥} fe {X} {Y} X-is-prop ε p = γ
+micro-tychonoff : funext 𝓤 𝓥
+                → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                → is-prop X
+                → ((x : X) → is-compact∙ (Y x))
+                → is-compact∙ (Π Y)
+micro-tychonoff {𝓤} {𝓥} fe {X} {Y} X-is-prop ε p = γ
  where
   _ : (x : X) → is-compact∙ (Y x)
   _ = ε
@@ -256,12 +258,12 @@ A particular case is the following:
 
 \begin{code}
 
-prop-tychonoff-corollary : funext 𝓤 𝓥
-                         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                         → is-prop X
-                         → is-compact∙ Y
-                         → is-compact∙ (X → Y)
-prop-tychonoff-corollary fe X-is-prop ε = prop-tychonoff fe X-is-prop (λ x → ε)
+micro-tychonoff-corollary : funext 𝓤 𝓥
+                          → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                          → is-prop X
+                          → is-compact∙ Y
+                          → is-compact∙ (X → Y)
+micro-tychonoff-corollary fe X-is-prop ε = micro-tychonoff fe X-is-prop (λ x → ε)
 
 \end{code}
 
@@ -273,12 +275,12 @@ Better (9 Sep 2015):
 
 \begin{code}
 
-prop-tychonoff-corollary' : funext 𝓤 𝓥
-                          → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                          → is-prop X
-                          → (X → is-compact∙ Y)
-                          → is-compact∙ (X → Y)
-prop-tychonoff-corollary' fe = prop-tychonoff fe
+micro-tychonoff-corollary' : funext 𝓤 𝓥
+                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                           → is-prop X
+                           → (X → is-compact∙ Y)
+                           → is-compact∙ (X → Y)
+micro-tychonoff-corollary' fe = micro-tychonoff fe
 
 \end{code}
 
@@ -297,12 +299,12 @@ in all models.
 
 open import UF.ClassicalLogic
 
-compact-prop-tychonoff-gives-WEM' : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
-                                        → is-prop X
-                                        → ((x : X) → is-compact (Y x))
-                                        → is-compact (Π Y))
-                                  → WEM 𝓤
-compact-prop-tychonoff-gives-WEM' {𝓤} {𝓥} τ X X-is-prop = δ γ
+compact-micro-tychonoff-gives-WEM' : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+                                         → is-prop X
+                                         → ((x : X) → is-compact (Y x))
+                                         → is-compact (Π Y))
+                                   → WEM 𝓤
+compact-micro-tychonoff-gives-WEM' {𝓤} {𝓥} τ X X-is-prop = δ γ
  where
   Y : X → 𝓥 ̇
   Y x = 𝟘

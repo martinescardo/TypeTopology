@@ -178,10 +178,10 @@ knowing whether LPO holds or not!
 
 \begin{code}
 
-open import TypeTopology.PropTychonoff
+open import TypeTopology.MicroTychonoff
 
 [LPO→ℕ]-is-compact∙ : funext₀ → is-compact∙ (LPO → ℕ)
-[LPO→ℕ]-is-compact∙ fe = prop-tychonoff-corollary' fe (LPO-is-prop fe) f
+[LPO→ℕ]-is-compact∙ fe = micro-tychonoff-corollary' fe (LPO-is-prop fe) f
  where
    f : LPO → is-compact∙ ℕ
    f lpo = compact-pointed-types-are-compact∙ (LPO-gives-compact-ℕ fe lpo) 0
