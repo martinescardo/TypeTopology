@@ -141,7 +141,7 @@ compact-pointed-types-are-compact∙ {𝓤} {X} φ x₀ p = γ (φ p)
   γ : (Σ x ꞉ X , p x ＝ ₀) + ((x : X) → p x ＝ ₁)
     → Σ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
   γ (inl (x , r)) = x , (λ s → 𝟘-elim (equal-₀-different-from-₁ r s))
-  γ (inr f) = x₀ , (λ r → f)
+  γ (inr f)       = x₀ , (λ r → f)
 
 compact∙-types-are-compact : {X : 𝓤 ̇ } → is-compact∙ X → is-compact X
 compact∙-types-are-compact {𝓤} {X} ε p = 𝟚-equality-cases case₀ case₁
@@ -352,7 +352,6 @@ discrete-to-power-compact-is-discrete : funext 𝓤 𝓥
                                       → is-compact X
                                       → ((x : X) → is-discrete (Y x))
                                       → is-discrete ((x : X) → Y x)
-
 discrete-to-power-compact-is-discrete fe φ d f g = h (apart-or-equal fe φ d f g)
  where
   h : (f ♯ g) + (f ＝ g) → (f ＝ g) + (f ≠ g)

@@ -372,8 +372,8 @@ MP-and-¬WLPO-give-that-all-functions-are-continuous mp nwlpo f
 End of 7th September 2024 addition.
 
 In the following fact we can replace Σ by ∃ because WLPO is a
-proposition. Hence WLPO is the propositional truncation of the type Σ
-f ꞉ (ℕ∞ → ℕ) , ¬ continuous f.
+proposition. Hence WLPO is the propositional truncation of the type
+Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f.
 
 TODO. Add code for this observation.
 
