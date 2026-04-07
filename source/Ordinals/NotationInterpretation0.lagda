@@ -125,8 +125,8 @@ relation _⊴_ on ordinals, under the assumption of excluded middle:
 
 But we first show that ⟦ b ⟧₂ and ⟦ b ⟧₁ are compact and pointed. The
 pointedness is absolutely essential in the proofs by induction, via
-the indirect use of prop-tychonoff in Σ¹, because a version of
-prop-tychonoff without pointedness implies excluded middle. And this
+the indirect use of micro-tychonoff in Σ¹, because a version of
+micro-tychonoff without pointedness implies excluded middle. And this
 is why we defined the base cases to be 𝟙 rather than 𝟘.
 
 \begin{code}

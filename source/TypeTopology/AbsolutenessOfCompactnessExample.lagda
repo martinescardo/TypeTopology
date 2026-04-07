@@ -74,29 +74,28 @@ open WithFunExtAndRepleteSigmaClosed
 \end{code}
 
 If we apply the theorems in AbsolutenessOfCompactness directly, the
-best we can get is the following non dependent version of
-propositional Tychonoff.
+best we can get is the following non dependent version of Micro Tychonoff.
 
 \begin{code}
 
-non-dependent-prop-tychonoff
+non-dependent-micro-tychonoff
  : (A : 𝓤 ̇ )
  → (P → is-compact∙ A)
  → is-compact∙ (P → A)
-non-dependent-prop-tychonoff = modalities-preserve-compact
+non-dependent-micro-tychonoff = modalities-preserve-compact
 
 \end{code}
 
-In order to get a new proof of propositional Tychonoff, we need to
+In order to get a new proof of Micro Tychonoff, we need to
 show how to derive it from the non-dependent version.
 
 \begin{code}
 
-prop-tychonoff₂
+micro-tychonoff₂
  : (A : P → 𝓤 ̇ )
  → ((z : P) → is-compact∙ (A z))
  → is-compact∙ (Π A)
-prop-tychonoff₂ A A-compact = ΠA-compact
+micro-tychonoff₂ A A-compact = ΠA-compact
  where
 
 \end{code}
@@ -109,9 +108,9 @@ above, which shows that P → Π A is compact. We then need to deduce
 from this that in fact Π A is compact.
 
 The first step, of showing that P implies Π A compact, is copied
-straight from the original propositional Tychonoff proof. Namely, if P
-is true, as witnessed by an inhabitant z, then Π A is equivalent to A
-z, and so is compact.
+straight from the original Micro Tychonoff proof. Namely, if P
+is true, as witnessed by an inhabitant z, then Π A is equivalent to A z,
+and so is compact.
 
 \begin{code}
 
@@ -132,7 +131,7 @@ is compact.
 
   P→ΠA-compact : is-compact∙ (P → Π A)
   P→ΠA-compact =
-   non-dependent-prop-tychonoff (Π A) product-locally-compact
+   non-dependent-micro-tychonoff (Π A) product-locally-compact
 
 \end{code}
 
@@ -141,7 +140,7 @@ equivalent to P → Π A. This can be shown directly, but we will give a
 slightly more abstract proof using general results about
 modalities.
 
-First note that given z : P, we known that P is true and so every type
+First note that given z : P, we know that P is true and so every type
 is modal for the open modality on P. Hence, in particular A z is
 modal.
 
