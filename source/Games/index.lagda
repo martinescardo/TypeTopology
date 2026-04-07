@@ -20,6 +20,7 @@ import Games.TicTacToe0                            -- (7)
 import Games.TicTacToe1                            -- (7)
 import Games.TicTacToe2                            -- (7)
 import Games.alpha-beta                            -- (8)
+import Games.OptimalPlays                          -- (9)
 import Games.AllOptimalPlays                       -- (9)
 import Games.Alternative                           -- (10)
 -- import Games.Main                               -- (11)
@@ -95,7 +96,11 @@ import Games.Alternative                           -- (10)
    by e.g. tic-tac-toe.  However, it doesn't yet include correctness
    proofs, although what needs to be proved is indicated in the file.
 
-9. AllOptimalPlays.
+9. OptimalPlays.
+
+   This defines the notions of optimal move and optimal play.
+
+   AllOptimalPlays.
 
    This computes the list of all optimal plays of a game, in two ways,
    one using (4) above.
