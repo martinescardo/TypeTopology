@@ -435,7 +435,8 @@ module ArgMinMax-Listed
  Max (x₀ , xs , _) p = foldr (λ x → max (p x)) (p x₀) xs
 
  private
-  argmin' argmax' : {X : 𝓤 ̇ } (p : X → R) (x y : X) → is-decidable (p x < p y) → X
+  argmin' argmax'
+   : {X : 𝓤 ̇ } (p : X → R) (x y : X) → is-decidable (p x < p y) → X
 
   argmin' p x y (inl le) = x
   argmin' p x y (inr ge) = y
