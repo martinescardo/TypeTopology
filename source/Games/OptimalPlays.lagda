@@ -45,4 +45,10 @@ is-optimal-play {X ∷ Xf} (ϕ :: ϕf) q (x :: xs) =
    is-optimal-move {X} {Xf} q ϕ ϕf x
  × is-optimal-play {Xf x} (ϕf x) (subpred q x) xs
 
+is-game-optimal-play : (G : Game) → Path (game-tree G) → 𝓦₀ ̇
+is-game-optimal-play (game Xt q ϕt) = is-optimal-play {Xt} ϕt q
+
+is-game-optimal-outcome : Game → R → 𝓦₀ ̇
+is-game-optimal-outcome G r = (r ＝ optimal-outcome G)
+
 \end{code}
