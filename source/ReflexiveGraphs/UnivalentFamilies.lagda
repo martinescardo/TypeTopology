@@ -40,13 +40,13 @@ is-univalent-family (A , B) = is-univalent-refl-graph (refl-graph-image A B)
 \end{code}
 
 This definition is intentionally general and offers a robust theoretical
-framework for working with universe. That is, if one was working directly
-with the codes of a tarski style universe presentation than a univalent family
-would be a pair (𝓤 , El) consiting of the universe type and the decoding map
-El : 𝓤 → Type. Fortunately, in Agda the user may operate as if universes where
-presented à la Russel and thus our pair of interest is simply (𝓤 , id). But
-there are other examples of univalent families of interest such as those
-given by sub-universes (like Prop, Set, etc.).
+framework for working with a universe of things. That is, if one was working
+directly with the codes of a tarski style universe presentation than a
+univalent family would be a pair (𝓤 , El) consiting of the universe type and
+the decoding map El : 𝓤 → Type. In Agda the user may operate as if universes
+where presented à la Russel and thus our pair of interest is simply (𝓤 , id).
+But there are other examples of univalent families of interest such as
+(Prop, pr₁), (Set, pr₁), (ℕ , finset), etc.
 
 We can give some equivalent characterizations of univalent family of types.
 
@@ -68,10 +68,8 @@ is-univalent-family-implies-id-to-equiv {𝓤} {𝓣} {A} {B} is-ua-fam
 
 \end{code}
 
-We can also state this in terms of contractible/propositional fans (or cofans).
-
-We define a univalent family of 'path objects' (see index for reference
-to Sterling).
+We can also state this in terms of contractible/propositional fans. We define
+a univalent family of 'path objects' (see index for reference to Sterling).
 
 \begin{code}
 
