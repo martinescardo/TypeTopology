@@ -3,6 +3,8 @@ Ian Ray. 28th August 2025.
 Minor changes and merged into TypeToplogy in April 2026.
 
 We define the notion of univalent family in terms of a reflexive graph image.
+The terminology here is borrowed from "Reflexive graph lenses in univalent
+foundations" by Jon Sterling (see ReflexiveGraphs.index for link).
 
 \begin{code}
 
@@ -38,12 +40,12 @@ is-univalent-family (A , B) = is-univalent-refl-graph (refl-graph-image A B)
 
 This definition is intentionally general and offers a robust theoretical
 framework for working with a universe of things. That is, if one was working
-directly with the codes of a tarski style universe presentation than a
+directly with the codes of a Tarski style universe presentation then a
 univalent family would be a pair (𝓤 , El) consiting of the universe type and
 the decoding map El : 𝓤 → Type. In Agda the user may operate as if universes
 where presented à la Russel and thus our pair of interest is simply (𝓤 , id).
 But there are other examples of univalent families of interest such as
-(Prop, pr₁), (Set, pr₁), (ℕ , finset), etc.
+(Prop, pr₁), (Set, pr₁), (ℕ , finset), etc. 
 
 We can give some equivalent characterizations of univalent family of types.
 
@@ -63,9 +65,16 @@ is-univalent-family-implies-id-to-equiv
 is-univalent-family-implies-id-to-equiv {𝓤} {𝓣} {A} {B} is-ua-fam
  = prop-fans-implies-id-to-edge-equiv (refl-graph-image A B) is-ua-fam
 
+id-to-equiv-family-implies-univalent-family
+ : {A : 𝓤 ̇} {B : A → 𝓣 ̇}
+ → ((x y : A) → is-equiv (id-to-equiv-family x y))
+ → is-univalent-family (A , B)
+id-to-equiv-family-implies-univalent-family {𝓤} {𝓣} {A} {B} is-equiv
+ = id-to-edge-equiv-implies-prop-fans (refl-graph-image A B) is-equiv
+
 \end{code}
 
-We conclude by defining a univalent family of univalent reflexive graps.
+We conclude by defining a univalent family of univalent reflexive graphs.
 
 \begin{code}
 
