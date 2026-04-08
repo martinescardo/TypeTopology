@@ -11,10 +11,7 @@ We define the notion of univalent family in terms of a reflexive graph image.
 module ReflexiveGraphs.UnivalentFamilies where
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Equiv
-open import UF.Subsingletons
-open import UF.Subsingletons-Properties
 open import ReflexiveGraphs.Type
 open import ReflexiveGraphs.Univalent
 
@@ -68,16 +65,15 @@ is-univalent-family-implies-id-to-equiv {𝓤} {𝓣} {A} {B} is-ua-fam
 
 \end{code}
 
-We can also state this in terms of contractible/propositional fans. We define
-a univalent family of 'path objects' (see index for reference to Sterling).
+We conclude by defining a univalent family of univalent reflexive graps.
 
 \begin{code}
 
-univalent-family-of-path-objects
+univalent-family-of-univalent-refl-graphs
  : {𝓦 𝓣 : Universe}
  → ((U , 𝓔) : Σ U ꞉ 𝓤 ̇ , (U → Univalent-Refl-Graph 𝓦 𝓣))
  → 𝓤 ⊔ 𝓦 ̇
-univalent-family-of-path-objects (U , 𝓔)
+univalent-family-of-univalent-refl-graphs (U , 𝓔)
  = is-univalent-refl-graph (refl-graph-image U (λ A → ⟨ (𝓔 A) ⟩ᵤ))
 
 \end{code}
