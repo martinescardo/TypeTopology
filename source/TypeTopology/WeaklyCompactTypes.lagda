@@ -153,17 +153,19 @@ without the need of any assumption:
 
 \begin{code}
 
-discrete-to-power-Π-compact-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                        → is-Π-compact X
-                                        → is-discrete Y
-                                        → is-discrete (X → Y)
-discrete-to-power-Π-compact-is-discrete {𝓤} {𝓥} {X} {Y} c d f g = δ
+Π-compact-indexed-product-of-discrete-types-is-discrete
+ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+ → is-Π-compact X
+ → ((x : X) → is-discrete (Y x))
+ → is-discrete (Π Y)
+Π-compact-indexed-product-of-discrete-types-is-discrete {𝓤} {𝓥} {X} {Y} c d f g
+ = δ
  where
   p : X → 𝟚
-  p = pr₁ (co-characteristic-function (λ x → d (f x) (g x)))
+  p = pr₁ (co-characteristic-function (λ x → d x (f x) (g x)))
 
   r : (x : X) → (p x ＝ ₀ → ¬ (f x ＝ g x)) × (p x ＝ ₁ → f x ＝ g x)
-  r = pr₂ (co-characteristic-function λ x → d (f x) (g x))
+  r = pr₂ (co-characteristic-function λ x → d x (f x) (g x))
 
   φ : ((x : X) → p x ＝ ₁) → f ＝ g
   φ α = dfunext fe' (λ x → pr₂ (r x) (α x))
@@ -177,6 +179,13 @@ discrete-to-power-Π-compact-is-discrete {𝓤} {𝓥} {X} {Y} c d f g = δ
 
   δ : is-decidable (f ＝ g)
   δ = h (c p)
+
+discrete-to-power-Π-compact-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                        → is-Π-compact X
+                                        → is-discrete Y
+                                        → is-discrete (X → Y)
+discrete-to-power-Π-compact-is-discrete {𝓤} {𝓥} {X} {Y} c d f g =
+ Π-compact-indexed-product-of-discrete-types-is-discrete c (λ _ → d) f g
 
 \end{code}
 
