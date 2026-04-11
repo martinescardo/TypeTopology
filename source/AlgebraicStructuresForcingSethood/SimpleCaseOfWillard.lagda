@@ -1,22 +1,39 @@
-Jakub Opršal, 24 Mar 2026.
+Jakub Opršal, 24 March 2026.
+
+My goal here is to sketch key ideas of the proof that a type with a bunch of
+ternary operations satisfying certain equations, known in universal algebra as
+WSection illard equations [1, see §2], is necessarily a set.
+
+In universal algebra, these equations are studied because they imply that the
+congruence lattices (of any algebra in the variety) need to be *congruence
+meet-semidistributive*. This is nevertheless irrelevant for our purposes. The
+key point is that the equations are not satisfied in any variety of modules,
+i.e., they do not have non-trivial models in the category of groups.
 
 THEOREM.
   Any type with ternary operations satisfying Willard equations is a set.
 
-TODO:
-- Sketch of the proof
-- references
+In essence, the argument shows that we can lift any *height 1 equation*, i.e.,
+an equation that does not involve composition of operations, between idempotent
+operations to the loop space. To do that, we need to assume that loops commute,
+but this can be proved in case we satisfy Willards equations using an argument
+of Taylor [2], which I also explored in the file [3]. For simplicity, in this
+file, I assume that the loops commute, and leave the proof for later.
 
-[1] Willard, 2000.
-[2] Taylor, 1977.
-[3] Jakub Opršal, AlgebraicStructuresForcingSethood.WeakNearUnanimity.
+[1] Ross Willard. A Finite Basis Theorem For Residually Finite, Congruence
+    Meet-semidistributive Varieties. J. of Symb. Logic 65(1):187-200, 2000.
+    https://doi.org/10.2307/2586531.
+[2] Walter Taylor. Varieties obeying homotopy laws. Can. J. Math., XXIX(3):
+    498–527, 1977. https://doi.org/10.4153/CJM-1977-054-9.
+[3] Jakub Opršal, AlgebraicStructuresForcingSethood.WeakNearUnanimity, March
+    2026.
 
 We start with some library for ternary idempotent functions.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
-module AlgebraicStructuresForcingSethood.WillardsEquations where
+module AlgebraicStructuresForcingSethood.SimpleCaseOfWillard where
 
 open import MLTT.Spartan
 
