@@ -39,13 +39,14 @@ is-univalent-family (A , B) = is-univalent-refl-graph (refl-graph-image A B)
 \end{code}
 
 This definition is intentionally general and offers a robust theoretical
-framework for working with a universe of things. That is, if one was working
-directly with the codes of a Tarski style universe presentation then a
-univalent family would be a pair (𝓤 , El) consiting of the universe type and
-the decoding map El : 𝓤 → Type. In Agda the user may operate as if universes
-where presented à la Russel and thus our pair of interest is simply (𝓤 , id).
-But there are other examples of univalent families of interest such as
-(Prop, pr₁), (Set, pr₁), (ℕ , finset), etc. 
+framework for working with universes. Concretely, if one were working directly
+with the codes of a Tarski style universe presentation then a univalent family
+could be a pair (𝓤 , El) consiting of the universe type and the decoding map
+El : 𝓤 → Type. In Agda the user may operate as if universes where presented à
+la Russel and thus the pair of interest is simply (𝓤 , id). But there are other
+examples of univalent families of interest such as any h-level sub-universe
+(e.g. (Prop, pr₁), (Set, pr₁)). Perhaps (ℕ , finset) offers a more non-standard
+and interesting example for your consideration. 
 
 We can give some equivalent characterizations of univalent family of types.
 
