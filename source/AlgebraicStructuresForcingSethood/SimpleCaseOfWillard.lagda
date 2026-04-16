@@ -2,13 +2,26 @@ Jakub Opršal, 24 March 2026.
 
 My goal here is to sketch key ideas of the proof that a type with a bunch of
 ternary operations satisfying certain equations, known in universal algebra as
-WSection illard equations [1, see §2], is necessarily a set.
+Willard equations [1, see §2], is necessarily a set.
 
 In universal algebra, these equations are studied because they imply that the
 congruence lattices (of any algebra in the variety) need to be *congruence
 meet-semidistributive*. This is nevertheless irrelevant for our purposes. The
 key point is that the equations are not satisfied in any variety of modules,
-i.e., they do not have non-trivial models in the category of groups.
+i.e., they do not have non-trivial models in the category of groups. Here is an example:
+
+  sᵢ (x, y, x) = tᵢ (x, y, x)  for i = 1, 2, 3
+  s₁ (x, x, y) = x
+  t₁ (x, y, y) = s₁ (x, y, y)
+  s₂ (x, x, y) = t₁ (x, x, y)
+  s₃ (x, y, y) = s₂ (x, y, y)
+  t₃ (x, x, y) = s₃ (x, x, y)
+  t₂ (x, y, y) = t₃ (x, y, y)
+  t₂ (x, x, y) = y
+
+These are satisfied by semi-lattice terms s₁ = xy, t₁ = xyz, s₂ = xz, t₂ = z,
+s₃ = xyz, and t₃ = yz. My claim is quite general, although in the file, I only
+show even simpler case than the above.
 
 THEOREM.
   Any type with ternary operations satisfying Willard equations is a set.
@@ -88,6 +101,20 @@ eq-cong-sq : {A : Type} {a a' b b' : A} (h₁ : a ＝ a') (h₂ : b ＝ b') (p :
            → h₁ ∙ eq-cong h₁ h₂ p ＝ p ∙ h₂
 eq-cong-sq refl refl p = (refl∙ p)
 
+module abelian-type (A : Type)
+                    (loops-commute : {a : A} (p q : a ＝ a) → p ∙ q ＝ q ∙ p)
+                    where
+
+ conjugation-triv : {a : A} (g : a ＝ a) (p : a ＝ a)
+                  → eq-cong g g p ＝ p
+ conjugation-triv g p = ∙-cancel g (eq-cong-sq g g p ∙ loops-commute p g)
+
+ one-eq-cong : {a b c : A} (p : a ＝ a) (q : b ＝ b)
+               (h₀ : a ＝ b) (h₁ : a ＝ c) (h₂ : b ＝ c)
+             → eq-cong h₀ h₀ p ＝ q
+             → eq-cong h₁ h₁ p ＝ eq-cong h₂ h₂ q
+ one-eq-cong p q refl h₁ refl eq = conjugation-triv h₁ p ∙ eq
+
 \end{code}
 
 The core idea of the proof is that each ternary operation f gives us a
@@ -132,25 +159,16 @@ able to do this, we will need that loops commute.
 
 \begin{code}
 
-module equation^ (A : Type)
-                 (s t    : A → A → A → A)
-                 (idem-s : (x : A) → s x x x ＝ x)
-                 (idem-t : (x : A) → t x x x ＝ x)
-                 (loops-commute : {a : A} (p q : a ＝ a) → p ∙ q ＝ q ∙ p)
-                 where
+module equation-lift (A : Type)
+                     (s t    : A → A → A → A)
+                     (idem-s : (x : A) → s x x x ＝ x)
+                     (idem-t : (x : A) → t x x x ＝ x)
+                     (loops-commute : {a : A} (p q : a ＝ a) → p ∙ q ＝ q ∙ p)
+                     where
 
+ open abelian-type A loops-commute
  open ternary-idempotent A s idem-s renaming (Ωf to Ωs)
  open ternary-idempotent A t idem-t renaming (Ωf to Ωt)
-
- conjugation-triv : {a : A} (g : a ＝ a) (p : a ＝ a)
-                  → eq-cong g g p ＝ p
- conjugation-triv g p = ∙-cancel g (eq-cong-sq g g p ∙ loops-commute p g)
-
- one-eq-cong : {a b c : A} (p : a ＝ a) (q : b ＝ b)
-               (h₀ : a ＝ b) (h₁ : a ＝ c) (h₂ : b ＝ c)
-             → eq-cong h₀ h₀ p ＝ q
-             → eq-cong h₁ h₁ p ＝ eq-cong h₂ h₂ q
- one-eq-cong p q refl h₁ refl eq = conjugation-triv h₁ p ∙ eq
 
  Ωeq₁ : ((x y : A) → s x y y ＝ t x y y)
       → {a : A} (p q : a ＝ a)
@@ -201,7 +219,7 @@ module simple-willard (A : Type)
   renaming (Ωf to Ωs; triangle to triangle-s)
  open ternary-idempotent A t (λ x → end x x)
   renaming (Ωf to Ωt; triangle to triangle-t)
- open equation^ A s t (λ x → start x x) (λ x → end x x) loops-commute
+ open equation-lift A s t (λ x → start x x) (λ x → end x x) loops-commute
   using (Ωeq₁ ; Ωeq₂)
 
  Ωst₀ : {a : A} → (p q : a ＝ a) → Ωs p q q ＝ Ωt p q q
@@ -260,7 +278,6 @@ the required refl = p.
 
 \end{code}
 
-
 APPENDIX. Taylor term from Willard's term.
 
 The rest of this code shows how to derive existence of a Taylor operation from
@@ -279,51 +296,52 @@ Taylor term, and hence imply that loops commute.
 
 \begin{code}
 
- idemₛ : (x : A) → s x x x ＝ x
- idemₛ x = start x x
+ private
+  idemₛ : (x : A) → s x x x ＝ x
+  idemₛ x = start x x
 
- idemₜ : (x : A) → t x x x ＝ x
- idemₜ x = end x x
+  idemₜ : (x : A) → t x x x ＝ x
+  idemₜ x = end x x
 
- taylor : A → A → A → A → A → A → A → A → A → A
- taylor x₀ x₁ x₂ x₃ x₄ x₅ x₆ x₇ x₈ = s (t x₀ x₁ x₂) (t x₃ x₄ x₅) (t x₆ x₇ x₈)
+  taylor : A → A → A → A → A → A → A → A → A → A
+  taylor x₀ x₁ x₂ x₃ x₄ x₅ x₆ x₇ x₈ = s (t x₀ x₁ x₂) (t x₃ x₄ x₅) (t x₆ x₇ x₈)
 
- eq₀ : (x y : A) → taylor x x y x x y x x y ＝ taylor y y y y y y y y y
- eq₀ x y =
-  taylor x x y x x y x x y ＝⟨ idemₛ (t x x y) ⟩
-  t x x y                  ＝⟨ end x y ⟩
-  y                        ＝⟨ sym (idemₜ y) ⟩
-  t y y y                  ＝⟨ sym (idemₛ (t y y y)) ⟩
-  taylor y y y y y y y y y ∎
+  eq₀ : (x y : A) → taylor x x y x x y x x y ＝ taylor y y y y y y y y y
+  eq₀ x y =
+   taylor x x y x x y x x y ＝⟨ idemₛ (t x x y) ⟩
+   t x x y                  ＝⟨ end x y ⟩
+   y                        ＝⟨ sym (idemₜ y) ⟩
+   t y y y                  ＝⟨ sym (idemₛ (t y y y)) ⟩
+   taylor y y y y y y y y y ∎
 
- eq₁ = eq₀
+  eq₁ = eq₀
 
- eq₂ : (x y : A) → taylor x x x y y y y y y ＝ taylor x y y x y y x y y
- eq₂ x y =
-  taylor x x x y y y y y y ＝⟨ ap₃ s (idemₜ x) (idemₜ y) (idemₜ y) ⟩
-  s x y y                  ＝⟨ st₀ x y ⟩
-  t x y y                  ＝⟨ sym (idemₛ (t x y y)) ⟩
-  taylor x y y x y y x y y ∎
+  eq₂ : (x y : A) → taylor x x x y y y y y y ＝ taylor x y y x y y x y y
+  eq₂ x y =
+   taylor x x x y y y y y y ＝⟨ ap₃ s (idemₜ x) (idemₜ y) (idemₜ y) ⟩
+   s x y y                  ＝⟨ st₀ x y ⟩
+   t x y y                  ＝⟨ sym (idemₛ (t x y y)) ⟩
+   taylor x y y x y y x y y ∎
 
- eq₃ = eq₀
- eq₄ = eq₀
+  eq₃ = eq₀
+  eq₄ = eq₀
 
- eq₅ : (x y : A) → taylor x x x y y y x x x ＝ taylor x y x x y x x y x
- eq₅ x y =
-  taylor x x x y y y x x x ＝⟨ ap₃ s (idemₜ x) (idemₜ y) (idemₜ x) ⟩
-  s x y x                  ＝⟨ st₁ x y ⟩
-  t x y x                  ＝⟨ sym (idemₛ (t x y x)) ⟩
-  taylor x y x x y x x y x ∎
+  eq₅ : (x y : A) → taylor x x x y y y x x x ＝ taylor x y x x y x x y x
+  eq₅ x y =
+   taylor x x x y y y x x x ＝⟨ ap₃ s (idemₜ x) (idemₜ y) (idemₜ x) ⟩
+   s x y x                  ＝⟨ st₁ x y ⟩
+   t x y x                  ＝⟨ sym (idemₛ (t x y x)) ⟩
+   taylor x y x x y x x y x ∎
 
- eq₆ = eq₀
- eq₇ = eq₀
+  eq₆ = eq₀
+  eq₇ = eq₀
 
- eq₈ : (x y : A) → taylor x x x x x x x x x ＝ taylor x x x x x x y y y
- eq₈ x y =
-  taylor x x x x x x x x x ＝⟨ idemₛ (t x x x) ⟩
-  t x x x                  ＝⟨ idemₜ x ⟩
-  x                        ＝⟨ sym (start x y) ⟩
-  s x x y                  ＝⟨ sym (ap₃ s (idemₜ x) (idemₜ x) (idemₜ y)) ⟩
-  taylor x x x x x x y y y ∎
+  eq₈ : (x y : A) → taylor x x x x x x x x x ＝ taylor x x x x x x y y y
+  eq₈ x y =
+   taylor x x x x x x x x x ＝⟨ idemₛ (t x x x) ⟩
+   t x x x                  ＝⟨ idemₜ x ⟩
+   x                        ＝⟨ sym (start x y) ⟩
+   s x x y                  ＝⟨ sym (ap₃ s (idemₜ x) (idemₜ x) (idemₜ y)) ⟩
+   taylor x x x x x x y y y ∎
 
 \end{code}
