@@ -21,7 +21,6 @@ import gist.multiset-addendum-question
 import gist.not-an-apartness
 import gist.remove-swap
 import gist.transport-discussion
-import gist.ThereAreNoHigherSemilattices  -- by Martin Escardo based on David Wärn
 import gist.ThereAreNoHigherSemilattices2 -- by Tom de Jong
 import gist.MajoritiesOnlyActOnSets       -- by Jakub Opršal
 import gist.MajoritiesOnlyActOnSets2      -- by Tom de Jong
