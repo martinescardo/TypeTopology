@@ -68,7 +68,7 @@ semilattices:
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
-module gist.MajoritiesOnlyActOnSets where
+module AlgebraicStructuresForcingSethood.Majority where
 
 open import gist.ThereAreNoHigherSemilattices
 open import Agda.Primitive renaming (Set to Type)
@@ -88,12 +88,12 @@ satisfying the majority identities.
 \begin{code}
 
 module type-with-majority
-         (M   : Type)
-         (m   : M → M → M → M)
-         (eq₀ : (a b : M) → m b a a ＝ a)
-         (eq₁ : (a b : M) → m a b a ＝ a)
-         (eq₂ : (a b : M) → m a a b ＝ a)
-         (m₀  : M)
+       (M   : Type)
+       (m   : M → M → M → M)
+       (eq₀ : (a b : M) → m b a a ＝ a)
+       (eq₁ : (a b : M) → m a b a ＝ a)
+       (eq₂ : (a b : M) → m a a b ＝ a)
+       (m₀  : M)
        where
 
 \end{code}
