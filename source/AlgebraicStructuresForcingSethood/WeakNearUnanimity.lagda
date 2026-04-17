@@ -29,7 +29,8 @@ operations. Curiosly, this fact was noted in Taylor's original paper [p. 515, 1]
 
 [1] Walter Taylor. Varieties obeying homotopy laws. Can. J. Math., XXIX(3):
     498–527, 1977. https://doi.org/10.4153/CJM-1977-054-9.
-[2] Tom de Jong. gist.CommutativeLoopSpaces.lagda, 18 March 2026.
+[2] Tom de Jong. AlgebraicStructuresForcingSethood.CommutativeLoopSpaces.lagda,
+    18 March 2026.
 [3] Sebastian Meyer and Jakub Opršal. A topological proof of the Hell–Nešetřil
     dichotomy. https://arxiv.org/abs/2409.12627v2
 

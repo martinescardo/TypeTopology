@@ -4,9 +4,10 @@ Following a discussion with Jakub Opršal.
 If a type has a commutative and idempotent binary operation, then its loop space
 (at any given point) is commutative.
 
-In gist.ThereAreNoHigherSemilattices2, I formalized that such an operation on a
-type induces an idempotent commutative operation ＊Ω on its loop spaces that
-moreover is a homomorphism (called interchange in that file):
+In AlgebraicStructuresForcingSethood.Semilattices-streamlined, I formalized that
+such an operation on a type induces an idempotent commutative operation ＊Ω on
+its loop spaces that moreover is a homomorphism (called interchange in that
+file):
   (p ∙ q) ＊Ω (r ∙ s) ＝ (p ＊Ω r) ∙ (q ＊Ω s).
 
 Jakub Opršal noted that this is sufficient to prove that ∙ is commutative.
@@ -18,7 +19,8 @@ Another (different?) proof is given by David Wärn as part of a MathOverflow
 answer (https://mathoverflow.net/a/496927) and formalized as
 https://dwarn.se/agda/Idem.html.
 But I did not distill this from his formalization when I wrote
-gist.ThereAreNoHigherSemilattices2 (where David's formalization is referenced).
+AlgebraicStructuresForcingSethood.Semilattices-streamlined (where David's
+formalization is referenced).
 
 [1] Walter Taylor. Varieties obeying homotopy laws. Can. J. Math., XXIX(3):
     498–527, 1977. https://doi.org/10.4153/CJM-1977-054-9.
@@ -29,10 +31,10 @@ gist.ThereAreNoHigherSemilattices2 (where David's formalization is referenced).
 
 {-# OPTIONS --safe --without-K #-}
 
-module gist.CommutativeLoopSpaces where
+module AlgebraicStructuresForcingSethood.CommutativeLoopSpaces where
 
 open import Agda.Primitive renaming (Set to Type)
-open import gist.ThereAreNoHigherSemilattices2
+open import AlgebraicStructuresForcingSethood.Semilattices-streamlined
 
 refl-right-neutral : {A : Type} {a b : A} (p : a ＝ b) → p ∙ refl ＝ p
 refl-right-neutral refl = refl

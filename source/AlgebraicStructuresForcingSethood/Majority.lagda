@@ -12,8 +12,10 @@ here [2, 3]; Wärn's theorem is an analogue of Taylor's Theorem 6.2.
 
 [1] Walter Taylor. Varieties obeying homotopy laws. Can. J. Math., XXIX(3):
     498–527, 1977. https://doi.org/10.4153/CJM-1977-054-9.
-[2] Martin Escardo. gist.ThereAreNoHigherSemilattices.lagda, 23 February 2026.
-[3] Tom de Jong. gist.ThereAreNoHigherSemilattices2.lagda, 25—27 February 2026.
+[2] Martin Escardo. AlgebraicStructuresForcingSethood.Semilattice.lagda,
+    23 February 2026.
+[3] Tom de Jong. AlgebraicStructuresForcingSethood.Semilattice-streamlined.lagda,
+    25—27 February 2026.
 
 Taylor studied varieties of topological algebras, and how the equations
 influence homotopy of the corresponding spaces. The results about semilattices
@@ -70,7 +72,7 @@ semilattices:
 {-# OPTIONS --safe --without-K #-}
 module AlgebraicStructuresForcingSethood.Majority where
 
-open import gist.ThereAreNoHigherSemilattices
+open import AlgebraicStructuresForcingSethood.Semilattices
 open import Agda.Primitive renaming (Set to Type)
 
 ap₃ : {A B C D : Type} (f : A → B → C → D) {a₁ a₂ : A} {b₁ b₂ : B} {c₁ c₂ : C}

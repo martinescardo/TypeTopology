@@ -4,11 +4,12 @@
 
 module AlgebraicStructuresForcingSethood.index where
 
--- import gist.ThereAreNoHigherSemilattices  -- by Martin Escardo based on David Wärn
--- import gist.ThereAreNoHigherSemilattices2 -- by Tom de Jong
-import AlgebraicStructuresForcingSethood.Majority            -- Jakub Opršal
--- import gist.MajoritiesOnlyActOnSets2      -- by Tom de Jong
-import AlgebraicStructuresForcingSethood.SimpleCaseOfWillard -- Jakub Opršal
-import AlgebraicStructuresForcingSethood.WeakNearUnanimity   -- Jakub Opršal
+import AlgebraicStructuresForcingSethood.CommutativeLoopSpaces    -- by Tom de Jong
+import AlgebraicStructuresForcingSethood.Majority                 -- by Jakub Opršal
+import AlgebraicStructuresForcingSethood.Majority-streamlined     -- by Tom de Jong
+import AlgebraicStructuresForcingSethood.Semilattices             -- by Martin Escardo based on David Wärn
+import AlgebraicStructuresForcingSethood.Semilattices-streamlined -- by Tom de Jong
+import AlgebraicStructuresForcingSethood.SimpleCaseOfWillard      -- by Jakub Opršal
+import AlgebraicStructuresForcingSethood.WeakNearUnanimity        -- by Jakub Opršal
 
 \end{code}
