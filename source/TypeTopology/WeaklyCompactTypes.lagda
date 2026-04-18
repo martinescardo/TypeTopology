@@ -309,12 +309,12 @@ retract-is-Π-compact' t c = ∥∥-rec
                              Π-compactness-is-prop
                              (λ r → retract-is-Π-compact r c) t
 
-Π-compact-exponential-with-pointed-domain-has-Π-compact-domain
+Π-compact-exponential-with-pointed-domain-has-Π-compact-codomain
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
  → X
  → is-Π-compact (X → Y)
  → is-Π-compact Y
-Π-compact-exponential-with-pointed-domain-has-Π-compact-domain x
+Π-compact-exponential-with-pointed-domain-has-Π-compact-codomain x
  = retract-is-Π-compact (codomain-is-retract-of-function-space-with-pointed-domain x)
 
 \end{code}

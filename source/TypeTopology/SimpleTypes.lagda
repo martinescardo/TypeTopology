@@ -61,7 +61,7 @@ cfdbce : {X Y : 𝓤₀ ̇ }
 cfdbce s t c = tscd₀
                 (simple-types-are-totally-separated s)
                 (simple-types-r ℕ-is-disconnected t) c ,
-               Π-compact-exponential-with-pointed-domain-has-Π-compact-domain
+                 Π-compact-exponential-with-pointed-domain-has-Π-compact-codomain
                 (simple-types-pointed s) c
 \end{code}
 
@@ -145,10 +145,12 @@ cfdbce₂ : {X Y : 𝓤₀ ̇ }
         → simple-type₂ Y
         → is-compact (X → Y)
         → is-discrete X × is-compact Y
-cfdbce₂ s t c = tscd₀ (simple-types₂-totally-separated s)
-                      (simple-types₂-disconnected t) c ,
-                Π-compact-exponential-with-pointed-domain-has-Π-compact-domain
-                 (simple-types₂-pointed s)
-                 c
+cfdbce₂ s t c =
+ tscd₀
+  (simple-types₂-totally-separated s)
+  (simple-types₂-disconnected t) c ,
+   Π-compact-exponential-with-pointed-domain-has-Π-compact-codomain
+  (simple-types₂-pointed s)
+  c
 
 \end{code}
