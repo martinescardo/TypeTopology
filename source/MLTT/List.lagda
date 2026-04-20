@@ -146,8 +146,9 @@ member-map f x' (_ ∷ _)  in-head     = in-head
 member-map f x' (_ ∷ xs) (in-tail m) = in-tail (member-map f x' xs m)
 
 private
- filter-helper : {X : 𝓤 ̇ } (p : X → 𝓥 ̇ )
-               → (x : X)
+ filter-helper : {X : 𝓤 ̇ }
+                 (p : X → 𝓥 ̇ )
+                 (x : X)
                → p x + ¬ p x
                → List X
                → List X
