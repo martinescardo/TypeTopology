@@ -13,6 +13,7 @@ open import Naturals.AbsoluteDifference
 open import Naturals.Properties
 open import Notation.Order
 open import Ordinals.Notions
+open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Subsingletons
 
@@ -29,8 +30,6 @@ instance
 ≤-is-prop-valued 0        n        = 𝟙-is-prop
 ≤-is-prop-valued (succ m) 0        = 𝟘-is-prop
 ≤-is-prop-valued (succ m) (succ n) = ≤-is-prop-valued m n
-
-open import UF.Base
 
 right-addition-is-embedding : (m n : ℕ) → is-prop (Σ k ꞉ ℕ , k +' m ＝ n)
 right-addition-is-embedding 0        n        (n , refl) (n , refl) = refl
@@ -357,8 +356,6 @@ least-from-given A δ (k , a) = γ
 
 \begin{code}
 
-open import Naturals.Addition renaming (_+_ to _∔_)
-
 max : ℕ → ℕ → ℕ
 max 0        n        = n
 max (succ m) 0        = succ m
@@ -404,6 +401,8 @@ minus : (m n : ℕ) → n ≤ m → ℕ
 minus 0        n        le = 0
 minus (succ m) 0        ⋆  = succ m
 minus (succ m) (succ n) le = minus m n le
+
+open import Naturals.Addition renaming (_+_ to _∔_)
 
 minus-property : (m n : ℕ) (le : n ≤ m) → minus m n le ∔ n ＝ m
 minus-property 0        0        ⋆  = refl

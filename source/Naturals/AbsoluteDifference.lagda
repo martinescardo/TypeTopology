@@ -17,9 +17,14 @@ module Naturals.AbsoluteDifference where
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import MLTT.Plus-Properties using (+functor)
 
-open import Naturals.Addition using (_+_; zero-left-neutral; succ-left;
- addition-commutativity; sum-to-zero-gives-zero; addition-left-cancellable;
- addition-associativity)
+open import Naturals.Addition
+ using (_+_;
+        zero-left-neutral;
+        succ-left;
+        addition-commutativity;
+        sum-to-zero-gives-zero;
+        addition-left-cancellable;
+        addition-associativity)
 open import Naturals.Multiplication using (_*_)
 open import Naturals.Properties using (zero-not-positive)
 

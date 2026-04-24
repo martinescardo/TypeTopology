@@ -12,10 +12,6 @@ open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.Order
 open import Naturals.Properties
 open import Notation.Order
-open import Ordinals.Notions
-open import UF.DiscreteAndSeparated
-open import UF.Subsingletons
-open import UF.Base
 
 subtraction : (m n : ℕ) → m ≤ n → Σ k ꞉ ℕ , k +' m ＝ n
 subtraction 0        n        l = n , refl
