@@ -8,6 +8,7 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.AbsoluteDifference using (∣_-_∣)
 open import Naturals.Order
+open import Naturals.Subtraction
 open import Notation.Order
 open import UF.Base
 open import UF.Subsingletons

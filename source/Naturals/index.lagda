@@ -17,6 +17,7 @@ import Naturals.Parity
 import Naturals.Properties
 import Naturals.RootsTruncation
 import Naturals.Sequence
+import Naturals.Subtraction
 import Naturals.UniversalProperty
 
 \end{code}

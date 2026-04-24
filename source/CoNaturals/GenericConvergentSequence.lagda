@@ -76,21 +76,21 @@ force-decreasing-unchanged : (α : ℕ → 𝟚)
                            → force-decreasing α ∼ α
 force-decreasing-unchanged α d 0        = refl
 force-decreasing-unchanged α d (succ i) = g
-  where
-    IH : force-decreasing α i ＝ α i
-    IH = force-decreasing-unchanged α d i
+ where
+  IH : force-decreasing α i ＝ α i
+  IH = force-decreasing-unchanged α d i
 
-    p : α (succ i) ≤ α i
-    p = d i
+  p : α (succ i) ≤ α i
+  p = d i
 
-    h : min𝟚 (α (succ i)) (α i) ＝ α (succ i)
-    h = Lemma[a≤₂b→min𝟚ab＝a] p
+  h : min𝟚 (α (succ i)) (α i) ＝ α (succ i)
+  h = Lemma[a≤₂b→min𝟚ab＝a] p
 
-    g' : min𝟚 (α (succ i)) (force-decreasing α i) ＝ α (succ i)
-    g' = transport (λ b → min𝟚 (α (succ i)) b ＝ α (succ i)) (IH ⁻¹) h
+  g' : min𝟚 (α (succ i)) (force-decreasing α i) ＝ α (succ i)
+  g' = transport (λ b → min𝟚 (α (succ i)) b ＝ α (succ i)) (IH ⁻¹) h
 
-    g : force-decreasing α (succ i) ＝ α (succ i)
-    g = g'
+  g : force-decreasing α (succ i) ＝ α (succ i)
+  g = g'
 
 ℕ→𝟚-to-ℕ∞ : (ℕ → 𝟚) → ℕ∞
 ℕ→𝟚-to-ℕ∞ β = force-decreasing β , force-decreasing-is-decreasing β
@@ -113,15 +113,15 @@ force-decreasing-is-not-much-smaller : (β : ℕ → 𝟚) (n : ℕ)
                                      → Σ m ꞉ ℕ , β m ＝ ₀
 force-decreasing-is-not-much-smaller β 0  p       = 0 , p
 force-decreasing-is-not-much-smaller β (succ n) p = f c
-  where
-    A = Σ m ꞉ ℕ , β m ＝ ₀
+ where
+  A = Σ m ꞉ ℕ , β m ＝ ₀
 
-    c : (β (succ n) ＝ ₀) + (force-decreasing β n ＝ ₀)
-    c = lemma[min𝟚ab＝₀] {β (succ n)} {force-decreasing β n} p
+  c : (β (succ n) ＝ ₀) + (force-decreasing β n ＝ ₀)
+  c = lemma[min𝟚ab＝₀] {β (succ n)} {force-decreasing β n} p
 
-    f : (β (succ n) ＝ ₀) + (force-decreasing β n ＝ ₀) → A
-    f (inl q) = succ n , q
-    f (inr r) = force-decreasing-is-not-much-smaller β n r
+  f : (β (succ n) ＝ ₀) + (force-decreasing β n ＝ ₀) → A
+  f (inl q) = succ n , q
+  f (inr r) = force-decreasing-is-not-much-smaller β n r
 
 ℕ∞-is-¬¬-separated : funext₀ → is-¬¬-separated ℕ∞
 ℕ∞-is-¬¬-separated fe = subtype-is-¬¬-separated

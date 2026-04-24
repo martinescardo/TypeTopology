@@ -32,6 +32,7 @@ open import UF.Subsingletons-FunExt
 
 open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.Order
+open import Naturals.Subtraction
 open import Notation.Order
 
 open import OrderedTypes.Poset fe

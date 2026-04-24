@@ -13,6 +13,7 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition
 open import Naturals.Multiplication
 open import Naturals.Properties
+open import Naturals.Subtraction
 open import Naturals.Order
 open import Notation.Order
 open import UF.DiscreteAndSeparated

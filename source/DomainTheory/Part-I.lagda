@@ -39,7 +39,7 @@ open PropositionalTruncation pt
 
 open import MLTT.Spartan
 
-open import Naturals.Order hiding (subtraction')
+open import Naturals.Order
 open import Notation.Order hiding (_⊑_ ; _≼_)
 
 open import UF.Base

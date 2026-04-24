@@ -253,7 +253,7 @@ open import Notation.CanonicalMap hiding ([_])
       p'-property : ((w , c) : Σ A) (d d' : is-decidable (ι n ＝ w))
                   → p' (w , c) d ＝ p' (w , c) d'
       p'-property (w , c) (inl e) (inl e') = ap (λ - → r (transport⁻¹ A - c))
-                                                 (ℕ∞-is-set fe₀ e e')
+                                                (ℕ∞-is-set fe₀ e e')
       p'-property (w , c) (inl e) (inr ν') = 𝟘-elim (ν' e)
       p'-property (w , c) (inr ν) (inl e') = 𝟘-elim (ν e')
       p'-property (w , c) (inr ν) (inr ν') = refl
