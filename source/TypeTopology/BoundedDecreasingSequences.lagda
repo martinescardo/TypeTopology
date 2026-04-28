@@ -235,7 +235,7 @@ is what we wanted to show in this file.
                    (𝓑-is-compact∙ k)
 \end{code}
 
-[2] We now construct the claimed isomorphism
+[2] In order to conclude, we now construct the claimed isomorphism
 
      𝔹-step : 𝔹 (succ k) ≃ 𝔻 (𝔹 k) as follows.
 
