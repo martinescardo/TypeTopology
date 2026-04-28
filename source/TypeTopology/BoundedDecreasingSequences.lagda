@@ -187,10 +187,10 @@ corollary.
   (ℕ∞-compact∙ fe)
   (λ u → micro-tychonoff fe (being-finite-is-prop fe u) (λ _ → κ))
 
-𝔻-preserves-totally-separatedness : (X : 𝓤 ̇ )
-                                  → is-totally-separated X
-                                  → is-totally-separated (𝔻 X)
-𝔻-preserves-totally-separatedness X τ =
+𝔻-preserves-total-separatedness : (X : 𝓤 ̇ )
+                                → is-totally-separated X
+                                → is-totally-separated (𝔻 X)
+𝔻-preserves-total-separatedness X τ =
  Σ¹-is-totally-separated (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) (λ _ → X) (λ _ → τ)
 
 𝓑-is-compact∙ : (k : ℕ) → is-compact∙ (𝓑 k)
