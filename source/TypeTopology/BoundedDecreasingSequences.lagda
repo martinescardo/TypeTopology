@@ -223,7 +223,8 @@ later, is the main tool.
 
 \end{code}
 
-With this we conclude that 𝔹 k ≃ 𝓑 k and hence 𝔹 k is compact.
+With this we conclude that 𝔹 k ≃ 𝓑 k and hence 𝔹 k is compact, which
+is what we wanted to show in this file.
 
 \begin{code}
 
