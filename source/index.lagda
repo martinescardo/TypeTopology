@@ -145,6 +145,7 @@ Click at the imported module names below to navigate to them:
 module index where
 
 import Apartness.index
+import AlgebraicStructuresForcingSethood.index
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Cardinals.index
