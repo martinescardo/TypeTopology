@@ -7,9 +7,10 @@ isomorphic to another set we know to be compact. This doesn't require
 univalence. Our only assumption is function extensionality. And total
 separatedness follows directly from previous results.
 
-This result was first announced at 7FWTop [1], before the formal proof in
-Agda was completed, although the informal construction was already in
-this file at that time in mathematical vernacular (see below).
+This result was first announced at 7FWTop [1], before the formal proof
+here in Agda was completed, although the informal construction was
+already in this file at that time in mathematical vernacular (see [2]
+below).
 
 [1] https://martinescardo.github.io/.talks/escardo-venice2026-stone-types.pdf
 
@@ -234,8 +235,9 @@ is what we wanted to show in this file.
                    (𝓑-is-compact∙ k)
 \end{code}
 
-We now construct the claimed isomorphism 𝔹-step : 𝔹 (succ k) ≃ 𝔻 (𝔹 k)
-as follows.
+[2] We now construct the claimed isomorphism
+
+     𝔹-step : 𝔹 (succ k) ≃ 𝔻 (𝔹 k) as follows.
 
  (→) Given a non-increasing sequence β : ℕ → ℕ, we define α : ℕ → 𝟚 by
 
@@ -260,7 +262,7 @@ as follows.
 
      where n₀ is the minimal number with n₀ ≤ n and e₀ : α n₀ = 0.
 
-The formal construction in Agda is rather laborious but routine.
+The following formal construction in Agda is rather laborious but routine.
 
 Minor remark. It would have been slightly better to instead define
 γ n = β (n₀ + n). This would have saved us from applying commutativity of
