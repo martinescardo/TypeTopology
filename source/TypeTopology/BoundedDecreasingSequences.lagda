@@ -239,7 +239,7 @@ is what we wanted to show in this file.
 
      𝔹-step : 𝔹 (succ k) ≃ 𝔻 (𝔹 k) as follows.
 
- (→) Given a non-increasing sequence β : ℕ → ℕ, we define α : ℕ → 𝟚 by
+ (→) Given a decreasing sequence β : ℕ → ℕ, we define α : ℕ → 𝟚 by
 
       α n = ₁ iff β n = succ k
 
@@ -252,7 +252,7 @@ is what we wanted to show in this file.
 
       γ n = β (n + n₀),
 
-     which is bounded by k and is non-increasing.
+     which is bounded by k and is decreasing.
 
  (←) To undo this, given α : ℕ → 𝟚 decreasing for x : ℕ∞ and
      𝕓 : is-finite x → B k, we define
