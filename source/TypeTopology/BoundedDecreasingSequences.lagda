@@ -206,24 +206,35 @@ corollary.
 
 \end{code}
 
-The following transport lemma, which is a generalization of
-`transport-finite` in the module SquashedCantor, will be crucial for
-our purposes.
+The main result of this file is the following, where 𝔹-step, defined
+later, is the main tool.
 
 \begin{code}
 
-transport-is-finite
- : {k : ℕ}
-   {u v : ℕ∞}
-   (q : u ＝ v)
-   (π : is-finite u → 𝔹 k)
-   (φ : is-finite v)
- → transport (λ - → is-finite - → 𝔹 k) q π φ ＝ π (transport is-finite (q ⁻¹) φ)
-transport-is-finite refl h φ = refl
+𝔹-step : (k : ℕ) → 𝔹 (succ k) ≃ 𝔻 (𝔹 k)
+
+𝔹-and-𝓑-are-equivalent : (k : ℕ) → 𝔹 k ≃ 𝓑 k
+𝔹-and-𝓑-are-equivalent 0        = 𝔹-base
+𝔹-and-𝓑-are-equivalent (succ k) =
+ 𝔹 (succ k) ≃⟨ 𝔹-step k ⟩
+ 𝔻 (𝔹 k)    ≃⟨ 𝔻-preserves-≃ (𝔹-and-𝓑-are-equivalent k) ⟩
+ 𝔻 (𝓑 k)    ≃⟨ ≃-refl _ ⟩
+ 𝓑 (succ k) ■
 
 \end{code}
 
-We now construct an isomorphism 𝔹 (succ k) ≃ 𝔻 (𝔹 k) as follows.
+With this we conclude that 𝔹 k ≃ 𝓑 k and hence 𝔹 k is compact.
+
+\begin{code}
+
+𝔹-is-compact∙ : (k : ℕ) → is-compact∙ (𝔹 k)
+𝔹-is-compact∙ k = compact∙-types-are-closed-under-equiv
+                   (≃-sym (𝔹-and-𝓑-are-equivalent k))
+                   (𝓑-is-compact∙ k)
+\end{code}
+
+We now construct the claimed isomorphism 𝔹-step : 𝔹 (succ k) ≃ 𝔻 (𝔹 k)
+as follows.
 
  (→) Given a non-increasing sequence β : ℕ → ℕ, we define α : ℕ → 𝟚 by
 
@@ -255,9 +266,27 @@ Minor remark. It would have been slightly better to instead define
 addition twice. But it would also require slightly changing other
 things. So we'll leave it at that.
 
+We begin with the following transport lemma, which is a generalization
+of `transport-finite` in the module SquashedCantor, will be crucial
+for our purposes, but will be used much later.
+
 \begin{code}
 
-𝔹-step : (k : ℕ) → 𝔹 (succ k) ≃ 𝔻 (𝔹 k)
+transport-is-finite
+ : {k : ℕ}
+   {u v : ℕ∞}
+   (q : u ＝ v)
+   (π : is-finite u → 𝔹 k)
+   (φ : is-finite v)
+ → transport (λ - → is-finite - → 𝔹 k) q π φ ＝ π (transport is-finite (q ⁻¹) φ)
+transport-is-finite refl h φ = refl
+
+\end{code}
+
+We now proceed to the proof of 𝔹-step, which, in turn, requires many steps itself.
+
+\begin{code}
+
 𝔹-step k = qinveq f (g , gf , fg)
  where
 
@@ -679,22 +708,4 @@ We now show that f and g are mutually inverse.
          ⦅2⦆ = ap π' (being-finite-is-prop fe u' φ'' φ')
          ⦅3⦆ = to-𝔹-＝ _ _ V₀
 
-\end{code}
-
-With this we conclude that 𝔹 k ≃ 𝓑 k and hence 𝔹 k is compact.
-
-\begin{code}
-
-𝔹-and-𝓑-are-equivalent : (k : ℕ) → 𝔹 k ≃ 𝓑 k
-𝔹-and-𝓑-are-equivalent 0        = 𝔹-base
-𝔹-and-𝓑-are-equivalent (succ k) =
- 𝔹 (succ k) ≃⟨ 𝔹-step k ⟩
- 𝔻 (𝔹 k)    ≃⟨ 𝔻-preserves-≃ (𝔹-and-𝓑-are-equivalent k) ⟩
- 𝔻 (𝓑 k)    ≃⟨ ≃-refl _ ⟩
- 𝓑 (succ k) ■
-
-𝔹-is-compact∙ : (k : ℕ) → is-compact∙ (𝔹 k)
-𝔹-is-compact∙ k = compact∙-types-are-closed-under-equiv
-                   (≃-sym (𝔹-and-𝓑-are-equivalent k))
-                   (𝓑-is-compact∙ k)
 \end{code}
