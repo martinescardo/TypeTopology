@@ -270,7 +270,7 @@ addition twice. But it would also require slightly changing other
 things. So we'll leave it at that.
 
 We begin with the following transport lemma, which is a generalization
-of `transport-finite` in the module SquashedCantor, will be crucial
+of `transport-finite` in the module SquashedCantor, and will be crucial
 for our purposes, but will be used much later.
 
 \begin{code}
