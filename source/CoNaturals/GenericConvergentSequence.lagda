@@ -1153,3 +1153,17 @@ finite-trichotomous fe (succ n) u =
         → inl (⊏-gives-≺ (succ n) u m))
 
 \end{code}
+
+Added 28th April 2026.
+
+\begin{code}
+
+open import Naturals.Addition renaming (_+_ to _+'_)
+
++-stays-zero : (u : ℕ∞) (n₀ : ℕ) → ι n₀ ＝ u → (n : ℕ) → ι u (n₀ +' n) ＝ ₀
++-stays-zero u n₀ e 0 = ι u n₀      ＝⟨ ap (λ - → ι - n₀) (e ⁻¹) ⟩
+                        ι (ι n₀) n₀ ＝⟨ ℕ-to-ℕ∞-diagonal₀ n₀ ⟩
+                        ₀           ∎
++-stays-zero u n₀ e (succ n) = stays-zero u (+-stays-zero u n₀ e n)
+
+\end{code}
