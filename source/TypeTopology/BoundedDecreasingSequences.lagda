@@ -194,7 +194,7 @@ corollary.
  Σ¹-is-totally-separated (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) (λ _ → X) (λ _ → τ)
 
 𝓑-is-compact∙ : (k : ℕ) → is-compact∙ (𝓑 k)
-𝓑-is-compact∙ zero     = 𝟙-is-compact∙
+𝓑-is-compact∙ 0        = 𝟙-is-compact∙
 𝓑-is-compact∙ (succ k) = 𝔻-preserves-compactness∙ (𝓑 k) (𝓑-is-compact∙ k)
 
 𝔻-preserves-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → 𝔻 X ≃ 𝔻 Y
