@@ -586,7 +586,7 @@ constructions and lemmas.
 
 \end{code}
 
-With this we can define an inver g of the function f defined above.
+With this we can define an inverse g of the function f defined above.
 
 \begin{code}
 
@@ -595,7 +595,7 @@ With this we can define an inver g of the function f defined above.
 
 \end{code}
 
-We now show that f and g are mutually inverse.
+We now show that f and g are indeed mutually inverse.
 
 \begin{code}
 
