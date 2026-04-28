@@ -241,7 +241,7 @@ is what we wanted to show in this file.
 
  (→) Given a decreasing sequence β : ℕ → ℕ, we define α : ℕ → 𝟚 by
 
-      α n = ₁ iff β n = succ k
+      α n = ₁ iff β n = succ k.
 
      This is decreasing, and hence gives an element x of ℕ∞.
 
@@ -262,7 +262,8 @@ is what we wanted to show in this file.
 
      where n₀ is the minimal number with n₀ ≤ n and e₀ : α n₀ = 0.
 
-The following formal construction in Agda is rather laborious but routine.
+The following formal construction and proof in Agda of the above is
+rather laborious but routine.
 
 Minor remark. It would have been slightly better to instead define
 γ n = β (n₀ + n). This would have saved us from applying commutativity of
