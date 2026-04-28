@@ -1,4 +1,4 @@
-By Martin Escardo, 5-28 April 2026.
+Martin Escardo, 5-28 April 2026.
 
 The set of decreasing sequences of natural numbers bounded by a
 natural number k is compact, aka searchable, and also totally
