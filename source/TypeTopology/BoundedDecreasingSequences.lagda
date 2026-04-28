@@ -14,8 +14,8 @@ below).
 
 [1] https://martinescardo.github.io/.talks/escardo-venice2026-stone-types.pdf
 
-In any case, we don't obtain any new compact type here. Just a
-different, perhaps more appealing, isomorphic copy.
+In any case, we don't obtain any new compact type here, but instead
+just a different, perhaps more appealing, isomorphic copy.
 
 \begin{code}
 
