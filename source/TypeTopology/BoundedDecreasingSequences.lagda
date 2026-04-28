@@ -237,30 +237,32 @@ is what we wanted to show in this file.
 
 [2] In order to conclude, we now construct the claimed isomorphism
 
-     𝔹-step : 𝔹 (succ k) ≃ 𝔻 (𝔹 k) as follows.
+     𝔹-step : 𝔹 (succ k) ≃ 𝔻 (𝔹 k)
 
- (→) Given a decreasing sequence β : ℕ → ℕ, we define α : ℕ → 𝟚 by
+    as follows.
 
-      α n = ₁ iff β n = succ k.
+    (→) Given a decreasing sequence β : ℕ → ℕ, we define α : ℕ → 𝟚 by
 
-     This is decreasing, and hence gives an element x of ℕ∞.
+         α n = ₁ iff β n = succ k.
 
-     Now assume x is finite. This means that there is a minimal n₀ such
-     that α n₀ = ₀.
+        This is decreasing, and hence gives an element x of ℕ∞.
 
-     We define an element of 𝔹 k with underlying sequence γ : ℕ → ℕ defined by
+        Now assume x is finite. This means that there is a minimal n₀ such
+        that α n₀ = ₀.
 
-      γ n = β (n + n₀),
+        We define an element of 𝔹 k with underlying sequence γ : ℕ → ℕ defined by
 
-     which is bounded by k and is decreasing.
+         γ n = β (n + n₀),
 
- (←) To undo this, given α : ℕ → 𝟚 decreasing for x : ℕ∞ and
-     𝕓 : is-finite x → B k, we define
+        which is bounded by k and is decreasing.
 
-     β n = succ k if α n = ₁
-           𝕓 (n₀ , e₀) (n - n₀) otherwise,
+    (←) To undo this, given α : ℕ → 𝟚 decreasing for x : ℕ∞ and
+        𝕓 : is-finite x → B k, we define
 
-     where n₀ is the minimal number with n₀ ≤ n and e₀ : α n₀ = 0.
+        β n = succ k if α n = ₁
+              𝕓 (n₀ , e₀) (n - n₀) otherwise,
+
+        where n₀ is the minimal number with n₀ ≤ n and e₀ : α n₀ = 0.
 
 The following formal construction and proof in Agda of the above is
 rather laborious but routine.
