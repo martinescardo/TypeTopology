@@ -595,7 +595,7 @@ With this we can define an inverse g of the function f defined above.
 
 \end{code}
 
-We now show that f and g are indeed mutually inverse.
+To conclude, we now show that f and g are indeed mutually inverse.
 
 \begin{code}
 
