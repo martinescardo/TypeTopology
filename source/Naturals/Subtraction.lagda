@@ -9,7 +9,6 @@ module Naturals.Subtraction where
 open import MLTT.Spartan hiding (_^_)
 
 open import Naturals.Addition renaming (_+_ to _+'_)
-open import Naturals.Order
 open import Naturals.Properties
 open import Notation.Order
 
