@@ -15,7 +15,7 @@ below).
 [1] https://martinescardo.github.io/.talks/escardo-venice2026-stone-types.pdf
 
 In any case, we don't obtain any new compact type here, but instead
-just a different, perhaps more appealing, isomorphic copy.
+just a, perhaps more appealing, isomorphic copy.
 
 \begin{code}
 
@@ -376,7 +376,7 @@ We begin with auxiliary constructions and lemmas for the forward direction.
 
 With this, we can complete the definition of the forward direction,
 but also notice that the above constructions and lemmas will also be
-useful to prove that it has a two-sided inverses.
+useful to prove that it has a two-sided inverse.
 
 \begin{code}
 
