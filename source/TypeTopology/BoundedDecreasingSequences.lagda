@@ -259,10 +259,10 @@ is what we wanted to show in this file.
     (←) To undo this, given α : ℕ → 𝟚 decreasing for x : ℕ∞ and
         𝕓 : is-finite x → B k, we define
 
-        β n = succ k if α n = ₁
-              𝕓 (n₀ , e₀) (n - n₀) otherwise,
+         β n = succ k               if α n = ₁
+               𝕓 (n₀ , e₀) (n - n₀) otherwise,
 
-        where n₀ is the minimal number with n₀ ≤ n and e₀ : α n₀ = 0.
+        where n₀ is the minimal number with n₀ ≤ n and e₀ : α n₀ = ₀.
 
 The following formal construction and proof in Agda of the above is
 rather laborious but routine.
