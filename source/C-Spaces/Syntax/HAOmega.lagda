@@ -41,8 +41,9 @@ data HAω : Cxt → Set where
 
 Uniform-continuity principle
 
-As in the System-T-with-Fan file, `EQ` compares two booleans and `MIN`
-propagates failure while scanning initial segments of binary sequences.
+To formalize uniform continuity, we first define two auxiliary boolean
+operations. The term `EQ` compares two booleans, and `MIN` propagates failure
+while scanning initial segments of binary sequences.
 
 \begin{code}
 
@@ -52,10 +53,14 @@ EQ B₀ B₁ = IF · B₀ · (IF · B₁ · ⊤ · ⊥) · B₁
 MIN : {Γ : Cxt} → Tm Γ ② → Tm Γ ② → Tm Γ ②
 MIN B₀ B₁ = IF · B₀ · ⊥ · B₁
 
--- The context consists of:
---   F : (Ⓝ ⇨ ②) ⇨ Ⓝ   a function on binary sequences,
---   M : Ⓝ             a candidate modulus,
---   A , B : Ⓝ ⇨ ②     two binary sequences.
+\end{code}
+
+The formula expressing uniform continuity is written in a context containing a
+functional `F : (Ⓝ ⇨ ②) ⇨ Ⓝ`, a candidate modulus `M : Ⓝ`, and two binary
+sequences `A` and `B`.
+
+\begin{code}
+
 Γ : Cxt
 Γ = ε ₊ ((Ⓝ ⇨ ②) ⇨ Ⓝ) ₊ Ⓝ ₊ (Ⓝ ⇨ ②) ₊ (Ⓝ ⇨ ②)
 
@@ -69,27 +74,44 @@ A B : Tm Γ (Ⓝ ⇨ ②)
 A = VAR (succ zero)
 B = VAR zero
 
--- In the recursive step we work in the extended context
---   Γ , n : Ⓝ , b : ②
--- and recover the original sequences A and B by de Bruijn indexing.
+\end{code}
+
+To define the boolean term expressing that `A` and `B` agree on their first
+`M` bits, we use primitive recursion on `M`. Its step term is formed in the
+extended context consisting of `Γ` together with a natural number index and an
+accumulator boolean. The terms `A'` and `B'` are the weakened copies of `A`
+and `B` in this larger context.
+
+\begin{code}
+
 A' B' : Tm (Γ ₊ Ⓝ ₊ ②) (Ⓝ ⇨ ②)
 A' = VAR (succ (succ (succ zero)))
 B' = VAR (succ (succ zero))
 
--- The step checks equality at the current index and combines it with the
--- previously accumulated truth value.
+\end{code}
+
+The step term compares the values of `A` and `B` at the current index and
+combines that comparison with the accumulated truth value. The resulting term
+`A＝⟦M⟧B` is intended to express that `A` and `B` agree up to the bound `M`.
+
+\begin{code}
+
 step : Tm Γ (Ⓝ ⇨ ② ⇨ ②)
 step = LAM (LAM (MIN (EQ (A' · (VAR (succ zero)))
                          (B' · (VAR (succ zero))))
                      (VAR zero)))
 
--- Boolean predicate expressing that A and B agree on their first M bits.
 A＝⟦M⟧B : Tm Γ ②
 A＝⟦M⟧B = REC · ⊤ · step · M
 
--- The HAω formulation of uniform continuity:
--- every F : (Ⓝ ⇨ ②) ⇨ Ⓝ has some modulus M such that agreement of A and B on
--- the first M bits implies F A ＝ F B.
+\end{code}
+
+We can now write the HAω formulation of uniform continuity: every functional
+`F : (Ⓝ ⇨ ②) ⇨ Ⓝ` has some modulus `M` such that, whenever `A` and `B` agree on
+their first `M` bits, the values `F · A` and `F · B` are equal.
+
+\begin{code}
+
 Principle[UC] : HAω ε
 Principle[UC] =
    Ā (Ⓝ ⇨ ②) ⇨ Ⓝ     · Ē Ⓝ     · Ā Ⓝ ⇨ ②     · Ā Ⓝ ⇨ ②     ·  A＝⟦M⟧B == ⊤  →→  F · A == F · B

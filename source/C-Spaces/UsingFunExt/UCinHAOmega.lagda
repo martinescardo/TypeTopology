@@ -34,7 +34,7 @@ open import C-Spaces.UsingFunExt.TdefinableFunctionsAreUC fe
 
 \end{code}
 
-Realizability semantic
+Realizability semantics
 
 The type `∣ φ ∣` is the type of realizers of `φ`. Equality is realized by a
 natural-number placeholder, while conjunction, implication, and quantifiers are
@@ -49,10 +49,17 @@ interpreted by the corresponding type formers.
 ∣ Ā σ · φ ∣ = σ ⇨ ∣ φ ∣
 ∣ Ē σ · φ ∣ = σ ⊠ ∣ φ ∣
 
+\end{code}
+
+A pair `(ρ , r)` realizes a formula `φ` when `ρ` interprets the free variables
+of `φ` and `r` supplies the realizer data required by the logical shape of `φ`.
+The type `φ is-realizable` is the corresponding existential statement saying
+that some environment-realizer pair realizes `φ`.
+
+\begin{code}
+
 infix 50 _is-realized-by_
 
--- A pair `(ρ , r)` realizes `φ` when `ρ` interprets the free variables of `φ`
--- and `r` provides the realizer data required by the shape of `φ`.
 _is-realized-by_ : {Γ : Cxt} → (φ : HAω Γ) → U ⟦ Γ ⟧ᶜ × U ⟦ ∣ φ ∣ ⟧ʸ → Set
 (M == N)  is-realized-by (ρ , _)     = pr₁ ⟦ M ⟧ᵐ ρ ＝ pr₁ ⟦ N ⟧ᵐ ρ
 (φ ∧∧ ψ)  is-realized-by (ρ , x , y) = φ is-realized-by (ρ , x) × ψ is-realized-by (ρ , y)
@@ -65,25 +72,28 @@ _is-realizable {Γ} φ = Σ \(w : U ⟦ Γ ⟧ᶜ × U ⟦ ∣ φ ∣ ⟧ʸ) →
 
 \end{code}
 
-These are the meta-level counterparts of the object-language boolean terms
-used to express agreement on an initial segment.
+In the case of the formula `Principle[UC]`, realizability amounts to producing
+for each functional `f : (ℕSpace ⇒ 𝟚Space) ⇒ ℕSpace` a modulus together with
+enough auxiliary data to satisfy the realizability interpretation of the
+quantifier prefix.
+
+The final theorem is obtained by supplying a realizer for the quantifier prefix
+of `Principle[UC]`. The modulus component is extracted by the fan functional,
+and the remaining higher-type component is filled by a constant dummy witness,
+which is sufficient because only the modulus is used in the equality
+conclusion. The proof then shows that realization of the premise
+`A＝⟦M⟧B == ⊤` yields agreement of the two input sequences on the required
+initial segment, so that the fan theorem can be applied.
 
 \begin{code}
 
-
-
--- The realizer for `Principle[UC]` packages:
---   1. a modulus extracted by the fan functional, and
---   2. a trivial witness for the higher-type component introduced by the
---      realizability interpretation of the quantifier prefix.
 Theorem : Principle[UC] is-realizable
 Theorem = (⋆ , e) , prf
  where
   e : U (((ℕSpace ⇒ 𝟚Space) ⇒ ℕSpace) ⇒ (ℕSpace ⊗ ((ℕSpace ⇒ 𝟚Space) ⇒ (ℕSpace ⇒ 𝟚Space) ⇒ ℕSpace ⇒ ℕSpace)))
   e = g , cts-g
    where
-    -- This witness is constant and computationally irrelevant for the equality
-    -- conclusion.
+    -- This witness is constant and computationally irrelevant for the equality conclusion.
     c : Map (ℕSpace ⇒ 𝟚Space) ((ℕSpace ⇒ 𝟚Space) ⇒ ℕSpace ⇒ ℕSpace)
     c = continuous-constant (ℕSpace ⇒ 𝟚Space) ((ℕSpace ⇒ 𝟚Space) ⇒ ℕSpace ⇒ ℕSpace)
                             (continuous-constant (ℕSpace ⇒ 𝟚Space) (ℕSpace ⇒ ℕSpace)

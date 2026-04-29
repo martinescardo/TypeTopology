@@ -62,9 +62,9 @@ data Fml : Cxt → Set where
 
 \end{code}
 
-The uniform-continuity principle in the object language
-
-To keep the main statement readable, we name the types that occur in it.
+To formulate uniform continuity in System T, we define some auxiliary functions:
+ - `EQ` compares two booleans and
+ - `MIN` propagates failure while scanning initial segments of binary sequences.
 
 \begin{code}
 
@@ -74,8 +74,13 @@ EQ B₀ B₁ = IF · B₀ · (IF · B₁ · ⊤ · ⊥) · B₁
 MIN : {Γ : Cxt} → Tm Γ ② → Tm Γ ② → Tm Γ ②
 MIN B₀ B₁ = IF · B₀ · ⊥ · B₁
 
--- The context consists of a function F : Cantor -> Nat and two binary
--- sequences A and B.
+\end{code}
+
+To state the uniform-continuity principle, we work in a context consisting of a
+functional `F : (Ⓝ ⇨ ②) ⇨ Ⓝ` together with two binary sequences `A` and `B`.
+
+\begin{code}
+
 Γ : Cxt
 Γ = ε ₊ ((Ⓝ ⇨ ②) ⇨ Ⓝ) ₊ (Ⓝ ⇨ ②) ₊ (Ⓝ ⇨ ②)
 
@@ -86,16 +91,32 @@ A B : Tm Γ (Ⓝ ⇨ ②)
 A = VAR (succ zero)
 B = VAR zero
 
--- In the body of the recursor we work in the extended context
---   Γ , n : Nat , b : ②
--- and refer back to the original sequences A and B.
+\end{code}
+
+To define the boolean term expressing that `A` and `B` agree on their first
+`FAN(F)` bits, we use primitive recursion on `FAN · F`. Its step term is formed
+in the extended context consisting of the original context `Γ` together with a
+natural number index and an accumulator boolean. The terms `A'` and `B'` are
+the weakened copies of `A` and `B` in this larger context.
+
+\begin{code}
+
 A' B' : Tm (Γ ₊ Ⓝ ₊ ②) (Ⓝ ⇨ ②)
 A' = VAR (succ (succ (succ zero)))
 B' = VAR (succ (succ zero))
 
--- Boolean predicate expressing that A and B agree on their first FAN(F) bits.
--- It is computed by primitive recursion on FAN · F, starting from ⊤ and
--- conjoining the equality test at each index.
+\end{code}
+
+The term `step` compares the values of `A` and `B` at the current index and
+combines the result with the accumulator. By primitive recursion on `FAN · F`,
+this yields a boolean expressing that `A` and `B` agree on their first
+`FAN(F)` bits.
+
+Accordingly, the notation `A＝⟦FAN•F⟧B` is meant to suggest that `A` and `B`
+are equal up to the bound computed by applying `FAN` to `F`.
+
+\begin{code}
+
 step : Tm Γ (Ⓝ ⇨ ② ⇨ ②)
 step = LAM (LAM (MIN (EQ (A' · (VAR (succ zero)))
                          (B' · (VAR (succ zero))))
@@ -103,8 +124,13 @@ step = LAM (LAM (MIN (EQ (A' · (VAR (succ zero)))
 A＝⟦FAN•F⟧B : Tm Γ ②
 A＝⟦FAN•F⟧B = REC · ⊤ · step · (FAN · F)
 
--- Uniform continuity principle: If A and B agree on their first FAN(F) bits,
--- then F takes the same value on A and B.
+\end{code}
+
+Uniform continuity principle: If A and B agree on their first FAN(F) bits,
+then F takes the same value on A and B.
+
+\begin{code}
+
 Principle[UC] : Fml Γ
 Principle[UC] = (A＝⟦FAN•F⟧B == ⊤) →→ ((F · A) == (F · B))
 

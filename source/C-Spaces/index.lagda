@@ -88,6 +88,19 @@ import C-Spaces.UsingFunExt.ValidatingUCviaLCCC
 
 \end{code}
 
+C-spaces form a category with families (CwF).
+
+\begin{code}
+
+-- § 6.3  Categories with families
+import C-Spaces.CwFs.Base
+import C-Spaces.CwFs.Types
+
+-- § 6.4  A continuous model of dependent types
+import C-Spaces.UsingFunExt.CwF
+
+\end{code}
+
 The above development is closest to the mathematical presentation in the thesis,
 but it relies on the full function extensionality axiom, which is not available
 in Spartan MLTT. This does not affect the mathematical correctness of the
