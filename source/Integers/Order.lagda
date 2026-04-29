@@ -6,7 +6,7 @@ Andrew Sneap, 26th November 2021
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Naturals.AbsoluteDifference using (∣_-_∣)
+open import Naturals.AbsoluteDifference using (∣_-_∣ ; triangle-inequality)
 open import Naturals.Order
 open import Naturals.Subtraction
 open import Notation.Order

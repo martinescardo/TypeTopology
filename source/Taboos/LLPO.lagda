@@ -13,7 +13,6 @@ open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Parity
-open import Naturals.Properties
 open import Notation.CanonicalMap
 open import Taboos.BasicDiscontinuity
 open import Taboos.WLPO
@@ -46,6 +45,8 @@ _+_, LLPO implies WLPO, but it is known that LLPO with _∨_ doesn't
 (there are counter-models).
 
 \begin{code}
+
+open import Naturals.Double
 
 untruncated-LLPO : 𝓤₀ ̇
 untruncated-LLPO = (α : ℕ → 𝟚)

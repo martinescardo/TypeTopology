@@ -42,6 +42,7 @@ Applications:
 module Naturals.Binary where
 
 open import MLTT.Spartan renaming (_+_ to _∔_) hiding (ℕ-induction)
+open import Naturals.Double
 open import Naturals.Properties
 open import UF.Equiv
 open import UF.Base

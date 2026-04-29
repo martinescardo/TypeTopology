@@ -156,16 +156,3 @@ sum-to-zero-gives-zero x 0        e = refl
 sum-to-zero-gives-zero x (succ y) e = 𝟘-elim (positive-not-zero (x + y) e)
 
 \end{code}
-
-Added 26 September 2025 by Fredrik Nordvall Forsberg.
-
-\begin{code}
-
-double-is-self-addition : (n : ℕ) → double n ＝ n + n
-double-is-self-addition zero = refl
-double-is-self-addition (succ n) =
- ap succ (succ (double n) ＝⟨ ap succ (double-is-self-addition n) ⟩
-          succ (n + n)    ＝⟨ succ-left n n ⁻¹ ⟩
-          succ n + n      ∎)
-
-\end{code}

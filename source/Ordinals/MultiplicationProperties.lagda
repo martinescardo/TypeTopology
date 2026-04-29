@@ -1087,7 +1087,8 @@ Some special cases of multiplication by ω.
   open import Naturals.Addition hiding (_+_)
   open import Naturals.Division
   open import Naturals.Order
-  open import Naturals.Properties
+  open import Naturals.Double
+
   f : ⟨ 𝟚ₒ ⟩ × ℕ → ℕ
   f (inl ⋆ , n) = double n
   f (inr ⋆ , n) = sdouble n

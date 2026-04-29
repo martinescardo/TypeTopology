@@ -29,7 +29,7 @@ private
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 open import Fin.Type
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_^_)
 open import Naturals.Exponentiation
 open import Naturals.Order
 open import Notation.Order
@@ -51,7 +51,7 @@ Fin-ordinal- k@(succ (succ k')) ^ₒω-is-ω p =
   𝕜 ^ₒ ω                           ＝⟨ ap (𝕜 ^ₒ_) ω-is-sup-of-Fin ⟩
   𝕜 ^ₒ (sup (λ n → Fin-ordinal n)) ＝⟨ I ⟩
   sup (λ n → 𝕜 ^ₒ Fin-ordinal n)   ＝⟨ II ⟩
-  sup (λ n → Fin-ordinal (k ℕ^ n)) ＝⟨ ⊴-antisym _ _ III IV ⟩
+  sup (λ n → Fin-ordinal (k ^ n))  ＝⟨ ⊴-antisym _ _ III IV ⟩
   sup (λ n → Fin-ordinal n)        ＝⟨ ω-is-sup-of-Fin ⁻¹ ⟩
   ω                                ∎
    where
@@ -64,13 +64,13 @@ Fin-ordinal- k@(succ (succ k')) ^ₒω-is-ω p =
 
     II = ap sup (dfunext fe' λ n → Fin-ordinal-^ₒ ua pt sr (succ k') n ⁻¹)
 
-    III : sup (λ n → Fin-ordinal (k ℕ^ n)) ⊴ sup (λ n → Fin-ordinal n)
-    III = sup-composition-⊴ (k ℕ^_) Fin-ordinal
+    III : sup (λ n → Fin-ordinal (k ^ n)) ⊴ sup (λ n → Fin-ordinal n)
+    III = sup-composition-⊴ (k ^_) Fin-ordinal
 
-    IV : sup (λ n → Fin-ordinal n) ⊴ sup (λ n → Fin-ordinal (k ℕ^ n))
-    IV = sup-monotone Fin-ordinal (Fin-ordinal ∘ (k ℕ^_)) IV₀
+    IV : sup (λ n → Fin-ordinal n) ⊴ sup (λ n → Fin-ordinal (k ^ n))
+    IV = sup-monotone Fin-ordinal (Fin-ordinal ∘ (k ^_)) IV₀
      where
-      IV₀ : (n : ℕ) → Fin-ordinal n ⊴ Fin-ordinal (k ℕ^ n)
+      IV₀ : (n : ℕ) → Fin-ordinal n ⊴ Fin-ordinal (k ^ n)
       IV₀ n = Fin-ordinal-preserves-≤ ua
                (exponent-smaller-than-exponential-for-base-at-least-two n k ⋆)
 

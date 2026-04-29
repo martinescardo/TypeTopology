@@ -38,34 +38,6 @@ succ-no-fp (succ n) p = succ-no-fp n (succ-lc p)
 ℕ-cases 0        c₀ cₛ = c₀ refl
 ℕ-cases (succ n) c₀ cₛ = cₛ n refl
 
-double : ℕ → ℕ
-double 0        = 0
-double (succ n) = succ (succ (double n))
-
-sdouble : ℕ → ℕ
-sdouble = succ ∘ double
-
-double-is-not-sdouble : {m n : ℕ} → double m ≠ sdouble n
-double-is-not-sdouble {0}      {0}      = zero-not-positive 0
-double-is-not-sdouble {0}      {succ n} = zero-not-positive
-                                           (succ (succ (double n)))
-double-is-not-sdouble {succ m} {succ n} = λ p → double-is-not-sdouble
-                                                 (succ-lc (succ-lc p))
-
-double-lc : {m n : ℕ} → double m ＝ double n → m ＝ n
-double-lc {0}      {0}      p = refl
-double-lc {succ m} {succ n} p = ap succ IH
- where
-  IH : m ＝ n
-  IH = double-lc {m} {n} (succ-lc (succ-lc p))
-
-sdouble-lc : {m n : ℕ} → sdouble m ＝ sdouble n → m ＝ n
-sdouble-lc = double-lc ∘ succ-lc
-
-power2 : ℕ → ℕ
-power2 0        = 1
-power2 (succ n) = double (power2 n)
-
 \end{code}
 
 Added 12/05/2022 by Andrew Sneap.

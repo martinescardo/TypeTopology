@@ -4,7 +4,7 @@ Andrew Sneap, 17 February 2022
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_)
+open import MLTT.Spartan renaming (_+_ to _∔_) hiding (_^_)
 open import Dyadics.Type
 open import Dyadics.Negation
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
@@ -200,7 +200,7 @@ unsimplified rationals.
          viiₐₚ = distributivity-mult-over-ℤ (q * c') (r * b') a' ⁻¹
          viiiₐₚ : pos (2^ b) * pos (2^ c) ＝ pos (2^ b ℕ* 2^ c)
          viiiₐₚ = pos-multiplication-equiv-to-ℕ (2^ b) (2^ c)
-         ixₐₚ : 2^ b ℕ* 2^ c ＝ 2 ℕ^ (b ℕ+ c)
+         ixₐₚ : 2^ b ℕ* 2^ c ＝ 2 ^ (b ℕ+ c)
          ixₐₚ = prod-of-powers 2 b c
 
          i    = ap (λ - → (p * b' ℤ+ q * a') * c' ℤ+ r * pos -) iₐₚ

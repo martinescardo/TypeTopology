@@ -13,7 +13,7 @@ open import Integers.Type
 open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import Naturals.Properties hiding (double)
+open import Naturals.Properties
 open import Notation.Order
 open import UF.Base
 open import UF.FunExt

@@ -134,3 +134,107 @@ diff-cancellable (succ x) (succ y) = +functor
  (ap succ) (ap succ) (diff-cancellable x y)
 
 \end{code}
+
+Added by Lane Biocini, 07 September 2023
+
+Here we define some order lemmas for the Absolute Difference operation
+and then prove the analog of the triangle inequality for the Natural
+Numbers under it.
+
+Slight refactoring on 12 October 2023
+
+\begin{code}
+
+open import Naturals.Order
+open import Notation.Order
+
+≤-diff : (x y : ℕ) → ∣ x - y ∣ ≤ x + y
+≤-diff x        0        = ≤-refl x
+≤-diff 0        (succ y) = ≤-+' 0    y
+≤-diff (succ x) (succ y) = γ
+ where
+  Γ : (x + y) ≤ (succ x + y)
+  Γ = ≤-trans (x + y) (succ (x + y)) (succ x + y)
+       (≤-succ (x + y))
+       (equal-gives-less-than-or-equal (succ (x + y)) (succ x + y)
+         (succ-left x y ⁻¹))
+
+  γ : ∣ x - y ∣ ≤ succ (succ x + y)
+  γ = ≤-trans₂ ∣ x - y ∣ (x + y) (succ x + y) (succ (succ x + y))
+       (≤-diff x y) Γ (≤-succ (succ x + y))
+
+≤-diff-minus : (x y : ℕ) → x ≤ y + ∣ y - x ∣
+≤-diff-minus 0    y = ⋆
+≤-diff-minus (succ x) 0    = ≤-+' 0    x
+≤-diff-minus (succ x) (succ y) = γ
+ where
+  Γ : x ≤ (y + ∣ y - x ∣)
+  Γ = ≤-diff-minus x y
+
+  γ : succ x ≤ (succ y + ∣ y - x ∣)
+  γ = ≤-trans (succ x) (succ (y + ∣ y - x ∣)) (succ y + ∣ y - x ∣)
+       (succ-monotone x (y + ∣ y - x ∣) Γ)
+       (equal-gives-less-than-or-equal
+        (succ (y + ∣ y - x ∣)) (succ y + ∣ y - x ∣)
+        (succ-left y ∣ y - x ∣ ⁻¹))
+
+≤-diff-plus : (x y : ℕ) → x ≤ (∣ x - y ∣ + y)
+≤-diff-plus 0        y        = ⋆
+≤-diff-plus (succ x) 0        = ≤-refl x
+≤-diff-plus (succ x) (succ y) = ≤-diff-plus x y
+
+triangle-inequality : (x y z : ℕ) → ∣ x - z ∣ ≤ ∣ x - y ∣ + ∣ y - z ∣
+triangle-inequality 0    y z =
+ ≤-trans₂ ∣ 0 - z ∣ z (y + ∣ y - z ∣) (∣ 0 - y ∣ + ∣ y - z ∣) Γ α γ
+  where
+   Γ : ∣ 0 - z ∣ ≤ z
+   Γ = equal-gives-less-than-or-equal ∣ 0 - z ∣ z (minus-nothing z)
+
+   α : z ≤ (y + ∣ y - z ∣)
+   α = ≤-diff-minus z y
+
+   β : y ≤ ∣ 0 - y ∣
+   β = equal-gives-less-than-or-equal y ∣ 0 - y ∣ (minus-nothing y ⁻¹)
+
+   γ : (y + ∣ y - z ∣) ≤ (∣ 0 - y ∣ + ∣ y - z ∣)
+   γ = ≤-adding y ∣ 0 - y ∣ ∣ y - z ∣ ∣ y - z ∣ β (≤-refl ∣ y - z ∣)
+triangle-inequality (succ x) 0    0        = ≤-refl x
+triangle-inequality (succ x) 0    (succ z) =
+ ≤-trans₂ ∣ x - z ∣ (x + z) (succ (x + z)) (succ (succ x + z))
+      (≤-diff x z)
+      (≤-succ (x + z))
+      (≤-trans (x + z) (succ (x + z)) (succ x + z) (≤-succ (x + z)) α )
+  where
+   α : succ (x + z) ≤ (succ x + z)
+   α = equal-gives-less-than-or-equal (succ (x + z)) (succ x + z)
+        (succ-left x z ⁻¹)
+triangle-inequality (succ x) (succ y) 0        = ≤-diff-plus x y
+triangle-inequality (succ x) (succ y) (succ z) = triangle-inequality x y z
+
+\end{code}
+
+Added by Lane Biocini, 18 September 2023
+
+Another lemma for Absolute Difference
+
+\begin{code}
+triangle-inequality-bound : (a b : ℕ) → ¬ (succ (a + b) ≤ ∣ a - b ∣)
+triangle-inequality-bound a b l = not-less-than-itself (a + b) γ
+ where
+  Γ : ∣ a - b ∣ ≤ a + b
+  Γ = ≤-diff a b
+
+  γ : succ (a + b) ≤ (a + b)
+  γ = ≤-trans (succ (a + b)) ∣ a - b ∣ (a + b) l Γ
+
+triangle-inequality-bound' : (a b : ℕ) → ¬ (succ (succ a + b) ≤ ∣ a - b ∣)
+triangle-inequality-bound' a b l = triangle-inequality-bound a b γ
+ where
+  Γ : succ (a + b) ≤ succ a + b
+  Γ = equal-gives-less-than-or-equal (succ (a + b)) (succ a + b)
+   (succ-left a b ⁻¹)
+
+  γ : succ (a + b) ≤ ∣ a - b ∣
+  γ = ≤-trans₂ (succ (a + b)) (succ a + b) (succ (succ a + b)) ∣ a - b ∣
+       Γ (≤-succ (succ a + b) ) l
+\end{code}
