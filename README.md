@@ -121,12 +121,23 @@ Tosun.
 
    https://doi.org/10.1007/978-3-642-38946-7_14
 
+1. Chuangjie Xu and H. Escardó Escardó. *A constructive model of uniform continuity.* TLCA 2013.
+
+   https://doi.org/10.1007/978-3-642-38946-7_18
+
 1. Martín H. Escardó. *Constructive decidability of classical continuity.*
    [Mathematical Structures in Computer Science][MSCS], Volume 25, Special
    Issue 7: Computing with Infinite Data: Topological and Logical Foundations
    Part 1, October 2015, pp. 1578 - 1589 DOI:
 
    https://doi.org/10.1017/S096012951300042X
+
+1. Martín H. Escardó and Chuangjie Xu. *A constructive manifestation of
+   the Kleene-Kreisel continuous functionals.* Annals of Pure and
+   Applied Logic 167(9), 2016.
+
+   https://doi.org/10.1016/j.apal.2016.04.011
+
 
 1. Martín H. Escardó and Chuangjie Xu. *The inconsistency of a
    Brouwerian continuity principle with the Curry-Howard
@@ -276,6 +287,14 @@ Tosun.
 
    https://doi.org/10.48550/arXiv.2505.11055
 
+1. Ayberk Tosun. *Constructive and Predicative Locale Theory in Univalent
+   Foundations*. PhD thesis. School of Computer Science, University of
+   Birmingham, UK. Submitted: 30 November 2024; accepted: 3 June 2025.
+
+   https://etheses.bham.ac.uk/id/eprint/16416/
+   Updated versions: \
+   https://arxiv.org/abs/2603.01308
+
 1. Igor Arrieta, Martín H. Escardó and Ayberk Tosun. *The Patch Topology in
    Univalent Foundations*. [Mathematical Structures in Computer Science][MSCS],
    Volume 35, Special Issue: Advances in Homotopy Type Theory.
@@ -296,14 +315,6 @@ Tosun.
    types*. January 2026.
 
    https://doi.org/10.48550/arxiv.2601.12536
-
-1. Ayberk Tosun. *Constructive and Predicative Locale Theory in Univalent
-   Foundations*. PhD thesis. School of Computer Science, University of
-   Birmingham, UK. Submitted: 30 November 2024; accepted: 3 June 2025.
-
-   https://etheses.bham.ac.uk/id/eprint/16416/
-   Updated versions: \
-   https://arxiv.org/abs/2603.01308
 
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
