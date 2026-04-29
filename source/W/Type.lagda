@@ -64,10 +64,11 @@ module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
 
 \end{code}
 
-The record version of W:
+The record version of W.
 
 \begin{code}
 
+{-# ETA_EQUALITY #-}
 record W' {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  inductive
  constructor

@@ -38,7 +38,6 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
   Cell = Fin 9
 
   record Board : 𝓤₀ ̇ where
-   pattern
    constructor board
    field
     next-player     : Player
