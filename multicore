@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Martin Escardo, 31st December 2025, improved 20th Jan 2025.
+# Martin Escardo, 31st December 2025, improved 20th Jan 2026.
 # Script to typecheck TypeTopology fast exploiting multicore.
 #
 # This performs better than a makefile with the appropriate dependencies
