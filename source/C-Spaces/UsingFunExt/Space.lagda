@@ -9,7 +9,6 @@ module C-Spaces.UsingFunExt.Space where
 open import MLTT.Spartan
 
 open import C-Spaces.Preliminaries.Sequence
-open import C-Spaces.UniformContinuity
 open import C-Spaces.Coverage
 
 \end{code}

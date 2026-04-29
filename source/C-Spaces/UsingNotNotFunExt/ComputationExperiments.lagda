@@ -34,9 +34,6 @@ open import Naturals.Addition
 open import C-Spaces.Preliminaries.Booleans.Functions using (if)
 open import C-Spaces.Preliminaries.Sequence
 open import C-Spaces.Syntax.SystemTWithFan
-open import C-Spaces.UsingNotNotFunExt.Space
-open import C-Spaces.UsingNotNotFunExt.CartesianClosedness dnfe
-open import C-Spaces.UsingNotNotFunExt.DiscreteSpace dnfe
 open import C-Spaces.UsingNotNotFunExt.YonedaLemma dnfe
 open import C-Spaces.UsingNotNotFunExt.Fan dnfe
 open import C-Spaces.UsingNotNotFunExt.UCinT dnfe

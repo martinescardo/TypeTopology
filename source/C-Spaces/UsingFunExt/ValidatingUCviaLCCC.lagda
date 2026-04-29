@@ -10,9 +10,6 @@ open import UF.FunExt using (DN-funext)
 module C-Spaces.UsingFunExt.ValidatingUCviaLCCC (fe : DN-funext 𝓤₀ 𝓤₀) where
 
 open import C-Spaces.Preliminaries.Sequence
-open import C-Spaces.Preliminaries.Naturals.Order
-open import C-Spaces.UniformContinuity
-open import C-Spaces.Coverage
 open import C-Spaces.UsingFunExt.Space
 open import C-Spaces.UsingFunExt.CartesianClosedness fe
 open import C-Spaces.UsingFunExt.DiscreteSpace fe

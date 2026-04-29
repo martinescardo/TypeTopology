@@ -22,7 +22,6 @@ open import UF.Subsingletons-FunExt
 
 open import C-Spaces.CwFs.Base
 open import C-Spaces.Preliminaries.Sequence
-open import C-Spaces.UniformContinuity
 open import C-Spaces.Coverage
 open import C-Spaces.UsingFunExt.Space
 open import C-Spaces.UsingFunExt.CartesianClosedness (dfunext fe)

@@ -13,7 +13,6 @@ inside the extended language.
 
 module C-Spaces.Syntax.SystemTWithFan where
 
-open import MLTT.Spartan
 
 open import C-Spaces.Syntax.SystemT hiding (Tm) public
 

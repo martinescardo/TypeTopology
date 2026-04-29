@@ -7,7 +7,6 @@ Definition of a displayed functor.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import Notation.UnderlyingType
 open import UF.DependentEquality
 open import Categories.Pre
 open import Categories.Functor

@@ -12,7 +12,6 @@ modularity and clarity of the core definitions.
 module C-Spaces.CwFs.Base where
 
 open import MLTT.Spartan
-open import UF.Base
 
 record CwFStructure : (𝓤 ⊔ 𝓥)⁺ ̇ where
   field

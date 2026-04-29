@@ -14,18 +14,13 @@ open import UF.FunExt using (DN-funext)
 
 module C-Spaces.UsingNotNotFunExt.UCinT (dnfe : ¬¬ DN-funext 𝓤₀ 𝓤₀) where
 
-open import Naturals.Properties
 
 open import C-Spaces.Preliminaries.Booleans.Functions
-open import C-Spaces.Preliminaries.Naturals.Order
 open import C-Spaces.Preliminaries.Sequence
-open import C-Spaces.UniformContinuity
-open import C-Spaces.Coverage
 open import C-Spaces.Syntax.SystemTWithFan
 open import C-Spaces.UsingNotNotFunExt.Space
 open import C-Spaces.UsingNotNotFunExt.CartesianClosedness dnfe
 open import C-Spaces.UsingNotNotFunExt.DiscreteSpace dnfe
-open import C-Spaces.UsingNotNotFunExt.YonedaLemma dnfe
 open import C-Spaces.UsingNotNotFunExt.Fan dnfe
 
 \end{code}

@@ -9,15 +9,12 @@ Definition of adjoint.
 open import MLTT.Spartan
 
 open import UF.FunExt
-open import Notation.UnderlyingType
 
 open import Categories.Pre
 open import Categories.Functor
 open import Categories.Functor-Composition
 open import Categories.NaturalTransformation
 
-open import Categories.Notation.Functor
-open import Categories.Notation.NaturalTransformation
 
 module Categories.Adjoint where
 

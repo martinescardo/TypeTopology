@@ -9,7 +9,6 @@ open import UF.FunExt using (DN-funext)
 
 module C-Spaces.UsingNotNotFunExt.DiscreteSpace (dnfe : ¬¬ DN-funext 𝓤₀ 𝓤₀) where
 
-open import UF.Base
 open import UF.Sets
 open import UF.DiscreteAndSeparated
 open import Naturals.Addition

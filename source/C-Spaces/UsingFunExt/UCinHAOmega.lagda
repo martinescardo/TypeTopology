@@ -16,18 +16,14 @@ open import UF.FunExt using (DN-funext)
 
 module C-Spaces.UsingFunExt.UCinHAOmega (fe : DN-funext 𝓤₀ 𝓤₀) where
 
-open import Naturals.Properties
 
 open import C-Spaces.Preliminaries.Sequence
 open import C-Spaces.Preliminaries.Booleans.Functions
 open import C-Spaces.Preliminaries.Naturals.Order
-open import C-Spaces.UniformContinuity
-open import C-Spaces.Coverage
 open import C-Spaces.Syntax.HAOmega
 open import C-Spaces.UsingFunExt.Space
 open import C-Spaces.UsingFunExt.CartesianClosedness fe
 open import C-Spaces.UsingFunExt.DiscreteSpace fe
-open import C-Spaces.UsingFunExt.YonedaLemma fe
 open import C-Spaces.UsingFunExt.Fan fe
 open import C-Spaces.UsingFunExt.TdefinableFunctionsAreUC fe
      renaming (c⟦_⟧ʸ to ⟦_⟧ʸ ; c⟦_⟧ᶜ to ⟦_⟧ᶜ; c⟦_⟧ᵐ to ⟦_⟧ᵐ)

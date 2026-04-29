@@ -9,13 +9,11 @@ The Category of Magmas
 open import Categories.Wild
 open import Categories.Pre 
 open import Categories.Univalent
-open import Categories.Notation.Wild renaming (⌜_⌝ to ⌜_⌝')
 open import Categories.Notation.Pre renaming (⌜_⌝ to ⌜_⌝')
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv hiding (_≅_) renaming (inverse to e-inverse)
 open import UF.FunExt
-open import UF.Sets
 open import UF.Sets-Properties
 open import UF.SIP-Examples
 open import UF.Subsingletons

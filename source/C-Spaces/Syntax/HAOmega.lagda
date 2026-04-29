@@ -11,7 +11,6 @@ formulas, together with the particular formula expressing uniform continuity.
 
 module C-Spaces.Syntax.HAOmega where
 
-open import MLTT.Spartan
 
 open import C-Spaces.Syntax.SystemT public
 
