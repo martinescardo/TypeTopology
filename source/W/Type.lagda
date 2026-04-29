@@ -68,6 +68,7 @@ The record version of W.
 
 \begin{code}
 
+{- uncomment when we move to Agda 2.9.0
 {-# ETA_EQUALITY #-}
 record W' {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  inductive
@@ -76,6 +77,7 @@ record W' {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 
  field
   pr₁ : X
   pr₂ : A pr₁ → W' X A
+-}
 
 \end{code}
 
