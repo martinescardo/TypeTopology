@@ -30,6 +30,8 @@ TypeTopology, and in particular which type theory is adopted.
 
 {-# OPTIONS --without-K --guardedness #-}
 
+module AllModulesIndex where
+
 import index                                -- (1)
 import Unsafe.index                         -- (2)
 import InfinitePigeon.index                 -- (3)
