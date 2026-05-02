@@ -13,8 +13,6 @@ This is a wrapper module. Perform a choice below.
 \begin{code}
 
 open import InfinitePigeon.JK-Monads
-open import InfinitePigeon.K-Shift-BBC
-open import InfinitePigeon.K-Shift-MBR
 open import InfinitePigeon.K-Shift-Selection
 open import InfinitePigeon.Logic
 open import InfinitePigeon.Naturals

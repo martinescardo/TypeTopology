@@ -9,11 +9,8 @@ module InfinitePigeon.InfinitePigeonOriginal where
 open import InfinitePigeon.Addition
 open import InfinitePigeon.Cantor
 open import InfinitePigeon.Equality
-open import InfinitePigeon.JK-LogicalFacts
 open import InfinitePigeon.JK-Monads
-open import InfinitePigeon.K-AC-N
 open import InfinitePigeon.Logic
-open import InfinitePigeon.LogicalFacts
 open import InfinitePigeon.Naturals
 open import InfinitePigeon.Order
 open import InfinitePigeon.Two

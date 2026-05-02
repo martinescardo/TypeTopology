@@ -16,7 +16,6 @@ module InfinitePigeon.J-Shift-Selection where
 open import InfinitePigeon.Finite-JK-Shifts
 open import InfinitePigeon.JK-Monads
 open import InfinitePigeon.Logic
-open import InfinitePigeon.LogicalFacts
 open import InfinitePigeon.Naturals
 
 \end{code}

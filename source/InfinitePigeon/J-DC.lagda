@@ -13,7 +13,6 @@ open import InfinitePigeon.J-Shift
 open import InfinitePigeon.JK-LogicalFacts
 open import InfinitePigeon.JK-Monads
 open import InfinitePigeon.Logic
-open import InfinitePigeon.LogicalFacts
 open import InfinitePigeon.Naturals
 
 \end{code}

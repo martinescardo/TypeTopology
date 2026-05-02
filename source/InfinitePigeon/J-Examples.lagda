@@ -69,7 +69,6 @@ Alternatively, calculate b and s using the Theorem:
 
 \begin{code}
 {--
-open import InfinitePigeon.FinitePigeon
 
 b : ₂
 b = ∃-witness(Theorem α m)

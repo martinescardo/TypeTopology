@@ -16,8 +16,6 @@ not included here.
 \begin{code}
 
 open import InfinitePigeon.Equality
-open import InfinitePigeon.Logic
-open import InfinitePigeon.LogicalFacts
 open import InfinitePigeon.Naturals
 
 infixl 30 _+_
