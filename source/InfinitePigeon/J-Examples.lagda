@@ -68,16 +68,18 @@ example2 = pigeon-program α⁵ 12
 Alternatively, calculate b and s using the Theorem:
 
 \begin{code}
-{--
 
+open import InfinitePigeon.Addition
+open import InfinitePigeon.Finite
 open import InfinitePigeon.FinitePigeon
+open import InfinitePigeon.Logic
 
 b : ₂
-b = ∃-witness(Theorem α m)
+b = ∃-witness(Theorem α⁵ 12)
 
-s : smaller(m + 1) → ℕ
-s = ∃-witness(∃-elim(Theorem α m))
---}
+s : smaller(12 + 1) → ℕ
+s = ∃-witness(∃-elim(Theorem α⁵ 12))
+
 \end{code}
 
 Warning: depending on the example you build, and on the chosen
