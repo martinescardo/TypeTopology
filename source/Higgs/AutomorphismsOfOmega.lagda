@@ -177,6 +177,7 @@ element ⊤.
 
 \begin{code}
 
+open import Groups.Type
 open import Groups.Symmetric fe
 
 Ωₛ : Group 𝓤⁺
