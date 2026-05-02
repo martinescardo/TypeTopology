@@ -7,7 +7,7 @@ Martin Escardo, November 2023.
 module CoNaturals.Type2Properties where
 
 open import CoNaturals.Type hiding (is-finite')
-open import CoNaturals.GenericConvergentSequence2
+open import TypeTopology.GenericConvergentSequence2
 open import CoNaturals.Equivalence
 open import MLTT.Spartan
 open import MLTT.Two-Properties

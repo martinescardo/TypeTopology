@@ -12,7 +12,7 @@ lemmas. More additions after that date.
 
 {-# OPTIONS --safe --without-K #-}
 
-module CoNaturals.GenericConvergentSequence where
+module TypeTopology.GenericConvergentSequence where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
