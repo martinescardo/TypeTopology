@@ -499,7 +499,6 @@ any exists.
 
 \begin{code}
 
-open import Taboos.WLPO
 open import Apartness.Definition
 
 strong-apartness-separating-∞₀-and-∞₁-gives-WLPO
