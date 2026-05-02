@@ -16,7 +16,6 @@ consists of a type family B : A → Type together with an reflexive relation
 module ReflexiveGraphs.Displayed where
 
 open import MLTT.Spartan
-open import UF.Base
 open import ReflexiveGraphs.Type
 
 module _ (𝓣 𝓦 : Universe) where
@@ -34,7 +33,7 @@ more easily with displayed reflexive graphs.
 
 \begin{code}
 
-module _ {𝓐 : Refl-Graph 𝓤 𝓥} where 
+module _ {𝓐 : Refl-Graph 𝓤 𝓥} where
 
  ⟪_⟫ : Displayed-Refl-Graph 𝓣 𝓦 𝓐 → ⟨ 𝓐 ⟩ → 𝓣 ̇
  ⟪ (B , _) ⟫ = B
@@ -48,9 +47,9 @@ module _ {𝓐 : Refl-Graph 𝓤 𝓥} where
 
  ≈-disp-refl : (𝓑 : Displayed-Refl-Graph 𝓣 𝓦 𝓐)
              → {x : ⟨ 𝓐 ⟩} (u : ⟪ 𝓑 ⟫ x)
-             → u ≈⟨ 𝓑 ⸴ ≈-refl 𝓐 x ⟩ u 
+             → u ≈⟨ 𝓑 ⸴ ≈-refl 𝓐 x ⟩ u
  ≈-disp-refl (_ , _ , r) u = r u
- 
+
 \end{code}
 
 We show that each component of a displayed reflexive graph is itself a

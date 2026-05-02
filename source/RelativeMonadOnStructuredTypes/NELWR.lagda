@@ -7,7 +7,6 @@ discrete type (a type with decidable equality).
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Notation.General
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
 open import UF.Equiv

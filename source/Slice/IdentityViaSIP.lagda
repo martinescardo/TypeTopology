@@ -13,13 +13,10 @@ module Slice.IdentityViaSIP
        where
 
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Univalence
-open import UF.UA-FunExt
 open import deprecated.StructureIdentityPrinciple
 
 open import Slice.Construction 𝓣

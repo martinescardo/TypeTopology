@@ -7,7 +7,6 @@ Double function on natural nuumbers.
 module Naturals.Double where
 
 open import MLTT.Spartan hiding (_+_)
-open import MLTT.Unit-Properties
 open import Naturals.Properties
 
 double : ℕ → ℕ
@@ -44,7 +43,6 @@ Added 26 September 2025 by Fredrik Nordvall Forsberg.
 
 \begin{code}
 
-open import Naturals.Properties
 open import Naturals.Order
 open import Notation.Order
 

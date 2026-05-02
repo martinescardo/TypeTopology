@@ -37,7 +37,6 @@ module Ordinals.Exponentiation.Paper
        where
 
 open import MLTT.Spartan
-open import Notation.General
 
 open import UF.FunExt
 open import UF.UA-FunExt
