@@ -13,9 +13,9 @@ This is a wrapper module. Perform a choice below.
 \begin{code}
 
 open import InfinitePigeon.JK-Monads
--- open import InfinitePigeon.K-Shift-BBC
--- open import InfinitePigeon.K-Shift-MBR
-open import InfinitePigeon.K-Shift-Selection
+import InfinitePigeon.K-Shift-BBC
+import InfinitePigeon.K-Shift-MBR
+import InfinitePigeon.K-Shift-Selection
 open import InfinitePigeon.Logic
 open import InfinitePigeon.Naturals
 
@@ -31,8 +31,9 @@ Choose a definition here for experimentation:
 
 \begin{code}
 
-K-∀-shift = K-∀-shift-selection
--- K-∀-shift = K-∀-shift-mbr
--- K-∀-shift = K-∀-shift-bbc
+K-∀-shift =
+ InfinitePigeon.K-Shift-Selection.K-∀-shift-selection
+-- InfinitePigeon.K-Shift-MBR.K-∀-shift-mbr
+-- InfinitePigeon.K-Shift-BBC.K-∀-shift-bbc
 
 \end{code}
