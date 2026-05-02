@@ -24,10 +24,8 @@ open import UF.FunExt
 
 module gist.2-injective-types (fe : FunExt) where
 
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import TypeTopology.TotallySeparated
-open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Embeddings

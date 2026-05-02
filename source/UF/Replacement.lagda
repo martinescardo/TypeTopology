@@ -11,7 +11,7 @@ proven depending on the context (see discussion below for details about the
 strength of type replacement). We also mention that the file UF/Size.lagda
 defines 'set replacement' which restricts type replacement to those maps whose
 codomain is a set (in the sense of univalent foundations). We will drop the word
-'axiom' and write 'type replacement', or simply 'replacement' when there is no 
+'axiom' and write 'type replacement', or simply 'replacement' when there is no
 risk of confusion with set replacement.
 
 The statement of type replacement is as follows:
@@ -34,7 +34,7 @@ proven. Additionally, one may carry out this construction simply with pushouts
 (which can be shown to be equivalent to graph quotients). The join construction
 via pushouts is being actively explored in files not yet publicly available.
 Additionally, set replacement (see above) is equivalent to the existence of set
-quotients, another modest assumption.   
+quotients, another modest assumption.
 
 It is worth noting that the status of type replacements strength relative to
 the strength of adding certain HITs is not completely understood, but it
@@ -54,7 +54,6 @@ module UF.Replacement (pt : propositional-truncations-exist)
 
 open import MLTT.Spartan
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
 open import UF.Size
 open import UF.SmallnessProperties
