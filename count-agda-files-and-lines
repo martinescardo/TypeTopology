@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Counts file, lines. and number of non-empty lines
+
 root_dir=$(git rev-parse --show-toplevel)
 
 git ls-files $root_dir/source | grep agda | wc -l

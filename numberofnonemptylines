@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+root_dir=$(git rev-parse --show-toplevel)
+
+git ls-files $root_dir/source | grep agda | xargs cat | awk 'NF' | wc -l
