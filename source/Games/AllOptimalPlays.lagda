@@ -38,10 +38,8 @@ open import MonadOnTypes.Definition
 open import MonadOnTypes.J-transf-variation
 open import MonadOnTypes.JK R
 open import MonadOnTypes.K
-open import MonadOnTypes.List
 open import MonadOnTypes.NonEmptyList
 open import Notation.CanonicalMap
-open import UF.Base
 open import UF.Subsingletons
 
 open K-definitions R

@@ -419,7 +419,6 @@ of a Σ type (added 13th July 2018):
 
 open import UF.Base
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 PRED-is-the-homotopy-final-coalgebra : {X : 𝓤 ̇ } (κ : X → 𝟙 + X)
                                      → ∃! h ꞉ (X → ℕ∞), is-homomorphism κ h
