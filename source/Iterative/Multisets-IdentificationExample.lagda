@@ -8,9 +8,7 @@ and their equality under univalence.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Sets-Properties
 open import UF.Univalence
-open import UF.Universes
 
 module Iterative.Multisets-IdentificationExample
         (ua : Univalence)
@@ -18,7 +16,6 @@ module Iterative.Multisets-IdentificationExample
 
 open import Iterative.Multisets 𝓤₀
 open import Iterative.Multisets-Addendum ua 𝓤₀ hiding (𝟚ᴹ)
-open import MLTT.Two
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import W.Type
