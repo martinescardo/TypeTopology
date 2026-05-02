@@ -321,10 +321,10 @@ We begin with auxiliary constructions and lemmas for the forward direction.
    α-of-₀-converse ne = different-from-₁-equal-₀
                          (λ p → ne (α-of-₁-converse p))
 
-   α-equals-₀-gives-bounded : is-bounded-by (succ k) β
-                            → α-of β n ＝ ₀
-                            → β n ≤ k
-   α-equals-₀-gives-bounded b p = ≤-down (β n) k (b n) (α-of-₀ p)
+   α-of-equals-₀-gives-bounded : is-bounded-by (succ k) β
+                               → α-of β n ＝ ₀
+                               → β n ≤ k
+   α-of-equals-₀-gives-bounded b p = ≤-down (β n) k (b n) (α-of-₀ p)
 
   α-of-decreasing : (β : ℕ → ℕ)
                   → is-bounded-by (succ k) β
@@ -347,9 +347,10 @@ We begin with auxiliary constructions and lemmas for the forward direction.
   u-of : 𝔹 (succ k) → ℕ∞
   u-of (β , b , δ) = α-of β , α-of-decreasing β b δ
 
-  α-₀-criterion : (𝕓 : 𝔹 (succ k)) (φ : is-finite (u-of 𝕓))
-                → α-of (ι 𝕓) (size φ) ＝ ₀
-  α-₀-criterion (β , _ , _) (n₀ , e) =
+  α-of-equals-₀-criterion : (𝕓 : 𝔹 (succ k))
+                            (φ : is-finite (u-of 𝕓))
+                          → α-of (ι 𝕓) (size φ) ＝ ₀
+  α-of-equals-₀-criterion (β , _ , _) (n₀ , e) =
    α-of β n₀    ＝⟨ ap (λ - → ι - n₀) (e ⁻¹) ⟩
    ι (ι n₀) n₀  ＝⟨ ℕ-to-ℕ∞-diagonal₀ n₀ ⟩
    ₀            ∎
@@ -364,7 +365,7 @@ We begin with auxiliary constructions and lemmas for the forward direction.
      γ n = β (n₀ + n)
 
      I : β n₀ ≤ k
-     I = α-equals-₀-gives-bounded β n₀ b (α-₀-criterion 𝕓 φ)
+     I = α-of-equals-₀-gives-bounded β n₀ b (α-of-equals-₀-criterion 𝕓 φ)
 
      II : is-bounded-by k γ
      II n = ≤-trans (β (n₀ + n)) (β n₀) k (is-decreasing'' β δ n₀ n) I
@@ -451,13 +452,13 @@ constructions and lemmas.
      IV : d ＝ n
      IV = addition-left-cancellable d n n₀ III
 
-  β-of-bd : (u : ℕ∞)
-            (π : is-finite u → 𝔹 k)
-          → is-bounded-by (succ k) (β-of u π)
-  β-of-bd u π n = 𝟚-equality-cases bd₀ bd₁
+  β-of-bounded : (u : ℕ∞)
+                 (π : is-finite u → 𝔹 k)
+               → is-bounded-by (succ k) (β-of u π)
+  β-of-bounded u π n = 𝟚-equality-cases bounded₀ bounded₁
    where
-    bd₀ : ι u n ＝ ₀ → β-of u π n ≤ succ k
-    bd₀ e = transport (_≤ succ k) (I ⁻¹) III
+    bounded₀ : ι u n ＝ ₀ → β-of u π n ≤ succ k
+    bounded₀ e = transport (_≤ succ k) (I ⁻¹) III
      where
       φ : is-finite u
       φ = φ-of n u e
@@ -474,12 +475,12 @@ constructions and lemmas.
       III : ι (π φ) d ≤ succ k
       III = ≤-trans (ι (π φ) d) k (succ k) II (≤-succ k)
 
-    bd₁ : ι u n ＝ ₁ → β-of u π n ≤ succ k
-    bd₁ p = transport (_≤ succ k) ((β-of-at-₁ u π n p) ⁻¹) (≤-refl (succ k))
+    bounded₁ : ι u n ＝ ₁ → β-of u π n ≤ succ k
+    bounded₁ p = transport (_≤ succ k) ((β-of-at-₁ u π n p) ⁻¹) (≤-refl (succ k))
 
-  β-of-decr : (u : ℕ∞) (π : is-finite u → 𝔹 k)
-            → is-decreasing' (β-of u π)
-  β-of-decr u π n = 𝟚-equality-cases I₀ I₁
+  β-of-decreasing' : (u : ℕ∞) (π : is-finite u → 𝔹 k)
+                   → is-decreasing' (β-of u π)
+  β-of-decreasing' u π n = 𝟚-equality-cases I₀ I₁
    where
     I₀ : ι u (succ n) ＝ ₀ → β-of u π (succ n) ≤ β-of u π n
     I₀ z' = 𝟚-equality-cases
@@ -594,7 +595,7 @@ With this we can define an inverse g of the function f defined above.
 \begin{code}
 
   g : 𝔻 (𝔹 k) → 𝔹 (succ k)
-  g (u , π) = β-of u π , β-of-bd u π , β-of-decr u π
+  g (u , π) = β-of u π , β-of-bounded u π , β-of-decreasing' u π
 
 \end{code}
 
@@ -643,10 +644,10 @@ To conclude, we now show that f and g are indeed mutually inverse.
     β = β-of u π
 
     I : is-bounded-by (succ k) β
-    I = β-of-bd u π
+    I = β-of-bounded u π
 
     II : is-decreasing' β
-    II = β-of-decr u π
+    II = β-of-decreasing' u π
 
     𝕕' : 𝔻 (𝔹 k)
     𝕕' = f (g 𝕕)
