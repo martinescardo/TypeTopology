@@ -48,7 +48,6 @@ open import Games.TypeTrees
 open import MLTT.Athenian
 open import MLTT.Fin
 open import MLTT.Spartan hiding (J)
-open import MonadOnTypes.J
 open import MonadOnTypes.K
 open import UF.FunExt
 
@@ -75,7 +74,6 @@ module minimax
        where
 
  open Games.FiniteHistoryDependent {𝓤} {𝓤} R
- open import MonadOnTypes.JK R
  open K-definitions R
  open import Games.ArgMinMax
  open ArgMinMax-Listed {𝓤} {𝓥} R _<_ δ

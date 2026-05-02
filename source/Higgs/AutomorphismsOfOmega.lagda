@@ -15,7 +15,6 @@ We prove the main results of [1] and [2] about automorphisms of Ω.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Groups.Type
 open import MLTT.Spartan
 open import UF.Embeddings
 open import UF.Equiv hiding (_≅_)
@@ -178,7 +177,6 @@ element ⊤.
 
 \begin{code}
 
-open import Groups.Type
 open import Groups.Symmetric fe
 
 Ωₛ : Group 𝓤⁺

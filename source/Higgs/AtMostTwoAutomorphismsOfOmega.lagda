@@ -18,7 +18,6 @@ open import UF.Equiv hiding (_≅_)
 open import UF.FunExt
 open import UF.Logic
 open import UF.Subsingletons
-open import UF.SubtypeClassifier hiding (Ω)
 
 module Higgs.AtMostTwoAutomorphismsOfOmega
         {𝓤 : Universe}

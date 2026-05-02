@@ -41,7 +41,6 @@ open import EffectfulForcing.MFPSAndVariations.SystemT using (type;〖_〗; ι; 
 open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS
   renaming (B〖_〗 to 〖_〗𝒟)
   using (Kleisli-extension)
-open import MLTT.Sigma
 open import MLTT.Spartan
 
 \end{code}

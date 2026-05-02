@@ -41,12 +41,9 @@ pruning in the file GamesExperimental2.alpha-beta).
 {-# OPTIONS --safe --without-K #-}
 
 open import MonadOnTypes.K
-open import MonadOnTypes.Definition hiding (ext-const)
 open import RelativeMonadOnStructuredTypes.OneSigmaStructure
 open import RelativeMonadOnStructuredTypes.Definition
 open import MLTT.Spartan hiding (J)
-open import UF.Base
-open import UF.Equiv
 open import UF.FunExt
 
 \end{code}
