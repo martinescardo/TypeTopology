@@ -159,8 +159,6 @@ filter : {X : 𝓤 ̇ } (p : X → 𝓥 ̇ ) → ((x : X) → p x + ¬ p x) → 
 filter p δ []       = []
 filter p δ (x ∷ xs) = filter-helper p x (δ x) (filter p δ xs)
 
-open import MLTT.Plus-Properties
-
 filter-member→ : {X : 𝓤 ̇ }
                  (p : X → 𝓥 ̇ )
                  (δ : (x : X) → p x + ¬ p x)
