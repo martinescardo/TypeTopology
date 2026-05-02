@@ -8,17 +8,12 @@ Completed on the 2nd of June 2023.
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (𝟚)
 open import Slice.Family
 open import UF.Base
-open import UF.Embeddings
-open import UF.Equiv renaming (_■ to _𝔔𝔈𝔇)
 open import UF.FunExt
-open import UF.PropTrunc
-open import UF.PropTrunc
-open import UF.Retracts
 open import UF.EquivalenceExamples
+open import UF.PropTrunc
 open import UF.Size
 
 module Locales.UniversalPropertyOfPatch
@@ -44,13 +39,11 @@ open import Locales.PatchProperties            pt fe sr
 open import Locales.PerfectMaps                pt fe
 open import Locales.ScottContinuity            pt fe sr
 open import Locales.SmallBasis                 pt fe sr
-open import Locales.Spectrality.Properties     pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap    pt fe
 open import Locales.Stone                      pt fe sr
 open import Locales.StoneImpliesSpectral       pt fe sr
 open import Locales.ZeroDimensionality         pt fe sr
-open import UF.ImageAndSurjection
 open import UF.Logic
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

@@ -13,10 +13,8 @@ module Locales.Clopen (pt : propositional-truncations-exist)
                       (fe : Fun-Ext)
                       (sr : Set-Replacement pt) where
 
-open import Locales.Compactness.Definition pt fe
 open import Locales.Complements pt fe
 open import Locales.Frame pt fe
-open import Locales.WayBelowRelation.Definition pt fe
 open import Locales.WellInside pt fe sr
 open import MLTT.List hiding ([_])
 open import Slice.Family
