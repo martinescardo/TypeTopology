@@ -96,5 +96,5 @@ grep -E "^[[:space:]]*(open[[:space:]]+)?import " `git ls-files '*agda'` \
 # # during the development of this script.
 
 
-# # TODO. Someone brave please make a more general version of this
-# # script, including the above single-hash comments as options.
+# # TODO. Someone brave people please make a more general version of
+# # this script, including the above single-hash comments as options.
