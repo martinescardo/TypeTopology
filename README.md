@@ -15,6 +15,8 @@ page.
 
 ## Table of contents
 
+ 1. [What TypeTopology is about#about]()
+
  1. [How to cite this repository](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
  1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-agda-files)
  1. [Current contributors](https://github.com/martinescardo/TypeTopology/blob/master/README.md#current-contributors-in-alphabetical-order-of-first-name)
@@ -25,6 +27,15 @@ page.
 
     (These guidelines need reworking. But, generally, see how we write things in TypeTopology, and try to immitate our style, although departures from our style may some times be acceptable, if they are implicitly or explicitly justified.)
 
+## About
+
+TypeTopology is a blackboard, for working on new mathematics, rather than being an encyclopedia of existing mathematics. As a result, its organization differs considerably from other formalization libraries, both in Agda and in other proof assistants.
+
+The purpose of TypeTopology is to be a playground to work on new ideas we want to submit for publication.
+
+This leads to a fundamentally different organization of our ideas, as recorded in our Agda files here, compared to other existing libraries that record mathematical knowledge.
+
+But, of course, we are also happy for already-existing mathematical ideas to be recorded here. In fact, they may be very useful for developing our own new ideas. Or your own. We are happy for you to join us using TypeTopology as either a blackboard or as record of already-existing mathematical ideas. But, remember, the primary purpose of TypeTopology is to be a blackboard for thinking about mathematics.
 
 ## How to cite
 
