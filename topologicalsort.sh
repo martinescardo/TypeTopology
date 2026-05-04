@@ -1,18 +1,34 @@
 #!/usr/bin/env bash
 
-# # Creates a file in the format required by unix tsort.
+# # Convention here: double hashes are explanations. Single hashes are
+# # code you may wish to include in future experiments.
+
+# # This script creates a file in the format required by unix `tsort`.
 # #
-# # Run as
+# # But also this file can be used for other statistics.
+# # It is particularly easy to read from a Haskell program.
+# # The format is (as for tsort), a list of lines
 # #
-# #   $ TypeTopology/source> ../topologicalsort | tsort
+# #  dependecy -> thing that depends on the dependency.
+
 # #
-# # But also this file can be used by for other statistics.
+# # Run e.g. as
+# #
+# #   $ TypeTopology/source> ../topologicalsort | tsort | wc
+# #     9831   19662  464509
+# #
+# # But you can also run it as e.g.
+# #
+# #   $ cd TypeTopology
+# #   $ TypeTopology/source/TypeTopology> ../../topologicalsort.sh | wc
+# #     406     812   16483
+# #
+# # In other words, you will get the dependency graph for the folder you at.
 
 set -Eeo pipefail
 
-
-# # Optionally remove unsafe modules.
-# # Insert after CubicalBinarySystem if desired.
+# # Optionally remove unsafe modules. If this is desired,
+# # insert the following, after CubicalBinarySystem below:
 
   # grep -v Cubical \
   # | grep -v Unsafe \
@@ -25,21 +41,24 @@ set -Eeo pipefail
 
 # # NB. CubicalBinarySystem no longer works.
 
-# 1.  We get all lines that contain "import" and "open import" in Agda files
-#     under git control,
-# 2.  remove the extensions .(l)agda,
-# 3.  remove all spaces at the beginning of lines,
-# 4.  collapse multiple spaces to single spaces,
-# 5.  remove "(open) import" from line beginnings,
-# 6.  remove all spaces that appear immediately after a colon
-#     (where the colon is produced by grep), without removing the colon,
-# 7.  remove everything after a whitespace (this will be module parameters),
-# 8.  swap what is before the colon with what is after the colon
-#     (to get the right dependency order),
-# 9.  replace "/" by "." globally,
-# 10. replace ":" by ":" globally
-#     (at the stage we have a file that tsort can work with, but we may as well cleanup),
-# 11. remove duplicate lines.
+# # What we do here:
+# #
+# # 1.  We get all lines that contain "import" and "open import" in Agda files
+# #     under git control, taking care of whitespaces,
+# # 2.  remove the extensions .(l)agda,
+# # 3.  remove all spaces at the beginning of lines,
+# # 4.  collapse multiple spaces to single spaces,
+# # 5.  remove "(open) import" from line beginnings,
+# # 6.  remove all spaces that appear immediately after a colon
+# #     (where the colon is produced by grep), without removing the colon,
+# # 7.  remove everything after a whitespace (this will be module parameters),
+# # 8.  swap what is before the colon with what is after the colon
+# #     (to get the right dependency order),
+# # 9.  replace "/" by "." globally,
+# # 10. replace ":" by ":" globally
+# #     (at the stage we have a file that tsort can work with,
+# #      but we may as well cleanup),
+# # 11. remove duplicate lines.
 
 grep -E "^[[:space:]]*(open[[:space:]]+)?import " `git ls-files '*agda'` \
   | grep -v CubicalBinarySystem \
@@ -68,4 +87,9 @@ grep -E "^[[:space:]]*(open[[:space:]]+)?import " `git ls-files '*agda'` \
 # agda listOfAlmostAllFiles.agda -j +RTS -A16M -qb0
 # agda ../AllModulesIndex.lagda
 
-# # However, this is not very useful other than as a sanity check.
+# # However, this is not very useful other than as a sanity check
+# # during the development of this script.
+
+
+# # TODO. Someone brave please make a more general version of this
+# # script, including the above single-hash comments as options.
