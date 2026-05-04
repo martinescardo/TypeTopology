@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 
+# # This script generates a dependency graph of (subfolders of)
+# # TypeTopology, in the format recognized by the unix command tsort.
+
 # # Convention here: double hashes are explanations. Single hashes are
 # # code you may wish to include in future experiments.
 
 # # This script creates a file in the format required by unix `tsort`.
 # #
 # # But also this file can be used for other statistics.
-# # It is particularly easy to read from a Haskell program.
+# # It is particularly easy to read e.g. from a Haskell program or
+# # indeed a program in any programming language.
+# #
 # # The format is (as for tsort), a list of lines
 # #
 # #  dependecy -> thing that depends on the dependency.
