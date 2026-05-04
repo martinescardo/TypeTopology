@@ -25,11 +25,12 @@ set -Eeo pipefail
 
 # # NB. CubicalBinarySystem no longer works.
 
-# 1.  We get all agda files under git control,
+# 1.  We get all lines that contain "import" and "open import" in Agda files
+#     under git control,
 # 2.  remove the extensions .(l)agda,
 # 3.  remove all spaces at the beginning of lines,
 # 4.  collapse multiple spaces to single spaces,
-# 5.  remove "open import",
+# 5.  remove "(open) import" from line beginnings,
 # 6.  remove all spaces that appear immediately after a colon
 #     (where the colon is produced by grep), without removing the colon,
 # 7.  remove everything after a whitespace (this will be module parameters),
@@ -40,14 +41,14 @@ set -Eeo pipefail
 #     (at the stage we have a file that tsort can work with, but we may as well cleanup),
 # 11. remove duplicate lines.
 
-
-grep "open import" `git ls-files '*agda'` \
+grep -E "^[[:space:]]*(open[[:space:]]+)?import " `git ls-files '*agda'` \
   | grep -v CubicalBinarySystem \
   | sed 's/\.lagda//' \
   | sed 's/\.agda//' \
   | sed 's/^[[:space:]]*//' \
   | sed 's/  */ /g' \
   | sed 's/open import //' \
+  | sed 's/import //' \
   | sed 's/:\([[:space:]]*\)/:/g' \
   | sed 's/ .*//' \
   | sed 's/^\([^:]*\):\(.*\)$/\2:\1/' \
