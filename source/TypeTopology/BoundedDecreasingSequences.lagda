@@ -214,6 +214,13 @@ later, is the main tool.
 
 𝔹-step : (k : ℕ) → 𝔹 (succ k) ≃ 𝔻 (𝔹 k)
 
+\end{code}
+
+With this we conclude that 𝔹 k ≃ 𝓑 k and hence 𝔹 k is compact, which
+is what we wanted to show in this file.
+
+\begin{code}
+
 𝔹-and-𝓑-are-equivalent : (k : ℕ) → 𝔹 k ≃ 𝓑 k
 𝔹-and-𝓑-are-equivalent 0        = 𝔹-base
 𝔹-and-𝓑-are-equivalent (succ k) =
@@ -221,13 +228,6 @@ later, is the main tool.
  𝔻 (𝔹 k)    ≃⟨ 𝔻-preserves-≃ (𝔹-and-𝓑-are-equivalent k) ⟩
  𝔻 (𝓑 k)    ≃⟨ ≃-refl _ ⟩
  𝓑 (succ k) ■
-
-\end{code}
-
-With this we conclude that 𝔹 k ≃ 𝓑 k and hence 𝔹 k is compact, which
-is what we wanted to show in this file.
-
-\begin{code}
 
 𝔹-is-compact∙ : (k : ℕ) → is-compact∙ (𝔹 k)
 𝔹-is-compact∙ k = compact∙-types-are-closed-under-equiv
