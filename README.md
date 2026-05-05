@@ -15,7 +15,7 @@ page.
 
 ## Table of contents
 
- 1. [What TypeTopology is about#about]()
+ 1. [What TypeTopology is about](#about)
 
  1. [How to cite this repository](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
  1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-agda-files)
@@ -186,8 +186,13 @@ Tosun.
 
    https://doi.org/10.23638/LMCS-13(1:15)2017
 
-1. Tom de Jong. *The Scott model of PCF in univalent type
-   theory.* [Mathematical Structures in Computer
+1. Brendan Hart. Investigating properties of PCF in Agda. MSci dissertation, School of Computer Science, University of Birmingham, UK, 2020.
+
+   https://github.com/BrendanHart/Investigating-Properties-of-PCF/blob/master/InvestigatingPropertiesOfPCFInAgda.pdf
+   https://github.com/BrendanHart/Investigating-Properties-of-PCF
+
+1. Tom de Jong. *The Scott model of PCF in univalent type theory.*
+   [Mathematical Structures in Computer
    Science](https://www.cambridge.org/core/journals/mathematical-structures-in-computer-science),
    Volume 31, Issue 10 - Homotopy Type Theory 2019, July 2021.
 
