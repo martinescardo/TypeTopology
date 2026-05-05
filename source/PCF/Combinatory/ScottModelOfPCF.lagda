@@ -17,8 +17,12 @@ an Agda formalization of soundness and computational adequacy.
 Brendan's code, using a previous version of our library, can be found
 here: https://github.com/BrendanHart/Investigating-Properties-of-PCF.
 
-The repository also contains Brendan's report describing the project:
+Ported to TypeTopology by Martin Escardo in 17-18 May 2023.
+https://martinescardo.github.io/TypeTopology/PCF.Lambda.index.html
+
+Brendan's repository also contains his report describing the project:
 https://github.com/BrendanHart/Investigating-Properties-of-PCF/blob/master/InvestigatingPropertiesOfPCFInAgda.pdf.
+
 
 \begin{code}
 
