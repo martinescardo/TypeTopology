@@ -5,7 +5,7 @@ Here we prove the main lemma that
     If function extensionality is available, then for any
     type family A : ℕ → U such that
     (1) A(n) is a proposition for all n,
-    (2) if A(n) then A(m) is decidable for all i < n,
+    (2) if A(n) then A(m) is decidable for all m < n,
     the truncation ∥ Σ n:ℕ, A(n) ∥ exists, and
 
           ∥ Σ n:ℕ, A(n) ∥ → Σ(n:ℕ).A(n).
