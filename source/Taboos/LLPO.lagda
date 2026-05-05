@@ -211,18 +211,18 @@ untruncated-ℕ∞'-LLPO-gives-untruncated-ℕ∞-LLPO fe llpo u v μ = II I
   II (inl d) = inl (∞'-gives-∞ fe u d)
   II (inr e) = inr (∞'-gives-∞ fe v e)
 
-untruncated-ℕ∞-LLPO-gives-untruncated-LPO : funext₀
-                                          → untruncated-ℕ∞-LLPO
-                                          → untruncated-LLPO
-untruncated-ℕ∞-LLPO-gives-untruncated-LPO fe unllpo =
+untruncated-ℕ∞-LLPO-gives-untruncated-LLPO : funext₀
+                                           → untruncated-ℕ∞-LLPO
+                                           → untruncated-LLPO
+untruncated-ℕ∞-LLPO-gives-untruncated-LLPO fe unllpo =
  untrucated-LLPO'-gives-untruncated-LLPO
   (untruncated-ℕ∞'-LLPO-gives-untruncated-LLPO' fe
     (untruncated-ℕ∞-LLPO-gives-untruncated-ℕ∞'-LLPO fe unllpo))
 
-untruncated-LLPO-gives-untruncated-ℕ∞-LPO : funext₀
-                                          → untruncated-LLPO
-                                          → untruncated-ℕ∞-LLPO
-untruncated-LLPO-gives-untruncated-ℕ∞-LPO fe ullpo =
+untruncated-LLPO-gives-untruncated-ℕ∞-LLPO : funext₀
+                                           → untruncated-LLPO
+                                           → untruncated-ℕ∞-LLPO
+untruncated-LLPO-gives-untruncated-ℕ∞-LLPO fe ullpo =
  untruncated-ℕ∞'-LLPO-gives-untruncated-ℕ∞-LLPO fe
   (untruncated-LLPO'-gives-untruncated-ℕ∞'-LLPO fe
    (untrucated-LLPO-gives-untruncated-LLPO' ullpo))
@@ -233,7 +233,7 @@ The following result seems to be new (and I announced it years ago in
 the constructivenews mailing list). The idea is to construct a
 non-continuous function using untruncated LLPO, and then derive WLPO
 from this. This proof was written here 15th November 2023, simplified
-28th February 2023, for which we included the above ℕ∞-versions of
+28th February 2024, for which we included the above ℕ∞-versions of
 LLPO and their equivalences.
 
 \begin{code}
@@ -385,7 +385,7 @@ module _ (pt : propositional-truncations-exist) where
 TODO. Show that all these variants are equivalent.
 
 LLPO doesn't imply WLPO (there are published refereces - find and
-include them here). One example seems to Johnstone's topological
+include them here). One example seems to be Johnstone's topological
 topos, but this is unpublished as far as I know.
 
 Added 17th July 2024. There is a proof by Chris Grossack here:
