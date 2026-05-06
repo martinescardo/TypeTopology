@@ -1,7 +1,7 @@
 -- Martin Escardo 6th May 2026.
 --
 -- Program to explore this repositorie's dependency graph.
--- Best run from ghci.
+-- Best run from ghci. See examples below.
 --
 -- To use this program, you must first run ./generateHaskellgraph.sh.
 
