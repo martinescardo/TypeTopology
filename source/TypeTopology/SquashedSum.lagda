@@ -27,6 +27,7 @@ open import TypeTopology.Density
 open import TypeTopology.ExtendedSumCompact fe
 open import TypeTopology.GenericConvergentSequenceCompactness fe₀
 open import TypeTopology.SigmaDiscrete
+open import TypeTopology.ExtensionTotallySeparated
 open import TypeTopology.SigmaTotallySeparated
 open import UF.Base
 open import UF.DiscreteAndSeparated

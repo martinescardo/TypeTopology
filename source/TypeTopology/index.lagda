@@ -24,6 +24,7 @@ import TypeTopology.DenseMapsProperties              -- by Fredrik Bakke
 import TypeTopology.Density
 import TypeTopology.DisconnectedTypes
 import TypeTopology.ExtendedSumCompact
+import TypeTopology.ExtensionTotallySeparated
 import TypeTopology.FailureOfTotalSeparatedness
 import TypeTopology.GenericConvergentSequence
 import TypeTopology.GenericConvergentSequence2
