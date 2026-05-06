@@ -33,7 +33,8 @@ import TypeTopology.MicroInfTychonoff
 import TypeTopology.MicroTychonoff
 import TypeTopology.RicesTheoremForTheUniverse
 import TypeTopology.SequentiallyHausdorff
-import TypeTopology.SigmaDiscreteAndTotallySeparated
+import TypeTopology.SigmaDiscrete
+import TypeTopology.SigmaTotallySeparated
 import TypeTopology.SimpleTypes
 import TypeTopology.SquashedCantor
 import TypeTopology.SquashedSum

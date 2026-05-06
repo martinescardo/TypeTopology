@@ -31,7 +31,7 @@ open import Ordinals.Underlying
 open import TypeTopology.CompactTypes
 open import TypeTopology.ConvergentSequenceHasInf
 open import TypeTopology.MicroInfTychonoff
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SigmaDiscrete
 open import TypeTopology.SquashedCantor fe
 open import TypeTopology.SquashedSum fe
 open import UF.Base

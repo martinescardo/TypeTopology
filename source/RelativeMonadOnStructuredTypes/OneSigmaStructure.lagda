@@ -46,7 +46,7 @@ Some typical examples that we are going to need.
 \begin{code}
 
 open import UF.DiscreteAndSeparated
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SigmaDiscrete
 
 discrete-𝟙-Σ-structure : 𝟙-Σ-structure
 discrete-𝟙-Σ-structure =

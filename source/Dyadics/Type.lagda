@@ -23,7 +23,7 @@ open import Naturals.Properties
 open import Notation.Order
 open import Rationals.Fractions hiding (_≈_ ; ≈-sym ; ≈-trans ; ≈-refl)
 open import Rationals.Type
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SigmaDiscrete
 open import UF.Base hiding (_≈_)
 open import UF.DiscreteAndSeparated
 open import UF.Sets

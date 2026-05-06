@@ -16,7 +16,7 @@ open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Properties
 open import Notation.CanonicalMap
 open import Rationals.Fractions
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SigmaDiscrete
 open import UF.DiscreteAndSeparated
 open import UF.Sets
 open import UF.Subsingletons

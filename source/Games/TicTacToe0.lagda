@@ -18,7 +18,7 @@ open import MLTT.Spartan hiding (J)
 open import MonadOnTypes.J
 open import MonadOnTypes.K
 open import TypeTopology.CompactTypes
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SigmaDiscrete
 open import UF.DiscreteAndSeparated
 
 \end{code}

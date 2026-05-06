@@ -20,7 +20,7 @@ open import Naturals.Division
 open import Naturals.HCF
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Properties
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SigmaDiscrete
 open import UF.Base hiding (_≈_)
 open import UF.DiscreteAndSeparated
 open import UF.Sets
