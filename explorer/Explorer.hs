@@ -110,13 +110,13 @@ longestpathto s = reverse (map decode (snd (height' (hd (dfs tgraph [code s]))))
 mprint :: Show a => [a] -> IO ()
 mprint = mapM_ print
 
-breakpoint = 20
+breakpoint = 30
 
 less :: Show a => [a] -> IO ()
 less s = if length s < breakpoint
          then mprint s
          else do
-          let (t,u) = splitAt 40 s
+          let (t,u) = splitAt breakpoint s
           mprint t
           getLine
           less u
