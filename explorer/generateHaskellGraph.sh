@@ -28,9 +28,9 @@ grep "label" reduced-graph.dot \
      | sed 's/\t/ /g' \
     >> DependencyGraph.hs
 
-echo ""                             >> DependencyGraph.hs
-echo "dependencies :: [(Int,Int)]"  >> DependencyGraph.hs
-echo "dependencies = ["             >> DependencyGraph.hs
+echo ""                        >> DependencyGraph.hs
+echo "imports :: [(Int,Int)]"  >> DependencyGraph.hs
+echo "imports = ["             >> DependencyGraph.hs
 
 grep "\->" reduced-graph.dot \
      | sed 's/\tm/  (/' \

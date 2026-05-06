@@ -22,7 +22,7 @@ bounds :: (Int,Int)
 bounds = (minimum (map fst labels) , maximum (map fst labels))
 
 graph :: Graph
-graph = buildG bounds dependencies
+graph = buildG bounds imports
 
 tgraph :: Graph
 tgraph = transposeG graph
