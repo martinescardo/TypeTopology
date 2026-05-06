@@ -121,7 +121,7 @@ less s = if length s < breakpoint
           getLine
           less u
 
--- Examples/
+-- Examples.
 
 example1  = less tablenodescendants
 example2  = less tablenoancestors

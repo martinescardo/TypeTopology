@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Martin Escardo 6th May 2026.
+
 # Generates a Haskell file with the dependency graph of all modules,
 # after transitive reduction.
 
