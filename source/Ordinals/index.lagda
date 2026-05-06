@@ -49,6 +49,7 @@ import Ordinals.TrichotomousType
 import Ordinals.Type
 import Ordinals.Underlying
 import Ordinals.WellOrderArithmetic
+import Ordinals.WellOrderExtension
 import Ordinals.WellOrderTransport
 import Ordinals.WellOrderingPrinciple
 import Ordinals.WellOrderingTaboo            -- by [4]
