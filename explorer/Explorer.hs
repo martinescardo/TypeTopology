@@ -102,6 +102,24 @@ longestpathfrom s = map decode (snd (height' (hd (dfs graph [code s]))))
 longestpathto :: Filename -> [Filename]
 longestpathto s = reverse (map decode (snd (height' (hd (dfs tgraph [code s])))))
 
+levels :: Tree a -> [[a]]
+levels (Node a ts) = [a] : foldr (lzw (++)) [] (map levels ts)
+
+-- "long zipWith": like zipWith but keeps the tail of the longer list
+lzw :: (a -> a -> a) -> [a] -> [a] -> [a]
+lzw _ as []         = as
+lzw _ [] bs         = bs
+lzw f (a:as) (b:bs) = f a b : lzw f as as
+
+tsortbylevel :: [(Filename,Int)]
+tsortbylevel = -- clean
+                (sortOn snd
+                  [ file | vs <- levels (hd (dfs graph [code "AllModulesIndex"])) ,
+                           file <- zip (map decode vs) [1..] ])
+ where
+   clean [] = []
+   clean ((a,n):ps) = (a,n):clean [ (b,m) | (b,m) <- ps , b /= a ]
+
 -- For more available features, to possibly incorporate here, see
 -- https://hackage-content.haskell.org/package/containers-0.8/docs/Data-Graph.html
 
@@ -135,3 +153,4 @@ example9  = less (longestpathto "InjectiveTypes.Blackboard")
 example10 = less (longestpathfrom "InjectiveTypes.Blackboard")
 example11 = longestdistancefrom "InjectiveTypes.Blackboard"
 example12 = longestdistanceto "InjectiveTypes.Blackboard"
+example13 = less tsortbylevel
