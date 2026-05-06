@@ -37,6 +37,7 @@ open import CoNaturals.Type
 open import MLTT.Spartan
 open import Notation.CanonicalMap
 open import Ordinals.AdditionProperties ua
+open import Ordinals.ToppedAdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Brouwer
 open import Ordinals.Injectivity

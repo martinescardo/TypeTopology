@@ -144,6 +144,7 @@ module _ {𝓤 : Universe}
    open import Ordinals.OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
    open Omega (pe 𝓤)
    open import Ordinals.AdditionProperties ua
+   open import Ordinals.ToppedAdditionProperties ua
 
    τ = 𝟚ᵒ
 
