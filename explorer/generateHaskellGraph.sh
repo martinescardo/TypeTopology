@@ -2,6 +2,8 @@
 
 # Martin Escardo 6th May 2026.
 
+# Requires graphviz to be installed.
+
 # Generates a Haskell file with the dependency graph of all modules,
 # after transitive reduction.
 

@@ -135,3 +135,5 @@ example9  = less (longestpathto "InjectiveTypes.Blackboard")
 example10 = less (longestpathfrom "InjectiveTypes.Blackboard")
 example11 = longestdistancefrom "InjectiveTypes.Blackboard"
 example12 = longestdistanceto "InjectiveTypes.Blackboard"
+example13 = less (longestpathfrom "AllModulesIndex")
+example14 = length (longestpathfrom "AllModulesIndex")
