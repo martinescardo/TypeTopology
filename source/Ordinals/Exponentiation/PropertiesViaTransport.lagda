@@ -49,7 +49,7 @@ open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
 
 open import DiscreteGraphicMonoids.ListsWithoutRepetitions fe'
              using (List-is-discrete)
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SigmaDiscrete
              using (×-is-discrete)
 
 \end{code}

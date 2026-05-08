@@ -12,19 +12,17 @@ module gist.index where
 
 import gist.2-injective-types
 import gist.Ackermann
-import gist.CommutativeLoopSpaces         -- by Tom de Jong
 import gist.DependentlyTypedTensors
 import gist.Hydra                         -- by Alice Laroche
 import gist.InjectivesVersusAlgebras
 import gist.IntervalObject
+import gist.MajoritiesOnlyActOnSets
+import gist.ThereAreNoHigherSemilattices
+import gist.ThereAreNoHigherSemilattices2
 import gist.multiset-addendum-question
 import gist.not-an-apartness
 import gist.remove-swap
 import gist.transport-discussion
-import gist.ThereAreNoHigherSemilattices  -- by Martin Escardo based on David Wärn
-import gist.ThereAreNoHigherSemilattices2 -- by Tom de Jong
-import gist.MajoritiesOnlyActOnSets       -- by Jakub Opršal
-import gist.MajoritiesOnlyActOnSets2      -- by Tom de Jong
 import gist.wrong-proofs
 
 \end{code}

@@ -74,11 +74,8 @@ open PropositionalTruncation pt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤
-open import UF.Sets
-open import UF.Sets-Properties
 open import UF.Size
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 \end{code}
 

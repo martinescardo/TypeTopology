@@ -49,7 +49,6 @@ open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Sets
 open import UF.Size
 open import UF.SubtypeClassifier
 open import UF.Subsingletons

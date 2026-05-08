@@ -63,7 +63,6 @@ open import DedekindReals.Type fe' pe' pt
 open import DedekindReals.Order fe' pe' pt renaming (_♯_ to _♯ℝ_)
 
 open import Notation.CanonicalMap
-open import Notation.General
 open import Notation.Order
 
 open import InjectiveTypes.Blackboard fe hiding (extension)

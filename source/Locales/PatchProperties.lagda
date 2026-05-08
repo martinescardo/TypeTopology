@@ -45,7 +45,6 @@ open import MLTT.Spartan hiding (𝟚)
 open import Slice.Family
 open import UF.EquivalenceExamples
 open import UF.Logic
-open import UF.Subsingletons
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe

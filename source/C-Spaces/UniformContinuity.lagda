@@ -9,8 +9,6 @@ module C-Spaces.UniformContinuity where
 open import MLTT.Spartan renaming (_+_ to _⊎_)
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
-open import Naturals.Addition
-open import Naturals.Properties
 open import UF.DiscreteAndSeparated
 
 open import C-Spaces.Preliminaries.Naturals.Order

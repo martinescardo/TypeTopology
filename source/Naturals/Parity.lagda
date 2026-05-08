@@ -5,10 +5,12 @@
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition
 open import Naturals.Division
+open import Naturals.Double
 open import Naturals.Exponentiation
 open import Naturals.Multiplication
 open import Naturals.Properties
 open import UF.Subsingletons
+
 
 module Naturals.Parity where
 

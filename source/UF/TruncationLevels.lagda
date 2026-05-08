@@ -9,7 +9,6 @@ The type ℕ₋₂ of integers ≥ -2, used for truncation levels.
 module UF.TruncationLevels where
 
 open import MLTT.Spartan hiding (_+_)
-open import Naturals.Order
 open import Notation.Order
 open import Notation.Decimal
 open import UF.Equiv

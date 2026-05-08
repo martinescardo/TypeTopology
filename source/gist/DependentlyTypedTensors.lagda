@@ -17,7 +17,6 @@ module gist.DependentlyTypedTensors (fe : Fun-Ext) where
 
 open import MLTT.Fin
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Equiv
 
 \end{code}

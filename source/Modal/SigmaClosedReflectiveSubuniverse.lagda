@@ -10,6 +10,7 @@ not just recursion, but induction.
 https://doi.org/10.23638/LMCS-16(1:2)2020
 
 \begin{code}
+
 {-# OPTIONS --safe --without-K --auto-inline #-}
 
 open import MLTT.Spartan
@@ -22,6 +23,7 @@ module Modal.SigmaClosedReflectiveSubuniverse
  (P-is-reflective : subuniverse-is-reflective P)
  (P-is-sigma-closed : subuniverse-is-sigma-closed P)
  where
+
 \end{code}
 
 A Σ-closed reflective subuniverse is in particular a reflective
@@ -29,7 +31,9 @@ subuniverse, so we first import everything already proved for
 reflective subuniverses in general.
 
 \begin{code}
+
 open import Modal.ReflectiveSubuniverse P P-is-reflective public
+
 \end{code}
 
 We can now prove the induction principle. We do this as a direct
@@ -39,6 +43,7 @@ then using uniqueness to show that composition pr₁ ∘ g is the identity
 on ○ A.
 
 \begin{code}
+
 ○-induction
  : (fe : funext 𝓤 𝓤)
  → (A : 𝓤 ̇ )
@@ -60,4 +65,5 @@ on ○ A.
        (○-is-modal _)
        _ _
        (dfunext fe (λ a → ap pr₁ (○-rec-compute _ _ _ _ a)))
+
 \end{code}

@@ -87,9 +87,10 @@ subuniverse-is-sigma-closed
  : (P : subuniverse 𝓤 𝓥)
  → 𝓤 ⁺ ⊔ 𝓥 ̇
 subuniverse-is-sigma-closed P =
- (A : _) →
- (B : A → _) →
- pr₁ P A →
- ((a : A) → pr₁ P (B a)) →
- pr₁ P (Σ B)
+   (A : _)
+ → (B : A → _)
+ → pr₁ P A
+ → ((a : A) → pr₁ P (B a))
+ → pr₁ P (Σ B)
+
 \end{code}

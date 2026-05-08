@@ -8,7 +8,6 @@ Definition of functor composition
 
 open import MLTT.Spartan
 open import UF.FunExt
-open import Notation.UnderlyingType
 open import Categories.Pre
 open import Categories.Functor
 open import Categories.Notation.Pre

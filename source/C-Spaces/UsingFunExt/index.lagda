@@ -33,6 +33,7 @@ import C-Spaces.UsingFunExt.Coproduct
 import C-Spaces.UsingFunExt.LocalCartesianClosedness
 import C-Spaces.UsingFunExt.DiscreteSpace
 import C-Spaces.UsingFunExt.IndiscreteSpace
+import C-Spaces.UsingFunExt.CwF
 
 \end{code}
 

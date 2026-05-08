@@ -41,7 +41,6 @@ open import EffectfulForcing.MFPSAndVariations.SystemT using (type;〖_〗; ι; 
 open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS
   renaming (B〖_〗 to 〖_〗𝒟)
   using (Kleisli-extension)
-open import MLTT.Sigma
 open import MLTT.Spartan
 
 \end{code}
@@ -363,8 +362,8 @@ Correctness of `dialogue-treeᵀ`.
 \begin{code}
 
 Theorem-37 : (t : T₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
-           → ⟦ t ⟧₀ α ＝ dialogue (dialogue-tree t) α
-Theorem-37 = dialogue-tree-correct
+           → ⟦ t ⟧₀ α ＝ ⟦ dialogueᵀ · (dialogue-treeᵀ t) ⟧₀ α
+Theorem-37 = ⌜dialogue-tree⌝-correct
 
 \end{code}
 

@@ -7,10 +7,7 @@ Chuangjie Xu 2012, ported to TypeTopology in 2025
 module C-Spaces.Coverage where
 
 open import MLTT.Spartan renaming (_+_ to _⊎_)
-open import MLTT.Plus-Properties
-open import MLTT.Two-Properties
 open import Naturals.Addition
-open import Naturals.Properties
 
 open import C-Spaces.Preliminaries.Naturals.Order
 open import C-Spaces.Preliminaries.Sequence

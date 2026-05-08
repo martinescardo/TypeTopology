@@ -8,6 +8,7 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Properties
+open import Naturals.Subtraction
 open import Naturals.Order
 open import Notation.Order
 open import UF.Base

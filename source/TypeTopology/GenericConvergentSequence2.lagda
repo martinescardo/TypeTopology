@@ -7,7 +7,7 @@ The isomorphism is proved in CoNaturals.Equivalence.
 
 {-# OPTIONS --safe --without-K #-}
 
-module CoNaturals.GenericConvergentSequence2 where
+module TypeTopology.GenericConvergentSequence2 where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties

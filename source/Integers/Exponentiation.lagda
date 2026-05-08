@@ -4,7 +4,7 @@ Andrew Sneap
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_)
+open import MLTT.Spartan renaming (_+_ to _∔_ ; _^_ to _^^_)
 
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
@@ -24,7 +24,7 @@ module Integers.Exponentiation where
 \begin{code}
 
 _pos^_ : ℤ → ℕ → ℤ
-a pos^ b = ((a *_) ^ b) (pos 1)
+a pos^ b = ((a *_) ^^ b) (pos 1)
 
 ℤ-exp-zero-base : (a : ℤ) → a pos^ 0 ＝ pos 1
 ℤ-exp-zero-base a = refl

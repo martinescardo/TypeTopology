@@ -7,7 +7,6 @@ Category of Magmas via displayed categories.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.DependentEquality
 open import UF.Equiv
 open import UF.FunExt
@@ -15,12 +14,10 @@ open import UF.Sets-Properties
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.Univalence
-open import Notation.UnderlyingType
 open import Categories.Pre
 open import Categories.Univalent
 open import Categories.Notation.Pre
 open import Categories.Examples.Set
-open import Categories.Examples.Magma
 open import Categories.Displayed.Pre
 open import Categories.Displayed.Notation.Pre
 open import Categories.Displayed.Univalent

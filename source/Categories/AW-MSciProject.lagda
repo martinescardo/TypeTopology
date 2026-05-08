@@ -21,7 +21,6 @@ open import Categories.NaturalTransformation
 
 open import Categories.Adjoint
 
-open import Categories.Notation.Wild
 open import Categories.Notation.Pre
 
 open import Categories.Displayed.Pre

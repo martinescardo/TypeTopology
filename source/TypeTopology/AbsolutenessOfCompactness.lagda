@@ -87,6 +87,7 @@ https://doi.org/10.23638/LMCS-16(1:2)2020
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
+
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 
@@ -132,7 +133,7 @@ compactness for the reflective subuniverse.
 
 is-internal-compact∙ : 𝓤 ̇ → 𝓤 ̇
 is-internal-compact∙ A =
- (F : A → ○ (Lift _ 𝟚))
+   (F : A → ○ (Lift _ 𝟚))
  → Σ a₀ ꞉ A , (F a₀ ＝ η _ (lift 𝓤 ₁)
  → (a : A)
  → F a ＝ η _ (lift 𝓤 ₁))
@@ -204,7 +205,7 @@ We can now prove the main theorem: whenever a modal type is weak
 internal compact, it is (externally) compact.
 
 Although it looks a bit different, this is the argument that most
-closely follows the original theorem prop-tychonoff.
+closely follows the original theorem micro-tychonoff.
 
 \begin{code}
 
@@ -434,11 +435,11 @@ putting it inside the modality.
 \end{code}
 
 Finally, we can use the lemmas together with the main theorem to get a
-result which is closer to the statement of prop-tychonoff. This says ○
+result which is closer to the statement of micro-tychonoff. This says ○
 "preserves compactness" in the sense that if ○ (A is compact), then
 (○ A) is compact.
 
-In order to derive prop-tychonoff from this statement we will need a
+In order to derive micro-tychonoff from this statement we will need a
 few extra arguments. This will be covered in a separate module,
 AbsolutenessOfCompactnessExample, which works specifically with open
 modalities, as opposed to this module that applies to modalities in

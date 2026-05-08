@@ -16,11 +16,7 @@ open import UF.FunExt using (DN-funext)
 
 module C-Spaces.UsingNotNotFunExt.Fan (dnfe : ¬¬ DN-funext 𝓤₀ 𝓤₀) where
 
-open import UF.Base
-open import UF.Sets
 open import UF.DiscreteAndSeparated
-open import Naturals.Addition
-open import Naturals.Properties
 
 open import C-Spaces.Preliminaries.Sequence
 open import C-Spaces.Preliminaries.Naturals.Order

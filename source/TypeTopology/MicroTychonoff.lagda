@@ -2,9 +2,9 @@ Martin Escardo 29 April 2014.
 
 Micro-Tychonoff Theorem.
 
-A proposition-indexed product of pointed compact sets is itself
+A proposition-indexed product of pointed compact types is itself
 compact. But the assumption that a proposition-indexed product of
-compact sets is compact gives weak excluded middle (negative
+compact types is compact gives weak excluded middle (negative
 propositions are decidable).
 
 The definition of compactness-pointedness (or exhaustive
@@ -299,12 +299,12 @@ in all models.
 
 open import UF.ClassicalLogic
 
-compact-micro-tychonoff-gives-WEM' : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+compact-micro-tychonoff-gives-WEM : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                                          → is-prop X
                                          → ((x : X) → is-compact (Y x))
                                          → is-compact (Π Y))
-                                   → WEM 𝓤
-compact-micro-tychonoff-gives-WEM' {𝓤} {𝓥} τ X X-is-prop = δ γ
+                                  → WEM 𝓤
+compact-micro-tychonoff-gives-WEM {𝓤} {𝓥} τ X X-is-prop = δ γ
  where
   Y : X → 𝓥 ̇
   Y x = 𝟘
@@ -320,6 +320,3 @@ compact-micro-tychonoff-gives-WEM' {𝓤} {𝓥} τ X X-is-prop = δ γ
   δ (inr ϕ) = inr (contrapositive (λ f → 𝟘-elim ∘ f) ϕ)
 
 \end{code}
-
-If we further assume function extensionality, we get WEM from WEM',
-and hence we can replace the conclusion of the above fact by WEM.

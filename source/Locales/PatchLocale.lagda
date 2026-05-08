@@ -7,7 +7,6 @@ Based on `ayberkt/formal-topology-in-UF`.
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.List hiding ([_])
-open import MLTT.Pi
 open import MLTT.Spartan
 open import Slice.Family
 open import UF.Base
@@ -16,8 +15,6 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
 open import UF.SubtypeClassifier
-open import UF.UA-FunExt
-open import UF.Univalence
 
 \end{code}
 

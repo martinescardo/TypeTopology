@@ -68,7 +68,7 @@ open import TypeTopology.Density
 open import TypeTopology.FailureOfTotalSeparatedness
 open import TypeTopology.LimitPoints
 open import TypeTopology.MicroInfTychonoff fe
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SigmaDiscrete
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv

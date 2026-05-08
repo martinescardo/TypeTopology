@@ -314,3 +314,87 @@ succ-pred-multiplication x y = succ-pred' (succ x * succ y) γ ⁻¹
   γ = ℕ-positive-multiplication-not-zero x y
 
 \end{code}
+
+Added 2022 by Andrew Sneap.
+
+Multiplication preserves non-strict order, and this is proved by induction.
+
+In the base case, it is required to prove that 0 ≤ 0 which is true by
+definition.  In the inductive case, we need to prove that
+m * succ k ≤ n * succ k, or by definitional equality m + m * k ≤ n + n * k.
+
+By the inductive hypothesis, m * k ≤ n * k, and we have that m ≤ n, so we
+can use the result which says we can combine two order relations into one.
+
+\begin{code}
+
+open import Naturals.Order
+open import Notation.Order
+
+multiplication-preserves-order : (m n k : ℕ) → m ≤ n → m * k ≤ n * k
+multiplication-preserves-order m n 0        l = zero-least 0
+multiplication-preserves-order m n (succ k) l = γ
+ where
+  IH : m * k ≤ n * k
+  IH = multiplication-preserves-order m n k l
+
+  γ : m * (succ k) ≤ n * (succ k)
+  γ = ≤-adding m n (m * k) (n * k) l IH
+
+\end{code}
+
+For strict order, order is only preserved when multiplying by a value
+greater than 0.  Again by induction, the base case is trivial since we
+are multiplying by 1.  The inductive case is similar to the above
+proof.
+
+\begin{code}
+
+multiplication-preserves-strict-order : (m n k : ℕ)
+                                      → m < n
+                                      → m * succ k < n * succ k
+multiplication-preserves-strict-order m n 0        l = l
+multiplication-preserves-strict-order m n (succ k) l = γ
+ where
+  IH : m * succ k < n * succ k
+  IH = multiplication-preserves-strict-order m n k l
+
+  γ : m * succ (succ k) < n * succ (succ k)
+  γ = <-adding m n (m * succ k) (n * succ k) l IH
+
+\end{code}
+
+A variation added by Fredrik Nordvall Forsberg on 11 October 2025.
+
+\begin{code}
+
+multiplication-preserves-strict-order' : (m n k : ℕ)
+                                       → m < n
+                                       → 0 < k
+                                       → m * k < n * k
+multiplication-preserves-strict-order' m n (succ k) l p =
+ multiplication-preserves-strict-order m n k l
+
+\end{code}
+
+If x * (y + 1) ≤ z, then x ≤ z. This is a useful property to have, and
+proof follows from x ≤ x * y + 1 and transitivity of order.
+
+A similar proof for strict order is sometimes useful.
+
+\begin{code}
+
+product-order-cancellable : (x y z : ℕ) → x * (succ y) ≤ z → x ≤ z
+product-order-cancellable x 0        z   = id
+product-order-cancellable x (succ y) z l = γ
+ where
+  I : x ≤ x + x * succ y
+  I = ≤-+ x (x * succ y)
+
+  γ : x ≤ z
+  γ = ≤-trans x (x * succ (succ y)) z I l
+
+less-than-pos-mult : (x y z : ℕ) → x < y → x < y * succ z
+less-than-pos-mult x y z l = <-+ x y (y * z) l
+
+\end{code}

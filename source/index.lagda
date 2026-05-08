@@ -63,8 +63,8 @@
      control safety and, to the extent this is currently possible, to
      control which type theory is used.
 
-   * In our last count, on 2026-04-06, this development has 926 Agda
-     files with 273K lines of code, including comments and blank
+   * In our last count, on 2026-05-06, this development has 956 Agda
+     files with 277K lines of code, including comments and blank
      lines.
 
 Philosophy of the repository
@@ -145,6 +145,7 @@ Click at the imported module names below to navigate to them:
 module index where
 
 import Apartness.index
+import AlgebraicStructuresForcingSethood.index
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Cardinals.index

@@ -20,6 +20,7 @@ import EffectfulForcing.Internal.InternalModCont    -- by Ayberk Tosun
 import EffectfulForcing.Internal.InternalModUniCont -- by Ayberk Tosun
 import EffectfulForcing.Internal.Degrees            -- by Ayberk Tosun
 import EffectfulForcing.Internal.PaperIndex
+import EffectfulForcing.Internal.AnotherCorrectnessProof -- by Chuangjie Xu
 
 \end{code}
 
@@ -41,3 +42,7 @@ import EffectfulForcing.Internal.PaperIndex
 
  6. The file `InternalModUniCont` contains the proof of correctness of the
     internal modulus of _uniform_ continuity operator.
+
+ 7. The file `AnotherCorrectnessProof` gives another proof of the
+    correctness of the Church-encoded dialogue-tree translation,
+    using a different logical relation.

@@ -9,12 +9,8 @@ In this module, we collect properties of lists.
 module MLTT.List-Properties where
 
 open import Fin.Type
-open import MLTT.Bool
 open import MLTT.List
 open import MLTT.Spartan
-open import Naturals.Order hiding (minus)
-open import Naturals.Properties
-open import Notation.Order
 open import UF.Base
 open import UF.Equiv
 open import UF.PropTrunc

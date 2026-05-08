@@ -15,7 +15,6 @@ module C-Spaces.UsingFunExt.ComputationExperiments (fe : DN-funext 𝓤₀ 𝓤�
 open import C-Spaces.Preliminaries.Booleans.Functions using (if)
 open import C-Spaces.Preliminaries.Sequence
 open import C-Spaces.Syntax.SystemTWithFan
-open import C-Spaces.UsingFunExt.DiscreteSpace fe
 open import C-Spaces.UsingFunExt.YonedaLemma fe
 open import C-Spaces.UsingFunExt.Fan fe
 open import C-Spaces.UsingFunExt.UCinT fe

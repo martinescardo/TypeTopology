@@ -9,7 +9,6 @@ open import UF.FunExt using (DN-funext)
 
 module C-Spaces.UsingNotNotFunExt.CartesianClosedness (dnfe : ¬¬ (DN-funext 𝓤₀ 𝓤₀)) where
 
-open import UF.Base
 
 open import C-Spaces.Preliminaries.Sequence
 open import C-Spaces.Preliminaries.DoubleNegation

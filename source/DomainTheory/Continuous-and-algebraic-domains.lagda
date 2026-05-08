@@ -261,8 +261,6 @@ Section 3.4. Lifting
 
  open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
  open import Lifting.Construction 𝓥 renaming (⊥ to ⊥𝓛)
- open import Lifting.IdentityViaSIP 𝓥
- open import Lifting.Monad 𝓥
  open import Lifting.Miscelanea-PropExt-FunExt 𝓥 pe fe
 
  Definition-3-21 : (X : 𝓤 ̇ ) → 𝓥 ⁺ ⊔ 𝓤 ̇
@@ -319,7 +317,6 @@ module _ (𝓥 : Universe) where
  open import DomainTheory.Basics.Pointed pt fe 𝓥
  open import DomainTheory.Basics.Products pt fe
  open DcpoProductsGeneral 𝓥
- open import DomainTheory.Basics.ProductsContinuity pt fe 𝓥
  open import DomainTheory.Basics.Exponential pt fe 𝓥
 
  Definition-3-26 : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
@@ -367,7 +364,6 @@ Section 3.6. Bilimits
 module _ (𝓥 : Universe) where
 
  open import DomainTheory.Basics.Dcpo pt fe 𝓥
- open import DomainTheory.Basics.Exponential pt fe 𝓥
  open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 
  Definition-3-29 : (𝓓 : DCPO {𝓤} {𝓣}) → DCPO[ 𝓓 , 𝓓 ] → 𝓤 ⊔ 𝓣 ̇

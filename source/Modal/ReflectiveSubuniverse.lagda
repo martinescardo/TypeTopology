@@ -322,4 +322,5 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
    (id-type-as-pullback A u v)
    (id-type-to-pullback-equiv A u v)
    (pullbacks-of-modal-types-are-modal 𝟙 𝟙 A 𝟙-is-modal 𝟙-is-modal A-modal _ _)
+
 \end{code}

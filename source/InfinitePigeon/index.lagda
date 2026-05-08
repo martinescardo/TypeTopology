@@ -1,6 +1,6 @@
 Martin Escardo and Paulo Oliva 2011
 
-This is for a tutorial at MFPS XXVII, Pittburgh, 27th May 2011 "Programs
+This is for a tutorial at MFPS XXVII, Pittsburgh, 27th May 2011 "Programs
 from proofs", by Ulrich Berger, Monika Seisenberger, Martin Escardo
 and Paulo Oliva.
 

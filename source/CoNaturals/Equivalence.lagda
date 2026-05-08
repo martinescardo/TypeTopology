@@ -18,8 +18,8 @@ Notice that the condition on α can be expressed as "is-prop (fiber α ₁)".
 
 module CoNaturals.Equivalence where
 
-open import CoNaturals.GenericConvergentSequence
-open import CoNaturals.GenericConvergentSequence2
+open import TypeTopology.GenericConvergentSequence
+open import TypeTopology.GenericConvergentSequence2
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order

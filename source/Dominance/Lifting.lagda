@@ -7,7 +7,6 @@ Jonathan Sterling, June 2023
 
 open import Dominance.Definition
 open import MLTT.Spartan
-open import UF.Base
 open import UF.SIP
 open import UF.Univalence
 open import UF.FunExt
@@ -15,7 +14,6 @@ open import UF.Equiv-FunExt
 open import UF.Equiv hiding (_≅_; ≅-refl)
 open import UF.EquivalenceExamples
 open import UF.UA-FunExt
-open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 import UF.PairFun as PairFun

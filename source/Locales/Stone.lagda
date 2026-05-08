@@ -32,11 +32,7 @@ Importations of other locale theory modules.
 \begin{code}
 
 open import Locales.Frame            pt fe
-open import Locales.WayBelowRelation.Definition pt fe
 open import Locales.Compactness.Definition pt fe
-open import Locales.Complements      pt fe
-open import Locales.PosetalAdjunction pt fe
-open import Locales.InitialFrame     pt fe
 open import Locales.ZeroDimensionality pt fe sr
 
 open Locale

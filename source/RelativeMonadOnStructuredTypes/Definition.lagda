@@ -4,7 +4,6 @@ Martin Escardo, Paulo Oliva, May 2024
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Notation.General
 open import MLTT.Spartan
 open import UF.Equiv
 open import UF.FunExt

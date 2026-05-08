@@ -31,7 +31,6 @@ module DomainTheory.Examples.ExtendedPartialDedekindReals
 
  open import UF.Base
  open import UF.Powerset
- open import UF.Powerset-MultiUniverse hiding (𝓟)
  open unions-of-small-families pt 𝓤₀ 𝓤₀ ℚ
 
  open import Various.DedekindNonAxiomatic pt fe pe

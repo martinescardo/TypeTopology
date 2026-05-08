@@ -137,7 +137,7 @@ optimal-outcome (game Xt q ϕt) = sequenceᴷ ϕt q
 
 \end{code}
 
-A strategy assigns a move to each mode of a tree. This corresponds to
+A strategy assigns a move to each node of a tree. This corresponds to
 Definition 4 of [1]:
 
 \begin{code}
@@ -168,7 +168,8 @@ strategic-path = path-sequence 𝕀𝕕
 remark-strategic-path : {X : 𝓤 ̇ } {Xf : X → 𝑻} {x : X}
                         {σf : (x : X) → Strategy (Xf x)}
                       → (strategic-path {[]}     ⟨⟩        ＝ ⟨⟩)
-                      × (strategic-path {X ∷ Xf} (x :: σf) ＝ x :: strategic-path (σf x))
+                      × (strategic-path {X ∷ Xf} (x :: σf)
+                         ＝ x :: strategic-path (σf x))
 remark-strategic-path = refl , refl
 
 \end{code}

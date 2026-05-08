@@ -28,7 +28,6 @@ open import MLTT.Spartan hiding (_+_)
 
 open import UF.Base
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets

@@ -4,7 +4,7 @@
 
 module CoNaturals.Type2 where
 
-open import CoNaturals.GenericConvergentSequence2
+open import TypeTopology.GenericConvergentSequence2
      renaming (
       ℕ∞'                   to ℕ∞ ;
       ℕ-to-ℕ∞'              to ℕ-to-ℕ∞ ;

@@ -8,6 +8,6 @@ Interface file. Please use this rather than the 2012 file imported below.
 
 module CoNaturals.Type where
 
-open import CoNaturals.GenericConvergentSequence public
+open import TypeTopology.GenericConvergentSequence public
 
 \end{code}

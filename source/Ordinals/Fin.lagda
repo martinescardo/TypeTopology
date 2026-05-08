@@ -12,7 +12,7 @@ module Ordinals.Fin where
 open import Fin.Embeddings
 open import Fin.Order
 open import Fin.Type
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_^_)
 open import MLTT.Plus-Properties
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import Naturals.Multiplication
@@ -227,9 +227,9 @@ is positive.
 
   Fin-ordinal-^ₒ : (n m : ℕ)
                  → let n' = succ n
-                   in Fin-ordinal (n' ℕ^ m) ＝ Fin-ordinal n' ^ₒ Fin-ordinal m
+                   in Fin-ordinal (n' ^ m) ＝ Fin-ordinal n' ^ₒ Fin-ordinal m
   Fin-ordinal-^ₒ n zero =
-   Fin-ordinal (succ n ℕ^ zero)             ＝⟨refl⟩
+   Fin-ordinal (succ n ^ zero)             ＝⟨refl⟩
    Fin-ordinal 1                            ＝⟨ Fin-ordinal-one ⟩
    𝟙₀                                       ＝⟨ I ⟩
    Fin-ordinal (succ n) ^ₒ 𝟘ₒ               ＝⟨ II ⟩
@@ -238,18 +238,18 @@ is positive.
      I = ^ₒ-satisfies-zero-specification (Fin-ordinal (succ n)) ⁻¹
      II = ap (Fin-ordinal (succ n) ^ₒ_) (Fin-ordinal-zero ⁻¹)
   Fin-ordinal-^ₒ n (succ m) =
-   Fin-ordinal (n' ℕ^ succ m)                        ＝⟨refl⟩
-   Fin-ordinal (n' * n' ℕ^ m)                        ＝⟨ I ⟩
-   Fin-ordinal (n' ℕ^ m * n')                        ＝⟨ II ⟩
-   Fin-ordinal (n' ℕ^ m) ×ₒ Fin-ordinal n'           ＝⟨ III ⟩
+   Fin-ordinal (n' ^ succ m)                        ＝⟨refl⟩
+   Fin-ordinal (n' * n' ^ m)                        ＝⟨ I ⟩
+   Fin-ordinal (n' ^ m * n')                        ＝⟨ II ⟩
+   Fin-ordinal (n' ^ m) ×ₒ Fin-ordinal n'           ＝⟨ III ⟩
    Fin-ordinal n' ^ₒ Fin-ordinal m ×ₒ Fin-ordinal n' ＝⟨ IV ⟩
    Fin-ordinal n' ^ₒ (Fin-ordinal m +ₒ 𝟙₀)           ＝⟨ V ⟩
    Fin-ordinal n' ^ₒ Fin-ordinal (succ m)            ∎
     where
      n' = succ n
 
-     I = ap Fin-ordinal (mult-commutativity n' (n' ℕ^ m))
-     II = Fin-ordinal-×ₒ (n' ℕ^ m) n'
+     I = ap Fin-ordinal (mult-commutativity n' (n' ^ m))
+     II = Fin-ordinal-×ₒ (n' ^ m) n'
      III = ap (_×ₒ Fin-ordinal n') (Fin-ordinal-^ₒ n m)
      IV = ^ₒ-satisfies-succ-specification (Fin-ordinal n')
                                           (Fin-ordinal-succ-positive n)

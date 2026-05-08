@@ -16,15 +16,9 @@ open import UF.FunExt using (DN-funext)
 
 module C-Spaces.UsingFunExt.Fan (fe : DN-funext 𝓤₀ 𝓤₀) where
 
-open import UF.Base
-open import UF.Sets
-open import UF.DiscreteAndSeparated
-open import Naturals.Addition
-open import Naturals.Properties
 
 open import C-Spaces.Preliminaries.Sequence
 open import C-Spaces.Preliminaries.Naturals.Order
-open import C-Spaces.Preliminaries.FunExt fe
 open import C-Spaces.UniformContinuity
 open import C-Spaces.Coverage
 open import C-Spaces.UsingFunExt.Space

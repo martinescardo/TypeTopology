@@ -15,6 +15,8 @@ page.
 
 ## Table of contents
 
+ 1. [What TypeTopology is about](#about)
+
  1. [How to cite this repository](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
  1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-agda-files)
  1. [Current contributors](https://github.com/martinescardo/TypeTopology/blob/master/README.md#current-contributors-in-alphabetical-order-of-first-name)
@@ -25,6 +27,15 @@ page.
 
     (These guidelines need reworking. But, generally, see how we write things in TypeTopology, and try to immitate our style, although departures from our style may some times be acceptable, if they are implicitly or explicitly justified.)
 
+## About
+
+TypeTopology is a blackboard, for working on new mathematics, rather than being an encyclopedia of existing mathematics. As a result, its organization differs considerably from other formalization libraries, both in Agda and in other proof assistants.
+
+The purpose of TypeTopology is to be a playground to work on new ideas we want to submit for publication.
+
+This leads to a fundamentally different organization of our ideas, as recorded in our Agda files here, compared to other existing libraries that record mathematical knowledge.
+
+But, of course, we are also happy for already-existing mathematical ideas to be recorded here. In fact, they may be very useful for developing our own new ideas. Or your own. We are happy for you to join us using TypeTopology as either a blackboard or as record of already-existing mathematical ideas. But, remember, the primary purpose of TypeTopology is to be a blackboard for thinking about mathematics.
 
 ## How to cite
 
@@ -121,12 +132,23 @@ Tosun.
 
    https://doi.org/10.1007/978-3-642-38946-7_14
 
+1. Chuangjie Xu and H. Escardó Escardó. *A constructive model of uniform continuity.* TLCA 2013.
+
+   https://doi.org/10.1007/978-3-642-38946-7_18
+
 1. Martín H. Escardó. *Constructive decidability of classical continuity.*
    [Mathematical Structures in Computer Science][MSCS], Volume 25, Special
    Issue 7: Computing with Infinite Data: Topological and Logical Foundations
    Part 1, October 2015, pp. 1578 - 1589 DOI:
 
    https://doi.org/10.1017/S096012951300042X
+
+1. Martín H. Escardó and Chuangjie Xu. *A constructive manifestation of
+   the Kleene-Kreisel continuous functionals.* Annals of Pure and
+   Applied Logic 167(9), 2016.
+
+   https://doi.org/10.1016/j.apal.2016.04.011
+
 
 1. Martín H. Escardó and Chuangjie Xu. *The inconsistency of a
    Brouwerian continuity principle with the Curry-Howard
@@ -164,8 +186,14 @@ Tosun.
 
    https://doi.org/10.23638/LMCS-13(1:15)2017
 
-1. Tom de Jong. *The Scott model of PCF in univalent type
-   theory.* [Mathematical Structures in Computer
+1. Brendan Hart. Investigating properties of PCF in Agda. MSci dissertation, School of Computer Science, University of Birmingham, UK, 2020.
+
+   https://github.com/BrendanHart/Investigating-Properties-of-PCF/blob/master/InvestigatingPropertiesOfPCFInAgda.pdf
+   https://github.com/BrendanHart/Investigating-Properties-of-PCF
+   https://martinescardo.github.io/TypeTopology/PCF.Lambda.index.html
+
+1. Tom de Jong. *The Scott model of PCF in univalent type theory.*
+   [Mathematical Structures in Computer
    Science](https://www.cambridge.org/core/journals/mathematical-structures-in-computer-science),
    Volume 31, Issue 10 - Homotopy Type Theory 2019, July 2021.
 
@@ -276,6 +304,14 @@ Tosun.
 
    https://doi.org/10.48550/arXiv.2505.11055
 
+1. Ayberk Tosun. *Constructive and Predicative Locale Theory in Univalent
+   Foundations*. PhD thesis. School of Computer Science, University of
+   Birmingham, UK. Submitted: 30 November 2024; accepted: 3 June 2025.
+
+   https://etheses.bham.ac.uk/id/eprint/16416/
+   Updated versions: \
+   https://arxiv.org/abs/2603.01308
+
 1. Igor Arrieta, Martín H. Escardó and Ayberk Tosun. *The Patch Topology in
    Univalent Foundations*. [Mathematical Structures in Computer Science][MSCS],
    Volume 35, Special Issue: Advances in Homotopy Type Theory.
@@ -296,14 +332,6 @@ Tosun.
    types*. January 2026.
 
    https://doi.org/10.48550/arxiv.2601.12536
-
-1. Ayberk Tosun. *Constructive and Predicative Locale Theory in Univalent
-   Foundations*. PhD thesis. School of Computer Science, University of
-   Birmingham, UK. Submitted: 30 November 2024; accepted: 3 June 2025.
-
-   https://etheses.bham.ac.uk/id/eprint/16416/
-   Updated versions: \
-   https://arxiv.org/abs/2603.01308
 
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/

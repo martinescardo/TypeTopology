@@ -9,7 +9,6 @@ module C-Spaces.UsingFunExt.Space where
 open import MLTT.Spartan
 
 open import C-Spaces.Preliminaries.Sequence
-open import C-Spaces.UniformContinuity
 open import C-Spaces.Coverage
 
 \end{code}
@@ -26,7 +25,7 @@ probe-axioms : (X : Set) → ((₂ℕ → X) → Set) → Set
 probe-axioms X P =
     (∀(x : X) → (λ α → x) ∈ P)
   × (∀(t : ₂ℕ → ₂ℕ) → t ∈ C → ∀(p : ₂ℕ → X) → p ∈ P → p ∘ t ∈ P)
-  × (∀(p : ₂ℕ → X) → (Σ \(n : ℕ) → ∀(s : ₂Fin n) → (p ∘ (cons s)) ∈ P) → p ∈ P)
+  × (∀(p : ₂ℕ → X) → (Σ \(n : ℕ) → ∀(s : ₂Fin n) → p ∘ cons s ∈ P) → p ∈ P)
 
 TopologyOn : Set → Set₁
 TopologyOn X = Σ \(P : (₂ℕ → X) → Set) → probe-axioms X P
@@ -34,7 +33,6 @@ TopologyOn X = Σ \(P : (₂ℕ → X) → Set) → probe-axioms X P
 Space : Set₁
 Space = Σ \(X : Set) → TopologyOn X
 
-U : Space → Set
 U = pr₁
 
 Probe : (X : Space) → (₂ℕ → U X) → Set
@@ -72,6 +70,9 @@ Mapto Y = Σ \(X : Space) → Map X Y
 
 id-is-continuous : ∀{X : Space} → continuous X X id
 id-is-continuous p pinP = pinP
+
+idMap : (X : Space) → Map X X
+idMap X = id , id-is-continuous {X}
 
 ∘-preserves-continuity : (X Y Z : Space) →
     ∀(f : U X → U Y) → continuous X Y f →

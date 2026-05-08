@@ -9,15 +9,13 @@ to the statement that Aut Ω has exactly 1 or 2 elements
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import MLTT.Plus-Properties
 open import UF.DiscreteAndSeparated
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SigmaDiscrete
 open import UF.Equiv hiding (_≅_)
 open import UF.FunExt
 open import UF.Logic
 open import UF.PropTrunc
 open import UF.Subsingletons
-open import UF.SubtypeClassifier hiding (Ω)
 open import Fin.Type
 open import Fin.Topology
 open import Fin.Pigeonhole
@@ -31,7 +29,6 @@ module Higgs.UntruncatedAtMostTwo
 
 open import Higgs.Rigidity fe pe
 open import Higgs.InvolutionTheorem fe pe
-open import Higgs.AutomorphismsOfOmega fe pe
 open import Higgs.AutomorphismsOfOmegaWEM fe pe pt
 
 open Conjunction

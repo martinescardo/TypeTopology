@@ -28,10 +28,6 @@ module Locales.DiscreteLocale.Two-Properties
 open import Locales.Compactness.Definition pt fe
 open import Locales.DiscreteLocale.Two fe pe pt
 open import Locales.Frame pt fe
-open import Locales.SmallBasis pt fe sr
-open import Locales.Spectrality.SpectralLocale pt fe
-open import Locales.Spectrality.SpectralMap pt fe
-open import Locales.Stone pt fe sr
 open import Slice.Family
 open import UF.Logic
 open import UF.Powerset

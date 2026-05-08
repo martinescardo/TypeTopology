@@ -55,11 +55,8 @@ open import Lifting.Algebras 𝓣
 open import Lifting.Identity 𝓣
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Logic
 open import UF.Sets-Properties
-open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
-open import UF.SubtypeClassifier-Properties
 open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
 
 private

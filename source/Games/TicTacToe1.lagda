@@ -17,7 +17,7 @@ open import Fin.Type
 open import MLTT.Athenian
 open import MLTT.Spartan hiding (J)
 open import TypeTopology.CompactTypes
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SigmaDiscrete
 open import UF.DiscreteAndSeparated
 
 𝟛 : 𝓤₀ ̇

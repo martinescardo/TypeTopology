@@ -141,7 +141,7 @@ compact-pointed-types-are-compact∙ {𝓤} {X} φ x₀ p = γ (φ p)
   γ : (Σ x ꞉ X , p x ＝ ₀) + ((x : X) → p x ＝ ₁)
     → Σ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
   γ (inl (x , r)) = x , (λ s → 𝟘-elim (equal-₀-different-from-₁ r s))
-  γ (inr f) = x₀ , (λ r → f)
+  γ (inr f)       = x₀ , (λ r → f)
 
 compact∙-types-are-compact : {X : 𝓤 ̇ } → is-compact∙ X → is-compact X
 compact∙-types-are-compact {𝓤} {X} ε p = 𝟚-equality-cases case₀ case₁
@@ -352,7 +352,6 @@ discrete-to-power-compact-is-discrete : funext 𝓤 𝓥
                                       → is-compact X
                                       → ((x : X) → is-discrete (Y x))
                                       → is-discrete ((x : X) → Y x)
-
 discrete-to-power-compact-is-discrete fe φ d f g = h (apart-or-equal fe φ d f g)
  where
   h : (f ♯ g) + (f ＝ g) → (f ＝ g) + (f ≠ g)
@@ -1285,5 +1284,64 @@ Added by Fredrik Bakke on the 2nd of April 2025.
  decidable-↔
   ((λ x → 𝟘-elim ∘ x) , (λ x → 𝟘-elim ∘ x))
   (Π-Compact-types-have-decidable-negations' αX)
+
+\end{code}
+
+Added March 2022 by Martin Escardo.
+
+\begin{code}
+
+Σ-isolated-left : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
+                → ((x : X) → is-Compact (Y x))
+                → is-isolated (x , y)
+                → is-isolated x
+Σ-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} κ i x' = γ δ
+ where
+   A : (y' : Y x') → 𝓤 ⊔ 𝓥 ̇
+   A y' = (x , y) ＝ (x' , y')
+
+   d : is-complemented A
+   d y' = i (x' , y')
+
+   δ : is-decidable (Σ A)
+   δ = κ x' A d
+
+   γ : is-decidable (Σ A) → is-decidable (x ＝ x')
+   γ (inl (y' , refl)) = inl refl
+   γ (inr ν)           = inr (λ {refl → ν (y , refl)})
+
+\end{code}
+
+Is the compactness assumption needed? Are there better assumptions
+
+\begin{code}
+
+Σ-weakly-isolated-left' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
+                        → ((x : X) → is-Π-Compact (Y x))
+                        → is-weakly-isolated (x , y)
+                        → is-weakly-isolated x
+Σ-weakly-isolated-left' {𝓤} {𝓥} {X} {Y} {x} {y} κ i x' = γ δ
+ where
+  A : (y' : Y x') → 𝓤 ⊔ 𝓥 ̇
+  A y' = (x' , y') ≠ (x , y)
+
+  c : is-complemented A
+  c y' = i (x' , y')
+
+  δ : is-decidable (Π A)
+  δ = κ x' A c
+
+  γ : is-decidable (Π A) → is-decidable (x' ≠ x)
+  γ (inl a) = inl (λ {refl → a y refl})
+  γ (inr ν) = inr (λ (d : x' ≠ x)
+                   → ν (λ (y' : Y x') (e : (x' , y') ＝ (x , y))
+                        → d (ap pr₁ e)))
+
+Σ-weakly-isolated-left : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
+                       → ((x : X) → is-Compact (Y x))
+                       → is-weakly-isolated (x , y)
+                       → is-weakly-isolated x
+Σ-weakly-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} κ =
+ Σ-weakly-isolated-left' (λ x → Σ-Compact-types-are-Π-Compact (Y x) (κ x))
 
 \end{code}

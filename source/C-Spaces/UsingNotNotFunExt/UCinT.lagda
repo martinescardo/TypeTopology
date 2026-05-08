@@ -1,7 +1,9 @@
 Chuangjie Xu 2013 (updated in February 2015, ported to TypeTopology in 2025)
 
-We extend System T with a Fan functional, use it to formulate the
-uniform-continuity principle, and validate the principle via C-spaces.
+We have extended System T with a Fan functional and used it to formulate the
+uniform-continuity principle. In this module we interpret the theory in the
+C-space model to validate the distinguished formula for the uniform-continuity
+principle.
 
 \begin{code}
 
@@ -12,26 +14,20 @@ open import UF.FunExt using (DN-funext)
 
 module C-Spaces.UsingNotNotFunExt.UCinT (dnfe : ¬¬ DN-funext 𝓤₀ 𝓤₀) where
 
-open import Naturals.Properties
 
 open import C-Spaces.Preliminaries.Booleans.Functions
-open import C-Spaces.Preliminaries.Naturals.Order
 open import C-Spaces.Preliminaries.Sequence
-open import C-Spaces.UniformContinuity
-open import C-Spaces.Coverage
 open import C-Spaces.Syntax.SystemTWithFan
 open import C-Spaces.UsingNotNotFunExt.Space
 open import C-Spaces.UsingNotNotFunExt.CartesianClosedness dnfe
 open import C-Spaces.UsingNotNotFunExt.DiscreteSpace dnfe
-open import C-Spaces.UsingNotNotFunExt.YonedaLemma dnfe
 open import C-Spaces.UsingNotNotFunExt.Fan dnfe
 
 \end{code}
 
 Interpretation of the syntax of System T with Fan into C-spaces:
 
-Types are interpreted as C-spaces, contexts as iterated products, and terms as
-continuous maps between the corresponding interpretations.
+Types are interpreted as C-spaces and contexts as iterated products.
 
 \begin{code}
 
@@ -45,7 +41,12 @@ continuous maps between the corresponding interpretations.
 ⟦ ε ⟧ᶜ = 𝟙Space
 ⟦ Γ ₊ A ⟧ᶜ = ⟦ Γ ⟧ᶜ ⊗ ⟦ A ⟧ʸ
 
--- The semantic projection corresponding to a de Bruijn variable.
+\end{code}
+
+The semantic projection corresponding to a de Bruijn variable.
+
+\begin{code}
+
 continuous-prj : (Γ : Cxt)(i : Fin (length Γ)) → Map ⟦ Γ ⟧ᶜ ⟦ Γ [ i ] ⟧ʸ
 continuous-prj  ε      ()
 continuous-prj (Γ ₊ σ)  zero    = pr₂ , (λ _ → pr₂)
@@ -59,6 +60,12 @@ continuous-prj (Γ ₊ σ) (succ i) = prjᵢ₊₁ , cprjᵢ₊₁
   cprjᵢ = pr₂ (continuous-prj Γ i)
   cprjᵢ₊₁ : continuous ⟦ Γ ₊ σ ⟧ᶜ ⟦ (Γ ₊ σ) [ succ i ] ⟧ʸ prjᵢ₊₁
   cprjᵢ₊₁ p pΓσ = cprjᵢ (pr₁ ∘ p) (pr₁ pΓσ)
+
+\end{code}
+
+Terms are interpreted as continuous maps between the corresponding interpretations.
+
+\begin{code}
 
 ⟦_⟧ᵐ : {Γ : Cxt}{σ : Ty} → Tm Γ σ → Map ⟦ Γ ⟧ᶜ ⟦ σ ⟧ʸ
 ⟦ VAR {Γ} i ⟧ᵐ            = continuous-prj Γ i
@@ -75,8 +82,13 @@ continuous-prj (Γ ₊ σ) (succ i) = prjᵢ₊₁ , cprjᵢ₊₁
 ⟦ _·_ {Γ} {σ} {τ} M N ⟧ᵐ  = continuous-app ⟦ Γ ⟧ᶜ ⟦ σ ⟧ʸ ⟦ τ ⟧ʸ ⟦ M ⟧ᵐ ⟦ N ⟧ᵐ
 ⟦ FAN {Γ} ⟧ᵐ              = continuous-constant ⟦ Γ ⟧ᶜ ⟦ ((Ⓝ ⇨ ②) ⇨ Ⓝ) ⇨ Ⓝ ⟧ʸ fan
 
--- Formula semantics: a formula in context Γ is interpreted as a predicate on
--- semantic environments ρ : U ⟦ Γ ⟧ᶜ.
+\end{code}
+
+Formula semantics: a formula in context Γ is interpreted as a predicate on
+semantic environments ρ : U ⟦ Γ ⟧ᶜ.
+
+\begin{code}
+
 ⟦_⟧ᶠ : {Γ : Cxt} → Fml Γ → U ⟦ Γ ⟧ᶜ → Set
 ⟦ t == u ⟧ᶠ ρ = pr₁ ⟦ t ⟧ᵐ ρ ＝ pr₁ ⟦ u ⟧ᵐ ρ
 ⟦ φ ∧∧ ψ ⟧ᶠ ρ = (⟦ φ ⟧ᶠ ρ) × (⟦ ψ ⟧ᶠ ρ)
@@ -84,7 +96,7 @@ continuous-prj (Γ ₊ σ) (succ i) = prjᵢ₊₁ , cprjᵢ₊₁
 
 \end{code}
 
-We say a formula is validated by the model if
+A formula is validated by the model if it holds for every semantic environment.
 
 \begin{code}
 
@@ -93,12 +105,14 @@ _is-validated : {Γ : Cxt} → Fml Γ → Set
 
 \end{code}
 
-The uniform-continuity principle is validated by the model:
+The uniform-continuity principle, formulated as the formula `Principle[UC]`, says that
+if two binary sequences agree on their first `FAN(F)` bits, then the functional `F`
+takes the same value on them.
 
 Given an environment `ρ`, the assumption `EN` says that the interpreted term
-`A＝⟦FAN•F⟧B` evaluates to `⊤`. Unfolding the recursor shows that the
-interpreted sequences agree on the first `fan f` bits; `fan-behaviour` then
-gives equality of the values of `f` on those sequences.
+`A＝⟦FAN•F⟧B` evaluates to `⊤`. Unfolding the recursor defining this term shows
+that the interpreted sequences agree on the first `fan f` bits. The theorem
+`fan-behaviour` can then be applied to conclude that `f α ＝ f β`.
 
 \begin{code}
 

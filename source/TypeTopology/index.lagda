@@ -11,32 +11,37 @@ https://grossack.site/tags/life-in-the-topological-topos/
 module TypeTopology.index where
 
 import TypeTopology.ADecidableQuantificationOverTheNaturals
-import TypeTopology.AbsolutenessOfCompactness -- by Andrew Swan
+import TypeTopology.AbsolutenessOfCompactness        -- by Andrew Swan
 import TypeTopology.AbsolutenessOfCompactnessExample -- by Andrew Swan
+import TypeTopology.BoundedDecreasingSequences
 import TypeTopology.Cantor
 import TypeTopology.CantorMinusPoint
 import TypeTopology.CantorSearch
 import TypeTopology.CompactTypes
 import TypeTopology.ConvergentSequenceHasInf
 import TypeTopology.DecidabilityOfNonContinuity
+import TypeTopology.DenseMapsProperties              -- by Fredrik Bakke
 import TypeTopology.Density
-import TypeTopology.DenseMapsProperties -- by Fredrik Bakke
 import TypeTopology.DisconnectedTypes
 import TypeTopology.ExtendedSumCompact
+import TypeTopology.ExtensionTotallySeparated
 import TypeTopology.FailureOfTotalSeparatedness
+import TypeTopology.GenericConvergentSequence
+import TypeTopology.GenericConvergentSequence2
 import TypeTopology.GenericConvergentSequenceCompactness
 import TypeTopology.LimitPoints
 import TypeTopology.MicroInfTychonoff
 import TypeTopology.MicroTychonoff
 import TypeTopology.RicesTheoremForTheUniverse
 import TypeTopology.SequentiallyHausdorff
-import TypeTopology.SigmaDiscreteAndTotallySeparated
+import TypeTopology.SigmaDiscrete
+import TypeTopology.SigmaTotallySeparated
 import TypeTopology.SimpleTypes
 import TypeTopology.SquashedCantor
 import TypeTopology.SquashedSum
 import TypeTopology.TheTopologyOfTheUniverse
 import TypeTopology.TotallySeparated
-import TypeTopology.UniformSearch -- by Ayberk Tosun
+import TypeTopology.UniformSearch                    -- by Ayberk Tosun
 import TypeTopology.WeaklyCompactTypes
 
 \end{code}

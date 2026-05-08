@@ -14,7 +14,6 @@ open import Notation.UnderlyingType
 open import Categories.Wild
 open import Categories.Pre
 open import Categories.Univalent
-open import Categories.Notation.Pre hiding (⌜_⌝)
 open import Categories.Notation.Univalent hiding (⌜_⌝)
 open import Categories.Displayed.Pre
 open import Categories.Displayed.Univalent

@@ -24,13 +24,11 @@ open import C-Spaces.Preliminaries.Booleans.Functions using (if)
 open import C-Spaces.Preliminaries.Naturals.Order
 open import C-Spaces.Preliminaries.Sequence
 open import C-Spaces.UniformContinuity
-open import C-Spaces.Coverage
 open import C-Spaces.Syntax.SystemT
 open import C-Spaces.UsingFunExt.Space
 open import C-Spaces.UsingFunExt.CartesianClosedness fe
 open import C-Spaces.UsingFunExt.DiscreteSpace fe
 open import C-Spaces.UsingFunExt.YonedaLemma fe
-open import C-Spaces.UsingFunExt.Fan fe
 
 \end{code}
 

@@ -16,7 +16,6 @@ module InfinitePigeon.K-Shift-MBR where
 open import InfinitePigeon.Finite
 open import InfinitePigeon.JK-Monads
 open import InfinitePigeon.Logic
-open import InfinitePigeon.LogicalFacts
 open import InfinitePigeon.Naturals
 
 K-∀-shift-mbr : {R : Ω}

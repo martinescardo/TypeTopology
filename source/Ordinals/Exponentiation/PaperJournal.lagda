@@ -36,7 +36,6 @@ module Ordinals.Exponentiation.PaperJournal
        where
 
 open import MLTT.Spartan
-open import Notation.General
 
 open import UF.FunExt
 open import UF.UA-FunExt

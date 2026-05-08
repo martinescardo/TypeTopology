@@ -5,7 +5,6 @@ Anna Williams 29 January 2026
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (id)
-open import Categories.Wild
 open import Categories.Univalent
 open import Notation.UnderlyingType
 

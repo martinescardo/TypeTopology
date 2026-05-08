@@ -15,14 +15,11 @@ compactness, which we denote `is-compact-open'` and `is-compact-open''`.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
-open import UF.Base
-open import UF.Classifiers
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
 module Locales.Compactness.Properties
@@ -35,18 +32,13 @@ open import Fin.Kuratowski pt
 open import Fin.Type
 open import Locales.Compactness.Definition pt fe
 open import Locales.Frame pt fe renaming (⟨_⟩ to ⟨_⟩∙) hiding (∅)
-open import Locales.WayBelowRelation.Definition  pt fe
 open import MLTT.List using (member; []; _∷_; List; in-head; in-tail; length)
 open import MLTT.List-Properties
 open import Slice.Family
-open import Taboos.FiniteSubsetTaboo pt fe
-open import UF.Equiv hiding (_■)
-open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
 open import UF.Logic
 open import UF.Powerset-Fin pt
 open import UF.Powerset-MultiUniverse
-open import UF.Sets-Properties
 open import Notation.UnderlyingType
 
 open AllCombinators pt fe

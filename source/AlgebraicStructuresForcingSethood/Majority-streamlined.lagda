@@ -1,25 +1,25 @@
 Tom de Jong, 16 & 18 March 2026.
 
-We show that the proof given by Jakub Opršal in gist.MajoritiesOnlyActOnSets
-factors through a simple lemma about loop spaces (see the module
-Ω-trivial-criterion).
+We show that the proof given by Jakub Opršal in
+AlgebraicStructuresForcingSethood.Majority factors through a simple lemma about
+loop spaces (see the module Ω-trivial-criterion).
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-module gist.MajoritiesOnlyActOnSets2 where
+module AlgebraicStructuresForcingSethood.Majority-streamlined where
 
 open import Agda.Primitive renaming (Set to Type)
 
 \end{code}
 
 To be compatible with Jakub's file, we also build on Martín's file
-gist.ThereAreNoHigherSemilattices, but with minimal imports.
+AlgebraicStructuresForcingSethood.Semilattice but with minimal imports.
 
 \begin{code}
 
-open import gist.ThereAreNoHigherSemilattices
+open import AlgebraicStructuresForcingSethood.Semilattices
  using (_＝_ ; _∙_ ; refl ; sym ; ap ; ap₂ ; eq-congr)
 
 \end{code}
@@ -111,7 +111,7 @@ majority operation must be a set.
 
 \begin{code}
 
-open import gist.MajoritiesOnlyActOnSets
+open import AlgebraicStructuresForcingSethood.Majority
 
 majorities-only-act-on-sets : (M : Type) (m : M → M → M → M)
                             → ((a b : M) → m b a a ＝ a)

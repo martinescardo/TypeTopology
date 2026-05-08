@@ -16,7 +16,7 @@ open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import Ordinals.WellOrderArithmetic
+open import Ordinals.WellOrderExtension
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv

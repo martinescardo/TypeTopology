@@ -8,7 +8,6 @@ module C-Spaces.Preliminaries.DoubleNegation where
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.DiscreteAndSeparated
 
 \end{code}
 
