@@ -333,6 +333,11 @@ Tosun.
 
    https://doi.org/10.48550/arxiv.2601.12536
 
+1. Ian Ray. *Tarski's least fixed point theorem: A predicative type theoretic
+   formulation*. January 2024.
+
+   https://doi.org/10.48550/arXiv.2401.00841
+
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
 [LICS21]: https://easyconferences.eu/lics2021/
