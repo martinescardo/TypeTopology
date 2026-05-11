@@ -678,7 +678,9 @@ isolated-Id-is-prop x i =
 
 lc-maps-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → left-cancellable f
-                             → (x : X) → is-isolated (f x) → is-isolated x
+                             → (x : X)
+                             → is-isolated (f x)
+                             → is-isolated x
 lc-maps-reflect-isolatedness f l x i y = γ (i (f y))
  where
   γ : (f x ＝ f y) + ¬ (f x ＝ f y) → (x ＝ y) + ¬ (x ＝ y)
@@ -694,14 +696,16 @@ lc-maps-reflect-discreteness f l d x =
 
 embeddings-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-embedding f
-                                → (x : X) → is-isolated (f x)
+                                → (x : X)
+                                → is-isolated (f x)
                                 → is-isolated x
 embeddings-reflect-isolatedness f e x i y = lc-maps-reflect-isolatedness f
                                               (embeddings-are-lc f e) x i y
 
 equivs-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-equiv f
-                            → (x : X) → is-isolated (f x)
+                            → (x : X)
+                            → is-isolated (f x)
                             → is-isolated x
 equivs-reflect-isolatedness f e = embeddings-reflect-isolatedness f
                                    (equivs-are-embeddings f e)
@@ -710,7 +714,9 @@ embeddings-reflect-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-embedding f
                                 → is-discrete Y
                                 → is-discrete X
-embeddings-reflect-discreteness f e = lc-maps-reflect-discreteness f (embeddings-are-lc f e)
+embeddings-reflect-discreteness f e = lc-maps-reflect-discreteness
+                                       f
+                                       (embeddings-are-lc f e)
 
 equivs-preserve-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-equiv f
