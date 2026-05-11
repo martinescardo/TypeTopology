@@ -20,7 +20,7 @@ page.
  1. [How to cite this repository](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
  1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-agda-files)
  1. [Current contributors](https://github.com/martinescardo/TypeTopology/blob/master/README.md#current-contributors-in-alphabetical-order-of-first-name)
- 1. [Academic publications resulting from TypeTopology](https://github.com/martinescardo/TypeTopology/blob/master/README.md#publications-resulting-from-typetopology)
+ 1. [Academic publications and preprints resulting from TypeTopology](https://github.com/martinescardo/TypeTopology#academic-publications-and-preprints-resulting-from-typetopology)
  1. [Statement of inclusion](https://github.com/martinescardo/TypeTopology/blob/master/STATEMENT-OF-INCLUSION.md)
  1. [Code of conduct](https://github.com/martinescardo/TypeTopology/blob/master/CODE-OF-CONDUCT.md)
  1. [Contributing](https://github.com/martinescardo/TypeTopology/blob/master/CONTRIBUTING.md)
@@ -107,7 +107,7 @@ of Martin Escardo.
 contributed to constructions, theorems and proofs via the hands of Ayberk
 Tosun.
 
-## Publications resulting from [`TypeTopology`]()
+## Academic publications and preprints resulting from TypeTopology
 
 1. Martín H. Escardó. *Infinite sets that satisfy the principle of
    omniscience in any variety of constructive mathematics.* [The
@@ -279,6 +279,11 @@ Tosun.
    volume 974, 29 September 2023, available online 2 August 2023.
 
    https://doi.org/10.1016/j.tcs.2023.114111
+
+1. Ian Ray. *Tarski's least fixed point theorem: A predicative type theoretic
+   formulation*. January 2024.
+
+   https://doi.org/10.48550/arXiv.2401.00841
 
 1. Todd Waugh Ambridge. *Exact Real Search: Formalised Optimisation and
    Regression in Constructive Univalent Mathematics.* January 2024. University
