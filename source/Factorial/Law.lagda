@@ -88,15 +88,20 @@ co-derived-set X = Σ x ꞉ X , is-isolated x
 cods-embedding : (X : 𝓤 ̇ ) → co-derived-set X → X
 cods-embedding X = pr₁
 
-cods-embedding-is-embedding : (X : 𝓤 ̇ ) → is-embedding (cods-embedding X)
+cods-embedding-is-embedding : (X : 𝓤 ̇ )
+                            → is-embedding (cods-embedding X)
 cods-embedding-is-embedding X = pr₁-is-embedding (being-isolated-is-prop fe)
 
-cods-embedding-is-equiv : (X : 𝓤 ̇ ) → is-discrete X → is-equiv (cods-embedding X)
+cods-embedding-is-equiv : (X : 𝓤 ̇ )
+                        → is-discrete X
+                        → is-equiv (cods-embedding X)
 cods-embedding-is-equiv X d = pr₁-is-equiv X is-isolated
                                (λ x → pointed-props-are-singletons (d x)
                                        (being-isolated-is-prop fe x))
 
-≃-cods : (X : 𝓤 ̇ ) → is-discrete X → co-derived-set X ≃ X
+≃-cods : (X : 𝓤 ̇ )
+       → is-discrete X
+       → co-derived-set X ≃ X
 ≃-cods X d = cods-embedding X , cods-embedding-is-equiv X d
 
 \end{code}
@@ -119,10 +124,14 @@ Recall that a type is perfect if it has no isolated points.
 
 \begin{code}
 
-perfect-coderived-empty : (X : 𝓤 ̇ ) → is-perfect X → is-empty (co-derived-set X)
+perfect-coderived-empty : (X : 𝓤 ̇ )
+                        → is-perfect X
+                        → is-empty (co-derived-set X)
 perfect-coderived-empty X i (x , j) = i (x , j)
 
-perfect-coderived-singleton : (X : 𝓤 ̇ ) → is-perfect X → is-singleton (co-derived-set (X + 𝟙 {𝓥}))
+perfect-coderived-singleton : (X : 𝓤 ̇ )
+                            → is-perfect X
+                            → is-singleton (co-derived-set (X + 𝟙 {𝓥}))
 perfect-coderived-singleton X i = (inr ⋆ , new-point-is-isolated) , γ
  where
   γ : (c : co-derived-set (X + 𝟙)) → inr ⋆ , new-point-is-isolated ＝ c
@@ -399,7 +408,8 @@ This is the end of the submodule, which has the following corollaries:
 
 \begin{code}
 
-general-factorial : (X : 𝓤 ̇ ) → co-derived-set (X + 𝟙) × Aut X ≃ Aut (X + 𝟙)
+general-factorial : (X : 𝓤 ̇ )
+                  → co-derived-set (X + 𝟙) × Aut X ≃ Aut (X + 𝟙)
 general-factorial {𝓤} X = factorial-steps.step₄ 𝓤 𝓤 X X
 
 discrete-factorial : (X : 𝓤 ̇ )
