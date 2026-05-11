@@ -99,6 +99,12 @@ cods-embedding-is-equiv X d = pr₁-is-equiv X is-isolated
 ≃-cods : (X : 𝓤 ̇ ) → is-discrete X → co-derived-set X ≃ X
 ≃-cods X d = cods-embedding X , cods-embedding-is-equiv X d
 
+\end{code}
+
+The co derived set of any type is indeed a set.
+
+\begin{code}
+
 cods-is-set : (X : 𝓤 ̇ ) → is-set (co-derived-set X)
 cods-is-set X {x , i} = isolated-points-are-h-isolated
                          (x , i)
