@@ -18,8 +18,10 @@ open import UF.FunExt
 
 \end{code}
 
-In the following definition, it works to make ℓ into a field, but this requires
-the pragma --no-level-universe, which we don't want to use. In fact, our code originally did have ℓ as a field, using that pragma.
+In the following definition, it works to make ℓ into a field, but this
+requires the pragma --no-level-universe, which we don't want to
+use. In fact, our code originally did have ℓ as a field, using that
+pragma.
 
 \begin{code}
 

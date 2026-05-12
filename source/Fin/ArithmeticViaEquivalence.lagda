@@ -507,11 +507,12 @@ open import UF.PropIndexedPiSigma
   k = pr₁ IH
   φ : Fin k ≃ (Σ i ꞉ Fin n , Fin (a (suc i)))
   φ = pr₂ IH
-  φ' = Fin (a 𝟎 +' k)                                                      ≃⟨ i ⟩
-       Fin (a 𝟎) + Fin k                                                   ≃⟨ ii ⟩
-       Fin k + Fin (a 𝟎)                                                   ≃⟨ iii ⟩
-       (Σ i ꞉ Fin n , Fin (a (suc i))) + (Σ i ꞉ 𝟙 , Fin (a (inr i))) ≃⟨ iv ⟩
-      (Σ i ꞉ Fin n + 𝟙 , Fin (a i))                                     ■
+  φ' = Fin (a 𝟎 +' k)               ≃⟨ i ⟩
+       Fin (a 𝟎) + Fin k            ≃⟨ ii ⟩
+       Fin k + Fin (a 𝟎)            ≃⟨ iii ⟩
+       (Σ i ꞉ Fin n , Fin (a (suc i))) + (Σ i ꞉ 𝟙 , Fin (a (inr i)))
+                                    ≃⟨ iv ⟩
+      (Σ i ꞉ Fin n + 𝟙 , Fin (a i)) ■
    where
     i   = pr₂ (+construction (a 𝟎) k)
     ii  = +comm
@@ -576,11 +577,12 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
    k = pr₁ IH
    φ : Fin k ≃ (Π i ꞉ Fin n , Fin (a (suc i)))
    φ = pr₂ IH
-   φ' = Fin (a 𝟎 ×' k)                                                      ≃⟨ i ⟩
-        Fin (a 𝟎) × Fin k                                                   ≃⟨ ii ⟩
-        Fin k × Fin (a 𝟎)                                                   ≃⟨ iii ⟩
-        (Π i ꞉ Fin n , Fin (a (suc i))) × (Π i ꞉ 𝟙 , Fin (a (inr i))) ≃⟨ iv ⟩
-        (Π i ꞉ Fin n + 𝟙 , Fin (a i))                                    ■
+   φ' = Fin (a 𝟎 ×' k)                ≃⟨ i ⟩
+        Fin (a 𝟎) × Fin k             ≃⟨ ii ⟩
+        Fin k × Fin (a 𝟎)             ≃⟨ iii ⟩
+        (Π i ꞉ Fin n , Fin (a (suc i))) × (Π i ꞉ 𝟙 , Fin (a (inr i)))
+                                      ≃⟨ iv ⟩
+        (Π i ꞉ Fin n + 𝟙 , Fin (a i)) ■
     where
      i   = pr₂ (×construction (a 𝟎) k)
      ii  = ×comm
