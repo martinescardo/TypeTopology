@@ -29,6 +29,7 @@ module ReflexiveGraphs.index where
 import ReflexiveGraphs.Constructions
 import ReflexiveGraphs.Displayed
 import ReflexiveGraphs.DisplayedUnivalent
+import ReflexiveGraphs.Lenses
 import ReflexiveGraphs.Type
 import ReflexiveGraphs.Univalent
 import ReflexiveGraphs.UnivalentClosureProperties
