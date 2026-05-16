@@ -22,7 +22,7 @@ open import ReflexiveGraphs.Univalent
 
 \end{code}
 
-Given a reflexive graph (A , ≈) we consider a notion of transport along edges
+Given a reflexive graph (A , ≈) we wish to consider 'transport' along edges
 
                    push : (x ≈ y) → P(x) → P(y)
 
@@ -31,23 +31,35 @@ graph family). For example, we have the following term
 
                    _ : (X ≃ Y) → is-set X → is-set Y
 
-on the reflexive graph (𝓤 , ≃). In fact, this property is recorded in
-Sets-Properties.lagda contravariantly as the term named equiv-to-set. Of course,
-many notions of transport arise in the contravariant form as well, that is we
-wish to consider
+on the reflexive graph (𝓤 , ≃). In fact, such a term is recorded in
+Sets-Properties.lagda albeit contravariantly as the term named equiv-to-set.
+Of course, many notions of transport arise in the contravariant form as well,
+that is we wish to consider
 
                   pull : (x ≈ y) → P(y) → P(x).
 
 A lens on a reflexive graph can be thought of as a generic notion of transport.
 They will manifest in both the covariant and contravariant forms. Lenses allow
-for a deeper characiterization of many structures that use a personalized (but
-equivalent up to homotopy) notion of transport. This fact about uniqueness of
-transport has been dubbed the fundamental theorem of transport by Martin
-Escardo. In a later file we provide a generalization of this theorem.
+for a deeper characiterization of many structures that use a personalized
+notion of transport (which under univalence are equivalent up to homotopy).
+This fact about uniqueness of transport has been dubbed the fundamental theorem
+of transport by Martin Escardo. (TODO. Add the ReflexiveGraphs.Examples file
+which provides a generalization of this theorem.) Just as in the statement of
+this transport theorem one needs data that details behavior at refl. This data
+must then be included in the definition of a lens.
 
-We present the strcuture of an oplax covariant lens as a record and then
+We present the structure of an oplax covariant lens as a record and then
 collect the type of oplax covariant lenses as a sigma type.
-  
+
+One final note on terminology, we follow Sterling's convention in calling the
+covariant notion of a lens "oplax". This terminology is borrowed from category
+theory and more precisely the notion of a lax (oplax) monoidal functor.
+Recall, if a monoidal functor F : C → D is lax then in particular there is a
+morphism 1_D → F(1_C) (in addition to many other requirements) and oplax if
+there is a morphism F(1_C) → 1_D. It is the direction of these morphisms which
+motivates Sterling's use of the terminology. That is, the direction of the
+push-refl and pull-refl data (see below).
+
 \begin{code}
 
 record oplax-covariant-lens-structure
@@ -90,8 +102,6 @@ lens-push-refl : {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
 lens-push-refl (_ , s) = oplax-covariant-lens-structure.push-refl s
 
 \end{code}
-
-TODO. Discuss the terminolgy i.e. Lax and Oplax...
 
 We now present a lax contravariant lens.
 
@@ -239,7 +249,8 @@ cofan-of-lax-contravariant-lens 𝓐 𝓛 x u = refl
 \end{code}
 
 We now show that if each fiber of a lens is univalent then the displayed
-reflexive graph is univalent.
+reflexive graph is univalent. The previous observation should provide some
+insight into the form of the following proof terms.
 
 \begin{code}
 
