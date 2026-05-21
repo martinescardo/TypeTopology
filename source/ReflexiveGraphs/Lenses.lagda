@@ -22,7 +22,8 @@ open import ReflexiveGraphs.Univalent
 
 \end{code}
 
-Given a reflexive graph (A , ≈) we wish to consider 'transport' along edges
+Given a reflexive graph (A , ≈) it is useful to consider 'transport' along
+edges, that is, terms of the form
 
                    push : (x ≈ y) → P(x) → P(y)
 
@@ -32,21 +33,21 @@ graph family). For example, we have the following term
                    _ : (X ≃ Y) → is-set X → is-set Y
 
 on the reflexive graph (𝓤 , ≃). In fact, such a term is recorded in
-Sets-Properties.lagda albeit contravariantly as the term named equiv-to-set.
-Of course, many notions of transport arise in the contravariant form as well,
-that is we wish to consider
+Sets-Properties.lagda, albeit contravariantly, as the term equiv-to-set. Of
+course, many notions of transport arise in the contravariant form as well.
+For this reason we wish to also consider terms of the form
 
                   pull : (x ≈ y) → P(y) → P(x).
 
-A lens on a reflexive graph can be thought of as a generic notion of transport.
-They will manifest in both the covariant and contravariant forms. Lenses allow
-for a deeper characiterization of many structures that use a personalized
-notion of transport (which under univalence are equivalent up to homotopy).
-This fact about uniqueness of transport has been dubbed the fundamental theorem
-of transport by Martin Escardo. (TODO. Add the ReflexiveGraphs.Examples file
-which provides a generalization of this theorem.) Just as in the statement of
-this transport theorem one needs data that details behavior at refl. This data
-must then be included in the definition of a lens.
+A lens on a reflexive graph can be thought of as such a generic notion of
+transport. They will manifest in both the covariant and contravariant forms.
+Lenses allow for a deeper characiterization of many structures that use a
+personalized notion of transport (which under univalence are equivalent up to
+homotopy). This fact about uniqueness of transport has been dubbed the
+fundamental theorem of transport by Martin Escardo. (TODO. Add the
+ReflexiveGraphs.Examples file which provides a generalization of this theorem.)
+Just as in the statement of this transport theorem one needs data that details
+behavior at refl, this data must also be included in the definition of a lens.
 
 We present the structure of an oplax covariant lens as a record and then
 collect the type of oplax covariant lenses as a sigma type.
