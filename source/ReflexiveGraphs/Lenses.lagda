@@ -52,14 +52,18 @@ behavior at refl, this data must also be included in the definition of a lens.
 We present the structure of an oplax covariant lens as a record and then
 collect the type of oplax covariant lenses as a sigma type.
 
-One final note on terminology, we follow Sterling's convention in calling the
-covariant notion of a lens "oplax". This terminology is borrowed from category
-theory and more precisely the notion of a lax (oplax) monoidal functor.
-Recall, if a monoidal functor F : C → D is lax then in particular there is a
-morphism 1_D → F(1_C) (in addition to many other requirements) and oplax if
-there is a morphism F(1_C) → 1_D. It is the direction of these morphisms which
-motivates Sterling's use of the terminology. In particular, see the direction
-of the edges in the push-refl and pull-refl data below.
+NOTE ON TERMINOLOGY: We follow Sterling's terminological conventions, but we
+make an attempt to explain them here. The term "lens" has a long history of use
+in computer science and category theory which we make no attempt to recount
+here. Sterling borrows the term lens from work on a generalisation of fibrations
+which, rather than satisfying a universal property, are only required satisfy a
+unit law. The "oplax/lax" terminology is borrowed from category theory; more
+precisely the notion of a lax (oplax) monoidal functor. Recall, if a monoidal
+functor F : C → D is lax then in particular there is a morphism 1_D → F(1_C)
+(in addition to many other requirements) and oplax if there is a morphism
+F(1_C) → 1_D. It is the direction of these morphisms which motivates Sterling's
+use of the terminology. In particular, see the direction of the edges in the
+push-refl and pull-refl data below.
 
 \begin{code}
 
