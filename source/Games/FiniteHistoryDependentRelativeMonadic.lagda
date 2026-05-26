@@ -83,7 +83,7 @@ open import Games.FiniteHistoryDependent {𝓤} {𝓦₀} R
 open Game
 
 open import RelativeMonadOnStructuredTypes.J-transf
-open K-definitions R
+open K-definitions {𝓦₀} {R}
 open relative-T-definitions 𝕋
 open relative-α-definitions 𝕋 𝓡 𝓐
 open relative-JT-definitions 𝕋 𝓡 𝓐 fe

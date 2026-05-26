@@ -20,7 +20,7 @@ private
 open import Games.FiniteHistoryDependent {𝓤} {𝓦₀} R
 open import Games.TypeTrees {𝓤}
 open import MonadOnTypes.K
-open K-definitions R
+open K-definitions {𝓦₀} {R}
 
 \end{code}
 

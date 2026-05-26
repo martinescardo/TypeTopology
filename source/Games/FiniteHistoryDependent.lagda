@@ -55,8 +55,8 @@ open import MonadOnTypes.JK R
 open import UF.Base
 open import UF.FunExt
 
-open K-definitions R
-open J-definitions R
+open K-definitions {𝓦₀} {R}
+open J-definitions {𝓦₀} {R}
 
 \end{code}
 
@@ -361,7 +361,7 @@ obvious way, by induction:
 _Attains_ : {Xt : 𝑻} → 𝓙 Xt → 𝓚 Xt → 𝓤 ⊔ 𝓦₀ ̇
 _Attains_ {[]}     ⟨⟩        ⟨⟩        = 𝟙
 _Attains_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε attains ϕ)
-                                           × ((x : X) → (εf x) Attains (ϕf x))
+                                       × ((x : X) → (εf x) Attains (ϕf x))
 
 \end{code}
 

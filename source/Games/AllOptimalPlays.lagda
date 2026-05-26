@@ -1,4 +1,4 @@
-Martin Escardo, Paulo Oliva, 27th November 2024 - 14th May 2025
+CSMartin Escardo, Paulo Oliva, 27th November 2024 - 14th May 2025
 
 Using the JT monad, with T the monad List⁺ of non-empty lists, we
 compute all optimal plays of a game, provided it has ordinary
@@ -42,7 +42,7 @@ open import MonadOnTypes.NonEmptyList
 open import Notation.CanonicalMap
 open import UF.Subsingletons
 
-open K-definitions R
+open K-definitions {𝓦₀} {R}
 
 \end{code}
 

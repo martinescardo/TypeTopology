@@ -86,7 +86,7 @@ module relative-JT-definitions
 
  open relative-T-definitions 𝕋
  open relative-α-definitions 𝕋 𝓡 𝓐
- open K-definitions ⟨ 𝓡 ⟩
+ open K-definitions {𝓦₀} {⟨ 𝓡 ⟩}
 
  𝕁𝕋 : Relative-Monad
  𝕁𝕋 = 𝕁-transf fe 𝕋 𝓡

@@ -428,7 +428,7 @@ module ArgMinMax-Listed
  max r s = max' r s (δ r s)
 
  open import MonadOnTypes.K
- open K-definitions R
+ open K-definitions {𝓤} {R}
 
  Min Max : {X : 𝓤 ̇ } → listed⁺ X → K X
  Min (x₀ , xs , _) p = foldr (λ x → min (p x)) (p x₀) xs
@@ -470,7 +470,7 @@ module ArgMinMax-Listed
  argmax-spec p x y = argmax'-spec p x y (δ (p x) (p y))
 
  open import MonadOnTypes.J
- open J-definitions R
+ open J-definitions {𝓤} {R}
 
  ArgMin ArgMax : {X : 𝓤 ̇ } → listed⁺ X → J X
  ArgMin (x₀ , xs , _) p = foldr (argmin p) x₀ xs

@@ -65,7 +65,7 @@ open Game
 open import MonadOnTypes.J-transf
 open import MonadOnTypes.K
 
-open K-definitions R
+open K-definitions {𝓦₀} {R}
 open T-definitions 𝕋
 open α-definitions 𝕋 R 𝓐
 open JT-definitions 𝕋 R 𝓐 fe

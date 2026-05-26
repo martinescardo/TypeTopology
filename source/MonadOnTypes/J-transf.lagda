@@ -77,7 +77,7 @@ module JT-definitions
 
  open T-definitions 𝕋
  open α-definitions 𝕋 R 𝓐
- open K-definitions R
+ open K-definitions {𝓦} {R}
 
  𝕁𝕋 : Monad
  𝕁𝕋 = 𝕁-transf fe 𝕋 R
@@ -114,7 +114,7 @@ module JT-algebra-definitions
  open import MonadOnTypes.K
 
  open T-definitions 𝕋
- open K-definitions R
+ open K-definitions {𝓦₀} {R}
  open JT-definitions 𝕋 R 𝓐 fe
  open α-definitions 𝕋 R 𝓐
 

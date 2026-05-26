@@ -74,7 +74,7 @@ module minimax
        where
 
  open Games.FiniteHistoryDependent {𝓤} {𝓤} R
- open K-definitions R
+ open K-definitions {𝓤} {R}
  open import Games.ArgMinMax
  open ArgMinMax-Listed {𝓤} {𝓥} R _<_ δ
 
@@ -366,7 +366,7 @@ module minimax'
                             (λ (_ : s < r) → (s , ys))
                             (λ (_ : s ≥ r) → (r , xs))
 
- open K-definitions R'
+ open K-definitions {𝓤} {R'}
 
  Min' Max' : {X : 𝓤 ̇ } → listed⁺ X → K X
  Min' (x₀ , xs , _) p = foldr (λ x → min' (p x)) (p x₀) xs

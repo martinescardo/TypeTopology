@@ -25,7 +25,7 @@ open import Games.FiniteHistoryDependent {𝓤} R
 
 open import MonadOnTypes.K
 
-open K-definitions R
+open K-definitions {𝓦₀} {R}
 
 data Game : 𝓤 ⁺ ⊔ 𝓦₀ ̇  where
  leaf   : R → Game

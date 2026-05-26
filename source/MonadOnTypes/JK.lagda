@@ -12,8 +12,8 @@ module MonadOnTypes.JK (R : 𝓦₀ ̇ ) where
 open import MonadOnTypes.J
 open import MonadOnTypes.K
 
-open J-definitions R
-open K-definitions R
+open J-definitions {𝓦₀} {R}
+open K-definitions {𝓦₀} {R}
 
 overline : {X : 𝓤 ̇ } → J X → K X
 overline ε = λ p → p (ε p)

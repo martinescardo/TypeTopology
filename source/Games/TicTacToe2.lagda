@@ -124,7 +124,7 @@ predicate q:
       k X-wins = y , a
       k r      = g vs b
 
-  open J-definitions 𝟛
+  open J-definitions {𝓤₀} {𝟛}
 
   argmin : (m : Cell) (ms : List Cell) → 𝟛 → (Move (m ∷ ms) → 𝟛) → Move (m ∷ ms)
   argmin m ms r q = argmax m ms (flip r) (λ xs → flip (q xs))

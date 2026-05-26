@@ -21,7 +21,7 @@ open import MonadOnTypes.Definition
        assoc   = λ g f x → refl
      }
 
-module K-definitions (R : 𝓦₀ ̇ ) where
+module K-definitions {R : 𝓦₀ ̇ } where
 
  K : 𝓤 ̇ → 𝓦₀ ⊔ 𝓤 ̇
  K = functor (𝕂 R)

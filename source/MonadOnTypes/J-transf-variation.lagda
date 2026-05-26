@@ -84,7 +84,7 @@ module JT-definitions
  open import MonadOnTypes.K
 
  open T-definitions 𝕋
- open K-definitions R
+ open K-definitions {𝓦₀} {R}
 
  𝕁𝕋 : Monad
  𝕁𝕋 = 𝕁-transf fe 𝕋 R 𝓐

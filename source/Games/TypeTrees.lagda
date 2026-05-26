@@ -182,7 +182,7 @@ Here are some examples for the sake of illustration:
 private
 
  Path' : 𝑻 → 𝓤 ̇
- Path' = 𝑻-iteration (_ ̇ )  𝟙 (λ X F → Σ x ꞉ X , F x)
+ Path' = 𝑻-iteration (𝓤 ̇ )  𝟙 (λ X F → Σ x ꞉ X , F x)
 
  Path'-[] : Path' [] ＝ 𝟙
  Path'-[] = refl

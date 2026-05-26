@@ -20,7 +20,7 @@ open import Games.FiniteHistoryDependent {𝓤} {𝓦₀} R
 open import MonadOnTypes.J
 open import MonadOnTypes.JK R
 
-open J-definitions R
+open J-definitions {𝓦₀} {R}
 
 \end{code}
 

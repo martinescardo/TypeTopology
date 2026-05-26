@@ -42,7 +42,7 @@ module search (fe : Fun-Ext) where
  open import MLTT.Athenian
  open import Games.FiniteHistoryDependent {𝓤₀} {𝓤₀} Bool
 
- open J-definitions Bool
+ open J-definitions {𝓤₀} {Bool}
 
  ε₂ : J Bool
  ε₂ p = p true
@@ -71,7 +71,7 @@ module search (fe : Fun-Ext) where
 
 module another-game-representation {𝓤 𝓦₀ : Universe} (R : 𝓦₀ ̇ ) where
 
- open K-definitions R
+ open K-definitions {𝓦₀} {R}
 
  data GameK {𝓤 : Universe} : 𝓤 ⁺ ⊔ 𝓦₀ ̇ where
   leaf   : R → GameK {𝓤}

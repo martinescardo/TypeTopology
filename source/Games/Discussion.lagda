@@ -715,7 +715,7 @@ module illustration (R : 𝓤 ̇ ) where
 
  open import MonadOnTypes.K
 
- open K-definitions R
+ open K-definitions {𝓤} {R}
 
  Path' : ℍ → 𝓤 ̇
  Path' ((X ∷ Xf) , inr _ , _) = 𝟙
