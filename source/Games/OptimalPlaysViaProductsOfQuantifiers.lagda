@@ -24,17 +24,12 @@ module Games.OptimalPlaysViaProductsOfQuantifiers
 
 open import Games.FiniteHistoryDependent renaming (_Attains_ to Attains)
 open import Games.TypeTrees
-open import MLTT.Athenian
-open import MLTT.Fin
 open import MonadOnTypes.J
 open import MonadOnTypes.K
-open import MonadOnTypes.JK R
 open import UF.FunExt
 
 open J-definitions
 open K-definitions
-
-open import MonadOnTypes.Definition
 
 private
  ψ : (P : 𝓥 ̇ ) (Xt : 𝑻 {𝓤}) → 𝓙 R Xt → 𝓙 (R × P) Xt
