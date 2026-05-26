@@ -63,7 +63,7 @@ private
     δ' : (x : X) → J (Path (Xf x))
     δ' x = sequenceᴶ R' (ψ P (Xf x) (εf x))
 
-    q' : Path (X ∷ Xf) → R × P
+    q' : Path (X ∷ Xf) → R'
     q' xs = q xs , f xs
 
     x₀ x₁ : X
