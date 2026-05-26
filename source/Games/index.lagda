@@ -20,6 +20,7 @@ import Games.TicTacToe0                            -- (7)
 import Games.TicTacToe1                            -- (7)
 import Games.TicTacToe2                            -- (7)
 import Games.alpha-beta                            -- (8)
+import Games.OptimalPlaysViaProductsOfQuantifiers  -- (8)
 import Games.OptimalPlays                          -- (9)
 import Games.AllOptimalPlays                       -- (9)
 import Games.Alternative                           -- (10)
@@ -95,6 +96,12 @@ import Games.Alternative                           -- (10)
    This implements alpha-beta and more for efficiency, as exemplified
    by e.g. tic-tac-toe.  However, it doesn't yet include correctness
    proofs, although what needs to be proved is indicated in the file.
+
+   OptimalPlaysViaProductsOfQuantifiers.
+
+   This shows how to do compute a product of selections functions as a
+   product of quantifiers, which is applied to alpha-beta. This mainly
+   for performance.
 
 9. OptimalPlays.
 
