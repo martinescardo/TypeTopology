@@ -13,8 +13,6 @@ link).
 module ReflexiveGraphs.Lenses where
 
 open import MLTT.Spartan
-open import UF.Equiv
-open import ReflexiveGraphs.Constructions
 open import ReflexiveGraphs.Displayed
 open import ReflexiveGraphs.DisplayedUnivalent
 open import ReflexiveGraphs.Type
@@ -41,13 +39,15 @@ For this reason we wish to also consider terms of the form
 
 A lens on a reflexive graph can be thought of as such a generic notion of
 transport. They will manifest in both the covariant and contravariant forms.
-Lenses allow for a deeper characiterization of many structures that use a
+Lenses allow for a deeper characterization of many structures that use a
 personalized notion of transport (which under univalence are equivalent up to
 homotopy). This fact about uniqueness of transport has been dubbed the
-fundamental theorem of transport by Martin Escardo. (TODO. Add the
-ReflexiveGraphs.Examples file which provides a generalization of this theorem.)
-Just as in the statement of this transport theorem one needs data that details
-behavior at refl, this data must also be included in the definition of a lens.
+fundamental lemma of transport along equivalences by Martin Escardo
+(see https://martinescardo.github.io/TypeTopology/UF.FundamentalLemmaOfTransportAlongEquivalences.html).
+(TODO. Add the ReflexiveGraphs.Examples file which provides a generalization
+of this theorem.) Just as in the statement of this transport theorem one needs
+data that details behavior at refl, this data must also be included in the
+definition of a lens.
 
 We present the structure of an oplax covariant lens as a record and then
 collect the type of oplax covariant lenses as a sigma type.
@@ -55,9 +55,9 @@ collect the type of oplax covariant lenses as a sigma type.
 NOTE ON TERMINOLOGY: We follow Sterling's terminological conventions, but we
 make an attempt to explain them here. The term "lens" has a long history of use
 in computer science and category theory which we make no attempt to recount
-here. Sterling borrows the term lens from work on a generalisation of fibrations
-which, rather than satisfying a universal property, are only required satisfy a
-unit law. The "oplax/lax" terminology is borrowed from category theory; more
+here. Sterling borrows the term lens from work on a generalization of fibrations
+which, rather than satisfying a universal property, are only required to satisfy
+a unit law. The "oplax/lax" terminology is borrowed from category theory; more
 precisely the notion of a lax (oplax) monoidal functor. Recall, if a monoidal
 functor F : C → D is lax then in particular there is a morphism 1_D → F(1_C)
 (in addition to many other requirements) and oplax if there is a morphism
@@ -69,7 +69,7 @@ push-refl and pull-refl data below.
 
 record oplax-covariant-lens-structure
  (𝓤' 𝓥' : Universe) (𝓐 : Refl-Graph 𝓤 𝓥)
- (𝓑 : ⟨ 𝓐 ⟩ → Refl-Graph 𝓤' 𝓥') : 𝓤 ⊔ 𝓥 ⊔ (𝓤' ⊔ 𝓥')⁺  ̇ where
+ (𝓑 : ⟨ 𝓐 ⟩ → Refl-Graph 𝓤' 𝓥') : 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥'  ̇ where
  field
   push : {x y : ⟨ 𝓐 ⟩} (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 x ⟩ → ⟨ 𝓑 y ⟩
   push-refl : {x : ⟨ 𝓐 ⟩} (u : ⟨ 𝓑 x ⟩) → push (≈-refl 𝓐 x) u ≈⟨ 𝓑 x ⟩ u
@@ -85,28 +85,24 @@ We name the components of an oplax covariant lens.
 
 \begin{code}
 
-lens-push-graph : {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
-                → Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐
-                → ⟨ 𝓐 ⟩ → Refl-Graph 𝓤' 𝓥'
-lens-push-graph (𝓑 , _) = 𝓑
+module _ {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
+         (𝓛@(𝓑 , s) : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
+          where
 
-lens-push-fam : {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
-              → Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐
-              → ⟨ 𝓐 ⟩ → 𝓤' ̇
-lens-push-fam 𝓛 x = ⟨ lens-push-graph 𝓛 x ⟩
+ lens-push-graph : ⟨ 𝓐 ⟩ → Refl-Graph 𝓤' 𝓥'
+ lens-push-graph = 𝓑
 
-lens-push : {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
-          → (𝓛 : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
-          → {x y : ⟨ 𝓐 ⟩} (p : x ≈⟨ 𝓐 ⟩ y)
-          → lens-push-fam 𝓛 x
-          → lens-push-fam 𝓛 y
-lens-push (_ , s) = oplax-covariant-lens-structure.push s
+ lens-push-fam : ⟨ 𝓐 ⟩ → 𝓤' ̇
+ lens-push-fam x = ⟨ lens-push-graph x ⟩
 
-lens-push-refl : {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
-              → (𝓛 : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
-              → {x : ⟨ 𝓐 ⟩} (u : lens-push-fam 𝓛 x)
-              → lens-push 𝓛 (≈-refl 𝓐 x) u ≈⟨ lens-push-graph 𝓛 x ⟩ u
-lens-push-refl (_ , s) = oplax-covariant-lens-structure.push-refl s
+ lens-push : {x y : ⟨ 𝓐 ⟩} (p : x ≈⟨ 𝓐 ⟩ y)
+           → lens-push-fam x
+           → lens-push-fam y
+ lens-push = oplax-covariant-lens-structure.push s
+
+ lens-push-refl : {x : ⟨ 𝓐 ⟩} (u : lens-push-fam x)
+                → lens-push (≈-refl 𝓐 x) u ≈⟨ lens-push-graph x ⟩ u
+ lens-push-refl = oplax-covariant-lens-structure.push-refl s
 
 \end{code}
 
@@ -116,7 +112,7 @@ We now present a lax contravariant lens.
 
 record lax-contravariant-lens-structure
  (𝓤' 𝓥' : Universe) (𝓐 : Refl-Graph 𝓤 𝓥)
- (𝓑 : ⟨ 𝓐 ⟩ → Refl-Graph 𝓤' 𝓥') : 𝓤 ⊔ 𝓥 ⊔ (𝓤' ⊔ 𝓥')⁺ ̇ where
+ (𝓑 : ⟨ 𝓐 ⟩ → Refl-Graph 𝓤' 𝓥') : 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ̇ where
  field
   pull : {x y : ⟨ 𝓐 ⟩} (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 y ⟩ → ⟨ 𝓑 x ⟩
   pull-refl : {x : ⟨ 𝓐 ⟩} (u : ⟨ 𝓑 x ⟩) → u ≈⟨ 𝓑 x ⟩ pull (≈-refl 𝓐 x) u
@@ -132,47 +128,43 @@ We name the components of an lax contravariant lens.
 
 \begin{code}
 
-lens-pull-graph : {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
-                → Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐
-                → ⟨ 𝓐 ⟩ → Refl-Graph 𝓤' 𝓥'
-lens-pull-graph (𝓑 , _) = 𝓑
+module _ {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
+         (𝓛@(𝓑 , s) : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
+          where
 
-lens-pull-fam : {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
-              → Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐
-              → ⟨ 𝓐 ⟩ → 𝓤' ̇
-lens-pull-fam 𝓛 x = ⟨ lens-pull-graph 𝓛 x ⟩
+ lens-pull-graph : ⟨ 𝓐 ⟩ → Refl-Graph 𝓤' 𝓥'
+ lens-pull-graph = 𝓑
 
-lens-pull : {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
-          → (𝓛 : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
-          → {x y : ⟨ 𝓐 ⟩} (p : x ≈⟨ 𝓐 ⟩ y)
-          → lens-pull-fam 𝓛 y
-          → lens-pull-fam 𝓛 x
-lens-pull (_ , s) = lax-contravariant-lens-structure.pull s
+ lens-pull-fam : ⟨ 𝓐 ⟩ → 𝓤' ̇
+ lens-pull-fam x = ⟨ lens-pull-graph x ⟩
 
-lens-pull-refl : {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
-               → (𝓛 : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
-               → {x : ⟨ 𝓐 ⟩} (u : lens-pull-fam 𝓛 x)
-               → u ≈⟨ lens-pull-graph 𝓛 x ⟩ lens-pull 𝓛 (≈-refl 𝓐 x) u
-lens-pull-refl (_ , s) = lax-contravariant-lens-structure.pull-refl s
+ lens-pull : {x y : ⟨ 𝓐 ⟩} (p : x ≈⟨ 𝓐 ⟩ y)
+           → lens-pull-fam y
+           → lens-pull-fam x
+ lens-pull = lax-contravariant-lens-structure.pull s
+
+ lens-pull-refl : {x : ⟨ 𝓐 ⟩} (u : lens-pull-fam x)
+                → u ≈⟨ lens-pull-graph x ⟩ lens-pull (≈-refl 𝓐 x) u
+ lens-pull-refl = lax-contravariant-lens-structure.pull-refl s
   
 \end{code}
 
-We say a oplax (lax) covariant (contravariant) lens is univalent just when each
-fiber of the underlying family is univalent.
+We say an oplax (lax) covariant (contravariant) lens is univalent just when
+each fiber of the underlying family is univalent.
 
 \begin{code}
 
-oplax-covariant-lens-is-univalent : {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥)
-                                  → Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐
-                                  → 𝓤 ⊔ 𝓤' ⊔ 𝓥' ̇
-oplax-covariant-lens-is-univalent 𝓐 𝓛
- = (x : ⟨ 𝓐 ⟩) → is-univalent-refl-graph (lens-push-graph 𝓛 x)
+module _ {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥) where
 
-lax-contravariant-lens-is-univalent : {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥)
-                                    → Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐
-                                    → 𝓤 ⊔ 𝓤' ⊔ 𝓥' ̇
-lax-contravariant-lens-is-univalent 𝓐 𝓛
- = (x : ⟨ 𝓐 ⟩) → is-univalent-refl-graph (lens-pull-graph 𝓛 x)
+ oplax-covariant-lens-is-univalent : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐
+                                   → 𝓤 ⊔ 𝓤' ⊔ 𝓥' ̇
+ oplax-covariant-lens-is-univalent 𝓛
+  = (x : ⟨ 𝓐 ⟩) → is-univalent-refl-graph (lens-push-graph 𝓛 x)
+
+ lax-contravariant-lens-is-univalent : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐
+                                     → 𝓤 ⊔ 𝓤' ⊔ 𝓥' ̇
+ lax-contravariant-lens-is-univalent 𝓛
+  = (x : ⟨ 𝓐 ⟩) → is-univalent-refl-graph (lens-pull-graph 𝓛 x)
 
 \end{code}
 
@@ -180,37 +172,31 @@ We now define a display of lenses.
 
 \begin{code}
 
-display-oplax-covariant-lens : {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥)
-                             → Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐
-                             → Displayed-Refl-Graph 𝓤' 𝓥' 𝓐
-display-oplax-covariant-lens {𝓤} {𝓥} {𝓤'} {𝓥'} 𝓐 𝓛
- = (lens-push-fam 𝓛 , II , III)
- where
-  II : {x y : ⟨ 𝓐 ⟩} → x ≈⟨ 𝓐 ⟩ y → lens-push-fam 𝓛 x → lens-push-fam 𝓛 y → 𝓥' ̇
-  II {_} {y} p u v = lens-push 𝓛 p u ≈⟨ lens-push-graph 𝓛 y ⟩ v
-  III : {x : ⟨ 𝓐 ⟩} (u : lens-push-fam 𝓛 x) → II (≈-refl 𝓐 x) u u
-  III u = lens-push-refl 𝓛 u
-
-disp⁺ : {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥)
-      → Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐
-      → Displayed-Refl-Graph 𝓤' 𝓥' 𝓐
-disp⁺ 𝓐 𝓑 = display-oplax-covariant-lens 𝓐 𝓑
-
-display-lax-contravariant-lens : {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥)
-                                 → Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐
-                                 → Displayed-Refl-Graph 𝓤' 𝓥' 𝓐
-display-lax-contravariant-lens {𝓤} {𝓥} {𝓤'} {𝓥'} 𝓐 𝓛
- = (lens-pull-fam 𝓛 , I , II)
+ display-oplax-covariant-lens : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐
+                              → Displayed-Refl-Graph 𝓤' 𝓥' 𝓐
+ display-oplax-covariant-lens 𝓛 = (lens-push-fam 𝓛 , II , III)
   where
-  I : {x y : ⟨ 𝓐 ⟩} → x ≈⟨ 𝓐 ⟩ y → lens-pull-fam 𝓛 x → lens-pull-fam 𝓛 y → 𝓥' ̇
-  I {x} p u v = u ≈⟨ lens-pull-graph 𝓛 x ⟩ lens-pull 𝓛 p v
-  II : {x : ⟨ 𝓐 ⟩} (u : ⟨ lens-pull-graph 𝓛 x ⟩) → I (≈-refl 𝓐 x) u u
-  II u = lens-pull-refl 𝓛 u
+   II : {x y : ⟨ 𝓐 ⟩} → x ≈⟨ 𝓐 ⟩ y → lens-push-fam 𝓛 x → lens-push-fam 𝓛 y → 𝓥' ̇
+   II {_} {y} p u v = lens-push 𝓛 p u ≈⟨ lens-push-graph 𝓛 y ⟩ v
+   III : {x : ⟨ 𝓐 ⟩} (u : lens-push-fam 𝓛 x) → II (≈-refl 𝓐 x) u u
+   III u = lens-push-refl 𝓛 u
 
-disp⁻ : {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥)
-      → Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐
-      → Displayed-Refl-Graph 𝓤' 𝓥' 𝓐
-disp⁻ 𝓐 𝓑 = display-lax-contravariant-lens 𝓐 𝓑
+ disp⁺ : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐
+       → Displayed-Refl-Graph 𝓤' 𝓥' 𝓐
+ disp⁺ 𝓛 = display-oplax-covariant-lens 𝓛
+
+ display-lax-contravariant-lens : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐
+                                → Displayed-Refl-Graph 𝓤' 𝓥' 𝓐
+ display-lax-contravariant-lens 𝓛 = (lens-pull-fam 𝓛 , I , II)
+  where
+   I : {x y : ⟨ 𝓐 ⟩} → x ≈⟨ 𝓐 ⟩ y → lens-pull-fam 𝓛 x → lens-pull-fam 𝓛 y → 𝓥' ̇
+   I {x} p u v = u ≈⟨ lens-pull-graph 𝓛 x ⟩ lens-pull 𝓛 p v
+   II : {x : ⟨ 𝓐 ⟩} (u : ⟨ lens-pull-graph 𝓛 x ⟩) → I (≈-refl 𝓐 x) u u
+   II u = lens-pull-refl 𝓛 u
+
+ disp⁻ : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐
+       → Displayed-Refl-Graph 𝓤' 𝓥' 𝓐
+ disp⁻ 𝓛 = display-lax-contravariant-lens 𝓛
 
 \end{code}
 
@@ -218,24 +204,22 @@ We observe the components of the displayed lenses are as we expect.
 
 \begin{code}
 
-private
- observation
-  : {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥)
-  → (𝓛 : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
-  → (x : ⟨ 𝓐 ⟩)
-  → [ disp⁺ 𝓐 𝓛 ] x ＝ (⟪ disp⁺ 𝓐 𝓛 ⟫ x ,
-                        (λ u v → u ≈⟨ (disp⁺ 𝓐 𝓛) ⸴ (≈-refl 𝓐 x) ⟩ v) ,
-                        ≈-disp-refl (disp⁺ 𝓐 𝓛))
- observation 𝓐 𝓑 x = refl
+ private
+  observation
+   : (𝓛 : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
+   → (x : ⟨ 𝓐 ⟩)
+   → [ disp⁺ 𝓛 ] x ＝ (⟪ disp⁺ 𝓛 ⟫ x ,
+                         (λ u v → u ≈⟨ (disp⁺ 𝓛) ⸴ (≈-refl 𝓐 x) ⟩ v) ,
+                         ≈-disp-refl (disp⁺ 𝓛))
+  observation 𝓛 x = refl
 
- observation'
-  : {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥)
-  → (𝓑 : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
-  → (x : ⟨ 𝓐 ⟩)
-  → [ disp⁻ 𝓐 𝓑 ] x ＝ (⟪ disp⁻ 𝓐 𝓑 ⟫ x ,
-                        (λ u v → u ≈⟨ (disp⁻ 𝓐 𝓑) ⸴ (≈-refl 𝓐 x) ⟩ v) ,
-                        ≈-disp-refl (disp⁻ 𝓐 𝓑))
- observation' 𝓐 𝓑 x = refl
+  observation'
+   : (𝓛 : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
+   → (x : ⟨ 𝓐 ⟩)
+   → [ disp⁻ 𝓛 ] x ＝ (⟪ disp⁻ 𝓛 ⟫ x ,
+                         (λ u v → u ≈⟨ (disp⁻ 𝓛) ⸴ (≈-refl 𝓐 x) ⟩ v) ,
+                         ≈-disp-refl (disp⁻ 𝓛))
+  observation' 𝓛 x = refl
 
 \end{code}
 
@@ -243,23 +227,21 @@ Now let's consider the description of fans of displayed lenses.
 
 \begin{code}
  
-compute-fan-of-oplax-covariant-lens
- : {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥)
- → (𝓛 : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
- → (x : ⟨ 𝓐 ⟩)
- → (u : ⟪ disp⁺ 𝓐 𝓛 ⟫ x)
- → fan ([ disp⁺ 𝓐 𝓛 ] x) u
-  ＝ fan (lens-push-graph 𝓛 x) (lens-push 𝓛 (≈-refl 𝓐 x) u)
-compute-fan-of-oplax-covariant-lens 𝓐 𝓛 x u = refl
+ compute-fan-of-oplax-covariant-lens
+  : (𝓛 : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
+  → (x : ⟨ 𝓐 ⟩)
+  → (u : ⟪ disp⁺ 𝓛 ⟫ x)
+  → fan ([ disp⁺ 𝓛 ] x) u
+   ＝ fan (lens-push-graph 𝓛 x) (lens-push 𝓛 (≈-refl 𝓐 x) u)
+ compute-fan-of-oplax-covariant-lens 𝓛 x u = refl
 
-compute-cofan-of-lax-contravariant-lens
- : {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥)
- → (𝓛 : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
- → (x : ⟨ 𝓐 ⟩)
- → (u : ⟪ disp⁻ 𝓐 𝓛 ⟫ x)
- → cofan ([ disp⁻ 𝓐 𝓛 ] x) u
-  ＝ cofan (lens-pull-graph 𝓛 x) (lens-pull 𝓛 (≈-refl 𝓐 x) u)
-compute-cofan-of-lax-contravariant-lens 𝓐 𝓛 x u = refl
+ compute-cofan-of-lax-contravariant-lens
+  : (𝓛 : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
+  → (x : ⟨ 𝓐 ⟩)
+  → (u : ⟪ disp⁻ 𝓛 ⟫ x)
+  → cofan ([ disp⁻ 𝓛 ] x) u
+   ＝ cofan (lens-pull-graph 𝓛 x) (lens-pull 𝓛 (≈-refl 𝓐 x) u)
+ compute-cofan-of-lax-contravariant-lens 𝓛 x u = refl
 
 \end{code}
 
@@ -269,24 +251,22 @@ insight into the form of the following proof terms.
 
 \begin{code}
 
-disp-oplax-covariant-lens-univalent
- : {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥)
- → (𝓛 : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
- → ((x : ⟨ 𝓐 ⟩) → is-univalent-refl-graph (lens-push-graph 𝓛 x))
- → is-displayed-univalent-refl-graph 𝓐 (disp⁺ 𝓐 𝓛)
-disp-oplax-covariant-lens-univalent 𝓐 𝓛 fibers-ua x u 
- = fibers-ua x (lens-push 𝓛 (≈-refl 𝓐 x) u)
+ disp-oplax-covariant-lens-univalent
+  : (𝓛 : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
+  → ((x : ⟨ 𝓐 ⟩) → is-univalent-refl-graph (lens-push-graph 𝓛 x))
+  → is-displayed-univalent-refl-graph 𝓐 (disp⁺ 𝓛)
+ disp-oplax-covariant-lens-univalent 𝓛 fibers-ua x u 
+  = fibers-ua x (lens-push 𝓛 (≈-refl 𝓐 x) u)
 
-disp-lax-contravariant-lens-univalent
- : {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥)
- → (𝓛 : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
- → ((x : ⟨ 𝓐 ⟩)
- → is-univalent-refl-graph (lens-pull-graph 𝓛 x))
- → is-displayed-univalent-refl-graph 𝓐 (disp⁻ 𝓐 𝓛)
-disp-lax-contravariant-lens-univalent 𝓐 𝓛 fibers-ua x 
- = prop-cofan-to-fan ([ disp⁻ 𝓐 𝓛 ] x)
-    ((λ - → fibers-co-ua (lens-pull 𝓛 (≈-refl 𝓐 x) -))) 
- where
-  fibers-co-ua = prop-fan-to-cofan (lens-pull-graph 𝓛 x) (fibers-ua x)
+ disp-lax-contravariant-lens-univalent
+  : (𝓛 : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
+  → ((x : ⟨ 𝓐 ⟩)
+  → is-univalent-refl-graph (lens-pull-graph 𝓛 x))
+  → is-displayed-univalent-refl-graph 𝓐 (disp⁻ 𝓛)
+ disp-lax-contravariant-lens-univalent 𝓛 fibers-ua x 
+  = prop-cofan-to-fan ([ disp⁻ 𝓛 ] x)
+     ((λ - → fibers-co-ua (lens-pull 𝓛 (≈-refl 𝓐 x) -))) 
+  where
+   fibers-co-ua = prop-fan-to-cofan (lens-pull-graph 𝓛 x) (fibers-ua x)
   
 \end{code}
