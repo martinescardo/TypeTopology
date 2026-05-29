@@ -171,7 +171,7 @@ module TChoice
 January 2018.
 
 We now implement the examples discussed above, which give
-characterizations choice as in the HoTT book, which we refer to as
+characterizations of choice as in the HoTT book, which we refer to as
 Univalent Choice.
 
 \begin{code}
