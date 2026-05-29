@@ -24,7 +24,7 @@ Notice that, as shown in the HoTT book, the statement
 
 is in contradiction with the univalence axiom (we cannot reveal
 secrets in general). However, univalent choice is consistent with the
-univalent axiom, and, moreover, gives that
+univalence axiom, and, moreover, gives that
 
    ∥(B : 𝓤 ̇ ) → ∥ ∥ B ∥ → B ∥
 
