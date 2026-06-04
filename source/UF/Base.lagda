@@ -246,7 +246,6 @@ ap₂-∙ f refl refl refl refl = refl
 
 \end{code}
 
-
 \begin{code}
 
 ap₃ : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
@@ -628,5 +627,65 @@ transport-after-ap' refl s s' q =
  q                             ＝⟨ refl-left-neutral ⁻¹ ⟩
  refl ∙ q                      ＝⟨refl⟩
  ap s refl ⁻¹ ∙ q ∙ ap s' refl ∎
+
+\end{code}
+
+Moved here (from AlgebraicStructuresForcingSethood)
+on 4 June 2026 by Tom de Jong.
+
+Transporting along the identity type ＝ establishes that ＝ is a
+congruence. Duplicating two of the arguments we obtain conjugation of loops.
+
+The congruence witness enjoys various coherence properties, as shown below.
+These are used in several files in the AlgebraicStructuresForcingSethood folder.
+
+\begin{code}
+
+＝-congr : {A : 𝓤 ̇ } {a b x y : A} → a ＝ x → b ＝ y → a ＝ b → x ＝ y
+＝-congr = transport₂ _＝_
+
+conjugate-loop : {A : 𝓤 ̇ } {a b : A} → a ＝ b → a ＝ a → b ＝ b
+conjugate-loop p = ＝-congr p p
+
+conjugate-loop-conjugates : {A : 𝓤 ̇ } {a b : A} (p : a ＝ b) (l : a ＝ a)
+                          → conjugate-loop p l ＝ p ⁻¹ ∙ l ∙ p
+conjugate-loop-conjugates refl = transport-along-＝ refl
+
+＝-congr-refl : {A : 𝓤 ̇ } {a x : A} (h : a ＝ x) → ＝-congr h h refl ＝ refl
+＝-congr-refl refl = refl
+
+＝-congr-∙ : {A : 𝓤 ̇ } {a b c x y z : A}
+             (h₁ : a ＝ x) (h₂ : b ＝ y) (h₃ : c ＝ z)
+             (p : a ＝ b) (q : b ＝ c)
+           → ＝-congr h₁ h₃ (p ∙ q) ＝ ＝-congr h₁ h₂ p ∙ ＝-congr h₂ h₃ q
+＝-congr-∙ refl refl refl p q = refl
+
+＝-congr-∙'
+ : {A : 𝓤 ̇ } {a b u v x y : A}
+   (l₁ : a ＝ u) (l₂ : u ＝ x)
+   (r₁ : b ＝ v) (r₂ : v ＝ y)
+   (p : a ＝ b)
+ → ＝-congr (l₁ ∙ l₂) (r₁ ∙ r₂) p ＝ ＝-congr l₂ r₂ (＝-congr l₁ r₁ p)
+＝-congr-∙' refl refl refl refl p = refl
+
+＝-congr-nat : {A : 𝓤 ̇ } {a b x y : A}
+               (ha : a ＝ a) (hb : b ＝ b) (hax : a ＝ x) (hby : b ＝ y)
+               (p : a ＝ b)
+             → ＝-congr hax hby (＝-congr ha hb p)
+             ＝ ＝-congr
+                 (＝-congr hax hax ha)
+                 (＝-congr hby hby hb)
+                 (＝-congr hax hby p)
+＝-congr-nat ha hb refl refl p = refl
+
+＝-congr-nat' : {A : 𝓤 ̇ } {a b x y : A}
+                (hab : a ＝ b) (hax : a ＝ x) (hby : b ＝ y)
+                (p : a ＝ a)
+              → ＝-congr hby hby (＝-congr hab hab p)
+                ＝ ＝-congr
+                    (＝-congr hax hby hab)
+                    (＝-congr hax hby hab)
+                    (＝-congr hax hax p)
+＝-congr-nat' refl refl refl p = refl
 
 \end{code}

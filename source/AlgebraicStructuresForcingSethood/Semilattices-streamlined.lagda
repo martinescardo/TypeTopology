@@ -1,6 +1,6 @@
 Tom de Jong, 25—27 February 2026.
-
-Moved from `gist` to this place 17th April 2026.
+Moved from `gist` to this place on 17 April 2026.
+Merged basic library into UF.Base on 3—4 June 2026.
 
 This is the result of my own attempt to understand David Wärn's Agda
 formalization [1] which proves that any type equipped with a binary operation
@@ -13,9 +13,6 @@ Escardo's version [2].
 [2] Martin Escardo. AlgebraicStructuresForcingSethood.Semilattices.lagda,
     23 February 2026.
 
-Like [1] and [2], this file is completely self-contained with the basics taken
-from [2].
-
 As David pointed out to me, this proof is slightly different from his in that I
 do not use commutativity of path composition to prove associativity of the
 operation on loop spaces.
@@ -26,123 +23,30 @@ operation on loop spaces.
 
 module AlgebraicStructuresForcingSethood.Semilattices-streamlined where
 
-open import Agda.Primitive renaming (Set to Type)
-
-infix 15 _＝_
-
-data _＝_ {A : Type} (a : A) : A → Type where
- refl : a ＝ a
-
-infixr 20 _∙_
-
-_∙_ : {A : Type} {a b c : A} → a ＝ b → b ＝ c → a ＝ c
-refl ∙ refl = refl
-
 \end{code}
 
-For readability, we introduce the standard combinators for equational reasoning.
+To emphasize that we need very little for the below development we explicitly
+list our minimal imports.
 
 \begin{code}
 
-_＝⟨_⟩_ : {X : Type} (x : X) {y z : X} → x ＝ y → y ＝ z → x ＝ z
-_ ＝⟨ p ⟩ q = p ∙ q
-
-_∎ : {X : Type} (x : X) → x ＝ x
-_∎ _ = refl
-
-infix  1 _∎
-infixr 0 _＝⟨_⟩_
-
-sym : {A : Type} {a b : A} → a ＝ b → b ＝ a
-sym refl = refl
-
-ap : {A B : Type} {a b : A} (f : A → B) → a ＝ b → f a ＝ f b
-ap f refl = refl
-
-ap₂ : {A B C : Type} (f : A → B → C) {a₁ a₂ : A} {b₁ b₂ : B}
-    → a₁ ＝ a₂
-    → b₁ ＝ b₂
-    → f a₁ b₁ ＝ f a₂ b₂
-ap₂ f refl refl = refl
-
-∙refl : {A : Type} {a b : A} (p : a ＝ b) → p ∙ refl ＝ p
-∙refl refl = refl
-
-refl∙ : {A : Type} {a b : A} (p : a ＝ b) → refl ∙ p ＝ p
-refl∙ refl = refl
-
-∙-cancel : {A : Type} {a b c : A} (p : a ＝ b) (q₁ q₂ : b ＝ c)
-         → p ∙ q₁ ＝ p ∙ q₂ → q₁ ＝ q₂
-∙-cancel refl refl q₂ h = refl      ＝⟨ h ⟩
-                          refl ∙ q₂ ＝⟨ refl∙ q₂ ⟩
-                          q₂        ∎
-
-eq-congr : {A : Type} {a b x y : A} → a ＝ x → b ＝ y → a ＝ b → x ＝ y
-eq-congr refl refl p = p
-
-eq-congr-refl : {A : Type} {a x : A} (h : a ＝ x) → eq-congr h h refl ＝ refl
-eq-congr-refl refl = refl
-
-eq-congr-nat : {A : Type} {a b x y : A}
-               (ha : a ＝ a) (hb : b ＝ b) (hax : a ＝ x) (hby : b ＝ y)
-               (p : a ＝ b)
-             → eq-congr hax hby (eq-congr ha hb p)
-             ＝ eq-congr
-                 (eq-congr hax hax ha)
-                 (eq-congr hby hby hb)
-                 (eq-congr hax hby p)
-eq-congr-nat ha hb refl refl p = refl
+open import MLTT.Universes
+open import MLTT.Id
+open import UF.Base using
+  ( ap₂
+  ; refl-left-neutral
+  ; refl-right-neutral
+  ; cancel-left
+  ; conjugate-loop
+  ; ＝-congr
+  ; ＝-congr-refl
+  ; ＝-congr-∙
+  ; ＝-congr-∙'
+  ; ＝-congr-nat
+  ; ＝-congr-nat'
+  )
 
 \end{code}
-
-A variation of the above that was not needed in [2]:
-
-\begin{code}
-
-eq-congr-nat' : {A : Type} {a b x y : A}
-                (hab : a ＝ b) (hax : a ＝ x) (hby : b ＝ y)
-                (p : a ＝ a)
-              → eq-congr hby hby (eq-congr hab hab p)
-                ＝ eq-congr
-                    (eq-congr hax hby hab)
-                    (eq-congr hax hby hab)
-                    (eq-congr hax hax p)
-eq-congr-nat' refl refl refl p = refl
-
-eq-congr-∙ : {A : Type} {a b c x y z : A}
-             {h₁ : a ＝ x} {h₂ : b ＝ y} {h₃ : c ＝ z}
-             (p : a ＝ b) (q : b ＝ c)
-           → eq-congr h₁ h₃ (p ∙ q) ＝ eq-congr h₁ h₂ p ∙ eq-congr h₂ h₃ q
-eq-congr-∙ {h₁ = refl} {h₂ = refl} {h₃ = refl} p q = refl
-
-congr-∙ : {A : Type} {a b u v x y : A}
-          (l₁ : a ＝ u) (l₂ : u ＝ x) (r₁ : b ＝ v) (r₂ : v ＝ y) (p : a ＝ b)
-        → eq-congr (l₁ ∙ l₂) (r₁ ∙ r₂) p ＝ eq-congr l₂ r₂ (eq-congr l₁ r₁ p)
-congr-∙ refl refl refl refl p = refl
-
-\end{code}
-
-In what follows we will often take the first two arguments of eq-congr to be the
-same which amounts to conjugating a loop as we show here for good measure.
-
-\begin{code}
-
-conjugate-loop : {A : Type} {a b : A} → a ＝ b → a ＝ a → b ＝ b
-conjugate-loop p = eq-congr p p
-
-conjugate-loop' : {A : Type} {a b : A} → a ＝ b → a ＝ a → b ＝ b
-conjugate-loop' p q = sym p ∙ q ∙ p
-
-conjugate-loops-agree : {A : Type} {a b x y : A} (p : a ＝ x) (q : a ＝ a)
-                      → conjugate-loop p q ＝ conjugate-loop' p q
-conjugate-loops-agree refl q =
- q               ＝⟨ sym (refl∙ q) ⟩
- refl ∙ q        ＝⟨ ap (refl ∙_) (sym (∙refl q)) ⟩
- refl ∙ q ∙ refl ∎
-
-\end{code}
-
-This completes our basic library.
 
 We extract two criteria from [1] for the loop space to be trivial. The second
 lemma is invoked at the very end.
@@ -150,29 +54,29 @@ lemma is invoked at the very end.
 \begin{code}
 
 module pointed-type
-        (A  : Type)
+        (A  : 𝓤 ̇ )
         (a₀ : A)
        where
 
- ΩA : Type
+ ΩA : 𝓤 ̇
  ΩA = a₀ ＝ a₀
 
  trivial-Ω-endomap-criterion : (f : ΩA → ΩA)
                              → ((p : ΩA) → f (f p) ＝ f p)
                              → ((p : ΩA) → f p ∙ f p ＝ p)
                              → (p : ΩA) → p ＝ refl
- trivial-Ω-endomap-criterion f f-idem f-self-concat p = sym III
+ trivial-Ω-endomap-criterion f f-idem f-self-concat p = III ⁻¹
   where
-   I = f p ∙ f p         ＝⟨ ap₂ _∙_ (sym (f-idem p)) (sym (f-idem p)) ⟩
+   I = f p ∙ f p         ＝⟨ ap₂ _∙_ ((f-idem p) ⁻¹) ((f-idem p) ⁻¹) ⟩
        f (f p) ∙ f (f p) ＝⟨ f-self-concat (f p) ⟩
-       f p               ＝⟨ sym (∙refl (f p)) ⟩
+       f p               ＝⟨ refl-right-neutral (f p) ⟩
        f p ∙ refl        ∎
 
    II : f p ＝ refl
-   II = ∙-cancel (f p) (f p) refl I
+   II = cancel-left I
 
    III = refl        ＝⟨ refl ⟩
-         refl ∙ refl ＝⟨ ap₂ _∙_ (sym II) (sym II) ⟩
+         refl ∙ refl ＝⟨ ap₂ _∙_ (II ⁻¹) (II ⁻¹) ⟩
          f p ∙ f p   ＝⟨ f-self-concat p ⟩
          p           ∎
 
@@ -202,7 +106,7 @@ The loop space is trivial if it can be equipped with a binary operation ⋆ such
     f-idempotent p =
      f (f p)           ＝⟨ refl ⟩
      (f p) ⋆ refl      ＝⟨ refl ⟩
-     (p ⋆ refl) ⋆ refl ＝⟨ sym (⋆-assoc p refl refl) ⟩
+     (p ⋆ refl) ⋆ refl ＝⟨ (⋆-assoc p refl refl) ⁻¹ ⟩
      p ⋆ (refl ⋆ refl) ＝⟨ ap (p ⋆_) (⋆-idem refl) ⟩
      p ⋆ refl          ＝⟨ refl ⟩
      f p               ∎
@@ -212,11 +116,12 @@ The loop space is trivial if it can be equipped with a binary operation ⋆ such
      f p ∙ f p               ＝⟨ refl ⟩
      (p ⋆ refl) ∙ (p ⋆ refl) ＝⟨ I ⟩
      (p ⋆ refl) ∙ (refl ⋆ p) ＝⟨ ⋆-interchange-∙ p refl refl p ⟩
-     (p ∙ refl) ⋆ (refl ∙ p) ＝⟨ ap₂ _⋆_ (∙refl p) (refl∙ p) ⟩
+     (p ∙ refl) ⋆ (refl ∙ p) ＝⟨ II ⟩
      p ⋆ p                   ＝⟨ ⋆-idem p ⟩
      p                       ∎
       where
-       I = ap ((p ⋆ refl) ∙_) (⋆-comm p refl)
+       I  = ap ((p ⋆ refl) ∙_) (⋆-comm p refl)
+       II = ap₂ _⋆_ (refl-right-neutral p) refl-left-neutral
 
 \end{code}
 
@@ -227,7 +132,7 @@ binary operation in the sense that it is not of type X → X → X for some X.
 \begin{code}
 
 module _
-        (A   : Type)
+        (A   : 𝓤 ̇ )
         (_*_ : A → A → A)
        where
 
@@ -248,38 +153,38 @@ induction.
 
 \begin{code}
 
- ＊-eq-congr-left : {a a' b b' c c' : A}
+ ＊-＝-congr-left : {a a' b b' c c' : A}
                     (u : a * b ＝ c) (v : a' * b' ＝ c')
                     (p : a ＝ a') (q : b ＝ b') (r : c ＝ c')
-                  → (eq-congr u v (p ＊ q)) ＊ r
-                    ＝ eq-congr (u ＊ refl) (v ＊ refl) ((p ＊ q) ＊ r)
- ＊-eq-congr-left refl refl refl refl r = refl
+                  → (＝-congr u v (p ＊ q)) ＊ r
+                    ＝ ＝-congr (u ＊ refl) (v ＊ refl) ((p ＊ q) ＊ r)
+ ＊-＝-congr-left refl refl refl refl r = refl
 
- ＊-eq-congr-right : {a a' b b' c c' : A}
+ ＊-＝-congr-right : {a a' b b' c c' : A}
                     (u : a * b ＝ c) (v : a' * b' ＝ c')
                     (p : c ＝ c') (q : a ＝ a') (r : b ＝ b')
-                  → p ＊ (eq-congr u v (q ＊ r))
-                    ＝ eq-congr (refl ＊ u) (refl ＊ v) (p ＊ (q ＊ r))
- ＊-eq-congr-right refl refl p refl refl = refl
+                  → p ＊ (＝-congr u v (q ＊ r))
+                    ＝ ＝-congr (refl ＊ u) (refl ＊ v) (p ＊ (q ＊ r))
+ ＊-＝-congr-right refl refl p refl refl = refl
 
 \end{code}
 
-If * is commutative/associative, then so is ＊ up to eq-congr which is necessary
+If * is commutative/associative, then so is ＊ up to ＝-congr which is necessary
 to make things type check as ＊ is a dependent function.
 
 \begin{code}
 
- commutativity-of-* : Type
+ commutativity-of-* : 𝓤 ̇
  commutativity-of-* = (a b : A) → a * b ＝ b * a
 
- associativity-of-* : Type
+ associativity-of-* : 𝓤 ̇
  associativity-of-* = (a b c : A) → (a * b) * c ＝ a * (b * c)
 
  ＊-comm : (*-comm : commutativity-of-*)
            {a a' b b' : A}
            (p : a ＝ a') (q : b ＝ b')
-         → p ＊ q ＝ eq-congr (*-comm b a) (*-comm b' a') (q ＊ p)
- ＊-comm *-comm refl refl = sym (eq-congr-refl (*-comm _ _))
+         → p ＊ q ＝ ＝-congr (*-comm b a) (*-comm b' a') (q ＊ p)
+ ＊-comm *-comm refl refl = (＝-congr-refl (*-comm _ _)) ⁻¹
 
 \end{code}
 
@@ -293,8 +198,8 @@ paths.
   : (*-assoc : associativity-of-*)
     {a a' b b' c c' : A}
     (p : a ＝ a') (q : b ＝ b') (r : c ＝ c')
-  → p ＊ (q ＊ r) ＝ eq-congr (*-assoc a b c) (*-assoc a' b' c') ((p ＊ q) ＊ r)
- ＊-assoc *-assoc refl refl refl = sym (eq-congr-refl (*-assoc _ _ _))
+  → p ＊ (q ＊ r) ＝ ＝-congr (*-assoc a b c) (*-assoc a' b' c') ((p ＊ q) ＊ r)
+ ＊-assoc *-assoc refl refl refl = (＝-congr-refl (*-assoc _ _ _)) ⁻¹
 
 \end{code}
 
@@ -304,7 +209,7 @@ restricted to loops yet, so that this has a (trivial) proof by path induction.
 
 \begin{code}
 
- idempotentency-of-* : Type
+ idempotentency-of-* : 𝓤 ̇
  idempotentency-of-* = (a : A) → a * a ＝ a
 
  module idempotent
@@ -312,10 +217,10 @@ restricted to loops yet, so that this has a (trivial) proof by path induction.
         where
 
   _＊'_ : {a b : A} → a ＝ b → a ＝ b → a ＝ b
-  _＊'_ {a} {b} p q = eq-congr (*-idem a) (*-idem b) (p ＊ q)
+  _＊'_ {a} {b} p q = ＝-congr (*-idem a) (*-idem b) (p ＊ q)
 
   ＊'-idempotent : {a b : A} (p : a ＝ b) → p ＊' p ＝ p
-  ＊'-idempotent refl = eq-congr-refl (*-idem _)
+  ＊'-idempotent refl = ＝-congr-refl (*-idem _)
 
 \end{code}
 
@@ -344,7 +249,7 @@ this operation by ＊Ω.
    ＊Ω-idempotent = ＊'-idempotent
 
    ＊Ω-refl : refl ＊Ω refl ＝ refl
-   ＊Ω-refl = eq-congr-refl ι
+   ＊Ω-refl = ＝-congr-refl ι
 
    ＊Ω-interchange-∙ : (p q r s : ΩA)
                     → (p ＊Ω q) ∙ (r ＊Ω s) ＝ (p ∙ r) ＊Ω (q ∙ s)
@@ -355,7 +260,7 @@ this operation by ＊Ω.
     conjugate-loop ι ((p ∙ r) ＊ (q ∙ s))                 ＝⟨ refl ⟩
     (p ∙ r) ＊Ω (q ∙ s)                                   ∎
      where
-      I  = sym (eq-congr-∙ (p ＊ q) (r ＊ s))
+      I  = (＝-congr-∙ ι ι ι (p ＊ q) (r ＊ s)) ⁻¹
       II = ap (conjugate-loop ι) (＊-interchange-∙ p q r s)
 
 \end{code}
@@ -381,19 +286,19 @@ The strategy for this is to
     ＊Ω-commutative-up-to-conjugation p q =
      p ＊Ω q                                      ＝⟨ refl ⟩
      conjugate-loop ι (p ＊ q)                    ＝⟨ I    ⟩
-     conjugate-loop ι (eq-congr γ₀ γ₀ (q ＊ p))   ＝⟨ refl ⟩
-     eq-congr ι ι (eq-congr γ₀ γ₀ (q ＊ p))       ＝⟨ II   ⟩
-     eq-congr (eq-congr ι ι γ₀)
-              (eq-congr ι ι γ₀)
-              (eq-congr ι ι (q ＊ p))             ＝⟨ refl ⟩
-     eq-congr γ γ (eq-congr ι ι (q ＊ p))         ＝⟨ refl ⟩
+     conjugate-loop ι (＝-congr γ₀ γ₀ (q ＊ p))   ＝⟨ refl ⟩
+     ＝-congr ι ι (＝-congr γ₀ γ₀ (q ＊ p))       ＝⟨ II   ⟩
+     ＝-congr (＝-congr ι ι γ₀)
+              (＝-congr ι ι γ₀)
+              (＝-congr ι ι (q ＊ p))             ＝⟨ refl ⟩
+     ＝-congr γ γ (＝-congr ι ι (q ＊ p))         ＝⟨ refl ⟩
      conjugate-loop γ (conjugate-loop ι (q ＊ p)) ＝⟨ refl ⟩
      conjugate-loop γ (q ＊Ω p)                   ∎
       where
        γ₀ : a₀ * a₀ ＝ a₀ * a₀
        γ₀ = *-comm a₀ a₀
        I  = ap (conjugate-loop ι) (＊-comm *-comm p q)
-       II = eq-congr-nat γ₀ γ₀ ι ι (q ＊ p)
+       II = ＝-congr-nat γ₀ γ₀ ι ι (q ＊ p)
 
     conjugate-loop-comm-is-id : (p : ΩA) → conjugate-loop γ p ＝ p
     conjugate-loop-comm-is-id p =
@@ -402,8 +307,8 @@ The strategy for this is to
       p ＊Ω p                    ＝⟨ ＊Ω-idempotent p ⟩
       p                          ∎
        where
-        I  = ap (conjugate-loop γ) (sym (＊Ω-idempotent p))
-        II = sym (＊Ω-commutative-up-to-conjugation p p)
+        I  = ap (conjugate-loop γ) ((＊Ω-idempotent p) ⁻¹)
+        II = (＊Ω-commutative-up-to-conjugation p p) ⁻¹
 
     ＊Ω-commutative : (p q : ΩA) → p ＊Ω q ＝ q ＊Ω p
     ＊Ω-commutative p q =
@@ -446,8 +351,8 @@ and similarly for the other bracketing.
      conjugate-loop ((ι ＊ refl) ∙ ι) ((p ＊ q) ＊ r)              ＝⟨ refl ⟩
      conjugate-loop ι₁ ((p ＊ q) ＊ r)                             ∎
       where
-       I  = ap (conjugate-loop ι) (＊-eq-congr-left ι ι p q r)
-       II = sym (congr-∙ (ι ＊ refl) ι (ι ＊ refl) ι ((p ＊ q) ＊ r))
+       I  = ap (conjugate-loop ι) (＊-＝-congr-left ι ι p q r)
+       II = (＝-congr-∙' (ι ＊ refl) ι (ι ＊ refl) ι ((p ＊ q) ＊ r)) ⁻¹
 
     ＊Ω-is-＊-up-to-conjugation₂
      : (p q r : ΩA)
@@ -459,11 +364,11 @@ and similarly for the other bracketing.
      conjugate-loop ((refl ＊ ι) ∙ ι) (p ＊ (q ＊ r))              ＝⟨ refl ⟩
      conjugate-loop ι₂ (p ＊ (q ＊ r))                             ∎
       where
-       I  = ap (conjugate-loop ι) (＊-eq-congr-right ι ι p q r)
-       II = sym (congr-∙ (refl ＊ ι) ι (refl ＊ ι) ι (p ＊ (q ＊ r)))
+       I  = ap (conjugate-loop ι) (＊-＝-congr-right ι ι p q r)
+       II = (＝-congr-∙' (refl ＊ ι) ι (refl ＊ ι) ι (p ＊ (q ＊ r))) ⁻¹
 
     α : a₀ ＝ a₀
-    α = eq-congr ι₁ ι₂ (*-assoc a₀ a₀ a₀)
+    α = ＝-congr ι₁ ι₂ (*-assoc a₀ a₀ a₀)
 
 \end{code}
 
@@ -478,19 +383,19 @@ The rebracketing convention follows that of ＊-assoc.
      p ＊Ω (q ＊Ω r)                                       ＝⟨ I    ⟩
      conjugate-loop ι₂ (p ＊ (q ＊ r))                     ＝⟨ II   ⟩
      conjugate-loop ι₂ (conjugate-loop α₀ ((p ＊ q) ＊ r)) ＝⟨ refl ⟩
-     eq-congr ι₂ ι₂ (eq-congr α₀ α₀ ((p ＊ q) ＊ r))       ＝⟨ III  ⟩
-     eq-congr (eq-congr ι₁ ι₂ α₀)
-              (eq-congr ι₁ ι₂ α₀)
-              (eq-congr ι₁ ι₁ ((p ＊ q) ＊ r))             ＝⟨ refl ⟩
-     eq-congr α α (eq-congr ι₁ ι₁ ((p ＊ q) ＊ r))         ＝⟨ refl ⟩
+     ＝-congr ι₂ ι₂ (＝-congr α₀ α₀ ((p ＊ q) ＊ r))       ＝⟨ III  ⟩
+     ＝-congr (＝-congr ι₁ ι₂ α₀)
+              (＝-congr ι₁ ι₂ α₀)
+              (＝-congr ι₁ ι₁ ((p ＊ q) ＊ r))             ＝⟨ refl ⟩
+     ＝-congr α α (＝-congr ι₁ ι₁ ((p ＊ q) ＊ r))         ＝⟨ refl ⟩
      conjugate-loop α (conjugate-loop ι₁ ((p ＊ q) ＊ r))  ＝⟨ IV   ⟩
      conjugate-loop α ((p ＊Ω q) ＊Ω r)                    ∎
       where
        α₀ = *-assoc a₀ a₀ a₀
        I = ＊Ω-is-＊-up-to-conjugation₂ p q r
        II = ap (conjugate-loop ι₂) (＊-assoc *-assoc p q r)
-       III = eq-congr-nat' α₀ ι₁ ι₂ ((p ＊ q) ＊ r)
-       IV = ap (conjugate-loop α) (sym (＊Ω-is-＊-up-to-conjugation₁ p q r))
+       III = ＝-congr-nat' α₀ ι₁ ι₂ ((p ＊ q) ＊ r)
+       IV = ap (conjugate-loop α) ((＊Ω-is-＊-up-to-conjugation₁ p q r) ⁻¹)
 
     conjugate-loop-assoc-is-id : (p : ΩA) → conjugate-loop α p ＝ p
     conjugate-loop-assoc-is-id p =
@@ -501,9 +406,9 @@ The rebracketing convention follows that of ＊-assoc.
      p ＊Ω p                            ＝⟨ V ⟩
      p                                  ∎
       where
-       I   = ap (conjugate-loop α) (sym (＊Ω-idempotent p))
-       II  = ap (λ - → conjugate-loop α (- ＊Ω p)) (sym (＊Ω-idempotent p))
-       III = sym (＊Ω-associative-up-to-conjugation p p p)
+       I   = ap (conjugate-loop α) ((＊Ω-idempotent p) ⁻¹)
+       II  = ap (λ - → conjugate-loop α (- ＊Ω p)) ((＊Ω-idempotent p) ⁻¹)
+       III = (＊Ω-associative-up-to-conjugation p p p) ⁻¹
        IV  = ap (p ＊Ω_) (＊Ω-idempotent p)
        V   = ＊Ω-idempotent p
 
