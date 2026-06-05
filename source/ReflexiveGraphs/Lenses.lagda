@@ -43,9 +43,9 @@ Lenses allow for a deeper characterization of many structures that use a
 personalized notion of transport (which under univalence are equivalent up to
 homotopy). This fact about uniqueness of transport has been dubbed the
 fundamental lemma of transport along equivalences by Martin Escardo
-(see https://martinescardo.github.io/TypeTopology/UF.FundamentalLemmaOfTransportAlongEquivalences.html).
-(TODO. Add the ReflexiveGraphs.Examples file which provides a generalization
-of this theorem.) Just as in the statement of this transport theorem one needs
+(see UF/FundamentalLemmaOfTransportAlongEquivalences).
+TODO. Add the ReflexiveGraphs.Examples file which provides a generalization
+of this theorem. Just as in the statement of this transport theorem one needs
 data that details behavior at refl, this data must also be included in the
 definition of a lens.
 
