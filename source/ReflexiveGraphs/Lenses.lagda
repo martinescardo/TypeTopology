@@ -87,7 +87,7 @@ We name the components of an oplax covariant lens.
 
 module _ {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
          (𝓛@(𝓑 , s) : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
-          where
+       where
 
  lens-push-graph : ⟨ 𝓐 ⟩ → Refl-Graph 𝓤' 𝓥'
  lens-push-graph = 𝓑
@@ -130,7 +130,7 @@ We name the components of an lax contravariant lens.
 
 module _ {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
          (𝓛@(𝓑 , s) : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
-          where
+       where
 
  lens-pull-graph : ⟨ 𝓐 ⟩ → Refl-Graph 𝓤' 𝓥'
  lens-pull-graph = 𝓑
@@ -174,12 +174,12 @@ We now define a display of lenses.
 
  display-oplax-covariant-lens : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐
                               → Displayed-Refl-Graph 𝓤' 𝓥' 𝓐
- display-oplax-covariant-lens 𝓛 = (lens-push-fam 𝓛 , II , III)
+ display-oplax-covariant-lens 𝓛 = (lens-push-fam 𝓛 , I , II)
   where
-   II : {x y : ⟨ 𝓐 ⟩} → x ≈⟨ 𝓐 ⟩ y → lens-push-fam 𝓛 x → lens-push-fam 𝓛 y → 𝓥' ̇
-   II {_} {y} p u v = lens-push 𝓛 p u ≈⟨ lens-push-graph 𝓛 y ⟩ v
-   III : {x : ⟨ 𝓐 ⟩} (u : lens-push-fam 𝓛 x) → II (≈-refl 𝓐 x) u u
-   III u = lens-push-refl 𝓛 u
+   I : {x y : ⟨ 𝓐 ⟩} → x ≈⟨ 𝓐 ⟩ y → lens-push-fam 𝓛 x → lens-push-fam 𝓛 y → 𝓥' ̇
+   I {_} {y} p u v = lens-push 𝓛 p u ≈⟨ lens-push-graph 𝓛 y ⟩ v
+   II : {x : ⟨ 𝓐 ⟩} (u : lens-push-fam 𝓛 x) → I (≈-refl 𝓐 x) u u
+   II u = lens-push-refl 𝓛 u
 
  disp⁺ : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐
        → Displayed-Refl-Graph 𝓤' 𝓥' 𝓐
