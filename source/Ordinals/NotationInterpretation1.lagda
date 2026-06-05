@@ -230,8 +230,8 @@ And hence they are totally separated:
 \begin{code}
 
 Κ-is-totally-separated ν = retract-of-totally-separated
-                             (Κ-Cantor-retract ν)
-                             (Cantor-is-totally-separated fe₀)
+                            (Κ-Cantor-retract ν)
+                            (Cantor-is-totally-separated fe₀)
 \end{code}
 
 Without total separatedness (enough functions into the type 𝟚 of

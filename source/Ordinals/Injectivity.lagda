@@ -43,10 +43,10 @@ module ordinals-injectivity (fe : FunExt) where
                        (λ {i} → underlying-order (α i))
 
  ↗-propertyₒ : {I : 𝓤 ̇ } {J : 𝓥 ̇ }
-              (α : I → Ordinal 𝓦)
-              (𝓮@(e , e-is-embedding) : I ↪ J)
-              (i : I)
-            → (α ↗ 𝓮) (e i) ≃ₒ α i
+               (α : I → Ordinal 𝓦)
+               (𝓮@(e , e-is-embedding) : I ↪ J)
+               (i : I)
+             → (α ↗ 𝓮) (e i) ≃ₒ α i
  ↗-propertyₒ {𝓤} {𝓥} {I} {J} α 𝓮@(e , e-is-embedding) i = γ
   where
    ϕ : ⟨ (α ↗ 𝓮) (e i) ⟩ ≃ ⟨ α i ⟩

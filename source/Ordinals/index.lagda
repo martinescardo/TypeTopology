@@ -44,6 +44,7 @@ import Ordinals.SupSum
 import Ordinals.Taboos                       -- by [3]
 import Ordinals.ToppedArithmetic
 import Ordinals.ToppedType
+import Ordinals.TotallySeparated
 import Ordinals.TrichotomousArithmetic
 import Ordinals.TrichotomousType
 import Ordinals.Type
