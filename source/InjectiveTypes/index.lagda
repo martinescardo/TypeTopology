@@ -76,6 +76,7 @@ equivalent to that of ordinals.)
 \begin{code}
 
 import Ordinals.Injectivity
+import Ordinals.TotallySeparated
 import Iterative.Multisets-Addendum
 import Iterative.Sets-Addendum
 import Iterative.Ordinals
