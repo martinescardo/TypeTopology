@@ -2,10 +2,10 @@ Martin Escardo, 31st May 2026.
 
 The type of totally separated ordinals is (algebraically)
 injective. Examples of totally separated ordinals are 𝟘, 𝟙 (and any
-proposition), 𝟚, Fin n, ℕ + 𝟙 and ℕ∞ with their natural ordered
+proposition), 𝟚, Fin n, ℕ + 𝟙 and ℕ∞ with their natural orders
 (defined elsewhere in this repository). In particular, the type of
 totally separated ordinals doesn't admit a non-trivial apartness in
-general, and in particular isn't totally separated itself.
+general, and hence isn't totally separated itself.
 
 \begin{code}
 
