@@ -73,8 +73,9 @@ in this module is instantiated to 𝓤₀.
 X : 𝓤₁ ̇
 X = Σ p ꞉ ⟨ Ωₒ ⟩ , ¬ (p ＝ ⊥)
 
-recall-that : is-extensional (underlying-order Ωₒ)
-recall-that = Extensionality Ωₒ
+private
+ recall-that : is-extensional (underlying-order Ωₒ)
+ recall-that = Extensionality Ωₒ
 
 \end{code}
 

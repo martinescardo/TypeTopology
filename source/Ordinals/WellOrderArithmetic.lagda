@@ -408,7 +408,8 @@ retract-accessible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                      (r : X → Y) (s : Y → X)
                    → ((y : Y) → r (s y) ＝ y)
                    → ((x : X) (y : Y) → y ≺ r x → s y < x)
-                   → (x : X) → is-accessible _<_ x → is-accessible _≺_ (r x)
+                   → (x : X) → is-accessible _<_ x
+                   → is-accessible _≺_ (r x)
 retract-accessible _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
  where
   P = λ x → is-accessible _≺_ (r x)
@@ -427,7 +428,8 @@ retract-well-founded : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        (r : X → Y) (s : Y → X)
                      → ((y : Y) → r (s y) ＝ y)
                      → ((x : X) (y : Y) → y ≺ r x → s y < x)
-                     → is-well-founded _<_ → is-well-founded _≺_
+                     → is-well-founded _<_
+                     → is-well-founded _≺_
 retract-well-founded {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _<_ _≺_ r s η φ w = w'
  where
   wr : (x : X) → is-accessible _≺_ (r x)
