@@ -55,11 +55,11 @@ open import UF.Base using
   ; ap₃-⁻¹
   ; refl-left-neutral
   ; ∙assoc
-  ; ＝-congr
-  ; ＝-congr-refl
-  ; ＝-congr-∙
-  ; ＝-congr-cancel
-  ; ＝-congr-ap₃
+  ; ＝-cong
+  ; ＝-cong-refl
+  ; ＝-cong-∙
+  ; ＝-cong-cancel
+  ; ＝-cong-ap₃
   ; right-inverse
   )
 
@@ -95,16 +95,16 @@ module ternary-idempotent
 
  idem^ : {a b : A}
        → (p : a ＝ b)
-       → ＝-congr (idem a) (idem b) (ap₃ f p p p) ＝ p
- idem^ refl = ＝-congr-refl (idem _)
+       → ＝-cong (idem a) (idem b) (ap₃ f p p p) ＝ p
+ idem^ refl = ＝-cong-refl (idem _)
 
  ap₃-onto : {a : A}
           → (p : f a a a ＝ f a a a)
           → Σ p' ꞉ a ＝ a , ap₃ f p' p' p' ＝ p
  ap₃-onto {a} p = p' , hp
   where
-   p' = ＝-congr (idem a) (idem a) p
-   hp = ＝-congr-cancel (idem a) (idem a) (idem^ p')
+   p' = ＝-cong (idem a) (idem a) p
+   hp = ＝-cong-cancel (idem a) (idem a) (idem^ p')
 
 \end{code}
 
@@ -170,8 +170,8 @@ module ternary-wnu (A    : 𝓤 ̇ )
  wnu₁^ {a = a} {b = b} refl refl = refl-left-neutral
 
  wnu₂^ : {a a' b b' : A} (p : a ＝ b) (p' : a' ＝ b')
-       →  ap₃ w p p' p ＝ ＝-congr (wnu₂ a a') (wnu₂ b b') (ap₃ w p p p')
- wnu₂^ refl refl = sym (＝-congr-refl (wnu₂ _ _))
+       →  ap₃ w p p' p ＝ ＝-cong (wnu₂ a a') (wnu₂ b b') (ap₃ w p p p')
+ wnu₂^ refl refl = sym (＝-cong-refl (wnu₂ _ _))
 
  reduce₁ : {a : A} (q : a ＝ a)
          → Σ q' ꞉ a ＝ a , Σ q'' ꞉ a ＝ a , w' q q q ＝ w' refl q' q''
@@ -247,31 +247,31 @@ module ternary-wnu (A    : 𝓤 ̇ )
    he : wnu₂ a a ＝ ap₃ w e e e
    he = sym (pr₂ (ap₃-onto (wnu₂ a a)))
 
-   q'' = q ∙ (＝-congr e e q)
+   q'' = q ∙ (＝-cong e e q)
 
-   use-wnu₂ : ap₃ w refl q refl ＝ ap₃ w refl refl (＝-congr e e q)
+   use-wnu₂ : ap₃ w refl q refl ＝ ap₃ w refl refl (＝-cong e e q)
    use-wnu₂ =
-    ap₃ w refl q refl                                              ＝⟨ I ⟩
-    ＝-congr (wnu₂ a a) (wnu₂ a a) (ap₃ w refl refl q)             ＝⟨ II ⟩
-    ＝-congr (ap₃ w e e e) (ap₃ w e e e) (ap₃ w refl refl q)       ＝⟨ III ⟩
-    ap₃ w (＝-congr e e refl) (＝-congr e e refl) (＝-congr e e q) ＝⟨ IV ⟩
-    ap₃ w refl refl (＝-congr e e q)                               ∎
+    ap₃ w refl q refl                                           ＝⟨ I ⟩
+    ＝-cong (wnu₂ a a) (wnu₂ a a) (ap₃ w refl refl q)           ＝⟨ II ⟩
+    ＝-cong (ap₃ w e e e) (ap₃ w e e e) (ap₃ w refl refl q)     ＝⟨ III ⟩
+    ap₃ w (＝-cong e e refl) (＝-cong e e refl) (＝-cong e e q) ＝⟨ IV ⟩
+    ap₃ w refl refl (＝-cong e e q)                             ∎
      where
       I = wnu₂^ refl q
-      II = ap (λ - → ＝-congr - - (ap₃ w refl refl q)) he
-      III = ＝-congr-ap₃ w e e refl e e refl e e q
-      IV = ap₂ (λ - y → ap₃ w - - y) (＝-congr-refl e) refl
+      II = ap (λ - → ＝-cong - - (ap₃ w refl refl q)) he
+      III = ＝-cong-ap₃ w e e refl e e refl e e q
+      IV = ap₂ (λ - y → ap₃ w - - y) (＝-cong-refl e) refl
 
    hq : ap₃ w q q q ＝ ap₃ w q refl q''
    hq =
-    ap₃ w q q q                                       ＝⟨ I ⟩
-    ap₃ w q refl q ∙ ap₃ w refl q refl                ＝⟨ II ⟩
-    ap₃ w q refl q ∙ ap₃ w refl refl (＝-congr e e q) ＝⟨ III ⟩
-    ap₃ w q refl q''                                  ∎
+    ap₃ w q q q                                      ＝⟨ I ⟩
+    ap₃ w q refl q ∙ ap₃ w refl q refl               ＝⟨ II ⟩
+    ap₃ w q refl q ∙ ap₃ w refl refl (＝-cong e e q) ＝⟨ III ⟩
+    ap₃ w q refl q''                                 ∎
      where
       I = ap₃-∙' w q refl refl q q refl refl (sym refl-left-neutral) refl
       II = ap (λ - → ap₃ w q refl q ∙ -) use-wnu₂
-      III = sym (ap₃-∙' w q refl refl refl q (＝-congr e e q) refl refl refl)
+      III = sym (ap₃-∙' w q refl refl refl q (＝-cong e e q) refl refl refl)
 
  commutes₂ : {a : A}
            → (p q : a ＝ a)
@@ -291,7 +291,7 @@ module ternary-wnu (A    : 𝓤 ̇ )
 
  reduce₃ : {a : A} (q : a ＝ a)
          → Σ q' ꞉ a ＝ a , Σ q'' ꞉ a ＝ a , w' q q q ＝ w'  q' q'' refl
- reduce₃ {a} q = (＝-congr e e q) , (q ∙ (＝-congr e e q)) , hq
+ reduce₃ {a} q = (＝-cong e e q) , (q ∙ (＝-cong e e q)) , hq
   where
    e : a ＝ a
    e = pr₁ (ap₃-onto (wnu₂ a a))
@@ -299,29 +299,29 @@ module ternary-wnu (A    : 𝓤 ̇ )
    he : wnu₂ a a ＝ ap₃ w e e e
    he = sym (pr₂ (ap₃-onto (wnu₂ a a)))
 
-   use-wnu₂' : ap₃ w q refl q ＝ ap₃ w (＝-congr e e q) (＝-congr e e q) refl
+   use-wnu₂' : ap₃ w q refl q ＝ ap₃ w (＝-cong e e q) (＝-cong e e q) refl
    use-wnu₂' =
-    ap₃ w q refl q                                             ＝⟨ wnu₂^ q refl ⟩
-    ＝-congr (wnu₂ a a) (wnu₂ a a) (ap₃ w q q refl)             ＝⟨ II ⟩
-    ＝-congr (ap₃ w e e e) (ap₃ w e e e) (ap₃ w q q refl)       ＝⟨ III ⟩
-    ap₃ w (＝-congr e e q) (＝-congr e e q) (＝-congr e e refl) ＝⟨ IV ⟩
-    ap₃ w (＝-congr e e q) (＝-congr e e q) refl                ∎
+    ap₃ w q refl q                                           ＝⟨ wnu₂^ q refl ⟩
+    ＝-cong (wnu₂ a a) (wnu₂ a a) (ap₃ w q q refl)           ＝⟨ II ⟩
+    ＝-cong (ap₃ w e e e) (ap₃ w e e e) (ap₃ w q q refl)     ＝⟨ III ⟩
+    ap₃ w (＝-cong e e q) (＝-cong e e q) (＝-cong e e refl) ＝⟨ IV ⟩
+    ap₃ w (＝-cong e e q) (＝-cong e e q) refl               ∎
      where
-      II = ap (λ - → ＝-congr - - (ap₃ w q q refl)) he
-      III = ＝-congr-ap₃ w e e q e e q e e refl
-      IV = ap₂ (λ x y → ap₃ w x x y) refl (＝-congr-refl e)
+      II = ap (λ - → ＝-cong - - (ap₃ w q q refl)) he
+      III = ＝-cong-ap₃ w e e q e e q e e refl
+      IV = ap₂ (λ x y → ap₃ w x x y) refl (＝-cong-refl e)
 
-   hq : ap₃ w q q q ＝ ap₃ w (＝-congr e e q) (q ∙ ＝-congr e e q) refl
+   hq : ap₃ w q q q ＝ ap₃ w (＝-cong e e q) (q ∙ ＝-cong e e q) refl
    hq =
-    ap₃ w q q q                                                      ＝⟨ I ⟩
-    ap₃ w refl q refl ∙ ap₃ w q refl q                               ＝⟨ II ⟩
-    ap₃ w refl q refl ∙ ap₃ w (＝-congr e e q) (＝-congr e e q) refl ＝⟨ III ⟩
-    ap₃ w (＝-congr e e q) (q ∙ (＝-congr e e q)) refl               ∎
+    ap₃ w q q q                                                    ＝⟨ I ⟩
+    ap₃ w refl q refl ∙ ap₃ w q refl q                             ＝⟨ II ⟩
+    ap₃ w refl q refl ∙ ap₃ w (＝-cong e e q) (＝-cong e e q) refl ＝⟨ III ⟩
+    ap₃ w (＝-cong e e q) (q ∙ (＝-cong e e q)) refl               ∎
      where
       I = ap₃-∙' w refl q q refl refl q (sym refl-left-neutral)
                  refl (sym refl-left-neutral)
       II = ap (λ - → ap₃ w refl q refl ∙ -) use-wnu₂'
-      III = sym (ap₃-∙' w refl (＝-congr e e q) q (＝-congr e e q) refl refl
+      III = sym (ap₃-∙' w refl (＝-cong e e q) q (＝-cong e e q) refl refl
                         (sym refl-left-neutral) refl refl)
 
  commutes₃ : {a : A}
@@ -388,22 +388,22 @@ module ternary-wnu (A    : 𝓤 ̇ )
     VIII = ap (w' q q q ∙_)
               (ap₃-homo-w' {p'' = p} {q'' = p} refl∙p refl∙p refl)
 
- Ωw-idem : {a b : A} → (p : a ＝ b) → ＝-congr (idem a) (idem b) (ap₃ w p p p) ＝ p
- Ωw-idem refl = ＝-congr-refl (idem _)
+ Ωw-idem : {a b : A} → (p : a ＝ b) → ＝-cong (idem a) (idem b) (ap₃ w p p p) ＝ p
+ Ωw-idem refl = ＝-cong-refl (idem _)
 
  taylors-lemma : {a : A} → (p q : a ＝ a) → p ∙ q ＝ q ∙ p
  taylors-lemma {a} p q =
-  p ∙ q                                            ＝⟨ sym (dissolve p q) ⟩
-  ＝-congr (idem a) (idem a) (w' p p p ∙ w' q q q) ＝⟨ see-above ⟩
-  ＝-congr (idem a) (idem a) (w' q q q ∙ w' p p p) ＝⟨ dissolve q p ⟩
-  q ∙ p                                            ∎
+  p ∙ q                                           ＝⟨ sym (dissolve p q) ⟩
+  ＝-cong (idem a) (idem a) (w' p p p ∙ w' q q q) ＝⟨ see-above ⟩
+  ＝-cong (idem a) (idem a) (w' q q q ∙ w' p p p) ＝⟨ dissolve q p ⟩
+  q ∙ p                                           ∎
    where
     dissolve : (p' q' : a ＝ a)
-             → ＝-congr (idem a) (idem a) (w' p' p' p' ∙ w' q' q' q') ＝ p' ∙ q'
+             → ＝-cong (idem a) (idem a) (w' p' p' p' ∙ w' q' q' q') ＝ p' ∙ q'
     dissolve p' q' =
-       ＝-congr-∙ (idem a) (idem a) (idem a) (ap₃ w p' p' p') (ap₃ w q' q' q')
+       ＝-cong-∙ (idem a) (idem a) (idem a) (ap₃ w p' p' p') (ap₃ w q' q' q')
      ∙ ap₂ _∙_ (Ωw-idem p') (Ωw-idem q')
 
-    see-above = ap (＝-congr (idem a) (idem a)) (image-of-w'-commutes p q)
+    see-above = ap (＝-cong (idem a) (idem a)) (image-of-w'-commutes p q)
 
 \end{code}

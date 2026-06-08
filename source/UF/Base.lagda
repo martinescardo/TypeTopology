@@ -673,7 +673,7 @@ congruence. Duplicating two of the arguments we obtain conjugation of loops.
 The congruence witness enjoys various coherence properties, as shown below.
 These are used in several files in the AlgebraicStructuresForcingSethood folder.
 
-`＝-congr h₁ h₂ p` transports a path p : a ＝ b across a commutative
+`＝-cong h₁ h₂ p` transports a path p : a ＝ b across a commutative
 square to obtain a path x ＝ y:
 
     a ═════ p ════ b
@@ -688,11 +688,11 @@ h₁ = h₂ = refl, the square degenerates and we recover p.
 
 \begin{code}
 
-＝-congr : {A : 𝓤 ̇ } {a b x y : A} → a ＝ x → b ＝ y → a ＝ b → x ＝ y
-＝-congr = transport₂ _＝_
+＝-cong : {A : 𝓤 ̇ } {a b x y : A} → a ＝ x → b ＝ y → a ＝ b → x ＝ y
+＝-cong = transport₂ _＝_
 
 conjugate-loop : {A : 𝓤 ̇ } {a b : A} → a ＝ b → a ＝ a → b ＝ b
-conjugate-loop p = ＝-congr p p
+conjugate-loop p = ＝-cong p p
 
 conjugate-loop-conjugates : {A : 𝓤 ̇ } {a b : A} (p : a ＝ b) (l : a ＝ a)
                           → conjugate-loop p l ＝ p ⁻¹ ∙ l ∙ p
@@ -710,8 +710,8 @@ When h = refl the square collapses to a point and the loop is unchanged:
 
 \begin{code}
 
-＝-congr-refl : {A : 𝓤 ̇ } {a x : A} (h : a ＝ x) → ＝-congr h h refl ＝ refl
-＝-congr-refl refl = refl
+＝-cong-refl : {A : 𝓤 ̇ } {a x : A} (h : a ＝ x) → ＝-cong h h refl ＝ refl
+＝-cong-refl refl = refl
 
 \end{code}
 
@@ -725,11 +725,11 @@ Equality congruence distributes over path concatenation:
 
 \begin{code}
 
-＝-congr-∙ : {A : 𝓤 ̇ } {a b c x y z : A}
-             (h₁ : a ＝ x) (h₂ : b ＝ y) (h₃ : c ＝ z)
-             (p : a ＝ b) (q : b ＝ c)
-           → ＝-congr h₁ h₃ (p ∙ q) ＝ ＝-congr h₁ h₂ p ∙ ＝-congr h₂ h₃ q
-＝-congr-∙ refl refl refl p q = refl
+＝-cong-∙ : {A : 𝓤 ̇ } {a b c x y z : A}
+            (h₁ : a ＝ x) (h₂ : b ＝ y) (h₃ : c ＝ z)
+            (p : a ＝ b) (q : b ＝ c)
+          → ＝-cong h₁ h₃ (p ∙ q) ＝ ＝-cong h₁ h₂ p ∙ ＝-cong h₂ h₃ q
+＝-cong-∙ refl refl refl p q = refl
 
 
 \end{code}
@@ -738,13 +738,13 @@ Equality congruence by a composite path equals iterated congruence.
 
 \begin{code}
 
-＝-congr-∙'
+＝-cong-∙'
  : {A : 𝓤 ̇ } {a b u v x y : A}
    (l₁ : a ＝ u) (l₂ : u ＝ x)
    (r₁ : b ＝ v) (r₂ : v ＝ y)
    (p : a ＝ b)
- → ＝-congr (l₁ ∙ l₂) (r₁ ∙ r₂) p ＝ ＝-congr l₂ r₂ (＝-congr l₁ r₁ p)
-＝-congr-∙' refl refl refl refl p = refl
+ → ＝-cong (l₁ ∙ l₂) (r₁ ∙ r₂) p ＝ ＝-cong l₂ r₂ (＝-cong l₁ r₁ p)
+＝-cong-∙' refl refl refl refl p = refl
 
 \end{code}
 
@@ -786,25 +786,25 @@ same path x ＝ y.
 
 \begin{code}
 
-＝-congr-nat : {A : 𝓤 ̇ } {a b x y : A}
-               (ha : a ＝ a) (hb : b ＝ b) (hax : a ＝ x) (hby : b ＝ y)
-               (p : a ＝ b)
-             → ＝-congr hax hby (＝-congr ha hb p)
-             ＝ ＝-congr
-                 (＝-congr hax hax ha)
-                 (＝-congr hby hby hb)
-                 (＝-congr hax hby p)
-＝-congr-nat ha hb refl refl p = refl
+＝-cong-nat : {A : 𝓤 ̇ } {a b x y : A}
+              (ha : a ＝ a) (hb : b ＝ b) (hax : a ＝ x) (hby : b ＝ y)
+              (p : a ＝ b)
+            → ＝-cong hax hby (＝-cong ha hb p)
+              ＝ ＝-cong
+                  (＝-cong hax hax ha)
+                  (＝-cong hby hby hb)
+                  (＝-cong hax hby p)
+＝-cong-nat ha hb refl refl p = refl
 
-＝-congr-nat' : {A : 𝓤 ̇ } {a b x y : A}
-                (hab : a ＝ b) (hax : a ＝ x) (hby : b ＝ y)
-                (p : a ＝ a)
-              → ＝-congr hby hby (＝-congr hab hab p)
-                ＝ ＝-congr
-                    (＝-congr hax hby hab)
-                    (＝-congr hax hby hab)
-                    (＝-congr hax hax p)
-＝-congr-nat' refl refl refl p = refl
+＝-cong-nat' : {A : 𝓤 ̇ } {a b x y : A}
+               (hab : a ＝ b) (hax : a ＝ x) (hby : b ＝ y)
+               (p : a ＝ a)
+             → ＝-cong hby hby (＝-cong hab hab p)
+               ＝ ＝-cong
+                   (＝-cong hax hby hab)
+                   (＝-cong hax hby hab)
+                   (＝-cong hax hax p)
+＝-cong-nat' refl refl refl p = refl
 
 \end{code}
 
@@ -812,12 +812,12 @@ Equality congruence is invertible.
 
 \begin{code}
 
-＝-congr-⁻¹ : {A : 𝓤 ̇ } {a b x y : A}
-              {hax : a ＝ x} {hby : b ＝ y}
-              {p : a ＝ b} {q : x ＝ y}
-            → ＝-congr hax hby p ＝ q
-            → p ＝ ＝-congr (hax ⁻¹) (hby ⁻¹) q
-＝-congr-⁻¹ {hax = refl} {hby = refl} refl = refl
+＝-cong-⁻¹ : {A : 𝓤 ̇ } {a b x y : A}
+             {hax : a ＝ x} {hby : b ＝ y}
+             {p : a ＝ b} {q : x ＝ y}
+           → ＝-cong hax hby p ＝ q
+           → p ＝ ＝-cong (hax ⁻¹) (hby ⁻¹) q
+＝-cong-⁻¹ {hax = refl} {hby = refl} refl = refl
 
 \end{code}
 
@@ -833,10 +833,10 @@ Going right-then-down equals going down-then-right:
 
 \begin{code}
 
-＝-congr-sq : {A : 𝓤 ̇ } {a b x y : A}
-              (p : a ＝ b) (q : a ＝ x) (r : b ＝ y)
-            → q ∙ ＝-congr q r p ＝ p ∙ r
-＝-congr-sq refl refl refl = refl
+＝-cong-sq : {A : 𝓤 ̇ } {a b x y : A}
+             (p : a ＝ b) (q : a ＝ x) (r : b ＝ y)
+           → q ∙ ＝-cong q r p ＝ p ∙ r
+＝-cong-sq refl refl refl = refl
 
 \end{code}
 
@@ -846,23 +846,23 @@ on 8 June 2026.
 
 \begin{code}
 
-＝-congr-cancel : {A : 𝓤 ̇ } {a a' b b' : A} {p q : a ＝ a'}
+＝-cong-cancel : {A : 𝓤 ̇ } {a a' b b' : A} {p q : a ＝ a'}
                 → (h₁ : a ＝ b)
                 → (h₂ : a' ＝ b')
-                → ＝-congr h₁ h₂ p ＝ ＝-congr h₁ h₂ q
+                → ＝-cong h₁ h₂ p ＝ ＝-cong h₁ h₂ q
                 → p ＝ q
-＝-congr-cancel refl refl h = h
+＝-cong-cancel refl refl h = h
 
-＝-congr-ap₃
+＝-cong-ap₃
  : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
     (f : W → X → Y → Z)
     {w₀ w₁ w₂ w₃ : W} {x₀ x₁ x₂ x₃ : X} {y₀ y₁ y₂ y₃ : Y}
     (r₀ : w₀ ＝ w₁) (r₁ : w₂ ＝ w₃) (r₂ : w₀ ＝ w₂)
     (p₀ : x₀ ＝ x₁) (p₁ : x₂ ＝ x₃) (p₂ : x₀ ＝ x₂)
     (q₀ : y₀ ＝ y₁) (q₁ : y₂ ＝ y₃) (q₂ : y₀ ＝ y₂)
-  → ＝-congr (ap₃ f r₀ p₀ q₀) (ap₃ f r₁ p₁ q₁) (ap₃ f r₂ p₂ q₂)
-    ＝ ap₃ f (＝-congr r₀ r₁ r₂) (＝-congr p₀ p₁ p₂) (＝-congr q₀ q₁ q₂)
-＝-congr-ap₃ f refl refl r₂ refl refl p₂ refl refl q₂ = refl
+  → ＝-cong (ap₃ f r₀ p₀ q₀) (ap₃ f r₁ p₁ q₁) (ap₃ f r₂ p₂ q₂)
+    ＝ ap₃ f (＝-cong r₀ r₁ r₂) (＝-cong p₀ p₁ p₂) (＝-cong q₀ q₁ q₂)
+＝-cong-ap₃ f refl refl r₂ refl refl p₂ refl refl q₂ = refl
 
 \end{code}
 
@@ -900,14 +900,14 @@ assoc₄ {p = refl} {q = refl} {r = refl} {s = refl} = refl
 comm₂ : {A : 𝓤 ̇ } {a : A} {p q : a ＝ a} (h : p ∙ q ＝ q ∙ p)
       → (p ∙ p) ∙ (q ∙ q) ＝ (q ∙ q) ∙ (p ∙ p)
 comm₂ {p = p} {q = q} h =
- ＝-congr
+ ＝-cong
   ((assoc₄ {p = p} {q = p} {r = q} {s = q}) ⁻¹)
   ((assoc₄ {p = q} {q = q} {r = p} {s = p}) ⁻¹)
-  (＝-congr
+  (＝-cong
     (ap (λ x → p ∙ x ∙ q) (h ⁻¹))
     (ap (λ x → q ∙ x ∙ p) h)
-    (＝-congr (assoc₄ {p = p} {q = q} {r = p} {s = q})
-              (assoc₄ {p = q} {q = p} {r = q} {s = p})
-              (ap (λ x → x ∙ x) h)))
+    (＝-cong (assoc₄ {p = p} {q = q} {r = p} {s = q})
+             (assoc₄ {p = q} {q = p} {r = q} {s = p})
+             (ap (λ x → x ∙ x) h)))
 
 \end{code}
