@@ -2,6 +2,8 @@ Martin Escardo 23rd Feb 2026. A result by David Wärn [1].
 
 Moved from `gist` to this place 17th April 2026.
 
+Merged basic library into UF.Base on 3—4 June 2026 by Tom de Jong.
+
 Any type equipped with a binary operation _*_ that is associative,
 commutative and idempotent is a set (homotopy 0-type). That is, there
 are no higher semilattices! This file is my attempt to understand
@@ -41,11 +43,10 @@ Finally, using the associativity of *, we get that
   (ix)   act-l p ＝ refl                       (act-l-trivial)
   (x)    p ＝ refl                             (Ω-null)
 
-In the spirit of the original file [1], we make this file
-self-contained, without importing any TypeTopology file, to show that
-a relatively short argument in a rather Spartan MLTT is possible - we
-only need Π-types and identity types. (We also don't use universe
-polymorphism.)
+In the spirit of the original file [1], we only use minimal imports
+from TypeTopology, to show that a relatively short argument in a
+rather Spartan MLTT is possible - we only need Π-types and identity
+types. (We also don't make real use of universe polymorphism.)
 
 \begin{code}
 
@@ -53,245 +54,24 @@ polymorphism.)
 
 module AlgebraicStructuresForcingSethood.Semilattices where
 
-\end{code}
-
-What Agda calls sets is what we call types.
-
-\begin{code}
-
-open import Agda.Primitive renaming (Set to Type)
-
-\end{code}
-
-Basic path combinators.
-
-\begin{code}
-
-infix 15 _＝_
-
-data _＝_ {A : Type} (a : A) : A → Type where
- refl : a ＝ a
-
-ap : {A B : Type} {a b : A} (f : A → B) → a ＝ b → f a ＝ f b
-ap f refl = refl
-
-infixr 20 _∙_
-
-_∙_ : {A : Type} {a b c : A} → a ＝ b → b ＝ c → a ＝ c
-refl ∙ refl = refl
-
-sym : {A : Type} {a b : A} → a ＝ b → b ＝ a
-sym refl = refl
-
-ap₂ : {A B C : Type} (f : A → B → C) {a₁ a₂ : A} {b₁ b₂ : B}
-    → a₁ ＝ a₂ → b₁ ＝ b₂ → f a₁ b₁ ＝ f a₂ b₂
-ap₂ f refl refl = refl
-
-∙refl : {A : Type} {a b : A} (p : a ＝ b) → p ∙ refl ＝ p
-∙refl refl = refl
-
-refl∙ : {A : Type} {a b : A} (p : a ＝ b) → refl ∙ p ＝ p
-refl∙ refl = refl
+open import MLTT.Universes
+open import MLTT.Id
+open import UF.Base using
+  ( ap₂
+  ; refl-left-neutral
+  ; refl-right-neutral
+  ; cancel-left
+  ; ＝-congr
+  ; ＝-congr-refl
+  ; ＝-congr-∙
+  ; ＝-congr-∙'
+  ; ＝-congr-nat
+  ; ＝-congr-⁻¹
+  ; ＝-congr-sq
+  ; comm₂
+  )
 
 \end{code}
-
-We now define a notion of equality (or path) congruence.
-
-`eq-congr h₁ h₂ p` transports a path p : a ＝ b across a commutative
-square to obtain a path x ＝ y:
-
-    a ═════ p ════ b
-    ║              ║
-   h₁              h₂
-    ║              ║
-    x ════════════ y
-           ?
-
-The resulting path is sym h₁ ∙ p ∙ h₂.  Definitionally, when
-h₁ = h₂ = refl, the square degenerates and we recover p.
-
-\begin{code}
-
-eq-congr : {A : Type} {a b x y : A} → a ＝ x → b ＝ y → a ＝ b → x ＝ y
-eq-congr refl refl p = p
-
-\end{code}
-
-When h = refl the square collapses to a point and the loop is unchanged:
-
-    a ═══ p ══ a
-    ║          ║
-    h          h    ↝   a ══ refl ══ a
-    ║          ║
-    a ════════ a
-
-\begin{code}
-
-eq-congr-refl : {A : Type} {a x : A} (h : a ＝ x) → eq-congr h h refl ＝ refl
-eq-congr-refl refl = refl
-
-\end{code}
-
-Equality congruence distributes over path concatenation:
-
-    a ══ p ══ b ══ q ═══ c
-    ║         ║          ║
-   h₁        h₂          h₃
-    ║         ║          ║
-    x ═══════ y ════════ z
-
-\begin{code}
-
-eq-congr-∙ : {A : Type} {a b c x y z : A}
-             {h₁ : a ＝ x} {h₂ : b ＝ y} {h₃ : c ＝ z}
-             (p : a ＝ b) (q : b ＝ c)
-           → eq-congr h₁ h₃ (p ∙ q) ＝ eq-congr h₁ h₂ p ∙ eq-congr h₂ h₃ q
-eq-congr-∙ {h₁ = refl} {h₂ = refl} {h₃ = refl} p q = refl
-
-\end{code}
-
-Equality congruence is invertible.
-
-\begin{code}
-
-eq-congr-sym : {A : Type} {a b x y : A}
-               {hax : a ＝ x} {hby : b ＝ y}
-               {p : a ＝ b} {q : x ＝ y}
-             → eq-congr hax hby p ＝ q
-             → p ＝ eq-congr (sym hax) (sym hby) q
-eq-congr-sym {hax = refl} {hby = refl} refl = refl
-
-\end{code}
-
-We now construct a square congruence identity.
-
-Going right-then-down equals going down-then-right:
-
-    a ══ p ══ b
-    ║         ║
-    q         r
-    ║         ║
-    x ═══════ y
-
-\begin{code}
-
-eq-congr-sq : {A : Type} {a b x y : A}
-              (p : a ＝ b) (q : a ＝ x) (r : b ＝ y)
-            → q ∙ eq-congr q r p ＝ p ∙ r
-eq-congr-sq refl refl refl = refl
-
-\end{code}
-
-We now show that equality congruence is natural.
-
-The cleanest expression is a commutative square whose nodes are
-path spaces and whose edges are "apply congruence with":
-
-  (a ＝ b) ══════ congruence with (ha, hb) ══════ (a ＝ b)
-     ║                                              ║
-congruence with (hax, hby)                  congruence with (hax, hby)
-     ║                                              ║
-  (x ＝ y) ════ congruence with (ha', hb') ══════ (x ＝ y)
-
-  where  ha' = eq-congr hax hax ha
-         hb' = eq-congr hby hby hb.
-
-The geometric intuition is a cube in A, where the top and bottom faces
-record the ha/hb loops and their congruences ha'/hb', and the vertical
-edges are hax and hby:
-
-        a ══  ha ══ a
-       ╱║           ║╲
-    hax ║           ║ hax
-     ╱  p           p' ╲
-    x   ║           ║    x
-    ║   b ══  hb ══ b    ║
-    ║  ╱             ╲   ║
-    ║ hby           hby  ║
-    ║╱                 ╲ ║
-    y ══════  hb' ══════ y
-
-  where  p  = eq-congr hax hby p      (front face)
-         p' = eq-congr hax hby        (back face)
-               (eq-congr ha hb p).
-
-Naturality says that the front face and back face of the cube give the
-same path x ＝ y.
-
-\begin{code}
-
-eq-congr-nat : {A : Type} {a b x y : A}
-               (ha : a ＝ a) (hb : b ＝ b) (hax : a ＝ x) (hby : b ＝ y)
-               (p : a ＝ b)
-             → eq-congr hax hby (eq-congr ha hb p)
-             ＝ eq-congr
-                 (eq-congr hax hax ha)
-                 (eq-congr hby hby hb)
-                 (eq-congr hax hby p)
-eq-congr-nat ha hb refl refl p = refl
-
-\end{code}
-
-Equality congruence by a composite path equals iterated congruence.
-
-\begin{code}
-
-iter-congr : {A : Type} {a b u v x y : A}
-             (l₁ : a ＝ u) (l₂ : u ＝ x) (r₁ : b ＝ v) (r₂ : v ＝ y) (p : a ＝ b)
-           → eq-congr (l₁ ∙ l₂) (r₁ ∙ r₂) p ＝ eq-congr l₂ r₂ (eq-congr l₁ r₁ p)
-iter-congr refl refl refl refl p = refl
-
-\end{code}
-
-Left-cancellation of path concatenation.
-
-\begin{code}
-
-∙-cancel : {A : Type} {a b c : A} (p : a ＝ b) (q₁ q₂ : b ＝ c)
-         → p ∙ q₁ ＝ p ∙ q₂ → q₁ ＝ q₂
-∙-cancel refl q₁ q₂ h = eq-congr (refl∙ q₁) (refl∙ q₂) h
-
-\end{code}
-
-The standard Eckmann–Hilton argument shows that two binary operations
-on a set that share a unit and interchange with each other must
-coincide and be commutative. Here we only need one piece of that
-argument: if loops p and q commute, then p ∙ p and q ∙ q also commute.
-
-The key calculation rearranges a 2×2 grid of tiles:
-
-  ┌──────┬──────┐     ┌──────┬──────┐
-  │  p   │  p   │     │  q   │  q   │
-  ├──────┼──────┤  ↝  ├──────┼──────┤
-  │  q   │  q   │     │  p   │  p   │
-  └──────┴──────┘     └──────┴──────┘
-
-  p∙p∙q∙q = p∙(p∙q)∙q ＝ p∙(q∙p)∙q = (p∙q)∙(p∙q)
-          ＝ (q∙p)∙(q∙p) = q∙(p∙q)∙p ＝ q∙(q∙p)∙p = q∙q∙p∙p.
-
-The function assoc₄ handles the repeated reassociation steps.
-
-\begin{code}
-
-assoc₄ : {A : Type} {a b c d e : A}
-         {p : a ＝ b} {q : b ＝ c} {r : c ＝ d} {s : d ＝ e}
-       → (p ∙ q) ∙ (r ∙ s) ＝ p ∙ (q ∙ r) ∙ s
-assoc₄ {p = refl} {q = refl} {r = refl} {s = refl} = refl
-
-comm₂ : {A : Type} {a : A} {p q : a ＝ a} (h : p ∙ q ＝ q ∙ p)
-      → (p ∙ p) ∙ (q ∙ q) ＝ (q ∙ q) ∙ (p ∙ p)
-comm₂ {p = p} {q = q} h =
- eq-congr
-  (sym assoc₄)
-  (sym assoc₄)
-  (eq-congr
-    (ap (λ x → p ∙ x ∙ q) (sym h))
-    (ap (λ x → q ∙ x ∙ p) h)
-    (eq-congr assoc₄ assoc₄ (ap (λ x → x ∙ x) h)))
-
-\end{code}
-
-We now come to the main theorem.
 
 We fix a type A with an associative, commutative, idempotent
 operation, and a base-point x₀.
@@ -299,7 +79,7 @@ operation, and a base-point x₀.
 \begin{code}
 
 module _
-         (A     : Type)
+         (A     : 𝓤 ̇ )
          (_*_   : A → A → A)
          (idem  : (a : A) → a * a ＝ a)
          (comm  : (a b : A) → a * b ＝ b * a)
@@ -307,7 +87,7 @@ module _
          (x₀    : A)
        where
 
-  ΩA : Type
+  ΩA : 𝓤 ̇
   ΩA = x₀ ＝ x₀
 
 \end{code}
@@ -347,7 +127,7 @@ a loop at x₀:
 \begin{code}
 
   reduce : x₀ * x₀ ＝ x₀ * x₀ → ΩA
-  reduce = eq-congr (idem x₀) (idem x₀)
+  reduce = ＝-congr (idem x₀) (idem x₀)
 
 \end{code}
 
@@ -385,7 +165,7 @@ With this we have that _★_ induces an operation _⋆_ on loops.
   ⋆-in-terms-of-∙ : (p q : ΩA) → p ⋆ q ＝ act-l p ∙ act-r q
   ⋆-in-terms-of-∙ p q =
    ap reduce (★-in-terms-of-∙ _ _)
-   ∙ eq-congr-∙ (ap (_* x₀) p) (ap (x₀ *_) q)
+   ∙ ＝-congr-∙ (idem x₀) (idem x₀) (idem x₀) (ap (_* x₀) p) (ap (x₀ *_) q)
 
 \end{code}
 
@@ -403,8 +183,8 @@ of *, for any p : a ＝ b:
 \begin{code}
 
   ★-idemp : {a b : A} (p : a ＝ b)
-          → eq-congr (idem a) (idem b) (p ★ p) ＝ p
-  ★-idemp refl = eq-congr-refl (idem _)
+          → ＝-congr (idem a) (idem b) (p ★ p) ＝ p
+  ★-idemp refl = ＝-congr-refl (idem _)
 
   ⋆-idemp : (p : ΩA) → p ⋆ p ＝ p
   ⋆-idemp = ★-idemp
@@ -439,29 +219,29 @@ and using ⋆-idemp.
 \begin{code}
 
   comm-paths : {a b x y : A} (p : a ＝ x) (q : b ＝ y)
-             → eq-congr (comm a b) (comm x y) (p ★ q) ＝ q ★ p
-  comm-paths refl refl = eq-congr-refl _
+             → ＝-congr (comm a b) (comm x y) (p ★ q) ＝ q ★ p
+  comm-paths refl refl = ＝-congr-refl (comm _ _)
 
   comm-self : ΩA
   comm-self = reduce (comm x₀ x₀)
 
   comm-loop-raw : (p q : ΩA)
-                → eq-congr comm-self comm-self (p ⋆ q) ＝ q ⋆ p
+                → ＝-congr comm-self comm-self (p ⋆ q) ＝ q ⋆ p
   comm-loop-raw p q =
-    eq-congr
-     (eq-congr-nat (comm x₀ x₀) (comm x₀ x₀) (idem x₀) (idem x₀) (p ★ q))
+    ＝-congr
+     (＝-congr-nat (comm x₀ x₀) (comm x₀ x₀) (idem x₀) (idem x₀) (p ★ q))
      refl
      (ap reduce (comm-paths p q))
 
-  comm-self-center : (p : ΩA) → eq-congr comm-self comm-self p ＝ p
+  comm-self-center : (p : ΩA) → ＝-congr comm-self comm-self p ＝ p
   comm-self-center p =
-   eq-congr
-    (ap (eq-congr comm-self comm-self) (⋆-idemp p))
+   ＝-congr
+    (ap (＝-congr comm-self comm-self) (⋆-idemp p))
     (⋆-idemp p)
     (comm-loop-raw p p)
 
   comm-loop : (p q : ΩA) → p ⋆ q ＝ q ⋆ p
-  comm-loop p q = eq-congr (comm-self-center _) refl (comm-loop-raw p q)
+  comm-loop p q = ＝-congr (comm-self-center _) refl (comm-loop-raw p q)
 
 \end{code}
 
@@ -482,21 +262,21 @@ To deduce act-l ＝ act-r, we specialize to q = refl:
 \begin{code}
 
   act-swap : (p q : ΩA) → act-l p ∙ act-r q ＝ act-l q ∙ act-r p
-  act-swap p q = eq-congr
+  act-swap p q = ＝-congr
                   (⋆-in-terms-of-∙ p q)
                   (⋆-in-terms-of-∙ q p)
                   (comm-loop p q)
 
   act-l-refl : act-l refl ＝ refl
-  act-l-refl = eq-congr-refl _
+  act-l-refl = ＝-congr-refl (idem x₀)
 
   act-r-refl : act-r refl ＝ refl
-  act-r-refl = eq-congr-refl _
+  act-r-refl = ＝-congr-refl (idem x₀)
 
   only-one-act : (p : ΩA) → act-l p ＝ act-r p
-  only-one-act p = eq-congr
-                    (ap (act-l p ∙_) act-r-refl ∙ ∙refl _)
-                    (ap (_∙ act-r p) act-l-refl ∙ refl∙ _)
+  only-one-act p = ＝-congr
+                    (ap (act-l p ∙_) act-r-refl ∙ refl-right-neutral _)
+                    (ap (_∙ act-r p) act-l-refl ∙ refl-left-neutral)
                     (act-swap p refl)
 
 \end{code}
@@ -521,21 +301,21 @@ Then
   act-l-idemp : (p : ΩA) → act-l p ∙ act-l p ＝ p
   act-l-idemp p =
    ap (act-l p ∙_) (only-one-act p)
-   ∙ eq-congr (⋆-in-terms-of-∙ p p) refl (⋆-idemp p)
+   ∙ ＝-congr (⋆-in-terms-of-∙ p p) refl (⋆-idemp p)
 
   comm-l : (p q : ΩA) → act-l p ∙ act-l q ＝ act-l q ∙ act-l p
   comm-l p q =
-   eq-congr
-    (ap (act-l p ∙_) (sym (only-one-act q)))
-    (ap (act-l q ∙_) (sym (only-one-act p)))
+   ＝-congr
+    (ap (act-l p ∙_) ((only-one-act q) ⁻¹))
+    (ap (act-l q ∙_) ((only-one-act p) ⁻¹))
     (act-swap p q)
 
   loop-comm : (p q : ΩA) → p ∙ q ＝ q ∙ p
   loop-comm p q =
-   eq-congr
+   ＝-congr
     (ap₂ _∙_ (act-l-idemp p) (act-l-idemp q))
     (ap₂ _∙_ (act-l-idemp q) (act-l-idemp p))
-    (comm₂ (comm-l p q))
+    (comm₂ {p = act-l p} {q = act-l q} (comm-l p q))
 
 \end{code}
 
@@ -566,15 +346,15 @@ The function path assoc-self is the loop
 that witnesses the path between the two constructions.  Equality
 congruence with assoc-self gives ⋆-assoc-raw.  Since ΩA is commutative
 (loop-comm) and the equality congruence witness satisfies the square
-identity (eq-congr-sq), we can use ∙-cancel to strip assoc-self and
+identity (＝-congr-sq), we can use ∙-cancel to strip assoc-self and
 obtain ⋆-assoc.
 
 \begin{code}
 
   assoc-paths : {a b c x y z : A} (p : a ＝ x) (q : b ＝ y) (r : c ＝ z)
-              → eq-congr (assoc a b c) (assoc x y z) ((p ★ q) ★ r)
+              → ＝-congr (assoc a b c) (assoc x y z) ((p ★ q) ★ r)
               ＝ p ★ (q ★ r)
-  assoc-paths refl refl refl = eq-congr-refl _
+  assoc-paths refl refl refl = ＝-congr-refl (assoc _ _ _)
 
   idem-triple-l : (x₀ * x₀) * x₀ ＝ x₀
   idem-triple-l = (idem x₀ ★  refl) ∙ idem x₀
@@ -590,7 +370,7 @@ We now have, recorded as triple-fold-l,
      ║                                                       ║
 (hab ★refl) ∙ hcd                                       (hab ★ refl) ∙ hcd
      ║                                                       ║
-     e ══ eq-congr hcd hcd (eq-congr hab hab (p ★ q) ★ r) ══ e
+     e ══ ＝-congr hcd hcd (＝-congr hab hab (p ★ q) ★ r) ══ e
 
 And we have that triple-fold-r does the same for the right-associated
 parenthesization.
@@ -599,59 +379,60 @@ parenthesization.
 
   triple-fold-l : {a b c d e : A} (hab : a * b ＝ c) (hcd : c * d ＝ e)
                   (p : a ＝ a) (q : b ＝ b) (r : d ＝ d)
-                → eq-congr
+                → ＝-congr
                    ((hab ★ refl) ∙ hcd)
                    ((hab ★ refl) ∙ hcd)
                    ((p ★ q) ★ r)
-                ＝ eq-congr
+                ＝ ＝-congr
                     hcd
                     hcd
-                    (eq-congr hab hab (p ★ q) ★ r)
+                    (＝-congr hab hab (p ★ q) ★ r)
   triple-fold-l refl refl p q r = refl
 
   triple-fold-r : {a b c d e : A} (hab : a * b ＝ c) (hcd : d * c ＝ e)
                   (p : a ＝ a) (q : b ＝ b) (r : d ＝ d)
-                → eq-congr
+                → ＝-congr
                    ((refl ★ hab) ∙ hcd)
                    ((refl ★ hab) ∙ hcd)
                    (r ★ (p ★ q))
-                ＝ eq-congr
+                ＝ ＝-congr
                     hcd
                     hcd
-                    (r ★ eq-congr hab hab (p ★ q))
+                    (r ★ ＝-congr hab hab (p ★ q))
   triple-fold-r refl refl p q r = refl
 
   loop-triple-l : (p q r : ΩA)
-                → eq-congr idem-triple-l idem-triple-l ((p ★ q) ★ r)
+                → ＝-congr idem-triple-l idem-triple-l ((p ★ q) ★ r)
                 ＝ (p ⋆ q) ⋆ r
   loop-triple-l p q r = triple-fold-l (idem x₀) (idem x₀) p q r
 
   loop-triple-r : (p q r : ΩA)
-                → eq-congr idem-triple-r idem-triple-r (p ★ (q ★ r))
+                → ＝-congr idem-triple-r idem-triple-r (p ★ (q ★ r))
                 ＝ p ⋆ (q ⋆ r)
   loop-triple-r p q r = triple-fold-r (idem x₀) (idem x₀) q r p
 
   assoc-self : ΩA
-  assoc-self = sym idem-triple-l ∙ (assoc x₀ x₀ x₀ ∙ idem-triple-r)
+  assoc-self = idem-triple-l ⁻¹ ∙ (assoc x₀ x₀ x₀ ∙ idem-triple-r)
 
   ⋆-assoc-raw : (p q r : ΩA)
-              → eq-congr assoc-self assoc-self ((p ⋆ q) ⋆ r)
+              → ＝-congr assoc-self assoc-self ((p ⋆ q) ⋆ r)
               ＝ p ⋆ (q ⋆ r)
   ⋆-assoc-raw p q r =
-   eq-congr
-    (sym (iter-congr (assoc x₀ x₀ x₀) idem-triple-r _ idem-triple-r _)
-      ∙ sym (iter-congr (sym idem-triple-l) _ _ _ _))
+   ＝-congr
+    ((＝-congr-∙' (assoc x₀ x₀ x₀) idem-triple-r _ idem-triple-r _) ⁻¹
+      ∙ (＝-congr-∙' _ (assoc x₀ x₀ x₀ ∙ idem-triple-r) _ _ _) ⁻¹)
     (loop-triple-r p q r)
-    (ap (eq-congr idem-triple-r idem-triple-r)
-      (ap (eq-congr (assoc x₀ x₀ x₀) _)
-          (sym (eq-congr-sym (loop-triple-l p q r)))
+    (ap (＝-congr idem-triple-r idem-triple-r)
+      (ap (＝-congr (assoc x₀ x₀ x₀) _)
+          ((＝-congr-⁻¹ {hax = idem-triple-l} {hby = idem-triple-l}
+                       (loop-triple-l p q r)) ⁻¹)
         ∙ assoc-paths p q r))
 
   ⋆-refl : (p : ΩA) → p ⋆ refl ＝ act-l p
   ⋆-refl p =
    ⋆-in-terms-of-∙ p refl
    ∙ ap (act-l p ∙_) act-r-refl
-   ∙ ∙refl (act-l p)
+   ∙ refl-right-neutral (act-l p)
 
 \end{code}
 
@@ -660,13 +441,13 @@ identity:
 
   assoc-self ∙ ⋆-assoc-raw  ＝  (p ⋆ q) ⋆ r ∙ assoc-self
 
-(by eq-congr-sq once we know loop-comm).
+(by ＝-congr-sq once we know loop-comm).
 
 \begin{code}
 
   ⋆-assoc : (p q r : ΩA) → (p ⋆ q) ⋆ r ＝ p ⋆ (q ⋆ r)
   ⋆-assoc p q r =
-   ∙-cancel assoc-self _ _ (loop-comm _ _ ∙ sym (eq-congr-sq _ _ _))
+   cancel-left (loop-comm assoc-self _ ∙ ＝-congr-sq _ assoc-self _ ⁻¹)
    ∙ ⋆-assoc-raw p q r
 
 \end{code}
@@ -686,7 +467,7 @@ act-l is idempotent:
 
   act-l-idem : (p : ΩA) → act-l (act-l p) ＝ act-l p
   act-l-idem p =
-   eq-congr
+   ＝-congr
     (⋆-refl _ ∙ ap act-l (⋆-refl p))
     (ap (p ⋆_) (⋆-refl refl ∙ act-l-refl) ∙ ⋆-refl p)
     (⋆-assoc p refl refl)
@@ -706,15 +487,12 @@ to get refl.
 
   act-l-trivial : (p : ΩA) → act-l p ＝ refl
   act-l-trivial p =
-   ∙-cancel
-    (act-l p)
-    (act-l p)
-    refl
+   cancel-left
     ((ap₂ _∙_
-          (sym (act-l-idem p))
-          (sym (act-l-idem p))
+          ((act-l-idem p) ⁻¹)
+          ((act-l-idem p) ⁻¹)
       ∙ act-l-idemp (act-l p))
-      ∙ sym (∙refl (act-l p)))
+      ∙ refl-right-neutral (act-l p))
 
 \end{code}
 
@@ -730,8 +508,8 @@ know.
 
   Ω-null : (p : x₀ ＝ x₀) → p ＝ refl
   Ω-null p =
-   sym (act-l-idemp p)
+   (act-l-idemp p) ⁻¹
    ∙ ap₂ _∙_ (act-l-trivial p) (act-l-trivial p)
-   ∙ ∙refl refl
+   ∙ refl-left-neutral
 
 \end{code}
