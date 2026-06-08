@@ -1,4 +1,5 @@
 Tom de Jong, 16 & 18 March 2026.
+Updated on 8 June 2026 by Tom de Jong to use minimal library imports.
 
 We show that the proof given by Jakub Opršal in
 AlgebraicStructuresForcingSethood.Majority factors through a simple lemma about
@@ -10,68 +11,25 @@ loop spaces (see the module Ω-trivial-criterion).
 
 module AlgebraicStructuresForcingSethood.Majority-streamlined where
 
-open import Agda.Primitive renaming (Set to Type)
-
-\end{code}
-
-To be compatible with Jakub's file, we also build on Martín's file
-AlgebraicStructuresForcingSethood.Semilattice but with minimal imports.
-
-\begin{code}
-
-open import AlgebraicStructuresForcingSethood.Semilattices
- using (_＝_ ; _∙_ ; refl ; sym ; ap ; ap₂ ; eq-congr)
-
-\end{code}
-
-We introduce a little additional boilerplate on top of our minimal imports.
-
-\begin{code}
-
-_＝⟨_⟩_ : {X : Type} (x : X) {y z : X} → x ＝ y → y ＝ z → x ＝ z
-_ ＝⟨ p ⟩ q = p ∙ q
-
-_∎ : {X : Type} (x : X) → x ＝ x
-_∎ _ = refl
-
-infix  1 _∎
-infixr 0 _＝⟨_⟩_
-
-refl-left-neutral : {X : Type} {x y : X} (p : x ＝ y) → refl ∙ p ＝ p
-refl-left-neutral refl = refl
-
-refl-right-neutral : {X : Type} {x y : X} (p : x ＝ y) → p ∙ refl ＝ p
-refl-right-neutral refl = refl
+open import MLTT.Universes
+open import MLTT.Id
+open import UF.Base using
+  ( ap₂
+  ; ＝-congr
+  ; ＝-congr-refl
+  ; refl-left-neutral
+  ; refl-right-neutral
+  ; conjugate-loop )
 
 module _
-        {A : Type}
-        {a b : A}
-       where
-
- conjugate-loop : a ＝ b → a ＝ a → b ＝ b
- conjugate-loop p = eq-congr p p
-
- conjugate-loop-refl : (p : a ＝ b) → conjugate-loop p refl ＝ refl
- conjugate-loop-refl refl = refl
-
- NB₁ : (p : a ＝ b) (q : a ＝ a) → conjugate-loop p q ＝ (sym p) ∙ q ∙ p
- NB₁ refl q = sym (refl-left-neutral (q ∙ refl) ∙ refl-right-neutral q)
-
-\end{code}
-
-We now present the lemma about trivial loop spaces.
-
-\begin{code}
-
-module _
-        (A : Type)
+        (A : 𝓤 ̇ )
         (a₀ b₀ : A)
        where
 
- Ωᵃ : Type
+ Ωᵃ : 𝓤 ̇
  Ωᵃ = a₀ ＝ a₀
 
- Ωᵇ : Type
+ Ωᵇ : 𝓤 ̇
  Ωᵇ = b₀ ＝ b₀
 
  module Ω-trivial-criterion
@@ -93,15 +51,15 @@ module _
    refl ∙ refl             ＝⟨ refl ⟩
    refl                    ∎
     where
-     I   = sym (ap₂ f (refl-right-neutral p) (refl-left-neutral p))
+     I   = (ap₂ f (refl-right-neutral p) refl-left-neutral) ⁻¹
      II  = homomorphism p refl refl p
      III = ap₂ _∙_ (left-nilpotent p) (right-nilpotent p)
 
   Ω-trivial : (p : Ωᵃ) → p ＝ refl
   Ω-trivial p =
-   p                        ＝⟨ sym (idempotent-up-to-conjugation p) ⟩
+   p                        ＝⟨ (idempotent-up-to-conjugation p) ⁻¹ ⟩
    conjugate-loop γ (f p p) ＝⟨ ap (conjugate-loop γ) (nilpotent p) ⟩
-   conjugate-loop γ refl    ＝⟨ conjugate-loop-refl γ ⟩
+   conjugate-loop γ refl    ＝⟨ ＝-congr-refl γ ⟩
    refl                     ∎
 
 \end{code}
@@ -113,7 +71,7 @@ majority operation must be a set.
 
 open import AlgebraicStructuresForcingSethood.Majority
 
-majorities-only-act-on-sets : (M : Type) (m : M → M → M → M)
+majorities-only-act-on-sets : (M : 𝓤 ̇ ) (m : M → M → M → M)
                             → ((a b : M) → m b a a ＝ a)
                             → ((a b : M) → m a b a ＝ a)
                             → ((a b : M) → m a a b ＝ a)
@@ -128,7 +86,7 @@ majorities-only-act-on-sets M m eq₀ eq₁ eq₂ m₀ =
   side₁-is-p
   side₀-is-refl
   side₂-is-refl
-  (λ p q r s → sym (m'-is-homo p r refl refl q s))
+  (λ p q r s → (m'-is-homo p r refl refl q s) ⁻¹)
    where
     open Ω-trivial-criterion
     open type-with-majority M m eq₀ eq₁ eq₂ m₀
