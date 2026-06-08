@@ -15,8 +15,8 @@ open import MLTT.Universes
 open import MLTT.Id
 open import UF.Base using
   ( ap₂
-  ; ＝-cong
-  ; ＝-cong-refl
+  ; ＝-congr
+  ; ＝-congr-refl
   ; refl-left-neutral
   ; refl-right-neutral
   ; conjugate-loop )
@@ -59,7 +59,7 @@ module _
   Ω-trivial p =
    p                        ＝⟨ (idempotent-up-to-conjugation p) ⁻¹ ⟩
    conjugate-loop γ (f p p) ＝⟨ ap (conjugate-loop γ) (nilpotent p) ⟩
-   conjugate-loop γ refl    ＝⟨ ＝-cong-refl γ ⟩
+   conjugate-loop γ refl    ＝⟨ ＝-congr-refl γ ⟩
    refl                     ∎
 
 \end{code}

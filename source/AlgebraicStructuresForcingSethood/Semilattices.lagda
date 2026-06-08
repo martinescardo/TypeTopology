@@ -61,13 +61,13 @@ open import UF.Base using
   ; refl-left-neutral
   ; refl-right-neutral
   ; cancel-left
-  ; ＝-cong
-  ; ＝-cong-refl
-  ; ＝-cong-∙
-  ; ＝-cong-∙'
-  ; ＝-cong-nat
-  ; ＝-cong-⁻¹
-  ; ＝-cong-sq
+  ; ＝-congr
+  ; ＝-congr-refl
+  ; ＝-congr-∙
+  ; ＝-congr-∙'
+  ; ＝-congr-nat
+  ; ＝-congr-⁻¹
+  ; ＝-congr-sq
   ; comm₂
   )
 
@@ -127,7 +127,7 @@ a loop at x₀:
 \begin{code}
 
   reduce : x₀ * x₀ ＝ x₀ * x₀ → ΩA
-  reduce = ＝-cong (idem x₀) (idem x₀)
+  reduce = ＝-congr (idem x₀) (idem x₀)
 
 \end{code}
 
@@ -165,7 +165,7 @@ With this we have that _★_ induces an operation _⋆_ on loops.
   ⋆-in-terms-of-∙ : (p q : ΩA) → p ⋆ q ＝ act-l p ∙ act-r q
   ⋆-in-terms-of-∙ p q =
    ap reduce (★-in-terms-of-∙ _ _)
-   ∙ ＝-cong-∙ (idem x₀) (idem x₀) (idem x₀) (ap (_* x₀) p) (ap (x₀ *_) q)
+   ∙ ＝-congr-∙ (idem x₀) (idem x₀) (idem x₀) (ap (_* x₀) p) (ap (x₀ *_) q)
 
 \end{code}
 
@@ -183,8 +183,8 @@ of *, for any p : a ＝ b:
 \begin{code}
 
   ★-idemp : {a b : A} (p : a ＝ b)
-          → ＝-cong (idem a) (idem b) (p ★ p) ＝ p
-  ★-idemp refl = ＝-cong-refl (idem _)
+          → ＝-congr (idem a) (idem b) (p ★ p) ＝ p
+  ★-idemp refl = ＝-congr-refl (idem _)
 
   ⋆-idemp : (p : ΩA) → p ⋆ p ＝ p
   ⋆-idemp = ★-idemp
@@ -219,29 +219,29 @@ and using ⋆-idemp.
 \begin{code}
 
   comm-paths : {a b x y : A} (p : a ＝ x) (q : b ＝ y)
-             → ＝-cong (comm a b) (comm x y) (p ★ q) ＝ q ★ p
-  comm-paths refl refl = ＝-cong-refl (comm _ _)
+             → ＝-congr (comm a b) (comm x y) (p ★ q) ＝ q ★ p
+  comm-paths refl refl = ＝-congr-refl (comm _ _)
 
   comm-self : ΩA
   comm-self = reduce (comm x₀ x₀)
 
   comm-loop-raw : (p q : ΩA)
-                → ＝-cong comm-self comm-self (p ⋆ q) ＝ q ⋆ p
+                → ＝-congr comm-self comm-self (p ⋆ q) ＝ q ⋆ p
   comm-loop-raw p q =
-    ＝-cong
-     (＝-cong-nat (comm x₀ x₀) (comm x₀ x₀) (idem x₀) (idem x₀) (p ★ q))
+    ＝-congr
+     (＝-congr-nat (comm x₀ x₀) (comm x₀ x₀) (idem x₀) (idem x₀) (p ★ q))
      refl
      (ap reduce (comm-paths p q))
 
-  comm-self-center : (p : ΩA) → ＝-cong comm-self comm-self p ＝ p
+  comm-self-center : (p : ΩA) → ＝-congr comm-self comm-self p ＝ p
   comm-self-center p =
-   ＝-cong
-    (ap (＝-cong comm-self comm-self) (⋆-idemp p))
+   ＝-congr
+    (ap (＝-congr comm-self comm-self) (⋆-idemp p))
     (⋆-idemp p)
     (comm-loop-raw p p)
 
   comm-loop : (p q : ΩA) → p ⋆ q ＝ q ⋆ p
-  comm-loop p q = ＝-cong (comm-self-center _) refl (comm-loop-raw p q)
+  comm-loop p q = ＝-congr (comm-self-center _) refl (comm-loop-raw p q)
 
 \end{code}
 
@@ -262,19 +262,19 @@ To deduce act-l ＝ act-r, we specialize to q = refl:
 \begin{code}
 
   act-swap : (p q : ΩA) → act-l p ∙ act-r q ＝ act-l q ∙ act-r p
-  act-swap p q = ＝-cong
+  act-swap p q = ＝-congr
                   (⋆-in-terms-of-∙ p q)
                   (⋆-in-terms-of-∙ q p)
                   (comm-loop p q)
 
   act-l-refl : act-l refl ＝ refl
-  act-l-refl = ＝-cong-refl (idem x₀)
+  act-l-refl = ＝-congr-refl (idem x₀)
 
   act-r-refl : act-r refl ＝ refl
-  act-r-refl = ＝-cong-refl (idem x₀)
+  act-r-refl = ＝-congr-refl (idem x₀)
 
   only-one-act : (p : ΩA) → act-l p ＝ act-r p
-  only-one-act p = ＝-cong
+  only-one-act p = ＝-congr
                     (ap (act-l p ∙_) act-r-refl ∙ refl-right-neutral _)
                     (ap (_∙ act-r p) act-l-refl ∙ refl-left-neutral)
                     (act-swap p refl)
@@ -301,18 +301,18 @@ Then
   act-l-idemp : (p : ΩA) → act-l p ∙ act-l p ＝ p
   act-l-idemp p =
    ap (act-l p ∙_) (only-one-act p)
-   ∙ ＝-cong (⋆-in-terms-of-∙ p p) refl (⋆-idemp p)
+   ∙ ＝-congr (⋆-in-terms-of-∙ p p) refl (⋆-idemp p)
 
   comm-l : (p q : ΩA) → act-l p ∙ act-l q ＝ act-l q ∙ act-l p
   comm-l p q =
-   ＝-cong
+   ＝-congr
     (ap (act-l p ∙_) ((only-one-act q) ⁻¹))
     (ap (act-l q ∙_) ((only-one-act p) ⁻¹))
     (act-swap p q)
 
   loop-comm : (p q : ΩA) → p ∙ q ＝ q ∙ p
   loop-comm p q =
-   ＝-cong
+   ＝-congr
     (ap₂ _∙_ (act-l-idemp p) (act-l-idemp q))
     (ap₂ _∙_ (act-l-idemp q) (act-l-idemp p))
     (comm₂ {p = act-l p} {q = act-l q} (comm-l p q))
@@ -346,15 +346,15 @@ The function path assoc-self is the loop
 that witnesses the path between the two constructions.  Equality
 congruence with assoc-self gives ⋆-assoc-raw.  Since ΩA is commutative
 (loop-comm) and the equality congruence witness satisfies the square
-identity (＝-cong-sq), we can use ∙-cancel to strip assoc-self and
+identity (＝-congr-sq), we can use ∙-cancel to strip assoc-self and
 obtain ⋆-assoc.
 
 \begin{code}
 
   assoc-paths : {a b c x y z : A} (p : a ＝ x) (q : b ＝ y) (r : c ＝ z)
-              → ＝-cong (assoc a b c) (assoc x y z) ((p ★ q) ★ r)
+              → ＝-congr (assoc a b c) (assoc x y z) ((p ★ q) ★ r)
               ＝ p ★ (q ★ r)
-  assoc-paths refl refl refl = ＝-cong-refl (assoc _ _ _)
+  assoc-paths refl refl refl = ＝-congr-refl (assoc _ _ _)
 
   idem-triple-l : (x₀ * x₀) * x₀ ＝ x₀
   idem-triple-l = (idem x₀ ★  refl) ∙ idem x₀
@@ -366,11 +366,11 @@ obtain ⋆-assoc.
 
 We now have, recorded as triple-fold-l,
 
-  (a*b)*d ════════════ (p ★ q) ★ r ═══════════════════ (a*b)*d
-     ║                                                    ║
-(hab ★refl) ∙ hcd                                    (hab ★ refl) ∙ hcd
-     ║                                                    ║
-     e ══ ＝-cong hcd hcd (＝-cong hab hab (p ★ q) ★ r) ══ e
+  (a*b)*d ════════════ (p ★ q) ★ r ══════════════════════ (a*b)*d
+     ║                                                       ║
+(hab ★refl) ∙ hcd                                       (hab ★ refl) ∙ hcd
+     ║                                                       ║
+     e ══ ＝-congr hcd hcd (＝-congr hab hab (p ★ q) ★ r) ══ e
 
 And we have that triple-fold-r does the same for the right-associated
 parenthesization.
@@ -379,35 +379,35 @@ parenthesization.
 
   triple-fold-l : {a b c d e : A} (hab : a * b ＝ c) (hcd : c * d ＝ e)
                   (p : a ＝ a) (q : b ＝ b) (r : d ＝ d)
-                → ＝-cong
+                → ＝-congr
                    ((hab ★ refl) ∙ hcd)
                    ((hab ★ refl) ∙ hcd)
                    ((p ★ q) ★ r)
-                ＝ ＝-cong
+                ＝ ＝-congr
                     hcd
                     hcd
-                    (＝-cong hab hab (p ★ q) ★ r)
+                    (＝-congr hab hab (p ★ q) ★ r)
   triple-fold-l refl refl p q r = refl
 
   triple-fold-r : {a b c d e : A} (hab : a * b ＝ c) (hcd : d * c ＝ e)
                   (p : a ＝ a) (q : b ＝ b) (r : d ＝ d)
-                → ＝-cong
+                → ＝-congr
                    ((refl ★ hab) ∙ hcd)
                    ((refl ★ hab) ∙ hcd)
                    (r ★ (p ★ q))
-                ＝ ＝-cong
+                ＝ ＝-congr
                     hcd
                     hcd
-                    (r ★ ＝-cong hab hab (p ★ q))
+                    (r ★ ＝-congr hab hab (p ★ q))
   triple-fold-r refl refl p q r = refl
 
   loop-triple-l : (p q r : ΩA)
-                → ＝-cong idem-triple-l idem-triple-l ((p ★ q) ★ r)
+                → ＝-congr idem-triple-l idem-triple-l ((p ★ q) ★ r)
                 ＝ (p ⋆ q) ⋆ r
   loop-triple-l p q r = triple-fold-l (idem x₀) (idem x₀) p q r
 
   loop-triple-r : (p q r : ΩA)
-                → ＝-cong idem-triple-r idem-triple-r (p ★ (q ★ r))
+                → ＝-congr idem-triple-r idem-triple-r (p ★ (q ★ r))
                 ＝ p ⋆ (q ⋆ r)
   loop-triple-r p q r = triple-fold-r (idem x₀) (idem x₀) q r p
 
@@ -415,16 +415,16 @@ parenthesization.
   assoc-self = idem-triple-l ⁻¹ ∙ (assoc x₀ x₀ x₀ ∙ idem-triple-r)
 
   ⋆-assoc-raw : (p q r : ΩA)
-              → ＝-cong assoc-self assoc-self ((p ⋆ q) ⋆ r)
+              → ＝-congr assoc-self assoc-self ((p ⋆ q) ⋆ r)
               ＝ p ⋆ (q ⋆ r)
   ⋆-assoc-raw p q r =
-   ＝-cong
-    ((＝-cong-∙' (assoc x₀ x₀ x₀) idem-triple-r _ idem-triple-r _) ⁻¹
-      ∙ (＝-cong-∙' _ (assoc x₀ x₀ x₀ ∙ idem-triple-r) _ _ _) ⁻¹)
+   ＝-congr
+    ((＝-congr-∙' (assoc x₀ x₀ x₀) idem-triple-r _ idem-triple-r _) ⁻¹
+      ∙ (＝-congr-∙' _ (assoc x₀ x₀ x₀ ∙ idem-triple-r) _ _ _) ⁻¹)
     (loop-triple-r p q r)
-    (ap (＝-cong idem-triple-r idem-triple-r)
-      (ap (＝-cong (assoc x₀ x₀ x₀) _)
-          ((＝-cong-⁻¹ {hax = idem-triple-l} {hby = idem-triple-l}
+    (ap (＝-congr idem-triple-r idem-triple-r)
+      (ap (＝-congr (assoc x₀ x₀ x₀) _)
+          ((＝-congr-⁻¹ {hax = idem-triple-l} {hby = idem-triple-l}
                        (loop-triple-l p q r)) ⁻¹)
         ∙ assoc-paths p q r))
 
@@ -441,13 +441,13 @@ identity:
 
   assoc-self ∙ ⋆-assoc-raw  ＝  (p ⋆ q) ⋆ r ∙ assoc-self
 
-(by ＝-cong-sq once we know loop-comm).
+(by ＝-congr-sq once we know loop-comm).
 
 \begin{code}
 
   ⋆-assoc : (p q r : ΩA) → (p ⋆ q) ⋆ r ＝ p ⋆ (q ⋆ r)
   ⋆-assoc p q r =
-   cancel-left (loop-comm assoc-self _ ∙ ＝-cong-sq _ assoc-self _ ⁻¹)
+   cancel-left (loop-comm assoc-self _ ∙ ＝-congr-sq _ assoc-self _ ⁻¹)
    ∙ ⋆-assoc-raw p q r
 
 \end{code}
@@ -467,7 +467,7 @@ act-l is idempotent:
 
   act-l-idem : (p : ΩA) → act-l (act-l p) ＝ act-l p
   act-l-idem p =
-   ＝-cong
+   ＝-congr
     (⋆-refl _ ∙ ap act-l (⋆-refl p))
     (ap (p ⋆_) (⋆-refl refl ∙ act-l-refl) ∙ ⋆-refl p)
     (⋆-assoc p refl refl)

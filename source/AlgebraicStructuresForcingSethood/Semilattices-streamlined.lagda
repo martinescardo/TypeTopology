@@ -38,12 +38,12 @@ open import UF.Base using
   ; refl-right-neutral
   ; cancel-left
   ; conjugate-loop
-  ; ＝-cong
-  ; ＝-cong-refl
-  ; ＝-cong-∙
-  ; ＝-cong-∙'
-  ; ＝-cong-nat
-  ; ＝-cong-nat'
+  ; ＝-congr
+  ; ＝-congr-refl
+  ; ＝-congr-∙
+  ; ＝-congr-∙'
+  ; ＝-congr-nat
+  ; ＝-congr-nat'
   )
 
 \end{code}
@@ -153,23 +153,23 @@ induction.
 
 \begin{code}
 
- ＊-＝-cong-left : {a a' b b' c c' : A}
+ ＊-＝-congr-left : {a a' b b' c c' : A}
                     (u : a * b ＝ c) (v : a' * b' ＝ c')
                     (p : a ＝ a') (q : b ＝ b') (r : c ＝ c')
-                  → (＝-cong u v (p ＊ q)) ＊ r
-                    ＝ ＝-cong (u ＊ refl) (v ＊ refl) ((p ＊ q) ＊ r)
- ＊-＝-cong-left refl refl refl refl r = refl
+                  → (＝-congr u v (p ＊ q)) ＊ r
+                    ＝ ＝-congr (u ＊ refl) (v ＊ refl) ((p ＊ q) ＊ r)
+ ＊-＝-congr-left refl refl refl refl r = refl
 
- ＊-＝-cong-right : {a a' b b' c c' : A}
+ ＊-＝-congr-right : {a a' b b' c c' : A}
                     (u : a * b ＝ c) (v : a' * b' ＝ c')
                     (p : c ＝ c') (q : a ＝ a') (r : b ＝ b')
-                  → p ＊ (＝-cong u v (q ＊ r))
-                    ＝ ＝-cong (refl ＊ u) (refl ＊ v) (p ＊ (q ＊ r))
- ＊-＝-cong-right refl refl p refl refl = refl
+                  → p ＊ (＝-congr u v (q ＊ r))
+                    ＝ ＝-congr (refl ＊ u) (refl ＊ v) (p ＊ (q ＊ r))
+ ＊-＝-congr-right refl refl p refl refl = refl
 
 \end{code}
 
-If * is commutative/associative, then so is ＊ up to ＝-cong which is necessary
+If * is commutative/associative, then so is ＊ up to ＝-congr which is necessary
 to make things type check as ＊ is a dependent function.
 
 \begin{code}
@@ -183,8 +183,8 @@ to make things type check as ＊ is a dependent function.
  ＊-comm : (*-comm : commutativity-of-*)
            {a a' b b' : A}
            (p : a ＝ a') (q : b ＝ b')
-         → p ＊ q ＝ ＝-cong (*-comm b a) (*-comm b' a') (q ＊ p)
- ＊-comm *-comm refl refl = (＝-cong-refl (*-comm _ _)) ⁻¹
+         → p ＊ q ＝ ＝-congr (*-comm b a) (*-comm b' a') (q ＊ p)
+ ＊-comm *-comm refl refl = (＝-congr-refl (*-comm _ _)) ⁻¹
 
 \end{code}
 
@@ -198,8 +198,8 @@ paths.
   : (*-assoc : associativity-of-*)
     {a a' b b' c c' : A}
     (p : a ＝ a') (q : b ＝ b') (r : c ＝ c')
-  → p ＊ (q ＊ r) ＝ ＝-cong (*-assoc a b c) (*-assoc a' b' c') ((p ＊ q) ＊ r)
- ＊-assoc *-assoc refl refl refl = (＝-cong-refl (*-assoc _ _ _)) ⁻¹
+  → p ＊ (q ＊ r) ＝ ＝-congr (*-assoc a b c) (*-assoc a' b' c') ((p ＊ q) ＊ r)
+ ＊-assoc *-assoc refl refl refl = (＝-congr-refl (*-assoc _ _ _)) ⁻¹
 
 \end{code}
 
@@ -217,10 +217,10 @@ restricted to loops yet, so that this has a (trivial) proof by path induction.
         where
 
   _＊'_ : {a b : A} → a ＝ b → a ＝ b → a ＝ b
-  _＊'_ {a} {b} p q = ＝-cong (*-idem a) (*-idem b) (p ＊ q)
+  _＊'_ {a} {b} p q = ＝-congr (*-idem a) (*-idem b) (p ＊ q)
 
   ＊'-idempotent : {a b : A} (p : a ＝ b) → p ＊' p ＝ p
-  ＊'-idempotent refl = ＝-cong-refl (*-idem _)
+  ＊'-idempotent refl = ＝-congr-refl (*-idem _)
 
 \end{code}
 
@@ -249,7 +249,7 @@ this operation by ＊Ω.
    ＊Ω-idempotent = ＊'-idempotent
 
    ＊Ω-refl : refl ＊Ω refl ＝ refl
-   ＊Ω-refl = ＝-cong-refl ι
+   ＊Ω-refl = ＝-congr-refl ι
 
    ＊Ω-interchange-∙ : (p q r s : ΩA)
                     → (p ＊Ω q) ∙ (r ＊Ω s) ＝ (p ∙ r) ＊Ω (q ∙ s)
@@ -260,7 +260,7 @@ this operation by ＊Ω.
     conjugate-loop ι ((p ∙ r) ＊ (q ∙ s))                 ＝⟨ refl ⟩
     (p ∙ r) ＊Ω (q ∙ s)                                   ∎
      where
-      I  = (＝-cong-∙ ι ι ι (p ＊ q) (r ＊ s)) ⁻¹
+      I  = (＝-congr-∙ ι ι ι (p ＊ q) (r ＊ s)) ⁻¹
       II = ap (conjugate-loop ι) (＊-interchange-∙ p q r s)
 
 \end{code}
@@ -286,19 +286,19 @@ The strategy for this is to
     ＊Ω-commutative-up-to-conjugation p q =
      p ＊Ω q                                      ＝⟨ refl ⟩
      conjugate-loop ι (p ＊ q)                    ＝⟨ I    ⟩
-     conjugate-loop ι (＝-cong γ₀ γ₀ (q ＊ p))    ＝⟨ refl ⟩
-     ＝-cong ι ι (＝-cong γ₀ γ₀ (q ＊ p))         ＝⟨ II   ⟩
-     ＝-cong (＝-cong ι ι γ₀)
-             (＝-cong ι ι γ₀)
-             (＝-cong ι ι (q ＊ p))               ＝⟨ refl ⟩
-     ＝-cong γ γ (＝-cong ι ι (q ＊ p))           ＝⟨ refl ⟩
+     conjugate-loop ι (＝-congr γ₀ γ₀ (q ＊ p))   ＝⟨ refl ⟩
+     ＝-congr ι ι (＝-congr γ₀ γ₀ (q ＊ p))       ＝⟨ II   ⟩
+     ＝-congr (＝-congr ι ι γ₀)
+              (＝-congr ι ι γ₀)
+              (＝-congr ι ι (q ＊ p))             ＝⟨ refl ⟩
+     ＝-congr γ γ (＝-congr ι ι (q ＊ p))         ＝⟨ refl ⟩
      conjugate-loop γ (conjugate-loop ι (q ＊ p)) ＝⟨ refl ⟩
      conjugate-loop γ (q ＊Ω p)                   ∎
       where
        γ₀ : a₀ * a₀ ＝ a₀ * a₀
        γ₀ = *-comm a₀ a₀
        I  = ap (conjugate-loop ι) (＊-comm *-comm p q)
-       II = ＝-cong-nat γ₀ γ₀ ι ι (q ＊ p)
+       II = ＝-congr-nat γ₀ γ₀ ι ι (q ＊ p)
 
     conjugate-loop-comm-is-id : (p : ΩA) → conjugate-loop γ p ＝ p
     conjugate-loop-comm-is-id p =
@@ -351,8 +351,8 @@ and similarly for the other bracketing.
      conjugate-loop ((ι ＊ refl) ∙ ι) ((p ＊ q) ＊ r)              ＝⟨ refl ⟩
      conjugate-loop ι₁ ((p ＊ q) ＊ r)                             ∎
       where
-       I  = ap (conjugate-loop ι) (＊-＝-cong-left ι ι p q r)
-       II = (＝-cong-∙' (ι ＊ refl) ι (ι ＊ refl) ι ((p ＊ q) ＊ r)) ⁻¹
+       I  = ap (conjugate-loop ι) (＊-＝-congr-left ι ι p q r)
+       II = (＝-congr-∙' (ι ＊ refl) ι (ι ＊ refl) ι ((p ＊ q) ＊ r)) ⁻¹
 
     ＊Ω-is-＊-up-to-conjugation₂
      : (p q r : ΩA)
@@ -364,11 +364,11 @@ and similarly for the other bracketing.
      conjugate-loop ((refl ＊ ι) ∙ ι) (p ＊ (q ＊ r))              ＝⟨ refl ⟩
      conjugate-loop ι₂ (p ＊ (q ＊ r))                             ∎
       where
-       I  = ap (conjugate-loop ι) (＊-＝-cong-right ι ι p q r)
-       II = (＝-cong-∙' (refl ＊ ι) ι (refl ＊ ι) ι (p ＊ (q ＊ r))) ⁻¹
+       I  = ap (conjugate-loop ι) (＊-＝-congr-right ι ι p q r)
+       II = (＝-congr-∙' (refl ＊ ι) ι (refl ＊ ι) ι (p ＊ (q ＊ r))) ⁻¹
 
     α : a₀ ＝ a₀
-    α = ＝-cong ι₁ ι₂ (*-assoc a₀ a₀ a₀)
+    α = ＝-congr ι₁ ι₂ (*-assoc a₀ a₀ a₀)
 
 \end{code}
 
@@ -383,18 +383,18 @@ The rebracketing convention follows that of ＊-assoc.
      p ＊Ω (q ＊Ω r)                                       ＝⟨ I    ⟩
      conjugate-loop ι₂ (p ＊ (q ＊ r))                     ＝⟨ II   ⟩
      conjugate-loop ι₂ (conjugate-loop α₀ ((p ＊ q) ＊ r)) ＝⟨ refl ⟩
-     ＝-cong ι₂ ι₂ (＝-cong α₀ α₀ ((p ＊ q) ＊ r))         ＝⟨ III  ⟩
-     ＝-cong (＝-cong ι₁ ι₂ α₀)
-             (＝-cong ι₁ ι₂ α₀)
-             (＝-cong ι₁ ι₁ ((p ＊ q) ＊ r))               ＝⟨ refl ⟩
-     ＝-cong α α (＝-cong ι₁ ι₁ ((p ＊ q) ＊ r))           ＝⟨ refl ⟩
+     ＝-congr ι₂ ι₂ (＝-congr α₀ α₀ ((p ＊ q) ＊ r))       ＝⟨ III  ⟩
+     ＝-congr (＝-congr ι₁ ι₂ α₀)
+              (＝-congr ι₁ ι₂ α₀)
+              (＝-congr ι₁ ι₁ ((p ＊ q) ＊ r))             ＝⟨ refl ⟩
+     ＝-congr α α (＝-congr ι₁ ι₁ ((p ＊ q) ＊ r))         ＝⟨ refl ⟩
      conjugate-loop α (conjugate-loop ι₁ ((p ＊ q) ＊ r))  ＝⟨ IV   ⟩
      conjugate-loop α ((p ＊Ω q) ＊Ω r)                    ∎
       where
        α₀ = *-assoc a₀ a₀ a₀
        I = ＊Ω-is-＊-up-to-conjugation₂ p q r
        II = ap (conjugate-loop ι₂) (＊-assoc *-assoc p q r)
-       III = ＝-cong-nat' α₀ ι₁ ι₂ ((p ＊ q) ＊ r)
+       III = ＝-congr-nat' α₀ ι₁ ι₂ ((p ＊ q) ＊ r)
        IV = ap (conjugate-loop α) ((＊Ω-is-＊-up-to-conjugation₁ p q r) ⁻¹)
 
     conjugate-loop-assoc-is-id : (p : ΩA) → conjugate-loop α p ＝ p
