@@ -246,7 +246,6 @@ ap₂-∙ f refl refl refl refl = refl
 
 \end{code}
 
-
 \begin{code}
 
 ap₃ : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
@@ -264,9 +263,28 @@ ap₃-∙ : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
         (f : W → X → Y → Z) {w₀ w₁ w₂ : W} {x₀ x₁ x₂ : X} {y₀ y₁ y₂ : Y}
         (r₀ : w₀ ＝ w₁) (r₁ : w₁ ＝ w₂)
         (p₀ : x₀ ＝ x₁) (p₁ : x₁ ＝ x₂)
-        (q₀ : y₀ ＝ y₁) (q₁ :  y₁ ＝ y₂)
+        (q₀ : y₀ ＝ y₁) (q₁ : y₁ ＝ y₂)
       → ap₃ f (r₀ ∙ r₁) (p₀ ∙ p₁) (q₀ ∙ q₁) ＝ ap₃ f r₀ p₀ q₀ ∙ ap₃ f r₁ p₁ q₁
 ap₃-∙ f refl refl refl refl refl refl = refl
+
+\end{code}
+
+A variation of the above due to Jakub Opršal.
+
+\begin{code}
+
+ap₃-∙' : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+         (f : W → X → Y → Z) {w₀ w₁ w₂ : W} {x₀ x₁ x₂ : X} {y₀ y₁ y₂ : Y}
+         (r₀ : w₀ ＝ w₁) (r₁ : w₁ ＝ w₂) {r₂ : w₀ ＝ w₂}
+         (p₀ : x₀ ＝ x₁) (p₁ : x₁ ＝ x₂) {p₂ : x₀ ＝ x₂}
+         (q₀ : y₀ ＝ y₁) (q₁ : y₁ ＝ y₂) {q₂ : y₀ ＝ y₂}
+         (e₀ : r₂ ＝ r₀ ∙ r₁) (e₁ : p₂ ＝ p₀ ∙ p₁) (e₂ : q₂ ＝ q₀ ∙ q₁)
+      → ap₃ f r₂ p₂ q₂ ＝ ap₃ f r₀ p₀ q₀ ∙ ap₃ f r₁ p₁ q₁
+ap₃-∙' f r₀ r₁ p₀ p₁ q₀ q₁ refl refl refl = ap₃-∙ f r₀ r₁ p₀ p₁ q₀ q₁
+
+\end{code}
+
+\begin{code}
 
 ap₃-refl-left : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                 (f : W → X → Y → Z) {w : W} {x₀ x₁ : X} {y₀ y₁ : Y}
@@ -281,10 +299,22 @@ ap₃-refl-mid : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
 ap₃-refl-mid f refl refl = refl
 
 ap₃-refl-right : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-               (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y : Y}
-               (r : w₀ ＝ w₁) (p : x₀ ＝ x₁)
-              → ap₃ f r p refl ＝ ap₂ (λ w x → f w x y) r p
+                 (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y : Y}
+                 (r : w₀ ＝ w₁) (p : x₀ ＝ x₁)
+               → ap₃ f r p refl ＝ ap₂ (λ w x → f w x y) r p
 ap₃-refl-right f refl refl = refl
+
+\end{code}
+
+ap₃ commutes with inverting paths (code due to Jakub Opršal).
+
+\begin{code}
+
+ap₃-⁻¹ : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+         (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y₀ y₁ : Y}
+         (r : w₀ ＝ w₁) (p : x₀ ＝ x₁) (q : y₀ ＝ y₁)
+       → ap₃ f (r ⁻¹) (p ⁻¹) (q ⁻¹) ＝ (ap₃ f r p q) ⁻¹
+ap₃-⁻¹ f refl refl refl = refl
 
 \end{code}
 
@@ -628,5 +658,256 @@ transport-after-ap' refl s s' q =
  q                             ＝⟨ refl-left-neutral ⁻¹ ⟩
  refl ∙ q                      ＝⟨refl⟩
  ap s refl ⁻¹ ∙ q ∙ ap s' refl ∎
+
+\end{code}
+
+Moved here (from AlgebraicStructuresForcingSethood)
+on 4 June 2026 by Tom de Jong.
+
+Additions, notably the diagrams, from the same place due to Martin Escardo, were
+integrated here by Tom de Jong on 8 June 2026.
+
+Transporting along the identity type ＝ establishes that ＝ is a
+congruence. Duplicating two of the arguments we obtain conjugation of loops.
+
+The congruence witness enjoys various coherence properties, as shown below.
+These are used in several files in the AlgebraicStructuresForcingSethood folder.
+
+`＝-congr h₁ h₂ p` transports a path p : a ＝ b across a commutative
+square to obtain a path x ＝ y:
+
+    a ═════ p ════ b
+    ║              ║
+   h₁              h₂
+    ║              ║
+    x ════════════ y
+           ?
+
+The resulting path is sym h₁ ∙ p ∙ h₂.  Definitionally, when
+h₁ = h₂ = refl, the square degenerates and we recover p.
+
+\begin{code}
+
+＝-congr : {A : 𝓤 ̇ } {a b x y : A} → a ＝ x → b ＝ y → a ＝ b → x ＝ y
+＝-congr = transport₂ _＝_
+
+conjugate-loop : {A : 𝓤 ̇ } {a b : A} → a ＝ b → a ＝ a → b ＝ b
+conjugate-loop p = ＝-congr p p
+
+conjugate-loop-conjugates : {A : 𝓤 ̇ } {a b : A} (p : a ＝ b) (l : a ＝ a)
+                          → conjugate-loop p l ＝ p ⁻¹ ∙ l ∙ p
+conjugate-loop-conjugates refl = transport-along-＝ refl
+
+\end{code}
+
+When h = refl the square collapses to a point and the loop is unchanged:
+
+    a ═══ p ══ a
+    ║          ║
+    h          h    ↝   a ══ refl ══ a
+    ║          ║
+    a ════════ a
+
+\begin{code}
+
+＝-congr-refl : {A : 𝓤 ̇ } {a x : A} (h : a ＝ x) → ＝-congr h h refl ＝ refl
+＝-congr-refl refl = refl
+
+\end{code}
+
+Equality congruence distributes over path concatenation:
+
+    a ══ p ══ b ══ q ═══ c
+    ║         ║          ║
+   h₁        h₂          h₃
+    ║         ║          ║
+    x ═══════ y ════════ z
+
+\begin{code}
+
+＝-congr-∙ : {A : 𝓤 ̇ } {a b c x y z : A}
+             (h₁ : a ＝ x) (h₂ : b ＝ y) (h₃ : c ＝ z)
+             (p : a ＝ b) (q : b ＝ c)
+           → ＝-congr h₁ h₃ (p ∙ q) ＝ ＝-congr h₁ h₂ p ∙ ＝-congr h₂ h₃ q
+＝-congr-∙ refl refl refl p q = refl
+
+
+\end{code}
+
+Equality congruence by a composite path equals iterated congruence.
+
+\begin{code}
+
+＝-congr-∙'
+ : {A : 𝓤 ̇ } {a b u v x y : A}
+   (l₁ : a ＝ u) (l₂ : u ＝ x)
+   (r₁ : b ＝ v) (r₂ : v ＝ y)
+   (p : a ＝ b)
+ → ＝-congr (l₁ ∙ l₂) (r₁ ∙ r₂) p ＝ ＝-congr l₂ r₂ (＝-congr l₁ r₁ p)
+＝-congr-∙' refl refl refl refl p = refl
+
+\end{code}
+
+We now show that equality congruence is natural.
+
+The cleanest expression is a commutative square whose nodes are
+path spaces and whose edges are "apply congruence with":
+
+  (a ＝ b) ══════ congruence with (ha, hb) ══════ (a ＝ b)
+     ║                                              ║
+congruence with (hax, hby)                  congruence with (hax, hby)
+     ║                                              ║
+  (x ＝ y) ════ congruence with (ha', hb') ══════ (x ＝ y)
+
+  where  ha' = eq-congr hax hax ha
+         hb' = eq-congr hby hby hb.
+
+The geometric intuition is a cube in A, where the top and bottom faces
+record the ha/hb loops and their congruences ha'/hb', and the vertical
+edges are hax and hby:
+
+        a ══  ha ══ a
+       ╱║           ║╲
+    hax ║           ║ hax
+     ╱  p           p' ╲
+    x   ║           ║    x
+    ║   b ══  hb ══ b    ║
+    ║  ╱             ╲   ║
+    ║ hby           hby  ║
+    ║╱                 ╲ ║
+    y ══════  hb' ══════ y
+
+  where  p  = eq-congr hax hby p      (front face)
+         p' = eq-congr hax hby        (back face)
+               (eq-congr ha hb p).
+
+Naturality says that the front face and back face of the cube give the
+same path x ＝ y.
+
+\begin{code}
+
+＝-congr-nat : {A : 𝓤 ̇ } {a b x y : A}
+               (ha : a ＝ a) (hb : b ＝ b) (hax : a ＝ x) (hby : b ＝ y)
+               (p : a ＝ b)
+             → ＝-congr hax hby (＝-congr ha hb p)
+             ＝ ＝-congr
+                 (＝-congr hax hax ha)
+                 (＝-congr hby hby hb)
+                 (＝-congr hax hby p)
+＝-congr-nat ha hb refl refl p = refl
+
+＝-congr-nat' : {A : 𝓤 ̇ } {a b x y : A}
+                (hab : a ＝ b) (hax : a ＝ x) (hby : b ＝ y)
+                (p : a ＝ a)
+              → ＝-congr hby hby (＝-congr hab hab p)
+                ＝ ＝-congr
+                    (＝-congr hax hby hab)
+                    (＝-congr hax hby hab)
+                    (＝-congr hax hax p)
+＝-congr-nat' refl refl refl p = refl
+
+\end{code}
+
+Equality congruence is invertible.
+
+\begin{code}
+
+＝-congr-⁻¹ : {A : 𝓤 ̇ } {a b x y : A}
+              {hax : a ＝ x} {hby : b ＝ y}
+              {p : a ＝ b} {q : x ＝ y}
+            → ＝-congr hax hby p ＝ q
+            → p ＝ ＝-congr (hax ⁻¹) (hby ⁻¹) q
+＝-congr-⁻¹ {hax = refl} {hby = refl} refl = refl
+
+\end{code}
+
+We now construct a square congruence identity.
+
+Going right-then-down equals going down-then-right:
+
+    a ══ p ══ b
+    ║         ║
+    q         r
+    ║         ║
+    x ═══════ y
+
+\begin{code}
+
+＝-congr-sq : {A : 𝓤 ̇ } {a b x y : A}
+              (p : a ＝ b) (q : a ＝ x) (r : b ＝ y)
+            → q ∙ ＝-congr q r p ＝ p ∙ r
+＝-congr-sq refl refl refl = refl
+
+\end{code}
+
+Moved here from Jakub Opršal's
+AlgebraicStructuresForcingSethood.WeakNearUnanimity by Tom de Jong
+on 8 June 2026.
+
+\begin{code}
+
+＝-congr-cancel : {A : 𝓤 ̇ } {a a' b b' : A} {p q : a ＝ a'}
+                → (h₁ : a ＝ b)
+                → (h₂ : a' ＝ b')
+                → ＝-congr h₁ h₂ p ＝ ＝-congr h₁ h₂ q
+                → p ＝ q
+＝-congr-cancel refl refl h = h
+
+＝-congr-ap₃
+ : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+    (f : W → X → Y → Z)
+    {w₀ w₁ w₂ w₃ : W} {x₀ x₁ x₂ x₃ : X} {y₀ y₁ y₂ y₃ : Y}
+    (r₀ : w₀ ＝ w₁) (r₁ : w₂ ＝ w₃) (r₂ : w₀ ＝ w₂)
+    (p₀ : x₀ ＝ x₁) (p₁ : x₂ ＝ x₃) (p₂ : x₀ ＝ x₂)
+    (q₀ : y₀ ＝ y₁) (q₁ : y₂ ＝ y₃) (q₂ : y₀ ＝ y₂)
+  → ＝-congr (ap₃ f r₀ p₀ q₀) (ap₃ f r₁ p₁ q₁) (ap₃ f r₂ p₂ q₂)
+    ＝ ap₃ f (＝-congr r₀ r₁ r₂) (＝-congr p₀ p₁ p₂) (＝-congr q₀ q₁ q₂)
+＝-congr-ap₃ f refl refl r₂ refl refl p₂ refl refl q₂ = refl
+
+\end{code}
+
+\end{code}
+
+Moved here from AlgebraicStructuresForcingSethood.Semilattices by
+Tom de Jong on 8 June 2026.
+Code and comments authored by Martin Escardo.
+
+The standard Eckmann–Hilton argument shows that two binary operations
+on a set that share a unit and interchange with each other must
+coincide and be commutative. Here we record one piece of that
+argument: if loops p and q commute, then p ∙ p and q ∙ q also commute.
+
+The key calculation rearranges a 2×2 grid of tiles:
+
+  ┌──────┬──────┐     ┌──────┬──────┐
+  │  p   │  p   │     │  q   │  q   │
+  ├──────┼──────┤  ↝  ├──────┼──────┤
+  │  q   │  q   │     │  p   │  p   │
+  └──────┴──────┘     └──────┴──────┘
+
+  p∙p∙q∙q = p∙(p∙q)∙q ＝ p∙(q∙p)∙q = (p∙q)∙(p∙q)
+          ＝ (q∙p)∙(q∙p) = q∙(p∙q)∙p ＝ q∙(q∙p)∙p = q∙q∙p∙p.
+
+The function assoc₄ handles the repeated reassociation steps.
+
+\begin{code}
+
+assoc₄ : {A : 𝓤 ̇ } {a b c d e : A}
+         {p : a ＝ b} {q : b ＝ c} {r : c ＝ d} {s : d ＝ e}
+       → (p ∙ q) ∙ (r ∙ s) ＝ p ∙ (q ∙ r) ∙ s
+assoc₄ {p = refl} {q = refl} {r = refl} {s = refl} = refl
+
+comm₂ : {A : 𝓤 ̇ } {a : A} {p q : a ＝ a} (h : p ∙ q ＝ q ∙ p)
+      → (p ∙ p) ∙ (q ∙ q) ＝ (q ∙ q) ∙ (p ∙ p)
+comm₂ {p = p} {q = q} h =
+ ＝-congr
+  ((assoc₄ {p = p} {q = p} {r = q} {s = q}) ⁻¹)
+  ((assoc₄ {p = q} {q = q} {r = p} {s = p}) ⁻¹)
+  (＝-congr
+    (ap (λ x → p ∙ x ∙ q) (h ⁻¹))
+    (ap (λ x → q ∙ x ∙ p) h)
+    (＝-congr (assoc₄ {p = p} {q = q} {r = p} {s = q})
+              (assoc₄ {p = q} {q = p} {r = q} {s = p})
+              (ap (λ x → x ∙ x) h)))
 
 \end{code}

@@ -1,4 +1,5 @@
 Jakub Opršal, 11–12 Mar 2026.
+Updated on 8 June 2026 by Tom de Jong to use minimal library imports.
 
 In this note, I would like to explore the HoTT analogue of the following
 theorem of Walter Taylor [1, Theorem 7.7].
@@ -64,23 +65,22 @@ computation to show that if a majority acts on a type, then the type is a set.
 The fact that this second step is an algebraic (equational) argument makes it
 more amenable for type theory.
 
-We will start where Martin left off with proving that there are no higher
-semilattices:
+We will start with some very minimal imports.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 module AlgebraicStructuresForcingSethood.Majority where
 
-open import AlgebraicStructuresForcingSethood.Semilattices
-open import Agda.Primitive renaming (Set to Type)
-
-ap₃ : {A B C D : Type} (f : A → B → C → D) {a₁ a₂ : A} {b₁ b₂ : B} {c₁ c₂ : C}
-    → a₁ ＝ a₂
-    → b₁ ＝ b₂
-    → c₁ ＝ c₂
-    → f a₁ b₁ c₁ ＝ f a₂ b₂ c₂
-ap₃ f refl refl refl = refl
+open import MLTT.Universes
+open import MLTT.Id
+open import UF.Base using
+  ( ap₂
+  ; ap₃
+  ; refl-left-neutral
+  ; ＝-congr
+  ; ＝-congr-refl
+  )
 
 \end{code}
 
@@ -90,7 +90,7 @@ satisfying the majority identities.
 \begin{code}
 
 module type-with-majority
-       (M   : Type)
+       (M   : 𝓤 ̇ )
        (m   : M → M → M → M)
        (eq₀ : (a b : M) → m b a a ＝ a)
        (eq₁ : (a b : M) → m a b a ＝ a)
@@ -111,10 +111,10 @@ We start with the action of `m` on the paths.
     → m x₀ x₁ x₂ ＝ m y₀ y₁ y₂
  m' = ap₃ m
 
- ΩM : Type
+ ΩM : 𝓤 ̇
  ΩM = m₀ ＝ m₀
 
- ΩM' : Type
+ ΩM' : 𝓤 ̇
  ΩM' = m m₀ m₀ m₀ ＝ m m₀ m₀ m₀
 
 \end{code}
@@ -183,7 +183,7 @@ tion.
    homomorphism = m'-is-homo p refl refl refl refl p
 
    simplify-arguments : m' (p ∙ refl) (refl ∙ refl) (refl ∙ p) ＝ m' p refl p
-   simplify-arguments = ap₃ m' (∙refl p) refl (refl∙ p)
+   simplify-arguments = ap₃ m' refl refl refl-left-neutral
 
 \end{code}
 
@@ -207,14 +207,14 @@ to use here — it has to agree with the equation, i.e., idem₁ = eq₁ m₀ m�
  idem₁ : m m₀ m₀ m₀ ＝ m₀
  idem₁ = eq₁ m₀ m₀
 
- side₁-is-p : (p : ΩM) → eq-congr idem₁ idem₁ (m' p refl₀ p) ＝ p
+ side₁-is-p : (p : ΩM) → ＝-congr idem₁ idem₁ (m' p refl₀ p) ＝ p
  side₁-is-p p = eq₁' p refl
   where
    eq₁' : {a b c d : M}
         → (p : a ＝ b)
         → (q : c ＝ d)
-        → eq-congr (eq₁ a c) (eq₁ b d) (m' p q p) ＝ p
-   eq₁' {a} {_} {c} {_} refl refl = eq-congr-refl (eq₁ a c)
+        → ＝-congr (eq₁ a c) (eq₁ b d) (m' p q p) ＝ p
+   eq₁' {a} {_} {c} {_} refl refl = ＝-congr-refl (eq₁ a c)
 
 \end{code}
 
@@ -236,33 +236,33 @@ avoid problems with conjugation since conjugation fixes refl.
  reflₘ = refl
 
  side₀-is-refl : (p : ΩM) → (m' p refl₀ refl₀) ＝ reflₘ
- side₀-is-refl p = use-eq₀ ∙ (eq-congr-refl idem₀)
+ side₀-is-refl p = use-eq₀ ∙ (＝-congr-refl idem₀)
   where
    idem₀ : m₀ ＝ m m₀ m₀ m₀
-   idem₀ = sym (eq₀ m₀ m₀)
+   idem₀ = (eq₀ m₀ m₀) ⁻¹
 
    eq₀' : {a b c d : M}
         → (p : a ＝ b)
         → (q : c ＝ d)
-        → (m' q p p) ＝ eq-congr (sym (eq₀ a c)) (sym (eq₀ b d)) p
-   eq₀' {a} {_} {c} {_} refl refl = sym (eq-congr-refl (sym (eq₀ a c)))
+        → (m' q p p) ＝ ＝-congr ((eq₀ a c) ⁻¹) ((eq₀ b d) ⁻¹) p
+   eq₀' {a} {_} {c} {_} refl refl = (＝-congr-refl ((eq₀ a c) ⁻¹)) ⁻¹
 
-   use-eq₀ : (m' p refl₀ refl₀) ＝ eq-congr idem₀ idem₀ refl₀
+   use-eq₀ : (m' p refl₀ refl₀) ＝ ＝-congr idem₀ idem₀ refl₀
    use-eq₀ = eq₀' refl₀ p
 
  side₂-is-refl : (p : ΩM) → (m' refl₀ refl₀ p) ＝ reflₘ
- side₂-is-refl p = use-eq₂ ∙ (eq-congr-refl idem₂)
+ side₂-is-refl p = use-eq₂ ∙ (＝-congr-refl idem₂)
   where
    idem₂ : m₀ ＝ m m₀ m₀ m₀
-   idem₂ = sym (eq₂ m₀ m₀)
+   idem₂ = (eq₂ m₀ m₀) ⁻¹
 
    eq₂' : {a b c d : M}
         → (p : a ＝ b)
         → (q : c ＝ d)
-        → (m' p p q) ＝ eq-congr (sym (eq₂ a c)) (sym (eq₂ b d)) p
-   eq₂' {a} {_} {c} {_} refl refl = sym (eq-congr-refl (sym (eq₂ a c)))
+        → (m' p p q) ＝ ＝-congr ((eq₂ a c) ⁻¹) ((eq₂ b d) ⁻¹) p
+   eq₂' {a} {_} {c} {_} refl refl = (＝-congr-refl ((eq₂ a c) ⁻¹)) ⁻¹
 
-   use-eq₂ : (m' refl₀ refl₀ p) ＝ eq-congr idem₂ idem₂ refl₀
+   use-eq₂ : (m' refl₀ refl₀ p) ＝ ＝-congr idem₂ idem₂ refl₀
    use-eq₂ = eq₂' refl₀ p
 
 \end{code}
@@ -274,7 +274,7 @@ which gets us almost there.
 
  almost-there : (p : ΩM) → reflₘ ＝ (m' p refl₀ p)
  almost-there p =
-  ap₂ _∙_ (sym (side₀-is-refl p)) (sym (side₂-is-refl p))
+  ap₂ _∙_ ((side₀-is-refl p) ⁻¹) ((side₂-is-refl p) ⁻¹)
   ∙ (triangle p)
 
 \end{code}
@@ -286,9 +286,9 @@ we can transport it to the required refl₀ ＝ p.
 \begin{code}
 
  M-is-set : (p : ΩM) → refl ＝ p
- M-is-set p = sym (eq-congr-refl idem₁) ∙ conjugate ∙ (side₁-is-p p)
+ M-is-set p = ((＝-congr-refl idem₁) ⁻¹) ∙ conjugate ∙ (side₁-is-p p)
   where
-   conjugate : eq-congr idem₁ idem₁ reflₘ ＝ eq-congr idem₁ idem₁ (m' p refl₀ p)
-   conjugate = (ap (eq-congr idem₁ idem₁) (almost-there p))
+   conjugate : ＝-congr idem₁ idem₁ reflₘ ＝ ＝-congr idem₁ idem₁ (m' p refl₀ p)
+   conjugate = (ap (＝-congr idem₁ idem₁) (almost-there p))
 
 \end{code}
