@@ -1,4 +1,5 @@
 Jakub Opršal, 11–12 Mar 2026.
+Updated on 8 June 2026 by Tom de Jong to use minimal library imports.
 
 In this note, I would like to explore the HoTT analogue of the following
 theorem of Walter Taylor [1, Theorem 7.7].
