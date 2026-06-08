@@ -263,9 +263,28 @@ ap₃-∙ : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
         (f : W → X → Y → Z) {w₀ w₁ w₂ : W} {x₀ x₁ x₂ : X} {y₀ y₁ y₂ : Y}
         (r₀ : w₀ ＝ w₁) (r₁ : w₁ ＝ w₂)
         (p₀ : x₀ ＝ x₁) (p₁ : x₁ ＝ x₂)
-        (q₀ : y₀ ＝ y₁) (q₁ :  y₁ ＝ y₂)
+        (q₀ : y₀ ＝ y₁) (q₁ : y₁ ＝ y₂)
       → ap₃ f (r₀ ∙ r₁) (p₀ ∙ p₁) (q₀ ∙ q₁) ＝ ap₃ f r₀ p₀ q₀ ∙ ap₃ f r₁ p₁ q₁
 ap₃-∙ f refl refl refl refl refl refl = refl
+
+\end{code}
+
+A variation of the above due to Jakub Opršal.
+
+\begin{code}
+
+ap₃-∙' : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+         (f : W → X → Y → Z) {w₀ w₁ w₂ : W} {x₀ x₁ x₂ : X} {y₀ y₁ y₂ : Y}
+         (r₀ : w₀ ＝ w₁) (r₁ : w₁ ＝ w₂) {r₂ : w₀ ＝ w₂}
+         (p₀ : x₀ ＝ x₁) (p₁ : x₁ ＝ x₂) {p₂ : x₀ ＝ x₂}
+         (q₀ : y₀ ＝ y₁) (q₁ : y₁ ＝ y₂) {q₂ : y₀ ＝ y₂}
+         (e₀ : r₂ ＝ r₀ ∙ r₁) (e₁ : p₂ ＝ p₀ ∙ p₁) (e₂ : q₂ ＝ q₀ ∙ q₁)
+      → ap₃ f r₂ p₂ q₂ ＝ ap₃ f r₀ p₀ q₀ ∙ ap₃ f r₁ p₁ q₁
+ap₃-∙' f r₀ r₁ p₀ p₁ q₀ q₁ refl refl refl = ap₃-∙ f r₀ r₁ p₀ p₁ q₀ q₁
+
+\end{code}
+
+\begin{code}
 
 ap₃-refl-left : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                 (f : W → X → Y → Z) {w : W} {x₀ x₁ : X} {y₀ y₁ : Y}
@@ -280,10 +299,22 @@ ap₃-refl-mid : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
 ap₃-refl-mid f refl refl = refl
 
 ap₃-refl-right : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-               (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y : Y}
-               (r : w₀ ＝ w₁) (p : x₀ ＝ x₁)
-              → ap₃ f r p refl ＝ ap₂ (λ w x → f w x y) r p
+                 (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y : Y}
+                 (r : w₀ ＝ w₁) (p : x₀ ＝ x₁)
+               → ap₃ f r p refl ＝ ap₂ (λ w x → f w x y) r p
 ap₃-refl-right f refl refl = refl
+
+\end{code}
+
+ap₃ commutes with inverting paths (code due to Jakub Opršal).
+
+\begin{code}
+
+ap₃-⁻¹ : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+         (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y₀ y₁ : Y}
+         (r : w₀ ＝ w₁) (p : x₀ ＝ x₁) (q : y₀ ＝ y₁)
+       → ap₃ f (r ⁻¹) (p ⁻¹) (q ⁻¹) ＝ (ap₃ f r p q) ⁻¹
+ap₃-⁻¹ f refl refl refl = refl
 
 \end{code}
 
@@ -806,6 +837,34 @@ Going right-then-down equals going down-then-right:
               (p : a ＝ b) (q : a ＝ x) (r : b ＝ y)
             → q ∙ ＝-congr q r p ＝ p ∙ r
 ＝-congr-sq refl refl refl = refl
+
+\end{code}
+
+Moved here from Jakub Opršal's
+AlgebraicStructuresForcingSethood.WeakNearUnanimity by Tom de Jong
+on 8 June 2026.
+
+\begin{code}
+
+＝-congr-cancel : {A : 𝓤 ̇ } {a a' b b' : A} {p q : a ＝ a'}
+                → (h₁ : a ＝ b)
+                → (h₂ : a' ＝ b')
+                → ＝-congr h₁ h₂ p ＝ ＝-congr h₁ h₂ q
+                → p ＝ q
+＝-congr-cancel refl refl h = h
+
+＝-congr-ap₃
+ : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+    (f : W → X → Y → Z)
+    {w₀ w₁ w₂ w₃ : W} {x₀ x₁ x₂ x₃ : X} {y₀ y₁ y₂ y₃ : Y}
+    (r₀ : w₀ ＝ w₁) (r₁ : w₂ ＝ w₃) (r₂ : w₀ ＝ w₂)
+    (p₀ : x₀ ＝ x₁) (p₁ : x₂ ＝ x₃) (p₂ : x₀ ＝ x₂)
+    (q₀ : y₀ ＝ y₁) (q₁ : y₂ ＝ y₃) (q₂ : y₀ ＝ y₂)
+  → ＝-congr (ap₃ f r₀ p₀ q₀) (ap₃ f r₁ p₁ q₁) (ap₃ f r₂ p₂ q₂)
+    ＝ ap₃ f (＝-congr r₀ r₁ r₂) (＝-congr p₀ p₁ p₂) (＝-congr q₀ q₁ q₂)
+＝-congr-ap₃ f refl refl r₂ refl refl p₂ refl refl q₂ = refl
+
+\end{code}
 
 \end{code}
 
