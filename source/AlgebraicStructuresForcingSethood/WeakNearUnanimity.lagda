@@ -1,5 +1,5 @@
 Jakub Opršal, 15–24 March 2026.
-TODO. UPDATE COMMENT
+Updated on 8 June 2026 by Tom de Jong to use minimal library imports.
 
 In this file, I want to explore another of Taylor's results from [1]. Namely,
 the following lemma.
