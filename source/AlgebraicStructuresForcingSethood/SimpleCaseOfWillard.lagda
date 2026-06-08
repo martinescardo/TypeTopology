@@ -56,10 +56,10 @@ open import UF.Base using
   ( ap₃
   ; ap₃-∙
   ; refl-left-neutral
-  ; ＝-cong
-  ; ＝-cong-refl
-  ; ＝-cong-∙
-  ; ＝-cong-sq
+  ; ＝-congr
+  ; ＝-congr-refl
+  ; ＝-congr-∙
+  ; ＝-congr-sq
   ; cancel-left
   )
 
@@ -71,14 +71,14 @@ module abelian-type (A : 𝓤 ̇  )
                     where
 
  conjugation-triv : {a : A} (g : a ＝ a) (p : a ＝ a)
-                  → ＝-cong g g p ＝ p
- conjugation-triv g p = cancel-left (＝-cong-sq p g g ∙ loops-commute p g)
+                  → ＝-congr g g p ＝ p
+ conjugation-triv g p = cancel-left (＝-congr-sq p g g ∙ loops-commute p g)
 
- one-＝-cong : {a b c : A} (p : a ＝ a) (q : b ＝ b)
-               (h₀ : a ＝ b) (h₁ : a ＝ c) (h₂ : b ＝ c)
-             → ＝-cong h₀ h₀ p ＝ q
-             → ＝-cong h₁ h₁ p ＝ ＝-cong h₂ h₂ q
- one-＝-cong p q refl h₁ refl eq = conjugation-triv h₁ p ∙ eq
+ one-＝-congr : {a b c : A} (p : a ＝ a) (q : b ＝ b)
+                (h₀ : a ＝ b) (h₁ : a ＝ c) (h₂ : b ＝ c)
+              → ＝-congr h₀ h₀ p ＝ q
+              → ＝-congr h₁ h₁ p ＝ ＝-congr h₂ h₂ q
+ one-＝-congr p q refl h₁ refl eq = conjugation-triv h₁ p ∙ eq
 
 \end{code}
 
@@ -100,22 +100,22 @@ module ternary-idempotent (A    : 𝓤 ̇ )
                           where
 
  Ωf : {a : A} → a ＝ a → a ＝ a → a ＝ a → a ＝ a
- Ωf p q r = ＝-cong (idem _) (idem _) (ap₃ f p q r)
+ Ωf p q r = ＝-congr (idem _) (idem _) (ap₃ f p q r)
 
  triangle : {a : A} (p : a ＝ a)
           → Ωf p refl refl ∙ Ωf refl refl p ＝ Ωf p refl p
  triangle {a} p =
-  Ωf p refl refl ∙ Ωf refl refl p                                   ＝⟨ I ⟩
-  ＝-cong (idem a) (idem a) (ap₃ f p refl refl ∙ ap₃ f refl refl p) ＝⟨ II ⟩
-  ＝-cong (idem a) (idem a) (ap₃ f (p ∙ refl) refl (refl ∙ p))      ＝⟨ III ⟩
-  Ωf p refl p ∎
+  Ωf p refl refl ∙ Ωf refl refl p                                    ＝⟨ I ⟩
+  ＝-congr (idem a) (idem a) (ap₃ f p refl refl ∙ ap₃ f refl refl p) ＝⟨ II ⟩
+  ＝-congr (idem a) (idem a) (ap₃ f (p ∙ refl) refl (refl ∙ p))      ＝⟨ III ⟩
+  Ωf p refl p                                                        ∎
    where
-    I = sym (＝-cong-∙ (idem a) (idem a) (idem a)
-                       (ap₃ f p refl refl)
-                       (ap₃ f refl refl p))
-    II = ap (λ x → ＝-cong (idem a) (idem a) x)
+    I = sym (＝-congr-∙ (idem a) (idem a) (idem a)
+                        (ap₃ f p refl refl)
+                        (ap₃ f refl refl p))
+    II = ap (λ x → ＝-congr (idem a) (idem a) x)
             (sym (ap₃-∙ f p refl refl refl refl p))
-    III = ap (λ x →  ＝-cong (idem a) (idem a) (ap₃ f p refl x))
+    III = ap (λ x →  ＝-congr (idem a) (idem a) (ap₃ f p refl x))
              refl-left-neutral
 
 \end{code}
@@ -139,29 +139,29 @@ module equation-lift (A : 𝓤 ̇ )
  Ωeq₁ : ((x y : A) → s x y y ＝ t x y y)
       → {a : A} (p q : a ＝ a)
       → Ωs p q q ＝ Ωt p q q
- Ωeq₁ eq {a} p q = one-＝-cong _ _ (eq a a) (idem-s a) (idem-t a) (eq^ p q)
+ Ωeq₁ eq {a} p q = one-＝-congr _ _ (eq a a) (idem-s a) (idem-t a) (eq^ p q)
   where
    eq^ : {a a' b b' : A} (p : a ＝ a') (q : b ＝ b')
-        → ＝-cong (eq a b) (eq a' b') (ap₃ s p q q) ＝ ap₃ t p q q
-   eq^ refl refl = ＝-cong-refl (eq _ _)
+        → ＝-congr (eq a b) (eq a' b') (ap₃ s p q q) ＝ ap₃ t p q q
+   eq^ refl refl = ＝-congr-refl (eq _ _)
 
  Ωeq₂ : ((x y : A) → s x y x ＝ t x y x)
       → {a : A} (p q : a ＝ a)
       → Ωs p q p ＝ Ωt p q p
- Ωeq₂ eq {a} p q = one-＝-cong _ _ (eq a a) (idem-s a) (idem-t a) (eq^ p q)
+ Ωeq₂ eq {a} p q = one-＝-congr _ _ (eq a a) (idem-s a) (idem-t a) (eq^ p q)
   where
    eq^ : {a a' b b' : A} (p : a ＝ a') (q : b ＝ b')
-        → ＝-cong (eq a b) (eq a' b') (ap₃ s p q p) ＝ ap₃ t p q p
-   eq^ refl refl = ＝-cong-refl (eq _ _)
+        → ＝-congr (eq a b) (eq a' b') (ap₃ s p q p) ＝ ap₃ t p q p
+   eq^ refl refl = ＝-congr-refl (eq _ _)
 
  Ωeq₃ : ((x y : A) → s x x y ＝ t x x y)
       → {a : A} (p q : a ＝ a)
       → Ωs p p q ＝ Ωt p p q
- Ωeq₃ eq {a} p q = one-＝-cong _ _ (eq a a) (idem-s a) (idem-t a) (eq^ p q)
+ Ωeq₃ eq {a} p q = one-＝-congr _ _ (eq a a) (idem-s a) (idem-t a) (eq^ p q)
   where
    eq^ : {a a' b b' : A} (p : a ＝ a') (q : b ＝ b')
-        → ＝-cong (eq a b) (eq a' b') (ap₃ s p p q) ＝ ap₃ t p p q
-   eq^ refl refl = ＝-cong-refl (eq _ _)
+        → ＝-congr (eq a b) (eq a' b') (ap₃ s p p q) ＝ ap₃ t p p q
+   eq^ refl refl = ＝-congr-refl (eq _ _)
 
 \end{code}
 
@@ -226,12 +226,12 @@ the required refl = p.
   p ∎
    where
     start^ : {a a' b b' : A} (p : a ＝ a') (q : b ＝ b')
-           → ＝-cong (start a b) (start a' b') (ap₃ s p p q) ＝ p
-    start^ refl refl = ＝-cong-refl (start _ _)
+           → ＝-congr (start a b) (start a' b') (ap₃ s p p q) ＝ p
+    start^ refl refl = ＝-congr-refl (start _ _)
 
     end^ : {a a' b b' : A} (p : a ＝ a') (q : b ＝ b')
-         → ＝-cong (end a b) (end a' b') (ap₃ t p p q) ＝ q
-    end^ refl refl = ＝-cong-refl (end _ _)
+         → ＝-congr (end a b) (end a' b') (ap₃ t p p q) ＝ q
+    end^ refl refl = ＝-congr-refl (end _ _)
 
     glue : Ωs p refl refl ∙ Ωs refl refl p ＝ Ωs p refl refl ∙ Ωt refl refl p
     glue =
