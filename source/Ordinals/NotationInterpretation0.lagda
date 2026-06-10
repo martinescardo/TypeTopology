@@ -153,8 +153,8 @@ is why we defined the base cases to be 𝟙 rather than 𝟘.
                                   (λ {(inl ⋆) → ⟦ b ⟧₁-is-totally-separated ;
                                       (inr ⋆) → 𝟙-is-totally-separated})
  ⟦ L b ⟧₁-is-totally-separated = Σ¹-is-totally-separated
-                                  (λ i → ⟨ ⟦ b i ⟧₁ ⟩)
-                                  (λ i → ⟦ b i ⟧₁-is-totally-separated)
+                                   (λ i → ⟨ ⟦ b i ⟧₁ ⟩)
+                                   (λ i → ⟦ b i ⟧₁-is-totally-separated)
 
  ⟦_⟧₂-is-compact∙ : (b : B) → is-compact∙ ⟨ ⟦ b ⟧₂ ⟩
  ⟦ Z ⟧₂-is-compact∙   = 𝟙-is-compact∙
