@@ -76,7 +76,7 @@ The first interpretation is the intended one.
 \begin{code}
 
  ⟦_⟧₀ : B → Ordinal 𝓤₀
- ⟦ Z ⟧₀   = 𝟘ₒ
+ ⟦ Z   ⟧₀ = 𝟘ₒ
  ⟦ S b ⟧₀ = ⟦ b ⟧₀ +ₒ 𝟙ₒ
  ⟦ L b ⟧₀ = sup (λ i → ⟦ b i ⟧₀)
 
@@ -89,7 +89,7 @@ importantly for our purposes, compact ordinals.
 \begin{code}
 
  ⟦_⟧₁ : B → Ordinalᵀ 𝓤₀
- ⟦ Z ⟧₁   = 𝟙ᵒ
+ ⟦ Z   ⟧₁ = 𝟙ᵒ
  ⟦ S b ⟧₁ = ⟦ b ⟧₁ +ᵒ 𝟙ᵒ
  ⟦ L b ⟧₁ = ∑¹ (λ i → ⟦ b i ⟧₁)
 
@@ -100,7 +100,7 @@ The third interpretation enlarges the first one in a different way.
 \begin{code}
 
  ⟦_⟧₂ : B → Ordinal 𝓤₀
- ⟦ Z ⟧₂   = 𝟙ₒ
+ ⟦ Z   ⟧₂ = 𝟙ₒ
  ⟦ S b ⟧₂ = ⟦ b ⟧₂ +ₒ 𝟙ₒ
  ⟦ L b ⟧₂ = sup (extension (λ i → ⟦ b i ⟧₂))
 
@@ -113,7 +113,7 @@ universe 𝓤. We again take sums rather than sups.
 \begin{code}
 
  ⟦_⟧₃ : B → Ordinal₃ 𝓤₀
- ⟦ Z ⟧₃    = 𝟘₃
+ ⟦ Z   ⟧₃  = 𝟘₃
  ⟦ S b ⟧₃  = ⟦ b ⟧₃ +₃ 𝟙₃
  ⟦ L b ⟧₃  = ∑³ ω₃ (λ i → ⟦ b i ⟧₃)
 
@@ -135,7 +135,7 @@ is why we defined the base cases to be 𝟙 rather than 𝟘.
 \begin{code}
 
  ⟦_⟧₁-is-compact∙ : (b : B) → is-compact∙ ⟨ ⟦ b ⟧₁ ⟩
- ⟦ Z ⟧₁-is-compact∙   = 𝟙-is-compact∙
+ ⟦ Z   ⟧₁-is-compact∙ = 𝟙-is-compact∙
  ⟦ S b ⟧₁-is-compact∙ = Σ-is-compact∙ 𝟙+𝟙-is-compact∙
                          (dep-cases
                            (λ _ → ⟦ b ⟧₁-is-compact∙)
@@ -145,7 +145,7 @@ is why we defined the base cases to be 𝟙 rather than 𝟘.
                           (λ i → ⟦ b i ⟧₁-is-compact∙)
 
  ⟦_⟧₁-is-totally-separated : (b : B) → is-totally-separated ⟨ ⟦ b ⟧₁ ⟩
- ⟦ Z ⟧₁-is-totally-separated = 𝟙-is-totally-separated
+ ⟦ Z   ⟧₁-is-totally-separated = 𝟙-is-totally-separated
  ⟦ S b ⟧₁-is-totally-separated = Σ-is-totally-separated-if-index-type-is-discrete
                                   (𝟙 + 𝟙)
                                   (λ x → ⟨ cases (λ _ → ⟦ b ⟧₁) (λ _ → 𝟙ᵒ) x ⟩)
@@ -157,7 +157,7 @@ is why we defined the base cases to be 𝟙 rather than 𝟘.
                                    (λ i → ⟦ b i ⟧₁-is-totally-separated)
 
  ⟦_⟧₂-is-compact∙ : (b : B) → is-compact∙ ⟨ ⟦ b ⟧₂ ⟩
- ⟦ Z ⟧₂-is-compact∙   = 𝟙-is-compact∙
+ ⟦ Z   ⟧₂-is-compact∙ = 𝟙-is-compact∙
  ⟦ S b ⟧₂-is-compact∙ = +-is-compact∙ ⟦ b ⟧₂-is-compact∙ (𝟙-is-compact∙)
  ⟦ L b ⟧₂-is-compact∙ = codomain-of-surjection-is-compact∙ pt
                          (sum-to-sup (extension (λ i → ⟦ b i ⟧₂)))
@@ -317,4 +317,4 @@ We also have:
 
 \end{code}
 
-TODO. Is the function map₁₂ a surjection?
+TODO. Is the function map₁₂ a surjection? Probably not without classical logic.

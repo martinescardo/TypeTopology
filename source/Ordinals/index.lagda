@@ -1,4 +1,4 @@
-Martin Escardo
+Martin Escardo, with additions by others, indicated below.
 
 \begin{code}
 
@@ -14,6 +14,7 @@ import Ordinals.Brouwer
 import Ordinals.BuraliForti                   -- by [1]
 import Ordinals.Closure
 import Ordinals.Codes
+import Ordinals.CompactnessOfSuprema
 import Ordinals.ConvergentSequence
 import Ordinals.CumulativeHierarchy           -- by [2]
 import Ordinals.CumulativeHierarchy-Addendum  -- by [2]
