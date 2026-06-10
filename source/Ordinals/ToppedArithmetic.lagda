@@ -39,6 +39,9 @@ open import Ordinals.ToppedType fe
 open import Ordinals.Injectivity
 open import Ordinals.Underlying
 
+private
+ fe₀ = fe 𝓤₀ 𝓤₀
+
 Ordᵀ = Ordinalᵀ 𝓤₀
 
 succₒ : Ordinal 𝓤 → Ordinalᵀ 𝓤
@@ -125,7 +128,7 @@ ordinals defined above.
 open topped-ordinals-injectivity fe
 
 ∑¹ : (ℕ → Ordᵀ) → Ordᵀ
-∑¹ τ = ∑ ℕ∞ᵒ (τ ↗ embedding-ℕ-to-ℕ∞ (fe 𝓤₀ 𝓤₀))
+∑¹ τ = ∑ ℕ∞ᵒ (τ ↗ embedding-ℕ-to-ℕ∞ fe₀)
 
 \end{code}
 

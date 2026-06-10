@@ -208,6 +208,12 @@ discrete-types-are-totally-separated {𝓤} {X} d {x} {y} α = g
   g : x ＝ y
   g = pr₁ (φ y) a
 
+𝟘-is-totally-separated : is-totally-separated (𝟘 {𝓤})
+𝟘-is-totally-separated = discrete-types-are-totally-separated 𝟘-is-discrete
+
+𝟙-is-totally-separated : is-totally-separated (𝟙 {𝓤})
+𝟙-is-totally-separated = discrete-types-are-totally-separated 𝟙-is-discrete
+
 \end{code}
 
 The converse fails: by the results below, e.g. (ℕ → 𝟚) is totally

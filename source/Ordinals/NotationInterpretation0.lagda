@@ -37,13 +37,13 @@ open import CoNaturals.Type
 open import MLTT.Spartan
 open import Notation.CanonicalMap
 open import Ordinals.AdditionProperties ua
-open import Ordinals.ToppedAdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Brouwer
 open import Ordinals.Injectivity
 open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
+open import Ordinals.ToppedAdditionProperties ua
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
 open import Ordinals.TrichotomousArithmetic fe
@@ -52,6 +52,8 @@ open import Ordinals.Type
 open import Ordinals.Underlying
 open import TypeTopology.CompactTypes
 open import TypeTopology.SquashedSum fe
+open import TypeTopology.TotallySeparated
+open import UF.DiscreteAndSeparated
 open import UF.Size
 
 open ordinals-injectivity fe
@@ -132,6 +134,31 @@ is why we defined the base cases to be 𝟙 rather than 𝟘.
 
 \begin{code}
 
+ ⟦_⟧₁-is-compact∙ : (b : B) → is-compact∙ ⟨ ⟦ b ⟧₁ ⟩
+ ⟦ Z ⟧₁-is-compact∙   = 𝟙-is-compact∙
+ ⟦ S b ⟧₁-is-compact∙ = Σ-is-compact∙ 𝟙+𝟙-is-compact∙
+                         (dep-cases
+                           (λ _ → ⟦ b ⟧₁-is-compact∙)
+                           (λ _ → 𝟙-is-compact∙))
+ ⟦ L b ⟧₁-is-compact∙ = Σ¹-compact∙
+                          (λ i → ⟨ ⟦ b i ⟧₁ ⟩)
+                          (λ i → ⟦ b i ⟧₁-is-compact∙)
+
+ ⟦_⟧₁-is-totally-separated : (b : B) → is-totally-separated ⟨ ⟦ b ⟧₁ ⟩
+ ⟦ Z ⟧₁-is-totally-separated
+  = 𝟙-is-totally-separated
+ ⟦ S b ⟧₁-is-totally-separated
+  = Σ-is-totally-separated-if-index-type-is-discrete
+     (𝟙 + 𝟙)
+     (λ x → ⟨ cases (λ _ → ⟦ b ⟧₁) (λ _ → 𝟙ᵒ) x ⟩)
+     (+-is-discrete 𝟙-is-discrete 𝟙-is-discrete)
+     (λ {(inl ⋆) → ⟦ b ⟧₁-is-totally-separated ;
+         (inr ⋆) → 𝟙-is-totally-separated})
+ ⟦ L b ⟧₁-is-totally-separated
+   = Σ¹-is-totally-separated
+      (λ i → ⟨ ⟦ b i ⟧₁ ⟩)
+      (λ i → ⟦ b i ⟧₁-is-totally-separated)
+
  ⟦_⟧₂-is-compact∙ : (b : B) → is-compact∙ ⟨ ⟦ b ⟧₂ ⟩
  ⟦ Z ⟧₂-is-compact∙   = 𝟙-is-compact∙
  ⟦ S b ⟧₂-is-compact∙ = +-is-compact∙ ⟦ b ⟧₂-is-compact∙ (𝟙-is-compact∙)
@@ -143,16 +170,9 @@ is why we defined the base cases to be 𝟙 rather than 𝟘.
        (λ i → ⟨ ⟦ b i ⟧₂ ⟩)
        (λ i → ⟦ b i ⟧₂-is-compact∙ ))
 
- ⟦_⟧₁-is-compact∙ : (b : B) → is-compact∙ ⟨ ⟦ b ⟧₁ ⟩
- ⟦ Z ⟧₁-is-compact∙   = 𝟙-is-compact∙
- ⟦ S b ⟧₁-is-compact∙ = Σ-is-compact∙ 𝟙+𝟙-is-compact∙
-                         (dep-cases
-                           (λ _ → ⟦ b ⟧₁-is-compact∙)
-                           (λ _ → 𝟙-is-compact∙))
- ⟦ L b ⟧₁-is-compact∙ = Σ¹-compact∙
-                          (λ i → ⟨ ⟦ b i ⟧₁ ⟩)
-                          (λ i → ⟦ b i ⟧₁-is-compact∙)
 \end{code}
+
+TODO. I don't think ⟦ b ⟧₂ is totally separated in general.
 
 The successor function on ordinals is not necessarily monotone, but it
 is if excluded middle holds.
