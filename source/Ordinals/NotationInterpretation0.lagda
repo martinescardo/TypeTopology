@@ -145,34 +145,30 @@ is why we defined the base cases to be 𝟙 rather than 𝟘.
                           (λ i → ⟦ b i ⟧₁-is-compact∙)
 
  ⟦_⟧₁-is-totally-separated : (b : B) → is-totally-separated ⟨ ⟦ b ⟧₁ ⟩
- ⟦ Z ⟧₁-is-totally-separated
-  = 𝟙-is-totally-separated
- ⟦ S b ⟧₁-is-totally-separated
-  = Σ-is-totally-separated-if-index-type-is-discrete
-     (𝟙 + 𝟙)
-     (λ x → ⟨ cases (λ _ → ⟦ b ⟧₁) (λ _ → 𝟙ᵒ) x ⟩)
-     (+-is-discrete 𝟙-is-discrete 𝟙-is-discrete)
-     (λ {(inl ⋆) → ⟦ b ⟧₁-is-totally-separated ;
-         (inr ⋆) → 𝟙-is-totally-separated})
- ⟦ L b ⟧₁-is-totally-separated
-   = Σ¹-is-totally-separated
-      (λ i → ⟨ ⟦ b i ⟧₁ ⟩)
-      (λ i → ⟦ b i ⟧₁-is-totally-separated)
+ ⟦ Z ⟧₁-is-totally-separated = 𝟙-is-totally-separated
+ ⟦ S b ⟧₁-is-totally-separated = Σ-is-totally-separated-if-index-type-is-discrete
+                                  (𝟙 + 𝟙)
+                                  (λ x → ⟨ cases (λ _ → ⟦ b ⟧₁) (λ _ → 𝟙ᵒ) x ⟩)
+                                  (+-is-discrete 𝟙-is-discrete 𝟙-is-discrete)
+                                  (λ {(inl ⋆) → ⟦ b ⟧₁-is-totally-separated ;
+                                      (inr ⋆) → 𝟙-is-totally-separated})
+ ⟦ L b ⟧₁-is-totally-separated = Σ¹-is-totally-separated
+                                  (λ i → ⟨ ⟦ b i ⟧₁ ⟩)
+                                  (λ i → ⟦ b i ⟧₁-is-totally-separated)
 
  ⟦_⟧₂-is-compact∙ : (b : B) → is-compact∙ ⟨ ⟦ b ⟧₂ ⟩
  ⟦ Z ⟧₂-is-compact∙   = 𝟙-is-compact∙
  ⟦ S b ⟧₂-is-compact∙ = +-is-compact∙ ⟦ b ⟧₂-is-compact∙ (𝟙-is-compact∙)
- ⟦ L b ⟧₂-is-compact∙ =
-   codomain-of-surjection-is-compact∙ pt
-    (sum-to-sup (extension (λ i → ⟦ b i ⟧₂)))
-    (sum-to-sup-is-surjection (extension (λ i → ⟦ b i ⟧₂)))
-    (Σ¹-compact∙
-       (λ i → ⟨ ⟦ b i ⟧₂ ⟩)
-       (λ i → ⟦ b i ⟧₂-is-compact∙ ))
+ ⟦ L b ⟧₂-is-compact∙ = codomain-of-surjection-is-compact∙ pt
+                         (sum-to-sup (extension (λ i → ⟦ b i ⟧₂)))
+                         (sum-to-sup-is-surjection (extension (λ i → ⟦ b i ⟧₂)))
+                         (Σ¹-compact∙
+                            (λ i → ⟨ ⟦ b i ⟧₂ ⟩)
+                            (λ i → ⟦ b i ⟧₂-is-compact∙ ))
 
 \end{code}
 
-TODO. I don't think ⟦ b ⟧₂ is totally separated in general.
+TODO. I don't think ⟦ b ⟧₂ is totally separated without assuming classical logic.
 
 The successor function on ordinals is not necessarily monotone, but it
 is if excluded middle holds.
