@@ -103,8 +103,9 @@ module NotionsOfDecidability.SemiDecidable
         (pt  : propositional-truncations-exist)
        where
 
-fe' : FunExt
-fe' 𝓤 𝓥 = fe
+private
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe
 
 open PropositionalTruncation pt
 open import UF.ImageAndSurjection pt

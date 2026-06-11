@@ -24,16 +24,16 @@ open import UF.Univalence
 open import Ordinals.Injectivity
 open import TypeTopology.TotallySeparated
 
-TTOrdinal : ∀ 𝓤 → 𝓤 ⁺ ̇
-TTOrdinal 𝓤 = Σ α ꞉ Ordinal 𝓤 , is-totally-separated ⟨ α ⟩
+TSOrdinal : ∀ 𝓤 → 𝓤 ⁺ ̇
+TSOrdinal 𝓤 = Σ α ꞉ Ordinal 𝓤 , is-totally-separated ⟨ α ⟩
 
-underlying-ordinal : TTOrdinal 𝓤 → Ordinal 𝓤
+underlying-ordinal : TSOrdinal 𝓤 → Ordinal 𝓤
 underlying-ordinal = pr₁
 
-⟪_⟫ : TTOrdinal 𝓤 → 𝓤 ̇
+⟪_⟫ : TSOrdinal 𝓤 → 𝓤 ̇
 ⟪ τ ⟫ = ⟨ underlying-ordinal τ ⟩
 
-total-separatedness-of-underlying-ordinal : (τ : TTOrdinal 𝓤)
+total-separatedness-of-underlying-ordinal : (τ : TSOrdinal 𝓤)
                                           → is-totally-separated ⟪ τ ⟫
 total-separatedness-of-underlying-ordinal = pr₂
 
@@ -54,9 +54,9 @@ module _ (fe : FunExt) where
  ↗-is-totally-separated α 𝓮 t j = Π-is-totally-separated fe'
                                    (λ φ → t (fiber-point φ))
 
- TTOrdinal-is-ainjective : is-univalent (𝓤 ⊔ 𝓥)
-                         → ainjective-type (TTOrdinal (𝓤 ⊔ 𝓥)) 𝓤 𝓥
- TTOrdinal-is-ainjective {𝓤} {𝓥} ua {I} {J} e e-is-embedding α = γ
+ TSOrdinal-is-ainjective : is-univalent (𝓤 ⊔ 𝓥)
+                         → ainjective-type (TSOrdinal (𝓤 ⊔ 𝓥)) 𝓤 𝓥
+ TSOrdinal-is-ainjective {𝓤} {𝓥} ua {I} {J} e e-is-embedding α = γ
   where
    β : I → Ordinal (𝓤 ⊔ 𝓥)
    β x = underlying-ordinal (α x)
@@ -64,14 +64,14 @@ module _ (fe : FunExt) where
    𝓮 : I ↪ J
    𝓮 = (e , e-is-embedding)
 
-   α↗𝓮 : J → TTOrdinal (𝓤 ⊔ 𝓥)
+   α↗𝓮 : J → TSOrdinal (𝓤 ⊔ 𝓥)
    α↗𝓮 y = (β ↗ 𝓮) y ,
            ↗-is-totally-separated
             β
             𝓮
             (λ i → total-separatedness-of-underlying-ordinal (α i)) y
 
-   γ : Σ α↗𝓮 ꞉ (J → TTOrdinal (𝓤 ⊔ 𝓥)) , (α↗𝓮 ∘ e ∼ α)
+   γ : Σ α↗𝓮 ꞉ (J → TSOrdinal (𝓤 ⊔ 𝓥)) , (α↗𝓮 ∘ e ∼ α)
    γ = α↗𝓮 ,
        (λ i → to-subtype-＝
                 (λ α → being-totally-separated-is-prop fe' ⟨ α ⟩)
