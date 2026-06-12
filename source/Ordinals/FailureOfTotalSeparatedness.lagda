@@ -410,9 +410,9 @@ unsolved constraints.
    IV (succ n') lt a = Succ-criterion fe' (lt n' (<-succ n')) a
 
  𝓕-is-semidecidable : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) → is-semidecidable (𝓕 ξ)
- 𝓕-is-semidecidable {u} ξ = ∣ extent ξ ,
-                              𝓕-gives-finite-extent ξ ,
-                              finite-extent-gives-𝓕 ξ ∣
+ 𝓕-is-semidecidable ξ = ∣ extent ξ ,
+                          𝓕-gives-finite-extent ξ ,
+                          finite-extent-gives-𝓕 ξ ∣
 
  𝔽 : {u : ℕ∞} → ⟨ α̅ u ⟩ → 𝕊
  𝔽 ξ = (𝓕 ξ , 𝓕-is-prop ξ) , 𝓕-is-semidecidable ξ
@@ -453,7 +453,8 @@ We now show that 𝔽 preservers the strict order.
 
 \end{code}
 
-If the lower sets of ξ and ξ' are equal, then so are 𝔽 ξ and 𝔽 ξ'.
+If the lower sets of ξ and ξ' are equal, then so are the elements 𝔽 ξ
+and 𝔽 ξ'.
 
 \begin{code}
 
@@ -465,23 +466,23 @@ If the lower sets of ξ and ξ' are equal, then so are 𝔽 ξ and 𝔽 ξ'.
    I : (Σ ζ ꞉ ⟨ α̅ u ⟩ , ζ ≺⟨ α̅ u ⟩ ξ) ＝ (Σ ζ' ꞉ ⟨ α̅ u' ⟩ , ζ' ≺⟨ α̅ u' ⟩ ξ')
    I = ap ⟨_⟩ E
 
-   II : (w : ℕ∞) (ρ : ⟨ α̅ w ⟩) → 𝓕 ρ → Σ ζ ꞉ ⟨ α̅ w ⟩ , ζ ≺⟨ α̅ w ⟩ ρ
-   II w ρ (φ , e₂) = ⊥ξ , φ , ≺-left-right (⊥ξ φ) (ρ φ) refl e₂
+   II : {w : ℕ∞} (ρ : ⟨ α̅ w ⟩) → 𝓕 ρ → Σ ζ ꞉ ⟨ α̅ w ⟩ , ζ ≺⟨ α̅ w ⟩ ρ
+   II ρ (φ , e₂) = ⊥ξ , φ , ≺-left-right (⊥ξ φ) (ρ φ) refl e₂
 
-   III : (w w' : ℕ∞) (ρ : ⟨ α̅ w ⟩) (ρ' : ⟨ α̅ w' ⟩)
+   III : {w w' : ℕ∞} (ρ : ⟨ α̅ w ⟩) (ρ' : ⟨ α̅ w' ⟩)
       → ((Σ ζ ꞉ ⟨ α̅ w ⟩ , ζ ≺⟨ α̅ w ⟩ ρ) → (Σ ζ' ꞉ ⟨ α̅ w' ⟩ , ζ' ≺⟨ α̅ w' ⟩ ρ'))
       → 𝓕 ρ
       → 𝓕 ρ'
-   III w w' ρ ρ' h s = c (h (II w ρ s))
+   III {w} {w'} ρ ρ' h s = c (h (II ρ s))
     where
      c : (Σ ζ' ꞉ ⟨ α̅ w' ⟩ , ζ' ≺⟨ α̅ w' ⟩ ρ') → 𝓕 ρ'
      c (ζ' , ψ , l) = ψ , ≺-right (ζ' ψ) (ρ' ψ) l
 
    IV : 𝓕 ξ → 𝓕 ξ'
-   IV = III u u' ξ ξ' (Idtofun I)
+   IV = III ξ ξ' (Idtofun I)
 
    V : 𝓕 ξ' → 𝓕 ξ
-   V = III u' u ξ' ξ (Idtofun (I ⁻¹))
+   V = III ξ' ξ (Idtofun (I ⁻¹))
 
 \end{code}
 
@@ -583,11 +584,11 @@ time of writing).
                → θ ξ ≺⟨ α̅∞ ⟩ θ ξ'
  θ-preserves-≺ u = simulations-are-order-preserving (α̅ u) α̅∞ θ θ-is-simulation
 
- θ-is-initial-segment : (u : ℕ∞) (ξ : ⟨ α̅ u ⟩) (z : ⟨ α̅∞ ⟩)
+ θ-is-initial-segment : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) (z : ⟨ α̅∞ ⟩)
                       → z ≺⟨ α̅∞ ⟩ θ ξ
                       → Σ ξ₀ ꞉ ⟨ α̅ u ⟩ , (ξ₀ ≺⟨ α̅ u ⟩ ξ) × (θ ξ₀ ＝ z)
- θ-is-initial-segment u ξ z = simulations-are-initial-segments (α̅ u) α̅∞ θ
-                               θ-is-simulation ξ z
+ θ-is-initial-segment {u} ξ z = simulations-are-initial-segments (α̅ u) α̅∞ θ
+                                 θ-is-simulation ξ z
 
  ≺ₛ-cast-left : (t t' r : 𝕊) → t ＝ t' → t ≺ₛ r → t' ≺ₛ r
  ≺ₛ-cast-left t t' r refl l = l
@@ -605,7 +606,7 @@ time of writing).
               → θ ξ ＝ y
               → τ y ＝ ⊥ₛ
               → ¬ (z ≺⟨ α̅∞ ⟩ y)
- τ-⊥-no-preds u ξ y z e c l = II (θ-is-initial-segment u ξ z l')
+ τ-⊥-no-preds u ξ y z e c l = II (θ-is-initial-segment ξ z l')
   where
    l' : z ≺⟨ α̅∞ ⟩ θ ξ
    l' = ≺-cast-right z y (θ ξ) (e ⁻¹) l
@@ -643,7 +644,7 @@ time of writing).
   → (z : ⟨ α̅∞ ⟩)
   → z ≺⟨ α̅∞ ⟩ θ ξ₁
   → z ≺⟨ α̅∞ ⟩ θ ξ₂
- τ-⊤-lemma {u₁} {u₂} ξ₁ ξ₂ c₁ c₂ z l₀ = III (θ-is-initial-segment u₁ ξ₁ z l₀)
+ τ-⊤-lemma {u₁} {u₂} ξ₁ ξ₂ c₁ c₂ z l₀ = III (θ-is-initial-segment ξ₁ z l₀)
   where
    s₂ : 𝓕 ξ₂
    s₂ = transport (λ - → δ - holds) (c₂ ⁻¹) ⋆
@@ -712,13 +713,14 @@ that the required Σ-type is a proposition.
 
 \begin{code}
 
- τ-lemma₂ : (y y' : ⟨ α̅∞ ⟩) (u : ℕ∞) (ξ : ⟨ α̅ u ⟩)
+ τ-lemma₂ : (y y' : ⟨ α̅∞ ⟩)
+          → {u : ℕ∞} (ξ : ⟨ α̅ u ⟩)
           → θ ξ ＝ y
-          → (u' : ℕ∞) (ξ' : ⟨ α̅ u' ⟩)
+          → {u' : ℕ∞} (ξ' : ⟨ α̅ u' ⟩)
           → θ ξ' ＝ y'
           → y ≺⟨ α̅∞ ⟩ y'
           → τ y ≺ₛ τ y'
- τ-lemma₂ y y' u ξ e u' ξ' e' l = I (θ-is-initial-segment u' ξ' (θ ξ) l')
+ τ-lemma₂ y y' ξ e {u'} ξ' e' l = I (θ-is-initial-segment ξ' (θ ξ) l')
   where
    l₁ : θ ξ ≺⟨ α̅∞ ⟩ y'
    l₁ = ≺-cast-left y (θ ξ) y' (e ⁻¹) l
@@ -751,7 +753,7 @@ that the required Σ-type is a proposition.
  τ-lemma₃ y y' l =
   ∥∥-rec (≺ₛ-prop-valued (τ y) (τ y'))
    (λ (u , ξ , e) → ∥∥-rec (≺ₛ-prop-valued (τ y) (τ y'))
-     (λ (u' , ξ' , e') → τ-lemma₂ y y' u ξ e u' ξ' e' l)
+     (λ (u' , ξ' , e') → τ-lemma₂ y y' ξ e ξ' e' l)
      (θ-fiber-lemma y'))
    (θ-fiber-lemma y)
 
