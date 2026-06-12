@@ -662,16 +662,16 @@ time of writing).
 
    III : (Σ ξ₀ ꞉ ⟨ α̅ u₁ ⟩ , (ξ₀ ≺⟨ α̅ u₁ ⟩ ξ₁) × (θ ξ₀ ＝ z))
        → z ≺⟨ α̅∞ ⟩ θ ξ₂
-   III (ξ₀ , (φ₁ , l₁) , p) = ≺-cast-left (θ ⊥ξ) z (θ ξ₂) (zz ⁻¹)
-                             (θ-preserves-≺ u₂ ⊥ξ ξ₂ I)
+   III (ξ₀ , (φ₁ , l₁) , p) = ≺-cast-left (θ ⊥ξ) z (θ ξ₂) (III₁ ⁻¹)
+                               (θ-preserves-≺ u₂ ⊥ξ ξ₂ I)
     where
-     cz : τ z ＝ ⊥ₛ
-     cz = τ z       ＝⟨ τ-property ξ₀ z p ⟩
+     III₀ : τ z ＝ ⊥ₛ
+     III₀ = τ z       ＝⟨ τ-property ξ₀ z p ⟩
           𝔽 ξ₀ ＝⟨ 𝔽⊥ ξ₀ φ₁ (≺-left (ξ₀ φ₁) (ξ₁ φ₁) l₁) ⟩
           ⊥ₛ        ∎
 
-     zz : z ＝ θ ⊥ξ
-     zz = τ-⊥-uniqueness z (θ ⊥ξ) cz II
+     III₁ : z ＝ θ ⊥ξ
+     III₁ = τ-⊥-uniqueness z (θ ⊥ξ) III₀ II
 
  τ-lemma₁ : (y y' : ⟨ α̅∞ ⟩) → τ y ＝ ⊤ₛ → τ y' ＝ ⊤ₛ → y ＝ y'
  τ-lemma₁ y y' a a' =
@@ -720,34 +720,34 @@ that the required Σ-type is a proposition.
           → θ ξ' ＝ y'
           → y ≺⟨ α̅∞ ⟩ y'
           → τ y ≺ₛ τ y'
- τ-lemma₂ y y' ξ e {u'} ξ' e' l = I (θ-is-initial-segment ξ' (θ ξ) l')
+ τ-lemma₂ y y' ξ e {u'} ξ' e' l = III (θ-is-initial-segment ξ' (θ ξ) II)
   where
-   l₁ : θ ξ ≺⟨ α̅∞ ⟩ y'
-   l₁ = ≺-cast-left y (θ ξ) y' (e ⁻¹) l
+   I : θ ξ ≺⟨ α̅∞ ⟩ y'
+   I = ≺-cast-left y (θ ξ) y' (e ⁻¹) l
 
-   l' : θ ξ ≺⟨ α̅∞ ⟩ θ ξ'
-   l' = ≺-cast-right (θ ξ) y' (θ ξ') (e' ⁻¹) l₁
+   II : θ ξ ≺⟨ α̅∞ ⟩ θ ξ'
+   II = ≺-cast-right (θ ξ) y' (θ ξ') (e' ⁻¹) I
 
-   I : (Σ ξ₀ ꞉ ⟨ α̅ u' ⟩ , (ξ₀ ≺⟨ α̅ u' ⟩ ξ') × (θ ξ₀ ＝ θ ξ))
-     → τ y ≺ₛ τ y'
-   I (ξ₀ , m , p) = ≺ₛ-cast-left (𝔽 ξ₀) (τ y) (τ y') I₃ I₄
+   III : (Σ ξ₀ ꞉ ⟨ α̅ u' ⟩ , (ξ₀ ≺⟨ α̅ u' ⟩ ξ') × (θ ξ₀ ＝ θ ξ))
+       → τ y ≺ₛ τ y'
+   III (ξ₀ , m , p) = ≺ₛ-cast-left (𝔽 ξ₀) (τ y) (τ y') III₃ III₄
     where
-     I₀ : 𝔽 ξ₀ ≺ₛ 𝔽 ξ'
-     I₀ = 𝔽-preserves-≺ ξ₀ ξ' m
+     III₀ : 𝔽 ξ₀ ≺ₛ 𝔽 ξ'
+     III₀ = 𝔽-preserves-≺ ξ₀ ξ' m
 
-     I₁ : 𝔽 ξ' ＝ τ y'
-     I₁ = (τ-property ξ' y' e') ⁻¹
+     III₁ : 𝔽 ξ' ＝ τ y'
+     III₁ = (τ-property ξ' y' e') ⁻¹
 
-     I₂ : θ ξ₀ ＝ y
-     I₂ = θ ξ₀ ＝⟨ p ⟩
-          θ ξ  ＝⟨ e ⟩
-          y    ∎
+     III₂ : θ ξ₀ ＝ y
+     III₂ = θ ξ₀ ＝⟨ p ⟩
+            θ ξ  ＝⟨ e ⟩
+            y    ∎
 
-     I₃ : 𝔽 ξ₀ ＝ τ y
-     I₃ = (τ-property ξ₀ y I₂) ⁻¹
+     III₃ : 𝔽 ξ₀ ＝ τ y
+     III₃ = (τ-property ξ₀ y III₂) ⁻¹
 
-     I₄ : 𝔽 ξ₀ ≺ₛ τ y'
-     I₄ = ≺ₛ-cast-right (𝔽 ξ₀) (𝔽 ξ') (τ y') I₁ I₀
+     III₄ : 𝔽 ξ₀ ≺ₛ τ y'
+     III₄ = ≺ₛ-cast-right (𝔽 ξ₀) (𝔽 ξ') (τ y') III₁ III₀
 
  τ-lemma₃ : is-order-preserving α̅∞ 𝓢 τ
  τ-lemma₃ y y' l =
@@ -761,19 +761,19 @@ that the required Σ-type is a proposition.
           → θ ξ ＝ y
           → 𝓕 ξ
           → Σ y₀ ꞉ ⟨ α̅∞ ⟩ , (y₀ ≺⟨ α̅∞ ⟩ y) × (τ y₀ ＝ ⊥ₛ)
- τ-lemma₄ y u ξ eᵧ (φ , e₂) = θ ⊥ξ , I₁ , I₂
+ τ-lemma₄ y u ξ eᵧ (φ , e) = θ ⊥ξ , II , III
   where
-   I₀ : θ ⊥ξ ≺⟨ α̅∞ ⟩ θ ξ
-   I₀ = θ-preserves-≺ u ⊥ξ ξ
-         (φ , ≺-left-right (⊥ξ φ) (ξ φ) refl e₂)
+   I : θ ⊥ξ ≺⟨ α̅∞ ⟩ θ ξ
+   I = θ-preserves-≺ u ⊥ξ ξ
+        (φ , ≺-left-right (⊥ξ φ) (ξ φ) refl e)
 
-   I₁ : θ ⊥ξ ≺⟨ α̅∞ ⟩ y
-   I₁ = ≺-cast-right (θ ⊥ξ) (θ ξ) y eᵧ I₀
+   II : θ ⊥ξ ≺⟨ α̅∞ ⟩ y
+   II = ≺-cast-right (θ ⊥ξ) (θ ξ) y eᵧ I
 
-   I₂ : τ (θ ⊥ξ) ＝ ⊥ₛ
-   I₂ = τ (θ ⊥ξ) ＝⟨ τ-property ⊥ξ (θ ⊥ξ) refl ⟩
-        𝔽 ⊥ξ    ＝⟨ 𝔽⊥ ⊥ξ φ refl ⟩
-        ⊥ₛ              ∎
+   III : τ (θ ⊥ξ) ＝ ⊥ₛ
+   III = τ (θ ⊥ξ) ＝⟨ τ-property ⊥ξ (θ ⊥ξ) refl ⟩
+         𝔽 ⊥ξ     ＝⟨ 𝔽⊥ ⊥ξ φ refl ⟩
+         ⊥ₛ       ∎
 
  τ-lemma₅ : (y : ⟨ α̅∞ ⟩) (t : 𝕊)
           → t ≺ₛ τ y
