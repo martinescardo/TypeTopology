@@ -518,12 +518,12 @@ is u : ℕ∞ such that the fiber of y over θ {u} is inhabited.
    I = α̅ u ↓ ξ   ＝⟨ (initial-segment-of-sup-at-component α̅ u ξ)⁻¹ ⟩
        α̅∞ ↓ θ ξ  ＝⟨ ap (α̅∞ ↓_) e ⟩
        α̅∞ ↓ θ ξ' ＝⟨ initial-segment-of-sup-at-component α̅ u' ξ' ⟩
-       α̅ u' ↓ ξ'  ∎
+       α̅ u' ↓ ξ' ∎
 
 \end{code}
 
 We now define a map τ : ⟨ α̅∞ ⟩ → 𝕊 by first defining a type-valued
-version τ' of it, which we first show to be single-valued.
+version τ' of it, after showing that it is single-valued.
 
 \begin{code}
 
