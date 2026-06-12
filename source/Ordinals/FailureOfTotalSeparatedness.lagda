@@ -886,25 +886,25 @@ promised description of the supremum.
 
 \end{code}
 
-As promised, the sup of α̅ is S:
+As promised, the sup of α̅ is 𝓢:
 
 \begin{code}
 
  α̅∞-is-𝓢 : α̅∞ ≃ₒ 𝓢
  α̅∞-is-𝓢 = τ , τ-lemma₃ , τ-is-equiv , τ⁻¹-is-order-preserving
 
- characterization-of-α̅∞ : ⟨ α̅∞ ⟩ ≃ 𝕊
- characterization-of-α̅∞ = ≃ₒ-gives-≃ α̅∞ 𝓢 α̅∞-is-𝓢
+ characterization-of-⟨α̅∞⟩ : ⟨ α̅∞ ⟩ ≃ 𝕊
+ characterization-of-⟨α̅∞⟩ = ≃ₒ-gives-≃ α̅∞ 𝓢 α̅∞-is-𝓢
 
 \end{code}
 
 As a corollary, we conclude that, although 𝕊 lives in 𝓤₁ by
-construction, it has a copy in 𝓤₀:
+construction, it has a copy in 𝓤₀, as mentioned above.
 
 \begin{code}
 
  𝕊-is-small : is-small 𝕊
- 𝕊-is-small = ⟨ α̅∞ ⟩ , characterization-of-α̅∞
+ 𝕊-is-small = ⟨ α̅∞ ⟩ , characterization-of-⟨α̅∞⟩
 
 \end{code}
 
@@ -1008,7 +1008,7 @@ Topos, for instance.
  ⟨α̅∞⟩-totally-separated-gives-¬¬WLPO : is-totally-separated ⟨ α̅∞ ⟩ → ¬¬ WLPO
  ⟨α̅∞⟩-totally-separated-gives-¬¬WLPO ts =
   𝕊-totally-separated-gives-¬¬WLPO
-   (equiv-to-totally-separated characterization-of-α̅∞ ts)
+   (equiv-to-totally-separated characterization-of-⟨α̅∞⟩ ts)
 
 \end{code}
 
