@@ -917,7 +917,7 @@ Topos, for instance.
 
  open import TypeTopology.TotallySeparated
  open import Taboos.WLPO
- open import Taboos.BasicDiscontinuity (fe 𝓤₀ 𝓤₀)
+ open import Taboos.BasicDiscontinuity fe'
 
  is-fin : ℕ∞ → 𝕊
  is-fin u = (is-finite u , being-finite-is-prop fe' u) , ∣ u , ↔-refl ∣
@@ -940,8 +940,8 @@ Topos, for instance.
    q : ℕ∞ → 𝟚
    q u = p (is-fin u)
 
-   q-fin : (n : ℕ) → q (ι n) ＝ p ⊤ₛ
-   q-fin n = ap p (naturals-are-fin n)
+   q₀ : (n : ℕ) → q (ι n) ＝ p ⊤ₛ
+   q₀ n = ap p (naturals-are-fin n)
 
    q∞ : q ∞ ＝ p ⊥ₛ
    q∞ = ap p ∞-is-not-fin
@@ -956,23 +956,23 @@ Topos, for instance.
    h ₁ ₀ e e' = basic-discontinuity-taboo q (I₀ , I∞)
     where
      I₀ : (n : ℕ) → q (ι n) ＝ ₀
-     I₀ n = q (ι n) ＝⟨ q-fin n ⟩
-           p ⊤ₛ    ＝⟨ e' ⟩
-           ₀       ∎
+     I₀ n = q (ι n) ＝⟨ q₀ n ⟩
+            p ⊤ₛ    ＝⟨ e' ⟩
+            ₀       ∎
 
      I∞ : q ∞ ＝ ₁
      I∞ = q ∞  ＝⟨ q∞ ⟩
           p ⊥ₛ ＝⟨ e ⟩
           ₁    ∎
-   h ₀ ₁ e e' = basic-discontinuity-taboo (λ u → complement (q u)) (d , d∞)
+   h ₀ ₁ e e' = basic-discontinuity-taboo (λ u → complement (q u)) (I₀ , I∞)
     where
-     d : (n : ℕ) → complement (q (ι n)) ＝ ₀
-     d n = complement (q (ι n)) ＝⟨ ap complement (q-fin n) ⟩
-           complement (p ⊤ₛ)    ＝⟨ ap complement e' ⟩
-           ₀                    ∎
+     I₀ : (n : ℕ) → complement (q (ι n)) ＝ ₀
+     I₀ n = complement (q (ι n)) ＝⟨ ap complement (q₀ n) ⟩
+            complement (p ⊤ₛ)    ＝⟨ ap complement e' ⟩
+            ₀                    ∎
 
-     d∞ : complement (q ∞) ＝ ₁
-     d∞ = complement (q ∞)  ＝⟨ ap complement q∞ ⟩
+     I∞ : complement (q ∞) ＝ ₁
+     I∞ = complement (q ∞)  ＝⟨ ap complement q∞ ⟩
           complement (p ⊥ₛ) ＝⟨ ap complement e ⟩
           ₁                 ∎
 
