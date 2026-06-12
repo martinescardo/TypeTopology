@@ -50,7 +50,7 @@ Ordinals.OrdinalOfTruthValues, to the semidecidable propositions.
 
 Classically the supremum is 𝟚ₒ, and indeed S ≃ₒ 𝟚ₒ iff every
 semidecidable proposition is decidable, but we don't formalize this
-here.
+here (because it is not needed for our purposes).
 
 \begin{code}
 
@@ -120,8 +120,7 @@ module _ (sr : Set-Replacement pt) where
 
 \end{code}
 
-As explained above, we work with constantly 2 sequence, called α
-below.
+As discussed above, we work with constantly 2 sequence α.
 
 \begin{code}
 
@@ -139,10 +138,10 @@ below.
 
 \end{code}
 
-We work with the following alternative formulation of
-semidecidability.  We don't bother to pause to show it is equivalent
-to the standard definition, because all we need is an example for (†)
-above, which we provide below.
+We work with the following alternative formulation of semidecidability.
+We don't bother to pause to show it is equivalent to the standard
+definition, because all we need is an example for (†) above, which we
+provide below.
 
 TODO. In the future, do establish this equivalence formally, and
 probably move all code for the alternative definition to the file
@@ -182,7 +181,7 @@ definition of an element of 𝕊 as follows.
 
 \end{code}
 
-We order the Sierpinski type as follows:
+As discussed above, we order the Sierpinski type as follows.
 
 \begin{code}
 
@@ -194,7 +193,7 @@ We order the Sierpinski type as follows:
 NB. We are deliberately making the order to live in the universe 𝓤₁,
 rather than 𝓤₀, because its carrier already lives in 𝓤₁, for
 simplicitly. A conclusion of our development, recorded below, is that
-both 𝕊 and its order have a copy in 𝓤₀.
+both 𝕊 and its order have a copy in 𝓤₀ under our assumptions above.
 
 The Sierpinski type 𝕊 is a set, its equality is characterized by
 logical equivalence of domains of definition, and ≺ₛ is a well-order,
