@@ -359,16 +359,14 @@ that is finite if and only if 𝓕 ξ holds.
      h : (c : 𝟚) → ι u m ＝ c → raw-semidecider ξ m ＝ ₁
      h ₁ e = 𝟚-equality-cases₁ e
      h ₀ e =
-      raw-semidecider ξ m
-        ＝⟨ 𝟚-equality-cases₀ e ⟩
-      complement (ξ (ϕ e))
-        ＝⟨ ap (λ - → complement (ξ -))
-               (finiteness-is-prop (ϕ e) (ϕ (stays-zero u e))) ⟩
-      complement (ξ (ϕ (stays-zero u e)))
-        ＝⟨ (𝟚-equality-cases₀ (stays-zero u e))⁻¹ ⟩
-      raw-semidecider ξ (succ m)
-        ＝⟨ e₁ ⟩
-      ₁ ∎
+      raw-semidecider ξ m                 ＝⟨ 𝟚-equality-cases₀ e ⟩
+      complement (ξ (ϕ e))                ＝⟨ ap (λ - → complement (ξ -))
+                                                 (finiteness-is-prop (ϕ e)
+                                                   (ϕ (stays-zero u e))) ⟩
+      complement (ξ (ϕ (stays-zero u e))) ＝⟨ (𝟚-equality-cases₀
+                                                (stays-zero u e))⁻¹ ⟩
+      raw-semidecider ξ (succ m)          ＝⟨ e₁ ⟩
+      ₁                                   ∎
 
 \end{code}
 
@@ -426,14 +424,11 @@ unsolved constraints.
         ₀         ∎
 
    III : raw-semidecider ξ n ＝ ₀
-   III = raw-semidecider ξ n
-           ＝⟨ 𝟚-equality-cases₀ II ⟩
-         complement (ξ (ϕ II))
-           ＝⟨ ap (λ - → complement (ξ -))
-                 (finiteness-is-prop (ϕ II) (n , p)) ⟩
-         complement (ξ (n , p))
-           ＝⟨ ap complement geq ⟩
-         ₀ ∎
+   III = raw-semidecider ξ n    ＝⟨ 𝟚-equality-cases₀ II ⟩
+         complement (ξ (ϕ II))  ＝⟨ ap (λ - → complement (ξ -))
+                                       (finiteness-is-prop (ϕ II) (n , p)) ⟩
+         complement (ξ (n , p)) ＝⟨ ap complement geq ⟩
+         ₀                      ∎
 
    IV : (n : ℕ)
       → ((m : ℕ) → m < n → raw-semidecider ξ m ＝ ₁)
@@ -463,7 +458,7 @@ We now show that 𝔽 is order preserving.
 \begin{code}
 
  disjoint-fibers : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) → fiber ξ ₀ → fiber ξ ₁ → 𝟘
- disjoint-fibers {u} ξ (φ₀ , e₀) (φ₁ , e₁) = one-is-not-zero I
+ disjoint-fibers ξ (φ₀ , e₀) (φ₁ , e₁) = one-is-not-zero I
   where
    I : ₁ ＝ ₀
    I = ₁    ＝⟨ e₁ ⁻¹ ⟩
@@ -508,10 +503,10 @@ If the lower sets of ξ and ξ' are equal, then so are 𝔽 ξ and 𝔽 ξ'.
    V : 𝓕 ξ' → 𝓕 ξ
    V = III ξ' ξ (Idtofun (I ⁻¹))
 
- θ-to-𝔽-＝ : {u u' : ℕ∞} (ξ : ⟨ α̅ u ⟩) (ξ' : ⟨ α̅ u' ⟩)
+ θ-to-𝔽-＝ : {u u' : ℕ∞} {ξ : ⟨ α̅ u ⟩} {ξ' : ⟨ α̅ u' ⟩}
           → θ ξ ＝ θ ξ'
           → 𝔽 ξ ＝ 𝔽 ξ'
- θ-to-𝔽-＝ {u} {u'} ξ ξ' e = ↓-to-𝔽-＝ ξ ξ' I
+ θ-to-𝔽-＝ {u} {u'} {ξ} {ξ'} e = ↓-to-𝔽-＝ ξ ξ' I
   where
    I : α̅ u ↓ ξ ＝ α̅ u' ↓ ξ'
    I = α̅ u ↓ ξ   ＝⟨ (θ-downset ξ)⁻¹ ⟩
@@ -542,7 +537,7 @@ version T of it, after showing that it is singleton-valued.
  T-point y = ∥∥-rec (T-is-prop y) I (θ-is-jointly-surjective y)
   where
    I : (Σ u ꞉ ℕ∞ , Σ ξ ꞉ ⟨ α̅ u ⟩ , θ ξ ＝ y) → T y
-   I (u , ξ , e) = 𝔽 ξ , (λ u' ξ' e' → θ-to-𝔽-＝ ξ' ξ (I₀ ξ' e'))
+   I (u , ξ , e) = 𝔽 ξ , (λ u' ξ' e' → θ-to-𝔽-＝ (I₀ ξ' e'))
     where
      I₀ : {u' : ℕ∞} (ξ' : ⟨ α̅ u' ⟩) → θ ξ' ＝ y → θ ξ' ＝ θ ξ
      I₀ ξ' e' = θ ξ' ＝⟨ e' ⟩
@@ -674,7 +669,7 @@ that the required Σ-type is a proposition.
 
    III : τ (θ 𝟎) ＝ ⊥ₛ
    III = τ (θ 𝟎) ＝⟨ by-construction-of-τ 𝟎 (θ 𝟎) refl ⟩
-         𝔽 𝟎     ＝⟨ to-𝕊-＝ ((disjoint-fibers 𝟎 (to-fiber (λ _ → ₀) φ)) , 𝟘-elim) ⟩
+         𝔽 𝟎     ＝⟨ to-𝕊-＝ ((disjoint-fibers 𝟎 (φ , refl)) , 𝟘-elim) ⟩
          ⊥ₛ       ∎
 
  τ-is-initial-segment : is-initial-segment 𝓼 𝓢 τ
@@ -757,8 +752,8 @@ promised description of the supremum.
  τ-is-equiv : is-equiv τ
  τ-is-equiv = surjective-embeddings-are-equivs τ τ-is-embedding τ-is-surjection
 
- τ-reflects-≺ : (y y' : ⟨ 𝓼 ⟩) → τ y ≺ₛ τ y' → y ≺⟨ 𝓼 ⟩ y'
- τ-reflects-≺ y y' l = I (τ-is-initial-segment y' (τ y) l)
+ τ-is-order-reflecting : is-order-reflecting 𝓼 𝓢 τ
+ τ-is-order-reflecting y y' l = I (τ-is-initial-segment y' (τ y) l)
   where
    I : (Σ y₀ ꞉ ⟨ 𝓼 ⟩ , (y₀ ≺⟨ 𝓼 ⟩ y') × (τ y₀ ＝ τ y)) → y ≺⟨ 𝓼 ⟩ y'
    I (y₀ , m , c) = ≺-transportₗ (τ-lc c) m
@@ -768,7 +763,8 @@ promised description of the supremum.
 
  τ⁻¹-is-order-preserving : is-order-preserving 𝓢 𝓼 τ⁻¹
  τ⁻¹-is-order-preserving =
-  order-reflecting-gives-inverse-order-preserving 𝓼 𝓢 τ τ-is-equiv τ-reflects-≺
+  order-reflecting-gives-inverse-order-preserving 𝓼 𝓢 τ τ-is-equiv
+   τ-is-order-reflecting
 
 \end{code}
 
