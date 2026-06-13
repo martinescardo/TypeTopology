@@ -50,6 +50,7 @@ import Ordinals.TotallySeparated
 import Ordinals.TrichotomousArithmetic
 import Ordinals.TrichotomousType
 import Ordinals.Type
+import Ordinals.Two
 import Ordinals.Underlying
 import Ordinals.WellOrderArithmetic
 import Ordinals.WellOrderExtension

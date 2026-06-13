@@ -21,10 +21,10 @@ The four interpretations are as follows.
     S denotes successor, and L denotes supremum (least upper bound).
 
 (1) Like the standard interpretation, but replacing the interpretation
-    of Z by one, and that of L by the following construction. Given
-    α : ℕ → Ordinal, we extend it to α̅ : ℕ∞ → Ordinal, using the
-    injectivity of the type of ordinals, and then take the ordinal sum
-    of α̅.
+    of Z by one, and that of L by the following construction. Given a
+    sequence α : ℕ → Ordinal, we extend it to α̅ : ℕ∞ → Ordinal, using
+    the injectivity of the type of ordinals, and then take the ordinal
+    sum of α̅.
 
     The ordinals we get in this way are compact (or searchable) and
     totally separated.
@@ -42,15 +42,11 @@ The four interpretations are as follows.
     Here we get countable trichotomous ordinals.
 
 The simplest example for (†) is obtained by taking the constant
-sequence αₙ = 2.  The supremum of the corresponding α̅ is the ordinal
-of semidecidable propositions, where a proposition is below another
-iff the former fails and the latter holds. Notice that this is the
-restriction of the ordinal Ωₒ of propositions, defined in the file
+sequence αₙ = 2.  We show that the supremum of its extension α̅ is the
+ordinal of semidecidable propositions, where a proposition is below
+another iff the former fails and the latter holds. Notice that this is
+the restriction of the ordinal Ωₒ of propositions, defined in the file
 Ordinals.OrdinalOfTruthValues, to the semidecidable propositions.
-
-Classically the supremum is 𝟚ₒ, and indeed S ≃ₒ 𝟚ₒ iff every
-semidecidable proposition is decidable, but we don't formalize this
-here (because it is not needed for our purposes).
 
 \begin{code}
 
@@ -86,13 +82,13 @@ open import MLTT.Two-Properties
 open import Naturals.Order
 open import Notation.CanonicalMap
 open import Notation.Order
-open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
 open import Ordinals.Injectivity
 open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
+open import Ordinals.Two
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
@@ -120,7 +116,7 @@ module _ (sr : Set-Replacement pt) where
 
 \end{code}
 
-As discussed above, we work with constantly 2 sequence α.
+As discussed above, we work with the constantly 2 sequence α.
 
 \begin{code}
 
@@ -130,11 +126,27 @@ As discussed above, we work with constantly 2 sequence α.
  α̅ : ℕ∞ → Ordinal 𝓤₀
  α̅ = extension α
 
- α̅∞ : Ordinal 𝓤₀
- α̅∞ = sup α̅
+\end{code}
 
- ⟨α̅∞⟩-is-set : is-set ⟨ α̅∞ ⟩
- ⟨α̅∞⟩-is-set = underlying-type-is-set fe α̅∞
+For u : ℕ∞, an element of ⟨ α̅ u ⟩ is a function ξ : is-finite u → 𝟚. We
+let φ range over the type is-finite u.
+
+\begin{code}
+
+ _ : (u : ℕ∞) → ⟨ α̅ u ⟩ ＝ (is-finite u → 𝟚)
+ _ = λ u → refl
+
+ 𝓼 : Ordinal 𝓤₀
+ 𝓼 = sup α̅
+
+\end{code}
+
+TODO. Add a proof that 𝓼 is compact and totally separated.
+
+\begin{code}
+
+ 𝓼-is-set : is-set ⟨ 𝓼 ⟩
+ 𝓼-is-set = underlying-type-is-set fe 𝓼
 
 \end{code}
 
@@ -186,11 +198,11 @@ As discussed above, we order the Sierpinski type as follows.
 \begin{code}
 
  _≺ₛ_ : 𝕊 → 𝕊 → 𝓤₁ ̇
- s ≺ₛ s' = (δ s holds → 𝟘 {𝓤₁}) × (δ s' holds)
+ t ≺ₛ t' = (δ t holds → 𝟘 {𝓤₁}) × (δ t' holds)
 
 \end{code}
 
-NB. We are deliberately making the order to live in the universe 𝓤₁,
+NB. We are deliberately making the order live in the universe 𝓤₁,
 rather than 𝓤₀, because its carrier already lives in 𝓤₁, for
 simplicitly. A conclusion of our development, recorded below, is that
 both 𝕊 and its order have a copy in 𝓤₀ under our assumptions above.
@@ -206,12 +218,12 @@ all of which are immediate, although a bit laborious.
              (λ p → props-are-sets
                      (being-semidecidable-is-prop (p holds)))
 
- to-𝕊-＝ : (t t' : 𝕊)
+ to-𝕊-＝ : {t t' : 𝕊}
          → (δ t holds ↔ δ t' holds)
          → t ＝ t'
- to-𝕊-＝ t t' (f , g) = to-subtype-＝
-                         (λ p → being-semidecidable-is-prop (p holds))
-                         (Ω-extensionality pe fe' f g)
+ to-𝕊-＝ (f , g) = to-subtype-＝
+                    (λ p → being-semidecidable-is-prop (p holds))
+                    (Ω-extensionality pe fe' f g)
 
  ≺ₛ-prop-valued : is-prop-valued _≺ₛ_
  ≺ₛ-prop-valued t t' = ×-is-prop
@@ -222,7 +234,7 @@ all of which are immediate, although a bit laborious.
  ≺ₛ-transitive t t' t'' (ν , _) (_ , h') = ν , h'
 
  ≺ₛ-extensional : is-extensional _≺ₛ_
- ≺ₛ-extensional t t' f g = to-𝕊-＝ t t' (I , II)
+ ≺ₛ-extensional t t' f g = to-𝕊-＝ (I , II)
   where
    I : δ t holds → δ t' holds
    I s = pr₂ (f ⊥ₛ (𝟘-elim , s))
@@ -230,73 +242,26 @@ all of which are immediate, although a bit laborious.
    II : δ t' holds → δ t holds
    II s' = pr₂ (g ⊥ₛ (𝟘-elim , s'))
 
+\end{code}
+
+TODO. Find a sensible name for the above projection pr₂. We must have
+a definition somewhere. If not, define it at an appropriate file.
+
+\begin{code}
+
  ≺ₛ-well-founded : is-well-founded _≺ₛ_
- ≺ₛ-well-founded t = acc (λ z (ν , _) → acc (λ w (_ , h) → 𝟘-elim (ν h)))
+ ≺ₛ-well-founded t = acc (λ _ (ν , _) → acc (λ _ (_ , h) → 𝟘-elim (ν h)))
 
  𝓢 : Ordinal 𝓤₁
  𝓢 = 𝕊 , _≺ₛ_ , ≺ₛ-prop-valued ,
      ≺ₛ-well-founded , ≺ₛ-extensional , ≺ₛ-transitive
 
-\end{code}
-
-We now develop auxiliary constructions and lemmas. By definition, we
-have that ⟨ 𝟚ₒ {𝓤₀} ⟩ ＝ 𝟙 + 𝟙, but the type 𝟚 is defined by
-constructors ₀ and ₁.
-
-\begin{code}
-
- pattern 𝟎 = inl ⋆
- pattern 𝟏 = inr ⋆
-
  ⊥ξ ⊤ξ : {u : ℕ∞} → ⟨ α̅ u ⟩
- ⊥ξ _ = 𝟎
- ⊤ξ _ = 𝟏
-
- 𝟚ₒ-to-𝟚 : ⟨ 𝟚ₒ {𝓤₀} ⟩ → 𝟚
- 𝟚ₒ-to-𝟚 𝟎 = ₀
- 𝟚ₒ-to-𝟚 𝟏 = ₁
-
-\end{code}
-
-We will denote the above map by ι.
-
-\begin{code}
-
- instance
-  canonical-map-𝟚ₒ-𝟚 : Canonical-Map ⟨ 𝟚ₒ {𝓤₀} ⟩ 𝟚
-  ι {{canonical-map-𝟚ₒ-𝟚}} = 𝟚ₒ-to-𝟚
-
- ≺-left : (x y : ⟨ 𝟚ₒ ⟩) → x ≺⟨ 𝟚ₒ ⟩ y → ι x ＝ ₀
- ≺-left 𝟎 𝟎 l = 𝟘-elim l
- ≺-left 𝟎 𝟏 l = refl
- ≺-left 𝟏 𝟎 l = 𝟘-elim l
- ≺-left 𝟏 𝟏 l = 𝟘-elim l
-
- ≺-right : (x y : ⟨ 𝟚ₒ ⟩) → x ≺⟨ 𝟚ₒ ⟩ y → ι y ＝ ₁
- ≺-right 𝟎 𝟎 l = 𝟘-elim l
- ≺-right 𝟎 𝟏 l = refl
- ≺-right 𝟏 𝟎 l = 𝟘-elim l
- ≺-right 𝟏 𝟏 l = 𝟘-elim l
-
- ≺-left-right : (x y : ⟨ 𝟚ₒ ⟩) → ι x ＝ ₀ → ι y ＝ ₁ → x ≺⟨ 𝟚ₒ ⟩ y
- ≺-left-right 𝟎 𝟎 e₀ e₁ = 𝟘-elim (zero-is-not-one e₁)
- ≺-left-right 𝟎 𝟏 e₀ e₁ = ⋆
- ≺-left-right 𝟏 𝟎 e₀ e₁ = 𝟘-elim (one-is-not-zero e₀)
- ≺-left-right 𝟏 𝟏 e₀ e₁ = 𝟘-elim (one-is-not-zero e₀)
-
-\end{code}
-
-For u : ℕ∞, an element of α̅ u is a function ξ : is-finite u → 𝟙 + 𝟙.
-We convert it to a function ρ ξ : is-finite u → 𝟚. We let φ range
-over the type is-finite u.
-
-\begin{code}
-
- ρ : {u : ℕ∞} → ⟨ α̅ u ⟩ → (is-finite u → 𝟚)
- ρ ξ φ = ι (ξ φ)
+ ⊥ξ φ = ₀
+ ⊤ξ φ = ₁
 
  𝓕 : {u : ℕ∞} → ⟨ α̅ u ⟩ → 𝓤₀ ̇
- 𝓕 ξ = fiber (ρ ξ) ₁
+ 𝓕 ξ = fiber ξ ₁
 
  𝓕-is-prop : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) → is-prop (𝓕 ξ)
  𝓕-is-prop {u} ξ = Σ-is-prop (being-finite-is-prop fe' u) (λ φ → 𝟚-is-set)
@@ -314,7 +279,7 @@ the fiber of ξ over ₁.
  raw-extent : {u : ℕ∞} → ⟨ α̅ u ⟩ → (ℕ → 𝟚)
  raw-extent {u} ξ m =
   𝟚-equality-cases
-   (λ (e : ι u m ＝ ₀) → complement (ρ ξ (bounded-is-finite fe' m u e)))
+   (λ (e : ι u m ＝ ₀) → complement (ξ (bounded-is-finite fe' m u e)))
    (λ (_ : ι u m ＝ ₁) → ₁)
 
  raw-extent-is-decreasing : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩)
@@ -329,12 +294,12 @@ the fiber of ξ over ₁.
      h ₀ e =
       raw-extent ξ m
         ＝⟨ 𝟚-equality-cases₀ e ⟩
-      complement (ρ ξ (bounded-is-finite fe' m u e))
-        ＝⟨ ap (λ - → complement (ρ ξ -))
+      complement (ξ (bounded-is-finite fe' m u e))
+        ＝⟨ ap (λ - → complement (ξ -))
              (being-finite-is-prop fe' u
                (bounded-is-finite fe' m u e)
                (bounded-is-finite fe' (succ m) u (stays-zero u e))) ⟩
-      complement (ρ ξ (bounded-is-finite fe' (succ m) u (stays-zero u e)))
+      complement (ξ (bounded-is-finite fe' (succ m) u (stays-zero u e)))
         ＝⟨ (𝟚-equality-cases₀ (stays-zero u e))⁻¹ ⟩
       raw-extent ξ (succ m)
         ＝⟨ e₁ ⟩
@@ -349,7 +314,7 @@ unsolved constraints.
 
 \begin{code}
 
- extent : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) → ℕ∞
+ extent : {u : ℕ∞} → ⟨ α̅ u ⟩ → ℕ∞
  extent ξ = raw-extent ξ , raw-extent-is-decreasing ξ
 
  finite-extent-gives-𝓕 : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) → is-finite (extent ξ) → 𝓕 ξ
@@ -370,10 +335,10 @@ unsolved constraints.
      φ : is-finite u
      φ = bounded-is-finite fe' n u e
 
-     q : complement (ρ ξ φ) ＝ ₀
-     q = complement (ρ ξ φ) ＝⟨ (𝟚-equality-cases₀ e)⁻¹ ⟩
-         raw-extent ξ n     ＝⟨ I ⟩
-         ₀                  ∎
+     q : complement (ξ φ) ＝ ₀
+     q = complement (ξ φ) ＝⟨ (𝟚-equality-cases₀ e)⁻¹ ⟩
+         raw-extent ξ n   ＝⟨ I ⟩
+         ₀                ∎
 
  𝓕-gives-finite-extent : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) → 𝓕 ξ → is-finite (extent ξ)
  𝓕-gives-finite-extent {u} ξ ((n , p) , geq) = n , ((IV n I III) ⁻¹)
@@ -394,11 +359,11 @@ unsolved constraints.
    III : raw-extent ξ n ＝ ₀
    III = raw-extent ξ n
            ＝⟨ 𝟚-equality-cases₀ II ⟩
-         complement (ρ ξ (bounded-is-finite fe' n u II))
-           ＝⟨ ap (λ ψ → complement (ρ ξ ψ))
+         complement (ξ (bounded-is-finite fe' n u II))
+           ＝⟨ ap (λ - → complement (ξ -))
                  (being-finite-is-prop fe' u
                  (bounded-is-finite fe' n u II) (n , p)) ⟩
-         complement (ρ ξ (n , p))
+         complement (ξ (n , p))
            ＝⟨ ap complement geq ⟩
           ₀ ∎
 
@@ -424,32 +389,32 @@ We now show that 𝔽 preservers the strict order.
 \begin{code}
 
  𝓕-is-empty : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) (φ : is-finite u)
-            → ρ ξ φ ＝ ₀
-            → ¬ (𝓕 ξ)
+            → ξ φ ＝ ₀
+            → ¬ 𝓕 ξ
  𝓕-is-empty {u} ξ φ e₀ (ψ , e₁) = one-is-not-zero I
   where
    I : ₁ ＝ ₀
-   I = ₁     ＝⟨ e₁ ⁻¹ ⟩
-       ρ ξ ψ ＝⟨ ap (ρ ξ) (being-finite-is-prop fe' u ψ φ) ⟩
-       ρ ξ φ ＝⟨ e₀ ⟩
-       ₀     ∎
+   I = ₁   ＝⟨ e₁ ⁻¹ ⟩
+       ξ ψ ＝⟨ ap ξ (being-finite-is-prop fe' u ψ φ) ⟩
+       ξ φ ＝⟨ e₀ ⟩
+       ₀   ∎
 
  𝔽⊥ : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) (φ : is-finite u)
-    → ρ ξ φ ＝ ₀
+    → ξ φ ＝ ₀
     → 𝔽 ξ ＝ ⊥ₛ
- 𝔽⊥ ξ φ e₀ = to-𝕊-＝ (𝔽 ξ) ⊥ₛ (𝓕-is-empty ξ φ e₀ , 𝟘-elim)
+ 𝔽⊥ ξ φ e₀ = to-𝕊-＝ (𝓕-is-empty ξ φ e₀ , 𝟘-elim)
 
  𝔽⊤ : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) (φ : is-finite u)
-    → ρ ξ φ ＝ ₁
+    → ξ φ ＝ ₁
     → 𝔽 ξ ＝ ⊤ₛ
- 𝔽⊤ ξ φ e₁ = to-𝕊-＝ (𝔽 ξ) ⊤ₛ ((λ _ → ⋆) , (λ _ → φ , e₁))
+ 𝔽⊤ ξ φ e₁ = to-𝕊-＝ ((λ _ → ⋆) , (λ _ → φ , e₁))
 
  𝔽-preserves-≺ : {u : ℕ∞} (ξ₁ ξ₂ : ⟨ α̅ u ⟩)
                → ξ₁ ≺⟨ α̅ u ⟩ ξ₂
                → 𝔽 ξ₁ ≺ₛ 𝔽 ξ₂
  𝔽-preserves-≺ ξ₁ ξ₂ (φ , l) =
-  (λ s → 𝟘-elim (𝓕-is-empty ξ₁ φ (≺-left (ξ₁ φ) (ξ₂ φ) l) s)) ,
-  (φ , ≺-right (ξ₁ φ) (ξ₂ φ) l)
+  (λ s → 𝟘-elim (𝓕-is-empty ξ₁ φ (≺₂-left l) s)) ,
+  (φ , ≺₂-right l)
 
 \end{code}
 
@@ -461,13 +426,13 @@ and 𝔽 ξ'.
  ↓-to-𝔽-＝ : {u u' : ℕ∞} (ξ : ⟨ α̅ u ⟩) (ξ' : ⟨ α̅ u' ⟩)
           → α̅ u ↓ ξ ＝ α̅ u' ↓ ξ'
           → 𝔽 ξ ＝ 𝔽 ξ'
- ↓-to-𝔽-＝ {u} {u'} ξ ξ' E = to-𝕊-＝ (𝔽 ξ) (𝔽 ξ') (IV , V)
+ ↓-to-𝔽-＝ {u} {u'} ξ ξ' E = to-𝕊-＝ (IV , V)
   where
    I : (Σ ζ ꞉ ⟨ α̅ u ⟩ , ζ ≺⟨ α̅ u ⟩ ξ) ＝ (Σ ζ' ꞉ ⟨ α̅ u' ⟩ , ζ' ≺⟨ α̅ u' ⟩ ξ')
    I = ap ⟨_⟩ E
 
    II : {w : ℕ∞} (ρ : ⟨ α̅ w ⟩) → 𝓕 ρ → Σ ζ ꞉ ⟨ α̅ w ⟩ , ζ ≺⟨ α̅ w ⟩ ρ
-   II ρ (φ , e₂) = ⊥ξ , φ , ≺-left-right (⊥ξ φ) (ρ φ) refl e₂
+   II ρ (φ , e₂) = ⊥ξ , φ , ≺₂-left-right refl e₂
 
    III : {w w' : ℕ∞} (ρ : ⟨ α̅ w ⟩) (ρ' : ⟨ α̅ w' ⟩)
       → ((Σ ζ ꞉ ⟨ α̅ w ⟩ , ζ ≺⟨ α̅ w ⟩ ρ) → (Σ ζ' ꞉ ⟨ α̅ w' ⟩ , ζ' ≺⟨ α̅ w' ⟩ ρ'))
@@ -476,7 +441,7 @@ and 𝔽 ξ'.
    III {w} {w'} ρ ρ' h s = c (h (II ρ s))
     where
      c : (Σ ζ' ꞉ ⟨ α̅ w' ⟩ , ζ' ≺⟨ α̅ w' ⟩ ρ') → 𝓕 ρ'
-     c (ζ' , ψ , l) = ψ , ≺-right (ζ' ψ) (ρ' ψ) l
+     c (ζ' , ψ , l) = ψ , ≺₂-right l
 
    IV : 𝓕 ξ → 𝓕 ξ'
    IV = III ξ ξ' (Idtofun I)
@@ -484,16 +449,10 @@ and 𝔽 ξ'.
    V : 𝓕 ξ' → 𝓕 ξ
    V = III ξ' ξ (Idtofun (I ⁻¹))
 
-\end{code}
-
-We now define a simulation θ from from the ordinal α̅ u to the ordinal α̅∞.
-
-\begin{code}
-
- θ : {u : ℕ∞} → ⟨ α̅ u ⟩ → ⟨ α̅∞ ⟩
+ θ : {u : ℕ∞} → ⟨ α̅ u ⟩ → ⟨ 𝓼 ⟩
  θ {u} = [ α̅ u , sup α̅ ]⟨ sup-is-upper-bound α̅ u ⟩
 
- θ-is-simulation : {u : ℕ∞} → is-simulation (α̅ u) α̅∞ θ
+ θ-is-simulation : {u : ℕ∞} → is-simulation (α̅ u) 𝓼 θ
  θ-is-simulation {u} = pr₂ (sup-is-upper-bound α̅ u)
 
 \end{code}
@@ -501,12 +460,12 @@ We now define a simulation θ from from the ordinal α̅ u to the ordinal α̅�
 TODO. Find a sensible name for the above projection pr₂. We must have
 a definition somewhere. If not, define it at an appropriate file.
 
-We will use a number of times the fact that for every y : ⟨ α̅∞ ⟩ there
+We will use a number of times the fact that for every y : ⟨ 𝓼 ⟩ there
 is u : ℕ∞ such that the fiber of y over θ {u} is inhabited.
 
 \begin{code}
 
- θ-fiber-lemma : (y : ⟨ α̅∞ ⟩) → ∃ u ꞉ ℕ∞ , fiber (θ {u}) y
+ θ-fiber-lemma : (y : ⟨ 𝓼 ⟩) → ∃ u ꞉ ℕ∞ , fiber (θ {u}) y
  θ-fiber-lemma = sup-is-upper-bound-jointly-surjective α̅
 
  θ-to-𝔽-＝ : {u u' : ℕ∞} (ξ : ⟨ α̅ u ⟩) (ξ' : ⟨ α̅ u' ⟩)
@@ -516,21 +475,21 @@ is u : ℕ∞ such that the fiber of y over θ {u} is inhabited.
   where
    I : α̅ u ↓ ξ ＝ α̅ u' ↓ ξ'
    I = α̅ u ↓ ξ   ＝⟨ (initial-segment-of-sup-at-component α̅ u ξ)⁻¹ ⟩
-       α̅∞ ↓ θ ξ  ＝⟨ ap (α̅∞ ↓_) e ⟩
-       α̅∞ ↓ θ ξ' ＝⟨ initial-segment-of-sup-at-component α̅ u' ξ' ⟩
+       𝓼 ↓ θ ξ   ＝⟨ ap (𝓼 ↓_) e ⟩
+       𝓼 ↓ θ ξ'  ＝⟨ initial-segment-of-sup-at-component α̅ u' ξ' ⟩
        α̅ u' ↓ ξ' ∎
 
 \end{code}
 
-We now define a map τ : ⟨ α̅∞ ⟩ → 𝕊 by first defining a type-valued
+We now define a map τ : ⟨ 𝓼 ⟩ → 𝕊 by first defining a type-valued
 version τ' of it, after showing that it is single-valued.
 
 \begin{code}
 
- τ' : ⟨ α̅∞ ⟩ → 𝓤₁ ̇
+ τ' : ⟨ 𝓼 ⟩ → 𝓤₁ ̇
  τ' y = Σ t ꞉ 𝕊 , ((u : ℕ∞) (ξ : ⟨ α̅ u ⟩) → θ ξ ＝ y → 𝔽 ξ ＝ t)
 
- τ'-is-prop : (y : ⟨ α̅∞ ⟩) → is-prop (τ' y)
+ τ'-is-prop : (y : ⟨ 𝓼 ⟩) → is-prop (τ' y)
  τ'-is-prop y (t , h) (t' , h') =
   to-subtype-＝
    (λ - → Π₃-is-prop fe' (λ u ξ e → 𝕊-is-set))
@@ -539,7 +498,7 @@ version τ' of it, after showing that it is single-valued.
                                      t'  ∎)
    (θ-fiber-lemma y))
 
- τ'-pointed : (y : ⟨ α̅∞ ⟩) → τ' y
+ τ'-pointed : (y : ⟨ 𝓼 ⟩) → τ' y
  τ'-pointed y = ∥∥-rec (τ'-is-prop y) I (θ-fiber-lemma y)
   where
    I : (Σ u ꞉ ℕ∞ , Σ ξ ꞉ ⟨ α̅ u ⟩ , θ ξ ＝ y) → τ' y
@@ -550,7 +509,7 @@ version τ' of it, after showing that it is single-valued.
                 y    ＝⟨ e ⁻¹ ⟩
                 θ ξ  ∎
 
- τ : ⟨ α̅∞ ⟩ → 𝕊
+ τ : ⟨ 𝓼 ⟩ → 𝕊
  τ y = pr₁ (τ'-pointed y)
 
 \end{code}
@@ -560,7 +519,7 @@ main result of this file.
 
 \begin{code}
 
- τ-property : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) (y : ⟨ α̅∞ ⟩)
+ τ-property : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) (y : ⟨ 𝓼 ⟩)
             → θ ξ ＝ y
             → τ y ＝ 𝔽 ξ
  τ-property {u} ξ y e = (pr₂ (τ'-pointed y) u ξ e) ⁻¹
@@ -573,77 +532,77 @@ time of writing).
 
 \begin{code}
 
- ≺-cast-left : (x x' y : ⟨ α̅∞ ⟩) → x ＝ x' → x ≺⟨ α̅∞ ⟩ y → x' ≺⟨ α̅∞ ⟩ y
- ≺-cast-left x x' y refl l = l
+ ≺-cast-left : {x x' y : ⟨ 𝓼 ⟩} → x ＝ x' → x ≺⟨ 𝓼 ⟩ y → x' ≺⟨ 𝓼 ⟩ y
+ ≺-cast-left refl l = l
 
- ≺-cast-right : (x y y' : ⟨ α̅∞ ⟩) → y ＝ y' → x ≺⟨ α̅∞ ⟩ y → x ≺⟨ α̅∞ ⟩ y'
- ≺-cast-right x y y' refl l = l
+ ≺ₛ-cast-left : {t t' r : 𝕊} → t ＝ t' → t ≺ₛ r → t' ≺ₛ r
+ ≺ₛ-cast-left refl l = l
 
- θ-preserves-≺ : (u : ℕ∞) (ξ ξ' : ⟨ α̅ u ⟩)
+ ≺ₛ-cast-right : {t r r' : 𝕊} → r ＝ r' → t ≺ₛ r → t ≺ₛ r'
+ ≺ₛ-cast-right refl l = l
+
+ ≺-cast-right : {x y y' : ⟨ 𝓼 ⟩} → y ＝ y' → x ≺⟨ 𝓼 ⟩ y → x ≺⟨ 𝓼 ⟩ y'
+ ≺-cast-right refl l = l
+
+ θ-preserves-≺ : {u : ℕ∞} (ξ ξ' : ⟨ α̅ u ⟩)
                → ξ ≺⟨ α̅ u ⟩ ξ'
-               → θ ξ ≺⟨ α̅∞ ⟩ θ ξ'
- θ-preserves-≺ u = simulations-are-order-preserving (α̅ u) α̅∞ θ θ-is-simulation
+               → θ ξ ≺⟨ 𝓼 ⟩ θ ξ'
+ θ-preserves-≺ {u} = simulations-are-order-preserving (α̅ u) 𝓼 θ θ-is-simulation
 
- θ-is-initial-segment : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) (z : ⟨ α̅∞ ⟩)
-                      → z ≺⟨ α̅∞ ⟩ θ ξ
+ θ-is-initial-segment : {u : ℕ∞} (ξ : ⟨ α̅ u ⟩) (z : ⟨ 𝓼 ⟩)
+                      → z ≺⟨ 𝓼 ⟩ θ ξ
                       → Σ ξ₀ ꞉ ⟨ α̅ u ⟩ , (ξ₀ ≺⟨ α̅ u ⟩ ξ) × (θ ξ₀ ＝ z)
- θ-is-initial-segment {u} ξ z = simulations-are-initial-segments (α̅ u) α̅∞ θ
+ θ-is-initial-segment {u} ξ z = simulations-are-initial-segments (α̅ u) 𝓼 θ
                                  θ-is-simulation ξ z
 
- ≺ₛ-cast-left : (t t' r : 𝕊) → t ＝ t' → t ≺ₛ r → t' ≺ₛ r
- ≺ₛ-cast-left t t' r refl l = l
-
- ≺ₛ-cast-right : (t r r' : 𝕊) → r ＝ r' → t ≺ₛ r → t ≺ₛ r'
- ≺ₛ-cast-right t r r' refl l = l
-
- τ-fiber-cast : (y : ⟨ α̅∞ ⟩) (t t' : 𝕊)
+ τ-fiber-cast : (y : ⟨ 𝓼 ⟩) (t t' : 𝕊)
               → t ＝ t'
-              → (Σ y₀ ꞉ ⟨ α̅∞ ⟩ , (y₀ ≺⟨ α̅∞ ⟩ y) × (τ y₀ ＝ t))
-              → (Σ y₀ ꞉ ⟨ α̅∞ ⟩ , (y₀ ≺⟨ α̅∞ ⟩ y) × (τ y₀ ＝ t'))
+              → (Σ y₀ ꞉ ⟨ 𝓼 ⟩ , (y₀ ≺⟨ 𝓼 ⟩ y) × (τ y₀ ＝ t))
+              → (Σ y₀ ꞉ ⟨ 𝓼 ⟩ , (y₀ ≺⟨ 𝓼 ⟩ y) × (τ y₀ ＝ t'))
  τ-fiber-cast y t t' refl σ = σ
 
- τ-⊥-no-preds : (u : ℕ∞) (ξ : ⟨ α̅ u ⟩) (y z : ⟨ α̅∞ ⟩)
+ τ-⊥-no-preds : (u : ℕ∞) (ξ : ⟨ α̅ u ⟩) (y z : ⟨ 𝓼 ⟩)
               → θ ξ ＝ y
               → τ y ＝ ⊥ₛ
-              → ¬ (z ≺⟨ α̅∞ ⟩ y)
+              → ¬ (z ≺⟨ 𝓼 ⟩ y)
  τ-⊥-no-preds u ξ y z e c l = II (θ-is-initial-segment ξ z l')
   where
-   l' : z ≺⟨ α̅∞ ⟩ θ ξ
-   l' = ≺-cast-right z y (θ ξ) (e ⁻¹) l
+   l' : z ≺⟨ 𝓼 ⟩ θ ξ
+   l' = ≺-cast-right (e ⁻¹) l
 
    I : 𝔽 ξ ＝ ⊥ₛ
    I = 𝔽 ξ ＝⟨ (τ-property ξ y e) ⁻¹ ⟩
-       τ y     ＝⟨ c ⟩
-       ⊥ₛ      ∎
+       τ y ＝⟨ c ⟩
+       ⊥ₛ  ∎
 
    II : (Σ ξ₀ ꞉ ⟨ α̅ u ⟩ , (ξ₀ ≺⟨ α̅ u ⟩ ξ) × (θ ξ₀ ＝ z)) → 𝟘 {𝓤₀}
    II (ξ₀ , m , p) = transport (λ - → δ - holds) I
                       (pr₂ (𝔽-preserves-≺ ξ₀ ξ m))
 
- τ-⊥-uniqueness : (y y' : ⟨ α̅∞ ⟩) → τ y ＝ ⊥ₛ → τ y' ＝ ⊥ₛ → y ＝ y'
+ τ-⊥-uniqueness : (y y' : ⟨ 𝓼 ⟩) → τ y ＝ ⊥ₛ → τ y' ＝ ⊥ₛ → y ＝ y'
  τ-⊥-uniqueness y y' c c' =
-  ∥∥-rec ⟨α̅∞⟩-is-set
-   (λ ρ → ∥∥-rec ⟨α̅∞⟩-is-set (I ρ) (θ-fiber-lemma y'))
+  ∥∥-rec 𝓼-is-set
+   (λ ρ → ∥∥-rec 𝓼-is-set (I ρ) (θ-fiber-lemma y'))
    (θ-fiber-lemma y)
   where
-   I : (Σ u ꞉ ℕ∞ , Σ ξ ꞉ ⟨ α̅ u ⟩ , θ ξ ＝ y)
+   I : (Σ u  ꞉ ℕ∞ , Σ ξ  ꞉ ⟨ α̅ u  ⟩ , θ ξ  ＝ y)
      → (Σ u' ꞉ ℕ∞ , Σ ξ' ꞉ ⟨ α̅ u' ⟩ , θ ξ' ＝ y')
      → y ＝ y'
-   I (u , ξ , e) (u' , ξ' , e') = Extensionality α̅∞ y y' f g
+   I (u , ξ , e) (u' , ξ' , e') = Extensionality 𝓼 y y' f g
     where
-     f : (z : ⟨ α̅∞ ⟩) → z ≺⟨ α̅∞ ⟩ y → z ≺⟨ α̅∞ ⟩ y'
+     f : (z : ⟨ 𝓼 ⟩) → z ≺⟨ 𝓼 ⟩ y → z ≺⟨ 𝓼 ⟩ y'
      f z l = 𝟘-elim (τ-⊥-no-preds u ξ y z e c l)
 
-     g : (z : ⟨ α̅∞ ⟩) → z ≺⟨ α̅∞ ⟩ y' → z ≺⟨ α̅∞ ⟩ y
+     g : (z : ⟨ 𝓼 ⟩) → z ≺⟨ 𝓼 ⟩ y' → z ≺⟨ 𝓼 ⟩ y
      g z l = 𝟘-elim (τ-⊥-no-preds u' ξ' y' z e' c' l)
 
  τ-⊤-lemma
   : {u₁ u₂ : ℕ∞} (ξ₁ : ⟨ α̅ u₁ ⟩) (ξ₂ : ⟨ α̅ u₂ ⟩)
   → 𝔽 ξ₁ ＝ ⊤ₛ
   → 𝔽 ξ₂ ＝ ⊤ₛ
-  → (z : ⟨ α̅∞ ⟩)
-  → z ≺⟨ α̅∞ ⟩ θ ξ₁
-  → z ≺⟨ α̅∞ ⟩ θ ξ₂
+  → (z : ⟨ 𝓼 ⟩)
+  → z ≺⟨ 𝓼 ⟩ θ ξ₁
+  → z ≺⟨ 𝓼 ⟩ θ ξ₂
  τ-⊤-lemma {u₁} {u₂} ξ₁ ξ₂ c₁ c₂ z l₀ = III (θ-is-initial-segment ξ₁ z l₀)
   where
    s₂ : 𝓕 ξ₂
@@ -653,7 +612,7 @@ time of writing).
    φ₂ = pr₁ s₂
 
    I : ⊥ξ ≺⟨ α̅ u₂ ⟩ ξ₂
-   I = φ₂ , ≺-left-right (⊥ξ φ₂) (ξ₂ φ₂) refl (pr₂ s₂)
+   I = φ₂ , ≺₂-left-right refl (pr₂ s₂)
 
    II : τ (θ ⊥ξ) ＝ ⊥ₛ
    II = τ (θ ⊥ξ) ＝⟨ τ-property ⊥ξ (θ ⊥ξ) refl ⟩
@@ -661,28 +620,27 @@ time of writing).
         ⊥ₛ       ∎
 
    III : (Σ ξ₀ ꞉ ⟨ α̅ u₁ ⟩ , (ξ₀ ≺⟨ α̅ u₁ ⟩ ξ₁) × (θ ξ₀ ＝ z))
-       → z ≺⟨ α̅∞ ⟩ θ ξ₂
-   III (ξ₀ , (φ₁ , l₁) , p) = ≺-cast-left (θ ⊥ξ) z (θ ξ₂) (III₁ ⁻¹)
-                               (θ-preserves-≺ u₂ ⊥ξ ξ₂ I)
+       → z ≺⟨ 𝓼 ⟩ θ ξ₂
+   III (ξ₀ , (φ₁ , l₁) , p) = ≺-cast-left (III₁ ⁻¹) (θ-preserves-≺ ⊥ξ ξ₂ I)
     where
      III₀ : τ z ＝ ⊥ₛ
      III₀ = τ z       ＝⟨ τ-property ξ₀ z p ⟩
-          𝔽 ξ₀ ＝⟨ 𝔽⊥ ξ₀ φ₁ (≺-left (ξ₀ φ₁) (ξ₁ φ₁) l₁) ⟩
+          𝔽 ξ₀ ＝⟨ 𝔽⊥ ξ₀ φ₁ (≺₂-left l₁) ⟩
           ⊥ₛ        ∎
 
      III₁ : z ＝ θ ⊥ξ
      III₁ = τ-⊥-uniqueness z (θ ⊥ξ) III₀ II
 
- τ-lemma₁ : (y y' : ⟨ α̅∞ ⟩) → τ y ＝ ⊤ₛ → τ y' ＝ ⊤ₛ → y ＝ y'
+ τ-lemma₁ : (y y' : ⟨ 𝓼 ⟩) → τ y ＝ ⊤ₛ → τ y' ＝ ⊤ₛ → y ＝ y'
  τ-lemma₁ y y' a a' =
-  ∥∥-rec ⟨α̅∞⟩-is-set
-   (λ ρ → ∥∥-rec ⟨α̅∞⟩-is-set (I ρ) (θ-fiber-lemma y'))
+  ∥∥-rec 𝓼-is-set
+   (λ ρ → ∥∥-rec 𝓼-is-set (I ρ) (θ-fiber-lemma y'))
    (θ-fiber-lemma y)
   where
    I : (Σ u ꞉ ℕ∞ , Σ ξ ꞉ ⟨ α̅ u ⟩ , θ ξ ＝ y)
      → (Σ u' ꞉ ℕ∞ , Σ ξ' ꞉ ⟨ α̅ u' ⟩ , θ ξ' ＝ y')
      → y ＝ y'
-   I (u , ξ , e) (u' , ξ' , e') = Extensionality α̅∞ y y' III III'
+   I (u , ξ , e) (u' , ξ' , e') = Extensionality 𝓼 y y' III III'
     where
      II : 𝔽 ξ ＝ ⊤ₛ
      II = 𝔽 ξ ＝⟨ (τ-property ξ y e) ⁻¹ ⟩
@@ -694,15 +652,15 @@ time of writing).
            τ y' ＝⟨ a' ⟩
            ⊤ₛ   ∎
 
-     III : (z : ⟨ α̅∞ ⟩) → z ≺⟨ α̅∞ ⟩ y → z ≺⟨ α̅∞ ⟩ y'
-     III z l = ≺-cast-right z (θ ξ') y' e'
+     III : (z : ⟨ 𝓼 ⟩) → z ≺⟨ 𝓼 ⟩ y → z ≺⟨ 𝓼 ⟩ y'
+     III z l = ≺-cast-right e'
                 (τ-⊤-lemma ξ ξ' II II' z
-                  (≺-cast-right z y (θ ξ) (e ⁻¹) l))
+                  (≺-cast-right (e ⁻¹) l))
 
-     III' : (z : ⟨ α̅∞ ⟩) → z ≺⟨ α̅∞ ⟩ y' → z ≺⟨ α̅∞ ⟩ y
-     III' z l = ≺-cast-right z (θ ξ) y e
+     III' : (z : ⟨ 𝓼 ⟩) → z ≺⟨ 𝓼 ⟩ y' → z ≺⟨ 𝓼 ⟩ y
+     III' z l = ≺-cast-right e
                  (τ-⊤-lemma ξ' ξ II' II z
-                   (≺-cast-right z y' (θ ξ') (e' ⁻¹) l))
+                   (≺-cast-right (e' ⁻¹) l))
 
 \end{code}
 
@@ -713,24 +671,24 @@ that the required Σ-type is a proposition.
 
 \begin{code}
 
- τ-lemma₂ : (y y' : ⟨ α̅∞ ⟩)
+ τ-lemma₂ : (y y' : ⟨ 𝓼 ⟩)
           → {u : ℕ∞} (ξ : ⟨ α̅ u ⟩)
           → θ ξ ＝ y
           → {u' : ℕ∞} (ξ' : ⟨ α̅ u' ⟩)
           → θ ξ' ＝ y'
-          → y ≺⟨ α̅∞ ⟩ y'
+          → y ≺⟨ 𝓼 ⟩ y'
           → τ y ≺ₛ τ y'
  τ-lemma₂ y y' ξ e {u'} ξ' e' l = III (θ-is-initial-segment ξ' (θ ξ) II)
   where
-   I : θ ξ ≺⟨ α̅∞ ⟩ y'
-   I = ≺-cast-left y (θ ξ) y' (e ⁻¹) l
+   I : θ ξ ≺⟨ 𝓼 ⟩ y'
+   I = ≺-cast-left (e ⁻¹) l
 
-   II : θ ξ ≺⟨ α̅∞ ⟩ θ ξ'
-   II = ≺-cast-right (θ ξ) y' (θ ξ') (e' ⁻¹) I
+   II : θ ξ ≺⟨ 𝓼 ⟩ θ ξ'
+   II = ≺-cast-right (e' ⁻¹) I
 
    III : (Σ ξ₀ ꞉ ⟨ α̅ u' ⟩ , (ξ₀ ≺⟨ α̅ u' ⟩ ξ') × (θ ξ₀ ＝ θ ξ))
        → τ y ≺ₛ τ y'
-   III (ξ₀ , m , p) = ≺ₛ-cast-left (𝔽 ξ₀) (τ y) (τ y') III₃ III₄
+   III (ξ₀ , m , p) = ≺ₛ-cast-left {𝔽 ξ₀} {τ y} {τ y'} III₃ III₄
     where
      III₀ : 𝔽 ξ₀ ≺ₛ 𝔽 ξ'
      III₀ = 𝔽-preserves-≺ ξ₀ ξ' m
@@ -747,9 +705,9 @@ that the required Σ-type is a proposition.
      III₃ = (τ-property ξ₀ y III₂) ⁻¹
 
      III₄ : 𝔽 ξ₀ ≺ₛ τ y'
-     III₄ = ≺ₛ-cast-right (𝔽 ξ₀) (𝔽 ξ') (τ y') III₁ III₀
+     III₄ = ≺ₛ-cast-right {𝔽 ξ₀} {𝔽 ξ'} {τ y'} III₁ III₀
 
- τ-lemma₃ : is-order-preserving α̅∞ 𝓢 τ
+ τ-lemma₃ : is-order-preserving 𝓼 𝓢 τ
  τ-lemma₃ y y' l =
   ∥∥-rec (≺ₛ-prop-valued (τ y) (τ y'))
    (λ (u , ξ , e) → ∥∥-rec (≺ₛ-prop-valued (τ y) (τ y'))
@@ -757,46 +715,46 @@ that the required Σ-type is a proposition.
      (θ-fiber-lemma y'))
    (θ-fiber-lemma y)
 
- τ-lemma₄ : (y : ⟨ α̅∞ ⟩) (u : ℕ∞) (ξ : ⟨ α̅ u ⟩)
+ τ-lemma₄ : (y : ⟨ 𝓼 ⟩) (u : ℕ∞) (ξ : ⟨ α̅ u ⟩)
           → θ ξ ＝ y
           → 𝓕 ξ
-          → Σ y₀ ꞉ ⟨ α̅∞ ⟩ , (y₀ ≺⟨ α̅∞ ⟩ y) × (τ y₀ ＝ ⊥ₛ)
+          → Σ y₀ ꞉ ⟨ 𝓼 ⟩ , (y₀ ≺⟨ 𝓼 ⟩ y) × (τ y₀ ＝ ⊥ₛ)
  τ-lemma₄ y u ξ eᵧ (φ , e) = θ ⊥ξ , II , III
   where
-   I : θ ⊥ξ ≺⟨ α̅∞ ⟩ θ ξ
-   I = θ-preserves-≺ u ⊥ξ ξ
-        (φ , ≺-left-right (⊥ξ φ) (ξ φ) refl e)
+   I : θ ⊥ξ ≺⟨ 𝓼 ⟩ θ ξ
+   I = θ-preserves-≺ ⊥ξ ξ
+        (φ , ≺₂-left-right refl e)
 
-   II : θ ⊥ξ ≺⟨ α̅∞ ⟩ y
-   II = ≺-cast-right (θ ⊥ξ) (θ ξ) y eᵧ I
+   II : θ ⊥ξ ≺⟨ 𝓼 ⟩ y
+   II = ≺-cast-right eᵧ I
 
    III : τ (θ ⊥ξ) ＝ ⊥ₛ
    III = τ (θ ⊥ξ) ＝⟨ τ-property ⊥ξ (θ ⊥ξ) refl ⟩
          𝔽 ⊥ξ     ＝⟨ 𝔽⊥ ⊥ξ φ refl ⟩
          ⊥ₛ       ∎
 
- τ-lemma₅ : (y : ⟨ α̅∞ ⟩) (t : 𝕊)
+ τ-lemma₅ : (y : ⟨ 𝓼 ⟩) (t : 𝕊)
           → t ≺ₛ τ y
-          → Σ y₀ ꞉ ⟨ α̅∞ ⟩ , (y₀ ≺⟨ α̅∞ ⟩ y) × (τ y₀ ＝ t)
+          → Σ y₀ ꞉ ⟨ 𝓼 ⟩ , (y₀ ≺⟨ 𝓼 ⟩ y) × (τ y₀ ＝ t)
  τ-lemma₅ y t (ν , h) = τ-fiber-cast y ⊥ₛ t (I ⁻¹) IV
   where
    I : t ＝ ⊥ₛ
-   I = to-𝕊-＝ t ⊥ₛ ((λ s → 𝟘-elim (ν s)) , 𝟘-elim)
+   I = to-𝕊-＝ ((λ s → 𝟘-elim (ν s)) , 𝟘-elim)
 
-   II : is-prop (Σ y₀ ꞉ ⟨ α̅∞ ⟩ , (y₀ ≺⟨ α̅∞ ⟩ y) × (τ y₀ ＝ ⊥ₛ))
+   II : is-prop (Σ y₀ ꞉ ⟨ 𝓼 ⟩ , (y₀ ≺⟨ 𝓼 ⟩ y) × (τ y₀ ＝ ⊥ₛ))
    II (y₀ , m , c) (y₀' , m' , c') =
     to-subtype-＝
-     (λ y₁ → ×-is-prop (Prop-valuedness α̅∞ y₁ y) 𝕊-is-set)
+     (λ y₁ → ×-is-prop (Prop-valuedness 𝓼 y₁ y) 𝕊-is-set)
      (τ-⊥-uniqueness y₀ y₀' c c')
 
    III : (Σ u ꞉ ℕ∞ , Σ ξ ꞉ ⟨ α̅ u ⟩ , θ ξ ＝ y)
-       → Σ y₀ ꞉ ⟨ α̅∞ ⟩ , (y₀ ≺⟨ α̅∞ ⟩ y) × (τ y₀ ＝ ⊥ₛ)
+       → Σ y₀ ꞉ ⟨ 𝓼 ⟩ , (y₀ ≺⟨ 𝓼 ⟩ y) × (τ y₀ ＝ ⊥ₛ)
    III (u , ξ , eᵧ) = τ-lemma₄ y u ξ eᵧ s
     where
      s : 𝓕 ξ
      s = transport (λ - → δ - holds) (τ-property ξ y eᵧ) h
 
-   IV : Σ y₀ ꞉ ⟨ α̅∞ ⟩ , (y₀ ≺⟨ α̅∞ ⟩ y) × (τ y₀ ＝ ⊥ₛ)
+   IV : Σ y₀ ꞉ ⟨ 𝓼 ⟩ , (y₀ ≺⟨ 𝓼 ⟩ y) × (τ y₀ ＝ ⊥ₛ)
    IV = ∥∥-rec II III (θ-fiber-lemma y)
 
 \end{code}
@@ -805,7 +763,7 @@ Which give the desired conclusion.
 
 \begin{code}
 
- τ-is-simulation : is-simulation α̅∞ 𝓢 τ
+ τ-is-simulation : is-simulation 𝓼 𝓢 τ
  τ-is-simulation = τ-lemma₅ , τ-lemma₃
 
 \end{code}
@@ -820,11 +778,11 @@ We continue with more lemmas about τ.
           → fiber τ (p , σ)
  τ-lemma₆ p {u} 𝕖 σ = y , II
   where
-   y : ⟨ α̅∞ ⟩
+   y : ⟨ 𝓼 ⟩
    y = θ ⊤ξ
 
    I : 𝔽 ⊤ξ ＝ (p , σ)
-   I = to-𝕊-＝ (𝔽 ⊤ξ) (p , σ) (I₀ , I₁)
+   I = to-𝕊-＝ (I₀ , I₁)
     where
      I₀ : 𝓕 ⊤ξ → p holds
      I₀ (φ , _) = rl-implication 𝕖 φ
@@ -848,7 +806,7 @@ promised description of the supremum.
 \begin{code}
 
  τ-lc : left-cancellable τ
- τ-lc = simulations-are-lc α̅∞ 𝓢 τ τ-is-simulation
+ τ-lc = simulations-are-lc 𝓼 𝓢 τ τ-is-simulation
 
  τ-is-embedding : is-embedding τ
  τ-is-embedding = lc-maps-into-sets-are-embeddings τ τ-lc 𝕊-is-set
@@ -856,16 +814,16 @@ promised description of the supremum.
  τ-is-equiv : is-equiv τ
  τ-is-equiv = surjective-embeddings-are-equivs τ τ-is-embedding τ-is-surjection
 
- τ-reflects-≺ : (y y' : ⟨ α̅∞ ⟩) → τ y ≺ₛ τ y' → y ≺⟨ α̅∞ ⟩ y'
+ τ-reflects-≺ : (y y' : ⟨ 𝓼 ⟩) → τ y ≺ₛ τ y' → y ≺⟨ 𝓼 ⟩ y'
  τ-reflects-≺ y y' l = I (τ-lemma₅ y' (τ y) l)
   where
-   I : (Σ y₀ ꞉ ⟨ α̅∞ ⟩ , (y₀ ≺⟨ α̅∞ ⟩ y') × (τ y₀ ＝ τ y)) → y ≺⟨ α̅∞ ⟩ y'
-   I (y₀ , m , c) = ≺-cast-left y₀ y y' (τ-lc c) m
+   I : (Σ y₀ ꞉ ⟨ 𝓼 ⟩ , (y₀ ≺⟨ 𝓼 ⟩ y') × (τ y₀ ＝ τ y)) → y ≺⟨ 𝓼 ⟩ y'
+   I (y₀ , m , c) = ≺-cast-left (τ-lc c) m
 
- τ⁻¹ : 𝕊 → ⟨ α̅∞ ⟩
+ τ⁻¹ : 𝕊 → ⟨ 𝓼 ⟩
  τ⁻¹ = inverse τ τ-is-equiv
 
- τ⁻¹-is-order-preserving : is-order-preserving 𝓢 α̅∞ τ⁻¹
+ τ⁻¹-is-order-preserving : is-order-preserving 𝓢 𝓼 τ⁻¹
  τ⁻¹-is-order-preserving t t' l = τ-reflects-≺
                                    (inverse τ τ-is-equiv t)
                                    (inverse τ τ-is-equiv t')
@@ -878,11 +836,11 @@ promised description of the supremum.
    I' = (inverses-are-sections τ τ-is-equiv t') ⁻¹
 
    II : t ≺ₛ τ (inverse τ τ-is-equiv t')
-   II = ≺ₛ-cast-right t t' (τ (inverse τ τ-is-equiv t')) I' l
+   II = ≺ₛ-cast-right {t} {t'} {τ (inverse τ τ-is-equiv t')} I' l
 
    III : τ (inverse τ τ-is-equiv t) ≺ₛ τ (inverse τ τ-is-equiv t')
-   III = ≺ₛ-cast-left t (τ (inverse τ τ-is-equiv t))
-          (τ (inverse τ τ-is-equiv t')) I II
+   III = ≺ₛ-cast-left {t} {τ (inverse τ τ-is-equiv t)}
+          {τ (inverse τ τ-is-equiv t')} I II
 
 \end{code}
 
@@ -890,11 +848,11 @@ As promised, the sup of α̅ is 𝓢:
 
 \begin{code}
 
- α̅∞-is-𝓢 : α̅∞ ≃ₒ 𝓢
- α̅∞-is-𝓢 = τ , τ-lemma₃ , τ-is-equiv , τ⁻¹-is-order-preserving
+ 𝓼-is-𝓢 : 𝓼 ≃ₒ 𝓢
+ 𝓼-is-𝓢 = τ , τ-lemma₃ , τ-is-equiv , τ⁻¹-is-order-preserving
 
- characterization-of-⟨α̅∞⟩ : ⟨ α̅∞ ⟩ ≃ 𝕊
- characterization-of-⟨α̅∞⟩ = ≃ₒ-gives-≃ α̅∞ 𝓢 α̅∞-is-𝓢
+ characterization-of-𝓼 : ⟨ 𝓼 ⟩ ≃ 𝕊
+ characterization-of-𝓼 = ≃ₒ-gives-≃ 𝓼 𝓢 𝓼-is-𝓢
 
 \end{code}
 
@@ -904,11 +862,11 @@ construction, it has a copy in 𝓤₀, as mentioned above.
 \begin{code}
 
  𝕊-is-small : is-small 𝕊
- 𝕊-is-small = ⟨ α̅∞ ⟩ , characterization-of-⟨α̅∞⟩
+ 𝕊-is-small = ⟨ 𝓼 ⟩ , characterization-of-𝓼
 
 \end{code}
 
-The ordinal α̅∞, or equivalently the type 𝕊, fails to be totally
+The ordinal 𝓼, or equivalently the type 𝕊, fails to be totally
 separated in general in the following sense: its total separatedness
 implies the constructive taboo ¬¬ WLPO, which is a principle that
 fails in both Johnstone's Topological Topos and Hylands Effective
@@ -924,13 +882,10 @@ Topos, for instance.
  is-fin u = (is-finite u , being-finite-is-prop fe' u) , ∣ u , ↔-refl ∣
 
  naturals-are-fin : (n : ℕ) → is-fin (ι n) ＝ ⊤ₛ
- naturals-are-fin n = to-𝕊-＝ (is-fin (ι n)) ⊤ₛ ((λ _ → ⋆) , (λ _ → n , refl))
+ naturals-are-fin n = to-𝕊-＝ ((λ _ → ⋆) , (λ _ → n , refl))
 
  ∞-is-not-fin : is-fin ∞ ＝ ⊥ₛ
- ∞-is-not-fin = to-𝕊-＝ (is-fin ∞) ⊥ₛ (ν , 𝟘-elim)
-  where
-   ν : ¬ is-finite ∞
-   ν (n , r) = ∞-is-not-finite n (r ⁻¹)
+ ∞-is-not-fin = to-𝕊-＝ (is-infinite-∞ , 𝟘-elim)
 
  ⊥ₛ-is-not-⊤ₛ : ⊥ₛ ≠ ⊤ₛ
  ⊥ₛ-is-not-⊤ₛ e = transport (λ - → δ - holds) (e ⁻¹) ⋆
@@ -951,20 +906,6 @@ Topos, for instance.
    h ₀ ₀ e e' = 𝟘-elim (ν (p ⊥ₛ ＝⟨ e ⟩
                            ₀    ＝⟨ e' ⁻¹ ⟩
                            p ⊤ₛ ∎))
-   h ₁ ₁ e e' = 𝟘-elim (ν (p ⊥ₛ ＝⟨ e ⟩
-                           ₁    ＝⟨ e' ⁻¹ ⟩
-                           p ⊤ₛ ∎))
-   h ₁ ₀ e e' = basic-discontinuity-taboo q (I₀ , I∞)
-    where
-     I₀ : (n : ℕ) → q (ι n) ＝ ₀
-     I₀ n = q (ι n) ＝⟨ q₀ n ⟩
-            p ⊤ₛ    ＝⟨ e' ⟩
-            ₀       ∎
-
-     I∞ : q ∞ ＝ ₁
-     I∞ = q ∞  ＝⟨ q∞ ⟩
-          p ⊥ₛ ＝⟨ e ⟩
-          ₁    ∎
    h ₀ ₁ e e' = basic-discontinuity-taboo (λ u → complement (q u)) (I₀ , I∞)
     where
      I₀ : (n : ℕ) → complement (q (ι n)) ＝ ₀
@@ -976,39 +917,53 @@ Topos, for instance.
      I∞ = complement (q ∞)  ＝⟨ ap complement q∞ ⟩
           complement (p ⊥ₛ) ＝⟨ ap complement e ⟩
           ₁                 ∎
+   h ₁ ₀ e e' = basic-discontinuity-taboo q (I₀ , I∞)
+    where
+     I₀ : (n : ℕ) → q (ι n) ＝ ₀
+     I₀ n = q (ι n) ＝⟨ q₀ n ⟩
+            p ⊤ₛ    ＝⟨ e' ⟩
+            ₀       ∎
+
+     I∞ : q ∞ ＝ ₁
+     I∞ = q ∞  ＝⟨ q∞ ⟩
+          p ⊥ₛ ＝⟨ e ⟩
+          ₁    ∎
+   h ₁ ₁ e e' = 𝟘-elim (ν (p ⊥ₛ ＝⟨ e ⟩
+                           ₁    ＝⟨ e' ⁻¹ ⟩
+                           p ⊤ₛ ∎))
 
  𝕊-totally-separated-gives-¬¬WLPO : is-totally-separated 𝕊 → ¬¬ WLPO
- 𝕊-totally-separated-gives-¬¬WLPO ts w = ⊥ₛ-is-not-⊤ₛ (ts {⊥ₛ} {⊤ₛ} a)
+ 𝕊-totally-separated-gives-¬¬WLPO ts nwlpo = ⊥ₛ-is-not-⊤ₛ (ts I)
   where
-   a : (p : 𝕊 → 𝟚) → p ⊥ₛ ＝ p ⊤ₛ
-   a p = h (p ⊥ₛ) (p ⊤ₛ) refl refl
+   I : (p : 𝕊 → 𝟚) → p ⊥ₛ ＝ p ⊤ₛ
+   I p = h (p ⊥ₛ) (p ⊤ₛ) refl refl
     where
      h : (b c : 𝟚) → p ⊥ₛ ＝ b → p ⊤ₛ ＝ c → p ⊥ₛ ＝ p ⊤ₛ
      h ₀ ₀ e e' = p ⊥ₛ ＝⟨ e ⟩
                   ₀    ＝⟨ e' ⁻¹ ⟩
                   p ⊤ₛ ∎
-     h ₁ ₁ e e' = p ⊥ₛ ＝⟨ e ⟩
-                  ₁    ＝⟨ e' ⁻¹ ⟩
-                  p ⊤ₛ ∎
-     h ₀ ₁ e e' = 𝟘-elim (w (𝕊-separating-map-gives-WLPO p ν))
+     h ₀ ₁ e e' = 𝟘-elim (nwlpo (𝕊-separating-map-gives-WLPO p ν))
       where
        ν : p ⊥ₛ ≠ p ⊤ₛ
        ν d = zero-is-not-one (₀    ＝⟨ e ⁻¹ ⟩
                               p ⊥ₛ ＝⟨ d ⟩
                               p ⊤ₛ ＝⟨ e' ⟩
                               ₁    ∎)
-     h ₁ ₀ e e' = 𝟘-elim (w (𝕊-separating-map-gives-WLPO p ν))
+     h ₁ ₀ e e' = 𝟘-elim (nwlpo (𝕊-separating-map-gives-WLPO p ν))
       where
        ν : p ⊥ₛ ≠ p ⊤ₛ
        ν d = one-is-not-zero (₁    ＝⟨ e ⁻¹ ⟩
                               p ⊥ₛ ＝⟨ d ⟩
                               p ⊤ₛ ＝⟨ e' ⟩
                               ₀    ∎)
+     h ₁ ₁ e e' = p ⊥ₛ ＝⟨ e ⟩
+                  ₁    ＝⟨ e' ⁻¹ ⟩
+                  p ⊤ₛ ∎
 
- ⟨α̅∞⟩-totally-separated-gives-¬¬WLPO : is-totally-separated ⟨ α̅∞ ⟩ → ¬¬ WLPO
- ⟨α̅∞⟩-totally-separated-gives-¬¬WLPO ts =
+ 𝓼-totally-separated-gives-¬¬WLPO : is-totally-separated ⟨ 𝓼 ⟩ → ¬¬ WLPO
+ 𝓼-totally-separated-gives-¬¬WLPO ts =
   𝕊-totally-separated-gives-¬¬WLPO
-   (equiv-to-totally-separated characterization-of-⟨α̅∞⟩ ts)
+   (equiv-to-totally-separated characterization-of-𝓼 ts)
 
 \end{code}
 
