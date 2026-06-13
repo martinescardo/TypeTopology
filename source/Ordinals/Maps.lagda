@@ -187,7 +187,7 @@ being-initial-segment-is-prop : Fun-Ext
 being-initial-segment-is-prop fe α β f p = prop-criterion γ
   where
    γ : is-initial-segment α β f → is-prop (is-initial-segment α β f)
-   γ i = Π₃-is-prop fe (λ x z l → φ x z l)
+   γ i = Π₃-is-prop fe φ
     where
      φ : ∀ x y
        → y ≺⟨ β ⟩ f x
@@ -208,7 +208,7 @@ being-initial-segment-is-prop fe α β f p = prop-criterion γ
             (Prop-valuedness α x'' x)
             (underlying-type-is-set (λ _ _ → fe) β)
 
-       b : transport (λ - →  (- ≺⟨ α ⟩ x) × (f - ＝ y)) a (m , r) ＝ m' , r'
+       b : transport (λ - →  (- ≺⟨ α ⟩ x) × (f - ＝ y)) a (m , r) ＝ (m' , r')
        b = k _ _
 
 being-simulation-is-prop : Fun-Ext
