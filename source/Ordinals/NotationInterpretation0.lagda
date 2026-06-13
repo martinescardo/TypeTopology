@@ -169,8 +169,8 @@ base cases to be 𝟙 rather than 𝟘.
 
 \end{code}
 
-In the separate file Ordinals.FailureOfTotalSeparatedness, we show
-that ⟦ b ⟧₂ is not totally separated in general without assuming classical logic.
+In the file Ordinals.FailureOfTotalSeparatedness, we show that ⟦ b ⟧₂
+is not totally separated in general without assuming classical logic.
 
 The successor function on ordinals is not necessarily monotone, but it
 is if excluded middle holds.
