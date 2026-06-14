@@ -7,6 +7,8 @@ Martin Escardo, 2012, 2018, 2022.
 module Ordinals.NotationInterpretation where
 
 import Ordinals.BrouwerCodesInterpretations            -- 2022
+import Ordinals.FailureOfTotalSeparatedness            -- 2026
+import Ordinals.FailureOfTrichotomy                    -- 2026
 import Ordinals.BrouwerCodesVariationInterpretations   -- 2018
 import Ordinals.InductiveRecursiveCodesInterpretations -- 2022
 
