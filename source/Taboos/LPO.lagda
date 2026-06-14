@@ -56,9 +56,12 @@ we had equivalently defined
 because we have
 
   fiber ι x = Σ n ꞉ ℕ , ι n ＝ x
+            = is-finite x
 
 by definition and ι is an embedding, so that e.g. the following
 wouldn't require a proof given our definition of embedding.
+
+See 14 June 2026 addition below.
 
 End of addition.
 
@@ -311,7 +314,7 @@ LPO-implies-LPO-variation fe lpo α = I (LPO-gives-compact-ℕ fe lpo α)
 
 \end{code}
 
-Added 3rd December by Martin Escardo.
+Added 3rd December by Martin Escardo 2025.
 
 \begin{code}
 
@@ -353,3 +356,24 @@ LPO-criterion fe ℓ = compact-ℕ-gives-LPO fe (ℕ-compact-criterion fe ℓ)
 \end{code}
 
 TODO. Add the converse of LPO-criterion.
+
+Added 14 June 2026 by Martin Escardo. See 10th September 2024 addition
+above.
+
+\begin{code}
+
+open import NotionsOfDecidability.Decidable
+
+LPO' : 𝓤₀ ̇
+LPO' = (x : ℕ∞) → is-decidable (is-finite x)
+
+LPO'-lemma : {x : ℕ∞} → (Σ n ꞉ ℕ , x ＝ ι n) ↔ is-finite x
+LPO'-lemma = (λ (n , e) → n , (e ⁻¹)) , (λ (n , e) → n , (e ⁻¹))
+
+LPO-gives-LPO' : LPO → LPO'
+LPO-gives-LPO' lpo x = decidable-↔ LPO'-lemma (lpo x)
+
+LPO'-gives-LPO : LPO' → LPO
+LPO'-gives-LPO lpo' x = decidable-↔ (↔-sym LPO'-lemma) (lpo' x)
+
+\end{code}
