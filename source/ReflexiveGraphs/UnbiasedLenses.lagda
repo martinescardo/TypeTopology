@@ -29,17 +29,17 @@ foundations"). We first note that, not surpisingly, some univalent reflexive
 graphs of interest do not arise naturally from the existing notion of lenses.
 For example consider an isomorphism of magmas (M , ⊗) ≃ (N , ⊗') which consist
 of an equivalence of the underlying types e : M ≃ N that preserves the binary
-operation, that is: e (x ⊗ y) ＝ (e x) ⊗' (e y) for all x, y : M. One would
-expect the reflexive graph on the type of Magmas would arise from the following displayed reflexive graph of the canonical reflexive graph of the underlying
-universe we are considering Magmas relative to; explicitly
+operation, that is: e (x ⊗ y) ＝ (e x) ⊗' (e y) for all x, y : M. One could
+produce the reflexive graph for the type of Magmas from the following displayed
+reflexive graph 
 
           BinOp(M) :≡ M × M → M
           ⊗ ≈⟨ BinOp , e ⟩ ⊗' :≡ (x y : M) → e (x ⊗ y) ＝ (e x) ⊗' (e y)
           ≈-disp-refl BinOp ⊗ :≡ λ x y : M . refl {x ⊗ y}
 
-but this displayed reflexive graph DOES NOT arise from either of the existing
-notions of lens. We could consider similar, albeit assymetric (or biased!),
-displayed reflexive graph
+but notice that this displayed reflexive graph DOES NOT arise from either of
+the existing notions of lens. We could consider a similar, albeit assymetric
+(or biased!), displayed reflexive graph
 
           BinOp(M) :≡ M × M → M
           ⊗ ≈⟨ BinOp , e ⟩ ⊗' :≡ (x y : N) → e (e⁻¹ x ⊗  e⁻¹ y) ＝ x ⊗' y
@@ -52,8 +52,8 @@ displaying over. Without further delay we now introduce the notion of an
 unbiased lense. (TODO when the examples file is added we should note that the
 above Magma example is actually formalized.)
 
-We first give the structure in terms of of sigma types before giving the more
-conveinient record type.
+We define the structure of an unbiased lens using a record then collect the
+type of unbiased lens as a sigma type.
 
 \begin{code}
 
@@ -72,16 +72,16 @@ record unbiased-lens-structure
 \end{code}
 
 Although the previous discussion motivating the notion of an unbiased lens
-may offer the reader with insight into the first three datum one may take a
-moments pause at the final field rext-refl. You will see below that it is
+may offer the reader with insight into the first three datum one may have a
+moment's pause at the final field rext-refl. You will see below that it is
 not necessary for defining a displayed reflexive graph associated to an
 unbiased lens, but it will be relevant when showing univalence is inherited.
-The reader may wonder why we only include a reflexivity a the rext field? The
-situation here is similar to that of half-adjoint equivalences where we must
-exclude one of the coherences in the interest of ensuring the being an
-equivalence is a property (although it is worth noting that the situation does
-differ in that the anaglous lext-refl is not derivable from rext-refl in
-general).
+The reader may wonder why we only include a reflexivity datum for the rext
+field? The situation here is similar to that of half-adjoint equivalences
+where we must exclude one of the coherences in the interest of ensuring that
+being an equivalence is a property (although it is worth noting that the
+situation does differ in that the anaglous lext-refl is not derivable from
+rext-refl in general).
 
 \begin{code}
 
