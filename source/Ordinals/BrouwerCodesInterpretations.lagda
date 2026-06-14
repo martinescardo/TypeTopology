@@ -176,7 +176,7 @@ We'll prove the following inequalities, where the arrows represent the
 relation _⊴_ on ordinals, under the assumption of excluded middle:
 
  ⟦ b ⟧₀ → ⟦ b ⟧₃
-   ↓       ↓
+   ↓        ↓
  ⟦ b ⟧₂ → ⟦ b ⟧₁
 
 The successor function on ordinals is not necessarily monotone, but it
