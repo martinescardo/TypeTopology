@@ -35,7 +35,7 @@ universe we are considering Magmas relative to; explicitly
 
           BinOp(M) :≡ M × M → M
           ⊗ ≈⟨ BinOp , e ⟩ ⊗' :≡ (x y : M) → e (x ⊗ y) ＝ (e x) ⊗' (e y)
-          ≈-refl ⊗ :≡ λ x y . refl
+          ≈-disp-refl BinOp ⊗ :≡ λ x y : M . refl {x ⊗ y}
 
 but this displayed reflexive graph DOES NOT arise from either of the existing
 notions of lens. We could consider similar, albeit assymetric (or biased!),
@@ -43,7 +43,7 @@ displayed reflexive graph
 
           BinOp(M) :≡ M × M → M
           ⊗ ≈⟨ BinOp , e ⟩ ⊗' :≡ (x y : N) → e (e⁻¹ x ⊗  e⁻¹ y) ＝ x ⊗' y
-          ≈-refl ⊗ :≡ λ x y . refl
+          ≈-disp-refl BinOp ⊗ :≡ λ x y : M . refl {x ⊗ y}
 
 which does arise from an oplax contravariant lens. Aesthetically, the latter
 is lacking but more importantly it is awkward to use. What we need is a notion
