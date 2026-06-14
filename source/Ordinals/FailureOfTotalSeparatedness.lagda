@@ -937,7 +937,7 @@ open import Ordinals.Arithmetic fe renaming (𝟚ₒ to 𝟚ₒ-standard)
 
 total-separatedness-of-the-sup-of-extension-interpretation-gives-¬¬WLPO
  : ((b : B) → is-totally-separated ⟨ ⟦ b ⟧₂ ⟩) → ¬¬ WLPO
-total-separatedness-of-the-sup-of-extension-interpretation-gives-¬¬WLPO τ
+total-separatedness-of-the-sup-of-extension-interpretation-gives-¬¬WLPO ts
  = V
  where
   _ : ⟦ Z ⟧₂ ＝ 𝟙ₒ
@@ -956,7 +956,7 @@ total-separatedness-of-the-sup-of-extension-interpretation-gives-¬¬WLPO τ
   II = ap (sup ∘ extension) (dfunext fe' (λ _ → I ⁻¹))
 
   III : is-totally-separated ⟨ ⟦ b ⟧₂ ⟩
-  III = τ b
+  III = ts b
 
   IV : is-totally-separated ⟨ 𝓼 ⟩
   IV = transport (λ - → is-totally-separated ⟨ - ⟩) II III
