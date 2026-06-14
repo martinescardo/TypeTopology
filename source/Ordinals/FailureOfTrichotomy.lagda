@@ -122,6 +122,9 @@ module _ (u : ℕ∞) where
  β₀-is-𝟚ₒ : β 0 ＝ 𝟚ₒ
  β₀-is-𝟚ₒ = ap (_+ₒ 𝟙ₒ) (𝟘ₒ-left-neutral 𝟙ₒ)
 
+ supα⊲β₁ : sup α ⊲ β 1
+ supα⊲β₁ = (inr ⋆ , ((successor-lemma-right (sup α)) ⁻¹))
+
  𝟙ₒ⊲supβ : 𝟙ₒ ⊲ sup β
  𝟙ₒ⊲supβ = ⊲-⊴-gives-⊲ 𝟙ₒ (β 0) (sup β)
            (transport (𝟙ₒ ⊲_) (β₀-is-𝟚ₒ ⁻¹) 𝟙ₒ⊲𝟚ₒ)
@@ -129,7 +132,7 @@ module _ (u : ℕ∞) where
 
  supα⊲supβ : sup α ⊲ sup β
  supα⊲supβ = ⊲-⊴-gives-⊲ (sup α) (β 1) (sup β)
-              (inr ⋆ , ((successor-lemma-right (sup α)) ⁻¹))
+              {!supα⊲β₁!}
               (sup-is-upper-bound β 1)
 
  y₀ y₁ : ⟨ sup β ⟩
