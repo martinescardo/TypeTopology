@@ -9,14 +9,17 @@ inductively defined by the constructors
   S : B → B,
   L : (ℕ → B) → B.
 
-The standard interpretation, given in Ordinals.BrouwerCodesInterpretations,
-interprets Z as zero, S as successor, and L as supremum (least upper
-bound). We show that the assumption that ⟦ b ⟧₀ is trichotomous for
-every Brouwer code b implies the constructive taboo LPO.
+The standard interpretation, given in
+Ordinals.BrouwerCodesInterpretations, interprets Z as zero, S as
+successor, and L as supremum (least upper bound). A question we had
+for some time was whether the resulting ordinals are
+trichotomous. Here we answer this in the negative. More precisely,
+from the assumption that the resulting ordinals are trichotomous, we
+conclude that LPO holds.
 
-We exhibit, from any given conatural u, a code such that if the
-standard interpretation of the code is trichotomous then the
-finiteness of u is decidable, which amounts to LPO.
+To prove this, we exhibit, from any given conatural u, a Brouwer code
+such that if the standard interpretation of the code is trichotomous
+then the finiteness of u is decidable, which amounts to LPO.
 
 \begin{code}
 
@@ -72,7 +75,7 @@ open import Ordinals.BrouwerCodesInterpretations ua pt sr using (⟦_⟧₀)
 
 \end{code}
 
-From a given conatural, we construct various Brouwer codes and
+From a given conatural u : ℕ∞, we construct various Brouwer codes and
 associated ordinals.
 
 \begin{code}
@@ -215,7 +218,7 @@ module _ (u : ℕ∞) where
 
 \end{code}
 
-Ranging over all conatural numbers, this is LPO.
+Ranging over all conatural numbers, this amounts to LPO.
 
 \begin{code}
 

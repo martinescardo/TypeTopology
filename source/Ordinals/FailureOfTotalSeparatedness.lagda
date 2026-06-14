@@ -20,7 +20,7 @@ family ℕ → Ordinal, given by the algebraic injectivity of the type of
 ordinals as constructed in the file Ordinals.Injectivity.
 
 This non-standard interpretation gives compact (aka searchable)
-ordinals. One question we had for some time was whether the resulting
+ordinals. A question we had for some time was whether the resulting
 ordinals are also totally separated. Here we answer this in the
 negative. More precisely, from the assumption that the resulting
 ordinals are totally separated, we conclude that ¬¬ WLPO holds.
@@ -30,6 +30,9 @@ that a supremum of totally separated ordinals doesn't need to be
 totally separated itself, even if the ordinals are further assumed to
 be compact and the index set is assumed to be compact and totally
 separated.
+
+To prove this, we show that the supremum of the extension of the
+constantly 2 sequence of ordinals is a Sierpinski-like type.
 
 \begin{code}
 
