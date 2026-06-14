@@ -209,7 +209,7 @@ definition of an element of 𝕊 as follows.
 
 \end{code}
 
-As discussed above, we order the Sierpinski type as follows.
+We order the Sierpinski type as follows.
 
 \begin{code}
 
