@@ -1,4 +1,4 @@
-Martin Escardo, 2012, 2018, 2022.
+Martin Escardo, 2012, 2018, 2022, 2026.
 
 \begin{code}
 
