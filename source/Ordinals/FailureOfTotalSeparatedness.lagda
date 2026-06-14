@@ -2,53 +2,34 @@ Martin Escardo, 10-12th June 2026.
 
 This is a companion to Ordinals.BrouwerCodesInterpretations.
 
-We show that a supremum of totally separated ordinals doesn't need to
-be totally separated itself, even if the ordinals are further assumed
-to be compact and the index set is assumed to be compact and totally
+Recall that Brouwer ordinal codes are countably branching trees,
+inductively defined by the constructors
+
+  Z : B,
+  S : B → B,
+  L : (ℕ → B) → B.
+
+The standard interpretation ⟦_⟧₀, given in Ordinals.BrouwerCodesInterpretations,
+interprets Z as zero, S as successor, and L as supremum (least upper bound).
+See also Ordinals.FailureOfTrichotomy.
+
+The alternative sup-of-extension interpretation ⟦_⟧₂, given in the
+same file, interprets Z as one (rather than zero), S again as
+successor, but L as the supremum of the extension ℕ∞ → Ordinal of a
+family ℕ → Ordinal, given by the algebraic injectivity of the type of
+ordinals as constructed in the file Ordinals.Injectivity.
+
+This non-standard interpretation gives compact (aka searchable)
+ordinals. One question we had for some time was whether the resulting
+ordinals are also totally separated. Here we answer this in the
+negative. More precisely, from the assumption that the resulting
+ordinals are totally separated, we conclude that ¬¬ WLPO holds.
+
+More generally, and this is what we start with in this file, we show
+that a supremum of totally separated ordinals doesn't need to be
+totally separated itself, even if the ordinals are further assumed to
+be compact and the index set is assumed to be compact and totally
 separated.
-
-The motivation for this comes from the file Ordinals.BrouwerCodesInterpretations,
-where we interpret Brouwer ordinal codes as ordinals in four ways.
-
-Recall that Brouwer ordinal codes are countably branching trees
-inductively defined by constructors
-
-  Z : 𝔹,
-  S : 𝔹,
-  L : (ℕ → 𝔹) → 𝔹.
-
-The four interpretations are as follows.
-
-(0) The standard interpretation, where Z denotes zero,
-    S denotes successor, and L denotes supremum (least upper bound).
-
-(1) Like the standard interpretation, but replacing the interpretation
-    of Z by one, and that of L by the following construction. Given a
-    sequence α : ℕ → Ordinal, we extend it to α̅ : ℕ∞ → Ordinal, using
-    the injectivity of the type of ordinals, and then take the ordinal
-    sum of α̅.
-
-    The ordinals we get in this way are compact (or searchable) and
-    totally separated.
-
-(2) Like (1), but instead of taking the sum of α̅ we take its sup.
-
-    Here we get compact ordinals, but it was an open question whether
-    they are also totally separated.
-
-    (†) We show that they are *not* totally separated in general,
-        unless a certain amount of classical logic is available.
-
-(3) Like (0), but we replace supremum by ordinal sum.
-
-    Here we get countable trichotomous ordinals.
-
-The simplest example for (†) is obtained by taking the constant
-sequence αₙ = 2.  We show that the supremum of its extension α̅ is the
-ordinal of semidecidable propositions, where a proposition is below
-another iff the former fails and the latter holds. Notice that this is
-the restriction of the ordinal Ωₒ of propositions, defined in the file
-Ordinals.OrdinalOfTruthValues, to the semidecidable propositions.
 
 \begin{code}
 
@@ -107,7 +88,6 @@ open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 
-
 open suprema pt sr
 
 private
@@ -118,7 +98,8 @@ private
 
 \end{code}
 
-As discussed above, we work with the constantly 2 sequence α.
+To achieve the above goal, we work with the constantly 2 sequence of
+ordinals, abbreviated α here.
 
 \begin{code}
 
@@ -176,13 +157,11 @@ our purposes, all labelled by θ.
 
 We work with the following alternative formulation of semidecidability.
 
-We don't bother to pause to show it is equivalent to the standard
-definition, because all we need is an example for (†) above, which we
-do provide below.
-
-TODO. In the future, do establish this equivalence formally, and
-probably move all code for the alternative definition to the file
-NotionsOfDecidability.SemiDecidable.
+TODO. In the future, establish this equivalence formally, and probably
+move all code for the alternative definition to the file
+NotionsOfDecidability.SemiDecidable. But notice that we don't need to
+establish this equivalence to get our desired conclusions discussed
+above.
 
 \begin{code}
 
@@ -236,14 +215,14 @@ t ≺ₛ t' = (δ t holds → 𝟘 {𝓤₁}) × (δ t' holds)
 
 \end{code}
 
-NB. We are deliberately making the order live in the universe 𝓤₁,
-rather than 𝓤₀, because its carrier already lives in 𝓤₁, for
-simplicitly. A conclusion of our development, recorded below, is that
-both 𝕊 and its order have a copy in 𝓤₀ under our assumptions above.
+NB. For simplicity, we are deliberately making the order live in the
+universe 𝓤₁, rather than 𝓤₀, because its carrier already lives in 𝓤₁.
+A conclusion of our development, recorded below, is that both 𝕊 and
+its order have a copy in 𝓤₀ under our assumptions above.
 
 The Sierpinski type 𝕊 is a set, its equality is characterized by
 logical equivalence of domains of definition, and ≺ₛ is a well-order,
-all of which are immediate, although a bit laborious.
+all of which are immediate.
 
 \begin{code}
 
@@ -290,6 +269,14 @@ a definition somewhere. If not, define it at an appropriate file.
 𝓢 = 𝕊 , _≺ₛ_ , ≺ₛ-prop-valued ,
     ≺ₛ-well-founded , ≺ₛ-extensional , ≺ₛ-transitive
 
+\end{code}
+
+Eventually we will show that 𝓼 ≃ₒ 𝓢. Notice that the former lives in
+the first universe 𝓤₀ and the latter in next universe 𝓤₁, which is one
+way of interpreting the choice of capitalization.
+
+\begin{code}
+
 𝟎 𝟏 : {u : ℕ∞} → ⟨ α̅ u ⟩
 𝟎 φ = ₀
 𝟏 φ = ₁
@@ -297,7 +284,10 @@ a definition somewhere. If not, define it at an appropriate file.
 \end{code}
 
 The following specialized transports are to make the type checking
-performance feasible.
+performance feasible. We struggled to make the draft versions of this
+file to type check, where we used the general transport construction,
+with Agda spinning "for ever". We use similar tricks in a number of
+places below, for the same reason.
 
 \begin{code}
 
@@ -317,7 +307,7 @@ performance feasible.
 
 We have that, for any u : ℕ∞ and ξ : ⟨ α̅ u ⟩, the type
 
-  fiber ξ ₁ := Σ φ : is-finite , ξ φ ＝ ₁
+  fiber ξ ₁ := (Σ φ : is-finite , ξ φ ＝ ₁)
 
 is a proposition. We need to show that it is semidecidable.
 
@@ -476,7 +466,8 @@ disjoint-fibers ξ (φ₀ , e₀) (φ₁ , e₁) = one-is-not-zero I
 
 \end{code}
 
-If the lower sets of ξ and ξ' are equal, then so are 𝔽 ξ and 𝔽 ξ'.
+If the lower sets of ξ and ξ' in the ordinals α̅ u and α̅ u' are equal,
+then so are 𝔽 ξ and 𝔽 ξ'.
 
 \begin{code}
 
@@ -520,15 +511,20 @@ If the lower sets of ξ and ξ' are equal, then so are 𝔽 ξ and 𝔽 ξ'.
 \end{code}
 
 We now define a map τ : ⟨ 𝓼 ⟩ → 𝕊 by first defining a type-valued
-version T of it, after showing that it is singleton-valued.
+version T of it, after showing that it is singleton-valued. Although
+T-point gives data, it is defined by propositional-truncation
+induction, and, for that purpose, we first need to show that T is
+proposition valued. Getting the construction of τ using something such
+as T was the biggest headache of this file, luckily with a
+simple-looking solution.
 
 \begin{code}
 
 T : ⟨ 𝓼 ⟩ → 𝓤₁ ̇
 T y = Σ t ꞉ 𝕊 , ((u : ℕ∞) (ξ : ⟨ α̅ u ⟩) → θ ξ ＝ y → 𝔽 ξ ＝ t)
 
-T-is-prop : (y : ⟨ 𝓼 ⟩) → is-prop (T y)
-T-is-prop y (t , h) (t' , h') =
+T-is-prop-valued : (y : ⟨ 𝓼 ⟩) → is-prop (T y)
+T-is-prop-valued y (t , h) (t' , h') =
  to-subtype-＝
   (λ - → Π₃-is-prop fe' (λ u ξ e → 𝕊-is-set))
   (∥∥-rec 𝕊-is-set (λ (u , ξ , e) → t   ＝⟨ (h u ξ e)⁻¹ ⟩
@@ -537,7 +533,7 @@ T-is-prop y (t , h) (t' , h') =
   (θ-is-jointly-surjective y))
 
 T-point : (y : ⟨ 𝓼 ⟩) → T y
-T-point y = ∥∥-rec (T-is-prop y) I (θ-is-jointly-surjective y)
+T-point y = ∥∥-rec (T-is-prop-valued y) I (θ-is-jointly-surjective y)
  where
   I : (Σ u ꞉ ℕ∞ , Σ ξ ꞉ ⟨ α̅ u ⟩ , θ ξ ＝ y) → T y
   I (u , ξ , e) = 𝔽 ξ , (λ u' ξ' e' → θ-to-𝔽-＝ (I₀ ξ' e'))
@@ -553,7 +549,8 @@ T-point y = ∥∥-rec (T-is-prop y) I (θ-is-jointly-surjective y)
 \end{code}
 
 We have that τ ∘ θ ∼ 𝔽. For future use, it is convenient to formulate
-this in the following equivalent form.
+this in the following equivalent form, and in any case this is what
+the definition of T gives directly.
 
 \begin{code}
 
@@ -793,11 +790,11 @@ construction, it has a copy in 𝓤₀, as mentioned above.
 
 \end{code}
 
-The ordinal 𝓼, or equivalently the type 𝕊, fails to be totally
-separated in general in the following sense: its total separatedness
-implies the constructive taboo ¬¬ WLPO, which is a principle that
-fails in both Johnstone's Topological Topos and Hylands Effective
-Topos, for instance.
+The underlying type of the ordinal 𝓼, or equivalently the type 𝕊,
+fails to be totally separated in general in the following sense: its
+total separatedness implies the constructive taboo ¬¬ WLPO, which is a
+principle that fails in both Johnstone's Topological Topos and Hylands
+Effective Topos, for instance.
 
 \begin{code}
 
@@ -897,7 +894,8 @@ naturals-are-fin n = to-𝕊-＝ ((λ _ → ⋆) , (λ _ → n , refl))
 
 \end{code}
 
-Finally, we justify (†) above.
+Putting the above together, we get the desired counter-example
+discussed in the introduction to this file.
 
 \begin{code}
 
@@ -923,9 +921,10 @@ counterexample-to-total-separatedess =
 
 \end{code}
 
-The sup-of-extension interpretation of Brouwer ordinal codes is called ⟦_⟧₂.
-Recall that this interprets Z as 𝟙₀, rather than 𝟘ₒ, so that all types in the
-image of the interpretation are (compact and) pointed.
+We now get back to our main concern, the sup-of-extension
+interpretation ⟦_⟧₂ discussed in the introduction to this file. In
+order to make sense of the proof below, remember our remark that this
+non-standard interpretation maps Z to one rather than zero.
 
 \begin{code}
 
@@ -938,14 +937,17 @@ total-separatedness-of-the-sup-of-extension-interpretation-gives-¬¬WLPO
 total-separatedness-of-the-sup-of-extension-interpretation-gives-¬¬WLPO τ
  = V
  where
-  NB : ⟦ S Z ⟧₂ ＝ 𝟚ₒ-standard
-  NB = refl
+  _ : ⟦ Z ⟧₂ ＝ 𝟙ₒ
+  _ = refl
 
-  b : B
-  b = L (λ _ → S Z)
+  _ : ⟦ S Z ⟧₂ ＝ 𝟚ₒ-standard
+  _ = refl
 
   I : 𝟚ₒ ＝ ⟦ S Z ⟧₂
   I = eqtoidₒ (ua 𝓤₀) fe' 𝟚ₒ ⟦ S Z ⟧₂ (𝟚₀-agrees-with-𝟚₀-standard fe)
+
+  b : B
+  b = L (λ _ → S Z)
 
   II : ⟦ b ⟧₂ ＝ 𝓼
   II = ap (sup ∘ extension) (dfunext fe' (λ _ → I ⁻¹))
