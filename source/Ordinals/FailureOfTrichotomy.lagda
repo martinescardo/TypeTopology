@@ -64,15 +64,11 @@ open suprema pt sr
 
 \end{code}
 
-The standard interpretation of Brouwer ordinal codes, repeated here so
-that the file is self-contained.
+The standard interpretation of Brouwer ordinal codes is called ⟦_⟧₀.
 
 \begin{code}
 
-⟦_⟧₀ : B → Ordinal 𝓤₀
-⟦ Z ⟧₀   = 𝟘ₒ
-⟦ S b ⟧₀ = ⟦ b ⟧₀ +ₒ 𝟙ₒ
-⟦ L b ⟧₀ = sup (λ i → ⟦ b i ⟧₀)
+open import Ordinals.BrouwerCodesInterpretations ua pt sr using (⟦_⟧₀)
 
 \end{code}
 
@@ -83,10 +79,11 @@ associated ordinals.
 
 module _ (u : ℕ∞) where
 
- 𝟎 𝟏 𝟐 : B
- 𝟎 = Z
- 𝟏 = S 𝟎
- 𝟐 = S 𝟏
+ private
+  𝟎 𝟏 𝟐 : B
+  𝟎 = Z
+  𝟏 = S 𝟎
+  𝟐 = S 𝟏
 
  𝟚-to-B : 𝟚 → B
  𝟚-to-B ₀ = 𝟏

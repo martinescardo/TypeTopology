@@ -47,4 +47,45 @@ b ≺₂ c = (b ＝ ₀) × (c ＝ ₁)
   II ₁ ₀ f g = 𝟘-elim (zero-is-not-one (pr₂ (f ₀ (refl , refl))))
   II ₁ ₁ f g = refl
 
+open import UF.FunExt
+
+module _ (fe : FunExt) where
+
+ open import Ordinals.Arithmetic fe renaming (𝟚ₒ to 𝟚ₒ-standard)
+ open import Ordinals.Equivalence
+ open import Ordinals.Maps
+ open import Ordinals.Underlying
+ open import UF.Equiv
+
+ 𝟚₀-agrees-with-𝟚₀-standard : 𝟚ₒ ≃ₒ 𝟚ₒ-standard {𝓤}
+ 𝟚₀-agrees-with-𝟚₀-standard = f ,
+                              f-is-order-preserving ,
+                              qinvs-are-equivs f (g , gf , fg) ,
+                              g-is-order-preserving
+  where
+   f : ⟨ 𝟚ₒ ⟩ → ⟨ 𝟚ₒ-standard ⟩
+   f ₀ = inl ⋆
+   f ₁ = inr ⋆
+
+   f-is-order-preserving : is-order-preserving 𝟚ₒ 𝟚ₒ-standard f
+   f-is-order-preserving ₀ ₁ (refl , refl) = ⋆
+
+   g : ⟨ 𝟚ₒ-standard ⟩ → ⟨ 𝟚ₒ ⟩
+   g (inl ⋆) = ₀
+   g (inr ⋆) = ₁
+
+   fg : f ∘ g ∼ id
+   fg (inl ⋆) = refl
+   fg (inr ⋆) = refl
+
+   gf : g ∘ f ∼ id
+   gf ₀ = refl
+   gf ₁ = refl
+
+   g-is-order-preserving : is-order-preserving 𝟚ₒ-standard 𝟚ₒ g
+   g-is-order-preserving (inl ⋆) (inl ⋆) l = 𝟘-elim l
+   g-is-order-preserving (inl ⋆) (inr ⋆) ⋆ = (refl , refl)
+   g-is-order-preserving (inr ⋆) (inl ⋆) l = 𝟘-elim l
+   g-is-order-preserving (inr ⋆) (inr ⋆) l = 𝟘-elim l
+
 \end{code}
