@@ -53,6 +53,7 @@ open import Ordinals.TrichotomousType fe
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import TypeTopology.CompactTypes
+open import TypeTopology.SigmaDiscrete
 open import TypeTopology.SquashedSum fe
 open import TypeTopology.TotallySeparated
 open import UF.DiscreteAndSeparated
@@ -74,7 +75,8 @@ standard interpretation. It gives ordinals that are not trichotomous
 in general, as shown in the module Ordinals.FailureOfTrichotomy.
 
 TODO. They are not compact in general, as e.g. the ordinal ω is in the
-range of the standard interpretation.
+range of the standard interpretation, and the compactness of ω amounts
+to LPO.
 
 \begin{code}
 
@@ -95,51 +97,6 @@ importantly for our purposes, compact totally separated ordinals.
 ⟦ Z   ⟧₁ = 𝟙ᵒ
 ⟦ S b ⟧₁ = ⟦ b ⟧₁ +ᵒ 𝟙ᵒ
 ⟦ L b ⟧₁ = ∑¹ (λ i → ⟦ b i ⟧₁)
-
-\end{code}
-
-The third interpretation enlarges the first one in a different way. It
-gives compact ordinals, which are not totally separated in general,
-as shown in Ordinals.FailureOfTotalSeparatedness.
-
-\begin{code}
-
-⟦_⟧₂ : B → Ordinal 𝓤₀
-⟦ Z   ⟧₂ = 𝟙ₒ
-⟦ S b ⟧₂ = ⟦ b ⟧₂ +ₒ 𝟙ₒ
-⟦ L b ⟧₂ = sup (extension (λ i → ⟦ b i ⟧₂))
-
-\end{code}
-
-And the fourth and last interpretation is into trichomotomous
-ordinals, where Ordinal₃ 𝓤 is the type of trichotomous ordinals in the
-universe 𝓤. We again take sums rather than sups. It gives discrete
-(and hence totally separated) ordinals that are not compact in general.
-
-\begin{code}
-
-⟦_⟧₃ : B → Ordinal₃ 𝓤₀
-⟦ Z   ⟧₃ = 𝟘₃
-⟦ S b ⟧₃ = ⟦ b ⟧₃ +₃ 𝟙₃
-⟦ L b ⟧₃ = ∑³ ω₃ (λ i → ⟦ b i ⟧₃)
-
-\end{code}
-
-We'll prove the following inequalities, where the arrows represent the
-relation _⊴_ on ordinals, under the assumption of excluded middle:
-
- ⟦ b ⟧₀ → ⟦ b ⟧₃
-   ↓       ↓
- ⟦ b ⟧₂ → ⟦ b ⟧₁
-
-But we first show that ⟦ b ⟧₁ and ⟦ b ⟧₂ are compact and pointed and
-that ⟦ b ⟧₁ is totally separated. The pointedness is absolutely
-essential in the proofs by induction, via the indirect use of
-micro-tychonoff in Σ¹, because a version of micro-tychonoff without
-pointedness implies excluded middle. And this is why we defined the
-base cases to be 𝟙 rather than 𝟘.
-
-\begin{code}
 
 ⟦_⟧₁-is-compact∙ : (b : B) → is-compact∙ ⟨ ⟦ b ⟧₁ ⟩
 ⟦ Z   ⟧₁-is-compact∙ = 𝟙-is-compact∙
@@ -163,6 +120,19 @@ base cases to be 𝟙 rather than 𝟘.
                                   (λ i → ⟨ ⟦ b i ⟧₁ ⟩)
                                   (λ i → ⟦ b i ⟧₁-is-totally-separated)
 
+\end{code}
+
+The third interpretation enlarges the first one in a different way. It
+gives compact ordinals, which are not totally separated in general,
+as shown in the module Ordinals.FailureOfTotalSeparatedness.
+
+\begin{code}
+
+⟦_⟧₂ : B → Ordinal 𝓤₀
+⟦ Z   ⟧₂ = 𝟙ₒ
+⟦ S b ⟧₂ = ⟦ b ⟧₂ +ₒ 𝟙ₒ
+⟦ L b ⟧₂ = sup (extension (λ i → ⟦ b i ⟧₂))
+
 ⟦_⟧₂-is-compact∙ : (b : B) → is-compact∙ ⟨ ⟦ b ⟧₂ ⟩
 ⟦ Z   ⟧₂-is-compact∙ = 𝟙-is-compact∙
 ⟦ S b ⟧₂-is-compact∙ = +-is-compact∙ ⟦ b ⟧₂-is-compact∙ (𝟙-is-compact∙)
@@ -175,8 +145,41 @@ base cases to be 𝟙 rather than 𝟘.
 
 \end{code}
 
-In the file Ordinals.FailureOfTotalSeparatedness, we show that ⟦ b ⟧₂
-is not totally separated in general without assuming classical logic.
+The pointedness is absolutely essential in the above proofs by
+induction, via the indirect use of micro-tychonoff in Σ¹, because a
+version of micro-tychonoff without pointedness implies excluded
+middle. And this is why we defined the base cases to be 𝟙 rather than 𝟘.
+
+And the fourth and last interpretation is into trichomotomous
+ordinals, where Ordinal₃ 𝓤 is the type of trichotomous ordinals in the
+universe 𝓤. We again take sums rather than sups. This interpretation
+gives discrete (and hence totally separated) ordinals that are not
+compact in general, as ω is in the range of the interpretation
+(c.f. discussion above).
+
+\begin{code}
+
+⟦_⟧₃ : B → Ordinal₃ 𝓤₀
+⟦ Z   ⟧₃ = 𝟘₃
+⟦ S b ⟧₃ = ⟦ b ⟧₃ +₃ 𝟙₃
+⟦ L b ⟧₃ = ∑³ ω₃ (λ i → ⟦ b i ⟧₃)
+
+⟦_⟧₃-is-discrete : (b : B) → is-discrete ⟨ ⟦ b ⟧₃ ⟩
+⟦ Z   ⟧₃-is-discrete = 𝟘-is-discrete
+⟦ S b ⟧₃-is-discrete = +-is-discrete ⟦ b ⟧₃-is-discrete 𝟙-is-discrete
+⟦ L b ⟧₃-is-discrete = Σ-is-discrete ℕ-is-discrete (λ i → ⟦ b i ⟧₃-is-discrete)
+
+⟦_⟧₃-is-totally-separated : (b : B) → is-totally-separated ⟨ ⟦ b ⟧₃ ⟩
+⟦ b ⟧₃-is-totally-separated = discrete-types-are-totally-separated
+                               ⟦ b ⟧₃-is-discrete
+\end{code}
+
+We'll prove the following inequalities, where the arrows represent the
+relation _⊴_ on ordinals, under the assumption of excluded middle:
+
+ ⟦ b ⟧₀ → ⟦ b ⟧₃
+   ↓       ↓
+ ⟦ b ⟧₂ → ⟦ b ⟧₁
 
 The successor function on ordinals is not necessarily monotone, but it
 is if excluded middle holds.
