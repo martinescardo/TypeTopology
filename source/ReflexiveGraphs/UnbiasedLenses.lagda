@@ -49,11 +49,11 @@ which does arise from an oplax contravariant lens. Aesthetically, the latter
 is lacking but more importantly it is awkward to use. What we need is a notion
 of lens that allows us to mediate between either side of the edge we are
 displaying over. Without further delay we now introduce the notion of an
-unbiased lense. (TODO when the examples file is added we should note that the
+unbiased lens. (TODO when the examples file is added we should note that the
 above Magma example is actually formalized.)
 
 We define the structure of an unbiased lens using a record then collect the
-type of unbiased lens as a sigma type.
+type of unbiased lenses as a sigma type.
 
 \begin{code}
 
