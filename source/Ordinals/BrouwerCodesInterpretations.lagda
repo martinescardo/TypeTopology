@@ -67,9 +67,6 @@ private
 
 \end{code}
 
-We now define our four interpretations of Brouwer ordinal trees as
-ordinals.
-
 The first interpretation is the intended one, and we call it the
 standard interpretation. It gives ordinals that are not trichotomous
 in general, as shown in the module Ordinals.FailureOfTrichotomy.
@@ -148,7 +145,8 @@ as shown in the module Ordinals.FailureOfTotalSeparatedness.
 The pointedness is absolutely essential in the above proofs by
 induction, via the indirect use of micro-tychonoff in Σ¹, because a
 version of micro-tychonoff without pointedness implies excluded
-middle. And this is why we defined the base cases to be 𝟙 rather than 𝟘.
+middle. And this is why we defined the base cases to be the ordinal 𝟙₀
+rather than 𝟘₀.
 
 And the fourth and last interpretation is into trichomotomous
 ordinals, where Ordinal₃ 𝓤 is the type of trichotomous ordinals in the
@@ -311,7 +309,7 @@ comparison₃₁ em b = ≼-gives-⊴ _ _
 
 This completes the promised comparisons.
 
-We also have:
+Unimportant. We also have:
 
 \begin{code}
 
@@ -329,4 +327,4 @@ map₁₂ (L b) (u , f)     = sum-to-sup
 \end{code}
 
 TODO. Is the function map₁₂ a surjection? Probably not without
-classical logic, and LPO is sufficient.
+classical logic, and we know that LPO is sufficient.
