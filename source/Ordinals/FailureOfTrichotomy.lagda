@@ -9,13 +9,12 @@ inductively defined by the constructors
   S : B → B,
   L : (ℕ → B) → B.
 
-The standard interpretation, given in
-Ordinals.BrouwerCodesInterpretations, interprets Z as zero, S as
-successor, and L as supremum (least upper bound). A question we had
-for some time was whether the resulting ordinals are
-trichotomous. Here we answer this in the negative. More precisely,
-from the assumption that the resulting ordinals are trichotomous, we
-conclude that LPO holds.
+The standard interpretation ⟦_⟧₀, given in Ordinals.BrouwerCodesInterpretations,
+interprets Z as the ordinal zero, S as successor of ordinals, and L as
+supremum of ordinals (least upper bound).  A question we had for some
+time was whether the resulting ordinals are trichotomous. Here we
+answer this in the negative. More precisely, from the assumption that
+the resulting ordinals are trichotomous, we conclude that LPO holds.
 
 To prove this, we exhibit, from any given conatural u, a Brouwer code
 such that if the standard interpretation of the code is trichotomous

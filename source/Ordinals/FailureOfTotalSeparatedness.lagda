@@ -9,9 +9,10 @@ inductively defined by the constructors
   S : B → B,
   L : (ℕ → B) → B.
 
-The standard interpretation ⟦_⟧₀, given in Ordinals.BrouwerCodesInterpretations,
-interprets Z as zero, S as successor, and L as supremum (least upper bound).
-See also Ordinals.FailureOfTrichotomy.
+The standard interpretation ⟦_⟧₀, given in
+Ordinals.BrouwerCodesInterpretations, interprets Z as the ordinal
+zero, S as successor of ordinals, and L as supremum of ordinals (least
+upper bound).  See also Ordinals.FailureOfTrichotomy.
 
 The alternative sup-of-extension interpretation ⟦_⟧₂, given in the
 same file, interprets Z as one (rather than zero), S again as
