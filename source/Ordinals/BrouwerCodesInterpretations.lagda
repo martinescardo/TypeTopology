@@ -1,6 +1,6 @@
 Martin Escardo, 4th April 2022
 
-See the 2018 file OrdinalNotationInterpretation1 for discussion.
+See the 2018 file OrdinalBrouwerCodesVariationInterpretations for discussion.
 
 We interpret Brouwer ordinal codes as ordinals in four ways and relate
 them.
@@ -12,7 +12,7 @@ them.
 open import UF.Univalence
 open import UF.PropTrunc
 
-module Ordinals.NotationInterpretation0
+module Ordinals.BrouwerCodesInterpretations
         (ua : Univalence)
         (pt : propositional-truncations-exist)
        where
@@ -38,7 +38,7 @@ open import MLTT.Spartan
 open import Notation.CanonicalMap
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
-open import Ordinals.Brouwer
+open import Ordinals.BrouwerCodes
 open import Ordinals.Injectivity
 open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua

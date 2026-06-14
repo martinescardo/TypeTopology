@@ -1,13 +1,13 @@
 Martin Escardo, 10-12th June 2026.
 
-This is a companion to Ordinals.NotationInterpretation0.
+This is a companion to Ordinals.BrouwerCodesInterpretations.
 
 We show that a supremum of totally separated ordinals doesn't need to
 be totally separated itself, even if the ordinals are further assumed
 to be compact and the index set is assumed to be compact and totally
 separated.
 
-The motivation for this comes from the file Ordinals.NotationInterpretation0,
+The motivation for this comes from the file Ordinals.BrouwerCodesInterpretations,
 where we interpret Brouwer ordinal codes as ordinals in four ways.
 
 Recall that Brouwer ordinal codes are countably branching trees

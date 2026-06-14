@@ -32,13 +32,13 @@ univalent notion of ordinal (as introduced in the HoTT Book).
 open import MLTT.Spartan
 open import UF.FunExt
 
-module Ordinals.NotationInterpretation1 (fe : FunExt) where
+module Ordinals.BrouwerCodesVariationInterpretations (fe : FunExt) where
 
 \end{code}
 
 We work with ordinal encodings, or ordinal expressions, that are
 slightly different from the traditional Brouwer ordinal trees, which
-we also consider in the file NotationInterpretation0.
+we also consider in the file BrouwerCodesInterpretations.
 
 \begin{code}
 
@@ -118,8 +118,9 @@ the theorems and constructions to be performed here:
 \begin{code}
 
 open import Ordinals.Arithmetic fe
+open import Ordinals.BrouwerCodes
 open import Ordinals.Closure fe
-open import Ordinals.Codes
+open import Ordinals.ChurchEncoding
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
 open import Ordinals.Type
@@ -511,4 +512,4 @@ module _ (pt : propositional-truncations-exist)
 
 \end{code}
 
-More can be said about this, which we do in NotationInterpretation2.
+More can be said about this, which we do in InductiveRecursiveCodesInterpretations.

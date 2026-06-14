@@ -1,6 +1,6 @@
 Martin Escardo, March 2022
 
-This generalizes the 2018 file OrdinalNotationInterpretation1.
+This generalizes the 2018 file OrdinalBrouwerCodesVariationInterpretations.
 
 A Tarski universe E of ordinal codes with two related decoding
 functions Δ and Κ (standing for "discrete" and "compact"
@@ -25,7 +25,7 @@ There is an embedding ι : Δ ν → Κ ν which is order preserving and
 reflecting, and whose image has empty complement. The assumption that
 it is a bijection implies LPO.
 
-This extends and generalizes OrdinalNotationInterpretation1, for
+This extends and generalizes OrdinalBrouwerCodesVariationInterpretations, for
 which slides for a talk are available at
 https://www.cs.bham.ac.uk/~mhe/.talks/csl2022.pdf which may well serve
 as an introduction to this file. The main difference is that the
@@ -43,7 +43,7 @@ This is a draft version that needs polishing and more explanation.
 open import MLTT.Spartan
 open import UF.FunExt
 
-module Ordinals.NotationInterpretation2 (fe : FunExt) where
+module Ordinals.InductiveRecursiveCodesInterpretations (fe : FunExt) where
 
 private
  fe₀ = fe 𝓤₀ 𝓤₀

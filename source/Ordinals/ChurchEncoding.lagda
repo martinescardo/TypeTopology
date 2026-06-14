@@ -85,7 +85,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-module Ordinals.Codes where
+module Ordinals.ChurchEncoding where
 
 open import MLTT.Spartan
 
@@ -281,7 +281,7 @@ define εω. Then proceeding in the same way we can get εα for α =
 
 
 Now, using this last step (2), we can project to step (1) and
-define ε₀ as an element of O X using the following coersion:
+define ε₀ as an element of O X using the following coercion:
 
 \begin{code}
 
@@ -309,10 +309,7 @@ forests, that is, sequences ℕ → B.
 
 \begin{code}
 
-data B : 𝓤₀ ̇ where
- Z : B
- S : B → B
- L : (ℕ → B) → B
+open import Ordinals.BrouwerCodes
 
 \end{code}
 
@@ -341,20 +338,6 @@ completion as an exercise at the time of writing.
 We can define the tree B-ε₀ by recursion on B and we should show,
 in Agda, that this produces the same result as the above
 recursion-free definition.
-
-\begin{code}
-B-rec : {X : 𝓤₀ ̇ } → X → (X → X) → ((ℕ → X) → X) → B → X
-B-rec {X} z s l = h
- where
-  h : B → X
-  h Z = z
-  h (S u) = s (h u)
-  h (L us) = l (λ i → h (us i))
-\end{code}
-
-By suitable uncurrying, flipping and currying, the type of B-rec is
-isomorphic to {X : 𝓤₀ ̇ } → B → O X, but the above form is more
-convenient for recursive definitions:
 
 \begin{code}
 
@@ -420,7 +403,7 @@ Exercise₃ = (u v : B) → B-exp u v ≣ O↦B (exp (B↦O u) (B↦O v))
 
 \end{code}
 
-We need more coersions:
+We need more coercions:
 
 \begin{code}
 
@@ -436,24 +419,6 @@ Exercise₃' = (u v : B) → B-exp u v ≣ O'↦B (exp' (B↦O' u) (B↦O' v))
 
 \end{code}
 
-And, to solve the above exercises, you will need induction on B
-(which amounts to "primitive recursion" on B, rather than simple
-recursion or iteration B-rec on B):
-
-\begin{code}
-
-B-induction : {A : B → 𝓤₀ ̇ } →
-   A Z →
-  ((u : B) → A u → A (S u)) →
-  ((us : ℕ → B) → ((i : ℕ) → A (us i)) → A (L us)) →
------------------------------------------------------------
-  ((u : B) → A u)
-
-B-induction {A} z s l = h
- where
-  h : (u : B) → A u
-  h Z = z
-  h (S u) = s u (h u)
-  h (L us) = l us (λ i → h (us i))
-
-\end{code}
+And, to solve the above exercises, you will need induction on B (which
+amounts to "primitive recursion" on B, rather than simple recursion or
+iteration B-rec on B), defined in the BrouwerCodes import.

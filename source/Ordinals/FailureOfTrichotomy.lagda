@@ -1,6 +1,6 @@
 Martin Escardo, 14th June 2026.
 
-This is a companion to Ordinals.NotationInterpretation0.
+This is a companion to Ordinals.BrouwerCodesInterpretations.
 
 Recall that Brouwer ordinal codes are countably branching trees,
 inductively defined by the constructors
@@ -9,7 +9,7 @@ inductively defined by the constructors
   S : B → B,
   L : (ℕ → B) → B.
 
-The standard interpretation, given in Ordinals.NotationInterpretation0,
+The standard interpretation, given in Ordinals.BrouwerCodesInterpretations,
 interprets Z as zero, S as successor, and L as supremum (least upper
 bound). We show that the assumption that ⟦ b ⟧₀ is trichotomous for
 every Brouwer code b implies the constructive taboo LPO.
@@ -49,7 +49,7 @@ open import Notation.CanonicalMap
 open import NotionsOfDecidability.Decidable
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
-open import Ordinals.Brouwer
+open import Ordinals.BrouwerCodes
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
@@ -132,7 +132,7 @@ module _ (u : ℕ∞) where
 
  supα⊲supβ : sup α ⊲ sup β
  supα⊲supβ = ⊲-⊴-gives-⊲ (sup α) (β 1) (sup β)
-              {!supα⊲β₁!}
+              supα⊲β₁
               (sup-is-upper-bound β 1)
 
  y₀ y₁ : ⟨ sup β ⟩
@@ -222,12 +222,12 @@ Ranging over all conatural numbers, this is LPO.
 
 \begin{code}
 
-code : ℕ∞ → B
-code u = L (h u)
+brouwer-code : ℕ∞ → B
+brouwer-code u = L (h u)
 
 trichotomy-of-the-standard-interpretation-gives-LPO
  : ((b : B) → is-trichotomous ⟦ b ⟧₀) → LPO
 trichotomy-of-the-standard-interpretation-gives-LPO τ
- = LPO'-gives-LPO (λ u → main-lemma u (τ (code u)))
+ = LPO'-gives-LPO (λ u → main-lemma u (τ (brouwer-code u)))
 
 \end{code}
