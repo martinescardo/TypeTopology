@@ -71,7 +71,12 @@ module _ (sr : Set-Replacement pt) where
 We now define our four interpretations of Brouwer ordinal trees as
 ordinals.
 
-The first interpretation is the intended one.
+The first interpretation is the intended one, and we call it the
+standard interpretation. It gives ordinals that are not trichotomous
+in general, as shown in the module Ordinals.FailureOfTrichotomy.
+
+TODO. They are not compact in general, as e.g. the ordinal ω is in the
+range of the standard interpretation.
 
 \begin{code}
 
@@ -84,7 +89,7 @@ The first interpretation is the intended one.
 
 The second interpretation is into topped ordinals. It enlarges, in
 some sense, the first interpretation, so that we get bigger, and,
-importantly for our purposes, compact ordinals.
+importantly for our purposes, compact totally separated ordinals.
 
 \begin{code}
 
@@ -95,7 +100,9 @@ importantly for our purposes, compact ordinals.
 
 \end{code}
 
-The third interpretation enlarges the first one in a different way.
+The third interpretation enlarges the first one in a different way. It
+gives compact ordinals, which are not totally separated in general,
+as shown in Ordinals.FailureOfTotalSeparatedness.
 
 \begin{code}
 
@@ -108,14 +115,15 @@ The third interpretation enlarges the first one in a different way.
 
 And the fourth and last interpretation is into trichomotomous
 ordinals, where Ordinal₃ 𝓤 is the type of trichotomous ordinals in the
-universe 𝓤. We again take sums rather than sups.
+universe 𝓤. We again take sums rather than sups. It gives discrete
+(and hence totally separated) ordinals that are not compact in general.
 
 \begin{code}
 
  ⟦_⟧₃ : B → Ordinal₃ 𝓤₀
- ⟦ Z   ⟧₃  = 𝟘₃
- ⟦ S b ⟧₃  = ⟦ b ⟧₃ +₃ 𝟙₃
- ⟦ L b ⟧₃  = ∑³ ω₃ (λ i → ⟦ b i ⟧₃)
+ ⟦ Z   ⟧₃ = 𝟘₃
+ ⟦ S b ⟧₃ = ⟦ b ⟧₃ +₃ 𝟙₃
+ ⟦ L b ⟧₃ = ∑³ ω₃ (λ i → ⟦ b i ⟧₃)
 
 \end{code}
 

@@ -269,6 +269,13 @@ We are now ready to make the type of ordinals into an ordinal.
 _⊲_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
 α ⊲ β = Σ b ꞉ ⟨ β ⟩ , α ＝ (β ↓ b)
 
+⊲-witness : {α β : Ordinal 𝓤} → α ⊲ β → ⟨ β ⟩
+⊲-witness = pr₁
+
+⊲-witness-property : {α β : Ordinal 𝓤} (l : α ⊲ β)
+                   → α ＝ (β ↓ ⊲-witness l)
+⊲-witness-property = pr₂
+
 ⊲-is-prop-valued : (α β : Ordinal 𝓤) → is-prop (α ⊲ β)
 ⊲-is-prop-valued {𝓤} α β (b , p) (b' , p') = γ
  where

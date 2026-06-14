@@ -1,5 +1,7 @@
 Martin Escardo, 10-12th June 2026.
 
+This is a companion to Ordinals.NotationInterpretation0.
+
 We show that a supremum of totally separated ordinals doesn't need to
 be totally separated itself, even if the ordinals are further assumed
 to be compact and the index set is assumed to be compact and totally
@@ -146,7 +148,7 @@ We let φ range over the type is-finite u.
 \end{code}
 
 The following are all the properties of the supremum that we need for
-our purposes.
+our purposes, all labelled by θ.
 
 \begin{code}
 
@@ -173,9 +175,10 @@ our purposes.
 \end{code}
 
 We work with the following alternative formulation of semidecidability.
+
 We don't bother to pause to show it is equivalent to the standard
 definition, because all we need is an example for (†) above, which we
-provide below.
+do provide below.
 
 TODO. In the future, do establish this equivalence formally, and
 probably move all code for the alternative definition to the file
@@ -818,8 +821,8 @@ Topos, for instance.
  ⊥ₛ-is-not-⊤ₛ : ⊥ₛ ≠ ⊤ₛ
  ⊥ₛ-is-not-⊤ₛ e = transport (λ - → δ - holds) (e ⁻¹) ⋆
 
- 𝕊-separating-map-gives-WLPO : (p : 𝕊 → 𝟚) → p ⊥ₛ ≠ p ⊤ₛ → WLPO
- 𝕊-separating-map-gives-WLPO p ν = h (p ⊥ₛ) (p ⊤ₛ) refl refl
+ 𝕊-separation-gives-WLPO : (p : 𝕊 → 𝟚) → p ⊥ₛ ≠ p ⊤ₛ → WLPO
+ 𝕊-separation-gives-WLPO p ν = h (p ⊥ₛ) (p ⊤ₛ) refl refl
   where
    q : ℕ∞ → 𝟚
    q u = p (is-fin u)
@@ -870,14 +873,14 @@ Topos, for instance.
      h ₀ ₀ e e' = p ⊥ₛ ＝⟨ e ⟩
                   ₀    ＝⟨ e' ⁻¹ ⟩
                   p ⊤ₛ ∎
-     h ₀ ₁ e e' = 𝟘-elim (nwlpo (𝕊-separating-map-gives-WLPO p ν))
+     h ₀ ₁ e e' = 𝟘-elim (nwlpo (𝕊-separation-gives-WLPO p ν))
       where
        ν : p ⊥ₛ ≠ p ⊤ₛ
        ν d = zero-is-not-one (₀    ＝⟨ e ⁻¹ ⟩
                               p ⊥ₛ ＝⟨ d ⟩
                               p ⊤ₛ ＝⟨ e' ⟩
                               ₁    ∎)
-     h ₁ ₀ e e' = 𝟘-elim (nwlpo (𝕊-separating-map-gives-WLPO p ν))
+     h ₁ ₀ e e' = 𝟘-elim (nwlpo (𝕊-separation-gives-WLPO p ν))
       where
        ν : p ⊥ₛ ≠ p ⊤ₛ
        ν d = one-is-not-zero (₁    ＝⟨ e ⁻¹ ⟩

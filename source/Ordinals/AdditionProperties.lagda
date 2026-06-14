@@ -495,6 +495,12 @@ successor-lemma-right α  = III
 successor-increasing : (α : Ordinal 𝓤) → α ⊲ (α +ₒ 𝟙ₒ)
 successor-increasing α = inr ⋆ , ((successor-lemma-right α)⁻¹)
 
+¬𝟙ₒ⊲𝟙ₒ : ¬ (𝟙ₒ {𝓤₀} ⊲ 𝟙ₒ)
+¬𝟙ₒ⊲𝟙ₒ = irreflexive _⊲_ 𝟙ₒ (⊲-is-well-founded 𝟙ₒ)
+
+𝟙ₒ⊲𝟚ₒ : 𝟙ₒ {𝓤₀} ⊲ 𝟚ₒ
+𝟙ₒ⊲𝟚ₒ = inr ⋆ , ((successor-lemma-right 𝟙ₒ) ⁻¹)
+
 \end{code}
 
 Added on 24th May 2024 by Tom de Jong.

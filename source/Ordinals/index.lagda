@@ -21,6 +21,7 @@ import Ordinals.CumulativeHierarchy-Addendum  -- by [2]
 import Ordinals.Equivalence
 import Ordinals.Exponentiation.index          -- by [2]
 import Ordinals.FailureOfTotalSeparatedness
+import Ordinals.FailureOfTrichotomy
 import Ordinals.Fin                           -- by [5] with additions by [2]
 import Ordinals.Indecomposable
 import Ordinals.IdentifyingEquivalentOrdinals -- by [3]
