@@ -2,7 +2,7 @@ Martin Escardo, 24th March 2022
 with minor improvements and additions June 2024.
 
 This file is a apropos the discussion at the end of the file
-Ordinals.NotationInterpretation2.
+Ordinals.InductiveRecursiveCodesInterpretations.
 
 \begin{code}
 
