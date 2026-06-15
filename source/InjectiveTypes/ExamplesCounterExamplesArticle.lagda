@@ -247,27 +247,9 @@ Examples (3)—(5) can be found below and are postponed for now (as in the paper
 \begin{code}
 
 Examples-6-i : set-quotients-exist → ainjective-type (Ordinal 𝓤) 𝓤 𝓤
-Examples-6-i {𝓤} sqe =
- pointed-dcpos-are-ainjective-types 𝓤 (Ord-DCPO , 𝟘ₒ , 𝟘ₒ-least-⊴)
-  where
-   open import DomainTheory.Basics.Dcpo pt fe' 𝓤
-   open import Ordinals.AdditionProperties ua
-   open import Ordinals.Arithmetic fe
-   open import Ordinals.Equivalence
-   open import Ordinals.OrdinalOfOrdinals ua
-   open import Ordinals.OrdinalOfOrdinalsSuprema ua
-   open import Quotient.GivesSetReplacement
-
-   sr : Set-Replacement pt
-   sr = set-replacement-from-set-quotients-and-prop-trunc sqe pt
-
-   Ord-DCPO : DCPO {𝓤 ⁺} {𝓤}
-   Ord-DCPO = (Ordinal 𝓤 , _⊴_ ,
-               (the-type-of-ordinals-is-a-set (ua 𝓤) fe' ,
-                ⊴-is-prop-valued , ⊴-refl , ⊴-trans , ⊴-antisym) ,
-               (λ I α _ → ordinal-of-ordinals-has-small-suprema' pt sr I α))
-    where
-     open suprema pt sr
+Examples-6-i {𝓤} sq = Ordinal-is-ainjective
+ where
+  open ordinals-injectivity-using-suprema ua sq pt
 
 Examples-6-ii : ainjective-type (Ordinal 𝓤) 𝓤 𝓤
 Examples-6-ii {𝓤} = Ordinal-is-ainjective (ua 𝓤)

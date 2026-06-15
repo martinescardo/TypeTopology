@@ -1,4 +1,6 @@
 Martin Escardo, 2018, April 2022.
+With an addition by Tom de Jong from January 2026,
+but moved here on 15 June 2026.
 
 The type of ordinals is (algebraically) injective.
 
@@ -242,5 +244,55 @@ module topped-ordinals-injectivity-order (ua : Univalence) where
                → (j : J) → [ (α ↗ 𝓮) j ] ⊴ [ (β ↗ 𝓮) j ]
  ↗-preserves-⊴ 𝓮 α β =
    ordinals-injectivity-order.↗-preserves-⊴ ua 𝓮 (λ i → [ α i ]) (λ i → [ β i ])
+
+\end{code}
+
+Tom de Jong, 15 June 2026 (original code from January 2026)
+
+Alternatively, we can show that the type of ordinals is
+(algebraically) injective using suprema. Indeed, the suprema make it a
+sup-lattice and in particular a pointed dcpo, and the carrier of any
+pointed dcpo is always injective.
+
+\begin{code}
+
+open import Quotient.Type
+open import UF.PropTrunc
+
+module ordinals-injectivity-using-suprema
+        (ua : Univalence)
+        (sq : set-quotients-exist)
+        (pt : propositional-truncations-exist)
+       where
+
+ open import UF.UA-FunExt
+
+ private
+  fe : FunExt
+  fe = Univalence-gives-FunExt ua
+
+  fe' : Fun-Ext
+  fe' = Univalence-gives-Fun-Ext ua
+
+ open import InjectiveTypes.Blackboard fe
+ open import InjectiveTypes.PointedDcpos fe pt
+
+ Ordinal-is-ainjective : ainjective-type (Ordinal 𝓤) 𝓤 𝓤
+ Ordinal-is-ainjective {𝓤} =
+  pointed-dcpos-are-ainjective-types 𝓤 (Ord-DCPO , 𝟘ₒ , 𝟘ₒ-least-⊴)
+   where
+    open import DomainTheory.Basics.Dcpo pt fe' 𝓤 using (DCPO)
+    open import Ordinals.AdditionProperties ua using (𝟘ₒ-least-⊴)
+    open import Ordinals.Arithmetic fe using (𝟘ₒ)
+    open import Ordinals.OrdinalOfOrdinals ua
+    open import Ordinals.OrdinalOfOrdinalsSuprema ua
+    open suprema pt
+
+    Ord-DCPO : DCPO {𝓤 ⁺} {𝓤}
+    Ord-DCPO =
+     (Ordinal 𝓤 , _⊴_ ,
+      (the-type-of-ordinals-is-a-set (ua 𝓤) fe' ,
+       ⊴-is-prop-valued , ⊴-refl , ⊴-trans , ⊴-antisym) ,
+       (λ I α _ → ordinal-of-ordinals-has-small-suprema sq I α))
 
 \end{code}
