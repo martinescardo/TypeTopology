@@ -9,11 +9,8 @@ Minor changes and merged into TypeToplogy in June 2026.
 module ReflexiveGraphs.UnbiasedLenses where
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.Subsingletons
-open import ReflexiveGraphs.Constructions
 open import ReflexiveGraphs.Displayed
 open import ReflexiveGraphs.DisplayedUnivalent
 open import ReflexiveGraphs.Lenses
@@ -23,14 +20,14 @@ open import ReflexiveGraphs.Univalent
 \end{code}
 
 In this file we generalize the two previous notion of lenses, but before diving
-into the techincal details we attempt to motivate the notion of an unbiased lens
+into the technical details we attempt to motivate the notion of an unbiased lens
 (see index for link to Jon Sterling's "Reflexive graph lenses in univalent
-foundations"). We first note that, not surpisingly, some univalent reflexive
+foundations"). We first note that, not surprisingly, some univalent reflexive
 graphs of interest do not arise naturally from the existing notion of lenses.
 For example consider an isomorphism of magmas (M , ⊗) ≃ (N , ⊗') which consist
 of an equivalence of the underlying types e : M ≃ N that preserves the binary
 operation, that is: e (x ⊗ y) ＝ (e x) ⊗' (e y) for all x, y : M. One could
-produce the reflexive graph for the type of Magmas from the following displayed
+produce the reflexive graph for the type of magmas from the following displayed
 reflexive graph 
 
           BinOp(M) :≡ M × M → M
@@ -38,7 +35,7 @@ reflexive graph
           ≈-disp-refl BinOp ⊗ :≡ λ x y : M . refl {x ⊗ y}
 
 but notice that this displayed reflexive graph DOES NOT arise from either of
-the existing notions of lens. We could consider a similar, albeit assymetric
+the existing notions of lens. We could consider a similar, albeit asymetric
 (or biased!), displayed reflexive graph
 
           BinOp(M) :≡ M × M → M
@@ -50,9 +47,9 @@ is lacking but more importantly it is awkward to use. What we need is a notion
 of lens that allows us to mediate between either side of the edge we are
 displaying over. Without further delay we now introduce the notion of an
 unbiased lens. (TODO when the examples file is added we should note that the
-above Magma example is actually formalized.)
+above magma example is actually formalized.)
 
-We define the structure of an unbiased lens using a record then collect the
+We define the structure of an unbiased lens using a record and then collect the
 type of unbiased lenses as a sigma type.
 
 \begin{code}
@@ -72,15 +69,15 @@ record unbiased-lens-structure
 \end{code}
 
 Although the previous discussion motivating the notion of an unbiased lens
-may offer the reader with insight into the first three datum one may have a
+may offer the reader with insight into the first three fields one may have a
 moment's pause at the final field rext-refl. You will see below that it is
 not necessary for defining a displayed reflexive graph associated to an
 unbiased lens, but it will be relevant when showing univalence is inherited.
 The reader may wonder why we only include a reflexivity datum for the rext
-field? The situation here is similar to that of half-adjoint equivalences
+field. The situation here is similar to that of half-adjoint equivalences
 where we must exclude one of the coherences in the interest of ensuring that
 being an equivalence is a property (although it is worth noting that the
-situation does differ in that the anaglous lext-refl is not derivable from
+situation does differ in that the analogous lext-refl is not derivable from
 rext-refl in general).
 
 \begin{code}
@@ -220,7 +217,7 @@ displayed reflexive graph over it is univalent.
 
 \end{code}
 
-We can construct unbiased lenses from an oplax covariant lenses.
+We construct an unbiased lens from an oplax covariant lens.
 
 \begin{code}
 
@@ -239,8 +236,8 @@ We can construct unbiased lenses from an oplax covariant lenses.
         ; rext-refl = λ {x} u → ≈-refl (𝓑 x) u
         }
 
- disp±̂⁺ : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐 → Unbiased-Lens 𝓤' 𝓥' 𝓐
- disp±̂⁺ 𝓛 = oplax-covariant-to-unbiased-lens 𝓛
+ unbias⁺ : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐 → Unbiased-Lens 𝓤' 𝓥' 𝓐
+ unbias⁺ 𝓛 = oplax-covariant-to-unbiased-lens 𝓛
 
 \end{code}
 
@@ -253,12 +250,12 @@ module _ {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥) where
 
  private
   observation' : (𝓛 : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
-               → disp⁺ 𝓐 𝓛 ＝ disp± 𝓐 (disp±̂⁺ 𝓐 𝓛)
+               → disp⁺ 𝓐 𝓛 ＝ disp± 𝓐 (unbias⁺ 𝓐 𝓛)
   observation' 𝓛 = refl
 
 \end{code}
 
-We now construct an unbiased lense from lax contravariant lenses.
+We now construct an unbiased lens from a lax contravariant lens.
 
 \begin{code}
 
@@ -277,14 +274,14 @@ We now construct an unbiased lense from lax contravariant lenses.
         ; rext-refl = λ {x} u → pull-refl u
         }
 
- disp±⁻ : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐 → Unbiased-Lens 𝓤' 𝓥' 𝓐
- disp±⁻ 𝓛 = lax-contravariant-to-unbiased-lens 𝓛
+ unbias⁻ : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐 → Unbiased-Lens 𝓤' 𝓥' 𝓐
+ unbias⁻ 𝓛 = lax-contravariant-to-unbiased-lens 𝓛
 
 module _ {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥) where
 
  private
   observation'' : (𝓛 : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
-                → disp⁻ 𝓐 𝓛 ＝ disp± 𝓐 (disp±⁻ 𝓐 𝓛)
+                → disp⁻ 𝓐 𝓛 ＝ disp± 𝓐 (unbias⁻ 𝓐 𝓛)
   observation'' 𝓛 = refl
 
 \end{code}
