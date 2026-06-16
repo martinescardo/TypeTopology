@@ -44,7 +44,7 @@ import Ordinals.InductiveRecursiveCodesInterpretations -- 2022
   4. BrouwerCodesVariationInterpretations gives a mild generalization
      of Brouwer codes and interpretations corresponding to ⟦_⟧₁ and
      ⟦_⟧₃ and further connects the two interpretations with an
-     embeddings of the former into the latter which has empty
+     embeddings of the latter into the former which has empty
      complement, and gives further information.
 
   5. InductiveRecursiveCodesInterpretations again generalizes Brouwer
