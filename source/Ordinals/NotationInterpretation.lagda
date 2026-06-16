@@ -30,7 +30,6 @@ import Ordinals.InductiveRecursiveCodesInterpretations -- 2022
 
      which are also related to each other.
 
-
   2. FailureOfTrichotomy shows that if ⟦_⟧₀ gives trichotomous
      ordinals then LPO holds. It is evident that if it gives compact
      ordinals then LPO holds, because the interpretation of the code
