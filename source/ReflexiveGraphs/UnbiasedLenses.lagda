@@ -101,13 +101,13 @@ module _ {𝓤' 𝓥' : Universe} {𝓐 : Refl-Graph 𝓤 𝓥}
  unbiased-fam p = ⟨ unbiased-graph p ⟩
 
  unbiased-lext : {x y : ⟨ 𝓐 ⟩} (p : x ≈⟨ 𝓐 ⟩ y)
-                    → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩
-                    → ⟨ 𝓑 p ⟩
+               → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩
+               → ⟨ 𝓑 p ⟩
  unbiased-lext = lext
 
  unbiased-rext : {x y : ⟨ 𝓐 ⟩} (p : x ≈⟨ 𝓐 ⟩ y)
-                    → ⟨ 𝓑 (≈-refl 𝓐 y) ⟩
-                    → ⟨ 𝓑 p ⟩
+               → ⟨ 𝓑 (≈-refl 𝓐 y) ⟩
+               → ⟨ 𝓑 p ⟩
  unbiased-rext = rext
 
  unbiased-ext-refl
@@ -158,13 +158,13 @@ Now we define a display of unbiased lenses.
  disp± 𝓛 = display-unbiased-lens 𝓛
 
  private
-  observation
+  observation₁
    : (𝓛 : Unbiased-Lens 𝓤' 𝓥' 𝓐)
    → (x : ⟨ 𝓐 ⟩)
    → [ disp± 𝓛 ] x ＝ (⟪ disp± 𝓛 ⟫ x
                        , displayed-edge-rel (disp± 𝓛) (≈-refl 𝓐 x)
                        , ≈-disp-refl (disp± 𝓛))
-  observation 𝓛 x = refl
+  observation₁ 𝓛 x = refl
 
 \end{code}
 
@@ -249,9 +249,9 @@ induced displayed reflexive graphs explicit in the following observation.
 module _ {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥) where
 
  private
-  observation' : (𝓛 : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
+  observation₂ : (𝓛 : Oplax-Covariant-Lens 𝓤' 𝓥' 𝓐)
                → disp⁺ 𝓐 𝓛 ＝ disp± 𝓐 (unbias⁺ 𝓐 𝓛)
-  observation' 𝓛 = refl
+  observation₂ 𝓛 = refl
 
 \end{code}
 
@@ -280,8 +280,8 @@ We now construct an unbiased lens from a lax contravariant lens.
 module _ {𝓤' 𝓥' : Universe} (𝓐 : Refl-Graph 𝓤 𝓥) where
 
  private
-  observation'' : (𝓛 : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
-                → disp⁻ 𝓐 𝓛 ＝ disp± 𝓐 (unbias⁻ 𝓐 𝓛)
-  observation'' 𝓛 = refl
+  observation₃ : (𝓛 : Lax-Contravariant-Lens 𝓤' 𝓥' 𝓐)
+               → disp⁻ 𝓐 𝓛 ＝ disp± 𝓐 (unbias⁻ 𝓐 𝓛)
+  observation₃ 𝓛 = refl
 
 \end{code}
