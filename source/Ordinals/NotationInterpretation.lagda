@@ -33,9 +33,9 @@ import Ordinals.InductiveRecursiveCodesInterpretations -- 2022
 
   2. FailureOfTrichotomy shows that if ⟦_⟧₀ gives trichotomous
      ordinals then LPO holds. It is evident that if it gives compact
-     ordinals then LPO holds, because the interpretation of the code L
-     (n ↦ Sⁿ Z) gives ω with underlying set ℕ, which is compact iff
-     and only if LPO holds.
+     ordinals then LPO holds, because the interpretation of the code
+     Brouwer code L (n ↦ Sⁿ Z) gives ω with underlying set ℕ, which is
+     compact iff and only if LPO holds.
 
   3. FailureOfTotalSeparatedness shows that if ⟦_⟧₂ gives totally
      separated types then ¬¬ WLPO holds, and also gives positive
