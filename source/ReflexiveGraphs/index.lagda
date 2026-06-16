@@ -31,6 +31,7 @@ import ReflexiveGraphs.Displayed
 import ReflexiveGraphs.DisplayedUnivalent
 import ReflexiveGraphs.Lenses
 import ReflexiveGraphs.Type
+import ReflexiveGraphs.UnbiasedLenses
 import ReflexiveGraphs.Univalent
 import ReflexiveGraphs.UnivalentClosureProperties
 import ReflexiveGraphs.UnivalentFamilies
