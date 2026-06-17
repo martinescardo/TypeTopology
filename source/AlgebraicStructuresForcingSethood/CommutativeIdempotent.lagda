@@ -22,7 +22,6 @@ on the properness of this generalisation in the final section of this file. Our
 work builds on the adaptated formalisation of this result by Tom de Jong [2].
 See also Martín Escardó's adaptation [3] of this result.
 
-
 [1] David Wärn. https://dwarn.se/agda/Idem.html, 17 February 2026.
     (See also https://mathstodon.xyz/deck/@dwarn/116091515645003634.)
 
@@ -31,6 +30,7 @@ See also Martín Escardó's adaptation [3] of this result.
 
 [3] Martín Escardó. AlgebraicStructuresForcingSethood.Semilattices.lagda,
     23 February 2026.
+
 
 TODO: elaborate on proof
 
@@ -159,11 +159,11 @@ module pointed-endomap-iterates
   : {y z : A}
     (h : y ＝ z) (β : y ＝ x₀) (γ : z ＝ x₀)
     {r : y ＝ y} {s : z ＝ z}
-  → h ∙ s ∙ h ⁻¹ ＝ r
+  → r ＝ h ∙ s ∙ h ⁻¹
   → ((p q : ΩA x₀) → p ∙ q ＝ q ∙ p)
   → conjugate-loop β r ＝ conjugate-loop γ s
  homotopic-conjugations refl β refl {r} e loop-comm =
-  conjugate-loop-is-id loop-comm β r ∙ e ⁻¹ ∙ refl-left-neutral
+  conjugate-loop-is-id loop-comm β r ∙ e ∙ refl-left-neutral
 
  homotopic-Ω-map^
   : (m n : ℕ)
@@ -176,7 +176,7 @@ module pointed-endomap-iterates
    (H x₀)
    (fixed^ m)
    (fixed^ n)
-   (homotopies-are-natural' (f ^ m) (f ^ n) H {p = p})
+   (homotopies-are-natural' (f ^ m) (f ^ n) H {p = p} ⁻¹)
    (loop-comm)
 
  Ω-map-eventually-idempotent
