@@ -694,6 +694,19 @@ h₁ = h₂ = refl, the square degenerates and we recover p.
 conjugate-loop : {A : 𝓤 ̇ } {a b : A} → a ＝ b → a ＝ a → b ＝ b
 conjugate-loop p = ＝-congr p p
 
+ap-＝-congr
+ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } (f : A → B) {a b x y : A}
+ → (α : a ＝ x) (β : b ＝ y) (p : a ＝ b)
+ → ap f (＝-congr α β p)
+   ＝ ＝-congr (ap f α) (ap f β) (ap f p)
+ap-＝-congr f refl refl p = refl
+
+ap-conjugate-loop
+ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } (f : A → B) {a b : A}
+ → (p : a ＝ b) (l : a ＝ a)
+ → ap f (conjugate-loop p l) ＝ conjugate-loop (ap f p) (ap f l)
+ap-conjugate-loop f p l = ap-＝-congr f p p l
+
 conjugate-loop-conjugates : {A : 𝓤 ̇ } {a b : A} (p : a ＝ b) (l : a ＝ a)
                           → conjugate-loop p l ＝ p ⁻¹ ∙ l ∙ p
 conjugate-loop-conjugates refl = transport-along-＝ refl
