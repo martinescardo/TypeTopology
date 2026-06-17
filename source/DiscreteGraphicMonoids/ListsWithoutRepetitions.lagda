@@ -37,7 +37,7 @@ module _
 \end{code}
 
 We first define a conditional `cons` operation, and then we use it to
-define the function δ that deletes all occurences of an element from a
+define the function δ that deletes all occurrences of an element from a
 list.
 
 The function ccons can be made abstract, and this was useful during

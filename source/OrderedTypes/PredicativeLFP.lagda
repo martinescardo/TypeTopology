@@ -862,7 +862,7 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
 
 The remainder of this formalization is essentially a search for restrictions
 we may impose on sup-lattices and inductive definitions to achieve the
-neccesary smallness assumptions on 𝓘nd which will guarentee least fixed points.
+necessary smallness assumptions on 𝓘nd which will guarentee least fixed points.
 
 We now consider a boundedness restricion on inductive definitions and show
 that bounded inductive definitions are local.

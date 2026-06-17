@@ -1186,7 +1186,7 @@ evc-extension-restriction f
 \end{code}
 
 Conversely, a modulus of continuity of an extension is a modulus of
-constancy of the orginal function.
+constancy of the original function.
 
 \begin{code}
 

@@ -37,7 +37,7 @@ operations. Curiosly, this fact was noted in Taylor's original paper [p. 515, 1]
 
 WARNING!  I have used this exercise to learn some intricacies of Agda, so the
  code below is quite rough. I am leaving it as is, with proofs of symmetric
- cases being quite distict, for the record of my progress with Agda.
+ cases being quite distinct, for the record of my progress with Agda.
 
 \begin{code}
 

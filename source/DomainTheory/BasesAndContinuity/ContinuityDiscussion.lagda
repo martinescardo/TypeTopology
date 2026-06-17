@@ -215,7 +215,7 @@ module _
 
 \end{code}
 
-Finall, we consider pseudocontinuity. It is similar to structural continuity,
+Finally, we consider pseudocontinuity. It is similar to structural continuity,
 but instead of asking that for every x : D, we have a specified directed family
 approximating x, we merely ask there exists an unspecified directed family
 approximating x.
