@@ -55,7 +55,7 @@ instance
 
 \section{Preliminaries}
 
-The universal property of the inital frame gives that there is a unique frame
+The universal property of the initial frame gives that there is a unique frame
 homomorphism `Ω → 𝒪(X)`, for every locale `X`. We denote this by `!`. We also
 define the shorthand notation `!꙳` for the underlying function of the frame
 homomorphism in consideration.
@@ -257,5 +257,5 @@ I have benefited from Graham Manuell's notes on constructive locale theory [1],
 where this characterization of compactness is discussed. The proof here is
 different, however, as it uses the machinery of spectral and perfect maps.
 
-[1]: Manuell, Graham. "Pointfree topology and constructive mathematics." arXiv
+[1]: Manual, Graham. "Pointfree topology and constructive mathematics." arXiv
 preprint arXiv:2304.06000 (2023).

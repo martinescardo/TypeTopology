@@ -360,7 +360,7 @@ the composition of all `fᵢₙ ∘ ⋯ ∘ fᵢ₀`:
 
 \end{code}
 
-Using `sequence`, we define the following functio that will help us “directify”
+Using `sequence`, we define the following function that will help us “directify”
 a given family:
 
 \begin{code}

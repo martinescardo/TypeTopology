@@ -22,7 +22,7 @@ and our
 
  https://www.cs.bham.ac.uk/~mhe/TypeTopology/PlusOneLC.html
 
-More generally, for an arbitraty type X, we prove that
+More generally, for an arbitrary type X, we prove that
 
   co-derived-set (X + 𝟙) × Aut X ≃ Aut (X + 𝟙),
 

@@ -226,7 +226,7 @@ structure. It is however weaker than continuity (as defined in
 Continuity.lagda) and structural continuity. More importantly, with
 pseudocontinuity we would need some instances of the axiom of choice when
 proving the interpolation properties for the way-below relation, at least when
-trying to mimick the proof in Continuity.lagda.
+trying to mimic the proof in Continuity.lagda.
 
 \begin{code}
 

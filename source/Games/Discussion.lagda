@@ -239,7 +239,7 @@ In constructive mathematics it is usual to regard a type X to be
 inhabited if we can exhibit some x : X. But this is *data* rather than
 *property*. Following the philosophy of univalent foundations and
 homotopy type theory, we will instead say that X is inhabited if we
-can exibit a point of its propositional truncation ∥ X ∥, which is
+can exhibit a point of its propositional truncation ∥ X ∥, which is
 property. (In the case where we can exhibit some x : X, we say that X
 is pointed.)
 

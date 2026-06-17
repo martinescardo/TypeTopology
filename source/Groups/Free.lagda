@@ -354,7 +354,7 @@ The idea is that list concatenation _◦_ will be the group operation
 after suitable quotienting, with the empty list [] as the neutral
 element.
 
-We will quotient the following type FA to get the undelying type of
+We will quotient the following type FA to get the underlying type of
 the free group:
 
 \begin{code}
@@ -1040,7 +1040,7 @@ The following proofs rely on the above naturality conditions:
 \end{code}
 
 So we have constructed a group with underlying set FA/∾ and a map
-ηᴳʳᵖ : A → FA/∾. We now put everyhing together:
+ηᴳʳᵖ : A → FA/∾. We now put everything together:
 
 \begin{code}
 
@@ -1368,7 +1368,7 @@ module FreeGroupInterface
 
 \end{code}
 
-With this we have proved the tecnical lemma.
+With this we have proved the technical lemma.
 
 \begin{code}
 

@@ -54,7 +54,7 @@
             exp : O (O X) → O (O X) → O X
 
          These types are the best one can do in system T. With this we
-         can define ordinals abitrarily close to, and strictly below,
+         can define ordinals arbitrarily close to, and strictly below,
          the ordinal ε₀.
 
     (2): We use the first universe and dependent products to define

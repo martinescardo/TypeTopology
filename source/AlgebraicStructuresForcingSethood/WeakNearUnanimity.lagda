@@ -15,7 +15,7 @@ would not apply here.
 
 The equations are called *ternary weak near-unanimity*. Briefly, they can be
 described as similar to majority, except that the three substitutions do not
-necesarily return a projection, but just a same value depending on both
+necessarily return a projection, but just a same value depending on both
 x and y, i.e.,
 
   w (x, x, y) = w (x, y, x) = w (y, x, x)
@@ -26,7 +26,7 @@ equation, namely the binary case.
 The proof here follows roughly the line that we outlined in [Lemma 2.12, 3],
 although I need to prove that certain 'subgrupoids' are normal, which is not
 necessary in the case of topological algebras with strictly idempotent
-operations. Curiosly, this fact was noted in Taylor's original paper [p. 515, 1].
+operations. Curiously, this fact was noted in Taylor's original paper [p. 515, 1].
 
 [1] Walter Taylor. Varieties obeying homotopy laws. Can. J. Math., XXIX(3):
     498–527, 1977. https://doi.org/10.4153/CJM-1977-054-9.

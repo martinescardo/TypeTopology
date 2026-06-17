@@ -1,6 +1,6 @@
 Ian Ray, 25 July 2023 updated on 11 January 2024.
 
-Formalizing the auxilary notion of a delta-complete poset and the main
+Formalizing the auxiliary notion of a delta-complete poset and the main
 theorems of Section 6.2 from Tom de Jong's thesis involving impredicativity
 (in the form of resizing principles) in order theory.
 

@@ -20,7 +20,7 @@ module Integers.Multiplication where
 
 \end{code}
 
-Instead of defining auxilliary functions with a natural number
+Instead of defining auxiliary functions with a natural number
 argument, multiplication is defined by pattern matching.
 
 \begin{code}
@@ -101,7 +101,7 @@ Induction on negatives:
 \end{code}
 
 Now we have an example where the positive and negative inductions are separated
-into subfunctions, for readibility, since the individual proofs are
+into subfunctions, for readability, since the individual proofs are
 lengthy. Distributivity of addition relies on commutativity and associativity
 (and distributivity of negation).
 

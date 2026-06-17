@@ -109,7 +109,7 @@ proofs as a comment.
 
  \end{code}
 
- For the second one we need to do a manual eta expasion to deal with
+ For the second one we need to do a manual eta expansion to deal with
  the way Agda works with implicit arguments, which gives unsolved
  constraints otherwise (this is a well known design issue).
 

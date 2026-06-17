@@ -61,7 +61,7 @@ constructive mathematics, are not in general successor
 ordinals). Technically, the top element allows us to prove the closure
 of ordinals under ordinal-indexed sums, playing a crucial role in the
 proof of extensionality of the sum. But the top element is equally
-crucial for compactness purposes, as dicussed below.
+crucial for compactness purposes, as discussed below.
 
   * The ordinals in the image of Δ are discrete (have decidable
     equality) and have countable underlying sets, which are in fact

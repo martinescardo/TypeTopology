@@ -366,7 +366,7 @@
 	%\LoadClass[\@PaperFormat,\@PaperOrientation,\@ColumnCount,\@BaseFontSize]{article}
 \fi
 
-% Require UTF8 encoding, per Andrei Voronkov, to accomodate
+% Require UTF8 encoding, per Andrei Voronkov, to accommodate
 % all sorts of author names.
 %\RequirePackage[utf8]{inputenc}
 

@@ -447,7 +447,7 @@ Subƛ⌜Sub⌝ {A} {Γ} {Δ} {σ} s {τ} (∈CxtS .(B-type〖 σ 〗 A) i) with 
  ⌜ weaken, σ (s j₂) ⌝
   ∎
 
--- cloes returns the same result given "equivalent" substitutions
+-- close returns the same result given "equivalent" substitutions
 close-eta : {Γ₁ : Cxt} {Γ₂ : Cxt} {σ : type} (s1 s2 : Sub Γ₁ Γ₂) (t : T Γ₁ σ)
            → ＝Sub s1 s2
            → close t s1 ＝ close t s2

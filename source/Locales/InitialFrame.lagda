@@ -361,7 +361,7 @@ module Spectrality-of-𝟎 (𝓤 : Universe) (pe : propext 𝓤) where
 
 Added on 2024-05-17.
 
-It is sometimes conventient to refer to the initial frame as “Ω viewed as a
+It is sometimes convenient to refer to the initial frame as “Ω viewed as a
 frame”, and we add some notation to highlight this.
 
 \begin{code}

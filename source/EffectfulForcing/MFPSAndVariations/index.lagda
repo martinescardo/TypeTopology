@@ -64,7 +64,7 @@ import EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer         -- By Mart
 
      4. The definition of a monad (in Kleisli extension form) of dialogue trees.
 
-     5. And, crucially, the contruction of a "generic" sequence of
+     5. And, crucially, the construction of a "generic" sequence of
         natural number, with its specification (the function
         generic-diagram).
 
@@ -80,7 +80,7 @@ import EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer         -- By Mart
    semantics of system T, it defines a translation from system T to
    system T that implements an internalization of the dialogue
    semantics. For that purpose, it uses Church encoding of dialogue
-   trees wuthin system T.
+   trees within system T.
 
    However, it doesn't formulate or prove the correctness of this
    translation.

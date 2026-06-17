@@ -81,7 +81,7 @@ all-chains-have-upper-bound {𝓥} =
 
 \end{code}
 
-The following is a formalization ofthe standard transfinite-induction-based
+The following is a formalization of the standard transfinite-induction-based
 proof of Zorn's lemma. The closest informal analog to the proof can be found
 here: https://math.stackexchange.com/a/2889205.
 The primary differences between this proof and that proof are just ones of

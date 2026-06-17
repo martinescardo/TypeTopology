@@ -15,7 +15,7 @@ open import NotionsOfDecidability.Decidable
 We again have a particular case of interest.  Complemented subsets,
 defined below, are often known as decidable subsets. Agda doesn't
 allow overloading of terminology, and hence we gladly accept the
-slighly non-universal terminology.
+slightly non-universal terminology.
 
 \begin{code}
 

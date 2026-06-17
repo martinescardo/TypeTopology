@@ -309,7 +309,7 @@ decidability-is-semidecidable X σ τ = ∥∥-rec being-semidecidable-is-prop �
 \end{code}
 
 The following pairing lemma comes in useful, especially when we are given a
-ℕ-indexed family Xₙ where each Xₙ is equiped with semidecidability structure.
+ℕ-indexed family Xₙ where each Xₙ is equipped with semidecidability structure.
 
 \begin{code}
 
@@ -813,7 +813,7 @@ LPO-from-semidecidable-implications mp h =
 
  (3) Closure under all meets
 
- For meets the situation is asymetric. We only managed to prove that if we have
+ For meets the situation is asymmetric. We only managed to prove that if we have
  all meets, then we can deduce LPO; and if we have BKS⁺, then we have all meets.
 
 \begin{code}

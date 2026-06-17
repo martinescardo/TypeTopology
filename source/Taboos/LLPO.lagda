@@ -384,7 +384,7 @@ module _ (pt : propositional-truncations-exist) where
 
 TODO. Show that all these variants are equivalent.
 
-LLPO doesn't imply WLPO (there are published refereces - find and
+LLPO doesn't imply WLPO (there are published references - find and
 include them here). One example seems to be Johnstone's topological
 topos, but this is unpublished as far as I know.
 
