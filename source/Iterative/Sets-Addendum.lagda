@@ -92,7 +92,7 @@ subset-↔ A P = pr₂ (𝕍-separation A P)
 
 \end{code}
 
-The type of multisets is large, in the sense that it doesn' have a
+The type of multisets is large, in the sense that it doesn't have a
 small copy.
 
 \begin{code}

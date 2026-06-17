@@ -911,7 +911,7 @@ win, draw or lose, such as in poker.
 Our conception of game, defined in Games.FiniteHistoryDependent,
 allows for two-person games of the above kind, but in general is
 defined for multiple-person games, with outcomes (or "pay offs") in
-any type, for example the real numbes.
+any type, for example the real numbers.
 
 In the following paper the author shows that shows that Aczel and
 Leversha's original W-type gives a model of multisets.

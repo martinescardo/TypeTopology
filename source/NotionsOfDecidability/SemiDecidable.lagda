@@ -689,7 +689,7 @@ BKS⁺-in-terms-of-Ωˢᵈ-and-Ω {𝓤} =
 We close part II with some remarks relating BKS⁺ and LPO with excluded middle;
 and BKS⁺ and propositional resizing.
 
-NB: We use the formulation LPO' as it is more convient for our purposes, but
+NB: We use the formulation LPO' as it is more convenient for our purposes, but
 recall that we proved LPO' equivalent to LPO.
 
 Somewhat similar results can be found in CantorSchroederBernstein.lagda, where

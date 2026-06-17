@@ -111,8 +111,8 @@ module ternary-idempotent
 Now, we get to the fun part! The key idea is that for any binary operation f,
 elements of the form `ap f p refl` and `ap f refl q` commute. We apply this to
 three different binary operations defined from `w`. Furthermore, we use
-Taylor's identies to smuggle the last part through by equating it to an element
-that commutes.
+Taylor's identities to smuggle the last part through by equating it to an
+element that commutes.
 
 \begin{code}
 
