@@ -1,4 +1,4 @@
-Tom de Jong, 26 Feburary 2020
+Tom de Jong, 26 February 2020
 Minor updates on 28 January 2022
 
 We construct the rounded ideal completion of an abstract basis, cf. Section

@@ -769,7 +769,7 @@ Id-is-embedding {𝓤} = UA-Id-embedding (ua 𝓤) fe
 
 \end{code}
 
-The proof explained in the publised article is implemented at
+The proof explained in the published article is implemented at
 
 https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/HoTT-UF-Agda.html#yoneda
 

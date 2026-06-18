@@ -165,7 +165,7 @@ We give names to the closure conditions.
 \end{code}
 
 The following record type should be interpreted as supplying the assumption
-that the QIT family exists with the apropriate 'initiality' principle
+that the QIT family exists with the appropriate 'initiality' principle
 (initiality is considerably weaker than an induction/recursion principle that
 one may expect).
 
@@ -657,7 +657,7 @@ respect to an arbitrary universe parameter 𝓣.)
 
 \end{code}
 
-Using the previously displayed correspondance we can show that, under certain
+Using the previously displayed correspondence we can show that, under certain
 smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operator
 Γ ϕ has a least fixed point.
 
@@ -862,7 +862,7 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
 
 The remainder of this formalization is essentially a search for restrictions
 we may impose on sup-lattices and inductive definitions to achieve the
-neccesary smallness assumptions on 𝓘nd which will guarentee least fixed points.
+necessary smallness assumptions on 𝓘nd which will guarantee least fixed points.
 
 We now consider a boundedness restricion on inductive definitions and show
 that bounded inductive definitions are local.
@@ -1134,7 +1134,7 @@ module _
 \end{code}
 
 The following serves as evidence that the desired QIT family is small (and
-atleast has strictly positive point constructors).
+at least has strictly positive point constructors).
 
 \begin{code}
 
@@ -1153,7 +1153,7 @@ atleast has strictly positive point constructors).
 \end{code}
 
 Again, we use records to assert the existence of another QIT family with
-apropriate 'intiality' principle. As before we will first introduce some
+appropriate 'intiality' principle. As before we will first introduce some
 names for the closure properties.
 
 \begin{code}

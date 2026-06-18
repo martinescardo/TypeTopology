@@ -88,7 +88,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
 
 \end{code}
 
-As prevoiusly mentioned, we assume
+As previously mentioned, we assume
 
   * `A` and `X`: large and locally small locales,
   * `σᴰ`: the spectrality data of `A`,

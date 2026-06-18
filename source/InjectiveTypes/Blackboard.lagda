@@ -1173,7 +1173,7 @@ aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
 \end{code}
 
 Because Ω 𝓤 is a retract of 𝓤 via propositional truncation, it is
-injective. But we can prove this directly without assumming
+injective. But we can prove this directly without assuming
 propositional truncations, and propositional and functional
 extensionality (which give propositional univalence) are enough,
 whereas the injectivity of the universe requires full univalence.

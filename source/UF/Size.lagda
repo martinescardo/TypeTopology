@@ -1163,7 +1163,7 @@ In particular, if 𝓤 and 𝓥 are the same, then the image is 𝓤-small.
 
 The name "Set Replacement" is inspired by [Section 2.19, Bezem+2022], but is
 different in two ways:
-(1) In [Bezem+2022] replacement is not restriced to maps into sets, hence our
+(1) In [Bezem+2022] replacement is not restricted to maps into sets, hence our
     name *Set* Replacement
 (2) In [Bezem+2022] the universe parameters 𝓤 and 𝓥 are taken to be the same.
 

@@ -1,7 +1,7 @@
 Martin Escardo, 3 February 2021.
 
 We consider one special kind of Church-Rosser property motivated by
-our applications of this module to the contruction of free groups
+our applications of this module to the construction of free groups
 without higher-inductive types other than propositional truncation.
 
 \begin{code}

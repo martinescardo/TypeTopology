@@ -215,7 +215,7 @@ module _
 
 \end{code}
 
-Finall, we consider pseudocontinuity. It is similar to structural continuity,
+Finally, we consider pseudocontinuity. It is similar to structural continuity,
 but instead of asking that for every x : D, we have a specified directed family
 approximating x, we merely ask there exists an unspecified directed family
 approximating x.
@@ -226,7 +226,7 @@ structure. It is however weaker than continuity (as defined in
 Continuity.lagda) and structural continuity. More importantly, with
 pseudocontinuity we would need some instances of the axiom of choice when
 proving the interpolation properties for the way-below relation, at least when
-trying to mimick the proof in Continuity.lagda.
+trying to mimic the proof in Continuity.lagda.
 
 \begin{code}
 

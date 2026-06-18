@@ -55,7 +55,7 @@ instance
 
 \section{Preliminaries}
 
-The universal property of the inital frame gives that there is a unique frame
+The universal property of the initial frame gives that there is a unique frame
 homomorphism `Ω → 𝒪(X)`, for every locale `X`. We denote this by `!`. We also
 define the shorthand notation `!꙳` for the underlying function of the frame
 homomorphism in consideration.

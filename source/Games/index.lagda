@@ -63,7 +63,7 @@ import Games.Alternative                           -- (10)
 
 3. Examples.
 
-   This has miscelaneous small examples.
+   This has miscellaneous small examples.
 
 4. FiniteHistoryDependentMonadic.
 

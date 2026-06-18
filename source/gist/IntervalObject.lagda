@@ -267,7 +267,7 @@ a₀ and a₁.
 \end{code}
 
 End of module standard-definitions, and still in anonymous module
-assumming an interval [𝟎,𝟏].
+assuming an interval [𝟎,𝟏].
 
 Observation (17th April 2025). If we don't assume commutativity in the
 definition of interval object, but only that 𝟎 ⊕ 𝟏 ＝ 𝟏 ⊕ 𝟎, then we

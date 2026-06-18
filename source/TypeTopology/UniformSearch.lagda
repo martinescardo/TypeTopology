@@ -58,7 +58,7 @@ _＝⟦_⟧_ : (ℕ → X) → ℕ → (ℕ → X) → 𝓤 ̇
 \end{code}
 
 A map `p : ((ℕ → X) → 𝟚)` is called *locally constant* if it has a modulus of
-localy constancy.
+locally constancy.
 
 \begin{code}
 

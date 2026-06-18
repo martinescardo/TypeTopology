@@ -1,7 +1,7 @@
 We use this directory to include examples for discussion or
 illustration.
 
-We also use it for blackboard style experiments, which, if succesful,
+We also use it for blackboard style experiments, which, if successful,
 are eventually moved to the main (old or new) folders.
 
 \begin{code}

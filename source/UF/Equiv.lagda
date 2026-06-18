@@ -161,7 +161,7 @@ idtoeq-traditional X _ refl = ≃-refl X
 \end{code}
 
 We would have a definitional equality if we had defined the traditional
-one using J (based), but because of the idiosyncracies of Agda, we
+one using J (based), but because of the idiosyncrasies of Agda, we
 don't with the current definition:
 
 \begin{code}

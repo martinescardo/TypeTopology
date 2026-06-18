@@ -41,7 +41,7 @@ the strength of adding certain HITs is not completely understood, but it
 appears to be even weaker than the assumption that pushouts exist (this
 observation will follow from a forthcoming write up by Reid Barton). In light
 of this, it is reasonable to explore type replacement and use it as an
-independent assumption when neccesary.
+independent assumption when necessary.
 
 \begin{code}
 

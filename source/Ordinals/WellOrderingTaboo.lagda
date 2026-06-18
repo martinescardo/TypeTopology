@@ -293,7 +293,7 @@ above.
 
 For comparison, we include Andrew Swan's first construction of the family of
 sets, which could also be used to derive the above results. This construction
-uses quotients, which we constuct using propositional truncations.
+uses quotients, which we construct using propositional truncations.
 
 \begin{code}
 

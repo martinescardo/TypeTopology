@@ -408,7 +408,7 @@ generalize to get closure of compact types under Σ.
 
 \begin{code}
 
-module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
+module warm-up {𝓤} {𝓥} {R : 𝓥 ̇ } where
 
  quantifier : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  quantifier X = (X → R) → R

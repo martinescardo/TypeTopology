@@ -361,7 +361,7 @@ The proof relies on the following monotonicity property of the exponentiation.
 
 Added 29 January 2025 by Tom de Jong.
 
-^ₒ also satisifes the strong supremum specification, yielding yet another proof
+^ₒ also satisfies the strong supremum specification, yielding yet another proof
 that it satisfies the (ordinary) supremum specification.
 
 \begin{code}
@@ -666,7 +666,7 @@ The following characterizes initial segments of exponentiated ordinals.
 \end{code}
 
 Finally, using the above characterization of initial segments, we show that ^ₒ
-is (stricly) order preserving in the exponent (provided that the base is
+is (strictly) order preserving in the exponent (provided that the base is
 strictly greater than 𝟙ₒ).
 
 \begin{code}

@@ -1,6 +1,6 @@
 Ian Ray, 7 February 2024
 
-Singleton Properties. Of course there are alot more we can add to this file.
+Singleton Properties. Of course there are a lot more we can add to this file.
 For now we will show that singletons are closed under Σ types and equivalence.
 
 \begin{code}

@@ -9,7 +9,7 @@ set -Eeo pipefail
 if [[ "$OSTYPE" == "darwin"* ]]; then
   # Require gnu-sed.
   if ! [ -x "$(command -v gsed)" ]; then
-    echo "Error: 'gsed' is not istalled." >&2
+    echo "Error: 'gsed' is not installed." >&2
     echo "If you are using Homebrew, install with 'brew install gnu-sed'." >&2
     exit 1
   fi
