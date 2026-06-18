@@ -392,7 +392,8 @@ binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') =
              → propext 𝓤
              → ∀ {𝓥} {X : 𝓥 ̇ }
              → is-¬¬-separated X
-             → (f : Ω 𝓤 → X) → f ⊥ ＝ f ⊤
+             → (f : Ω 𝓤 → X)
+             → f ⊥ ＝ f ⊤
              → wconstant f
 ⊥-⊤-density' fe pe s f r p q = g p ∙ (g q)⁻¹
   where
@@ -461,16 +462,7 @@ equality-of-¬¬stable-propositions fe pe p q f g a = γ
             → is-¬¬-separated X
             → f ⊥ ＝ f ⊤
             → (p : Ω 𝓤) → f p ＝ f ⊤
-⊥-⊤-Density fe pe f s r p = s (f p) (f ⊤) a
- where
-  a : ¬¬ (f p ＝ f ⊤)
-  a u = no-truth-values-other-than-⊥-or-⊤ fe pe (p , b , c)
-   where
-    b : p ≠ ⊥
-    b v = u (ap f v ∙ r)
-
-    c : p ≠ ⊤
-    c w = u (ap f w)
+⊥-⊤-Density fe pe f s r p = ⊥-⊤-density' fe pe s f r p ⊤
 
 ⊥-⊤-density : funext 𝓤 𝓤
             → propext 𝓤

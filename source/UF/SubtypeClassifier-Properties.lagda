@@ -90,8 +90,7 @@ equal-⊥-≃ {𝓤} pe fe p =
  (fails-gives-equal-⊥ pe fe p)
 
 𝟚-to-Ω : 𝟚 → Ω 𝓤
-𝟚-to-Ω ₀ = ⊥
-𝟚-to-Ω ₁ = ⊤
+𝟚-to-Ω = 𝟚-cases ⊥ ⊤
 
 module _ (fe : funext 𝓤 𝓤) (pe : propext 𝓤) where
 
