@@ -322,3 +322,29 @@ idempotence of the right action for commutative idempotent binary operations.
   3 │ 1 1 0 3
 
  We leave verifying these laws as an exercise to the reader.
+
+ You can also see the laws it satisfies and refutes here:
+ https://teorth.github.io/equational_theories/fme/?magma=0%200%200%201%0A0%201%203%201%0A0%203%202%200%0A1%201%200%203
+ where the relevant laws correspond to the following numbers:
+  #     3 is the idempotence law
+  #    43 is the commutative law
+  #   378 is the idempotence law for the right action
+  #  4512 is the associative law
+  # 62068 is the second order idempotence law for the right action
+
+
+I originally wanted see if some of the results from the Equational Theories
+Project [4] could aid in generalising Wärn's result, but unfortunately their
+project is too limited in scope for this problem. This is because they only
+consider equational theories with a single equation. They also do not consider
+parametric laws such as eventual idempotence.
+
+ [4] Bolan, M., Breitner, J., Brox, J., Carlini, N., Carneiro, M.,
+     van Doorn, F., Dvorak, M., Goens, A., Hill, A., Husum, H.,
+     Ibarra Mejia, H., Kocsis, Z. A., Le Floch, B., Livne Bar-on, A.,
+     Luccioli, L., McNeil, D., Meiburg, A., Monticone, P., Nielsen, P.,
+     Osazuwa, E. O., Paolini, G., Petracci, M., Reinke, B., Renshaw, D.,
+     Rossel, M., Roux, C., Scanvic, J., Srinivas, S., Tadipatri, A. R., Tao, T.,
+     Tsyrklevich, V., Vaquerizo-Villar, F., Weber, D., & Zheng, F. (2025).
+     The Equational Theories Project (Version 0.2.0) [Computer software].
+     https://teorth.github.io/equational_theories/
