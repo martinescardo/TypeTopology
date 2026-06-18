@@ -40,9 +40,24 @@ TODO: elaborate on proof
 module AlgebraicStructuresForcingSethood.CommutativeIdempotent where
 
 open import MLTT.Universes
-open import MLTT.Id
-open import MLTT.NaturalNumbers
-open import UF.Base
+open import MLTT.Id using
+ (_＝_ ; refl ; _∙_ ; _⁻¹ ; ap ; _＝⟨_⟩_ ; _∎)
+open import MLTT.NaturalNumbers using
+ (ℕ ; zero ; succ ; _^_ ; ^-succ ; ap-iterate-succ)
+open import UF.Base using
+ ( conjugate-loop
+ ; cancel-left
+ ; refl-right-neutral
+ ; ap-id-is-id'
+ ; ap-conjugate-loop
+ ; conjugate-loop-refl
+ ; conjugate-loop-conjugates
+ ; homotopies-are-natural''
+ ; ap₂
+ ; refl-left-neutral
+ ; ap₂-refl-right'
+ ; ＝-congr-∙'
+ ; ＝-congr-sq)
 open import UF.Sets using
  (is-set ; refl-is-set')
 open import AlgebraicStructuresForcingSethood.Semilattices-streamlined using
@@ -229,7 +244,7 @@ TODO: text
    Ω-map p ∙ Ω-map p          ＝⟨ ap₂ (_∙_) (Ω-map-is-＊Ω-refl p) (Ω-map-is-＊Ω-refl p) ⟩
    (p ＊Ω refl) ∙ (p ＊Ω refl) ＝⟨ ap ((p ＊Ω refl) ∙_) (＊Ω-commutative comm p refl) ⟩
    (p ＊Ω refl) ∙ (refl ＊Ω p) ＝⟨ ＊Ω-interchange-∙ p refl refl p ⟩
-   (p ∙ refl) ＊Ω (refl ∙ p)  ＝⟨ ap₂ _＊Ω_ (refl-right-neutral p) refl-left-neutral ⟩
+   (p ∙ refl) ＊Ω (refl ∙ p)  ＝⟨ ap₂ (_＊Ω_) (refl-right-neutral p) (refl-left-neutral) ⟩
    p ＊Ω p                    ＝⟨ ＊Ω-idempotent p ⟩
    p                          ∎
 
