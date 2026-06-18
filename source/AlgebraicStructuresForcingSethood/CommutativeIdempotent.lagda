@@ -273,8 +273,8 @@ we obtain that A is a set.
 Properness of the generalisation
 ────────────────────────────────────────────────────────────────────────────────
 
-This theorem gives a proper generalisation of David Wärn's result [1] that types
-equipped with the algebraic structure of a semilattice are sets. Recall that
+This theorem gives a proper generalisation of Wärn's result [1] that types
+equipped with the algebraic structure of a semilattice are sets. Recall that the
 algebraic structure of a semilattice is that of an associative, commutative, and
 idempotent binary operation. Associative idempotent binary operations have
 idempotent right action:
@@ -321,8 +321,8 @@ idempotence of the right action for commutative idempotent binary operations.
 
  Counterexample.
  The following 4-element table defines a binary operation that is commutative
- and idempotent, whose right action is not idempotent at any element,
- but which satisfies (((x * y) * y) * y) = ((x * y) * y) for all x and y:
+ and idempotent, whose right action is not idempotent at any element, but which
+ satisfies (((x * y) * y) * y) = ((x * y) * y) for all x and y:
 
   * │ 0 1 2 3
   ──┼────────
