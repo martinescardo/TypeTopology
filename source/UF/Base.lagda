@@ -233,10 +233,20 @@ ap₂-refl-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → 
               → ap₂ f refl q ＝ ap (f x) q
 ap₂-refl-left f refl = refl
 
+ap₂-refl-left' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x : X} {y₀ y₁ : Y}
+                 (q : y₀ ＝ y₁)
+               → ap (f x) q ＝ ap₂ f refl q
+ap₂-refl-left' f refl = refl
+
 ap₂-refl-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x₁ : X} {y : Y}
-                (p : x₀ ＝ x₁)
-              → ap₂ f p refl ＝ ap (λ v → f v y) p
+                 (p : x₀ ＝ x₁)
+               → ap₂ f p refl ＝ ap (λ v → f v y) p
 ap₂-refl-right f refl = refl
+
+ap₂-refl-right' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x₁ : X} {y : Y}
+                  (p : x₀ ＝ x₁)
+                → ap (λ v → f v y) p ＝ ap₂ f p refl
+ap₂-refl-right' f refl = refl
 
 ap₂-∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x₁ x₂ : X} {y₀ y₁ y₂ : Y}
         (p₀ : x₀ ＝ x₁) (p₁ : x₁ ＝ x₂)

@@ -132,7 +132,7 @@ module pointed-endomap-iterates
 
  Ω-map-iterates : (n : ℕ) (p : ΩA x₀)
                 → (Ω-map ^ n) p ＝ Ω-map^-conj n p
- Ω-map-iterates 0 p = ap-id-is-id p ⁻¹
+ Ω-map-iterates 0 p = ap-id-is-id' p
  Ω-map-iterates (succ n) p =
   let
    β = preserves-point^ n
@@ -222,7 +222,7 @@ TODO: text
 
   Ω-map-is-＊Ω-refl : (p : ΩA x₀) → Ω-map p ＝ p ＊Ω refl
   Ω-map-is-＊Ω-refl p =
-   ap (conjugate-loop (idem x₀)) (ap₂-refl-right (_*_) p ⁻¹)
+   ap (conjugate-loop (idem x₀)) (ap₂-refl-right' (_*_) p)
 
   Ω-map-self-concat : (p : ΩA x₀) → Ω-map p ∙ Ω-map p ＝ p
   Ω-map-self-concat p =
