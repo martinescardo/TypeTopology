@@ -544,7 +544,7 @@ triv-torsor-Auto-compare G g = refl
 The right multiplication map induces an equivalence between G and the
 Action Isomorphism type of the trivial torsor.
 
-Note that the proof boils down to the analyis of the equivariance of
+Note that the proof boils down to the analysis of the equivariance of
 the underlying right-multiplication map for the trivial torsor, namely
 that:
 
@@ -652,7 +652,7 @@ module _ (G : Group 𝓤) where
 \end{code}
 
 If φ is a torsor map, informally φ (x) = g · x, for any point x, for
-an appropriate g. This is obtained by applying the divison map to
+an appropriate g. This is obtained by applying the division map to
 φ. Thus, φ corresponds to j : X → G such that f x = (j x) · x.
 
 Informally, the equivariance property of j is

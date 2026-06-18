@@ -37,7 +37,7 @@ data Brouwer : Set where
 We use φ to range over forests of dialogue trees, that is,
 functions ℕ → D.
 
-We use γ to range over forests of Brower trees.
+We use γ to range over forests of Brouwer trees.
 
 Brouwer trees represent functions (ℕ → ℕ) → ℕ too:
 

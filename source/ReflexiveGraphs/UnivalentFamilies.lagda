@@ -41,7 +41,7 @@ is-univalent-family (A , B) = is-univalent-refl-graph (refl-graph-image A B)
 This definition is intentionally general and offers a robust theoretical
 framework for working with universes. Concretely, if one were working directly
 with the codes of a Tarski style universe presentation then a univalent family
-could be a pair (𝓤 , El) consiting of the universe type and the decoding map
+could be a pair (𝓤 , El) consisting of the universe type and the decoding map
 El : 𝓤 → Type. In Agda the user may operate as if universes where presented à
 la Russel and thus the pair of interest is simply (𝓤 , id). But there are other
 examples of univalent families of interest such as any h-level sub-universe

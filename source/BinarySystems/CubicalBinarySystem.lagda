@@ -543,7 +543,7 @@ module _ {ℓ    : Level}
          (f    : (b : 𝔹) → P b → P (l b))
          (g    : (b : 𝔹) → P b → P (r b))
          (eqf  : subst P eqL x       ＝ f L x) -- HoTT/UF style
-         (eqfg : subst P eqM (f R y) ＝ g L x) -- fomulation.
+         (eqfg : subst P eqM (f R y) ＝ g L x) -- formulation.
          (eqg  : subst P eqR y       ＝ g R y) --
        where
 

@@ -107,7 +107,7 @@ Pictorially, we have the following:
                       f
    ℚ ────────────────────────────────▶ ℚ
    │                                   │           We want our extension to satisfy f̂ ∘ ι ＝ ι ∘ f
-   │                                   │           This means f̂ does not change the behavour of f
+   │                                   │           This means f̂ does not change the behaviour of f
    │                                   │           for any point in the rationals.
  ι │                                   │ ι
    │                                   │
@@ -319,7 +319,7 @@ the function which adds 1 to a rational.
 With this, we have a function which adds one to a real number, which
 agrees with the function that adds one to a rational. Moreover, we
 didn't have to write the proof that this function produces a real (by
-proving that the output satisifies the properties of a real, because
+proving that the output satisfies the properties of a real, because
 this is taken care of by the f→f̂ function.
 
 TODO: I would like to be able to show that the extended function

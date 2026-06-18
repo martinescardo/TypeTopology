@@ -165,7 +165,7 @@ private
 
 \end{code}
 
-The following names are also found in the orginal implementation.
+The following names are also found in the original implementation.
 
 \begin{code}
 

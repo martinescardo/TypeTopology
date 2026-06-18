@@ -180,7 +180,7 @@ Lemma[＝⟦⟧-succ] {succ n} (＝⟦succ⟧ en e) = ＝⟦succ⟧ (Lemma[＝�
 
 \end{code}
 
-The following lemmas give an equivalent defintion of _＝⟦_⟧_:
+The following lemmas give an equivalent definition of _＝⟦_⟧_:
 
 \begin{code}
 

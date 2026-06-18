@@ -2,14 +2,14 @@
 set -Eeo pipefail
 
 # Created by Tom de Jong in September 2024.
-# Mofified from the original imports.sh to perform strict checking by Martin Escardo 2nd May 2026.
+# Modified from the original imports.sh to perform strict checking by Martin Escardo 2nd May 2026.
 
 # Ensure we have GNU-style sed
 # See https://stackoverflow.com/questions/4247068/sed-command-with-i-option-failing-on-mac-but-works-on-linux
 if [[ "$OSTYPE" == "darwin"* ]]; then
   # Require gnu-sed.
   if ! [ -x "$(command -v gsed)" ]; then
-    echo "Error: 'gsed' is not istalled." >&2
+    echo "Error: 'gsed' is not installed." >&2
     echo "If you are using Homebrew, install with 'brew install gnu-sed'." >&2
     exit 1
   fi

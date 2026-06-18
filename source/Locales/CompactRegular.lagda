@@ -2305,7 +2305,7 @@ unpacked in the function `δ`.
 \end{code}
 
 As we will have to refer to `(ℬ [_]) <$> is` and `(ℬ [_]) <$> js` frequently,
-we introduce abbrevations for them:
+we introduce abbreviations for them:
 
 \begin{code}
 

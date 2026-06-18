@@ -222,11 +222,11 @@ We could repeat the same argument for the other two equations, but the problem
 is that we would get squares with sides idem₀ = eq₀ m₀ m₀ and idem₂ = eq₂ m₀ m₀,
 respectively, and these do not fit together. Originally, I thought that the only
 way to resolve that is to assume that idem₀ ＝ idem₁ ＝ idem₂, i.e., that we need
-some higher coherence. To my suprise, I realised, a few days after finishing the
-proof with coherences, that they are not needed!
+some higher coherence. To my surprise, I realised, a few days after finishing
+the proof with coherences, that they are not needed!
 
-Instead, we do a sleigh of hand, and show that m' p refl refl ＝ refl, where the
-refl on the right-hand side is refl of type m m₀ m₀ m₀ ＝ m m₀ m₀ m₀; I will
+Instead, we do a sleight of hand, and show that m' p refl refl ＝ refl, where
+the refl on the right-hand side is refl of type m m₀ m₀ m₀ ＝ m m₀ m₀ m₀; I will
 denote it by reflₘ. Similarly, we show m' refl refl p ＝ refl. This helps us
 avoid problems with conjugation since conjugation fixes refl.
 

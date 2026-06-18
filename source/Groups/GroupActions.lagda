@@ -9,7 +9,7 @@ Group actions on sets and Torsors, following the UniMath blueprint. We
 add a couple of things:
 
 1. actions give homomorphisms into groups of automorphisms and
-   viceversa.
+   vice-versa.
 2. pullbacks of actions.
 3. G Sets
 
@@ -107,7 +107,7 @@ module _ (G : Group 𝓤) where
   right-mult 𝕏 x = λ g → action-op 𝕏 g x
   ----------------------------------
 
-  -- the total action map is often used, especiall for torsors
+  -- the total action map is often used, especially for torsors
   ------------------------------------------------------------
   mult : (𝕏 : Action)
        →  ⟨ G ⟩ × ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩ × ⟨ 𝕏 ⟩

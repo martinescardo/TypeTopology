@@ -1,4 +1,4 @@
-Ian Ray, 4th Febuary 2024.
+Ian Ray, 4th February 2024.
 
 Modifications made by Ian Ray on 14 October 2024.
 

@@ -187,7 +187,7 @@ In our discussions on the notion of continuous dcpo we will be interested in
 ∐-map having a left adjoint, see ContinuityDiscussion.lagda.
 
 We define what that means here and note that it is helpful to consider an
-auxilliary relation between Ind(D) and D that we call "being left adjunct to",
+auxiliary relation between Ind(D) and D that we call "being left adjunct to",
 because a map L : D → Ind(D) is a left adjoint to ∐-map precisely when L(x) is
 left adjunct to x for every x : D.
 

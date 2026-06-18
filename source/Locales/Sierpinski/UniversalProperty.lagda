@@ -283,7 +283,7 @@ We now proceed to prove that it preserves the joins.
 
 \end{code}
 
-We package these up into a continuous map of locales (recal that `X ─c→ Y`
+We package these up into a continuous map of locales (recall that `X ─c→ Y`
 denotes the type of continuous maps from locale `X` to locale `Y`).
 
 \begin{code}

@@ -70,7 +70,7 @@ fmin (succ m) (succ n) = fsucc(fmin m n)
 
 \end{code}
 
-The following mimicks the definition of the infinite shifts
+The following mimics the definition of the infinite shifts
 (in the modules Naturals.agda and J-Shift-Selection.agda):
 
 \begin{code}

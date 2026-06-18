@@ -229,7 +229,7 @@ The above works in pure MLTT without any HoTT/UF assumptions.
 We now show that 𝕄 is locally small assuming univalence. For this
 purpose, we characterize identification of multisets as follows.
 
-TODO. Notice that there is some ammount of repetition compared with
+TODO. Notice that there is some amount of repetition compared with
 Iterative.W-Properties. Can we avoid it by proving something more
 general that subsumes both cases?
 
