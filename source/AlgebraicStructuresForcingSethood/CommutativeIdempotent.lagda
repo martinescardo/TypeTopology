@@ -86,7 +86,7 @@ open import AlgebraicStructuresForcingSethood.CommutativeLoopSpaces using
 Trivial loop space criterion
 ────────────────────────────────────────────────────────────────────────────────
 
-We start by observing that following trivial loop space criterion used by de
+We start by observing that the following trivial loop space criterion used by de
 Jong [2] may be generalised:
 
  Lemma (de Jong).
