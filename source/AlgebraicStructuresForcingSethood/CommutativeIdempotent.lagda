@@ -6,13 +6,13 @@ action _*_ with eventually idempotent right action at every element is a set.
  Theorem.
  Given a type A with a binary operation _*_ which satisfies the equations
 
-  x * x = x                              (idempotence)
   x * y = y * x                          (commutativity)
+  x * x = x                              (idempotence)
 
- for all x and y, and such that for each y there is a natural number n such that
- the following equation holds
+ for all x and y, and eventual idempotence of the right action, meaning that for
+ each y there is a natural number n such that the following equation holds
 
-  rⁿ⁺¹(x) = rⁿ(x), where r(x) := x * y
+  rⁿ⁺¹(x) = rⁿ(x), where r(x) := x * y   (eventual idempotence of right action)
 
  then A is a set.
 
@@ -118,7 +118,7 @@ module _ (A  : 𝓤 ̇) (x₀ : A) where
 
 \end{code}
 
-Iterating the induced map on the loop space of a pointed endomap
+Iteration of the induced map on the loop space of a pointed endomap
 ────────────────────────────────────────────────────────────────────────────────
 
 \begin{code}
