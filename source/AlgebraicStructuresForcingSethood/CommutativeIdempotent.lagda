@@ -17,12 +17,12 @@ action _*_ with eventually idempotent right action is a set.
  then A is a set.
 
 This theorem provides a generalisation of David Wärn's result [1] that types
-equipped with the algebraic structure of a semilattice forms a set. We elaborate
-on the properness of this generalisation in the final section of this file. Our
-work builds on the adaptated formalisation of this result by Tom de Jong [2]
-and his characterisation of commutative loop spaces [3]. See also Martín
-Escardó's adaptation [4] of Wärn's result. Like [2,3,4], this work is a result
-of my own attempt at understanding the work that came before me.
+equipped with the algebraic structure of a semilattice forms a set. In the final
+section we elaborate on the properness of this generalisation. Our work builds
+on the adaptated formalisation of this result by Tom de Jong [2] and his
+characterisation of commutative loop spaces [3]. See also Martín Escardó's
+adaptation [4] of Wärn's result. Like [2,3,4], this work is a result of my own
+attempt at understanding the work that came before me.
 
  [1] David Wärn. https://dwarn.se/agda/Idem.html, 17 February 2026.
      (See also https://mathstodon.xyz/deck/@dwarn/116091515645003634.)
@@ -46,6 +46,13 @@ of my own attempt at understanding the work that came before me.
  3. Demonstrating that the induced map Ωr of the right action satisfies
     the equation Ωr ∙ Ωr ∼ id, and hence satisfies our trivial loop space
     criterion.                                                           ∎
+
+In the end, the generalisation to eventual idempotence of the right action is,
+I believe, a rather natural one. Idempotence of the right action immediately
+generalises the usage of the trivial loop space condition given by de Jong [2],
+from which the rest follows by induction on the natural numbers. At the time of
+writing I am still curious and expect that the equations can be relaxed even
+further.
 
 \begin{code}
 
