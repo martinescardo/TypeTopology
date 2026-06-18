@@ -21,7 +21,8 @@ equipped with the algebraic structure of a semilattice forms a set. We elaborate
 on the properness of this generalisation in the final section of this file. Our
 work builds on the adaptated formalisation of this result by Tom de Jong [2]
 and his characterisation of commutative loop spaces [3]. See also Martín
-Escardó's adaptation [4] of Wärn's result.
+Escardó's adaptation [4] of Wärn's result. Like [2,3,4], this work is a result
+of my own attempt at understanding the work that came before me.
 
  [1] David Wärn. https://dwarn.se/agda/Idem.html, 17 February 2026.
      (See also https://mathstodon.xyz/deck/@dwarn/116091515645003634.)
