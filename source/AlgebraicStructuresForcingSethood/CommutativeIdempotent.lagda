@@ -1,7 +1,7 @@
 Fredrik Bakke, 16–17 June 2026.
 
 We demonstrate that any type A that has a commutative and idempotent binary
-action _*_ with eventually idempotent right action at every element is a set.
+action _*_ with eventually idempotent right action is a set.
 
  Theorem.
  Given a type A with a binary operation _*_ which satisfies the equations
