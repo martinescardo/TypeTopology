@@ -79,7 +79,7 @@ TODO: explain criterion
 
 module _ (A  : 𝓤 ̇) (x₀ : A) where
 
- iterate-reflects-is-refl
+ iterates-reflect-is-refl
   : (f g : ΩA x₀ → ΩA x₀)
   → ((p : ΩA x₀) → g (f p) ＝ p)
   → refl ＝ g refl
@@ -87,8 +87,8 @@ module _ (A  : 𝓤 ̇) (x₀ : A) where
   → (p : ΩA x₀)
   → refl ＝ (f ^ n) p
   → refl ＝ p
- iterate-reflects-is-refl f g gf g-refl 0 p e = e
- iterate-reflects-is-refl f g gf g-refl (succ n) p e
+ iterates-reflect-is-refl f g gf g-refl 0 p e = e
+ iterates-reflect-is-refl f g gf g-refl (succ n) p e
   = refl       ＝⟨ g-refl ⟩
     g refl     ＝⟨ ap g refl-is-fp ⟩
     g (f p)    ＝⟨ gf p ⟩
@@ -96,7 +96,7 @@ module _ (A  : 𝓤 ̇) (x₀ : A) where
     where
      refl-is-fp : refl ＝ f p
      refl-is-fp
-      = iterate-reflects-is-refl f g gf g-refl n (f p) (e ∙ ^-succ f n p)
+      = iterates-reflect-is-refl f g gf g-refl n (f p) (e ∙ ^-succ f n p)
 
  trivial-Ω-eventually-idempotent-endomap-criterion
   : (f : ΩA x₀ → ΩA x₀)
@@ -106,7 +106,7 @@ module _ (A  : 𝓤 ̇) (x₀ : A) where
   → (p : ΩA x₀) → refl ＝ p
  trivial-Ω-eventually-idempotent-endomap-criterion
   f n r f-self-concat p =
-  iterate-reflects-is-refl f (λ p → p ∙ p) f-self-concat refl n p (II ⁻¹)
+  iterates-reflect-is-refl f (λ p → p ∙ p) f-self-concat refl n p (II ⁻¹)
    where
     I : (f ^ n) p ∙ (f ^ n) p ＝ (f ^ n) p
     I = (f ^ n) p ∙ (f ^ n) p           ＝⟨ ap (λ q → q ∙ q) (r p) ⟩
@@ -165,28 +165,28 @@ module pointed-endomap-iterates
  conjugate-loop-is-id loop-comm β p =
   cancel-left (＝-congr-sq p β β ∙ loop-comm p β)
 
- homotopic-conjugations
+ homotopy-conjugate-loop
   : {y z : A}
     (h : y ＝ z) (β : y ＝ x₀) (γ : z ＝ x₀)
     {r : y ＝ y} {s : z ＝ z}
   → conjugate-loop h r ＝ s
   → ((p q : ΩA x₀) → p ∙ q ＝ q ∙ p)
   → conjugate-loop β r ＝ conjugate-loop γ s
- homotopic-conjugations refl β refl {r} {s} e loop-comm
+ homotopy-conjugate-loop refl β refl {r} {s} e loop-comm
   = conjugate-loop β r    ＝⟨ conjugate-loop-is-id loop-comm β r ⟩
     r                     ＝⟨ conjugate-loop-refl r ⟩
     conjugate-loop refl r ＝⟨ e ⟩
     s                     ＝⟨ conjugate-loop-refl s ⟩
     conjugate-loop refl s ∎
 
- homotopic-Ω-map^-conj
+ homotopy-Ω-map^-conj
   : (m n : ℕ)
   → ((x : A) → (f ^ m) x ＝ (f ^ n) x)
   → ((p q : ΩA x₀) → p ∙ q ＝ q ∙ p)
   → (p : ΩA x₀)
   → Ω-map^-conj m p ＝ Ω-map^-conj n p
- homotopic-Ω-map^-conj m n H loop-comm p =
-  homotopic-conjugations
+ homotopy-Ω-map^-conj m n H loop-comm p =
+  homotopy-conjugate-loop
    (H x₀)
    (preserves-point^ m)
    (preserves-point^ n)
@@ -194,15 +194,15 @@ module pointed-endomap-iterates
    ∙ homotopies-are-natural'' (f ^ m) (f ^ n) H {p = p})
    (loop-comm)
 
- Ω-map-eventually-idempotent
+ Ω-map-is-eventually-idempotent
   : (n : ℕ)
   → ((x : A) → (f ^ n) x ＝ (f ^ succ n) x)
   → ((p q : ΩA x₀) → p ∙ q ＝ q ∙ p)
   → (p : ΩA x₀)
   → (Ω-map ^ n) p ＝ (Ω-map ^ succ n) p
- Ω-map-eventually-idempotent n r loop-comm p =
+ Ω-map-is-eventually-idempotent n r loop-comm p =
   (Ω-map ^ n) p          ＝⟨ Ω-map-iterates n p ⟩
-  Ω-map^-conj n p        ＝⟨ homotopic-Ω-map^-conj n (succ n) r loop-comm p ⟩
+  Ω-map^-conj n p        ＝⟨ homotopy-Ω-map^-conj n (succ n) r loop-comm p ⟩
   Ω-map^-conj (succ n) p ＝⟨ Ω-map-iterates (succ n) p ⁻¹ ⟩
   (Ω-map ^ succ n) p     ∎
 
@@ -253,7 +253,7 @@ TODO: text
    → (p : ΩA x₀) → refl ＝ p
   ΩA-is-trivial n₀ r₀ =
    trivial-Ω-eventually-idempotent-endomap-criterion A x₀
-    Ω-map n₀ (Ω-map-eventually-idempotent n₀ r₀ ∙-is-commutative) Ω-map-self-concat
+    Ω-map n₀ (Ω-map-is-eventually-idempotent n₀ r₀ ∙-is-commutative) Ω-map-self-concat
 
 \end{code}
 
