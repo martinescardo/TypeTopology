@@ -20,7 +20,7 @@ This is interesting for at least two reasons:
     quotients.
 
     (†): This was also done through other means by Gylterud [Gyl18] who gave a
-         non-HIT construction of the cumulative hiearchy 𝕍.
+         non-HIT construction of the cumulative hierarchy 𝕍.
 
 After Fredrik Nordvall Forsberg's talk at the workshop in honour of Thorsten
 Altenkirch's 60th birthday

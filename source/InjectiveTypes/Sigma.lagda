@@ -578,7 +578,7 @@ Discussion. It is easy to prove (TODO) that
   → aflabby (Σ x ꞉ X , Σ a ꞉ A x , B x a) ?
 
 where the question marks are universes that Agda should be able to
-resolve, or at least give contraints to.
+resolve, or at least give constraints to.
 
 However, the hypothesis (*) will not be very useful in practice, as in
 many cases it will be difficult to check. So a good thing to do would

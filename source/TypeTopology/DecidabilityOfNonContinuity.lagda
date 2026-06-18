@@ -48,7 +48,7 @@ open import UF.Subsingletons-FunExt
 \end{code}
 
 For convenience, we first recall the version of Theorem 8.2 of [1],
-which is used a number of times in this file, in a slighly
+which is used a number of times in this file, in a slightly
 reformulated way which is convenient for our purposes.
 
 [2] Martin Escardo. Infinite sets that satisfy the principle of
@@ -1186,7 +1186,7 @@ evc-extension-restriction f
 \end{code}
 
 Conversely, a modulus of continuity of an extension is a modulus of
-constancy of the orginal function.
+constancy of the original function.
 
 \begin{code}
 

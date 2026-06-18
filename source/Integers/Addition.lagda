@@ -19,7 +19,7 @@ module Integers.Addition where
 \end{code}
 
 Addition is defined inductively, first on positive and then through
-negatives using auxilliary functions. +pos and +negsucc.
+negatives using auxiliary functions. +pos and +negsucc.
 
 \begin{code}
 
@@ -47,7 +47,7 @@ We now have the proof that pos distributes over addition of natural numbers.
 
 Following this, we have the interactions of succℤ and predℤ with
 integer addition, by first considering their interactions with the
-auxilliary functions +pos and +negsucc. These will of course be useful
+auxiliary functions +pos and +negsucc. These will of course be useful
 in inductive proofs.
 
 \begin{code}

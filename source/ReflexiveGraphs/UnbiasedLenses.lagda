@@ -35,7 +35,7 @@ reflexive graph
           ≈-disp-refl BinOp ⊗ :≡ λ x y : M . refl {x ⊗ y}
 
 but notice that this displayed reflexive graph DOES NOT arise from either of
-the existing notions of lens. We could consider a similar, albeit asymetric
+the existing notions of lens. We could consider a similar, albeit asymmetric
 (or biased!), displayed reflexive graph
 
           BinOp(M) :≡ M × M → M

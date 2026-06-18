@@ -2,7 +2,7 @@ Ian Ray. 28th August 2025.
 
 Minor changes and merged into TypeToplogy in March 2026.
 
-We provide some basic contructions on (displayed) reflexive graphs (see index
+We provide some basic constructions on (displayed) reflexive graphs (see index
 for references to Sterling, Buchholtz, etc.)
 
 \begin{code}

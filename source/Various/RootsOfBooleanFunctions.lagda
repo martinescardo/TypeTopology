@@ -329,7 +329,7 @@ module _ {n : ℕ} (f : 𝟚 ^ n → 𝟚) where
 
 \end{code}
 
-We use the following auxilary constructions to define a formula for a
+We use the following auxiliary constructions to define a formula for a
 putative root of any n-ary boolean function:
 
 \begin{code}
@@ -517,7 +517,7 @@ formulas-agreement₄ = refl
 
 TODO. The above formula grows doubly exponentially in size. However,
 using variables for common subexpressions, they grow
-exponentially. Define a type of expression accomodating variables for
+exponentially. Define a type of expression accommodating variables for
 common subexpressions and produce a version ε-formula that produced
 such reduced-size expressions.
 

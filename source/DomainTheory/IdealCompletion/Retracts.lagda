@@ -219,7 +219,7 @@ semidirected and lower-closed.
 \end{code}
 
 A major application of the theory of rounded ideals is the following: a
-continuous dcpo D with a small basis β : B → D is a continous retract (in fact,
+continuous dcpo D with a small basis β : B → D is a continuous retract (in fact,
 we have an embedding-projection pair) of an algebraic dcpo, namely of Idl(B,⊑).
 
 \begin{code}

@@ -1012,7 +1012,7 @@ definition-by-transfinite-induction-on-OO X f =
 
 \end{code}
 
-Added 4 June 2024 at the Hausdorff Reseach Institute for Mathematics (HIM).
+Added 4 June 2024 at the Hausdorff Research Institute for Mathematics (HIM).
 By Tom de Jong and Fredrik Nordvall Forsberg.
 
 Given simulations

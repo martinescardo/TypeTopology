@@ -1,7 +1,7 @@
 Martin Escardo, Paulo Oliva, mid 2024.
 
 Remark added 11th June 2025. This file is experimental. In particular,
-we are not sure our use of the algebra is modelling the intented
+we are not sure our use of the algebra is modelling the intended
 notions. It may be that different players need different algebras. For
 example, if we are working with the powerset monad, whose algebras are
 the sup-lattices, and some players play argmax and some players play

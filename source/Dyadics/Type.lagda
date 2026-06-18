@@ -263,8 +263,8 @@ normalise-pos-info' p  (succ a) = equality-cases (ℤeven-or-odd p) I II
 \end{code}
 
 This function finds the k value for which (2^k) is a common factor of
-a dyadic rational. It is proved with it's arguments seperated in the
-above function, to satisy Agda's termination checker.
+a dyadic rational. It is proved with it's arguments separated in the
+above function, to satisfy Agda's termination checker.
 
 \begin{code}
 

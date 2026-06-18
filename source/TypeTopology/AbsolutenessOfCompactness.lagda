@@ -239,7 +239,7 @@ already done. The tricky case, which we deal with in the lemma below
 is getting a proof F a = 1 out of a proof of F a = 0. We would like to
 argue by contradiction from the fact that F a₀ = 1, but F a =
 0. However, all that weak internal compactness tells us is that η(F a)
-= η(1) as elements of ○ 𝟚.  This is actually consistant with F a = 0:
+= η(1) as elements of ○ 𝟚.  This is actually consistent with F a = 0:
 consider the open modality on the empty type.
 
 The idea of the lemma is as follows: given η(F a) = η(1), we can

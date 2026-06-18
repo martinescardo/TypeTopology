@@ -6,7 +6,7 @@ This gives a structured identity principle for
  * interval objects,
 with each building on the last.
 
-The defintions for these are found in Escardo-Simpson-LICS2001.
+The definitions for these are found in Escardo-Simpson-LICS2001.
 
 For each structure we define a standard notion of structure (SNS),
 which gives rise to an equivalence type for the structure.

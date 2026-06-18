@@ -482,7 +482,7 @@ References
 TODO. Implement the above thoughts.
 
 Added 3rd August 2023 by Martin Escardo. Injective types are
-decomposable iff WEM holds. This subsumes the above developement,
+decomposable iff WEM holds. This subsumes the above development,
 because the type of ordinals is injective.
 
 \begin{code}

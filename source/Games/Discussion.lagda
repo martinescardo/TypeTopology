@@ -239,7 +239,7 @@ In constructive mathematics it is usual to regard a type X to be
 inhabited if we can exhibit some x : X. But this is *data* rather than
 *property*. Following the philosophy of univalent foundations and
 homotopy type theory, we will instead say that X is inhabited if we
-can exibit a point of its propositional truncation ∥ X ∥, which is
+can exhibit a point of its propositional truncation ∥ X ∥, which is
 property. (In the case where we can exhibit some x : X, we say that X
 is pointed.)
 
@@ -911,7 +911,7 @@ win, draw or lose, such as in poker.
 Our conception of game, defined in Games.FiniteHistoryDependent,
 allows for two-person games of the above kind, but in general is
 defined for multiple-person games, with outcomes (or "pay offs") in
-any type, for example the real numbes.
+any type, for example the real numbers.
 
 In the following paper the author shows that shows that Aczel and
 Leversha's original W-type gives a model of multisets.

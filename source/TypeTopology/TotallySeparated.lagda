@@ -328,7 +328,7 @@ open import UF.ClassicalLogic
 
 \end{code}
 
-Old proof, which by-passes the step via ¬¬-separatedness and has a
+Old proof, which bypasses the step via ¬¬-separatedness and has a
 different extensionality hypothesis:
 
 \begin{code}

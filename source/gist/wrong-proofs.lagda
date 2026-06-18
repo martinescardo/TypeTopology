@@ -1,4 +1,4 @@
-Martin Escardo 20 Deceber 2025.
+Martin Escardo 20 December 2025.
 
 This is regarding this discussion at mathstodon:
 https://mathstodon.xyz/deck/@MartinEscardo/115751523590095370

@@ -12,7 +12,7 @@ non-empty lists without repetitions, we do get an affine monad.
 
 However, to work with a monad of lists without repetitions we need
 decidable equality on the types under consideration. This leads us to
-consider relative monads on strutured types, where, in this example,
+consider relative monads on structured types, where, in this example,
 the structure is actually property, namely decidability of
 equality. In this example, we need decidable equality on X to be able
 to form T X, but we don't need to consider decidable equality on T X,

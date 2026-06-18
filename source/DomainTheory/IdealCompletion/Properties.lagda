@@ -71,7 +71,7 @@ module _
 
 A few useful facts regarding ideals on abstract bases:
 - the ideals are rounded;
-- the map that maps x : X to its prinicipal ideal is monotone;
+- the map that maps x : X to its principal ideal is monotone;
 - suprema of ideals are given by unions.
 
 \begin{code}

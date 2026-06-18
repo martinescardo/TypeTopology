@@ -8,7 +8,7 @@ index for references to Sterling, Buchholtz, etc.)
 In this file we give some properties about fans (terminology borrowed from
 Sterling), which are analogous to singletons up to the edge relation. Then we
 provide some equivalent characterizations of univalent reflexive graphs. It is
-worth noting that, although Sterling makes no choice for the defintion in his
+worth noting that, although Sterling makes no choice for the definition in his
 paper, we are required to. There is good reason to go with the 'propositional
 fans' definition as it simplifies many proofs later on.
 

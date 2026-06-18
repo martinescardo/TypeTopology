@@ -267,7 +267,7 @@ this operation by ＊Ω.
 
 Assuming that * is commutative, we wish to show that ＊Ω is commutative.
 The strategy for this is to
-  (1) prove that this holds up to conjugating by some appropriately choosen
+  (1) prove that this holds up to conjugating by some appropriately chosen
       (i.e. reverse engineered) loop γ;
   (2) using idempotency of ＊Ω, prove that conjugating by γ is the identity;
   (3) conclude that ＊Ω is commutative (with no conjugation).
@@ -321,7 +321,7 @@ The strategy for this is to
 Assuming that * is associative, we wish to show that ＊Ω is associative.
 The strategy for this is like for commutativity above:
   (1) prove that ＊Ω is associative up to conjugating by some appropriately
-      choosen (i.e. reverse engineered) loop α;
+      chosen (i.e. reverse engineered) loop α;
   (2) using idempotency of ＊Ω, prove that conjugating by α is the identity;
   (3) conclude that ＊Ω is commutative (with no conjugation).
 

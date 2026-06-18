@@ -155,7 +155,7 @@ submultiset-≃ M P = pr₂ (𝕄-separation M P)
 
 \end{code}
 
-The type of multisets is large, in the sense that it doesn' have a
+The type of multisets is large, in the sense that it doesn't have a
 small copy. This is proved using Russell's Paradox technique, using
 separation as defined above.
 

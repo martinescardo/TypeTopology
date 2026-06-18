@@ -691,7 +691,7 @@ taboo.
 
 \end{code}
 
-We record that, in fact, β ⊴ α ^ₒ β iff exluded middle holds.
+We record that, in fact, β ⊴ α ^ₒ β iff excluded middle holds.
 
 \begin{code}
 

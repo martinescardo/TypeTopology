@@ -39,7 +39,7 @@ In particular, we do not assume function extensionality, univalence, or axiom K.
 
 This theorem builds on Escardó's earlier work (2021) which demonstrates that the
 Cantor–Schröder–Bernstein theorem holds in every boolean ∞-topos. This theorem
-can be understood as a generalization of to arbitrary non-topological ∞-topoi,
+can be understood as a generalization to arbitrary non-topological ∞-topoi,
 since, under the assumption of the law of excluded middle (LEM), every embedding
 is complemented. On the other hand, It was shown by Pradic and Brown (2022) that
 the Cantor–Schröder–Bernstein theorem in its most naïve form implies the law of
@@ -313,7 +313,7 @@ the latter.
 
 \end{code}
 
-Finally, to dispell all doubt, we instantiate the previous theorem at the
+Finally, to dispel all doubt, we instantiate the previous theorem at the
 traditional phrasing of WLPO.
 
 \begin{code}

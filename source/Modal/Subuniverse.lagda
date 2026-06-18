@@ -1,5 +1,5 @@
 Jon Sterling, started 27th Sep 2022
-Andrew Swan, 7th Februrary 2024, definition of Σ-closed subuniverse added
+Andrew Swan, 7th February 2024, definition of Σ-closed subuniverse added
 
 \begin{code}
 
