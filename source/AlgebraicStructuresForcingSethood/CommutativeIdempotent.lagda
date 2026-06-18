@@ -16,21 +16,20 @@ action _*_ with eventually idempotent right action at every element is a set.
 
  then A is a set.
 
-This theorem provides a generalisation of David Wärn's proof [1] that types
+This theorem provides a generalisation of David Wärn's result [1] that types
 equipped with the algebraic structure of a semilattice forms a set. We elaborate
 on the properness of this generalisation in the final section of this file. Our
 work builds on the adaptated formalisation of this result by Tom de Jong [2].
-See also Martín Escardó's adaptation [3] of this result.
+See also Martín Escardó's adaptation [3].
 
-[1] David Wärn. https://dwarn.se/agda/Idem.html, 17 February 2026.
-    (See also https://mathstodon.xyz/deck/@dwarn/116091515645003634.)
+ [1] David Wärn. https://dwarn.se/agda/Idem.html, 17 February 2026.
+     (See also https://mathstodon.xyz/deck/@dwarn/116091515645003634.)
 
-[2] Tom de Jong. AlgebraicStructuresForcingSethood.Semilattices-streamlined.lagda,
-    25—27 February 2026
+ [2] Tom de Jong. AlgebraicStructuresForcingSethood.Semilattices-streamlined.lagda,
+     25—27 February 2026
 
-[3] Martín Escardó. AlgebraicStructuresForcingSethood.Semilattices.lagda,
-    23 February 2026.
-
+ [3] Martín Escardó. AlgebraicStructuresForcingSethood.Semilattices.lagda,
+     23 February 2026.
 
 TODO: elaborate on proof
 
@@ -56,6 +55,8 @@ open import AlgebraicStructuresForcingSethood.CommutativeLoopSpaces using
 Loop space criterion
 ────────────────────────────────────────────────────────────────────────────────
 
+TODO: explain criterion
+
 \begin{code}
 
 ΩA : {A  : 𝓤 ̇} → A → 𝓤 ̇
@@ -63,7 +64,7 @@ Loop space criterion
 
 module _ (A  : 𝓤 ̇) (x₀ : A) where
 
- iterate-is-refl-reflects
+ iterate-reflects-is-refl
   : (f g : ΩA x₀ → ΩA x₀)
   → ((p : ΩA x₀) → g (f p) ＝ p)
   → refl ＝ g refl
@@ -71,9 +72,8 @@ module _ (A  : 𝓤 ̇) (x₀ : A) where
   → (p : ΩA x₀)
   → refl ＝ (f ^ n) p
   → refl ＝ p
- iterate-is-refl-reflects f g gf g-refl 0 p e
-  = e
- iterate-is-refl-reflects f g gf g-refl (succ n) p e
+ iterate-reflects-is-refl f g gf g-refl 0 p e = e
+ iterate-reflects-is-refl f g gf g-refl (succ n) p e
   = refl       ＝⟨ g-refl ⟩
     g refl     ＝⟨ ap g refl-is-fp ⟩
     g (f p)    ＝⟨ gf p ⟩
@@ -81,7 +81,7 @@ module _ (A  : 𝓤 ̇) (x₀ : A) where
     where
      refl-is-fp : refl ＝ f p
      refl-is-fp
-      = iterate-is-refl-reflects f g gf g-refl n (f p) (e ∙ ^-succ f n p)
+      = iterate-reflects-is-refl f g gf g-refl n (f p) (e ∙ ^-succ f n p)
 
  trivial-Ω-eventually-idempotent-endomap-criterion
   : (f : ΩA x₀ → ΩA x₀)
@@ -91,7 +91,7 @@ module _ (A  : 𝓤 ̇) (x₀ : A) where
   → (p : ΩA x₀) → refl ＝ p
  trivial-Ω-eventually-idempotent-endomap-criterion
   f n r f-self-concat p =
-  iterate-is-refl-reflects f (λ p → p ∙ p) f-self-concat refl n p (II ⁻¹)
+  iterate-reflects-is-refl f (λ p → p ∙ p) f-self-concat refl n p (II ⁻¹)
    where
    I : (f ^ n) p ∙ (f ^ n) p ＝ (f ^ n) p
    I = (f ^ n) p ∙ (f ^ n) p           ＝⟨ ap (λ q → q ∙ q) (r p) ⟩
@@ -167,7 +167,7 @@ module pointed-endomap-iterates
     r                     ＝⟨ conjugate-loop-refl r ⟩
     conjugate-loop refl r ＝⟨ e ⟩
     s                     ＝⟨ conjugate-loop-refl s ⟩
-    conjugate-loop refl s  ∎
+    conjugate-loop refl s ∎
 
  homotopic-Ω-map^-conj
   : (m n : ℕ)
@@ -234,9 +234,9 @@ TODO: text
    Ω-map p ∙ Ω-map p          ＝⟨ ap₂ (_∙_) (Ω-map-is-＊Ω-refl p) (Ω-map-is-＊Ω-refl p) ⟩
    (p ＊Ω refl) ∙ (p ＊Ω refl) ＝⟨ ap ((p ＊Ω refl) ∙_) (＊Ω-commutative comm p refl) ⟩
    (p ＊Ω refl) ∙ (refl ＊Ω p) ＝⟨ ＊Ω-interchange-∙ p refl refl p ⟩
-   (p ∙ refl) ＊Ω (refl ∙ p)   ＝⟨ ap₂ _＊Ω_ (refl-right-neutral p) refl-left-neutral ⟩
-   p ＊Ω p                     ＝⟨ ＊Ω-idempotent p ⟩
-   p                           ∎
+   (p ∙ refl) ＊Ω (refl ∙ p)  ＝⟨ ap₂ _＊Ω_ (refl-right-neutral p) refl-left-neutral ⟩
+   p ＊Ω p                    ＝⟨ ＊Ω-idempotent p ⟩
+   p                          ∎
 
   ΩA-is-trivial
    : (n₀ : ℕ) (r : (x : A) → ((_* x₀) ^ n₀) x ＝ ((_* x₀) ^ succ n₀) x)
