@@ -59,7 +59,7 @@ open import MLTT.Universes
 open import MLTT.Id using
  (_＝_ ; refl ; _∙_ ; _⁻¹ ; ap ; _＝⟨_⟩_ ; _∎)
 open import MLTT.NaturalNumbers using
- (ℕ ; zero ; succ ; _^_ ; ^-succ ; ap-iterate-succ)
+ (ℕ ; zero ; succ ; _^_ ; ^-succ ; ap-^-succ)
 open import UF.Base using
  ( conjugate-loop
  ; cancel-left
@@ -230,7 +230,7 @@ module pointed-endomap-iteration
     I   = ap Ω-map (Ω-map-iterates n p)
     II  = ap (conjugate-loop η) (ap-conjugate-loop f β r)
     III = ＝-congr-∙' (ap f β) η (ap f β) η (ap f r) ⁻¹
-    IV  = ap (conjugate-loop (preserves-point^ (succ n))) (ap-iterate-succ n p)
+    IV  = ap (conjugate-loop (preserves-point^ (succ n))) (ap-^-succ n p)
 
 \end{code}
 

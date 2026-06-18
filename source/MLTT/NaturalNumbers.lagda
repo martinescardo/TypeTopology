@@ -22,10 +22,10 @@ _^_ : {X : 𝓤 ̇ } → (X → X) → ℕ → (X → X)
 ^-succ f 0 x = refl
 ^-succ f (succ n) x = ap f (^-succ f n x)
 
-ap-iterate-succ
+ap-^-succ
  : {X : 𝓤 ̇} {f : X → X} {x y : X} (n : ℕ) (p : x ＝ y)
  → ap f (ap (f ^ n) p) ＝ ap (f ^ succ n) p
-ap-iterate-succ n refl = refl
+ap-^-succ n refl = refl
 
 ℕ-induction : {A : ℕ → 𝓤 ̇ } → A 0 → ((k : ℕ) → A k → A(succ k)) → (n : ℕ) → A n
 ℕ-induction base step 0 = base
