@@ -388,27 +388,6 @@ binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') =
   lemma : ¬¬ (inr y ＝ inr y') → inr y ＝ inr y'
   lemma = ap inr ∘ t y y' ∘ ¬¬-functor claim
 
-⊥-⊤-density' : funext 𝓤 𝓤
-             → propext 𝓤
-             → ∀ {𝓥} {X : 𝓥 ̇ }
-             → is-¬¬-separated X
-             → (f : Ω 𝓤 → X)
-             → f ⊥ ＝ f ⊤
-             → wconstant f
-⊥-⊤-density' fe pe s f r p q = g p ∙ (g q)⁻¹
-  where
-    a : ∀ p → ¬¬ (f p ＝ f ⊤)
-    a p t = no-truth-values-other-than-⊥-or-⊤ fe pe (p , (b , c))
-      where
-        b : p ≠ ⊥
-        b u = t (ap f u ∙ r)
-
-        c : p ≠ ⊤
-        c u = t (ap f u)
-
-    g : ∀ p → f p ＝ f ⊤
-    g p = s (f p) (f ⊤) (a p)
-
 \end{code}
 
 Added 19th March 2021.
@@ -454,6 +433,33 @@ equality-of-¬¬stable-propositions fe pe p q f g a = γ
 
   γ : p ＝ q
   γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) δ
+
+\end{code}
+
+TODO. Find a better home for the following.
+
+\begin{code}
+
+⊥-⊤-density' : funext 𝓤 𝓤
+             → propext 𝓤
+             → ∀ {𝓥} {X : 𝓥 ̇ }
+             → is-¬¬-separated X
+             → (f : Ω 𝓤 → X)
+             → f ⊥ ＝ f ⊤
+             → wconstant f
+⊥-⊤-density' fe pe s f r p q = g p ∙ (g q)⁻¹
+  where
+    a : ∀ p → ¬¬ (f p ＝ f ⊤)
+    a p t = no-truth-values-other-than-⊥-or-⊤ fe pe (p , (b , c))
+      where
+        b : p ≠ ⊥
+        b u = t (ap f u ∙ r)
+
+        c : p ≠ ⊤
+        c u = t (ap f u)
+
+    g : ∀ p → f p ＝ f ⊤
+    g p = s (f p) (f ⊤) (a p)
 
 ⊥-⊤-Density : funext 𝓤 𝓤
             → propext 𝓤

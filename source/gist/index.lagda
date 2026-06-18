@@ -20,6 +20,7 @@ import gist.MajoritiesOnlyActOnSets
 import gist.ThereAreNoHigherSemilattices
 import gist.ThereAreNoHigherSemilattices2
 import gist.multiset-addendum-question
+import gist.TotallySeparatedReflectionOfOmega
 import gist.not-an-apartness
 import gist.remove-swap
 import gist.transport-discussion
