@@ -174,7 +174,7 @@ For our main result we use the following form of these criteria:
     I : (f ^ (n p)) p ∙ (f ^ (n p)) p ＝ (f ^ (n p)) p
     I = (f ^ (n p)) p ∙ (f ^ (n p)) p           ＝⟨ ap (λ q → q ∙ q) (r p) ⟩
         (f ^ succ (n p)) p ∙ (f ^ succ (n p)) p ＝⟨ f-self-concat ((f ^ (n p)) p) ⟩
-        (f ^ (n p)) p                       ∎
+        (f ^ (n p)) p                           ∎
 
     II : (f ^ (n p)) p ＝ refl
     II = cancel-left (I ∙ refl-right-neutral ((f ^ (n p)) p))
@@ -349,11 +349,11 @@ We note the following in passing.
 
   Ω-map-self-concat : (p : ΩA x₀) → Ω-map p ∙ Ω-map p ＝ p
   Ω-map-self-concat p =
-   Ω-map p ∙ Ω-map p          ＝⟨ I ⟩
-   (p ＊Ω refl) ∙ (p ＊Ω refl) ＝⟨ II ⟩
+   Ω-map p ∙ Ω-map p          ＝⟨ I   ⟩
+   (p ＊Ω refl) ∙ (p ＊Ω refl) ＝⟨ II  ⟩
    (p ＊Ω refl) ∙ (refl ＊Ω p) ＝⟨ III ⟩
-   (p ∙ refl) ＊Ω (refl ∙ p)  ＝⟨ IV ⟩
-   p ＊Ω p                    ＝⟨ V ⟩
+   (p ∙ refl) ＊Ω (refl ∙ p)  ＝⟨ IV  ⟩
+   p ＊Ω p                    ＝⟨ V   ⟩
    p                          ∎
     where
      I   = ap₂ (_∙_) (Ω-map-is-＊Ω-refl p) (Ω-map-is-＊Ω-refl p)
