@@ -79,9 +79,9 @@ module idempotent-commutative-operation
     (refl ＊Ω q) ∙ (p ＊Ω refl) ∎
      where
       II₁ = ＊Ω-interchange-∙ p refl refl q
-      II₂ = ap (p ＊Ω_) refl-left-neutral
-      II₃ = ap (_＊Ω q) (refl-left-neutral ⁻¹)
-      II₄ = (＊Ω-interchange-∙ refl q p refl) ⁻¹
+      II₂ = ap₂ (_＊Ω_) (refl-right-neutral p) (refl-left-neutral)
+      II₃ = ap₂ (_＊Ω_) (refl-left-neutral ⁻¹) (refl-right-neutral q)
+      II₄ = ＊Ω-interchange-∙ refl q p refl ⁻¹
 
    III : (p : ΩA) → p ＝ (p ∙ p) ＊Ω refl
    III p = p                           ＝⟨ I p ⟩
