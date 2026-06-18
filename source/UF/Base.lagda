@@ -721,6 +721,15 @@ conjugate-loop-conjugates : {A : 𝓤 ̇ } {a b : A} (p : a ＝ b) (l : a ＝ a)
                           → conjugate-loop p l ＝ p ⁻¹ ∙ l ∙ p
 conjugate-loop-conjugates refl = transport-along-＝ refl
 
+conjugate-loop-refl
+ : {A : 𝓤 ̇ } {a : A} (p : a ＝ a)
+ → conjugate-loop refl p ＝ p
+conjugate-loop-refl p =
+ p                      ＝⟨ conjugate-loop-conjugates refl p ⟩
+ refl ∙ p               ＝⟨ refl ⟩
+ refl ⁻¹ ∙ p ∙ refl     ＝⟨ refl-left-neutral ⟩
+ conjugate-loop refl p  ∎
+
 \end{code}
 
 When h = refl the square collapses to a point and the loop is unchanged:

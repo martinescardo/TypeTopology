@@ -18,7 +18,7 @@ _^_ : {X : 𝓤 ̇ } → (X → X) → ℕ → (X → X)
 (f ^ n) x = rec x f n
 
 ^-succ : {X : 𝓤 ̇ } → (f : X → X) (n : ℕ) (x : X)
-       → (f ^ n) (f x) ＝ (f ^ succ n) x
+        → (f ^ succ n) x ＝ (f ^ n) (f x)
 ^-succ f 0 x = refl
 ^-succ f (succ n) x = ap f (^-succ f n x)
 

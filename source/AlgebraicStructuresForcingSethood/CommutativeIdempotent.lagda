@@ -45,7 +45,7 @@ open import MLTT.Id
 open import MLTT.NaturalNumbers
 open import UF.Base
 open import UF.Sets using
- (is-set ; refl-is-set)
+ (is-set ; refl-is-set')
 open import AlgebraicStructuresForcingSethood.Semilattices-streamlined using
  (module idempotent)
 open import AlgebraicStructuresForcingSethood.CommutativeLoopSpaces using
@@ -66,40 +66,40 @@ module _ (A  : 𝓤 ̇) (x₀ : A) where
  iterate-is-refl-reflects
   : (f g : ΩA x₀ → ΩA x₀)
   → ((p : ΩA x₀) → g (f p) ＝ p)
-  → g refl ＝ refl
+  → refl ＝ g refl
   → (n : ℕ)
   → (p : ΩA x₀)
-  → (f ^ n) p ＝ refl
-  → p ＝ refl
+  → refl ＝ (f ^ n) p
+  → refl ＝ p
  iterate-is-refl-reflects f g gf g-refl 0 p e
   = e
  iterate-is-refl-reflects f g gf g-refl (succ n) p e
-  = p       ＝⟨ gf p ⁻¹ ⟩
-    g (f p) ＝⟨ ap g fp-trivial ⟩
-    g refl  ＝⟨ g-refl ⟩
-    refl    ∎
+  = refl       ＝⟨ g-refl ⟩
+    g refl     ＝⟨ ap g refl-is-fp ⟩
+    g (f p)    ＝⟨ gf p ⟩
+    p          ∎
     where
-     fp-trivial : f p ＝ refl
-     fp-trivial
-       = iterate-is-refl-reflects f g gf g-refl n
-          (f p)
-          (^-succ f n p ∙ e)
+     refl-is-fp : refl ＝ f p
+     refl-is-fp
+      = iterate-is-refl-reflects f g gf g-refl n (f p) (e ∙ ^-succ f n p)
 
  trivial-Ω-eventually-idempotent-endomap-criterion
   : (f : ΩA x₀ → ΩA x₀)
     (n : ℕ)
   → ((p : ΩA x₀) → (f ^ n) p ＝ (f ^ succ n) p)
   → ((p : ΩA x₀) → f p ∙ f p ＝ p)
-  → (p : ΩA x₀) → p ＝ refl
+  → (p : ΩA x₀) → refl ＝ p
  trivial-Ω-eventually-idempotent-endomap-criterion
   f n r f-self-concat p =
-  iterate-is-refl-reflects f (λ p → p ∙ p) f-self-concat refl n p (cancel-left I)
+  iterate-is-refl-reflects f (λ p → p ∙ p) f-self-concat refl n p (II ⁻¹)
    where
-   I : (f ^ n) p ∙ (f ^ n) p ＝ (f ^ n) p ∙ refl
+   I : (f ^ n) p ∙ (f ^ n) p ＝ (f ^ n) p
    I = (f ^ n) p ∙ (f ^ n) p           ＝⟨ ap (λ q → q ∙ q) (r p) ⟩
        (f ^ succ n) p ∙ (f ^ succ n) p ＝⟨ f-self-concat ((f ^ n) p) ⟩
-       (f ^ n) p                       ＝⟨ refl-right-neutral ((f ^ n) p) ⟩
-       (f ^ n) p ∙ refl                ∎
+       (f ^ n) p                       ∎
+
+   II : (f ^ n) p ＝ refl
+   II = cancel-left (I ∙ refl-right-neutral ((f ^ n) p))
 
 \end{code}
 
@@ -159,11 +159,15 @@ module pointed-endomap-iterates
   : {y z : A}
     (h : y ＝ z) (β : y ＝ x₀) (γ : z ＝ x₀)
     {r : y ＝ y} {s : z ＝ z}
-  → r ＝ h ∙ s ∙ h ⁻¹
+  → conjugate-loop h r ＝ s
   → ((p q : ΩA x₀) → p ∙ q ＝ q ∙ p)
   → conjugate-loop β r ＝ conjugate-loop γ s
- homotopic-conjugations refl β refl {r} e loop-comm =
-  conjugate-loop-is-id loop-comm β r ∙ e ∙ refl-left-neutral
+ homotopic-conjugations refl β refl {r} {s} e loop-comm
+  = conjugate-loop β r    ＝⟨ conjugate-loop-is-id loop-comm β r ⟩
+    r                     ＝⟨ conjugate-loop-refl r ⟩
+    conjugate-loop refl r ＝⟨ e ⟩
+    s                     ＝⟨ conjugate-loop-refl s ⟩
+    conjugate-loop refl s  ∎
 
  homotopic-Ω-map^-conj
   : (m n : ℕ)
@@ -176,7 +180,8 @@ module pointed-endomap-iterates
    (H x₀)
    (preserves-point^ m)
    (preserves-point^ n)
-   (homotopies-are-natural' (f ^ m) (f ^ n) H {p = p} ⁻¹)
+   ( conjugate-loop-conjugates (H x₀) (ap (f ^ m) p)
+   ∙ homotopies-are-natural'' (f ^ m) (f ^ n) H {p = p})
    (loop-comm)
 
  Ω-map-eventually-idempotent
@@ -235,7 +240,7 @@ TODO: text
 
   ΩA-is-trivial
    : (n₀ : ℕ) (r : (x : A) → ((_* x₀) ^ n₀) x ＝ ((_* x₀) ^ succ n₀) x)
-   → (p : ΩA x₀) → p ＝ refl
+   → (p : ΩA x₀) → refl ＝ p
   ΩA-is-trivial n₀ r₀ =
    trivial-Ω-eventually-idempotent-endomap-criterion A x₀
     Ω-map n₀ (Ω-map-eventually-idempotent n₀ r₀ ∙-is-commutative) Ω-map-self-concat
@@ -251,7 +256,7 @@ we obtain that A is a set.
   : (n : A → ℕ)
     (r : (y x : A) → ((_* y) ^ n y) x ＝ ((_* y) ^ succ (n y)) x)
   → is-set A
- A-is-set n r = refl-is-set A (λ x → pointed.ΩA-is-trivial x (n x) (r x))
+ A-is-set n r = refl-is-set' A (λ x → pointed.ΩA-is-trivial x (n x) (r x))
 
 \end{code}
 
