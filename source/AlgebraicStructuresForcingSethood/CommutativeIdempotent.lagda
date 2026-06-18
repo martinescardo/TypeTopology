@@ -1,4 +1,4 @@
-Fredrik Bakke, 16–17 June 2026.
+Fredrik Bakke, 16–18 June 2026.
 
 We demonstrate that any type A that has a commutative and idempotent binary
 action _*_ with eventually idempotent right action is a set.
@@ -25,10 +25,10 @@ See also Martín Escardó's adaptation [3].
  [1] David Wärn. https://dwarn.se/agda/Idem.html, 17 February 2026.
      (See also https://mathstodon.xyz/deck/@dwarn/116091515645003634.)
 
- [2] Tom de Jong. AlgebraicStructuresForcingSethood.Semilattices-streamlined.lagda,
+ [2] Tom de Jong. AlgebraicStructuresForcingSethood.Semilattices-streamlined,
      25—27 February 2026
 
- [3] Martín Escardó. AlgebraicStructuresForcingSethood.Semilattices.lagda,
+ [3] Martín Escardó. AlgebraicStructuresForcingSethood.Semilattices,
      23 February 2026.
 
 TODO: elaborate on proof
@@ -67,10 +67,41 @@ open import AlgebraicStructuresForcingSethood.CommutativeLoopSpaces using
 
 \end{code}
 
-Loop space criterion
+Trivial loop space criterion
 ────────────────────────────────────────────────────────────────────────────────
 
-TODO: explain criterion
+We start by observing that following trivial loop space criterion used by de
+Jong [2] may be generalised:
+
+ Lemma (de Jong).
+ Given a type A with an element x₀, if there is a map f : Ω(A,x₀) → Ω(A,x₀)
+ such that
+
+ 1. f ∙ f ∼ id
+ 2. f is idempotent
+
+ then Ω(A,x₀) is trivial.
+
+Indeed, we recover these criteria from the following by parametrising over p,
+setting g(p) := p ∙ p, and n := 1:
+
+ Lemma.
+ Given a type A with an element x₀, if there are maps f g : Ω(A,x₀) → Ω(A,x₀)
+ such that
+
+  1. g ∘ f ∼ id
+  2. g refl = refl
+
+ then for every p : Ω(A,x₀), if there is a natural number such that fⁿ(p) = refl
+ then p = refl.
+
+In the case of de Jong's criteria, the final equation f p ＝ refl follows from
+idempotence (ι) using the series of equations
+
+                    ι⁻¹          1.                  ι ∙ ι
+ f p ∙ refl  =  f p  =  f (f p)  =  f (f p) ∙ f (f p)  =  f p ∙ f p,
+
+and applying the cancellation law of concatenation, obtaining refl = f p.
 
 \begin{code}
 
@@ -98,32 +129,59 @@ module _ (A  : 𝓤 ̇) (x₀ : A) where
      refl-is-fp
       = iterates-reflect-is-refl f g gf g-refl n (f p) (e ∙ ^-succ f n p)
 
+\end{code}
+
+For our main result we use the following form of these criteria
+
+ Corollary.
+ Given a type A with an element x₀, if there is a map f : Ω(A,x₀) → Ω(A,x₀)
+ that satisfies
+
+  1. f ∙ f ∼ id,
+  2. eventual idempotence: for every loop p : Ω(A,x₀) there is a choice of
+     natural number nₚ such that f^{nₚ+1}(p) = f^{nₚ}(p),
+
+  then every loop is trivial.
+
+\begin{code}
+
  trivial-Ω-eventually-idempotent-endomap-criterion
   : (f : ΩA x₀ → ΩA x₀)
-    (n : ℕ)
-  → ((p : ΩA x₀) → (f ^ n) p ＝ (f ^ succ n) p)
   → ((p : ΩA x₀) → f p ∙ f p ＝ p)
+  → (n : ΩA x₀ → ℕ)
+  → ((p : ΩA x₀) → (f ^ (n p)) p ＝ (f ^ succ (n p)) p)
   → (p : ΩA x₀) → refl ＝ p
  trivial-Ω-eventually-idempotent-endomap-criterion
-  f n r f-self-concat p =
-  iterates-reflect-is-refl f (λ p → p ∙ p) f-self-concat refl n p (II ⁻¹)
+  f f-self-concat n r p =
+  iterates-reflect-is-refl f (λ p → p ∙ p) f-self-concat refl (n p) p (II ⁻¹)
    where
-    I : (f ^ n) p ∙ (f ^ n) p ＝ (f ^ n) p
-    I = (f ^ n) p ∙ (f ^ n) p           ＝⟨ ap (λ q → q ∙ q) (r p) ⟩
-        (f ^ succ n) p ∙ (f ^ succ n) p ＝⟨ f-self-concat ((f ^ n) p) ⟩
-        (f ^ n) p                       ∎
+    I : (f ^ (n p)) p ∙ (f ^ (n p)) p ＝ (f ^ (n p)) p
+    I = (f ^ (n p)) p ∙ (f ^ (n p)) p           ＝⟨ ap (λ q → q ∙ q) (r p) ⟩
+        (f ^ succ (n p)) p ∙ (f ^ succ (n p)) p ＝⟨ f-self-concat ((f ^ (n p)) p) ⟩
+        (f ^ (n p)) p                       ∎
 
-    II : (f ^ n) p ＝ refl
-    II = cancel-left (I ∙ refl-right-neutral ((f ^ n) p))
+    II : (f ^ (n p)) p ＝ refl
+    II = cancel-left (I ∙ refl-right-neutral ((f ^ (n p)) p))
 
 \end{code}
 
 Iteration of the induced map on the loop space of a pointed endomap
 ────────────────────────────────────────────────────────────────────────────────
 
+Given a pointed endomap f : (A,x₀) → (A,x₀) where η : f(x₀) = x, then we
+consider the induced endomap on loop spaces Ωf : Ω(A,x₀) → Ω(A,x₀) given by
+conjugation:
+
+ Ωf(p) := η⁻¹ ∙ f(p) ∙ η
+
+We observe that if loop concatenation over x₀ is commutative, then Ωf is
+eventually idempotent when f is.
+
+To obtain this result we must perform a series of basic computations of (Ωf)ⁿ.
+
 \begin{code}
 
-module pointed-endomap-iterates
+module pointed-endomap-iteration
  {A  : 𝓤 ̇}
  (x₀ : A)
  (f  : A → A)
@@ -144,15 +202,19 @@ module pointed-endomap-iterates
                 → (Ω-map ^ n) p ＝ Ω-map^-conj n p
  Ω-map-iterates 0 p = ap-id-is-id' p
  Ω-map-iterates (succ n) p =
-  let
-   β = preserves-point^ n
-   r = ap (f ^ n) p
-  in
-  Ω-map ((Ω-map ^ n) p)                               ＝⟨ ap Ω-map (Ω-map-iterates n p) ⟩
-  Ω-map (Ω-map^-conj n p)                             ＝⟨ ap (conjugate-loop η) (ap-conjugate-loop f β r) ⟩
-  conjugate-loop η (conjugate-loop (ap f β) (ap f r)) ＝⟨ ＝-congr-∙' (ap f β) η (ap f β) η (ap f r) ⁻¹ ⟩
-  conjugate-loop (ap f β ∙ η) (ap f r)                ＝⟨ ap (conjugate-loop (preserves-point^ (succ n))) (ap-iterate-succ n p) ⟩
+  Ω-map ((Ω-map ^ n) p)                               ＝⟨ I   ⟩
+  Ω-map (Ω-map^-conj n p)                             ＝⟨ II  ⟩
+  conjugate-loop η (conjugate-loop (ap f β) (ap f r)) ＝⟨ III ⟩
+  conjugate-loop (ap f β ∙ η) (ap f r)                ＝⟨ IV  ⟩
   Ω-map^-conj (succ n) p                              ∎
+   where
+    β = preserves-point^ n
+    r = ap (f ^ n) p
+
+    I   = ap Ω-map (Ω-map-iterates n p)
+    II  = ap (conjugate-loop η) (ap-conjugate-loop f β r)
+    III = ＝-congr-∙' (ap f β) η (ap f β) η (ap f r) ⁻¹
+    IV  = ap (conjugate-loop (preserves-point^ (succ n))) (ap-iterate-succ n p)
 
 \end{code}
 
@@ -224,55 +286,79 @@ module comm-idem
 
 \end{code}
 
-We observe that for any point x₀ of a type A equipped with a commutative
-idempotent binary operation _*_, then the right action at x₀, _* x₀ preserves
-the base point by idempotence, and the induced map on loops satisfies the
-equation
+ Lemma.
+ Given a type A with a commutative idempotent binary operation _*_, and a point
+ x₀ : A, then the right action at x₀, _* x₀, preserves the base point by
+ idempotence, and the induced map on loops satisfies the equation
 
- Ω-map p ∙ Ω-map p ＝ p
+  Ω-map p ∙ Ω-map p ＝ p,
 
-the proof relies on four essential properties that we import from de Jong's
-work:
+ and hence if _* x₀ is eventually idempotent  then by the trivial loop space
+ criterion Ω(A,x₀) is contractible.
+
+The proof relies on four essential properties that we import from de Jong's
+work, noting that Ω-map p = p ＊Ω refl by idempotence:
 
  1. _＊Ω_ is idempotent
- 2. refl is ＊Ω-central
+ 2. refl is central wrt. _＊Ω_
  3. _＊Ω_ and _∙_ satisfy the interchange law (at (p ＊Ω refl) ∙ (refl ＊Ω p))
- 4. _∙_ is commutative
+ 4. _∙_ is commutative.
 
-hence by the trivial loop space criterion, if _* x₀ is eventually idempotent
-then Ω(A,x₀) is contractible.
+We note the following in passing.
+
+ Question.
+ Tom de Jong's proof of commutativity of _∙_ [4] in turn only uses the following
+ facts:
+
+  1. _＊Ω_ is idempotent
+  2. refl is central wrt. _＊Ω_
+  3. _＊Ω_ and _∙_ satisfy the interchange law
+
+ So perhaps there is some way to relax the commutativity assumption on _*_?
+
+ [4] Tom de Jong. AlgebraicStructuresForcingSethood.CommutativeLoopSpaces,
+     18 March 2026
 
 \begin{code}
  module pointed (x₀ : A) where
 
-  open pointed-endomap-iterates x₀ (_* x₀) (idem x₀)
+  open pointed-endomap-iteration x₀ (_* x₀) (idem x₀)
   open idempotent.pointed A _*_ idem x₀ using
-   (_＊Ω_ ; ＊Ω-idempotent ; ＊Ω-interchange-∙ ; ＊Ω-commutative)
+   ( _＊Ω_
+   ; ＊Ω-idempotent
+   ; ＊Ω-interchange-∙
+   ; ＊Ω-commutative)
   open idempotent-commutative-operation A x₀ _*_ idem comm using
-   (∙-is-commutative)
+   ( ∙-is-commutative)
 
   Ω-map-is-＊Ω-refl : (p : ΩA x₀) → Ω-map p ＝ p ＊Ω refl
-  Ω-map-is-＊Ω-refl p =
-   ap (conjugate-loop (idem x₀)) (ap₂-refl-right' (_*_) p)
+  Ω-map-is-＊Ω-refl p = ap (conjugate-loop (idem x₀)) (ap₂-refl-right' (_*_) p)
 
   Ω-map-self-concat : (p : ΩA x₀) → Ω-map p ∙ Ω-map p ＝ p
   Ω-map-self-concat p =
-   Ω-map p ∙ Ω-map p          ＝⟨ ap₂ (_∙_) (Ω-map-is-＊Ω-refl p) (Ω-map-is-＊Ω-refl p) ⟩
-   (p ＊Ω refl) ∙ (p ＊Ω refl) ＝⟨ ap ((p ＊Ω refl) ∙_) (＊Ω-commutative comm p refl) ⟩
-   (p ＊Ω refl) ∙ (refl ＊Ω p) ＝⟨ ＊Ω-interchange-∙ p refl refl p ⟩
-   (p ∙ refl) ＊Ω (refl ∙ p)  ＝⟨ ap₂ (_＊Ω_) (refl-right-neutral p) (refl-left-neutral) ⟩
-   p ＊Ω p                    ＝⟨ ＊Ω-idempotent p ⟩
+   Ω-map p ∙ Ω-map p          ＝⟨ I ⟩
+   (p ＊Ω refl) ∙ (p ＊Ω refl) ＝⟨ II ⟩
+   (p ＊Ω refl) ∙ (refl ＊Ω p) ＝⟨ III ⟩
+   (p ∙ refl) ＊Ω (refl ∙ p)  ＝⟨ IV ⟩
+   p ＊Ω p                    ＝⟨ V ⟩
    p                          ∎
+    where
+     I   = ap₂ (_∙_) (Ω-map-is-＊Ω-refl p) (Ω-map-is-＊Ω-refl p)
+     II  = ap ((p ＊Ω refl) ∙_) (＊Ω-commutative comm p refl)
+     III = ＊Ω-interchange-∙ p refl refl p
+     IV  = ap₂ (_＊Ω_) (refl-right-neutral p) (refl-left-neutral)
+     V   = ＊Ω-idempotent p
 
   ΩA-is-trivial
-   : (n₀ : ℕ) (r : (x : A) → ((_* x₀) ^ n₀) x ＝ ((_* x₀) ^ succ n₀) x)
-   → (p : ΩA x₀) → refl ＝ p
+   : (n₀ : ℕ)
+     (r : (x : A) → ((_* x₀) ^ n₀) x ＝ ((_* x₀) ^ succ n₀) x)
+     (p : ΩA x₀) → refl ＝ p
   ΩA-is-trivial n₀ r₀ =
    trivial-Ω-eventually-idempotent-endomap-criterion A x₀
      (Ω-map)
-     (n₀)
-     (Ω-map-is-eventually-idempotent n₀ r₀ ∙-is-commutative)
      (Ω-map-self-concat)
+     (λ _ → n₀)
+     (Ω-map-is-eventually-idempotent n₀ r₀ ∙-is-commutative)
 
 \end{code}
 
@@ -363,12 +449,12 @@ idempotence of the right action for commutative idempotent binary operations.
 
 
 I originally wanted see if some of the results from the Equational Theories
-Project [4] could aid in generalising Wärn's result, but unfortunately their
+Project [5] could aid in generalising Wärn's result, but unfortunately their
 project is too limited in scope for this problem. This is because they only
 consider equational theories with a single equation. They also do not consider
 parametric laws such as eventual idempotence.
 
- [4] Bolan, M., Breitner, J., Brox, J., Carlini, N., Carneiro, M.,
+ [5] Bolan, M., Breitner, J., Brox, J., Carlini, N., Carneiro, M.,
      van Doorn, F., Dvorak, M., Goens, A., Hill, A., Husum, H.,
      Ibarra Mejia, H., Kocsis, Z. A., Le Floch, B., Livne Bar-on, A.,
      Luccioli, L., McNeil, D., Meiburg, A., Monticone, P., Nielsen, P.,
