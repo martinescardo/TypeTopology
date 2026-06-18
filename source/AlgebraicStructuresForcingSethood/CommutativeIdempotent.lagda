@@ -28,10 +28,10 @@ of my own attempt at understanding the work that came before me.
      (See also https://mathstodon.xyz/deck/@dwarn/116091515645003634.)
 
  [2] Tom de Jong. AlgebraicStructuresForcingSethood.Semilattices-streamlined,
-     25—27 February 2026
+     25—27 February 2026.
 
  [3] Tom de Jong. AlgebraicStructuresForcingSethood.CommutativeLoopSpaces,
-     18 March 2026
+     18 March 2026.
 
  [4] Martín Escardó. AlgebraicStructuresForcingSethood.Semilattices,
      23 February 2026.
@@ -473,6 +473,7 @@ do not consider parametric laws such as eventual idempotence.
      Luccioli, L., McNeil, D., Meiburg, A., Monticone, P., Nielsen, P.,
      Osazuwa, E. O., Paolini, G., Petracci, M., Reinke, B., Renshaw, D.,
      Rossel, M., Roux, C., Scanvic, J., Srinivas, S., Tadipatri, A. R., Tao, T.,
-     Tsyrklevich, V., Vaquerizo-Villar, F., Weber, D., & Zheng, F. (2025).
+     Tsyrklevich, V., Vaquerizo-Villar, F., Weber, D., & Zheng, F.
      The Equational Theories Project (Version 0.2.0) [Computer software].
      https://teorth.github.io/equational_theories/
+     2025.
