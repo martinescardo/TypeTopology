@@ -118,31 +118,31 @@ module pointed-endomap-iterates
  Ω-map : ΩA x₀ → ΩA x₀
  Ω-map p = conjugate-loop η (ap f p)
 
- fixed^ : (n : ℕ) → (f ^ n) x₀ ＝ x₀
- fixed^ 0 = refl
- fixed^ (succ n) = ap f (fixed^ n) ∙ η
+ preserves-point^ : (n : ℕ) → (f ^ n) x₀ ＝ x₀
+ preserves-point^ 0 = refl
+ preserves-point^ (succ n) = ap f (preserves-point^ n) ∙ η
 
- Ω-map^ : (n : ℕ) → ΩA x₀ → ΩA x₀
- Ω-map^ n p = conjugate-loop (fixed^ n) (ap (f ^ n) p)
+ Ω-map^-conj : (n : ℕ) → ΩA x₀ → ΩA x₀
+ Ω-map^-conj n p = conjugate-loop (preserves-point^ n) (ap (f ^ n) p)
 
  ap-iterate-succ
   : {x y : A} (n : ℕ) (p : x ＝ y)
-  → ap (f ^ succ n) p ＝ ap f (ap (f ^ n) p)
+  → ap f (ap (f ^ n) p) ＝ ap (f ^ succ n) p
  ap-iterate-succ n refl = refl
 
  Ω-map-iterates : (n : ℕ) (p : ΩA x₀)
-                → (Ω-map ^ n) p ＝ Ω-map^ n p
+                → (Ω-map ^ n) p ＝ Ω-map^-conj n p
  Ω-map-iterates 0 p = ap-id-is-id p ⁻¹
  Ω-map-iterates (succ n) p =
   let
-   β = fixed^ n
+   β = preserves-point^ n
    r = ap (f ^ n) p
   in
   Ω-map ((Ω-map ^ n) p)                               ＝⟨ ap Ω-map (Ω-map-iterates n p) ⟩
-  Ω-map (Ω-map^ n p)                                  ＝⟨ ap (conjugate-loop η) (ap-conjugate-loop f β r) ⟩
+  Ω-map (Ω-map^-conj n p)                             ＝⟨ ap (conjugate-loop η) (ap-conjugate-loop f β r) ⟩
   conjugate-loop η (conjugate-loop (ap f β) (ap f r)) ＝⟨ ＝-congr-∙' (ap f β) η (ap f β) η (ap f r) ⁻¹ ⟩
-  conjugate-loop (ap f β ∙ η) (ap f r)                ＝⟨ ap (conjugate-loop (fixed^ (succ n))) (ap-iterate-succ n p ⁻¹) ⟩
-  Ω-map^ (succ n) p                                   ∎
+  conjugate-loop (ap f β ∙ η) (ap f r)                ＝⟨ ap (conjugate-loop (preserves-point^ (succ n))) (ap-iterate-succ n p) ⟩
+  Ω-map^-conj (succ n) p                              ∎
 
 \end{code}
 
@@ -165,17 +165,17 @@ module pointed-endomap-iterates
  homotopic-conjugations refl β refl {r} e loop-comm =
   conjugate-loop-is-id loop-comm β r ∙ e ∙ refl-left-neutral
 
- homotopic-Ω-map^
+ homotopic-Ω-map^-conj
   : (m n : ℕ)
   → ((x : A) → (f ^ m) x ＝ (f ^ n) x)
   → ((p q : ΩA x₀) → p ∙ q ＝ q ∙ p)
   → (p : ΩA x₀)
-  → Ω-map^ m p ＝ Ω-map^ n p
- homotopic-Ω-map^ m n H loop-comm p =
+  → Ω-map^-conj m p ＝ Ω-map^-conj n p
+ homotopic-Ω-map^-conj m n H loop-comm p =
   homotopic-conjugations
    (H x₀)
-   (fixed^ m)
-   (fixed^ n)
+   (preserves-point^ m)
+   (preserves-point^ n)
    (homotopies-are-natural' (f ^ m) (f ^ n) H {p = p} ⁻¹)
    (loop-comm)
 
@@ -186,10 +186,10 @@ module pointed-endomap-iterates
   → (p : ΩA x₀)
   → (Ω-map ^ n) p ＝ (Ω-map ^ succ n) p
  Ω-map-eventually-idempotent n r loop-comm p =
-  (Ω-map ^ n) p      ＝⟨ Ω-map-iterates n p ⟩
-  Ω-map^ n p         ＝⟨ homotopic-Ω-map^ n (succ n) r loop-comm p ⟩
-  Ω-map^ (succ n) p  ＝⟨ Ω-map-iterates (succ n) p ⁻¹ ⟩
-  (Ω-map ^ succ n) p ∎
+  (Ω-map ^ n) p          ＝⟨ Ω-map-iterates n p ⟩
+  Ω-map^-conj n p        ＝⟨ homotopic-Ω-map^-conj n (succ n) r loop-comm p ⟩
+  Ω-map^-conj (succ n) p ＝⟨ Ω-map-iterates (succ n) p ⁻¹ ⟩
+  (Ω-map ^ succ n) p     ∎
 
 \end{code}
 
@@ -222,11 +222,11 @@ TODO: text
 
   Ω-map-is-＊Ω-refl : (p : ΩA x₀) → Ω-map p ＝ p ＊Ω refl
   Ω-map-is-＊Ω-refl p =
-   ap (conjugate-loop (idem x₀)) ((ap₂-refl-right (_*_) {y = x₀} p) ⁻¹)
+   ap (conjugate-loop (idem x₀)) (ap₂-refl-right (_*_) p ⁻¹)
 
   Ω-map-self-concat : (p : ΩA x₀) → Ω-map p ∙ Ω-map p ＝ p
   Ω-map-self-concat p =
-   Ω-map p ∙ Ω-map p           ＝⟨ ap₂ (_∙_) (Ω-map-is-＊Ω-refl p) (Ω-map-is-＊Ω-refl p) ⟩
+   Ω-map p ∙ Ω-map p          ＝⟨ ap₂ (_∙_) (Ω-map-is-＊Ω-refl p) (Ω-map-is-＊Ω-refl p) ⟩
    (p ＊Ω refl) ∙ (p ＊Ω refl) ＝⟨ ap ((p ＊Ω refl) ∙_) (＊Ω-commutative comm p refl) ⟩
    (p ＊Ω refl) ∙ (refl ＊Ω p) ＝⟨ ＊Ω-interchange-∙ p refl refl p ⟩
    (p ∙ refl) ＊Ω (refl ∙ p)   ＝⟨ ap₂ _＊Ω_ (refl-right-neutral p) refl-left-neutral ⟩
