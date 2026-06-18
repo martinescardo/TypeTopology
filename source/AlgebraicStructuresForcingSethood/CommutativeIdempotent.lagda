@@ -125,11 +125,6 @@ module pointed-endomap-iterates
  Ω-map^-conj : (n : ℕ) → ΩA x₀ → ΩA x₀
  Ω-map^-conj n p = conjugate-loop (preserves-point^ n) (ap (f ^ n) p)
 
- ap-iterate-succ
-  : {x y : A} (n : ℕ) (p : x ＝ y)
-  → ap f (ap (f ^ n) p) ＝ ap (f ^ succ n) p
- ap-iterate-succ n refl = refl
-
  Ω-map-iterates : (n : ℕ) (p : ΩA x₀)
                 → (Ω-map ^ n) p ＝ Ω-map^-conj n p
  Ω-map-iterates 0 p = ap-id-is-id' p
