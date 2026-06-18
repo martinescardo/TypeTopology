@@ -45,9 +45,9 @@ of my own attempt at understanding the work that came before me.
     eventually idempotent when f is, given that loop concatenation is
     commutative.
 
- 3. Demonstrating that the induced map Ωr of the right action at y satisfies
+ 3. Demonstrating that the induced map Ωr of the right action satisfies
     the equation Ωr ∙ Ωr ∼ id, and hence satisfies our trivial loop space
-    criterion.                                                                ∎
+    criterion.                                                           ∎
 
 \begin{code}
 
