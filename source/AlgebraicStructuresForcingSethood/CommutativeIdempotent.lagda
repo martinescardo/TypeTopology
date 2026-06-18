@@ -40,11 +40,9 @@ of my own attempt at understanding the work that came before me.
  The proof of the theorem proceeds by
 
  1. Giving a generalisation of de Jong's trivial loop space criterion [2].
-
  2. Showing that the induced map on loop spaces Ωf of a pointed map f is
     eventually idempotent when f is, given that loop concatenation is
     commutative.
-
  3. Demonstrating that the induced map Ωr of the right action satisfies
     the equation Ωr ∙ Ωr ∼ id, and hence satisfies our trivial loop space
     criterion.                                                           ∎
@@ -214,10 +212,10 @@ module pointed-endomap-iteration
  Ω-map^-conj : (n : ℕ) → ΩA x₀ → ΩA x₀
  Ω-map^-conj n p = conjugate-loop (preserves-point^ n) (ap (f ^ n) p)
 
- Ω-map-iterates : (n : ℕ) (p : ΩA x₀)
-                → (Ω-map ^ n) p ＝ Ω-map^-conj n p
- Ω-map-iterates 0 p = ap-id-is-id' p
- Ω-map-iterates (succ n) p =
+ Ω-map^-is-Ω-map^-conj : (n : ℕ) (p : ΩA x₀)
+                       → (Ω-map ^ n) p ＝ Ω-map^-conj n p
+ Ω-map^-is-Ω-map^-conj 0 p = ap-id-is-id' p
+ Ω-map^-is-Ω-map^-conj (succ n) p =
   Ω-map ((Ω-map ^ n) p)                               ＝⟨ I   ⟩
   Ω-map (Ω-map^-conj n p)                             ＝⟨ II  ⟩
   conjugate-loop η (conjugate-loop (ap f β) (ap f r)) ＝⟨ III ⟩
@@ -227,7 +225,7 @@ module pointed-endomap-iteration
     β = preserves-point^ n
     r = ap (f ^ n) p
 
-    I   = ap Ω-map (Ω-map-iterates n p)
+    I   = ap Ω-map (Ω-map^-is-Ω-map^-conj n p)
     II  = ap (conjugate-loop η) (ap-conjugate-loop f β r)
     III = ＝-congr-∙' (ap f β) η (ap f β) η (ap f r) ⁻¹
     IV  = ap (conjugate-loop (preserves-point^ (succ n))) (ap-^-succ n p)
@@ -279,9 +277,9 @@ module pointed-endomap-iteration
   → (p : ΩA x₀)
   → (Ω-map ^ n) p ＝ (Ω-map ^ succ n) p
  Ω-map-is-eventually-idempotent n r loop-comm p =
-  (Ω-map ^ n) p          ＝⟨ Ω-map-iterates n p ⟩
+  (Ω-map ^ n) p          ＝⟨ Ω-map^-is-Ω-map^-conj n p ⟩
   Ω-map^-conj n p        ＝⟨ homotopy-Ω-map^-conj n (succ n) r loop-comm p ⟩
-  Ω-map^-conj (succ n) p ＝⟨ Ω-map-iterates (succ n) p ⁻¹ ⟩
+  Ω-map^-conj (succ n) p ＝⟨ Ω-map^-is-Ω-map^-conj (succ n) p ⁻¹ ⟩
   (Ω-map ^ succ n) p     ∎
 
 \end{code}
