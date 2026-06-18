@@ -19,8 +19,9 @@ action _*_ with eventually idempotent right action is a set.
 This theorem provides a generalisation of David Wärn's result [1] that types
 equipped with the algebraic structure of a semilattice forms a set. We elaborate
 on the properness of this generalisation in the final section of this file. Our
-work builds on the adaptated formalisation of this result by Tom de Jong [2].
-See also Martín Escardó's adaptation [3].
+work builds on the adaptated formalisation of this result by Tom de Jong [2]
+and his characterisation of commutative loop spaces [3]. See also Martín
+Escardó's adaptation [4] of Wärn's result.
 
  [1] David Wärn. https://dwarn.se/agda/Idem.html, 17 February 2026.
      (See also https://mathstodon.xyz/deck/@dwarn/116091515645003634.)
@@ -28,10 +29,24 @@ See also Martín Escardó's adaptation [3].
  [2] Tom de Jong. AlgebraicStructuresForcingSethood.Semilattices-streamlined,
      25—27 February 2026
 
- [3] Martín Escardó. AlgebraicStructuresForcingSethood.Semilattices,
+ [3] Tom de Jong. AlgebraicStructuresForcingSethood.CommutativeLoopSpaces,
+     18 March 2026
+
+ [4] Martín Escardó. AlgebraicStructuresForcingSethood.Semilattices,
      23 February 2026.
 
-TODO: elaborate on proof
+ Proof outline.
+ The proof of the theorem proceeds by
+
+ 1. Giving a generalisation of de Jong's trivial loop space criterion [2].
+
+ 2. Showing that the induced map on loop spaces Ωf of a pointed map f is
+    eventually idempotent when f is, given that loop concatenation is
+    commutative.
+
+ 3. Demonstrating that the induced map Ωr of the right action at y satisfies
+    the equation Ωr ∙ Ωr ∼ id, and hence satisfies our trivial loop space
+    criterion.                                                                ∎
 
 \begin{code}
 
@@ -131,7 +146,7 @@ module _ (A  : 𝓤 ̇) (x₀ : A) where
 
 \end{code}
 
-For our main result we use the following form of these criteria
+For our main result we use the following form of these criteria:
 
  Corollary.
  Given a type A with an element x₀, if there is a map f : Ω(A,x₀) → Ω(A,x₀)
@@ -168,13 +183,13 @@ For our main result we use the following form of these criteria
 Iteration of the induced map on the loop space of a pointed endomap
 ────────────────────────────────────────────────────────────────────────────────
 
-Given a pointed endomap f : (A,x₀) → (A,x₀) where η : f(x₀) = x, then we
+Given a pointed endomap f : (A,x₀) → (A,x₀) where η : f(x₀) = x₀, then we
 consider the induced endomap on loop spaces Ωf : Ω(A,x₀) → Ω(A,x₀) given by
 conjugation:
 
  Ωf(p) := η⁻¹ ∙ f(p) ∙ η
 
-We observe that if loop concatenation over x₀ is commutative, then Ωf is
+We prove that if loop concatenation over x₀ is commutative, then Ωf is
 eventually idempotent when f is.
 
 To obtain this result we must perform a series of basic computations of (Ωf)ⁿ.
@@ -293,11 +308,11 @@ module comm-idem
 
   Ω-map p ∙ Ω-map p ＝ p,
 
- and hence if _* x₀ is eventually idempotent  then by the trivial loop space
+ and hence if _* x₀ is eventually idempotent then by the trivial loop space
  criterion Ω(A,x₀) is contractible.
 
 The proof relies on four essential properties that we import from de Jong's
-work, noting that Ω-map p = p ＊Ω refl by idempotence:
+work [2,3], noting that Ω-map p = p ＊Ω refl by idempotence:
 
  1. _＊Ω_ is idempotent
  2. refl is central wrt. _＊Ω_
@@ -307,7 +322,7 @@ work, noting that Ω-map p = p ＊Ω refl by idempotence:
 We note the following in passing.
 
  Question.
- Tom de Jong's proof of commutativity of _∙_ [4] in turn only uses the following
+ Tom de Jong's proof of commutativity of _∙_ [3] in turn only uses the following
  facts:
 
   1. _＊Ω_ is idempotent
@@ -315,9 +330,6 @@ We note the following in passing.
   3. _＊Ω_ and _∙_ satisfy the interchange law
 
  So perhaps there is some way to relax the commutativity assumption on _*_?
-
- [4] Tom de Jong. AlgebraicStructuresForcingSethood.CommutativeLoopSpaces,
-     18 March 2026
 
 \begin{code}
  module pointed (x₀ : A) where
@@ -448,11 +460,11 @@ idempotence of the right action for commutative idempotent binary operations.
   # 62068 is the second order idempotence law for the right action
 
 
-I originally wanted see if some of the results from the Equational Theories
-Project [5] could aid in generalising Wärn's result, but unfortunately their
-project is too limited in scope for this problem. This is because they only
-consider equational theories with a single equation. They also do not consider
-parametric laws such as eventual idempotence.
+I originally wanted see if I could use the database produced by the
+Equational Theories Project [5] to aid in generalising Wärn's result, but
+unfortunately their project is too limited in scope for this problem. This is
+because they only consider equational theories with a single equation. They also
+do not consider parametric laws such as eventual idempotence.
 
  [5] Bolan, M., Breitner, J., Brox, J., Carlini, N., Carneiro, M.,
      van Doorn, F., Dvorak, M., Goens, A., Hill, A., Husum, H.,
