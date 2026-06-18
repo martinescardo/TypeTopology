@@ -213,8 +213,6 @@ Commutative idempotent binary operations with eventually idempotent right action
 
 We now return to a commutative idempotent binary operation on A.
 
-TODO: text
-
 \begin{code}
 
 module comm-idem
@@ -226,14 +224,32 @@ module comm-idem
 
 \end{code}
 
-TODO: text
+We observe that for any point x₀ of a type A equipped with a commutative
+idempotent binary operation _*_, then the right action at x₀, _* x₀ preserves
+the base point by idempotence, and the induced map on loops satisfies the
+equation
+
+ Ω-map p ∙ Ω-map p ＝ p
+
+the proof relies on four essential properties that we import from de Jong's
+work:
+
+ 1. _＊Ω_ is idempotent
+ 2. refl is ＊Ω-central
+ 3. _＊Ω_ and _∙_ satisfy the interchange law (at (p ＊Ω refl) ∙ (refl ＊Ω p))
+ 4. _∙_ is commutative
+
+hence by the trivial loop space criterion, if _* x₀ is eventually idempotent
+then Ω(A,x₀) is contractible.
 
 \begin{code}
  module pointed (x₀ : A) where
 
-  open idempotent-commutative-operation A x₀ _*_ idem comm
   open pointed-endomap-iterates x₀ (_* x₀) (idem x₀)
-  open idempotent.pointed A _*_ idem x₀
+  open idempotent.pointed A _*_ idem x₀ using
+   (_＊Ω_ ; ＊Ω-idempotent ; ＊Ω-interchange-∙ ; ＊Ω-commutative)
+  open idempotent-commutative-operation A x₀ _*_ idem comm using
+   (∙-is-commutative)
 
   Ω-map-is-＊Ω-refl : (p : ΩA x₀) → Ω-map p ＝ p ＊Ω refl
   Ω-map-is-＊Ω-refl p =
@@ -253,12 +269,15 @@ TODO: text
    → (p : ΩA x₀) → refl ＝ p
   ΩA-is-trivial n₀ r₀ =
    trivial-Ω-eventually-idempotent-endomap-criterion A x₀
-    Ω-map n₀ (Ω-map-is-eventually-idempotent n₀ r₀ ∙-is-commutative) Ω-map-self-concat
+     (Ω-map)
+     (n₀)
+     (Ω-map-is-eventually-idempotent n₀ r₀ ∙-is-commutative)
+     (Ω-map-self-concat)
 
 \end{code}
 
-Now, assuming that the right action at every element is eventually idempotent
-we obtain that A is a set.
+Consequently, if the right action at every element is eventually idempotent then
+A is a set.
 
 \begin{code}
 
