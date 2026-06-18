@@ -93,13 +93,13 @@ module _ (A  : 𝓤 ̇) (x₀ : A) where
   f n r f-self-concat p =
   iterate-reflects-is-refl f (λ p → p ∙ p) f-self-concat refl n p (II ⁻¹)
    where
-   I : (f ^ n) p ∙ (f ^ n) p ＝ (f ^ n) p
-   I = (f ^ n) p ∙ (f ^ n) p           ＝⟨ ap (λ q → q ∙ q) (r p) ⟩
-       (f ^ succ n) p ∙ (f ^ succ n) p ＝⟨ f-self-concat ((f ^ n) p) ⟩
-       (f ^ n) p                       ∎
+    I : (f ^ n) p ∙ (f ^ n) p ＝ (f ^ n) p
+    I = (f ^ n) p ∙ (f ^ n) p           ＝⟨ ap (λ q → q ∙ q) (r p) ⟩
+        (f ^ succ n) p ∙ (f ^ succ n) p ＝⟨ f-self-concat ((f ^ n) p) ⟩
+        (f ^ n) p                       ∎
 
-   II : (f ^ n) p ＝ refl
-   II = cancel-left (I ∙ refl-right-neutral ((f ^ n) p))
+    II : (f ^ n) p ＝ refl
+    II = cancel-left (I ∙ refl-right-neutral ((f ^ n) p))
 
 \end{code}
 
