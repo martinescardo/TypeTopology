@@ -51,8 +51,7 @@ In the end, the generalisation to eventual idempotence of the right action is,
 I believe, a rather natural one. Idempotence of the right action immediately
 generalises the usage of the trivial loop space condition given by de Jong [2],
 from which the rest follows by induction on the natural numbers. At the time of
-writing I am still curious and expect that the equations can be relaxed even
-further.
+writing I still expect that the equations can be relaxed further.
 
 \begin{code}
 
