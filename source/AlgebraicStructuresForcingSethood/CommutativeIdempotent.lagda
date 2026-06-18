@@ -18,8 +18,8 @@ action _*_ with eventually idempotent right action is a set.
 
 This theorem provides a generalisation of David Wärn's result [1] that types
 equipped with the algebraic structure of a semilattice forms a set. In the final
-section we elaborate on the properness of this generalisation. Our work builds
-on the adaptated formalisation of this result by Tom de Jong [2] and his
+section we establish that this generalisation is proper. Our work builds on the
+adaptated formalisation of this result by Tom de Jong [2] and his
 characterisation of commutative loop spaces [3]. See also Martín Escardó's
 adaptation [4] of Wärn's result. Like [2,3,4], this work is a result of my own
 attempt at understanding the work that came before me.
