@@ -453,7 +453,7 @@ quantified) principle of excluded middle.
         A
         (Ω-is-set (fe _ _) pe)
         (λ (P , i) → decidability-of-prop-is-prop (fe _ _) i)
-        (λ _ → fake-¬¬-EM)
+        (λ _ → double-negation-of-decision)
 
  ¬¬EM-gives-DNS₋₁ : ¬¬ EM 𝓤 → DNS₋₁ {𝓤} {𝓤}
  ¬¬EM-gives-DNS₋₁ {𝓤} nnem X A X-is-set A-is-prop-valued f = ¬¬-functor g nnem

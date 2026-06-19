@@ -117,13 +117,13 @@ EM-gives-DNE em P i φ = cases id (λ u → 𝟘-elim (φ u)) (em P i)
 double-negation-elim : EM 𝓤 → DNE 𝓤
 double-negation-elim = EM-gives-DNE
 
-fake-¬¬-EM : {X : 𝓤 ̇ } → ¬¬ (X + ¬ X)
-fake-¬¬-EM u = u (inr (λ p → u (inl p)))
+double-negation-of-decision : {X : 𝓤 ̇ } → ¬¬ (X + ¬ X)
+double-negation-of-decision u = u (inr (λ p → u (inl p)))
 
 DNE-gives-EM : funext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 DNE-gives-EM fe dne P isp = dne (P + ¬ P)
                              (decidability-of-prop-is-prop fe isp)
-                             fake-¬¬-EM
+                             double-negation-of-decision
 
 all-props-negative-gives-DNE : funext 𝓤 𝓤₀
                             → ((P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ↔ ¬ Q))
