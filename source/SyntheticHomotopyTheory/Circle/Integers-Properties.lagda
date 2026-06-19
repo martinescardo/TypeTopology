@@ -57,6 +57,20 @@ pred-ℤ-is-equiv = ⌜⌝-is-equiv (≃-sym succ-ℤ-≃)
 
 \end{code}
 
+Added 19 June 2026.
+
+\begin{code}
+
+ℕ-to-ℤ₊-on-succ : (n : ℕ) → ℕ-to-ℤ₊ (succ n) ＝ succ-ℤ (ℕ-to-ℤ₊ n)
+ℕ-to-ℤ₊-on-succ zero     = refl
+ℕ-to-ℤ₊-on-succ (succ n) = refl
+
+ℕ-to-ℤ₋-on-succ : (n : ℕ) → ℕ-to-ℤ₋ (succ n) ＝ pred-ℤ (ℕ-to-ℤ₋ n)
+ℕ-to-ℤ₋-on-succ zero     = refl
+ℕ-to-ℤ₋-on-succ (succ n) = refl
+
+\end{code}
+
 We will consider iterations of succ-ℤ and pred-ℤ in defining addition on ℤ and
 need some lemmas for working with those iterations.
 

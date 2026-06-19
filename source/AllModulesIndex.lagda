@@ -28,7 +28,7 @@ TypeTopology, and in particular which type theory is adopted.
 
 \begin{code}
 
-{-# OPTIONS --without-K --guardedness #-}
+{-# OPTIONS --without-K --guardedness --rewriting #-}
 
 module AllModulesIndex where
 
@@ -39,7 +39,8 @@ import InfinitePigeon.index                 -- (3)
 \end{code}
 
 (1) Index of --safe modules using --without-K and --level-universe.
-(2) Index of unsafe modules. Requires --guardedness for some modules.
+(2) Index of unsafe modules. Requires --guardedness and --rewriting
+    for some modules.
 (3) Index of modules that disable termination check for bar recursion.
     These modules *should* be safe in some sense, but Agda can't tell this,
     and so the checking needs to be done by mathematicians and/or logicians.
@@ -87,6 +88,7 @@ infective options are:
 
   --no-termination-check
   --guardedness
+  --rewriting
 
 Navigate to the corresponding files to see which (infective or
 coinfective) options they use.

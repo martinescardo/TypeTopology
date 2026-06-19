@@ -176,6 +176,28 @@ idtofun X Y p = ⌜ idtoeq X Y p ⌝
 idtofun' : {X Y : 𝓤 ̇ } → X ＝ Y → X → Y
 idtofun' = idtofun _ _
 
+\end{code}
+
+Added 19 June 2026 by Tom de Jong: relating transport, idtofun and ap.
+
+\begin{code}
+
+transport-is-idtofun-after-ap
+ : {A : 𝓤 ̇ } (B : A → 𝓥 ̇ ) {a₁ a₂ : A} (p : a₁ ＝ a₂)
+ → transport B p ＝ idtofun (B a₁) (B a₂) (ap B p)
+transport-is-idtofun-after-ap B refl = refl
+
+transport-is-idtofun-after-ap⁻¹
+ : {A : 𝓤 ̇ } (B : A → 𝓥 ̇ ) {a₁ a₂ : A} (p : a₁ ＝ a₂)
+ → transport B (p ⁻¹) ＝ ⌜ idtoeq (B a₁) (B a₂) (ap B p) ⌝⁻¹
+transport-is-idtofun-after-ap⁻¹ B refl = refl
+
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 idtofun-agreement : (X Y : 𝓤 ̇ ) (p : X ＝ Y) → idtofun X Y p ＝ Idtofun p
 idtofun-agreement X Y refl = refl
 

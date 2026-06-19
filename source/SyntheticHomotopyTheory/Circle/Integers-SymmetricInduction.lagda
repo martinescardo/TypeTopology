@@ -177,3 +177,42 @@ module SyntheticHomotopyTheory.Circle.Integers-SymmetricInduction where
    XII  = ≃-sym (𝟙→ fe)
 
 \end{code}
+
+A nondependent instance and a consequence of the symmetric induction principle
+are the following, added on 19 June 2026 by Tom de Jong.
+
+The space of maps f : ℤ → X that equalize succ-ℤ and id_ℤ is equivalent to X,
+and similarly for pred-ℤ instead of succ-ℤ.
+
+\begin{code}
+
+maps-equalizing-succ-ℤ-and-id-≃ : funext 𝓤₀ 𝓤 → (X : 𝓤 ̇ )
+                                → (Σ f ꞉ (ℤ → X) , f ∘ succ-ℤ ＝ f) ≃ X
+maps-equalizing-succ-ℤ-and-id-≃ fe X =
+ (Σ f ꞉ (ℤ → X) , f ∘ succ-ℤ ＝ f) ≃⟨ Σ-cong (λ f → happly-≃ fe) ⟩
+ (Σ f ꞉ (ℤ → X) , f ∘ succ-ℤ ∼ f)  ≃⟨ ind ⟩
+ X                                 ■
+  where
+   ind = ℤ-symmetric-induction fe (λ _ → X) (λ _ → ≃-refl X)
+
+maps-equalizing-pred-ℤ-and-id-≃ : funext 𝓤₀ 𝓤 → (X : 𝓤 ̇ )
+                                → (Σ f ꞉ (ℤ → X) , f ∘ pred-ℤ ＝ f) ≃ X
+maps-equalizing-pred-ℤ-and-id-≃ fe X =
+  (Σ f ꞉ (ℤ → X) , f ∘ pred-ℤ ＝ f)                   ≃⟨ I   ⟩
+  (Σ f ꞉ (ℤ → X) , f ∘ pred-ℤ ∘ succ-ℤ ＝ f ∘ succ-ℤ) ≃⟨ II  ⟩
+  (Σ f ꞉ (ℤ → X) , f ＝ f ∘ succ-ℤ)                   ≃⟨ III ⟩
+  (Σ f ꞉ (ℤ → X) , f ∘ succ-ℤ ＝ f)                   ≃⟨ IV  ⟩
+  X                                                   ■
+  where
+   I   = Σ-cong
+          (λ f → ap (_∘ succ-ℤ) ,
+                 ap-is-equiv (_∘ succ-ℤ)
+                             (dprecomp-is-equiv fe fe (λ _ → X)
+                                                succ-ℤ
+                                                succ-ℤ-is-equiv))
+   II  = Σ-cong (λ f → ＝-cong-l _ _ (dfunext fe
+                                       (λ k → ap f (succ-ℤ-is-section k))))
+   III = Σ-cong (λ f → ＝-flip)
+   IV  = maps-equalizing-succ-ℤ-and-id-≃ fe X
+
+\end{code}
