@@ -145,8 +145,8 @@ The unit of the reflection and its non-definitional "computation" rules.
 η⊤ : η ⊤ ＝ τ₁
 η⊤ = dfunext fe (λ w → η₁ ⊤ w (¬¬-intro ⊤-holds))
 
-τ-const : (t : T) (w : WEM) → t ＝ τ (t w)
-τ-const t w = dfunext fe (λ w' → ap t (WEM-is-prop w' w))
+τ-lemma : (t : T) (w : WEM) → t ＝ τ (t w)
+τ-lemma t w = dfunext fe (λ w' → ap t (WEM-is-prop w' w))
 
 \end{code}
 
@@ -159,6 +159,15 @@ lemma-⊥ h p ν = ap h (fails-gives-equal-⊥ pe fe p ν)
 
 lemma-⊤ : (h : Ω → 𝟚) (p : Ω) → p holds → h p ＝ h ⊤
 lemma-⊤ h p e = ap h (holds-gives-equal-⊤ pe fe p e)
+
+\end{code}
+
+Given h : Ω → 𝟚, we can decide whether h ⊥ ＝ h ⊤ or not.
+
+ * If so, then h is constant.
+ * Otherwise, WEM follows.
+
+\begin{code}
 
 constancy-lemma : (h : Ω → 𝟚) → h ⊥ ＝ h ⊤ → (p : Ω) → h p ＝ h ⊥
 constancy-lemma h e p = 𝟚-is-¬¬-separated (h p) (h ⊥) I
@@ -241,7 +250,7 @@ We apply resizing to the proposition (t ＝ τ₁).
              t w       ∎
     where
      IV : t ＝ τ₁
-     IV = t       ＝⟨ τ-const t w ⟩
+     IV = t       ＝⟨ τ-lemma t w ⟩
           τ (t w) ＝⟨ ap τ e ⟩
           τ₁      ∎
      V : ¬¬ (s t holds)
@@ -324,9 +333,9 @@ same conclusion without assuming WEM.
 
 \end{code}
 
-This is the end of the module assuming-resizing, and we now record
-everything we know about the universal property of T without assuming
-resizing.
+This is the end of the above module assuming resizing, and we now
+record everything we know about the universal property of T without
+assuming resizing.
 
 We first show that the universal property holds when 𝟚 is the target type.
 
@@ -361,7 +370,7 @@ restriction-of-extension₂ f = dfunext fe (λ p → extension₂-property f p)
 \end{code}
 
 The points τ₀ and τ₁ are ¬¬-dense in T, which gives
-left-cancellability of ρ₂, hence the other triangle.
+left-cancellability of ρ₂.
 
 \begin{code}
 
@@ -370,10 +379,10 @@ left-cancellability of ρ₂, hence the other triangle.
  where
   I : is-decidable WEM → (t ＝ τ₀) + (t ＝ τ₁)
   I (inl w) = 𝟚-equality-cases
-               (λ e → inl (t        ＝⟨ τ-const t w ⟩
+               (λ e → inl (t        ＝⟨ τ-lemma t w ⟩
                            τ (t w) ＝⟨ ap τ e ⟩
                            τ₀       ∎))
-               (λ e → inr (t        ＝⟨ τ-const t w ⟩
+               (λ e → inr (t        ＝⟨ τ-lemma t w ⟩
                            τ (t w) ＝⟨ ap τ e ⟩
                            τ₁       ∎))
   I (inr nw) = inl (dfunext fe (λ w → 𝟘-elim (nw w)))
