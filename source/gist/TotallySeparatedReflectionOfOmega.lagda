@@ -37,7 +37,7 @@ retracts of powers of 𝟚.
 TODO. Is every totally separated type a retract of a power of 𝟚,
 without assuming resizing? No, because this excludes the empty type
 (as pointed out to us by Jason Carr). But what can we say in this
-direction.
+direction?
 
 \begin{code}
 
