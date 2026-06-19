@@ -60,7 +60,7 @@ so we replace [ap f loop] by its unfolding to a transport.
 
 \end{code}
 
-The above rewrite rules amount to the following defintional equalities.
+The above rewrite rules amount to the following definitional equalities.
 
 \begin{code}
 
