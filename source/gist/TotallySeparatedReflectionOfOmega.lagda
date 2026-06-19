@@ -837,7 +837,7 @@ more or less directly.
        where
         V : h p ＝ h ⊤
         V = 𝟚-is-¬¬-separated (h p) (h ⊤)
-             (λ k → νν (λ ph → k (lemma-⊤ h p ph)))
+             (λ ν → νν (λ ph → ν (lemma-⊤ h p ph)))
 
 ψε : ψ ∘ ψ⁻¹ ∼ id
 ψε (inl b) = I (𝟚-is-discrete b b)
