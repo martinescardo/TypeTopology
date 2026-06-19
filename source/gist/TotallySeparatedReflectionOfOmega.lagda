@@ -39,21 +39,24 @@ without assuming resizing?
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 open import UF.Subsingletons
 
+open import MLTT.Spartan
+
 module gist.TotallySeparatedReflectionOfOmega
         (fe : Fun-Ext)
         (pe : Prop-Ext)
+        (𝓤 : Universe)
        where
 
-open import MLTT.Spartan hiding (𝟚-cases)
 open import MLTT.Two-Properties
 open import TypeTopology.CompactTypes
 open import TypeTopology.MicroTychonoff
 open import TypeTopology.TotallySeparated
+open import TypeTopology.SigmaTotallySeparated
 open import UF.Base
 open import UF.ClassicalLogic
              using (EM ; LEM ; EM-gives-LEM ; double-negation-of-decision)
@@ -64,61 +67,50 @@ open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
 open import UF.Size
-open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier renaming (Ω to Ω-of)
 open import UF.Subsingletons-FunExt
 
-fe' : FunExt
-fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+private
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+
+Ω : (𝓤 ⁺) ̇
+Ω = Ω-of 𝓤
+
+WEM : 𝓤 ⁺ ̇
+WEM = (p : Ω) → is-decidable (¬ (p holds))
+
+WEM-is-prop : is-prop WEM
+WEM-is-prop = Π-is-prop fe
+               (λ p → decidability-of-prop-is-prop fe (negations-are-props fe))
+
+T : 𝓤 ⁺ ̇
+T = WEM → 𝟚
+
+T-is-totally-separated : is-totally-separated T
+T-is-totally-separated = Π-is-totally-separated fe (λ _ → 𝟚-is-totally-separated)
+
+T-is-set : is-set T
+T-is-set = totally-separated-types-are-sets fe T T-is-totally-separated
+
+τ : 𝟚 → T
+τ b = λ _ → b
+
+τ₀ τ₁ : T
+τ₀ = τ ₀
+τ₁ = τ ₁
 
 \end{code}
 
-Everything in this outer module is resizing-free.
+We use the following only for A = ¬ (p holds) and B = ¬¬ (p holds),
+but Agda can't infer p if we leave it implicit, and so we define it
+more generally.
 
 \begin{code}
 
-module _ {𝓤 : Universe} where
-
- WEM : 𝓤 ⁺ ̇
- WEM = (p : Ω 𝓤) → is-decidable (¬ (p holds))
-
- WEM-is-prop : is-prop WEM
- WEM-is-prop = Π-is-prop fe
-                (λ p → decidability-of-prop-is-prop fe (negations-are-props fe))
-
- T : 𝓤 ⁺ ̇
- T = WEM → 𝟚
-
- T-is-totally-separated : is-totally-separated T
- T-is-totally-separated = Π-is-totally-separated fe (λ _ → 𝟚-is-totally-separated)
-
- T-is-set : is-set T
- T-is-set = totally-separated-types-are-sets fe T T-is-totally-separated
-
- τ : 𝟚 → T
- τ b = λ _ → b
-
- τ₀ τ₁ : T
- τ₀ = τ ₀
- τ₁ = τ ₁
-
-\end{code}
-
-TODO. Move the following to a better home.
-
-\begin{code}
-
- δ : {A B : 𝓤 ̇ } → A + B → 𝟚
- δ (inl _) = ₀
- δ (inr _) = ₁
-
- 𝟚-cases : {A : 𝓦 ̇ } → 𝟚 → A → A → A
- 𝟚-cases ₀ a b = a
- 𝟚-cases ₁ a b = b
-
- 𝟚-cases-lemma : {Y : 𝓦 ̇ } (f : Y → 𝟚) (b : 𝟚) (y₀ y₁ : Y)
-               → f (𝟚-cases b y₀ y₁) ＝ 𝟚-cases b (f y₀) (f y₁)
- 𝟚-cases-lemma f ₀ y₀ y₁ = refl
- 𝟚-cases-lemma f ₁ y₀ y₁ = refl
+δ : {A : 𝓥 ̇ } {B : 𝓥 ̇ } → A + B → 𝟚
+δ (inl _) = ₀
+δ (inr _) = ₁
 
 \end{code}
 
@@ -126,28 +118,28 @@ The unit of the reflection and its non-definitional "computation" rules.
 
 \begin{code}
 
- η : Ω 𝓤 → T
- η Q w = δ (w Q)
+η : Ω → T
+η p w = δ (w p)
 
- η₀ : (q : Ω 𝓤) (w : WEM) → ¬ (q holds) → η q w ＝ ₀
- η₀ q w ν = I (w q)
-  where
-   I : (d : ¬ (q holds) + ¬¬ (q holds)) → δ d ＝ ₀
-   I (inl ν') = refl
-   I (inr φ)  = 𝟘-elim (φ ν)
+η₀ : (p : Ω) (w : WEM) → ¬ (p holds) → η p w ＝ ₀
+η₀ p w ν = I (w p)
+ where
+  I : (d : is-decidable (¬ (p holds))) → δ d ＝ ₀
+  I (inl _) = refl
+  I (inr φ)  = 𝟘-elim (φ ν)
 
- η₁ : (q : Ω 𝓤) (w : WEM) → ¬¬ (q holds) → η q w ＝ ₁
- η₁ q w nn = I (w q)
-  where
-   I : (d : ¬ (q holds) + ¬¬ (q holds)) → δ d ＝ ₁
-   I (inl ν) = 𝟘-elim (nn ν)
-   I (inr φ) = refl
+η₁ : (p : Ω) (w : WEM) → ¬¬ (p holds) → η p w ＝ ₁
+η₁ p w νν = I (w p)
+ where
+  I : (d : is-decidable (¬ (p holds))) → δ d ＝ ₁
+  I (inl ν) = 𝟘-elim (νν ν)
+  I (inr _) = refl
 
- η⊥ : η ⊥ ＝ τ₀
- η⊥ = dfunext fe (λ w → η₀ ⊥ w ⊥-doesnt-hold)
+η⊥ : η ⊥ ＝ τ₀
+η⊥ = dfunext fe (λ w → η₀ ⊥ w ⊥-doesnt-hold)
 
- η⊤ : η ⊤ ＝ τ₁
- η⊤ = dfunext fe (λ w → η₁ ⊤ w (¬¬-intro ⊤-holds))
+η⊤ : η ⊤ ＝ τ₁
+η⊤ = dfunext fe (λ w → η₁ ⊤ w (¬¬-intro ⊤-holds))
 
 \end{code}
 
@@ -155,43 +147,43 @@ A witness w of WEM makes every t : T constant with value t w.
 
 \begin{code}
 
- τ-const : (t : T) (w : WEM) → t ＝ τ (t w)
- τ-const t w = dfunext fe (λ w' → ap t (WEM-is-prop w' w))
+τ-const : (t : T) (w : WEM) → t ＝ τ (t w)
+τ-const t w = dfunext fe (λ w' → ap t (WEM-is-prop w' w))
 
 \end{code}
 
-Boolean-valued maps on Ω 𝓤 are constant, determined by their values
+Boolean-valued maps on Ω are constant, determined by their values
 at ⊥ and ⊤.
 
 \begin{code}
 
- lemma-⊥ : (h : Ω 𝓤 → 𝟚) (p : Ω 𝓤) → ¬ (p holds) → h p ＝ h ⊥
- lemma-⊥ h p ν = ap h (fails-gives-equal-⊥ pe fe p ν)
+lemma-⊥ : (h : Ω → 𝟚) (p : Ω) → ¬ (p holds) → h p ＝ h ⊥
+lemma-⊥ h p ν = ap h (fails-gives-equal-⊥ pe fe p ν)
 
- lemma-⊤ : (h : Ω 𝓤 → 𝟚) (p : Ω 𝓤) → p holds → h p ＝ h ⊤
- lemma-⊤ h p e = ap h (holds-gives-equal-⊤ pe fe p e)
+lemma-⊤ : (h : Ω → 𝟚) (p : Ω) → p holds → h p ＝ h ⊤
+lemma-⊤ h p e = ap h (holds-gives-equal-⊤ pe fe p e)
 
- constancy-lemma : (h : Ω 𝓤 → 𝟚) → h ⊥ ＝ h ⊤ → (p : Ω 𝓤) → h p ＝ h ⊥
- constancy-lemma h e p = 𝟚-is-¬¬-separated (h p) (h ⊥) I
-  where
-   I : ¬¬ (h p ＝ h ⊥)
-   I k = III II
-    where
-     II : ¬ (p holds)
-     II ν = k (h p ＝⟨ lemma-⊤ h p ν ⟩
-               h ⊤ ＝⟨ e ⁻¹ ⟩
-               h ⊥ ∎)
-     III : ¬¬ (p holds)
-     III ν = k (lemma-⊥ h p ν)
+constancy-lemma : (h : Ω → 𝟚) → h ⊥ ＝ h ⊤ → (p : Ω) → h p ＝ h ⊥
+constancy-lemma h e p = 𝟚-is-¬¬-separated (h p) (h ⊥) I
+ where
+  I : ¬¬ (h p ＝ h ⊥)
+  I k = III II
+   where
+    II : ¬ (p holds)
+    II ν = k (h p ＝⟨ lemma-⊤ h p ν ⟩
+              h ⊤ ＝⟨ e ⁻¹ ⟩
+              h ⊥ ∎)
+    III : ¬¬ (p holds)
+    III ν = k (lemma-⊥ h p ν)
 
- to-WEM : (h : Ω 𝓤 → 𝟚) → h ⊥ ≠ h ⊤ → WEM
- to-WEM h d p = I (𝟚-is-discrete (h p) (h ⊤))
-  where
-   I : is-decidable (h p ＝ h ⊤) → is-decidable (¬ (p holds))
-   I (inl e) = inr (λ ν → d (h ⊥ ＝⟨ (lemma-⊥ h p ν) ⁻¹ ⟩
-                             h p ＝⟨ e ⟩
-                             h ⊤ ∎))
-   I (inr ν) = inl (λ e → ν (lemma-⊤ h p e))
+to-WEM : (h : Ω → 𝟚) → h ⊥ ≠ h ⊤ → WEM
+to-WEM h d p = I (𝟚-is-discrete (h p) (h ⊤))
+ where
+  I : is-decidable (h p ＝ h ⊤) → is-decidable (¬ (p holds))
+  I (inl e) = inr (λ ν → d (h ⊥ ＝⟨ (lemma-⊥ h p ν) ⁻¹ ⟩
+                            h p ＝⟨ e ⟩
+                            h ⊤ ∎))
+  I (inr ν) = inl (λ e → ν (lemma-⊤ h p e))
 
 \end{code}
 
@@ -199,8 +191,8 @@ Restriction along η:
 
 \begin{code}
 
- ρ : (Z : 𝓦 ̇ ) → (T → Z) → (Ω 𝓤 → Z)
- ρ Z g = g ∘ η
+ρ : (Z : 𝓦 ̇ ) → (T → Z) → (Ω → Z)
+ρ Z g = g ∘ η
 
 \end{code}
 
@@ -210,156 +202,164 @@ universal property of T without assuming resizing.
 
 \begin{code}
 
- module assuming-resizing (r : propositional-resizing (𝓤 ⁺) 𝓤) where
+module T-is-ts-reflection-of-Ω-assuming-resizing
+        (r : propositional-resizing (𝓤 ⁺) 𝓤)
+       where
 
-  being-equal-to-τ₁-is-prop : (t : T) → is-prop (t ＝ τ₁)
-  being-equal-to-τ₁-is-prop t = T-is-set
-
-  s : T → Ω 𝓤
-  s t = resize r (t ＝ τ₁) (being-equal-to-τ₁-is-prop t) ,
-        resize-is-prop r (t ＝ τ₁) (being-equal-to-τ₁-is-prop t)
-
-  to-s-holds : (t : T) → (t ＝ τ₁) → s t holds
-  to-s-holds t = to-resize r (t ＝ τ₁) (being-equal-to-τ₁-is-prop t)
-
-  from-s-holds : (t : T) → s t holds → (t ＝ τ₁)
-  from-s-holds t = from-resize r (t ＝ τ₁) (being-equal-to-τ₁-is-prop t)
-
-  ηs : (t : T) → η (s t) ＝ t
-  ηs t = dfunext fe (λ w → 𝟚-equality-cases (I w) (II w))
-   where
-    I : (w : WEM) → t w ＝ ₀ → η (s t) w ＝ t w
-    I w e₀ = η (s t) w ＝⟨ η₀ (s t) w III ⟩
-             ₀         ＝⟨ e₀ ⁻¹ ⟩
-             t w        ∎
-     where
-      III : ¬ (s t holds)
-      III sh = zero-is-not-one (₀     ＝⟨ e₀ ⁻¹ ⟩
-                                t w   ＝⟨ happly (from-s-holds t sh) w ⟩
-                                τ₁ w  ＝⟨ refl ⟩
-                                ₁     ∎)
-    II : (w : WEM) → t w ＝ ₁ → η (s t) w ＝ t w
-    II w e₁ = η (s t) w ＝⟨ η₁ (s t) w V ⟩
-              ₁         ＝⟨ e₁ ⁻¹ ⟩
-              t w       ∎
-     where
-      IV : t ＝ τ₁
-      IV = t       ＝⟨ τ-const t w ⟩
-           τ (t w) ＝⟨ ap τ e₁ ⟩
-           τ₁      ∎
-      V : ¬¬ (s t holds)
-      V ν = ν (to-s-holds t IV)
+ being-equal-to-τ₁-is-prop : (t : T) → is-prop (t ＝ τ₁)
+ being-equal-to-τ₁-is-prop t = T-is-set
 
 \end{code}
 
-Although s is not necessarily a retraction of η, any function Ω 𝓤 → 𝟚
+We apply resizing to the proposition (t ＝ τ₁).
+
+\begin{code}
+
+ s : T → Ω
+ s t = resize r (t ＝ τ₁) (being-equal-to-τ₁-is-prop t) ,
+       resize-is-prop r (t ＝ τ₁) (being-equal-to-τ₁-is-prop t)
+
+ to-s-holds : (t : T) → (t ＝ τ₁) → s t holds
+ to-s-holds t = to-resize r (t ＝ τ₁) (being-equal-to-τ₁-is-prop t)
+
+ from-s-holds : (t : T) → s t holds → (t ＝ τ₁)
+ from-s-holds t = from-resize r (t ＝ τ₁) (being-equal-to-τ₁-is-prop t)
+
+ ηs : (t : T) → η (s t) ＝ t
+ ηs t = dfunext fe (λ w → 𝟚-equality-cases (I w) (II w))
+  where
+   I : (w : WEM) → t w ＝ ₀ → η (s t) w ＝ t w
+   I w e₀ = η (s t) w ＝⟨ η₀ (s t) w III ⟩
+            ₀         ＝⟨ e₀ ⁻¹ ⟩
+            t w        ∎
+    where
+     III : ¬ (s t holds)
+     III sh = zero-is-not-one (₀     ＝⟨ e₀ ⁻¹ ⟩
+                               t w   ＝⟨ happly (from-s-holds t sh) w ⟩
+                               τ₁ w  ＝⟨ refl ⟩
+                               ₁     ∎)
+   II : (w : WEM) → t w ＝ ₁ → η (s t) w ＝ t w
+   II w e₁ = η (s t) w ＝⟨ η₁ (s t) w V ⟩
+             ₁         ＝⟨ e₁ ⁻¹ ⟩
+             t w       ∎
+    where
+     IV : t ＝ τ₁
+     IV = t       ＝⟨ τ-const t w ⟩
+          τ (t w) ＝⟨ ap τ e₁ ⟩
+          τ₁      ∎
+     V : ¬¬ (s t holds)
+     V ν = ν (to-s-holds t IV)
+
+\end{code}
+
+Although s is not necessarily a retraction of η, any function Ω → 𝟚
 believes it is, assuming WEM. But then this can be used to get the
 same conclusion without assuming WEM.
 
 \begin{code}
 
-  sη-with-WEM : (h : Ω 𝓤 → 𝟚) (p : Ω 𝓤) → WEM → h (s (η p)) ＝ h p
-  sη-with-WEM h p w = I (w p)
-   where
-    I : is-decidable (¬ (p holds)) → h (s (η p)) ＝ h p
-    I (inr φ) = h (s (η p)) ＝⟨ ap h (holds-gives-equal-⊤ pe fe (s (η p)) III) ⟩
-                h ⊤         ＝⟨ IV ⁻¹ ⟩
-                h p         ∎
-     where
-      II : η p ＝ τ₁
-      II = dfunext fe (λ w → η₁ p w φ)
-      III : s (η p) holds
-      III = to-s-holds (η p) II
-      IV : h p ＝ h ⊤
-      IV = 𝟚-is-¬¬-separated (h p) (h ⊤)
-            (λ k → φ (λ (ph : p holds) → k (lemma-⊤ h p ph)))
-    I (inl ν) = h (s (η p)) ＝⟨ ap h (fails-gives-equal-⊥ pe fe (s (η p)) II) ⟩
-                h ⊥         ＝⟨ (lemma-⊥ h p ν) ⁻¹ ⟩
-                h p         ∎
-     where
-      II : ¬ (s (η p) holds)
-      II sh = zero-is-not-one
-               (₀       ＝⟨ (η₀ p w ν) ⁻¹ ⟩
-                η p w  ＝⟨ happly (from-s-holds (η p) sh) w ⟩
-                τ₁ w   ＝⟨ refl ⟩
-                ₁       ∎)
+ sη-with-WEM : (h : Ω → 𝟚) (p : Ω) → WEM → h (s (η p)) ＝ h p
+ sη-with-WEM h p w = I (w p)
+  where
+   I : is-decidable (¬ (p holds)) → h (s (η p)) ＝ h p
+   I (inr φ) = h (s (η p)) ＝⟨ ap h (holds-gives-equal-⊤ pe fe (s (η p)) III) ⟩
+               h ⊤         ＝⟨ IV ⁻¹ ⟩
+               h p         ∎
+    where
+     II : η p ＝ τ₁
+     II = dfunext fe (λ w → η₁ p w φ)
+     III : s (η p) holds
+     III = to-s-holds (η p) II
+     IV : h p ＝ h ⊤
+     IV = 𝟚-is-¬¬-separated (h p) (h ⊤)
+           (λ k → φ (λ (ph : p holds) → k (lemma-⊤ h p ph)))
+   I (inl ν) = h (s (η p)) ＝⟨ ap h (fails-gives-equal-⊥ pe fe (s (η p)) II) ⟩
+               h ⊥         ＝⟨ (lemma-⊥ h p ν) ⁻¹ ⟩
+               h p         ∎
+    where
+     II : ¬ (s (η p) holds)
+     II sh = zero-is-not-one
+              (₀      ＝⟨ (η₀ p w ν) ⁻¹ ⟩
+               η p w  ＝⟨ happly (from-s-holds (η p) sh) w ⟩
+               τ₁ w   ＝⟨ refl ⟩
+               ₁      ∎)
 
-  sη : (h : Ω 𝓤 → 𝟚) (p : Ω 𝓤) → h (s (η p)) ＝ h p
-  sη h p = 𝟚-is-¬¬-separated (h (s (η p))) (h p) I
-   where
-    I : ¬¬ (h (s (η p)) ＝ h p)
-    I k = k (h (s (η p)) ＝⟨ constancy-lemma h III (s (η p)) ⟩
-             h ⊥         ＝⟨ (constancy-lemma h III p) ⁻¹ ⟩
-             h p         ∎)
-     where
-      II : ¬ WEM
-      II w = k (sη-with-WEM h p w)
+ sη : (h : Ω → 𝟚) (p : Ω) → h (s (η p)) ＝ h p
+ sη h p = 𝟚-is-¬¬-separated (h (s (η p))) (h p) I
+  where
+   I : ¬¬ (h (s (η p)) ＝ h p)
+   I k = k (h (s (η p)) ＝⟨ constancy-lemma h III (s (η p)) ⟩
+            h ⊥         ＝⟨ (constancy-lemma h III p) ⁻¹ ⟩
+            h p         ∎)
+    where
+     II : ¬ WEM
+     II w = k (sη-with-WEM h p w)
 
-      III : h ⊥ ＝ h ⊤
-      III = 𝟚-is-¬¬-separated (h ⊥) (h ⊤) (λ ν → II (to-WEM h ν))
+     III : h ⊥ ＝ h ⊤
+     III = 𝟚-is-¬¬-separated (h ⊥) (h ⊤) (λ ν → II (to-WEM h ν))
 
-  ρ-is-equiv : (Y : 𝓦 ̇ )
-             → is-totally-separated Y
-             → is-equiv (ρ Y)
-  ρ-is-equiv Y ts = qinvs-are-equivs (ρ Y) (ρ⁻¹ , I , II)
-   where
-    ρ⁻¹ : (Ω 𝓤 → Y) → (T → Y)
-    ρ⁻¹ f = f ∘ s
+ ρ-is-equiv : (Y : 𝓦 ̇ )
+            → is-totally-separated Y
+            → is-equiv (ρ Y)
+ ρ-is-equiv Y ts = qinvs-are-equivs (ρ Y) (ρ⁻¹ , I , II)
+  where
+   ρ⁻¹ : (Ω → Y) → (T → Y)
+   ρ⁻¹ f = f ∘ s
 
-    I : (g : T → Y) → ρ⁻¹ (ρ Y g) ＝ g
-    I g = dfunext fe (λ t → ap g (ηs t))
+   I : (g : T → Y) → ρ⁻¹ (ρ Y g) ＝ g
+   I g = dfunext fe (λ t → ap g (ηs t))
 
-    II : (f : Ω 𝓤 → Y) → ρ Y (ρ⁻¹ f) ＝ f
-    II f = dfunext fe (λ p → ts (λ h → sη (λ q → h (f q)) p))
+   II : (f : Ω → Y) → ρ Y (ρ⁻¹ f) ＝ f
+   II f = dfunext fe (λ p → ts (λ h → sη (λ q → h (f q)) p))
 
-  reflection : (Y : 𝓦 ̇ )
-             → is-totally-separated Y
-             → (T → Y) ≃ (Ω 𝓤 → Y)
-  reflection Y ts = ρ Y , ρ-is-equiv Y ts
+ reflection : (Y : 𝓦 ̇ )
+            → is-totally-separated Y
+            → (T → Y) ≃ (Ω → Y)
+ reflection Y ts = ρ Y , ρ-is-equiv Y ts
 
-  module _ (pt : propositional-truncations-exist) where
+ module _ (pt : propositional-truncations-exist) where
 
-   open import UF.ImageAndSurjection pt
-   open PropositionalTruncation pt
+  open import UF.ImageAndSurjection pt
+  open PropositionalTruncation pt
 
-   resizing-gives-ηsurjection : is-surjection η
-   resizing-gives-ηsurjection t = ∣ s t , ηs t ∣
+  resizing-gives-ηsurjection : is-surjection η
+  resizing-gives-ηsurjection t = ∣ s t , ηs t ∣
 
 \end{code}
 
 This is the end of the module assuming-resizing, and we now record
-everything we know abou the universal property of T without assuming
+everything we know about the universal property of T without assuming
 resizing.
 
 We first show that the universal property holds when 𝟚 is the target type.
 
 \begin{code}
 
- extension₂'-along-η : (f : Ω 𝓤 → 𝟚) → is-decidable (f ⊥ ＝ f ⊤) → T → 𝟚
- extension₂'-along-η f (inl _)  t = f ⊥
- extension₂'-along-η f (inr ν) t = 𝟚-cases (t (to-WEM f ν)) (f ⊥) (f ⊤)
+extension₂'-along-η : (f : Ω → 𝟚) → is-decidable (f ⊥ ＝ f ⊤) → T → 𝟚
+extension₂'-along-η f (inl _) t = f ⊥
+extension₂'-along-η f (inr ν) t = 𝟚-cases (f ⊥) (f ⊤) (t (to-WEM f ν))
 
- extension₂-along-η : (Ω 𝓤 → 𝟚) → (T → 𝟚)
- extension₂-along-η f = extension₂'-along-η f (𝟚-is-discrete (f ⊥) (f ⊤))
+extension₂-along-η : (Ω → 𝟚) → (T → 𝟚)
+extension₂-along-η f = extension₂'-along-η f (𝟚-is-discrete (f ⊥) (f ⊤))
 
- extension₂'-property : (f : Ω 𝓤 → 𝟚) (d : is-decidable (f ⊥ ＝ f ⊤)) (P : Ω 𝓤)
-                      → extension₂'-along-η f d (η P) ＝ f P
- extension₂'-property f (inl e)  P = (constancy-lemma f e P) ⁻¹
- extension₂'-property f (inr ne) P = I (to-WEM f ne P)
-  where
-   I : (d : ¬ (P holds) + ¬¬ (P holds)) → 𝟚-cases (δ d) (f ⊥) (f ⊤) ＝ f P
-   I (inl ν) = (lemma-⊥ f P ν) ⁻¹
-   I (inr φ) = (𝟚-is-¬¬-separated (f P) (f ⊤)
-                  (λ k → φ (λ p → k (lemma-⊤ f P p)))) ⁻¹
+extension₂'-property : (f : Ω → 𝟚) (d : is-decidable (f ⊥ ＝ f ⊤)) (p : Ω)
+                     → extension₂'-along-η f d (η p) ＝ f p
+extension₂'-property f (inl e)  p = (constancy-lemma f e p) ⁻¹
+extension₂'-property f (inr ne) p = I (to-WEM f ne p)
+ where
+  I : (d : is-decidable (¬ (p holds))) → 𝟚-cases (f ⊥) (f ⊤) (δ d) ＝ f p
+  I (inl ν) = (lemma-⊥ f p ν) ⁻¹
+  I (inr φ) = (𝟚-is-¬¬-separated (f p) (f ⊤)
+                (λ ν → φ (λ ph → ν (lemma-⊤ f p ph)))) ⁻¹
 
- extension₂-property : (f : Ω 𝓤 → 𝟚) (p : Ω 𝓤) → extension₂-along-η f (η p) ＝ f p
- extension₂-property f p = extension₂'-property f (𝟚-is-discrete (f ⊥) (f ⊤)) p
+extension₂-property : (f : Ω → 𝟚) (p : Ω) → extension₂-along-η f (η p) ＝ f p
+extension₂-property f p = extension₂'-property f (𝟚-is-discrete (f ⊥) (f ⊤)) p
 
- ρ₂ : (T → 𝟚) → Ω 𝓤 → 𝟚
- ρ₂ = ρ 𝟚
+ρ₂ : (T → 𝟚) → Ω → 𝟚
+ρ₂ = ρ 𝟚
 
- restriction-of-extension₂ : (f : Ω 𝓤 → 𝟚) → ρ₂ (extension₂-along-η f) ＝ f
- restriction-of-extension₂ f = dfunext fe (λ p → extension₂-property f p)
+restriction-of-extension₂ : (f : Ω → 𝟚) → ρ₂ (extension₂-along-η f) ＝ f
+restriction-of-extension₂ f = dfunext fe (λ p → extension₂-property f p)
 
 \end{code}
 
@@ -368,57 +368,57 @@ left-cancellability of ρ₂, hence the other triangle.
 
 \begin{code}
 
- τ₀₁-density : (t : T) → ¬¬ ((t ＝ τ₀) + (t ＝ τ₁))
- τ₀₁-density t k = II (λ d → k (I d))
-  where
-   I : is-decidable WEM → (t ＝ τ₀) + (t ＝ τ₁)
-   I (inl w) = 𝟚-equality-cases {b = t w}
-                (λ e → inl (t        ＝⟨ τ-const t w ⟩
-                            τ (t w) ＝⟨ ap τ e ⟩
-                            τ₀       ∎))
-                (λ e → inr (t        ＝⟨ τ-const t w ⟩
-                            τ (t w) ＝⟨ ap τ e ⟩
-                            τ₁       ∎))
-   I (inr nw) = inl (dfunext fe (λ w → 𝟘-elim (nw w)))
+τ₀₁-density : (t : T) → ¬¬ ((t ＝ τ₀) + (t ＝ τ₁))
+τ₀₁-density t k = II (λ d → k (I d))
+ where
+  I : is-decidable WEM → (t ＝ τ₀) + (t ＝ τ₁)
+  I (inl w) = 𝟚-equality-cases
+               (λ e → inl (t        ＝⟨ τ-const t w ⟩
+                           τ (t w) ＝⟨ ap τ e ⟩
+                           τ₀       ∎))
+               (λ e → inr (t        ＝⟨ τ-const t w ⟩
+                           τ (t w) ＝⟨ ap τ e ⟩
+                           τ₁       ∎))
+  I (inr nw) = inl (dfunext fe (λ w → 𝟘-elim (nw w)))
 
-   II : ¬¬ (is-decidable WEM)
-   II nk = nk (inr (λ w → nk (inl w)))
+  II : ¬¬ (is-decidable WEM)
+  II  = double-negation-of-decision
 
- ρ₂-lc : (g g' : T → 𝟚) → ρ₂ g ＝ ρ₂ g' → g ＝ g'
- ρ₂-lc g g' e = dfunext fe (λ t → 𝟚-is-¬¬-separated (g t) (g' t) (III t))
-  where
-   I : g τ₀ ＝ g' τ₀
-   I = g τ₀     ＝⟨ ap g (η⊥ ⁻¹) ⟩
-       g (η ⊥)  ＝⟨ happly e ⊥ ⟩
-       g' (η ⊥) ＝⟨ ap g' η⊥ ⟩
-       g' τ₀    ∎
-   II : g τ₁ ＝ g' τ₁
-   II = g τ₁     ＝⟨ ap g (η⊤ ⁻¹) ⟩
-        g (η ⊤)  ＝⟨ happly e ⊤ ⟩
-        g' (η ⊤) ＝⟨ ap g' η⊤ ⟩
-        g' τ₁    ∎
-   III : (t : T) → ¬¬ (g t ＝ g' t)
-   III t k = τ₀₁-density t IV
-    where
-     IV : ¬ ((t ＝ τ₀) + (t ＝ τ₁))
-     IV (inl a) = k (g t  ＝⟨ ap g a ⟩
-                     g τ₀ ＝⟨ I ⟩
-                     g' τ₀ ＝⟨ ap g' (a ⁻¹) ⟩
-                     g' t ∎)
-     IV (inr a) = k (g t  ＝⟨ ap g a ⟩
-                     g τ₁ ＝⟨ II ⟩
-                     g' τ₁ ＝⟨ ap g' (a ⁻¹) ⟩
-                     g' t ∎)
+ρ₂-lc : (g g' : T → 𝟚) → ρ₂ g ＝ ρ₂ g' → g ＝ g'
+ρ₂-lc g g' e = dfunext fe (λ t → 𝟚-is-¬¬-separated (g t) (g' t) (III t))
+ where
+  I : g τ₀ ＝ g' τ₀
+  I = g τ₀     ＝⟨ ap g (η⊥ ⁻¹) ⟩
+      g (η ⊥)  ＝⟨ happly e ⊥ ⟩
+      g' (η ⊥) ＝⟨ ap g' η⊥ ⟩
+      g' τ₀    ∎
+  II : g τ₁ ＝ g' τ₁
+  II = g τ₁     ＝⟨ ap g (η⊤ ⁻¹) ⟩
+       g (η ⊤)  ＝⟨ happly e ⊤ ⟩
+       g' (η ⊤) ＝⟨ ap g' η⊤ ⟩
+       g' τ₁    ∎
+  III : (t : T) → ¬¬ (g t ＝ g' t)
+  III t νν = τ₀₁-density t IV
+   where
+    IV : ¬ ((t ＝ τ₀) + (t ＝ τ₁))
+    IV (inl l) = νν (g  t  ＝⟨ ap g l ⟩
+                     g  τ₀ ＝⟨ I ⟩
+                     g' τ₀ ＝⟨ ap g' (l ⁻¹) ⟩
+                     g' t  ∎)
+    IV (inr r) = νν (g  t  ＝⟨ ap g r ⟩
+                     g  τ₁ ＝⟨ II ⟩
+                     g' τ₁ ＝⟨ ap g' (r ⁻¹) ⟩
+                     g' t  ∎)
 
- extension₂-of-restriction : (g : T → 𝟚) → extension₂-along-η (ρ₂ g) ＝ g
- extension₂-of-restriction g = ρ₂-lc (extension₂-along-η (ρ₂ g)) g
-                                (restriction-of-extension₂ (ρ₂ g))
+extension₂-of-restriction : (g : T → 𝟚) → extension₂-along-η (ρ₂ g) ＝ g
+extension₂-of-restriction g = ρ₂-lc (extension₂-along-η (ρ₂ g)) g
+                               (restriction-of-extension₂ (ρ₂ g))
 
- ρ₂-is-equiv : is-equiv ρ₂
- ρ₂-is-equiv = qinvs-are-equivs ρ₂
-                (extension₂-along-η ,
-                 extension₂-of-restriction ,
-                 restriction-of-extension₂)
+ρ₂-is-equiv : is-equiv ρ₂
+ρ₂-is-equiv = qinvs-are-equivs ρ₂
+               (extension₂-along-η ,
+                extension₂-of-restriction ,
+                restriction-of-extension₂)
 
 \end{code}
 
@@ -426,24 +426,24 @@ We now prove the universal property when the target type is a power of 𝟚, coo
 
 \begin{code}
 
- extension-power-of-𝟚-along-η : {𝓘 : Universe} {J : 𝓘 ̇ }
-                              → (Ω 𝓤 → (J → 𝟚)) → (T → (J → 𝟚))
- extension-power-of-𝟚-along-η f t j = extension₂-along-η (λ p → f p j) t
+extension-power-of-𝟚-along-η : {𝓘 : Universe} {J : 𝓘 ̇ }
+                             → (Ω → (J → 𝟚)) → (T → (J → 𝟚))
+extension-power-of-𝟚-along-η f t j = extension₂-along-η (λ p → f p j) t
 
- ρ-of-power-of-𝟚-is-equiv : {𝓘 : Universe} {J : 𝓘 ̇ } → is-equiv (ρ (J → 𝟚))
- ρ-of-power-of-𝟚-is-equiv {𝓘} {J} =
-  qinvs-are-equivs (ρ (J → 𝟚)) (extension-power-of-𝟚-along-η , I , II)
-  where
-   I : (g : T → (J → 𝟚)) → extension-power-of-𝟚-along-η (ρ (J → 𝟚) g) ＝ g
-   I g = dfunext fe (λ t → dfunext fe (λ j → happly
-                                              (extension₂-of-restriction
-                                                (λ t' → g t' j))
-                                              t))
+ρ-of-power-of-𝟚-is-equiv : {𝓘 : Universe} {J : 𝓘 ̇ } → is-equiv (ρ (J → 𝟚))
+ρ-of-power-of-𝟚-is-equiv {𝓘} {J} =
+ qinvs-are-equivs (ρ (J → 𝟚)) (extension-power-of-𝟚-along-η , I , II)
+ where
+  I : (g : T → (J → 𝟚)) → extension-power-of-𝟚-along-η (ρ (J → 𝟚) g) ＝ g
+  I g = dfunext fe (λ t → dfunext fe (λ j → happly
+                                             (extension₂-of-restriction
+                                               (λ t' → g t' j))
+                                             t))
 
-   II : (f : Ω 𝓤 → (J → 𝟚)) → ρ (J → 𝟚) (extension-power-of-𝟚-along-η f) ＝ f
-   II f = dfunext fe (λ p → dfunext fe (λ j → extension₂-property
-                                               (λ p' → f p' j)
-                                               p))
+  II : (f : Ω → (J → 𝟚)) → ρ (J → 𝟚) (extension-power-of-𝟚-along-η f) ＝ f
+  II f = dfunext fe (λ p → dfunext fe (λ j → extension₂-property
+                                              (λ p' → f p' j)
+                                              p))
 
 \end{code}
 
@@ -452,34 +452,34 @@ the universal property of totally separated reflection.
 
 \begin{code}
 
- ρ-of-retract-is-equiv : {Y : 𝓦 ̇ } {Z : 𝓣 ̇ }
-                       → retract Y of Z
-                       → is-equiv (ρ Z)
-                       → is-equiv (ρ Y)
- ρ-of-retract-is-equiv {𝓦} {𝓣} {Y} {Z} (r , s , rs) ez =
-  qinvs-are-equivs (ρ Y) (ρY⁻¹ , III , IV)
-  where
-   ρZ⁻¹ : (Ω 𝓤 → Z) → (T → Z)
-   ρZ⁻¹ = inverse (ρ Z) ez
+ρ-of-retract-is-equiv : {Y : 𝓦 ̇ } {Z : 𝓣 ̇ }
+                      → retract Y of Z
+                      → is-equiv (ρ Z)
+                      → is-equiv (ρ Y)
+ρ-of-retract-is-equiv {𝓦} {𝓣} {Y} {Z} (r , s , rs) ez =
+ qinvs-are-equivs (ρ Y) (ρY⁻¹ , III , IV)
+ where
+  ρZ⁻¹ : (Ω → Z) → (T → Z)
+  ρZ⁻¹ = inverse (ρ Z) ez
 
-   I : (φ : Ω 𝓤 → Z) → ρ Z (ρZ⁻¹ φ) ＝ φ
-   I = inverses-are-sections (ρ Z) ez
+  I : (φ : Ω → Z) → ρ Z (ρZ⁻¹ φ) ＝ φ
+  I = inverses-are-sections (ρ Z) ez
 
-   II : (ψ : T → Z) → ρZ⁻¹ (ρ Z ψ) ＝ ψ
-   II = inverses-are-retractions (ρ Z) ez
+  II : (ψ : T → Z) → ρZ⁻¹ (ρ Z ψ) ＝ ψ
+  II = inverses-are-retractions (ρ Z) ez
 
-   ρY⁻¹ : (Ω 𝓤 → Y) → (T → Y)
-   ρY⁻¹ f = r ∘ ρZ⁻¹ (s ∘ f)
+  ρY⁻¹ : (Ω → Y) → (T → Y)
+  ρY⁻¹ f = r ∘ ρZ⁻¹ (s ∘ f)
 
-   III : (g : T → Y) → ρY⁻¹ (ρ Y g) ＝ g
-   III g = ρY⁻¹ (ρ Y g)  ＝⟨ ap (λ - → r ∘ -) (II (s ∘ g)) ⟩
-           r ∘ (s ∘ g)   ＝⟨ dfunext fe (λ t → rs (g t)) ⟩
-           g             ∎
+  III : (g : T → Y) → ρY⁻¹ (ρ Y g) ＝ g
+  III g = ρY⁻¹ (ρ Y g)  ＝⟨ ap (λ - → r ∘ -) (II (s ∘ g)) ⟩
+          r ∘ (s ∘ g)   ＝⟨ dfunext fe (λ t → rs (g t)) ⟩
+          g             ∎
 
-   IV : (f : Ω 𝓤 → Y) → ρ Y (ρY⁻¹ f) ＝ f
-   IV f = ρ Y (ρY⁻¹ f)  ＝⟨ ap (λ - → r ∘ -) (I (s ∘ f)) ⟩
-           r ∘ (s ∘ f)  ＝⟨ dfunext fe (λ p → rs (f p)) ⟩
-           f            ∎
+  IV : (f : Ω → Y) → ρ Y (ρY⁻¹ f) ＝ f
+  IV f = ρ Y (ρY⁻¹ f)  ＝⟨ ap (λ - → r ∘ -) (I (s ∘ f)) ⟩
+          r ∘ (s ∘ f)  ＝⟨ dfunext fe (λ p → rs (f p)) ⟩
+          f            ∎
 
 \end{code}
 
@@ -487,19 +487,19 @@ The universal property for retracts of powers of 𝟚.
 
 \begin{code}
 
- ρ-of-retract-of-power-of-𝟚-is-equiv
-  : {𝓘 : Universe} {Y : 𝓦 ̇ } {J : 𝓘 ̇ }
-  → retract Y of (J → 𝟚)
-  → is-equiv (ρ Y)
- ρ-of-retract-of-power-of-𝟚-is-equiv ret =
-  ρ-of-retract-is-equiv ret ρ-of-power-of-𝟚-is-equiv
+ρ-of-retract-of-power-of-𝟚-is-equiv
+ : {𝓘 : Universe} {Y : 𝓦 ̇ } {J : 𝓘 ̇ }
+ → retract Y of (J → 𝟚)
+ → is-equiv (ρ Y)
+ρ-of-retract-of-power-of-𝟚-is-equiv ret =
+ ρ-of-retract-is-equiv ret ρ-of-power-of-𝟚-is-equiv
 
- reflection-for-retract-of-power-of-𝟚
-  : {𝓘 : Universe} {Y : 𝓦 ̇ } {J : 𝓘 ̇ }
-  → retract Y of (J → 𝟚)
-  → (T → Y) ≃ (Ω 𝓤 → Y)
- reflection-for-retract-of-power-of-𝟚 r =
-  ρ _ , ρ-of-retract-of-power-of-𝟚-is-equiv r
+reflection-for-retract-of-power-of-𝟚
+ : {𝓘 : Universe} {Y : 𝓦 ̇ } {J : 𝓘 ̇ }
+ → retract Y of (J → 𝟚)
+ → (T → Y) ≃ (Ω → Y)
+reflection-for-retract-of-power-of-𝟚 r =
+ ρ _ , ρ-of-retract-of-power-of-𝟚-is-equiv r
 
 \end{code}
 
@@ -510,19 +510,19 @@ inverstigated in gist.2-injective-types.
 
 \begin{code}
 
- open import gist.2-injective-types fe'
+open import gist.2-injective-types fe'
 
- T-is-𝟚-injective : {𝓥 𝓦 : Universe} → 𝟚-injective T 𝓥 𝓦
- T-is-𝟚-injective = first-dual-is-𝟚-injective
+T-is-𝟚-injective : {𝓥 𝓦 : Universe} → 𝟚-injective T 𝓥 𝓦
+T-is-𝟚-injective = first-dual-is-𝟚-injective
 
- η-is-𝟚-injecting : is-𝟚-injecting η
- η-is-𝟚-injecting f = extension₂-along-η f , happly (restriction-of-extension₂ f)
+η-is-𝟚-injecting : is-𝟚-injecting η
+η-is-𝟚-injecting f = extension₂-along-η f , happly (restriction-of-extension₂ f)
 
- ρ-of-𝟚-injective-is-equiv : {Y : 𝓦 ̇ }
-                           → 𝟚-injective Y 𝓦 𝓦
-                           → is-equiv (ρ Y)
- ρ-of-𝟚-injective-is-equiv i =
-  ρ-of-retract-of-power-of-𝟚-is-equiv (𝟚-injectives-are-K-retracts i)
+ρ-of-𝟚-injective-is-equiv : {Y : 𝓦 ̇ }
+                          → 𝟚-injective Y 𝓦 𝓦
+                          → is-equiv (ρ Y)
+ρ-of-𝟚-injective-is-equiv i =
+ ρ-of-retract-of-power-of-𝟚-is-equiv (𝟚-injectives-are-K-retracts i)
 
 \end{code}
 
@@ -530,135 +530,120 @@ There is at most one extension for a totally separated target.
 
 \begin{code}
 
- ρ₂-of-ts-is-lc : (Y : 𝓦 ̇ )
-                → is-totally-separated Y
-                → (g g' : T → Y) → ρ Y g ＝ ρ Y g' → g ＝ g'
- ρ₂-of-ts-is-lc Y ts g g' e =
-  dfunext fe (λ t → ts (λ q → happly
-                               (ρ₂-lc
-                                 (λ t' → q (g t'))
-                                 (λ t' → q (g' t'))
-                                 (ap (λ - → q ∘ -) e)) t))
+ρ₂-of-ts-is-lc : (Y : 𝓦 ̇ )
+               → is-totally-separated Y
+               → (g g' : T → Y) → ρ Y g ＝ ρ Y g' → g ＝ g'
+ρ₂-of-ts-is-lc Y ts g g' e =
+ dfunext fe (λ t → ts (λ q → happly
+                              (ρ₂-lc
+                                (λ t' → q (g t'))
+                                (λ t' → q (g' t'))
+                                (ap (λ - → q ∘ -) e)) t))
 
 \end{code}
 
 The notion of compactness is defined in TypeTopology.CompactTypes,
-where it is proved that Ω 𝓤 is-compact.
+where it is proved that Ω is-compact.
 
 \begin{code}
 
- T-is-compact∙ : is-compact∙ T
- T-is-compact∙ = micro-tychonoff fe WEM-is-prop (λ _ → 𝟚-is-compact∙)
+T-is-compact∙ : is-compact∙ T
+T-is-compact∙ = micro-tychonoff fe WEM-is-prop (λ _ → 𝟚-is-compact∙)
 
 \end{code}
 
-Ω 𝓤 is totally separated if and only if excluded middle holds at 𝓤.
+Ω is totally separated if and only if excluded middle holds at 𝓤.
 The forward direction is already Ω-totally-separated-gives-EM in
 TypeTopology.TotallySeparated (through ¬¬-separatedness and DNE), so we
 import and reuse it. Here we record the backward direction: EM makes
-Ω 𝓤 discrete, and discrete types are totally separated.
+Ω discrete, and discrete types are totally separated.
 
 \begin{code}
 
- EM-gives-Ω-discrete : EM 𝓤 → is-discrete (Ω 𝓤)
- EM-gives-Ω-discrete em p q = II (I p) (I q)
-  where
-   I : LEM 𝓤
-   I = EM-gives-LEM em
+EM-gives-Ω-discrete : EM 𝓤 → is-discrete Ω
+EM-gives-Ω-discrete em p q = II (I p) (I q)
+ where
+  I : LEM 𝓤
+  I = EM-gives-LEM em
 
-   II : is-decidable (p holds) → is-decidable (q holds) → is-decidable (p ＝ q)
-   II (inl ph) (inl qh)  = inl (p ＝⟨ holds-gives-equal-⊤ pe fe p ph ⟩
-                                ⊤ ＝⟨ (holds-gives-equal-⊤ pe fe q qh) ⁻¹ ⟩
-                                q ∎)
-   II (inl ph) (inr nq) = inr (λ e → nq (transport _holds e ph))
-   II (inr np) (inl qh) = inr (λ e → np (transport _holds (e ⁻¹) qh))
-   II (inr np) (inr nq) = inl (p ＝⟨ fails-gives-equal-⊥ pe fe p np ⟩
-                               ⊥ ＝⟨ (fails-gives-equal-⊥ pe fe q nq) ⁻¹ ⟩
+  II : is-decidable (p holds) → is-decidable (q holds) → is-decidable (p ＝ q)
+  II (inl ph) (inl qh)  = inl (p ＝⟨ holds-gives-equal-⊤ pe fe p ph ⟩
+                               ⊤ ＝⟨ (holds-gives-equal-⊤ pe fe q qh) ⁻¹ ⟩
                                q ∎)
+  II (inl ph) (inr nq) = inr (λ e → nq (transport _holds e ph))
+  II (inr np) (inl qh) = inr (λ e → np (transport _holds (e ⁻¹) qh))
+  II (inr np) (inr nq) = inl (p ＝⟨ fails-gives-equal-⊥ pe fe p np ⟩
+                              ⊥ ＝⟨ (fails-gives-equal-⊥ pe fe q nq) ⁻¹ ⟩
+                              q ∎)
 
- EM-gives-Ω-totally-separated : EM 𝓤 → is-totally-separated (Ω 𝓤)
- EM-gives-Ω-totally-separated em =
-  discrete-types-are-totally-separated (EM-gives-Ω-discrete em)
+EM-gives-Ω-totally-separated : EM 𝓤 → is-totally-separated Ω
+EM-gives-Ω-totally-separated em =
+ discrete-types-are-totally-separated (EM-gives-Ω-discrete em)
 
- extension₂-along-η-under-WEM : (h : Ω 𝓤 → 𝟚) (w : WEM) (t : T)
-                              → extension₂-along-η h t ＝ 𝟚-cases (t w) (h ⊥) (h ⊤)
- extension₂-along-η-under-WEM h w t = I (𝟚-is-discrete (h ⊥) (h ⊤))
-  where
-   I : (d : is-decidable (h ⊥ ＝ h ⊤))
-     → extension₂'-along-η h d t ＝ 𝟚-cases (t w) (h ⊥) (h ⊤)
-   I (inl e)  = 𝟚-equality-cases
-                 (λ e' → h ⊥                       ＝⟨ I₀ e' ⟩
-                         𝟚-cases (t w) (h ⊥) (h ⊤) ∎)
-                 (λ e' → h ⊥                       ＝⟨ e ⟩
-                         h ⊤                       ＝⟨ I₁ e' ⟩
-                         𝟚-cases (t w) (h ⊥) (h ⊤) ∎)
-                where
-                 I₀ = λ e' → ap (λ b → 𝟚-cases b (h ⊥) (h ⊤)) (e' ⁻¹)
-                 I₁ = λ e' → ap (λ b → 𝟚-cases b (h ⊥) (h ⊤)) (e' ⁻¹)
+extension₂-along-η-under-WEM : (h : Ω → 𝟚) (w : WEM) (t : T)
+                             → extension₂-along-η h t ＝ 𝟚-cases (h ⊥) (h ⊤)(t w)
+extension₂-along-η-under-WEM h w t = I (𝟚-is-discrete (h ⊥) (h ⊤))
+ where
+  I : (d : is-decidable (h ⊥ ＝ h ⊤))
+    → extension₂'-along-η h d t ＝ 𝟚-cases (h ⊥) (h ⊤) (t w)
+  I (inl e)  = 𝟚-equality-cases
+                (λ e' → h ⊥                       ＝⟨ I₀ e' ⟩
+                        𝟚-cases (h ⊥) (h ⊤) (t w) ∎)
+                (λ e' → h ⊥                       ＝⟨ e ⟩
+                        h ⊤                       ＝⟨ I₁ e' ⟩
+                        𝟚-cases (h ⊥) (h ⊤) (t w) ∎)
+               where
+                I₀ = λ e' → ap (𝟚-cases (h ⊥) (h ⊤)) (e' ⁻¹)
+                I₁ = λ e' → ap (𝟚-cases (h ⊥) (h ⊤)) (e' ⁻¹)
 
-   I (inr ν) = ap (λ b → 𝟚-cases b (h ⊥) (h ⊤))
-                  (ap t (WEM-is-prop (to-WEM h ν) w))
+  I (inr ν) = ap (𝟚-cases (h ⊥) (h ⊤))
+                 (ap t (WEM-is-prop (to-WEM h ν) w))
 
- extension₂-along-η-under-¬WEM : (h : Ω 𝓤 → 𝟚) (t : T)
-                               → ¬ WEM
-                               → extension₂-along-η h t ＝ h ⊥
- extension₂-along-η-under-¬WEM h t nw = I (𝟚-is-discrete (h ⊥) (h ⊤))
-  where
-   I : (d : is-decidable (h ⊥ ＝ h ⊤)) → extension₂'-along-η h d t ＝ h ⊥
-   I (inl e)  = refl
-   I (inr ν) = 𝟘-elim (nw (to-WEM h ν))
+extension₂-along-η-under-¬WEM : (h : Ω → 𝟚) (t : T)
+                              → ¬ WEM
+                              → extension₂-along-η h t ＝ h ⊥
+extension₂-along-η-under-¬WEM h t nw = I (𝟚-is-discrete (h ⊥) (h ⊤))
+ where
+  I : (d : is-decidable (h ⊥ ＝ h ⊤)) → extension₂'-along-η h d t ＝ h ⊥
+  I (inl e)  = refl
+  I (inr ν) = 𝟘-elim (nw (to-WEM h ν))
 
- ¬¬-extension
-  : (Y : 𝓦 ̇ )
-  → is-totally-separated Y
-  → (f : Ω 𝓤 → Y)
-    (t : T)
-  → ¬¬ (Σ y ꞉ Y , ((y ＝ f ⊥) + (y ＝ f ⊤))
-                 × ((q : Y → 𝟚)
-                       → q y ＝ extension₂-along-η (λ p → q (f p)) t))
- ¬¬-extension Y ts f t na
-  = I (λ d → na (II d))
-  where
-   I : ¬¬ (is-decidable WEM)
-   I = double-negation-of-decision
+¬¬-extension
+ : (Y : 𝓦 ̇ )
+ → is-totally-separated Y
+ → (f : Ω → Y)
+   (t : T)
+ → ¬¬ (Σ y ꞉ Y , ((y ＝ f ⊥) + (y ＝ f ⊤))
+               × ((q : Y → 𝟚) → q y ＝ extension₂-along-η (q ∘ f) t))
+¬¬-extension Y ts f t ν
+ = I (λ d → ν (II d))
+ where
+  I : ¬¬ (is-decidable WEM)
+  I = double-negation-of-decision
 
-   II : is-decidable WEM
-       → Σ y ꞉ Y , ((y ＝ f ⊥) + (y ＝ f ⊤))
-                 × ((q : Y → 𝟚) → q y ＝ extension₂-along-η (λ p → q (f p)) t)
-   II (inl w) = 𝟚-cases (t w) (f ⊥) (f ⊤) , III , IV
-    where
-     III : (𝟚-cases (t w) (f ⊥) (f ⊤) ＝ f ⊥) + (𝟚-cases (t w) (f ⊥) (f ⊤) ＝ f ⊤)
-     III = 𝟚-equality-cases {b = t w}
-             (λ e → inl (ap (λ b → 𝟚-cases b (f ⊥) (f ⊤)) e))
-             (λ e → inr (ap (λ b → 𝟚-cases b (f ⊥) (f ⊤)) e))
+  II : is-decidable WEM
+      → Σ y ꞉ Y , ((y ＝ f ⊥) + (y ＝ f ⊤))
+                × ((q : Y → 𝟚) → q y ＝ extension₂-along-η (q ∘ f) t)
+  II (inl w) = 𝟚-cases (f ⊥) (f ⊤) (t w) , III , IV
+   where
+    III : (𝟚-cases (f ⊥) (f ⊤) (t w) ＝ f ⊥) + (𝟚-cases (f ⊥) (f ⊤) (t w) ＝ f ⊤)
+    III = 𝟚-equality-cases {b = t w}
+            (λ e → inl (ap (𝟚-cases (f ⊥) (f ⊤)) e))
+            (λ e → inr (ap (𝟚-cases (f ⊥) (f ⊤)) e))
 
-     IV : (q : Y → 𝟚)
-        → q (𝟚-cases (t w) (f ⊥) (f ⊤)) ＝ extension₂-along-η (λ p → q (f p)) t
-     IV q = q (𝟚-cases (t w) (f ⊥) (f ⊤))        ＝⟨ IV₀ ⟩
-            𝟚-cases (t w) (q (f ⊥)) (q (f ⊤))    ＝⟨ IV₁ ⟩
-            extension₂-along-η (λ p → q (f p)) t ∎
-             where
-              IV₀ = 𝟚-cases-lemma q (t w) (f ⊥) (f ⊤)
-              IV₁ = (extension₂-along-η-under-WEM (λ p → q (f p)) w t)⁻¹
+    IV : (q : Y → 𝟚)
+       → q (𝟚-cases (f ⊥) (f ⊤) (t w)) ＝ extension₂-along-η (q ∘ f) t
+    IV q = q (𝟚-cases (f ⊥) (f ⊤) (t w))        ＝⟨ IV₀ ⟩
+           𝟚-cases (q (f ⊥)) (q (f ⊤)) (t w)    ＝⟨ IV₁ ⟩
+           extension₂-along-η (q ∘ f) t         ∎
+            where
+             IV₀ = 𝟚-cases-lemma q (f ⊥) (f ⊤) (t w)
+             IV₁ = (extension₂-along-η-under-WEM (q ∘ f) w t)⁻¹
 
-   II (inr nw) = f ⊥ , inl refl , V
-    where
-     V : (q : Y → 𝟚) → q (f ⊥) ＝ extension₂-along-η (λ p → q (f p)) t
-     V q = (extension₂-along-η-under-¬WEM (λ p → q (f p)) t nw) ⁻¹
-
-\end{code}
-
-TODO. Move this to a better home.
-
-\begin{code}
-
- subtype-is-totally-separated : {X : 𝓥 ̇ } {Y : 𝓦 ̇ }
-                              → (j : X → Y)
-                              → is-embedding j
-                              → is-totally-separated Y
-                              → is-totally-separated X
- subtype-is-totally-separated j je τ {x} {x'} α =
-  embeddings-are-lc j je (τ (λ q → α (λ z → q (j z))))
+  II (inr nw) = f ⊥ , inl refl , V
+   where
+    V : (q : Y → 𝟚) → q (f ⊥) ＝ extension₂-along-η (q ∘ f) t
+    V q = (extension₂-along-η-under-¬WEM (q ∘ f) t nw) ⁻¹
 
 \end{code}
 
@@ -666,65 +651,65 @@ We now assume propositional truncations.
 
 \begin{code}
 
- module _ (pt : propositional-truncations-exist) where
+module _ (pt : propositional-truncations-exist) where
 
-  open import UF.ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
-  ι : image η → T
-  ι = restriction η
+ ι : image η → T
+ ι = restriction η
 
-  ι-emb : is-embedding ι
-  ι-emb = restrictions-are-embeddings η
+ ι-emb : is-embedding ι
+ ι-emb = restrictions-are-embeddings η
 
-  ι-image-is-ts : is-totally-separated (image η)
-  ι-image-is-ts = subtype-is-totally-separated ι ι-emb T-is-totally-separated
+ ι-image-is-ts : is-totally-separated (image η)
+ ι-image-is-ts = subtype-is-totally-separated' ι T-is-totally-separated ι-emb
 
-  ηc : Ω 𝓤 → image η
-  ηc = corestriction η
+ ηc : Ω → image η
+ ηc = corestriction η
 
-  section-of-ι-gives-η-surjection : (𝓼 : T → image η)
-                                  → ι ∘ 𝓼 ＝ id
-                                  → is-surjection η
-  section-of-ι-gives-η-surjection 𝓼 ι𝓼-id =
-   ∘-is-surjection
-    (corestrictions-are-surjections η)
-    (equivs-are-surjections
-      (embeddings-with-sections-are-equivs ι ι-emb (𝓼 , happly ι𝓼-id)))
+ section-of-ι-gives-η-surjection : (𝓼 : T → image η)
+                                 → ι ∘ 𝓼 ＝ id
+                                 → is-surjection η
+ section-of-ι-gives-η-surjection 𝓼 ι𝓼-id =
+  ∘-is-surjection
+   (corestrictions-are-surjections η)
+   (equivs-are-surjections
+     (embeddings-with-sections-are-equivs ι ι-emb (𝓼 , happly ι𝓼-id)))
 
-  ρ-equiv-gives-η-surjection
-   : ((Y : 𝓤 ⁺ ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
-   → is-surjection η
-  ρ-equiv-gives-η-surjection up = section-of-ι-gives-η-surjection 𝓼 III
-   where
-    I : is-equiv (ρ (image η))
-    I = up (image η) ι-image-is-ts
+ ρ-equiv-gives-η-surjection
+  : ((Y : 𝓤 ⁺ ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
+  → is-surjection η
+ ρ-equiv-gives-η-surjection up = section-of-ι-gives-η-surjection 𝓼 III
+  where
+   I : is-equiv (ρ (image η))
+   I = up (image η) ι-image-is-ts
 
-    𝓼 : T → image η
-    𝓼 = inverse (ρ (image η)) I ηc
+   𝓼 : T → image η
+   𝓼 = inverse (ρ (image η)) I ηc
 
-    II : ρ (image η) 𝓼 ＝ ηc
-    II = inverses-are-sections (ρ (image η)) I ηc
+   II : ρ (image η) 𝓼 ＝ ηc
+   II = inverses-are-sections (ρ (image η)) I ηc
 
-    III : ι ∘ 𝓼 ＝ id
-    III = ρ₂-of-ts-is-lc T T-is-totally-separated (ι ∘ 𝓼) id
-           (ap (λ - → ι ∘ -) II)
+   III : ι ∘ 𝓼 ＝ id
+   III = ρ₂-of-ts-is-lc T T-is-totally-separated (ι ∘ 𝓼) id
+          (ap (λ - → ι ∘ -) II)
 
-  𝟚-injective-image-gives-η-surjection : 𝟚-injective (image η) (𝓤 ⁺) (𝓤 ⁺)
-                                       → is-surjection η
-  𝟚-injective-image-gives-η-surjection i = section-of-ι-gives-η-surjection 𝓼 III
-   where
-    I : Σ 𝓼 ꞉ (T → image η) , 𝓼 ∘ η ∼ ηc
-    I = i η η-is-𝟚-injecting ηc
+ 𝟚-injective-image-gives-η-surjection : 𝟚-injective (image η) (𝓤 ⁺) (𝓤 ⁺)
+                                      → is-surjection η
+ 𝟚-injective-image-gives-η-surjection i = section-of-ι-gives-η-surjection 𝓼 III
+  where
+   I : Σ 𝓼 ꞉ (T → image η) , 𝓼 ∘ η ∼ ηc
+   I = i η η-is-𝟚-injecting ηc
 
-    𝓼 : T → image η
-    𝓼 = pr₁ I
+   𝓼 : T → image η
+   𝓼 = pr₁ I
 
-    II : 𝓼 ∘ η ∼ ηc
-    II = pr₂ I
+   II : 𝓼 ∘ η ∼ ηc
+   II = pr₂ I
 
-    III : ι ∘ 𝓼 ＝ id
-    III = ρ₂-of-ts-is-lc T T-is-totally-separated (ι ∘ 𝓼) id
-           (dfunext fe (λ p → ap ι (II p)))
+   III : ι ∘ 𝓼 ＝ id
+   III = ρ₂-of-ts-is-lc T T-is-totally-separated (ι ∘ 𝓼) id
+          (dfunext fe (λ p → ap ι (II p)))
 
 \end{code}
 
@@ -733,7 +718,7 @@ of any type X as the image of the evaluation map X → ((X → 𝟚) → 𝟚).
 
 \begin{code}
 
-  open totally-separated-reflection fe' pt
+ open totally-separated-reflection fe' pt
 
 \end{code}
 
@@ -741,47 +726,47 @@ The comparison map 𝓬.
 
 \begin{code}
 
-  𝓬 : 𝕋 (Ω 𝓤) → T
-  𝓬 = ∃!-witness (totally-separated-reflection T-is-totally-separated η)
+ 𝓬 : 𝕋 Ω → T
+ 𝓬 = ∃!-witness (totally-separated-reflection T-is-totally-separated η)
 
-  𝓬-triangle : 𝓬 ∘ ηᵀ ＝ η
-  𝓬-triangle = ∃!-is-witness
-                         (totally-separated-reflection T-is-totally-separated η)
+ 𝓬-triangle : 𝓬 ∘ ηᵀ ＝ η
+ 𝓬-triangle = ∃!-is-witness
+                        (totally-separated-reflection T-is-totally-separated η)
 
-  reflection-gives-𝕋-equivalence
-   : ((Y : 𝓤 ⁺ ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
-   → is-equiv 𝓬
-  reflection-gives-𝕋-equivalence up
-   = qinvs-are-equivs 𝓬 (𝓬⁻¹ , III , IV)
-   where
-    I : is-equiv (ρ (𝕋 (Ω 𝓤)))
-    I = up (𝕋 (Ω 𝓤)) 𝕋-is-totally-separated
+ reflection-gives-𝕋-equivalence
+  : ((Y : 𝓤 ⁺ ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
+  → is-equiv 𝓬
+ reflection-gives-𝕋-equivalence up
+  = qinvs-are-equivs 𝓬 (𝓬⁻¹ , III , IV)
+  where
+   I : is-equiv (ρ (𝕋 Ω))
+   I = up (𝕋 Ω) 𝕋-is-totally-separated
 
-    𝓬⁻¹ : T → 𝕋 (Ω 𝓤)
-    𝓬⁻¹ = inverse (ρ (𝕋 (Ω 𝓤))) I ηᵀ
+   𝓬⁻¹ : T → 𝕋 Ω
+   𝓬⁻¹ = inverse (ρ (𝕋 Ω)) I ηᵀ
 
-    II : ρ (𝕋 (Ω 𝓤)) 𝓬⁻¹ ＝ ηᵀ
-    II = inverses-are-sections (ρ (𝕋 (Ω 𝓤))) I ηᵀ
+   II : ρ (𝕋 Ω) 𝓬⁻¹ ＝ ηᵀ
+   II = inverses-are-sections (ρ (𝕋 Ω)) I ηᵀ
 
-    III : 𝓬⁻¹ ∘ 𝓬 ∼ id
-    III = happly VI
-     where
-      V : (𝓬⁻¹ ∘ 𝓬) ∘ ηᵀ ＝ ηᵀ
-      V = (𝓬⁻¹ ∘ 𝓬) ∘ ηᵀ ＝⟨ ap (λ - → 𝓬⁻¹ ∘ -) 𝓬-triangle ⟩
-          𝓬⁻¹ ∘ η                 ＝⟨ II ⟩
-          ηᵀ                    ∎
-      VI : 𝓬⁻¹ ∘ 𝓬 ＝ id
-      VI = witness-uniqueness _
-             (totally-separated-reflection 𝕋-is-totally-separated ηᵀ)
-             (𝓬⁻¹ ∘ 𝓬) id V refl
+   III : 𝓬⁻¹ ∘ 𝓬 ∼ id
+   III = happly VI
+    where
+     V : (𝓬⁻¹ ∘ 𝓬) ∘ ηᵀ ＝ ηᵀ
+     V = (𝓬⁻¹ ∘ 𝓬) ∘ ηᵀ ＝⟨ ap (λ - → 𝓬⁻¹ ∘ -) 𝓬-triangle ⟩
+         𝓬⁻¹ ∘ η                 ＝⟨ II ⟩
+         ηᵀ                    ∎
+     VI : 𝓬⁻¹ ∘ 𝓬 ＝ id
+     VI = witness-uniqueness _
+            (totally-separated-reflection 𝕋-is-totally-separated ηᵀ)
+            (𝓬⁻¹ ∘ 𝓬) id V refl
 
-    IV : 𝓬 ∘ 𝓬⁻¹ ∼ id
-    IV = happly VII
-     where
-      VII : 𝓬 ∘ 𝓬⁻¹ ＝ id
-      VII = ρ₂-of-ts-is-lc T T-is-totally-separated (𝓬 ∘ 𝓬⁻¹) id
-             (ρ T (𝓬 ∘ 𝓬⁻¹) ＝⟨ ap (λ - → 𝓬 ∘ -) II ⟩
-              𝓬 ∘ ηᵀ           ＝⟨ 𝓬-triangle ⟩
-              η                         ∎)
+   IV : 𝓬 ∘ 𝓬⁻¹ ∼ id
+   IV = happly VII
+    where
+     VII : 𝓬 ∘ 𝓬⁻¹ ＝ id
+     VII = ρ₂-of-ts-is-lc T T-is-totally-separated (𝓬 ∘ 𝓬⁻¹) id
+            (ρ T (𝓬 ∘ 𝓬⁻¹) ＝⟨ ap (λ - → 𝓬 ∘ -) II ⟩
+             𝓬 ∘ ηᵀ           ＝⟨ 𝓬-triangle ⟩
+             η                         ∎)
 
 \end{code}
