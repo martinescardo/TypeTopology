@@ -537,6 +537,18 @@ transport-along-→ Y Z refl f = refl
 
 \end{code}
 
+A variation on the above where we replace the type family Z by just a type,
+added 19 June 2026 by Tom de Jong.
+
+\begin{code}
+
+transport-along-→' : {A : 𝓤 ̇ } (B : A → 𝓥 ̇ ) {a₁ a₂ : A} (p : a₁ ＝ a₂) {X : 𝓦 ̇ }
+                     (f : B a₁ → X)
+                   → transport (λ - → B - → X) p f ＝ f ∘ transport B (p ⁻¹)
+transport-along-→' B refl f = refl
+
+\end{code}
+
 Added by Ettore Aldrovandi
 September 19, 2022:
 
@@ -658,6 +670,25 @@ transport-after-ap' refl s s' q =
  q                             ＝⟨ refl-left-neutral ⁻¹ ⟩
  refl ∙ q                      ＝⟨refl⟩
  ap s refl ⁻¹ ∙ q ∙ ap s' refl ∎
+
+\end{code}
+
+A version of transport-after-ap' for dependent functions,
+added 19 June 2026 by Tom de Jong.
+
+\begin{code}
+
+transport-after-ap'-dependent
+ : {X : 𝓤 ̇ } {x₁ x₂ : X} {Y : X → 𝓥 ̇ } (g h : Π Y)
+   (p : x₁ ＝ x₂) (q : g x₁ ＝ h x₁)
+ → transport (λ - → g - ＝ h -) p q
+   ＝ apd g p ⁻¹ ∙ ap (transport Y p) q ∙ apd h p
+transport-after-ap'-dependent g h refl q =
+ q                              ＝⟨ ap-id-is-id q ⁻¹ ⟩
+ ap id q                        ＝⟨refl⟩
+ ap id q ∙ refl                 ＝⟨refl⟩
+ ap id q ∙ apd h refl           ＝⟨ refl-left-neutral ⁻¹ ⟩
+ refl ⁻¹ ∙ ap id q ∙ apd h refl ∎
 
 \end{code}
 

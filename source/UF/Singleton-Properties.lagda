@@ -8,6 +8,7 @@ For now we will show that singletons are closed under Σ types and equivalence.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
+open import UF.Base
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
@@ -66,5 +67,66 @@ the-singletons-form-a-singleton-type {𝓤} fe pe =
                                       X-is-prop))
               (λ (i : is-singleton X) → singletons-are-props i , center i)
               (λ (j , x) → pointed-props-are-singletons x j)
+
+\end{code}
+
+Added 19 June 2026 by Tom de Jong.
+
+\begin{code}
+
+consts : (A : 𝓤 ̇ ) (X : 𝓥 ̇ ) → X → (A → X)
+consts A X x = λ _ → x
+
+universal-property-of-singletons⁻ : 𝓤 ̇  → 𝓤 ⁺ ̇
+universal-property-of-singletons⁻ {𝓤} A =
+ (X : 𝓤 ̇ ) → is-equiv (consts A X)
+
+universal-property-of-singletons : 𝓤 ̇  → 𝓤ω
+universal-property-of-singletons {𝓤} A =
+ {𝓥 : Universe} (X : 𝓥 ̇ ) → is-equiv (consts A X)
+
+singletons-satisfy-universal-property : Fun-Ext
+                                      → {A : 𝓤 ̇ }
+                                      → is-singleton A
+                                      → universal-property-of-singletons A
+singletons-satisfy-universal-property fe {A} s X =
+ qinvs-are-equivs (consts A X) (f , (λ _ → refl) , II)
+  where
+   f : (A → X) → X
+   f g = g (center s)
+   II : (λ g _ → g (center s)) ∼ id
+   II g = dfunext fe (λ a → ap g (centrality s a))
+
+singleton-if-consts-is-equiv : {A : 𝓤 ̇ }
+                             → is-equiv (consts A A)
+                             → is-singleton A
+singleton-if-consts-is-equiv {𝓤} {A} e = a₀ , I
+ where
+  c : A → A → A
+  c = consts A A
+
+  f : (A → A) → A
+  f = inverse (consts A A) e
+
+  a₀ : A
+  a₀ = f id
+
+  I : (a : A) → a₀ ＝ a
+  I a = a₀         ＝⟨refl⟩
+        c a₀ a     ＝⟨refl⟩
+        c (f id) a ＝⟨ happly (inverses-are-sections c e id) a ⟩
+        id a       ＝⟨refl⟩
+        a          ∎
+
+singleton-if-universal-property⁻ : {A : 𝓤 ̇ }
+                                 → universal-property-of-singletons⁻ A
+                                 → is-singleton A
+singleton-if-universal-property⁻ {𝓤} {A} up =
+ singleton-if-consts-is-equiv (up A)
+
+singleton-if-universal-property : {A : 𝓤 ̇ }
+                                → universal-property-of-singletons A
+                                → is-singleton A
+singleton-if-universal-property {𝓤} {A} up = singleton-if-universal-property⁻ up
 
 \end{code}
