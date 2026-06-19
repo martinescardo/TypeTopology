@@ -22,7 +22,7 @@ function that, given a witness of WEM, gives ₀ or ₁ according to
 whether ¬ p holds or ¬¬ p holds.
 
 The universal property says that, for every totally separated type Y,
-precomposition with η is an equivalence
+precomposition with η (the restriction map) is an equivalence
 
     (T → Y) ≃ (Ω → Y).
 
