@@ -152,8 +152,7 @@ A witness w of WEM makes every t : T constant with value t w.
 
 \end{code}
 
-Boolean-valued maps on Ω are constant, determined by their values
-at ⊥ and ⊤.
+Sufficient condition for boolean-valued maps on Ω being constant.
 
 \begin{code}
 
