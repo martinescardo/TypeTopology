@@ -1,6 +1,6 @@
 Martin Escardo, 17-19 June 2025.
 
-The totally separated reflection of the type Ω 𝓤 of propositions.
+The totally separated reflection of the type Ω of propositions.
 
 Any type X has a totally separated reflection, given by the image of
 the evaluation map X → ((X → 𝟚) → 𝟚). Here we explore whether the
