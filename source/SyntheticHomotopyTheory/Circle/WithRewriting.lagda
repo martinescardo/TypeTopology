@@ -1,4 +1,4 @@
-Tom de Jong, 18 & 19 June 2026.
+Tom de Jong, 19 June 2026.
 
 We postulate the existence of the circle S¹ with definitional computation rules
 using Agda's rewriting mechanism and derive its (dependent) universal property.
