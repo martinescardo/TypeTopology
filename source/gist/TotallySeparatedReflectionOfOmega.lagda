@@ -166,14 +166,14 @@ constancy-lemma : (h : Ω → 𝟚) → h ⊥ ＝ h ⊤ → (p : Ω) → h p ＝
 constancy-lemma h e p = 𝟚-is-¬¬-separated (h p) (h ⊥) I
  where
   I : ¬¬ (h p ＝ h ⊥)
-  I k = III II
+  I νν = III II
    where
     II : ¬ (p holds)
-    II ν = k (h p ＝⟨ lemma-⊤ h p ν ⟩
-              h ⊤ ＝⟨ e ⁻¹ ⟩
-              h ⊥ ∎)
+    II ν = νν (h p ＝⟨ lemma-⊤ h p ν ⟩
+                 h ⊤ ＝⟨ e ⁻¹ ⟩
+                 h ⊥ ∎)
     III : ¬¬ (p holds)
-    III ν = k (lemma-⊥ h p ν)
+    III ν = νν (lemma-⊥ h p ν)
 
 to-WEM : (h : Ω → 𝟚) → h ⊥ ≠ h ⊤ → WEM
 to-WEM h d p = I (𝟚-is-discrete (h p) (h ⊤))
@@ -233,21 +233,21 @@ We apply resizing to the proposition (t ＝ τ₁).
             t w        ∎
     where
      III : ¬ (s t holds)
-     III sh = zero-is-not-one (₀     ＝⟨ e₀ ⁻¹ ⟩
-                               t w   ＝⟨ happly (from-s-holds t sh) w ⟩
-                               τ₁ w  ＝⟨ refl ⟩
-                               ₁     ∎)
+     III ν = zero-is-not-one (₀     ＝⟨ e₀ ⁻¹ ⟩
+                              t  w  ＝⟨ happly (from-s-holds t ν) w ⟩
+                              τ₁ w  ＝⟨ refl ⟩
+                              ₁     ∎)
    II : (w : WEM) → t w ＝ ₁ → η (s t) w ＝ t w
-   II w e₁ = η (s t) w ＝⟨ η₁ (s t) w V ⟩
-             ₁         ＝⟨ e₁ ⁻¹ ⟩
+   II w e = η (s t) w ＝⟨ η₁ (s t) w V ⟩
+             ₁         ＝⟨ e ⁻¹ ⟩
              t w       ∎
     where
      IV : t ＝ τ₁
      IV = t       ＝⟨ τ-const t w ⟩
-          τ (t w) ＝⟨ ap τ e₁ ⟩
+          τ (t w) ＝⟨ ap τ e ⟩
           τ₁      ∎
      V : ¬¬ (s t holds)
-     V ν = ν (to-s-holds t IV)
+     V νν = νν (to-s-holds t IV)
 
 \end{code}
 
@@ -368,7 +368,7 @@ left-cancellability of ρ₂, hence the other triangle.
 \begin{code}
 
 τ₀₁-density : (t : T) → ¬¬ ((t ＝ τ₀) + (t ＝ τ₁))
-τ₀₁-density t k = II (λ d → k (I d))
+τ₀₁-density t νν = II (λ d → νν (I d))
  where
   I : is-decidable WEM → (t ＝ τ₀) + (t ＝ τ₁)
   I (inl w) = 𝟚-equality-cases
@@ -391,11 +391,13 @@ left-cancellability of ρ₂, hence the other triangle.
       g (η ⊥)  ＝⟨ happly e ⊥ ⟩
       g' (η ⊥) ＝⟨ ap g' η⊥ ⟩
       g' τ₀    ∎
+
   II : g τ₁ ＝ g' τ₁
   II = g τ₁     ＝⟨ ap g (η⊤ ⁻¹) ⟩
        g (η ⊤)  ＝⟨ happly e ⊤ ⟩
        g' (η ⊤) ＝⟨ ap g' η⊤ ⟩
        g' τ₁    ∎
+
   III : (t : T) → ¬¬ (g t ＝ g' t)
   III t νν = τ₀₁-density t IV
    where
@@ -404,6 +406,7 @@ left-cancellability of ρ₂, hence the other triangle.
                      g  τ₀ ＝⟨ I ⟩
                      g' τ₀ ＝⟨ ap g' (l ⁻¹) ⟩
                      g' t  ∎)
+
     IV (inr r) = νν (g  t  ＝⟨ ap g r ⟩
                      g  τ₁ ＝⟨ II ⟩
                      g' τ₁ ＝⟨ ap g' (r ⁻¹) ⟩
@@ -525,7 +528,8 @@ T-is-𝟚-injective = first-dual-is-𝟚-injective
 
 \end{code}
 
-There is at most one extension for a totally separated target.
+There is at most one extension for a totally separated target. The
+following generalizes and uses ρ₂-lc.
 
 \begin{code}
 
@@ -569,6 +573,7 @@ EM-gives-Ω-discrete em p q = II (I p) (I q)
   II (inl ph) (inl qh)  = inl (p ＝⟨ holds-gives-equal-⊤ pe fe p ph ⟩
                                ⊤ ＝⟨ (holds-gives-equal-⊤ pe fe q qh) ⁻¹ ⟩
                                q ∎)
+
   II (inl ph) (inr nq) = inr (λ e → nq (transport _holds e ph))
   II (inr np) (inl qh) = inr (λ e → np (transport _holds (e ⁻¹) qh))
   II (inr np) (inr nq) = inl (p ＝⟨ fails-gives-equal-⊥ pe fe p np ⟩
