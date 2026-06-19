@@ -1,4 +1,4 @@
-Martin Escardo, 18-19 June 2025.
+Martin Escardo, 17-19 June 2025.
 
 The totally separated reflection of the type Ω 𝓤 of propositions.
 
@@ -126,7 +126,7 @@ The unit of the reflection and its non-definitional "computation" rules.
  where
   I : (d : is-decidable (¬ (p holds))) → δ d ＝ ₀
   I (inl _) = refl
-  I (inr φ)  = 𝟘-elim (φ ν)
+  I (inr φ) = 𝟘-elim (φ ν)
 
 η₁ : (p : Ω) (w : WEM) → ¬¬ (p holds) → η p w ＝ ₁
 η₁ p w νν = I (w p)
