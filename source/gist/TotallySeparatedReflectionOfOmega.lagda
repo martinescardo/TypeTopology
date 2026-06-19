@@ -76,17 +76,19 @@ private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
-Ω : 𝓤 ⁺ ̇
+ 𝓤⁺ = 𝓤 ⁺
+
+Ω : 𝓤⁺ ̇
 Ω = Ω-of 𝓤
 
-WEM : 𝓤 ⁺ ̇
+WEM : 𝓤⁺ ̇
 WEM = (p : Ω) → is-decidable (¬ (p holds))
 
 WEM-is-prop : is-prop WEM
 WEM-is-prop = Π-is-prop fe
                (λ p → decidability-of-prop-is-prop fe (negations-are-props fe))
 
-T : 𝓤 ⁺ ̇
+T : 𝓤⁺ ̇
 T = WEM → 𝟚
 
 T-is-totally-separated : is-totally-separated T
@@ -198,7 +200,7 @@ universal property of T without assuming resizing.
 \begin{code}
 
 module T-is-ts-reflection-of-Ω-assuming-resizing
-        (r : propositional-resizing (𝓤 ⁺) 𝓤)
+        (r : propositional-resizing (𝓤⁺) 𝓤)
        where
 
  being-equal-to-τ₁-is-prop : (t : T) → is-prop (t ＝ τ₁)
@@ -677,7 +679,7 @@ module _ (pt : propositional-truncations-exist) where
      (embeddings-with-sections-are-equivs ι ι-emb (𝓼 , happly ι𝓼-id)))
 
  ρ-equiv-gives-η-surjection
-  : ((Y : 𝓤 ⁺ ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
+  : ((Y : 𝓤⁺ ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
   → is-surjection η
  ρ-equiv-gives-η-surjection up = section-of-ι-gives-η-surjection 𝓼 III
   where
@@ -694,7 +696,7 @@ module _ (pt : propositional-truncations-exist) where
    III = ρ₂-of-ts-is-lc T T-is-totally-separated (ι ∘ 𝓼) id
           (ap (λ - → ι ∘ -) II)
 
- 𝟚-injective-image-gives-η-surjection : 𝟚-injective (image η) (𝓤 ⁺) (𝓤 ⁺)
+ 𝟚-injective-image-gives-η-surjection : 𝟚-injective (image η) (𝓤⁺) (𝓤⁺)
                                       → is-surjection η
  𝟚-injective-image-gives-η-surjection i = section-of-ι-gives-η-surjection 𝓼 III
   where
@@ -734,7 +736,7 @@ The comparison map 𝓬.
                         (totally-separated-reflection T-is-totally-separated η)
 
  reflection-gives-𝕋-equivalence
-  : ((Y : 𝓤 ⁺ ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
+  : ((Y : 𝓤⁺ ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
   → is-equiv 𝓬
  reflection-gives-𝕋-equivalence up
   = qinvs-are-equivs 𝓬 (𝓬⁻¹ , III , IV)
