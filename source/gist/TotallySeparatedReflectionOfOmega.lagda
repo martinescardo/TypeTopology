@@ -857,11 +857,11 @@ more or less directly.
   II = ap (𝟚-cases b (complement b)) (η₁ ⊤ w (¬¬-intro ⊤-holds))
 
   III : h ⊥ ≠ h ⊤
-  III q = complement-no-fp b
-           (b            ＝⟨ I ⁻¹ ⟩
-            h ⊥          ＝⟨ q ⟩
-            h ⊤          ＝⟨ II ⟩
-            complement b ∎)
+  III ν = complement-no-fp b
+            (b            ＝⟨ I ⁻¹ ⟩
+             h ⊥          ＝⟨ ν ⟩
+             h ⊤          ＝⟨ II ⟩
+             complement b ∎)
 
   IV : (d : is-decidable (h ⊥ ＝ h ⊤)) → ψ' h d ＝ inr (w , b)
   IV (inl e)   = 𝟘-elim (III e)
