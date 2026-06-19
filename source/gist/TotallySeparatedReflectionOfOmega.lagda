@@ -10,23 +10,23 @@ We show, assuming propositional resizing, that the type
 
     T = WEM → 𝟚
 
-has the universal property of the totally separated reflection of Ω 𝓤,
+has the universal property of the totally separated reflection of Ω,
 where
 
-    WEM 𝓤 := (p : Ω 𝓤) → ¬ (p holds) + ¬¬ (p holds)
+    WEM := (p : Ω) → ¬ (p holds) + ¬¬ (p holds)
 
 is the principle of weak excluded middle.
 
-The unit η : Ω 𝓤 → T of the reflection sends a proposition p to the
+The unit η : Ω→ T of the reflection sends a proposition p to the
 function that, given a witness of WEM, gives ₀ or ₁ according to
 whether ¬ p holds or ¬¬ p holds.
 
 The universal property says that, for every totally separated type Y,
 precomposition with η is an equivalence
 
-    (T → Y) ≃ (Ω 𝓤 → Y).
+    (T → Y) ≃ (Ω → Y).
 
-Resizing is used to define a section s : T → Ω 𝓤 of η by
+Resizing is used to define a section s : T → Ω of η by
 s t = "the resized proposition that t is the constant function ₁".
 
 Can this equivalence be extablished without assuming propositional
@@ -39,7 +39,7 @@ without assuming resizing?
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import UF.FunExt
 open import UF.Subsingletons
@@ -74,7 +74,7 @@ private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
-Ω : (𝓤 ⁺) ̇
+Ω : 𝓤 ⁺ ̇
 Ω = Ω-of 𝓤
 
 WEM : 𝓤 ⁺ ̇
@@ -88,10 +88,12 @@ T : 𝓤 ⁺ ̇
 T = WEM → 𝟚
 
 T-is-totally-separated : is-totally-separated T
-T-is-totally-separated = Π-is-totally-separated fe (λ _ → 𝟚-is-totally-separated)
+T-is-totally-separated = Π-is-totally-separated fe
+                          (λ _ → 𝟚-is-totally-separated)
 
 T-is-set : is-set T
-T-is-set = totally-separated-types-are-sets fe T T-is-totally-separated
+T-is-set = totally-separated-types-are-sets fe T
+            T-is-totally-separated
 
 τ : 𝟚 → T
 τ b = λ _ → b
@@ -102,13 +104,11 @@ T-is-set = totally-separated-types-are-sets fe T T-is-totally-separated
 
 \end{code}
 
-We use the following only for A = ¬ (p holds) and B = ¬¬ (p holds),
-but Agda can't infer p if we leave it implicit, and so we define it
-more generally.
+NB. The function δ needs --lossy-unification to avoid unsolved constraints.
 
 \begin{code}
 
-δ : {A : 𝓥 ̇ } {B : 𝓥 ̇ } → A + B → 𝟚
+δ : {p : Ω} → is-decidable (¬ (p holds)) → 𝟚
 δ (inl _) = ₀
 δ (inr _) = ₁
 
