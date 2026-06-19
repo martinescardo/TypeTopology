@@ -8,7 +8,7 @@ totally separated reflection of Ω has a more direct description.
 
 We show, assuming propositional resizing, that the type
 
-    T = WEM → 𝟚
+    T := (WEM → 𝟚)
 
 has the universal property of the totally separated reflection of Ω,
 where
@@ -17,7 +17,7 @@ where
 
 is the principle of weak excluded middle.
 
-The unit η : Ω→ T of the reflection sends a proposition p to the
+The unit η : Ω → T of the reflection sends a proposition p to the
 function that, given a witness of WEM, gives ₀ or ₁ according to
 whether ¬ p holds or ¬¬ p holds.
 
@@ -29,9 +29,9 @@ precomposition with η is an equivalence
 Resizing is used to define a section s : T → Ω of η by
 s t = "the resized proposition that t is the constant function ₁".
 
-Can this equivalence be extablished without assuming propositional
+Can this equivalence be established without assuming propositional
 resizing? We don't know, but we explore this a bit here. In particular,
-we extablish the equivalence, without resizing, for types Y that are
+we establish the equivalence, without resizing, for types Y that are
 retracts of powers of 𝟚.
 
 TODO. Is every totally separated type a retract of a power of 𝟚,
