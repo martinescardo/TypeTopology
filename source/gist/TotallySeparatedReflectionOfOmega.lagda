@@ -857,9 +857,9 @@ more or less directly.
   II = ap (𝟚-cases b (complement b)) (η₁ ⊤ w (¬¬-intro ⊤-holds))
 
   III : h ⊥ ≠ h ⊤
-  III ν = complement-no-fp b
+  III e = complement-no-fp b
            (b            ＝⟨ I ⁻¹ ⟩
-            h ⊥          ＝⟨ ν ⟩
+            h ⊥          ＝⟨ e ⟩
             h ⊤          ＝⟨ II ⟩
             complement b ∎)
 
