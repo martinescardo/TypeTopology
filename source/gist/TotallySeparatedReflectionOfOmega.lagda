@@ -805,8 +805,8 @@ more or less directly.
 \begin{code}
 
 ψ' : (h : Ω → 𝟚) → is-decidable (h ⊥ ＝ h ⊤) → 𝟚 + WEM × 𝟚
-ψ' h (inl _)  = inl (h ⊥)
-ψ' h (inr ne) = inr (to-WEM h ne , h ⊥)
+ψ' h (inl _) = inl (h ⊥)
+ψ' h (inr ν) = inr (to-WEM h ν , h ⊥)
 
 ψ : (Ω → 𝟚) → 𝟚 + WEM × 𝟚
 ψ h = ψ' h (𝟚-is-discrete (h ⊥) (h ⊤))
@@ -858,14 +858,14 @@ more or less directly.
 
   III : h ⊥ ≠ h ⊤
   III ν = complement-no-fp b
-            (b            ＝⟨ I ⁻¹ ⟩
-             h ⊥          ＝⟨ ν ⟩
-             h ⊤          ＝⟨ II ⟩
-             complement b ∎)
+           (b            ＝⟨ I ⁻¹ ⟩
+            h ⊥          ＝⟨ ν ⟩
+            h ⊤          ＝⟨ II ⟩
+            complement b ∎)
 
   IV : (d : is-decidable (h ⊥ ＝ h ⊤)) → ψ' h d ＝ inr (w , b)
-  IV (inl e)   = 𝟘-elim (III e)
-  IV (inr ne') = ap inr (to-×-＝ (WEM-is-prop (to-WEM h ne') w) I)
+  IV (inl e) = 𝟘-elim (III e)
+  IV (inr ν) = ap inr (to-×-＝ (WEM-is-prop (to-WEM h ν) w) I)
 
 Ψ : (Ω → 𝟚) ≃ (𝟚 + WEM × 𝟚)
 Ψ = ψ , qinvs-are-equivs ψ (ψ⁻¹ , ψη , ψε)
