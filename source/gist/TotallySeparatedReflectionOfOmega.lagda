@@ -619,6 +619,12 @@ extension₂-along-η-under-¬WEM h t nw = I (𝟚-is-discrete (h ⊥) (h ⊤))
   I (inl e)  = refl
   I (inr ν) = 𝟘-elim (nw (to-WEM h ν))
 
+\end{code}
+
+TODO. The following deserves a better name and some explanation.
+
+\begin{code}
+
 ¬¬-extension
  : (Y : 𝓦 ̇ )
  → is-totally-separated Y
