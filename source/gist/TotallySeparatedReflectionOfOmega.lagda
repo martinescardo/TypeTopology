@@ -35,7 +35,9 @@ we establish the equivalence, without resizing, for types Y that are
 retracts of powers of 𝟚.
 
 TODO. Is every totally separated type a retract of a power of 𝟚,
-without assuming resizing?
+without assuming resizing? No, because this excludes the empty type
+(as pointed out to us by Jason Carr). But what can we say in this
+direction.
 
 \begin{code}
 
