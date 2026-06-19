@@ -78,15 +78,15 @@ private
 
  𝓤⁺ = 𝓤 ⁺
 
-Ω : 𝓤⁺ ̇
-Ω = Ω-of 𝓤
+ Ω : 𝓤⁺ ̇
+ Ω = Ω-of 𝓤
 
-WEM : 𝓤⁺ ̇
-WEM = (p : Ω) → is-decidable (¬ (p holds))
+ WEM : 𝓤⁺ ̇
+ WEM = (p : Ω) → is-decidable (¬ (p holds))
 
-WEM-is-prop : is-prop WEM
-WEM-is-prop = Π-is-prop fe
-               (λ p → decidability-of-prop-is-prop fe (negations-are-props fe))
+ WEM-is-prop : is-prop WEM
+ WEM-is-prop = Π-is-prop fe
+                (λ p → decidability-of-prop-is-prop fe (negations-are-props fe))
 
 T : 𝓤⁺ ̇
 T = WEM → 𝟚
