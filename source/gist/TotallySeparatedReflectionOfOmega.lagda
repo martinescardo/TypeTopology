@@ -141,12 +141,6 @@ The unit of the reflection and its non-definitional "computation" rules.
 η⊤ : η ⊤ ＝ τ₁
 η⊤ = dfunext fe (λ w → η₁ ⊤ w (¬¬-intro ⊤-holds))
 
-\end{code}
-
-A witness w of WEM makes every t : T constant with value t w.
-
-\begin{code}
-
 τ-const : (t : T) (w : WEM) → t ＝ τ (t w)
 τ-const t w = dfunext fe (λ w' → ap t (WEM-is-prop w' w))
 
