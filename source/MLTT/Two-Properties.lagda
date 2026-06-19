@@ -116,6 +116,12 @@ complement : 𝟚 → 𝟚
 complement ₀ = ₁
 complement ₁ = ₀
 
+complement-of-different-booleans : {a b : 𝟚} → a ≠ b → b ＝ complement a
+complement-of-different-booleans {₀} {₀} ν = 𝟘-elim (ν refl)
+complement-of-different-booleans {₀} {₁} ν = refl
+complement-of-different-booleans {₁} {₀} ν = refl
+complement-of-different-booleans {₁} {₁} ν = 𝟘-elim (ν refl)
+
 complement-no-fp : (n : 𝟚) → n ≠ complement n
 complement-no-fp ₀ p = 𝟘-elim (zero-is-not-one p)
 complement-no-fp ₁ p = 𝟘-elim (one-is-not-zero p)

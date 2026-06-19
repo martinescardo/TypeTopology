@@ -39,6 +39,14 @@ without assuming resizing? No, because this excludes the empty type
 (as pointed out to us by Jason Carr). But what can we say in this
 direction?
 
+A side-conclusion of this technical development is that we have an
+equivalence
+
+  (Ω → 𝟚) ≃ (𝟚 + WEM × 𝟚).
+
+There are always two maps Ω → 𝟚, namely the constant ones, plus two
+when WEM holds.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
@@ -209,7 +217,7 @@ universal property of T without assuming resizing.
 \begin{code}
 
 module T-is-ts-reflection-of-Ω-assuming-resizing
-        (r : propositional-resizing (𝓤⁺) 𝓤)
+        (r : propositional-resizing 𝓤⁺ 𝓤)
        where
 
  being-equal-to-τ₁-is-prop : (t : T) → is-prop (t ＝ τ₁)
@@ -711,7 +719,7 @@ module _ (pt : propositional-truncations-exist) where
    III = ρ₂-of-ts-is-lc T T-is-totally-separated (ι ∘ 𝓼) id
           (ap (λ - → ι ∘ -) II)
 
- 𝟚-injective-image-gives-η-surjection : 𝟚-injective (image η) (𝓤⁺) (𝓤⁺)
+ 𝟚-injective-image-gives-η-surjection : 𝟚-injective (image η) 𝓤⁺ 𝓤⁺
                                       → is-surjection η
  𝟚-injective-image-gives-η-surjection i = section-of-ι-gives-η-surjection 𝓼 III
   where
@@ -785,5 +793,81 @@ The comparison map 𝓬.
             (ρ T (𝓬 ∘ 𝓬⁻¹) ＝⟨ ap (λ - → 𝓬 ∘ -) II ⟩
              𝓬 ∘ ηᵀ           ＝⟨ 𝓬-triangle ⟩
              η                         ∎)
+
+\end{code}
+
+The above development gives the equivalence
+
+    (Ω → 𝟚) ≃ (𝟚 + WEM × 𝟚)
+
+more or less directly.
+
+\begin{code}
+
+ψ' : (h : Ω → 𝟚) → is-decidable (h ⊥ ＝ h ⊤) → 𝟚 + WEM × 𝟚
+ψ' h (inl _)  = inl (h ⊥)
+ψ' h (inr ne) = inr (to-WEM h ne , h ⊥)
+
+ψ : (Ω → 𝟚) → 𝟚 + WEM × 𝟚
+ψ h = ψ' h (𝟚-is-discrete (h ⊥) (h ⊤))
+
+ψ⁻¹ : 𝟚 + WEM × 𝟚 → (Ω → 𝟚)
+ψ⁻¹ (inl b)       _ = b
+ψ⁻¹ (inr (w , b)) p = 𝟚-cases b (complement b) (δ (w p))
+
+ψη : ψ⁻¹ ∘ ψ ∼ id
+ψη h = I (𝟚-is-discrete (h ⊥) (h ⊤))
+ where
+  I : (d : is-decidable (h ⊥ ＝ h ⊤)) → ψ⁻¹ (ψ' h d) ＝ h
+  I (inl e) = dfunext fe (λ p → (constancy-lemma h e p) ⁻¹)
+  I (inr ν) = dfunext fe III
+   where
+    II : WEM
+    II = to-WEM h ν
+
+    III : (p : Ω) → 𝟚-cases (h ⊥) (complement (h ⊥)) (δ (II p)) ＝ h p
+    III p = IV (II p)
+     where
+      IV : (d : is-decidable (¬ (p holds)))
+         → 𝟚-cases (h ⊥) (complement (h ⊥)) (δ d) ＝ h p
+      IV (inl ν)  = (lemma-⊥ h p ν) ⁻¹
+      IV (inr νν) = complement (h ⊥) ＝⟨ (complement-of-different-booleans ν) ⁻¹ ⟩
+                    h ⊤              ＝⟨ V ⁻¹ ⟩
+                    h p              ∎
+       where
+        V : h p ＝ h ⊤
+        V = 𝟚-is-¬¬-separated (h p) (h ⊤)
+             (λ k → νν (λ ph → k (lemma-⊤ h p ph)))
+
+ψε : ψ ∘ ψ⁻¹ ∼ id
+ψε (inl b) = I (𝟚-is-discrete b b)
+ where
+  I : (d : is-decidable (b ＝ b)) → ψ' (ψ⁻¹ (inl b)) d ＝ inl b
+  I (inl _) = refl
+  I (inr ν) = 𝟘-elim (ν refl)
+ψε (inr (w , b)) = IV (𝟚-is-discrete (h ⊥) (h ⊤))
+ where
+  h : Ω → 𝟚
+  h = ψ⁻¹ (inr (w , b))
+
+  I : h ⊥ ＝ b
+  I = ap (𝟚-cases b (complement b)) (η₀ ⊥ w ⊥-doesnt-hold)
+
+  II : h ⊤ ＝ complement b
+  II = ap (𝟚-cases b (complement b)) (η₁ ⊤ w (¬¬-intro ⊤-holds))
+
+  III : h ⊥ ≠ h ⊤
+  III q = complement-no-fp b
+           (b            ＝⟨ I ⁻¹ ⟩
+            h ⊥          ＝⟨ q ⟩
+            h ⊤          ＝⟨ II ⟩
+            complement b ∎)
+
+  IV : (d : is-decidable (h ⊥ ＝ h ⊤)) → ψ' h d ＝ inr (w , b)
+  IV (inl e)   = 𝟘-elim (III e)
+  IV (inr ne') = ap inr (to-×-＝ (WEM-is-prop (to-WEM h ne') w) I)
+
+Ψ : (Ω → 𝟚) ≃ (𝟚 + WEM × 𝟚)
+Ψ = ψ , qinvs-are-equivs ψ (ψ⁻¹ , ψη , ψε)
 
 \end{code}
