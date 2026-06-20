@@ -872,14 +872,15 @@ module _ (pt : propositional-truncations-exist) where
 
 In the next step we show that
 
-              η
-   Ω ----------------------> T
-   |                         |
- f |                         | ε f
-   |                         |
-   v                         v
-   Y ----------------> ((Y → 𝟚) → 𝟚)
-            eval Y
+                η
+      Ω ───────────────────→ T
+      │                      │
+      │                      │
+    f │                      │ ε f
+      │                      │
+      ↓                      ↓
+      Y ─────────────→ ((Y → 𝟚) → 𝟚)
+              eval Y
 
 \begin{code}
 
@@ -896,15 +897,43 @@ It is in the following step that the surjectivity of η is used:
    φ f t = ∥∥-rec (eval-is-embedding (ε f t)) I (η-surj t)
     where
      I : (Σ p ꞉ Ω , η p ＝ t) → fiber (eval Y) (ε f t)
-     I (p , e) = f p , (eval Y (f p) ＝⟨ (ε-square f p) ⁻¹ ⟩
+     I (p , e) = f p , (eval Y (f p) ＝⟨ (ε-square f p)⁻¹ ⟩
                         ε f (η p)    ＝⟨ ap (ε f) e ⟩
                         ε f t        ∎)
 
    σ : (Ω → Y) → (T → Y)
    σ f t = fiber-point (φ f t)
 
+\end{code}
+
+Next we show that
+
+
+
+                  T
+                 ╱│
+                ╱ │
+               ╱  │
+              ╱   │
+             ╱    │
+       σ f  ╱     │ ε f
+           ╱      │
+          ╱       │
+         ╱        │
+        ↙         ↓
+       Y ─────→ ((Y → 𝟚) → 𝟚)
+          eval Y
+
+\begin{code}
+
    σ-triangle : (f : Ω → Y) → eval Y ∘ σ f ∼ ε f
    σ-triangle f t = fiber-identification (φ f t)
+
+\end{code}
+
+Pasting these two diagrams we get that σ is section of ρ.
+
+\begin{code}
 
    ρσ : ρ Y ∘ σ ∼ id
    ρσ f = dfunext fe
@@ -912,6 +941,13 @@ It is in the following step that the surjectivity of η is used:
                    (eval Y (σ f (η p)) ＝⟨ σ-triangle f (η p) ⟩
                     ε f (η p)          ＝⟨ ε-square f p ⟩
                     eval Y (f p)       ∎))
+
+\end{code}
+
+And that σ is a retraction of ρ follows from from this and the total
+separatedness of Y.
+
+\begin{code}
 
    σρ : σ ∘ ρ Y ∼ id
    σρ g = ρ₂-of-ts-is-lc Y ts (σ (ρ Y g)) g (ρσ (ρ Y g))
