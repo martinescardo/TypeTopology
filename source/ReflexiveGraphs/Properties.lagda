@@ -35,9 +35,9 @@ private
 
 In this file we observe that univalence of (displayed) reflexive graphs and the
 structure of a lens on a reflexive graph and associated family of reflexive
-graphs are properties rather than data. For this we globally assume function
-extensionality, and for the latter we assume univalence of the reflexive graphs
-in question.
+graphs are properties rather than data. For this, we globally assume function
+extensionality, and for the latter, we assume univalence of the reflexive
+graphs in question.
 
 We show that univalence for (displayed) reflexive graphs is a proposition.
 
@@ -56,13 +56,8 @@ displayed-refl-graph-univalence-is-a-property 𝓐 𝓑
 
 \end{code}
 
-We show that oplax coravariant lens structure is contracible and in fact a
-property.
-
-NOTE: We inline the definitional isomorphism between the record type collecting
-the lens structure and the corresponding sigma type. We then proceed with
-equivalence reasoning by massaging this sigma type into the form of something
-contractible.
+We show that the oplax contravariant lens structure is contracible and in fact a
+property of the reflexive graph and reflexive graphs family.
 
 \begin{code}
 
@@ -80,17 +75,14 @@ module _ (𝓤' 𝓥' : Universe)
    (Π-is-singleton fe (λ x → equiv-to-singleton (II x) (III x)))
   where
    open oplax-covariant-lens-structure 
-   I' : oplax-covariant-lens-structure 𝓤' 𝓥' 𝓐 𝓑 ≃
-        (Σ ϕ ꞉ ((x y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 x ⟩ → ⟨ 𝓑 y ⟩)
-          , ((x : ⟨ 𝓐 ⟩) → (u : ⟨ 𝓑 x ⟩) → ϕ x x (≈-refl 𝓐 x) u ≈⟨ 𝓑 x ⟩ u))
-   I' = qinveq (λ 𝓛 → ((λ x y → push 𝓛) , λ x → push-refl 𝓛))
-         ((λ (ϕ , r) → record {push = λ {x y} → ϕ x y; push-refl = λ {x} → r x})
-          , ∼-refl , ∼-refl)
    I : oplax-covariant-lens-structure 𝓤' 𝓥' 𝓐 𝓑
      ≃ ((x : ⟨ 𝓐 ⟩)
         → Σ ϕ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 x ⟩ → ⟨ 𝓑 y ⟩)
           , ((u : ⟨ 𝓑 x ⟩) → ϕ x (≈-refl 𝓐 x) u ≈⟨ 𝓑 x ⟩ u))
-   I = ≃-comp I' (≃-sym ΠΣ-distr-≃)
+   I = qinveq (λ 𝓛 x → ((λ _ → push 𝓛) , push-refl 𝓛))
+        ((λ f → record {push = λ {x y} → (pr₁ (f x)) y
+                        ; push-refl = λ {x} → pr₂ (f x)})
+         , ∼-refl , ∼-refl)
    II : (x : ⟨ 𝓐 ⟩) → _ ≃ (cofan (⟨ 𝓑 x ⟩ ➙ 𝓑 x) id)
    II x = (Σ ϕ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 x ⟩ → ⟨ 𝓑 y ⟩) ,
             ((u : ⟨ 𝓑 x ⟩) → ϕ x (≈-refl 𝓐 x) u ≈⟨ 𝓑 x ⟩ u))
