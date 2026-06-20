@@ -47,6 +47,9 @@ equivalence
 There are always two maps Ω → 𝟚, namely the constant ones, plus two
 when WEM holds.
 
+Moreover, we show that η is the universal map of Ω into a totally
+separated type if and only if it is a surjection.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
