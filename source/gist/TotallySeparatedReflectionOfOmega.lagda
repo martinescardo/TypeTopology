@@ -6,7 +6,7 @@ Any type X has a totally separated reflection, given by the image of
 the evaluation map X → ((X → 𝟚) → 𝟚). Here we explore whether the
 totally separated reflection of Ω has a more direct description.
 
-We show, assuming propositional resizing, that the type
+First, we show, assuming propositional resizing, that the type
 
     T := (WEM → 𝟚)
 
@@ -29,9 +29,11 @@ precomposition with η (the restriction map) is an equivalence
 Resizing is used to define a section s : T → Ω of η by
 s t = "the resized proposition that t is the constant function ₁".
 
-Can this equivalence be established without assuming propositional
-resizing? We don't know, but we explore this a bit here. In particular,
-we establish the equivalence, without resizing, for types Y that are
+Second, we ask whether this equivalence be established without
+assuming propositional resizing.
+
+We don't know, but we explore this a bit here. In particular, we
+establish the equivalence, without resizing, for types Y that are
 retracts of powers of 𝟚.
 
 TODO. Is every totally separated type a retract of a power of 𝟚,
@@ -876,7 +878,7 @@ In the next step we show that
  f |                         | ε f
    |                         |
    v                         v
-   Y ----------------- ((Y → 𝟚) → 𝟚)
+   Y ----------------> ((Y → 𝟚) → 𝟚)
             eval Y
 
 \begin{code}
