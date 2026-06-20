@@ -275,8 +275,8 @@ same conclusion without assuming WEM.
 
 \begin{code}
 
- sη-with-WEM : (f : Ω → 𝟚) (p : Ω) → WEM → f (s (η p)) ＝ f p
- sη-with-WEM f p w = I (w p)
+ sη-with-WEM : WEM → (f : Ω → 𝟚) (p : Ω) → f (s (η p)) ＝ f p
+ sη-with-WEM w f p = I (w p)
   where
    I : is-decidable (¬ (p holds)) → f (s (η p)) ＝ f p
    I (inl ν) = f (s (η p)) ＝⟨ ap f (fails-gives-equal-⊥ pe fe (s (η p)) I₀) ⟩
@@ -313,7 +313,7 @@ same conclusion without assuming WEM.
               f p         ∎)
     where
      I₀ : ¬ WEM
-     I₀ w = ne (sη-with-WEM f p w)
+     I₀ w = ne (sη-with-WEM w f p)
 
      I₁ : f ⊥ ＝ f ⊤
      I₁ = 𝟚-is-¬¬-separated (f ⊥) (f ⊤) (λ ne' → I₀ (WEM-lemma f ne'))
