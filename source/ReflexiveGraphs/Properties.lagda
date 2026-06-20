@@ -194,47 +194,47 @@ module _ (𝓤' 𝓥' : Universe)
                         ; rext-refl = λ {x} → pr₂ (pr₂ (pr₂ (f x)))})
          , ∼-refl , ∼-refl)
    II : (x : ⟨ 𝓐 ⟩) (ϕ : ⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩)
-      → is-contr (fan (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x)) ϕ)
+       → is-contr (fan (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x)) ϕ)
    II x ϕ = prop-fan-to-contr (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x))
-             (univalence-closed-under-cotensor fe _ (𝓑 (≈-refl 𝓐 x))
-              (is-ua-𝓑 x x (≈-refl 𝓐 x))) ϕ
+              (univalence-closed-under-cotensor fe _ (𝓑 (≈-refl 𝓐 x))
+               (is-ua-𝓑 x x (≈-refl 𝓐 x))) ϕ
    III : (x : ⟨ 𝓐 ⟩) → _ ≃ fan (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x)) id
    III x =
-     (Σ ϕ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 p ⟩)
-     , Σ ψ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 (≈-refl 𝓐 y) ⟩ → ⟨ 𝓑 p ⟩)
-     , ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-         → ϕ x (≈-refl 𝓐 x) u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ x (≈-refl 𝓐 x) u)
-     × ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩) → u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ x (≈-refl 𝓐 x) u))
-        ≃⟨ Σ-bicong _ _ (≃-sym (curry-uncurry fe'))
-            (λ _ → Σ-change-of-variable-≃ _ (≃-sym (curry-uncurry fe'))) ⟩
-     (Σ ϕ ꞉ (((y , p) : fan 𝓐 x) → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 p ⟩)
-     , Σ ψ ꞉ (((y , p) : fan 𝓐 x) → ⟨ 𝓑 (≈-refl 𝓐 y) ⟩ → ⟨ 𝓑 p ⟩)
-     , ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-      → ϕ (x , (≈-refl 𝓐 x)) u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ (x , (≈-refl 𝓐 x)) u)
-     × ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-      → u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ (x , (≈-refl 𝓐 x)) u))
-        ≃⟨ Σ-bicong _ _ (prop-indexed-product (x , ≈-refl 𝓐 x) fe (is-ua-𝓐 x))
-           (λ _ → Σ-change-of-variable-≃ _
-            (prop-indexed-product (x , ≈-refl 𝓐 x) fe (is-ua-𝓐 x))) ⟩
-     (Σ ϕ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-     , Σ ψ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-     , ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩) → ϕ u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ u)
-     × ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩) → u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ u))
-        ≃⟨by-definition⟩
-     (Σ ϕ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-     , Σ ψ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-     , (ϕ ≈⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩ ψ)
-     × (id ≈⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩ ψ))
-        ≃⟨ Σ-cong (λ _ → ≃-sym Σ-assoc) ⟩
-     (Σ ϕ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-     , Σ (ψ , _) ꞉ fan (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x)) ϕ
-     , (id ≈⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩ ψ))
-        ≃⟨ Σ-cong (λ - → prop-indexed-sum (center (II x -))
-            (singletons-are-props (II x -))) ⟩
-     ((Σ ϕ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-     , (id ≈⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩ ϕ)))
-        ≃⟨by-definition⟩
-     fan (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x)) id ■
+    (Σ ϕ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 p ⟩)
+    , Σ ψ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 (≈-refl 𝓐 y) ⟩ → ⟨ 𝓑 p ⟩)
+    , ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
+        → ϕ x (≈-refl 𝓐 x) u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ x (≈-refl 𝓐 x) u)
+    × ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩) → u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ x (≈-refl 𝓐 x) u))
+       ≃⟨ Σ-bicong _ _ (≃-sym (curry-uncurry fe'))
+           (λ _ → Σ-change-of-variable-≃ _ (≃-sym (curry-uncurry fe'))) ⟩
+    (Σ ϕ ꞉ (((y , p) : fan 𝓐 x) → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 p ⟩)
+    , Σ ψ ꞉ (((y , p) : fan 𝓐 x) → ⟨ 𝓑 (≈-refl 𝓐 y) ⟩ → ⟨ 𝓑 p ⟩)
+    , ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
+     → ϕ (x , (≈-refl 𝓐 x)) u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ (x , (≈-refl 𝓐 x)) u)
+    × ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
+     → u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ (x , (≈-refl 𝓐 x)) u))
+       ≃⟨ Σ-bicong _ _ (prop-indexed-product (x , ≈-refl 𝓐 x) fe (is-ua-𝓐 x))
+          (λ _ → Σ-change-of-variable-≃ _
+           (prop-indexed-product (x , ≈-refl 𝓐 x) fe (is-ua-𝓐 x))) ⟩
+    (Σ ϕ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
+    , Σ ψ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
+    , ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩) → ϕ u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ u)
+    × ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩) → u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ u))
+       ≃⟨by-definition⟩
+    (Σ ϕ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
+    , Σ ψ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
+    , (ϕ ≈⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩ ψ)
+    × (id ≈⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩ ψ))
+       ≃⟨ Σ-cong (λ _ → ≃-sym Σ-assoc) ⟩
+    (Σ ϕ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
+    , Σ (ψ , _) ꞉ fan (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x)) ϕ
+    , (id ≈⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩ ψ))
+       ≃⟨ Σ-cong (λ - → prop-indexed-sum (center (II x -))
+           (singletons-are-props (II x -))) ⟩
+    ((Σ ϕ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
+    , (id ≈⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩ ϕ)))
+       ≃⟨by-definition⟩
+    fan (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x)) id ■
 
  unbiased-lens-structure-is-a-property
   : is-univalent-refl-graph 𝓐
