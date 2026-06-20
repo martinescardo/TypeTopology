@@ -134,18 +134,18 @@ The unit of the reflection and its non-definitional "computation" rules.
 η p w = δ (w p)
 
 η₀ : (p : Ω) (w : WEM) → ¬ (p holds) → η p w ＝ ₀
-η₀ p w ν = I (w p)
+η₀ p w ph = I (w p)
  where
   I : (d : is-decidable (¬ (p holds))) → δ d ＝ ₀
   I (inl _) = refl
-  I (inr φ) = 𝟘-elim (φ ν)
+  I (inr ν) = 𝟘-elim (ν ph)
 
 η₁ : (p : Ω) (w : WEM) → ¬¬ (p holds) → η p w ＝ ₁
-η₁ p w νν = I (w p)
+η₁ p w ν = I (w p)
  where
   I : (d : is-decidable (¬ (p holds))) → δ d ＝ ₁
-  I (inl ν) = 𝟘-elim (νν ν)
-  I (inr _) = refl
+  I (inl ph) = 𝟘-elim (ν ph)
+  I (inr _)  = refl
 
 η⊥ : η ⊥ ＝ τ₀
 η⊥ = dfunext fe (λ w → η₀ ⊥ w ⊥-doesnt-hold)
@@ -166,7 +166,7 @@ lemma-⊥ : (h : Ω → 𝟚) (p : Ω) → ¬ (p holds) → h p ＝ h ⊥
 lemma-⊥ h p ν = ap h (fails-gives-equal-⊥ pe fe p ν)
 
 lemma-⊤ : (h : Ω → 𝟚) (p : Ω) → p holds → h p ＝ h ⊤
-lemma-⊤ h p e = ap h (holds-gives-equal-⊤ pe fe p e)
+lemma-⊤ h p ph = ap h (holds-gives-equal-⊤ pe fe p ph)
 
 \end{code}
 
@@ -181,23 +181,23 @@ constancy-lemma : (h : Ω → 𝟚) → h ⊥ ＝ h ⊤ → (p : Ω) → h p ＝
 constancy-lemma h e p = 𝟚-is-¬¬-separated (h p) (h ⊥) I
  where
   I : ¬¬ (h p ＝ h ⊥)
-  I νν = III II
+  I ne = I₁ I₀
    where
-    II : ¬ (p holds)
-    II ν = νν (h p ＝⟨ lemma-⊤ h p ν ⟩
-                 h ⊤ ＝⟨ e ⁻¹ ⟩
-                 h ⊥ ∎)
-    III : ¬¬ (p holds)
-    III ν = νν (lemma-⊥ h p ν)
+    I₀ : ¬ (p holds)
+    I₀ ph = ne (h p ＝⟨ lemma-⊤ h p ph ⟩
+                h ⊤ ＝⟨ e ⁻¹ ⟩
+                h ⊥ ∎)
+    I₁ : ¬¬ (p holds)
+    I₁ ν = ne (lemma-⊥ h p ν)
 
-to-WEM : (h : Ω → 𝟚) → h ⊥ ≠ h ⊤ → WEM
-to-WEM h d p = I (𝟚-is-discrete (h p) (h ⊤))
+WEM-lemma : (h : Ω → 𝟚) → h ⊥ ≠ h ⊤ → WEM
+WEM-lemma h ne p = I (𝟚-is-discrete (h p) (h ⊤))
  where
   I : is-decidable (h p ＝ h ⊤) → is-decidable (¬ (p holds))
-  I (inl e) = inr (λ ν → d (h ⊥ ＝⟨ (lemma-⊥ h p ν) ⁻¹ ⟩
-                            h p ＝⟨ e ⟩
-                            h ⊤ ∎))
-  I (inr ν) = inl (λ e → ν (lemma-⊤ h p e))
+  I (inl e)   = inr (λ ph → ne (h ⊥ ＝⟨ (lemma-⊥ h p ph)⁻¹ ⟩
+                                h p ＝⟨ e ⟩
+                                h ⊤ ∎))
+  I (inr ne') = inl (λ ph → ne' (lemma-⊤ h p ph))
 
 \end{code}
 
@@ -225,7 +225,8 @@ module T-is-ts-reflection-of-Ω-assuming-resizing
 
 \end{code}
 
-We apply resizing to the proposition (t ＝ τ₁).
+We apply resizing to the proposition (t ＝ τ₁), to show that T is a
+retract of Ω with a section s of η.
 
 \begin{code}
 
@@ -243,26 +244,28 @@ We apply resizing to the proposition (t ＝ τ₁).
  ηs t = dfunext fe (λ w → 𝟚-equality-cases (I w) (II w))
   where
    I : (w : WEM) → t w ＝ ₀ → η (s t) w ＝ t w
-   I w e₀ = η (s t) w ＝⟨ η₀ (s t) w III ⟩
+   I w e₀ = η (s t) w ＝⟨ η₀ (s t) w I₀ ⟩
             ₀         ＝⟨ e₀ ⁻¹ ⟩
-            t w        ∎
+            t w       ∎
     where
-     III : ¬ (s t holds)
-     III ν = zero-is-not-one (₀     ＝⟨ e₀ ⁻¹ ⟩
-                              t  w  ＝⟨ happly (from-s-holds t ν) w ⟩
-                              τ₁ w  ＝⟨ refl ⟩
-                              ₁     ∎)
+     I₀ : ¬ (s t holds)
+     I₀ h = zero-is-not-one
+             (₀     ＝⟨ e₀ ⁻¹ ⟩
+              t  w  ＝⟨ happly (from-s-holds t h) w ⟩
+              τ₁ w  ＝⟨ refl ⟩
+              ₁     ∎)
    II : (w : WEM) → t w ＝ ₁ → η (s t) w ＝ t w
-   II w e = η (s t) w ＝⟨ η₁ (s t) w V ⟩
-             ₁         ＝⟨ e ⁻¹ ⟩
+   II w e₁ = η (s t) w ＝⟨ η₁ (s t) w II₁ ⟩
+             ₁         ＝⟨ e₁ ⁻¹ ⟩
              t w       ∎
     where
-     IV : t ＝ τ₁
-     IV = t       ＝⟨ τ-lemma t w ⟩
-          τ (t w) ＝⟨ ap τ e ⟩
-          τ₁      ∎
-     V : ¬¬ (s t holds)
-     V νν = νν (to-s-holds t IV)
+     II₀ : t ＝ τ₁
+     II₀ = t       ＝⟨ τ-lemma t w ⟩
+           τ (t w) ＝⟨ ap τ e₁ ⟩
+           τ₁      ∎
+
+     II₁ : ¬¬ (s t holds)
+     II₁ ν = ν (to-s-holds t II₀)
 
 \end{code}
 
@@ -276,41 +279,44 @@ same conclusion without assuming WEM.
  sη-with-WEM h p w = I (w p)
   where
    I : is-decidable (¬ (p holds)) → h (s (η p)) ＝ h p
-   I (inr φ) = h (s (η p)) ＝⟨ ap h (holds-gives-equal-⊤ pe fe (s (η p)) III) ⟩
-               h ⊤         ＝⟨ IV ⁻¹ ⟩
+   I (inl ν) = h (s (η p)) ＝⟨ ap h (fails-gives-equal-⊥ pe fe (s (η p)) I₀) ⟩
+               h ⊥         ＝⟨ (lemma-⊥ h p ν)⁻¹ ⟩
                h p         ∎
     where
-     II : η p ＝ τ₁
-     II = dfunext fe (λ w → η₁ p w φ)
-     III : s (η p) holds
-     III = to-s-holds (η p) II
-     IV : h p ＝ h ⊤
-     IV = 𝟚-is-¬¬-separated (h p) (h ⊤)
-           (λ k → φ (λ (ph : p holds) → k (lemma-⊤ h p ph)))
-   I (inl ν) = h (s (η p)) ＝⟨ ap h (fails-gives-equal-⊥ pe fe (s (η p)) II) ⟩
-               h ⊥         ＝⟨ (lemma-⊥ h p ν) ⁻¹ ⟩
-               h p         ∎
-    where
-     II : ¬ (s (η p) holds)
-     II sh = zero-is-not-one
-              (₀      ＝⟨ (η₀ p w ν) ⁻¹ ⟩
+     I₀ : ¬ (s (η p) holds)
+     I₀ sh = zero-is-not-one
+              (₀      ＝⟨ (η₀ p w ν)⁻¹ ⟩
                η p w  ＝⟨ happly (from-s-holds (η p) sh) w ⟩
                τ₁ w   ＝⟨ refl ⟩
                ₁      ∎)
+
+   I (inr νν) = h (s (η p)) ＝⟨ ap h (holds-gives-equal-⊤ pe fe (s (η p)) I₁) ⟩
+                h ⊤         ＝⟨ I₂ ⁻¹ ⟩
+                h p         ∎
+    where
+     I₀ : η p ＝ τ₁
+     I₀ = dfunext fe (λ w → η₁ p w νν)
+
+     I₁ : s (η p) holds
+     I₁ = to-s-holds (η p) I₀
+
+     I₂ : h p ＝ h ⊤
+     I₂ = 𝟚-is-¬¬-separated (h p) (h ⊤)
+           (λ (ne : h p ≠ h ⊤) → νν (λ (ph : p holds) → ne (lemma-⊤ h p ph)))
 
  sη : (h : Ω → 𝟚) (p : Ω) → h (s (η p)) ＝ h p
  sη h p = 𝟚-is-¬¬-separated (h (s (η p))) (h p) I
   where
    I : ¬¬ (h (s (η p)) ＝ h p)
-   I k = k (h (s (η p)) ＝⟨ constancy-lemma h III (s (η p)) ⟩
-            h ⊥         ＝⟨ (constancy-lemma h III p) ⁻¹ ⟩
-            h p         ∎)
+   I ne = ne (h (s (η p)) ＝⟨ constancy-lemma h I₁ (s (η p)) ⟩
+              h ⊥         ＝⟨ (constancy-lemma h I₁ p)⁻¹ ⟩
+              h p         ∎)
     where
-     II : ¬ WEM
-     II w = k (sη-with-WEM h p w)
+     I₀ : ¬ WEM
+     I₀ w = ne (sη-with-WEM h p w)
 
-     III : h ⊥ ＝ h ⊤
-     III = 𝟚-is-¬¬-separated (h ⊥) (h ⊤) (λ ν → II (to-WEM h ν))
+     I₁ : h ⊥ ＝ h ⊤
+     I₁ = 𝟚-is-¬¬-separated (h ⊥) (h ⊤) (λ ne' → I₀ (WEM-lemma h ne'))
 
  ρ-is-equiv : (Y : 𝓦 ̇ )
             → is-totally-separated Y
@@ -350,21 +356,21 @@ We first show that the universal property holds when 𝟚 is the target type.
 \begin{code}
 
 extension₂'-along-η : (f : Ω → 𝟚) → is-decidable (f ⊥ ＝ f ⊤) → T → 𝟚
-extension₂'-along-η f (inl _) t = f ⊥
-extension₂'-along-η f (inr ν) t = 𝟚-cases (f ⊥) (f ⊤) (t (to-WEM f ν))
+extension₂'-along-η f (inl _)  t = f ⊥
+extension₂'-along-η f (inr ne) t = 𝟚-cases (f ⊥) (f ⊤) (t (WEM-lemma f ne))
 
 extension₂-along-η : (Ω → 𝟚) → (T → 𝟚)
 extension₂-along-η f = extension₂'-along-η f (𝟚-is-discrete (f ⊥) (f ⊤))
 
 extension₂'-property : (f : Ω → 𝟚) (d : is-decidable (f ⊥ ＝ f ⊤)) (p : Ω)
                      → extension₂'-along-η f d (η p) ＝ f p
-extension₂'-property f (inl e)  p = (constancy-lemma f e p) ⁻¹
-extension₂'-property f (inr ne) p = I (to-WEM f ne p)
+extension₂'-property f (inl e)  p = (constancy-lemma f e p)⁻¹
+extension₂'-property f (inr ne) p = I (WEM-lemma f ne p)
  where
   I : (d : is-decidable (¬ (p holds))) → 𝟚-cases (f ⊥) (f ⊤) (δ d) ＝ f p
-  I (inl ν) = (lemma-⊥ f p ν) ⁻¹
-  I (inr φ) = (𝟚-is-¬¬-separated (f p) (f ⊤)
-                (λ ν → φ (λ ph → ν (lemma-⊤ f p ph)))) ⁻¹
+  I (inl ν)  = (lemma-⊥ f p ν)⁻¹
+  I (inr νν) = (𝟚-is-¬¬-separated (f p) (f ⊤)
+                 (λ (ne : f p ≠ f ⊤) → νν (λ (ph : p holds) → ne (lemma-⊤ f p ph))))⁻¹
 
 extension₂-property : (f : Ω → 𝟚) (p : Ω) → extension₂-along-η f (η p) ＝ f p
 extension₂-property f p = extension₂'-property f (𝟚-is-discrete (f ⊥) (f ⊤)) p
@@ -383,20 +389,20 @@ left-cancellability of ρ₂.
 \begin{code}
 
 τ₀₁-density : (t : T) → ¬¬ ((t ＝ τ₀) + (t ＝ τ₁))
-τ₀₁-density t νν = II (λ d → νν (I d))
+τ₀₁-density t ν = II (λ d → ν (I d))
  where
   I : is-decidable WEM → (t ＝ τ₀) + (t ＝ τ₁)
   I (inl w) = 𝟚-equality-cases
-               (λ e → inl (t        ＝⟨ τ-lemma t w ⟩
+               (λ e → inl (t       ＝⟨ τ-lemma t w ⟩
                            τ (t w) ＝⟨ ap τ e ⟩
-                           τ₀       ∎))
-               (λ e → inr (t        ＝⟨ τ-lemma t w ⟩
+                           τ₀      ∎))
+               (λ e → inr (t       ＝⟨ τ-lemma t w ⟩
                            τ (t w) ＝⟨ ap τ e ⟩
-                           τ₁       ∎))
+                           τ₁      ∎))
   I (inr nw) = inl (dfunext fe (λ w → 𝟘-elim (nw w)))
 
   II : ¬¬ (is-decidable WEM)
-  II  = double-negation-of-decision
+  II = double-negation-of-decision
 
 ρ₂-lc : (g g' : T → 𝟚) → ρ₂ g ＝ ρ₂ g' → g ＝ g'
 ρ₂-lc g g' e = dfunext fe (λ t → 𝟚-is-¬¬-separated (g t) (g' t) (III t))
@@ -414,18 +420,18 @@ left-cancellability of ρ₂.
        g' τ₁    ∎
 
   III : (t : T) → ¬¬ (g t ＝ g' t)
-  III t νν = τ₀₁-density t IV
+  III t ne = τ₀₁-density t III₀
    where
-    IV : ¬ ((t ＝ τ₀) + (t ＝ τ₁))
-    IV (inl l) = νν (g  t  ＝⟨ ap g l ⟩
-                     g  τ₀ ＝⟨ I ⟩
-                     g' τ₀ ＝⟨ ap g' (l ⁻¹) ⟩
-                     g' t  ∎)
+    III₀ : ¬ ((t ＝ τ₀) + (t ＝ τ₁))
+    III₀ (inl e₀) = ne (g  t  ＝⟨ ap g e₀ ⟩
+                        g  τ₀ ＝⟨ I ⟩
+                        g' τ₀ ＝⟨ ap g' (e₀ ⁻¹) ⟩
+                        g' t  ∎)
 
-    IV (inr r) = νν (g  t  ＝⟨ ap g r ⟩
-                     g  τ₁ ＝⟨ II ⟩
-                     g' τ₁ ＝⟨ ap g' (r ⁻¹) ⟩
-                     g' t  ∎)
+    III₀ (inr e₁) = ne (g  t  ＝⟨ ap g e₁ ⟩
+                        g  τ₁ ＝⟨ II ⟩
+                        g' τ₁ ＝⟨ ap g' (e₁ ⁻¹) ⟩
+                        g' t  ∎)
 
 extension₂-of-restriction : (g : T → 𝟚) → extension₂-along-η (ρ₂ g) ＝ g
 extension₂-of-restriction g = ρ₂-lc (extension₂-along-η (ρ₂ g)) g
@@ -586,13 +592,13 @@ EM-gives-Ω-discrete em p q = II (I p) (I q)
 
   II : is-decidable (p holds) → is-decidable (q holds) → is-decidable (p ＝ q)
   II (inl ph) (inl qh)  = inl (p ＝⟨ holds-gives-equal-⊤ pe fe p ph ⟩
-                               ⊤ ＝⟨ (holds-gives-equal-⊤ pe fe q qh) ⁻¹ ⟩
+                               ⊤ ＝⟨ (holds-gives-equal-⊤ pe fe q qh)⁻¹ ⟩
                                q ∎)
 
   II (inl ph) (inr nq) = inr (λ e → nq (transport _holds e ph))
   II (inr np) (inl qh) = inr (λ e → np (transport _holds (e ⁻¹) qh))
   II (inr np) (inr nq) = inl (p ＝⟨ fails-gives-equal-⊥ pe fe p np ⟩
-                              ⊥ ＝⟨ (fails-gives-equal-⊥ pe fe q nq) ⁻¹ ⟩
+                              ⊥ ＝⟨ (fails-gives-equal-⊥ pe fe q nq)⁻¹ ⟩
                               q ∎)
 
 EM-gives-Ω-totally-separated : EM 𝓤 → is-totally-separated Ω
@@ -615,8 +621,8 @@ extension₂-along-η-under-WEM h w t = I (𝟚-is-discrete (h ⊥) (h ⊤))
                 I₀ = λ e' → ap (𝟚-cases (h ⊥) (h ⊤)) (e' ⁻¹)
                 I₁ = λ e' → ap (𝟚-cases (h ⊥) (h ⊤)) (e' ⁻¹)
 
-  I (inr ν) = ap (𝟚-cases (h ⊥) (h ⊤))
-                 (ap t (WEM-is-prop (to-WEM h ν) w))
+  I (inr ne) = ap (𝟚-cases (h ⊥) (h ⊤))
+                (ap t (WEM-is-prop (WEM-lemma h ne) w))
 
 extension₂-along-η-under-¬WEM : (h : Ω → 𝟚) (t : T)
                               → ¬ WEM
@@ -625,7 +631,7 @@ extension₂-along-η-under-¬WEM h t nw = I (𝟚-is-discrete (h ⊥) (h ⊤))
  where
   I : (d : is-decidable (h ⊥ ＝ h ⊤)) → extension₂'-along-η h d t ＝ h ⊥
   I (inl e)  = refl
-  I (inr ν) = 𝟘-elim (nw (to-WEM h ν))
+  I (inr ne) = 𝟘-elim (nw (WEM-lemma h ne))
 
 \end{code}
 
@@ -640,8 +646,8 @@ TODO. The following deserves a better name and some explanation.
    (t : T)
  → ¬¬ (Σ y ꞉ Y , ((y ＝ f ⊥) + (y ＝ f ⊤))
                × ((q : Y → 𝟚) → q y ＝ extension₂-along-η (q ∘ f) t))
-¬¬-extension Y ts f t ν
- = I (λ d → ν (II d))
+¬¬-extension Y ts f t nσ
+ = I (λ d → nσ (II d))
  where
   I : ¬¬ (is-decidable WEM)
   I = double-negation-of-decision
@@ -668,7 +674,7 @@ TODO. The following deserves a better name and some explanation.
   II (inr nw) = f ⊥ , inl refl , V
    where
     V : (q : Y → 𝟚) → q (f ⊥) ＝ extension₂-along-η (q ∘ f) t
-    V q = (extension₂-along-η-under-¬WEM (q ∘ f) t nw) ⁻¹
+    V q = (extension₂-along-η-under-¬WEM (q ∘ f) t nw)⁻¹
 
 \end{code}
 
@@ -805,8 +811,8 @@ more or less directly.
 \begin{code}
 
 ψ' : (h : Ω → 𝟚) → is-decidable (h ⊥ ＝ h ⊤) → 𝟚 + WEM × 𝟚
-ψ' h (inl _) = inl (h ⊥)
-ψ' h (inr ν) = inr (to-WEM h ν , h ⊥)
+ψ' h (inl _)  = inl (h ⊥)
+ψ' h (inr ne) = inr (WEM-lemma h ne , h ⊥)
 
 ψ : (Ω → 𝟚) → 𝟚 + WEM × 𝟚
 ψ h = ψ' h (𝟚-is-discrete (h ⊥) (h ⊤))
@@ -819,32 +825,31 @@ more or less directly.
 ψη h = I (𝟚-is-discrete (h ⊥) (h ⊤))
  where
   I : (d : is-decidable (h ⊥ ＝ h ⊤)) → ψ⁻¹ (ψ' h d) ＝ h
-  I (inl e) = dfunext fe (λ p → (constancy-lemma h e p) ⁻¹)
-  I (inr ν) = dfunext fe III
+  I (inl e)  = dfunext fe (λ p → (constancy-lemma h e p)⁻¹)
+  I (inr ne) = dfunext fe II
    where
-    II : WEM
-    II = to-WEM h ν
+    w : WEM
+    w = WEM-lemma h ne
 
-    III : (p : Ω) → 𝟚-cases (h ⊥) (complement (h ⊥)) (δ (II p)) ＝ h p
-    III p = IV (II p)
+    II : (p : Ω) → 𝟚-cases (h ⊥) (complement (h ⊥)) (δ (w p)) ＝ h p
+    II p = III (w p)
      where
-      IV : (d : is-decidable (¬ (p holds)))
-         → 𝟚-cases (h ⊥) (complement (h ⊥)) (δ d) ＝ h p
-      IV (inl ν)  = (lemma-⊥ h p ν) ⁻¹
-      IV (inr νν) = complement (h ⊥) ＝⟨ (complement-of-different-booleans ν) ⁻¹ ⟩
-                    h ⊤              ＝⟨ V ⁻¹ ⟩
-                    h p              ∎
+      III : (d : is-decidable (¬ (p holds)))
+          → 𝟚-cases (h ⊥) (complement (h ⊥)) (δ d) ＝ h p
+      III (inl ν)  = (lemma-⊥ h p ν)⁻¹
+      III (inr νν) = complement (h ⊥) ＝⟨ (complement-of-different-booleans ne)⁻¹ ⟩
+                     h ⊤              ＝⟨ IV ⁻¹ ⟩
+                     h p              ∎
        where
-        V : h p ＝ h ⊤
-        V = 𝟚-is-¬¬-separated (h p) (h ⊤)
+        IV = 𝟚-is-¬¬-separated (h p) (h ⊤)
              (λ ν → νν (λ ph → ν (lemma-⊤ h p ph)))
 
 ψε : ψ ∘ ψ⁻¹ ∼ id
 ψε (inl b) = I (𝟚-is-discrete b b)
  where
   I : (d : is-decidable (b ＝ b)) → ψ' (ψ⁻¹ (inl b)) d ＝ inl b
-  I (inl _) = refl
-  I (inr ν) = 𝟘-elim (ν refl)
+  I (inl _)  = refl
+  I (inr ne) = 𝟘-elim (ne refl)
 ψε (inr (w , b)) = IV (𝟚-is-discrete (h ⊥) (h ⊤))
  where
   h : Ω → 𝟚
@@ -864,8 +869,8 @@ more or less directly.
             complement b ∎)
 
   IV : (d : is-decidable (h ⊥ ＝ h ⊤)) → ψ' h d ＝ inr (w , b)
-  IV (inl e) = 𝟘-elim (III e)
-  IV (inr ν) = ap inr (to-×-＝ (WEM-is-prop (to-WEM h ν) w) I)
+  IV (inl e)  = 𝟘-elim (III e)
+  IV (inr ne) = ap inr (to-×-＝ (WEM-is-prop (WEM-lemma h ne) w) I)
 
 Ψ : (Ω → 𝟚) ≃ (𝟚 + WEM × 𝟚)
 Ψ = ψ , qinvs-are-equivs ψ (ψ⁻¹ , ψη , ψε)
