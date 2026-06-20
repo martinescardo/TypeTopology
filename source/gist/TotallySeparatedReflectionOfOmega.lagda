@@ -853,8 +853,7 @@ module _ (pt : propositional-truncations-exist) where
 
  η-surjection-gives-universal-property : is-surjection η
                                        → universal-property
- η-surjection-gives-universal-property η-surj Y ts =
-  qinvs-are-equivs (ρ Y) (σ , σρ , ρσ)
+ η-surjection-gives-universal-property η-surj Y ts = ρ-is-equiv
   where
    _ : type-of (eval Y) ＝ (Y → ((Y → 𝟚) → 𝟚))
    _ = refl
@@ -908,8 +907,6 @@ It is in the following step that the surjectivity of η is used:
 
 Next we show that
 
-
-
                   T
                  ╱│
                 ╱ │
@@ -951,6 +948,9 @@ separatedness of Y.
 
    σρ : σ ∘ ρ Y ∼ id
    σρ g = ρ₂-of-ts-is-lc Y ts (σ (ρ Y g)) g (ρσ (ρ Y g))
+
+   ρ-is-equiv : is-equiv (ρ Y)
+   ρ-is-equiv = qinvs-are-equivs (ρ Y) (σ , σρ , ρσ)
 
 \end{code}
 
