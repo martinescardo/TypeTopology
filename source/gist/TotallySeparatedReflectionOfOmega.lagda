@@ -947,7 +947,11 @@ separatedness of Y.
 \begin{code}
 
    σρ : σ ∘ ρ Y ∼ id
-   σρ g = ρ₂-of-ts-is-lc Y ts (σ (ρ Y g)) g (ρσ (ρ Y g))
+   σρ g = σ (ρ Y g) ＝⟨ ρ₂-of-ts-is-lc Y ts (σ (ρ Y g)) g I ⟩
+          g         ∎
+          where
+           I : ρ Y (σ (ρ Y g)) ＝ ρ Y g
+           I = ρσ (ρ Y g)
 
    ρ-is-equiv : is-equiv (ρ Y)
    ρ-is-equiv = qinvs-are-equivs (ρ Y) (σ , σρ , ρσ)
