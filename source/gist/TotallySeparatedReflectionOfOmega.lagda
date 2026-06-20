@@ -162,42 +162,42 @@ Sufficient condition for boolean-valued maps on Ω being constant.
 
 \begin{code}
 
-lemma-⊥ : (h : Ω → 𝟚) (p : Ω) → ¬ (p holds) → h p ＝ h ⊥
-lemma-⊥ h p ν = ap h (fails-gives-equal-⊥ pe fe p ν)
+lemma-⊥ : (f : Ω → 𝟚) (p : Ω) → ¬ (p holds) → f p ＝ f ⊥
+lemma-⊥ f p ν = ap f (fails-gives-equal-⊥ pe fe p ν)
 
-lemma-⊤ : (h : Ω → 𝟚) (p : Ω) → p holds → h p ＝ h ⊤
-lemma-⊤ h p ph = ap h (holds-gives-equal-⊤ pe fe p ph)
+lemma-⊤ : (f : Ω → 𝟚) (p : Ω) → p holds → f p ＝ f ⊤
+lemma-⊤ f p ph = ap f (holds-gives-equal-⊤ pe fe p ph)
 
 \end{code}
 
-Given h : Ω → 𝟚, we can decide whether h ⊥ ＝ h ⊤ or not.
+Given f : Ω → 𝟚, we can decide whether f ⊥ ＝ f ⊤ or not.
 
- * If so, then h is constant.
+ * If so, then f is constant.
  * Otherwise, WEM follows.
 
 \begin{code}
 
-constancy-lemma : (h : Ω → 𝟚) → h ⊥ ＝ h ⊤ → (p : Ω) → h p ＝ h ⊥
-constancy-lemma h e p = 𝟚-is-¬¬-separated (h p) (h ⊥) I
+constancy-lemma : (f : Ω → 𝟚) → f ⊥ ＝ f ⊤ → (p : Ω) → f p ＝ f ⊥
+constancy-lemma f e p = 𝟚-is-¬¬-separated (f p) (f ⊥) I
  where
-  I : ¬¬ (h p ＝ h ⊥)
+  I : ¬¬ (f p ＝ f ⊥)
   I ne = I₁ I₀
    where
     I₀ : ¬ (p holds)
-    I₀ ph = ne (h p ＝⟨ lemma-⊤ h p ph ⟩
-                h ⊤ ＝⟨ e ⁻¹ ⟩
-                h ⊥ ∎)
+    I₀ ph = ne (f p ＝⟨ lemma-⊤ f p ph ⟩
+                f ⊤ ＝⟨ e ⁻¹ ⟩
+                f ⊥ ∎)
     I₁ : ¬¬ (p holds)
-    I₁ ν = ne (lemma-⊥ h p ν)
+    I₁ ν = ne (lemma-⊥ f p ν)
 
-WEM-lemma : (h : Ω → 𝟚) → h ⊥ ≠ h ⊤ → WEM
-WEM-lemma h ne p = I (𝟚-is-discrete (h p) (h ⊤))
+WEM-lemma : (f : Ω → 𝟚) → f ⊥ ≠ f ⊤ → WEM
+WEM-lemma f ne p = I (𝟚-is-discrete (f p) (f ⊤))
  where
-  I : is-decidable (h p ＝ h ⊤) → is-decidable (¬ (p holds))
-  I (inl e)   = inr (λ ph → ne (h ⊥ ＝⟨ (lemma-⊥ h p ph)⁻¹ ⟩
-                                h p ＝⟨ e ⟩
-                                h ⊤ ∎))
-  I (inr ne') = inl (λ ph → ne' (lemma-⊤ h p ph))
+  I : is-decidable (f p ＝ f ⊤) → is-decidable (¬ (p holds))
+  I (inl e)   = inr (λ ph → ne (f ⊥ ＝⟨ (lemma-⊥ f p ph)⁻¹ ⟩
+                                f p ＝⟨ e ⟩
+                                f ⊤ ∎))
+  I (inr ne') = inl (λ ph → ne' (lemma-⊤ f p ph))
 
 \end{code}
 
@@ -275,13 +275,13 @@ same conclusion without assuming WEM.
 
 \begin{code}
 
- sη-with-WEM : (h : Ω → 𝟚) (p : Ω) → WEM → h (s (η p)) ＝ h p
- sη-with-WEM h p w = I (w p)
+ sη-with-WEM : (f : Ω → 𝟚) (p : Ω) → WEM → f (s (η p)) ＝ f p
+ sη-with-WEM f p w = I (w p)
   where
-   I : is-decidable (¬ (p holds)) → h (s (η p)) ＝ h p
-   I (inl ν) = h (s (η p)) ＝⟨ ap h (fails-gives-equal-⊥ pe fe (s (η p)) I₀) ⟩
-               h ⊥         ＝⟨ (lemma-⊥ h p ν)⁻¹ ⟩
-               h p         ∎
+   I : is-decidable (¬ (p holds)) → f (s (η p)) ＝ f p
+   I (inl ν) = f (s (η p)) ＝⟨ ap f (fails-gives-equal-⊥ pe fe (s (η p)) I₀) ⟩
+               f ⊥         ＝⟨ (lemma-⊥ f p ν)⁻¹ ⟩
+               f p         ∎
     where
      I₀ : ¬ (s (η p) holds)
      I₀ sh = zero-is-not-one
@@ -290,9 +290,9 @@ same conclusion without assuming WEM.
                τ₁ w   ＝⟨ refl ⟩
                ₁      ∎)
 
-   I (inr νν) = h (s (η p)) ＝⟨ ap h (holds-gives-equal-⊤ pe fe (s (η p)) I₁) ⟩
-                h ⊤         ＝⟨ I₂ ⁻¹ ⟩
-                h p         ∎
+   I (inr νν) = f (s (η p)) ＝⟨ ap f (holds-gives-equal-⊤ pe fe (s (η p)) I₁) ⟩
+                f ⊤         ＝⟨ I₂ ⁻¹ ⟩
+                f p         ∎
     where
      I₀ : η p ＝ τ₁
      I₀ = dfunext fe (λ w → η₁ p w νν)
@@ -300,23 +300,23 @@ same conclusion without assuming WEM.
      I₁ : s (η p) holds
      I₁ = to-s-holds (η p) I₀
 
-     I₂ : h p ＝ h ⊤
-     I₂ = 𝟚-is-¬¬-separated (h p) (h ⊤)
-           (λ (ne : h p ≠ h ⊤) → νν (λ (ph : p holds) → ne (lemma-⊤ h p ph)))
+     I₂ : f p ＝ f ⊤
+     I₂ = 𝟚-is-¬¬-separated (f p) (f ⊤)
+           (λ (ne : f p ≠ f ⊤) → νν (λ (ph : p holds) → ne (lemma-⊤ f p ph)))
 
- sη : (h : Ω → 𝟚) (p : Ω) → h (s (η p)) ＝ h p
- sη h p = 𝟚-is-¬¬-separated (h (s (η p))) (h p) I
+ sη : (f : Ω → 𝟚) (p : Ω) → f (s (η p)) ＝ f p
+ sη f p = 𝟚-is-¬¬-separated (f (s (η p))) (f p) I
   where
-   I : ¬¬ (h (s (η p)) ＝ h p)
-   I ne = ne (h (s (η p)) ＝⟨ constancy-lemma h I₁ (s (η p)) ⟩
-              h ⊥         ＝⟨ (constancy-lemma h I₁ p)⁻¹ ⟩
-              h p         ∎)
+   I : ¬¬ (f (s (η p)) ＝ f p)
+   I ne = ne (f (s (η p)) ＝⟨ constancy-lemma f I₁ (s (η p)) ⟩
+              f ⊥         ＝⟨ (constancy-lemma f I₁ p)⁻¹ ⟩
+              f p         ∎)
     where
      I₀ : ¬ WEM
-     I₀ w = ne (sη-with-WEM h p w)
+     I₀ w = ne (sη-with-WEM f p w)
 
-     I₁ : h ⊥ ＝ h ⊤
-     I₁ = 𝟚-is-¬¬-separated (h ⊥) (h ⊤) (λ ne' → I₀ (WEM-lemma h ne'))
+     I₁ : f ⊥ ＝ f ⊤
+     I₁ = 𝟚-is-¬¬-separated (f ⊥) (f ⊤) (λ ne' → I₀ (WEM-lemma f ne'))
 
  ρ-is-equiv : (Y : 𝓦 ̇ )
             → is-totally-separated Y
@@ -526,10 +526,12 @@ reflection-for-retract-of-power-of-𝟚 r =
 
 \end{code}
 
-The remainder of this file is just miscelaneous observations.
+The remainder of this file has a number of observations, eventually
+culminating in the fact that η : Ω → T is the universal map from Ω to
+a totally separated type if and only if it is a surjection.
 
-We first connect this to the investigation of 𝟚-injective types,
-inverstigated in gist.2-injective-types.
+We first connect this to the investigation of 𝟚-injective types from
+the file gist.2-injective-types.
 
 \begin{code}
 
@@ -574,16 +576,6 @@ where it is proved that Ω is-compact.
 T-is-compact∙ : is-compact∙ T
 T-is-compact∙ = micro-tychonoff fe WEM-is-prop (λ _ → 𝟚-is-compact∙)
 
-\end{code}
-
-Ω is totally separated if and only if excluded middle holds at 𝓤.
-The forward direction is already Ω-totally-separated-gives-EM in
-TypeTopology.TotallySeparated (through ¬¬-separatedness and DNE), so we
-import and reuse it. Here we record the backward direction: EM makes
-Ω discrete, and discrete types are totally separated.
-
-\begin{code}
-
 EM-gives-Ω-discrete : EM 𝓤 → is-discrete Ω
 EM-gives-Ω-discrete em p q = II (I p) (I q)
  where
@@ -602,79 +594,36 @@ EM-gives-Ω-discrete em p q = II (I p) (I q)
                               q ∎)
 
 EM-gives-Ω-totally-separated : EM 𝓤 → is-totally-separated Ω
-EM-gives-Ω-totally-separated em =
- discrete-types-are-totally-separated (EM-gives-Ω-discrete em)
+EM-gives-Ω-totally-separated em = discrete-types-are-totally-separated
+                                   (EM-gives-Ω-discrete em)
 
-extension₂-along-η-under-WEM : (h : Ω → 𝟚) (w : WEM) (t : T)
-                             → extension₂-along-η h t ＝ 𝟚-cases (h ⊥) (h ⊤)(t w)
-extension₂-along-η-under-WEM h w t = I (𝟚-is-discrete (h ⊥) (h ⊤))
+extension₂-along-η-under-WEM : (f : Ω → 𝟚) (w : WEM) (t : T)
+                             → extension₂-along-η f t ＝ 𝟚-cases (f ⊥) (f ⊤) (t w)
+extension₂-along-η-under-WEM f w t = I (𝟚-is-discrete (f ⊥) (f ⊤))
  where
-  I : (d : is-decidable (h ⊥ ＝ h ⊤))
-    → extension₂'-along-η h d t ＝ 𝟚-cases (h ⊥) (h ⊤) (t w)
+  I : (d : is-decidable (f ⊥ ＝ f ⊤))
+    → extension₂'-along-η f d t ＝ 𝟚-cases (f ⊥) (f ⊤) (t w)
   I (inl e)  = 𝟚-equality-cases
-                (λ e' → h ⊥                       ＝⟨ I₀ e' ⟩
-                        𝟚-cases (h ⊥) (h ⊤) (t w) ∎)
-                (λ e' → h ⊥                       ＝⟨ e ⟩
-                        h ⊤                       ＝⟨ I₁ e' ⟩
-                        𝟚-cases (h ⊥) (h ⊤) (t w) ∎)
+                (λ e' → f ⊥                       ＝⟨ I₀ e' ⟩
+                        𝟚-cases (f ⊥) (f ⊤) (t w) ∎)
+                (λ e' → f ⊥                       ＝⟨ e ⟩
+                        f ⊤                       ＝⟨ I₁ e' ⟩
+                        𝟚-cases (f ⊥) (f ⊤) (t w) ∎)
                where
-                I₀ = λ e' → ap (𝟚-cases (h ⊥) (h ⊤)) (e' ⁻¹)
-                I₁ = λ e' → ap (𝟚-cases (h ⊥) (h ⊤)) (e' ⁻¹)
+                I₀ = λ e' → ap (𝟚-cases (f ⊥) (f ⊤)) (e' ⁻¹)
+                I₁ = λ e' → ap (𝟚-cases (f ⊥) (f ⊤)) (e' ⁻¹)
 
-  I (inr ne) = ap (𝟚-cases (h ⊥) (h ⊤))
-                (ap t (WEM-is-prop (WEM-lemma h ne) w))
+  I (inr ne) = ap (𝟚-cases (f ⊥) (f ⊤))
+                (ap t (WEM-is-prop (WEM-lemma f ne) w))
 
-extension₂-along-η-under-¬WEM : (h : Ω → 𝟚) (t : T)
+extension₂-along-η-under-¬WEM : (f : Ω → 𝟚) (t : T)
                               → ¬ WEM
-                              → extension₂-along-η h t ＝ h ⊥
-extension₂-along-η-under-¬WEM h t nw = I (𝟚-is-discrete (h ⊥) (h ⊤))
+                              → extension₂-along-η f t ＝ f ⊥
+extension₂-along-η-under-¬WEM f t nw = I (𝟚-is-discrete (f ⊥) (f ⊤))
  where
-  I : (d : is-decidable (h ⊥ ＝ h ⊤)) → extension₂'-along-η h d t ＝ h ⊥
+  I : (d : is-decidable (f ⊥ ＝ f ⊤)) → extension₂'-along-η f d t ＝ f ⊥
   I (inl e)  = refl
-  I (inr ne) = 𝟘-elim (nw (WEM-lemma h ne))
-
-\end{code}
-
-TODO. The following deserves a better name and some explanation.
-
-\begin{code}
-
-¬¬-extension
- : (Y : 𝓦 ̇ )
- → is-totally-separated Y
- → (f : Ω → Y)
-   (t : T)
- → ¬¬ (Σ y ꞉ Y , ((y ＝ f ⊥) + (y ＝ f ⊤))
-               × ((q : Y → 𝟚) → q y ＝ extension₂-along-η (q ∘ f) t))
-¬¬-extension Y ts f t nσ
- = I (λ d → nσ (II d))
- where
-  I : ¬¬ (is-decidable WEM)
-  I = double-negation-of-decision
-
-  II : is-decidable WEM
-      → Σ y ꞉ Y , ((y ＝ f ⊥) + (y ＝ f ⊤))
-                × ((q : Y → 𝟚) → q y ＝ extension₂-along-η (q ∘ f) t)
-  II (inl w) = 𝟚-cases (f ⊥) (f ⊤) (t w) , III , IV
-   where
-    III : (𝟚-cases (f ⊥) (f ⊤) (t w) ＝ f ⊥) + (𝟚-cases (f ⊥) (f ⊤) (t w) ＝ f ⊤)
-    III = 𝟚-equality-cases {b = t w}
-            (λ e → inl (ap (𝟚-cases (f ⊥) (f ⊤)) e))
-            (λ e → inr (ap (𝟚-cases (f ⊥) (f ⊤)) e))
-
-    IV : (q : Y → 𝟚)
-       → q (𝟚-cases (f ⊥) (f ⊤) (t w)) ＝ extension₂-along-η (q ∘ f) t
-    IV q = q (𝟚-cases (f ⊥) (f ⊤) (t w))        ＝⟨ IV₀ ⟩
-           𝟚-cases (q (f ⊥)) (q (f ⊤)) (t w)    ＝⟨ IV₁ ⟩
-           extension₂-along-η (q ∘ f) t         ∎
-            where
-             IV₀ = 𝟚-cases-lemma q (f ⊥) (f ⊤) (t w)
-             IV₁ = (extension₂-along-η-under-WEM (q ∘ f) w t)⁻¹
-
-  II (inr nw) = f ⊥ , inl refl , V
-   where
-    V : (q : Y → 𝟚) → q (f ⊥) ＝ extension₂-along-η (q ∘ f) t
-    V q = (extension₂-along-η-under-¬WEM (q ∘ f) t nw)⁻¹
+  I (inr ne) = 𝟘-elim (nw (WEM-lemma f ne))
 
 \end{code}
 
@@ -701,14 +650,14 @@ module _ (pt : propositional-truncations-exist) where
  section-of-ι-gives-η-surjection : (𝓼 : T → image η)
                                  → ι ∘ 𝓼 ＝ id
                                  → is-surjection η
- section-of-ι-gives-η-surjection 𝓼 ι𝓼-id =
+ section-of-ι-gives-η-surjection 𝓼 e =
   ∘-is-surjection
    (corestrictions-are-surjections η)
    (equivs-are-surjections
-     (embeddings-with-sections-are-equivs ι ι-emb (𝓼 , happly ι𝓼-id)))
+     (embeddings-with-sections-are-equivs ι ι-emb (𝓼 , happly e)))
 
  ρ-equiv-gives-η-surjection
-  : ((Y : 𝓤⁺ ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
+  : ({𝓥 : Universe} (Y : 𝓥 ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
   → is-surjection η
  ρ-equiv-gives-η-surjection up = section-of-ι-gives-η-surjection 𝓼 III
   where
@@ -765,7 +714,7 @@ The comparison map 𝓬.
                         (totally-separated-reflection T-is-totally-separated η)
 
  reflection-gives-𝕋-equivalence
-  : ((Y : 𝓤⁺ ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
+  : ({𝓥 : Universe} (Y : 𝓥 ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
   → is-equiv 𝓬
  reflection-gives-𝕋-equivalence up
   = qinvs-are-equivs 𝓬 (𝓬⁻¹ , III , IV)
@@ -810,39 +759,39 @@ more or less directly.
 
 \begin{code}
 
-ψ' : (h : Ω → 𝟚) → is-decidable (h ⊥ ＝ h ⊤) → 𝟚 + WEM × 𝟚
-ψ' h (inl _)  = inl (h ⊥)
-ψ' h (inr ne) = inr (WEM-lemma h ne , h ⊥)
+ψ' : (f : Ω → 𝟚) → is-decidable (f ⊥ ＝ f ⊤) → 𝟚 + WEM × 𝟚
+ψ' f (inl _)  = inl (f ⊥)
+ψ' f (inr ne) = inr (WEM-lemma f ne , f ⊥)
 
 ψ : (Ω → 𝟚) → 𝟚 + WEM × 𝟚
-ψ h = ψ' h (𝟚-is-discrete (h ⊥) (h ⊤))
+ψ f = ψ' f (𝟚-is-discrete (f ⊥) (f ⊤))
 
 ψ⁻¹ : 𝟚 + WEM × 𝟚 → (Ω → 𝟚)
 ψ⁻¹ (inl b)       _ = b
 ψ⁻¹ (inr (w , b)) p = 𝟚-cases b (complement b) (δ (w p))
 
 ψη : ψ⁻¹ ∘ ψ ∼ id
-ψη h = I (𝟚-is-discrete (h ⊥) (h ⊤))
+ψη f = I (𝟚-is-discrete (f ⊥) (f ⊤))
  where
-  I : (d : is-decidable (h ⊥ ＝ h ⊤)) → ψ⁻¹ (ψ' h d) ＝ h
-  I (inl e)  = dfunext fe (λ p → (constancy-lemma h e p)⁻¹)
+  I : (d : is-decidable (f ⊥ ＝ f ⊤)) → ψ⁻¹ (ψ' f d) ＝ f
+  I (inl e)  = dfunext fe (λ p → (constancy-lemma f e p)⁻¹)
   I (inr ne) = dfunext fe II
    where
     w : WEM
-    w = WEM-lemma h ne
+    w = WEM-lemma f ne
 
-    II : (p : Ω) → 𝟚-cases (h ⊥) (complement (h ⊥)) (δ (w p)) ＝ h p
+    II : (p : Ω) → 𝟚-cases (f ⊥) (complement (f ⊥)) (δ (w p)) ＝ f p
     II p = III (w p)
      where
       III : (d : is-decidable (¬ (p holds)))
-          → 𝟚-cases (h ⊥) (complement (h ⊥)) (δ d) ＝ h p
-      III (inl ν)  = (lemma-⊥ h p ν)⁻¹
-      III (inr νν) = complement (h ⊥) ＝⟨ (complement-of-different-booleans ne)⁻¹ ⟩
-                     h ⊤              ＝⟨ IV ⁻¹ ⟩
-                     h p              ∎
+          → 𝟚-cases (f ⊥) (complement (f ⊥)) (δ d) ＝ f p
+      III (inl ν)  = (lemma-⊥ f p ν)⁻¹
+      III (inr νν) = complement (f ⊥) ＝⟨ (complement-of-different-booleans ne)⁻¹ ⟩
+                     f ⊤              ＝⟨ IV ⁻¹ ⟩
+                     f p              ∎
        where
-        IV = 𝟚-is-¬¬-separated (h p) (h ⊤)
-             (λ ν → νν (λ ph → ν (lemma-⊤ h p ph)))
+        IV = 𝟚-is-¬¬-separated (f p) (f ⊤)
+             (λ ν → νν (λ ph → ν (lemma-⊤ f p ph)))
 
 ψε : ψ ∘ ψ⁻¹ ∼ id
 ψε (inl b) = I (𝟚-is-discrete b b)
@@ -850,29 +799,120 @@ more or less directly.
   I : (d : is-decidable (b ＝ b)) → ψ' (ψ⁻¹ (inl b)) d ＝ inl b
   I (inl _)  = refl
   I (inr ne) = 𝟘-elim (ne refl)
-ψε (inr (w , b)) = IV (𝟚-is-discrete (h ⊥) (h ⊤))
+ψε (inr (w , b)) = IV (𝟚-is-discrete (f ⊥) (f ⊤))
  where
-  h : Ω → 𝟚
-  h = ψ⁻¹ (inr (w , b))
+  f : Ω → 𝟚
+  f = ψ⁻¹ (inr (w , b))
 
-  I : h ⊥ ＝ b
+  I : f ⊥ ＝ b
   I = ap (𝟚-cases b (complement b)) (η₀ ⊥ w ⊥-doesnt-hold)
 
-  II : h ⊤ ＝ complement b
+  II : f ⊤ ＝ complement b
   II = ap (𝟚-cases b (complement b)) (η₁ ⊤ w (¬¬-intro ⊤-holds))
 
-  III : h ⊥ ≠ h ⊤
+  III : f ⊥ ≠ f ⊤
   III e = complement-no-fp b
            (b            ＝⟨ I ⁻¹ ⟩
-            h ⊥          ＝⟨ e ⟩
-            h ⊤          ＝⟨ II ⟩
+            f ⊥          ＝⟨ e ⟩
+            f ⊤          ＝⟨ II ⟩
             complement b ∎)
 
-  IV : (d : is-decidable (h ⊥ ＝ h ⊤)) → ψ' h d ＝ inr (w , b)
+  IV : (d : is-decidable (f ⊥ ＝ f ⊤)) → ψ' f d ＝ inr (w , b)
   IV (inl e)  = 𝟘-elim (III e)
-  IV (inr ne) = ap inr (to-×-＝ (WEM-is-prop (WEM-lemma h ne) w) I)
+  IV (inr ne) = ap inr (to-×-＝ (WEM-is-prop (WEM-lemma f ne) w) I)
 
 Ψ : (Ω → 𝟚) ≃ (𝟚 + WEM × 𝟚)
 Ψ = ψ , qinvs-are-equivs ψ (ψ⁻¹ , ψη , ψε)
 
 \end{code}
+
+We now show that η : Ω → T is the universal map from Ω into a totally
+separated type if and only if it is a surjection.
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open import UF.ImageAndSurjection pt
+ open PropositionalTruncation pt
+ open totally-separated-reflection fe' pt
+
+ universal-property : 𝓤ω
+ universal-property = {𝓥 : Universe} (Y : 𝓥 ̇ )
+                    → is-totally-separated Y
+                    → is-equiv (ρ Y)
+
+ universal-property-gives-η-surjection : universal-property
+                                       → is-surjection η
+ universal-property-gives-η-surjection = ρ-equiv-gives-η-surjection pt
+
+ η-surjection-gives-universal-property : is-surjection η
+                                       → universal-property
+ η-surjection-gives-universal-property η-surj Y ts =
+  qinvs-are-equivs (ρ Y) (σ , σρ , ρσ)
+  where
+   _ : type-of (eval Y) ＝ (Y → ((Y → 𝟚) → 𝟚))
+   _ = refl
+
+   _ : eval Y ＝ (λ (y : Y) (g : Y → 𝟚) → g y)
+   _ = refl
+
+   eval-is-embedding : is-embedding (eval Y)
+   eval-is-embedding = totally-separated-gives-totally-separated₂ fe ts
+
+   ε : (Ω → Y) → (T → ((Y → 𝟚) → 𝟚))
+   ε f t g = extension₂-along-η (g ∘ f) t
+
+\end{code}
+
+In the next step we show that
+
+              η
+   Ω ----------------------> T
+   |                         |
+ f |                         | ε f
+   |                         |
+   v                         v
+   Y ----------------- ((Y → 𝟚) → 𝟚)
+            eval Y
+
+\begin{code}
+
+   ε-square : (f : Ω → Y) → ε f ∘ η ∼ eval Y ∘ f
+   ε-square f p = dfunext fe (λ g → extension₂-property (g ∘ f) p)
+
+\end{code}
+
+It is in the following step that the surjectivity of η is used:
+
+\begin{code}
+
+   φ : (f : Ω → Y) (t : T) → fiber (eval Y) (ε f t)
+   φ f t = ∥∥-rec (eval-is-embedding (ε f t)) I (η-surj t)
+    where
+     I : (Σ p ꞉ Ω , η p ＝ t) → fiber (eval Y) (ε f t)
+     I (p , e) = f p , (eval Y (f p) ＝⟨ (ε-square f p) ⁻¹ ⟩
+                        ε f (η p)    ＝⟨ ap (ε f) e ⟩
+                        ε f t        ∎)
+
+   σ : (Ω → Y) → (T → Y)
+   σ f t = fiber-point (φ f t)
+
+   σ-triangle : (f : Ω → Y) → eval Y ∘ σ f ∼ ε f
+   σ-triangle f t = fiber-identification (φ f t)
+
+   ρσ : ρ Y ∘ σ ∼ id
+   ρσ f = dfunext fe
+           (λ p → embeddings-are-lc (eval Y) eval-is-embedding
+                   (eval Y (σ f (η p)) ＝⟨ σ-triangle f (η p) ⟩
+                    ε f (η p)          ＝⟨ ε-square f p ⟩
+                    eval Y (f p)       ∎))
+
+   σρ : σ ∘ ρ Y ∼ id
+   σρ g = ρ₂-of-ts-is-lc Y ts (σ (ρ Y g)) g (ρσ (ρ Y g))
+
+\end{code}
+
+So the main question reduces to whether the map η : Ω → T is a
+surjection in the absense of propositional resizing, or whether its
+surjectivity implies an unprovable form of resizing.
