@@ -193,31 +193,29 @@ module _ (𝓤' 𝓥' : Universe)
                (is-ua-𝓑 x x (≈-refl 𝓐 x))) ϕ
    III : (x : ⟨ 𝓐 ⟩) → _ ≃ fan (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x)) id
    III x =
-    (Σ ϕ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝕏 ⟩ → ⟨ 𝓑 p ⟩)
-     , Σ ψ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝕐 y ⟩ → ⟨ 𝓑 p ⟩)
-     , ((u : X) → ϕ x r u ≈⟨ 𝕏 ⟩ ψ x r u) × ((u : X) → u ≈⟨ 𝕏 ⟩ ψ x r u))
+    (Σ ϕ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝔹 ⟩ → ⟨ 𝓑 p ⟩)
+     , Σ ψ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 (≈-refl 𝓐 y) ⟩ → ⟨ 𝓑 p ⟩)
+     , ((u : B) → ϕ x r u ≈⟨ 𝔹 ⟩ ψ x r u) × ((u : B) → u ≈⟨ 𝔹 ⟩ ψ x r u))
                                                               ≃⟨ IV ⟩
-    (Σ ϕ ꞉ (((y , p) : fan 𝓐 x) → ⟨ 𝕏 ⟩ → ⟨ 𝓑 p ⟩)
-     , Σ ψ ꞉ (((y , p) : fan 𝓐 x) → ⟨ 𝕐 y ⟩ → ⟨ 𝓑 p ⟩)
-     , ((u : X) → ϕ (x , r) u ≈⟨ 𝕏 ⟩ ψ (x , r) u)
-     × ((u : X) → u ≈⟨ 𝕏 ⟩ ψ (x , r) u))
+    (Σ ϕ ꞉ (((y , p) : fan 𝓐 x) → ⟨ 𝔹 ⟩ → ⟨ 𝓑 p ⟩)
+     , Σ ψ ꞉ (((y , p) : fan 𝓐 x) → ⟨ 𝓑 (≈-refl 𝓐 y) ⟩ → ⟨ 𝓑 p ⟩)
+     , ((u : B) → ϕ (x , r) u ≈⟨ 𝔹 ⟩ ψ (x , r) u)
+     × ((u : B) → u ≈⟨ 𝔹 ⟩ ψ (x , r) u))
                                                               ≃⟨ V ⟩
-    (Σ ϕ ꞉ (X → X) , Σ ψ ꞉ (X → X)
-     , ((u : X) → ϕ u ≈⟨ 𝕏 ⟩ ψ u) × ((u : X) → u ≈⟨ 𝕏 ⟩ ψ u))
+    (Σ ϕ ꞉ (B → B) , Σ ψ ꞉ (B → B)
+     , ((u : B) → ϕ u ≈⟨ 𝔹 ⟩ ψ u) × ((u : B) → u ≈⟨ 𝔹 ⟩ ψ u))
                                                               ≃⟨by-definition⟩
-    (Σ ϕ ꞉ (X → X) , Σ ψ ꞉ (X → X) , (ϕ ≈⟨ X ➙ 𝕏 ⟩ ψ) × (id ≈⟨ X ➙ 𝕏 ⟩ ψ))
+    (Σ ϕ ꞉ (B → B) , Σ ψ ꞉ (B → B) , (ϕ ≈⟨ B ➙ 𝔹 ⟩ ψ) × (id ≈⟨ B ➙ 𝔹 ⟩ ψ))
                                                               ≃⟨ VI ⟩
-    (Σ ϕ ꞉ (X → X) , Σ (ψ , _) ꞉ fan (X ➙ 𝕏) ϕ , (id ≈⟨ X ➙ 𝕏 ⟩ ψ))
+    (Σ ϕ ꞉ (B → B) , Σ (ψ , _) ꞉ fan (B ➙ 𝔹) ϕ , (id ≈⟨ B ➙ 𝔹 ⟩ ψ))
                                                               ≃⟨ VII ⟩
-    ((Σ ϕ ꞉ (X → X) , (id ≈⟨ X ➙ 𝕏 ⟩ ϕ)))
+    ((Σ ϕ ꞉ (B → B) , (id ≈⟨ B ➙ 𝔹 ⟩ ϕ)))
                                                               ≃⟨by-definition⟩
-    fan (X ➙ 𝕏) id ■
+    fan (B ➙ 𝔹) id                                            ■
      where
-      𝕏 = 𝓑 (≈-refl 𝓐 x)
-      X = ⟨ 𝓑 (≈-refl 𝓐 x) ⟩
       r = ≈-refl 𝓐 x
-      𝕐 : ⟨ 𝓐 ⟩ → Refl-Graph 𝓤' 𝓥'
-      𝕐 y = 𝓑 (≈-refl 𝓐 y)
+      𝔹 = 𝓑 r
+      B = ⟨ 𝔹 ⟩
       IV = Σ-bicong _ _ (≃-sym (curry-uncurry fe'))
             (λ _ → Σ-change-of-variable-≃ _ (≃-sym (curry-uncurry fe')))
       V = Σ-bicong _ _ (prop-indexed-product (x , ≈-refl 𝓐 x) fe (is-ua-𝓐 x))
@@ -225,7 +223,7 @@ module _ (𝓤' 𝓥' : Universe)
             (prop-indexed-product (x , ≈-refl 𝓐 x) fe (is-ua-𝓐 x)))
       VI = Σ-cong (λ _ → ≃-sym Σ-assoc)
       VII = Σ-cong (λ - → prop-indexed-sum (center (II x -))
-                            (singletons-are-props (II x -)))
+                    (singletons-are-props (II x -)))
 
  unbiased-lens-structure-is-a-property
   : is-univalent-refl-graph 𝓐
