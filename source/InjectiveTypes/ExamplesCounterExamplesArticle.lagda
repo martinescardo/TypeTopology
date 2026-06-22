@@ -107,6 +107,7 @@ open import UF.Retracts
 open import UF.SIP-Examples
 open import UF.Size
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
 open import Various.DedekindNonAxiomatic pt fe' pe' using (𝓡∞)
@@ -262,14 +263,7 @@ Proposition-4-1 {𝓤} = Non-Empty-retract 𝓤 , Non-Empty-is-injective 𝓤
 
 Lemma-4-2 : (P : 𝓣 ̇ ) (X : P → 𝓤 ̇ ) → is-prop P
           → (Π p ꞉ P , ¬¬ X p) → ¬¬ Π X
-Lemma-4-2 P X i φ ν = ν III
- where
-  I : (p : P) → ¬ X p
-  I p x = ν (λ p' → transport X (i p p') x)
-  II : ¬ P
-  II p = φ p (I p)
-  III : (p : P) → X p
-  III p = 𝟘-elim (II p)
+Lemma-4-2 = DNS-for-prop-indexed-families
 
 Proposition-4-1-alt : ainjective-type (Σ X ꞉ 𝓤 ̇  , ¬¬ X) 𝓤 𝓤
 Proposition-4-1-alt =
