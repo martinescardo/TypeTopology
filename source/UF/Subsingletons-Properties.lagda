@@ -42,7 +42,8 @@ on 22 June 2026 by Tom de Jong.
 
 \begin{code}
 
-DNS-for-prop-indexed-families : (P : 𝓣 ̇ ) (X : P → 𝓤 ̇ ) → is-prop P
+DNS-for-prop-indexed-families : (P : 𝓣 ̇ ) (X : P → 𝓤 ̇ )
+                              → is-prop P
                               → (Π p ꞉ P , ¬¬ X p) → ¬¬ Π X
 DNS-for-prop-indexed-families P X i φ ν = ν III
  where

@@ -505,9 +505,9 @@ the universal property of totally separated reflection.
           g             ∎
 
   IV : (f : Ω → Y) → ρ Y (ρY⁻¹ f) ＝ f
-  IV f = ρ Y (ρY⁻¹ f)  ＝⟨ ap (λ - → r ∘ -) (I (s ∘ f)) ⟩
-          r ∘ (s ∘ f)  ＝⟨ dfunext fe (λ p → rs (f p)) ⟩
-          f            ∎
+  IV f = ρ Y (ρY⁻¹ f) ＝⟨ ap (λ - → r ∘ -) (I (s ∘ f)) ⟩
+         r ∘ (s ∘ f)  ＝⟨ dfunext fe (λ p → rs (f p)) ⟩
+         f            ∎
 
 \end{code}
 
@@ -619,7 +619,7 @@ extension₂-along-η-under-WEM f w t = I (𝟚-is-discrete (f ⊥) (f ⊤))
                 I₁ = λ e' → ap (𝟚-cases (f ⊥) (f ⊤)) (e' ⁻¹)
 
   I (inr ne) = ap (𝟚-cases (f ⊥) (f ⊤))
-                (ap t (WEM-is-prop (WEM-lemma f ne) w))
+                  (ap t (WEM-is-prop (WEM-lemma f ne) w))
 
 extension₂-along-η-under-¬WEM : (f : Ω → 𝟚) (t : T)
                               → ¬ WEM
@@ -636,18 +636,20 @@ We now assume propositional truncations.
 
 \begin{code}
 
-module _ (pt : propositional-truncations-exist) where
+module comparison (pt : propositional-truncations-exist) where
 
  open import UF.ImageAndSurjection pt
 
  ι : image η → T
  ι = restriction η
 
- ι-emb : is-embedding ι
- ι-emb = restrictions-are-embeddings η
+ ι-is-embedding : is-embedding ι
+ ι-is-embedding = restrictions-are-embeddings η
 
  ι-image-is-ts : is-totally-separated (image η)
- ι-image-is-ts = subtype-is-totally-separated' ι T-is-totally-separated ι-emb
+ ι-image-is-ts = subtype-is-totally-separated' ι
+                  T-is-totally-separated
+                  ι-is-embedding
 
  ηc : Ω → image η
  ηc = corestriction η
@@ -659,7 +661,7 @@ module _ (pt : propositional-truncations-exist) where
   ∘-is-surjection
    (corestrictions-are-surjections η)
    (equivs-are-surjections
-     (embeddings-with-sections-are-equivs ι ι-emb (𝓼 , happly e)))
+     (embeddings-with-sections-are-equivs ι ι-is-embedding (𝓼 , happly e)))
 
  ρ-equiv-gives-η-surjection
   : ({𝓥 : Universe} (Y : 𝓥 ̇ ) → is-totally-separated Y → is-equiv (ρ Y))
@@ -841,6 +843,7 @@ module _ (pt : propositional-truncations-exist) where
  open import UF.ImageAndSurjection pt
  open PropositionalTruncation pt
  open totally-separated-reflection fe' pt
+ open comparison pt
 
  universal-property : 𝓤ω
  universal-property = {𝓥 : Universe} (Y : 𝓥 ̇ )
@@ -849,7 +852,7 @@ module _ (pt : propositional-truncations-exist) where
 
  universal-property-gives-η-surjection : universal-property
                                        → is-surjection η
- universal-property-gives-η-surjection = ρ-equiv-gives-η-surjection pt
+ universal-property-gives-η-surjection = ρ-equiv-gives-η-surjection
 
  η-surjection-gives-universal-property : is-surjection η
                                        → universal-property
@@ -961,3 +964,185 @@ separatedness of Y.
 So the main question reduces to whether the map η : Ω → T is a
 surjection in the absense of propositional resizing, or whether its
 surjectivity implies an unprovable form of resizing.
+
+Next we record the immediate fact that η : Ω → T is a surjection if
+and only if the comparison map 𝓬 : 𝕋 Ω → T is an equivalence.
+
+\begin{code}
+
+ ρᵀ-lc : (g g' : 𝕋 Ω → 𝟚) → g ∘ ηᵀ ＝ g' ∘ ηᵀ → g ＝ g'
+ ρᵀ-lc g g' e = dfunext fe
+                 (surjection-induction ηᵀ ηᵀ-is-surjection
+                   (λ t → g t ＝ g' t)
+                   (λ t → 𝟚-is-set)
+                   (happly e))
+
+ 𝓬-lc : left-cancellable 𝓬
+ 𝓬-lc {x} {y} c = 𝕋-is-totally-separated I
+  where
+   I : (g : 𝕋 Ω → 𝟚) → g x ＝ g y
+   I g = g x     ＝⟨ (happly I₁ x)⁻¹ ⟩
+         r (𝓬 x) ＝⟨ ap r c ⟩
+         r (𝓬 y) ＝⟨ happly I₁ y ⟩
+         g y     ∎
+    where
+     r : T → 𝟚
+     r = inverse ρ₂ ρ₂-is-equiv (g ∘ ηᵀ)
+
+     I₀ : r ∘ η ＝ g ∘ ηᵀ
+     I₀ = inverses-are-sections ρ₂ ρ₂-is-equiv (g ∘ ηᵀ)
+
+     I₁ : r ∘ 𝓬 ＝ g
+     I₁ = ρᵀ-lc (r ∘ 𝓬) g
+           ((r ∘ 𝓬) ∘ ηᵀ ＝⟨ ap (λ - → r ∘ -) 𝓬-triangle ⟩
+            r ∘ η        ＝⟨ I₀ ⟩
+            g ∘ ηᵀ       ∎)
+
+ 𝓬-is-embedding : is-embedding 𝓬
+ 𝓬-is-embedding = lc-maps-into-sets-are-embeddings 𝓬 𝓬-lc T-is-set
+
+ 𝓬-is-surjection : is-surjection η → is-surjection 𝓬
+ 𝓬-is-surjection σ t = ∥∥-functor f (σ t)
+  where
+   f : (Σ p ꞉ Ω , η p ＝ t) → (Σ z ꞉ 𝕋 Ω , 𝓬 z ＝ t)
+   f (p , e) = ηᵀ p , (𝓬 (ηᵀ p) ＝⟨ happly 𝓬-triangle p ⟩
+                       η p      ＝⟨ e ⟩
+                       t        ∎)
+
+ η-surjection-gives-𝓬-is-equiv : is-surjection η → is-equiv 𝓬
+ η-surjection-gives-𝓬-is-equiv σ = surjective-embeddings-are-equivs 𝓬
+                                    𝓬-is-embedding
+                                    (𝓬-is-surjection σ)
+
+ 𝓬-is-equiv-gives-η-surjection : is-equiv 𝓬 → is-surjection η
+ 𝓬-is-equiv-gives-η-surjection e = transport is-surjection 𝓬-triangle
+                                    (∘-is-surjection
+                                      ηᵀ-is-surjection
+                                      (equivs-are-surjections e))
+
+\end{code}
+
+It is worth comparing the development in this file to the earlier
+development of the following module:
+
+\begin{code}
+
+ import Taboos.P2
+
+\end{code}
+
+Images of Ω in totally separated types
+
+\begin{code}
+
+ not-equal-⊤-gives-empty : (p : Ω) → p ≠ ⊤ → ¬ (p holds)
+ not-equal-⊤-gives-empty p ν h = ν (holds-gives-equal-⊤ pe fe p h)
+
+ not-equal-⊥-gives-irrefutable : (p : Ω) → p ≠ ⊥ → ¬¬ (p holds)
+ not-equal-⊥-gives-irrefutable p ν n = ν (fails-gives-equal-⊥ pe fe p n)
+
+ is-¬¬-bipointed : {𝓦 : Universe} → 𝓦 ̇ → 𝓦 ̇
+ is-¬¬-bipointed Z = Σ b₀ ꞉ Z , Σ b₁ ꞉ Z , ((z : Z) → ¬¬ ((z ＝ b₀) + (z ＝ b₁)))
+
+ module _ (Z : 𝓤 ⁺ ̇ )
+          (Z-is-ts : is-totally-separated Z)
+          (f : Ω → Z)
+          (f-is-surjection : is-surjection f)
+        where
+
+  image-of-Ω-is-set : is-set Z
+  image-of-Ω-is-set = totally-separated-types-are-sets fe Z Z-is-ts
+
+  image-of-Ω-is-¬¬-bipointed : (z : Z) → ¬¬ ((z ＝ f ⊥) + (z ＝ f ⊤))
+  image-of-Ω-is-¬¬-bipointed z =
+   ∥∥-rec (negations-are-props fe) γ (f-is-surjection z)
+   where
+    γ : (Σ p ꞉ Ω , f p ＝ z) → ¬¬ ((z ＝ f ⊥) + (z ＝ f ⊤))
+    γ (p , e) ν = IV III
+     where
+      I : p ≠ ⊥
+      I r = ν (inl (z   ＝⟨ e ⁻¹ ⟩
+                    f p ＝⟨ ap f r ⟩
+                    f ⊥ ∎))
+      II : p ≠ ⊤
+      II r = ν (inr (z   ＝⟨ e ⁻¹ ⟩
+                     f p ＝⟨ ap f r ⟩
+                     f ⊤ ∎))
+      III : ¬ (p holds)
+      III = not-equal-⊤-gives-empty p II
+      IV : ¬¬ (p holds)
+      IV = not-equal-⊥-gives-irrefutable p I
+
+  image-of-Ω-shape : is-¬¬-bipointed Z
+  image-of-Ω-shape = f ⊥ , f ⊤ , image-of-Ω-is-¬¬-bipointed
+
+ T-is-¬¬-bipointed : is-¬¬-bipointed T
+ T-is-¬¬-bipointed = τ₀ , τ₁ , γ
+  where
+   γ : (t : T) → ¬¬ ((t ＝ τ₀) + (t ＝ τ₁))
+   γ t ν = ν (inl III)
+    where
+     I : WEM → (t ＝ τ₀) + (t ＝ τ₁)
+     I w = 𝟚-equality-cases case₀ case₁
+      where
+       case₀ : t w ＝ ₀ → (t ＝ τ₀) + (t ＝ τ₁)
+       case₀ d = inl (t       ＝⟨ τ-lemma t w ⟩
+                      τ (t w) ＝⟨ ap τ d ⟩
+                      τ₀      ∎)
+       case₁ : t w ＝ ₁ → (t ＝ τ₀) + (t ＝ τ₁)
+       case₁ d = inr (t       ＝⟨ τ-lemma t w ⟩
+                      τ (t w) ＝⟨ ap τ d ⟩
+                      τ₁      ∎)
+     II : ¬ WEM
+     II w = ν (I w)
+     III : t ＝ τ₀
+     III = dfunext fe (λ w → 𝟘-elim (II w))
+
+ T-has-the-shape : is-totally-separated T × is-¬¬-bipointed T
+ T-has-the-shape = T-is-totally-separated , T-is-¬¬-bipointed
+
+ is-ts-image-of-Ω : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
+ is-ts-image-of-Ω Z =
+  is-totally-separated Z × (∃ f ꞉ (Ω → Z) , is-surjection f)
+
+ is-ts-quotient-of-𝕋Ω : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
+ is-ts-quotient-of-𝕋Ω Z =
+  is-totally-separated Z × (∃ g ꞉ (𝕋 Ω → Z) , is-surjection g)
+
+ ts-images-are-ts-quotients-of-𝕋Ω : (Z : 𝓤 ⁺ ̇ )
+                                   → is-ts-image-of-Ω Z
+                                   → is-ts-quotient-of-𝕋Ω Z
+ ts-images-are-ts-quotients-of-𝕋Ω Z (Z-is-ts , s) = Z-is-ts , ∥∥-functor γ s
+  where
+   γ : (Σ f ꞉ (Ω → Z) , is-surjection f)
+     → Σ g ꞉ (𝕋 Ω → Z) , is-surjection g
+   γ (f , f-is-surjection) = g , g-is-surjection
+    where
+     g : 𝕋 Ω → Z
+     g = extᵀ Z-is-ts f
+     I : g ∘ ηᵀ ∼ f
+     I = ext-ηᵀ Z-is-ts f
+     g-is-surjection : is-surjection g
+     g-is-surjection z = ∥∥-functor II (f-is-surjection z)
+      where
+       II : (Σ p ꞉ Ω , f p ＝ z) → Σ w ꞉ 𝕋 Ω , g w ＝ z
+       II (p , e) = ηᵀ p , (g (ηᵀ p) ＝⟨ I p ⟩
+                            f p       ＝⟨ e ⟩
+                            z         ∎)
+
+ ts-quotients-of-𝕋Ω-are-ts-images : (Z : 𝓤 ⁺ ̇ )
+                                   → is-ts-quotient-of-𝕋Ω Z
+                                   → is-ts-image-of-Ω Z
+ ts-quotients-of-𝕋Ω-are-ts-images Z (Z-is-ts , t) = Z-is-ts , ∥∥-functor γ t
+  where
+   γ : (Σ g ꞉ (𝕋 Ω → Z) , is-surjection g)
+     → Σ f ꞉ (Ω → Z) , is-surjection f
+   γ (g , g-is-surjection) =
+    g ∘ ηᵀ , ∘-is-surjection ηᵀ-is-surjection g-is-surjection
+
+ ts-image-of-Ω-characterization : (Z : 𝓤 ⁺ ̇ )
+                                 → is-ts-image-of-Ω Z ↔ is-ts-quotient-of-𝕋Ω Z
+ ts-image-of-Ω-characterization Z =
+  ts-images-are-ts-quotients-of-𝕋Ω Z , ts-quotients-of-𝕋Ω-are-ts-images Z
+
+\end{code}
