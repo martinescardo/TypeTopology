@@ -56,8 +56,8 @@ displayed-refl-graph-univalence-is-a-property 𝓐 𝓑
 
 \end{code}
 
-We show that the oplax contravariant lens structure is contracible and in fact a
-property of the reflexive graph and reflexive graphs family.
+We show that the oplax contravariant lens structure is contractible and in fact
+a property of the reflexive graph and family of reflexive graphs.
 
 \begin{code}
 
@@ -80,8 +80,8 @@ module _ (𝓤' 𝓥' : Universe)
         → Σ ϕ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 x ⟩ → ⟨ 𝓑 y ⟩)
           , ((u : ⟨ 𝓑 x ⟩) → ϕ x (≈-refl 𝓐 x) u ≈⟨ 𝓑 x ⟩ u))
    I = qinveq (λ 𝓛 x → ((λ _ → push 𝓛) , push-refl 𝓛))
-        ((λ f → record {push = λ {x y} → (pr₁ (f x)) y
-                        ; push-refl = λ {x} → pr₂ (f x)})
+        ((λ f → record
+          {push = λ {x y} → (pr₁ (f x)) y ; push-refl = λ {x} → pr₂ (f x)})
          , ∼-refl , ∼-refl)
    II : (x : ⟨ 𝓐 ⟩) → _ ≃ (cofan (⟨ 𝓑 x ⟩ ➙ 𝓑 x) id)
    II x = (Σ ϕ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 x ⟩ → ⟨ 𝓑 y ⟩) ,
@@ -126,8 +126,8 @@ Similarly, a lax covariant lens structure is contractible and thus a property.
         → Σ ϕ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 y ⟩ → ⟨ 𝓑 x ⟩)
           , ((u : ⟨ 𝓑 x ⟩) → u ≈⟨ 𝓑 x ⟩ ϕ x (≈-refl 𝓐 x) u))
    I = qinveq (λ 𝓛 x → ((λ _ → pull 𝓛) , pull-refl 𝓛))
-        ((λ f → record {pull = λ {x y} → (pr₁ (f x)) y
-                        ; pull-refl = λ {x} → pr₂ (f x)})
+        ((λ f → record
+          {pull = λ {x y} → (pr₁ (f x)) y ; pull-refl = λ {x} → pr₂ (f x)})
          , ∼-refl , ∼-refl)
    II : (x : ⟨ 𝓐 ⟩) → is-contr (fan (⟨ 𝓑 x ⟩ ➙ 𝓑 x) id)
    II x = prop-fan-to-contr (⟨ 𝓑 x ⟩ ➙ 𝓑 x)
@@ -187,46 +187,45 @@ module _ (𝓤' 𝓥' : Universe)
          , ∼-refl , ∼-refl)
    II : (x : ⟨ 𝓐 ⟩) (ϕ : ⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩)
        → is-contr (fan (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x)) ϕ)
-   II x ϕ = prop-fan-to-contr (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x))
+   II x ϕ = prop-fan-to-contr
+             (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x))
               (univalence-closed-under-cotensor fe _ (𝓑 (≈-refl 𝓐 x))
                (is-ua-𝓑 x x (≈-refl 𝓐 x))) ϕ
    III : (x : ⟨ 𝓐 ⟩) → _ ≃ fan (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x)) id
    III x =
-    (Σ ϕ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 p ⟩)
-    , Σ ψ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 (≈-refl 𝓐 y) ⟩ → ⟨ 𝓑 p ⟩)
-    , ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-        → ϕ x (≈-refl 𝓐 x) u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ x (≈-refl 𝓐 x) u)
-    × ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩) → u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ x (≈-refl 𝓐 x) u))
-       ≃⟨ Σ-bicong _ _ (≃-sym (curry-uncurry fe'))
-           (λ _ → Σ-change-of-variable-≃ _ (≃-sym (curry-uncurry fe'))) ⟩
-    (Σ ϕ ꞉ (((y , p) : fan 𝓐 x) → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 p ⟩)
-    , Σ ψ ꞉ (((y , p) : fan 𝓐 x) → ⟨ 𝓑 (≈-refl 𝓐 y) ⟩ → ⟨ 𝓑 p ⟩)
-    , ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-     → ϕ (x , (≈-refl 𝓐 x)) u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ (x , (≈-refl 𝓐 x)) u)
-    × ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-     → u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ (x , (≈-refl 𝓐 x)) u))
-       ≃⟨ Σ-bicong _ _ (prop-indexed-product (x , ≈-refl 𝓐 x) fe (is-ua-𝓐 x))
-          (λ _ → Σ-change-of-variable-≃ _
-           (prop-indexed-product (x , ≈-refl 𝓐 x) fe (is-ua-𝓐 x))) ⟩
-    (Σ ϕ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-    , Σ ψ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-    , ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩) → ϕ u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ u)
-    × ((u : ⟨ 𝓑 (≈-refl 𝓐 x) ⟩) → u ≈⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ψ u))
-       ≃⟨by-definition⟩
-    (Σ ϕ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-    , Σ ψ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-    , (ϕ ≈⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩ ψ)
-    × (id ≈⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩ ψ))
-       ≃⟨ Σ-cong (λ _ → ≃-sym Σ-assoc) ⟩
-    (Σ ϕ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-    , Σ (ψ , _) ꞉ fan (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x)) ϕ
-    , (id ≈⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩ ψ))
-       ≃⟨ Σ-cong (λ - → prop-indexed-sum (center (II x -))
-           (singletons-are-props (II x -))) ⟩
-    ((Σ ϕ ꞉ (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ → ⟨ 𝓑 (≈-refl 𝓐 x) ⟩)
-    , (id ≈⟨ ⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x) ⟩ ϕ)))
-       ≃⟨by-definition⟩
-    fan (⟨ 𝓑 (≈-refl 𝓐 x) ⟩ ➙ 𝓑 (≈-refl 𝓐 x)) id ■
+    (Σ ϕ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝕏 ⟩ → ⟨ 𝓑 p ⟩)
+     , Σ ψ ꞉ ((y : ⟨ 𝓐 ⟩) (p : x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝕐 y ⟩ → ⟨ 𝓑 p ⟩)
+     , ((u : X) → ϕ x r u ≈⟨ 𝕏 ⟩ ψ x r u) × ((u : X) → u ≈⟨ 𝕏 ⟩ ψ x r u))
+                                                              ≃⟨ IV ⟩
+    (Σ ϕ ꞉ (((y , p) : fan 𝓐 x) → ⟨ 𝕏 ⟩ → ⟨ 𝓑 p ⟩)
+     , Σ ψ ꞉ (((y , p) : fan 𝓐 x) → ⟨ 𝕐 y ⟩ → ⟨ 𝓑 p ⟩)
+     , ((u : X) → ϕ (x , r) u ≈⟨ 𝕏 ⟩ ψ (x , r) u)
+     × ((u : X) → u ≈⟨ 𝕏 ⟩ ψ (x , r) u))
+                                                              ≃⟨ V ⟩
+    (Σ ϕ ꞉ (X → X) , Σ ψ ꞉ (X → X)
+     , ((u : X) → ϕ u ≈⟨ 𝕏 ⟩ ψ u) × ((u : X) → u ≈⟨ 𝕏 ⟩ ψ u))
+                                                              ≃⟨by-definition⟩
+    (Σ ϕ ꞉ (X → X) , Σ ψ ꞉ (X → X) , (ϕ ≈⟨ X ➙ 𝕏 ⟩ ψ) × (id ≈⟨ X ➙ 𝕏 ⟩ ψ))
+                                                              ≃⟨ VI ⟩
+    (Σ ϕ ꞉ (X → X) , Σ (ψ , _) ꞉ fan (X ➙ 𝕏) ϕ , (id ≈⟨ X ➙ 𝕏 ⟩ ψ))
+                                                              ≃⟨ VII ⟩
+    ((Σ ϕ ꞉ (X → X) , (id ≈⟨ X ➙ 𝕏 ⟩ ϕ)))
+                                                              ≃⟨by-definition⟩
+    fan (X ➙ 𝕏) id ■
+     where
+      𝕏 = 𝓑 (≈-refl 𝓐 x)
+      X = ⟨ 𝓑 (≈-refl 𝓐 x) ⟩
+      r = ≈-refl 𝓐 x
+      𝕐 : ⟨ 𝓐 ⟩ → Refl-Graph 𝓤' 𝓥'
+      𝕐 y = 𝓑 (≈-refl 𝓐 y)
+      IV = Σ-bicong _ _ (≃-sym (curry-uncurry fe'))
+            (λ _ → Σ-change-of-variable-≃ _ (≃-sym (curry-uncurry fe')))
+      V = Σ-bicong _ _ (prop-indexed-product (x , ≈-refl 𝓐 x) fe (is-ua-𝓐 x))
+           (λ _ → Σ-change-of-variable-≃ _
+            (prop-indexed-product (x , ≈-refl 𝓐 x) fe (is-ua-𝓐 x)))
+      VI = Σ-cong (λ _ → ≃-sym Σ-assoc)
+      VII = Σ-cong (λ - → prop-indexed-sum (center (II x -))
+                            (singletons-are-props (II x -)))
 
  unbiased-lens-structure-is-a-property
   : is-univalent-refl-graph 𝓐
