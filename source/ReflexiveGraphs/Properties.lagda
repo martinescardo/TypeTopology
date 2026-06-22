@@ -223,7 +223,7 @@ module _ (𝓤' 𝓥' : Universe)
             (prop-indexed-product (x , ≈-refl 𝓐 x) fe (is-ua-𝓐 x)))
       VI = Σ-cong (λ _ → ≃-sym Σ-assoc)
       VII = Σ-cong (λ - → prop-indexed-sum (center (II x -))
-                    (singletons-are-props (II x -)))
+             (singletons-are-props (II x -)))
 
  unbiased-lens-structure-is-a-property
   : is-univalent-refl-graph 𝓐
