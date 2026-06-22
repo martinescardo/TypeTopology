@@ -24,18 +24,19 @@ is univalent.
 \begin{code}
 
 is-displayed-univalent-refl-graph : (𝓐 : Refl-Graph 𝓤 𝓥)
-                                    (𝓑 : Displayed-Refl-Graph 𝓣 𝓦 𝓐)
+                                  → Displayed-Refl-Graph 𝓣 𝓦 𝓐
                                   → 𝓤 ⊔ 𝓣 ⊔ 𝓦 ̇
 is-displayed-univalent-refl-graph 𝓐 𝓑 = (x : ⟨ 𝓐 ⟩)
                                       → is-univalent-refl-graph ([ 𝓑 ] x)
 
-Displayed-Univalent-Refl-Graph : (𝓣 𝓦 : Universe) (𝓐 : Refl-Graph 𝓤 𝓥)
+Displayed-Univalent-Refl-Graph : (𝓣 𝓦 : Universe)
+                               → Refl-Graph 𝓤 𝓥
                                → 𝓤 ⊔ 𝓥 ⊔ (𝓣 ⊔ 𝓦)⁺ ̇
 Displayed-Univalent-Refl-Graph 𝓣 𝓦 𝓐
  = Σ 𝓑 ꞉ (Displayed-Refl-Graph 𝓣 𝓦 𝓐) , is-displayed-univalent-refl-graph 𝓐 𝓑
 
 underlying-displayed-refl-graph : {𝓐 : Refl-Graph 𝓤 𝓥}
-                                → (𝓑 : Displayed-Univalent-Refl-Graph 𝓣 𝓦 𝓐)
+                                → Displayed-Univalent-Refl-Graph 𝓣 𝓦 𝓐
                                 → Displayed-Refl-Graph 𝓣 𝓦 𝓐
 underlying-displayed-refl-graph (𝓑 , _) = 𝓑
 

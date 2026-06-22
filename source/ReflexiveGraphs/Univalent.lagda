@@ -211,7 +211,7 @@ one could use any of the equivalent characterizations.
 
 \begin{code}
 
-is-univalent-refl-graph : (𝓐 : Refl-Graph 𝓤 𝓥) → 𝓤 ⊔ 𝓥 ̇
+is-univalent-refl-graph : Refl-Graph 𝓤 𝓥 → 𝓤 ⊔ 𝓥 ̇
 is-univalent-refl-graph 𝓐 = (x : ⟨ 𝓐 ⟩) → is-prop (fan 𝓐 x)
 
 Univalent-Refl-Graph : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
