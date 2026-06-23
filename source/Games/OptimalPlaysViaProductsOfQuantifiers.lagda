@@ -10,38 +10,50 @@ quantifiers, rather than the product of selection functions.
 {-# OPTIONS --safe --without-K --no-exact-split #-}
 
 open import MLTT.Spartan hiding (J)
+open import UF.FunExt
 
 module Games.OptimalPlaysViaProductsOfQuantifiers
         {𝓤 𝓦₀ : Universe}
         (R : 𝓦₀ ̇ )
+        (fe : Fun-Ext)
        where
 
 open import Games.FiniteHistoryDependent renaming (_Attains_ to Attains)
 open import Games.TypeTrees
 open import MonadOnTypes.J
 open import MonadOnTypes.K
-open import UF.FunExt
 
 open J-definitions
+open contravariant-functoriality-on-outcome-type
 open K-definitions
+
+\end{code}
+
+We extend O-functor from types to type trees.
+
+\begin{code}
 
 𝓞-functor : (P : 𝓥 ̇ ) (Xt : 𝑻 {𝓤}) → 𝓙 R Xt → 𝓙 (R × P) Xt
 𝓞-functor P []       ⟨⟩        = ⟨⟩
-𝓞-functor P (X ∷ Xf) (ε :: εf) = (O-functor pr₁ ε) ,
+𝓞-functor P (X ∷ Xf) (ε :: εf) = (O-functor X pr₁ ε) ,
                                  (λ x → 𝓞-functor P (Xf x) (εf x))
- where
-  open contravariant-functoriality-on-outcome-type X
 
-lemma-𝓞-functor : (fe : Fun-Ext)
-                  {P : 𝓥 ̇ }
+\end{code}
+
+We apply the following lemma for P := Path Xt and f := id. The general
+version is needed to get a suitable induction hypothesis.
+
+\begin{code}
+
+lemma-𝓞-functor : {P : 𝓥 ̇ }
                   (Xt : 𝑻 {𝓤})
                   (εt : 𝓙 R Xt)
                   (q : Path Xt → R)
                   (f : Path Xt → P)
                 → sequenceᴶ (R × P) (𝓞-functor P Xt εt) (λ xs → q xs , f xs)
                 ＝ sequenceᴶ R εt q
-lemma-𝓞-functor fe []       ⟨⟩        q f = refl
-lemma-𝓞-functor fe {P} (X ∷ Xf) (ε :: εf) q f = I
+lemma-𝓞-functor         []       ⟨⟩        q f = refl
+lemma-𝓞-functor {𝓥} {P} (X ∷ Xf) (ε :: εf) q f = I
   where
    R' = R × P
 
@@ -62,7 +74,7 @@ lemma-𝓞-functor fe {P} (X ∷ Xf) (ε :: εf) q f = I
    x₁ = ε (λ x → subpred q x (δ  x (subpred q  x)))
 
    IH : (x : X) → δ' x (subpred q' x) ＝ δ x (subpred q  x)
-   IH x = lemma-𝓞-functor fe (Xf x) (εf x) (subpred q x) (subpred f x)
+   IH x = lemma-𝓞-functor (Xf x) (εf x) (subpred q x) (subpred f x)
 
    e : x₀ ＝ x₁
    e = ap ε (dfunext fe (λ x → ap (subpred q x) (IH x)))
@@ -81,7 +93,6 @@ lemma-𝓞-functor fe {P} (X ∷ Xf) (ε :: εf) q f = I
 module _ (Xt : 𝑻 {𝓤})
          (ϕt : 𝓚 R Xt)
          (εt : 𝓙 R Xt)
-         (⦅1⦆ : Attains R εt ϕt)
        where
 
  R' = R × Path Xt
@@ -89,36 +100,77 @@ module _ (Xt : 𝑻 {𝓤})
  εt' : 𝓙 R' Xt
  εt' = 𝓞-functor (Path Xt) Xt εt
 
- module _ (ϕt' : 𝓚 R' Xt)
-          (⦅2⦆ : Attains R' εt' ϕt')
-          (q : Path Xt → R)
-          (fe : Fun-Ext)
+ module _ (q : Path Xt → R)
         where
 
-   q' : Path Xt → R'
-   q' xs = q xs , xs
+  q' : Path Xt → R'
+  q' xs = q xs , xs
 
-   lemma : sequenceᴶ R' εt' q' ＝ sequenceᴶ R εt q
-   lemma = lemma-𝓞-functor fe Xt εt q id
+\end{code}
+
+We now have two different ways of computing an optimal play, which
+coincide:
+
+\begin{code}
+
+  lemma : sequenceᴶ R' εt' q' ＝ sequenceᴶ R εt q
+  lemma = lemma-𝓞-functor Xt εt q id
+
+  private
+   G : Game R
+   G = game Xt q ϕt
+
+\end{code}
+
+With this, we conclude that the optimal outcome of G together with the
+particular optimal play sequenceᴶ R εt q can be computed as the
+optimal outcome of G'.
+
+\begin{code}
+
+  module _ (ϕt' : 𝓚 R' Xt)
+         where
 
    private
     G' : Game R'
     G' = game Xt q' ϕt'
 
-    G : Game R
-    G = game Xt q ϕt
+   theorem
+    : Attains R  εt  ϕt
+    → Attains R' εt' ϕt'
+    → (optimal-outcome R G , sequenceᴶ R εt q) ＝ optimal-outcome R' G'
+   theorem a a'
+    = optimal-outcome R G , sequenceᴶ R εt q        ＝⟨ I ⟩
+      q (sequenceᴶ R εt q) , sequenceᴶ R εt q       ＝⟨ II ⟩
+      q (sequenceᴶ R' εt' q') , sequenceᴶ R' εt' q' ＝⟨ refl ⟩
+      q' (sequenceᴶ R' εt' q')                      ＝⟨ III ⟩
+      optimal-outcome R' G'                         ∎
+       where
+        I   = ap (_, sequenceᴶ R εt q)
+                 ((selection-strategy-corollary R fe G εt a)⁻¹)
+        II  = ap (λ - → q - , -) (lemma ⁻¹)
+        III = selection-strategy-corollary R' fe G' εt' a'
 
-   theorem : (optimal-outcome R G) , sequenceᴶ R εt q ＝ optimal-outcome R' G'
-   theorem =
-    optimal-outcome R G , sequenceᴶ R εt q        ＝⟨ I ⟩
-    q (sequenceᴶ R εt q) , sequenceᴶ R εt q       ＝⟨ II ⟩
-    q (sequenceᴶ R' εt' q') , sequenceᴶ R' εt' q' ＝⟨ refl ⟩
-    q' (sequenceᴶ R' εt' q')                      ＝⟨ III ⟩
-    optimal-outcome R' G'                         ∎
-     where
-      I   = ap (_, sequenceᴶ R εt q)
-               ((selection-strategy-corollary R fe G εt ⦅1⦆)⁻¹)
-      II  = ap (λ - → q - , -) (lemma ⁻¹)
-      III = selection-strategy-corollary R' fe G' εt' ⦅2⦆
+\end{code}
+
+We are interested in the following corollary, which shows how to
+compute a product of attainable selection functions as a product of
+quantifiers, provided εt' attains ϕt.
+
+\begin{code}
+
+   products-of-selection-functions-via-products-of-quantifiers
+    : Attains R  εt  ϕt
+    → Attains R' εt' ϕt'
+    → sequenceᴶ R εt q ＝ pr₂ (sequenceᴷ R' ϕt' q')
+   products-of-selection-functions-via-products-of-quantifiers a a'
+    = ap pr₂ (theorem a a')
+
+   optimal-outcomes-coincide
+    : Attains R  εt  ϕt
+    → Attains R' εt' ϕt'
+    → optimal-outcome R G ＝ pr₁ (optimal-outcome R' G')
+   optimal-outcomes-coincide a a'
+    = ap pr₁ (theorem a a')
 
 \end{code}
