@@ -276,11 +276,10 @@ module _ {𝓤' 𝓥' : Universe}
    I = univalence-implies-edge-induction 𝓐 ua-𝓐
    II : (x y : ⟨ 𝓐 ⟩) → x ≈⟨ 𝓐 ⟩ y → 𝓤' ⊔ 𝓥' ̇
    II x y e = (u : ⟨ 𝓑 x ⟩)
-    → push e u ≈⟨ 𝓑 y ⟩ transport-along-≈ 𝓐 ua-𝓐 (lens-push-fam 𝓛) e u
+            → push e u ≈⟨ 𝓑 y ⟩ transport-along-≈ 𝓐 ua-𝓐 (lens-push-fam 𝓛) e u
    III : (x : ⟨ 𝓐 ⟩) (u : ⟨ 𝓑 x ⟩)
        → u ＝ transport-along-≈ 𝓐 ua-𝓐 (lens-push-fam 𝓛) (≈-refl 𝓐 x) u
-   III x u = ap (λ - → transport (lens-push-fam 𝓛) - u)
-             (edge-to-id-preserves-refl (𝓐 , ua-𝓐)) ⁻¹
+   III x u = transport-along-≈-comp 𝓐 ua-𝓐 (lens-push-fam 𝓛) u ⁻¹
    IV : (x : ⟨ 𝓐 ⟩) (u : ⟨ 𝓑 x ⟩)
       → push (≈-refl 𝓐 x) u
       ≈⟨ 𝓑 x ⟩ transport-along-≈ 𝓐 ua-𝓐 (lens-push-fam 𝓛) (≈-refl 𝓐 x) u
@@ -312,42 +311,39 @@ module _ {𝓤' 𝓥' : Universe}
 \end{code}
 
 It is worth noting that this result follows immediatly from the fact that
-oplax structure is contractible (or a pointed proposition!)
+oplax structure is in fact a property!
 
 \begin{code}
 
- transport-along-≈-is-oplax-structure
-  : oplax-covariant-lens-structure 𝓤' 𝓥' 𝓐 𝓑
- transport-along-≈-is-oplax-structure
-  = record {push = I ; push-refl = II}
-  where
-   I : {x y : ⟨ 𝓐 ⟩} → (x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 x ⟩ → ⟨ 𝓑 y ⟩
-   I {x} {y} = transport-along-≈ 𝓐 ua-𝓐 (lens-push-fam 𝓛)
-   II : {x : ⟨ 𝓐 ⟩} (u : ⟨ 𝓑 x ⟩)
-      → (I (≈-refl 𝓐 x) u) ≈⟨ 𝓑 x ⟩ u
-   II {x} u = id-to-edge (𝓑 x)
-               (transport-along-≈-comp 𝓐 ua-𝓐 (lens-push-fam 𝓛) u)
-
- oplax-＝-transport-structure
-  : FunExt
-  → s ＝ transport-along-≈-is-oplax-structure
- oplax-＝-transport-structure fe
-  = oplax-lens-structure-is-a-property (fe _ _) 𝓤' 𝓥' 𝓐 𝓑 ua-𝓐 ua-𝓛
-     s transport-along-≈-is-oplax-structure
-
  private
-  observation
+  transport-along-≈-is-oplax-structure
+   : oplax-covariant-lens-structure 𝓤' 𝓥' 𝓐 𝓑
+  transport-along-≈-is-oplax-structure
+   = record {push = I ; push-refl = II}
+   where
+    I : {x y : ⟨ 𝓐 ⟩} → (x ≈⟨ 𝓐 ⟩ y) → ⟨ 𝓑 x ⟩ → ⟨ 𝓑 y ⟩
+    I {x} {y} = transport-along-≈ 𝓐 ua-𝓐 (lens-push-fam 𝓛)
+    II : {x : ⟨ 𝓐 ⟩} (u : ⟨ 𝓑 x ⟩)
+       → (I (≈-refl 𝓐 x) u) ≈⟨ 𝓑 x ⟩ u
+    II {x} u = id-to-edge (𝓑 x)
+                (transport-along-≈-comp 𝓐 ua-𝓐 (lens-push-fam 𝓛) u)
+
+  oplax-＝-transport-structure
+   : FunExt
+   → s ＝ transport-along-≈-is-oplax-structure
+  oplax-＝-transport-structure fe
+   = oplax-lens-structure-is-a-property (fe _ _) 𝓤' 𝓥' 𝓐 𝓑 ua-𝓐 ua-𝓛
+      s transport-along-≈-is-oplax-structure
+
+  unique-transport-observation
    : FunExt
    → {x y : ⟨ 𝓐 ⟩}
    → (e : x ≈⟨ 𝓐 ⟩ y)
    → push e ∼ transport-along-≈ 𝓐 ua-𝓐 (lens-push-fam 𝓛) e
-  observation fe e u
-   = ap ? (oplax-＝-transport-structure fe)
-   where
+  unique-transport-observation fe e u
+   = ap (λ - → lens-push (𝓑 , -) e u) (oplax-＝-transport-structure fe)
 
 \end{code}
-
-(λ - → (pr₁ -) _ _ e u)
 
 We observe that univalent universes form a univalent family (which is a
 specific form of univalent reflexive graph).
