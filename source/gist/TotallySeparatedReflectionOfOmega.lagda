@@ -239,9 +239,12 @@ _ = ⊥-⊤-density' fe pe
 
 ¬¬WEM-observation : {Y : 𝓥 ̇ }
                   → is-totally-separated Y
-                  → (f : Ω → Y) → f ⊥ ≠ f ⊤ → ¬¬ WEM
-¬¬WEM-observation ts f = contrapositive
-                          (λ (nwem : ¬ WEM) → ¬WEM-observation nwem ts f ⊥ ⊤)
+                  → (Σ f ꞉ (Ω → Y) , f ⊥ ≠ f ⊤)
+                  → ¬¬ WEM
+¬¬WEM-observation ts (f , ne) =
+ contrapositive
+  (λ (nwem : ¬ WEM) → ¬WEM-observation nwem ts f ⊥ ⊤)
+  ne
 
 \end{code}
 
