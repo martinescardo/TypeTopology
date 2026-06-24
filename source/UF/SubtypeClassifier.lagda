@@ -131,6 +131,16 @@ fails-gives-equal-⊥ pe fe (P , i) = false-gives-equal-⊥ pe fe P i
 equal-⊥-gives-fails : (p : Ω 𝓤) → p ＝ ⊥ → ¬ (p holds)
 equal-⊥-gives-fails .⊥ refl = 𝟘-elim
 
+not-equal-⊤-gives-empty : propext 𝓤
+                        → funext 𝓤 𝓤
+                        → (p : Ω 𝓤) → p ≠ ⊤ → ¬ (p holds)
+not-equal-⊤-gives-empty pe fe p ν h = ν (holds-gives-equal-⊤ pe fe p h)
+
+not-equal-⊥-gives-irrefutable : propext 𝓤
+                              → funext 𝓤 𝓤
+                              → (p : Ω 𝓤) → p ≠ ⊥ → ¬¬ (p holds)
+not-equal-⊥-gives-irrefutable pe fe p ν n = ν (fails-gives-equal-⊥ pe fe p n)
+
 decidable-truth-values-are-⊥-or-⊤ : propext 𝓤
                                   → funext 𝓤 𝓤
                                   → (P : 𝓤 ̇ ) (i : is-prop P)
