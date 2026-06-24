@@ -311,7 +311,8 @@ module _ {𝓤' 𝓥' : Universe}
 \end{code}
 
 It is worth noting that this result follows immediatly from the fact that
-oplax structure is in fact a property!
+oplax structure is in fact a property, but this avenue requires function
+extensionality.
 
 \begin{code}
 
@@ -329,14 +330,14 @@ oplax structure is in fact a property!
                 (transport-along-≈-comp 𝓐 ua-𝓐 (lens-push-fam 𝓛) u)
 
   oplax-＝-transport-structure
-   : FunExt
+   : Fun-Ext
    → s ＝ transport-along-≈-is-oplax-structure
   oplax-＝-transport-structure fe
-   = oplax-lens-structure-is-a-property (fe _ _) 𝓤' 𝓥' 𝓐 𝓑 ua-𝓐 ua-𝓛
+   = oplax-lens-structure-is-a-property fe 𝓤' 𝓥' 𝓐 𝓑 ua-𝓐 ua-𝓛
       s transport-along-≈-is-oplax-structure
 
   unique-transport-observation
-   : FunExt
+   : Fun-Ext
    → {x y : ⟨ 𝓐 ⟩}
    → (e : x ≈⟨ 𝓐 ⟩ y)
    → push e ∼ transport-along-≈ 𝓐 ua-𝓐 (lens-push-fam 𝓛) e
@@ -448,8 +449,8 @@ hSet-refl-graph {𝓤} ua fe
  = universe-refl-graph 𝓤 ﹐ (universe-univalent-refl-graph ua fe Δ is-set)
 
 private
-  observation-I : (ua : is-univalent 𝓤) (fe : funext (𝓤 ⁺) 𝓤) →
-    ⟨ hSet-refl-graph ua fe ⟩ ＝ hSet 𝓤
+  observation-I : (ua : is-univalent 𝓤) (fe : funext (𝓤 ⁺) 𝓤)
+                → ⟨ hSet-refl-graph ua fe ⟩ ＝ hSet 𝓤
   observation-I = λ ua fe → refl
 
 hSet-refl-graph-is-univalent : (ua : is-univalent 𝓤)
@@ -489,11 +490,9 @@ hSet-＝-char {𝓤} ua fe fe' 𝓧@(X , X-is-set) 𝓨@(Y , Y-is-set)
 
 \end{code}
 
-We observe a relationship between displayed univalent reflexive graphs and the
-standard notion of structure (SNS) (see UF.SIP) already present in the
+We observe logical equivalence between displayed univalent reflexive graphs
+and the standard notion of structure (SNS) (see UF.SIP) already present in the
 TypeTopology library.
-
-TODO finish showing the equivalence stated below.
 
 \begin{code}
 
@@ -556,7 +555,8 @@ SNS-to-displayed-univalent-refl-graph {𝓤} {𝓣} {𝓦} fe B (ι , ρ , θ)
 
 \end{code}
 
-TODO characterize ＝ of displayed refl graphs and finish this proof.
+TODO characterize ＝ of displayed refl graphs and finish the proof of
+equivalence stated below.
 
 displayed-univalent-refl-graph-≃-SNS
  : {𝓤 𝓣 𝓦 : Universe}
@@ -573,16 +573,14 @@ displayed-univalent-refl-graph-≃-SNS fe
      → (displayed-univalent-refl-graph 𝓣 𝓦 (universe-refl-graph 𝓤))
   II (B , sns) = SNS-to-displayed-univalent-refl-graph fe B sns
   III : II ∘ I ∼ id
-  III ((B , R , r) , ua) = _
+  III ((B , R , r) , ua) = ?
   IV : I ∘ II ∼ id
-  IV (B , (ι , ρ , θ)) = _
-
-end{code}
+  IV (B , (ι , ρ , θ)) = ?
 
 We conclude this example file (for now) with a comparison of characterizations
 of the identity type of ∞-magmas. The former characterization directly via
 displayed reflexive graphs (but by the above observation this is equivalent to
-a characterization via SNS) and the latter via bivariant midpoint lenses. 
+a characterization via SNS) and the latter via unbiased lenses. 
 
 \begin{code}
 
@@ -672,7 +670,7 @@ private
 
 \end{code}
 
-We may instead use the bivariant lense machinary, which allows us to
+We may instead utilize the unbiased lense machinary, which allows us to
 characterize structures that have 'mixed variance'.
 
 \begin{code}
@@ -743,14 +741,14 @@ private
     (univalent-universe-is-univalent-family ua fe)
     (∞-Magma-unbiased-lens-display-univalent 𝓤 fe)
 
-∞-Magma-＝-lens-char
+∞-Magma-unbiased-lens-＝-char
  : {𝓤 : Universe}  
  → Fun-Ext
  → is-univalent 𝓤
  → ((X , _·X_) (Y , _·Y_) : ∞-Magma 𝓤) 
  → ((X , _·X_) ＝ (Y , _·Y_))
   ≃ (Σ e ꞉ X ≃ Y , ((x y : X) → ⌜ e ⌝ (x ·X y) ＝ (⌜ e ⌝ x ·Y ⌜ e ⌝ y)))
-∞-Magma-＝-lens-char {𝓤} fe ua (X , _·X_) (Y , _·Y_)
+∞-Magma-unbiased-lens-＝-char {𝓤} fe ua (X , _·X_) (Y , _·Y_)
  = id-equiv-edge
     (∞-Magma-unbiased-lens-total 𝓤
      , ∞-Magma-unbiased-lens-total-univalent 𝓤 ua fe)
@@ -764,4 +762,4 @@ few advantages. First, we get the displayed reflexive graph (and its univalence)
 for free by identifying the left and right hand side of the equation relating
 the mixed variance data. This offers a blueprint for characterizing mixed
 variance structures of increasingly complicated nature where "guessing" (or
-maybe it is more apt to say "being clever") is not feasible.
+maybe it is more apt to say "being clever") is not always feasible.
