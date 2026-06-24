@@ -620,7 +620,7 @@ particular, extensionality and univalence are not needed. We again use
 Lawvere's fixed point theorem.
 
 TODO. It should also be possible to replace the diagonal construction
-of Lemma₀ by a second application of LFPT.
+of Lemma₀ below by a second application of LFPT.
 
 \begin{code}
 
