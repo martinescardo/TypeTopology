@@ -388,8 +388,7 @@ restriction-of-extension₂ f = dfunext fe (λ p → extension₂-property f p)
 
 \end{code}
 
-The points τ₀ and τ₁ are ¬¬-dense in T, which gives
-left-cancellability of ρ₂.
+The points τ₀ and τ₁ are ¬¬-dense in T, which gives left-cancellability of ρ₂.
 
 \begin{code}
 
@@ -450,28 +449,52 @@ extension₂-of-restriction g = ρ₂-lc (extension₂-along-η (ρ₂ g)) g
 
 \end{code}
 
-We now prove the universal property when the target type is a power of 𝟚, coordinatewise.
+TODO. Actually, we can replace 𝟚 by any discrete type to get the same
+conclusion.
+
+We now prove the universal property when the target type is a power of 𝟚,
+pointwise. More generally, if ρ Y is an equivalence then so is ρ (J → Y)
+for any J.
 
 \begin{code}
 
-extension-power-of-𝟚-along-η : {𝓘 : Universe} {J : 𝓘 ̇ }
-                             → (Ω → (J → 𝟚)) → (T → (J → 𝟚))
-extension-power-of-𝟚-along-η f t j = extension₂-along-η (λ p → f p j) t
+module _
+        {𝓥 𝓙 : Universe}
+        (Y : 𝓥 ̇ )
+        {J : 𝓙 ̇ }
+        (ρY-is-equiv : is-equiv (ρ Y))
+       where
+
+ private
+  𝕣 : (T → Y) ≃ (Ω → Y)
+  𝕣 = (ρ Y , ρY-is-equiv)
+
+ extension-power : (Ω → (J → Y)) → (T → (J → Y))
+ extension-power f t j = ⌜ 𝕣 ⌝⁻¹ (λ p → f p j) t
+
+ restriction-of-extension-power : (f : Ω → (J → Y))
+                                → ρ (J → Y) (extension-power f) ＝ f
+ restriction-of-extension-power f = dfunext fe (λ p →
+                                    dfunext fe (λ j → happly
+                                                       (inverses-are-sections' 𝕣
+                                                         (λ (q : Ω) → f q j))
+                                                       p))
+
+ extension-of-restriction-power : (g : T → (J → Y))
+                                → extension-power (ρ (J → Y) g) ＝ g
+ extension-of-restriction-power g =
+  dfunext fe (λ t → dfunext fe (λ j →
+   happly (inverses-are-retractions' 𝕣 (λ t' → g t' j)) t))
+
+ ρ-of-power-is-equiv : is-equiv (ρ (J → Y))
+ ρ-of-power-is-equiv =
+  qinvs-are-equivs (ρ (J → Y))
+   (extension-power ,
+    extension-of-restriction-power ,
+    restriction-of-extension-power)
 
 ρ-of-power-of-𝟚-is-equiv : {𝓘 : Universe} {J : 𝓘 ̇ } → is-equiv (ρ (J → 𝟚))
-ρ-of-power-of-𝟚-is-equiv {𝓘} {J} =
- qinvs-are-equivs (ρ (J → 𝟚)) (extension-power-of-𝟚-along-η , I , II)
- where
-  I : (g : T → (J → 𝟚)) → extension-power-of-𝟚-along-η (ρ (J → 𝟚) g) ＝ g
-  I g = dfunext fe (λ t → dfunext fe (λ j → happly
-                                             (extension₂-of-restriction
-                                               (λ t' → g t' j))
-                                             t))
-
-  II : (f : Ω → (J → 𝟚)) → ρ (J → 𝟚) (extension-power-of-𝟚-along-η f) ＝ f
-  II f = dfunext fe (λ p → dfunext fe (λ j → extension₂-property
-                                              (λ p' → f p' j)
-                                              p))
+ρ-of-power-of-𝟚-is-equiv {𝓘} {J} = ρ-of-power-is-equiv 𝟚 ρ₂-is-equiv
 
 \end{code}
 
