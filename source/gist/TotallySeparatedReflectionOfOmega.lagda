@@ -192,6 +192,7 @@ constancy-lemma f e p = 𝟚-is-¬¬-separated (f p) (f ⊥) I
     I₀ ph = ne (f p ＝⟨ lemma-⊤ f p ph ⟩
                 f ⊤ ＝⟨ e ⁻¹ ⟩
                 f ⊥ ∎)
+
     I₁ : ¬¬ (p holds)
     I₁ ν = ne (lemma-⊥ f p ν)
 
@@ -206,12 +207,42 @@ WEM-lemma f ne p = I (𝟚-is-discrete (f p) (f ⊤))
 
 \end{code}
 
+Some observations not needed for our development:
+
+\begin{code}
+
+_ : (Y : 𝓥 ̇ ) → is-totally-separated Y → is-¬¬-separated Y
+_ = totally-separated-types-are-¬¬-separated
+
+_ : {Y : 𝓥 ̇ }
+  → is-¬¬-separated Y
+  → (f : Ω → Y) → f ⊥ ＝ f ⊤ → (p q : Ω) → f p ＝ f q
+_ = ⊥-⊤-density' fe pe
+
+¬WEM-observation : {Y : 𝓥 ̇ }
+                 → is-totally-separated Y
+                 → ¬ WEM → (f : Ω → Y) → f ⊥ ＝ f ⊤
+¬WEM-observation {𝓥} {Y} ts nwem f =
+ ts (λ (g : Y → 𝟚) → 𝟚-is-¬¬-separated
+                      (g (f ⊥))
+                      (g (f ⊤))
+                      (λ (ne : g (f ⊥) ≠ g (f ⊤))
+                             → nwem (WEM-lemma (g ∘ f) ne)))
+
+¬¬WEM-observation : {Y : 𝓥 ̇ }
+                  → is-totally-separated Y
+                  → (f : Ω → Y) → f ⊥ ≠ f ⊤ → ¬¬ WEM
+¬¬WEM-observation ts f = contrapositive
+                          (λ (nwem : ¬ WEM) → ¬WEM-observation ts nwem f)
+
+\end{code}
+
 Restriction along η:
 
 \begin{code}
 
-ρ : (Z : 𝓦 ̇ ) → (T → Z) → (Ω → Z)
-ρ Z g = g ∘ η
+ρ : (Y : 𝓥 ̇ ) → (T → Y) → (Ω → Y)
+ρ Y g = g ∘ η
 
 \end{code}
 
