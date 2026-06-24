@@ -187,6 +187,8 @@ Exercise. Show that
 
  (Σ p ꞉ (𝟚ᴺ  → N) , uniformly-continuous p) ≃ (Σ n ꞉ ℕ , Fin (2 ^ n) → N)
 
+Added 23 June 2026. Actually, the above is not quite correct!
+
 If we define uniform continuity with ∃ rather than Σ, this is no
 longer the case.
 

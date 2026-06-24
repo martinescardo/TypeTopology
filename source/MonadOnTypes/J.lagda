@@ -52,7 +52,9 @@ module J-definitions {R : 𝓦₀ ̇ } where
 
 \end{code}
 
-The following is the letter O for the contravariant outcome functor.
+Added 16th June 2026. We have that J {R} X is a monad on X for the
+outcome type R fixed. But it is also a contravariant functor on R for
+the type X fixed, for which we use the letter O.
 
 \begin{code}
 
