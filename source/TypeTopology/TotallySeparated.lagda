@@ -712,10 +712,10 @@ open neighbourhoods are equal).
 
 \end{code}
 
-TODO: example of 𝟚-separated type that fails to be 𝟚-sober, 𝟚-sober
+TODO. example of 𝟚-separated type that fails to be 𝟚-sober, 𝟚-sober
 reflection (or 𝟚-sobrification).
 
-TODO: most of what we said doesn't depend on the type 𝟚, and total
+TODO. most of what we said doesn't depend on the type 𝟚, and total
 separatedness can be generalized to S-separatedness for an arbitrary
 type S, where 𝟚-separatedness is total separatedness. Then, for
 example, Prop-separated is equivalent to is-set, all types in U are U

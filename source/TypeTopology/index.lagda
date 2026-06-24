@@ -41,6 +41,7 @@ import TypeTopology.SquashedCantor
 import TypeTopology.SquashedSum
 import TypeTopology.TheTopologyOfTheUniverse
 import TypeTopology.TotallySeparated
+import TypeTopology.TotallySeparatedReflectionViaQuotients
 import TypeTopology.UniformSearch                    -- by Ayberk Tosun
 import TypeTopology.WeaklyCompactTypes
 
