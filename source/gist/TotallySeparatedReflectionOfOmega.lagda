@@ -219,21 +219,29 @@ _ : {Y : 𝓥 ̇ }
   → (f : Ω → Y) → f ⊥ ＝ f ⊤ → (p q : Ω) → f p ＝ f q
 _ = ⊥-⊤-density' fe pe
 
-¬WEM-observation : {Y : 𝓥 ̇ }
+¬WEM-observation : ¬ WEM
+                 → {Y : 𝓥 ̇ }
                  → is-totally-separated Y
-                 → ¬ WEM → (f : Ω → Y) → f ⊥ ＝ f ⊤
-¬WEM-observation {𝓥} {Y} ts nwem f =
- ts (λ (g : Y → 𝟚) → 𝟚-is-¬¬-separated
-                      (g (f ⊥))
-                      (g (f ⊤))
-                      (λ (ne : g (f ⊥) ≠ g (f ⊤))
-                             → nwem (WEM-lemma (g ∘ f) ne)))
+                 → (f : Ω → Y) (p q : Ω) → f p ＝ f q
+¬WEM-observation nwem {Y} ts f = III
+ where
+  I : (g : Y → 𝟚) → g (f ⊥) ＝ g (f ⊤)
+  I g = 𝟚-is-¬¬-separated (g (f ⊥)) (g (f ⊤)) I₀
+   where
+    I₀ : ¬¬ (g (f ⊥) ＝ g (f ⊤))
+    I₀ ne = nwem (WEM-lemma (g ∘ f) ne)
+
+  II : f ⊥ ＝ f ⊤
+  II = ts I
+
+  III : (p q : Ω) → f p ＝ f q
+  III = ⊥-⊤-density' fe pe (totally-separated-types-are-¬¬-separated Y ts) f II
 
 ¬¬WEM-observation : {Y : 𝓥 ̇ }
                   → is-totally-separated Y
                   → (f : Ω → Y) → f ⊥ ≠ f ⊤ → ¬¬ WEM
 ¬¬WEM-observation ts f = contrapositive
-                          (λ (nwem : ¬ WEM) → ¬WEM-observation ts nwem f)
+                          (λ (nwem : ¬ WEM) → ¬WEM-observation nwem ts f ⊥ ⊤)
 
 \end{code}
 
