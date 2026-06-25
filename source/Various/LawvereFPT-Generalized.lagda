@@ -29,8 +29,8 @@ and
        → (f : X → X) → ∃ x ꞉ X , x ＝ f x
 
 Here we generalize both, by replacing the identity type former _＝_ by
-any binary relation _≈_, and by replacing the notions of section and
-of surjection accordingly.
+any binary relation _≈_ whatsoever, and by replacing the notions of
+section and of surjection accordingly.
 
 We apply the former to get a simplified version of the module
 generalized-Coquand, whose conclusions include
