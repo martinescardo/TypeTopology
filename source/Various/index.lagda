@@ -11,6 +11,7 @@ import Various.Dedekind
 import Various.DedekindNonAxiomatic
 import Various.DummettDisjunction
 import Various.LawvereFPT
+import Various.LawvereFPT-Generalized
 import Various.Lumsdaine
 import Various.NatIsSetWithoutUniverse    -- by Evan Cavallo
 import Various.NonCollapsibleFamily

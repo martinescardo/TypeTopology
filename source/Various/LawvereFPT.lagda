@@ -157,7 +157,7 @@ is a fixed point of f.
          (r : A → (A → X))
        → has-section· r
        → designated-fixed-point-property X
- LFPT· {𝓤} {𝓥} {A} {X} r (s , rs) f = lfix r s f , lfix-is-fixed-point r s rs f
+ LFPT· r (s , rs) f = lfix r s f , lfix-is-fixed-point r s rs f
 
  LFPT : {A : 𝓤 ̇ }
         {X : 𝓥 ̇ }
@@ -619,7 +619,7 @@ types, Π types, W types and a universe 𝓤 closed under them. In
 particular, extensionality and univalence are not needed. We again use
 Lawvere's fixed point theorem.
 
-TODO. It should also be possible to replace the diagonal construction
+Question. It should also be possible to replace the diagonal construction
 of Lemma₀ below by a second application of LFPT.
 
 \begin{code}
