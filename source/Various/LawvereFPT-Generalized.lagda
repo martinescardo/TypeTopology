@@ -122,7 +122,7 @@ LFPT-with-retract-relation
  → (f : 𝓥 ̇ → 𝓥 ̇ ) → Σ B ꞉ 𝓥 ̇ , retract (f B) of B
 LFPT-with-retract-relation {𝓤} {𝓥} {A}
  = relational-LFPT A (𝓥 ̇ )
-   (λ (B C : 𝓥 ̇ ) → retract C of B)
+    (λ (B C : 𝓥 ̇ ) → retract C of B)
 
 \end{code}
 
