@@ -55,8 +55,8 @@ help:
 	@echo "SyntheticHomotopyTheory.Circle.WithRewriting. Since that flag is part"
 	@echo "of Agda's interface files, mixing 'latest' (without it) and these"
 	@echo "targets (with it) forces a full re-typecheck of the whole library."
-        @echo
-        @echo "Override the Agda executable with e.g. make latest AGDA=agda-2.8.0".
+	 @echo
+	 @echo "Override the Agda executable with e.g. make latest AGDA=agda-2.8.0".
 
 
 latest l:

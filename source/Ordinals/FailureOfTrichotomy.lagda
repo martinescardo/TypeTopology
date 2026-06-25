@@ -100,7 +100,7 @@ module _ (u : ℕ∞) where
  h : ℕ → B
  h 0               = 𝟐
  h 1               = S (L g)
- h (succ (succ _)) = 𝟎
+ h (succ (succ _)) = 𝟎        --<-- It doesn't matter we we choose here.
 
  β : ℕ → Ordinal 𝓤₀
  β i = ⟦ h i ⟧₀
