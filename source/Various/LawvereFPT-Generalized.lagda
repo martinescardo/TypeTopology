@@ -182,11 +182,11 @@ As discussed above, we don't yet have any application of the second
 generalization.
 
 We conclude with an application of the first, which was its motivation
-in the first place.  We show that certain assumptions are together
-impossible, by using two applications of the fixed point theorem,
-where the first one is the generalization and the second one is the
-original (to show that no type is logically equivalent to its own
-negation).
+in the first place.  We first show that certain assumptions are
+together impossible, by using two applications of the fixed point
+theorem, where the first one is the generalization and the second one
+is the original (to show that no type is logically equivalent to its
+own negation).
 
 \begin{code}
 
