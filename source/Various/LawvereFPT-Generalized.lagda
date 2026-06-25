@@ -159,6 +159,9 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
+Again, the proof is literally the same as the original one with the
+identity type _＝_ in place of the arbitrary relation _≈_.
+
 As discussed above, we don't yet have any application of the second
 generalization. We conclude with an application of the first, which
 was its motivation in the first place.
