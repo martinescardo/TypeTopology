@@ -142,11 +142,10 @@ module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- module _
-         {𝓤 𝓥 𝓦 : Universe}
-         (A : 𝓤 ̇ )
-         (X : 𝓥 ̇ )
-         (_≈_ : X → X → 𝓦 ̇ )
+ module _ {𝓤 𝓥 𝓦 : Universe}
+          (A : 𝓤 ̇ )
+          (X : 𝓥 ̇ )
+          (_≈_ : X → X → 𝓦 ̇ )
         where
 
 \end{code}
