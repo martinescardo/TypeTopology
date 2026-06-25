@@ -24,10 +24,8 @@ See also the file Various.CantorTheoremForEmbeddings by Jon Sterling.
 module Various.LawvereFPT where
 
 open import MLTT.Spartan
-
 open import MLTT.Two-Properties
 open import Naturals.Properties
-
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt

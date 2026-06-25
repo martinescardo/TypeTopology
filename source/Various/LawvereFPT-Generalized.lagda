@@ -112,6 +112,23 @@ by _≈_.
    relational-LFPT : (f : X → X) → Σ x ꞉ X , x ≈ f x
    relational-LFPT f = lfix r s f , lfix-is-relational-fixed-point f
 
+
+\end{code}
+
+The above generalizes the original theorem in the strong sense that
+its proof is definitionally equal when specialized to _≈_ to be the
+identity type.
+
+\begin{code}
+
+private
+
+ open retract-version
+
+ sanity-check : {A  : 𝓤 ̇ } {X  : 𝓥 ̇ }
+              → lfix-is-fixed-point ＝ lfix-is-relational-fixed-point A X _＝_
+ sanity-check = by-construction
+
 \end{code}
 
 For the module generalized-Coquand-streamlined below, we use the
