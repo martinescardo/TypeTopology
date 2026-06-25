@@ -622,6 +622,9 @@ Lawvere's fixed point theorem.
 Question. It should also be possible to replace the diagonal construction
 of Lemma₀ below by a second application of LFPT.
 
+Added 25th June 2026. This question is now answered in the file
+Various.LawvereFPT-Generalized. End of addition.
+
 \begin{code}
 
 module generalized-Coquand where
