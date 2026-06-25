@@ -34,12 +34,9 @@ section and of surjection accordingly.
 We apply the former to get a simplified version of the module
 generalized-Coquand, whose conclusions include
 
-  Lemma₄ : ¬ (Σ U ꞉ 𝓤 ̇ , retract 𝓤 ̇ of U)
-
+  Lemma₄    : ¬ (Σ U ꞉ 𝓤 ̇ , retract 𝓤 ̇ of U)
   corollary : ∀ 𝓤 → ¬ (retract 𝓤 ⁺ ̇ of (𝓤 ̇ ))
-
-  Theorem : ¬ (Σ U ꞉ 𝓤 ̇ , 𝓤 ̇ ≃ U)
-
+  Theorem   : ¬ (Σ U ꞉ 𝓤 ̇ , 𝓤 ̇ ≃ U)
   Corollary : ¬ (𝓤 ⁺ ̇ ≃ 𝓤 ̇ )
 
 At the moment we don't have any application of the second
@@ -107,18 +104,21 @@ by _≈_.
 
 \end{code}
 
-For the module generalized-Coquand, we use the following particular
-case, where B ≈ C is taken to be "C is a retract of B".
+For the module generalized-Coquand-streamlined below, we use the
+following particular case, where B ≈ C is taken to be "C is a retract
+of B".
 
 \begin{code}
 
-LFPT-retract : {A : 𝓤 ̇ }
-               (r : A → (A → 𝓥 ̇ ))
-               (s : (A → 𝓥 ̇ ) → A)
-             → ((g : A → 𝓥 ̇ ) (a : A) → retract (g a) of (r (s g) a))
-             → (f : 𝓥 ̇ → 𝓥 ̇ ) → Σ B ꞉ 𝓥 ̇ , retract (f B) of B
-LFPT-retract {𝓤} {𝓥} {A} = relational-LFPT A (𝓥 ̇ )
-                             (λ (B C : 𝓥 ̇ ) → retract C of B)
+LFPT-with-retract-relation
+ : {A : 𝓤 ̇ }
+   (r : A → (A → 𝓥 ̇ ))
+   (s : (A → 𝓥 ̇ ) → A)
+ → ((g : A → 𝓥 ̇ ) (a : A) → retract (g a) of (r (s g) a))
+ → (f : 𝓥 ̇ → 𝓥 ̇ ) → Σ B ꞉ 𝓥 ̇ , retract (f B) of B
+LFPT-with-retract-relation {𝓤} {𝓥} {A}
+ = relational-LFPT A (𝓥 ̇ )
+   (λ (B C : 𝓥 ̇ ) → retract C of B)
 
 \end{code}
 
@@ -237,7 +237,7 @@ first projection gives a function R (S (Σ g)) → A
         ii = apd pr₂ (ρσ (Σ g) ay)
 
    I : Σ B ꞉ 𝓤 ̇ , retract (¬ B) of B
-   I = LFPT-retract r s rs ¬_
+   I = LFPT-with-retract-relation r s rs ¬_
 
    II : ¬ (Σ B ꞉ 𝓤 ̇ , retract (¬ B) of B)
    II (B , (f , g , _)) = not-equivalent-to-own-negation'' (f , g)
