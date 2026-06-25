@@ -207,10 +207,10 @@ with u : U and φ : R u → A.
 
 Notice that, by definition, fiber φ a = Σ x ꞉ R u , φ x ＝ a.
 
-For g : A → 𝓤, we have that Σ a ꞉ A , g a (abbreviated Σ g) lives
-in 𝓤, and hence we can apply S to get a point of the type U. We have
-that ρ (Σ g) : R (S (Σ g)) → Σ g, and so post-composition with the
-first projection gives a function R (S (Σ g)) → A
+For g : A → 𝓤, we have that the type Σ a ꞉ A , g a (abbreviated Σ g)
+lives in 𝓤, and hence we can apply S to get a point of the type U. We
+have that ρ (Σ g) : R (S (Σ g)) → Σ g, and so post-composition with
+the first projection gives a function R (S (Σ g)) → A
 
 \begin{code}
 
