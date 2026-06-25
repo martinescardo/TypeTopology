@@ -67,11 +67,10 @@ given in two nested anonymous submodules.
 
 \begin{code}
 
-module _
-        {𝓤 𝓥 𝓦 : Universe}
-        (A : 𝓤 ̇ )
-        (X : 𝓥 ̇ )
-        (_≈_ : X → X → 𝓦 ̇ )
+module _ {𝓤 𝓥 𝓦 : Universe}
+         (A : 𝓤 ̇ )
+         (X : 𝓥 ̇ )
+         (_≈_ : X → X → 𝓦 ̇ )
        where
 
   private
