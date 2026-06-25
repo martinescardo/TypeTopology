@@ -124,8 +124,8 @@ LFPT-with-retract-relation
  : {A : 𝓤 ̇ }
    (r : A → (A → 𝓥 ̇ ))
    (s : (A → 𝓥 ̇ ) → A)
- → ((g : A → 𝓥 ̇ ) (a : A) → retract (g a) of (r (s g) a))
- → (f : 𝓥 ̇ → 𝓥 ̇ ) → Σ B ꞉ 𝓥 ̇ , retract (f B) of B
+ → ((g : A → 𝓥 ̇ ) (a : A) → retract g a of r (s g) a)
+ → (f : 𝓥 ̇ → 𝓥 ̇ ) → Σ B ꞉ 𝓥 ̇ , retract f B of B
 LFPT-with-retract-relation {𝓤} {𝓥} {A}
  = relational-LFPT A (𝓥 ̇ )
     (λ (B C : 𝓥 ̇ ) → retract C of B)
@@ -229,7 +229,7 @@ the first projection gives a function R (S (Σ g)) → A
    s : (A → 𝓤 ̇ ) → A
    s g = ssup (S (Σ g)) (pr₁ ∘ ρ (Σ g))
 
-   rs : (g : A → 𝓤 ̇ ) (a : A) → retract (g a) of (r (s g) a)
+   rs : (g : A → 𝓤 ̇ ) (a : A) → retract g a of r (s g) a
    rs g a = 𝓻 , 𝓼 , 𝓻𝓼
     where
      𝓻 : r (s g) a → g a
@@ -252,7 +252,7 @@ the first projection gives a function R (S (Σ g)) → A
         i  = (transport-ap g pr₁ (ρσ (Σ g) ay))⁻¹
         ii = apd pr₂ (ρσ (Σ g) ay)
 
-   I : Σ B ꞉ 𝓤 ̇ , retract (¬ B) of B
+   I : Σ B ꞉ 𝓤 ̇ , retract ¬ B of B
    I = LFPT-with-retract-relation r s rs ¬_
 
    II : ¬ (Σ B ꞉ 𝓤 ̇ , retract (¬ B) of B)
@@ -262,7 +262,7 @@ the first projection gives a function R (S (Σ g)) → A
    III = II I
 
  Lemma₁ : (U : 𝓤 ̇ ) (R : U → 𝓤 ̇ ) (S : 𝓤 ̇ → U)
-        → ¬ ((X : 𝓤 ̇ ) → retract X of (R (S X)))
+        → ¬ ((X : 𝓤 ̇ ) → retract X of R (S X))
  Lemma₁ U R S ρ = Lemma₀ U R S
                    (λ X → retraction (ρ X))
                    (λ X → section (ρ X))
