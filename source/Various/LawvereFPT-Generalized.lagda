@@ -78,6 +78,12 @@ module _
    𝓕 : 𝓤 ⊔ 𝓥 ̇
    𝓕 = (A → X) → (A → X)
 
+\end{code}
+
+We define (double) pointwise relationship as follows.
+
+\begin{code}
+
    _≈̇_ : 𝓕 → 𝓕 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
    ϕ ≈̇ ψ = (g : A → X) (a : A) → ϕ g a ≈ ψ g a
 
@@ -144,6 +150,12 @@ module _ (pt : propositional-truncations-exist) where
          (_≈_ : X → X → 𝓦 ̇ )
         where
 
+\end{code}
+
+We define (single) pointwise equality as follows.
+
+\begin{code}
+
   private
    _≈̇_ : (A → X) → (A → X) → 𝓤 ⊔ 𝓦 ̇
    ϕ ≈̇ ψ = (a : A) → ϕ a ≈ ψ a
@@ -167,13 +179,14 @@ Again, the proof is literally the same as the original one with the
 identity type _＝_ in place of the arbitrary relation _≈_.
 
 As discussed above, we don't yet have any application of the second
-generalization. We conclude with an application of the first, which
-was its motivation in the first place.
+generalization.
 
-We show that certain assumptions are together impossible, by using two
-applications of the fixed point theorem, where the first one is the
-generalization and the second one is the original (to show that no
-type is logically equivalent to its own negation).
+We conclude with an application of the first, which was its motivation
+in the first place.  We show that certain assumptions are together
+impossible, by using two applications of the fixed point theorem,
+where the first one is the generalization and the second one is the
+original (to show that no type is logically equivalent to its own
+negation).
 
 \begin{code}
 
