@@ -18,3 +18,16 @@ import SyntheticHomotopyTheory.Circle.Construction
 import SyntheticHomotopyTheory.Circle.Induction
 
 \end{code}
+
+Updated in June 2026.
+
+The following files use --rewriting and can therefore not be imported with
+--safe. They are obviously still related to the circle so we list them here as
+commented imports.
+
+\begin{code}
+
+-- import SyntheticHomotopyTheory.Circle.WithRewriting
+-- import SyntheticHomotopyTheory.Circle.FundamentalGroup
+
+\end{code}
