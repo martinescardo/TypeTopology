@@ -21,7 +21,6 @@ and then proved various fixed point properties for it, including
                       → (s : (A → X) → A)
                       → s is-section·-of r
                       → (f : X → X) → lfix r s f ＝ f (lfix r s f)
-
 and
 
   LFPT : {A : 𝓤 ̇ } {X : 𝓥 ̇ } (φ : A → (A → X))
