@@ -43,7 +43,7 @@ At the moment we don't have any application of the second
 generalization.
 
 We work in a Martin-Löf tpe theory with W types, and no HoTT/UF axioms
-other than propositional truncation, which are is needed for the main
+other than propositional truncation, which isn't needed for the main
 theorem, but only for the second version of the fixed point theorem.
 
 \begin{code}
