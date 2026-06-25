@@ -57,6 +57,7 @@ help:
 	@echo "targets (with it) forces a full re-typecheck of the whole library."
 	@echo
 	@echo "Override the Agda executable with e.g. make latest AGDA=agda-2.8.0".
+	@echo "                                   or  make development AGDA=agda-2.9.0".
 
 
 latest l:
