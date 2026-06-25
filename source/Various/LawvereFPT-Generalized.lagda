@@ -212,7 +212,7 @@ module generalized-Coquand-streamlined where
           (S  : 𝓤 ̇ → U)
           (ρ  : (X : 𝓤 ̇ ) → R (S X) → X)
           (σ  : (X : 𝓤 ̇ ) → X → R (S X))
-          (ρσ : (X : 𝓤 ̇ ) (x : X) → ρ X (σ X x) ＝ x)
+          (ρσ : (X : 𝓤 ̇ ) → ρ X ∘ σ X ∼ id)
         → 𝟘
  Lemma₀ {𝓤} U R S ρ σ ρσ = III
   where
