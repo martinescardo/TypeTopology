@@ -85,6 +85,14 @@ module _
            (rs : (r ∘ s) ≈̇ id)
          where
 
+\end{code}
+
+Notice that the proof of the following is the same as the original
+proof of the particular case lfix-is-fixed-point, with _＝_ replaced
+by _≈_.
+
+\begin{code}
+
    lfix-is-relational-fixed-point : (f : X → X)
                                   → lfix r s f ≈ f (lfix r s f)
    lfix-is-relational-fixed-point f = e
