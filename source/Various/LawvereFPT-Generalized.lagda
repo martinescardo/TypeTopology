@@ -117,7 +117,7 @@ by _≈_.
 
 The above generalizes the original theorem in the strong sense that
 its proof is definitionally equal when specialized to _≈_ to be the
-identity type.
+identity type:
 
 \begin{code}
 
@@ -296,7 +296,7 @@ the first projection gives a function R (S (Σ g)) → A
  Lemma₄ : ¬ (Σ U ꞉ 𝓤 ̇ , retract 𝓤 ̇ of U)
  Lemma₄ (U , R , S , TS) = Lemma₃ U R S TS
 
- corollary : ∀ 𝓤 → ¬ (retract 𝓤 ⁺ ̇ of (𝓤 ̇ ))
+ corollary : ∀ 𝓤 → ¬ (retract (𝓤 ⁺ ̇ ) of (𝓤 ̇ ))
  corollary 𝓤 ρ = Lemma₄ ((𝓤 ̇ ) , ρ)
 
  Theorem : ¬ (Σ U ꞉ 𝓤 ̇ , 𝓤 ̇ ≃ U)
