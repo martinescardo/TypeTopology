@@ -306,3 +306,13 @@ the first projection gives a function R (S (Σ g)) → A
  Corollary {𝓤} e = Theorem ((𝓤 ̇ ) , e)
 
 \end{code}
+
+A variation of this argument was used originally by Coquand to show
+that type theory with a judgment Type:Type is inconsistent [1]. This
+corresponds to the above theorem, which says that no type in a type a
+universe is equivalent to the universe. We originally developed this
+modification on 12 October 2018 in the file Various.LawvereFPT.
+
+  [1] Thierry Coquand, The paradox of trees in type theory
+      BIT Numerical Mathematics, March 1992, Volume 32, Issue , pp 10–14
+      https://pdfs.semanticscholar.org/f2f3/30b27f1d7ca99c2550f96581a4400c209ef8.pdf
