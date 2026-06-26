@@ -112,7 +112,6 @@ by _≈_.
    relational-LFPT : (f : X → X) → Σ x ꞉ X , x ≈ f x
    relational-LFPT f = lfix r s f , lfix-is-relational-fixed-point f
 
-
 \end{code}
 
 The above generalizes the original theorem in the strong sense that
