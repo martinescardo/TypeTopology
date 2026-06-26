@@ -115,8 +115,8 @@ by _≈_.
 \end{code}
 
 The above generalizes the original theorem in the strong sense that
-its proof is definitionally equal when specialized to _≈_ to be the
-identity type:
+its proof is definitionally equal when _≈_ is taken to be the identity
+type:
 
 \begin{code}
 
@@ -148,7 +148,9 @@ LFPT-with-retract-relation {𝓤} {𝓥} {A}
 
 \end{code}
 
-We now develop the second generalization.
+We now develop the second generalization. In order the have the
+existential quantifier available, we need to assume the existence of
+propositional truncations.
 
 \begin{code}
 
