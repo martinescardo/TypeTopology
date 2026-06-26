@@ -1,5 +1,8 @@
 Tom de Jong, 19 June 2026.
 
+Updated 26 June 2026 to work with fewer definitional computation rules
+(cf. the file Circle.WithRewriting).
+
 We show that the loop space of the circle is equivalent to the integers via the
 mapping k : ℤ ↦ loopᵏ : pt ＝ pt.
 
@@ -51,26 +54,38 @@ private
  C : S¹ → 𝓤₀ ̇
  C = S¹-recursion (𝓤₀ ̇ ) ℤ 𝕤
 
- _ : ap C loop ＝ 𝕤
- _ = refl
+ C-on-loop : ap C loop ＝ 𝕤
+ C-on-loop = S¹-recursion-comp-loop (𝓤₀ ̇ ) ℤ 𝕤
 
  C-transport-loop-is-succ : transport C loop ＝ succ-ℤ
- C-transport-loop-is-succ = transport-is-idtofun-after-ap C loop ∙ II
-  where
-   I : idtoeq ℤ ℤ 𝕤 ＝ succ-ℤ-≃
-   I = idtoeq-eqtoid ua ℤ ℤ succ-ℤ-≃
-
-   II : ⌜ idtoeq ℤ ℤ (ap C loop) ⌝ ＝ succ-ℤ
-   II = ap ⌜_⌝ I
+ C-transport-loop-is-succ =
+  transport C loop                        ＝⟨ I   ⟩
+  idtofun (C pt) (C pt) (ap C loop)       ＝⟨refl⟩
+  ⌜ idtoeq ℤ ℤ (ap C loop) ⌝              ＝⟨ II ⟩
+  ⌜ idtoeq ℤ ℤ 𝕤 ⌝                        ＝⟨refl⟩
+  ⌜ idtoeq ℤ ℤ (eqtoid ua ℤ ℤ succ-ℤ-≃) ⌝ ＝⟨ III ⟩
+  ⌜ succ-ℤ-≃ ⌝                            ＝⟨refl⟩
+  succ-ℤ                                  ∎
+   where
+    I   = transport-is-idtofun-after-ap C loop
+    II  = ap (λ - → ⌜ idtoeq ℤ ℤ - ⌝) C-on-loop
+    III = ap ⌜_⌝ (idtoeq-eqtoid ua ℤ ℤ succ-ℤ-≃)
 
  C-transport-loop⁻¹-is-pred : transport C (loop ⁻¹) ＝ pred-ℤ
- C-transport-loop⁻¹-is-pred = transport-is-idtofun-after-ap⁻¹ C loop ∙ II
-  where
-   I : idtoeq ℤ ℤ 𝕤 ＝ succ-ℤ-≃
-   I = idtoeq-eqtoid ua ℤ ℤ succ-ℤ-≃
-
-   II : ⌜ idtoeq ℤ ℤ (ap C loop) ⌝⁻¹ ＝ pred-ℤ
-   II = ap ⌜_⌝⁻¹ I
+ C-transport-loop⁻¹-is-pred =
+  transport C (loop ⁻¹)                           ＝⟨ I   ⟩
+  idtofun (C pt) (C pt) (ap C (loop ⁻¹))          ＝⟨ II  ⟩
+  idtofun (C pt) (C pt) ((ap C loop) ⁻¹)          ＝⟨ III ⟩
+  idtofun ℤ ℤ (𝕤 ⁻¹)                              ＝⟨ IV  ⟩
+  ⌜ idtoeq ℤ ℤ (eqtoid ua ℤ ℤ (≃-sym succ-ℤ-≃)) ⌝ ＝⟨ V   ⟩
+  ⌜ ≃-sym succ-ℤ-≃ ⌝                              ＝⟨refl⟩
+  pred-ℤ                                          ∎
+   where
+    I   = transport-is-idtofun-after-ap C (loop ⁻¹)
+    II  = ap (idtofun (C pt) (C pt)) ((ap-sym C loop) ⁻¹)
+    III = ap (λ - → idtofun ℤ ℤ (- ⁻¹)) C-on-loop
+    IV  = ap (idtofun ℤ ℤ) (eqtoid-inverse ua succ-ℤ-≃)
+    V   = ap ⌜_⌝ (idtoeq-eqtoid ua ℤ ℤ (≃-sym succ-ℤ-≃))
 
 \end{code}
 
