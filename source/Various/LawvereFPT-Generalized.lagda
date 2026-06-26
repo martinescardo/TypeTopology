@@ -293,7 +293,7 @@ the first projection gives a function R (S (Σ g)) → A
  Lemma₃ U R S p = Lemma₂ U R S (λ X → idtoeq (R (S X)) X (p X))
 
  Lemma₄ : ¬ (Σ U ꞉ 𝓤 ̇ , retract 𝓤 ̇ of U)
- Lemma₄ (U , R , S , TS) = Lemma₃ U R S TS
+ Lemma₄ (U , R , S , RS) = Lemma₃ U R S RS
 
  corollary : ∀ 𝓤 → ¬ (retract (𝓤 ⁺ ̇ ) of (𝓤 ̇ ))
  corollary 𝓤 ρ = Lemma₄ ((𝓤 ̇ ) , ρ)
