@@ -1,7 +1,11 @@
 Tom de Jong, 19 June 2026.
 
+Updated on 26 June 2026 to remove the definitional computation rules for path
+constructors, in line with the HoTT Book.
+
 We postulate the existence of the circle S¹ with definitional computation rules
-using Agda's rewriting mechanism and derive its (dependent) universal property.
+at the point using Agda's rewriting mechanism and derive its (dependent)
+universal property.
 
 \begin{code}
 
@@ -30,22 +34,10 @@ postulate
 
  {-# REWRITE S¹-recursion-comp-pt #-}
 
-\end{code}
-
-In the following computation rule, we would like to write
-   ap f loop ＝ l
-but by definition the left-hand side reduces to a transport,
-and Agda only allows rewriting when the left-hans side does not reduce,
-so we replace [ap f loop] by its unfolding to a transport.
-
-\begin{code}
-
  S¹-recursion-comp-loop
   : (A : 𝓤 ̇ ) (a : A) (l : a ＝ a)
   → let f = S¹-recursion A a l in
-    transport (λ - → f pt ＝ f -) loop refl ＝ l
-
- {-# REWRITE S¹-recursion-comp-loop #-}
+    ap f loop ＝ l
 
  S¹-induction-comp-pt : (A : S¹ → 𝓤 ̇ ) (a : A pt) (l : transport A loop a ＝ a)
                       → S¹-induction A a l pt ＝ a
@@ -54,13 +46,12 @@ so we replace [ap f loop] by its unfolding to a transport.
 
  S¹-induction-comp-loop
   : (A : S¹ → 𝓤 ̇ ) (a : A pt) (l : transport A loop a ＝ a)
-  → apd' A (S¹-induction A a l) loop ＝ l
-
- {-# REWRITE S¹-induction-comp-loop #-}
+  → apd (S¹-induction A a l) loop ＝ l
 
 \end{code}
 
-The above rewrite rules amount to the following definitional equalities.
+The above rewrite rules amount to the following equalities, with the first
+components being given by refl.
 
 \begin{code}
 
@@ -71,7 +62,7 @@ private
                    → let f = S¹-recursion A a l in
                      (f pt , ap f loop) ＝
                      ((a , l) ∶ (Σ a' ꞉ A , a' ＝ a'))
- S¹-recursion-comp A a l = refl
+ S¹-recursion-comp A a l = to-Σ-＝ (refl , S¹-recursion-comp-loop A a l)
 
  S¹-induction-comp : (A : S¹ → 𝓤 ̇ )
                      (a : A pt)
@@ -79,7 +70,7 @@ private
                    → let f = S¹-induction A a l in
                      (f pt , apd f loop) ＝
                      ((a , l) ∶ (Σ a' ꞉ A pt , transport A loop a' ＝ a'))
- S¹-induction-comp A a l = refl
+ S¹-induction-comp A a l = to-Σ-＝ (refl , S¹-induction-comp-loop A a l)
 
 \end{code}
 
@@ -94,8 +85,9 @@ S¹-universal-property : funext 𝓤₀ 𝓤 → (A : 𝓤 ̇ )
 S¹-universal-property fe A =
  qinvs-are-equivs _ ((λ (a , l) → S¹-recursion A a l) , II , I)
   where
-   I : (w : Σ a ꞉ A , a ＝ a) → w ＝ w
-   I w = refl
+   I : ((a , l) : Σ a ꞉ A , a ＝ a)
+     → (S¹-recursion A a l pt , ap (S¹-recursion A a l) loop) ＝ (a , l)
+   I (a , l) = S¹-recursion-comp A a l
 
    II : (λ f → S¹-recursion A (f pt) (ap f loop)) ∼ id
    II f = dfunext fe III
@@ -109,12 +101,14 @@ S¹-universal-property fe A =
        IV : transport (λ - → g - ＝ f -) loop refl ＝ refl
        IV = transport (λ - → g - ＝ f -) loop refl ＝⟨ IV₁ ⟩
             ap g loop ⁻¹ ∙ refl ∙ ap f loop        ＝⟨refl⟩
-            ap g loop ⁻¹ ∙ ap f loop               ＝⟨refl⟩
+            ap g loop ⁻¹ ∙ ap f loop               ＝⟨ IV₃ ⟩
             ap f loop ⁻¹ ∙ ap f loop               ＝⟨ IV₂ ⟩
             refl                                   ∎
         where
          IV₁ = transport-after-ap' loop g f refl
          IV₂ = left-inverse (ap f loop)
+         IV₃ = ap (λ - → - ⁻¹ ∙ ap f loop)
+                  (S¹-recursion-comp-loop A (f pt) (ap f loop))
 
 S¹-universal-property-≃
  : funext 𝓤₀ 𝓤 → (A : 𝓤 ̇ )
@@ -130,7 +124,7 @@ S¹-dependent-universal-property fe A =
  qinvs-are-equivs (λ f → f pt , apd f loop)
                   ((λ (a , l) → S¹-induction A a l) ,
                    I ,
-                   (λ _ → refl))
+                   (λ _ → S¹-induction-comp A _ _))
   where
    I : (λ f → S¹-induction A (f pt) (apd f loop)) ∼ id
    I f = dfunext fe II
@@ -142,16 +136,18 @@ S¹-dependent-universal-property fe A =
        g = S¹-induction A (f pt) (apd f loop)
        III =
         transport (λ - → g - ＝ f -) loop refl                  ＝⟨ III₁ ⟩
-        apd g loop ⁻¹ ∙ ap (transport A loop) refl ∙ apd f loop ＝⟨refl⟩
-        apd f loop ⁻¹ ∙ ap (transport A loop) refl ∙ apd f loop ＝⟨ III₂ ⟩
+        apd g loop ⁻¹ ∙ ap (transport A loop) refl ∙ apd f loop ＝⟨ III₂ ⟩
+        apd f loop ⁻¹ ∙ ap (transport A loop) refl ∙ apd f loop ＝⟨ III₃ ⟩
         apd f loop ⁻¹ ∙ refl ∙ apd f loop                       ＝⟨refl⟩
-        apd f loop ⁻¹ ∙ apd f loop                              ＝⟨ III₃ ⟩
+        apd f loop ⁻¹ ∙ apd f loop                              ＝⟨ III₄ ⟩
         refl                                                    ∎
          where
           III₁ = transport-after-ap'-dependent g f loop refl
-          III₂ = ap (λ - → apd f loop ⁻¹ ∙ - ∙ apd f loop)
+          III₂ = ap (λ - → - ⁻¹ ∙ ap (transport A loop) refl ∙ apd f loop)
+                    (S¹-induction-comp-loop A (f pt) (apd f loop))
+          III₃ = ap (λ - → apd f loop ⁻¹ ∙ - ∙ apd f loop)
                     (ap-refl (transport A loop))
-          III₃ = left-inverse (apd f loop)
+          III₄ = left-inverse (apd f loop)
 
 S¹-dependent-universal-property-≃
  : funext 𝓤₀ 𝓤 → (A : S¹ → 𝓤 ̇ )
