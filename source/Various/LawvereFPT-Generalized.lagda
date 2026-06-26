@@ -68,9 +68,9 @@ given in two nested anonymous submodules.
 \begin{code}
 
 module _ {𝓤 𝓥 𝓦 : Universe}
-         (A : 𝓤 ̇ )
-         (X : 𝓥 ̇ )
-         (_≈_ : X → X → 𝓦 ̇ )
+         (A      : 𝓤 ̇ )
+         (X      : 𝓥 ̇ )
+         (_≈_    : X → X → 𝓦 ̇ )
        where
 
   private
@@ -140,7 +140,7 @@ LFPT-with-retract-relation
  : {A : 𝓤 ̇ }
    (r : A → (A → 𝓥 ̇ ))
    (s : (A → 𝓥 ̇ ) → A)
- → ((g : A → 𝓥 ̇ ) (a : A) → retract g a of r (s g) a)
+ → ((g : A → 𝓥 ̇ ) (a : A) → retract g a of (r ∘ s) g a)
  → (f : 𝓥 ̇ → 𝓥 ̇ ) → Σ B ꞉ 𝓥 ̇ , retract f B of B
 LFPT-with-retract-relation {𝓤} {𝓥} {A}
  = relational-LFPT A (𝓥 ̇ )
@@ -161,9 +161,9 @@ module _ (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  module _ {𝓤 𝓥 𝓦 : Universe}
-          (A : 𝓤 ̇ )
-          (X : 𝓥 ̇ )
-          (_≈_ : X → X → 𝓦 ̇ )
+          (A      : 𝓤 ̇ )
+          (X      : 𝓥 ̇ )
+          (_≈_    : X → X → 𝓦 ̇ )
         where
 
 \end{code}
@@ -181,13 +181,16 @@ We define (single) pointwise equality as follows.
          where
 
    relational-surjection-LFPT : (f : X → X) → ∃ x ꞉ X , x ≈ f x
-   relational-surjection-LFPT f = ∥∥-functor γ (s g)
+   relational-surjection-LFPT f = II
     where
      g : A → X
      g a = f (φ a a)
 
-     γ : (Σ a ꞉ A , φ a ≈̇ g) → Σ x ꞉ X , x ≈ f x
-     γ (a , q) = φ a a , q a
+     I : (Σ a ꞉ A , φ a ≈̇ g) → Σ x ꞉ X , x ≈ f x
+     I (a , q) = φ a a , q a
+
+     II : ∃ x ꞉ X , x ≈ f x
+     II = ∥∥-functor I (s g)
 
 \end{code}
 
