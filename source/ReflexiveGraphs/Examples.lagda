@@ -40,8 +40,8 @@ open import ReflexiveGraphs.UnivalentFamilies
 
 \end{code}
 
-We can recover the standard characterizations of the identity type of products
-using reflexive graphs.
+We can recover the standard characterization of the identity type of products
+using discrete reflexive graphs.
 
 \begin{code}
 
@@ -75,7 +75,7 @@ sigma-characterization-from-univalent-refl-graphs
 
 \end{code}
 
-But, this is simply a sanity check for the theory we have developed. We now
+This is simply a sanity check for the theory we have developed. We now
 wish to move towards a more unified approach to SIP, by working through
 some illustrative examples.
 
@@ -125,10 +125,15 @@ p ∼ p' and q ∼ q'.
 \begin{code}
 
  cone-base-refl-graph : (A : 𝓣 ̇) → Refl-Graph (𝓤 ⊔ 𝓥 ⊔ 𝓣) (𝓤 ⊔ 𝓥 ⊔ 𝓣)
- cone-base-refl-graph A
-  = (((A → X) × (A → Y)) ,
-    (λ (p , q) (p' , q') → (p ∼ p') × (q ∼ q')) ,
-     λ (p , q) → (∼-refl , ∼-refl))
+ cone-base-refl-graph {𝓣} A
+  = (((A → X) × (A → Y)) , I , II)
+  where
+   I : ((A → X) × (A → Y))
+     → ((A → X) × (A → Y))
+     → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
+   I (p , q) (p' , q') = (p ∼ p') × (q ∼ q')
+   II : ((p , q) : (A → X) × (A → Y)) → (p ∼ p) × (q ∼ q) 
+   II (p , q) = (∼-refl , ∼-refl)
 
 \end{code}
 
@@ -157,10 +162,19 @@ edges correspond to the natural coherence condition mentioned above.
  cone-displayed-refl-graph
   : (A : 𝓣 ̇)
   → Displayed-Refl-Graph (𝓦 ⊔ 𝓣) (𝓦 ⊔ 𝓣) (cone-base-refl-graph A)
- cone-displayed-refl-graph A
-  = ((λ (p , q) → commutative-square (p , q)) ,
-    (λ (α , β) H H' → ∼-trans H (∼-ap-∘ g β) ∼ ∼-trans (∼-ap-∘ f α) H') ,
-     λ H - → refl-left-neutral ⁻¹)
+ cone-displayed-refl-graph {𝓣} A
+  = (commutative-square , I , II)
+  where
+   I : {(p , q) (p' , q') : (A → X) × (A → Y)}
+       ((α , β) : (p ∼ p') × (q ∼ q'))
+     → commutative-square (p , q)
+     → commutative-square (p' , q')
+     → 𝓦 ⊔ 𝓣 ̇
+   I (α , β) H H' = ∼-trans H (∼-ap-∘ g β) ∼ ∼-trans (∼-ap-∘ f α) H'
+   II : {(p , q) : (A → X) × (A → Y)}
+        (H : commutative-square (p , q))
+      → ∼-trans H ∼-refl ∼ ∼-trans ∼-refl H
+   II H x = refl-left-neutral ⁻¹
 
 \end{code}
 
@@ -178,13 +192,13 @@ univalent).
      (cone-displayed-refl-graph A) 
  cone-display-is-univalent A (p , q) H
   = equiv-to-prop I
-     (univalence-closed-under-Π fe A (λ x → Δ (f (p x) ＝ g (q x)))
+     (univalence-closed-under-Π fe A (λ - → Δ (f (p -) ＝ g (q -)))
       (λ - → discrete-refl-graph-is-univalent (f (p -) ＝ g (q -))) H)
   where
    I : fan ([ cone-displayed-refl-graph A ] (p , q)) H
      ≃ fan (∏ x ˸ A , (Δ (f (p x) ＝ g (q x)))) H
    I = (Σ H' ꞉ commutative-square (p , q) ,
-        ∼-trans H (∼-refl) ∼ ∼-trans (∼-refl) H')
+        ∼-trans H ∼-refl ∼ ∼-trans ∼-refl H')
                                                            ≃⟨ II ⟩
        (Σ H' ꞉ commutative-square (p , q) , H ∼ H')        ■
     where
@@ -657,11 +671,12 @@ private
 
 Appealing simply to line counting one could not justify the latter approach to
 characterizing the identity type of ∞-Magma. But we would like to point out a
-few advantages. First, we get the displayed reflexive graph (and its univalence)
-for free by identifying the left and right hand side of the equation relating
-the mixed variance data. This offers a blueprint for characterizing mixed
-variance structures of increasingly complicated nature where "guessing" (or
-maybe it is more apt to say "being clever") is not always feasible.
+few advantages. We get the displayed reflexive graph (and its univalence) for
+free just by identifying what we want the left and right hand side of the
+equation relating the mixed variance data to be. This offers a blueprint for
+characterizing mixed variance structures of increasingly complicated nature
+where "guessing" (or maybe it is more apt to say "being clever") is not
+feasible.
 
 The following should probably be deleted or heavily improved...
 
