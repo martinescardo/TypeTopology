@@ -768,14 +768,13 @@ hSet-＝-char : is-univalent 𝓤
              → (X Y : hSet 𝓤)
              → (X ＝ Y) ≃ (underlying-set X ≃ underlying-set Y)
 hSet-＝-char {𝓤} ua fe 𝓧@(X , X-is-set) 𝓨@(Y , Y-is-set)
- = (𝓧 ＝ 𝓨)                               ≃⟨ II ⟩
-   (𝓧 ≈⟨ hSet-refl-graph ua fe ⟩ 𝓨)       ≃⟨ III ⟩
+ = (𝓧 ＝ 𝓨)                               ≃⟨ I ⟩
+   (𝓧 ≈⟨ hSet-refl-graph ua fe ⟩ 𝓨)       ≃⟨ II ⟩
    (X ≃ Y)                                ■
  where
-  I = universe-univalent-refl-graph ua fe
-  II = id-equiv-edge (hSet-univalent-refl-graph ua fe) 𝓧 𝓨
-  III = prop-lens-displayed-reflexive-graph (universe-refl-graph 𝓤)
-         (hSet-lens 𝓤 fe) (λ - → discrete-refl-graph-is-univalent (is-set -))
-          (λ _ → being-set-is-prop fe) X Y X-is-set Y-is-set
+  I = id-equiv-edge (hSet-univalent-refl-graph ua fe) 𝓧 𝓨
+  II = prop-lens-displayed-reflexive-graph (universe-refl-graph 𝓤)
+        (hSet-lens 𝓤 fe) (λ - → discrete-refl-graph-is-univalent (is-set -))
+         (λ _ → being-set-is-prop fe) X Y X-is-set Y-is-set
 
 \end{code}
