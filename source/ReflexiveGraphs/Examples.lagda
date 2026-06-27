@@ -15,7 +15,6 @@ module ReflexiveGraphs.Examples where
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
@@ -27,7 +26,6 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.Univalence
-open import UF.UA-FunExt
 open import ReflexiveGraphs.Constructions
 open import ReflexiveGraphs.Displayed
 open import ReflexiveGraphs.DisplayedUnivalent
