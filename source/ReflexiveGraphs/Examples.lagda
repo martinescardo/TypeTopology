@@ -701,6 +701,19 @@ discrete-displayed-reflexive-graph {_} {_} {𝓣} 𝓐 B = (B , I , II)
 
 syntax discrete-displayed-reflexive-graph 𝓐 B = 𝓐 Δ B
 
+codiscrete-displayed-reflexive-graph : (𝓐 : Refl-Graph 𝓤 𝓥)
+                                     → (⟨ 𝓐 ⟩ → 𝓣 ̇)
+                                     → Displayed-Refl-Graph 𝓣 𝓣 𝓐
+codiscrete-displayed-reflexive-graph {_} {_} {𝓣} 𝓐 B = (B , I , II)
+ where
+  I : {x y : ⟨ 𝓐 ⟩} → x ≈⟨ 𝓐 ⟩ y → B x → B y → 𝓣 ̇
+  I e u v = 𝟙
+  II : {x : ⟨ 𝓐 ⟩} (u : B x)
+     → I (≈-refl 𝓐 x) u u
+  II u = ⋆
+
+syntax codiscrete-displayed-reflexive-graph 𝓐 B = 𝓐 ∇ B
+
 prop-display-univalent
  : (𝓐 : Univalent-Refl-Graph 𝓤 𝓥)
  → (B : ⟨ 𝓐 ⟩ᵤ → 𝓣 ̇)

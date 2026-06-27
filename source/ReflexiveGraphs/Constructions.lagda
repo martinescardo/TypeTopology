@@ -164,6 +164,8 @@ syntax discrete-reflexive-graph A = Δ A
 codiscrete-reflexive-graph : 𝓤 ̇ → Refl-Graph 𝓤 𝓤
 codiscrete-reflexive-graph A = (A , (λ _ _ → 𝟙) , λ _ → ⋆)
 
+syntax codiscrete-reflexive-graph A = ∇ A
+
 \end{code}
 
 We can give the constant displayed reflexive graph.
