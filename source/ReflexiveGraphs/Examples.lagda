@@ -246,7 +246,8 @@ The carrier of this total reflexive graph corresponds to the type of cones.
 Example 2:
 
 We now use lenses to generalize an existing characterization of transport (see
-file UF.FundamentalLemmaOfTransportAlongEquivalences).
+file UF.FundamentalLemmaOfTransportAlongEquivalences). We start by defining
+transport along an edge.
 
 \begin{code}
 
@@ -366,7 +367,7 @@ universe the previous theorem reduces to what is observed in the previously
 mentioned file UF.FundamentalLemmaOfTransportAlongEquivalences. In fact, before
 moving to the next example we observe that univalent universes form a univalent
 family (which is a specific form of univalent reflexive graph), although we wont
-explicitly record the previous observation.
+explicitly record the previously mentioned observation.
 
 \begin{code}
 
@@ -396,7 +397,7 @@ universe-univalent-refl-graph {𝓤} ua fe
 
 \end{code}
 
-TODO: Consider how to prove universe reflexive graph is univalent without
+TODO: Consider how to prove the universe reflexive graph is univalent without
 function extensionality.
 
 Example 3:
@@ -719,12 +720,12 @@ prop-display-total-univalent 𝓐 B B-prop
     (underlying-refl-graph-is-univalent 𝓐)
     (prop-display-univalent 𝓐 B B-prop)
 
-prop-display-total-edge-char : (𝓐 : Univalent-Refl-Graph 𝓤 𝓥)
-                             → (B : ⟨ 𝓐 ⟩ᵤ → 𝓣 ̇)
-                             → ((x : ⟨ 𝓐 ⟩ᵤ) → is-prop (B x))
-                             → (x y : ⟨ 𝓐 ⟩ᵤ) (u : B x) (v : B y)
-                             → (x , u) ≈⟨ (𝓐 /ᵤ) ﹐ (𝓐 Δ B) ⟩ (y , v)
-                             ≃ x ≈ᵤ⟨ 𝓐 ⟩ y
+prop-display-total-edge-char
+ : (𝓐 : Univalent-Refl-Graph 𝓤 𝓥)
+ → (B : ⟨ 𝓐 ⟩ᵤ → 𝓣 ̇)
+ → ((x : ⟨ 𝓐 ⟩ᵤ) → is-prop (B x))
+ → (x y : ⟨ 𝓐 ⟩ᵤ) (u : B x) (v : B y)
+ → (x , u) ≈⟨ (𝓐 /ᵤ) ﹐ (𝓐 Δ B) ⟩ (y , v) ≃ x ≈ᵤ⟨ 𝓐 ⟩ y
 prop-display-total-edge-char 𝓐 B B-prop x y u v
  = (x , u) ≈⟨ (𝓐 /ᵤ) ﹐ (𝓐 Δ B) ⟩ (y , v)                     ≃⟨by-definition⟩
    (Σ e ꞉ x ≈ᵤ⟨ 𝓐 ⟩ y , transport B (edge-to-id 𝓐 e) u ＝ v) ≃⟨ I ⟩
