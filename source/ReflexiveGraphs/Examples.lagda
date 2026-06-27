@@ -491,10 +491,10 @@ displayed-univalent-refl-graph-≃-SNS fe
 
 Example 4:
 
-We conclude this example file (for now) with a comparison of characterizations
-of the identity type of ∞-magmas. The former characterization directly via
-displayed reflexive graphs (but by the above observation this is equivalent to
-a characterization via SNS) and the latter via unbiased lenses. 
+We now offer a comparison of characterizations of the identity type of ∞-magmas.
+The former characterization directly via displayed reflexive graphs (but by the
+above observation this is equivalent to a characterization via SNS) and the
+latter via unbiased lenses. 
 
 \begin{code}
 
@@ -679,75 +679,33 @@ characterizing mixed variance structures of increasingly complicated nature
 where "guessing" (or maybe it is more apt to say "being clever") is not
 feasible.
 
-The following should probably be deleted or heavily improved...
-
-We show that propositional valued families on univalent reflexive graphs induce
-displayed univalent reflexive graphs such that the resulting total univalent
-reflexive graph contains no new edge information.
+Example 5:
+If we have a univalent lens with underlying propositionally valued family then
+the total reflexive graph induced by the lens carries no new edge information.
 
 \begin{code}
 
-discrete-displayed-reflexive-graph : (𝓐 : Univalent-Refl-Graph 𝓤 𝓥)
-                                   → (⟨ 𝓐 ⟩ᵤ → 𝓣 ̇)
-                                   → Displayed-Refl-Graph 𝓣 𝓣 (𝓐 /ᵤ)
-discrete-displayed-reflexive-graph {_} {_} {𝓣} 𝓐 B = (B , I , II)
- where
-  I : {x y : ⟨ 𝓐 ⟩ᵤ} → x ≈ᵤ⟨ 𝓐 ⟩ y → B x → B y → 𝓣 ̇
-  I e u v = transport B (edge-to-id 𝓐 e) u ＝ v
-  II : {x : ⟨ 𝓐 ⟩ᵤ} (u : B x)
-     → I (≈-refl (𝓐 /ᵤ) x) u u
-  II u = transport (λ - → transport B - u ＝ u)
-          (edge-to-id-preserves-refl 𝓐 ⁻¹) refl
-
-syntax discrete-displayed-reflexive-graph 𝓐 B = 𝓐 Δ B
-
-codiscrete-displayed-reflexive-graph : (𝓐 : Refl-Graph 𝓤 𝓥)
-                                     → (⟨ 𝓐 ⟩ → 𝓣 ̇)
-                                     → Displayed-Refl-Graph 𝓣 𝓣 𝓐
-codiscrete-displayed-reflexive-graph {_} {_} {𝓣} 𝓐 B = (B , I , II)
- where
-  I : {x y : ⟨ 𝓐 ⟩} → x ≈⟨ 𝓐 ⟩ y → B x → B y → 𝓣 ̇
-  I e u v = 𝟙
-  II : {x : ⟨ 𝓐 ⟩} (u : B x)
-     → I (≈-refl 𝓐 x) u u
-  II u = ⋆
-
-syntax codiscrete-displayed-reflexive-graph 𝓐 B = 𝓐 ∇ B
-
-prop-display-univalent
- : (𝓐 : Univalent-Refl-Graph 𝓤 𝓥)
- → (B : ⟨ 𝓐 ⟩ᵤ → 𝓣 ̇)
- → ((x : ⟨ 𝓐 ⟩ᵤ) → is-prop (B x))
- → is-displayed-univalent-refl-graph (𝓐 /ᵤ) (𝓐 Δ B)
-prop-display-univalent 𝓐 B B-prop x u = Σ-is-prop (B-prop x) I
- where
-  I : (v : B x) → is-prop (u ≈⟨ 𝓐 Δ B ⸴ ≈-refl (𝓐 /ᵤ) x ⟩ v)
-  I v = props-are-sets (B-prop x)
-
-prop-display-total-univalent : (𝓐 : Univalent-Refl-Graph 𝓤 𝓥)
-                             → (B : ⟨ 𝓐 ⟩ᵤ → 𝓣 ̇)
-                             → ((x : ⟨ 𝓐 ⟩ᵤ) → is-prop (B x))
-                             → is-univalent-refl-graph ((𝓐 /ᵤ) ﹐ (𝓐 Δ B))
-prop-display-total-univalent 𝓐 B B-prop
- = univalence-closed-under-total (𝓐 /ᵤ) (𝓐 Δ B)
-    (underlying-refl-graph-is-univalent 𝓐)
-    (prop-display-univalent 𝓐 B B-prop)
-
-prop-display-total-edge-char
- : (𝓐 : Univalent-Refl-Graph 𝓤 𝓥)
- → (B : ⟨ 𝓐 ⟩ᵤ → 𝓣 ̇)
- → ((x : ⟨ 𝓐 ⟩ᵤ) → is-prop (B x))
- → (x y : ⟨ 𝓐 ⟩ᵤ) (u : B x) (v : B y)
- → (x , u) ≈⟨ (𝓐 /ᵤ) ﹐ (𝓐 Δ B) ⟩ (y , v) ≃ x ≈ᵤ⟨ 𝓐 ⟩ y
-prop-display-total-edge-char 𝓐 B B-prop x y u v
- = (x , u) ≈⟨ (𝓐 /ᵤ) ﹐ (𝓐 Δ B) ⟩ (y , v)                     ≃⟨by-definition⟩
-   (Σ e ꞉ x ≈ᵤ⟨ 𝓐 ⟩ y , transport B (edge-to-id 𝓐 e) u ＝ v) ≃⟨ I ⟩ 
-   x ≈ᵤ⟨ 𝓐 ⟩ y                                               ■
+prop-lens-displayed-reflexive-graph
+ : (𝓐 : Refl-Graph 𝓤 𝓥)
+ → (𝓛 : Oplax-Covariant-Lens 𝓣 𝓣' 𝓐)
+ → oplax-covariant-lens-is-univalent 𝓐 𝓛
+ → ((x : ⟨ 𝓐 ⟩) → is-prop (lens-push-fam 𝓛 x))
+ → (x y : ⟨ 𝓐 ⟩) (u : lens-push-fam 𝓛 x) (v : lens-push-fam 𝓛 y)
+ → (x , u) ≈⟨ 𝓐 ﹐ disp⁺ 𝓐 𝓛 ⟩ (y , v) ≃ x ≈⟨ 𝓐 ⟩ y
+prop-lens-displayed-reflexive-graph 𝓐 𝓛 ua-𝓛 prop-lens x y u v
+ = (x , u) ≈⟨ 𝓐 ﹐ disp⁺ 𝓐 𝓛 ⟩ (y , v)
+                                                            ≃⟨by-definition⟩
+   (Σ p ꞉ x ≈⟨ 𝓐 ⟩ y , lens-push 𝓛 p u ≈⟨ lens-push-graph 𝓛 y ⟩ v)
+                                                            ≃⟨ I ⟩
+   (Σ p ꞉ x ≈⟨ 𝓐 ⟩ y , lens-push 𝓛 p u ＝ v)
+                                                            ≃⟨ II ⟩
+   x ≈⟨ 𝓐 ⟩ y                                                       ■
     where
-     I = pr₁-≃ (x ≈ᵤ⟨ 𝓐 ⟩ y) (λ - → transport B (edge-to-id 𝓐 -) u ＝ v)
-          (λ - → pointed-props-are-singletons
-                  (B-prop y (transport B (edge-to-id 𝓐 -) u) v)
-                  (props-are-sets (B-prop y)))
+     I = Σ-cong (λ - → ≃-sym (id-equiv-edge (lens-push-graph 𝓛 y , ua-𝓛 y)
+                               (lens-push 𝓛 - u) v))
+     II = pr₁-≃ (x ≈⟨ 𝓐 ⟩ y) (λ - → lens-push 𝓛 - u ＝ v)
+           (λ - → pointed-props-are-singletons (prop-lens y (lens-push 𝓛 - u) v)
+            (props-are-sets (prop-lens y)))
 
 \end{code}
 
@@ -756,50 +714,67 @@ We use this fact to give a characterization of the identity type of hSets
 
 \begin{code}
 
+equiv-to-set' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              → X ≃ Y
+              → is-set X
+              → is-set Y
+equiv-to-set' = equiv-to-set ∘ ≃-sym
+
+hSet-lens : (𝓤 : Universe)
+          → Fun-Ext
+          → Oplax-Covariant-Lens 𝓤 𝓤 (universe-refl-graph 𝓤)
+hSet-lens 𝓤 fe = (I , II)
+ where
+  I : 𝓤 ̇ → Refl-Graph 𝓤 𝓤
+  I X = Δ (is-set X)
+  II : oplax-covariant-lens-structure 𝓤 𝓤 (universe-refl-graph 𝓤) I
+  II = record
+       {push = equiv-to-set'
+       ; push-refl = λ {X} is-set → being-set-is-prop fe
+                      (equiv-to-set' (≃-refl X) is-set) is-set}
+
 hSet-refl-graph : is-univalent 𝓤
-                → funext (𝓤 ⁺) 𝓤
+                → Fun-Ext
                 → Refl-Graph (𝓤 ⁺) 𝓤
 hSet-refl-graph {𝓤} ua fe
- = universe-refl-graph 𝓤 ﹐ (universe-univalent-refl-graph ua fe Δ is-set)
+ = universe-refl-graph 𝓤 ﹐ disp⁺ (universe-refl-graph 𝓤) (hSet-lens 𝓤 fe)
 
 private
-  observation-I : (ua : is-univalent 𝓤) (fe : funext (𝓤 ⁺) 𝓤)
+  observation-I : (ua : is-univalent 𝓤) (fe : Fun-Ext)
                 → ⟨ hSet-refl-graph ua fe ⟩ ＝ hSet 𝓤
   observation-I = λ ua fe → refl
 
 hSet-refl-graph-is-univalent : (ua : is-univalent 𝓤)
-                             → funext 𝓤 𝓤
-                             → (fe' : funext (𝓤 ⁺) 𝓤)
-                             → is-univalent-refl-graph (hSet-refl-graph ua fe')
-hSet-refl-graph-is-univalent {𝓤} ua fe fe'
- = prop-display-total-univalent I is-set II
- where
-  I = universe-univalent-refl-graph ua fe'
-  II = λ - → being-set-is-prop fe
+                             → (fe : Fun-Ext)
+                             → is-univalent-refl-graph (hSet-refl-graph ua fe)
+hSet-refl-graph-is-univalent {𝓤} ua fe
+ = univalence-closed-under-total (universe-refl-graph 𝓤)
+    (disp⁺ (universe-refl-graph 𝓤) (hSet-lens 𝓤 fe))
+    (univalent-universe-is-univalent-family ua fe)
+    (λ X → disp-oplax-covariant-lens-univalent (universe-refl-graph 𝓤)
+     (hSet-lens 𝓤 fe)
+      (λ - → discrete-refl-graph-is-univalent (is-set -)) X)
 
 hSet-univalent-refl-graph : is-univalent 𝓤
-                          → funext 𝓤 𝓤
-                          → funext (𝓤 ⁺) 𝓤
+                          → Fun-Ext
                           → Univalent-Refl-Graph (𝓤 ⁺) 𝓤
-hSet-univalent-refl-graph ua fe fe'
- = (hSet-refl-graph ua fe' , hSet-refl-graph-is-univalent ua fe fe')
+hSet-univalent-refl-graph ua fe 
+ = (hSet-refl-graph ua fe , hSet-refl-graph-is-univalent ua fe)
 
 hSet-＝-char : is-univalent 𝓤
-             → funext 𝓤 𝓤
-             → funext (𝓤 ⁺) 𝓤
+             → Fun-Ext
              → (X Y : hSet 𝓤)
              → (X ＝ Y) ≃ (underlying-set X ≃ underlying-set Y)
-hSet-＝-char {𝓤} ua fe fe' 𝓧@(X , X-is-set) 𝓨@(Y , Y-is-set)
+hSet-＝-char {𝓤} ua fe 𝓧@(X , X-is-set) 𝓨@(Y , Y-is-set)
  = (𝓧 ＝ 𝓨)                               ≃⟨ II ⟩
-   (𝓧 ≈⟨ hSet-refl-graph ua fe' ⟩ 𝓨)      ≃⟨ III ⟩
+   (𝓧 ≈⟨ hSet-refl-graph ua fe ⟩ 𝓨)       ≃⟨ III ⟩
    (X ≃ Y)                                ■
  where
-  I = universe-univalent-refl-graph ua fe'
+  I = universe-univalent-refl-graph ua fe
   II = id-equiv-edge
-        (hSet-refl-graph ua fe' , prop-display-total-univalent I is-set
-                                   (λ - → being-set-is-prop fe))
-        𝓧 𝓨
-  III = prop-display-total-edge-char I is-set (λ - → being-set-is-prop fe)
-         X Y X-is-set Y-is-set
+        (hSet-refl-graph ua fe , hSet-refl-graph-is-univalent ua fe) 𝓧 𝓨
+  III = prop-lens-displayed-reflexive-graph (universe-refl-graph 𝓤)
+         (hSet-lens 𝓤 fe) (λ - → discrete-refl-graph-is-univalent (is-set -))
+          (λ _ → being-set-is-prop fe) X Y X-is-set Y-is-set
 
 \end{code}
