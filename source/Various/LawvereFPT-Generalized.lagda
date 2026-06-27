@@ -1,9 +1,9 @@
 Martin Escardo, 24-25 June 2026.
 
-This file answers a question posed in Various.LawvereFPT, specifically
-in the module generalized-Coquand, regarding whether a certain
-diagonalization construction could be replaced by a second application
-of Lawvere's fixed point theorem.
+This file answers a question posed in Various.LawvereFPT by myself on
+12th October 2018, specifically in the module generalized-Coquand,
+regarding whether a certain diagonalization construction could be
+replaced by a second application of Lawvere's fixed point theorem.
 
 The answer is that no, not directly. However, we can generalize
 Lawvere's FPT as follows. In the above file, we defined
