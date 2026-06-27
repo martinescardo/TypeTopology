@@ -710,7 +710,9 @@ prop-lens-displayed-reflexive-graph 𝓐 𝓛 ua-𝓛 prop-lens x y u v
 \end{code}
 
 We use this fact to give a characterization of the identity type of hSets
-(although this is by no means better than existing characterizations).
+(although this is by no means better than existing characterizations), but
+hopefully it is clear that this suggests a methodology for characterizing
+the identity type of more complicated structures with propositional lenses.
 
 \begin{code}
 
@@ -771,8 +773,7 @@ hSet-＝-char {𝓤} ua fe 𝓧@(X , X-is-set) 𝓨@(Y , Y-is-set)
    (X ≃ Y)                                ■
  where
   I = universe-univalent-refl-graph ua fe
-  II = id-equiv-edge
-        (hSet-refl-graph ua fe , hSet-refl-graph-is-univalent ua fe) 𝓧 𝓨
+  II = id-equiv-edge (hSet-univalent-refl-graph ua fe) 𝓧 𝓨
   III = prop-lens-displayed-reflexive-graph (universe-refl-graph 𝓤)
          (hSet-lens 𝓤 fe) (λ - → discrete-refl-graph-is-univalent (is-set -))
           (λ _ → being-set-is-prop fe) X Y X-is-set Y-is-set
