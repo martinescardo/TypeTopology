@@ -728,16 +728,13 @@ prop-display-total-edge-char
  → (x , u) ≈⟨ (𝓐 /ᵤ) ﹐ (𝓐 Δ B) ⟩ (y , v) ≃ x ≈ᵤ⟨ 𝓐 ⟩ y
 prop-display-total-edge-char 𝓐 B B-prop x y u v
  = (x , u) ≈⟨ (𝓐 /ᵤ) ﹐ (𝓐 Δ B) ⟩ (y , v)                     ≃⟨by-definition⟩
-   (Σ e ꞉ x ≈ᵤ⟨ 𝓐 ⟩ y , transport B (edge-to-id 𝓐 e) u ＝ v) ≃⟨ I ⟩
-   (Σ p ꞉ x ＝ y , transport B p u ＝ v)                     ≃⟨ ≃-sym Σ-＝-≃ ⟩
-   ((x , u) ＝ (y , v))                                      ≃⟨ II ⟩
-   (x ＝ y)                                                  ≃⟨ III ⟩
+   (Σ e ꞉ x ≈ᵤ⟨ 𝓐 ⟩ y , transport B (edge-to-id 𝓐 e) u ＝ v) ≃⟨ I ⟩ 
    x ≈ᵤ⟨ 𝓐 ⟩ y                                               ■
- where
-  I = Σ-change-of-variable-≃ (λ p → transport B p u ＝ v)
-       (≃-sym (id-equiv-edge 𝓐 x y))
-  II = ≃-sym (to-subtype-＝-≃ B-prop)
-  III = id-equiv-edge 𝓐 x y
+    where
+     I = pr₁-≃ (x ≈ᵤ⟨ 𝓐 ⟩ y) (λ - → transport B (edge-to-id 𝓐 -) u ＝ v)
+          (λ - → pointed-props-are-singletons
+                  (B-prop y (transport B (edge-to-id 𝓐 -) u) v)
+                  (props-are-sets (B-prop y)))
 
 \end{code}
 
@@ -790,6 +787,6 @@ hSet-＝-char {𝓤} ua fe fe' 𝓧@(X , X-is-set) 𝓨@(Y , Y-is-set)
                                    (λ - → being-set-is-prop fe))
         𝓧 𝓨
   III = prop-display-total-edge-char I is-set (λ - → being-set-is-prop fe)
-        X Y X-is-set Y-is-set
+         X Y X-is-set Y-is-set
 
 \end{code}
