@@ -684,14 +684,14 @@ the total reflexive graph induced by the lens carries no new edge information.
 
 \begin{code}
 
-prop-lens-displayed-reflexive-graph
+univalent-prop-lens-edge-char
  : (𝓐 : Refl-Graph 𝓤 𝓥)
  → (𝓛 : Oplax-Covariant-Lens 𝓣 𝓣' 𝓐)
  → oplax-covariant-lens-is-univalent 𝓐 𝓛
  → ((x : ⟨ 𝓐 ⟩) → is-prop (lens-push-fam 𝓛 x))
  → (x y : ⟨ 𝓐 ⟩) (u : lens-push-fam 𝓛 x) (v : lens-push-fam 𝓛 y)
  → (x , u) ≈⟨ 𝓐 ﹐ disp⁺ 𝓐 𝓛 ⟩ (y , v) ≃ x ≈⟨ 𝓐 ⟩ y
-prop-lens-displayed-reflexive-graph 𝓐 𝓛 ua-𝓛 prop-lens x y u v
+univalent-prop-lens-edge-char 𝓐 𝓛 ua-𝓛 prop-lens x y u v
  = (x , u) ≈⟨ 𝓐 ﹐ disp⁺ 𝓐 𝓛 ⟩ (y , v)
                                                             ≃⟨by-definition⟩
    (Σ p ꞉ x ≈⟨ 𝓐 ⟩ y , lens-push 𝓛 p u ≈⟨ lens-push-graph 𝓛 y ⟩ v)
@@ -772,7 +772,7 @@ hSet-＝-char {𝓤} ua fe 𝓧@(X , X-is-set) 𝓨@(Y , Y-is-set)
    (X ≃ Y)                                ■
  where
   I = id-equiv-edge (hSet-univalent-refl-graph ua fe) 𝓧 𝓨
-  II = prop-lens-displayed-reflexive-graph (universe-refl-graph 𝓤)
+  II = univalent-prop-lens-edge-char (universe-refl-graph 𝓤)
         (hSet-lens 𝓤 fe) (λ - → discrete-refl-graph-is-univalent (is-set -))
          (λ _ → being-set-is-prop fe) X Y X-is-set Y-is-set
 
