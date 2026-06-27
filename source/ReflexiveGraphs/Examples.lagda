@@ -2,9 +2,10 @@ Ian Ray. 4th November 2025.
 
 Minor changes and merged into TypeToplogy in June 2026.
 
-We provide some applications of (displayed) univalent reflexive graphs to
-existing identity characterization results. This provides evidence that DURGs
-provide a unified framework for developing structured identity principles (SIP).
+We provide some examples of using (displayed) univalent reflexive graphs and
+reflexive graph lenses to characterize certain identity types, characterize
+transport, and observe the relationship between the reflexive graph approach to
+SIP and the existing approaches available in the TypeTopology library.
 
 \begin{code}
 
@@ -41,7 +42,7 @@ open import ReflexiveGraphs.UnivalentFamilies
 \end{code}
 
 We can recover the standard characterization of the identity type of products
-using discrete reflexive graphs.
+using the discrete reflexive graph construction.
 
 \begin{code}
 
@@ -75,9 +76,9 @@ sigma-characterization-from-univalent-refl-graphs
 
 \end{code}
 
-This is simply a sanity check for the theory we have developed. We now
-wish to move towards a more unified approach to SIP, by working through
-some illustrative examples.
+This is simply a sanity check for the theory we have developed. We now  move
+towards a more unified approach to SIP, by working through some illustrative
+examples.
 
 Example 1:
 
@@ -180,7 +181,7 @@ edges correspond to the natural coherence condition mentioned above.
 
 To see that the displayed reflexive graph is univalent we only have to look
 at the fibers. The luxury here is that the base edges are taken to be the
-reflexive data. The fan of interest here is equivalent to a fan over what is
+reflexive data. The fan of interest is equivalent to a fan over what is
 essentially the discrete reflexive graph of f ∘ p ∼ g ∘ q (which is manifestly
 univalent).
 
@@ -198,8 +199,7 @@ univalent).
    I : fan ([ cone-displayed-refl-graph A ] (p , q)) H
      ≃ fan (∏ x ˸ A , (Δ (f (p x) ＝ g (q x)))) H
    I = (Σ H' ꞉ commutative-square (p , q) ,
-        ∼-trans H ∼-refl ∼ ∼-trans ∼-refl H')
-                                                           ≃⟨ II ⟩
+        ∼-trans H ∼-refl ∼ ∼-trans ∼-refl H')              ≃⟨ II ⟩
        (Σ H' ꞉ commutative-square (p , q) , H ∼ H')        ■
     where
      II = Σ-cong (λ - → transport-≃ (λ - → H ∼ -)
@@ -218,9 +218,9 @@ The carrier of this total reflexive graph corresponds to the type of cones.
   = (cone-base-refl-graph A ﹐ cone-displayed-refl-graph A)
 
  private
-  observation : (A : 𝓣 ̇)
-              → ⟨ cone-total-refl-graph A ⟩ ＝ cone A
-  observation A = refl
+  observation₁ : (A : 𝓣 ̇)
+               → ⟨ cone-total-refl-graph A ⟩ ＝ cone A
+  observation₁ A = refl
 
  cone-total-is-univalent : (A : 𝓣 ̇)
                          → is-univalent-refl-graph (cone-total-refl-graph A)
@@ -491,10 +491,9 @@ displayed-univalent-refl-graph-≃-SNS fe
 
 Example 4:
 
-We now offer a comparison of characterizations of the identity type of ∞-magmas.
-The former characterization directly via displayed reflexive graphs (but by the
-above observation this is equivalent to a characterization via SNS) and the
-latter via unbiased lenses. 
+We now compare to characterizations of the identity type of ∞-magmas. The
+former characterization directly via displayed reflexive graphs and the latter
+via unbiased lenses. 
 
 \begin{code}
 
@@ -554,9 +553,9 @@ of ∞-magmas and then characterize the type of identifications of them.
  = (universe-refl-graph 𝓤 ﹐ bin-op-displayed-refl-graph 𝓤)
 
 private
- observation : (𝓤 : Universe)
+ observation₂ : (𝓤 : Universe)
               → ⟨ ∞-Magma-total-refl-graph 𝓤 ⟩ ＝ ∞-Magma 𝓤
- observation 𝓤 = refl
+ observation₂ 𝓤 = refl
 
 ∞-Magma-total-univalent-refl-graph
  : (𝓤 : Universe)
@@ -639,9 +638,9 @@ characterize structures that have 'mixed variance'.
  = universe-refl-graph 𝓤 ﹐ ∞-Magma-unbiased-lens-display 𝓤
 
 private
- obs1 : (𝓤 : Universe)
-      → ⟨ ∞-Magma-unbiased-lens-total 𝓤 ⟩ ＝ ∞-Magma 𝓤
- obs1 𝓤 = refl
+ observation₃ : (𝓤 : Universe)
+              → ⟨ ∞-Magma-unbiased-lens-total 𝓤 ⟩ ＝ ∞-Magma 𝓤
+ observation₃ 𝓤 = refl
 
 ∞-Magma-unbiased-lens-total-univalent
  : (𝓤 : Universe)
@@ -699,7 +698,7 @@ prop-lens-displayed-reflexive-graph 𝓐 𝓛 ua-𝓛 prop-lens x y u v
                                                             ≃⟨ I ⟩
    (Σ p ꞉ x ≈⟨ 𝓐 ⟩ y , lens-push 𝓛 p u ＝ v)
                                                             ≃⟨ II ⟩
-   x ≈⟨ 𝓐 ⟩ y                                                       ■
+   x ≈⟨ 𝓐 ⟩ y                                               ■
     where
      I = Σ-cong (λ - → ≃-sym (id-equiv-edge (lens-push-graph 𝓛 y , ua-𝓛 y)
                                (lens-push 𝓛 - u) v))
@@ -709,10 +708,10 @@ prop-lens-displayed-reflexive-graph 𝓐 𝓛 ua-𝓛 prop-lens x y u v
 
 \end{code}
 
-We use this fact to give a characterization of the identity type of hSets
-(although this is by no means better than existing characterizations), but
-hopefully it is clear that this suggests a methodology for characterizing
-the identity type of more complicated structures with propositional lenses.
+We use this fact to give a characterization of the identity type of hSets.
+Although, we make no claims that this characterization of hSet identity is
+superior, but suggest a methodology for characterizing the identity type of
+more complicated structures with propositional lenses.
 
 \begin{code}
 
@@ -742,9 +741,9 @@ hSet-refl-graph {𝓤} ua fe
  = universe-refl-graph 𝓤 ﹐ disp⁺ (universe-refl-graph 𝓤) (hSet-lens 𝓤 fe)
 
 private
-  observation-I : (ua : is-univalent 𝓤) (fe : Fun-Ext)
-                → ⟨ hSet-refl-graph ua fe ⟩ ＝ hSet 𝓤
-  observation-I = λ ua fe → refl
+  observation₄ : (ua : is-univalent 𝓤) (fe : Fun-Ext)
+               → ⟨ hSet-refl-graph ua fe ⟩ ＝ hSet 𝓤
+  observation₄ = λ ua fe → refl
 
 hSet-refl-graph-is-univalent : (ua : is-univalent 𝓤)
                              → (fe : Fun-Ext)
