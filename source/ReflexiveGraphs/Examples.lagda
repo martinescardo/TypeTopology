@@ -364,25 +364,23 @@ universe-refl-graph : (𝓤 : Universe)
                     → Refl-Graph (𝓤 ⁺) 𝓤
 universe-refl-graph 𝓤 = refl-graph-image (𝓤  ̇) id
 
-univalent-universe-is-univalent-family : is-univalent 𝓤
-                                       → funext (𝓤 ⁺) 𝓤
-                                       → is-univalent-family ((𝓤  ̇) , id)
-univalent-universe-is-univalent-family {𝓤} ua fe
- = id-to-edge-equiv-implies-prop-fans (universe-refl-graph 𝓤)
-    (λ X Y → transport is-equiv (II X Y) (ua X Y))
- where
-  I : (X Y : 𝓤  ̇)
-    → idtoeq X Y ∼ id-to-edge (universe-refl-graph 𝓤) {X} {Y}
-  I X Y refl = refl
-  II : (X Y : 𝓤  ̇)
-     → idtoeq X Y ＝ id-to-edge (universe-refl-graph 𝓤) {X} {Y}
-  II X Y = dfunext fe (I X Y)
+module _ (𝓤 : Universe) (ua : is-univalent 𝓤) (fe : funext (𝓤 ⁺) 𝓤) where
 
-universe-univalent-refl-graph : is-univalent 𝓤
-                              → funext (𝓤 ⁺) 𝓤
-                              → Univalent-Refl-Graph (𝓤 ⁺) 𝓤
-universe-univalent-refl-graph {𝓤} ua fe
- = (universe-refl-graph 𝓤 , univalent-universe-is-univalent-family ua fe)
+ univalent-universe-is-univalent-family : is-univalent-family ((𝓤  ̇) , id)
+ univalent-universe-is-univalent-family 
+  = id-to-edge-equiv-implies-prop-fans (universe-refl-graph 𝓤)
+     (λ X Y → transport is-equiv (II X Y) (ua X Y))
+  where
+   I : (X Y : 𝓤  ̇)
+     → idtoeq X Y ∼ id-to-edge (universe-refl-graph 𝓤) {X} {Y}
+   I X Y refl = refl
+   II : (X Y : 𝓤  ̇)
+      → idtoeq X Y ＝ id-to-edge (universe-refl-graph 𝓤) {X} {Y}
+   II X Y = dfunext fe (I X Y)
+
+ universe-univalent-refl-graph : Univalent-Refl-Graph (𝓤 ⁺) 𝓤
+ universe-univalent-refl-graph
+  = (universe-refl-graph 𝓤 , univalent-universe-is-univalent-family)
 
 \end{code}
 
@@ -397,86 +395,75 @@ structure (SNS) (see UF.SIP) already present in the TypeTopology library.
 
 \begin{code}
 
-open sip hiding (⟨_⟩)
+module _ {𝓤 𝓣 𝓦 : Universe} (fe : Fun-Ext) where
 
-displayed-univalent-refl-graph-to-SNS
- : {𝓤 𝓣 𝓦 : Universe}
- → Fun-Ext
- → (((B , _ , _) , _) : Displayed-Univalent-Refl-Graph 𝓣 𝓦
-                         (universe-refl-graph 𝓤))
- → SNS B 𝓦
-displayed-univalent-refl-graph-to-SNS {𝓤} {𝓣} {𝓦} fe (𝓑@(B , R , r) , ua)
- = (I , II , III)
- where
-  I : ((X , _) (Y , _) : Σ B) → X ≃ Y → 𝓦 ̇
-  I X Y e = structure X ≈⟨ 𝓑 ⸴ e ⟩ structure Y
-  II : ((X , _) : Σ B) → I (X , _) (X , _) (≃-refl X)
-  II X = r (structure X)
-  obs : {X : 𝓤 ̇} (s t : B X)
-      → id-to-edge ([ 𝓑 ] X) {s} {t} ＝ canonical-map I II s t
-  obs {X} s t = dfunext fe obs'
-   where
-    obs'
-     : id-to-edge (component-refl-graph (B , R , r) X) ∼ canonical-map I II s t 
-    obs' refl = refl
-  III : {X : 𝓤 ̇} (s t : B X)
-      → is-equiv (canonical-map I II s t)
-  III {X} s t = transport is-equiv (obs s t)
-                 (prop-fans-implies-id-to-edge-equiv ([ 𝓑 ] X) (ua X) s t)
+ open sip hiding (⟨_⟩)
 
-SNS-to-displayed-univalent-refl-graph
- : {𝓤 𝓣 𝓦 : Universe}
- → Fun-Ext
- → (B : 𝓤 ̇ → 𝓣 ̇)
- → SNS B 𝓦 
- → Displayed-Univalent-Refl-Graph 𝓣 𝓦 (universe-refl-graph 𝓤)
-SNS-to-displayed-univalent-refl-graph {𝓤} {𝓣} {𝓦} fe B (ι , ρ , θ)
- = ((B , I , II) , III)
- where
-  I : {X Y : ⟨ universe-refl-graph 𝓤 ⟩}
-    → edge-rel (universe-refl-graph 𝓤) X Y
-    → B X
-    → B Y
-    → 𝓦 ̇
-  I {X} {Y} e s t = ι (X , s) (Y , t) e
-  II : {X : ⟨ universe-refl-graph 𝓤 ⟩} (u : B X)
-     → ι (X , u) (X , u) (≈-refl (universe-refl-graph 𝓤) X)
-  II {X} u = ρ (X , u)
-  obs : {X : 𝓤 ̇} (s t : B X)
-      → canonical-map ι ρ s t ＝ id-to-edge ([ (B , I , II) ] X)
-  obs {X} s t = dfunext fe obs'
-   where
-    obs'
-     : canonical-map ι ρ s t ∼ id-to-edge (component-refl-graph (B , I , II) X)
-    obs' refl = refl
-  III : is-displayed-univalent-refl-graph (universe-refl-graph 𝓤)
-         (B , I , II)
-  III X u = id-to-edge-equiv-implies-prop-fans ([ (B , I , II) ] X)
-             (λ s t → transport is-equiv (obs s t) (θ s t)) u
+ displayed-univalent-refl-graph-to-SNS
+  : (((B , _ , _) , _) : Displayed-Univalent-Refl-Graph 𝓣 𝓦
+                          (universe-refl-graph 𝓤))
+  → SNS B 𝓦
+ displayed-univalent-refl-graph-to-SNS (𝓑@(B , R , r) , ua)
+  = (I , II , III)
+  where
+   I : ((X , _) (Y , _) : Σ B) → X ≃ Y → 𝓦 ̇
+   I X Y e = structure X ≈⟨ 𝓑 ⸴ e ⟩ structure Y
+   II : ((X , _) : Σ B) → I (X , _) (X , _) (≃-refl X)
+   II X = r (structure X)
+   obs : {X : 𝓤 ̇} (s t : B X)
+       → id-to-edge ([ 𝓑 ] X) {s} {t} ＝ canonical-map I II s t
+   obs {X} s t = dfunext fe obs'
+    where
+     obs' : id-to-edge ([ (B , R , r) ] X) ∼ canonical-map I II s t
+     obs' refl = refl
+   III : {X : 𝓤 ̇} (s t : B X)
+       → is-equiv (canonical-map I II s t)
+   III {X} s t = transport is-equiv (obs s t)
+                  (prop-fans-implies-id-to-edge-equiv ([ 𝓑 ] X) (ua X) s t)
+
+ SNS-to-displayed-univalent-refl-graph
+  : (B : 𝓤 ̇ → 𝓣 ̇)
+  → SNS B 𝓦 
+  → Displayed-Univalent-Refl-Graph 𝓣 𝓦 (universe-refl-graph 𝓤)
+ SNS-to-displayed-univalent-refl-graph B (ι , ρ , θ)
+  = ((B , I , II) , III)
+  where
+   I : {X Y : ⟨ universe-refl-graph 𝓤 ⟩} → X ≃ Y → B X → B Y → 𝓦 ̇
+   I {X} {Y} e s t = ι (X , s) (Y , t) e
+   II : {X : ⟨ universe-refl-graph 𝓤 ⟩} (u : B X)
+      → ι (X , u) (X , u) (≈-refl (universe-refl-graph 𝓤) X)
+   II {X} u = ρ (X , u)
+   obs : {X : 𝓤 ̇} (s t : B X)
+       → canonical-map ι ρ s t ＝ id-to-edge ([ (B , I , II) ] X)
+   obs {X} s t = dfunext fe obs'
+    where
+     obs' : canonical-map ι ρ s t ∼ id-to-edge ([ (B , I , II) ] X)
+     obs' refl = refl
+   III : is-displayed-univalent-refl-graph (universe-refl-graph 𝓤) (B , I , II)
+   III X u = id-to-edge-equiv-implies-prop-fans ([ (B , I , II) ] X)
+              (λ s t → transport is-equiv (obs s t) (θ s t)) u
 
 \end{code}
 
 TODO characterize ＝ of displayed refl graphs and finish the proof of
 equivalence stated below.
 
-displayed-univalent-refl-graph-≃-SNS
- : {𝓤 𝓣 𝓦 : Universe}
- → Fun-Ext
- → (displayed-univalent-refl-graph 𝓣 𝓦 (universe-refl-graph 𝓤))
- ≃ (Σ B ꞉ (𝓤 ̇ → 𝓣 ̇) , SNS B 𝓦)
-displayed-univalent-refl-graph-≃-SNS fe
- = (I , qinvs-are-equivs I (II , III , IV))
- where
-  I : (displayed-univalent-refl-graph 𝓣 𝓦 (universe-refl-graph 𝓤))
-    → (Σ B ꞉ (𝓤 ̇ → 𝓣 ̇) , SNS B 𝓦)
-  I (𝓑@((B , _ , _) , _)) = (B , displayed-univalent-refl-graph-to-SNS fe 𝓑)
-  II : (Σ B ꞉ (𝓤 ̇ → 𝓣 ̇) , SNS B 𝓦)
-     → (displayed-univalent-refl-graph 𝓣 𝓦 (universe-refl-graph 𝓤))
-  II (B , sns) = SNS-to-displayed-univalent-refl-graph fe B sns
-  III : II ∘ I ∼ id
-  III ((B , R , r) , ua) = ?
-  IV : I ∘ II ∼ id
-  IV (B , (ι , ρ , θ)) = ?
+ displayed-univalent-refl-graph-≃-SNS
+  : (displayed-univalent-refl-graph 𝓣 𝓦 (universe-refl-graph 𝓤))
+  ≃ (Σ B ꞉ (𝓤 ̇ → 𝓣 ̇) , SNS B 𝓦)
+ displayed-univalent-refl-graph-≃-SNS fe
+  = (I , qinvs-are-equivs I (II , III , IV))
+  where
+   I : (displayed-univalent-refl-graph 𝓣 𝓦 (universe-refl-graph 𝓤))
+     → (Σ B ꞉ (𝓤 ̇ → 𝓣 ̇) , SNS B 𝓦)
+   I (𝓑@((B , _ , _) , _)) = (B , displayed-univalent-refl-graph-to-SNS fe 𝓑)
+   II : (Σ B ꞉ (𝓤 ̇ → 𝓣 ̇) , SNS B 𝓦)
+      → (displayed-univalent-refl-graph 𝓣 𝓦 (universe-refl-graph 𝓤))
+   II (B , sns) = SNS-to-displayed-univalent-refl-graph fe B sns
+   III : II ∘ I ∼ id
+   III ((B , R , r) , ua) = ?
+   IV : I ∘ II ∼ id
+   IV (B , (ι , ρ , θ)) = ?
 
 Example 4:
 
@@ -555,7 +542,7 @@ private
  = univalence-closed-under-total
     (universe-refl-graph 𝓤)
     (bin-op-displayed-refl-graph 𝓤)
-    (univalent-universe-is-univalent-family ua fe)
+    (univalent-universe-is-univalent-family 𝓤 ua fe)
     (bin-op-disp-is-univalent fe 𝓤)
 
 ∞-Magma-＝-char
@@ -640,7 +627,7 @@ private
  = univalence-closed-under-total
     (universe-refl-graph 𝓤)
     (∞-Magma-unbiased-lens-display 𝓤)
-    (univalent-universe-is-univalent-family ua fe)
+    (univalent-universe-is-univalent-family 𝓤 ua fe)
     (∞-Magma-unbiased-lens-display-univalent 𝓤 fe)
 
 ∞-Magma-unbiased-lens-＝-char
@@ -740,7 +727,7 @@ hSet-refl-graph-is-univalent : (ua : is-univalent 𝓤)
 hSet-refl-graph-is-univalent {𝓤} ua fe
  = univalence-closed-under-total (universe-refl-graph 𝓤)
     (disp⁺ (universe-refl-graph 𝓤) (hSet-lens 𝓤 fe))
-    (univalent-universe-is-univalent-family ua fe)
+    (univalent-universe-is-univalent-family 𝓤 ua fe)
     (λ X → disp-oplax-covariant-lens-univalent (universe-refl-graph 𝓤)
      (hSet-lens 𝓤 fe)
       (λ - → discrete-refl-graph-is-univalent (is-set -)) X)
