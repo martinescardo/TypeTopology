@@ -45,10 +45,9 @@ using the discrete reflexive graph construction.
 \begin{code}
 
 product-characterization-from-univalent-refl-graphs
- : {A : 𝓤 ̇} {B : 𝓥 ̇} {a a' : A} {b b' : B}
+ : (A : 𝓤 ̇) (B : 𝓥 ̇) (a a' : A) (b b' : B)
  → ((a , b) ＝ (a' , b')) ≃ (a ＝ a') × (b ＝ b')
-product-characterization-from-univalent-refl-graphs
- {_} {_} {A} {B} {a} {a'} {b} {b'}
+product-characterization-from-univalent-refl-graphs A B a a' b b'
  = id-equiv-edge ((Δ A) ⊗ (Δ B) , I) (a , b) (a' , b')
  where
   I : is-univalent-refl-graph ((Δ A) ⊗ (Δ B))
@@ -62,10 +61,9 @@ Similarly for Sigma types.
 \begin{code}
 
 sigma-characterization-from-univalent-refl-graphs
- : {A : 𝓤 ̇} {B : A → 𝓥 ̇} {a a' : A} {b : B a} {b' : B a'}
+ : (A : 𝓤 ̇) (B : A → 𝓥 ̇) (a a' : A) (b : B a) (b' : B a')
  → ((a , b) ＝ (a' , b')) ≃ (Σ p ꞉ (a ＝ a') , transport B p b ＝ b')
-sigma-characterization-from-univalent-refl-graphs
- {𝓤} {𝓥} {A} {B} {a} {a'} {b} {b'}
+sigma-characterization-from-univalent-refl-graphs A B a a' b b'
  = id-equiv-edge ((∐ a ˸ A , (Δ (B a))) , I) (a , b) (a' , b')
  where
   I : is-univalent-refl-graph (∐ a ˸ A , (Δ (B a)))
@@ -110,7 +108,7 @@ between the homotopies.
 \begin{code}
 
 module _ (fe : Fun-Ext) {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-         (f : X → Z) (g : Y → Z)
+         (f : X → Z) (g : Y → Z) (A : 𝓣 ̇)
        where
 
  open pullback f g
@@ -123,8 +121,8 @@ p ∼ p' and q ∼ q'.
 
 \begin{code}
 
- cone-base-refl-graph : (A : 𝓣 ̇) → Refl-Graph (𝓤 ⊔ 𝓥 ⊔ 𝓣) (𝓤 ⊔ 𝓥 ⊔ 𝓣)
- cone-base-refl-graph {𝓣} A
+ cone-base-refl-graph : Refl-Graph (𝓤 ⊔ 𝓥 ⊔ 𝓣) (𝓤 ⊔ 𝓥 ⊔ 𝓣)
+ cone-base-refl-graph 
   = (((A → X) × (A → Y)) , I , II)
   where
    I : ((A → X) × (A → Y))
@@ -141,9 +139,8 @@ under products, functions and the discrete reflexive graph.
 
 \begin{code}
      
- cone-base-is-univalent : (A : 𝓣 ̇)
-                        → is-univalent-refl-graph (cone-base-refl-graph A)
- cone-base-is-univalent A = univalence-closed-under-×
+ cone-base-is-univalent : is-univalent-refl-graph cone-base-refl-graph
+ cone-base-is-univalent = univalence-closed-under-×
                              (A ➙ (Δ X)) (A ➙ (Δ Y))
                              (univalence-closed-under-cotensor fe A (Δ X)
                               (discrete-refl-graph-is-univalent X))
@@ -159,9 +156,8 @@ edges correspond to the natural coherence condition mentioned above.
 \begin{code}
                               
  cone-displayed-refl-graph
-  : (A : 𝓣 ̇)
-  → Displayed-Refl-Graph (𝓦 ⊔ 𝓣) (𝓦 ⊔ 𝓣) (cone-base-refl-graph A)
- cone-displayed-refl-graph {𝓣} A
+  : Displayed-Refl-Graph (𝓦 ⊔ 𝓣) (𝓦 ⊔ 𝓣) cone-base-refl-graph
+ cone-displayed-refl-graph
   = (commutative-square , I , II)
   where
    I : {(p , q) (p' , q') : (A → X) × (A → Y)}
@@ -186,15 +182,14 @@ univalent).
 \begin{code}
 
  cone-display-is-univalent
-  : (A : 𝓣 ̇)
-  → is-displayed-univalent-refl-graph (cone-base-refl-graph A)
-     (cone-displayed-refl-graph A) 
- cone-display-is-univalent A (p , q) H
+  : is-displayed-univalent-refl-graph
+     cone-base-refl-graph cone-displayed-refl-graph 
+ cone-display-is-univalent (p , q) H
   = equiv-to-prop I
      (univalence-closed-under-Π fe A (λ - → Δ (f (p -) ＝ g (q -)))
       (λ - → discrete-refl-graph-is-univalent (f (p -) ＝ g (q -))) H)
   where
-   I : fan ([ cone-displayed-refl-graph A ] (p , q)) H
+   I : fan ([ cone-displayed-refl-graph ] (p , q)) H
      ≃ fan (∏ x ˸ A , (Δ (f (p x) ＝ g (q x)))) H
    I = (Σ H' ꞉ commutative-square (p , q) ,
         ∼-trans H ∼-refl ∼ ∼-trans ∼-refl H')              ≃⟨ II ⟩
@@ -211,32 +206,26 @@ The carrier of this total reflexive graph corresponds to the type of cones.
 
 \begin{code}
 
- cone-total-refl-graph : (A : 𝓣 ̇) → Refl-Graph (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣) (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣)
- cone-total-refl-graph A
-  = (cone-base-refl-graph A ﹐ cone-displayed-refl-graph A)
+ cone-total-refl-graph : Refl-Graph (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣) (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣)
+ cone-total-refl-graph = (cone-base-refl-graph ﹐ cone-displayed-refl-graph)
 
  private
-  observation₁ : (A : 𝓣 ̇)
-               → ⟨ cone-total-refl-graph A ⟩ ＝ cone A
-  observation₁ A = refl
+  observation₁ : ⟨ cone-total-refl-graph ⟩ ＝ cone A
+  observation₁ = refl
 
- cone-total-is-univalent : (A : 𝓣 ̇)
-                         → is-univalent-refl-graph (cone-total-refl-graph A)
- cone-total-is-univalent A
-  = univalence-closed-under-total
-     (cone-base-refl-graph A)
-     (cone-displayed-refl-graph A)
-     (cone-base-is-univalent A)
-     (cone-display-is-univalent A)
+ cone-total-is-univalent : is-univalent-refl-graph cone-total-refl-graph 
+ cone-total-is-univalent
+  = univalence-closed-under-total cone-base-refl-graph cone-displayed-refl-graph
+     cone-base-is-univalent cone-display-is-univalent 
 
  cone-＝-characterization
-  : {A : 𝓣 ̇ } {p p' : A → X} {q q' : A → Y}
-    {H : f ∘ p ∼ g ∘ q} {H' : f ∘ p' ∼ g ∘ q'}
+  : (p p' : A → X) (q q' : A → Y)
+    (H : f ∘ p ∼ g ∘ q) (H' : f ∘ p' ∼ g ∘ q')
   → (((p , q) , H) ＝ ((p' , q') , H'))
   ≃ (Σ (α , β) ꞉ (p ∼ p') × (q ∼ q') ,
      ∼-trans H (∼-ap-∘ g β) ∼ ∼-trans (∼-ap-∘ f α) H')
- cone-＝-characterization {𝓣} {A} {p} {p'} {q} {q'} {H} {H'}
-  = id-equiv-edge (cone-total-refl-graph A , cone-total-is-univalent A)
+ cone-＝-characterization p p' q q' H H'
+  = id-equiv-edge (cone-total-refl-graph , cone-total-is-univalent)
      ((p , q) , H) ((p' , q') , H')
 
 \end{code}
