@@ -72,7 +72,7 @@ sigma-characterization-from-univalent-refl-graphs A B a a' b b'
 
 \end{code}
 
-This is simply a sanity check for the theory we have developed. We now  move
+This is simply a sanity check for the theory we have developed. We now move
 towards a more unified approach to SIP, by working through some illustrative
 examples.
 
@@ -353,8 +353,8 @@ If one instantiates the previous theorem with the reflexive graph on a univalent
 universe the previous theorem reduces to what is observed in the previously
 mentioned file UF.FundamentalLemmaOfTransportAlongEquivalences. In fact, before
 moving to the next example we observe that univalent universes form a univalent
-family (which is a specific form of univalent reflexive graph), although we wont
-explicitly record the previously mentioned observation.
+family (which is a specific form of univalent reflexive graph), although we
+won't explicitly record the previously mentioned observation.
 
 \begin{code}
 
@@ -385,7 +385,7 @@ universe-univalent-refl-graph {𝓤} ua fe
 \end{code}
 
 TODO: Consider how to prove the universe reflexive graph is univalent without
-function extensionality.
+function extensionality(?)
 
 Example 3:
 
@@ -478,7 +478,7 @@ displayed-univalent-refl-graph-≃-SNS fe
 
 Example 4:
 
-We now compare to characterizations of the identity type of ∞-magmas. The
+We now compare two characterizations of the identity type of ∞-magmas. The
 former characterization directly via displayed reflexive graphs and the latter
 via unbiased lenses. 
 
