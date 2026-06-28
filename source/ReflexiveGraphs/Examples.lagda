@@ -115,7 +115,7 @@ module _ (fe : Fun-Ext) {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
 
 \end{code}
 
-We define reflexive graph structure on the base of cone whose underlying type
+We define reflexive graph structure on the base of a cone whose underlying type
 must be (A → X) × (A → Y) with edges corresponding to the pair of homotopes
 p ∼ p' and q ∼ q'.
 
@@ -238,18 +238,20 @@ transport along an edge.
 
 \begin{code}
 
-module _ (𝓐 : Refl-Graph 𝓤 𝓥) (ua-𝓐 : is-univalent-refl-graph 𝓐)
+module _ (𝓐 : Refl-Graph 𝓤 𝓥)
+         (ua-𝓐 : is-univalent-refl-graph 𝓐)
+         (P : ⟨ 𝓐 ⟩ → 𝓣 ̇)
        where
 
- transport-along-≈ : (P : ⟨ 𝓐 ⟩ → 𝓣 ̇) {x y : ⟨ 𝓐 ⟩}
+ transport-along-≈ : {x y : ⟨ 𝓐 ⟩}
                    → x ≈⟨ 𝓐 ⟩ y
                    → P x → P y
- transport-along-≈ P e = transport P (edge-to-id (𝓐 , ua-𝓐) e)
+ transport-along-≈ e = transport P (edge-to-id (𝓐 , ua-𝓐) e)
 
- transport-along-≈-comp : (P : ⟨ 𝓐 ⟩ → 𝓣 ̇) {x : ⟨ 𝓐 ⟩}
+ transport-along-≈-comp : {x : ⟨ 𝓐 ⟩}
                         → (u : P x)
-                        → transport-along-≈ P (≈-refl 𝓐 x) u ＝ u
- transport-along-≈-comp P u
+                        → transport-along-≈ (≈-refl 𝓐 x) u ＝ u
+ transport-along-≈-comp u
   = transport (λ - → transport P - u ＝ u)
      (edge-to-id-preserves-refl (𝓐 , ua-𝓐) ⁻¹) refl
 
