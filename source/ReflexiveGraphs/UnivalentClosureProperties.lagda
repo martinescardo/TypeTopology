@@ -140,9 +140,9 @@ univalence-closed-under-Π fe A 𝓑 ua-𝓑 = III
   III f = equiv-to-prop (I f) (Π-is-prop fe (λ x → ua-𝓑 x (f x)))
 
 univalence-closed-under-cotensor : Fun-Ext
-                          → (A : 𝓤' ̇) (𝓑 : Refl-Graph 𝓤 𝓥)
-                          → is-univalent-refl-graph 𝓑
-                          → is-univalent-refl-graph (A ➙ 𝓑)
+                                 → (A : 𝓤' ̇) (𝓑 : Refl-Graph 𝓤 𝓥)
+                                 → is-univalent-refl-graph 𝓑
+                                 → is-univalent-refl-graph (A ➙ 𝓑)
 univalence-closed-under-cotensor fe A 𝓑 ua-𝓑
  = univalence-closed-under-Π fe A (λ - → 𝓑) (λ - → ua-𝓑)
 

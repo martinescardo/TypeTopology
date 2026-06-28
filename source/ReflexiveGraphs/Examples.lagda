@@ -364,28 +364,21 @@ universe-refl-graph : (𝓤 : Universe)
                     → Refl-Graph (𝓤 ⁺) 𝓤
 universe-refl-graph 𝓤 = refl-graph-image (𝓤  ̇) id
 
-module _ (𝓤 : Universe) (ua : is-univalent 𝓤) (fe : funext (𝓤 ⁺) 𝓤) where
+module _ (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  univalent-universe-is-univalent-family : is-univalent-family ((𝓤  ̇) , id)
- univalent-universe-is-univalent-family 
-  = id-to-edge-equiv-implies-prop-fans (universe-refl-graph 𝓤)
-     (λ X Y → transport is-equiv (II X Y) (ua X Y))
+ univalent-universe-is-univalent-family X
+  = singletons-are-props (equiv-to-singleton (I X)
+     (singleton-types-are-singletons X))
   where
-   I : (X Y : 𝓤  ̇)
-     → idtoeq X Y ∼ id-to-edge (universe-refl-graph 𝓤) {X} {Y}
-   I X Y refl = refl
-   II : (X Y : 𝓤  ̇)
-      → idtoeq X Y ＝ id-to-edge (universe-refl-graph 𝓤) {X} {Y}
-   II X Y = dfunext fe (I X Y)
+   I : (X : 𝓤 ̇) → (Σ Y ꞉ 𝓤 ̇ , X ≃ Y) ≃ (Σ Y ꞉ 𝓤 ̇ , X ＝ Y)
+   I X = Σ-cong (λ - → ≃-sym (univalence-≃ ua X -))
 
  universe-univalent-refl-graph : Univalent-Refl-Graph (𝓤 ⁺) 𝓤
  universe-univalent-refl-graph
   = (universe-refl-graph 𝓤 , univalent-universe-is-univalent-family)
 
 \end{code}
-
-TODO: Consider how to prove the universe reflexive graph is univalent without
-function extensionality(?)
 
 Example 3:
 
@@ -542,7 +535,7 @@ private
  = univalence-closed-under-total
     (universe-refl-graph 𝓤)
     (bin-op-displayed-refl-graph 𝓤)
-    (univalent-universe-is-univalent-family 𝓤 ua fe)
+    (univalent-universe-is-univalent-family 𝓤 ua)
     (bin-op-disp-is-univalent fe 𝓤)
 
 ∞-Magma-＝-char
@@ -627,7 +620,7 @@ private
  = univalence-closed-under-total
     (universe-refl-graph 𝓤)
     (∞-Magma-unbiased-lens-display 𝓤)
-    (univalent-universe-is-univalent-family 𝓤 ua fe)
+    (univalent-universe-is-univalent-family 𝓤 ua)
     (∞-Magma-unbiased-lens-display-univalent 𝓤 fe)
 
 ∞-Magma-unbiased-lens-＝-char
@@ -727,7 +720,7 @@ hSet-refl-graph-is-univalent : (ua : is-univalent 𝓤)
 hSet-refl-graph-is-univalent {𝓤} ua fe
  = univalence-closed-under-total (universe-refl-graph 𝓤)
     (disp⁺ (universe-refl-graph 𝓤) (hSet-lens 𝓤 fe))
-    (univalent-universe-is-univalent-family 𝓤 ua fe)
+    (univalent-universe-is-univalent-family 𝓤 ua)
     (λ X → disp-oplax-covariant-lens-univalent (universe-refl-graph 𝓤)
      (hSet-lens 𝓤 fe)
       (λ - → discrete-refl-graph-is-univalent (is-set -)) X)
