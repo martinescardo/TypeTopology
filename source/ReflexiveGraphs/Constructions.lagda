@@ -159,12 +159,14 @@ On the other end of the extreme we have the codiscrete reflexive graph.
 discrete-reflexive-graph : 𝓤 ̇ → Refl-Graph 𝓤 𝓤
 discrete-reflexive-graph A = (A , _＝_ , ∼-refl)
 
-syntax discrete-reflexive-graph A = Δ A
+Δ : 𝓤 ̇ → Refl-Graph 𝓤 𝓤
+Δ = discrete-reflexive-graph
 
 codiscrete-reflexive-graph : 𝓤 ̇ → Refl-Graph 𝓤 𝓤
 codiscrete-reflexive-graph A = (A , (λ _ _ → 𝟙) , λ _ → ⋆)
 
-syntax codiscrete-reflexive-graph A = ∇ A
+∇ : 𝓤 ̇ → Refl-Graph 𝓤 𝓤
+∇ = codiscrete-reflexive-graph
 
 \end{code}
 

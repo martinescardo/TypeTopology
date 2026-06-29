@@ -78,7 +78,7 @@ examples.
 
 Example 1:
 
-We give a detailed characaterization of the identity type of cones over a
+We give a detailed characterization of the identity type of cones over a
 cospan using reflexive graphs. This illustration is not intended to be brief.
 
 Two cones with commutative graphs witnessed by 
@@ -116,7 +116,7 @@ module _ (fe : Fun-Ext) {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
 \end{code}
 
 We define reflexive graph structure on the base of a cone whose underlying type
-must be (A → X) × (A → Y) with edges corresponding to the pair of homotopes
+must be (A → X) × (A → Y) with edges corresponding to the pair of homotopies
 p ∼ p' and q ∼ q'.
 
 \begin{code}
@@ -315,7 +315,7 @@ module _ {𝓤' 𝓥' : Universe}
 
 \end{code}
 
-It is worth noting that this result follows immediatly from the fact that
+It is worth noting that this result follows immediately from the fact that
 oplax structure is in fact a property, but this avenue requires function
 extensionality.
 
@@ -353,32 +353,7 @@ extensionality.
 
 If one instantiates the previous theorem with the reflexive graph on a univalent
 universe the previous theorem reduces to what is observed in the previously
-mentioned file UF.FundamentalLemmaOfTransportAlongEquivalences. In fact, before
-moving to the next example we observe that univalent universes form a univalent
-family (which is a specific form of univalent reflexive graph), although we
-won't explicitly record the previously mentioned observation.
-
-\begin{code}
-
-universe-refl-graph : (𝓤 : Universe)
-                    → Refl-Graph (𝓤 ⁺) 𝓤
-universe-refl-graph 𝓤 = refl-graph-image (𝓤  ̇) id
-
-module _ (𝓤 : Universe) (ua : is-univalent 𝓤) where
-
- univalent-universe-is-univalent-family : is-univalent-family ((𝓤  ̇) , id)
- univalent-universe-is-univalent-family X
-  = singletons-are-props (equiv-to-singleton (I X)
-     (singleton-types-are-singletons X))
-  where
-   I : (X : 𝓤 ̇) → (Σ Y ꞉ 𝓤 ̇ , X ≃ Y) ≃ (Σ Y ꞉ 𝓤 ̇ , X ＝ Y)
-   I X = Σ-cong (λ - → ≃-sym (univalence-≃ ua X -))
-
- universe-univalent-refl-graph : Univalent-Refl-Graph (𝓤 ⁺) 𝓤
- universe-univalent-refl-graph
-  = (universe-refl-graph 𝓤 , univalent-universe-is-univalent-family)
-
-\end{code}
+mentioned file UF.FundamentalLemmaOfTransportAlongEquivalences. 
 
 Example 3:
 
@@ -543,7 +518,7 @@ of ∞-magmas and then characterize the type of identifications of them.
 
 \end{code}
 
-We may instead utilize the unbiased lense machinary, which allows us to
+We may instead utilize the unbiased lense machinery, which allows us to
 characterize structures that have 'mixed variance'.
 
 \begin{code}
@@ -619,7 +594,10 @@ characterizing mixed variance structures of increasingly complicated nature
 where "guessing" (or maybe it is more apt to say "being clever") is not
 feasible.
 
-Example 5:
+TODO: Currently we are exploring a number of results of flavor similar to the
+one below. When such a file is added we will move the following result and
+import that file here.
+
 If we have a univalent lens with underlying propositionally valued family then
 the total reflexive graph induced by the lens carries no new edge information.
 
@@ -649,9 +627,11 @@ univalent-prop-lens-edge-char 𝓐 𝓛 ua-𝓛 prop-lens x y u v
 
 \end{code}
 
-We use this fact to give a characterization of the identity type of hSets.
-Although, we make no claims that this characterization of hSet identity is
-superior, but suggest a methodology for characterizing the identity type of
+Example 5:
+
+We use the previous fact to give a characterization of the identity type of
+hSets. Although, we make no claims that this characterization of hSet identity
+is superior, but suggest a methodology for characterizing the identity type of
 more complicated structures with propositional lenses.
 
 \begin{code}

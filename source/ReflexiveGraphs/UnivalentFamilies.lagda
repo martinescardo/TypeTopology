@@ -14,6 +14,9 @@ module ReflexiveGraphs.UnivalentFamilies where
 
 open import MLTT.Spartan
 open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Subsingletons
+open import UF.Univalence
 open import ReflexiveGraphs.Type
 open import ReflexiveGraphs.Univalent
 
@@ -85,5 +88,30 @@ univalent-family-of-univalent-refl-graphs
  → 𝓤 ⊔ 𝓦 ̇
 univalent-family-of-univalent-refl-graphs (U , 𝓔)
  = is-univalent-refl-graph (refl-graph-image U (λ A → ⟨ (𝓔 A) ⟩ᵤ))
+
+\end{code}
+
+We observe that a univalent universe is a univalent family and thus a univalent
+reflexive graph. 
+
+\begin{code}
+
+universe-refl-graph : (𝓤 : Universe)
+                    → Refl-Graph (𝓤 ⁺) 𝓤
+universe-refl-graph 𝓤 = refl-graph-image (𝓤  ̇) id
+
+module _ (𝓤 : Universe) (ua : is-univalent 𝓤) where
+
+ univalent-universe-is-univalent-family : is-univalent-family ((𝓤  ̇) , id)
+ univalent-universe-is-univalent-family X
+  = singletons-are-props (equiv-to-singleton (I X)
+     (singleton-types-are-singletons X))
+  where
+   I : (X : 𝓤 ̇) → (Σ Y ꞉ 𝓤 ̇ , X ≃ Y) ≃ (Σ Y ꞉ 𝓤 ̇ , X ＝ Y)
+   I X = Σ-cong (λ - → ≃-sym (univalence-≃ ua X -))
+
+ universe-univalent-refl-graph : Univalent-Refl-Graph (𝓤 ⁺) 𝓤
+ universe-univalent-refl-graph
+  = (universe-refl-graph 𝓤 , univalent-universe-is-univalent-family)
 
 \end{code}
