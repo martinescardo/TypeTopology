@@ -47,6 +47,12 @@ axioms other than propositional truncation, which isn't needed for the
 main theorem, but only for the second version of the fixed point
 theorem.
 
+James E Hanson cameup with essentially the second generalization on 11
+May 2026, before us, called (⋆⋆) in his post https://mathoverflow.net/a/511183
+
+  (⋆⋆) For any f:A×A→B, g:B→B, and binary relation R⊆B², if there is an
+       a such that g(f(x,x)) R f(a,x) for all x∈A, then g(f(a,a)) R f(a,a).
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
