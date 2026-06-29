@@ -475,39 +475,38 @@ We now define a displayed reflexive graph over 𝓤 of binary operations.
 
 \begin{code}
 
-bin-op-displayed-refl-graph
- : (𝓤 : Universe)
- → Displayed-Refl-Graph 𝓤 𝓤 (universe-refl-graph 𝓤)
-bin-op-displayed-refl-graph 𝓤
- = ((λ X → (X → X → X)) , I , II)
- where
-  I : {X Y : 𝓤 ̇}
-    → (X ≃ Y)
-    → (X → X → X)
-    → (Y → Y → Y)
-    → 𝓤 ̇
-  I {X} {_} e _·X_ _·Y_ = (x y : X) → ⌜ e ⌝ (x ·X y) ＝ (⌜ e ⌝ x ·Y ⌜ e ⌝ y)
-  II : {X : 𝓤 ̇}
-     → (_·X_ : X → X → X)
-     → (x y : X)
-     → (x ·X y) ＝ (x ·X y)
-  II _·X_ x y = refl
+module _ (𝓤 : Universe) (ua : is-univalent 𝓤) (fe : Fun-Ext) where
 
-bin-op-disp-is-univalent
- : (fe : Fun-Ext) (𝓤 : Universe)
- → is-displayed-univalent-refl-graph (universe-refl-graph 𝓤)
-    (bin-op-displayed-refl-graph 𝓤)
-bin-op-disp-is-univalent fe 𝓤 X _·X_
- = equiv-to-prop I
-    (Π-is-prop fe (λ x → Π-is-prop fe λ y
-      → singletons-are-props (singleton-types-are-singletons (x ·X y))))
- where
-  I : fan ([ bin-op-displayed-refl-graph 𝓤 ] X) _·X_
-    ≃ ((x y : X) → Σ z ꞉ X , x ·X y ＝ z)
-  I = (Σ _·X'_ ꞉ (X → X → X) , ((x y : X) → x ·X y ＝ x ·X' y)) ≃⟨ II ⟩
-      ((x y : X) → Σ z ꞉ X , x ·X y ＝ z)                       ■
-   where
-    II = ≃-sym (≃-comp (Π-cong fe fe (λ x → ΠΣ-distr-≃)) ΠΣ-distr-≃)
+ bin-op-displayed-refl-graph : Displayed-Refl-Graph 𝓤 𝓤 (universe-refl-graph 𝓤)
+ bin-op-displayed-refl-graph
+  = ((λ X → (X → X → X)) , I , II)
+  where
+   I : {X Y : 𝓤 ̇}
+     → (X ≃ Y)
+     → (X → X → X)
+     → (Y → Y → Y)
+     → 𝓤 ̇
+   I {X} {_} e _·X_ _·Y_ = (x y : X) → ⌜ e ⌝ (x ·X y) ＝ (⌜ e ⌝ x ·Y ⌜ e ⌝ y)
+   II : {X : 𝓤 ̇}
+      → (_·X_ : X → X → X)
+      → (x y : X)
+      → (x ·X y) ＝ (x ·X y)
+   II _·X_ x y = refl
+
+ bin-op-disp-is-univalent
+  : is-displayed-univalent-refl-graph (universe-refl-graph 𝓤)
+     (bin-op-displayed-refl-graph)
+ bin-op-disp-is-univalent X _·X_
+  = equiv-to-prop I
+     (Π-is-prop fe (λ x → Π-is-prop fe λ y
+       → singletons-are-props (singleton-types-are-singletons (x ·X y))))
+  where
+   I : fan ([ bin-op-displayed-refl-graph ] X) _·X_
+     ≃ ((x y : X) → Σ z ꞉ X , x ·X y ＝ z)
+   I = (Σ _·X'_ ꞉ (X → X → X) , ((x y : X) → x ·X y ＝ x ·X' y)) ≃⟨ II ⟩
+       ((x y : X) → Σ z ꞉ X , x ·X y ＝ z)                       ■
+    where
+     II = ≃-sym (≃-comp (Π-cong fe fe (λ x → ΠΣ-distr-≃)) ΠΣ-distr-≃)
 
 \end{code}
 
@@ -516,39 +515,31 @@ of ∞-magmas and then characterize the type of identifications of them.
 
 \begin{code}
 
-∞-Magma-total-refl-graph : (𝓤 : Universe)
-                         → Refl-Graph (𝓤 ⁺) 𝓤
-∞-Magma-total-refl-graph 𝓤
- = (universe-refl-graph 𝓤 ﹐ bin-op-displayed-refl-graph 𝓤)
+ ∞-Magma-total-refl-graph : Refl-Graph (𝓤 ⁺) 𝓤
+ ∞-Magma-total-refl-graph
+  = (universe-refl-graph 𝓤 ﹐ bin-op-displayed-refl-graph)
 
-private
- observation₂ : (𝓤 : Universe)
-              → ⟨ ∞-Magma-total-refl-graph 𝓤 ⟩ ＝ ∞-Magma 𝓤
- observation₂ 𝓤 = refl
+ private
+  observation₂ : ⟨ ∞-Magma-total-refl-graph ⟩ ＝ ∞-Magma 𝓤
+  observation₂ = refl
 
-∞-Magma-total-univalent-refl-graph
- : (𝓤 : Universe)
- → is-univalent 𝓤
- → Fun-Ext
- → is-univalent-refl-graph (∞-Magma-total-refl-graph 𝓤)
-∞-Magma-total-univalent-refl-graph 𝓤 ua fe
- = univalence-closed-under-total
-    (universe-refl-graph 𝓤)
-    (bin-op-displayed-refl-graph 𝓤)
-    (univalent-universe-is-univalent-family 𝓤 ua)
-    (bin-op-disp-is-univalent fe 𝓤)
+ ∞-Magma-total-univalent-refl-graph
+  : is-univalent-refl-graph (∞-Magma-total-refl-graph)
+ ∞-Magma-total-univalent-refl-graph 
+  = univalence-closed-under-total
+     (universe-refl-graph 𝓤)
+     (bin-op-displayed-refl-graph)
+     (univalent-universe-is-univalent-family 𝓤 ua)
+     (bin-op-disp-is-univalent)
 
-∞-Magma-＝-char
- : {𝓤 : Universe} 
- → Fun-Ext
- → is-univalent 𝓤
- → ((X , _·X_) (Y , _·Y_) : ∞-Magma 𝓤) 
- → ((X , _·X_) ＝ (Y , _·Y_))
-  ≃ (Σ e ꞉ X ≃ Y , ((x y : X) → ⌜ e ⌝ (x ·X y) ＝ (⌜ e ⌝ x ·Y ⌜ e ⌝ y)))
-∞-Magma-＝-char {𝓤} fe ua (X , _·X_) (Y , _·Y_)
- = id-equiv-edge
-    (∞-Magma-total-refl-graph 𝓤 , ∞-Magma-total-univalent-refl-graph 𝓤 ua fe)
-    (X , _·X_) (Y , _·Y_)
+ ∞-Magma-＝-char
+  : ((X , _·X_) (Y , _·Y_) : ∞-Magma 𝓤) 
+  → ((X , _·X_) ＝ (Y , _·Y_))
+   ≃ (Σ e ꞉ X ≃ Y , ((x y : X) → ⌜ e ⌝ (x ·X y) ＝ (⌜ e ⌝ x ·Y ⌜ e ⌝ y)))
+ ∞-Magma-＝-char (X , _·X_) (Y , _·Y_)
+  = id-equiv-edge
+     (∞-Magma-total-refl-graph , ∞-Magma-total-univalent-refl-graph)
+      (X , _·X_) (Y , _·Y_)
 
 \end{code}
 
@@ -557,84 +548,65 @@ characterize structures that have 'mixed variance'.
 
 \begin{code}
 
-∞-Magma-unbiased-lens
- : (𝓤 : Universe)
- → Unbiased-Lens 𝓤 𝓤 (universe-refl-graph 𝓤)
-∞-Magma-unbiased-lens 𝓤 =
- (I , record
-       { lext = λ e u → λ x x' → ⌜ e ⌝ (u x x')
-       ; rext = λ e u → λ x x' → u (⌜ e ⌝ x) (⌜ e ⌝ x')
-       ; ext-refl = λ u x x' → refl
-       ; rext-refl = λ u x x' → refl
-       })
- where
-  I : {x y : ⟨ universe-refl-graph 𝓤 ⟩}
-    → x ≈⟨ universe-refl-graph 𝓤 ⟩ y
-    → Refl-Graph 𝓤 𝓤
-  I {X} {Y} e = X ➙ (X ➙ (Δ Y))
+module _ (𝓤 : Universe) (ua : is-univalent 𝓤) (fe : Fun-Ext) where
 
-∞-Magma-unbiased-lens-is-univalent
- : (𝓤 : Universe)
- → Fun-Ext
- → unbiased-lens-is-univalent (universe-refl-graph 𝓤)
-    (∞-Magma-unbiased-lens 𝓤)
-∞-Magma-unbiased-lens-is-univalent 𝓤 fe {X} {Y} p
- = univalence-closed-under-cotensor fe X (X ➙ (Δ Y))
-    (univalence-closed-under-cotensor fe X (Δ Y)
-     (discrete-refl-graph-is-univalent Y))
+ ∞-Magma-unbiased-lens : Unbiased-Lens 𝓤 𝓤 (universe-refl-graph 𝓤)
+ ∞-Magma-unbiased-lens =
+  (I , record
+        { lext = λ e u → λ x x' → ⌜ e ⌝ (u x x')
+        ; rext = λ e u → λ x x' → u (⌜ e ⌝ x) (⌜ e ⌝ x')
+        ; ext-refl = λ u x x' → refl
+        ; rext-refl = λ u x x' → refl })
+  where
+   I : {x y : ⟨ universe-refl-graph 𝓤 ⟩}
+     → x ≈⟨ universe-refl-graph 𝓤 ⟩ y
+     → Refl-Graph 𝓤 𝓤
+   I {X} {Y} e = X ➙ (X ➙ (Δ Y))
 
-∞-Magma-unbiased-lens-display
- : (𝓤 : Universe)
- → Displayed-Refl-Graph 𝓤 𝓤 (universe-refl-graph 𝓤)
-∞-Magma-unbiased-lens-display 𝓤
- = disp± (universe-refl-graph 𝓤) (∞-Magma-unbiased-lens 𝓤)
+ ∞-Magma-unbiased-lens-is-univalent
+  : unbiased-lens-is-univalent (universe-refl-graph 𝓤) ∞-Magma-unbiased-lens
+ ∞-Magma-unbiased-lens-is-univalent {X} {Y} p
+  = univalence-closed-under-cotensor fe X (X ➙ (Δ Y))
+     (univalence-closed-under-cotensor fe X (Δ Y)
+      (discrete-refl-graph-is-univalent Y))
 
-∞-Magma-unbiased-lens-display-univalent
- : (𝓤 : Universe)
- → Fun-Ext
- → is-displayed-univalent-refl-graph (universe-refl-graph 𝓤)
-    (∞-Magma-unbiased-lens-display 𝓤)
-∞-Magma-unbiased-lens-display-univalent 𝓤 fe
- = disp-unbiased-lens-univalent (universe-refl-graph 𝓤)
-    (∞-Magma-unbiased-lens 𝓤)
-     (λ x → ∞-Magma-unbiased-lens-is-univalent 𝓤 fe
-            (≃-refl x))
+ ∞-Magma-unbiased-lens-display
+  : Displayed-Refl-Graph 𝓤 𝓤 (universe-refl-graph 𝓤)
+ ∞-Magma-unbiased-lens-display
+  = disp± (universe-refl-graph 𝓤) ∞-Magma-unbiased-lens
 
-∞-Magma-unbiased-lens-total
- : (𝓤 : Universe)
- → Refl-Graph (𝓤 ⁺) 𝓤
-∞-Magma-unbiased-lens-total 𝓤 
- = universe-refl-graph 𝓤 ﹐ ∞-Magma-unbiased-lens-display 𝓤
+ ∞-Magma-unbiased-lens-display-univalent
+  : is-displayed-univalent-refl-graph (universe-refl-graph 𝓤)
+     ∞-Magma-unbiased-lens-display 
+ ∞-Magma-unbiased-lens-display-univalent
+  = disp-unbiased-lens-univalent (universe-refl-graph 𝓤) ∞-Magma-unbiased-lens
+      (λ x → ∞-Magma-unbiased-lens-is-univalent (≃-refl x))
 
-private
- observation₃ : (𝓤 : Universe)
-              → ⟨ ∞-Magma-unbiased-lens-total 𝓤 ⟩ ＝ ∞-Magma 𝓤
- observation₃ 𝓤 = refl
+ ∞-Magma-unbiased-lens-total
+  : Refl-Graph (𝓤 ⁺) 𝓤
+ ∞-Magma-unbiased-lens-total
+  = universe-refl-graph 𝓤 ﹐ ∞-Magma-unbiased-lens-display
 
-∞-Magma-unbiased-lens-total-univalent
- : (𝓤 : Universe)
- → is-univalent 𝓤
- → Fun-Ext
- → is-univalent-refl-graph (∞-Magma-unbiased-lens-total 𝓤)
-∞-Magma-unbiased-lens-total-univalent 𝓤 ua fe
- = univalence-closed-under-total
-    (universe-refl-graph 𝓤)
-    (∞-Magma-unbiased-lens-display 𝓤)
-    (univalent-universe-is-univalent-family 𝓤 ua)
-    (∞-Magma-unbiased-lens-display-univalent 𝓤 fe)
+ private
+  observation₃ : ⟨ ∞-Magma-unbiased-lens-total ⟩ ＝ ∞-Magma 𝓤
+  observation₃ = refl
 
-∞-Magma-unbiased-lens-＝-char
- : {𝓤 : Universe}  
- → Fun-Ext
- → is-univalent 𝓤
- → ((X , _·X_) (Y , _·Y_) : ∞-Magma 𝓤) 
- → ((X , _·X_) ＝ (Y , _·Y_))
-  ≃ (Σ e ꞉ X ≃ Y , ((x y : X) → ⌜ e ⌝ (x ·X y) ＝ (⌜ e ⌝ x ·Y ⌜ e ⌝ y)))
-∞-Magma-unbiased-lens-＝-char {𝓤} fe ua (X , _·X_) (Y , _·Y_)
- = id-equiv-edge
-    (∞-Magma-unbiased-lens-total 𝓤
-     , ∞-Magma-unbiased-lens-total-univalent 𝓤 ua fe)
-    (X , _·X_) (Y , _·Y_)
+ ∞-Magma-unbiased-lens-total-univalent
+  : is-univalent-refl-graph ∞-Magma-unbiased-lens-total 
+ ∞-Magma-unbiased-lens-total-univalent
+  = univalence-closed-under-total
+     (universe-refl-graph 𝓤) ∞-Magma-unbiased-lens-display
+     (univalent-universe-is-univalent-family 𝓤 ua)
+     ∞-Magma-unbiased-lens-display-univalent
+
+ ∞-Magma-unbiased-lens-＝-char
+  : ((X , _·X_) (Y , _·Y_) : ∞-Magma 𝓤) 
+  → ((X , _·X_) ＝ (Y , _·Y_))
+   ≃ (Σ e ꞉ X ≃ Y , ((x y : X) → ⌜ e ⌝ (x ·X y) ＝ (⌜ e ⌝ x ·Y ⌜ e ⌝ y)))
+ ∞-Magma-unbiased-lens-＝-char (X , _·X_) (Y , _·Y_)
+  = id-equiv-edge
+     (∞-Magma-unbiased-lens-total , ∞-Magma-unbiased-lens-total-univalent)
+     (X , _·X_) (Y , _·Y_)
 
 \end{code}
 
@@ -690,59 +662,49 @@ equiv-to-set' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
               → is-set Y
 equiv-to-set' = equiv-to-set ∘ ≃-sym
 
-hSet-lens : (𝓤 : Universe)
-          → Fun-Ext
-          → Oplax-Covariant-Lens 𝓤 𝓤 (universe-refl-graph 𝓤)
-hSet-lens 𝓤 fe = (I , II)
- where
-  I : 𝓤 ̇ → Refl-Graph 𝓤 𝓤
-  I X = Δ (is-set X)
-  II : oplax-covariant-lens-structure 𝓤 𝓤 (universe-refl-graph 𝓤) I
-  II = record
-       {push = equiv-to-set'
-       ; push-refl = λ {X} is-set → being-set-is-prop fe
-                      (equiv-to-set' (≃-refl X) is-set) is-set}
+module _ (𝓤 : Universe) (ua : is-univalent 𝓤) (fe : Fun-Ext) where
 
-hSet-refl-graph : is-univalent 𝓤
-                → Fun-Ext
-                → Refl-Graph (𝓤 ⁺) 𝓤
-hSet-refl-graph {𝓤} ua fe
- = universe-refl-graph 𝓤 ﹐ disp⁺ (universe-refl-graph 𝓤) (hSet-lens 𝓤 fe)
+ hSet-lens : Oplax-Covariant-Lens 𝓤 𝓤 (universe-refl-graph 𝓤)
+ hSet-lens = (I , II)
+  where
+   I : 𝓤 ̇ → Refl-Graph 𝓤 𝓤
+   I X = Δ (is-set X)
+   II : oplax-covariant-lens-structure 𝓤 𝓤 (universe-refl-graph 𝓤) I
+   II = record
+        {push = equiv-to-set'
+        ; push-refl = λ {X} is-set → being-set-is-prop fe
+                       (equiv-to-set' (≃-refl X) is-set) is-set}
 
-private
-  observation₄ : (ua : is-univalent 𝓤) (fe : Fun-Ext)
-               → ⟨ hSet-refl-graph ua fe ⟩ ＝ hSet 𝓤
-  observation₄ = λ ua fe → refl
+ hSet-refl-graph : Refl-Graph (𝓤 ⁺) 𝓤
+ hSet-refl-graph
+  = universe-refl-graph 𝓤 ﹐ disp⁺ (universe-refl-graph 𝓤) hSet-lens
 
-hSet-refl-graph-is-univalent : (ua : is-univalent 𝓤)
-                             → (fe : Fun-Ext)
-                             → is-univalent-refl-graph (hSet-refl-graph ua fe)
-hSet-refl-graph-is-univalent {𝓤} ua fe
- = univalence-closed-under-total (universe-refl-graph 𝓤)
-    (disp⁺ (universe-refl-graph 𝓤) (hSet-lens 𝓤 fe))
-    (univalent-universe-is-univalent-family 𝓤 ua)
-    (λ X → disp-oplax-covariant-lens-univalent (universe-refl-graph 𝓤)
-     (hSet-lens 𝓤 fe)
-      (λ - → discrete-refl-graph-is-univalent (is-set -)) X)
+ private
+  observation₄ : ⟨ hSet-refl-graph ⟩ ＝ hSet 𝓤
+  observation₄ = refl
 
-hSet-univalent-refl-graph : is-univalent 𝓤
-                          → Fun-Ext
-                          → Univalent-Refl-Graph (𝓤 ⁺) 𝓤
-hSet-univalent-refl-graph ua fe 
- = (hSet-refl-graph ua fe , hSet-refl-graph-is-univalent ua fe)
+ hSet-refl-graph-is-univalent : is-univalent-refl-graph hSet-refl-graph
+ hSet-refl-graph-is-univalent 
+  = univalence-closed-under-total (universe-refl-graph 𝓤)
+     (disp⁺ (universe-refl-graph 𝓤) hSet-lens)
+     (univalent-universe-is-univalent-family 𝓤 ua)
+     (λ X → disp-oplax-covariant-lens-univalent (universe-refl-graph 𝓤)
+             hSet-lens (λ - → discrete-refl-graph-is-univalent (is-set -)) X)
 
-hSet-＝-char : is-univalent 𝓤
-             → Fun-Ext
-             → (X Y : hSet 𝓤)
-             → (X ＝ Y) ≃ (underlying-set X ≃ underlying-set Y)
-hSet-＝-char {𝓤} ua fe 𝓧@(X , X-is-set) 𝓨@(Y , Y-is-set)
- = (𝓧 ＝ 𝓨)                               ≃⟨ I ⟩
-   (𝓧 ≈⟨ hSet-refl-graph ua fe ⟩ 𝓨)       ≃⟨ II ⟩
-   (X ≃ Y)                                ■
- where
-  I = id-equiv-edge (hSet-univalent-refl-graph ua fe) 𝓧 𝓨
-  II = univalent-prop-lens-edge-char (universe-refl-graph 𝓤)
-        (hSet-lens 𝓤 fe) (λ - → discrete-refl-graph-is-univalent (is-set -))
-         (λ _ → being-set-is-prop fe) X Y X-is-set Y-is-set
+ hSet-univalent-refl-graph : Univalent-Refl-Graph (𝓤 ⁺) 𝓤
+ hSet-univalent-refl-graph 
+  = (hSet-refl-graph , hSet-refl-graph-is-univalent)
+
+ hSet-＝-char : (X Y : hSet 𝓤)
+              → (X ＝ Y) ≃ (underlying-set X ≃ underlying-set Y)
+ hSet-＝-char 𝓧@(X , X-is-set) 𝓨@(Y , Y-is-set)
+  = (𝓧 ＝ 𝓨)                         ≃⟨ I ⟩
+    (𝓧 ≈⟨ hSet-refl-graph ⟩ 𝓨)       ≃⟨ II ⟩
+    (X ≃ Y)                          ■
+  where
+   I = id-equiv-edge hSet-univalent-refl-graph 𝓧 𝓨
+   II = univalent-prop-lens-edge-char (universe-refl-graph 𝓤)
+         hSet-lens (λ - → discrete-refl-graph-is-univalent (is-set -))
+          (λ _ → being-set-is-prop fe) X Y X-is-set Y-is-set
 
 \end{code}
