@@ -4,8 +4,9 @@ Minor changes and merged into TypeToplogy in June 2026.
 
 We provide some examples of using (displayed) univalent reflexive graphs and
 reflexive graph lenses to characterize certain identity types, characterize
-transport, and observe the relationship between the reflexive graph approach to
-SIP and the existing approaches available in the TypeTopology library.
+transport, and observe the relationship between the reflexive graph approach
+to the structured identity principled (SIP) and the existing approaches
+available in the TypeTopology library.
 
 \begin{code}
 
@@ -18,6 +19,7 @@ open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
+open import UF.FundamentalLemmaOfTransportAlongEquivalences
 open import UF.Pullback
 open import UF.Sets
 open import UF.Sets-Properties
@@ -73,8 +75,8 @@ sigma-characterization-from-univalent-refl-graphs A B a a' b b'
 \end{code}
 
 This is simply a sanity check for the theory we have developed. We now move
-towards a more unified approach to SIP, by working through some illustrative
-examples.
+towards a more unified approach to the SIP, by working through some
+illustrative examples.
 
 Example 1:
 
@@ -351,9 +353,43 @@ extensionality.
 
 \end{code}
 
-If one instantiates the previous theorem with the reflexive graph on a univalent
-universe the previous theorem reduces to what is observed in the previously
-mentioned file UF.FundamentalLemmaOfTransportAlongEquivalences. 
+Using the fundamental theorem derived above on the reflexive graph associated
+to a univalent universe we can recover the lemma that is stated in the file
+UF.FundamentalLemmaOfTransportAlongEquivalences. 
+
+\begin{code}
+
+transport-along-≃-fundamental-lemma'
+ : {𝓤 𝓥 : Universe}
+   (S : 𝓤 ̇ → 𝓥 ̇ )
+   (T : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y)
+   (T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id)
+   {X Y : 𝓤 ̇ }
+   (𝕗 : X ≃ Y)
+   (ua : is-univalent 𝓤)
+ → T 𝕗 ∼ transport-along-≃ ua S 𝕗
+transport-along-≃-fundamental-lemma' {𝓤} {𝓥} S T T-refl {X} {Y} 𝕗 ua s
+ = I s ∙ II s ⁻¹
+ where
+  I : T 𝕗 ∼ transport-along-≈ (universe-refl-graph 𝓤)
+             (univalent-universe-is-univalent-family 𝓤 ua)
+              S 𝕗
+  I = fundamental-theorem-of-transport (universe-refl-graph 𝓤)
+       (univalent-universe-is-univalent-family 𝓤 ua)
+       ((λ - → Δ (S -)) , record {push = T ; push-refl = T-refl})
+       (λ - → discrete-refl-graph-is-univalent (S -)) 𝕗
+  II : transport-along-≃ ua S 𝕗 ∼ transport-along-≈ (universe-refl-graph 𝓤)
+                                   (univalent-universe-is-univalent-family 𝓤 ua)
+                                    S 𝕗
+  II = fundamental-theorem-of-transport (universe-refl-graph 𝓤)
+        (univalent-universe-is-univalent-family 𝓤 ua)
+        ((λ - → Δ (S -))
+         , record {push = transport-along-≃ ua S
+                  ; push-refl = λ {x} u
+                     → ap (λ r → transport S r u) (eqtoid-refl ua x)})
+        (λ - → discrete-refl-graph-is-univalent (S -)) 𝕗
+
+\end{code}
 
 Example 3:
 
@@ -594,7 +630,7 @@ characterizing mixed variance structures of increasingly complicated nature
 where "guessing" (or maybe it is more apt to say "being clever") is not
 feasible.
 
-TODO: Currently we are exploring a number of results of flavor similar to the
+TODO: Currently we are exploring a number of results of similar flavor to the
 one below. When such a file is added we will move the following result and
 import that file here.
 
@@ -630,17 +666,11 @@ univalent-prop-lens-edge-char 𝓐 𝓛 ua-𝓛 prop-lens x y u v
 Example 5:
 
 We use the previous fact to give a characterization of the identity type of
-hSets. Although, we make no claims that this characterization of hSet identity
-is superior, but suggest a methodology for characterizing the identity type of
+hSets. Although we make no claims that this characterization of hSet identity
+is superior, it suggests a methodology for characterizing the identity type of
 more complicated structures with propositional lenses.
 
 \begin{code}
-
-equiv-to-set' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-              → X ≃ Y
-              → is-set X
-              → is-set Y
-equiv-to-set' = equiv-to-set ∘ ≃-sym
 
 module _ (𝓤 : Universe) (ua : is-univalent 𝓤) (fe : Fun-Ext) where
 
@@ -651,9 +681,9 @@ module _ (𝓤 : Universe) (ua : is-univalent 𝓤) (fe : Fun-Ext) where
    I X = Δ (is-set X)
    II : oplax-covariant-lens-structure 𝓤 𝓤 (universe-refl-graph 𝓤) I
    II = record
-        {push = equiv-to-set'
+        {push = equiv-to-set ∘ ≃-sym
         ; push-refl = λ {X} is-set → being-set-is-prop fe
-                       (equiv-to-set' (≃-refl X) is-set) is-set}
+                       ((equiv-to-set ∘ ≃-sym) (≃-refl X) is-set) is-set}
 
  hSet-refl-graph : Refl-Graph (𝓤 ⁺) 𝓤
  hSet-refl-graph

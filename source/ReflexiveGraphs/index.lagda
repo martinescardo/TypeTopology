@@ -1,4 +1,4 @@
-Ian Ray. August 2025–February 2026.
+Ian Ray. August 2025–June 2026.
 
 The structure identity principle (SIP), coined by Peter Aczel, allows for a
 treatment of identificiation in Univalent Foundations that, with much care,
@@ -10,15 +10,19 @@ recent times, some have considered 'reflexive graphs' as a more modular
 approach to SIP (see "Using Displayed Univalent Graphs to Formalize Higher
 Groups in Univalent Foundations" by Johannes Schipp von Branitz and Ulrik
 Buchholtz, https://ulrikbuchholtz.dk/durgs.pdf; and "Reflexive graph lenses
-in univalent foundations" by Jonathan Sterling,
-https://doi.org/10.48550/arXiv.2404.07854).
+in univalent foundations" by Jonathan Sterling.)
 
 Here we will explore the foundation of the theory of (displayed) (univalent)
 reflexive graphs following Sterling. Sterling also introduces the notion of
 a reflexive graph lens which may be described as a generic notion of transport
 which leads to novel characterizations of indetity. We will provide multiple
 examples that outline the reflexive graph approach to SIP, including the use
-of lenses.
+of lenses. Since Sterling is the primary source for this development we will
+include a full reference to his work.
+
+Jonathan Sterling. 'Reflexive graph lenses in univalent foundations'.
+In: Mathematical Structures in Computer Science 36, e21 (2026), pp. 1–48.
+DOI: 10.1017/S0960129526100565
 
 \begin{code}
 
