@@ -188,6 +188,10 @@ reader monad, to speed-up the computation of the optimal play.
   q† : Path Xt → T R
   q† xs (α , β) = q xs
 
+  _≥_ _≤_ : R → R → 𝓥 ̇
+  r ≥ s = ¬ (r < s)
+  s ≤ r = r ≥ s
+
   ArgMin† ArgMax† : {X : 𝓤 ̇ } → List X → X → R → (X → T R) → T X
 
   ArgMin† []       x₀ r p (α , β) = x₀

@@ -80,12 +80,12 @@ lemma-𝓞-functor {𝓥} {P} (X ∷ Xf) (ε :: εf) q f = I
    e = ap ε (dfunext fe (λ x → ap (subpred q x) (IH x)))
 
    I = sequenceᴶ R' (𝓞-functor P (X ∷ Xf) (ε :: εf)) q' ＝⟨ refl ⟩
-       (ε' ⊗ᴶ δ') q'                            ＝⟨ refl ⟩
-       x₀ :: δ' x₀ (subpred q' x₀)              ＝⟨ I₀ ⟩
-       x₀ :: δ  x₀ (subpred q  x₀)              ＝⟨ I₁ ⟩
-       x₁ :: δ  x₁ (subpred q  x₁)              ＝⟨ refl ⟩
-       (ε ⊗ᴶ δ) q                               ＝⟨ refl ⟩
-       sequenceᴶ R (ε :: εf) q                  ∎
+       (ε' ⊗ᴶ δ') q'                                    ＝⟨ refl ⟩
+       x₀ :: δ' x₀ (subpred q' x₀)                      ＝⟨ I₀ ⟩
+       x₀ :: δ  x₀ (subpred q  x₀)                      ＝⟨ I₁ ⟩
+       x₁ :: δ  x₁ (subpred q  x₁)                      ＝⟨ refl ⟩
+       (ε ⊗ᴶ δ) q                                       ＝⟨ refl ⟩
+       sequenceᴶ R (ε :: εf) q                          ∎
     where
      I₀ = ap (x₀ ,_) (IH x₀)
      I₁ = ap (λ - → - :: δ - (subpred q -)) e
@@ -95,16 +95,18 @@ module _ (Xt : 𝑻 {𝓤})
          (εt : 𝓙 R Xt)
        where
 
- R' = R × Path Xt
+ private
+  R' = R × Path Xt
 
- εt' : 𝓙 R' Xt
- εt' = 𝓞-functor (Path Xt) Xt εt
+  εt' : 𝓙 R' Xt
+  εt' = 𝓞-functor (Path Xt) Xt εt
 
  module _ (q : Path Xt → R)
         where
 
-  q' : Path Xt → R'
-  q' xs = q xs , xs
+  private
+   q' : Path Xt → R'
+   q' xs = q xs , xs
 
 \end{code}
 

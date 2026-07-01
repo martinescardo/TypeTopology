@@ -399,9 +399,12 @@ Added 3rd March 2026. Moved and refined from the alpha-beta file.
 This version of argmin and argmax assumes a listed domain and
 any type of outcomes that has a decidable order.
 
+Modified 1st July 2026. It suffices to consider only argmin, because
+we can work with the opposite order to get argmax.
+
 \begin{code}
 
-module ArgMinMax-Listed
+module ArgMin-Listed
         {𝓤 𝓥 : Universe}
         (R : 𝓤 ̇ )
         (_<_ : R → R → 𝓥 ̇ )
@@ -410,71 +413,40 @@ module ArgMinMax-Listed
 
  open import MLTT.List
 
- _≥_ _≤_ : R → R → 𝓥 ̇
- r ≥ s = ¬ (r < s)
- s ≤ r = r ≥ s
+ minδ : (r s : R) → is-decidable (r < s) → R
+ minδ r s (inl lt) = r
+ minδ r s (inr ge) = s
 
- private
-  min' max' : (r s : R) → is-decidable (r < s) → R
-
-  min' r s (inl lt) = r
-  min' r s (inr ge) = s
-
-  max' r s (inl lt) = s
-  max' r s (inr ge) = r
-
- min max : R → R → R
- min r s = min' r s (δ r s)
- max r s = max' r s (δ r s)
+ min : R → R → R
+ min r s = minδ r s (δ r s)
 
  open import MonadOnTypes.K
  open K-definitions {𝓤} {R}
 
- Min Max : {X : 𝓤 ̇ } → listed⁺ X → K X
+ Min : {X : 𝓤 ̇ } → listed⁺ X → K X
  Min (x₀ , xs , _) p = foldr (λ x → min (p x)) (p x₀) xs
- Max (x₀ , xs , _) p = foldr (λ x → max (p x)) (p x₀) xs
 
- private
-  argmin' argmax'
-   : {X : 𝓤 ̇ } (p : X → R) (x y : X) → is-decidable (p x < p y) → X
+ argminδ : {X : 𝓤 ̇ } (p : X → R) (x y : X) → is-decidable (p x < p y) → X
+ argminδ p x y (inl le) = x
+ argminδ p x y (inr ge) = y
 
-  argmin' p x y (inl le) = x
-  argmin' p x y (inr ge) = y
+ argminδ-spec : {X : 𝓤 ̇ } (p : X → R) (x y : X) (d : is-decidable (p x < p y))
+              → p (argminδ p x y d) ＝ minδ (p x) (p y) d
+ argminδ-spec p x y (inl lt) = refl
+ argminδ-spec p x y (inr ge) = refl
 
-  argmax' p x y (inl le) = y
-  argmax' p x y (inr ge) = x
-
-  argmin'-spec : {X : 𝓤 ̇ } (p : X → R) (x y : X) (d : is-decidable (p x < p y))
-               → p (argmin' p x y d) ＝ min' (p x) (p y) d
-  argmin'-spec p x y (inl lt) = refl
-  argmin'-spec p x y (inr ge) = refl
-
-  argmax'-spec : {X : 𝓤 ̇ } (p : X → R) (x y : X) (d : is-decidable (p x < p y))
-               → p (argmax' p x y d) ＝ max' (p x) (p y) d
-  argmax'-spec p x y (inl lt) = refl
-  argmax'-spec p x y (inr ge) = refl
-
-
- argmin argmax : {X : 𝓤 ̇ } → (X → R) → X → X → X
-
- argmin p x y = argmin' p x y (δ (p x) (p y))
- argmax p x y = argmax' p x y (δ (p x) (p y))
-
+ argmin : {X : 𝓤 ̇ } → (X → R) → X → X → X
+ argmin p x y = argminδ p x y (δ (p x) (p y))
 
  argmin-spec : {X : 𝓤 ̇ } (p : X → R) (x y : X)
              → p (argmin p x y) ＝ min (p x) (p y)
- argmin-spec p x y = argmin'-spec p x y (δ (p x) (p y))
-
- argmax-spec : {X : 𝓤 ̇ } (p : X → R) (x y : X)
-             → p (argmax p x y) ＝ max (p x) (p y)
- argmax-spec p x y = argmax'-spec p x y (δ (p x) (p y))
+ argmin-spec p x y = argminδ-spec p x y (δ (p x) (p y))
 
  open import MonadOnTypes.J
  open J-definitions {𝓤} {R}
 
- ArgMin ArgMax : {X : 𝓤 ̇ } → listed⁺ X → J X
+ ArgMin : {X : 𝓤 ̇ } → listed⁺ X → J X
  ArgMin (x₀ , xs , _) p = foldr (argmin p) x₀ xs
- ArgMax (x₀ , xs , _) p = foldr (argmax p) x₀ xs
 
  open import MonadOnTypes.JK R
 
@@ -496,22 +468,105 @@ module ArgMinMax-Listed
             I₁ = argmin-spec p x (foldr (argmin p) x₀ xs)
             I₂ = ap (min (p x)) IH
 
- ArgMax-spec : {X : 𝓤 ̇ } (ℓ : listed⁺ X) → (ArgMax ℓ) attains (Max ℓ)
- ArgMax-spec {X} (x₀ , xs , m) p = I xs
+ foldr-min-attainment
+  : {X : 𝓤 ̇ } (p : X → R) (x₀ : X) (xs : List X)
+  → p (foldr (argmin p) x₀ xs) ＝ foldr (λ x → min (p x)) (p x₀) xs
+ foldr-min-attainment p x₀ [] = refl
+ foldr-min-attainment {X} p x₀ (x ∷ xs) =
+  p (argmin p x x')                             ＝⟨ argmin-spec p x x' ⟩
+  min (p x) (p x')                              ＝⟨ ap (min (p x)) IH ⟩
+  min (p x) (foldr (λ x → min (p x)) (p x₀) xs) ∎
   where
-   I : (xs : List X)
-     → p (foldr (argmax p) x₀ xs) ＝ foldr (λ x → max (p x)) (p x₀) xs
-   I [] = refl
-   I (x ∷ xs) = I₀
-    where
-     IH : p (foldr (argmax p) x₀ xs) ＝ foldr (λ x → max (p x)) (p x₀) xs
-     IH = I xs
+   x' : X
+   x' = foldr (argmin p) x₀ xs
 
-     I₀ = p (argmax p x (foldr (argmax p) x₀ xs))         ＝⟨ I₁ ⟩
-          max (p x) (p (foldr (argmax p) x₀ xs))          ＝⟨ I₂ ⟩
-          max (p x) (foldr (λ x₁ → max (p x₁)) (p x₀) xs) ∎
-           where
-            I₁ = argmax-spec p x (foldr (argmax p) x₀ xs)
-            I₂ = ap (max (p x)) IH
+   IH : p x' ＝ foldr (λ x → min (p x)) (p x₀) xs
+   IH = foldr-min-attainment p x₀ xs
+
+module ArgMax-Listed
+        {𝓤 𝓥 : Universe}
+        (R : 𝓤 ̇ )
+        (_<_ : R → R → 𝓥 ̇ )
+        (δ : (r s : R) → is-decidable (r < s))
+      where
+
+ open ArgMin-Listed R (λ x y → y < x) (λ x y → δ y x)
+  renaming (
+             minδ         to maxδ
+           ; min          to max
+           ; argminδ      to argmaxδ
+           ; argminδ-spec to argmaxδ-spec
+           ; argmin       to argmax
+           ; argmin-spec  to argmax-spec
+           ; Min          to Max
+           ; ArgMin       to ArgMax
+           ; ArgMin-spec  to ArgMax-spec
+           ; foldr-min-attainment to foldr-max-attainment
+           )
+
+  public
+
+module ArgMinMax-Listed
+        {𝓤 𝓥 : Universe}
+        (R : 𝓤 ̇ )
+        (_<_ : R → R → 𝓥 ̇ )
+        (δ : (r s : R) → is-decidable (r < s))
+      where
+
+ open ArgMin-Listed {𝓤} {𝓥} R _<_ δ public
+ open ArgMax-Listed {𝓤} {𝓥} R _<_ δ public
+
+module ArgMin'-Listed
+        {𝓤 𝓥 𝓦 : Universe}
+        (R : 𝓤 ̇ )
+        (_<_ : R → R → 𝓥 ̇ )
+        (δ : (r s : R) → is-decidable (r < s))
+        (P : 𝓦 ̇ )
+      where
+
+ open import MLTT.List
+
+ R' : 𝓤 ⊔ 𝓦 ̇
+ R' = R × P
+
+ _<'_ : R' → R' → 𝓥 ̇
+ (r , _) <' (s , _) = r < s
+
+ δ' : (r' s' : R') → is-decidable (r' <' s')
+ δ' (r , _) (s , _) = δ r s
+
+ open ArgMin-Listed R' _<'_ δ'
+       using () renaming (minδ to min'δ ; min to min' ; Min to Min')
+
+ module _ (X : 𝓤 ̇ )
+          (X-is-listed⁺@(x₀ , xs , m) : listed⁺ X)
+        where
+
+  open ArgMinMax-Listed {𝓤} {𝓥} R _<_ δ
+        using (ArgMin; argminδ ; argmin ; foldr-min-attainment)
+
+  foldr-min'-attainment
+   : (p : X → R') (x₀ : X) (xs : List X)
+   → p (foldr (argmin (pr₁ ∘ p)) x₀ xs) ＝ foldr (λ x → min' (p x)) (p x₀) xs
+  foldr-min'-attainment p x₀ [] = refl
+  foldr-min'-attainment p x₀ (x ∷ xs) =
+   p (argmin p' x x')                              ＝⟨ I (δ (p' x) (p' x')) ⟩
+   min' (p x) (p x')                               ＝⟨ ap (min' (p x)) IH ⟩
+   min' (p x) (foldr (λ x → min' (p x)) (p x₀) xs) ∎
+   where
+    p' : X → R
+    p' = pr₁ ∘ p
+
+    x' : X
+    x' = foldr (argmin p') x₀ xs
+
+    IH : p (foldr (argmin p') x₀ xs)
+      ＝ foldr (λ x → min' (p x)) (p x₀) xs
+    IH = foldr-min'-attainment p x₀ xs
+
+    I : (d : is-decidable (p' x < p' x'))
+      → p (argminδ p' x x' d) ＝ min'δ (p x) (p x') d
+    I (inl lt) = refl
+    I (inr ge) = refl
 
 \end{code}
