@@ -1,6 +1,6 @@
 Ian Ray. 4th November 2025.
 
-Minor changes and merged into TypeToplogy in June 2026.
+Minor changes and merged into TypeToplogy in July 2026.
 
 We provide some examples of using (displayed) univalent reflexive graphs and
 reflexive graph lenses to characterize certain identity types, characterize
@@ -143,11 +143,11 @@ under products, functions and the discrete reflexive graph.
      
  cone-base-is-univalent : is-univalent-refl-graph cone-base-refl-graph
  cone-base-is-univalent = univalence-closed-under-×
-                             (A ➙ (Δ X)) (A ➙ (Δ Y))
-                             (univalence-closed-under-cotensor fe A (Δ X)
-                              (discrete-refl-graph-is-univalent X))
-                             (univalence-closed-under-cotensor fe A (Δ Y)
-                              (discrete-refl-graph-is-univalent Y))
+                           (A ➙ (Δ X)) (A ➙ (Δ Y))
+                           (univalence-closed-under-cotensor fe A (Δ X)
+                            (discrete-refl-graph-is-univalent X))
+                           (univalence-closed-under-cotensor fe A (Δ Y)
+                            (discrete-refl-graph-is-univalent Y))
 
 \end{code}
 
@@ -198,7 +198,7 @@ univalent).
        (Σ H' ꞉ commutative-square (p , q) , H ∼ H')        ■
     where
      II = Σ-cong (λ - → transport-≃ (λ - → H ∼ -)
-          (dfunext fe (λ x → refl-left-neutral)))
+           (dfunext fe (λ x → refl-left-neutral)))
 
 \end{code}
 
@@ -369,24 +369,20 @@ transport-along-≃-fundamental-lemma'
    (ua : is-univalent 𝓤)
  → T 𝕗 ∼ transport-along-≃ ua S 𝕗
 transport-along-≃-fundamental-lemma' {𝓤} {𝓥} S T T-refl {X} {Y} 𝕗 ua s
- = I s ∙ II s ⁻¹
+ = III s ∙ IV s ⁻¹
  where
-  I : T 𝕗 ∼ transport-along-≈ (universe-refl-graph 𝓤)
-             (univalent-universe-is-univalent-family 𝓤 ua)
-              S 𝕗
-  I = fundamental-theorem-of-transport (universe-refl-graph 𝓤)
-       (univalent-universe-is-univalent-family 𝓤 ua)
-       ((λ - → Δ (S -)) , record {push = T ; push-refl = T-refl})
-       (λ - → discrete-refl-graph-is-univalent (S -)) 𝕗
-  II : transport-along-≃ ua S 𝕗 ∼ transport-along-≈ (universe-refl-graph 𝓤)
-                                   (univalent-universe-is-univalent-family 𝓤 ua)
-                                    S 𝕗
-  II = fundamental-theorem-of-transport (universe-refl-graph 𝓤)
-        (univalent-universe-is-univalent-family 𝓤 ua)
-        ((λ - → Δ (S -))
-         , record {push = transport-along-≃ ua S
-                  ; push-refl = λ {x} u
-                     → ap (λ r → transport S r u) (eqtoid-refl ua x)})
+  I = universe-refl-graph 𝓤
+  II = univalent-universe-is-univalent-family 𝓤 ua
+  III : T 𝕗 ∼ transport-along-≈ I II S 𝕗
+  III = fundamental-theorem-of-transport I II
+         ((λ - → Δ (S -)) , record {push = T ; push-refl = T-refl})
+         (λ - → discrete-refl-graph-is-univalent (S -)) 𝕗
+  IV : transport-along-≃ ua S 𝕗 ∼ transport-along-≈ I II S 𝕗
+  IV = fundamental-theorem-of-transport I II
+        ((λ - → Δ (S -)) , record {push = transport-along-≃ ua S
+                                  ; push-refl = λ {x} u
+                                              → ap (λ r → transport S r u)
+                                                   (eqtoid-refl ua x)})
         (λ - → discrete-refl-graph-is-univalent (S -)) 𝕗
 
 \end{code}
@@ -449,8 +445,8 @@ module _ {𝓤 𝓣 𝓦 : Universe} (fe : Fun-Ext) where
 
 \end{code}
 
-TODO characterize ＝ of displayed refl graphs and finish the proof of
-equivalence stated below.
+TODO: Characterize the identity type of displayed refl graphs and finish the
+proof of equivalence stated below.
 
  displayed-univalent-refl-graph-≃-SNS
   : (displayed-univalent-refl-graph 𝓣 𝓦 (universe-refl-graph 𝓤))
@@ -647,13 +643,10 @@ univalent-prop-lens-edge-char
  → (x y : ⟨ 𝓐 ⟩) (u : lens-push-fam 𝓛 x) (v : lens-push-fam 𝓛 y)
  → (x , u) ≈⟨ 𝓐 ﹐ disp⁺ 𝓐 𝓛 ⟩ (y , v) ≃ x ≈⟨ 𝓐 ⟩ y
 univalent-prop-lens-edge-char 𝓐 𝓛 ua-𝓛 prop-lens x y u v
- = (x , u) ≈⟨ 𝓐 ﹐ disp⁺ 𝓐 𝓛 ⟩ (y , v)
-                                                            ≃⟨by-definition⟩
-   (Σ p ꞉ x ≈⟨ 𝓐 ⟩ y , lens-push 𝓛 p u ≈⟨ lens-push-graph 𝓛 y ⟩ v)
-                                                            ≃⟨ I ⟩
-   (Σ p ꞉ x ≈⟨ 𝓐 ⟩ y , lens-push 𝓛 p u ＝ v)
-                                                            ≃⟨ II ⟩
-   x ≈⟨ 𝓐 ⟩ y                                               ■
+ = (x , u) ≈⟨ 𝓐 ﹐ disp⁺ 𝓐 𝓛 ⟩ (y , v)                              ≃⟨refl⟩
+   (Σ p ꞉ x ≈⟨ 𝓐 ⟩ y , lens-push 𝓛 p u ≈⟨ lens-push-graph 𝓛 y ⟩ v) ≃⟨ I ⟩
+   (Σ p ꞉ x ≈⟨ 𝓐 ⟩ y , lens-push 𝓛 p u ＝ v)                       ≃⟨ II ⟩
+   x ≈⟨ 𝓐 ⟩ y                                                      ■
     where
      I = Σ-cong (λ - → ≃-sym (id-equiv-edge (lens-push-graph 𝓛 y , ua-𝓛 y)
                                (lens-push 𝓛 - u) v))
