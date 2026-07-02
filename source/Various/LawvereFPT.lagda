@@ -75,10 +75,11 @@ section·-gives-section fe r (s , rs·) = s , λ g → dfunext fe (rs· g)
 
 \end{code}
 
-Lawvere's fixed-point combinator for a type X can be defined if we
-have maps r : A → (A → X) and s : (A → X) → A subject to no
-assumptions, but, to show that it produces a fixed point combinator,
-we will assume that s is a pointwise section of r.
+Lawvere misses the opportunity to define what I here call "Lawvere's
+fixed-point combinator" for a type X. It can be defined if we have
+maps r : A → (A → X) and s : (A → X) → A subject to no assumptions at
+all, but, to show that it produces a fixed point combinator, we will
+assume that s is a pointwise section of r.
 
 \begin{code}
 
@@ -95,7 +96,7 @@ Notice the similarity with the usual fixed-point combinator Y of the
 untyped λ-calculus.
 
 The intuitionistic proof of ¬ (A ↔ ¬ A) is the particular case of lfix
-with X = 𝟘 and f = id.
+with X = 𝟘, r : A → ¬ A, s : ¬ A → A, and f = id.
 
 \begin{code}
 
@@ -124,12 +125,13 @@ is a fixed point of f.
 
 \begin{code}
 
- lfix-is-fixed-point : {A : 𝓤 ̇ }
-                       {X : 𝓥 ̇ }
-                       (r : A → (A → X))
-                     → (s : (A → X) → A)
-                     → s is-section·-of r
-                     → (f : X → X) → lfix r s f ＝ f (lfix r s f)
+ lfix-is-fixed-point
+  : {A : 𝓤 ̇ }
+    {X : 𝓥 ̇ }
+    (r : A → (A → X))
+  → (s : (A → X) → A)
+  → s is-section·-of r
+  → (f : X → X) → lfix r s f ＝ f (lfix r s f)
  lfix-is-fixed-point {𝓤} {𝓥} {A} {X} r s rs f = p
   where
    g : A → X
@@ -149,6 +151,29 @@ is a fixed point of f.
        r (s g) a ＝⟨ rs g a ⟩
        g a       ＝⟨by-definition⟩
        f x       ∎
+
+\end{code}
+
+The above is an attempt to make the proof understandable. Here is the
+same proof in normal form:
+
+\begin{code}
+
+ lfix-is-fixed-point-concise
+  : {A : 𝓤 ̇ }
+    {X : 𝓥 ̇ }
+    (r : A → (A → X))
+  → (s : (A → X) → A)
+  → s is-section·-of r
+  → (f : X → X) → lfix r s f ＝ f (lfix r s f)
+ lfix-is-fixed-point-concise r s rs f
+  = rs (λ a → f (r a a)) (s (λ a → f (r a a)))
+
+\end{code}
+
+We now consider some useful direct consequences.
+
+\begin{code}
 
  LFPT· : {A : 𝓤 ̇ }
          {X : 𝓥 ̇ }
