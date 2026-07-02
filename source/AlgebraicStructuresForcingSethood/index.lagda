@@ -4,6 +4,7 @@
 
 module AlgebraicStructuresForcingSethood.index where
 
+import AlgebraicStructuresForcingSethood.CommutativeIdempotent    -- by Fredrik Bakke
 import AlgebraicStructuresForcingSethood.CommutativeLoopSpaces    -- by Tom de Jong
 import AlgebraicStructuresForcingSethood.Majority                 -- by Jakub Opršal
 import AlgebraicStructuresForcingSethood.Majority-streamlined     -- by Tom de Jong
