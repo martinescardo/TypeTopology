@@ -45,7 +45,7 @@ as saying that r has a pointwise section).
 \begin{code}
 
 _is-section·-of_ : {A : 𝓤 ̇ } {X : 𝓥 ̇ } → ((A → X) → A) → (A → (A → X)) → 𝓤 ⊔ 𝓥 ̇
-s is-section·-of r  = ∀ g a → r (s g) a ＝ g a
+s is-section·-of r  = ∀ g a → (r ∘ s) g a ＝ g a
 
 \end{code}
 
