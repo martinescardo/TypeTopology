@@ -1,4 +1,4 @@
-Martin Escardo, 17-19 June 2025.
+Martin Escardo, 17-19 June 2026.
 
 The totally separated reflection of the type Ω of propositions.
 
