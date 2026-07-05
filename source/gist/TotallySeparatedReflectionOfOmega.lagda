@@ -29,7 +29,7 @@ precomposition with η (the restriction map) is an equivalence
 Resizing is used to define a section s : T → Ω of η by
 s t = "the resized proposition that t is the constant function ₁".
 
-Second, we ask whether this equivalence be established without
+Second, we ask whether this equivalence can be established without
 assuming propositional resizing.
 
 We don't know, but we explore this a bit here. In particular, we
