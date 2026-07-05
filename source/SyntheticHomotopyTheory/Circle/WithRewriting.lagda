@@ -2,8 +2,10 @@ Tom de Jong, 19 June 2026.
 
 Updated on 26 June 2026 to remove the definitional computation rules for path
 constructors, in line with the HoTT Book.
+Updated 5 July 2026 to derive the recursion principle with a definitional point
+computation rule from the induction principle.
 
-We postulate the existence of the circle S¹ with definitional computation rules
+We postulate the existence of the circle S¹ with a definitional computation rule
 at the point using Agda's rewriting mechanism and derive its (dependent)
 universal property.
 
@@ -25,19 +27,8 @@ postulate
  pt : S¹
  loop : pt ＝ pt
 
- S¹-recursion : (A : 𝓤 ̇ ) (a : A) → a ＝ a → S¹ → A
  S¹-induction : (A : S¹ → 𝓤 ̇ ) (a : A pt) (l : transport A loop a ＝ a)
               → (s : S¹) → A s
-
- S¹-recursion-comp-pt : (A : 𝓤 ̇ ) (a : A) (l : a ＝ a)
-                      → S¹-recursion A a l pt ＝ a
-
- {-# REWRITE S¹-recursion-comp-pt #-}
-
- S¹-recursion-comp-loop
-  : (A : 𝓤 ̇ ) (a : A) (l : a ＝ a)
-  → let f = S¹-recursion A a l in
-    ap f loop ＝ l
 
  S¹-induction-comp-pt : (A : S¹ → 𝓤 ̇ ) (a : A pt) (l : transport A loop a ＝ a)
                       → S¹-induction A a l pt ＝ a
@@ -48,29 +39,53 @@ postulate
   : (A : S¹ → 𝓤 ̇ ) (a : A pt) (l : transport A loop a ＝ a)
   → apd (S¹-induction A a l) loop ＝ l
 
+S¹-recursion : (A : 𝓤 ̇ ) (a : A) → a ＝ a → S¹ → A
+S¹-recursion A a l = S¹-induction (λ _ → A) a (transport-const loop ∙ l)
+
+private
+ S¹-recursion-comp-pt : (A : 𝓤 ̇ ) (a : A) (l : a ＝ a)
+                      → S¹-recursion A a l pt ＝ a
+ S¹-recursion-comp-pt A a l = refl
+
+S¹-recursion-comp-loop : (A : 𝓤 ̇ ) (a : A) (l : a ＝ a)
+                       → ap (S¹-recursion A a l) loop ＝ l
+S¹-recursion-comp-loop A a l =
+ ap f loop         ＝⟨refl⟩
+ ap g loop         ＝⟨ apd-from-ap g loop ⟩
+ p ⁻¹ ∙ apd g loop ＝⟨ e ⟩
+ p ⁻¹ ∙ (p ∙ l)    ＝⟨ (∙assoc (p ⁻¹) p l) ⁻¹ ⟩
+ (p ⁻¹ ∙ p) ∙ l    ＝⟨ ap (_∙ l) (left-inverse p) ⟩
+ refl ∙ l          ＝⟨ refl-left-neutral ⟩
+ l                 ∎
+  where
+   p : transport (λ _ → A) loop a ＝ a
+   p = transport-const loop
+   f = S¹-recursion A a l
+   g = S¹-induction (λ _ → A) a (p ∙ l)
+   e = ap (p ⁻¹ ∙_) (S¹-induction-comp-loop (λ _ → A) a (p ∙ l))
+
 \end{code}
 
-The above rewrite rules amount to the following equalities, with the first
-components being given by refl.
+The above rewrite rule amounts to the first components being refl in the below
+proofs.
 
 \begin{code}
 
-private
- S¹-recursion-comp : (A : 𝓤 ̇ )
-                     (a : A)
-                     (l : a ＝ a)
-                   → let f = S¹-recursion A a l in
-                     (f pt , ap f loop) ＝
-                     ((a , l) ∶ (Σ a' ꞉ A , a' ＝ a'))
- S¹-recursion-comp A a l = to-Σ-＝ (refl , S¹-recursion-comp-loop A a l)
+S¹-recursion-comp : (A : 𝓤 ̇ )
+                    (a : A)
+                    (l : a ＝ a)
+                  → let f = S¹-recursion A a l in
+                    (f pt , ap f loop) ＝
+                    ((a , l) ∶ (Σ a' ꞉ A , a' ＝ a'))
+S¹-recursion-comp A a l = to-Σ-＝ (refl , S¹-recursion-comp-loop A a l)
 
- S¹-induction-comp : (A : S¹ → 𝓤 ̇ )
-                     (a : A pt)
-                     (l : transport A loop a ＝ a)
-                   → let f = S¹-induction A a l in
-                     (f pt , apd f loop) ＝
-                     ((a , l) ∶ (Σ a' ꞉ A pt , transport A loop a' ＝ a'))
- S¹-induction-comp A a l = to-Σ-＝ (refl , S¹-induction-comp-loop A a l)
+S¹-induction-comp : (A : S¹ → 𝓤 ̇ )
+                    (a : A pt)
+                    (l : transport A loop a ＝ a)
+                  → let f = S¹-induction A a l in
+                    (f pt , apd f loop) ＝
+                    ((a , l) ∶ (Σ a' ꞉ A pt , transport A loop a' ＝ a'))
+S¹-induction-comp A a l = to-Σ-＝ (refl , S¹-induction-comp-loop A a l)
 
 \end{code}
 
