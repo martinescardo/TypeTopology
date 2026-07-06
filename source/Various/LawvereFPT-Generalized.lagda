@@ -14,7 +14,7 @@ Lawvere's FPT as follows. In the above file, we defined
        → (X → X) → X
   lfix r s f = r (s (λ a → f (r a a))) (s (λ a → f (r a a)))
 
-and then proved various fixed point properties for it, including
+and then proved various fixed point properties, including
 
   lfix-is-fixed-point : {A : 𝓤 ̇ } {X : 𝓥 ̇ }
                         (r : A → (A → X))
@@ -45,7 +45,8 @@ generalization.
 We work in a Martin-Löf type theory with W types, and no HoTT/UF
 axioms other than propositional truncation, which isn't needed for the
 main theorem, but only for the second version of the fixed point
-theorem.
+theorem, and where W types are used only for the application of the
+first relational fixed-point theorem.
 
 James E Hanson came up with essentially the second generalization on 11
 May 2026, before us, called (⋆⋆) in his post https://mathoverflow.net/a/511183
