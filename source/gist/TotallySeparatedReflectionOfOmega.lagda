@@ -237,14 +237,37 @@ _ = ⊥-⊤-density' fe pe
   III : (p q : Ω) → f p ＝ f q
   III = ⊥-⊤-density' fe pe (totally-separated-types-are-¬¬-separated Y ts) f II
 
-¬¬WEM-observation : {Y : 𝓥 ̇ }
+¬¬WEM-observation : (Y : 𝓥 ̇ )
                   → is-totally-separated Y
                   → (Σ f ꞉ (Ω → Y) , f ⊥ ≠ f ⊤)
                   → ¬¬ WEM
-¬¬WEM-observation ts (f , ne) =
+¬¬WEM-observation Y ts (f , ne) =
  contrapositive
   (λ (nwem : ¬ WEM) → ¬WEM-observation nwem ts f ⊥ ⊤)
   ne
+
+τ₀＝τ₁-gives-¬WEM : τ₀ ＝ τ₁ → ¬ WEM
+τ₀＝τ₁-gives-¬WEM e w = zero-is-not-one (happly e w)
+
+¬¬WEM-gives-τ₀≠τ₁ : ¬¬ WEM → τ₀ ≠ τ₁
+¬¬WEM-gives-τ₀≠τ₁ = contrapositive τ₀＝τ₁-gives-¬WEM
+
+τ₀≠τ₁-gives-¬¬WEM : τ₀ ≠ τ₁ → ¬¬ WEM
+τ₀≠τ₁-gives-¬¬WEM ne nw =
+ ¬¬WEM-observation T T-is-totally-separated (η , I) nw
+ where
+  I : η ⊥ ≠ η ⊤
+  I e = ne (τ₀  ＝⟨ η⊥ ⁻¹ ⟩
+            η ⊥ ＝⟨ e ⟩
+            η ⊤ ＝⟨ η⊤ ⟩
+            τ₁  ∎)
+
+¬WEM-gives-τ₀＝τ₁ : ¬ WEM → τ₀ ＝ τ₁
+¬WEM-gives-τ₀＝τ₁ nw =
+ totally-separated-types-are-¬¬-separated T T-is-totally-separated τ₀ τ₁ I
+ where
+  I : ¬¬ (τ₀ ＝ τ₁)
+  I ne = τ₀≠τ₁-gives-¬¬WEM ne nw
 
 \end{code}
 
