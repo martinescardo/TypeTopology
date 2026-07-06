@@ -42,11 +42,9 @@ generalized-Coquand, whose conclusions include
 At the moment we don't have any application of the second
 generalization.
 
-We work in a Martin-Löf type theory with W types, and no HoTT/UF
-axioms other than propositional truncation, which isn't needed for the
-main theorem, but only for the second version of the fixed point
-theorem, and where W types are used only for the application of the
-first relational fixed-point theorem.
+We work in a Martin-Löf type theory with no HoTT/UF axioms other than
+propositional truncation, which isn't needed for the main theorem, but
+only for the second version of the fixed point theorem.
 
 James E Hanson came up with essentially the second generalization on 11
 May 2026, before us, called (⋆⋆) in his post https://mathoverflow.net/a/511183
@@ -64,11 +62,7 @@ https://mathstodon.xyz/deck/@jameshanson/116816664171797522
 module Various.LawvereFPT-Generalized where
 
 open import MLTT.Spartan
-open import UF.Base hiding (_≈_)
-open import UF.Equiv
-open import UF.Retracts
 open import Various.LawvereFPT
-open import W.Type
 
 \end{code}
 
@@ -146,6 +140,8 @@ of B".
 
 \begin{code}
 
+open import UF.Retracts
+
 LFPT-with-retract-relation
  : {A : 𝓤 ̇ }
    (r : A → (A → 𝓥 ̇ ))
@@ -210,16 +206,25 @@ identity type _＝_ in place of the arbitrary relation _≈_.
 As discussed above, we don't yet have any application of the second
 generalization.
 
-We conclude with an application of the first, which was its motivation
-in the first place.  We first show that certain assumptions are
-together impossible, by using two applications of the fixed point
-theorem, where the first one is the generalization and the second one
-is the original (to show that no type is logically equivalent to its
-own negation).
+We conclude with an application of the first, which was its original
+motivation. The argument assumes W types in our type theory.
 
 \begin{code}
 
 module generalized-Coquand-streamlined where
+
+ open import W.Type
+ open import UF.Base
+ open import UF.Equiv
+
+\end{code}
+
+We begin by showing that certain assumptions are together impossible,
+by using two applications of the fixed point theorem, where the first
+one is the generalization and the second one is the original (to show
+that no type is logically equivalent to its own negation).
+
+\begin{code}
 
  Lemma₀ : (U  : 𝓤 ̇ )
           (R  : U → 𝓤 ̇ )
@@ -286,7 +291,7 @@ the first projection gives a function R (S (Σ g)) → A
    I : Σ B ꞉ 𝓤 ̇ , retract ¬ B of B
    I = LFPT-with-retract-relation r s rs ¬_
 
-   II : ¬ (Σ B ꞉ 𝓤 ̇ , retract (¬ B) of B)
+   II : ¬ (Σ B ꞉ 𝓤 ̇ , retract ¬ B of B)
    II (B , (f , g , _)) = not-equivalent-to-own-negation'' (f , g)
 
    III : 𝟘
