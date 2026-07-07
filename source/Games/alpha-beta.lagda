@@ -323,6 +323,7 @@ module example₁ where
 
  wikipedia-optimal-play＝ : wikipedia-optimal-play ＝ (𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
  wikipedia-optimal-play＝ = refl
+
 -}
 
 \end{code}
