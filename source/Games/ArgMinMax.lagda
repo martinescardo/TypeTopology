@@ -513,7 +513,7 @@ module ArgMax-Listed
 
 \end{code}
 
-We now define a single module the reexports ArgMin and ArgMax
+We now define a single module that reexports ArgMin and ArgMax
 together:
 
 \begin{code}
