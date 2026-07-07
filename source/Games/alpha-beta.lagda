@@ -321,7 +321,7 @@ module example₁ where
 
 {- Comment out because it is slow (8s in a Mac M4):
 
- wikipedia-optimal-play＝ : wikipedia-optimal-play ＝ (𝟏 ,  𝟎 , 𝟎 , 𝟎 , ⟨⟩)
+ wikipedia-optimal-play＝ : wikipedia-optimal-play ＝ (𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
  wikipedia-optimal-play＝ = refl
 -}
 
