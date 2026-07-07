@@ -108,13 +108,6 @@ And with this we get the desired maxmin game.
 
 \end{code}
 
-Now we define selection functions for this game.
-
-\begin{code}
-
-
-\end{code}
-
 We now label the give tree Xt with the above ArgMin and ArgMax
 quantifiers in an alternating fashion.
 
@@ -138,23 +131,25 @@ quantifiers in an alternating fashion.
  optimal-play : Path Xt
  optimal-play = sequenceᴶ G-selection-tree q
 
+ argmaxmin-attains-maxmin : (Xt : 𝑻 {𝓤})
+     (Xt-is-listed⁺ : structure listed⁺ Xt)
+   → (argmaxmin Xt Xt-is-listed⁺) Attains (maxmin Xt Xt-is-listed⁺)
+
+ argminmax-attains-minmax : (Xt : 𝑻 {𝓤})
+      (Xt-is-listed⁺ : structure listed⁺ Xt)
+    → (argminmax Xt Xt-is-listed⁺) Attains (minmax Xt Xt-is-listed⁺)
+
+ argmaxmin-attains-maxmin  []       ⟨⟩        = ⋆
+ argmaxmin-attains-maxmin  (X ∷ Xf) (ℓ :: ℓf) =
+  ArgMax-spec ℓ , (λ x → argminmax-attains-minmax (Xf x) (ℓf x))
+
+ argminmax-attains-minmax []       ⟨⟩        = ⋆
+ argminmax-attains-minmax (X ∷ Xf) (ℓ :: ℓf) =
+  ArgMin-spec ℓ , (λ x → argmaxmin-attains-maxmin (Xf x) (ℓf x))
+
  private
   lemma : G-selection-tree Attains G-quantifier-tree
-  lemma = I Xt Xt-is-listed⁺
-   where
-    I : (Xt : 𝑻 {𝓤})
-        (Xt-is-listed⁺ : structure listed⁺ Xt)
-      → (argmaxmin Xt Xt-is-listed⁺) Attains (maxmin Xt Xt-is-listed⁺)
-
-    II : (Xt : 𝑻 {𝓤})
-         (Xt-is-listed⁺ : structure listed⁺ Xt)
-       → (argminmax Xt Xt-is-listed⁺) Attains (minmax Xt Xt-is-listed⁺)
-
-    I  []       ⟨⟩        = ⋆
-    I  (X ∷ Xf) (ℓ :: ℓf) = ArgMax-spec ℓ , (λ x → II (Xf x) (ℓf x))
-
-    II []       ⟨⟩        = ⋆
-    II (X ∷ Xf) (ℓ :: ℓf) = ArgMin-spec ℓ , (λ x → I (Xf x) (ℓf x))
+  lemma = argmaxmin-attains-maxmin Xt Xt-is-listed⁺
 
  module _ (fe : Fun-Ext) where
 
@@ -335,7 +330,10 @@ module example₁ where
 Part 2. Now we define G' which computes optimal strategies using
 quantifiers with a modification of the outcome type to include
 paths. This uses the product of quantifiers rather than the product of
-selection functions, which is more efficient.
+selection functions, which is more efficient in practice.
+
+In the following module minimax', we build on the definitions of the
+above module minimax.
 
 \begin{code}
 
@@ -349,32 +347,47 @@ module minimax'
         (q : Path Xt → R)
        where
 
- open Games.FiniteHistoryDependent
+ open import Games.ArgMinMax
+ open import MonadOnTypes.J
 
- _≥_ : R → R → 𝓥 ̇
- r ≥ s = ¬ (r < s)
+ open Games.FiniteHistoryDependent
+  using (𝓚 ; Game ; game ; _Attains_ ; sequenceᴷ ; sequenceᴶ ; optimal-outcome)
+
+ open minimax R _<_ δ Xt Xt-is-listed⁺ q
+  using (argminmax ; argmaxmin ; minmax ; maxmin ;
+         argmaxmin-attains-maxmin ; argminmax-attains-minmax ;
+         G ; optimal-play)
+
+\end{code}
+
+We now modify the above game G with type R of outcomes to a new game
+G' with type of outcomes R' defined as follows:
+
+\begin{code}
 
  R' : 𝓤 ̇
  R' = R × Path Xt
 
+ _<'_ : R' → R' → 𝓥 ̇
+ (r , _) <' (s , _) = r < s
+
+ δ' : (r' s' : R') → is-decidable (r' <' s')
+ δ' (r , _) (s , _) = δ r s
+
  q' : Path Xt → R'
  q' xs = q xs , xs
 
- max' min' : R' → R' → R'
-
- max' (r , xs) (s , ys)  = Cases (δ r s)
-                            (λ (_ : r < s) → (s , ys))
-                            (λ (_ : r ≥ s) → (r , xs))
-
- min' (r , xs) (s , ys)  = Cases (δ s r)
-                            (λ (_ : s < r) → (s , ys))
-                            (λ (_ : s ≥ r) → (r , xs))
-
+ open import MonadOnTypes.JK R'
+ open J-definitions {𝓤} {R'}
  open K-definitions {𝓤} {R'}
+ open ArgMinMax-Listed {𝓤} {𝓥} R' _<'_ δ'
+  using () renaming (Min to Min' ; Max to Max')
 
- Min' Max' : {X : 𝓤 ̇ } → listed⁺ X → K X
- Min' (x₀ , xs , _) p = foldr (λ x → min' (p x)) (p x₀) xs
- Max' (x₀ , xs , _) p = foldr (λ x → max' (p x)) (p x₀) xs
+\end{code}
+
+We now define selection functions for G' and hence G' itself.
+
+\begin{code}
 
  minmax' maxmin' : (Xt : 𝑻)
                  → structure listed⁺ Xt
@@ -387,19 +400,102 @@ module minimax'
  G' : Game R'
  G' = game Xt q' (maxmin' Xt Xt-is-listed⁺)
 
-{- TODO.
+\end{code}
 
- module _ where
+We now prove a lemma, by mutual induction, relating selection
+functions and quantifiers of the original game G to those of the above
+modification G', where we use the construction 𝓞-functor to convert
+selection functions for G to selection functions for G'.
 
-  open minimax R _<_ δ Xt Xt-is-listed⁺ q
+\begin{code}
 
-  theorem' : optimal-outcome R' G' ＝ (sequenceᴷ R (maxmin Xt Xt-is-listed⁺) q ,
-                                       sequenceᴶ R (argmaxmin Xt Xt-is-listed⁺) q)
-  theorem' = {!!}
+ open import Games.SequenceJ-via-SequenceK {𝓤} {𝓤} R
+  using (𝓞-functor ;
+         optimal-outcomes-coincide ;
+         products-of-selection-functions-via-products-of-quantifiers)
 
--}
+ open ArgMinMax'-Listed {𝓤} {𝓥} {𝓤} R _<_ δ
+  using (foldr-min'-attainment ; foldr-max'-attainment)
+
+ argminmax-attains-minmax'
+  : (Yt : 𝑻) (Yt-is-listed⁺ : structure listed⁺ Yt)
+  → _Attains_ R' (𝓞-functor (Path Xt) Yt (argminmax Yt Yt-is-listed⁺))
+                 (minmax' Yt Yt-is-listed⁺)
+
+ argmaxmin-attains-maxmin'
+  : (Yt : 𝑻) (Yt-is-listed⁺ : structure listed⁺ Yt)
+  → _Attains_ R' (𝓞-functor (Path Xt) Yt (argmaxmin Yt Yt-is-listed⁺))
+                 (maxmin' Yt Yt-is-listed⁺)
+ argminmax-attains-minmax' []       _
+  = ⟨⟩
+ argminmax-attains-minmax' (Y ∷ Yf) (Y-is-listed⁺@(y₀ , ys , _) , Yf-is-listed⁺)
+  = (λ p → foldr-min'-attainment (Path Xt) Y Y-is-listed⁺ p y₀ ys) ,
+    (λ y → argmaxmin-attains-maxmin' (Yf y) (Yf-is-listed⁺ y))
+
+ argmaxmin-attains-maxmin' []       _
+  = ⟨⟩
+ argmaxmin-attains-maxmin' (Y ∷ Yf) (Y-is-listed⁺@(y₀ , ys , _) , Yf-is-listed⁺)
+  = (λ p → foldr-max'-attainment (Path Xt) Y Y-is-listed⁺ p y₀ ys) ,
+    (λ y → argminmax-attains-minmax' (Yf y) (Yf-is-listed⁺ y))
 
 \end{code}
+
+From this we conclude that the optimal outcome of G' contains the
+optimal outcome of G. We formulate this in two equivalent ways.
+
+\begin{code}
+
+ module _ (fe : Fun-Ext) where
+
+  theorem'₁ : sequenceᴷ R (maxmin Xt Xt-is-listed⁺) q
+           ＝ pr₁ (sequenceᴷ R' (maxmin' Xt Xt-is-listed⁺) q')
+  theorem'₁ = optimal-outcomes-coincide
+               Xt
+               (maxmin Xt Xt-is-listed⁺)
+               (argmaxmin Xt Xt-is-listed⁺)
+               q
+               (maxmin' Xt Xt-is-listed⁺)
+               fe
+               (argmaxmin-attains-maxmin Xt Xt-is-listed⁺)
+               (argmaxmin-attains-maxmin' Xt Xt-is-listed⁺)
+
+  theorem'₁' : optimal-outcome R G ＝ pr₁ (optimal-outcome R' G')
+  theorem'₁' = theorem'₁
+
+\end{code}
+
+And the optimal outcome of G' also includes the optimal play of G,
+which we again formute in two equivalent ways, the first of which says
+explicitly that a product of selection functions can be calculated as
+a product of quantifiers.
+
+\begin{code}
+
+  theorem'₂ : sequenceᴶ R (argmaxmin Xt Xt-is-listed⁺) q
+            ＝ pr₂ (sequenceᴷ R' (maxmin' Xt Xt-is-listed⁺) q')
+  theorem'₂ =  products-of-selection-functions-via-products-of-quantifiers
+                Xt
+                (maxmin Xt Xt-is-listed⁺)
+                (argmaxmin Xt Xt-is-listed⁺)
+                q
+                (maxmin' Xt Xt-is-listed⁺)
+                fe
+                (argmaxmin-attains-maxmin Xt Xt-is-listed⁺)
+                (argmaxmin-attains-maxmin' Xt Xt-is-listed⁺)
+
+  theorem'₂' : optimal-play ＝ pr₂ (optimal-outcome R' G')
+  theorem'₂' =  theorem'₂
+
+\end{code}
+
+In general, the optimal play depends on the particular choice of
+selection functions. In this case, the use of 𝓞-functor, to convert
+selection functions of G to selection functions of G', makes the the
+optimal play of two games to coincide in the sense theorem'₂'.
+
+TODO. The optimal play of G', with respect to the selection functions
+obtained from 𝓞-functor, should coincide with the optimal play of G
+with respect to the argmaxmin selection functions for G.
 
 Example from Wikipedia continued.
 

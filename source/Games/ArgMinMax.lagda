@@ -483,6 +483,12 @@ module ArgMin-Listed
    IH : p x' ＝ foldr (λ x → min (p x)) (p x₀) xs
    IH = foldr-min-attainment p x₀ xs
 
+\end{code}
+
+By taking the opposite order, we can use ArgMin to compute ArgMax:
+
+\begin{code}
+
 module ArgMax-Listed
         {𝓤 𝓥 : Universe}
         (R : 𝓤 ̇ )
@@ -503,8 +509,14 @@ module ArgMax-Listed
            ; ArgMin-spec  to ArgMax-spec
            ; foldr-min-attainment to foldr-max-attainment
            )
-
   public
+
+\end{code}
+
+We now define a single module the reexports ArgMin and ArgMax
+together:
+
+\begin{code}
 
 module ArgMinMax-Listed
         {𝓤 𝓥 : Universe}
@@ -516,6 +528,14 @@ module ArgMinMax-Listed
  open ArgMin-Listed {𝓤} {𝓥} R _<_ δ public
  open ArgMax-Listed {𝓤} {𝓥} R _<_ δ public
 
+\end{code}
+
+We now define a version of ArgMin with a modification R' of the
+outcome type R, and, crucially, we relate it to the original
+version. We use this for the purpose of the module alpha-beta.
+
+\begin{code}
+
 module ArgMin'-Listed
         {𝓤 𝓥 𝓦 : Universe}
         (R : 𝓤 ̇ )
@@ -526,24 +546,32 @@ module ArgMin'-Listed
 
  open import MLTT.List
 
- R' : 𝓤 ⊔ 𝓦 ̇
- R' = R × P
+ private
+  R' : 𝓤 ⊔ 𝓦 ̇
+  R' = R × P
 
- _<'_ : R' → R' → 𝓥 ̇
- (r , _) <' (s , _) = r < s
+  _<'_ : R' → R' → 𝓥 ̇
+  (r , _) <' (s , _) = r < s
 
- δ' : (r' s' : R') → is-decidable (r' <' s')
- δ' (r , _) (s , _) = δ r s
+  δ' : (r' s' : R') → is-decidable (r' <' s')
+  δ' (r , _) (s , _) = δ r s
 
  open ArgMin-Listed R' _<'_ δ'
-       using () renaming (minδ to min'δ ; min to min' ; Min to Min')
+  using () renaming (minδ to min'δ ; min to min' ; Min to Min')
 
  module _ (X : 𝓤 ̇ )
           (X-is-listed⁺@(x₀ , xs , m) : listed⁺ X)
         where
 
   open ArgMinMax-Listed {𝓤} {𝓥} R _<_ δ
-        using (ArgMin; argminδ ; argmin ; foldr-min-attainment)
+   using (ArgMin; argminδ ; argmin ; foldr-min-attainment)
+
+\end{code}
+
+The main technical result of this module is the following relation
+between argmin and min':
+
+\begin{code}
 
   foldr-min'-attainment
    : (p : X → R') (x₀ : X) (xs : List X)
@@ -568,5 +596,41 @@ module ArgMin'-Listed
       → p (argminδ p' x x' d) ＝ min'δ (p x) (p x') d
     I (inl lt) = refl
     I (inr ge) = refl
+
+\end{code}
+
+We do the same for ArgMax by taking the opposite order.
+
+\begin{code}
+
+module ArgMax'-Listed
+        {𝓤 𝓥 𝓦 : Universe}
+        (R : 𝓤 ̇ )
+        (_<_ : R → R → 𝓥 ̇ )
+        (δ : (r s : R) → is-decidable (r < s))
+        (P : 𝓦 ̇ )
+      where
+
+ open ArgMin'-Listed R (λ r s → s < r) (λ r s → δ s r) P
+  renaming (foldr-min'-attainment to foldr-max'-attainment)
+  public
+
+\end{code}
+
+And now we combine ArgMin' and ArgMax' in a single module that
+reexports them.
+
+\begin{code}
+
+module ArgMinMax'-Listed
+        {𝓤 𝓥 𝓦 : Universe}
+        (R : 𝓤 ̇ )
+        (_<_ : R → R → 𝓥 ̇ )
+        (δ : (r s : R) → is-decidable (r < s))
+        (P : 𝓦 ̇ )
+      where
+
+ open ArgMin'-Listed R _<_ δ P public
+ open ArgMax'-Listed R _<_ δ P public
 
 \end{code}

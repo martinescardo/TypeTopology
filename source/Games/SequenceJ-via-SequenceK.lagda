@@ -12,10 +12,9 @@ quantifiers, rather than the product of selection functions.
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
 
-module Games.OptimalPlaysViaProductsOfQuantifiers
+module Games.SequenceJ-via-SequenceK
         {𝓤 𝓦₀ : Universe}
         (R : 𝓦₀ ̇ )
-        (fe : Fun-Ext)
        where
 
 open import Games.FiniteHistoryDependent renaming (_Attains_ to Attains)
@@ -45,15 +44,16 @@ version is needed to get a suitable induction hypothesis.
 
 \begin{code}
 
-lemma-𝓞-functor : {P : 𝓥 ̇ }
+lemma-𝓞-functor : Fun-Ext
+                → {P : 𝓥 ̇ }
                   (Xt : 𝑻 {𝓤})
                   (εt : 𝓙 R Xt)
                   (q : Path Xt → R)
                   (f : Path Xt → P)
                 → sequenceᴶ (R × P) (𝓞-functor P Xt εt) (λ xs → q xs , f xs)
                 ＝ sequenceᴶ R εt q
-lemma-𝓞-functor         []       ⟨⟩        q f = refl
-lemma-𝓞-functor {𝓥} {P} (X ∷ Xf) (ε :: εf) q f = I
+lemma-𝓞-functor fe         []       ⟨⟩        q f = refl
+lemma-𝓞-functor fe {P} (X ∷ Xf) (ε :: εf) q f = I
   where
    R' = R × P
 
@@ -74,7 +74,7 @@ lemma-𝓞-functor {𝓥} {P} (X ∷ Xf) (ε :: εf) q f = I
    x₁ = ε (λ x → subpred q x (δ  x (subpred q  x)))
 
    IH : (x : X) → δ' x (subpred q' x) ＝ δ x (subpred q  x)
-   IH x = lemma-𝓞-functor (Xf x) (εf x) (subpred q x) (subpred f x)
+   IH x = lemma-𝓞-functor fe (Xf x) (εf x) (subpred q x) (subpred f x)
 
    e : x₀ ＝ x₁
    e = ap ε (dfunext fe (λ x → ap (subpred q x) (IH x)))
@@ -115,8 +115,8 @@ coincide:
 
 \begin{code}
 
-  lemma : sequenceᴶ R' εt' q' ＝ sequenceᴶ R εt q
-  lemma = lemma-𝓞-functor Xt εt q id
+  lemma : Fun-Ext → sequenceᴶ R' εt' q' ＝ sequenceᴶ R εt q
+  lemma fe = lemma-𝓞-functor fe Xt εt q id
 
   private
    G : Game R
@@ -138,10 +138,11 @@ optimal outcome of G'.
     G' = game Xt q' ϕt'
 
    theorem
-    : Attains R  εt  ϕt
+    : Fun-Ext
+    → Attains R  εt  ϕt
     → Attains R' εt' ϕt'
     → (optimal-outcome R G , sequenceᴶ R εt q) ＝ optimal-outcome R' G'
-   theorem a a'
+   theorem fe a a'
     = optimal-outcome R G , sequenceᴶ R εt q        ＝⟨ I ⟩
       q (sequenceᴶ R εt q) , sequenceᴶ R εt q       ＝⟨ II ⟩
       q (sequenceᴶ R' εt' q') , sequenceᴶ R' εt' q' ＝⟨ refl ⟩
@@ -150,7 +151,7 @@ optimal outcome of G'.
        where
         I   = ap (_, sequenceᴶ R εt q)
                  ((selection-strategy-corollary R fe G εt a)⁻¹)
-        II  = ap (λ - → q - , -) (lemma ⁻¹)
+        II  = ap (λ - → q - , -) ((lemma fe)⁻¹)
         III = selection-strategy-corollary R' fe G' εt' a'
 
 \end{code}
@@ -162,17 +163,19 @@ quantifiers, provided εt' attains ϕt.
 \begin{code}
 
    products-of-selection-functions-via-products-of-quantifiers
-    : Attains R  εt  ϕt
+    : Fun-Ext
+    → Attains R  εt  ϕt
     → Attains R' εt' ϕt'
     → sequenceᴶ R εt q ＝ pr₂ (sequenceᴷ R' ϕt' q')
-   products-of-selection-functions-via-products-of-quantifiers a a'
-    = ap pr₂ (theorem a a')
+   products-of-selection-functions-via-products-of-quantifiers fe a a'
+    = ap pr₂ (theorem fe a a')
 
    optimal-outcomes-coincide
-    : Attains R  εt  ϕt
+    : Fun-Ext
+    → Attains R  εt  ϕt
     → Attains R' εt' ϕt'
     → optimal-outcome R G ＝ pr₁ (optimal-outcome R' G')
-   optimal-outcomes-coincide a a'
-    = ap pr₁ (theorem a a')
+   optimal-outcomes-coincide fe a a'
+    = ap pr₁ (theorem fe a a')
 
 \end{code}
