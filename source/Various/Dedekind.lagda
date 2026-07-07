@@ -2,6 +2,11 @@ Martin Escardo, 20th December 2021
 
 Some thoughts about Dedekind reals.
 
+A proper development of Dedekind reals is at Dedekind.index, by Andrew
+Sneap, started March 2021. Here we duplicate some definitions, and the
+aim is to explore ideas about Dedekind reals, and not to define a
+library of Dedekind reals, like Andrew has done.
+
 A Dedekind real in constructive type theory is defined as a triple
 (L , U , p) where L and U are data, namely given sets of rational
 numbers, and p is property of (L , U).
