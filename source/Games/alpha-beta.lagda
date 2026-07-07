@@ -319,11 +319,11 @@ module example₁ where
  wikipedia-optimal-outcome＝ : wikipedia-optimal-outcome ＝ 6
  wikipedia-optimal-outcome＝ = refl
 
- {- Comment out because it is slow:
+{- Comment out because it is slow (8s in a Mac M4):
 
- wikipedia-optimal-play＝ : wikipedia-optimal-play ＝ (𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
+ wikipedia-optimal-play＝ : wikipedia-optimal-play ＝ (𝟏 ,  𝟎 , 𝟎 , 𝟎 , ⟨⟩)
  wikipedia-optimal-play＝ = refl
- -}
+-}
 
 \end{code}
 
