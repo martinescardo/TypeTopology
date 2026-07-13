@@ -37,7 +37,7 @@ import Ordinals.Maps
 import Ordinals.MultiplicationProperties      -- by [2]
 import Ordinals.NotationInterpretation
 import Ordinals.Notions
-import Ordinals.Omega                        -- by [2]
+import Ordinals.Omega                         -- by [2]
 import Ordinals.OrdinalOfOrdinals
 import Ordinals.OrdinalOfOrdinalsInfima       -- by [6]
 import Ordinals.OrdinalOfOrdinalsSuprema     -- by [3]
@@ -45,7 +45,7 @@ import Ordinals.OrdinalOfTruthValues
 import Ordinals.Propositions
 import Ordinals.ShulmanTaboo
 import Ordinals.SupSum
-import Ordinals.Taboos                       -- by [3]
+import Ordinals.Taboos                        -- by [3]
 import Ordinals.ToppedArithmetic
 import Ordinals.ToppedType
 import Ordinals.TotallySeparated
@@ -58,7 +58,7 @@ import Ordinals.WellOrderArithmetic
 import Ordinals.WellOrderExtension
 import Ordinals.WellOrderTransport
 import Ordinals.WellOrderingPrinciple
-import Ordinals.WellOrderingTaboo            -- by [4]
+import Ordinals.WellOrderingTaboo             -- by [4]
 
 \end{code}
 

@@ -14,6 +14,12 @@ data _＝_ {𝓤} {X : 𝓤 ̇ } : X → X → 𝓤 ̇ where
 
 syntax -Id X x y = x ＝[ X ] y
 
-{-# BUILTIN EQUALITY _＝_ #-}
+\end{code}
+
+We don't want built-in equality.
+
+\begin{code}
+
+-- {-# BUILTIN EQUALITY _＝_ #-}
 
 \end{code}
