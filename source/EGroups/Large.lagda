@@ -148,3 +148,5 @@ there-is-a-large-egroup-if-there-is-a-large-set (A , A-is-set , ls , A-is-large)
  = large-egroup-with-no-small-copy A A-is-set ls A-is-large
 
 \end{code}
+
+TODO. Is the sethood assumption necessary?
