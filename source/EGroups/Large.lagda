@@ -41,3 +41,15 @@ free-egroup-is-large {𝓤} A =
   open free-group-construction A
 
 \end{code}
+
+TODO. Fill this proof.
+
+-- \begin{code}
+
+large-group-with-no-small-copy : (Σ A ꞉ 𝓤 ⁺ ̇ , is-large A
+                                              × is-locally-small A)
+                               → Σ 𝓕 ꞉ EGroup (𝓤 ⁺) (𝓤 ⁺) , ((𝓖 : EGroup 𝓤 𝓤) → ¬ (𝓖 ≅ 𝓕))
+
+large-group-with-no-small-copy {𝓤} (A , A-is-large , A-ls) = {!!}
+
+-- \end{code}
