@@ -42,7 +42,8 @@ free-egroup-is-large {𝓤} A =
 
 \end{code}
 
-TODO. Fill this proof.
+TODO. Fill this proof. The local smallness assumption may not be
+needed in the setoid world.
 
 -- \begin{code}
 
