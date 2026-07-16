@@ -1412,39 +1412,23 @@ Lemma[free-groups-from-general-set-quotients] pt fe ℓ sq eff A =
 (*) Notice that the assumption that A is a set is not needed for η to
 be small in this case, but it is needed for η to be an embedding.
 
-We now proceed to the proof of Theorem₁, which requires an enhancement
-of the above proof.
-
 The assumptions _＝₀_, refl₀ and from-＝₀ in the following module
 parameters are a slight weakening of the local smallness condition on
 the type A.
 
 \begin{code}
 
-module resize-universal-map
-        (fe : Fun-Ext)
-        (pe : Prop-Ext)
-        (pt : propositional-truncations-exist)
+module free-group-construction-reduction
         {𝓤        : Universe}
         (A        : 𝓤 ⁺ ̇ )
         (_＝₀_    : A → A → 𝓤 ̇ )
         (refl₀    : (a : A) → a ＝₀ a)
         (from-＝₀ : (a b : A) → a ＝₀ b → a ＝ b)
-        (ℓ : Universe → Universe)
-        (sq : general-set-quotients-exist ℓ)
-        (η/-relates-identified-points : are-effective sq)
        where
 
  open free-group-construction A
 
  𝓤⁺  = 𝓤 ⁺
- 𝓤⁺⁺ = 𝓤⁺ ⁺
-
- fe' : FunExt
- fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
-
- pe' : PropExt
- pe' 𝓤 = pe {𝓤}
 
 \end{code}
 
@@ -1626,6 +1610,86 @@ corresponding notion of reduct for such chains:
 
 \end{code}
 
+\begin{code}
+
+ generator : FA → 𝓤⁺ ̇
+ generator s = Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , fiber η (chain-reduct s n ρ)
+
+ generator-is-small : (s : FA) → generator s is 𝓤 small
+ generator-is-small s =
+  Σ-is-small
+   (native-size ℕ)
+   (λ n → Σ-is-small
+           (native-size (redex-chain n s))
+           (λ ρ → η-has-any-size 𝓤 (chain-reduct s n ρ)))
+
+ gen-a : {s : FA} → generator s → A
+ gen-a (n , ρ , a , p) = a
+
+ ∿→generator⁺ : {a : A} {s : FA}
+              → η a ∿ s → Σ γ ꞉ generator s , (gen-a γ ＝ a)
+ ∿→generator⁺ {a} {s} e = δ (d c)
+  where
+   c : Σ u ꞉ FA , (η a ▷⋆ u) × (s ▷⋆ u)
+   c = from-∿ Theorem[Church-Rosser] (η a) s e
+
+   d : type-of c → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ＝ η a
+   d (u , r , r₁) = δ r₂
+    where
+     p : η a ＝ u
+     p = η-irreducible⋆ r
+
+     r₂ : s  ▷⋆ η a
+     r₂ = transport (s ▷⋆_) (p ⁻¹) r₁
+
+     δ : s  ▷⋆ η a
+       → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ＝ η a
+     δ (n , r₃) = (n , chain-lemma← s (η a) n r₃)
+
+   δ : type-of (d c) → Σ γ ꞉ generator s , (gen-a γ ＝ a)
+   δ (n , ρ , p) = (n , ρ , a , (p ⁻¹)) , refl
+
+ ∿→generator : {a : A} {s : FA} → η a ∿ s → generator s
+ ∿→generator e = pr₁ (∿→generator⁺ e)
+
+ gen-a-∿→generator : {a : A} {s : FA} (e : η a ∿ s)
+                   → gen-a (∿→generator e) ＝ a
+ gen-a-∿→generator e = pr₂ (∿→generator⁺ e)
+
+\end{code}
+
+We now proceed to the proof of Theorem₁, which requires an enhancement
+of the above proof.
+
+\begin{code}
+
+module resize-universal-map
+        (fe : Fun-Ext)
+        (pe : Prop-Ext)
+        (pt : propositional-truncations-exist)
+        {𝓤        : Universe}
+        (A        : 𝓤 ⁺ ̇ )
+        (_＝₀_    : A → A → 𝓤 ̇ )
+        (refl₀    : (a : A) → a ＝₀ a)
+        (from-＝₀ : (a b : A) → a ＝₀ b → a ＝ b)
+        (ℓ : Universe → Universe)
+        (sq : general-set-quotients-exist ℓ)
+        (η/-relates-identified-points : are-effective sq)
+       where
+
+ open free-group-construction A
+ open free-group-construction-reduction A _＝₀_ refl₀ from-＝₀
+
+ 𝓤⁺⁺ = 𝓤⁺ ⁺
+
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+
+ pe' : PropExt
+ pe' 𝓤 = pe {𝓤}
+
+\end{code}
+
 Now notice that the native size of ηᴳʳᵖ is large.
 
 \begin{code}
@@ -1661,10 +1725,9 @@ We now need to assume that A is a set to be able to proceed.
 
 \end{code}
 
-*****
-Using this, next we want to reduce the size of the type
-Σ a ꞉ A , η a ∾ s, which we informally refer to as "the ∾-fiber of s
-over η". First, this type is a proposition:
+Using this, next we want to reduce the size of the type Σ a ꞉ A , η a ∾ s,
+which we informally refer to as "the ∾-fiber of s over η". First,
+this type is a proposition:
 
 \begin{code}
 
@@ -1686,45 +1749,14 @@ over η". First, this type is a proposition:
     γ : (a , e) ＝ (a' , e')
     γ = to-subtype-＝ (λ x → ∥∥-is-prop) β
 
-  generator : FA → 𝓤⁺ ̇
-  generator s = Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , fiber η (chain-reduct s n ρ)
-
   is-generator : FA → 𝓤⁺ ̇
   is-generator s = ∥ generator s ∥
 
   being-generator-is-small : (s : FA) → is-generator s is 𝓤 small
-  being-generator-is-small s =
-   ∥∥-is-small pt
-    (Σ-is-small
-      (native-size ℕ)
-      (λ n → Σ-is-small
-              (native-size (redex-chain n s))
-              (λ ρ → η-has-any-size 𝓤 (chain-reduct s n ρ))))
+  being-generator-is-small s = ∥∥-is-small pt (generator-is-small s)
 
   ∾-fiber-η-lemma→ : (s : FA) → (Σ a ꞉ A , η a ∾ s) → is-generator s
-  ∾-fiber-η-lemma→ s (a , e) = ∥∥-functor γ e
-   where
-    γ : η a ∿ s → generator s
-    γ e = δ (d c)
-     where
-      c : Σ u ꞉ FA , (η a ▷⋆ u) × (s ▷⋆ u)
-      c = from-∿ Theorem[Church-Rosser] (η a) s e
-
-      d : type-of c → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ＝ η a
-      d (u , r , r₁) = δ r₂
-       where
-        p : η a ＝ u
-        p = η-irreducible⋆ r
-
-        r₂ : s  ▷⋆ η a
-        r₂ = transport (s ▷⋆_) (p ⁻¹) r₁
-
-        δ : s  ▷⋆ η a
-          → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ＝ η a
-        δ (n , r₃) = (n , chain-lemma← s (η a) n r₃)
-
-      δ : type-of (d c) → generator s
-      δ (n , ρ , p) = n , ρ , a , (p ⁻¹)
+  ∾-fiber-η-lemma→ s (a , e) = ∥∥-functor ∿→generator e
 
   ∾-fiber-η-lemma← : (s : FA) → is-generator s → (Σ a ꞉ A , η a ∾ s)
   ∾-fiber-η-lemma← s = ∥∥-rec (the-∾-fibers-of-η-are-props s) γ
@@ -1842,6 +1874,7 @@ module resize-free-group
   (large-effective-set-quotients pt fe pe)
 
  open free-group-construction A
+ open free-group-construction-reduction A _＝₀_ refl₀ from-＝₀
 
 \end{code}
 
