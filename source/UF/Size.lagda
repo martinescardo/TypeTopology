@@ -1018,6 +1018,28 @@ universes-are-locally-small ua X Y = (X ≃ Y) , ≃-sym (univalence-≃ ua X Y)
 
 \end{code}
 
+Small types are locally small. More generally:
+
+\begin{code}
+
+identity-types-of-small-types-are-small
+ : {X : 𝓥 ̇ }
+ → X is 𝓤 small
+ → (x y : X) → (x ＝ y) is 𝓤 small
+identity-types-of-small-types-are-small {𝓥} {𝓤} {X} (X' , 𝕖) x y =
+ ≃-size-contravariance e (native-size (⌜ 𝕖 ⌝⁻¹ x ＝ ⌜ 𝕖 ⌝⁻¹ y))
+ where
+  e : (x ＝ y) ≃ (⌜ 𝕖 ⌝⁻¹ x ＝ ⌜ 𝕖 ⌝⁻¹ y)
+  e = ap ⌜ ≃-sym 𝕖 ⌝ , ap-is-equiv ⌜ ≃-sym 𝕖 ⌝ (⌜⌝-is-equiv (≃-sym 𝕖))
+
+small-types-are-locally-small
+ : {X : 𝓤 ⁺ ̇ }
+ → is-small X
+ → is-locally-small X
+small-types-are-locally-small = identity-types-of-small-types-are-small
+
+\end{code}
+
 General machinery for dealing with local smallness:
 
 \begin{code}

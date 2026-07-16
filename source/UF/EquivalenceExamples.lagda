@@ -11,6 +11,7 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import UF.Base
 open import UF.Equiv
+open import UF.Sets
 open import UF.FunExt
 open import UF.Lower-FunExt
 open import UF.PropIndexedPiSigma
@@ -951,6 +952,38 @@ pr₁-fiber-equiv {𝓤} {𝓥} {X} {Y} x =
   fiber pr₁ x                   ≃⟨ Σ-assoc ⟩
   (Σ x' ꞉ X , Y x' × (x' ＝ x))  ≃⟨ right-Id-equiv x ⟩
   Y x                           ■
+
+\end{code}
+
+If every element of a Σ-type has the same first component a₀ and the
+index type is a set, then the total space is equivalent to the fiber
+at a₀.
+
+\begin{code}
+
+total-space-is-fiber : {A : 𝓤 ̇ }
+                     → is-set A
+                     → {B : A → 𝓥 ̇ } (a₀ : A)
+                     → ((a : A) → B a → a ＝ a₀)
+                     → (Σ B) ≃ B a₀
+total-space-is-fiber A-is-set {B = B} a₀ ρ = qinveq f (g , gf , fg)
+ where
+  f : Σ B → B a₀
+  f (a , b) = transport B (ρ a b) b
+
+  g : B a₀ → Σ B
+  g b = a₀ , b
+
+  gf : (σ : Σ B) → g (f σ) ＝ σ
+  gf (a , b) = (to-Σ-＝ (ρ a b , refl)) ⁻¹
+
+  fg : (b : B a₀) → f (g b) ＝ b
+  fg b = transport B (ρ a₀ b) b  ＝⟨ I ⟩
+         transport B refl b      ＝⟨ refl ⟩
+         b                       ∎
+   where
+    I : transport B (ρ a₀ b) b ＝ transport B refl b
+    I = ap (λ - → transport B - b) (A-is-set (ρ a₀ b) refl)
 
 \end{code}
 

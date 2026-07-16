@@ -1623,11 +1623,11 @@ corresponding notion of reduct for such chains:
            (native-size (redex-chain n s))
            (λ ρ → η-has-any-size 𝓤 (chain-reduct s n ρ)))
 
- gen-a : {s : FA} → generator s → A
- gen-a (n , ρ , a , p) = a
+ underlying-generator : {s : FA} → generator s → A
+ underlying-generator (n , ρ , a , p) = a
 
  ∿→generator⁺ : {a : A} {s : FA}
-              → η a ∿ s → Σ γ ꞉ generator s , (gen-a γ ＝ a)
+              → η a ∿ s → Σ γ ꞉ generator s , (underlying-generator γ ＝ a)
  ∿→generator⁺ {a} {s} e = δ (d c)
   where
    c : Σ u ꞉ FA , (η a ▷⋆ u) × (s ▷⋆ u)
@@ -1646,15 +1646,15 @@ corresponding notion of reduct for such chains:
        → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ＝ η a
      δ (n , r₃) = (n , chain-lemma← s (η a) n r₃)
 
-   δ : type-of (d c) → Σ γ ꞉ generator s , (gen-a γ ＝ a)
+   δ : type-of (d c) → Σ γ ꞉ generator s , (underlying-generator γ ＝ a)
    δ (n , ρ , p) = (n , ρ , a , (p ⁻¹)) , refl
 
  ∿→generator : {a : A} {s : FA} → η a ∿ s → generator s
  ∿→generator e = pr₁ (∿→generator⁺ e)
 
- gen-a-∿→generator : {a : A} {s : FA} (e : η a ∿ s)
-                   → gen-a (∿→generator e) ＝ a
- gen-a-∿→generator e = pr₂ (∿→generator⁺ e)
+ underlying-generator-∿→generator : {a : A} {s : FA} (e : η a ∿ s)
+                                  → underlying-generator (∿→generator e) ＝ a
+ underlying-generator-∿→generator e = pr₂ (∿→generator⁺ e)
 
 \end{code}
 
