@@ -62,6 +62,7 @@ import UF.Section-Embedding
 import UF.SemistrictIdentity
 import UF.SetTrunc
 import UF.Sets
+import UF.SetsExamples
 import UF.Sets-Properties
 import UF.SequentialColimits         -- by [2]
 import UF.SigmaIdentity
