@@ -151,3 +151,5 @@ there-is-a-large-egroup-if-there-is-a-large-type (A , ls , A-is-large)
  = large-egroup-with-no-small-copy A ls A-is-large
 
 \end{code}
+
+Question. Is there a large locally small type a Spartan MLTT?
