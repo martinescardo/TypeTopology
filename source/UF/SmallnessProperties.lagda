@@ -121,6 +121,16 @@ id-has-any-size 𝓦 {𝓤} = equivs-have-any-size id (id-is-equiv 𝓤)
   γ : fiber (g ∘ f) z is 𝓣 ⊔ 𝓣' small
   γ = domain ⌜ δ ⌝ , δ
 
+maps-between-small-types-are-small-maps
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+ → X is 𝓦 small
+ → Y is 𝓦 small
+ → f is 𝓦 small-map
+maps-between-small-types-are-small-maps f X-small Y-small y =
+ Σ-is-small
+  X-small
+  (λ x → identity-types-of-small-types-are-small Y-small (f x) y)
+
 NatΣ-is-small : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
                 (τ : Nat A B)
               → ((x : X) → τ x is 𝓣 small-map)

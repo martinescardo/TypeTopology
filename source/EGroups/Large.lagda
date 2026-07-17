@@ -1,7 +1,7 @@
 Martin Escardo, July 2026.
 
 This is the egroup counterpart of Groups.Large. For a large, locally
-small set A of generators, the free egroup on A is large: no egroup
+small type A of generators, the free egroup on A is large: no egroup
 with a small carrier is isomorphic to it. This is developed in an
 Spartan MLTT.
 
@@ -14,7 +14,6 @@ module EGroups.Large where
 open import MLTT.Spartan
 open import UF.Equiv hiding (_≅_)
 open import UF.EquivalenceExamples
-open import UF.Sets
 open import UF.Size
 open import UF.SmallnessProperties
 
@@ -33,7 +32,6 @@ local smalless of A.
 
 module _ {𝓤 : Universe}
          (A : 𝓤 ⁺ ̇ )
-         (A-is-set : is-set A)
        where
 
  open free-group-construction A
@@ -73,36 +71,38 @@ module _ {𝓤 : Universe}
      Φ : fiber κ y → generator (f y)
      Φ (a , p) = ∿→generator (e a p)
 
+     ug : generator (f y) → A
+     ug = underlying-generator
+
+     H : ug ∘ Φ ∼ pr₁
+     H (a , p) = underlying-generator-∿→generator (e a p)
+
      Φ-is-small-map : (γ : generator (f y)) → fiber Φ γ is 𝓤 small
-     Φ-is-small-map γ = ≃-size-contravariance II III
+     Φ-is-small-map γ = ≃-size-contravariance
+                         (≃-sym (pr₁-fiber-equiv (γ , refl)))
+                         (maps-between-small-types-are-small-maps
+                           pr₁ total-is-small fiber-ug-is-small (γ , refl))
       where
        a₀ : A
-       a₀ = underlying-generator γ
+       a₀ = ug γ
 
-       B : A → 𝓤 ⁺ ̇
-       B a = Σ p ꞉ κ a ＝ y , (Φ (a , p) ＝ γ)
+       fiber-ug-is-small : fiber ug a₀ is 𝓤 small
+       fiber-ug-is-small = Σ-is-small
+                            (generator-is-small (f y))
+                            (λ γ' → ls (ug γ') a₀)
 
-       ρ : (a : A) → B a → a ＝ a₀
-       ρ a (p , q) =
-        a                                          ＝⟨ ρ₀ ⟩
-        underlying-generator (∿→generator (e a p)) ＝⟨ ρ₁ ⟩
-        underlying-generator γ                     ＝⟨refl⟩
-        a₀                                         ∎
-         where
-          ρ₀ = (underlying-generator-∿→generator (e a p))⁻¹
-          ρ₁ = ap underlying-generator q
-
-       I : fiber Φ γ ≃ Σ B
-       I = Σ-assoc
-
-       II : fiber Φ γ ≃ B a₀
-       II = I ● total-space-is-fiber A-is-set a₀ ρ
-
-       III : B a₀ is 𝓤 small
-       III = Σ-is-small
-              (native-size (κ a₀ ＝ y))
-              (λ p → identity-types-of-small-types-are-small
-                      (generator-is-small (f y)) (Φ (a₀ , p)) γ)
+       total-is-small : (Σ (w , _) ꞉ fiber ug a₀ , fiber Φ w) is 𝓤 small
+       total-is-small = ≃-size-contravariance e₁ (native-size (κ a₀ ＝ y))
+        where
+         e₁ : (Σ (w , _) ꞉ fiber ug a₀ , fiber Φ w) ≃ (κ a₀ ＝ y)
+         e₁ = (Σ (w , _) ꞉ fiber ug a₀ , fiber Φ w) ≃⟨ I ⟩
+              fiber (ug ∘ Φ) a₀                     ≃⟨ II ⟩
+              fiber pr₁ a₀                          ≃⟨ III ⟩
+              (κ a₀ ＝ y)                           ■
+          where
+           I   = ≃-sym (fiber-of-composite Φ ug a₀)
+           II  = ∼-fiber-≃ H a₀
+           III = pr₁-fiber-equiv a₀
 
      κ-fiber-is-small : fiber κ y is 𝓤 small
      κ-fiber-is-small = size-contravariance Φ Φ-is-small-map
@@ -128,25 +128,26 @@ module _ {𝓤 : Universe}
 \end{code}
 
 We are not done yet. The objective is to show that there are more
-egroups in the next universe in a Spartan MLTT, but I don't see how to
-construct a large set in a Spartan MLTT, to apply the above, although
-large types can be constructed, as shown in Various.LawvereFTP in the
-module generalized-Coquand.
+egroups in the next universe in a Spartan MLTT. Large types can be
+constructed in a Spartan MLTT, as shown in Various.LawvereFPT in the
+module generalized-Coquand, where the universe 𝓤 ̇ is shown to be
+large. What is missing in a Spartan MLTT is local smallness: the
+universe is locally small under univalence, but I don't see how to
+make it locally small in a Spartan MLTT, or how to find any other
+large, locally small type in a Spartan MLTT.
 
 The best we can currently do in a Spartan MLTT without HoTT/UF
 assumptions is the following conditional statement: if there is a
-large, locally small set, then there is an egroup in the next universe
+large, locally small type, then there is an egroup in the next universe
 with no small copy.
 
 \begin{code}
 
-there-is-a-large-egroup-if-there-is-a-large-set
+there-is-a-large-egroup-if-there-is-a-large-type
  : {𝓤 : Universe}
- → (Σ A ꞉ 𝓤 ⁺ ̇ , is-set A × is-locally-small A × is-large A)
+ → (Σ A ꞉ 𝓤 ⁺ ̇ , is-locally-small A × is-large A)
  → Σ 𝓕 ꞉ EGroup (𝓤 ⁺) (𝓤 ⁺) , ((𝓖 : EGroup 𝓤 𝓤) → ¬ (𝓖 ≅ 𝓕))
-there-is-a-large-egroup-if-there-is-a-large-set (A , A-is-set , ls , A-is-large)
- = large-egroup-with-no-small-copy A A-is-set ls A-is-large
+there-is-a-large-egroup-if-there-is-a-large-type (A , ls , A-is-large)
+ = large-egroup-with-no-small-copy A ls A-is-large
 
 \end{code}
-
-TODO. Is the sethood assumption necessary?
