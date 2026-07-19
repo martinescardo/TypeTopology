@@ -39,7 +39,8 @@ import Ordinals.NotationInterpretation
 import Ordinals.Notions
 import Ordinals.Omega                         -- by [2]
 import Ordinals.OrdinalOfOrdinals
-import Ordinals.OrdinalOfOrdinalsSuprema      -- by [3]
+import Ordinals.OrdinalOfOrdinalsInfima       -- by [6]
+import Ordinals.OrdinalOfOrdinalsSuprema     -- by [3]
 import Ordinals.OrdinalOfTruthValues
 import Ordinals.Propositions
 import Ordinals.ShulmanTaboo
@@ -66,3 +67,4 @@ import Ordinals.WellOrderingTaboo             -- by [4]
 [3] Tom de Jong
 [4] Tom de Jong (after Andrew Swan)
 [5] Alice Laroche
+[6] Nicolai Kraus
