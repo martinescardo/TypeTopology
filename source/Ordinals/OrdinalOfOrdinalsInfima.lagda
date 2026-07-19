@@ -17,10 +17,10 @@ in the original family.
 
 The construction is this:
 
-    Inf F := Σ f ꞉ ((i : I) → ⟨ F i ⟩) , (∀ j k → F j ↓ f j ≃ₒ F k ↓ f k),
+    inf F := Σ f ꞉ ((i : I) → ⟨ F i ⟩) , (∀ j k → F j ↓ f j ≃ₒ F k ↓ f k),
 
 ordered pointwise by (f , _) ≺ (g , _) := ∀ i → f i ≺ g i. This file proves that
-Inf F is indeed the infimum.
+inf F is indeed the infimum.
 
 Note: The construction of infima requires only few assumptions, namely
 propositional truncation and univalence. The (known) constructions of *suprema*,
@@ -40,7 +40,7 @@ from infima, cannot avoid the size problem, and we do not expect that the
 additional requirements for the suprema construction discussed above can be
 avoided.
 
-Caveat: There is also a different notion of Infimum by Martin Escardo in the file
+Caveat: There is also a different notion of infimum by Martin Escardo in the file
 Ordinals.InfProperty.lagda from 2012. This notion refers to an infimum within an
 ordinal, not necessarily the ordinal of ordinals.
 
@@ -85,7 +85,7 @@ open import UF.Size
 
 \end{code}
 
-Some basic lemmas that help proving that a type equipped with relation is an
+Some basic lemmas that help proving that a type equipped with a relation is an
 ordinal.
 
 It works like this: Let α be an ordinal, X a type with a (prop-valued)
