@@ -339,6 +339,7 @@ Much further below, we show that the unnegated conclusion is a constructive
 taboo.
 
 \begin{code}
+
  well-founded-gives-¬¬-inhabited : is-well-founded _≺_ → ¬¬ I
  well-founded-gives-¬¬-inhabited w n =
   irreflexive _≺_ x₀ (w x₀) x₀-is-reflexive
@@ -722,8 +723,8 @@ module _ {𝓤 : Universe} {I : 𝓤 ̇ } {J : I → 𝓤 ̇ }
   inner : I → Ordinal 𝓤
   inner i = inf (ε i) (λ j → F (i , j))
 
- inf-Fubini : inf δᴶ F ＝ inf δᴵ inner
- inf-Fubini = ⊴-antisym (inf δᴶ F) (inf δᴵ inner) below above
+ inf-commute : inf δᴶ F ＝ inf δᴵ inner
+ inf-commute = ⊴-antisym (inf δᴶ F) (inf δᴵ inner) below above
   where
    below : inf δᴶ F ⊴ inf δᴵ inner
    below = inf-is-greatest-lower-bound δᴵ inner (inf δᴶ F)
