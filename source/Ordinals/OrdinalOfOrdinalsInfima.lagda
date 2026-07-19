@@ -27,7 +27,7 @@ propositional truncation and univalence. The (known) constructions of *suprema*,
 implemented in Ordinals.OrdinalOfOrdinalsSuprema, require more:
 The construction of upper bounds in [Lemma 10.3.22, Uni2013], which Tom de Jong
 proved to be a least upper bound and thus a supremum, requires set quotients.
-An alternative constructions of suprema, due to Martin Escardo and implemented
+An alternative construction of suprema, due to Martin Escardo and implemented
 by Tom de Jong, requires set replacement (a condition equivalent to having set
 quotients).
 
@@ -440,7 +440,7 @@ Can the hypothesis ∥ I ∥ be weakened to ¬¬ I in the argument that inf F is
 ordinal? The construction uses inhabitedness only to prove well-foundedness, and
 by well-order-gives-¬¬-inhabited the weaker ¬¬ I is at least necessary.
 
-We now show two that the implication
+We now show that the implication
   "inf F is an ordinal => ∥ I ∥"
 is a taboo; it implies LEM.
 
