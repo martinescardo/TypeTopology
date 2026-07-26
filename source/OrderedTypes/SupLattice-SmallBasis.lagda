@@ -35,9 +35,18 @@ module OrderedTypes.SupLattice-SmallBasis
         (fe : Fun-Ext)
        where
 
-open import Locales.Frame pt fe hiding (⟨_⟩ ; join-of)
+private
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+
+open import Locales.Frame pt fe hiding
+ (⟨_⟩ ; join-of)
 open import Slice.Family
+open import UF.ImageAndSurjection pt
 open import OrderedTypes.SupLattice pt fe
+open import OrderedTypes.InfLattice fe pt hiding
+ (⟨_⟩ ; order-of ; partial-orderedness-of ; is-monotone-endomap
+  ; transitivity-of)
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
@@ -110,6 +119,13 @@ boiler plate that will allow us to use a small basis with greater efficiency.
   ≤ᴮ-is-prop-valued {b} {x} =
    equiv-to-prop ≤ᴮ-≃-≤ (holds-is-prop ((β b) ≤ x))
 
+  ≤ᴮ-≤-transitive : {b : B} {x y : ⟨ L ⟩}
+                  → b ≤ᴮ x
+                  → (x ≤ y) holds
+                  → b ≤ᴮ y
+  ≤ᴮ-≤-transitive {b} {x} {y} o o'
+   = ≤-to-≤ᴮ (transitivity-of L (β b) x y (≤ᴮ-to-≤ o) o')
+
   small-↓ᴮ : ⟨ L ⟩ → 𝓥 ̇
   small-↓ᴮ x = Σ b ꞉ B , b ≤ᴮ x
 
@@ -145,4 +161,40 @@ boiler plate that will allow us to use a small basis with greater efficiency.
                                       (small-↓ᴮ x , small-↓ᴮ-inclusion x))
                         → (x ≤ u') holds
   is-least-upper-boundᴮ x = pr₂ (is-supᴮ x)
+
 \end{code}
+
+We show that a sup-lattice with a basis is an inf-Lattice. 
+
+\begin{code}
+ 
+sup-lattice-is-inf-lattice : (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                             {B : 𝓥 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+                           → inf-lattice-structure 𝓤 𝓦 𝓥 ⟨ L ⟩
+sup-lattice-is-inf-lattice {𝓤} {𝓦} {𝓥} L {B} β h
+ = ((order-of L , I) , partial-orderedness-of L , II)
+ where
+  open Infs (order-of L)
+  open is-basis h
+  I : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
+  I (D , α)
+   = ⋁⟨ L ⟩ ((Σ x ꞉ B , ((d : D) → x ≤ᴮ α d)) , β ∘ pr₁)
+  II : (U : Fam 𝓥 ⟨ L ⟩) → ((I U) is-glb-of U) holds
+  II (D , α) = (III , IV)
+   where
+    III : (I (D , α) is-a-lower-bound-of (D , α)) holds
+    III i = join-is-least-upper-bound-of L
+              ((Σ x ꞉ B , ((d : D) → x ≤ᴮ α d)) , β ∘ pr₁)
+               (α i , λ (x , o) → ≤ᴮ-to-≤ (o i))
+    IV : (Ɐ (u′ , _) ꞉ lower-bound (D , α) , (u′ ≤⟨ L ⟩ I (D , α))) holds
+    IV (l , lb) = transport (λ - → (- ≤⟨ L ⟩ I (D , α)) holds)
+                   (is-supᴮ' l ⁻¹)
+                   (joins-preserve-containment L β
+                   {λ x → (x ≤ᴮ l , ≤ᴮ-is-prop-valued)}
+                   {λ x → Ɐ i ꞉ D , ((x ≤ᴮ α i) , ≤ᴮ-is-prop-valued)}
+                   (λ z z∈↓l i → ≤ᴮ-≤-transitive z∈↓l (lb i)))
+
+inf-lattice-from-sup-lattice : (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                               {B : 𝓥 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+                             → Inf-Lattice 𝓤 𝓦 𝓥
+inf-lattice-from-sup-lattice L β h = (⟨ L ⟩ , sup-lattice-is-inf-lattice L β h)
