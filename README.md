@@ -117,7 +117,7 @@ Tosun.
 
    https://doi.org/10.2178/jsl.7803040
 
-1. Martín H. Escardó. *Continuity of Gödel's system T functionals via
+1. Martín H. Escardó. *Continuity of Gödel's system T definable functionals via
    effectful forcing.* [Electronic Notes in Theoretical Computer
    Science](https://www.sciencedirect.com/journal/electronic-notes-in-theoretical-computer-science),
    Volume 298, 2013, Pages 119-141. [MFPS XXIX](https://www.cs.cornell.edu/Conferences/MFPS29/)
