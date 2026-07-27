@@ -68,8 +68,8 @@ import EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer         -- By Mart
         natural number, with its specification (the function
         generic-diagram).
 
- * The file MFPS-XXIX is implements the MFPS'2013 paper, which shows
-   that all PCF definable functions (ℕ → ℕ) → ℕ are continuous, and
+ * The file MFPS-XXIX implements the MFPS'2013 paper, which shows
+   that all system T definable functions (ℕ → ℕ) → ℕ are continuous, and
    their restriction to (ℕ → 𝟐) are uniformly continuous, using a
    dialogue tree interpretation of (combinatory) system T.
 
@@ -88,8 +88,8 @@ import EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer         -- By Mart
    But it repeats the examples given in the file MFPS-XXIX, which give
    the same numerical results.
 
-   TODO. Formulate and prove the correctness, in a new file called
-   InternalCorrectness.
+   The correctness is formulated and proved in the file
+   EffectfulForcing.Internal.Correctness.
 
  * The file WithoutOracle, written by Vincent Rahli in 2015, shows
    that it is not necessary to consider an extension of (combinatory)
