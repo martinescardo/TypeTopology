@@ -163,7 +163,6 @@ import Duploids.index
 import Dyadics.index
 import DyadicsInductive.index
 import EffectfulForcing.index
-import EGroups.index
 import Factorial.index
 import Field.index
 import Fin.index

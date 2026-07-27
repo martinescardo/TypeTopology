@@ -2,8 +2,8 @@ Martin Escardo, July 2026.
 
 The free egroup on a setoid, in pure MLTT.
 
-EGroups.FreeOnType constructs the free egroup on a *type* A of
-generators (with the identity type as the equality of
+deprecated.EGroups.FreeOnType constructs the free egroup on a *type* A
+of generators (with the identity type as the equality of
 generators). Here we construct the free egroup on a *setoid* 𝔸, which
 is the correct free-forgetful adjunction: the underlying-setoid
 functor egroups → Setoids has a left adjoint.
@@ -24,15 +24,15 @@ TODO. Generalize this, if it is worth for any particular application.
 
 {-# OPTIONS --safe --without-K #-}
 
-module EGroups.FreeOnSetoid where
+module deprecated.EGroups.FreeOnSetoid where
 
 open import MLTT.Spartan
 open import MLTT.List renaming (_∷_ to _•_ ; _++_ to _◦_ ; ++-assoc to ◦-assoc)
 
 open import Groups.Free using (module free-group-construction)
-open import EGroups.Setoid
-open import EGroups.Type
-open import EGroups.MediatingMap
+open import deprecated.EGroups.Setoid
+open import deprecated.EGroups.Type
+open import deprecated.EGroups.MediatingMap
 
 module _ (𝔸 : Setoid 𝓤 𝓤) where
 
@@ -142,9 +142,10 @@ the empty word as unit, and finv as inverse, all up to _≍_.
 
 \end{code}
 
-The universal property. Given a target egroup 𝓖 and a setoid map
-f : 𝔸 → underlying-setoid 𝓖, the extension is the mediating map h of
-EGroups.MediatingMap, which respects _≍_ because f respects the relation of 𝔸.
+The universal property. Given a target egroup 𝓖 and a setoid map f : 𝔸
+→ underlying-setoid 𝓖, the extension is the mediating map h of
+deprecated.EGroups.MediatingMap, which respects _≍_ because f respects
+the relation of 𝔸.
 
 \begin{code}
 
@@ -239,10 +240,10 @@ that both extend f agree up to the equivalence relation.
 \end{code}
 
 The universal property as an adjunction: restriction along η and
-extension are mutually inverse setoid maps between the hom-setoid out of
-the free egroup and the setoid of setoid maps from 𝔸 into the underlying
-setoid of the target. This is the free-forgetful adjunction between
-setoids and EGroups.
+extension are mutually inverse setoid maps between the hom-setoid out
+of the free egroup and the setoid of setoid maps from 𝔸 into the
+underlying setoid of the target. This is the free-forgetful adjunction
+between setoids and deprecated.EGroups.
 
 \begin{code}
 

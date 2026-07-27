@@ -6,12 +6,13 @@ For a type A of generators, we construct the free egroup on A and
 prove its universal property. Unlike the HoTT/UF construction in
 Groups.Free, this needs no function extensionality, propositional
 truncation, quotients or univalence. The underlying type of the free
-egroup is simply the type FA of words, and its equivalence relation is _∿_,
-the symmetric-reflexive-transitive closure of the reduction
+egroup is simply the type FA of words, and its equivalence relation is
+_∿_, the symmetric-reflexive-transitive closure of the reduction
 relation. There is no quotient because we are working with setoids:
-the mediating map into a target egroup is the map h of EGroups.MediatingMap
-directly, and its invariance under _∿_ is established from the
-Church-Rosser property, with no propositional truncation.
+the mediating map into a target egroup is the map h of
+deprecated.EGroups.MediatingMap directly, and its invariance under _∿_
+is established from the Church-Rosser property, with no propositional
+truncation.
 
 Finally, we phrase the universal property as an adjunction: restriction
 along the insertion of generators is a setoid isomorphism between the
@@ -22,15 +23,15 @@ functions from the generators into the underlying setoid of the target.
 
 {-# OPTIONS --safe --without-K #-}
 
-module EGroups.FreeOnType where
+module deprecated.EGroups.FreeOnType where
 
 open import MLTT.Spartan
 open import MLTT.List renaming (_∷_ to _•_ ; _++_ to _◦_ ; ++-assoc to ◦-assoc)
 
 open import Groups.Free using (module free-group-construction)
-open import EGroups.Setoid
-open import EGroups.Type
-open import EGroups.MediatingMap
+open import deprecated.EGroups.Setoid
+open import deprecated.EGroups.Type
+open import deprecated.EGroups.MediatingMap
 
 \end{code}
 
@@ -57,7 +58,7 @@ free-egroup A =
 \end{code}
 
 The universal property. Given a target egroup 𝓖 and a map f : A → ⟨ 𝓖 ⟩,
-the extension is the mediating map h of EGroups.MediatingMap, and it is the
+the extension is the mediating map h of deprecated.EGroups.MediatingMap, and it is the
 unique homomorphism extending f, up to the equivalence relation.
 
 \begin{code}

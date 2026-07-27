@@ -2,7 +2,7 @@ Martin Escardo, July 2026.
 
 The type of egroups.
 
-An egroup is a setoid (defined in EGroups.Setoid) equipped with a
+An egroup is a setoid (defined in deprecated.EGroups.Setoid) equipped with a
 compatible group structure, that is, an operation that is a congruence
 for the equivalence relation, whose group laws hold up to the
 equivalence relation rather than up to the identity type _＝_.
@@ -22,17 +22,17 @@ with Groups.Type:
 
 {-# OPTIONS --safe --without-K #-}
 
-module EGroups.Type where
+module deprecated.EGroups.Type where
 
 open import MLTT.Spartan
-open import EGroups.Setoid
+open import deprecated.EGroups.Setoid
 
 \end{code}
 
 The axioms of a compatible group structure on a setoid S, and the
-structure and type of EGroups. As in Groups.Type, the inverse is given
-existentially, as part of the axioms, where Σ is used for existence in
-the setoid world.
+structure and type of deprecated.EGroups. As in Groups.Type, the
+inverse is given existentially, as part of the axioms, where Σ is used
+for existence in the setoid world.
 
 \begin{code}
 
@@ -129,7 +129,7 @@ is-hom G H f =
 \end{code}
 
 Some minimal group theory up to the equivalence relation, needed for
-the universal property of free EGroups. This is a transcription of the
+the universal property of free deprecated.EGroups. This is a transcription of the
 relevant parts of Groups.Type, with the identity type replaced by the
 equivalence relation and with the congruence of the operation used
 explicitly.

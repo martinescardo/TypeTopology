@@ -7,15 +7,15 @@ egroups, defined in EGroup.Type, briefly described below.
 
 {-# OPTIONS --safe --without-K #-}
 
-module EGroups.index where
+module deprecated.EGroups.index where
 
-import EGroups.Setoid
-import EGroups.Type
-import EGroups.MediatingMap
-import EGroups.FreeOnType
-import EGroups.FreeOnSetoid
-import EGroups.FromGroup
-import EGroups.Large
+import deprecated.EGroups.Setoid
+import deprecated.EGroups.Type
+import deprecated.EGroups.MediatingMap
+import deprecated.EGroups.FreeOnType
+import deprecated.EGroups.FreeOnSetoid
+import deprecated.EGroups.FromGroup
+import deprecated.EGroups.Large
 
 \end{code}
 

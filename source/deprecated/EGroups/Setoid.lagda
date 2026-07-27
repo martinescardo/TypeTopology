@@ -1,7 +1,7 @@
 Martin Escardo, July 2026.
 
-Setoids, for the development of groups in pure MLTT (see EGroups.Type
-and EGroups.FreeOnType).
+Setoids, for the development of groups in pure MLTT (see
+deprecated.EGroups.Type and deprecated.EGroups.FreeOnType).
 
 A setoid is a type equipped with an equivalence relation, given as
 data. We do *not* require the relation to be proposition-valued,
@@ -18,7 +18,7 @@ maps, setoid isomorphism, and the function setoid.
 
 {-# OPTIONS --safe --without-K #-}
 
-module EGroups.Setoid where
+module deprecated.EGroups.Setoid where
 
 open import MLTT.Spartan
 

@@ -9,15 +9,15 @@ the equivalence relation (which is an equivalence relation, given by
 refl, _⁻¹ and _∙_), and the operation is a congruence for _＝_ via ap₂.
 
 Note that we do not use that the carrier is a set: the identity type
-is an equivalence relation in the sense of EGroups.Setoid, whether or
-not it is proposition-valued, and egroups do not require the
-equivalence relation to be proposition-valued.
+is an equivalence relation in the sense of deprecated.EGroups.Setoid,
+whether or not it is proposition-valued, and egroups do not require
+the equivalence relation to be proposition-valued.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-module EGroups.FromGroup where
+module deprecated.EGroups.FromGroup where
 
 open import MLTT.Spartan
 open import UF.Base using (ap₂)
@@ -27,8 +27,8 @@ open import Groups.Type
                     inv ; inv-left ; inv-right)
              renaming (⟨_⟩ to ⟪_⟫)
 
-open import EGroups.Setoid
-open import EGroups.Type
+open import deprecated.EGroups.Setoid
+open import deprecated.EGroups.Type
 
 Group-to-EGroup : Group 𝓤 → EGroup 𝓤 𝓤
 Group-to-EGroup G =

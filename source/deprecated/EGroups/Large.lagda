@@ -9,7 +9,7 @@ Spartan MLTT.
 
 {-# OPTIONS --safe --without-K #-}
 
-module EGroups.Large where
+module deprecated.EGroups.Large where
 
 open import MLTT.Spartan
 open import UF.Equiv hiding (_≅_)
@@ -19,8 +19,8 @@ open import UF.SmallnessProperties
 
 open import Groups.Free using (module free-group-construction ;
                                module free-group-construction-reduction)
-open import EGroups.Type
-open import EGroups.FreeOnType
+open import deprecated.EGroups.Type
+open import deprecated.EGroups.FreeOnType
 
 \end{code}
 

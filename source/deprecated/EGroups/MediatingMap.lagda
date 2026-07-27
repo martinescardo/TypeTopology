@@ -9,13 +9,13 @@ relation, and removing the HoTT/UF assumptions.
 
 {-# OPTIONS --safe --without-K --no-exact-split #-}
 
-module EGroups.MediatingMap where
+module deprecated.EGroups.MediatingMap where
 
 open import MLTT.Spartan
 open import MLTT.List renaming (_∷_ to _•_ ; _++_ to _◦_ ; ++-assoc to ◦-assoc)
 
 open import Groups.Free using (module free-group-construction)
-open import EGroups.Setoid
+open import deprecated.EGroups.Setoid
 
 \end{code}
 
