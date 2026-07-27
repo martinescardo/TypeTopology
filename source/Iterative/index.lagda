@@ -48,7 +48,12 @@ References.
 [2] Gerald Leversha. "Formal Systems for Constructive Mathematics".
     PhD Thesis, 1976, The University of Manchester (United
     Kingdom). Department of Pure and Applied Mathematics.
+    The catalogue record
     https://www.librarysearch.manchester.ac.uk/permalink/44MAN_INST/1r887gn/alma992983521804701631
+    is available only within the University of Manchester. The ProQuest
+    record U418690
+    https://www.proquest.com/openview/d03a6ded62b06e051b998bb47822dc08/1
+    is publicly visible, but only the record and a preview are available.
 
 [3] Håkon Gylterud. "Multisets in type theory".  Mathematical
     Proceedings of the Cambridge Philosophical Society, Volume 169,
