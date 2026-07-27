@@ -36,8 +36,9 @@ J-∀-shift-selection εs =
 
 That's it. What follows is for information only.
 
-This is one of definitions given in both LICS2007 and LMCS2008
-(Section 8.1, called Π):
+This is one of definitions given in both LICS2007,
+https://doi.org/10.1109/LICS.2007.25, and LMCS2008,
+https://doi.org/10.2168/LMCS-4(3:3)2008 (Section 8.1, called Π):
 
 \begin{code}
 

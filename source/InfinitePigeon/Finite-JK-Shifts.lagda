@@ -17,8 +17,9 @@ J-∧-shift {R} (∧-intro ε₀ ε₁) =
 
 \end{code}
 
-This was defined in the following alternative way in Escardo's
-LICS2007 and LMCS2008 papers:
+This was defined in the following alternative way in Escardo's papers
+LICS2007, https://doi.org/10.1109/LICS.2007.25, and LMCS2008,
+https://doi.org/10.2168/LMCS-4(3:3)2008:
 
 \begin{code}
 

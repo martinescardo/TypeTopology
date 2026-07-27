@@ -51,14 +51,14 @@ Because of the relation to LPO, we formerly referred to Σ- or
    Martin H. Escardo, Infinite sets that satisfy the principle of
    omniscience in any variety of constructive mathematics. The Journal
    of Symbolic Logic, Vol 78, September 2013, pp. 764-784.
-   https://www.jstor.org/stable/43303679
+   https://doi.org/10.2178/jsl.7803040
 
 And because of the connection with computation, we called them
 exhaustively searchable, or exhaustible or searchable:
 
    Martin Escardo. Exhaustible sets in higher-type computation. Logical
    Methods in Computer Science, August 27, 2008, Volume 4, Issue 3.
-   https://lmcs.episciences.org/693
+   https://doi.org/10.2168/LMCS-4(3:3)2008
 
 The name "compact" is appropriate, because e.g. in the model of
 Kleene-Kreisel spaces for simple types, it does correspond to
@@ -633,7 +633,9 @@ is-wcompact X = (p : X → 𝟚) → Σ y ꞉ 𝟚 , (y ＝ ₁ ↔ ((x : X) →
 
 \end{code}
 
-Closer to the original definition of exhaustibility in LICS'2007 amd LMCS'2008:
+Closer to the original definition of exhaustibility in LICS'2007,
+https://doi.org/10.1109/LICS.2007.25, and LMCS'2008,
+https://doi.org/10.2168/LMCS-4(3:3)2008:
 
 \begin{code}
 

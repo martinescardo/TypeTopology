@@ -3,8 +3,9 @@ Martin Escardo, 20th June 2019 and 28th May 2021.
 Search over uniformly continuous decidable predicates on the Cantor type.
 
 This is loosely based on my LICS'2007 paper "Infinite sets that admit
-fast exhaustive search" and my LMCS'2008 paper "Exhaustible sets in
-higher-type computation".
+fast exhaustive search", https://doi.org/10.1109/LICS.2007.25, and my
+LMCS'2008 paper "Exhaustible sets in higher-type computation",
+https://doi.org/10.2168/LMCS-4(3:3)2008.
 
 Removed assumption of function extensionality 11th July 2024 by using
 the observation that 𝟚-valued uniformly continuous functions on the
