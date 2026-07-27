@@ -40,11 +40,6 @@ open AllCombinators pt fe
 open PropositionalTruncation pt
 
 open import OrderedTypes.PredicativeLFP pt fe pe
-
-module resized-order (L : Sup-Lattice 𝓤 𝓦 𝓥) where
-
- _≤⟨small⟩_ : ⟨ L ⟩ → ⟨ L ⟩ → 𝓥 ̇
- x ≤⟨small⟩ y = resize pr ((x ≤⟨ L ⟩ y) holds) (holds-is-prop (x ≤⟨ L ⟩ y))
     
 module _ {L : Sup-Lattice 𝓤 𝓦 𝓥} {B : 𝓥 ̇}
          (β : B → ⟨ L ⟩) (h : is-basis L β)
@@ -58,7 +53,8 @@ module _ {L : Sup-Lattice 𝓤 𝓦 𝓥} {B : 𝓥 ̇}
 
 \end{code}
 
-Show that prop resizing implies the QIT we need to assume exists(?).
+TODO. Can we show that certain QITs including the one assumed in the anonomous
+module below follow from propositional resizing?
 
 \begin{code}
 
@@ -78,15 +74,45 @@ Show that prop resizing implies the QIT we need to assume exists(?).
 
 \end{code}
 
-TODO: Show TarskiLFP follows directly from prop resizing
+TODO: Show TarskiLFP follows directly from propositional resizing.
 
-  TarskiLFP : (f : ⟨ L ⟩ → ⟨ L ⟩)
-            → is-monotone-endomap L f
-            → has-least-fixed-point L f
-  TarskiLFP f f-mono = (fix-f , {!!} , {!!})
-   where
-    open resized-order L
-    L-inf-lat : Inf-Lattice 𝓤 𝓦 𝓥 
-    L-inf-lat = inf-lattice-from-sup-lattice L β h
-    fix-f : ⟨ L ⟩
-    fix-f = ⋀⟨ L-inf-lat ⟩ ((Σ b ꞉ B , (f (β b) ≤⟨small⟩ β b)) , β ∘ pr₁)
+This code is currently commented out. In the classic argument one would
+take the infimum of pre-fixed points, then one shows that this infimum is
+iteslf a fixed-point and by construction the least such. In the process of
+it is fixed we need to use the set of pre-fixed points is closed under the
+monotone map, etc.
+
+Unfortunately, the type of pre-fixed is not "small", so one if forced tp
+consider the pre-fixed points from the basis. Unfortunately, this type is
+not closed under the monotone map, as the monotone map is not closed under
+the basis. So we must proceed in another direction.
+
+Main Idea: Use properties of the basis for infimum analgous to those for
+supremum
+
+ 1) if A ⊆ B the ⋀ B ≤ ⋀ A↑ 
+ 2) (⋀ A) = A and ⋀ ( ↑ a) = a
+
+these properties aren't currently formalized and there is no guarentee that
+they are sufficient to complete the proof.
+
+begin{code}
+
+module _ {L : Sup-Lattice 𝓤 𝓦 𝓥} {B : 𝓥 ̇}
+         (β : B → ⟨ L ⟩) (h : is-basis L β)
+         (f : ⟨ L ⟩ → ⟨ L ⟩)
+         (f-mono : is-monotone-endomap L f)
+       where
+
+ _≤⟨small⟩_ : ⟨ L ⟩ → ⟨ L ⟩ → 𝓥 ̇
+ x ≤⟨small⟩ y = resize pr ((x ≤⟨ L ⟩ y) holds) (holds-is-prop (x ≤⟨ L ⟩ y))
+
+ TarskiLFP : (f : ⟨ L ⟩ → ⟨ L ⟩)
+           → is-monotone-endomap L f
+           → has-least-fixed-point L f
+ TarskiLFP f f-mono = (fix-f , {!!} , {!!})
+  where
+   L-inf-lat : Inf-Lattice 𝓤 𝓦 𝓥 
+   L-inf-lat = inf-lattice-from-sup-lattice L β h
+   fix-f : ⟨ L ⟩
+   fix-f = ⋀⟨ L-inf-lat ⟩ ((Σ b ꞉ B , (f (β b) ≤⟨small⟩ β b)) , β ∘ pr₁) 
