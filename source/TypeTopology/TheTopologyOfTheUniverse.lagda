@@ -74,7 +74,7 @@ what the topology of this interpretation of the Martin-Lof
 universe is. The answer is that its topological reflection is indiscrete:
 
   http://www.cs.bham.ac.uk/~mhe/papers/universe-indiscrete.pdf
-  http://www.sciencedirect.com/science/article/pii/S0168007216300409
+  https://doi.org/10.1016/j.apal.2016.04.010
 
   M.H. Escardo and T. Streicher. The intrinsic topology of Martin-Lof
   universes. Version of Feb 2016. In Annals of Pure and Applied Logic,

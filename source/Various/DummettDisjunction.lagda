@@ -137,8 +137,8 @@ agreement-gives-LA f P Q = f (P → Q) (Q → P) (⊞-linearity P Q)
 And I don't know either whether this is known. It probably is.
 
 The following is adapted from
-http://www.jstor.org/stable/20016490?seq=2#page_scan_tab_contents page
-154, replacing disjunction by Dummett disjunction.
+https://doi.org/10.1023/A:1022997524909 , page 154, replacing
+disjunction by Dummett disjunction.
 
 Jan von Plato, Skolem's Discovery of Gödel-Dummett Logic.  Studia
 Logica: An International Journal for Symbolic Logic Vol. 73, No. 1,

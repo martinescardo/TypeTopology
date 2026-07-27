@@ -13,7 +13,7 @@ as in the HoTT Book.
 This tries to make previous work by Coquand and Danielsson [1] more
 general.
 
-[1] https://www.sciencedirect.com/science/article/pii/S0019357713000694 , 2013
+[1] https://doi.org/10.1016/j.indag.2013.09.002 , 2013
 
 Contents:
 

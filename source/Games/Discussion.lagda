@@ -12,7 +12,6 @@ purpose of encoding ordinals in dependent type theory.
 Gerald Leversha. "Formal Systems for Constructive Mathematics".  PhD
 Thesis, 1976, The University of Manchester (United
 Kingdom). Department of Pure and Applied Mathematics.
-https://www.sciencedirect.com/science/article/abs/pii/S0049237X0871989X
 
 More references are given below.
 

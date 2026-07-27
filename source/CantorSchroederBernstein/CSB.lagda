@@ -902,7 +902,7 @@ We adapt an argument in Johnstone's Sketches of an Elephant Volume 2
 (Lemma D.4.1.12).
 
 See also van Atten
-https://www.sciencedirect.com/science/article/pii/S0019357718303276
+https://doi.org/10.1016/j.indag.2018.06.005
 for BKS⁺ defined below (strong Brouwer-Kripke Schema) and the fact
 that together with Markov Principle it implies excluded middle
 (attributed to Moschovakis).

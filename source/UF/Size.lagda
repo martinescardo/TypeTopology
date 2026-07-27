@@ -522,7 +522,7 @@ Lift-is-section ua R 𝓤 𝓥 = (r , rs)
 We remark that for types that are not sets, sections are not
 automatically embeddings (Shulman 2015, Logical Methods in Computer
 Science, April 27, 2017, Volume 12, Issue 3,
-https://lmcs.episciences.org/2027 , Theorem 3.10).
+https://doi.org/10.2168/LMCS-12(3:9)2016 , Theorem 3.10).
 
 Hence it is worth stating this explicitly:
 

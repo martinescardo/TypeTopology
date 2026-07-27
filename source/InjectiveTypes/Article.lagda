@@ -63,7 +63,7 @@ are easy to state:
        moves a propositional truncation inside a \m{\Pi}-type to
        outside the \m{\Pi}-type, and may be related to [Toby Kenney,
        2011,
-       https://www.sciencedirect.com/science/article/pii/S0022404910000782]).
+       https://doi.org/10.1016/j.jpaa.2010.04.004]).
 
    (2) The algebraically injective types are precisely the retracts of
        exponential powers of type universes. In particular,
@@ -1950,7 +1950,7 @@ John Bourke, 2017, Equipping weak equivalences with algebraic structure.
 Toby Kenney, 2011, Injective power objects and the axiom of choice.
                    Journal of Pure and Applied Algebra Volume 215,
                    Issue 2, February 2011, Pages 131-144
-                   https://www.sciencedirect.com/science/article/pii/S0022404910000782
+                   https://doi.org/10.1016/j.jpaa.2010.04.004
 
 The Univalent Foundations Program, 2013,
                    Homotopy Type Theory: Univalent Foundations of Mathematics.
