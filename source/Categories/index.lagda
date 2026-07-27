@@ -32,6 +32,10 @@ https://homotopytypetheory.org/book.
 [2] Capriotti, Paolo and Nicolai Kraus (2017). Univalent Higher Categories via
 Complete Semi-Segal Type. https://arxiv.org/abs/1707.03693.
 
+[3] Williams, Anna (2026). Formalising Displayed Categories with Univalent
+Foundations. MSci project, University of Birmingham:
+https://anna-maths.xyz/assets/papers/disp-categories.pdf.
+
 \begin{code}
 
 import Categories.Wild
@@ -68,7 +72,8 @@ import Categories.Displayed.index
 
 \end{code}
 
-A listing relating to the masters project of Anna Williams
+A listing relating to the masters project of Anna Williams, which formalizes
+the paper [3] above.
 
 \begin{code}
 

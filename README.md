@@ -338,6 +338,11 @@ Tosun.
 
    https://doi.org/10.48550/arxiv.2601.12536
 
+1. Anna Williams. *Formalising Displayed Categories with Univalent Foundations*.
+   MSci project, School of Computer Science, University of Birmingham, UK, 2026.
+
+   https://anna-maths.xyz/assets/papers/disp-categories.pdf
+
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
 [LICS21]: https://easyconferences.eu/lics2021/

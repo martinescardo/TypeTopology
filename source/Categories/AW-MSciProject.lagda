@@ -2,7 +2,9 @@ Anna Williams, March 2026
 
 This file corresponds to the paper
 
-https://anna-maths.xyz/assets/papers/disp-categories.pdf
+  Anna Williams. Formalising Displayed Categories with Univalent Foundations.
+  MSci project, University of Birmingham.
+  https://anna-maths.xyz/assets/papers/disp-categories.pdf
 
 \begin{code}
 
