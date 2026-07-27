@@ -16,7 +16,7 @@ open import MLTT.Spartan
 module EGroups.LargeExample (𝓤 : Universe) where
 
 open import UF.Equiv hiding (_≅_)
-open import Various.LawvereFPT-Generalized
+open import Various.LawvereFPT
 open import EGroups.Setoid
 open import EGroups.Type
 open import EGroups.Size
@@ -32,7 +32,7 @@ The universe setoid 𝕌 = (𝓤 ̇ , _≃_) is large.
 
 universe-setoid-is-large : is-large-setoid 𝓤 𝕌
 universe-setoid-is-large (T , iso) =
- generalized-Coquand-streamlined.Lemma₂ ∣ T ∣
+ generalized-Coquand.Lemma₂ ∣ T ∣
   (_≅ˢ_.from iso) (_≅ˢ_.to iso) (_≅ˢ_.from-to iso)
 
 \end{code}
