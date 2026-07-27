@@ -79,15 +79,15 @@ TODO: Show TarskiLFP follows directly from propositional resizing.
 This code is currently commented out. In the classic argument one would
 take the infimum of pre-fixed points, then one shows that this infimum is
 iteslf a fixed-point and by construction the least such. In the process of
-it is fixed we need to use the set of pre-fixed points is closed under the
-monotone map, etc.
+showing it is fixed we need to use that the set of pre-fixed points is closed
+under the monotone map, etc.
 
 Unfortunately, the type of pre-fixed is not "small", so one if forced tp
 consider the pre-fixed points from the basis. Unfortunately, this type is
 not closed under the monotone map, as the monotone map is not closed under
 the basis. So we must proceed in another direction.
 
-Main Idea: Use properties of the basis for infimum analgous to those for
+Main Ideas: Use properties of the basis for infimum analgous to those for
 supremum
 
  1) if A ⊆ B the ⋀ B ≤ ⋀ A↑ 
