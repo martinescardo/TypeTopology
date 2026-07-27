@@ -25,7 +25,6 @@ import EGroups.ChurchRosserModulo
 import EGroups.Reduction
 import EGroups.Free
 import EGroups.Large
-import EGroups.LargeExample
 
 \end{code}
 
@@ -80,17 +79,13 @@ import EGroups.LargeExample
    from the generators into an egroup has a unique extension to a
    homomorphism, up to the equivalence relation of that egroup. But
    notice that the universal property is not needed for the purposes
-   of the next two modules.
+   of the next module.
 
  * Large
 
    The free egroup on a large, locally small setoid is large. No egroup
    whose underlying type and equivalence relation are both small is
-   isomorphic to it.
-
- * LargeExample
-
-   The universe, taken as a setoid under type equivalence, is a large
-   setoid, by the generalized Lawvere fixed-point theorem. Therefore,
-   by the above, there is a large egroup in the next universe, in a
-   Spartan MLTT.
+   isomorphic to it. We then give the example we are after. The
+   universe, taken as a setoid under type equivalence, is a large
+   setoid, by the generalized Lawvere fixed-point theorem, and so there
+   is a large egroup in the next universe, in a Spartan MLTT.
