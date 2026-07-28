@@ -1,8 +1,22 @@
 Ian Ray. July 25 2026.
 
-In this file we will prove a version of Tarski's fixed point theorem which
-relies on propositional resizing (as well as a seemingly innocuous QIT) and
-is valid for any large sup-lattice with a small basis. 
+In this file we will prove a version of Tarski's least fixed point theorem
+which relies on propositional resizing (as well as a seemingly innocuous QIT)
+and is valid for any large sup-lattice with a small basis.
+
+In the traditional proof of Tarskis least fixed point theorem one would take
+the infimum of pre-fixed points, then one shows that this infimum is itself a
+fixed-point and by construction the least such. In the process of showing it
+is fixed we need to use that the set of pre-fixed points is closed under the
+monotone map, etc.
+
+Unfortunately, the type of pre-fixed points is not "small", so one is forced to
+consider the pre-fixed points taken from the basis:
+
+                    Σ b ꞉ B , (f (β b) ≤ β b)
+
+This type is not closed under the monotone map, as the monotone map is not
+closed under the basis. So we must proceed in another direction.
 
 \begin{code}
 
@@ -45,15 +59,15 @@ fixed point theorem which only applies for sup-lattices that are "presentable"
 and monotone maps that are "inductively generated" (see the file for more
 details but we attempt to recount the development here).
 
-Along the way we show that any monotone map produces a moderately well-behaved
-inductive definition. We observe that (small) subsets that are "closed" under
-the inductive definition correspond to pre-fixed points of the monotone map.
-Assuming the existence of a seemingly innocuous QIT we can then inductively
-generate a subset 𝓘nd of the basis closed under the inductive definition. Now,
-by construction 𝓘nd is not necessarily small, but if it is it corresponds to
-the least fixed point. The remainder of the file amounts to exploring
-conditions on the sup-lattice and monotone map that guarentee this smallness
-assumption. But with propositional resizing available we are able to
+In the file above we show that any monotone map produces a moderately
+well-behaved inductive definition. We observe that (small) subsets that are
+"closed" under the inductive definition correspond to pre-fixed points of the
+monotone map. Assuming the existence of a seemingly innocuous QIT we can then
+inductively generate a subset 𝓘nd of the basis closed under the inductive
+definition. Now, by construction 𝓘nd is not necessarily small, but if it is it
+corresponds to the least fixed point. The remainder of the file amounts to
+exploring conditions on the sup-lattice and monotone map that guarantee this
+smallness assumption. But with propositional resizing available we are able to
 immediately satisfy this condition and as a result we get a version of Tarski's
 least fixed point theorem for a large sup-lattice with small basis.
 
@@ -84,25 +98,14 @@ the one assumed in the anonymous module below?
   open trunc-ind-def L β h (ind-def-from-monotone-map f f-mono) ind-e
   open smallness-assumption (λ - → pr (- ∈ 𝓘nd) (holds-is-prop (- ∈ₚ 𝓘nd)))
 
-  TarskiLFP-from-predicative : has-least-fixed-point L f
-  TarskiLFP-from-predicative
+  impredicative-Tarski-LFP : has-least-fixed-point L f
+  impredicative-Tarski-LFP
    = transport (has-least-fixed-point L)
       (dfunext fe (local-ind-def-is-section-of-Γ f f-mono))
        Γ-has-least-fixed-point
 
 \end{code}
 
-TODO: Show TarskiLFP follows directly from propositional resizing.
-
-In the traditional argument one would take the infimum of pre-fixed points,
-then one shows that this infimum is itself a fixed-point and by construction
-the least such. In the process of showing it is fixed we need to use that the
-set of pre-fixed points is closed under the monotone map, etc.
-
-Unfortunately, the type of pre-fixed points is not "small", so one is forced to
-consider the pre-fixed points taken from the basis:
-
-                    Σ b ꞉ B , (f (β b) ≤ β b)
-
-This type is not closed under the monotone map, as the monotone map is not
-closed under the basis. So we must proceed in another direction.
+TODO: Determine whether TarskiLFP follows directly from propositional resizing.
+One approach would be to construct the aforementioned QIT from propositional
+resizing. 
