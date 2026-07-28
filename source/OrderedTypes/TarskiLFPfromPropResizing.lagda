@@ -1,5 +1,9 @@
 Ian Ray. July 25 2026.
 
+In this file we will prove a version of Tarski's fixed point theorem which
+is relies on propositional resizing and is valid for any large sup-lattice
+with a small basis. 
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -33,6 +37,27 @@ open AllCombinators pt fe
 open PropositionalTruncation pt
 
 open import OrderedTypes.PredicativeLFP pt fe pe
+
+\end{code}
+
+Here we are importing a file that explores a predicative version of the least
+fixed point theorem which only applies for sup-lattices that are "presentable"
+and monotone maps that are "inductively generated" (see the file for more
+details but we attempt to recount the development here).
+
+Along the way we show that any monotone map produces a moderately well-behaved
+inductive definition. We observe that (small) subsets that are "closed" under
+the inductive definition correspond pre-fixed points of the monotone map.
+Assuming the existence of a seemingly innocuous QIT we can then inductively
+generate a subset 𝓘nd of the basis closed under the inductive definition. Now,
+by construction 𝓘nd is not necessarily small, but if it is it corresponds to
+the least fixed point. The remainder of the file amounts to exploring
+conditions on the sup-lattice and monotone map that guarentee this smallness
+assumption. But with propositional resizing available we are able to
+immediately satsify this condition and as a result we get a version of Tarski's
+least fixed point theorem for a large sup-lattice with small basis.
+
+\begin{code}
     
 module _ {L : Sup-Lattice 𝓤 𝓦 𝓥} {B : 𝓥 ̇}
          (β : B → ⟨ L ⟩) (h : is-basis L β)
@@ -69,37 +94,15 @@ the one assumed in the anonymous module below?
 
 TODO: Show TarskiLFP follows directly from propositional resizing.
 
-This code is currently commented out. In the traditional argument one would
-take the infimum of pre-fixed points, then one shows that this infimum is
-itself a fixed-point and by construction the least such. In the process of
-showing it is fixed we need to use that the set of pre-fixed points is closed
-under the monotone map, etc.
+In the traditional argument one would take the infimum of pre-fixed points,
+then one shows that this infimum is itself a fixed-point and by construction
+the least such. In the process of showing it is fixed we need to use that the
+set of pre-fixed points is closed under the monotone map, etc.
 
-Unfortunately, the type of pre-fixed is not "small", so one is forced to
-consider the pre-fixed points taken from the basis. Unfortunately, this type is
-not closed under the monotone map, as the monotone map is not closed under
-the basis. So we must proceed in another direction.
+Unfortunately, the type of pre-fixed points is not "small", so one is forced to
+consider the pre-fixed points taken from the basis:
 
-Main ideas: Use properties infimum and its interaction with the basis analogous
-to those for supremum. For example 
+                    Σ b ꞉ B , (f (β b) ≤ β b)
 
- 1) if A ⊆ B then ⋀ B ≤ ⋀ A 
- 2) (⋀ A) = A and ⋀ (↑ a) = a.
-
-These properties aren't currently formalized and there is no guarantee that
-they are sufficient to complete the proof.
-
-begin{code}
-
- _≤⟨small⟩_ : ⟨ L ⟩ → ⟨ L ⟩ → 𝓥 ̇
- x ≤⟨small⟩ y = resize pr ((x ≤⟨ L ⟩ y) holds) (holds-is-prop (x ≤⟨ L ⟩ y))
-
- TarskiLFP : (f : ⟨ L ⟩ → ⟨ L ⟩)
-           → is-monotone-endomap L f
-           → has-least-fixed-point L f
- TarskiLFP f f-mono = (fix-f , {!!} , {!!})
-  where
-   L-inf-lat : Inf-Lattice 𝓤 𝓦 𝓥 
-   L-inf-lat = inf-lattice-from-sup-lattice L β h
-   fix-f : ⟨ L ⟩
-   fix-f = ⋀⟨ L-inf-lat ⟩ ((Σ b ꞉ B , (f (β b) ≤⟨small⟩ β b)) , β ∘ pr₁) 
+This type is not closed under the monotone map, as the monotone map is not
+closed under the basis. So we must proceed in another direction.
