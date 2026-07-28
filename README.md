@@ -17,8 +17,8 @@ at the place of contribution.
 
  1. [How to cite this repository](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
  1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-agda-files)
- 1. [Current contributors](https://github.com/martinescardo/TypeTopology/blob/master/README.md#current-contributors-in-alphabetical-order-of-first-name)
  1. [Academic publications and preprints resulting from TypeTopology](https://github.com/martinescardo/TypeTopology#academic-publications-and-preprints-resulting-from-typetopology)
+ 1. [Current contributors](https://github.com/martinescardo/TypeTopology/blob/master/README.md#current-contributors-in-alphabetical-order-of-first-name)
  1. [Statement of inclusion](https://github.com/martinescardo/TypeTopology/blob/master/STATEMENT-OF-INCLUSION.md)
  1. [Code of conduct](https://github.com/martinescardo/TypeTopology/blob/master/CODE-OF-CONDUCT.md)
  1. [Contributing](https://github.com/martinescardo/TypeTopology/blob/master/CONTRIBUTING.md)
@@ -57,53 +57,6 @@ only your name as author.
  * [source/AllModulesIndex.lagda](source/AllModulesIndex.lagda) (including
    "unsafe" ones).
  * Each subdirectory in [source/](source/) has its own index file.
-
-## Current contributors in alphabetical order of first name
-
-Please add yourself the first time you contribute. Use your adopted name, and not necessarily your given name, at your discretion.
-
-* Alice Laroche
-* Andrew Sneap
-* Andrew Swan
-* Anna Williams
-* Ayberk Tosun
-* Brendan Hart
-* Bruno Paiva
-* Carlo Angiuli
-* Chuangjie Xu
-* Cory Knapp
-* Ettore Aldrovandi
-* Evan Cavallo
-* Fredrik Bakke
-* Fredrik Nordvall Forsberg
-* Ian Ray
-* Igor Arrieta (ii)
-* J. A. Carr
-* Jakub Opršal
-* Jon Sterling
-* Kelton OBrien
-* Keri D'Angelo
-* Lane Biocini
-* Marc Bezem
-* Martin Escardo
-* Nicolai Kraus
-* Ohad Kammar
-* Paul Levy (i)
-* Paulo Oliva
-* Peter Dybjer
-* Simcha van Collem
-* Thierry Coquand
-* Todd Waugh Ambridge
-* Tom de Jong
-* Vincent Rahli
-
-(i) These authors didn't write any single line of Agda code here, but
-they contributed to constructions, theorems and proofs via the hands
-of Martin Escardo.
-
-(ii) These authors didn't write single line of Agda code here, but they
-contributed to constructions, theorems and proofs via the hands of Ayberk
-Tosun.
 
 ## Academic publications and preprints resulting from TypeTopology
 
@@ -351,3 +304,50 @@ Tosun.
 [MSCS]: https://www.cambridge.org/core/journals/mathematical-structures-in-computer-science
 [LIPICS]: https://www.dagstuhl.de/en/publishing/series/details/LIPIcs
 [JPAA]: https://www.sciencedirect.com/journal/journal-of-pure-and-applied-algebra
+
+## Current TypeTopology contributors in alphabetical order of first name
+
+Please add yourself the first time you contribute. Use your adopted name, and not necessarily your given name, at your discretion.
+
+* Alice Laroche
+* Andrew Sneap
+* Andrew Swan
+* Anna Williams
+* Ayberk Tosun
+* Brendan Hart
+* Bruno Paiva
+* Carlo Angiuli
+* Chuangjie Xu
+* Cory Knapp
+* Ettore Aldrovandi
+* Evan Cavallo
+* Fredrik Bakke
+* Fredrik Nordvall Forsberg
+* Ian Ray
+* Igor Arrieta (ii)
+* J. A. Carr
+* Jakub Opršal
+* Jon Sterling
+* Kelton OBrien
+* Keri D'Angelo
+* Lane Biocini
+* Marc Bezem
+* Martin Escardo
+* Nicolai Kraus
+* Ohad Kammar
+* Paul Levy (i)
+* Paulo Oliva
+* Peter Dybjer
+* Simcha van Collem
+* Thierry Coquand
+* Todd Waugh Ambridge
+* Tom de Jong
+* Vincent Rahli
+
+(i) These authors didn't write any single line of Agda code here, but
+they contributed to constructions, theorems and proofs via the hands
+of Martin Escardo.
+
+(ii) These authors didn't write single line of Agda code here, but they
+contributed to constructions, theorems and proofs via the hands of Ayberk
+Tosun.
