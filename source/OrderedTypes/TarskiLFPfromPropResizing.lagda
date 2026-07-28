@@ -1,8 +1,8 @@
 Ian Ray. July 25 2026.
 
 In this file we will prove a version of Tarski's fixed point theorem which
-is relies on propositional resizing and is valid for any large sup-lattice
-with a small basis. 
+relies on propositional resizing (as well as a seemingly innocuous QIT) and
+is valid for any large sup-lattice with a small basis. 
 
 \begin{code}
 
@@ -47,14 +47,14 @@ details but we attempt to recount the development here).
 
 Along the way we show that any monotone map produces a moderately well-behaved
 inductive definition. We observe that (small) subsets that are "closed" under
-the inductive definition correspond pre-fixed points of the monotone map.
+the inductive definition correspond to pre-fixed points of the monotone map.
 Assuming the existence of a seemingly innocuous QIT we can then inductively
 generate a subset 𝓘nd of the basis closed under the inductive definition. Now,
 by construction 𝓘nd is not necessarily small, but if it is it corresponds to
 the least fixed point. The remainder of the file amounts to exploring
 conditions on the sup-lattice and monotone map that guarentee this smallness
 assumption. But with propositional resizing available we are able to
-immediately satsify this condition and as a result we get a version of Tarski's
+immediately satisfy this condition and as a result we get a version of Tarski's
 least fixed point theorem for a large sup-lattice with small basis.
 
 \begin{code}
