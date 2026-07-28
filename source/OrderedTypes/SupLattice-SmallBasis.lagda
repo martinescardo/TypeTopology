@@ -44,7 +44,6 @@ open import UF.Size
 open import Locales.Frame pt fe hiding
  (⟨_⟩ ; join-of)
 open import Slice.Family
-open import UF.ImageAndSurjection pt
 open import OrderedTypes.SupLattice pt fe
 open import OrderedTypes.InfLattice fe pt hiding
  (⟨_⟩ ; order-of ; partial-orderedness-of ; is-monotone-endomap
