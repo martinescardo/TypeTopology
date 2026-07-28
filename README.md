@@ -9,7 +9,7 @@ If you contribute, please add your full (legal or adopted) name and date
 at the place of contribution.
 
  1. [html rendering of the Agda code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html).
- 1. [search](https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html) for a name, a fragment of one, a concept, or a contributor, including wildcards.
+ 1. [search](https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html) for a name, a fragment of one, a concept, a definition, or a contributor, including wildcards.
 
 ## Table of contents
 
