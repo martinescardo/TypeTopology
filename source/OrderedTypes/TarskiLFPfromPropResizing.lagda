@@ -59,7 +59,7 @@ fixed point theorem which only applies for sup-lattices that are "presentable"
 and monotone maps that are "inductively generated" (see the file for more
 details but we attempt to recount the development here).
 
-In the file above we show that any monotone map produces a moderately
+In PredicativeLFP we show that any monotone map produces a moderately
 well-behaved inductive definition. We observe that (small) subsets that are
 "closed" under the inductive definition correspond to pre-fixed points of the
 monotone map. Assuming the existence of a seemingly innocuous QIT we can then
