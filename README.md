@@ -8,10 +8,8 @@ transferred to `github` Monday 5th February 2018.
 If you contribute, please add your full (legal or adopted) name and date
 at the place of contribution.
 
-An [html rendering of the Agda
-code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html) is hosted at
-[Martin Escardo](https://www.cs.bham.ac.uk/~mhe/index.html)'s institutional web
-page.
+ 1. [html rendering of the Agda code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html).
+ 1. [search](https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html) a name, a fragment of one, or a concept, including wildcards.
 
 ## Table of contents
 
