@@ -1,4 +1,4 @@
-Ian Ray, started: 2023-09-12 - updated: 2024-02-05
+Ian Ray, started: 2023-09-12 - updated: 2026-07-28
 
 We define the notion of a small basis for a suplattice as well as some
 boiler plate. This consists of a type B and a map β : B → L. In a sense to be
@@ -7,7 +7,7 @@ is crucial for the development of predicative order theory.
 
 This notion of a basis was motivated by the set theoretic formulation due to
 Curi (see http://doi.org/10.1090/proc/12569) and can be compared with a similar
-notion for Domains due to Tom de Jong (see DomainTheory.BasisAndContinuity).
+notion for domains due to Tom de Jong (see DomainTheory.BasisAndContinuity).
 
 A suplattice L that has suprema for family of size 𝓥 has a basis if there is a
 type B : 𝓥 and map β : B → L such that
@@ -20,15 +20,8 @@ for all x.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan
-open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Logic
 open import UF.PropTrunc
-open import UF.Subsingletons
-open import UF.SubtypeClassifier
-open import UF.Size
 
 module OrderedTypes.SupLattice-SmallBasis
         (pt : propositional-truncations-exist)
@@ -39,6 +32,15 @@ private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
+open import MLTT.Spartan
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Logic
+open import UF.PropTrunc
+open import UF.Subsingletons
+open import UF.SubtypeClassifier
+open import UF.Size
 open import Locales.Frame pt fe hiding
  (⟨_⟩ ; join-of)
 open import Slice.Family
@@ -119,11 +121,11 @@ boiler plate that will allow us to use a small basis with greater efficiency.
   ≤ᴮ-is-prop-valued {b} {x} =
    equiv-to-prop ≤ᴮ-≃-≤ (holds-is-prop ((β b) ≤ x))
 
-  ≤ᴮ-≤-transitive : {b : B} {x y : ⟨ L ⟩}
-                  → b ≤ᴮ x
-                  → (x ≤ y) holds
-                  → b ≤ᴮ y
-  ≤ᴮ-≤-transitive {b} {x} {y} o o'
+  ≤ᴮ-≤-to-≤ᴮ : {b : B} {x y : ⟨ L ⟩}
+             → b ≤ᴮ x
+             → (x ≤ y) holds
+             → b ≤ᴮ y
+  ≤ᴮ-≤-to-≤ᴮ {b} {x} {y} o o'
    = ≤-to-≤ᴮ (transitivity-of L (β b) x y (≤ᴮ-to-≤ o) o')
 
   small-↓ᴮ : ⟨ L ⟩ → 𝓥 ̇
@@ -177,8 +179,7 @@ sup-lattice-is-inf-lattice {𝓤} {𝓦} {𝓥} L {B} β h
   open Infs (order-of L)
   open is-basis h
   I : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
-  I (D , α)
-   = ⋁⟨ L ⟩ ((Σ x ꞉ B , ((d : D) → x ≤ᴮ α d)) , β ∘ pr₁)
+  I (D , α) = ⋁⟨ L ⟩ ((Σ x ꞉ B , ((d : D) → x ≤ᴮ α d)) , β ∘ pr₁)
   II : (U : Fam 𝓥 ⟨ L ⟩) → ((I U) is-glb-of U) holds
   II (D , α) = (III , IV)
    where
@@ -192,9 +193,11 @@ sup-lattice-is-inf-lattice {𝓤} {𝓦} {𝓥} L {B} β h
                    (joins-preserve-containment L β
                    {λ x → (x ≤ᴮ l , ≤ᴮ-is-prop-valued)}
                    {λ x → Ɐ i ꞉ D , ((x ≤ᴮ α i) , ≤ᴮ-is-prop-valued)}
-                   (λ z z∈↓l i → ≤ᴮ-≤-transitive z∈↓l (lb i)))
+                   (λ z z∈↓l i → ≤ᴮ-≤-to-≤ᴮ z∈↓l (lb i)))
 
 inf-lattice-from-sup-lattice : (L : Sup-Lattice 𝓤 𝓦 𝓥)
                                {B : 𝓥 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
                              → Inf-Lattice 𝓤 𝓦 𝓥
 inf-lattice-from-sup-lattice L β h = (⟨ L ⟩ , sup-lattice-is-inf-lattice L β h)
+
+\end{code}

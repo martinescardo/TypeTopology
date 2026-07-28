@@ -1,29 +1,29 @@
+Ian Ray. July 25 2026.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan
-open import UF.Equiv
 open import UF.FunExt
-open import UF.HedbergApplications
-open import UF.Logic
 open import UF.PropTrunc
-open import UF.Sets
-open import UF.Subsingletons
-open import UF.SubtypeClassifier
 
 module OrderedTypes.InfLattice
         (fe : Fun-Ext)
         (pt : propositional-truncations-exist)
       where
 
+open import MLTT.Spartan
+open import UF.HedbergApplications
+open import UF.Logic
+open import UF.Sets
+open import UF.SubtypeClassifier
 open import Slice.Family hiding (_[_])
 open import Locales.Frame pt fe hiding (⟨_⟩ ; join-of)
 open AllCombinators pt fe
 
 \end{code}
 
-We inline the definition of inf lattice but should add to the library.
+We give the definition of an inf lattice.
 
 \begin{code}
 
@@ -84,8 +84,8 @@ transitivity-of : (L : Inf-Lattice 𝓤 𝓣 𝓥) → is-transitive (order-of L
 transitivity-of L = pr₂ (pr₁ (partial-orderedness-of L))
 
 inf-is-glb-of : (L : Inf-Lattice 𝓤 𝓣 𝓥)
-               → (U : Fam 𝓥 ⟨ L ⟩)
-               → ((order-of L) Infs.is-glb-of inf-of L U) U holds
+              → (U : Fam 𝓥 ⟨ L ⟩)
+              → ((order-of L) Infs.is-glb-of inf-of L U) U holds
 inf-is-glb-of (A , (_≤_ , ⋁_) , order , infima) = infima
 
 inf-is-lower-bound-of : (L : Inf-Lattice 𝓤 𝓣 𝓥)
@@ -110,7 +110,7 @@ sethood-of L =
 
 \end{code}
 
-Monotone maps on Inf-Lattice
+Monotone maps on an inf-lattice.
 
 \begin{code}
 
@@ -126,3 +126,5 @@ is-monotone-endomap : {𝓤 𝓣 𝓥 : Universe}
                     → (f : ⟨ L ⟩ → ⟨ L ⟩)
                     → 𝓤 ⊔ 𝓣 ̇
 is-monotone-endomap L f = is-monotone L L f
+
+\end{code}
