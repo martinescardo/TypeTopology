@@ -28,7 +28,7 @@ open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Size
 
-module OrderedTypes.TarskiLFPfromPropResizing
+module OrderedTypes.TarskiLFP-SmallBasis
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
