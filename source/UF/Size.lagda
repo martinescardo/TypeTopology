@@ -895,7 +895,7 @@ Shulman's results are formalized in the Coq-HoTT library
 (https://github.com/HoTT/Coq-HoTT, see theories/Idempotents.v).
 
 Here we formalize Theorem 2.13 of our paper, but take Shulman's construction as
-an hypothesis, rather than porting the whole proof from Coq to Agda.
+a hypothesis, rather than porting the whole proof from Coq to Agda.
 
 Note that Shulman's construction relies only on function extensionality (which
 can be checked in Rocq and is also claimed in Shulman's paper), so we include
