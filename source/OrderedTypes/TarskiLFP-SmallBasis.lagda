@@ -4,19 +4,20 @@ In this file we will prove a version of Tarski's least fixed point theorem
 which relies on propositional resizing (as well as a seemingly innocuous QIT)
 and is valid for any large sup-lattice with a small basis.
 
-In the traditional proof of Tarskis least fixed point theorem one would take
+In the traditional proof of Tarski's least fixed point theorem one would take
 the infimum of pre-fixed points, then one shows that this infimum is itself a
-fixed-point and by construction the least such. In the process of showing it
-is fixed we need to use that the set of pre-fixed points is closed under the
-monotone map, etc.
+fixed-point and by construction the least such. One crucial fact used in the
+traditional argument is that the set of pre-fixed points is closed under the
+monotone endomap.
 
-Unfortunately, the type of pre-fixed points is not "small", so one is forced to
+Unfortunately, the type of pre-fixed points is not small, so one is forced to
 consider the pre-fixed points taken from the basis:
 
                     Σ b ꞉ B , (f (β b) ≤ β b)
 
-This type is not closed under the monotone map, as the monotone map is not
-closed under the basis. So we must proceed in another direction.
+This type is not closed under the monotone endomap, becuase the monotone
+endomap does not necessarily restrict to basis elements. So we must proceed in
+another direction.
 
 \begin{code}
 
@@ -59,14 +60,14 @@ fixed point theorem which only applies for sup-lattices that are "presentable"
 and monotone maps that are "inductively generated" (see the file for more
 details but we attempt to recount the development here).
 
-In PredicativeLFP we show that any monotone map produces a moderately
-well-behaved inductive definition. We observe that (small) subsets that are
+In PredicativeLFP we show that any monotone endomap produces a moderately
+well-behaved inductive definition. We observe that (small) subsets which are
 "closed" under the inductive definition correspond to pre-fixed points of the
-monotone map. Assuming the existence of a seemingly innocuous QIT we can then
-inductively generate a subset 𝓘nd of the basis closed under the inductive
-definition. Now, by construction 𝓘nd is not necessarily small, but if it is it
-corresponds to the least fixed point. The remainder of the file amounts to
-exploring conditions on the sup-lattice and monotone map that guarantee this
+monotone endomap. Assuming the existence of a seemingly innocuous QIT we can
+then inductively generate a subset 𝓘nd of the basis closed under the inductive
+definition. Now, by construction 𝓘nd is not necessarily small, but if it is, it
+corresponds to the least fixed point. The remainder of PredicativeLFP explores
+conditions on the sup-lattice and monotone endomap that guarantee this
 smallness assumption. But with propositional resizing available we are able to
 immediately satisfy this condition and as a result we get a version of Tarski's
 least fixed point theorem for a large sup-lattice with small basis.
