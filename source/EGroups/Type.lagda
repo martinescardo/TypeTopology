@@ -40,10 +40,11 @@ egroup-axioms : (S : Setoid 𝓤 𝓥) → (∣ S ∣ → ∣ S ∣ → ∣ S �
 egroup-axioms S _·_ =
    is-econgruence  (setoid-relation S) _·_
  × is-eassociative (setoid-relation S) _·_
- × (Σ e ꞉ ∣ S ∣ , is-eleft-neutral  (setoid-relation S) e _·_
-                × is-eright-neutral (setoid-relation S) e _·_
-                × ((x : ∣ S ∣) → Σ x' ꞉ ∣ S ∣ , ((x' · x) ≈∣ S ∣ e)
-                                              × ((x · x') ≈∣ S ∣ e)))
+ × (Σ e ꞉ ∣ S ∣
+        , is-eleft-neutral  (setoid-relation S) e _·_
+        × is-eright-neutral (setoid-relation S) e _·_
+        × ((x : ∣ S ∣)
+              → Σ x' ꞉ ∣ S ∣ , ((x' · x) ≈∣ S ∣ e) × ((x · x') ≈∣ S ∣ e)))
 
 egroup-structure : Setoid 𝓤 𝓥 → 𝓤 ⊔ 𝓥 ̇
 egroup-structure S = Σ _·_ ꞉ (∣ S ∣ → ∣ S ∣ → ∣ S ∣) , (egroup-axioms S _·_)
