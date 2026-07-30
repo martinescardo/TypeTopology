@@ -10,6 +10,7 @@ at the place of contribution.
 
  * [html rendering of the Agda code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html).
  * [search](https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html) for a name, a fragment of one, a concept, a definition, or a contributor, including wildcards.
+ * [emacs search command](https://github.com/martinescardo/TypeTopologySearch/blob/main/README.md) for TypeTopology.
 
 ## Table of contents
 
