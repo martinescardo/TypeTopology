@@ -65,21 +65,21 @@ import EGroups.Large
 
    This module sets up the reduction underlying the free egroup on a
    setoid, which cancels two adjacent generators when the second is
-   related to the inverse of the first. We prove local confluence up to
-   the relation and hence, via the previous module, the Church-Rosser
-   property. A size reduction in the style of Groups.Free shows that the
-   type of generators of a word is small even when the setoid is large,
-   using no decidable equality.
+   related to the inverse of the first. We prove local confluence up
+   to the relation and hence, via the previous module, the
+   Church-Rosser property. A size reduction in the style of
+   Groups.Free shows that the type of generators is small even when
+   the setoid is large, using no decidable equality.
 
  * Free
 
    The free egroup on a setoid has as underlying type the words on the
-   generators modulo convertibility, with multiplication given by
-   concatenation. We prove its universal property, that a setoid map
-   from the generators into an egroup has a unique extension to a
-   homomorphism, up to the equivalence relation of that egroup. But
-   notice that the universal property is not needed for the purposes
-   of the next module.
+   generators with polarity modulo convertibility, with multiplication
+   given by concatenation. We prove its universal property, that a
+   setoid map from the generators into an egroup has a unique
+   extension to a homomorphism, up to the equivalence relation of that
+   egroup. But notice that the universal property is not needed for
+   the purposes of the next module.
 
  * Large
 
