@@ -165,7 +165,7 @@ boiler plate that will allow us to use a small basis with greater efficiency.
 
 \end{code}
 
-We show that a sup-lattice with a basis is an inf-Lattice. 
+We show that a sup-lattice with a basis is an inf-lattice. 
 
 \begin{code}
  
@@ -184,15 +184,16 @@ sup-lattice-is-inf-lattice {𝓤} {𝓦} {𝓥} L {B} β h
    where
     III : (I (D , α) is-a-lower-bound-of (D , α)) holds
     III i = join-is-least-upper-bound-of L
-              ((Σ x ꞉ B , ((d : D) → x ≤ᴮ α d)) , β ∘ pr₁)
-               (α i , λ (x , o) → ≤ᴮ-to-≤ (o i))
+             ((Σ x ꞉ B , ((d : D) → x ≤ᴮ α d)) , β ∘ pr₁)
+              (α i , λ (x , o) → ≤ᴮ-to-≤ (o i))
     IV : (Ɐ (u′ , _) ꞉ lower-bound (D , α) , (u′ ≤⟨ L ⟩ I (D , α))) holds
-    IV (l , lb) = transport (λ - → (- ≤⟨ L ⟩ I (D , α)) holds)
-                   (is-supᴮ' l ⁻¹)
-                   (joins-preserve-containment L β
-                   {λ x → (x ≤ᴮ l , ≤ᴮ-is-prop-valued)}
-                   {λ x → Ɐ i ꞉ D , ((x ≤ᴮ α i) , ≤ᴮ-is-prop-valued)}
-                   (λ z z∈↓l i → ≤ᴮ-≤-to-≤ᴮ z∈↓l (lb i)))
+    IV (l , lb)
+     = transitivity-of L l (⋁⟨ L ⟩ (small-↓ᴮ l , small-↓ᴮ-inclusion l))
+        (I (D , α)) (＝-to-≤ L (is-supᴮ' l))
+        (joins-preserve-containment L β
+          {λ x → (x ≤ᴮ l , ≤ᴮ-is-prop-valued)}
+          {λ x → Ɐ i ꞉ D , ((x ≤ᴮ α i) , ≤ᴮ-is-prop-valued)}
+          (λ z z∈↓l i → ≤ᴮ-≤-to-≤ᴮ z∈↓l (lb i)))
 
 inf-lattice-from-sup-lattice : (L : Sup-Lattice 𝓤 𝓦 𝓥)
                                {B : 𝓥 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
