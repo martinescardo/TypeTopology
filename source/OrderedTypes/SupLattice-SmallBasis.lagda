@@ -41,12 +41,12 @@ open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
 open import UF.Size
-open import Locales.Frame pt fe hiding
- (⟨_⟩ ; join-of)
+open import Locales.Frame pt fe
+ hiding (⟨_⟩ ; join-of)
 open import Slice.Family
 open import OrderedTypes.SupLattice pt fe
-open import OrderedTypes.InfLattice fe pt hiding
- (⟨_⟩ ; order-of ; partial-orderedness-of ; is-monotone-endomap
+open import OrderedTypes.InfLattice fe pt
+ hiding (⟨_⟩ ; order-of ; partial-orderedness-of ; is-monotone-endomap
   ; transitivity-of)
 
 open AllCombinators pt fe

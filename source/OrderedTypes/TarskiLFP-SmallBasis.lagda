@@ -15,7 +15,7 @@ consider the pre-fixed points taken from the basis:
 
                     Σ b ꞉ B , (f (β b) ≤ β b)
 
-This type is not closed under the monotone endomap, becuase the monotone
+This type is not closed under the monotone endomap, because the monotone
 endomap does not necessarily restrict to basis elements. So we must proceed in
 another direction.
 
@@ -45,8 +45,8 @@ open import UF.Powerset-MultiUniverse
 open import UF.SubtypeClassifier
 open import OrderedTypes.SupLattice pt fe
 open import OrderedTypes.SupLattice-SmallBasis pt fe
-open import OrderedTypes.InfLattice fe pt hiding
- (⟨_⟩ ; order-of ; is-monotone-endomap)
+open import OrderedTypes.InfLattice fe pt
+ hiding (⟨_⟩ ; order-of ; is-monotone-endomap)
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
