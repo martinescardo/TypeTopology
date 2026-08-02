@@ -113,6 +113,11 @@ sethood-of L =
   (λ x → reflexivity-of L x)
   (λ x → λ y → antisymmetry-of L)
 
+＝-to-≤ : (L : Sup-Lattice 𝓤 𝓣 𝓥) {x y : ⟨ L ⟩}
+        → x ＝ y
+        → (x ≤⟨ L ⟩ y) holds
+＝-to-≤ L {x} {.x} refl = reflexivity-of L x
+
 \end{code}
 
 We now define monotone endomaps on a sup-lattice and specify monotone endomaps
