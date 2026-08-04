@@ -2,7 +2,7 @@ Martin Escardo, 1st April 2013
 
 Recall that a type is called collapsible if it has a weakly constant
 endomap. If every type is collapsible then every type has decidable
-equality and hence is a set by Hedberg's Theorem, and global hoice
+equality and hence is a set by Hedberg's Theorem, and global choice
 holds, because collapsible types have split support.
 
 \begin{code}
