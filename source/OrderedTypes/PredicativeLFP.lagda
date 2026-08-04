@@ -453,7 +453,7 @@ module _
  open is-basis h
  open local-inductive-definitions L β h
 
- module correspondance-from-locally-small-ϕ
+ module correspondence-from-locally-small-ϕ
          (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
          (i : is-local ϕ)
         where
@@ -1389,7 +1389,7 @@ We first present the untruncated least fixed point theorem.
                                              → (x ≤ a) holds))
              path Γ-has-least-fixed-point
    where
-    open correspondance-from-locally-small-ϕ L β h ϕ
+    open correspondence-from-locally-small-ϕ L β h ϕ
                                              (bounded-implies-local ϕ bnd)
     open small-𝓘nd-from-exists (ind-e ϕ)
     open 𝓘nd-is-small-from-bounded-and-small-presentation L β h small-pres ϕ bnd
