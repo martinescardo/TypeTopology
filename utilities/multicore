@@ -69,10 +69,25 @@ rm -f x*.agda
 # then make this into a list of 'import' commands in the format
 # required by Agda, using 'sed'.
 
+# We additionally omit the modules whose OPTIONS include the --rewriting
+# flag. That flag is infective: a module using it can only be imported by a
+# module that also uses it. The x*.agda files generated below deliberately
+# don't use it, and so whichever of them happened to contain such a module
+# would fail at that import with an [InfectiveImport] error, abandoning the
+# rest of its import list. That failure was invisible, because we don't
+# check the exit codes of the parallel agda processes below -- the abandoned
+# modules were quietly left to the final AllModulesIndex pass, making the
+# parallel phase shorter and the final pass longer than they should be.
+# So, exactly as with the index files, we leave these modules to that final
+# pass, which does use --rewriting and hence can import them.
+
 git ls-files "../*agda" \
  | grep -v Cubical \
  | grep -v index \
  | grep -v AllModulesIndex \
+ | while read -r f ; do
+     grep -qE '^\{-#[[:space:]]*OPTIONS.*--rewriting' "$f" || echo "$f"
+   done \
  | shuf \
  | sed 's:.lagda::' \
  | sed 's:.agda::' \
