@@ -40,10 +40,44 @@ then
  exit 1
 fi
 
+# We need `shuf`, which is part of GNU coreutils and hence is available on
+# Linux but is not present at all on macOS. Current Homebrew coreutils (9.11)
+# installs it under both names, `shuf` and `gshuf`, but older versions install
+# only the "g"-prefixed one unless the coreutils gnubin directory is placed on
+# the PATH -- which we don't want to require, because that directory also
+# replaces `ls`, `cp`, `date`, `stat` and about a hundred other commands with
+# their GNU versions, which may break other scripts that expect the macOS
+# ones. So we simply accept either name here, and this script then works on
+# both systems, and on old and new Homebrew, without anyone having to change
+# their PATH.
+#
+# This check comes before the backup rotation below on purpose: if we exited
+# after it, we would have already discarded a generation of saved x*.agda
+# files, which are exactly what `multicore-reuse` exists to preserve.
+
+if command -v shuf > /dev/null 2>&1
+then
+ SHUF=shuf
+elif command -v gshuf > /dev/null 2>&1
+then
+ SHUF=gshuf
+else
+ echo "This script needs 'shuf', from GNU coreutils, which macOS does not have."
+ echo ""
+ echo "On macOS, install it with:"
+ echo "        $ brew install coreutils"
+ echo ""
+ echo "That provides it as 'shuf' and/or 'gshuf', either of which this script"
+ echo "will find and use automatically. There is no need to put the coreutils"
+ echo "gnubin directory on your PATH."
+ exit 1
+fi
+
 echo >> log
 echo "-------------------------------" >> log
 echo "Got started at with argument $1" >> log
 echo $(date) >> log
+echo "Using $SHUF" >> log
 
 # We now save the previously existing files x*.agda created by this
 # script. This is so that if a particularly fast random splitting is
@@ -88,7 +122,7 @@ git ls-files "../*agda" \
  | while read -r f ; do
      grep -qE '^\{-#[[:space:]]*OPTIONS.*--rewriting' "$f" || echo "$f"
    done \
- | shuf \
+ | $SHUF \
  | sed 's:.lagda::' \
  | sed 's:.agda::' \
  | sed 's:\.\.\/:import :' \
