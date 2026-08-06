@@ -137,7 +137,7 @@ lower bound of all pre-fixed points. With this fact in hand the least fixed
 point theorem follows immediately.
 
 We start by defining the type of pre-fixed points (and observing that it is
-latge).
+large).
 
 \begin{code}
 
@@ -212,8 +212,8 @@ The join of the resized subset, which we call p, is the least fixed point.
 
 \end{code}
 
-To see this we need to observe that p is the greatest lower bound of the type
-of pre-fixed points.
+To see that p is the least fixed point we need to observe that p is the greatest
+lower bound of the type of pre-fixed points.
 
 \begin{code}
 
@@ -249,8 +249,8 @@ Now it follows rather directly that p is the least fixed point.
   where
    I : (f (p pr) ≤⟨ L ⟩ p pr) holds
    I = p-is-greatest-lower-bound pr (f (p pr) , λ (x , fx≤x)
-         → transitivity-of L (f (p pr)) (f x) x (f-mono (p pr) x
-             (p-is-a-lower-bound pr (x , fx≤x))) fx≤x)
+         → transitivity-of L (f (p pr)) (f x) x
+            (f-mono (p pr) x (p-is-a-lower-bound pr (x , fx≤x))) fx≤x)
    II : (p pr ≤⟨ L ⟩ f (p pr)) holds
    II = p-is-a-lower-bound pr (f (p pr) , f-mono (f (p pr)) (p pr) I)
    III : (a : ⟨ L ⟩) → f a ＝ a → order-of L (p pr) a holds
