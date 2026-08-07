@@ -247,6 +247,11 @@ lower bound of the type of pre-fixed points.
 
 \end{code}
 
+NOTE: Observe that we do not use Pre-Fixed-Points in an essential way. This
+suggests that in general a subset S b = (x : L) → P x → β b ≤ x can be resized
+and its join can be taken to get a least upperbound of the family Σ P. This
+could prove useful in other investigations.
+
 Now it follows rather directly that p is the least fixed point.
 
 \begin{code}
