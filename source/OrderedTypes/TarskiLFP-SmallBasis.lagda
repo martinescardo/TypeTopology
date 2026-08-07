@@ -2,14 +2,21 @@ Ian Ray. July 25 2026.
 
 Recall, the type Sup-Lattice 𝓤 𝓦 𝓥 consists of a type L : 𝓤 with order in 𝓦 and
 joins of size 𝓥, that is we have _≤_ : L → L → Ω 𝓦 and ⋁ : Fam L 𝓥 → L. We will
-denote TarskiLFP 𝓤 𝓦 𝓥 for the following statement:
+consider TarskiLFP 𝓤 𝓦 𝓥 to be the following statement:
 
  Any monotone map f : L → L, where L : Sup-Lattice 𝓤 𝓦 𝓥, has a least fixed
- point. 
+ point.
 
-Now, TarskiLFP 𝓤 𝓦 𝓥 in this generality is in fact false. Consider the counter-
-examples (Ord 𝓤)ᵒᵖ : 𝓤⁺ which forms a Sup-Lattice 𝓤⁺ 𝓤 𝓤, but of course the
-identity map has no least fixed point because (Ord 𝓤)ᵒᵖ has no least element.
+We can define TarskiGFP 𝓤 𝓦 𝓥 analogously. Now TarskiGFP 𝓤 𝓦 𝓥 is actually false
+(cite Tom ...)
+because Ord 𝓤 : 𝓤⁺ can be made into a term of Sup-Lattice 𝓤⁺ 𝓤 𝓤, but of course
+the identity map has no greatest fixed point as Ord 𝓤 has no greatest element
+(a dual argument can be made for TarskiLFP 𝓤 𝓦 𝓥 stated in terms of inf-lattices
+by considering (Ord 𝓤)ᵒᵖ, but we restrict attention to sup-lattices for now).
+It is shown in (cite ???) that the succesor map on Ord 𝓤 is monotone iff LEM
+holds. So in the presence of LEM, Ord 𝓤 and the succesor map provide a counter-
+example to TarskiLFP 𝓤 𝓦 𝓥. It is open whether there is a constructive and/or
+predicative counter-example to TarskiLFP 𝓤 𝓦 𝓥.
 
 Alternatively, TarskiLFP 𝓤 𝓤 𝓤 is true, and we recount the standard proof here: 
 
