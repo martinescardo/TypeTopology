@@ -7,7 +7,7 @@ file Subst.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --without-K --safe --auto-inline #-}
 
 module EffectfulForcing.Internal.SystemT where
 

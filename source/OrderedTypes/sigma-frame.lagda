@@ -93,11 +93,11 @@ and axiom VI says that binary meets distribute over countable joins.
 
 is-σ-frame-homomorphism : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
                         → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
-is-σ-frame-homomorphism  (_ , (⊤ , _∧_ , ⊥ , ⋁) , _) (_ , (⊤' , _∧'_ , ⊥' , ⋁') , _) f =
+is-σ-frame-homomorphism  (A , (⊤ , _∧_ , ⊥ , ⋁) , _) (_ , (⊤' , _∧'_ , ⊥' , ⋁') , _) f =
     (f ⊤ ＝ ⊤')
-  × ((λ a b → f (a ∧ b)) ＝ (λ a b → f a ∧' f b))
+  × ((λ (a b : A) → f (a ∧ b)) ＝ (λ a b → f a ∧' f b))
   × (f ⊥ ＝ ⊥')
-  × ((λ 𝕒 → f (⋁ 𝕒)) ＝ (λ 𝕒 → ⋁' (n ↦ f (𝕒 n))))
+  × ((λ (𝕒 : ℕ → A) → f (⋁ 𝕒)) ＝ (λ 𝕒 → ⋁' (n ↦ f (𝕒 n))))
 
 _≅[σ-Frame]_ : σ-Frame 𝓤 → σ-Frame 𝓤 → 𝓤 ̇
 𝓐 ≅[σ-Frame] 𝓑 = Σ f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-equiv f × is-σ-frame-homomorphism 𝓐 𝓑 f
@@ -217,9 +217,9 @@ being-σ-frame-homomorphism-is-prop (_ , _ ,  _) (_ , _ , (i' , _)) f =
        g ⊤⟨ 𝓑 ⟩     ＝⟨ p₁ ⟩
        ⊤⟨ 𝓒 ⟩       ∎
 
-  q₂ = (λ a b → g (f (a ∧⟨ 𝓐 ⟩ b)))     ＝⟨ dfunext fe (λ a → dfunext fe (λ b → ap (λ - → g (- a b)) q₀)) ⟩
-       (λ a b → g (f a ∧⟨ 𝓑 ⟩ f b))     ＝⟨ dfunext fe (λ a → dfunext fe (λ b → ap (λ - → - (f a) (f b)) q₁)) ⟩
-       (λ a b → g (f a) ∧⟨ 𝓒 ⟩ g (f b)) ∎
+  q₂ = (λ (a b : ⟨ 𝓐 ⟩) → g (f (a ∧⟨ 𝓐 ⟩ b)))     ＝⟨ dfunext fe (λ a → dfunext fe (λ b → ap (λ - → g (- a b)) q₀)) ⟩
+       (λ (a b : ⟨ 𝓐 ⟩) → g (f a ∧⟨ 𝓑 ⟩ f b))     ＝⟨ dfunext fe (λ a → dfunext fe (λ b → ap (λ - → - (f a) (f b)) q₁)) ⟩
+       (λ (a b : ⟨ 𝓐 ⟩) → g (f a) ∧⟨ 𝓒 ⟩ g (f b)) ∎
 
   r₂ = g (f ⊥⟨ 𝓐 ⟩) ＝⟨ ap g r₀ ⟩
        g ⊥⟨ 𝓑 ⟩     ＝⟨ r₁ ⟩

@@ -1582,17 +1582,19 @@ We now show that the the σ-suplat on one generator is also the initial
            f a ∧' ⋁⟨ 𝓑 ⟩' (λ n → f (c n)) ＝⟨ V c ⟩
            f a ∧' f (⋁ c)                 ∎
             where
-             I   = λ c → ap f (meet⋁ a c)
-             II  = λ c → σ-suplat-hom-⋁
-                          𝓐
-                          𝓑-qua-σ-suplat
-                          f
-                          f-is-hom
-                          (λ n → a ∧ c n)
-             III = λ c p → ap ⋁⟨ 𝓑 ⟩' (dfunext fe p)
-             IV  = λ c → (⟨ 𝓑 ⟩-distributivity (f a) (λ n → f (c n)))⁻¹
-             V   = λ c → ap (f a ∧'_)
-                            ((σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom c)⁻¹)
+             I   = λ (c : ℕ → ⟨ 𝓐 ⟩) → ap f (meet⋁ a c)
+             II  = λ (c : ℕ → ⟨ 𝓐 ⟩) → σ-suplat-hom-⋁
+                                        𝓐
+                                        𝓑-qua-σ-suplat
+                                        f
+                                        f-is-hom
+                                        (λ n → a ∧ c n)
+             III = λ (c : ℕ → ⟨ 𝓐 ⟩)
+                     (p : (n : ℕ) → _ ＝ meet' 𝓑 (f a) (f (c n)))
+                        → ap ⋁⟨ 𝓑 ⟩' (dfunext fe p)
+             IV  = λ (c : ℕ → ⟨ 𝓐 ⟩) → (⟨ 𝓑 ⟩-distributivity (f a) (λ n → f (c n)))⁻¹
+             V   = λ (c : ℕ → ⟨ 𝓐 ⟩) → ap (f a ∧'_)
+                                         ((σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom c)⁻¹)
 
     f-is-hom' : is-σ-frame-hom A-qua-σ-frame 𝓑 f
     f-is-hom' = σ-rec-⊤ 𝓑-qua-σ-suplat ⊤' ,
