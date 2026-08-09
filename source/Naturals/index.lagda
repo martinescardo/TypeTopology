@@ -11,6 +11,7 @@ import Naturals.Division
 import Naturals.Double
 import Naturals.ExitTruncation
 import Naturals.Exponentiation
+import Naturals.IdOrder
 import Naturals.HCF
 import Naturals.Multiplication
 import Naturals.Order
