@@ -98,7 +98,7 @@ dialogue⋆ = D⋆-rec (λ z α → z) (λ φ x α → φ (α x) α)
 B⋆ : 𝓦 ̇ → 𝓣 ̇ → 𝓦 ⊔ 𝓣 ̇
 B⋆ = D⋆ ℕ ℕ
 
-B↦B⋆ : {X A : Type} → B X → B⋆ X A
+B↦B⋆ : {X A : 𝓤₀ ̇ } → B X → B⋆ X A
 B↦B⋆ = church-encode
 
 church-encode-B : {X : 𝓦 ̇ } {A : 𝓣 ̇ }
@@ -125,11 +125,11 @@ kleisli-extension⋆ f d η' β' = d (λ x → f x η' β') β'
 B⋆-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓣 ̇ } → (X → Y) → B⋆ X A → B⋆ Y A
 B⋆-functor f = kleisli-extension⋆ (λ x → η⋆ (f x))
 
-B⋆〖_〗 : type → Type → Type
+B⋆〖_〗 : type → 𝓤₀ ̇  → 𝓤₀ ̇
 B⋆〖 ι 〗     A = B⋆(〖 ι 〗) A
 B⋆〖 σ ⇒ τ 〗 A = B⋆〖 σ 〗 A → B⋆〖 τ 〗 A
 
-Kleisli-extension⋆ : {X A : Type}
+Kleisli-extension⋆ : {X A : 𝓤₀ ̇ }
                      {σ : type}
                    → (X → B⋆〖 σ 〗 A)
                    → (B⋆ X A → B⋆〖 σ 〗 A)
@@ -137,36 +137,36 @@ Kleisli-extension⋆ {X} {A} {ι}     = kleisli-extension⋆
 Kleisli-extension⋆ {X} {A} {σ ⇒ τ} =
   λ g d s → Kleisli-extension⋆ {X} {A} {τ} (λ x → g x s) d
 
-generic⋆ : {A : Type} → B⋆ ℕ A → B⋆ ℕ A
+generic⋆ : {A : 𝓤₀ ̇ } → B⋆ ℕ A → B⋆ ℕ A
 generic⋆ = kleisli-extension⋆ (β⋆ η⋆)
 
-zero⋆ : {A : Type} → B⋆ ℕ A
+zero⋆ : {A : 𝓤₀ ̇ } → B⋆ ℕ A
 zero⋆ = η⋆ 0
 
-succ⋆ : {A : Type} → B⋆ ℕ A → B⋆ ℕ A
+succ⋆ : {A : 𝓤₀ ̇ } → B⋆ ℕ A → B⋆ ℕ A
 succ⋆ = B⋆-functor succ
 
 rec⋆ : {σ : type}
-       {A : Type}
+       {A : 𝓤₀ ̇ }
      → (B⋆ ℕ A → B⋆〖 σ 〗 A → B⋆〖 σ 〗 A)
      → B⋆〖 σ 〗 A
      → B⋆ ℕ A → B⋆〖 σ 〗 A
 rec⋆ {σ} {A} f x = Kleisli-extension⋆ {ℕ} {A} {σ} (rec (f ∘ η⋆) x)
 
-B⋆【_】 : {n : ℕ} (Γ : Cxt n) (A : Type) → Type
+B⋆【_】 : {n : ℕ} (Γ : Cxt n) (A : 𝓤₀ ̇ ) → 𝓤₀ ̇
 B⋆【 Γ 】 A = (i : Fin _) → B⋆〖 Γ [ i ] 〗 A
 
-⟪⟫⋆ : {A : Type} → B⋆【 〈〉 】 A
+⟪⟫⋆ : {A : 𝓤₀ ̇ } → B⋆【 〈〉 】 A
 ⟪⟫⋆ ()
 
-_‚‚⋆_ : {n : ℕ} {Γ : Cxt n} {A : Type} {σ : type}
+_‚‚⋆_ : {n : ℕ} {Γ : Cxt n} {A : 𝓤₀ ̇ } {σ : type}
       → B⋆【 Γ 】 A
       → B⋆〖 σ 〗 A
       → B⋆【 Γ , σ 】 A
 (xs ‚‚⋆ x) 𝟎       = x
 (xs ‚‚⋆ x) (suc i) = xs i
 
-B⋆⟦_⟧ : {n : ℕ} {Γ : Cxt n} {σ : type} {A : Type}
+B⋆⟦_⟧ : {n : ℕ} {Γ : Cxt n} {σ : type} {A : 𝓤₀ ̇ }
       → T' Γ σ
       → B⋆【 Γ 】 A
       → B⋆〖 σ 〗 A
@@ -178,7 +178,7 @@ B⋆⟦ ν i             ⟧ xs = xs i
 B⋆⟦ ƛ t             ⟧ xs = λ x → B⋆⟦ t ⟧ (xs ‚‚⋆ x)
 B⋆⟦ t · u           ⟧ xs = (B⋆⟦ t ⟧ xs) (B⋆⟦ u ⟧ xs)
 
-dialogue-tree⋆ : {A : Type} → T₀ ((ι ⇒ ι) ⇒ ι) → B⋆ ℕ A
+dialogue-tree⋆ : {A : 𝓤₀ ̇ } → T₀ ((ι ⇒ ι) ⇒ ι) → B⋆ ℕ A
 dialogue-tree⋆ t = B⋆⟦ (embed t) · Ω ⟧ ⟪⟫⋆
 
 \end{code}

@@ -83,13 +83,13 @@ Closed terms can be interpreted in a special way:
 
 \begin{code}
 
-T₀ : type → Type
+T₀ : type → 𝓤₀ ̇
 T₀ = T 〈〉
 
 ⟦_⟧₀  : {σ : type} → T₀ σ → 〖 σ 〗
 ⟦ t ⟧₀ = ⟦ t ⟧ ⟨⟩
 
-T-definable : {σ : type} → 〖 σ 〗 → Type
+T-definable : {σ : type} → 〖 σ 〗 → 𝓤₀ ̇
 T-definable {σ} x = Σ t ꞉ T₀ σ , ⟦ t ⟧₀ ＝ x
 
 \end{code}
@@ -98,7 +98,7 @@ System T extended with a formal oracle Ω, called T' (rather than TΩ as previou
 
 \begin{code}
 
-data T' : (Γ : Cxt) (σ : type) → Type where
+data T' : (Γ : Cxt) (σ : type) → 𝓤₀ ̇  where
  Ω    : {Γ : Cxt} → T' Γ (ι ⇒ ι)
  Zero : {Γ : Cxt} → T' Γ ι
  Succ : {Γ : Cxt} → T' Γ ι → T' Γ ι
