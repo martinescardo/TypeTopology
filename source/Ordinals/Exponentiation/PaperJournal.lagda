@@ -739,11 +739,18 @@ Lemma-53 = ^ₒ-𝟚ₒ-by-prop
 Lemma-54
  : ((α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩) → is-order-preserving α β f → α ⊴ β)
  ↔ EM 𝓤
-Lemma-54 =   order-preserving-gives-≼-implies-EM ∘ H₁
-           , H₂ ∘ EM-implies-order-preserving-gives-≼
+Lemma-54 = ↔-trans (H₁ , H₂)
+                   (order-preserving-gives-≼-implies-EM ,
+                    EM-implies-order-preserving-gives-≼)
  where
-  H₁ = λ h α β (f , f-order-pres) → ⊴-gives-≼ α β (h α β  f   f-order-pres)
-  H₂ = λ h α β  f   f-order-pres  → ≼-gives-⊴ α β (h α β (f , f-order-pres))
+  T₁ = (α β : Ordinal _) (f : ⟨ α ⟩ → ⟨ β ⟩) → is-order-preserving α β f → α ⊴ β
+  T₂ = (α β : Ordinal _) → (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f)
+       → α ≼ β
+  H₁ : T₁ → T₂
+  H₁ h α β (f , o) = ⊴-gives-≼ α β (h α β f o)
+  H₂ : T₂ → T₁
+  H₂ h α β f o = ≼-gives-⊴ α β (h α β (f , o))
+
 
 Proposition-55-i : ((α β : Ordinal 𝓤) → β ⊴ α +ₒ β) ↔ EM 𝓤
 Proposition-55-i =   +ₒ-as-large-as-right-summand-implies-EM

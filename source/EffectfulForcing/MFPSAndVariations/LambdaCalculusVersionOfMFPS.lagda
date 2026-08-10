@@ -25,7 +25,7 @@ Auxiliary interpretation of types:
 
 \begin{code}
 
-B〖_〗 : type → Type
+B〖_〗 : type → 𝓤₀ ̇
 B〖 ι 〗     = B ℕ
 B〖 σ ⇒ τ 〗 = B〖 σ 〗 → B〖 τ 〗
 
@@ -35,7 +35,7 @@ Generalized Kleisli extension (as in the original treatment):
 
 \begin{code}
 
-Kleisli-extension : {X : Type} {σ : type} → (X → B〖 σ 〗) → B X → B〖 σ 〗
+Kleisli-extension : {X : 𝓤₀ ̇ } {σ : type} → (X → B〖 σ 〗) → B X → B〖 σ 〗
 Kleisli-extension {X} {ι}     = kleisli-extension
 Kleisli-extension {X} {σ ⇒ τ} = λ g d s → Kleisli-extension {X} {τ} (λ x → g x s) d
 
@@ -62,7 +62,7 @@ the original development):
 
 \begin{code}
 
-B【_】 : {n : ℕ} (Γ : Cxt n) → Type
+B【_】 : {n : ℕ} (Γ : Cxt n) → 𝓤₀ ̇
 B【 Γ 】 = (i : Fin _) → B〖 (Γ [ i ]) 〗
 
 ⟪⟫ : B【 〈〉 】
@@ -104,7 +104,7 @@ The logical relation is the same as in the original development:
 
 \begin{code}
 
-R : {σ : type} → (Baire → 〖 σ 〗) → B〖 σ 〗 → Type
+R : {σ : type} → (Baire → 〖 σ 〗) → B〖 σ 〗 → 𝓤₀ ̇
 R {ι}     n n' = (α : Baire) → n α ＝ decode α n'
 R {σ ⇒ τ} f f' = (x  : Baire → 〖 σ 〗)
                  (x' : B〖 σ 〗)
@@ -152,7 +152,7 @@ to contexts (in the obvious way):
 
 \begin{code}
 
-Rs : {n : ℕ} {Γ : Cxt n} → (Baire → 【 Γ 】) → B【 Γ 】 → Type
+Rs : {n : ℕ} {Γ : Cxt n} → (Baire → 【 Γ 】) → B【 Γ 】 → 𝓤₀ ̇
 Rs {n} {Γ} xs ys = (i : Fin n) → R {Γ [ i ]} (λ α → xs α i) (ys i)
 
 main-lemma : {n : ℕ} {Γ : Cxt n}

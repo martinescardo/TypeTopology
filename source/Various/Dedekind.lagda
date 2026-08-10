@@ -1034,7 +1034,8 @@ The canonical embedding of the rationals into the reals:
  ℚ-to-ℝᵁ q = (λ p → (q < p) , <-ℚ-ℚ-is-prop-valued q p) ,
              ℚ-is-upper-open q ,
              (λ p i r j → ℚ-transitivity q p r i j) ,
-             (λ p i → ∣(λ (r , j , k) → r , k , j) (ℚ-density q p i)∣)
+             (λ p i → ∣ (λ ((r , j , k) : type-of (ℚ-density q p i))
+                                        → r , k , j) (ℚ-density q p i) ∣)
 
  ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ
   : (q : ℚ)

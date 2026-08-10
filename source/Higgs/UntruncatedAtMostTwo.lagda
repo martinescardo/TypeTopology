@@ -138,7 +138,7 @@ at-most-discrete-gives-discrete X Y X-discrete f-ph y y' = V VI
   repeat-indices : (X → Y)
                  → X × X
   repeat-indices f =
-    (λ (x , x' , _) → (x , x'))
+    (λ ((x , x' , _) : Σ x ꞉ X , Σ x' ꞉ X , (x ≠ x') × (f x ＝ f x')) → (x , x'))
     (f-ph f)
 
   repeat-is-repeat : (f : X → Y)

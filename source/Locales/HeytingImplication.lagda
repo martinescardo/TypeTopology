@@ -50,7 +50,7 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
 \begin{code}
 
  private
-  _≤_ = λ U V → U ≤[ poset-of (𝒪 X) ] V
+  _≤_ = λ (U V : ∣ poset-of (𝒪 X) ∣ₚ) → U ≤[ poset-of (𝒪 X) ] V
   L   = 𝒪 X
   Lₚ  = poset-of (𝒪 X)
 
