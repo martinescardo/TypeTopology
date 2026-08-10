@@ -263,7 +263,7 @@ suggests that in general a subset S b = (x : L) → P x → β b ≤ x can be re
 and its join can be taken to get a least upperbound of the total space Σ P for
 any family P : L → Type. This could prove useful in other investigations.
 
-Now it follows rather directly that p is the least fixed point.
+Now it follows rather directly that p is the least fixed point of f.
 
 \begin{code}
 
