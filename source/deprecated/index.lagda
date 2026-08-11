@@ -14,4 +14,4 @@ import deprecated.EGroups.index                 -- (2)
 
 (1) Use UF.SIP instead
 
-(2) A new version is under development, and then this one will be deleted.
+(2) Superseded by EGroups, and kept here for comparison for the moment.
