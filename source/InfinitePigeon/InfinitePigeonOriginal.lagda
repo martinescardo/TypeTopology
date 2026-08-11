@@ -24,7 +24,7 @@ quantifier K∃ (called pigeonhole below). The proof uses excluded
 middle and classical countable choice (i.e. choice formulated with
 the classical existential quantifier), which is implemented using
 the K-shift (more commonly known as the double negation shift) in
-the modules JK-Choice.agda and Infinite-JK-Shifts.agda.
+the modules InfinitePigeon.K-AC-N and InfinitePigeon.K-Shift.
 
 In the module FinitePigeon.agda we derive a statement that uses the
 intuitionistic quantifiers (and doesn't mention the double negation

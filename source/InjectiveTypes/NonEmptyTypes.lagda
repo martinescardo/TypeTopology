@@ -6,7 +6,7 @@ fact that the type of inhabited types is not necessarily injective, see
 InjectiveTypes.InhabitedTypesTaboo.
 
 An alternative proof of the injectivity of the type of non-empty types
-may be found in InjectiveTypes.MathematicalStrutures.
+may be found in InjectiveTypes.MathematicalStructures.
 
 \begin{code}
 

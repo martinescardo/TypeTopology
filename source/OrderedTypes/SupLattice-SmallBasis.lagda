@@ -7,7 +7,8 @@ is crucial for the development of predicative order theory.
 
 This notion of a basis was motivated by the set theoretic formulation due to
 Curi (see http://doi.org/10.1090/proc/12569) and can be compared with a similar
-notion for domains due to Tom de Jong (see DomainTheory.BasisAndContinuity).
+notion for domains due to Tom de Jong (see
+DomainTheory.BasesAndContinuity.Bases).
 
 A suplattice L that has suprema for family of size 𝓥 has a basis if there is a
 type B : 𝓥 and map β : B → L such that

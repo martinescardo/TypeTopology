@@ -61,7 +61,7 @@ univalent mathematics, because the types in 𝓤 ̇ need not be sets, and
 also because it places emphasis on levels rather than universes
 themselves.)
 
-Now, using an anonymous module UF.with parameters (corresponding to a
+Now, using an anonymous module with parameters (corresponding to a
 section in Coq), we assume propositional truncations that stay in the
 same universe, function extensionality for all universes, two
 universes 𝓤 and 𝓥, propositional truncation for the universe 𝓥, a type

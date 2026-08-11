@@ -117,7 +117,7 @@ _×ᵒ_ : Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤
 
 Extension of a family X → Ordᵀ along an embedding j : X → A to get a
 family A → Ordᵀ. (This can also be done for Ord-valued families.)
-This uses the module UF.InjectiveTypes to calculate Y / j.
+This uses the module InjectiveTypes.Blackboard to calculate Y / j.
 
 Sum of a countable family with an added non-isolated top element. We
 first extend the family to ℕ∞ and then take the ordinal-indexed sum of

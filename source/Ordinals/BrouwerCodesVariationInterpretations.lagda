@@ -241,7 +241,7 @@ possible to prove total separatedness directly, because this property
 is not closed under Σ, which is used to define +ᵒ, ×ᵒ and Σ₁, as shown
 in the module FailureOfTotalSeparatedness. (Added 15th October
 2024. This is actually possible. See the module
-TypeTopology.SigmaDiscreteAndTotallySeparated , which shows that this
+TypeTopology.SigmaTotallySeparated , which shows that this
 is possible in the particular case we are interested in.)
 
 Classically, the squashed sum is the ordinal sum plus 1, and now we

@@ -146,7 +146,7 @@ Lift-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 
 
 Added 7th Feb 2019. Assuming propositional and functional
 extensionality instead of univalence, then lift-fibers of propositions
-are propositions. (For use in the module UF.Resize.)
+are propositions. (For use in the module UF.Size.)
 
 \begin{code}
 

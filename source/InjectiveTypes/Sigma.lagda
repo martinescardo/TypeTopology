@@ -144,7 +144,7 @@ the (weaker) compatibility data is enough for our purposes, and easier
 to check (see the file MathematicalStructuresMoreGeneral).
 
 That the compatibility data is sufficient but not necessary is
-illustrated in the file InjectiveTypes.InhabitednessTaboo, with the
+illustrated in the file InjectiveTypes.InhabitedTypesTaboo, with the
 type of pointed types (which is injective) shown to be equivalent to a
 subtype of the type of inhabited types (which is not injective in
 general).

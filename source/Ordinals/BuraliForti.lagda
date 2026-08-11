@@ -231,7 +231,7 @@ that there is at most one universe embedding.
 
 Moreover, universe embeddings are automatically type embeddings
 (meaning that they have subsingleton fibers), as shown in the module
-UF.UniverseEmbeddings.
+UF.UniverseEmbedding.
 
 So the following says that the universe 𝓤⁺ is strictly larger than the
 universe 𝓤:

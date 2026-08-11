@@ -2,7 +2,7 @@ Martin Escardo, 20th December 2021
 
 Some thoughts about Dedekind reals.
 
-A proper development of Dedekind reals is at Dedekind.index, by Andrew
+A proper development of Dedekind reals is at DedekindReals.index, by Andrew
 Sneap, started March 2021. Here we duplicate some definitions, and the
 aim in this file is to explore ideas about Dedekind reals, and not to
 define a library of Dedekind reals, like Andrew has done.

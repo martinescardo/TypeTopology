@@ -57,8 +57,8 @@ is-limit-ordinal⁺ {𝓤} α = (β : Ordinal 𝓤)
 
 We give an equivalent definition below.
 
-Recall from the modules UF.Quotients.FromSetReplacement and
-UF.Quotients.GivesSetReplacement that the existence propositional
+Recall from the modules Quotient.FromSetReplacement and
+Quotient.GivesSetReplacement that the existence propositional
 truncations and the set-replacement property are together equivalent
 to the existence of small quotients. With them we can construct
 suprema of families of ordinals.

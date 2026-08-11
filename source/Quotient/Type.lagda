@@ -382,8 +382,8 @@ large-set-quotients-exist = general-set-quotients-exist (_⁺)
 \end{code}
 
 It turns out that quotients, if they exist, are necessarily
-effective. This is proved the module Quotient.Effective. But we need
-to include the definition here.
+effective. This is proved in the module Quotient.Effectivity. But we
+need to include the definition here.
 
 \begin{code}
 

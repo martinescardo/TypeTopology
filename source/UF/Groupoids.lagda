@@ -9,7 +9,7 @@ propositions are at level zero, sets are at level one and groupoids
 are at level two.
 
 We define is-groupoid as an analog of is-set and is-prop,
-independently of hlevels. Since UF.hlevels uses global univalence,
+independently of hlevels. Since UF.HLevels uses global univalence,
 hlevel stuff is confined in a submodule below.
 
 \begin{code}
@@ -47,7 +47,7 @@ sets-are-groupoids i = props-are-sets i
 
 \end{code}
 
-UF.hlevels uses global univalence.
+UF.HLevels uses global univalence.
 
 \begin{code}
 

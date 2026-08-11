@@ -1,7 +1,7 @@
 Tom de Jong, 19 June 2026.
 
 Updated 26 June 2026 to work with fewer definitional computation rules
-(cf. the file Circle.WithRewriting).
+(cf. the file SyntheticHomotopyTheory.Circle.WithRewriting).
 
 We show that the loop space of the circle is equivalent to the integers via the
 mapping k : ℤ ↦ loopᵏ : pt ＝ pt.

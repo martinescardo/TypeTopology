@@ -16,7 +16,7 @@ where y is called sharp if η n ⊑ y is decidable for every n ꞉ ℕ [1].
     https://doi.org/10.1017/S0960129523000282
 
 There are two equivalent copies of ℕ∞ in this development. We use the
-one defined in CoNaturals.GenericConvergentSequence2 imported via the
+one defined in TypeTopology.GenericConvergentSequence2 imported via the
 module CoNaturals.Type2.
 
 \begin{code}

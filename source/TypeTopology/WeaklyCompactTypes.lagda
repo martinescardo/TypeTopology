@@ -1244,8 +1244,8 @@ through the embedding 𝟚 of into the type of truth values, we say that
 it has decidable truth-values, which is equivalent. Such an asymmetry
 is already present in our formulation of the notion of compactness.
 
-We have defined image with lower case in the module UF. We now need
-Images with upper case:
+We have defined image with lower case in the module
+UF.ImageAndSurjection. We now need Images with upper case:
 
 \begin{code}
 

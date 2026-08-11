@@ -12,7 +12,7 @@ necessary for the semidecidable propositions to be closed under countable joins.
 Before we do that, we relate Bishop's Limited Principle of Omniscience (LPO),
 Markov's Principle (MP) and strong Brouwer-Kripke Schema (BKS⁺) to properties of
 the type of semidecidable propositions. (See Appendix II of
-CantorSchroederBernstein.lagda for more on BKS⁺.)
+CantorSchroederBernstein.CSB for more on BKS⁺.)
 
 Moreover, we formalize [Theorem 3, EK2017] which says that the semidecidable
 propositions are closed under Σ if and only if a certain weak choice principle,
@@ -692,7 +692,7 @@ and BKS⁺ and propositional resizing.
 NB: We use the formulation LPO' as it is more convenient for our purposes, but
 recall that we proved LPO' equivalent to LPO.
 
-Somewhat similar results can be found in CantorSchroederBernstein.lagda, where
+Somewhat similar results can be found in CantorSchroederBernstein.CSB, where
 the observation that BKS⁺ → MP → EM is attributed to Moschovakis. As LPO → MP,
 it follows that BKS⁺ → LPO → EM, but we give a direct proof of the latter here.
 In particular, we prove EM ≃ BKS⁺ × LPO directly, although this follows from the
@@ -910,10 +910,10 @@ Semidecidable-Dominance-Axiom 𝓤 𝓥 = (P : 𝓤 ̇ )
 
 That the dominance axiom implies closure in Σ is proved next.
 
-There is a very similar result and proof in Dominance.lagda (see
+There is a very similar result and proof in Dominance.Definition (see
 D3-and-D5'-give-D5), but we can't use it here, because we have more general
 universe parameters (i.e. P : 𝓤, but Q : P → 𝓥) which are not possible in
-Dominance.lagda as the dominance is given by a function d : 𝓣 → 𝓚 whose domain
+Dominance.Definition as the dominance is given by a function d : 𝓣 → 𝓚 whose domain
 is a *fixed* universe 𝓣.
 
 \begin{code}
