@@ -101,6 +101,7 @@ Lift'-≃ 𝓥 X = 𝟘-rneutral'
 Lift'-is-embedding : Univalence → is-embedding (Lift' {𝓤} 𝓥)
 Lift'-is-embedding {𝓤} {𝓥} ua =
  universe-embeddings-are-embeddings ua 𝓤 (𝓤 ⊔ 𝓥) (Lift' 𝓥) (Lift'-≃ 𝓥)
+
 \end{code}
 
 The following embedding has better definitional properties:
