@@ -20,7 +20,8 @@ open PropositionalTruncation pt
 
 \end{code}
 
-Multiplication is defined as in the HoTT Book. It reminds of interval multiplication of rational numbers.
+Multiplication is defined as in the HoTT Book. It reminds of interval
+multiplication of rational numbers.
 
 Inhabitedness: by inhabitedness of x and y, we find values
 on both sides of each. Then using the property that rationals have no

@@ -12,7 +12,8 @@
     (ii) Hancock (Russell'08 Proof Theory meets Type Theory, Swansea)
          https://web.archive.org/web/20220723181746/http://www.cs.swan.ac.uk/~csetzer/russell08/slides/hancock.pdf
 
-         See also his MGS'08 lecture notes https://www.cs.bham.ac.uk/~mhe/events/MGS08/notes/proofTheory.pdf
+         See also his MGS'08 lecture notes
+         https://www.cs.bham.ac.uk/~mhe/events/MGS08/notes/proofTheory.pdf
 
     An interesting and powerful idea is their use of "lenses", which
     allows to define rather large ordinals, in particular in the

@@ -615,14 +615,14 @@ module decomposability-bis (pt : propositional-truncations-exist) where
 
 Added 25th July 2024 by Tom de Jong and Martin Escardo.
 
-The previous theorem, however, doesn't capture our examples of injective types. Indeed, the assumption that D : 𝓤 is injective with respect to 𝓤
-and 𝓥 is a bit unnatural, as all known examples of injective types are
-large, e.g. the universe 𝓤 is injective w.r.t 𝓤 and 𝓤, as are the
-ordinals in 𝓤 and the propositions in 𝓤. In fact, in
-InjectiveTypes.Resizing we showed that such injective types are
-necessarily large unless Ω¬¬-resizing holds. Therefore, we now improve
-and generalize the above theorem to a large, but locally small,
-type, so that all known examples are captured.
+The previous theorem, however, doesn't capture our examples of injective
+types. Indeed, the assumption that D : 𝓤 is injective with respect to 𝓤 and
+𝓥 is a bit unnatural, as all known examples of injective types are large,
+e.g. the universe 𝓤 is injective w.r.t 𝓤 and 𝓤, as are the ordinals in 𝓤
+and the propositions in 𝓤. In fact, in InjectiveTypes.Resizing we showed
+that such injective types are necessarily large unless Ω¬¬-resizing holds.
+Therefore, we now improve and generalize the above theorem to a large, but
+locally small, type, so that all known examples are captured.
 
 \begin{code}
 

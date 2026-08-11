@@ -50,7 +50,8 @@ has-triv-kernel = is-iso (triv {𝓤 ⊔ 𝓥}) (kernel X Y f isf) (triv-initial
 
 \end{code}
 
-Being injective in the naive sense employed above is the same as having a left-cancellable underlying function.
+Being injective in the naive sense employed above is the same as having a
+left-cancellable underlying function.
 
 \begin{code}
 

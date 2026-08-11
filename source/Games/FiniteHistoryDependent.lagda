@@ -230,7 +230,8 @@ In the above definition:
 
    So the first part
 
-     subpred q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → subpred q x (strategic-path (σf x)))
+     subpred q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → subpred q x
+     (strategic-path (σf x)))
 
    of the definition is as in the comment above, but with a partial
    play of length k=0, and the second (inductive) part, says that the

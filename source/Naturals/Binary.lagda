@@ -452,7 +452,8 @@ Binary-induction-on-ℕ A a f g = h , refl , IIIa , IIIb
 
 \end{code}
 
-By symmetry, the proof is concluded. But we have to write the symmetric argument in Agda:
+By symmetry, the proof is concluded. But we have to write the symmetric
+argument in Agda:
 
 \begin{code}
 

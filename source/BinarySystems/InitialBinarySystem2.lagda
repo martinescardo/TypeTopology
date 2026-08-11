@@ -924,7 +924,8 @@ seen that there is some redundancy:
    × (  r x ⊕ l y ＝ m (x ⊕ y)    )
    × (  r x ⊕ r y ＝ r (x ⊕ y)    )
 
-The first two come from the binary system F and the remaining ones from the homomorphism condition and case analysis.
+The first two come from the binary system F and the remaining ones from the
+homomorphism condition and case analysis.
 
 TODO. Next we want to show that
 

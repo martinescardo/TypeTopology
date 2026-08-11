@@ -2064,7 +2064,8 @@ We also consider the following notion of locator for families:
 
 \end{code}
 
-Limits of sequences, but using the topological, rather than metric, structure of the reals.
+Limits of sequences, but using the topological, rather than metric,
+structure of the reals.
 
 \begin{code}
 

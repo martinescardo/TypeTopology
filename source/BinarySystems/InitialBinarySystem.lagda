@@ -1297,7 +1297,8 @@ seen that there is some redundancy:
    × (  right x ⊕ left y   ＝ center (x ⊕ y)     )
    × (  right x ⊕ right y  ＝ right (x ⊕ y)      )
 
-The first two come from the binary system F and the remaining ones from the homomorphism condition and cases analysis.
+The first two come from the binary system F and the remaining ones from the
+homomorphism condition and cases analysis.
 
 Next we want to show that
 
