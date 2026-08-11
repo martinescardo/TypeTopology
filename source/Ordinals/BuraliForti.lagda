@@ -16,7 +16,7 @@ Similarly, the embedding hSet 𝓤 → hSet 𝓤⁺ of the type of sets of 𝓤
 into that of 𝓤⁺ in not an equivalence either.  We also establish this
 for the types of magmas, monoids and groups, where the case of groups
 requires considerable more work (invoked here but performed in the
-modules FreeGroup.lagda and FreeGroupOfLargeLocallySmallSet.lagda).
+modules Groups.Free and Groups.Large).
 
 We work with ordinals as defined in the HoTT book for that purpose.
 https://homotopytypetheory.org/book/
