@@ -913,8 +913,8 @@ That the dominance axiom implies closure in Σ is proved next.
 There is a very similar result and proof in Dominance.Definition (see
 D3-and-D5'-give-D5), but we can't use it here, because we have more general
 universe parameters (i.e. P : 𝓤, but Q : P → 𝓥) which are not possible in
-Dominance.Definition as the dominance is given by a function d : 𝓣 → 𝓚 whose domain
-is a *fixed* universe 𝓣.
+Dominance.Definition as the dominance is given by a function d : 𝓣 → 𝓚 whose
+domain is a *fixed* universe 𝓣.
 
 \begin{code}
 

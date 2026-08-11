@@ -147,8 +147,8 @@ subtype-is-discrete pv d (x , p) (y , q) = κ (d x y)
 \end{code}
 
 The closure of discrete types under Σ is proved in the module
-TypeTopology.SigmaDiscrete (as this requires to
-first prove that discrete types are sets).
+TypeTopology.SigmaDiscrete (as this requires to first prove that
+discrete types are sets).
 
 General properties:
 

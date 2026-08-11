@@ -239,10 +239,10 @@ Without total separatedness (enough functions into the type 𝟚 of
 booleans), compactness wouldn't be an interesting property. It is not
 possible to prove total separatedness directly, because this property
 is not closed under Σ, which is used to define +ᵒ, ×ᵒ and Σ₁, as shown
-in the module FailureOfTotalSeparatedness. (Added 15th October
-2024. This is actually possible. See the module
-TypeTopology.SigmaTotallySeparated , which shows that this
-is possible in the particular case we are interested in.)
+in the module FailureOfTotalSeparatedness. (Added 15th October 2024.
+This is actually possible. See the module
+TypeTopology.SigmaTotallySeparated , which shows that this is possible
+in the particular case we are interested in.)
 
 Classically, the squashed sum is the ordinal sum plus 1, and now we
 give an alternative semantics of ordinal codes with this

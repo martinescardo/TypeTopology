@@ -69,11 +69,10 @@ We denote by `_⊑_` the informating ordering of the dcpo `𝓓`.
 
 We also define a reformulation `has-supₚ` of `has-sup` from
 `DomainTheory.Basics.Dcpo`. The reason for this reformulation is to have a
-version more suitable to use with notion of family that I (Ayberk) use, which
-is the one from `Slice.Family`.
-Moreover, it is also convenient to have a version of this notion that is
-packaged up with the proof of its propositionality so that it can be defined
-directly as an `Ω`-valued function.
+version more suitable to use with notion of family that I (Ayberk) use, which is
+the one from `Slice.Family`. Moreover, it is also convenient to have a version
+of this notion that is packaged up with the proof of its propositionality so
+that it can be defined directly as an `Ω`-valued function.
 
 \begin{code}
 

@@ -103,8 +103,8 @@ is compatible with the product and with taking the inverse.
 \end{code}
 
 \texttt{id-implies-related} below says that two equal terms must be
-related. It should be part of \texttt{Notation.General}, or
-closer to general facts about equivalence relations.
+related. It should be part of \texttt{Notation.General}, or closer to
+general facts about equivalence relations.
 
 \begin{code}
 
