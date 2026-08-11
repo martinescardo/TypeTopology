@@ -18,7 +18,7 @@ for now). The successor map on Ord 𝓤 is monotone iff LEM holds (see Theorem 8
 "Connecting Constructive Notions of Ordinals in Homotopy Type Theory" by Nicolai
 Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu ;
 https://doi.org/10.4230/LIPIcs.MFCS.2021.70). Thus, in the presence of LEM,
-Ord 𝓤 and the successor map provide a counter- example to TarskiLFP 𝓤 𝓦 𝓥. It is
+Ord 𝓤 and the successor map provide a counter-example to TarskiLFP 𝓤 𝓦 𝓥. It is
 open whether there is a constructive and/or predicative counter-example to
 TarskiLFP 𝓤 𝓦 𝓥.
 
