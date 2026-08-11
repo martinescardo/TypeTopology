@@ -8,7 +8,8 @@ module InfinitePigeon.J-Shift where
 
 \end{code}
 
-Import Pigeon.one of J-Shift-BBC or J-Shift-Selection.
+Import one of InfinitePigeon.J-Shift-BBC or
+InfinitePigeon.J-Shift-Selection.
 
 \begin{code}
 

@@ -13,11 +13,8 @@ ordinal, then so does every type in the extended family Y/j : A → 𝓦.
                    v
                    𝓦
 
-This is a direct application of the construction in the module
-OrdinalArithmetic.prop-indexed-product-of-ordinals.
-
 This assumes X A : 𝓦, and that the given ordinal structure is
-W-valued. More generally, we have the following typing, for which the
+𝓦-valued. More generally, we have the following typing, for which the
 above triangle no longer makes sense, because Y / j : A → 𝓤 ⊔ 𝓥 ⊔ 𝓦,
 but the constructions still work.
 
@@ -29,10 +26,10 @@ module Ordinals.WellOrderExtension where
 
 open import MLTT.Spartan
 open import Ordinals.Notions
+open import Ordinals.WellOrderArithmetic
+open import UF.Embeddings
 open import UF.FunExt
 open import UF.Subsingletons
-open import UF.Embeddings
-open import Ordinals.WellOrderArithmetic
 
 module extension
         (fe : FunExt)

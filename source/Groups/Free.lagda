@@ -1986,7 +1986,7 @@ original quotient FA/∾, which lives in the higher universe 𝓤⁺⁺.
 \end{code}
 
 The following relies on transporting group structures along
-equivalences, which is implemented in the module Group.Type
+equivalences, which is implemented in the module Groups.Type
 (unfortunately, one cannot apply univalence for that purpose, because
 the types live in different universes and hence one can't form their
 identity type, and so this transport has to be done manually).
