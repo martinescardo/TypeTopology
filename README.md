@@ -310,6 +310,7 @@ only your name as author.
 
 Please add yourself the first time you contribute. Use your adopted name, and not necessarily your given name, at your discretion.
 
+* Alex Rice
 * Alice Laroche
 * Andrew Sneap
 * Andrew Swan
@@ -334,6 +335,7 @@ Please add yourself the first time you contribute. Use your adopted name, and no
 * Lane Biocini
 * Marc Bezem
 * Martin Escardo
+* Mike Shulman
 * Nicolai Kraus
 * Ohad Kammar
 * Paul Levy (i)
@@ -343,6 +345,7 @@ Please add yourself the first time you contribute. Use your adopted name, and no
 * Thierry Coquand
 * Todd Waugh Ambridge
 * Tom de Jong
+* Ulrik Buchholtz
 * Vincent Rahli
 
 (i) These authors didn't write any single line of Agda code here, but
