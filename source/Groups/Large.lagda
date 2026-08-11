@@ -72,7 +72,7 @@ large-group-with-no-small-copy {𝓤} (A , A-is-set , A-is-large , A-ls) = 𝓕 
 
 \end{code}
 
-In the module BuraliForti we instantiate A to the set of ordinals,
+In the module Ordinals.BuraliForti we instantiate A to the set of ordinals,
 which is large and locally small, to construct a large group with no
 small copy.
 

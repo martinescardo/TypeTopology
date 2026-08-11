@@ -1527,7 +1527,7 @@ We now show that _▶_ defined above is logically equivalent to _▷_.
 \end{code}
 
 The usual way to define the transitive closure of a relation (cf. the
-file SRTclosure) applied to the relation _▶_ would increase universe
+file Relations.SRTclosure) applied to the relation _▶_ would increase universe
 level back to that of the relation _∾_.
 
 In order to overcome this obstacle, we consider a type of redexes.

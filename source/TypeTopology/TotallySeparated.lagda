@@ -466,7 +466,7 @@ Baire-is-totally-separated fe =
 \end{code}
 
 More generally, all simple types are totally separated - see the
-module SimpleTypes.
+module TypeTopology.SimpleTypes.
 
 We now characterize the totally separated types X as those such that
 the map eval X defined below is an embedding, in order to construct
@@ -646,7 +646,7 @@ rather than direct proofs (as in the proof of tight reflection below).
 \end{code}
 
 We package the above as follows for convenient use elsewhere
-(including the module CompactTypes).
+(including the module TypeTopology.CompactTypes).
 
 \begin{code}
 
@@ -665,7 +665,7 @@ We package the above as follows for convenient use elsewhere
 \end{code}
 
 In particular, because 𝟚 is totally separated, 𝕋 X and X have the same
-boolean predicates (which we exploit in the module CompactTypes).
+boolean predicates (which we exploit in the module TypeTopology.CompactTypes).
 
 Added 21st July 2025.
 

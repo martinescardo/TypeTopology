@@ -362,7 +362,7 @@ equivalent, as also shown below.
 December 2012, going back to work done circa 2010.
 
 The theorem here is that the "squashed sum" of any countable family of
-compact∙ sets is itself compact (see the module CompactTypes,
+compact∙ sets is itself compact (see the module TypeTopology.CompactTypes,
 imported below, for the definition and fundamental facts about the
 notion).
 
@@ -381,7 +381,7 @@ extend it to a ℕ∞-indexed family of sets as follows
   X [ u ] = (k : ℕ) → ι k ＝ u → X k
 
 where u ranges over ℕ∞, the one-point compactification of the natural
-numbers ℕ, defined in the module GenericConvergentSequence.
+numbers ℕ, defined in the module TypeTopology.GenericConvergentSequence.
 
 The squashed sum of X : ℕ → 𝓤₀ ̇ is defined to be
 

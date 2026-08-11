@@ -38,7 +38,7 @@ module Ordinals.BrouwerCodesVariationInterpretations (fe : FunExt) where
 
 We work with ordinal encodings, or ordinal expressions, that are
 slightly different from the traditional Brouwer ordinal trees, which
-we also consider in the file BrouwerCodesInterpretations.
+we also consider in the file Ordinals.BrouwerCodesInterpretations.
 
 \begin{code}
 

@@ -284,7 +284,7 @@ micro-tychonoff-corollary' fe = micro-tychonoff fe
 
 \end{code}
 
-So the function type (LPO → ℕ) is compact! (See the module LPO for a
+So the function type (LPO → ℕ) is compact! (See the module Taboos.LPO for a
 proof.)
 
 The Tychonoff theorem for prop-indexed products of compact types

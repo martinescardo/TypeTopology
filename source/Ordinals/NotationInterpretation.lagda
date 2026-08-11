@@ -14,7 +14,7 @@ import Ordinals.InductiveRecursiveCodesInterpretations -- 2022
 
 \end{code}
 
-  1. The file BrouwerCodesInterpretations interprets Brouwer
+  1. The file Ordinals.BrouwerCodesInterpretations interprets Brouwer
      ordinal codes, inductively defined by constructors
 
        Z : B,

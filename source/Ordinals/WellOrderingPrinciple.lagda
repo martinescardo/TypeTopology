@@ -5,7 +5,7 @@ be well-ordered, written in Agda, similar to the one in the HoTT book,
 and to one of the two original proofs by Zermelo in set theory.
 
 Converse added 22nd December 2022, but is already available, by Tom de
-Jong since July 2021 in the module WellOrderingTaboo, which also shows
+Jong since July 2021 in the module Ordinals.WellOrderingTaboo, which also shows
 that, under excluded middle, the classical and inductive definitions
 of ordinals agree.
 

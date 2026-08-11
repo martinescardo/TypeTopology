@@ -418,7 +418,7 @@ module ∞-proto-metric-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (
  or order preserving-reflecting maps (ordered-set case).
 
 The following example is related to compact types (in the sense of the
-module CompactTypes):
+module TypeTopology.CompactTypes):
 
 \begin{code}
 

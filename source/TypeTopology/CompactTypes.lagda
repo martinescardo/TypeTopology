@@ -3,10 +3,10 @@ Martin Escardo 2011, reorganized and expanded 2018,2019.
 Compact types. We shall call a type compact if it is exhaustibly
 searchable. But there are many closely related, but different, notions
 of searchability, and we investigate this phenomenon in this module
-and the module WeaklyCompactTypes.
+and the module TypeTopology.WeaklyCompactTypes.
 
 Perhaps surprisingly, there are infinite searchable sets, such as ℕ∞
-(see the module GenericConvergentSequenceCompactness).
+(see the module TypeTopology.GenericConvergentSequenceCompactness).
 
 It is in general not possible to decide constructively the statement
 
@@ -110,7 +110,7 @@ is-compact  = is-Σ-compact
 Notice that compactness in this sense is not in general a univalent
 proposition (subsingleton). Weaker notions, ∃-compactness and
 Π-compactness, that are always propositions are defined and studied in
-the module WeaklyCompactTypes.
+the module TypeTopology.WeaklyCompactTypes.
 
 The following notion is logically equivalent to the conjunction of
 compactness and pointedness, and hence the notation "compact∙":
@@ -1032,7 +1032,7 @@ Compact∙-gives-pointed ε = pr₁ (ε (λ x → 𝟘) (λ x → 𝟘-is-decida
 
 \end{code}
 
-Based on what was done in the module WeaklyCompactTypes before:
+Based on what was done in the module TypeTopology.WeaklyCompactTypes before:
 
 \begin{code}
 

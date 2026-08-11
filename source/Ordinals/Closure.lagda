@@ -60,7 +60,7 @@ Ordinal-indexed sums of topped ordinals are closed under compactness:
 
 \end{code}
 
-More compactness closure properties are in the module SquashedSum.
+More compactness closure properties are in the module TypeTopology.SquashedSum.
 
 The complication of the following proof in the case for addition is
 that the ordinal 𝟚ᵒ has underlying set 𝟙+𝟙 rather than 𝟚, and that
@@ -69,7 +69,7 @@ as a co-product. This saved lots of code elsewhere, but adds labour
 here (and in some helper lemmas/constructions that we added in other
 modules for this purpose). Notice that +' is the sum indexed by 𝟚,
 defined in the module MLTT.Spartan. The bulk of the work for the
-following construction is performed in the module SquashedCantor.
+following construction is performed in the module TypeTopology.SquashedCantor.
 
 \begin{code}
 
@@ -119,7 +119,7 @@ following construction is performed in the module SquashedCantor.
 
 \end{code}
 
-More Cantor-retract properties are in the module SquashedCantor.
+More Cantor-retract properties are in the module TypeTopology.SquashedCantor.
 
 \begin{code}
 
