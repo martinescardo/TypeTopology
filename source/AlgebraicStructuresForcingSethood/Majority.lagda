@@ -15,7 +15,8 @@ here [2, 3]; Wärn's theorem is an analogue of Taylor's Theorem 6.2.
     498–527, 1977. https://doi.org/10.4153/CJM-1977-054-9.
 [2] Martin Escardo. AlgebraicStructuresForcingSethood.Semilattices.lagda,
     23 February 2026.
-[3] Tom de Jong. AlgebraicStructuresForcingSethood.Semilattices-streamlined.lagda,
+[3] Tom de Jong.
+    AlgebraicStructuresForcingSethood.Semilattices-streamlined.lagda,
     25—27 February 2026.
 
 Taylor studied varieties of topological algebras, and how the equations
