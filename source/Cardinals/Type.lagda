@@ -11,8 +11,6 @@ module Cardinals.Type (st : set-truncations-exist) where
 
 open import UF.Sets
 
-import UF.Logic
-
 open set-truncations-exist st
 
 Card : (𝓤 : Universe) → 𝓤 ⁺ ̇

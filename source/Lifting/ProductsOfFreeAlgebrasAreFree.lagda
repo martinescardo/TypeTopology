@@ -9,15 +9,9 @@ free. This result seems to be new.
 
 \end{code}
 
-This file generalizes the following file, in a more or less
-straightforward way, whose result also seem to be new, which shows
-that powers of Ω are free lifting algebras.
-
-\begin{code}
-
-import Lifting.PowersOfOmegaAreFreeAlgebras
-
-\end{code}
+This file generalizes Lifting.PowersOfOmegaAreFreeAlgebras, in a more
+or less straightforward way, whose result also seem to be new, which
+shows that powers of Ω are free lifting algebras.
 
 Therefore we have decided to remove most of the discussion, to avoid
 repetition. So readers who wish to understand the motivation for

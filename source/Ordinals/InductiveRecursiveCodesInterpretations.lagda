@@ -694,23 +694,10 @@ Let P be a proposition and assume function extensionality.
 It doesn't seem to be possible to reverse any of the implications (0)
 and (1), so that the proposition "(P → 2) has decidable equality"
 seems to be strictly between "P is decidable" and "¬P is decidable".
-
-This is discussed in the following module.
-
-\begin{code}
-
-import Taboos.P2
-
-\end{code}
+This is discussed in the file Taboos.P2.
 
 TODO. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do have
-(ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in the following module.
-
-\begin{code}
-
-import Ordinals.ConvergentSequence
-
-\end{code}
+(ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in Ordinals.ConvergentSequence.
 
 TODO. Define an element x of an ordinal to be trisolated if for every
 y we have that y ≺ x or x ＝ y or x ≺ y.  Notice that trisolated
