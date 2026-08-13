@@ -731,9 +731,7 @@ types.
 
 Another useful thing is that in any type X we can define an apartness
 relation x♯y by ∃ p : X→𝟚 , p x ‌≠p y, which is tight iff X is totally
-separated, where tightness means ¬ (x ♯ y)→ x = y. Part of the following
-should be moved to another module about apartness, but I keep it here
-for the moment.
+separated, where tightness means ¬ (x ♯ y)→ x = y.
 
 Added 26 January 2018.
 
