@@ -107,6 +107,6 @@ Aut-Ω-is-boolean 𝕗@(f , e) = to-≃-＝ fe (automorphisms-of-Ω-are-involuti
 
 \end{code}
 
-Notice that the fact that the autoembeddings of Ω are equivalences
-says that Ω is Dedekind finite (which is recorded explicitly in
-another file that imports this one).
+Notice that the fact that the autoembeddings of Ω are equivalences says that Ω
+is Dedekind finite (which is recorded explicitly in Fin.Dedekind, which imports
+this one).

@@ -125,10 +125,9 @@ The above renaming in the Sequence import is for us to be able to
 avoid "yellow" with the following definitions, which specialize the
 implicit arguments of head', tail' and _∶∶'_. As a side-effect, this
 also speeds up type checking. NB. We could have used (and we tried) to
-have the necessary types as parameters of the module
-sequence. However, this doesn't work, as in another module
-(CountableTychonoff), these functions are used with different implicit
-parameters in the same term.
+have the necessary types as parameters of the module sequence. However, this
+doesn't work, as in another module (Unsafe.CountableTychonoff), these functions
+are used with different implicit parameters in the same term.
 
 \begin{code}
 

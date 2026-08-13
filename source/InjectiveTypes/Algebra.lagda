@@ -850,9 +850,8 @@ But if D is a set, we again have a typal equivalence.
 \end{code}
 
 TODO (trivial). Bring homomorphisms into the picture explicitly, where
-𝓛-algebras and their homomorphisms are already defined in another
-module, and here we define homomorphisms of injective structures as
-follows.
+𝓛-algebras and their homomorphisms are already defined in Lifting.Algebras, and
+here we define homomorphisms of injective structures as follows.
 
 \begin{code}
 

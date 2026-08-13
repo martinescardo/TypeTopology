@@ -5,9 +5,9 @@ non-dependent, naive function extensionality, as presented by Gambino,
 Kapulkin and Lumsdaine in
 http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf.
 
-We then deduce dependent function extensionality applying a second
-argument by Voevodsky, developed in another module, which doesn't
-depend on univalence.
+We then deduce dependent function extensionality applying a second argument by
+Voevodsky, developed in UF.FunExt-from-Naive-FunExt, which doesn't depend on
+univalence.
 
 \begin{code}
 

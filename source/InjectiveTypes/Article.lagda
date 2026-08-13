@@ -758,9 +758,8 @@ ainjective-retract-of-subtype D i Y (j , e) = pr₁ a , j , pr₂ a
 
 \end{code}
 
-The identity-type former Id is an embedding X → (X → 𝓤). The proof
-requires some insight and can be found in another module by following
-the link.
+The identity-type former Id is an embedding X → (X → 𝓤). The proof requires
+some insight and can be found in UF.IdEmbedding.
 
 \begin{code}
 

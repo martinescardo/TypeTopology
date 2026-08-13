@@ -215,8 +215,8 @@ For no choice of universes 𝓤 and 𝓣 can we have 𝓣 ⁺ ⊔ 𝓤 to coinci
 with 𝓣. However, for some dominances other than is-prop, it is possible to
 have the equality between the fiber of l and the definedness of l.
 
-The following simplified proof of ⊑-anti uses the SIP via the
-construction of _⋍·_ in another module:
+The following simplified proof of ⊑-anti uses the SIP via the construction of
+_⋍·_ in Lifting.IdentityViaSIP:
 
 \begin{code}
 
