@@ -729,11 +729,10 @@ with the S-separated reflection of the lifting of X, and hence, in
 this context, it makes sense to restrict our attention to S-separated
 types.
 
-Another useful thing is that in any type X we can define an apartness
-relation x♯y by ∃ p : X→𝟚 , p x ‌≠p y, which is tight iff X is totally
-separated, where tightness means ¬ (x ♯ y)→ x = y. Part of the following
-should be moved to another module about apartness, but I keep it here
-for the moment.
+Another useful thing is that in any type X we can define an apartness relation
+x♯y by ∃ p : X→𝟚 , p x ‌≠p y, which is tight iff X is totally separated, where
+tightness means ¬ (x ♯ y)→ x = y. Part of the following should be moved to
+Apartness.Definition, but I keep it here for the moment.
 
 Added 26 January 2018.
 

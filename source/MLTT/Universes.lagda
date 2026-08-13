@@ -42,9 +42,8 @@ Then the definition of `foo` can be
 
   foo X = refl
 
-using the conventions for the identity type in another file in this
-development, or, if we want to be explicit (or need, in similar
-definitions, to refer to 𝓤), it can be
+using the conventions for the identity type in MLTT.Id, or, if we want to be
+explicit (or need, in similar definitions, to refer to 𝓤), it can be
 
   foo {𝓤} X = refl {𝓤} {X}
 

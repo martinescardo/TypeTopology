@@ -21,8 +21,8 @@ open import InfinitePigeon.Two
 
 \end{code}
 
-We use the classical, infinite pigeonhole principle (in another
-module) to derive a finite one:
+We use the classical, infinite pigeonhole principle (in
+InfinitePigeon.J-InfinitePigeon) to derive a finite one:
 
 \begin{code}
 

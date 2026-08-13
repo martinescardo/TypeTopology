@@ -1851,10 +1851,10 @@ module ∞-bigmagma {𝓤 𝓥 : Universe} (I : 𝓥 ̇ ) where
 
 \end{code}
 
-We use the above in another module to define σ-frames.
+We use the above in OrderedTypes.sigma-frame to define σ-frames.
 
-We now consider ∞-bigmagmas with all operations of all arities, which
-we use in another module to define frames.
+We now consider ∞-bigmagmas with all operations of all arities, which we use in
+OrderedTypes.Frame to define frames.
 
 \begin{code}
 

@@ -2,7 +2,7 @@ Martin Escardo, Added 21st April 2022.
 
 Limit ordinals and suprema of families of ordinals.
 
-(Moved from another file to this new file 15th October 2024.)
+(Moved from Ordinals.AdditionProperties to this new file 15th October 2024.)
 
 \begin{code}
 

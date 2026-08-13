@@ -99,8 +99,8 @@ module sup-bounded-by-sum-under-em
 \end{code}
 
 We also formulate the following immediate consequence for use in
-another module, where Ordinalᵀ 𝓤 is the type of topped ordinals in the
-universe 𝓤, that is, the ordinals that have a largest element.
+Ordinals.BrouwerCodesInterpretations, where Ordinalᵀ 𝓤 is the type of topped
+ordinals in the universe 𝓤, that is, the ordinals that have a largest element.
 
 \begin{code}
 
