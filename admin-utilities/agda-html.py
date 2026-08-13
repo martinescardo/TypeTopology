@@ -106,7 +106,7 @@ LINKABLE = re.compile(r"""  (?P<url>(?:https?|ftp)://\S+)
                           | (?P<bare>\b(?:files?|modules?|submodules?)\s+
                                        (?:`|\\texttt\{)?
                                        (?P<word>[A-Z][A-Za-z0-9'_-]*)
-                                       (?![A-Za-z0-9'_-]|\.[A-Za-z]))
+                                       (?![A-Za-z0-9'_-]|\.[A-Za-z]|/))
                        """, re.X)
 
 # An arXiv identifier, new style (1412.7148, 2304.06000v2) or old
