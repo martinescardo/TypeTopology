@@ -57,8 +57,8 @@ constant-maps-are-h-isolated fe y₀ y₀-iso {f} = II
 
 \end{code}
 
-Added before 2018 and moved here 7th March 2025 from another file
-where it was in less general form.
+Added before 2018 and moved here 7th March 2025 from UF.Hedberg, where it was
+in less general form.
 
 \begin{code}
 

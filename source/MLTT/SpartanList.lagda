@@ -144,8 +144,8 @@ module _ {𝓤} (fe : funext 𝓤₀ 𝓤) where
 
 \end{code}
 
-9th Feb 2021. More operations on vectors. The stuff on
-vectors should be eventually moved to another module.
+9th Feb 2021. More operations on vectors. The stuff on vectors should
+eventually be moved to a new module.
 
 \begin{code}
 

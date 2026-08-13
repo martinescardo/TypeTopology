@@ -1,7 +1,7 @@
 Martin Escardo, Paulo Oliva, 2-27 July 2021
 
-Example: Tic-tac-toe. We have two versions. The other version is in
-another file.
+Example: Tic-tac-toe. We have three versions. The other two are
+Games.TicTacToe0 and Games.TicTacToe1.
 
 \begin{code}
 

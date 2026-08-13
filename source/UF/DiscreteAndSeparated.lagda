@@ -878,5 +878,5 @@ equivs-reflect-weak-isolatedness f x i = II
 
 \end{code}
 
-TODO (in another module). More generally, if an equivalence preserve
+TODO (in another module). More generally, if an equivalence preserves
 some property, it also reflects it.

@@ -2419,14 +2419,13 @@ theorem₄ {𝓣} {𝓚} ρ = quasidecidable-propositions
 
 TODO.
 
-  * Very little here has to do with the nature of the type ℕ. We never
-    used zero, successor, or induction! (But they are used in another
-    module to construct binary joins, which are not used here.) Any
-    indexing type replacing ℕ works in the above development, with the
-    definition of σ-sup-lattice generalized to have an arbitrary (but
-    fixed) indexing type in place of ℕ. (We could have multiple
-    indexing types, but this would require a modification of the above
-    development.)
+  * Very little here has to do with the nature of the type ℕ. We never used
+    zero, successor, or induction! (But they are used in
+    OrderedTypes.sigma-sup-lattice to construct binary joins, which are not
+    used here.) Any indexing type replacing ℕ works in the above development,
+    with the definition of σ-sup-lattice generalized to have an arbitrary (but
+    fixed) indexing type in place of ℕ. (We could have multiple indexing types,
+    but this would require a modification of the above development.)
 
   * Define, by induction (or as a W-type) a type similar to the
     Brouwer ordinals, with two constructors 0 and 1 and a formal
