@@ -60,9 +60,9 @@ We work with ordinals as defined in [3].
 
 \end{code}
 
-But see also the following Iterative.index, which is not used here, and works
-with an encoding of ordinals similar to the von Neumann encoding,
-shown to be equivalent to the one we use (check the references there).
+But see also Iterative.index, which is not used here, and works with an
+encoding of ordinals similar to the von Neumann encoding, shown to be
+equivalent to the one we use (check the references there).
 
 Multiplication _×ₒ_ of ordinals is given by the lexicographic order of
 the cartesian product of the underlying types. In particular, the

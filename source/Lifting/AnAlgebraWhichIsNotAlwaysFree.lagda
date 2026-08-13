@@ -426,8 +426,8 @@ more. For example, a product of algebras is an algebra. Is a product
 of free algebras also free? As a second example, do the algebras form
 an exponential ideal: Is the algebra X → A free if the algebra A is?
 
-These questions are answered positively in the following module
-Lifting.ProductsOfFreeAlgebrasAreFree
+These questions are answered positively in
+Lifting.ProductsOfFreeAlgebrasAreFree.
 
 So, at present, we have only *one* example of an algebra which is not
 free in all toposes.
