@@ -311,9 +311,9 @@ More generally, we have the following.
 
 \end{code}
 
-The following two technical lemmas, which are probably not very well
-named, and are used to show that the monad of non-empty lists without
-repetitions is affine, in another module.
+The following two technical lemmas, which are probably not very well named, and
+are used to show that the monad of non-empty lists without repetitions is
+affine, in DiscreteGraphicMonoids.AffineMonad.
 
 \begin{code}
 
