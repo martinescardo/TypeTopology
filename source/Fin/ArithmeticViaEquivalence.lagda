@@ -158,8 +158,8 @@ open import UF.Subsingletons
 
 \end{code}
 
-The 1st definition by induction is that of the function Fin defined in
-the module Fin imported above, namely
+The 1st definition by induction is that of the function Fin defined in the
+module Fin.Type imported above, namely
 
   Fin   0  = 𝟘,
   Fin(n+1) = Fin n + 𝟙.
@@ -227,7 +227,7 @@ Fin+homo m n = pr₂(+construction m n)
 \end{code}
 
 The 3rd and last use of induction is for the left-cancellability of
-Fin : ℕ → 𝓤₀, which is in the module Fin.
+Fin : ℕ → 𝓤₀, which is in the module Fin.Properties.
 
 With this, no further induction is needed to prove commutativity of
 addition:

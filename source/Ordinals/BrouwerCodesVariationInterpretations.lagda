@@ -366,8 +366,8 @@ order preserving and reflecting (28 July 2018).
                                    (λ i → ι-is-order-reflecting (ν i))
 \end{code}
 
-As discussed in the module Ordinals, propositional extensionality in
-the following construction is not strictly needed but makes our life
+As discussed in the module Ordinals.Closure, propositional extensionality
+in the following construction is not strictly needed but makes our life
 much easier (given the mathematics we have already developed).
 
 \begin{code}

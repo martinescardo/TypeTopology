@@ -1,6 +1,6 @@
 Martin Escardo, 12 Feb 2018.
 
-Moved from the file TotallySeparated 22 August 2024.
+Moved from the file TypeTopology.TotallySeparated 22 August 2024.
 
 We give a positive characterization of the negation of apartness.
 

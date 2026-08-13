@@ -1,8 +1,8 @@
 Martin Escardo, 21 June 2018
 
-Ordinals proper are defined in the module Ordinals, as types equipped
-with well orders. This module forms the basis for that module. We
-still use the terminology "ordinal" here.
+Ordinals proper are defined in the module Ordinals.Type, as types equipped with
+well orders. This module forms the basis for that module. We still use the
+terminology "ordinal" here.
 
 \begin{code}
 

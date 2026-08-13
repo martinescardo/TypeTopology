@@ -825,12 +825,12 @@ open is-discrete' {{...}} public
 
 \end{code}
 
-Added 14th October 2024. We move the notion of weakly isolated point
-from its original place FailureOfTotalSeparatedness (added there some
-time in 2013 for a paper with Thomas Streicher on the indiscreteness
-of the universe and related things). Then we add further properties of
-this notion, used both in the module FailureOfTotalSeparatedness and
-the module Ordinals.NotationInterpretation.
+Added 14th October 2024. We move the notion of weakly isolated point from its
+original place TypeTopology.FailureOfTotalSeparatedness (added there some time
+in 2013 for a paper with Thomas Streicher on the indiscreteness of the universe
+and related things). Then we add further properties of this notion, used both
+in the module TypeTopology.FailureOfTotalSeparatedness and the module
+Ordinals.InductiveRecursiveCodesInterpretations.
 
 \begin{code}
 
