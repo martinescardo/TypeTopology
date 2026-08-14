@@ -34,9 +34,10 @@ intuitionistic quantifiers (and doesn't mention the double negation
 modality K at all), using the classical result as a lemma. In the
 module Examples.agda we run it.
 
-This is the first version. Much improved ones are in other files.
-Also, this proof switches the case analysis, and this causes funny
-subsequences in some cases.
+This is the first version. Much improved ones are in the modules
+InfinitePigeon.InfinitePigeonOriginal, InfinitePigeon.InfinitePigeon2011-05-12
+and InfinitePigeon.InfinitePigeon. Also, this proof switches the case
+analysis, and this causes funny subsequences in some cases.
 
 Definition:
 
