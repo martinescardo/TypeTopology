@@ -406,20 +406,10 @@ def rewrite(htmldir, check):
 
 def render(agda, source, entry, htmldir, force):
     "Run agda --html, unless the rendering is there and up to date already."
-    # Ask git, which knows what belongs to the library, and walk the tree
-    # where there is no git, as in the container the github action runs in.
-    sources = []
-    try:
-        listed = subprocess.run(["git", "ls-files", "*.lagda", "*.agda"],
-                                cwd=source, capture_output=True, text=True)
-        sources = [os.path.join(source, f) for f in listed.stdout.split()]
-    except OSError:
-        pass
-    if not sources:
-        sources = [os.path.join(root, f)
-                   for root, _, here in os.walk(source)
-                   for f in here if f.endswith((".lagda", ".agda"))]
-    newest = max((os.path.getmtime(f) for f in sources if os.path.exists(f)),
+    sources = subprocess.run(["git", "ls-files", "*.lagda", "*.agda"],
+                             cwd=source, capture_output=True,
+                             text=True).stdout.split()
+    newest = max((os.path.getmtime(os.path.join(source, f)) for f in sources),
                  default=0)
     pages = glob.glob(os.path.join(htmldir, "*.html"))
     if pages and not force and min(os.path.getmtime(p) for p in pages) > newest:
