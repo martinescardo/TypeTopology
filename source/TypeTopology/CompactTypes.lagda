@@ -314,8 +314,8 @@ compatible constructive mathematics, like Bishop's methamatics and
 Martin-Löf type theory (in its various flavours) - even the principle
 of excluded middle is independent.
 
-We'll see that the infinite set ℕ∞ defined in the module
-ConvergentSequenceCompact is compact.
+We'll see in TypeTopology.GenericConvergentSequenceCompactness that
+the infinite set ℕ∞ is compact.
 
 If a set X is compact∙ and a set Y has decidable equality, then the
 function space (X → Y) has decidable equality, if we assume function
