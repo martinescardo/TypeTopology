@@ -140,7 +140,9 @@ Philosophy of the repository
      extensionality, the existence of propositional truncations and
      the existence of quotients, and some higher inductive types.
 
-Click at the imported module names below to navigate to them:
+
+A description of the following imported modules is available at
+https://github.com/martinescardo/TypeTopologyModuleDescriptions/blob/main/README.md
 
 \begin{code}
 
@@ -210,8 +212,6 @@ import gist.index
 
 \end{code}
 
-TODO. Explain what each of the above does here. This is long overdue.
-
 The above includes only the --safe modules. A list of all modules is here:
 
 https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html
@@ -222,5 +222,5 @@ NB. This file is accessible from both
 (2) https://martinescardo.github.io/TypeTopology/index.html
 
 We have that currently (1) redirects to (2), but in the future we may
-choose a different redirection to (1), so please use (1) when citing
+choose a different redirection from (1), so please use (1) when citing
 the html rendering of this repository.
