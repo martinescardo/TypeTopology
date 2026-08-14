@@ -892,9 +892,10 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
 
 \end{code}
 
-In `TypeTopology.DenseMapsProperties` a generalization of the above result is
-given that applies to all dense maps, and does not use the function
-extensionality axiom or existence of propositional truncations.
+In TypeTopology.DenseMapsProperties a generalization of the above
+result is given that applies to all dense maps, and does not use the
+function extensionality axiom or existence of propositional
+truncations.
 
 \begin{code}
 
