@@ -11,7 +11,7 @@ at the place of contribution.
 ## Table of contents
 
  1. [About](#about)
- 1. [html rendering of the Agda code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html)
+ 1. [Official html rendering of the Agda code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html)
  1. [Alternative html rendering](https://pdmosses.github.io/TypeTopology) by [Peter Mosses](https://pdmosses.github.io/)
  1. [Search](https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html) for a name, a fragment of one, a concept, a definition, or a contributor, including wildcards
  1. [Emacs search command](https://github.com/martinescardo/TypeTopologySearch/blob/main/README.md) for TypeTopology
