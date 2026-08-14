@@ -713,8 +713,9 @@ TODO. An element x of α is trisolated iff there are ordinals αₕ and αₜ
 and an ordinal-equivalence αₕ +ₒ 𝟙ₒ + αₜ → α that maps the point at
 the component 𝟙ₒ to x.
 
-TODO. Suprema of compact ordinals are compact. (This follows directly
-from the constructions in the file OrdinalOfOrdinalsSupremum.)
+Suprema of compact-indexed families of compact ordinals are compact,
+proved in Ordinals.CompactnessOfSuprema from the constructions in
+Ordinals.OrdinalOfOrdinalsSuprema.
 
 TODO. Are the ordinals in the image of K totally separated?
 
