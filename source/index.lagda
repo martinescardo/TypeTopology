@@ -142,7 +142,7 @@ Philosophy of the repository
 
 
 A description of each of the following imported modules is available at
-https://github.com/martinescardo/TypeTopologyModuleDescriptions/blob/main/README.md
+https://github.com/martinescardo/TypeTopologyModuleDescriptions/
 
 Moreover, the files within these modules have extensive discussions in prose.
 
