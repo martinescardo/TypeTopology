@@ -1318,7 +1318,7 @@ Added March 2022 by Martin Escardo.
 
 \end{code}
 
-Is the compactness assumption needed? Are there better assumptions
+TODO. Is the compactness assumption needed? Are there better assumptions?
 
 \begin{code}
 
