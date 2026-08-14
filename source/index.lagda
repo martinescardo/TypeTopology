@@ -141,8 +141,10 @@ Philosophy of the repository
      the existence of quotients, and some higher inductive types.
 
 
-A description of the following imported modules is available at
+A description of the following of each imported modules is available at
 https://github.com/martinescardo/TypeTopologyModuleDescriptions/blob/main/README.md
+
+Moreover, the files within these module have extensive discussions in prose.
 
 \begin{code}
 
