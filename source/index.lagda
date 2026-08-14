@@ -92,8 +92,9 @@ Philosophy of the repository
 
    * We work in a minimal subset of Agda to implement Spartan MLTT and
      work with it. In particular, we restrict ourselves to safe
-     features (with the flags --safe --no-sized-types --no-guardedness
-     and more).
+     features, with flags such as --safe --no-sized-types --no-guardedness
+     and more:
+     https://github.com/martinescardo/TypeTopology/blob/master/typetopology.agda-lib.
 
    * Most of the time we prefer to use Σ types rather than records,
      although records are not forbidden, as they are equivalent to
