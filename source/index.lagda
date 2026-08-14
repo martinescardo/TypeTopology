@@ -215,7 +215,6 @@ import gist.index
 \end{code}
 
 The above includes only the --safe modules. A list of all modules is here:
-
 https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html
 
 NB. This file is accessible from both
