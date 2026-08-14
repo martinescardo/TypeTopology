@@ -1,4 +1,4 @@
-sMartin Escardo 2012
+Martin Escardo 2012
 
 \begin{code}
 
