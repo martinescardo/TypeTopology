@@ -233,10 +233,20 @@ ap₂-refl-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → 
               → ap₂ f refl q ＝ ap (f x) q
 ap₂-refl-left f refl = refl
 
+ap₂-refl-left' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x : X} {y₀ y₁ : Y}
+                 (q : y₀ ＝ y₁)
+               → ap (f x) q ＝ ap₂ f refl q
+ap₂-refl-left' f refl = refl
+
 ap₂-refl-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x₁ : X} {y : Y}
-                (p : x₀ ＝ x₁)
-              → ap₂ f p refl ＝ ap (λ v → f v y) p
+                 (p : x₀ ＝ x₁)
+               → ap₂ f p refl ＝ ap (λ v → f v y) p
 ap₂-refl-right f refl = refl
+
+ap₂-refl-right' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x₁ : X} {y : Y}
+                  (p : x₀ ＝ x₁)
+                → ap (λ v → f v y) p ＝ ap₂ f p refl
+ap₂-refl-right' f refl = refl
 
 ap₂-∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x₁ x₂ : X} {y₀ y₁ y₂ : Y}
         (p₀ : x₀ ＝ x₁) (p₁ : x₁ ＝ x₂)
@@ -725,9 +735,31 @@ h₁ = h₂ = refl, the square degenerates and we recover p.
 conjugate-loop : {A : 𝓤 ̇ } {a b : A} → a ＝ b → a ＝ a → b ＝ b
 conjugate-loop p = ＝-congr p p
 
+ap-＝-congr
+ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } (f : A → B) {a b x y : A}
+ → (α : a ＝ x) (β : b ＝ y) (p : a ＝ b)
+ → ap f (＝-congr α β p)
+   ＝ ＝-congr (ap f α) (ap f β) (ap f p)
+ap-＝-congr f refl refl p = refl
+
+ap-conjugate-loop
+ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } (f : A → B) {a b : A}
+ → (p : a ＝ b) (l : a ＝ a)
+ → ap f (conjugate-loop p l) ＝ conjugate-loop (ap f p) (ap f l)
+ap-conjugate-loop f p l = ap-＝-congr f p p l
+
 conjugate-loop-conjugates : {A : 𝓤 ̇ } {a b : A} (p : a ＝ b) (l : a ＝ a)
                           → conjugate-loop p l ＝ p ⁻¹ ∙ l ∙ p
 conjugate-loop-conjugates refl = transport-along-＝ refl
+
+conjugate-loop-refl
+ : {A : 𝓤 ̇ } {a : A} (p : a ＝ a)
+ → conjugate-loop refl p ＝ p
+conjugate-loop-refl p =
+ p                      ＝⟨ conjugate-loop-conjugates refl p ⟩
+ refl ∙ p               ＝⟨ refl ⟩
+ refl ⁻¹ ∙ p ∙ refl     ＝⟨ refl-left-neutral ⟩
+ conjugate-loop refl p  ∎
 
 \end{code}
 
