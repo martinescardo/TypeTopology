@@ -5,17 +5,13 @@
 
    Martin Escardo and collaborators,
    2010--2026--∞, continuously evolving.
-
    https://www.cs.bham.ac.uk/~mhe/
-   https://www.cs.bham.ac.uk/~mhe/TypeTopology/
-   https://github.com/martinescardo/TypeTopology
 
    This repository is searchable:
    https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html
+   https://github.com/martinescardo/TypeTopologyModuleDescriptions/
 
-   Tested with Agda 2.8.0
-   (it will probably work with Agda 2.7.0.1, and
-    it may still work with Agda 2.6.4.3).
+   Tested with Agda 2.8.0 and 2.9.0 (unreleased development version).
 
    * Our main use of this development is as a personal blackboard or
      notepad for our research and that of collaborators. In
@@ -141,7 +137,6 @@ Philosophy of the repository
      extensionality, the existence of propositional truncations and
      the existence of quotients, and some higher inductive types.
 
-
 A short description of each of the following imported modules is available at
 https://github.com/martinescardo/TypeTopologyModuleDescriptions/
 
@@ -220,8 +215,8 @@ https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html
 
 NB. This file is accessible from both
 
-(1) https://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html
-(2) https://martinescardo.github.io/TypeTopology/index.html
+(1) https://www.cs.bham.ac.uk/~mhe/TypeTopology
+(2) https://martinescardo.github.io/TypeTopology
 
 We have that currently (1) redirects to (2), but in the future we may
 choose a different redirection from (1), so please use (1) when citing
