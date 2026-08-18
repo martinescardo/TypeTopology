@@ -730,23 +730,65 @@ Compact-types-are-compact {𝓤} {X} C p = iv
   ii : is-complemented (λ x → p x ＝ ₀)
   ii x = 𝟚-is-discrete (p x) ₀
 
-  iii : is-decidable (Σ x ꞉ X , p x ＝ ₀) → (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
+  iii : is-decidable (Σ x ꞉ X , p x ＝ ₀)
+      → (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   iii (inl σ) = inl σ
   iii (inr u) = inr (λ x → different-from-₀-equal-₁ (λ r → u (x , r)))
 
   iv : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   iv = iii (i ii)
 
-Compact-resize-up₀ : {X : 𝓤 ̇ } → is-Compact X {𝓤₀} → is-Compact X {𝓥}
-Compact-resize-up₀ C = compact-types-are-Compact
-                       (Compact-types-are-compact C)
 \end{code}
 
-TODO. Prove the converse of the previous observation, using the fact
-that any decidable proposition is logically equivalent to either 𝟘 or
-𝟙, and hence to a type in the universe 𝓤₀.
+A corollary is that we can resize up Compactness from 𝓤₀ to any universe.
 
 \begin{code}
+
+Compact-resize-up₀ : {X : 𝓤 ̇ } → is-Compact X {𝓤₀} → is-Compact X {𝓥}
+Compact-resize-up₀ C = compact-types-are-Compact
+                        (Compact-types-are-compact C)
+
+\end{code}
+
+But with a little more work, we can resize Compactness between any two
+universes.
+
+\begin{code}
+
+Compact-resize : {X : 𝓤 ̇ } → is-Compact X {𝓥} → is-Compact X {𝓦}
+Compact-resize {𝓤} {𝓥} {𝓦} {X} C A α = V
+ where
+  B' : (x : X) → is-decidable (A x) → 𝓥 ̇
+  B' x (inl _) = 𝟙
+  B' x (inr _) = 𝟘
+
+  B : X → 𝓥 ̇
+  B x = B' x (α x)
+
+  β' : (x : X) (d : is-decidable (A x)) → is-decidable (B' x d)
+  β' x (inl a₀) = inl ⋆
+  β' x (inr ν)  = inr 𝟘-elim
+
+  β : is-complemented B
+  β x = β' x (α x)
+
+  I : is-decidable (Σ B)
+  I = C B β
+
+  II : (x : X) (d : is-decidable (A x)) → B' x d → A x
+  II x (inl a) b = a
+  II x (inr ν) b = 𝟘-elim b
+
+  III : (x : X) (d : is-decidable (A x)) → A x → B' x d
+  III x (inl _) _ = ⋆
+  III x (inr ν) a = 𝟘-elim (ν a)
+
+  IV : is-decidable (Σ B) → is-decidable (Σ A)
+  IV (inl (x , b)) = inl (x , II x (α x) b)
+  IV (inr ν)       = inr (contrapositive (λ (x , a) → x , III x (α x) a) ν)
+
+  V : is-decidable (Σ A)
+  V = IV I
 
 is-Π-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 is-Π-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → is-complemented A → is-decidable (Π A)
