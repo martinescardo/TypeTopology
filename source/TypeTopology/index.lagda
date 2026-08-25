@@ -1,4 +1,4 @@
-Martin Escardo, from about 2010 to today.
+cMartin Escardo, from about 2010 to today.
 
 A motivation for what is done here can be found in three blog
 posts by Chris Groassack from July 2024:

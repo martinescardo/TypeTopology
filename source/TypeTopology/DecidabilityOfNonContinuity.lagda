@@ -93,7 +93,7 @@ Lemma-3·1 {𝓤} A δ
   I :  (x : ℕ∞) → is-decidable (B x)
   I x = Theorem-8·2' (A x) (δ x)
 
-  II :  (x : ℕ∞) → is-decidable (¬ B x)
+  II : (x : ℕ∞) → is-decidable (¬ B x)
   II x = ¬-preserves-decidability (I x)
 
   III : is-decidable ((n : ℕ) → ¬ B (ι n))
