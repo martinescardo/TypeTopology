@@ -255,7 +255,7 @@ reader monad, to speed-up the computation of the optimal play.
 TODO. Formulate and prove the correctness of the optimal-play†.
 
 Example from Wikipedia:
-https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
+https://en.wikipedia.org/w/index.php?title=Alpha%E2%80%93beta_pruning&oldid=1362075007
 
 \begin{code}
 
@@ -296,35 +296,32 @@ module example₁ where
  wikipedia-q (𝟐 , 𝟎 , _ , _ , ⟨⟩) = 5
  wikipedia-q (𝟐 , _ , _ , _ , ⟨⟩) = 9
 
- module _ where
+ open import Naturals.Order
+ open minimax
+       R
+       _<ℕ_
+       <-decidable
+       wikipedia-tree
+       wikipedia-tree-is-listed⁺
+       wikipedia-q
 
-  open import Naturals.Order
-  open minimax
-        R
-        _<ℕ_
-        <-decidable
-        wikipedia-tree
-        wikipedia-tree-is-listed⁺
-        wikipedia-q
-
-  wikipedia-G : Game R
-  wikipedia-G = G
-
-  wikipedia-optimal-play : Path wikipedia-tree
-  wikipedia-optimal-play = optimal-play
-
- wikipedia-optimal-outcome : R
- wikipedia-optimal-outcome = optimal-outcome R wikipedia-G
-
- wikipedia-optimal-outcome＝ : wikipedia-optimal-outcome ＝ 6
+ wikipedia-optimal-outcome＝ : optimal-outcome R G ＝ 6
  wikipedia-optimal-outcome＝ = refl
 
 {- Comment out because it is slow (8s in a Mac M4):
 
- wikipedia-optimal-play＝ : wikipedia-optimal-play ＝ (𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
- wikipedia-optimal-play＝ = refl
+ wikipedia-optimal-play : optimal-play ＝ (𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
+ wikipedia-optimal-play = refl
 
 -}
+
+ -∞ ∞ : R
+ -∞ = 0
+ ∞  = 10
+
+ wikipedia-optimal-play† : (fe : Fun-Ext)
+                         → optimal-play† fe -∞ ∞ ＝ (𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
+ wikipedia-optimal-play† fe = refl
 
 \end{code}
 
