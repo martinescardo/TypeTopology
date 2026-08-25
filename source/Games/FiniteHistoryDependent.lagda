@@ -167,7 +167,7 @@ strategic-path = path-sequence 𝕀𝕕
 
 remark-strategic-path : {X : 𝓤 ̇ } {Xf : X → 𝑻} {x : X}
                         {σf : (x : X) → Strategy (Xf x)}
-                      → (strategic-path {[]}     ⟨⟩        ＝ ⟨⟩)
+                      → (strategic-path {[]} ⟨⟩ ＝ ⟨⟩)
                       × (strategic-path {X ∷ Xf} (x :: σf)
                          ＝ x :: strategic-path (σf x))
 remark-strategic-path = refl , refl

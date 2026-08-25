@@ -108,7 +108,7 @@ And with this we get the desired maxmin game.
 
 \end{code}
 
-We now label the give tree Xt with the above ArgMin and ArgMax
+We now label the given tree Xt with the above ArgMin and ArgMax
 quantifiers in an alternating fashion.
 
 \begin{code}
@@ -166,7 +166,9 @@ reader monad, to speed-up the computation of the optimal play.
 
 \begin{code}
 
- module _ (fe : Fun-Ext) (-∞ ∞ : R) where
+ module _ (fe : Fun-Ext)
+          (-∞ ∞ : R)
+        where
 
   open import MonadOnTypes.Reader
   open import MonadOnTypes.Definition
@@ -216,8 +218,8 @@ reader monad, to speed-up the computation of the optimal play.
   𝓡 : Algebra (Reader AB) R
   𝓡 = record {
         structure-map = λ (t : AB → R) → t (-∞ , ∞) ;
-        aunit = λ _ → refl ;
-        aassoc = λ _ → refl
+        aunit         = λ _ → refl ;
+        aassoc        = λ _ → refl
       }
 
   ρ : T R → R
@@ -250,9 +252,105 @@ reader monad, to speed-up the computation of the optimal play.
   optimal-play† : Path Xt
   optimal-play† = sequenceᴶᵀ G-selection-tree† q† (-∞ , ∞)
 
+  open import Games.OptimalPlays {𝓤} {𝓤} R
+
+{- If the strong correctness conjecture below holds, then we don't need the following:
+
+  max-correctness†-lemma
+   : (Xt : 𝑻)
+     (Xt-is-listed⁺ : structure listed⁺ Xt)
+     (q : Path Xt → R)
+   → (α β : R)
+   → α ≤ sequenceᴷ (maxmin Xt Xt-is-listed⁺) q
+   → sequenceᴷ (maxmin Xt Xt-is-listed⁺) q ≤ β
+   → is-optimal-play
+      (maxmin Xt Xt-is-listed⁺)
+      q
+      (sequenceᴶᵀ (argmaxmin† Xt Xt-is-listed⁺) (λ xs _ → q xs) (α , β))
+  max-correctness†-lemma = {!!}
+
+  correctness† : -∞ ≤ optimal-outcome G
+               → optimal-outcome G ≤ ∞
+               → is-game-optimal-play G optimal-play†
+  correctness† = max-correctness†-lemma Xt Xt-is-listed⁺ q -∞ ∞
+
+-}
+
+{- TODO. Fill the following two holes. If we succeed, deleted the
+         above and remove "conjectural" below.
+
+  max-conjectural-strong-correctness†-lemma
+   : (Xt : 𝑻)
+     (Xt-is-listed⁺ : structure listed⁺ Xt)
+     (q : Path Xt → R)
+   → (α β : R)
+   → α ≤ sequenceᴷ (maxmin Xt Xt-is-listed⁺) q
+   → sequenceᴷ (maxmin Xt Xt-is-listed⁺) q ≤ β
+   → sequenceᴶ (argmaxmin Xt Xt-is-listed⁺) q
+   ＝ sequenceᴶᵀ (argmaxmin† Xt Xt-is-listed⁺) (λ xs _ → q xs) (α , β)
+  max-conjectural-strong-correctness†-lemma = {!!}
+
+  min-conjectural-strong-correctness†-lemma
+   : (Xt : 𝑻)
+     (Xt-is-listed⁺ : structure listed⁺ Xt)
+     (q : Path Xt → R)
+   → (α β : R)
+   → α ≤ sequenceᴷ (minmax Xt Xt-is-listed⁺) q
+   → sequenceᴷ (minmax Xt Xt-is-listed⁺) q ≤ β
+   → sequenceᴶ (argminmax Xt Xt-is-listed⁺) q
+   ＝ sequenceᴶᵀ (argminmax† Xt Xt-is-listed⁺) (λ xs _ → q xs) (α , β)
+  min-conjectural-strong-correctness†-lemma = {!!}
+
+  conjectural-strong-correctness†
+   : -∞ ≤ optimal-outcome G
+   → optimal-outcome G ≤ ∞
+   → optimal-play ＝ optimal-play†
+  conjectural-strong-correctness†
+   = max-conjectural-strong-correctness†-lemma Xt Xt-is-listed⁺ q -∞ ∞
+
+  correctness†' : -∞ ≤ optimal-outcome G
+                → optimal-outcome G ≤ ∞
+                → is-game-optimal-play G optimal-play†
+  correctness†' l m = transport
+                       (is-game-optimal-play G)
+                       (conjectural-strong-correctness† l m)
+                       IV
+   where
+    I : is-in-sgpe
+         (maxmin Xt Xt-is-listed⁺)
+         q
+         (selection-strategy (argmaxmin Xt Xt-is-listed⁺) q)
+    I = selection-strategy-theorem fe
+         (argmaxmin Xt Xt-is-listed⁺)
+         (maxmin Xt Xt-is-listed⁺)
+         q
+         (argmaxmin-attains-maxmin Xt Xt-is-listed⁺)
+
+    II : is-optimal-play
+         (maxmin Xt Xt-is-listed⁺)
+         q
+         (strategic-path (selection-strategy (argmaxmin Xt Xt-is-listed⁺) q))
+    II = strategic-path-is-optimal-play fe
+         (maxmin Xt Xt-is-listed⁺)
+         q
+         (selection-strategy (argmaxmin Xt Xt-is-listed⁺) q)
+         I
+
+    III : strategic-path (selection-strategy (argmaxmin Xt Xt-is-listed⁺) q)
+        ＝ sequenceᴶ (argmaxmin Xt Xt-is-listed⁺) q
+    III = main-lemma (argmaxmin Xt Xt-is-listed⁺) q
+
+    IV : is-optimal-play
+          (maxmin Xt Xt-is-listed⁺)
+          q
+          (sequenceᴶ (argmaxmin Xt Xt-is-listed⁺) q)
+    IV = transport (is-optimal-play (maxmin Xt Xt-is-listed⁺) q) III II
+
+-}
+
 \end{code}
 
-TODO. Formulate and prove the correctness of the optimal-play†.
+TODO. Fill the above two holes.
 
 Example from Wikipedia:
 https://en.wikipedia.org/w/index.php?title=Alpha%E2%80%93beta_pruning&oldid=1362075007
