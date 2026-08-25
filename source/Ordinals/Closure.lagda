@@ -603,12 +603,12 @@ get rid of this at some point, here and in the other files.
                           (not-≺-gives-≼ fe₀ u v)))
 
 
-∑₁-has-infs-of-complemented-subsets
+∑¹-has-infs-of-complemented-subsets
  : propext 𝓤₀
  → (τ : ℕ → Ordᵀ)
  → ((n : ℕ) → has-infs-of-complemented-subsets (τ n))
  → has-infs-of-complemented-subsets (∑¹ τ)
-∑₁-has-infs-of-complemented-subsets pe τ ε =
+∑¹-has-infs-of-complemented-subsets pe τ ε =
  ∑-has-infs-of-complemented-subsets pe
   ℕ∞ᵒ
   (λ (x : ℕ∞) → (τ ↗ embedding-ℕ-to-ℕ∞ fe₀) x)

@@ -389,7 +389,7 @@ much easier (given the mathematics we have already developed).
   (Κ-has-infs-of-complemented-subsets pe ν)
   (λ _ → Κ-has-infs-of-complemented-subsets pe μ)
 Κ-has-infs-of-complemented-subsets pe (L ν) =
- ∑₁-has-infs-of-complemented-subsets
+ ∑¹-has-infs-of-complemented-subsets
   pe
   (Κ ∘ ν)
   (λ i → Κ-has-infs-of-complemented-subsets pe (ν i))
