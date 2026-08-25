@@ -441,8 +441,7 @@ compact∙-ε₀-ub = Κ-compact∙ (brouwer-to-oe B-ε₀)
 
 \end{code}
 
-We can go much higher using the work of and Setzer, Hancock and
-others.
+We can go much higher using the work of Setzer, Hancock and others.
 
 Added 4th April 2022. A third interpretation of ordinal expressions.
 
