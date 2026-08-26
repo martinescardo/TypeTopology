@@ -745,3 +745,71 @@ Added August 2026.
     (λ x → order-equivs-are-order-reflecting [ υ x ] [ υ' x ] (h x) (e x))
 
 \end{code}
+
+Added August 2026. The extension of the constant family at the
+one-point ordinal is again the one-point ordinal, and a sum whose
+summands are all one-point ordinals is the index type. Together these
+identify the two extended sums of the constant family at 𝟙ᵒ.
+
+\begin{code}
+
+↗-of-𝟙ᵒ : {I J : 𝓤₀ ̇ } (𝓮 : I ↪ J) (j : J)
+        → [ ((λ _ → 𝟙ᵒ) ↗ 𝓮) j ] ≃ₒ 𝟙ₒ {𝓤₀}
+↗-of-𝟙ᵒ {I} {J} 𝓮 j =
+ f ,
+ (λ u v (w , l) → 𝟘-elim l) ,
+ f-is-equiv ,
+ (λ x y l → 𝟘-elim l)
+ where
+  f : ⟨ ((λ _ → 𝟙ᵒ) ↗ 𝓮) j ⟩ → 𝟙
+  f _ = ⋆
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = qinvs-are-equivs f
+                ((λ _ _ → ⋆) ,
+                 (λ u → dfunext (fe 𝓤₀ 𝓤₀) (λ w → 𝟙-is-prop ⋆ (u w))) ,
+                 (λ ⋆ → refl))
+
+∑-of-𝟙ᵒ : (τ : Ordᵀ) (υ : ⟨ τ ⟩ → Ordᵀ)
+        → ((x : ⟨ τ ⟩) → [ υ x ] ≃ₒ 𝟙ₒ {𝓤₀})
+        → [ ∑ τ υ ] ≃ₒ [ τ ]
+∑-of-𝟙ᵒ τ υ e =
+ f ,
+ order-preserving-reflecting-equivs-are-order-equivs
+  [ ∑ τ υ ] [ τ ] f
+  f-is-equiv f-is-order-preserving f-is-order-reflecting
+ where
+  f : ⟨ ∑ τ υ ⟩ → ⟨ τ ⟩
+  f = pr₁
+
+  s : (x : ⟨ τ ⟩) → is-singleton ⟨ υ x ⟩
+  s x = equiv-to-singleton
+         (≃ₒ-to-fun [ υ x ] (𝟙ₒ {𝓤₀}) (e x) ,
+          order-equivs-are-equivs [ υ x ] (𝟙ₒ {𝓤₀}) (pr₂ (e x)))
+         𝟙-is-singleton
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = pr₁-is-equiv ⟨ τ ⟩ (λ x → ⟨ υ x ⟩) s
+
+  f-is-order-preserving : is-order-preserving (∑ τ υ) τ f
+  f-is-order-preserving (x , y) (x' , y') (inl l) = l
+  f-is-order-preserving (x , y) (x , y') (inr (refl , m)) =
+   𝟘-elim (order-equivs-are-order-preserving
+            [ υ x ] (𝟙ₒ {𝓤₀}) (pr₂ (e x)) y y' m)
+
+  f-is-order-reflecting : is-order-reflecting (∑ τ υ) τ f
+  f-is-order-reflecting (x , y) (x' , y') l = inl l
+
+∑¹-of-𝟙ᵒ : [ ∑¹ (λ _ → 𝟙ᵒ) ] ≃ₒ [ ℕ∞ᵒ ]
+∑¹-of-𝟙ᵒ = ∑-of-𝟙ᵒ
+            ℕ∞ᵒ
+            ((λ _ → 𝟙ᵒ) ↗ embedding-ℕ-to-ℕ∞ fe₀)
+            (↗-of-𝟙ᵒ (embedding-ℕ-to-ℕ∞ fe₀))
+
+∑₁-of-𝟙ᵒ : [ ∑₁ (λ _ → 𝟙ᵒ) ] ≃ₒ [ succₒ ω ]
+∑₁-of-𝟙ᵒ = ∑-of-𝟙ᵒ
+            (succₒ ω)
+            ((λ _ → 𝟙ᵒ) ↗ (over , over-embedding))
+            (↗-of-𝟙ᵒ (over , over-embedding))
+
+\end{code}
