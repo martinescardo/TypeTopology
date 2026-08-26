@@ -785,7 +785,7 @@ identify the two extended sums of the constant family at 𝟙ᵒ.
   s : (x : ⟨ τ ⟩) → is-singleton ⟨ υ x ⟩
   s x = equiv-to-singleton
          (≃ₒ-to-fun [ υ x ] (𝟙ₒ {𝓤₀}) (e x) ,
-          order-equivs-are-equivs [ υ x ] (𝟙ₒ {𝓤₀}) (pr₂ (e x)))
+          ≃ₒ-to-fun-is-equiv [ υ x ] (𝟙ₒ {𝓤₀}) (e x))
          𝟙-is-singleton
 
   f-is-equiv : is-equiv f
@@ -795,7 +795,9 @@ identify the two extended sums of the constant family at 𝟙ᵒ.
   f-is-order-preserving (x , y) (x' , y') (inl l) = l
   f-is-order-preserving (x , y) (x , y') (inr (refl , m)) =
    𝟘-elim (order-equivs-are-order-preserving
-            [ υ x ] (𝟙ₒ {𝓤₀}) (pr₂ (e x)) y y' m)
+            [ υ x ] (𝟙ₒ {𝓤₀})
+            (≃ₒ-to-fun-is-order-equiv [ υ x ] (𝟙ₒ {𝓤₀}) (e x))
+            y y' m)
 
   f-is-order-reflecting : is-order-reflecting (∑ τ υ) τ f
   f-is-order-reflecting (x , y) (x' , y') l = inl l
