@@ -25,7 +25,11 @@ open import Notation.CanonicalMap hiding ([_])
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
 open import TypeTopology.ExtendedSumCompact fe
+open import TypeTopology.FailureOfTotalSeparatedness fe₀
+         using (∞-is-a-limit-point⁺-of-ℕ∞)
 open import TypeTopology.GenericConvergentSequenceCompactness fe₀
+open import TypeTopology.LimitPoints
+open import TypeTopology.MicroTychonoff
 open import TypeTopology.SigmaDiscrete
 open import TypeTopology.ExtensionTotallySeparated
 open import TypeTopology.SigmaTotallySeparated
@@ -34,6 +38,9 @@ open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.PairFun
+open import UF.Retracts
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 
 \end{code}
@@ -71,6 +78,20 @@ X n is compact then so is its squashed sum Σ¹ X.
                    (ℕ-to-ℕ∞-is-embedding fe₀)
                    ε
                    ℕ∞-compact∙
+
+/ι-is-compact∙ : (X : ℕ → 𝓤 ̇ )
+               → ((n : ℕ) → is-compact∙ (X n))
+               → (u : ℕ∞) → is-compact∙ ((X / ι) u)
+/ι-is-compact∙ {𝓤} X ε u = micro-tychonoff
+                            (fe 𝓤₀ 𝓤)
+                            (ℕ-to-ℕ∞-is-embedding fe₀ u)
+                            (λ (n , _) → ε n)
+
+/ι-is-Compact : (X : ℕ → 𝓤 ̇ )
+              → ((n : ℕ) → is-compact∙ (X n))
+              → (u : ℕ∞) → is-Compact ((X / ι) u) {𝓥}
+/ι-is-Compact X ε u = compact-types-are-Compact
+                       (compact∙-types-are-compact (/ι-is-compact∙ X ε u))
 \end{code}
 
 Added 20th December 2023.
@@ -112,6 +133,10 @@ over = inl {𝓤₀} {𝓤₀}
 over-embedding : is-embedding over
 over-embedding = inl-is-embedding ℕ 𝟙
 
+over-fibers-are-decidable : (z : ℕ + 𝟙) → is-decidable (fiber over z)
+over-fibers-are-decidable (inl n) = inl (n , refl)
+over-fibers-are-decidable (inr ⋆) = inr (λ (n , p) → +disjoint p)
+
 Σ₁ :(ℕ → 𝓤 ̇ ) → 𝓤 ̇
 Σ₁ X = Σ (X / over)
 
@@ -144,16 +169,25 @@ The type (X / over) z is densely embedded into the type (X / ι) (ι𝟙 z):
 
 \begin{code}
 
+over-ι-equiv : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
+             → (X / over) z ≃ (X / ι) (ι𝟙 z)
+over-ι-equiv X (inl n) =
+ (X / over) (over n) ≃⟨ Π-extension-property X over over-embedding n ⟩
+ X n                 ≃⟨ ≃-sym
+                        (Π-extension-property X ℕ-to-ℕ∞
+                          (ℕ-to-ℕ∞-is-embedding fe₀) n) ⟩
+ (X / ι) (ι n)       ■
+over-ι-equiv X (inr *) =
+ (X / over) (inr *) ≃⟨ Π-extension-out-of-range X over (inr *)
+                        (λ x → +disjoint) ⟩
+ 𝟙 {𝓤₀}             ≃⟨ ≃-sym
+                        (Π-extension-out-of-range X ι ∞
+                          (λ n p → ∞-is-not-finite n (p ⁻¹))) ⟩
+ (X / ι) ∞          ■
+
 over-ι : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
        → (X / over) z ↪ᵈ (X / ι) (ι𝟙 z)
-over-ι X (inl n) = equiv-dense-embedding (
- (X / over) (over n)   ≃⟨ Π-extension-property X over over-embedding n ⟩
- X n                   ≃⟨ ≃-sym (Π-extension-property X ℕ-to-ℕ∞ (ℕ-to-ℕ∞-is-embedding fe₀) n) ⟩
- (X / ι) (ι n) ■)
-over-ι X (inr *) = equiv-dense-embedding (
- (X / over) (inr *) ≃⟨ Π-extension-out-of-range X over (inr *) (λ x → +disjoint ) ⟩
- 𝟙 {𝓤₀}             ≃⟨ ≃-sym (Π-extension-out-of-range X ι ∞ (λ n p → ∞-is-not-finite n (p ⁻¹))) ⟩
- (X / ι) ∞      ■ )
+over-ι X z = equiv-dense-embedding (over-ι-equiv X z)
 
 over-ι-map : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
                → (X / over) z → (X / ι) (ι𝟙 z)
@@ -340,6 +374,211 @@ Over-embedding {𝓤} X Y f d (inr ⋆) =
              → ((n : ℕ) → is-embedding (f n))
              → is-embedding (Σ↑ X Y f)
 Σ↑-embedding X Y f d = ∘-is-embedding (Σ₁-functor-embedding X Y f d) (Σ-up-embedding Y)
+
+\end{code}
+
+Added August 2026. The map Σ↑ sends a point (inl n , φ) of Σ₁ X,
+coming from the component X n, to an isolated point precisely when the
+image of that point under f n is isolated, which is what the three
+lemmas about isolatedness below say. It sends the added top point,
+namely a point (inr ⋆ , φ), to a limit point, because that point sits
+over ∞, which is what the two lemmas about limit points say.
+
+We first record three abbreviations. The image of a point (inl n , φ)
+of Σ₁ X has first component ι n, and second component the one named
+below, which evaluates at the canonical element of the fiber of ι over
+ι n to f n (φ (n , refl)).
+
+\begin{code}
+
+extension-at : (Y : ℕ → 𝓤 ̇ ) (n : ℕ) → (Y / ι) (ι n) ≃ Y n
+extension-at Y n = Π-extension-property Y ℕ-to-ℕ∞
+                    (ℕ-to-ℕ∞-is-embedding fe₀) n
+
+Σ↑-inl-component : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
+                   (f : (n : ℕ) → X n → Y n)
+                   (n : ℕ) (φ : (X / over) (inl n))
+                 → (Y / ι) (ι n)
+Σ↑-inl-component X Y f n φ = over-ι-map Y (inl n) (Over X Y f (inl n) φ)
+
+Σ↑-inl-component-value : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
+                         (f : (n : ℕ) → X n → Y n)
+                         (n : ℕ) (φ : (X / over) (inl n))
+                       → Σ↑-inl-component X Y f n φ (n , refl)
+                       ＝ f n (φ (n , refl))
+Σ↑-inl-component-value X Y f n φ =
+ over-ι-map-left Y n (Over X Y f (inl n) φ) ∙ I
+  where
+   I : Over X Y f (inl n) φ (n , refl) ＝ f n (φ (n , refl))
+   I = ap (λ - → transport (λ - → Y (pr₁ -)) - (f n (φ (n , refl))))
+          (props-are-sets
+            (over-embedding (inl n))
+            (over-embedding (inl n) (n , refl) (n , refl))
+            refl)
+
+Σ↑-preserves-isolatedness : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
+              (f : (n : ℕ) → X n → Y n)
+              (n : ℕ) (φ : (X / over) (inl n))
+            → is-isolated (f n (φ (n , refl)))
+            → is-isolated (Σ↑ X Y f (inl n , φ))
+Σ↑-preserves-isolatedness X Y f n φ i =
+ Σ-isolated
+  (finite-isolated fe₀ n)
+  (equivs-reflect-isolatedness
+    ⌜ extension-at Y n ⌝
+    (⌜⌝-is-equiv (extension-at Y n))
+    (Σ↑-inl-component X Y f n φ)
+    (transport⁻¹ is-isolated (Σ↑-inl-component-value X Y f n φ) i))
+
+Σ↑-reflects-isolatedness : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
+                       (f : (n : ℕ) → X n → Y n)
+                       (n : ℕ) (φ : (X / over) (inl n))
+                     → is-isolated (Σ↑ X Y f (inl n , φ))
+                     → is-isolated (f n (φ (n , refl)))
+Σ↑-reflects-isolatedness X Y f n φ i =
+ transport is-isolated (Σ↑-inl-component-value X Y f n φ)
+  (equivs-preserve-isolatedness
+    ⌜ extension-at Y n ⌝
+    (⌜⌝-is-equiv (extension-at Y n))
+    (Σ↑-inl-component X Y f n φ)
+    (Σ-isolated-right (ℕ∞-is-set fe₀) i))
+
+Σ↑-reflects-weak-isolatedness : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
+                              (f : (n : ℕ) → X n → Y n)
+                              (n : ℕ) (φ : (X / over) (inl n))
+                            → is-weakly-isolated (Σ↑ X Y f (inl n , φ))
+                            → is-weakly-isolated (f n (φ (n , refl)))
+Σ↑-reflects-weak-isolatedness X Y f n φ i =
+ transport is-weakly-isolated (Σ↑-inl-component-value X Y f n φ)
+  (equivs-preserve-weak-isolatedness
+    (extension-at Y n)
+    (Σ↑-inl-component X Y f n φ)
+    (Σ-weakly-isolated-right (ℕ∞-is-set fe₀) i))
+
+Σ↑-limit-point : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
+                 (f : (n : ℕ) → X n → Y n)
+               → ((n : ℕ) → is-compact∙ (Y n))
+               → (φ : (X / over) (inr ⋆))
+               → is-limit-point (Σ↑ X Y f (inr ⋆ , φ))
+Σ↑-limit-point X Y f ε φ i = is-isolated-gives-is-isolated' ∞
+                              (Σ-isolated-left (/ι-is-Compact Y ε) i)
+
+Σ↑-limit-point⁺ : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
+                  (f : (n : ℕ) → X n → Y n)
+                → ((n : ℕ) → is-compact∙ (Y n))
+                → (φ : (X / over) (inr ⋆))
+                → is-limit-point⁺ (Σ↑ X Y f (inr ⋆ , φ))
+Σ↑-limit-point⁺ X Y f ε φ i = ∞-is-a-limit-point⁺-of-ℕ∞
+                               (Σ-weakly-isolated-left (/ι-is-Compact Y ε) i)
+
+\end{code}
+
+The map Σ↑ is an equivalence if ι𝟙 is and the given maps f n are, and
+conversely in the case of the constant family 𝟙, where Σ↑ amounts to
+ι𝟙 itself. For that family, Σ₁ 𝟙 is identified with ℕ + 𝟙 and Σ¹ 𝟙
+with ℕ∞, in both cases by the first projection, their second
+components being products over a fiber into 𝟙 and hence singletons,
+and under these identifications the two maps agree definitionally,
+because the first component of Σ-up is ι𝟙 and the first component of
+Σ₁-functor is the identity. So the identification that relates them is
+refl, and the rest of the proof only cancels the projection on the
+discrete side.
+
+\begin{code}
+
+over-ι-map-is-equiv : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
+                    → is-equiv (over-ι-map X z)
+over-ι-map-is-equiv X z = ⌜⌝-is-equiv (over-ι-equiv X z)
+
+Over-is-equiv : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
+                (f : (n : ℕ) → X n → Y n)
+              → ((n : ℕ) → is-equiv (f n))
+              → (z : ℕ + 𝟙) → is-equiv (Over X Y f z)
+Over-is-equiv {𝓤} X Y f e (inl n) =
+ ∘-is-equiv
+  (∘-is-equiv
+    (⌜⌝-is-equiv (Π-extension-property X over over-embedding n))
+    (e n))
+  (⌜⌝-is-equiv (≃-sym (Π-extension-property Y over over-embedding n)))
+Over-is-equiv {𝓤} X Y f e (inr ⋆) =
+ ∘-is-equiv {𝓤} {𝓤₀}
+  (⌜⌝-is-equiv (Π-extension-out-of-range X over (inr ⋆)
+                 (λ x → +disjoint)))
+  (⌜⌝-is-equiv (≃-sym (Π-extension-out-of-range Y over (inr ⋆)
+                        (λ x → +disjoint))))
+
+Σ₁-functor-is-equiv : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
+                      (f : (n : ℕ) → X n → Y n)
+                    → ((n : ℕ) → is-equiv (f n))
+                    → is-equiv (Σ₁-functor X Y f)
+Σ₁-functor-is-equiv X Y f e = pair-fun-is-equiv
+                               id
+                               (Over X Y f)
+                               (id-is-equiv (ℕ + 𝟙))
+                               (Over-is-equiv X Y f e)
+
+Σ-up-is-equiv : is-equiv ι𝟙 → (X : ℕ → 𝓤 ̇ ) → is-equiv (Σ-up X)
+Σ-up-is-equiv j X = pair-fun-is-equiv
+                     ι𝟙
+                     (over-ι-map X)
+                     j
+                     (over-ι-map-is-equiv X)
+
+Σ↑-is-equiv : is-equiv ι𝟙
+            → (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
+              (f : (n : ℕ) → X n → Y n)
+            → ((n : ℕ) → is-equiv (f n))
+            → is-equiv (Σ↑ X Y f)
+Σ↑-is-equiv j X Y f e = ∘-is-equiv
+                         (Σ₁-functor-is-equiv X Y f e)
+                         (Σ-up-is-equiv j Y)
+
+Σ↑-𝟙-is-equiv-gives-ι𝟙-is-equiv
+ : is-equiv (Σ↑ (λ (_ : ℕ) → 𝟙 {𝓤₀}) (λ _ → 𝟙) (λ _ → id))
+ → is-equiv ι𝟙
+Σ↑-𝟙-is-equiv-gives-ι𝟙-is-equiv e = VI
+ where
+  X : ℕ → 𝓤₀ ̇
+  X _ = 𝟙
+
+  Σ₁-𝟙 : Σ₁ X ≃ (ℕ + 𝟙)
+  Σ₁-𝟙 = pr₁ ,
+         pr₁-is-equiv (ℕ + 𝟙) (X / over)
+          (λ z → Π-is-singleton fe₀ (λ _ → 𝟙-is-singleton))
+
+  Σ¹-𝟙 : Σ¹ X ≃ ℕ∞
+  Σ¹-𝟙 = pr₁ ,
+         pr₁-is-equiv ℕ∞ (X / ι)
+          (λ u → Π-is-singleton fe₀ (λ _ → 𝟙-is-singleton))
+
+  I : is-equiv (⌜ Σ¹-𝟙 ⌝ ∘ Σ↑ X X (λ _ → id))
+  I = ∘-is-equiv e (⌜⌝-is-equiv Σ¹-𝟙)
+
+  II : (ι𝟙 ∘ ⌜ Σ₁-𝟙 ⌝) ∼ (⌜ Σ¹-𝟙 ⌝ ∘ Σ↑ X X (λ _ → id))
+  II (z , φ) = refl
+
+  III : is-equiv (ι𝟙 ∘ ⌜ Σ₁-𝟙 ⌝)
+  III = equiv-closed-under-∼ _ _ I II
+
+  IV : ι𝟙 ∼ (ι𝟙 ∘ ⌜ Σ₁-𝟙 ⌝) ∘ ⌜ Σ₁-𝟙 ⌝⁻¹
+  IV z = ap ι𝟙 ((inverses-are-sections ⌜ Σ₁-𝟙 ⌝ (⌜⌝-is-equiv Σ₁-𝟙) z)⁻¹)
+
+  V : is-equiv ((ι𝟙 ∘ ⌜ Σ₁-𝟙 ⌝) ∘ ⌜ Σ₁-𝟙 ⌝⁻¹)
+  V = ∘-is-equiv (⌜⌝-is-equiv (≃-sym Σ₁-𝟙)) III
+
+  VI : is-equiv ι𝟙
+  VI = equiv-closed-under-∼ _ _ V IV
+
+\end{code}
+
+For the same constant family we also record a retraction, the section
+sending u to the pair (u , λ _ → ⋆).  It is enough for transferring to
+ℕ∞ properties that are inherited by retracts, such as discreteness.
+
+\begin{code}
+
+ℕ∞-retract-of-Σ¹-𝟙 : retract ℕ∞ of (Σ¹ (λ (_ : ℕ) → 𝟙 {𝓤₀}))
+ℕ∞-retract-of-Σ¹-𝟙 = pr₁ , (λ u → u , (λ _ → ⋆)) , (λ u → refl)
 
 \end{code}
 

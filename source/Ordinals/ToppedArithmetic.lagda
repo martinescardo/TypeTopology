@@ -25,19 +25,17 @@ module Ordinals.ToppedArithmetic
         (fe : FunExt)
        where
 
-open import UF.Subsingletons
-
-open import MLTT.Spartan
 open import CoNaturals.Type
-open import TypeTopology.SquashedSum fe
+open import MLTT.Spartan
 open import Notation.CanonicalMap
-
-open import Ordinals.Type
 open import Ordinals.Arithmetic fe
-open import Ordinals.WellOrderArithmetic
-open import Ordinals.ToppedType fe
 open import Ordinals.Injectivity
+open import Ordinals.ToppedType fe
+open import Ordinals.Type
 open import Ordinals.Underlying
+open import Ordinals.WellOrderArithmetic
+open import TypeTopology.SquashedSum fe
+open import UF.Subsingletons
 
 private
  fe₀ = fe 𝓤₀ 𝓤₀
@@ -138,6 +136,27 @@ And now with an isolated top element:
 
 ∑₁ : (ℕ → Ordᵀ) → Ordᵀ
 ∑₁ τ = ∑ (succₒ ω) (τ ↗ (over , over-embedding))
+
+\end{code}
+
+The sum with an isolated top element preserves trichotomy, because the
+fibers of the map over are decidable. There is no such statement for
+the sum with a non-isolated top element, because the fibers of the map
+ℕ → ℕ∞ used there are decidable only under LPO.
+
+\begin{code}
+
+∑₁-is-trichotomous : (τ : ℕ → Ordᵀ)
+                   → ((n : ℕ) → is-trichotomous [ τ n ])
+                   → is-trichotomous [ ∑₁ τ ]
+∑₁-is-trichotomous τ t = ∑-is-trichotomous
+                          (succₒ ω)
+                          (τ ↗ (over , over-embedding))
+                          (succₒ-is-trichotomous ω ω-is-trichotomous)
+                          (↗-is-trichotomous τ
+                            (over , over-embedding)
+                            over-fibers-are-decidable
+                            t)
 
 \end{code}
 

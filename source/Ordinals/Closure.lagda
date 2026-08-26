@@ -21,6 +21,7 @@ open import MLTT.Two-Properties
 open import Naturals.Binary hiding (_+_ ; L ; R)
 open import Notation.CanonicalMap
 open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
 open import Ordinals.InfProperty
 open import Ordinals.Injectivity
 open import Ordinals.LexicographicCompactness
@@ -29,6 +30,8 @@ open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
 open import Ordinals.Underlying
 open import TypeTopology.CompactTypes
+open import TypeTopology.Density
+open import TypeTopology.LimitPoints
 open import TypeTopology.ConvergentSequenceHasInf
 open import TypeTopology.MicroInfTychonoff
 open import TypeTopology.SigmaDiscrete
@@ -483,6 +486,80 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) =
                                   (∑-up-is-order-reflecting υ)
 \end{code}
 
+Added August 2026. Some lemmas about Σ↑ of the module
+TypeTopology.SquashedSum that are not already available here,
+transported to families of topped ordinals, namely density and being
+an embedding, the isolatedness and limit-point lemmas, and the
+characterization of Σ↑ as an equivalence.
+
+\begin{code}
+
+∑↑-dense : (τ υ : ℕ → Ordᵀ)
+           (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+         → ((n : ℕ) → is-dense (f n))
+         → is-dense (∑↑ τ υ f)
+∑↑-dense τ υ = Σ↑-dense (λ n → ⟨ τ n ⟩) (λ n → ⟨ υ n ⟩)
+
+∑↑-embedding : (τ υ : ℕ → Ordᵀ)
+               (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+             → ((n : ℕ) → is-embedding (f n))
+             → is-embedding (∑↑ τ υ f)
+∑↑-embedding τ υ = Σ↑-embedding (λ n → ⟨ τ n ⟩) (λ n → ⟨ υ n ⟩)
+
+∑↑-preserves-isolatedness : (τ υ : ℕ → Ordᵀ)
+                            (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+                            (n : ℕ)
+                            (φ : ⟨ (τ ↗ (over , over-embedding)) (inl n) ⟩)
+                          → is-isolated (f n (φ (n , refl)))
+                          → is-isolated (∑↑ τ υ f (inl n , φ))
+∑↑-preserves-isolatedness τ υ = Σ↑-preserves-isolatedness
+                                 (λ n → ⟨ τ n ⟩)
+                                 (λ n → ⟨ υ n ⟩)
+
+∑↑-reflects-isolatedness : (τ υ : ℕ → Ordᵀ)
+                           (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+                           (n : ℕ)
+                           (φ : ⟨ (τ ↗ (over , over-embedding)) (inl n) ⟩)
+                         → is-isolated (∑↑ τ υ f (inl n , φ))
+                         → is-isolated (f n (φ (n , refl)))
+∑↑-reflects-isolatedness τ υ = Σ↑-reflects-isolatedness
+                                (λ n → ⟨ τ n ⟩)
+                                (λ n → ⟨ υ n ⟩)
+
+∑↑-reflects-weak-isolatedness : (τ υ : ℕ → Ordᵀ)
+                                (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+                                (n : ℕ)
+                                (φ : ⟨ (τ ↗ (over , over-embedding)) (inl n) ⟩)
+                              → is-weakly-isolated (∑↑ τ υ f (inl n , φ))
+                              → is-weakly-isolated (f n (φ (n , refl)))
+∑↑-reflects-weak-isolatedness τ υ = Σ↑-reflects-weak-isolatedness
+                                     (λ n → ⟨ τ n ⟩)
+                                     (λ n → ⟨ υ n ⟩)
+
+∑↑-limit-point : (τ υ : ℕ → Ordᵀ)
+                 (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+               → ((n : ℕ) → is-compact∙ ⟨ υ n ⟩)
+               → (φ : ⟨ (τ ↗ (over , over-embedding)) (inr ⋆) ⟩)
+               → is-limit-point (∑↑ τ υ f (inr ⋆ , φ))
+∑↑-limit-point τ υ = Σ↑-limit-point (λ n → ⟨ τ n ⟩) (λ n → ⟨ υ n ⟩)
+
+∑↑-limit-point⁺ : (τ υ : ℕ → Ordᵀ)
+                  (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+                → ((n : ℕ) → is-compact∙ ⟨ υ n ⟩)
+                → (φ : ⟨ (τ ↗ (over , over-embedding)) (inr ⋆) ⟩)
+                → is-limit-point⁺ (∑↑ τ υ f (inr ⋆ , φ))
+∑↑-limit-point⁺ τ υ = Σ↑-limit-point⁺ (λ n → ⟨ τ n ⟩) (λ n → ⟨ υ n ⟩)
+
+∑↑-is-equiv : is-equiv ι𝟙
+            → (τ υ : ℕ → Ordᵀ)
+              (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+            → ((n : ℕ) → is-equiv (f n))
+            → is-equiv (∑↑ τ υ f)
+∑↑-is-equiv j τ υ = Σ↑-is-equiv j (λ n → ⟨ τ n ⟩) (λ n → ⟨ υ n ⟩)
+
+\end{code}
+
+
 28 July 2018. Inf property.
 
 \begin{code}
@@ -621,5 +698,50 @@ get rid of this at some point, here and in the other files.
          (ℕ-to-ℕ∞-is-embedding fe₀ x)
          (λ {w} x y → x ≺⟨ τ (pr₁ w) ⟩ y)
          (λ w → ε (pr₁ w))
+
+\end{code}
+
+Added August 2026.
+
+\begin{code}
+
+∑-≃ₒ : (τ : Ordᵀ) (υ υ' : ⟨ τ ⟩ → Ordᵀ)
+     → ((x : ⟨ τ ⟩) → [ υ x ] ≃ₒ [ υ' x ])
+     → [ ∑ τ υ ] ≃ₒ [ ∑ τ υ' ]
+∑-≃ₒ τ υ υ' g = f ,
+                order-preserving-reflecting-equivs-are-order-equivs
+                 [ ∑ τ υ ] [ ∑ τ υ' ] f
+                 f-is-equiv
+                 f-is-order-preserving
+                 f-is-order-reflecting
+ where
+  h : (x : ⟨ τ ⟩) → ⟨ υ x ⟩ → ⟨ υ' x ⟩
+  h x = ≃ₒ-to-fun [ υ x ] [ υ' x ] (g x)
+
+  e : (x : ⟨ τ ⟩) → is-order-equiv [ υ x ] [ υ' x ] (h x)
+  e x = ≃ₒ-to-fun-is-order-equiv [ υ x ] [ υ' x ] (g x)
+
+  f : ⟨ ∑ τ υ ⟩ → ⟨ ∑ τ υ' ⟩
+  f = pair-fun id h
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = pair-fun-is-equiv
+                id
+                h
+                (id-is-equiv ⟨ τ ⟩)
+                (λ x → order-equivs-are-equivs [ υ x ] [ υ' x ] (e x))
+
+  f-is-order-preserving : is-order-preserving (∑ τ υ) (∑ τ υ') f
+  f-is-order-preserving =
+   pair-fun-is-order-preserving τ τ υ υ' id h
+    (λ x y l → l)
+    (λ x → order-equivs-are-order-preserving [ υ x ] [ υ' x ] (e x))
+
+  f-is-order-reflecting : is-order-reflecting (∑ τ υ) (∑ τ υ') f
+  f-is-order-reflecting =
+   pair-fun-is-order-reflecting τ τ υ υ' id h
+    (λ x y l → l)
+    id-is-embedding
+    (λ x → order-equivs-are-order-reflecting [ υ x ] [ υ' x ] (h x) (e x))
 
 \end{code}

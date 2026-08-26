@@ -49,13 +49,14 @@ private
  fe₀ = fe 𝓤₀ 𝓤₀
 
 open import CoNaturals.Type
+open import Fin.Topology
+open import Fin.Type
 open import MLTT.Two-Properties
 open import Naturals.Binary hiding (_+_)
 open import Notation.CanonicalMap hiding (ι)
 open import Ordinals.Arithmetic fe
 open import Ordinals.Closure fe
 open import Ordinals.Equivalence
-open import Ordinals.InfProperty
 open import Ordinals.Injectivity
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
@@ -66,15 +67,21 @@ open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
 open import TypeTopology.FailureOfTotalSeparatedness
+open import TypeTopology.GenericConvergentSequenceCompactness fe₀
 open import TypeTopology.LimitPoints
 open import TypeTopology.MicroInfTychonoff fe
+open import TypeTopology.MicroTychonoff
 open import TypeTopology.SigmaDiscrete
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.PairFun
 open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
+import W.Properties
+open import W.Type
 
 \end{code}
 
@@ -270,9 +277,72 @@ module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
 This completes the definitions of Κ, ι and ι-is-embedding.
 
 The important fact about the Κ interpretation is that the ordinals in
-its image have the least element property for non-empty complemented
-subsets, and, in particular, they are compact, and more generally infs
-of arbitrary complemented subsets.
+its image are compact, which we prove directly by induction, and that
+they moreover have the least element property for non-empty
+complemented subsets, and more generally infima of arbitrary
+complemented subsets.
+
+Compactness used to be derived from the least element property
+instead. It is now derived from the induction here so that it does not
+depend on propositional extensionality any longer, and so that we get
+the pointed form, which is the stronger one and is what the induction
+gives. The unpointed form is kept as a corollary because it is what
+the results about limit points below need.
+
+\begin{code}
+
+Κ-compact∙ : (ν : E) → is-compact∙ ⟨ Κ ν ⟩
+𝓚-compact∙ : (ν : E) (A : ⟨ Δ ν ⟩ → E) (y : ⟨ Κ ν ⟩)
+           → is-compact∙ ⟨ 𝓚 ν A y ⟩
+
+\end{code}
+
+These two are proved by simultaneous induction. The second one holds
+because the underlying type of 𝓚 ν A y is a product indexed by the
+fiber of ι ν over y, which is a proposition since ι ν is an embedding,
+so that micro-tychonoff applies.
+
+The pointedness is essential in this induction, as it is in the module
+Ordinals.BrouwerCodesVariationInterpretations, because a version of
+micro-tychonoff without pointedness implies excluded middle.
+
+\begin{code}
+
+Κ-compact∙ ⌜𝟙⌝         = 𝟙-is-compact∙
+Κ-compact∙ ⌜ω+𝟙⌝       = ℕ∞-compact∙
+Κ-compact∙ (ν₀ ⌜+⌝ ν₁) = Σ-is-compact∙
+                          𝟙+𝟙-is-compact∙
+                          (dep-cases
+                            (λ _ → Κ-compact∙ ν₀)
+                            (λ _ → Κ-compact∙ ν₁))
+Κ-compact∙ (ν₀ ⌜×⌝ ν₁) = Σ-is-compact∙
+                          (Κ-compact∙ ν₀)
+                          (λ _ → Κ-compact∙ ν₁)
+Κ-compact∙ (⌜Σ⌝ ν A)   = Σ-is-compact∙
+                          (Κ-compact∙ ν)
+                          (𝓚-compact∙ ν A)
+
+𝓚-compact∙ ν A y = micro-tychonoff
+                    (fe 𝓤₀ 𝓤₀)
+                    (ι-is-embedding ν y)
+                    (λ (x , _) → Κ-compact∙ (A x))
+
+Κ-Compact : {𝓥 : Universe} (ν : E) → is-Compact ⟨ Κ ν ⟩ {𝓥}
+Κ-Compact ν = compact-types-are-Compact
+               (compact∙-types-are-compact (Κ-compact∙ ν))
+
+𝓚-Compact : {𝓥 : Universe} (ν : E) (A : ⟨ Δ ν ⟩ → E) (y : ⟨ Κ ν ⟩)
+          → is-Compact ⟨ 𝓚 ν A y ⟩ {𝓥}
+𝓚-Compact ν A y = compact-types-are-Compact
+                   (compact∙-types-are-compact (𝓚-compact∙ ν A y))
+
+\end{code}
+
+The ordinals in the image of Κ moreover have the least element property
+for non-empty complemented subsets, and more generally infima of
+arbitrary complemented subsets. This needs propositional extensionality,
+which, as discussed in the module Ordinals.Closure, is not strictly
+needed but makes our life much easier.
 
 \begin{code}
 
@@ -310,22 +380,6 @@ module _ (pe : propext 𝓤₀) where
      (ι-is-embedding ν x)
      (λ {(x , _)} y z → y ≺⟨ Κ (A x) ⟩ z)
      (λ (x , _) → K-has-infs-of-complemented-subsets (A x))
-
-\end{code}
-
-And, as discussed above, as a corollary we get that the ordinals in
-the image of Κ are compact.
-
-\begin{code}
-
- Κ-Compact : {𝓥 : Universe} (ν : E)
-           → is-Compact ⟨ Κ ν ⟩ {𝓥}
- Κ-Compact ν = has-inf-gives-Compact _ (K-has-infs-of-complemented-subsets ν)
-
- 𝓚-Compact : {𝓥 : Universe} (ν : E) (A : ⟨ Δ ν ⟩ → E) (x : ⟨ Κ ν ⟩)
-            → is-Compact ⟨ 𝓚 ν A x ⟩ {𝓥}
- 𝓚-Compact ν A x = has-inf-gives-Compact _
-                     (𝓚-has-infs-of-complemented-subsets ν A x)
 
 \end{code}
 
@@ -530,49 +584,47 @@ The function ℓ really does detect limit points:
 
 \begin{code}
 
-module _ (pe : propext 𝓤₀) where
+ℓ-limit : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point (ι ν x)
+ℓ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
+ℓ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit ν₀ x₀ p
+                                        (Σ-isolated-right
+                                          (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                          i)
+ℓ-limit (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = ℓ-limit ν₁ x₁ p
+                                        (Σ-isolated-right
+                                          (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                          i)
+ℓ-limit (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
+  Cases (max𝟚-lemma p)
+   (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit ν₀ x₀ p₀ (×-isolated-left i))
+   (λ (p₁ : ℓ ν₁ x₁ ＝ ₁) → ℓ-limit ν₁ x₁ p₁ (×-isolated-right i))
+ℓ-limit (⌜Σ⌝ ν A)   (x , y)      p i =
+  Cases (max𝟚-lemma p)
+   (λ (p₀ : ℓ ν x ＝ ₁)
+          → ℓ-limit ν x p₀ (Σ-isolated-left (𝓚-Compact ν A) i))
+   (λ (p₁ : ℓ (A x) y ＝ ₁)
+          → ℓ-limit (A x) y p₁
+             (equivs-reflect-isolatedness (φ⁻¹ x)
+               (φ⁻¹-is-equiv x)
+               (ι (A x) y)
+               (Σ-isolated-right
+                 (underlying-type-is-setᵀ fe (Κ ν)) i)))
+ where
+  open Κ-extension ν A
 
- ℓ-limit : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point (ι ν x)
- ℓ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
- ℓ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit ν₀ x₀ p
-                                         (Σ-isolated-right
-                                           (underlying-type-is-setᵀ fe 𝟚ᵒ)
-                                           i)
- ℓ-limit (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = ℓ-limit ν₁ x₁ p
-                                         (Σ-isolated-right
-                                           (underlying-type-is-setᵀ fe 𝟚ᵒ)
-                                           i)
- ℓ-limit (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
-   Cases (max𝟚-lemma p)
-    (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit ν₀ x₀ p₀ (×-isolated-left i))
-    (λ (p₁ : ℓ ν₁ x₁ ＝ ₁) → ℓ-limit ν₁ x₁ p₁ (×-isolated-right i))
- ℓ-limit (⌜Σ⌝ ν A)   (x , y)      p i =
-   Cases (max𝟚-lemma p)
-    (λ (p₀ : ℓ ν x ＝ ₁)
-           → ℓ-limit ν x p₀ (Σ-isolated-left (𝓚-Compact pe ν A) i))
-    (λ (p₁ : ℓ (A x) y ＝ ₁)
-           → ℓ-limit (A x) y p₁
-              (equivs-reflect-isolatedness (φ⁻¹ x)
-                (φ⁻¹-is-equiv x)
-                (ι (A x) y)
-                (Σ-isolated-right
-                  (underlying-type-is-setᵀ fe (Κ ν)) i)))
-  where
-   open Κ-extension ν A
+isolatedness-decision : (ν : E) (x : ⟨ Δ ν ⟩)
+                      → is-isolated (ι ν x) + is-limit-point (ι ν x)
+isolatedness-decision ν x = 𝟚-equality-cases
+                             (λ (p : ℓ ν x ＝ ₀) → inl (ℓ-isolated ν x p))
+                             (λ (p : ℓ ν x ＝ ₁) → inr (ℓ-limit ν x p))
 
- isolatedness-decision : (ν : E) (x : ⟨ Δ ν ⟩)
-                       → is-isolated (ι ν x) + is-limit-point (ι ν x)
- isolatedness-decision ν x = 𝟚-equality-cases
-                              (λ (p : ℓ ν x ＝ ₀) → inl (ℓ-isolated ν x p))
-                              (λ (p : ℓ ν x ＝ ₁) → inr (ℓ-limit ν x p))
-
- isolatedness-decision' : ¬ WLPO
-                        → (ν : E) (x : ⟨ Δ ν ⟩)
-                        → is-decidable (is-isolated (ι ν x))
- isolatedness-decision' f ν x =
-   Cases (isolatedness-decision ν x)
-    inl
-    (λ (g : is-isolated (ι ν x) → WLPO)  → inr (contrapositive g f))
+isolatedness-decision' : ¬ WLPO
+                       → (ν : E) (x : ⟨ Δ ν ⟩)
+                       → is-decidable (is-isolated (ι ν x))
+isolatedness-decision' f ν x =
+  Cases (isolatedness-decision ν x)
+   inl
+   (λ (g : is-isolated (ι ν x) → WLPO)  → inr (contrapositive g f))
 
 \end{code}
 
@@ -581,35 +633,35 @@ limit point holds.
 
 \begin{code}
 
- ℓ-limit⁺ : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point⁺ (ι ν x)
- ℓ-limit⁺ ⌜ω+𝟙⌝ (inr x) p i = ∞-is-a-limit-point⁺-of-ℕ∞ fe₀ i
- ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i
-  = ℓ-limit⁺ ν₀ x₀ p
-     (Σ-weakly-isolated-right
-       (underlying-type-is-setᵀ fe 𝟚ᵒ)
-       i)
- ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i
-  = ℓ-limit⁺ ν₁ x₁ p
-     (Σ-weakly-isolated-right
-       (underlying-type-is-setᵀ fe 𝟚ᵒ)
-       i)
- ℓ-limit⁺ (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i
-  = Cases (max𝟚-lemma p)
-     (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit⁺ ν₀ x₀ p₀ (×-weakly-isolated-left i))
-     (λ (p₁ : ℓ ν₁ x₁ ＝ ₁) → ℓ-limit⁺ ν₁ x₁ p₁ (×-weakly-isolated-right i))
- ℓ-limit⁺ (⌜Σ⌝ ν A)   (x , y)      p i
-  = Cases (max𝟚-lemma p)
-     (λ (p₀ : ℓ ν x ＝ ₁)
-            → ℓ-limit⁺ ν x p₀ (Σ-weakly-isolated-left (𝓚-Compact pe ν A) i))
-     (λ (p₁ : ℓ (A x) y ＝ ₁)
-            → ℓ-limit⁺ (A x) y p₁
-               (equivs-reflect-weak-isolatedness
-                 (Φ x)
-                 (ι (A x) y)
-                 (Σ-weakly-isolated-right
-                   (underlying-type-is-setᵀ fe (Κ ν)) i)))
-   where
-    open Κ-extension ν A
+ℓ-limit⁺ : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point⁺ (ι ν x)
+ℓ-limit⁺ ⌜ω+𝟙⌝ (inr x) p i = ∞-is-a-limit-point⁺-of-ℕ∞ fe₀ i
+ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i
+ = ℓ-limit⁺ ν₀ x₀ p
+    (Σ-weakly-isolated-right
+      (underlying-type-is-setᵀ fe 𝟚ᵒ)
+      i)
+ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i
+ = ℓ-limit⁺ ν₁ x₁ p
+    (Σ-weakly-isolated-right
+      (underlying-type-is-setᵀ fe 𝟚ᵒ)
+      i)
+ℓ-limit⁺ (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i
+ = Cases (max𝟚-lemma p)
+    (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit⁺ ν₀ x₀ p₀ (×-weakly-isolated-left i))
+    (λ (p₁ : ℓ ν₁ x₁ ＝ ₁) → ℓ-limit⁺ ν₁ x₁ p₁ (×-weakly-isolated-right i))
+ℓ-limit⁺ (⌜Σ⌝ ν A)   (x , y)      p i
+ = Cases (max𝟚-lemma p)
+    (λ (p₀ : ℓ ν x ＝ ₁)
+           → ℓ-limit⁺ ν x p₀ (Σ-weakly-isolated-left (𝓚-Compact ν A) i))
+    (λ (p₁ : ℓ (A x) y ＝ ₁)
+           → ℓ-limit⁺ (A x) y p₁
+              (equivs-reflect-weak-isolatedness
+                (Φ x)
+                (ι (A x) y)
+                (Σ-weakly-isolated-right
+                  (underlying-type-is-setᵀ fe (Κ ν)) i)))
+  where
+   open Κ-extension ν A
 
 \end{code}
 
@@ -721,3 +773,88 @@ TODO. Are the ordinals in the image of K totally separated?
 
 TODO. The map ℓ should also be the characteristic function of
 ordinal-limit points.
+
+Added August 2026. The universe E is a set. We prove this by
+encoding it into a W-type, which is possible because the branching type
+⟨ Δ ν ⟩ of the constructor ⌜Σ⌝ is a retract of ℕ, so that a family
+indexed by it is determined by its restriction along the retraction,
+and ℕ can serve as the arity of that constructor.
+
+Only the five pairs of equal constructors of E occur in the induction
+below. The other twenty are refuted by the clash of shapes of the
+W-type in the hypothesis.
+
+\begin{code}
+
+E-is-set : is-set E
+E-is-set = subtypes-of-sets-are-sets' e e-lc 𝕋-is-set
+ where
+  shape : 𝓤₀ ̇
+  shape = Fin 5
+
+  arity : shape → 𝓤₀ ̇
+  arity 𝟎 = 𝟘
+  arity 𝟏 = 𝟘
+  arity 𝟐 = 𝟙 + 𝟙
+  arity 𝟑 = 𝟙 + 𝟙
+  arity 𝟒 = 𝟙 + ℕ
+
+  𝕋 : 𝓤₀ ̇
+  𝕋 = W shape arity
+
+  open W.Properties shape arity
+
+  𝕋-is-set : is-set 𝕋
+  𝕋-is-set = W-is-set (fe 𝓤₀ 𝓤₀) Fin-is-set
+
+  ρ : (ν : E) → ℕ → ⟨ Δ ν ⟩
+  ρ ν = retraction (Δ-retract-of-ℕ ν)
+
+  σ : (ν : E) → ⟨ Δ ν ⟩ → ℕ
+  σ ν = section (Δ-retract-of-ℕ ν)
+
+  ρσ : (ν : E) (x : ⟨ Δ ν ⟩) → ρ ν (σ ν x) ＝ x
+  ρσ ν = retract-condition (Δ-retract-of-ℕ ν)
+
+  e : E → 𝕋
+  e ⌜𝟙⌝       = ssup 𝟎 𝟘-elim
+  e ⌜ω+𝟙⌝     = ssup 𝟏 𝟘-elim
+  e (ν ⌜+⌝ μ) = ssup 𝟐 (cases (λ _ → e ν) (λ _ → e μ))
+  e (ν ⌜×⌝ μ) = ssup 𝟑 (cases (λ _ → e ν) (λ _ → e μ))
+  e (⌜Σ⌝ ν A) = ssup 𝟒 (cases (λ _ → e ν) (λ n → e (A (ρ ν n))))
+
+  ⌜Σ⌝-＝ : (ν ν' : E) → ν ＝ ν'
+         → (A : ⟨ Δ ν ⟩ → E) (A' : ⟨ Δ ν' ⟩ → E)
+         → ((n : ℕ) → A (ρ ν n) ＝ A' (ρ ν' n))
+         → ⌜Σ⌝ ν A ＝ ⌜Σ⌝ ν' A'
+  ⌜Σ⌝-＝ ν .ν refl A A' h = ap (⌜Σ⌝ ν) (dfunext (fe 𝓤₀ 𝓤₀) I)
+   where
+    I : A ∼ A'
+    I x = A x               ＝⟨ ap A ((ρσ ν x)⁻¹) ⟩
+          A (ρ ν (σ ν x))   ＝⟨ h (σ ν x) ⟩
+          A' (ρ ν (σ ν x))  ＝⟨ ap A' (ρσ ν x) ⟩
+          A' x              ∎
+
+  e-lc : left-cancellable e
+  e-lc {⌜𝟙⌝}     {⌜𝟙⌝}       p = refl
+  e-lc {⌜ω+𝟙⌝}   {⌜ω+𝟙⌝}     p = refl
+  e-lc {ν ⌜+⌝ μ} {ν' ⌜+⌝ μ'} p =
+   ν  ⌜+⌝ μ  ＝⟨ ap (λ - → - ⌜+⌝ μ) (e-lc (φ (inl ⋆))) ⟩
+   ν' ⌜+⌝ μ  ＝⟨ ap (λ - → ν' ⌜+⌝ -) (e-lc (φ (inr ⋆))) ⟩
+   ν' ⌜+⌝ μ' ∎
+    where
+     φ = forest-＝ Fin-is-set p
+  e-lc {ν ⌜×⌝ μ} {ν' ⌜×⌝ μ'} p =
+   ν  ⌜×⌝ μ  ＝⟨ ap (λ - → - ⌜×⌝ μ) (e-lc (φ (inl ⋆))) ⟩
+   ν' ⌜×⌝ μ  ＝⟨ ap (λ - → ν' ⌜×⌝ -) (e-lc (φ (inr ⋆))) ⟩
+   ν' ⌜×⌝ μ' ∎
+    where
+     φ = forest-＝ Fin-is-set p
+  e-lc {⌜Σ⌝ ν A} {⌜Σ⌝ ν' A'} p = ⌜Σ⌝-＝ ν ν'
+                                  (e-lc (φ (inl ⋆)))
+                                  A A'
+                                  (λ n → e-lc (φ (inr n)))
+   where
+    φ = forest-＝ Fin-is-set p
+
+\end{code}

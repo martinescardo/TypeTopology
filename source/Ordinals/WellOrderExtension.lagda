@@ -29,7 +29,6 @@ open import Ordinals.Notions
 open import Ordinals.WellOrderArithmetic
 open import UF.Embeddings
 open import UF.FunExt
-open import UF.Subsingletons
 
 module extension
         (fe : FunExt)
@@ -60,6 +59,18 @@ module extension
                  (λ (p : fiber j a) → Y (pr₁ p))
                  (λ {p : fiber j a} y y' → y < y')
                  (λ (p : fiber j a) → o (pr₁ p))
+
+ decidable-fibers-give-trichotomy : is-decidable (fiber j a)
+                                  → ((x : X) → is-trichotomous-order (_<_ {x}))
+                                  → is-trichotomous-order _≺_
+ decidable-fibers-give-trichotomy d t = pip.decidable-index-gives-trichotomy
+                                         (fe (𝓤 ⊔ 𝓥) 𝓦)
+                                         (fiber j a)
+                                         (j-is-embedding a)
+                                         (λ (p : fiber j a) → Y (pr₁ p))
+                                         (λ {p : fiber j a} y y' → y < y')
+                                         d
+                                         (λ (p : fiber j a) → t (pr₁ p))
 
  top-preservation : ((x : X) → has-top (_<_ {x})) → has-top _≺_
  top-preservation f = φ , g

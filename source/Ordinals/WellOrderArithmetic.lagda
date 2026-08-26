@@ -619,6 +619,25 @@ lemma.
 
 \end{code}
 
+The trichotomy of the constructed order needs the index proposition to
+be decidable.
+
+\begin{code}
+
+ decidable-index-gives-trichotomy : is-decidable P
+                                  → ((p : P) → is-trichotomous-order (_<_ {p}))
+                                  → is-trichotomous-order _≺_
+ decidable-index-gives-trichotomy (inl p) t u v = γ (t p (φ p u) (φ p v))
+  where
+   γ : in-trichotomy (_<_ {p}) (φ p u) (φ p v) → in-trichotomy _≺_ u v
+   γ (inl l)       = inl (p , l)
+   γ (inr (inl e)) = inr (inl ((η p u)⁻¹ ∙ ap (ψ p) e ∙ η p v))
+   γ (inr (inr m)) = inr (inr (p , m))
+ decidable-index-gives-trichotomy (inr ν) t u v =
+  inr (inl (dfunext fe (λ p → 𝟘-elim (ν p))))
+
+\end{code}
+
 I am not sure this is going to be useful:
 
 \begin{code}

@@ -5,6 +5,11 @@ See the 2018 file OrdinalBrouwerCodesVariationInterpretations for discussion.
 We interpret Brouwer ordinal codes as ordinals in four ways and relate
 them.
 
+Only ⟦_⟧₀ and ⟦_⟧₂ and the comparisons use the assumptions of this
+module. The other two interpretations need function extensionality
+alone, and ⟦_⟧₁ is repeated under the name Κ in the module
+Ordinals.BrouwerCodesDiscreteAndCompactInterpretations.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
