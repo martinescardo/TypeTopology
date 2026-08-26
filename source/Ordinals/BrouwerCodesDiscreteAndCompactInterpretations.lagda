@@ -14,9 +14,9 @@ the unnecessary assumptions of univalence, propositional truncation
 and set replacement.
 
 The discrete interpretation Δ agrees with Κ at Z and at S, and differs
-from it only at L, where the discrete squashed sum ∑₁ stands in place
-of the compact squashed sum ∑¹. This difference makes the map ∑↑ into
-a dense embedding.
+from it only at L, where the successor sum ∑₁ stands in place of the
+squashed sum ∑¹. This difference makes the map ∑↑ into a dense
+embedding.
 
 The other discrete interpretation of the Brouwer codes, called ⟦_⟧₃ in
 the module Ordinals.BrouwerCodesInterpretations, cannot play the role
