@@ -37,6 +37,7 @@ open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.PairFun
 open import UF.Retracts
 open import UF.Subsingletons
@@ -65,6 +66,9 @@ X n is compact then so is its squashed sum Σ¹ X.
 
 Σ¹ : (ℕ → 𝓤 ̇ ) → 𝓤 ̇
 Σ¹ X = Σ (X / ι)
+
+Σ¹-base : {X : ℕ → 𝓤 ̇ } → Σ¹ X → ℕ∞
+Σ¹-base = pr₁
 
 Σ¹-explicitly : (X : ℕ → 𝓤 ̇ )
               → Σ¹ X ＝ (Σ u ꞉ ℕ∞ , ((φ : is-finite u) → X (size φ)))
@@ -134,11 +138,14 @@ over-embedding : is-embedding over
 over-embedding = inl-is-embedding ℕ 𝟙
 
 over-fibers-are-decidable : (z : ℕ + 𝟙) → is-decidable (fiber over z)
-over-fibers-are-decidable (inl n) = inl (n , refl)
+over-fibers-are-decidable (inl n) = inl (to-fiber over n)
 over-fibers-are-decidable (inr ⋆) = inr (λ (n , p) → +disjoint p)
 
 Σ₁ :(ℕ → 𝓤 ̇ ) → 𝓤 ̇
 Σ₁ X = Σ (X / over)
+
+Σ₁-base : {X : ℕ → 𝓤 ̇ } → Σ₁ X → ℕ + 𝟙
+Σ₁-base = pr₁
 
 ι𝟙-over : (n : ℕ) → ι𝟙 (over n) ＝ ι n
 ι𝟙-over n = refl
@@ -169,55 +176,53 @@ The type (X / over) z is densely embedded into the type (X / ι) (ι𝟙 z):
 
 \begin{code}
 
+ι𝟙-lc : left-cancellable ι𝟙
+ι𝟙-lc = embeddings-are-lc ι𝟙 (ι𝟙-is-embedding fe₀)
+
+over-ι-fiber : (z : ℕ + 𝟙) → fiber ι (ι𝟙 z) → fiber over z
+over-ι-fiber z (n , q) = n , ι𝟙-lc q
+
+over-ι-fiber-is-equiv : (z : ℕ + 𝟙) → is-equiv (over-ι-fiber z)
+over-ι-fiber-is-equiv z =
+ logical-equivs-of-props-are-equivs
+  (ℕ-to-ℕ∞-is-embedding fe₀ (ι𝟙 z))
+  (over-embedding z)
+  (over-ι-fiber z)
+  (λ (n , r) → n , ap ι𝟙 r)
+
+over-ι-map : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
+           → (X / over) z → (X / ι) (ι𝟙 z)
+over-ι-map X z φ = φ ∘ over-ι-fiber z
+
+over-ι-map-is-equiv : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
+                    → is-equiv (over-ι-map X z)
+over-ι-map-is-equiv X z = dprecomp-is-equiv (fe _ _) (fe _ _)
+                           (λ w → X (fiber-point w))
+                           (over-ι-fiber z)
+                           (over-ι-fiber-is-equiv z)
+
 over-ι-equiv : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
              → (X / over) z ≃ (X / ι) (ι𝟙 z)
-over-ι-equiv X (inl n) =
- (X / over) (over n) ≃⟨ Π-extension-property X over over-embedding n ⟩
- X n                 ≃⟨ ≃-sym
-                        (Π-extension-property X ℕ-to-ℕ∞
-                          (ℕ-to-ℕ∞-is-embedding fe₀) n) ⟩
- (X / ι) (ι n)       ■
-over-ι-equiv X (inr *) =
- (X / over) (inr *) ≃⟨ Π-extension-out-of-range X over (inr *)
-                        (λ x → +disjoint) ⟩
- 𝟙 {𝓤₀}             ≃⟨ ≃-sym
-                        (Π-extension-out-of-range X ι ∞
-                          (λ n p → ∞-is-not-finite n (p ⁻¹))) ⟩
- (X / ι) ∞          ■
+over-ι-equiv X z = over-ι-map X z , over-ι-map-is-equiv X z
 
 over-ι : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
        → (X / over) z ↪ᵈ (X / ι) (ι𝟙 z)
 over-ι X z = equiv-dense-embedding (over-ι-equiv X z)
 
-over-ι-map : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
-               → (X / over) z → (X / ι) (ι𝟙 z)
-over-ι-map X z = detofun (over-ι X z)
-
 over-ι-map-dense : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
-                     → is-dense (over-ι-map X z)
+                 → is-dense (over-ι-map X z)
 over-ι-map-dense X z = is-dense-detofun (over-ι X z)
 
 over-ι-map-left : (X : ℕ → 𝓤 ̇ ) (n : ℕ)
-                      (φ : (w : fiber over (inl n)) → X (pr₁ w))
-                    → over-ι-map X (inl n) φ (n , refl)
-                    ＝ φ (n , refl)
+                  (φ : (w : fiber over (inl n)) → X (fiber-point w))
+                → over-ι-map X (inl n) φ (to-fiber ι n)
+                ＝ φ (to-fiber over n)
 over-ι-map-left X n φ =
- transport
-  (λ - → over-ι-map X (inl n) φ (n , refl)
-       ＝ transport (λ - → X (pr₁ -)) - (φ (n , refl)))
-  (props-are-sets
-    (ℕ-to-ℕ∞-is-embedding fe₀ (ι n))
-    (ℕ-to-ℕ∞-is-embedding fe₀ (ι n) (n , refl) (n , refl))
-    refl)
-  (f (n , refl))
- where
-  -- We define this for the sake of clarity only:
-  f : (t : fiber ι (ι n))
-    → over-ι-map X (inl n) φ t
-    ＝ transport (λ - → X (pr₁ -))
-                 (ℕ-to-ℕ∞-is-embedding fe₀ (ι n) (n , refl) t)
-                 (φ (n , refl))
-  f t = refl
+ ap (λ - → φ (n , -))
+    (discrete-types-are-sets
+      (+-is-discrete ℕ-is-discrete 𝟙-is-discrete)
+      (ι𝟙-lc refl)
+      refl)
 
 \end{code}
 
@@ -271,13 +276,14 @@ Over X Y f (inr *) =
 Over-inl : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n → Y n)
          → (n : ℕ) → Over X Y f (inl n)
          ＝ λ (φ : (X / over) (inl n)) (w : fiber over (inl n)) →
-             transport (λ - → Y (pr₁ -))
-                       (inl-is-embedding ℕ 𝟙 (inl n) (n , refl) w)
-                       (f n (φ (n , refl)))
+             transport (λ - → Y (fiber-point -))
+                       (inl-is-embedding ℕ 𝟙 (inl n) (to-fiber over n) w)
+                       (f n (φ (to-fiber over n)))
 Over-inl X Y f n = refl
 
 Over-inr : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n → Y n)
-         → Over X Y f (inr ⋆) ＝ λ φ w → 𝟘-elim (+disjoint (pr₂ w))
+         → Over X Y f (inr ⋆)
+         ＝ λ φ w → 𝟘-elim (+disjoint (fiber-identification w))
 Over-inr X Y f = refl
 
 \end{code}
@@ -387,7 +393,7 @@ over ∞, which is what the two lemmas about limit points say.
 We first record three abbreviations. The image of a point (inl n , φ)
 of Σ₁ X has first component ι n, and second component the one named
 below, which evaluates at the canonical element of the fiber of ι over
-ι n to f n (φ (n , refl)).
+ι n to f n (φ (to-fiber over n)).
 
 \begin{code}
 
@@ -404,22 +410,23 @@ extension-at Y n = Π-extension-property Y ℕ-to-ℕ∞
 Σ↑-inl-component-value : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
                          (f : (n : ℕ) → X n → Y n)
                          (n : ℕ) (φ : (X / over) (inl n))
-                       → Σ↑-inl-component X Y f n φ (n , refl)
-                       ＝ f n (φ (n , refl))
+                       → Σ↑-inl-component X Y f n φ (to-fiber ι n)
+                       ＝ f n (φ (to-fiber over n))
 Σ↑-inl-component-value X Y f n φ =
  over-ι-map-left Y n (Over X Y f (inl n) φ) ∙ I
   where
-   I : Over X Y f (inl n) φ (n , refl) ＝ f n (φ (n , refl))
-   I = ap (λ - → transport (λ - → Y (pr₁ -)) - (f n (φ (n , refl))))
+   I : Over X Y f (inl n) φ (to-fiber over n) ＝ f n (φ (to-fiber over n))
+   I = ap (λ - → transport (λ - → Y (fiber-point -)) -
+                  (f n (φ (to-fiber over n))))
           (props-are-sets
             (over-embedding (inl n))
-            (over-embedding (inl n) (n , refl) (n , refl))
+            (over-embedding (inl n) (to-fiber over n) (to-fiber over n))
             refl)
 
 Σ↑-preserves-isolatedness : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
               (f : (n : ℕ) → X n → Y n)
               (n : ℕ) (φ : (X / over) (inl n))
-            → is-isolated (f n (φ (n , refl)))
+            → is-isolated (f n (φ (to-fiber over n)))
             → is-isolated (Σ↑ X Y f (inl n , φ))
 Σ↑-preserves-isolatedness X Y f n φ i =
  Σ-isolated
@@ -434,7 +441,7 @@ extension-at Y n = Π-extension-property Y ℕ-to-ℕ∞
                        (f : (n : ℕ) → X n → Y n)
                        (n : ℕ) (φ : (X / over) (inl n))
                      → is-isolated (Σ↑ X Y f (inl n , φ))
-                     → is-isolated (f n (φ (n , refl)))
+                     → is-isolated (f n (φ (to-fiber over n)))
 Σ↑-reflects-isolatedness X Y f n φ i =
  transport is-isolated (Σ↑-inl-component-value X Y f n φ)
   (equivs-preserve-isolatedness
@@ -447,7 +454,7 @@ extension-at Y n = Π-extension-property Y ℕ-to-ℕ∞
                               (f : (n : ℕ) → X n → Y n)
                               (n : ℕ) (φ : (X / over) (inl n))
                             → is-weakly-isolated (Σ↑ X Y f (inl n , φ))
-                            → is-weakly-isolated (f n (φ (n , refl)))
+                            → is-weakly-isolated (f n (φ (to-fiber over n)))
 Σ↑-reflects-weak-isolatedness X Y f n φ i =
  transport is-weakly-isolated (Σ↑-inl-component-value X Y f n φ)
   (equivs-preserve-weak-isolatedness
@@ -485,10 +492,6 @@ refl, and the rest of the proof only cancels the projection on the
 discrete side.
 
 \begin{code}
-
-over-ι-map-is-equiv : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
-                    → is-equiv (over-ι-map X z)
-over-ι-map-is-equiv X z = ⌜⌝-is-equiv (over-ι-equiv X z)
 
 Over-is-equiv : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
                 (f : (n : ℕ) → X n → Y n)
@@ -542,12 +545,12 @@ Over-is-equiv {𝓤} X Y f e (inr ⋆) =
   X _ = 𝟙
 
   Σ₁-𝟙 : Σ₁ X ≃ (ℕ + 𝟙)
-  Σ₁-𝟙 = pr₁ ,
+  Σ₁-𝟙 = Σ₁-base ,
          pr₁-is-equiv (ℕ + 𝟙) (X / over)
           (λ z → Π-is-singleton fe₀ (λ _ → 𝟙-is-singleton))
 
   Σ¹-𝟙 : Σ¹ X ≃ ℕ∞
-  Σ¹-𝟙 = pr₁ ,
+  Σ¹-𝟙 = Σ¹-base ,
          pr₁-is-equiv ℕ∞ (X / ι)
           (λ u → Π-is-singleton fe₀ (λ _ → 𝟙-is-singleton))
 
@@ -578,7 +581,7 @@ sending u to the pair (u , λ _ → ⋆).  It is enough for transferring to
 \begin{code}
 
 ℕ∞-retract-of-Σ¹-𝟙 : retract ℕ∞ of (Σ¹ (λ (_ : ℕ) → 𝟙 {𝓤₀}))
-ℕ∞-retract-of-Σ¹-𝟙 = pr₁ , (λ u → u , (λ _ → ⋆)) , (λ u → refl)
+ℕ∞-retract-of-Σ¹-𝟙 = Σ¹-base , (λ u → u , (λ _ → ⋆)) , (λ u → refl)
 
 \end{code}
 
@@ -734,7 +737,7 @@ module original-version-and-equivalence-with-new-version where
    -- p  : Y → ₂
 
    y₀ : Y
-   y₀ n r = pr₁(ε n (p ∘ (F n u r)))
+   y₀ n r = universal-witness (ε n) (p ∘ (F n u r))
 
    lemma₁ : (n : ℕ) → ι n ＝ u → p y₀ ＝ ₁ → (y : Y) → p y ＝ ₁
    lemma₁ n r e = claim₃
@@ -743,7 +746,7 @@ module original-version-and-equivalence-with-new-version where
      claim₀ y = ap p (FG n u r y)
 
      claim₁ : p (F n u r (G n u r y₀)) ＝ ₁ → (x : X n) → p (F n u r x) ＝ ₁
-     claim₁ =  pr₂(ε n (p ∘ (F n u r)))
+     claim₁ = witness-universality (ε n) (p ∘ (F n u r))
 
      claim₂ : (x : X n) → p (F n u r x) ＝ ₁
      claim₂ = claim₁ (claim₀ y₀ ∙ e)
