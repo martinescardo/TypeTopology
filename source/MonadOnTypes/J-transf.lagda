@@ -107,7 +107,7 @@ module JT-algebra-definitions
         {ℓ : Universe → Universe}
         (𝕋 : Monad {ℓ})
         (R : 𝓦₀ ̇ )
-        (𝓐 : Algebra 𝕋 R)
+        (𝓡 : Algebra 𝕋 R)
         (fe : Fun-Ext)
        where
 
@@ -115,8 +115,8 @@ module JT-algebra-definitions
 
  open T-definitions 𝕋
  open K-definitions {𝓦₀} {R}
- open JT-definitions 𝕋 R 𝓐 fe
- open α-definitions 𝕋 R 𝓐
+ open JT-definitions 𝕋 R 𝓡 fe
+ open α-definitions 𝕋 R 𝓡
 
  α-overlineᵀ : {X : 𝓤 ̇ } → JT X → KT X
  α-overlineᵀ ε = λ p → α (extᵀ p (ε p))

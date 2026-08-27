@@ -178,9 +178,8 @@ reader monad, to speed-up the computation of the optimal play.
   T : 𝓤 ̇ → 𝓤 ̇
   T = functor (Reader AB)
 
-  private
-   NB : T R ＝ (AB → R)
-   NB = refl
+  _ : {X : 𝓤 ̇ } → T X ＝ (AB → X)
+  _ = refl
 
   q† : Path Xt → T R
   q† xs (α , β) = q xs
@@ -214,6 +213,34 @@ reader monad, to speed-up the computation of the optimal play.
                   (λ (_ : r ≥ s) → ArgMax† xs x₀ r p (α , β)))
          (λ (_ : s ≥ β)
                → x)
+{- TODO.
+
+  module _ {X : 𝓤 ̇ }
+           (x : X)
+           (xs : List X)
+           (x₀ : X)
+           (r : R)
+           (p : X → T R)
+           ((α , β) : AB)
+         where
+
+   private
+    s = p x (α , β)
+
+   ArgMin†₀₀ : α < s
+             → s < r
+             → ArgMin† (x ∷ xs) x₀ r p (α , β) ＝ ArgMin† xs x s p (α , min β s)
+   ArgMin†₀₀ = {!!}
+
+   ArgMin†₀₁ : α < s
+             → s ≥ r
+             → ArgMin† (x ∷ xs) x₀ r p (α , β) ＝ ArgMin† xs x₀ r p (α , β)
+   ArgMin†₀₁ = {!!}
+
+   ArgMin†₁ : α ≥ s
+            → ArgMin† (x ∷ xs) x₀ r p (α , β) ＝ x
+   ArgMin†₁ = {!!}
+-}
 
   𝓡 : Algebra (Reader AB) R
   𝓡 = record {
@@ -237,14 +264,14 @@ reader monad, to speed-up the computation of the optimal play.
                         → structure listed⁺ Xt
                         → 𝓙𝓣 Xt
   argminmax† []       ⟨⟩                    = ⟨⟩
-  argminmax† (X ∷ Xf) ((x₀ , xs , _) :: ss) =
+  argminmax† (X ∷ Xf) ((x₀ , xs , _) :: ℓf) =
    (λ (p : X → T R) → ArgMin† xs x₀ (ρ (p x₀)) p)
-   :: (λ x → argmaxmin† (Xf x) (ss x))
+   :: (λ x → argmaxmin† (Xf x) (ℓf x))
 
   argmaxmin† []       ⟨⟩                    = ⟨⟩
-  argmaxmin† (X ∷ Xf) ((x₀ , xs , _) :: ss) =
+  argmaxmin† (X ∷ Xf) ((x₀ , xs , _) :: ℓf) =
    (λ (p : X → T R) → ArgMax† xs x₀ (ρ (p x₀)) p)
-   :: (λ x → argminmax† (Xf x) (ss x))
+   :: (λ x → argminmax† (Xf x) (ℓf x))
 
   G-selection-tree† : 𝓙𝓣 Xt
   G-selection-tree† = argmaxmin† Xt Xt-is-listed⁺
@@ -288,7 +315,6 @@ reader monad, to speed-up the computation of the optimal play.
    → sequenceᴷ (maxmin Xt Xt-is-listed⁺) q ≤ β
    → sequenceᴶ (argmaxmin Xt Xt-is-listed⁺) q
    ＝ sequenceᴶᵀ (argmaxmin† Xt Xt-is-listed⁺) (λ xs _ → q xs) (α , β)
-  max-conjectural-strong-correctness†-lemma = {!!}
 
   min-conjectural-strong-correctness†-lemma
    : (Xt : 𝑻)
@@ -299,6 +325,48 @@ reader monad, to speed-up the computation of the optimal play.
    → sequenceᴷ (minmax Xt Xt-is-listed⁺) q ≤ β
    → sequenceᴶ (argminmax Xt Xt-is-listed⁺) q
    ＝ sequenceᴶᵀ (argminmax† Xt Xt-is-listed⁺) (λ xs _ → q xs) (α , β)
+
+  max-conjectural-strong-correctness†-lemma [] Xt-is-listed⁺ q α β l m
+   = refl
+  max-conjectural-strong-correctness†-lemma (X ∷ Xf) (ℓ@(x₀ , xs , _) , ℓf) q α β l m
+   = IX
+    where
+     IH : (x : X) → (α₁ β₁ : R)
+                  → α₁ ≤ sequenceᴷ (minmax (Xf x) (ℓf x)) (λ xs → q (x , xs))
+                  → sequenceᴷ (minmax (Xf x) (ℓf x)) (λ xs → q (x , xs)) ≤ β₁
+                  → sequenceᴶ (argminmax (Xf x) (ℓf x)) (λ xs → q (x , xs))
+                 ＝ sequenceᴶᵀ (argminmax† (Xf x) (ℓf x)) (λ xs _ → q (x , xs))
+                     (α₁ , β₁)
+     IH x = min-conjectural-strong-correctness†-lemma (Xf x) (ℓf x) (subpred q x)
+
+     open import MonadOnTypes.J
+     open J-definitions {𝓤}
+     open import MonadOnTypes.J-transf
+     open JT-definitions {𝓤} {𝓤 ⊔_} (Reader AB) R 𝓡 fe
+
+     IX = sequenceᴶ (argmaxmin (X ∷ Xf) (ℓ , ℓf)) q ＝⟨ refl ⟩
+          sequenceᴶ (ArgMax ℓ :: (λ x → argminmax (Xf x) (ℓf x))) q ＝⟨ refl ⟩
+          (ArgMax ℓ ⊗ᴶ (λ x → sequenceᴶ (argminmax (Xf x) (ℓf x)))) q ＝⟨ {!!} ⟩
+          {!!} ＝⟨ {!!} ⟩
+          {!!} ＝⟨ {!!} ⟩
+          {!!} ＝⟨ {!!} ⟩
+          {!!} ＝⟨ {!!} ⟩
+          {!!} ＝⟨ {!!} ⟩
+          ((λ (p : X → T R) → ArgMax† xs x₀ (ρ (p x₀)) p)
+          ⊗ᴶᵀ
+          (λ x → sequenceᴶᵀ (argminmax† (Xf x) (ℓf x))))
+          (λ xs _ → q xs) (α , β) ＝⟨ refl ⟩
+          sequenceᴶᵀ ((λ (p : X → T R) → ArgMax† xs x₀ (ρ (p x₀)) p)
+           :: (λ x → argminmax† (Xf x) (ℓf x)))
+           (λ xs _ → q xs) (α , β) ＝⟨ refl ⟩
+          sequenceᴶᵀ (argmaxmin† (X ∷ Xf) (ℓ , ℓf))
+           (λ xs _ → q xs) (α , β) ∎
+      where
+       IX₀ = ap (λ - → (ArgMax ℓ ⊗ᴶ -) q) {!dfunext!}
+
+       _ : JT X
+       _ = λ (p : X → T R) → ArgMax† xs x₀ (ρ (p x₀)) p
+
   min-conjectural-strong-correctness†-lemma = {!!}
 
   conjectural-strong-correctness†

@@ -35,7 +35,7 @@ Recall that a type is discrete if it has decidable equality.
 \begin{code}
 
 Fin-is-discrete : {n : ℕ} → is-discrete (Fin n)
-Fin-is-discrete {0    } = 𝟘-is-discrete
+Fin-is-discrete {0}      = 𝟘-is-discrete
 Fin-is-discrete {succ n} = +-is-discrete (Fin-is-discrete {n}) 𝟙-is-discrete
 
 Fin-is-set : {n : ℕ} → is-set (Fin n)
