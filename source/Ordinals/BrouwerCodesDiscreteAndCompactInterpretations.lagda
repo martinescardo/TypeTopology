@@ -160,19 +160,13 @@ rather than 𝟘ᵒ.
 \end{code}
 
 They are moreover retracts of the Cantor type, and hence totally
-separated. We begin with two simple lemmas.
+separated.
 
 \begin{code}
 
-𝟙-Cantor-retract : retract (𝟙 {𝓤₀}) of (ℕ → 𝟚)
-𝟙-Cantor-retract = (λ _ → ⋆) , (λ _ → λ n → ₀) , 𝟙-is-prop ⋆
-
-𝟙-retract-of-ℕ : retract (𝟙 {𝓤₀}) of ℕ
-𝟙-retract-of-ℕ = (λ _ → ⋆) , (λ _ → 0) , 𝟙-is-prop ⋆
-
-Κ-Cantor-retract Z     = 𝟙-Cantor-retract
+Κ-Cantor-retract Z     = 𝟙-retract-of-Cantor
 Κ-Cantor-retract (S b) = +-retract-of-Cantor (Κ b) 𝟙ᵒ
-                          (Κ-Cantor-retract b) 𝟙-Cantor-retract
+                          (Κ-Cantor-retract b) 𝟙-retract-of-Cantor
 Κ-Cantor-retract (L b) = Σ¹-Cantor-retract
                           (λ n → ⟨ Κ (b n) ⟩) (λ i → Κ-Cantor-retract (b i))
 
