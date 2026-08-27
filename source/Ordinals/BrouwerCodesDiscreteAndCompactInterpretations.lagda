@@ -63,12 +63,6 @@ private
  fe₀ : funext 𝓤₀ 𝓤₀
  fe₀ = fe 𝓤₀ 𝓤₀
 
- 𝟙-Cantor-retract : retract (𝟙 {𝓤₀}) of (ℕ → 𝟚)
- 𝟙-Cantor-retract = (λ _ → ⋆) , (λ _ → λ n → ₀) , 𝟙-is-prop ⋆
-
- 𝟙-retract-of-ℕ : retract (𝟙 {𝓤₀}) of ℕ
- 𝟙-retract-of-ℕ = (λ _ → ⋆) , (λ _ → 0) , 𝟙-is-prop ⋆
-
 \end{code}
 
 In the following, ⟨ τ ⟩ denotes the underlying set of an ordinal τ, and
@@ -166,9 +160,15 @@ rather than 𝟘ᵒ.
 \end{code}
 
 They are moreover retracts of the Cantor type, and hence totally
-separated.
+separated. We begin with two simple lemmas.
 
 \begin{code}
+
+𝟙-Cantor-retract : retract (𝟙 {𝓤₀}) of (ℕ → 𝟚)
+𝟙-Cantor-retract = (λ _ → ⋆) , (λ _ → λ n → ₀) , 𝟙-is-prop ⋆
+
+𝟙-retract-of-ℕ : retract (𝟙 {𝓤₀}) of ℕ
+𝟙-retract-of-ℕ = (λ _ → ⋆) , (λ _ → 0) , 𝟙-is-prop ⋆
 
 Κ-Cantor-retract Z     = 𝟙-Cantor-retract
 Κ-Cantor-retract (S b) = +-retract-of-Cantor (Κ b) 𝟙ᵒ
