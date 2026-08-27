@@ -57,11 +57,13 @@ open import Ordinals.TrichotomousArithmetic fe
 open import Ordinals.TrichotomousType fe
 open import Ordinals.Type
 open import Ordinals.Underlying
+open import Taboos.LPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.SigmaDiscrete
 open import TypeTopology.SquashedSum fe
 open import TypeTopology.TotallySeparated
 open import UF.DiscreteAndSeparated
+open import UF.Retracts
 
 open ordinals-injectivity fe
 open suprema pt sr
@@ -175,6 +177,21 @@ compact in general, as ω is in the range of the interpretation
 ⟦_⟧₃-is-totally-separated : (b : B) → is-totally-separated ⟨ ⟦ b ⟧₃ ⟩
 ⟦ b ⟧₃-is-totally-separated = discrete-types-are-totally-separated
                                ⟦ b ⟧₃-is-discrete
+\end{code}
+
+The code L (λ _ → S Z) is the promised witness. It is interpreted as
+an ordinal whose underlying type has ℕ as a retract, and so its
+compactness amounts to LPO.
+
+\begin{code}
+
+⟦_⟧₃-compact-gives-LPO : ((b : B) → is-compact ⟨ ⟦ b ⟧₃ ⟩) → LPO
+⟦_⟧₃-compact-gives-LPO κ = compact-ℕ-gives-LPO fe'
+                            (retract-is-compact ρ (κ (L (λ _ → S Z))))
+ where
+  ρ : retract ℕ of ⟨ ⟦ L (λ _ → S Z) ⟧₃ ⟩
+  ρ = pr₁ , (λ n → n , inr ⋆) , (λ n → refl)
+
 \end{code}
 
 We'll prove the following inequalities, where the arrows represent the

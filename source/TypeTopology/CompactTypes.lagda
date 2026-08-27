@@ -895,6 +895,14 @@ Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → is-Compact Y {𝓦}
 Compact-closed-under-≃ e = Compact-closed-under-retracts (≃-gives-▷ e)
 
+retract-is-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                   → retract Y of X
+                   → is-compact X
+                   → is-compact Y
+retract-is-compact ρ c = Compact-types-are-compact
+                          (Compact-closed-under-retracts ρ
+                            (compact-types-are-Compact c))
+
 module CompactTypesPT (pt : propositional-truncations-exist) where
 
  open import UF.ImageAndSurjection pt

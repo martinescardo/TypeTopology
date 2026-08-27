@@ -136,6 +136,9 @@ LPO-gives-ι-is-equiv         : LPO → (b : B) → is-equiv (ι {b})
 
 LPO-gives-Κ-discrete         : LPO → (b : B) → is-discrete ⟨ Κ b ⟩
 Κ-discrete-gives-WLPO        : ((b : B) → is-discrete ⟨ Κ b ⟩) → WLPO
+Δ-compact-gives-LPO          : ((b : B) → is-compact ⟨ Δ b ⟩) → LPO
+LPO-gives-Δ-compact          : LPO → (b : B) → is-compact ⟨ Δ b ⟩
+Δ-compact-iff-LPO            : ((b : B) → is-compact ⟨ Δ b ⟩) ↔ LPO
 
 Κ-of-ε₀-code                 : Ordᵀ
 Κ-of-ε₀-code-is-compact∙     : is-compact∙ ⟨ Κ-of-ε₀-code ⟩
@@ -400,8 +403,11 @@ LPO-gives-ι-is-equiv lpo (L b) = ∑↑-is-equiv
 Discreteness of the compact interpretation sits between LPO and WLPO.
 Whether the gap between LPO-gives-Κ-discrete and Κ-discrete-gives-WLPO
 can be closed is open, and it is the same question as the one left
-open at the end of the module
-Ordinals.InductiveRecursiveCodesInterpretations.
+open at the end of the module Ordinals.InductiveRecursiveCodesInterpretations.
+
+In the other direction there is no gap. Compactness of the discrete
+interpretation is exactly LPO, and the code L (λ _ → Z) alone
+witnesses this in one direction.
 
 \begin{code}
 
@@ -419,6 +425,19 @@ LPO-gives-Κ-discrete lpo b = ι-is-equiv-gives-Κ-discrete b
                            (retract-is-discrete
                              ℕ∞-retract-of-Σ¹-𝟙
                              (f (L (λ _ → Z))))
+
+Δ-compact-gives-LPO κ = compact-ℕ-gives-LPO fe₀
+                         (retract-is-compact
+                           (retracts-compose
+                             ℕ+𝟙-retract-of-Σ₁-𝟙
+                             (cases id (λ _ → 0) , inl , (λ n → refl)))
+                           (κ (L (λ _ → Z))))
+
+LPO-gives-Δ-compact lpo b = retract-is-compact
+                             (Δ-retract-of-ℕ b)
+                             (LPO-gives-compact-ℕ fe₀ lpo)
+
+Δ-compact-iff-LPO = Δ-compact-gives-LPO , LPO-gives-Δ-compact
 
 \end{code}
 

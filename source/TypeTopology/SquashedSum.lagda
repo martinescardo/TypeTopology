@@ -574,14 +574,19 @@ Over-is-equiv {𝓤} X Y f e (inr ⋆) =
 
 \end{code}
 
-For the same constant family we also record a retraction, the section
-sending u to the pair (u , λ _ → ⋆).  It is enough for transferring to
-ℕ∞ properties that are inherited by retracts, such as discreteness.
+For the same constant family we also record two retractions, in both
+cases with the section sending a base point z to the pair
+(z , λ _ → ⋆).  They are enough for transferring to ℕ∞ and to ℕ + 𝟙
+properties that are inherited by retracts, such as discreteness in the
+first case and compactness in the second.
 
 \begin{code}
 
 ℕ∞-retract-of-Σ¹-𝟙 : retract ℕ∞ of (Σ¹ (λ (_ : ℕ) → 𝟙 {𝓤₀}))
 ℕ∞-retract-of-Σ¹-𝟙 = Σ¹-base , (λ u → u , (λ _ → ⋆)) , (λ u → refl)
+
+ℕ+𝟙-retract-of-Σ₁-𝟙 : retract (ℕ + 𝟙) of (Σ₁ (λ (_ : ℕ) → 𝟙 {𝓤₀}))
+ℕ+𝟙-retract-of-Σ₁-𝟙 = Σ₁-base , (λ z → z , (λ _ → ⋆)) , (λ z → refl)
 
 \end{code}
 
