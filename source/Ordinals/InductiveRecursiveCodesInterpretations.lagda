@@ -144,6 +144,29 @@ equality).
 
 \end{code}
 
+The discrete interpretation is compact for every code precisely when
+LPO holds. One direction is that Δ ν is a retract of ℕ, and the other
+uses the single code ⌜ω+𝟙⌝, whose discrete interpretation has ℕ + 𝟙 as
+its underlying type.
+
+\begin{code}
+
+LPO-gives-Δ-compact : LPO → (ν : E) → is-compact ⟨ Δ ν ⟩
+LPO-gives-Δ-compact lpo ν = retract-is-compact
+                             (Δ-retract-of-ℕ ν)
+                             (LPO-gives-compact-ℕ fe₀ lpo)
+
+Δ-compact-gives-LPO : ((ν : E) → is-compact ⟨ Δ ν ⟩) → LPO
+Δ-compact-gives-LPO κ = compact-ℕ-gives-LPO fe₀
+                         (retract-is-compact
+                           (≃-gives-◁ (≃-sym ℕ-plus-𝟙))
+                           (κ ⌜ω+𝟙⌝))
+
+Δ-compact-iff-LPO : ((ν : E) → is-compact ⟨ Δ ν ⟩) ↔ LPO
+Δ-compact-iff-LPO = Δ-compact-gives-LPO , LPO-gives-Δ-compact
+
+\end{code}
+
 A stronger result is that the ordinals in the image of Δ are
 trichotomous:
 
