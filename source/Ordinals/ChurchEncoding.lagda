@@ -7,7 +7,7 @@
     This is based on work of Coquand, Setzer and Hancock, in particular:
 
     (i) Coquand, Hancock and Setzer (1997)
-        http://www.cse.chalmers.se/~coquand/ordinal.pdf
+        https://www.cse.chalmers.se/~coquand/ordinal.pdf
         https://web.archive.org/web/20251203190938/https://www.cse.chalmers.se/~coquand/ordinal.ps
 
     (ii) Hancock (Russell'08 Proof Theory meets Type Theory, Swansea)
