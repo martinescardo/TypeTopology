@@ -377,3 +377,17 @@ LPO'-gives-LPO : LPO' → LPO
 LPO'-gives-LPO lpo' x = decidable-↔ (↔-sym LPO'-lemma) (lpo' x)
 
 \end{code}
+
+Added 28th August 2026 by Martin Escardo.
+
+Excluded middle gives LPO.
+
+\begin{code}
+
+open import UF.ClassicalLogic
+
+EM-gives-LPO : funext₀ → EM 𝓤₀ → LPO
+EM-gives-LPO fe em = LPO'-gives-LPO
+                      (λ x → em (is-finite x) (being-finite-is-prop fe x))
+
+\end{code}
