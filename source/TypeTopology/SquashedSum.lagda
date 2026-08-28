@@ -172,6 +172,92 @@ over-is-discrete X d (inr *) = retract-is-discrete {𝓤₀}
                        (over-is-discrete X d)
 \end{code}
 
+Unlike Σ¹ X, the type Σ₁ X is the disjoint union of the X n with one
+further point added, and that point is isolated.
+
+\begin{code}
+
+over-inr-is-singleton : (X : ℕ → 𝓤 ̇ )
+                      → is-singleton ((X / over) (inr ⋆))
+over-inr-is-singleton {𝓤} X = equiv-to-singleton
+                               (Π-extension-out-of-range X over (inr ⋆)
+                                 (λ n → +disjoint))
+                               (𝟙-is-singleton {𝓤})
+
+Σ₁-explicitly : (X : ℕ → 𝓤 ̇ ) → Σ₁ X ≃ (Σ n ꞉ ℕ , X n) + 𝟙 {𝓤}
+Σ₁-explicitly X =
+ Σ₁ X                                                              ≃⟨ I ⟩
+ ((Σ n ꞉ ℕ , (X / over) (inl n)) + (Σ u ꞉ 𝟙 , (X / over) (inr u))) ≃⟨ II ⟩
+ ((Σ n ꞉ ℕ , X n) + 𝟙)                                             ■
+ where
+  I = ≃-sym (Σ+-split ℕ 𝟙 (X / over))
+  II = +-cong
+        (Σ-cong (Π-extension-property X over over-embedding))
+        (≃-comp 𝟙-lneutral
+          (singleton-≃-𝟙 (over-inr-is-singleton X)))
+
+Σ₁-inr : (X : ℕ → 𝓤 ̇ ) → (X / over) (inr ⋆) → Σ₁ X
+Σ₁-inr X φ = inr ⋆ , φ
+
+Σ₁-top : (X : ℕ → 𝓤 ̇ ) → Σ₁ X
+Σ₁-top X = Σ₁-inr X (center (over-inr-is-singleton X))
+
+Σ₁-inr-is-isolated : (X : ℕ → 𝓤 ̇ ) (φ : (X / over) (inr ⋆))
+                   → is-isolated (Σ₁-inr X φ)
+Σ₁-inr-is-isolated X φ =
+ Σ-isolated
+  (inr-is-isolated ⋆ (𝟙-is-discrete ⋆))
+  (props-are-discrete (singletons-are-props (over-inr-is-singleton X)) φ)
+
+Σ₁-top-is-isolated : (X : ℕ → 𝓤 ̇ ) → is-isolated (Σ₁-top X)
+Σ₁-top-is-isolated X = Σ₁-inr-is-isolated X (center (over-inr-is-singleton X))
+
+\end{code}
+
+The added point of Σ¹ X is a limit point instead.
+
+\begin{code}
+
+ι-∞-is-singleton : (X : ℕ → 𝓤 ̇ ) → is-singleton ((X / ι) ∞)
+ι-∞-is-singleton {𝓤} X = equiv-to-singleton
+                          (Π-extension-out-of-range X ι ∞
+                            (λ n → ≠-sym (∞-is-not-finite n)))
+                          (𝟙-is-singleton {𝓤})
+
+Σ¹-∞ : (X : ℕ → 𝓤 ̇ ) → (X / ι) ∞ → Σ¹ X
+Σ¹-∞ X φ = ∞ , φ
+
+Σ¹-top : (X : ℕ → 𝓤 ̇ ) → Σ¹ X
+Σ¹-top X = Σ¹-∞ X (center (ι-∞-is-singleton X))
+
+Σ¹-∞-is-limit-point : (X : ℕ → 𝓤 ̇ )
+                    → ((n : ℕ) → X n)
+                    → (φ : (X / ι) ∞)
+                    → is-limit-point (Σ¹-∞ X φ)
+Σ¹-∞-is-limit-point X x φ i u = γ (i (u , ψ))
+ where
+  ψ : (X / ι) u
+  ψ w = x (fiber-point w)
+
+  δ : u ＝ ∞ → Σ¹-∞ X φ ＝ (u , ψ)
+  δ e = to-Σ-＝ ((e ⁻¹) , k _ _)
+   where
+    k : is-prop ((X / ι) u)
+    k = transport (λ - → is-prop ((X / ι) -)) (e ⁻¹)
+         (singletons-are-props (ι-∞-is-singleton X))
+
+  γ : is-decidable (Σ¹-∞ X φ ＝ (u , ψ)) → (u ＝ ∞) + (u ≠ ∞)
+  γ (inl e) = inl ((ap Σ¹-base e)⁻¹)
+  γ (inr ν) = inr (λ e → ν (δ e))
+
+Σ¹-top-is-limit-point : (X : ℕ → 𝓤 ̇ )
+                      → ((n : ℕ) → X n)
+                      → is-limit-point (Σ¹-top X)
+Σ¹-top-is-limit-point X x = Σ¹-∞-is-limit-point X x
+                             (center (ι-∞-is-singleton X))
+
+\end{code}
+
 The type (X / over) z is densely embedded into the type (X / ι) (ι𝟙 z):
 
 \begin{code}

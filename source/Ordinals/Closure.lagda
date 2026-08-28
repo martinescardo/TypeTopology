@@ -138,6 +138,16 @@ More Cantor-retract properties are in the module TypeTopology.SquashedCantor.
   b : retract (ℕ × ℕ) of ℕ
   b = ≃-gives-◁ pairing
 
+∑₁-top-is-over-inr : (τ : ℕ → Ordᵀ) → Σ₁-base (top (∑₁ τ)) ＝ inr ⋆
+∑₁-top-is-over-inr τ = refl
+
+∑₁-top-is-isolated : (τ : ℕ → Ordᵀ) → is-isolated (top (∑₁ τ))
+∑₁-top-is-isolated τ = Σ₁-inr-is-isolated (λ n → ⟨ τ n ⟩) _
+
+∑¹-top-is-limit-point : (τ : ℕ → Ordᵀ) → is-limit-point (top (∑¹ τ))
+∑¹-top-is-limit-point τ = Σ¹-∞-is-limit-point
+                           (λ n → ⟨ τ n ⟩) (λ n → top (τ n)) _
+
 Σ₁-ℕ-retract : {X : ℕ → 𝓤 ̇ }
              → ((n : ℕ) → retract (X n) of ℕ)
              → retract (Σ₁ X) of ℕ
