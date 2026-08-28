@@ -11,7 +11,9 @@ open import MLTT.Spartan
 
 open import CoNaturals.Type
 open import MLTT.Two-Properties
+open import Naturals.ExitTruncation
 open import Notation.Order
+open import Taboos.LPO
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.DisconnectedTypes
@@ -36,6 +38,7 @@ private
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 open PropositionalTruncation pt
+open exit-truncations pt
 open import NotionsOfDecidability.Complemented
 
 is-∃-compact : 𝓤 ̇ → 𝓤 ̇
@@ -113,6 +116,34 @@ compact-types-are-∃-compact {𝓤} {X} φ p = g (φ p)
 
 But notice that the Π-compactness of ℕ is WLPO and its ∃-compactness
 amounts to LPO.
+
+\begin{code}
+
+Π-compact-ℕ-gives-WLPO : is-Π-compact ℕ → WLPO
+Π-compact-ℕ-gives-WLPO = WLPO-traditional-gives-WLPO (fe 𝓤₀ 𝓤₀)
+
+WLPO-gives-Π-compact-ℕ : WLPO → is-Π-compact ℕ
+WLPO-gives-Π-compact-ℕ = WLPO-gives-WLPO-traditional (fe 𝓤₀ 𝓤₀)
+
+∃-compact-ℕ-gives-LPO : is-∃-compact ℕ → LPO
+∃-compact-ℕ-gives-LPO c = LPO-variation-implies-LPO (fe 𝓤₀ 𝓤₀) I
+ where
+  I : LPO-variation
+  I α = II (c α)
+   where
+    II : is-decidable (∃ n ꞉ ℕ , α n ＝ ₀)
+       → is-decidable (Σ n ꞉ ℕ , α n ＝ ₀)
+    II (inl s) = inl (exit-truncation
+                       (λ n → α n ＝ ₀)
+                       (λ n → 𝟚-is-discrete (α n) ₀)
+                       s)
+    II (inr ν) = inr (λ σ → ν ∣ σ ∣)
+
+LPO-gives-∃-compact-ℕ : LPO → is-∃-compact ℕ
+LPO-gives-∃-compact-ℕ lpo = compact-types-are-∃-compact
+                             (LPO-gives-compact-ℕ (fe 𝓤₀ 𝓤₀) lpo)
+
+\end{code}
 
 The Π-compactness of X is equivalent to the isolatedness of the boolean
 predicate λ x → ₁:
