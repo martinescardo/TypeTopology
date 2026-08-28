@@ -30,12 +30,16 @@ open import MLTT.Spartan
 open import Notation.CanonicalMap
 open import Ordinals.Arithmetic fe
 open import Ordinals.Injectivity
+open import Ordinals.Notions
 open import Ordinals.ToppedType fe
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Ordinals.WellOrderArithmetic
 open import TypeTopology.SquashedSum fe
+open import UF.ClassicalLogic
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
 
 private
  fe₀ = fe 𝓤₀ 𝓤₀
@@ -83,6 +87,48 @@ Sum of an ordinal-indexed family of ordinals:
                   → ((x : ⟨ τ ⟩) → is-trichotomous [ υ x ])
                   → is-trichotomous [ ∑ τ υ ]
 ∑-is-trichotomous τ υ = sum.trichotomy-preservation _ _
+
+\end{code}
+
+Some restriction is needed to get extensionality of the lexicographic
+order on sums. Two such restrictions are trichotomy and having
+top. Without a restriction, the lexicographic order on the sum of an
+ordinal-indexed family of ordinals need not be extensional, and asking
+that it always be gives excluded middle, by Shulman's example in
+Ordinals.ShulmanTaboo.
+
+\begin{code}
+
+Extensionality-of-Ordinal-Indexed-Sums : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Extensionality-of-Ordinal-Indexed-Sums 𝓤 =
+   (τ : Ordinal 𝓤) (υ : ⟨ τ ⟩ → Ordinal 𝓤)
+ → is-extensional (sum.order
+                    (underlying-order τ)
+                    (λ {x} → underlying-order (υ x)))
+
+module _ (pe : propext 𝓤₀) where
+
+ open import Ordinals.OrdinalOfTruthValues fe 𝓤₀ pe
+ open import Ordinals.ShulmanTaboo fe pe
+
+ extensionality-of-ordinal-indexed-sums-gives-EM
+  : Extensionality-of-Ordinal-Indexed-Sums 𝓤₁ → EM 𝓤₀
+ extensionality-of-ordinal-indexed-sums-gives-EM h = shulmans-taboo e
+  where
+   υ : ⟨ Ωₒ ⟩ → Ordinal 𝓤₁
+   υ p = prop-ordinal (¬ (p ＝ ⊥)) (negations-are-props (fe 𝓤₁ 𝓤₀))
+
+   _⊏_ : X → X → 𝓤₁ ̇
+   _⊏_ = sum.order (underlying-order Ωₒ) (λ {p} → underlying-order (υ p))
+
+   lex-gives-≺ : (z w : X) → z ⊏ w → z ≺ w
+   lex-gives-≺ z w (inl l)       = l
+   lex-gives-≺ z w (inr (r , l)) = 𝟘-elim l
+
+   e : is-extensional _≺_
+   e x y f g = h Ωₒ υ x y
+                (λ z l → inl (f z (lex-gives-≺ z x l)))
+                (λ z l → inl (g z (lex-gives-≺ z y l)))
 
 \end{code}
 
