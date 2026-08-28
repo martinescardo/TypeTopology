@@ -66,20 +66,24 @@ open import Taboos.LPO
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
-open import TypeTopology.FailureOfTotalSeparatedness
+open import TypeTopology.FailureOfTotalSeparatedness fe₀
 open import TypeTopology.GenericConvergentSequenceCompactness fe₀
 open import TypeTopology.LimitPoints
 open import TypeTopology.MicroInfTychonoff fe
 open import TypeTopology.MicroTychonoff
 open import TypeTopology.SigmaDiscrete
+open import TypeTopology.SigmaTotallySeparated
+open import TypeTopology.TotallySeparated
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.PairFun
 open import UF.Retracts
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 import W.Properties
 open import W.Type
 
@@ -452,18 +456,18 @@ complement).
                       → x ≺⟨ Δ ν ⟩ y
 ι-is-order-reflecting ⌜𝟙⌝        = λ x y l → l
 ι-is-order-reflecting ⌜ω+𝟙⌝      = ι𝟙ᵒ-is-order-reflecting
-ι-is-order-reflecting (ν₀ ⌜+⌝ ν₁) =  pair-fun-is-order-reflecting
-                                      𝟚ᵒ
-                                      𝟚ᵒ
-                                      (cases (λ _ → Δ ν₀) (λ _ → Δ ν₁))
-                                      (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
-                                      id
-                                      (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
-                                      (λ x y l → l)
-                                      id-is-embedding
-                                      (dep-cases
-                                        (λ _ → ι-is-order-reflecting ν₀)
-                                        (λ _ → ι-is-order-reflecting ν₁))
+ι-is-order-reflecting (ν₀ ⌜+⌝ ν₁) = pair-fun-is-order-reflecting
+                                     𝟚ᵒ
+                                     𝟚ᵒ
+                                     (cases (λ _ → Δ ν₀) (λ _ → Δ ν₁))
+                                     (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
+                                     id
+                                     (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
+                                     (λ x y l → l)
+                                     id-is-embedding
+                                     (dep-cases
+                                       (λ _ → ι-is-order-reflecting ν₀)
+                                       (λ _ → ι-is-order-reflecting ν₁))
 ι-is-order-reflecting (ν₀ ⌜×⌝ ν₁) = pair-fun-is-order-reflecting
                                      (Δ ν₀)
                                      (Κ ν₀)
@@ -634,7 +638,7 @@ limit point holds.
 \begin{code}
 
 ℓ-limit⁺ : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point⁺ (ι ν x)
-ℓ-limit⁺ ⌜ω+𝟙⌝ (inr x) p i = ∞-is-a-limit-point⁺-of-ℕ∞ fe₀ i
+ℓ-limit⁺ ⌜ω+𝟙⌝ (inr x) p i = ∞-is-a-limit-point⁺-of-ℕ∞ i
 ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i
  = ℓ-limit⁺ ν₀ x₀ p
     (Σ-weakly-isolated-right
@@ -856,5 +860,137 @@ E-is-set = subtypes-of-sets-are-sets' e e-lc 𝕋-is-set
                                   (λ n → e-lc (φ (inr n)))
    where
     φ = forest-＝ Fin-is-set p
+
+\end{code}
+
+Added 28th August 2026.
+
+The compact ordinals Κ ν are not totally separated in general. This is
+in contrast with the compact interpretation of the Brouwer codes, given
+in Ordinals.BrouwerCodesDiscreteAndCompactInterpretations.
+
+The reason is that the constructor ⌜Σ⌝ takes a sum, indexed by the
+compact ordinal Κ ν, of a family extended along the dense embedding ι ν.
+For the code ⌜ω+𝟙⌝ the discrete ordinal Δ ⌜ω+𝟙⌝ is ℕ + 𝟙 and the
+embedding ι𝟙 sends the added point to ∞, so the extended family is
+unconstrained at ∞, and we can make it two-valued there. This
+reproduces the type ℕ∞₂ of TypeTopology.FailureOfTotalSeparatedness,
+whose total separatedness gives ¬¬ WLPO.
+
+Over the finite points of ω+1 we put the one-point ordinal, and over
+the added point we put the two-point one.
+
+\begin{code}
+
+private
+ A₂ : ⟨ Δ ⌜ω+𝟙⌝ ⟩ → E
+ A₂ (inl n) = ⌜𝟙⌝
+ A₂ (inr ⋆) = ⌜𝟙⌝ ⌜+⌝ ⌜𝟙⌝
+
+⌜ℕ∞₂⌝ : E
+⌜ℕ∞₂⌝ = ⌜Σ⌝ ⌜ω+𝟙⌝ A₂
+
+\end{code}
+
+By definition, the underlying type of Κ ⌜ℕ∞₂⌝ is the sum over ℕ∞ of the
+extension of the above family along ι𝟙.
+
+\begin{code}
+
+_ : ⟨ Κ ⌜ℕ∞₂⌝ ⟩ ＝ (Σ u ꞉ ℕ∞ , (Π (d , _) ꞉ fiber ι𝟙 u , ⟨ Κ (A₂ d) ⟩))
+_ = refl
+
+\end{code}
+
+This sum is the type ℕ∞₂, and so its total separatedness gives ¬¬ WLPO.
+
+\begin{code}
+
+Κ⌜ℕ∞₂⌝-totally-separated-gives-¬¬WLPO
+ : is-totally-separated ⟨ Κ ⌜ℕ∞₂⌝ ⟩ → ¬¬ WLPO
+Κ⌜ℕ∞₂⌝-totally-separated-gives-¬¬WLPO ts
+ = III
+ where
+  F : ⟨ Δ ⌜ω+𝟙⌝ ⟩ → 𝓤₀ ̇
+  F d = ⟨ Κ (A₂ d) ⟩
+
+\end{code}
+
+The two points over ∞ are those of the two-point ordinal, whose
+underlying type is a sum over the two-element type, so that we identify
+them with the booleans by cases.
+
+\begin{code}
+
+  I : F (inr ⋆) ≃ 𝟚
+  I = qinveq f (g , gf , fg)
+   where
+    f : F (inr ⋆) → 𝟚
+    f (inl ⋆ , ⋆) = ₀
+    f (inr ⋆ , ⋆) = ₁
+
+    g : 𝟚 → F (inr ⋆)
+    g ₀ = inl ⋆ , ⋆
+    g ₁ = inr ⋆ , ⋆
+
+    gf : g ∘ f ∼ id
+    gf (inl ⋆ , ⋆) = refl
+    gf (inr ⋆ , ⋆) = refl
+
+    fg : f ∘ g ∼ id
+    fg ₀ = refl
+    fg ₁ = refl
+
+\end{code}
+
+The fiber of ι𝟙 over a conatural number u splits into a finite part,
+over which the family is a singleton, and the part over ∞, which is
+where the two points live. So the fiber of the extension over u is the
+type of functions from u ＝ ∞ to the booleans.
+
+\begin{code}
+
+  II : (u : ℕ∞) → (Π (d , _) ꞉ fiber ι𝟙 u , F d) ≃ (u ＝ ∞ → 𝟚)
+  II u = (Π (d , _) ꞉ fiber ι𝟙 u , F d)             ≃⟨ II₀ ⟩
+         (Π d ꞉ ℕ + 𝟙 , (ι𝟙 d ＝ u → F d))          ≃⟨ II₁ ⟩
+         (Π n ꞉ ℕ , (ι𝟙 (inl n) ＝ u → F (inl n)))
+         × (𝟙 → ∞ ＝ u → F (inr ⋆))                 ≃⟨ II₂ ⟩
+         𝟙 × (∞ ＝ u → F (inr ⋆))                   ≃⟨ II₃ ⟩
+         𝟙 × (u ＝ ∞ → 𝟚)                           ≃⟨ II₄ ⟩
+         (u ＝ ∞ → 𝟚) ■
+   where
+    II₀ = curry-uncurry fe
+    II₁ = ≃-sym (Π×+ fe₀)
+    II₂ = ×-cong
+           (singleton-≃-𝟙
+            (Π-is-singleton fe₀
+              (λ n → Π-is-singleton fe₀ (λ _ → 𝟙-is-singleton))))
+           (≃-sym (𝟙→ fe₀))
+    II₃ = ×-cong {𝓤₀} {𝓤₀} {𝓤₀}
+           (≃-refl _)
+           (→cong fe₀ fe₀ ＝-flip I)
+    II₄ = 𝟙-lneutral
+
+  𝕖 : ⟨ Κ ⌜ℕ∞₂⌝ ⟩ ≃ ℕ∞₂
+  𝕖 = Σ-cong II
+
+  III : ¬¬ WLPO
+  III = ℕ∞₂-is-not-totally-separated-in-general
+         (subtype-is-totally-separated''
+           ⌜ 𝕖 ⌝⁻¹
+           ts
+           (equivs-are-lc ⌜ 𝕖 ⌝⁻¹ (⌜⌝⁻¹-is-equiv 𝕖)))
+
+\end{code}
+
+Hence the compact ordinals of the codes E are not totally separated in
+general.
+
+\begin{code}
+
+Κ-totally-separated-gives-¬¬WLPO
+ : ((ν : E) → is-totally-separated ⟨ Κ ν ⟩) → ¬¬ WLPO
+Κ-totally-separated-gives-¬¬WLPO ts
+ = Κ⌜ℕ∞₂⌝-totally-separated-gives-¬¬WLPO (ts ⌜ℕ∞₂⌝)
 
 \end{code}
