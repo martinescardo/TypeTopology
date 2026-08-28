@@ -8,9 +8,11 @@
 
     (i) Coquand, Hancock and Setzer (1997)
         http://www.cse.chalmers.se/~coquand/ordinal.pdf
+        https://web.archive.org/web/20251203190938/https://www.cse.chalmers.se/~coquand/ordinal.ps
 
     (ii) Hancock (Russell'08 Proof Theory meets Type Theory, Swansea)
          https://web.archive.org/web/20220723181746/http://www.cs.swan.ac.uk/~csetzer/russell08/slides/hancock.pdf
+
 
          See also his MGS'08 lecture notes
          https://www.cs.bham.ac.uk/~mhe/events/MGS08/notes/proofTheory.pdf
