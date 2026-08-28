@@ -327,6 +327,7 @@ Please add yourself the first time you contribute. Use your adopted name, and no
 * Fredrik Nordvall Forsberg
 * Ian Ray
 * Igor Arrieta (ii)
+* Ingo Blechschmidt
 * J. A. Carr
 * Jakub Opršal
 * Jon Sterling
