@@ -638,13 +638,13 @@ pair-seq-retract {𝓤} {X} = e
   open import Naturals.Binary
 
   a : retract (ℕ → X) of (𝔹 → X)
-  a = retract-covariance fe' (unary , binary , unary-binary)
+  a = retract-contravariance fe' (unary , binary , unary-binary)
 
   b : retract ((ℕ → X) × (ℕ → X)) of ((𝔹 → X) × (𝔹 → X))
   b = ×-retract a a
 
   c : retract (𝔹 → X) of (ℕ → X)
-  c = retract-covariance fe' (binary , unary , binary-unary)
+  c = retract-contravariance fe' (binary , unary , binary-unary)
 
   d : retract ((𝔹 → X) × (𝔹 → X)) of (𝔹 → X)
   d = (f , g , fg)

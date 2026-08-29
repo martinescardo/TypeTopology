@@ -240,7 +240,7 @@ discrete-power-of-disconnected-gives-compact-exponent : {X : 𝓤 ̇ } {Y : 𝓥
 discrete-power-of-disconnected-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d = γ
  where
   a : retract (X → 𝟚) of (X → Y)
-  a = retract-contravariance fe' ρ
+  a = retract-covariance fe' ρ
 
   b : is-discrete (X → 𝟚)
   b = retract-is-discrete a d
@@ -475,7 +475,7 @@ tscd₀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
       → is-Π-compact (X → Y)
       → is-discrete X
 tscd₀ {𝓤} {𝓥} {X} {Y} ts r c =
- tscd ts (retract-is-Π-compact (retract-contravariance fe' r) c)
+ tscd ts (retract-is-Π-compact (retract-covariance fe' r) c)
 
 open totally-separated-reflection fe pt
 
@@ -486,7 +486,7 @@ tscd₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
  where
   z : retract (X → 𝟚) of (X → Y)
-  z = retract-contravariance fe' r
+  z = retract-covariance fe' r
 
   a : (𝕋 X → 𝟚) ≃ (X → 𝟚)
   a = totally-separated-reflection'' 𝟚-is-totally-separated
