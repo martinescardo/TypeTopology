@@ -13,6 +13,7 @@ open import Notation.CanonicalMap
 open import Notation.Order
 open import Rationals.Order
 
+open import UF.Embeddings
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Powerset
@@ -214,5 +215,28 @@ Added by Martin Escardo 24th August 2023, adapted from Various.Dedekind.
  where
   c : ¬¬ (x ＝ y) → ¬ (x ♯ y)
   c = contrapositive (apartness-gives-inequality x y)
+
+\end{code}
+
+Added by Martin Escardo 31st August 2026.
+
+\begin{code}
+
+ℚ-to-ℝ-is-left-cancellable : left-cancellable (ι {{canonical-map-ℚ-to-ℝ}})
+ℚ-to-ℝ-is-left-cancellable {p} {q} e = γ (ℚ-trichotomous p q)
+ where
+  γ : (p < q) ∔ (p ＝ q) ∔ (q < p) → p ＝ q
+  γ (inl l)        = 𝟘-elim (<ℝ-irreflexive (ι q)
+                              (transport (_< ι q) e
+                                (embedding-preserves-order p q l)))
+  γ (inr (inl e')) = e'
+  γ (inr (inr l))  = 𝟘-elim (<ℝ-irreflexive (ι p)
+                              (transport (_< ι p) (e ⁻¹)
+                                (embedding-preserves-order q p l)))
+
+ℚ-to-ℝ-is-embedding : is-embedding (ι {{canonical-map-ℚ-to-ℝ}})
+ℚ-to-ℝ-is-embedding = lc-maps-into-sets-are-embeddings ι
+                       ℚ-to-ℝ-is-left-cancellable
+                       ℝ-is-set
 
 \end{code}
