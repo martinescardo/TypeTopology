@@ -21,9 +21,6 @@ module do use it.
 
 \begin{code}
 
-Type  = Set
-Type₁ = Set₁
-
 fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
 fiber f y = Σ x ꞉ domain f , f x ＝ y
 

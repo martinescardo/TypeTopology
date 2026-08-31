@@ -36,7 +36,7 @@ module J-definitions {R : 𝓦₀ ̇ } where
                         (ε : J X)
                         (δ : (x : X) → J (Y x))
                       → ε ⊗ᴶ δ ∼ (λ q → let
-                                         ν  = λ x → δ x (curry q x)
+                                         ν  = λ (x : X) → δ x (curry q x)
                                          x₀ = ε (λ x → curry q x (ν x))
                                         in (x₀ , ν x₀))
  ⊗ᴶ-direct-definition ε δ q = refl

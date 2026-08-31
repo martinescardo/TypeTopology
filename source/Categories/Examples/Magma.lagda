@@ -7,7 +7,7 @@ The Category of Magmas
 {-# OPTIONS --safe --without-K  #-}
 
 open import Categories.Wild
-open import Categories.Pre 
+open import Categories.Pre
 open import Categories.Univalent
 open import Categories.Notation.Pre renaming (⌜_⌝ to ⌜_⌝')
 open import MLTT.Spartan
@@ -137,15 +137,15 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) where
       where
        i   = ap (λ - → g (- * y)) (gp x)⁻¹
        ii  = ap (λ - → g (f (g x) * -)) (gp y)⁻¹
-       iii = ap g ((λ x y → ap (λ - → - x y) fp) (g x) (g y))⁻¹
+       iii = ap g ((λ (x y : a) → ap (λ - → - x y) fp) (g x) (g y))⁻¹
        iv  = inverses-are-retractions f e (g x · g y)
 
      left-is-prop = (λ _ → Π₂-is-prop fe (λ _ _ → sA))
      right-is-prop = (λ _ → Π₂-is-prop fe (λ _ _ → sB))
-     
+
      left-inv : (λ x → g (f x)) ∼ (λ x → x)
      left-inv = inverses-are-retractions f e
-     
+
    fromiso : A ≅ B → A M≅ B
    fromiso ((f , fp) , (g , gp) , lg , rg)
     = f
@@ -160,7 +160,7 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) where
    is-section e@((f , fp) , (g , gp) , lg , rg)
     = to-≅-＝ {_} {_} {_} {A} {B}
               (to-subtype-＝ (λ _ → Π₂-is-prop fe (λ x y → sB)) refl)
-   
+
    has-section : fromiso ∘ toiso ∼ id
    has-section (f , e@((g , gp) , (g' , gp')) , fp)
     = to-Σ-＝ (refl
@@ -202,12 +202,12 @@ And finally show that this is a category.
 
      left-inv = hom-is-set (MagmaPrecategory fe) {A} {A} _ _
      right-inv = hom-is-set (MagmaPrecategory fe) {A} {A} _ _
-    
+
      underlying-is-iso = underlying-morphism-is-isomorphism {_} {_} {_} {A} {B}
 
      underlying-equality : underlying-is-iso ((id-to-iso A B) refl)
-                         ＝ underlying-is-iso 
-                            (⌜ characterization-of-magma-＝ ua A B ⌝ refl) 
+                         ＝ underlying-is-iso
+                            (⌜ characterization-of-magma-＝ ua A B ⌝ refl)
      underlying-equality = to-Σ-＝ (inv-eq' , to-×-＝ left-inv right-inv)
 
    is-cat : is-category (MagmaPrecategory fe)

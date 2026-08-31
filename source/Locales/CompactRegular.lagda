@@ -229,7 +229,7 @@ well-inside-implies-below : (F : Frame 𝓤 𝓥 𝓦)
                           → (U ⋜[ F ] V ⇒ (U ≤[ poset-of F ] V)) holds
 well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ] V)) γ
  where
-  _⊓_ = λ U V → U ∧[ F ] V
+  _⊓_ = λ (U V : ⟨ F ⟩) → U ∧[ F ] V
 
   γ : U ⋜₀[ F ] V → (U ≤[ poset-of F ] V) holds
   γ (W , c₁ , c₂) = connecting-lemma₂ F δ
@@ -317,7 +317,7 @@ complementation-is-symmetric F x y (φ , ψ) = † , ‡
  where
   open PosetReasoning (poset-of F)
 
-  _⊓_ = λ x y → x ∧[ F ] y
+  _⊓_ = λ (x y : ⟨ F ⟩) → x ∧[ F ] y
 
   φ₀ : x ⊓ x′ ＝ 𝟎[ F ]
   φ₀ = x ⊓ x′ ＝⟨ ∧[ F ]-is-commutative x x′ ⟩ x′ ⊓ x ＝⟨ pr₁ φ ⟩  𝟎[ F ] ∎

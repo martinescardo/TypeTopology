@@ -371,7 +371,7 @@ is-generated-by {𝓦 = 𝓦} L B η =
    σ : is-set ⟨ L ⟩
    σ = carrier-of-[ poset-of L ]-is-set
 
-   _≤_ = λ x y → (x ≤[ poset-of L ] y) holds
+   _≤_ = λ (x y : ∣ poset-of L ∣ₚ) → (x ≤[ poset-of L ] y) holds
 
 contains-compact-opens : (L : Frame 𝓤 𝓦 𝓦) (B : BooleanAlgebra 𝓦 𝓥)
                        → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓦 ⁺)
@@ -750,7 +750,7 @@ The map `h⁻` is the _unique_ map making the diagram commute.
        (h⁻ , (φ , ψ))
   ϑ (h⁻₀ , φ′@(φ′₁ , φ′₂ , φ′₃) , ψ′) = to-subtype-＝ † (dfunext fe ϑ₁)
    where
-    _≤L_ = λ x y → (x ≤[ poset-of L ] y) holds
+    _≤L_ = λ (x y : ⟨ L ⟩) → (x ≤[ poset-of L ] y) holds
 
     † : (h′ : ⟨ L ⟩ → ⟨ L′ ⟩)
       → is-prop (is-a-frame-homomorphism L L′ h′ holds × (h ＝ h′ ∘ η))
@@ -948,7 +948,7 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
    f (g (y₁ ⋏ᵢ y₂) ⋎[ B₁ ] g (y₁ ⋏ᵢ y₃))                   ＝⟨refl⟩
    (y₁ ⋏ᵢ y₂) ⋎ᵢ (y₁ ⋏ᵢ y₃)                                ∎
     where
-     ※ = λ x y → g-preserves-meets {x} {y} ⁻¹
+     ※ = λ (x y : Y) → g-preserves-meets {x} {y} ⁻¹
      Ⅰ = ap (λ - → f (g y₁ ⋏[ B₁ ] -)) g-preserves-joins
      Ⅱ = ap f (⋏-distributes-over-⋎ B₁ (g y₁) (g y₂) (g y₃))
      Ⅲ = ap₂ (λ a b → f (a ⋎[ B₁ ] b)) (※ y₁ y₂) (※ y₁ y₃)

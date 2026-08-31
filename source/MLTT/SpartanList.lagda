@@ -43,11 +43,11 @@ List-induction : {X : 𝓤 ̇ } (P : List X → 𝓥 ̇ )
                → P []
                → ((x : X) (xs : List X) → P xs → P (x ∷ xs))
                → (xs : List X) → P xs
-List-induction {𝓤} {𝓥} {X} P p f = h
+List-induction {𝓤} {𝓥} {X} P p f xs = h (length xs) (pr₂ xs)
  where
-  h : (xs : List X) → P xs
-  h []               = p
-  h (succ n , x , s) = f x (n , s) (h (n , s))
+  h : (n : ℕ) → (v : Vec X n) → P (n , v)
+  h 0 _              = p
+  h (succ n) (x , s) = f x (n , s) (h n s)
 
 \end{code}
 

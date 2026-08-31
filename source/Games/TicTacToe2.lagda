@@ -13,7 +13,7 @@ module Games.TicTacToe2 where
 open import MLTT.Spartan hiding (J)
 open import MLTT.Fin
 
-data 𝟛 : Type where
+data 𝟛 : 𝓤₀ ̇  where
  O-wins draw X-wins : 𝟛
 
 open import Games.Constructor {𝓤₀} {𝓤₀} 𝟛

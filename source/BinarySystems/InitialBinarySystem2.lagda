@@ -860,10 +860,12 @@ module _ (fe  : Fun-Ext) where
                × (l x ⊕ r y ＝ m (x ⊕ y))
  mid-is-hom-l' x y = u , v , w , t
   where
-   α = λ y → l x ⊕ y             ＝⟨refl⟩
-             pr₁ (mid (l x)) y   ＝⟨ happly (ap pr₁ (mid-is-hom-l x)) y ⟩
-             pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y  ＝⟨refl⟩
-             𝕄-cases (l ∘ (x ⊕_)) (m ∘ (x ⊕_)) (pr₁ (⊕-property x)) y ∎
+   α : (y : 𝕄)
+     → l x ⊕ y ＝ 𝕄-cases (l ∘ (x ⊕_)) (m ∘ (x ⊕_)) (pr₁ (⊕-property x)) y
+   α y = l x ⊕ y             ＝⟨refl⟩
+         pr₁ (mid (l x)) y   ＝⟨ happly (ap pr₁ (mid-is-hom-l x)) y ⟩
+         pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y  ＝⟨refl⟩
+         𝕄-cases (l ∘ (x ⊕_)) (m ∘ (x ⊕_)) (pr₁ (⊕-property x)) y ∎
 
    u = α L
    v = α R
@@ -888,10 +890,12 @@ module _ (fe  : Fun-Ext) where
                × (r x ⊕ r y ＝ r (x ⊕ y))
  mid-is-hom-r' x y = u , v , w , t
   where
-   α = λ y → r x ⊕ y              ＝⟨refl⟩
-             pr₁ (mid (r x)) y    ＝⟨ happly (ap pr₁ (mid-is-hom-r x)) y ⟩
-             pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y ＝⟨refl⟩
-             𝕄-cases (m ∘ (x ⊕_)) (r ∘ (x ⊕_)) (pr₂ (⊕-property x)) y ∎
+   α : (y : 𝕄)
+     → r x ⊕ y ＝ 𝕄-cases (m ∘ (x ⊕_)) (r ∘ (x ⊕_)) (pr₂ (⊕-property x)) y
+   α y = r x ⊕ y              ＝⟨refl⟩
+         pr₁ (mid (r x)) y    ＝⟨ happly (ap pr₁ (mid-is-hom-r x)) y ⟩
+         pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y ＝⟨refl⟩
+         𝕄-cases (m ∘ (x ⊕_)) (r ∘ (x ⊕_)) (pr₂ (⊕-property x)) y ∎
 
    u = α L
    v = α R

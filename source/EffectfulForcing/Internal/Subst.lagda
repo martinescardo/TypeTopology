@@ -46,7 +46,7 @@ church-encode-respects-≡ {A} (β ϕ n) = β⋆≡β⋆ ϕ₀≡ϕ₀ refl
   ϕ₀≡ϕ₀ {i} refl = church-encode-respects-≡ (ϕ i)
 
 
-_【≡】_ : {Γ : Cxt} (a b : 【 Γ 】) → Type
+_【≡】_ : {Γ : Cxt} (a b : 【 Γ 】) → 𝓤₀ ̇
 _【≡】_ {Γ} a b = {σ : type} (i : ∈Cxt σ Γ) → a i ≡ b i
 
 ≡-refl : {Γ : Cxt} {σ : type} (t : T Γ σ) {γ₁ γ₂ : 【 Γ 】}
@@ -99,7 +99,7 @@ infixr 0 _≡＝⟨_⟩_
 -- Machinery for substitutions
 
 -- Γ₁ ⊆ Γ₂ states that Γ₁ is a sub context of Γ₂
-_⊆_ : (Γ₁ Γ₂ : Cxt) → Type
+_⊆_ : (Γ₁ Γ₂ : Cxt) → 𝓤₀ ̇
 Γ₁ ⊆ Γ₂ = {σ : type} → ∈Cxt σ Γ₁ → ∈Cxt σ Γ₂
 
 -- ⊆ is reflexive
@@ -111,7 +111,7 @@ _⊆_ : (Γ₁ Γ₂ : Cxt) → Type
          → Γ₁ ⊆ Γ₂ → Γ₂ ⊆ Γ₃ → Γ₁ ⊆ Γ₃
 ⊆-trans {Γ₁} {Γ₂} {Γ₃} p q {σ} i = q (p i)
 
-＝⊆ : {Γ₁ Γ₂ : Cxt} (s1 s2 : Γ₁ ⊆ Γ₂) → Type
+＝⊆ : {Γ₁ Γ₂ : Cxt} (s1 s2 : Γ₁ ⊆ Γ₂) → 𝓤₀ ̇
 ＝⊆ {Γ₁} {Γ₂} s1 s2 = {σ : type} (i : ∈Cxt σ Γ₁) → s1 i ＝ s2 i
 
 ⊆, : (Γ : Cxt) (τ : type) → Γ ⊆ (Γ ,, τ)
@@ -188,13 +188,13 @@ dec-Cxt (Γ ,, σ) (Δ ,, τ) with dec-Cxt Γ Δ | dec-type σ τ
 ＝Cxt-refl : {Γ : Cxt} (e : Γ ＝ Γ) → e ＝ refl
 ＝Cxt-refl {Γ} e = hedberg dec-Cxt Γ Γ e refl
 
-Sub : (Γ₁ Γ₂ : Cxt) → Type
+Sub : (Γ₁ Γ₂ : Cxt) → 𝓤₀ ̇
 Sub Γ₁ Γ₂ = {σ : type} (i : ∈Cxt σ Γ₁) → T Γ₂ σ
 
-Sub₀ : (Γ : Cxt) → Type
+Sub₀ : (Γ : Cxt) → 𝓤₀ ̇
 Sub₀ Γ = Sub Γ 〈〉
 
-＝Sub : {Γ₁ Γ₂ : Cxt} (s1 s2 : Sub Γ₁ Γ₂) → Type
+＝Sub : {Γ₁ Γ₂ : Cxt} (s1 s2 : Sub Γ₁ Γ₂) → 𝓤₀ ̇
 ＝Sub {Γ₁} {Γ₂} s1 s2 = {σ : type} (i : ∈Cxt σ Γ₁) → s1 i ＝ s2 i
 
 Subƛ : {Γ₁ Γ₂ : Cxt} {σ : type}
@@ -524,7 +524,7 @@ close-eta {Γ₁} {Γ₂} {σ}     s1 s2 (t · t₁)      e =
           → ⟦ weaken₀ t ⟧ s ≡ ⟦ t ⟧₀
 ⟦weaken₀⟧ {Γ} {σ} t s = ⟦weaken⟧ t (⊆〈〉 Γ) s ⟨⟩ (λ ())
 
-【≡】-is-refl : {Γ : Cxt} (s : 【 Γ 】) → Type
+【≡】-is-refl : {Γ : Cxt} (s : 【 Γ 】) → 𝓤₀ ̇
 【≡】-is-refl {Γ} s = s 【≡】 s
 
 【≡】-is-refl‚ : {Γ : Cxt} (s : 【 Γ 】) {σ : type} (a : 〖 σ 〗)
