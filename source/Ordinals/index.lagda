@@ -35,6 +35,7 @@ import Ordinals.Injectivity
 import Ordinals.LexicographicCompactness
 import Ordinals.LexicographicOrder
 import Ordinals.Limit
+import Ordinals.LimitPoints
 import Ordinals.Maps
 import Ordinals.MultiplicationProperties      -- by [2]
 import Ordinals.NotationInterpretation

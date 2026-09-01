@@ -798,9 +798,6 @@ Ordinals.OrdinalOfOrdinalsSuprema.
 
 TODO. Are the ordinals in the image of K totally separated?
 
-TODO. The map ℓ should also be the characteristic function of
-ordinal-limit points.
-
 Added August 2026. The universe E is a set. We prove this by
 encoding it into a W-type, which is possible because the branching type
 ⟨ Δ ν ⟩ of the constructor ⌜Σ⌝ is a retract of ℕ, so that a family
