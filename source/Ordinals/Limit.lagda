@@ -292,3 +292,18 @@ ordinal is either a successor or a limit.
 TODO (1st June 2023). A classically equivalently definition of limit
 ordinal α is that there is some β < α, and for every β < α there is γ
 with β < γ < α. We have that ℕ∞ is a limit ordinal in this sense.
+
+Added 1st September 2026.
+
+\begin{code}
+
+is-successor-of : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
+is-successor-of α x y = (y ≺⟨ α ⟩ x)
+                      × ((z : ⟨ α ⟩) → z ≺⟨ α ⟩ x → z ≼⟨ α ⟩ y)
+
+is-order-theoretic-limit-point : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
+is-order-theoretic-limit-point α x =
+   ¬ is-least α x
+ × ¬ (Σ y ꞉ ⟨ α ⟩ , is-successor-of α x y)
+
+\end{code}
