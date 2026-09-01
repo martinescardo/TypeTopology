@@ -63,8 +63,8 @@
      control safety and, to the extent this is currently possible, to
      control which type theory is used.
 
-   * In our last count, on 2026-09-01, this development has 992 Agda
-     files with 289K lines of code, including comments and blank
+   * In our last count, on 2026-09-01, this development has 993 Agda
+     files with 290K lines of code, including comments and blank
      lines.
 
 Philosophy of the repository
