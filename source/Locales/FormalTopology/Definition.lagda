@@ -52,7 +52,7 @@ The rule that Negri calls _transitivity_:
 
 satisfies-cover-transitivity : {A : 𝓤 ̇ } → (A → 𝓟 A → Ω 𝓤) → Ω (𝓤 ⁺)
 satisfies-cover-transitivity {_} {A} _◁_ =
- Ɐ a ꞉ A , Ɐ U ꞉ 𝓟 A , Ɐ V ꞉ 𝓟 A , a ◁ U ⇒ U ⊆ₚ (_◁ V) ⇒ a ◁ V
+ Ɐ a ꞉ A , Ɐ U V ꞉ 𝓟 A , a ◁ U ⇒ U ⊆ₚ (_◁ V) ⇒ a ◁ V
 
 \end{code}
 
@@ -91,7 +91,7 @@ instance
 carrier-of-quasi-formal-topology-is-set
  : (𝒜 : Quasi-Formal-Topology 𝓤)
  → is-set ⟨ 𝒜 ⟩
-carrier-of-quasi-formal-topology-is-set {𝓤} (A , _ , σ , _) = σ
+carrier-of-quasi-formal-topology-is-set {𝓤} (_ , _ , σ , _) = σ
 
 cover-of-quasi-formal-topology
  : (𝒜 : Quasi-Formal-Topology 𝓤)
@@ -118,7 +118,7 @@ transitivity-of-quasi-cover (_ , _ , _ , _ , γ) = γ
 \subsection{Basic properties of quasi formal topologies}
 
 We previously used the relation `U ⊆ (_◁ V)`. We now define the syntax
-as an abbreviation for this `U ◁Q⁺[ 𝒜 ] V`.
+`U ◁Q⁺[ 𝒜 ] V` as an abbreviation for this.
 
 \begin{code}
 
@@ -174,8 +174,8 @@ syntax cover-equivalence-of-quasi-formal-topology 𝒜 U V = U =[ 𝒜 ]= V
 
 \subsection{Cover reasoning}
 
-We define the `Quasi-Cover-Reasoning` module for writing chains of cover
-transitivity in a pretty way.
+The `Quasi-Cover-Reasoning` module defines constructs for writing chains of
+cover transitivity in a pretty way.
 
 \begin{code}
 
