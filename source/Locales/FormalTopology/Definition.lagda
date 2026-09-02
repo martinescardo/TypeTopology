@@ -203,6 +203,7 @@ module Quasi-Cover-Reasoning (𝒜 : Quasi-Formal-Topology 𝓤) where
  infixr 0 _◁⟨_⟩_
  infixr 0 _◁⁺⟨_⟩_
  infixr 0 _＝⟨_⟩c_
+ infix  1 _■
 
 \end{code}
 
@@ -236,6 +237,7 @@ module Downward-Closure-Intersection-Syntax {A : 𝓤 ̇} (_⊑_ : A → A → �
  U ⊓ V = (↓ U) ∩ (↓ V)
 
  infix 6 _⊓_
+ infix 7 ↓_
 
 \end{code}
 
