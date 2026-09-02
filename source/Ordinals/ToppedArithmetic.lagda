@@ -90,6 +90,31 @@ Sum of an ordinal-indexed family of ordinals:
 
 \end{code}
 
+Added by Martin Escardo 2nd September 2026.
+
+The top of the index is needed only for the sum to have a top, and the
+sum over an index without one is still an ordinal.
+
+\begin{code}
+
+∑ₒ : (α : Ordinal 𝓤) → (⟨ α ⟩ → Ordinalᵀ 𝓤) → Ordinal 𝓤
+∑ₒ {𝓤} (X , _<_ , o) υ = (Σ x ꞉ X , ⟨ υ x ⟩) ,
+                         Sum.order ,
+                         Sum.well-order o (λ x → tis-well-ordered (υ x))
+ where
+  _≺_ : {x : X} → ⟨ υ x ⟩ → ⟨ υ x ⟩ → 𝓤 ̇
+  y ≺ z = y ≺⟨ υ _ ⟩ z
+
+  module Sum = sum-top fe _<_ _≺_ (λ x → top (υ x)) (λ x → top-is-top (υ x))
+
+∑-is-∑ₒ : (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
+        → [ ∑ τ υ ] ＝ ∑ₒ [ τ ] υ
+∑-is-∑ₒ τ υ = refl
+
+\end{code}
+
+End of addition.
+
 Some restriction is needed to get extensionality of the lexicographic
 order on sums. Two such restrictions are trichotomy and having
 top. Without a restriction, the lexicographic order on the sum of an
