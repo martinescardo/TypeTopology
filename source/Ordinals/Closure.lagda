@@ -831,10 +831,7 @@ identify the two extended sums of the constant family at 𝟙ᵒ.
 Added 2nd September 2026.
 
 The least element property for complemented subsets is invariant under
-order isomorphism, and for the ordinal ω + 1 it amounts to LPO,
-because the subset consisting of the top together with the roots of a
-given sequence is non-empty outright, and its least element decides
-whether the sequence has a root below the top.
+order isomorphism, and for the ordinal ω + 1 it amounts to LPO.
 
 \begin{code}
 
