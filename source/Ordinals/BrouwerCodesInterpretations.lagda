@@ -46,8 +46,10 @@ open import Notation.CanonicalMap
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.BrouwerCodes
+open import Ordinals.Fin
 open import Ordinals.Injectivity
 open import Ordinals.Maps
+open import Ordinals.Omega ua pt sr
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.ToppedAdditionProperties ua
@@ -78,10 +80,6 @@ The first interpretation is the intended one, and we call it the
 standard interpretation. It gives ordinals that are not trichotomous
 in general, as shown in the module Ordinals.FailureOfTrichotomy.
 
-TODO. They are not compact in general, as e.g. the ordinal ω is in the
-range of the standard interpretation, and the compactness of ω amounts
-to LPO.
-
 \begin{code}
 
 ⟦_⟧₀ : B → Ordinal 𝓤₀
@@ -90,6 +88,42 @@ to LPO.
 ⟦ L b ⟧₀ = sup (λ i → ⟦ b i ⟧₀)
 
 \end{code}
+
+Added by Martin Escardo 2nd September 2026.
+
+They are not compact in general either, as the ordinal ω is in the
+range of the standard interpretation, and the compactness of ω amounts
+to LPO.
+
+\begin{code}
+
+finite-code : ℕ → B
+finite-code 0        = Z
+finite-code (succ n) = S (finite-code n)
+
+⟦finite-code⟧₀ : (n : ℕ) → ⟦ finite-code n ⟧₀ ＝ Fin-ordinal n
+⟦finite-code⟧₀ 0        = (Fin-ordinal-zero ua)⁻¹
+⟦finite-code⟧₀ (succ n) =
+ ⟦ finite-code n ⟧₀ +ₒ 𝟙ₒ ＝⟨ ap (_+ₒ 𝟙ₒ) (⟦finite-code⟧₀ n) ⟩
+ Fin-ordinal n +ₒ 𝟙ₒ      ＝⟨ (Fin-ordinal-succ' ua n)⁻¹ ⟩
+ Fin-ordinal (succ n)     ∎
+
+ω-is-a-standard-interpretation : ⟦ L finite-code ⟧₀ ＝ ω
+ω-is-a-standard-interpretation =
+ sup (λ n → ⟦ finite-code n ⟧₀) ＝⟨ ap sup (dfunext fe' ⟦finite-code⟧₀) ⟩
+ sup (λ n → Fin-ordinal n)      ＝⟨ ω-is-sup-of-Fin ⁻¹ ⟩
+ ω                              ∎
+
+⟦_⟧₀-compact-gives-LPO : ((b : B) → is-compact ⟨ ⟦ b ⟧₀ ⟩) → LPO
+⟦_⟧₀-compact-gives-LPO κ = compact-ℕ-gives-LPO fe'
+                            (transport
+                              (λ - → is-compact ⟨ - ⟩)
+                              ω-is-a-standard-interpretation
+                              (κ (L finite-code)))
+
+\end{code}
+
+End of addition.
 
 The second interpretation is into topped ordinals. It enlarges, in
 some sense, the first interpretation, so that we get bigger, and,
