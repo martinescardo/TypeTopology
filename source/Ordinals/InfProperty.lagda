@@ -74,3 +74,18 @@ has-inf-gives-least-root h p ν = f (h p)
     γ (inr u) = 𝟘-elim (ν (λ (x , e) → zero-is-not-one (e ⁻¹ ∙ u x)))
 
 \end{code}
+
+Added 2nd September 2026. The least element property for complemented
+subsets.
+
+\begin{code}
+
+has-least-roots : 𝓤 ⊔ 𝓥 ̇
+has-least-roots = (p : X → 𝟚)
+                → ¬¬ (Σ x ꞉ X , p x ＝ ₀)
+                → Σ x₀ ꞉ X , is-least-root p x₀
+
+has-inf-gives-least-roots : has-inf → has-least-roots
+has-inf-gives-least-roots = has-inf-gives-least-root
+
+\end{code}

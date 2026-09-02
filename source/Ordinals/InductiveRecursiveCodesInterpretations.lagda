@@ -57,6 +57,7 @@ open import Notation.CanonicalMap hiding (ι)
 open import Ordinals.Arithmetic fe
 open import Ordinals.Closure fe
 open import Ordinals.Equivalence
+open import Ordinals.InfProperty
 open import Ordinals.Injectivity
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
@@ -1012,5 +1013,54 @@ general.
  : ((ν : E) → is-totally-separated ⟨ Κ ν ⟩) → ¬¬ WLPO
 Κ-totally-separated-gives-¬¬WLPO ts
  = Κ⌜ℕ∞₂⌝-totally-separated-gives-¬¬WLPO (ts ⌜ℕ∞₂⌝)
+
+\end{code}
+
+Added 2nd September 2026.
+
+Every non-empty complemented subset of the compact interpretation has
+a least element. For the discrete interpretation this exactly LPO, and
+the code ⌜ω+𝟙⌝ alone witnesses one direction, its discrete
+interpretation being ω + 1 by definition.
+
+\begin{code}
+
+K-has-least-roots-of-complemented-subsets
+ : propext 𝓤₀
+ → (ν : E) → has-least-roots-of-complemented-subsets (Κ ν)
+K-has-least-roots-of-complemented-subsets pe ν =
+ has-inf-gives-least-roots
+  (underlying-weak-order (Κ ν))
+  (K-has-infs-of-complemented-subsets pe ν)
+
+Δ-least-roots-gives-LPO
+ : ((ν : E) → has-least-roots-of-complemented-subsets (Δ ν))
+ → LPO
+Δ-least-roots-gives-LPO h = succₒ-ω-least-roots-gives-LPO (h ⌜ω+𝟙⌝)
+
+LPO-gives-Δ-least-roots
+ : propext 𝓤₀
+ → LPO
+ → (ν : E) → has-least-roots-of-complemented-subsets (Δ ν)
+LPO-gives-Δ-least-roots pe lpo ν = ≃ₒ-gives-has-least-roots
+                                    [ Κ ν ]
+                                    [ Δ ν ]
+                                    (≃ₒ-sym [ Δ ν ] [ Κ ν ] e)
+                                    (K-has-least-roots-of-complemented-subsets
+                                      pe ν)
+ where
+  e : [ Δ ν ] ≃ₒ [ Κ ν ]
+  e = ι ν ,
+      order-preserving-reflecting-equivs-are-order-equivs
+       [ Δ ν ] [ Κ ν ] (ι ν)
+       (LPO-gives-ι-is-equiv lpo ν)
+       (ι-is-order-preserving ν)
+       (ι-is-order-reflecting ν)
+
+Δ-least-roots-iff-LPO
+ : propext 𝓤₀
+ → ((ν : E) → has-least-roots-of-complemented-subsets (Δ ν)) ↔ LPO
+Δ-least-roots-iff-LPO pe = Δ-least-roots-gives-LPO ,
+                           LPO-gives-Δ-least-roots pe
 
 \end{code}

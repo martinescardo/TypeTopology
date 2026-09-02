@@ -28,7 +28,9 @@ open import Ordinals.LexicographicCompactness
 open import Ordinals.LexicographicOrder
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
+open import Ordinals.Type
 open import Ordinals.Underlying
+open import Taboos.LPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
 open import TypeTopology.LimitPoints
@@ -823,5 +825,81 @@ identify the two extended sums of the constant family at 𝟙ᵒ.
             (succₒ ω)
             ((λ _ → 𝟙ᵒ) ↗ (over , over-embedding))
             (↗-of-𝟙ᵒ (over , over-embedding))
+
+\end{code}
+
+Added 2nd September 2026.
+
+The least element property for complemented subsets is invariant under
+order isomorphism, and for the ordinal ω + 1 it amounts to LPO,
+because the subset consisting of the top together with the roots of a
+given sequence is non-empty outright, and its least element decides
+whether the sequence has a root below the top.
+
+\begin{code}
+
+≃ₒ-gives-has-least-roots : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                         → α ≃ₒ β
+                         → has-least-roots (underlying-weak-order α)
+                         → has-least-roots (underlying-weak-order β)
+≃ₒ-gives-has-least-roots α β (f , _ , e , iop) h q ν = γ
+ where
+  g : ⟨ β ⟩ → ⟨ α ⟩
+  g = inverse f e
+
+  p : ⟨ α ⟩ → 𝟚
+  p = q ∘ f
+
+  p-root : (y : ⟨ β ⟩) → q y ＝ ₀ → p (g y) ＝ ₀
+  p-root y d = ap q (inverses-are-sections f e y) ∙ d
+
+  ν' : ¬¬ (Σ x ꞉ ⟨ α ⟩ , p x ＝ ₀)
+  ν' u = ν (λ (y , d) → u (g y , p-root y d))
+
+  σ : Σ x₀ ꞉ ⟨ α ⟩ , is-least-root (underlying-weak-order α) p x₀
+  σ = h p ν'
+
+  x₀ : ⟨ α ⟩
+  x₀ = pr₁ σ
+
+  y₀-is-root : q (f x₀) ＝ ₀
+  y₀-is-root = pr₁ (pr₂ σ)
+
+  y₀-is-roots-lower-bound : (y : ⟨ β ⟩) → q y ＝ ₀ → f x₀ ≾⟨ β ⟩ y
+  y₀-is-roots-lower-bound y d l = pr₂ (pr₂ σ) (g y) (p-root y d) I
+   where
+    I : g y ≺⟨ α ⟩ x₀
+    I = transport
+         (λ - → g y ≺⟨ α ⟩ -)
+         (inverses-are-retractions f e x₀)
+         (iop y (f x₀) l)
+
+  γ : Σ y₀ ꞉ ⟨ β ⟩ , is-least-root (underlying-weak-order β) q y₀
+  γ = f x₀ , y₀-is-root , y₀-is-roots-lower-bound
+
+succₒ-ω-least-roots-gives-LPO
+ : has-least-roots-of-complemented-subsets (succₒ ω) → LPO
+succₒ-ω-least-roots-gives-LPO h = compact-ℕ-gives-LPO fe₀ c
+ where
+  c : is-compact ℕ
+  c α = γ (h p ν)
+   where
+    p : ⟨ succₒ ω ⟩ → 𝟚
+    p (inl n) = α n
+    p (inr ⋆) = ₀
+
+    ν : ¬¬ (Σ x ꞉ ⟨ succₒ ω ⟩ , p x ＝ ₀)
+    ν u = u (inr ⋆ , refl)
+
+    γ : (Σ x₀ ꞉ ⟨ succₒ ω ⟩ , is-least-root
+                               (underlying-weak-order (succₒ ω))
+                               p
+                               x₀)
+      → (Σ n ꞉ ℕ , α n ＝ ₀) + (Π n ꞉ ℕ , α n ＝ ₁)
+    γ (inl n , e , _)  = inl (n , e)
+    γ (inr ⋆ , _ , lb) = inr (λ n → different-from-₀-equal-₁ (δ n))
+     where
+      δ : (n : ℕ) → α n ≠ ₀
+      δ n e = lb (inl n) e ⋆
 
 \end{code}

@@ -39,6 +39,8 @@ open import Ordinals.Arithmetic fe
 open import Ordinals.BrouwerCodes
 open import Ordinals.ChurchEncoding using (B-ε₀)
 open import Ordinals.Closure fe
+open import Ordinals.Equivalence
+open import Ordinals.InfProperty
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
 open import Ordinals.Type
@@ -99,6 +101,11 @@ Ordinals.BrouwerCodesVariationInterpretations.
                              : propext 𝓤₀
                              → (b : B) → has-infs-of-complemented-subsets (Κ b)
 
+Κ-has-least-roots-of-complemented-subsets
+                             : propext 𝓤₀
+                             → (b : B)
+                             → has-least-roots-of-complemented-subsets (Κ b)
+
 ℓ                            : (b : B) → ⟨ Δ b ⟩ → 𝟚
 ℓ-isolated                   : (b : B) (x : ⟨ Δ b ⟩)
                              → ℓ b x ＝ ₀ → is-isolated (ι {b} x)
@@ -133,6 +140,20 @@ LPO-gives-Κ-discrete         : LPO → (b : B) → is-discrete ⟨ Κ b ⟩
 Δ-compact-gives-LPO          : ((b : B) → is-compact ⟨ Δ b ⟩) → LPO
 LPO-gives-Δ-compact          : LPO → (b : B) → is-compact ⟨ Δ b ⟩
 Δ-compact-iff-LPO            : ((b : B) → is-compact ⟨ Δ b ⟩) ↔ LPO
+
+Δ-least-roots-gives-LPO      : ((b : B)
+                              → has-least-roots-of-complemented-subsets (Δ b))
+                             → LPO
+
+LPO-gives-Δ-least-roots      : propext 𝓤₀
+                             → LPO
+                             → (b : B)
+                             → has-least-roots-of-complemented-subsets (Δ b)
+
+Δ-least-roots-iff-LPO        : propext 𝓤₀
+                             → ((b : B)
+                              → has-least-roots-of-complemented-subsets (Δ b))
+                             ↔ LPO
 
 Κ-of-ε₀-code                 : Ordᵀ
 Κ-of-ε₀-code-is-compact∙     : is-compact∙ ⟨ Κ-of-ε₀-code ⟩
@@ -458,6 +479,49 @@ but makes our life much easier.
   (λ i → Κ-has-infs-of-complemented-subsets pe (b i))
 
 \end{code}
+
+Added 2nd September 2026.
+
+Hence every non-empty complemented subset of the compact
+interpretation has a least element. For the discrete interpretation
+this is exactly LPO, and the code L (λ _ → Z) alone witnesses one
+direction, its discrete interpretation being ω + 1.
+
+\begin{code}
+
+Κ-has-least-roots-of-complemented-subsets pe b =
+ has-inf-gives-least-roots
+  (underlying-weak-order (Κ b))
+  (Κ-has-infs-of-complemented-subsets pe b)
+
+Δ-least-roots-gives-LPO h = succₒ-ω-least-roots-gives-LPO
+                            (≃ₒ-gives-has-least-roots
+                              [ ∑₁ (λ _ → 𝟙ᵒ) ]
+                              [ succₒ ω ]
+                              ∑₁-of-𝟙ᵒ
+                              (h (L (λ _ → Z))))
+
+LPO-gives-Δ-least-roots pe lpo b = ≃ₒ-gives-has-least-roots
+                                    [ Κ b ]
+                                    [ Δ b ]
+                                    (≃ₒ-sym [ Δ b ] [ Κ b ] 𝕚)
+                                    (Κ-has-least-roots-of-complemented-subsets
+                                      pe b)
+ where
+  𝕚 : [ Δ b ] ≃ₒ [ Κ b ]
+  𝕚 = ι {b} ,
+      order-preserving-reflecting-equivs-are-order-equivs
+       [ Δ b ] [ Κ b ] (ι {b})
+       (LPO-gives-ι-is-equiv lpo b)
+       (ι-is-order-preserving b)
+       (ι-is-order-reflecting b)
+
+Δ-least-roots-iff-LPO pe = Δ-least-roots-gives-LPO ,
+                           LPO-gives-Δ-least-roots pe
+
+\end{code}
+
+End of addition.
 
 As an example, the compact interpretation can be applied directly to a
 Brouwer code for ε₀.
