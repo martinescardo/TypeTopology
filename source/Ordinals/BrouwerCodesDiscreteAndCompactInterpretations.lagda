@@ -494,12 +494,17 @@ direction, its discrete interpretation being ω + 1.
   (underlying-weak-order (Κ b))
   (Κ-has-infs-of-complemented-subsets pe b)
 
-Δ-least-roots-gives-LPO h = succₒ-ω-least-roots-gives-LPO
-                            (≃ₒ-gives-has-least-roots
-                              [ ∑₁ (λ _ → 𝟙ᵒ) ]
-                              [ succₒ ω ]
-                              ∑₁-of-𝟙ᵒ
-                              (h (L (λ _ → Z))))
+Δ𝟙-least-roots-gives-LPO
+ : has-least-roots-of-complemented-subsets (Δ (L (λ _ → Z))) → LPO
+Δ𝟙-least-roots-gives-LPO h
+ = succₒ-ω-least-roots-gives-LPO
+    (≃ₒ-gives-has-least-roots
+      [ ∑₁ (λ _ → 𝟙ᵒ) ]
+      [ succₒ ω ]
+      ∑₁-of-𝟙ᵒ
+      h)
+
+Δ-least-roots-gives-LPO h = Δ𝟙-least-roots-gives-LPO (h (L (λ _ → Z)))
 
 LPO-gives-Δ-least-roots pe lpo b = ≃ₒ-gives-has-least-roots
                                     [ Κ b ]
