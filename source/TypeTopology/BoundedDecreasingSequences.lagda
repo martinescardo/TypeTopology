@@ -168,10 +168,9 @@ to-𝔹-＝ {k} (α , _) (β , _) h = to-subtype-＝ (being-bd-is-prop k) (dfune
 
 \end{code}
 
-We now define 𝓑 k = 𝔻ᵏ 𝟙 by induction on k, where 𝔻 is the delay monad
-defined in the module SquashedCantor. Our objective is to eventually
-show that 𝔹 k ≃ 𝓑 k, in order to derive the claims made above as a
-corollary.
+We now define 𝓑 k = 𝔻ᵏ 𝟙 by induction on k, where 𝔻 is the delay monad defined
+in the module TypeTopology.SquashedCantor. Our objective is to eventually show
+that 𝔹 k ≃ 𝓑 k, in order to derive the claims made above as a corollary.
 
 \begin{code}
 
@@ -272,9 +271,9 @@ Minor remark. It would have been slightly better to instead define
 addition twice. But it would also require slightly changing other
 things. So we'll leave it at that.
 
-We begin with the following transport lemma, which is a generalization
-of `transport-finite` in the module SquashedCantor, and will be crucial
-for our purposes, but will be used much later.
+We begin with the following transport lemma, which is a generalization of
+`transport-finite` in the module TypeTopology.SquashedCantor, and will be
+crucial for our purposes, but will be used much later.
 
 \begin{code}
 

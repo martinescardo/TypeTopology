@@ -38,7 +38,7 @@ module Ordinals.BrouwerCodesVariationInterpretations (fe : FunExt) where
 
 We work with ordinal encodings, or ordinal expressions, that are
 slightly different from the traditional Brouwer ordinal trees, which
-we also consider in the file BrouwerCodesInterpretations.
+we also consider in the file Ordinals.BrouwerCodesInterpretations.
 
 \begin{code}
 
@@ -239,10 +239,10 @@ Without total separatedness (enough functions into the type 𝟚 of
 booleans), compactness wouldn't be an interesting property. It is not
 possible to prove total separatedness directly, because this property
 is not closed under Σ, which is used to define +ᵒ, ×ᵒ and Σ₁, as shown
-in the module FailureOfTotalSeparatedness. (Added 15th October
-2024. This is actually possible. See the module
-TypeTopology.SigmaDiscreteAndTotallySeparated , which shows that this
-is possible in the particular case we are interested in.)
+in the module FailureOfTotalSeparatedness. (Added 15th October 2024.
+This is actually possible. See the module
+TypeTopology.SigmaTotallySeparated , which shows that this is possible
+in the particular case we are interested in.)
 
 Classically, the squashed sum is the ordinal sum plus 1, and now we
 give an alternative semantics of ordinal codes with this
@@ -366,8 +366,8 @@ order preserving and reflecting (28 July 2018).
                                    (λ i → ι-is-order-reflecting (ν i))
 \end{code}
 
-As discussed in the module Ordinals, propositional extensionality in
-the following construction is not strictly needed but makes our life
+As discussed in the module Ordinals.Closure, propositional extensionality
+in the following construction is not strictly needed but makes our life
 much easier (given the mathematics we have already developed).
 
 \begin{code}
@@ -389,7 +389,7 @@ much easier (given the mathematics we have already developed).
   (Κ-has-infs-of-complemented-subsets pe ν)
   (λ _ → Κ-has-infs-of-complemented-subsets pe μ)
 Κ-has-infs-of-complemented-subsets pe (L ν) =
- ∑₁-has-infs-of-complemented-subsets
+ ∑¹-has-infs-of-complemented-subsets
   pe
   (Κ ∘ ν)
   (λ i → Κ-has-infs-of-complemented-subsets pe (ν i))
@@ -441,8 +441,7 @@ compact∙-ε₀-ub = Κ-compact∙ (brouwer-to-oe B-ε₀)
 
 \end{code}
 
-We can go much higher using the work of and Setzer, Hancock and
-others.
+We can go much higher using the work of Setzer, Hancock and others.
 
 Added 4th April 2022. A third interpretation of ordinal expressions.
 

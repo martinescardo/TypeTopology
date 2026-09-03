@@ -292,7 +292,7 @@ The below shows that constructively we cannot expect to have an operation
   exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤
 that behaves like exponentiation for *all* bases α and exponents β.
 
-In Ordinals.Exponentiation.Suprema we construct an operation _^ₒ_ that is well
+In Ordinals.Exponentiation.Supremum we construct an operation _^ₒ_ that is well
 behaved for all bases α ⊵ 𝟙₀ and all exponents β.
 
 \begin{code}

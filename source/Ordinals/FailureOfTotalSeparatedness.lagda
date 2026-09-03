@@ -907,21 +907,21 @@ open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness fe'
 open import TypeTopology.MicroTychonoff
 
-counterexample-to-total-separatedess
+counterexample-to-total-separatedness
  : Σ I ꞉ (𝓤₀ ̇ ) ,
    Σ α ꞉ (I → Ordinal 𝓤₀) , ((is-compact∙ I)
                           × (is-totally-separated I)
                           × ((i : I) → is-compact∙ ⟨ α i ⟩)
                           × ((i : I) → is-totally-separated ⟨ α i ⟩)
                           × (is-totally-separated ⟨ sup α ⟩ → ¬¬ WLPO))
-counterexample-to-total-separatedess =
- ℕ∞ ,
- α̅ ,
- ℕ∞-compact∙ ,
- ℕ∞-is-totally-separated fe' ,
- (λ i → micro-tychonoff fe' (ℕ-to-ℕ∞-is-embedding fe' i) (λ _ → 𝟚-is-compact∙)) ,
- (λ i → Π-is-totally-separated fe' (λ _ → 𝟚-is-totally-separated)) ,
- 𝓼-totally-separated-gives-¬¬WLPO
+counterexample-to-total-separatedness
+ = ℕ∞ ,
+   α̅ ,
+   ℕ∞-compact∙ ,
+   ℕ∞-is-totally-separated fe' ,
+   (λ i → micro-tychonoff fe' (ℕ-to-ℕ∞-is-embedding fe' i) (λ _ → 𝟚-is-compact∙)) ,
+   (λ i → Π-is-totally-separated fe' (λ _ → 𝟚-is-totally-separated)) ,
+   𝓼-totally-separated-gives-¬¬WLPO
 
 \end{code}
 

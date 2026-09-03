@@ -8,14 +8,14 @@ transferred to `github` Monday 5th February 2018.
 If you contribute, please add your full (legal or adopted) name and date
 at the place of contribution.
 
- * [html rendering of the Agda code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html).
- * [search](https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html) for a name, a fragment of one, a concept, a definition, or a contributor, including wildcards.
- * [emacs search command](https://github.com/martinescardo/TypeTopologySearch/blob/main/README.md) for TypeTopology.
-
 ## Table of contents
 
- 1. [What TypeTopology is about](#about)
-
+ 1. [About](#about)
+ 1. [Official html rendering of the Agda code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html)
+ 1. [Alternative html rendering](https://pdmosses.github.io/TypeTopology) by [Peter Mosses](https://pdmosses.github.io/)
+ 1. [Search](https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html) for a name, a fragment of one, a concept, a definition, or a contributor, including wildcards
+ 1. [Emacs search command](https://github.com/martinescardo/TypeTopologySearch/blob/main/README.md) for TypeTopology
+ 1. [Brief module descriptions](https://github.com/martinescardo/TypeTopologyModuleDescriptions)
  1. [How to cite this repository](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
  1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-agda-files)
  1. [Academic publications and preprints resulting from TypeTopology](https://github.com/martinescardo/TypeTopology#academic-publications-and-preprints-resulting-from-typetopology)
@@ -310,6 +310,7 @@ only your name as author.
 
 Please add yourself the first time you contribute. Use your adopted name, and not necessarily your given name, at your discretion.
 
+* Alex Rice
 * Alice Laroche
 * Andrew Sneap
 * Andrew Swan
@@ -326,6 +327,7 @@ Please add yourself the first time you contribute. Use your adopted name, and no
 * Fredrik Nordvall Forsberg
 * Ian Ray
 * Igor Arrieta (ii)
+* Ingo Blechschmidt
 * J. A. Carr
 * Jakub Opršal
 * Jon Sterling
@@ -334,6 +336,7 @@ Please add yourself the first time you contribute. Use your adopted name, and no
 * Lane Biocini
 * Marc Bezem
 * Martin Escardo
+* Mike Shulman
 * Nicolai Kraus
 * Ohad Kammar
 * Paul Levy (i)
@@ -343,6 +346,7 @@ Please add yourself the first time you contribute. Use your adopted name, and no
 * Thierry Coquand
 * Todd Waugh Ambridge
 * Tom de Jong
+* Ulrik Buchholtz
 * Vincent Rahli
 
 (i) These authors didn't write any single line of Agda code here, but

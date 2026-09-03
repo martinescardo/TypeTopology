@@ -334,7 +334,7 @@ is-top'-gives-is-top w x i y = ≼-coarser-than-≾ x (w x) y (i y)
 There is no hope of proving the converse constructively, because in
 the ordinal of truth values any ¬¬-dense truth-value p satisfies
 is-top p, and the only truth-value that satisfies is-top is ⊤. See the
-module OrdinalOfTruthValues.
+module Ordinals.OrdinalOfTruthValues.
 
 \begin{code}
 

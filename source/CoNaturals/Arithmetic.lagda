@@ -12,7 +12,7 @@ operation).
 
 NB. There are shorter constructions with more direct proofs of the
 minimum function, e.g. take the pointwise minimum in 𝟚 (see the
-module GenericConvergentSequence), but this module
+module TypeTopology.GenericConvergentSequence), but this module
 serves as a good illustration of reasoning with the final coalgebra
 property to both construct functions and prove their properties.
 
@@ -444,7 +444,8 @@ min-Succ u v x r = h (Zero+Succ fe₀ u) (Zero+Succ fe₀ v)
 
 \end{code}
 
-Relation of min with ≼ defined in the module GenericConvergentSequence.
+Relation of min with ≼ defined in the module
+TypeTopology.GenericConvergentSequence.
 
 \begin{code}
 

@@ -147,8 +147,8 @@ subtype-is-discrete pv d (x , p) (y , q) = κ (d x y)
 \end{code}
 
 The closure of discrete types under Σ is proved in the module
-TypeTopology.SigmaDiscreteAndTotallySeparated (as this requires to
-first prove that discrete types are sets).
+TypeTopology.SigmaDiscrete (as this requires to first prove that
+discrete types are sets).
 
 General properties:
 
@@ -825,12 +825,12 @@ open is-discrete' {{...}} public
 
 \end{code}
 
-Added 14th October 2024. We move the notion of weakly isolated point
-from its original place FailureOfTotalSeparatedness (added there some
-time in 2013 for a paper with Thomas Streicher on the indiscreteness
-of the universe and related things). Then we add further properties of
-this notion, used both in the module FailureOfTotalSeparatedness and
-the module Ordinals.NotationInterpretation.
+Added 14th October 2024. We move the notion of weakly isolated point from its
+original place TypeTopology.FailureOfTotalSeparatedness (added there some time
+in 2013 for a paper with Thomas Streicher on the indiscreteness of the universe
+and related things). Then we add further properties of this notion, used both
+in the module TypeTopology.FailureOfTotalSeparatedness and the module
+Ordinals.InductiveRecursiveCodesInterpretations.
 
 \begin{code}
 
@@ -878,5 +878,5 @@ equivs-reflect-weak-isolatedness f x i = II
 
 \end{code}
 
-TODO (in another module). More generally, if an equivalence preserve
+TODO (in another module). More generally, if an equivalence preserves
 some property, it also reflects it.

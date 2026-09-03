@@ -499,7 +499,7 @@ Assuming excluded middle (for 𝓤 ⊔ 𝓣), we show
  _≺_ is a classical well-order ↔ _≺_ is an inductive well-order.
 
 A remark on well-order-gives-minimal (see below) is in order.
-  It may seem that it repeats nonempty-has-minimal in OrdinalNotions.lagda, but
+  It may seem that it repeats nonempty-has-minimal in Ordinals.Notions, but
   nonempty-has-minimal uses ¬¬ and excluded middle in ⋆every⋆ universe to
   construct propositional truncations, and ∃ in particular, but we just assume
   propositional truncations and when we assume excluded middle, we only do so
@@ -704,7 +704,7 @@ which expresses that if every set in some large universe can be inductively
 well-ordered, then so can every set in a lower universe.
 
 (NB. There are similar, but different technical lemmas in the file
-OrdinalsWellOrderTransport.lagda.)
+Ordinals.WellOrderTransport.)
 
 \begin{code}
 

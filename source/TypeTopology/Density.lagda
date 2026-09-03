@@ -1,7 +1,7 @@
 Martin Escardo 2011
 
 A function is dense if the complement of its image is empty. Maybe
-¬¬-surjective would be a better terminology.
+¬¬-surjective or ¬¬-dense would be a better terminology.
 
 \begin{code}
 
@@ -14,10 +14,52 @@ open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.FunExt
+open import UF.PropTrunc
 open import UF.Retracts
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 is-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-dense {𝓤} {𝓥} {X} {Y} f = ¬ (Σ y ꞉ Y , ¬ (Σ x ꞉ X , f x ＝ y))
+
+being-dense-is-prop : Fun-Ext
+                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                    → is-prop (is-dense f)
+being-dense-is-prop fe f = negations-are-props fe
+
+\end{code}
+
+The following gives the intended meaning of density, but the above
+equivalent definition avoids the use of propositional truncations.
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+ open import UF.ImageAndSurjection pt
+
+ density-characterization : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                          → is-dense f ↔ is-empty (complement-of-image f)
+ density-characterization {𝓤} {𝓥} {X} {Y} f = (ϕ , γ)
+  where
+   ϕ : is-dense f → is-empty (complement-of-image f)
+   ϕ d (y , ν) = d (y , (λ (φ : fiber f y) → ν ∣ φ ∣))
+
+   γ : is-empty (complement-of-image f) → is-dense f
+   γ e (y , ν) = e (y , (∥∥-rec 𝟘-is-prop ν))
+
+ density-characterization-≃ : Fun-Ext
+                            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                          → is-dense f ≃ is-empty (complement-of-image f)
+ density-characterization-≃ fe f =
+  logically-equivalent-props-are-equivalent
+   (being-dense-is-prop fe f)
+   (negations-are-props fe)
+   (lr-implication (density-characterization f))
+   (rl-implication (density-characterization f))
+
 
 dense-maps-into-¬¬-separated-types-are-rc' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : Y → 𝓦 ̇ }
                                             {h : X → Y} {f g : Π Z}

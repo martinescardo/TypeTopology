@@ -153,7 +153,8 @@ Given a term of type (ι ⇒ ι) ⇒ ι, we calculate a term defining its dialog
 
 \end{code}
 
-TODO. Formulate and prove the correctness of ⌜dialogue-tree⌝. We'll do this in another file.
+The correctness of ⌜dialogue-tree⌝ is formulated and proved in
+EffectfulForcing.Internal.Correctness.
 
 Given a term t of type (ι ⇒ ι) ⇒ ι, we calculate a term defining a
 modulus of continuity for t.

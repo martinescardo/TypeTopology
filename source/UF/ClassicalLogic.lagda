@@ -18,13 +18,17 @@ module UF.ClassicalLogic where
 open import MLTT.Spartan
 
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
+open import UF.Univalence
 open import UF.UniverseEmbedding
+open import UF.Universes
 
 \end{code}
 
@@ -694,5 +698,22 @@ Global-Choice'-gives-Global-Choice gc X = gc (X + ¬ X)
                                              (λ u → u (inr (λ p → u (inl p))))
 \end{code}
 
-TODO. Global choice contradicts univalence. This is already present in
-the directory MGS.
+Global choice makes every type discrete, and hence a set, which
+contradicts univalence, as the universes are not sets. This is already
+present, in a different formulation, in the directory MGS.Choice.
+
+\begin{code}
+
+Global-Choice-gives-discreteness : Global-Choice 𝓤 → (X : 𝓤 ̇ ) → is-discrete X
+Global-Choice-gives-discreteness gc X x y = gc (x ＝ y)
+
+Global-Choice-gives-sethood : Global-Choice 𝓤 → (X : 𝓤 ̇ ) → is-set X
+Global-Choice-gives-sethood gc X =
+ discrete-types-are-sets (Global-Choice-gives-discreteness gc X)
+
+Global-Choice-is-inconsistent-with-univalence
+ : Global-Choice (𝓤 ⁺) → is-univalent 𝓤 → 𝟘
+Global-Choice-is-inconsistent-with-univalence {𝓤} gc ua =
+ universes-are-not-sets ua (Global-Choice-gives-sethood gc (𝓤 ̇ ))
+
+\end{code}

@@ -7,7 +7,7 @@ module InfinitePigeon.Addition where
 \end{code}
 
 The following was implemented by Martin Escardo and his student
-Chuangje Xu as part of his Individual Study module on Agda and
+Chuangjie Xu as part of his Individual Study module on Agda and
 Curry-Howard isomorphism (UG student in Computer Science,
 Birmingham, UK, academic year 2010-2011). We also did
 multiplication and its properties, and other things, but this is

@@ -1,6 +1,6 @@
 Martin Escardo, 26 January 2018.
 
-Moved from the file TotallySeparated 22 August 2024.
+Moved from the file TypeTopology.TotallySeparated 22 August 2024.
 
 Definition of apartness relation and basic general facts.
 

@@ -12,7 +12,7 @@ relation on the underlying type of $Y$ by the left (and right)
 multiplications by the image of $f$.
 
 If the image is normal in $Y$ (which is defined in
-\texttt{Groups.homomorphisms}) then the quotient is a group that can
+\texttt{Groups.Homomorphisms}) then the quotient is a group that can
 (ought to) be interpreted as the cokernel of $f$.
 
 TODO: adapt to use (small) quotients defined in UF-Quotient
@@ -216,7 +216,7 @@ equivalent.
 \end{code}
 
 The relations _≈_ and _≈'_ are the same if and only if they are both
-left and right-invariant, in the sense specified in Groups.quotient.
+left and right-invariant, in the sense specified in Groups.Quotient.
 
 \begin{code}
 

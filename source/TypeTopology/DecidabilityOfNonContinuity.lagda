@@ -93,7 +93,7 @@ Lemma-3·1 {𝓤} A δ
   I :  (x : ℕ∞) → is-decidable (B x)
   I x = Theorem-8·2' (A x) (δ x)
 
-  II :  (x : ℕ∞) → is-decidable (¬ B x)
+  II : (x : ℕ∞) → is-decidable (¬ B x)
   II x = ¬-preserves-decidability (I x)
 
   III : is-decidable ((n : ℕ) → ¬ B (ι n))
@@ -1155,8 +1155,8 @@ Notice that, in the following, c can be derived from d, but, in uses
 of this, it will be convenient to have them both given, as they are
 obtained separately.
 
-Notice also that this is not entirely trivial. It uses a density lemma
-proved in another module.
+Notice also that this is not entirely trivial. It uses a density lemma proved
+in TypeTopology.GenericConvergentSequence.
 
 \begin{code}
 

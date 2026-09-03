@@ -301,8 +301,8 @@ loop) by assuming that base ＝ base is a set, because this tells us
 that every element of loop ＝ loop must be refl.
 
 We can satisfy this assumption for our intended application (see
-CircleConstruction.lagda), because for the construction involving ℤ-torsors it's
-is quite easy to prove that base ＝ base is a set.
+SyntheticHomotopyTheory.Circle.Construction), because for the construction
+involving ℤ-torsors it's is quite easy to prove that base ＝ base is a set.
 
 However, for completeness sake, below we also show that assuming function
 extensionality and univalence, it is possible to prove that base ＝ base is a

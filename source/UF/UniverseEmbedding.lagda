@@ -101,6 +101,7 @@ Lift'-≃ 𝓥 X = 𝟘-rneutral'
 Lift'-is-embedding : Univalence → is-embedding (Lift' {𝓤} 𝓥)
 Lift'-is-embedding {𝓤} {𝓥} ua =
  universe-embeddings-are-embeddings ua 𝓤 (𝓤 ⊔ 𝓥) (Lift' 𝓥) (Lift'-≃ 𝓥)
+
 \end{code}
 
 The following embedding has better definitional properties:
@@ -146,7 +147,7 @@ Lift-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 
 
 Added 7th Feb 2019. Assuming propositional and functional
 extensionality instead of univalence, then lift-fibers of propositions
-are propositions. (For use in the module UF.Resize.)
+are propositions. (For use in the module UF.Size.)
 
 \begin{code}
 

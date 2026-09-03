@@ -1,6 +1,6 @@
 Martin Escardo, 14th January 2022.
 
-An isomorphic copy of ℕ∞ defined in CoNaturals.GenericConvergentSequence.
+An isomorphic copy of ℕ∞ defined in TypeTopology.GenericConvergentSequence.
 The isomorphism is proved in CoNaturals.Equivalence.
 
 \begin{code}

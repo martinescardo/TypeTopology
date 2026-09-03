@@ -5,6 +5,11 @@ See the 2018 file OrdinalBrouwerCodesVariationInterpretations for discussion.
 We interpret Brouwer ordinal codes as ordinals in four ways and relate
 them.
 
+Only ⟦_⟧₀ and ⟦_⟧₂ and the comparisons use the assumptions of this
+module. The other two interpretations need function extensionality
+alone, and ⟦_⟧₁ is repeated under the name Κ in the module
+Ordinals.BrouwerCodesDiscreteAndCompactInterpretations.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
@@ -41,8 +46,10 @@ open import Notation.CanonicalMap
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.BrouwerCodes
+open import Ordinals.Fin
 open import Ordinals.Injectivity
 open import Ordinals.Maps
+open import Ordinals.Omega ua pt sr
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.ToppedAdditionProperties ua
@@ -52,11 +59,13 @@ open import Ordinals.TrichotomousArithmetic fe
 open import Ordinals.TrichotomousType fe
 open import Ordinals.Type
 open import Ordinals.Underlying
+open import Taboos.LPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.SigmaDiscrete
 open import TypeTopology.SquashedSum fe
 open import TypeTopology.TotallySeparated
 open import UF.DiscreteAndSeparated
+open import UF.Retracts
 
 open ordinals-injectivity fe
 open suprema pt sr
@@ -71,10 +80,6 @@ The first interpretation is the intended one, and we call it the
 standard interpretation. It gives ordinals that are not trichotomous
 in general, as shown in the module Ordinals.FailureOfTrichotomy.
 
-TODO. They are not compact in general, as e.g. the ordinal ω is in the
-range of the standard interpretation, and the compactness of ω amounts
-to LPO.
-
 \begin{code}
 
 ⟦_⟧₀ : B → Ordinal 𝓤₀
@@ -83,6 +88,42 @@ to LPO.
 ⟦ L b ⟧₀ = sup (λ i → ⟦ b i ⟧₀)
 
 \end{code}
+
+Added by Martin Escardo 2nd September 2026.
+
+They are not compact in general either, as the ordinal ω is in the
+range of the standard interpretation, and the compactness of ω amounts
+to LPO.
+
+\begin{code}
+
+finite-code : ℕ → B
+finite-code 0        = Z
+finite-code (succ n) = S (finite-code n)
+
+⟦finite-code⟧₀ : (n : ℕ) → ⟦ finite-code n ⟧₀ ＝ Fin-ordinal n
+⟦finite-code⟧₀ 0        = (Fin-ordinal-zero ua)⁻¹
+⟦finite-code⟧₀ (succ n) =
+ ⟦ finite-code n ⟧₀ +ₒ 𝟙ₒ ＝⟨ ap (_+ₒ 𝟙ₒ) (⟦finite-code⟧₀ n) ⟩
+ Fin-ordinal n +ₒ 𝟙ₒ      ＝⟨ (Fin-ordinal-succ' ua n)⁻¹ ⟩
+ Fin-ordinal (succ n)     ∎
+
+ω-is-a-standard-interpretation : ⟦ L finite-code ⟧₀ ＝ ω
+ω-is-a-standard-interpretation =
+ sup (λ n → ⟦ finite-code n ⟧₀) ＝⟨ ap sup (dfunext fe' ⟦finite-code⟧₀) ⟩
+ sup (λ n → Fin-ordinal n)      ＝⟨ ω-is-sup-of-Fin ⁻¹ ⟩
+ ω                              ∎
+
+⟦_⟧₀-compact-gives-LPO : ((b : B) → is-compact ⟨ ⟦ b ⟧₀ ⟩) → LPO
+⟦_⟧₀-compact-gives-LPO κ = compact-ℕ-gives-LPO fe'
+                            (transport
+                              (λ - → is-compact ⟨ - ⟩)
+                              ω-is-a-standard-interpretation
+                              (κ (L finite-code)))
+
+\end{code}
+
+End of addition.
 
 The second interpretation is into topped ordinals. It enlarges, in
 some sense, the first interpretation, so that we get bigger, and,
@@ -170,6 +211,21 @@ compact in general, as ω is in the range of the interpretation
 ⟦_⟧₃-is-totally-separated : (b : B) → is-totally-separated ⟨ ⟦ b ⟧₃ ⟩
 ⟦ b ⟧₃-is-totally-separated = discrete-types-are-totally-separated
                                ⟦ b ⟧₃-is-discrete
+\end{code}
+
+The code L (λ _ → S Z) is the promised witness. It is interpreted as
+an ordinal whose underlying type has ℕ as a retract, and so its
+compactness amounts to LPO.
+
+\begin{code}
+
+⟦_⟧₃-compact-gives-LPO : ((b : B) → is-compact ⟨ ⟦ b ⟧₃ ⟩) → LPO
+⟦_⟧₃-compact-gives-LPO κ = compact-ℕ-gives-LPO fe'
+                            (retract-is-compact ρ (κ (L (λ _ → S Z))))
+ where
+  ρ : retract ℕ of ⟨ ⟦ L (λ _ → S Z) ⟧₃ ⟩
+  ρ = pr₁ , (λ n → n , inr ⋆) , (λ n → refl)
+
 \end{code}
 
 We'll prove the following inequalities, where the arrows represent the

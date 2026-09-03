@@ -1,8 +1,8 @@
 Martin Escardo, 21 June 2018
 
-Ordinals proper are defined in the module Ordinals, as types equipped
-with well orders. This module forms the basis for that module. We
-still use the terminology "ordinal" here.
+Ordinals proper are defined in the module Ordinals.Type, as types equipped with
+well orders. This module forms the basis for that module. We still use the
+terminology "ordinal" here.
 
 \begin{code}
 
@@ -616,6 +616,25 @@ lemma.
                 well-founded (λ p → well-foundedness _<_ (o p)) ,
                 extensional  (λ p → extensionality _<_ (o p)) ,
                 transitive   (λ p → transitivity _<_ (o p))
+
+\end{code}
+
+The trichotomy of the constructed order needs the index proposition to
+be decidable.
+
+\begin{code}
+
+ decidable-index-gives-trichotomy : is-decidable P
+                                  → ((p : P) → is-trichotomous-order (_<_ {p}))
+                                  → is-trichotomous-order _≺_
+ decidable-index-gives-trichotomy (inl p) t u v = γ (t p (φ p u) (φ p v))
+  where
+   γ : in-trichotomy (_<_ {p}) (φ p u) (φ p v) → in-trichotomy _≺_ u v
+   γ (inl l)       = inl (p , l)
+   γ (inr (inl e)) = inr (inl ((η p u)⁻¹ ∙ ap (ψ p) e ∙ η p v))
+   γ (inr (inr m)) = inr (inr (p , m))
+ decidable-index-gives-trichotomy (inr ν) t u v =
+  inr (inl (dfunext fe (λ p → 𝟘-elim (ν p))))
 
 \end{code}
 

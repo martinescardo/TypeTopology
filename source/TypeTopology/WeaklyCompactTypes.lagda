@@ -1,7 +1,7 @@
 Martin Escardo, January 2018
 
 Two weak notions of compactness: ∃-compactness and Π-compactness. See
-the module CompactTypes for the strong notion.
+the module TypeTopology.CompactTypes for the strong notion.
 
 \begin{code}
 
@@ -11,7 +11,9 @@ open import MLTT.Spartan
 
 open import CoNaturals.Type
 open import MLTT.Two-Properties
+open import Naturals.ExitTruncation
 open import Notation.Order
+open import Taboos.LPO
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.DisconnectedTypes
@@ -36,6 +38,7 @@ private
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 open PropositionalTruncation pt
+open exit-truncations pt
 open import NotionsOfDecidability.Complemented
 
 is-∃-compact : 𝓤 ̇ → 𝓤 ̇
@@ -113,6 +116,34 @@ compact-types-are-∃-compact {𝓤} {X} φ p = g (φ p)
 
 But notice that the Π-compactness of ℕ is WLPO and its ∃-compactness
 amounts to LPO.
+
+\begin{code}
+
+Π-compact-ℕ-gives-WLPO : is-Π-compact ℕ → WLPO
+Π-compact-ℕ-gives-WLPO = WLPO-traditional-gives-WLPO (fe 𝓤₀ 𝓤₀)
+
+WLPO-gives-Π-compact-ℕ : WLPO → is-Π-compact ℕ
+WLPO-gives-Π-compact-ℕ = WLPO-gives-WLPO-traditional (fe 𝓤₀ 𝓤₀)
+
+∃-compact-ℕ-gives-LPO : is-∃-compact ℕ → LPO
+∃-compact-ℕ-gives-LPO c = LPO-variation-implies-LPO (fe 𝓤₀ 𝓤₀) I
+ where
+  I : LPO-variation
+  I α = II (c α)
+   where
+    II : is-decidable (∃ n ꞉ ℕ , α n ＝ ₀)
+       → is-decidable (Σ n ꞉ ℕ , α n ＝ ₀)
+    II (inl s) = inl (exit-truncation
+                       (λ n → α n ＝ ₀)
+                       (λ n → 𝟚-is-discrete (α n) ₀)
+                       s)
+    II (inr ν) = inr (λ σ → ν ∣ σ ∣)
+
+LPO-gives-∃-compact-ℕ : LPO → is-∃-compact ℕ
+LPO-gives-∃-compact-ℕ lpo = compact-types-are-∃-compact
+                             (LPO-gives-compact-ℕ (fe 𝓤₀ 𝓤₀) lpo)
+
+\end{code}
 
 The Π-compactness of X is equivalent to the isolatedness of the boolean
 predicate λ x → ₁:
@@ -209,7 +240,7 @@ discrete-power-of-disconnected-gives-compact-exponent : {X : 𝓤 ̇ } {Y : 𝓥
 discrete-power-of-disconnected-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d = γ
  where
   a : retract (X → 𝟚) of (X → Y)
-  a = retract-contravariance fe' ρ
+  a = retract-covariance fe' ρ
 
   b : is-discrete (X → 𝟚)
   b = retract-is-discrete a d
@@ -444,7 +475,7 @@ tscd₀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
       → is-Π-compact (X → Y)
       → is-discrete X
 tscd₀ {𝓤} {𝓥} {X} {Y} ts r c =
- tscd ts (retract-is-Π-compact (retract-contravariance fe' r) c)
+ tscd ts (retract-is-Π-compact (retract-covariance fe' r) c)
 
 open totally-separated-reflection fe pt
 
@@ -455,7 +486,7 @@ tscd₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
  where
   z : retract (X → 𝟚) of (X → Y)
-  z = retract-contravariance fe' r
+  z = retract-covariance fe' r
 
   a : (𝕋 X → 𝟚) ≃ (X → 𝟚)
   a = totally-separated-reflection'' 𝟚-is-totally-separated
@@ -477,7 +508,7 @@ tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
 In topological models, Π-compactness is the same as topological
 compactness in the presence of total separatedness, at least for some
 spaces, including the Kleene-Kreisel spaces, which model the simple
-types (see the module SimpleTypes). Hence, for example, the
+types (see the module TypeTopology.SimpleTypes). Hence, for example, the
 topological space (ℕ∞→𝟚) is not Π-compact because it is countably
 discrete, as it is a theorem of topology that discrete to the power
 compact is again discrete, which is compact iff it is finite. This
@@ -757,7 +788,7 @@ complemented-subtype-is-Π-compact {𝓤} {X} A c q = g (c p)
 20 Jan 2018.
 
 We now consider a truncated version of pointed compactness (see the
-module CompactTypes).
+module TypeTopology.CompactTypes).
 
 \begin{code}
 
@@ -1244,8 +1275,8 @@ through the embedding 𝟚 of into the type of truth values, we say that
 it has decidable truth-values, which is equivalent. Such an asymmetry
 is already present in our formulation of the notion of compactness.
 
-We have defined image with lower case in the module UF. We now need
-Images with upper case:
+We have defined image with lower case in the module
+UF.ImageAndSurjection. We now need Images with upper case:
 
 \begin{code}
 

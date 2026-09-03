@@ -1,8 +1,8 @@
 Ayberk Tosun.
 
 Formulations of some alternative definitions of the notion of continuity from
-`MFPSAndVariations.Continuity` and proofs of their equivalences with the
-original definitions.
+`EffectfulForcing.MFPSAndVariations.Continuity` and proofs of their
+equivalences with the original definitions.
 
 First equivalence, for continuity, proved on 2023-06-13.
 

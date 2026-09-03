@@ -17,15 +17,15 @@ general.
 
 Contents:
 
- * The submodule UF.gsip has a very abstract version of sip.
+ * The submodule gsip has a very abstract version of sip.
 
  * This is followed by various submodules that consider more concrete
    examples such as ∞-magmas and much more.
 
- * The submodule UF.gsip-with-axioms considers structures subject to
+ * The submodule gsip-with-axioms considers structures subject to
    axioms, to easily account for mathematical structures such as
-   monoids, groups, spaces, etc. This module UF.performs a reduction to
-   the module UF.gsip.
+   monoids, groups, spaces, etc. This module performs a reduction to
+   the module gsip.
 
  * This is followed by monoids as an example.
 
@@ -94,7 +94,7 @@ structure = pr₂
       relating the data specified by the functions S-id-structure and
       S-refl.
 
- These assumptions (1)-(4) are given as module UF.parameters for gsip:
+ These assumptions (1)-(4) are given as module parameters for gsip:
 
 \begin{code}
 
@@ -418,7 +418,7 @@ module ∞-proto-metric-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (
  or order preserving-reflecting maps (ordered-set case).
 
 The following example is related to compact types (in the sense of the
-module CompactTypes):
+module TypeTopology.CompactTypes):
 
 \begin{code}
 

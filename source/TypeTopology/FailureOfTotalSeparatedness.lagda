@@ -250,7 +250,7 @@ decidable equality, the points a₀,a₁ of Y cannot necessarily be
 distinguished by maps into the discrete set 𝟚. To get the desired
 conclusion, it is enough to consider X = (ℕ → 𝟚), which is
 ¬¬-separated, in the sense that ¬¬ (x ＝ y) → x ＝ y, assuming
-extensionality. (Cf. the module DiscreteAndSeparated.)
+extensionality. (Cf. the module UF.DiscreteAndSeparated.)
 
 \begin{code}
 
@@ -290,13 +290,13 @@ extensionality. (Cf. the module DiscreteAndSeparated.)
 
 Added 10th October 2024.
 
-Examples. As discussed in the module DecidabilityOfNonContinuity, we
-have that ¬ WPO is a weak continuity principle. Using this, we get
-explicit examples of non weakly isolated points. Notice that, because
-excluded middle is consistent, it is consistent that every point of
-every set is (weakly) isolated. So we can't give any example of a
-non-isolated point or weakly-non-isolated of a set without assuming an
-anticlassical principle such as ¬ WLPO.
+Examples. As discussed in the module TypeTopology.DecidabilityOfNonContinuity,
+we have that ¬ WPO is a weak continuity principle. Using this, we get explicit
+examples of non weakly isolated points. Notice that, because excluded middle is
+consistent, it is consistent that every point of every set is (weakly)
+isolated. So we can't give any example of a non-isolated point or
+weakly-non-isolated of a set without assuming an anticlassical principle such
+as ¬ WLPO.
 
 \begin{code}
 

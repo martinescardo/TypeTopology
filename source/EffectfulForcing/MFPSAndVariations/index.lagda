@@ -32,7 +32,8 @@ import EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer         -- By Mart
  * The file combinators defines S, K, iteration over the natural
    numbers and primitive recursion.
 
- * The file CombinatoryT defines a combinatory version of Gödel's system T.
+ * The file EffectfulForcing.MFPSAndVariations.CombinatoryT defines a
+   combinatory version of Gödel's system T.
 
    Additionally it defines its "standard set-theoretical interpretation": the
    ground type is interpreted as the set of natural numbers, and functions types
@@ -48,8 +49,9 @@ import EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer         -- By Mart
 
    It also includes simple, but useful, lemmas and constructions.
 
- * The file Dialogue defines dialogue trees, which are a fundamental
-   ingredient for the MFPS paper coded in the file MFPS-XXIX.
+ * The file EffectfulForcing.MFPSAndVariations.Dialogue defines dialogue trees,
+   which are a fundamental ingredient for the MFPS paper coded in the file
+   EffectfulForcing.MFPSAndVariations.MFPS-XXIX.
 
    It is better to read the paper to know about this before reading
    the Agda code, but, in very brief summary, the following is included:
@@ -68,10 +70,10 @@ import EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer         -- By Mart
         natural number, with its specification (the function
         generic-diagram).
 
- * The file MFPS-XXIX implements the MFPS'2013 paper, which shows
-   that all system T definable functions (ℕ → ℕ) → ℕ are continuous, and
-   their restriction to (ℕ → 𝟐) are uniformly continuous, using a
-   dialogue tree interpretation of (combinatory) system T.
+ * The file EffectfulForcing.MFPSAndVariations.MFPS-XXIX implements the
+   MFPS'2013 paper, which shows that all system T definable functions (ℕ → ℕ) →
+   ℕ are continuous, and their restriction to (ℕ → 𝟐) are uniformly continuous,
+   using a dialogue tree interpretation of (combinatory) system T.
 
  * The file system T defines the λ-calculus version of system T,
    including a version with oracles.
@@ -85,17 +87,19 @@ import EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer         -- By Mart
    However, it doesn't formulate or prove the correctness of this
    translation.
 
-   But it repeats the examples given in the file MFPS-XXIX, which give
-   the same numerical results.
+   But it repeats the examples given in the file
+   EffectfulForcing.MFPSAndVariations.MFPS-XXIX, which give the same numerical
+   results.
 
    The correctness is formulated and proved in the file
    EffectfulForcing.Internal.Correctness.
 
- * The file WithoutOracle, written by Vincent Rahli in 2015, shows
-   that it is not necessary to consider an extension of (combinatory)
-   system T with oracles to reach the same conclusions.
+ * The file EffectfulForcing.MFPSAndVariations.WithoutOracle, written by
+   Vincent Rahli in 2015, shows that it is not necessary to consider an
+   extension of (combinatory) system T with oracles to reach the same
+   conclusions.
 
- * The file Dialogue-to-Brouwer, written by Martin Escardo and Paulo
-   Oliva, shows how to translate dialogue trees for functions (ℕ → ℕ) → ℕ
-   to Brouwer trees, including a formulation and proof of correctness
-   of the translation.
+ * The file EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer, written by
+   Martin Escardo and Paulo Oliva, shows how to translate dialogue trees for
+   functions (ℕ → ℕ) → ℕ to Brouwer trees, including a formulation and proof of
+   correctness of the translation.

@@ -5,7 +5,7 @@ We prove the known (constructive) fact that
   X + 𝟙 ≃ Y + 𝟙 → X ≃ Y.
 
 The new proof from 1st December 2019 is extracted from the module
-UF.Factorial and doesn't use function extensionality. The old proof
+Factorial.Law and doesn't use function extensionality. The old proof
 from 21 March 2018 is included at the end.
 
 \begin{code}

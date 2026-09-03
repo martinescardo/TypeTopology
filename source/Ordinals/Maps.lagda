@@ -420,7 +420,7 @@ every x : ⟨ α ⟩ and y : ⟨ β ⟩ with y ≺⟨ β ⟩ f x, the type
 follows (see the proof above) that being a simulation is property.
 
 However, for some purposes, notably for constructing suprema of
-ordinals in OrdinalSupOfOrdinals.lagda, it is useful to formulate the
+ordinals in Ordinals.OrdinalOfOrdinalsSuprema, it is useful to formulate the
 notion of initial segment and the notion of simulation using ∃, rather
 than Σ.
 

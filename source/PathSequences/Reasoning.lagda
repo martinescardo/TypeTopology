@@ -42,7 +42,7 @@ module _ {X : 𝓤 ̇ } {x y : X} where
   ＝ₛ-level : {s t : x ≡ y} {n : ℕ} → X is-of-level n → (s ＝ₛ t) is-of-level (n - 2)
 
   which awaits implementation once I figure out how to deal with the
-  global univalence in UF.HLlevels.
+  global univalence in UF.HLevels.
 
 \begin{code}
 

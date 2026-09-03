@@ -5,14 +5,13 @@
 
    Martin Escardo and collaborators,
    2010--2026--∞, continuously evolving.
-
    https://www.cs.bham.ac.uk/~mhe/
-   https://www.cs.bham.ac.uk/~mhe/TypeTopology/
-   https://github.com/martinescardo/TypeTopology
-   https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html
 
-   Tested with Agda 2.8.0
-   (it will probably work with Agda 2.7.0.1, and it may still work with Agda 2.6.4.3).
+   This repository is searchable:
+   https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html
+   https://github.com/martinescardo/TypeTopologyModuleDescriptions/
+
+   Tested with Agda 2.8.0 and 2.9.0 (unreleased development version).
 
    * Our main use of this development is as a personal blackboard or
      notepad for our research and that of collaborators. In
@@ -64,8 +63,8 @@
      control safety and, to the extent this is currently possible, to
      control which type theory is used.
 
-   * In our last count, on 2026-08-05, this development has 990 Agda
-     files with 287K lines of code, including comments and blank
+   * In our last count, on 2026-09-02, this development has 993 Agda
+     files with 290K lines of code, including comments and blank
      lines.
 
 Philosophy of the repository
@@ -89,8 +88,9 @@ Philosophy of the repository
 
    * We work in a minimal subset of Agda to implement Spartan MLTT and
      work with it. In particular, we restrict ourselves to safe
-     features (with the flags --safe --no-sized-types --no-guardedness
-     and more).
+     features, with flags such as --safe --no-sized-types --no-guardedness
+     and more:
+     https://github.com/martinescardo/TypeTopology/blob/master/typetopology.agda-lib.
 
    * Most of the time we prefer to use Σ types rather than records,
      although records are not forbidden, as they are equivalent to
@@ -137,7 +137,10 @@ Philosophy of the repository
      extensionality, the existence of propositional truncations and
      the existence of quotients, and some higher inductive types.
 
-Click at the imported module names below to navigate to them:
+A short description of each of the following imported modules is available at
+https://github.com/martinescardo/TypeTopologyModuleDescriptions/
+
+Moreover, the files within these modules have extensive discussions in prose.
 
 \begin{code}
 
@@ -207,17 +210,14 @@ import gist.index
 
 \end{code}
 
-TODO. Explain what each of the above does here. This is long overdue.
-
 The above includes only the --safe modules. A list of all modules is here:
-
 https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html
 
 NB. This file is accessible from both
 
-(1) https://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html
-(2) https://martinescardo.github.io/TypeTopology/index.html
+(1) https://www.cs.bham.ac.uk/~mhe/TypeTopology
+(2) https://martinescardo.github.io/TypeTopology
 
 We have that currently (1) redirects to (2), but in the future we may
-choose a different redirection to (1), so please use (1) when citing
+choose a different redirection from (1), so please use (1) when citing
 the html rendering of this repository.

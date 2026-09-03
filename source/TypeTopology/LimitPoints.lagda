@@ -12,7 +12,7 @@ they are explicitly assumed. The idea is that we want our results to
 hold in any ∞-topos, and in more general settings too.
 
 If excluded middle holds, every point of every set is isolated, and so
-it is not possible to exhibit any isolated point. This changes if we
+it is not possible to exhibit any limit point. This changes if we
 assume anticlassical principles, such as "all functions (of some kind)
 are continuous". One of the weakest continuity principle is the
 negation of WLPO, as discussed in the module

@@ -3,10 +3,10 @@ Martin Escardo 2011, reorganized and expanded 2018,2019.
 Compact types. We shall call a type compact if it is exhaustibly
 searchable. But there are many closely related, but different, notions
 of searchability, and we investigate this phenomenon in this module
-and the module WeaklyCompactTypes.
+and the module TypeTopology.WeaklyCompactTypes.
 
 Perhaps surprisingly, there are infinite searchable sets, such as ℕ∞
-(see the module GenericConvergentSequenceCompactness).
+(see the module TypeTopology.GenericConvergentSequenceCompactness).
 
 It is in general not possible to decide constructively the statement
 
@@ -110,7 +110,7 @@ is-compact  = is-Σ-compact
 Notice that compactness in this sense is not in general a univalent
 proposition (subsingleton). Weaker notions, ∃-compactness and
 Π-compactness, that are always propositions are defined and studied in
-the module WeaklyCompactTypes.
+the module TypeTopology.WeaklyCompactTypes.
 
 The following notion is logically equivalent to the conjunction of
 compactness and pointedness, and hence the notation "compact∙":
@@ -314,8 +314,8 @@ compatible constructive mathematics, like Bishop's methamatics and
 Martin-Löf type theory (in its various flavours) - even the principle
 of excluded middle is independent.
 
-We'll see that the infinite set ℕ∞ defined in the module
-ConvergentSequenceCompact is compact.
+We'll see in TypeTopology.GenericConvergentSequenceCompactness that
+the infinite set ℕ∞ is compact.
 
 If a set X is compact∙ and a set Y has decidable equality, then the
 function space (X → Y) has decidable equality, if we assume function
@@ -730,23 +730,65 @@ Compact-types-are-compact {𝓤} {X} C p = iv
   ii : is-complemented (λ x → p x ＝ ₀)
   ii x = 𝟚-is-discrete (p x) ₀
 
-  iii : is-decidable (Σ x ꞉ X , p x ＝ ₀) → (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
+  iii : is-decidable (Σ x ꞉ X , p x ＝ ₀)
+      → (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   iii (inl σ) = inl σ
   iii (inr u) = inr (λ x → different-from-₀-equal-₁ (λ r → u (x , r)))
 
   iv : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   iv = iii (i ii)
 
-Compact-resize-up₀ : {X : 𝓤 ̇ } → is-Compact X {𝓤₀} → is-Compact X {𝓥}
-Compact-resize-up₀ C = compact-types-are-Compact
-                       (Compact-types-are-compact C)
 \end{code}
 
-TODO. Prove the converse of the previous observation, using the fact
-that any decidable proposition is logically equivalent to either 𝟘 or
-𝟙, and hence to a type in the universe 𝓤₀.
+A corollary is that we can resize up Compactness from 𝓤₀ to any universe.
 
 \begin{code}
+
+Compact-resize-up₀ : {X : 𝓤 ̇ } → is-Compact X {𝓤₀} → is-Compact X {𝓥}
+Compact-resize-up₀ C = compact-types-are-Compact
+                        (Compact-types-are-compact C)
+
+\end{code}
+
+But with a little more work, we can resize Compactness between any two
+universes.
+
+\begin{code}
+
+Compact-resize : {X : 𝓤 ̇ } → is-Compact X {𝓥} → is-Compact X {𝓦}
+Compact-resize {𝓤} {𝓥} {𝓦} {X} C A α = V
+ where
+  B' : (x : X) → is-decidable (A x) → 𝓥 ̇
+  B' x (inl _) = 𝟙
+  B' x (inr _) = 𝟘
+
+  B : X → 𝓥 ̇
+  B x = B' x (α x)
+
+  β' : (x : X) (d : is-decidable (A x)) → is-decidable (B' x d)
+  β' x (inl a₀) = inl ⋆
+  β' x (inr ν)  = inr 𝟘-elim
+
+  β : is-complemented B
+  β x = β' x (α x)
+
+  I : is-decidable (Σ B)
+  I = C B β
+
+  II : (x : X) (d : is-decidable (A x)) → B' x d → A x
+  II x (inl a) b = a
+  II x (inr ν) b = 𝟘-elim b
+
+  III : (x : X) (d : is-decidable (A x)) → A x → B' x d
+  III x (inl _) _ = ⋆
+  III x (inr ν) a = 𝟘-elim (ν a)
+
+  IV : is-decidable (Σ B) → is-decidable (Σ A)
+  IV (inl (x , b)) = inl (x , II x (α x) b)
+  IV (inr ν)       = inr (contrapositive (λ (x , a) → x , III x (α x) a) ν)
+
+  V : is-decidable (Σ A)
+  V = IV I
 
 is-Π-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 is-Π-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → is-complemented A → is-decidable (Π A)
@@ -853,6 +895,14 @@ Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → is-Compact Y {𝓦}
 Compact-closed-under-≃ e = Compact-closed-under-retracts (≃-gives-▷ e)
 
+retract-is-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                   → retract Y of X
+                   → is-compact X
+                   → is-compact Y
+retract-is-compact ρ c = Compact-types-are-compact
+                          (Compact-closed-under-retracts ρ
+                            (compact-types-are-Compact c))
+
 module CompactTypesPT (pt : propositional-truncations-exist) where
 
  open import UF.ImageAndSurjection pt
@@ -892,9 +942,10 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
 
 \end{code}
 
-In `TypeTopology.DenseMapsProperties` a generalization of the above result is
-given that applies to all dense maps, and does not use the function
-extensionality axiom or existence of propositional truncations.
+In TypeTopology.DenseMapsProperties a generalization of the above
+result is given that applies to all dense maps, and does not use the
+function extensionality axiom or existence of propositional
+truncations.
 
 \begin{code}
 
@@ -1032,7 +1083,7 @@ Compact∙-gives-pointed ε = pr₁ (ε (λ x → 𝟘) (λ x → 𝟘-is-decida
 
 \end{code}
 
-Based on what was done in the module WeaklyCompactTypes before:
+Based on what was done in the module TypeTopology.WeaklyCompactTypes before:
 
 \begin{code}
 
@@ -1317,7 +1368,7 @@ Added March 2022 by Martin Escardo.
 
 \end{code}
 
-Is the compactness assumption needed? Are there better assumptions
+TODO. Is the compactness assumption needed? Are there better assumptions?
 
 \begin{code}
 

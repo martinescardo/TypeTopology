@@ -12,7 +12,7 @@ To perform experiments, evaluate "example1" or "example2" to normal
 form. It is easy to create your own examples.
 
 Also, if you wish, choose another implementation of the K-shift in
-the wrapper module K-Shift following the instructions, and which
+the wrapper module InfinitePigeon.K-Shift following the instructions, and which
 proof of the infinite pigeonhole theorem is used in the module
 FinitePigeon, by importing a different module.
 

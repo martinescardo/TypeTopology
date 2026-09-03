@@ -10,7 +10,7 @@ Jong's domain theory development.
 If one starts with a dcpo with a specified small compact basis, one can ensure
 that the resulting Scott locale is locally small by quantifying over only the
 basic/compact opens. This is the difference between the construction in this
-module and the one in `ScottLocale.Definition`
+module and the one in `Locales.ScottLocale.Definition`.
 
 \begin{code}[hide]
 

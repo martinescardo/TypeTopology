@@ -121,6 +121,20 @@ module subset-complement (fe : Fun-Ext) where
  ∖-elim₁ : {X : 𝓤 ̇ } (A : 𝓟 {𝓥} X) (B : 𝓟 {𝓦} X) {x : X} → x ∈ A ∖ B → x ∉ B
  ∖-elim₁ A B = pr₂
 
+𝓟-inverse-image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                → (X → Y)
+                → 𝓟 {𝓦} Y → 𝓟 {𝓦} X
+𝓟-inverse-image {𝓤} {𝓥} {𝓦} {X} {Y} f B x = f x ∈ B , ∈-is-prop B (f x)
+
+module 𝓟-image (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ 𝓟-image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+         → (X → Y)
+         → 𝓟 {𝓦} X → 𝓟 {𝓤 ⊔ 𝓥 ⊔ 𝓦} Y
+ 𝓟-image {𝓤} {𝓥} {𝓦} {X} {Y} f A y = (∃ x ꞉ X , x ∈ A × (f x ＝ y)) , ∃-is-prop
+
 module inhabited-subsets (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt

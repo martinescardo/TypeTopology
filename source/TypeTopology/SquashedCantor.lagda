@@ -125,10 +125,9 @@ The above renaming in the Sequence import is for us to be able to
 avoid "yellow" with the following definitions, which specialize the
 implicit arguments of head', tail' and _∶∶'_. As a side-effect, this
 also speeds up type checking. NB. We could have used (and we tried) to
-have the necessary types as parameters of the module
-sequence. However, this doesn't work, as in another module
-(CountableTychonoff), these functions are used with different implicit
-parameters in the same term.
+have the necessary types as parameters of the module sequence. However, this
+doesn't work, as in another module (Unsafe.CountableTychonoff), these functions
+are used with different implicit parameters in the same term.
 
 \begin{code}
 
@@ -639,13 +638,13 @@ pair-seq-retract {𝓤} {X} = e
   open import Naturals.Binary
 
   a : retract (ℕ → X) of (𝔹 → X)
-  a = retract-covariance fe' (unary , binary , unary-binary)
+  a = retract-contravariance fe' (unary , binary , unary-binary)
 
   b : retract ((ℕ → X) × (ℕ → X)) of ((𝔹 → X) × (𝔹 → X))
   b = ×-retract a a
 
   c : retract (𝔹 → X) of (ℕ → X)
-  c = retract-covariance fe' (binary , unary , binary-unary)
+  c = retract-contravariance fe' (binary , unary , binary-unary)
 
   d : retract ((𝔹 → X) × (𝔹 → X)) of (𝔹 → X)
   d = (f , g , fg)
