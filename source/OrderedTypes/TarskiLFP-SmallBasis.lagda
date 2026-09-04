@@ -17,10 +17,10 @@ inf-lattices by considering (Ord 𝓤)ᵒᵖ, but we restrict attention to sup-l
 for now). The successor map on Ord 𝓤 is monotone iff LEM holds (see Theorem 8 of
 "Connecting Constructive Notions of Ordinals in Homotopy Type Theory" by Nicolai
 Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu ;
-https://doi.org/10.4230/LIPIcs.MFCS.2021.70). This result is also formalized in
-the TypeTopology library (see succ-not-necessarily-monotone and succ-monotone
-from the file Ordinals.AdditionProperties). Thus, in the presence of LEM, Ord 𝓤
-and the successor map provide a counter-example to TarskiLFP 𝓤 𝓦 𝓥. It is open
+https://doi.org/10.4230/LIPIcs.MFCS.2021.70). This result is formalized in the
+TypeTopology library (see succ-not-necessarily-monotone and succ-monotone from
+the file Ordinals.AdditionProperties). Thus, in the presence of LEM, Ord 𝓤 and
+the successor map provide a counter-example to TarskiLFP 𝓤 𝓦 𝓥. It is open
 whether there is a constructive and/or predicative counter-example to
 TarskiLFP 𝓤 𝓦 𝓥.
 
@@ -51,7 +51,7 @@ down-collection of x taken from B: Σ (b : B), β(b) ≤ x. Notice this type is 
 by definition of a small-basis so the join exists.
 
 In fact, it is this modification that will be the main focus of the current
-file. That is TarskiLFP-small-basis 𝓤 𝓦 𝓥 is the statement:
+file. That is, we call TarskiLFP-small-basis 𝓤 𝓦 𝓥 the following statement:
 
  Any monotone map f : L → L, where L : Sup-Lattice 𝓤 𝓦 𝓥 has a 𝓥-small basis,
  has a least fixed point.
@@ -60,7 +60,7 @@ Note: Ord 𝓤 does not have a 𝓤-small basis.
 
 The predicative status of TarskiLFP-small-basis 𝓤 𝓦 𝓥 is currently open. That is
 to say it is not known whether we can prove the above statement in a predicative
-theory. But at this time the author and others interested in the field are
+setting. But at this time the author and others interested in the field are
 doubtful that such a proof exists. In fact, it is believed by the author that
 TarskiLFP is in some way a 'predicative taboo' but exactly how strong of a
 predicative taboo is also open and a topic of current investigation.
@@ -97,9 +97,9 @@ For example something like B × ℕ {𝓥} with map B × ℕ {𝓥} → L given 
 
 But, this isn't necessarily a basis since fⁿ (β (b)) ≤ x isn't 𝓥-small and even
 if it were it would not necessarily be closed under infima; another critical
-fact used in the traditional proof. However, this lead to an alternative approach
-which was subsequently sketched and explained to the author. We will formalize
-and explain the proof here.
+fact used in the traditional proof. However, the failure of closing the basis
+suggested an alternative approach to Carlo, which was subsequently sketched and
+explained to the author. We will formalize and explain the proof here.
 
 \begin{code}
 
@@ -301,7 +301,7 @@ Now it follows rather directly that we have a least fixed point of f.
             (f-mono p x (lfp-is-a-lower-bound pr (x , fx≤x))) fx≤x)
    II : (p ≤⟨ L ⟩ f p) holds
    II = lfp-is-a-lower-bound pr (f (p) , f-mono (f p) p I)
-   III : (a : ⟨ L ⟩) → f a ＝ a → order-of L p a holds
+   III : (a : ⟨ L ⟩) → f a ＝ a → (p ≤⟨ L ⟩ a) holds
    III a fa＝a = lfp-is-a-lower-bound pr (a , ＝-to-≤ L fa＝a)
 
 \end{code}
