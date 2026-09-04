@@ -166,14 +166,14 @@ Finite types are discrete and hence sets:
    γ : P
    γ = ∥∥-rec i (λ 𝕗 → ⌜ 𝕗 ⌝⁻¹ 𝟎) s
 
- summands-of-finite-sum-always-finite-gives-EM :
-
-   ((𝓤 𝓥 : Universe) (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+ summands-of-finite-sum-always-finite-gives-EM
+  : ((𝓤 𝓥 : Universe) (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
           → is-finite (Σ A)
           → (x : X) → is-finite (A x))
 
   → (𝓦 : Universe) → funext 𝓦 𝓦 → propext 𝓦 → EM 𝓦
- summands-of-finite-sum-always-finite-gives-EM ϕ 𝓦 fe pe P i = γ
+ summands-of-finite-sum-always-finite-gives-EM ϕ 𝓦 fe pe P i
+  = γ
   where
    X : 𝓦 ⁺ ̇
    X = Ω 𝓦
