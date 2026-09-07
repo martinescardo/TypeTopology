@@ -155,7 +155,7 @@ reflexivity-of-quasi-cover-plus 𝒜 U a = reflexivity-of-quasi-cover 𝒜 a U
 \end{code}
 
 Two subsets of a quasi formal topology are called _cover equivalent_ if they
-cover each other. We define the syntax `U ＝[ 𝒜 ]＝ V` for this.
+cover each other. We define the syntax `U ＝[ 𝒜 ]＝ V` to denote this.
 
 \begin{code}
 
@@ -172,7 +172,7 @@ syntax cover-equivalence-of-quasi-formal-topology 𝒜 U V = U =[ 𝒜 ]= V
 
 \end{code}
 
-\subsection{Cover reasoning}
+\subsection{Cover reasoning for quasi formal topologies}
 
 The `Quasi-Cover-Reasoning` module defines constructs for writing chains of
 cover transitivity in a pretty way.
@@ -280,6 +280,8 @@ Formal-Topology 𝓤 = Σ A ꞉ 𝓤 ̇ , Formal-Topology-Structure A
 
 \subsection{Named projections for formal topologies}
 
+We now define some named projections for the `Formal-Topology` type.
+
 \begin{code}
 
 carrier-of-formal-topology : Formal-Topology 𝓤 → 𝓤 ̇
@@ -295,8 +297,7 @@ order-of-formal-topology (_ , _⊑_ , _) = _⊑_
 infix 5 order-of-formal-topology
 syntax order-of-formal-topology 𝒜 a b = a ⊑[ 𝒜 ] b
 
-cover-of-formal-topology : (𝒜 : Formal-Topology 𝓤)
-                         → ⟨ 𝒜 ⟩ → 𝓟 ⟨ 𝒜 ⟩ → Ω 𝓤
+cover-of-formal-topology : (𝒜 : Formal-Topology 𝓤) → ⟨ 𝒜 ⟩ → 𝓟 ⟨ 𝒜 ⟩ → Ω 𝓤
 cover-of-formal-topology (_ , _ , _◁_ , _) = _◁_
 
 infix 5 cover-of-formal-topology
@@ -373,11 +374,7 @@ The `_◁⁺_` operation for formal topologies.
 
 \begin{code}
 
-cover-plus-of-formal-topology
- : (𝒜 : Formal-Topology 𝓤)
- → 𝓟 ⟨ 𝒜 ⟩
- → 𝓟 ⟨ 𝒜 ⟩
- → Ω 𝓤
+cover-plus-of-formal-topology : (𝒜 : Formal-Topology 𝓤) → 𝓟 ⟨ 𝒜 ⟩ → 𝓟 ⟨ 𝒜 ⟩ → Ω 𝓤
 cover-plus-of-formal-topology =
  cover-plus-of-quasi-formal-topology ∘ underlying-quasi-formal-topology
 
@@ -391,6 +388,8 @@ transitivity-of-cover-plus =
  transitivity-of-quasi-cover-plus ∘ underlying-quasi-formal-topology
 
 \end{code}
+
+\section{Bibliography}
 
 [1]: Sara Negri. _Continuous domains as formal spaces_. Mathematical Structures
      in Computer Science, Volume 12, No. 1, pp. 19–52, 2002.
