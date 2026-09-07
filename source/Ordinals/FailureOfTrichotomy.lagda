@@ -48,14 +48,14 @@ open import CoNaturals.Type
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
-open import NotionsOfDecidability.Decidable
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.BrouwerCodes
-open import Ordinals.Notions
+open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Propositions ua
+open import Ordinals.TrichotomousType fe
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Taboos.LPO
@@ -70,7 +70,7 @@ The standard interpretation of Brouwer ordinal codes is called ⟦_⟧₀.
 
 \begin{code}
 
-open import Ordinals.BrouwerCodesInterpretations ua pt sr using (⟦_⟧₀)
+open import Ordinals.BrouwerCodesInterpretations ua pt sr using (⟦_⟧₀ ; ⟦_⟧₃)
 
 \end{code}
 
@@ -228,5 +228,35 @@ trichotomy-of-the-standard-interpretation-gives-LPO
  : ((b : B) → is-trichotomous ⟦ b ⟧₀) → LPO
 trichotomy-of-the-standard-interpretation-gives-LPO τ
  = LPO'-gives-LPO (λ u → main-lemma u (τ (brouwer-code u)))
+
+\end{code}
+
+Added 7th September 2026.
+
+If the comparison of the standard interpretation into the
+trichotomous interpretation holds for every code, then the standard
+interpretation is trichotomous, and so LPO holds.
+
+\begin{code}
+
+comparison₀₃-gives-LPO : ((b : B) → ⟦ b ⟧₀ ⊴ [ ⟦ b ⟧₃ ]) → LPO
+comparison₀₃-gives-LPO h = II
+ where
+  I : (b : B) → is-trichotomous ⟦ b ⟧₀
+  I b = simulation-into-trichotomous-gives-trichotomous
+         α₀ α₃ f s (3is-trichotomous ⟦ b ⟧₃)
+   where
+    α₀ α₃ : Ordinal 𝓤₀
+    α₀ = ⟦ b ⟧₀
+    α₃ = [ ⟦ b ⟧₃ ]
+
+    f : ⟨ α₀ ⟩ → ⟨ α₃ ⟩
+    f = [ α₀ , α₃ ]⟨ h b ⟩
+
+    s : is-simulation α₀ α₃ f
+    s = [ α₀ , α₃ ]⟨ h b ⟩-is-simulation
+
+  II : LPO
+  II = trichotomy-of-the-standard-interpretation-gives-LPO I
 
 \end{code}

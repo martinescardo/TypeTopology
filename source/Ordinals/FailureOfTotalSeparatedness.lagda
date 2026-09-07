@@ -933,7 +933,8 @@ non-standard interpretation maps Z to one rather than zero.
 \begin{code}
 
 open import Ordinals.BrouwerCodes
-open import Ordinals.BrouwerCodesInterpretations ua pt sr using (⟦_⟧₂)
+open import Ordinals.ToppedType fe
+open import Ordinals.BrouwerCodesInterpretations ua pt sr using (⟦_⟧₁ ; ⟦_⟧₂ ; ⟦_⟧₁-is-totally-separated)
 open import Ordinals.Arithmetic fe renaming (𝟚ₒ to 𝟚ₒ-standard)
 
 total-separatedness-of-the-sup-of-extension-interpretation-gives-¬¬WLPO
@@ -964,5 +965,35 @@ total-separatedness-of-the-sup-of-extension-interpretation-gives-¬¬WLPO ts
 
   V : ¬¬ WLPO
   V = 𝓼-totally-separated-gives-¬¬WLPO IV
+
+\end{code}
+
+Added 7th September 2026.
+
+If the comparison of the compact interpretation into the compact
+totally separated interpretation holds for every code, then the
+compact interpretation is totally separated, and so ¬¬ WLPO holds.
+
+\begin{code}
+
+comparison₂₁-gives-¬¬WLPO : ((b : B) → ⟦ b ⟧₂ ⊴ [ ⟦ b ⟧₁ ]) → ¬¬ WLPO
+comparison₂₁-gives-¬¬WLPO h = II
+ where
+  I : (b : B) → is-totally-separated ⟨ ⟦ b ⟧₂ ⟩
+  I b = embedding-into-totally-separated-gives-totally-separated
+         f (simulations-are-embeddings fe α₂ α₁ f s) ⟦ b ⟧₁-is-totally-separated
+   where
+    α₁ α₂ : Ordinal 𝓤₀
+    α₁ = [ ⟦ b ⟧₁ ]
+    α₂ = ⟦ b ⟧₂
+
+    f : ⟨ α₂ ⟩ → ⟨ α₁ ⟩
+    f = [ α₂ , α₁ ]⟨ h b ⟩
+
+    s : is-simulation α₂ α₁ f
+    s = [ α₂ , α₁ ]⟨ h b ⟩-is-simulation
+
+  II : ¬¬ WLPO
+  II = total-separatedness-of-the-sup-of-extension-interpretation-gives-¬¬WLPO I
 
 \end{code}

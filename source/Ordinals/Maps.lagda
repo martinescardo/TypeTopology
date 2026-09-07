@@ -241,6 +241,25 @@ simulations-are-order-reflecting α β f (i , p) =
  lc-initial-segments-are-order-reflecting α β f i
   (simulations-are-lc α β f (i , p))
 
+simulation-into-trichotomous-gives-trichotomous :
+   (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
+ → is-simulation α β f
+ → is-trichotomous β
+ → is-trichotomous α
+simulation-into-trichotomous-gives-trichotomous α β f s tβ x y = γ (tβ (f x) (f y))
+ where
+  r : is-order-reflecting α β f
+  r = simulations-are-order-reflecting α β f s
+
+  c : left-cancellable f
+  c = simulations-are-lc α β f s
+
+  γ : (f x ≺⟨ β ⟩ f y) + (f x ＝ f y) + (f y ≺⟨ β ⟩ f x)
+    → (x ≺⟨ α ⟩ y) + (x ＝ y) + (y ≺⟨ α ⟩ x)
+  γ (inl l)       = inl (r x y l)
+  γ (inr (inl e)) = inr (inl (c e))
+  γ (inr (inr l)) = inr (inr (r y x l))
+
 order-embeddings-are-lc : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                         → is-order-embedding α β f
                         → left-cancellable f
