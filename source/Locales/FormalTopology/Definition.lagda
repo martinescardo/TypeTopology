@@ -2,7 +2,7 @@
 title: Definition of Formal Topology
 author: Ayberk Tosun
 date-started: 2026-07-06
-date-completed: 2026-08-26
+date-completed: 2026-09-01
 ---
 
 This module defines the notions of formal topology and quasi formal topology,
