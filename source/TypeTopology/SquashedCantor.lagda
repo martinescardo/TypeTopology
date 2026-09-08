@@ -593,15 +593,15 @@ Hence Cons is left invertible, or has a section:
 
 \begin{code}
 
-Snoc : Cantor → 𝔻 Cantor
-Snoc α = (Head α , Tail α)
+Cons⁻¹ : Cantor → 𝔻 Cantor
+Cons⁻¹ α = (Head α , Tail α)
 
-Snoc-Cons : (d : 𝔻 Cantor) → Snoc (Cons d) ＝ d
-Snoc-Cons (u , π) = to-Σ-＝ (Head-Cons u π , Tail-Cons' u π)
+Cons⁻¹-Cons : (d : 𝔻 Cantor) → Cons⁻¹ (Cons d) ＝ d
+Cons⁻¹-Cons (u , π) = to-Σ-＝ (Head-Cons u π , Tail-Cons' u π)
 
 
 𝔻-Cantor-retract-of-Cantor : retract (𝔻 Cantor) of Cantor
-𝔻-Cantor-retract-of-Cantor = Snoc , Cons , Snoc-Cons
+𝔻-Cantor-retract-of-Cantor = Cons⁻¹ , Cons , Cons⁻¹-Cons
 
 \end{code}
 
@@ -690,7 +690,7 @@ End for the moment. 20 July 2018.
 Added 8th September 2026.
 
 We now show that Cons is also right invertible, so that it is a
-equivalence with inverse Snoc.
+equivalence with inverse Cons⁻¹.
 
 Transporting a finiteness witness along an identification of elements
 of ℕ∞ doesn't change its size:
@@ -703,11 +703,11 @@ size-transport-finite⁻¹ refl φ = refl
 
 \end{code}
 
-We now compute Cons (Snoc α) in the two cases in which α starts with ₀
-or with ₁. In the first case the Head of α is Zero, and so Cons (Snoc α)
+We now compute Cons (Cons⁻¹ α) in the two cases in which α starts with ₀
+or with ₁. In the first case the Head of α is Zero, and so Cons (Cons⁻¹ α)
 is α itself, written as ₀ ∶∶ tail α. In the second case the Head of α
-is the successor of the Head of tail α, and so Cons (Snoc α) is ₁
-followed by Cons (Snoc (tail α)).
+is the successor of the Head of tail α, and so Cons (Cons⁻¹ α) is ₁
+followed by Cons (Cons⁻¹ (tail α)).
 
 The crucial step in both cases is that the finiteness witness produced
 by the transport has the size that makes Tail α agree with tail α in
@@ -715,10 +715,10 @@ the first case, and with Tail (tail α) in the second, by definition.
 
 \begin{code}
 
-Cons-Snoc₀ : (α : Cantor)
+Cons-Cons⁻¹₀ : (α : Cantor)
            → head α ＝ ₀
            → Cons (Head α , Tail α) ＝ ₀ ∶∶ tail α
-Cons-Snoc₀ α r =
+Cons-Cons⁻¹₀ α r =
  Cons (Head α , Tail α)         ＝⟨ I ⟩
  Cons (Zero , Tail α ∘ t)       ＝⟨ II ⟩
  ₀ ∶∶ Tail α (t Zero-is-finite) ＝⟨ III ⟩
@@ -738,11 +738,11 @@ Cons-Snoc₀ α r =
    II  = Cons₀ (Tail α ∘ t)
    III = ap (λ - → ₀ ∶∶ -) e
 
-Cons-Snoc₁ : (α : Cantor)
-           → head α ＝ ₁
-           → Cons (Head α , Tail α)
-           ＝ ₁ ∶∶ Cons (Head (tail α) , Tail (tail α))
-Cons-Snoc₁ α r =
+Cons-Cons⁻¹₁ : (α : Cantor)
+             → head α ＝ ₁
+             → Cons (Head α , Tail α)
+             ＝ ₁ ∶∶ Cons (Head (tail α) , Tail (tail α))
+Cons-Cons⁻¹₁ α r =
  Cons (Head α , Tail α)                     ＝⟨ I ⟩
  Cons (Succ (Head (tail α)) , Tail α ∘ t)   ＝⟨ II ⟩
  ₁ ∶∶ Cons (Head (tail α) , Tail α ∘ t ∘ f) ＝⟨ III ⟩
@@ -774,28 +774,28 @@ tail of α rather than for α itself:
 
 \begin{code}
 
-Cons-Snoc : (α : Cantor) → Cons (Snoc α) ＝ α
-Cons-Snoc α = dfunext fe' (λ i → γ i α)
+Cons-Cons⁻¹ : (α : Cantor) → Cons (Cons⁻¹ α) ＝ α
+Cons-Cons⁻¹ α = dfunext fe' (λ i → γ i α)
  where
   γ : (i : ℕ) (β : Cantor) → Cons (Head β , Tail β) i ＝ β i
   γ 0 β =
    𝟚-equality-cases
     (λ (r : head β ＝ ₀)
-          → let I = ap (λ - → - 0) (Cons-Snoc₀ β r)
+          → let I = ap (λ - → - 0) (Cons-Cons⁻¹₀ β r)
             in Cons (Head β , Tail β) 0 ＝⟨ I ⟩
                (₀ ∶∶ tail β) 0          ＝⟨ r ⁻¹ ⟩
                β 0                      ∎)
     (λ (r : head β ＝ ₁)
-          → let I = ap (λ - → - 0) (Cons-Snoc₁ β r)
+          → let I = ap (λ - → - 0) (Cons-Cons⁻¹₁ β r)
             in Cons (Head β , Tail β) 0                      ＝⟨ I ⟩
                (₁ ∶∶ Cons (Head (tail β) , Tail (tail β))) 0 ＝⟨ r ⁻¹ ⟩
                β 0                                           ∎)
   γ (succ i) β =
    𝟚-equality-cases
     (λ (r : head β ＝ ₀)
-          → ap (λ - → - (succ i)) (Cons-Snoc₀ β r))
+          → ap (λ - → - (succ i)) (Cons-Cons⁻¹₀ β r))
     (λ (r : head β ＝ ₁)
-          → let I  = ap (λ - → - (succ i)) (Cons-Snoc₁ β r)
+          → let I  = ap (λ - → - (succ i)) (Cons-Cons⁻¹₁ β r)
                 II = γ i (tail β)
             in Cons (Head β , Tail β) (succ i)                      ＝⟨ I ⟩
                (₁ ∶∶ Cons (Head (tail β) , Tail (tail β))) (succ i) ＝⟨ II ⟩
@@ -808,7 +808,7 @@ And so Cons is an equivalence, as promised above:
 \begin{code}
 
 Cons-is-equiv : is-equiv Cons
-Cons-is-equiv = qinvs-are-equivs Cons (Snoc , Snoc-Cons , Cons-Snoc)
+Cons-is-equiv = qinvs-are-equivs Cons (Cons⁻¹ , Cons⁻¹-Cons , Cons-Cons⁻¹)
 
 𝔻-Cantor-≃-Cantor : 𝔻 Cantor ≃ Cantor
 𝔻-Cantor-≃-Cantor = Cons , Cons-is-equiv
