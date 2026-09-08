@@ -31,6 +31,7 @@ open import Naturals.Sequence fe
 open import Notation.CanonicalMap
 open import TypeTopology.SquashedSum fe
 open import UF.Base
+open import UF.Equiv
 open import UF.Retracts
 open import UF.Retracts-FunExt
 
@@ -604,10 +605,9 @@ Snoc-Cons (u , π) = to-Σ-＝ (Head-Cons u π , Tail-Cons' u π)
 
 \end{code}
 
-We actually have an equivalence, not just a retraction (as a
-consequence of Lambek's Lemma - see unfinished code below), but we
-delay a proof of this as it is not needed for our immediate purpose
-of showing that our searchable ordinals are totally separated.
+We actually have an equivalence, not just a retraction, but we delay a
+proof of this, given below, as it is not needed for our immediate
+purpose of showing that our searchable ordinals are totally separated.
 
 \begin{code}
 
@@ -687,53 +687,135 @@ BinaryNaturals (which is not needed for the moment).
 
 End for the moment. 20 July 2018.
 
-TODO. Complete the following.
+Added 8th September 2026.
+
+We now show that Cons is also right invertible, so that it is a
+equivalence with inverse Snoc.
+
+Transporting a finiteness witness along an identification of elements
+of ℕ∞ doesn't change its size:
 
 \begin{code}
 
-{-
-Cons-Snoc : (α : Cantor) → Cons (Snoc α) ＝ α
-Cons-Snoc α = dfunext fe' (λ φ → γ φ α)
- where
-  γ : (i : ℕ) (α : Cantor) → Cons (Head α , Tail α) i ＝ α i
-  γ 0 α = 𝟚-equality-cases a b
-   where
-    a : head α ＝ ₀ → Cons (Head α , Tail α) 0 ＝ α 0
-    a r = ap head (p ∙ q) ∙ r ⁻¹
-     where
-      s : Head α ＝ Zero
-      s = Head₀ α r
-      p : Cons (Head α , Tail α) ＝ Cons (Zero , Tail α ∘ transport-finite⁻¹ s)
-      p = to-Cons-＝ {Head α} {Zero} (Head α) (Tail α) s {id} {transport-finite⁻¹ s}
-      q : Cons (Zero , Tail α ∘ transport-finite⁻¹ s)
-        ＝ ₀ ∶∶  Tail α (transport-finite⁻¹ s Zero-is-finite)
-      q = Cons₀ (Tail α ∘ transport-finite⁻¹ s)
-    b : head α ＝ ₁ → Cons (Head α , Tail α) 0 ＝ α 0
-    b r = ap head (p ∙ q) ∙ r ⁻¹
-     where
-      s : Head α ＝ Succ (Head (tail α))
-      s = Head₁ α r
-      p : Cons (Head α , Tail α)
-       ＝ Cons (Succ (Head (tail α)) , Tail α ∘ transport-finite⁻¹ s)
-      p = to-Cons-＝ {Head α} {Succ (Head (tail α))} (Head α) (Tail α) s {id} {transport-finite⁻¹ s}
-      q : Cons (Succ (Head (tail α)) , Tail α ∘ transport-finite⁻¹ s)
-       ＝ (₁ ∶∶  Cons ((Head (tail α)) , (Tail α ∘ transport-finite⁻¹ s ∘ is-finite-up (Head (tail α)))))
-      q = Cons₁ (Head (tail α)) (Tail α ∘ transport-finite⁻¹ s)
-
-  γ (succ i) α = g
-   where
-    IH : Cons (Head α , Tail α) i ＝ α i
-    IH = γ i (α)
-    g : Cons (Head α , Tail α) (succ i) ＝ α (succ i)
-    g = Cons (Head α , Tail α) (succ i) ＝⟨ {!!} ⟩
-        {!!} ＝⟨ {!!} ⟩
-        {!!} ＝⟨ {!!} ⟩
-        {!!} ＝⟨ {!!} ⟩
-        {!!} ＝⟨ {!!} ⟩
-        α (succ i) ∎
--}
+size-transport-finite⁻¹ : {u v : ℕ∞} (p : u ＝ v) (φ : is-finite v)
+                        → size (transport-finite⁻¹ p φ) ＝ size φ
+size-transport-finite⁻¹ refl φ = refl
 
 \end{code}
+
+We now compute Cons (Snoc α) in the two cases in which α starts with ₀
+or with ₁. In the first case the Head of α is Zero, and so Cons (Snoc α)
+is α itself, written as ₀ ∶∶ tail α. In the second case the Head of α
+is the successor of the Head of tail α, and so Cons (Snoc α) is ₁
+followed by Cons (Snoc (tail α)).
+
+The crucial step in both cases is that the finiteness witness produced
+by the transport has the size that makes Tail α agree with tail α in
+the first case, and with Tail (tail α) in the second, by definition.
+
+\begin{code}
+
+Cons-Snoc₀ : (α : Cantor)
+           → head α ＝ ₀
+           → Cons (Head α , Tail α) ＝ ₀ ∶∶ tail α
+Cons-Snoc₀ α r =
+ Cons (Head α , Tail α)         ＝⟨ I ⟩
+ Cons (Zero , Tail α ∘ t)       ＝⟨ II ⟩
+ ₀ ∶∶ Tail α (t Zero-is-finite) ＝⟨ III ⟩
+ ₀ ∶∶ tail α                    ∎
+  where
+   s : Head α ＝ Zero
+   s = Head₀ α r
+
+   t : is-finite Zero → is-finite (Head α)
+   t = transport-finite⁻¹ s
+
+   e : Tail α (t Zero-is-finite) ＝ tail α
+   e = ap (λ - k → α (k ∔ succ -))
+          (size-transport-finite⁻¹ s Zero-is-finite)
+
+   I   = ap-Cantor (λ u π → Cons (u , π)) s
+   II  = Cons₀ (Tail α ∘ t)
+   III = ap (λ - → ₀ ∶∶ -) e
+
+Cons-Snoc₁ : (α : Cantor)
+           → head α ＝ ₁
+           → Cons (Head α , Tail α)
+           ＝ ₁ ∶∶ Cons (Head (tail α) , Tail (tail α))
+Cons-Snoc₁ α r =
+ Cons (Head α , Tail α)                     ＝⟨ I ⟩
+ Cons (Succ (Head (tail α)) , Tail α ∘ t)   ＝⟨ II ⟩
+ ₁ ∶∶ Cons (Head (tail α) , Tail α ∘ t ∘ f) ＝⟨ III ⟩
+ ₁ ∶∶ Cons (Head (tail α) , Tail (tail α))  ∎
+  where
+   s : Head α ＝ Succ (Head (tail α))
+   s = Head₁ α r
+
+   t : is-finite (Succ (Head (tail α))) → is-finite (Head α)
+   t = transport-finite⁻¹ s
+
+   f : is-finite (Head (tail α)) → is-finite (Succ (Head (tail α)))
+   f = is-finite-up (Head (tail α))
+
+   e : Tail α ∘ t ∘ f ＝ Tail (tail α)
+   e = dfunext fe'
+        (λ φ → ap (λ - k → α (k ∔ succ -))
+                  (size-transport-finite⁻¹ s (f φ)))
+
+   I   = ap-Cantor (λ u π → Cons (u , π)) s
+   II  = Cons₁ (Head (tail α)) (Tail α ∘ t)
+   III = ap (λ - → ₁ ∶∶ Cons (Head (tail α) , -)) e
+
+\end{code}
+
+The two cases fit together by induction on the index i. Only the
+second case invokes the induction hypothesis, and it does so for the
+tail of α rather than for α itself:
+
+\begin{code}
+
+Cons-Snoc : (α : Cantor) → Cons (Snoc α) ＝ α
+Cons-Snoc α = dfunext fe' (λ i → γ i α)
+ where
+  γ : (i : ℕ) (β : Cantor) → Cons (Head β , Tail β) i ＝ β i
+  γ 0 β =
+   𝟚-equality-cases
+    (λ (r : head β ＝ ₀)
+          → let I = ap (λ - → - 0) (Cons-Snoc₀ β r)
+            in Cons (Head β , Tail β) 0 ＝⟨ I ⟩
+               (₀ ∶∶ tail β) 0          ＝⟨ r ⁻¹ ⟩
+               β 0                      ∎)
+    (λ (r : head β ＝ ₁)
+          → let I = ap (λ - → - 0) (Cons-Snoc₁ β r)
+            in Cons (Head β , Tail β) 0                      ＝⟨ I ⟩
+               (₁ ∶∶ Cons (Head (tail β) , Tail (tail β))) 0 ＝⟨ r ⁻¹ ⟩
+               β 0                                           ∎)
+  γ (succ i) β =
+   𝟚-equality-cases
+    (λ (r : head β ＝ ₀)
+          → ap (λ - → - (succ i)) (Cons-Snoc₀ β r))
+    (λ (r : head β ＝ ₁)
+          → let I  = ap (λ - → - (succ i)) (Cons-Snoc₁ β r)
+                II = γ i (tail β)
+            in Cons (Head β , Tail β) (succ i)                      ＝⟨ I ⟩
+               (₁ ∶∶ Cons (Head (tail β) , Tail (tail β))) (succ i) ＝⟨ II ⟩
+               β (succ i)                                           ∎)
+
+\end{code}
+
+And so Cons is an equivalence, as promised above:
+
+\begin{code}
+
+Cons-is-equiv : is-equiv Cons
+Cons-is-equiv = qinvs-are-equivs Cons (Snoc , Snoc-Cons , Cons-Snoc)
+
+𝔻-Cantor-≃-Cantor : 𝔻 Cantor ≃ Cantor
+𝔻-Cantor-≃-Cantor = Cons , Cons-is-equiv
+
+\end{code}
+
+End of 8th September 2026 addition.
 
 Added 20th December 2023.
 
