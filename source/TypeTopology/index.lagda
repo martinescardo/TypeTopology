@@ -17,6 +17,7 @@ import TypeTopology.BoundedDecreasingSequences
 import TypeTopology.Cantor
 import TypeTopology.CantorMinusPoint
 import TypeTopology.CantorSearch
+import TypeTopology.CompactTotallySeparatedTypesArticle
 import TypeTopology.CompactTypes
 import TypeTopology.ConvergentSequenceHasInf
 import TypeTopology.DecidabilityOfNonContinuity
