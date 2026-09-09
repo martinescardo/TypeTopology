@@ -297,6 +297,13 @@ only your name as author.
 
    https://anna-maths.xyz/assets/papers/disp-categories.pdf
 
+1. Martín H. Escardó. *Compact totally separated types*, preprint, 9th September 2026.
+
+   https://www.cs.bham.ac.uk/~mhe/papers/compact-totally-separated.pdf
+
+   Agda companion.
+   https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html
+
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
 [LICS21]: https://easyconferences.eu/lics2021/
