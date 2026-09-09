@@ -1327,7 +1327,6 @@ Lemma-4-36-1 = refl
 Lemma-4-36-2 : 𝔻 Cantor ≃ Cantor
 Lemma-4-36-2 = 𝔻-Cantor-≃-Cantor
 
-
 \end{code}
 
 Section 5. Ordinals and their arithmetic
