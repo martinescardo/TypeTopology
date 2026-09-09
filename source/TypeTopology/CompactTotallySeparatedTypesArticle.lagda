@@ -5,7 +5,7 @@ examples and remarks of the paper
 
    Martín Hötzel Escardó
    Compact totally separated types
-   https://www.cs.bham.ac.uk/~mhe/papers/totally-separated.pdf
+   https://www.cs.bham.ac.uk/~mhe/papers/compact-totally-separated.pdf
 
 in the same order and with the same numbering, including the
 mathematical discussions in its prose, so that a reader of the paper
