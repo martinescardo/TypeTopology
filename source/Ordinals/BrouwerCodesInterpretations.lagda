@@ -365,6 +365,27 @@ comparison₃₁ em b = ≼-gives-⊴ _ _
 
 This completes the promised comparisons.
 
+Added 7th September 2026.
+
+TODO. We know from Ordinals.FailureOfTotalSeparatedness and
+Ordinals.FailureOfTrichotomy that
+
+ 1. ((b : B) → ⟦ b ⟧₀ ⊴ [ ⟦ b ⟧₃ ]) → LPO
+
+ 2. ((b : B) → ⟦ b ⟧₂ ⊴ [ ⟦ b ⟧₁ ]) → ¬¬ WLPO
+
+It is likely that the statement
+
+ 3. (b : B) → ⟦ b ⟧₀ ⊴ ⟦ b ⟧₂
+
+implies some constructive taboo, and that the statement
+
+ 4. (b : B) → [ ⟦ b ⟧₃ ] ⊴ [ ⟦ b ⟧₁ ]
+
+just holds constructively.
+
+End of addition.
+
 Unimportant. We also have:
 
 \begin{code}

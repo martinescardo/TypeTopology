@@ -51,6 +51,7 @@ private
 open import CoNaturals.Type
 open import Fin.Topology
 open import Fin.Type
+open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import Naturals.Binary hiding (_+_)
 open import Notation.CanonicalMap hiding (ι)
@@ -75,6 +76,7 @@ open import TypeTopology.MicroTychonoff
 open import TypeTopology.SigmaDiscrete
 open import TypeTopology.SigmaTotallySeparated
 open import TypeTopology.TotallySeparated
+open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
@@ -776,8 +778,9 @@ and (1), so that the proposition "(P → 2) has decidable equality"
 seems to be strictly between "P is decidable" and "¬P is decidable".
 This is discussed in the file Taboos.P2.
 
-TODO. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do have
-(ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in Ordinals.ConvergentSequence.
+QUESTION. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do
+have (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in Ordinals.ConvergentSequence. This is
+below: the condition is equivalent to LPO.
 
 TODO. Define an element x of an ordinal to be trisolated if for every
 y we have that y ≺ x or x ＝ y or x ≺ y.  Notice that trisolated
@@ -1062,5 +1065,194 @@ LPO-gives-Δ-least-roots pe lpo ν = ≃ₒ-gives-has-least-roots
  → ((ν : E) → has-least-roots-of-complemented-subsets (Δ ν)) ↔ LPO
 Δ-least-roots-iff-LPO pe = Δ-least-roots-gives-LPO ,
                            LPO-gives-Δ-least-roots pe
+
+\end{code}
+
+Added 8th September 2026.
+
+We now answer the question of whether (ν : E) → [ Δ ν ] ⊴ [ Κ ν ],
+raised above. The answer is that this is equivalent to LPO, and one
+code already accounts for the failure, namely ⌜ω+𝟙⌝ ⌜+⌝ ⌜𝟙⌝, whose
+discrete interpretation is ω + 2 and whose compact interpretation is
+ℕ∞ + 1.
+
+The point is that in the sum ℕ∞ + 1 every element of ℕ∞ is below the
+added top element, so that a simulation from ω + 2 has to hit every
+element of ℕ∞, which gives a section of ι𝟙 and hence LPO. Notice that
+for the code ⌜ω+𝟙⌝ alone we do have succₒ ω ⊴ ℕ∞ᵒ, because the
+elements of ℕ∞ below ∞ are precisely the finite ones.
+
+\begin{code}
+
+open import UF.Univalence
+
+module _ (ua : Univalence) where
+
+ open import Ordinals.ConvergentSequence ua
+ open import Ordinals.Maps hiding
+                            (is-order-preserving ;
+                             is-order-reflecting)
+ open import Ordinals.OrdinalOfOrdinals ua
+
+ ⌜ω+𝟚⌝ : E
+ ⌜ω+𝟚⌝ = ⌜ω+𝟙⌝ ⌜+⌝ ⌜𝟙⌝
+
+ Δ-⊴-Κ-gives-LPO : [ Δ ⌜ω+𝟚⌝ ] ⊴ [ Κ ⌜ω+𝟚⌝ ] → LPO
+ Δ-⊴-Κ-gives-LPO (f , f-init , f-op) = ι𝟙-has-section-gives-LPO (s , ε)
+  where
+   δ κ : Ordᵀ
+   δ = Δ ⌜ω+𝟚⌝
+   κ = Κ ⌜ω+𝟚⌝
+
+   q : ⟨ κ ⟩ → ℕ∞
+   q (inl ⋆ , u) = u
+   q (inr ⋆ , ⋆) = ∞
+
+   nothing-above-the-top : (y : ⟨ κ ⟩) → ¬ ((inr ⋆ , ⋆) ≺⟨ κ ⟩ y)
+   nothing-above-the-top (inl ⋆ , u) (inl l)       = l
+   nothing-above-the-top (inl ⋆ , u) (inr (r , l)) = +disjoint (r ⁻¹)
+   nothing-above-the-top (inr ⋆ , ⋆) (inl l)       = l
+   nothing-above-the-top (inr ⋆ , ⋆) (inr (r , l)) = l
+
+\end{code}
+
+The left summand of δ is mapped to the left summand of κ, because
+nothing lies above the top element of κ.
+
+\begin{code}
+
+   in-left : (z : ℕ + 𝟙) → Σ u ꞉ ℕ∞ , f (inl ⋆ , z) ＝ (inl ⋆ , u)
+   in-left z = h (f (inl ⋆ , z)) refl
+    where
+     l : f (inl ⋆ , z) ≺⟨ κ ⟩ f (inr ⋆ , ⋆)
+     l = f-op (inl ⋆ , z) (inr ⋆ , ⋆) (inl ⋆)
+
+     h : (y : ⟨ κ ⟩)
+       → f (inl ⋆ , z) ＝ y
+       → Σ u ꞉ ℕ∞ , f (inl ⋆ , z) ＝ (inl ⋆ , u)
+     h (inl ⋆ , u) e = u , e
+     h (inr ⋆ , ⋆) e = 𝟘-elim
+                        (nothing-above-the-top
+                          (f (inr ⋆ , ⋆))
+                          (transport (λ - → - ≺⟨ κ ⟩ f (inr ⋆ , ⋆)) e l))
+
+   g : ℕ + 𝟙 → ℕ∞
+   g z = pr₁ (in-left z)
+
+   fg : (z : ℕ + 𝟙) → f (inl ⋆ , z) ＝ (inl ⋆ , g z)
+   fg z = pr₂ (in-left z)
+
+\end{code}
+
+The map g is a simulation, and hence is ι𝟙, as simulations are unique.
+
+\begin{code}
+
+   g-op : is-order-preserving (succₒ ω) ℕ∞ᵒ g
+   g-op z z' l = γ (transport₂
+                     (λ a b → a ≺⟨ κ ⟩ b)
+                     (fg z)
+                     (fg z')
+                     (f-op (inl ⋆ , z) (inl ⋆ , z') (inr (refl , l))))
+    where
+     γ : ((inl ⋆ , g z) ≺⟨ κ ⟩ (inl ⋆ , g z')) → g z ≺⟨ ℕ∞ₒ ⟩ g z'
+     γ (inl l')          = 𝟘-elim l'
+     γ (inr (refl , l')) = l'
+
+   g-init : is-initial-segment [ succₒ ω ] ℕ∞ₒ g
+   g-init z v m = γ (f-init (inl ⋆ , z) (inl ⋆ , v) m')
+    where
+     m' : (inl ⋆ , v) ≺⟨ κ ⟩ f (inl ⋆ , z)
+     m' = transport
+           (λ - → (inl ⋆ , v) ≺⟨ κ ⟩ -)
+           ((fg z)⁻¹)
+           (inr (refl , m))
+
+     γ : (Σ x ꞉ ⟨ δ ⟩ , (x ≺⟨ δ ⟩ (inl ⋆ , z)) × (f x ＝ (inl ⋆ , v)))
+       → Σ z' ꞉ ℕ + 𝟙 , (z' ≺⟨ succₒ ω ⟩ z) × (g z' ＝ v)
+     γ ((inl ⋆ , w) , inl l          , e) = 𝟘-elim l
+     γ ((inl ⋆ , w) , inr (refl , l) , e) = w , l , ap q ((fg w)⁻¹ ∙ e)
+     γ ((inr ⋆ , ⋆) , inl l          , e) = 𝟘-elim l
+     γ ((inr ⋆ , ⋆) , inr (r , l)    , e) = 𝟘-elim (+disjoint (r ⁻¹))
+
+   g-is-ι𝟙 : g ∼ ι𝟙
+   g-is-ι𝟙 = at-most-one-simulation
+              [ succₒ ω ]
+              ℕ∞ₒ
+              g
+              ι𝟙
+              (g-init , g-op)
+              (pr₂ ω+𝟙-is-⊴-ℕ∞)
+
+\end{code}
+
+Therefore the top element of δ is mapped to the top element of κ,
+because otherwise ∞ = g (inr ⋆) would have an element of ℕ∞ above it.
+
+\begin{code}
+
+   f-top : f (inr ⋆ , ⋆) ＝ (inr ⋆ , ⋆)
+   f-top = h (f (inr ⋆ , ⋆)) refl
+    where
+     h : (y : ⟨ κ ⟩)
+       → f (inr ⋆ , ⋆) ＝ y
+       → f (inr ⋆ , ⋆) ＝ (inr ⋆ , ⋆)
+     h (inr ⋆ , ⋆) e = e
+     h (inl ⋆ , w) e = 𝟘-elim
+                        (∞-top w
+                          (transport (λ - → - ≺⟨ ℕ∞ᵒ ⟩ w) (g-is-ι𝟙 (inr ⋆)) m))
+      where
+       l : (inl ⋆ , g (inr ⋆)) ≺⟨ κ ⟩ (inl ⋆ , w)
+       l = transport₂
+            (λ a b → a ≺⟨ κ ⟩ b)
+            (fg (inr ⋆))
+            e
+            (f-op (inl ⋆ , inr ⋆) (inr ⋆ , ⋆) (inl ⋆))
+
+       m : g (inr ⋆) ≺⟨ ℕ∞ᵒ ⟩ w
+       m = γ l
+        where
+         γ : ((inl ⋆ , g (inr ⋆)) ≺⟨ κ ⟩ (inl ⋆ , w)) → g (inr ⋆) ≺⟨ ℕ∞ᵒ ⟩ w
+         γ (inl l')          = 𝟘-elim l'
+         γ (inr (refl , l')) = l'
+
+\end{code}
+
+And so every element of ℕ∞ is in the image of g, which gives the
+desired section of ι𝟙.
+
+\begin{code}
+
+   σ : (u : ℕ∞) → Σ z ꞉ ℕ + 𝟙 , g z ＝ u
+   σ u = γ (f-init (inr ⋆ , ⋆) (inl ⋆ , u) l)
+    where
+     l : (inl ⋆ , u) ≺⟨ κ ⟩ f (inr ⋆ , ⋆)
+     l = transport (λ - → (inl ⋆ , u) ≺⟨ κ ⟩ -) (f-top ⁻¹) (inl ⋆)
+
+     γ : (Σ x ꞉ ⟨ δ ⟩ , (x ≺⟨ δ ⟩ (inr ⋆ , ⋆)) × (f x ＝ (inl ⋆ , u)))
+       → Σ z ꞉ ℕ + 𝟙 , g z ＝ u
+     γ ((inl ⋆ , w) , _ , e) = w , ap q ((fg w)⁻¹ ∙ e)
+     γ ((inr ⋆ , ⋆) , _ , e) = 𝟘-elim
+                                (+disjoint ((ap pr₁ ((f-top ⁻¹) ∙ e))⁻¹))
+
+   s : ℕ∞ → ℕ + 𝟙
+   s u = pr₁ (σ u)
+
+   ε : ι𝟙 ∘ s ∼ id
+   ε u = (g-is-ι𝟙 (s u))⁻¹ ∙ pr₂ (σ u)
+
+ LPO-gives-Δ-⊴-Κ : LPO → (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]
+ LPO-gives-Δ-⊴-Κ lpo ν = ι ν ,
+                         order-equivs-are-simulations [ Δ ν ] [ Κ ν ] (ι ν) e
+  where
+   e : is-order-equiv [ Δ ν ] [ Κ ν ] (ι ν)
+   e = order-preserving-reflecting-equivs-are-order-equivs
+        [ Δ ν ] [ Κ ν ] (ι ν)
+        (LPO-gives-ι-is-equiv lpo ν)
+        (ι-is-order-preserving ν)
+        (ι-is-order-reflecting ν)
+
+ Δ-⊴-Κ-iff-LPO : ((ν : E) → [ Δ ν ] ⊴ [ Κ ν ]) ↔ LPO
+ Δ-⊴-Κ-iff-LPO = (λ h → Δ-⊴-Κ-gives-LPO (h ⌜ω+𝟚⌝)) , LPO-gives-Δ-⊴-Κ
 
 \end{code}

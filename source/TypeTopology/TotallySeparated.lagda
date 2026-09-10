@@ -238,6 +238,14 @@ equiv-to-totally-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                            → is-totally-separated Y
 equiv-to-totally-separated 𝕗 = retract-of-totally-separated (≃-gives-▷ 𝕗)
 
+embedding-into-totally-separated-gives-totally-separated :
+   {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+ → is-embedding f
+ → is-totally-separated Y
+ → is-totally-separated X
+embedding-into-totally-separated-gives-totally-separated f e τ α
+ = embeddings-are-lc f e (τ (λ q → α (q ∘ f)))
+
 \end{code}
 
 Recall that a type is called ¬¬-separated if the doubly negated equality

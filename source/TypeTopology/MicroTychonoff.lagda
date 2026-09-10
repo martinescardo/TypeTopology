@@ -44,9 +44,13 @@ open import MLTT.Spartan
 
 module TypeTopology.MicroTychonoff where
 
+open import Fin.Topology
+open import Fin.Type
 open import MLTT.Two-Properties
 open import TypeTopology.CompactTypes
+open import UF.Embeddings
 open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
@@ -251,9 +255,6 @@ And we are done:
 \end{code}
 
 
-TODO. 9 Sep 2015. We can generalize from X being a subsingleton (or
-proposition) to X being subfinite (embedded into a finite type).
-
 A particular case is the following:
 
 \begin{code}
@@ -287,6 +288,56 @@ micro-tychonoff-corollary' fe = micro-tychonoff fe
 So the function type (LPO → ℕ) is compact! (See the module Taboos.LPO for a
 proof.)
 
+Added 4th September 2026, implementing a TODO of 9 Sep 2015 to
+generalize from X being a proposition to X being subfinite, which
+means that X is embedded into a finite type.
+
+The fibers of an embedding are propositions, and X is the sum of the n
+fibers of the given embedding into Fin n. So a product of pointed
+compact types indexed by X is a product of n proposition-indexed
+products, and compactness follows from the micro-Tychonoff theorem
+together with the Tychonoff theorem for finitely indexed products.
+
+\begin{code}
+
+subfinite-tychonoff : funext 𝓤 𝓥
+                    → funext 𝓤₀ (𝓤 ⊔ 𝓥)
+                    → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                    → (n : ℕ)
+                    → X ↪ Fin n
+                    → ((x : X) → is-compact∙ (Y x))
+                    → is-compact∙ (Π Y)
+subfinite-tychonoff {𝓤} {𝓥} fe fe' {X} {Y} n (e , e-is-embedding) ε = γ
+ where
+  F : 𝓤 ̇
+  F = Σ i ꞉ Fin n , fiber e i
+
+  𝕗 : F ≃ X
+  𝕗 = total-fiber-is-domain e
+
+  Z : (i : Fin n) → fiber e i → 𝓥 ̇
+  Z i w = Y (⌜ 𝕗 ⌝ (i , w))
+
+  𝕘 : Π Y ≃ (Π i ꞉ Fin n , Π (Z i))
+  𝕘 = Π Y                     ≃⟨ I ⟩
+      (Π v ꞉ F , Y (⌜ 𝕗 ⌝ v)) ≃⟨ II ⟩
+      (Π i ꞉ Fin n , Π (Z i)) ■
+   where
+    I  = Π-change-of-variable fe fe Y ⌜ 𝕗 ⌝ ⌜ 𝕗 ⌝-is-equiv
+    II = curry-uncurry' fe' fe
+
+  δ : is-compact∙ (Π i ꞉ Fin n , Π (Z i))
+  δ = finitely-indexed-product-compact∙ fe' n
+       (λ i → Π (Z i))
+       (λ i → micro-tychonoff fe (e-is-embedding i) (λ w → ε (⌜ 𝕗 ⌝ (i , w))))
+
+  γ : is-compact∙ (Π Y)
+  γ = compact∙-types-are-closed-under-equiv (≃-sym 𝕘) δ
+
+\end{code}
+
+End of addition.
+
 The Tychonoff theorem for prop-indexed products of compact types
 doesn't hold. To see this, first notice that a proposition is compact
 iff it is decidable. Now, the empty type 𝟘 is compact (but not
@@ -300,9 +351,9 @@ in all models.
 open import UF.ClassicalLogic
 
 compact-micro-tychonoff-gives-WEM : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
-                                         → is-prop X
-                                         → ((x : X) → is-compact (Y x))
-                                         → is-compact (Π Y))
+                                        → is-prop X
+                                        → ((x : X) → is-compact (Y x))
+                                        → is-compact (Π Y))
                                   → WEM 𝓤
 compact-micro-tychonoff-gives-WEM {𝓤} {𝓥} τ X X-is-prop = δ γ
  where
