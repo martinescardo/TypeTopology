@@ -299,7 +299,7 @@ only your name as author.
 
 1. Martín H. Escardó. *Compact totally separated types*, preprint, 9th September 2026.
 
-   https://www.cs.bham.ac.uk/~mhe/papers/compact-totally-separated.pdf
+   https://arxiv.org/abs/2609.10447
 
    Agda companion.
    https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html

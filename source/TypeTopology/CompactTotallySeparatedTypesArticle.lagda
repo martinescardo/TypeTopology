@@ -6,6 +6,7 @@ examples and remarks of the paper
    Martín Hötzel Escardó
    Compact totally separated types
    https://arxiv.org/abs/2609.10447
+   https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html
 
 in the same order and with the same numbering, including the
 mathematical discussions in its prose, so that a reader of the paper
@@ -28,6 +29,16 @@ univalence. However, the TypeTopology repository is careful to
 minimize the number of assumptions for each result, and readers
 interested in such foundational issues can follow the definitions
 given here to find out exactly what assumptions each result uses.
+
+@misc{escardo2026compacttotallyseparatedtypes,
+      title={Compact totally separated types},
+      author={Mart\'{i}n H\"otzel Escard\'o},
+      year={2026},
+      eprint={2609.10447},
+      archivePrefix={arXiv},
+      primaryClass={math.LO},
+      url={https://arxiv.org/abs/2609.10447},
+}
 
 \begin{code}
 
