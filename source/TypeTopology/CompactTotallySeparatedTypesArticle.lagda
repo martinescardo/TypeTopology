@@ -1,18 +1,30 @@
 Martin Escardo, 9th September 2026.
 
 This file follows the definitions, lemmas, propositions, theorems,
-examples and remarks of the paper
+examples and remarks of the paper below, in the same order and with
+the same numbering, including the mathematical discussions in its
+prose, so that a reader of the paper can walk this file alongside
+it. The name of each entry is the number the item has in the paper,
+and the comment after it is the LaTeX label of that item.
+
 
    Martín Hötzel Escardó
    Compact totally separated types
-   https://arxiv.org/abs/2609.10447
-   https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html
 
-in the same order and with the same numbering, including the
-mathematical discussions in its prose, so that a reader of the paper
-can walk this file alongside it. The name of each entry is the number
-the item has in the paper, and the comment after it is the LaTeX label
-of that item.
+   [1] https://arxiv.org/abs/2609.10447, 9th September 2026
+
+       For the Agda companion, see
+           https://github.com/martinescardo/TypeTopology/blob/0025fb18cda5504f36b74cdbd2a05a8a4e1c1974/source/TypeTopology/CompactTotallySeparatedTypesArticle.lagda
+
+   [2] This Agda companion is for the version of 15th September 2026:
+
+       https://www.cs.bham.ac.uk/~mhe/papers/compact-totally-separated.pdf
+       https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html
+
+       They redirect to
+       https://martinescardo.github.io/papers/compact-totally-separated.pdf
+       https://martinescardo.github.io/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html
+
 
 Claims that the paper makes in running prose, outside proofs, appear
 here too, under names beginning with Prose. Each of them is named in
@@ -181,6 +193,8 @@ open import Ordinals.WellOrderArithmetic
 open import TypeTopology.SquashedSum fe
 open import TypeTopology.SquashedCantor fe
       using (Cantor ; 𝔻 ; 𝔻-Cantor-≃-Cantor)
+open import TypeTopology.BoundedDecreasingSequences fe'
+      using (𝔹 ; 𝔹-is-compact∙ ; 𝔹-is-totally-separated)
 
 open import Ordinals.BrouwerCodes
 open import Ordinals.BrouwerCodesInterpretations ua pt sr
@@ -1338,6 +1352,13 @@ Lemma-4-36-1 = refl
 Lemma-4-36-2 : 𝔻 Cantor ≃ Cantor
 Lemma-4-36-2 = 𝔻-Cantor-≃-Cantor
 
+-- ex:bounded-decreasing-sequences
+Example-4-38 : (k : ℕ) → is-compact∙ (𝔹 k)
+Example-4-38 = 𝔹-is-compact∙
+
+Example-4-38' : (k : ℕ) → is-totally-separated (𝔹 k)
+Example-4-38' = 𝔹-is-totally-separated
+
 \end{code}
 
 Section 5. Ordinals and their arithmetic
@@ -2312,17 +2333,21 @@ Proposition-7-8-2-instance = IRC.Δ-⊴-Κ-gives-LPO ua
 Definition-7-9 : B → IRC.E
 Definition-7-9 = BtoE.B-to-E
 
--- thm:brouwer-to-E, the map is an embedding
-Theorem-7-10 : is-embedding BtoE.B-to-E
-Theorem-7-10 = BtoE.B-to-E-is-embedding
+-- thm:brouwer-to-E (1), item:E-is-set
+Theorem-7-10-1 : is-set IRC.E
+Theorem-7-10-1 = IRC.E-is-set
 
--- thm:brouwer-to-E (1), item:bemb-discrete
-Theorem-7-10-1 : (b : B) → [ ⟦ b ⟧-Σ₁ ] ≃ₒ [ IRC.Δ (BtoE.B-to-E b) ]
-Theorem-7-10-1 = BtoE.Δ-agreement
+-- thm:brouwer-to-E (2), item:bemb-embedding
+Theorem-7-10-2 : is-embedding BtoE.B-to-E
+Theorem-7-10-2 = BtoE.B-to-E-is-embedding
 
--- thm:brouwer-to-E (2), item:bemb-compact
-Theorem-7-10-2 : (b : B) → [ ⟦ b ⟧-Σ' ] ≃ₒ [ IRC.Κ (BtoE.B-to-E b) ]
-Theorem-7-10-2 = BtoE.Κ-agreement
+-- thm:brouwer-to-E (3), item:bemb-discrete
+Theorem-7-10-3 : (b : B) → [ ⟦ b ⟧-Σ₁ ] ≃ₒ [ IRC.Δ (BtoE.B-to-E b) ]
+Theorem-7-10-3 = BtoE.Δ-agreement
+
+-- thm:brouwer-to-E (4), item:bemb-compact
+Theorem-7-10-4 : (b : B) → [ ⟦ b ⟧-Σ' ] ≃ₒ [ IRC.Κ (BtoE.B-to-E b) ]
+Theorem-7-10-4 = BtoE.Κ-agreement
 
 -- prop:kappa-not-tot-sep
 Proposition-7-11 : ((ν : IRC.E) → is-totally-separated ⟨ IRC.Κ ν ⟩) → ¬¬ WLPO
