@@ -8,15 +8,28 @@ it. The name of each entry is the number the item has in the paper,
 and the comment after it is the LaTeX label of that item.
 
 
-   Martín Hötzel Escardó
    Compact totally separated types
+   -------------------------------
+
+   Martín Hötzel Escardó
+   https://www.cs.bham.ac.uk/~mhe/
 
    [1] https://arxiv.org/abs/2609.10447, 9th September 2026
 
        For the Agda companion, see
        https://github.com/martinescardo/TypeTopology/blob/0025fb18cda5504f36b74cdbd2a05a8a4e1c1974/source/TypeTopology/CompactTotallySeparatedTypesArticle.lagda
 
-   [2] This Agda companion is for the version of 15th September 2026:
+       @misc{escardo2026compacttotallyseparatedtypes,
+             title={Compact totally separated types},
+             author={Mart\'{i}n H\"otzel Escard\'o},
+             year={2026},
+             eprint={2609.10447},
+             archivePrefix={arXiv},
+             primaryClass={math.LO},
+             url={https://arxiv.org/abs/2609.10447},
+       }
+
+   [2] This Agda companion is for the updated version of 15th September 2026:
 
        https://www.cs.bham.ac.uk/~mhe/papers/compact-totally-separated.pdf
        https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html
@@ -41,16 +54,6 @@ univalence. However, the TypeTopology repository is careful to
 minimize the number of assumptions for each result, and readers
 interested in such foundational issues can follow the definitions
 given here to find out exactly what assumptions each result uses.
-
-@misc{escardo2026compacttotallyseparatedtypes,
-      title={Compact totally separated types},
-      author={Mart\'{i}n H\"otzel Escard\'o},
-      year={2026},
-      eprint={2609.10447},
-      archivePrefix={arXiv},
-      primaryClass={math.LO},
-      url={https://arxiv.org/abs/2609.10447},
-}
 
 \begin{code}
 
