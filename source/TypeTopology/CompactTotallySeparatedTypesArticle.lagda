@@ -155,6 +155,10 @@ open import CantorSchroederBernstein.CSB-WLPO
 open import SyntheticHomotopyTheory.Circle.Construction pt (ua 𝓤₀)
       using (Tℤ ; loops-at-base-equivalent-to-ℤ)
  renaming (base to base-of-Tℤ)
+open import TypeTopology.Cantor using (𝟚ᴺ ; module notions-of-continuity)
+open notions-of-continuity 𝟚 𝟚-is-discrete using (uniformly-continuous)
+open import TypeTopology.CantorSearch
+      using (Cantor-uniformly-searchable ; having-root-is-decidable)
 open import TypeTopology.DisconnectedTypes
 open import TypeTopology.ExtendedSumCompact fe
 open import TypeTopology.ExtensionTotallySeparated
@@ -1057,118 +1061,156 @@ so it has no entry. What it says about finite products is Theorem 4.8(3).
 Labels: Remark 4.12 = rem:tychonoff-independence,
 Theorem 4.8(3) = thm:compact-closure(item:compact-sigma).
 
+The paragraph after Remark 4.12 claims that the Brouwerian principle
+that all maps of the Cantor type into a discrete type are uniformly
+continuous makes the Cantor type compact. The paper does not adopt
+this principle, and so the claim takes it as a hypothesis. The two
+primed entries are the notions of modulus of uniform continuity and of
+uniform continuity that the paragraph defines.
+
+Labels: Remark 4.12 = rem:tychonoff-independence.
+
 \begin{code}
 
--- prop:weakly-compact-basic (1), item:weak-compact-are-props
-Proposition-4-13-1 : {X : 𝓤 ̇ } → is-prop (is-∃-compact X)
-Proposition-4-13-1 = ∃-compactness-is-prop
+-- claim uniform-continuity-gives-cantor-compact
+Prose-uniform-continuity-gives-cantor-compact
+ : ((N : 𝓤₀ ̇ ) (d : is-discrete N) (p : 𝟚ᴺ → N)
+      → notions-of-continuity.uniformly-continuous N d p)
+ → (p : 𝟚ᴺ → 𝟚) → is-decidable (Σ α ꞉ 𝟚ᴺ , p α ＝ ₀)
+Prose-uniform-continuity-gives-cantor-compact ucp p
+ = having-root-is-decidable p (ucp 𝟚 𝟚-is-discrete p)
 
-Proposition-4-13-1' : {X : 𝓤 ̇ } → is-prop (is-Π-compact X)
-Proposition-4-13-1' = Π-compactness-is-prop
+Prose-uniform-continuity-gives-cantor-compact'
+ : (N : 𝓤 ̇ ) → is-discrete N → ℕ → (𝟚ᴺ → N) → 𝓤 ̇
+Prose-uniform-continuity-gives-cantor-compact' N d
+ = notions-of-continuity._is-a-modulus-of-uc-of_ N d
+
+Prose-uniform-continuity-gives-cantor-compact''
+ : (N : 𝓤 ̇ ) → is-discrete N → (𝟚ᴺ → N) → 𝓤 ̇
+Prose-uniform-continuity-gives-cantor-compact'' N d
+ = notions-of-continuity.uniformly-continuous N d
+
+-- prop:cantor-uniform-search
+Proposition-4-13 : (p : 𝟚ᴺ → 𝟚)
+                 → uniformly-continuous p
+                 → Σ α₀ ꞉ 𝟚ᴺ , (p α₀ ＝ ₁ → (α : 𝟚ᴺ) → p α ＝ ₁)
+Proposition-4-13 = Cantor-uniformly-searchable
+
+Proposition-4-13' : (p : 𝟚ᴺ → 𝟚)
+                  → uniformly-continuous p
+                  → is-decidable (Σ α ꞉ 𝟚ᴺ , p α ＝ ₀)
+Proposition-4-13' = having-root-is-decidable
+
+-- prop:weakly-compact-basic (1), item:weak-compact-are-props
+Proposition-4-14-1 : {X : 𝓤 ̇ } → is-prop (is-∃-compact X)
+Proposition-4-14-1 = ∃-compactness-is-prop
+
+Proposition-4-14-1' : {X : 𝓤 ̇ } → is-prop (is-Π-compact X)
+Proposition-4-14-1' = Π-compactness-is-prop
 
 -- prop:weakly-compact-basic (2), item:compact-gives-exists-compact
-Proposition-4-13-2 : {X : 𝓤 ̇ } → is-compact X → is-∃-compact X
-Proposition-4-13-2 = compact-types-are-∃-compact
+Proposition-4-14-2 : {X : 𝓤 ̇ } → is-compact X → is-∃-compact X
+Proposition-4-14-2 = compact-types-are-∃-compact
 
 -- prop:weakly-compact-basic (3), item:exists-gives-pi-compact
-Proposition-4-13-3 : {X : 𝓤 ̇ } → is-∃-compact X → is-Π-compact X
-Proposition-4-13-3 = ∃-compact-types-are-Π-compact
+Proposition-4-14-3 : {X : 𝓤 ̇ } → is-∃-compact X → is-Π-compact X
+Proposition-4-14-3 = ∃-compact-types-are-Π-compact
 
 -- prop:weakly-compact-basic (4), item:exists-compact-stability
-Proposition-4-13-4
+Proposition-4-14-4
  : {X : 𝓤 ̇ }
  → is-∃-compact X
  → (p : X → 𝟚) → ¬¬ (∃ x ꞉ X , p x ＝ ₀) → ∃ x ꞉ X , p x ＝ ₀
-Proposition-4-13-4 = ∃-compactness-gives-Markov
+Proposition-4-14-4 = ∃-compactness-gives-Markov
 
 -- prop:weakly-compact-basic (5), item:pi-compact-isolated
-Proposition-4-13-5 : {X : 𝓤 ̇ } → is-Π-compact' X → is-Π-compact X
-Proposition-4-13-5 = Π-compact'-types-are-Π-compact
+Proposition-4-14-5 : {X : 𝓤 ̇ } → is-Π-compact' X → is-Π-compact X
+Proposition-4-14-5 = Π-compact'-types-are-Π-compact
 
-Proposition-4-13-5' : {X : 𝓤 ̇ } → is-Π-compact X → is-Π-compact' X
-Proposition-4-13-5' = Π-compact-types-are-Π-compact'
+Proposition-4-14-5' : {X : 𝓤 ̇ } → is-Π-compact X → is-Π-compact' X
+Proposition-4-14-5' = Π-compact-types-are-Π-compact'
 
 -- prop:weakly-compact-basic (6), item:weakly-compact-reflection
-Proposition-4-13-6 : (X : 𝓤 ̇ ) → is-∃-compact X ↔ is-∃-compact (𝕋 X)
-Proposition-4-13-6 X = ∃-compact-types-are-∃-compact-𝕋 X ,
+Proposition-4-14-6 : (X : 𝓤 ̇ ) → is-∃-compact X ↔ is-∃-compact (𝕋 X)
+Proposition-4-14-6 X = ∃-compact-types-are-∃-compact-𝕋 X ,
                        ∃-compact-𝕋-types-are-∃-compact X
 
-Proposition-4-13-6' : (X : 𝓤 ̇ ) → is-Π-compact X ↔ is-Π-compact (𝕋 X)
-Proposition-4-13-6' X = Π-compact-types-are-Π-compact-𝕋 X ,
+Proposition-4-14-6' : (X : 𝓤 ̇ ) → is-Π-compact X ↔ is-Π-compact (𝕋 X)
+Proposition-4-14-6' X = Π-compact-types-are-Π-compact-𝕋 X ,
                         Π-compact-𝕋-types-are-Π-compact X
 
 -- prop:weakly-compact-closure (1), item:weak-compact-retracts
-Proposition-4-14-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+Proposition-4-15-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                    → is-surjection f → is-∃-compact X → is-∃-compact Y
-Proposition-4-14-1 = codomain-of-surjection-is-∃-compact
+Proposition-4-15-1 = codomain-of-surjection-is-∃-compact
 
-Proposition-4-14-1' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+Proposition-4-15-1' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → is-surjection f → is-Π-compact X → is-Π-compact Y
-Proposition-4-14-1' = codomain-of-surjection-is-Π-compact
+Proposition-4-15-1' = codomain-of-surjection-is-Π-compact
 
 -- prop:weakly-compact-closure (2), item:weak-compact-sigma
-Proposition-4-14-2 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Proposition-4-15-2 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                    → is-Π-compact X
                    → ((x : X) → is-Π-compact (Y x))
                    → is-Π-compact (Σ Y)
-Proposition-4-14-2 = Π-compact-closed-under-Σ
+Proposition-4-15-2 = Π-compact-closed-under-Σ
 
 -- prop:weakly-compact-closure (3), item:weak-compact-subtype
-Proposition-4-14-3 : {X : 𝓤 ̇ } (A : X → 𝟚)
+Proposition-4-15-3 : {X : 𝓤 ̇ } (A : X → 𝟚)
                    → is-∃-compact X → is-∃-compact (Σ x ꞉ X , A x ＝ ₀)
-Proposition-4-14-3 = detachable-subset-∃-compact
+Proposition-4-15-3 = detachable-subset-∃-compact
 
-Proposition-4-14-3' : {X : 𝓤 ̇ } (A : X → 𝟚)
+Proposition-4-15-3' : {X : 𝓤 ̇ } (A : X → 𝟚)
                     → is-Π-compact X → is-Π-compact (Σ x ꞉ X , A x ＝ ₁)
-Proposition-4-14-3' = complemented-subtype-is-Π-compact
+Proposition-4-15-3' = complemented-subtype-is-Π-compact
 
 -- prop:weakly-compact-props (1), item:exists-compact-prop-decidable
-Proposition-4-15-1 : (X : 𝓤 ̇ ) → is-prop X → is-∃-compact X → is-decidable X
-Proposition-4-15-1 = ∃-compact-propositions-are-decidable
+Proposition-4-16-1 : (X : 𝓤 ̇ ) → is-prop X → is-∃-compact X → is-decidable X
+Proposition-4-16-1 = ∃-compact-propositions-are-decidable
 
-Proposition-4-15-1' : (X : 𝓤 ̇ ) → is-prop X → is-decidable X → is-∃-compact X
-Proposition-4-15-1' = decidable-propositions-are-∃-compact
+Proposition-4-16-1' : (X : 𝓤 ̇ ) → is-prop X → is-decidable X → is-∃-compact X
+Proposition-4-16-1' = decidable-propositions-are-∃-compact
 
 -- prop:weakly-compact-props (2), item:exists-compact-support
-Proposition-4-15-2 : {X : 𝓤 ̇ } → is-∃-compact X → is-decidable ∥ X ∥
-Proposition-4-15-2 = ∃-compact-types-have-decidable-support
+Proposition-4-16-2 : {X : 𝓤 ̇ } → is-∃-compact X → is-decidable ∥ X ∥
+Proposition-4-16-2 = ∃-compact-types-have-decidable-support
 
 -- prop:weakly-compact-props (3), item:non-empty-exists-compact
-Proposition-4-15-3 : {X : 𝓤 ̇ } → is-∃-compact X → ¬¬ X → ∥ X ∥
-Proposition-4-15-3 = ∃-compact-non-empty-types-are-inhabited
+Proposition-4-16-3 : {X : 𝓤 ̇ } → is-∃-compact X → ¬¬ X → ∥ X ∥
+Proposition-4-16-3 = ∃-compact-non-empty-types-are-inhabited
 
 -- prop:weakly-compact-props (4), item:pi-compact-negation
-Proposition-4-15-4 : (X : 𝓤 ̇ ) → is-Π-compact X → is-decidable (¬ X)
-Proposition-4-15-4 = negations-of-Π-compact-types-are-decidable
+Proposition-4-16-4 : (X : 𝓤 ̇ ) → is-Π-compact X → is-decidable (¬ X)
+Proposition-4-16-4 = negations-of-Π-compact-types-are-decidable
 
 -- prop:exists-compact-pt, item:truncated-universal-witness
-Proposition-4-16 : 𝓤 ̇ → 𝓤 ̇
-Proposition-4-16 = is-∃-compact∙
+Proposition-4-17 : 𝓤 ̇ → 𝓤 ̇
+Proposition-4-17 = is-∃-compact∙
 
 -- prop:exists-compact-pt, item:exists-compact-inhabited against
 -- item:truncated-universal-witness
-Proposition-4-16-12 : {X : 𝓤 ̇ } → is-∃-compact∙ X → ∥ X ∥ × is-∃-compact X
-Proposition-4-16-12 = ∃-compact∙-types-are-inhabited-and-compact
+Proposition-4-17-12 : {X : 𝓤 ̇ } → is-∃-compact∙ X → ∥ X ∥ × is-∃-compact X
+Proposition-4-17-12 = ∃-compact∙-types-are-inhabited-and-compact
 
-Proposition-4-16-21 : {X : 𝓤 ̇ } → ∥ X ∥ × is-∃-compact X → is-∃-compact∙ X
-Proposition-4-16-21 = inhabited-and-compact-types-are-∃-compact∙
+Proposition-4-17-21 : {X : 𝓤 ̇ } → ∥ X ∥ × is-∃-compact X → is-∃-compact∙ X
+Proposition-4-17-21 = inhabited-and-compact-types-are-∃-compact∙
 
 -- prop:exists-compact-pt, ∃-compact is being ∃-compact pointed or empty
-Proposition-4-16-empty : {X : 𝓤 ̇ }
+Proposition-4-17-empty : {X : 𝓤 ̇ }
                        → is-∃-compact X → is-∃-compact∙ X + is-empty X
-Proposition-4-16-empty = ∃-compact-types-are-∃-compact∙-or-empty
+Proposition-4-17-empty = ∃-compact-types-are-∃-compact∙-or-empty
 
-Proposition-4-16-empty' : {X : 𝓤 ̇ }
+Proposition-4-17-empty' : {X : 𝓤 ̇ }
                         → is-∃-compact∙ X + is-empty X → is-∃-compact X
-Proposition-4-16-empty' = ∃-compact∙-or-empty-types-are-∃-compact
+Proposition-4-17-empty' = ∃-compact∙-or-empty-types-are-∃-compact
 
 -- prop:pi-compact-infs
-Proposition-4-17 : {X : 𝓤 ̇ } → is-Π-compact X → has-infs X
-Proposition-4-17 = Π-compact-has-infs
+Proposition-4-18 : {X : 𝓤 ̇ } → is-Π-compact X → has-infs X
+Proposition-4-18 = Π-compact-has-infs
 
 -- prop:pi-compact-infs, the converse
-Proposition-4-17' : {X : 𝓤 ̇ } → has-infs X → is-Π-compact X
-Proposition-4-17' = has-infs-Π-compact
+Proposition-4-18' : {X : 𝓤 ̇ } → has-infs X → is-Π-compact X
+Proposition-4-18' = has-infs-Π-compact
 
 -- claim right-adjoint-characterization
 Prose-right-adjoint-characterization
@@ -1181,98 +1223,105 @@ Prose-right-adjoint-characterization'
 Prose-right-adjoint-characterization' = Π-compact-iff-Κ-has-right-adjoint
 
 -- prop:clopen-projections
-Proposition-4-18 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-Proposition-4-18 = is-clopen-map
+Proposition-4-19 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+Proposition-4-19 = is-clopen-map
 
 -- prop:clopen-projections, the two directions
-Proposition-4-18-clopen
+Proposition-4-19-clopen
  : (X : 𝓤 ̇ )
  → is-∃-compact X
  → ({𝓥 : Universe} (A : 𝓥 ̇ ) → is-clopen-map (fst A X))
-Proposition-4-18-clopen = ∃-compact-clopen-projections
+Proposition-4-19-clopen = ∃-compact-clopen-projections
 
-Proposition-4-18-clopen'
+Proposition-4-19-clopen'
  : (X : 𝓤 ̇ )
  → ({𝓥 : Universe} (A : 𝓥 ̇ ) → is-clopen-map (fst A X))
  → is-∃-compact X
-Proposition-4-18-clopen' {𝓤} = clopen-projections-∃-compact {𝓤} {𝓤₀}
+Proposition-4-19-clopen' {𝓤} = clopen-projections-∃-compact {𝓤} {𝓤₀}
 
 -- lem:sigma-isolated
-Lemma-4-19 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
+Lemma-4-20 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
            → ((x : X) → is-Compact (Y x) {𝓤 ⊔ 𝓥})
            → is-isolated (x , y) → is-isolated x
-Lemma-4-19 = Σ-isolated-left
+Lemma-4-20 = Σ-isolated-left
 
 -- prop:compact-to-discrete (1), item:pi-compact-discrete-power
-Proposition-4-20-1 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Proposition-4-21-1 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                    → is-Π-compact X
                    → ((x : X) → is-discrete (Y x))
                    → is-discrete ((x : X) → Y x)
-Proposition-4-20-1 = discrete-to-power-Compact-is-discrete' (fe _ _)
+Proposition-4-21-1 = discrete-to-power-Compact-is-discrete' (fe _ _)
                    ∘ Π-compact-types-are-Π-Compact
 
 -- prop:compact-to-discrete (2), item:compact-apart-or-equal
-Proposition-4-20-2 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Proposition-4-21-2 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                    → is-compact X
                    → ((x : X) → is-discrete (Y x))
                    → (f g : (x : X) → Y x) → (f ♯ g) + (f ＝ g)
-Proposition-4-20-2 = apart-or-equal (fe _ _)
+Proposition-4-21-2 = apart-or-equal (fe _ _)
 
--- ex:cantor-discrete-converse
-Example-4-21 : WLPO → is-discrete (ℕ → 𝟚)
-Example-4-21 wlpo = discrete-to-power-Π-compact-is-discrete
-                    (WLPO-gives-Π-compact-ℕ wlpo) 𝟚-is-discrete
+-- ex:discrete-exponentials (1), item:NInf-exponentials-discrete
+Examples-4-22-1 : is-discrete (ℕ∞ → 𝟚)
+Examples-4-22-1 = ℕ∞→𝟚-is-discrete
+
+Examples-4-22-1' : is-discrete (ℕ∞ → ℕ)
+Examples-4-22-1' = ℕ∞→ℕ-is-discrete
+
+-- ex:discrete-exponentials (2), item:cantor-discrete-converse
+Examples-4-22-2 : WLPO → is-discrete (ℕ → 𝟚)
+Examples-4-22-2 wlpo = discrete-to-power-Π-compact-is-discrete
+                       (WLPO-gives-Π-compact-ℕ wlpo) 𝟚-is-discrete
 
 -- def:disconnected
-Definition-4-22 : 𝓤 ̇ → 𝓤 ̇
-Definition-4-22 = is-disconnected
+Definition-4-23 : 𝓤 ̇ → 𝓤 ̇
+Definition-4-23 = is-disconnected
 
 -- prop:discrete-exponential-gives-compact
-Proposition-4-23 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Proposition-4-24 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                  → is-disconnected Y
                  → is-discrete (X → Y)
                  → is-Π-compact X
-Proposition-4-23 = discrete-power-of-disconnected-gives-compact-exponent
+Proposition-4-24 = discrete-power-of-disconnected-gives-compact-exponent
 
-Proposition-4-23' : {X : 𝓤 ̇ } → is-discrete (X → 𝟚) → is-Π-compact X
-Proposition-4-23' = power-of-two-discrete-gives-compact-exponent
+Proposition-4-24' : {X : 𝓤 ̇ } → is-discrete (X → 𝟚) → is-Π-compact X
+Proposition-4-24' = power-of-two-discrete-gives-compact-exponent
 
 -- prop:tot-sep-compact-exponential (1), item:tscd-disconnected
-Proposition-4-24-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Proposition-4-25-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → is-totally-separated X
                    → is-disconnected Y
                    → is-Π-compact (X → Y)
                    → is-discrete X
-Proposition-4-24-1 = tscd₀
+Proposition-4-25-1 = tscd₀
 
-Proposition-4-24-1' : {X : 𝓤 ̇ }
+Proposition-4-25-1' : {X : 𝓤 ̇ }
                     → is-totally-separated X
                     → is-Π-compact (X → 𝟚)
                     → is-discrete X
-Proposition-4-24-1' = tscd
+Proposition-4-25-1' = tscd
 
 -- prop:tot-sep-compact-exponential (2), item:tscd-reflection
-Proposition-4-24-2 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Proposition-4-25-2 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → is-disconnected Y
                    → is-Π-compact (X → Y)
                    → is-discrete (𝕋 X)
-Proposition-4-24-2 = tscd₁
+Proposition-4-25-2 = tscd₁
 
 -- ex:not-compact (1), item:simple-not-compact
-Examples-4-25-1 : {X : 𝓤₀ ̇ }
+Examples-4-26-1 : {X : 𝓤₀ ̇ }
                 → simple-type X → is-Π-compact X → is-Π-compact ℕ
-Examples-4-25-1 = stcwlpo
+Examples-4-26-1 = stcwlpo
 
 -- ex:not-compact (2), item:NInf-power-not-compact
-Examples-4-25-2 : is-Π-compact (ℕ∞ → 𝟚) → WLPO
-Examples-4-25-2 = [ℕ∞→𝟚]-compact-implies-WLPO
+Examples-4-26-2 : is-Π-compact (ℕ∞ → 𝟚) → WLPO
+Examples-4-26-2 = [ℕ∞→𝟚]-compact-implies-WLPO
 
 -- thm:micro-tychonoff
-Theorem-4-26 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Theorem-4-27 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
              → is-prop X
              → ((x : X) → is-compact∙ (Y x))
              → is-compact∙ (Π Y)
-Theorem-4-26 = micro-tychonoff fe'
+Theorem-4-27 = micro-tychonoff fe'
 
 -- claim micro-tychonoff-constant-family
 Prose-micro-tychonoff-constant-family
@@ -1284,83 +1333,83 @@ Prose-micro-tychonoff-constant-family i c
  = micro-tychonoff fe' i (λ _ → c)
 
 -- ex:LPO-to-N
-Example-4-27 : is-compact∙ (LPO → ℕ)
-Example-4-27 = [LPO→ℕ]-is-compact∙ fe₀
+Example-4-28 : is-compact∙ (LPO → ℕ)
+Example-4-28 = [LPO→ℕ]-is-compact∙ fe₀
 
 -- rem:micro-tychonoff (2), item:pointedness-essential
-Remark-4-28-2 : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+Remark-4-29-2 : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                   → is-prop X
                   → ((x : X) → is-compact (Y x))
                   → is-compact (Π Y))
               → WEM 𝓤
-Remark-4-28-2 = compact-micro-tychonoff-gives-WEM
+Remark-4-29-2 = compact-micro-tychonoff-gives-WEM
 
 -- cor:subfinite-tychonoff
-Corollary-4-29 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Corollary-4-30 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                → (n : ℕ)
                → X ↪ Fin n
                → ((x : X) → is-compact∙ (Y x))
                → is-compact∙ (Π Y)
-Corollary-4-29 = subfinite-tychonoff fe' fe'
+Corollary-4-30 = subfinite-tychonoff fe' fe'
 
 -- def:extension
-Definition-4-30 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Definition-4-31 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → (X → 𝓦 ̇ ) → (X → Y) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ )
-Definition-4-30 = Π-extension
+Definition-4-31 = Π-extension
 
 -- lem:extension-property (1), item:ext-restricts
-Lemma-4-31-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y)
+Lemma-4-32-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y)
                    → is-embedding j
                    → (x : X) → Π-extension f j (j x) ≃ f x
-Lemma-4-31-1 = Π-extension-property
+Lemma-4-32-1 = Π-extension-property
 
 -- lem:extension-property (2), item:ext-off-image
-Lemma-4-31-2 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y) (y : Y)
+Lemma-4-32-2 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y) (y : Y)
                    → ((x : X) → j x ≠ y)
                    → Π-extension f j y ≃ 𝟙 {𝓣}
-Lemma-4-31-2 f j = Π-extension-out-of-range f j
+Lemma-4-32-2 f j = Π-extension-out-of-range f j
 
 -- thm:extended-sum-compact
-Theorem-4-32 : {X : 𝓤 ̇ } {K : 𝓥 ̇ } {Y : X → 𝓦 ̇ } (j : X → K)
+Theorem-4-33 : {X : 𝓤 ̇ } {K : 𝓥 ̇ } {Y : X → 𝓦 ̇ } (j : X → K)
              → is-embedding j
              → ((x : X) → is-compact∙ (Y x))
              → is-compact∙ K
              → is-compact∙ (Σ (Y / j))
-Theorem-4-32 = extended-sum-compact∙
+Theorem-4-33 = extended-sum-compact∙
 
 -- lem:extension-tot-sep
-Lemma-4-34 : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (j : X → A) (Y : X → 𝓦 ̇ )
+Lemma-4-35 : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (j : X → A) (Y : X → 𝓦 ̇ )
                  → ((x : X) → is-totally-separated (Y x))
                  → (a : A) → is-totally-separated ((Y / j) a)
-Lemma-4-34 = /-is-totally-separated fe
+Lemma-4-35 = /-is-totally-separated fe
 
 -- lem:extension-retract (1), item:ext-retract-fiber
-Lemma-4-35-1 : {X : 𝓤 ̇ } {K : 𝓥 ̇ } (Y Z : X → 𝓦 ̇ ) (j : X → K)
+Lemma-4-36-1 : {X : 𝓤 ̇ } {K : 𝓥 ̇ } (Y Z : X → 𝓦 ̇ ) (j : X → K)
              → ((x : X) → retract (Y x) of (Z x))
              → (k : K) → retract ((Y / j) k) of ((Z / j) k)
-Lemma-4-35-1 = retract-extension
+Lemma-4-36-1 = retract-extension
 
 -- lem:extension-retract (2), item:ext-retract-sum
-Lemma-4-35-2 : {X : 𝓤 ̇ } {K : 𝓥 ̇ } (Y Z : X → 𝓦 ̇ ) (j : X → K)
+Lemma-4-36-2 : {X : 𝓤 ̇ } {K : 𝓥 ̇ } (Y Z : X → 𝓦 ̇ ) (j : X → K)
              → ((x : X) → retract (Y x) of (Z x))
              → retract (Σ (Y / j)) of (Σ (Z / j))
-Lemma-4-35-2 Y₀ Y₁ j ρ = Σ-retract (Y₀ / j) (Y₁ / j)
+Lemma-4-36-2 Y₀ Y₁ j ρ = Σ-retract (Y₀ / j) (Y₁ / j)
                           (retract-extension Y₀ Y₁ j ρ)
 
 -- lem:delayed-sequences (1), item:delayed-sequences-1
-Lemma-4-36-1 : Σ¹ (λ (_ : ℕ) → Cantor) ＝ (Σ u ꞉ ℕ∞ , (is-finite u → Cantor))
-Lemma-4-36-1 = refl
+Lemma-4-37-1 : Σ¹ (λ (_ : ℕ) → Cantor) ＝ (Σ u ꞉ ℕ∞ , (is-finite u → Cantor))
+Lemma-4-37-1 = refl
 
 -- lem:delayed-sequences (2), item:delayed-sequences-2
-Lemma-4-36-2 : 𝔻 Cantor ≃ Cantor
-Lemma-4-36-2 = 𝔻-Cantor-≃-Cantor
+Lemma-4-37-2 : 𝔻 Cantor ≃ Cantor
+Lemma-4-37-2 = 𝔻-Cantor-≃-Cantor
 
 -- ex:bounded-decreasing-sequences
-Example-4-38 : (k : ℕ) → is-compact∙ (𝔹 k)
-Example-4-38 = 𝔹-is-compact∙
+Example-4-39 : (k : ℕ) → is-compact∙ (𝔹 k)
+Example-4-39 = 𝔹-is-compact∙
 
-Example-4-38' : (k : ℕ) → is-totally-separated (𝔹 k)
-Example-4-38' = 𝔹-is-totally-separated
+Example-4-39' : (k : ℕ) → is-totally-separated (𝔹 k)
+Example-4-39' = 𝔹-is-totally-separated
 
 \end{code}
 
