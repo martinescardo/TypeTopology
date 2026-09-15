@@ -34,7 +34,7 @@ and the comment after it is the LaTeX label of that item.
        https://www.cs.bham.ac.uk/~mhe/papers/compact-totally-separated.pdf
        https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html
 
-       They redirect to
+       The above two links redirect to
        https://martinescardo.github.io/papers/compact-totally-separated.pdf
        https://martinescardo.github.io/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html
 
