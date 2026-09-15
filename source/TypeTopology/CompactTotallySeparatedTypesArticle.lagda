@@ -14,7 +14,7 @@ and the comment after it is the LaTeX label of that item.
    [1] https://arxiv.org/abs/2609.10447, 9th September 2026
 
        For the Agda companion, see
-           https://github.com/martinescardo/TypeTopology/blob/0025fb18cda5504f36b74cdbd2a05a8a4e1c1974/source/TypeTopology/CompactTotallySeparatedTypesArticle.lagda
+       https://github.com/martinescardo/TypeTopology/blob/0025fb18cda5504f36b74cdbd2a05a8a4e1c1974/source/TypeTopology/CompactTotallySeparatedTypesArticle.lagda
 
    [2] This Agda companion is for the version of 15th September 2026:
 
