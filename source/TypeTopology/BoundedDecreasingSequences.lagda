@@ -234,6 +234,26 @@ is what we wanted to show in this file.
                    (𝓑-is-compact∙ k)
 \end{code}
 
+Added by Martin Escardo 15th September 2026.
+
+The type 𝔹 k is also totally separated.
+
+\begin{code}
+
+𝓑-is-totally-separated : (k : ℕ) → is-totally-separated (𝓑 k)
+𝓑-is-totally-separated 0        = 𝟙-is-totally-separated
+𝓑-is-totally-separated (succ k) =
+ 𝔻-preserves-total-separatedness (𝓑 k) (𝓑-is-totally-separated k)
+
+𝔹-is-totally-separated : (k : ℕ) → is-totally-separated (𝔹 k)
+𝔹-is-totally-separated k = equiv-to-totally-separated
+                            (≃-sym (𝔹-and-𝓑-are-equivalent k))
+                            (𝓑-is-totally-separated k)
+
+\end{code}
+
+End of addition.
+
 [2] In order to conclude, we now construct the claimed isomorphism
 
      𝔹-step : 𝔹 (succ k) ≃ 𝔻 (𝔹 k)
