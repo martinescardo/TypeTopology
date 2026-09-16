@@ -14,7 +14,7 @@ and the comment after it is the LaTeX label of that item.
    Martín Hötzel Escardó
    https://www.cs.bham.ac.uk/~mhe/
 
-   https://arxiv.org/abs/2609.10447v2, 16th September 2026
+   https://arxiv.org/abs/2609.10447v2, 15th September 2026
 
    @misc{escardo2026compacttotallyseparatedtypes,
          title={Compact totally separated types},
