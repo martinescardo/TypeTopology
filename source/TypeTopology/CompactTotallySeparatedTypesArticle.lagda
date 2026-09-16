@@ -1315,10 +1315,10 @@ Theorem-4-27 = micro-tychonoff fe'
 Prose-micro-tychonoff-constant-family
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
  → is-prop X
- → is-compact∙ Y
+ → (X → is-compact∙ Y)
  → is-compact∙ (X → Y)
 Prose-micro-tychonoff-constant-family i c
- = micro-tychonoff fe' i (λ _ → c)
+ = micro-tychonoff fe' i c
 
 -- ex:LPO-to-N
 Example-4-28 : is-compact∙ (LPO → ℕ)
