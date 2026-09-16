@@ -14,29 +14,17 @@ and the comment after it is the LaTeX label of that item.
    Martín Hötzel Escardó
    https://www.cs.bham.ac.uk/~mhe/
 
-   [1] https://arxiv.org/abs/2609.10447, 9th September 2026
+   https://arxiv.org/abs/2609.10447v2, 16th September 2026
 
-       For the Agda companion, see
-       https://github.com/martinescardo/TypeTopology/blob/0025fb18cda5504f36b74cdbd2a05a8a4e1c1974/source/TypeTopology/CompactTotallySeparatedTypesArticle.lagda
-
-       @misc{escardo2026compacttotallyseparatedtypes,
-             title={Compact totally separated types},
-             author={Mart\'{i}n H\"otzel Escard\'o},
-             year={2026},
-             eprint={2609.10447},
-             archivePrefix={arXiv},
-             primaryClass={math.LO},
-             url={https://arxiv.org/abs/2609.10447},
-       }
-
-   [2] This Agda companion is for the updated version of 15th September 2026:
-
-       https://www.cs.bham.ac.uk/~mhe/papers/compact-totally-separated.pdf
-       https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html
-
-       The above two links redirect to
-       https://martinescardo.github.io/papers/compact-totally-separated.pdf
-       https://martinescardo.github.io/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html
+   @misc{escardo2026compacttotallyseparatedtypes,
+         title={Compact totally separated types},
+         author={Mart\'{i}n H\"otzel Escard\'o},
+         year={2026},
+         eprint={2609.10447},
+         archivePrefix={arXiv},
+         primaryClass={math.LO},
+         url={https://arxiv.org/abs/2609.10447v2},
+   }
 
 
 Claims that the paper makes in running prose, outside proofs, appear
