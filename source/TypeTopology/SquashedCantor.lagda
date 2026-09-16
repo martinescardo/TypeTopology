@@ -454,13 +454,13 @@ Head-Cons-∞ π = γ
       Succ (Head (tail (Cons (Succ ∞ , π ∘ is-finite-down ∞))))      ＝⟨ III ⟩
       Succ (Head (Cons (∞ , π ∘ is-finite-down ∞ ∘ is-finite-up ∞))) ＝⟨ IV ⟩
       Succ (Head (Cons (∞ , π)))                                     ∎
-       where
-        I   = ap Head
-                 (to-Cons-＝ ∞ π ((Succ-∞-is-∞ fe')⁻¹) {id} {is-finite-down ∞})
-        II  = Head₁ (Cons (Succ ∞ , π ∘ is-finite-down ∞)) (ap head r)
-        III = ap (Succ ∘ Head ∘ tail) r
-        IV  = ap (Succ ∘ Head)
-                 (to-Cons-＝ ∞ π refl {is-finite-down ∞ ∘ is-finite-up ∞} {id})
+      where
+       I   = ap Head
+                (to-Cons-＝ ∞ π ((Succ-∞-is-∞ fe')⁻¹) {id} {is-finite-down ∞})
+       II  = Head₁ (Cons (Succ ∞ , π ∘ is-finite-down ∞)) (ap head r)
+       III = ap (Succ ∘ Head ∘ tail) r
+       IV  = ap (Succ ∘ Head)
+                (to-Cons-＝ ∞ π refl {is-finite-down ∞ ∘ is-finite-up ∞} {id})
 
   γ : Head (Cons (∞ , π)) ＝ ∞
   γ = unique-fixed-point-of-Succ fe' (Head (Cons (∞ , π))) p
@@ -554,10 +554,10 @@ Tail-Cons u π = dfunext fe' (γ u π)
          Succ (Head (tail (₁ ∶∶ Cons (ι n , (λ x → π (t' x)))))) ＝⟨ III ⟩
          Succ (ι n)                                              ＝⟨refl⟩
          ι (succ n)                                              ∎
-          where
-           I   = size-property k
-           II  = Head₁ (₁ ∶∶ Cons (ι n , π ∘ t')) refl
-           III = ap Succ (Head-Cons (ι n) (π ∘ t'))
+         where
+          I   = size-property k
+          II  = Head₁ (₁ ∶∶ Cons (ι n , π ∘ t')) refl
+          III = ap Succ (Head-Cons (ι n) (π ∘ t'))
 
      m : size k ＝ succ n
      m = ℕ-to-ℕ∞-lc l
@@ -899,60 +899,217 @@ from-𝔻-＝ {𝓤} {X} u u π π refl = (refl , refl)
 
 \end{code}
 
-This is something I am thinking about:
+Added by Martin Escardo 16th September 2026.
+
+The Cantor type is a final coalgebra of the functor 𝔻, with structure
+map Cons⁻¹.
 
 \begin{code}
-{-
-is-𝔻-coalgebra-map : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-                     (a : A → 𝔻 A)
-                     (b : B → 𝔻 B)
-                   → (A → B)
-                   → 𝓤 ⊔ 𝓥 ̇
-is-𝔻-coalgebra-map {𝓤} {𝓥} {A} {B} α β f = β ∘ f ∼ 𝔻-functor f ∘ α
- where
-  headᵃ : A → ℕ∞
-  headᵃ = pr₁ ∘ α
 
-  tailᵃ : (a : A) → is-finite (headᵃ a) → A
-  tailᵃ = pr₂ ∘ α
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
-  headᵇ : B → ℕ∞
-  headᵇ = pr₁ ∘ β
+Cons-Zero : (u : ℕ∞) (π : Cantor[ u ]) (z : is-Zero u)
+          → Cons (u , π) ＝ ₀ ∶∶ π (Zero-is-finite' fe' u z)
+Cons-Zero u π z =
+ Cons (u , π)               ＝⟨ to-Cons-＝ u π e {id} {t} ⟩
+ Cons (Zero , π ∘ t)        ＝⟨ Cons₀ (π ∘ t) ⟩
+ (₀ ∶∶ π (t Zero-is-finite)) ∎
+  where
+   e : u ＝ Zero
+   e = is-Zero-equal-Zero fe' z
 
-  tailᵇ : (b : B) → is-finite (headᵇ b) → B
-  tailᵇ = pr₂ ∘ β
+   t : is-finite Zero → is-finite u
+   t = transport⁻¹ is-finite e
 
-  module _ {u v : ℕ∞}
+Cons-positive : (u : ℕ∞) (π : Cantor[ u ]) (p : is-positive u)
+              → Cons (u , π) ＝ ₁ ∶∶ Cons (Pred u , π ∘ is-finite-up' fe' u)
+Cons-positive u π p =
+ Cons (u , π)                                       ＝⟨ I ⟩
+ Cons (Succ (Pred u) , π ∘ t)                       ＝⟨ II ⟩
+ ₁ ∶∶ Cons (Pred u , π ∘ t ∘ is-finite-up (Pred u)) ＝⟨ III ⟩
+ (₁ ∶∶ Cons (Pred u , π ∘ is-finite-up' fe' u))     ∎
+  where
+   e : u ＝ Succ (Pred u)
+   e = positive-equal-Succ fe' p
+
+   t : is-finite (Succ (Pred u)) → is-finite u
+   t = transport⁻¹ is-finite e
+
+   I   = to-Cons-＝ u π e {id} {t}
+   II  = Cons₁ (Pred u) (π ∘ t)
+   III = ap (₁ ∶∶_) (to-Cons-＝ u π refl)
+
+is-Cantor-𝔻-coalgebra-map : {X : 𝓤 ̇ } → (X → 𝔻 X) → (X → Cantor) → 𝓤 ̇
+is-Cantor-𝔻-coalgebra-map c h = Cons⁻¹ ∘ h ∼ 𝔻-functor h ∘ c
+
+\end{code}
+
+A 𝔻-coalgebra on X induces a 𝟚-stream coalgebra on 𝔻 X, whose
+corecursive map, precomposed with the 𝔻-coalgebra, gives the unique
+coalgebra map into the Cantor type.
+
+\begin{code}
+
+module _ {X : 𝓤 ̇ } (c : X → 𝔻 X) where
+
+ 𝔻-stream-head : 𝔻 X → 𝟚
+ 𝔻-stream-head (u , π) = 𝟚-equality-cases
+                          (λ (z : is-Zero u)     → ₀)
+                          (λ (p : is-positive u) → ₁)
+
+ 𝔻-stream-tail : 𝔻 X → 𝔻 X
+ 𝔻-stream-tail (u , π) = 𝟚-equality-cases
+                          (λ (z : is-Zero u)
+                                → c (π (Zero-is-finite' fe' u z)))
+                          (λ (p : is-positive u)
+                                → (Pred u , π ∘ is-finite-up' fe' u))
+
+ 𝔻-stream-head₀ : (u : ℕ∞) (π : is-finite u → X) (z : is-Zero u)
+                → 𝔻-stream-head (u , π) ＝ ₀
+ 𝔻-stream-head₀ u π = 𝟚-equality-cases₀
+
+ 𝔻-stream-head₁ : (u : ℕ∞) (π : is-finite u → X) (p : is-positive u)
+                → 𝔻-stream-head (u , π) ＝ ₁
+ 𝔻-stream-head₁ u π = 𝟚-equality-cases₁
+
+ 𝔻-stream-tail₀ : (u : ℕ∞) (π : is-finite u → X) (z : is-Zero u)
+                → 𝔻-stream-tail (u , π) ＝ c (π (Zero-is-finite' fe' u z))
+ 𝔻-stream-tail₀ u π = 𝟚-equality-cases₀
+
+ 𝔻-stream-tail₁ : (u : ℕ∞) (π : is-finite u → X) (p : is-positive u)
+                → 𝔻-stream-tail (u , π) ＝ (Pred u , π ∘ is-finite-up' fe' u)
+ 𝔻-stream-tail₁ u π = 𝟚-equality-cases₁
+
+ 𝔻-stream : 𝔻 X → Cantor
+ 𝔻-stream = seq-corec 𝔻-stream-head 𝔻-stream-tail
+
+ 𝔻-corec : X → Cantor
+ 𝔻-corec = 𝔻-stream ∘ c
+
+ 𝔻-stream-unfolds : (n : ℕ) (d : 𝔻 X)
+                  → 𝔻-stream d n ＝ Cons (𝔻-functor 𝔻-corec d) n
+ 𝔻-stream-unfolds n (u , π) = 𝟚-equality-cases (I n) (II n)
+   where
+    h : X → Cantor
+    h = 𝔻-corec
+
+    I : (n : ℕ) → is-Zero u → 𝔻-stream (u , π) n ＝ Cons (u , h ∘ π) n
+    I 0 z =
+     𝔻-stream (u , π) 0 ＝⟨ 𝔻-stream-head₀ u π z ⟩
+     ₀                  ＝⟨ ap (λ - → - 0) ((Cons-Zero u (h ∘ π) z)⁻¹) ⟩
+     Cons (u , h ∘ π) 0 ∎
+    I (succ m) z =
+     𝔻-stream (u , π) (succ m) ＝⟨ I₀ ⟩
+     h (π φ) m                 ＝⟨ I₁ ⟩
+     Cons (u , h ∘ π) (succ m) ∎
+      where
+       φ : is-finite u
+       φ = Zero-is-finite' fe' u z
+
+       I₀ = ap (λ - → 𝔻-stream - m) (𝔻-stream-tail₀ u π z)
+       I₁ = ap (λ - → - (succ m)) ((Cons-Zero u (h ∘ π) z)⁻¹)
+
+    II : (n : ℕ) → is-positive u → 𝔻-stream (u , π) n ＝ Cons (u , h ∘ π) n
+    II 0 p =
+     𝔻-stream (u , π) 0 ＝⟨ 𝔻-stream-head₁ u π p ⟩
+     ₁                  ＝⟨ ap (λ - → - 0) ((Cons-positive u (h ∘ π) p)⁻¹) ⟩
+     Cons (u , h ∘ π) 0 ∎
+    II (succ m) p =
+     𝔻-stream (u , π) (succ m) ＝⟨ II₀ ⟩
+     𝔻-stream (Pred u , π') m  ＝⟨ II₁ ⟩
+     Cons (Pred u , h ∘ π') m  ＝⟨ II₂ ⟩
+     Cons (u , h ∘ π) (succ m) ∎
+      where
+       π' : is-finite (Pred u) → X
+       π' = π ∘ is-finite-up' fe' u
+
+       II₀ = ap (λ - → 𝔻-stream - m) (𝔻-stream-tail₁ u π p)
+       II₁ = 𝔻-stream-unfolds m (Pred u , π')
+       II₂ = ap (λ - → - (succ m)) ((Cons-positive u (h ∘ π) p)⁻¹)
+
+ 𝔻-corec-is-coalgebra-map : is-Cantor-𝔻-coalgebra-map c 𝔻-corec
+ 𝔻-corec-is-coalgebra-map x =
+  Cons⁻¹ (𝔻-corec x)                      ＝⟨ I ⟩
+  Cons⁻¹ (Cons (𝔻-functor 𝔻-corec (c x))) ＝⟨ II ⟩
+  𝔻-functor 𝔻-corec (c x)                 ∎
+   where
+    I  = ap Cons⁻¹ (dfunext fe' (λ n → 𝔻-stream-unfolds n (c x)))
+    II = Cons⁻¹-Cons (𝔻-functor 𝔻-corec (c x))
+
+ 𝔻-corec-uniqueness : (h : X → Cantor)
+                    → is-Cantor-𝔻-coalgebra-map c h
+                    → h ∼ 𝔻-corec
+ 𝔻-corec-uniqueness h a x = dfunext fe' V
+   where
+    f : 𝔻 X → Cantor
+    f d = Cons (𝔻-functor h d)
+
+    I : (x : X) → h x ＝ f (c x)
+    I x =
+     h x                 ＝⟨ (Cons-Cons⁻¹ (h x))⁻¹ ⟩
+     Cons (Cons⁻¹ (h x)) ＝⟨ ap Cons (a x) ⟩
+     f (c x)             ∎
+
+    II : (d : 𝔻 X) → f d 0 ＝ 𝔻-stream-head d
+    II (u , π) = 𝟚-equality-cases II₀ II₁
+      where
+       II₀ : is-Zero u → f (u , π) 0 ＝ 𝔻-stream-head (u , π)
+       II₀ z =
+        f (u , π) 0           ＝⟨ ap (λ - → - 0) (Cons-Zero u (h ∘ π) z) ⟩
+        ₀                     ＝⟨ (𝔻-stream-head₀ u π z)⁻¹ ⟩
+        𝔻-stream-head (u , π) ∎
+
+       II₁ : is-positive u → f (u , π) 0 ＝ 𝔻-stream-head (u , π)
+       II₁ p =
+        f (u , π) 0           ＝⟨ ap (λ - → - 0) (Cons-positive u (h ∘ π) p) ⟩
+        ₁                     ＝⟨ (𝔻-stream-head₁ u π p)⁻¹ ⟩
+        𝔻-stream-head (u , π) ∎
+
+    III : (d : 𝔻 X) → tail (f d) ＝ f (𝔻-stream-tail d)
+    III (u , π) = 𝟚-equality-cases III₀ III₁
+      where
+       III₀ : is-Zero u → tail (f (u , π)) ＝ f (𝔻-stream-tail (u , π))
+       III₀ z =
+        tail (f (u , π))          ＝⟨ ap tail (Cons-Zero u (h ∘ π) z) ⟩
+        h (π φ)                   ＝⟨ I (π φ) ⟩
+        f (c (π φ))               ＝⟨ ap f ((𝔻-stream-tail₀ u π z)⁻¹) ⟩
+        f (𝔻-stream-tail (u , π)) ∎
          where
+          φ : is-finite u
+          φ = Zero-is-finite' fe' u z
 
-   t : u ＝ v → is-finite u → is-finite v
-   t = transport is-finite
-
-   s : u ＝ v → is-finite u → is-finite v
-   s p (n , e) = n , (e ∙ p)
-
-   ts : (p : u ＝ v) (φ : is-finite u) → t p φ ＝ s p φ
-   ts refl (n , refl) = refl
-
-  module _ (a : A)
-           (p₁ : headᵃ a ＝ headᵇ (f a))
-           (h₂ : (n : ℕ)
-                 (q : ι n ＝ headᵃ a)
-               → f (tailᵃ a (n , q)) ＝ tailᵇ (f a) (n , (q ∙ p₁)))
+       III₁ : is-positive u → tail (f (u , π)) ＝ f (𝔻-stream-tail (u , π))
+       III₁ p =
+        tail (f (u , π))                     ＝⟨ III₁₀ ⟩
+        f (Pred u , π ∘ is-finite-up' fe' u) ＝⟨ III₁₁ ⟩
+        f (𝔻-stream-tail (u , π))            ∎
          where
+          III₁₀ = ap tail (Cons-positive u (h ∘ π) p)
+          III₁₁ = ap f ((𝔻-stream-tail₁ u π p)⁻¹)
 
-   p₂ : f ∘ tailᵃ a ＝ tailᵇ (f a) ∘ transport is-finite p₁
-   p₂ = dfunext fe' (λ (n , q) →
-         (f ∘ tailᵃ a) (n , q) ＝⟨ h₂ n q ⟩
-         tailᵇ (f a) (n , (q ∙ p₁)) ＝⟨ ap (tailᵇ (f a)) ((ts p₁ (n , q))⁻¹) ⟩
-         (tailᵇ (f a) ∘ transport is-finite p₁) (n , q) ∎)
+    IV : (n : ℕ) (d : 𝔻 X) → f d n ＝ 𝔻-stream d n
+    IV 0        d = II d
+    IV (succ n) d =
+     f d (succ n)          ＝⟨ ap (λ - → - n) (III d) ⟩
+     f (𝔻-stream-tail d) n ＝⟨ IV n (𝔻-stream-tail d) ⟩
+     𝔻-stream d (succ n)   ∎
 
-   I = 𝔻-functor f (α a) ＝⟨refl⟩
-       (headᵃ a , f ∘ tailᵃ a) ＝⟨ I₀ ⟩
-       (headᵇ (f a) , tailᵇ (f a)) ＝⟨refl⟩
-       β (f a) ∎
-        where
-         I₀ = to-𝔻-＝ (headᵃ a) (headᵇ (f a)) (f ∘ tailᵃ a) (tailᵇ (f a)) (p₁ , p₂)
--}
+    V : h x ∼ 𝔻-corec x
+    V n =
+     h x n       ＝⟨ ap (λ - → - n) (I x) ⟩
+     f (c x) n   ＝⟨ IV n (c x) ⟩
+     𝔻-corec x n ∎
+
+ Cantor-is-final-𝔻-coalgebra : ∃! (is-Cantor-𝔻-coalgebra-map c)
+ Cantor-is-final-𝔻-coalgebra = (𝔻-corec , 𝔻-corec-is-coalgebra-map) , II
+   where
+    I : (h : X → Cantor) → is-prop (is-Cantor-𝔻-coalgebra-map c h)
+    I h = Π-is-prop fe' (λ x → 𝔻-is-set (Π-is-set fe' (λ _ → 𝟚-is-set)))
+
+    II : (σ : Σ (is-Cantor-𝔻-coalgebra-map c))
+       → (𝔻-corec , 𝔻-corec-is-coalgebra-map) ＝ σ
+    II (h , a) = to-subtype-＝ I
+                  (dfunext fe' (λ x → (𝔻-corec-uniqueness h a x)⁻¹))
 
 \end{code}
