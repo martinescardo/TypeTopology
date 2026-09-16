@@ -187,7 +187,11 @@ open import Ordinals.Underlying
 open import Ordinals.WellOrderArithmetic
 open import TypeTopology.SquashedSum fe
 open import TypeTopology.SquashedCantor fe
-      using (Cantor ; 𝔻 ; 𝔻-Cantor-≃-Cantor)
+      using (Cantor ;
+             𝔻 ;
+             𝔻-Cantor-≃-Cantor ;
+             is-Cantor-𝔻-coalgebra-map ;
+             Cantor-is-final-𝔻-coalgebra)
 open import TypeTopology.BoundedDecreasingSequences fe'
       using (𝔹 ; 𝔹-is-compact∙ ; 𝔹-is-totally-separated)
 
@@ -1391,6 +1395,10 @@ Lemma-4-37-1 = refl
 -- lem:delayed-sequences (2), item:delayed-sequences-2
 Lemma-4-37-2 : 𝔻 Cantor ≃ Cantor
 Lemma-4-37-2 = 𝔻-Cantor-≃-Cantor
+
+-- rem:delay-monad, the Cantor type is the final 𝔻-coalgebra
+Remark-4-38 : {X : 𝓤 ̇ } (c : X → 𝔻 X) → ∃! (is-Cantor-𝔻-coalgebra-map c)
+Remark-4-38 = Cantor-is-final-𝔻-coalgebra
 
 -- ex:bounded-decreasing-sequences
 Example-4-39 : (k : ℕ) → is-compact∙ (𝔹 k)
