@@ -9,6 +9,7 @@ open import UF.FunExt
 module Naturals.Sequence (fe : FunExt) where
 
 open import MLTT.Spartan hiding (_+_)
+open import UF.Equiv
 open import UF.Retracts
 open import Naturals.Addition
 
@@ -35,10 +36,11 @@ cons (x , α) = x ∶∶ α
 cons-has-section' : {X : ℕ → 𝓤 ̇ } → has-section' (cons {𝓤} {X})
 cons-has-section' α = (head α , tail α) , head-tail-eta
 
-\end{code}
+head-tail-≃ : {X : ℕ → 𝓤 ̇ } → ((n : ℕ) → X n) ≃ X 0 × ((n : ℕ) → X (succ n))
+head-tail-≃ = qinveq (λ α → head α , tail α)
+               (cons , (λ α → head-tail-eta) , (λ _ → refl))
 
-(In fact it is an equivalence, but I won't bother, until this is
-needed.)
+\end{code}
 
 \begin{code}
 
@@ -89,6 +91,33 @@ module _ {𝓤 𝓥 : Universe}
 
  seq-corec-tail : tail ∘ f ∼ f ∘ t
  seq-corec-tail x = dfunext (fe 𝓤₀ 𝓤) (λ n → refl)
+
+\end{code}
+
+Added by Martin Escardo 17th September 2026.
+
+Any other map satisfying the same equations is equal to the corecursive
+map.
+
+\begin{code}
+
+ seq-corec-uniqueness : (g : X → (ℕ → A))
+                      → head ∘ g ∼ h
+                      → tail ∘ g ∼ g ∘ t
+                      → g ＝ seq-corec
+ seq-corec-uniqueness g a b = dfunext (fe 𝓥 𝓤) (λ x → dfunext (fe 𝓤₀ 𝓤) (r x))
+  where
+   r : (x : X) (n : ℕ) → g x n ＝ f x n
+   r x zero     = a x
+   r x (succ n) = g x (succ n) ＝⟨ ap (λ - → - n) (b x) ⟩
+                  g (t x) n    ＝⟨ r (t x) n ⟩
+                  f x (succ n) ∎
+
+\end{code}
+
+End of addition.
+
+\begin{code}
 
  seq-final : Σ! f ꞉ (X → (ℕ → A)), (head ∘ f ∼ h) × (tail ∘ f ∼ f ∘ t)
  seq-final = (seq-corec , seq-corec-head , seq-corec-tail) , c

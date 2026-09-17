@@ -21,6 +21,7 @@ import TypeTopology.CompactTotallySeparatedTypesArticle
 import TypeTopology.CompactTypes
 import TypeTopology.ConvergentSequenceHasInf
 import TypeTopology.DecidabilityOfNonContinuity
+import TypeTopology.DelayMonad
 import TypeTopology.DenseMapsProperties              -- by Fredrik Bakke
 import TypeTopology.Density
 import TypeTopology.DisconnectedTypes

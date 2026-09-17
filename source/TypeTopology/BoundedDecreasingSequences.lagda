@@ -36,7 +36,7 @@ open import Notation.Order
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness
 open import TypeTopology.MicroTychonoff
-open import TypeTopology.SquashedCantor (λ 𝓤 𝓥 → fe {𝓤} {𝓥})
+open import TypeTopology.DelayMonad (λ 𝓤 𝓥 → fe {𝓤} {𝓥})
 open import TypeTopology.SquashedSum
 open import TypeTopology.TotallySeparated
 open import UF.Base

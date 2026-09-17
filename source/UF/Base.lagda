@@ -10,6 +10,11 @@ module UF.Base where
 
 open import MLTT.Spartan
 
+_≈_ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (x : X) → Y x → 𝓦 ̇ }
+    → (f g : (x : X) (y : Y x) → Z x y)
+    → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+f ≈ g = ∀ x → f x ∼ g x
+
 Nat : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 Nat A B = ∀ x → A x → B x
 
@@ -38,9 +43,6 @@ NatΠ f g x = f x (g x) -- (S combinator from combinatory logic!)
            → (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
            → Π x ꞉ X , Σ a ꞉ A x , P x a
 ΠΣ-distr⁻¹ (f , φ) x = f x , φ x
-
-_≈_ : {X : 𝓤 ̇ } {x : X} {A : X → 𝓥 ̇ } → Nat (Id x) A → Nat (Id x) A → 𝓤 ⊔ 𝓥 ̇
-η ≈ θ = ∀ y → η y ∼ θ y
 
 ap-const : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (y : Y) {x x' : X} (p : x ＝ x')
          → ap (λ _ → y) p ＝ refl
