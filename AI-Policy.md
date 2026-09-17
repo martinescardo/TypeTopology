@@ -1,1 +1,3 @@
 TypeTopology consists of literate Agda files that contain Agda code as well as accompanying prose. We will not consider AI generated Agda code or prose.
+
+Our reasons for this policy resonate with those of the Rust community, eloquently explained in this [blog post](https://blog.rust-lang.org/inside-rust/2026/08/05/rust-langrust-is-adopting-an-llm-policy/) from Aug. 5, 2026 by [Jynn Nelson](https://jyn.dev/about/).
