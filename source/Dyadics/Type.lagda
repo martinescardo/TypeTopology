@@ -101,10 +101,11 @@ normalise-pos-lemma z (succ n) =
  Cases (ℤeven-or-odd z) case-even case-odd
  where
   case-even : ℤeven z → ℤ[1/2]
-  case-even ez = (λ (k , e) → normalise-pos-lemma k n) divide-by-two
-   where
-    divide-by-two : Σ k ꞉ ℤ , z ＝ pos 2 * k
-    divide-by-two = ℤeven-is-multiple-of-two z ez
+  case-even ez =
+   (λ ((k , e) : type-of divide-by-two) → normalise-pos-lemma k n) divide-by-two
+    where
+     divide-by-two : Σ k ꞉ ℤ , z ＝ pos 2 * k
+     divide-by-two = ℤeven-is-multiple-of-two z ez
 
   case-odd : ℤodd z → ℤ[1/2]
   case-odd oz = (z , succ n) , inr (⋆ , oz)

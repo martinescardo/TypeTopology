@@ -78,7 +78,7 @@ midpoint-algebra-sns = add-axioms midpoint-algebra-axioms s
 _≊⟨midpoint-algebra⟩_ : midpoint-algebra → midpoint-algebra → 𝓤 ̇
 (X , _⊕_ , _) ≊⟨midpoint-algebra⟩ (Y , _⊗_ , _)
  = Σ f ꞉ (X → Y) , is-equiv f
-                 × ((λ x y → f (x ⊕ y)) ＝ (λ x y → f x ⊗ f y))
+                 × ((λ x y → f (x ⊕ y)) ＝[ (X → X → Y) ] (λ x y → f x ⊗ f y))
 
 characterization-of-midpoint-algebra-＝ : is-univalent 𝓤
                                        → (A B : midpoint-algebra)
@@ -187,7 +187,7 @@ _≊⟨interval-object⟩_ : {𝓥 : Universe}
                      → interval-object 𝓥 → interval-object 𝓥 → 𝓤 ̇
 (X , (_⊕_ , u , v) , _)  ≊⟨interval-object⟩ (Y , (_⊗_ , s , t) , _)
  = Σ f ꞉ (X → Y) , is-equiv f
-                 × (((λ x y → f (x ⊕ y)) ＝ (λ x y → f x ⊗ f y)))
+                 × (((λ x y → f (x ⊕ y)) ＝[ (X → X → Y) ] (λ x y → f x ⊗ f y)))
                  × (f u ＝ s) × (f v ＝ t)
 
 characterization-of-interval-object-＝ : {𝓥 : Universe} → is-univalent 𝓤

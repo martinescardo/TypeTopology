@@ -703,8 +703,8 @@ extension₂-along-η-under-WEM f w t = I (𝟚-is-discrete (f ⊥) (f ⊤))
                         f ⊤                       ＝⟨ I₁ e' ⟩
                         𝟚-cases (f ⊥) (f ⊤) (t w) ∎)
                where
-                I₀ = λ e' → ap (𝟚-cases (f ⊥) (f ⊤)) (e' ⁻¹)
-                I₁ = λ e' → ap (𝟚-cases (f ⊥) (f ⊤)) (e' ⁻¹)
+                I₀ = λ (e' : t w ＝ ₀) → ap (𝟚-cases (f ⊥) (f ⊤)) (e' ⁻¹)
+                I₁ = λ (e' : t w ＝ ₁) → ap (𝟚-cases (f ⊥) (f ⊤)) (e' ⁻¹)
 
   I (inr ne) = ap (𝟚-cases (f ⊥) (f ⊤))
                   (ap t (WEM-is-prop (WEM-lemma f ne) w))

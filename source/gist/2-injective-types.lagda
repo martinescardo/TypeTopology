@@ -414,8 +414,8 @@ always an embedding.
              p x                                ＝⟨refl⟩
              q (ηᵀ x)                           ∎)
       where
-       I  = λ x → ap (extᵀ _ p') (ext-ηᵀ _ (ηᵀ ∘ j) x)
-       II = λ x → ext-ηᵀ _ p' (j x)
+       I  = λ (x : X) → ap (extᵀ _ p') (ext-ηᵀ _ (ηᵀ ∘ j) x)
+       II = λ (x : X) → ext-ηᵀ _ p' (j x)
 
   𝕋-is-embedding : is-embedding (𝕋-functor j)
   𝕋-is-embedding = 𝟚-injecting-map-of-totally-separated-types-is-embedding

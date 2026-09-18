@@ -235,7 +235,7 @@ dep-discrete-finite-seq-csearchable'
    x₀ = pr₁ (finite-searchable (f 0) (α 0) pₕ)
    γₕ : Σ x ꞉ X 0 , pr₁ pₕ x holds → pr₁ pₕ x₀ holds
    γₕ = pr₂ (finite-searchable (f 0) (α 0) pₕ)
-   pₜ→ = λ x → tail-predicate f ds δ x ((p , d) , ϕ)
+   pₜ→ = λ (x : X 0) → tail-predicate f ds δ x ((p , d) , ϕ)
    xs→ : (x : X 0) → Σ xs₀ ꞉ Π (X ∘ succ)
        , ((Σ xs ꞉ Π (X ∘ succ) , (pr₁ ∘ pr₁) (pₜ→ x) xs holds)
        → (pr₁ ∘ pr₁) (pₜ→ x) xs₀ holds)
@@ -359,7 +359,7 @@ tychonoff' T S 0 ((p , d) , ϕ)
 tychonoff' T S (succ δ) ((p , d) , ϕ)
  = (x ∷ pr₁ (xs→ x)) , γ
  where
-   pₜ→ = λ x → tail-predicate-tych T δ x ((p , d) , ϕ)
+   pₜ→ = λ (x : ⟨ T 0 ⟩) → tail-predicate-tych T δ x ((p , d) , ϕ)
    pₕ  = head-predicate-tych T S δ ((p , d) , ϕ)
    xs→ : (x : ⟨ T 0 ⟩) →  Σ xs₀ ꞉ Π (⟨_⟩ ∘ T ∘ succ)
        , ((Σ xs ꞉ Π (⟨_⟩ ∘ T ∘ succ)

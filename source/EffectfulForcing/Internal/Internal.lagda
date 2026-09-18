@@ -22,20 +22,20 @@ open import EffectfulForcing.MFPSAndVariations.Church
              hiding (B⋆【_】 ; ⟪⟫⋆ ; _‚‚⋆_ ; B⋆⟦_⟧ ; dialogue-tree⋆)
 open import EffectfulForcing.Internal.SystemT
 
-B⋆【_】 : (Γ : Cxt) (A : Type) → Type
+B⋆【_】 : (Γ : Cxt) (A : 𝓤₀ ̇ ) → 𝓤₀ ̇
 B⋆【 Γ 】 A = {σ : type} (i : ∈Cxt σ Γ) → B⋆〖 σ 〗 A
 
-⟪⟫⋆ : {A : Type} → B⋆【 〈〉 】 A
+⟪⟫⋆ : {A : 𝓤₀ ̇ } → B⋆【 〈〉 】 A
 ⟪⟫⋆ ()
 
-_‚‚⋆_ : {Γ : Cxt} {A : Type} {σ : type}
+_‚‚⋆_ : {Γ : Cxt} {A : 𝓤₀ ̇ } {σ : type}
       → B⋆【 Γ 】 A
       → B⋆〖 σ 〗 A
       → B⋆【 Γ ,, σ 】 A
 (xs ‚‚⋆ x) {σ} (∈Cxt0 _) = x
 (xs ‚‚⋆ x) {σ} (∈CxtS _ i) = xs i
 
-B⋆⟦_⟧ : {Γ : Cxt} {σ : type} {A : Type}
+B⋆⟦_⟧ : {Γ : Cxt} {σ : type} {A : 𝓤₀ ̇ }
       → T' Γ σ
       → B⋆【 Γ 】 A
       → B⋆〖 σ 〗 A
@@ -47,7 +47,7 @@ B⋆⟦ ν i       ⟧ xs = xs i
 B⋆⟦ ƛ t       ⟧ xs = λ x → B⋆⟦ t ⟧ (xs ‚‚⋆ x)
 B⋆⟦ t · u     ⟧ xs = (B⋆⟦ t ⟧ xs) (B⋆⟦ u ⟧ xs)
 
-dialogue-tree⋆ : {A : Type} → T₀ ((ι ⇒ ι) ⇒ ι) → B⋆ ℕ A
+dialogue-tree⋆ : {A : 𝓤₀ ̇ } → T₀ ((ι ⇒ ι) ⇒ ι) → B⋆ ℕ A
 dialogue-tree⋆ t = B⋆⟦ (embed t) · Ω ⟧ ⟪⟫⋆
 
 \end{code}

@@ -70,7 +70,8 @@ module ∞-magma {𝓤 : Universe} where
  sns-data = (ι , ρ , θ)
   where
    ι : (A B : ∞-Magma) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
-   ι (X , _·_) (Y , _*_) (f , _) = (λ x x' → f (x · x')) ＝ (λ x x' → f x * f x')
+   ι (X , _·_) (Y , _*_) (f , _) =
+    (λ x x' → f (x · x')) ＝[ (X → X → Y) ] (λ x x' → f x * f x')
 
    ρ : (A : ∞-Magma) → ι A A (≃-refl ⟨ A ⟩)
    ρ (X , _·_) = 𝓻𝓮𝒻𝓵  _·_
@@ -88,7 +89,8 @@ module ∞-magma {𝓤 : Universe} where
  _≅_ : ∞-Magma → ∞-Magma → 𝓤 ̇
  (X , _·_) ≅ (Y , _*_) =
            Σ f ꞉ (X → Y) , is-equiv f
-                         × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
+                         × ((λ x x' → f (x · x')) ＝[ (X → X → Y) ]
+                            (λ x x' → f x * f x'))
 
  characterization-of-∞-Magma-＝ : is-univalent 𝓤
                                → (A B : ∞-Magma)
@@ -112,7 +114,8 @@ module magma {𝓤 : Universe} where
 
  (X , _·_ , _) ≅ (Y , _*_ , _) =
                Σ f ꞉ (X → Y), is-equiv f
-                            × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
+                            × ((λ x x' → f (x · x')) ＝[ (X → X → Y) ]
+                               (λ x x' → f x * f x'))
 
  characterization-of-Magma-＝ : is-univalent 𝓤
                              → (A B : Magma)
@@ -162,7 +165,8 @@ module pointed-∞-magma {𝓤 : Universe} where
  _≅_ : ∞-Magma· → ∞-Magma· → 𝓤 ̇
  (X ,  _·_ , x₀) ≅ (Y ,  _*_ , y₀) =
                  Σ f ꞉ (X → Y), is-equiv f
-                              × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
+                              × ((λ x x' → f (x · x')) ＝[ (X → X → Y) ]
+                                 (λ x x' → f x * f x'))
                               × (f x₀ ＝ y₀)
 
  characterization-of-pointed-magma-＝ : is-univalent 𝓤
@@ -220,7 +224,8 @@ module monoid {𝓤 : Universe} where
  _≅_ : Monoid → Monoid → 𝓤 ̇
  (X , (_·_ , d) , _) ≅ (Y , (_*_ , e) , _) =
     Σ f ꞉ (X → Y), is-equiv f
-                 × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
+                 × ((λ x x' → f (x · x')) ＝[ (X → X → Y) ]
+                    (λ x x' → f x * f x'))
                  × (f d ＝ e)
 
  characterization-of-monoid-＝ : is-univalent 𝓤
@@ -245,20 +250,23 @@ module associative-∞-magma
  ∞-aMagma = Σ X ꞉ 𝓤 ̇ , ∞-amagma-structure X
 
  homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
- homomorphic _·_ _*_ f = (λ x y → f (x · y)) ＝ (λ x y → f x * f y)
+ homomorphic {X} {Y} _·_ _*_ f =
+  (λ x y → f (x · y)) ＝[ (X → X → Y) ] (λ x y → f x * f y)
 
  respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
                → associative _·_ → associative _*_
                → (f : X → A) → homomorphic _·_ _*_ f → 𝓤 ̇
- respect-assoc _·_ _*_ α β f h  =  fα ＝ βf
+ respect-assoc {X} {A} _·_ _*_ α β f h  =  fα ＝ βf
   where
-   l = λ x y z → f ((x · y) · z)   ＝⟨ ap (λ - → - (x · y) z) h ⟩
-                 f (x · y) * f z   ＝⟨ ap (λ - → - x y * f z) h ⟩
-                 (f x * f y) * f z ∎
+   l : (x y z : X) → f ((x · y) · z) ＝ (f x * f y) * f z
+   l x y z = f ((x · y) · z)   ＝⟨ ap (λ - → - (x · y) z) h ⟩
+             f (x · y) * f z   ＝⟨ ap (λ - → - x y * f z) h ⟩
+             (f x * f y) * f z ∎
 
-   r = λ x y z → f (x · (y · z))   ＝⟨ ap (λ - → - x (y · z)) h ⟩
-                 f x * f (y · z)   ＝⟨ ap (λ - → f x * - y z) h ⟩
-                 f x * (f y * f z) ∎
+   r : (x y z : X) → f (x · (y · z)) ＝ f x * (f y * f z)
+   r x y z = f (x · (y · z))   ＝⟨ ap (λ - → - x (y · z)) h ⟩
+             f x * f (y · z)   ＝⟨ ap (λ - → f x * - y z) h ⟩
+             f x * (f y * f z) ∎
 
    fα βf : ∀ x y z → (f x * f y) * f z ＝ f x * (f y * f z)
    fα x y z = (l x y z)⁻¹ ∙ ap f (α x y z) ∙ r x y z
@@ -386,7 +394,8 @@ module group {𝓤 : Universe} where
  _≅_ : Group → Group → 𝓤 ̇
  (X , ((_·_ , d) , _) , _) ≅ (Y , ((_*_ , e) , _) , _) =
     Σ f ꞉ (X → Y), is-equiv f
-                 × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
+                 × ((λ x x' → f (x · x')) ＝[ (X → X → Y) ]
+                    (λ x x' → f x * f x'))
                  × (f d ＝ e)
 
  characterization-of-group-＝ : is-univalent 𝓤
@@ -398,7 +407,8 @@ module group {𝓤 : Universe} where
  _≅'_ : Group → Group → 𝓤 ̇
  (X , ((_·_ , d) , _) , _) ≅' (Y , ((_*_ , e) , _) , _) =
     Σ f ꞉ (X → Y), is-equiv f
-                 × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
+                 × ((λ x x' → f (x · x')) ＝[ (X → X → Y) ]
+                    (λ x x' → f x * f x'))
 
  group-structure-of : (G : Group) → group-structure ⟨ G ⟩
  group-structure-of (X , ((_·_ , e) , i , l , r , a) , γ) =
@@ -943,8 +953,10 @@ module ring {𝓤 : Universe} (ua : Univalence) where
 
                        Σ f ꞉ (R → R')
                            , is-equiv f
-                           × ((λ x y → f (x + y)) ＝ (λ x y → f x +' f y))
-                           × ((λ x y → f (x · y)) ＝ (λ x y → f x ·' f y))
+                           × ((λ x y → f (x + y)) ＝[ (R → R → R') ]
+                              (λ x y → f x +' f y))
+                           × ((λ x y → f (x · y)) ＝[ (R → R → R') ]
+                              (λ x y → f x ·' f y))
 
  characterization-of-rng-＝ : (𝓡 𝓡' : Rng) → (𝓡 ＝ 𝓡') ≃ (𝓡 ≅[Rng] 𝓡')
  characterization-of-rng-＝ = characterization-of-＝ (ua 𝓤)
@@ -986,8 +998,10 @@ module ring {𝓤 : Universe} (ua : Univalence) where
                            Σ f ꞉ (R → R')
                                , is-equiv f
                                × (f 𝟏 ＝ 𝟏')
-                               × ((λ x y → f (x + y)) ＝ (λ x y → f x +' f y))
-                               × ((λ x y → f (x · y)) ＝ (λ x y → f x ·' f y))
+                               × ((λ x y → f (x + y)) ＝[ (R → R → R') ]
+                                  (λ x y → f x +' f y))
+                               × ((λ x y → f (x · y)) ＝[ (R → R → R') ]
+                                  (λ x y → f x ·' f y))
 
  characterization-of-ring-＝ : (𝓡 𝓡' : Ring) → (𝓡 ＝ 𝓡') ≃ (𝓡 ≅[Ring] 𝓡')
  characterization-of-ring-＝ = sip.characterization-of-＝ (ua 𝓤)
@@ -1053,8 +1067,8 @@ module ring {𝓤 : Universe} (ua : Univalence) where
   ((R , (_+_ , _·_) , _) , _) ≅[NoetherianRng] ((R' , (_+'_ , _·'_) , _) , _) =
       Σ f ꞉ (R → R')
           , is-equiv f
-          × ((λ x y → f (x + y)) ＝ (λ x y → f x +' f y))
-          × ((λ x y → f (x · y)) ＝ (λ x y → f x ·' f y))
+          × ((λ x y → f (x + y)) ＝[ (R → R → R') ] (λ x y → f x +' f y))
+          × ((λ x y → f (x · y)) ＝[ (R → R → R') ] (λ x y → f x ·' f y))
 
   NB : (𝓡 𝓡' : NoetherianRng)
      → (𝓡 ≅[NoetherianRng] 𝓡') ＝ (forget-Noether 𝓡 ≅[Rng] forget-Noether 𝓡')
@@ -1111,11 +1125,11 @@ module ring {𝓤 : Universe} (ua : Univalence) where
 
   ((R , (𝟏 , _+_ , _·_) , _) , _) ≅[CNL] ((R' , (𝟏' , _+'_ , _·'_) , _) , _) =
 
-                                  Σ f ꞉ (R → R')
-                                      , is-equiv f
-                                      × (f 𝟏 ＝ 𝟏')
-                                      × ((λ x y → f (x + y)) ＝ (λ x y → f x +' f y))
-                                      × ((λ x y → f (x · y)) ＝ (λ x y → f x ·' f y))
+   Σ f ꞉ (R → R')
+       , is-equiv f
+       × (f 𝟏 ＝ 𝟏')
+       × ((λ x y → f (x + y)) ＝[ (R → R → R') ] (λ x y → f x +' f y))
+       × ((λ x y → f (x · y)) ＝[ (R → R → R') ] (λ x y → f x ·' f y))
 
   forget-CNL : CNL-Ring → Ring
   forget-CNL (𝓡 , _) = 𝓡
@@ -1547,10 +1561,13 @@ module type-valued-preorder
    𝓕 : {x y : Ob 𝓧} → hom 𝓧 x y → hom 𝓐 (F x) (F y)
    𝓕 f = 𝓕' _ _ f
 
-   pidentity = (λ x → 𝓕 (𝒾𝒹 𝓧 x)) ＝ (λ x → 𝒾𝒹 𝓐 (F x))
+   pidentity = (λ x → 𝓕 (𝒾𝒹 𝓧 x)) ＝[ ((x : Ob 𝓧) → hom 𝓐 (F x) (F x)) ]
+               (λ x → 𝒾𝒹 𝓐 (F x))
 
-   pcomposition = (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 (g o f))
-                ＝ (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 g □ 𝓕 f)
+   pcomposition =
+    (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 (g o f))
+    ＝[ ((x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓐 (F x) (F z)) ]
+    (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 g □ 𝓕 f)
 
  sns-data : SNS S (𝓤 ⊔ (𝓥 ⁺))
  sns-data = (ι , ρ , θ)
@@ -1766,10 +1783,13 @@ module category
    𝓕 : {x y : Ob 𝓧} → hom 𝓧 x y → hom 𝓐 (F x) (F y)
    𝓕 f = 𝓕' _ _ f
 
-   pidentity    = (λ x → 𝓕 (𝒾𝒹 𝓧 x)) ＝ (λ x → 𝒾𝒹 𝓐 (F x))
+   pidentity = (λ x → 𝓕 (𝒾𝒹 𝓧 x)) ＝[ ((x : Ob 𝓧) → hom 𝓐 (F x) (F x)) ]
+               (λ x → 𝒾𝒹 𝓐 (F x))
 
-   pcomposition = (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 (g o f))
-                ＝ (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 g □ 𝓕 f)
+   pcomposition =
+    (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 (g o f))
+    ＝[ ((x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓐 (F x) (F z)) ]
+    (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 g □ 𝓕 f)
 
  _⋍_ : Cat → Cat → 𝓤 ⊔ 𝓥 ̇
 
@@ -1823,7 +1843,7 @@ module ∞-bigmagma {𝓤 𝓥 : Universe} (I : 𝓥 ̇ ) where
   where
    ι : (𝓐 𝓐' : ∞-Bigmagma) → ⟨ 𝓐 ⟩ ≃ ⟨ 𝓐' ⟩ → 𝓤 ⊔ 𝓥 ̇
    ι (A , sup) (A' , sup') (f , _) =
-    (λ 𝕒 → f (sup 𝕒)) ＝ (λ 𝕒 → sup' (n ↦ f (𝕒 n)))
+    (λ 𝕒 → f (sup 𝕒)) ＝[ ((I → A) → A') ] (λ 𝕒 → sup' (n ↦ f (𝕒 n)))
 
    ρ : (𝓐 : ∞-Bigmagma) → ι 𝓐 𝓐 (≃-refl ⟨ 𝓐 ⟩)
    ρ (A , sup) = 𝓻𝓮𝒻𝓵 sup
@@ -1842,7 +1862,8 @@ module ∞-bigmagma {𝓤 𝓥 : Universe} (I : 𝓥 ̇ ) where
  (A , sup) ≅[∞-Bigmagma] (A' , sup') =
 
            Σ f ꞉ (A → A'), is-equiv f
-                         × ((λ 𝕒 → f (sup 𝕒)) ＝ (λ 𝕒 → sup' (n ↦ f (𝕒 n))))
+                         × ((λ 𝕒 → f (sup 𝕒)) ＝[ ((I → A) → A') ]
+                            (λ 𝕒 → sup' (n ↦ f (𝕒 n))))
 
  characterization-of-∞-Bigmagma-＝ : is-univalent 𝓤
                                   → (A B : ∞-Bigmagma)

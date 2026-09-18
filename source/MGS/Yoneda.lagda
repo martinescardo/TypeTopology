@@ -250,10 +250,10 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
             ((y : X) → 𝓨 x y ＝ A y)   ≃⟨ ii x ⟩
             ((y : X) → 𝓨 x y ≃ A y)   ■
     where
-     i  = λ x → (happly (𝓨 x) A , hfe (𝓨 x) A)
-     ii = λ x → Π-cong dfe dfe
-                 (λ y → univalence-≃ (ua 𝓤)
-                         (𝓨 x y) (A y))
+     i  = λ (x : X) → (happly (𝓨 x) A , hfe (𝓨 x) A)
+     ii = λ (x : X) → Π-cong dfe dfe
+                       (λ y → univalence-≃ (ua 𝓤)
+                               (𝓨 x y) (A y))
 
   e : fiber 𝓨 A ≃ is-representable A
   e = Σ-cong p

@@ -58,13 +58,13 @@ type-2 functionals.
 
 \begin{code}
 
-Type-2 : Type
+Type-2 : 𝓤₀ ̇
 Type-2 = (ℕ → ℕ) → ℕ
 
 type-2 : type
 type-2 = (ι ⇒ ι) ⇒ ι
 
-𝒟 : Type
+𝒟 : 𝓤₀ ̇
 𝒟 = D ℕ ℕ ℕ
 
 ⌜𝒟⌝ : type
@@ -141,7 +141,7 @@ run : 𝒟 → (ℕ → Type-2) → Type-2
 run (η n) e α = e n α
 run (β g i) e α = run (g (α i)) e α
 
-_represents_ : 𝒟 → 〖 ⌜𝒟⌝ 〗 → Type
+_represents_ : 𝒟 → 〖 ⌜𝒟⌝ 〗 → 𝓤₀ ̇
 d represents t = (e : ℕ → Type-2) (α : ℕ → ℕ) → t e branch α ＝ run d e α
 
 \end{code}
@@ -215,14 +215,14 @@ dialogue tree that evaluates to `n` at the oracle `α`.
 
 \begin{code}
 
-Rι : (ℕ → ℕ) → 〖 ι 〗 → 〖 ⌜𝒟⌝ 〗 → Type
+Rι : (ℕ → ℕ) → 〖 ι 〗 → 〖 ⌜𝒟⌝ 〗 → 𝓤₀ ̇
 Rι α n t =  Σ d ꞉ 𝒟 , (d represents t) × (n ＝ dialogue d α)
 
-R : (ℕ → ℕ) → {ρ : type} → 〖 ρ 〗 → 〖 ⟨ ρ ⟩ᴰ 〗 → Type
+R : (ℕ → ℕ) → {ρ : type} → 〖 ρ 〗 → 〖 ⟨ ρ ⟩ᴰ 〗 → 𝓤₀ ̇
 R α {ι} = Rι α
 R α {σ ⇒ τ} f g = ∀ x y → R α x y → R α (f x) (g y)
 
-Rˣ : (ℕ → ℕ) → {Γ : Cxt} → 【 Γ 】 → 【 ⟪ Γ ⟫ᴰ 】 → Type
+Rˣ : (ℕ → ℕ) → {Γ : Cxt} → 【 Γ 】 → 【 ⟪ Γ ⟫ᴰ 】 → 𝓤₀ ̇
 Rˣ α {Γ} γ δ = ∀ {ρ} (i : ∈Cxt ρ Γ) → R α (γ i) (δ (∈Cxt-B-type i))
 
 \end{code}

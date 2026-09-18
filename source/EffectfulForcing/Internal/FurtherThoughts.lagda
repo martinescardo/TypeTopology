@@ -22,7 +22,7 @@ open import EffectfulForcing.Internal.Correctness
 
 \begin{code}
 
-B⋆⟦_⟧ : {Γ : Cxt} {σ : type} {A : Type}
+B⋆⟦_⟧ : {Γ : Cxt} {σ : type} {A : 𝓤₀ ̇ }
       → T Γ σ
       → B⋆【 Γ 】 A
       → B⋆〖 σ 〗 A
@@ -33,10 +33,10 @@ B⋆⟦ ν i       ⟧ xs = xs i
 B⋆⟦ ƛ t       ⟧ xs = λ x → B⋆⟦ t ⟧ (xs ‚‚⋆ x)
 B⋆⟦ t · u     ⟧ xs = (B⋆⟦ t ⟧ xs) (B⋆⟦ u ⟧ xs)
 
-B⋆⟦_⟧₀ : {σ : type} {A : Type} → T₀ σ → B⋆〖 σ 〗 A
+B⋆⟦_⟧₀ : {σ : type} {A : 𝓤₀ ̇ } → T₀ σ → B⋆〖 σ 〗 A
 B⋆⟦ t ⟧₀ = B⋆⟦ t ⟧ ⟪⟫⋆
 
-dialogue-tree⋆ : {A : Type} → T₀ ((ι ⇒ ι) ⇒ ι) → B⋆ ℕ A
+dialogue-tree⋆ : {A : 𝓤₀ ̇ } → T₀ ((ι ⇒ ι) ⇒ ι) → B⋆ ℕ A
 dialogue-tree⋆ t = B⋆⟦ t ⟧₀ generic⋆
 
 \end{code}
@@ -46,7 +46,7 @@ to keep it around for a bit to maybe relate it to Rnorm and R.
 
 \begin{code}
 
-R⋆ : {σ : type} → Baire → 〖 σ 〗 → T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)) → Type
+R⋆ : {σ : type} → Baire → 〖 σ 〗 → T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)) → 𝓤₀ ̇
 R⋆ {ι}     α n d  = n ＝ dialogue⋆ ⟦ d ⟧₀ α
 R⋆ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
                     (x' : T₀ σ)
@@ -61,7 +61,7 @@ IB₀ : {A : type} → IB【 〈〉 】 A
 IB₀ {A} ()
 
 R⋆s : Baire → {Γ : Cxt}
-  → 【 Γ 】 → IB【 Γ 】 ((ι ⇒ ι) ⇒ ι) → Type
+  → 【 Γ 】 → IB【 Γ 】 ((ι ⇒ ι) ⇒ ι) → 𝓤₀ ̇
 R⋆s α {Γ} xs ys = {σ : type} (i : ∈Cxt σ Γ) → R⋆ α (xs i) (ys (∈Cxt-B-type i))
 
 R⋆-preserves-⟦⟧' : {α : Baire} {σ : type}

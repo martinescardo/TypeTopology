@@ -16,13 +16,13 @@ module Various.DummettDisjunction where
 
 open import MLTT.Spartan
 
-_⊞_ : Type → Type → Type
+_⊞_ : 𝓤₀ ̇  → 𝓤₀ ̇  → 𝓤₀ ̇
 P ⊞ Q = ((P → Q) → Q) × ((Q → P) → P)
 
-inL : (P Q : Type) → P → P ⊞ Q
+inL : (P Q : 𝓤₀ ̇ ) → P → P ⊞ Q
 inL P Q p = (λ u → u p) , (λ _ → p)
 
-inR : (P Q : Type) → Q → P ⊞ Q
+inR : (P Q : 𝓤₀ ̇ ) → Q → P ⊞ Q
 inR P Q q = (λ _ → q) , (λ v → v q)
 
 \end{code}
@@ -31,7 +31,7 @@ Dummett disjunction _⊞_ weakens intuitionistic disjunction _+_:
 
 \begin{code}
 
-weaker-than-intuitionistic : (P Q : Type) → P + Q → P ⊞ Q
+weaker-than-intuitionistic : (P Q : 𝓤₀ ̇ ) → P + Q → P ⊞ Q
 weaker-than-intuitionistic P Q (inl p) = inL P Q p
 weaker-than-intuitionistic P Q (inr q) = inR P Q q
 
@@ -41,10 +41,10 @@ and strengthens classical disjunction:
 
 \begin{code}
 
-stronger-than-classical : (P Q : Type) → P ⊞ Q → ¬ (¬ P × ¬ Q)
+stronger-than-classical : (P Q : 𝓤₀ ̇ ) → P ⊞ Q → ¬ (¬ P × ¬ Q)
 stronger-than-classical P Q = more-generally 𝟘 𝟘-elim
   where
-    more-generally : (R : Type) → (R → P) → P ⊞ Q → ((P → R) × (Q → R)) → R
+    more-generally : (R : 𝓤₀ ̇ ) → (R → P) → P ⊞ Q → ((P → R) × (Q → R)) → R
     more-generally R e (_ , γ) (u , v) = u (γ (λ q → e (v q)))
 
 \end{code}
@@ -53,7 +53,7 @@ Dummett's linearity axiom for implication,
 
 \begin{code}
 
-linearity-axiom : Type → Type → Type
+linearity-axiom : 𝓤₀ ̇  → 𝓤₀ ̇  → 𝓤₀ ̇
 linearity-axiom P Q = (P → Q) + (Q → P)
 
 \end{code}
@@ -62,7 +62,7 @@ makes Dummett disjunction logically equivalent to _+_:
 
 \begin{code}
 
-equivalent-to-intuitionistic : (P Q : Type) → linearity-axiom P Q → P ⊞ Q → P + Q
+equivalent-to-intuitionistic : (P Q : 𝓤₀ ̇ ) → linearity-axiom P Q → P ⊞ Q → P + Q
 equivalent-to-intuitionistic P Q (inl u) (φ , _) = inr (φ u)
 equivalent-to-intuitionistic P Q (inr v) (_ , γ) = inl (γ v)
 
@@ -72,10 +72,10 @@ We may wish to reformulate the above as follows:
 
 \begin{code}
 
-LA : Type₁
-LA = (P Q : Type) → linearity-axiom P Q
+LA : 𝓤₁ ̇
+LA = (P Q : 𝓤₀ ̇ ) → linearity-axiom P Q
 
-LA-gives-agreement : LA → (P Q : Type) → P ⊞ Q → P + Q
+LA-gives-agreement : LA → (P Q : 𝓤₀ ̇ ) → P ⊞ Q → P + Q
 LA-gives-agreement la P Q = equivalent-to-intuitionistic P Q (la P Q)
 
 \end{code}
@@ -90,7 +90,7 @@ of the propositions is decidable:
 
 \begin{code}
 
-dl : (P Q : Type) → is-decidable P → linearity-axiom P Q
+dl : (P Q : 𝓤₀ ̇ ) → is-decidable P → linearity-axiom P Q
 dl P Q (inl p) = inr (λ _ → p)
 dl P Q (inr u) = inl (λ p → 𝟘-elim (u p))
 
@@ -105,7 +105,7 @@ propositions is decidable, then P ⊞ Q and P + Q are equivalent:
 
 \begin{code}
 
-classical-logic-gives-agreement : (P Q : Type) → is-decidable P → P ⊞ Q → P + Q
+classical-logic-gives-agreement : (P Q : 𝓤₀ ̇ ) → is-decidable P → P ⊞ Q → P + Q
 classical-logic-gives-agreement P Q dp = equivalent-to-intuitionistic P Q (dl P Q dp)
 
 \end{code}
@@ -116,7 +116,7 @@ intuitionistic disjunction:
 
 \begin{code}
 
-⊞-linearity : (P Q : Type) → (P → Q) ⊞ (Q → P)
+⊞-linearity : (P Q : 𝓤₀ ̇ ) → (P → Q) ⊞ (Q → P)
 ⊞-linearity P Q = (λ φ q → φ (λ _ → q) q) , (λ γ p → γ (λ _ → p) p)
 
 \end{code}
@@ -129,7 +129,7 @@ _+_ in intuitionistic logic, then the linearity axiom must hold:
 
 \begin{code}
 
-agreement-gives-LA : ((P Q : Type) → P ⊞ Q → P + Q) → LA
+agreement-gives-LA : ((P Q : 𝓤₀ ̇ ) → P ⊞ Q → P + Q) → LA
 agreement-gives-LA f P Q = f (P → Q) (Q → P) (⊞-linearity P Q)
 
 \end{code}
@@ -147,11 +147,11 @@ Constructivism in Non-Classical Logics and Computer Science (Feb.,
 
 \begin{code}
 
-skolem : (A B C : Type) → (A → B ⊞ C) → (A → B) ⊞ (A → C)
+skolem : (A B C : 𝓤₀ ̇ ) → (A → B ⊞ C) → (A → B) ⊞ (A → C)
 skolem A B C h = (λ f a → pr₁ (h a) (λ b → f (λ _ → b) a)) ,
                  (λ g a → pr₂ (h a) (λ c → g (λ _ → c) a))
 
-dummett : (A B C : Type) → (A × B → C) → (A → C) ⊞ (B → C)
+dummett : (A B C : 𝓤₀ ̇ ) → (A × B → C) → (A → C) ⊞ (B → C)
 dummett A B C h = (λ f b → f (λ a → h (a , b)) b) ,
                   (λ g a → g (λ b → h (a , b)) a)
 
@@ -168,10 +168,10 @@ proposition Q:
 
 \begin{code}
 
-⊞-wem' : (P Q : Type) → (P → Q) ⊞ ((P → Q) → Q)
+⊞-wem' : (P Q : 𝓤₀ ̇ ) → (P → Q) ⊞ ((P → Q) → Q)
 ⊞-wem' P Q = (λ f g → f g g) , (λ f p → f (λ g → g p) p)
 
-⊞-wem : (P Q : Type) → ¬ P ⊞ ¬¬ P
+⊞-wem : (P Q : 𝓤₀ ̇ ) → ¬ P ⊞ ¬¬ P
 ⊞-wem P Q = ⊞-wem' P 𝟘
 
 \end{code}
@@ -180,19 +180,19 @@ What about excluded middle? Peirce's Law arises directly.
 
 \begin{code}
 
-Peirce's-Law : Type → Type → Type
+Peirce's-Law : 𝓤₀ ̇  → 𝓤₀ ̇  → 𝓤₀ ̇
 Peirce's-Law P Q = ((P → Q) → P) → P
 
-PL₀ : Type₁
-PL₀ = (P : Type) → Peirce's-Law P 𝟘
+PL₀ : 𝓤₁ ̇
+PL₀ = (P : 𝓤₀ ̇ ) → Peirce's-Law P 𝟘
 
-⊞-EM : Type₁
-⊞-EM = (P : Type) → P ⊞ ¬ P
+⊞-EM : 𝓤₁ ̇
+⊞-EM = (P : 𝓤₀ ̇ ) → P ⊞ ¬ P
 
 ⊞-EM-gives-PL₀ : ⊞-EM → PL₀
 ⊞-EM-gives-PL₀ dem P = more-generally 𝟘 (dem P)
  where
-  more-generally : (Q : Type) → P ⊞ (P → Q) → Peirce's-Law P Q
+  more-generally : (Q : 𝓤₀ ̇ ) → P ⊞ (P → Q) → Peirce's-Law P Q
   more-generally Q (_ , γ)= γ
 
 \end{code}
@@ -204,11 +204,11 @@ The converse holds, but we don't need it:
 PL₀-gives-⊞-EM : PL₀ → ⊞-EM
 PL₀-gives-⊞-EM pl₀ P = more-generally 𝟘 (pl₀ P)
  where
-  more-generally : (Q : Type) → Peirce's-Law P Q → P ⊞ (P → Q)
+  more-generally : (Q : 𝓤₀ ̇ ) → Peirce's-Law P Q → P ⊞ (P → Q)
   more-generally Q pl = (λ f p → f p p) , pl
 
-PL : Type₁
-PL = (P Q : Type) → Peirce's-Law P Q
+PL : 𝓤₁ ̇
+PL = (P Q : 𝓤₀ ̇ ) → Peirce's-Law P Q
 
 PL-gives-PL₀ : PL → PL₀
 PL-gives-PL₀ pl P = pl P 𝟘
@@ -216,8 +216,8 @@ PL-gives-PL₀ pl P = pl P 𝟘
 PL₀-gives-PL : PL₀ → PL
 PL₀-gives-PL pl₀ P Q ε = pl₀ P (λ u → ε (λ p → pl₀ Q (λ _ → 𝟘-elim (u p))))
 
-Curry-Howard-EM : Type₁
-Curry-Howard-EM = (P : Type) → P + ¬ P
+Curry-Howard-EM : 𝓤₁ ̇
+Curry-Howard-EM = (P : 𝓤₀ ̇ ) → P + ¬ P
 
 PL-gives-Curry-Howard-EM : PL → Curry-Howard-EM
 PL-gives-Curry-Howard-EM pl P = pl (P + ¬ P) P (λ f → inl (pl P 𝟘 (λ g → f (inr g))))
@@ -249,7 +249,7 @@ Dummett or Curry-Howard disjunction are logically equivalent:
 \end{code}
 
 Also, the above shows that Peirce's Law is equivalent to
-(P Q : Type) → P ⊞ (P → Q).
+(P Q : 𝓤₀ ̇ ) → P ⊞ (P → Q).
 
 I hadn't looked at Gӧdel-Dummett logic before.
 
@@ -301,23 +301,23 @@ Weak Dummet disjunction:
 
 \begin{code}
 
-_⊕_ : Type → Type → Type
+_⊕_ : 𝓤₀ ̇  → 𝓤₀ ̇  → 𝓤₀ ̇
 P ⊕ Q = (P → Q) → Q
 
-⊕-inL : (P Q : Type) → P → P ⊕ Q
+⊕-inL : (P Q : 𝓤₀ ̇ ) → P → P ⊕ Q
 ⊕-inL P Q p = λ u → u p
 
-⊕-inR : (P Q : Type) → Q → P ⊕ Q
+⊕-inR : (P Q : 𝓤₀ ̇ ) → Q → P ⊕ Q
 ⊕-inR P Q q = λ _ → q
 
-⊕-weaker-than-intuitionistic : (P Q : Type) → P + Q → P ⊕ Q
+⊕-weaker-than-intuitionistic : (P Q : 𝓤₀ ̇ ) → P + Q → P ⊕ Q
 ⊕-weaker-than-intuitionistic P Q (inl p) = ⊕-inL P Q p
 ⊕-weaker-than-intuitionistic P Q (inr q) = ⊕-inR P Q q
 
-⊕-stronger-than-classical : (P Q : Type) → P ⊕ Q → ¬ (¬ P × ¬ Q)
+⊕-stronger-than-classical : (P Q : 𝓤₀ ̇ ) → P ⊕ Q → ¬ (¬ P × ¬ Q)
 ⊕-stronger-than-classical P Q = more-generally 𝟘 𝟘-elim
   where
-    more-generally : (R : Type) → (R → Q) → P ⊕ Q → ((P → R) × (Q → R)) → R
+    more-generally : (R : 𝓤₀ ̇ ) → (R → Q) → P ⊕ Q → ((P → R) × (Q → R)) → R
     more-generally R e γ (u , v) = v (γ (λ p → e (u p)))
 
 \end{code}
@@ -326,7 +326,7 @@ Right excluded middle just holds for this notion of disjunction:
 
 \begin{code}
 
-⊕-em-right : (P : Type) → P ⊕ ¬ P
+⊕-em-right : (P : 𝓤₀ ̇ ) → P ⊕ ¬ P
 ⊕-em-right P = λ u p → u p p
 
 \end{code}
@@ -338,7 +338,7 @@ Notice that this doesn't use 𝟘-elim:
 
 \begin{code}
 
-⊕-Curry-Howard-EM-left-gives-Curry-Howard-EM : ((P : Type) → ¬ P ⊕ P) → Curry-Howard-EM
+⊕-Curry-Howard-EM-left-gives-Curry-Howard-EM : ((P : 𝓤₀ ̇ ) → ¬ P ⊕ P) → Curry-Howard-EM
 ⊕-Curry-Howard-EM-left-gives-Curry-Howard-EM e P = e (P + ¬ P) (λ φ → inr (λ p → φ (inl p)))
 
 \end{code}
@@ -348,10 +348,10 @@ case of Peirce's Law with an empty type.
 
 \begin{code}
 
-Curry-Howard-EM-gives-⊕-Curry-Howard-EM-left : Curry-Howard-EM → (P : Type) → ¬ P ⊕ P
+Curry-Howard-EM-gives-⊕-Curry-Howard-EM-left : Curry-Howard-EM → (P : 𝓤₀ ̇ ) → ¬ P ⊕ P
 Curry-Howard-EM-gives-⊕-Curry-Howard-EM-left em P = more-generally P (em P)
  where
-  more-generally : (P : Type) → is-decidable P → ¬ P ⊕ P
+  more-generally : (P : 𝓤₀ ̇ ) → is-decidable P → ¬ P ⊕ P
   more-generally P (inl p) = λ φ → p
   more-generally P (inr u) = λ φ → φ u
 
@@ -363,7 +363,7 @@ the right case:
 
 \begin{code}
 
-⊕-wem-left : (P : Type) → ¬ (¬ P) ⊕ ¬ P
+⊕-wem-left : (P : 𝓤₀ ̇ ) → ¬ (¬ P) ⊕ ¬ P
 ⊕-wem-left P = λ φ p → φ (λ u → u p) p
 
 \end{code}
@@ -373,13 +373,13 @@ excluded middle holds:
 
 \begin{code}
 
-agreement-gives-Curry-Howard-EM : ((P Q : Type) → P ⊕ Q → P + Q) → Curry-Howard-EM
+agreement-gives-Curry-Howard-EM : ((P Q : 𝓤₀ ̇ ) → P ⊕ Q → P + Q) → Curry-Howard-EM
 agreement-gives-Curry-Howard-EM f P = f P (¬ P) (⊕-em-right P)
 
-Curry-Howard-EM-gives-agreement : Curry-Howard-EM → (P Q : Type) → P ⊕ Q → P + Q
+Curry-Howard-EM-gives-agreement : Curry-Howard-EM → (P Q : 𝓤₀ ̇ ) → P ⊕ Q → P + Q
 Curry-Howard-EM-gives-agreement em P Q = more-generally P Q (em P)
  where
-  more-generally : (P Q : Type) → is-decidable P → P ⊕ Q → P + Q
+  more-generally : (P Q : 𝓤₀ ̇ ) → is-decidable P → P ⊕ Q → P + Q
   more-generally P Q (inl p) φ = inl p
   more-generally P Q (inr u) φ = inr (φ (λ p → 𝟘-elim (u p)))
 
@@ -389,8 +389,8 @@ Interestingly, also the commutativity of ⊕ is equivalent to excluded middle:
 
 \begin{code}
 
-⊕-commutative : Type₁
-⊕-commutative = (P Q : Type) → P ⊕ Q → Q ⊕ P
+⊕-commutative : 𝓤₁ ̇
+⊕-commutative = (P Q : 𝓤₀ ̇ ) → P ⊕ Q → Q ⊕ P
 
 ⊕-commutative-gives-Curry-Howard-EM : ⊕-commutative → Curry-Howard-EM
 ⊕-commutative-gives-Curry-Howard-EM c P = c (P + ¬ P) (¬ P) (λ φ p → φ (inl p) p) inr
@@ -401,10 +401,10 @@ We also have, of course:
 
 \begin{code}
 
-equivalent-to-classical : Curry-Howard-EM → (P Q : Type) → ¬ (¬ P × ¬ Q) → P ⊕ Q
+equivalent-to-classical : Curry-Howard-EM → (P Q : 𝓤₀ ̇ ) → ¬ (¬ P × ¬ Q) → P ⊕ Q
 equivalent-to-classical em P Q = more-generally P Q (em P) (em Q)
  where
-  more-generally : (P Q : Type) → is-decidable P → is-decidable Q → ¬ (¬ P × ¬ Q) → P ⊕ Q
+  more-generally : (P Q : 𝓤₀ ̇ ) → is-decidable P → is-decidable Q → ¬ (¬ P × ¬ Q) → P ⊕ Q
   more-generally P Q (inl p) e v w = w p
   more-generally P Q (inr p) (inl q) v w = q
   more-generally P Q (inr p) (inr q) v w = 𝟘-elim (v ((λ p → q (w p)) , q))
@@ -416,10 +416,10 @@ of Dummet disjunction:
 
 \begin{code}
 
-⊕-skolem : (A B C : Type) → (A → B ⊕ C) → (A → B) ⊕ (A → C)
+⊕-skolem : (A B C : 𝓤₀ ̇ ) → (A → B ⊕ C) → (A → B) ⊕ (A → C)
 ⊕-skolem A B C h = λ φ a → h a (λ b → φ (λ _ → b) a)
 
-⊕-dummett : (A B C : Type) → (A × B → C) → (A → C) ⊕ (B → C)
+⊕-dummett : (A B C : 𝓤₀ ̇ ) → (A × B → C) → (A → C) ⊕ (B → C)
 ⊕-dummett A B C h = λ φ b → φ (λ a → h (a , b)) b
 
 \end{code}
@@ -428,7 +428,7 @@ Added April 2016:
 
 We can apply the same idea to the existential quantifier.
 
-Given a family of propositions P : X → Type, we consider
+Given a family of propositions P : X → 𝓤₀ ̇ , we consider
 
    (i : X) → ((Σ x ꞉ X , P x) → P i) → P i
 
@@ -440,7 +440,7 @@ A Dummet existential quantifier:
 
 \begin{code}
 
-D : {X : Type} (P : X → Type) → Type
+D : {X : 𝓤₀ ̇ } (P : X → 𝓤₀ ̇ ) → 𝓤₀ ̇
 D P = ∀ i → (∀ x → P x → P i) → P i
 
 \end{code}
@@ -451,7 +451,7 @@ existential quantifier for X non-empty:
 
 \begin{code}
 
-D-stronger-than-classical : {X : Type} (P : X → Type) → ¬¬ X → D P → ¬ (∀ x → ¬ P x)
+D-stronger-than-classical : {X : 𝓤₀ ̇ } (P : X → 𝓤₀ ̇ ) → ¬¬ X → D P → ¬ (∀ x → ¬ P x)
 D-stronger-than-classical P ne d u = ne (λ i → u i (d i (λ x p → 𝟘-elim (u x p))))
 
 \end{code}
@@ -472,7 +472,7 @@ More slowly:
   g : 𝟘
   g = ne c
 
-D-lin : {X : Type} (P : X → Type) → D (λ i → D (λ x → P i → P x))
+D-lin : {X : 𝓤₀ ̇ } (P : X → 𝓤₀ ̇ ) → D (λ i → D (λ x → P i → P x))
 D-lin P i _ _ f = f i (λ p → p)
 
 \end{code}

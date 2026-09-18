@@ -109,7 +109,8 @@ failure-of-decomposability-at-∞₀-and-∞₁ p = disagreement-taboo p₀ p₁
   lemma : (n : ℕ) → p₀ (ι n) ＝ p₁ (ι n)
   lemma n = ap (λ - → p (ι n , -)) (dfunext fe₀ claim)
    where
-    claim : (r : ι n ＝ ∞) → (λ r → ₀) r ＝ (λ r → ₁) r
+    claim : (r : ι n ＝ ∞)
+          → (λ (r : ι n ＝ ∞) → ₀) r ＝ (λ (r : ι n ＝ ∞) → ₁) r
     claim s = 𝟘-elim (∞-is-not-finite n (s ⁻¹))
 
 open import UF.DiscreteAndSeparated hiding (_♯_)

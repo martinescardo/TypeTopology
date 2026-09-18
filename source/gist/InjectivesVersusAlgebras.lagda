@@ -251,7 +251,7 @@ module _ (𝓤 : Universe)
              (f /̇ u) p                                  ＝⟨ II' p ⟩
              (f / u) p                                  ∎)
               where
-               II' = λ p → (extensions-are-pointwise f u p)⁻¹
+               II' = λ (p : P) → (extensions-are-pointwise f u p)⁻¹
 
        III : (v ∘↪ u) ＝ w
        III = to-subtype-＝ (being-embedding-is-prop fe') refl

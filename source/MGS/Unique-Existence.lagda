@@ -81,7 +81,7 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
     η : (z : (h 0 ＝ y₀) × (h ∘ succ ∼ g ∘ h)) → r (s z) ＝ z
     η (p , K) = q
      where
-      v = λ n →
+      v = λ (n : ℕ) →
        s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))                  ＝⟨ refl _ ⟩
        K n ∙  ap g (s (p , K) n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))           ＝⟨ i   n ⟩
        K n ∙  ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹)                    ＝⟨ ii  n ⟩
@@ -90,11 +90,11 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
        K n ∙ refl _                                                            ＝⟨ refl _ ⟩
        K n                                                                     ∎
         where
-         i   = λ n → ap (K n ∙ ap g (s (p , K) n) ∙_)
-                        (refl-left {_} {_} {_} {_} {ap g ((s (p , K) n)⁻¹)})
-         ii  = λ n → ∙assoc (K n) (ap g (s (p , K) n)) (ap g ((s (p , K) n)⁻¹))
-         iii = λ n → ap (λ - → K n ∙ (ap g (s (p , K) n) ∙ -)) (ap⁻¹ g (s (p , K) n) ⁻¹)
-         iv  = λ n → ap (K n ∙_) (⁻¹-right∙ (ap g (s (p , K) n)))
+         i   = λ (n : ℕ) → ap (K n ∙ ap g (s (p , K) n) ∙_)
+                           (refl-left {_} {_} {_} {_} {ap g ((s (p , K) n)⁻¹)})
+         ii  = λ (n : ℕ) → ∙assoc (K n) (ap g (s (p , K) n)) (ap g ((s (p , K) n)⁻¹))
+         iii = λ (n : ℕ) → ap (λ - → K n ∙ (ap g (s (p , K) n) ∙ -)) (ap⁻¹ g (s (p , K) n) ⁻¹)
+         iv  = λ (n : ℕ) → ap (K n ∙_) (⁻¹-right∙ (ap g (s (p , K) n)))
 
       q = r (s (p , K))                                                      ＝⟨ refl _ ⟩
           p , (λ n → s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))) ＝⟨ vi ⟩
@@ -107,8 +107,8 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
                  (h ∼ ℕ-iteration Y y₀ g)        ◁⟨ ii h ⟩
                  (h ＝ ℕ-iteration Y y₀ g)        ◀
    where
-    i  = λ h → Σ-retract (λ _ → ≃-gives-◁ (happly (h ∘ succ) (g ∘ h) , hfe _ _))
-    ii = λ h → ≃-gives-▷ (happly h (ℕ-iteration Y y₀ g) , hfe _ _)
+    i  = λ (h : ℕ → Y) → Σ-retract (λ _ → ≃-gives-◁ (happly (h ∘ succ) (g ∘ h) , hfe _ _))
+    ii = λ (h : ℕ → Y) → ≃-gives-▷ (happly h (ℕ-iteration Y y₀ g) , hfe _ _)
 
   lemma₂ : (Σ h ꞉ (ℕ → Y), (h 0 ＝ y₀) × (h ∘ succ ＝ g ∘ h))
          ◁ (Σ h ꞉ (ℕ → Y), h ＝ ℕ-iteration Y y₀ g)

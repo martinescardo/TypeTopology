@@ -33,7 +33,7 @@ transpositional  _∙_
  = ∀ a b c d → (a ∙ b) ∙ (c ∙ d) ＝ (a ∙ c) ∙ (b ∙ d)
 
 seq-add-push : {A : 𝓤 ̇ } (α : ℕ → A) (n : ℕ)
-             → (λ i → α (succ i +ℕ n)) ＝ (λ i → α (succ (i +ℕ n)))
+             → (λ i → α (succ i +ℕ n)) ＝[ (ℕ → A) ] (λ i → α (succ (i +ℕ n)))
 seq-add-push α 0 = refl
 seq-add-push α (succ n) = seq-add-push (α ∘ succ) n
 

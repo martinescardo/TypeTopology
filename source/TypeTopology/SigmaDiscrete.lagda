@@ -118,16 +118,18 @@ replacing isolatedness by weak isolatedness.
 
   γ : is-decidable ((x , y') ≠ (x , y)) → is-decidable (y' ≠ y)
   γ (inl a) = inl (λ {refl → a refl})
-  γ (inr b) = inr (λ (d : y' ≠ y) → b (λ (p : x , y' ＝ x , y)
-   → d (y'                               ＝⟨refl⟩
-        transport Y refl y'              ＝⟨ I p ⟩
-        transport Y (ap pr₁ p) y'        ＝⟨ II p ⟩
-        transport (λ - → Y (pr₁ -)) p y' ＝⟨ III p ⟩
-        y                                ∎)))
-    where
-     I   = λ p → ap (λ - → transport Y - y') (s refl (ap pr₁ p))
-     II  = λ p → (transport-ap Y pr₁ p)⁻¹
-     III = λ p → apd pr₂ p
+  γ (inr b) = inr (b ∘ γ')
+   where
+    γ' : y' ≠ y → ¬ (x , y' ＝ x , y)
+    γ' d p = d (y'                               ＝⟨refl⟩
+                transport Y refl y'              ＝⟨ I ⟩
+                transport Y (ap pr₁ p) y'        ＝⟨ II ⟩
+                transport (λ - → Y (pr₁ -)) p y' ＝⟨ III ⟩
+                y                                ∎)
+     where
+      I   = ap (λ - → transport Y - y') (s refl (ap pr₁ p))
+      II  = (transport-ap Y pr₁ p)⁻¹
+      III = apd pr₂ p
 
 ×-weakly-isolated-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y}
                        → is-weakly-isolated (x , y)

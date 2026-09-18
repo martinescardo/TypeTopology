@@ -41,7 +41,7 @@ _[_] {X} {succ n} (xs , x) (suc i) = xs [ i ]
 Cxt : ℕ → 𝓤₀ ̇
 Cxt n = type ^ n
 
-data T : {n : ℕ} (Γ : Cxt n) (σ : type) → Type where
+data T : {n : ℕ} (Γ : Cxt n) (σ : type) → 𝓤₀ ̇  where
  Zero : {n : ℕ} {Γ : Cxt n} → T Γ ι
  Succ : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι)
  Rec  : {n : ℕ} {Γ : Cxt n} {σ : type}   → T Γ ((ι ⇒ σ ⇒ σ) ⇒ σ ⇒ ι ⇒ σ)
@@ -87,13 +87,13 @@ Closed terms can be interpreted in a special way:
 
 \begin{code}
 
-T₀ : type → Type
+T₀ : type → 𝓤₀ ̇
 T₀ = T 〈〉
 
 ⟦_⟧₀  : {σ : type} → T₀ σ → 〖 σ 〗
 ⟦ t ⟧₀ = ⟦ t ⟧ ⟨⟩
 
-T-definable : {σ : type} → 〖 σ 〗 → Type
+T-definable : {σ : type} → 〖 σ 〗 → 𝓤₀ ̇
 T-definable {σ} x = Σ t ꞉ T₀ σ , ⟦ t ⟧₀ ＝ x
 
 \end{code}
@@ -102,7 +102,7 @@ System T extended with a formal oracle Ω, called T' (rather than TΩ as previou
 
 \begin{code}
 
-data T' : {n : ℕ} (Γ : Cxt n) (σ : type) → Type where
+data T' : {n : ℕ} (Γ : Cxt n) (σ : type) → 𝓤₀ ̇  where
  Ω    : {n : ℕ} {Γ : Cxt n} → T' Γ (ι ⇒ ι)
  Zero : {n : ℕ} {Γ : Cxt n} → T' Γ ι
  Succ : {n : ℕ} {Γ : Cxt n} → T' Γ (ι ⇒ ι)

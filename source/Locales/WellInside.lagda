@@ -66,7 +66,7 @@ well-inside-implies-below : (F : Frame 𝓤 𝓥 𝓦)
                           → (U ⋜[ F ] V ⇒ (U ≤[ poset-of F ] V)) holds
 well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ] V)) γ
  where
-  _⊓_ = λ U V → U ∧[ F ] V
+  _⊓_ = λ (U V : ⟨ F ⟩) → U ∧[ F ] V
 
   γ : U ⋜₀[ F ] V → (U ≤[ poset-of F ] V) holds
   γ (W , c₁ , c₂) = connecting-lemma₂ F δ
