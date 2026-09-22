@@ -253,21 +253,18 @@ topologies.
 
 \begin{code}
 
-QFTop-wild : (𝓤 : Universe) → WildCategory (𝓤 ⁺) (𝓤 ⁺)
-QFTop-wild 𝓤 =
- record
-  { obj                 = Quasi-Formal-Topology 𝓤
-  ; hom                 = _─qft→_
-  ; 𝒊𝒅                  = λ {𝒜} → identity-morphism-qft 𝒜
-  ; _◦_                 = λ {𝒜} {ℬ} {𝒞} → qftop-composition 𝒜 ℬ 𝒞
-  ; 𝒊𝒅-is-left-neutral  = λ {𝒜} {ℬ} → id-is-left-neutral 𝒜 ℬ
-  ; 𝒊𝒅-is-right-neutral = λ {𝒜} {ℬ} → id-is-right-neutral 𝒜 ℬ
-  ; assoc               = λ {𝒜} {ℬ} {𝒞} {𝒟} →
-                           qftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟
-  }
+QFTopWildCategory : (𝓤 : Universe) → WildCategory (𝓤 ⁺) (𝓤 ⁺)
+QFTopWildCategory 𝓤 =
+ wildcategory (Quasi-Formal-Topology 𝓤)
+              _─qft→_
+              (λ {𝒜} → identity-morphism-qft 𝒜)
+              (λ {𝒜} {ℬ} {𝒞} → qftop-composition 𝒜 ℬ 𝒞)
+              (λ {𝒜} {ℬ} → id-is-left-neutral 𝒜 ℬ)
+              (λ {𝒜} {ℬ} → id-is-right-neutral 𝒜 ℬ)
+              (λ {𝒜} {ℬ} {𝒞} {𝒟} → qftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟)
 
-QFTop-pre : (𝓤 : Universe) → Precategory (𝓤 ⁺) (𝓤 ⁺)
-QFTop-pre 𝓤 = QFTop-wild 𝓤 , _─qft→_-is-set
+QFTopPrecategory : (𝓤 : Universe) → Precategory (𝓤 ⁺) (𝓤 ⁺)
+QFTopPrecategory 𝓤 = QFTopWildCategory 𝓤 , _─qft→_-is-set
 
 \end{code}
 
@@ -431,22 +428,20 @@ Finally, we write down the precategory of formal topologies.
 
 \begin{code}
 
-FTop-wild : (𝓤 : Universe) → WildCategory (𝓤 ⁺) (𝓤 ⁺)
-FTop-wild 𝓤 =
- record
-  { obj                 = Formal-Topology 𝓤
-  ; hom                 = _─ft→_
-  ; 𝒊𝒅                  = λ {𝒜} → identity-morphism-ft 𝒜
-  ; _◦_                 = λ {𝒜} {ℬ} {𝒞} → ftop-composition 𝒜 ℬ 𝒞
-  ; 𝒊𝒅-is-left-neutral  = λ {𝒜} {ℬ} → id-ftop-is-left-neutral 𝒜 ℬ
-  ; 𝒊𝒅-is-right-neutral = λ {𝒜} {ℬ} → id-ftop-is-right-neutral 𝒜 ℬ
-  ; assoc               = λ {𝒜} {ℬ} {𝒞} {𝒟} → comp-ftop-is-associative 𝒜 ℬ 𝒞 𝒟
-  }
+FTopWildCategory : (𝓤 : Universe) → WildCategory (𝓤 ⁺) (𝓤 ⁺)
+FTopWildCategory 𝓤 =
+ wildcategory (Formal-Topology 𝓤)
+              _─ft→_
+              (λ {𝒜} → identity-morphism-ft 𝒜)
+              (λ {𝒜} {ℬ} {𝒞} → ftop-composition 𝒜 ℬ 𝒞)
+              (λ {𝒜} {ℬ} → id-ftop-is-left-neutral 𝒜 ℬ)
+              (λ {𝒜} {ℬ} → id-ftop-is-right-neutral 𝒜 ℬ)
+              (λ {𝒜} {ℬ} {𝒞} {𝒟} → comp-ftop-is-associative 𝒜 ℬ 𝒞 𝒟)
 
-FTop-pre : (𝓤 : Universe) → Precategory (𝓤 ⁺) (𝓤 ⁺)
-FTop-pre 𝓤 = FTop-wild 𝓤 , †
+FTopPrecategory : (𝓤 : Universe) → Precategory (𝓤 ⁺) (𝓤 ⁺)
+FTopPrecategory 𝓤 = FTopWildCategory 𝓤 , †
  where
-  † : is-precategory (FTop-wild 𝓤)
+  † : is-precategory (FTopWildCategory 𝓤)
   † 𝒜 ℬ = _─ft→_-is-set 𝒜 ℬ
 
 \end{code}
