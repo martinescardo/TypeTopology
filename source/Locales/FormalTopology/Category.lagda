@@ -255,13 +255,14 @@ topologies.
 
 QFTopWildCategory : (𝓤 : Universe) → WildCategory (𝓤 ⁺) (𝓤 ⁺)
 QFTopWildCategory 𝓤 =
- wildcategory (Quasi-Formal-Topology 𝓤)
-              _─qft→_
-              (λ {𝒜} → identity-morphism-qft 𝒜)
-              (λ {𝒜} {ℬ} {𝒞} → qftop-composition 𝒜 ℬ 𝒞)
-              (λ {𝒜} {ℬ} → id-qftop-is-left-neutral 𝒜 ℬ)
-              (λ {𝒜} {ℬ} → id-qftop-is-right-neutral 𝒜 ℬ)
-              (λ {𝒜} {ℬ} {𝒞} {𝒟} → qftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟)
+ wildcategory
+  (Quasi-Formal-Topology 𝓤)
+  _─qft→_
+  (λ {𝒜} → identity-morphism-qft 𝒜)
+  (λ {𝒜} {ℬ} {𝒞} → qftop-composition 𝒜 ℬ 𝒞)
+  (λ {𝒜} {ℬ} → id-qftop-is-left-neutral 𝒜 ℬ)
+  (λ {𝒜} {ℬ} → id-qftop-is-right-neutral 𝒜 ℬ)
+  (λ {𝒜} {ℬ} {𝒞} {𝒟} → qftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟)
 
 QFTopPrecategory : (𝓤 : Universe) → Precategory (𝓤 ⁺) (𝓤 ⁺)
 QFTopPrecategory 𝓤 = QFTopWildCategory 𝓤 , _─qft→_-is-set
