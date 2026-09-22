@@ -426,7 +426,7 @@ comp-ftop-is-associative 𝒜 ℬ 𝒞 𝒟 𝒻 ℊ 𝒽 = to-formal-topology-m
 
 \end{code}
 
-Finally, we write down the wild category of formal topologies.
+Finally, we write down the precategory of formal topologies.
 
 \begin{code}
 
@@ -441,12 +441,6 @@ FTop-wild 𝓤 =
   ; 𝒊𝒅-is-right-neutral = λ {𝒜} {ℬ} → id-ftop-is-right-neutral 𝒜 ℬ
   ; assoc               = λ {𝒜} {ℬ} {𝒞} {𝒟} → comp-ftop-is-associative 𝒜 ℬ 𝒞 𝒟
   }
-
-\end{code}
-
-The precategory of formal topologies.
-
-\begin{code}
 
 FTop-pre : (𝓤 : Universe) → Precategory (𝓤 ⁺) (𝓤 ⁺)
 FTop-pre 𝓤 = FTop-wild 𝓤 , †
