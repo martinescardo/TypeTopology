@@ -179,6 +179,20 @@ is sufficient to establish the equality of two quasi formal topology morphisms.
 
 \end{code}
 
+The type of quasi formal topology morphisms is a set.
+
+\begin{code}
+
+ _─qft→_-is-set : is-set _─qft→_
+ _─qft→_-is-set =
+  subsets-of-sets-are-sets
+   (A → 𝓟 B)
+   (_holds ∘ is-quasi-formal-topology-morphism)
+   (Π-is-set fe (λ _ → 𝓟-is-set' fe pe))
+   (λ {f} → holds-is-prop (is-quasi-formal-topology-morphism f))
+
+\end{code}
+
 \section{Morphisms of formal topologies}
 
 We now define the notion of formal topology morphism, following Definition 2.4
