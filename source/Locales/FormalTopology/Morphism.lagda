@@ -267,8 +267,8 @@ formal topologies `𝒜` and `ℬ` and then define the named projections.
  ft-fun-preserves-top : (𝒻 : _─ft→_) → preserves-top [ 𝒻 ] holds
  ft-fun-preserves-top (_ , φ , _) = φ
 
- fun-preserves-binary-meets : (𝒻 : _─ft→_) → preserves-binary-meets [ 𝒻 ] holds
- fun-preserves-binary-meets (_ , _ , ψ , _) = ψ
+ ft-fun-preserves-binary-meets : (𝒻 : _─ft→_) → preserves-binary-meets [ 𝒻 ] holds
+ ft-fun-preserves-binary-meets (_ , _ , ψ , _) = ψ
 
  ft-fun-preserves-covering : (𝒻 : _─ft→_) → preserves-covering [ 𝒻 ] holds
  ft-fun-preserves-covering (_ , _ , _ , χ) = χ
