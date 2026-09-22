@@ -146,11 +146,11 @@ The identity morphism is neutral for composition.
 
 \begin{code}
 
-id-is-left-neutral
+id-qftop-is-left-neutral
  : (𝒜 ℬ : Quasi-Formal-Topology 𝓤)
  → (𝒻 : 𝒜 ─qft→ ℬ)
  → qftop-composition 𝒜 ℬ ℬ (identity-morphism-qft ℬ) 𝒻 ＝ 𝒻
-id-is-left-neutral 𝒜 ℬ 𝒻 =
+id-qftop-is-left-neutral 𝒜 ℬ 𝒻 =
  to-quasi-formal-topology-morphism-＝
   𝒜
   ℬ
@@ -174,11 +174,11 @@ id-is-left-neutral 𝒜 ℬ 𝒻 =
      Ⅱ : f a ⊆ ❴_❵ ⦅ f a ⦆
      Ⅱ b μ = ∣ (b , μ) , refl ∣
 
-id-is-right-neutral
+id-qftop-is-right-neutral
  : (𝒜 ℬ : Quasi-Formal-Topology 𝓤)
  → (𝒻 : 𝒜 ─qft→ ℬ)
  → qftop-composition 𝒜 𝒜 ℬ 𝒻 (identity-morphism-qft 𝒜) ＝ 𝒻
-id-is-right-neutral 𝒜 ℬ 𝒻 =
+id-qftop-is-right-neutral 𝒜 ℬ 𝒻 =
  to-quasi-formal-topology-morphism-＝
   𝒜
   ℬ
@@ -259,8 +259,8 @@ QFTopWildCategory 𝓤 =
               _─qft→_
               (λ {𝒜} → identity-morphism-qft 𝒜)
               (λ {𝒜} {ℬ} {𝒞} → qftop-composition 𝒜 ℬ 𝒞)
-              (λ {𝒜} {ℬ} → id-is-left-neutral 𝒜 ℬ)
-              (λ {𝒜} {ℬ} → id-is-right-neutral 𝒜 ℬ)
+              (λ {𝒜} {ℬ} → id-qftop-is-left-neutral 𝒜 ℬ)
+              (λ {𝒜} {ℬ} → id-qftop-is-right-neutral 𝒜 ℬ)
               (λ {𝒜} {ℬ} {𝒞} {𝒟} → qftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟)
 
 QFTopPrecategory : (𝓤 : Universe) → Precategory (𝓤 ⁺) (𝓤 ⁺)
@@ -367,7 +367,7 @@ id-ftop-is-left-neutral 𝒜 ℬ 𝒻 = to-formal-topology-morphism-＝ 𝒜 ℬ
   𝒻₀ = to-qft-morphism 𝒜 ℬ 𝒻
 
   † : ft-fun 𝒜 ℬ (ftop-composition 𝒜 ℬ ℬ (identity-morphism-ft ℬ) 𝒻) ∼ ft-fun 𝒜 ℬ 𝒻
-  † = happly (ap (fun 𝒜₀ ℬ₀) (id-is-left-neutral 𝒜₀ ℬ₀ 𝒻₀))
+  † = happly (ap (fun 𝒜₀ ℬ₀) (id-qftop-is-left-neutral 𝒜₀ ℬ₀ 𝒻₀))
 
 \end{code}
 
@@ -387,7 +387,7 @@ id-ftop-is-right-neutral 𝒜 ℬ 𝒻 = to-formal-topology-morphism-＝ 𝒜 �
   𝒻₀ = to-qft-morphism 𝒜 ℬ 𝒻
 
   † : ft-fun 𝒜 ℬ (ftop-composition 𝒜 𝒜 ℬ 𝒻 (identity-morphism-ft 𝒜)) ∼ ft-fun 𝒜 ℬ 𝒻
-  † = happly (ap (fun 𝒜₀ ℬ₀) (id-is-right-neutral 𝒜₀ ℬ₀ 𝒻₀))
+  † = happly (ap (fun 𝒜₀ ℬ₀) (id-qftop-is-right-neutral 𝒜₀ ℬ₀ 𝒻₀))
 
 \end{code}
 
@@ -395,14 +395,14 @@ Composition of formal topology morphisms is associative.
 
 \begin{code}
 
-comp-ftop-is-associative
+ftop-composition-is-associative
  : (𝒜 ℬ 𝒞 𝒟 : Formal-Topology 𝓤)
  → (𝒻 : 𝒜 ─ft→ ℬ)
  → (ℊ : ℬ ─ft→ 𝒞)
  → (𝒽 : 𝒞 ─ft→ 𝒟)
  → ftop-composition 𝒜 𝒞 𝒟 𝒽 (ftop-composition 𝒜 ℬ 𝒞 ℊ 𝒻)
    ＝ ftop-composition 𝒜 ℬ 𝒟 (ftop-composition ℬ 𝒞 𝒟 𝒽 ℊ) 𝒻
-comp-ftop-is-associative 𝒜 ℬ 𝒞 𝒟 𝒻 ℊ 𝒽 = to-formal-topology-morphism-＝ 𝒜 𝒟 _ _ †
+ftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟 𝒻 ℊ 𝒽 = to-formal-topology-morphism-＝ 𝒜 𝒟 _ _ †
  where
   open Formal-Topology-Morphism 𝒜 𝒟
    hiding (to-formal-topology-morphism-＝; to-qft-morphism)
@@ -436,7 +436,7 @@ FTopWildCategory 𝓤 =
               (λ {𝒜} {ℬ} {𝒞} → ftop-composition 𝒜 ℬ 𝒞)
               (λ {𝒜} {ℬ} → id-ftop-is-left-neutral 𝒜 ℬ)
               (λ {𝒜} {ℬ} → id-ftop-is-right-neutral 𝒜 ℬ)
-              (λ {𝒜} {ℬ} {𝒞} {𝒟} → comp-ftop-is-associative 𝒜 ℬ 𝒞 𝒟)
+              (λ {𝒜} {ℬ} {𝒞} {𝒟} → ftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟)
 
 FTopPrecategory : (𝓤 : Universe) → Precategory (𝓤 ⁺) (𝓤 ⁺)
 FTopPrecategory 𝓤 = FTopWildCategory 𝓤 , †
