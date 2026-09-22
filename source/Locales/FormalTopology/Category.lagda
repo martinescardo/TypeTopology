@@ -113,7 +113,7 @@ qftop-composition 𝒜 ℬ 𝒞 ℊ 𝒻 = h , h-preserves-top , h-preserves-cov
     Ⅱ = fun-preserves-top ℬ 𝒞 ℊ
 
     Ⅲ : (g ⦅ full ⦆ ◁Q⁺[ 𝒞 ] g ⦅ f ⦅ full ⦆ ⦆) holds
-    Ⅲ = fun-respects-cover-plus ℬ 𝒞 ℊ full (f ⦅ full ⦆) Ⅰ
+    Ⅲ = fun-preserves-covering-plus ℬ 𝒞 ℊ full (f ⦅ full ⦆) Ⅰ
 
     Ⅳ : (full ◁Q⁺[ 𝒞 ] g ⦅ f ⦅ full ⦆ ⦆) holds
     Ⅳ = transitivity-of-quasi-cover-plus 𝒞 full _ _ Ⅱ Ⅲ
@@ -129,10 +129,10 @@ qftop-composition 𝒜 ℬ 𝒞 ℊ 𝒻 = h , h-preserves-top , h-preserves-cov
   h-preserves-covering a U κ = Ⅲ
    where
     Ⅰ : (f a ◁Q⁺[ ℬ ] f ⦅ U ⦆) holds
-    Ⅰ = fun-respects-cover 𝒜 ℬ 𝒻 a U κ
+    Ⅰ = fun-preserves-covering 𝒜 ℬ 𝒻 a U κ
 
     Ⅱ : (g ⦅ f a ⦆ ◁Q⁺[ 𝒞 ] g ⦅ f ⦅ U ⦆ ⦆) holds
-    Ⅱ = fun-respects-cover-plus ℬ 𝒞 ℊ (f a) (f ⦅ U ⦆) Ⅰ
+    Ⅱ = fun-preserves-covering-plus ℬ 𝒞 ℊ (f a) (f ⦅ U ⦆) Ⅰ
 
     Ⅲ : (g ⦅ f a ⦆ ◁Q⁺[ 𝒞 ] h ⦅ U ⦆) holds
     Ⅲ = transport
@@ -326,7 +326,7 @@ ftop-composition 𝒜 ℬ 𝒞 ℊ 𝒻 =
                (∣ c₁ , q₁ , p₁ ∣ , ∣ c₂ , q₂ , p₂ ∣)
 
           Ⅱ : (g b₁ ⊓₃ g b₂ ◁⁺[ 𝒞 ] g ⦅ lower-bounds ℬ ℬ b₁ b₂ ⦆) holds
-          Ⅱ = fun-preserves-binary-meets ℬ 𝒞 ℊ b₁ b₂
+          Ⅱ = ft-fun-preserves-binary-meets ℬ 𝒞 ℊ b₁ b₂
 
           ξ : (lower-bounds ℬ ℬ b₁ b₂ ◁⁺[ ℬ ] f ⦅ lower-bounds 𝒜 𝒜 a₁ a₂ ⦆) holds
           ξ = lower-bounds ℬ ℬ b₁ b₂                  ◁⁺⟨ Ⅵ ⟩
@@ -343,11 +343,11 @@ ftop-composition 𝒜 ℬ 𝒞 ℊ 𝒻 =
                                  (∣ b₁ , θ₁ , r₁ ∣ , ∣ b₂ , θ₂ , r₂ ∣)
 
                 Ⅶ : (f a₁ ⊓₂ f a₂ ◁⁺[ ℬ ] f ⦅ lower-bounds 𝒜 𝒜 a₁ a₂ ⦆) holds
-                Ⅶ = fun-preserves-binary-meets 𝒜 ℬ 𝒻 a₁ a₂
+                Ⅶ = ft-fun-preserves-binary-meets 𝒜 ℬ 𝒻 a₁ a₂
 
           Ⅲ : (g ⦅ lower-bounds ℬ ℬ b₁ b₂ ⦆ ◁⁺[ 𝒞 ] g ⦅ f ⦅ lower-bounds 𝒜 𝒜 a₁ a₂ ⦆ ⦆)
                holds
-          Ⅲ = fun-respects-cover-plus ℬ₀ 𝒞₀ ℊ₀ (lower-bounds ℬ ℬ b₁ b₂) _ ξ
+          Ⅲ = fun-preserves-covering-plus ℬ₀ 𝒞₀ ℊ₀ (lower-bounds ℬ ℬ b₁ b₂) _ ξ
 
           Ⅳ = relational-image-commutes-with-composition f g (lower-bounds 𝒜 𝒜 a₁ a₂)
 
