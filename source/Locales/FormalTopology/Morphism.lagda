@@ -57,7 +57,7 @@ We define the syntax `f ⦅ U ⦆` for the image of a relation over a subset `U`
 relational-image-syntax : {A B : 𝓤 ̇} → (A → 𝓟 B) → 𝓟 A → 𝓟 B
 relational-image-syntax f U = relational-image f U
 
-infix 8 relational-image-syntax
+infix 25 relational-image-syntax
 syntax relational-image-syntax f U = f ⦅ U ⦆
 
 \end{code}
