@@ -431,13 +431,14 @@ Finally, we write down the precategory of formal topologies.
 
 FTopWildCategory : (𝓤 : Universe) → WildCategory (𝓤 ⁺) (𝓤 ⁺)
 FTopWildCategory 𝓤 =
- wildcategory (Formal-Topology 𝓤)
-              _─ft→_
-              (λ {𝒜} → identity-morphism-ft 𝒜)
-              (λ {𝒜} {ℬ} {𝒞} → ftop-composition 𝒜 ℬ 𝒞)
-              (λ {𝒜} {ℬ} → id-ftop-is-left-neutral 𝒜 ℬ)
-              (λ {𝒜} {ℬ} → id-ftop-is-right-neutral 𝒜 ℬ)
-              (λ {𝒜} {ℬ} {𝒞} {𝒟} → ftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟)
+ wildcategory
+  (Formal-Topology 𝓤)
+  _─ft→_
+  (λ {𝒜} → identity-morphism-ft 𝒜)
+  (λ {𝒜} {ℬ} {𝒞} → ftop-composition 𝒜 ℬ 𝒞)
+  (λ {𝒜} {ℬ} → id-ftop-is-left-neutral 𝒜 ℬ)
+  (λ {𝒜} {ℬ} → id-ftop-is-right-neutral 𝒜 ℬ)
+  (λ {𝒜} {ℬ} {𝒞} {𝒟} → ftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟)
 
 FTopPrecategory : (𝓤 : Universe) → Precategory (𝓤 ⁺) (𝓤 ⁺)
 FTopPrecategory 𝓤 = FTopWildCategory 𝓤 , †
