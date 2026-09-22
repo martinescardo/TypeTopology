@@ -1,7 +1,8 @@
 ---
 title: Category of formal topologies
 author: Ayberk Tosun
-date: 2026-08-25
+date-started: 2026-08-27
+date-completed: 2026-09-02
 ---
 
 This module defines the category of formal topologies as well as that of quasi
