@@ -6,7 +6,7 @@ date-completed: 2026-08-27
 ---
 
 This module defines morphisms between formal topologies as well as quasi formal
-topologies, following [1] as reference.
+topologies, following [1] as a reference.
 
 \begin{code}
 

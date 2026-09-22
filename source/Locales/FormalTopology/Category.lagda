@@ -6,7 +6,7 @@ date-completed: 2026-09-02
 ---
 
 This module defines the category of formal topologies as well as that of quasi
-formal topologies, following [1] as reference.
+formal topologies, following [1] as a reference.
 
 \begin{code}
 
@@ -402,7 +402,8 @@ ftop-composition-is-associative
  → (𝒽 : 𝒞 ─ft→ 𝒟)
  → ftop-composition 𝒜 𝒞 𝒟 𝒽 (ftop-composition 𝒜 ℬ 𝒞 ℊ 𝒻)
    ＝ ftop-composition 𝒜 ℬ 𝒟 (ftop-composition ℬ 𝒞 𝒟 𝒽 ℊ) 𝒻
-ftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟 𝒻 ℊ 𝒽 = to-formal-topology-morphism-＝ 𝒜 𝒟 _ _ †
+ftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟 𝒻 ℊ 𝒽 =
+ to-formal-topology-morphism-＝ 𝒜 𝒟 _ _ †
  where
   open Formal-Topology-Morphism 𝒜 𝒟
    hiding (to-formal-topology-morphism-＝; to-qft-morphism)
@@ -415,7 +416,6 @@ ftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟 𝒻 ℊ 𝒽 = to-formal-top
   𝒻₀ = to-qft-morphism 𝒜 ℬ 𝒻
   ℊ₀ = to-qft-morphism ℬ 𝒞 ℊ
   𝒽₀ = to-qft-morphism 𝒞 𝒟 𝒽
-
 
   † : [ (ftop-composition 𝒜 𝒞 𝒟 𝒽 (ftop-composition 𝒜 ℬ 𝒞 ℊ 𝒻)) ]
       ∼
