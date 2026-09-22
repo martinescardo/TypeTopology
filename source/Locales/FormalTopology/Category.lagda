@@ -247,7 +247,7 @@ qftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟 𝒻 ℊ 𝒽 =
 
 \end{code}
 
-We now have everything we need to define the category of quasi formal
+We now have everything we need to define the precategory of quasi formal
 topologies.
 
 \begin{code}
@@ -264,6 +264,9 @@ QFTop-wild 𝓤 =
   ; assoc               = λ {𝒜} {ℬ} {𝒞} {𝒟} →
                            qftop-composition-is-associative 𝒜 ℬ 𝒞 𝒟
   }
+
+QFTop-pre : (𝓤 : Universe) → Precategory (𝓤 ⁺) (𝓤 ⁺)
+QFTop-pre 𝓤 = QFTop-wild 𝓤 , _─qft→_-is-set
 
 \end{code}
 
