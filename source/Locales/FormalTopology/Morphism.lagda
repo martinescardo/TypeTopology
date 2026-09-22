@@ -29,6 +29,8 @@ open import Notation.CanonicalMap
 open import Notation.UnderlyingType
 open import UF.Logic
 open import UF.Powerset
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
@@ -301,6 +303,20 @@ topologies.
   where
    † : (f : A → 𝓟 B) → is-prop (is-formal-topology-morphism f holds)
    † f = holds-is-prop (is-formal-topology-morphism f)
+
+\end{code}
+
+The type of formal topology morphisms is a set.
+
+\begin{code}
+
+ _─ft→_-is-set : is-set _─ft→_
+ _─ft→_-is-set =
+  subsets-of-sets-are-sets
+   (A → 𝓟 B)
+   (_holds ∘ is-formal-topology-morphism)
+   (Π-is-set fe (λ _ → 𝓟-is-set' fe pe))
+   (λ {f} → holds-is-prop (is-formal-topology-morphism f))
 
 \end{code}
 
