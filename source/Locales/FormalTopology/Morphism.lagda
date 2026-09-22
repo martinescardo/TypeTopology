@@ -134,13 +134,13 @@ We now define named projections for the `_─qft→_` type.
  fun-preserves-top : (𝒻 : _─qft→_) → preserves-top [ 𝒻 ] holds
  fun-preserves-top (_ , φ , _) = φ
 
- fun-respects-cover : (𝒻 : _─qft→_) → preserves-covering [ 𝒻 ] holds
- fun-respects-cover (_ , _ , ψ) = ψ
+ fun-preserves-covering : (𝒻 : _─qft→_) → preserves-covering [ 𝒻 ] holds
+ fun-preserves-covering (_ , _ , ψ) = ψ
 
- fun-respects-cover-plus
+ fun-preserves-covering-plus
   : (𝒻 : _─qft→_)
   → (Ɐ U V ꞉ 𝓟 ⟨ 𝒜 ⟩ , U ◁Q⁺[ 𝒜 ] V ⇒ [ 𝒻 ] ⦅ U ⦆ ◁Q⁺[ ℬ ] [ 𝒻 ] ⦅ V ⦆) holds
- fun-respects-cover-plus 𝒻 U V p b h =
+ fun-preserves-covering-plus 𝒻 U V p b h =
   ∥∥-rec (holds-is-prop (b ∈ₚ (λ - → - ◁Q[ ℬ ] ([ 𝒻 ] ⦅ V ⦆)))) † h
    where
     f = [ 𝒻 ]
@@ -153,7 +153,7 @@ We now define named projections for the `_─qft→_` type.
       open Quasi-Cover-Reasoning ℬ
 
       Ⅱ : (f a ◁Q⁺[ ℬ ] f ⦅ V ⦆) holds
-      Ⅱ = fun-respects-cover 𝒻 a V (p a μ)
+      Ⅱ = fun-preserves-covering 𝒻 a V (p a μ)
 
       Ⅰ : (b ◁Q[ ℬ ] f a) holds
       Ⅰ = reflexivity-of-quasi-cover ℬ b (f a) q
@@ -270,8 +270,8 @@ formal topologies `𝒜` and `ℬ` and then define the named projections.
  fun-preserves-binary-meets : (𝒻 : _─ft→_) → preserves-binary-meets [ 𝒻 ] holds
  fun-preserves-binary-meets (_ , _ , ψ , _) = ψ
 
- ft-fun-respects-cover : (𝒻 : _─ft→_) → preserves-covering [ 𝒻 ] holds
- ft-fun-respects-cover (_ , _ , _ , χ) = χ
+ ft-fun-preserves-covering : (𝒻 : _─ft→_) → preserves-covering [ 𝒻 ] holds
+ ft-fun-preserves-covering (_ , _ , _ , χ) = χ
 
 \end{code}
 
