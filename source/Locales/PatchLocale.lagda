@@ -38,7 +38,7 @@ open import UF.Subsingletons
 
 open AllCombinators pt fe
 open FrameHomomorphismProperties
-open FrameHomomorphisms hiding (fun; fun-syntax)
+open FrameHomomorphisms hiding (fun)
 open PropositionalTruncation pt
 
 \end{code}

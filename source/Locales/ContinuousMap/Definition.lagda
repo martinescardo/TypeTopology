@@ -38,8 +38,7 @@ We work in a module parameterized by two locales `X` and `Y`.
 module ContinuousMaps (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤' 𝓥' 𝓦) where
 
  open Locale
- open FrameHomomorphisms hiding (fun-syntax; fun)
- open FrameHomomorphisms (𝒪 Y) (𝒪 X) using (fun-syntax)
+ open FrameHomomorphisms hiding (fun)
 
 \end{code}
 
@@ -75,8 +74,8 @@ module ContinuousMapNotation (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤' 𝓥'
  open Locale
 
  open ContinuousMaps
- open FrameHomomorphisms (𝒪 Y) (𝒪 X) using (fun-syntax; fun)
- open FrameHomomorphisms hiding (fun-syntax; fun)
+ open FrameHomomorphisms (𝒪 Y) (𝒪 X) using (fun)
+ open FrameHomomorphisms hiding (fun)
 
 \end{code}
 

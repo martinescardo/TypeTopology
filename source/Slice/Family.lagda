@@ -41,8 +41,6 @@ Comprehension notation.
 compr-syntax : {A : 𝓤 ̇ } (I : 𝓦 ̇ )→ (I → A) → Fam 𝓦 A
 compr-syntax I f = I , f
 
-infix 2 compr-syntax
-
 syntax compr-syntax I (λ x → e) = ⁅ e ∣ x ∶ I ⁆
 
 \end{code}
@@ -54,8 +52,6 @@ Comprehension over another family.
 fmap-syntax : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
             → (A → B) → Fam 𝓦 A → Fam 𝓦 B
 fmap-syntax h (I , f) = I , h ∘ f
-
-infix 2 fmap-syntax
 
 syntax fmap-syntax (λ x → e) U = ⁅ e ∣ x ε U ⁆
 
