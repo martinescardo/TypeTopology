@@ -151,7 +151,6 @@ Define fixites.
 
 \begin{code}
 
-infix  3 dep-sym
 infixr 0 _＝⟦⟨_⟩⟧_
 
 \end{code}

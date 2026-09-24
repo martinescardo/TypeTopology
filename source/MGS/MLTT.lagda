@@ -668,7 +668,6 @@ module basic-arithmetic-and-order where
 infixr 30 _×_
 infix   0 _∼_
 infixl 70 _∘_
-infix   0 Id
 infix  10 _↔_
 infixl 30 _∙_
 infixr  0 _＝⟨_⟩_

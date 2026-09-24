@@ -381,9 +381,6 @@ But the induction equation does.
 ∣∣⟨ inl x ⟩-exit-is-section ⋆ = refl
 ∣∣⟨ inr ν ⟩-exit-is-section s = 𝟘-elim s
 
-infix 0 ∥_∥⟨_⟩
-infix 0 ∣_∣⟨_⟩
-
 module propositional-truncation-of-decidable-type
         (pt : propositional-truncations-exist)
        where
