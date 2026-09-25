@@ -1201,6 +1201,162 @@ simulations-pointwise-equal-gives-isomorphic-initial-segments α β γ f g a b e
 
 \end{code}
 
+Added 25 September 2026 by Tom de Jong.
+
+TODO. Move to separate file.
+
+We characterize the type of simulations into a fixed ordinal α as
+the type of lower-closed subsets of α.
+
+\begin{code}
+
+open import UF.Powerset
+open import UF.Subsingletons-FunExt
+
+module _
+        (α : Ordinal 𝓤)
+       where
+
+ is-lower-closed : 𝓟 ⟨ α ⟩ → 𝓤 ̇
+ is-lower-closed S = (a b : ⟨ α ⟩) → b ∈ S → a ≺⟨ α ⟩ b → a ∈ S
+
+ being-lower-closed-is-prop : (S : 𝓟 (⟨ α ⟩)) → is-prop (is-lower-closed S)
+ being-lower-closed-is-prop S =
+  Π₄-is-prop fe' (λ x _ _ _ → ∈-is-prop S x)
+
+ lower-closed-subsetₒ : (S : 𝓟 ⟨ α ⟩) → is-lower-closed S → Ordinal 𝓤
+ lower-closed-subsetₒ S lc =
+  (𝕋 S ,
+   _≺_ ,
+   subtype-order-is-prop-valued α (_∈ S) ,
+   subtype-order-is-well-founded α (_∈ S) ,
+   ext ,
+   subtype-order-is-transitive α (_∈ S))
+    where
+     ι : 𝕋 S → ⟨ α ⟩
+     ι = 𝕋-to-carrier S
+     _≺_ = subtype-order α (_∈ S)
+     ≼-lemma : (x y : 𝕋 S) → ((z : 𝕋 S) → z ≺ x → z ≺ y) → ι x ≼⟨ α ⟩ ι y
+     ≼-lemma (x , s) _ u a l = u (a , t) l
+      where
+       t : a ∈ S
+       t = lc a x s l
+     ext : is-extensional _≺_
+     ext x y u v =
+      to-subtype-＝
+       (∈-is-prop S)
+       (Extensionality α (ι x) (ι y) (≼-lemma x y u) (≼-lemma y x v))
+
+ lower-closed-subsetₒ-⊴ : (S : 𝓟 ⟨ α ⟩) (lc : is-lower-closed S)
+                        → lower-closed-subsetₒ S lc ⊴ α
+ lower-closed-subsetₒ-⊴ S lc = ι , ι-is-initial-segment , ι-is-order-preserving
+  where
+   σ = lower-closed-subsetₒ S lc
+   ι : ⟨ σ ⟩ → ⟨ α ⟩
+   ι = 𝕋-to-carrier S
+   ι-is-order-preserving : is-order-preserving σ α ι
+   ι-is-order-preserving x y l = l
+   ι-is-initial-segment : is-initial-segment σ α ι
+   ι-is-initial-segment (x , s) a l = (a , t) , (l , refl)
+    where
+     t : a ∈ S
+     t = lc a x s l
+
+ open import UF.PropTrunc
+
+ module _ (pt : propositional-truncations-exist) where
+  open PropositionalTruncation pt
+  open import UF.ImageAndSurjection pt
+  open 𝓟-image pt
+
+  image-of-simulation-is-lower-closed-subset
+   : (β : Ordinal 𝓤) (f : β ⊴ α)
+   → is-lower-closed (image-as-subset [ β , α ]⟨ f ⟩)
+  image-of-simulation-is-lower-closed-subset β 𝕗@(f , f-sim) a b a-in-im l =
+   ∥∥-functor I a-in-im
+    where
+     I : (Σ y ꞉ ⟨ β ⟩ , f y ＝ b)
+       → Σ x ꞉ ⟨ β ⟩ , f x ＝ a
+     I (y , refl) = (pr₁ II , pr₂ (pr₂ II))
+      where
+       II : Σ x ꞉ ⟨ β ⟩ , (x ≺⟨ β ⟩ y) × (f x ＝ a)
+       II = simulations-are-initial-segments β α f f-sim y a l
+
+  ordinal-with-simulation-lower-closed-subset-≃ₒ
+   : (β : Ordinal 𝓤) (f : β ⊴ α)
+   → β ≃ₒ lower-closed-subsetₒ (image-as-subset [ β , α ]⟨ f ⟩)
+                               (image-of-simulation-is-lower-closed-subset β f)
+  ordinal-with-simulation-lower-closed-subset-≃ₒ β 𝕗@(f , f-sim) =
+   (ι , order-preserving-reflecting-equivs-are-order-equivs β σ ι I II III)
+    where
+     S = image-as-subset f
+     lc = image-of-simulation-is-lower-closed-subset β 𝕗
+     σ = lower-closed-subsetₒ S lc
+     ι : ⟨ β ⟩ → ⟨ σ ⟩
+     ι = corestriction f
+
+     I : is-equiv ι
+     I = surjective-embeddings-are-equivs ι
+          (factor-is-embedding ι (restriction f)
+            (simulations-are-embeddings fe β α f f-sim)
+            (restrictions-are-embeddings f))
+          (corestrictions-are-surjections f)
+
+     II : is-order-preserving β σ ι
+     II = simulations-are-order-preserving β α f f-sim
+
+     III : is-order-reflecting β σ ι
+     III = simulations-are-order-reflecting β α f f-sim
+
+  simulations-as-lower-closed-subsets
+   : (Σ β ꞉ Ordinal 𝓤 , β ⊴ α) ≃ (Σ S ꞉ 𝓟 ⟨ α ⟩ , is-lower-closed S)
+  simulations-as-lower-closed-subsets = φ , qinvs-are-equivs φ (ψ , I , II)
+   where
+    φ : (Σ β ꞉ Ordinal 𝓤 , β ⊴ α) → (Σ S ꞉ 𝓟 ⟨ α ⟩ , is-lower-closed S)
+    φ (β , 𝕗@(f , f-sim)) =
+     (image-as-subset f , image-of-simulation-is-lower-closed-subset β 𝕗)
+
+    ψ : (Σ S ꞉ 𝓟 ⟨ α ⟩ , is-lower-closed S) → (Σ β ꞉ Ordinal 𝓤 , β ⊴ α)
+    ψ (S , lc) = (lower-closed-subsetₒ S lc , lower-closed-subsetₒ-⊴ S lc)
+
+    I : ψ ∘ φ ∼ id
+    I (β , 𝕗) =
+     to-subtype-＝ (λ γ → ⊴-is-prop-valued γ α)
+                   (eqtoidₒ (ua 𝓤) fe' _ β
+                     (≃ₒ-sym β (uncurry lower-closed-subsetₒ (φ (β , 𝕗)))
+                       (ordinal-with-simulation-lower-closed-subset-≃ₒ β 𝕗)))
+
+    II : φ ∘ ψ ∼ id
+    II (S , lc) =
+     to-subtype-＝ being-lower-closed-is-prop
+                   (𝕋-to-carrier-section-of-image-as-subset pt {𝓤} ua S)
+
+  open import UF.Size
+  open import UF.SubtypeClassifier
+  open import UF.EquivalenceExamples
+  the-type-of-simulations-is-small : Ω-resizing 𝓤
+                                   → is-small (Σ β ꞉ Ordinal 𝓤 , β ⊴ α)
+  the-type-of-simulations-is-small res = T , ≃-sym I
+   where
+    Ω' : 𝓤 ̇
+    Ω' = resized (Ω 𝓤) res
+    ϕ : Ω' ≃ Ω 𝓤
+    ϕ = resizing-condition res
+    ψ : (⟨ α ⟩ → Ω') ≃ 𝓟 ⟨ α ⟩
+    ψ = →cong fe' fe' (≃-refl ⟨ α ⟩) ϕ
+
+    T : 𝓤 ̇
+    T = (Σ S ꞉ (⟨ α ⟩ → Ω') , is-lower-closed (⌜ ψ ⌝ S))
+
+    I = (Σ β ꞉ Ordinal 𝓤 , β ⊴ α)           ≃⟨ II ⟩
+        (Σ S ꞉ 𝓟 ⟨ α ⟩ , is-lower-closed S) ≃⟨ III ⟩
+        T                                   ■
+     where
+      II = simulations-as-lower-closed-subsets
+      III = ≃-sym (Σ-change-of-variable-≃ is-lower-closed ψ)
+
+\end{code}
+
 Fixities and precedences
 
 \begin{code}
