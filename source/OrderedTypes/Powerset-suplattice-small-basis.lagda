@@ -105,7 +105,7 @@ module _ (A : 𝓤 ̇) where
 \end{code}
 
 We will now observe that a sup lattice L, with small basis B, gives L as a
-retraction of 𝓟 B
+retraction of 𝓟 B.
 
            L --- ↓ᴮ ---> 𝓟 B --- ⋁ ---> L
             \                          ^
@@ -114,26 +114,35 @@ retraction of 𝓟 B
 
 \begin{code}
 
-module _ {𝓤 𝓣 𝓥 : Universe}
+module sup-lattice-powerset-retract
          (L : Sup-Lattice 𝓤 𝓣 𝓥)
          {B : 𝓥 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
        where
 
  open is-basis h
 
- sup-lat-to-pow : ⟨ L ⟩ → 𝓟 {𝓥} B
- sup-lat-to-pow x b = ((b ≤ᴮ x) , ≤ᴮ-is-prop-valued)
+ ↓-map : ⟨ L ⟩ → 𝓟 {𝓥} B
+ ↓-map x b = ((b ≤ᴮ x) , ≤ᴮ-is-prop-valued)
 
- pow-to-sup-lat : 𝓟 {𝓥} B → ⟨ L ⟩
- pow-to-sup-lat S = ⋁⟨ L ⟩ (𝕋 S , β ∘ 𝕋-to-carrier S)
+ ↓-monotone : (x y : ⟨ L ⟩)
+            → (x ≤⟨ L ⟩ y) holds
+            → ↓-map x ⊆ ↓-map y
+ ↓-monotone x y x≤y b b∈↓x = ≤ᴮ-≤-to-≤ᴮ b∈↓x x≤y 
 
- sup-lat-pow-compose-to-id
-  : pow-to-sup-lat ∘ sup-lat-to-pow ∼ id
- sup-lat-pow-compose-to-id x = is-supᴮ' x ⁻¹
+ ⋁-map : 𝓟 {𝓥} B → ⟨ L ⟩
+ ⋁-map S = ⋁⟨ L ⟩ (𝕋 S , β ∘ 𝕋-to-carrier S)
+
+ ⋁-monotone : (S T : 𝓟 {𝓥} B)
+            → S ⊆ T
+            → (⋁-map S ≤⟨ L ⟩ ⋁-map T) holds
+ ⋁-monotone S T S⊆T = joins-preserve-containment L β S T S⊆T
+
+ ⋁∘↓-id
+  : ⋁-map ∘ ↓-map ∼ id
+ ⋁∘↓-id x = is-supᴮ' x ⁻¹
 
  sup-lattice-retract-of-pow : retract ⟨ L ⟩ of 𝓟 {𝓥} B
- sup-lattice-retract-of-pow
-  = (pow-to-sup-lat , sup-lat-to-pow , sup-lat-pow-compose-to-id)
+ sup-lattice-retract-of-pow = (⋁-map , ↓-map , ⋁∘↓-id)
 
 \end{code}
 
@@ -146,9 +155,133 @@ is small.
                       → ⟨ L ⟩ is 𝓥 small
  sup-lattice-is-small omega-res
   = embedded-retract-is-small sup-lattice-retract-of-pow
-     (sections-into-sets-are-embeddings sup-lat-to-pow
-      (pow-to-sup-lat , sup-lat-pow-compose-to-id)
+     (sections-into-sets-are-embeddings ↓-map (⋁-map , ⋁∘↓-id)
       (powersets-are-sets fe pe))
      (Π-is-small fe' (B , ≃-refl B) (λ _ → omega-res))
 
 \end{code}
+
+Now we will investigate the connection between least (pre) fixed points of
+monotone maps on small generated sup lattices and monotone operators on the
+power set.
+
+\begin{code}
+
+module _ (𝓤 : Universe) (A : 𝓤 ̇) where
+
+ monotone-operator-has-least-pre-fixed-point
+  : (f : 𝓟 {𝓤} A → 𝓟 {𝓤} A)
+  → is-monotone-endomap (𝓟-sup-lattice A) f
+  → (𝓤 ⁺) ̇
+ monotone-operator-has-least-pre-fixed-point f f-mono
+  = Σ S ꞉ 𝓟 {𝓤} A , f S ⊆ S × ((T : 𝓟 {𝓤} A) → f T ⊆ T → S ⊆ T)
+
+ monotone-operator-LPFP : (𝓤 ⁺) ̇
+ monotone-operator-LPFP
+  = (f : 𝓟 {𝓤} A → 𝓟 {𝓤} A) (f-mono : is-monotone-endomap (𝓟-sup-lattice A) f)
+  → monotone-operator-has-least-pre-fixed-point f f-mono
+
+ module _ (f : 𝓟 {𝓤} A → 𝓟 {𝓤} A)
+          (f-mono : is-monotone-endomap (𝓟-sup-lattice A) f)
+        where
+
+  mon-op-LPFP-point : monotone-operator-LPFP → 𝓟 {𝓤} A
+  mon-op-LPFP-point m = pr₁ (m f f-mono)
+
+  mon-op-LPFP-pre-fixed
+   : (m : monotone-operator-LPFP)
+   → f (mon-op-LPFP-point m) ⊆ mon-op-LPFP-point m
+  mon-op-LPFP-pre-fixed m = pr₁ (pr₂ (m f f-mono))
+
+  mon-op-LPFP-least
+   : (m : monotone-operator-LPFP)
+   → (T : 𝓟 {𝓤} A)
+   → f T ⊆ T
+   → mon-op-LPFP-point m ⊆ T
+  mon-op-LPFP-least m = pr₂ (pr₂ (m f f-mono))
+
+module _ (𝓤 𝓣 𝓥 : Universe)
+         (L : Sup-Lattice 𝓤 𝓣 𝓥)
+         {B : 𝓥 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+       where
+
+ open is-basis h
+
+ monotone-map-has-least-pre-fixed-point
+  : (f : ⟨ L ⟩ → ⟨ L ⟩)
+  → is-monotone-endomap L f
+  → 𝓤 ⊔ 𝓣 ̇
+ monotone-map-has-least-pre-fixed-point f mono-f
+  = Σ p ꞉ ⟨ L ⟩ , (f p ≤⟨ L ⟩ p) holds
+                × ((q : ⟨ L ⟩) → (f q ≤⟨ L ⟩ q) holds → (p ≤⟨ L ⟩ q) holds)
+
+ monotone-map-LPFP : 𝓤 ⊔ 𝓣 ̇
+ monotone-map-LPFP
+  = (f : ⟨ L ⟩ → ⟨ L ⟩) (f-mono : is-monotone-endomap L f)
+  → monotone-map-has-least-pre-fixed-point f f-mono
+
+\end{code}
+
+We now observe that monotone-map-LPFP 𝓤⁺ 𝓤 𝓤 implies monotone-operator-LPFP 𝓤.
+
+\begin{code}
+
+montone-map-implies-monotone-operator-LPFP
+ : (A : 𝓤 ̇)
+ → monotone-map-LPFP (𝓤 ⁺) 𝓤 𝓤 (𝓟-sup-lattice A) (❴_❵ₜᵣ A) (❴❵ₜᵣ-is-basis A)
+ → monotone-operator-LPFP 𝓤 A
+montone-map-implies-monotone-operator-LPFP A mon-map-LPFP = mon-map-LPFP
+
+\end{code}
+
+What is more suprising is that monotone-operator-LPFP 𝓥 implies
+monotone-map-LPFP 𝓤 𝓣 𝓥.
+
+\begin{code}
+
+monotone-operator-implies-monotone-map-LPFP
+ : (L : Sup-Lattice 𝓤 𝓣 𝓥)
+   {B : 𝓥 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+ → monotone-operator-LPFP 𝓥 B
+ → monotone-map-LPFP 𝓤 𝓣 𝓥 L β h
+monotone-operator-implies-monotone-map-LPFP
+ {𝓤} {𝓣} {𝓥} L {B} β h mon-op-LPFP f f-mono = (p , fp≤p , p≤any)
+ where
+  open sup-lattice-powerset-retract {𝓤} {𝓣} {𝓥} L β h
+  open is-basis h
+  mon-op : 𝓟 {𝓥} B → 𝓟 {𝓥} B
+  mon-op = ↓-map ∘ f ∘ ⋁-map
+  mon-op-is-monotone : is-monotone-endomap (𝓟-sup-lattice B) mon-op
+  mon-op-is-monotone
+   = ∘-presererves-monotone
+      (𝓟-sup-lattice B) L (𝓟-sup-lattice B) ⋁-map (↓-map ∘ f) ⋁-monotone
+       (∘-presererves-monotone L L (𝓟-sup-lattice B) f ↓-map f-mono ↓-monotone)
+  S : 𝓟 {𝓥} B
+  S = mon-op-LPFP-point 𝓥 B mon-op mon-op-is-monotone mon-op-LPFP
+  mon-opS⊆S : mon-op S ⊆ S
+  mon-opS⊆S = mon-op-LPFP-pre-fixed 𝓥 B mon-op mon-op-is-monotone mon-op-LPFP
+  S⊆any : (T : 𝓟 {𝓥} B) → (mon-op T ⊆ T) → S ⊆ T
+  S⊆any = mon-op-LPFP-least 𝓥 B mon-op mon-op-is-monotone mon-op-LPFP
+  p : ⟨ L ⟩
+  p = ⋁-map S
+  fp≤p : (f p ≤⟨ L ⟩ p) holds
+  {- Would be nice to have equational reasoning...
+        f p ＝ ⋁-map (mon-op S) ≤ ⋁-map S ≡ p -}
+  fp≤p = transitivity-of L (f p) (⋁-map (mon-op S)) p
+          (＝-to-≤ L (is-supᴮ' (f p))) (⋁-monotone (mon-op S) S mon-opS⊆S)
+  p≤any : (q : ⟨ L ⟩) → (f q ≤⟨ L ⟩ q) holds → (p ≤⟨ L ⟩ q) holds
+  p≤any q fq≤q = transitivity-of L p (⋁-map (↓-map q)) q
+                  (⋁-monotone S (↓-map q) (S⊆any (↓-map q)
+                   (⊆-trans (mon-op (↓-map q)) (↓-map (f q)) (↓-map q)
+                     (pr₁ (⊆-refl-consequence (mon-op (↓-map q)) (↓-map (f q))
+                           (ap (↓-map ∘ f) (is-supᴮ' q ⁻¹))))
+                     (↓-monotone (f q) q fq≤q))))
+                  (＝-to-≤ L (is-supᴮ' q ⁻¹))
+
+\end{code}
+
+TODO. Add a version of equational reasoning for ≤⟨ L ⟩ to make the above more
+clear.
+
+
+

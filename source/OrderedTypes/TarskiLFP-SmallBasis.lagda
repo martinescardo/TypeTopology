@@ -270,7 +270,7 @@ lower bound of the type of pre-fixed points.
    = transitivity-of L l (⋁⟨ L ⟩ (small-↓ᴮ l , small-↓ᴮ-inclusion l)) lfp
       (＝-to-≤ L (is-supᴮ' l))
        (joins-preserve-containment L β
-        {λ - → (- ≤ᴮ l , ≤ᴮ-is-prop-valued)} {resized-basis-below-subset}
+        (λ - → (- ≤ᴮ l , ≤ᴮ-is-prop-valued)) (resized-basis-below-subset)
          (λ b o → basis-below-to-resized-basis-below b (λ x fx≤x
            → transitivity-of L (β b) l x (≤ᴮ-to-≤ o) (lb (x , fx≤x)))))
 

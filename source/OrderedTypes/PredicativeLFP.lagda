@@ -580,8 +580,7 @@ respect to an arbitrary universe parameter 𝓣.)
      ≤-to-≤ᴮ (transitivity-of L (β b) (⋁ 【 β , U 】) a (≤ᴮ-to-≤ o)
               (transport (λ - → ((⋁ 【 β , U 】) ≤ -) holds)
                          (a is-sup-Q ⁻¹)
-                         (joins-preserve-containment
-                         L β {U} {Q a} C)))
+                         (joins-preserve-containment L β U (Q a) C)))
     ϕ-closed : (a' : ⟨ L ⟩)
              → (b : B)
              → ((b , a') ∈ ϕ)
@@ -604,7 +603,7 @@ respect to an arbitrary universe parameter 𝓣.)
        transport (λ - → (- ≤ a) holds) (a' is-sup-Q ⁻¹)
                  (transport (λ - → ((sup-Q a') ≤ -) holds)
                             (a is-sup-Q ⁻¹)
-                            (joins-preserve-containment L β {Q a'} {Q a} f))
+                            (joins-preserve-containment L β (Q a') (Q a) f))
 
   small-closed-subsets-≃-def-points :
     small-closed-subsets ≃ deflationary-points
@@ -765,7 +764,7 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
         sup-Q = ⋁ 【 β , Q-Γ-sup 】
         sup-𝓘-below-sup-Q : (sup-𝓘 ≤ sup-Q) holds
         sup-𝓘-below-sup-Q =
-         joins-preserve-containment L β {𝓘'-subset} {Q-Γ-sup}
+         joins-preserve-containment L β (𝓘'-subset) (Q-Γ-sup)
                                     𝓘-is-small-subset-contained-Q-Γ-sup
         sup-Q-is-Γ-sup : sup-Q ＝ (Γ ϕ i) sup-𝓘
         sup-Q-is-Γ-sup = is-supᴮ' ((Γ ϕ i) sup-𝓘) ⁻¹
@@ -808,7 +807,7 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
       sup-P = ⋁ 【 β , P-a 】
       sup-𝓘-below-sup-P : (sup-𝓘 ≤ sup-P) holds
       sup-𝓘-below-sup-P =
-       joins-preserve-containment L β {𝓘'-subset} {P-a}
+       joins-preserve-containment L β (𝓘'-subset) (P-a)
                                   𝓘'-subset-contained-P-a
       sup-P-is-a : sup-P ＝ a
       sup-P-is-a = is-supᴮ' a ⁻¹
@@ -853,7 +852,7 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
         sup-P = ⋁ 【 β , P-a 】
         sup-𝓘-below-sup-P : (sup-𝓘 ≤ sup-P) holds
         sup-𝓘-below-sup-P =
-         joins-preserve-containment L β {𝓘'-subset} {P-a}
+         joins-preserve-containment L β (𝓘'-subset) (P-a)
                                     𝓘'-subset-contained-P-a
         sup-P-is-a : sup-P ＝ a
         sup-P-is-a = is-supᴮ' a ⁻¹
