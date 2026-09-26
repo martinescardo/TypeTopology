@@ -115,10 +115,7 @@ We denote by `fun 𝒽` the underlying function of a frame homomorphism `𝒽`.
  fun : _─f→_ → ⟨ F ⟩ → ⟨ G ⟩
  fun (h , _) = h
 
- fun-syntax : _─f→_ → ⟨ F ⟩ → ⟨ G ⟩
- fun-syntax = fun
-
- infixr 3 fun-syntax
+ infixr 3 fun
 
  syntax fun f x = f $ x
 
