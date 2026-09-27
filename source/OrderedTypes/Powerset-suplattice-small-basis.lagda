@@ -33,12 +33,12 @@ open import OrderedTypes.SupLattice-SmallBasis pt fe
 
 open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)
-open import Locales.Frame pt fe hiding (⟨_⟩ ; join-of)
+open import Locales.Frame pt fe hiding (⟨_⟩ ; join-of ; rel-syntax)
 open import Slice.Family
 
 \end{code}
 
-We show that the powerset of some given type A is itself a sup-lattice with
+We show that the powerset of any given small type A is itself a sup-lattice with
 small basis. To do this we first need to define the truncated singleton
 construction and show that it has the proper characterization of the singleton.
 
@@ -137,17 +137,17 @@ module sup-lattice-powerset-retract
             → (⋁-map S ≤⟨ L ⟩ ⋁-map T) holds
  ⋁-monotone S T S⊆T = joins-preserve-containment L β S T S⊆T
 
- ⋁∘↓-id
+ ⋁∘↓∼id
   : ⋁-map ∘ ↓-map ∼ id
- ⋁∘↓-id x = is-supᴮ' x ⁻¹
+ ⋁∘↓∼id x = is-supᴮ' x ⁻¹
 
  sup-lattice-retract-of-pow : retract ⟨ L ⟩ of 𝓟 {𝓥} B
- sup-lattice-retract-of-pow = (⋁-map , ↓-map , ⋁∘↓-id)
+ sup-lattice-retract-of-pow = (⋁-map , ↓-map , ⋁∘↓∼id)
 
 \end{code}
 
-We now show in the presence of prop resizing any small generated sup lattice
-is small.
+We now show in the presence of Ω-resizing any small generated sup lattice
+is also small.
 
 \begin{code}
 
@@ -155,7 +155,7 @@ is small.
                       → ⟨ L ⟩ is 𝓥 small
  sup-lattice-is-small omega-res
   = embedded-retract-is-small sup-lattice-retract-of-pow
-     (sections-into-sets-are-embeddings ↓-map (⋁-map , ⋁∘↓-id)
+     (sections-into-sets-are-embeddings ↓-map (⋁-map , ⋁∘↓∼id)
       (powersets-are-sets fe pe))
      (Π-is-small fe' (B , ≃-refl B) (λ _ → omega-res))
 
@@ -222,7 +222,7 @@ module _ (𝓤 𝓣 𝓥 : Universe)
 
 \end{code}
 
-We now observe that monotone-map-LPFP 𝓤⁺ 𝓤 𝓤 implies monotone-operator-LPFP 𝓤.
+Clearly monotone-map-LPFP 𝓤⁺ 𝓤 𝓤 implies monotone-operator-LPFP 𝓤.
 
 \begin{code}
 
@@ -234,8 +234,7 @@ montone-map-implies-monotone-operator-LPFP A mon-map-LPFP = mon-map-LPFP
 
 \end{code}
 
-What is more suprising is that monotone-operator-LPFP 𝓥 implies
-monotone-map-LPFP 𝓤 𝓣 𝓥.
+We also have that monotone-operator-LPFP 𝓥 implies monotone-map-LPFP 𝓤 𝓣 𝓥.
 
 \begin{code}
 
@@ -247,8 +246,9 @@ monotone-operator-implies-monotone-map-LPFP
 monotone-operator-implies-monotone-map-LPFP
  {𝓤} {𝓣} {𝓥} L {B} β h mon-op-LPFP f f-mono = (p , fp≤p , p≤any)
  where
-  open sup-lattice-powerset-retract {𝓤} {𝓣} {𝓥} L β h
+  open sup-lattice-powerset-retract L β h
   open is-basis h
+  open equational-reasoning-≤ L
   mon-op : 𝓟 {𝓥} B → 𝓟 {𝓥} B
   mon-op = ↓-map ∘ f ∘ ⋁-map
   mon-op-is-monotone : is-monotone-endomap (𝓟-sup-lattice B) mon-op
@@ -265,18 +265,22 @@ monotone-operator-implies-monotone-map-LPFP
   p : ⟨ L ⟩
   p = ⋁-map S
   fp≤p : (f p ≤⟨ L ⟩ p) holds
-  {- Would be nice to have equational reasoning...
-        f p ＝ ⋁-map (mon-op S) ≤ ⋁-map S ≡ p -}
-  fp≤p = transitivity-of L (f p) (⋁-map (mon-op S)) p
-          (＝-to-≤ L (is-supᴮ' (f p))) (⋁-monotone (mon-op S) S mon-opS⊆S)
+  {- Not sure why the parethesis is like this -}
+  fp≤p = f p                ≤[ ＝-to-≤ L (⋁∘↓∼id (f p) ⁻¹) ]
+         (⋁-map (mon-op S)  ≤[ ⋁-monotone (mon-op S) S mon-opS⊆S ]
+         (p                 ▣))
   p≤any : (q : ⟨ L ⟩) → (f q ≤⟨ L ⟩ q) holds → (p ≤⟨ L ⟩ q) holds
-  p≤any q fq≤q = transitivity-of L p (⋁-map (↓-map q)) q
-                  (⋁-monotone S (↓-map q) (S⊆any (↓-map q)
-                   (⊆-trans (mon-op (↓-map q)) (↓-map (f q)) (↓-map q)
-                     (pr₁ (⊆-refl-consequence (mon-op (↓-map q)) (↓-map (f q))
-                           (ap (↓-map ∘ f) (is-supᴮ' q ⁻¹))))
-                     (↓-monotone (f q) q fq≤q))))
-                  (＝-to-≤ L (is-supᴮ' q ⁻¹))
+  p≤any q fq≤q = ⋁-map S          ≤[ ⋁-monotone S (↓-map q) II ]
+                 (⋁-map (↓-map q) ≤[ ＝-to-≤ L (⋁∘↓∼id q) ]
+                 (q               ▣))
+   where
+    I : mon-op (↓-map q) ⊆ ↓-map q
+    I = ⊆-trans (mon-op (↓-map q)) (↓-map (f q)) (↓-map q)
+         (pr₁ (⊆-refl-consequence (mon-op (↓-map q)) (↓-map (f q))
+                (ap (↓-map ∘ f) (⋁∘↓∼id q))))
+         (↓-monotone (f q) q fq≤q)
+    II : S ⊆ ↓-map q
+    II = S⊆any (↓-map q) I
 
 \end{code}
 

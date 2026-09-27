@@ -126,9 +126,9 @@ as a special case.
 \begin{code}
 
 is-monotone : {𝓤 𝓤' 𝓣 𝓣' 𝓥 𝓥' : Universe}
-             → (L : Sup-Lattice 𝓤 𝓣 𝓥) (M : Sup-Lattice 𝓤' 𝓣' 𝓥')
-             → (f : ⟨ L ⟩ → ⟨ M ⟩)
-             → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
+            → (L : Sup-Lattice 𝓤 𝓣 𝓥) (M : Sup-Lattice 𝓤' 𝓣' 𝓥')
+            → (f : ⟨ L ⟩ → ⟨ M ⟩)
+            → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
 is-monotone L M f = (x y : ⟨ L ⟩)
                   → (x ≤⟨ L ⟩ y) holds
                   → (f x ≤⟨ M ⟩ f y) holds
@@ -159,7 +159,6 @@ spaces are ordered as expected.
 \begin{code}
 
 module _
-        {𝓤 𝓣 𝓥 : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         {A : 𝓥 ̇ }
         (m : A → ⟨ L ⟩)
@@ -184,7 +183,6 @@ We now show if a type is small and has a map to the carrier then it has a join.
 \begin{code}
 
 module _
-        {𝓤 𝓣 𝓥 𝓦 : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         {T : 𝓦 ̇ }
         (m : T → ⟨ L ⟩)
@@ -250,7 +248,6 @@ We now show that reindexing families along a surjection preserves the supremum.
 \begin{code}
 
 module _
-        {𝓤 𝓣 𝓥 𝓦 𝓦' : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         {T : 𝓦 ̇ }
         {T' : 𝓦' ̇ }
@@ -292,7 +289,6 @@ surjection.
 \begin{code}
 
 module _
-        {𝓤 𝓣 𝓥 𝓦 𝓦' : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         {T : 𝓦 ̇ }
         {T' : 𝓦' ̇ }
@@ -309,5 +305,24 @@ module _
  reindexing-along-equiv-＝-sup =
   reindexing-along-surj-＝-sup
    L (⌜ e ⌝ , equivs-are-surjections ⌜ e ⌝-is-equiv) m
+
+\end{code}
+
+Added by Ian Ray 27th September 2026.
+
+\begin{code}
+
+module equational-reasoning-≤ (L : Sup-Lattice 𝓤 𝓣 𝓥) where
+
+ open Joins (order-of L)
+
+ _≤[_]_ : (x : ⟨ L ⟩) {y z : ⟨ L ⟩}
+        → (x ≤⟨ L ⟩ y) holds
+        → (y ≤⟨ L ⟩ z) holds
+        → (x ≤⟨ L ⟩ z) holds
+ _≤[_]_ x {y} {z} o o' = transitivity-of L x y z o o'
+
+ _▣ : (x : ⟨ L ⟩) → (x ≤⟨ L ⟩ x) holds
+ x ▣ = reflexivity-of L x
 
 \end{code}
