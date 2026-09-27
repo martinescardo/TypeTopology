@@ -1,3 +1,12 @@
+Ian Ray. 27th September 2026.
+
+In this file we construct the truncated singleton basis for the powerset sup
+lattice. We also observe that any small generated sup lattice is the retract of
+the powerset on its basis. Using this retraction we show that with Ω-resizing a
+small generated sup lattice is itself small. We conclude this file by showing
+the connection between least (pre) fixed points of small generated sup lattices
+and least (pre) fixed points monotone operators on powersets.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
