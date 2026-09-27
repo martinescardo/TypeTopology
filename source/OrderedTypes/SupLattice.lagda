@@ -310,6 +310,8 @@ module _
 
 Added by Ian Ray 27th September 2026.
 
+TODO. Apply this new tool in other files to improve proof readability.
+
 \begin{code}
 
 module equational-reasoning-≤ (L : Sup-Lattice 𝓤 𝓣 𝓥) where
@@ -324,5 +326,7 @@ module equational-reasoning-≤ (L : Sup-Lattice 𝓤 𝓣 𝓥) where
 
  _▣ : (x : ⟨ L ⟩) → (x ≤⟨ L ⟩ x) holds
  x ▣ = reflexivity-of L x
+
+ infixr 0 _≤[_]_
 
 \end{code}

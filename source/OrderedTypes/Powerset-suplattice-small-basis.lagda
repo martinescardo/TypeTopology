@@ -265,14 +265,13 @@ monotone-operator-implies-monotone-map-LPFP
   p : ⟨ L ⟩
   p = ⋁-map S
   fp≤p : (f p ≤⟨ L ⟩ p) holds
-  {- Not sure why the parethesis is like this -}
   fp≤p = f p                ≤[ ＝-to-≤ L (⋁∘↓∼id (f p) ⁻¹) ]
-         (⋁-map (mon-op S)  ≤[ ⋁-monotone (mon-op S) S mon-opS⊆S ]
-         (p                 ▣))
+         ⋁-map (mon-op S)   ≤[ ⋁-monotone (mon-op S) S mon-opS⊆S ]
+         p                  ▣
   p≤any : (q : ⟨ L ⟩) → (f q ≤⟨ L ⟩ q) holds → (p ≤⟨ L ⟩ q) holds
   p≤any q fq≤q = ⋁-map S          ≤[ ⋁-monotone S (↓-map q) II ]
-                 (⋁-map (↓-map q) ≤[ ＝-to-≤ L (⋁∘↓∼id q) ]
-                 (q               ▣))
+                 ⋁-map (↓-map q)  ≤[ ＝-to-≤ L (⋁∘↓∼id q) ]
+                 q                ▣
    where
     I : mon-op (↓-map q) ⊆ ↓-map q
     I = ⊆-trans (mon-op (↓-map q)) (↓-map (f q)) (↓-map q)
@@ -283,9 +282,5 @@ monotone-operator-implies-monotone-map-LPFP
     II = S⊆any (↓-map q) I
 
 \end{code}
-
-TODO. Add a version of equational reasoning for ≤⟨ L ⟩ to make the above more
-clear.
-
 
 
