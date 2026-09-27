@@ -155,8 +155,6 @@ B-context【_】 : Cxt → type → Cxt
 B-context【_】 〈〉       A = 〈〉
 B-context【_】 (Γ ,, σ) A = B-context【_】 Γ A ,, B-type〖 σ 〗 A
 
-infix 10 B-context【_】
-
 ∈Cxt-B-type : {Γ : Cxt} {A : type} {σ : type} (i : ∈Cxt σ Γ)
             → ∈Cxt (B-type〖 σ 〗 A) (B-context【 Γ 】 A)
 ∈Cxt-B-type {Γ ,, σ} {A} {σ} (∈Cxt0 Γ) = ∈Cxt0 (B-context【 Γ 】 A)

@@ -108,8 +108,6 @@ B-context【_】 : {n : ℕ} → Cxt n → type → Cxt n
 B-context【_】 {0}      〈〉       A = 〈〉
 B-context【_】 {succ n} (Γ , σ) A = (B-context【_】 {n} Γ A , B-type〖 σ 〗 A)
 
-infix 10 B-context【_】
-
 ⌜ν⌝ : {n : ℕ} {Γ : Cxt n} {A : type} (i : Fin n)
     → T (B-context【 Γ 】 A) (B-type〖 Γ [ i ] 〗 A)
 ⌜ν⌝ i = transport (T (B-context【 _ 】 _)) (p i) (ν i)

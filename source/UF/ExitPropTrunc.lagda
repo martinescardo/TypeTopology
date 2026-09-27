@@ -150,9 +150,6 @@ prop-valued, which allows us to exit truncations.
 ∣∣⌜_⌝-exit : {X : 𝓤 ̇ } (c : collapsible X) → ∥ X ∥⌜ c ⌝ → X
 ∣∣⌜ c ⌝-exit = ∥∥⌜ c ⌝-rec id
 
-infix 0 ∥_∥⌜_⌝
-infix 0 ∣_∣⌜_⌝
-
 module propositional-truncation-of-decidable-type
         (pt : propositional-truncations-exist)
        where
