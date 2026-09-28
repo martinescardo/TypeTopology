@@ -58,8 +58,6 @@ record general-truncations-exist : 𝓤ω where
                → (m : (s : ∥ X ∥[ n ]) → (P s) is n truncated)
                → (g : (x : X) → P (∣ x ∣[ n ]))
                → (x : X) → ∥∥ₙ-ind m g (∣ x ∣[ n ]) ＝ g x
- infix 0 ∥_∥[_]
- infix 0 ∣_∣[_]
 
 \end{code}
 

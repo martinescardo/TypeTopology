@@ -353,6 +353,12 @@ retract-𝟙+𝟙-of-ℕ = r , s , rs
   rs (inl ⋆) = refl
   rs (inr ⋆) = refl
 
+𝟙-retract-of-ℕ : retract (𝟙 {𝓤₀}) of ℕ
+𝟙-retract-of-ℕ = (λ _ → ⋆) , (λ _ → 0) , 𝟙-is-prop ⋆
+
+𝟙-retract-of-Cantor : retract (𝟙 {𝓤₀}) of (ℕ → 𝟚)
+𝟙-retract-of-Cantor = (λ _ → ⋆) , (λ _ → λ n → ₀) , 𝟙-is-prop ⋆
+
 \end{code}
 
 Added 5th March 2019. Notation for composing retracts. I should have

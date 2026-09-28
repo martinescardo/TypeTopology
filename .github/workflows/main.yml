@@ -63,14 +63,14 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: html
-        path: source/html
+        path: html
 
     - name: Upload GitHub Pages HTML
       id: html-pages-upload
       if: github.ref == 'refs/heads/master' && github.repository == 'martinescardo/TypeTopology'
       uses: actions/upload-pages-artifact@v3
       with:
-        path: source/html
+        path: html
 
   deploy:
     needs: typecheck

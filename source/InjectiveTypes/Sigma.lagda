@@ -138,13 +138,13 @@ for this data, see the file InjectiveTypes.MathematicalStructures.
 
 \end{code}
 
-In all examples of interest we look at, the compatibility condition,
-which is property, holds (see the file MathematicalStructures). However,
-the (weaker) compatibility data is enough for our purposes, and easier
-to check (see the file MathematicalStructuresMoreGeneral).
+In all examples of interest we look at, the compatibility condition, which is
+property, holds (see the file InjectiveTypes.MathematicalStructures). However,
+the (weaker) compatibility data is enough for our purposes, and easier to check
+(see the file InjectiveTypes.MathematicalStructuresMoreGeneral).
 
 That the compatibility data is sufficient but not necessary is
-illustrated in the file InjectiveTypes.InhabitednessTaboo, with the
+illustrated in the file InjectiveTypes.InhabitedTypesTaboo, with the
 type of pointed types (which is injective) shown to be equivalent to a
 subtype of the type of inhabited types (which is not injective in
 general).

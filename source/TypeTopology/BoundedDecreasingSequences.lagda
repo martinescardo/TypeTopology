@@ -36,7 +36,7 @@ open import Notation.Order
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness
 open import TypeTopology.MicroTychonoff
-open import TypeTopology.SquashedCantor (λ 𝓤 𝓥 → fe {𝓤} {𝓥})
+open import TypeTopology.DelayMonad (λ 𝓤 𝓥 → fe {𝓤} {𝓥})
 open import TypeTopology.SquashedSum
 open import TypeTopology.TotallySeparated
 open import UF.Base
@@ -168,10 +168,9 @@ to-𝔹-＝ {k} (α , _) (β , _) h = to-subtype-＝ (being-bd-is-prop k) (dfune
 
 \end{code}
 
-We now define 𝓑 k = 𝔻ᵏ 𝟙 by induction on k, where 𝔻 is the delay monad
-defined in the module SquashedCantor. Our objective is to eventually
-show that 𝔹 k ≃ 𝓑 k, in order to derive the claims made above as a
-corollary.
+We now define 𝓑 k = 𝔻ᵏ 𝟙 by induction on k, where 𝔻 is the delay monad defined
+in the module TypeTopology.SquashedCantor. Our objective is to eventually show
+that 𝔹 k ≃ 𝓑 k, in order to derive the claims made above as a corollary.
 
 \begin{code}
 
@@ -235,6 +234,26 @@ is what we wanted to show in this file.
                    (𝓑-is-compact∙ k)
 \end{code}
 
+Added by Martin Escardo 15th September 2026.
+
+The type 𝔹 k is also totally separated.
+
+\begin{code}
+
+𝓑-is-totally-separated : (k : ℕ) → is-totally-separated (𝓑 k)
+𝓑-is-totally-separated 0        = 𝟙-is-totally-separated
+𝓑-is-totally-separated (succ k) =
+ 𝔻-preserves-total-separatedness (𝓑 k) (𝓑-is-totally-separated k)
+
+𝔹-is-totally-separated : (k : ℕ) → is-totally-separated (𝔹 k)
+𝔹-is-totally-separated k = equiv-to-totally-separated
+                            (≃-sym (𝔹-and-𝓑-are-equivalent k))
+                            (𝓑-is-totally-separated k)
+
+\end{code}
+
+End of addition.
+
 [2] In order to conclude, we now construct the claimed isomorphism
 
      𝔹-step : 𝔹 (succ k) ≃ 𝔻 (𝔹 k)
@@ -272,9 +291,9 @@ Minor remark. It would have been slightly better to instead define
 addition twice. But it would also require slightly changing other
 things. So we'll leave it at that.
 
-We begin with the following transport lemma, which is a generalization
-of `transport-finite` in the module SquashedCantor, and will be crucial
-for our purposes, but will be used much later.
+We begin with the following transport lemma, which is a generalization of
+`transport-finite` in the module TypeTopology.SquashedCantor, and will be
+crucial for our purposes, but will be used much later.
 
 \begin{code}
 

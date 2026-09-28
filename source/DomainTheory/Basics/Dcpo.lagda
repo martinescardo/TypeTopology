@@ -5,7 +5,7 @@ Definitions of:
  * Directed complete posets (dcpos).
  * Scott continuous maps.
 
-See DomainTheory.lagda for an overview of the formalization of the theory of
+See DomainTheory.index for an overview of the formalization of the theory of
 dcpos.
 
 \begin{code}

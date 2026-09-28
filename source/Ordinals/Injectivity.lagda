@@ -87,6 +87,32 @@ module ordinals-injectivity (fe : FunExt) where
    γ : (α ↗ 𝓮) (e i) ≃ₒ α i
    γ = g , g-is-order-preserving , g-is-equiv , g⁻¹-is-order-preserving
 
+\end{code}
+
+The extension of a family of trichotomous ordinals along an embedding
+is trichotomous, provided the fibers of the embedding are decidable,
+which is what the proposition-indexed product underlying the extension
+needs.
+
+\begin{code}
+
+ ↗-is-trichotomous : {I : 𝓤 ̇ } {J : 𝓥 ̇ }
+                     (α : I → Ordinal 𝓦)
+                     (𝓮@(e , e-is-embedding) : I ↪ J)
+                   → ((j : J) → is-decidable (fiber e j))
+                   → ((i : I) → is-trichotomous (α i))
+                   → (j : J) → is-trichotomous ((α ↗ 𝓮) j)
+ ↗-is-trichotomous α (e , e-is-embedding) d t j =
+  extension.decidable-fibers-give-trichotomy
+   fe
+   (λ i → ⟨ α i ⟩)
+   e
+   e-is-embedding
+   (λ {i} → underlying-order (α i))
+   j
+   (d j)
+   t
+
  ↗-property : is-univalent (𝓤 ⊔ 𝓥)
             → {I : 𝓤 ̇ } {J : 𝓥 ̇ }
               (α : I → Ordinal (𝓤 ⊔ 𝓥))
@@ -105,6 +131,7 @@ module ordinals-injectivity (fe : FunExt) where
 module topped-ordinals-injectivity (fe : FunExt) where
 
  open import InjectiveTypes.Blackboard fe
+ open import Ordinals.Arithmetic fe
  open import Ordinals.ToppedType fe
 
  _↗_ : {I : 𝓤 ̇ } {J : 𝓥 ̇ }
@@ -128,6 +155,47 @@ module topped-ordinals-injectivity (fe : FunExt) where
                (i : I)
              → [ (α ↗ 𝓮) (e i) ] ≃ₒ [ α i ]
  ↗-propertyₒ α = ordinals-injectivity.↗-propertyₒ fe (λ i → [ α i ])
+
+ ↗-is-trichotomous : {I : 𝓤 ̇ } {J : 𝓥 ̇ }
+                     (τ : I → Ordinalᵀ 𝓦)
+                     (𝓮@(e , e-is-embedding) : I ↪ J)
+                   → ((j : J) → is-decidable (fiber e j))
+                   → ((i : I) → is-trichotomous [ τ i ])
+                   → (j : J) → is-trichotomous [ (τ ↗ 𝓮) j ]
+ ↗-is-trichotomous τ = ordinals-injectivity.↗-is-trichotomous fe (λ i → [ τ i ])
+
+\end{code}
+
+Outside the range of the embedding the extension is the ordinal 𝟙ₒ,
+its underlying type being a product indexed by an empty fiber, and its
+order being empty for the same reason.
+
+\begin{code}
+
+ ↗-out-of-range : {I : 𝓤 ̇ } {J : 𝓥 ̇ } {𝓣 : Universe}
+                  (τ : I → Ordinalᵀ 𝓦)
+                  (𝓮@(e , _) : I ↪ J)
+                  (j : J)
+                → ((i : I) → e i ≠ j)
+                → [ (τ ↗ 𝓮) j ] ≃ₒ 𝟙ₒ {𝓣}
+ ↗-out-of-range {𝓤} {𝓥} {𝓦} {I} {J} {𝓣} τ 𝓮@(e , _) j ν =
+  f ,
+  (λ u v (w , _) → 𝟘-elim (ν (pr₁ w) (pr₂ w))) ,
+  f-is-equiv ,
+  (λ x y l → 𝟘-elim l)
+  where
+   f : ⟨ (τ ↗ 𝓮) j ⟩ → 𝟙 {𝓣}
+   f _ = ⋆
+
+   g : 𝟙 {𝓣} → ⟨ (τ ↗ 𝓮) j ⟩
+   g _ w = 𝟘-elim (ν (pr₁ w) (pr₂ w))
+
+   f-is-equiv : is-equiv f
+   f-is-equiv = qinvs-are-equivs f
+                 (g ,
+                  (λ u → dfunext (fe (𝓤 ⊔ 𝓥) 𝓦)
+                          (λ w → 𝟘-elim (ν (pr₁ w) (pr₂ w)))) ,
+                  (λ ⋆ → refl))
 
 \end{code}
 

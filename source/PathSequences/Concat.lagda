@@ -20,9 +20,9 @@ open import PathSequences.Type
 
 \end{code}
 
-This module handles concatenation of path sequences. The developmenet
-is very close to the module `Concat` in the original repository, with
-a couple of extra items.
+This module handles concatenation of path sequences. The developmenet is very
+close to the module `PathSequences.Concat` in the original repository, with a
+couple of extra items.
 
 \begin{code}
 

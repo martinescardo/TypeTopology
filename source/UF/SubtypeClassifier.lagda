@@ -322,7 +322,7 @@ The above function was added 19th March 2021.
 
 The above implies that if Fin n is embedded in Ω 𝓤, then n ≤ 2. That
 is, every finite subset of Ω has at most two elements. See the module
-Fin.lagda.
+Fin.Omega.
 
 Added 3rd September 2023.
 

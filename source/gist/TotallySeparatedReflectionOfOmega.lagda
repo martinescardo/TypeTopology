@@ -1111,10 +1111,4 @@ and only if the comparison map 𝓬 : 𝕋 Ω → T is an equivalence.
 \end{code}
 
 It is worth comparing the development in this file to the earlier
-development of the following module:
-
-\begin{code}
-
- import Taboos.P2
-
-\end{code}
+development in Taboos.P2.

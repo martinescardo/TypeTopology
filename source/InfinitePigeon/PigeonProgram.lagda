@@ -20,11 +20,10 @@ boolean b and a finite list of length n with the indices of a
 finite constant subsequence of α with value b at all
 positions.
 
-This is usually how such programs are specified in functional
-programming (if they are at all). Here Theorem (defined in the
-module FinitePigeon) is the program with the formal specification,
-also formally checked. Once this is done we can erase the
-specification.
+This is usually how such programs are specified in functional programming (if
+they are at all). Here Theorem (defined in the module
+InfinitePigeon.FinitePigeon) is the program with the formal specification, also
+formally checked. Once this is done we can erase the specification.
 
 \begin{code}
 

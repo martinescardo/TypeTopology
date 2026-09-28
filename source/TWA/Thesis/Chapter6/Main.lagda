@@ -47,7 +47,8 @@ show𝟚ᴺ×𝟚ᴺ-prefix (x , y) n
  = show𝟚ᴺ-prefix x n +++ " ;\n" +++ show𝟚ᴺ-prefix y n
 \end{code}
 
-Open the Example module here from SignedDigitExamples.lagda.md
+Open the Example module here from
+TWA.Thesis.Chapter6.SignedDigitExamples
 
 \end{code}
 open Regression-Example2

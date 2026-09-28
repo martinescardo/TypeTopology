@@ -296,8 +296,9 @@ characterization-of-frame-＝ {𝓤} F G =
 
 \end{code}
 
-The notion of equivalence induced by `frame-sns-data` is logically equivalent to
-the notion of isomorphism of frames from module `FrameIsomorphism-Definition`.
+The notion of equivalence induced by `frame-sns-data` is logically equivalent
+to the notion of isomorphism of frames from module
+`Locales.ContinuousMap.FrameIsomorphism-Definition`.
 
 \begin{code}
 

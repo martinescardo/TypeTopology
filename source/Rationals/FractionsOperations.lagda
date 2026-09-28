@@ -21,7 +21,8 @@ module Rationals.FractionsOperations where
 
 \end{code}
 
-The denom-setup function is useful to manipulate denominators into an easier to work with form.
+The denom-setup function is useful to manipulate denominators into an
+easier to work with form.
 
 \begin{code}
 

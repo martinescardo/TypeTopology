@@ -171,7 +171,8 @@ Can the above logical equivalences be made into type equivalences?
 
 No, at least not with the functions given to prove each implication.
 
-Example. The injectivity structure on Ω induces the following endofunction f of the universe.
+Example. The injectivity structure on Ω induces the following endofunction
+f of the universe.
 
 \begin{code}
 

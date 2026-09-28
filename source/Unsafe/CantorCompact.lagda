@@ -3,7 +3,7 @@ Martin Escardo 2011.
 The Cantor space is the type (ℕ → 𝟚). We show it is compact, under
 the assumptions discussed in CountableTychonoff.
 
-This module is a set of corollaries of the module CountableTychonoff
+This module is a set of corollaries of the module Unsafe.CountableTychonoff
 and other modules.
 
 \begin{code}

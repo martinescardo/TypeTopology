@@ -117,8 +117,3 @@ shulmans-taboo e = DNE-gives-EM fe₀ δ
     s = ap (pr₁ ∘ pr₁) r
 
 \end{code}
-
-TODO. Use this to show that if the sum of any ordinal-indexed family
-of ordinals is an ordinal under the lexicographic ordering, then
-excluded middle holds, as explained in the message quoted
-above. (Routine, tedious.)

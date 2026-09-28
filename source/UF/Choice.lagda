@@ -729,8 +729,9 @@ Notice that we don't require that this is a family of sets. Notice
 also that excluded middle implies PAC. For more information, see
 Theorem 7.7 of the above reference.
 
-TODO. Add these and more facts about this. Some of them can be adapted
-from this Agda file: https://www.cs.bham.ac.uk/~mhe/GeneralizedHedberg/html/GeneralizedHedberg.html
+TODO. Add these and more facts about this. Some of them can be adapted from
+this Agda file:
+https://www.cs.bham.ac.uk/~mhe/GeneralizedHedberg/html/GeneralizedHedberg.html
 
 Added 6th Feb 2025 by Martin Escardo.
 

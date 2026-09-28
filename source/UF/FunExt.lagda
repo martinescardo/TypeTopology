@@ -212,7 +212,8 @@ but then it is not able to infer it. To prevent this from happening,
 can write (λ {x} → f {x}) ＝ g, which is ugly, but amounts to the
 equality f = g.
 
-("Implicit arguments are inserted eagerly in left-hand sides" https://agda.readthedocs.io/en/latest/language/implicit-arguments.html)
+("Implicit arguments are inserted eagerly in left-hand sides"
+https://agda.readthedocs.io/en/latest/language/implicit-arguments.html)
 
 Our solution is to instead write f ＝[ Πᵢ A ] g. We
 use a similar trick for _∼ᵢ_.

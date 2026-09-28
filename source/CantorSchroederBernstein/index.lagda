@@ -7,7 +7,7 @@ The result holds in any boolean ∞-topos. It says that if there is an
 embedding of a type X to a type Y, and also from Y to X, then the
 types X and Y are equivalent.
 
-The file CSB led to the publication
+The file CantorSchroederBernstein.CSB led to the publication
 
  [1] M. H. Escardo. The Cantor–Schröder–Bernstein Theorem for
      ∞-groupoids. Journal of Homotopy and Related Structures.

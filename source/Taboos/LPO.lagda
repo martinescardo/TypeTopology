@@ -1,7 +1,7 @@
 Martin Escardo, December 2017 (but done much earlier on paper)
 
-As discussed in the module CompactTypes, Bishop's "limited principle
-of omniscience" amount to the compactness of the type ℕ, that is,
+As discussed in the module TypeTopology.CompactTypes, Bishop's "limited
+principle of omniscience" amount to the compactness of the type ℕ, that is,
 
   Π p ꞉ ℕ → 𝟚 , (Σ n ꞉ ℕ , p n ＝ ₀) + (Π n ꞉ ℕ , p n ＝ ₁),
 
@@ -375,5 +375,19 @@ LPO-gives-LPO' lpo x = decidable-↔ LPO'-lemma (lpo x)
 
 LPO'-gives-LPO : LPO' → LPO
 LPO'-gives-LPO lpo' x = decidable-↔ (↔-sym LPO'-lemma) (lpo' x)
+
+\end{code}
+
+Added 28th August 2026 by Martin Escardo.
+
+Excluded middle gives LPO.
+
+\begin{code}
+
+open import UF.ClassicalLogic
+
+EM-gives-LPO : funext₀ → EM 𝓤₀ → LPO
+EM-gives-LPO fe em = LPO'-gives-LPO
+                      (λ x → em (is-finite x) (being-finite-is-prop fe x))
 
 \end{code}

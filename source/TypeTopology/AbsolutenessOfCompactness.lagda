@@ -439,10 +439,10 @@ result which is closer to the statement of micro-tychonoff. This says ○
 "preserves compactness" in the sense that if ○ (A is compact), then
 (○ A) is compact.
 
-In order to derive micro-tychonoff from this statement we will need a
-few extra arguments. This will be covered in a separate module,
-AbsolutenessOfCompactnessExample, which works specifically with open
-modalities, as opposed to this module that applies to modalities in
+In order to derive micro-tychonoff from this statement we will need a few extra
+arguments. This will be covered in a separate module,
+TypeTopology.AbsolutenessOfCompactnessExample, which works specifically with
+open modalities, as opposed to this module that applies to modalities in
 general.
 
 \begin{code}

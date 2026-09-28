@@ -1,6 +1,6 @@
 Brendan Hart 2019-2020
 
-We define big step semantics of PCF.Lambda.
+We define big step semantics of PCF.Lambda.index.
 
 \begin{code}
 

@@ -49,3 +49,43 @@ has-inf-gives-Compact : {𝓦 : Universe} → has-inf → is-Compact X {𝓦}
 has-inf-gives-Compact = compact-types-are-Compact ∘ has-inf-gives-compact
 
 \end{code}
+
+Added 28th August 2026. The infimum of a non-empty complemented subset
+is a least element.
+
+\begin{code}
+
+is-least-root : (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
+is-least-root p x₀ = (p x₀ ＝ ₀) × is-roots-lower-bound p x₀
+
+has-inf-gives-least-root : has-inf
+                         → (p : X → 𝟚)
+                         → ¬¬ (Σ x ꞉ X , p x ＝ ₀)
+                         → Σ x₀ ꞉ X , is-least-root p x₀
+has-inf-gives-least-root h p ν = f (h p)
+ where
+  f : (Σ x₀ ꞉ X , is-conditional-root p x₀ × is-roots-infimum p x₀)
+    → Σ x₀ ꞉ X , is-least-root p x₀
+  f (x₀ , cr , (lb , _)) = γ (has-inf-gives-compact h p)
+   where
+    γ : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
+      → Σ x₀ ꞉ X , is-least-root p x₀
+    γ (inl σ) = x₀ , cr σ , lb
+    γ (inr u) = 𝟘-elim (ν (λ (x , e) → zero-is-not-one (e ⁻¹ ∙ u x)))
+
+\end{code}
+
+Added 2nd September 2026. The least element property for complemented
+subsets.
+
+\begin{code}
+
+has-least-roots : 𝓤 ⊔ 𝓥 ̇
+has-least-roots = (p : X → 𝟚)
+                → ¬¬ (Σ x ꞉ X , p x ＝ ₀)
+                → Σ x₀ ꞉ X , is-least-root p x₀
+
+has-inf-gives-least-roots : has-inf → has-least-roots
+has-inf-gives-least-roots = has-inf-gives-least-root
+
+\end{code}

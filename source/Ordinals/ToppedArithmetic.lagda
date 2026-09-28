@@ -25,19 +25,21 @@ module Ordinals.ToppedArithmetic
         (fe : FunExt)
        where
 
-open import UF.Subsingletons
-
-open import MLTT.Spartan
 open import CoNaturals.Type
-open import TypeTopology.SquashedSum fe
+open import MLTT.Spartan
 open import Notation.CanonicalMap
-
-open import Ordinals.Type
 open import Ordinals.Arithmetic fe
-open import Ordinals.WellOrderArithmetic
-open import Ordinals.ToppedType fe
 open import Ordinals.Injectivity
+open import Ordinals.Notions
+open import Ordinals.ToppedType fe
+open import Ordinals.Type
 open import Ordinals.Underlying
+open import Ordinals.WellOrderArithmetic
+open import TypeTopology.SquashedSum fe
+open import UF.ClassicalLogic
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
 
 private
  fe₀ = fe 𝓤₀ 𝓤₀
@@ -88,6 +90,73 @@ Sum of an ordinal-indexed family of ordinals:
 
 \end{code}
 
+Added by Martin Escardo 2nd September 2026.
+
+The top of the index is needed only for the sum to have a top, and the
+sum over an index without one is still an ordinal.
+
+\begin{code}
+
+∑ₒ : (α : Ordinal 𝓤) → (⟨ α ⟩ → Ordinalᵀ 𝓤) → Ordinal 𝓤
+∑ₒ {𝓤} (X , _<_ , o) υ = (Σ x ꞉ X , ⟨ υ x ⟩) ,
+                         Sum.order ,
+                         Sum.well-order o (λ x → tis-well-ordered (υ x))
+ where
+  _≺_ : {x : X} → ⟨ υ x ⟩ → ⟨ υ x ⟩ → 𝓤 ̇
+  y ≺ z = y ≺⟨ υ _ ⟩ z
+
+  module Sum = sum-top fe _<_ _≺_ (λ x → top (υ x)) (λ x → top-is-top (υ x))
+
+∑-is-∑ₒ : (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
+        → [ ∑ τ υ ] ＝ ∑ₒ [ τ ] υ
+∑-is-∑ₒ τ υ = refl
+
+\end{code}
+
+End of addition.
+
+Some restriction is needed to get extensionality of the lexicographic
+order on sums. Two such restrictions are trichotomy and having
+top. Without a restriction, the lexicographic order on the sum of an
+ordinal-indexed family of ordinals need not be extensional, and asking
+that it always be gives excluded middle, by Shulman's example in
+Ordinals.ShulmanTaboo.
+
+\begin{code}
+
+Extensionality-of-Ordinal-Indexed-Sums : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Extensionality-of-Ordinal-Indexed-Sums 𝓤 =
+   (τ : Ordinal 𝓤) (υ : ⟨ τ ⟩ → Ordinal 𝓤)
+ → is-extensional (sum.order
+                    (underlying-order τ)
+                    (λ {x} → underlying-order (υ x)))
+
+module _ (pe : propext 𝓤₀) where
+
+ open import Ordinals.OrdinalOfTruthValues fe 𝓤₀ pe
+ open import Ordinals.ShulmanTaboo fe pe
+
+ extensionality-of-ordinal-indexed-sums-gives-EM
+  : Extensionality-of-Ordinal-Indexed-Sums 𝓤₁ → EM 𝓤₀
+ extensionality-of-ordinal-indexed-sums-gives-EM h = shulmans-taboo e
+  where
+   υ : ⟨ Ωₒ ⟩ → Ordinal 𝓤₁
+   υ p = prop-ordinal (¬ (p ＝ ⊥)) (negations-are-props (fe 𝓤₁ 𝓤₀))
+
+   _⊏_ : X → X → 𝓤₁ ̇
+   _⊏_ = sum.order (underlying-order Ωₒ) (λ {p} → underlying-order (υ p))
+
+   lex-gives-≺ : (z w : X) → z ⊏ w → z ≺ w
+   lex-gives-≺ z w (inl l)       = l
+   lex-gives-≺ z w (inr (r , l)) = 𝟘-elim l
+
+   e : is-extensional _≺_
+   e x y f g = h Ωₒ υ x y
+                (λ z l → inl (f z (lex-gives-≺ z x l)))
+                (λ z l → inl (g z (lex-gives-≺ z y l)))
+
+\end{code}
+
 Addition and multiplication can be reduced to ∑, given the ordinal 𝟚ᵒ
 defined above:
 
@@ -117,7 +186,7 @@ _×ᵒ_ : Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤
 
 Extension of a family X → Ordᵀ along an embedding j : X → A to get a
 family A → Ordᵀ. (This can also be done for Ord-valued families.)
-This uses the module UF.InjectiveTypes to calculate Y / j.
+This uses the module InjectiveTypes.Blackboard to calculate Y / j.
 
 Sum of a countable family with an added non-isolated top element. We
 first extend the family to ℕ∞ and then take the ordinal-indexed sum of
@@ -138,6 +207,27 @@ And now with an isolated top element:
 
 ∑₁ : (ℕ → Ordᵀ) → Ordᵀ
 ∑₁ τ = ∑ (succₒ ω) (τ ↗ (over , over-embedding))
+
+\end{code}
+
+The sum with an isolated top element preserves trichotomy, because the
+fibers of the map over are decidable. There is no such statement for
+the sum with a non-isolated top element, because the fibers of the map
+ℕ → ℕ∞ used there are decidable only under LPO.
+
+\begin{code}
+
+∑₁-is-trichotomous : (τ : ℕ → Ordᵀ)
+                   → ((n : ℕ) → is-trichotomous [ τ n ])
+                   → is-trichotomous [ ∑₁ τ ]
+∑₁-is-trichotomous τ t = ∑-is-trichotomous
+                          (succₒ ω)
+                          (τ ↗ (over , over-embedding))
+                          (succₒ-is-trichotomous ω ω-is-trichotomous)
+                          (↗-is-trichotomous τ
+                            (over , over-embedding)
+                            over-fibers-are-decidable
+                            t)
 
 \end{code}
 

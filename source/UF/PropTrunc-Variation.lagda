@@ -25,8 +25,6 @@ record propositional-truncations-exist : 𝓤ω where
   ∥∥-is-prop : {𝓤 : Universe} {X : 𝓤 ̇ } → is-prop ∥ X ∥
   ∣_∣ : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
   ∥∥-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ } → is-prop P → (X → P) → ∥ X ∥ → P
- infix 0 ∥_∥
- infix 0 ∣_∣
 
 module PropositionalTruncation (pt : propositional-truncations-exist) where
 

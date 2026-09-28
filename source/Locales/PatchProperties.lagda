@@ -50,7 +50,7 @@ open import UF.SubtypeClassifier
 open AllCombinators pt fe
 open ContinuousMaps
 open FrameHomomorphismProperties
-open FrameHomomorphisms hiding (fun-syntax; fun)
+open FrameHomomorphisms hiding (fun)
 open Locale
 open PropositionalTruncation pt
 

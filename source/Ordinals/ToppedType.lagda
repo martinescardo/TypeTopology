@@ -79,4 +79,8 @@ open import Ordinals.InfProperty
 has-infs-of-complemented-subsets : Ordinalᵀ 𝓤 → 𝓤 ̇
 has-infs-of-complemented-subsets τ = has-inf (underlying-weak-order τ)
 
+has-least-roots-of-complemented-subsets : Ordinalᵀ 𝓤 → 𝓤 ̇
+has-least-roots-of-complemented-subsets τ =
+ has-least-roots (underlying-weak-order τ)
+
 \end{code}

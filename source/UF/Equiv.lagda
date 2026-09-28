@@ -952,6 +952,5 @@ infixr 0 _≃⟨_⟩_
 infixr 0 _≃⟨refl⟩_
 infixr 0 _≃⟨by-definition⟩_
 infixl 2 _●_
-infix  1 ⌜_⌝
 
 \end{code}

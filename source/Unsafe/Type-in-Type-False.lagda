@@ -10,11 +10,11 @@ Part 1 (11th October 2018) is based on a well-known argument,
 
 (see also http://www.cs.nott.ac.uk/~psztxa/g53cfr/l20.html/l20.html),
 but phrased in terms of LFPT (Lawvere's fixed point theorem). See also
-the module LawvereFPT for a formulation and proof that doesn't assume
+the module Various.LawvereFPT for a formulation and proof that doesn't assume
 type-in-type.
 
 Part 2 (28th September 2018) is based on a recent argument by Ingo
-Blechschmidt. See also the module LawvereFPT.
+Blechschmidt. See also the module Various.LawvereFPT.
 
 \begin{code}
 
@@ -70,7 +70,7 @@ s is a definitional section of the function r):
 \end{code}
 
 Part 2. As mentioned above, this is an application of work of Ingo
-Blechschmidt (see the module LawvereFPT) to show that type-in-type,
+Blechschmidt (see the module Various.LawvereFPT) to show that type-in-type,
 Streicher's K-axiom, functional and propositional extensionality are
 together impossible.
 

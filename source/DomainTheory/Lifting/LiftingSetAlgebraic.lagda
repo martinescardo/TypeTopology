@@ -202,7 +202,7 @@ A small compact basis for 𝓛 X will be given by [⊥ , η] : 𝟙 + X → 𝓛
 
 TODO: Show that freely adding a least element to a dcpo gives an algebraic dcpo
       with a small compact basis if the original dcpo had a small compact basis.
-      (Do so in another file, e.g. LiftingDcpoAlgebraic.lagda).
+      (Do so in a new file, e.g. named LiftingDcpoAlgebraic.lagda).
 
 Added 5 July 2024 for clarity.
 

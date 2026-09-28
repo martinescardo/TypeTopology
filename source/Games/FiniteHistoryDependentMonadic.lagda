@@ -178,7 +178,7 @@ T-selection-strategy{X ∷ Xf} εt@(ε :: εf) q = σ :: σf
 \end{code}
 
 For the next technical lemma, we need the monad T to satisfy the
-condition extᵀ-const defined in MonadOnTypesLSU.Monads, which says
+condition extᵀ-const defined in MonadOnTypes.Definition, which says
 that the Kleisli extension of a constant function is itself
 constant. Ohad Kammar pointed out to us that this condition is
 equivalent to the monad being affine. A proof is included in the

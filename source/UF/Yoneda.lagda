@@ -24,7 +24,7 @@ See also
 module UF.Yoneda where
 
 open import MLTT.Spartan
-open import UF.Base
+open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
@@ -76,6 +76,10 @@ The Yoneda Lemma says that every natural transformation is induced by
 its Yoneda element:
 
 \begin{code}
+
+private
+ _≈_ : {X : 𝓤 ̇ } {x : X} {A : X → 𝓥 ̇ } → Nat (Id x) A → Nat (Id x) A → 𝓤 ⊔ 𝓥 ̇
+ η ≈ θ = ∀ y → η y ∼ θ y
 
 yoneda-lemma : {X : 𝓤 ̇ } (x : X) (A : X → 𝓥 ̇ ) (η : Nat (Id x) A)
              → yoneda-nat x A (yoneda-elem x A η) ≈ η

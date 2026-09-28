@@ -238,6 +238,14 @@ equiv-to-totally-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                            → is-totally-separated Y
 equiv-to-totally-separated 𝕗 = retract-of-totally-separated (≃-gives-▷ 𝕗)
 
+embedding-into-totally-separated-gives-totally-separated :
+   {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+ → is-embedding f
+ → is-totally-separated Y
+ → is-totally-separated X
+embedding-into-totally-separated-gives-totally-separated f e τ α
+ = embeddings-are-lc f e (τ (λ q → α (q ∘ f)))
+
 \end{code}
 
 Recall that a type is called ¬¬-separated if the doubly negated equality
@@ -466,7 +474,7 @@ Baire-is-totally-separated fe =
 \end{code}
 
 More generally, all simple types are totally separated - see the
-module SimpleTypes.
+module TypeTopology.SimpleTypes.
 
 We now characterize the totally separated types X as those such that
 the map eval X defined below is an embedding, in order to construct
@@ -646,7 +654,7 @@ rather than direct proofs (as in the proof of tight reflection below).
 \end{code}
 
 We package the above as follows for convenient use elsewhere
-(including the module CompactTypes).
+(including the module TypeTopology.CompactTypes).
 
 \begin{code}
 
@@ -665,7 +673,7 @@ We package the above as follows for convenient use elsewhere
 \end{code}
 
 In particular, because 𝟚 is totally separated, 𝕋 X and X have the same
-boolean predicates (which we exploit in the module CompactTypes).
+boolean predicates (which we exploit in the module TypeTopology.CompactTypes).
 
 Added 21st July 2025.
 
@@ -731,9 +739,7 @@ types.
 
 Another useful thing is that in any type X we can define an apartness
 relation x♯y by ∃ p : X→𝟚 , p x ‌≠p y, which is tight iff X is totally
-separated, where tightness means ¬ (x ♯ y)→ x = y. Part of the following
-should be moved to another module about apartness, but I keep it here
-for the moment.
+separated, where tightness means ¬ (x ♯ y)→ x = y.
 
 Added 26 January 2018.
 

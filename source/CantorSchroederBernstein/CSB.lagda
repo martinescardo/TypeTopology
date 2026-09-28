@@ -13,7 +13,7 @@ univalence or the existence of propositional truncations (any
 assumption beyond MLTT is explicit in each claim).
 
 
-(1) A univalent-foundations version of Pierre Pradic and Chad
+(1) A univalent-foundations version of Cécilia Pradic and Chad
     E. Brown's argument that Cantor-Schröder-Bernstein implies
     excluded middle in constructive set theory. (Added 22nd January.)
     (https://arxiv.org/abs/1904.09193).

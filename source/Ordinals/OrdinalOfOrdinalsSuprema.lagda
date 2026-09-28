@@ -591,8 +591,9 @@ We now formalize an alternative construction due to Martín Escardó that doesn'
 use set quotients, but instead relies on Set Replacement (as defined and
 explained in UF.Size.lagda) to obtain a small ordinal at the end.
 
-(As proved in Quotient.Type.lagda and UF-Quotient-Replacement.lagda, Set
-Replacement is equivalent to having small set quotients.)
+(As proved in Quotient.Type.lagda, Quotient.FromSetReplacement and
+Quotient.GivesSetReplacement, Set Replacement is equivalent to having
+small set quotients.)
 
 \begin{code}
 
@@ -1045,10 +1046,10 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-As proved in Quotient.Type.lagda and UF-Quotient-Replacement.lagda, Set
-Replacement is equivalent to having small set quotients, so it follows
-immediately that (just as above) Ordinal 𝓤 has small suprema if we assume the
-existence of (small) set quotients.
+As proved in Quotient.Type.lagda, Quotient.FromSetReplacement and
+Quotient.GivesSetReplacement, Set Replacement is equivalent to having small set
+quotients, so it follows immediately that (just as above) Ordinal 𝓤 has small
+suprema if we assume the existence of (small) set quotients.
 
 \begin{code}
 

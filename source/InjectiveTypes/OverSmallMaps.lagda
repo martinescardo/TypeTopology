@@ -94,7 +94,7 @@ ainjectivity-over-small-maps {𝓤} {𝓥} {𝓦} {𝓣₀} {𝓣₂} 𝓣₁ D 
 \end{code}
 
 Added by Martin Escardo and Tom de Jong 24th October 2024. This
-improves the universe levels of BlackBoard.embedding-retract.
+improves the universe levels of InjectiveTypes.Blackboard.embedding-retract.
 
 \begin{code}
 

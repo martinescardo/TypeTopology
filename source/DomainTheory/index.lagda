@@ -218,7 +218,7 @@ We present a succinct list of domain-theoretic formalization targets here:
 3. Formalize the results in reverse mathematics and delta-complete posets.
    See Chapter 6 of the PhD thesis for details.
    In 2023, Ian Ray formalized the main results in
-   OrderedTypes/DeltaCompletePosets.lagda.
+   OrderedTypes.DeltaCompletePoset.
 
 Item 2 should be a fun challenge for a student with an interest in
 (domain-theoretic semantics of) programming languages.

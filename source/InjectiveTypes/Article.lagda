@@ -9,8 +9,8 @@ January 2021.  https://doi.org/10.1017/S0960129520000225
 
 Remark about the contents and organization of this Agda file.
 
-       This file InjectiveTypes-article is an article-style version of
-       the blackboard-style version InjectiveTypes.lagda, to be
+       This file InjectiveTypes.Article is an article-style version of
+       the blackboard-style version InjectiveTypes.Blackboard, to be
        submitted for publication. The blackboard presents the ideas as
        they have been developed, rather than the way they should be
        presented in an article submitted for publication, but still in
@@ -758,9 +758,8 @@ ainjective-retract-of-subtype D i Y (j , e) = pr₁ a , j , pr₂ a
 
 \end{code}
 
-The identity-type former Id is an embedding X → (X → 𝓤). The proof
-requires some insight and can be found in another module by following
-the link.
+The identity-type former Id is an embedding X → (X → 𝓤). The proof requires
+some insight and can be found in UF.IdEmbedding.
 
 \begin{code}
 

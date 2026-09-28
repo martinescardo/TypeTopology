@@ -6,15 +6,16 @@ Martin Escardo, 2012, 2018, 2022, 2026.
 
 module Ordinals.NotationInterpretation where
 
-import Ordinals.BrouwerCodesInterpretations            -- 2022
-import Ordinals.FailureOfTrichotomy                    -- 2026
-import Ordinals.FailureOfTotalSeparatedness            -- 2026
-import Ordinals.BrouwerCodesVariationInterpretations   -- 2018
-import Ordinals.InductiveRecursiveCodesInterpretations -- 2022
+import Ordinals.BrouwerCodesInterpretations                   -- 2022
+import Ordinals.FailureOfTrichotomy                           -- 2026
+import Ordinals.FailureOfTotalSeparatedness                   -- 2026
+import Ordinals.BrouwerCodesVariationInterpretations          -- 2018
+import Ordinals.InductiveRecursiveCodesInterpretations        -- 2022
+import Ordinals.BrouwerCodesDiscreteAndCompactInterpretations -- 2026
 
 \end{code}
 
-  1. The file BrouwerCodesInterpretations interprets Brouwer
+  1. The file Ordinals.BrouwerCodesInterpretations interprets Brouwer
      ordinal codes, inductively defined by constructors
 
        Z : B,
@@ -53,6 +54,9 @@ import Ordinals.InductiveRecursiveCodesInterpretations -- 2022
      former. Additionally, it describes which elements of the
      interpretation ⟦_⟧₁ are isolated points or limit points, by a
      boolean valued function.
+
+  6. The file BrouwerCodesDiscreteAndCompactInterpretations does the
+     same as (4) and a few things from (5), but for Brouwer codes instead.
 
 See also the MFPS'2026 talk slides
 

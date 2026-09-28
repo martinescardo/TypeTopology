@@ -240,9 +240,9 @@ r = optimal-outcome tic-tac-toe
 
 \end{code}
 
-The above computation takes too long, due to the use of brute-force
-search in the definition of the game (the compactness conditions). A
-more efficient one is in another file.
+The above computation takes too long, due to the use of brute-force search in
+the definition of the game (the compactness conditions). A more efficient one
+is in Games.TicTacToe2.
 
 \begin{code}
 

@@ -154,7 +154,7 @@ _≃ᵈᶜᵖᵒ⊥_ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {�
 Pointed dcpos have semidirected & subsingleton suprema and these are preserved
 by maps that are both strict and continuous.
 
-This is used to prove (in DomainTheroy.Lifting.LiftingSet.lagda) that the
+This is used to prove (in DomainTheory.Lifting.LiftingSet.lagda) that the
 lifting yields the free pointed dcpo on a set.
 
 \begin{code}

@@ -20,7 +20,8 @@ open import UF.Subsingletons-Properties
 
 \end{code}
 
-We define the kernel of a group homomorphism $f : A → B$ as the fiber of f at the unit e⟨ B ⟩
+We define the kernel of a group homomorphism $f : A → B$ as the fiber of f
+at the unit e⟨ B ⟩
 
 \begin{code}
 

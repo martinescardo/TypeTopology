@@ -108,8 +108,6 @@ B-context【_】 : {n : ℕ} → Cxt n → type → Cxt n
 B-context【_】 {0}      〈〉       A = 〈〉
 B-context【_】 {succ n} (Γ , σ) A = (B-context【_】 {n} Γ A , B-type〖 σ 〗 A)
 
-infix 10 B-context【_】
-
 ⌜ν⌝ : {n : ℕ} {Γ : Cxt n} {A : type} (i : Fin n)
     → T (B-context【 Γ 】 A) (B-type〖 Γ [ i ] 〗 A)
 ⌜ν⌝ i = transport (T (B-context【 _ 】 _)) (p i) (ν i)
@@ -153,7 +151,8 @@ Given a term of type (ι ⇒ ι) ⇒ ι, we calculate a term defining its dialog
 
 \end{code}
 
-TODO. Formulate and prove the correctness of ⌜dialogue-tree⌝. We'll do this in another file.
+The correctness of ⌜dialogue-tree⌝ is formulated and proved in
+EffectfulForcing.Internal.Correctness.
 
 Given a term t of type (ι ⇒ ι) ⇒ ι, we calculate a term defining a
 modulus of continuity for t.

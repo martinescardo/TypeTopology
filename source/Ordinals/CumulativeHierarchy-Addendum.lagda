@@ -401,8 +401,8 @@ equivalent to a large one. We do *not* use resizing axioms.
 We now show that for x = 𝕍-set {A} f, the total space 𝕋xᵒʳᵈ and the above set
 quotient A/~ᵒʳᵈ are equal as (large) ordinals. The equivalence of types is
 proved generally in the module set-replacement-construction in the file
-UF/Quotient.lagda. We only need to check that the equivalence is order
-preserving and reflecting.
+Quotient.GivesSetReplacement. We only need to check that the equivalence is
+order preserving and reflecting.
 
 \begin{code}
 

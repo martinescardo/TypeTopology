@@ -31,7 +31,8 @@ is-attainable {𝓤} {X} ϕ = Σ ε ꞉ J X , (ε attains ϕ)
 
 \end{code}
 
-Notice that attainability is data in general, rather than property, as a quantifier can have many selection functions.
+Notice that attainability is data in general, rather than property, as a
+quantifier can have many selection functions.
 
 TODO. Show that overline is a monad morphism.
 

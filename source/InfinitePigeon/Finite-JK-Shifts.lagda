@@ -61,8 +61,9 @@ observation₃ ε₀ ε₁ = reflexivity
 
 \end{code}
 
-Preliminary lemmas for the countable shifts (in another module).
-The following definitions are the same with a parameter J/K.
+Preliminary lemmas for the countable shifts (in InfinitePigeon.J-Shift and
+InfinitePigeon.K-Shift). The following definitions are the same with a
+parameter J/K.
 
 \begin{code}
 

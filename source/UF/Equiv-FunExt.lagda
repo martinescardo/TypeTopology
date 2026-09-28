@@ -2,7 +2,7 @@ Martin Escardo
 
 Properties of equivalences depending on function extensionality.
 
-(Not included in UF.Equiv because the module UF.funext defines function
+(Not included in UF.Equiv because the module funext defines function
 extensionality as the equivalence of happly for suitable parameters.)
 
 \begin{code}

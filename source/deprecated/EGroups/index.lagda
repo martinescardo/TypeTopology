@@ -1,7 +1,7 @@
 Martin Escardo, 15th July 2026.
 
 Free groups in pure MLTT using setoids. More precisely, we work with
-egroups, defined in EGroup.Type, briefly described below.
+egroups, defined in deprecated.EGroups.Type, briefly described below.
 
 \begin{code}
 

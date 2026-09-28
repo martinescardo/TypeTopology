@@ -1,12 +1,13 @@
 Tom de Jong & Martín Escardó, 8 & 10 September 2023.
-Moved to its own file on 29 October 2025.
+Moved from InjectiveTypes.InhabitedTypesTaboo to its own file on 29 October
+2025.
 
 The type of non-empty types is injective. This should be contrasted with the
 fact that the type of inhabited types is not necessarily injective, see
 InjectiveTypes.InhabitedTypesTaboo.
 
 An alternative proof of the injectivity of the type of non-empty types
-may be found in InjectiveTypes.MathematicalStrutures.
+may be found in InjectiveTypes.MathematicalStructures.
 
 \begin{code}
 

@@ -53,7 +53,7 @@ derived-flabby-structure {𝓤} (_∣_ , e) = ⨆ , e'
 
 \end{code}
 
-We had already given (in InjectiveTypes.BlackBoard) conversions
+We had already given (in InjectiveTypes.Blackboard) conversions
 between ainjective types and a flabby types. We now record that the
 ones we gave here agree definitionally with those there, via the
 "repackaging" equivalences gives below.

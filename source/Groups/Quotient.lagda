@@ -14,9 +14,9 @@ relation is again a group.
 In particular this is true for the equivalence relation arising from
 the standard condition that the image of a group homomorphism be
 normal in the target. The quotient is then the cokernel of the
-homomorphism (see cokernel.lagda)
+homomorphism (see Groups.Cokernel)
 
-TODO: adapt to use (small) quotients defined in UF-Quotient
+TODO: adapt to use (small) quotients defined in Quotient.Type
 
 \begin{code}
 
@@ -103,8 +103,8 @@ is compatible with the product and with taking the inverse.
 \end{code}
 
 \texttt{id-implies-related} below says that two equal terms must be
-related. It should be part of \texttt{GeneralNotation.lagda}, or
-closer to general facts about equivalence relations.
+related. It should be part of \texttt{Notation.General}, or closer to
+general facts about equivalence relations.
 
 \begin{code}
 

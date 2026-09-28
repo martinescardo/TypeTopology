@@ -100,7 +100,8 @@ bijective-and-monotonic' f g f-preserves-order f-g-bijection = γ
 
 \end{code}
 
-Now, given a monotonic function f, and a bijective function g, we construct an extension of f, which we call f̂.
+Now, given a monotonic function f, and a bijective function g, we construct
+an extension of f, which we call f̂.
 
 Pictorially, we have the following:
 
@@ -117,7 +118,8 @@ Pictorially, we have the following:
                       f̂
 
 
-The following f→f̂ extends functions, and the is followed by diagram commutes which proves that the above diagram is satisfied.
+The following f→f̂ extends functions, and the is followed by diagram
+commutes which proves that the above diagram is satisfied.
 
 \begin{code}
 

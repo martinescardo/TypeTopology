@@ -49,6 +49,9 @@ private
  fe₀ = fe 𝓤₀ 𝓤₀
 
 open import CoNaturals.Type
+open import Fin.Topology
+open import Fin.Type
+open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import Naturals.Binary hiding (_+_)
 open import Notation.CanonicalMap hiding (ι)
@@ -65,16 +68,27 @@ open import Taboos.LPO
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
-open import TypeTopology.FailureOfTotalSeparatedness
+open import TypeTopology.FailureOfTotalSeparatedness fe₀
+open import TypeTopology.GenericConvergentSequenceCompactness fe₀
 open import TypeTopology.LimitPoints
 open import TypeTopology.MicroInfTychonoff fe
+open import TypeTopology.MicroTychonoff
 open import TypeTopology.SigmaDiscrete
+open import TypeTopology.SigmaTotallySeparated
+open import TypeTopology.TotallySeparated
+open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.PairFun
 open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+import W.Properties
+open import W.Type
 
 \end{code}
 
@@ -130,6 +144,29 @@ equality).
 
 Δ-is-discrete : (ν : E) → is-discrete ⟨ Δ ν ⟩
 Δ-is-discrete ν = retract-is-discrete (Δ-retract-of-ℕ ν) ℕ-is-discrete
+
+\end{code}
+
+The discrete interpretation is compact for every code precisely when
+LPO holds. One direction is that Δ ν is a retract of ℕ, and the other
+uses the single code ⌜ω+𝟙⌝, whose discrete interpretation has ℕ + 𝟙 as
+its underlying type.
+
+\begin{code}
+
+LPO-gives-Δ-compact : LPO → (ν : E) → is-compact ⟨ Δ ν ⟩
+LPO-gives-Δ-compact lpo ν = retract-is-compact
+                             (Δ-retract-of-ℕ ν)
+                             (LPO-gives-compact-ℕ fe₀ lpo)
+
+Δ-compact-gives-LPO : ((ν : E) → is-compact ⟨ Δ ν ⟩) → LPO
+Δ-compact-gives-LPO κ = compact-ℕ-gives-LPO fe₀
+                         (retract-is-compact
+                           (≃-gives-◁ (≃-sym ℕ-plus-𝟙))
+                           (κ ⌜ω+𝟙⌝))
+
+Δ-compact-iff-LPO : ((ν : E) → is-compact ⟨ Δ ν ⟩) ↔ LPO
+Δ-compact-iff-LPO = Δ-compact-gives-LPO , LPO-gives-Δ-compact
 
 \end{code}
 
@@ -270,9 +307,72 @@ module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
 This completes the definitions of Κ, ι and ι-is-embedding.
 
 The important fact about the Κ interpretation is that the ordinals in
-its image have the least element property for non-empty complemented
-subsets, and, in particular, they are compact, and more generally infs
-of arbitrary complemented subsets.
+its image are compact, which we prove directly by induction, and that
+they moreover have the least element property for non-empty
+complemented subsets, and more generally infima of arbitrary
+complemented subsets.
+
+Compactness used to be derived from the least element property
+instead. It is now derived from the induction here so that it does not
+depend on propositional extensionality any longer, and so that we get
+the pointed form, which is the stronger one and is what the induction
+gives. The unpointed form is kept as a corollary because it is what
+the results about limit points below need.
+
+\begin{code}
+
+Κ-compact∙ : (ν : E) → is-compact∙ ⟨ Κ ν ⟩
+𝓚-compact∙ : (ν : E) (A : ⟨ Δ ν ⟩ → E) (y : ⟨ Κ ν ⟩)
+           → is-compact∙ ⟨ 𝓚 ν A y ⟩
+
+\end{code}
+
+These two are proved by simultaneous induction. The second one holds
+because the underlying type of 𝓚 ν A y is a product indexed by the
+fiber of ι ν over y, which is a proposition since ι ν is an embedding,
+so that micro-tychonoff applies.
+
+The pointedness is essential in this induction, as it is in the module
+Ordinals.BrouwerCodesVariationInterpretations, because a version of
+micro-tychonoff without pointedness implies excluded middle.
+
+\begin{code}
+
+Κ-compact∙ ⌜𝟙⌝         = 𝟙-is-compact∙
+Κ-compact∙ ⌜ω+𝟙⌝       = ℕ∞-compact∙
+Κ-compact∙ (ν₀ ⌜+⌝ ν₁) = Σ-is-compact∙
+                          𝟙+𝟙-is-compact∙
+                          (dep-cases
+                            (λ _ → Κ-compact∙ ν₀)
+                            (λ _ → Κ-compact∙ ν₁))
+Κ-compact∙ (ν₀ ⌜×⌝ ν₁) = Σ-is-compact∙
+                          (Κ-compact∙ ν₀)
+                          (λ _ → Κ-compact∙ ν₁)
+Κ-compact∙ (⌜Σ⌝ ν A)   = Σ-is-compact∙
+                          (Κ-compact∙ ν)
+                          (𝓚-compact∙ ν A)
+
+𝓚-compact∙ ν A y = micro-tychonoff
+                    (fe 𝓤₀ 𝓤₀)
+                    (ι-is-embedding ν y)
+                    (λ (x , _) → Κ-compact∙ (A x))
+
+Κ-Compact : {𝓥 : Universe} (ν : E) → is-Compact ⟨ Κ ν ⟩ {𝓥}
+Κ-Compact ν = compact-types-are-Compact
+               (compact∙-types-are-compact (Κ-compact∙ ν))
+
+𝓚-Compact : {𝓥 : Universe} (ν : E) (A : ⟨ Δ ν ⟩ → E) (y : ⟨ Κ ν ⟩)
+          → is-Compact ⟨ 𝓚 ν A y ⟩ {𝓥}
+𝓚-Compact ν A y = compact-types-are-Compact
+                   (compact∙-types-are-compact (𝓚-compact∙ ν A y))
+
+\end{code}
+
+The ordinals in the image of Κ moreover have the least element property
+for non-empty complemented subsets, and more generally infima of
+arbitrary complemented subsets. This needs propositional extensionality,
+which, as discussed in the module Ordinals.Closure, is not strictly
+needed but makes our life much easier.
 
 \begin{code}
 
@@ -310,22 +410,6 @@ module _ (pe : propext 𝓤₀) where
      (ι-is-embedding ν x)
      (λ {(x , _)} y z → y ≺⟨ Κ (A x) ⟩ z)
      (λ (x , _) → K-has-infs-of-complemented-subsets (A x))
-
-\end{code}
-
-And, as discussed above, as a corollary we get that the ordinals in
-the image of Κ are compact.
-
-\begin{code}
-
- Κ-Compact : {𝓥 : Universe} (ν : E)
-           → is-Compact ⟨ Κ ν ⟩ {𝓥}
- Κ-Compact ν = has-inf-gives-Compact _ (K-has-infs-of-complemented-subsets ν)
-
- 𝓚-Compact : {𝓥 : Universe} (ν : E) (A : ⟨ Δ ν ⟩ → E) (x : ⟨ Κ ν ⟩)
-            → is-Compact ⟨ 𝓚 ν A x ⟩ {𝓥}
- 𝓚-Compact ν A x = has-inf-gives-Compact _
-                     (𝓚-has-infs-of-complemented-subsets ν A x)
 
 \end{code}
 
@@ -398,18 +482,18 @@ complement).
                       → x ≺⟨ Δ ν ⟩ y
 ι-is-order-reflecting ⌜𝟙⌝        = λ x y l → l
 ι-is-order-reflecting ⌜ω+𝟙⌝      = ι𝟙ᵒ-is-order-reflecting
-ι-is-order-reflecting (ν₀ ⌜+⌝ ν₁) =  pair-fun-is-order-reflecting
-                                      𝟚ᵒ
-                                      𝟚ᵒ
-                                      (cases (λ _ → Δ ν₀) (λ _ → Δ ν₁))
-                                      (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
-                                      id
-                                      (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
-                                      (λ x y l → l)
-                                      id-is-embedding
-                                      (dep-cases
-                                        (λ _ → ι-is-order-reflecting ν₀)
-                                        (λ _ → ι-is-order-reflecting ν₁))
+ι-is-order-reflecting (ν₀ ⌜+⌝ ν₁) = pair-fun-is-order-reflecting
+                                     𝟚ᵒ
+                                     𝟚ᵒ
+                                     (cases (λ _ → Δ ν₀) (λ _ → Δ ν₁))
+                                     (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
+                                     id
+                                     (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
+                                     (λ x y l → l)
+                                     id-is-embedding
+                                     (dep-cases
+                                       (λ _ → ι-is-order-reflecting ν₀)
+                                       (λ _ → ι-is-order-reflecting ν₁))
 ι-is-order-reflecting (ν₀ ⌜×⌝ ν₁) = pair-fun-is-order-reflecting
                                      (Δ ν₀)
                                      (Κ ν₀)
@@ -530,49 +614,47 @@ The function ℓ really does detect limit points:
 
 \begin{code}
 
-module _ (pe : propext 𝓤₀) where
+ℓ-limit : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point (ι ν x)
+ℓ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
+ℓ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit ν₀ x₀ p
+                                        (Σ-isolated-right
+                                          (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                          i)
+ℓ-limit (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = ℓ-limit ν₁ x₁ p
+                                        (Σ-isolated-right
+                                          (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                          i)
+ℓ-limit (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
+  Cases (max𝟚-lemma p)
+   (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit ν₀ x₀ p₀ (×-isolated-left i))
+   (λ (p₁ : ℓ ν₁ x₁ ＝ ₁) → ℓ-limit ν₁ x₁ p₁ (×-isolated-right i))
+ℓ-limit (⌜Σ⌝ ν A)   (x , y)      p i =
+  Cases (max𝟚-lemma p)
+   (λ (p₀ : ℓ ν x ＝ ₁)
+          → ℓ-limit ν x p₀ (Σ-isolated-left (𝓚-Compact ν A) i))
+   (λ (p₁ : ℓ (A x) y ＝ ₁)
+          → ℓ-limit (A x) y p₁
+             (equivs-reflect-isolatedness (φ⁻¹ x)
+               (φ⁻¹-is-equiv x)
+               (ι (A x) y)
+               (Σ-isolated-right
+                 (underlying-type-is-setᵀ fe (Κ ν)) i)))
+ where
+  open Κ-extension ν A
 
- ℓ-limit : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point (ι ν x)
- ℓ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
- ℓ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit ν₀ x₀ p
-                                         (Σ-isolated-right
-                                           (underlying-type-is-setᵀ fe 𝟚ᵒ)
-                                           i)
- ℓ-limit (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = ℓ-limit ν₁ x₁ p
-                                         (Σ-isolated-right
-                                           (underlying-type-is-setᵀ fe 𝟚ᵒ)
-                                           i)
- ℓ-limit (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
-   Cases (max𝟚-lemma p)
-    (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit ν₀ x₀ p₀ (×-isolated-left i))
-    (λ (p₁ : ℓ ν₁ x₁ ＝ ₁) → ℓ-limit ν₁ x₁ p₁ (×-isolated-right i))
- ℓ-limit (⌜Σ⌝ ν A)   (x , y)      p i =
-   Cases (max𝟚-lemma p)
-    (λ (p₀ : ℓ ν x ＝ ₁)
-           → ℓ-limit ν x p₀ (Σ-isolated-left (𝓚-Compact pe ν A) i))
-    (λ (p₁ : ℓ (A x) y ＝ ₁)
-           → ℓ-limit (A x) y p₁
-              (equivs-reflect-isolatedness (φ⁻¹ x)
-                (φ⁻¹-is-equiv x)
-                (ι (A x) y)
-                (Σ-isolated-right
-                  (underlying-type-is-setᵀ fe (Κ ν)) i)))
-  where
-   open Κ-extension ν A
+isolatedness-decision : (ν : E) (x : ⟨ Δ ν ⟩)
+                      → is-isolated (ι ν x) + is-limit-point (ι ν x)
+isolatedness-decision ν x = 𝟚-equality-cases
+                             (λ (p : ℓ ν x ＝ ₀) → inl (ℓ-isolated ν x p))
+                             (λ (p : ℓ ν x ＝ ₁) → inr (ℓ-limit ν x p))
 
- isolatedness-decision : (ν : E) (x : ⟨ Δ ν ⟩)
-                       → is-isolated (ι ν x) + is-limit-point (ι ν x)
- isolatedness-decision ν x = 𝟚-equality-cases
-                              (λ (p : ℓ ν x ＝ ₀) → inl (ℓ-isolated ν x p))
-                              (λ (p : ℓ ν x ＝ ₁) → inr (ℓ-limit ν x p))
-
- isolatedness-decision' : ¬ WLPO
-                        → (ν : E) (x : ⟨ Δ ν ⟩)
-                        → is-decidable (is-isolated (ι ν x))
- isolatedness-decision' f ν x =
-   Cases (isolatedness-decision ν x)
-    inl
-    (λ (g : is-isolated (ι ν x) → WLPO)  → inr (contrapositive g f))
+isolatedness-decision' : ¬ WLPO
+                       → (ν : E) (x : ⟨ Δ ν ⟩)
+                       → is-decidable (is-isolated (ι ν x))
+isolatedness-decision' f ν x =
+  Cases (isolatedness-decision ν x)
+   inl
+   (λ (g : is-isolated (ι ν x) → WLPO)  → inr (contrapositive g f))
 
 \end{code}
 
@@ -581,35 +663,35 @@ limit point holds.
 
 \begin{code}
 
- ℓ-limit⁺ : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point⁺ (ι ν x)
- ℓ-limit⁺ ⌜ω+𝟙⌝ (inr x) p i = ∞-is-a-limit-point⁺-of-ℕ∞ fe₀ i
- ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i
-  = ℓ-limit⁺ ν₀ x₀ p
-     (Σ-weakly-isolated-right
-       (underlying-type-is-setᵀ fe 𝟚ᵒ)
-       i)
- ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i
-  = ℓ-limit⁺ ν₁ x₁ p
-     (Σ-weakly-isolated-right
-       (underlying-type-is-setᵀ fe 𝟚ᵒ)
-       i)
- ℓ-limit⁺ (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i
-  = Cases (max𝟚-lemma p)
-     (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit⁺ ν₀ x₀ p₀ (×-weakly-isolated-left i))
-     (λ (p₁ : ℓ ν₁ x₁ ＝ ₁) → ℓ-limit⁺ ν₁ x₁ p₁ (×-weakly-isolated-right i))
- ℓ-limit⁺ (⌜Σ⌝ ν A)   (x , y)      p i
-  = Cases (max𝟚-lemma p)
-     (λ (p₀ : ℓ ν x ＝ ₁)
-            → ℓ-limit⁺ ν x p₀ (Σ-weakly-isolated-left (𝓚-Compact pe ν A) i))
-     (λ (p₁ : ℓ (A x) y ＝ ₁)
-            → ℓ-limit⁺ (A x) y p₁
-               (equivs-reflect-weak-isolatedness
-                 (Φ x)
-                 (ι (A x) y)
-                 (Σ-weakly-isolated-right
-                   (underlying-type-is-setᵀ fe (Κ ν)) i)))
-   where
-    open Κ-extension ν A
+ℓ-limit⁺ : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point⁺ (ι ν x)
+ℓ-limit⁺ ⌜ω+𝟙⌝ (inr x) p i = ∞-is-a-limit-point⁺-of-ℕ∞ i
+ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i
+ = ℓ-limit⁺ ν₀ x₀ p
+    (Σ-weakly-isolated-right
+      (underlying-type-is-setᵀ fe 𝟚ᵒ)
+      i)
+ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i
+ = ℓ-limit⁺ ν₁ x₁ p
+    (Σ-weakly-isolated-right
+      (underlying-type-is-setᵀ fe 𝟚ᵒ)
+      i)
+ℓ-limit⁺ (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i
+ = Cases (max𝟚-lemma p)
+    (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit⁺ ν₀ x₀ p₀ (×-weakly-isolated-left i))
+    (λ (p₁ : ℓ ν₁ x₁ ＝ ₁) → ℓ-limit⁺ ν₁ x₁ p₁ (×-weakly-isolated-right i))
+ℓ-limit⁺ (⌜Σ⌝ ν A)   (x , y)      p i
+ = Cases (max𝟚-lemma p)
+    (λ (p₀ : ℓ ν x ＝ ₁)
+           → ℓ-limit⁺ ν x p₀ (Σ-weakly-isolated-left (𝓚-Compact ν A) i))
+    (λ (p₁ : ℓ (A x) y ＝ ₁)
+           → ℓ-limit⁺ (A x) y p₁
+              (equivs-reflect-weak-isolatedness
+                (Φ x)
+                (ι (A x) y)
+                (Σ-weakly-isolated-right
+                  (underlying-type-is-setᵀ fe (Κ ν)) i)))
+  where
+   open Κ-extension ν A
 
 \end{code}
 
@@ -694,23 +776,11 @@ Let P be a proposition and assume function extensionality.
 It doesn't seem to be possible to reverse any of the implications (0)
 and (1), so that the proposition "(P → 2) has decidable equality"
 seems to be strictly between "P is decidable" and "¬P is decidable".
+This is discussed in the file Taboos.P2.
 
-This is discussed in the following module.
-
-\begin{code}
-
-import Taboos.P2
-
-\end{code}
-
-TODO. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do have
-(ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in the following module.
-
-\begin{code}
-
-import Ordinals.ConvergentSequence
-
-\end{code}
+QUESTION. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do
+have (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in Ordinals.ConvergentSequence. This is
+below: the condition is equivalent to LPO.
 
 TODO. Define an element x of an ordinal to be trisolated if for every
 y we have that y ≺ x or x ＝ y or x ≺ y.  Notice that trisolated
@@ -726,10 +796,463 @@ TODO. An element x of α is trisolated iff there are ordinals αₕ and αₜ
 and an ordinal-equivalence αₕ +ₒ 𝟙ₒ + αₜ → α that maps the point at
 the component 𝟙ₒ to x.
 
-TODO. Suprema of compact ordinals are compact. (This follows directly
-from the constructions in the file OrdinalOfOrdinalsSupremum.)
+Suprema of compact-indexed families of compact ordinals are compact,
+proved in Ordinals.CompactnessOfSuprema from the constructions in
+Ordinals.OrdinalOfOrdinalsSuprema.
 
 TODO. Are the ordinals in the image of K totally separated?
 
-TODO. The map ℓ should also be the characteristic function of
-ordinal-limit points.
+Added August 2026. The universe E is a set. We prove this by
+encoding it into a W-type, which is possible because the branching type
+⟨ Δ ν ⟩ of the constructor ⌜Σ⌝ is a retract of ℕ, so that a family
+indexed by it is determined by its restriction along the retraction,
+and ℕ can serve as the arity of that constructor.
+
+Only the five pairs of equal constructors of E occur in the induction
+below. The other twenty are refuted by the clash of shapes of the
+W-type in the hypothesis.
+
+\begin{code}
+
+E-is-set : is-set E
+E-is-set = subtypes-of-sets-are-sets' e e-lc 𝕋-is-set
+ where
+  shape : 𝓤₀ ̇
+  shape = Fin 5
+
+  arity : shape → 𝓤₀ ̇
+  arity 𝟎 = 𝟘
+  arity 𝟏 = 𝟘
+  arity 𝟐 = 𝟙 + 𝟙
+  arity 𝟑 = 𝟙 + 𝟙
+  arity 𝟒 = 𝟙 + ℕ
+
+  𝕋 : 𝓤₀ ̇
+  𝕋 = W shape arity
+
+  open W.Properties shape arity
+
+  𝕋-is-set : is-set 𝕋
+  𝕋-is-set = W-is-set (fe 𝓤₀ 𝓤₀) Fin-is-set
+
+  ρ : (ν : E) → ℕ → ⟨ Δ ν ⟩
+  ρ ν = retraction (Δ-retract-of-ℕ ν)
+
+  σ : (ν : E) → ⟨ Δ ν ⟩ → ℕ
+  σ ν = section (Δ-retract-of-ℕ ν)
+
+  ρσ : (ν : E) (x : ⟨ Δ ν ⟩) → ρ ν (σ ν x) ＝ x
+  ρσ ν = retract-condition (Δ-retract-of-ℕ ν)
+
+  e : E → 𝕋
+  e ⌜𝟙⌝       = ssup 𝟎 𝟘-elim
+  e ⌜ω+𝟙⌝     = ssup 𝟏 𝟘-elim
+  e (ν ⌜+⌝ μ) = ssup 𝟐 (cases (λ _ → e ν) (λ _ → e μ))
+  e (ν ⌜×⌝ μ) = ssup 𝟑 (cases (λ _ → e ν) (λ _ → e μ))
+  e (⌜Σ⌝ ν A) = ssup 𝟒 (cases (λ _ → e ν) (λ n → e (A (ρ ν n))))
+
+  ⌜Σ⌝-＝ : (ν ν' : E) → ν ＝ ν'
+         → (A : ⟨ Δ ν ⟩ → E) (A' : ⟨ Δ ν' ⟩ → E)
+         → ((n : ℕ) → A (ρ ν n) ＝ A' (ρ ν' n))
+         → ⌜Σ⌝ ν A ＝ ⌜Σ⌝ ν' A'
+  ⌜Σ⌝-＝ ν .ν refl A A' h = ap (⌜Σ⌝ ν) (dfunext (fe 𝓤₀ 𝓤₀) I)
+   where
+    I : A ∼ A'
+    I x = A x               ＝⟨ ap A ((ρσ ν x)⁻¹) ⟩
+          A (ρ ν (σ ν x))   ＝⟨ h (σ ν x) ⟩
+          A' (ρ ν (σ ν x))  ＝⟨ ap A' (ρσ ν x) ⟩
+          A' x              ∎
+
+  e-lc : left-cancellable e
+  e-lc {⌜𝟙⌝}     {⌜𝟙⌝}       p = refl
+  e-lc {⌜ω+𝟙⌝}   {⌜ω+𝟙⌝}     p = refl
+  e-lc {ν ⌜+⌝ μ} {ν' ⌜+⌝ μ'} p =
+   ν  ⌜+⌝ μ  ＝⟨ ap (λ - → - ⌜+⌝ μ) (e-lc (φ (inl ⋆))) ⟩
+   ν' ⌜+⌝ μ  ＝⟨ ap (λ - → ν' ⌜+⌝ -) (e-lc (φ (inr ⋆))) ⟩
+   ν' ⌜+⌝ μ' ∎
+    where
+     φ = forest-＝ Fin-is-set p
+  e-lc {ν ⌜×⌝ μ} {ν' ⌜×⌝ μ'} p =
+   ν  ⌜×⌝ μ  ＝⟨ ap (λ - → - ⌜×⌝ μ) (e-lc (φ (inl ⋆))) ⟩
+   ν' ⌜×⌝ μ  ＝⟨ ap (λ - → ν' ⌜×⌝ -) (e-lc (φ (inr ⋆))) ⟩
+   ν' ⌜×⌝ μ' ∎
+    where
+     φ = forest-＝ Fin-is-set p
+  e-lc {⌜Σ⌝ ν A} {⌜Σ⌝ ν' A'} p = ⌜Σ⌝-＝ ν ν'
+                                  (e-lc (φ (inl ⋆)))
+                                  A A'
+                                  (λ n → e-lc (φ (inr n)))
+   where
+    φ = forest-＝ Fin-is-set p
+
+\end{code}
+
+Added 28th August 2026.
+
+The compact ordinals Κ ν are not totally separated in general. This is
+in contrast with the compact interpretation of the Brouwer codes, given
+in Ordinals.BrouwerCodesDiscreteAndCompactInterpretations.
+
+The reason is that the constructor ⌜Σ⌝ takes a sum, indexed by the
+compact ordinal Κ ν, of a family extended along the dense embedding ι ν.
+For the code ⌜ω+𝟙⌝ the discrete ordinal Δ ⌜ω+𝟙⌝ is ℕ + 𝟙 and the
+embedding ι𝟙 sends the added point to ∞, so the extended family is
+unconstrained at ∞, and we can make it two-valued there. This
+reproduces the type ℕ∞₂ of TypeTopology.FailureOfTotalSeparatedness,
+whose total separatedness gives ¬¬ WLPO.
+
+Over the finite points of ω+1 we put the one-point ordinal, and over
+the added point we put the two-point one.
+
+\begin{code}
+
+private
+ A₂ : ⟨ Δ ⌜ω+𝟙⌝ ⟩ → E
+ A₂ (inl n) = ⌜𝟙⌝
+ A₂ (inr ⋆) = ⌜𝟙⌝ ⌜+⌝ ⌜𝟙⌝
+
+⌜ℕ∞₂⌝ : E
+⌜ℕ∞₂⌝ = ⌜Σ⌝ ⌜ω+𝟙⌝ A₂
+
+\end{code}
+
+By definition, the underlying type of Κ ⌜ℕ∞₂⌝ is the sum over ℕ∞ of the
+extension of the above family along ι𝟙.
+
+\begin{code}
+
+_ : ⟨ Κ ⌜ℕ∞₂⌝ ⟩ ＝ (Σ u ꞉ ℕ∞ , (Π (d , _) ꞉ fiber ι𝟙 u , ⟨ Κ (A₂ d) ⟩))
+_ = refl
+
+\end{code}
+
+This sum is the type ℕ∞₂, and so its total separatedness gives ¬¬ WLPO.
+
+\begin{code}
+
+Κ⌜ℕ∞₂⌝-totally-separated-gives-¬¬WLPO
+ : is-totally-separated ⟨ Κ ⌜ℕ∞₂⌝ ⟩ → ¬¬ WLPO
+Κ⌜ℕ∞₂⌝-totally-separated-gives-¬¬WLPO ts
+ = III
+ where
+  F : ⟨ Δ ⌜ω+𝟙⌝ ⟩ → 𝓤₀ ̇
+  F d = ⟨ Κ (A₂ d) ⟩
+
+\end{code}
+
+The two points over ∞ are those of the two-point ordinal, whose
+underlying type is a sum over the two-element type, so that we identify
+them with the booleans by cases.
+
+\begin{code}
+
+  I : F (inr ⋆) ≃ 𝟚
+  I = qinveq f (g , gf , fg)
+   where
+    f : F (inr ⋆) → 𝟚
+    f (inl ⋆ , ⋆) = ₀
+    f (inr ⋆ , ⋆) = ₁
+
+    g : 𝟚 → F (inr ⋆)
+    g ₀ = inl ⋆ , ⋆
+    g ₁ = inr ⋆ , ⋆
+
+    gf : g ∘ f ∼ id
+    gf (inl ⋆ , ⋆) = refl
+    gf (inr ⋆ , ⋆) = refl
+
+    fg : f ∘ g ∼ id
+    fg ₀ = refl
+    fg ₁ = refl
+
+\end{code}
+
+The fiber of ι𝟙 over a conatural number u splits into a finite part,
+over which the family is a singleton, and the part over ∞, which is
+where the two points live. So the fiber of the extension over u is the
+type of functions from u ＝ ∞ to the booleans.
+
+\begin{code}
+
+  II : (u : ℕ∞) → (Π (d , _) ꞉ fiber ι𝟙 u , F d) ≃ (u ＝ ∞ → 𝟚)
+  II u = (Π (d , _) ꞉ fiber ι𝟙 u , F d)             ≃⟨ II₀ ⟩
+         (Π d ꞉ ℕ + 𝟙 , (ι𝟙 d ＝ u → F d))          ≃⟨ II₁ ⟩
+         (Π n ꞉ ℕ , (ι𝟙 (inl n) ＝ u → F (inl n)))
+         × (𝟙 → ∞ ＝ u → F (inr ⋆))                 ≃⟨ II₂ ⟩
+         𝟙 × (∞ ＝ u → F (inr ⋆))                   ≃⟨ II₃ ⟩
+         𝟙 × (u ＝ ∞ → 𝟚)                           ≃⟨ II₄ ⟩
+         (u ＝ ∞ → 𝟚) ■
+   where
+    II₀ = curry-uncurry fe
+    II₁ = ≃-sym (Π×+ fe₀)
+    II₂ = ×-cong
+           (singleton-≃-𝟙
+            (Π-is-singleton fe₀
+              (λ n → Π-is-singleton fe₀ (λ _ → 𝟙-is-singleton))))
+           (≃-sym (𝟙→ fe₀))
+    II₃ = ×-cong {𝓤₀} {𝓤₀} {𝓤₀}
+           (≃-refl _)
+           (→cong fe₀ fe₀ ＝-flip I)
+    II₄ = 𝟙-lneutral
+
+  𝕖 : ⟨ Κ ⌜ℕ∞₂⌝ ⟩ ≃ ℕ∞₂
+  𝕖 = Σ-cong II
+
+  III : ¬¬ WLPO
+  III = ℕ∞₂-is-not-totally-separated-in-general
+         (subtype-is-totally-separated''
+           ⌜ 𝕖 ⌝⁻¹
+           ts
+           (equivs-are-lc ⌜ 𝕖 ⌝⁻¹ (⌜⌝⁻¹-is-equiv 𝕖)))
+
+\end{code}
+
+Hence the compact ordinals of the codes E are not totally separated in
+general.
+
+\begin{code}
+
+Κ-totally-separated-gives-¬¬WLPO
+ : ((ν : E) → is-totally-separated ⟨ Κ ν ⟩) → ¬¬ WLPO
+Κ-totally-separated-gives-¬¬WLPO ts
+ = Κ⌜ℕ∞₂⌝-totally-separated-gives-¬¬WLPO (ts ⌜ℕ∞₂⌝)
+
+\end{code}
+
+Added 2nd September 2026.
+
+Every non-empty complemented subset of the compact interpretation has
+a least element. For the discrete interpretation this exactly LPO, and
+the code ⌜ω+𝟙⌝ alone witnesses one direction, its discrete
+interpretation being ω + 1 by definition.
+
+\begin{code}
+
+K-has-least-roots-of-complemented-subsets
+ : propext 𝓤₀
+ → (ν : E) → has-least-roots-of-complemented-subsets (Κ ν)
+K-has-least-roots-of-complemented-subsets pe ν =
+ has-inf-gives-least-roots
+  (underlying-weak-order (Κ ν))
+  (K-has-infs-of-complemented-subsets pe ν)
+
+Δ-least-roots-gives-LPO
+ : ((ν : E) → has-least-roots-of-complemented-subsets (Δ ν))
+ → LPO
+Δ-least-roots-gives-LPO h = succₒ-ω-least-roots-gives-LPO (h ⌜ω+𝟙⌝)
+
+LPO-gives-Δ-least-roots
+ : propext 𝓤₀
+ → LPO
+ → (ν : E) → has-least-roots-of-complemented-subsets (Δ ν)
+LPO-gives-Δ-least-roots pe lpo ν = ≃ₒ-gives-has-least-roots
+                                    [ Κ ν ]
+                                    [ Δ ν ]
+                                    (≃ₒ-sym [ Δ ν ] [ Κ ν ] e)
+                                    (K-has-least-roots-of-complemented-subsets
+                                      pe ν)
+ where
+  e : [ Δ ν ] ≃ₒ [ Κ ν ]
+  e = ι ν ,
+      order-preserving-reflecting-equivs-are-order-equivs
+       [ Δ ν ] [ Κ ν ] (ι ν)
+       (LPO-gives-ι-is-equiv lpo ν)
+       (ι-is-order-preserving ν)
+       (ι-is-order-reflecting ν)
+
+Δ-least-roots-iff-LPO
+ : propext 𝓤₀
+ → ((ν : E) → has-least-roots-of-complemented-subsets (Δ ν)) ↔ LPO
+Δ-least-roots-iff-LPO pe = Δ-least-roots-gives-LPO ,
+                           LPO-gives-Δ-least-roots pe
+
+\end{code}
+
+Added 8th September 2026.
+
+We now answer the question of whether (ν : E) → [ Δ ν ] ⊴ [ Κ ν ],
+raised above. The answer is that this is equivalent to LPO, and one
+code already accounts for the failure, namely ⌜ω+𝟙⌝ ⌜+⌝ ⌜𝟙⌝, whose
+discrete interpretation is ω + 2 and whose compact interpretation is
+ℕ∞ + 1.
+
+The point is that in the sum ℕ∞ + 1 every element of ℕ∞ is below the
+added top element, so that a simulation from ω + 2 has to hit every
+element of ℕ∞, which gives a section of ι𝟙 and hence LPO. Notice that
+for the code ⌜ω+𝟙⌝ alone we do have succₒ ω ⊴ ℕ∞ᵒ, because the
+elements of ℕ∞ below ∞ are precisely the finite ones.
+
+\begin{code}
+
+open import UF.Univalence
+
+module _ (ua : Univalence) where
+
+ open import Ordinals.ConvergentSequence ua
+ open import Ordinals.Maps hiding
+                            (is-order-preserving ;
+                             is-order-reflecting)
+ open import Ordinals.OrdinalOfOrdinals ua
+
+ ⌜ω+𝟚⌝ : E
+ ⌜ω+𝟚⌝ = ⌜ω+𝟙⌝ ⌜+⌝ ⌜𝟙⌝
+
+ Δ-⊴-Κ-gives-LPO : [ Δ ⌜ω+𝟚⌝ ] ⊴ [ Κ ⌜ω+𝟚⌝ ] → LPO
+ Δ-⊴-Κ-gives-LPO (f , f-init , f-op) = ι𝟙-has-section-gives-LPO (s , ε)
+  where
+   δ κ : Ordᵀ
+   δ = Δ ⌜ω+𝟚⌝
+   κ = Κ ⌜ω+𝟚⌝
+
+   q : ⟨ κ ⟩ → ℕ∞
+   q (inl ⋆ , u) = u
+   q (inr ⋆ , ⋆) = ∞
+
+   nothing-above-the-top : (y : ⟨ κ ⟩) → ¬ ((inr ⋆ , ⋆) ≺⟨ κ ⟩ y)
+   nothing-above-the-top (inl ⋆ , u) (inl l)       = l
+   nothing-above-the-top (inl ⋆ , u) (inr (r , l)) = +disjoint (r ⁻¹)
+   nothing-above-the-top (inr ⋆ , ⋆) (inl l)       = l
+   nothing-above-the-top (inr ⋆ , ⋆) (inr (r , l)) = l
+
+\end{code}
+
+The left summand of δ is mapped to the left summand of κ, because
+nothing lies above the top element of κ.
+
+\begin{code}
+
+   in-left : (z : ℕ + 𝟙) → Σ u ꞉ ℕ∞ , f (inl ⋆ , z) ＝ (inl ⋆ , u)
+   in-left z = h (f (inl ⋆ , z)) refl
+    where
+     l : f (inl ⋆ , z) ≺⟨ κ ⟩ f (inr ⋆ , ⋆)
+     l = f-op (inl ⋆ , z) (inr ⋆ , ⋆) (inl ⋆)
+
+     h : (y : ⟨ κ ⟩)
+       → f (inl ⋆ , z) ＝ y
+       → Σ u ꞉ ℕ∞ , f (inl ⋆ , z) ＝ (inl ⋆ , u)
+     h (inl ⋆ , u) e = u , e
+     h (inr ⋆ , ⋆) e = 𝟘-elim
+                        (nothing-above-the-top
+                          (f (inr ⋆ , ⋆))
+                          (transport (λ - → - ≺⟨ κ ⟩ f (inr ⋆ , ⋆)) e l))
+
+   g : ℕ + 𝟙 → ℕ∞
+   g z = pr₁ (in-left z)
+
+   fg : (z : ℕ + 𝟙) → f (inl ⋆ , z) ＝ (inl ⋆ , g z)
+   fg z = pr₂ (in-left z)
+
+\end{code}
+
+The map g is a simulation, and hence is ι𝟙, as simulations are unique.
+
+\begin{code}
+
+   g-op : is-order-preserving (succₒ ω) ℕ∞ᵒ g
+   g-op z z' l = γ (transport₂
+                     (λ a b → a ≺⟨ κ ⟩ b)
+                     (fg z)
+                     (fg z')
+                     (f-op (inl ⋆ , z) (inl ⋆ , z') (inr (refl , l))))
+    where
+     γ : ((inl ⋆ , g z) ≺⟨ κ ⟩ (inl ⋆ , g z')) → g z ≺⟨ ℕ∞ₒ ⟩ g z'
+     γ (inl l')          = 𝟘-elim l'
+     γ (inr (refl , l')) = l'
+
+   g-init : is-initial-segment [ succₒ ω ] ℕ∞ₒ g
+   g-init z v m = γ (f-init (inl ⋆ , z) (inl ⋆ , v) m')
+    where
+     m' : (inl ⋆ , v) ≺⟨ κ ⟩ f (inl ⋆ , z)
+     m' = transport
+           (λ - → (inl ⋆ , v) ≺⟨ κ ⟩ -)
+           ((fg z)⁻¹)
+           (inr (refl , m))
+
+     γ : (Σ x ꞉ ⟨ δ ⟩ , (x ≺⟨ δ ⟩ (inl ⋆ , z)) × (f x ＝ (inl ⋆ , v)))
+       → Σ z' ꞉ ℕ + 𝟙 , (z' ≺⟨ succₒ ω ⟩ z) × (g z' ＝ v)
+     γ ((inl ⋆ , w) , inl l          , e) = 𝟘-elim l
+     γ ((inl ⋆ , w) , inr (refl , l) , e) = w , l , ap q ((fg w)⁻¹ ∙ e)
+     γ ((inr ⋆ , ⋆) , inl l          , e) = 𝟘-elim l
+     γ ((inr ⋆ , ⋆) , inr (r , l)    , e) = 𝟘-elim (+disjoint (r ⁻¹))
+
+   g-is-ι𝟙 : g ∼ ι𝟙
+   g-is-ι𝟙 = at-most-one-simulation
+              [ succₒ ω ]
+              ℕ∞ₒ
+              g
+              ι𝟙
+              (g-init , g-op)
+              (pr₂ ω+𝟙-is-⊴-ℕ∞)
+
+\end{code}
+
+Therefore the top element of δ is mapped to the top element of κ,
+because otherwise ∞ = g (inr ⋆) would have an element of ℕ∞ above it.
+
+\begin{code}
+
+   f-top : f (inr ⋆ , ⋆) ＝ (inr ⋆ , ⋆)
+   f-top = h (f (inr ⋆ , ⋆)) refl
+    where
+     h : (y : ⟨ κ ⟩)
+       → f (inr ⋆ , ⋆) ＝ y
+       → f (inr ⋆ , ⋆) ＝ (inr ⋆ , ⋆)
+     h (inr ⋆ , ⋆) e = e
+     h (inl ⋆ , w) e = 𝟘-elim
+                        (∞-top w
+                          (transport (λ - → - ≺⟨ ℕ∞ᵒ ⟩ w) (g-is-ι𝟙 (inr ⋆)) m))
+      where
+       l : (inl ⋆ , g (inr ⋆)) ≺⟨ κ ⟩ (inl ⋆ , w)
+       l = transport₂
+            (λ a b → a ≺⟨ κ ⟩ b)
+            (fg (inr ⋆))
+            e
+            (f-op (inl ⋆ , inr ⋆) (inr ⋆ , ⋆) (inl ⋆))
+
+       m : g (inr ⋆) ≺⟨ ℕ∞ᵒ ⟩ w
+       m = γ l
+        where
+         γ : ((inl ⋆ , g (inr ⋆)) ≺⟨ κ ⟩ (inl ⋆ , w)) → g (inr ⋆) ≺⟨ ℕ∞ᵒ ⟩ w
+         γ (inl l')          = 𝟘-elim l'
+         γ (inr (refl , l')) = l'
+
+\end{code}
+
+And so every element of ℕ∞ is in the image of g, which gives the
+desired section of ι𝟙.
+
+\begin{code}
+
+   σ : (u : ℕ∞) → Σ z ꞉ ℕ + 𝟙 , g z ＝ u
+   σ u = γ (f-init (inr ⋆ , ⋆) (inl ⋆ , u) l)
+    where
+     l : (inl ⋆ , u) ≺⟨ κ ⟩ f (inr ⋆ , ⋆)
+     l = transport (λ - → (inl ⋆ , u) ≺⟨ κ ⟩ -) (f-top ⁻¹) (inl ⋆)
+
+     γ : (Σ x ꞉ ⟨ δ ⟩ , (x ≺⟨ δ ⟩ (inr ⋆ , ⋆)) × (f x ＝ (inl ⋆ , u)))
+       → Σ z ꞉ ℕ + 𝟙 , g z ＝ u
+     γ ((inl ⋆ , w) , _ , e) = w , ap q ((fg w)⁻¹ ∙ e)
+     γ ((inr ⋆ , ⋆) , _ , e) = 𝟘-elim
+                                (+disjoint ((ap pr₁ ((f-top ⁻¹) ∙ e))⁻¹))
+
+   s : ℕ∞ → ℕ + 𝟙
+   s u = pr₁ (σ u)
+
+   ε : ι𝟙 ∘ s ∼ id
+   ε u = (g-is-ι𝟙 (s u))⁻¹ ∙ pr₂ (σ u)
+
+ LPO-gives-Δ-⊴-Κ : LPO → (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]
+ LPO-gives-Δ-⊴-Κ lpo ν = ι ν ,
+                         order-equivs-are-simulations [ Δ ν ] [ Κ ν ] (ι ν) e
+  where
+   e : is-order-equiv [ Δ ν ] [ Κ ν ] (ι ν)
+   e = order-preserving-reflecting-equivs-are-order-equivs
+        [ Δ ν ] [ Κ ν ] (ι ν)
+        (LPO-gives-ι-is-equiv lpo ν)
+        (ι-is-order-preserving ν)
+        (ι-is-order-reflecting ν)
+
+ Δ-⊴-Κ-iff-LPO : ((ν : E) → [ Δ ν ] ⊴ [ Κ ν ]) ↔ LPO
+ Δ-⊴-Κ-iff-LPO = (λ h → Δ-⊴-Κ-gives-LPO (h ⌜ω+𝟚⌝)) , LPO-gives-Δ-⊴-Κ
+
+\end{code}

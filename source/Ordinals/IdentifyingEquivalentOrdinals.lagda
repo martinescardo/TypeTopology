@@ -63,8 +63,8 @@ idtoeqₒ-naturality α β refl = refl
 
 \end{code}
 
-We now construct the ordinal 𝟚₀ = (𝟚 , ₀ ≺ ₁).
-Note that it is equivalent to 𝟙ₒ +ₒ 𝟙ₒ, but we prefer to work directly with booleans here.
+We now construct the ordinal 𝟚₀ = (𝟚 , ₀ ≺ ₁). Note that it is equivalent
+to 𝟙ₒ +ₒ 𝟙ₒ, but we prefer to work directly with booleans here.
 
 \begin{code}
 

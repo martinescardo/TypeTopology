@@ -144,5 +144,5 @@ t₁ = optimal-outcome tic-tac-toe₁
 
 \end{code}
 
-The above computation takes too long, due to the use of brute-force
-search. A more efficient one is in another file.
+The above computation takes too long, due to the use of brute-force search. A
+more efficient one is in Games.TicTacToe2.

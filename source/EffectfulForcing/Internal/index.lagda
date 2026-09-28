@@ -27,22 +27,23 @@ import EffectfulForcing.Internal.AnotherCorrectnessProof -- by Chuangjie Xu
  1. The file Internal gives Church-encoded dialogue trees of system T
     terms t : (ι → ι) → ι.
 
- 2. The file External gives a semantics in terms of inductive dialogue
-    trees and formulates and proves the correctness of the produced
-    dialogue trees.
+ 2. The file EffectfulForcing.Internal.External gives a semantics in terms of
+    inductive dialogue trees and formulates and proves the correctness of the
+    produced dialogue trees.
 
  3. The file Correctness proves the correctness of (1) using the
     composition of the logical relation defined in (2) with a second
     logical relation defined for that purpose.
 
- 4. The file FurtherThoughts contains some work in progress.
+ 4. The file EffectfulForcing.Internal.FurtherThoughts contains some work in
+    progress.
 
- 5. The file `InternalModCont` contains the proof of correctness of the internal
-    modulus of continuity operator.
+ 5. The file `EffectfulForcing.Internal.InternalModCont` contains the proof of
+    correctness of the internal modulus of continuity operator.
 
- 6. The file `InternalModUniCont` contains the proof of correctness of the
-    internal modulus of _uniform_ continuity operator.
+ 6. The file `EffectfulForcing.Internal.InternalModUniCont` contains the proof
+    of correctness of the internal modulus of _uniform_ continuity operator.
 
- 7. The file `AnotherCorrectnessProof` gives another proof of the
-    correctness of the Church-encoded dialogue-tree translation,
+ 7. The file `EffectfulForcing.Internal.AnotherCorrectnessProof` gives another
+    proof of the correctness of the Church-encoded dialogue-tree translation,
     using a different logical relation.

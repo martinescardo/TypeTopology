@@ -13,7 +13,7 @@ add a couple of things:
 2. pullbacks of actions.
 3. G Sets
 
-Torsors are in their own file Torsos.lagda
+Torsors are in their own file Groups.Torsors
 
 
 \begin{code}

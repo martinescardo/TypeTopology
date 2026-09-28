@@ -57,10 +57,10 @@ baire = ι ⇒ ι
 
 \end{code}
 
-In module `InternalModCont`, we defined a System T operation that computes
-moduli of continuity of maps from Baire space into ℕ. In this module, we develop
-the same operation for maps on the Cantor space -- but this time it computes
-the modulus of _uniform_ continuity.
+In module `EffectfulForcing.Internal.InternalModCont`, we defined a System T
+operation that computes moduli of continuity of maps from Baire space into ℕ.
+In this module, we develop the same operation for maps on the Cantor space --
+but this time it computes the modulus of _uniform_ continuity.
 
 To define the Cantor type, it's tempting to augment System T with the type of
 Booleans. However, we refrain from doing that here as to avoid repeating all our
@@ -101,9 +101,9 @@ numeral-is-section = to-nat , to-nat-cancels-to-numeral
 
 \end{code}
 
-In module `ContinuityProperties`, we defined the notion of a Boolean point. We
-now define the same notion for System T representations of points of the Baire
-space.
+In module `EffectfulForcing.MFPSAndVariations.ContinuityProperties`, we defined
+the notion of a Boolean point. We now define the same notion for System T
+representations of points of the Baire space.
 
 \begin{code}
 

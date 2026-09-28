@@ -500,7 +500,7 @@ amounts to the principle of excluded middle.
       ϕ' : (P → 𝟘 {𝓣}) → 𝟘 {𝓣}
       ϕ' u = 𝟘-elim (ϕ (λ p → 𝟘-elim (u p)))
 
-    III : (P : Set 𝓣) → is-prop P →  P + ¬ P
+    III : (P : 𝓣 ̇ ) → is-prop P →  P + ¬ P
     III = DNE-gives-EM fe II
 
 \end{code}

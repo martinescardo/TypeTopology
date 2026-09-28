@@ -32,7 +32,8 @@ private
 
 \end{code}
 
-We first improve the universe levels of Blackboard.ainjectivity-of-Lifting.
+We first improve the universe levels of
+InjectiveTypes.Blackboard.ainjectivity-of-Lifting.
 
 \begin{code}
 

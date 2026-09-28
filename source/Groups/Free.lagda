@@ -1527,7 +1527,7 @@ We now show that _▶_ defined above is logically equivalent to _▷_.
 \end{code}
 
 The usual way to define the transitive closure of a relation (cf. the
-file SRTclosure) applied to the relation _▶_ would increase universe
+file Relations.SRTclosure) applied to the relation _▶_ would increase universe
 level back to that of the relation _∾_.
 
 In order to overcome this obstacle, we consider a type of redexes.
@@ -1986,7 +1986,7 @@ original quotient FA/∾, which lives in the higher universe 𝓤⁺⁺.
 \end{code}
 
 The following relies on transporting group structures along
-equivalences, which is implemented in the module Group.Type
+equivalences, which is implemented in the module Groups.Type
 (unfortunately, one cannot apply univalence for that purpose, because
 the types live in different universes and hence one can't form their
 identity type, and so this transport has to be done manually).

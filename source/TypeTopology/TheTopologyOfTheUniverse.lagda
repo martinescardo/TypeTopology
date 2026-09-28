@@ -39,7 +39,7 @@ though this is about topology in constructive mathematics.
 We show that the universe U, in Agda notation, is indiscrete, in
 the sense that every sequence of types converges to any desired
 type. Convergence is defined using ℕ∞, the generic convergent
-sequence, constructed in the module GenericConvergentSequence, but
+sequence, constructed in the module TypeTopology.GenericConvergentSequence, but
 briefly introduced below.
 
 For the sake of motivation, let's define convergence for sequences

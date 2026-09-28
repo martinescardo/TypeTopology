@@ -21,14 +21,19 @@ open import MLTT.Two-Properties
 open import Naturals.Binary hiding (_+_ ; L ; R)
 open import Notation.CanonicalMap
 open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
 open import Ordinals.InfProperty
 open import Ordinals.Injectivity
 open import Ordinals.LexicographicCompactness
 open import Ordinals.LexicographicOrder
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
+open import Ordinals.Type
 open import Ordinals.Underlying
+open import Taboos.LPO
 open import TypeTopology.CompactTypes
+open import TypeTopology.Density
+open import TypeTopology.LimitPoints
 open import TypeTopology.ConvergentSequenceHasInf
 open import TypeTopology.MicroInfTychonoff
 open import TypeTopology.SigmaDiscrete
@@ -60,7 +65,7 @@ Ordinal-indexed sums of topped ordinals are closed under compactness:
 
 \end{code}
 
-More compactness closure properties are in the module SquashedSum.
+More compactness closure properties are in the module TypeTopology.SquashedSum.
 
 The complication of the following proof in the case for addition is
 that the ordinal 𝟚ᵒ has underlying set 𝟙+𝟙 rather than 𝟚, and that
@@ -69,7 +74,7 @@ as a co-product. This saved lots of code elsewhere, but adds labour
 here (and in some helper lemmas/constructions that we added in other
 modules for this purpose). Notice that +' is the sum indexed by 𝟚,
 defined in the module MLTT.Spartan. The bulk of the work for the
-following construction is performed in the module SquashedCantor.
+following construction is performed in the module TypeTopology.SquashedCantor.
 
 \begin{code}
 
@@ -119,7 +124,7 @@ following construction is performed in the module SquashedCantor.
 
 \end{code}
 
-More Cantor-retract properties are in the module SquashedCantor.
+More Cantor-retract properties are in the module TypeTopology.SquashedCantor.
 
 \begin{code}
 
@@ -134,6 +139,16 @@ More Cantor-retract properties are in the module SquashedCantor.
 
   b : retract (ℕ × ℕ) of ℕ
   b = ≃-gives-◁ pairing
+
+∑₁-top-is-over-inr : (τ : ℕ → Ordᵀ) → Σ₁-base (top (∑₁ τ)) ＝ inr ⋆
+∑₁-top-is-over-inr τ = refl
+
+∑₁-top-is-isolated : (τ : ℕ → Ordᵀ) → is-isolated (top (∑₁ τ))
+∑₁-top-is-isolated τ = Σ₁-inr-is-isolated (λ n → ⟨ τ n ⟩) _
+
+∑¹-top-is-limit-point : (τ : ℕ → Ordᵀ) → is-limit-point (top (∑¹ τ))
+∑¹-top-is-limit-point τ = Σ¹-∞-is-limit-point
+                           (λ n → ⟨ τ n ⟩) (λ n → top (τ n)) _
 
 Σ₁-ℕ-retract : {X : ℕ → 𝓤 ̇ }
              → ((n : ℕ) → retract (X n) of ℕ)
@@ -483,6 +498,80 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) =
                                   (∑-up-is-order-reflecting υ)
 \end{code}
 
+Added August 2026. Some lemmas about Σ↑ of the module
+TypeTopology.SquashedSum that are not already available here,
+transported to families of topped ordinals, namely density and being
+an embedding, the isolatedness and limit-point lemmas, and the
+characterization of Σ↑ as an equivalence.
+
+\begin{code}
+
+∑↑-dense : (τ υ : ℕ → Ordᵀ)
+           (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+         → ((n : ℕ) → is-dense (f n))
+         → is-dense (∑↑ τ υ f)
+∑↑-dense τ υ = Σ↑-dense (λ n → ⟨ τ n ⟩) (λ n → ⟨ υ n ⟩)
+
+∑↑-embedding : (τ υ : ℕ → Ordᵀ)
+               (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+             → ((n : ℕ) → is-embedding (f n))
+             → is-embedding (∑↑ τ υ f)
+∑↑-embedding τ υ = Σ↑-embedding (λ n → ⟨ τ n ⟩) (λ n → ⟨ υ n ⟩)
+
+∑↑-preserves-isolatedness : (τ υ : ℕ → Ordᵀ)
+                            (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+                            (n : ℕ)
+                            (φ : ⟨ (τ ↗ (over , over-embedding)) (inl n) ⟩)
+                          → is-isolated (f n (φ (n , refl)))
+                          → is-isolated (∑↑ τ υ f (inl n , φ))
+∑↑-preserves-isolatedness τ υ = Σ↑-preserves-isolatedness
+                                 (λ n → ⟨ τ n ⟩)
+                                 (λ n → ⟨ υ n ⟩)
+
+∑↑-reflects-isolatedness : (τ υ : ℕ → Ordᵀ)
+                           (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+                           (n : ℕ)
+                           (φ : ⟨ (τ ↗ (over , over-embedding)) (inl n) ⟩)
+                         → is-isolated (∑↑ τ υ f (inl n , φ))
+                         → is-isolated (f n (φ (n , refl)))
+∑↑-reflects-isolatedness τ υ = Σ↑-reflects-isolatedness
+                                (λ n → ⟨ τ n ⟩)
+                                (λ n → ⟨ υ n ⟩)
+
+∑↑-reflects-weak-isolatedness : (τ υ : ℕ → Ordᵀ)
+                                (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+                                (n : ℕ)
+                                (φ : ⟨ (τ ↗ (over , over-embedding)) (inl n) ⟩)
+                              → is-weakly-isolated (∑↑ τ υ f (inl n , φ))
+                              → is-weakly-isolated (f n (φ (n , refl)))
+∑↑-reflects-weak-isolatedness τ υ = Σ↑-reflects-weak-isolatedness
+                                     (λ n → ⟨ τ n ⟩)
+                                     (λ n → ⟨ υ n ⟩)
+
+∑↑-limit-point : (τ υ : ℕ → Ordᵀ)
+                 (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+               → ((n : ℕ) → is-compact∙ ⟨ υ n ⟩)
+               → (φ : ⟨ (τ ↗ (over , over-embedding)) (inr ⋆) ⟩)
+               → is-limit-point (∑↑ τ υ f (inr ⋆ , φ))
+∑↑-limit-point τ υ = Σ↑-limit-point (λ n → ⟨ τ n ⟩) (λ n → ⟨ υ n ⟩)
+
+∑↑-limit-point⁺ : (τ υ : ℕ → Ordᵀ)
+                  (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+                → ((n : ℕ) → is-compact∙ ⟨ υ n ⟩)
+                → (φ : ⟨ (τ ↗ (over , over-embedding)) (inr ⋆) ⟩)
+                → is-limit-point⁺ (∑↑ τ υ f (inr ⋆ , φ))
+∑↑-limit-point⁺ τ υ = Σ↑-limit-point⁺ (λ n → ⟨ τ n ⟩) (λ n → ⟨ υ n ⟩)
+
+∑↑-is-equiv : is-equiv ι𝟙
+            → (τ υ : ℕ → Ordᵀ)
+              (f : (n : ℕ) → ⟨ τ n ⟩ → ⟨ υ n ⟩)
+            → ((n : ℕ) → is-equiv (f n))
+            → is-equiv (∑↑ τ υ f)
+∑↑-is-equiv j τ υ = Σ↑-is-equiv j (λ n → ⟨ τ n ⟩) (λ n → ⟨ υ n ⟩)
+
+\end{code}
+
+
 28 July 2018. Inf property.
 
 \begin{code}
@@ -603,12 +692,12 @@ get rid of this at some point, here and in the other files.
                           (not-≺-gives-≼ fe₀ u v)))
 
 
-∑₁-has-infs-of-complemented-subsets
+∑¹-has-infs-of-complemented-subsets
  : propext 𝓤₀
  → (τ : ℕ → Ordᵀ)
  → ((n : ℕ) → has-infs-of-complemented-subsets (τ n))
  → has-infs-of-complemented-subsets (∑¹ τ)
-∑₁-has-infs-of-complemented-subsets pe τ ε =
+∑¹-has-infs-of-complemented-subsets pe τ ε =
  ∑-has-infs-of-complemented-subsets pe
   ℕ∞ᵒ
   (λ (x : ℕ∞) → (τ ↗ embedding-ℕ-to-ℕ∞ fe₀) x)
@@ -621,5 +710,193 @@ get rid of this at some point, here and in the other files.
          (ℕ-to-ℕ∞-is-embedding fe₀ x)
          (λ {w} x y → x ≺⟨ τ (pr₁ w) ⟩ y)
          (λ w → ε (pr₁ w))
+
+\end{code}
+
+Added August 2026.
+
+\begin{code}
+
+∑-≃ₒ : (τ : Ordᵀ) (υ υ' : ⟨ τ ⟩ → Ordᵀ)
+     → ((x : ⟨ τ ⟩) → [ υ x ] ≃ₒ [ υ' x ])
+     → [ ∑ τ υ ] ≃ₒ [ ∑ τ υ' ]
+∑-≃ₒ τ υ υ' g = f ,
+                order-preserving-reflecting-equivs-are-order-equivs
+                 [ ∑ τ υ ] [ ∑ τ υ' ] f
+                 f-is-equiv
+                 f-is-order-preserving
+                 f-is-order-reflecting
+ where
+  h : (x : ⟨ τ ⟩) → ⟨ υ x ⟩ → ⟨ υ' x ⟩
+  h x = ≃ₒ-to-fun [ υ x ] [ υ' x ] (g x)
+
+  e : (x : ⟨ τ ⟩) → is-order-equiv [ υ x ] [ υ' x ] (h x)
+  e x = ≃ₒ-to-fun-is-order-equiv [ υ x ] [ υ' x ] (g x)
+
+  f : ⟨ ∑ τ υ ⟩ → ⟨ ∑ τ υ' ⟩
+  f = pair-fun id h
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = pair-fun-is-equiv
+                id
+                h
+                (id-is-equiv ⟨ τ ⟩)
+                (λ x → order-equivs-are-equivs [ υ x ] [ υ' x ] (e x))
+
+  f-is-order-preserving : is-order-preserving (∑ τ υ) (∑ τ υ') f
+  f-is-order-preserving =
+   pair-fun-is-order-preserving τ τ υ υ' id h
+    (λ x y l → l)
+    (λ x → order-equivs-are-order-preserving [ υ x ] [ υ' x ] (e x))
+
+  f-is-order-reflecting : is-order-reflecting (∑ τ υ) (∑ τ υ') f
+  f-is-order-reflecting =
+   pair-fun-is-order-reflecting τ τ υ υ' id h
+    (λ x y l → l)
+    id-is-embedding
+    (λ x → order-equivs-are-order-reflecting [ υ x ] [ υ' x ] (h x) (e x))
+
+\end{code}
+
+Added August 2026. The extension of the constant family at the
+one-point ordinal is again the one-point ordinal, and a sum whose
+summands are all one-point ordinals is the index type. Together these
+identify the two extended sums of the constant family at 𝟙ᵒ.
+
+\begin{code}
+
+↗-of-𝟙ᵒ : {I J : 𝓤₀ ̇ } (𝓮 : I ↪ J) (j : J)
+        → [ ((λ _ → 𝟙ᵒ) ↗ 𝓮) j ] ≃ₒ 𝟙ₒ {𝓤₀}
+↗-of-𝟙ᵒ {I} {J} 𝓮 j =
+ f ,
+ (λ u v (w , l) → 𝟘-elim l) ,
+ f-is-equiv ,
+ (λ x y l → 𝟘-elim l)
+ where
+  f : ⟨ ((λ _ → 𝟙ᵒ) ↗ 𝓮) j ⟩ → 𝟙
+  f _ = ⋆
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = qinvs-are-equivs f
+                ((λ _ _ → ⋆) ,
+                 (λ u → dfunext (fe 𝓤₀ 𝓤₀) (λ w → 𝟙-is-prop ⋆ (u w))) ,
+                 (λ ⋆ → refl))
+
+∑-of-𝟙ᵒ : (τ : Ordᵀ) (υ : ⟨ τ ⟩ → Ordᵀ)
+        → ((x : ⟨ τ ⟩) → [ υ x ] ≃ₒ 𝟙ₒ {𝓤₀})
+        → [ ∑ τ υ ] ≃ₒ [ τ ]
+∑-of-𝟙ᵒ τ υ e =
+ f ,
+ order-preserving-reflecting-equivs-are-order-equivs
+  [ ∑ τ υ ] [ τ ] f
+  f-is-equiv f-is-order-preserving f-is-order-reflecting
+ where
+  f : ⟨ ∑ τ υ ⟩ → ⟨ τ ⟩
+  f = pr₁
+
+  s : (x : ⟨ τ ⟩) → is-singleton ⟨ υ x ⟩
+  s x = equiv-to-singleton
+         (≃ₒ-to-fun [ υ x ] (𝟙ₒ {𝓤₀}) (e x) ,
+          ≃ₒ-to-fun-is-equiv [ υ x ] (𝟙ₒ {𝓤₀}) (e x))
+         𝟙-is-singleton
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = pr₁-is-equiv ⟨ τ ⟩ (λ x → ⟨ υ x ⟩) s
+
+  f-is-order-preserving : is-order-preserving (∑ τ υ) τ f
+  f-is-order-preserving (x , y) (x' , y') (inl l) = l
+  f-is-order-preserving (x , y) (x , y') (inr (refl , m)) =
+   𝟘-elim (order-equivs-are-order-preserving
+            [ υ x ] (𝟙ₒ {𝓤₀})
+            (≃ₒ-to-fun-is-order-equiv [ υ x ] (𝟙ₒ {𝓤₀}) (e x))
+            y y' m)
+
+  f-is-order-reflecting : is-order-reflecting (∑ τ υ) τ f
+  f-is-order-reflecting (x , y) (x' , y') l = inl l
+
+∑¹-of-𝟙ᵒ : [ ∑¹ (λ _ → 𝟙ᵒ) ] ≃ₒ [ ℕ∞ᵒ ]
+∑¹-of-𝟙ᵒ = ∑-of-𝟙ᵒ
+            ℕ∞ᵒ
+            ((λ _ → 𝟙ᵒ) ↗ embedding-ℕ-to-ℕ∞ fe₀)
+            (↗-of-𝟙ᵒ (embedding-ℕ-to-ℕ∞ fe₀))
+
+∑₁-of-𝟙ᵒ : [ ∑₁ (λ _ → 𝟙ᵒ) ] ≃ₒ [ succₒ ω ]
+∑₁-of-𝟙ᵒ = ∑-of-𝟙ᵒ
+            (succₒ ω)
+            ((λ _ → 𝟙ᵒ) ↗ (over , over-embedding))
+            (↗-of-𝟙ᵒ (over , over-embedding))
+
+\end{code}
+
+Added 2nd September 2026.
+
+The least element property for complemented subsets is invariant under
+order isomorphism, and for the ordinal ω + 1 it amounts to LPO.
+
+\begin{code}
+
+≃ₒ-gives-has-least-roots : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                         → α ≃ₒ β
+                         → has-least-roots (underlying-weak-order α)
+                         → has-least-roots (underlying-weak-order β)
+≃ₒ-gives-has-least-roots α β (f , _ , e , iop) h q ν = γ
+ where
+  g : ⟨ β ⟩ → ⟨ α ⟩
+  g = inverse f e
+
+  p : ⟨ α ⟩ → 𝟚
+  p = q ∘ f
+
+  p-root : (y : ⟨ β ⟩) → q y ＝ ₀ → p (g y) ＝ ₀
+  p-root y d = ap q (inverses-are-sections f e y) ∙ d
+
+  ν' : ¬¬ (Σ x ꞉ ⟨ α ⟩ , p x ＝ ₀)
+  ν' u = ν (λ (y , d) → u (g y , p-root y d))
+
+  σ : Σ x₀ ꞉ ⟨ α ⟩ , is-least-root (underlying-weak-order α) p x₀
+  σ = h p ν'
+
+  x₀ : ⟨ α ⟩
+  x₀ = pr₁ σ
+
+  y₀-is-root : q (f x₀) ＝ ₀
+  y₀-is-root = pr₁ (pr₂ σ)
+
+  y₀-is-roots-lower-bound : (y : ⟨ β ⟩) → q y ＝ ₀ → f x₀ ≾⟨ β ⟩ y
+  y₀-is-roots-lower-bound y d l = pr₂ (pr₂ σ) (g y) (p-root y d) I
+   where
+    I : g y ≺⟨ α ⟩ x₀
+    I = transport
+         (λ - → g y ≺⟨ α ⟩ -)
+         (inverses-are-retractions f e x₀)
+         (iop y (f x₀) l)
+
+  γ : Σ y₀ ꞉ ⟨ β ⟩ , is-least-root (underlying-weak-order β) q y₀
+  γ = f x₀ , y₀-is-root , y₀-is-roots-lower-bound
+
+succₒ-ω-least-roots-gives-LPO
+ : has-least-roots-of-complemented-subsets (succₒ ω) → LPO
+succₒ-ω-least-roots-gives-LPO h = compact-ℕ-gives-LPO fe₀ c
+ where
+  c : is-compact ℕ
+  c α = γ (h p ν)
+   where
+    p : ⟨ succₒ ω ⟩ → 𝟚
+    p (inl n) = α n
+    p (inr ⋆) = ₀
+
+    ν : ¬¬ (Σ x ꞉ ⟨ succₒ ω ⟩ , p x ＝ ₀)
+    ν u = u (inr ⋆ , refl)
+
+    γ : (Σ x₀ ꞉ ⟨ succₒ ω ⟩ , is-least-root
+                               (underlying-weak-order (succₒ ω))
+                               p
+                               x₀)
+      → (Σ n ꞉ ℕ , α n ＝ ₀) + (Π n ꞉ ℕ , α n ＝ ₁)
+    γ (inl n , e , _)  = inl (n , e)
+    γ (inr ⋆ , _ , lb) = inr (λ n → different-from-₀-equal-₁ (δ n))
+     where
+      δ : (n : ℕ) → α n ≠ ₀
+      δ n e = lb (inl n) e ⋆
 
 \end{code}

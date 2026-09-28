@@ -77,17 +77,10 @@ TODO. It would be good to formalize this here in TypeTopology.
 
 \end{code}
 
-We import the following unused module, deliberately without opening
-it, for browsing purposes, where the original ideas presented here
-were obtained in a tortuous way, with more information than necessary
-to obtain the results, which may nevertheless be interesting for other
-purposes.
-
-\begin{code}
-
-import Lifting.AnAlgebraWhichIsNotAlwaysFree-blackboard
-
-\end{code}
+The ideas presented here were originally obtained in a tortuous way,
+with more information than necessary to obtain the results, in the
+module Lifting.AnAlgebraWhichIsNotAlwaysFree-blackboard, which may
+nevertheless be interesting for other purposes.
 
 We now import what is necessary to give the types for the module
 parameters.
@@ -433,13 +426,8 @@ more. For example, a product of algebras is an algebra. Is a product
 of free algebras also free? As a second example, do the algebras form
 an exponential ideal: Is the algebra X → A free if the algebra A is?
 
-These questions are answered positively in the following module:
-
-\begin{code}
-
-import Lifting.ProductsOfFreeAlgebrasAreFree
-
-\end{code}
+These questions are answered positively in
+Lifting.ProductsOfFreeAlgebrasAreFree.
 
 So, at present, we have only *one* example of an algebra which is not
 free in all toposes.

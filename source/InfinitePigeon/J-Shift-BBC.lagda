@@ -6,8 +6,8 @@ Martin Escardo and Paulo Oliva 2011
 
 \end{code}
 
-We use the Berardi-Bezem-Coquand functional to realize the J-Shift
-(and hence the K-Shift in another module).
+We use the Berardi-Bezem-Coquand functional to realize the J-Shift (and hence
+the K-Shift in InfinitePigeon.K-Shift-BBC).
 
 \begin{code}
 

@@ -97,7 +97,6 @@ record subsingleton-truncations-exist : 𝓤ω where
   ∣_∣                  : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
   ∥∥-recursion         : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
                        → is-subsingleton P → (X → P) → ∥ X ∥ → P
- infix 0 ∥_∥
 
 module basic-truncation-development
         (pt  : subsingleton-truncations-exist)

@@ -121,6 +121,25 @@ module subset-complement (fe : Fun-Ext) where
  ∖-elim₁ : {X : 𝓤 ̇ } (A : 𝓟 {𝓥} X) (B : 𝓟 {𝓦} X) {x : X} → x ∈ A ∖ B → x ∉ B
  ∖-elim₁ A B = pr₂
 
+𝓟-inverse-image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                → (X → Y)
+                → 𝓟 {𝓦} Y → 𝓟 {𝓦} X
+𝓟-inverse-image {𝓤} {𝓥} {𝓦} {X} {Y} f B x = f x ∈ B , ∈-is-prop B (f x)
+
+module 𝓟-image (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+ open import UF.ImageAndSurjection pt
+
+ image-as-subset : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                 → 𝓟 {𝓤 ⊔ 𝓥} Y
+ image-as-subset f y = (y ∈image f , being-in-the-image-is-prop y f)
+
+ 𝓟-image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+         → (X → Y)
+         → 𝓟 {𝓦} X → 𝓟 {𝓤 ⊔ 𝓥 ⊔ 𝓦} Y
+ 𝓟-image {𝓤} {𝓥} {𝓦} {X} {Y} f A y = (∃ x ꞉ X , x ∈ A × (f x ＝ y)) , ∃-is-prop
+
 module inhabited-subsets (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
@@ -260,6 +279,42 @@ module _
 
  𝕋-to-membership : (A : 𝓟 {𝓥} X) → (t : 𝕋 A) → 𝕋-to-carrier A t ∈ A
  𝕋-to-membership A = pr₂
+
+\end{code}
+
+Added by Tom de Jong on 25 September 2026.
+
+\begin{code}
+
+ module _ (pt : propositional-truncations-exist) where
+  open 𝓟-image pt
+  open PropositionalTruncation pt
+  open import UF.ImageAndSurjection pt
+
+  𝕋-to-carrier-section-of-image-as-subset'
+   : propext (𝓤 ⊔ 𝓥)
+   → funext 𝓤 ((𝓤 ⊔ 𝓥) ⁺)
+   → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+   → (A : 𝓟 {𝓤 ⊔ 𝓥} X) → image-as-subset (𝕋-to-carrier A) ＝ A
+  𝕋-to-carrier-section-of-image-as-subset' pe fe fe' A =
+   subset-extensionality'' pe fe fe' I II
+    where
+     I : image-as-subset (𝕋-to-carrier A) ⊆ A
+     I x p = ∥∥-rec (∈-is-prop A x) I' p
+      where
+       I' : (Σ y ꞉ 𝕋 A , 𝕋-to-carrier A y ＝ x) → x ∈ A
+       I' ((y , a) , refl) = a
+     II : A ⊆ image-as-subset (𝕋-to-carrier A)
+     II x a = pr₂ (corestriction (𝕋-to-carrier A) (x , a))
+
+  𝕋-to-carrier-section-of-image-as-subset
+   : Univalence
+   → (A : 𝓟 {𝓤 ⊔ 𝓥} X) → image-as-subset (𝕋-to-carrier A) ＝ A
+  𝕋-to-carrier-section-of-image-as-subset {𝓥} ua =
+   𝕋-to-carrier-section-of-image-as-subset' {𝓥}
+    (univalence-gives-propext (ua _))
+    (Univalence-gives-FunExt ua _ _)
+    (Univalence-gives-FunExt ua _ _)
 
 \end{code}
 

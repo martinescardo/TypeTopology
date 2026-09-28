@@ -70,7 +70,7 @@ open import Games.TypeTrees {𝓤}
 \end{code}
 
 We use quantifiers as in Section 1 of reference [1], defined in
-another module.
+MonadOnTypes.K.
 
 In the same way as the type of moves at a given stage of the game
 depends on the previously played moves, so do the quantifiers and
@@ -167,7 +167,7 @@ strategic-path = path-sequence 𝕀𝕕
 
 remark-strategic-path : {X : 𝓤 ̇ } {Xf : X → 𝑻} {x : X}
                         {σf : (x : X) → Strategy (Xf x)}
-                      → (strategic-path {[]}     ⟨⟩        ＝ ⟨⟩)
+                      → (strategic-path {[]} ⟨⟩ ＝ ⟨⟩)
                       × (strategic-path {X ∷ Xf} (x :: σf)
                          ＝ x :: strategic-path (σf x))
 remark-strategic-path = refl , refl
@@ -230,7 +230,8 @@ In the above definition:
 
    So the first part
 
-     subpred q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → subpred q x (strategic-path (σf x)))
+     subpred q x₀ (strategic-path (σf x₀)) ＝
+      ϕ (λ x → subpred q x (strategic-path (σf x)))
 
    of the definition is as in the comment above, but with a partial
    play of length k=0, and the second (inductive) part, says that the
@@ -295,7 +296,7 @@ optimality-theorem fe (game Xt ϕt q) = sgpe-lemma fe Xt q ϕt
 We now show how to use selection functions to compute a sgpe strategy.
 
 We use selection functions, as in Section 2 of reference [1], defined
-in another module.
+in MonadOnTypes.J.
 
 𝓙 assigns types of selection functions to the nodes.
 
@@ -347,11 +348,11 @@ selection-strategy {X ∷ Xf} εt@(ε :: εf) q = x₀ :: σf
 \end{code}
 
 We convert a selection function into a quantifier as in Definition 10
-of [1], using the function overline, defined in another module.
+of [1], using the function overline, defined in MonadOnTypes.JK.
 
 The work with the definition of a selection function being a selection
-function for a quantifier as in Section 1 on [1], defined in another
-module.
+function for a quantifier as in Section 1 on [1], defined in
+MonadOnTypes.JK.
 
 We generalize it to selection-function and quantifier trees in the
 obvious way, by induction:

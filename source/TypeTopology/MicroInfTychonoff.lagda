@@ -1,8 +1,8 @@
 Martin Escardo 28 July 2018
 
-Adapted from the module TypeTopology.MicroTychnoff to take order into
-account. The file MicrosTychonoff has many comments, but this one
-doesn't.
+Adapted from the module TypeTopology.MicroTychonoff to take order into
+account. The file TypeTopology.MicroTychonoff has many comments, but
+this one doesn't.
 
 \begin{code}
 

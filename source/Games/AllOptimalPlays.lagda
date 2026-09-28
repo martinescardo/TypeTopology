@@ -70,64 +70,6 @@ being-optimal-move-is-decidable q ϕ ϕf x = R-is-discrete _ _
 
 \end{code}
 
-We now show that the strategic path of a strategy in subgame perfect
-equilibrium is an optimal play. We start with a lemma that is
-interesting on its own right.
-
-\begin{code}
-
-optimal-play-gives-optimal-outcome
- : {Xt : 𝑻}
-   (ϕt : 𝓚 Xt)
-   (q : Path Xt → R)
-   (xs : Path Xt)
- → is-optimal-play {Xt} ϕt q xs
- → q xs ＝ optimal-outcome (game Xt q ϕt)
-optimal-play-gives-optimal-outcome {[]}     ⟨⟩        q ⟨⟩        ⟨⟩ = refl
-optimal-play-gives-optimal-outcome {X ∷ Xf} (ϕ :: ϕf) q (x :: xs) (o :: os)
- = subpred q x xs                                     ＝⟨ IH ⟩
-   optimal-outcome (game (Xf x) (subpred q x) (ϕf x)) ＝⟨ o ⁻¹ ⟩
-   optimal-outcome (game (X ∷ Xf) q (ϕ :: ϕf))        ∎
- where
-  IH : subpred q x xs ＝ optimal-outcome (game (Xf x) (subpred q x) (ϕf x))
-  IH = optimal-play-gives-optimal-outcome {Xf x} (ϕf x) (subpred q x) xs os
-
-strategic-path-is-optimal-play
- : {Xt : 𝑻}
-   (ϕt : 𝓚 Xt)
-   (q : Path Xt → R)
-   (σ : Strategy Xt)
- → is-in-sgpe ϕt q σ
- → is-optimal-play ϕt q (strategic-path σ)
-strategic-path-is-optimal-play {[]} ⟨⟩ q ⟨⟩ ⟨⟩ = ⋆
-strategic-path-is-optimal-play {X ∷ Xf} ϕt@(ϕ :: ϕf) q σ@(x₀ :: σf) ot@(o :: os)
- = I , IH x₀
- where
-  IH : (x : X) → is-optimal-play (ϕf x) (subpred q x) (strategic-path (σf x))
-  IH x = strategic-path-is-optimal-play {Xf x} (ϕf x) (subpred q x) (σf x) (os x)
-
-  I : is-optimal-move q ϕ ϕf x₀
-  I = optimal-outcome (game (X ∷ Xf) q (ϕ :: ϕf))                  ＝⟨refl⟩
-      sequenceᴷ {X ∷ Xf} (ϕ :: ϕf) q                               ＝⟨refl⟩
-      ϕ (λ x → sequenceᴷ (ϕf x) (subpred q x))                     ＝⟨refl⟩
-      ϕ (λ x → optimal-outcome (game (Xf x) (subpred q x) (ϕf x))) ＝⟨ I₁ ⟩
-      ϕ (λ x → subpred q x (strategic-path (σf x)))                ＝⟨ o ⁻¹ ⟩
-      q (strategic-path σ)                                         ＝⟨refl⟩
-      subpred q x₀ (strategic-path (σf x₀))                        ＝⟨ I₂ ⟩
-      optimal-outcome (game (Xf x₀) (subpred q x₀) (ϕf x₀))        ∎
-       where
-        I₀ : (x : X)
-           → optimal-outcome (game (Xf x) (subpred q x) (ϕf x))
-           ＝ subpred q x (strategic-path (σf x))
-        I₀ x = (optimal-play-gives-optimal-outcome
-                 (ϕf x) (subpred q x) (strategic-path (σf x)) (IH x))⁻¹
-
-        I₁ = ap ϕ (dfunext fe I₀)
-        I₂ = optimal-play-gives-optimal-outcome
-              (ϕf x₀) (subpred q x₀) (strategic-path (σf x₀)) (IH x₀)
-
-\end{code}
-
 We now proceed to compute the non-empty list of all optimal plays of a
 game, under suitable assumptions on the game.
 

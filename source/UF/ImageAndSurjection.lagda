@@ -41,6 +41,9 @@ being-in-the-image-is-prop y f = ∃-is-prop
 image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 image f = Σ y ꞉ codomain f , y ∈image f
 
+complement-of-image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+complement-of-image f = Σ y ꞉ codomain f , ¬(y ∈image f)
+
 restriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
             → image f → Y
 restriction f (y , _) = y

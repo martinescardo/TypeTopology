@@ -35,7 +35,7 @@ Recall that a type is discrete if it has decidable equality.
 \begin{code}
 
 Fin-is-discrete : {n : ℕ} → is-discrete (Fin n)
-Fin-is-discrete {0    } = 𝟘-is-discrete
+Fin-is-discrete {0}      = 𝟘-is-discrete
 Fin-is-discrete {succ n} = +-is-discrete (Fin-is-discrete {n}) 𝟙-is-discrete
 
 Fin-is-set : {n : ℕ} → is-set (Fin n)
@@ -73,7 +73,6 @@ If the type X i is compact for every i : Fin n, then the product type
 finite-product-compact : (n : ℕ) (X : Fin n → 𝓤 ̇ )
                        → ((i : Fin n) → is-Compact (X i) {𝓤})
                        → is-Compact (vec n X) {𝓤}
-
 finite-product-compact zero     X c = 𝟙-is-Compact
 finite-product-compact (succ n) X c = ×-is-Compact
                                        (c 𝟎)
@@ -83,12 +82,35 @@ finitely-indexed-product-compact : funext 𝓤₀ 𝓤
                                  → (n : ℕ) (X : Fin n → 𝓤 ̇ )
                                  → ((i : Fin n) → is-Compact (X i))
                                  → is-Compact ((i : Fin n) → X i)
-
 finitely-indexed-product-compact fe n X c = Compact-closed-under-≃
                                             (vec-≃ fe n)
                                             (finite-product-compact n X c)
 
 \end{code}
+
+Added 4th September 2026. The same holds for compact pointedness.
+
+\begin{code}
+
+finite-product-compact∙ : (n : ℕ) (X : Fin n → 𝓤 ̇ )
+                        → ((i : Fin n) → is-compact∙ (X i))
+                        → is-compact∙ (vec n X)
+finite-product-compact∙ zero     X c = 𝟙-is-compact∙
+finite-product-compact∙ (succ n) X c =
+ binary-Tychonoff (c 𝟎) (finite-product-compact∙ n (X ∘ suc) (c ∘ suc))
+
+finitely-indexed-product-compact∙ : funext 𝓤₀ 𝓤
+                                  → (n : ℕ) (X : Fin n → 𝓤 ̇ )
+                                  → ((i : Fin n) → is-compact∙ (X i))
+                                  → is-compact∙ ((i : Fin n) → X i)
+finitely-indexed-product-compact∙ fe n X c =
+ compact∙-types-are-closed-under-equiv
+  (vec-≃ fe n)
+  (finite-product-compact∙ n X c)
+
+\end{code}
+
+End of addition.
 
 Finite types are compact, or exhaustively searchable.
 
@@ -144,14 +166,14 @@ Finite types are discrete and hence sets:
    γ : P
    γ = ∥∥-rec i (λ 𝕗 → ⌜ 𝕗 ⌝⁻¹ 𝟎) s
 
- summands-of-finite-sum-always-finite-gives-EM :
-
-   ((𝓤 𝓥 : Universe) (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+ summands-of-finite-sum-always-finite-gives-EM
+  : ((𝓤 𝓥 : Universe) (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
           → is-finite (Σ A)
           → (x : X) → is-finite (A x))
 
   → (𝓦 : Universe) → funext 𝓦 𝓦 → propext 𝓦 → EM 𝓦
- summands-of-finite-sum-always-finite-gives-EM ϕ 𝓦 fe pe P i = γ
+ summands-of-finite-sum-always-finite-gives-EM ϕ 𝓦 fe pe P i
+  = γ
   where
    X : 𝓦 ⁺ ̇
    X = Ω 𝓦

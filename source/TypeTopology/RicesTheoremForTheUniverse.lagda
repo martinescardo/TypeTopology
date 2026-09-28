@@ -55,7 +55,7 @@ where U is the universe of types and where 𝟚 is a type with two
 distinct elements ₀ and ₁, and with decidable equality.
 
 We derive this claim as a corollary or more general topological
-constructions developed in the module TheTopologyOfTheUniverse,
+constructions developed in the module TypeTopology.TheTopologyOfTheUniverse,
 which is the interesting and non-trivial technical aspect of this
 work. We emphasize that we don't postulate any continuity axiom in
 that module (or in fact any axiom other than extensionality).
@@ -117,10 +117,10 @@ Rice's-Theorem-for-U {𝓤} P e X Y r s = basic-discontinuity-taboo p (p-lemma ,
 Notice that although the proof uses topological techniques, the
 formulation of the theorem doesn't mention topology.
 
-One can get more milleage exploiting the fact that ℕ∞ is compact, in
-the sense that it satisfies Bishop's principle of omniscience, as
-proved in the module GenericConvergentSequence. As a simple example,
-one can conclude LPO rather than WLPO.
+One can get more milleage exploiting the fact that ℕ∞ is compact, in the sense
+that it satisfies Bishop's principle of omniscience, as proved in the module
+TypeTopology.GenericConvergentSequence. As a simple example, one can conclude
+LPO rather than WLPO.
 
 The type-inhabitedness predicate is clearly extensional. By the
 above theorem, this means that there is no algorithm within type

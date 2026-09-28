@@ -80,9 +80,9 @@ module _
 
 \end{code}
 
-We now use the above resizing to construct a quotient that strictly lives in the
-universe 𝓤 ⊔ 𝓥, yielding set quotients as defined in
-Quotient.Quotient.lagda.
+We now use the above resizing to construct a quotient that strictly
+lives in the universe 𝓤 ⊔ 𝓥, yielding set quotients as defined in
+Quotient.Type.
 
 \begin{code}
 

@@ -11,7 +11,7 @@ here we split the proof that naive function extensionality into two parts:
 2. If naive-function extensionality holds, then the antecedent of the
    above holds.
 
-Point 2. is already proved in UF.Equiv-Funext.lagda
+Point 2. is already proved in UF.Equiv-FunExt.lagda
 
 \begin{code}
 

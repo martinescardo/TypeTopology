@@ -1,8 +1,8 @@
 Martin Escardo and Paulo Oliva, April 2024
 
-The type of lists without repetitions over a discrete type forms a
-discrete graphic monoid. In another module, we prove that it gives the
-free discrete graphic monoid.
+The type of lists without repetitions over a discrete type forms a discrete
+graphic monoid. In DiscreteGraphicMonoids.Free, we prove that it gives the free
+discrete graphic monoid.
 
 \begin{code}
 

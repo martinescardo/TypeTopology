@@ -2,8 +2,8 @@ Martin Escardo, January 2018
 
 The simple types are the smallest collection of types containing ℕ and
 closed under exponentials (function types).  All simple types are
-totally separated and retracts of 𝟚. This is used to show that no
-simple type is 𝟚-compact, unless WLPO holds. If 𝟚 is included as a
+totally separated and have ℕ as a retract. This is used to show that
+no simple type is 𝟚-compact, unless WLPO holds. If 𝟚 is included as a
 base simple type, then for (X → Y) to be compact it is necessary that
 X is discrete and Y is compact. (It is consistent that the converse
 holds (Tychonoff Theorem).)

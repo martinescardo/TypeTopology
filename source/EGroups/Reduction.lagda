@@ -8,7 +8,7 @@ Groups.Free. Two adjacent letters cancel when the second is the
 inverse of the first up to the setoid relation _≈_, rather than only
 when they are equal. As a consequence the reducts of a word agree only
 up to the letter-wise relation _≈[FA]_, so that confluence becomes
-confluence modulo _≈_ in the sense of the module ChurchRosserModulo.
+confluence modulo _≈_ in the sense of the module EGroups.ChurchRosserModulo.
 
 We define the reduction relation, prove local confluence and hence,
 via that module, the Church-Rosser property, and then adapt the
@@ -350,7 +350,7 @@ Theorem[Church-Rosser≈] s t₀ t₁ (u₀ , v₀ , a₀ , b₀ , p₀ , q₀ ,
 
 \end{code}
 
-Instantiating the module ChurchRosserModulo with the reduction and the
+Instantiating the module EGroups.ChurchRosserModulo with the reduction and the
 two hypotheses just proved gives the setoid Church-Rosser property
 and its consequence for generators.
 

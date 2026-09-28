@@ -33,14 +33,8 @@ import InjectiveTypes.InhabitedTypesTaboo
 \end{code}
 
 Injectivity plays a major role in the construction of "searchable" or
-"compact" types:
-
-\begin{code}
-
-import TypeTopology.index
-import Ordinals.index
-
-\end{code}
+"compact" types and ordinals. See the files imported from
+TypeTopology.index and Ordinals.index.
 
 The following has an application to (in)decomposability.  Injective
 types have non-trivial decidable properties if and only if weak
@@ -53,10 +47,12 @@ lifting monad (also known as the partial-map classifier monad).
 \begin{code}
 
 import InjectiveTypes.OverSmallMaps
-import Taboos.Decomposability
 import InjectiveTypes.CharacterizationViaLifting
 
 \end{code}
+
+See also the file Taboos.Decomposability.
+
 
 Since the above publication, a number of new examples of injective
 types have been found, including the following:
@@ -75,11 +71,6 @@ equivalent to that of ordinals.)
 
 \begin{code}
 
-import Ordinals.Injectivity
-import Ordinals.TotallySeparated
-import Iterative.Multisets-Addendum
-import Iterative.Sets-Addendum
-import Iterative.Ordinals
 import InjectiveTypes.NonEmptyTypes
 import InjectiveTypes.Sigma
 import InjectiveTypes.MathematicalStructures
@@ -88,6 +79,10 @@ import InjectiveTypes.PointedDcpos
 import InjectiveTypes.Subtypes
 
 \end{code}
+
+See also the files Ordinals.Injectivity, Ordinals.TotallySeparated,
+Iterative.Multisets-Addendum, Iterative.Sets-Addendum.
+Iterative.Ordinals
 
 With Tom de Jong we prove more things about resizing, and in
 particular we show that previous results about injectivity are tight

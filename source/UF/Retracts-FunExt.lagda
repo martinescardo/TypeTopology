@@ -31,17 +31,17 @@ retract-variance
   γ : retract (X → Y') of (X' → Y)
   γ = (r , s , rs)
 
-retract-contravariance : funext 𝓤 𝓦
-                       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Y' : 𝓦 ̇ }
-                       → retract Y' of Y
-                       → retract (X → Y') of (X → Y)
-retract-contravariance fe = retract-variance fe identity-retraction
+retract-covariance : funext 𝓤 𝓦
+                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Y' : 𝓦 ̇ }
+                   → retract Y' of Y
+                   → retract (X → Y') of (X → Y)
+retract-covariance fe = retract-variance fe identity-retraction
 
-retract-covariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {X' : 𝓦 ̇ }
-                   → funext 𝓤 𝓥
-                   → retract X of X'
-                   → retract (X → Y) of (X' → Y)
-retract-covariance fe rx = retract-variance fe rx identity-retraction
+retract-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {X' : 𝓦 ̇ }
+                       → funext 𝓤 𝓥
+                       → retract X of X'
+                       → retract (X → Y) of (X' → Y)
+retract-contravariance fe rx = retract-variance fe rx identity-retraction
 
 codomain-is-retract-of-function-space-with-pointed-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                           → X
