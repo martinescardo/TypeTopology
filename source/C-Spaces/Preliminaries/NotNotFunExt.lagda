@@ -9,13 +9,13 @@ open import UF.FunExt using (DN-funext)
 
 module C-Spaces.Preliminaries.NotNotFunExt (dnfe : ¬¬ (DN-funext 𝓤₀ 𝓤₀)) where
 
-fe : {X : Set} {Y : X → Set}
+fe : {X : Type} {Y : X → Set}
    → {f g : (x : X) → Y x}
    → f ∼ g → ¬¬ (f ＝ g)
 fe e u = dnfe (λ z → u (z e))
 
 
-fe² : {X : Set}
+fe² : {X : Type}
       {Y : X → Set}
       {Z : (x : X) → (y : Y x) → Set} →
       {f g : (x : X) → (y : Y x) → Z x y}
@@ -29,11 +29,11 @@ fe² {X} {Y} {Z} {f} {g} exy = goal
   Exy (x , y) = exy x y
   E : ¬¬ (F ＝ G)
   E = fe Exy
-  goal : ¬¬ (f ＝ g) 
+  goal : ¬¬ (f ＝ g)
   goal = ¬¬-functor (ap (λ φ x y → φ(x , y))) E
 
 
-fe³ : {X : Set}
+fe³ : {X : Type}
       {Y : X → Set}
       {Z : (x : X) → Y x → Set}
       {W : (x : X) → (y : Y x) → Z x y → Set}
@@ -52,7 +52,7 @@ fe³ {X} {Y} {Z} {W} {f} {g} exyz = goal
   goal = ¬¬-functor (ap (λ φ x y z → φ(x , y , z))) E
 
 
-fe⁴ : {X : Set}
+fe⁴ : {X : Type}
       {Y : X → Set}
       {Z : (x : X) → Y x → Set}
       {W : (x : X) → (y : Y x) → Z x y → Set}
@@ -61,7 +61,7 @@ fe⁴ : {X : Set}
     → (∀ x y z w → f x y z w ＝ g x y z w) → ¬¬ (f ＝ g)
 fe⁴ {X} {Y} {Z} {W} {U} {f} {g} ex = goal
  where
-  Ω : Set
+  Ω : Type
   Ω = Σ \(x : X) → Σ \(y : Y x) → Σ \(z : Z x y) → W x y z
   F G : (ω : Ω) → U (pr₁ ω) (pr₁(pr₂ ω)) (pr₁(pr₂(pr₂ ω))) (pr₂(pr₂(pr₂ ω)))
   F (x , y , z , w) = f x y z w
@@ -74,7 +74,7 @@ fe⁴ {X} {Y} {Z} {W} {U} {f} {g} ex = goal
   goal = ¬¬-functor (ap (λ φ x y z w → φ(x , y , z , w))) E
 
 
-fe⁵ : {X : Set}
+fe⁵ : {X : Type}
       {Y : X → Set}
       {Z : (x : X) → Y x → Set}
       {W : (x : X) → (y : Y x) → Z x y → Set}
@@ -85,7 +85,7 @@ fe⁵ : {X : Set}
     → (∀ x y z w u → f x y z w u ＝ g x y z w u) → ¬¬ (f ＝ g)
 fe⁵ {X} {Y} {Z} {W} {U} {V} {f} {g} ex = goal
  where
-  Ω : Set
+  Ω : Type
   Ω = Σ \(x : X) → Σ \(y : Y x) → Σ \(z : Z x y) → Σ \(w : W x y z) → U x y z w
   F G : (ω : Ω) → V (pr₁ ω) (pr₁(pr₂ ω)) (pr₁(pr₂(pr₂ ω))) (pr₁(pr₂(pr₂(pr₂ ω)))) (pr₂(pr₂(pr₂(pr₂ ω))))
   F (x , y , z , w , u) = f x y z w u

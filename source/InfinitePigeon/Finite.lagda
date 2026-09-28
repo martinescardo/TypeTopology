@@ -22,7 +22,7 @@ embed {O} ()
 embed {succ n} fzero = O
 embed {succ n} (fsucc i) = succ(embed i)
 
-restriction : {m : ℕ} {X : Set} → (ℕ → X) → smaller m → X
+restriction : {m : ℕ} {X : Type} → (ℕ → X) → smaller m → X
 restriction f = f ∘ embed
 
 coerce : {n : ℕ} → smaller n → smaller(succ n)

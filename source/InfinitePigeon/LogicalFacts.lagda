@@ -40,27 +40,27 @@ three-negations-imply-one : {R A : Ω}
 three-negations-imply-one = contra-positive double-negation-intro
 
 not-exists-implies-forall-not : {R : Ω}
-                                {X : Set}
+                                {X : Type}
                                 {A : X → Ω}
                               → ((∃ \(x : X) → A x) → R)
                               → ∀(x : X) → A x → R
 not-exists-implies-forall-not f x a = f(∃-intro x a)
 
 forall-not-implies-not-exists : {R : Ω}
-                                {X : Set}
+                                {X : Type}
                                 {A : X → Ω}
                               → (∀(x : X) → A x → R)
                               → (∃ \(x : X) → A x)
                               → R
 forall-not-implies-not-exists f (∃-intro x a) = f x a
 
-∃-functor : {X : Set}
+∃-functor : {X : Type}
             {A B : X → Ω}
           → ({x : X} → A x → B x)
           → (∃ \(x : X) → A x) →  ∃ \(x : X) → B x
 ∃-functor f (∃-intro x a) = ∃-intro x (f a)
 
-∃-nested-functor : {X Y : Set}
+∃-nested-functor : {X Y : Type}
                    {A B : X → Y → Ω}
                  → ({x : X} → {y : Y} → A x y → B x y)
                  → (∃ \(x : X) → ∃ \(y : Y) → A x y)

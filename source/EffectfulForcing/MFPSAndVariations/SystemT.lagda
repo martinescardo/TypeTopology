@@ -34,7 +34,7 @@ X ^ (succ n) = X ^ n × X
 
 infixr 3 _^_
 
-_[_] : {X : Set} {n : ℕ} → X ^ n → Fin n → X
+_[_] : {X : Type} {n : ℕ} → X ^ n → Fin n → X
 _[_] {X} {succ n} (xs , x) 𝟎       = x
 _[_] {X} {succ n} (xs , x) (suc i) = xs [ i ]
 

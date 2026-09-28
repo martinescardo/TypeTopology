@@ -31,7 +31,7 @@ Type structure
 
 \begin{code}
 
-data Ty : Set where
+data Ty : Type where
  Ⓝ : Ty
  _⊠_ : Ty → Ty → Ty
  _⇨_ : Ty → Ty → Ty
@@ -87,7 +87,7 @@ Lemma[simple-probe-hprop] (σ ⊠ τ) r rστ₀ rστ₁ = to-×-＝ IHσ IHτ
   IHτ = Lemma[simple-probe-hprop] τ (pr₂ ∘ r) (pr₂ rστ₀) (pr₂ rστ₁)
 Lemma[simple-probe-hprop] (σ ⇨ τ) r rστ₀ rστ₁ = goal
  where
-  IH : ∀(p : ₂ℕ → U ⟦ σ ⟧c) → (pσ : p ∈ Probe ⟦ σ ⟧c) → ∀(t : ₂ℕ → ₂ℕ) → (uc : t ∈ C) → 
+  IH : ∀(p : ₂ℕ → U ⟦ σ ⟧c) → (pσ : p ∈ Probe ⟦ σ ⟧c) → ∀(t : ₂ℕ → ₂ℕ) → (uc : t ∈ C) →
        rστ₀ p pσ t uc ＝ rστ₁ p pσ t uc
   IH p pσ t uc = Lemma[simple-probe-hprop] τ (λ α → (pr₁ ∘ r)(t α)(p α))
                                            (rστ₀ p pσ t uc) (rστ₁ p pσ t uc)
@@ -139,7 +139,7 @@ in the sense that the two interpretations of each type are equivalent.
 
 \begin{code}
 
-_≅_ : Set → Set → Set
+_≅_ : Type → Set → Set
 X ≅ Y = Σ \(f : X → Y) → Σ \(g : Y → X) →
            (∀(x : X) → g(f x) ＝ x) × (∀(y : Y) → f(g y) ＝ y)
 

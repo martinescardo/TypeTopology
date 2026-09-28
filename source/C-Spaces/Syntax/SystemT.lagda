@@ -27,7 +27,7 @@ binary products, and function spaces.
 infixr 10 _⊠_
 infixr 10 _⇨_
 
-data Ty : Set where
+data Ty : Type where
  ② : Ty
  Ⓝ : Ty
  _⊠_ : Ty → Ty → Ty
@@ -48,7 +48,7 @@ steps to the left in the context.
 
 infixl 10 _₊_
 
-data Cxt : Set where
+data Cxt : Type where
  ε : Cxt
  _₊_ : Cxt → Ty → Cxt
 

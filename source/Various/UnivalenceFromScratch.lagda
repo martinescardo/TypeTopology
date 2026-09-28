@@ -584,7 +584,7 @@ Using projections pr₁ and pr₂ rather than pattern matching on Σ types
 (by defining Σ as a record type), Agda calculates the following normal
 form for the term is-univalent:
 
-λ 𝓤 → (X Y : Set 𝓤) (y : Σ (λ f → (y₁ : Y) → Σ (λ c →
+λ 𝓤 → (X Y : Type 𝓤) (y : Σ (λ f → (y₁ : Y) → Σ (λ c →
 (x : Σ (λ x₁ → Id (f x₁) y₁)) → Id c x))) →
 Σ (λ c → (x : Σ (λ x₁ → Id (J (λ X₁ Y₁ p → Σ (λ f →
 (y₁ : Y₁) → Σ (λ c₁ → (x₂ : Σ (λ x₃ → Id (f x₃) y₁)) → Id c₁ x₂)))

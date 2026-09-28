@@ -20,7 +20,7 @@ Infinite sequences are defined as functions:
 
 \begin{code}
 
-₂ℕ : Set
+₂ℕ : Type
 ₂ℕ = ℕ → 𝟚
 
 0̄ : ₂ℕ
@@ -75,7 +75,7 @@ Lemma[drop+] : ∀(n : ℕ) → ∀(α : ₂ℕ) → ∀(i : ℕ) → drop n α 
 Lemma[drop+] 0        α i = refl
 Lemma[drop+] (succ n) α i = Lemma[drop+] n (α ∘ succ) i
 
-isomorphism-₂Fin : ∀(X : Set) → ∀(n : ℕ) → (f : ₂Fin (succ n) → X) →
+isomorphism-₂Fin : ∀(X : Type) → ∀(n : ℕ) → (f : ₂Fin (succ n) → X) →
                     Σ \(g : 𝟚 → ₂Fin n → X) →
                      ∀(s : ₂Fin (succ n)) → f s ＝ g (head s) (tail s)
 isomorphism-₂Fin X n f = g , prf
@@ -132,7 +132,7 @@ relation and a deciable type:
 
 infixl 10 _＝⟦_⟧_
 
-data _＝⟦_⟧_ {X : Set} : (ℕ → X) → ℕ → (ℕ → X) → Set where
+data _＝⟦_⟧_ {X : Type} : (ℕ → X) → ℕ → (ℕ → X) → Set where
  ＝⟦zero⟧ : {α β : ℕ → X} → α ＝⟦ 0 ⟧ β
  ＝⟦succ⟧ : {α β : ℕ → X}{n : ℕ} → α ＝⟦ n ⟧ β → α n ＝ β n → α ＝⟦ succ n ⟧ β
 
@@ -243,7 +243,7 @@ Concatenation map:
 \begin{code}
 
 cons : {m : ℕ} → ₂Fin m → ₂ℕ → ₂ℕ
-cons ⟨⟩      α          = α 
+cons ⟨⟩      α          = α
 cons (h ∷ _) α 0        = h
 cons (_ ∷ t) α (succ i) = cons t α i
 
@@ -288,7 +288,7 @@ Lemma[cons-ftake-fdrop] n (succ k) (_ ∷ s) α (succ i) = Lemma[cons-ftake-fdro
 
 Lemma[cons-ftake-fdrop]² : ∀(n m l k : ℕ) → (eq : k ＝ m + l) →
                             ∀(s : ₂Fin (k + n)) → ∀(α : ₂ℕ) →
-    cons (ftake k n s) 
+    cons (ftake k n s)
          (cons (ftake m l (transport ₂Fin eq (fdrop k n s)))
                (cons (fdrop m l ((transport ₂Fin eq (fdrop k n s)))) α))
   ∼ cons s α
@@ -302,7 +302,7 @@ Lemma[cons-ftake-fdrop]² n m l k eq s α = goal
   Q i t = cons (ftake k n s) (cons t α) ∼ cons s α
   claim₀ : cons (ftake k n s) (cons ss α) ∼ cons s α
   claim₀ = Lemma[cons-ftake-fdrop] k n s α
-  transport² : {X : Set} (Y : X → Set) (Z : (x : X) → Y x → Set)
+  transport² : {X : Type} (Y : X → Set) (Z : (x : X) → Y x → Set)
              → {x x' : X} {y : Y x}
              → (p : x ＝ x') → Z x y → Z x' (transport Y p y)
   transport² Y Z refl z = z
@@ -388,7 +388,7 @@ Lemma[₂Fin-decidability] 0 Y decY = cases (inl ∘ c₀) (inr ∘ c₁) (decY 
   c₀ : Y ⟨⟩ → ∀ s → Y s
   c₀ y ⟨⟩ = y
   c₁ : ¬ (Y ⟨⟩) → ¬ (∀ s → Y s)
-  c₁ f g = f (g ⟨⟩) 
+  c₁ f g = f (g ⟨⟩)
 Lemma[₂Fin-decidability] (succ n) Y decY = cases c₀ c₁ IH₀
  where
   Y₀ : ₂Fin n → Set

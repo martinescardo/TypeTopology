@@ -277,10 +277,10 @@ Arbitrary coproduct of C-spaces
 
 \begin{code}
 
-∐ : {I : Set} → (I → Space) → Space
+∐ : {I : Type} → (I → Space) → Space
 ∐ {I} X = A , P , c₀ , c₁ , c₂
  where
-  A : Set
+  A : Type
   A = Σ \(i : I) → U(X i)
 
   P : (₂ℕ → A) → Set
@@ -378,7 +378,7 @@ Arbitrary coproduct of C-spaces
         eq₁ = claim₂ (cons s₂ α)
 
 
-continuous-inj : {I : Set} → (X : I → Space) → (i : I) → Map (X i) (∐ X)
+continuous-inj : {I : Type} → (X : I → Space) → (i : I) → Map (X i) (∐ X)
 continuous-inj {I} X i = inj , cts
  where
   inj : U(X i) → U(∐ X)
@@ -392,7 +392,7 @@ continuous-inj {I} X i = inj , cts
 
 
 universal-property-∐ :
-    {I : Set} → ∀(X : I → Space) →
+    {I : Type} → ∀(X : I → Space) →
     ∀(Y : Space) → ∀(f : (i : I) → Map (X i) Y) →
     Σ \(g : Map (∐ X) Y) →
       ∀(i : I) → ∀(x : U(X i)) → pr₁ g (pr₁ (continuous-inj X i) x) ＝ pr₁ (f i) x

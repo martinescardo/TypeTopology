@@ -12,7 +12,8 @@ Type of propositions denoted by Ω like in a topos.
 
 \begin{code}
 
-Ω = Set
+Type = Set
+Ω = Type
 
 data ⊥ : Ω where
 
@@ -63,18 +64,18 @@ dependent-∨-elim f₀ f₁ (∨-intro₁ a₁) = f₁ a₁
 decidable : Ω → Ω
 decidable A = A ∨ ¬ A
 
-data ∃ {X : Set} (A : X → Ω) : Ω where
+data ∃ {X : Type} (A : X → Ω) : Ω where
  ∃-intro : (x₀ : X) → A x₀ → ∃ \(x : X) → A x
 
-∃-witness : {X : Set} {A : X → Ω} → (∃ \(x : X) → A x) → X
+∃-witness : {X : Type} {A : X → Ω} → (∃ \(x : X) → A x) → X
 ∃-witness (∃-intro x a) = x
 
-∃-elim : {X : Set}
+∃-elim : {X : Type}
          {A : X → Ω}
        → (proof : ∃ \(x : X) → A x) → A (∃-witness proof)
 ∃-elim (∃-intro x a) = a
 
-inhabited : Set → Ω
+inhabited : Type → Ω
 inhabited X = ∃ \(x : X) → ⊤
 
 \end{code}

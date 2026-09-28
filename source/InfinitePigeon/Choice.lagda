@@ -11,7 +11,7 @@ open import InfinitePigeon.Logic
 open import InfinitePigeon.Naturals
 
 
-AC : {X : Set}
+AC : {X : Type}
      {Y : X → Set}
      {A : (x : X) → Y x → Ω}
    → (∀(x : X) → ∃ \(y : Y x) → A x y)
@@ -19,7 +19,7 @@ AC : {X : Set}
    → ∀(x : X) → A x (f x)
 AC g = ∃-intro (λ x → ∃-witness (g x)) (λ x → ∃-elim (g x))
 
-DC : {X : Set}
+DC : {X : Type}
      {P : ℕ → X → X → Ω}
      (x₀ : X)
    → (∀(n : ℕ) → ∀(x : X) → ∃ \(y : X) → P n x y)

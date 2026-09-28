@@ -9,14 +9,14 @@ open import UF.FunExt using (DN-funext)
 
 module C-Spaces.Preliminaries.FunExt (fe : DN-funext 𝓤₀ 𝓤₀) where
 
-fe² : {X : Set}
+fe² : {X : Type}
       {Y : X → Set}
       {Z : (x : X) → (y : Y x) → Set} →
       {f g : (x : X) → (y : Y x) → Z x y}
     → (∀ x y → f x y ＝ g x y) → f ＝ g
 fe² ex = fe (λ x → fe (ex x))
 
-fe³ : {X : Set}
+fe³ : {X : Type}
       {Y : X → Set}
       {Z : (x : X) → Y x → Set}
       {W : (x : X) → (y : Y x) → Z x y → Set}
@@ -24,7 +24,7 @@ fe³ : {X : Set}
     → (∀ x y z → f x y z ＝ g x y z) → f ＝ g
 fe³ ex = fe (λ x → fe² (ex x))
 
-fe⁴ : {X : Set}
+fe⁴ : {X : Type}
       {Y : X → Set}
       {Z : (x : X) → Y x → Set}
       {W : (x : X) → (y : Y x) → Z x y → Set}
@@ -33,7 +33,7 @@ fe⁴ : {X : Set}
     → (∀ x y z w → f x y z w ＝ g x y z w) → f ＝ g
 fe⁴ ex = fe (λ x → fe³ (ex x))
 
-fe⁵ : {X : Set}
+fe⁵ : {X : Type}
       {Y : X → Set}
       {Z : (x : X) → Y x → Set}
       {W : (x : X) → (y : Y x) → Z x y → Set}
