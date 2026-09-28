@@ -1,9 +1,14 @@
 Tom de Jong, 25-28 September 2026.
 
-We characterize the type of simulations into a fixed ordinal α as
-the type of lower-closed subsets of α.
+We characterize the type of simulations into a fixed ordinal α as the type of
+lower sets of α. Here, a lower set of α is a subset S of (the carrier of) α such
+that for every a ≺ s in α and s ∈ S, we have a ∈ S.
 
-TODO. Mention HoTT Book exercise.
+This implies in particular that the type of simulations into α is a small type
+in the presence of Ω-resizing.
+
+This slightly generalizes, and provides (most of) a solution to,
+Exercise 10.16(i) of the HoTT Book (https://homotopytypetheory.org/book/).
 
 \begin{code}
 
@@ -57,6 +62,13 @@ module _
  Lower-Set : 𝓤 ⁺ ̇
  Lower-Set = Σ S ꞉ 𝓟 ⟨ α ⟩ , is-lower-set S
 
+\end{code}
+
+Every lower set of α gives rise to an ordinal (with the order induced by α) that
+admits a canonical simulation into α.
+
+\begin{code}
+
  lower-set-ordinal : Lower-Set → Ordinal 𝓤
  lower-set-ordinal (S , lc) =
   (𝕋 S ,
@@ -96,7 +108,9 @@ module _
 
 \end{code}
 
-TODO. COMMENT
+For the converse, that every ordinal with a simulation into α gives rise to a
+lower set of α, we consider the image of the simulation, for which we need the
+propositional truncation.
 
 \begin{code}
 
@@ -133,6 +147,27 @@ TODO. COMMENT
    image-of-simulation-lower-set =
     (image-as-subset f , image-of-simulation-is-lower-set)
 
+\end{code}
+
+Thus, given a simulation f : β ⊴ α, its image is a lower set of α. Turning this
+lower set into an ordinal recovers the domain β of the original simulation.
+
+Indeed, we have a commutative triangle
+
+   β ---f--> α
+    \       /
+     \     /
+      \   /
+       \ /
+        v
+       im f
+
+where the top map (f) is an embedding (all simulations are), as is the right map
+(the inclusion). Thus, so is the left map (the corestriction) which is always a
+surjection. Hence, the corestriction is an equivalence.
+
+\begin{code}
+
    image-of-simulation-ordinal : Ordinal 𝓤
    image-of-simulation-ordinal = lower-set-ordinal image-of-simulation-lower-set
 
@@ -160,7 +195,8 @@ TODO. COMMENT
 
 \end{code}
 
-TODO. Comment
+As announced, the type of simulations into α is equivalent to the type of lower
+sets of α.
 
 \begin{code}
 
@@ -181,9 +217,7 @@ simulations-as-lower-sets {𝓤} pt α = φ , qinvs-are-equivs φ (ψ , I , II)
   I (β , 𝕗) =
    to-subtype-＝
     (λ γ → ⊴-is-prop-valued γ α)
-    (eqtoidₒ (ua 𝓤) fe' _ β
-      (≃ₒ-sym β (lower-set-ordinal α (φ (β , 𝕗)))
-                (image-of-simulation-ordinal-≃ₒ β 𝕗)))
+    ((eqtoidₒ (ua 𝓤) fe' β _ (image-of-simulation-ordinal-≃ₒ β 𝕗)) ⁻¹)
 
   II : φ ∘ ψ ∼ id
   II (S , lc) =
@@ -192,7 +226,8 @@ simulations-as-lower-sets {𝓤} pt α = φ , qinvs-are-equivs φ (ψ , I , II)
 
 \end{code}
 
-TODO. Comment
+As a consequence of the above characterization the type of simulations into a
+fixed ordinal is small in the presence of Ω-resizing.
 
 \begin{code}
 
@@ -202,21 +237,21 @@ the-type-of-simulations-is-small : propositional-truncations-exist
                                  → is-small (Σ β ꞉ Ordinal 𝓤 , β ⊴ α)
 the-type-of-simulations-is-small {𝓤} pt res α = Lower-Set' , ≃-sym I
  where
-  Ω' : 𝓤 ̇
-  Ω' = resized (Ω 𝓤) res
-  ϕ : Ω' ≃ Ω 𝓤
-  ϕ = resizing-condition res
-  ψ : (⟨ α ⟩ → Ω') ≃ 𝓟 ⟨ α ⟩
-  ψ = →cong fe' fe' (≃-refl ⟨ α ⟩) ϕ
+  𝓟-small : is-small (𝓟 ⟨ α ⟩)
+  𝓟-small =
+   ((⟨ α ⟩ → resized (Ω 𝓤) res) , →cong' fe' fe' (resizing-condition res))
+
+  ρ : resized (𝓟 ⟨ α ⟩) 𝓟-small ≃ 𝓟 ⟨ α ⟩
+  ρ = resizing-condition 𝓟-small
 
   Lower-Set' : 𝓤 ̇
-  Lower-Set' = (Σ S ꞉ (⟨ α ⟩ → Ω') , is-lower-set α (⌜ ψ ⌝ S))
+  Lower-Set' = (Σ S ꞉ resized _ 𝓟-small , is-lower-set α (⌜ ρ ⌝ S))
 
   I = (Σ β ꞉ Ordinal 𝓤 , β ⊴ α) ≃⟨ II ⟩
       Lower-Set α               ≃⟨ III ⟩
       Lower-Set'                ■
    where
     II = simulations-as-lower-sets pt α
-    III = ≃-sym (Σ-change-of-variable-≃ (is-lower-set α) ψ)
+    III = ≃-sym (Σ-change-of-variable-≃ (is-lower-set α) ρ)
 
 \end{code}
