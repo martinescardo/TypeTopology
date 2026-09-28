@@ -91,7 +91,6 @@ of identity types is normalized. See the module PathSequences.Concat
 ≡-to-＝ [] = refl
 ≡-to-＝ (p ◃∙ s) = p ∙ ≡-to-＝ s
 
-infix 30 ≡-to-＝
 syntax ≡-to-＝ s = [ s ↓]
 
 \end{code}

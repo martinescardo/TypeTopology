@@ -1,31 +1,27 @@
 Martin Escardo, 9th September 2026.
 
-This file follows the definitions, lemmas, propositions, theorems,
-examples and remarks of the paper below, in the same order and with
-the same numbering, including the mathematical discussions in its
-prose, so that a reader of the paper can walk this file alongside
-it. The name of each entry is the number the item has in the paper,
-and the comment after it is the LaTeX label of that item.
-
+This is an Agda companion for the preprint
 
    Compact totally separated types
    -------------------------------
 
+   https://arxiv.org/abs/2609.10447v3, 27th September 2026
+
    Martín Hötzel Escardó
    https://www.cs.bham.ac.uk/~mhe/
 
-   https://arxiv.org/abs/2609.10447v2, 15th September 2026
+   This file is
+   https://github.com/martinescardo/TypeTopology/blob/master/source/TypeTopology/CompactTotallySeparatedTypesArticle.lagda
 
-   @misc{escardo2026compacttotallyseparatedtypes,
-         title={Compact totally separated types},
-         author={Mart\'{i}n H\"otzel Escard\'o},
-         year={2026},
-         eprint={2609.10447},
-         archivePrefix={arXiv},
-         primaryClass={math.LO},
-         url={https://arxiv.org/abs/2609.10447v2},
-   }
+   Readers of earlier arXiv versions of the paper should use the Agda
+   companions [1] and [2] below instead.
 
+This file follows the definitions, lemmas, propositions, theorems,
+examples and remarks of the paper above, in the same order and with
+the same numbering, including the mathematical discussions in its
+prose, so that a reader of the paper can walk this file alongside
+it. The name of each entry is the number the item has in the paper,
+and the comment after it is the LaTeX label of that item.
 
 Claims that the paper makes in running prose, outside proofs, appear
 here too, under names beginning with Prose. Each of them is named in
@@ -43,12 +39,35 @@ minimize the number of assumptions for each result, and readers
 interested in such foundational issues can follow the definitions
 given here to find out exactly what assumptions each result uses.
 
+[1] https://arxiv.org/abs/2609.10447v1, 9th September 2026
+
+    https://github.com/martinescardo/TypeTopology/blob/0025fb18cda5504f36b74cdbd2a05a8a4e1c1974/source/TypeTopology/CompactTotallySeparatedTypesArticle.lagda
+
+[2] https://arxiv.org/abs/2609.10447v2, 15th September 2026
+
+    https://github.com/martinescardo/TypeTopology/blob/c3e7e439d47ab9c0dfa0849b368bd076be0a19fb/source/TypeTopology/CompactTotallySeparatedTypesArticle.lagda
+
+Cite as
+
+@misc{escardo2026compacttotallyseparatedtypes,
+      title={Compact totally separated types},
+      author={Mart\'{i}n H\"otzel Escard\'o},
+      year={2026},
+      eprint={2609.10447},
+      archivePrefix={arXiv},
+      primaryClass={math.LO},
+      url={https://arxiv.org/abs/2609.10447},
+}
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
 open import UF.PropTrunc
 open import UF.Size
+open import UF.Yoneda using (univalence-via-singletons←)
+open import UF.EquivalenceExamples using (Σ-cong)
+open import UF.Equiv-FunExt using (≃-Sym)
 open import UF.Univalence
 
 module TypeTopology.CompactTotallySeparatedTypesArticle
@@ -107,6 +126,7 @@ open import TypeTopology.DecidabilityOfNonContinuity fe₀
              ¬WLPO-iff-all-maps-are-¬¬-continuous ;
              MP-and-¬WLPO-give-that-all-functions-are-continuous)
 open import TypeTopology.Density
+open import TypeTopology.DenseMapsProperties using (surjections-are-dense)
 open import UF.ClassicalLogic
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
@@ -122,6 +142,8 @@ open import Quotient.GivesSetReplacement
 open import Quotient.Type using (set-quotients-exist)
 open import UF.PairFun
 open import UF.Retracts
+open import UF.Retracts-FunExt
+      using (codomain-is-retract-of-function-space-with-pointed-domain)
 open import UF.Sets
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
@@ -325,6 +347,22 @@ Definition-2-14 = is-small
 Definition-2-14-locally : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 Definition-2-14-locally = is-locally-small
 
+-- claim smallness-and-univalence
+Prose-smallness-and-univalence : Univalence
+                               → (X : 𝓤 ̇ ) (𝓥 : Universe)
+                               → is-prop (X is 𝓥 small)
+Prose-smallness-and-univalence = being-small-is-prop
+
+Prose-smallness-and-univalence' : ((X : 𝓤 ̇ ) → is-prop (X is 𝓤 small))
+                                → is-univalent 𝓤
+Prose-smallness-and-univalence' {𝓤} h = univalence-via-singletons← γ
+ where
+  γ : (X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇ , X ≃ Y
+  γ X = pointed-props-are-singletons (X , ≃-refl X) (equiv-to-prop e (h X))
+   where
+    e : (Σ Y ꞉ 𝓤 ̇ , X ≃ Y) ≃ (Σ Y ꞉ 𝓤 ̇ , Y ≃ X)
+    e = Σ-cong (λ Y → ≃-Sym fe)
+
 -- def:set-replacement
 Definition-2-15 : 𝓤ω
 Definition-2-15 = Set-Replacement pt
@@ -403,6 +441,21 @@ Definition-2-20-equivalence = density-characterization pt
 Definition-2-20-is-prop
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-prop (is-dense f)
 Definition-2-20-is-prop = being-dense-is-prop fe'
+
+-- claim em-dense-surjection
+Prose-em-dense-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                          → is-surjection f
+                          → is-dense f
+Prose-em-dense-surjection = surjections-are-dense pt
+
+Prose-em-dense-surjection' : EM (𝓤 ⊔ 𝓥)
+                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                           → is-dense f
+                           → is-surjection f
+Prose-em-dense-surjection' em f d y =
+ Cases (em (y ∈image f) (being-in-the-image-is-prop y f))
+  id
+  (λ (ν : ¬ (y ∈image f)) → 𝟘-elim (d (y , (λ (x , p) → ν ∣ x , p ∣))))
 
 -- lem:dense-into-nn-separated-rc
 Lemma-2-21 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : Y → 𝓦 ̇ } {j : X → Y} {f g : Π Z}
@@ -660,19 +713,26 @@ Proposition-3-6-5' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                    → (x : X) → is-isolated x → is-isolated (f x)
 Proposition-3-6-5' = equivs-preserve-isolatedness
 
--- lem:discrete-exponential (1)
-Lemma-3-7-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-            → has-two-distinct-points Y
-            → is-discrete (X → Y)
-            → is-decidable (is-empty X)
-Lemma-3-7-1 = discrete-exponential-has-decidable-emptiness-of-exponent fe'
+-- prop:discrete-exponential (1)
+Proposition-3-7-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                  → has-two-distinct-points Y
+                  → is-discrete (X → Y)
+                  → is-decidable (is-empty X)
+Proposition-3-7-1 =
+ discrete-exponential-has-decidable-emptiness-of-exponent fe'
 
--- lem:discrete-exponential (2)
-Lemma-3-7-2 : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
-            → is-prop P
-            → ((p : P) → is-isolated (f p))
-            → is-embedding f
-Lemma-3-7-2 = maps-of-props-into-isolated-points-are-embeddings
+-- prop:discrete-exponential (2)
+Proposition-3-7-2 : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
+                  → is-prop P
+                  → ((p : P) → is-h-isolated (f p))
+                  → is-embedding f
+Proposition-3-7-2 = maps-of-props-into-h-isolated-points-are-embeddings
+
+Proposition-3-7-2' : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
+                   → is-prop P
+                   → ((p : P) → is-isolated (f p))
+                   → is-embedding f
+Proposition-3-7-2' = maps-of-props-into-isolated-points-are-embeddings
 
 -- def:tot-sep
 Definition-3-8 : 𝓤 ̇ → 𝓤 ̇
@@ -690,9 +750,9 @@ Lemma-3-9-2 = totally-separated-types-are-¬¬-separated
 Lemma-3-9-3 : (X : 𝓤 ̇ ) → is-totally-separated X → is-set X
 Lemma-3-9-3 = totally-separated-types-are-sets fe'
 
--- lem:tot-sep-basic (3), item:ts-is-set, the propositionhood
-Lemma-3-9-3' : (X : 𝓤 ̇ ) → is-prop (is-totally-separated X)
-Lemma-3-9-3' {𝓤} = being-totally-separated-is-prop (fe 𝓤 𝓤)
+-- lem:tot-sep-basic (4), item:being-ts-is-prop
+Lemma-3-9-4 : (X : 𝓤 ̇ ) → is-prop (is-totally-separated X)
+Lemma-3-9-4 {𝓤} = being-totally-separated-is-prop (fe 𝓤 𝓤)
 
 \end{code}
 
@@ -715,8 +775,11 @@ Examples-3-10-1 s = +disjoint (loops-are-a-proposition (inl ⋆) (inr (inl 0)))
                              (s {base-of-Tℤ} {base-of-Tℤ})
 
 -- ex:tot-sep-failures (2), item:Omega-tot-sep-gives-EM
-Examples-3-10-2 : is-totally-separated (Ω 𝓤) → EM 𝓤
-Examples-3-10-2 {𝓤} = Ω-totally-separated-gives-EM (pe 𝓤) fe'
+Examples-3-10-2 : is-¬¬-separated (Ω 𝓤) → EM 𝓤
+Examples-3-10-2 {𝓤} = Ω-¬¬-separated-gives-EM (pe 𝓤) (fe 𝓤 𝓤)
+
+Examples-3-10-2' : is-totally-separated (Ω 𝓤) → EM 𝓤
+Examples-3-10-2' {𝓤} = Ω-totally-separated-gives-EM (pe 𝓤) fe'
 
 -- ex:tot-sep-failures (3), item:two-infinities-not-tot-sep
 Examples-3-10-3 : is-totally-separated ℕ∞₂ → ¬¬ WLPO
@@ -798,26 +861,32 @@ Proposition-3-12-4 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
 Proposition-3-12-4 = Π-is-totally-separated fe'
 
 -- ex:tot-sep (2), item:simple-types
-Examples-3-13-1 : 𝓤₀ ̇ → 𝓤₁ ̇
-Examples-3-13-1 = simple-type
+Examples-3-13-2 : 𝓤₀ ̇ → 𝓤₁ ̇
+Examples-3-13-2 = simple-type
 
-Examples-3-13-1' : {X : 𝓤₀ ̇ } → simple-type X → is-totally-separated X
-Examples-3-13-1' = simple-types-are-totally-separated
+Examples-3-13-2' : {X : 𝓤₀ ̇ } → simple-type X → is-totally-separated X
+Examples-3-13-2' = simple-types-are-totally-separated
 
-Examples-3-13-1'' : {X : 𝓤₀ ̇ } → simple-type X → retract ℕ of X
-Examples-3-13-1'' = ℕ-is-retract-of-any-simple-type
+Examples-3-13-2'' : {X : 𝓤₀ ̇ } → simple-type X → retract ℕ of X
+Examples-3-13-2'' = ℕ-is-retract-of-any-simple-type
 
 -- ex:tot-sep (2), item:simple-types, pointedness and the retract clause
-Examples-3-13-1-pointed : {X : 𝓤₀ ̇ } → simple-type X → X
-Examples-3-13-1-pointed = simple-types-pointed
+Examples-3-13-2-pointed : {X : 𝓤₀ ̇ } → simple-type X → X
+Examples-3-13-2-pointed = simple-types-pointed
 
-Examples-3-13-1-r : {X A : 𝓤₀ ̇ }
+Examples-3-13-2-r : {X A : 𝓤₀ ̇ }
                   → retract A of ℕ → simple-type X → retract A of X
-Examples-3-13-1-r = simple-types-r
+Examples-3-13-2-r = simple-types-r
+
+-- ex:tot-sep (2), item:simple-types, the induction step of the retract
+Examples-3-13-2-r-step : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+                       → X → retract A of Y → retract A of (X → Y)
+Examples-3-13-2-r-step x =
+ retracts-compose (codomain-is-retract-of-function-space-with-pointed-domain x)
 
 -- ex:tot-sep (3), item:cantor-not-discrete
-Examples-3-13-2 : is-discrete (ℕ → 𝟚) → WLPO
-Examples-3-13-2 = ℕ∞-discrete-gives-WLPO ∘ retract-is-discrete (ℕ∞-retract-of-Cantor fe₀)
+Examples-3-13-3 : is-discrete (ℕ → 𝟚) → WLPO
+Examples-3-13-3 = ℕ∞-discrete-gives-WLPO ∘ retract-is-discrete (ℕ∞-retract-of-Cantor fe₀)
 
 -- lem:sigma-NInf-tot-sep
 Lemma-3-14 : (A : ℕ∞ → 𝓥 ̇ )
@@ -1305,7 +1374,7 @@ Proposition-4-25-2 = tscd₁
 -- ex:not-compact (1), item:simple-not-compact
 Examples-4-26-1 : {X : 𝓤₀ ̇ }
                 → simple-type X → is-Π-compact X → is-Π-compact ℕ
-Examples-4-26-1 = stcwlpo
+Examples-4-26-1 = stcwlpo'
 
 -- ex:not-compact (2), item:NInf-power-not-compact
 Examples-4-26-2 : is-Π-compact (ℕ∞ → 𝟚) → WLPO
@@ -1700,53 +1769,37 @@ Labels: Lemma 5.19 = lem:topped-sum.
 Lemma-5-19 : (τ : Ordinalᵀ 𝓤) → (⟨ τ ⟩ → Ordinalᵀ 𝓤) → Ordinalᵀ 𝓤
 Lemma-5-19 = ∑
 
--- lem:sum-compact
-Lemma-5-20 : (τ : Ordᵀ) (υ : ⟨ τ ⟩ → Ordᵀ)
-                 → is-compact∙ ⟨ τ ⟩
-                 → ((x : ⟨ τ ⟩) → is-compact∙ ⟨ υ x ⟩)
-                 → is-compact∙ ⟨ ∑ τ υ ⟩
-Lemma-5-20 = ∑-compact∙
-
 -- lem:ordinal-extension
-Lemma-5-21 : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+Lemma-5-20 : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
            → (X → Ordinal 𝓦)
            → (X ↪ A)
            → (A → Ordinal (𝓤 ⊔ 𝓥 ⊔ 𝓦))
-Lemma-5-21 = _↗_
+Lemma-5-20 = _↗_
 
 -- lem:extension-top
-Lemma-5-22 : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+Lemma-5-21 : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
            → (X → Ordinalᵀ 𝓦)
            → (X ↪ A)
            → (A → Ordinalᵀ (𝓤 ⊔ 𝓥 ⊔ 𝓦))
-Lemma-5-22 = _↗ᵀ_
+Lemma-5-21 = _↗ᵀ_
 
 -- lem:extension-restricts
-Lemma-5-23 : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+Lemma-5-22 : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
              (α : X → Ordinal 𝓦)
              (𝓮@(j , _) : X ↪ A)
              (x : X)
            → (α ↗ 𝓮) (j x) ≃ₒ α x
-Lemma-5-23 = ↗-propertyₒ
+Lemma-5-22 = ↗-propertyₒ
 
 -- lem:extension-restricts, algebraic injectivity of the type of ordinals
-Lemma-5-23-ainjective : is-univalent (𝓤 ⊔ 𝓥)
+Lemma-5-22-ainjective : is-univalent (𝓤 ⊔ 𝓥)
                       → ainjective-type (Ordinal (𝓤 ⊔ 𝓥)) 𝓤 𝓥
-Lemma-5-23-ainjective = Ordinal-is-ainjective
+Lemma-5-22-ainjective = Ordinal-is-ainjective
 
 -- lem:extension-restricts, and of the type of totally separated ordinals
-Lemma-5-23-ainjective-TS : is-univalent (𝓤 ⊔ 𝓥)
+Lemma-5-22-ainjective-TS : is-univalent (𝓤 ⊔ 𝓥)
                          → ainjective-type (TSOrdinal (𝓤 ⊔ 𝓥)) 𝓤 𝓥
-Lemma-5-23-ainjective-TS = TSOrdinal-is-ainjective fe
-
--- lem:extension-totally-separated
-Lemma-5-24
- : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
-   (α : X → Ordinal 𝓦)
-   (𝓮 : X ↪ A)
- → ((x : X) → is-totally-separated ⟨ α x ⟩)
- → (a : A) → is-totally-separated ⟨ (α ↗ 𝓮) a ⟩
-Lemma-5-24 = ↗-is-totally-separated fe
+Lemma-5-22-ainjective-TS = TSOrdinal-is-ainjective fe
 
 -- claim ordinals-are-ainjective
 Prose-ordinals-are-ainjective : ainjective-type (Ordinal (𝓤 ⊔ 𝓥)) 𝓤 𝓥
@@ -1760,117 +1813,117 @@ Prose-ordinals-are-ainjective'' : (α β : Ordinal 𝓤) → α ≃ₒ β → α
 Prose-ordinals-are-ainjective'' {𝓤} = eqtoidₒ (ua 𝓤) fe'
 
 -- def:extended-and-successor-sum (1), item:extended-sum
-Definition-5-25-1 : (ℕ → Ordᵀ) → Ordᵀ
-Definition-5-25-1 = ∑¹
+Definition-5-23-1 : (ℕ → Ordᵀ) → Ordᵀ
+Definition-5-23-1 = ∑¹
 
-Definition-5-25-1-explicitly
+Definition-5-23-1-explicitly
  : (X : ℕ → 𝓤 ̇ )
  → Σ¹ X ＝ (Σ u ꞉ ℕ∞ , ((φ : is-finite u) → X (size φ)))
-Definition-5-25-1-explicitly = Σ¹-explicitly
+Definition-5-23-1-explicitly = Σ¹-explicitly
 
-Definition-5-25-1-compact∙ : (X : ℕ → 𝓤 ̇ )
+Definition-5-23-1-compact∙ : (X : ℕ → 𝓤 ̇ )
                            → ((n : ℕ) → is-compact∙ (X n))
                            → is-compact∙ (Σ¹ X)
-Definition-5-25-1-compact∙ = Σ¹-compact∙
+Definition-5-23-1-compact∙ = Σ¹-compact∙
 
 -- def:extended-and-successor-sum (2), item:successor-sum
-Definition-5-25-2 : (ℕ → Ordᵀ) → Ordᵀ
-Definition-5-25-2 = ∑₁
+Definition-5-23-2 : (ℕ → Ordᵀ) → Ordᵀ
+Definition-5-23-2 = ∑₁
 
 -- lem:successor-sum, the underlying type of the successor sum and its top
-Lemma-5-26-shape : (X : ℕ → 𝓤 ̇ ) → Σ₁ X ≃ (Σ n ꞉ ℕ , X n) + 𝟙 {𝓤}
-Lemma-5-26-shape = Σ₁-explicitly
+Lemma-5-24-shape : (X : ℕ → 𝓤 ̇ ) → Σ₁ X ≃ (Σ n ꞉ ℕ , X n) + 𝟙 {𝓤}
+Lemma-5-24-shape = Σ₁-explicitly
 
-Lemma-5-26-shape-top : (τ : ℕ → Ordᵀ) → Σ₁-base (top (∑₁ τ)) ＝ inr ⋆
-Lemma-5-26-shape-top = ∑₁-top-is-over-inr
+Lemma-5-24-shape-top : (τ : ℕ → Ordᵀ) → Σ₁-base (top (∑₁ τ)) ＝ inr ⋆
+Lemma-5-24-shape-top = ∑₁-top-is-over-inr
 
 -- lem:successor-sum (1), item:successor-sum-is-successor
-Lemma-5-26-1 : (τ : ℕ → Ordᵀ) → [ ∑₁ τ ] ≃ₒ (∑ₒ ω τ +ₒ 𝟙ₒ)
-Lemma-5-26-1 = ∑₁-is-successorₒ
+Lemma-5-24-1 : (τ : ℕ → Ordᵀ) → [ ∑₁ τ ] ≃ₒ (∑ₒ ω τ +ₒ 𝟙ₒ)
+Lemma-5-24-1 = ∑₁-is-successorₒ
 
 -- lem:successor-sum (2), item:successor-sum-retract
-Lemma-5-26-2 : {X : ℕ → 𝓤 ̇ }
+Lemma-5-24-2 : {X : ℕ → 𝓤 ̇ }
              → ((n : ℕ) → retract (X n) of ℕ)
              → retract (Σ₁ X) of ℕ
-Lemma-5-26-2 = Σ₁-ℕ-retract
+Lemma-5-24-2 = Σ₁-ℕ-retract
 
-Lemma-5-26-2-discrete : (X : ℕ → 𝓤 ̇ )
+Lemma-5-24-2-discrete : (X : ℕ → 𝓤 ̇ )
                       → ((n : ℕ) → is-discrete (X n))
                       → is-discrete (Σ₁ X)
-Lemma-5-26-2-discrete = Σ₁-is-discrete
+Lemma-5-24-2-discrete = Σ₁-is-discrete
 
 -- def:sum-comparison
-Definition-5-27 : (X : ℕ → 𝓤 ̇ ) → Σ₁ X → Σ¹ X
-Definition-5-27 = Σ-up
+Definition-5-25 : (X : ℕ → 𝓤 ̇ ) → Σ₁ X → Σ¹ X
+Definition-5-25 = Σ-up
 
-Definition-5-27-ordinals : (τ : ℕ → Ordᵀ) → ⟨ ∑₁ τ ⟩ → ⟨ ∑¹ τ ⟩
-Definition-5-27-ordinals = ∑-up
+Definition-5-25-ordinals : (τ : ℕ → Ordᵀ) → ⟨ ∑₁ τ ⟩ → ⟨ ∑¹ τ ⟩
+Definition-5-25-ordinals = ∑-up
 
-Definition-5-27-lc : left-cancellable ι𝟙
-Definition-5-27-lc = ι𝟙-lc
+Definition-5-25-lc : left-cancellable ι𝟙
+Definition-5-25-lc = ι𝟙-lc
 
 -- lem:sum-comparison
-Lemma-5-28-embedding : (X : ℕ → 𝓤 ̇ ) → is-embedding (Σ-up X)
-Lemma-5-28-embedding = Σ-up-embedding
+Lemma-5-26-embedding : (X : ℕ → 𝓤 ̇ ) → is-embedding (Σ-up X)
+Lemma-5-26-embedding = Σ-up-embedding
 
-Lemma-5-28-dense : (X : ℕ → 𝓤 ̇ ) → is-dense (Σ-up X)
-Lemma-5-28-dense = Σ-up-dense
+Lemma-5-26-dense : (X : ℕ → 𝓤 ̇ ) → is-dense (Σ-up X)
+Lemma-5-26-dense = Σ-up-dense
 
-Lemma-5-28-order-preserving
+Lemma-5-26-order-preserving
  : (τ : ℕ → Ordᵀ) → is-order-preserving (∑₁ τ) (∑¹ τ) (∑-up τ)
-Lemma-5-28-order-preserving = ∑-up-is-order-preserving
+Lemma-5-26-order-preserving = ∑-up-is-order-preserving
 
-Lemma-5-28-order-reflecting
+Lemma-5-26-order-reflecting
  : (τ : ℕ → Ordᵀ) → is-order-reflecting (∑₁ τ) (∑¹ τ) (∑-up τ)
-Lemma-5-28-order-reflecting = ∑-up-is-order-reflecting
+Lemma-5-26-order-reflecting = ∑-up-is-order-reflecting
 
 -- thm:sup, the map σ
-Theorem-5-29 : {I : 𝓤 ̇ } (α : I → Ordinal 𝓤)
+Theorem-5-27 : {I : 𝓤 ̇ } (α : I → Ordinal 𝓤)
              → (Σ i ꞉ I , ⟨ α i ⟩) → Ordinal 𝓤
-Theorem-5-29 = sum-to-ordinals
+Theorem-5-27 = sum-to-ordinals
 
 -- thm:sup (1), item:sup-is-ordinal
-Theorem-5-29-1 : {I : 𝓤 ̇ } → (I → Ordinal 𝓤) → Ordinal 𝓤
-Theorem-5-29-1 = sup
+Theorem-5-27-1 : {I : 𝓤 ̇ } → (I → Ordinal 𝓤) → Ordinal 𝓤
+Theorem-5-27-1 = sup
 
 -- thm:sup (2), item:sup-surjection
-Theorem-5-29-2 : {I : 𝓤 ̇ } (α : I → Ordinal 𝓤)
+Theorem-5-27-2 : {I : 𝓤 ̇ } (α : I → Ordinal 𝓤)
                → is-surjection (sum-to-sup α)
-Theorem-5-29-2 = sum-to-sup-is-surjection
+Theorem-5-27-2 = sum-to-sup-is-surjection
 
 -- thm:sup (3), item:sup-lub
-Theorem-5-29-3 : {I : 𝓤 ̇ } (α : I → Ordinal 𝓤) (i : I) → α i ⊴ sup α
-Theorem-5-29-3 = sup-is-upper-bound
+Theorem-5-27-3 : {I : 𝓤 ̇ } (α : I → Ordinal 𝓤) (i : I) → α i ⊴ sup α
+Theorem-5-27-3 = sup-is-upper-bound
 
-Theorem-5-29-3' : {I : 𝓤 ̇ } (α : I → Ordinal 𝓤) (β : Ordinal 𝓤)
+Theorem-5-27-3' : {I : 𝓤 ̇ } (α : I → Ordinal 𝓤) (β : Ordinal 𝓤)
                 → ((i : I) → α i ⊴ β)
                 → sup α ⊴ β
-Theorem-5-29-3' = sup-is-lower-bound-of-upper-bounds
+Theorem-5-27-3' = sup-is-lower-bound-of-upper-bounds
 
-Theorem-5-29-3'' : {I : 𝓤 ̇ } (α : I → Ordinal 𝓤) (i : I) (x : ⟨ α i ⟩)
+Theorem-5-27-3'' : {I : 𝓤 ̇ } (α : I → Ordinal 𝓤) (i : I) (x : ⟨ α i ⟩)
                  → sup α ↓ [ α i , sup α ]⟨ sup-is-upper-bound α i ⟩ x
                  ＝ α i ↓ x
-Theorem-5-29-3'' = initial-segment-of-sup-at-component
+Theorem-5-27-3'' = initial-segment-of-sup-at-component
 
 -- cor:sup-compact
-Corollary-5-30 : {I : 𝓤 ̇ } {α : I → Ordinal 𝓤}
+Corollary-5-28 : {I : 𝓤 ̇ } {α : I → Ordinal 𝓤}
                → is-compact∙ I
                → ((i : I) → is-compact∙ ⟨ α i ⟩)
                → is-compact∙ ⟨ sup α ⟩
-Corollary-5-30 = sup-is-compact∙ sr
+Corollary-5-28 = sup-is-compact∙ sr
 
 -- thm:extended-sup-compact
-Theorem-5-31 : {X K : 𝓤 ̇ } (𝓮@(j , _) : X ↪ K) (α : X → Ordinal 𝓤)
+Theorem-5-29 : {X K : 𝓤 ̇ } (𝓮@(j , _) : X ↪ K) (α : X → Ordinal 𝓤)
              → is-compact∙ K
              → ((x : X) → is-compact∙ ⟨ α x ⟩)
              → is-compact∙ ⟨ sup (α ↗ 𝓮) ⟩
-Theorem-5-31 (j , j-is-embedding) α K-compact∙ α-compact∙ =
+Theorem-5-29 (j , j-is-embedding) α K-compact∙ α-compact∙ =
  sup-is-compact∙ sr K-compact∙
   (λ k → micro-tychonoff (fe _ _) (j-is-embedding k) (α-compact∙ ∘ pr₁))
 
 -- def:extended-supremum
-Definition-5-32 : (ℕ → Ordinal 𝓤₀) → Ordinal 𝓤₀
-Definition-5-32 α = sup (α ↗ embedding-ℕ-to-ℕ∞ fe₀)
+Definition-5-30 : (ℕ → Ordinal 𝓤₀) → Ordinal 𝓤₀
+Definition-5-30 α = sup (α ↗ embedding-ℕ-to-ℕ∞ fe₀)
 
 \end{code}
 
@@ -1978,22 +2031,42 @@ Theorem-6-7-2 = ⟦_⟧₁-is-compact∙
 Theorem-6-7-2' : (b : B) → is-totally-separated ⟨ ⟦ b ⟧-Σ¹ ⟩
 Theorem-6-7-2' = ⟦_⟧₁-is-totally-separated
 
--- thm:four-interp-props (3), item:compact-interp
-Theorem-6-7-3 : (b : B) → is-compact∙ ⟨ ⟦ b ⟧-sup¹ ⟩
-Theorem-6-7-3 = ⟦_⟧₂-is-compact∙
+-- thm:four-interp-props (3), item:kappa-retract-cantor
+Theorem-6-7-3 : (b : B) → retract ⟨ ⟦ b ⟧-Σ' ⟩ of (ℕ → 𝟚)
+Theorem-6-7-3 = BDC.Κ-Cantor-retract
+
+-- thm:four-interp-props (4), item:compact-interp
+Theorem-6-7-4 : (b : B) → is-compact∙ ⟨ ⟦ b ⟧-sup¹ ⟩
+Theorem-6-7-4 = ⟦_⟧₂-is-compact∙
 
 -- claim trichotomous-interpretation-is-discrete
 Prose-trichotomous-interpretation-is-discrete
  : (b : B) → is-discrete ⟨ ⟦ b ⟧-Σ ⟩
 Prose-trichotomous-interpretation-is-discrete = ⟦_⟧₃-is-discrete
 
+-- rem:tot-sep-via-cantor
+Remark-6-8 : (X : ℕ → 𝓤 ̇ )
+            → ((n : ℕ) → is-totally-separated (X n))
+            → is-totally-separated (Σ¹ X)
+Remark-6-8 = Σ¹-is-totally-separated
+
+Remark-6-8' : (A : ℕ∞ → 𝓥 ̇ )
+             → ((u : ℕ∞) → is-totally-separated (A u))
+             → is-prop (A ∞)
+             → is-totally-separated (Σ A)
+Remark-6-8'
+ = Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop fe₀
+
+Remark-6-8'' : (b : B) → is-totally-separated ⟨ ⟦ b ⟧-Σ' ⟩
+Remark-6-8'' = BDC.Κ-is-totally-separated
+
 -- prop:trich-compact-lpo
-Proposition-6-8 : ((b : B) → is-compact ⟨ ⟦ b ⟧-Σ ⟩) → LPO
-Proposition-6-8 = ⟦_⟧₃-compact-gives-LPO
+Proposition-6-9 : ((b : B) → is-compact ⟨ ⟦ b ⟧-Σ ⟩) → LPO
+Proposition-6-9 = ⟦_⟧₃-compact-gives-LPO
 
 -- prop:failure-tot-sep
-Proposition-6-9 : ((b : B) → is-totally-separated ⟨ ⟦ b ⟧-sup¹ ⟩) → ¬¬ WLPO
-Proposition-6-9
+Proposition-6-10 : ((b : B) → is-totally-separated ⟨ ⟦ b ⟧-sup¹ ⟩) → ¬¬ WLPO
+Proposition-6-10
  = FTS.total-separatedness-of-the-sup-of-extension-interpretation-gives-¬¬WLPO
 
 \end{code}
@@ -2002,22 +2075,22 @@ Examples 3.13(1) has no entry. That total separatedness is not closed
 under sums is the example of Examples 3.10(3), whose index type and
 fibers are totally separated by the two entries following
 Examples-3-10-3 above. That it is not closed under surjective images
-is Example 6.10 below.
+is Example 6.11 below.
 
 Labels: Examples 3.13(1) = ex:tot-sep(item:ts-not-sigma),
 Examples 3.10(3) = ex:tot-sep-failures(item:two-infinities-not-tot-sep),
-Example 6.10 = ex:tot-sep-counterexample.
+Example 6.11 = ex:tot-sep-counterexample.
 
 \begin{code}
 
 -- ex:tot-sep-counterexample
-Example-6-10 : Σ I ꞉ 𝓤₀ ̇ , Σ α ꞉ (I → Ordinal 𝓤₀) ,
+Example-6-11 : Σ I ꞉ 𝓤₀ ̇ , Σ α ꞉ (I → Ordinal 𝓤₀) ,
                is-compact∙ I
              × is-totally-separated I
              × ((i : I) → is-compact∙ ⟨ α i ⟩)
              × ((i : I) → is-totally-separated ⟨ α i ⟩)
              × (is-totally-separated ⟨ sup α ⟩ → ¬¬ WLPO)
-Example-6-10 = FTS.counterexample-to-total-separatedness
+Example-6-11 = FTS.counterexample-to-total-separatedness
 
 -- claim extension-is-partial-boolean
 Prose-extension-is-partial-boolean
@@ -2025,125 +2098,101 @@ Prose-extension-is-partial-boolean
 Prose-extension-is-partial-boolean u = refl
 
 -- def:sierpinski
-Definition-6-11 : 𝓤 ̇ → 𝓤 ̇
-Definition-6-11 = FTS.is-semidecidable
+Definition-6-12 : 𝓤 ̇ → 𝓤 ̇
+Definition-6-12 = FTS.is-semidecidable
 
-Definition-6-11-𝕊 : 𝓤₁ ̇
-Definition-6-11-𝕊 = FTS.𝕊
+Definition-6-12-𝕊 : 𝓤₁ ̇
+Definition-6-12-𝕊 = FTS.𝕊
 
-Definition-6-11-order : FTS.𝕊 → FTS.𝕊 → 𝓤₁ ̇
-Definition-6-11-order = FTS._≺ₛ_
+Definition-6-12-order : FTS.𝕊 → FTS.𝕊 → 𝓤₁ ̇
+Definition-6-12-order = FTS._≺ₛ_
 
-Definition-6-11-⊥ : FTS.𝕊
-Definition-6-11-⊥ = FTS.⊥ₛ
+Definition-6-12-⊥ : FTS.𝕊
+Definition-6-12-⊥ = FTS.⊥ₛ
 
-Definition-6-11-⊤ : FTS.𝕊
-Definition-6-11-⊤ = FTS.⊤ₛ
+Definition-6-12-⊤ : FTS.𝕊
+Definition-6-12-⊤ = FTS.⊤ₛ
 
-Definition-6-11-ordinal : Ordinal 𝓤₁
-Definition-6-11-ordinal = FTS.𝓢
+Definition-6-12-ordinal : Ordinal 𝓤₁
+Definition-6-12-ordinal = FTS.𝓢
 
 -- lem:sierpinski-ordinal
-Lemma-6-12-prop-valued : is-prop-valued FTS._≺ₛ_
-Lemma-6-12-prop-valued = FTS.≺ₛ-prop-valued
+Lemma-6-13-prop-valued : is-prop-valued FTS._≺ₛ_
+Lemma-6-13-prop-valued = FTS.≺ₛ-prop-valued
 
-Lemma-6-12-transitive : is-transitive FTS._≺ₛ_
-Lemma-6-12-transitive = FTS.≺ₛ-transitive
+Lemma-6-13-transitive : is-transitive FTS._≺ₛ_
+Lemma-6-13-transitive = FTS.≺ₛ-transitive
 
-Lemma-6-12-extensional : is-extensional FTS._≺ₛ_
-Lemma-6-12-extensional = FTS.≺ₛ-extensional
+Lemma-6-13-extensional : is-extensional FTS._≺ₛ_
+Lemma-6-13-extensional = FTS.≺ₛ-extensional
 
-Lemma-6-12-well-founded : is-well-founded FTS._≺ₛ_
-Lemma-6-12-well-founded = FTS.≺ₛ-well-founded
+Lemma-6-13-well-founded : is-well-founded FTS._≺ₛ_
+Lemma-6-13-well-founded = FTS.≺ₛ-well-founded
 
-Lemma-6-12-identity : {t t' : FTS.𝕊}
+Lemma-6-13-identity : {t t' : FTS.𝕊}
                     → (pr₁ t holds ↔ pr₁ t' holds)
                     → t ＝ t'
-Lemma-6-12-identity = FTS.to-𝕊-＝
+Lemma-6-13-identity = FTS.to-𝕊-＝
 
 -- lem:sup-is-sierpinski
-Lemma-6-13 : FTS.𝓼 ≃ₒ FTS.𝓢
-Lemma-6-13 = FTS.𝓼-is-𝓢
+Lemma-6-14 : FTS.𝓼 ≃ₒ FTS.𝓢
+Lemma-6-14 = FTS.𝓼-is-𝓢
 
-Lemma-6-13-small : is-small FTS.𝕊
-Lemma-6-13-small = FTS.𝕊-is-small
+Lemma-6-14-small : is-small FTS.𝕊
+Lemma-6-14-small = FTS.𝕊-is-small
 
 -- lem:sierpinski-separation
-Lemma-6-14 : (p : FTS.𝕊 → 𝟚) → p FTS.⊥ₛ ≠ p FTS.⊤ₛ → WLPO
-Lemma-6-14 = FTS.𝕊-separation-gives-WLPO
+Lemma-6-15 : (p : FTS.𝕊 → 𝟚) → p FTS.⊥ₛ ≠ p FTS.⊤ₛ → WLPO
+Lemma-6-15 = FTS.𝕊-separation-gives-WLPO
 
-Lemma-6-14' : is-totally-separated FTS.𝕊 → ¬¬ WLPO
-Lemma-6-14' = FTS.𝕊-totally-separated-gives-¬¬WLPO
+Lemma-6-15' : is-totally-separated FTS.𝕊 → ¬¬ WLPO
+Lemma-6-15' = FTS.𝕊-totally-separated-gives-¬¬WLPO
 
 -- thm:comparisons
-Theorem-6-15-₀₃ : Excluded-Middle → (b : B) → ⟦ b ⟧-sup ⊴ [ ⟦ b ⟧-Σ ]
-Theorem-6-15-₀₃ = comparison₀₃
+Theorem-6-16-₀₃ : Excluded-Middle → (b : B) → ⟦ b ⟧-sup ⊴ [ ⟦ b ⟧-Σ ]
+Theorem-6-16-₀₃ = comparison₀₃
 
-Theorem-6-15-₀₂ : EM 𝓤₁ → (b : B) → ⟦ b ⟧-sup ⊴ ⟦ b ⟧-sup¹
-Theorem-6-15-₀₂ = comparison₀₂
+Theorem-6-16-₀₂ : EM 𝓤₁ → (b : B) → ⟦ b ⟧-sup ⊴ ⟦ b ⟧-sup¹
+Theorem-6-16-₀₂ = comparison₀₂
 
-Theorem-6-15-₂₁ : Excluded-Middle → (b : B) → ⟦ b ⟧-sup¹ ⊴ [ ⟦ b ⟧-Σ¹ ]
-Theorem-6-15-₂₁ = comparison₂₁
+Theorem-6-16-₂₁ : Excluded-Middle → (b : B) → ⟦ b ⟧-sup¹ ⊴ [ ⟦ b ⟧-Σ¹ ]
+Theorem-6-16-₂₁ = comparison₂₁
 
-Theorem-6-15-₃₁ : EM 𝓤₀ → (b : B) → [ ⟦ b ⟧-Σ ] ⊴ [ ⟦ b ⟧-Σ¹ ]
-Theorem-6-15-₃₁ = comparison₃₁
+Theorem-6-16-₃₁ : EM 𝓤₀ → (b : B) → [ ⟦ b ⟧-Σ ] ⊴ [ ⟦ b ⟧-Σ¹ ]
+Theorem-6-16-₃₁ = comparison₃₁
 
 -- prop:comparisons-taboos (1), item:comparison03-gives-lpo
-Proposition-6-16-1 : ((b : B) → ⟦ b ⟧-sup ⊴ [ ⟦ b ⟧-Σ ]) → LPO
-Proposition-6-16-1 = FTr.comparison₀₃-gives-LPO
+Proposition-6-17-1 : ((b : B) → ⟦ b ⟧-sup ⊴ [ ⟦ b ⟧-Σ ]) → LPO
+Proposition-6-17-1 = FTr.comparison₀₃-gives-LPO
 
 -- prop:comparisons-taboos (2), item:comparison21-gives-notnot-wlpo
-Proposition-6-16-2 : ((b : B) → ⟦ b ⟧-sup¹ ⊴ [ ⟦ b ⟧-Σ¹ ]) → ¬¬ WLPO
-Proposition-6-16-2 = FTS.comparison₂₁-gives-¬¬WLPO
+Proposition-6-17-2 : ((b : B) → ⟦ b ⟧-sup¹ ⊴ [ ⟦ b ⟧-Σ¹ ]) → ¬¬ WLPO
+Proposition-6-17-2 = FTS.comparison₂₁-gives-¬¬WLPO
 
 \end{code}
 
-Question 6.17, which is not formalizable, asks whether the remaining
+Question 6.18, which is not formalizable, asks whether the remaining
 two comparisons, comparison₀₂ and comparison₃₁ holding for every code,
 imply a constructive taboo.
 
-Labels: Question 6.17 = q:comparisons-taboos.
+Labels: Question 6.18 = q:comparisons-taboos.
 
 \begin{code}
 
 -- def:delta-kappa
-Definition-6-18 : B → Ordᵀ
-Definition-6-18 = ⟦_⟧-Σ₁
+Definition-6-19 : B → Ordᵀ
+Definition-6-19 = ⟦_⟧-Σ₁
 
 -- thm:delta-kappa-props (1), item:delta-trichotomous
-Theorem-6-19-1 : (b : B) → is-trichotomous [ ⟦ b ⟧-Σ₁ ]
-Theorem-6-19-1 = BDC.Δ-is-trichotomous
+Theorem-6-20-1 : (b : B) → is-trichotomous [ ⟦ b ⟧-Σ₁ ]
+Theorem-6-20-1 = BDC.Δ-is-trichotomous
 
--- thm:delta-kappa-props (2), item:kappa-compact
-Theorem-6-19-2 : (b : B) → is-compact∙ ⟨ ⟦ b ⟧-Σ' ⟩
-Theorem-6-19-2 = BDC.Κ-compact∙
+-- thm:delta-kappa-props (2), item:delta-retract-N
+Theorem-6-20-2 : (b : B) → retract ⟨ ⟦ b ⟧-Σ₁ ⟩ of ℕ
+Theorem-6-20-2 = BDC.Δ-retract-of-ℕ
 
--- thm:delta-kappa-props (3), item:delta-retract-N
-Theorem-6-19-3 : (b : B) → retract ⟨ ⟦ b ⟧-Σ₁ ⟩ of ℕ
-Theorem-6-19-3 = BDC.Δ-retract-of-ℕ
-
-Theorem-6-19-3' : (b : B) → is-discrete ⟨ ⟦ b ⟧-Σ₁ ⟩
-Theorem-6-19-3' = BDC.Δ-is-discrete
-
--- thm:delta-kappa-props (4), item:kappa-retract-cantor
-Theorem-6-19-4 : (b : B) → retract ⟨ ⟦ b ⟧-Σ' ⟩ of (ℕ → 𝟚)
-Theorem-6-19-4 = BDC.Κ-Cantor-retract
-
-Theorem-6-19-4' : (b : B) → is-totally-separated ⟨ ⟦ b ⟧-Σ' ⟩
-Theorem-6-19-4' = BDC.Κ-is-totally-separated
-
--- rem:tot-sep-via-cantor
-Remark-6-20 : (X : ℕ → 𝓤 ̇ )
-            → ((n : ℕ) → is-totally-separated (X n))
-            → is-totally-separated (Σ¹ X)
-Remark-6-20 = Σ¹-is-totally-separated
-
-Remark-6-20' : (A : ℕ∞ → 𝓥 ̇ )
-             → ((u : ℕ∞) → is-totally-separated (A u))
-             → is-prop (A ∞)
-             → is-totally-separated (Σ A)
-Remark-6-20'
- = Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop fe₀
+Theorem-6-20-2' : (b : B) → is-discrete ⟨ ⟦ b ⟧-Σ₁ ⟩
+Theorem-6-20-2' = BDC.Δ-is-discrete
 
 -- prop:delta-kappa-fail (1), item:delta-compact-lpo
 Proposition-6-21-1 : ((b : B) → is-compact ⟨ ⟦ b ⟧-Σ₁ ⟩) ↔ LPO
@@ -2287,18 +2336,9 @@ Theorem-7-2-discrete = IRC.Δ-is-discrete
 Theorem-7-2-trichotomous : (ν : IRC.E) → is-trichotomous [ IRC.Δ ν ]
 Theorem-7-2-trichotomous = IRC.Δ-is-trichotomous
 
--- prop:E-delta-lpo (1), item:E-delta-compact
-Proposition-7-3-1 : ((ν : IRC.E) → is-compact ⟨ IRC.Δ ν ⟩) ↔ LPO
-Proposition-7-3-1 = IRC.Δ-compact-iff-LPO
-
--- prop:E-delta-lpo (2), item:E-delta-least
-Proposition-7-3-2 : propext 𝓤₀
-            → (((ν : IRC.E) (p : ⟨ IRC.Δ ν ⟩ → 𝟚)
-                 → ¬¬ (Σ x ꞉ ⟨ IRC.Δ ν ⟩ , p x ＝ ₀)
-                 → Σ x₀ ꞉ ⟨ IRC.Δ ν ⟩ ,
-                      is-least-root (underlying-weak-order (IRC.Δ ν)) p x₀)
-               ↔ LPO)
-Proposition-7-3-2 = IRC.Δ-least-roots-iff-LPO
+-- prop:E-delta-lpo
+Proposition-7-3 : ((ν : IRC.E) → is-compact ⟨ IRC.Δ ν ⟩) ↔ LPO
+Proposition-7-3 = IRC.Δ-compact-iff-LPO
 
 -- def:E-kappa
 Definition-7-4 : IRC.E → Ordᵀ
@@ -2369,64 +2409,74 @@ Proposition-7-7-2' = IRC.ι-is-equiv-gives-Κ-discrete
 Proposition-7-7-3 : ((ν : IRC.E) → is-discrete ⟨ IRC.Κ ν ⟩) → WLPO
 Proposition-7-7-3 = IRC.Κ-discrete-gives-WLPO
 
+-- prop:E-delta-least-lpo
+Proposition-7-8 : propext 𝓤₀
+                → (((ν : IRC.E) (p : ⟨ IRC.Δ ν ⟩ → 𝟚)
+                     → ¬¬ (Σ x ꞉ ⟨ IRC.Δ ν ⟩ , p x ＝ ₀)
+                     → Σ x₀ ꞉ ⟨ IRC.Δ ν ⟩ ,
+                          is-least-root (underlying-weak-order (IRC.Δ ν)) p x₀)
+                   ↔ LPO)
+Proposition-7-8 = IRC.Δ-least-roots-iff-LPO
+
 -- prop:E-delta-below-kappa (1), item:iota1-simulation
-Proposition-7-8-1 : [ IRC.Δ IRC.⌜ω+𝟙⌝ ] ⊴ [ IRC.Κ IRC.⌜ω+𝟙⌝ ]
-Proposition-7-8-1 = ω+𝟙-is-⊴-ℕ∞
+Proposition-7-9-1 : [ IRC.Δ IRC.⌜ω+𝟙⌝ ] ⊴ [ IRC.Κ IRC.⌜ω+𝟙⌝ ]
+Proposition-7-9-1 = ω+𝟙-is-⊴-ℕ∞
 
 -- prop:E-delta-below-kappa (2), item:E-delta-below-kappa-lpo
-Proposition-7-8-2 : ((ν : IRC.E) → [ IRC.Δ ν ] ⊴ [ IRC.Κ ν ]) ↔ LPO
-Proposition-7-8-2 = IRC.Δ-⊴-Κ-iff-LPO ua
+Proposition-7-9-2 : ((ν : IRC.E) → [ IRC.Δ ν ] ⊴ [ IRC.Κ ν ]) ↔ LPO
+Proposition-7-9-2 = IRC.Δ-⊴-Κ-iff-LPO ua
 
 -- prop:E-delta-below-kappa (2), the code of the forward implication
-Proposition-7-8-2-code : IRC.E
-Proposition-7-8-2-code = IRC.⌜ω+𝟚⌝ ua
+Proposition-7-9-2-code : IRC.E
+Proposition-7-9-2-code = IRC.⌜ω+𝟚⌝ ua
 
-Proposition-7-8-2-instance
+Proposition-7-9-2-instance
  : [ IRC.Δ (IRC.⌜ω+𝟚⌝ ua) ] ⊴ [ IRC.Κ (IRC.⌜ω+𝟚⌝ ua) ] → LPO
-Proposition-7-8-2-instance = IRC.Δ-⊴-Κ-gives-LPO ua
+Proposition-7-9-2-instance = IRC.Δ-⊴-Κ-gives-LPO ua
 
 -- def:brouwer-to-E
-Definition-7-9 : B → IRC.E
-Definition-7-9 = BtoE.B-to-E
+Definition-7-10 : B → IRC.E
+Definition-7-10 = BtoE.B-to-E
 
 -- thm:brouwer-to-E (1), item:E-is-set
-Theorem-7-10-1 : is-set IRC.E
-Theorem-7-10-1 = IRC.E-is-set
+Theorem-7-11-1 : is-set IRC.E
+Theorem-7-11-1 = IRC.E-is-set
 
 -- thm:brouwer-to-E (2), item:bemb-embedding
-Theorem-7-10-2 : is-embedding BtoE.B-to-E
-Theorem-7-10-2 = BtoE.B-to-E-is-embedding
+Theorem-7-11-2 : is-embedding BtoE.B-to-E
+Theorem-7-11-2 = BtoE.B-to-E-is-embedding
 
 -- thm:brouwer-to-E (3), item:bemb-discrete
-Theorem-7-10-3 : (b : B) → [ ⟦ b ⟧-Σ₁ ] ≃ₒ [ IRC.Δ (BtoE.B-to-E b) ]
-Theorem-7-10-3 = BtoE.Δ-agreement
+Theorem-7-11-3 : (b : B) → [ ⟦ b ⟧-Σ₁ ] ≃ₒ [ IRC.Δ (BtoE.B-to-E b) ]
+Theorem-7-11-3 = BtoE.Δ-agreement
 
 -- thm:brouwer-to-E (4), item:bemb-compact
-Theorem-7-10-4 : (b : B) → [ ⟦ b ⟧-Σ' ] ≃ₒ [ IRC.Κ (BtoE.B-to-E b) ]
-Theorem-7-10-4 = BtoE.Κ-agreement
+Theorem-7-11-4 : (b : B) → [ ⟦ b ⟧-Σ' ] ≃ₒ [ IRC.Κ (BtoE.B-to-E b) ]
+Theorem-7-11-4 = BtoE.Κ-agreement
 
 -- prop:kappa-not-tot-sep
-Proposition-7-11 : ((ν : IRC.E) → is-totally-separated ⟨ IRC.Κ ν ⟩) → ¬¬ WLPO
-Proposition-7-11 = IRC.Κ-totally-separated-gives-¬¬WLPO
+Proposition-7-12 : ((ν : IRC.E) → is-totally-separated ⟨ IRC.Κ ν ⟩) → ¬¬ WLPO
+Proposition-7-12 = IRC.Κ-totally-separated-gives-¬¬WLPO
 
 -- prop:kappa-not-tot-sep, the witnessing code
-Proposition-7-11-code : IRC.E
-Proposition-7-11-code = IRC.⌜ℕ∞₂⌝
+Proposition-7-12-code : IRC.E
+Proposition-7-12-code = IRC.⌜ℕ∞₂⌝
 
-Proposition-7-11-instance
+Proposition-7-12-instance
  : is-totally-separated ⟨ IRC.Κ IRC.⌜ℕ∞₂⌝ ⟩ → ¬¬ WLPO
-Proposition-7-11-instance = IRC.Κ⌜ℕ∞₂⌝-totally-separated-gives-¬¬WLPO
+Proposition-7-12-instance = IRC.Κ⌜ℕ∞₂⌝-totally-separated-gives-¬¬WLPO
 
 \end{code}
 
-Remark 7.12 concludes that the ordinals witnessing the failure of
-Proposition 7.11 are denoted by no Brouwer code, from Theorem 6.19(4)
-and Theorem 7.10. It is a comparison rather than a further claim.
+Remark 7.13 concludes that the ordinals witnessing the failure of
+Proposition 7.12 are not in general denoted by Brouwer codes, from
+Theorem 6.7(2) and Theorem 7.11. It is a comparison rather than a
+further claim.
 
-Labels: Remark 7.12 = rem:kappa-tot-sep-contrast,
-Proposition 7.11 = prop:kappa-not-tot-sep,
-Theorem 6.19(4) = thm:delta-kappa-props(item:kappa-retract-cantor),
-Theorem 7.10 = thm:brouwer-to-E.
+Labels: Remark 7.13 = rem:kappa-tot-sep-contrast,
+Proposition 7.12 = prop:kappa-not-tot-sep,
+Theorem 6.7(2) = thm:four-interp-props(item:compactsep-interp),
+Theorem 7.11 = thm:brouwer-to-E.
 
 \begin{code}
 
@@ -2456,53 +2506,53 @@ Prose-limit-points-for-brouwer-codes-decidable
 Prose-limit-points-for-brouwer-codes-decidable = BDC.isolatedness-decision'
 
 -- def:limit-point
-Definition-7-13 : {X : 𝓤 ̇ } → X → 𝓤 ̇
-Definition-7-13 = is-limit-point
+Definition-7-14 : {X : 𝓤 ̇ } → X → 𝓤 ̇
+Definition-7-14 = is-limit-point
 
 -- def:limitfn
-Definition-7-14 : (ν : IRC.E) → ⟨ IRC.Δ ν ⟩ → 𝟚
-Definition-7-14 = IRC.ℓ
+Definition-7-15 : (ν : IRC.E) → ⟨ IRC.Δ ν ⟩ → 𝟚
+Definition-7-15 = IRC.ℓ
 
 -- thm:limitfn (1), item:limitfn-isolated
-Theorem-7-15-1 : (ν : IRC.E) (x : ⟨ IRC.Δ ν ⟩)
+Theorem-7-16-1 : (ν : IRC.E) (x : ⟨ IRC.Δ ν ⟩)
               → IRC.ℓ ν x ＝ ₀
               → is-isolated (IRC.ι ν x)
-Theorem-7-15-1 = IRC.ℓ-isolated
+Theorem-7-16-1 = IRC.ℓ-isolated
 
 -- thm:limitfn (2), item:limitfn-limit
-Theorem-7-15-2 : (ν : IRC.E) (x : ⟨ IRC.Δ ν ⟩)
+Theorem-7-16-2 : (ν : IRC.E) (x : ⟨ IRC.Δ ν ⟩)
               → IRC.ℓ ν x ＝ ₁
               → is-limit-point (IRC.ι ν x)
-Theorem-7-15-2 = IRC.ℓ-limit
+Theorem-7-16-2 = IRC.ℓ-limit
 
 -- thm:limitfn (3), item:limitfn-dichotomy
-Theorem-7-15-3 : (ν : IRC.E) (x : ⟨ IRC.Δ ν ⟩)
+Theorem-7-16-3 : (ν : IRC.E) (x : ⟨ IRC.Δ ν ⟩)
               → is-isolated (IRC.ι ν x) + is-limit-point (IRC.ι ν x)
-Theorem-7-15-3 = IRC.isolatedness-decision
+Theorem-7-16-3 = IRC.isolatedness-decision
 
 -- thm:limitfn (4), item:limitfn-decidable
-Theorem-7-15-4 : ¬ WLPO
+Theorem-7-16-4 : ¬ WLPO
               → (ν : IRC.E) (x : ⟨ IRC.Δ ν ⟩)
               → is-decidable (is-isolated (IRC.ι ν x))
-Theorem-7-15-4 = IRC.isolatedness-decision'
+Theorem-7-16-4 = IRC.isolatedness-decision'
 
 \end{code}
 
-Remark 7.16 states that the order notion of limit point, a point of an
+Remark 7.17 states that the order notion of limit point, a point of an
 ordinal that is neither a successor of anything nor the least element,
-does not agree with the topological notion of Definition 7.13, because
+does not agree with the topological notion of Definition 7.14, because
 the point (∞ , ι 1) of the compact ordinal Κ ν₂ is a topological limit
 point but not an order one.
 
-Labels: Remark 7.16 = rem:limit-points-do-not-agree,
-Definition 7.13 = def:limit-point.
+Labels: Remark 7.17 = rem:limit-points-do-not-agree,
+Definition 7.14 = def:limit-point.
 
 \begin{code}
 
 -- rem:limit-points-do-not-agree
-Remark-7-16 : Σ α ꞉ Ordinal 𝓤₀ ,
+Remark-7-17 : Σ α ꞉ Ordinal 𝓤₀ ,
               Σ x ꞉ ⟨ α ⟩ , is-limit-point x
                           × ¬ OLP.is-order-limit-point α x
-Remark-7-16 = OLP.example-of-topological-limit-point-which-is-not-order-limit
+Remark-7-17 = OLP.example-of-topological-limit-point-which-is-not-order-limit
 
 \end{code}
