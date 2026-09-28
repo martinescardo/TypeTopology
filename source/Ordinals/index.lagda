@@ -47,6 +47,7 @@ import Ordinals.OrdinalOfOrdinalsSuprema      -- by [3]
 import Ordinals.OrdinalOfTruthValues
 import Ordinals.Propositions
 import Ordinals.ShulmanTaboo
+import Ordinals.SimulationsLowerSets          -- by [3]
 import Ordinals.SupSum
 import Ordinals.Taboos                        -- by [3]
 import Ordinals.ToppedArithmetic
