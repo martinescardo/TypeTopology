@@ -46,7 +46,6 @@ pos-multiplication-equiv-to-ℕ x = ℕ-induction base step
                 pos x + pos (x ℕ* k) ＝⟨ distributivity-pos-addition x (x ℕ* k) ⟩
                 pos (x ℕ* succ k)    ∎
 
-
 \end{code}
 
 The following proofs that 0 is the base and 1 is the identity for
@@ -147,8 +146,10 @@ distributivity-mult-ℤ₁ x y = ℕ-induction base step
          x * negsucc 0 + y * negsucc 0 ∎
 
   step : (k : ℕ)
-       → (x + y) * negsucc k               ＝ x * negsucc k + y * negsucc k
-       → (- (x + y)) + (x + y) * negsucc k ＝ (- x) + x * negsucc k + ((- y) + y * negsucc k)
+       → (x + y) * negsucc k
+       ＝ x * negsucc k + y * negsucc k
+       → (- (x + y)) + (x + y) * negsucc k
+       ＝ (- x) + x * negsucc k + ((- y) + y * negsucc k)
   step k IH = (- (x + y)) + (x + y) * negsucc k               ＝⟨ i    ⟩
               (- (x + y)) + (u + w)                           ＝⟨ ii   ⟩
               (- x) - y + (u + w)                             ＝⟨ iii  ⟩
@@ -204,7 +205,8 @@ mult-negation = ℤ-induction base step₁ step₂
    ℤ+-lc (- succℤ (negsucc (succ x)))
           (negsucc 0 * succℤ (negsucc (succ x))) (pos 1) I
    where
-    I : pos 1 + (- succℤ (negsucc (succ x))) ＝ pos 1 + negsucc 0 * succℤ (negsucc (succ x))
+    I : pos 1 + (- succℤ (negsucc (succ x)))
+      ＝ pos 1 + negsucc 0 * succℤ (negsucc (succ x))
     I = pos 1 + (- succℤ (negsucc (succ x))) ＝⟨ i  ⟩
         succℤ (pos x + pos 1)                ＝⟨ IH ⟩
         negsucc 0 * negsucc (succ x)         ∎
@@ -289,7 +291,6 @@ distributivity-mult-over-ℤ' x y z = γ
       x * z + y * z    ＝⟨ ap (_+ (y * z)) (ℤ*-comm x z)     ⟩
       z * x + y * z    ＝⟨ ap ((z * x) +_ ) (ℤ*-comm y z)    ⟩
       z * x + z * y    ∎
-
 
 negation-dist-over-mult₀ : (x : ℤ) → (y : ℕ) → x * (- pos y) ＝ - x * pos y
 negation-dist-over-mult₀ x = ℕ-induction base step
@@ -469,6 +470,8 @@ product-positive-negative-not-positive 0 (succ b) c e = 𝟘-elim II
 
   II : 𝟘
   II = positive-not-zero c (pos-lc I ⁻¹)
+product-positive-negative-not-positive (succ a) 0 c e =
+ 𝟘-elim (negsucc-not-pos e)
 product-positive-negative-not-positive (succ a) (succ b) c e₁ = γ I
  where
   I : Σ z ꞉ ℕ , succ z ＝ succ a ℕ* succ b

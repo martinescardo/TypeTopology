@@ -59,7 +59,8 @@ diff-commutative (succ x) (succ y) = diff-commutative x y
 equal-if-difference-is-zero : (x y : ℕ)
                          → ∣ x - y ∣ ＝ 0
                          → x ＝ y
-equal-if-difference-is-zero x zero p = p
+equal-if-difference-is-zero x        zero     p = p
+equal-if-difference-is-zero 0        (succ y) p = p ⁻¹
 equal-if-difference-is-zero (succ x) (succ y) p =
  ap succ (equal-if-difference-is-zero x y p)
 
@@ -68,9 +69,11 @@ subtract-cancellable-left x zero = refl
 subtract-cancellable-left x (succ y) = subtract-cancellable-left x y
 
 subtract-cancellable-right : (x y : ℕ) → ∣ x - x + y ∣ ＝ y
-subtract-cancellable-right zero y = ap ∣ 0 -_∣ (zero-left-neutral y) ∙ minus-nothing y
-subtract-cancellable-right (succ x) y = ap (λ u → ∣ succ x - u ∣) (succ-left x y)
-                                      ∙ subtract-cancellable-right x y
+subtract-cancellable-right zero     y =
+ ap ∣ 0 -_∣ (zero-left-neutral y) ∙ minus-nothing y
+subtract-cancellable-right (succ x) y =
+ ap (λ u → ∣ succ x - u ∣) (succ-left x y)
+ ∙ subtract-cancellable-right x y
 
 diff-addition-cancel : (a x y : ℕ) → ∣ a + x - a + y ∣ ＝ ∣ x - y ∣
 diff-addition-cancel zero x y =
@@ -87,10 +90,11 @@ diff-equals-remainder a x y p = γ ∙ subtract-cancellable-left y x
     γ = ap ∣_- x ∣ (addition-commutativity y x ∙ p) ⁻¹
 
 diff-mult-distributivity : (a x y : ℕ) → ∣ a * x - a * y ∣ ＝ a * ∣ x - y ∣
-diff-mult-distributivity a x zero = refl
-diff-mult-distributivity a zero (succ y) = minus-nothing (a + a * y)
-diff-mult-distributivity a (succ x) (succ y) = diff-addition-cancel a (a * x) (a * y)
-                                             ∙ diff-mult-distributivity a x y
+diff-mult-distributivity a x        zero     = refl
+diff-mult-distributivity a zero     (succ y) = minus-nothing (a + a * y)
+diff-mult-distributivity a (succ x) (succ y) =
+ diff-addition-cancel a (a * x) (a * y)
+ ∙ diff-mult-distributivity a x y
 
 diff-equals-constant : (a x y : ℕ) → ∣ x - y ∣ ＝ a → (x ＝ a + y) ∔ (y ＝ a + x)
 diff-equals-constant a x zero p = inl p

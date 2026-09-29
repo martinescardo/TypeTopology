@@ -19,6 +19,7 @@ tail : {A : 𝓤 ̇ } {n : ℕ} → Vector A (succ n) → Vector A n
 tail (x ∷ xs) = xs
 
 _!!_ : {X : 𝓤 ̇ } {n : ℕ} → Vector X n → Fin n → X
+[]       !! i     = 𝟘-elim (Fin-0-is-empty i)
 (x ∷ xs) !! 𝟎     = x
 (x ∷ xs) !! suc n = xs !! n
 
@@ -27,7 +28,6 @@ vmap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
     → {n : ℕ} → Vector X n → Vector Y n
 vmap f []       = []
 vmap f (x ∷ xs) = f x ∷ vmap f xs
-
 
 module vector-util
         {𝓤 : Universe}
@@ -39,6 +39,15 @@ module vector-util
    in-head : {x : X}   {n : ℕ} {xs : Vector X n} → x is-in (x ∷ xs)
    in-tail : {x y : X} {n : ℕ} {xs : Vector X n} → x is-in xs → x is-in (y ∷ xs)
 
+  members-give-is-nonzero : {x : X} {n : ℕ} {xs : Vector X n}
+                          → x is-in xs
+                          → is-nonzero n
+  members-give-is-nonzero in-head     = ⋆
+  members-give-is-nonzero (in-tail m) = ⋆
+
+  empty-vector-has-no-members : {x : X} → ¬ (x is-in [])
+  empty-vector-has-no-members = members-give-is-nonzero
+
   insert : X → {n : ℕ} → Vector X n → Vector X (succ n)
   insert x xs = x ∷ xs
 
@@ -47,6 +56,8 @@ module vector-util
          → x is-in xs
          → Vector X n
   remove x {0}      (_ ∷ []) in-head     = []
+  remove x {0}      (_ ∷ []) (in-tail p) =
+   𝟘-elim (empty-vector-has-no-members p)
   remove x {succ n} (_ ∷ xs) in-head     = xs
   remove x {succ n} (y ∷ xs) (in-tail p) = y ∷ remove x {n} xs p
 
