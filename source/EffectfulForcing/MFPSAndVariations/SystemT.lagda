@@ -18,6 +18,10 @@ data type : 𝓤₀ ̇ where
  ι   : type
  _⇒_ : type → type → type
 
+is-ι : type → 𝓤₀ ̇
+is-ι ι       = 𝟙
+is-ι (σ ⇒ τ) = 𝟘
+
 infixr 6 _⇒_
 
 \end{code}

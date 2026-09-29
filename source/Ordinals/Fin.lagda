@@ -42,6 +42,7 @@ import Naturals.Order as ℕ
   recurs (acc rec₁) = acc (λ j r → recurs (rec₁ ⟦ j ⟧ r))
 
 <-is-extensional : (n : ℕ) → is-extensional {X = Fin n} _<_
+<-is-extensional 0 x y i≼j j≼i = 𝟘-elim x
 <-is-extensional (succ n) 𝟎 𝟎 i≼j j≼i = refl
 <-is-extensional (succ n) 𝟎 (suc x) i≼j j≼i = 𝟘-elim (j≼i 𝟎 ⋆)
 <-is-extensional (succ n) (suc i) 𝟎 i≼j j≼i = 𝟘-elim (i≼j 𝟎 ⋆)
@@ -114,10 +115,14 @@ module _ (ua : Univalence) where
    f-order-preserving : is-order-preserving α β f
    f-order-preserving (inl n) (inl m) l = l
    f-order-preserving (inr ⋆) (inl m) l = l
+   f-order-preserving (inl n) (inr ⋆) l = 𝟘-elim l
+   f-order-preserving (inr ⋆) (inr ⋆) l = 𝟘-elim l
 
    f-order-reflecting : is-order-reflecting α β f
    f-order-reflecting (inl n) (inl m) l = l
    f-order-reflecting (inr ⋆) (inl m) l = l
+   f-order-reflecting (inl n) (inr ⋆) l = 𝟘-elim l
+   f-order-reflecting (inr ⋆) (inr ⋆) l = 𝟘-elim l
 
    f-order-equiv : is-order-equiv α β f
    f-order-equiv = order-preserving-reflecting-equivs-are-order-equivs
@@ -198,6 +203,7 @@ The construction of finite ordinals is order preserving.
  Fin-ordinal-preserves-≤ : {n m : ℕ} → n ≤ m → Fin-ordinal n ⊴ Fin-ordinal m
  Fin-ordinal-preserves-≤ {zero} {m} l =
   transport⁻¹ (_⊴ Fin-ordinal m) Fin-ordinal-zero (𝟘ₒ-least-⊴ (Fin-ordinal m))
+ Fin-ordinal-preserves-≤ {succ n} {zero}   l = 𝟘-elim l
  Fin-ordinal-preserves-≤ {succ n} {succ m} l =
   transport₂⁻¹ _⊴_ (Fin-ordinal-succ n)
                    (Fin-ordinal-succ m)

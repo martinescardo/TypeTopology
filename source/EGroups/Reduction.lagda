@@ -91,10 +91,16 @@ _≈[FA]_ : FA → FA → 𝓤 ̇
 
 ≈[FA]-sym : (s t : FA) → s ≈[FA] t → t ≈[FA] s
 ≈[FA]-sym []      []      ⋆       = ⋆
+≈[FA]-sym []      (y • t) ν       = 𝟘-elim ν
+≈[FA]-sym (x • s) []      ν       = 𝟘-elim ν
 ≈[FA]-sym (x • s) (y • t) (p , q) = ≈[X]-sym x y p , ≈[FA]-sym s t q
 
 ≈[FA]-trans : (s t u : FA) → s ≈[FA] t → t ≈[FA] u → s ≈[FA] u
 ≈[FA]-trans []      []      []      ⋆       ⋆         = ⋆
+≈[FA]-trans []      []      (z • u) ⋆       ν         = 𝟘-elim ν
+≈[FA]-trans []      (y • t) u       ν       m         = 𝟘-elim ν
+≈[FA]-trans (x • s) []      u       ν       m         = 𝟘-elim ν
+≈[FA]-trans (x • s) (y • t) []      l       ν         = 𝟘-elim ν
 ≈[FA]-trans (x • s) (y • t) (z • u) (p , q) (p' , q') =
  ≈[X]-trans x y z p p' , ≈[FA]-trans s t u q q'
 
@@ -108,6 +114,8 @@ transport a redex along an ≈[FA]-related word.
 
 ◦-cong : (s s' t t' : FA) → s ≈[FA] s' → t ≈[FA] t' → (s ◦ t) ≈[FA] (s' ◦ t')
 ◦-cong []      []       t t' ⋆        q = q
+◦-cong []      (y • s')  t t' ν        q = 𝟘-elim ν
+◦-cong (x • s) []        t t' ν        q = 𝟘-elim ν
 ◦-cong (x • s) (y • s') t t' (p , r)  q = p , ◦-cong s s' t t' r q
 
 cons-split : (a : X) (s w : FA)
@@ -390,10 +398,14 @@ redex (x • [])    = 𝟘
 redex (x • y • s) = (y ≈[X] (x ⁻)) + redex (y • s)
 
 reduct : (s : FA) → redex s → FA
+reduct []          r       = 𝟘-elim r
+reduct (x • [])    r       = 𝟘-elim r
 reduct (x • y • s) (inl p) = s
 reduct (x • y • s) (inr r) = x • reduct (y • s) r
 
 reduct-gives-▷ : (s : FA) (r : redex s) → s ▷ reduct s r
+reduct-gives-▷ []          r       = 𝟘-elim r
+reduct-gives-▷ (x • [])    r       = 𝟘-elim r
 reduct-gives-▷ (x • y • s) (inl c) = [] , s , x , y , refl , refl , c
 reduct-gives-▷ (x • y • s) (inr r) = •-▷ x (reduct-gives-▷ (y • s) r)
 

@@ -51,10 +51,14 @@ open import Ordinals.Underlying
   f = ⌜ 𝟘-lneutral ⌝
 
   f-preserves-order : (x y : 𝟘 + ⟨ α ⟩) → x ≺⟨ 𝟘ₒ +ₒ α ⟩ y → f x ≺⟨ α ⟩ f y
-  f-preserves-order (inr x) (inr y) l = l
+  f-preserves-order (inl x)  y       l = 𝟘-elim x
+  f-preserves-order (inr x) (inl y)  l = 𝟘-elim y
+  f-preserves-order (inr x) (inr y)  l = l
 
   f-reflects-order : (x y : 𝟘 + ⟨ α ⟩) → f x ≺⟨ α ⟩ f y → x ≺⟨ 𝟘ₒ +ₒ α ⟩ y
-  f-reflects-order (inr x) (inr y) l = l
+  f-reflects-order (inl x)  y       l = 𝟘-elim x
+  f-reflects-order (inr x) (inl y)  l = 𝟘-elim y
+  f-reflects-order (inr x) (inr y)  l = l
 
 
   h : (𝟘ₒ +ₒ α) ≃ₒ α
@@ -69,9 +73,13 @@ open import Ordinals.Underlying
 
   f-preserves-order : is-order-preserving (α  +ₒ 𝟘ₒ) α f
   f-preserves-order (inl x) (inl y) l = l
+  f-preserves-order (inl x) (inr y) l = 𝟘-elim y
+  f-preserves-order (inr x)  y      l = 𝟘-elim x
 
   f-reflects-order : is-order-reflecting (α  +ₒ 𝟘ₒ) α f
   f-reflects-order (inl x) (inl y) l = l
+  f-reflects-order (inl x) (inr y) l = 𝟘-elim y
+  f-reflects-order (inr x)  y      l = 𝟘-elim x
 
 
   h : (α +ₒ 𝟘ₒ) ≃ₒ α
@@ -90,6 +98,8 @@ open import Ordinals.Underlying
   f-preserves-order (inl (inr x)) (inl (inr y)) l = l
   f-preserves-order (inl (inl x)) (inr y)       l = l
   f-preserves-order (inl (inr x)) (inr y)       l = l
+  f-preserves-order (inl (inr x)) (inl (inl y)) l = 𝟘-elim l
+  f-preserves-order (inr x)       (inl y)       l = 𝟘-elim l
   f-preserves-order (inr x)       (inr y)       l = l
 
 
@@ -99,6 +109,7 @@ open import Ordinals.Underlying
   f-reflects-order (inl (inr x)) (inl (inr y)) l = l
   f-reflects-order (inl (inl x)) (inr y)       l = l
   f-reflects-order (inl (inr x)) (inr y)       l = l
+  f-reflects-order (inl (inr x)) (inl (inl y)) l = 𝟘-elim l
   f-reflects-order (inr x)       (inl (inl y)) l = l
   f-reflects-order (inr x)       (inl (inr y)) l = l
   f-reflects-order (inr x)       (inr y)       l = l
@@ -121,12 +132,14 @@ open import Ordinals.Underlying
 
   g :  ⟨ δ ⟩ → ⟨ γ ⟩
   g (inl x , l) = x , l
+  g (inr x , l) = 𝟘-elim l
 
   η : g ∘ f ∼ id
   η u = refl
 
   ε : f ∘ g ∼ id
   ε (inl x , l) = refl
+  ε (inr x , l) = 𝟘-elim l
 
   f-is-equiv : is-equiv f
   f-is-equiv = qinvs-are-equivs f (g , η , ε)
@@ -137,6 +150,8 @@ open import Ordinals.Underlying
 
   g-is-order-preserving : is-order-preserving δ γ g
   g-is-order-preserving (inl x , _) (inl x' , _) l = l
+  g-is-order-preserving (inl x , _) (inr x' , m) l = 𝟘-elim m
+  g-is-order-preserving (inr x , m)  y           l = 𝟘-elim m
 
   h : γ ＝ δ
   h = eqtoidₒ (ua 𝓤) fe' γ δ
@@ -175,11 +190,13 @@ open import Ordinals.Underlying
   f-is-order-preserving : is-order-preserving γ δ f
   f-is-order-preserving (inl _) (inl _) l = l
   f-is-order-preserving (inl _) (inr _) l = l
+  f-is-order-preserving (inr _) (inl _) l = 𝟘-elim l
   f-is-order-preserving (inr _) (inr _) l = l
 
   g-is-order-preserving : is-order-preserving δ γ g
   g-is-order-preserving (inl _ , _) (inl _ , _) l = l
   g-is-order-preserving (inl _ , _) (inr _ , _) l = l
+  g-is-order-preserving (inr _ , _) (inl _ , _) l = 𝟘-elim l
   g-is-order-preserving (inr _ , _) (inr _ , _) l = l
 
   h : γ ＝ δ
@@ -256,10 +273,12 @@ above.
   g-order-pres : is-order-preserving (α +ₒ β) (α +ₒ γ) g
   g-order-pres (inl a) (inl a') l = l
   g-order-pres (inl a) (inr b)  l = l
+  g-order-pres (inr b) (inl a)  l = 𝟘-elim l
   g-order-pres (inr b) (inr b') l =
    simulations-are-order-preserving β γ f f-sim b b' l
   g-init-seg : is-initial-segment (α +ₒ β) (α +ₒ γ) g
   g-init-seg (inl a) (inl a') l = inl a' , l , refl
+  g-init-seg (inl a) (inr b)  l = 𝟘-elim l
   g-init-seg (inr b) (inl a)  l = inl a , ⋆ , refl
   g-init-seg (inr b) (inr b') l =
    inr (pr₁ I) , pr₁ (pr₂ I) , ap inr (pr₂ (pr₂ I))
@@ -686,6 +705,8 @@ left-preserves-least : (α β : Ordinal 𝓤)
                      → (a₀ : ⟨ α ⟩) → is-least α a₀ → is-least (α +ₒ β) (inl a₀)
 left-preserves-least α β a₀ a₀-least (inl x) (inl u) l = a₀-least x u l
 left-preserves-least α β a₀ a₀-least (inr x) (inl u) l = ⋆
+left-preserves-least α β a₀ a₀-least (inl x) (inr u) l = 𝟘-elim l
+left-preserves-least α β a₀ a₀-least (inr x) (inr u) l = 𝟘-elim l
 
 \end{code}
 
@@ -782,6 +803,7 @@ succₒ-reflects-⊴ α β (f , i , p) = g , j , q
     I = i (inl x) (inl y) m
 
     II : type-of I → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (g x' ＝ y)
+    II (inr x' , n , e) = 𝟘-elim n
     II (inl x' , n , e) = x' , n , inl-lc (inl (g x') ＝⟨ (ϕ x')⁻¹ ⟩
                                            f (inl x') ＝⟨ e ⟩
                                            inl y      ∎)
@@ -1302,11 +1324,15 @@ Some special cases of addition by ω.
     ϵ (succ x) = refl
 
   f-preserves-order : (x y : 𝟙 + ℕ) → x ≺⟨ 𝟙ₒ +ₒ ω ⟩ y → f x ≺⟨ ω ⟩ f y
+  f-preserves-order (inl ⋆) (inl m) p = 𝟘-elim p
   f-preserves-order (inl ⋆) (inr n) p = ⋆
+  f-preserves-order (inr n) (inl m) p = 𝟘-elim p
   f-preserves-order (inr n) (inr m) p = p
 
   f-reflects-order : (x y : 𝟙 + ℕ) → f x ≺⟨ ω ⟩ f y → x ≺⟨ 𝟙ₒ +ₒ ω ⟩ y
+  f-reflects-order (inl ⋆) (inl m) p = 𝟘-elim p
   f-reflects-order (inl ⋆) (inr n) _ = ⋆
+  f-reflects-order (inr n) (inl m) p = 𝟘-elim p
   f-reflects-order (inr n) (inr m) p = p
 
   h : (𝟙ₒ +ₒ ω) ≃ₒ ω

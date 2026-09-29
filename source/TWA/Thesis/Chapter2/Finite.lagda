@@ -24,6 +24,7 @@ Fin-is-discrete (succ n)
  = +-is-discrete (Fin-is-discrete n) 𝟙-is-discrete
 
 Fin-is-set : (n : ℕ) → is-set (Fin n)
+Fin-is-set 0 {i} = 𝟘-elim i
 Fin-is-set (succ n) = +-is-set (Fin n) 𝟙 (Fin-is-set n) 𝟙-is-set
 
 finite-is-discrete
@@ -40,12 +41,13 @@ finite-is-set (n , f) = equiv-to-set f (Fin-is-set n)
   g : 𝟙 → Fin 1
   g ⋆ = 𝟎
   h : Fin 1 → 𝟙
-  h 𝟎 = ⋆
+  h 𝟎       = ⋆
+  h (inl i) = 𝟘-elim i
   η : h ∘ g ∼ id
   η ⋆ = refl
   μ : g ∘ h ∼ id
-  μ 𝟎 = refl
-  μ (suc ())
+  μ 𝟎       = refl
+  μ (suc i) = 𝟘-elim i
 
 𝟚-is-finite : finite-linear-order 𝟚
 𝟚-is-finite = 2 , qinveq g (h , η , μ)
@@ -54,14 +56,16 @@ finite-is-set (n , f) = equiv-to-set f (Fin-is-set n)
   g ₀ = 𝟎
   g ₁ = 𝟏
   h : Fin 2 → 𝟚
-  h 𝟎 = ₀
-  h 𝟏 = ₁
+  h 𝟎             = ₀
+  h 𝟏             = ₁
+  h (inl (inl i)) = 𝟘-elim i
   η : h ∘ g ∼ id
   η ₀ = refl
   η ₁ = refl
   μ : g ∘ h ∼ id
-  μ 𝟎 = refl
-  μ 𝟏 = refl
+  μ 𝟎             = refl
+  μ 𝟏             = refl
+  μ (inl (inl i)) = 𝟘-elim i
 
 +-is-finite : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
             → finite-linear-order X

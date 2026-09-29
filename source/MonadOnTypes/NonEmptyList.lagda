@@ -28,9 +28,11 @@ module _ {X : 𝓤 ̇ } where
  [ x ]⁺ = (x ∷ []) , cons-is-non-empty
 
  head⁺ : List⁺ X → X
+ head⁺ ([] , ν)                       = 𝟘-elim ν
  head⁺ ((x ∷ xs) , cons-is-non-empty) = x
 
  tail⁺ : List⁺ X → List X
+ tail⁺ ([] , ν)                       = 𝟘-elim ν
  tail⁺ ((x ∷ xs) , cons-is-non-empty) = xs
 
  cons⁺ : X → List X → List⁺ X
@@ -52,12 +54,14 @@ module _ {X : 𝓤 ̇ } where
 
 head⁺-is-member : {X : 𝓤 ̇ } (xs : List⁺ X)
                 → member (head⁺ xs) (ι xs)
+head⁺-is-member ([] , ν)       = 𝟘-elim ν
 head⁺-is-member ((x ∷ xs) , _) = in-head
 
 List-ext-lemma⁻ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   (f : X → List⁺ Y) (xs : List X)
                 → is-non-empty xs
                 → is-non-empty (List-ext (ι ∘ f) xs)
+List-ext-lemma⁻ f []       ν = 𝟘-elim ν
 List-ext-lemma⁻ f (x ∷ xs) cons-is-non-empty =
  is-non-empty-++ (ι (f x)) _ (underlying-list⁺-is-non-empty (f x))
 
@@ -105,6 +109,7 @@ module List⁺-definitions where
 
  concat⁺-non-empty : {X : 𝓤 ̇ } (xss : List⁺ (List⁺ X))
                    → is-non-empty (concat (lmap ι (ι xss)))
+ concat⁺-non-empty ([] , ν) = 𝟘-elim ν
  concat⁺-non-empty (((xs , xs-ne) ∷ xss) , xss-ne) =
   is-non-empty-++ xs (concat (lmap ι xss)) xs-ne
 
@@ -163,15 +168,18 @@ module List⁺-definitions where
 
  head⁺-of-+++ : {X : 𝓤 ̇ } (xs : List⁺ X) (ys : List X)
               → head⁺ (xs +++ ys) ＝ head⁺ xs
+ head⁺-of-+++ ([] , ν)           ys = 𝟘-elim ν
  head⁺-of-+++ ((x ∷ xs) , xs-ne) ys = refl
 
  head⁺-of-concat⁺ : {X : 𝓤 ̇ } (xss : List⁺ (List⁺ X))
                   → head⁺ (concat⁺ xss) ＝ head⁺ (head⁺ xss)
+ head⁺-of-concat⁺ ([] , ν) = 𝟘-elim ν
  head⁺-of-concat⁺ ((xs ∷ xss) , cons-is-non-empty) =
   head⁺-of-+++ xs (concat (lmap ι xss))
 
  head⁺-of-lmap⁺ :  {X : 𝓤 ̇ } {Y : 𝓥 ̇ }(f : X → Y) (xs : List⁺ X)
                 → head⁺ (lmap⁺ f xs) ＝ f (head⁺ xs)
+ head⁺-of-lmap⁺ f ([] , ν)       = 𝟘-elim ν
  head⁺-of-lmap⁺ f ((x ∷ xs) , _) = refl
 
  split-membership : Fun-Ext

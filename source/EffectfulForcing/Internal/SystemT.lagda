@@ -51,6 +51,15 @@ Cxt-is-non-empty (Γ ,, σ) = 𝟙
 ∈Cxt-gives-Cxt-is-non-empty (∈Cxt0 Γ)   = ⋆
 ∈Cxt-gives-Cxt-is-non-empty (∈CxtS τ i) = ⋆
 
+is-∈Cxt0 : {σ : type} {Γ : Cxt} → ∈Cxt σ Γ → 𝓤₀ ̇
+is-∈Cxt0 (∈Cxt0 Γ)   = 𝟙
+is-∈Cxt0 (∈CxtS τ i) = 𝟘
+
+∈Cxt-〈〉-elim : {σ : type} {X : ∈Cxt σ 〈〉 → 𝓤 ̇ }
+              (i : ∈Cxt σ 〈〉)
+            → X i
+∈Cxt-〈〉-elim i = 𝟘-elim (∈Cxt-gives-Cxt-is-non-empty i)
+
 data T : (Γ : Cxt) (σ : type) → 𝓤₀ ̇ where
  Zero : {Γ : Cxt} → T Γ ι
  Succ : {Γ : Cxt} → T Γ ι → T Γ ι
