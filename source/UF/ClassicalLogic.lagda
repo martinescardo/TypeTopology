@@ -249,12 +249,12 @@ End of addition/modification.
 Is the above untruncated De Morgan Law a proposition? Not in
 general. If it doesn't hold, it is vacuously a proposition. But if it
 does hold, it is not a proposition. We prove this by modifying any
-given δ : De-Mordan 𝓤 to a different δ' : untruncated-De-Morgan
-𝓤. Then we also consider a truncated version of untruncated-De-Morgan
-that is a proposition and is logically equivalent to
-untruncated-De-Morgan. So untruncated-De-Morgan 𝓤 is not necessarily a
-proposition, but it always has split support (it has a proposition as
-a retract).
+given δ : untruncated-typal-De-Mordan 𝓤 to a different δ' of the same
+type. Then we also consider a truncated version of
+untruncated-De-Morgan that is a proposition and is logically
+equivalent to untruncated-De-Morgan. So untruncated-De-Morgan 𝓤 is not
+necessarily a proposition, but it always has split support (it has a
+proposition as a retract).
 
 \begin{code}
 
