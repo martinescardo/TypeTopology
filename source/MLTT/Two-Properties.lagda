@@ -18,6 +18,19 @@ open import UF.FunExt
 open import UF.Retracts
 open import UF.Subsingletons
 
+one-is-not-zero : ₁ ≠ ₀
+one-is-not-zero p = 𝟙-is-not-𝟘 q
+ where
+  f : 𝟚 → 𝓤₀ ̇
+  f ₀ = 𝟘
+  f ₁ = 𝟙
+
+  q : 𝟙 ＝ 𝟘
+  q = ap f p
+
+zero-is-not-one : ₀ ≠ ₁
+zero-is-not-one p = one-is-not-zero (p ⁻¹)
+
 𝟚-Cases : {A : 𝓤 ̇ } → 𝟚 → A → A → A
 𝟚-Cases a b c = 𝟚-cases b c a
 
@@ -66,19 +79,6 @@ open import UF.Subsingletons
 𝟚-things-distinct-from-a-third-are-equal ₁ ₀ z u v =
  𝟘-elim (𝟚-excluded-third z (≠-sym v) (≠-sym u))
 𝟚-things-distinct-from-a-third-are-equal ₁ ₁ z u v = refl
-
-one-is-not-zero : ₁ ≠ ₀
-one-is-not-zero p = 𝟙-is-not-𝟘 q
- where
-  f : 𝟚 → 𝓤₀ ̇
-  f ₀ = 𝟘
-  f ₁ = 𝟙
-
-  q : 𝟙 ＝ 𝟘
-  q = ap f p
-
-zero-is-not-one : ₀ ≠ ₁
-zero-is-not-one p = one-is-not-zero (p ⁻¹)
 
 𝟚-ext : {b c : 𝟚} → (b ＝ ₁ → c ＝ ₁) → (c ＝ ₁ → b ＝ ₁) → b ＝ c
 𝟚-ext {₀} {₀} f g = refl
