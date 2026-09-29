@@ -121,7 +121,7 @@ greatest element.
   where
    α : (y : Fin 1) → p 𝟎 ≤ p y
    α 𝟎       = ≤-refl ⟦ p 𝟎 ⟧
-   α (inl i) = 𝟘-elim i
+   α (suc i) = 𝟘-elim i
  Fin-argmin {succ a} p = γ
   where
    IH : Σ x ꞉ Fin (succ a) , ((y : Fin (succ a)) → p (suc x) ≤ p (suc y))
@@ -159,7 +159,7 @@ greatest element.
   where
    α : (y : Fin 1) → p y ≤ p 𝟎
    α 𝟎       = ≤-refl ⟦ p 𝟎 ⟧
-   α (inl i) = 𝟘-elim i
+   α (suc i) = 𝟘-elim i
  Fin-argmax {succ a} p = γ
   where
    IH : Σ x ꞉ Fin (succ a) , ((y : Fin (succ a)) → p (suc y) ≤ p (suc x))

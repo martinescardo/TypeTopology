@@ -63,7 +63,7 @@ module _
   where
    e : Fin 1 → 𝕋 ❴ x ❵
    e 𝟎       = x , refl
-   e (inl i) = 𝟘-elim i
+   e (suc i) = 𝟘-elim i
    σ : is-surjection e
    σ (x , refl) = ∣ inr ⋆ , refl ∣
 

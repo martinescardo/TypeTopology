@@ -35,7 +35,7 @@ data 𝟛 : 𝓤₀ ̇ where
   h 𝟎 = −1
   h 𝟏 =  O
   h 𝟐 = +1
-  h (inl (inl (inl i))) = 𝟘-elim i
+  h (suc (suc (suc i))) = 𝟘-elim i
   η : h ∘ g ∼ id
   η −1 = refl
   η  O = refl
@@ -44,7 +44,7 @@ data 𝟛 : 𝓤₀ ̇ where
   μ 𝟎 = refl
   μ 𝟏 = refl
   μ 𝟐 = refl
-  μ (inl (inl (inl i))) = 𝟘-elim i
+  μ (suc (suc (suc i))) = 𝟘-elim i
   
 𝟛-is-discrete : is-discrete 𝟛
 𝟛-is-discrete = finite-is-discrete 𝟛-is-finite

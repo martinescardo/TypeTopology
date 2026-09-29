@@ -74,6 +74,8 @@ expᴸ-satisfies-zero-specification-≃ₒ α = f , f-order-preserving ,
   f-order-preserving : is-order-preserving (expᴸ[𝟙+ α ] 𝟘ₒ) 𝟙ₒ f
   f-order-preserving ([] , δ) ([] , ε) u =
    𝟘-elim (Irreflexivity (expᴸ[𝟙+ α ] 𝟘ₒ) ([] , δ) u)
+  f-order-preserving ([] , δ) (((a , z) ∷ l) , ε) u = 𝟘-elim z
+  f-order-preserving (((a , z) ∷ l) , δ) y u = 𝟘-elim z
 
   g : 𝟙 → ⟨ expᴸ[𝟙+ α ] 𝟘ₒ ⟩
   g _ = [] , []-decr
@@ -86,6 +88,7 @@ expᴸ-satisfies-zero-specification-≃ₒ α = f , f-order-preserving ,
    where
     p : g ∘ f ∼ id
     p ([] , []-decr) = refl
+    p (((a , z) ∷ l) , δ) = 𝟘-elim z
     q : f ∘ g ∼ id
     q ⋆ = refl
 
@@ -112,6 +115,12 @@ expᴸ-satisfies-zero-specification {𝓤} {𝓥} α =
   f-order-preserving ([] , δ) ((y ∷ []) , ε) q = ⋆
   f-order-preserving ([] , δ) (((a , ⋆) ∷ (a' , ⋆) ∷ l) , many-decr p ε) q =
    𝟘-elim (irrefl 𝟙ₒ ⋆ p)
+  f-order-preserving (((a , ⋆) ∷ []) , δ) ([] , ε) q =
+   𝟘-elim (lex-gives-non-empty-right _ q)
+  f-order-preserving (((a , ⋆) ∷ []) , δ) (((a' , ⋆) ∷ []) , ε)
+   (head-lex (inl q)) = 𝟘-elim q
+  f-order-preserving (((a , ⋆) ∷ []) , δ) (((a' , ⋆) ∷ []) , ε)
+   (tail-lex r q) = 𝟘-elim (lex-gives-non-empty-right _ q)
   f-order-preserving (((a , ⋆) ∷ []) , δ) (((a' , ⋆) ∷ []) , ε)
    (head-lex (inr (r , q))) = q
   f-order-preserving (((a , ⋆) ∷ []) , δ)
@@ -125,6 +134,8 @@ expᴸ-satisfies-zero-specification {𝓤} {𝓥} α =
   g (inr a) = ([ a , ⋆ ] , sing-decr)
 
   g-order-preserving : is-order-preserving (𝟙ₒ +ₒ α) (expᴸ[𝟙+ α ] (𝟙ₒ {𝓤})) g
+  g-order-preserving (inl ⋆) (inl ⋆) p = 𝟘-elim p
+  g-order-preserving (inr a) (inl ⋆) p = 𝟘-elim p
   g-order-preserving (inl ⋆) (inr a) ⋆ = []-lex
   g-order-preserving (inr a) (inr a') p = head-lex (inr (refl , p))
   f-qinv : qinv f
@@ -258,6 +269,20 @@ preserving forward map.
                                  (expᴸ[𝟙+ α ] (β +ₒ γ))
                                  (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ)
                                  forward
+  forward-is-order-preserving ([] , δ₁) ([] , δ₂) u =
+   𝟘-elim (lex-gives-non-empty-right _ u)
+  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁) ([] , δ₂) u =
+   𝟘-elim (lex-gives-non-empty-right _ u)
+  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁) ([] , δ₂) u =
+   𝟘-elim (lex-gives-non-empty-right _ u)
+  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁)
+                              (((a' , inr c) ∷ l₂) , δ₂)
+                              (tail-lex e u) =
+   𝟘-elim (+disjoint (ap pr₂ e))
+  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁)
+                              (((a' , inl b) ∷ l₂) , δ₂)
+                              (tail-lex e u) =
+   𝟘-elim (+disjoint' (ap pr₂ e))
   forward-is-order-preserving ([] , δ₁) (((a , inl b) ∷ l₂) , δ₂) []-lex =
    inr ((stay-left l₂ a b δ₂ ⁻¹) , []-lex)
   forward-is-order-preserving ([] , δ₁) (((a , inr c) ∷ l₂) , δ₂) []-lex =
@@ -370,12 +395,23 @@ We now construct an order preserving map in the other direction.
      ((l₁' , δ₁') , (l₂' , δ₂'))
    → backward ((l₁ , δ₁) , (l₂ , δ₂)) ≺⟨ expᴸ[𝟙+ α ] (β +ₒ γ) ⟩
      backward ((l₁' , δ₁') , (l₂' , δ₂'))
-  backward-is-order-preserving' [] [] [] [] δ₁ δ₁' δ₂ δ₂' (inl ())
-  backward-is-order-preserving' [] [] [] [] δ₁ δ₁' δ₂ δ₂' (inr (refl , ()))
+  backward-is-order-preserving' [] [] [] [] δ₁ δ₁' δ₂ δ₂' (inl q) =
+   𝟘-elim (lex-gives-non-empty-right _ q)
+  backward-is-order-preserving' [] [] [] [] δ₁ δ₁' δ₂ δ₂' (inr (refl , q)) =
+   𝟘-elim (lex-gives-non-empty-right _ q)
   backward-is-order-preserving' [] [] [] (_ ∷ l₂') δ₁ δ₁' δ₂ δ₂' p = []-lex
-  backward-is-order-preserving' [] [] (_ ∷ l₂) [] δ₁ δ₁' δ₂ δ₂' (inl ())
+  backward-is-order-preserving' [] [] (_ ∷ l₂) [] δ₁ δ₁' δ₂ δ₂' (inl q) =
+   𝟘-elim (lex-gives-non-empty-right _ q)
   backward-is-order-preserving' [] [] (_ ∷ l₂) [] δ₁ δ₁' δ₂ δ₂' (inr (e , p)) =
    𝟘-elim ([]-is-not-cons _ l₂ (ap pr₁ (e ⁻¹)))
+  backward-is-order-preserving' [] [] (_ ∷ l₂) (_ ∷ l₂') δ₁ δ₁' δ₂ δ₂'
+   (inr (e , q)) =
+   𝟘-elim (lex-gives-non-empty-right _ q)
+  backward-is-order-preserving' (x ∷ l₁) [] (_ ∷ l₂) (_ ∷ l₂') δ₁ δ₁' δ₂ δ₂'
+   (inr (e , q)) =
+   𝟘-elim (lex-gives-non-empty-right _ q)
+  backward-is-order-preserving' (x ∷ l₁) (y ∷ l₁') [] [] δ₁ δ₁' δ₂ δ₂' (inl q) =
+   𝟘-elim (lex-gives-non-empty-right _ q)
   backward-is-order-preserving' [] [] (_ ∷ l₂) (_ ∷ l₂') δ₁ δ₁' δ₂ δ₂'
    (inl (head-lex (inl p))) = head-lex (inl p)
   backward-is-order-preserving' [] [] (_ ∷ l₂) (_ ∷ l₂') δ₁ δ₁' δ₂ δ₂'

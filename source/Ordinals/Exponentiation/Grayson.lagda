@@ -339,6 +339,10 @@ equivalent way:
    I : (l l' : GraysonList)
      → Grayson-order l l'
      → Grayson'-order (⌜ GraysonLists-agree p ⌝ l) (⌜ GraysonLists-agree p ⌝ l')
+   I ([] , _) ([] , _) q =
+    𝟘-elim (lex-gives-non-empty-right _ q)
+   I ((x ∷ l) , _) ([] , _) q =
+    𝟘-elim (lex-gives-non-empty-right _ q)
    I ([] , _) ((x ∷ l') , (δ , (p ∷ ps))) []-lex = []-lex
    I ((x ∷ l) , (δ , (p ∷ ps))) ((x' ∷ l') , (δ' , (p' ∷ ps'))) (head-lex q) =
     head-lex q
@@ -350,6 +354,10 @@ equivalent way:
    II : (l l' : GraysonList)
       → Grayson'-order (⌜ GraysonLists-agree p ⌝ l) (⌜ GraysonLists-agree p ⌝ l')
       → Grayson-order l l'
+   II ([] , _) ([] , _) q =
+    𝟘-elim (lex-gives-non-empty-right _ q)
+   II ((x ∷ l) , _) ([] , _) q =
+    𝟘-elim (lex-gives-non-empty-right _ q)
    II ([] , _) ((x ∷ l') , (δ , (p ∷ ps))) []-lex = []-lex
    II ((x ∷ l) , (δ , (p ∷ ps))) ((x' ∷ l') , (δ' , (p' ∷ ps'))) (head-lex q) =
     head-lex q
@@ -445,6 +453,9 @@ Assuming that the order on Grayson lists is a well-order, so is the order on A�
    I x y e l []-lex = []-lex
    I x y e ((a , ⋆ ∷ l') , _ , (q ∷ _)) (head-lex (inr (_ , r))) =
     head-lex (inr (refl , e (a , q) r))
+   I x y e ((a , ⋆ ∷ l') , _ , (q ∷ _)) (head-lex (inl r)) = 𝟘-elim r
+   I x y e ((z ∷ l') , _) (tail-lex r q) =
+    𝟘-elim (lex-gives-non-empty-right _ q)
 
    II : sing (inr x) ＝ sing (inr y)
    II = ext (sing (inr x)) (sing (inr y)) (I x y p) (I y x q)
@@ -463,6 +474,9 @@ Assuming that the order on Grayson lists is a well-order, so is the order on A�
 
    II : sing (inr a₀) ≺ sing (inr a₂) → R⁺ a₀ a₂
    II (head-lex (inr (_ , r))) = r
+   II (head-lex (inl r))       = 𝟘-elim r
+   II (tail-lex r q)           =
+    𝟘-elim (lex-gives-non-empty-right _ q)
 
  R⁺-wellorder : is-well-order _≺_ → is-well-order R⁺
  R⁺-wellorder (p , w , e , t) =
@@ -655,6 +669,10 @@ GraysonList'-order-is-exponentiationᴸ-order-for-trichotomous-least-base
    II : (l l' : GraysonList' (underlying-order α) (underlying-order β))
       → underlying-order (exponentiationᴸ α h β) (f l) (f l')
       → (Grayson'-order _ _ l l')
+   II ([] , p) ([] , p') q =
+    𝟘-elim (lex-gives-non-empty-right _ q)
+   II ((x ∷ l) , p) ([] , p') q =
+    𝟘-elim (lex-gives-non-empty-right _ q)
    II ([] , p) ((x ∷ l') , p') q = []-lex
    II ((x ∷ l) , p) ((x' ∷ l') , p') (head-lex q) = head-lex q
    II ((x ∷ l) , p) ((x' ∷ l') , p') (tail-lex r q) =

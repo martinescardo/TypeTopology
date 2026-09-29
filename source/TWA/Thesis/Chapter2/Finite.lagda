@@ -42,7 +42,7 @@ finite-is-set (n , f) = equiv-to-set f (Fin-is-set n)
   g ⋆ = 𝟎
   h : Fin 1 → 𝟙
   h 𝟎       = ⋆
-  h (inl i) = 𝟘-elim i
+  h (suc i) = 𝟘-elim i
   η : h ∘ g ∼ id
   η ⋆ = refl
   μ : g ∘ h ∼ id
@@ -58,14 +58,14 @@ finite-is-set (n , f) = equiv-to-set f (Fin-is-set n)
   h : Fin 2 → 𝟚
   h 𝟎             = ₀
   h 𝟏             = ₁
-  h (inl (inl i)) = 𝟘-elim i
+  h (suc (suc i)) = 𝟘-elim i
   η : h ∘ g ∼ id
   η ₀ = refl
   η ₁ = refl
   μ : g ∘ h ∼ id
   μ 𝟎             = refl
   μ 𝟏             = refl
-  μ (inl (inl i)) = 𝟘-elim i
+  μ (suc (suc i)) = 𝟘-elim i
 
 +-is-finite : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
             → finite-linear-order X

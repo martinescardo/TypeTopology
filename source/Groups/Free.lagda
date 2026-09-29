@@ -625,8 +625,12 @@ after quotienting:
 \begin{code}
 
  η-irreducible : {a : A} {s : FA} → ¬ (η a ▷ s)
- η-irreducible ((x • []) , v , y , () , refl)
- η-irreducible ((x • y • u) , v , z , () , q)
+ η-irreducible ([] , v , y , e₁ , e₂) =
+  []-is-not-cons _ _ (equal-tails e₁)
+ η-irreducible ((x • []) , v , y , e₁ , e₂) =
+  []-is-not-cons _ _ (equal-tails e₁)
+ η-irreducible ((x • y • u) , v , z , e₁ , e₂) =
+  []-is-not-cons _ _ (equal-tails e₁)
 
  η-irreducible⋆ : {a : A} {s : FA} → η a ▷⋆ s → η a ＝ s
  η-irreducible⋆ {a} {s} (n , r) = f n r
@@ -1457,10 +1461,14 @@ functions refl₀ and from-＝₀.
 
  from-＝[FA] : {s t : FA} → s ＝[FA] t → s ＝ t
  from-＝[FA] {[]}    {[]}    e       = refl
+ from-＝[FA] {[]}    {y • t} ν       = 𝟘-elim ν
+ from-＝[FA] {x • s} {[]}    ν       = 𝟘-elim ν
  from-＝[FA] {x • s} {y • t} (p , q) = ap₂ _•_ (from-＝[X] p) (from-＝[FA] q)
 
  to-＝[FA] : {s t : FA} → s ＝ t → s ＝[FA] t
  to-＝[FA] {[]} {[]}       p = ⋆
+ to-＝[FA] {[]}    {y • t} p = 𝟘-elim ([]-is-not-cons y t p)
+ to-＝[FA] {x • s} {[]}    p = 𝟘-elim ([]-is-not-cons x s (p ⁻¹))
  to-＝[FA] {x • s} {y • t} p = to-＝[X]  (equal-heads p) ,
                                to-＝[FA] (equal-tails p)
 
@@ -1496,6 +1504,8 @@ We now show that _▶_ defined above is logically equivalent to _▷_.
 
  ▶-gives-▷ {[]} {t} r = 𝟘-elim r
 
+ ▶-gives-▷ {x • []} {[]}    r       = 𝟘-elim r
+ ▶-gives-▷ {x • []} {y • t} (inl r) = 𝟘-elim r
  ▶-gives-▷ {x • y • s} {[]} (p , q) = [] , s , x ,
                                       ap (λ - → x • - • s) (from-＝[X] p) ,
                                       ((from-＝[FA] q)⁻¹)
@@ -1540,6 +1550,8 @@ In order to overcome this obstacle, we consider a type of redexes.
  redex (x • y • s) = (y ＝[X] (x ⁻)) + redex (y • s)
 
  reduct : (s : FA) → redex s → FA
+ reduct []          r       = 𝟘-elim r
+ reduct (x • [])    r       = 𝟘-elim r
  reduct (x • y • s) (inl p) = s
  reduct (x • y • s) (inr r) = x • reduct (y • s) r
 
@@ -1552,13 +1564,17 @@ redex r, which is what we prove next:
 \begin{code}
 
  lemma-reduct→ : (s : FA) (r : redex s) → s ▶ reduct s r
+ lemma-reduct→ []          r       = 𝟘-elim r
+ lemma-reduct→ (x • [])    r       = 𝟘-elim r
  lemma-reduct→ (x • y • s) (inl p) = ▶-lemma x y s (from-＝[X] p)
  lemma-reduct→ (x • y • s) (inr r) = inr (to-＝[X] {x} refl ,
                                          lemma-reduct→ (y • s) r)
 
  lemma-reduct← : (s t : FA) → s ▶ t → Σ r ꞉ redex s , reduct s r ＝ t
- lemma-reduct← (x • [])    (z • t) (inl ())
- lemma-reduct← (x • [])    (z • t) (inr ())
+ lemma-reduct← []          t       r             = 𝟘-elim r
+ lemma-reduct← (x • [])    []      r             = 𝟘-elim r
+ lemma-reduct← (x • [])    (z • t) (inl r)       = 𝟘-elim r
+ lemma-reduct← (x • [])    (z • t) (inr (p , r)) = 𝟘-elim r
  lemma-reduct← (x • y • s) []      (p , q)       = inl p , from-＝[FA] q
  lemma-reduct← (x • y • s) (z • t) (inl (p , q)) = inl p , from-＝[FA] q
  lemma-reduct← (x • y • s) (z • t) (inr (p , r)) = inr (pr₁ IH) ,

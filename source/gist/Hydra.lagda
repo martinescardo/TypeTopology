@@ -79,14 +79,14 @@ cons-mult x 0 xs = xs
 cons-mult x (succ n) xs = x ∷ (cons-mult x n xs)
 
 HeadLocation₀-gives-is-non-empty : {hs : List Hydra}
-                                → HeadLocation₀ hs
-                                → is-non-empty hs
+                                 → HeadLocation₀ hs
+                                 → is-non-empty hs
 HeadLocation₀-gives-is-non-empty here     = ⋆
 HeadLocation₀-gives-is-non-empty (next l) = ⋆
 
 HeadLocation₁-gives-is-non-empty : {hs : List Hydra}
-                                → HeadLocation₁ hs
-                                → is-non-empty hs
+                                 → HeadLocation₁ hs
+                                 → is-non-empty hs
 HeadLocation₁-gives-is-non-empty (here₀ l) = ⋆
 HeadLocation₁-gives-is-non-empty (here₁ l) = ⋆
 HeadLocation₁-gives-is-non-empty (next  l) = ⋆

@@ -51,6 +51,7 @@ private
 open import CoNaturals.Type
 open import Fin.Topology
 open import Fin.Type
+open import Naturals.Properties
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import Naturals.Binary hiding (_+_)
@@ -597,6 +598,7 @@ Non-limit points are isolated in the Κ interpretation:
 ℓ-isolated : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₀ → is-isolated (ι ν x)
 ℓ-isolated ⌜𝟙⌝         ⋆            p    = 𝟙-is-discrete ⋆
 ℓ-isolated ⌜ω+𝟙⌝       (inl n)      refl = finite-isolated fe₀ n
+ℓ-isolated ⌜ω+𝟙⌝       (inr ⋆)      p    = 𝟘-elim (one-is-not-zero p)
 ℓ-isolated (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p    = Σ-isolated
                                             (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
                                             (ℓ-isolated ν₀ x₀ p)
@@ -629,6 +631,8 @@ The function ℓ really does detect limit points:
 \begin{code}
 
 ℓ-limit : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point (ι ν x)
+ℓ-limit ⌜𝟙⌝         ⋆            p = 𝟘-elim (zero-is-not-one p)
+ℓ-limit ⌜ω+𝟙⌝       (inl n)      p = 𝟘-elim (zero-is-not-one p)
 ℓ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
 ℓ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit ν₀ x₀ p
                                         (Σ-isolated-right
@@ -678,6 +682,8 @@ limit point holds.
 \begin{code}
 
 ℓ-limit⁺ : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point⁺ (ι ν x)
+ℓ-limit⁺ ⌜𝟙⌝   ⋆       p = 𝟘-elim (zero-is-not-one p)
+ℓ-limit⁺ ⌜ω+𝟙⌝ (inl n) p = 𝟘-elim (zero-is-not-one p)
 ℓ-limit⁺ ⌜ω+𝟙⌝ (inr x) p i = ∞-is-a-limit-point⁺-of-ℕ∞ i
 ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i
  = ℓ-limit⁺ ν₀ x₀ p
@@ -835,6 +841,7 @@ E-is-set = subtypes-of-sets-are-sets' e e-lc 𝕋-is-set
   shape = Fin 5
 
   arity : shape → 𝓤₀ ̇
+  arity (suc (suc (suc (suc (suc i))))) = 𝟘-elim i
   arity 𝟎 = 𝟘
   arity 𝟏 = 𝟘
   arity 𝟐 = 𝟙 + 𝟙
@@ -877,6 +884,14 @@ E-is-set = subtypes-of-sets-are-sets' e e-lc 𝕋-is-set
           A' (ρ ν (σ ν x))  ＝⟨ ap A' (ρσ ν x) ⟩
           A' x              ∎
 
+  e-root : 𝕋 → ℕ
+  e-root (ssup 𝟎 f) = 0
+  e-root (ssup 𝟏 f) = 1
+  e-root (ssup 𝟐 f) = 2
+  e-root (ssup 𝟑 f) = 3
+  e-root (ssup 𝟒 f) = 4
+  e-root (ssup (suc (suc (suc (suc (suc i))))) f) = 𝟘-elim i
+
   e-lc : left-cancellable e
   e-lc {⌜𝟙⌝}     {⌜𝟙⌝}       p = refl
   e-lc {⌜ω+𝟙⌝}   {⌜ω+𝟙⌝}     p = refl
@@ -892,6 +907,86 @@ E-is-set = subtypes-of-sets-are-sets' e e-lc 𝕋-is-set
    ν' ⌜×⌝ μ' ∎
     where
      φ = forest-＝ Fin-is-set p
+  e-lc {⌜𝟙⌝} {⌜ω+𝟙⌝} p =
+   𝟘-elim (zero-not-positive 0 q)
+   where
+    q = ap e-root p
+  e-lc {⌜𝟙⌝} {ν' ⌜+⌝ μ'} p =
+   𝟘-elim (zero-not-positive 1 q)
+   where
+    q = ap e-root p
+  e-lc {⌜𝟙⌝} {ν' ⌜×⌝ μ'} p =
+   𝟘-elim (zero-not-positive 2 q)
+   where
+    q = ap e-root p
+  e-lc {⌜𝟙⌝} {⌜Σ⌝ ν' A'} p =
+   𝟘-elim (zero-not-positive 3 q)
+   where
+    q = ap e-root p
+  e-lc {⌜ω+𝟙⌝} {⌜𝟙⌝} p =
+   𝟘-elim (positive-not-zero 0 q)
+   where
+    q = ap e-root p
+  e-lc {⌜ω+𝟙⌝} {ν' ⌜+⌝ μ'} p =
+   𝟘-elim (zero-not-positive 0 (succ-lc q))
+   where
+    q = ap e-root p
+  e-lc {⌜ω+𝟙⌝} {ν' ⌜×⌝ μ'} p =
+   𝟘-elim (zero-not-positive 1 (succ-lc q))
+   where
+    q = ap e-root p
+  e-lc {⌜ω+𝟙⌝} {⌜Σ⌝ ν' A'} p =
+   𝟘-elim (zero-not-positive 2 (succ-lc q))
+   where
+    q = ap e-root p
+  e-lc {ν  ⌜+⌝ μ} {⌜𝟙⌝} p =
+   𝟘-elim (positive-not-zero 1 q)
+   where
+    q = ap e-root p
+  e-lc {ν  ⌜+⌝ μ} {⌜ω+𝟙⌝} p =
+   𝟘-elim (positive-not-zero 0 (succ-lc q))
+   where
+    q = ap e-root p
+  e-lc {ν  ⌜+⌝ μ} {ν' ⌜×⌝ μ'} p =
+   𝟘-elim (zero-not-positive 0 (succ-lc (succ-lc q)))
+   where
+    q = ap e-root p
+  e-lc {ν  ⌜+⌝ μ} {⌜Σ⌝ ν' A'} p =
+   𝟘-elim (zero-not-positive 1 (succ-lc (succ-lc q)))
+   where
+    q = ap e-root p
+  e-lc {ν  ⌜×⌝ μ} {⌜𝟙⌝} p =
+   𝟘-elim (positive-not-zero 2 q)
+   where
+    q = ap e-root p
+  e-lc {ν  ⌜×⌝ μ} {⌜ω+𝟙⌝} p =
+   𝟘-elim (positive-not-zero 1 (succ-lc q))
+   where
+    q = ap e-root p
+  e-lc {ν  ⌜×⌝ μ} {ν' ⌜+⌝ μ'} p =
+   𝟘-elim (positive-not-zero 0 (succ-lc (succ-lc q)))
+   where
+    q = ap e-root p
+  e-lc {ν  ⌜×⌝ μ} {⌜Σ⌝ ν' A'} p =
+   𝟘-elim (zero-not-positive 0 (succ-lc (succ-lc (succ-lc q))))
+   where
+    q = ap e-root p
+  e-lc {⌜Σ⌝ ν  A} {⌜𝟙⌝} p =
+   𝟘-elim (positive-not-zero 3 q)
+   where
+    q = ap e-root p
+  e-lc {⌜Σ⌝ ν  A} {⌜ω+𝟙⌝} p =
+   𝟘-elim (positive-not-zero 2 (succ-lc q))
+   where
+    q = ap e-root p
+  e-lc {⌜Σ⌝ ν  A} {ν' ⌜+⌝ μ'} p =
+   𝟘-elim (positive-not-zero 1 (succ-lc (succ-lc q)))
+   where
+    q = ap e-root p
+  e-lc {⌜Σ⌝ ν  A} {ν' ⌜×⌝ μ'} p =
+   𝟘-elim (positive-not-zero 0 (succ-lc (succ-lc (succ-lc q))))
+   where
+    q = ap e-root p
   e-lc {⌜Σ⌝ ν A} {⌜Σ⌝ ν' A'} p = ⌜Σ⌝-＝ ν ν'
                                   (e-lc (φ (inl ⋆)))
                                   A A'

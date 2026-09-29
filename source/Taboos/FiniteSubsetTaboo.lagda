@@ -118,7 +118,7 @@ hereditary-Kuratowski-finiteness-gives-discreteness {𝓤} X 𝕤 ϡ x y =
    e : Fin 2 → 𝕋 F
    e 𝟎             = x , ∣ inl refl ∣
    e 𝟏             = y , ∣ inr refl ∣
-   e (inl (inl i)) = 𝟘-elim i
+   e (suc (suc i)) = 𝟘-elim i
 
    σ : is-surjection e
    σ (z , p) = ∥∥-rec ∃-is-prop † p

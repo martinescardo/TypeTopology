@@ -56,8 +56,8 @@ is-∈Cxt0 (∈Cxt0 Γ)   = 𝟙
 is-∈Cxt0 (∈CxtS τ i) = 𝟘
 
 ∈Cxt-〈〉-elim : {σ : type} {X : ∈Cxt σ 〈〉 → 𝓤 ̇ }
-              (i : ∈Cxt σ 〈〉)
-            → X i
+               (i : ∈Cxt σ 〈〉)
+             → X i
 ∈Cxt-〈〉-elim i = 𝟘-elim (∈Cxt-gives-Cxt-is-non-empty i)
 
 data T : (Γ : Cxt) (σ : type) → 𝓤₀ ̇ where
