@@ -68,6 +68,7 @@ open import Notation.Order
 
 exponential-positive-if-base-positive : (n m : ℕ) → 0 < n → 0 < n ^ m
 exponential-positive-if-base-positive n zero _ = ⋆
+exponential-positive-if-base-positive zero (succ m) l = 𝟘-elim l
 exponential-positive-if-base-positive n@(succ n') (succ m) l = II
  where
   IH : 0 < (n ^ m)
@@ -83,6 +84,10 @@ exponent-smaller-than-exponential-for-base-at-least-two : (n k : ℕ)
                                                         → 2 ≤ k
                                                         → n ≤ (k ^ n)
 exponent-smaller-than-exponential-for-base-at-least-two zero k _ = ⋆
+exponent-smaller-than-exponential-for-base-at-least-two
+ (succ n) zero        l = 𝟘-elim l
+exponent-smaller-than-exponential-for-base-at-least-two
+ (succ n) (succ zero) l = 𝟘-elim l
 exponent-smaller-than-exponential-for-base-at-least-two
  (succ n) k@(succ (succ k')) l = ≤-<-trans n (1 * k ^ n) (k * (k ^ n)) I III
   where

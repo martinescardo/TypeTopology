@@ -78,11 +78,27 @@ cons-mult : {X : 𝓤 ̇ } → X → ℕ → List X → List X
 cons-mult x 0 xs = xs
 cons-mult x (succ n) xs = x ∷ (cons-mult x n xs)
 
+HeadLocation₀-gives-is-non-empty : {hs : List Hydra}
+                                → HeadLocation₀ hs
+                                → is-non-empty hs
+HeadLocation₀-gives-is-non-empty here     = ⋆
+HeadLocation₀-gives-is-non-empty (next l) = ⋆
+
+HeadLocation₁-gives-is-non-empty : {hs : List Hydra}
+                                → HeadLocation₁ hs
+                                → is-non-empty hs
+HeadLocation₁-gives-is-non-empty (here₀ l) = ⋆
+HeadLocation₁-gives-is-non-empty (here₁ l) = ⋆
+HeadLocation₁-gives-is-non-empty (next  l) = ⋆
+
 cut₀ : (hs : List Hydra) → HeadLocation₀ hs → List Hydra
+cut₀ []       l         = 𝟘-elim (HeadLocation₀-gives-is-non-empty l)
 cut₀ (h ∷ hs) (here)    = hs
 cut₀ (h ∷ hs) (next l)  = h ∷ (cut₀ hs l)
 
 cut₁ : ℕ → (hs : List Hydra) → HeadLocation₁ hs → List Hydra
+cut₁ n []                l         =
+ 𝟘-elim (HeadLocation₁-gives-is-non-empty l)
 cut₁ n (h ∷ hs')         (next  l) = h ∷ (cut₁ n hs' l)
 cut₁ n ((Node hs) ∷ hs') (here₀ l) = cons-mult (Node (cut₀ hs l)) (succ n) hs'
 cut₁ n ((Node hs) ∷ hs') (here₁ l) = Node (cut₁ n hs l) ∷ hs'

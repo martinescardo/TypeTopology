@@ -39,7 +39,7 @@ Seq-to-Vec-∼ : (n : ℕ) {X : ℕ → 𝓤 ̇ }
              → (α : Π (X ∘ succ ^ n))
              → (β : Π X)
              → (β ∼ⁿ Vec-to-Seq n α (Seq-to-Vec n β)) n
-Seq-to-Vec-∼ (succ n) α β 0 i<n = refl
-Seq-to-Vec-∼ (succ n) α β (succ i) i<n
- = Seq-to-Vec-∼ n α (β ∘ succ) i i<n
+Seq-to-Vec-∼ 0        α β i        i<n = 𝟘-elim i<n
+Seq-to-Vec-∼ (succ n) α β 0        i<n = refl
+Seq-to-Vec-∼ (succ n) α β (succ i) i<n = Seq-to-Vec-∼ n α (β ∘ succ) i i<n
 \end{code}

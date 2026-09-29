@@ -78,13 +78,26 @@ data PCF : {n : ℕ} (Γ : Context n) (σ : type) → 𝓤₀ ̇ where
 
 infixl 1 _·_
 
+Fin-0-is-empty : ¬ Fin 0
+Fin-0-is-empty i = f i
+ where
+  P : ℕ → 𝓤₀ ̇
+  P 0        = 𝟘
+  P (succ n) = 𝟙
+
+  f : {n : ℕ} → Fin n → P n
+  f zero     = ⋆
+  f (succ i) = ⋆
+
 lookup : {n : ℕ} → Context n → Fin n → type
+lookup ⟨⟩      i        = 𝟘-elim (Fin-0-is-empty i)
 lookup (Γ ’ x) zero     = x
 lookup (Γ ’ x) (succ n) = lookup Γ n
 
 count : {n : ℕ} {Γ : Context n} → (f : Fin n) → Γ ∋ lookup Γ f
-count {.(succ _)} {Γ ’ x} zero     = Z
-count {.(succ _)} {Γ ’ x} (succ f) = S (count f)
+count {0}      {⟨⟩}    i        = 𝟘-elim (Fin-0-is-empty i)
+count {succ n} {Γ ’ x} zero     = Z
+count {succ n} {Γ ’ x} (succ f) = S (count f)
 
 ext : ∀ {m n} {Γ : Context m} {Δ : Context n}
     → (∀ {A} → Γ ∋ A → Δ ∋ A)

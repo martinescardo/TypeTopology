@@ -38,6 +38,7 @@ module list-indexing (pt : propositional-truncations-exist) {X : 𝓤 ̇ } where
  open import UF.ImageAndSurjection pt
 
  nth : (xs : List X) → Fin (length xs) → Σ x ꞉ X , ∥ member x xs ∥
+ nth []       i       = 𝟘-elim i
  nth (x ∷ _)  (inr ⋆) = x , ∣ in-head ∣
  nth (_ ∷ xs) (inl n) = x , ∥∥-functor in-tail (pr₂ IH)
   where

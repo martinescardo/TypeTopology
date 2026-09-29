@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-} --
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Bool where
 

@@ -58,6 +58,7 @@ record JoinSemiLattice (𝓥 𝓣 : Universe) : 𝓤ω where
 
   ∨ⁿ-is-upperbound : {n : ℕ} (σ : Fin n → L)
                    → (k : Fin n) → σ k ⊑ ∨ⁿ σ
+  ∨ⁿ-is-upperbound {zero}   σ k       = 𝟘-elim k
   ∨ⁿ-is-upperbound {succ n} σ 𝟎       = ∨-is-upperbound₂ _ _
   ∨ⁿ-is-upperbound {succ n} σ (suc k) = σ (suc k)    ⊑⟨ IH ⟩
                                         ∨ⁿ (σ ∘ suc) ⊑⟨ ∨-is-upperbound₁ _ _ ⟩

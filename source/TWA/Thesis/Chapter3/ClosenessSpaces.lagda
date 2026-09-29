@@ -39,6 +39,7 @@ is-decreasing' v
 
 positive-below-n : (i n : ℕ) → ℕ∞-to-ℕ→𝟚 (Succ (n ↑)) i ＝ ₁ → i ≤ n
 positive-below-n zero n snᵢ=1 = ⋆
+positive-below-n (succ i) zero     snᵢ=1 = 𝟘-elim (zero-is-not-one snᵢ=1)
 positive-below-n (succ i) (succ n) snᵢ=1 = positive-below-n i n snᵢ=1
 
 ≼-left-decidable : (n : ℕ) (v : ℕ∞) → is-decidable ((n ↑) ≼ v)
