@@ -5,9 +5,9 @@ boiler plate. This consists of a type B and a map β : B → L. In a sense to be
 made precise we say the pair B and q generate the suplattice. This notion
 is crucial for the development of predicative order theory.
 
-This notion of a basis was motivated by the set theoretic formulation due to
-Curi (see http://doi.org/10.1090/proc/12569) and can be compared with a similar
-notion for domains due to Tom de Jong (see
+This notion of a basis was motivated by the set theoretic formulation
+due to Givanni Curi (see http://doi.org/10.1090/proc/12569) and can be
+compared with a similar notion for domains due to Tom de Jong (see
 DomainTheory.BasesAndContinuity.Bases).
 
 A suplattice L that has suprema for family of size 𝓥 has a basis if there is a
@@ -166,10 +166,10 @@ boiler plate that will allow us to use a small basis with greater efficiency.
 
 \end{code}
 
-We show that a sup-lattice with a basis is an inf-lattice. 
+We show that a sup-lattice with a basis is an inf-lattice.
 
 \begin{code}
- 
+
 sup-lattice-is-inf-lattice : (L : Sup-Lattice 𝓤 𝓦 𝓥)
                              {B : 𝓥 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
                            → inf-lattice-structure 𝓤 𝓦 𝓥 ⟨ L ⟩
