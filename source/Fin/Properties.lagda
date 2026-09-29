@@ -31,13 +31,16 @@ Fin1-is-singleton : is-singleton (Fin 1)
 Fin1-is-singleton = 𝟎 , γ
  where
   γ : (i : Fin 1) → 𝟎 ＝ i
-  γ 𝟎 = refl
+  γ 𝟎       = refl
+  γ (suc x) = 𝟘-elim x
 
 Fin0-is-prop : is-prop (Fin 0)
 Fin0-is-prop i = 𝟘-elim i
 
 Fin1-is-prop : is-prop (Fin 1)
-Fin1-is-prop 𝟎 𝟎 = refl
+Fin1-is-prop 𝟎       𝟎       = refl
+Fin1-is-prop 𝟎       (suc x) = 𝟘-elim x
+Fin1-is-prop (suc x) y       = 𝟘-elim x
 
 positive-not-𝟎 : {n : ℕ} {x : Fin n} → fsucc x ≠ 𝟎
 positive-not-𝟎 {0}      {x} p = 𝟘-elim x
@@ -56,10 +59,12 @@ when-Fin-is-prop 1               i = inr refl
 when-Fin-is-prop (succ (succ n)) i = 𝟘-elim (positive-not-𝟎 (i 𝟏 𝟎))
 
 when-Fin-is-singleton : (n : ℕ) → is-singleton (Fin n) → n ＝ 1
-when-Fin-is-singleton 0               ()
+when-Fin-is-singleton 0               (x , c)     = 𝟘-elim x
 when-Fin-is-singleton (succ 0)        _           = refl
-when-Fin-is-singleton (succ (succ n)) (𝟎 , c)     = 𝟘-elim (positive-not-𝟎 ((c 𝟏)⁻¹))
-when-Fin-is-singleton (succ (succ n)) (suc k , c) = 𝟘-elim (positive-not-𝟎 (c 𝟎))
+when-Fin-is-singleton (succ (succ n)) (𝟎 , c)     =
+ 𝟘-elim (positive-not-𝟎 ((c 𝟏)⁻¹))
+when-Fin-is-singleton (succ (succ n)) (suc k , c) =
+ 𝟘-elim (positive-not-𝟎 (c 𝟎))
 
 \end{code}
 
