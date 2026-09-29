@@ -90,3 +90,89 @@ inl-preservation {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} f p l x = γ x (f (inl x)) 
 +functor₂ f g h = +functor f (+functor g h)
 
 \end{code}
+
+Added 29 Sep 2026 by Tom de Jong.
+
+Previously, inl-lc-is-section and inr-lc-is-section were in UF.Sets and relied
+on injectivity of inl (resp. inr) which Agda silently uses when we pattern match
+on a term of type inl x ＝ inl x'.
+
+\begin{code}
+
+module encode-decode-inl
+        {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+        {x₀ : X}
+       where
+
+ private
+  C : X + Y → 𝓤 ̇
+  C (inl x) = x₀ ＝ x
+  C (inr x) = 𝟘
+
+  encode : (z : X + Y) → (inl x₀ ＝ z) → C z
+  encode (inl _) = inl-lc
+  encode (inr _) = λ p → 𝟘-elim (+disjoint p)
+
+  decode : (z : X + Y) → C z → (inl x₀ ＝ z)
+  decode (inl _) c = ap inl c
+  decode (inr _) c = 𝟘-elim c
+
+ encode-decode : (z : X + Y) (p : inl x₀ ＝ z)
+               → decode z (encode z p) ＝ p
+ encode-decode z refl = refl
+
+ decode-encode : (z : X + Y) (c : C z) → encode z (decode z c) ＝ c
+ decode-encode (inl _) refl = refl
+ decode-encode (inr _) c = 𝟘-elim c
+
+inl-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                    {x x' : X}
+                    (p : inl {𝓤} {𝓥} {X} {Y} x ＝ inl x')
+                  → ap inl (inl-lc p) ＝ p
+inl-lc-is-section = encode-decode-inl.encode-decode (inl _)
+
+inl-lc-is-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                       {x x' : X}
+                       (p : x ＝ x')
+                     → inl-lc {𝓤 } {𝓥} {X} {Y} (ap inl p) ＝ p
+inl-lc-is-retraction = encode-decode-inl.decode-encode (inl _)
+
+module encode-decode-inr
+        {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+        {y₀ : Y}
+       where
+
+ private
+  C : X + Y → 𝓥 ̇
+  C (inl _) = 𝟘
+  C (inr y) = y₀ ＝ y
+
+  encode : (z : X + Y) → (inr y₀ ＝ z) → C z
+  encode (inl _) = λ p → 𝟘-elim (+disjoint (p ⁻¹))
+  encode (inr _) = inr-lc
+
+  decode : (z : X + Y) → C z → (inr y₀ ＝ z)
+  decode (inl _) c = 𝟘-elim c
+  decode (inr _) c = ap inr c
+
+ encode-decode : (z : X + Y) (p : inr y₀ ＝ z)
+               → decode z (encode z p) ＝ p
+ encode-decode z refl = refl
+
+ decode-encode : (z : X + Y) (c : C z) → encode z (decode z c) ＝ c
+ decode-encode (inl _) c = 𝟘-elim c
+ decode-encode (inr _) refl = refl
+
+inr-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                    {y y' : Y}
+                    (p : inr {𝓤} {𝓥} {X} {Y} y ＝ inr y')
+                  → ap inr (inr-lc p) ＝ p
+inr-lc-is-section = encode-decode-inr.encode-decode (inr _)
+
+inr-lc-is-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                       {y y' : Y}
+                       (p : y ＝ y')
+                     → inr-lc {𝓤} {𝓥} {X} {Y} (ap inr p) ＝ p
+inr-lc-is-retraction = encode-decode-inr.decode-encode (inr _)
+
+\end{code}
