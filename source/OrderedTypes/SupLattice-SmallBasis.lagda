@@ -6,7 +6,7 @@ made precise we say the pair B and q generate the suplattice. This notion
 is crucial for the development of predicative order theory.
 
 This notion of a basis was motivated by the set theoretic formulation
-due to Givanni Curi (see http://doi.org/10.1090/proc/12569) and can be
+due to Giovanni Curi (see http://doi.org/10.1090/proc/12569) and can be
 compared with a similar notion for domains due to Tom de Jong (see
 DomainTheory.BasesAndContinuity.Bases).
 
