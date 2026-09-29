@@ -1,7 +1,7 @@
 Martin Escardo, 24th January 2019.
 With several additions after that, including by Tom de Jong.
 
-Voedvodsky (Types'2011) considered resizing rules for a type theory
+Voevodsky (Types'2011) considered resizing rules for a type theory
 for univalent foundations. These rules govern the syntax of the formal
 system, and hence are of a meta-mathematical nature.
 

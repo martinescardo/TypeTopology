@@ -128,7 +128,7 @@ TypeTopology, because we want people to understand what's going on by
 reading the code, as much as possible.
 
 The first of the following two proofs use Hedberg (to show that d x y
-＝ inl e), and the second one uses Herberg and, and additionally
+＝ inl e), and the second one uses Hedberg and, and additionally
 function extensionality (to show that d x y = inr u). This is the only
 place function extensionality is used in this file. Also notice that
 we only use function extensionality for empty-type-valued functions!
