@@ -16,6 +16,7 @@ uniquely up to the equivalence relation of that egroup.
 
 open import MLTT.Spartan
 open import MLTT.List renaming (_∷_ to _•_ ; _++_ to _◦_ ; ++-assoc to ◦-assoc)
+open import MLTT.Two-Properties
 open import Relations.SRTclosure
 
 module EGroups.Free
@@ -165,6 +166,13 @@ homomorphism from concatenation to the operation of 𝓖.
 
  h-respects-≈[FA] : (s t : FA) → s ≈[FA] t → h s ≈⟨ 𝓖 ⟩ h t
  h-respects-≈[FA] [] [] ⋆ = erefl 𝓖 eᴳ
+ h-respects-≈[FA] [] (y • t) ν = 𝟘-elim ν
+ h-respects-≈[FA] ((₀ , a) • s) [] ν = 𝟘-elim ν
+ h-respects-≈[FA] ((₁ , a) • s) [] ν = 𝟘-elim ν
+ h-respects-≈[FA] ((₀ , a) • s) ((₁ , b) • t) ((e , q) , r) =
+  𝟘-elim (zero-is-not-one e)
+ h-respects-≈[FA] ((₁ , a) • s) ((₀ , b) • t) ((e , q) , r) =
+  𝟘-elim (one-is-not-zero e)
  h-respects-≈[FA] ((₀ , a) • s) ((₀ , b) • t) ((refl , q) , r) =
   *-cong (f-resp q) (h-respects-≈[FA] s t r)
  h-respects-≈[FA] ((₁ , a) • s) ((₁ , b) • t) ((refl , q) , r) =
@@ -192,6 +200,8 @@ is why we needed h to respect _≈[FA]_.
 \begin{code}
 
  h-redex : (x y : X) → y ≈[X] (x ⁻) → h (x • y • []) ≈⟨ 𝓖 ⟩ eᴳ
+ h-redex (₀ , a) (₀ , b) (e , q) = 𝟘-elim (zero-is-not-one e)
+ h-redex (₁ , a) (₁ , b) (e , q) = 𝟘-elim (one-is-not-zero e)
  h-redex (₀ , a) (₁ , b) (refl , q) =
   f a * (invᴳ (f b) * eᴳ) ≈[ I ]
   f a * invᴳ (f b)        ≈[ II ]

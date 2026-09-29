@@ -187,7 +187,8 @@ We show (ii) and then (i) now.
                       f x                  ∎
    where
     e : Fin 1 → 𝕋 ❴ x ❵
-    e 𝟎 = x , refl
+    e 𝟎       = x , refl
+    e (inl i) = 𝟘-elim i
     σ : is-surjection e
     σ (x , refl) = ∣ 𝟎 , refl ∣
     I = f♭-in-terms-of-fₛ ❴ x ❵ σ ⟨ η x ⟩₂

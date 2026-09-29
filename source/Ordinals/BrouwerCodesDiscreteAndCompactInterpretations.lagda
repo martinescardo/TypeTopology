@@ -316,9 +316,9 @@ of the image of ι are isolated and which are limit points. The added
 top point of ∑₁ is the only source of limit points, because it is the
 one that sits over ∞.
 
-The two limit-point results have three clauses rather than five,
-because the cases in which ℓ takes the value ₀ are refuted by their
-hypothesis, which asks for the value ₁.
+The two limit-point results have five clauses, of which the two where ℓ
+takes the value ₀ are refuted by their hypothesis, which asks for the
+value ₁.
 
 \begin{code}
 
@@ -341,6 +341,10 @@ hypothesis, which asks for the value ₁.
                                   u
                                   (ℓ-isolated (b n) (u (n , refl)) p)
 
+ℓ-isolated (L b) (inr ⋆ , u) p = 𝟘-elim (one-is-not-zero p)
+
+ℓ-limit Z     ⋆           p = 𝟘-elim (zero-is-not-one p)
+ℓ-limit (S b) (inr ⋆ , ⋆) p = 𝟘-elim (zero-is-not-one p)
 ℓ-limit (S b) (inl ⋆ , x) p i = ℓ-limit b x p
                                  (Σ-isolated-right
                                    (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
@@ -355,6 +359,8 @@ hypothesis, which asks for the value ₁.
                                  (λ i → Κ-compact∙ (b i))
                                  u
 
+ℓ-limit⁺ Z     ⋆           p = 𝟘-elim (zero-is-not-one p)
+ℓ-limit⁺ (S b) (inr ⋆ , ⋆) p = 𝟘-elim (zero-is-not-one p)
 ℓ-limit⁺ (S b) (inl ⋆ , x) p i = ℓ-limit⁺ b x p
                                   (Σ-weakly-isolated-right
                                     (underlying-type-is-setᵀ fe 𝟚ᵒ) i)

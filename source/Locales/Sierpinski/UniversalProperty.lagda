@@ -234,6 +234,7 @@ The fact that it satisfies the property `h truth ＝ U` is quite easy to see.
    where
     γ : (U is-an-upper-bound-of (ℱₓ truth)) holds
     γ (inl ⋆) = ≤-is-reflexive (poset-of (𝒪 X)) U
+    γ (inr x) = 𝟘-elim x
 
   † : U ＝ h truth
   † = ≤-is-antisymmetric (poset-of (𝒪 X)) †₁ †₂

@@ -79,15 +79,25 @@ data PCF : {n : ℕ} (Γ : Context n) (σ : type) → 𝓤₀ ̇ where
 infixl 1 _·_
 
 Fin-0-is-empty : ¬ Fin 0
-Fin-0-is-empty i = f i
+Fin-0-is-empty i = Fin-gives-is-nonzero i
  where
-  P : ℕ → 𝓤₀ ̇
-  P 0        = 𝟘
-  P (succ n) = 𝟙
+  is-nonzero : ℕ → 𝓤₀ ̇
+  is-nonzero 0        = 𝟘
+  is-nonzero (succ n) = 𝟙
 
-  f : {n : ℕ} → Fin n → P n
-  f zero     = ⋆
-  f (succ i) = ⋆
+  Fin-gives-is-nonzero : {n : ℕ} → Fin n → is-nonzero n
+  Fin-gives-is-nonzero zero     = ⋆
+  Fin-gives-is-nonzero (succ i) = ⋆
+
+Context-is-non-empty : {n : ℕ} → Context n → 𝓤₀ ̇
+Context-is-non-empty ⟨⟩      = 𝟘
+Context-is-non-empty (Γ ’ σ) = 𝟙
+
+∋-gives-Context-is-non-empty : {n : ℕ} {Γ : Context n} {σ : type}
+                             → Γ ∋ σ
+                             → Context-is-non-empty Γ
+∋-gives-Context-is-non-empty Z     = ⋆
+∋-gives-Context-is-non-empty (S x) = ⋆
 
 lookup : {n : ℕ} → Context n → Fin n → type
 lookup ⟨⟩      i        = 𝟘-elim (Fin-0-is-empty i)

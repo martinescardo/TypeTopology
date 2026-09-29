@@ -126,6 +126,11 @@ canonical-Fin-inclusion-lc (succ m) (succ n) l {suc x} {suc y} p = γ
 
 canonical-Fin-inclusion-lc (succ m) (succ n) l {𝟎} {𝟎} p = refl
 
+canonical-Fin-inclusion-lc (succ m) (succ n) l {suc x} {𝟎}     p =
+ 𝟘-elim (+disjoint p)
+canonical-Fin-inclusion-lc (succ m) (succ n) l {𝟎}     {suc y} p =
+ 𝟘-elim (+disjoint' p)
+
 
 ≤-gives-↣ : (m n : ℕ) → m ≤ n → (Fin m ↣ Fin n)
 ≤-gives-↣ m n l = canonical-Fin-inclusion m n l , canonical-Fin-inclusion-lc m n l

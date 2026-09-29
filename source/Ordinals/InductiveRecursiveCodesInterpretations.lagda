@@ -114,6 +114,20 @@ data E where
 Δ (ν₀ ⌜×⌝ ν₁) = Δ ν₀ ×ᵒ Δ ν₁
 Δ (⌜Σ⌝ ν A)   = ∑ (Δ ν) (Δ ∘ A)
 
+is-⌜+⌝ : E → 𝓤₀ ̇
+is-⌜+⌝ ⌜𝟙⌝       = 𝟘
+is-⌜+⌝ ⌜ω+𝟙⌝     = 𝟘
+is-⌜+⌝ (ν ⌜+⌝ μ) = 𝟙
+is-⌜+⌝ (ν ⌜×⌝ μ) = 𝟘
+is-⌜+⌝ (⌜Σ⌝ ν A) = 𝟘
+
+is-⌜Σ⌝ : E → 𝓤₀ ̇
+is-⌜Σ⌝ ⌜𝟙⌝       = 𝟘
+is-⌜Σ⌝ ⌜ω+𝟙⌝     = 𝟘
+is-⌜Σ⌝ (ν ⌜+⌝ μ) = 𝟘
+is-⌜Σ⌝ (ν ⌜×⌝ μ) = 𝟘
+is-⌜Σ⌝ (⌜Σ⌝ ν A) = 𝟙
+
 \end{code}
 
 The underlying sets of all ordinals in the image of Δ are retracts of

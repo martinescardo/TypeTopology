@@ -90,21 +90,50 @@ data Value : {n : ℕ} {Γ : Context n} {σ : type} → PCF Γ σ → 𝓤₀ ̇
            → (i : Γ ∋ σ)
            → Value (v i)
 
+is-value : {n : ℕ} {Γ : Context n} {σ : type} → PCF Γ σ → 𝓤₀ ̇
+is-value Zero           = 𝟙
+is-value (Succ M)       = 𝟙
+is-value (Pred M)       = 𝟘
+is-value (IfZero M N P) = 𝟘
+is-value (ƛ M)          = 𝟙
+is-value (M · N)        = 𝟘
+is-value (v i)          = 𝟙
+is-value (Fix M)        = 𝟘
+
+Value-gives-is-value : {n : ℕ} {Γ : Context n} {σ : type} {M : PCF Γ σ}
+                     → Value M
+                     → is-value M
+Value-gives-is-value zero-val     = ⋆
+Value-gives-is-value (succ-val x) = ⋆
+Value-gives-is-value ƛ-val        = ⋆
+Value-gives-is-value (var-val i)  = ⋆
+
 values-dont-reduce-further : {n : ℕ} {Γ : Context n} {σ : type}
                            → (M : PCF Γ σ)
                            → Value M
                            → (N : PCF Γ σ)
                            → M ⇓' N
                            → M ＝ N
-values-dont-reduce-further .(v _) x .(v _) var-id = refl
-values-dont-reduce-further .(ƛ _) x .(ƛ _) ƛ-id   = refl
-values-dont-reduce-further .Zero x .Zero zero-id  = refl
-values-dont-reduce-further .(Succ M) (succ-val x)
-                           .(Succ (numeral k))
+values-dont-reduce-further _ x _ var-id  = refl
+values-dont-reduce-further _ x _ ƛ-id    = refl
+values-dont-reduce-further _ x _ zero-id = refl
+values-dont-reduce-further _ (succ-val x) _
                             (succ-arg {n} {Γ} {M} {k} r) = ap Succ IH
   where
     IH : M ＝ numeral k
     IH = values-dont-reduce-further M x (numeral k) r
+values-dont-reduce-further _ x _ (pred-zero r) =
+ 𝟘-elim (Value-gives-is-value x)
+values-dont-reduce-further _ x _ (pred-succ r) =
+ 𝟘-elim (Value-gives-is-value x)
+values-dont-reduce-further _ x _ (IfZero-zero r s) =
+ 𝟘-elim (Value-gives-is-value x)
+values-dont-reduce-further _ x _ (IfZero-succ r s) =
+ 𝟘-elim (Value-gives-is-value x)
+values-dont-reduce-further _ x _ (Fix-step r) =
+ 𝟘-elim (Value-gives-is-value x)
+values-dont-reduce-further _ x _ (·-step r s) =
+ 𝟘-elim (Value-gives-is-value x)
 
 ⇓-reduces-to-val : {n : ℕ} {Γ : Context n} {σ : type}
                    (M N : PCF Γ σ)

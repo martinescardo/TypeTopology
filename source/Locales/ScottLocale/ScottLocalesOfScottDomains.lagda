@@ -660,7 +660,10 @@ This forms a directed basis.
       ‡₂ = transport
             (λ - → (- ≤[ poset-of (𝒪 Σ[𝓓]) ] U′) holds)
             (r ⁻¹)
-            (ψ ((k ∷ []) , λ { _ in-head → p}))
+            (ψ ((k ∷ []) ,
+                λ { b in-head     → p
+                  ; b (in-tail m) →
+                     𝟘-elim (empty-list-has-no-members b m)}))
 
     † : (U is-lub-of ⁅ 𝜸 d ∣ d ε (D , δ) ⁆) holds
     † = †₁ , †₂
@@ -673,7 +676,7 @@ This forms a directed basis.
       ♣ b q = cases (𝕚 b) (𝕛 b) (split-++-membership b is js q)
 
     𝒹 : is-directed (𝒪 Σ[𝓓]) ⁅ 𝜸 d ∣ d ε (D , δ) ⁆ holds
-    𝒹 = ∣ [] , (λ _ ()) ∣ , 𝒹↑
+    𝒹 = ∣ [] , (λ b m → 𝟘-elim (empty-list-has-no-members b m)) ∣ , 𝒹↑
 
 \end{code}
 

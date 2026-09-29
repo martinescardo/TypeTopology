@@ -211,9 +211,11 @@ af = qinveq f (g , gf , fg)
   f (X ∷ Xf) = (X ∷ (pr₁ ∘ f ∘ Xf)) , pr₂ ∘ f ∘ Xf
 
   g : 𝔽 → 𝔸
+  g ([] , φ)       = 𝟘-elim φ
   g ((X ∷ Xf) , φ) = X ∷ (λ x → g (Xf x , φ x))
 
   fg' : (Xt : 𝕋) (φ : is-[]-free Xt) → f (g (Xt , φ)) ＝ (Xt , φ)
+  fg' []       φ = 𝟘-elim φ
   fg' (X ∷ Xf) φ =
    (f ∘ g) ((X ∷ Xf) , φ)    ＝⟨refl⟩
    (X ∷ (pr₁ ∘ h)) , pr₂ ∘ h ＝⟨ I ⟩
@@ -690,6 +692,7 @@ And, of course:
 \begin{code}
 
 []-property : (Xt : 𝕋) → is-[]-free Xt → ¬ has-at-least-one-[] Xt
+[]-property []       f h = 𝟘-elim f
 []-property (X ∷ Xf) f h = ∥∥-rec 𝟘-is-prop (λ (x , g) → IH x (f x) g) h
  where
   IH : (x : X) → is-[]-free (Xf x) → ¬ has-at-least-one-[] (Xf x)

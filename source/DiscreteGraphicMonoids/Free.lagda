@@ -204,6 +204,10 @@ We need the following particular case of the above lemma.
              → (vs : List M) → ρ us' ＝ ρ vs → ϕ us' ＝ ϕ vs)
      → (vs : List M) → ρ us ＝ ρ vs → ϕ us ＝ ϕ vs
    h [] IH [] e = refl
+   h [] IH (v • vs) e =
+    𝟘-elim ([]-is-not-cons v (δ v (ρ vs)) e)
+   h (u • us) IH [] e =
+    𝟘-elim ([]-is-not-cons u (δ u (ρ us)) (e ⁻¹))
    h (u • us) IH (v • vs) e =
     ϕ (u • us)     ＝⟨refl⟩
     u ● ϕ us       ＝⟨ (ϕ-δ-lemma u us)⁻¹ ⟩

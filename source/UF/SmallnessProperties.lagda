@@ -169,6 +169,8 @@ pair₀ x = (₀ , x)
 
 pair₀-is-embedding : {X : 𝓤 ̇ } → is-embedding (pair₀ {𝓤} {X})
 pair₀-is-embedding (₀ , x) (x , refl) (x , refl) = refl
+pair₀-is-embedding (₁ , x) (y , p)    _          =
+ 𝟘-elim (zero-is-not-one (ap pr₁ p))
 
 pair₀-is-decidable : {X : 𝓤 ̇ } → each-fiber-of (pair₀ {𝓤} {X}) is-decidable
 pair₀-is-decidable (₀ , x) = inl (x , refl)
@@ -180,7 +182,11 @@ pair₀-has-any-size 𝓦 = decidable-embeddings-have-any-size 𝓦
                          pair₀-is-decidable
 
 []-is-embedding : {X : 𝓤 ̇ } → is-embedding (λ (x : X) → [ x ])
+[]-is-embedding []             (x , p)    _          =
+ 𝟘-elim ([]-is-not-cons x [] (p ⁻¹))
 []-is-embedding (x ∷ []) (x , refl) (x , refl) = refl
+[]-is-embedding (x₀ ∷ x₁ ∷ xs) (x , p)    _          =
+ 𝟘-elim ([]-is-not-cons x₁ xs (equal-tails p))
 
 []-is-decidable : {X : 𝓤 ̇ } → each-fiber-of (λ (x : X) → [ x ]) is-decidable
 []-is-decidable {𝓤} {X} [] =
