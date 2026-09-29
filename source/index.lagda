@@ -64,7 +64,7 @@
      control which type theory is used.
 
    * In our last count, on 2026-09-29, this development has 996 Agda
-     files with 295K lines of code, including comments and blank
+     files with 296K lines of code, including comments and blank
      lines.
 
 Philosophy of the repository
