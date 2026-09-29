@@ -495,7 +495,7 @@ module fixed-assumptions-6
 
 \end{code}
 
-Section VI. On Grayson's Decreasing Lists
+Section VI. On Robin Grayson's Decreasing Lists
 
 \begin{code}
 
