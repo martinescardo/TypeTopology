@@ -62,7 +62,7 @@ refl-is-set X r {x} p refl = r x p
   r = ap (ap inl) (i (inl-lc p) (inl-lc q))
 
   γ : p ＝ q
-  γ = inl-lc-is-section p ∙ r ∙ (inl-lc-is-section q)⁻¹
+  γ = (inl-lc-is-section p)⁻¹ ∙ r ∙ (inl-lc-is-section q)
 
 +-is-set X Y i j {inl x} {inr y} p q = 𝟘-elim (+disjoint  p)
 
@@ -74,7 +74,7 @@ refl-is-set X r {x} p refl = r x p
   r = ap (ap inr) (j (inr-lc p) (inr-lc q))
 
   γ : p ＝ q
-  γ = inr-lc-is-section p ∙ r ∙ (inr-lc-is-section q)⁻¹
+  γ = (inr-lc-is-section p)⁻¹ ∙ r ∙ (inr-lc-is-section q)
 
 ×-is-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-set X → is-set Y → is-set (X × Y)
 ×-is-set i j {(x , y)} {(x' , y')} p q =
