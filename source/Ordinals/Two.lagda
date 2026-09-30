@@ -36,15 +36,15 @@ b ≺₂ c = (b ＝ ₀) × (c ＝ ₁)
      (λ _ _ _ (e₀ , _) (_ , e₁) → e₀ , e₁)
  where
   I : is-well-founded (λ b c → (b ＝ ₀) × (c ＝ ₁))
-  I ₀ = acc (λ _ (_ , ν) → 𝟘-elim (zero-is-not-one ν))
+  I ₀ = acc (λ _ (_ , ν) → zero-is-one-elim ν)
   I ₁ = acc (λ b (e₀ , _) → acc (λ c (_ , e₁) → 𝟘-elim
                                                  (zero-is-not-one
                                                    (e₀ ⁻¹ ∙ e₁))))
 
   II : is-extensional (λ b c → (b ＝ ₀) × (c ＝ ₁))
   II ₀ ₀ f g = refl
-  II ₀ ₁ f g = 𝟘-elim (zero-is-not-one (pr₂ (g ₀ (refl , refl))))
-  II ₁ ₀ f g = 𝟘-elim (zero-is-not-one (pr₂ (f ₀ (refl , refl))))
+  II ₀ ₁ f g = zero-is-one-elim (pr₂ (g ₀ (refl , refl)))
+  II ₁ ₀ f g = zero-is-one-elim (pr₂ (f ₀ (refl , refl)))
   II ₁ ₁ f g = refl
 
 open import UF.FunExt
@@ -68,9 +68,9 @@ module _ (fe : FunExt) where
    f ₁ = inr ⋆
 
    f-is-order-preserving : is-order-preserving 𝟚ₒ 𝟚ₒ-standard f
-   f-is-order-preserving ₀ ₀ l = 𝟘-elim (zero-is-not-one (≺₂-right l))
+   f-is-order-preserving ₀ ₀ l = zero-is-one-elim (≺₂-right l)
    f-is-order-preserving ₀ ₁ (refl , refl) = ⋆
-   f-is-order-preserving ₁ y l = 𝟘-elim (one-is-not-zero (≺₂-left l))
+   f-is-order-preserving ₁ y l = one-is-zero-elim (≺₂-left l)
 
    g : ⟨ 𝟚ₒ-standard ⟩ → ⟨ 𝟚ₒ ⟩
    g (inl ⋆) = ₀

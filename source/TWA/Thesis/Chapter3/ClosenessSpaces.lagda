@@ -39,7 +39,7 @@ is-decreasing' v
 
 positive-below-n : (i n : ℕ) → ℕ∞-to-ℕ→𝟚 (Succ (n ↑)) i ＝ ₁ → i ≤ n
 positive-below-n zero n snᵢ=1 = ⋆
-positive-below-n (succ i) zero     snᵢ=1 = 𝟘-elim (zero-is-not-one snᵢ=1)
+positive-below-n (succ i) zero     snᵢ=1 = zero-is-one-elim snᵢ=1
 positive-below-n (succ i) (succ n) snᵢ=1 = positive-below-n i n snᵢ=1
 
 ≼-left-decidable : (n : ℕ) (v : ℕ∞) → is-decidable ((n ↑) ≼ v)
@@ -409,8 +409,7 @@ pointed-has-a-0-net : (X : ClosenessSpace 𝓤)
                     → pointed ⟨ X ⟩
                     → Σ X' ꞉ 𝓦 ̇ , (X' is 0 net-of X)
 pointed-has-a-0-net X x
- = 𝟙 , ((λ _ → x) , (λ _ → ⋆) , λ _ _ p → 𝟘-elim (zero-is-not-one p))
-          , 𝟙-is-finite
+ = 𝟙 , ((λ _ → x) , (λ _ → ⋆) , λ _ _ → zero-is-one-elim) , 𝟙-is-finite
 
 totally-bounded : ClosenessSpace 𝓤 → (𝓤' : Universe) → 𝓤 ⊔ (𝓤' ⁺) ̇
 totally-bounded X 𝓤' = (ϵ : ℕ) → Σ X' ꞉ 𝓤' ̇ , X' is ϵ net-of X

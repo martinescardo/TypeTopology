@@ -187,15 +187,15 @@ decidable-to-𝟚 : {X : 𝓤 ̇ } → is-decidable X
                → Σ b ꞉ 𝟚 , ((b ＝ ₁ ↔ X) × (b ＝ ₀ ↔ ¬ X))
 decidable-to-𝟚 (inl  x)
  = ₁ , (((λ _ → x) , (λ _ → refl))
-     , (𝟘-elim ∘ zero-is-not-one ∘ _⁻¹) , (λ ¬x → 𝟘-elim (¬x x)))
+     , one-is-zero-elim , (λ ¬x → 𝟘-elim (¬x x)))
 decidable-to-𝟚 (inr ¬x)
- = ₀ , ((𝟘-elim ∘ zero-is-not-one) , (λ x → 𝟘-elim (¬x x)))
+ = ₀ , (zero-is-one-elim , (λ x → 𝟘-elim (¬x x)))
      , (λ _ → ¬x) , (λ _ → refl)
 
 LPO-implies-ℕ-searchability : LPO → searchable 𝓦 ℕ
 LPO-implies-ℕ-searchability {𝓦} f (p , d)
  = Cases (f (λ i → decidable-𝟚 (d i)))
-     (λ α∼₀ → 0 , λ (n , pn) → (𝟘-elim ∘ zero-is-not-one)
+     (λ α∼₀ → 0 , λ (n , pn) → zero-is-one-elim
                                  (α∼₀ n ⁻¹ ∙ decidable-𝟚₁ (d n) pn))
      λ (i , αᵢ=₀) → i , λ _ → 𝟚-decidable₁ (d i) αᵢ=₀
 \end{code}

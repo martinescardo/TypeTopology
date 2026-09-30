@@ -647,7 +647,7 @@ negations-of-types-whose-decidability-is-Π-compact-are-decidable X c
   a = c p
 
   l : ((z : X + ¬ X) → p z ＝ ₁) → ¬ X + ¬¬ X
-  l α = inl (λ x → 𝟘-elim (zero-is-not-one (α (inl x))))
+  l α = inl (λ x → zero-is-one-elim (α (inl x)))
 
   α : (u : X → 𝟘) (z : X + ¬ X) → p z ＝ ₁
   α u (inl x) = 𝟘-elim (u x)
@@ -682,7 +682,7 @@ detachable-subset-retract {𝓤} {X} {A} (x₀ , e₀) = r , pr₁ , rs
                            (λ (_ : b ＝ ₀) → (x , e))
                            (λ (_ : b ＝ ₁) → (x₀ , e₀)) ＝ (x , e)
     s ₀ refl = refl
-    s ₁ r = 𝟘-elim (one-is-not-zero r)
+    s ₁ r = one-is-zero-elim r
 
     t : 𝟚-equality-cases
          (λ (_ : A x ＝ ₀) → x , e)
@@ -746,7 +746,7 @@ complemented-subtype-is-Π-compact {𝓤} {X} A c q = g (c p)
     s : (b : 𝟚) → b ＝ ₀ → (f₁ : b ＝ ₁ → 𝟚)
       → 𝟚-equality-cases (λ (_ : b ＝ ₀) → ₁) f₁ ＝ ₁
     s ₀ refl = λ f₁ → refl
-    s ₁ r = 𝟘-elim (one-is-not-zero r)
+    s ₁ r = one-is-zero-elim r
 
   p-spec₁ : (x : X) (e : A x ＝ ₁) → p x ＝ q (x , e)
   p-spec₁ x e = u ∙ t
@@ -763,7 +763,7 @@ complemented-subtype-is-Π-compact {𝓤} {X} A c q = g (c p)
          (λ (_ : b ＝ ₀) → ₁)
          (λ (_ : b ＝ ₁) → q (x , e))
       ＝ q (x , e)
-    s ₀ r = 𝟘-elim (zero-is-not-one r)
+    s ₀ r = zero-is-one-elim r
     s ₁ refl = refl
 
     t : 𝟚-equality-cases (p₀ x) y ＝ q (x , e)
@@ -841,11 +841,11 @@ inhabited-and-compact-types-are-∃-compact∙ {𝓤} {X} (t , c) p = γ
     g : is-decidable (p x₀ ＝ ₀)
       → is-decidable (∃ x ꞉ X , p x ＝ ₀)
       → ∃ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
-    g (inl r) _       = ∣ x₀ , (λ s _ → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))) ∣
+    g (inl r) _       = ∣ x₀ , (λ s _ → zero-is-one-elim (r ⁻¹ ∙ s)) ∣
     g (inr _) (inl t) = ∥∥-functor h t
      where
       h : (Σ x ꞉ X , p x ＝ ₀) → Σ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
-      h (x , r) = x , λ s _ → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
+      h (x , r) = x , λ s _ → zero-is-one-elim (r ⁻¹ ∙ s)
     g (inr _) (inr v) = ∣ x₀ , (λ _ → not-exists₀-implies-forall₁ p v) ∣
 
   γ : ∃ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
@@ -1096,7 +1096,7 @@ the dominance 𝟚.
     l₀ : (p : X → 𝟚)
        → is-decidable (p ＝ (λ x → ₁)) → Σ n ꞉ 𝟚 , (n ＝ ₁ ↔ p ＝ (λ x → ₁))
     l₀ p (inl r) = (₁ , ((λ _ → r) , λ _ → refl))
-    l₀ p (inr u) = (₀ , ((λ s → 𝟘-elim (zero-is-not-one s)) , λ r → 𝟘-elim (u r)))
+    l₀ p (inr u) = (₀ , (zero-is-one-elim , λ r → 𝟘-elim (u r)))
 
     A : (X → 𝟚) → 𝟚
     A p = pr₁ (l₀ p (c' p))

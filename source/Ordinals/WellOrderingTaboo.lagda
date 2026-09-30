@@ -403,7 +403,7 @@ module swan'
    ∥∥-rec P-is-prop γ (large-effective-set-quotients ≋ ≈-identifies-₀-and-₁)
     where
      γ : (₀ ＝ ₁) + P → P
-     γ (inl e) = 𝟘-elim (zero-is-not-one e)
+     γ (inl e) = zero-is-one-elim e
      γ (inr p) = p
 
 \end{code}
@@ -642,7 +642,7 @@ with a fairly direct proof.
      where
       κ : (ι ₀ ≺ ι ₁) + (ι ₀ ＝ ι ₁) + (ι ₁ ≺ ι ₀)
         → P + ¬ P
-      κ (inr (inl e)) = 𝟘-elim (zero-is-not-one (equivs-are-lc ι lift-is-equiv e))
+      κ (inr (inl e)) = zero-is-one-elim (equivs-are-lc ι lift-is-equiv e)
       κ (inl k)       = f (min A A-is-prop-valued A-is-inhabited)
        where
         A : 𝟚' → 𝓤 ⊔ 𝓣 ̇

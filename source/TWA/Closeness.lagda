@@ -206,8 +206,8 @@ Ultra property:
  closeness-eq₁' : (α β : 𝓢) → is-positive (c α β)
                 → head α ＝ head β
  closeness-eq₁' α β p = Cases (δ (head α) (head β)) id
-   (λ h≠ → 𝟘-elim (zero-is-not-one
-    (is-Zero-Zero ⁻¹ ∙ ap (λ - → ι - 0) (closeness-eq₀ α β h≠ ⁻¹) ∙ p)))
+   (λ h≠ → zero-is-one-elim
+    (is-Zero-Zero ⁻¹ ∙ ap (λ - → ι - 0) (closeness-eq₀ α β h≠ ⁻¹) ∙ p))
 
  open import Naturals.Order
 

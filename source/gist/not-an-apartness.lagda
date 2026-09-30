@@ -192,8 +192,8 @@ module _ (P : 𝓤 ̇ )
    wc : (p : P) (q : Q) (m n : 𝟚) (r : g₀ p ＝ m) (s : h₀ q ＝ n)
       → f₀ p m r ＝ f₁ q n s
    wc p q ₀ ₀ r s = ap inl (P-is-prop p (h₁ q s))
-   wc p q ₀ ₁ r s = 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ w p q ∙ s))
-   wc p q ₁ ₀ r s = 𝟘-elim (one-is-not-zero (r ⁻¹ ∙ w p q ∙ s))
+   wc p q ₀ ₁ r s = zero-is-one-elim (r ⁻¹ ∙ w p q ∙ s)
+   wc p q ₁ ₀ r s = one-is-zero-elim (r ⁻¹ ∙ w p q ∙ s)
    wc p q ₁ ₁ r s = ap inr (Q-is-prop (g₁ p r) q)
 
   f-is-wconstant : wconstant f
@@ -212,16 +212,16 @@ module _ (P : 𝓤 ̇ )
    ϕ (inr q) = ₁
 
    ϕ₀ : (z t : P + Q) → f z ＝ t → ϕ t ＝ ₁ → Q
-   ϕ₀ (inl p) (inl p') r s = 𝟘-elim (zero-is-not-one s)
+   ϕ₀ (inl p) (inl p') r s = zero-is-one-elim s
    ϕ₀ (inl p) (inr q)  r s = q
-   ϕ₀ (inr q) (inl p)  r s = 𝟘-elim (zero-is-not-one s)
+   ϕ₀ (inr q) (inl p)  r s = zero-is-one-elim s
    ϕ₀ (inr q) (inr q') r s = q'
 
    ϕ₁ : (z t : P + Q) → f z ＝ t → ϕ t ＝ ₀ → P
    ϕ₁ (inl p) (inl p') r s = p'
-   ϕ₁ (inl p) (inr q)  r s = 𝟘-elim (one-is-not-zero s)
+   ϕ₁ (inl p) (inr q)  r s = one-is-zero-elim s
    ϕ₁ (inr q) (inl p)  r s = p
-   ϕ₁ (inr q) (inr q') r s = 𝟘-elim (one-is-not-zero s)
+   ϕ₁ (inr q) (inr q') r s = one-is-zero-elim s
 
   g₀ : P → 𝟚
   g₀ p = ϕ (f (inl p))

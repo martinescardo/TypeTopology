@@ -226,7 +226,7 @@ head-predicate {𝓤} {𝓦} {X} α f ds δ ((p , d) , ϕ)
            (tail-predicate f ds δ x ((p , d) , ϕ)))
 
 dep-discrete-finite-seq-csearchable' α f ds 0 ((p , d) , ϕ)
- = α , λ (y , py) → ϕ y α (λ _ p → 𝟘-elim (zero-is-not-one p)) py
+ = α , λ (y , py) → ϕ y α (λ _ → zero-is-one-elim) py
 dep-discrete-finite-seq-csearchable'
  {𝓤} {𝓦} {X} α f ds (succ δ) ((p , d) , ϕ)
  = xs₀ , γ
@@ -356,7 +356,7 @@ head-predicate-tych {𝓤} {𝓦} T S δ ((p , d) , ϕ)
 tychonoff' T S 0 ((p , d) , ϕ)
  = (λ n → pr₁ (S n (((λ _ → ⊤) , (λ _ → inl ⋆))
  , (0 , (λ x₁ x₂ _ _ → ⋆)))) )
- , (λ (α , pα) → ϕ α _ (λ _ p → 𝟘-elim (zero-is-not-one p)) pα)
+ , (λ (α , pα) → ϕ α _ (λ _ → zero-is-one-elim) pα)
 tychonoff' T S (succ δ) ((p , d) , ϕ)
  = (x ∷ pr₁ (xs→ x)) , γ
  where

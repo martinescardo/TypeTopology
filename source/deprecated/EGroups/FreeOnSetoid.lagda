@@ -173,8 +173,8 @@ the relation of 𝔸.
    E-is-congruence 𝓖 (f-resp q) (h-resp-≋ s t r)
   h-resp-≋ ((₁ , a) • s) ((₁ , b) • t) (refl , q , r) =
    E-is-congruence 𝓖 (≈-inv-cong (f a) (f b) (f-resp q)) (h-resp-≋ s t r)
-  h-resp-≋ ((₀ , a) • s) ((₁ , b) • t) (p , q , r) = 𝟘-elim (zero-is-not-one p)
-  h-resp-≋ ((₁ , a) • s) ((₀ , b) • t) (p , q , r) = 𝟘-elim (one-is-not-zero p)
+  h-resp-≋ ((₀ , a) • s) ((₁ , b) • t) (p , q , r) = zero-is-one-elim p
+  h-resp-≋ ((₁ , a) • s) ((₀ , b) • t) (p , q , r) = one-is-zero-elim p
 
   h-resp-≍ : (s t : FA) → s ≍ t → h s ≈⟨ 𝓖 ⟩ h t
   h-resp-≍ s t (∿-gives-≍ p)             = h-identifies-∿-related-points p

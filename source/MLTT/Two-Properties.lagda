@@ -31,6 +31,12 @@ one-is-not-zero p = 𝟙-is-not-𝟘 q
 zero-is-not-one : ₀ ≠ ₁
 zero-is-not-one p = one-is-not-zero (p ⁻¹)
 
+one-is-zero-elim : {A : 𝓤 ̇ } → ₁ ＝ ₀ → A
+one-is-zero-elim p = 𝟘-elim (one-is-not-zero p)
+
+zero-is-one-elim : {A : 𝓤 ̇ } → ₀ ＝ ₁ → A
+zero-is-one-elim p = 𝟘-elim (zero-is-not-one p)
+
 𝟚-Cases : {A : 𝓤 ̇ } → 𝟚 → A → A → A
 𝟚-Cases a b c = 𝟚-cases b c a
 
@@ -50,7 +56,7 @@ zero-is-not-one p = one-is-not-zero (p ⁻¹)
                     (p : b ＝ ₀)
                   → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ＝ f₀ p
 𝟚-equality-cases₀ {𝓤} {A} {₀} refl = refl
-𝟚-equality-cases₀ {𝓤} {A} {₁} p    = 𝟘-elim (one-is-not-zero p)
+𝟚-equality-cases₀ {𝓤} {A} {₁} p    = one-is-zero-elim p
 
 𝟚-equality-cases₁ : {A : 𝓤 ̇ }
                     {b : 𝟚}
@@ -58,7 +64,7 @@ zero-is-not-one p = one-is-not-zero (p ⁻¹)
                     {f₁ : b ＝ ₁ → A}
                     (p : b ＝ ₁)
                   → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ＝ f₁ p
-𝟚-equality-cases₁ {𝓤} {A} {₀} p    = 𝟘-elim (zero-is-not-one p)
+𝟚-equality-cases₁ {𝓤} {A} {₀} p    = zero-is-one-elim p
 𝟚-equality-cases₁ {𝓤} {A} {₁} refl = refl
 
 𝟚-equality-cases' : {A₀ A₁ : 𝓤 ̇ } {b : 𝟚}
@@ -84,8 +90,8 @@ zero-is-not-one p = one-is-not-zero (p ⁻¹)
 
 𝟚-ext : {b c : 𝟚} → (b ＝ ₁ → c ＝ ₁) → (c ＝ ₁ → b ＝ ₁) → b ＝ c
 𝟚-ext {₀} {₀} f g = refl
-𝟚-ext {₀} {₁} f g = 𝟘-elim (zero-is-not-one (g refl))
-𝟚-ext {₁} {₀} f g = 𝟘-elim (zero-is-not-one (f refl))
+𝟚-ext {₀} {₁} f g = zero-is-one-elim (g refl)
+𝟚-ext {₁} {₀} f g = zero-is-one-elim (f refl)
 𝟚-ext {₁} {₁} f g = refl
 
 equal-₁-different-from-₀ : {b : 𝟚} → b ＝ ₁ → b ≠ ₀
@@ -125,8 +131,8 @@ complement-of-different-booleans {₁} {₀} ν = refl
 complement-of-different-booleans {₁} {₁} ν = 𝟘-elim (ν refl)
 
 complement-no-fp : (n : 𝟚) → n ≠ complement n
-complement-no-fp ₀ p = 𝟘-elim (zero-is-not-one p)
-complement-no-fp ₁ p = 𝟘-elim (one-is-not-zero p)
+complement-no-fp ₀ p = zero-is-one-elim p
+complement-no-fp ₁ p = one-is-zero-elim p
 
 complement-involutive : (b : 𝟚) → complement (complement b) ＝ b
 complement-involutive ₀ = refl
@@ -148,8 +154,8 @@ eq𝟚-equal ₁ n p = p ⁻¹
 
 equal-eq𝟚 : (m n : 𝟚) → m ＝ n → eq𝟚 m n ＝ ₁
 equal-eq𝟚 ₀ ₀ refl = refl
-equal-eq𝟚 ₀ ₁ p    = 𝟘-elim (zero-is-not-one p)
-equal-eq𝟚 ₁ ₀ p    = 𝟘-elim (one-is-not-zero p)
+equal-eq𝟚 ₀ ₁ p    = zero-is-one-elim p
+equal-eq𝟚 ₁ ₀ p    = one-is-zero-elim p
 equal-eq𝟚 ₁ ₁ refl = refl
 
 \end{code}
@@ -186,9 +192,9 @@ instance
 ≤₂-is-prop-valued {₁} {₁} = 𝟙-is-prop
 
 <₂-criterion : {a b : 𝟚} → (a ＝ ₀) → (b ＝ ₁) → a < b
-<₂-criterion {₀} {₀} p q = 𝟘-elim (zero-is-not-one q)
+<₂-criterion {₀} {₀} p q = zero-is-one-elim q
 <₂-criterion {₀} {₁} p q = ⋆
-<₂-criterion {₁} {b} p q = 𝟘-elim (one-is-not-zero p)
+<₂-criterion {₁} {b} p q = one-is-zero-elim p
 
 <₂-criterion-converse : {a b : 𝟚} → a < b → (a ＝ ₀) × (b ＝ ₁)
 <₂-criterion-converse {₀} {₀} l = 𝟘-elim l
@@ -197,18 +203,18 @@ instance
 
 ≤₂-criterion : {a b : 𝟚} → (a ＝ ₁ → b ＝ ₁) → a ≤ b
 ≤₂-criterion {₀} {b} f = ⋆
-≤₂-criterion {₁} {₀} f = 𝟘-elim (zero-is-not-one (f refl))
+≤₂-criterion {₁} {₀} f = zero-is-one-elim (f refl)
 ≤₂-criterion {₁} {₁} f = ⋆
 
 ≤₂-criterion-converse : {a b : 𝟚} → a ≤ b → a ＝ ₁ → b ＝ ₁
-≤₂-criterion-converse {₀} {b} l p = 𝟘-elim (zero-is-not-one p)
+≤₂-criterion-converse {₀} {b} l p = zero-is-one-elim p
 ≤₂-criterion-converse {₁} {₀} l p = 𝟘-elim l
 ≤₂-criterion-converse {₁} {₁} l p = refl
 
 ₀-smallest : {a b : 𝟚} → a ≤ b → b ＝ ₀ → a ＝ ₀
 ₀-smallest {₀} {b} l p = refl
 ₀-smallest {₁} {₀} l p = 𝟘-elim l
-₀-smallest {₁} {₁} l p = 𝟘-elim (one-is-not-zero p)
+₀-smallest {₁} {₁} l p = one-is-zero-elim p
 
 <₂-gives-≤₂ : {a b : 𝟚} → a < b → a ≤ b
 <₂-gives-≤₂ {₀} {₀} l = 𝟘-elim l
@@ -223,7 +229,7 @@ instance
 Lemma[a＝₀→b<c→a<c] : {a b c : 𝟚} → a ＝ ₀ → b < c → a < c
 Lemma[a＝₀→b<c→a<c] {₀} {₀} {c} p l = l
 Lemma[a＝₀→b<c→a<c] {₀} {₁} {c} p l = 𝟘-elim l
-Lemma[a＝₀→b<c→a<c] {₁} {b} {c} p l = 𝟘-elim (one-is-not-zero p)
+Lemma[a＝₀→b<c→a<c] {₁} {b} {c} p l = one-is-zero-elim p
 
 Lemma[a<b→c≠₀→a<c] : {a b c : 𝟚} → a < b → c ≠ ₀ → a < c
 Lemma[a<b→c≠₀→a<c] {₀} {₀} {c} l ν = 𝟘-elim l
@@ -244,7 +250,7 @@ Lemma[a<b→c≠₀→a<c] {₁} {b} {c} l ν = 𝟘-elim l
 ₁-maximal {₁} l = refl
 
 ₁-maximal-converse : {b : 𝟚} → b ＝ ₁ → ₁ ≤ b
-₁-maximal-converse {₀} p = 𝟘-elim (zero-is-not-one p)
+₁-maximal-converse {₀} p = zero-is-one-elim p
 ₁-maximal-converse {₁} p = ⋆
 
 ₀-minimal : {b : 𝟚} → b ≤ ₀ → b ＝ ₀
@@ -253,7 +259,7 @@ Lemma[a<b→c≠₀→a<c] {₁} {b} {c} l ν = 𝟘-elim l
 
 ₀-minimal-converse : {b : 𝟚} → b ＝ ₀ → b ≤ ₀
 ₀-minimal-converse {₀} p = ⋆
-₀-minimal-converse {₁} p = 𝟘-elim (one-is-not-zero p)
+₀-minimal-converse {₁} p = one-is-zero-elim p
 
 _≤₂'_ : (a b : 𝟚) → 𝓤₀ ̇
 a ≤₂' b = b ＝ ₀ → a ＝ ₀
@@ -265,7 +271,7 @@ a ≤₂' b = b ＝ ₀ → a ＝ ₀
 
 ≤₂'-gives-≤₂ : {a b : 𝟚} → a ≤₂' b → a ≤ b
 ≤₂'-gives-≤₂ {₀} {b} _ = ⋆
-≤₂'-gives-≤₂ {₁} {₀} l = 𝟘-elim (one-is-not-zero (l refl))
+≤₂'-gives-≤₂ {₁} {₀} l = one-is-zero-elim (l refl)
 ≤₂'-gives-≤₂ {₁} {₁} _ = ⋆
 
 ≤₂-refl : {b : 𝟚} → b ≤ b
@@ -328,8 +334,8 @@ Lemma[min𝟚ab＝₁→a＝₁] {₀} r = r
 Lemma[min𝟚ab＝₁→a＝₁] {₁} r = refl
 
 Lemma[a＝₁→b＝₁→min𝟚ab＝₁] : {a b : 𝟚} → a ＝ ₁ → b ＝ ₁ → min𝟚 a b ＝ ₁
-Lemma[a＝₁→b＝₁→min𝟚ab＝₁] {₀} {b} p q = 𝟘-elim (zero-is-not-one p)
-Lemma[a＝₁→b＝₁→min𝟚ab＝₁] {₁} {₀} p q = 𝟘-elim (zero-is-not-one q)
+Lemma[a＝₁→b＝₁→min𝟚ab＝₁] {₀} {b} p q = zero-is-one-elim p
+Lemma[a＝₁→b＝₁→min𝟚ab＝₁] {₁} {₀} p q = zero-is-one-elim q
 Lemma[a＝₁→b＝₁→min𝟚ab＝₁] {₁} {₁} p q = refl
 
 Lemma[a≤₂b→min𝟚ab＝a] : {a b : 𝟚} → a ≤ b → min𝟚 a b ＝ a
@@ -340,8 +346,8 @@ Lemma[a≤₂b→min𝟚ab＝a] {₁} {₁} p = refl
 Lemma[min𝟚ab＝₀] : {a b : 𝟚} → (a ＝ ₀) + (b ＝ ₀) → min𝟚 a b ＝ ₀
 Lemma[min𝟚ab＝₀] {₀} {b} s       = refl
 Lemma[min𝟚ab＝₀] {₁} {₀} s       = refl
-Lemma[min𝟚ab＝₀] {₁} {₁} (inl p) = 𝟘-elim (one-is-not-zero p)
-Lemma[min𝟚ab＝₀] {₁} {₁} (inr q) = 𝟘-elim (one-is-not-zero q)
+Lemma[min𝟚ab＝₀] {₁} {₁} (inl p) = one-is-zero-elim p
+Lemma[min𝟚ab＝₀] {₁} {₁} (inr q) = one-is-zero-elim q
 
 lemma[min𝟚ab＝₀] : {a b : 𝟚} → min𝟚 a b ＝ ₀ → (a ＝ ₀) + (b ＝ ₀)
 lemma[min𝟚ab＝₀] {₀} {b} p = inl p
@@ -373,14 +379,14 @@ max𝟚-lemma-converse {₁} x       = refl
 max𝟚-lemma' : {a b : 𝟚} → max𝟚 a b ＝ ₁ → (a ＝ ₀) × (b ＝ ₁)
                                        + (a ＝ ₁) × (b ＝ ₀)
                                        + (a ＝ ₁) × (b ＝ ₁)
-max𝟚-lemma' {₀} {₀} r = 𝟘-elim (zero-is-not-one r)
+max𝟚-lemma' {₀} {₀} r = zero-is-one-elim r
 max𝟚-lemma' {₀} {₁} r = inl (refl , refl)
 max𝟚-lemma' {₁} {₀} r = inr (inl (refl , refl))
 max𝟚-lemma' {₁} {₁} r = inr (inr (refl , refl))
 
 max𝟚-lemma'' : {a b : 𝟚} → max𝟚 a b ＝ ₁ → (a ＝ ₁) × (b ＝ ₀)
                                         + (b ＝ ₁)
-max𝟚-lemma'' {₀} {₀} r = 𝟘-elim (zero-is-not-one r)
+max𝟚-lemma'' {₀} {₀} r = zero-is-one-elim r
 max𝟚-lemma'' {₁} {₀} r = inl (refl , refl)
 max𝟚-lemma'' {₀} {₁} r = inr refl
 max𝟚-lemma'' {₁} {₁} r = inr refl
@@ -398,7 +404,7 @@ max𝟚-₀-left {₁} {b} p = p
 
 max𝟚-₀-right : {a b : 𝟚} → max𝟚 a b ＝ ₀ → b ＝ ₀
 max𝟚-₀-right {₀} {b} p = p
-max𝟚-₀-right {₁} {b} p = 𝟘-elim (one-is-not-zero p)
+max𝟚-₀-right {₁} {b} p = one-is-zero-elim p
 
 \end{code}
 
@@ -434,24 +440,24 @@ Lemma[b⊕c＝₁→b≠c] : {b c : 𝟚} → b ⊕ c ＝ ₁ → b ≠ c
 Lemma[b⊕c＝₁→b≠c] = (contrapositive Lemma[b＝c→b⊕c＝₀]) ∘ equal-₁-different-from-₀
 
 complement₀ : {a : 𝟚} → complement a ＝ ₀ → a ＝ ₁
-complement₀ {₀} p    = 𝟘-elim (one-is-not-zero p)
+complement₀ {₀} p    = one-is-zero-elim p
 complement₀ {₁} refl = refl
 
 complement₁ : {a : 𝟚} → complement a ＝ ₁ → a ＝ ₀
 complement₁ {₀} refl = refl
-complement₁ {₁} p    = 𝟘-elim (zero-is-not-one p)
+complement₁ {₁} p    = zero-is-one-elim p
 
 complement₁-back : {a : 𝟚} → a ＝ ₀ → complement a ＝ ₁
 complement₁-back {₀} refl = refl
-complement₁-back {₁} p    = 𝟘-elim (one-is-not-zero p)
+complement₁-back {₁} p    = one-is-zero-elim p
 
 complement₀-back : {a : 𝟚} → a ＝ ₁ → complement a ＝ ₀
-complement₀-back {₀} p    = 𝟘-elim (zero-is-not-one p)
+complement₀-back {₀} p    = zero-is-one-elim p
 complement₀-back {₁} refl = refl
 
 complement-one-gives-argument-not-one : {a : 𝟚} → complement a ＝ ₁ → a ≠ ₁
 complement-one-gives-argument-not-one {₀} p = zero-is-not-one
-complement-one-gives-argument-not-one {₁} p = 𝟘-elim (zero-is-not-one p)
+complement-one-gives-argument-not-one {₁} p = zero-is-one-elim p
 
 argument-not-one-gives-complement-one : {a : 𝟚} → a ≠ ₁ → complement a ＝ ₁
 argument-not-one-gives-complement-one {₀} ν = refl
@@ -492,29 +498,29 @@ complement-both-right {₁} {₁} l = ⋆
 
 ⊕-property₁ : {a b : 𝟚} (g : a ≥ b)
             → a ⊕ b ＝ ₁ → (a ＝ ₁) × (b ＝ ₀)
-⊕-property₁ {₀} {₀} g p = 𝟘-elim (zero-is-not-one p)
+⊕-property₁ {₀} {₀} g p = zero-is-one-elim p
 ⊕-property₁ {₀} {₁} g p = 𝟘-elim g
 ⊕-property₁ {₁} {₀} g p = refl , refl
-⊕-property₁ {₁} {₁} g p = 𝟘-elim (zero-is-not-one p)
+⊕-property₁ {₁} {₁} g p = zero-is-one-elim p
 
 ⊕-intro₀₀ : {a b : 𝟚} → a ＝ ₀ → b ＝ ₀ → a ⊕ b ＝ ₀
 ⊕-intro₀₀ {₀} {₀} p q = refl
-⊕-intro₀₀ {₀} {₁} p q = 𝟘-elim (one-is-not-zero q)
-⊕-intro₀₀ {₁} {b} p q = 𝟘-elim (one-is-not-zero p)
+⊕-intro₀₀ {₀} {₁} p q = one-is-zero-elim q
+⊕-intro₀₀ {₁} {b} p q = one-is-zero-elim p
 
 ⊕-intro₀₁ : {a b : 𝟚} → a ＝ ₀ → b ＝ ₁ → a ⊕ b ＝ ₁
-⊕-intro₀₁ {₀} {₀} p q = 𝟘-elim (zero-is-not-one q)
+⊕-intro₀₁ {₀} {₀} p q = zero-is-one-elim q
 ⊕-intro₀₁ {₀} {₁} p q = refl
-⊕-intro₀₁ {₁} {b} p q = 𝟘-elim (one-is-not-zero p)
+⊕-intro₀₁ {₁} {b} p q = one-is-zero-elim p
 
 ⊕-intro₁₀ : {a b : 𝟚} → a ＝ ₁ → b ＝ ₀ → a ⊕ b ＝ ₁
-⊕-intro₁₀ {₀} {b} p q = 𝟘-elim (zero-is-not-one p)
+⊕-intro₁₀ {₀} {b} p q = zero-is-one-elim p
 ⊕-intro₁₀ {₁} {₀} p q = refl
-⊕-intro₁₀ {₁} {₁} p q = 𝟘-elim (one-is-not-zero q)
+⊕-intro₁₀ {₁} {₁} p q = one-is-zero-elim q
 
 ⊕-intro₁₁ : {a b : 𝟚} → a ＝ ₁ → b ＝ ₁ → a ⊕ b ＝ ₀
-⊕-intro₁₁ {₀} {b} p q = 𝟘-elim (zero-is-not-one p)
-⊕-intro₁₁ {₁} {₀} p q = 𝟘-elim (zero-is-not-one q)
+⊕-intro₁₁ {₀} {b} p q = zero-is-one-elim p
+⊕-intro₁₁ {₁} {₀} p q = zero-is-one-elim q
 ⊕-intro₁₁ {₁} {₁} p q = refl
 
 ⊕-₀-right-neutral : {a : 𝟚} → a ⊕ ₀ ＝ a
@@ -523,14 +529,14 @@ complement-both-right {₁} {₁} l = ⋆
 
 ⊕-₀-right-neutral' : {a b : 𝟚} → b ＝ ₀ → a ⊕ b ＝ a
 ⊕-₀-right-neutral' {₀} {₀} p = refl
-⊕-₀-right-neutral' {₀} {₁} p = 𝟘-elim (one-is-not-zero p)
+⊕-₀-right-neutral' {₀} {₁} p = one-is-zero-elim p
 ⊕-₀-right-neutral' {₁} {₀} p = refl
-⊕-₀-right-neutral' {₁} {₁} p = 𝟘-elim (one-is-not-zero p)
+⊕-₀-right-neutral' {₁} {₁} p = one-is-zero-elim p
 
 ⊕-left-complement : {a b : 𝟚} → b ＝ ₁ → a ⊕ b ＝ complement a
-⊕-left-complement {₀} {₀} p = 𝟘-elim (zero-is-not-one p)
+⊕-left-complement {₀} {₀} p = zero-is-one-elim p
 ⊕-left-complement {₀} {₁} p = refl
-⊕-left-complement {₁} {₀} p = 𝟘-elim (zero-is-not-one p)
+⊕-left-complement {₁} {₀} p = zero-is-one-elim p
 ⊕-left-complement {₁} {₁} p = refl
 
 ≤₂-add-left : (a b : 𝟚) → b ≤ a → a ⊕ b ≤ a

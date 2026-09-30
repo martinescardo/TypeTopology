@@ -64,7 +64,7 @@ discrete-clofun''-e : {X : 𝓤 ̇ } (x y : X)
                     → discrete-clofun'' x y d ＝ ∞ → x ＝ y
 discrete-clofun''-e x y (inl e) cxy＝∞ = e
 discrete-clofun''-e x y (inr f) cxy＝∞
- = 𝟘-elim (zero-is-not-one (ap (λ - → ℕ∞-to-ℕ→𝟚 - 0) cxy＝∞))
+ = zero-is-one-elim (ap (λ - → ℕ∞-to-ℕ→𝟚 - 0) cxy＝∞)
 
 discrete-clofun''-i : {X : 𝓤 ̇ } (x : X)
                     → (d : is-decidable (x ＝ x))
@@ -152,7 +152,7 @@ discrete-closeness-succ-implies-equal d x y n Csnxy
     → ℕ∞-to-ℕ→𝟚 (discrete-clofun'' x y dxy) n ＝ ₁
     → x ＝ y
   γ (inl e) _ = e
-  γ (inr f) cxyₙ=₁ = 𝟘-elim (zero-is-not-one cxyₙ=₁)
+  γ (inr f) cxyₙ=₁ = zero-is-one-elim cxyₙ=₁
 \end{code}
 
 ## Disjoint union of closeness spaces
@@ -172,9 +172,9 @@ discrete-closeness-succ-implies-equal d x y n Csnxy
 +-clofun'-e X Y (inr y₁) (inr y₂) q
  = ap inr (e⟨ Y ⟩ y₁ y₂ q)
 +-clofun'-e X Y (inl x₁) (inr y₂) f
- = 𝟘-elim (zero-is-not-one (ap (λ - → ℕ∞-to-ℕ→𝟚 - 0) f))
+ = zero-is-one-elim (ap (λ - → ℕ∞-to-ℕ→𝟚 - 0) f)
 +-clofun'-e X Y (inr y₁) (inl x₂) f
- = 𝟘-elim (zero-is-not-one (ap (λ - → ℕ∞-to-ℕ→𝟚 - 0) f))
+ = zero-is-one-elim (ap (λ - → ℕ∞-to-ℕ→𝟚 - 0) f)
 
 +-clofun'-i : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
             → self-indistinguishable (+-clofun' X Y)
@@ -196,8 +196,8 @@ discrete-closeness-succ-implies-equal d x y n Csnxy
  = Lemma[min𝟚ab＝₀] (inr refl) ⁻¹ ∙ mina₀＝₁
 +-clofun'-u X Y (inr y₁) (inr y₂) (inl x₃) n mina₀＝₁
  = Lemma[min𝟚ab＝₀] (inr refl) ⁻¹ ∙ mina₀＝₁
-+-clofun'-u X Y (inl x₁) (inr y₂) _ _ p = 𝟘-elim (zero-is-not-one p)
-+-clofun'-u X Y (inr y₁) (inl x₂) _ _ p = 𝟘-elim (zero-is-not-one p)
++-clofun'-u X Y (inl x₁) (inr y₂) _ _ p = zero-is-one-elim p
++-clofun'-u X Y (inr y₁) (inl x₂) _ _ p = zero-is-one-elim p
 
 +-clofun'-is-clofun : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
                     → is-closeness (+-clofun' X Y)
@@ -303,19 +303,19 @@ min𝟚-abcd {a} {b} {.a} {.b} refl refl = refl
 min𝟚-abcd-ac : (a b c d : 𝟚)
              → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁
              → min𝟚 a c ＝ ₁
-min𝟚-abcd-ac ₀ b c d e = 𝟘-elim (zero-is-not-one e)
-min𝟚-abcd-ac ₁ ₀ c d e = 𝟘-elim (zero-is-not-one e)
-min𝟚-abcd-ac ₁ ₁ ₀ d e = 𝟘-elim (zero-is-not-one e)
-min𝟚-abcd-ac ₁ ₁ ₁ ₀ e = 𝟘-elim (zero-is-not-one e)
+min𝟚-abcd-ac ₀ b c d e = zero-is-one-elim e
+min𝟚-abcd-ac ₁ ₀ c d e = zero-is-one-elim e
+min𝟚-abcd-ac ₁ ₁ ₀ d e = zero-is-one-elim e
+min𝟚-abcd-ac ₁ ₁ ₁ ₀ e = zero-is-one-elim e
 min𝟚-abcd-ac ₁ ₁ ₁ ₁ e = refl
 
 min𝟚-abcd-bd : (a b c d : 𝟚)
              → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁
              → min𝟚 b d ＝ ₁
-min𝟚-abcd-bd ₀ b c d e = 𝟘-elim (zero-is-not-one e)
-min𝟚-abcd-bd ₁ ₀ c d e = 𝟘-elim (zero-is-not-one e)
-min𝟚-abcd-bd ₁ ₁ ₀ d e = 𝟘-elim (zero-is-not-one e)
-min𝟚-abcd-bd ₁ ₁ ₁ ₀ e = 𝟘-elim (zero-is-not-one e)
+min𝟚-abcd-bd ₀ b c d e = zero-is-one-elim e
+min𝟚-abcd-bd ₁ ₀ c d e = zero-is-one-elim e
+min𝟚-abcd-bd ₁ ₁ ₀ d e = zero-is-one-elim e
+min𝟚-abcd-bd ₁ ₁ ₁ ₀ e = zero-is-one-elim e
 min𝟚-abcd-bd ₁ ₁ ₁ ₁ e = refl
 
 minℕ∞-abcdef : (a b c d e f : ℕ∞)
@@ -614,12 +614,12 @@ decidable-𝟚₀ (inr ¬x)  _ = refl
 𝟚-decidable₁ : {X : 𝓤 ̇ } (d : is-decidable X)
              → decidable-𝟚 d ＝ ₁ → X
 𝟚-decidable₁ (inl x)  _ = x
-𝟚-decidable₁ (inr ¬x) e = 𝟘-elim (zero-is-not-one e)
+𝟚-decidable₁ (inr ¬x) e = zero-is-one-elim e
 
 𝟚-decidable₀ : {X : 𝓤 ̇ } (d : is-decidable X)
              → decidable-𝟚 d ＝ ₀
              → ¬ X
-𝟚-decidable₀ (inl x)  e = 𝟘-elim (one-is-not-zero e)
+𝟚-decidable₀ (inl x)  e = one-is-zero-elim e
 𝟚-decidable₀ (inr ¬x) _ = ¬x
 
 decidable-seq-𝟚 : {X : ℕ → 𝓤 ̇ } → is-complemented X → (ℕ → 𝟚)
@@ -685,8 +685,8 @@ discrete-seq-clofun'-u d α β ζ n
     → min𝟚 (decidable-𝟚 dαβ) (decidable-𝟚 dβζ) ＝ ₁
     → decidable-𝟚 dαζ ＝ ₁
   γ _          _          (inl _) _ = refl
-  γ (inl α∼ⁿβ) (inr _)    (inr _)     m = 𝟘-elim (zero-is-not-one m)
-  γ (inr _)     dβζ       (inr _)     m = 𝟘-elim (zero-is-not-one m)
+  γ (inl α∼ⁿβ) (inr _)    (inr _)     m = zero-is-one-elim m
+  γ (inr _)     dβζ       (inr _)     m = zero-is-one-elim m
   γ (inl α∼ⁿβ) (inl β∼ⁿζ) (inr ¬α∼ⁿζ) m
    = 𝟘-elim (¬α∼ⁿζ (λ i i<n → α∼ⁿβ i i<n ∙ β∼ⁿζ i i<n))
 
@@ -705,7 +705,7 @@ discrete-seq-clofun'-u d α β ζ n
     → decidable-𝟚 dαβₛₙ ＝ ₁
   γ (inl _) (inl _) _ = refl
   γ (inl _) (inr _) _ = refl
-  γ (inr _) (inr _) e = 𝟘-elim (zero-is-not-one e)
+  γ (inr _) (inr _) e = zero-is-one-elim e
   γ (inr ¬α∼ˢⁿβ) (inl α∼ˢˢⁿβ) _
    = (𝟘-elim ∘ ¬α∼ˢⁿβ)
        (λ i i<sn → α∼ˢˢⁿβ i
@@ -770,7 +770,7 @@ discrete-seq-clospace d = discrete-seq-clofun d
          → (α β : Π X) (n : ℕ)
          → (α ∼ⁿ β) n
          → C (ΠD-ClosenessSpace d) n α β
-∼ⁿ-to-C' d α β zero     α∼ⁿβ i i<n = 𝟘-elim (zero-is-not-one i<n)
+∼ⁿ-to-C' d α β zero     α∼ⁿβ i i<n = zero-is-one-elim i<n
 ∼ⁿ-to-C' d α β (succ n) α∼ⁿβ i i<n
  = is-decreasing' (discrete-seq-clofun d α β)
      n i (⊏-gives-< i (succ n) i<n)
@@ -890,19 +890,19 @@ C-to-∼ⁿ d = C-to-∼ⁿ' (λ _ → d)
 Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] : (a b c d : 𝟚)
                             → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁
                             → min𝟚 a c ＝ ₁
-Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] ₀ b c d e = 𝟘-elim (zero-is-not-one e)
-Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] ₁ ₀ c d e = 𝟘-elim (zero-is-not-one e)
-Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] ₁ ₁ ₀ d e = 𝟘-elim (zero-is-not-one e)
-Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] ₁ ₁ ₁ ₀ e = 𝟘-elim (zero-is-not-one e)
+Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] ₀ b c d e = zero-is-one-elim e
+Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] ₁ ₀ c d e = zero-is-one-elim e
+Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] ₁ ₁ ₀ d e = zero-is-one-elim e
+Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] ₁ ₁ ₁ ₀ e = zero-is-one-elim e
 Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] ₁ ₁ ₁ ₁ e = refl
 
 Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] : (a b c d : 𝟚)
                             → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁
                             → min𝟚 b d ＝ ₁
-Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₀ b c d e = 𝟘-elim (zero-is-not-one e)
-Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₀ c d e = 𝟘-elim (zero-is-not-one e)
-Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₀ d e = 𝟘-elim (zero-is-not-one e)
-Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₁ ₀ e = 𝟘-elim (zero-is-not-one e)
+Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₀ b c d e = zero-is-one-elim e
+Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₀ c d e = zero-is-one-elim e
+Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₀ d e = zero-is-one-elim e
+Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₁ ₀ e = zero-is-one-elim e
 Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₁ ₁ e = refl
 
 Π-clofun'-u : (T : ℕ → ClosenessSpace 𝓤)
@@ -1075,7 +1075,7 @@ Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₁ ₁ e = refl
         → (ε : ℕ)
         → C (Π-ClosenessSpace T) ε α (α 0 ∷ (α ∘ succ))
 Π-C-eta T α ε 0 = C-refl (T 0) ε (α 0) 0
-Π-C-eta T α zero     (succ n) l = 𝟘-elim (zero-is-not-one l)
+Π-C-eta T α zero     (succ n) l = zero-is-one-elim l
 Π-C-eta T α (succ ε) (succ n)
  = Π-C-combine T (α 0) (α 0) (α ∘ succ) (α ∘ succ) ε
      (C-refl (T 0) (succ ε) (α 0))

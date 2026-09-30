@@ -170,9 +170,9 @@ homomorphism from concatenation to the operation of 𝓖.
  h-respects-≈[FA] ((₀ , a) • s) [] ν = 𝟘-elim ν
  h-respects-≈[FA] ((₁ , a) • s) [] ν = 𝟘-elim ν
  h-respects-≈[FA] ((₀ , a) • s) ((₁ , b) • t) ((e , q) , r) =
-  𝟘-elim (zero-is-not-one e)
+  zero-is-one-elim e
  h-respects-≈[FA] ((₁ , a) • s) ((₀ , b) • t) ((e , q) , r) =
-  𝟘-elim (one-is-not-zero e)
+  one-is-zero-elim e
  h-respects-≈[FA] ((₀ , a) • s) ((₀ , b) • t) ((refl , q) , r) =
   *-cong (f-resp q) (h-respects-≈[FA] s t r)
  h-respects-≈[FA] ((₁ , a) • s) ((₁ , b) • t) ((refl , q) , r) =
@@ -200,8 +200,8 @@ is why we needed h to respect _≈[FA]_.
 \begin{code}
 
  h-redex : (x y : X) → y ≈[X] (x ⁻) → h (x • y • []) ≈⟨ 𝓖 ⟩ eᴳ
- h-redex (₀ , a) (₀ , b) (e , q) = 𝟘-elim (zero-is-not-one e)
- h-redex (₁ , a) (₁ , b) (e , q) = 𝟘-elim (one-is-not-zero e)
+ h-redex (₀ , a) (₀ , b) (e , q) = zero-is-one-elim e
+ h-redex (₁ , a) (₁ , b) (e , q) = one-is-zero-elim e
  h-redex (₀ , a) (₁ , b) (refl , q) =
   f a * (invᴳ (f b) * eᴳ) ≈[ I ]
   f a * invᴳ (f b)        ≈[ II ]

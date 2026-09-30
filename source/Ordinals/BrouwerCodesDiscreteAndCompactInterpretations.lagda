@@ -341,10 +341,10 @@ value ₁.
                                   u
                                   (ℓ-isolated (b n) (u (n , refl)) p)
 
-ℓ-isolated (L b) (inr ⋆ , u) p = 𝟘-elim (one-is-not-zero p)
+ℓ-isolated (L b) (inr ⋆ , u) p = one-is-zero-elim p
 
-ℓ-limit Z     ⋆           p = 𝟘-elim (zero-is-not-one p)
-ℓ-limit (S b) (inr ⋆ , ⋆) p = 𝟘-elim (zero-is-not-one p)
+ℓ-limit Z     ⋆           p = zero-is-one-elim p
+ℓ-limit (S b) (inr ⋆ , ⋆) p = zero-is-one-elim p
 ℓ-limit (S b) (inl ⋆ , x) p i = ℓ-limit b x p
                                  (Σ-isolated-right
                                    (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
@@ -359,8 +359,8 @@ value ₁.
                                  (λ i → Κ-compact∙ (b i))
                                  u
 
-ℓ-limit⁺ Z     ⋆           p = 𝟘-elim (zero-is-not-one p)
-ℓ-limit⁺ (S b) (inr ⋆ , ⋆) p = 𝟘-elim (zero-is-not-one p)
+ℓ-limit⁺ Z     ⋆           p = zero-is-one-elim p
+ℓ-limit⁺ (S b) (inr ⋆ , ⋆) p = zero-is-one-elim p
 ℓ-limit⁺ (S b) (inl ⋆ , x) p i = ℓ-limit⁺ b x p
                                   (Σ-weakly-isolated-right
                                     (underlying-type-is-setᵀ fe 𝟚ᵒ) i)

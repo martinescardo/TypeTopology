@@ -36,8 +36,7 @@ boolean-value' : {A : 𝓤 ̇ }
 boolean-value' {𝓤} {A} (inl a ) = (₁ , ϕ , ψ)
  where
   ϕ : ₁ ＝ ₀ ↔ ¬ A
-  ϕ = (λ p → 𝟘-elim (one-is-not-zero p))
-    , (λ na → 𝟘-elim (na a))
+  ϕ = one-is-zero-elim , (λ na → 𝟘-elim (na a))
   ψ : ₁ ＝ ₁ ↔ A
   ψ = (λ _ → a) , (λ _ → refl)
 boolean-value' {𝓤} {A} (inr na) = ₀ , ϕ , ψ
@@ -45,8 +44,7 @@ boolean-value' {𝓤} {A} (inr na) = ₀ , ϕ , ψ
   ϕ : ₀ ＝ ₀ ↔ ¬ A
   ϕ = (λ _ → na) , (λ _ → refl)
   ψ : ₀ ＝ ₁ ↔ A
-  ψ = (λ p → 𝟘-elim (zero-is-not-one p))
-    , (λ a → 𝟘-elim (na a))
+  ψ = zero-is-one-elim , (λ a → 𝟘-elim (na a))
 
 inclusion-of-booleans : 𝟚 → Ω 𝓤
 inclusion-of-booleans ₀ = 𝟘 , 𝟘-is-prop

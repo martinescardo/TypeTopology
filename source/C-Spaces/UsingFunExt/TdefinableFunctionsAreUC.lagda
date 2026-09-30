@@ -160,8 +160,8 @@ Lemma[s⟦t⟧ᵐRc⟦t⟧ᵐ] (IF {Γ} {σ}) ρ ρ' r = claim
  where
   claim : s⟦ IF {Γ} {σ} ⟧ᵐ ρ R pr₁ c⟦ IF {Γ} {σ} ⟧ᵐ ρ'
   claim ₀ ₀ refl _ _ rx _ _ ry = rx
-  claim ₀ ₁ p = 𝟘-elim (zero-is-not-one p)
-  claim ₁ ₀ p = 𝟘-elim (one-is-not-zero p)
+  claim ₀ ₁ p = zero-is-one-elim p
+  claim ₁ ₀ p = one-is-zero-elim p
   claim ₁ ₁ refl _ _ rx _ _ ry = ry
 Lemma[s⟦t⟧ᵐRc⟦t⟧ᵐ] ZERO _ _ _ = refl
 Lemma[s⟦t⟧ᵐRc⟦t⟧ᵐ] SUCC _ _ _ _ _ rn = ap succ rn

@@ -614,11 +614,11 @@ characterization of Σ↑ as an equivalence.
   γ r = inr ⋆ , f , g , h
    where
     f : (Σ x ꞉ 𝟙 + 𝟙 , p x ＝ ₀) → p (inr ⋆) ＝ ₀
-    f (inl ⋆ , s) = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
+    f (inl ⋆ , s) = zero-is-one-elim (s ⁻¹ ∙ r)
     f (inr ⋆ , s) = s
 
     g : (x : 𝟙 + 𝟙) → p x ＝ ₀ → inr ⋆ ≤ x
-    g (inl ⋆) s l = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
+    g (inl ⋆) s l = zero-is-one-elim (s ⁻¹ ∙ r)
     g (inr ⋆) s l = 𝟘-elim l
 
     h : (x : 𝟙 + 𝟙) → is-roots-lower-bound _≤_ p x → x ≤ inr ⋆

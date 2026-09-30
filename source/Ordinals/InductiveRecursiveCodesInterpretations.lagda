@@ -598,7 +598,7 @@ Non-limit points are isolated in the Κ interpretation:
 ℓ-isolated : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₀ → is-isolated (ι ν x)
 ℓ-isolated ⌜𝟙⌝         ⋆            p    = 𝟙-is-discrete ⋆
 ℓ-isolated ⌜ω+𝟙⌝       (inl n)      refl = finite-isolated fe₀ n
-ℓ-isolated ⌜ω+𝟙⌝       (inr ⋆)      p    = 𝟘-elim (one-is-not-zero p)
+ℓ-isolated ⌜ω+𝟙⌝       (inr ⋆)      p    = one-is-zero-elim p
 ℓ-isolated (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p    = Σ-isolated
                                             (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
                                             (ℓ-isolated ν₀ x₀ p)
@@ -631,8 +631,8 @@ The function ℓ really does detect limit points:
 \begin{code}
 
 ℓ-limit : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point (ι ν x)
-ℓ-limit ⌜𝟙⌝         ⋆            p = 𝟘-elim (zero-is-not-one p)
-ℓ-limit ⌜ω+𝟙⌝       (inl n)      p = 𝟘-elim (zero-is-not-one p)
+ℓ-limit ⌜𝟙⌝         ⋆            p = zero-is-one-elim p
+ℓ-limit ⌜ω+𝟙⌝       (inl n)      p = zero-is-one-elim p
 ℓ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
 ℓ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit ν₀ x₀ p
                                         (Σ-isolated-right
@@ -682,8 +682,8 @@ limit point holds.
 \begin{code}
 
 ℓ-limit⁺ : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point⁺ (ι ν x)
-ℓ-limit⁺ ⌜𝟙⌝   ⋆       p = 𝟘-elim (zero-is-not-one p)
-ℓ-limit⁺ ⌜ω+𝟙⌝ (inl n) p = 𝟘-elim (zero-is-not-one p)
+ℓ-limit⁺ ⌜𝟙⌝   ⋆       p = zero-is-one-elim p
+ℓ-limit⁺ ⌜ω+𝟙⌝ (inl n) p = zero-is-one-elim p
 ℓ-limit⁺ ⌜ω+𝟙⌝ (inr x) p i = ∞-is-a-limit-point⁺-of-ℕ∞ i
 ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i
  = ℓ-limit⁺ ν₀ x₀ p

@@ -346,7 +346,7 @@ nid (succ n) (succ i) d n<i
           → C (Π-ClosenessSpace (λ _ → ΠD-ClosenessSpace d)) n α β
 ∼ⁿ-to-ΠC' d α β n f 0 i⊏sn
  = ∼ⁿ-to-C' d (α 0) (β 0) n (f 0) 0 i⊏sn
-∼ⁿ-to-ΠC' d α β zero f (succ i) i⊏sn = 𝟘-elim (zero-is-not-one i⊏sn)
+∼ⁿ-to-ΠC' d α β zero f (succ i) i⊏sn = zero-is-one-elim i⊏sn
 ∼ⁿ-to-ΠC' d α β (succ n) f (succ i) i⊏sn
  = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
     (∼ⁿ-to-C' d (α 0) (β 0) (succ n) (f 0) (succ i) i⊏sn)
@@ -375,7 +375,7 @@ nid (succ n) (succ i) d n<i
          → (α β : (ℕ → Π X)) (n : ℕ)
          → ((i : ℕ) → i < n → (α i ∼ⁿ β i) n)
          → C (Π-ClosenessSpace (λ _ → ΠD-ClosenessSpace d)) n α β
-∼ⁿ-to-ΠC d α β zero α∼β i i⊏n = 𝟘-elim (zero-is-not-one i⊏n)
+∼ⁿ-to-ΠC d α β zero α∼β i i⊏n = zero-is-one-elim i⊏n
 ∼ⁿ-to-ΠC d α β n@(succ _) α∼β
  = ∼ⁿ-to-ΠC' d α β n (λ i → Cases (order-split i n) (γ< i) (γ≥ i))
  where

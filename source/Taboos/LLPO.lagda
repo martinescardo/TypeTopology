@@ -309,11 +309,11 @@ untruncated-ℕ∞-LLPO-gives-WLPO fe llpo = wlpo
           (λ (b : f₀ ∞ ＝ ₁)
                 → Cases (𝟚-possibilities (f₁ ∞))
                    (λ (c : f₁ ∞ ＝ ₀)
-                         → 𝟘-elim (zero-is-not-one
-                                    (₀    ＝⟨ c ⁻¹ ⟩
-                                     f₁ ∞ ＝⟨ f-∞-agreement ⟩
-                                     f₀ ∞ ＝⟨ b ⟩
-                                     ₁    ∎)))
+                         → zero-is-one-elim
+                            (₀    ＝⟨ c ⁻¹ ⟩
+                             f₁ ∞ ＝⟨ f-∞-agreement ⟩
+                             f₀ ∞ ＝⟨ b ⟩
+                             ₁    ∎))
                    (λ (d : f₁ ∞ ＝ ₁)
                          → wlpo₁ d))
 

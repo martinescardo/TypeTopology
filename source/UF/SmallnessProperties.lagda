@@ -170,7 +170,7 @@ pair₀ x = (₀ , x)
 pair₀-is-embedding : {X : 𝓤 ̇ } → is-embedding (pair₀ {𝓤} {X})
 pair₀-is-embedding (₀ , x) (x , refl) (x , refl) = refl
 pair₀-is-embedding (₁ , x) (y , p)    _          =
- 𝟘-elim (zero-is-not-one (ap pr₁ p))
+ zero-is-one-elim (ap pr₁ p)
 
 pair₀-is-decidable : {X : 𝓤 ̇ } → each-fiber-of (pair₀ {𝓤} {X}) is-decidable
 pair₀-is-decidable (₀ , x) = inl (x , refl)
