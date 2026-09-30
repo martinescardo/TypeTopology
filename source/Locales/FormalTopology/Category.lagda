@@ -31,10 +31,7 @@ open import MLTT.Spartan
 open import Notation.CanonicalMap
 open import Notation.UnderlyingType
 open import UF.Base
-open import UF.Logic
 open import UF.Powerset
-open import UF.Sets
-open import UF.Sets-Properties
 open import UF.SubtypeClassifier
 
 open Formal-Topology-Morphism
