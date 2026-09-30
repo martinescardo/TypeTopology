@@ -66,7 +66,7 @@ B【_】 : {n : ℕ} (Γ : Cxt n) → Type
 B【 Γ 】 = (i : Fin _) → B〖 (Γ [ i ]) 〗
 
 ⟪⟫ : B【 〈〉 】
-⟪⟫ ()
+⟪⟫ i = 𝟘-elim (Fin-0-is-empty i)
 
 _‚‚_ : {n : ℕ} {Γ : Cxt n} {σ : type} → B【 Γ 】 → B〖 σ 〗 → B【 Γ , σ 】
 (xs ‚‚ x) 𝟎       = x
@@ -236,7 +236,8 @@ hypothesis, as usual.
 
 main-closed-ground : (t : T' 〈〉 ι) (α : Baire)
                    → ⟦ t ⟧' α ⟨⟩ ＝ decode α (B⟦ t ⟧ ⟪⟫)
-main-closed-ground t = main-lemma t (λ α → ⟨⟩) ⟪⟫ (λ())
+main-closed-ground t = main-lemma t (λ α → ⟨⟩) ⟪⟫
+                                  (λ i → 𝟘-elim (Fin-0-is-empty i))
 
 \end{code}
 

@@ -17,18 +17,24 @@ data smaller : ℕ → Set where
  fzero : {n : ℕ} → smaller(succ n)
  fsucc : {n : ℕ} → smaller n → smaller(succ n)
 
+is-nonzero : ℕ → Set
+is-nonzero O        = ⊥
+is-nonzero (succ n) = ⊤
+
+smaller-gives-is-nonzero : {n : ℕ} → smaller n → is-nonzero n
+smaller-gives-is-nonzero fzero     = *
+smaller-gives-is-nonzero (fsucc i) = *
+
 embed : {n : ℕ} → smaller n → ℕ
-embed {O} ()
-embed {succ n} fzero = O
-embed {succ n} (fsucc i) = succ(embed i)
+embed fzero = O
+embed (fsucc i) = succ(embed i)
 
 restriction : {m : ℕ} {X : Type} → (ℕ → X) → smaller m → X
 restriction f = f ∘ embed
 
 coerce : {n : ℕ} → smaller n → smaller(succ n)
-coerce {O} ()
-coerce {succ n} (fzero) = fzero
-coerce {succ n} (fsucc i) = fsucc(coerce i)
+coerce (fzero) = fzero
+coerce (fsucc i) = fsucc(coerce i)
 
 \end{code}
 
@@ -39,8 +45,7 @@ In summary, embed i ≡ embed (coerce i).
 embed-coerce-lemma : {n : ℕ}
                      {i : smaller n}
                    → embed {n} i ≡ embed {succ n} (coerce {n} i)
-embed-coerce-lemma {O} {()}
-embed-coerce-lemma {succ n} {fzero} = reflexivity
+embed-coerce-lemma {_} {fzero} = reflexivity
 embed-coerce-lemma {succ n} {fsucc i} = lemma₄
  where
   induction-hypothesis : embed {n} i ≡ embed {succ n} (coerce {n} i)
@@ -107,7 +112,8 @@ fK-∀-shift : {m : ℕ}
              {A : smaller m → Ω}
            → (∀(n : smaller m) → K {R} (A n))
            → K {R} (∀(n : smaller m) → A n)
-fK-∀-shift  {O} φs = λ p → p λ()
+fK-∀-shift  {O} φs =
+ λ p → p (λ n → ⊥-elim (smaller-gives-is-nonzero n))
 fK-∀-shift {succ m}  φs =
  fK-∧-shift' (∧-intro (fhead φs) (fK-∀-shift (ftail φs)))
 
@@ -140,7 +146,7 @@ append : {X : ℕ → Set}
        → (i : smaller(succ m))
        → X(embed i)
 append {X} {0} s x fzero = x
-append {X} {0} s x (fsucc ())
+append {X} {0} s x (fsucc i) = ⊥-elim (smaller-gives-is-nonzero i)
 append {X} {succ m} s x fzero = s fzero
 append {X} {succ m} s x (fsucc i)
  = append {λ n → X(succ n)} {m} (ftail s) x i

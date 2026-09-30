@@ -62,18 +62,33 @@ left-lc x x refl = refl
 right-lc : (x y : 𝔹) → right x ＝ right y → x ＝ y
 right-lc x x refl = refl
 
+is-center : 𝔹 → 𝓤₀ ̇
+is-center center    = 𝟙
+is-center (left _)  = 𝟘
+is-center (right _) = 𝟘
+
+is-left : 𝔹 → 𝓤₀ ̇
+is-left center    = 𝟘
+is-left (left _)  = 𝟙
+is-left (right _) = 𝟘
+
+is-right : 𝔹 → 𝓤₀ ̇
+is-right center    = 𝟘
+is-right (left _)  = 𝟘
+is-right (right _) = 𝟙
+
 𝔹-is-discrete : (x y : 𝔹) → (x ＝ y) + (x ≠ y)
 𝔹-is-discrete center   center     = inl refl
-𝔹-is-discrete center   (left y)   = inr (λ ())
-𝔹-is-discrete center   (right y)  = inr (λ ())
-𝔹-is-discrete (left x) center     = inr (λ ())
+𝔹-is-discrete center   (left y)   = inr (λ p → transport is-center p ⋆)
+𝔹-is-discrete center   (right y)  = inr (λ p → transport is-center p ⋆)
+𝔹-is-discrete (left x) center     = inr (λ p → transport is-left p ⋆)
 𝔹-is-discrete (left x) (left y)   =
  Cases (𝔹-is-discrete x y)
   (λ (p : x ＝ y) → inl (ap left p))
   (λ (ν : x ≠ y) → inr (contrapositive (left-lc x y) ν))
-𝔹-is-discrete (left x)  (right y) = inr (λ ())
-𝔹-is-discrete (right x) center    = inr (λ ())
-𝔹-is-discrete (right x) (left y)  = inr (λ ())
+𝔹-is-discrete (left x)  (right y) = inr (λ p → transport is-left p ⋆)
+𝔹-is-discrete (right x) center    = inr (λ p → transport is-right p ⋆)
+𝔹-is-discrete (right x) (left y)  = inr (λ p → transport is-right p ⋆)
 𝔹-is-discrete (right x) (right y) =
  Cases (𝔹-is-discrete x y)
   (λ (p : x ＝ y) → inl (ap right p))
@@ -81,15 +96,30 @@ right-lc x x refl = refl
 η-lc : (x y : 𝔹) → η x ＝ η y → x ＝ y
 η-lc x x refl = refl
 
+is-L : 𝕄 → 𝓤₀ ̇
+is-L L     = 𝟙
+is-L R     = 𝟘
+is-L (η _) = 𝟘
+
+is-R : 𝕄 → 𝓤₀ ̇
+is-R L     = 𝟘
+is-R R     = 𝟙
+is-R (η _) = 𝟘
+
+is-η : 𝕄 → 𝓤₀ ̇
+is-η L     = 𝟘
+is-η R     = 𝟘
+is-η (η _) = 𝟙
+
 𝕄-is-discrete : (x y : 𝕄) → (x ＝ y) + (x ≠ y)
 𝕄-is-discrete L     L     = inl refl
-𝕄-is-discrete L     R     = inr (λ ())
-𝕄-is-discrete L     (η x) = inr (λ ())
-𝕄-is-discrete R     L     = inr (λ ())
+𝕄-is-discrete L     R     = inr (λ p → transport is-L p ⋆)
+𝕄-is-discrete L     (η x) = inr (λ p → transport is-L p ⋆)
+𝕄-is-discrete R     L     = inr (λ p → transport is-R p ⋆)
 𝕄-is-discrete R     R     = inl refl
-𝕄-is-discrete R     (η x) = inr (λ ())
-𝕄-is-discrete (η x) L     = inr (λ ())
-𝕄-is-discrete (η x) R     = inr (λ ())
+𝕄-is-discrete R     (η x) = inr (λ p → transport is-R p ⋆)
+𝕄-is-discrete (η x) L     = inr (λ p → transport is-η p ⋆)
+𝕄-is-discrete (η x) R     = inr (λ p → transport is-η p ⋆)
 𝕄-is-discrete (η x) (η y) = Cases (𝔹-is-discrete x y)
                               (λ (p : x ＝ y) → inl (ap η p))
                               (λ (ν : x ≠ y) → inr (contrapositive (η-lc x y) ν))

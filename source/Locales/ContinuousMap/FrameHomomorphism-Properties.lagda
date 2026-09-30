@@ -116,7 +116,7 @@ homomorphisms are extensionally equal, then the frame homomorphisms are equal.
   only-𝟎-is-below-𝟎 G (𝒽 .pr₁ 𝟎[ F ]) †
    where
     † : (h 𝟎[ F ] ≤[ poset-of G ] 𝟎[ G ]) holds
-    † = pr₂ (γ (∅ _)) ((⋁[ G ] ∅ 𝓦) , λ ())
+    † = pr₂ (γ (∅ _)) ((⋁[ G ] ∅ 𝓦) , 𝟘-induction)
 
 \end{code}
 

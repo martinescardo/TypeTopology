@@ -729,7 +729,7 @@ module _ {𝓤 : Universe} where
  ⊴-add-taboo (f , s) = VI
   where
    I : is-least (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
-   I = left-preserves-least 𝟙ₒ Ωₒ ⋆ (λ ⋆ ⋆ ())
+   I = left-preserves-least 𝟙ₒ Ωₒ ⋆ (λ ⋆ ⋆ p → 𝟘-elim p)
 
    II : f ⊥ ＝ inl ⋆
    II = simulations-preserve-least Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥ (inl ⋆) f s ⊥-is-least I

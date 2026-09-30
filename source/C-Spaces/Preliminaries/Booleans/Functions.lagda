@@ -10,6 +10,7 @@ basic facts about them needed later in the C-space development.
 module C-Spaces.Preliminaries.Booleans.Functions where
 
 open import MLTT.Spartan
+open import MLTT.Two-Properties
 
 \end{code}
 
@@ -31,8 +32,8 @@ eq b₀ b₁ = if b₀ (if b₁ ₁ ₀) b₁
 
 Lemma[eq] : (b₀ b₁ : 𝟚) → eq b₀ b₁ ＝ ₁ → b₀ ＝ b₁
 Lemma[eq] ₀ ₀ refl = refl
-Lemma[eq] ₀ ₁ ()
-Lemma[eq] ₁ ₀ ()
+Lemma[eq] ₀ ₁ p = 𝟘-elim (zero-is-not-one p)
+Lemma[eq] ₁ ₀ p = 𝟘-elim (zero-is-not-one p)
 Lemma[eq] ₁ ₁ refl = refl
 
 \end{code}
@@ -45,9 +46,9 @@ min : 𝟚 → 𝟚 → 𝟚
 min b₀ b₁ = if b₀ ₀ b₁
 
 Lemma[min] : (b₀ b₁ : 𝟚) → min b₀ b₁ ＝ ₁ → (b₀ ＝ ₁) × (b₁ ＝ ₁)
-Lemma[min] ₀ ₀ ()
-Lemma[min] ₀ ₁ ()
-Lemma[min] ₁ ₀ ()
+Lemma[min] ₀ ₀ p = 𝟘-elim (zero-is-not-one p)
+Lemma[min] ₀ ₁ p = 𝟘-elim (zero-is-not-one p)
+Lemma[min] ₁ ₀ p = 𝟘-elim (zero-is-not-one p)
 Lemma[min] ₁ ₁ refl = refl , refl
 
 \end{code}

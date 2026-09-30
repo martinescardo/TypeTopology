@@ -1939,7 +1939,8 @@ End of addition.
   = (L , U) , (Ll , Lo) , (Uu , Uo) , o
 
  ⊥𝓡∞ : 𝓡∞
- ⊥𝓡∞ = (∅ , ∅) , ((λ _ ()) , (λ _ ())) , ((λ _ ()) , (λ _ ())) , (λ p q ())
+ ⊥𝓡∞ = (∅ , ∅) , ((λ _ → 𝟘-elim) , (λ _ → 𝟘-elim))
+                 , ((λ _ → 𝟘-elim) , (λ _ → 𝟘-elim)) , (λ p q → 𝟘-elim)
 
  instance
   canonical-map-𝓡-to-𝓡∞ : Canonical-Map 𝓡 𝓡∞

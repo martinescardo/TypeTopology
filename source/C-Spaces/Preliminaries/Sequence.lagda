@@ -196,7 +196,8 @@ Lemma[<-＝⟦⟧] {(succ n)} {α} {β} f = ＝⟦succ⟧ IH claim
   claim = f n ≤-refl
 
 Lemma[＝⟦⟧-<] : ∀{n : ℕ}{α β : ₂ℕ} → α ＝⟦ n ⟧ β → ∀(i : ℕ) → i < n → α i ＝ β i
-Lemma[＝⟦⟧-<] {0}      _ i        ()
+Lemma[＝⟦⟧-<] {0}      _ i        r =
+ 𝟘-elim (successors-are-not-below-zero i r)
 Lemma[＝⟦⟧-<] {succ n} e 0        r          = Lemma[＝⟦⟧-zero] e
 Lemma[＝⟦⟧-<] {succ n} e (succ i) (≤-succ r) = Lemma[＝⟦⟧-<] (Lemma[＝⟦⟧-succ] e) i r
 
@@ -265,7 +266,8 @@ Lemma[cons-∼] (h ∷ _) α β eq 0        = refl
 Lemma[cons-∼] (_ ∷ t) α β eq (succ i) = Lemma[cons-∼] t α β eq i
 
 lemma-blah : {n : ℕ}(s : ₂Fin n)(α β : ₂ℕ)(i : ℕ) → i < n → cons s α i ＝ cons s β i
-lemma-blah ⟨⟩      α β i        ()
+lemma-blah ⟨⟩      α β i        r =
+ 𝟘-elim (successors-are-not-below-zero i r)
 lemma-blah (b ∷ s) α β 0        r          = refl
 lemma-blah (b ∷ s) α β (succ i) (≤-succ r) = lemma-blah s α β i r
 
@@ -276,7 +278,8 @@ Lemma[cons-take-＝⟦⟧] : ∀(n : ℕ) → ∀(α β : ₂ℕ) → α ＝⟦ 
 Lemma[cons-take-＝⟦⟧] n α β = Lemma[<-＝⟦⟧] (lemma n α β)
  where
   lemma : ∀(n : ℕ) → ∀(α β : ₂ℕ) → ∀(i : ℕ) → i < n → α i ＝ cons (take n α) β i
-  lemma 0        α β i        ()
+  lemma 0        α β i        r =
+   𝟘-elim (successors-are-not-below-zero i r)
   lemma (succ n) α β 0        r          = refl
   lemma (succ n) α β (succ i) (≤-succ r) = lemma n (α ∘ succ) β i r
 
@@ -330,12 +333,14 @@ Lemma[＝⟦⟧-cons-take] : {α β : ₂ℕ} → ∀(n : ℕ) → α ＝⟦ n �
 Lemma[＝⟦⟧-cons-take] {α} {β} n = lemma₁ n n ≤-refl
  where
   lemma₀ : ∀(α β : ₂ℕ)(m k : ℕ) → succ m ≤ k → α m ＝ cons (take k α) β m
-  lemma₀ α β m        0        ()
+  lemma₀ α β m        0        r =
+   𝟘-elim (successors-are-not-below-zero m r)
   lemma₀ α β 0        (succ k) r          = refl
   lemma₀ α β (succ m) (succ k) (≤-succ r) = lemma₀ (α ∘ succ) β m k r
   lemma₁ : ∀(m k : ℕ) → m ≤ k → α ＝⟦ m ⟧ cons (take k α) β
   lemma₁ 0        k        ≤-zero     = ＝⟦zero⟧
-  lemma₁ (succ m) 0        ()
+  lemma₁ (succ m) 0        r =
+   𝟘-elim (successors-are-not-below-zero m r)
   lemma₁ (succ m) (succ k) (≤-succ r) = ＝⟦succ⟧ (lemma₁ m (succ k) (≤-r-succ r))
                                                 (lemma₀ α β m (succ k) (≤-succ r))
 

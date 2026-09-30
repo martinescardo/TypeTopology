@@ -534,7 +534,8 @@ module _
     where
      h : (l : ⟨ expᴸ[𝟙+ α ] β ↓ expᴸ-⊥ ⟩)
        → ((expᴸ[𝟙+ α ] β ↓ expᴸ-⊥) ↓ l) ⊲ 𝟘ₒ
-     h ()
+     h (x , p) =
+      𝟘-elim (lex-gives-non-empty-right (underlying-order (α ×ₒ β)) p)
    II : 𝟘ₒ ≼OO (expᴸ[𝟙+ α ] β ↓ expᴸ-⊥)
    II = 𝟘ₒ-least (expᴸ[𝟙+ α ] β ↓ expᴸ-⊥)
 

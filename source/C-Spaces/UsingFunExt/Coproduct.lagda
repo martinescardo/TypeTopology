@@ -37,7 +37,7 @@ The initial C-space
   c₂ p _ = p 0̄
 
 continuous-empty : (A : Space) → Map 𝟘Space A
-continuous-empty A = (λ ()) , (λ p → λ ())
+continuous-empty A = 𝟘-elim , (λ p → 𝟘-elim)
 
 \end{code}
 

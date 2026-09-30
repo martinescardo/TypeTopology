@@ -26,7 +26,7 @@ B⋆【_】 : (Γ : Cxt) (A : Type) → Type
 B⋆【 Γ 】 A = {σ : type} (i : ∈Cxt σ Γ) → B⋆〖 σ 〗 A
 
 ⟪⟫⋆ : {A : Type} → B⋆【 〈〉 】 A
-⟪⟫⋆ ()
+⟪⟫⋆ i = 𝟘-elim (∈Cxt-gives-Cxt-is-non-empty i)
 
 _‚‚⋆_ : {Γ : Cxt} {A : Type} {σ : type}
       → B⋆【 Γ 】 A

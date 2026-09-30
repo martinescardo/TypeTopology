@@ -157,7 +157,7 @@ B⋆【_】 : {n : ℕ} (Γ : Cxt n) (A : Type) → Type
 B⋆【 Γ 】 A = (i : Fin _) → B⋆〖 Γ [ i ] 〗 A
 
 ⟪⟫⋆ : {A : Type} → B⋆【 〈〉 】 A
-⟪⟫⋆ ()
+⟪⟫⋆ i = 𝟘-elim (Fin-0-is-empty i)
 
 _‚‚⋆_ : {n : ℕ} {Γ : Cxt n} {A : Type} {σ : type}
       → B⋆【 Γ 】 A

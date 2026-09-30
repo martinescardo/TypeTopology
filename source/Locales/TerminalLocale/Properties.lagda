@@ -122,7 +122,7 @@ this fact is not a definitional equality.
            pe
            ⊥
            𝟎[ 𝒪 (𝟏Loc pe) ]
-           (holds-gives-equal-⊤ pe fe _ ((λ ()) , 𝟎-is-bottom (𝒪 (𝟏Loc pe)) ⊥))
+           (holds-gives-equal-⊤ pe fe _ (𝟘-elim , 𝟎-is-bottom (𝒪 (𝟏Loc pe)) ⊥))
 
 \end{code}
 

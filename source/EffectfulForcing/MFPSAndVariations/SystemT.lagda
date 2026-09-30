@@ -70,7 +70,7 @@ The standard interpretation of system T:
 【 Γ 】 = (i : Fin _) → 〖 Γ [ i ] 〗
 
 ⟨⟩ : 【 〈〉 】
-⟨⟩ ()
+⟨⟩ i = 𝟘-elim (Fin-0-is-empty i)
 
 _‚_ : {n : ℕ} {Γ : Cxt n} {σ : type} → 【 Γ 】 → 〖 σ 〗 → 【 Γ , σ 】
 (xs ‚ x)  𝟎      = x

@@ -80,7 +80,7 @@ The standard interpretation of system T:
 【 Γ 】 = {σ : type} (i : ∈Cxt σ Γ) → 〖 σ 〗
 
 ⟨⟩ : 【 〈〉 】
-⟨⟩ ()
+⟨⟩ i = 𝟘-elim (∈Cxt-gives-Cxt-is-non-empty i)
 
 _‚_ : {Γ : Cxt} {σ : type} → 【 Γ 】 → 〖 σ 〗 → 【 Γ ,, σ 】
 (xs ‚ x) {σ} (∈Cxt0 _) = x

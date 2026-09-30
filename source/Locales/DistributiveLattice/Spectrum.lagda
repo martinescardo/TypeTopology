@@ -173,7 +173,8 @@ Below are some simple lemmas about the covering relation.
  covering-lemma : (S : Fam 𝓤 (Ideal L)) (xs : List ∣ L ∣ᵈ)
                 → xs ◁ S
                 → (x : ∣ L ∣ᵈ) → member x xs → Σ i ꞉ index S , x ∈ⁱ (S [ i ])
- covering-lemma S []       p             x  ()
+ covering-lemma S []       p             x  m =
+  𝟘-elim (lists-with-members-are-non-empty m)
  covering-lemma S (x ∷ xs) ((i , r) , q) x  in-head     = i , r
  covering-lemma S (x ∷ xs) p             x′ (in-tail r) = IH
   where

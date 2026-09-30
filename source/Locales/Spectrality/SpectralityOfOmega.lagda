@@ -40,7 +40,7 @@ open PropositionalTruncation pt
 open Spectrality-of-𝟎 𝓤 pe
 
 bottom-of-𝟎Frm-is-⊥ : ⊥ ＝ 𝟎[ 𝟎-𝔽𝕣𝕞 pe ]
-bottom-of-𝟎Frm-is-⊥ = only-𝟎-is-below-𝟎 (𝟎-𝔽𝕣𝕞 pe) ⊥ (λ ())
+bottom-of-𝟎Frm-is-⊥ = only-𝟎-is-below-𝟎 (𝟎-𝔽𝕣𝕞 pe) ⊥ 𝟘-elim
 
 Ω-frm : Frame (𝓤 ⁺) 𝓤 𝓤
 Ω-frm = 𝟎-𝔽𝕣𝕞 pe
@@ -75,13 +75,13 @@ bottom-of-𝟎Frm-is-⊥ = only-𝟎-is-below-𝟎 (𝟎-𝔽𝕣𝕞 pe) ⊥ (�
    IH = ℬ𝟎↑-consists-of-compact-opens is
 
 and₂-lemma₁ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ x ]) holds
-and₂-lemma₁ (inl ⋆) y       = λ ()
-and₂-lemma₁ (inr ⋆) (inl ⋆) = λ ()
+and₂-lemma₁ (inl ⋆) y       = 𝟘-elim
+and₂-lemma₁ (inr ⋆) (inl ⋆) = 𝟘-elim
 and₂-lemma₁ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆}
 
 and₂-lemma₂ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ y ]) holds
-and₂-lemma₂ (inl ⋆) y       = λ ()
-and₂-lemma₂ (inr ⋆) (inl ⋆) = λ ()
+and₂-lemma₂ (inl ⋆) y       = 𝟘-elim
+and₂-lemma₂ (inr ⋆) (inl ⋆) = 𝟘-elim
 and₂-lemma₂ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆}
 
 open Meets (λ x y → x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] y) hiding (is-top)

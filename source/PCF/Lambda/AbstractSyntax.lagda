@@ -166,6 +166,15 @@ numeral zero     = Zero
 numeral (succ n) = Succ (numeral n)
 
 peano-axiom-for-PCF : ∀ {n Γ k} → numeral {n} {Γ} zero ≠ numeral (succ k)
-peano-axiom-for-PCF ()
+peano-axiom-for-PCF {n} {Γ} {k} p = transport f p ⋆
+ where
+  f : PCF Γ ι → 𝓤₀ ̇
+  f Zero           = 𝟙
+  f (Succ _)       = 𝟘
+  f (Pred _)       = 𝟘
+  f (IfZero _ _ _) = 𝟘
+  f (_ · _)        = 𝟘
+  f (v _)          = 𝟘
+  f (Fix _)        = 𝟘
 
 \end{code}

@@ -26,10 +26,20 @@ module permutations where
  Permutations n = Path (no-repetitions n (Fin n))
 
  example-permutation2 : Permutations 2
- example-permutation2 = 𝟎 :: ((𝟏 , (λ ())) :: ⟨⟩)
+ example-permutation2 = 𝟎 :: ((𝟏 , λ p → 𝟎-is-not-suc 𝟎 (p ⁻¹)) :: ⟨⟩)
 
  example-permutation3 : Permutations 3
- example-permutation3 = 𝟐 :: ((𝟏 :: (λ ())) :: (((𝟎 , (λ ())) , (λ ())) :: ⟨⟩))
+ example-permutation3 =
+  𝟐 :: ((𝟏 , p₁) :: (((𝟎 , p₂) , p₃) :: ⟨⟩))
+  where
+   p₁ : 𝟏 ≠ 𝟐
+   p₁ p = 𝟎-is-not-suc 𝟎 (suc-lc p)
+
+   p₂ : 𝟎 ≠ 𝟐
+   p₂ = 𝟎-is-not-suc (suc 𝟎)
+
+   p₃ : (𝟎 , p₂) ≠ (𝟏 , p₁)
+   p₃ p = 𝟎-is-not-suc 𝟎 (ap pr₁ p)
 
 \end{code}
 
