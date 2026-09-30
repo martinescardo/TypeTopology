@@ -48,7 +48,7 @@ The semantic projection corresponding to a de Bruijn variable.
 \begin{code}
 
 continuous-prj : (Γ : Cxt)(i : Fin (length Γ)) → Map ⟦ Γ ⟧ᶜ ⟦ Γ [ i ] ⟧ʸ
-continuous-prj  ε      ()
+continuous-prj  ε      i = 𝟘-elim (Fin-gives-is-nonzero i)
 continuous-prj (Γ ₊ σ)  zero    = pr₂ , (λ _ → pr₂)
 continuous-prj (Γ ₊ σ) (succ i) = prjᵢ₊₁ , cprjᵢ₊₁
  where

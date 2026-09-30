@@ -16,7 +16,7 @@ Some properties of the double negation monad
 \begin{code}
 
 ¬¬𝟘-elim : {X : Type} → ¬¬ (𝟘 {𝓤₀}) → X
-¬¬𝟘-elim f = 𝟘-elim (f λ ())
+¬¬𝟘-elim f = 𝟘-elim (f id)
 
 ¬¬-functor₂ : {X Y Z : Type} → (X → Y → Z) → ¬¬ X → ¬¬ Y → ¬¬ Z
 ¬¬-functor₂ f xh yh = ¬¬-kleisli (λ x → ¬¬-functor (f x) yh) xh

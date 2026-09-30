@@ -326,7 +326,7 @@ nid (succ n) (succ i) d n<i
           → (i : ℕ)
           → (α i ∼ⁿ β i) ((pred ^ i) n)
 ΠC-to-∼ⁿ' d α β zero Cαβ i
- = transport (α i ∼ⁿ β i) (pred^i-0-is-0 i ⁻¹) (λ _ ())
+ = transport (α i ∼ⁿ β i) (pred^i-0-is-0 i ⁻¹) (λ _ → 𝟘-elim)
 ΠC-to-∼ⁿ' d α β (succ n) Cαβ zero = C-to-∼ⁿ' d (α 0) (β 0) (succ n) γ
  where
   γ : C (ΠD-ClosenessSpace d) (succ n) (α 0) (β 0)
@@ -383,7 +383,7 @@ nid (succ n) (succ i) d n<i
   γ< i i<n j j<2n-i
    = α∼β i i<n j (<-≤-trans j ((pred ^ i) n) n j<2n-i (predⁱ-≤ i n))
   γ≥ : (i : ℕ) → n ≤ i → (α i ∼ⁿ β i) ((pred ^ i) n)
-  γ≥ i n≤i = transport (α i ∼ⁿ β i) (pred^i≥n-is-0 i n n≤i ⁻¹) (λ _ ())
+  γ≥ i n≤i = transport (α i ∼ⁿ β i) (pred^i≥n-is-0 i n n≤i ⁻¹) (λ _ → 𝟘-elim)
 
 seq-f-ucontinuousᴺ-to-closeness
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }

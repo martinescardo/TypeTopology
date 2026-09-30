@@ -37,6 +37,20 @@ Fin-gives-is-nonzero (suc i) = ⋆
 Fin-0-is-empty : ¬ Fin 0
 Fin-0-is-empty = Fin-gives-is-nonzero
 
+is-𝟎 : {n : ℕ} → Fin n → 𝓤₀ ̇
+is-𝟎 𝟎       = 𝟙
+is-𝟎 (suc _) = 𝟘
+
+𝟎-is-not-suc : {n : ℕ} (i : Fin n) → 𝟎 ≠ suc i
+𝟎-is-not-suc i p = transport is-𝟎 p ⋆
+
+pred : {n : ℕ} → Fin n → Fin (succ n) → Fin n
+pred i 𝟎       = i
+pred i (suc k) = k
+
+suc-lc : {n : ℕ} {i j : Fin n} → suc i ＝ suc j → i ＝ j
+suc-lc {n} {i} = ap (pred i)
+
 list-Fin : (n : ℕ) → List (Fin n)
 list-Fin 0        = []
 list-Fin (succ n) = 𝟎 ∷ map suc (list-Fin n)

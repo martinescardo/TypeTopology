@@ -23,7 +23,7 @@ The empty list has no members.
 \begin{code}
 
 not-in-empty-list : {A : 𝓤 ̇ } {x : A} → ¬ member x []
-not-in-empty-list ()
+not-in-empty-list {𝓤} {A} {x} = empty-list-has-no-members x
 
 \end{code}
 
@@ -49,7 +49,8 @@ module list-indexing (pt : propositional-truncations-exist) {X : 𝓤 ̇ } where
    x = pr₁ IH
 
  nth-is-surjection : (xs : List X) → is-surjection (nth xs)
- nth-is-surjection []       (y , μ) = ∥∥-rec ∃-is-prop (λ ()) μ
+ nth-is-surjection []       (y , μ) =
+  ∥∥-rec ∃-is-prop (λ m → 𝟘-elim (not-in-empty-list m)) μ
  nth-is-surjection (x ∷ xs) (y , μ) = ∥∥-rec ∃-is-prop † μ
   where
    † : member y (x ∷ xs) → ∃ i ꞉ Fin (length (x ∷ xs)) , (nth (x ∷ xs) i ＝ y , μ)

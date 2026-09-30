@@ -36,7 +36,7 @@ open import TWA.Closeness fe hiding (is-ultra; is-closeness)
 
 \begin{code}
 𝟘-clospace : is-closeness-space (𝟘 {𝓤})
-𝟘-clospace = (λ ()) , ((λ ()) , (λ ()) , ((λ ()) , (λ ())))
+𝟘-clospace = 𝟘-induction , 𝟘-induction , 𝟘-induction , 𝟘-induction , 𝟘-induction
 
 𝟙-clospace : is-closeness-space (𝟙 {𝓤})
 𝟙-clospace
@@ -196,8 +196,8 @@ discrete-closeness-succ-implies-equal d x y n Csnxy
  = Lemma[min𝟚ab＝₀] (inr refl) ⁻¹ ∙ mina₀＝₁
 +-clofun'-u X Y (inr y₁) (inr y₂) (inl x₃) n mina₀＝₁
  = Lemma[min𝟚ab＝₀] (inr refl) ⁻¹ ∙ mina₀＝₁
-+-clofun'-u X Y (inl x₁) (inr y₂) _ _ ()
-+-clofun'-u X Y (inr y₁) (inl x₂) _ _ ()
++-clofun'-u X Y (inl x₁) (inr y₂) _ _ p = 𝟘-elim (zero-is-not-one p)
++-clofun'-u X Y (inr y₁) (inl x₂) _ _ p = 𝟘-elim (zero-is-not-one p)
 
 +-clofun'-is-clofun : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
                     → is-closeness (+-clofun' X Y)

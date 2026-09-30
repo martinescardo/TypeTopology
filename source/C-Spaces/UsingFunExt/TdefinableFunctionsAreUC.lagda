@@ -19,6 +19,7 @@ open import UF.FunExt using (DN-funext)
 module C-Spaces.UsingFunExt.TdefinableFunctionsAreUC (fe : DN-funext 𝓤₀ 𝓤₀) where
 
 open import Naturals.Properties
+open import MLTT.Two-Properties
 
 open import C-Spaces.Preliminaries.Booleans.Functions using (if)
 open import C-Spaces.Preliminaries.Naturals.Order
@@ -51,7 +52,7 @@ c⟦ Γ ₊ A ⟧ᶜ = c⟦ Γ ⟧ᶜ ⊗ c⟦ A ⟧ʸ
 
 -- Semantic projection associated to a de Bruijn variable.
 continuous-prj : (Γ : Cxt)(i : Fin (length Γ)) → Map c⟦ Γ ⟧ᶜ c⟦ Γ [ i ] ⟧ʸ
-continuous-prj  ε      ()
+continuous-prj  ε      i = 𝟘-elim (Fin-gives-is-nonzero i)
 continuous-prj (Γ ₊ σ)  zero    = pr₂ , (λ _ → pr₂)
 continuous-prj (Γ ₊ σ) (succ i) = prjᵢ₊₁ , cprjᵢ₊₁
  where
@@ -98,7 +99,7 @@ s⟦ ε ⟧ᶜ = 𝟙
 s⟦ Γ ₊ A ⟧ᶜ = s⟦ Γ ⟧ᶜ × s⟦ A ⟧ʸ
 
 prj : {Γ : Cxt}(i : Fin (length Γ)) → s⟦ Γ ⟧ᶜ → s⟦ Γ [ i ] ⟧ʸ
-prj {ε}     ()
+prj {ε}     i = 𝟘-elim (Fin-gives-is-nonzero i)
 prj {Γ ₊ σ}  zero    (xs , x) = x
 prj {Γ ₊ σ} (succ i) (xs , x) = prj i xs
 
@@ -142,7 +143,7 @@ _Rᶜ_ {Γ ₊ σ} (ρ , x) (ρ' , x') = (ρ Rᶜ ρ') × (x R x')
 Lemma[Rᶜ-prj] : {Γ : Cxt}
               → ∀(ρ : s⟦ Γ ⟧ᶜ)(ρ' : U c⟦ Γ ⟧ᶜ) → ρ Rᶜ ρ'
               → ∀ i → (prj i ρ) R (pr₁ (continuous-prj Γ i) ρ')
-Lemma[Rᶜ-prj] {ε}     _ _ _ ()
+Lemma[Rᶜ-prj] {ε}     _ _ _ i = 𝟘-elim (Fin-gives-is-nonzero i)
 Lemma[Rᶜ-prj] {Γ ₊ σ} (ρ , x) (ρ' , x') (rs , r)  zero    = r
 Lemma[Rᶜ-prj] {Γ ₊ σ} (ρ , x) (ρ' , x') (rs , r) (succ i) = Lemma[Rᶜ-prj] ρ ρ' rs i
 
@@ -159,8 +160,8 @@ Lemma[s⟦t⟧ᵐRc⟦t⟧ᵐ] (IF {Γ} {σ}) ρ ρ' r = claim
  where
   claim : s⟦ IF {Γ} {σ} ⟧ᵐ ρ R pr₁ c⟦ IF {Γ} {σ} ⟧ᵐ ρ'
   claim ₀ ₀ refl _ _ rx _ _ ry = rx
-  claim ₀ ₁ ()
-  claim ₁ ₀ ()
+  claim ₀ ₁ p = 𝟘-elim (zero-is-not-one p)
+  claim ₁ ₀ p = 𝟘-elim (one-is-not-zero p)
   claim ₁ ₁ refl _ _ rx _ _ ry = ry
 Lemma[s⟦t⟧ᵐRc⟦t⟧ᵐ] ZERO _ _ _ = refl
 Lemma[s⟦t⟧ᵐRc⟦t⟧ᵐ] SUCC _ _ _ _ _ rn = ap succ rn
@@ -168,8 +169,8 @@ Lemma[s⟦t⟧ᵐRc⟦t⟧ᵐ] (REC {Γ} {σ}) ρ ρ' r = claim
  where
   claim : s⟦ REC {Γ} {σ} ⟧ᵐ ρ R pr₁ c⟦ REC {Γ} {σ} ⟧ᵐ ρ'
   claim _ _ rx _ _  rf  0        0        _  = rx
-  claim _ _ rx _ _  rf  0       (succ _)  ()
-  claim _ _ rx _ _  rf (succ _)  0        ()
+  claim _ _ rx _ _  rf  0       (succ _)  p  = 𝟘-elim (zero-not-positive _ p)
+  claim _ _ rx _ _  rf (succ _)  0        p  = 𝟘-elim (positive-not-zero _ p)
   claim _ _ rx f f' rf (succ m) (succ m') rm =
       rf m m' (ap pred rm) _ _ (claim _ _ rx f f' rf m m' (ap pred rm))
 Lemma[s⟦t⟧ᵐRc⟦t⟧ᵐ] (PAIR t u) ρ ρ' r =

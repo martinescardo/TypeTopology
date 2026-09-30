@@ -121,7 +121,7 @@ transport a redex along an ≈[FA]-related word.
 cons-split : (a : X) (s w : FA)
            → (a • s) ≈[FA] w
            → Σ b ꞉ X , Σ w₀ ꞉ FA , (w ＝ b • w₀) × (a ≈[X] b) × (s ≈[FA] w₀)
-cons-split a s []       ()
+cons-split a s []       h = 𝟘-elim h
 cons-split a s (b • w₀) (p , q) = b , w₀ , refl , p , q
 
 left-split : (u v w : FA)
@@ -449,10 +449,10 @@ _▶_ : FA → FA → 𝓤 ⁺ ̇
   f (w • u) v       x y c = inr (refl , f u v x y c)
 
 lemma-reduct← : (s t : FA) → s ▶ t → Σ r ꞉ redex s , reduct s r ＝ t
-lemma-reduct← []          t       ()
-lemma-reduct← (x • [])    []      ()
-lemma-reduct← (x • [])    (z • t) (inl ())
-lemma-reduct← (x • [])    (z • t) (inr (p , ()))
+lemma-reduct← []          t       h             = 𝟘-elim h
+lemma-reduct← (x • [])    []      h             = 𝟘-elim h
+lemma-reduct← (x • [])    (z • t) (inl p)       = 𝟘-elim p
+lemma-reduct← (x • [])    (z • t) (inr (p , q)) = 𝟘-elim q
 lemma-reduct← (x • y • s) []      (p , q)       = inl p , q
 lemma-reduct← (x • y • s) (z • t) (inl (p , q)) = inl p , q
 lemma-reduct← (x • y • s) (z • t) (inr (p , r)) =
@@ -521,10 +521,10 @@ This is the setoid replacement for the injectivity of η after quotienting.
 \begin{code}
 
 ≈[FA]-η→ : {a : A} (z : FA) → η a ≈[FA] z → Σ c ꞉ A , (z ＝ η c) × (c ≈ a)
-≈[FA]-η→ []                ()
+≈[FA]-η→ []                h = 𝟘-elim h
 ≈[FA]-η→ ((m , c) • [])      ((p , q) , ⋆) =
  c , ap (λ n → (n , c) • []) (p ⁻¹) , ≈s _ c q
-≈[FA]-η→ ((m , c) • (x • t)) (_ , ())
+≈[FA]-η→ ((m , c) • (x • t)) (p , q) = 𝟘-elim q
 
 \end{code}
 

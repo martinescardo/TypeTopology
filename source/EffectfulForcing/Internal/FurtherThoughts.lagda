@@ -58,7 +58,7 @@ R⋆ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
                  → R⋆ {τ} α (f x) (f' · ⌜ x' ⌝)-} -- would this be enough?
 
 IB₀ : {A : type} → IB【 〈〉 】 A
-IB₀ {A} ()
+IB₀ {A} i = 𝟘-elim (∈Cxt-gives-Cxt-is-non-empty i)
 
 R⋆s : Baire → {Γ : Cxt}
   → 【 Γ 】 → IB【 Γ 】 ((ι ⇒ ι) ⇒ ι) → Type
@@ -119,7 +119,7 @@ R⋆-main-lemma-ι t α =
   e : (a b : ℕ) → a ＝ b → α a ＝ α b
   e a .a refl = refl
 
-  Ⅰ = main-lemma t α ⟨⟩ ⟪⟫ (λ ())
+  Ⅰ = main-lemma t α ⟨⟩ ⟪⟫ ∈Cxt-〈〉-elim
   Ⅱ = dialogues-agreement B⟦ t ⟧₀ α
   Ⅲ = ≡-symm (Rnorm-lemmaι t (e _ _))
 

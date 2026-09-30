@@ -33,6 +33,9 @@ data Hydra : 𝓤₀ ̇ where
 
 pattern Head = Node []
 
+heads : Hydra → List Hydra
+heads (Node hs) = hs
+
 example₁ : Hydra
 example₁ = Node (Node [] ∷ [])
 
@@ -131,8 +134,8 @@ pattern step₁ n l eq = (n , inr (l , eq))
 ⊲⇒⊲' (step n (inr l) refl) = step₁ n l refl
 
 []-is-minimum : (hs : List Hydra) → ¬(hs ⊲' [])
-[]-is-minimum h (step₀ _ () _)
-[]-is-minimum h (step₁ _ () _)
+[]-is-minimum h (step₀ _ l _) = 𝟘-elim (HeadLocation₀-gives-is-non-empty l)
+[]-is-minimum h (step₁ _ l _) = 𝟘-elim (HeadLocation₁-gives-is-non-empty l)
 
 ⊲-is-well-founded : is-well-founded _⊲_
 ⊲'-is-well-founded : is-well-founded _⊲'_
@@ -178,7 +181,7 @@ leftmost-head₀ : (hs : List Hydra) → hs ≠ []
 leftmost-head₀ []                    neq = 𝟘-elim (neq refl)
 leftmost-head₀ (Head ∷ _)            neq = inl here
 leftmost-head₀ ((Node (h ∷ hs)) ∷ _) neq =
- leftmost-head₀' (leftmost-head₀ (h ∷ hs) (λ ()))
+ leftmost-head₀' (leftmost-head₀ (h ∷ hs) (λ p → []-is-not-cons h hs (p ⁻¹)))
  where
   leftmost-head₀' : HeadLocation₀ (h ∷ hs) + HeadLocation₁ (h ∷ hs)
                   → HeadLocation₀ _ + HeadLocation₁ _
@@ -187,7 +190,8 @@ leftmost-head₀ ((Node (h ∷ hs)) ∷ _) neq =
 
 leftmost-head : (h : Hydra) → h ≠ Head → HeadLocation h
 leftmost-head Head            neq = 𝟘-elim (neq refl)
-leftmost-head (Node (h ∷ hs)) neq = leftmost-head₀ (h ∷ hs) (λ ())
+leftmost-head (Node (h ∷ hs)) neq =
+ leftmost-head₀ (h ∷ hs) (λ p → []-is-not-cons h hs (p ⁻¹))
 
 f-Hydra : (n : ℕ) → ℕ
 f-Hydra n = battle 1 (tall-hydra n) (⊲-is-well-founded _)
@@ -202,7 +206,8 @@ f-Hydra n = battle 1 (tall-hydra n) (⊲-is-well-founded _)
    succ (battle (succ turn) cut-hydra (rec₁ cut-hydra (turn , cut-head , refl)))
    where
     cut-head : HeadLocation (Node (h ∷ hs))
-    cut-head = leftmost-head _ (λ ())
+    cut-head = leftmost-head _
+                (λ p → []-is-not-cons h hs ((ap heads p) ⁻¹))
 
     cut-hydra : Hydra
     cut-hydra = cut turn (Node (h ∷ hs)) cut-head

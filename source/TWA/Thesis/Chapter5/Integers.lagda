@@ -14,6 +14,7 @@ open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Order
+open import Naturals.Properties
 open import Notation.Order hiding (_≤_≤_)
 open import UF.Base
 open import UF.Subsingletons
@@ -178,7 +179,7 @@ pred-shift a b = ℤ-left-pred a (ℤ- b)
    γ' : 0 ＝ succ n
    γ' = pos-lc (ℤ+-lc _ _ a (a<a ⁻¹ ∙ ℤ-left-succ-pos a n))
    γ : 0 ≠ succ n
-   γ ()
+   γ = zero-not-positive n
 
 ≤-succℤ' : (x y : ℤ) → succℤ x ≤ succℤ y → x ≤ y
 ≤-succℤ' x y (n , e) = n , succℤ-lc (ℤ-left-succ x (pos n) ⁻¹ ∙ e)

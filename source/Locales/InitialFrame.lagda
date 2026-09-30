@@ -135,10 +135,10 @@ open propositional-truncations-exist pt
 \begin{code}
 𝟎-of-IF-is-⊥ : {𝓦 : Universe} → (pe : propext 𝓦) → 𝟎[ 𝟎-𝔽𝕣𝕞 pe ] ＝ ⊥
 𝟎-of-IF-is-⊥ pe =
- ≤-is-antisymmetric (poset-of (𝟎-𝔽𝕣𝕞 pe)) γ λ ()
+ ≤-is-antisymmetric (poset-of (𝟎-𝔽𝕣𝕞 pe)) γ 𝟘-elim
  where
   γ : (𝟎[ 𝟎-𝔽𝕣𝕞 pe ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ]  ⊥) holds
-  γ x = ∥∥-rec 𝟘-is-prop (λ ()) x
+  γ x = ∥∥-rec 𝟘-is-prop (λ (i , p) → 𝟘-elim i) x
 \end{code}
 
 \section{Proof of initiality}

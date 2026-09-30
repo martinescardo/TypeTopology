@@ -23,7 +23,7 @@ B【_】 : (Γ : Cxt) → Type
 B【 Γ 】 = {σ : type} (i : ∈Cxt σ Γ) → B〖 σ 〗
 
 ⟪⟫ : B【 〈〉 】
-⟪⟫ ()
+⟪⟫ i = 𝟘-elim (∈Cxt-gives-Cxt-is-non-empty i)
 
 _‚‚_ : {Γ : Cxt} {σ : type} → B【 Γ 】 → B〖 σ 〗 → B【 Γ ,, σ 】
 (xs ‚‚ x) (∈Cxt0 _) = x
@@ -137,7 +137,7 @@ main-lemma (t · u) α xs ys cr = IH-t (⟦ u ⟧ xs) (B⟦ u ⟧ ys) IH-u
 
 main-lemma-closed : {σ : type} (t : T₀ σ) (α : Baire)
                   → R α ⟦ t ⟧₀ (B⟦ t ⟧₀)
-main-lemma-closed {σ} t α = main-lemma t α ⟨⟩ ⟪⟫ (λ())
+main-lemma-closed {σ} t α = main-lemma t α ⟨⟩ ⟪⟫ ∈Cxt-〈〉-elim
 
 dialogue-tree-correct : (t : T₀ ((ι ⇒ ι) ⇒ ι))
                         (α : Baire)

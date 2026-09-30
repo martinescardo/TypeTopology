@@ -23,7 +23,8 @@ K-∀-shift-mbr : {R : Ω}
               → (∀(n : ℕ) → R → A n)                     -- efqs,
               → (∀(n : ℕ) → K(A n)) → K(∀(n : ℕ) → A n)  -- shift.
 
-K-∀-shift-mbr {R} {A} efqs φs p = mbr {0} (λ ())
+K-∀-shift-mbr {R} {A} efqs φs p =
+ mbr {0} (λ i → ⊥-elim (smaller-gives-is-nonzero i))
   where
    mbr : {m : ℕ} → (∀(i : smaller m) → A(embed i)) → R
    mbr {m} s = p(override s (λ n → efqs n (φs m (λ x → mbr(append {A} s x)))))

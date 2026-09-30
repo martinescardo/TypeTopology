@@ -50,7 +50,7 @@ Lemma[≤-dec-+] {P} 0 dp = cases c₀ c₁ (dp 0 ≤-zero)
    where
     claim : ∀ m → m ≤ 0 → ¬(P m)
     claim 0 ≤-zero = f0
-    claim (succ m) ()
+    claim (succ m) r = 𝟘-elim (successors-are-not-below-zero m r)
 
 Lemma[≤-dec-+] {P} (succ n) dp = cases c₀ c₁ (dp (succ n) ≤-refl)
  where

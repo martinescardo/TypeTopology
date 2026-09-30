@@ -42,10 +42,22 @@ m < n = succ m ≤ n
 ≤-r-succ ≤-zero     = ≤-zero
 ≤-r-succ (≤-succ r) = ≤-succ (≤-r-succ r)
 
+is-zero : ℕ → Set
+is-zero 0        = 𝟙
+is-zero (succ n) = 𝟘
+
+is-zero-monotonicity : (m n : ℕ) → m ≤ n → is-zero n → is-zero m
+is-zero-monotonicity m n ≤-zero     q = ⋆
+is-zero-monotonicity m n (≤-succ r) q = 𝟘-elim q
+
+successors-are-not-below-zero : (m : ℕ) → ¬ (succ m ≤ 0)
+successors-are-not-below-zero m p = is-zero-monotonicity (succ m) 0 p ⋆
+
 Lemma[n≤m+1→n≤m+n＝m+1] : {n m : ℕ} → n ≤ succ m → (n ≤ m) + (n ＝ succ m)
 Lemma[n≤m+1→n≤m+n＝m+1] {0}      {m}      r = inl ≤-zero
 Lemma[n≤m+1→n≤m+n＝m+1] {succ 0} {0}      r = inr refl
-Lemma[n≤m+1→n≤m+n＝m+1] {succ (succ n)} {0} (≤-succ ())
+Lemma[n≤m+1→n≤m+n＝m+1] {succ (succ n)} {0} (≤-succ r) =
+ 𝟘-elim (successors-are-not-below-zero n r)
 Lemma[n≤m+1→n≤m+n＝m+1] {succ n} {succ m} (≤-succ r) = +functor c₀ c₁ IH
  where
   c₀ : n ≤ m → succ n ≤ succ m
@@ -64,8 +76,10 @@ Lemma[n≰m→m<n] {succ n} {succ m} f = ≤-succ (Lemma[n≰m→m<n] (f ∘ ≤
 
 Lemma[m≤n∧n≤m→m=n] : ∀{m n : ℕ} → m ≤ n → n ≤ m → m ＝ n
 Lemma[m≤n∧n≤m→m=n] {0}      {0}      ≤-zero     ≤-zero      = refl
-Lemma[m≤n∧n≤m→m=n] {0}      {succ n} ≤-zero     ()
-Lemma[m≤n∧n≤m→m=n] {succ m} {0}      ()         ≤-zero
+Lemma[m≤n∧n≤m→m=n] {0}      {succ n} ≤-zero     r =
+ 𝟘-elim (successors-are-not-below-zero n r)
+Lemma[m≤n∧n≤m→m=n] {succ m} {0}      r          ≤-zero =
+ 𝟘-elim (successors-are-not-below-zero m r)
 Lemma[m≤n∧n≤m→m=n] {succ m} {succ n} (≤-succ r) (≤-succ r') = ap succ (Lemma[m≤n∧n≤m→m=n] r r')
 
 CoV-induction : {P : ℕ → Set}
@@ -77,7 +91,7 @@ CoV-induction {P} step n = step n (claim n)
   Q n = ∀ m → succ m ≤ n → P m
 
   qbase : Q 0
-  qbase m ()
+  qbase m r = 𝟘-elim (successors-are-not-below-zero m r)
 
   qstep : ∀ n → Q n → Q(succ n)
   qstep n qn m (≤-succ r) = step m (λ k u → qn k (≤-trans u r))
@@ -184,12 +198,12 @@ Lemma[＝⟦]-cons-take] : {α β : ₂ℕ} → ∀(n : ℕ) → α ＝⟦ n ⟧
 Lemma[＝⟦]-cons-take] {α} {β} n = lemma₁ n n ≤-refl
  where
   lemma₀ : ∀(α β : ₂ℕ)(m k : ℕ) → succ m ≤ k → α m ＝ cons (take k α) β m
-  lemma₀ α β m        0        ()
+  lemma₀ α β m        0        r = 𝟘-elim (successors-are-not-below-zero m r)
   lemma₀ α β 0        (succ k) r          = refl
   lemma₀ α β (succ m) (succ k) (≤-succ r) = lemma₀ (α ∘ succ) β m k r
   lemma₁ : ∀(m k : ℕ) → m ≤ k → α ＝⟦ m ⟧ cons (take k α) β
   lemma₁ 0        k        ≤-zero     = ＝⟦zero⟧
-  lemma₁ (succ m) 0        ()
+  lemma₁ (succ m) 0        r = 𝟘-elim (successors-are-not-below-zero m r)
   lemma₁ (succ m) (succ k) (≤-succ r) = ＝⟦succ⟧ (lemma₁ m (succ k) (≤-r-succ r))
                                                 (lemma₀ α β m (succ k) (≤-succ r))
 

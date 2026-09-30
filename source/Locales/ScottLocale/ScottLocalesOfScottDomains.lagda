@@ -201,7 +201,7 @@ f(x[0], f(x[1], … f(x[n-1], u)))
 
  𝜸₀-is-upwards-closed : (ks : List B)
                       → is-upwards-closed (𝜸₀ ks) holds
- 𝜸₀-is-upwards-closed []       x y () q
+ 𝜸₀-is-upwards-closed []       x y p q = 𝟘-elim p
  𝜸₀-is-upwards-closed (b ∷ bs) x y p  q =
   ∥∥-rec (holds-is-prop (y ∈ₚ 𝜸₀ (b ∷ bs))) † p
    where
@@ -212,7 +212,7 @@ f(x[0], f(x[1], … f(x[n-1], u)))
  𝜸₀-is-inaccessible-by-directed-joins :(ks : List B)
                                       → is-inaccessible-by-directed-joins (𝜸₀ ks)
                                          holds
- 𝜸₀-is-inaccessible-by-directed-joins []       (S , δ) ()
+ 𝜸₀-is-inaccessible-by-directed-joins []       (S , δ) p = 𝟘-elim p
  𝜸₀-is-inaccessible-by-directed-joins (k ∷ ks) (S , δ) p =
   ∥∥-rec ∃-is-prop † p
    where
@@ -251,7 +251,7 @@ f(x[0], f(x[1], … f(x[n-1], u)))
 
  𝜸₀-lemma : (x : ⟨ 𝓓 ⟩∙) (ks : List B)
           → x ∈ 𝜸₀ ks → ∃ k ꞉ B , member k ks × β k ⊑⟨ 𝓓 ⟩ x
- 𝜸₀-lemma x []       = λ ()
+ 𝜸₀-lemma x []       = 𝟘-elim
  𝜸₀-lemma x (k ∷ ks) p = ∥∥-rec ∃-is-prop † p
   where
    † : principal-filter 𝓓 (β k) x holds + x ∈ 𝜸₀ ks
@@ -276,7 +276,7 @@ The function `𝜸₁` is equal to `𝜸`.
 \begin{code}
 
  𝜸-below-𝜸₁ : (bs : List B) → (𝜸 bs ≤[ poset-of (𝒪 Σ[𝓓]) ] 𝜸₁ bs) holds
- 𝜸-below-𝜸₁ []       _ ()
+ 𝜸-below-𝜸₁ []       _ p = 𝟘-elim p
  𝜸-below-𝜸₁ (i ∷ is) j p =
   ∥∥-rec (holds-is-prop (𝜸₁ (i ∷ is) .pr₁ (β j))) † p
    where
@@ -312,7 +312,7 @@ TODO: get rid of `𝜸` altogether and use `𝜸₁` as the basis function
 \begin{code}
 
  𝜸-lemma₁ : (is js : List B) → (𝜸 is ≤[ poset-of (𝒪 Σ[𝓓]) ] 𝜸 (is ++ js)) holds
- 𝜸-lemma₁ []       js       = λ _ ()
+ 𝜸-lemma₁ []       js       = λ _ → 𝟘-elim
  𝜸-lemma₁ (i ∷ is) []       = let
                                open PosetNotation (poset-of (𝒪 Σ[𝓓]))
 

@@ -276,13 +276,13 @@ discrete-lexicorder-is-preorder d _≤_ ((r' , t' , p') , a') = r , t , p
  r x n _ = r' (x n)
  t : transitive (discrete-lexicorder d _≤_)
  t x y z x≤y y≤z 0 x∼ⁿz
-  = t' (x 0) (y 0) (z 0) (x≤y 0 (λ _ ())) (y≤z 0 (λ _ ()))
+  = t' (x 0) (y 0) (z 0) (x≤y 0 (λ _ → 𝟘-elim)) (y≤z 0 (λ _ → 𝟘-elim))
  t x y z x≤y y≤z (succ n) x∼ⁿz
   = t (tail x) (tail y) (tail z) γ₁ γ₂ n (x∼ⁿz ∘ succ)
     where
      e : x 0 ＝ y 0
-     e = a' (x 0) (y 0) (x≤y 0 (λ _ ()))
-          (transport (y 0 ≤_) (x∼ⁿz 0 ⋆ ⁻¹) (y≤z 0 (λ _ ())))
+     e = a' (x 0) (y 0) (x≤y 0 (λ _ → 𝟘-elim))
+          (transport (y 0 ≤_) (x∼ⁿz 0 ⋆ ⁻¹) (y≤z 0 (λ _ → 𝟘-elim)))
      γ₁ : discrete-lexicorder d _≤_ (tail x) (tail y)
      γ₁ i tx∼ⁿty = x≤y (succ i) ζ
       where
@@ -387,15 +387,15 @@ discrete-approx-lexicorder-is-approx-order
   t : (n : ℕ)
     → transitive (λ x y → discrete-approx-lexicorder ds _≤_ x y n)
   t n x y z x≤y y≤z 0 i<n x∼ⁱz
-   = t' (x 0) (y 0) (z 0) (x≤y 0 i<n (λ _ ())) (y≤z 0 i<n (λ _ ()))
+   = t' (x 0) (y 0) (z 0) (x≤y 0 i<n (λ _ → 𝟘-elim)) (y≤z 0 i<n (λ _ → 𝟘-elim))
   t zero     x y z x≤y y≤z (succ i) i<n x∼ⁱz = 𝟘-elim i<n
   t (succ n) x y z x≤y y≤z (succ i) i<n x∼ⁱz
    = t n (tail x) (tail y) (tail z) γ₁ γ₂ i i<n (x∼ⁱz ∘ succ)
    where
     e : x 0 ＝ y 0
     e = a' (x 0) (y 0)
-           (x≤y 0 ⋆ (λ _ ()))
-           (transport (y 0 ≤_) (x∼ⁱz 0 ⋆ ⁻¹) (y≤z 0 ⋆ (λ _ ())))
+           (x≤y 0 ⋆ (λ _ → 𝟘-elim))
+           (transport (y 0 ≤_) (x∼ⁱz 0 ⋆ ⁻¹) (y≤z 0 ⋆ (λ _ → 𝟘-elim)))
     γ₁ : (j : ℕ)
        → j < n
        → (tail x ∼ⁿ tail y) j
@@ -420,7 +420,7 @@ discrete-approx-lexicorder-is-approx-order
   l : (ϵ : ℕ) → (x y : ℕ → D)
     → discrete-approx-lexicorder ds _≤_ x y ϵ
     + discrete-approx-lexicorder ds _≤_ y x ϵ
-  l 0 x y = inl (λ _ ())
+  l 0 x y = inl (λ _ → 𝟘-elim)
   l (succ ϵ) x y
    = γ (l ϵ (tail x) (tail y))
        (l' (head x) (head y)) (ds (head x) (head y))
@@ -463,7 +463,7 @@ discrete-approx-lexicorder-is-approx-order
       ζ (succ i) i<sϵ x∼ⁱy = 𝟘-elim (hx≠hy (x∼ⁱy 0 ⋆))
   d : (ϵ : ℕ) (x y : ℕ → D)
     → is-decidable (discrete-approx-lexicorder ds _≤_ x y ϵ)
-  d 0 x y = inl (λ _ ())
+  d 0 x y = inl (λ _ → 𝟘-elim)
   d (succ ϵ) x y
    = Cases (d ϵ x y)
        (λ x≤ᵉy → γ₁ x≤ᵉy

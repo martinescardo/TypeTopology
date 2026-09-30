@@ -27,6 +27,7 @@ TODO. Generalize this, if it is worth for any particular application.
 module deprecated.EGroups.FreeOnSetoid where
 
 open import MLTT.Spartan
+open import MLTT.Two-Properties
 open import MLTT.List renaming (_∷_ to _•_ ; _++_ to _◦_ ; ++-assoc to ◦-assoc)
 
 open import Groups.Free using (module free-group-construction)
@@ -58,24 +59,24 @@ _≈⟦ 𝔸 ⟧_-related generators.
 
  ≋-sym : (s t : FA) → s ≋ t → t ≋ s
  ≋-sym []            []            _           = ⋆
- ≋-sym []            (x • t)       ()
- ≋-sym (x • s)       []            ()
+ ≋-sym []            (x • t)       e = 𝟘-elim e
+ ≋-sym (x • s)       []            e = 𝟘-elim e
  ≋-sym ((n , a) • s) ((m , b) • t) (p , q , r) =
   (p ⁻¹) , setoid-sym 𝔸 a b q , ≋-sym s t r
 
  ≋-trans : (s t u : FA) → s ≋ t → t ≋ u → s ≋ u
  ≋-trans []            []            []            _           _             = ⋆
- ≋-trans []            []            (x • u)       _           ()
- ≋-trans []            (x • t)       u             ()          _
- ≋-trans (x • s)       []            u             ()          _
- ≋-trans ((n , a) • s) ((m , b) • t) []            _           ()
+ ≋-trans []            []            (x • u)       _           e = 𝟘-elim e
+ ≋-trans []            (x • t)       u             e           _ = 𝟘-elim e
+ ≋-trans (x • s)       []            u             e           _ = 𝟘-elim e
+ ≋-trans ((n , a) • s) ((m , b) • t) []            _           e = 𝟘-elim e
  ≋-trans ((n , a) • s) ((m , b) • t) ((k , c) • u) (p , q , r) (p' , q' , r') =
   (p ∙ p') , setoid-trans 𝔸 a b c q q' , ≋-trans s t u r r'
 
  ≋-◦ : (s s' t t' : FA) → s ≋ s' → t ≋ t' → (s ◦ t) ≋ (s' ◦ t')
  ≋-◦ []            []            t t' _           e = e
- ≋-◦ []            (x • s')      t t' ()          e
- ≋-◦ (x • s)       []            t t' ()          e
+ ≋-◦ []            (x • s')      t t' d           e = 𝟘-elim d
+ ≋-◦ (x • s)       []            t t' d           e = 𝟘-elim d
  ≋-◦ ((n , a) • s) ((m , b) • s') t t' (p , q , r) e =
   p , q , ≋-◦ s s' t t' r e
 
@@ -166,14 +167,14 @@ the relation of 𝔸.
 
   h-resp-≋ : (s t : FA) → s ≋ t → h s ≈⟨ 𝓖 ⟩ h t
   h-resp-≋ []            []            _           = E-refl 𝓖 (h [])
-  h-resp-≋ []            (x • t)       ()
-  h-resp-≋ (x • s)       []            ()
+  h-resp-≋ []            (x • t)       e = 𝟘-elim e
+  h-resp-≋ (x • s)       []            e = 𝟘-elim e
   h-resp-≋ ((₀ , a) • s) ((₀ , b) • t) (refl , q , r) =
    E-is-congruence 𝓖 (f-resp q) (h-resp-≋ s t r)
   h-resp-≋ ((₁ , a) • s) ((₁ , b) • t) (refl , q , r) =
    E-is-congruence 𝓖 (≈-inv-cong (f a) (f b) (f-resp q)) (h-resp-≋ s t r)
-  h-resp-≋ ((₀ , a) • s) ((₁ , b) • t) (() , q , r)
-  h-resp-≋ ((₁ , a) • s) ((₀ , b) • t) (() , q , r)
+  h-resp-≋ ((₀ , a) • s) ((₁ , b) • t) (p , q , r) = 𝟘-elim (zero-is-not-one p)
+  h-resp-≋ ((₁ , a) • s) ((₀ , b) • t) (p , q , r) = 𝟘-elim (one-is-not-zero p)
 
   h-resp-≍ : (s t : FA) → s ≍ t → h s ≈⟨ 𝓖 ⟩ h t
   h-resp-≍ s t (∿-gives-≍ p)             = h-identifies-∿-related-points p

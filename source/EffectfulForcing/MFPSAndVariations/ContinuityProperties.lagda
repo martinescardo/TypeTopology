@@ -166,7 +166,8 @@ equivalent to the original version.
 
 ＝⟪⟫-implies-＝⟪⟫₀ : {X : 𝓤₀ ̇ } (α β : ℕ → X) (s : List ℕ)
                    → α ＝⟪ s ⟫ β → α ＝⟪ s ⟫₀ β
-＝⟪⟫-implies-＝⟪⟫₀ α α′ []       []       i ()
+＝⟪⟫-implies-＝⟪⟫₀ α α′ []       []       i m =
+ 𝟘-elim (lists-with-members-are-non-empty m)
 ＝⟪⟫-implies-＝⟪⟫₀ α α′ (i ∷ is) (p ∷ ps) i in-head     = p
 ＝⟪⟫-implies-＝⟪⟫₀ α α′ (_ ∷ is) (p ∷ ps) j (in-tail q) = IH
  where
@@ -246,7 +247,8 @@ range (succ n) = succ n ∷ range n
 
 range-succ : (i n : ℕ) → member i (range n) → member (succ i) (range (succ n))
 range-succ zero     zero     p            = in-head
-range-succ (succ i) zero     (in-tail ())
+range-succ (succ i) zero     (in-tail m) =
+ 𝟘-elim (lists-with-members-are-non-empty m)
 range-succ zero     (succ n) (in-tail p)  = in-tail (range-succ zero n p)
 range-succ (succ i) (succ i) in-head      = in-head
 range-succ (succ i) (succ n) (in-tail p)  = in-tail (range-succ (succ i) n p)
@@ -710,7 +712,8 @@ Conversely, the `_＝⟦_⟧_` relation implies the `_＝⟪_⟫₀` relation.
 
 ＝⟦⟧-implies-＝⟪⟫₀ : (α β : Baire) (t : BT ℕ)
                    → α ＝⟦ t ⟧ β → α ＝⟪ sequentialize t ⟫₀ β
-＝⟦⟧-implies-＝⟪⟫₀ _ _ []      _       _ ()
+＝⟦⟧-implies-＝⟪⟫₀ _ _ []      _       i m =
+ 𝟘-elim (lists-with-members-are-non-empty m)
 ＝⟦⟧-implies-＝⟪⟫₀ α β (n ∷ φ) (p ∷ _) _ in-head     = p
 ＝⟦⟧-implies-＝⟪⟫₀ α β (n ∷ φ) (p ∷ ψ) i (in-tail q) = † i q
  where
