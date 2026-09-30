@@ -1,4 +1,4 @@
-Martin Escardo
+Martin Escardo, August 2020 and September 2026.
 
 \begin{code}
 
@@ -6,17 +6,20 @@ Martin Escardo
 
 module BinarySystems.index where
 
-import BinarySystems.InitialBinarySystem
-import BinarySystems.InitialBinarySystem2
--- import BinarySystems.CubicalBinarySystem
+import BinarySystems.Type
+import BinarySystems.Initiality
+import BinarySystems.TypeOriginal
 
 \end{code}
 
-The first construction does more work than needed. The second one improves
-it, as there is no need to work with the subtype of normal elements.
+The construction in BinarySystems.TypeOriginal does more work than
+needed, by working with a subtype of normal elements. The one in
+BinarySystems.Type avoids this, giving rise to a more direct and
+simpler construction.
 
-The third one, by Martin Escardo and Alex Rice, works with Agda 2.6.2 and
-needs the Cubical Library. It is commented out because it currently breaks
-the build, and for that reason it is not rendered either. It can be read at
+A third one, by Martin Escardo and Alex Rice, works with Agda 2.6.2
+and needs the Cubical Library. It currently breaks the build and so
+cannot be rendered in html, which is also why it is not imported, but
+it can be read at
 
-https://github.com/martinescardo/TypeTopology/blob/master/source/BinarySystems/CubicalBinarySystem.lagda
+https://github.com/martinescardo/TypeTopology/blob/master/source/BinarySystems/CubicalType.lagda

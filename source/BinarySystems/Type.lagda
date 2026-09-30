@@ -1,7 +1,7 @@
 Martin Escardo, 7th August 2020.
 
-This file improves the file InitialBinarySystem.lagda, which gives the
-background for this file.
+This file improves the file BinarySystems.TypeOriginal, which gives
+the background for this file.
 
 Modified 2nd May 2025 to remove the requirement that the underlying
 types of binary systems are sets, and also to remove some unused
@@ -12,7 +12,7 @@ a set.
 
 {-# OPTIONS --safe --without-K #-}
 
-module BinarySystems.InitialBinarySystem2 where
+module BinarySystems.Type where
 
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
@@ -121,8 +121,8 @@ is-η (η _) = 𝟙
 𝕄-is-discrete (η x) L     = inr (λ p → transport is-η p ⋆)
 𝕄-is-discrete (η x) R     = inr (λ p → transport is-η p ⋆)
 𝕄-is-discrete (η x) (η y) = Cases (𝔹-is-discrete x y)
-                              (λ (p : x ＝ y) → inl (ap η p))
-                              (λ (ν : x ≠ y) → inr (contrapositive (η-lc x y) ν))
+                             (λ (p : x ＝ y) → inl (ap η p))
+                             (λ (ν : x ≠ y) → inr (contrapositive (η-lc x y) ν))
 
 𝕄-is-set : is-set 𝕄
 𝕄-is-set = discrete-types-are-sets 𝕄-is-discrete
@@ -383,6 +383,8 @@ system.
 TODO. Now that we have removed the sethood requirement for the
 underlying type of a binary system we need to prove unique existence
 as contractibility (as done for nno's in the MGS'2019 lecture notes).
+This is done in BinarySystems.Initiality after it is reformulated to
+include coherence conditions on the notion of homomorphism.
 
 Primitive (or parametric) recursion, which has the above as a special
 case:
@@ -392,7 +394,8 @@ case:
 𝕄-primrec : {A : 𝓤 ̇ } (a b : A) (f g : 𝕄 → A → A) → 𝕄 → A
 𝕄-primrec {𝓤} {A} a b f = 𝕄-induction (λ _ → A) a b f
 
-primitive-recursive : {A : 𝓤 ̇ } → A → A → (𝕄 → A → A) → (𝕄 → A → A) → (𝕄 → A) → 𝓤 ̇
+primitive-recursive : {A : 𝓤 ̇ } → A → A → (𝕄 → A → A) → (𝕄 → A → A)
+                    → (𝕄 → A) → 𝓤 ̇
 primitive-recursive a b f g h =
 
          (h L ＝ a)

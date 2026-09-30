@@ -6,7 +6,7 @@ Produced in the Birmingham Agda Club. We benefited from the company
 and discussions with the other members, Todd Ambridge, Tom De Jong,
 George Kaye, Owen Milner and Ayberk Tosun.
 
-See the file https://www.cs.bham.ac.uk/~mhe/TypeTopology/InitialBinarySystem.html
+See the file https://www.cs.bham.ac.uk/~mhe/TypeTopology/BinarySystems.Type.html
 for background.
 
 The initial binary system gives the closed interval of dyadic
@@ -26,7 +26,7 @@ definitions of the initial binary system.
 
 {-# OPTIONS --safe --cubical#-}
 
-module BinarySystems.CubicalBinarySystem where
+module BinarySystems.CubicalType where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Function

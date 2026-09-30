@@ -10,7 +10,7 @@ The key insight which proved formative for this approach comes from Alperin's
 "Rationals and the Modular Group": canonical words in PSL(2,ℤ) arise from
 mutual induction, where generators must strictly alternate (S cannot follow S,
 R's cycle through two states). Taking influence from Escardó's
-InitialBinarySystem2, we use helper functions s, r : PSL2Z → PSL2Z as "smart
+BinarySystems.Type, we use helper functions s, r : PSL2Z → PSL2Z as "smart
 constructors" that reduce automatically via the group relations. The resulting
 type has remarkably smooth computational properties.
 

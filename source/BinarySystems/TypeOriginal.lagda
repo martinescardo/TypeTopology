@@ -21,7 +21,7 @@ quotients - it just happens to have the quotient we want.
 
 {-# OPTIONS --safe --without-K #-}
 
-module BinarySystems.InitialBinarySystem where
+module BinarySystems.TypeOriginal where
 
 open import MLTT.Spartan
 open import UF.Sets-Properties
