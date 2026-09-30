@@ -28,6 +28,7 @@ cosubtraction (succ m) _ (k , refl) = cosubtraction m (k + m) (k , refl)
 subtraction' : (x y : ℕ) → x < y → Σ z ꞉ ℕ , (z + x ＝ y)
 subtraction' 0        0        l = 𝟘-induction l
 subtraction' 0        (succ y) l = (succ y) , refl
+subtraction' (succ x) 0        l = 𝟘-elim l
 subtraction' (succ x) (succ y) l = pr₁ IH , ap succ (pr₂ IH)
  where
   IH : Σ z ꞉ ℕ , z + x ＝ y

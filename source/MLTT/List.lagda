@@ -64,8 +64,11 @@ equal-head-tail {𝓤} {X} {x} {s} {t} refl = x , s , refl
 
 []-is-not-cons : {X : 𝓤 ̇ } (x : X) (xs : List X)
                → [] ≠ x ∷ xs
-[]-is-not-cons x []        ()
-[]-is-not-cons x (x₀ ∷ xs) ()
+[]-is-not-cons {𝓤} {X} x xs p = transport f p ⋆
+ where
+  f : List X → 𝓤₀ ̇
+  f []       = 𝟙
+  f (y ∷ ys) = 𝟘
 
 _++_ : {X : 𝓤 ̇ } → List X → List X → List X
 []      ++ t = t
@@ -107,6 +110,7 @@ list-non-emptiness-is-decidable (x ∷ xs) = inl cons-is-non-empty
 map-is-non-empty : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (xs : List X)
                  → is-non-empty xs
                  → is-non-empty (map f xs)
+map-is-non-empty f []       ν                 = 𝟘-elim ν
 map-is-non-empty f (x ∷ xs) cons-is-non-empty = cons-is-non-empty
 
 
@@ -116,6 +120,7 @@ map-is-non-empty f (x ∷ xs) cons-is-non-empty = cons-is-non-empty
 is-non-empty-++ : {X : 𝓤 ̇ } (xs ys : List X)
                 → is-non-empty xs
                 → is-non-empty (xs ++ ys)
+is-non-empty-++ []       ys ν = 𝟘-elim ν
 is-non-empty-++ (x ∷ xs) ys ⋆ = ⋆
 
 empty : {X : 𝓤 ̇ } → List X → Bool
@@ -126,11 +131,6 @@ data member {X : 𝓤 ̇ } : X → List X → 𝓤 ̇ where
  in-head : {x : X}   {xs : List X} → member x (x ∷ xs)
  in-tail : {x y : X} {xs : List X} → member x xs → member x (y ∷ xs)
 
-empty-list-has-no-members : {X : 𝓤 ̇ }
-                            (x : X)
-                          → ¬ member x []
-empty-list-has-no-members x ()
-
 lists-with-members-are-non-empty : {X : 𝓤 ̇ }
                                    {y : X}
                                    {xs : List X}
@@ -139,9 +139,15 @@ lists-with-members-are-non-empty : {X : 𝓤 ̇ }
 lists-with-members-are-non-empty in-head     = cons-is-non-empty
 lists-with-members-are-non-empty (in-tail m) = cons-is-non-empty
 
+empty-list-has-no-members : {X : 𝓤 ̇ }
+                            (x : X)
+                          → ¬ member x []
+empty-list-has-no-members x m = 𝟘-elim (lists-with-members-are-non-empty m)
+
 member-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X) (xs : List X)
            → member x xs
            → member (f x) (map f xs)
+member-map f x' []       m           = 𝟘-elim (empty-list-has-no-members x' m)
 member-map f x' (_ ∷ _)  in-head     = in-head
 member-map f x' (_ ∷ xs) (in-tail m) = in-tail (member-map f x' xs m)
 
@@ -166,6 +172,8 @@ filter-member→ : {X : 𝓤 ̇ }
                  (xs : List X)
                → member y (filter p δ xs)
                → p y
+filter-member→ {𝓤} {𝓥} {X} p δ y []       m =
+ 𝟘-elim (empty-list-has-no-members y m)
 filter-member→ {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
  where
   h : (x : X)
@@ -175,6 +183,7 @@ filter-member→ {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
     → p y
   h x xs        (inl l) in-head     = l
   h x xs        (inl _) (in-tail m) = filter-member→ p δ y xs m
+  h x []        (inr _) m           = 𝟘-elim (empty-list-has-no-members y m)
   h x (x' ∷ xs) (inr _) m           = h x' xs (δ x') m
 
 filter-member← : {X : 𝓤 ̇ }
@@ -185,6 +194,8 @@ filter-member← : {X : 𝓤 ̇ }
                → p y
                → member y xs
                → member y (filter p δ xs)
+filter-member← {𝓤} {𝓥} {X} p δ y []       py m =
+ 𝟘-elim (empty-list-has-no-members y m)
 filter-member← {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
  where
   h : (x : X)
@@ -194,6 +205,7 @@ filter-member← {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
     → member y (x ∷ xs)
     → member y (filter-helper p x d (filter p δ xs))
   h x xs (inl _) py in-head = in-head
+  h x []        (inl _) py (in-tail m) = 𝟘-elim (empty-list-has-no-members y m)
   h x (x' ∷ xs) (inl _) py (in-tail m) = in-tail (h x' xs (δ x') py m)
   h x xs (inr r) py in-head = 𝟘-elim (r py)
   h x xs (inr _) py (in-tail m) = filter-member← p δ y xs py m
@@ -205,6 +217,7 @@ member' y (x ∷ xs) = (x ＝ y) + member' y xs
 member'-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X) (xs : List X)
             → member' x xs
             → member' (f x) (map f xs)
+member'-map f x' []       m       = 𝟘-elim m
 member'-map f x' (x ∷ xs) (inl p) = inl (ap f p)
 member'-map f x' (x ∷ xs) (inr m) = inr (member'-map f x' xs m)
 
@@ -241,7 +254,7 @@ type-from-list-is-listed : {X : 𝓤 ̇ } (xs : List X)
 type-from-list-is-listed {𝓤} {X} [] = [] , g
  where
   g : (σ : type-from-list []) → member σ []
-  g (x , ())
+  g (x , m) = 𝟘-elim (empty-list-has-no-members x m)
 type-from-list-is-listed {𝓤} {X} (x ∷ xs) = g
  where
   h : (x : X) → type-from-list (x ∷ xs)
@@ -271,6 +284,7 @@ module _ {X : 𝓤 ̇ } where
           ((xs , _) : Vector' X (succ n))
         → member y xs
         → Vector' X n
+ delete {succ n} ([] , p)       _           = 𝟘-elim (zero-not-positive _ p)
  delete {0}      _              in-head     = [] , refl
  delete {0}      _              (in-tail _) = [] , refl
  delete {succ _} ((_ ∷ xs) , p) in-head     = xs , succ-lc p
@@ -311,12 +325,15 @@ module list-util
    a : (y == x) || ((y == z) || (y is-in xs)) ＝ true
    a = Cases (||-gives-+ e₁)
         (λ (e : (y == x) ＝ true)   → ||-left-intro ((y == z) || (y is-in xs)) e)
-        (λ (e : y is-in xs ＝ true) → ||-right-intro {y == x} ((y == z) || (y is-in xs)) (||-right-intro (y is-in xs) e))
+        (λ (e : y is-in xs ＝ true) →
+          ||-right-intro {y == x} ((y == z) || (y is-in xs))
+                                  (||-right-intro (y is-in xs) e))
 
    b : ys contained-in (x ∷ z ∷ xs) ＝ true
    b = IH e₂
 
-   γ : ((y == x) || ((y == z) || (y is-in xs))) && (ys contained-in (x ∷ z ∷ xs)) ＝ true
+   γ : ((y == x) || ((y == z) || (y is-in xs)))
+     && (ys contained-in (x ∷ z ∷ xs)) ＝ true
    γ = &&-intro a b
 
  contained-lemma₁ : (x : X) (ys : List X)
@@ -328,12 +345,14 @@ module list-util
    IH = contained-lemma₁ x ys
 
    a : y == x || (y == y || (y is-in ys)) ＝ true
-   a = ||-right-intro {y == x} ((y == y) || (y is-in ys)) (||-left-intro (y is-in ys) (==-refl y))
+   a = ||-right-intro {y == x} ((y == y) || (y is-in ys))
+                              (||-left-intro (y is-in ys) (==-refl y))
 
    b : ys contained-in (x ∷ y ∷ ys) ＝ true
    b = contained-lemma₀ x y ys ys IH
 
-   γ : (y == x || (y == y || (y is-in ys))) && (ys contained-in (x ∷ y ∷ ys)) ＝ true
+   γ : (y == x || (y == y || (y is-in ys)))
+     && (ys contained-in (x ∷ y ∷ ys)) ＝ true
    γ = &&-intro a b
 
  some-contained : List (List X) → List X → Bool
@@ -342,11 +361,15 @@ module list-util
 
  remove-first : X → List X → List X
  remove-first x []       = []
- remove-first x (y ∷ ys) = if x == y then ys else (y ∷ remove-first x ys)
+ remove-first x (y ∷ ys) = if x == y
+                           then ys
+                           else (y ∷ remove-first x ys)
 
  remove-all : X → List X → List X
  remove-all x []       = []
- remove-all x (y ∷ ys) = if x == y then remove-all x ys else (y ∷ remove-all x ys)
+ remove-all x (y ∷ ys) = if x == y
+                         then remove-all x ys
+                         else (y ∷ remove-all x ys)
 
  _minus_ : List X → List X → List X
  xs minus []       = xs
@@ -389,6 +412,7 @@ Remove first occurrence:
                → (n : ℕ)
                → length ys ＝ succ n
                → length (remove x ys) ＝ n
+ remove-length x []          m n p = 𝟘-elim (empty-list-has-no-members x m)
  remove-length x ys@(z ∷ zs) m n p = h m n p (x == z) refl
   where
    h : member x ys
@@ -405,8 +429,10 @@ Remove first occurrence:
              (true    ＝⟨ (==-refl x)⁻¹ ⟩
              (x == x) ＝⟨ q ⟩
              false    ∎))
-   h (in-tail in-head)     0        () false q
-   h (in-tail (in-tail m)) 0        () false q
+   h (in-tail in-head)     0        p  false q =
+    𝟘-elim (positive-not-zero _ (succ-lc p))
+   h (in-tail (in-tail m)) 0        p  false q =
+    𝟘-elim (positive-not-zero _ (succ-lc p))
    h (in-tail m)           (succ n) p  false q =
     length (remove x (z ∷ zs))  ＝⟨ I ⟩
     length (z ∷ remove x zs)    ＝⟨refl⟩
@@ -432,6 +458,8 @@ Added by Ayberk Tosun on 2023-10-16.
 right-concatenation-preserves-membership : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
                                          → member x xs
                                          → member x (xs ++ ys)
+right-concatenation-preserves-membership x []            ys m =
+ 𝟘-elim (empty-list-has-no-members x m)
 right-concatenation-preserves-membership x xs@(x′ ∷ _)   ys in-head = in-head
 right-concatenation-preserves-membership x xs@(x′ ∷ xs′) ys (in-tail p) =
  in-tail (right-concatenation-preserves-membership x xs′ ys p)
@@ -566,6 +594,8 @@ Added by Martin Escardo and Paulo Oliva 12th March 2025.
 member-of-concat← : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
                   → member x (concat yss)
                   → Σ ys ꞉ List X , member ys yss × member x ys
+member-of-concat← {𝓤} {X} x []         m =
+ 𝟘-elim (empty-list-has-no-members x m)
 member-of-concat← {𝓤} {X} x (ys ∷ yss) m = II I
  where
   I : member x ys + member x (concat yss)
@@ -584,6 +614,7 @@ member-of-concat← {𝓤} {X} x (ys ∷ yss) m = II I
 member-of-map← : {X Y : 𝓤 ̇ } (f : X → Y) (y : Y) (xs : List X)
               → member y (map f xs)
               → Σ x ꞉ X , member x xs × (f x ＝ y)
+member-of-map← f y []       m       = 𝟘-elim (empty-list-has-no-members y m)
 member-of-map← f y (x ∷ xs) in-head = x , in-head , refl
 member-of-map← {𝓤} {X} f y (x ∷ xs) (in-tail m) = I IH
  where
@@ -621,7 +652,9 @@ member-of-concat→ : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
                   → member zs yss
                   → member x zs
                   → member x (concat yss)
-member-of-concat→ x (ys ∷ yss) .ys in-head m₂ =
+member-of-concat→ x []         zs m₁ m₂ =
+ 𝟘-elim (empty-list-has-no-members zs m₁)
+member-of-concat→ x (ys ∷ yss) zs in-head m₂ =
  right-concatenation-preserves-membership x ys (concat yss) m₂
 member-of-concat→ x (ys ∷ yss) zs (in-tail m₁) m₂ =
  left-concatenation-preserves-membership x (concat yss) ys IH
@@ -667,6 +700,8 @@ filter'-member← : {X : 𝓤 ̇ }
                   (a : A y)
                 → member y xs
                 → member (y , a) (filter' A δ xs)
+filter'-member← {𝓤} {𝓥} {X} A δ A-is-prop-valued y []       a m =
+ 𝟘-elim (empty-list-has-no-members y m)
 filter'-member← {𝓤} {𝓥} {X} A δ A-is-prop-valued y (x ∷ xs) = h x xs (δ x)
  where
   h : (x : X)
@@ -685,6 +720,7 @@ filter'-member← {𝓤} {𝓥} {X} A δ A-is-prop-valued y (x ∷ xs) = h x xs 
           (λ - → member (y , a) ((y , -) ∷ filter' A δ xs))
           (A-is-prop-valued y a b)
           I
+  h x []        (inl b) a (in-tail m) = 𝟘-elim (empty-list-has-no-members y m)
   h x (x' ∷ xs) (inl b) a (in-tail m) = in-tail (h x' xs (δ x') a m)
   h x xs (inr r) a in-head = 𝟘-elim (r a)
   h x xs (inr x₁) a (in-tail m) = filter'-member← A δ A-is-prop-valued y xs a m
@@ -696,8 +732,8 @@ detachable-subtype-of-listed-type-is-listed
  → ((x : X) → is-prop (A x))
  → listed X
  → listed (Σ x ꞉ X , A x)
-detachable-subtype-of-listed-type-is-listed {𝓤} {𝓥} {X} A δ A-is-prop-valued (xs , m)
- = filter' A δ xs , γ
+detachable-subtype-of-listed-type-is-listed
+ {𝓤} {𝓥} {X} A δ A-is-prop-valued (xs , m) = filter' A δ xs , γ
  where
   γ : (σ : Σ x ꞉ X , A x) → member σ (filter' A δ xs)
   γ (x , a) = filter'-member← A δ A-is-prop-valued x xs a (m x)
@@ -710,7 +746,10 @@ Dependent version of `map`.
 
 \begin{code}
 
-dmap : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → ((x : X) → Y x) → List X → List (Σ x ꞉ X , Y x)
+dmap : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+     → ((x : X) → Y x)
+     → List X
+     → List (Σ x ꞉ X , Y x)
 dmap f []       = []
 dmap f (x ∷ xs) = (x , f x) ∷ dmap f xs
 

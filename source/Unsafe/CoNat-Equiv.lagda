@@ -78,6 +78,8 @@ We can at least show that the relation is an equivalence relation.
 
 ＝C-refl p .prove = ＝C'-refl (ap force p)
 ＝C'-refl {cozero} {cozero}   p = con ⋆
+＝C'-refl {cozero}  {cosuc _} p = 𝟘-elim (+disjoint p)
+＝C'-refl {cosuc _} {cozero}  p = 𝟘-elim (+disjoint (p ⁻¹))
 ＝C'-refl {cosuc _} {cosuc _} p = con (＝C-refl (inr-lc p))
 
 ＝C-sym  : ∀ {x y} → x ＝C y → y ＝C x
@@ -85,6 +87,8 @@ We can at least show that the relation is an equivalence relation.
 
 ＝C-sym p .prove = ＝C'-sym (p .prove)
 ＝C'-sym {cozero}  {cozero}  (con p) = con ⋆
+＝C'-sym {cozero}  {cosuc _} (con p) = 𝟘-elim p
+＝C'-sym {cosuc _} {cozero}  (con p) = 𝟘-elim p
 ＝C'-sym {cosuc _} {cosuc _} (con p) = con (＝C-sym p)
 
 ＝C-trans : ∀ {x y z} → x ＝C y → y ＝C z → x ＝C z
@@ -92,6 +96,10 @@ We can at least show that the relation is an equivalence relation.
 
 ＝C-trans p q .prove = ＝C'-trans (p .prove) (q .prove)
 ＝C'-trans {cozero} {cozero} {cozero}   (con p) (con q) = con ⋆
+＝C'-trans {cozero}  {cozero}  {cosuc _} (con p) (con q) = 𝟘-elim q
+＝C'-trans {cozero}  {cosuc _}           (con p) q       = 𝟘-elim p
+＝C'-trans {cosuc _} {cozero}            (con p) q       = 𝟘-elim p
+＝C'-trans {cosuc _} {cosuc _} {cozero}  (con p) (con q) = 𝟘-elim q
 ＝C'-trans {cosuc _} {cosuc _} {cosuc _} (con p) (con q) = con (＝C-trans p q)
 
 \end{code}

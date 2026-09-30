@@ -71,9 +71,24 @@ The lexicographic order preserves many properties of the order.
 
 module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
 
+ lex-gives-non-empty-right : {l l' : List X}
+                           → lex R l l'
+                           → is-non-empty l'
+ lex-gives-non-empty-right []-lex         = ⋆
+ lex-gives-non-empty-right (head-lex p)   = ⋆
+ lex-gives-non-empty-right (tail-lex e q) = ⋆
+
  lex-transitive : is-transitive R → is-transitive (lex R)
  lex-transitive tr [] (y ∷ l₂) (z ∷ l₃) []-lex (head-lex q) = []-lex
  lex-transitive tr [] (y ∷ l₂) (z ∷ l₃) []-lex (tail-lex r q) = []-lex
+ lex-transitive tr []       []       z        p            q =
+  𝟘-elim (lex-gives-non-empty-right p)
+ lex-transitive tr []       (y ∷ l₂) []       p            q =
+  𝟘-elim (lex-gives-non-empty-right q)
+ lex-transitive tr (x ∷ l₁) []       z        p            q =
+  𝟘-elim (lex-gives-non-empty-right p)
+ lex-transitive tr (x ∷ l₁) (y ∷ l₂) []       p            q =
+  𝟘-elim (lex-gives-non-empty-right q)
  lex-transitive tr (x ∷ l₁) (y ∷ l₂) (z ∷ l₃) (head-lex p) (head-lex q) =
   head-lex (tr x y z p q)
  lex-transitive tr (x ∷ l₁) (y ∷ l₂) (.y ∷ l₃) (head-lex p) (tail-lex refl q) =
@@ -84,9 +99,11 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
   = tail-lex refl (lex-transitive tr l₁ l₂ l₃ p q)
 
  []-lex-bot : is-bot (lex R) []
- []-lex-bot l ()
+ []-lex-bot l r = 𝟘-elim (lex-gives-non-empty-right r)
 
  lex-irreflexive : is-irreflexive R → is-irreflexive (lex R)
+ lex-irreflexive ir []      r            =
+  𝟘-elim (lex-gives-non-empty-right r)
  lex-irreflexive ir (x ∷ l) (head-lex p) = ir x p
  lex-irreflexive ir (x ∷ l) (tail-lex e q) = lex-irreflexive ir l q
 
@@ -94,6 +111,8 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
                  → is-prop-valued R
                  → is-irreflexive R
                  → is-prop-valued (lex R)
+ lex-prop-valued st pr irR l []       u      v      =
+  𝟘-elim (lex-gives-non-empty-right u)
  lex-prop-valued st pr irR l (y ∷ l') []-lex []-lex = refl
  lex-prop-valued st pr irR (x ∷ l) (y ∷ l') (head-lex u) (head-lex v) =
   ap head-lex (pr x y u v)
@@ -401,6 +420,7 @@ The order on DecrList₂ α β is extensional.
       c = h₁ ([ z ] , sing-decr) (head-lex u)
       κ : [ z ] ≺⟨List (α ×ₒ β) ⟩ [ y ] → z ≺⟨ α ×ₒ β ⟩ y
       κ (head-lex v) = v
+      κ (tail-lex e q) = 𝟘-elim (lex-gives-non-empty-right R q)
     I₂ : y ≼⟨ α ×ₒ β ⟩ x
     I₂ z u = κ c
      where
@@ -408,6 +428,7 @@ The order on DecrList₂ α β is extensional.
       c = h₂ ([ z ] , sing-decr) (head-lex u)
       κ : [ z ] ≺⟨List (α ×ₒ β) ⟩ [ x ] → z ≺⟨ α ×ₒ β ⟩ x
       κ (head-lex v) = v
+      κ (tail-lex e q) = 𝟘-elim (lex-gives-non-empty-right R q)
  DecrList₂-order-is-extensional' (x ∷ []) (y ∷ y' ∷ l₂) δ₁ δ₂ h₁ h₂ =
   𝟘-elim (lex-irreflexive R (Irreflexivity (α ×ₒ β)) (y ∷ y' ∷ l₂) III)
    where
@@ -416,6 +437,7 @@ The order on DecrList₂ α β is extensional.
      where
       κ :  [ y ] ≺⟨List (α ×ₒ β) ⟩ [ x ] → y ≺⟨ α ×ₒ β ⟩ x
       κ (head-lex u) = u
+      κ (tail-lex e q) = 𝟘-elim (lex-gives-non-empty-right R q)
     II : (y ∷ y' ∷ l₂) ≺⟨List (α ×ₒ β) ⟩ [ x ]
     II = head-lex I
     III : (y ∷ y' ∷ l₂) ≺⟨List (α ×ₒ β) ⟩ (y ∷ y' ∷ l₂)
@@ -428,6 +450,7 @@ The order on DecrList₂ α β is extensional.
      where
       κ :  [ x ] ≺⟨List (α ×ₒ β) ⟩ [ y ] → x ≺⟨ α ×ₒ β ⟩ y
       κ (head-lex u) = u
+      κ (tail-lex e q) = 𝟘-elim (lex-gives-non-empty-right R q)
     II : (x ∷ x' ∷ l₁) ≺⟨List (α ×ₒ β) ⟩ [ y ]
     II = head-lex I
     III : (x ∷ x' ∷ l₁) ≺⟨List (α ×ₒ β) ⟩ (x ∷ x' ∷ l₁)
@@ -590,6 +613,8 @@ module _
  expᴸ-map-is-order-preserving
   : is-order-preserving (expᴸ[𝟙+ α ] β) (expᴸ[𝟙+ α ] γ) expᴸ-map
  expᴸ-map-is-order-preserving ([] , δ) (l' , δ') []-lex = []-lex
+ expᴸ-map-is-order-preserving (((a , b) ∷ l), δ) ([] , δ') u =
+  𝟘-elim (lex-gives-non-empty-right _ u)
  expᴸ-map-is-order-preserving (((a , b) ∷ l), δ) (((a' , b') ∷ l') , δ')
   (head-lex (inl u)) = head-lex (inl (f-is-order-preserving b b' u))
  expᴸ-map-is-order-preserving (((a , b) ∷ l), δ) (((a' , b') ∷ l') , δ')
@@ -607,6 +632,10 @@ module _
   → left-cancellable f
   → is-order-reflecting (expᴸ[𝟙+ α ] β) (expᴸ[𝟙+ α ] γ) expᴸ-map
  expᴸ-map-is-order-reflecting ρ κ ([] , δ) ((_ ∷ l') , δ') u = []-lex
+ expᴸ-map-is-order-reflecting ρ κ ([] , δ) ([] , δ') u =
+  𝟘-elim (lex-gives-non-empty-right _ u)
+ expᴸ-map-is-order-reflecting ρ κ (((a , b) ∷ l) , δ) ([] , δ') u =
+  𝟘-elim (lex-gives-non-empty-right _ u)
  expᴸ-map-is-order-reflecting ρ κ (((a , b) ∷ l) , δ) (((a' , b') ∷ l') , δ')
   (head-lex (inl v)) = head-lex (inl (ρ b b' v))
  expᴸ-map-is-order-reflecting ρ κ (((a , b) ∷ l) , δ) (((a' , b') ∷ l') , δ')
@@ -644,6 +673,8 @@ is the induced map on expᴸ.
     (δ₁ : is-decreasing-pr₂ α β l₁) (δ : is-decreasing-pr₂ α γ l)
   → (l , δ) ≺⟨ expᴸ[𝟙+ α ] γ ⟩ expᴸ-map (l₁ , δ₁)
   → Σ l₂ ꞉ ⟨ expᴸ[𝟙+ α ] β ⟩ , expᴸ-map l₂ ＝ (l , δ)
+ expᴸ-map-is-partially-surjective ρ h [] l δ₁ δ v =
+  𝟘-elim (lex-gives-non-empty-right _ v)
  expᴸ-map-is-partially-surjective ρ h ((a₁ , b) ∷ l₁) [] δ₁ []-decr v =
   ([] , []-decr) , refl
  expᴸ-map-is-partially-surjective ρ h ((a₁ , b) ∷ l₁) ((a , c) ∷ []) δ₁ δ
@@ -810,6 +841,8 @@ module _
     {l₂ : List ⟨ α ×ₒ (β ↓ b₀) ⟩}
   → ((a , b) ∷ l₁) ≺⟨List (α ×ₒ β) ⟩ expᴸ-segment-inclusion-list l₂
   → b ≺⟨ β ⟩ b₀
+ predecessor-of-expᴸ-segment-inclusion-lemma a {b} {l₁} {[]} v =
+  𝟘-elim (lex-gives-non-empty-right _ v)
  predecessor-of-expᴸ-segment-inclusion-lemma a {b} {l₁} {(a' , (b' , u)) ∷ l₂}
   (head-lex (inl v)) = Transitivity β b b' b₀ v u
  predecessor-of-expᴸ-segment-inclusion-lemma a {b} {l₁} {(a' , (b' , u)) ∷ l₂}
@@ -931,6 +964,10 @@ module _
   → l₁ ≺⟨List (α ×ₒ β) ⟩ l₂
   → expᴸ-tail l₁ δ₁ ≺⟨ expᴸ[𝟙+ α ] (β ↓ b₀) ⟩ expᴸ-tail l₂ δ₂
  expᴸ-tail-is-order-preserving {[]} {(_ ∷ l₂)} δ₁ δ₂ _ = []-lex
+ expᴸ-tail-is-order-preserving {[]} {[]} δ₁ δ₂ u =
+  𝟘-elim (lex-gives-non-empty-right _ u)
+ expᴸ-tail-is-order-preserving {((a , b) ∷ l₁)} {[]} δ₁ δ₂ u =
+  𝟘-elim (lex-gives-non-empty-right _ u)
  expᴸ-tail-is-order-preserving {((a , b) ∷ l₁)} {((a' , b') ∷ l₂)} δ₁ δ₂
   (head-lex (inl u)) = head-lex (inl u)
  expᴸ-tail-is-order-preserving {((a , b) ∷ l₁)} {((a' , b') ∷ l₂)} δ₁ δ₂
@@ -1085,6 +1122,10 @@ expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
           (expᴸ-tail-section-of-expᴸ-segment-inclusion' α β a b l' ε)))
 
   g-is-order-preserving : is-order-preserving RHS LHS g
+  g-is-order-preserving (inl (l , inl ⋆)) (inl (l' , inl ⋆)) (inl u) =
+   𝟘-elim u
+  g-is-order-preserving (inl (l , inr (a' , i))) (inl (l' , inl ⋆))
+                        (inl u) = 𝟘-elim u
   g-is-order-preserving (inl (l , inl ⋆)) (inl (l' , inl ⋆)) (inr (refl , u)) =
    expᴸ-segment-inclusion-is-order-preserving α β b l l' u
   g-is-order-preserving (inl (l , inl ⋆)) (inl (l' , inr (a' , j))) u =
@@ -1100,6 +1141,7 @@ expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
    expᴸ-segment-inclusion-list-lex α β b
   g-is-order-preserving (inl (l , inr (a' , i))) (inr (l' , v)) _ =
    head-lex (inr (refl , i))
+  g-is-order-preserving (inr (l , v)) (inl y) u = 𝟘-elim u
   g-is-order-preserving (inr (l , v)) (inr (l' , v')) u =
    tail-lex refl (expᴸ-segment-inclusion-is-order-preserving α β b l l' u)
 
@@ -1191,6 +1233,18 @@ expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
                         (((a₂ , b₂ ∷ l₂) , δ₂) , tail-lex refl v)
                         (tail-lex e w) =
    expᴸ-tail-is-order-preserving α β a₁ b₁ δ₁ δ₂ w
+
+  f-is-order-preserving (([] , δ₁) , p) (([] , δ₂) , q) w =
+   𝟘-elim (lex-gives-non-empty-right _ w)
+  f-is-order-preserving (((a₁ , b₁ ∷ l₁) , δ₁) , head-lex (inl u))
+                        (([] , δ₂) , q) w =
+   𝟘-elim (lex-gives-non-empty-right _ w)
+  f-is-order-preserving (((a₁ , b₁ ∷ l₁) , δ₁) , head-lex (inr (refl , u)))
+                        (([] , δ₂) , q) w =
+   𝟘-elim (lex-gives-non-empty-right _ w)
+  f-is-order-preserving (((a₁ , b₁ ∷ l₁) , δ₁) , tail-lex refl u)
+                        (([] , δ₂) , q) w =
+   𝟘-elim (lex-gives-non-empty-right _ w)
 
 \end{code}
 

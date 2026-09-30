@@ -104,7 +104,9 @@ Zero' = α , h
   α (succ n) = ₀
 
   i : is-prop (T α)
-  i (0 , e) (0 , e') = to-T-＝ refl
+  i (0 , e)      (0 , e')       = to-T-＝ refl
+  i (0 , e)      (succ n' , e') = 𝟘-elim (zero-is-not-one e')
+  i (succ n , e) y              = 𝟘-elim (zero-is-not-one e)
 
   h : has-at-most-one-₁ α
   h (n , e) (n' , e') = to-T-＝ (index-uniqueness α i e e')
@@ -113,6 +115,8 @@ Succ' : ℕ∞' → ℕ∞'
 Succ' (α , h) = cons ₀ α , h'
  where
   h' : has-at-most-one-₁ (cons ₀ α)
+  h' (0 , e)      y              = 𝟘-elim (zero-is-not-one e)
+  h' (succ n , e) (0 , e')       = 𝟘-elim (zero-is-not-one e')
   h' (succ n , e) (succ n' , e') = to-T-＝ (ap succ (index-uniqueness α h e e'))
 
 ℕ-to-ℕ∞' : ℕ → ℕ∞'
@@ -147,6 +151,7 @@ is-finite'-up _ (n , e) = succ n , e
 is-finite'-down : (u : ℕ∞')
                 → is-finite' (Succ' u)
                 → is-finite' u
+is-finite'-down _ (0 , e)      = 𝟘-elim (zero-is-not-one e)
 is-finite'-down _ (succ n , e) = n , e
 
 ℕ-to-ℕ∞'-is-finite' : (n : ℕ) → is-finite' (ι n)

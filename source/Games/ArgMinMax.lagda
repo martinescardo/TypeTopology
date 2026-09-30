@@ -40,6 +40,7 @@ greatest element.
         → is-complemented A
         → A r₀
         → Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → r ≤ s)
+ Fin-wf {𝓤} {0} A r₀ d a = 𝟘-elim r₀
  Fin-wf {𝓤} {succ n} A 𝟎 d a = 𝟎 , a , λ s a' → ⟨⟩
  Fin-wf {𝓤} {succ n} A (suc r₀) d a = γ
   where
@@ -68,6 +69,7 @@ greatest element.
            → is-complemented A
            → A r₀
            → Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → s ≤ r)
+ Fin-co-wf {𝓤} {0} A r₀ d a = 𝟘-elim r₀
  Fin-co-wf {𝓤} {succ n} A 𝟎 d a = γ
   where
    δ : is-decidable (Σ i ꞉ Fin n , A (suc i))
@@ -118,7 +120,8 @@ greatest element.
  Fin-argmin {0} p = 𝟎 , α
   where
    α : (y : Fin 1) → p 𝟎 ≤ p y
-   α 𝟎 = ≤-refl ⟦ p 𝟎 ⟧
+   α 𝟎       = ≤-refl ⟦ p 𝟎 ⟧
+   α (suc i) = 𝟘-elim i
  Fin-argmin {succ a} p = γ
   where
    IH : Σ x ꞉ Fin (succ a) , ((y : Fin (succ a)) → p (suc x) ≤ p (suc y))
@@ -155,7 +158,8 @@ greatest element.
  Fin-argmax {0} p = 𝟎 , α
   where
    α : (y : Fin 1) → p y ≤ p 𝟎
-   α 𝟎 = ≤-refl ⟦ p 𝟎 ⟧
+   α 𝟎       = ≤-refl ⟦ p 𝟎 ⟧
+   α (suc i) = 𝟘-elim i
  Fin-argmax {succ a} p = γ
   where
    IH : Σ x ꞉ Fin (succ a) , ((y : Fin (succ a)) → p (suc y) ≤ p (suc x))

@@ -19,7 +19,7 @@ open import UF.LeftCancellable
 
 The appropriate notion of function extensionality in univalent
 mathematics is funext, define below. It is implied, by an argument due
-to Voevodky, by naive, non-dependent function extensionality, written
+to Voevodsky, by naive, non-dependent function extensionality, written
 naive-funext here.
 
 \begin{code}

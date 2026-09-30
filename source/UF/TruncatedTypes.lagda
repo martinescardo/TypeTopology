@@ -173,6 +173,7 @@ truncated-types-closed-under-embedding : {n : ℕ₋₂}
                                        → X ↪ Y
                                        → Y is n truncated
                                        → X is n truncated
+truncated-types-closed-under-embedding {𝓤} {𝓥} {−2} l = 𝟘-elim l
 truncated-types-closed-under-embedding {𝓤} {𝓥} {succ n} _ =
  truncated-types-closed-under-embedding⁺
 

@@ -212,12 +212,16 @@ module _ (P : 𝓤 ̇ )
    ϕ (inr q) = ₁
 
    ϕ₀ : (z t : P + Q) → f z ＝ t → ϕ t ＝ ₁ → Q
+   ϕ₀ (inl p) (inl p') r s = 𝟘-elim (zero-is-not-one s)
    ϕ₀ (inl p) (inr q)  r s = q
+   ϕ₀ (inr q) (inl p)  r s = 𝟘-elim (zero-is-not-one s)
    ϕ₀ (inr q) (inr q') r s = q'
 
    ϕ₁ : (z t : P + Q) → f z ＝ t → ϕ t ＝ ₀ → P
    ϕ₁ (inl p) (inl p') r s = p'
+   ϕ₁ (inl p) (inr q)  r s = 𝟘-elim (one-is-not-zero s)
    ϕ₁ (inr q) (inl p)  r s = p
+   ϕ₁ (inr q) (inr q') r s = 𝟘-elim (one-is-not-zero s)
 
   g₀ : P → 𝟚
   g₀ p = ϕ (f (inl p))

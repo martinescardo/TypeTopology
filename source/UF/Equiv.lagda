@@ -763,8 +763,8 @@ logically-equivalent-props-are-equivalent i j f g =
 
 \end{code}
 
-5th March 2019. A more direct proof that quasi-invertible maps
-are Voevodky equivalences (have contractible fibers).
+5th March 2019. A more direct proof that quasi-invertible maps are
+Voevodsky equivalences (have contractible fibers).
 
 \begin{code}
 

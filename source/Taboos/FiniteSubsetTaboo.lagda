@@ -90,6 +90,8 @@ Lemma 2:
 
 having-nonempty-enumeration-entails-inhabitedness :
  (X : 𝓤 ̇ ) (n : ℕ) → 0 < n → (e : Fin n → X) → is-surjection e → X
+having-nonempty-enumeration-entails-inhabitedness X 0        p e σ =
+ 𝟘-elim p
 having-nonempty-enumeration-entails-inhabitedness X (succ n) p e σ = e 𝟎
 
 \end{code}
@@ -114,8 +116,9 @@ hereditary-Kuratowski-finiteness-gives-discreteness {𝓤} X 𝕤 ϡ x y =
    F z = ∥ (z ＝ x) + (z ＝ y) ∥Ω
 
    e : Fin 2 → 𝕋 F
-   e 𝟎 = x , ∣ inl refl ∣
-   e 𝟏 = y , ∣ inr refl ∣
+   e 𝟎             = x , ∣ inl refl ∣
+   e 𝟏             = y , ∣ inr refl ∣
+   e (suc (suc i)) = 𝟘-elim i
 
    σ : is-surjection e
    σ (z , p) = ∥∥-rec ∃-is-prop † p

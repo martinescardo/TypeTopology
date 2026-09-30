@@ -150,26 +150,42 @@ about multiplication:
      f'-initial-seg : is-initial-segment (α ×ₒ α) (β ×ₒ β) (f' p)
      f'-initial-seg ₀α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
      f'-initial-seg ₀α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₀α (y , inl (inr ⋆))       (inl l) = 𝟘-elim l
+     f'-initial-seg ₀α (y , inr q)             (inl l) = 𝟘-elim l
      f'-initial-seg ₀α (inl (inl (inl ⋆)) , _) (inr (refl , l)) = 𝟘-elim l
      f'-initial-seg ₀α (inl (inl (inr ⋆)) , _) (inr (refl , l)) = 𝟘-elim l
+     f'-initial-seg ₀α (inl (inr ⋆) , _)       (inr (refl , l)) = 𝟘-elim l
+     f'-initial-seg ₀α (inr q , _)             (inr (refl , l)) = 𝟘-elim l
      f'-initial-seg ₁α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
      f'-initial-seg ₁α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₁α (y , inl (inr ⋆))       (inl l) = 𝟘-elim l
+     f'-initial-seg ₁α (y , inr q)             (inl l) = 𝟘-elim l
      f'-initial-seg ₁α (inl (inl (inl ⋆)) , z) (inr (refl , l)) =
       ₀α , inr (refl , ⋆) , refl
+     f'-initial-seg ₁α (inl (inl (inr ⋆)) , _) (inr (refl , l)) = 𝟘-elim l
+     f'-initial-seg ₁α (inl (inr ⋆) , _)       (inr (refl , l)) = 𝟘-elim l
+     f'-initial-seg ₁α (inr q , _)             (inr (refl , l)) = 𝟘-elim l
      f'-initial-seg ₂α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
      f'-initial-seg ₂α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₂α (y , inl (inr ⋆))       (inl l) = 𝟘-elim l
+     f'-initial-seg ₂α (y , inr q)             (inl l) = 𝟘-elim l
      f'-initial-seg ₂α (inl (inl (inl ⋆)) , z) (inr (refl , l)) =
       ₀α , inl ⋆ , refl
      f'-initial-seg ₂α (inl (inl (inr ⋆)) , z) (inr (refl , l)) =
       ₁α , inl ⋆ , refl
+     f'-initial-seg ₂α (inl (inr ⋆) , _)       (inr (refl , l)) = 𝟘-elim l
+     f'-initial-seg ₂α (inr q , _)             (inr (refl , l)) = 𝟘-elim l
      f'-initial-seg ₃α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
      f'-initial-seg ₃α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₃α (y , inl (inr ⋆))       (inl l) = 𝟘-elim l
+     f'-initial-seg ₃α (y , inr q)             (inl l) = 𝟘-elim l
      f'-initial-seg ₃α (inl (inl (inl ⋆)) , z) (inr (refl , l)) =
       ₀α , inl ⋆ , refl
      f'-initial-seg ₃α (inl (inl (inr ⋆)) , z) (inr (refl , l)) =
       ₁α , inl ⋆ , refl
      f'-initial-seg ₃α (inl (inr ⋆) , z) (inr (refl , l)) =
       ₂α , inr (refl , ⋆) , refl
+     f'-initial-seg ₃α (inr q , _)             (inr (refl , l)) = 𝟘-elim l
 
      f'-order-pres : is-order-preserving (α ×ₒ α) (β ×ₒ β) (f' p)
      f'-order-pres ₀α ₀α l = 𝟘-elim (cases id pr₂ l)
@@ -675,6 +691,7 @@ taboo.
    where
     V : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl ⋆ , inl ⋆)) → P
     V (inl p , _ , _) = p
+    V (inr x , l , _) = 𝟘-elim l
 
     VI : (inl ⋆ , inl ⋆) ≺⟨ γ ⟩ f (inr ⋆)
     VI = transport⁻¹ (underlying-order γ (inl ⋆ , inl ⋆)) r (inl ⋆)

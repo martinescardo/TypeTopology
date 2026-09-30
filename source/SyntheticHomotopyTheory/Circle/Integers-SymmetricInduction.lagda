@@ -2,11 +2,11 @@ Tom de Jong
 Reboot: 22 January 2021
 Earlier version: 18 September 2020
 
-We show that the type of integers enjoys the symmetric induction principle, as
-used in constructing the circle as the type of ℤ-torsors. The symmetric
-induction principle appears as Theorem 3.13 in "Construction of the circle in
-UniMath" by Bezem, Buchholtz, Grayson and Shulman
-(doi:10.1016/j.jpaa.2021.106687).
+We show that the type of integers enjoys the symmetric induction
+principle, as used in constructing the circle as the type of
+ℤ-torsors. The symmetric induction principle appears as Theorem 3.13
+in "Construction of the circle in UniMath" by Marc Bezem, Ulrik
+Buchholtz, Dan Grayson and Michael Shulman (doi:10.1016/j.jpaa.2021.106687).
 
 \begin{code}
 

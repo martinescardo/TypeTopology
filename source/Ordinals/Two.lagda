@@ -68,7 +68,9 @@ module _ (fe : FunExt) where
    f ₁ = inr ⋆
 
    f-is-order-preserving : is-order-preserving 𝟚ₒ 𝟚ₒ-standard f
+   f-is-order-preserving ₀ ₀ l = 𝟘-elim (zero-is-not-one (≺₂-right l))
    f-is-order-preserving ₀ ₁ (refl , refl) = ⋆
+   f-is-order-preserving ₁ y l = 𝟘-elim (one-is-not-zero (≺₂-left l))
 
    g : ⟨ 𝟚ₒ-standard ⟩ → ⟨ 𝟚ₒ ⟩
    g (inl ⋆) = ₀

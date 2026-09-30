@@ -1,10 +1,11 @@
 Tom de Jong, 28 January 2021
 (Following Bezem, Buchholtz, Grayson and Shulman)
 
-We construct the circle 𝕊¹ as the type of ℤ-torsors, following "Construction of
-the circle in UniMath" by Bezem, Buchholtz, Grayson and Shulman
-(doi:10.1016/j.jpaa.2021.106687). The construction needs univalence of 𝓤₀,
-propositional truncations and function extensionality for every two universes.
+We construct the circle 𝕊¹ as the type of ℤ-torsors, following
+"Construction of the circle in UniMath" by Marc Bezem, Ulrik
+Buchholtz, Dan Grayson and Michael Shulman (doi:10.1016/j.jpaa.2021.106687).
+The construction needs univalence of 𝓤₀, propositional truncations and
+function extensionality for every two universes.
 
 Rather than proving the induction principle directly as in "Construction of the
 circle in UniMath", we prove the induction principle abstractly from the

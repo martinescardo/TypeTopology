@@ -33,14 +33,16 @@ lni : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X → X + Y → X
 lni x₀ (inl x) = x
 lni x₀ (inr y) = x₀
 
-inl-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} → inl {𝓤} {𝓥} {X} {Y} x ＝ inl x' → x ＝ x'
+inl-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X}
+       → inl {𝓤} {𝓥} {X} {Y} x ＝ inl x' → x ＝ x'
 inl-lc {𝓤} {𝓥} {X} {Y} {x} = ap (lni x)
 
 rni : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y → X + Y → Y
 rni y₀ (inl x) = y₀
 rni y₀ (inr y) = y
 
-inr-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {y y' : Y} → inr {𝓤} {𝓥} {X} {Y} y ＝ inr y' → y ＝ y'
+inr-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {y y' : Y}
+       → inr {𝓤} {𝓥} {X} {Y} y ＝ inr y' → y ＝ y'
 inr-lc {𝓤} {𝓥} {X} {Y} {y} = ap (rni y)
 
 equality-cases : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (z : X + Y)
@@ -50,11 +52,11 @@ equality-cases (inr y) f g = g y refl
 
 Cases-equality-l : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → A) (g : Y → A)
                  → (z : X + Y) (x : X) → z ＝ inl x → Cases z f g ＝ f x
-Cases-equality-l f g .(inl x) x refl = refl
+Cases-equality-l f g z x refl = refl
 
 Cases-equality-r : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → A) (g : Y → A)
                  → (z : X + Y) (y : Y) → z ＝ inr y → Cases z f g ＝ g y
-Cases-equality-r f g .(inr y) y refl = refl
+Cases-equality-r f g z y refl = refl
 
 Left-fails-gives-right-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → P + Q → ¬ P → Q
 Left-fails-gives-right-holds (inl p) u = 𝟘-elim (u p)

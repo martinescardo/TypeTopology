@@ -74,7 +74,7 @@ dcpos to apply the theorem is to assume propositional resizing axioms
     PhD thesis at the University of Birmingham, UK, 2023.
     https://arxiv.org/abs/2301.12405
 
-[5] Vladimir Voevodky, Benedikt Ahrens, Dan Grayson and others.
+[5] Vladimir Voevodsky, Benedikt Ahrens, Dan Grayson and others.
     Unimath --- a computer-checked library of univalent mathematics.
     https://unimath.github.io/UniMath/
     https://doi.org/10.5281/zenodo.8427604

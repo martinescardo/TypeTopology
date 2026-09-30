@@ -33,10 +33,13 @@ Fin-global-minimal : (n : ℕ) → Fin n → {Y : 𝓤 ̇ }
                  → is-linear-preorder _≤_
                  → (f : Fin n → Y)
                  → has-global-minimal _≤_ f
+Fin-global-minimal 0 i       _≤_ l       f = 𝟘-elim i
+Fin-global-minimal 1 (suc i) _≤_ l       f = 𝟘-elim i
 Fin-global-minimal 1 𝟎 _≤_ (p , _) f = 𝟎 , γ
  where
   γ : is-global-minimal _≤_ f 𝟎
-  γ 𝟎 = ≤-refl⟨ p ⟩ (f 𝟎)
+  γ 𝟎       = ≤-refl⟨ p ⟩ (f 𝟎)
+  γ (suc i) = 𝟘-elim i
 Fin-global-minimal (succ (succ n)) x _≤_ l@(p , _) f
  with Fin-global-minimal (succ n) 𝟎 _≤_ l (f ∘ suc)
 ... | (x'₀ , m) = Cases (≤-linear⟨ l ⟩ (f (suc x'₀)) (f 𝟎)) γ₁ γ₂

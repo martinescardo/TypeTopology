@@ -18,6 +18,10 @@ data type : 𝓤₀ ̇ where
  ι   : type
  _⇒_ : type → type → type
 
+is-ι : type → 𝓤₀ ̇
+is-ι ι       = 𝟙
+is-ι (σ ⇒ τ) = 𝟘
+
 infixr 6 _⇒_
 
 \end{code}
@@ -35,6 +39,7 @@ X ^ (succ n) = X ^ n × X
 infixr 3 _^_
 
 _[_] : {X : Type} {n : ℕ} → X ^ n → Fin n → X
+_[_] {X} {0}      xs       i       = 𝟘-elim (Fin-0-is-empty i)
 _[_] {X} {succ n} (xs , x) 𝟎       = x
 _[_] {X} {succ n} (xs , x) (suc i) = xs [ i ]
 

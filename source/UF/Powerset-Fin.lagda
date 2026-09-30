@@ -62,7 +62,8 @@ module _
  ❴❵-is-Kuratowski-finite-subset {x} = ∣ 1 , e , σ ∣
   where
    e : Fin 1 → 𝕋 ❴ x ❵
-   e 𝟎 = x , refl
+   e 𝟎       = x , refl
+   e (suc i) = 𝟘-elim i
    σ : is-surjection e
    σ (x , refl) = ∣ inr ⋆ , refl ∣
 

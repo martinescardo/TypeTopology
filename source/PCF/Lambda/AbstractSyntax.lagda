@@ -78,13 +78,36 @@ data PCF : {n : ℕ} (Γ : Context n) (σ : type) → 𝓤₀ ̇ where
 
 infixl 1 _·_
 
+Fin-0-is-empty : ¬ Fin 0
+Fin-0-is-empty i = Fin-gives-is-nonzero i
+ where
+  is-nonzero : ℕ → 𝓤₀ ̇
+  is-nonzero 0        = 𝟘
+  is-nonzero (succ n) = 𝟙
+
+  Fin-gives-is-nonzero : {n : ℕ} → Fin n → is-nonzero n
+  Fin-gives-is-nonzero zero     = ⋆
+  Fin-gives-is-nonzero (succ i) = ⋆
+
+Context-is-non-empty : {n : ℕ} → Context n → 𝓤₀ ̇
+Context-is-non-empty ⟨⟩      = 𝟘
+Context-is-non-empty (Γ ’ σ) = 𝟙
+
+∋-gives-Context-is-non-empty : {n : ℕ} {Γ : Context n} {σ : type}
+                             → Γ ∋ σ
+                             → Context-is-non-empty Γ
+∋-gives-Context-is-non-empty Z     = ⋆
+∋-gives-Context-is-non-empty (S x) = ⋆
+
 lookup : {n : ℕ} → Context n → Fin n → type
+lookup ⟨⟩      i        = 𝟘-elim (Fin-0-is-empty i)
 lookup (Γ ’ x) zero     = x
 lookup (Γ ’ x) (succ n) = lookup Γ n
 
 count : {n : ℕ} {Γ : Context n} → (f : Fin n) → Γ ∋ lookup Γ f
-count {.(succ _)} {Γ ’ x} zero     = Z
-count {.(succ _)} {Γ ’ x} (succ f) = S (count f)
+count {0}      {⟨⟩}    i        = 𝟘-elim (Fin-0-is-empty i)
+count {succ n} {Γ ’ x} zero     = Z
+count {succ n} {Γ ’ x} (succ f) = S (count f)
 
 ext : ∀ {m n} {Γ : Context m} {Δ : Context n}
     → (∀ {A} → Γ ∋ A → Δ ∋ A)

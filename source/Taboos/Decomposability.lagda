@@ -234,15 +234,20 @@ type-of-ordinals-has-Ω-paths {𝓤} ua α β = f , γ⊥ , γ⊤
    where
     u : ⟨ f ⊥ ⟩ → ⟨ α ⟩
     u (inl (x , a)) = a
+    u (inr (e , b)) = 𝟘-elim e
 
     o : is-order-preserving (f ⊥) α u
     o (inl (x , a)) (inl (y , b)) (inl l) = l
+    o (inl (x , a)) (inl (y , b)) (inr m) = 𝟘-elim (pr₂ m)
+    o (inl (x , a)) (inr (e , b))  l      = 𝟘-elim e
+    o (inr (e , a))  y             l      = 𝟘-elim e
 
     v : ⟨ α ⟩ → ⟨ f ⊥ ⟩
     v a = inl (𝟘-elim , a)
 
     vu : v ∘ u ∼ id
     vu (inl (x , a)) = ap inl (to-×-＝ (dfunext fe' (λ z → 𝟘-elim z)) refl)
+    vu (inr (e , b)) = 𝟘-elim e
 
     uv : u ∘ v ∼ id
     uv a = refl
@@ -262,7 +267,9 @@ type-of-ordinals-has-Ω-paths {𝓤} ua α β = f , γ⊥ , γ⊤
 
     o : is-order-preserving (f ⊤) β u
     o (inl (f , _)) y l = 𝟘-elim (f ⋆)
+    o (inr (⋆ , _)) (inl y)       l       = 𝟘-elim l
     o (inr (⋆ , _)) (inr (⋆ , _)) (inl l) = l
+    o (inr (⋆ , _)) (inr (⋆ , _)) (inr m) = 𝟘-elim (pr₂ m)
 
     v : ⟨ β ⟩ → ⟨ f ⊤ ⟩
     v b = inr (⋆ , b)

@@ -37,6 +37,9 @@ having-three-distinct-points-covariant (f , f-is-emb) ((x , y , z) , u , v , w) 
 finite-type-with-three-distict-points : (k : ℕ)
                                       → k ≥ 3
                                       → has-three-distinct-points (Fin k)
+finite-type-with-three-distict-points 0               l = 𝟘-elim l
+finite-type-with-three-distict-points 1               l = 𝟘-elim l
+finite-type-with-three-distict-points 2               l = 𝟘-elim l
 finite-type-with-three-distict-points (succ (succ (succ k))) * =
  ((𝟎 , 𝟏 , 𝟐) , +disjoint' , (λ a → +disjoint' (inl-lc a)) , +disjoint)
 
@@ -85,6 +88,8 @@ Fin-to-Ω-embedding-is-equiv-iff-2-and-EM {𝓤} fe pe 1 (e , _) = I , II
     𝕗 = (e , e-is-equiv)
 
     I₀ : is-prop (Fin 1)
+    I₀ (inl x) y       = 𝟘-elim x
+    I₀ (inr _) (inl y) = 𝟘-elim y
     I₀ (inr _) (inr _) = ap inr refl
 
     I₁ = ⊥                 ＝⟨ (inverses-are-sections ⌜ 𝕗 ⌝ ⌜ 𝕗 ⌝-is-equiv ⊥)⁻¹ ⟩

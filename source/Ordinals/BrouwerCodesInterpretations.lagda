@@ -337,12 +337,15 @@ map₃₁ (L b) (i , x) = ℕ-to-ℕ∞ i , f
 
 map₃₁-is-order-preserving : (b : B)
                           → is-order-preserving [ ⟦ b ⟧₃ ] [ ⟦ b ⟧₁ ] (map₃₁ b)
+map₃₁-is-order-preserving Z     x       y       l = 𝟘-elim x
+map₃₁-is-order-preserving (S b) (inr x) (inl y) l = 𝟘-elim l
+map₃₁-is-order-preserving (S b) (inr x) (inr y) l = 𝟘-elim l
 map₃₁-is-order-preserving (S b) (inl x) (inl y) l =
  inr (refl , (map₃₁-is-order-preserving b x y l))
 map₃₁-is-order-preserving (S b) (inl x) (inr y) ⋆ = inl ⋆
 map₃₁-is-order-preserving (L b) (i , x) (j , y) (inl l) =
  inl (ℕ-to-ℕ∞-order-preserving i j l)
-map₃₁-is-order-preserving (L b) (i , x) (.i , y) (inr (refl , m)) =
+map₃₁-is-order-preserving (L b) (i , x) (j , y) (inr (refl , m)) =
  inr (refl , (i , refl) , γ)
  where
   IH : map₃₁ (b i) x ≺⟨ ⟦ b i ⟧₁ ⟩ map₃₁ (b i) y

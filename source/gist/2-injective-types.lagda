@@ -560,6 +560,7 @@ open notions-of-continuity 𝟚 𝟚-is-discrete
 
     γ-property₁ : (n k : ℕ) → k ≤ n → ₀ ≠ γ k n
     γ-property₁ n        0        l e = zero-is-not-one e
+    γ-property₁ 0        (succ k) l e = 𝟘-elim l
     γ-property₁ (succ n) (succ k) l e = γ-property₁ n k l e
 
     impossible : 𝟘

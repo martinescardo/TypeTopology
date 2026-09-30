@@ -20,7 +20,9 @@ open import MLTT.Athenian
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order
-open import Naturals.Properties using (succ-no-fp; zero-not-positive)
+open import Naturals.Properties
+             using (succ-no-fp; zero-not-positive;
+                    positive-not-zero; succ-lc)
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Subsingletons
@@ -54,7 +56,7 @@ A small lemma characterizing this relation.
 agreement→ : {X : 𝓤₀ ̇ } (α α′ : ℕ → X) (n : ℕ)
            → α ＝⦅ n ⦆ α′
            → (i : ℕ) → (i <ℕ n) → α i ＝ α′ i
-agreement→ α α′ zero     p         zero     ()
+agreement→ α α′ zero     p         i        q = 𝟘-elim q
 agreement→ α α′ (succ n) (p₁ , p₂) zero     q = p₁
 agreement→ α α′ (succ n) (p₁ , p₂) (succ i) q = IH i q
  where
@@ -195,6 +197,8 @@ this.
 \begin{code}
 
 member-implies-below-max : (s : List ℕ) (i : ℕ) → member i s → i ≤ℕ maximum s
+member-implies-below-max []       i p =
+ 𝟘-elim (empty-list-has-no-members i p)
 member-implies-below-max (m ∷ ns) m in-head     = max-≤-upper-bound m (maximum ns)
 member-implies-below-max (n ∷ ns) m (in-tail p) =
  ≤-trans m _ _ IH (max-≤-upper-bound' (maximum ns) n)
@@ -250,6 +254,7 @@ range-succ (succ i) (succ n) (in-tail p)  = in-tail (range-succ (succ i) n p)
 range-is-complete : (i n : ℕ) → i ≤ℕ n → member i (range n)
 range-is-complete zero     zero     p = in-head
 range-is-complete zero     (succ n) p = in-tail (range-is-complete zero n p)
+range-is-complete (succ i) zero     p = 𝟘-elim p
 range-is-complete (succ i) (succ n) p = range-succ i n (range-is-complete i n p)
 
 \end{code}
@@ -396,8 +401,10 @@ to-cantor (α , p) = λ n → to-bool (α n) (p n)
 
 embedding-𝟚-ℕ-0-implies-is-₀ : (b : 𝟚) → embedding-𝟚-ℕ b ＝ 0 → b ＝ ₀
 embedding-𝟚-ℕ-0-implies-is-₀ ₀ p = refl
+embedding-𝟚-ℕ-0-implies-is-₀ ₁ p = 𝟘-elim (positive-not-zero 0 p)
 
 embedding-𝟚-ℕ-1-implies-is-₁ : (b : 𝟚) → embedding-𝟚-ℕ b ＝ 1 → b ＝ ₁
+embedding-𝟚-ℕ-1-implies-is-₁ ₀ p = 𝟘-elim (zero-not-positive 0 p)
 embedding-𝟚-ℕ-1-implies-is-₁ ₁ p = refl
 
 embedding-𝟚-ℕ-is-embedding : is-embedding embedding-𝟚-ℕ
@@ -730,10 +737,28 @@ to-bool-congruence : (m n : ℕ)
                    → to-bool m 𝒷₁ ＝ to-bool n 𝒷₂
 to-bool-congruence zero            zero            (inl refl) (inl refl) _ = refl
 to-bool-congruence (succ zero)     (succ zero)     (inr refl) (inr refl) _ = refl
-to-bool-congruence (succ (succ _)) (succ (succ _)) (inl ())   (inl _)    _
-to-bool-congruence (succ (succ _)) (succ (succ _)) (inl ())   (inr _)    _
-to-bool-congruence (succ (succ _)) (succ (succ _)) (inr ())   (inl _)    _
-to-bool-congruence (succ (succ _)) (succ (succ _)) (inr ())   (inr _)    _
+to-bool-congruence zero            zero            (inl refl) (inr e)    _ =
+ 𝟘-elim (zero-not-positive 0 e)
+to-bool-congruence zero            zero            (inr e)    𝒷₂         _ =
+ 𝟘-elim (zero-not-positive 0 e)
+to-bool-congruence zero            (succ n)        𝒷₁         𝒷₂         e =
+ 𝟘-elim (zero-not-positive n e)
+to-bool-congruence (succ zero)     zero            𝒷₁         𝒷₂         e =
+ 𝟘-elim (positive-not-zero 0 e)
+to-bool-congruence (succ zero)     (succ zero)     (inl e)    𝒷₂         _ =
+ 𝟘-elim (positive-not-zero 0 e)
+to-bool-congruence (succ zero)     (succ zero)     (inr refl) (inl e)    _ =
+ 𝟘-elim (positive-not-zero 0 e)
+to-bool-congruence (succ zero)     (succ (succ n)) 𝒷₁         𝒷₂         e =
+ 𝟘-elim (zero-not-positive n (succ-lc e))
+to-bool-congruence (succ (succ m)) zero            𝒷₁         𝒷₂         e =
+ 𝟘-elim (positive-not-zero (succ m) e)
+to-bool-congruence (succ (succ m)) (succ zero)     𝒷₁         𝒷₂         e =
+ 𝟘-elim (positive-not-zero m (succ-lc e))
+to-bool-congruence (succ (succ m)) (succ (succ n)) (inl e)    𝒷₂         _ =
+ 𝟘-elim (positive-not-zero (succ m) e)
+to-bool-congruence (succ (succ m)) (succ (succ n)) (inr e)    𝒷₂         _ =
+ 𝟘-elim (positive-not-zero m (succ-lc e))
 
 \end{code}
 

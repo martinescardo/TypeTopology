@@ -113,6 +113,7 @@ module discrete-trichotomous-taboo-construction
  ≺-is-prop-valued i ₁ ₁ = 𝟘-is-prop
 
  ≺-is-transitive : transitive _≺_
+ ≺-is-transitive ₀ ₀ z u v = 𝟘-elim u
  ≺-is-transitive ₀ ₁ ₀ u v = v
  ≺-is-transitive ₀ ₁ ₁ u v = u
  ≺-is-transitive ₁ ₀ z u v = 𝟘-elim u
@@ -128,6 +129,7 @@ module discrete-trichotomous-taboo-construction
   where
    γ : (y : 𝟚) → y ≺ ₁ → is-accessible _≺_ y
    γ ₀ l = acc ≺-well-founded-lemma
+   γ ₁ l = 𝟘-elim l
 
  ≺-is-extensional : ¬¬ P → is-extensional _≺_
  ≺-is-extensional h ₀ ₀ u v = refl
@@ -281,6 +283,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
 
   fact-I : ⟨ α ₀ ↓ inr ⋆ ⟩ → P
   fact-I (inl p , _) = p
+  fact-I (inr ⋆ , l) = 𝟘-elim l
 
   NB₁ : ⟨ α ₀ ↓ inr ⋆ ⟩ ≃ P
   NB₁ = qinveq f (g , η , ε)
@@ -291,6 +294,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
     g p = (inl p , ⋆)
     η : g ∘ f ∼ id
     η (inl p , _) = to-subtype-＝ (λ x → Prop-valuedness P' x ₁) refl
+    η (inr ⋆ , l) = 𝟘-elim l
     ε : f ∘ g ∼ id
     ε p = P-is-prop (f (g p)) p
 
@@ -301,6 +305,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
     x = (inl ⋆ , ⋆)
     c : is-central (⟨ α ₁ ↓ inr ⋆ ⟩) (₀ , ⋆)
     c (inl ⋆ , ⋆) = refl
+    c (inr ⋆ , l) = 𝟘-elim l
 
   fact-II : P → (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆)
   fact-II p = f , (f-order-pres , f-is-equiv , g-order-pres)
@@ -311,16 +316,22 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
     g _ = inl p , ⋆
     f-order-pres : is-order-preserving (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆) f
     f-order-pres (inl p , _) (inl q , _) l = 𝟘-elim l
+    f-order-pres (inl p , _) (inr ⋆ , m) l = 𝟘-elim m
+    f-order-pres (inr ⋆ , m)  y          l = 𝟘-elim m
     g-order-pres : is-order-preserving (α ₁ ↓ inr ⋆) (α ₀ ↓ inr ⋆) g
     g-order-pres (inl ⋆ , _) (inl ⋆ , _) l = 𝟘-elim l
+    g-order-pres (inl ⋆ , _) (inr ⋆ , m) l = 𝟘-elim m
+    g-order-pres (inr ⋆ , m)  y          l = 𝟘-elim m
     f-is-equiv : is-equiv f
     f-is-equiv = qinvs-are-equivs f (g , η , ε)
      where
       ε : f ∘ g ∼ id
       ε (inl ⋆ , _) = refl
+      ε (inr ⋆ , l) = 𝟘-elim l
       η : g ∘ f ∼ id
       η (inl q , _) = to-subtype-＝ (λ x → Prop-valuedness P' x ₁)
                                    (ap inl (P-is-prop p q))
+      η (inr ⋆ , l) = 𝟘-elim l
 
   fact-III : (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆) → P
   fact-III e = fact-I (≃ₒ-to-fun⁻¹ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆) e (inl ⋆ , ⋆))

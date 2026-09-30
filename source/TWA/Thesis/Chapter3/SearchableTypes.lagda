@@ -62,6 +62,7 @@ searchable-pointed 𝓦 X Sx = pr₁ (Sx ((λ _ → ⊤) , (λ _ → inl ⋆)))
   γx : (Σ x ꞉ X , (pr₁ px x holds)) → pr₁ px x₀ holds
   γx = pr₂ (Sx px)
   γ : (Σ x ꞉ 𝟘 + X , (p x holds)) → pr₁ px x₀ holds
+  γ (inl x , pix) = 𝟘-elim x
   γ (inr x , pix) = γx (x , pix)
 
 +-searchable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -92,6 +93,7 @@ searchable-pointed 𝓦 X Sx = pr₁ (Sx ((λ _ → ⊤) , (λ _ → inl ⋆)))
   γ ¬px₀ (inr y , piy) = γy (y , piy)
 
 Fin-searchable : (n : ℕ) → Fin n → searchable 𝓦 (Fin n)
+Fin-searchable 0 i = 𝟘-elim i
 Fin-searchable 1 _ = 𝟘+-searchable 𝟙-searchable
 Fin-searchable (succ (succ n)) _
  = +-searchable (Fin-searchable (succ n) 𝟎) 𝟙-searchable

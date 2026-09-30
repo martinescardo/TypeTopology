@@ -286,6 +286,7 @@ module Positive-Posets (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
       where
        y-is-ub : (y is-an-upper-bound-of (δ-fam x y ⊥)) holds
        y-is-ub (inl ⋆) = order-from-strictly-below x-strictly-below-y
+       y-is-ub (inr e) = 𝟘-elim e
 
        y-has-lub-cond : ((u , _) : upper-bound (δ-fam x y ⊥)) → (y ≤ u) holds
        y-has-lub-cond (u , is-upbnd) = y ＝⟨ p ⁻¹ ⟩ₚ is-upbnd (inl ⋆)
@@ -693,6 +694,7 @@ module Ω-δ-complete-positive-Poset (𝓥 : Universe) where
      Q-has-lub-cond (P , P-is-upbnd) (o ⋆)
     where
      P-is-upbnd : (P is-an-upper-bound-of (δ-fam ⊥ Q P)) holds
+     P-is-upbnd (inl ⋆) e = 𝟘-elim e
      P-is-upbnd (inr p) e = p
 
 module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
