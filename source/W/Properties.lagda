@@ -118,8 +118,8 @@ an instance.
 \begin{code}
 
 W-Code : 𝕎 → 𝕎 → 𝓤 ⊔ 𝓥 ̇
-W-Code w t = Σ p ꞉ W-root w ＝ W-root t ,
-                   (W-forest w ＝ W-forest t ∘ transport A p)
+W-Code w t = Σ p ꞉ W-root w ＝ W-root t
+                 , (W-forest w ＝ W-forest t ∘ transport A p)
 
 W-code : (w t : 𝕎) → w ＝ t → W-Code w t
 W-code w _ refl = refl , refl
