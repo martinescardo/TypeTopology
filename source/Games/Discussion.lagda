@@ -1,4 +1,4 @@
-sSetMartin Escardo, Paulo Oliva, 7-22 June 2023
+Martin Escardo, Paulo Oliva, 7-22 June 2023
 
 We relate our game trees to Aczel's W type of CZF sets in various ways.
 
@@ -764,7 +764,7 @@ To illustrate the richness of 𝔸 and 𝕋, we now show how to embed the
 type of all ordinals into 𝔸, and then some kinds of ordinals in 𝔾, following
 
    Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie
-   Xu. *Set-Theoretic and ? ̇ -Theoretic Ordinals Coincide.*
+   Xu. *Set-Theoretic and Type-Theoretic Ordinals Coincide.*
    To appear at LICS 2023, June 2023.
 
    https://arxiv.org/abs/2301.10696
