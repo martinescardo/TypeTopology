@@ -27,7 +27,7 @@ binary products, and function spaces.
 infixr 10 _⊠_
 infixr 10 _⇨_
 
-data Ty : Set where
+data Ty : Type where
  ② : Ty
  Ⓝ : Ty
  _⊠_ : Ty → Ty → Ty
@@ -48,7 +48,7 @@ steps to the left in the context.
 
 infixl 10 _₊_
 
-data Cxt : Set where
+data Cxt : Type where
  ε : Cxt
  _₊_ : Cxt → Ty → Cxt
 
@@ -60,8 +60,16 @@ data Fin : ℕ → Set where
  zero : {n : ℕ} → Fin (succ n)
  succ : {n : ℕ} → Fin n → Fin (succ n)
 
+is-nonzero : ℕ → Set
+is-nonzero 0        = 𝟘
+is-nonzero (succ n) = 𝟙
+
+Fin-gives-is-nonzero : {n : ℕ} → Fin n → is-nonzero n
+Fin-gives-is-nonzero zero     = ⋆
+Fin-gives-is-nonzero (succ i) = ⋆
+
 _[_] : (Γ : Cxt) → Fin (length Γ) → Ty
-ε        [ () ]
+ε        [ i ] = 𝟘-elim (Fin-gives-is-nonzero i)
 (xs ₊ x) [ zero ]   = x
 (xs ₊ x) [ succ i ] = xs [ i ]
 

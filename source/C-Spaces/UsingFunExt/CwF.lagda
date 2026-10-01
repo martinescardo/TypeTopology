@@ -32,7 +32,7 @@ Contexts are C-spaces, and substitutions are continuous maps.
 
 \begin{code}
 
-Con : Set₁
+Con : Type₁
 Con = Space
 
 Sub : Con → Con → Set

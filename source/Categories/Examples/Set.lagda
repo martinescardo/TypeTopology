@@ -115,7 +115,7 @@ we can also prove this using SIP.
        g-is-section (h , lh , rh) = to-Σ-＝ (refl
                                    , (to-×-＝ (dfunext fe (λ x → sX _ _ _ _))
                                               (dfunext fe (λ y → sY _ _ _ _))))
-                                             
+
        g-has-section : g ∘ g⁻¹ ∼ id
        g-has-section (h , lh , rh) = to-Σ-＝ (refl
                                   , (to-×-＝ (Π-is-set fe (λ x → sX _ _) _ _)
@@ -154,4 +154,3 @@ We can finally prove that Set forms a category.
                            (pointwise-equal a b)
 
 \end{code}
-

@@ -11,6 +11,7 @@ open import Integers.Order
 open import Integers.Type
 open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
+open import Naturals.Properties
 
 open import TWA.Thesis.Chapter5.Integers
 
@@ -204,7 +205,7 @@ below-implies-below' a b
    k＝2 : k ＝ 2
    k＝2 = pos-lc (ℤ+-lc (pos k) (pos 2) (downLeft b) (η ∙ ζ ⁻¹))
    k≠2 : k ≠ 2
-   k≠2 = λ ()
+   k≠2 p = positive-not-zero ((n ℕ+ m) ℕ+ 3) (succ-lc (succ-lc p))
 \end{code}
 
 ## upLeft and upRight

@@ -68,15 +68,21 @@ alternative-plusₒ τ₀ τ₁ = e
   f-is-equiv = qinvs-are-equivs f (g , η , ε)
   f-is-op : is-order-preserving [ ∑ 𝟚ᵒ υ ] ([ τ₀ ] +ₒ [ τ₁ ]) f
 
+  f-is-op (inl ⋆ , _) (inl ⋆ , _) (inl l)          = 𝟘-elim l
   f-is-op (inl ⋆ , _) (inl ⋆ , _) (inr (refl , l)) = l
   f-is-op (inl ⋆ , _) (inr ⋆ , _) (inl ⋆)          = ⋆
+  f-is-op (inl ⋆ , _) (inr ⋆ , _) (inr l)          =
+   𝟘-elim (+disjoint (pr₁ l))
   f-is-op (inr ⋆ , _) (inl ⋆ , _) (inl l)          = l
+  f-is-op (inr ⋆ , _) (inl ⋆ , _) (inr l)          =
+   𝟘-elim (+disjoint' (pr₁ l))
+  f-is-op (inr ⋆ , _) (inr ⋆ , _) (inl l)          = 𝟘-elim l
   f-is-op (inr ⋆ , _) (inr ⋆ , _) (inr (refl , l)) = l
 
   g-is-op : is-order-preserving ([ τ₀ ] +ₒ [ τ₁ ]) [ ∑ 𝟚ᵒ υ ] g
   g-is-op (inl _) (inl _) l = inr (refl , l)
   g-is-op (inl _) (inr _) ⋆ = inl ⋆
-  g-is-op (inr _) (inl _) ()
+  g-is-op (inr _) (inl _) l = 𝟘-elim l
   g-is-op (inr _) (inr _) l = inr (refl , l)
 
   e : [ ∑ 𝟚ᵒ υ ] ≃ₒ ([ τ₀ ] +ₒ [ τ₁ ])
@@ -140,7 +146,11 @@ the family over ω.
   f-is-op (inl n , _) (inl m , _) (inl l)          = inl l
   f-is-op (inl n , _) (inl m , _) (inr (refl , l)) = inr (refl , l)
   f-is-op (inl n , _) (inr ⋆ , _) (inl ⋆)          = ⋆
+  f-is-op (inl n , _) (inr ⋆ , _) (inr l)          =
+   𝟘-elim (+disjoint (pr₁ l))
   f-is-op (inr ⋆ , _) (inl m , _) (inl l)          = 𝟘-elim l
+  f-is-op (inr ⋆ , _) (inl m , _) (inr l)          =
+   𝟘-elim (+disjoint' (pr₁ l))
   f-is-op (inr ⋆ , _) (inr ⋆ , _) (inl l)          = 𝟘-elim l
   f-is-op (inr ⋆ , _) (inr ⋆ , _) (inr (refl , l)) = 𝟘-elim l
 
@@ -148,6 +158,7 @@ the family over ω.
   g-is-op (inl (n , _)) (inl (m , _)) (inl l)          = inl l
   g-is-op (inl (n , _)) (inl (m , _)) (inr (refl , l)) = inr (refl , l)
   g-is-op (inl (n , _)) (inr ⋆)       ⋆                = inl ⋆
+  g-is-op (inr ⋆)       (inl (m , _)) l                = 𝟘-elim l
   g-is-op (inr ⋆)       (inr ⋆)       l                = 𝟘-elim l
 
   III : [ ∑ (succₒ ω) (cases τ (λ _ → 𝟙ᵒ)) ] ≃ₒ (∑ₒ ω τ +ₒ 𝟙ₒ)

@@ -20,7 +20,7 @@ Infinite sequences are defined as functions:
 
 \begin{code}
 
-₂ℕ : Set
+₂ℕ : Type
 ₂ℕ = ℕ → 𝟚
 
 0̄ : ₂ℕ
@@ -75,7 +75,7 @@ Lemma[drop+] : ∀(n : ℕ) → ∀(α : ₂ℕ) → ∀(i : ℕ) → drop n α 
 Lemma[drop+] 0        α i = refl
 Lemma[drop+] (succ n) α i = Lemma[drop+] n (α ∘ succ) i
 
-isomorphism-₂Fin : ∀(X : Set) → ∀(n : ℕ) → (f : ₂Fin (succ n) → X) →
+isomorphism-₂Fin : ∀(X : Type) → ∀(n : ℕ) → (f : ₂Fin (succ n) → X) →
                     Σ \(g : 𝟚 → ₂Fin n → X) →
                      ∀(s : ₂Fin (succ n)) → f s ＝ g (head s) (tail s)
 isomorphism-₂Fin X n f = g , prf
@@ -132,7 +132,7 @@ relation and a deciable type:
 
 infixl 10 _＝⟦_⟧_
 
-data _＝⟦_⟧_ {X : Set} : (ℕ → X) → ℕ → (ℕ → X) → Set where
+data _＝⟦_⟧_ {X : Type} : (ℕ → X) → ℕ → (ℕ → X) → Set where
  ＝⟦zero⟧ : {α β : ℕ → X} → α ＝⟦ 0 ⟧ β
  ＝⟦succ⟧ : {α β : ℕ → X}{n : ℕ} → α ＝⟦ n ⟧ β → α n ＝ β n → α ＝⟦ succ n ⟧ β
 
@@ -196,7 +196,8 @@ Lemma[<-＝⟦⟧] {(succ n)} {α} {β} f = ＝⟦succ⟧ IH claim
   claim = f n ≤-refl
 
 Lemma[＝⟦⟧-<] : ∀{n : ℕ}{α β : ₂ℕ} → α ＝⟦ n ⟧ β → ∀(i : ℕ) → i < n → α i ＝ β i
-Lemma[＝⟦⟧-<] {0}      _ i        ()
+Lemma[＝⟦⟧-<] {0}      _ i        r =
+ 𝟘-elim (successors-are-not-below-zero i r)
 Lemma[＝⟦⟧-<] {succ n} e 0        r          = Lemma[＝⟦⟧-zero] e
 Lemma[＝⟦⟧-<] {succ n} e (succ i) (≤-succ r) = Lemma[＝⟦⟧-<] (Lemma[＝⟦⟧-succ] e) i r
 
@@ -243,7 +244,7 @@ Concatenation map:
 \begin{code}
 
 cons : {m : ℕ} → ₂Fin m → ₂ℕ → ₂ℕ
-cons ⟨⟩      α          = α 
+cons ⟨⟩      α          = α
 cons (h ∷ _) α 0        = h
 cons (_ ∷ t) α (succ i) = cons t α i
 
@@ -265,7 +266,8 @@ Lemma[cons-∼] (h ∷ _) α β eq 0        = refl
 Lemma[cons-∼] (_ ∷ t) α β eq (succ i) = Lemma[cons-∼] t α β eq i
 
 lemma-blah : {n : ℕ}(s : ₂Fin n)(α β : ₂ℕ)(i : ℕ) → i < n → cons s α i ＝ cons s β i
-lemma-blah ⟨⟩      α β i        ()
+lemma-blah ⟨⟩      α β i        r =
+ 𝟘-elim (successors-are-not-below-zero i r)
 lemma-blah (b ∷ s) α β 0        r          = refl
 lemma-blah (b ∷ s) α β (succ i) (≤-succ r) = lemma-blah s α β i r
 
@@ -276,7 +278,8 @@ Lemma[cons-take-＝⟦⟧] : ∀(n : ℕ) → ∀(α β : ₂ℕ) → α ＝⟦ 
 Lemma[cons-take-＝⟦⟧] n α β = Lemma[<-＝⟦⟧] (lemma n α β)
  where
   lemma : ∀(n : ℕ) → ∀(α β : ₂ℕ) → ∀(i : ℕ) → i < n → α i ＝ cons (take n α) β i
-  lemma 0        α β i        ()
+  lemma 0        α β i        r =
+   𝟘-elim (successors-are-not-below-zero i r)
   lemma (succ n) α β 0        r          = refl
   lemma (succ n) α β (succ i) (≤-succ r) = lemma n (α ∘ succ) β i r
 
@@ -288,7 +291,7 @@ Lemma[cons-ftake-fdrop] n (succ k) (_ ∷ s) α (succ i) = Lemma[cons-ftake-fdro
 
 Lemma[cons-ftake-fdrop]² : ∀(n m l k : ℕ) → (eq : k ＝ m + l) →
                             ∀(s : ₂Fin (k + n)) → ∀(α : ₂ℕ) →
-    cons (ftake k n s) 
+    cons (ftake k n s)
          (cons (ftake m l (transport ₂Fin eq (fdrop k n s)))
                (cons (fdrop m l ((transport ₂Fin eq (fdrop k n s)))) α))
   ∼ cons s α
@@ -302,7 +305,7 @@ Lemma[cons-ftake-fdrop]² n m l k eq s α = goal
   Q i t = cons (ftake k n s) (cons t α) ∼ cons s α
   claim₀ : cons (ftake k n s) (cons ss α) ∼ cons s α
   claim₀ = Lemma[cons-ftake-fdrop] k n s α
-  transport² : {X : Set} (Y : X → Set) (Z : (x : X) → Y x → Set)
+  transport² : {X : Type} (Y : X → Set) (Z : (x : X) → Y x → Set)
              → {x x' : X} {y : Y x}
              → (p : x ＝ x') → Z x y → Z x' (transport Y p y)
   transport² Y Z refl z = z
@@ -330,12 +333,14 @@ Lemma[＝⟦⟧-cons-take] : {α β : ₂ℕ} → ∀(n : ℕ) → α ＝⟦ n �
 Lemma[＝⟦⟧-cons-take] {α} {β} n = lemma₁ n n ≤-refl
  where
   lemma₀ : ∀(α β : ₂ℕ)(m k : ℕ) → succ m ≤ k → α m ＝ cons (take k α) β m
-  lemma₀ α β m        0        ()
+  lemma₀ α β m        0        r =
+   𝟘-elim (successors-are-not-below-zero m r)
   lemma₀ α β 0        (succ k) r          = refl
   lemma₀ α β (succ m) (succ k) (≤-succ r) = lemma₀ (α ∘ succ) β m k r
   lemma₁ : ∀(m k : ℕ) → m ≤ k → α ＝⟦ m ⟧ cons (take k α) β
   lemma₁ 0        k        ≤-zero     = ＝⟦zero⟧
-  lemma₁ (succ m) 0        ()
+  lemma₁ (succ m) 0        r =
+   𝟘-elim (successors-are-not-below-zero m r)
   lemma₁ (succ m) (succ k) (≤-succ r) = ＝⟦succ⟧ (lemma₁ m (succ k) (≤-r-succ r))
                                                 (lemma₀ α β m (succ k) (≤-succ r))
 
@@ -388,7 +393,7 @@ Lemma[₂Fin-decidability] 0 Y decY = cases (inl ∘ c₀) (inr ∘ c₁) (decY 
   c₀ : Y ⟨⟩ → ∀ s → Y s
   c₀ y ⟨⟩ = y
   c₁ : ¬ (Y ⟨⟩) → ¬ (∀ s → Y s)
-  c₁ f g = f (g ⟨⟩) 
+  c₁ f g = f (g ⟨⟩)
 Lemma[₂Fin-decidability] (succ n) Y decY = cases c₀ c₁ IH₀
  where
   Y₀ : ₂Fin n → Set

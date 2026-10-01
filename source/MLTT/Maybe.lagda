@@ -13,7 +13,11 @@ data Maybe {𝓤 : Universe} (A : 𝓤 ̇ ) : 𝓤 ̇ where
 {-# BUILTIN MAYBE Maybe #-}
 
 Just-is-not-Nothing : {A : 𝓤 ̇ } {a : A} → Just a ≠ Nothing
-Just-is-not-Nothing ()
+Just-is-not-Nothing {𝓤} {A} p = transport f p ⋆
+ where
+  f : Maybe A → 𝓤₀ ̇
+  f Nothing  = 𝟘
+  f (Just _) = 𝟙
 
 Nothing-is-isolated : {A : 𝓤 ̇ } (x : Maybe A) → is-decidable (Nothing ＝ x)
 Nothing-is-isolated Nothing  = inl refl

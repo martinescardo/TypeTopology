@@ -1,6 +1,6 @@
 Martin Escardo, January 2020.
 
-The Cantor-Schröder-Berntein Theorem, under the assumption of excluded
+The Cantor-Schröder-Bernstein Theorem, under the assumption of excluded
 middle, generalized from sets to (homotopy) types.
 
 The result holds in any boolean ∞-topos. It says that if there is an

@@ -275,6 +275,7 @@ pred^si-sn-is-pred^i-n (succ i) n
 
 pred^i≥n-is-0 : (i n : ℕ) → n ≤ i → (pred ^ i) n ＝ 0
 pred^i≥n-is-0 i zero n≤i = pred^i-0-is-0 i
+pred^i≥n-is-0 zero (succ n) n≤i = 𝟘-elim n≤i
 pred^i≥n-is-0 (succ i) (succ n) n≤i
  = pred^si-sn-is-pred^i-n i n
  ∙ pred^i≥n-is-0 i n n≤i
@@ -282,6 +283,7 @@ pred^i≥n-is-0 (succ i) (succ n) n≤i
 pred^i-sn-is-s-pred^i-n
  : (i n : ℕ) → i ≤ n → (pred ^ i) (succ n) ＝ succ ((pred ^ i) n)
 pred^i-sn-is-s-pred^i-n zero n i<n = refl
+pred^i-sn-is-s-pred^i-n (succ i) zero i<n = 𝟘-elim i<n
 pred^i-sn-is-s-pred^i-n (succ i) (succ n) i<n
  = pred^si-sn-is-pred^i-n i (succ n)
  ∙ pred^i-sn-is-s-pred^i-n i n i<n
@@ -307,9 +309,12 @@ predⁱ-≤ (succ i) n
 pred-mono : (n m : ℕ) → n ≤ m → pred n ≤ pred m
 pred-mono zero zero n≤m = ⋆
 pred-mono zero (succ m) n≤m = ⋆
+pred-mono (succ n) zero n≤m = 𝟘-elim n≤m
 pred-mono (succ n) (succ m) n≤m = n≤m
 
 nid : (n i d : ℕ) → n < i → (pred ^ i) d ≤ (pred ^ n) d
+nid zero zero d n<i = 𝟘-elim n<i
+nid (succ n) zero d n<i = 𝟘-elim n<i
 nid zero (succ i) d n<i = predⁱ-≤ (succ i) d
 nid (succ n) (succ i) d n<i
  = pred-mono ((pred ^ i) d) ((pred ^ n) d) (nid n i d n<i)
@@ -321,7 +326,7 @@ nid (succ n) (succ i) d n<i
           → (i : ℕ)
           → (α i ∼ⁿ β i) ((pred ^ i) n)
 ΠC-to-∼ⁿ' d α β zero Cαβ i
- = transport (α i ∼ⁿ β i) (pred^i-0-is-0 i ⁻¹) (λ _ ())
+ = transport (α i ∼ⁿ β i) (pred^i-0-is-0 i ⁻¹) (λ _ → 𝟘-elim)
 ΠC-to-∼ⁿ' d α β (succ n) Cαβ zero = C-to-∼ⁿ' d (α 0) (β 0) (succ n) γ
  where
   γ : C (ΠD-ClosenessSpace d) (succ n) (α 0) (β 0)
@@ -341,6 +346,7 @@ nid (succ n) (succ i) d n<i
           → C (Π-ClosenessSpace (λ _ → ΠD-ClosenessSpace d)) n α β
 ∼ⁿ-to-ΠC' d α β n f 0 i⊏sn
  = ∼ⁿ-to-C' d (α 0) (β 0) n (f 0) 0 i⊏sn
+∼ⁿ-to-ΠC' d α β zero f (succ i) i⊏sn = zero-is-one-elim i⊏sn
 ∼ⁿ-to-ΠC' d α β (succ n) f (succ i) i⊏sn
  = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
     (∼ⁿ-to-C' d (α 0) (β 0) (succ n) (f 0) (succ i) i⊏sn)
@@ -356,6 +362,7 @@ nid (succ n) (succ i) d n<i
          → (α β : (ℕ → Π X)) (n : ℕ)
          → C (Π-ClosenessSpace (λ _ → ΠD-ClosenessSpace d)) (double n) α β
          → (i : ℕ) → i < n → (α i ∼ⁿ β i) n
+ΠC-to-∼ⁿ d α β zero Cαβ i i<n j j<n = 𝟘-elim i<n
 ΠC-to-∼ⁿ d α β n@(succ _) Cαβ i i<n j j<n
  = ΠC-to-∼ⁿ' d α β (double n) Cαβ i j
      (<-≤-trans j n ((pred ^ i) (double n)) j<n
@@ -368,6 +375,7 @@ nid (succ n) (succ i) d n<i
          → (α β : (ℕ → Π X)) (n : ℕ)
          → ((i : ℕ) → i < n → (α i ∼ⁿ β i) n)
          → C (Π-ClosenessSpace (λ _ → ΠD-ClosenessSpace d)) n α β
+∼ⁿ-to-ΠC d α β zero α∼β i i⊏n = zero-is-one-elim i⊏n
 ∼ⁿ-to-ΠC d α β n@(succ _) α∼β
  = ∼ⁿ-to-ΠC' d α β n (λ i → Cases (order-split i n) (γ< i) (γ≥ i))
  where
@@ -375,7 +383,7 @@ nid (succ n) (succ i) d n<i
   γ< i i<n j j<2n-i
    = α∼β i i<n j (<-≤-trans j ((pred ^ i) n) n j<2n-i (predⁱ-≤ i n))
   γ≥ : (i : ℕ) → n ≤ i → (α i ∼ⁿ β i) ((pred ^ i) n)
-  γ≥ i n≤i = transport (α i ∼ⁿ β i) (pred^i≥n-is-0 i n n≤i ⁻¹) (λ _ ())
+  γ≥ i n≤i = transport (α i ∼ⁿ β i) (pred^i≥n-is-0 i n n≤i ⁻¹) (λ _ → 𝟘-elim)
 
 seq-f-ucontinuousᴺ-to-closeness
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }

@@ -247,7 +247,7 @@ To validate UC is equivalent to inhabit the space dom⟦uc⟧.
 
 \begin{code}
 
-UC-is-validated : Set
+UC-is-validated : Type
 UC-is-validated = U dom⟦uc⟧
 
 Theorem : UC-is-validated

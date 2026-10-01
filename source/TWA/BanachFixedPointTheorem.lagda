@@ -165,6 +165,7 @@ BanachFixedPointTheorem : (C : ClosenessSpace {𝓤})
                         → CUT-Complete C
                         → ((T , _) : CUT-ContractionMapping C)
                         → has-fixed-point T
+BanachFixedPointTheorem (X , c , p) x₀ complete (T , 0 , l , r) = 𝟘-elim l
 BanachFixedPointTheorem (X , c , p) x₀ complete (T , succ k , _ , r)
  = limits-yield-fixed-points T x₀ limit
  where
@@ -174,6 +175,8 @@ BanachFixedPointTheorem (X , c , p) x₀ complete (T , succ k , _ , r)
   limit = complete (s , λ ε → ε , γ ε)
    where
     γ : Π ε ꞉ ℕ , ((m n : ℕ) → (ε < m) × (ε < n) → ι ε ≺ c (s m) (s n))
+    γ ε 0        n        (ε<sm , ε<sn) = 𝟘-elim ε<sm
+    γ ε (succ m) 0        (ε<sm , ε<sn) = 𝟘-elim ε<sn
     γ ε (succ m) (succ n) (ε<sm , ε<sn)
       = ≺≼-gives-≺ (ι ε) ((Succ ^ succ k) (c (s m) (s n))) (c (T (s m)) (T (s n)))
                    (q k ε (ε<sm , ε<sn)) (r (s m) (s n))

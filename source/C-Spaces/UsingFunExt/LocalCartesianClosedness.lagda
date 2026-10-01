@@ -24,7 +24,7 @@ Subspace
 Subspace : (X : Space) → (U X → Set) → Space
 Subspace X Prp = A , R , rc₀ , rc₁ , rc₂
  where
-  A : Set
+  A : Type
   A = Σ \(x : U X) → Prp x
   R : (₂ℕ → A) → Set
   R r = pr₁ ∘ r ∈ Probe X
@@ -50,11 +50,11 @@ X ×[ Z ] Y ⟨ f , g ⟩ = Subspace (X ⊗ Y) Prp
   Prp : U (X ⊗ Y) → Set
   Prp (x , y) = pr₁ f x ＝ pr₁ g y
 
-⟪_×[_]_⟨_,_⟩⟫-pr₁ : (X Z Y : Space) → (f : Map X Z) → (g : Map Y Z) → 
+⟪_×[_]_⟨_,_⟩⟫-pr₁ : (X Z Y : Space) → (f : Map X Z) → (g : Map Y Z) →
                    Map (X ×[ Z ] Y ⟨ f , g ⟩) X
 ⟪ X ×[ Z ] Y ⟨ f , g ⟩⟫-pr₁ = (pr₁ ∘ pr₁) , λ r rR → pr₁ rR
 
-⟪_×[_]_⟨_,_⟩⟫-pr₂ : (X Z Y : Space) → (f : Map X Z) → (g : Map Y Z) → 
+⟪_×[_]_⟨_,_⟩⟫-pr₂ : (X Z Y : Space) → (f : Map X Z) → (g : Map Y Z) →
                    Map (X ×[ Z ] Y ⟨ f , g ⟩) Y
 ⟪ X ×[ Z ] Y ⟨ f , g ⟩⟫-pr₂ = (pr₂ ∘ pr₁) , λ r rR → pr₂ rR
 
@@ -110,7 +110,7 @@ dom⟪ X , Z , Y ⟫ g ^ f = A , R , rc₀ , rc₁ , rc₂
   f⁻¹ z = ⟪ X , Z ⟫ f ⁻¹₍ z ₎
   g⁻¹ : U Z → Space
   g⁻¹ z = ⟪ Y , Z ⟫ g ⁻¹₍ z ₎
-  A : Set
+  A : Type
   A = Σ \(z : U Z) → Map (f⁻¹ z) (g⁻¹  z)
   R : (₂ℕ → A) → Set
   R r =  (pr₁ ∘ r ∈ Probe Z)
@@ -256,7 +256,7 @@ simpler and easier to work with.
   dom[f^f] = dom⟪ X , Y , X ⟫ f ^ f
   f⁻¹ : U Y → Space
   f⁻¹ y = ⟪ X , Y ⟫ f ⁻¹₍ y ₎
-  
+
   h₀ : Map Y dom[f^f]
   h₀ = h , cts
    where
@@ -297,5 +297,3 @@ simpler and easier to work with.
 
 dom⟪_,_⟫Π[_] : (X Y : Space) → (Map X Y) → Mapto X → Space
 dom⟪ X , Y ⟫Π[ f ] (Z , g)= pr₁(⟪ X , Y ⟫Π[ f ] (Z , g))
-
-

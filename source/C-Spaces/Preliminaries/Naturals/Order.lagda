@@ -60,10 +60,22 @@ Lemma[n≤n+1] (succ n) = ≤-succ (Lemma[n≤n+1] n)
 Lemma[m+1≤n+1→m≤n] : ∀{m n : ℕ} → succ m ≤ succ n → m ≤ n
 Lemma[m+1≤n+1→m≤n] (≤-succ r) = r
 
+is-zero : ℕ → Set
+is-zero 0        = 𝟙
+is-zero (succ n) = 𝟘
+
+is-zero-monotonicity : (m n : ℕ) → m ≤ n → is-zero n → is-zero m
+is-zero-monotonicity m n ≤-zero     q = ⋆
+is-zero-monotonicity m n (≤-succ r) q = 𝟘-elim q
+
+successors-are-not-below-zero : (m : ℕ) → ¬ (succ m ≤ 0)
+successors-are-not-below-zero m p = is-zero-monotonicity (succ m) 0 p ⋆
+
 Lemma[n≤m+1→n≤m+n＝m+1] : {n m : ℕ} → n ≤ succ m → (n ≤ m) ⊎ (n ＝ succ m)
 Lemma[n≤m+1→n≤m+n＝m+1] {0}      {m}      r = inl ≤-zero
 Lemma[n≤m+1→n≤m+n＝m+1] {succ 0} {0}      r = inr refl
-Lemma[n≤m+1→n≤m+n＝m+1] {succ (succ n)} {0} (≤-succ ())
+Lemma[n≤m+1→n≤m+n＝m+1] {succ (succ n)} {0} (≤-succ r) =
+ 𝟘-elim (successors-are-not-below-zero n r)
 Lemma[n≤m+1→n≤m+n＝m+1] {succ n} {succ m} (≤-succ r) = +functor c₀ c₁ IH
  where
   c₀ : n ≤ m → succ n ≤ succ m
@@ -87,14 +99,17 @@ Lemma[m≮n→n≤m] {succ m} {succ n} f = ≤-succ (Lemma[m≮n→n≤m] (f ∘
 
 Lemma[m≤n∧n≤m→m=n] : ∀{m n : ℕ} → m ≤ n → n ≤ m → m ＝ n
 Lemma[m≤n∧n≤m→m=n] {0}      {0}      ≤-zero     ≤-zero      = refl
-Lemma[m≤n∧n≤m→m=n] {0}      {succ n} ≤-zero     ()
-Lemma[m≤n∧n≤m→m=n] {succ m} {0}      ()         ≤-zero
+Lemma[m≤n∧n≤m→m=n] {0}      {succ n} ≤-zero     r           =
+ 𝟘-elim (successors-are-not-below-zero n r)
+Lemma[m≤n∧n≤m→m=n] {succ m} {0}      r          ≤-zero =
+ 𝟘-elim (successors-are-not-below-zero m r)
 Lemma[m≤n∧n≤m→m=n] {succ m} {succ n} (≤-succ r) (≤-succ r') = ap succ (Lemma[m≤n∧n≤m→m=n] r r')
 
 Lemma[m<n→m≠n] : ∀{m n : ℕ} → m < n → m ≠ n
-Lemma[m<n→m≠n] {0}      {0}      ()
-Lemma[m<n→m≠n] {0}      {succ n} r          = λ ()
-Lemma[m<n→m≠n] {succ m} {0}      r          = λ ()
+Lemma[m<n→m≠n] {0}      {0}      r          =
+ 𝟘-elim (successors-are-not-below-zero 0 r)
+Lemma[m<n→m≠n] {0}      {succ n} r          = zero-not-positive n
+Lemma[m<n→m≠n] {succ m} {0}      r          = positive-not-zero m
 Lemma[m<n→m≠n] {succ m} {succ n} (≤-succ r) = λ e → Lemma[m<n→m≠n] r (succ-lc e)
 
 Lemma[a≤a+b] : ∀(a b : ℕ) → a ≤ a + b
@@ -118,7 +133,7 @@ Lemma[n+1+m=n+m+1] n (succ m) = ap succ (Lemma[n+1+m=n+m+1] n m)
 
 Lemma[≤-Σ] : ∀(a b : ℕ) → a ≤ b → Σ \(c : ℕ) → a + c ＝ b
 Lemma[≤-Σ] 0 b ≤-zero = b , zero-left-neutral b
-Lemma[≤-Σ] (succ a) 0 ()
+Lemma[≤-Σ] (succ a) 0 r = 𝟘-elim (successors-are-not-below-zero a r)
 Lemma[≤-Σ] (succ a) (succ b) (≤-succ r) = c , eq
  where
   c : ℕ
@@ -137,7 +152,7 @@ CoV-induction {P} step n = step n (claim n)
   Q n = ∀ m → succ m ≤ n → P m
 
   qbase : Q 0
-  qbase m ()
+  qbase m r = 𝟘-elim (successors-are-not-below-zero m r)
 
   qstep : ∀ n → Q n → Q(succ n)
   qstep n qn m (≤-succ r) = step m (λ k u → qn k (≤-trans u r))

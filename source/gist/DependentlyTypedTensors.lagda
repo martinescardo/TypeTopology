@@ -84,7 +84,9 @@ Vectors are just rank-1 tensors.
            ϑ i            ∎
             where
              ‡ : ϑ (λ _ → i 𝟎) ＝ ϑ i
-             ‡ = ap ϑ (dfunext fe λ { 𝟎 → refl })
+             ‡ = ap ϑ (dfunext fe
+                        λ { 𝟎       → refl
+                          ; (suc i) → 𝟘-elim (Fin-0-is-empty i) })
 
 \end{code}
 
@@ -95,6 +97,7 @@ Matrices are rank-2 tensors.
  _by_ : {X : 𝓥 ̇ } → X → X → Fin 2 → X
  _by_ x y 𝟎 = x
  _by_ x y 𝟏 = y
+ _by_ x y (suc (suc i)) = 𝟘-elim (Fin-0-is-empty i)
 
  matrix-is-rank-2-tensor : (m n : ℕ)
                          → Matrix m n ≃ Rank-[ 2 ]-Tensor (m by n)
@@ -106,6 +109,7 @@ Matrices are rank-2 tensors.
    doubleton′ : Fin m → Fin n → (k : Fin 2) → Fin ((m by n) k)
    doubleton′ i j 𝟎 = i
    doubleton′ i j 𝟏 = j
+   doubleton′ i j (suc (suc k)) = 𝟘-elim (Fin-0-is-empty k)
 
    r : Rank-[ 2 ]-Tensor (m by n) → Matrix m n
    r ϑ (i , j) = ϑ (doubleton′ i j)
@@ -125,6 +129,7 @@ Matrices are rank-2 tensors.
              ξ : doubleton′ (ν 𝟎) (ν 𝟏) ∼ ν
              ξ 𝟎 = refl
              ξ 𝟏 = refl
+             ξ (suc (suc i)) = 𝟘-elim (Fin-0-is-empty i)
 
              ‡ = ap ϑ (dfunext fe ξ)
 

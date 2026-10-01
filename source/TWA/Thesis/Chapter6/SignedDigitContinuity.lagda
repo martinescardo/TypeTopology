@@ -39,13 +39,14 @@ neg-ucontinuous
 
 \begin{code}
 div2-ucontinuous' : seq-f-ucontinuous¹ div2
-div2-ucontinuous' zero = 0 , λ α β _ k ()
+div2-ucontinuous' zero = 0 , λ α β _ k k<0 → 𝟘-elim k<0
 div2-ucontinuous' (succ ε) = succ (succ ε) , γ ε
  where
   γ : (ε : ℕ) → (α β : ℕ → 𝟝) → (α ∼ⁿ β) (succ (succ ε))
     →  (div2 α ∼ⁿ div2 β) (succ ε)
   γ ε α β α∼ⁿβ 0 ⋆ = ap (λ - → pr₁ (div2-aux - (α 1))) (α∼ⁿβ 0 ⋆)
                    ∙ ap (λ - → pr₁ (div2-aux (β 0) -)) (α∼ⁿβ 1 ⋆)
+  γ 0 α β α∼ⁿβ (succ k) k<ε = 𝟘-elim k<ε
   γ (succ ε) α β α∼ⁿβ (succ k) = γ ε α' β' α∼ⁿβ' k
    where
     α' = pr₂ (div2-aux (α 0) (α 1)) ∷ (tail (tail α))
@@ -119,6 +120,8 @@ bigMid'-ucontinuous' ε = dδ ε , d≤δ ε , γ ε
    = ap (λ - → (- +𝟛 -) +𝟝 (αs 0 1 +𝟛 αs 1 0)) (αs∼ⁿβs 0 ⋆ 0 ⋆)
    ∙ ap (λ - → (βs 0 0 +𝟛 βs 0 0) +𝟝 (- +𝟛 αs 1 0)) (αs∼ⁿβs 0 ⋆ 1 ⋆)
    ∙ ap (λ - → (βs 0 0 +𝟛 βs 0 0) +𝟝 (βs 0 1 +𝟛 -)) (αs∼ⁿβs 1 ⋆ 0 ⋆)
+  γ zero        αs βs αs∼ⁿβs i        i<ε = 𝟘-elim i<ε
+  γ (succ zero) αs βs αs∼ⁿβs (succ k) k<ε = 𝟘-elim k<ε
   γ (succ (succ ε)) αs βs αs∼ⁿβs (succ k)
    = γ (succ ε) αs' βs' αs∼ⁿβs' k
    where
@@ -140,13 +143,14 @@ bigMid'-ucontinuous' ε = dδ ε , d≤δ ε , γ ε
           i≤δϵ (≤-+ (δ ε) 3))
 
 div4-ucontinuous' : seq-f-ucontinuous¹ div4
-div4-ucontinuous' zero = 0 , λ α β _ k ()
+div4-ucontinuous' zero = 0 , λ α β _ k k<0 → 𝟘-elim k<0
 div4-ucontinuous' (succ ε) = succ (succ ε) , γ ε
  where
   γ : (ε : ℕ) → (α β : ℕ → 𝟡) → (α ∼ⁿ β) (succ (succ ε))
     →  (div4 α ∼ⁿ div4 β) (succ ε)
   γ ε α β α∼ⁿβ 0 ⋆ = ap (λ - → pr₁ (div4-aux - (α 1))) (α∼ⁿβ 0 ⋆)
                    ∙ ap (λ - → pr₁ (div4-aux (β 0) -)) (α∼ⁿβ 1 ⋆)
+  γ 0 α β α∼ⁿβ (succ k) k<ε = 𝟘-elim k<ε
   γ (succ ε) α β α∼ⁿβ (succ k) = γ ε α' β' α∼ⁿβ' k
    where
     α' = pr₂ (div4-aux (α 0) (α 1)) ∷ (tail (tail α))

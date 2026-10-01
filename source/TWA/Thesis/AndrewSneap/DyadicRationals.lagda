@@ -154,6 +154,7 @@ normalise-pos-lemma₁ fe k 0 (inl refl)
  = to-subtype-＝ (λ (z , n) → ℤ[1/2]-cond-is-prop fe z n)
      (to-×-＝ (div-by-two k) refl)
 normalise-pos-lemma₁ fe k 0 (inr (δnz , k-odd)) = 𝟘-elim (δnz refl)
+normalise-pos-lemma₁ fe k (succ δ) (inl e) = 𝟘-elim (positive-not-zero δ e)
 normalise-pos-lemma₁ fe k (succ δ) (inr p) with even-or-odd? ((k +ℤ k) /2')
 normalise-pos-lemma₁ fe k (succ δ) (inr (δnz , k-odd)) | inl k-even
  = 𝟘-elim (k-even (transport odd (div-by-two k ⁻¹) k-odd))

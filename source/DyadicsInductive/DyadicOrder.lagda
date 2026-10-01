@@ -207,6 +207,8 @@ left-≺ (right x) = ⋆
 ≺-has-no-right-endpoint-Σ x = right x , ≺-right x
 
 ≺-is-dense-Σ : (x y : 𝔻) → x ≺ y → Σ z ꞉ 𝔻 , x ≺ z × z ≺ y
+≺-is-dense-Σ middle middle = 𝟘-induction
+≺-is-dense-Σ middle (left y) = 𝟘-induction
 ≺-is-dense-Σ middle (right y) _ = right (left y) , ⋆ , left-≺ y
 ≺-is-dense-Σ (left x) middle _ = left (right x) , ≺-right x , ⋆
 ≺-is-dense-Σ (left x) (left y) x≺y = γ (≺-is-dense-Σ x y x≺y)

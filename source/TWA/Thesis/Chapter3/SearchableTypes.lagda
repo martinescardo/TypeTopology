@@ -62,6 +62,7 @@ searchable-pointed 𝓦 X Sx = pr₁ (Sx ((λ _ → ⊤) , (λ _ → inl ⋆)))
   γx : (Σ x ꞉ X , (pr₁ px x holds)) → pr₁ px x₀ holds
   γx = pr₂ (Sx px)
   γ : (Σ x ꞉ 𝟘 + X , (p x holds)) → pr₁ px x₀ holds
+  γ (inl x , pix) = 𝟘-elim x
   γ (inr x , pix) = γx (x , pix)
 
 +-searchable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -92,6 +93,7 @@ searchable-pointed 𝓦 X Sx = pr₁ (Sx ((λ _ → ⊤) , (λ _ → inl ⋆)))
   γ ¬px₀ (inr y , piy) = γy (y , piy)
 
 Fin-searchable : (n : ℕ) → Fin n → searchable 𝓦 (Fin n)
+Fin-searchable 0 i = 𝟘-elim i
 Fin-searchable 1 _ = 𝟘+-searchable 𝟙-searchable
 Fin-searchable (succ (succ n)) _
  = +-searchable (Fin-searchable (succ n) 𝟎) 𝟙-searchable
@@ -185,15 +187,15 @@ decidable-to-𝟚 : {X : 𝓤 ̇ } → is-decidable X
                → Σ b ꞉ 𝟚 , ((b ＝ ₁ ↔ X) × (b ＝ ₀ ↔ ¬ X))
 decidable-to-𝟚 (inl  x)
  = ₁ , (((λ _ → x) , (λ _ → refl))
-     , (𝟘-elim ∘ zero-is-not-one ∘ _⁻¹) , (λ ¬x → 𝟘-elim (¬x x)))
+     , one-is-zero-elim , (λ ¬x → 𝟘-elim (¬x x)))
 decidable-to-𝟚 (inr ¬x)
- = ₀ , ((𝟘-elim ∘ zero-is-not-one) , (λ x → 𝟘-elim (¬x x)))
+ = ₀ , (zero-is-one-elim , (λ x → 𝟘-elim (¬x x)))
      , (λ _ → ¬x) , (λ _ → refl)
 
 LPO-implies-ℕ-searchability : LPO → searchable 𝓦 ℕ
 LPO-implies-ℕ-searchability {𝓦} f (p , d)
  = Cases (f (λ i → decidable-𝟚 (d i)))
-     (λ α∼₀ → 0 , λ (n , pn) → (𝟘-elim ∘ zero-is-not-one)
+     (λ α∼₀ → 0 , λ (n , pn) → zero-is-one-elim
                                  (α∼₀ n ⁻¹ ∙ decidable-𝟚₁ (d n) pn))
      λ (i , αᵢ=₀) → i , λ _ → 𝟚-decidable₁ (d i) αᵢ=₀
 \end{code}

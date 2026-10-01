@@ -81,8 +81,8 @@ props-are-discrete i x y = inl (i x y)
 
 𝟚-is-discrete : is-discrete 𝟚
 𝟚-is-discrete ₀ ₀ = inl refl
-𝟚-is-discrete ₀ ₁ = inr (λ (p : ₀ ＝ ₁) → 𝟘-elim (zero-is-not-one p))
-𝟚-is-discrete ₁ ₀ = inr (λ (p : ₁ ＝ ₀) → 𝟘-elim (zero-is-not-one (p ⁻¹)))
+𝟚-is-discrete ₀ ₁ = inr (λ (p : ₀ ＝ ₁) → zero-is-one-elim p)
+𝟚-is-discrete ₁ ₀ = inr (λ (p : ₁ ＝ ₀) → zero-is-one-elim (p ⁻¹))
 𝟚-is-discrete ₁ ₁ = inl refl
 
 ℕ-is-discrete : is-discrete ℕ

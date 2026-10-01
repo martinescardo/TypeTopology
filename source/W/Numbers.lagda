@@ -460,6 +460,7 @@ LEM (𝓥 ⁺).
 
      η : (n : ℕ) (d : is-decidable (is-positive (ℕ-to-𝓝 n)))
        → f (ℕ-to-𝓝 n) d ＝ n
+     η zero (inl h)     = 𝟘-elim (Zero-is-not-positive h)
      η zero (inr ν)     = refl
      η (succ n) (inr ν) = 𝟘-elim (ν (Succ-is-positive (Succ (ℕ-to-𝓝 n))))
      η (succ n) (inl h) = ap succ (η n (lem (positive (ℕ-to-𝓝 n))))

@@ -2,7 +2,7 @@ Jon Sterling, 25th March 2023.
 
 Proof of Cantor's theorem stated for embeddings from the powerset of A
 onto A. This proof uses function extensionality, propositional
-extensionality, and propositional resizing. Our argument follows
+extensionality, and propositional resizing. Our argument follows Paul
 Taylor's Practical Foundations of Mathematics, via the nLab:
 https://ncatlab.org/nlab/show/Cantor%27s+theorem.
 

@@ -331,7 +331,7 @@ adequacy M n p = pr₂ iv ⋆
   i = lemma7-4 M ⋆ ids f
    where
     f : ∀ {A} → (x : ⟨⟩ ∋ A) → adequate A (extract x ⋆) (v x)
-    f ()
+    f x = 𝟘-elim (∋-gives-Context-is-non-empty x)
 
   ii : subst ids M ＝ M
   ii = sub-id M

@@ -1,7 +1,7 @@
 Martin Escardo, 7th August 2020.
 
-This file improves the file InitialBinarySystem.lagda, which gives the
-background for this file.
+This file improves the file BinarySystems.TypeOriginal, which gives
+the background for this file.
 
 Modified 2nd May 2025 to remove the requirement that the underlying
 types of binary systems are sets, and also to remove some unused
@@ -12,7 +12,7 @@ a set.
 
 {-# OPTIONS --safe --without-K #-}
 
-module BinarySystems.InitialBinarySystem2 where
+module BinarySystems.Type where
 
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
@@ -62,18 +62,33 @@ left-lc x x refl = refl
 right-lc : (x y : 𝔹) → right x ＝ right y → x ＝ y
 right-lc x x refl = refl
 
+is-center : 𝔹 → 𝓤₀ ̇
+is-center center    = 𝟙
+is-center (left _)  = 𝟘
+is-center (right _) = 𝟘
+
+is-left : 𝔹 → 𝓤₀ ̇
+is-left center    = 𝟘
+is-left (left _)  = 𝟙
+is-left (right _) = 𝟘
+
+is-right : 𝔹 → 𝓤₀ ̇
+is-right center    = 𝟘
+is-right (left _)  = 𝟘
+is-right (right _) = 𝟙
+
 𝔹-is-discrete : (x y : 𝔹) → (x ＝ y) + (x ≠ y)
 𝔹-is-discrete center   center     = inl refl
-𝔹-is-discrete center   (left y)   = inr (λ ())
-𝔹-is-discrete center   (right y)  = inr (λ ())
-𝔹-is-discrete (left x) center     = inr (λ ())
+𝔹-is-discrete center   (left y)   = inr (λ p → transport is-center p ⋆)
+𝔹-is-discrete center   (right y)  = inr (λ p → transport is-center p ⋆)
+𝔹-is-discrete (left x) center     = inr (λ p → transport is-left p ⋆)
 𝔹-is-discrete (left x) (left y)   =
  Cases (𝔹-is-discrete x y)
   (λ (p : x ＝ y) → inl (ap left p))
   (λ (ν : x ≠ y) → inr (contrapositive (left-lc x y) ν))
-𝔹-is-discrete (left x)  (right y) = inr (λ ())
-𝔹-is-discrete (right x) center    = inr (λ ())
-𝔹-is-discrete (right x) (left y)  = inr (λ ())
+𝔹-is-discrete (left x)  (right y) = inr (λ p → transport is-left p ⋆)
+𝔹-is-discrete (right x) center    = inr (λ p → transport is-right p ⋆)
+𝔹-is-discrete (right x) (left y)  = inr (λ p → transport is-right p ⋆)
 𝔹-is-discrete (right x) (right y) =
  Cases (𝔹-is-discrete x y)
   (λ (p : x ＝ y) → inl (ap right p))
@@ -81,18 +96,33 @@ right-lc x x refl = refl
 η-lc : (x y : 𝔹) → η x ＝ η y → x ＝ y
 η-lc x x refl = refl
 
+is-L : 𝕄 → 𝓤₀ ̇
+is-L L     = 𝟙
+is-L R     = 𝟘
+is-L (η _) = 𝟘
+
+is-R : 𝕄 → 𝓤₀ ̇
+is-R L     = 𝟘
+is-R R     = 𝟙
+is-R (η _) = 𝟘
+
+is-η : 𝕄 → 𝓤₀ ̇
+is-η L     = 𝟘
+is-η R     = 𝟘
+is-η (η _) = 𝟙
+
 𝕄-is-discrete : (x y : 𝕄) → (x ＝ y) + (x ≠ y)
 𝕄-is-discrete L     L     = inl refl
-𝕄-is-discrete L     R     = inr (λ ())
-𝕄-is-discrete L     (η x) = inr (λ ())
-𝕄-is-discrete R     L     = inr (λ ())
+𝕄-is-discrete L     R     = inr (λ p → transport is-L p ⋆)
+𝕄-is-discrete L     (η x) = inr (λ p → transport is-L p ⋆)
+𝕄-is-discrete R     L     = inr (λ p → transport is-R p ⋆)
 𝕄-is-discrete R     R     = inl refl
-𝕄-is-discrete R     (η x) = inr (λ ())
-𝕄-is-discrete (η x) L     = inr (λ ())
-𝕄-is-discrete (η x) R     = inr (λ ())
+𝕄-is-discrete R     (η x) = inr (λ p → transport is-R p ⋆)
+𝕄-is-discrete (η x) L     = inr (λ p → transport is-η p ⋆)
+𝕄-is-discrete (η x) R     = inr (λ p → transport is-η p ⋆)
 𝕄-is-discrete (η x) (η y) = Cases (𝔹-is-discrete x y)
-                              (λ (p : x ＝ y) → inl (ap η p))
-                              (λ (ν : x ≠ y) → inr (contrapositive (η-lc x y) ν))
+                             (λ (p : x ＝ y) → inl (ap η p))
+                             (λ (ν : x ≠ y) → inr (contrapositive (η-lc x y) ν))
 
 𝕄-is-set : is-set 𝕄
 𝕄-is-set = discrete-types-are-sets 𝕄-is-discrete
@@ -353,6 +383,8 @@ system.
 TODO. Now that we have removed the sethood requirement for the
 underlying type of a binary system we need to prove unique existence
 as contractibility (as done for nno's in the MGS'2019 lecture notes).
+This is done in BinarySystems.Initiality after it is reformulated to
+include coherence conditions on the notion of homomorphism.
 
 Primitive (or parametric) recursion, which has the above as a special
 case:
@@ -362,7 +394,8 @@ case:
 𝕄-primrec : {A : 𝓤 ̇ } (a b : A) (f g : 𝕄 → A → A) → 𝕄 → A
 𝕄-primrec {𝓤} {A} a b f = 𝕄-induction (λ _ → A) a b f
 
-primitive-recursive : {A : 𝓤 ̇ } → A → A → (𝕄 → A → A) → (𝕄 → A → A) → (𝕄 → A) → 𝓤 ̇
+primitive-recursive : {A : 𝓤 ̇ } → A → A → (𝕄 → A → A) → (𝕄 → A → A)
+                    → (𝕄 → A) → 𝓤 ̇
 primitive-recursive a b f g h =
 
          (h L ＝ a)

@@ -90,6 +90,8 @@ x · y = x. Concretely, this amounts to the following construction.
   u r = refl
 
   a : head⁺ ∘ ext 𝕃⁺ (η 𝕃⁺ ∘ head⁺) ∼ head⁺ ∘ ext 𝕃⁺ id
+  a ([] , ν)                  = 𝟘-elim ν
+  a ((([] , ν) ∷ _) , _)      = 𝟘-elim ν
   a ((((r ∷ _) , _) ∷ _) , _) = refl
 
 open T-definitions 𝕃⁺
@@ -116,6 +118,7 @@ characterized as follows.
 
 α-extᵀ-explicitly : {X : 𝓤 ̇ } (p : X → R) (t : List⁺ X)
                   → α-extᵀ p t ＝ p (head⁺ t)
+α-extᵀ-explicitly p ([] , ν)       = 𝟘-elim ν
 α-extᵀ-explicitly p ((x ∷ _) :: _) = refl
 
 \end{code}
@@ -294,6 +297,8 @@ main-lemma→ : (Xt : 𝑻)
             → member xs (ι (path-sequence 𝕁𝕋 (εt⁺ Xt lt ϕt εt at) q))
             → is-optimal-play ϕt q xs
 main-lemma→ [] ⟨⟩ q ⟨⟩ ⟨⟩ ⟨⟩ ⟨⟩ in-head = ⟨⟩
+main-lemma→ [] ⟨⟩ q ⟨⟩ ⟨⟩ ⟨⟩ xs (in-tail m) =
+ 𝟘-elim (empty-list-has-no-members xs m)
 main-lemma→ Xt@(X ∷ Xf) ϕt@(ϕ :: ϕf) q εt@(ε :: εf) at@(a :: af)
             lt@(l :: lf) (x :: xs) m =
  head-is-optimal-move , tail-is-optimal-play

@@ -21,10 +21,10 @@ moduli to be minimal.
 
 \begin{code}
 
-locally-constant : {X : Set} → (₂ℕ → X) → Set
+locally-constant : {X : Type} → (₂ℕ → X) → Set
 locally-constant p = Σ-min \(n : ℕ) → ∀(α β : ₂ℕ) → α ＝⟦ n ⟧ β → p α ＝ p β
 
-Axiom[UC-ℕ] : Set
+Axiom[UC-ℕ] : Type
 Axiom[UC-ℕ] = ∀(f : ₂ℕ → ℕ) → locally-constant f
 
 uniformly-continuous-₂ℕ : (₂ℕ → ₂ℕ) → Set
@@ -36,7 +36,7 @@ Here we provide an algorithm to compute least moduli of uniform continuity.
 
 \begin{code}
 
-Lemma[decidable-0̄-1̄] : {X : Set} → (_~_ : X → X → Set) →
+Lemma[decidable-0̄-1̄] : {X : Type} → (_~_ : X → X → Set) →
          (∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
          (p : ₂ℕ → X) → (n : ℕ) →
          is-decidable (∀(s : ₂Fin n) → p (cons s 0̄) ~ p (cons s 1̄))
@@ -48,7 +48,7 @@ Lemma[decidable-0̄-1̄] _~_ dec p n = Lemma[₂Fin-decidability] n P claim
   claim s = dec (p (cons s 0̄)) (p (cons s 1̄))
 
 
-LM : {X : Set} → (_~_ : X → X → Set) → (∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
+LM : {X : Type} → (_~_ : X → X → Set) → (∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
      (₂ℕ → X) → ℕ → ℕ
 LM _~_ dec p 0        = 0
 LM _~_ dec p (succ n) = cases f₀ f₁ (Lemma[decidable-0̄-1̄] _~_ dec p n)
@@ -60,7 +60,7 @@ LM _~_ dec p (succ n) = cases f₀ f₁ (Lemma[decidable-0̄-1̄] _~_ dec p n)
 
 
 LM-₂ℕ : {m : ℕ} → (₂ℕ → ₂ℕ) → ℕ → ℕ
-LM-₂ℕ {m} = LM {₂ℕ} (λ α β → α ＝⟦ m ⟧ β) Lemma[＝⟦⟧-decidable] 
+LM-₂ℕ {m} = LM {₂ℕ} (λ α β → α ＝⟦ m ⟧ β) Lemma[＝⟦⟧-decidable]
 
 LM-ℕ : (₂ℕ → ℕ) → ℕ → ℕ
 LM-ℕ = LM {ℕ} _＝_ ℕ-is-discrete
@@ -69,7 +69,7 @@ LM-₂ : (₂ℕ → 𝟚) → ℕ → ℕ
 LM-₂ = LM {𝟚} _＝_ 𝟚-is-discrete
 
 
-Lemma[LM]₀ : {X : Set} → (_~_ : X → X → Set) → (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
+Lemma[LM]₀ : {X : Type} → (_~_ : X → X → Set) → (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
              (p : ₂ℕ → X) → (n : ℕ) →
              (∀(s : ₂Fin n) → p (cons s 0̄) ~ p (cons s 1̄)) →
              LM _~_ dec p (succ n) ＝ LM _~_ dec p n
@@ -80,7 +80,7 @@ Lemma[LM]₀ _~_ dec p n h = equality-cases (Lemma[decidable-0̄-1̄] _~_ dec p 
   claim₁ : ∀ f → Lemma[decidable-0̄-1̄] _~_ dec p n ＝ inr f → LM _~_ dec p (succ n) ＝ LM _~_ dec p n
   claim₁ f = 𝟘-elim(f h)
 
-Lemma[LM]₁ : {X : Set} → (_~_ : X → X → Set) → (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
+Lemma[LM]₁ : {X : Type} → (_~_ : X → X → Set) → (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
              (p : ₂ℕ → X) → (n : ℕ) →
              ¬ (∀(s : ₂Fin n) → p (cons s 0̄) ~ p (cons s 1̄)) →
              LM _~_ dec p (succ n) ＝ succ n
@@ -92,7 +92,7 @@ Lemma[LM]₁ _~_ dec p n f = equality-cases (Lemma[decidable-0̄-1̄] _~_ dec p 
   claim₁ _ r = ap (cases _ _) r
 
 
-Lemma[succ-0̄-1̄] : {X : Set} → (_~_ : X → X → Set) →
+Lemma[succ-0̄-1̄] : {X : Type} → (_~_ : X → X → Set) →
         (∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
         ({x₀ x₁ : X} → x₀ ~ x₁ → x₁ ~ x₀) →
         ({x₀ x₁ x₂ : X} → x₀ ~ x₁ → x₁ ~ x₂ → x₀ ~ x₂) →
@@ -145,7 +145,7 @@ Lemma[succ-0̄-1̄] {X} _~_ dec sy tr p n pr g α β en = tr eqα (sy eqβ)
   eqβ = cases subclaim₃ subclaim₄ subclaim₅
 
 
-Lemma[LM-modulus] : {X : Set} → (_~_ : X → X → Set) →
+Lemma[LM-modulus] : {X : Type} → (_~_ : X → X → Set) →
         (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
         ({x₀ x₁ : X} → x₀ ~ x₁ → x₁ ~ x₀) →
         ({x₀ x₁ x₂ : X} → x₀ ~ x₁ → x₁ ~ x₂ → x₀ ~ x₂) →
@@ -174,7 +174,7 @@ Lemma[LM-modulus] _~_ dec sy tr p (succ n) pr α β e =
     e' = transport (λ k → α ＝⟦ k ⟧ β) fact e
 
 
-Lemma[LM-least] : {X : Set} → (_~_ : X → X → Set) →
+Lemma[LM-least] : {X : Type} → (_~_ : X → X → Set) →
         (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
         ({x₀ x₁ : X} → x₀ ~ x₁ → x₁ ~ x₀) →
         ({x₀ x₁ x₂ : X} → x₀ ~ x₁ → x₁ ~ x₂ → x₀ ~ x₂) →
@@ -216,7 +216,7 @@ Lemma[LM-least] _~_ dec sy tr p (succ n) prn k prk = cases claim₀ claim₁ cla
   claim₂ = Lemma[decidable-0̄-1̄] _~_ dec p n
 
 
-Lemma[LM-least-modulus] : {X : Set} → (_~_ : X → X → Set) →
+Lemma[LM-least-modulus] : {X : Type} → (_~_ : X → X → Set) →
         (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
         ({x₀ x₁ : X} → x₀ ~ x₁ → x₁ ~ x₀) →
         ({x₀ x₁ x₂ : X} → x₀ ~ x₁ → x₁ ~ x₂ → x₀ ~ x₂) →
@@ -305,11 +305,11 @@ Lemma[cons-UC] (b ∷ s) (succ m) = n , prs , mins
   n = pr₁ IH
   prn : ∀(α β : ₂ℕ) → α ＝⟦ n ⟧ β → cons s α ＝⟦ m ⟧ cons s β
   prn = pr₁ (pr₂ IH)
-  claim₀ : ∀(α β : ₂ℕ) → α ＝⟦ n ⟧ β → cons s α ＝⟦ m ⟧ cons s β → 
+  claim₀ : ∀(α β : ₂ℕ) → α ＝⟦ n ⟧ β → cons s α ＝⟦ m ⟧ cons s β →
             ∀(i : ℕ) → i < succ m → cons (b ∷ s) α i ＝ cons (b ∷ s) β i
   claim₀ α β en em 0        r          = refl
   claim₀ α β en em (succ i) (≤-succ r) = Lemma[＝⟦⟧-<] em i r
-  claim₁ : ∀(α β : ₂ℕ) → α ＝⟦ n ⟧ β → cons s α ＝⟦ m ⟧ cons s β → 
+  claim₁ : ∀(α β : ₂ℕ) → α ＝⟦ n ⟧ β → cons s α ＝⟦ m ⟧ cons s β →
             cons (b ∷ s) α ＝⟦ succ m ⟧ cons (b ∷ s) β
   claim₁ α β en em = Lemma[<-＝⟦⟧] (claim₀ α β en em)
   prs : ∀(α β : ₂ℕ) → α ＝⟦ n ⟧ β → cons (b ∷ s) α ＝⟦ succ m ⟧ cons (b ∷ s) β

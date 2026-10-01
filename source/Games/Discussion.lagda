@@ -210,17 +210,21 @@ module Games.Discussion
 --   f : 𝔸 → 𝔽
 --   f (X ∷ Xf) = (X ∷ (pr₁ ∘ f ∘ Xf)) , pr₂ ∘ f ∘ Xf
 
---   g : 𝔽 → 𝔸
---   g ((X ∷ Xf) , φ) = X ∷ (λ x → g (Xf x , φ x))
+{-
+  g : 𝔽 → 𝔸
+  g ([] , φ)       = 𝟘-elim φ
+  g ((X ∷ Xf) , φ) = X ∷ (λ x → g (Xf x , φ x))
 
---   fg' : (Xt : 𝕋) (φ : is-[]-free Xt) → f (g (Xt , φ)) ＝ (Xt , φ)
---   fg' (X ∷ Xf) φ =
---    (f ∘ g) ((X ∷ Xf) , φ)    ＝⟨refl⟩
---    (X ∷ (pr₁ ∘ h)) , pr₂ ∘ h ＝⟨ I ⟩
---    (X ∷ Xf) , φ              ∎
---     where
---      h : X → 𝔽
---      h x = f (g (Xf x , φ x))
+  fg' : (Xt : 𝕋) (φ : is-[]-free Xt) → f (g (Xt , φ)) ＝ (Xt , φ)
+  fg' []       φ = 𝟘-elim φ
+  fg' (X ∷ Xf) φ =
+   (f ∘ g) ((X ∷ Xf) , φ)    ＝⟨refl⟩
+   (X ∷ (pr₁ ∘ h)) , pr₂ ∘ h ＝⟨ I ⟩
+   (X ∷ Xf) , φ              ∎
+    where
+     h : X → 𝔽
+     h x = f (g (Xf x , φ x))
+-}
 
 --      IH : (x : X) → h x ＝ (Xf x , φ x)
 --      IH x = fg' (Xf x) (φ x)
@@ -719,7 +723,16 @@ module Games.Discussion
 
 -- module illustration (R : 𝓤 ̇ ) where
 
+<<<<<<< HEAD
 --  open import MonadOnTypes.K
+=======
+[]-property : (Xt : 𝕋) → is-[]-free Xt → ¬ has-at-least-one-[] Xt
+[]-property []       f h = 𝟘-elim f
+[]-property (X ∷ Xf) f h = ∥∥-rec 𝟘-is-prop (λ (x , g) → IH x (f x) g) h
+ where
+  IH : (x : X) → is-[]-free (Xf x) → ¬ has-at-least-one-[] (Xf x)
+  IH x = []-property (Xf x)
+>>>>>>> 682428d8a1e7b91093539c46150d5e7c2d4451a8
 
 --  open K-definitions {𝓤} {R}
 

@@ -262,7 +262,15 @@ trichotomy-to-decomposed-at {𝓤} α x tri = β , γ , p , p-spec
     g-order-preserving (inl (a , l))       (inr (inl ⋆))       _ = l
     g-order-preserving (inl (a , l))       (inr (inr (b , u))) _ =
      Transitivity α a x b l u
+    g-order-preserving (inr (inl _))       (inl (b , _))       v =
+     𝟘-elim v
+    g-order-preserving (inr (inl _))       (inr (inl _))       v =
+     𝟘-elim v
     g-order-preserving (inr (inl _))       (inr (inr (b , u))) _ = u
+    g-order-preserving (inr (inr (a , _))) (inl (b , _))       v =
+     𝟘-elim v
+    g-order-preserving (inr (inr (a , _))) (inr (inl _))       v =
+     𝟘-elim v
     g-order-preserving (inr (inr (a , _))) (inr (inr (b , _))) v = v
 
     η : (a : ⟨ α ⟩) → g (f a) ＝ a

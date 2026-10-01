@@ -13,7 +13,6 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition
 open import Naturals.Properties
 
-
 module Naturals.Multiplication where
 
 \end{code}
@@ -372,6 +371,7 @@ multiplication-preserves-strict-order' : (m n k : ℕ)
                                        → m < n
                                        → 0 < k
                                        → m * k < n * k
+multiplication-preserves-strict-order' m n 0        l p = 𝟘-elim p
 multiplication-preserves-strict-order' m n (succ k) l p =
  multiplication-preserves-strict-order m n k l
 

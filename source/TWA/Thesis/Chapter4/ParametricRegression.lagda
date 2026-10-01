@@ -123,18 +123,18 @@ oracle-closeness' (_ , c , _ , c-sym , c-ult) 𝓞 ϵ y₁ y₂ Cϵy₁y₂ n n�
           → c𝓞y₁n ＝ c𝓞y₂n
     C𝓞-eq n n<ϵ (inl c𝓞y₁＝₀) (inl c𝓞y₂＝₀) = c𝓞y₁＝₀ ∙ c𝓞y₂＝₀ ⁻¹
     C𝓞-eq n n<ϵ (inl c𝓞y₁＝₀) (inr c𝓞y₂＝₁)
-     = 𝟘-elim (zero-is-not-one
+     = zero-is-one-elim
         (c𝓞y₁＝₀ ⁻¹
          ∙ c-ult 𝓞 y₂ y₁ n
             (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] c𝓞y₂＝₁
              (ap (λ - → pr₁ - n) (c-sym y₂ y₁)
-              ∙ Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ)))))
+              ∙ Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ))))
     C𝓞-eq n n<ϵ (inr c𝓞y₁＝₁) (inl c𝓞y₂＝₀)
-     = 𝟘-elim (zero-is-not-one
+     = zero-is-one-elim
         (c𝓞y₂＝₀ ⁻¹
          ∙ c-ult 𝓞 y₁ y₂ n
             (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] c𝓞y₁＝₁
-             (Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ)))))
+             (Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ))))
     C𝓞-eq n n<ϵ (inr c𝓞y₁＝₁) (inr c𝓞y₂＝₁) = c𝓞y₁＝₁ ∙ c𝓞y₂＝₁ ⁻¹
 
 oracle-closeness : (Y : PseudoClosenessSpace 𝓥)

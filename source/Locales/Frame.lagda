@@ -651,7 +651,7 @@ map.
 \begin{code}
 
 ∅ : {A : 𝓤 ̇ } → (𝓦 : Universe) → Fam 𝓦 A
-∅ 𝓦 = 𝟘 {𝓦} , λ ()
+∅ 𝓦 = 𝟘 {𝓦} , 𝟘-elim
 
 𝟎[_] : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩
 𝟎[ F ] = ⋁[ F ] (∅ _)
@@ -661,7 +661,7 @@ is-bottom F b = Ɐ x ꞉ ⟨ F ⟩ , (b ≤[ poset-of F ] x)
 
 𝟎-is-bottom : (F : Frame 𝓤 𝓥 𝓦)
             → (x : ⟨ F ⟩) → (𝟎[ F ] ≤[ poset-of F ] x) holds
-𝟎-is-bottom F x = ⋁[ F ]-least (𝟘 , λ ()) (x , λ ())
+𝟎-is-bottom F x = ⋁[ F ]-least (𝟘 , 𝟘-elim) (x , 𝟘-induction)
 
 only-𝟎-is-below-𝟎 : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
                   → (x ≤[ poset-of F ] 𝟎[ F ]) holds → x ＝ 𝟎[ F ]

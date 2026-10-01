@@ -221,10 +221,10 @@ propositional extensionality, which are consequences of univalence:
    A = Σ x₀ ꞉ Ω 𝓤 , (p x₀ ＝ ₁ → (x : Ω 𝓤) → p x ＝ ₁)
 
    a : p ⊥ ＝ ₀ → A
-   a r = ⊥ , λ s → 𝟘-elim (zero-is-not-one
-                            (₀   ＝⟨ r ⁻¹ ⟩
-                             p ⊥ ＝⟨ s ⟩
-                             ₁   ∎))
+   a r = ⊥ , λ s → zero-is-one-elim
+                    (₀   ＝⟨ r ⁻¹ ⟩
+                     p ⊥ ＝⟨ s ⟩
+                     ₁   ∎)
 
    b : p ⊥ ＝ ₁ → A
    b r = ⊤ , ⊥-⊤-density fe pe p r

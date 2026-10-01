@@ -65,7 +65,8 @@ open import Ordinals.Underlying
   g = ( ⋆ ,_)
 
   f-order-preserving : is-order-preserving (𝟙ₒ {𝓤} ×ₒ α) α f
-  f-order-preserving x y (inl p) = p
+  f-order-preserving x y (inl p)       = p
+  f-order-preserving x y (inr (e , q)) = 𝟘-elim q
 
   f-is-equiv : is-equiv f
   f-is-equiv = qinvs-are-equivs f (g , (λ _ → refl) , (λ _ → refl))
@@ -85,6 +86,7 @@ open import Ordinals.Underlying
   g = (_, ⋆ )
 
   f-order-preserving : is-order-preserving (α ×ₒ 𝟙ₒ {𝓤}) α f
+  f-order-preserving x y (inl p)          = 𝟘-elim p
   f-order-preserving x y (inr (refl , p)) = p
 
   f-is-equiv : is-equiv f
@@ -157,6 +159,11 @@ at present.
   f-order-preserving (a , inr c) (a' , inr c') (inl p) = inl p
   f-order-preserving (a , inl b) (a' , inl .b) (inr (refl , q)) = inr (refl , q)
   f-order-preserving (a , inr c) (a' , inr .c) (inr (refl , q)) = inr (refl , q)
+  f-order-preserving (a , inl b) (a' , inr c') (inr (e , q)) =
+   𝟘-elim (+disjoint e)
+  f-order-preserving (a , inr c) (a' , inl b') (inl p) = 𝟘-elim p
+  f-order-preserving (a , inr c) (a' , inl b') (inr (e , q)) =
+   𝟘-elim (+disjoint' e)
 
   f-is-equiv : is-equiv f
   f-is-equiv = qinvs-are-equivs f (g , η , ε)
@@ -174,6 +181,7 @@ at present.
   g-order-preserving (inl (a , b)) (inl (a' , .b)) (inr (refl , q)) =
    inr (refl , q)
   g-order-preserving (inl (a , b)) (inr (a' , c')) p = inl ⋆
+  g-order-preserving (inr (a , c)) (inl b')        p       = 𝟘-elim p
   g-order-preserving (inr (a , c)) (inr (a' , c')) (inl p) = inl p
   g-order-preserving (inr (a , c)) (inr (a' , c')) (inr (refl , q)) =
    inr (refl , q)
@@ -231,6 +239,7 @@ useful when working with simulations between products.
   g-order-preserving (inl (x , y , p)) (inl (x' , y' , p')) (inr (refl , l)) =
    inr (refl , l)
   g-order-preserving (inl (x , y , p)) (inr (x' , q')) _ = inl p
+  g-order-preserving (inr (x , q))     (inl y')        l = 𝟘-elim l
   g-order-preserving (inr (x , q))     (inr (x' , q')) l = inr (refl , l)
 
 \end{code}
@@ -1096,6 +1105,7 @@ Some special cases of multiplication by ω.
   g' : (n : ℕ) → division-theorem n 1 → ⟨ 𝟚ₒ ⟩ × ℕ
   g' n (k , 0 , p , l) = inl ⋆ , k
   g' n (k , 1 , p , l) = inr ⋆ , k
+  g' n (k , succ (succ j) , p , l) = 𝟘-elim l
 
   g : ℕ → ⟨ 𝟚ₒ ⟩ × ℕ
   g n = g' n (division n 1)
@@ -1122,12 +1132,16 @@ Some special cases of multiplication by ω.
       τ : sdouble k ＝ sdouble n
       τ = ap succ (double-is-self-addition k) ∙ p ⁻¹ ∙ r
 
+    η' (inl ⋆ , n) m r (k , succ (succ j) , p , l) = 𝟘-elim l
+    η' (inr ⋆ , n) m r (k , succ (succ j) , p , l) = 𝟘-elim l
+
     η : (λ x → g (f x)) ∼ id
     η x = η' x (f x) refl (division (f x) 1)
 
     ϵ' : (n : ℕ) → (d : division-theorem n 1) → f (g' n d) ＝ n
     ϵ' n (k , 0 , refl , l) = double-is-self-addition k
     ϵ' n (k , 1 , refl , l) = ap succ (double-is-self-addition k)
+    ϵ' n (k , succ (succ j) , p , l) = 𝟘-elim l
 
     ϵ : (λ n → f (g n)) ∼ id
     ϵ n = ϵ' n (division n 1)
@@ -1152,6 +1166,7 @@ Some special cases of multiplication by ω.
                 (double-is-self-addition x)
                 (double-is-self-addition y)
                 (≤-adding x y (succ x) y (≤-trans x (succ x) y (≤-succ x) p) p)
+  f-preserves-order (inl ⋆ , x) (inl ⋆ , y) (inr (refl , q)) = 𝟘-elim q
   f-preserves-order (inl ⋆ , x) (inr ⋆ , x) (inr (refl , _)) = ≤-refl _
   f-preserves-order (inr ⋆ , x) (inl ⋆ , x) (inr (refl , q)) = 𝟘-elim q
   f-preserves-order (inr ⋆ , x) (inr ⋆ , x) (inr (refl , q)) = 𝟘-elim q

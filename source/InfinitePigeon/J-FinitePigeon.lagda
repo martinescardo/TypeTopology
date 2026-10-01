@@ -46,7 +46,7 @@ Finite-Pigeonhole-K {R} α m =
                     (∀(n : smaller m) → s(coerce n) < s(fsucc n))
                   ∧ (∀(n : smaller(m + 1)) → K{R}(α(s n) ≡ b))
 
-postulate conjecture : {A : Set} → A
+postulate conjecture : {A : Type} → A
 
 finite-pigeonhole-lemma : {R : Ω}
                           (α : ₂ℕ)

@@ -29,7 +29,8 @@ open import Ordinals.BrouwerCodesDiscreteAndCompactInterpretations fe
 open import Ordinals.Closure fe
 open import Ordinals.Equivalence
 open import Ordinals.InductiveRecursiveCodesInterpretations fe
-       using (E ; ⌜𝟙⌝ ; ⌜ω+𝟙⌝ ; _⌜+⌝_ ; _⌜×⌝_ ; ⌜Σ⌝ ; E-is-set ; 𝓚)
+       using (E ; ⌜𝟙⌝ ; ⌜ω+𝟙⌝ ; _⌜+⌝_ ; _⌜×⌝_ ; ⌜Σ⌝ ; E-is-set ; 𝓚 ;
+              is-⌜+⌝ ; is-⌜Σ⌝)
        renaming (Δ to Δᴱ ; Κ to Κᴱ)
 open import Ordinals.Injectivity
 open import Ordinals.ToppedArithmetic fe
@@ -63,6 +64,12 @@ B-to-E (L b) = ⌜Σ⌝ ⌜ω+𝟙⌝ (cases (λ n → B-to-E (b n)) (λ _ → �
 
 B-to-E-lc : left-cancellable B-to-E
 B-to-E-lc {Z}   {Z}    p = refl
+B-to-E-lc {Z}   {S b'} p = 𝟘-elim (transport is-⌜+⌝ (p ⁻¹) ⋆)
+B-to-E-lc {Z}   {L b'} p = 𝟘-elim (transport is-⌜Σ⌝ (p ⁻¹) ⋆)
+B-to-E-lc {S b} {Z}    p = 𝟘-elim (transport is-⌜+⌝ p ⋆)
+B-to-E-lc {S b} {L b'} p = 𝟘-elim (transport is-⌜+⌝ p ⋆)
+B-to-E-lc {L b} {Z}    p = 𝟘-elim (transport is-⌜Σ⌝ p ⋆)
+B-to-E-lc {L b} {S b'} p = 𝟘-elim (transport is-⌜Σ⌝ p ⋆)
 B-to-E-lc {S b} {S b'} p = ap S (B-to-E-lc (ap plus-left p))
  where
   plus-left : E → E

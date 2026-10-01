@@ -40,10 +40,14 @@ open import Locales.Frame pt fe hiding (𝟚; ₀; ₁)
 
       2-ord-is-transitive : is-transitive 2-ord holds
       2-ord-is-transitive ₀ y z p q = ⋆
+      2-ord-is-transitive ₁ ₀ z p q = 𝟘-elim p
+      2-ord-is-transitive ₁ ₁ ₀ p q = 𝟘-elim q
       2-ord-is-transitive ₁ ₁ ₁ p q = ⋆
 
     2-ord-is-antisymmetric : is-antisymmetric 2-ord
     2-ord-is-antisymmetric {₀} {₀} p q = refl
+    2-ord-is-antisymmetric {₀} {₁} p q = 𝟘-elim q
+    2-ord-is-antisymmetric {₁} {₀} p q = 𝟘-elim p
     2-ord-is-antisymmetric {₁} {₁} p q = refl
 
 \end{code}

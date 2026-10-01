@@ -6,7 +6,9 @@ Martin Escardo and Paulo Oliva 2011
 
 module InfinitePigeon.Two where
 
-data ₂ : Set where
+open import InfinitePigeon.Logic
+
+data ₂ : Type where
  ₀ : ₂
  ₁ : ₂
 

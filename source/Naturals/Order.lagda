@@ -47,7 +47,8 @@ zero-least' : (n : ℕ) → ¬ (succ n ≤ 0)
 zero-least' n l = l
 
 zero-least'' : (n : ℕ) → n ≤ 0 → n ＝ 0
-zero-least'' 0 l = refl
+zero-least'' 0        l = refl
+zero-least'' (succ n) l = 𝟘-elim l
 
 succ-monotone : (m n : ℕ) → m ≤ n → succ m ≤ succ n
 succ-monotone m n l = l
@@ -99,7 +100,7 @@ unique-least (succ n) l = 𝟘-elim l
 
 ≤-join : (m n : ℕ) → (m ≤ n) + (m ＝ succ n) → m ≤ succ n
 ≤-join m n (inl l) = ≤-trans m n (succ n) l (≤-succ n)
-≤-join .(succ n) n (inr refl) = ≤-refl n
+≤-join m n (inr refl) = ≤-refl n
 
 ≤-down : (m n : ℕ) → m ≤ succ n → (m ≠ succ n) → (m ≤ n)
 ≤-down m n l u = cases id (λ p → 𝟘-elim (u p)) (≤-split m n l)
@@ -215,7 +216,7 @@ course-of-values-induction-on-value-of-function
   A n = (x : X) → f x ＝ n → P x
 
   I : (n : ℕ) → ((m : ℕ) → m < n → A m) → A n
-  I .(f x) g x refl = h x (λ y l → g (f y) l y refl)
+  I n g x refl = h x (λ y l → g (f y) l y refl)
 
   II : (n : ℕ) → A n
   II = course-of-values-induction A I
@@ -257,6 +258,8 @@ Induction on z, then x, then y:
 ℕ-cotransitive : cotransitive _<_
 ℕ-cotransitive 0        y        0        l = inr l
 ℕ-cotransitive (succ x) y        0        l = inr (≤-trans 1 (succ(succ x)) y ⋆ l)
+ℕ-cotransitive 0        0        (succ z) l = 𝟘-elim l
+ℕ-cotransitive (succ x) 0        (succ z) l = 𝟘-elim l
 ℕ-cotransitive 0        (succ y) (succ z) l = inl (zero-least y)
 ℕ-cotransitive (succ x) (succ y) (succ z) l = γ IH
  where
@@ -405,6 +408,7 @@ open import Naturals.Addition renaming (_+_ to _∔_)
 
 minus-property : (m n : ℕ) (le : n ≤ m) → minus m n le ∔ n ＝ m
 minus-property 0        0        ⋆  = refl
+minus-property 0        (succ n) le = 𝟘-elim le
 minus-property (succ m) 0        ⋆  = refl
 minus-property (succ m) (succ n) le = ap succ (minus-property m n le)
 

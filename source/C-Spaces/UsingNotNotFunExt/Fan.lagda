@@ -44,9 +44,11 @@ Lemma[n≤2n] 0        = ≤-zero
 Lemma[n≤2n] (succ n) = ≤-trans (≤-succ (Lemma[n≤2n] n)) (Lemma[n≤n+1] (succ (n ×2)))
 
 Lemma[n<m→2n<2m] : ∀(n m : ℕ) → n < m → (n ×2) < (m ×2)
-Lemma[n<m→2n<2m] 0        0        ()
+Lemma[n<m→2n<2m] 0        0        h =
+ 𝟘-elim (successors-are-not-below-zero 0 h)
 Lemma[n<m→2n<2m] 0        (succ m) _          = ≤-succ ≤-zero
-Lemma[n<m→2n<2m] (succ n) 0        ()
+Lemma[n<m→2n<2m] (succ n) 0        h =
+ 𝟘-elim (successors-are-not-below-zero (succ n) h)
 Lemma[n<m→2n<2m] (succ n) (succ m) (≤-succ r) = ≤-succ (≤-succ (Lemma[n<m→2n<2m] n m r))
 
 
@@ -59,9 +61,11 @@ Lemma[n≤2n+1] 0        = ≤-zero
 Lemma[n≤2n+1] (succ n) = ≤-trans (≤-succ (Lemma[n≤2n+1] n)) (Lemma[n≤n+1] (succ (n ×2+1)))
 
 Lemma[n<m→2n+1<2m+1] : ∀(n m : ℕ) → n < m → (n ×2+1) < (m ×2+1)
-Lemma[n<m→2n+1<2m+1] 0        0        ()
+Lemma[n<m→2n+1<2m+1] 0        0        h =
+ 𝟘-elim (successors-are-not-below-zero 0 h)
 Lemma[n<m→2n+1<2m+1] 0        (succ m) _          = ≤-succ (≤-succ ≤-zero)
-Lemma[n<m→2n+1<2m+1] (succ n) 0        ()
+Lemma[n<m→2n+1<2m+1] (succ n) 0        h =
+ 𝟘-elim (successors-are-not-below-zero (succ n) h)
 Lemma[n<m→2n+1<2m+1] (succ n) (succ m) (≤-succ r) = ≤-succ (≤-succ (Lemma[n<m→2n+1<2m+1] n m r))
 
 
@@ -113,7 +117,8 @@ fan = f , cts
 
     lemma' : ∀(α β γ : ₂ℕ) → ∀(k : ℕ) → α ＝⟦ k ⟧ β → ∀(i : ℕ) → i < (k ×2)
            → merge α γ i ＝ merge β γ i
-    lemma' α β γ 0        aw i ()
+    lemma' α β γ 0        aw i h =
+     𝟘-elim (successors-are-not-below-zero i h)
     lemma' α β γ (succ k) aw 0 r = Lemma[＝⟦⟧-<] aw zero (≤-succ ≤-zero)
     lemma' α β γ (succ k) aw 1 r = refl
     lemma' α β γ (succ k) aw (succ (succ i)) (≤-succ (≤-succ r)) =

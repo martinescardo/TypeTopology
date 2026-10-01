@@ -137,10 +137,10 @@ formulations of the uniform continuity principle:
 
 \begin{code}
 
-UC : Set
+UC : Type
 UC = (f : ₂ℕ → ℕ) → ∥Σ (\(n : ℕ) → (α β : ₂ℕ) → α ＝⟦ n ⟧ β → f α ＝ f β) ∥
 
-CH-UC : Set
+CH-UC : Type
 CH-UC = (f : ₂ℕ → ℕ) → Σ \(n : ℕ) → (α β : ₂ℕ) → α ＝⟦ n ⟧ β → f α ＝ f β
 
 \end{code}

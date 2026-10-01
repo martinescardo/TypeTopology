@@ -433,9 +433,9 @@ by the type 𝟚):
 +-totally-separated X Y t u {inl x} {inl x'} φ =
     ap inl (t (λ p → φ (cases p (λ (_ : Y) → ₀))))
 +-totally-separated X Y t u {inl x} {inr y} φ =
-    𝟘-elim (zero-is-not-one (φ (cases (λ _ → ₀) (λ _ → ₁))))
+    zero-is-one-elim (φ (cases (λ _ → ₀) (λ _ → ₁)))
 +-totally-separated X Y t u {inr y} {inl x} φ =
-    𝟘-elim (zero-is-not-one (φ (cases (λ _ → ₁) (λ _ → ₀))))
+    zero-is-one-elim (φ (cases (λ _ → ₁) (λ _ → ₀)))
 +-totally-separated X Y t u {inr y} {inr y'} φ =
     ap inr (u (λ p → φ (cases (λ (_ : X) → ₀) p)))
 

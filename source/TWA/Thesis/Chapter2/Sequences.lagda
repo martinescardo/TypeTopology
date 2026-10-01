@@ -46,7 +46,7 @@ bounded-decidable-Π : {X : ℕ → 𝓤 ̇ }
                     → is-complemented X
                     → (n : ℕ)
                     → is-decidable (Π i ꞉ ℕ , (i < n → X i))
-bounded-decidable-Π d 0 = inl (λ _ ())
+bounded-decidable-Π d 0 = inl (λ _ → 𝟘-elim)
 bounded-decidable-Π {𝓤} {X} d (succ n)
  = Cases (bounded-decidable-Π d n) γ₁ (inr ∘ γ₂)
  where

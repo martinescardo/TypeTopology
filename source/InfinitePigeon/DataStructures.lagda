@@ -15,10 +15,11 @@ Some definitions of standard things
 
 open import InfinitePigeon.Addition
 open import InfinitePigeon.Finite
+open import InfinitePigeon.Logic
 open import InfinitePigeon.LogicalFacts
 open import InfinitePigeon.Naturals
 
-data List (X : Set) : Set where
+data List (X : Type) : Type where
  [] : List X
  _::_  : X → List X → List X
 
@@ -31,7 +32,7 @@ list:
 
 \begin{code}
 
-list : {m : ℕ} {X : Set} → (smaller m → X) → List X
+list : {m : ℕ} {X : Type} → (smaller m → X) → List X
 list {0} s = []
 list {succ m} s = s fzero :: list {m} (s ∘ fsucc)
 
@@ -41,7 +42,7 @@ Binary products:
 
 \begin{code}
 
-data _×_ (X Y : Set) : Set where
+data _×_ (X Y : Type) : Type where
  _,_ : X → Y → X × Y
 
 infixr 20 _,_
@@ -69,7 +70,7 @@ Take a finite initial sublist of an infinite sequence.
 
 \begin{code}
 
-take : (m : ℕ) {X : Set} → (ℕ → X) → List X
+take : (m : ℕ) {X : Type} → (ℕ → X) → List X
 take 0 α = []
 take (succ m) α = α 0 :: take m (α ∘ succ)
 

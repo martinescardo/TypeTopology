@@ -49,6 +49,7 @@ open import MLTT.Athenian
 open import MLTT.Fin
 open import MLTT.Spartan hiding (J)
 open import MonadOnTypes.K
+open import Naturals.Properties
 open import UF.FunExt
 
 \end{code}
@@ -461,6 +462,12 @@ module example₁ where
  wikipedia-q (𝟏 , 𝟏 , _ , _ , ⟨⟩) = 7
  wikipedia-q (𝟐 , 𝟎 , _ , _ , ⟨⟩) = 5
  wikipedia-q (𝟐 , _ , _ , _ , ⟨⟩) = 9
+ wikipedia-q (𝟎 , 𝟎 , 𝟏 , suc (suc (suc i)) , ⟨⟩) = 𝟘-elim (Fin-0-is-empty i)
+ wikipedia-q (𝟎 , 𝟎 , suc (suc i) , _ , ⟨⟩)       = 𝟘-elim (Fin-0-is-empty i)
+ wikipedia-q (𝟎 , suc (suc i) , _ , _ , ⟨⟩)       = 𝟘-elim (Fin-0-is-empty i)
+ wikipedia-q (𝟏 , 𝟎 , suc (suc i) , _ , ⟨⟩)       = 𝟘-elim (Fin-0-is-empty i)
+ wikipedia-q (𝟏 , suc (suc i) , _ , _ , ⟨⟩)       = 𝟘-elim (Fin-0-is-empty i)
+ wikipedia-q (suc (suc (suc i)) , _ , _ , _ , ⟨⟩) = 𝟘-elim (Fin-0-is-empty i)
 
  open import Naturals.Order
  open minimax
@@ -844,6 +851,8 @@ module _ {𝓤 : Universe}
 
  perm-tree : {n : ℕ} → Vector' X n → 𝑻 {𝓤}
  perm-tree {0}        ([] , _) = []
+ perm-tree {0}        ((x ∷ xs) , p) =
+  𝟘-elim (positive-not-zero (length xs) p)
  perm-tree {succ n} v@(xs , _) = type-from-list xs
                                ∷ λ (_ , m) → perm-tree {n} (delete v m)
 
@@ -851,6 +860,10 @@ module _ {𝓤 : Universe}
                         (v : Vector' X n)
                       → structure listed⁺ (perm-tree {n} v)
  perm-tree-is-listed⁺ {0}      ([]         , _) = ⟨⟩
+ perm-tree-is-listed⁺ {0}      ((x ∷ xs)   , p) =
+  𝟘-elim (positive-not-zero (length xs) p)
+ perm-tree-is-listed⁺ {succ n} ([]         , p) =
+  𝟘-elim (zero-not-positive n p)
  perm-tree-is-listed⁺ {succ n} (xs@(y ∷ _) , p) = ((y , in-head) , type-from-list-is-listed xs)
                                                 :: λ (_ , m) → perm-tree-is-listed⁺ {n}
                                                                 (delete (xs , p) m)

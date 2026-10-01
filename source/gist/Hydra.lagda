@@ -33,6 +33,9 @@ data Hydra : 𝓤₀ ̇ where
 
 pattern Head = Node []
 
+heads : Hydra → List Hydra
+heads (Node hs) = hs
+
 example₁ : Hydra
 example₁ = Node (Node [] ∷ [])
 
@@ -78,11 +81,27 @@ cons-mult : {X : 𝓤 ̇ } → X → ℕ → List X → List X
 cons-mult x 0 xs = xs
 cons-mult x (succ n) xs = x ∷ (cons-mult x n xs)
 
+HeadLocation₀-gives-is-non-empty : {hs : List Hydra}
+                                 → HeadLocation₀ hs
+                                 → is-non-empty hs
+HeadLocation₀-gives-is-non-empty here     = ⋆
+HeadLocation₀-gives-is-non-empty (next l) = ⋆
+
+HeadLocation₁-gives-is-non-empty : {hs : List Hydra}
+                                 → HeadLocation₁ hs
+                                 → is-non-empty hs
+HeadLocation₁-gives-is-non-empty (here₀ l) = ⋆
+HeadLocation₁-gives-is-non-empty (here₁ l) = ⋆
+HeadLocation₁-gives-is-non-empty (next  l) = ⋆
+
 cut₀ : (hs : List Hydra) → HeadLocation₀ hs → List Hydra
+cut₀ []       l         = 𝟘-elim (HeadLocation₀-gives-is-non-empty l)
 cut₀ (h ∷ hs) (here)    = hs
 cut₀ (h ∷ hs) (next l)  = h ∷ (cut₀ hs l)
 
 cut₁ : ℕ → (hs : List Hydra) → HeadLocation₁ hs → List Hydra
+cut₁ n []                l         =
+ 𝟘-elim (HeadLocation₁-gives-is-non-empty l)
 cut₁ n (h ∷ hs')         (next  l) = h ∷ (cut₁ n hs' l)
 cut₁ n ((Node hs) ∷ hs') (here₀ l) = cons-mult (Node (cut₀ hs l)) (succ n) hs'
 cut₁ n ((Node hs) ∷ hs') (here₁ l) = Node (cut₁ n hs l) ∷ hs'
@@ -115,8 +134,8 @@ pattern step₁ n l eq = (n , inr (l , eq))
 ⊲⇒⊲' (step n (inr l) refl) = step₁ n l refl
 
 []-is-minimum : (hs : List Hydra) → ¬(hs ⊲' [])
-[]-is-minimum h (step₀ _ () _)
-[]-is-minimum h (step₁ _ () _)
+[]-is-minimum h (step₀ _ l _) = 𝟘-elim (HeadLocation₀-gives-is-non-empty l)
+[]-is-minimum h (step₁ _ l _) = 𝟘-elim (HeadLocation₁-gives-is-non-empty l)
 
 ⊲-is-well-founded : is-well-founded _⊲_
 ⊲'-is-well-founded : is-well-founded _⊲'_
@@ -162,7 +181,7 @@ leftmost-head₀ : (hs : List Hydra) → hs ≠ []
 leftmost-head₀ []                    neq = 𝟘-elim (neq refl)
 leftmost-head₀ (Head ∷ _)            neq = inl here
 leftmost-head₀ ((Node (h ∷ hs)) ∷ _) neq =
- leftmost-head₀' (leftmost-head₀ (h ∷ hs) (λ ()))
+ leftmost-head₀' (leftmost-head₀ (h ∷ hs) (λ p → []-is-not-cons h hs (p ⁻¹)))
  where
   leftmost-head₀' : HeadLocation₀ (h ∷ hs) + HeadLocation₁ (h ∷ hs)
                   → HeadLocation₀ _ + HeadLocation₁ _
@@ -171,7 +190,8 @@ leftmost-head₀ ((Node (h ∷ hs)) ∷ _) neq =
 
 leftmost-head : (h : Hydra) → h ≠ Head → HeadLocation h
 leftmost-head Head            neq = 𝟘-elim (neq refl)
-leftmost-head (Node (h ∷ hs)) neq = leftmost-head₀ (h ∷ hs) (λ ())
+leftmost-head (Node (h ∷ hs)) neq =
+ leftmost-head₀ (h ∷ hs) (λ p → []-is-not-cons h hs (p ⁻¹))
 
 f-Hydra : (n : ℕ) → ℕ
 f-Hydra n = battle 1 (tall-hydra n) (⊲-is-well-founded _)
@@ -186,7 +206,8 @@ f-Hydra n = battle 1 (tall-hydra n) (⊲-is-well-founded _)
    succ (battle (succ turn) cut-hydra (rec₁ cut-hydra (turn , cut-head , refl)))
    where
     cut-head : HeadLocation (Node (h ∷ hs))
-    cut-head = leftmost-head _ (λ ())
+    cut-head = leftmost-head _
+                (λ p → []-is-not-cons h hs ((ap heads p) ⁻¹))
 
     cut-hydra : Hydra
     cut-hydra = cut turn (Node (h ∷ hs)) cut-head

@@ -29,7 +29,7 @@ C = uniformly-continuous-₂ℕ
 
 infixl 4 _∈_
 
-_∈_ : {X : Set} → X → (X → Set) → Set
+_∈_ : {X : Type} → X → (X → Set) → Set
 x ∈ A = A x
 
 \end{code}
@@ -77,7 +77,7 @@ Theorem[Coverage-axiom] m t tC = n , prf
         sclaim₁ : t (cons s α) (i + m) ＝ t (cons s β) (i + m)
         sclaim₁ = sclaim₀ (i + m) (Lemma[a<b→a+c<b+c] i k m i<k)
         sclaim₂ : t' α i ＝ t (cons s β) (i + m)
-        sclaim₂ = eq α i ∙ sclaim₁ 
+        sclaim₂ = eq α i ∙ sclaim₁
       claim₁ : ∀(α β : ₂ℕ) → α ＝⟦ l ⟧ β
              → t (cons s α) ＝⟦ k + m ⟧ t (cons s β) → t' α ＝⟦ k ⟧ t' β
       claim₁ α β el ekm = Lemma[<-＝⟦⟧] (claim₀ α β el ekm)

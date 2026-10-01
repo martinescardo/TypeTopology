@@ -105,7 +105,7 @@ made into a pointed dcpo:
 \begin{code}
 
 𝕊𝓓⊥ : DCPO⊥ {𝓤 ⁺} {𝓤}
-𝕊𝓓⊥ = 𝕊𝓓 , (𝟘 , (λ ()) , 𝟘-is-prop) , λ _ → (λ ()) , λ ()
+𝕊𝓓⊥ = 𝕊𝓓 , (𝟘 , 𝟘-elim , 𝟘-is-prop) , λ _ → 𝟘-induction , 𝟘-induction
 
 \end{code}
 

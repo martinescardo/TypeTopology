@@ -930,14 +930,20 @@ total-fiber-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → (Σ y ꞉ Y , Σ x ꞉ X , f x ＝ y) ≃ X
 total-fiber-is-domain {𝓤} {𝓥} {X} {Y} f = ≃-sym (domain-is-total-fiber f)
 
+based-contraction : {X : 𝓤 ̇ } {x₀ : X} (P : (x : X) → x ＝ x₀ → 𝓥 ̇ )
+                  → (Σ x ꞉ X , Σ p ꞉ x ＝ x₀ , P x p) ≃ P x₀ refl
+based-contraction {𝓤} {𝓥} {X} {x₀} P =
+ (Σ x ꞉ X , Σ p ꞉ x ＝ x₀ , P x p)        ≃⟨ ≃-sym Σ-assoc ⟩
+ (Σ (x , p) ꞉ singleton-type' x₀ , P x p) ≃⟨ I ⟩
+ P x₀ refl                                ■
+  where
+   I = prop-indexed-sum
+        (singleton'-center x₀)
+        (singleton-types'-are-props x₀)
+
 left-Id-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X)
               → (Σ x' ꞉ X , (x' ＝ x) × Y x') ≃ Y x
-left-Id-equiv {𝓤} {𝓥} {X} {Y} x =
-   (Σ x' ꞉ X , (x' ＝ x) × Y x')            ≃⟨ ≃-sym Σ-assoc ⟩
-   (Σ (x' , _) ꞉ singleton-type' x , Y x') ≃⟨ a ⟩
-   Y x                                     ■
-  where
-   a = prop-indexed-sum (singleton'-center x) (singleton-types'-are-props x)
+left-Id-equiv {𝓤} {𝓥} {X} {Y} x = based-contraction (λ x' _ → Y x')
 
 right-Id-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X)
                → (Σ x' ꞉ X , Y x' × (x' ＝ x)) ≃ Y x

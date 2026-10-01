@@ -221,6 +221,7 @@ doubleton-is-set {𝓤} {X} x₀ x₁ i = subsets-of-sets-are-sets
 doubleton-map : {X : 𝓤 ̇ } (x₀ x₁ : X) → Fin 2 → doubleton x₀ x₁
 doubleton-map x₀ x₁ 𝟎 = x₀ , ∣ inl refl ∣
 doubleton-map x₀ x₁ 𝟏 = x₁ , ∣ inr refl ∣
+doubleton-map x₀ x₁ (suc (suc i)) = 𝟘-elim i
 
 doubleton-map-is-surjection : {X : 𝓤 ̇ } {x₀ x₁ : X}
                             → is-surjection (doubleton-map x₀ x₁)
@@ -248,7 +249,8 @@ decidable-equality-gives-doubleton-finite x₀ x₁ X-is-set δ = γ δ
     l = 𝟎 , c
      where
       c : is-central (Fin 1) 𝟎
-      c 𝟎 = refl
+      c 𝟎       = refl
+      c (suc i) = 𝟘-elim i
 
     m : is-singleton (doubleton x₀ x₁)
     m = (doubleton-map x₀ x₁ 𝟎 , c)
@@ -267,6 +269,9 @@ decidable-equality-gives-doubleton-finite x₀ x₁ X-is-set δ = γ δ
     doubleton-map-lc {𝟎} {𝟏} p = 𝟘-elim (ν (ap pr₁ p))
     doubleton-map-lc {𝟏} {𝟎} p = 𝟘-elim (ν (ap pr₁ (p ⁻¹)))
     doubleton-map-lc {𝟏} {𝟏} p = refl
+    doubleton-map-lc {suc (suc i)} {k} p = 𝟘-elim i
+    doubleton-map-lc {𝟎} {suc (suc i)} p = 𝟘-elim i
+    doubleton-map-lc {𝟏} {suc (suc i)} p = 𝟘-elim i
 
     doubleton-map-is-embedding : is-embedding (doubleton-map x₀ x₁)
     doubleton-map-is-embedding = lc-maps-into-sets-are-embeddings
@@ -296,7 +301,9 @@ doubleton-finite-gives-decidable-equality fe x₀ x₁ X-is-set ϕ = δ
   γ (1 , s) = inl (∥∥-rec X-is-set β s)
    where
     α : is-prop (Fin 1)
-    α 𝟎 𝟎 = refl
+    α (suc i) y       = 𝟘-elim i
+    α 𝟎       (suc i) = 𝟘-elim i
+    α 𝟎       𝟎       = refl
 
     β : doubleton x₀ x₁ ≃ Fin 1 → x₀ ＝ x₁
     β (g , i) = ap pr₁ (equivs-are-lc g i
@@ -411,16 +418,18 @@ no-selection ua ϕ = γ
 𝟚-is-Fin2 = qinveq (𝟚-cases 𝟎 𝟏) (g , η , ε)
  where
   g : Fin 2 → 𝟚
-  g 𝟎 = ₀
-  g 𝟏 = ₁
+  g 𝟎             = ₀
+  g 𝟏             = ₁
+  g (suc (suc i)) = 𝟘-elim i
 
   η : g ∘ 𝟚-cases 𝟎 𝟏 ∼ id
   η ₀ = refl
   η ₁ = refl
 
   ε : 𝟚-cases 𝟎 𝟏 ∘ g ∼ id
-  ε 𝟎 = refl
-  ε 𝟏 = refl
+  ε 𝟎             = refl
+  ε 𝟏             = refl
+  ε (suc (suc i)) = 𝟘-elim i
 
 no-orderability-of-finite-types :
 

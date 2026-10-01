@@ -29,6 +29,7 @@ module Integers.Parity where
 ℤzero-not-odd : (n : ℤ) → ℤodd n → ¬ (n ＝ pos 0)
 ℤzero-not-odd (pos 0)        on e = on
 ℤzero-not-odd (pos (succ n)) on e = positive-not-zero n (pos-lc e)
+ℤzero-not-odd (negsucc n)    on e = 𝟘-elim (negsucc-not-pos e)
 
 ℤeven-is-prop : (n : ℤ) → is-prop (ℤeven n)
 ℤeven-is-prop n = even-is-prop (abs n)

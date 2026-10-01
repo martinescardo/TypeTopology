@@ -18,7 +18,7 @@ Classical existential quantifier:
 
 \begin{code}
 
-K∃ : {R : Ω} → {X : Set} → (A : X → Ω) → Ω
+K∃ : {R : Ω} → {X : Type} → (A : X → Ω) → Ω
 K∃ {R} {X} A = K {R} (∃ {X} A)
 
 \end{code}
@@ -27,7 +27,7 @@ Another one (which is not fully investigated here):
 
 \begin{code}
 
-J∃ : {R : Ω} → {X : Set} → (A : X → Ω) → Ω
+J∃ : {R : Ω} → {X : Type} → (A : X → Ω) → Ω
 J∃ {R} {X} A = J {R} (∃ {X} A)
 
 \end{code}
@@ -38,7 +38,7 @@ K∃ is really the classical existential quantifier:
 
 K-exists-implies-not-forall-not
  : {R : Ω}
-   {X : Set}
+   {X : Type}
    {A : X → Ω}
  → (K∃ \(x : X) → A x)
  → (∀ (x : X) → A x → R) → R
@@ -47,7 +47,7 @@ K-exists-implies-not-forall-not = contra-positive forall-not-implies-not-exists
 
 not-forall-not-implies-K-exists
  : {R : Ω}
-   {X : Set}
+   {X : Type}
    {A : X → Ω}
   → ((∀(x : X) → A x → R) → R)
   → K∃ \(x : X) → A x
@@ -55,7 +55,7 @@ not-forall-not-implies-K-exists = contra-positive not-exists-implies-forall-not
  where
   NB-special-case
    : {R : Ω}
-     {X : Set}
+     {X : Type}
      {A : X → Ω}
    → ((∀(x : X) → K(A x)) → R)
    →  K∃ \(x : X) → A x → R
@@ -63,7 +63,7 @@ not-forall-not-implies-K-exists = contra-positive not-exists-implies-forall-not
 
 K-∃-shift
  : {R : Ω}
-   {X : Set}
+   {X : Type}
    {A : X → Ω}
  → (∃ \(x : X) → K(A x))
  → K∃ \(x : X) → A x

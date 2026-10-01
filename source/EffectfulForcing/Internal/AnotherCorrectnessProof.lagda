@@ -351,7 +351,7 @@ evaluation of the extracted Church-encoded dialogue tree.
 ⌜dialogue-tree⌝-correct t α = eq₀  ∙ eq₁ ⁻¹
  where
   cor : Rι α (⟦ t ⟧₀ α) (⟦ ⌜ t ⌝ · ⌜generic⌝ ⟧₀)
-  cor = FundamentalLemma α t ⟨⟩ ⟨⟩ (λ ()) α ⟦ ⌜generic⌝ ⟧₀ (RΩ α)
+  cor = FundamentalLemma α t ⟨⟩ ⟨⟩ ∈Cxt-〈〉-elim α ⟦ ⌜generic⌝ ⟧₀ (RΩ α)
   d : 𝒟
   d = pr₁ cor
   r : d represents ⟦ ⌜ t ⌝ · ⌜generic⌝ ⟧₀

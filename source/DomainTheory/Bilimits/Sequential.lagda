@@ -91,7 +91,16 @@ Define repeated compositions of εs.
  ε⁺-helper-on-succ : (n m k : ℕ) (p : n +' succ k ＝ succ m)
                    → ε⁺-helper n (succ m) (succ k) p
                    ∼ ε m ∘ ε⁺-helper n m k (succ-lc p)
- ε⁺-helper-on-succ n m k refl x = refl
+ ε⁺-helper-on-succ n m k p x =
+  ap (λ - → ε⁺-helper n (succ m) (succ k) - x) (II p) ∙ I (succ-lc p) x
+   where
+    I : (q : n +' k ＝ m)
+      → ε⁺-helper n (succ m) (succ k) (ap succ q)
+      ∼ ε m ∘ ε⁺-helper n m k q
+    I refl _ = refl
+
+    II : {a b : ℕ} (q : succ a ＝ succ b) → q ＝ ap succ (succ-lc q)
+    II q = ℕ-is-set q (ap succ (succ-lc q))
 
  ε⁺-helper-Σ : (n m : ℕ) → (Σ k ꞉ ℕ , n +' k ＝ m) → ⟨ 𝓓 n ⟩ → ⟨ 𝓓 m ⟩
  ε⁺-helper-Σ n m (k , p) = ε⁺-helper n m k p
@@ -115,7 +124,16 @@ Similarly for π.
  π⁺-helper-on-succ : (n m k : ℕ) (p : n +' succ k ＝ succ m)
                    → π⁺-helper n (succ m) (succ k) p
                    ∼ π⁺-helper n m k (succ-lc p) ∘ π m
- π⁺-helper-on-succ n m k refl x = refl
+ π⁺-helper-on-succ n m k p x =
+  ap (λ - → π⁺-helper n (succ m) (succ k) - x) (II p) ∙ I (succ-lc p) x
+   where
+    I : (q : n +' k ＝ m)
+      → π⁺-helper n (succ m) (succ k) (ap succ q)
+      ∼ π⁺-helper n m k q ∘ π m
+    I refl _ = refl
+
+    II : {a b : ℕ} (q : succ a ＝ succ b) → q ＝ ap succ (succ-lc q)
+    II q = ℕ-is-set q (ap succ (succ-lc q))
 
  π⁺-helper-Σ : (n m : ℕ) → (Σ k ꞉ ℕ , n +' k ＝ m) → ⟨ 𝓓 m ⟩ → ⟨ 𝓓 n ⟩
  π⁺-helper-Σ n m (k , p) = π⁺-helper n m k p

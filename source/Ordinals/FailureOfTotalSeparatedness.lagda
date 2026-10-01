@@ -388,10 +388,10 @@ finite-semidecider-gives-𝓕 {u} ξ (n , p) = h (ι u n) refl
       ₀                   ∎
 
   h : (c : 𝟚) → ι u n ＝ c → 𝓕 ξ
-  h ₁ e = 𝟘-elim (zero-is-not-one
-                   (₀                   ＝⟨ I ⁻¹ ⟩
-                    raw-semidecider ξ n ＝⟨ 𝟚-equality-cases₁ e ⟩
-                    ₁                   ∎))
+  h ₁ e = zero-is-one-elim
+           (₀                   ＝⟨ I ⁻¹ ⟩
+            raw-semidecider ξ n ＝⟨ 𝟚-equality-cases₁ e ⟩
+            ₁                   ∎)
   h ₀ e = φ , complement₀ q
    where
     φ : is-finite u

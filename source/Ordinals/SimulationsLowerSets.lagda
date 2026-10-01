@@ -154,12 +154,12 @@ lower set into an ordinal recovers the domain β of the original simulation.
 
 Indeed, we have a commutative triangle
 
-   β ---f--> α
-    \       /
-     \     /
-      \   /
-       \ /
-        v
+   β ----f---> α
+    \         ^
+     \       /
+      \     /
+       \   /
+        v /
        im f
 
 where the top map (f) is an embedding (all simulations are), as is the right map

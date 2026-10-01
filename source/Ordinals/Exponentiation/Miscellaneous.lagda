@@ -47,6 +47,8 @@ open PropositionalTruncation pt
 open suprema pt sr
 
 Fin-ordinal-_^ₒω-is-ω_ : (k : ℕ) → 1 < k → Fin-ordinal k ^ₒ ω ＝ ω
+Fin-ordinal- 0 ^ₒω-is-ω p = 𝟘-elim p
+Fin-ordinal- (succ 0) ^ₒω-is-ω p = 𝟘-elim p
 Fin-ordinal- k@(succ (succ k')) ^ₒω-is-ω p =
   𝕜 ^ₒ ω                           ＝⟨ ap (𝕜 ^ₒ_) ω-is-sup-of-Fin ⟩
   𝕜 ^ₒ (sup (λ n → Fin-ordinal n)) ＝⟨ I ⟩

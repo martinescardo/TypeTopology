@@ -73,12 +73,16 @@ extract {n} {σ₁} {Γ ’ σ} (S x) d = extract x (pr₁ d)
                    → x ⊑⟨(【 Γ 】 ⁻)⟩ y
                    → (z : Γ ∋ σ)
                    → extract z x ⊑⟨(⟦ σ ⟧ ⁻)⟩ extract z y
-Γ₁⊑Γ₂→lookups-less {.(succ _)} {Γ ’ σ} {.σ} x y e Z     = pr₂ e
-Γ₁⊑Γ₂→lookups-less {.(succ _)} {Γ ’ τ} {σ}  x y e (S z) =
+Γ₁⊑Γ₂→lookups-less {n}      {⟨⟩}    {σ}  x y e z =
+ 𝟘-elim (∋-gives-Context-is-non-empty z)
+Γ₁⊑Γ₂→lookups-less {succ n} {Γ ’ σ} {σ}  x y e Z     = pr₂ e
+Γ₁⊑Γ₂→lookups-less {succ n} {Γ ’ τ} {σ}  x y e (S z) =
  Γ₁⊑Γ₂→lookups-less (pr₁ x) (pr₁ y) (pr₁ e) z
 
 ∘-of-prₓ-is-continuous : {n : ℕ} {Γ : Context n} {σ : type} (x : Γ ∋ σ)
                        → is-continuous (【 Γ 】 ⁻) (⟦ σ ⟧ ⁻) (extract x)
+∘-of-prₓ-is-continuous {n} {⟨⟩}    {σ} x =
+ 𝟘-elim (∋-gives-Context-is-non-empty x)
 ∘-of-prₓ-is-continuous {n} {Γ ’ σ} {σ} Z =
  continuity-of-function (【 Γ ’ σ 】 ⁻) (⟦ σ ⟧ ⁻)
   (pr₂-is-continuous (【 Γ 】 ⁻) (⟦ σ ⟧ ⁻))

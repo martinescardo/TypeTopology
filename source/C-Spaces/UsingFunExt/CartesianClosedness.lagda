@@ -111,7 +111,7 @@ X ⇒ Y = Map X Y , R , rc₀ , rc₁ , rc₂
       uc' = pr₁ (pr₂ (pr₂ (pr₂ (Theorem[Coverage-axiom] n t uc) s)))
       ex : ∀ α → t (cons s α) ∼ cons s' (t' α)
       ex = pr₂ (pr₂ (pr₂ (pr₂ (Theorem[Coverage-axiom] n t uc) s)))
-      eq : cons s' ∘ t' ＝ t ∘ cons s 
+      eq : cons s' ∘ t' ＝ t ∘ cons s
       eq = (fe (λ α → fe (ex α)))⁻¹
            ----      ----
       psinP : (p ∘ (cons s)) ∈ Probe X
@@ -183,10 +183,10 @@ Arbitrary product of C-spaces
 
 \begin{code}
 
-∏ : {I : Set} → (I → Space) → Space
+∏ : {I : Type} → (I → Space) → Space
 ∏ {I} X = A , P , c₀ , c₁ , c₂
  where
-  A : Set
+  A : Type
   A = (i : I) → U(X i)
   π : (i : I) → A → U(X i)
   π i a = a i
@@ -204,7 +204,7 @@ Arbitrary product of C-spaces
   c₂ p (n , pr) i = cond₂ (X i) ((π i) ∘ p) (n , λ s → pr s i)
 
 
-continuous-π : {I : Set} → (X : I → Space) → (i : I) → Map (∏ X) (X i)
+continuous-π : {I : Type} → (X : I → Space) → (i : I) → Map (∏ X) (X i)
 continuous-π {I} X i = π , cts
  where
   π : U(∏ X) → U(X i)
@@ -214,7 +214,7 @@ continuous-π {I} X i = π , cts
 
 
 universal-property-∏ :
-    {I : Set} → ∀(X : I → Space) →
+    {I : Type} → ∀(X : I → Space) →
     ∀(Y : Space) → ∀(f : (i : I) → Map Y (X i)) →
     Σ \(g : Map Y (∏ X)) →
       ∀(i : I) → ∀(y : U Y) → pr₁(continuous-π X i)(pr₁ g y) ＝ pr₁ (f i) y

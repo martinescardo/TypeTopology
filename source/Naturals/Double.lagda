@@ -20,11 +20,18 @@ double-is-not-sdouble : {m n : ℕ} → double m ≠ sdouble n
 double-is-not-sdouble {0}      {0}      = zero-not-positive 0
 double-is-not-sdouble {0}      {succ n} = zero-not-positive
                                            (succ (succ (double n)))
+double-is-not-sdouble {succ m} {0}      = λ p → positive-not-zero
+                                                 (double m)
+                                                 (succ-lc p)
 double-is-not-sdouble {succ m} {succ n} = λ p → double-is-not-sdouble
                                                  (succ-lc (succ-lc p))
 
 double-lc : {m n : ℕ} → double m ＝ double n → m ＝ n
 double-lc {0}      {0}      p = refl
+double-lc {0}      {succ n} p =
+ 𝟘-elim (zero-not-positive (succ (double n)) p)
+double-lc {succ m} {0}      p =
+ 𝟘-elim (positive-not-zero (succ (double m)) p)
 double-lc {succ m} {succ n} p = ap succ IH
  where
   IH : m ＝ n
@@ -48,10 +55,13 @@ open import Notation.Order
 
 double-reflects-≤ : {x y : ℕ} → double x ≤ double y → x ≤ y
 double-reflects-≤ {zero} {y} _ = ⋆
+double-reflects-≤ {succ x} {zero}   p = 𝟘-elim p
 double-reflects-≤ {succ x} {succ y} p = double-reflects-≤ {x} {y} p
 
 double-reflects-< : {x y : ℕ} → double x < double y → x < y
 double-reflects-< {zero} {succ y} _ = ⋆
+double-reflects-< {zero}   {zero}   p = 𝟘-elim p
+double-reflects-< {succ x} {zero}   p = 𝟘-elim p
 double-reflects-< {succ x} {succ y} p = double-reflects-< {x} {y} p
 
 \end{code}

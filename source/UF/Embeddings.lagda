@@ -467,13 +467,21 @@ This can be deduced directly from Yoneda.
 
 inl-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                  → is-embedding (inl {𝓤} {𝓥} {X} {Y})
-inl-is-embedding {𝓤} {𝓥} X Y (inl a) (a , refl) (a , refl) = refl
-inl-is-embedding {𝓤} {𝓥} X Y (inr b) (x , p) (x' , p') = 𝟘-elim (+disjoint p)
+inl-is-embedding {𝓤} {𝓥} X Y =
+ embedding'-gives-embedding
+  inl
+  (λ x x' → qinvs-are-equivs
+             (ap inl)
+             (inl-lc , inl-lc-is-retraction , inl-lc-is-section))
 
 inr-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                  → is-embedding (inr {𝓤} {𝓥} {X} {Y})
-inr-is-embedding {𝓤} {𝓥} X Y (inl b) (x , p) (x' , p') = 𝟘-elim (+disjoint' p)
-inr-is-embedding {𝓤} {𝓥} X Y (inr a) (a , refl) (a , refl) = refl
+inr-is-embedding {𝓤} {𝓥} X Y =
+ embedding'-gives-embedding
+  inr
+  (λ x x' → qinvs-are-equivs
+             (ap inr)
+             (inr-lc , inr-lc-is-retraction , inr-lc-is-section))
 
 maps-of-props-into-sets-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
                                        → is-prop P

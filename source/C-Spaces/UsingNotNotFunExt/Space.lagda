@@ -17,17 +17,17 @@ C-topologies and C-spaces
 
 \begin{code}
 
-probe-axioms : (X : Set) → ((₂ℕ → X) → Set) → Set
+probe-axioms : (X : Type) → ((₂ℕ → X) → Set) → Set
 probe-axioms X P =
     (∀(x : X) → (λ α → x) ∈ P)
   × (∀(t : ₂ℕ → ₂ℕ) → t ∈ C → ∀(p : ₂ℕ → X) → p ∈ P → p ∘ t ∈ P)
   × (∀(p : ₂ℕ → X) → (Σ n ꞉ ℕ , ∀(s : ₂Fin n) → p ∘ cons s ∈ P) → p ∈ P)
   × (∀(p q : ₂ℕ → X) → p ∈ P → (∀ α → ¬¬ (p α ＝ q α)) → q ∈ P)
 
-TopologyOn : Set → Set₁
+TopologyOn : Type → Set₁
 TopologyOn X = Σ P ꞉ ((₂ℕ → X) → Set) , probe-axioms X P
 
-Space : Set₁
+Space : Type₁
 Space = Σ X ꞉ Set , TopologyOn X
 
 U : Space → Set

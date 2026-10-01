@@ -35,7 +35,7 @@ The arbitrary product of indiscrete spaces is indiscrete.
 
 Proposition[∏-indiscrete] :
 
-  ∀{I : Set} (X : I → Space) → (∀ i → indiscrete (X i)) → indiscrete (∏ X)
+  ∀{I : Type} (X : I → Space) → (∀ i → indiscrete (X i)) → indiscrete (∏ X)
 
 Proposition[∏-indiscrete] X indX p = goal
  where

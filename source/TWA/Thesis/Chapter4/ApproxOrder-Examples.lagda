@@ -174,6 +174,7 @@ module ΣOrder-Relates (pt : propositional-truncations-exist) where
 
 \begin{code}
 _≤Fin_ : {n : ℕ} → Fin n → Fin n → 𝓤₀ ̇
+_≤Fin_ {0}      x y = 𝟘-elim x
 _≤Fin_ {succ n} 𝟎 y = 𝟙
 _≤Fin_ {succ n} (suc x) 𝟎 = 𝟘
 _≤Fin_ {succ n} (suc x) (suc y) = x ≤Fin y
@@ -182,12 +183,17 @@ _≤Fin_ {succ n} (suc x) (suc y) = x ≤Fin y
 ≤Fin-is-preorder {n} = r , t , p
  where
   r : {n : ℕ} → reflexive (_≤Fin_ {n})
+  r {0}      x = 𝟘-elim x
   r {succ n} 𝟎 = ⋆
   r {succ n} (suc x) = r x
   t : {n : ℕ} → transitive (_≤Fin_ {n})
+  t {0}      x y z u v = 𝟘-elim x
   t {succ n} 𝟎 y z _ _ = ⋆
+  t {succ n} (suc x) 𝟎       z       u v = 𝟘-elim u
+  t {succ n} (suc x) (suc y) 𝟎       u v = 𝟘-elim v
   t {succ n} (suc x) (suc y) (suc z) = t x y z
   p : {n : ℕ} → is-prop-valued (_≤Fin_ {n})
+  p {0}      x y = 𝟘-elim x
   p {succ n} 𝟎 y = 𝟙-is-prop
   p {succ n} (suc x) 𝟎 = 𝟘-is-prop
   p {succ n} (suc x) (suc y) = p x y
@@ -197,7 +203,10 @@ _≤Fin_ {succ n} (suc x) (suc y) = x ≤Fin y
  = ≤Fin-is-preorder , a'
  where
   a' : {n : ℕ} → antisymmetric (_≤Fin_ {n})
+  a' {0}      x y x≤y y≤x = 𝟘-elim x
   a' {succ n} 𝟎 𝟎 x≤y y≤x = refl
+  a' {succ n} (suc x) 𝟎       x≤y y≤x = 𝟘-elim x≤y
+  a' {succ n} 𝟎       (suc y) x≤y y≤x = 𝟘-elim y≤x
   a' {succ n} (suc x) (suc y) x≤y y≤x = ap suc (a' x y x≤y y≤x)
 
 ≤Fin-is-linear-preorder
@@ -205,6 +214,7 @@ _≤Fin_ {succ n} (suc x) (suc y) = x ≤Fin y
 ≤Fin-is-linear-preorder {n} = ≤Fin-is-preorder , l
  where
   l : {n : ℕ} → linear (_≤Fin_ {n})
+  l {0}      x y = 𝟘-elim x
   l {succ n} 𝟎 y = inl ⋆
   l {succ n} (suc x) 𝟎 = inr ⋆
   l {succ n} (suc x) (suc y) = l x y
@@ -266,13 +276,13 @@ discrete-lexicorder-is-preorder d _≤_ ((r' , t' , p') , a') = r , t , p
  r x n _ = r' (x n)
  t : transitive (discrete-lexicorder d _≤_)
  t x y z x≤y y≤z 0 x∼ⁿz
-  = t' (x 0) (y 0) (z 0) (x≤y 0 (λ _ ())) (y≤z 0 (λ _ ()))
+  = t' (x 0) (y 0) (z 0) (x≤y 0 (λ _ → 𝟘-elim)) (y≤z 0 (λ _ → 𝟘-elim))
  t x y z x≤y y≤z (succ n) x∼ⁿz
   = t (tail x) (tail y) (tail z) γ₁ γ₂ n (x∼ⁿz ∘ succ)
     where
      e : x 0 ＝ y 0
-     e = a' (x 0) (y 0) (x≤y 0 (λ _ ()))
-          (transport (y 0 ≤_) (x∼ⁿz 0 ⋆ ⁻¹) (y≤z 0 (λ _ ())))
+     e = a' (x 0) (y 0) (x≤y 0 (λ _ → 𝟘-elim))
+          (transport (y 0 ≤_) (x∼ⁿz 0 ⋆ ⁻¹) (y≤z 0 (λ _ → 𝟘-elim)))
      γ₁ : discrete-lexicorder d _≤_ (tail x) (tail y)
      γ₁ i tx∼ⁿty = x≤y (succ i) ζ
       where
@@ -300,6 +310,10 @@ linear-finite-lexicorder-implies-linear-ℕ∞-order
  → linear
     (discrete-lexicorder (finite-is-discrete f) (finite-order f))
  → linear _≼ℕ∞_
+linear-finite-lexicorder-implies-linear-ℕ∞-order (0 , _)      p l u v =
+ 𝟘-elim p
+linear-finite-lexicorder-implies-linear-ℕ∞-order (succ 0 , _) p l u v =
+ 𝟘-elim p
 linear-finite-lexicorder-implies-linear-ℕ∞-order
  {𝓤} {F} f@(succ (succ n) , (g , (h , η) , _)) _ l u v
  = Cases (l (ρ ∘ pr₁ u) (ρ ∘ pr₁ v)) (inl ∘ γ u v) (inr ∘ γ v u)
@@ -324,6 +338,7 @@ linear-finite-lexicorder-implies-linear-ℕ∞-order
                 (transport (λ - → ¬ (𝟏 ≤Fin -)) (η 𝟎 ⁻¹) id) gh1≤gh0)
     ₁-gρ-maximal ₁ _ = refl
     u∼ⁿv : (n : ℕ) → pr₁ u n ＝ ₁ → (pr₁ u ∼ⁿ pr₁ v) n
+    u∼ⁿv zero     uₙ=₁ i i<sn = 𝟘-elim i<sn
     u∼ⁿv (succ n) uₙ=₁ i i<sn
      = ⊏-trans' i (succ n) u i<sn uₙ=₁
      ∙ ⊏-trans'' v n i i<sn (γ u v u≤v n (⊏-back u n uₙ=₁)) ⁻¹
@@ -372,14 +387,15 @@ discrete-approx-lexicorder-is-approx-order
   t : (n : ℕ)
     → transitive (λ x y → discrete-approx-lexicorder ds _≤_ x y n)
   t n x y z x≤y y≤z 0 i<n x∼ⁱz
-   = t' (x 0) (y 0) (z 0) (x≤y 0 i<n (λ _ ())) (y≤z 0 i<n (λ _ ()))
+   = t' (x 0) (y 0) (z 0) (x≤y 0 i<n (λ _ → 𝟘-elim)) (y≤z 0 i<n (λ _ → 𝟘-elim))
+  t zero     x y z x≤y y≤z (succ i) i<n x∼ⁱz = 𝟘-elim i<n
   t (succ n) x y z x≤y y≤z (succ i) i<n x∼ⁱz
    = t n (tail x) (tail y) (tail z) γ₁ γ₂ i i<n (x∼ⁱz ∘ succ)
    where
     e : x 0 ＝ y 0
     e = a' (x 0) (y 0)
-           (x≤y 0 ⋆ (λ _ ()))
-           (transport (y 0 ≤_) (x∼ⁱz 0 ⋆ ⁻¹) (y≤z 0 ⋆ (λ _ ())))
+           (x≤y 0 ⋆ (λ _ → 𝟘-elim))
+           (transport (y 0 ≤_) (x∼ⁱz 0 ⋆ ⁻¹) (y≤z 0 ⋆ (λ _ → 𝟘-elim)))
     γ₁ : (j : ℕ)
        → j < n
        → (tail x ∼ⁿ tail y) j
@@ -404,7 +420,7 @@ discrete-approx-lexicorder-is-approx-order
   l : (ϵ : ℕ) → (x y : ℕ → D)
     → discrete-approx-lexicorder ds _≤_ x y ϵ
     + discrete-approx-lexicorder ds _≤_ y x ϵ
-  l 0 x y = inl (λ _ ())
+  l 0 x y = inl (λ _ → 𝟘-elim)
   l (succ ϵ) x y
    = γ (l ϵ (tail x) (tail y))
        (l' (head x) (head y)) (ds (head x) (head y))
@@ -447,7 +463,7 @@ discrete-approx-lexicorder-is-approx-order
       ζ (succ i) i<sϵ x∼ⁱy = 𝟘-elim (hx≠hy (x∼ⁱy 0 ⋆))
   d : (ϵ : ℕ) (x y : ℕ → D)
     → is-decidable (discrete-approx-lexicorder ds _≤_ x y ϵ)
-  d 0 x y = inl (λ _ ())
+  d 0 x y = inl (λ _ → 𝟘-elim)
   d (succ ϵ) x y
    = Cases (d ϵ x y)
        (λ x≤ᵉy → γ₁ x≤ᵉy

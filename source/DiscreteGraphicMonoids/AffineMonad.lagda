@@ -87,6 +87,7 @@ module _ {X : 𝓤 ̇ }
    𝑓 = ext⁻ (ι ∘ f)
 
    I : (𝔁𝓼 : List⁻ X) → is-non-empty (ι 𝔁𝓼) → is-non-empty (ι (𝑓 𝔁𝓼))
+   I ([] , a)       ν = 𝟘-elim ν
    I ((x • xs) , a) ⋆ = I₁
     where
      b : ρ xs ＝ xs
@@ -152,6 +153,7 @@ affine⁻⁺ = qinvs-are-equivs f (g , gf , fg)
    g _ = ⋆
 
    fg : f ∘ g ∼ id
+   fg (([] , a) , ν) = 𝟘-elim ν
    fg (((⋆ • []) , refl) , cons-is-non-empty) = refl
    fg (((⋆ • ⋆ • xs) , no-reps) , cons-is-non-empty) =
     𝟘-elim (repetition-lemma ⋆ xs no-reps)

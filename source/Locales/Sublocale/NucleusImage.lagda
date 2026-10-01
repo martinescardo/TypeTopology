@@ -72,5 +72,5 @@ fixed-points-of-nucleus-are-its-image X j 𝓃 =
 
 \end{code}
 
-[Joh82]: Peter T. Johstone. Stone Spaces. Cambridge Studies in Advanced
+[Joh82]: Peter T. Johnstone. Stone Spaces. Cambridge Studies in Advanced
          Mathematics. Cambridge, 1982. ISBN: 978-0-521-33779-3

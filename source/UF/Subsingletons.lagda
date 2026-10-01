@@ -194,17 +194,6 @@ subsets-of-props-are-props : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
 subsets-of-props-are-props X Y h p =
  subtypes-of-props-are-props' pr₁ (pr₁-lc p) h
 
-inl-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                    {x x' : X}
-                    (p : inl {𝓤} {𝓥} {X} {Y} x ＝ inl x')
-                  → p ＝ ap inl (inl-lc p)
-inl-lc-is-section refl = refl
-
-inr-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {y y' : Y}
-                    (p : inr {𝓤} {𝓥} {X} {Y} y ＝ inr y')
-                  → p ＝ ap inr (inr-lc p)
-inr-lc-is-section refl = refl
-
 \end{code}
 
 The following says that, in particular, for any proposition P, we have

@@ -5,7 +5,7 @@ This is an Agda companion for the preprint
    Compact totally separated types
    -------------------------------
 
-   https://arxiv.org/abs/2609.10447v3, 27th September 2026
+   https://arxiv.org/abs/2609.10447v3, 28th September 2026
 
    Martín Hötzel Escardó
    https://www.cs.bham.ac.uk/~mhe/

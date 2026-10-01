@@ -42,22 +42,30 @@ module _ {n : ℕ} where
 ⟦_⟧-lc n = embeddings-are-lc ⟦_⟧ (⟦_⟧-is-embedding n)
 
 coerce : {n : ℕ} {i : Fin n} → Fin ⟦ i ⟧ → Fin n
+coerce {0}      {i}     x       = 𝟘-elim i
+coerce {succ n} {𝟎}     x       = 𝟘-elim x
 coerce {succ n} {suc i} 𝟎       = 𝟎
 coerce {succ n} {suc i} (suc j) = suc (coerce j)
 
 coerce-lc : {n : ℕ} {i : Fin n} (j k : Fin ⟦ i ⟧)
           → coerce {n} {i} j ＝ coerce {n} {i} k → j ＝ k
+coerce-lc {0}      {i}     j       k       p = 𝟘-elim i
+coerce-lc {succ n} {𝟎}     j       k       p = 𝟘-elim j
 coerce-lc {succ n} {suc i} 𝟎       𝟎       p = refl
 coerce-lc {succ n} {suc i} 𝟎       (suc j) p = 𝟘-elim (+disjoint' p)
 coerce-lc {succ n} {suc i} (suc j) 𝟎       p = 𝟘-elim (+disjoint p)
 coerce-lc {succ n} {suc i} (suc j) (suc k) p = ap suc (coerce-lc {n} j k (suc-lc p))
 
 incl : {n : ℕ} {k : ℕ} → k ≤ n → Fin k → Fin n
+incl {n} {0}      l i = 𝟘-elim i
+incl {0} {succ k} l i = 𝟘-elim l
 incl {succ n} {succ k} l 𝟎 = 𝟎
 incl {succ n} {succ k} l (suc i) = suc (incl l i)
 
 incl-lc : {n : ℕ} {k : ℕ} (l : k ≤ n)
         → (i j : Fin k) → incl l i ＝ incl l j → i ＝ j
+incl-lc {n} {0}      l i j p = 𝟘-elim i
+incl-lc {0} {succ k} l i j p = 𝟘-elim l
 incl-lc {succ n} {succ k} l 𝟎       𝟎       p = refl
 incl-lc {succ n} {succ k} l 𝟎       (suc j) p = 𝟘-elim (positive-not-𝟎 (p ⁻¹))
 incl-lc {succ n} {succ k} l (suc i) 𝟎       p = 𝟘-elim (positive-not-𝟎 p)
@@ -70,6 +78,7 @@ _╱_ :  (n : ℕ) → Fin n → Fin (succ n)
 n ╱ k = incl (≤-succ n) k
 
 mirror : {n : ℕ} → Fin n → Fin n
+mirror {0}            i = 𝟘-elim i
 mirror {succ n}       𝟎 = ⟪ n ⟫
 mirror {succ n} (suc k) = n ╱ mirror {n} k
 

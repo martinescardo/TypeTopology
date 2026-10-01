@@ -127,6 +127,7 @@ succ-ℕ₋₂-assoc m (succ n) = ap succ (succ-ℕ₋₂-assoc m n)
 
 subtraction-ℕ₋₂ : (m n : ℕ₋₂) → m ≤ n → Σ k ꞉ ℕ , m + k ＝ n
 subtraction-ℕ₋₂ −2 n o = (ℕ₋₂-to-ℕ' (n + 2) , telescoping-sum-2 n)
+subtraction-ℕ₋₂ (succ m) −2       o = 𝟘-elim o
 subtraction-ℕ₋₂ (succ m) (succ n) o = (k , p)
  where
   IH : Σ k ꞉ ℕ , m + k ＝ n

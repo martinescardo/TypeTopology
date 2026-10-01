@@ -207,7 +207,7 @@ a suitable induction hypothesis.
   w : complement (β 0) ＝ ₁
   w = complement₁-back (at-most-one-₁-Lemma₁ β π (positive-not-zero n) p)
 
-γ-lemma β π 0 p (succ k) ()
+γ-lemma β π 0 p (succ k) l = 𝟘-elim l
 γ-lemma β π (succ n) p (succ k) l = w
  where
   IH : γ β k ＝ ₁

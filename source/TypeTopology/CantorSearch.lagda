@@ -39,7 +39,7 @@ private
   where
    f : (n₀ : 𝟚) → p ₀ ＝ n₀ → p n₀ ＝ ₁ → (n : 𝟚) → p n ＝ ₁
    f ₀ s r ₀ = r
-   f ₀ s r ₁ = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
+   f ₀ s r ₁ = zero-is-one-elim (s ⁻¹ ∙ r)
    f ₁ s r ₀ = s
    f ₁ s r ₁ = r
 

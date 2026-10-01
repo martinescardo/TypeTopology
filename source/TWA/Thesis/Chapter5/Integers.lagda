@@ -14,6 +14,7 @@ open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Order
+open import Naturals.Properties
 open import Notation.Order hiding (_≤_≤_)
 open import UF.Base
 open import UF.Subsingletons
@@ -178,7 +179,7 @@ pred-shift a b = ℤ-left-pred a (ℤ- b)
    γ' : 0 ＝ succ n
    γ' = pos-lc (ℤ+-lc _ _ a (a<a ⁻¹ ∙ ℤ-left-succ-pos a n))
    γ : 0 ≠ succ n
-   γ ()
+   γ = zero-not-positive n
 
 ≤-succℤ' : (x y : ℤ) → succℤ x ≤ succℤ y → x ≤ y
 ≤-succℤ' x y (n , e) = n , succℤ-lc (ℤ-left-succ x (pos n) ⁻¹ ∙ e)
@@ -329,10 +330,13 @@ odd-is-prop (negsucc               1) = 𝟘-is-prop
 odd-is-prop (negsucc (succ (succ x))) = odd-is-prop (negsucc x)
 
 succ-odd-is-even : (x : ℤ) → odd x → even (succℤ x)
+succ-odd-is-even (pos                          0) o = 𝟘-elim o
 succ-odd-is-even (pos                          1) o = id
 succ-odd-is-even (pos            (succ (succ x))) o
  = succ-odd-is-even (pos x) o
 succ-odd-is-even (negsucc                      0) o = id
+succ-odd-is-even (negsucc                      1) o = 𝟘-elim o
+succ-odd-is-even (negsucc                      2) o = id
 succ-odd-is-even (negsucc (succ (succ (succ x)))) o
  = succ-odd-is-even (negsucc (succ x)) o
 
@@ -350,11 +354,13 @@ succ-even-is-odd (negsucc (succ (succ (succ x)))) e
 odd-succ-succ : (x : ℤ) → odd x → odd (succℤ (succℤ x))
 odd-succ-succ (pos x) = id
 odd-succ-succ (negsucc zero) = id
+odd-succ-succ (negsucc (succ zero)) o = 𝟘-elim o
 odd-succ-succ (negsucc (succ (succ x))) = id
 
 even-succ-succ : (x : ℤ) → even x → even (succℤ (succℤ x))
 even-succ-succ (pos x) = id
 even-succ-succ (negsucc zero) = id
+even-succ-succ (negsucc (succ zero)) e o = 𝟘-elim o
 even-succ-succ (negsucc (succ (succ x))) = id
 
 negation-preserves-parity : (x : ℤ) → even x → even (ℤ- x)
@@ -396,6 +402,7 @@ even-lemma (negsucc x) = even-lemma-neg x
 odd-succ-succ' : (k : ℤ) → odd (succℤ (succℤ k)) → odd k
 odd-succ-succ' (pos x) = id
 odd-succ-succ' (negsucc zero) = id
+odd-succ-succ' (negsucc (succ zero)) o = 𝟘-elim o
 odd-succ-succ' (negsucc (succ (succ x))) = id
 
 even-succ-succ' : (k : ℤ) → even (succℤ (succℤ k)) → even k
@@ -407,6 +414,8 @@ even-succ-succ' (negsucc (succ 0)) e = id
 even-succ-succ' (negsucc (succ (succ x))) e = e
 
 times-two-even' : (k : ℤ) → even (k +ℤ k)
+times-two-even' (pos zero) odd2k = 𝟘-elim odd2k
+times-two-even' (negsucc zero) odd2k = 𝟘-elim odd2k
 times-two-even' (pos (succ k)) odd2k
  = times-two-even' (pos k)
      (odd-succ-succ' (pos k +ℤ pos k) (transport odd I odd2k))

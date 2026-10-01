@@ -84,10 +84,11 @@ module _ (ua : Univalence) where
    f (inr ⋆) = ⊤
 
    i : is-initial-segment 𝟚ₒ Ωₒ f
-   i (inl ⋆) .⊥ (refl , e) = 𝟘-elim (⊥-is-not-⊤ e)
-   i (inr ⋆) .⊥ (refl , _) = inl ⋆ , ⋆ , refl
+   i (inl ⋆) q (refl , e) = 𝟘-elim (⊥-is-not-⊤ e)
+   i (inr ⋆) q (refl , _) = inl ⋆ , ⋆ , refl
 
    p : is-order-preserving 𝟚ₒ Ωₒ f
+   p (inl ⋆) (inl x) l = 𝟘-elim l
    p (inl ⋆) (inr x) ⋆ = refl , refl
    p (inr ⋆) (inl x) l = 𝟘-elim l
    p (inr ⋆) (inr x) l = 𝟘-elim l

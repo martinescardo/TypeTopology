@@ -156,8 +156,8 @@ rec⋆ {σ} {A} f x = Kleisli-extension⋆ {ℕ} {A} {σ} (rec (f ∘ η⋆) x)
 B⋆【_】 : {n : ℕ} (Γ : Cxt n) (A : 𝓤₀ ̇ ) → 𝓤₀ ̇
 B⋆【 Γ 】 A = (i : Fin _) → B⋆〖 Γ [ i ] 〗 A
 
-⟪⟫⋆ : {A : 𝓤₀ ̇ } → B⋆【 〈〉 】 A
-⟪⟫⋆ ()
+⟪⟫⋆ : {A : Type} → B⋆【 〈〉 】 A
+⟪⟫⋆ i = 𝟘-elim (Fin-0-is-empty i)
 
 _‚‚⋆_ : {n : ℕ} {Γ : Cxt n} {A : 𝓤₀ ̇ } {σ : type}
       → B⋆【 Γ 】 A

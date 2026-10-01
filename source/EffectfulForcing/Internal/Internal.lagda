@@ -25,8 +25,8 @@ open import EffectfulForcing.Internal.SystemT
 B⋆【_】 : (Γ : Cxt) (A : 𝓤₀ ̇ ) → 𝓤₀ ̇
 B⋆【 Γ 】 A = {σ : type} (i : ∈Cxt σ Γ) → B⋆〖 σ 〗 A
 
-⟪⟫⋆ : {A : 𝓤₀ ̇ } → B⋆【 〈〉 】 A
-⟪⟫⋆ ()
+⟪⟫⋆ : {A : Type} → B⋆【 〈〉 】 A
+⟪⟫⋆ i = 𝟘-elim (∈Cxt-gives-Cxt-is-non-empty i)
 
 _‚‚⋆_ : {Γ : Cxt} {A : 𝓤₀ ̇ } {σ : type}
       → B⋆【 Γ 】 A
@@ -157,6 +157,8 @@ B-context【_】 (Γ ,, σ) A = B-context【_】 Γ A ,, B-type〖 σ 〗 A
 
 ∈Cxt-B-type : {Γ : Cxt} {A : type} {σ : type} (i : ∈Cxt σ Γ)
             → ∈Cxt (B-type〖 σ 〗 A) (B-context【 Γ 】 A)
+∈Cxt-B-type {〈〉}     {A} {σ} i =
+ 𝟘-elim (∈Cxt-gives-Cxt-is-non-empty i)
 ∈Cxt-B-type {Γ ,, σ} {A} {σ} (∈Cxt0 Γ) = ∈Cxt0 (B-context【 Γ 】 A)
 ∈Cxt-B-type {Γ ,, τ} {A} {σ} (∈CxtS τ i) = ∈CxtS (B-type〖 τ 〗 A) (∈Cxt-B-type i)
 

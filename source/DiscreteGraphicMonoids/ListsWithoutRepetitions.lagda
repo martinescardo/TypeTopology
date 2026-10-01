@@ -168,6 +168,7 @@ one.
  ρ (x • xs) = x • δ x (ρ xs)
 
  ρ-is-non-empty : (xs : List X) → is-non-empty xs → is-non-empty (ρ xs)
+ ρ-is-non-empty []       ν                 = 𝟘-elim ν
  ρ-is-non-empty (x • xs) cons-is-non-empty = cons-is-non-empty
 
  δ-ρ-cancel : (x : X) (ys : List X)
@@ -319,6 +320,7 @@ affine, in DiscreteGraphicMonoids.AffineMonad.
 
  δ-deletion-lemma : (y : X) (xs : List X)
                   → ¬ (Σ zs ꞉ List X , (δ y xs ＝ y • zs))
+ δ-deletion-lemma y []       (zs , p) = []-is-not-cons y zs p
  δ-deletion-lemma y (x • xs) (zs , p) = h (d y x)
   where
    h : ¬ is-decidable (y ＝ x)
@@ -643,6 +645,10 @@ module _ {X : 𝓤 ̇ }
             → ρ (map f ys) ＝ ρ (map f ys'))
      → (ys : List X) → ρ xs ＝ ρ ys → ρ (map f xs) ＝ ρ (map f ys)
    h [] IH [] refl = refl
+   h [] IH (y • ys) e =
+    𝟘-elim ([]-is-not-cons y (δ y (ρ ys)) e)
+   h (x • xs) IH [] e =
+    𝟘-elim ([]-is-not-cons x (δ x (ρ xs)) (e ⁻¹))
    h (x • xs) IH (y • ys) e = II
     where
      I = ρ (δ x xs) ＝⟨ (δ-ρ-swap x xs)⁻¹ ⟩
