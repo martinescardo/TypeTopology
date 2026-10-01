@@ -111,25 +111,43 @@ We now describe ways to "construct" and "destruct" native 𝕎
 identifications, which are mutually inverse and hence induce an
 equivalence.
 
+We first do this for arbitrary elements of 𝕎, using the accessors
+W-root and W-forest, and then get the case of elements given by ssup as
+an instance.
+
 \begin{code}
+
+W-Code : 𝕎 → 𝕎 → 𝓤 ⊔ 𝓥 ̇
+W-Code w t = Σ p ꞉ W-root w ＝ W-root t ,
+                   (W-forest w ＝ W-forest t ∘ transport A p)
+
+W-code : (w t : 𝕎) → w ＝ t → W-Code w t
+W-code w _ refl = refl , refl
+
+W-decode : (w t : 𝕎) → W-Code w t → w ＝ t
+W-decode (ssup x φ) (ssup x' φ') (refl , f) = ap (ssup x) f
+
+W-decode-code : (w t : 𝕎) (q : w ＝ t)
+              → W-decode w t (W-code w t q) ＝ q
+W-decode-code (ssup x φ) _ refl = refl
 
 to-W-＝ : {x  : X} {φ  : A x  → 𝕎}
           {x' : X} {φ' : A x' → 𝕎}
         → (Σ p ꞉ x ＝ x' , (φ ＝ φ' ∘ transport A p))
         → ssup x φ ＝[ 𝕎 ] ssup x' φ'
-to-W-＝ {x} {φ} {x} {φ'} (refl , f) = ap (ssup x) f
+to-W-＝ {x} {φ} {x'} {φ'} = W-decode (ssup x φ) (ssup x' φ')
 
 from-W-＝ : {x  : X} {φ  : A x  → 𝕎}
               {x' : X} {φ' : A x' → 𝕎}
             → ssup x φ ＝[ 𝕎 ] ssup x' φ'
             → (Σ p ꞉ x ＝ x' , (φ ＝ φ' ∘ transport A p))
-from-W-＝ refl = refl , refl
+from-W-＝ {x} {φ} {x'} {φ'} = W-code (ssup x φ) (ssup x' φ')
 
 to-from-W-＝ : {x  : X} {φ  : A x  → 𝕎}
                {x' : X} {φ' : A x' → 𝕎}
             → (q : ssup x φ ＝[ 𝕎 ] ssup x' φ')
             → to-W-＝ (from-W-＝ q) ＝ q
-to-from-W-＝ refl = refl
+to-from-W-＝ {x} {φ} {x'} {φ'} = W-decode-code (ssup x φ) (ssup x' φ')
 
 from-to-W-＝ : {x  : X} {φ  : A x  → 𝕎}
                {x' : X} {φ' : A x' → 𝕎}
@@ -188,11 +206,18 @@ W-is-set fe X-is-set {ssup x φ} {ssup x' φ'} = γ
      h : (λ (p : ssup x (λ v → φ v) ＝ ssup x' (λ v → φ' v))
          → to-W-＝ (pr₁ (from-W-＝ p) , dfunext fe (happly (pr₂ (from-W-＝ p)))))
        ∼ id
-     h refl =  ap (ssup x) (dfunext fe (happly refl)) ＝⟨ I ⟩
-               ap (ssup x) refl                       ＝⟨refl⟩
-               refl                                   ∎
-                where
-                 I = ap (ap (ssup x)) (funext-happly fe φ φ refl)
+     h = k (ssup x' φ')
+      where
+       k : (t : 𝕎) (p : ssup x φ ＝ t)
+         → W-decode (ssup x φ) t
+            (pr₁ (W-code (ssup x φ) t p) ,
+             dfunext fe (happly (pr₂ (W-code (ssup x φ) t p))))
+         ＝ p
+       k _ refl = ap (ssup x) (dfunext fe (happly refl)) ＝⟨ I ⟩
+                  ap (ssup x) refl                       ＝⟨refl⟩
+                  refl                                   ∎
+                   where
+                    I = ap (ap (ssup x)) (funext-happly fe φ φ refl)
 
   γ : is-prop (ssup x φ ＝ ssup x' φ')
   γ = retract-of-prop β α

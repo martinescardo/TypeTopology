@@ -55,8 +55,7 @@ zero-is-one-elim p = 𝟘-elim (zero-is-not-one p)
                     {f₁ : b ＝ ₁ → A}
                     (p : b ＝ ₀)
                   → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ＝ f₀ p
-𝟚-equality-cases₀ {𝓤} {A} {₀} refl = refl
-𝟚-equality-cases₀ {𝓤} {A} {₁} p    = one-is-zero-elim p
+𝟚-equality-cases₀ refl = refl
 
 𝟚-equality-cases₁ : {A : 𝓤 ̇ }
                     {b : 𝟚}
@@ -64,8 +63,7 @@ zero-is-one-elim p = 𝟘-elim (zero-is-not-one p)
                     {f₁ : b ＝ ₁ → A}
                     (p : b ＝ ₁)
                   → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ＝ f₁ p
-𝟚-equality-cases₁ {𝓤} {A} {₀} p    = zero-is-one-elim p
-𝟚-equality-cases₁ {𝓤} {A} {₁} refl = refl
+𝟚-equality-cases₁ refl = refl
 
 𝟚-equality-cases' : {A₀ A₁ : 𝓤 ̇ } {b : 𝟚}
                   → (b ＝ ₀ → A₀) → (b ＝ ₁ → A₁) → A₀ + A₁
@@ -139,10 +137,10 @@ complement-involutive ₀ = refl
 complement-involutive ₁ = refl
 
 complement-lc : (b c : 𝟚) → complement b ＝ complement c → b ＝ c
-complement-lc ₀ ₀ refl = refl
-complement-lc ₀ ₁ p    = p ⁻¹
-complement-lc ₁ ₀ p    = p ⁻¹
-complement-lc ₁ ₁ refl = refl
+complement-lc ₀ ₀ _ = refl
+complement-lc ₀ ₁ p = p ⁻¹
+complement-lc ₁ ₀ p = p ⁻¹
+complement-lc ₁ ₁ _ = refl
 
 eq𝟚 : 𝟚 → 𝟚 → 𝟚
 eq𝟚 ₀ n = complement n
@@ -153,10 +151,10 @@ eq𝟚-equal ₀ n p = ap complement (p ⁻¹) ∙ complement-involutive n
 eq𝟚-equal ₁ n p = p ⁻¹
 
 equal-eq𝟚 : (m n : 𝟚) → m ＝ n → eq𝟚 m n ＝ ₁
-equal-eq𝟚 ₀ ₀ refl = refl
-equal-eq𝟚 ₀ ₁ p    = zero-is-one-elim p
-equal-eq𝟚 ₁ ₀ p    = one-is-zero-elim p
-equal-eq𝟚 ₁ ₁ refl = refl
+equal-eq𝟚 ₀ ₀ _ = refl
+equal-eq𝟚 ₀ ₁ p = zero-is-one-elim p
+equal-eq𝟚 ₁ ₀ p = one-is-zero-elim p
+equal-eq𝟚 ₁ ₁ _ = refl
 
 \end{code}
 
@@ -440,20 +438,20 @@ Lemma[b⊕c＝₁→b≠c] : {b c : 𝟚} → b ⊕ c ＝ ₁ → b ≠ c
 Lemma[b⊕c＝₁→b≠c] = (contrapositive Lemma[b＝c→b⊕c＝₀]) ∘ equal-₁-different-from-₀
 
 complement₀ : {a : 𝟚} → complement a ＝ ₀ → a ＝ ₁
-complement₀ {₀} p    = one-is-zero-elim p
-complement₀ {₁} refl = refl
+complement₀ {₀} p = one-is-zero-elim p
+complement₀ {₁} _ = refl
 
 complement₁ : {a : 𝟚} → complement a ＝ ₁ → a ＝ ₀
-complement₁ {₀} refl = refl
-complement₁ {₁} p    = zero-is-one-elim p
+complement₁ {₀} _ = refl
+complement₁ {₁} p = zero-is-one-elim p
 
 complement₁-back : {a : 𝟚} → a ＝ ₀ → complement a ＝ ₁
-complement₁-back {₀} refl = refl
-complement₁-back {₁} p    = one-is-zero-elim p
+complement₁-back {₀} _ = refl
+complement₁-back {₁} p = one-is-zero-elim p
 
 complement₀-back : {a : 𝟚} → a ＝ ₁ → complement a ＝ ₀
-complement₀-back {₀} p    = zero-is-one-elim p
-complement₀-back {₁} refl = refl
+complement₀-back {₀} p = zero-is-one-elim p
+complement₀-back {₁} _ = refl
 
 complement-one-gives-argument-not-one : {a : 𝟚} → complement a ＝ ₁ → a ≠ ₁
 complement-one-gives-argument-not-one {₀} p = zero-is-not-one
@@ -568,10 +566,10 @@ instance
  ι {{Canonical-Map-𝟚-ℕ}} = 𝟚-to-ℕ
 
 𝟚-to-ℕ-is-lc : left-cancellable 𝟚-to-ℕ
-𝟚-to-ℕ-is-lc {₀} {₀} refl = refl
-𝟚-to-ℕ-is-lc {₀} {₁} r    = 𝟘-elim (positive-not-zero 0 (r ⁻¹))
-𝟚-to-ℕ-is-lc {₁} {₀} r    = 𝟘-elim (positive-not-zero 0 r)
-𝟚-to-ℕ-is-lc {₁} {₁} refl = refl
+𝟚-to-ℕ-is-lc {₀} {₀} _ = refl
+𝟚-to-ℕ-is-lc {₀} {₁} r = 𝟘-elim (positive-not-zero 0 (r ⁻¹))
+𝟚-to-ℕ-is-lc {₁} {₀} r = 𝟘-elim (positive-not-zero 0 r)
+𝟚-to-ℕ-is-lc {₁} {₁} _ = refl
 
 C-B-embedding : (ℕ → 𝟚) → (ℕ → ℕ)
 C-B-embedding α = 𝟚-to-ℕ ∘ α
