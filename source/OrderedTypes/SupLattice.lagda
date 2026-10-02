@@ -125,21 +125,31 @@ as a special case.
 
 \begin{code}
 
-module _ where
+is-monotone : {𝓤 𝓤' 𝓣 𝓣' 𝓥 𝓥' : Universe}
+            → (L : Sup-Lattice 𝓤 𝓣 𝓥) (M : Sup-Lattice 𝓤' 𝓣' 𝓥')
+            → (f : ⟨ L ⟩ → ⟨ M ⟩)
+            → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
+is-monotone L M f = (x y : ⟨ L ⟩)
+                  → (x ≤⟨ L ⟩ y) holds
+                  → (f x ≤⟨ M ⟩ f y) holds
 
- is-monotone : {𝓤 𝓤' 𝓣 𝓣' 𝓥 𝓥' : Universe}
-             → (L : Sup-Lattice 𝓤 𝓣 𝓥) (M : Sup-Lattice 𝓤' 𝓣' 𝓥')
-             → (f : ⟨ L ⟩ → ⟨ M ⟩)
-             → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
- is-monotone L M f = (x y : ⟨ L ⟩)
-                   → (x ≤⟨ L ⟩ y) holds
-                   → (f x ≤⟨ M ⟩ f y) holds
+∘-presererves-monotone : {𝓤 𝓤' 𝓤'' 𝓣 𝓣' 𝓣'' 𝓥 𝓥' 𝓥'' : Universe}
+                         (L : Sup-Lattice 𝓤 𝓣 𝓥)
+                         (M : Sup-Lattice 𝓤' 𝓣' 𝓥')
+                         (N : Sup-Lattice 𝓤'' 𝓣'' 𝓥'')
+                         (f : ⟨ L ⟩ → ⟨ M ⟩)
+                         (g : ⟨ M ⟩ → ⟨ N ⟩)
+                       → is-monotone L M f
+                       → is-monotone M N g
+                       → is-monotone L N (g ∘ f)
+∘-presererves-monotone L M N f g f-mono g-mono x y x≤y
+ = g-mono (f x) (f y) (f-mono x y x≤y)
 
- is-monotone-endomap : {𝓤 𝓣 𝓥 : Universe}
-                     → (L : Sup-Lattice 𝓤 𝓣 𝓥)
-                     → (f : ⟨ L ⟩ → ⟨ L ⟩)
-                     → 𝓤 ⊔ 𝓣 ̇
- is-monotone-endomap L f = is-monotone L L f
+is-monotone-endomap : {𝓤 𝓣 𝓥 : Universe}
+                    → (L : Sup-Lattice 𝓤 𝓣 𝓥)
+                    → (f : ⟨ L ⟩ → ⟨ L ⟩)
+                    → 𝓤 ⊔ 𝓣 ̇
+is-monotone-endomap L f = is-monotone L L f
 
 \end{code}
 
@@ -149,7 +159,6 @@ spaces are ordered as expected.
 \begin{code}
 
 module _
-        {𝓤 𝓣 𝓥 : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         {A : 𝓥 ̇ }
         (m : A → ⟨ L ⟩)
@@ -157,11 +166,11 @@ module _
 
  open Joins (order-of L)
 
- joins-preserve-containment : {P : 𝓟 {𝓥} A} {Q : 𝓟 {𝓥} A}
+ joins-preserve-containment : (P : 𝓟 {𝓥} A) (Q : 𝓟 {𝓥} A)
                             → P ⊆ Q
                             → ((⋁⟨ L ⟩ 【 m , P 】)
                              ≤⟨ L ⟩ (⋁⟨ L ⟩ 【 m , Q 】)) holds
- joins-preserve-containment {P} {Q} C =
+ joins-preserve-containment P Q C =
   (join-is-least-upper-bound-of L 【 m , P 】)
    (⋁⟨ L ⟩ 【 m , Q 】 ,
     (λ (b , b-in-P) → (join-is-upper-bound-of L 【 m , Q 】)
@@ -174,7 +183,6 @@ We now show if a type is small and has a map to the carrier then it has a join.
 \begin{code}
 
 module _
-        {𝓤 𝓣 𝓥 𝓦 : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         {T : 𝓦 ̇ }
         (m : T → ⟨ L ⟩)
@@ -240,7 +248,6 @@ We now show that reindexing families along a surjection preserves the supremum.
 \begin{code}
 
 module _
-        {𝓤 𝓣 𝓥 𝓦 𝓦' : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         {T : 𝓦 ̇ }
         {T' : 𝓦' ̇ }
@@ -282,7 +289,6 @@ surjection.
 \begin{code}
 
 module _
-        {𝓤 𝓣 𝓥 𝓦 𝓦' : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         {T : 𝓦 ̇ }
         {T' : 𝓦' ̇ }
@@ -299,5 +305,28 @@ module _
  reindexing-along-equiv-＝-sup =
   reindexing-along-surj-＝-sup
    L (⌜ e ⌝ , equivs-are-surjections ⌜ e ⌝-is-equiv) m
+
+\end{code}
+
+Added by Ian Ray 27th September 2026.
+
+TODO. Apply this new tool in other files to improve proof readability.
+
+\begin{code}
+
+module equational-reasoning-≤ (L : Sup-Lattice 𝓤 𝓣 𝓥) where
+
+ open Joins (order-of L)
+
+ _≤[_]_ : (x : ⟨ L ⟩) {y z : ⟨ L ⟩}
+        → (x ≤⟨ L ⟩ y) holds
+        → (y ≤⟨ L ⟩ z) holds
+        → (x ≤⟨ L ⟩ z) holds
+ _≤[_]_ x {y} {z} o o' = transitivity-of L x y z o o'
+
+ _▣ : (x : ⟨ L ⟩) → (x ≤⟨ L ⟩ x) holds
+ x ▣ = reflexivity-of L x
+
+ infixr 0 _≤[_]_
 
 \end{code}
