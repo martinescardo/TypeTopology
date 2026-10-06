@@ -7,8 +7,7 @@
    2010--2026--∞, continuously evolving.
    https://www.cs.bham.ac.uk/~mhe/
 
-   This repository is searchable:
-   https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html
+   Module descriptions are available here:
    https://github.com/martinescardo/TypeTopologyModuleDescriptions/
 
    Tested with Agda 2.8.0 and 2.9.0 (unreleased development version).
