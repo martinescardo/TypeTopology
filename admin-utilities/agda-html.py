@@ -44,6 +44,11 @@ alone.
 The pages look exactly as they did. Agda's own stylesheet already gives
 every link no underline and a green background under the cursor, which is
 what an identifier in the code does, so the stylesheet is left alone too.
+
+The one addition is a magnifying glass in the top right corner of every
+page, which stays there while the page scrolls and leads to the search
+page for the whole library. --search-url says where that is, and
+--search-url none leaves the icon out.
 """
 
 import argparse, collections, glob, os, re, shutil, subprocess, sys
@@ -94,6 +99,25 @@ OWN_MODULE = re.compile(r'<a id="\d+" href="([^"]*)#\d+" class="Module">([^<]*)<
 # neither where a link lands nor what the page looks like.
 
 SPAN = "span"
+
+# A magnifying glass fixed to the top right corner of the window, linking to
+# the search page. It is all on one line and shows no text, so a reader sees
+# the same characters as before. Its class, which Agda never uses, is what
+# identifies it, so that it is replaced rather than repeated on a second run.
+
+SEARCH_URL = "https://martinescardo.github.io/TypeTopologySearch.html"
+
+SEARCH_ICON = (
+    '<a class="TypeTopologySearch" href="{url}" title="Search TypeTopology" '
+    'aria-label="Search TypeTopology" style="position:fixed; top:8px; '
+    'right:8px; z-index:1; padding:8px; line-height:0; background:white; '
+    'border:2px solid #008B00; border-radius:8px; color:#008B00; '
+    'box-shadow:0 2px 6px rgba(0,0,0,0.25)">'
+    '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" '
+    'stroke="currentColor" stroke-width="2.5" stroke-linecap="round">'
+    '<circle cx="10" cy="10" r="7"/><path d="M15 15 L21 21"/></svg></a>')
+
+ICON = re.compile(r'<a class="TypeTopologySearch"[^>]*>.*?</a>')
 
 LINKABLE = re.compile(r"""  (?P<url>(?:https?|ftp)://\S+)
                           | (?P<doi>\bdoi:10\.\S+)
@@ -404,6 +428,24 @@ def rewrite(htmldir, check):
     return found, unresolved, read, rewritten
 
 
+def search_icon(htmldir, url):
+    """Put the search icon at the start of every page, or take it away.
+
+    Returns how many pages had to be changed, which is none of them when the
+    last run put the same icon there already.
+    """
+    href = url.replace("&", "&amp;").replace('"', "&quot;") if url else ""
+    icon = SEARCH_ICON.format(url=href) if url else ""
+    changed = 0
+    for path in sorted(glob.glob(os.path.join(htmldir, "*.html"))):
+        page = open(path, encoding="utf-8").read()
+        new = ICON.sub("", page).replace("<body>", "<body>" + icon, 1)
+        if new != page:
+            open(path, "w", encoding="utf-8").write(new)
+            changed += 1
+    return changed
+
+
 def render(agda, source, entry, htmldir, force):
     "Run agda --html, unless the rendering is there and up to date already."
     # Ask git, which knows what belongs to the library, and walk the tree
@@ -495,6 +537,10 @@ def main():
                    help="the stylesheet to put in the rendering, replacing "
                         "the one agda writes; by default Agda.css beside "
                         "this script, and 'none' keeps Agda's own")
+    p.add_argument("--search-url", default=SEARCH_URL, metavar="URL",
+                   help="the search page that the icon in the corner of "
+                        "every page leads to, by default the published one, "
+                        "and 'none' leaves the icon out")
     p.add_argument("--force", action="store_true",
                    help="run agda even when the rendering looks up to date")
     p.add_argument("--check", action="store_true",
@@ -530,6 +576,11 @@ def main():
     print(f"{len(links)} links in {len(found)} of the {pages} pages in {out}"
           + (f", {rewritten} page{'s' if rewritten != 1 else ''} rewritten"
              if rewritten else ", all of them there already"))
+    url = None if args.search_url == "none" else args.search_url
+    changed = search_icon(out, url)
+    if changed:
+        print(f"search icon {'put on' if url else 'taken off'} {changed} "
+              f"page{'s' if changed != 1 else ''}")
     if read:
         print(f"{len(read)} of them are links whose text is not the module it "
               f"points to"
