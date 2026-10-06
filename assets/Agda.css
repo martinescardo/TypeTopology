@@ -39,3 +39,10 @@
 .Agda a { text-decoration: none }
 .Agda a[href]:hover { background-color: #B4EEB4 }
 .Agda [href].hover-highlight { background-color: #B4EEB4; }
+
+/* Markdown in the prose and the comments, marked up by agda-html.py. */
+.Agda md-mark  { display: none }
+.Agda code     { font-family: inherit; font-size: inherit; background: #EEEEEE }
+.Agda em       { font-style: italic }
+.Agda strong   { font-weight: bold }
+.Agda md-block { display: inline-block; background: #F3F3F3 }
