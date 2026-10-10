@@ -13,7 +13,10 @@ open import Naturals.Multiplication
 open import Naturals.Order renaming (_≤ℕ_ to _≤_)
 
 data _∈O[_] (f : ℕ → ℕ) (g : ℕ → ℕ) : 𝓤₀  ̇ where
- big-o : Σ c ꞉ ℕ , Σ N₀ ꞉ ℕ , Π N ꞉ ℕ , (N₀ ≤ N → f N ≤ c * (g N))
-      → f ∈O[ g ]
+ big-o : Σ c ꞉ ℕ ,
+         Σ N₀ ꞉ ℕ ,
+         Π N ꞉ ℕ ,
+         (N₀ ≤ N → f N ≤ c * (g N))
+       → f ∈O[ g ]
       
 \end{code}

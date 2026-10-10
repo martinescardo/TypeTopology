@@ -114,12 +114,12 @@ value-time-independent {σ} f = (x y : ⟦ σ ⟧ᵢ) → strip-thunk x ＝ stri
 thunk-type {nat} x = 0 , return x
 thunk-type {list} l = 0 , return l
 thunk-type {σ ⇒ σ₁} f = (λ x → thunk-type (f (strip-thunk x))) , γ f
-  where
-    γ : {σ σ₁ : LType} (f : ⟦ σ ⟧ → ⟦ σ₁ ⟧) → (x y : ⟦ σ ⟧ᵢ) →
-      strip-thunk x ＝ strip-thunk y →
-      strip-thunk (thunk-type (f (strip-thunk x))) ＝
-      strip-thunk (thunk-type (f (strip-thunk y)))
-    γ {_} {_} f x y eq = ap (strip-thunk ∘ thunk-type ∘ f) eq
+ where
+  γ : {σ σ₁ : LType} (f : ⟦ σ ⟧ → ⟦ σ₁ ⟧) → (x y : ⟦ σ ⟧ᵢ)
+    → strip-thunk x ＝ strip-thunk y
+    → strip-thunk (thunk-type (f (strip-thunk x)))
+    ＝ strip-thunk (thunk-type (f (strip-thunk y)))
+  γ {_} {_} f x y eq = ap (strip-thunk ∘ thunk-type ∘ f) eq
 
 
 strip-thunk {nat} (_ , n) = force n
