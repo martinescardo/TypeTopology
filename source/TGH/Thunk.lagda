@@ -27,7 +27,7 @@ force : {n : ℕ} {X : 𝓤₀ ̇} → Thunk n X → X
 force (return x) = x
 force (√ x)      = force x
 
-_>>=_ :  {n₁ n₂ : ℕ} {X Y : 𝓤₀ ̇}
+_>>=_ : {n₁ n₂ : ℕ} {X Y : 𝓤₀ ̇}
       → Thunk n₁ X → (X → Thunk n₂ Y) → Thunk (n₂ + n₁) Y
 return x >>= f = f x
 (√ x)    >>= f = √ (x >>= f)

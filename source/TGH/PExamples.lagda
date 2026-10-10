@@ -56,29 +56,34 @@ list-last-last-true (x ∷ []) = bool-nat-inverse x
 list-last-last-true (x ∷ y ∷ xs) = list-last-last-true (y ∷ xs)
 
 head-is-first-true : {n : ℕ} {Γ : Ctx n}
-                  → (env : Env Γ)
-                  → (xs : List Bool)
-                  → nat-to-bool ((env [ head ]ₑ) (map bool-to-nat xs))
-                  ＝ first-true xs
+                   → (env : Env Γ)
+                   → (xs : List Bool)
+                   → nat-to-bool ((env [ head ]ₑ) (map bool-to-nat xs))
+                   ＝ first-true xs
 head-is-first-true env xs
- = nat-to-bool ((env [ head ]ₑ) (map bool-to-nat xs)) ＝⟨ ap nat-to-bool
-   (head-correctness (map bool-to-nat xs)) ⟩
-   nat-to-bool (list-head (map bool-to-nat xs)) ＝⟨ list-head-first-true xs ⟩
-   first-true xs ∎
+ = nat-to-bool ((env [ head ]ₑ) (map bool-to-nat xs))
+ ＝⟨ ap nat-to-bool (head-correctness (map bool-to-nat xs)) ⟩
+   nat-to-bool (list-head (map bool-to-nat xs))
+ ＝⟨ list-head-first-true xs ⟩
+   first-true xs
+ ∎
 
 last-is-last-true : {n : ℕ} {Γ : Ctx n}
-                 → (env : Env Γ)
-                 → (xs : List Bool)
-                 → nat-to-bool ((env [ last ]ₑ) (map bool-to-nat xs))
-                 ＝ last-true xs
+                  → (env : Env Γ)
+                  → (xs : List Bool)
+                  → nat-to-bool ((env [ last ]ₑ) (map bool-to-nat xs))
+                  ＝ last-true xs
 last-is-last-true env xs
  = nat-to-bool ((env [ last ]ₑ) (map bool-to-nat xs))
-   ＝⟨ ap nat-to-bool (last-correctness (map bool-to-nat xs)) ⟩
-   nat-to-bool (last' (map bool-to-nat xs)) ＝⟨ list-last-last-true xs ⟩
-   last-true xs ∎
+ ＝⟨ ap nat-to-bool (last-correctness (map bool-to-nat xs)) ⟩
+   nat-to-bool (last' (map bool-to-nat xs))
+ ＝⟨ list-last-last-true xs ⟩
+   last-true xs
+ ∎
 
 first-true∈P : first-true ∈P
-first-true∈P _ _ = head-comp , head-is-first-true , (1 , eager-head-linear-time')
+first-true∈P _ _
+ = head-comp , head-is-first-true , (1 , eager-head-linear-time')
 
 not-first-true∈P : (not ∘ first-true) ∈P
 not-first-true∈P = P-closure₁ first-true first-true∈P
@@ -90,9 +95,11 @@ not-last-true∈P : (not ∘ last-true) ∈P
 not-last-true∈P = P-closure₁ last-true last-true∈P
 
 first-or-last-true∈P : (λ bs → (first-true bs || last-true bs)) ∈P
-first-or-last-true∈P = P-closure₂ first-true last-true first-true∈P last-true∈P
+first-or-last-true∈P
+ = P-closure₂ first-true last-true first-true∈P last-true∈P
 
 first-and-last-true∈P : (λ bs → (first-true bs && last-true bs)) ∈P
-first-and-last-true∈P = P-closure₃ first-true last-true first-true∈P last-true∈P
+first-and-last-true∈P
+ = P-closure₃ first-true last-true first-true∈P last-true∈P
 
 \end{code}

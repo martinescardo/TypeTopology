@@ -119,14 +119,14 @@ is-linear-time-n {τ} {n} {Γ} program nat-or-list
       (pr₁ (pr₁ (env [ program ]ᵢ eager) (thunk-type l)) (thunk-type x)))
 
 is-polytime-to-polybig-o : {τ : LType} {n : ℕ} {Γ : Ctx n}
-                        → (nat-or-list : (τ ＝ nat) ∔ (τ ＝ list))
-                        → (program : Term (list ∷ Γ) τ)
-                        → (k : ℕ)
-                        → (Σ C ꞉ ℕ , Σ N₀ ꞉ ℕ , Π l ꞉ List ℕ , Π env ꞉ Envᵢ Γ
-                        , is-polytime k C N₀ (length l)
+                         → (nat-or-list : (τ ＝ nat) ∔ (τ ＝ list))
+                         → (program : Term (list ∷ Γ) τ)
+                         → (k : ℕ)
+                         → (Σ C ꞉ ℕ , Σ N₀ ꞉ ℕ , Π l ꞉ List ℕ , Π env ꞉ Envᵢ Γ
+                         , is-polytime k C N₀ (length l)
                           (get-time nat-or-list (pr₁ (env [ lam list program ]ᵢ
                           eager) (thunk-type l))))
-                        → Π env ꞉ Envᵢ Γ ,
+                         → Π env ꞉ Envᵢ Γ ,
                           ((list-time-function-naive env nat-or-list
                           (lam list program) eager) ∈O[ (λ n → n ^ k) ])
 is-polytime-to-polybig-o

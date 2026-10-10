@@ -3,6 +3,7 @@ Taken from the Advanced Functional Programming module lecture notes 2023-24
 Formalises isomorphisms in Agda
 
 \begin{code}
+
 {-# OPTIONS --without-K --safe #-}
 
 module TGH.AFP2024.isomorphisms where
@@ -11,7 +12,7 @@ open import MLTT.Spartan
 
 module isomorphisms where
  private
-  is-bijection : {A B : 𝓤₀ ̇ } → (A → B) → 𝓤₀ ̇ 
+  is-bijection : {A B : 𝓤₀ ̇ } → (A → B) → 𝓤₀ ̇
   is-bijection f = Σ g ꞉ (codomain f → domain f) , ((g ∘ f ∼ id) × (f ∘ g ∼ id))
 
   _≅_ : 𝓤₀ ̇ → 𝓤₀ ̇ → 𝓤₀ ̇

@@ -18,5 +18,5 @@ data _∈O[_] (f : ℕ → ℕ) (g : ℕ → ℕ) : 𝓤₀  ̇ where
          Π N ꞉ ℕ ,
          (N₀ ≤ N → f N ≤ c * (g N))
        → f ∈O[ g ]
-      
+
 \end{code}

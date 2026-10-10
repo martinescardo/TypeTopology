@@ -13,5 +13,5 @@ open import MLTT.Spartan
 data Strategy : 𝓤₀ ̇ where
  lazy : Strategy
  eager : Strategy
-  
+
 \end{code}

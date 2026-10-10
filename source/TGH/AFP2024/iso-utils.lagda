@@ -3,6 +3,7 @@ Taken from the Advanced Functional Programming module lecture notes 2023-24
 Provides functions for manipulating isomorphisms
 
 \begin{code}
+
 {-# OPTIONS --without-K --safe #-}
 
 module TGH.AFP2024.iso-utils where
@@ -13,29 +14,32 @@ open import TGH.AFP2024.isomorphisms
 open _≅_
 open is-bijection
 
-id-iso : (A : 𝓤₀ ̇) → A ≅ A
-id-iso A = record { bijection = f ; bijectivity = f-is-bijection }
- where
-  f : A → A
-  f = id
+\end{code}
 
-  g : A → A
-  g = id
+Constructs an isomorphism from a function, its inverse, and the proofs
+that they are inverse to each other.
 
-  gf : g ∘ f ∼ id
-  gf a = refl
+\begin{code}
 
-  fg : f ∘ g ∼ id
-  fg a = refl
+mk-iso : {A B : 𝓤₀ ̇ }
+       → (f : A → B)
+       → (g : B → A)
+       → g ∘ f ∼ id
+       → f ∘ g ∼ id
+       → A ≅ B
+mk-iso f g gf fg
+ = record { bijection = f
+          ; bijectivity = record { inverse = g ; η = gf ; ε = fg }
+          }
 
-  f-is-bijection : is-bijection f
-  f-is-bijection = record { inverse = g ; η = gf ; ε = fg }
+id-iso : (A : 𝓤₀ ̇ ) → A ≅ A
+id-iso A = mk-iso id id (λ a → refl) (λ a → refl)
 
-≅-sym : {X Y : 𝓤₀ ̇} → X ≅ Y → Y ≅ X
+≅-sym : {X Y : 𝓤₀ ̇ } → X ≅ Y → Y ≅ X
 ≅-sym (Isomorphism f (Inverse g η ε)) = Isomorphism g (Inverse f ε η)
 
-_∘ᵢ_ : {A B C : 𝓤₀ ̇} → B ≅ C → A ≅ B → A ≅ C
-α ∘ᵢ β = record { bijection = f ; bijectivity = f-is-bijection }
+_∘ᵢ_ : {A B C : 𝓤₀ ̇ } → B ≅ C → A ≅ B → A ≅ C
+α ∘ᵢ β = mk-iso f g gf fg
  where
   f : _ → _
   f = bijection α ∘ bijection β
@@ -44,30 +48,27 @@ _∘ᵢ_ : {A B C : 𝓤₀ ̇} → B ≅ C → A ≅ B → A ≅ C
   g = inverse (bijectivity β) ∘ inverse (bijectivity α)
 
   gf : g ∘ f ∼ id
-  gf a = trans (ap (inverse (bijectivity β)) (η (bijectivity α)
-               (bijection β a)))
-               (η (bijectivity β) a)
+  gf a = trans (ap (inverse (bijectivity β))
+                (η (bijectivity α) (bijection β a)))
+          (η (bijectivity β) a)
 
   fg : f ∘ g ∼ id
-  fg c = trans (ap (bijection α) (ε (bijectivity β) (inverse
-               (bijectivity α) c)))
-               (ε (bijectivity α) c)
-
-  f-is-bijection : is-bijection f
-  f-is-bijection = record { inverse = g ; η = gf ; ε = fg }
+  fg c = trans (ap (bijection α)
+                (ε (bijectivity β) (inverse (bijectivity α) c)))
+          (ε (bijectivity α) c)
 
 -- Equational reasoning for iso's
-_≅⟨_⟩_ : (X : 𝓤₀ ̇) {Y Z : 𝓤₀ ̇} → X ≅ Y → Y ≅ Z → X ≅ Z
+_≅⟨_⟩_ : (X : 𝓤₀ ̇ ) {Y Z : 𝓤₀ ̇ } → X ≅ Y → Y ≅ Z → X ≅ Z
 X ≅⟨ p ⟩ q = q ∘ᵢ p
 
-_∎ᵢ : (X : 𝓤₀ ̇) → X ≅ X
+_∎ᵢ : (X : 𝓤₀ ̇ ) → X ≅ X
 X ∎ᵢ = id-iso X
 
-infixr  0 _≅⟨_⟩_
-infix   1 _∎ᵢ
+infixr 0 _≅⟨_⟩_
+infix 1 _∎ᵢ
 
-∔-unit-left-iso : (X : 𝓤₀ ̇) → X ≅ 𝟘 ∔ X
-∔-unit-left-iso X = record { bijection = f ; bijectivity = f-is-bijection }
+∔-unit-left-iso : (X : 𝓤₀ ̇ ) → X ≅ 𝟘 ∔ X
+∔-unit-left-iso X = mk-iso f g gf fg
  where
   f : X → 𝟘 ∔ X
   f x = inr x
@@ -83,12 +84,8 @@ infix   1 _∎ᵢ
   fg (inl ())
   fg (inr _) = refl
 
-  f-is-bijection : is-bijection f
-  f-is-bijection = record { inverse = g ; η = gf ; ε = fg }
-  
-∔-pair-iso : {A B C D : 𝓤₀ ̇} → A ≅ B → C ≅ D → (A ∔ C) ≅ (B ∔ D)
-∔-pair-iso {A} {B} {C} {D} α β
- = record { bijection = f ; bijectivity = f-is-bijection }
+∔-pair-iso : {A B C D : 𝓤₀ ̇ } → A ≅ B → C ≅ D → (A ∔ C) ≅ (B ∔ D)
+∔-pair-iso {A} {B} {C} {D} α β = mk-iso f g gf fg
  where
   f : A ∔ C → B ∔ D
   f (inl a) = inl (bijection α a)
@@ -106,11 +103,8 @@ infix   1 _∎ᵢ
   fg (inl b) = ap inl (ε (bijectivity α) b)
   fg (inr d) = ap inr (ε (bijectivity β) d)
 
-  f-is-bijection : is-bijection f
-  f-is-bijection = record { inverse = g ; η = gf ; ε = fg }
-
-∔-assoc-iso : (A B C : 𝓤₀ ̇) → A ∔ B ∔ C ≅ (A ∔ B) ∔ C
-∔-assoc-iso A B C = record { bijection = f ; bijectivity = f-is-bijection }
+∔-assoc-iso : (A B C : 𝓤₀ ̇ ) → A ∔ B ∔ C ≅ (A ∔ B) ∔ C
+∔-assoc-iso A B C = mk-iso f g gf fg
  where
   f : A ∔ B ∔ C → (A ∔ B) ∔ C
   f (inl a) = inl (inl a)
@@ -125,18 +119,15 @@ infix   1 _∎ᵢ
   gf : g ∘ f ∼ id
   gf (inl a) = refl
   gf (inr (inl b)) = refl
-  gf (inr (inr c)) = refl 
+  gf (inr (inr c)) = refl
 
   fg : f ∘ g ∼ id
   fg (inl (inl a)) = refl
   fg (inl (inr b)) = refl
   fg (inr c) = refl
 
-  f-is-bijection : is-bijection f
-  f-is-bijection = record { inverse = g ; η = gf ; ε = fg }
-
-∔-left-swap-iso : (A B C : 𝓤₀ ̇) → A ∔ B ∔ C ≅ B ∔ A ∔ C
-∔-left-swap-iso A B C = record { bijection = f ; bijectivity = f-is-bijection }
+∔-left-swap-iso : (A B C : 𝓤₀ ̇ ) → A ∔ B ∔ C ≅ B ∔ A ∔ C
+∔-left-swap-iso A B C = mk-iso f g gf fg
  where
   f : A ∔ B ∔ C → B ∔ A ∔ C
   f (inl a) = inr (inl a)
@@ -158,5 +149,4 @@ infix   1 _∎ᵢ
   fg (inr (inl a)) = refl
   fg (inr (inr c)) = refl
 
-  f-is-bijection : is-bijection f
-  f-is-bijection = record { inverse = g ; η = gf ; ε = fg }
+\end{code}
