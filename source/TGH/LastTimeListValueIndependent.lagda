@@ -16,7 +16,7 @@ module TGH.LastTimeListValueIndependent (fe : naive-funext 𝓤₀ 𝓤₀) wher
 open import Naturals.Addition renaming
  (addition-commutativity to +-comm ; addition-associativity to +-assoc)
 open import Naturals.Multiplication
-open import Naturals.Exponentiation renaming (_ℕ^_ to _^_)
+open import Naturals.Exponentiation
 open import Naturals.Order renaming (_≤ℕ_ to _≤_ ; _<ℕ_ to _<_)
 open import Naturals.Properties renaming (pred to pred')
 open import MLTT.Vector renaming (Vector to Vec) hiding (head)
@@ -61,7 +61,12 @@ head-time-value-env-independent-eager (succ pr₃ , (√ x))
 last-list-length-lemma : (xs ys : List ℕ) → (length xs ＝ length ys)
                        → length (last-list' xs) ＝ length (last-list' ys)
 last-list-length-lemma [] [] eql = refl
+last-list-length-lemma [] (y ∷ ys) ()
+last-list-length-lemma (x ∷ []) [] ()
 last-list-length-lemma (x ∷ []) (y ∷ []) eql = refl
+last-list-length-lemma (x ∷ []) (y ∷ x₂ ∷ ys) ()
+last-list-length-lemma (x ∷ x₁ ∷ xs) [] ()
+last-list-length-lemma (x ∷ x₁ ∷ xs) (y ∷ []) ()
 last-list-length-lemma (x ∷ x₁ ∷ xs) (y ∷ x₂ ∷ ys) eql
  = last-list-length-lemma (x₁ ∷ xs) (x₂ ∷ ys) (ap pred' eql)
 
@@ -294,6 +299,8 @@ length'-comp-lemma : {n : ℕ} {Γ : Ctx n} → (env : Envᵢ Γ)
                      (lam nat (lam nat (suc (var 𝟏)))) eager))
                      (0 , return x₂))
 length'-comp-lemma env [] [] x₁ x₂ eq = refl
+length'-comp-lemma env [] (y₂ ∷ l₂) x₁ x₂ ()
+length'-comp-lemma env (y₁ ∷ l₁) [] x₁ x₂ ()
 length'-comp-lemma env (y₁ ∷ l₁) (y₂ ∷ l₂) x₁ x₂ eq
  = pr₁
       (eager-function-nat-helper env (lam nat (suc (var 𝟏)))
@@ -331,6 +338,8 @@ length'-list-value-independent : {n : ℕ} {Γ : Ctx n} → (env : Envᵢ Γ)
                                → time-independent-of-list-values env
                                  (inl refl) eager length'
 length'-list-value-independent env [] [] eq = refl
+length'-list-value-independent env [] (x₂ ∷ l₂) ()
+length'-list-value-independent env (x₁ ∷ l₁) [] ()
 length'-list-value-independent env (x₁ ∷ l₁) (x₂ ∷ l₂) eq
  = succ
       (pr₁
@@ -375,6 +384,8 @@ list-rec-length-lemma : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
                      → list-rec env₁ l₁ zero (lam nat (lam nat (suc (var 𝟏))))
                      ＝ list-rec env₂ l₂ zero (lam nat (lam nat (suc (var 𝟏))))
 list-rec-length-lemma [] [] eq = refl
+list-rec-length-lemma [] (x₁ ∷ l₂) ()
+list-rec-length-lemma (x ∷ l₁) [] ()
 list-rec-length-lemma (x ∷ l₁) (x₁ ∷ l₂) eq
  = ap succ (list-rec-length-lemma l₁ l₂ (ap pred' eq))
 
@@ -608,6 +619,8 @@ last-list-list-value-independent : {n : ℕ} {Γ : Ctx n} → (env : Envᵢ Γ)
                                  → time-independent-of-list-values env
                                    (inr refl) eager (lam list last-list)
 last-list-list-value-independent env [] [] eq = refl
+last-list-list-value-independent env [] (x₂ ∷ l₂) ()
+last-list-list-value-independent env (x₁ ∷ l₁) [] ()
 last-list-list-value-independent env (x₁ ∷ l₁) (x₂ ∷ l₂) eq
  = pr₁
     (pr₁ (env [ lam list last-list ]ᵢ eager) (thunk-type (x₁ ∷ l₁))) ＝⟨ refl ⟩

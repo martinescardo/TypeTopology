@@ -25,7 +25,8 @@ open import Naturals.Addition renaming
  (addition-commutativity to +-comm ; addition-associativity to +-assoc)
 open import Naturals.Multiplication
 open import Naturals.Order renaming (_≤ℕ_ to _≤_ ; _<ℕ_ to _<_)
-open import Naturals.Properties renaming (pred to pred' ; double to double')
+open import Naturals.Properties renaming (pred to pred')
+open import Naturals.Double renaming (double to double')
 open import MLTT.Vector renaming (Vector to Vec)
 open import MLTT.List
 open import MLTT.Bool hiding (if_then_else_)

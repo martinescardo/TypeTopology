@@ -16,11 +16,11 @@ module TGH.LastLinearTimeEager (fe : naive-funext 𝓤₀ 𝓤₀) where
 open import Naturals.Addition renaming
  (addition-commutativity to +-comm ; addition-associativity to +-assoc)
 open import Naturals.Multiplication
-open import Naturals.Exponentiation renaming (_ℕ^_ to _^_)
+open import Naturals.Exponentiation
 open import Naturals.Order renaming (_≤ℕ_ to _≤_ ; _<ℕ_ to _<_)
 open import Naturals.Properties renaming (pred to pred')
 open import MLTT.Vector renaming (Vector to Vec) hiding (head)
-open import MLTT.Fin
+open import MLTT.Fin hiding (pred)
 open import MLTT.List
 open import UF.Base
 open import TGH.Thunk
@@ -190,6 +190,7 @@ length'-linear-time {n} {Γ} = 4 , (1 , f')
               is-polytime 1 4 1 (length l)
               (get-time (inl refl)
                 (pr₁ (env [ length' ]ᵢ eager) (thunk-type l)))))
+  f' [] env ()
   f' (x ∷ xs) env ⋆ = f x xs env
 
 recursive-call-linear-time : {n : ℕ} {Γ : Ctx n}
@@ -315,6 +316,7 @@ last-list'-length-1 x (y ∷ xs) = last-list'-length-1 y xs
 
 last-list'-length-1' : (xs : List ℕ) → (0 < length xs)
                      → length (last-list' xs) ＝ 1
+last-list'-length-1' [] ()
 last-list'-length-1' (x ∷ xs) eq = last-list'-length-1 x xs
 
 last-list-linear-time : {n : ℕ} {Γ : Ctx n}
@@ -489,6 +491,7 @@ last-list-linear-time {n} {Γ} = 11 , (1 , f')
               is-polytime 1 11 1 (length l)
               (get-time (inr refl)
               (pr₁ (env [ lam list last-list ]ᵢ eager) (thunk-type l)))))
+  f' [] env ()
   f' (x ∷ xs) env ⋆ = f x xs env
 
 last-linear-time : {n : ℕ} {Γ : Ctx n} → is-linear-time last (inl refl)

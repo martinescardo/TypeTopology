@@ -16,11 +16,12 @@ open import TGH.Strategy
 open import Naturals.Addition
  renaming (addition-commutativity to +-comm ; addition-associativity to +-assoc)
 open import Naturals.Multiplication
-open import Naturals.Exponentiation renaming (_ℕ^_ to _^_)
+open import Naturals.Exponentiation
 open import Naturals.Order renaming (_≤ℕ_ to _≤_ ; _<ℕ_ to _<_)
+open import Naturals.Subtraction
 open import Naturals.Properties renaming (pred to pred')
 open import MLTT.Vector renaming (Vector to Vec)
-open import MLTT.Fin
+open import MLTT.Fin hiding (pred)
 open import MLTT.List hiding (concat)
 open import UF.Base
 open import TGH.Thunk

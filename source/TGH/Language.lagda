@@ -16,11 +16,11 @@ module TGH.Language (fe : naive-funext 𝓤₀ 𝓤₀) where
 open import Naturals.Addition renaming
  (addition-commutativity to +-comm ; addition-associativity to +-assoc)
 open import Naturals.Multiplication
-open import Naturals.Exponentiation renaming (_ℕ^_ to _^_)
+open import Naturals.Exponentiation
 open import Naturals.Order renaming (_≤ℕ_ to _≤_ ; _<ℕ_ to _<_)
 open import Naturals.Properties renaming (pred to pred')
 open import MLTT.Vector renaming (Vector to Vec)
-open import MLTT.Fin
+open import MLTT.Fin hiding (pred)
 open import MLTT.List
 open import UF.Base
 open import TGH.Thunk
@@ -409,6 +409,8 @@ if-then-else-equality : {σ : LType} {n : ℕ} {Γ : Ctx n}
         (env [ term₂ ]ᵢ strategy))
       ＝ if' not-thunked then' ((strip-thunk-env env) [ term₁ ]ₑ)
          else' ((strip-thunk-env env) [ term₂ ]ₑ)
+if-then-else-equality env term₁ term₂ (_ , return zero) (succ _) () _
+if-then-else-equality env term₁ term₂ (_ , return (succ _)) zero () _
 if-then-else-equality env term₁ term₂ (.0 , return zero) zero refl s
  = strip-thunk (increment (env [ term₁ ]ᵢ s))
    ＝⟨ (increment-equal-semantics)⁻¹ ⟩
@@ -535,6 +537,7 @@ equivalent-semantics env (var v) _ = strip-thunk (increment (lookup-envᵢ v env
   γ : {n : ℕ} → {Γ : Ctx n} → (env : Envᵢ Γ) → (v : Fin n)
     → strip-thunk (lookup-envᵢ v env)
     ＝ lookup-env v (strip-thunk-env env)
+  γ [] ()
   γ (x ∷Eᵢ _) 𝟎 = refl
   γ (_ ∷Eᵢ env) (suc v) = γ env v
 equivalent-semantics env zero _ = refl

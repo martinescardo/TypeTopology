@@ -50,6 +50,7 @@ Pos [] = 𝟘
 Pos (_ ∷ xs) = 𝟙 ∔ Pos xs
 
 Inhab : {X : 𝓤₀ ̇} (l : List X) → Pos l → X
+Inhab [] ()
 Inhab (x ∷ _) (inl ⋆) = x
 Inhab (_ ∷ l) (inr p) = Inhab l p
 

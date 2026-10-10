@@ -19,7 +19,7 @@ module TGH.HeadExample (fe : naive-funext 𝓤₀ 𝓤₀) where
 open import Naturals.Addition renaming
  (addition-commutativity to +-comm ; addition-associativity to +-assoc)
 open import Naturals.Multiplication
-open import Naturals.Exponentiation renaming (_ℕ^_ to _^_)
+open import Naturals.Exponentiation
 open import Naturals.Order renaming (_≤ℕ_ to _≤_ ; _<ℕ_ to _<_)
 open import Naturals.Properties renaming (pred to pred')
 open import MLTT.Vector renaming (Vector to Vec) hiding (head)
@@ -99,6 +99,8 @@ head-list-value-independent-lazy : {n : ℕ} {Γ : Ctx n} → (env : Envᵢ Γ)
                                   → time-independent-of-list-values env
                                     (inl refl) lazy head
 head-list-value-independent-lazy env [] [] _ = refl
+head-list-value-independent-lazy env (_ ∷ _) [] ()
+head-list-value-independent-lazy env [] (_ ∷ _) ()
 head-list-value-independent-lazy env (_ ∷ _) (_ ∷ _) _ = refl
 
 lazy-head-constant-time : {n : ℕ} {Γ : Ctx n}
@@ -112,6 +114,7 @@ lazy-head-constant-time env = big-o (2 , (1 , γ))
       1 ≤ x →
       pr₁ ((pr₁ (env [ head ]ᵢ lazy)) (thunk-type (gen-naive-list x)))
       ≤ 2
+  γ zero ()
   γ (succ x) _ = ⋆
 
 eager-head-env-lemma-I : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂} {x : ℕ}
@@ -152,6 +155,8 @@ head-list-value-independent-eager : {n : ℕ} {Γ : Ctx n}
                                   → time-independent-of-list-values
                                     env (inl refl) eager head
 head-list-value-independent-eager env [] [] eq = refl
+head-list-value-independent-eager env (x ∷ _) [] ()
+head-list-value-independent-eager env [] (x ∷ _) ()
 head-list-value-independent-eager env (x ∷ l₁) (x₁ ∷ l₂) eq
  = pr₁ (call-intermediate-l env head eager (x ∷ l₁)) ＝⟨ ap (succ ∘ pr₁)
    (eager-head-env-lemma-II (x ∷ l₁))  ⟩
@@ -193,6 +198,8 @@ head-list-value-independent-eager env (x ∷ l₁) (x₁ ∷ l₂) eq
        ＝ pr₁ (pr₁ (eager-function-nat-helper env₂ (lam nat (var 𝟎)) z₂)
        (0 , return m₂))
   γ₀ (zero , return x) (zero , return x₁) m₁ m₂ eq = refl
+  γ₀ (succ n , (√ x)) (zero , return x₁) m₁ m₂ ()
+  γ₀ (zero , return x) (succ m , (√ x₁)) m₁ m₂ ()
   γ₀ (succ n , (√ x)) (succ m , (√ x₁)) m₁ m₂ eq
     = ap succ (γ₀ (_ , x) (_ , x₁) m₁ m₂ (ap pred' eq))
 
@@ -204,6 +211,8 @@ head-list-value-independent-eager env (x ∷ l₁) (x₁ ∷ l₂) eq
       (list-recᵢ (_∷Eᵢ_ {_} {_} {list} (0 , return l₂) env) l₂
         zero (lam nat (lam nat (var 𝟎))) eager))
   γ [] [] eq = refl
+  γ (x₁ ∷ l₁) [] ()
+  γ [] (x₂ ∷ l₂) ()
   γ (x₁ ∷ l₁) (x₂ ∷ l₂) eq = ap pred' (IH env (x₁ ∷ l₁) (x₂ ∷ l₂) eq)
 
 nat-function-lemma : {n : ℕ} {Γ : Ctx n}
@@ -223,6 +232,7 @@ eager-head-not-constant-time-lemma : {n : ℕ} {Γ : Ctx n} → (env : Envᵢ Γ
                                      (lrec (var 𝟎) zero
                                      (lam nat (lam nat (var 𝟎))))
              (thunk-type (gen-naive-list (succ m)))) ≤ (succ m))
+eager-head-not-constant-time-lemma env zero ()
 eager-head-not-constant-time-lemma env (succ m) ineq
  = IH' ((γ₂ (list-recᵢ
        ((0 , return (0 ∷ 0 ∷ gen-naive-list m)) ∷Eᵢ env)
@@ -472,6 +482,7 @@ eager-head-linear-time-big-o {_} {Γ} = 3 , 1 , γ
     → pr₁ (eager-function-list-helper env (lrec (var 𝟎) zero
       (lam nat (lam nat (var 𝟎))))
       (thunk-type (gen-naive-list x))) ≤ 3 * x
+  γ zero () env
   γ (succ x) le env = γ₀ x env
 
 eager-head-linear-time : {n : ℕ} {Γ : Ctx n} → (env : Envᵢ Γ)

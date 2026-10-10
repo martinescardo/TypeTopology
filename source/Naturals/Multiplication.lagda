@@ -12,6 +12,7 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Addition
 open import Naturals.Properties
+open import UF.Base
 
 module Naturals.Multiplication where
 
@@ -396,5 +397,35 @@ product-order-cancellable x (succ y) z l = γ
 
 less-than-pos-mult : (x y z : ℕ) → x < y → x < y * succ z
 less-than-pos-mult x y z l = <-+ x y (y * z) l
+
+\end{code}
+
+Theo Hepburn, started on 8th October 2024
+
+Contains additional proofs regarding natural number ordering when
+multiplication.
+
+\begin{code}
+
+multiplication-preserves-order-left : (k m n : ℕ) → m ≤ n → k * m ≤ k * n
+multiplication-preserves-order-left k m n l = transport₂ _≤_ γ₁ γ₂ γ₃
+ where
+  γ₁ : m * k ＝ k * m
+  γ₁ = mult-commutativity m k
+
+  γ₂ : n * k ＝ k * n
+  γ₂ = mult-commutativity n k
+
+  γ₃ : m * k ≤ n * k
+  γ₃ = multiplication-preserves-order m n k l
+
+≤-multiplying : (m n x y : ℕ) → m ≤ n → x ≤ y → m * x ≤ n * y
+≤-multiplying m n x y l₁ l₂ = ≤-trans (m * x) (n * x) (n * y) γ₁ γ₂
+ where
+  γ₁ : m * x ≤ n * x
+  γ₁ = multiplication-preserves-order m n x l₁ 
+
+  γ₂ : n * x ≤ n * y
+  γ₂ = multiplication-preserves-order-left n x y l₂
 
 \end{code}
