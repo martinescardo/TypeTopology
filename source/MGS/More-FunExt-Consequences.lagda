@@ -340,20 +340,18 @@ being-hae-is-subsingleton fe₀ fe₁ fe₂ {X} {Y} f = subsingleton-criterion' 
     → (g (f x) , ε (f x) ＝ (x , refl (f x)))
     ≃ (Σ p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))
   a g ε x =
-   ((g (f x) , ε (f x)) ＝ (x , refl (f x)))                                   ≃⟨ i ⟩
+   ((g (f x) , ε (f x)) ＝ (x , refl (f x)))                                     ≃⟨ i ⟩
    (Σ p ꞉ g (f x) ＝ x , transport (λ - → f - ＝ f x) p (ε (f x)) ＝ refl (f x)) ≃⟨ ii ⟩
-   (Σ p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))                                     ■
+   (Σ p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))                                      ■
     where
      i  = Σ-＝-≃ (g (f x) , ε (f x)) (x , refl (f x))
      ii = Σ-cong (λ p → transport-ap-≃ f p (ε (f x)))
 
-  b : (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ＝ (x , refl (f x)))
-    ≃ is-hae f
   b = (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ＝ (x , refl (f x)))         ≃⟨ i ⟩
-      (Σ (g , ε) ꞉ has-section f , ∀ x → Σ  p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))          ≃⟨ ii ⟩
-      (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , ∀ x → Σ  p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))   ≃⟨ iii ⟩
+      (Σ (g , ε) ꞉ has-section f , ∀ x → Σ  p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))         ≃⟨ ii ⟩
+      (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , ∀ x → Σ  p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))  ≃⟨ iii ⟩
       (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , Σ η ꞉ g ∘ f ∼ id , ∀ x → ap f (η x) ＝ ε (f x)) ≃⟨ iv ⟩
-      is-hae f                                                                           ■
+      is-hae f                                                                            ■
    where
     i   = Σ-cong (λ (g , ε) → Π-cong fe₂ fe₂ (a g ε))
     ii  = Σ-assoc
