@@ -44,6 +44,14 @@ alone.
 The pages look exactly as they did. Agda's own stylesheet already gives
 every link no underline and a green background under the cursor, which is
 what an identifier in the code does, so the stylesheet is left alone too.
+
+There are two additions. A magnifying glass in the top right corner of
+every page, which stays there while the page scrolls, leads to the search
+page for the whole library. --search-url says where that is, and
+--search-url none leaves the icon out. And a little markdown in the prose
+and the comments is rendered, `code`, *emphasis*, **bold**, [text](url)
+and fenced blocks, with its markup characters hidden by the stylesheet
+rather than removed. --no-markdown leaves it as plain text.
 """
 
 import argparse, collections, glob, os, re, shutil, subprocess, sys
@@ -94,6 +102,25 @@ OWN_MODULE = re.compile(r'<a id="\d+" href="([^"]*)#\d+" class="Module">([^<]*)<
 # neither where a link lands nor what the page looks like.
 
 SPAN = "span"
+
+# A magnifying glass fixed to the top right corner of the window, linking to
+# the search page. It is all on one line and shows no text, so a reader sees
+# the same characters as before. Its class, which Agda never uses, is what
+# identifies it, so that it is replaced rather than repeated on a second run.
+
+SEARCH_URL = "https://martinescardo.github.io/TypeTopologySearch.html"
+
+SEARCH_ICON = (
+    '<a class="TypeTopologySearch" href="{url}" title="Search TypeTopology" '
+    'aria-label="Search TypeTopology" style="position:fixed; top:8px; '
+    'right:8px; z-index:1; padding:8px; line-height:0; background:white; '
+    'border:2px solid #008B00; border-radius:8px; color:#008B00; '
+    'box-shadow:0 2px 6px rgba(0,0,0,0.25)">'
+    '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" '
+    'stroke="currentColor" stroke-width="2.5" stroke-linecap="round">'
+    '<circle cx="10" cy="10" r="7"/><path d="M15 15 L21 21"/></svg></a>')
+
+ICON = re.compile(r'<a class="TypeTopologySearch"[^>]*>.*?</a>')
 
 LINKABLE = re.compile(r"""  (?P<url>(?:https?|ftp)://\S+)
                           | (?P<doi>\bdoi:10\.\S+)
@@ -350,13 +377,133 @@ def visible(page):
     return TAG.sub("", page)
 
 
-def rewrite(htmldir, check):
+# A little markdown in the prose and the comments: `code`, *emphasis*,
+# **bold**, [text](target) and fenced blocks. The markup characters stay in
+# the page, inside <md-mark>, which the stylesheet hides, so the text of the
+# page is unchanged. Agda emits none of the tags used here, and so all of it
+# can be taken off again exactly, which is done before the links are made
+# and the markdown put back after, so that every run starts from the same
+# page. Lists, underscores and runs of three or more asterisks are left as
+# they are.
+
+MARKDOWN = [
+    ("block", re.compile(r'(?m)^([ \t]*(`{3,})[^`\n]*\n)'
+                         r'((?:(?![ \t]*\2).*\n)*?(?:(?![ \t]*\2).*))'
+                         r'(\n[ \t]*\2`*[ \t]*)$')),
+    ("code", re.compile(r'(?<!`)(`)([^`\n]+)(`)(?!`)')),
+    ("link", re.compile(r'(\[)([^\]\n]+)(\]\(([^)\s]+)\))')),
+    ("strong", re.compile(r'(?<!\*)(\*\*)([^\s*](?:[^*\n]*[^\s*])?)(\*\*)(?!\*)')),
+    ("em", re.compile(r'(?<![*\w`])(\*)([A-Za-z][^*\n`]{0,60}?[A-Za-z.])(\*)'
+                      r'(?![*\w])')),
+]
+
+MARKDOWN_TAGS = re.compile(r'</?(?:md-mark|md-block|code|em|strong)>')
+MARKDOWN_LINK = re.compile(r'<a class="Markdown" href="[^"]*">([^<]*)</a>')
+URL = re.compile(r'(?:https?|ftp)://')
+
+
+def markdown_target(target, pages):
+    "Where a [text](target) points, a url or a page by its file name, or None."
+    if URL.match(target):
+        return target.replace('"', "&quot;")
+    name = SUFFIX.sub("", target.rsplit("/", 1)[-1])
+    return name + ".html" if name in pages else None
+
+
+def mark(body, pages):
+    """Put the markdown in one element's body, which may hold links already.
+
+    Returns the new body and what was rendered, as (kind, text) pairs.
+    """
+    # The visible text, where each of its characters is in the body, and
+    # whether it is inside a link.
+    text, where, inside, depth, i = [], [], [], 0, 0
+    while i < len(body):
+        if body[i] == "<":
+            j = body.index(">", i) + 1
+            depth += body.startswith("<a ", i) - body.startswith("</a>", i)
+            i = j
+        else:
+            text.append(body[i]), where.append(i), inside.append(depth > 0)
+            i += 1
+    text = "".join(text)
+    taken = [False] * len(text)
+    inserts, rendered = [], []
+    for kind, rx in MARKDOWN:
+        for m in rx.finditer(text):
+            s, e = m.start(), m.end()
+            body_group = 3 if kind == "block" else 2
+            first, last = m.end(1), m.start(body_group + 1)
+            # Every tag goes in outside a link, so that the tags nest.
+            if any(taken[s:e]) or any(inside[k] for k in (s, first - 1,
+                                                          last, e - 1)):
+                continue
+            if kind == "block":
+                open_, close = "<md-block>", "</md-block>"
+            elif kind == "link":
+                href = markdown_target(m.group(4), pages)
+                if href is None or any(inside[m.start(2):m.end(2)]):
+                    continue
+                open_, close = f'<a class="Markdown" href="{href}">', "</a>"
+            else:
+                open_, close = f"<{kind}>", f"</{kind}>"
+            for k in range(s, e):
+                taken[k] = True
+            # A start goes before its character and an end right after the
+            # character before it, so that neither crosses a tag.
+            inserts += [(where[s], 2, "<md-mark>"),
+                        (where[first - 1] + 1, 1, "</md-mark>" + open_),
+                        (where[last], 1, close + "<md-mark>"),
+                        (where[e - 1] + 1, 0, "</md-mark>")]
+            rendered.append((kind, m.group(0)))
+    # Inserted from the end, so that the positions still hold. At one
+    # position an end is placed before a start.
+    for pos, _, tag in sorted(inserts, reverse=True):
+        body = body[:pos] + tag + body[pos:]
+    return body, rendered
+
+
+def unmark(page):
+    "Take the markdown off a page, giving back the page it was put on."
+    page = MARKDOWN_LINK.sub(r"\1", MARKDOWN_TAGS.sub("", page))
+
+    # An element that became a span only for a markdown link goes back.
+    def element(m):
+        if m.group(1) == SPAN and "<a " not in m.group(3):
+            return f"<a{m.group(2)}>{m.group(3)}</a>"
+        return m.group(0)
+
+    return ELEMENT.sub(element, page)
+
+
+def markdown(page, pages):
+    "Put the markdown in every prose block and comment of a page."
+    rendered = []
+
+    def element(m):
+        tag, attrs, body = m.group(1), m.group(2), m.group(3)
+        found = CLASS.search(attrs)
+        if "href" in attrs or not found or \
+           found.group(1) not in LINKABLE_CLASSES:
+            return m.group(0)
+        new, done = mark(body, pages)
+        if not done:
+            return m.group(0)
+        rendered.extend(done)
+        if "<a " in new:
+            tag = SPAN
+        return f"<{tag}{attrs}>{new}</{tag}>"
+
+    return ELEMENT.sub(element, page), rendered
+
+
+def rewrite(htmldir, check, md):
     """Rewrite every page in place.
 
     Returns the links in each page, the names that answer to no page, the
-    links that rest on a reading rather than on a name that is exact, and
-    how many pages had to be rewritten, which is none of them when the
-    last run did it already. The links counted are the ones this script
+    links that rest on a reading rather than on a name that is exact, the
+    markdown rendered, and how many pages had to be rewritten, which is
+    none of them when the last run did it already. The links counted are the ones this script
     makes, an <a> with an href and nothing else, which is a shape Agda
     itself never emits.
     """
@@ -367,10 +514,11 @@ def rewrite(htmldir, check):
         tails[name.rsplit(".", 1)[-1]].add(name)
 
     found, unresolved, rewritten = {}, collections.defaultdict(list), 0
-    read = []
+    read, rendered = [], []
     for path in paths:
         here = os.path.basename(path)[:-len(".html")]
-        page = open(path, encoding="utf-8").read()
+        original = open(path, encoding="utf-8").read()
+        page = unmark(original)
         own = {name for target, name in OWN_MODULE.findall(page)
                if target in ("", os.path.basename(path))}
         new, links, missing = transform(page, pages, tails, here, own)
@@ -391,6 +539,14 @@ def rewrite(htmldir, check):
                     raise SystemExit(f"{path}: rewriting it again would "
                                      f"change it further; nothing has "
                                      f"been written")
+        if md:
+            linked = new
+            new, done = markdown(linked, pages)
+            rendered += [(here, kind, text) for kind, text in done]
+            if visible(new) != visible(linked) or unmark(new) != linked:
+                raise SystemExit(f"{path}: the markdown cannot be taken off "
+                                 f"again exactly; nothing has been written")
+        if new != original:
             open(path, "w", encoding="utf-8").write(new)
             rewritten += 1
         here_links = OURS.findall(new)
@@ -401,7 +557,25 @@ def rewrite(htmldir, check):
         read += [(here, module, shown)
                  for module, shown in TO_A_PAGE.findall(new)
                  if module in pages and SUFFIX.sub("", shown) != module]
-    return found, unresolved, read, rewritten
+    return found, unresolved, read, rendered, rewritten
+
+
+def search_icon(htmldir, url):
+    """Put the search icon at the start of every page, or take it away.
+
+    Returns how many pages had to be changed, which is none of them when the
+    last run put the same icon there already.
+    """
+    href = url.replace("&", "&amp;").replace('"', "&quot;") if url else ""
+    icon = SEARCH_ICON.format(url=href) if url else ""
+    changed = 0
+    for path in sorted(glob.glob(os.path.join(htmldir, "*.html"))):
+        page = open(path, encoding="utf-8").read()
+        new = ICON.sub("", page).replace("<body>", "<body>" + icon, 1)
+        if new != page:
+            open(path, "w", encoding="utf-8").write(new)
+            changed += 1
+    return changed
 
 
 def render(agda, source, entry, htmldir, force):
@@ -495,6 +669,15 @@ def main():
                    help="the stylesheet to put in the rendering, replacing "
                         "the one agda writes; by default Agda.css beside "
                         "this script, and 'none' keeps Agda's own")
+    p.add_argument("--search-url", default=SEARCH_URL, metavar="URL",
+                   help="the search page that the icon in the corner of "
+                        "every page leads to, by default the published one, "
+                        "and 'none' leaves the icon out")
+    p.add_argument("--no-markdown", action="store_true",
+                   help="leave the markdown in the prose and the comments "
+                        "as plain text, taking it off pages that have it")
+    p.add_argument("--list-markdown", action="store_true",
+                   help="list the markdown rendered, page by page")
     p.add_argument("--force", action="store_true",
                    help="run agda even when the rendering looks up to date")
     p.add_argument("--check", action="store_true",
@@ -524,12 +707,23 @@ def main():
     if args.css != "none":
         stylesheet(args.css, out)
 
-    found, unresolved, read, rewritten = rewrite(out, args.check)
+    found, unresolved, read, rendered, rewritten = \
+        rewrite(out, args.check, not args.no_markdown)
     links = [href for page in found.values() for href in page]
     pages = len(glob.glob(os.path.join(out, "*.html")))
     print(f"{len(links)} links in {len(found)} of the {pages} pages in {out}"
           + (f", {rewritten} page{'s' if rewritten != 1 else ''} rewritten"
              if rewritten else ", all of them there already"))
+    if rendered:
+        kinds = collections.Counter(kind for _, kind, _ in rendered)
+        print(f"{len(rendered)} pieces of markdown rendered: "
+              + ", ".join(f"{n} {k}" for k, n in sorted(kinds.items()))
+              + ("" if args.list_markdown else "; --list-markdown lists them"))
+    url = None if args.search_url == "none" else args.search_url
+    changed = search_icon(out, url)
+    if changed:
+        print(f"search icon {'put on' if url else 'taken off'} {changed} "
+              f"page{'s' if changed != 1 else ''}")
     if read:
         print(f"{len(read)} of them are links whose text is not the module it "
               f"points to"
@@ -544,6 +738,11 @@ def main():
         counts = collections.Counter(links)
         for href, n in sorted(counts.items()):
             print(f"{n:4}  {href}")
+
+    if args.list_markdown:
+        for here, kind, text in rendered:
+            shown = text if kind != "block" else text.replace("\n", "\n" + " " * 64)
+            print(f"{kind:6}  {here:55} {shown}")
 
     if args.guessed:
         for page, module, shown in sorted(read):

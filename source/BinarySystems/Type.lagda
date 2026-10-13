@@ -56,11 +56,16 @@ We now show that 𝕄 is a set.
 
 \begin{code}
 
+pred : 𝔹 → 𝔹
+pred center    = center
+pred (left x)  = x
+pred (right x) = x
+
 left-lc : (x y : 𝔹) → left x ＝ left y → x ＝ y
-left-lc x x refl = refl
+left-lc x y = ap pred
 
 right-lc : (x y : 𝔹) → right x ＝ right y → x ＝ y
-right-lc x x refl = refl
+right-lc x y = ap pred
 
 is-center : 𝔹 → 𝓤₀ ̇
 is-center center    = 𝟙
@@ -93,8 +98,13 @@ is-right (right _) = 𝟙
  Cases (𝔹-is-discrete x y)
   (λ (p : x ＝ y) → inl (ap right p))
   (λ (ν : x ≠ y) → inr (contrapositive (right-lc x y) ν))
+unη : 𝕄 → 𝔹
+unη L     = center
+unη R     = center
+unη (η x) = x
+
 η-lc : (x y : 𝔹) → η x ＝ η y → x ＝ y
-η-lc x x refl = refl
+η-lc x y = ap unη
 
 is-L : 𝕄 → 𝓤₀ ̇
 is-L L     = 𝟙

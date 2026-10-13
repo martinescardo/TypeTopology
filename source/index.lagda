@@ -7,8 +7,7 @@
    2010--2026--∞, continuously evolving.
    https://www.cs.bham.ac.uk/~mhe/
 
-   This repository is searchable:
-   https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html
+   Module descriptions are available here:
    https://github.com/martinescardo/TypeTopologyModuleDescriptions/
 
    Tested with Agda 2.8.0 and 2.9.0 (unreleased development version).
@@ -63,8 +62,8 @@
      control safety and, to the extent this is currently possible, to
      control which type theory is used.
 
-   * In our last count, on 2026-09-30, this development has 997 Agda
-     files with 296K lines of code, including comments and blank
+   * In our last count, on 2026-10-02, this development has 1000 Agda
+     files with 297K lines of code, including comments and blank
      lines.
 
 Philosophy of the repository
