@@ -577,14 +577,32 @@ trees-with-strategies-are-hereditarily-inhabited (X ∷ Xf) (x₀ , σf) =
 However, it is possible to define a correct notion of strategy for the
 isomorphic copy ℍ of 𝔾.
 
+The following definition passes termination checking in Agda 2.8.0
+and in Agda 2.9.0 (development version), but not in Mikan 8d62e23cf8.
+
 \begin{code}
 
+{-
 Strategy' : ℍ -> 𝓤 ̇
 Strategy' ((X ∷ Xf) , inr _ , _) = 𝟙
 Strategy' ((X ∷ Xf) , inl _ , h) = X × ((x : X) → Strategy' (Xf x , h x))
+-}
 
 \end{code}
-NoNo
+
+Working with the curried version solves the problem.
+
+\begin{code}
+
+Strategy'' : (Xt : 𝔸) → is-hereditarily-decidable Xt → 𝓤 ̇
+Strategy'' (X ∷ Xf) (inr _ , _) = 𝟙
+Strategy'' (X ∷ Xf) (inl _ , h) = X × ((x : X) → Strategy'' (Xf x) (h x))
+
+Strategy' : ℍ -> 𝓤 ̇
+Strategy' (Xt , d) = Strategy'' Xt d
+
+\end{code}
+
 Given any tree Xt : 𝕋, we can prune away the subtrees, to get a tree
 that has the same paths as Xt, and which is hereditarily inhabited as
 soon as there is at least one path in Xt (see further discussion
@@ -726,33 +744,79 @@ module illustration (R : 𝓤 ̇ ) where
 
  open K-definitions {𝓤} {R}
 
+\end{code}
+
+The following definitions pass termination checking in Agda 2.8.0
+and in Agda 2.9.0 (development version), but not in Mikan 8d62e23cf8.
+
+\begin{code}
+
+{-
  Path' : ℍ → 𝓤 ̇
  Path' ((X ∷ Xf) , inr _ , _) = 𝟙
  Path' ((X ∷ Xf) , inl _ , h) = Σ x ꞉ X , Path' (Xf x , h x)
-
- 𝓚 : 𝕋 → 𝓤 ̇
- 𝓚 []       = 𝟙
- 𝓚 (X ∷ Xf) = K X × ((x : X) → 𝓚 (Xf x))
 
  𝓚' : ℍ → 𝓤 ̇
  𝓚' ((X ∷ Xf) , inr _ , _) = 𝟙
  𝓚' ((X ∷ Xf) , inl _ , h) = K X × ((x : X) → 𝓚' (Xf x , h x))
 
+ K-sequence' : {Xt : ℍ} → 𝓚' Xt → K (Path' Xt)
+ K-sequence' {(X ∷ Xf) , inr _ , h} ⟨⟩        = λ q → q ⟨⟩
+ K-sequence' {(X ∷ Xf) , inl _ , h} (ϕ , ϕf) = ϕ ⊗ᴷ (λ x → K-sequence' {Xf x , h x} (ϕf x))
+
+ strategic-path' : {Xt : ℍ} → Strategy' Xt → Path' Xt
+ strategic-path' {(X ∷ Xf) , inr _ , h} ⟨⟩       = ⟨⟩
+ strategic-path' {(X ∷ Xf) , inl _ , h} (x , σf) = x , strategic-path' {Xf x , h x} (σf x)
+-}
+
+\end{code}
+
+We solve the problem by working with the curried versions, as above for
+Strategy'.
+
+\begin{code}
+
+ Path'' : (Xt : 𝔸) → is-hereditarily-decidable Xt → 𝓤 ̇
+ Path'' (X ∷ Xf) (inr _ , _) = 𝟙
+ Path'' (X ∷ Xf) (inl _ , h) = Σ x ꞉ X , Path'' (Xf x) (h x)
+
+ Path' : ℍ → 𝓤 ̇
+ Path' (Xt , d) = Path'' Xt d
+
+ 𝓚 : 𝕋 → 𝓤 ̇
+ 𝓚 []       = 𝟙
+ 𝓚 (X ∷ Xf) = K X × ((x : X) → 𝓚 (Xf x))
+
+ 𝓚'' : (Xt : 𝔸) → is-hereditarily-decidable Xt → 𝓤 ̇
+ 𝓚'' (X ∷ Xf) (inr _ , _) = 𝟙
+ 𝓚'' (X ∷ Xf) (inl _ , h) = K X × ((x : X) → 𝓚'' (Xf x) (h x))
+
+ 𝓚' : ℍ → 𝓤 ̇
+ 𝓚' (Xt , d) = 𝓚'' Xt d
+
  K-sequence : {Xt : 𝕋} → 𝓚 Xt → K (Path Xt)
  K-sequence {[]}     ⟨⟩       = λ q → q ⟨⟩
  K-sequence {X ∷ Xf} (ϕ , ϕf) = ϕ ⊗ᴷ (λ x → K-sequence {Xf x} (ϕf x))
 
+ K-sequence'' : (Xt : 𝔸) (d : is-hereditarily-decidable Xt)
+              → 𝓚'' Xt d → K (Path'' Xt d)
+ K-sequence'' (X ∷ Xf) (inr _ , h) ⟨⟩        = λ q → q ⟨⟩
+ K-sequence'' (X ∷ Xf) (inl _ , h) (ϕ , ϕf) = ϕ ⊗ᴷ (λ x → K-sequence'' (Xf x) (h x) (ϕf x))
+
  K-sequence' : {Xt : ℍ} → 𝓚' Xt → K (Path' Xt)
- K-sequence' {(X ∷ Xf) , inr _ , h} ⟨⟩        = λ q → q ⟨⟩
- K-sequence' {(X ∷ Xf) , inl _ , h} (ϕ , ϕf) = ϕ ⊗ᴷ (λ x → K-sequence' {Xf x , h x} (ϕf x))
+ K-sequence' {Xt , d} = K-sequence'' Xt d
 
  strategic-path : {Xt : 𝕋} → Strategy Xt → Path Xt
  strategic-path {[]}     ⟨⟩       = ⟨⟩
  strategic-path {X ∷ Xf} (x , σf) = x , strategic-path {Xf x} (σf x)
 
+ strategic-path'' : (Xt : 𝔸) (d : is-hereditarily-decidable Xt)
+                  → Strategy'' Xt d → Path'' Xt d
+ strategic-path'' (X ∷ Xf) (inr _ , h) ⟨⟩       = ⟨⟩
+ strategic-path'' (X ∷ Xf) (inl _ , h) (x , σf) = x , strategic-path'' (Xf x) (h x) (σf x)
+
  strategic-path' : {Xt : ℍ} → Strategy' Xt → Path' Xt
- strategic-path' {(X ∷ Xf) , inr _ , h} ⟨⟩       = ⟨⟩
- strategic-path' {(X ∷ Xf) , inl _ , h} (x , σf) = x , strategic-path' {Xf x , h x} (σf x)
+ strategic-path' {Xt , d} = strategic-path'' Xt d
 
 \end{code}
 

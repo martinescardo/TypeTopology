@@ -1228,7 +1228,7 @@ module _ (fe  : Fun-Ext) where
       center (left x)                                        ∎
        where
         i₀ = 𝕄-cases-l _ _ (𝕄-is-set , refl)
-        i₁ = λ x → (center-l x)⁻¹
+        i₁ = λ (x : 𝕄) → (center-l x)⁻¹
 
    ii =  λ (x : 𝕄)
      → 𝕄𝕄-cases (left ∘ right) (center ∘ right) refl (right x) ＝⟨ i₀ x ⟩
