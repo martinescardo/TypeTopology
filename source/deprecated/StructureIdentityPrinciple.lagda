@@ -262,8 +262,8 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
  S-equiv A B (f , e) =
-  (λ x x' → f (structure A x x')) ＝[ (⟨ A ⟩ → ⟨ A ⟩ → ⟨ B ⟩) ]
-  (λ x x' → structure B (f x) (f x'))
+     (λ (x x' : ⟨ A ⟩) → f (structure A x x'))
+  ＝ (λ (x x' : ⟨ A ⟩) → structure B (f x) (f x'))
 
  S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩)
  S-refl A = refl
@@ -289,9 +289,8 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
  fact : (A B : ∞-Magma)
       → (A ＝ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
                        , is-equiv f
-                       × ((λ x x' → f (structure A x x'))
-                         ＝[ (⟨ A ⟩ → ⟨ A ⟩ → ⟨ B ⟩) ]
-                          (λ x x' → structure B (f x) (f x'))))
+                       × ((λ (x x' : ⟨ A ⟩) → f (structure A x x'))
+                         ＝ (λ x x' → structure B (f x) (f x'))))
  fact = ＝-is-≃ₛ
 
 \end{code}
@@ -302,11 +301,11 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
 \begin{code}
 
- fact' : (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_*_ : Y → Y → Y)
-       → ((X , _·_) ＝ (Y , _*_))
-       ≃ (Σ f ꞉ (X → Y) , is-equiv f
-                        × ((λ x x' → f (x · x')) ＝[ (X → X → Y) ]
-                           (λ x x' → f x * f x')))
+ fact'
+  : (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_*_ : Y → Y → Y)
+  → ((X , _·_) ＝ (Y , _*_))
+  ≃ (Σ f ꞉ (X → Y) , is-equiv f
+                   × ((λ (x x' : X) → f (x · x')) ＝ (λ x x' → f x * f x')))
  fact' X Y _·_ _*_ = fact (X , _·_) (Y , _*_)
 
 \end{code}
@@ -647,20 +646,19 @@ And now we are ready to apply gsip-with-axioms to our situation:
        Axioms
        Axioms-is-prop
        (λ A' B' (f , e) →
-        ((λ x x' → f (mul A' x x')) ＝[ ((⟨ A' ⟩ → ⟨ A' ⟩ → ⟨ B' ⟩)) ]
-         (λ x x' → mul B' (f x) (f x')))
+        ((λ (x x' : ⟨ A' ⟩) → f (mul A' x x')) ＝ (λ x x' → mul B' (f x) (f x')))
         × (f (unit A') ＝ unit B'))
        (λ A' → refl , refl)
-       (λ X m n ν → to-×-＝ (pr₁ ν) (pr₂ ν))
+       (λ X m n u → to-×-＝ (pr₁ u) (pr₂ u))
        (λ {A' m (refl , refl) → refl})
 
- fact : (A B : Monoid)
-      → (A ＝ B)
-      ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
-             , is-equiv f
-             × ((λ x x' → f (μ A x x')) ＝[ (⟨ A ⟩ → ⟨ A ⟩ → ⟨ B ⟩) ]
-                (λ x x' → μ B (f x) (f x')))
-             × (f (η A) ＝ η B))
+ fact
+  : (A B : Monoid)
+  → (A ＝ B)
+  ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
+         , is-equiv f
+         × ((λ (x x' : ⟨ A ⟩) → f (μ A x x')) ＝ (λ x x' → μ B (f x) (f x')))
+         × (f (η A) ＝ η B))
  fact = ＝-is-≃ₛ
 
  fact' : (X : 𝓤 ̇ ) (_·_ : X → X → X) (d : X) (α : Axioms X (_·_ , d))
@@ -668,7 +666,7 @@ And now we are ready to apply gsip-with-axioms to our situation:
        → ((X , (_·_ , d) , α) ＝ (Y , (_*_ , e) , β))
        ≃ (Σ f ꞉ (X → Y)
               , is-equiv f
-              × ((λ x x' → f (x · x')) ＝[ (X → X → Y) ] (λ x x' → f x * f x'))
+              × ((λ (x x' : X) → f (x · x')) ＝ (λ x x' → f x * f x'))
               × (f d ＝ e))
  fact' X _·_ d α Y _*_ e β = fact (X , ((_·_ , d) , α)) (Y , ((_*_ , e) , β))
 

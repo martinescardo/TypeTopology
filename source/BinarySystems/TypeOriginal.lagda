@@ -1296,13 +1296,11 @@ module _ (fe  : Fun-Ext) where
                × (left x ⊕ right y ＝ center (x ⊕ y))
  mid-is-hom-l' x y = u , v , w , t
   where
-   α : (y : 𝕄)
-     → left x ⊕ y
-       ＝ 𝕄𝕄-cases (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (pr₁ (⊕-property x)) y
-   α y = left x ⊕ y           ＝⟨refl⟩
-         pr₁ (mid (left x)) y ＝⟨ happly (ap pr₁ (mid-is-hom-l x)) y ⟩
-         pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y   ＝⟨refl⟩
-         𝕄𝕄-cases (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (pr₁ (⊕-property x)) y ∎
+   α = λ (y : 𝕄) →
+        left x ⊕ y           ＝⟨refl⟩
+        pr₁ (mid (left x)) y ＝⟨ happly (ap pr₁ (mid-is-hom-l x)) y ⟩
+        pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y   ＝⟨refl⟩
+        𝕄𝕄-cases (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (pr₁ (⊕-property x)) y ∎
 
    u = α Left
      ∙ 𝕄-cases-L
@@ -1340,13 +1338,11 @@ module _ (fe  : Fun-Ext) where
                × (right x ⊕ right y ＝ right  (x ⊕ y))
  mid-is-hom-r' x y = u , v , w , t
   where
-   α : (y : 𝕄)
-     → right x ⊕ y
-       ＝ 𝕄𝕄-cases (center ∘ (x ⊕_)) (right ∘ (x ⊕_)) (pr₂ (⊕-property x)) y
-   α y = right x ⊕ y           ＝⟨refl⟩
-         pr₁ (mid (right x)) y ＝⟨ happly (ap pr₁ (mid-is-hom-r x)) y ⟩
-         pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y   ＝⟨refl⟩
-         𝕄𝕄-cases (center ∘ (x ⊕_)) (right ∘ (x ⊕_)) (pr₂ (⊕-property x)) y ∎
+   α = λ (y : 𝕄) →
+        right x ⊕ y           ＝⟨refl⟩
+        pr₁ (mid (right x)) y ＝⟨ happly (ap pr₁ (mid-is-hom-r x)) y ⟩
+        pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y   ＝⟨refl⟩
+        𝕄𝕄-cases (center ∘ (x ⊕_)) (right ∘ (x ⊕_)) (pr₂ (⊕-property x)) y ∎
 
    u = α Right
      ∙ 𝕄-cases-R
