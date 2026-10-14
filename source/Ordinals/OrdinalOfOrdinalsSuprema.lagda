@@ -68,6 +68,7 @@ private
  pe' : Prop-Ext
  pe' {𝓤} = pe 𝓤
 
+open import Ordinals.Arithmetic fe
 open import Ordinals.WellOrderTransport fe
 
 \end{code}
@@ -1190,6 +1191,10 @@ module suprema
                                (α i) (β i) (sup β)
                                (l i) (sup-is-upper-bound β i))
 
+ sup-pointwise-equal : {I : 𝓤 ̇ } (α β : I → Ordinal 𝓤)
+                     → α ∼ β → sup α ＝ sup β
+ sup-pointwise-equal α β h = ap sup (dfunext fe' h)
+
 \end{code}
 
 Conjecture (Martin Escardo, August 2018 originally in the file
@@ -1205,15 +1210,16 @@ developed in February 2024 in collaboration with Nicolai Kraus and Chuangjie Xu.
 
 \begin{code}
 
- is-continuous : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
- is-continuous {𝓤} F =
+ preservation-of-inhabited-suprema : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+ preservation-of-inhabited-suprema {𝓤} F =
     {I : 𝓤 ̇  }
   → ∥ I ∥
   → (γ : I → Ordinal 𝓤)
   → F (sup γ) ＝ sup (F ∘ γ)
 
- is-continuous-generalized : (Ordinal 𝓤 → Ordinal (𝓤 ⊔ 𝓥)) → (𝓤 ⊔ 𝓥) ⁺ ̇
- is-continuous-generalized {𝓤} {𝓥} F =
+ preservation-of-inhabited-suprema-generalized
+  : (Ordinal 𝓤 → Ordinal (𝓤 ⊔ 𝓥)) → (𝓤 ⊔ 𝓥) ⁺ ̇
+ preservation-of-inhabited-suprema-generalized {𝓤} {𝓥} F =
     {I : 𝓤 ̇  }
   → ∥ I ∥
   → (γ : I → Ordinal 𝓤)
@@ -1221,9 +1227,10 @@ developed in February 2024 in collaboration with Nicolai Kraus and Chuangjie Xu.
   where
    open import UF.UniverseEmbedding
 
- is-monotone-if-continuous-generalized : (F : Ordinal 𝓤 → Ordinal (𝓤 ⊔ 𝓥))
-                                       → is-continuous-generalized F
-                                       → is-monotone (OO 𝓤) (OO (𝓤 ⊔ 𝓥)) F
+ is-monotone-if-continuous-generalized
+  : (F : Ordinal 𝓤 → Ordinal (𝓤 ⊔ 𝓥))
+  → preservation-of-inhabited-suprema-generalized F
+  → is-monotone (OO 𝓤) (OO (𝓤 ⊔ 𝓥)) F
  is-monotone-if-continuous-generalized {𝓤} {𝓥} F F-cont α β l = IV
   where
    open import UF.UniverseEmbedding
@@ -1249,10 +1256,11 @@ developed in February 2024 in collaboration with Nicolai Kraus and Chuangjie Xu.
    IV : F α ≼ F β
    IV = ⊴-gives-≼ (F α) (F β) (transport (F α ⊴_) (I ⁻¹ ∙ ap F II) III)
 
- to-is-continuous-generalized : (F : Ordinal 𝓤 → Ordinal 𝓤)
-                              → is-continuous F
-                              → is-continuous-generalized {𝓤} {𝓤} F
- to-is-continuous-generalized {𝓤} F F-cont {S} S-inh γ =
+ to-preservation-of-inhabited-suprema-generalized
+  : (F : Ordinal 𝓤 → Ordinal 𝓤)
+  → preservation-of-inhabited-suprema F
+  → preservation-of-inhabited-suprema-generalized {𝓤} {𝓤} F
+ to-preservation-of-inhabited-suprema-generalized {𝓤} F F-cont {S} S-inh γ =
   transport⁻¹
    (_＝ sup (F ∘ γ ∘ lower))
    (F-cont S-inh γ)
@@ -1265,9 +1273,194 @@ developed in February 2024 in collaboration with Nicolai Kraus and Chuangjie Xu.
     II = sup-composition-⊴ lower (F ∘ γ)
 
  is-monotone-if-continuous : (F : Ordinal 𝓤 → Ordinal 𝓤)
-                           → is-continuous F
+                           → preservation-of-inhabited-suprema F
                            → is-monotone (OO 𝓤) (OO 𝓤) F
  is-monotone-if-continuous {𝓤} F F-cont =
-  is-monotone-if-continuous-generalized F (to-is-continuous-generalized F F-cont)
+  is-monotone-if-continuous-generalized F
+   (to-preservation-of-inhabited-suprema-generalized F F-cont)
+
+\end{code}
+
+Added 14 October 2026 by Tom de Jong, following an observation by Nicolai Kraus.
+
+Given an operation F on ordinals, we have that
+   F preserves inhabited suprema
+   (i.e. suprema of families with inhabited index types)
+if and only if
+   F preserves all suprema up to a binary join with F 𝟘ₒ, i.e.
+   F (sup β) ＝ F 𝟘ₒ ∨ sup (F ∘ β) holds.
+
+This observation is used for the operations of addition and exponentation by a
+fixed ordinal.
+For those applications we find it convenient to fix some ordinal α up front that
+is equal to F 𝟘ₒ.
+
+We need a few preliminaries to prove the observation.
+
+The (trivial) lemma 𝟘ₒ-least is copied from AdditionProperties to avoid
+cyclic dependencies.
+
+\begin{code}
+
+ private
+  𝟘ₒ-least : (α : Ordinal 𝓤) → 𝟘ₒ ≼ α
+  𝟘ₒ-least α β (x , e) = 𝟘-elim x
+
+ empty-sup-is-𝟘ₒ : sup 𝟘-elim ＝ 𝟘ₒ {𝓤}
+ empty-sup-is-𝟘ₒ {𝓤} =
+  Antisymmetry (OO 𝓤) (sup 𝟘-elim) 𝟘ₒ
+   (⊴-gives-≼ (sup 𝟘-elim) 𝟘ₒ
+    (sup-is-lower-bound-of-upper-bounds 𝟘-elim 𝟘ₒ 𝟘-induction))
+   (𝟘ₒ-least (sup 𝟘-elim))
+
+\end{code}
+
+The supremum of an arbitrary family can be replaced by an inhabited supremum.
+
+\begin{code}
+
+ module _
+         {I : 𝓤 ̇ }
+         (β : I → Ordinal 𝓤)
+        where
+
+  fattened-family : 𝟙{𝓤} + I → Ordinal 𝓤
+  fattened-family (inl _) = 𝟘ₒ
+  fattened-family (inr i) = β i
+
+  private
+   β⁺ = fattened-family
+
+  fattened-family-is-pointed : domain β⁺
+  fattened-family-is-pointed = inl ⋆
+
+  fattened-family-is-inhabited : ∥ domain β⁺ ∥
+  fattened-family-is-inhabited = ∣ fattened-family-is-pointed ∣
+
+  sup-of-fattened-family-agrees : sup β ＝ sup β⁺
+  sup-of-fattened-family-agrees = ⊴-antisym (sup β) (sup β⁺) ⦅1⦆ ⦅2⦆
+   where
+    ⦅1⦆ : sup β ⊴ sup β⁺
+    ⦅1⦆ = sup-is-lower-bound-of-upper-bounds β (sup β⁺)
+          (λ i → sup-is-upper-bound β⁺ (inr i))
+
+    ⦅2⦆ : sup β⁺ ⊴ sup β
+    ⦅2⦆ = sup-is-lower-bound-of-upper-bounds β⁺ (sup β) h
+     where
+      h : (j : 𝟙 + I) → β⁺ j ⊴ sup β
+      h (inl _) = ≼-gives-⊴ _ _ (𝟘ₒ-least _)
+      h (inr i) = sup-is-upper-bound β i
+
+\end{code}
+
+Next, we derive some consequences of preserving suprema up to a join with a
+fixed ordinal α.
+
+\begin{code}
+
+ module _
+         (α : Ordinal 𝓤)
+         (F : Ordinal 𝓤 → Ordinal 𝓤)
+        where
+
+  preservation-of-suprema-up-to-join : 𝓤 ⁺ ̇
+  preservation-of-suprema-up-to-join =
+   {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
+      → F (sup β) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → α) (F ∘ β))
+
+  private
+   α-is-F𝟘ₒ : preservation-of-suprema-up-to-join
+            → α ＝ F 𝟘ₒ
+   α-is-F𝟘ₒ eqₛ =
+    α                                  ＝⟨ ⊴-antisym α _ l₁ l₂ ⟩
+    sup (cases (λ _ → α) (F ∘ 𝟘-elim)) ＝⟨ (eqₛ 𝟘-elim) ⁻¹ ⟩
+    F (sup 𝟘-elim)                     ＝⟨ ap F empty-sup-is-𝟘ₒ ⟩
+    F 𝟘ₒ                               ∎
+     where
+      F⁺ = cases (λ _ → α) (F ∘ 𝟘-elim)
+      l₁ : α ⊴ sup F⁺
+      l₁ = sup-is-upper-bound _ (inl ⋆)
+      l₂ : sup F⁺ ⊴ α
+      l₂ = sup-is-lower-bound-of-upper-bounds _ α
+            (dep-cases (λ _ → ⊴-refl α) 𝟘-induction)
+
+   F-is-monotone : preservation-of-suprema-up-to-join
+                 → is-monotone (OO 𝓤) (OO 𝓤) F
+   F-is-monotone eqₛ β γ l = ⊴-gives-≼ (F β) (F γ) (transport (F β ⊴_) (ap F I) II)
+    where
+     Δ : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
+     Δ = cases (λ _ → β) (λ _ → γ)
+     Δ⁺ : 𝟙 + (domain Δ) → Ordinal 𝓤
+     Δ⁺ = cases (λ _ → α) (F ∘ Δ)
+
+     I : sup Δ ＝ γ
+     I = ⊴-antisym (sup Δ) γ
+          (sup-is-lower-bound-of-upper-bounds Δ γ
+            (dep-cases (λ _ → ≼-gives-⊴ β γ l)
+            (λ _ → ⊴-refl γ)))
+          (sup-is-upper-bound Δ (inr ⋆))
+
+     II : F β ⊴ F (sup Δ)
+     II = transport⁻¹ (F β ⊴_) (eqₛ Δ) (sup-is-upper-bound Δ⁺ (inr (inl ⋆)))
+
+   F𝟘ₒ-least : preservation-of-suprema-up-to-join
+             → (γ : Ordinal 𝓤) → F 𝟘ₒ ⊴ F γ
+   F𝟘ₒ-least eqₛ γ =
+    ≼-gives-⊴ (F 𝟘ₒ) (F γ) (F-is-monotone eqₛ 𝟘ₒ γ (𝟘ₒ-least γ))
+
+   α-least : preservation-of-suprema-up-to-join
+           → (γ : Ordinal 𝓤) → α ⊴ F γ
+   α-least eqₛ γ = transport⁻¹ (_⊴ F γ) (α-is-F𝟘ₒ eqₛ) (F𝟘ₒ-least eqₛ γ)
+
+\end{code}
+
+Finally, here is proof of the observation announced above.
+
+\begin{code}
+
+  preservation-of-suprema-observation
+   : ((F 𝟘ₒ ＝ α) × preservation-of-inhabited-suprema F)
+   ↔ preservation-of-suprema-up-to-join
+  preservation-of-suprema-observation = ⦅⇒⦆ , ⦅⇐⦆
+   where
+    F⁺ : {I : 𝓤 ̇ } → (I → Ordinal 𝓤) → 𝟙 + I → Ordinal 𝓤
+    F⁺ β = cases (λ _ → α) (F ∘ β)
+
+    ⦅⇒⦆ : (F 𝟘ₒ ＝ α) × preservation-of-inhabited-suprema F
+        → preservation-of-suprema-up-to-join
+    ⦅⇒⦆ (eqₒ , eqₛ) {I} β =
+     F (sup β)    ＝⟨ ap F (sup-of-fattened-family-agrees β) ⟩
+     F (sup β⁺)   ＝⟨ eqₛ (fattened-family-is-inhabited β) β⁺ ⟩
+     sup (F ∘ β⁺) ＝⟨ sup-pointwise-equal (F ∘ β⁺) (F⁺ β) e ⟩
+     sup (F⁺ β)   ∎
+      where
+       β⁺ = fattened-family β
+       e : F ∘ β⁺ ∼ F⁺ β
+       e = dep-cases (λ ⋆ → eqₒ) (λ i → refl)
+
+    ⦅⇐⦆ : preservation-of-suprema-up-to-join
+        → (F 𝟘ₒ ＝ α) × preservation-of-inhabited-suprema F
+    ⦅⇐⦆ eqₛ =
+     ((α-is-F𝟘ₒ eqₛ) ⁻¹) ,
+     (λ {I} →
+      ∥∥-rec (Π-is-prop fe' (λ _ → the-type-of-ordinals-is-a-set (ua 𝓤) fe')) h)
+      where
+       h : {I : 𝓤 ̇ } → I → (β : I → Ordinal 𝓤) → F (sup β) ＝ sup (F ∘ β)
+       h i β =
+        F (sup β)   ＝⟨ eqₛ β ⟩
+        sup (F⁺ β)  ＝⟨ ⊴-antisym (sup (F⁺ β)) (sup (F ∘ β)) l₁ l₂ ⟩
+        sup (F ∘ β) ∎
+         where
+          l₁ : sup (F⁺ β) ⊴ sup (F ∘ β)
+          l₁ = sup-is-lower-bound-of-upper-bounds _ _
+                (dep-cases (λ _ → l) (λ i → sup-is-upper-bound (F ∘ β) i))
+           where
+            l : α ⊴ sup (F ∘ β)
+            l = ⊴-trans α (F (β i)) (sup (F ∘ β))
+                 (α-least eqₛ (β i))
+                 (sup-is-upper-bound (F ∘ β) i)
+          l₂ : sup (F ∘ β) ⊴ sup (F⁺ β)
+          l₂ = sup-is-lower-bound-of-upper-bounds _ _
+                (λ i → sup-is-upper-bound (F⁺ β) (inr i))
 
 \end{code}

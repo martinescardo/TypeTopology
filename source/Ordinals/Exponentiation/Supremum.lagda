@@ -361,14 +361,13 @@ The proof relies on the following monotonicity property of the exponentiation.
 
 Added 29 January 2025 by Tom de Jong.
 
-^ₒ also satisfies the strong supremum specification, yielding yet another proof
-that it satisfies the (ordinary) supremum specification.
+^ₒ also satisfies the supremum specification
 
 \begin{code}
 
-^ₒ-satisfies-strong-sup-specification : (α : Ordinal 𝓤)
-                                      → exp-specification-sup-strong α (α ^ₒ_)
-^ₒ-satisfies-strong-sup-specification {𝓤} α S F =
+^ₒ-satisfies-sup'-specification : (α : Ordinal 𝓤)
+                                → exp-specification-sup' α (α ^ₒ_)
+^ₒ-satisfies-sup'-specification {𝓤} α {S} F =
  ⊴-antisym (α ^ₒ sup F) (sup (cases (λ _ → 𝟙ₒ) (λ s → α ^ₒ F s))) I II
   where
    G : 𝟙{𝓤} + S → Ordinal 𝓤
@@ -407,9 +406,9 @@ that it satisfies the (ordinary) supremum specification.
 ^ₒ-satisfies-sup-specification' : (α : Ordinal 𝓤)
                                 → exp-specification-sup α (α ^ₒ_)
 ^ₒ-satisfies-sup-specification' α =
- exp-specification-sup-from-strong α
+ exp-specification-sup-from-sup' α
   (α ^ₒ_)
-  (^ₒ-satisfies-strong-sup-specification α)
+  (^ₒ-satisfies-sup'-specification α)
 
 \end{code}
 

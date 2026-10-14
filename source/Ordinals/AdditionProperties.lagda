@@ -987,34 +987,33 @@ module _ (pt : propositional-truncations-exist)
 
 \end{code}
 
-Constructively, these equations do not fully characterize ordinal addition, at
-least not as far as we know. If addition preserved *all* suprema, then,
-expressing the ordinal β as a supremum via the result given below, we would have
-the recursive equation
-  α +ₒ β ＝ α +ₒ sup (λ b → (B ↓ b) +ₒ 𝟙ₒ)
-         ＝ sup (λ b → α +ₒ ((B ↓ b) +ₒ 𝟙ₒ))
-         ＝ sup (λ b → (α +ₒ (B ↓ b)) +ₒ 𝟙ₒ)
-which would ensure that there is a unique operation satisfying the above
-equations for successors and suprema. The problem is that constructively we
-cannot, in general, make a case distinction on whether β is zero or not.
+Revised 14 October 2026 by Tom de Jong, following an observation by
+Nicolai Kraus.
 
-In contrast, multiplication behaves differently and is uniquely characterized by
-similar equations since it does preserve all suprema, see
-MultiplicationProperties.
-
-Added 14 February 2025 by Tom de Jong.
-
-However, we could reformulate the equations for addition to the classically
-equivalent set of equations:
-
-  α +ₒ (β +ₒ 𝟙ₒ) ＝ (α +ₒ βₒ) +ₒ 𝟙ₒ
-  α +ₒ (sup β)   ＝ α ∨ sup (λ i → α +ₒ β i)
-
-for all families β : I → Ord without any inhabitedness condition on the index
-type I.
-
+The equations for zero and inhabited suprema can be combined to a single,
+equivalent equation
+  α +ₒ (sup β) ＝ α ∨ sup (λ i → α +ₒ β i)
+for all families β : I → Ord without any inhabitedness condition on the
+index type I.
 Note that the equation α +ₒ 𝟘ₒ = α follows by taking the empty family in the
 supremum equation.
+
+The fact that these equations are equivalent follows from a general fact proved
+for arbirary operations on ordinals (preservation-of-suprema-observation in
+OrdinalOfOrdinalsSuprema).
+Note how we have formulated α ∨ sup (λ i → α +ₒ β i) as a single supremum
+indexed over 𝟙 + I instead.
+
+\begin{code}
+
+ addition-equivalent-suprema-equations
+  : (α : Ordinal 𝓤)
+  → ((α +ₒ 𝟘ₒ ＝ α) × preservation-of-inhabited-suprema (α +ₒ_))
+  ↔ preservation-of-suprema-up-to-join α (α +ₒ_)
+ addition-equivalent-suprema-equations α =
+  preservation-of-suprema-observation α (α +ₒ_)
+
+\end{code}
 
 These reformulated equations have the benefit that they uniquely characterize
 addition via the recursive equation
@@ -1023,12 +1022,8 @@ addition via the recursive equation
          ＝ α ∨ sup (λ b → (α +ₒ (B ↓ b)) +ₒ 𝟙ₒ)
 which also gives a construction of addition via transfinite recursion.
 
-I first realized this in the context of ordinal exponentiation, cf.
-Ordinals.Exponentiation.Specification.
-
-
-Added 24th May 2024 by Tom de Jong.
-Every ordinal is the supremum of the successors of its initial segments.
+The first step in this derivation is the following: every ordinal is the
+supremum of the successors of its initial segments.
 
 \begin{code}
 
@@ -1116,7 +1111,7 @@ as a single supremum by indexing over 𝟙 + I instead, sending inl ⋆ to α.
 Added 22 July 2025 by Tom de Jong.
 
 The above, together with +ₒ-commutes-with-successor, uniquely determines
-addition of ordinals, see also the comment dated 14 February 2025.
+addition of ordinals.
 
 \begin{code}
 

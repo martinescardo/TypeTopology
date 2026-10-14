@@ -801,6 +801,10 @@ expᴸ-satisfies-sup-specification α α-nonzero I-inh β = (expᴸ-sup-＝ β �
 
 Added 29 January 2025 by Tom de Jong.
 
+TODO. This can now be simplified. The paper too?
+
+TODO. Grep for "strong"
+
 We now show that expᴸ also satisfies the stronger sup specification, i.e. that
   expᴸ[𝟙+ α ] (sup β) ＝ 𝟙ₒ ∨ expᴸ[𝟙+ α ] (sup β)
 for all families β : I → Ordinal 𝓤 (regardless of whether I is inhabited).
