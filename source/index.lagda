@@ -29,10 +29,10 @@
      need arises. Its form is the result of evolution rather than
      intelligent design (paraphrasing Linus Torvalds).
 
-     Our lecture notes develop HoTT/UF in Agda in a more principled
-     way, and offers better approaches to some constructions and
-     simpler proofs of some (previously) difficult theorems.
-     (https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/)
+     Our [MGS lecture notes](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/) develop HoTT/UF in Agda in a more
+     principled way, and offers better approaches to some
+     constructions and simpler proofs of some (previously) difficult
+     theorems.
 
      Our philosophy, here and in the lecture notes, is to work with a
      minimal Martin-Löf type theory, and use principles from HoTT/UF
