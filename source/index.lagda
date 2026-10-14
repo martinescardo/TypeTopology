@@ -1,4 +1,4 @@
-   TypeTopology
+   [TypeTopology](https://github.com/martinescardo/TypeTopology)
 
    Various new theorems in univalent mathematics written in Agda
    -------------------------------------------------------------
@@ -6,9 +6,6 @@
    Martin Escardo and collaborators,
    2010--2026--∞, continuously evolving.
    https://www.cs.bham.ac.uk/~mhe/
-
-   Module descriptions are available here:
-   https://github.com/martinescardo/TypeTopologyModuleDescriptions/
 
    Tested with Agda 2.8.0 and 2.9.0 (unreleased development version).
 
@@ -139,7 +136,8 @@ Philosophy of the repository
 A short description of each of the following imported modules is available at
 https://github.com/martinescardo/TypeTopologyModuleDescriptions/
 
-Moreover, the files within these modules have extensive discussions in prose.
+Moreover, the files within most of these modules have extensive
+discussions in prose.
 
 \begin{code}
 
