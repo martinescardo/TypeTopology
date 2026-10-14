@@ -53,9 +53,9 @@
      compactness of the Cantor type using countable Tychonoff, and
      more.
 
-     This file also explains which options are used in TypeTopology to
+     This file also explains which [options are used in TypeTopology](https://github.com/martinescardo/TypeTopology/blob/master/typetopology.agda-lib) to
      control safety and, to the extent this is currently possible, to
-     control which type theory is used.
+     fix which type theory is used.
 
    * In our last count, on 2026-10-13, this development has 1000 Agda
      files with 298K lines of code, including comments and blank
