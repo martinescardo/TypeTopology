@@ -578,11 +578,10 @@ The map `join` is monotone.
    Ⅰ = ap join (connecting-lemma₁ frame-of-ideals p)
    Ⅱ = join-preserves-binary-meets U V
 
-   abstract
-    † : join U ＝ join U ∧[ 𝒪 X ] join V
-    † = join U                  ＝⟨ Ⅰ ⟩
-        join (U ∧ᵢ V)           ＝⟨ Ⅱ ⟩
-        join U ∧[ 𝒪 X ] join V  ∎
+   † : join U ＝ join U ∧[ 𝒪 X ] join V
+   † = join U                  ＝⟨ Ⅰ ⟩
+       join (U ∧ᵢ V)           ＝⟨ Ⅱ ⟩
+       join U ∧[ 𝒪 X ] join V  ∎
 
  joinₘ : poset-of-ideals ─m→ poset-of (𝒪 X)
  joinₘ = join , join-is-monotone
