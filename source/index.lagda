@@ -9,6 +9,8 @@
 
    Tested with Agda 2.8.0 and 2.9.0 (unreleased development version).
 
+   This HTML rendering was automatically generated from commit to-be-filled-automatically.
+
    * Our main use of this development is as a personal blackboard or
      notepad for our research and that of collaborators. In
      particular, some modules have better and better results or
