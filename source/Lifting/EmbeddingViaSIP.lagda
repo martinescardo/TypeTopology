@@ -41,9 +41,10 @@ structure identity principle:
                          (univalence-gives-propext ua) 𝟙-is-prop ⟩
       𝟙       ■
 
-  b = λ x y → ((λ _ → x) ＝ (λ _ → y)) ≃⟨ ≃-funext fe (λ _ → x) (λ _ → y) ⟩
-              (𝟙 → x ＝ y)             ≃⟨ ≃-sym (𝟙→ fe) ⟩
-              (x ＝ y)                 ■
+  b = λ (x y : X) →
+       ((λ _ → x) ＝ (λ _ → y)) ≃⟨ ≃-funext fe (λ _ → x) (λ _ → y) ⟩
+       (𝟙 → x ＝ y)             ≃⟨ ≃-sym (𝟙→ fe) ⟩
+       (x ＝ y)                 ■
 
   c = λ x y → (η x ＝ η y)                       ≃⟨ 𝓛-Id ua (η x) (η y) ⟩
               (𝟙 ≃ 𝟙) × ((λ _ → x) ＝ (λ _ → y)) ≃⟨ ×-cong a (b x y) ⟩

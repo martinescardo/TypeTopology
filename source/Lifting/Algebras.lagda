@@ -555,7 +555,7 @@ second algebra law.
 
 \begin{code}
 
-  s-is-hom = λ P i φ →
+  s-is-hom = λ (P : 𝓣 ̇ ) (i : is-prop P) (φ : P → B) →
    s (∐ᵇ i φ)           ＝⟨refl⟩
    s (r (∐ᵃ i (s ∘ φ))) ＝⟨ sr-is-hom P i (s ∘ φ) ⟩
    ∐ᵃ i (s ∘ r ∘ s ∘ φ) ＝⟨ ap (λ - → ∐ᵃ i (s ∘ - ∘ φ)) (dfunext fe rs) ⟩

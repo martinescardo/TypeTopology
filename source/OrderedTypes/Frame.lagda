@@ -84,7 +84,7 @@ module _ (𝓤 𝓥 : Universe) where
                          Σ f ꞉ (A → A')
                              , is-equiv f
                              × (f ⊤ ＝ ⊤')
-                             × ((λ a b → f (a ∧ b)) ＝ (λ a b → f a ∧' f b))
+                             × ((λ (a b : A) → f (a ∧ b)) ＝ (λ a b → f a ∧' f b))
                              × ((λ {N} (𝕒 : N → A) → f (⋁ 𝕒)) ＝ (λ {N} 𝕒 → ⋁' (n ↦ f (𝕒 n))))
 
  characterization-of-Frame-＝ : is-univalent 𝓤

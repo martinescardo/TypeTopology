@@ -388,12 +388,14 @@ _≃ₐ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
    I   = Σ-cong (λ f → ×-cong (≃-refl _) Π×-distr₂)
    II  = Σ-cong (λ f → Σ-cong (λ e → ×-cong (≃-refl _) (b f e)))
     where
-     b = λ f e
-       → logically-equivalent-props-are-equivalent
-          (being-order-reflecting-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) α β f)
-          (being-order-preserving-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) β α (inv f e))
-          (order-reflecting-gives-inverse-order-preserving α β f e)
-          (inverse-order-reflecting-gives-order-preserving α β f e)
+     b : (f : ⟨ α ⟩ → ⟨ β ⟩) (e : is-equiv f)
+       → is-order-reflecting α β f ≃ is-order-preserving β α (inv f e)
+     b f e =
+      logically-equivalent-props-are-equivalent
+       (being-order-reflecting-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) α β f)
+       (being-order-preserving-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) β α (inv f e))
+       (order-reflecting-gives-inverse-order-preserving α β f e)
+       (inverse-order-reflecting-gives-order-preserving α β f e)
    III = Σ-cong (λ f → Σ-flip)
 
 \end{code}

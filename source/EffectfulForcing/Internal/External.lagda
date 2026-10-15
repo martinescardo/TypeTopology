@@ -19,7 +19,7 @@ open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ 
 open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS using (B〖_〗 ; Kleisli-extension ; zero' ; succ' ; rec')
 open import EffectfulForcing.Internal.SystemT
 
-B【_】 : (Γ : Cxt) → Type
+B【_】 : (Γ : Cxt) → 𝓤₀ ̇
 B【 Γ 】 = {σ : type} (i : ∈Cxt σ Γ) → B〖 σ 〗
 
 ⟪⟫ : B【 〈〉 】
@@ -45,7 +45,7 @@ B⟦ t ⟧₀ = B⟦ t ⟧ ⟪⟫
 dialogue-tree : T₀((ι ⇒ ι) ⇒ ι) → B ℕ
 dialogue-tree t = B⟦ t ⟧₀ generic
 
-R : {σ : type} → Baire → 〖 σ 〗 → B〖 σ 〗 → Type
+R : {σ : type} → Baire → 〖 σ 〗 → B〖 σ 〗 → 𝓤₀ ̇
 R {ι}     α n d  = n ＝ dialogue d α
 R {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
                    (x' : B〖 σ 〗)
@@ -79,7 +79,7 @@ R-kleisli-lemma (σ ⇒ τ) α g g' rg n n' rn
                  n'
                  rn
 
-Rs : {Γ : Cxt} → Baire → 【 Γ 】 → B【 Γ 】 → Type
+Rs : {Γ : Cxt} → Baire → 【 Γ 】 → B【 Γ 】 → 𝓤₀ ̇
 Rs {Γ} α xs ys = {σ : type} (i : ∈Cxt σ Γ) → R {σ} α (xs i) (ys i)
 
 main-lemma : {Γ : Cxt}

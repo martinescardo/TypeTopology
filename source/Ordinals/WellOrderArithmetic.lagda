@@ -763,7 +763,7 @@ module sum
              (λ (l : transport⁻¹ Y p y' ≺ y) → inr (inr (inr ((p ⁻¹) , l))))))
      (λ (l : x' < x) → inr (inr (inl l))))
       where
-       I  = λ p → ap (transport Y p)
+       I  = λ (p : x ＝ x') → ap (transport Y p)
        II = back-and-forth-transport
 
  trichotomy-preservation : is-trichotomous-order _<_

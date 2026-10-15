@@ -9,7 +9,6 @@ flags: --without-K
        --no-cumulativity
        --no-erasure
        --no-experimental-irrelevance
-       --no-guardedness
        --no-infer-absurd-clauses
        --no-irrelevant-projections
        --no-print-pattern-synonyms
@@ -17,4 +16,3 @@ flags: --without-K
        --no-rewriting
        --no-save-metas
        --no-sized-types
-       --no-two-level

@@ -4,7 +4,7 @@
 
 module MLTT.Natural-Numbers-Type where
 
-data ℕ : Set₀  where
+data ℕ : Type₀  where
  zero : ℕ
  succ : ℕ → ℕ
 
