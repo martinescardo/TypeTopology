@@ -321,7 +321,7 @@ module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
  exponentiation-defined-everywhere-implies-EM'
   : ((α : Ordinal 𝓤) → exp-specification-zero α (exp α))
   → ((α : Ordinal 𝓤) → exp-specification-succ α (exp α))
-  → ((α : Ordinal 𝓤) → α ≠ 𝟘ₒ → is-monotone (OO 𝓤) (OO 𝓤) (exp α))
+  → ((α : Ordinal 𝓤) → α ≠ 𝟘ₒ → is-monotone-⊴ (exp α))
   → EM 𝓤
  exponentiation-defined-everywhere-implies-EM' exp-zero exp-succ exp-mon P P-is-prop =
   III (f ⋆ , refl)
@@ -338,7 +338,7 @@ module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
     eq₂ = 𝟙ₒ-neutral-exp α (exp α) (exp-zero α) (exp-succ α)
 
     I : exp α 𝟘ₒ ⊴ exp α 𝟙ₒ
-    I = ≼-gives-⊴ (exp α 𝟘ₒ) (exp α 𝟙ₒ) (exp-mon α α-not-zero 𝟘ₒ 𝟙ₒ (𝟘ₒ-least 𝟙ₒ))
+    I = exp-mon α α-not-zero 𝟘ₒ 𝟙ₒ (𝟘ₒ-least-⊴ 𝟙ₒ)
 
     II : 𝟙ₒ ⊴ α
     II = transport₂ _⊴_ eq₁ eq₂ I

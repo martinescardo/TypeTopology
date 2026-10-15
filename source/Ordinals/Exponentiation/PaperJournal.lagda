@@ -216,7 +216,7 @@ Lemma-10 : (α : Ordinal 𝓤) (exp-α : Ordinal 𝓤 → Ordinal 𝓤)
          → exp-specification-sup  α exp-α
          → (exp-α 𝟙ₒ ＝ α)
          × (exp-α 𝟚ₒ ＝ α ×ₒ α)
-         × ((α ≠ 𝟘ₒ) → is-monotone (OO 𝓤) (OO 𝓤) exp-α)
+         × ((α ≠ 𝟘ₒ) → is-monotone-⊴ exp-α)
 Lemma-10 α exp-α exp-spec-zero exp-spec-succ exp-spec-sup =
    𝟙ₒ-neutral-exp α exp-α exp-spec-zero exp-spec-succ
  , exp-𝟚ₒ-is-×ₒ α exp-α exp-spec-zero exp-spec-succ

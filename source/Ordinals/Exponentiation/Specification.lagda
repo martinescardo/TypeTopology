@@ -108,19 +108,19 @@ TODO: COMMENT AND REVISE.
 \begin{code}
 
  exp-specification-sup' : 𝓤 ⁺ ̇
- exp-specification-sup' = preserves-suprema-up-to-join 𝟙ₒ F
+ exp-specification-sup' = preserves-suprema-up-to-join F 𝟙ₒ
 
  exp-specification-sup-from-sup' : exp-specification-sup'
                                  → exp-specification-sup
  exp-specification-sup-from-sup' σ _ =
-  pr₂ (rl-implication (preservation-of-suprema-equivalence 𝟙ₒ F) σ)
+  pr₂ (rl-implication (preservation-of-suprema-equivalence F 𝟙ₒ) σ)
 
  exp-specification-sup'-from--sup-and-zero
   : α ≠ 𝟘ₒ
   → exp-specification-zero α F × exp-specification-sup
   → exp-specification-sup'
  exp-specification-sup'-from--sup-and-zero α-nonzero (σ₀ , σₛ) =
-  lr-implication (preservation-of-suprema-equivalence 𝟙ₒ F)
+  lr-implication (preservation-of-suprema-equivalence F 𝟙ₒ)
                  (σ₀ , (σₛ α-nonzero))
 
  open import Notation.General
@@ -218,6 +218,10 @@ The specification for suprema implies monotonicity.
 
 \begin{code}
 
+-- TODO
+
+{-
+
 exp-is-monotone-in-exponent : (α : Ordinal 𝓤)
                               (exp-α : Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥))
                             → (α ≠ 𝟘ₒ)
@@ -225,5 +229,7 @@ exp-is-monotone-in-exponent : (α : Ordinal 𝓤)
                             → is-monotone (OO 𝓥) (OO (𝓤 ⊔ 𝓥)) exp-α
 exp-is-monotone-in-exponent α exp-α ν exp-sup =
  is-monotone-if-preserves-inhabited-suprema-generalized exp-α (exp-sup ν)
+
+-}
 
 \end{code}
