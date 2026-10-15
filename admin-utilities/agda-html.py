@@ -45,13 +45,18 @@ The pages look exactly as they did. Agda's own stylesheet already gives
 every link no underline and a green background under the cursor, which is
 what an identifier in the code does, so the stylesheet is left alone too.
 
-There are two additions. A magnifying glass in the top right corner of
-every page, which stays there while the page scrolls, leads to the search
-page for the whole library. --search-url says where that is, and
---search-url none leaves the icon out. And a little markdown in the prose
-and the comments is rendered, `code`, *emphasis*, **bold**, [text](url)
-and fenced blocks, with its markup characters hidden by the stylesheet
-rather than removed. --no-markdown leaves it as plain text.
+There are two additions. Three buttons in the top right corner of every
+page, which stay there while the page scrolls. A magnifying glass leads to
+the search page for the whole library, an arrow leads up to the index of
+the nearest directory above the module, and a house leads to the index of
+the library. A button is left out where the page is the one it would lead
+to, so the index of the library itself has none and a directory index has
+only the arrow. --search-url says where the search page is, and
+--search-url none leaves that button out and keeps the other two. And a
+little markdown in the prose and the comments is rendered, `code`,
+*emphasis*, **bold**, [text](url) and fenced blocks, with its markup
+characters hidden by the stylesheet rather than removed. --no-markdown
+leaves it as plain text.
 """
 
 import argparse, collections, glob, os, re, shutil, subprocess, sys
@@ -103,24 +108,39 @@ OWN_MODULE = re.compile(r'<a id="\d+" href="([^"]*)#\d+" class="Module">([^<]*)<
 
 SPAN = "span"
 
-# A magnifying glass fixed to the top right corner of the window, linking to
-# the search page. It is all on one line and shows no text, so a reader sees
-# the same characters as before. Its class, which Agda never uses, is what
-# identifies it, so that it is replaced rather than repeated on a second run.
+# Three buttons fixed to the top right corner of the window, held in one
+# container so that a later run replaces the cluster whole. From the corner
+# inwards: the search page for the whole library, the index of the nearest
+# directory above the module, and the index of the library. Each shows no
+# text, so a reader sees the same characters as before, and the classes,
+# which Agda never uses, are what identify them.
 
 SEARCH_URL = "https://martinescardo.github.io/TypeTopologySearch.html"
 
-SEARCH_ICON = (
-    '<a class="TypeTopologySearch" href="{url}" title="Search TypeTopology" '
-    'aria-label="Search TypeTopology" style="position:fixed; top:8px; '
-    'right:8px; z-index:1; padding:8px; line-height:0; background:white; '
-    'border:2px solid #008B00; border-radius:8px; color:#008B00; '
-    'box-shadow:0 2px 6px rgba(0,0,0,0.25)">'
-    '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" '
-    'stroke="currentColor" stroke-width="2.5" stroke-linecap="round">'
-    '<circle cx="10" cy="10" r="7"/><path d="M15 15 L21 21"/></svg></a>')
+MAIN_INDEX = "index"
 
-ICON = re.compile(r'<a class="TypeTopologySearch"[^>]*>.*?</a>')
+CORNER = ('<div class="TypeTopologyCorner" style="position:fixed; top:8px; '
+          'right:8px; z-index:1; display:flex; gap:8px">{buttons}</div>')
+
+BUTTON = ('<a class="TypeTopologyCornerButton" href="{href}" title="{title}" '
+          'aria-label="{title}" style="padding:8px; line-height:0; '
+          'background:white; border:2px solid #008B00; border-radius:8px; '
+          'color:#008B00; box-shadow:0 2px 6px rgba(0,0,0,0.25)">{glyph}</a>')
+
+GLYPH = ('<svg width="28" height="28" viewBox="0 0 24 24" fill="none" '
+         'stroke="currentColor" stroke-width="2.5" stroke-linecap="round" '
+         'stroke-linejoin="round">{shape}</svg>')
+
+GLASS = '<circle cx="10" cy="10" r="7"/><path d="M15 15 L21 21"/>'
+ARROW = '<path d="M12 20 V5"/><path d="M5 12 L12 5 L19 12"/>'
+HOUSE = '<path d="M3 11 L12 3 L21 11"/><path d="M6 10 V20 H18 V10"/>'
+
+# The cluster, and the single anchor that runs before there was more than
+# one button left behind, both have to come off before the new cluster goes
+# on, or a page keeps a magnifying glass belonging to nothing.
+
+CORNERS = re.compile(r'<div class="TypeTopologyCorner".*?</div>'
+                     r'|<a class="TypeTopologySearch"[^>]*>.*?</a>')
 
 LINKABLE = re.compile(r"""  (?P<url>(?:https?|ftp)://\S+)
                           | (?P<doi>\bdoi:10\.\S+)
@@ -560,18 +580,59 @@ def rewrite(htmldir, check, md):
     return found, unresolved, read, rendered, rewritten
 
 
-def search_icon(htmldir, url):
-    """Put the search icon at the start of every page, or take it away.
+def index_above(here, pages):
+    """The index of the nearest directory above the module HERE, or the
+    index of the library, or None on that index itself.
 
-    Returns how many pages had to be changed, which is none of them when the
-    last run put the same icon there already.
+    A directory need not have an index module of its own, while seventeen
+    subdirectories do have one, so the name is walked up a component at a
+    time rather than guessed at in one step: there is no
+    DomainTheory.Basics.index above DomainTheory.Basics.Curry, which
+    therefore lands on DomainTheory.index.
     """
+    parts = here.split(".")
+    if parts[-1] == MAIN_INDEX:
+        parts.pop()
+    while len(parts) > 1:
+        parts.pop()
+        above = ".".join(parts) + "." + MAIN_INDEX
+        if above in pages:
+            return above
+    return None if here == MAIN_INDEX else MAIN_INDEX
+
+
+def corner_buttons(htmldir, url):
+    """Put the buttons in the corner of every page, taking off whatever an
+    earlier run left there.
+
+    Returns how many pages had to be changed, which is none of them when
+    the last run put the same buttons on every one.
+    """
+    paths = sorted(glob.glob(os.path.join(htmldir, "*.html")))
+    pages = {os.path.basename(p)[:-len(".html")] for p in paths}
     href = url.replace("&", "&amp;").replace('"', "&quot;") if url else ""
-    icon = SEARCH_ICON.format(url=href) if url else ""
     changed = 0
-    for path in sorted(glob.glob(os.path.join(htmldir, "*.html"))):
+    for path in paths:
+        here = os.path.basename(path)[:-len(".html")]
+        above = index_above(here, pages)
+        buttons = []
+        if here != MAIN_INDEX and above != MAIN_INDEX and MAIN_INDEX in pages:
+            buttons.append(BUTTON.format(href=MAIN_INDEX + ".html",
+                                         title="The index of the library",
+                                         glyph=GLYPH.format(shape=HOUSE)))
+        if above in pages:
+            buttons.append(BUTTON.format(
+                href=above + ".html",
+                title=("Up to the index of the library"
+                       if above == MAIN_INDEX else "Up to " + above),
+                glyph=GLYPH.format(shape=ARROW)))
+        if href:
+            buttons.append(BUTTON.format(href=href,
+                                         title="Search TypeTopology",
+                                         glyph=GLYPH.format(shape=GLASS)))
+        corner = CORNER.format(buttons="".join(buttons)) if buttons else ""
         page = open(path, encoding="utf-8").read()
-        new = ICON.sub("", page).replace("<body>", "<body>" + icon, 1)
+        new = CORNERS.sub("", page).replace("<body>", "<body>" + corner, 1)
         if new != page:
             open(path, "w", encoding="utf-8").write(new)
             changed += 1
@@ -670,9 +731,9 @@ def main():
                         "the one agda writes; by default Agda.css beside "
                         "this script, and 'none' keeps Agda's own")
     p.add_argument("--search-url", default=SEARCH_URL, metavar="URL",
-                   help="the search page that the icon in the corner of "
-                        "every page leads to, by default the published one, "
-                        "and 'none' leaves the icon out")
+                   help="the search page that the magnifying glass in "
+                        "the corner of every page leads to, by default the "
+                        "published one, and 'none' leaves that button out")
     p.add_argument("--no-markdown", action="store_true",
                    help="leave the markdown in the prose and the comments "
                         "as plain text, taking it off pages that have it")
@@ -720,9 +781,9 @@ def main():
               + ", ".join(f"{n} {k}" for k, n in sorted(kinds.items()))
               + ("" if args.list_markdown else "; --list-markdown lists them"))
     url = None if args.search_url == "none" else args.search_url
-    changed = search_icon(out, url)
+    changed = corner_buttons(out, url)
     if changed:
-        print(f"search icon {'put on' if url else 'taken off'} {changed} "
+        print(f"corner buttons rewritten on {changed} "
               f"page{'s' if changed != 1 else ''}")
     if read:
         print(f"{len(read)} of them are links whose text is not the module it "

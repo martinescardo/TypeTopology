@@ -1,6 +1,8 @@
 Martin Escardo and Alex Rice, 4th September 2020.
 
-Works with Agda 2.6.2.
+Works with Agda 2.6.2. This file is now deliberately kept of the
+`source` tree in TypeTopology, as it no longer type checks with the
+current version of Agda or the cubical Agda library.
 
 Produced in the Birmingham Agda Club. We benefited from the company
 and discussions with the other members, Todd Ambridge, Tom De Jong,
@@ -24,7 +26,7 @@ definitions of the initial binary system.
 
 \begin{code}
 
-{-# OPTIONS --safe --cubical#-}
+{-# OPTIONS --safe --cubical #-}
 
 module BinarySystems.CubicalType where
 
