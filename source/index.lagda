@@ -118,7 +118,7 @@ Philosophy of the repository
      because at present it is not known whether (some) cubical type
      theory has an interpretation in any ∞-topos.
 
-     However, by fulfilling the HoTT hypotheses with Cubical-Agda
+     However, by fulfilling the HoTT hypotheses with Cubical Agda
      implementations, we should be able to run the constructions and
      proofs given here, so that we get constructivity in the
      computational sense, as opposed to constructivity just in the
