@@ -191,7 +191,7 @@ sup-lattice-is-inf-lattice {𝓤} {𝓦} {𝓥} L {B} β h
     IV (l , lb)
      = transitivity-of L l (⋁⟨ L ⟩ (small-↓ᴮ l , small-↓ᴮ-inclusion l))
         (I (D , α)) (＝-to-≤ L (is-supᴮ' l))
-        (joins-preserve-containment L β
+        (joins-are-monotone L β
           (λ x → (x ≤ᴮ l , ≤ᴮ-is-prop-valued))
           (λ x → Ɐ i ꞉ D , ((x ≤ᴮ α i) , ≤ᴮ-is-prop-valued))
           (λ z z∈↓l i → ≤ᴮ-≤-to-≤ᴮ z∈↓l (lb i)))

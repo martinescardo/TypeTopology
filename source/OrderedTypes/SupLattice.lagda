@@ -129,20 +129,19 @@ is-monotone : {𝓤 𝓤' 𝓣 𝓣' 𝓥 𝓥' : Universe}
             → (L : Sup-Lattice 𝓤 𝓣 𝓥) (M : Sup-Lattice 𝓤' 𝓣' 𝓥')
             → (f : ⟨ L ⟩ → ⟨ M ⟩)
             → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
-is-monotone L M f = (x y : ⟨ L ⟩)
-                  → (x ≤⟨ L ⟩ y) holds
-                  → (f x ≤⟨ M ⟩ f y) holds
+is-monotone L M f
+ = (x y : ⟨ L ⟩) → (x ≤⟨ L ⟩ y) holds → (f x ≤⟨ M ⟩ f y) holds
 
-∘-presererves-monotone : {𝓤 𝓤' 𝓤'' 𝓣 𝓣' 𝓣'' 𝓥 𝓥' 𝓥'' : Universe}
-                         (L : Sup-Lattice 𝓤 𝓣 𝓥)
-                         (M : Sup-Lattice 𝓤' 𝓣' 𝓥')
-                         (N : Sup-Lattice 𝓤'' 𝓣'' 𝓥'')
-                         (f : ⟨ L ⟩ → ⟨ M ⟩)
-                         (g : ⟨ M ⟩ → ⟨ N ⟩)
-                       → is-monotone L M f
-                       → is-monotone M N g
-                       → is-monotone L N (g ∘ f)
-∘-presererves-monotone L M N f g f-mono g-mono x y x≤y
+∘-is-monotone : {𝓤 𝓤' 𝓤'' 𝓣 𝓣' 𝓣'' 𝓥 𝓥' 𝓥'' : Universe}
+                (L : Sup-Lattice 𝓤 𝓣 𝓥)
+                (M : Sup-Lattice 𝓤' 𝓣' 𝓥')
+                (N : Sup-Lattice 𝓤'' 𝓣'' 𝓥'')
+                (f : ⟨ L ⟩ → ⟨ M ⟩)
+                (g : ⟨ M ⟩ → ⟨ N ⟩)
+              → is-monotone L M f
+              → is-monotone M N g
+              → is-monotone L N (g ∘ f)
+∘-is-monotone L M N f g f-mono g-mono x y x≤y
  = g-mono (f x) (f y) (f-mono x y x≤y)
 
 is-monotone-endomap : {𝓤 𝓣 𝓥 : Universe}
@@ -166,11 +165,11 @@ module _
 
  open Joins (order-of L)
 
- joins-preserve-containment : (P : 𝓟 {𝓥} A) (Q : 𝓟 {𝓥} A)
-                            → P ⊆ Q
-                            → ((⋁⟨ L ⟩ 【 m , P 】)
-                             ≤⟨ L ⟩ (⋁⟨ L ⟩ 【 m , Q 】)) holds
- joins-preserve-containment P Q C =
+ joins-are-monotone : (P : 𝓟 {𝓥} A) (Q : 𝓟 {𝓥} A)
+                    → P ⊆ Q
+                    → ((⋁⟨ L ⟩ 【 m , P 】)
+                    ≤⟨ L ⟩ (⋁⟨ L ⟩ 【 m , Q 】)) holds
+ joins-are-monotone P Q C =
   (join-is-least-upper-bound-of L 【 m , P 】)
    (⋁⟨ L ⟩ 【 m , Q 】 ,
     (λ (b , b-in-P) → (join-is-upper-bound-of L 【 m , Q 】)

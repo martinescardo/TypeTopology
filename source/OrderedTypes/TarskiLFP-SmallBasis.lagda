@@ -269,7 +269,7 @@ lower bound of the type of pre-fixed points.
   lfp-is-greatest-lower-bound (l , lb)
    = transitivity-of L l (⋁⟨ L ⟩ (small-↓ᴮ l , small-↓ᴮ-inclusion l)) lfp
       (＝-to-≤ L (is-supᴮ' l))
-       (joins-preserve-containment L β
+       (joins-are-monotone L β
         (λ - → (- ≤ᴮ l , ≤ᴮ-is-prop-valued)) (resized-basis-below-subset)
          (λ b o → basis-below-to-resized-basis-below b (λ x fx≤x
            → transitivity-of L (β b) l x (≤ᴮ-to-≤ o) (lb (x , fx≤x)))))

@@ -4,8 +4,8 @@ In this file we construct the truncated singleton basis for the powerset sup
 lattice. We also observe that any small generated sup lattice is the retract of
 the powerset on its basis. Using this retraction we show that with Ω-resizing a
 small generated sup lattice is itself small. We conclude this file by showing
-the connection between least (pre) fixed points of small generated sup lattices
-and least (pre) fixed points monotone operators on powersets.
+if monotone functions on powersets have least (pre)fixed points, then so does
+every monotone endomap on a sup-lattice with a small basis.
 
 \begin{code}
 
@@ -31,11 +31,8 @@ open import UF.Equiv
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
 open import UF.Retracts
-open import UF.Sets
-open import UF.Sets-Properties
 open import UF.Size
 open import UF.SmallnessProperties
-open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 open import OrderedTypes.SupLattice pt fe
 open import OrderedTypes.SupLattice-SmallBasis pt fe
@@ -71,9 +68,23 @@ module _ (A : 𝓤 ̇) where
    suprema : (S : Fam 𝓤 (𝓟 {𝓤} A)) → ((sup S) is-lub-of S) holds
    suprema (S , s)
     = (⋃-is-upperbound s , λ (U , O) → ⋃-is-lowerbound-of-upperbounds s U O)
+
+\end{code}
+
+Note: This generalizes the definition of 𝓟-lattice from the file FreeSupLattice.
+
+\begin{code}
  
  ❴_❵ₜᵣ : A → 𝓟 {𝓤} A
  ❴ x ❵ₜᵣ = λ y → (∥ x ＝ y ∥ , ∥∥-is-prop)
+
+\end{code}
+
+Note: The total space of ❴_❵ₜᵣ is not contractible. While this is somewhat
+pathological we will see that ❴_❵ₜᵣ satsifies enough of the criteria of a
+singleton for our purposes.
+
+\begin{code}
 
  ∈-❴❵ₜᵣ : {x : A} → x ∈ ❴ x ❵ₜᵣ
  ∈-❴❵ₜᵣ {x} = ∣ refl ∣
@@ -97,7 +108,7 @@ module _ (A : 𝓤 ̇) where
                (λ p → transport (_∈ S) p (a∈↓S a ∈-❴❵ₜᵣ)) o)
    II : S ⊆ ⋃ (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S)
    II x x∈S
-    = ∣ (x , pr₁ (❴❵ₜᵣ-subset-characterization {_} {x} S) x∈S) , ∈-❴❵ₜᵣ ∣
+    = ∣ (x , lr-implication (❴❵ₜᵣ-subset-characterization S) x∈S) , ∈-❴❵ₜᵣ ∣
 
  ❴❵ₜᵣ-is-basis : is-basis 𝓟-sup-lattice ❴_❵ₜᵣ
  ❴❵ₜᵣ-is-basis
@@ -144,7 +155,7 @@ module sup-lattice-powerset-retract
  ⋁-monotone : (S T : 𝓟 {𝓥} B)
             → S ⊆ T
             → (⋁-map S ≤⟨ L ⟩ ⋁-map T) holds
- ⋁-monotone S T S⊆T = joins-preserve-containment L β S T S⊆T
+ ⋁-monotone S T S⊆T = joins-are-monotone L β S T S⊆T
 
  ⋁∘↓∼id
   : ⋁-map ∘ ↓-map ∼ id
@@ -170,7 +181,7 @@ is also small.
 
 \end{code}
 
-Now we will investigate the connection between least (pre) fixed points of
+Now we will investigate the connection between least (pre)fixed points of
 monotone maps on small generated sup lattices and monotone operators on the
 power set.
 
@@ -262,9 +273,9 @@ monotone-operator-implies-monotone-map-LPFP
   mon-op = ↓-map ∘ f ∘ ⋁-map
   mon-op-is-monotone : is-monotone-endomap (𝓟-sup-lattice B) mon-op
   mon-op-is-monotone
-   = ∘-presererves-monotone
-      (𝓟-sup-lattice B) L (𝓟-sup-lattice B) ⋁-map (↓-map ∘ f) ⋁-monotone
-       (∘-presererves-monotone L L (𝓟-sup-lattice B) f ↓-map f-mono ↓-monotone)
+   = ∘-is-monotone (𝓟-sup-lattice B) L (𝓟-sup-lattice B)
+       ⋁-map (↓-map ∘ f) ⋁-monotone
+       (∘-is-monotone L L (𝓟-sup-lattice B) f ↓-map f-mono ↓-monotone)
   S : 𝓟 {𝓥} B
   S = mon-op-LPFP-point 𝓥 B mon-op mon-op-is-monotone mon-op-LPFP
   mon-opS⊆S : mon-op S ⊆ S
