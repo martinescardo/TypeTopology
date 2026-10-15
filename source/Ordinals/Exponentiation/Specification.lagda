@@ -45,6 +45,9 @@ open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
+-- TODO
+open import Ordinals.SupremaPreservation ua pt sr
+
 open PropositionalTruncation pt
 open suprema pt sr
 
@@ -105,19 +108,20 @@ TODO: COMMENT AND REVISE.
 \begin{code}
 
  exp-specification-sup' : 𝓤 ⁺ ̇
- exp-specification-sup' = preservation-of-suprema-up-to-join 𝟙ₒ F
+ exp-specification-sup' = preserves-suprema-up-to-join 𝟙ₒ F
 
  exp-specification-sup-from-sup' : exp-specification-sup'
                                  → exp-specification-sup
  exp-specification-sup-from-sup' σ _ =
-  pr₂ (rl-implication (preservation-of-suprema-observation 𝟙ₒ F) σ)
+  pr₂ (rl-implication (preservation-of-suprema-equivalence 𝟙ₒ F) σ)
 
  exp-specification-sup'-from--sup-and-zero
   : α ≠ 𝟘ₒ
   → exp-specification-zero α F × exp-specification-sup
   → exp-specification-sup'
  exp-specification-sup'-from--sup-and-zero α-nonzero (σ₀ , σₛ) =
-  lr-implication (preservation-of-suprema-observation 𝟙ₒ F) (σ₀ , (σₛ α-nonzero))
+  lr-implication (preservation-of-suprema-equivalence 𝟙ₒ F)
+                 (σ₀ , (σₛ α-nonzero))
 
  open import Notation.General
  exp-specification-sup-strong = exp-specification-sup'
@@ -220,6 +224,6 @@ exp-is-monotone-in-exponent : (α : Ordinal 𝓤)
                             → exp-specification-sup-generalized α exp-α
                             → is-monotone (OO 𝓥) (OO (𝓤 ⊔ 𝓥)) exp-α
 exp-is-monotone-in-exponent α exp-α ν exp-sup =
- is-monotone-if-continuous-generalized exp-α (exp-sup ν)
+ is-monotone-if-preserves-inhabited-suprema-generalized exp-α (exp-sup ν)
 
 \end{code}

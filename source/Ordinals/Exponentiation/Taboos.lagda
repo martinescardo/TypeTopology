@@ -47,6 +47,9 @@ open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
+-- TODO
+open import Ordinals.SupremaPreservation ua pt sr
+
 open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.PropertiesViaTransport ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
@@ -363,7 +366,7 @@ module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
   exponentiation-defined-everywhere-implies-EM'
    exp-zero
    exp-succ
-   (λ α ν → is-monotone-if-continuous (exp α) (exp-sup α ν))
+   (λ α ν → is-monotone-if-preserves-inhabited-suprema (exp α) (exp-sup α ν))
 
 \end{code}
 

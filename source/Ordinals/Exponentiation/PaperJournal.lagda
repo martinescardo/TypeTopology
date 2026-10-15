@@ -68,10 +68,11 @@ open import Ordinals.MultiplicationProperties ua
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
-open suprema pt sr
 open import Ordinals.Propositions ua
+open import Ordinals.SupremaPreservation ua pt sr
 open import Ordinals.Type
 open import Ordinals.Underlying
+open suprema pt sr
 
 open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.DecreasingListProperties-Concrete ua pt sr
@@ -219,7 +220,8 @@ Lemma-10 : (α : Ordinal 𝓤) (exp-α : Ordinal 𝓤 → Ordinal 𝓤)
 Lemma-10 α exp-α exp-spec-zero exp-spec-succ exp-spec-sup =
    𝟙ₒ-neutral-exp α exp-α exp-spec-zero exp-spec-succ
  , exp-𝟚ₒ-is-×ₒ α exp-α exp-spec-zero exp-spec-succ
- , (λ α-nonzero → is-monotone-if-continuous exp-α (exp-spec-sup α-nonzero))
+ , (λ α-nonzero → is-monotone-if-preserves-inhabited-suprema
+                   exp-α (exp-spec-sup α-nonzero))
 
 Proposition-11
  : (Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exp-full-specification exp)

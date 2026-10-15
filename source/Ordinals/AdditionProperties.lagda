@@ -1006,12 +1006,14 @@ indexed over 𝟙 + I instead.
 
 \begin{code}
 
+{-
  addition-equivalent-suprema-equations
   : (α : Ordinal 𝓤)
   → ((α +ₒ 𝟘ₒ ＝ α) × preservation-of-inhabited-suprema (α +ₒ_))
   ↔ preservation-of-suprema-up-to-join α (α +ₒ_)
  addition-equivalent-suprema-equations α =
   preservation-of-suprema-observation α (α +ₒ_)
+-}
 
 \end{code}
 
