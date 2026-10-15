@@ -363,6 +363,8 @@ Added 29 January 2025 by Tom de Jong.
 
 ^ₒ also satisfies the supremum specification
 
+TODO: CORRECT COMMENT AND CLEAN UP ABOVE.
+
 \begin{code}
 
 ^ₒ-satisfies-sup'-specification : (α : Ordinal 𝓤)
@@ -402,6 +404,8 @@ Added 29 January 2025 by Tom de Jong.
      II' (inl ⋆) = ^ₒ-has-least-element α (sup F)
      II' (inr s) = ^ₒ-monotone-in-exponent α (F s) (sup F)
                     (sup-is-upper-bound F s)
+
+^ₒ-satisfies-strong-sup-specification = ^ₒ-satisfies-sup'-specification
 
 ^ₒ-satisfies-sup-specification' : (α : Ordinal 𝓤)
                                 → exp-specification-sup α (α ^ₒ_)

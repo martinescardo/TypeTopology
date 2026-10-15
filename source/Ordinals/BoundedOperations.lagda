@@ -245,7 +245,7 @@ module Enderton-like
         (δ₀ δ : Ordinal 𝓤)
         (δ₀-below-δ : δ₀ ⊴ δ)
         (t-preserves-suprema-up-to-join
-          : (I : 𝓤 ̇ ) (F : I → Ordinal 𝓤)
+          : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
           → t (sup F) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → δ₀) (t ∘ F)))
        where
 
@@ -265,7 +265,7 @@ module Enderton-like
       ub (inl ⋆) = l
       ub (inr ⋆) = ⊴-refl β
     II : t (sup F) ＝ sup (cases (λ _ → δ₀) (t ∘ F))
-    II = t-preserves-suprema-up-to-join _ F
+    II = t-preserves-suprema-up-to-join F
     III : t α ⊴ t β
     III = transport⁻¹
            (t α ⊴_)
@@ -287,7 +287,7 @@ module Enderton-like
    P-is-prop α = ×-is-prop (⊴-is-prop-valued (t α) δ) (⊴-is-prop-valued α δ)
    P-closed-under-suprema : closed-under-suprema P
    P-closed-under-suprema I F ρ =
-    transport⁻¹ (_⊴ δ) (t-preserves-suprema-up-to-join _ F) l ,
+    transport⁻¹ (_⊴ δ) (t-preserves-suprema-up-to-join F) l ,
     sup-is-lower-bound-of-upper-bounds F δ (λ i → pr₂ (ρ i))
      where
       l : sup (cases (λ ⋆ → δ₀) (λ i → t (F i))) ⊴ δ
@@ -313,15 +313,15 @@ endofunction t that simply preserves suprema.
 module Enderton-like'
         (t : Ordinal 𝓤 → Ordinal 𝓤)
         (δ : Ordinal 𝓤)
-        (t-preserves-suprema : (I : 𝓤 ̇ ) (F : I → Ordinal 𝓤)
+        (t-preserves-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
                              → t (sup F) ＝ sup (t ∘ F))
        where
 
- preservation-of-suprema-up-to-join
-  : (I : 𝓤 ̇) (F : I → Ordinal 𝓤)
+ preservation-of-suprema-up-to-join'
+  : {I : 𝓤 ̇} (F : I → Ordinal 𝓤)
   → t (sup F) ＝ sup (cases (λ _  → 𝟘ₒ) (t ∘ F))
- preservation-of-suprema-up-to-join I F =
-  t-preserves-suprema I F
+ preservation-of-suprema-up-to-join' {I} F =
+  t-preserves-suprema F
   ∙ (⊴-antisym (sup (t ∘ F)) (sup G) u v)
   where
    G : 𝟙{𝓤} + I → Ordinal 𝓤
@@ -338,7 +338,7 @@ module Enderton-like'
      w (inr i) = sup-is-upper-bound (t ∘ F) i
 
  open Enderton-like
-       t 𝟘ₒ δ (𝟘ₒ-least-⊴ δ) preservation-of-suprema-up-to-join
+       t 𝟘ₒ δ (𝟘ₒ-least-⊴ δ) preservation-of-suprema-up-to-join'
       public
 
 \end{code}
@@ -353,7 +353,7 @@ module Enderton-like-inflationary
         (δ₀ δ : Ordinal 𝓤)
         (δ₀-below-δ : δ₀ ⊴ δ)
         (t-preserves-suprema-up-to-join
-          : (I : 𝓤 ̇ ) (F : I → Ordinal 𝓤)
+          : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
           → t (sup F) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → δ₀) (t ∘ F)))
         (t-inflationary : (α : Ordinal 𝓤) → α ⊴ t α)
        where
@@ -388,14 +388,14 @@ that simply preserve suprema.
 module Enderton-like-inflationary'
         (t : Ordinal 𝓤 → Ordinal 𝓤)
         (δ : Ordinal 𝓤)
-        (t-preserves-suprema : (I : 𝓤 ̇ ) (F : I → Ordinal 𝓤)
+        (t-preserves-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
                              → t (sup F) ＝ sup (t ∘ F))
         (t-inflationary : (α : Ordinal 𝓤) → α ⊴ t α)
        where
 
  open Enderton-like-inflationary
        t 𝟘ₒ δ (𝟘ₒ-least-⊴ δ)
-       (Enderton-like'.preservation-of-suprema-up-to-join
+       (Enderton-like'.preservation-of-suprema-up-to-join'
          t δ t-preserves-suprema)
        t-inflationary
       public
@@ -415,7 +415,8 @@ approximate-subtraction
  → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (α +ₒ - ⊴ β) × (- ⊴ β))
 approximate-subtraction {𝓤} α β l = enderton-like
  where
-  open Enderton-like (α +ₒ_) α β l (+ₒ-preserves-suprema-up-to-join pt sr α)
+  open Enderton-like (α +ₒ_) α β l
+        (λ {I} → +ₒ-preserves-suprema-up-to-join pt sr α I)
 
 \end{code}
 
@@ -428,7 +429,7 @@ approximate-division
  → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (α ×ₒ - ⊴ β) × (- ⊴ β))
 approximate-division {𝓤} α β = enderton-like
  where
-  open Enderton-like' (α ×ₒ_) β (×ₒ-preserves-suprema pt sr α)
+  open Enderton-like' (α ×ₒ_) β (λ {I} → ×ₒ-preserves-suprema pt sr α I)
 
 \end{code}
 
@@ -489,7 +490,7 @@ EM-implies-approximate-subtraction-variation {𝓤} em α β l =
   where
    open Enderton-like-inflationary
          (α +ₒ_) α β l
-         (+ₒ-preserves-suprema-up-to-join pt sr α)
+         (λ {I} → +ₒ-preserves-suprema-up-to-join pt sr α I)
          (EM-implies-+ₒ-as-large-as-right-summand em α)
 
 \end{code}
@@ -527,7 +528,7 @@ EM-implies-approximate-division-variation em α β α-pos =
   where
    open Enderton-like-inflationary'
          (α ×ₒ_) β
-         (×ₒ-preserves-suprema pt sr α)
+         (λ {I} → ×ₒ-preserves-suprema pt sr α I)
          (λ δ → EM-implies-×ₒ-as-large-as-right-factor em α δ α-pos)
 
 approximate-logarithm-variation-implies-EM

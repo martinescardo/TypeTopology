@@ -822,7 +822,7 @@ Proposition-59 P at b p = greatest-ordinal-satisfying-predicate P p b at
 
 Theorem-60-i : (t : Ordinal 𝓤 → Ordinal 𝓤)
              → (δ₀ : Ordinal 𝓤)
-             → ((I : 𝓤 ̇ ) (F : I → Ordinal 𝓤) → t (sup F) ＝ extended-sup (t ∘ F) δ₀)
+             → ({I : 𝓤 ̇ } (F : I → Ordinal 𝓤) → t (sup F) ＝ extended-sup (t ∘ F) δ₀)
              → (δ : Ordinal 𝓤)
              → δ₀ ⊴ δ
              → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (t - ⊴ δ) × (- ⊴ δ))
@@ -830,7 +830,7 @@ Theorem-60-i t δ₀ t-sup δ l = Enderton-like.enderton-like t δ₀ δ l t-sup
 
 Theorem-60-ii : (t : Ordinal 𝓤 → Ordinal 𝓤)
               → (δ₀ : Ordinal 𝓤)
-              → ((I : 𝓤 ̇ ) (F : I → Ordinal 𝓤) → t (sup F) ＝ extended-sup (t ∘ F) δ₀)
+              → ({I : 𝓤 ̇ } (F : I → Ordinal 𝓤) → t (sup F) ＝ extended-sup (t ∘ F) δ₀)
               → ((α : Ordinal 𝓤) → α ⊴ t α)
               → (δ : Ordinal 𝓤)
               → δ₀ ⊴ δ

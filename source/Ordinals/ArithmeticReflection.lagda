@@ -725,8 +725,8 @@ module _ (α : Ordinal 𝓤) where
         (_+ₒ α)
         𝟘ₒ
         (×ₒ-successor α)
-        (Enderton-like'.preservation-of-suprema-up-to-join
-         (α ×ₒ_) 𝟘ₒ (×ₒ-preserves-suprema pt sr α))
+        (λ I → Enderton-like'.preservation-of-suprema-up-to-join'
+                (α ×ₒ_) 𝟘ₒ (λ {I} → ×ₒ-preserves-suprema pt sr α I))
 
   asm-2 : 𝟘ₒ ⊲ α
         → Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)
@@ -775,7 +775,7 @@ module _
         (_×ₒ α)
         𝟙ₒ
         (^ₒ-satisfies-succ-specification α α-has-least)
-        (^ₒ-satisfies-strong-sup-specification α)
+        (λ I → ^ₒ-satisfies-strong-sup-specification α)
 
   asm-2 : has-trichotomous-least-element α
         →  Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)

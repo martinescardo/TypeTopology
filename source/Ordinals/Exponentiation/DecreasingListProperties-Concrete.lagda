@@ -927,6 +927,6 @@ module _ {I : 𝓤 ̇  }
 
 expᴸ-satisfies-strong-sup-specification :
  (α : Ordinal 𝓤) → exp-specification-sup-strong (𝟙ₒ +ₒ α) (expᴸ[𝟙+ α ])
-expᴸ-satisfies-strong-sup-specification α I β = expᴸ-sup⁺-＝ β α
+expᴸ-satisfies-strong-sup-specification α β = expᴸ-sup⁺-＝ β α
 
 \end{code}

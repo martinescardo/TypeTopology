@@ -100,11 +100,9 @@ Added 29 January 2025 by Tom de Jong.
 Minor changes 15 May 2025 by Fredrik Nordvall Forsberg.
 Revised 14 October 2026 by Tom de Jong, following an observation by Nicolai Kraus.
 
-TODO: COMMENT.
+TODO: COMMENT AND REVISE.
 
 \begin{code}
-
- open import Notation.General
 
  exp-specification-sup' : 𝓤 ⁺ ̇
  exp-specification-sup' = preservation-of-suprema-up-to-join 𝟙ₒ F
@@ -120,6 +118,9 @@ TODO: COMMENT.
   → exp-specification-sup'
  exp-specification-sup'-from--sup-and-zero α-nonzero (σ₀ , σₛ) =
   lr-implication (preservation-of-suprema-observation 𝟙ₒ F) (σ₀ , (σₛ α-nonzero))
+
+ open import Notation.General
+ exp-specification-sup-strong = exp-specification-sup'
 
 \end{code}
 
