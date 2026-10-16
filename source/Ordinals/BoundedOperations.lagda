@@ -38,6 +38,7 @@ open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Exponentiation.Taboos ua pt sr
+open import Ordinals.OperationsByCases ua pt sr
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
@@ -380,8 +381,9 @@ approximate-subtraction
  → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (α +ₒ - ⊴ β) × (- ⊴ β))
 approximate-subtraction {𝓤} α β l = enderton-like
  where
+  open addition-by-fixed-ordinal
   open Enderton-like (α +ₒ_) α β l
-        (+ₒ-preserves-suprema-up-to-join pt sr α)
+        (+ₒ-preserves-suprema-up-to-join α)
 
 \end{code}
 
@@ -453,9 +455,10 @@ EM-implies-approximate-subtraction-variation
 EM-implies-approximate-subtraction-variation {𝓤} em α β l =
  enderton-like-inflationary
   where
+   open addition-by-fixed-ordinal
    open Enderton-like-inflationary
          (α +ₒ_) α β l
-         (+ₒ-preserves-suprema-up-to-join pt sr α)
+         (+ₒ-preserves-suprema-up-to-join α)
          (EM-implies-+ₒ-as-large-as-right-summand em α)
 
 \end{code}

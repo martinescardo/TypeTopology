@@ -1,5 +1,22 @@
 TODO
 
+Revised 14 October 2026 by Tom de Jong, following an observation by
+Nicolai Kraus.
+
+The equations for zero and inhabited suprema can be combined to a single,
+equivalent equation
+  α +ₒ (sup β) ＝ α ∨ sup (λ i → α +ₒ β i)
+for all families β : I → Ord without any inhabitedness condition on the
+index type I.
+Note that the equation α +ₒ 𝟘ₒ = α follows by taking the empty family in the
+supremum equation.
+
+The fact that these equations are equivalent follows from a general fact proved
+for arbirary operations on ordinals (preservation-of-suprema-observation in
+OrdinalOfOrdinalsSuprema).
+Note how we have formulated α ∨ sup (λ i → α +ₒ β i) as a single supremum
+indexed over 𝟙 + I instead.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -189,6 +206,8 @@ uniquely-specified' {𝓤} S =
 
 TODO. EXAMPLES
 
+Added 22 July 2025 by Tom de Jong.
+
 \begin{code}
 
 module addition-by-fixed-ordinal
@@ -199,6 +218,11 @@ module addition-by-fixed-ordinal
  succ-equation α⊕_ =
   (β : Ordinal 𝓤) → α⊕ (β +ₒ 𝟙ₒ) ＝ (α⊕ β) +ₒ 𝟙ₒ
 
+ +ₒ-preserves-suprema-up-to-join : preserves-suprema-up-to-join (α +ₒ_) α
+ +ₒ-preserves-suprema-up-to-join =
+  preserves-suprema-up-to-join-criterion (α +ₒ_) α
+   (+ₒ-preserves-inhabited-suprema pt sr α , 𝟘ₒ-right-neutral α)
+
  +ₒ-is-uniquely-specified'
   : ∃! α⊕_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤) ,
      (succ-equation α⊕_) × (preserves-suprema-up-to-join α⊕_ α)
@@ -206,7 +230,7 @@ module addition-by-fixed-ordinal
   pointed-props-are-singletons
    (α +ₒ_ ,
     +ₒ-commutes-with-successor α ,
-    (λ {I} → +ₒ-preserves-suprema-up-to-join pt sr α))
+    (λ {I} → +ₒ-preserves-suprema-up-to-join))
    (uniquely-specified (_+ₒ 𝟙ₒ) α)
 
 module addition where
@@ -247,9 +271,10 @@ module addition where
                        → α +ₒ β ＝ extended-sup (λ b → α +ₒ (β ↓ b) +ₒ 𝟙ₒ) α
  +ₒ-recursive-equation α = recursive-equation
   where
+   open addition-by-fixed-ordinal
    open operation-by-cases-framework (α +ₒ_) (_+ₒ 𝟙ₒ) α
          (+ₒ-commutes-with-successor α)
-         (+ₒ-preserves-suprema-up-to-join pt sr α)
+         (+ₒ-preserves-suprema-up-to-join α)
 
 \end{code}
 

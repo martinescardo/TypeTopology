@@ -950,27 +950,28 @@ module _ (pt : propositional-truncations-exist)
  open suprema pt sr
  open PropositionalTruncation pt
 
- +ₒ-preserves-inhabited-suprema : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
-                                → ∥ I ∥
-                                → α +ₒ sup β ＝ sup (λ i → α +ₒ β i)
- +ₒ-preserves-inhabited-suprema α {I} β =
-  ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe')
-         (λ i₀ → ⊴-antisym _ _ (≼-gives-⊴ _ _ (⦅1⦆ i₀)) ⦅2⦆)
+ +ₒ-preserves-inhabited-suprema
+  : (α : Ordinal 𝓤) → {I : 𝓤 ̇ } → ∥ I ∥ → (β : I → Ordinal 𝓤)
+  → α +ₒ sup β ＝ sup (λ i → α +ₒ β i)
+ +ₒ-preserves-inhabited-suprema {𝓤} α {I} =
+  ∥∥-rec (Π-is-prop fe' (λ β → the-type-of-ordinals-is-a-set (ua 𝓤) fe'))
+         (λ i₀ β → ⊴-antisym _ _ (≼-gives-⊴ _ _ (⦅1⦆ i₀ β)) (⦅2⦆ β))
    where
-    ⦅2⦆ : sup (λ i → α +ₒ β i) ⊴ (α +ₒ sup β)
-    ⦅2⦆ = sup-is-lower-bound-of-upper-bounds (λ i → α +ₒ β i) (α +ₒ sup β) ⦅2⦆'
-     where
-      ⦅2⦆' : (i : I) → (α +ₒ β i) ⊴ (α +ₒ sup β)
-      ⦅2⦆' i = +ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i)
+    ⦅2⦆ : (β : I → Ordinal 𝓤) → sup (λ i → α +ₒ β i) ⊴ (α +ₒ sup β)
+    ⦅2⦆ β =
+     sup-is-lower-bound-of-upper-bounds (λ i → α +ₒ β i) (α +ₒ sup β) ⦅2⦆'
+      where
+       ⦅2⦆' : (i : I) → (α +ₒ β i) ⊴ (α +ₒ sup β)
+       ⦅2⦆' i = +ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i)
 
-    ⦅1⦆ : I → (α +ₒ sup β) ≼ sup (λ i → α +ₒ β i)
-    ⦅1⦆ i₀ _ (inl a , refl) =
+    ⦅1⦆ : I → (β : I → Ordinal 𝓤) → (α +ₒ sup β) ≼ sup (λ i → α +ₒ β i)
+    ⦅1⦆ i₀ β _ (inl a , refl) =
      transport (_⊲ sup (λ i → α +ₒ β i))
                (+ₒ-↓-left a)
                (⊲-⊴-gives-⊲ (α ↓ a) (α +ₒ β i₀) (sup (λ i → α +ₒ β i))
                 (inl a , +ₒ-↓-left a)
                 (sup-is-upper-bound (λ i → α +ₒ β i) i₀))
-    ⦅1⦆ i₀ _ (inr s , refl) =
+    ⦅1⦆ i₀ β _ (inr s , refl) =
      transport (_⊲ sup (λ i → α +ₒ β i))
                (+ₒ-↓-right s)
                (∥∥-rec (⊲-is-prop-valued _ _) ⦅1⦆'
@@ -987,45 +988,12 @@ module _ (pt : propositional-truncations-exist)
 
 \end{code}
 
-Revised 14 October 2026 by Tom de Jong, following an observation by
-Nicolai Kraus.
+In the file OperationsByCases, the above properties of addition — 𝟘ₒ being the
+neutral element, commutation with successor, and preservation of inhabited
+suprema — are shown to uniquely characterize addition.
 
-The equations for zero and inhabited suprema can be combined to a single,
-equivalent equation
-  α +ₒ (sup β) ＝ α ∨ sup (λ i → α +ₒ β i)
-for all families β : I → Ord without any inhabitedness condition on the
-index type I.
-Note that the equation α +ₒ 𝟘ₒ = α follows by taking the empty family in the
-supremum equation.
-
-The fact that these equations are equivalent follows from a general fact proved
-for arbirary operations on ordinals (preservation-of-suprema-observation in
-OrdinalOfOrdinalsSuprema).
-Note how we have formulated α ∨ sup (λ i → α +ₒ β i) as a single supremum
-indexed over 𝟙 + I instead.
-
-\begin{code}
-
-{-
- addition-equivalent-suprema-equations
-  : (α : Ordinal 𝓤)
-  → ((α +ₒ 𝟘ₒ ＝ α) × preservation-of-inhabited-suprema (α +ₒ_))
-  ↔ preservation-of-suprema-up-to-join α (α +ₒ_)
- addition-equivalent-suprema-equations α =
-  preservation-of-suprema-observation α (α +ₒ_)
--}
-
-\end{code}
-
-These reformulated equations have the benefit that they uniquely characterize
-addition via the recursive equation
-  α +ₒ β ＝ α +ₒ sup (λ b → (B ↓ b) +ₒ 𝟙ₒ)
-         ＝ α ∨ sup (λ b → α +ₒ ((B ↓ b) +ₒ 𝟙ₒ))
-         ＝ α ∨ sup (λ b → (α +ₒ (B ↓ b)) +ₒ 𝟙ₒ)
-which also gives a construction of addition via transfinite recursion.
-
-The first step in this derivation is the following: every ordinal is the
-supremum of the successors of its initial segments.
+A crucial ingredient in proving that is the following observation:
+every ordinal is the supremum of the successors of its initial segments.
 
 \begin{code}
 
@@ -1052,150 +1020,6 @@ supremum of the successors of its initial segments.
     II : s ⊴ α
     II = sup-is-lower-bound-of-upper-bounds F α
           (upper-bound-of-successors-of-initial-segments α)
-
-\end{code}
-
-Added 14 July 2024.
-
-We prove that α +ₒ (sup β) ＝ α ∨ sup (λ i → α +ₒ β i), but we formulate the RHS
-as a single supremum by indexing over 𝟙 + I instead, sending inl ⋆ to α.
-
-\begin{code}
-
- +ₒ-preserves-suprema-up-to-join
-  : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
-  → α +ₒ sup β ＝ sup (cases (λ ⋆ → α) (λ i → α +ₒ β i))
- +ₒ-preserves-suprema-up-to-join {𝓤} α {I} β =
-  ⊴-antisym (α +ₒ sup β) (sup F) ⦅1⦆ ⦅2⦆
-   where
-    F : 𝟙 {𝓤} + I → Ordinal 𝓤
-    F = cases (λ _ → α) (λ i → α +ₒ β i)
-
-    ⦅1⦆ : α +ₒ sup β ⊴ sup F
-    ⦅1⦆ = to-⊴ (α +ₒ sup β) (sup F) h
-     where
-      h : (z : ⟨ α +ₒ sup β ⟩)
-        → (α +ₒ sup β) ↓ z ⊲ sup F
-      h (inl a) = (s , (α +ₒ sup β ↓ inl a ＝⟨ (+ₒ-↓-left a) ⁻¹ ⟩
-                        α ↓ a              ＝⟨ e ⟩
-                        sup F ↓ s          ∎))
-       where
-        s : ⟨ sup F ⟩
-        s = [ α , sup F ]⟨ sup-is-upper-bound F (inl ⋆) ⟩ a
-        e = (initial-segment-of-sup-at-component F (inl ⋆) a) ⁻¹
-      h (inr y) =
-       ∥∥-rec
-        (⊲-is-prop-valued (α +ₒ sup β ↓ inr y) (sup F))
-        g
-        (initial-segment-of-sup-is-initial-segment-of-some-component β y)
-       where
-        g : (Σ i ꞉ I , Σ x ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ β i ↓ x)
-          → α +ₒ sup β ↓ inr y ⊲ sup F
-        g (i , x , e) = s , ((α +ₒ sup β) ↓ inr y ＝⟨ (+ₒ-↓-right y) ⁻¹ ⟩
-                             α +ₒ (sup β ↓ y)     ＝⟨ ap (α +ₒ_) e ⟩
-                             α +ₒ (β i ↓ x)       ＝⟨ +ₒ-↓-right x ⟩
-                             (α +ₒ β i) ↓ inr x   ＝⟨ e' ⟩
-                             sup F ↓ s            ∎)
-         where
-          s : ⟨ sup F ⟩
-          s = [ F (inr i) , sup F ]⟨ sup-is-upper-bound F (inr i) ⟩ (inr x)
-          e' = (initial-segment-of-sup-at-component F (inr i) (inr x)) ⁻¹
-
-    ⦅2⦆ : sup F ⊴ α +ₒ sup β
-    ⦅2⦆ = sup-is-lower-bound-of-upper-bounds F (α +ₒ sup β) h
-     where
-      h : (x : 𝟙 + I) → F x ⊴ α +ₒ sup β
-      h (inl ⋆) = +ₒ-left-⊴ α (sup β)
-      h (inr i) = +ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i)
-
-\end{code}
-
-Added 22 July 2025 by Tom de Jong.
-
-The above, together with +ₒ-commutes-with-successor, uniquely determines
-addition of ordinals.
-
-\begin{code}
-
-{-
- private
-  successor-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-  successor-equation {𝓤} _⊕_ =
-   (α β : Ordinal 𝓤) → α ⊕ (β +ₒ 𝟙ₒ) ＝ (α ⊕ β) +ₒ 𝟙ₒ
-
-  suprema-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-  suprema-equation {𝓤} _⊕_ =
-   (α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
-    → α ⊕ (sup β) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → α) (λ i → α ⊕ β i))
-
-  recursive-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-  recursive-equation {𝓤} _⊕_ =
-   (α β : Ordinal 𝓤)
-     → α ⊕ β ＝ sup (cases (λ (_ : 𝟙{𝓤}) → α) (λ b → (α ⊕ (β ↓ b)) +ₒ 𝟙ₒ))
-
-  successor-and-suprema-equations-give-recursive-equation
-   : (_⊕_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
-   → successor-equation _⊕_
-   → suprema-equation _⊕_
-   → recursive-equation _⊕_
-  successor-and-suprema-equations-give-recursive-equation
-   {𝓤} _⊕_ ⊕-succ ⊕-sup α β =
-    α ⊕ β                                             ＝⟨ I   ⟩
-    (α ⊕ sup (λ b → (β ↓ b) +ₒ 𝟙ₒ))                   ＝⟨ II  ⟩
-    sup (cases (λ ⋆ → α) (λ b → α ⊕ ((β ↓ b) +ₒ 𝟙ₒ))) ＝⟨ III ⟩
-    sup (cases (λ ⋆ → α) (λ b → (α ⊕ (β ↓ b)) +ₒ 𝟙ₒ)) ∎
-     where
-      I   = ap (α ⊕_) (supremum-of-successors-of-initial-segments β)
-      II  = ⊕-sup α ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
-      III = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → α) -))
-               (dfunext fe' (λ b → ⊕-succ α (β ↓ b)))
-
- +ₒ-recursive-equation : recursive-equation {𝓤} _+ₒ_
- +ₒ-recursive-equation =
-  successor-and-suprema-equations-give-recursive-equation
-    _+ₒ_ +ₒ-commutes-with-successor +ₒ-preserves-suprema-up-to-join
-
- +ₒ-is-uniquely-specified'
-  : (_⊕_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
-  → recursive-equation _⊕_
-  → (α β : Ordinal 𝓤) → α ⊕ β ＝ α +ₒ β
- +ₒ-is-uniquely-specified' {𝓤} _⊕_ ⊕-rec α =
-  transfinite-induction-on-OO (λ - → (α ⊕ -) ＝ (α +ₒ -)) I
-   where
-    I : (β : Ordinal 𝓤)
-      → ((b : ⟨ β ⟩) → (α ⊕ (β ↓ b)) ＝ (α +ₒ (β ↓ b)))
-      → (α ⊕ β) ＝ (α +ₒ β)
-    I β IH = α ⊕ β                                              ＝⟨ II  ⟩
-             sup (cases (λ ⋆ → α) (λ b → (α ⊕ (β ↓ b)) +ₒ 𝟙ₒ))  ＝⟨ III ⟩
-             sup (cases (λ ⋆ → α) (λ b → (α +ₒ (β ↓ b)) +ₒ 𝟙ₒ)) ＝⟨ IV  ⟩
-             α +ₒ β                                             ∎
-     where
-      II  = ⊕-rec α β
-      III = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → α) -))
-               (dfunext fe' (λ b → ap (_+ₒ 𝟙ₒ) (IH b)))
-      IV  = +ₒ-recursive-equation α β ⁻¹
--}
-
-{-
- +ₒ-is-uniquely-specified
-  : ∃! _⊕_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
-     (successor-equation _⊕_) × (suprema-equation _⊕_)
- +ₒ-is-uniquely-specified {𝓤} =
-  (_+ₒ_ , (+ₒ-commutes-with-successor , +ₒ-preserves-suprema-up-to-join)) ,
-  (λ (_⊕_ , ⊕-succ , ⊕-sup) →
-   to-subtype-＝
-    (λ F → ×-is-prop (Π₂-is-prop fe'
-                       (λ _ _ → underlying-type-is-set fe (OO 𝓤)))
-                     (Π₃-is-prop fe'
-                       (λ _ _ _ → underlying-type-is-set fe (OO 𝓤))))
-    (dfunext fe'
-      (λ α → dfunext fe'
-       (λ β →
-        (+ₒ-is-uniquely-specified' _⊕_
-          (successor-and-suprema-equations-give-recursive-equation
-            _⊕_ ⊕-succ ⊕-sup)
-        α β) ⁻¹))))
--}
 
 \end{code}
 

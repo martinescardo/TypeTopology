@@ -193,7 +193,9 @@ Proposition-8 α =
 
 Lemma-9 : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
         → α +ₒ sup β ＝ extended-sup (λ i → α +ₒ β i) α
-Lemma-9 = +ₒ-preserves-suprema-up-to-join pt sr
+Lemma-9 = +ₒ-preserves-suprema-up-to-join
+ where
+  open addition-by-fixed-ordinal
 
 Proposition-10 : (α : Ordinal 𝓤)
                → (α +ₒ 𝟘ₒ ＝ α)
@@ -209,11 +211,12 @@ Proposition-10 : (α : Ordinal 𝓤)
 Proposition-10 α =
    𝟘ₒ-right-neutral α
  , +ₒ-commutes-with-successor α
- , +ₒ-preserves-suprema-up-to-join pt sr α
+ , +ₒ-preserves-suprema-up-to-join α
  , +ₒ-recursive-equation
  , +ₒ-is-uniquely-specified
   where
    open addition
+   open addition-by-fixed-ordinal
 
 Eq-double-dagger : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
 Eq-double-dagger = exp-full-specification

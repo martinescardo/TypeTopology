@@ -568,12 +568,13 @@ addition by α is order reflecting.
 
 module _ (α : Ordinal 𝓤) where
  private
+  open addition-by-fixed-ordinal
   open framework
         (α +ₒ_)
         (_+ₒ 𝟙ₒ)
         α
         (+ₒ-commutes-with-successor α)
-        (+ₒ-preserves-suprema-up-to-join pt sr α)
+        (+ₒ-preserves-suprema-up-to-join α)
 
   asm-2 : Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)
               , ((β : Ordinal 𝓤) → β +ₒ 𝟙ₒ ＝ β +ₒ H β))
