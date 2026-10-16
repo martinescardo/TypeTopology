@@ -37,6 +37,7 @@ open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
+open import Ordinals.OperationsByCases ua pt sr
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Propositions ua
@@ -47,7 +48,7 @@ open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.DecreasingListProperties-Concrete ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 
 open PropositionalTruncation pt
 open suprema pt sr
@@ -176,16 +177,15 @@ An alternative proof added on 29 January 2025 by Tom de Jong.
 
 exponentiation-constructions-agree'-bis
  : (α β : Ordinal 𝓤) → expᴸ[𝟙+ α ] β ＝ (𝟙ₒ +ₒ α) ^ₒ β
-exponentiation-constructions-agree'-bis α β =
- exp-strong-specification-uniquely-specifies-exp'
-  (𝟙ₒ +ₒ α)
-  (expᴸ[𝟙+ α ])
-  ((𝟙ₒ +ₒ α) ^ₒ_)
-  (expᴸ-satisfies-strong-sup-specification α)
-  (expᴸ-satisfies-succ-specification α)
-  (^ₒ-satisfies-strong-sup-specification (𝟙ₒ +ₒ α))
-  (^ₒ-satisfies-succ-specification (𝟙ₒ +ₒ α) (+ₒ-left-⊴ 𝟙ₒ α))
-  β
+exponentiation-constructions-agree'-bis α =
+ happly (ap pr₁ (exponentiation-is-uniquely-specified (𝟙ₒ +ₒ α) I II))
+  where
+   I = expᴸ[𝟙+ α ] ,
+       expᴸ-satisfies-succ-specification α ,
+       (λ {I} → expᴸ-satisfies-zero-sup-combined-specification α)
+   II = (𝟙ₒ +ₒ α) ^ₒ_ ,
+        (^ₒ-satisfies-succ-specification (𝟙ₒ +ₒ α) (+ₒ-left-⊴ 𝟙ₒ α)) ,
+        (λ {I} → ^ₒ-satisfies-zero-sup-combined-specification (𝟙ₒ +ₒ α))
 
 exponentiation-constructions-agree-bis
  : (α β : Ordinal 𝓤) (h : has-trichotomous-least-element α)

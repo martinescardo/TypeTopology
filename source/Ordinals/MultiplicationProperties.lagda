@@ -37,6 +37,7 @@ open import MLTT.Plus-Properties
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Propositions ua
@@ -296,7 +297,7 @@ We now prove several useful facts about (bounded) simulations between products.
 Multiplication satisfies the expected recursive equations (which
 classically define ordinal multiplication): zero is fixed by multiplication
 (this is ×ₒ-𝟘ₒ-right above), multiplication for successors is repeated addition
-and multiplication preserves suprema.
+and multiplication preserves suprema (i.e. it is continuous).
 
 \begin{code}
 
@@ -314,127 +315,51 @@ module _ (pt : propositional-truncations-exist)
        where
 
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
+ open import Ordinals.SupremaPreservation ua pt sr
  open suprema pt sr
  open PropositionalTruncation pt
 
- ×ₒ-preserves-suprema : (α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
-                      → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i)
- ×ₒ-preserves-suprema {𝓤} α I β = ⊴-antisym (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆ ⦅2⦆
-  where
-   ⦅2⦆ : sup (λ i → α ×ₒ β i) ⊴ (α ×ₒ sup β)
-   ⦅2⦆ = sup-is-lower-bound-of-upper-bounds (λ i → α ×ₒ β i) (α ×ₒ sup β)
-          (λ i → ×ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i))
-
-   ⦅1⦆ : (α ×ₒ sup β) ⊴ sup (λ i → α ×ₒ β i)
-   ⦅1⦆ = ≼-gives-⊴ (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆-I
-    where
-     ⦅1⦆-I : (γ : Ordinal 𝓤) → γ ⊲ (α ×ₒ sup β) → γ ⊲ sup (λ i → α ×ₒ β i)
-     ⦅1⦆-I _ ((a , y) , refl) = ⦅1⦆-III
-      where
-       ⦅1⦆-II : (Σ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ (β i) ↓ b)
-              → ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ j → α ×ₒ β j)
-       ⦅1⦆-II (i , b , e) = σ (a , b) , eq
-        where
-         σ : ⟨ α ×ₒ β i ⟩ → ⟨ sup (λ j → α ×ₒ β j) ⟩
-         σ = [ α ×ₒ β i , sup (λ j → α ×ₒ β j) ]⟨ sup-is-upper-bound _ i ⟩
-
-         eq = (α ×ₒ sup β) ↓ (a , y)           ＝⟨ ×ₒ-↓ α (sup β) ⟩
-              (α ×ₒ (sup β ↓ y)) +ₒ (α ↓ a)    ＝⟨ eq₁ ⟩
-              (α ×ₒ (β i ↓ b)) +ₒ (α ↓ a)      ＝⟨ ×ₒ-↓ α (β i) ⁻¹ ⟩
-              (α ×ₒ β i) ↓ (a , b)             ＝⟨ eq₂ ⟩
-              sup (λ j → α ×ₒ β j) ↓ σ (a , b) ∎
-          where
-           eq₁ = ap (λ - → ((α ×ₒ -) +ₒ (α ↓ a))) e
-           eq₂ = (initial-segment-of-sup-at-component
-                  (λ j → α ×ₒ β j) i (a , b)) ⁻¹
-
-       ⦅1⦆-III : ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
-       ⦅1⦆-III = ∥∥-rec (⊲-is-prop-valued _ _) ⦅1⦆-II
-                  (initial-segment-of-sup-is-initial-segment-of-some-component
-                    β y)
-
-\end{code}
-
-11 September 2024, added by Tom de Jong following a question by Martin Escardo.
-
-The equations for successor and suprema uniquely specify the multiplication
-operation and lead to a definition by transfinite recursion.
-
-\begin{code}
-
- private
-  successor-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-  successor-equation {𝓤} _⊗_ =
-   (α β : Ordinal 𝓤) → α ⊗ (β +ₒ 𝟙ₒ) ＝ (α ⊗ β) +ₒ α
-
-  suprema-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-  suprema-equation {𝓤} _⊗_ =
-   (α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
-    → α ⊗ (sup β) ＝ sup (λ i → α ⊗ β i)
-
-  recursive-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-  recursive-equation {𝓤} _⊗_ =
-   (α β : Ordinal 𝓤) → α ⊗ β ＝ sup (λ b → (α ⊗ (β ↓ b)) +ₒ α)
-
-  successor-and-suprema-equations-give-recursive-equation
-   : (_⊗_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
-   → successor-equation _⊗_
-   → suprema-equation _⊗_
-   → recursive-equation _⊗_
-  successor-and-suprema-equations-give-recursive-equation
-   _⊗_ ⊗-succ ⊗-sup α β = α ⊗ β                           ＝⟨ I   ⟩
-                          (α ⊗ sup (λ b → (β ↓ b) +ₒ 𝟙ₒ)) ＝⟨ II  ⟩
-                          sup (λ b → α ⊗ ((β ↓ b) +ₒ 𝟙ₒ)) ＝⟨ III ⟩
-                          sup (λ b → (α ⊗ (β ↓ b)) +ₒ α)  ∎
-    where
-     I   = ap (α ⊗_) (supremum-of-successors-of-initial-segments pt sr β)
-     II  = ⊗-sup α ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
-     III = ap sup (dfunext fe' (λ b → ⊗-succ α (β ↓ b)))
-
- ×ₒ-recursive-equation : recursive-equation {𝓤} _×ₒ_
- ×ₒ-recursive-equation =
-  successor-and-suprema-equations-give-recursive-equation
-    _×ₒ_ ×ₒ-successor ×ₒ-preserves-suprema
-
- ×ₒ-is-uniquely-specified'
-  : (_⊗_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
-  → recursive-equation _⊗_
-  → (α β : Ordinal 𝓤) → α ⊗ β ＝ α ×ₒ β
- ×ₒ-is-uniquely-specified' {𝓤} _⊗_ ⊗-rec α =
-  transfinite-induction-on-OO (λ - → (α ⊗ -) ＝ (α ×ₒ -)) I
+ ×ₒ-is-continuous : (α : Ordinal 𝓤) → is-continuous (α ×ₒ_)
+ ×ₒ-is-continuous {𝓤} α {I} β =
+  ⊴-antisym (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆ ⦅2⦆
    where
-    I : (β : Ordinal 𝓤)
-      → ((b : ⟨ β ⟩) → (α ⊗ (β ↓ b)) ＝ (α ×ₒ (β ↓ b)))
-      → (α ⊗ β) ＝ (α ×ₒ β)
-    I β IH = α ⊗ β                            ＝⟨ II  ⟩
-             sup (λ b → (α ⊗ (β ↓ b)) +ₒ α)   ＝⟨ III ⟩
-             sup (λ b → (α ×ₒ (β ↓ b)) +ₒ α)  ＝⟨ IV  ⟩
-             α ×ₒ β                           ∎
-     where
-      II  = ⊗-rec α β
-      III = ap sup (dfunext fe' (λ b → ap (_+ₒ α) (IH b)))
-      IV  = ×ₒ-recursive-equation α β ⁻¹
+    ⦅2⦆ : sup (λ i → α ×ₒ β i) ⊴ (α ×ₒ sup β)
+    ⦅2⦆ = sup-is-lower-bound-of-upper-bounds (λ i → α ×ₒ β i) (α ×ₒ sup β)
+           (λ i → ×ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i))
 
- ×ₒ-is-uniquely-specified
-  : ∃! _⊗_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
-     (successor-equation _⊗_) × (suprema-equation _⊗_)
- ×ₒ-is-uniquely-specified {𝓤} =
-  (_×ₒ_ , (×ₒ-successor , ×ₒ-preserves-suprema)) ,
-  (λ (_⊗_ , ⊗-succ , ⊗-sup) →
-   to-subtype-＝
-    (λ F → ×-is-prop (Π₂-is-prop fe'
-                       (λ _ _ → underlying-type-is-set fe (OO 𝓤)))
-                     (Π₃-is-prop fe'
-                       (λ _ _ _ → underlying-type-is-set fe (OO 𝓤))))
-    (dfunext fe'
-      (λ α → dfunext fe'
-       (λ β →
-        (×ₒ-is-uniquely-specified' _⊗_
-          (successor-and-suprema-equations-give-recursive-equation
-            _⊗_ ⊗-succ ⊗-sup)
-        α β) ⁻¹))))
+    ⦅1⦆ : (α ×ₒ sup β) ⊴ sup (λ i → α ×ₒ β i)
+    ⦅1⦆ = ≼-gives-⊴ (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆-I
+     where
+      ⦅1⦆-I : (γ : Ordinal 𝓤) → γ ⊲ (α ×ₒ sup β) → γ ⊲ sup (λ i → α ×ₒ β i)
+      ⦅1⦆-I _ ((a , y) , refl) = ⦅1⦆-III
+       where
+        ⦅1⦆-II : (Σ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ (β i) ↓ b)
+               → ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ j → α ×ₒ β j)
+        ⦅1⦆-II (i , b , e) = σ (a , b) , eq
+         where
+          σ : ⟨ α ×ₒ β i ⟩ → ⟨ sup (λ j → α ×ₒ β j) ⟩
+          σ = [ α ×ₒ β i , sup (λ j → α ×ₒ β j) ]⟨ sup-is-upper-bound _ i ⟩
+
+          eq = (α ×ₒ sup β) ↓ (a , y)           ＝⟨ ×ₒ-↓ α (sup β) ⟩
+               (α ×ₒ (sup β ↓ y)) +ₒ (α ↓ a)    ＝⟨ eq₁ ⟩
+               (α ×ₒ (β i ↓ b)) +ₒ (α ↓ a)      ＝⟨ ×ₒ-↓ α (β i) ⁻¹ ⟩
+               (α ×ₒ β i) ↓ (a , b)             ＝⟨ eq₂ ⟩
+               sup (λ j → α ×ₒ β j) ↓ σ (a , b) ∎
+           where
+            eq₁ = ap (λ - → ((α ×ₒ -) +ₒ (α ↓ a))) e
+            eq₂ = (initial-segment-of-sup-at-component
+                   (λ j → α ×ₒ β j) i (a , b)) ⁻¹
+
+        ⦅1⦆-III : ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
+        ⦅1⦆-III = ∥∥-rec (⊲-is-prop-valued _ _) ⦅1⦆-II
+                   (initial-segment-of-sup-is-initial-segment-of-some-component
+                     β y)
 
 \end{code}
+
+In OperationsByCases, it is shown that the equations for successor and suprema
+uniquely specify the multiplication operation and lead to a definition by
+transfinite recursion.
 
 Added 17 September 2024 by Fredrik Nordvall Forsberg:
 
@@ -1014,17 +939,26 @@ simulation-product-decomposition-leftover-empty α β γ (a₀ , p) a e = II
 
 Added 15 July 2025 by Tom de Jong.
 
+Updated 6 October 2026 by Tom de Jong to reflect that we can even restrict to
+ordinals with a trichotomous least element.
+
 \begin{code}
 
-×ₒ-as-large-as-right-factor-implies-EM
- : ((α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β) → EM 𝓤
-×ₒ-as-large-as-right-factor-implies-EM  hyp P P-is-prop = IV (f (inr ⋆)) refl
+×ₒ-as-large-as-right-factor-implies-EM'
+ : ((α β : Ordinal 𝓤) → has-trichotomous-least-element α
+                      → has-trichotomous-least-element β
+                      → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β)
+ → EM 𝓤
+×ₒ-as-large-as-right-factor-implies-EM' hyp P P-is-prop = IV (f (inr ⋆)) refl
  where
   Pₒ = prop-ordinal P P-is-prop
   α = 𝟙ₒ +ₒ Pₒ
   β = 𝟚ₒ
   𝕗 : β ⊴ α ×ₒ β
-  𝕗 = hyp α β (inl ⋆ , (𝟙ₒ-↓ ⁻¹ ∙ +ₒ-↓-left ⋆))
+  𝕗 = hyp α β
+          (decomposable-to-trichotomous-least α (Pₒ , refl))
+          (decomposable-to-trichotomous-least β (𝟙ₒ , refl))
+          (inl ⋆ , (𝟙ₒ-↓ ⁻¹ ∙ +ₒ-↓-left ⋆))
   f = [ β , α ×ₒ β ]⟨ 𝕗 ⟩
   f-is-sim : is-simulation β (α ×ₒ β) f
   f-is-sim = [ β , α ×ₒ β ]⟨ 𝕗 ⟩-is-simulation
@@ -1065,6 +999,11 @@ Added 15 July 2025 by Tom de Jong.
   IV (inr p , inl ⋆) e = inl p
   IV (inl ⋆ , inr ⋆) e = inr (II (inl ⋆) e)
   IV (inr p , inr ⋆) e = inl p
+
+×ₒ-as-large-as-right-factor-implies-EM
+ : ((α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β) → EM 𝓤
+×ₒ-as-large-as-right-factor-implies-EM  hyp =
+ ×ₒ-as-large-as-right-factor-implies-EM' (λ α β _ _ → hyp α β)
 
 EM-implies-×ₒ-as-large-as-right-factor
  : EM 𝓤

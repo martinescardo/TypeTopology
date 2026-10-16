@@ -747,6 +747,25 @@ Added 9 September 2024 by Tom de Jong and Fredrik Nordvall Forsberg.
 
 \end{code}
 
+Added 15 October 2026 by Tom de Jong.
+
+\begin{code}
+
+is-monotone-⊴ : (Ordinal 𝓤 → Ordinal 𝓥) → 𝓤 ⁺ ⊔ 𝓥 ̇
+is-monotone-⊴ {𝓤} {𝓥} F = (α β : Ordinal 𝓤) → α ⊴ β → F α ⊴ F β
+
+to-is-monotone-⊴ : (F : Ordinal 𝓤 → Ordinal 𝓥)
+                 → is-monotone (OO 𝓤) (OO 𝓥) F
+                 → is-monotone-⊴ F
+to-is-monotone-⊴ F m α β l = ≼-gives-⊴ (F α) (F β) (m α β (⊴-gives-≼ α β l))
+
+from-is-monotone-⊴ : (F : Ordinal 𝓤 → Ordinal 𝓥)
+                   → is-monotone-⊴ F
+                   → is-monotone (OO 𝓤) (OO 𝓥) F
+from-is-monotone-⊴ F m α β l = ⊴-gives-≼ (F α) (F β) (m α β (≼-gives-⊴ α β l))
+
+\end{code}
+
 End of addition.
 
 Transfinite induction on the ordinal of ordinals:

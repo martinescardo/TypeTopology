@@ -41,6 +41,7 @@ import Ordinals.MultiplicationProperties      -- by [2]
 import Ordinals.NotationInterpretation
 import Ordinals.Notions
 import Ordinals.Omega                         -- by [2]
+import Ordinals.OperationsByCases             -- by [3]
 import Ordinals.OrdinalOfOrdinals
 import Ordinals.OrdinalOfOrdinalsInfima       -- by [6]
 import Ordinals.OrdinalOfOrdinalsSuprema      -- by [3]
@@ -48,6 +49,7 @@ import Ordinals.OrdinalOfTruthValues
 import Ordinals.Propositions
 import Ordinals.ShulmanTaboo
 import Ordinals.SimulationsLowerSets          -- by [3]
+import Ordinals.SupremaPreservation           -- by [3]
 import Ordinals.SupSum
 import Ordinals.Taboos                        -- by [3]
 import Ordinals.ToppedArithmetic

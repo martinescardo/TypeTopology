@@ -105,7 +105,7 @@ open import Ordinals.Underlying
 open import Ordinals.WellOrderArithmetic
 open import Ordinals.WellOrderTransport
 
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 open import Ordinals.Exponentiation.DecreasingList ua pt
 
 open PropositionalTruncation pt
@@ -792,6 +792,6 @@ EM-implies-GraysonList-is-ordinal em α β = I II
   I (inr refl) = GraysonList-is-ordinal-if-base-zero β
 
   II : has-trichotomous-least-element-or-is-zero α
-  II = EM-gives-Has-trichotomous-least-element-or-is-zero em α
+  II = EM-gives-Has-trichotomous-least-element-or-is-zero pt em α
 
 \end{code}

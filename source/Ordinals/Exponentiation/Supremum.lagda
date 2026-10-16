@@ -43,6 +43,7 @@ open import Ordinals.MultiplicationProperties ua
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Propositions ua
+open import Ordinals.SupremaPreservation ua pt sr
 open import Ordinals.Type
 open import Ordinals.Underlying
 
@@ -295,8 +296,8 @@ The proof relies on the following monotonicity property of the exponentiation.
 
 ^ₒ-monotone-in-exponent' : (α : Ordinal 𝓤)
                          → is-monotone (OO 𝓥) (OO (𝓤 ⊔ 𝓥)) (α ^ₒ_)
-^ₒ-monotone-in-exponent' {𝓤} {𝓥} α β γ l =
- ⊴-gives-≼ (α ^ₒ β) (α ^ₒ γ) (^ₒ-monotone-in-exponent α β γ (≼-gives-⊴ β γ l))
+^ₒ-monotone-in-exponent' {𝓤} {𝓥} α =
+ from-is-monotone-⊴ (α ^ₒ_) (^ₒ-monotone-in-exponent α)
 
 ^ₒ-satisfies-sup-specification-generalized :
    {𝓤 𝓥 : Universe} (α : Ordinal 𝓤)
@@ -361,14 +362,25 @@ The proof relies on the following monotonicity property of the exponentiation.
 
 Added 29 January 2025 by Tom de Jong.
 
-^ₒ also satisfies the strong supremum specification, yielding yet another proof
-that it satisfies the (ordinary) supremum specification.
+^ₒ also satisfies the combined zero and supremum specification.
+This follows from ^ₒ-satisfies-sup-specification and the zero specification, but
+it can also be proved directly, which is what did previously and still record
+here.
 
 \begin{code}
 
-^ₒ-satisfies-strong-sup-specification : (α : Ordinal 𝓤)
-                                      → exp-specification-sup-strong α (α ^ₒ_)
-^ₒ-satisfies-strong-sup-specification {𝓤} α S F =
+^ₒ-satisfies-zero-sup-combined-specification'
+ : (α : Ordinal 𝓤) → α ≠ 𝟘ₒ
+ → exp-specification-zero-sup-combined α (α ^ₒ_)
+^ₒ-satisfies-zero-sup-combined-specification' α α-nonzero =
+ preserves-suprema-up-to-join-criterion (α ^ₒ_) 𝟙ₒ
+  ((^ₒ-satisfies-sup-specification α α-nonzero) ,
+   ^ₒ-satisfies-zero-specification α)
+
+^ₒ-satisfies-zero-sup-combined-specification
+ : (α : Ordinal 𝓤)
+ → exp-specification-zero-sup-combined α (α ^ₒ_)
+^ₒ-satisfies-zero-sup-combined-specification {𝓤} α {S} F =
  ⊴-antisym (α ^ₒ sup F) (sup (cases (λ _ → 𝟙ₒ) (λ s → α ^ₒ F s))) I II
   where
    G : 𝟙{𝓤} + S → Ordinal 𝓤
@@ -407,9 +419,9 @@ that it satisfies the (ordinary) supremum specification.
 ^ₒ-satisfies-sup-specification' : (α : Ordinal 𝓤)
                                 → exp-specification-sup α (α ^ₒ_)
 ^ₒ-satisfies-sup-specification' α =
- exp-specification-sup-from-strong α
+ exp-specification-sup-from-zero-sup-combined α
   (α ^ₒ_)
-  (^ₒ-satisfies-strong-sup-specification α)
+  (^ₒ-satisfies-zero-sup-combined-specification α)
 
 \end{code}
 
@@ -451,7 +463,7 @@ product into the supremum.
    F = cases (λ _ → γ) (λ b → γ ×ₒ α ^ₒ (β ↓ b) ×ₒ α)
 
    I   = ap (γ ×ₒ_) (^ₒ-behaviour α β)
-   II  = ×ₒ-preserves-suprema pt sr γ _ (^ₒ-family α β)
+   II  = ×ₒ-is-continuous pt sr γ (^ₒ-family α β)
    III = ap sup (dfunext fe' h)
     where
      h : (λ - → γ ×ₒ ^ₒ-family α β -) ∼ F
@@ -710,7 +722,7 @@ Ordinals.Exponentiation.PropertiesViaTransport.
 
 \begin{code}
 
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 
 ^ₒ-reflects-trichotomous-least-in-base
  : (α β : Ordinal 𝓤) (a₀ : ⟨ α ⟩)

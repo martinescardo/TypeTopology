@@ -6,7 +6,7 @@ Taboos involving ordinal exponentiation.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification --no-exact-split #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -44,6 +44,7 @@ open import Ordinals.MultiplicationProperties ua
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Propositions ua
+open import Ordinals.SupremaPreservation ua pt sr
 open import Ordinals.Type
 open import Ordinals.Underlying
 
@@ -51,7 +52,7 @@ open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.PropertiesViaTransport ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 
 open import UF.Base
 open import UF.ClassicalLogic
@@ -318,7 +319,7 @@ module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
  exponentiation-defined-everywhere-implies-EM'
   : ((α : Ordinal 𝓤) → exp-specification-zero α (exp α))
   → ((α : Ordinal 𝓤) → exp-specification-succ α (exp α))
-  → ((α : Ordinal 𝓤) → α ≠ 𝟘ₒ → is-monotone (OO 𝓤) (OO 𝓤) (exp α))
+  → ((α : Ordinal 𝓤) → α ≠ 𝟘ₒ → is-monotone-⊴ (exp α))
   → EM 𝓤
  exponentiation-defined-everywhere-implies-EM' exp-zero exp-succ exp-mon P P-is-prop =
   III (f ⋆ , refl)
@@ -335,7 +336,7 @@ module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
     eq₂ = 𝟙ₒ-neutral-exp α (exp α) (exp-zero α) (exp-succ α)
 
     I : exp α 𝟘ₒ ⊴ exp α 𝟙ₒ
-    I = ≼-gives-⊴ (exp α 𝟘ₒ) (exp α 𝟙ₒ) (exp-mon α α-not-zero 𝟘ₒ 𝟙ₒ (𝟘ₒ-least 𝟙ₒ))
+    I = exp-mon α α-not-zero 𝟘ₒ 𝟙ₒ (𝟘ₒ-least-⊴ 𝟙ₒ)
 
     II : 𝟙ₒ ⊴ α
     II = transport₂ _⊴_ eq₁ eq₂ I
@@ -363,7 +364,7 @@ module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
   exponentiation-defined-everywhere-implies-EM'
    exp-zero
    exp-succ
-   (λ α ν → is-monotone-if-continuous (exp α) (exp-sup α ν))
+   (λ α ν → is-monotone-if-preserves-inhabited-suprema (exp α) (exp-sup α ν))
 
 \end{code}
 
@@ -462,7 +463,7 @@ EM-gives-full-exponentiation
  → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exp-full-specification exp
 EM-gives-full-exponentiation em =
  Has-trichotomous-least-element-or-is-zero-gives-full-exponentiation
-  (EM-gives-Has-trichotomous-least-element-or-is-zero em)
+  (EM-gives-Has-trichotomous-least-element-or-is-zero pt em)
 
 \end{code}
 
@@ -635,76 +636,148 @@ Classically, whenever the base α is greater than 𝟙₀, α ^ₒ β is at
 least as large as the exponent β. However, this is a constructive
 taboo.
 
+Refactored to use a counterexample with a trichotomous least element
+(i.e., of the form `𝟙ₒ +ₒ γ`) by Fredrik Nordvall Forsberg 5 October 2026.
+
 \begin{code}
 
-𝟚ₒ^ₒ-as-large-as-exponent-implies-EM
- : ((β : Ordinal 𝓤) → β ⊴ 𝟚ₒ {𝓤} ^ₒ β)
+𝟚ₒ^ₒ-as-large-as-exponent-implies-EM'
+ : ((β : Ordinal 𝓤) → has-trichotomous-least-element β → β ⊴ 𝟚ₒ {𝓤} ^ₒ β)
  → EM 𝓤
-𝟚ₒ^ₒ-as-large-as-exponent-implies-EM hyp P P-is-prop = IV (f (inr ⋆)) refl
+𝟚ₒ^ₒ-as-large-as-exponent-implies-EM' hyp P P-is-prop = X (f (inr ⋆)) refl
  where
   Pₒ = prop-ordinal P P-is-prop
-  β = Pₒ +ₒ 𝟙ₒ
+  β = 𝟙ₒ +ₒ Pₒ +ₒ 𝟙ₒ
 
-  γ = (𝟙ₒ +ₒ Pₒ) ×ₒ 𝟚ₒ
+  𝟚ₒ-positive : 𝟙ₒ ⊴ 𝟚ₒ
+  𝟚ₒ-positive = ⊲-gives-⊴ 𝟙ₒ 𝟚ₒ (successor-increasing 𝟙ₒ)
+
+  γ = (𝟚ₒ +ₒ 𝟚ₒ ×ₒ Pₒ) ×ₒ 𝟚ₒ
 
   I : 𝟚ₒ ^ₒ β ＝ γ
-  I = 𝟚ₒ ^ₒ (Pₒ +ₒ 𝟙ₒ) ＝⟨ I₀ ⟩
-      𝟚ₒ ^ₒ Pₒ   ×ₒ 𝟚ₒ ＝⟨ ap (_×ₒ 𝟚ₒ) (^ₒ-𝟚ₒ-by-prop P P-is-prop) ⟩
-      (𝟙ₒ +ₒ Pₒ) ×ₒ 𝟚ₒ ∎
+  I = 𝟚ₒ ^ₒ (𝟙ₒ +ₒ Pₒ +ₒ 𝟙ₒ) ＝⟨ I₀ ∙ ap (_×ₒ 𝟚ₒ) (^ₒ-by-+ₒ 𝟚ₒ 𝟙ₒ Pₒ) ⟩
+      (𝟚ₒ ^ₒ 𝟙ₒ) ×ₒ (𝟚ₒ ^ₒ Pₒ) ×ₒ 𝟚ₒ ＝⟨ ap₂ (λ x y → x ×ₒ y ×ₒ 𝟚ₒ)
+                                             (𝟙ₒ-neutral-^ₒ 𝟚ₒ 𝟚ₒ-positive)
+                                             (^ₒ-𝟚ₒ-by-prop P P-is-prop) ⟩
+      𝟚ₒ ×ₒ (𝟙ₒ +ₒ Pₒ) ×ₒ 𝟚ₒ ＝⟨ ap (_×ₒ 𝟚ₒ) (I₂ ∙ I₃) ⟩
+      (𝟚ₒ +ₒ 𝟚ₒ ×ₒ Pₒ) ×ₒ 𝟚ₒ ∎
    where
-    I₀ = ^ₒ-satisfies-succ-specification 𝟚ₒ
-          (⊲-gives-⊴ 𝟙ₒ 𝟚ₒ (successor-increasing 𝟙ₒ)) Pₒ
+    I₀ = ^ₒ-satisfies-succ-specification 𝟚ₒ 𝟚ₒ-positive (𝟙ₒ +ₒ Pₒ)
+    I₂ = ×ₒ-distributes-+ₒ-right 𝟚ₒ 𝟙ₒ Pₒ
+    I₃ = ap (_+ₒ 𝟚ₒ ×ₒ Pₒ) (𝟙ₒ-right-neutral-×ₒ 𝟚ₒ)
 
   II : β ⊴ γ
-  II = transport (β ⊴_) I (hyp β)
+  II = transport (β ⊴_) I (hyp β (decomposable-to-trichotomous-least β
+                                  (Pₒ +ₒ 𝟙ₒ , +ₒ-assoc 𝟙ₒ Pₒ 𝟙ₒ)))
 
   f : ⟨ β ⟩ → ⟨ γ ⟩
   f = [ β , γ ]⟨ II ⟩
   f-sim : is-simulation β γ f
   f-sim = [ β , γ ]⟨ II ⟩-is-simulation
 
-  IV : (x : ⟨ γ ⟩) → f (inr ⋆) ＝ x → P + ¬ P
-  IV (inr p , _) r = inl p
-  IV (inl ⋆ , inl ⋆) r = inr III
+  f-least : f (inl (inl ⋆)) ＝ inl (inl ⋆) , inl ⋆
+  f-least = simulations-preserve-least
+            β γ (inl (inl ⋆)) (inl (inl ⋆) , inl ⋆) f f-sim
+            (left-preserves-least (𝟙ₒ +ₒ Pₒ) 𝟙ₒ (inl ⋆)
+             (left-preserves-least 𝟙ₒ Pₒ ⋆ (prop-ordinal-least 𝟙-is-prop ⋆)))
+            (×ₒ-least (𝟚ₒ +ₒ 𝟚ₒ ×ₒ Pₒ) 𝟚ₒ (inl (inl ⋆)) (inl ⋆)
+             (left-preserves-least 𝟚ₒ (𝟚ₒ ×ₒ Pₒ) (inl ⋆)
+              (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ (prop-ordinal-least 𝟙-is-prop ⋆)))
+             (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ (prop-ordinal-least 𝟙-is-prop ⋆)))
+
+  X : (x : ⟨ γ ⟩) → f (inr ⋆) ＝ x → P + ¬ P
+  X (inr (_ , p) , _) r = inl p
+  X (inl (inl ⋆) , inl ⋆) r =
+   𝟘-elim (+disjoint (simulations-are-lc β γ f f-sim (f-least ∙ r ⁻¹)))
+  X (inl (inr ⋆) , inl ⋆) r = inr IV
    where
-    III : ¬ P
-    III p = +disjoint (simulations-are-lc β γ f f-sim III₁)
+    IV : ¬ P
+    IV p = +disjoint (simulations-are-lc β γ f f-sim (V ∙ r ⁻¹))
      where
-      III₁ = f (inl p)       ＝⟨ III₂ ⟩
-             (inl ⋆ , inl ⋆) ＝⟨ r ⁻¹ ⟩
-             f (inr ⋆)       ∎
+      V : f (inl (inr p)) ＝ inl (inr ⋆) , inl ⋆
+      V = at-most-one-simulation β γ f g f-sim g-sim (inl (inr p))
        where
-        III₂ = simulations-preserve-least β γ
-                (inl p)
-                (inl ⋆ , inl ⋆)
-                f f-sim
-                (left-preserves-least Pₒ 𝟙ₒ p (prop-ordinal-least P-is-prop p))
-                (×ₒ-least (𝟙ₒ +ₒ Pₒ) 𝟚ₒ
-                 (inl ⋆)
-                 (inl ⋆)
-                 (left-preserves-least 𝟙ₒ Pₒ ⋆ ⋆-least)
-                 (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least))
+        g : ⟨ β ⟩ → ⟨ γ ⟩
+        g (inl (inl ⋆)) = inl (inl ⋆) , inl ⋆
+        g (inl (inr p)) = inl (inr ⋆) , inl ⋆
+        g (inr ⋆) = inr (inl ⋆ , p) , inl ⋆
+        g-sim : is-simulation β γ g
+        g-sim = g-initial-segment , g-order-preserving
          where
-          ⋆-least : is-least 𝟙ₒ ⋆
-          ⋆-least = prop-ordinal-least 𝟙-is-prop ⋆
-  IV (inl ⋆ , inr ⋆) r = inl (V VII)
+          g-initial-segment : is-initial-segment β γ g
+          g-initial-segment (inl (inl ⋆)) (y , inl ⋆) (inl l) = 𝟘-elim l
+          g-initial-segment (inl (inl ⋆)) (y , inr ⋆) (inl l) = 𝟘-elim l
+          g-initial-segment (inl (inr p)) (y , inl ⋆) (inl l) = 𝟘-elim l
+          g-initial-segment (inl (inr p)) (y , inr ⋆) (inl l) = 𝟘-elim l
+          g-initial-segment (inr ⋆) (y , inl ⋆) (inl l) = 𝟘-elim l
+          g-initial-segment (inr ⋆) (y , inr ⋆) (inl l) = 𝟘-elim l
+          g-initial-segment (inl (inl ⋆)) (inl (inl ⋆) , ._) (inr (refl , l)) =
+           𝟘-elim l
+          g-initial-segment (inl (inl ⋆)) (inl (inr ⋆) , ._) (inr (refl , l)) =
+           𝟘-elim l
+          g-initial-segment (inl (inl ⋆)) (inr _ , ._) (inr (refl , l)) = 𝟘-elim l
+          g-initial-segment (inl (inr p)) (inl (inl ⋆) , ._) (inr (refl , l)) =
+           (inl (inl ⋆)) , ⋆ , refl
+          g-initial-segment (inl (inr p)) (inl (inr _) , y') (inr (r , l)) =
+           𝟘-elim l
+          g-initial-segment (inl (inr p)) (inr x , y') (inr (r , l)) = 𝟘-elim l
+          g-initial-segment (inr ⋆) (inl (inl ⋆) , ._) (inr (refl , l)) =
+           (inl (inl ⋆)) , ⋆ , refl
+          g-initial-segment (inr ⋆) (inl (inr ⋆) , ._) (inr (refl , l)) =
+           (inl (inr p)) , ⋆ , refl
+          g-initial-segment (inr ⋆) (inr (inl ⋆ , p') , ._) (inr (refl , inl l)) =
+           𝟘-elim l
+          g-initial-segment (inr ⋆) (inr (inl ⋆ , p') , _) (inr (_ , inr (_ , l))) =
+           𝟘-elim l
+          g-initial-segment (inr ⋆) (inr (inr ⋆ , p') , _) (inr (_ , inl l)) =
+           𝟘-elim l
+          g-initial-segment (inr ⋆) (inr (inr ⋆ , p') , _) (inr (_ , inr (r , l))) =
+           𝟘-elim l
+
+          g-order-preserving : is-order-preserving β γ g
+          g-order-preserving (inl (inl ⋆)) (inl (inl ⋆)) l = 𝟘-elim l
+          g-order-preserving (inl (inl ⋆)) (inl (inr p)) l = inr (refl , ⋆)
+          g-order-preserving (inl (inr p)) (inl (inl ⋆)) l = 𝟘-elim l
+          g-order-preserving (inl (inr p)) (inl (inr p')) l =
+           𝟘-elim (irrefl Pₒ p (transport (underlying-order Pₒ p) (P-is-prop p' p) l))
+          g-order-preserving (inl (inl ⋆)) (inr ⋆) l = inr (refl , ⋆)
+          g-order-preserving (inl (inr p)) (inr ⋆) l = inr (refl , ⋆)
+          g-order-preserving (inr ⋆) (inl x') l = 𝟘-elim l
+          g-order-preserving (inr ⋆) (inr ⋆) l = 𝟘-elim l
+  X (inl x , inr ⋆) r = inl (VII VI)
    where
-    V : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl ⋆ , inl ⋆)) → P
-    V (inl p , _ , _) = p
-    V (inr x , l , _) = 𝟘-elim l
+    VI : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl (inr ⋆) , inl ⋆))
+    VI = simulations-are-initial-segments β γ f f-sim
+          (inr ⋆)
+          (inl (inr ⋆) , inl ⋆)
+          (inl (transport⁻¹ (underlying-order 𝟚ₒ (inl ⋆)) (ap pr₂ r) ⋆))
+    VII : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl (inr ⋆) , inl ⋆)) → P
+    VII (inl (inl ⋆) , l , q) = 𝟘-elim (+disjoint (inl-lc (ap pr₁ (f-least ⁻¹ ∙ q))))
+    VII (inl (inr p) , l , q) = p
+    VII (inr ⋆ , l , q) = 𝟘-elim (irrefl β (inr ⋆) l)
 
-    VI : (inl ⋆ , inl ⋆) ≺⟨ γ ⟩ f (inr ⋆)
-    VI = transport⁻¹ (underlying-order γ (inl ⋆ , inl ⋆)) r (inl ⋆)
+𝟚ₒ^ₒ-as-large-as-exponent-implies-EM
+ : ((β : Ordinal 𝓤) → β ⊴ 𝟚ₒ {𝓤} ^ₒ β)
+ → EM 𝓤
+𝟚ₒ^ₒ-as-large-as-exponent-implies-EM hyp =
+ 𝟚ₒ^ₒ-as-large-as-exponent-implies-EM' (λ β _ → hyp β)
 
-    VII : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl ⋆ , inl ⋆))
-    VII = simulations-are-initial-segments β γ f f-sim
-                                           (inr ⋆) (inl ⋆ , inl ⋆) VI
+^ₒ-as-large-as-exponent-implies-EM'
+ : ((α β : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊲ α
+                      → has-trichotomous-least-element α
+                      → has-trichotomous-least-element β → β ⊴ α ^ₒ β)
+ → EM 𝓤
+^ₒ-as-large-as-exponent-implies-EM' hyp =
+ 𝟚ₒ^ₒ-as-large-as-exponent-implies-EM'
+  (λ β → hyp 𝟚ₒ β (successor-increasing 𝟙ₒ)
+                  (decomposable-to-trichotomous-least 𝟚ₒ (𝟙ₒ , refl)))
 
 ^ₒ-as-large-as-exponent-implies-EM
- : ((α β : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊲ α → β ⊴ α ^ₒ β)
+ : ((α β : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊲ α
+                      → β ⊴ α ^ₒ β)
  → EM 𝓤
 ^ₒ-as-large-as-exponent-implies-EM hyp =
- 𝟚ₒ^ₒ-as-large-as-exponent-implies-EM (λ β → hyp 𝟚ₒ β (successor-increasing 𝟙ₒ))
+ ^ₒ-as-large-as-exponent-implies-EM' (λ α β l _ _ → hyp α β l)
 
 \end{code}
 
