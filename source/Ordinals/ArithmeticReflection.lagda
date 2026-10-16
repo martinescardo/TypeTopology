@@ -1,11 +1,6 @@
 Tom de Jong, 31 July 2025.
 With additions by Fredrik Nordvall Forsberg in October 2025.
-
-TODO. COMMENT
-
-This file provides a formalization of Section 7 ("Abstract Cancellation
-Arithmetic") of the paper "Constructive Ordinal Exponentiation" by
-Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
+Slightly refactored on 16 October 2026.
 
 For a fixed ordinal α, we answer the following question positively:
   Do the functions (α + _), (α × _), and (exp α _) : Ord → Ord reflect
@@ -232,7 +227,8 @@ module uo-order
 
 \end{code}
 
-TODO: UPDATE.
+We introduce additional assumptions on top of the abstract framework from the
+file OperationsByCases.
 
 \begin{code}
 
