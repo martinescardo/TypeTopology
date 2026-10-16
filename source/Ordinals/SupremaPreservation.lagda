@@ -1,11 +1,30 @@
-TODO
+Tom de Jong, 14-16 October 2026.
 
-COMMENT AND REVISE
+Some of the below used to be part of OrdinalOfOrdinalsSuprema and was
+implemented by Tom de Jong and Fredrik Nordvall Forsberg on 5 December 2024,
+after it was developed in February 2024 in collaboration with Nicolai Kraus and
+Chuangjie Xu. It was moved here to avoid code duplication.
 
--- Previously (since 5 December 2024), this was part of OrdinalOfOrdinalsSuprema,
--- and it was implemented by Tom de Jong and Fredrik Nordvall Forsberg, developed
--- in February 2024 in collaboration with Nicolai Kraus and Chuangjie Xu.
--- It was moved here and revised on 15 October 2026 by Tom de Jong.
+For an operation F on ordinals, we consider several forms of the preservation of
+(some) suprema:
+  * F preserves all suprema (F is continuous)
+  * F preserves inhabited suprema
+  * F preserves (arbitrary) suprema up to a binary join with some fixed
+    ordinal α, i.e. F (sup γ) ＝ α ∨ sup (F ∘ γ).
+
+Clearly, any continuous operation preserves inhabited suprema.
+Moreover, if F preserves suprema up to a join with α, then F preserves inhabited
+suprema and α ＝ F 𝟘ₒ.
+Nicolai Kraus observed that the converse holds too constructively: if α ＝ F 𝟘ₒ
+and F preserves inhabited suprema, then F preserves arbitrary suprema up to a
+join with α. This is the main result of this file.
+
+We also show that if F preserves suprema up to a binary join then F is
+monontone, and similarly for the other preservation conditions.
+
+The above results are instantiated for
+  F = β +ₒ (-), F = β ×ₒ (-) and F = β ^ₒ (-)
+in other files.
 
 \begin{code}
 
@@ -44,12 +63,6 @@ open import Ordinals.Type
 open PropositionalTruncation pt
 open suprema pt sr
 
-\end{code}
-
-TODO. COMMENT
-
-\begin{code}
-
 is-continuous : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
 is-continuous {𝓤} F =
  {I : 𝓤 ̇ } (γ : I → Ordinal 𝓤) → F (sup γ) ＝ sup (F ∘ γ)
@@ -84,7 +97,8 @@ preserves-inhabited-suprema-if-continuous F c _ = c
 
 \end{code}
 
-The supremum of an arbitrary family can be replaced by an inhabited supremum.
+The supremum of an arbitrary family can be replaced by an inhabited
+supremum. This simple trick is instrumental.
 
 \begin{code}
 
@@ -119,10 +133,6 @@ module _
    ⦅2⦆ = sup-is-lower-bound-of-upper-bounds β (sup β⁺)
          (λ i → sup-is-upper-bound β⁺ (inr i))
 
-\end{code}
-
-\begin{code}
-
 empty-sup-is-𝟘ₒ : sup 𝟘-elim ＝ 𝟘ₒ {𝓤}
 empty-sup-is-𝟘ₒ {𝓤} =
  ⊴-antisym (sup 𝟘-elim) 𝟘ₒ
@@ -130,6 +140,9 @@ empty-sup-is-𝟘ₒ {𝓤} =
   (𝟘ₒ-least-⊴ (sup 𝟘-elim))
 
 \end{code}
+
+We can now show that if F preserves inhabited suprema and F 𝟘ₒ ＝ α,
+then F preserves arbitrarys suprema up to a join with α.
 
 \begin{code}
 
@@ -151,6 +164,9 @@ preserves-suprema-up-to-join-criterion {𝓤} F α (σ , eq) {I} β =
 
 \end{code}
 
+For the converse, we first observe that if F preserves suprema up to a join
+with α, then this forces α to be the value of F at 𝟘ₒ.
+
 \begin{code}
 
 preserves-suprema-up-to-join-implies-zero-equation
@@ -170,6 +186,13 @@ preserves-suprema-up-to-join-implies-zero-equation {𝓤} F α σ =
         (dep-cases (λ _ → ⊴-refl α) 𝟘-induction)
    II : α ⊴ sup F⁺
    II = sup-is-upper-bound F⁺ (inl ⋆)
+
+\end{code}
+
+To prove the preservation of inhabited suprema, we will need monotonicity, which
+is also of independent utility.
+
+\begin{code}
 
 module _
         (F : Ordinal 𝓤 → Ordinal 𝓤)
@@ -210,6 +233,9 @@ module _
    (preserves-inhabited-suprema-if-continuous F c)
 
 \end{code}
+
+We now prove the logical equivalences between several forms of preservation of
+suprema.
 
 \begin{code}
 
