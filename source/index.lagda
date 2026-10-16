@@ -4,7 +4,7 @@
    Various new theorems in univalent mathematics written in Agda
    -------------------------------------------------------------
 
-   [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/) and collaborators.
+   [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/) and [collaborators](https://github.com/martinescardo/TypeTopology#current-typetopology-contributors-in-alphabetical-order-of-first-name).
 
    Tested with Agda 2.8.0 and 2.9.0 (unreleased development version).
    This HTML rendering was automatically generated from commit to-be-filled-automatically.
