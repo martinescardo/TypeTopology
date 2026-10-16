@@ -346,14 +346,16 @@ exponentiation-is-uniquely-specified
  : (α : Ordinal 𝓤)
  → is-prop
     (Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤) ,
-      (exp-specification-succ α exp) × (exp-specification-sup' α exp))
+        (exp-specification-succ α exp)
+      × (exp-specification-zero-sup-combined α exp))
 exponentiation-is-uniquely-specified α =
  uniquely-specified (_×ₒ α) 𝟙ₒ
 
 ^ₒ-is-uniquely-specified
  : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α
  → ∃! exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤) ,
-    (exp-specification-succ α exp) × (exp-specification-sup' α exp)
+      (exp-specification-succ α exp)
+    × (exp-specification-zero-sup-combined α exp)
 ^ₒ-is-uniquely-specified α α-nonzero =
  pointed-props-are-singletons
   (α ^ₒ_ ,

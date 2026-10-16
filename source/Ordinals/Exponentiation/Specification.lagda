@@ -42,11 +42,9 @@ open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
+open import Ordinals.SupremaPreservation ua pt sr
 open import Ordinals.Type
 open import Ordinals.Underlying
-
--- TODO
-open import Ordinals.SupremaPreservation ua pt sr
 
 open PropositionalTruncation pt
 open suprema pt sr
@@ -84,9 +82,7 @@ module _
        where
 
  exp-specification-sup : 𝓤 ⁺ ̇
- exp-specification-sup =
-  α ≠ 𝟘ₒ → {I : 𝓤 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓤)
-         → F (sup β) ＝ sup (F ∘ β)
+ exp-specification-sup = α ≠ 𝟘ₒ → preserves-inhabited-suprema F
 
  exp-specification-sup-from-generalized : exp-specification-sup-generalized α F
                                         → exp-specification-sup
@@ -101,91 +97,35 @@ module _
 
 Added 29 January 2025 by Tom de Jong.
 Minor changes 15 May 2025 by Fredrik Nordvall Forsberg.
-Revised 14 October 2026 by Tom de Jong, following an observation by Nicolai Kraus.
-
-TODO: COMMENT AND REVISE.
+Revised 14-16 October 2026 by Tom de Jong, following
+an observation by Nicolai Kraus.
 
 \begin{code}
 
- exp-specification-sup' : 𝓤 ⁺ ̇
- exp-specification-sup' = preserves-suprema-up-to-join F 𝟙ₒ
+ exp-specification-zero-sup-combined : 𝓤 ⁺ ̇
+ exp-specification-zero-sup-combined = preserves-suprema-up-to-join F 𝟙ₒ
 
- exp-specification-sup-from-sup' : exp-specification-sup'
-                                 → exp-specification-sup
- exp-specification-sup-from-sup' σ _ =
+ exp-specification-sup-from-zero-sup-combined
+  : exp-specification-zero-sup-combined
+  → exp-specification-sup
+ exp-specification-sup-from-zero-sup-combined σ _ =
   pr₂ (rl-implication (preservation-of-suprema-equivalence F 𝟙ₒ) σ)
 
- exp-specification-sup'-from--sup-and-zero
+ exp-specification-zero-sup-combined-from-sup
   : α ≠ 𝟘ₒ
   → exp-specification-zero α F × exp-specification-sup
-  → exp-specification-sup'
- exp-specification-sup'-from--sup-and-zero α-nonzero (σ₀ , σₛ) =
+  → exp-specification-zero-sup-combined
+ exp-specification-zero-sup-combined-from-sup α-nonzero (σ₀ , σₛ) =
   lr-implication (preservation-of-suprema-equivalence F 𝟙ₒ)
                  (σ₀ , (σₛ α-nonzero))
 
- open import Notation.General
- exp-specification-sup-strong = exp-specification-sup'
+ exp-specification-sup-strong = exp-specification-zero-sup-combined
 
 \end{code}
 
-The appealing thing about the strong supremum specification is that, together
-with the successor specification, it uniquely specifies exponentiation with a
-nonzero base.
-
-\begin{code}
-
-exp-strong-specification-uniquely-specifies-exp'
- : (α : Ordinal 𝓤)
- → (F G : Ordinal 𝓤 → Ordinal 𝓤)
- → exp-specification-sup' α F
- → exp-specification-succ α F
- → exp-specification-sup' α G
- → exp-specification-succ α G
- → F ∼ G
-exp-strong-specification-uniquely-specifies-exp' {𝓤} α F G F-eq₁ F-eq₂ G-eq₁ G-eq₂ =
- transfinite-induction-on-OO _ e
-  where
-   e : (β : Ordinal 𝓤)
-     → ((b : ⟨ β ⟩) → F (β ↓ b) ＝ G (β ↓ b))
-     → F β ＝ G β
-   e β IH =
-     F β                                              ＝⟨ I   ⟩
-     F (sup λ b → (β ↓ b) +ₒ 𝟙ₒ)                      ＝⟨ II  ⟩
-     sup (cases (λ _ → 𝟙ₒ) (λ b → F ((β ↓ b) +ₒ 𝟙ₒ))) ＝⟨ III ⟩
-     sup (cases (λ _ → 𝟙ₒ) (λ b → F (β ↓ b) ×ₒ α))    ＝⟨ IV  ⟩
-     sup (cases (λ _ → 𝟙ₒ) (λ b → G (β ↓ b) ×ₒ α))    ＝⟨ V   ⟩
-     sup (cases (λ _ → 𝟙ₒ) (λ b → G ((β ↓ b) +ₒ 𝟙ₒ))) ＝⟨ VI  ⟩
-     G (sup (λ b → (β ↓ b) +ₒ 𝟙ₒ))                    ＝⟨ VII ⟩
-     G β                                              ∎
-      where
-       I   = ap F (supremum-of-successors-of-initial-segments pt sr β)
-       II  = F-eq₁ {⟨ β ⟩} (λ b → (β ↓ b) +ₒ 𝟙ₒ)
-       III = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → 𝟙ₒ) -))
-                (dfunext fe' (λ b → F-eq₂ (β ↓ b)))
-       IV  = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → 𝟙ₒ) -))
-                (dfunext fe' (λ b → ap (_×ₒ α) (IH b)))
-       V   = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → 𝟙ₒ) -))
-                (dfunext fe' (λ b → (G-eq₂ (β ↓ b)) ⁻¹))
-       VI  = (G-eq₁ {⟨ β ⟩} (λ b → (β ↓ b) +ₒ 𝟙ₒ)) ⁻¹
-       VII = ap G ((supremum-of-successors-of-initial-segments pt sr β) ⁻¹)
-
-exp-specification-uniquely-specifies-exp
- : (α : Ordinal 𝓤)
- → α ≠ 𝟘ₒ
- → is-prop (Σ F ꞉ (Ordinal 𝓤 → Ordinal 𝓤) , exp-specification-sup' α F
-                                          × exp-specification-succ α F)
-exp-specification-uniquely-specifies-exp {𝓤} α α-nonzero =
- (λ (F , F-eq₁ , F-eq₂) (G , G-eq₁ , G-eq₂)
-   → to-subtype-＝
-      (λ H → ×-is-prop
-              (implicit-Π-is-prop fe'
-                (λ _ → Π-is-prop fe' (λ _ → underlying-type-is-set fe (OO 𝓤))))
-              (Π-is-prop fe' (λ _ → underlying-type-is-set fe (OO 𝓤))))
-      (dfunext fe'
-        (exp-strong-specification-uniquely-specifies-exp'
-          α F G F-eq₁ F-eq₂ G-eq₁ G-eq₂)))
-
-\end{code}
+In Ordinals.OperationsByCases, it is shown that the the combined zero supremum
+specification together with the successor specification uniquely specifies
+exponentiation with a nonzero base.
 
 The following special cases follow directly from the specification.
 
@@ -218,18 +158,12 @@ The specification for suprema implies monotonicity.
 
 \begin{code}
 
--- TODO
-
-{-
-
 exp-is-monotone-in-exponent : (α : Ordinal 𝓤)
-                              (exp-α : Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥))
+                              (exp-α : Ordinal 𝓤 → Ordinal 𝓤)
                             → (α ≠ 𝟘ₒ)
-                            → exp-specification-sup-generalized α exp-α
-                            → is-monotone (OO 𝓥) (OO (𝓤 ⊔ 𝓥)) exp-α
+                            → exp-specification-sup α exp-α
+                            → is-monotone-⊴ exp-α
 exp-is-monotone-in-exponent α exp-α ν exp-sup =
- is-monotone-if-preserves-inhabited-suprema-generalized exp-α (exp-sup ν)
-
--}
+ is-monotone-if-preserves-inhabited-suprema exp-α (exp-sup ν)
 
 \end{code}

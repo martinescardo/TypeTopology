@@ -368,7 +368,7 @@ TODO: CORRECT COMMENT AND CLEAN UP ABOVE.
 \begin{code}
 
 ^ₒ-satisfies-sup'-specification : (α : Ordinal 𝓤)
-                                → exp-specification-sup' α (α ^ₒ_)
+                                → exp-specification-zero-sup-combined α (α ^ₒ_)
 ^ₒ-satisfies-sup'-specification {𝓤} α {S} F =
  ⊴-antisym (α ^ₒ sup F) (sup (cases (λ _ → 𝟙ₒ) (λ s → α ^ₒ F s))) I II
   where
@@ -410,7 +410,7 @@ TODO: CORRECT COMMENT AND CLEAN UP ABOVE.
 ^ₒ-satisfies-sup-specification' : (α : Ordinal 𝓤)
                                 → exp-specification-sup α (α ^ₒ_)
 ^ₒ-satisfies-sup-specification' α =
- exp-specification-sup-from-sup' α
+ exp-specification-sup-from-zero-sup-combined α
   (α ^ₒ_)
   (^ₒ-satisfies-sup'-specification α)
 
