@@ -175,7 +175,7 @@ Proposition-4 =
 Eq-double-dagger' : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
 Eq-double-dagger' {𝓤} exp =
    ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-succ α (exp α))
- × ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-sup-strong α (exp α))
+ × ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-zero-sup-combined α (exp α))
 
 \end{code}
 
@@ -204,7 +204,7 @@ Proposition-8 α β γ =   ^ₒ-monotone-in-exponent α β γ
 Theorem-9 : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α
           → exp-specification-zero α (α ^ₒ_)
           × exp-specification-succ α (α ^ₒ_)
-          × exp-specification-sup-strong α (α ^ₒ_)
+          × exp-specification-zero-sup-combined α (α ^ₒ_)
           × exp-specification-sup α (α ^ₒ_)
 Theorem-9 {𝓤} α α-pos =   ^ₒ-satisfies-zero-specification {𝓤} {𝓤} α
                         , ^ₒ-satisfies-succ-specification {𝓤} {𝓤} α α-pos
@@ -370,7 +370,7 @@ module fixed-assumptions-3
 
  Theorem-20 : exp-specification-zero α (λ - → exp[α, - ])
             × exp-specification-succ α (λ - → exp[α, - ])
-            × exp-specification-sup-strong α (λ - → exp[α, - ])
+            × exp-specification-zero-sup-combined α (λ - → exp[α, - ])
             × exp-specification-sup α (λ - → exp[α, - ])
  Theorem-20 =   expᴸ-satisfies-zero-specification {𝓤} {𝓤} α⁺
               , transport⁻¹
@@ -378,7 +378,7 @@ module fixed-assumptions-3
                  NB[α⁺-eq]
                  (expᴸ-satisfies-succ-specification {𝓤} α⁺)
               , transport⁻¹
-                 (λ - → exp-specification-sup-strong - (λ - → exp[α, - ]))
+                 (λ - → exp-specification-zero-sup-combined - (λ - → exp[α, - ]))
                  NB[α⁺-eq]
                  (expᴸ-satisfies-strong-sup-specification {𝓤} α⁺)
               , transport⁻¹

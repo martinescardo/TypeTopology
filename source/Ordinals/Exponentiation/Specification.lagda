@@ -119,8 +119,6 @@ an observation by Nicolai Kraus.
   lr-implication (preservation-of-suprema-equivalence F 𝟙ₒ)
                  (σ₀ , (σₛ α-nonzero))
 
- exp-specification-sup-strong = exp-specification-zero-sup-combined
-
 \end{code}
 
 In Ordinals.OperationsByCases, it is shown that the the combined zero supremum

@@ -926,7 +926,7 @@ module _ {I : 𝓤 ̇  }
      g-is-surjection) ⁻¹
 
 expᴸ-satisfies-strong-sup-specification :
- (α : Ordinal 𝓤) → exp-specification-sup-strong (𝟙ₒ +ₒ α) (expᴸ[𝟙+ α ])
+ (α : Ordinal 𝓤) → exp-specification-zero-sup-combined (𝟙ₒ +ₒ α) (expᴸ[𝟙+ α ])
 expᴸ-satisfies-strong-sup-specification α β = expᴸ-sup⁺-＝ β α
 
 \end{code}
