@@ -451,7 +451,7 @@ module fixed-assumptions-3
               , transport⁻¹
                  (λ - → exp-specification-zero-sup-combined - (λ - → exp[α, - ]))
                  NB[α⁺-eq]
-                 (expᴸ-satisfies-strong-sup-specification {𝓤} α⁺)
+                 (expᴸ-satisfies-zero-sup-combined-specification {𝓤} α⁺)
               , transport⁻¹
                  (λ - → exp-specification-sup - (λ - → exp[α, - ]))
                  NB[α⁺-eq]
