@@ -203,14 +203,11 @@ module addition-by-fixed-ordinal
   : ∃! α⊕_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤) ,
      (succ-equation α⊕_) × (preserves-suprema-up-to-join α⊕_ α)
  +ₒ-is-uniquely-specified' =
-  I ,
-  uniquely-specified (_+ₒ 𝟙ₒ) α I
-   where
-    I : Σ α⊕_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤) ,
-         (succ-equation α⊕_) × (preserves-suprema-up-to-join α⊕_ α)
-    I = α +ₒ_ ,
-        +ₒ-commutes-with-successor α ,
-        +ₒ-preserves-suprema-up-to-join pt sr α
+  pointed-props-are-singletons
+   (α +ₒ_ ,
+    +ₒ-commutes-with-successor α ,
+    (λ {I} → +ₒ-preserves-suprema-up-to-join pt sr α))
+   (uniquely-specified (_+ₒ 𝟙ₒ) α)
 
 module addition where
  private
@@ -273,14 +270,9 @@ module multiplication-by-fixed-ordinal
  ×ₒ-is-uniquely-specified'
   : ∃! α⊗_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤) , (succ-equation α⊗_) × (is-continuous α⊗_)
  ×ₒ-is-uniquely-specified' =
-  I ,
-  uniquely-specified' (_+ₒ α) I
-   where
-    I : Σ α⊗_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤) ,
-         (succ-equation α⊗_) × (is-continuous α⊗_)
-    I = α ×ₒ_ ,
-        ×ₒ-successor α ,
-        ×ₒ-preserves-suprema pt sr α
+  pointed-props-are-singletons
+   (α ×ₒ_ , ×ₒ-successor α , (λ {I} → ×ₒ-preserves-suprema pt sr α))
+   (uniquely-specified' (_+ₒ α))
 
 module multiplication where
  private
@@ -320,5 +312,33 @@ module multiplication where
    open framework-continuous (α ×ₒ_) (_+ₒ α)
          (×ₒ-successor α)
          (×ₒ-preserves-suprema pt sr α)
+
+\end{code}
+
+TODO. COMMENT
+
+\begin{code}
+
+open import Ordinals.Exponentiation.Specification ua pt sr
+open import Ordinals.Exponentiation.Supremum ua pt sr
+
+exponentiation-is-uniquely-specified
+ : (α : Ordinal 𝓤)
+ → is-prop
+    (Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤) ,
+      (exp-specification-succ α exp) × (exp-specification-sup' α exp))
+exponentiation-is-uniquely-specified α =
+ uniquely-specified (_×ₒ α) 𝟙ₒ
+
+^ₒ-is-uniquely-specified
+ : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α
+ → ∃! exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤) ,
+    (exp-specification-succ α exp) × (exp-specification-sup' α exp)
+^ₒ-is-uniquely-specified α α-nonzero =
+ pointed-props-are-singletons
+  (α ^ₒ_ ,
+   ^ₒ-satisfies-succ-specification α α-nonzero ,
+   (λ {I} → ^ₒ-satisfies-sup'-specification α))
+  (exponentiation-is-uniquely-specified α)
 
 \end{code}
