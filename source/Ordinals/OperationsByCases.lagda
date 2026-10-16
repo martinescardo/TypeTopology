@@ -6,11 +6,11 @@ This scheme used to be part of ArithmeticReflection, but was factored out to be
 hosted in this separate file.
 
 We consider an operation F : Ordinal 𝓤 → Ordinal 𝓤 together with
-- an ordinal Z : Ordinal 𝓤 (for the zero case)
-- an operation S : Ordinal 𝓤 → Ordinal 𝓤 (for the successor case)
+  - an ordinal Z : Ordinal 𝓤 (for the zero case)
+  - an operation S : Ordinal 𝓤 → Ordinal 𝓤 (for the successor case)
 such that
-- F (β +ₒ 𝟙ₒ) ＝ S (F β)         for all β : Ordinal 𝓤,
-- F (sup L)   ＝ Z ∨ sup (F ∘ L) for all L : I → Ordinal 𝓤 with I : 𝓤.
+  - F (β +ₒ 𝟙ₒ) ＝ S (F β)         for all β : Ordinal 𝓤,
+  - F (sup L)   ＝ Z ∨ sup (F ∘ L) for all L : I → Ordinal 𝓤 with I : 𝓤.
 
 Note that if we take L to be the empty family, then we get
 F 𝟘ₒ ＝ Z ∨ 𝟘ₒ ＝ Z, which is why Z is the zero case.
