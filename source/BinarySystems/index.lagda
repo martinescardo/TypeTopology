@@ -22,4 +22,4 @@ and needs the Cubical Library. It currently breaks the build and so
 cannot be rendered in html, which is also why it is not imported, but
 it can be read at
 
-https://github.com/martinescardo/TypeTopology/blob/master/source/BinarySystems/CubicalType.lagda
+https://github.com/martinescardo/TypeTopology/blob/master/cubical/BinarySystems/CubicalType.lagda

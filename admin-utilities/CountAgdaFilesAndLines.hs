@@ -27,7 +27,7 @@ isAgdaFile fname =
 
 getListOfAgdaFiles :: IO [String]
 getListOfAgdaFiles = do
-  output <- readProcess "git" ["ls-files", "source"] ""
+  output <- readProcess "git" ["ls-files", "source", "cubical"] ""
   let filePaths = lines output
   return $ filter isAgdaFile filePaths
 

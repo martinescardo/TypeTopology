@@ -1,12 +1,15 @@
 name: Update file and line count
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
     paths:
       - 'source/**/*.agda'
       - 'source/**/*.lagda'
+      - 'cubical/**/*.agda'
+      - 'cubical/**/*.lagda'
       - '!source/index.lagda'
 
 jobs:
@@ -23,8 +26,9 @@ jobs:
 
       - name: Check if bot committed in last 6 hours
         id: check-recent
+        if: github.event_name != 'workflow_dispatch'
         run: |
-          LAST_BOT_COMMIT=$(git log --author="github-actions\[bot\]" --since="6 hours ago" --oneline | head -1)
+          LAST_BOT_COMMIT=$(git log --committer="github-actions\[bot\]" --since="6 hours ago" --oneline | head -1)
           if [ -n "$LAST_BOT_COMMIT" ]; then
             echo "File and line count was updated in the last 6 hours: $LAST_BOT_COMMIT"
             echo "should_skip=true" >> $GITHUB_OUTPUT
