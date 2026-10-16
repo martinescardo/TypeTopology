@@ -1063,9 +1063,9 @@ as a single supremum by indexing over 𝟙 + I instead, sending inl ⋆ to α.
 \begin{code}
 
  +ₒ-preserves-suprema-up-to-join
-  : (α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
+  : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
   → α +ₒ sup β ＝ sup (cases (λ ⋆ → α) (λ i → α +ₒ β i))
- +ₒ-preserves-suprema-up-to-join {𝓤} α I β =
+ +ₒ-preserves-suprema-up-to-join {𝓤} α {I} β =
   ⊴-antisym (α +ₒ sup β) (sup F) ⦅1⦆ ⦅2⦆
    where
     F : 𝟙 {𝓤} + I → Ordinal 𝓤
@@ -1117,6 +1117,7 @@ addition of ordinals.
 
 \begin{code}
 
+{-
  private
   successor-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
   successor-equation {𝓤} _⊕_ =
@@ -1173,7 +1174,9 @@ addition of ordinals.
       III = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → α) -))
                (dfunext fe' (λ b → ap (_+ₒ 𝟙ₒ) (IH b)))
       IV  = +ₒ-recursive-equation α β ⁻¹
+-}
 
+{-
  +ₒ-is-uniquely-specified
   : ∃! _⊕_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
      (successor-equation _⊕_) × (suprema-equation _⊕_)
@@ -1192,6 +1195,7 @@ addition of ordinals.
           (successor-and-suprema-equations-give-recursive-equation
             _⊕_ ⊕-succ ⊕-sup)
         α β) ⁻¹))))
+-}
 
 \end{code}
 

@@ -18,6 +18,7 @@ module Ordinals.SupremaPreservation
 
 open import MLTT.Spartan
 open import UF.FunExt
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 
@@ -31,7 +32,6 @@ private
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
-open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Type
@@ -48,6 +48,13 @@ TODO. COMMENT
 is-continuous : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
 is-continuous {𝓤} F =
  {I : 𝓤 ̇ } (γ : I → Ordinal 𝓤) → F (sup γ) ＝ sup (F ∘ γ)
+
+being-continuous-is-prop : (F : Ordinal 𝓤 → Ordinal 𝓤)
+                         → is-prop (is-continuous F)
+being-continuous-is-prop {𝓤} F =
+ implicit-Π-is-prop fe'
+  (λ _ → Π-is-prop fe'
+          (λ _ → the-type-of-ordinals-is-a-set (ua 𝓤) fe'))
 
 preserves-inhabited-suprema : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
 preserves-inhabited-suprema {𝓤} F =
@@ -69,8 +76,16 @@ preserves-inhabited-suprema-generalized {𝓤} {𝓥} F =
 
 preserves-suprema-up-to-join : (Ordinal 𝓤 → Ordinal 𝓤) → Ordinal 𝓤 → 𝓤 ⁺ ̇
 preserves-suprema-up-to-join {𝓤} F α =
- {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
-    → F (sup β) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → α) (F ∘ β))
+ {I : 𝓤 ̇ } (γ : I → Ordinal 𝓤)
+    → F (sup γ) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → α) (F ∘ γ))
+
+preserves-suprema-up-to-join-is-prop
+ : (F : Ordinal 𝓤 → Ordinal 𝓤) (α : Ordinal 𝓤)
+ → is-prop (preserves-suprema-up-to-join F α)
+preserves-suprema-up-to-join-is-prop {𝓤} F α =
+ implicit-Π-is-prop fe'
+  (λ _ → Π-is-prop fe'
+          (λ _ → the-type-of-ordinals-is-a-set (ua 𝓤) fe'))
 
 preserves-inhabited-suprema-if-continuous :
  (F : Ordinal 𝓤 → Ordinal 𝓤) → is-continuous F → preserves-inhabited-suprema F
@@ -88,8 +103,7 @@ module _
        where
 
  fattened-family : 𝟙{𝓤} + I → Ordinal 𝓤
- fattened-family (inl _) = 𝟘ₒ
- fattened-family (inr i) = β i
+ fattened-family = cases (λ _ → 𝟘ₒ) β
 
  private
   β⁺ = fattened-family
@@ -100,19 +114,19 @@ module _
  fattened-family-is-inhabited : ∥ domain β⁺ ∥
  fattened-family-is-inhabited = ∣ fattened-family-is-pointed ∣
 
- sup-of-fattened-family-agrees : sup β ＝ sup β⁺
- sup-of-fattened-family-agrees = ⊴-antisym (sup β) (sup β⁺) ⦅1⦆ ⦅2⦆
+ sup-of-fattened-family-agrees : sup β⁺ ＝ sup β
+ sup-of-fattened-family-agrees = ⊴-antisym (sup β⁺) (sup β) ⦅1⦆ ⦅2⦆
   where
-   ⦅1⦆ : sup β ⊴ sup β⁺
-   ⦅1⦆ = sup-is-lower-bound-of-upper-bounds β (sup β⁺)
-         (λ i → sup-is-upper-bound β⁺ (inr i))
-
-   ⦅2⦆ : sup β⁺ ⊴ sup β
-   ⦅2⦆ = sup-is-lower-bound-of-upper-bounds β⁺ (sup β) h
+   ⦅1⦆ : sup β⁺ ⊴ sup β
+   ⦅1⦆ = sup-is-lower-bound-of-upper-bounds β⁺ (sup β) h
     where
      h : (j : 𝟙 + I) → β⁺ j ⊴ sup β
      h (inl _) = ≼-gives-⊴ 𝟘ₒ (sup β) (𝟘ₒ-least _)
      h (inr i) = sup-is-upper-bound β i
+
+   ⦅2⦆ : sup β ⊴ sup β⁺
+   ⦅2⦆ = sup-is-lower-bound-of-upper-bounds β (sup β⁺)
+         (λ i → sup-is-upper-bound β⁺ (inr i))
 
 \end{code}
 
@@ -133,7 +147,7 @@ preserves-suprema-up-to-join-criterion
  → preserves-inhabited-suprema F × (F 𝟘ₒ ＝ α)
  → preserves-suprema-up-to-join F α
 preserves-suprema-up-to-join-criterion {𝓤} F α (σ , eq) {I} β =
- F (sup β)    ＝⟨ ap F (sup-of-fattened-family-agrees β) ⟩
+ F (sup β)    ＝⟨ ap F ((sup-of-fattened-family-agrees β) ⁻¹) ⟩
  F (sup β⁺)   ＝⟨ σ (fattened-family-is-inhabited β) β⁺ ⟩
  sup (F ∘ β⁺) ＝⟨ sup-pointwise-equal (F ∘ β⁺) (F⁺ β) e ⟩
  sup (F⁺ β)   ∎
@@ -244,12 +258,19 @@ preservation-of-suprema-equivalence F α =
  (λ σ → eq σ ,
         preserves-inhabited-suprema-criterion F (σ' σ (eq σ)))
   where
-   open import UF.Base
    module _ (σ : preserves-suprema-up-to-join F α) where
     eq : F 𝟘ₒ ＝ α
     eq = preserves-suprema-up-to-join-implies-zero-equation F α σ
     σ' : F 𝟘ₒ ＝ α → preserves-suprema-up-to-join F (F 𝟘ₒ)
     σ' refl = σ
+
+preservation-of-suprema-continuity-equivalence
+ : (F : Ordinal 𝓤 → Ordinal 𝓤)
+ → preserves-suprema-up-to-join F 𝟘ₒ
+ ↔ is-continuous F
+preservation-of-suprema-continuity-equivalence F =
+ (λ σ γ → σ γ ∙ sup-of-fattened-family-agrees (F ∘ γ)) ,
+ (λ c γ → c γ ∙ (sup-of-fattened-family-agrees (F ∘ γ)) ⁻¹)
 
 \end{code}
 

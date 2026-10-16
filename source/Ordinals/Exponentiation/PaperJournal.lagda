@@ -59,13 +59,14 @@ open PropositionalTruncation pt
 
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
-open import Ordinals.ArithmeticReflection ua pt sr
+open import Ordinals.ArithmeticReflection ua pt sr hiding (extended-sup ; canonical-spec-by-cases) -- TODO
 open import Ordinals.BoundedOperations ua pt sr
 open import Ordinals.Equivalence
 open import Ordinals.Fin
 open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.Notions
+open import Ordinals.OperationsByCases ua pt sr
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Propositions ua
@@ -162,7 +163,7 @@ Lemma-4 : (α β γ : Ordinal 𝓤)
 Lemma-4 α β γ l = +ₒ-right-monotone-⊴ α β γ l , ×ₒ-right-monotone-⊴ α β γ l
 
 Lemma-5 : (α : Ordinal 𝓤)
-        → ((I : 𝓤 ̇ ) (F : I → Ordinal 𝓤) → α ×ₒ sup F ＝ sup (λ i → α ×ₒ F i))
+        → ({I : 𝓤 ̇ } (F : I → Ordinal 𝓤) → α ×ₒ sup F ＝ sup (λ i → α ×ₒ F i))
 Lemma-5 α = ×ₒ-preserves-suprema pt sr α
 
 Lemma-6 : (β : Ordinal 𝓤) → β ＝ sup (λ b → (β ↓ b) +ₒ 𝟙ₒ)
@@ -171,41 +172,45 @@ Lemma-6 = supremum-of-successors-of-initial-segments pt sr
 Proposition-7 : (α : Ordinal 𝓤)
               → (α ×ₒ 𝟘ₒ {𝓥} ＝ 𝟘ₒ)
               × ((β : Ordinal 𝓤) → α ×ₒ (β +ₒ 𝟙ₒ) ＝ α ×ₒ β +ₒ α)
-              × ((I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
+              × ({I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
                    → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i))
               × ((α β : Ordinal 𝓤) → α ×ₒ β ＝ sup (λ b → (α ×ₒ (β ↓ b)) +ₒ α))
               × (∃! _⊗_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
                      ((α β : Ordinal 𝓤) → α ⊗ (β +ₒ 𝟙ₒ) ＝ (α ⊗ β) +ₒ α)
-                   × ((α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
+                   × ((α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
                        → α ⊗ (sup β) ＝ sup (λ i → α ⊗ β i)))
 Proposition-7 α =
    ×ₒ-𝟘ₒ-right α
  , ×ₒ-successor α
  , ×ₒ-preserves-suprema pt sr α
- , ×ₒ-recursive-equation pt sr
- , ×ₒ-is-uniquely-specified pt sr
+ , ×ₒ-recursive-equation
+ , ×ₒ-is-uniquely-specified
+  where
+   open multiplication
 
-Lemma-8 : (α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
+Lemma-8 : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
         → α +ₒ sup β ＝ extended-sup (λ i → α +ₒ β i) α
 Lemma-8 = +ₒ-preserves-suprema-up-to-join pt sr
 
 Proposition-9 : (α : Ordinal 𝓤)
               → (α +ₒ 𝟘ₒ ＝ α)
               × ((β : Ordinal 𝓤) → α +ₒ (β +ₒ 𝟙ₒ) ＝ (α +ₒ β) +ₒ 𝟙ₒ)
-              × ((I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
+              × ({I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
                    → α +ₒ sup β ＝ extended-sup (λ i → α +ₒ β i) α)
               × ((α β : Ordinal 𝓤)
                    → α +ₒ β ＝ extended-sup (λ b → α +ₒ (β ↓ b) +ₒ 𝟙ₒ) α)
               × (∃! _⊕_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
                      ((α β : Ordinal 𝓤) → α ⊕ (β +ₒ 𝟙ₒ) ＝ (α ⊕ β) +ₒ 𝟙ₒ)
-                   × ((α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
+                   × ((α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
                        → α ⊕ (sup β) ＝ extended-sup (λ i → α ⊕ β i) α))
 Proposition-9 α =
    𝟘ₒ-right-neutral α
  , +ₒ-commutes-with-successor α
  , +ₒ-preserves-suprema-up-to-join pt sr α
- , +ₒ-recursive-equation pt sr
- , +ₒ-is-uniquely-specified pt sr
+ , +ₒ-recursive-equation
+ , +ₒ-is-uniquely-specified
+  where
+   open addition
 
 Eq-double-dagger : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
 Eq-double-dagger = exp-full-specification
@@ -617,34 +622,34 @@ Definition-44 : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
 Definition-44 {𝓤} F = Σ S ꞉ (Ordinal 𝓤 → Ordinal 𝓤) ,
                       Σ Z ꞉ Ordinal 𝓤 ,
                          ((β : Ordinal 𝓤) → F (β +ₒ 𝟙ₒ) ＝ S (F β))
-                       × ((I : 𝓤 ̇ ) (L : I → Ordinal 𝓤)
+                       × ({I : 𝓤 ̇ } (L : I → Ordinal 𝓤)
                             → F (sup L) ＝ extended-sup (F ∘ L) Z)
 
 Remark-45 : (F : Ordinal 𝓤 → Ordinal 𝓤)
           → ((S , Z , _) : Definition-44 F)
           → F ＝ canonical-spec-by-cases S Z
 Remark-45 F (S , Z , F-succ , F-sup) =
- dfunext fe' (framework.F-unique F S Z F-succ F-sup)
+ dfunext fe' (framework'.F-unique F S Z F-succ F-sup)
 
 module fixed-assumptions-7
         (F : Ordinal 𝓤 → Ordinal 𝓤)
         (S : Ordinal 𝓤 → Ordinal 𝓤)
         (Z : Ordinal 𝓤)
         (F-succ : (β : Ordinal 𝓤) → F (β +ₒ 𝟙ₒ) ＝ S (F β))
-        (F-sup : (I : 𝓤 ̇ ) (L : I → Ordinal 𝓤)
+        (F-sup : {I : 𝓤 ̇ } (L : I → Ordinal 𝓤)
                → F (sup L) ＝ extended-sup (F ∘ L) Z)
        where
 
  Assumption-1 : 𝓤 ⁺ ̇
- Assumption-1 = framework.Assumption-1 F S Z F-succ F-sup
+ Assumption-1 = framework'.Assumption-1 F S Z F-succ F-sup
 
  Assumption-2 : 𝓤 ⁺ ̇
- Assumption-2 = framework.Assumption-2 F S Z F-succ F-sup
+ Assumption-2 = framework'.Assumption-2 F S Z F-succ F-sup
 
  Assumption-3 : 𝓤 ⁺ ̇
- Assumption-3 = framework.Assumption-3 F S Z F-succ F-sup
+ Assumption-3 = framework'.Assumption-3 F S Z F-succ F-sup
 
- open framework F S Z F-succ F-sup
+ open framework' F S Z F-succ F-sup
   hiding (Assumption-1; Assumption-2; Assumption-3)
 
  Lemma-46 : (β γ : Ordinal 𝓤) → β ⊴ γ → F β ⊴ F γ

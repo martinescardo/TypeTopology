@@ -299,6 +299,8 @@ classically define ordinal multiplication): zero is fixed by multiplication
 (this is ×ₒ-𝟘ₒ-right above), multiplication for successors is repeated addition
 and multiplication preserves suprema.
 
+-- TODO. USE is-continuous AND REFACTOR
+
 \begin{code}
 
 ×ₒ-successor : (α β : Ordinal 𝓤) → α ×ₒ (β +ₒ 𝟙ₒ) ＝ (α ×ₒ β) +ₒ α
@@ -318,41 +320,42 @@ module _ (pt : propositional-truncations-exist)
  open suprema pt sr
  open PropositionalTruncation pt
 
- ×ₒ-preserves-suprema : (α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
+ ×ₒ-preserves-suprema : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
                       → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i)
- ×ₒ-preserves-suprema {𝓤} α I β = ⊴-antisym (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆ ⦅2⦆
-  where
-   ⦅2⦆ : sup (λ i → α ×ₒ β i) ⊴ (α ×ₒ sup β)
-   ⦅2⦆ = sup-is-lower-bound-of-upper-bounds (λ i → α ×ₒ β i) (α ×ₒ sup β)
-          (λ i → ×ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i))
+ ×ₒ-preserves-suprema {𝓤} α {I} β =
+  ⊴-antisym (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆ ⦅2⦆
+   where
+    ⦅2⦆ : sup (λ i → α ×ₒ β i) ⊴ (α ×ₒ sup β)
+    ⦅2⦆ = sup-is-lower-bound-of-upper-bounds (λ i → α ×ₒ β i) (α ×ₒ sup β)
+           (λ i → ×ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i))
 
-   ⦅1⦆ : (α ×ₒ sup β) ⊴ sup (λ i → α ×ₒ β i)
-   ⦅1⦆ = ≼-gives-⊴ (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆-I
-    where
-     ⦅1⦆-I : (γ : Ordinal 𝓤) → γ ⊲ (α ×ₒ sup β) → γ ⊲ sup (λ i → α ×ₒ β i)
-     ⦅1⦆-I _ ((a , y) , refl) = ⦅1⦆-III
-      where
-       ⦅1⦆-II : (Σ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ (β i) ↓ b)
-              → ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ j → α ×ₒ β j)
-       ⦅1⦆-II (i , b , e) = σ (a , b) , eq
-        where
-         σ : ⟨ α ×ₒ β i ⟩ → ⟨ sup (λ j → α ×ₒ β j) ⟩
-         σ = [ α ×ₒ β i , sup (λ j → α ×ₒ β j) ]⟨ sup-is-upper-bound _ i ⟩
+    ⦅1⦆ : (α ×ₒ sup β) ⊴ sup (λ i → α ×ₒ β i)
+    ⦅1⦆ = ≼-gives-⊴ (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆-I
+     where
+      ⦅1⦆-I : (γ : Ordinal 𝓤) → γ ⊲ (α ×ₒ sup β) → γ ⊲ sup (λ i → α ×ₒ β i)
+      ⦅1⦆-I _ ((a , y) , refl) = ⦅1⦆-III
+       where
+        ⦅1⦆-II : (Σ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ (β i) ↓ b)
+               → ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ j → α ×ₒ β j)
+        ⦅1⦆-II (i , b , e) = σ (a , b) , eq
+         where
+          σ : ⟨ α ×ₒ β i ⟩ → ⟨ sup (λ j → α ×ₒ β j) ⟩
+          σ = [ α ×ₒ β i , sup (λ j → α ×ₒ β j) ]⟨ sup-is-upper-bound _ i ⟩
 
-         eq = (α ×ₒ sup β) ↓ (a , y)           ＝⟨ ×ₒ-↓ α (sup β) ⟩
-              (α ×ₒ (sup β ↓ y)) +ₒ (α ↓ a)    ＝⟨ eq₁ ⟩
-              (α ×ₒ (β i ↓ b)) +ₒ (α ↓ a)      ＝⟨ ×ₒ-↓ α (β i) ⁻¹ ⟩
-              (α ×ₒ β i) ↓ (a , b)             ＝⟨ eq₂ ⟩
-              sup (λ j → α ×ₒ β j) ↓ σ (a , b) ∎
-          where
-           eq₁ = ap (λ - → ((α ×ₒ -) +ₒ (α ↓ a))) e
-           eq₂ = (initial-segment-of-sup-at-component
-                  (λ j → α ×ₒ β j) i (a , b)) ⁻¹
+          eq = (α ×ₒ sup β) ↓ (a , y)           ＝⟨ ×ₒ-↓ α (sup β) ⟩
+               (α ×ₒ (sup β ↓ y)) +ₒ (α ↓ a)    ＝⟨ eq₁ ⟩
+               (α ×ₒ (β i ↓ b)) +ₒ (α ↓ a)      ＝⟨ ×ₒ-↓ α (β i) ⁻¹ ⟩
+               (α ×ₒ β i) ↓ (a , b)             ＝⟨ eq₂ ⟩
+               sup (λ j → α ×ₒ β j) ↓ σ (a , b) ∎
+           where
+            eq₁ = ap (λ - → ((α ×ₒ -) +ₒ (α ↓ a))) e
+            eq₂ = (initial-segment-of-sup-at-component
+                   (λ j → α ×ₒ β j) i (a , b)) ⁻¹
 
-       ⦅1⦆-III : ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
-       ⦅1⦆-III = ∥∥-rec (⊲-is-prop-valued _ _) ⦅1⦆-II
-                  (initial-segment-of-sup-is-initial-segment-of-some-component
-                    β y)
+        ⦅1⦆-III : ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
+        ⦅1⦆-III = ∥∥-rec (⊲-is-prop-valued _ _) ⦅1⦆-II
+                   (initial-segment-of-sup-is-initial-segment-of-some-component
+                     β y)
 
 \end{code}
 
@@ -363,6 +366,7 @@ operation and lead to a definition by transfinite recursion.
 
 \begin{code}
 
+{-
  private
   successor-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
   successor-equation {𝓤} _⊗_ =
@@ -396,7 +400,9 @@ operation and lead to a definition by transfinite recursion.
  ×ₒ-recursive-equation =
   successor-and-suprema-equations-give-recursive-equation
     _×ₒ_ ×ₒ-successor ×ₒ-preserves-suprema
+-}
 
+{-
  ×ₒ-is-uniquely-specified'
   : (_⊗_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
   → recursive-equation _⊗_
@@ -434,6 +440,7 @@ operation and lead to a definition by transfinite recursion.
           (successor-and-suprema-equations-give-recursive-equation
             _⊗_ ⊗-succ ⊗-sup)
         α β) ⁻¹))))
+-}
 
 \end{code}
 

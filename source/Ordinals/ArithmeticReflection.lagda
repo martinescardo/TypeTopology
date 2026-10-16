@@ -272,18 +272,18 @@ canonical-spec-by-cases {𝓤} S Z =
  transfinite-recursion-on-OO (Ordinal 𝓤)
                              (λ β ih → extended-sup (λ b → S (ih b)) Z)
 
-module framework
+module framework'
         (F : Ordinal 𝓤 → Ordinal 𝓤)
         (S : Ordinal 𝓤 → Ordinal 𝓤)
         (Z : Ordinal 𝓤)
         (F-succ : (β : Ordinal 𝓤) → F (β +ₒ 𝟙ₒ) ＝ S (F β))
-        (F-sup : (I : 𝓤 ̇ ) (L : I → Ordinal 𝓤)
+        (F-sup : {I : 𝓤 ̇ } (L : I → Ordinal 𝓤)
                → F (sup L) ＝ extended-sup (F ∘ L) Z)
        where
 
  Z-is-F𝟘ₒ : Z ＝ F 𝟘ₒ
  Z-is-F𝟘ₒ = Z                      ＝⟨ I ⟩
-            extended-sup (F ∘ J) Z ＝⟨ F-sup 𝟘 J ⁻¹ ⟩
+            extended-sup (F ∘ J) Z ＝⟨ F-sup J ⁻¹ ⟩
             F (sup J)              ＝⟨ ap F II ⟩
             F 𝟘ₒ                   ∎
   where
@@ -307,7 +307,7 @@ module framework
           extended-sup (λ b → S (F (β ↓ b))) Z       ∎
   where
    I   = ap F (supremum-of-successors-of-initial-segments pt sr β)
-   II  = F-sup ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
+   II  = F-sup {⟨ β ⟩} (λ b → (β ↓ b) +ₒ 𝟙ₒ)
    III = ap (λ - → extended-sup - Z) (dfunext fe' (λ b → F-succ (β ↓ b)))
 
  F-unique : (β : Ordinal 𝓤) → F β ＝ canonical-spec-by-cases S Z β
@@ -347,7 +347,7 @@ is below all values of F.
    II : F β ⊴ extended-sup (F ∘ J) Z
    II = sup-is-upper-bound _ (inr (inl ⋆))
    III : F β ⊴ F γ
-   III = transport⁻¹ (F β ⊴_) (ap F (I ⁻¹) ∙ F-sup (𝟙 + 𝟙) J) II
+   III = transport⁻¹ (F β ⊴_) (ap F (I ⁻¹) ∙ F-sup J) II
 
  Z-below-all-values-of-F : (β : Ordinal 𝓤) → Z ⊴ F β
  Z-below-all-values-of-F β =
@@ -678,7 +678,7 @@ addition by α is order reflecting.
 
 module _ (α : Ordinal 𝓤) where
  private
-  open framework
+  open framework'
         (α +ₒ_)
         (_+ₒ 𝟙ₒ)
         α
@@ -720,13 +720,13 @@ multiplication by α is order reflecting (when 𝟘ₒ ⊲ α).
 
 module _ (α : Ordinal 𝓤) where
  private
-  open framework
+  open framework'
         (α ×ₒ_)
         (_+ₒ α)
         𝟘ₒ
         (×ₒ-successor α)
-        (λ I → Enderton-like'.preservation-of-suprema-up-to-join'
-                (α ×ₒ_) 𝟘ₒ (λ {I} → ×ₒ-preserves-suprema pt sr α I))
+        (Enderton-like'.preservation-of-suprema-up-to-join'
+          (α ×ₒ_) 𝟘ₒ (×ₒ-preserves-suprema pt sr α))
 
   asm-2 : 𝟘ₒ ⊲ α
         → Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)
@@ -770,12 +770,12 @@ module _
   α-has-least : 𝟙ₒ ⊴ α
   α-has-least = ⊴-trans 𝟙ₒ 𝟚ₒ α (+ₒ-left-⊴ 𝟙ₒ 𝟙ₒ) α-at-least-𝟚ₒ
 
-  open framework
+  open framework'
         (α ^ₒ_)
         (_×ₒ α)
         𝟙ₒ
         (^ₒ-satisfies-succ-specification α α-has-least)
-        (λ I → ^ₒ-satisfies-strong-sup-specification α)
+        (^ₒ-satisfies-strong-sup-specification α)
 
   asm-2 : has-trichotomous-least-element α
         →  Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)
