@@ -34,6 +34,8 @@ import UF.IdEmbedding
 import UF.IdentitySystems
 import UF.ImageAndSurjection
 import UF.ImageAndSurjection-Variation
+import UF.JoinConstruction                  -- by [2]
+import UF.JoinofMaps                        -- by [2]
 import UF.Knapp-UA
 import UF.KrausLemma
 import UF.LeftCancellable
