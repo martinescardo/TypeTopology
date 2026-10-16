@@ -1,21 +1,31 @@
-TODO
+Tom de Jong, 16 October 2026.
 
-Revised 14 October 2026 by Tom de Jong, following an observation by
-Nicolai Kraus.
+We introduce a general scheme (cf. the BoundedOperations file) that captures
+addition, multiplication and exponentiation by a fixed ordinal α.
+This scheme used to be part of ArithmeticReflection, but was factored out to be
+hosted in this separate file.
 
-The equations for zero and inhabited suprema can be combined to a single,
-equivalent equation
-  α +ₒ (sup β) ＝ α ∨ sup (λ i → α +ₒ β i)
-for all families β : I → Ord without any inhabitedness condition on the
-index type I.
-Note that the equation α +ₒ 𝟘ₒ = α follows by taking the empty family in the
-supremum equation.
+We consider an operation F : Ordinal 𝓤 → Ordinal 𝓤 together with
+- an ordinal Z : Ordinal 𝓤 (for the zero case)
+- an operation S : Ordinal 𝓤 → Ordinal 𝓤 (for the successor case)
+such that
+- F (β +ₒ 𝟙ₒ) ＝ S (F β)         for all β : Ordinal 𝓤,
+- F (sup L)   ＝ Z ∨ sup (F ∘ L) for all L : I → Ordinal 𝓤 with I : 𝓤.
 
-The fact that these equations are equivalent follows from a general fact proved
-for arbirary operations on ordinals (preservation-of-suprema-observation in
-OrdinalOfOrdinalsSuprema).
-Note how we have formulated α ∨ sup (λ i → α +ₒ β i) as a single supremum
-indexed over 𝟙 + I instead.
+Note that if we take L to be the empty family, then we get
+F 𝟘ₒ ＝ Z ∨ 𝟘ₒ ＝ Z, which is why Z is the zero case.
+
+Such an operation F is unique, because it must satisfy the recursive equation
+  F β = Z ∨ sup (λ b → S (F (β ↓ b))),
+since every ordinal is the supremum of the successors of its initial segments.
+
+As mentioned, examples are addition, multiplication and exponentiation
+by a fixed ordinal α. Specifically,
+- for F := (-) +ₒ α, we take Z = α  and S β := β +ₒ 𝟙ₒ;
+- for F := (-) ×ₒ α, we take Z = 𝟘ₒ and S β := β +ₒ α;
+- for F := α ^ₒ (-), we take Z = 𝟙ₒ and S β := β ×ₒ α (given 𝟙ₒ ⊴ α).
+
+In particular, these operations are uniquely specified.
 
 \begin{code}
 
@@ -59,26 +69,6 @@ open PropositionalTruncation pt
 open suprema pt sr
 
 \end{code}
-
-We now introduce a general scheme (cf. the BoundedOperations file)
-that captures addition, multiplication and exponentiation by a fixed
-ordinal α.
-
-We consider an operation F : Ordinal 𝓤 → Ordinal 𝓤 together with
-- an ordinal Z : Ordinal 𝓤 (for the zero case)
-- an operation S : Ordinal 𝓤 → Ordinal 𝓤 (for the successor case)
-such that
-- F (β +ₒ 𝟙ₒ) ＝ S (F β)         for all β : Ordinal 𝓤,
-- F (sup L)   ＝ Z ∨ sup (F ∘ L) for all L : I → Ordinal 𝓤 with I : 𝓤.
-
-Note that if we take L to be the empty family, then we get
-F 𝟘ₒ ＝ Z ∨ 𝟘ₒ ＝ Z, which is why Z is the zero case.
-
-As mentioned, examples are addition, multiplication and exponentiation
-by a fixed ordinal α. Specifically,
-- for F := (-) +ₒ α, we take Z = α  and S β := β +ₒ 𝟙ₒ;
-- for F := (-) ×ₒ α, we take Z = 𝟘ₒ and S β := β +ₒ α;
-- for F := α ^ₒ (-), we take Z = 𝟙ₒ and S β := β ×ₒ α (given 𝟙ₒ ⊴ α).
 
 We find it convenient to present Z ∨ sup (F ∘ L) via a single supremum.
 
@@ -164,7 +154,9 @@ uniquely-specified {𝓤} S Z (F , F-succ , F-sup) (G , G-succ , G-sup) =
 
 \end{code}
 
-TODO. COMMENT
+In case we have a continuous function, we need not consider binary joins with
+some ordinal Z since we can take Z ＝ 𝟘ₒ. The following code handles that
+special case.
 
 \begin{code}
 
@@ -204,9 +196,8 @@ uniquely-specified' {𝓤} S =
 
 \end{code}
 
-TODO. EXAMPLES
-
-Added 22 July 2025 by Tom de Jong.
+We now instantiate the above with addition.
+This used to be part of AdditionProperties (since 22 July 2025).
 
 \begin{code}
 
@@ -278,9 +269,9 @@ module addition where
 
 \end{code}
 
-TODO. COMMENT
-
-11 September 2024, added by Tom de Jong following a question by Martin Escardo.
+We now instantiate the above with multiplication.
+This used to be part of MultiplicationProperties (since 11 September 2024,
+following a question by Martin Escardo).
 
 \begin{code}
 
@@ -342,7 +333,9 @@ module multiplication where
 
 \end{code}
 
-TODO. COMMENT
+Finally, we apply the above to exponentiation by a fixed (positive) ordinal.
+This replaces a previous development as part of the file
+Exponentiation.Specification.
 
 \begin{code}
 
