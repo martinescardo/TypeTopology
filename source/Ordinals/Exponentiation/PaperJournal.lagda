@@ -176,12 +176,12 @@ Proposition-8 : (α : Ordinal 𝓤)
               → (α ×ₒ 𝟘ₒ {𝓥} ＝ 𝟘ₒ)
               × ((β : Ordinal 𝓤) → α ×ₒ (β +ₒ 𝟙ₒ) ＝ α ×ₒ β +ₒ α)
               × ({I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
-                   → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i))
+                    → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i))
               × ((α β : Ordinal 𝓤) → α ×ₒ β ＝ sup (λ b → (α ×ₒ (β ↓ b)) +ₒ α))
               × (∃! _⊗_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
                      ((α β : Ordinal 𝓤) → α ⊗ (β +ₒ 𝟙ₒ) ＝ (α ⊗ β) +ₒ α)
                    × ((α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
-                       → α ⊗ (sup β) ＝ sup (λ i → α ⊗ β i)))
+                         → α ⊗ (sup β) ＝ sup (λ i → α ⊗ β i)))
 Proposition-8 α =
    ×ₒ-𝟘ₒ-right α
  , ×ₒ-successor α
@@ -201,13 +201,13 @@ Proposition-10 : (α : Ordinal 𝓤)
                → (α +ₒ 𝟘ₒ ＝ α)
                × ((β : Ordinal 𝓤) → α +ₒ (β +ₒ 𝟙ₒ) ＝ (α +ₒ β) +ₒ 𝟙ₒ)
                × ({I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
-                    → α +ₒ sup β ＝ extended-sup (λ i → α +ₒ β i) α)
+                     → α +ₒ sup β ＝ extended-sup (λ i → α +ₒ β i) α)
                × ((α β : Ordinal 𝓤)
                     → α +ₒ β ＝ extended-sup (λ b → α +ₒ (β ↓ b) +ₒ 𝟙ₒ) α)
                × (∃! _⊕_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
                       ((α β : Ordinal 𝓤) → α ⊕ (β +ₒ 𝟙ₒ) ＝ (α ⊕ β) +ₒ 𝟙ₒ)
                     × ((α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
-                        → α ⊕ (sup β) ＝ extended-sup (λ i → α ⊕ β i) α))
+                          → α ⊕ (sup β) ＝ extended-sup (λ i → α ⊕ β i) α))
 Proposition-10 α =
    𝟘ₒ-right-neutral α
  , +ₒ-commutes-with-successor α
