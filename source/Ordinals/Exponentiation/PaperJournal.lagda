@@ -59,7 +59,7 @@ open PropositionalTruncation pt
 
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
-open import Ordinals.ArithmeticReflection ua pt sr hiding (extended-sup ; canonical-spec-by-cases) -- TODO
+open import Ordinals.ArithmeticReflection ua pt sr
 open import Ordinals.BoundedOperations ua pt sr
 open import Ordinals.Equivalence
 open import Ordinals.Fin
@@ -629,7 +629,9 @@ Remark-45 : (F : Ordinal 𝓤 → Ordinal 𝓤)
           → ((S , Z , _) : Definition-44 F)
           → F ＝ canonical-spec-by-cases S Z
 Remark-45 F (S , Z , F-succ , F-sup) =
- dfunext fe' (framework'.F-unique F S Z F-succ F-sup)
+ dfunext fe' presentation-by-transfinite-recursion
+  where
+   open operation-by-cases-framework F S Z F-succ F-sup
 
 module fixed-assumptions-7
         (F : Ordinal 𝓤 → Ordinal 𝓤)
@@ -641,19 +643,19 @@ module fixed-assumptions-7
        where
 
  Assumption-1 : 𝓤 ⁺ ̇
- Assumption-1 = framework'.Assumption-1 F S Z F-succ F-sup
+ Assumption-1 = framework.Assumption-1 F S Z F-succ F-sup
 
  Assumption-2 : 𝓤 ⁺ ̇
- Assumption-2 = framework'.Assumption-2 F S Z F-succ F-sup
+ Assumption-2 = framework.Assumption-2 F S Z F-succ F-sup
 
  Assumption-3 : 𝓤 ⁺ ̇
- Assumption-3 = framework'.Assumption-3 F S Z F-succ F-sup
+ Assumption-3 = framework.Assumption-3 F S Z F-succ F-sup
 
- open framework' F S Z F-succ F-sup
+ open framework F S Z F-succ F-sup
   hiding (Assumption-1; Assumption-2; Assumption-3)
 
  Lemma-46 : (β γ : Ordinal 𝓤) → β ⊴ γ → F β ⊴ F γ
- Lemma-46 = F-preserves-⊴
+ Lemma-46 = is-monotone-if-preserves-suprema-up-to-join F Z F-sup
 
  Lemma-47 : Assumption-2 → (β γ : Ordinal 𝓤) → β ⊲ γ → F β ⊲ F γ
  Lemma-47 = F-preserves-⊲

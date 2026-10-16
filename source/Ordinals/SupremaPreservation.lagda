@@ -222,6 +222,18 @@ module _
 
 \begin{code}
 
+least-value-if-preserves-suprema-up-to-join
+ : (F : Ordinal 𝓤 → Ordinal 𝓤) (α : Ordinal 𝓤)
+ → preserves-suprema-up-to-join F α
+ → (β : Ordinal 𝓤) → α ⊴ F β
+least-value-if-preserves-suprema-up-to-join F α σ β =
+ transport (_⊴ F β)
+           (preserves-suprema-up-to-join-implies-zero-equation F α σ)
+           I
+  where
+   I : F 𝟘ₒ ⊴ F β
+   I = is-monotone-if-preserves-suprema-up-to-join F α σ 𝟘ₒ β (𝟘ₒ-least-⊴ β)
+
 preserves-inhabited-suprema-criterion
  : (F : Ordinal 𝓤 → Ordinal 𝓤)
  → preserves-suprema-up-to-join F (F 𝟘ₒ)
@@ -234,15 +246,12 @@ preserves-inhabited-suprema-criterion {𝓤} F σ {I} =
     transport⁻¹ (_＝ sup (F ∘ γ)) (σ γ) (⊴-antisym (sup F⁺) (sup (F ∘ γ)) l₁ l₂)
      where
       F⁺ = cases (λ _ → F 𝟘ₒ) (F ∘ γ)
-      F𝟘ₒ-is-least : (β : Ordinal 𝓤) → F 𝟘ₒ ⊴ F β
-      F𝟘ₒ-is-least β =
-       is-monotone-if-preserves-suprema-up-to-join
-        F (F 𝟘ₒ) σ 𝟘ₒ β (𝟘ₒ-least-⊴ β)
 
       l₁ : sup F⁺ ⊴ sup (F ∘ γ)
       l₁ = sup-is-lower-bound-of-upper-bounds F⁺ (sup (F ∘ γ))
             (dep-cases (λ _ → ⊴-trans (F 𝟘ₒ) (F (γ i)) (sup (F ∘ γ))
-                         (F𝟘ₒ-is-least (γ i))
+                         (least-value-if-preserves-suprema-up-to-join
+                           F (F 𝟘ₒ) σ (γ i))
                          (sup-is-upper-bound (F ∘ γ) i))
                        (sup-is-upper-bound (F ∘ γ)))
       l₂ : sup (F ∘ γ) ⊴ sup F⁺

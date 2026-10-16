@@ -86,7 +86,7 @@ canonical-spec-by-cases {𝓤} S Z =
  transfinite-recursion-on-OO (Ordinal 𝓤)
                              (λ β ih → extended-sup (λ b → S (ih b)) Z)
 
-module framework
+module operation-by-cases-framework
         (F : Ordinal 𝓤 → Ordinal 𝓤)
         (S : Ordinal 𝓤 → Ordinal 𝓤)
         (Z : Ordinal 𝓤)
@@ -141,7 +141,7 @@ uniquely-specified {𝓤} S Z (F , F-succ , F-sup) (G , G-succ , G-sup) =
           canonical-spec-by-cases S Z β ＝⟨ I₂ ⁻¹ ⟩
           G β                           ∎
      where
-      open framework
+      open operation-by-cases-framework
       I₁ = presentation-by-transfinite-recursion F S Z F-succ F-sup β
       I₂ = presentation-by-transfinite-recursion G S Z G-succ G-sup β
 
@@ -151,7 +151,7 @@ TODO. COMMENT
 
 \begin{code}
 
-module framework-continuous
+module operation-by-cases-framework-continuous
         (F : Ordinal 𝓤 → Ordinal 𝓤)
         (S : Ordinal 𝓤 → Ordinal 𝓤)
         (F-succ : (β : Ordinal 𝓤) → F (β +ₒ 𝟙ₒ) ＝ S (F β))
@@ -247,7 +247,7 @@ module addition where
                        → α +ₒ β ＝ extended-sup (λ b → α +ₒ (β ↓ b) +ₒ 𝟙ₒ) α
  +ₒ-recursive-equation α = recursive-equation
   where
-   open framework (α +ₒ_) (_+ₒ 𝟙ₒ) α
+   open operation-by-cases-framework (α +ₒ_) (_+ₒ 𝟙ₒ) α
          (+ₒ-commutes-with-successor α)
          (+ₒ-preserves-suprema-up-to-join pt sr α)
 
@@ -309,7 +309,7 @@ module multiplication where
                        → α ×ₒ β ＝ sup (λ b → α ×ₒ (β ↓ b) +ₒ α)
  ×ₒ-recursive-equation α = recursive-equation
   where
-   open framework-continuous (α ×ₒ_) (_+ₒ α)
+   open operation-by-cases-framework-continuous (α ×ₒ_) (_+ₒ α)
          (×ₒ-successor α)
          (×ₒ-preserves-suprema pt sr α)
 
