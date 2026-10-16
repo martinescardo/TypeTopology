@@ -1,7 +1,7 @@
 Tom de Jong, 14 and 15 July 2025.
 In collaboration with Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
-
 Following sketches from July 2024.
+Slightly refactored by Tom de Jong on 16 October 2026.
 
 We consider the construction of certain bounded operations. The comments in the
 file offer more explanation as the development continues.
@@ -41,6 +41,7 @@ open import Ordinals.Exponentiation.Taboos ua pt sr
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
+open import Ordinals.SupremaPreservation ua pt sr
 open import Ordinals.Type
 open import Ordinals.Underlying
 
@@ -211,6 +212,9 @@ suprema up to a binary join in the following sense:
    t (sup F) ＝ δ₀ ∨ sup (t ∘ F)             (†)
 for some fixed ordinal δ₀.
 
+Such a property is already considered in the files SupremaPreservation and
+OperationsByCases.
+
 (Note that Eq. (†) forces t 𝟘ₒ to be δ₀ by considering the supremum of the empty
 family.)
 
@@ -244,33 +248,13 @@ module Enderton-like
         (t : Ordinal 𝓤 → Ordinal 𝓤)
         (δ₀ δ : Ordinal 𝓤)
         (δ₀-below-δ : δ₀ ⊴ δ)
-        (t-preserves-suprema-up-to-join
-          : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
-          → t (sup F) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → δ₀) (t ∘ F)))
+        (t-preserves-suprema-up-to-join : preserves-suprema-up-to-join t δ₀)
        where
 
  private
   t-is-monotone : (α β : Ordinal 𝓤) → α ⊴ β → t α ⊴ t β
-  t-is-monotone α β l = III
-   where
-    F : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
-    F (inl ⋆) = α
-    F (inr ⋆) = β
-    I : sup F ＝ β
-    I = ⊴-antisym (sup F) β
-         (sup-is-lower-bound-of-upper-bounds F β ub)
-         (sup-is-upper-bound F (inr ⋆))
-     where
-      ub : (i : 𝟙 + 𝟙) → F i ⊴ β
-      ub (inl ⋆) = l
-      ub (inr ⋆) = ⊴-refl β
-    II : t (sup F) ＝ sup (cases (λ _ → δ₀) (t ∘ F))
-    II = t-preserves-suprema-up-to-join F
-    III : t α ⊴ t β
-    III = transport⁻¹
-           (t α ⊴_)
-           (ap t I ⁻¹ ∙ II)
-           (sup-is-upper-bound (cases (λ _ → δ₀) (t ∘ F)) (inr (inl ⋆)))
+  t-is-monotone = is-monotone-if-preserves-suprema-up-to-join t δ₀
+                   t-preserves-suprema-up-to-join
 
  enderton-like
   : Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (t - ⊴ δ) × (- ⊴ δ))
@@ -306,39 +290,24 @@ module Enderton-like
 \end{code}
 
 We also provide the following more convenient interface in case we have an
-endofunction t that simply preserves suprema.
+endofunction t that simply preserves suprema, i.e. for continuous t.
 
 \begin{code}
 
 module Enderton-like'
         (t : Ordinal 𝓤 → Ordinal 𝓤)
         (δ : Ordinal 𝓤)
-        (t-preserves-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
-                             → t (sup F) ＝ sup (t ∘ F))
+        (t-is-continuous : is-continuous t)
        where
 
- preservation-of-suprema-up-to-join'
-  : {I : 𝓤 ̇} (F : I → Ordinal 𝓤)
-  → t (sup F) ＝ sup (cases (λ _  → 𝟘ₒ) (t ∘ F))
- preservation-of-suprema-up-to-join' {I} F =
-  t-preserves-suprema F
-  ∙ (⊴-antisym (sup (t ∘ F)) (sup G) u v)
-  where
-   G : 𝟙{𝓤} + I → Ordinal 𝓤
-   G = cases (λ _ → 𝟘ₒ) (t ∘ F)
-   u : sup (t ∘ F) ⊴ sup G
-   u = sup-is-lower-bound-of-upper-bounds (t ∘ F) (sup G)
-        (λ i → sup-is-upper-bound G (inr i))
-   v : sup G ⊴ sup (t ∘ F)
-   v = sup-is-lower-bound-of-upper-bounds G (sup (t ∘ F)) w
-    where
-     w : (x : 𝟙 + I)
-       → cases (λ _ → 𝟘ₒ) (t ∘ F) x ⊴ sup (t ∘ F)
-     w (inl ⋆) = 𝟘ₒ-least-⊴ (sup (t ∘ F))
-     w (inr i) = sup-is-upper-bound (t ∘ F) i
+ t-preserves-suprema-up-to-join : preserves-suprema-up-to-join t 𝟘ₒ
+ t-preserves-suprema-up-to-join =
+  rl-implication
+   (preservation-of-suprema-continuity-equivalence t)
+   t-is-continuous
 
  open Enderton-like
-       t 𝟘ₒ δ (𝟘ₒ-least-⊴ δ) preservation-of-suprema-up-to-join'
+       t 𝟘ₒ δ (𝟘ₒ-least-⊴ δ) t-preserves-suprema-up-to-join
       public
 
 \end{code}
@@ -352,9 +321,7 @@ module Enderton-like-inflationary
         (t : Ordinal 𝓤 → Ordinal 𝓤)
         (δ₀ δ : Ordinal 𝓤)
         (δ₀-below-δ : δ₀ ⊴ δ)
-        (t-preserves-suprema-up-to-join
-          : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
-          → t (sup F) ＝ sup (cases (λ (_ : 𝟙{𝓤}) → δ₀) (t ∘ F)))
+        (t-preserves-suprema-up-to-join : preserves-suprema-up-to-join t δ₀)
         (t-inflationary : (α : Ordinal 𝓤) → α ⊴ t α)
        where
 
@@ -380,23 +347,21 @@ module Enderton-like-inflationary
 
 \end{code}
 
-The following provides a convenient interface for inflationary endofunctions
-that simply preserve suprema.
+The following provides a convenient interface for continuous inflationary
+endofunctions.
 
 \begin{code}
 
 module Enderton-like-inflationary'
         (t : Ordinal 𝓤 → Ordinal 𝓤)
         (δ : Ordinal 𝓤)
-        (t-preserves-suprema : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤)
-                             → t (sup F) ＝ sup (t ∘ F))
+        (t-is-continuous : is-continuous t)
         (t-inflationary : (α : Ordinal 𝓤) → α ⊴ t α)
        where
 
  open Enderton-like-inflationary
        t 𝟘ₒ δ (𝟘ₒ-least-⊴ δ)
-       (Enderton-like'.preservation-of-suprema-up-to-join'
-         t δ t-preserves-suprema)
+       (Enderton-like'.t-preserves-suprema-up-to-join t 𝟘ₒ t-is-continuous)
        t-inflationary
       public
 

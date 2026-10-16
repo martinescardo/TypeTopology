@@ -50,7 +50,6 @@ open import UF.Equiv
 
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
-open import Ordinals.BoundedOperations ua pt sr
 open import Ordinals.Equivalence
 open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.Miscellaneous ua pt sr
@@ -616,8 +615,9 @@ module _ (α : Ordinal 𝓤) where
         (_+ₒ α)
         𝟘ₒ
         (×ₒ-successor α)
-        (Enderton-like'.preservation-of-suprema-up-to-join'
-          (α ×ₒ_) 𝟘ₒ (×ₒ-preserves-suprema pt sr α))
+        (rl-implication
+          (preservation-of-suprema-continuity-equivalence (α ×ₒ_))
+          (×ₒ-preserves-suprema pt sr α))
 
   asm-2 : 𝟘ₒ ⊲ α
         → Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)
