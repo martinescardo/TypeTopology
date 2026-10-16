@@ -185,7 +185,7 @@ exponentiation-constructions-agree'-bis α =
        (λ {I} → expᴸ-satisfies-strong-sup-specification α)
    II = (𝟙ₒ +ₒ α) ^ₒ_ ,
         (^ₒ-satisfies-succ-specification (𝟙ₒ +ₒ α) (+ₒ-left-⊴ 𝟙ₒ α)) ,
-        (λ {I} → ^ₒ-satisfies-strong-sup-specification (𝟙ₒ +ₒ α))
+        (λ {I} → ^ₒ-satisfies-zero-sup-combined-specification (𝟙ₒ +ₒ α))
 
 exponentiation-constructions-agree-bis
  : (α β : Ordinal 𝓤) (h : has-trichotomous-least-element α)

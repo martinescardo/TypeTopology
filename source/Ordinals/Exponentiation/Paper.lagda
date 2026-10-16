@@ -208,7 +208,7 @@ Theorem-9 : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α
           × exp-specification-sup α (α ^ₒ_)
 Theorem-9 {𝓤} α α-pos =   ^ₒ-satisfies-zero-specification {𝓤} {𝓤} α
                         , ^ₒ-satisfies-succ-specification {𝓤} {𝓤} α α-pos
-                        , ^ₒ-satisfies-strong-sup-specification α
+                        , ^ₒ-satisfies-zero-sup-combined-specification α
                         , ^ₒ-satisfies-sup-specification α
 
 Proposition-10 : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)

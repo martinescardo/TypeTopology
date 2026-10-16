@@ -415,7 +415,8 @@ aproximate-logarithm
     γ greatest-satisfying (λ - → (α ^ₒ - ⊴ β) × (- ⊴ β))
 aproximate-logarithm {𝓤} α β β-pos = enderton-like
  where
- open Enderton-like (α ^ₒ_) 𝟙ₒ β β-pos (^ₒ-satisfies-strong-sup-specification α)
+ open Enderton-like (α ^ₒ_) 𝟙ₒ β β-pos
+       (^ₒ-satisfies-zero-sup-combined-specification α)
 
 \end{code}
 
@@ -527,7 +528,7 @@ EM-implies-approximate-logarithm-variation em α β β-pos α-strictly-pos =
   where
    open Enderton-like-inflationary
          (α ^ₒ_) 𝟙ₒ β β-pos
-         (^ₒ-satisfies-strong-sup-specification α)
+         (^ₒ-satisfies-zero-sup-combined-specification α)
          (λ δ → EM-implies-^ₒ-as-large-as-exponent em α δ α-strictly-pos)
 
 \end{code}

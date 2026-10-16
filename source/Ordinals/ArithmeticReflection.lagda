@@ -663,7 +663,7 @@ module _
         (_×ₒ α)
         𝟙ₒ
         (^ₒ-satisfies-succ-specification α α-has-least)
-        (^ₒ-satisfies-strong-sup-specification α)
+        (^ₒ-satisfies-zero-sup-combined-specification α)
 
   asm-2 : has-trichotomous-least-element α
         →  Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)

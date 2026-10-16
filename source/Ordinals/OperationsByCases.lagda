@@ -360,7 +360,7 @@ exponentiation-is-uniquely-specified α =
  pointed-props-are-singletons
   (α ^ₒ_ ,
    ^ₒ-satisfies-succ-specification α α-nonzero ,
-   (λ {I} → ^ₒ-satisfies-sup'-specification α))
+   (λ {I} → ^ₒ-satisfies-zero-sup-combined-specification α))
   (exponentiation-is-uniquely-specified α)
 
 \end{code}
