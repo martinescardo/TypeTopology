@@ -1,4 +1,5 @@
-   [TypeTopology](https://github.com/martinescardo/TypeTopology)
+   [T y p e   T o p o l o g y](https://github.com/martinescardo/TypeTopology)
+
    2010--2026--∞, continuously evolving.
 
    Various new theorems in univalent mathematics written in Agda
