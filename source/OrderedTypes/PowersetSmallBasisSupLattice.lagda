@@ -187,39 +187,6 @@ power set.
 
 \begin{code}
 
-module _ (𝓤 : Universe) (A : 𝓤 ̇) where
-
- monotone-operator-has-least-pre-fixed-point
-  : (f : 𝓟 {𝓤} A → 𝓟 {𝓤} A)
-  → is-monotone-endomap (𝓟-sup-lattice A) f
-  → (𝓤 ⁺) ̇
- monotone-operator-has-least-pre-fixed-point f f-mono
-  = Σ S ꞉ 𝓟 {𝓤} A , f S ⊆ S × ((T : 𝓟 {𝓤} A) → f T ⊆ T → S ⊆ T)
-
- monotone-operator-LPFP : (𝓤 ⁺) ̇
- monotone-operator-LPFP
-  = (f : 𝓟 {𝓤} A → 𝓟 {𝓤} A) (f-mono : is-monotone-endomap (𝓟-sup-lattice A) f)
-  → monotone-operator-has-least-pre-fixed-point f f-mono
-
- module _ (f : 𝓟 {𝓤} A → 𝓟 {𝓤} A)
-          (f-mono : is-monotone-endomap (𝓟-sup-lattice A) f)
-        where
-
-  mon-op-LPFP-point : monotone-operator-LPFP → 𝓟 {𝓤} A
-  mon-op-LPFP-point m = pr₁ (m f f-mono)
-
-  mon-op-LPFP-pre-fixed
-   : (m : monotone-operator-LPFP)
-   → f (mon-op-LPFP-point m) ⊆ mon-op-LPFP-point m
-  mon-op-LPFP-pre-fixed m = pr₁ (pr₂ (m f f-mono))
-
-  mon-op-LPFP-least
-   : (m : monotone-operator-LPFP)
-   → (T : 𝓟 {𝓤} A)
-   → f T ⊆ T
-   → mon-op-LPFP-point m ⊆ T
-  mon-op-LPFP-least m = pr₂ (pr₂ (m f f-mono))
-
 module _ (𝓤 𝓣 𝓥 : Universe)
          (L : Sup-Lattice 𝓤 𝓣 𝓥)
          {B : 𝓥 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
@@ -227,18 +194,25 @@ module _ (𝓤 𝓣 𝓥 : Universe)
 
  open is-basis h
 
- monotone-map-has-least-pre-fixed-point
-  : (f : ⟨ L ⟩ → ⟨ L ⟩)
-  → is-monotone-endomap L f
-  → 𝓤 ⊔ 𝓣 ̇
- monotone-map-has-least-pre-fixed-point f mono-f
-  = Σ p ꞉ ⟨ L ⟩ , (f p ≤⟨ L ⟩ p) holds
-                × ((q : ⟨ L ⟩) → (f q ≤⟨ L ⟩ q) holds → (p ≤⟨ L ⟩ q) holds)
+ record monotone-map-has-least-pre-fixed-point
+  (f : ⟨ L ⟩ → ⟨ L ⟩) (f-mono : is-monotone-endomap L f) : 𝓤 ⊔ 𝓣 ̇ where
+  field
+   point : ⟨ L ⟩
+   pre-fixed : (f point ≤⟨ L ⟩ point) holds
+   least-pre-fixed : (q : ⟨ L ⟩) → (f q ≤⟨ L ⟩ q) holds → (point ≤⟨ L ⟩ q) holds
 
  monotone-map-LPFP : 𝓤 ⊔ 𝓣 ̇
  monotone-map-LPFP
   = (f : ⟨ L ⟩ → ⟨ L ⟩) (f-mono : is-monotone-endomap L f)
   → monotone-map-has-least-pre-fixed-point f f-mono
+
+module _ (𝓤 : Universe) (A : 𝓤 ̇) where
+
+ monotone-operator-LPFP : (𝓤 ⁺) ̇
+ monotone-operator-LPFP
+  = (f : 𝓟 {𝓤} A → 𝓟 {𝓤} A) (f-mono : is-monotone-endomap (𝓟-sup-lattice A) f)
+  → monotone-map-has-least-pre-fixed-point
+     (𝓤 ⁺) 𝓤 𝓤 (𝓟-sup-lattice A) (❴_❵ₜᵣ A) (❴❵ₜᵣ-is-basis A) f f-mono
 
 \end{code}
 
@@ -264,7 +238,8 @@ monotone-operator-implies-monotone-map-LPFP
  → monotone-operator-LPFP 𝓥 B
  → monotone-map-LPFP 𝓤 𝓣 𝓥 L β h
 monotone-operator-implies-monotone-map-LPFP
- {𝓤} {𝓣} {𝓥} L {B} β h mon-op-LPFP f f-mono = (p , fp≤p , p≤any)
+ {𝓤} {𝓣} {𝓥} L {B} β h mon-op-LPFP f f-mono
+  = record{point = p ; pre-fixed = fp≤p ; least-pre-fixed = p≤any}
  where
   open sup-lattice-powerset-retract L β h
   open is-basis h
@@ -277,11 +252,14 @@ monotone-operator-implies-monotone-map-LPFP
        ⋁-map (↓-map ∘ f) ⋁-monotone
        (∘-is-monotone L L (𝓟-sup-lattice B) f ↓-map f-mono ↓-monotone)
   S : 𝓟 {𝓥} B
-  S = mon-op-LPFP-point 𝓥 B mon-op mon-op-is-monotone mon-op-LPFP
+  S = monotone-map-has-least-pre-fixed-point.point
+       (mon-op-LPFP mon-op mon-op-is-monotone)
   mon-opS⊆S : mon-op S ⊆ S
-  mon-opS⊆S = mon-op-LPFP-pre-fixed 𝓥 B mon-op mon-op-is-monotone mon-op-LPFP
+  mon-opS⊆S = monotone-map-has-least-pre-fixed-point.pre-fixed
+               (mon-op-LPFP mon-op mon-op-is-monotone)
   S⊆any : (T : 𝓟 {𝓥} B) → (mon-op T ⊆ T) → S ⊆ T
-  S⊆any = mon-op-LPFP-least 𝓥 B mon-op mon-op-is-monotone mon-op-LPFP
+  S⊆any = monotone-map-has-least-pre-fixed-point.least-pre-fixed
+           (mon-op-LPFP mon-op mon-op-is-monotone)
   p : ⟨ L ⟩
   p = ⋁-map S
   fp≤p : (f p ≤⟨ L ⟩ p) holds
@@ -299,7 +277,7 @@ monotone-operator-implies-monotone-map-LPFP
                 (ap (↓-map ∘ f) (⋁∘↓∼id q))))
          (↓-monotone (f q) q fq≤q)
     II : S ⊆ ↓-map q
-    II = S⊆any (↓-map q) I
+    II = S⊆any (↓-map q) I 
 
 \end{code}
 
