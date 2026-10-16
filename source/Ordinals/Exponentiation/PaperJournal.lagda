@@ -156,20 +156,23 @@ Eq-3 : (α β : Ordinal 𝓤) (a : ⟨ α ⟩) (b : ⟨ β ⟩)
      → (α ×ₒ β) ↓ (a , b) ＝ α ×ₒ (β ↓ b) +ₒ (α ↓ a)
 Eq-3 α β a b = ×ₒ-↓ α β
 
-Lemma-4 : (α β γ : Ordinal 𝓤)
+Remark-4 : {I : 𝓤 ̇ } (F : I → Ordinal 𝓤) → sup (fattened-family F) ＝ sup F
+Remark-4 = sup-of-fattened-family-agrees
+
+Lemma-5 : (α β γ : Ordinal 𝓤)
         → β ⊴ γ
         → α +ₒ β ⊴ α +ₒ γ
         × α ×ₒ β ⊴ α ×ₒ γ
-Lemma-4 α β γ l = +ₒ-right-monotone-⊴ α β γ l , ×ₒ-right-monotone-⊴ α β γ l
+Lemma-5 α β γ l = +ₒ-right-monotone-⊴ α β γ l , ×ₒ-right-monotone-⊴ α β γ l
 
-Lemma-5 : (α : Ordinal 𝓤)
+Lemma-6 : (α : Ordinal 𝓤)
         → ({I : 𝓤 ̇ } (F : I → Ordinal 𝓤) → α ×ₒ sup F ＝ sup (λ i → α ×ₒ F i))
-Lemma-5 α = ×ₒ-preserves-suprema pt sr α
+Lemma-6 α = ×ₒ-preserves-suprema pt sr α
 
-Lemma-6 : (β : Ordinal 𝓤) → β ＝ sup (λ b → (β ↓ b) +ₒ 𝟙ₒ)
-Lemma-6 = supremum-of-successors-of-initial-segments pt sr
+Lemma-7 : (β : Ordinal 𝓤) → β ＝ sup (λ b → (β ↓ b) +ₒ 𝟙ₒ)
+Lemma-7 = supremum-of-successors-of-initial-segments pt sr
 
-Proposition-7 : (α : Ordinal 𝓤)
+Proposition-8 : (α : Ordinal 𝓤)
               → (α ×ₒ 𝟘ₒ {𝓥} ＝ 𝟘ₒ)
               × ((β : Ordinal 𝓤) → α ×ₒ (β +ₒ 𝟙ₒ) ＝ α ×ₒ β +ₒ α)
               × ({I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
@@ -179,7 +182,7 @@ Proposition-7 : (α : Ordinal 𝓤)
                      ((α β : Ordinal 𝓤) → α ⊗ (β +ₒ 𝟙ₒ) ＝ (α ⊗ β) +ₒ α)
                    × ((α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
                        → α ⊗ (sup β) ＝ sup (λ i → α ⊗ β i)))
-Proposition-7 α =
+Proposition-8 α =
    ×ₒ-𝟘ₒ-right α
  , ×ₒ-successor α
  , ×ₒ-preserves-suprema pt sr α
@@ -188,22 +191,22 @@ Proposition-7 α =
   where
    open multiplication
 
-Lemma-8 : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
+Lemma-9 : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
         → α +ₒ sup β ＝ extended-sup (λ i → α +ₒ β i) α
-Lemma-8 = +ₒ-preserves-suprema-up-to-join pt sr
+Lemma-9 = +ₒ-preserves-suprema-up-to-join pt sr
 
-Proposition-9 : (α : Ordinal 𝓤)
-              → (α +ₒ 𝟘ₒ ＝ α)
-              × ((β : Ordinal 𝓤) → α +ₒ (β +ₒ 𝟙ₒ) ＝ (α +ₒ β) +ₒ 𝟙ₒ)
-              × ({I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
-                   → α +ₒ sup β ＝ extended-sup (λ i → α +ₒ β i) α)
-              × ((α β : Ordinal 𝓤)
-                   → α +ₒ β ＝ extended-sup (λ b → α +ₒ (β ↓ b) +ₒ 𝟙ₒ) α)
-              × (∃! _⊕_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
-                     ((α β : Ordinal 𝓤) → α ⊕ (β +ₒ 𝟙ₒ) ＝ (α ⊕ β) +ₒ 𝟙ₒ)
-                   × ((α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
-                       → α ⊕ (sup β) ＝ extended-sup (λ i → α ⊕ β i) α))
-Proposition-9 α =
+Proposition-10 : (α : Ordinal 𝓤)
+               → (α +ₒ 𝟘ₒ ＝ α)
+               × ((β : Ordinal 𝓤) → α +ₒ (β +ₒ 𝟙ₒ) ＝ (α +ₒ β) +ₒ 𝟙ₒ)
+               × ({I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
+                    → α +ₒ sup β ＝ extended-sup (λ i → α +ₒ β i) α)
+               × ((α β : Ordinal 𝓤)
+                    → α +ₒ β ＝ extended-sup (λ b → α +ₒ (β ↓ b) +ₒ 𝟙ₒ) α)
+               × (∃! _⊕_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
+                      ((α β : Ordinal 𝓤) → α ⊕ (β +ₒ 𝟙ₒ) ＝ (α ⊕ β) +ₒ 𝟙ₒ)
+                    × ((α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
+                        → α ⊕ (sup β) ＝ extended-sup (λ i → α ⊕ β i) α))
+Proposition-10 α =
    𝟘ₒ-right-neutral α
  , +ₒ-commutes-with-successor α
  , +ₒ-preserves-suprema-up-to-join pt sr α
@@ -215,23 +218,23 @@ Proposition-9 α =
 Eq-double-dagger : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
 Eq-double-dagger = exp-full-specification
 
-Lemma-10 : (α : Ordinal 𝓤) (exp-α : Ordinal 𝓤 → Ordinal 𝓤)
+Lemma-11 : (α : Ordinal 𝓤) (exp-α : Ordinal 𝓤 → Ordinal 𝓤)
          → exp-specification-zero α exp-α
          → exp-specification-succ α exp-α
          → exp-specification-sup  α exp-α
          → (exp-α 𝟙ₒ ＝ α)
          × (exp-α 𝟚ₒ ＝ α ×ₒ α)
          × ((α ≠ 𝟘ₒ) → is-monotone-⊴ exp-α)
-Lemma-10 α exp-α exp-spec-zero exp-spec-succ exp-spec-sup =
+Lemma-11 α exp-α exp-spec-zero exp-spec-succ exp-spec-sup =
    𝟙ₒ-neutral-exp α exp-α exp-spec-zero exp-spec-succ
  , exp-𝟚ₒ-is-×ₒ α exp-α exp-spec-zero exp-spec-succ
  , (λ α-nonzero → is-monotone-if-preserves-inhabited-suprema
                    exp-α (exp-spec-sup α-nonzero))
 
-Proposition-11
+Proposition-12
  : (Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exp-full-specification exp)
  ↔ EM 𝓤
-Proposition-11 =
+Proposition-12 =
    (λ (exp , (exp-zero , exp-succ , exp-sup)) →
     exponentiation-defined-everywhere-implies-EM
      exp
@@ -251,38 +254,38 @@ Section 3. Abstract Algebraic Exponentiation
 
 \begin{code}
 
-Definition-12 : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤
-Definition-12 α β = α ^ₒ β
+Definition-13 : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤
+Definition-13 α β = α ^ₒ β
 
-Proposition-13 : (α β : Ordinal 𝓤)
+Proposition-14 : (α β : Ordinal 𝓤)
                  (a : ⟨ α ⟩) (b : ⟨ β ⟩) (e : ⟨ α ^ₒ (β ↓ b) ⟩)
                → α ^ₒ β ↓ ×ₒ-to-^ₒ α β {b} (e , a)
                  ＝ α ^ₒ (β ↓ b) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b) ↓ e)
-Proposition-13 α β a b e = ^ₒ-↓-×ₒ-to-^ₒ α β
+Proposition-14 α β a b e = ^ₒ-↓-×ₒ-to-^ₒ α β
 
-Proposition-14 : (α β γ : Ordinal 𝓤)
+Proposition-15 : (α β γ : Ordinal 𝓤)
                → (β ⊴ γ → α ^ₒ β ⊴ α ^ₒ γ)
                × (𝟙ₒ ⊲ α → β ⊲ γ → α ^ₒ β ⊲ α ^ₒ γ)
-Proposition-14 α β γ =   ^ₒ-monotone-in-exponent α β γ
+Proposition-15 α β γ =   ^ₒ-monotone-in-exponent α β γ
                        , ^ₒ-order-preserving-in-exponent α β γ
 
-Theorem-15 : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α
+Theorem-16 : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α
            → exp-specification-zero α (α ^ₒ_)
            × exp-specification-succ α (α ^ₒ_)
            × exp-specification-sup-strong α (α ^ₒ_)
            × exp-specification-sup α (α ^ₒ_)
-Theorem-15 {𝓤} α α-pos =   ^ₒ-satisfies-zero-specification {𝓤} {𝓤} α
+Theorem-16 {𝓤} α α-pos =   ^ₒ-satisfies-zero-specification {𝓤} {𝓤} α
                          , ^ₒ-satisfies-succ-specification {𝓤} {𝓤} α α-pos
                          , ^ₒ-satisfies-strong-sup-specification α
                          , ^ₒ-satisfies-sup-specification α
 
-Proposition-16 : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
-               → α ^ₒ (β +ₒ γ) ＝ (α ^ₒ β) ×ₒ (α ^ₒ γ)
-Proposition-16 = ^ₒ-by-+ₒ
-
 Proposition-17 : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+               → α ^ₒ (β +ₒ γ) ＝ (α ^ₒ β) ×ₒ (α ^ₒ γ)
+Proposition-17 = ^ₒ-by-+ₒ
+
+Proposition-18 : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
                → (α ^ₒ β) ^ₒ γ ＝ α ^ₒ (β ×ₒ γ)
-Proposition-17 α β γ = (^ₒ-by-×ₒ α β γ) ⁻¹
+Proposition-18 α β γ = (^ₒ-by-×ₒ α β γ) ⁻¹
 
 \end{code}
 
@@ -291,49 +294,49 @@ Section 4. Decreasing Lists: A Constructive Formulation
 
 \begin{code}
 
-Definition-18 : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → 𝓤 ⊔ 𝓥 ̇
-Definition-18 α β = DecrList₂ α β
+Definition-19 : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → 𝓤 ⊔ 𝓥 ̇
+Definition-19 α β = DecrList₂ α β
 
-Remark-19 : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+Remark-20 : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
             ((l , p) (l' , q) : DecrList₂ α β)
           → l ＝ l'
           → (l , p) ＝ (l' , q)
-Remark-19 α β _ _ = to-DecrList₂-＝ α β
+Remark-20 α β _ _ = to-DecrList₂-＝ α β
 
-Proposition-20-i
+Proposition-21-i
  : EM 𝓤
  → ((α : Ordinal 𝓤) (x : ⟨ α ⟩) → is-least α x
     → is-well-order (subtype-order α (λ - → x ≺⟨ α ⟩ -)))
-Proposition-20-i = EM-implies-subtype-of-positive-elements-an-ordinal
+Proposition-21-i = EM-implies-subtype-of-positive-elements-an-ordinal
 
-Proposition-20-ii
+Proposition-21-ii
  : ((α : Ordinal (𝓤 ⁺⁺)) (x : ⟨ α ⟩) → is-least α x
     → is-well-order (subtype-order α (λ - → x ≺⟨ α ⟩ -)))
  → EM 𝓤
-Proposition-20-ii = subtype-of-positive-elements-an-ordinal-implies-EM
+Proposition-21-ii = subtype-of-positive-elements-an-ordinal-implies-EM
 
-Lemma-21-i : (α : Ordinal 𝓤)
+Lemma-22-i : (α : Ordinal 𝓤)
            → has-trichotomous-least-element α ↔ is-decomposable-into-one-plus α
-Lemma-21-i α =   trichotomous-least-to-decomposable α
+Lemma-22-i α =   trichotomous-least-to-decomposable α
                , decomposable-to-trichotomous-least α
 
-Lemma-21-ii : (α : Ordinal 𝓤)
+Lemma-22-ii : (α : Ordinal 𝓤)
               ((a₀ , a₀-tri) : has-trichotomous-least-element α)
               (β : Ordinal 𝓤)
             → α ＝ 𝟙ₒ +ₒ β
             → (β ＝ α ⁺[ a₀ , a₀-tri ])
             × (⟨ α ⁺[ a₀ , a₀-tri ] ⟩ ＝ (Σ a ꞉ ⟨ α ⟩ , a₀ ≺⟨ α ⟩ a))
-Lemma-21-ii α (a₀ , a₀-tri) β p =
+Lemma-22-ii α (a₀ , a₀-tri) β p =
    +ₒ-left-cancellable 𝟙ₒ β (α ⁺[ a₀ , a₀-tri ]) (p ⁻¹ ∙ q)
  , ⁺-is-subtype-of-positive-elements α (a₀ , a₀-tri)
   where
    q : α ＝ 𝟙ₒ +ₒ α ⁺[ a₀ , a₀-tri ]
    q = α ⁺[ a₀ , a₀-tri ]-part-of-decomposition
 
-Definition-22 : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+Definition-23 : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
               → has-trichotomous-least-element α
               → Ordinal (𝓤 ⊔ 𝓥)
-Definition-22 α β h = exponentiationᴸ α h β
+Definition-23 α β h = exponentiationᴸ α h β
 
 module fixed-assumptions-1
         (α : Ordinal 𝓤)
@@ -348,21 +351,21 @@ module fixed-assumptions-1
  exp[α,_] : Ordinal 𝓦 → Ordinal (𝓤 ⊔ 𝓦)
  exp[α, γ ] = exponentiationᴸ α h γ
 
- Proposition-23 : (β : Ordinal 𝓥) → has-trichotomous-least-element exp[α, β ]
- Proposition-23 β = exponentiationᴸ-has-trichotomous-least-element α h β
+ Proposition-24 : (β : Ordinal 𝓥) → has-trichotomous-least-element exp[α, β ]
+ Proposition-24 β = exponentiationᴸ-has-trichotomous-least-element α h β
 
- Lemma-24-i : (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+ Lemma-25-i : (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
               (f : ⟨ β ⟩ → ⟨ γ ⟩)
             → is-order-preserving β γ f
             → Σ f̅ ꞉ (⟨ exp[α, β ] ⟩ → ⟨ exp[α, γ ] ⟩)
                   , is-order-preserving exp[α, β ] exp[α, γ ] f̅
- Lemma-24-i β γ f f-order-pres =
+ Lemma-25-i β γ f f-order-pres =
     expᴸ-map α⁺ β γ f f-order-pres
   , expᴸ-map-is-order-preserving α⁺ β γ f f-order-pres
 
- Lemma-24-ii : (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+ Lemma-25-ii : (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
              → β ⊴ γ → exp[α, β ] ⊴ exp[α, γ ]
- Lemma-24-ii β γ (f , (f-init-seg , f-order-pres)) =
+ Lemma-25-ii β γ (f , (f-init-seg , f-order-pres)) =
     expᴸ-map α⁺ β γ f f-order-pres
   , expᴸ-map-is-simulation α⁺ β γ f f-order-pres f-init-seg
 
@@ -412,18 +415,18 @@ module fixed-assumptions-2
  Eq-5-addendum-iii a b l {δ} =
   expᴸ-segment-inclusion-section-of-expᴸ-tail α⁺ β a b l δ
 
- Proposition-25-i
+ Proposition-26-i
   : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩) (l : List ⟨ α⁺ ×ₒ β ⟩)
     (δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l))
   → exp[α, β ] ↓ ((a , b ∷ l) , δ)
     ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ τ a b l δ)
- Proposition-25-i = expᴸ-↓-cons α⁺ β
+ Proposition-26-i = expᴸ-↓-cons α⁺ β
 
- Proposition-25-ii
+ Proposition-26-ii
   : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩) (l : ⟨ exp[α, β ↓ b ] ⟩)
   → exp[α, β ] ↓ extended-expᴸ-segment-inclusion α⁺ β b l a
     ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ l)
- Proposition-25-ii = expᴸ-↓-cons' α⁺ β
+ Proposition-26-ii = expᴸ-↓-cons' α⁺ β
 
 module fixed-assumptions-3
         (α : Ordinal 𝓤)
@@ -433,11 +436,11 @@ module fixed-assumptions-3
 
  open fixed-assumptions-1 α h
 
- Theorem-26 : exp-specification-zero α (λ - → exp[α, - ])
+ Theorem-27 : exp-specification-zero α (λ - → exp[α, - ])
             × exp-specification-succ α (λ - → exp[α, - ])
             × exp-specification-sup-strong α (λ - → exp[α, - ])
             × exp-specification-sup α (λ - → exp[α, - ])
- Theorem-26 =   expᴸ-satisfies-zero-specification {𝓤} {𝓤} α⁺
+ Theorem-27 =   expᴸ-satisfies-zero-specification {𝓤} {𝓤} α⁺
               , transport⁻¹
                  (λ - → exp-specification-succ - (λ - → exp[α, - ]))
                  NB[α⁺-eq]
@@ -452,15 +455,15 @@ module fixed-assumptions-3
                  (expᴸ-satisfies-sup-specification {𝓤} α⁺)
 
 
- Proposition-27 : (β γ : Ordinal 𝓥)
+ Proposition-28 : (β γ : Ordinal 𝓥)
                 → exp[α, β +ₒ γ ] ＝ exp[α, β ] ×ₒ exp[α, γ ]
- Proposition-27 = expᴸ-by-+ₒ α⁺
+ Proposition-28 = expᴸ-by-+ₒ α⁺
 
- Proposition-28 : (β : Ordinal 𝓥)
+ Proposition-29 : (β : Ordinal 𝓥)
                 → has-decidable-equality ⟨ α ⟩
                 → has-decidable-equality ⟨ β ⟩
                 → has-decidable-equality ⟨ exp[α, β ] ⟩
- Proposition-28 β = exponentiationᴸ-preserves-discreteness α β h
+ Proposition-29 β = exponentiationᴸ-preserves-discreteness α β h
 
 private
  tri-least : (α : Ordinal 𝓤)
@@ -471,12 +474,12 @@ private
   ⊥ ,
   is-trichotomous-and-least-implies-is-trichotomous-least α ⊥ (t ⊥) ⊥-is-least
 
-Proposition-29
+Proposition-30
  : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (h : has-least α)
  → (t : is-trichotomous α)
  → is-trichotomous β
  → is-trichotomous (exponentiationᴸ α (tri-least α h t) β)
-Proposition-29 = exponentiationᴸ-preserves-trichotomy
+Proposition-30 = exponentiationᴸ-preserves-trichotomy
 
 \end{code}
 
@@ -484,24 +487,24 @@ Section 5. Abstract and Concrete Exponentiation
 
 \begin{code}
 
-Theorem-30 : (α β : Ordinal 𝓤) (h : has-trichotomous-least-element α)
+Theorem-31 : (α β : Ordinal 𝓤) (h : has-trichotomous-least-element α)
            → α ^ₒ β ＝ exponentiationᴸ α h β
-Theorem-30 α β h = (exponentiation-constructions-agree α β h) ⁻¹
+Theorem-31 α β h = (exponentiation-constructions-agree α β h) ⁻¹
 
-Corollary-31-i : (α β : Ordinal 𝓤)
+Corollary-32-i : (α β : Ordinal 𝓤)
                → has-trichotomous-least-element α
                → has-decidable-equality ⟨ α ⟩
                → has-decidable-equality ⟨ β ⟩
                → has-decidable-equality ⟨ α ^ₒ β ⟩
-Corollary-31-i =
+Corollary-32-i =
  ^ₒ-preserves-discreteness-for-base-with-trichotomous-least-element
 
-Corollary-31-ii : (α β : Ordinal 𝓤)
+Corollary-32-ii : (α β : Ordinal 𝓤)
                 → has-least α
                 → is-trichotomous α
                 → is-trichotomous β
                 → is-trichotomous (α ^ₒ β)
-Corollary-31-ii = ^ₒ-preserves-trichotomy
+Corollary-32-ii = ^ₒ-preserves-trichotomy
 
 module fixed-assumptions-4
         (α β γ : Ordinal 𝓤)
@@ -512,9 +515,9 @@ module fixed-assumptions-4
   h' : has-trichotomous-least-element (exponentiationᴸ α h β)
   h' = exponentiationᴸ-has-trichotomous-least-element α h β
 
- Corollary-32
+ Corollary-33
   : exponentiationᴸ α h (β ×ₒ γ) ＝ exponentiationᴸ (exponentiationᴸ α h β) h' γ
- Corollary-32 = exponentiationᴸ-by-×ₒ α h β γ
+ Corollary-33 = exponentiationᴸ-by-×ₒ α h β γ
 
 module fixed-assumptions-5
         (α : Ordinal 𝓤)
@@ -522,13 +525,13 @@ module fixed-assumptions-5
 
  open denotations α
 
- Definition-33 : (β : Ordinal 𝓥) → DecrList₂ α β → ⟨ α ^ₒ β ⟩
- Definition-33 β l = ⟦ l ⟧⟨ β ⟩
+ Definition-34 : (β : Ordinal 𝓥) → DecrList₂ α β → ⟨ α ^ₒ β ⟩
+ Definition-34 β l = ⟦ l ⟧⟨ β ⟩
 
- -- Remark-34: By inspection of the definition of denotation.
+ -- Remark-35: By inspection of the definition of denotation.
 
- Proposition-35 : (β : Ordinal 𝓥) → is-surjection (λ l → ⟦ l ⟧⟨ β ⟩)
- Proposition-35 = ⟦⟧-is-surjection
+ Proposition-36 : (β : Ordinal 𝓥) → is-surjection (λ l → ⟦ l ⟧⟨ β ⟩)
+ Proposition-36 = ⟦⟧-is-surjection
 
 module fixed-assumptions-6
         (α : Ordinal 𝓤)
@@ -547,34 +550,34 @@ module fixed-assumptions-6
  con-to-abs : ⟨ expᴸ[𝟙+ α⁺ ] β ⟩ → ⟨ (𝟙ₒ +ₒ α⁺) ^ₒ β ⟩
  con-to-abs = induced-map α⁺ β
 
- Lemma-37 : con-to-abs ∼ denotation' α⁺ β
+ Lemma-38 : con-to-abs ∼ denotation' α⁺ β
 
- Lemma-38 : denotation (𝟙ₒ +ₒ α⁺) β ∼ denotation' α⁺ β ∘ normalize α⁺ β
+ Lemma-39 : denotation (𝟙ₒ +ₒ α⁺) β ∼ denotation' α⁺ β ∘ normalize α⁺ β
 
- Theorem-36 : denotation (𝟙ₒ +ₒ α⁺) β ∼ con-to-abs ∘ (normalize α⁺ β)
- Theorem-36 l = (Lemma-38 l) ∙ (Lemma-37 (normalize α⁺ β l) ⁻¹)
+ Theorem-37 : denotation (𝟙ₒ +ₒ α⁺) β ∼ con-to-abs ∘ (normalize α⁺ β)
+ Theorem-37 l = (Lemma-39 l) ∙ (Lemma-38 (normalize α⁺ β l) ⁻¹)
 
- Lemma-37 = induced-map-is-denotation' α⁺ β
+ Lemma-38 = induced-map-is-denotation' α⁺ β
 
- Lemma-38 = denotations-are-related-via-normalization α⁺ β
+ Lemma-39 = denotations-are-related-via-normalization α⁺ β
 
- -- Remark-39: No formalizable content
+ -- Remark-40: No formalizable content
 
-Definition-40 : (α β : Ordinal 𝓤) → 𝓤 ̇
-Definition-40 α β = GraysonList (underlying-order α) (underlying-order β)
+Definition-41 : (α β : Ordinal 𝓤) → 𝓤 ̇
+Definition-41 α β = GraysonList (underlying-order α) (underlying-order β)
 
-Proposition-41-i
+Proposition-42-i
  : EM 𝓤
  → (α β : Ordinal 𝓤)
  → is-well-order (Grayson-order (underlying-order α) (underlying-order β))
-Proposition-41-i = EM-implies-GraysonList-is-ordinal
+Proposition-42-i = EM-implies-GraysonList-is-ordinal
 
-Proposition-41-ii
+Proposition-42-ii
  : ((α β : Ordinal (𝓤 ⁺⁺))
    → has-least α
    → is-well-order (Grayson-order (underlying-order α) (underlying-order β)))
  → EM 𝓤
-Proposition-41-ii = GraysonList-always-ordinal-implies-EM
+Proposition-42-ii = GraysonList-always-ordinal-implies-EM
 
 \end{code}
 
@@ -599,18 +602,18 @@ Eq-6-addendum-ii = no-right-cancellation-×ₒ
 Eq-6-addendum-iii : ¬ ((α β γ : Ordinal 𝓤₀) → α ^ₒ γ ＝ β ^ₒ γ → α ＝ β)
 Eq-6-addendum-iii = no-right-cancellation-^ₒ
 
-Lemma-42 : (α β : Ordinal 𝓤)
+Lemma-43 : (α β : Ordinal 𝓤)
          → β ⊲ α → ¬ (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f)
-Lemma-42 α β l 𝕗 = order-preserving-gives-not-⊲ α β 𝕗 l
+Lemma-43 α β l 𝕗 = order-preserving-gives-not-⊲ α β 𝕗 l
 
-Lemma-43 : (α β γ : Ordinal 𝓤)
+Lemma-44 : (α β γ : Ordinal 𝓤)
          → (α ⊴ β → α ≤ᶜˡ β)
          × (α ⊲ β → α <ᶜˡ β)
          × (α <ᶜˡ β → α ≤ᶜˡ β)
          × (α <ᶜˡ β → β ≤ᶜˡ γ → α <ᶜˡ γ)
          × (α ≤ᶜˡ β → β <ᶜˡ γ → α <ᶜˡ γ)
          × ¬ (α <ᶜˡ α)
-Lemma-43 α β γ =
+Lemma-44 α β γ =
    ⊴-gives-≤ᶜˡ α β
  , ⊲-gives-<ᶜˡ α β
  , <ᶜˡ-gives-≤ᶜˡ α β
@@ -618,17 +621,17 @@ Lemma-43 α β γ =
  , ≤ᶜˡ-<ᶜˡ-to-<ᶜˡ α β γ
  , <ᶜˡ-irrefl α
 
-Definition-44 : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-Definition-44 {𝓤} F = Σ S ꞉ (Ordinal 𝓤 → Ordinal 𝓤) ,
+Definition-45 : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+Definition-45 {𝓤} F = Σ S ꞉ (Ordinal 𝓤 → Ordinal 𝓤) ,
                       Σ Z ꞉ Ordinal 𝓤 ,
                          ((β : Ordinal 𝓤) → F (β +ₒ 𝟙ₒ) ＝ S (F β))
                        × ({I : 𝓤 ̇ } (L : I → Ordinal 𝓤)
                             → F (sup L) ＝ extended-sup (F ∘ L) Z)
 
-Remark-45 : (F : Ordinal 𝓤 → Ordinal 𝓤)
-          → ((S , Z , _) : Definition-44 F)
+Remark-46 : (F : Ordinal 𝓤 → Ordinal 𝓤)
+          → ((S , Z , _) : Definition-45 F)
           → F ＝ canonical-spec-by-cases S Z
-Remark-45 F (S , Z , F-succ , F-sup) =
+Remark-46 F (S , Z , F-succ , F-sup) =
  dfunext fe' presentation-by-transfinite-recursion
   where
    open operation-by-cases-framework F S Z F-succ F-sup
@@ -654,70 +657,70 @@ module fixed-assumptions-7
  open framework F S Z F-succ F-sup
   hiding (Assumption-1; Assumption-2; Assumption-3)
 
- Lemma-46 : (β γ : Ordinal 𝓤) → β ⊴ γ → F β ⊴ F γ
- Lemma-46 = is-monotone-if-preserves-suprema-up-to-join F Z F-sup
+ Lemma-47 : (β γ : Ordinal 𝓤) → β ⊴ γ → F β ⊴ F γ
+ Lemma-47 = is-monotone-if-preserves-suprema-up-to-join F Z F-sup
 
- Lemma-47 : Assumption-2 → (β γ : Ordinal 𝓤) → β ⊲ γ → F β ⊲ F γ
- Lemma-47 = F-preserves-⊲
+ Lemma-48 : Assumption-2 → (β γ : Ordinal 𝓤) → β ⊲ γ → F β ⊲ F γ
+ Lemma-48 = F-preserves-⊲
 
- Lemma-48 : (β γ : Ordinal 𝓤)
+ Lemma-49 : (β γ : Ordinal 𝓤)
           → F 𝟘ₒ ⊴ β
           → β ⊲ F γ
           → Assumption-1
           → ∃ γ' ꞉ Ordinal 𝓤 , (γ' ⊲ γ) × (F γ' ⊴ β) × (β ⊲ F (γ' +ₒ 𝟙ₒ))
- Lemma-48 β γ l₀ l₁ asm-1 = F-tightening-bounds asm-1 β l₀ γ l₁
+ Lemma-49 β γ l₀ l₁ asm-1 = F-tightening-bounds asm-1 β l₀ γ l₁
 
  open uo-order
 
- Lemma-49 : (A : 𝓤 ̇ )(_≺_ : A → A → 𝓥 ̇ )
+ Lemma-50 : (A : 𝓤 ̇ )(_≺_ : A → A → 𝓥 ̇ )
           → is-well-founded _≺_
           → is-well-founded (_≺ᵤₒ_ A _≺_)
- Lemma-49 = ≺ᵤₒ-is-well-founded
+ Lemma-50 = ≺ᵤₒ-is-well-founded
 
- Lemma-50 : Assumption-1
+ Lemma-51 : Assumption-1
           → Assumption-2
           → Assumption-3
           → (β γ δ : Ordinal 𝓤)
           → F β ⊴ F γ +ₒ δ
           → F γ +ₒ δ ⊲ F (γ +ₒ 𝟙ₒ)
           → β ⊴ γ
- Lemma-50 _ = F-reflects-⊴'
+ Lemma-51 _ = F-reflects-⊴'
 
- Corollary-51 : Assumption-1
+ Corollary-52 : Assumption-1
               → Assumption-2
               → Assumption-3
               → (β γ : Ordinal 𝓤)
               → (F β ⊴ F γ → β ⊴ γ)
               × (F β ＝ F γ → β ＝ γ)
- Corollary-51 asm-1 asm-2 asm-3 β γ =
+ Corollary-52 asm-1 asm-2 asm-3 β γ =
     framework-with-assumptions.F-reflects-⊴ asm-2 asm-3 β γ
   , framework-with-assumptions.F-left-cancellable asm-2 asm-3
 
-Theorem-52 : (α : Ordinal 𝓤)
+Theorem-53 : (α : Ordinal 𝓤)
            → is-⊴-reflecting (α +ₒ_) × left-cancellable (α +ₒ_)
            × (𝟙ₒ ⊴ α → is-⊴-reflecting (α ×ₒ_) × left-cancellable (α ×ₒ_))
            × (𝟚ₒ ⊴ α → has-trichotomous-least-element α
                → is-⊴-reflecting (α ^ₒ_) × left-cancellable (α ^ₒ_))
-Theorem-52 α =
+Theorem-53 α =
    +ₒ-reflects-⊴ α , +ₒ-left-cancellable' α
  , (λ l → let l' = lr-implication (at-least-𝟙₀-iff-greater-than-𝟘ₒ α) l
           in ×ₒ-reflects-⊴ α l' , ×ₒ-left-cancellable' α l')
  , (λ l t → ^ₒ-reflects-⊴ α l t , ^ₒ-left-cancellable α l t)
 
-Proposition-53-i : (α β γ : Ordinal 𝓤)
+Proposition-54-i : (α β γ : Ordinal 𝓤)
                  → ((f , _) : α +ₒ β ⊴ α +ₒ γ)
                  → Σ (h , _) ꞉ β ⊴ γ , ((a : ⟨ α ⟩) → f (inl a) ＝ inl a)
                        × ((b : ⟨ β ⟩) → f (inr b) ＝ inr (h b))
-Proposition-53-i = +ₒ-simulation-behaviour
+Proposition-54-i = +ₒ-simulation-behaviour
 
-Proposition-53-ii
+Proposition-54-ii
  : (α β γ : Ordinal 𝓤)
  → 𝟘ₒ ⊲ α
  → ((f , _) : α ×ₒ β ⊴ α ×ₒ γ)
  → Σ (h , _) ꞉ β ⊴ γ , ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ (a , h b))
-Proposition-53-ii = ×ₒ-simulation-behaviour
+Proposition-54-ii = ×ₒ-simulation-behaviour
 
-Proposition-53-iii
+Proposition-54-iii
  : (α β γ : Ordinal 𝓤)
  → (t : has-trichotomous-least-element α)
  → 𝟚ₒ ⊴ α
@@ -726,7 +729,7 @@ Proposition-53-iii
      ((ℓ : ⟨ exponentiationᴸ α t β ⟩)
                → DecrList₂-list _ _ (f ℓ)
                  ＝ map (λ (a , b) → (a , h b)) (DecrList₂-list _ _ ℓ))
-Proposition-53-iii = exponentiationᴸ-simulation-behaviour
+Proposition-54-iii = exponentiationᴸ-simulation-behaviour
 
 \end{code}
 
@@ -734,7 +737,7 @@ Section 7. Constructive Taboos
 
 \begin{code}
 
-Proposition-54
+Proposition-55
  : (((α β γ : Ordinal 𝓤) → has-trichotomous-least-element α
                          → has-trichotomous-least-element β
                          → α ⊴ β → α ^ₒ γ ⊴ β ^ₒ γ)
@@ -747,70 +750,70 @@ Proposition-54
                        → has-trichotomous-least-element β
                        → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β)
    → EM 𝓤)
-Proposition-54 =   (  ^ₒ-monotone-in-base-implies-EM
+Proposition-55 =   (  ^ₒ-monotone-in-base-implies-EM
                    , (λ em α β γ _ _ → EM-implies-exp-monotone-in-base em α β γ))
                  , ^ₒ-weakly-monotone-in-base-implies-EM
                  , ×ₒ-weakly-monotone-in-both-arguments-implies-EM
 
-Lemma-55 : (P : 𝓤 ̇  ) (i : is-prop P)
+Lemma-56 : (P : 𝓤 ̇  ) (i : is-prop P)
          → let Pₒ = prop-ordinal P i in
            𝟚ₒ {𝓤} ^ₒ Pₒ ＝ 𝟙ₒ +ₒ Pₒ
-Lemma-55 = ^ₒ-𝟚ₒ-by-prop
+Lemma-56 = ^ₒ-𝟚ₒ-by-prop
 
-Lemma-56
+Lemma-57
  : ((α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩) → is-order-preserving α β f → α ⊴ β)
  ↔ EM 𝓤
-Lemma-56 =   order-preserving-gives-≼-implies-EM ∘ H₁
+Lemma-57 =   order-preserving-gives-≼-implies-EM ∘ H₁
            , H₂ ∘ EM-implies-order-preserving-gives-≼
  where
   H₁ = λ h α β (f , f-order-pres) → ⊴-gives-≼ α β (h α β  f   f-order-pres)
   H₂ = λ h α β  f   f-order-pres  → ≼-gives-⊴ α β (h α β (f , f-order-pres))
 
-Proposition-57-i : ((α β : Ordinal 𝓤) → β ⊴ α +ₒ β) ↔ EM 𝓤
-Proposition-57-i =   +ₒ-as-large-as-right-summand-implies-EM
+Proposition-58-i : ((α β : Ordinal 𝓤) → β ⊴ α +ₒ β) ↔ EM 𝓤
+Proposition-58-i =   +ₒ-as-large-as-right-summand-implies-EM
                    , EM-implies-+ₒ-as-large-as-right-summand
 
-Proposition-57-i' : ((α β : Ordinal 𝓤) → has-trichotomous-least-element α
+Proposition-58-i' : ((α β : Ordinal 𝓤) → has-trichotomous-least-element α
                                        → has-trichotomous-least-element β
                                        → β ⊴ α +ₒ β)
                   → EM 𝓤
-Proposition-57-i' hyp P P-is-prop =
+Proposition-58-i' hyp P P-is-prop =
  decidability
   (hyp α β (decomposable-to-trichotomous-least α (Pₒ , refl))
            (decomposable-to-trichotomous-least β (𝟙ₒ , refl)))
   where
    open +ₒ-inflationary-counterexample P P-is-prop
 
-Proposition-57-ii : ((α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β) ↔ EM 𝓤
-Proposition-57-ii =  ×ₒ-as-large-as-right-factor-implies-EM
+Proposition-58-ii : ((α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β) ↔ EM 𝓤
+Proposition-58-ii =  ×ₒ-as-large-as-right-factor-implies-EM
                    , EM-implies-×ₒ-as-large-as-right-factor
 
-Proposition-57-ii' : ((α β : Ordinal 𝓤) → has-trichotomous-least-element α
+Proposition-58-ii' : ((α β : Ordinal 𝓤) → has-trichotomous-least-element α
                                         → has-trichotomous-least-element β
                                         → 𝟘ₒ ⊲ α → β ⊴ α ×ₒ β)
                    → EM 𝓤
-Proposition-57-ii' = ×ₒ-as-large-as-right-factor-implies-EM'
+Proposition-58-ii' = ×ₒ-as-large-as-right-factor-implies-EM'
 
-Proposition-57-iii : ((β : Ordinal 𝓤) → β ⊴ 𝟚ₒ ^ₒ β) ↔ EM 𝓤
-Proposition-57-iii = 𝟚ₒ^ₒ-as-large-as-exponent-implies-EM
+Proposition-58-iii : ((β : Ordinal 𝓤) → β ⊴ 𝟚ₒ ^ₒ β) ↔ EM 𝓤
+Proposition-58-iii = 𝟚ₒ^ₒ-as-large-as-exponent-implies-EM
                      , (λ em β → EM-implies-^ₒ-as-large-as-exponent
                                   em 𝟚ₒ β (successor-increasing 𝟙ₒ))
 
-Proposition-57-iii'
+Proposition-58-iii'
  : ((β : Ordinal 𝓤) → has-trichotomous-least-element β → β ⊴ 𝟚ₒ ^ₒ β) → EM 𝓤
-Proposition-57-iii' = 𝟚ₒ^ₒ-as-large-as-exponent-implies-EM'
+Proposition-58-iii' = 𝟚ₒ^ₒ-as-large-as-exponent-implies-EM'
 
-Proposition-57-iv
+Proposition-58-iv
  : ((α β : Ordinal 𝓤) → 𝟙ₒ ⊲ α → β ⊴ α ^ₒ β) ↔ EM 𝓤
-Proposition-57-iv =   ^ₒ-as-large-as-exponent-implies-EM
+Proposition-58-iv =   ^ₒ-as-large-as-exponent-implies-EM
                     , EM-implies-^ₒ-as-large-as-exponent
 
-Proposition-57-iv'
+Proposition-58-iv'
  : ((α β : Ordinal 𝓤) → 𝟙ₒ ⊲ α
                       → has-trichotomous-least-element α
                       → has-trichotomous-least-element β → β ⊴ α ^ₒ β)
  → EM 𝓤
-Proposition-57-iv' =   ^ₒ-as-large-as-exponent-implies-EM'
+Proposition-58-iv' =   ^ₒ-as-large-as-exponent-implies-EM'
 
 \end{code}
 
@@ -818,36 +821,36 @@ Section 8. Approximating subtraction, division and logarithm operations
 
 \begin{code}
 
-Definition-58 : (P : Ordinal 𝓤 → 𝓥 ̇ ) → (𝓤 ⁺ ⊔ 𝓥 ̇) × (𝓤 ⁺ ⊔ 𝓥 ̇) × (𝓤 ⁺ ⊔ 𝓥 ̇)
-Definition-58 P = bounded P , antitone P , closed-under-suprema P
+Definition-59 : (P : Ordinal 𝓤 → 𝓥 ̇ ) → (𝓤 ⁺ ⊔ 𝓥 ̇) × (𝓤 ⁺ ⊔ 𝓥 ̇) × (𝓤 ⁺ ⊔ 𝓥 ̇)
+Definition-59 P = bounded P , antitone P , closed-under-suprema P
 
-Proposition-59 : (P : Ordinal 𝓤 → 𝓤 ̇ )
+Proposition-60 : (P : Ordinal 𝓤 → 𝓤 ̇ )
                → antitone P
                → bounded P
                → is-prop-valued-family P
                → closed-under-suprema P
                → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying P
-Proposition-59 P at b p = greatest-ordinal-satisfying-predicate P p b at
+Proposition-60 P at b p = greatest-ordinal-satisfying-predicate P p b at
 
-Theorem-60-i : (t : Ordinal 𝓤 → Ordinal 𝓤)
+Theorem-61-i : (t : Ordinal 𝓤 → Ordinal 𝓤)
              → (δ₀ : Ordinal 𝓤)
              → ({I : 𝓤 ̇ } (F : I → Ordinal 𝓤) → t (sup F) ＝ extended-sup (t ∘ F) δ₀)
              → (δ : Ordinal 𝓤)
              → δ₀ ⊴ δ
              → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (t - ⊴ δ) × (- ⊴ δ))
-Theorem-60-i t δ₀ t-sup δ l = Enderton-like.enderton-like t δ₀ δ l t-sup
+Theorem-61-i t δ₀ t-sup δ l = Enderton-like.enderton-like t δ₀ δ l t-sup
 
-Theorem-60-ii : (t : Ordinal 𝓤 → Ordinal 𝓤)
+Theorem-61-ii : (t : Ordinal 𝓤 → Ordinal 𝓤)
               → (δ₀ : Ordinal 𝓤)
               → ({I : 𝓤 ̇ } (F : I → Ordinal 𝓤) → t (sup F) ＝ extended-sup (t ∘ F) δ₀)
               → ((α : Ordinal 𝓤) → α ⊴ t α)
               → (δ : Ordinal 𝓤)
               → δ₀ ⊴ δ
               → Σ γ ꞉ Ordinal 𝓤 , γ ⊴ δ × γ greatest-satisfying (λ - → (t - ⊴ δ))
-Theorem-60-ii t δ₀ t-sup t-infl δ l =
+Theorem-61-ii t δ₀ t-sup t-infl δ l =
  Enderton-like-inflationary.enderton-like-inflationary t δ₀ δ l t-sup t-infl
 
-Proposition-61
+Proposition-62
  : (α β : Ordinal 𝓤)
  → (α ⊴ β → Σ γˢ ꞉ Ordinal 𝓤 ,
               γˢ greatest-satisfying (λ - → (α +ₒ - ⊴ β) × (- ⊴ β)))
@@ -855,32 +858,32 @@ Proposition-61
       γᵈ greatest-satisfying (λ - → (α ×ₒ - ⊴ β) × (- ⊴ β)))
  × (𝟙ₒ ⊴ β → Σ γˡ ꞉ Ordinal 𝓤 ,
                γˡ greatest-satisfying (λ - → (α ^ₒ - ⊴ β) × (- ⊴ β)))
-Proposition-61 α β =
+Proposition-62 α β =
    approximate-subtraction α β
  , approximate-division α β
  , aproximate-logarithm α β
 
-Proposition-62-i
+Proposition-63-i
  : ((α β : Ordinal 𝓤) → α ⊴ β
      → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α +ₒ - ⊴ β))))
  ↔ EM 𝓤
-Proposition-62-i =
+Proposition-63-i =
    approximate-subtraction-variation-implies-EM
  , EM-implies-approximate-subtraction-variation
 
-Proposition-62-ii
+Proposition-63-ii
  : ((α β : Ordinal 𝓤) → 𝟘ₒ ⊲ α
    → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α ×ₒ - ⊴ β))))
  ↔ EM 𝓤
-Proposition-62-ii =
+Proposition-63-ii =
    approximate-division-variation-implies-EM
  , EM-implies-approximate-division-variation
 
-Proposition-62-iii
+Proposition-63-iii
  : ((α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β → 𝟙ₒ ⊲ α
    → Σ γ ꞉ Ordinal 𝓤 , (γ ⊴ β) × (γ greatest-satisfying (λ - → (α ^ₒ - ⊴ β))))
  ↔ EM 𝓤
-Proposition-62-iii =
+Proposition-63-iii =
    approximate-logarithm-variation-implies-EM
  , EM-implies-approximate-logarithm-variation
 
