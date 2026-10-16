@@ -617,7 +617,7 @@ module _ (α : Ordinal 𝓤) where
         (×ₒ-successor α)
         (rl-implication
           (preservation-of-suprema-continuity-equivalence (α ×ₒ_))
-          (×ₒ-preserves-suprema pt sr α))
+          (×ₒ-is-continuous pt sr α))
 
   asm-2 : 𝟘ₒ ⊲ α
         → Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)

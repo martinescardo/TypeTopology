@@ -394,7 +394,7 @@ approximate-division
  → Σ γ ꞉ Ordinal 𝓤 , γ greatest-satisfying (λ - → (α ×ₒ - ⊴ β) × (- ⊴ β))
 approximate-division {𝓤} α β = enderton-like
  where
-  open Enderton-like' (α ×ₒ_) β (×ₒ-preserves-suprema pt sr α)
+  open Enderton-like' (α ×ₒ_) β (×ₒ-is-continuous pt sr α)
 
 \end{code}
 
@@ -493,7 +493,7 @@ EM-implies-approximate-division-variation em α β α-pos =
   where
    open Enderton-like-inflationary'
          (α ×ₒ_) β
-         (×ₒ-preserves-suprema pt sr α)
+         (×ₒ-is-continuous pt sr α)
          (λ δ → EM-implies-×ₒ-as-large-as-right-factor em α δ α-pos)
 
 approximate-logarithm-variation-implies-EM

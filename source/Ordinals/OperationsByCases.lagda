@@ -255,6 +255,8 @@ module addition where
 
 TODO. COMMENT
 
+11 September 2024, added by Tom de Jong following a question by Martin Escardo.
+
 \begin{code}
 
 open import Ordinals.MultiplicationProperties ua
@@ -271,7 +273,7 @@ module multiplication-by-fixed-ordinal
   : ∃! α⊗_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤) , (succ-equation α⊗_) × (is-continuous α⊗_)
  ×ₒ-is-uniquely-specified' =
   pointed-props-are-singletons
-   (α ×ₒ_ , ×ₒ-successor α , (λ {I} → ×ₒ-preserves-suprema pt sr α))
+   (α ×ₒ_ , ×ₒ-successor α , (λ {I} → ×ₒ-is-continuous pt sr α))
    (uniquely-specified' (_+ₒ α))
 
 module multiplication where
@@ -311,7 +313,7 @@ module multiplication where
   where
    open operation-by-cases-framework-continuous (α ×ₒ_) (_+ₒ α)
          (×ₒ-successor α)
-         (×ₒ-preserves-suprema pt sr α)
+         (×ₒ-is-continuous pt sr α)
 
 \end{code}
 

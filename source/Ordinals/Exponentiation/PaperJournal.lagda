@@ -167,7 +167,7 @@ Lemma-5 α β γ l = +ₒ-right-monotone-⊴ α β γ l , ×ₒ-right-monotone-�
 
 Lemma-6 : (α : Ordinal 𝓤)
         → ({I : 𝓤 ̇ } (F : I → Ordinal 𝓤) → α ×ₒ sup F ＝ sup (λ i → α ×ₒ F i))
-Lemma-6 α = ×ₒ-preserves-suprema pt sr α
+Lemma-6 α = ×ₒ-is-continuous pt sr α
 
 Lemma-7 : (β : Ordinal 𝓤) → β ＝ sup (λ b → (β ↓ b) +ₒ 𝟙ₒ)
 Lemma-7 = supremum-of-successors-of-initial-segments pt sr
@@ -185,7 +185,7 @@ Proposition-8 : (α : Ordinal 𝓤)
 Proposition-8 α =
    ×ₒ-𝟘ₒ-right α
  , ×ₒ-successor α
- , ×ₒ-preserves-suprema pt sr α
+ , ×ₒ-is-continuous pt sr α
  , ×ₒ-recursive-equation
  , ×ₒ-is-uniquely-specified
   where

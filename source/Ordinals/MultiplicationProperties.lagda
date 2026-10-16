@@ -297,9 +297,7 @@ We now prove several useful facts about (bounded) simulations between products.
 Multiplication satisfies the expected recursive equations (which
 classically define ordinal multiplication): zero is fixed by multiplication
 (this is ×ₒ-𝟘ₒ-right above), multiplication for successors is repeated addition
-and multiplication preserves suprema.
-
--- TODO. USE is-continuous AND REFACTOR
+and multiplication preserves suprema (i.e. it is continuous).
 
 \begin{code}
 
@@ -317,12 +315,12 @@ module _ (pt : propositional-truncations-exist)
        where
 
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
+ open import Ordinals.SupremaPreservation ua pt sr
  open suprema pt sr
  open PropositionalTruncation pt
 
- ×ₒ-preserves-suprema : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
-                      → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i)
- ×ₒ-preserves-suprema {𝓤} α {I} β =
+ ×ₒ-is-continuous : (α : Ordinal 𝓤) → is-continuous (α ×ₒ_)
+ ×ₒ-is-continuous {𝓤} α {I} β =
   ⊴-antisym (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆ ⦅2⦆
    where
     ⦅2⦆ : sup (λ i → α ×ₒ β i) ⊴ (α ×ₒ sup β)
@@ -359,90 +357,9 @@ module _ (pt : propositional-truncations-exist)
 
 \end{code}
 
-11 September 2024, added by Tom de Jong following a question by Martin Escardo.
-
-The equations for successor and suprema uniquely specify the multiplication
-operation and lead to a definition by transfinite recursion.
-
-\begin{code}
-
-{-
- private
-  successor-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-  successor-equation {𝓤} _⊗_ =
-   (α β : Ordinal 𝓤) → α ⊗ (β +ₒ 𝟙ₒ) ＝ (α ⊗ β) +ₒ α
-
-  suprema-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-  suprema-equation {𝓤} _⊗_ =
-   (α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
-    → α ⊗ (sup β) ＝ sup (λ i → α ⊗ β i)
-
-  recursive-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-  recursive-equation {𝓤} _⊗_ =
-   (α β : Ordinal 𝓤) → α ⊗ β ＝ sup (λ b → (α ⊗ (β ↓ b)) +ₒ α)
-
-  successor-and-suprema-equations-give-recursive-equation
-   : (_⊗_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
-   → successor-equation _⊗_
-   → suprema-equation _⊗_
-   → recursive-equation _⊗_
-  successor-and-suprema-equations-give-recursive-equation
-   _⊗_ ⊗-succ ⊗-sup α β = α ⊗ β                           ＝⟨ I   ⟩
-                          (α ⊗ sup (λ b → (β ↓ b) +ₒ 𝟙ₒ)) ＝⟨ II  ⟩
-                          sup (λ b → α ⊗ ((β ↓ b) +ₒ 𝟙ₒ)) ＝⟨ III ⟩
-                          sup (λ b → (α ⊗ (β ↓ b)) +ₒ α)  ∎
-    where
-     I   = ap (α ⊗_) (supremum-of-successors-of-initial-segments pt sr β)
-     II  = ⊗-sup α ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
-     III = ap sup (dfunext fe' (λ b → ⊗-succ α (β ↓ b)))
-
- ×ₒ-recursive-equation : recursive-equation {𝓤} _×ₒ_
- ×ₒ-recursive-equation =
-  successor-and-suprema-equations-give-recursive-equation
-    _×ₒ_ ×ₒ-successor ×ₒ-preserves-suprema
--}
-
-{-
- ×ₒ-is-uniquely-specified'
-  : (_⊗_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
-  → recursive-equation _⊗_
-  → (α β : Ordinal 𝓤) → α ⊗ β ＝ α ×ₒ β
- ×ₒ-is-uniquely-specified' {𝓤} _⊗_ ⊗-rec α =
-  transfinite-induction-on-OO (λ - → (α ⊗ -) ＝ (α ×ₒ -)) I
-   where
-    I : (β : Ordinal 𝓤)
-      → ((b : ⟨ β ⟩) → (α ⊗ (β ↓ b)) ＝ (α ×ₒ (β ↓ b)))
-      → (α ⊗ β) ＝ (α ×ₒ β)
-    I β IH = α ⊗ β                            ＝⟨ II  ⟩
-             sup (λ b → (α ⊗ (β ↓ b)) +ₒ α)   ＝⟨ III ⟩
-             sup (λ b → (α ×ₒ (β ↓ b)) +ₒ α)  ＝⟨ IV  ⟩
-             α ×ₒ β                           ∎
-     where
-      II  = ⊗-rec α β
-      III = ap sup (dfunext fe' (λ b → ap (_+ₒ α) (IH b)))
-      IV  = ×ₒ-recursive-equation α β ⁻¹
-
- ×ₒ-is-uniquely-specified
-  : ∃! _⊗_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
-     (successor-equation _⊗_) × (suprema-equation _⊗_)
- ×ₒ-is-uniquely-specified {𝓤} =
-  (_×ₒ_ , (×ₒ-successor , ×ₒ-preserves-suprema)) ,
-  (λ (_⊗_ , ⊗-succ , ⊗-sup) →
-   to-subtype-＝
-    (λ F → ×-is-prop (Π₂-is-prop fe'
-                       (λ _ _ → underlying-type-is-set fe (OO 𝓤)))
-                     (Π₃-is-prop fe'
-                       (λ _ _ _ → underlying-type-is-set fe (OO 𝓤))))
-    (dfunext fe'
-      (λ α → dfunext fe'
-       (λ β →
-        (×ₒ-is-uniquely-specified' _⊗_
-          (successor-and-suprema-equations-give-recursive-equation
-            _⊗_ ⊗-succ ⊗-sup)
-        α β) ⁻¹))))
--}
-
-\end{code}
+In OperationsByCases, it is shown that the equations for successor and suprema
+uniquely specify the multiplication operation and lead to a definition by
+transfinite recursion.
 
 Added 17 September 2024 by Fredrik Nordvall Forsberg:
 
