@@ -283,6 +283,13 @@ monotone-operator-implies-monotone-map-LPFP
 
 We close the file by stating a corollary of the previous two results which
 manifests as a concrete equivalence between statements about least prefixed.
+The following are equivalent
+
+ (i) Given a type A : 𝓤, every monotone map f : 𝓟 A → 𝓟 A has a least
+     prefixed point.
+
+ (ii) Given a sup lattice L : 𝓤 ⁺ with 𝓤-basis (B , β), every monotone
+      map f : L → L has a least prefixed point.
 
 \begin{code}
 
