@@ -17,7 +17,7 @@
      and with failed ideas and calculations eventually erased.
 
    * We offer this page as a preliminary announcement of results to be
-     submitted for publication, of the kind we would get when we visit
+     [submitted for publication](https://github.com/martinescardo/TypeTopology#academic-publications-and-preprints-resulting-from-typetopology), of the kind we would get when we visit
      a mathematician's office.
 
    * We have also used this development for learning other people's
