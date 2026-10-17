@@ -8,6 +8,7 @@
    [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/) and [collaborators](https://github.com/martinescardo/TypeTopology#current-typetopology-contributors-in-alphabetical-order-of-first-name).
 
    Tested with Agda 2.8.0 and 2.9.0 (unreleased development version).
+   This HTML rendering was automatically generated from commit to-be-filled-automatically.
 
 This file hereditarily imports all TypeTopology files. Most of them
 are --safe. All of them are --without-K. See discussion below for
