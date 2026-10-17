@@ -43,8 +43,7 @@ import InfinitePigeon.index                 -- (3)
 
 Notice that, currently, all modules use `--without-K`.
 
-The default options for all modules are listed in
-[typetopology.agda-lib](https://github.com/martinescardo/TypeTopology/blob/master/typetopology.agda-lib).
+The default options for all modules are listed in [typetopology.agda-lib](https://github.com/martinescardo/TypeTopology/blob/master/typetopology.agda-lib).
 
 But all modules should add the option `--without-K`, to emphasize an
 essential point in the [philosophy of TypeTopology](https://www.cs.bham.ac.uk/~mhe/TypeTopology/), which is to be
