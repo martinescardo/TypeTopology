@@ -281,4 +281,29 @@ monotone-operator-implies-monotone-map-LPFP
 
 \end{code}
 
+We close the file by stating a corollary of the previous two results which
+manifests as a concrete equivalence between statements about least prefixed.
 
+\begin{code}
+
+module _ (𝓤 : Universe) where
+
+ least-prefixed-point-equivalence
+  : ((A : 𝓤 ̇) → monotone-operator-LPFP 𝓤 A)
+  ↔ ((L : Sup-Lattice (𝓤 ⁺) 𝓤 𝓤) {B : 𝓤 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+     → monotone-map-LPFP (𝓤 ⁺) 𝓤 𝓤 L β h)
+ least-prefixed-point-equivalence = (I , II)
+  where
+   I : ((A : 𝓤 ̇) → monotone-operator-LPFP 𝓤 A)
+     → ((L : Sup-Lattice (𝓤 ⁺) 𝓤 𝓤) {B : 𝓤 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+        → monotone-map-LPFP (𝓤 ⁺) 𝓤 𝓤 L β h)
+   I mon-op-LPFP L {B} β h f f-mono
+    = monotone-operator-implies-monotone-map-LPFP L β h (mon-op-LPFP B) f f-mono
+   II : ((L : Sup-Lattice (𝓤 ⁺) 𝓤 𝓤) {B : 𝓤 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+        → monotone-map-LPFP (𝓤 ⁺) 𝓤 𝓤 L β h)
+      → ((A : 𝓤 ̇) → monotone-operator-LPFP 𝓤 A)
+   II mon-map-LPFP A f f-mono
+    = montone-map-implies-monotone-operator-LPFP A
+       (mon-map-LPFP (𝓟-sup-lattice A) (❴_❵ₜᵣ A) (❴❵ₜᵣ-is-basis A)) f f-mono
+
+\end{code}
