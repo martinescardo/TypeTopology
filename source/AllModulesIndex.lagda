@@ -11,7 +11,7 @@
    This HTML rendering was automatically generated from commit to-be-filled-automatically.
 
 This file hereditarily imports all TypeTopology files. Most of them
-are --safe. All of them are --without-K. See discussion below for
+are `--safe`. All of them are `--without-K`. See discussion below for
 details, and also the following Agda manual entries.
 
  * [Safe Agda](https://agda.readthedocs.io/en/latest/language/safe-agda.html)
@@ -54,20 +54,20 @@ An option is *coinfective* if whenever it is used in a module, it must
 be used in all modules imported by that module. The following options
 are coinfective:
 
-  --safe
-  --without-K
-  --no-universe-polymorphism
-  --no-sized-types
-  --no-guardedness
-  --level-universe
+  `--safe`
+  `--without-K`
+  `--no-universe-polymorphism`
+  `--no-sized-types`
+  `--no-guardedness`
+  `--level-universe`
 
 An option is *infective* if whenever it is used in one module, it must
 be used in all modules that import module. At the moment, TypeTopology
 infective options are:
 
-  --no-termination-check
-  --guardedness
-  --rewriting
+  `--no-termination-check`
+  `--guardednes`
+  `--rewriting`
 
 Navigate to the corresponding files to see which (infective or
 coinfective) options they use.
