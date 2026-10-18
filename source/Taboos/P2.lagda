@@ -402,6 +402,68 @@ Nathanael Rosnik proved the above independently within a few
 hours of difference here:
 https://gist.github.com/nrosnick/922250ddcc6bd04272199f59443d7510
 
+Conversely, weak excluded middle gives that every irrefutable
+proposition is thinly inhabited, which we get from the above
+discreteness criterion.
+
+\begin{code}
+
+typal-WEM-gives-X→𝟚-discreteness
+ : typal-WEM 𝓤
+ → {X : 𝓤 ̇ } → is-discrete (X → 𝟚)
+typal-WEM-gives-X→𝟚-discreteness {𝓤} wem {X} f g = I (wem (f ＝ g))
+ where
+  s : ¬¬ (f ＝ g) → f ＝ g
+  s ϕ = dfunext fe
+         (Π-is-¬¬-stable
+           (λ x → discrete-is-¬¬-separated 𝟚-is-discrete (f x) (g x))
+           (¬¬-functor happly ϕ))
+
+  I : ¬ (f ＝ g) + ¬¬ (f ＝ g) → is-decidable (f ＝ g)
+  I (inl ν) = inr ν
+  I (inr ϕ) = inl (s ϕ)
+
+X→𝟚-discreteness-gives-irrefutable-props-are-thinly-inhabited
+ : ((P : 𝓤 ̇ ) → is-prop P → is-discrete (P → 𝟚))
+ → (P : 𝓤 ̇ ) → is-prop P → ¬¬ P → is-thinly-inhabited P
+X→𝟚-discreteness-gives-irrefutable-props-are-thinly-inhabited δ P i ν =
+ Cases (P→𝟚-discreteness-criterion-necessity i (δ P i))
+  (λ (u : ¬ P) → 𝟘-elim (ν u))
+  id
+
+typal-WEM-gives-irrefutable-props-are-thinly-inhabited
+ : typal-WEM 𝓤
+ → (P : 𝓤 ̇ ) → is-prop P → ¬¬ P → is-thinly-inhabited P
+typal-WEM-gives-irrefutable-props-are-thinly-inhabited wem =
+ X→𝟚-discreteness-gives-irrefutable-props-are-thinly-inhabited
+  (λ P i → typal-WEM-gives-X→𝟚-discreteness wem)
+
+irrefutable-props-are-thinly-inhabited-iff-WEM
+ : ((P : 𝓤 ̇ ) → is-prop P → ¬¬ P → is-thinly-inhabited P)
+ ↔ typal-WEM 𝓤
+irrefutable-props-are-thinly-inhabited-iff-WEM =
+ irrefutable-props-are-thinly-inhabited-gives-WEM ,
+ typal-WEM-gives-irrefutable-props-are-thinly-inhabited
+
+\end{code}
+
+And so the discreteness of the type P → 𝟚 for all propositions P is yet
+another formulation of weak excluded middle.
+
+\begin{code}
+
+P→𝟚-discreteness-iff-WEM
+ : ((P : 𝓤 ̇ ) → is-prop P → is-discrete (P → 𝟚))
+ ↔ typal-WEM 𝓤
+P→𝟚-discreteness-iff-WEM =
+ (irrefutable-props-are-thinly-inhabited-gives-WEM
+   ∘ X→𝟚-discreteness-gives-irrefutable-props-are-thinly-inhabited) ,
+ (λ wem P i → typal-WEM-gives-X→𝟚-discreteness wem)
+
+\end{code}
+
+End of addition and back to the past.
+
 A minor observation, giving another instance of an implication
 is-thinly-inhabited P → P.
 
@@ -581,13 +643,331 @@ module universe-discussion where
 
 \end{code}
 
-We now come back to the original notion of thin inhabitedness studied
-in this file.
-
-TODO. Derive a constructive taboo from the hypothesis
+TODO (done below). Derive a constructive taboo from the hypothesis
 
       (P : 𝓤 ̇ ) → is-prop P → is-thinly-inhabited P → P.
 
 The difficulty, of course, is to come up with a type P which we can
 prove to be thinly inhabited but (we can't prove to be pointed and)
 whose pointedness would give a constructive taboo.
+
+Added 16th October 2026. We now come back to the original notion of
+thin inhabitedness studied in this file, and solve the above TODO. The
+taboo is that weak excluded middle implies excluded middle.
+
+\begin{code}
+
+WEM-implies-EM : ∀ 𝓤 → 𝓤 ⁺ ̇
+WEM-implies-EM 𝓤 = typal-WEM 𝓤 → EM 𝓤
+
+\end{code}
+
+We choose the typal version, rather than the propositional version,
+for technical convenience. But notice that it doesn't make any
+mathematical difference, because, as we have shown in
+UF.ClassicalLogic, typal WEM is logically equivalent to propositional WEM.
+
+This can be considered as a sort of taboo because weak excluded middle
+holds in models in which excluded middle fails, the simplest example
+being sheaves over the two-point space with one open point. Weak
+excluded middle is De Morgan's law, and the toposes that satisfy it are
+studied in
+
+   P.T. Johnstone. Conditions related to de Morgan's law. Applications
+   of Sheaves, Lecture Notes in Mathematics, Vol 753, Springer, 1979,
+   pp. 479-491. https://doi.org/10.1007/BFb0061829
+
+We first show that thin inhabitedness amounts to Π-compactness
+together with nonemptiness. We repeat the definition of Π-compactness,
+rather than import it from TypeTopology.WeaklyCompactTypes, because
+that module assumes propositional truncations and this one doesn't. One
+direction holds for arbitrary types, and for the other we need a
+proposition, as in the above case of a retraction of σ.
+
+\begin{code}
+
+is-Π-compact : 𝓤 ̇ → 𝓤 ̇
+is-Π-compact X = (p : X → 𝟚) → is-decidable ((x : X) → p x ＝ ₁)
+
+thinly-inhabited-types-are-Π-compact
+ : {X : 𝓤 ̇ }
+ → is-thinly-inhabited X
+ → is-Π-compact X
+thinly-inhabited-types-are-Π-compact {𝓤} {X} ti p = I (constancy ti p)
+ where
+  I : (Σ n ꞉ 𝟚 , p ＝ (λ _ → n)) → is-decidable ((x : X) → p x ＝ ₁)
+  I (₀ , e) = inr (λ (α : (x : X) → p x ＝ ₁)
+                     → thinly-inhabited-gives-nonempty ti
+                        (λ x → zero-is-not-one
+                                (₀   ＝⟨ (happly e x)⁻¹ ⟩
+                                 p x ＝⟨ α x ⟩
+                                 ₁   ∎)))
+  I (₁ , e) = inl (happly e)
+
+Π-compact-nonempty-props-are-thinly-inhabited
+ : {P : 𝓤 ̇ }
+ → is-prop P
+ → is-Π-compact P
+ → is-nonempty P
+ → is-thinly-inhabited P
+Π-compact-nonempty-props-are-thinly-inhabited {𝓤} {P} i c ν =
+ retraction-of-σ-gives-thinly-inhabited i (ρ , ρσ)
+ where
+  h : (f : P → 𝟚) → is-decidable ((x : P) → f x ＝ ₁) → 𝟚
+  h f (inl _) = ₁
+  h f (inr _) = ₀
+
+  ρ : (P → 𝟚) → 𝟚
+  ρ f = h f (c f)
+
+  h₀ : (d : is-decidable ((x : P) → σ₀ x ＝ ₁)) → h σ₀ d ＝ ₀
+  h₀ (inl α) = 𝟘-elim (ν (λ p → zero-is-not-one (α p)))
+  h₀ (inr _) = refl
+
+  h₁ : (d : is-decidable ((x : P) → σ₁ x ＝ ₁)) → h σ₁ d ＝ ₁
+  h₁ (inl _) = refl
+  h₁ (inr u) = 𝟘-elim (u (λ _ → refl))
+
+  ρσ : ρ ∘ σ P ∼ id
+  ρσ ₀ = h₀ (c σ₀)
+  ρσ ₁ = h₁ (c σ₁)
+
+thinly-inhabited-iff-Π-compact-and-nonempty
+ : {P : 𝓤 ̇ }
+ → is-prop P
+ → is-thinly-inhabited P
+ ↔ (is-Π-compact P × is-nonempty P)
+thinly-inhabited-iff-Π-compact-and-nonempty i =
+ (λ ti → thinly-inhabited-types-are-Π-compact ti ,
+         thinly-inhabited-gives-nonempty ti) ,
+ (λ (c , ν) → Π-compact-nonempty-props-are-thinly-inhabited i c ν)
+
+\end{code}
+
+In particular, the principle that all irrefutable propositions are
+Π-compact amounts to weak excluded middle.
+
+\begin{code}
+
+irrefutable-props-are-Π-compact-iff-WEM
+ : ((P : 𝓤 ̇ ) → is-prop P → ¬¬ P → is-Π-compact P)
+ ↔ typal-WEM 𝓤
+irrefutable-props-are-Π-compact-iff-WEM =
+ (λ c → irrefutable-props-are-thinly-inhabited-gives-WEM
+         (λ P i ν → Π-compact-nonempty-props-are-thinly-inhabited
+                     i (c P i ν) ν)) ,
+ (λ wem P i ν → thinly-inhabited-types-are-Π-compact
+                 (typal-WEM-gives-irrefutable-props-are-thinly-inhabited
+                   wem P i ν))
+
+\end{code}
+
+We now name the property we want to characterize.
+
+\begin{code}
+
+Thinly-Inhabited-Props-Are-Pointed : ∀ 𝓤 → 𝓤 ⁺ ̇
+Thinly-Inhabited-Props-Are-Pointed 𝓤 =
+  (P : 𝓤 ̇ )
+ → is-prop P
+ → is-thinly-inhabited P
+ → P
+
+\end{code}
+
+That thinly inhabited propositions are pointed follows from double
+negation elimination, because thinly inhabited types are nonempty, and
+so the hypothesis is classically true, which means that no
+anti-classical taboo can follow from it.
+
+\begin{code}
+
+DNE-gives-thinly-inhabited-props-are-pointed
+ : DNE 𝓤
+ → Thinly-Inhabited-Props-Are-Pointed 𝓤
+DNE-gives-thinly-inhabited-props-are-pointed dne P i ti =
+ dne P i (thinly-inhabited-gives-nonempty ti)
+
+\end{code}
+
+By the above characterization of thin inhabitedness, the hypothesis
+says precisely that Π-compact propositions are decidable. We name this
+property.
+
+\begin{code}
+
+Π-Compact-Props-Are-Decidable : ∀ 𝓤 → 𝓤 ⁺ ̇
+Π-Compact-Props-Are-Decidable 𝓤 =
+   (P : 𝓤 ̇ )
+ → is-prop P
+ → is-Π-compact P
+ → is-decidable P
+
+thinly-inhabited-props-are-pointed-iff-Π-compact-props-are-decidable
+ : Thinly-Inhabited-Props-Are-Pointed 𝓤
+ ↔ Π-Compact-Props-Are-Decidable 𝓤
+thinly-inhabited-props-are-pointed-iff-Π-compact-props-are-decidable {𝓤} =
+ (f , g)
+ where
+  f : Thinly-Inhabited-Props-Are-Pointed 𝓤
+    → Π-Compact-Props-Are-Decidable 𝓤
+  f α P i c = I (c σ₀)
+   where
+    I : is-decidable ((x : P) → σ₀ x ＝ ₁) → is-decidable P
+    I (inl β) = inr (λ p → zero-is-not-one (β p))
+    I (inr u) = inl (α P i (Π-compact-nonempty-props-are-thinly-inhabited
+                            i c ν))
+     where
+      ν : is-nonempty P
+      ν ϕ = u (λ p → 𝟘-elim (ϕ p))
+
+  g : Π-Compact-Props-Are-Decidable 𝓤
+    → Thinly-Inhabited-Props-Are-Pointed 𝓤
+  g β P i ti = I (β P i (thinly-inhabited-types-are-Π-compact ti))
+   where
+    I : is-decidable P → P
+    I (inl p) = p
+    I (inr u) = 𝟘-elim (thinly-inhabited-gives-nonempty ti u)
+
+\end{code}
+
+Equivalently, by the discreteness criterion given above, the
+hypothesis says that the discreteness of P → 𝟚 gives the decidability
+of P. This reverses the implication from the decidability of P to the
+discreteness of P → 𝟚, which is the motivation for this file, and we
+come back to this below.
+
+\begin{code}
+
+P→𝟚-Discreteness-Gives-Decidability : ∀ 𝓤 → 𝓤 ⁺ ̇
+P→𝟚-Discreteness-Gives-Decidability 𝓤 =
+ (P : 𝓤 ̇ ) → is-prop P → is-discrete (P → 𝟚) → is-decidable P
+
+thinly-inhabited-props-are-pointed-iff-P→𝟚-discreteness-gives-decidability
+ : Thinly-Inhabited-Props-Are-Pointed 𝓤
+ ↔ P→𝟚-Discreteness-Gives-Decidability 𝓤
+thinly-inhabited-props-are-pointed-iff-P→𝟚-discreteness-gives-decidability
+ {𝓤} = (f , g)
+ where
+  f : Thinly-Inhabited-Props-Are-Pointed 𝓤
+    → P→𝟚-Discreteness-Gives-Decidability 𝓤
+  f α P i δ = Cases (P→𝟚-discreteness-criterion-necessity i δ)
+               inr
+               (λ ti → inl (α P i ti))
+
+  g : P→𝟚-Discreteness-Gives-Decidability 𝓤
+    → Thinly-Inhabited-Props-Are-Pointed 𝓤
+  g β P i ti = I (β P i (X→𝟚-discreteness-criterion (inr ti)))
+   where
+    I : is-decidable P → P
+    I (inl p) = p
+    I (inr u) = 𝟘-elim (thinly-inhabited-gives-nonempty ti u)
+
+\end{code}
+
+And here is the derivation of the taboo. Under weak excluded middle
+every irrefutable proposition is thinly inhabited, and so the
+hypothesis turns weak excluded middle into double negation elimination,
+and hence into excluded middle.
+
+\begin{code}
+
+thinly-inhabited-props-are-pointed-gives-WEM-implies-EM
+ : Thinly-Inhabited-Props-Are-Pointed 𝓤
+ → WEM-implies-EM 𝓤
+thinly-inhabited-props-are-pointed-gives-WEM-implies-EM {𝓤} α wem =
+ DNE-gives-EM fe I
+ where
+  I : DNE 𝓤
+  I P i ν = α P i
+             (typal-WEM-gives-irrefutable-props-are-thinly-inhabited
+               wem P i ν)
+
+\end{code}
+
+And this is all that the hypothesis gives, in the sense that the
+hypothesis and weak excluded middle together are equivalent to excluded
+middle.
+
+\begin{code}
+
+thinly-inhabited-props-are-pointed-and-WEM-iff-EM
+ : (Thinly-Inhabited-Props-Are-Pointed 𝓤 × typal-WEM 𝓤) ↔ EM 𝓤
+thinly-inhabited-props-are-pointed-and-WEM-iff-EM {𝓤} = (f , g)
+ where
+  f : Thinly-Inhabited-Props-Are-Pointed 𝓤 × typal-WEM 𝓤 → EM 𝓤
+  f (α , wem) = thinly-inhabited-props-are-pointed-gives-WEM-implies-EM α wem
+
+  g : EM 𝓤 → Thinly-Inhabited-Props-Are-Pointed 𝓤 × typal-WEM 𝓤
+  g em = DNE-gives-thinly-inhabited-props-are-pointed (EM-gives-DNE em) ,
+         (λ A → em (¬ A) (negations-are-props fe))
+
+\end{code}
+
+And so the hypothesis gives excluded middle if and only if it gives
+weak excluded middle.
+
+\begin{code}
+
+thinly-inhabited-props-are-pointed-gives-EM-iff-gives-WEM
+ : (Thinly-Inhabited-Props-Are-Pointed 𝓤 → EM 𝓤)
+ ↔ (Thinly-Inhabited-Props-Are-Pointed 𝓤 → typal-WEM 𝓤)
+thinly-inhabited-props-are-pointed-gives-EM-iff-gives-WEM {𝓤} = (f , g)
+ where
+  f : (Thinly-Inhabited-Props-Are-Pointed 𝓤 → EM 𝓤)
+    → Thinly-Inhabited-Props-Are-Pointed 𝓤 → typal-WEM 𝓤
+  f ϕ α A = ϕ α (¬ A) (negations-are-props fe)
+
+  g : (Thinly-Inhabited-Props-Are-Pointed 𝓤 → typal-WEM 𝓤)
+    → Thinly-Inhabited-Props-Are-Pointed 𝓤 → EM 𝓤
+  g γ α = thinly-inhabited-props-are-pointed-gives-WEM-implies-EM α (γ α)
+
+\end{code}
+
+We haven't managed to derive weak excluded middle from the hypothesis,
+and by the above this is the same as deriving excluded middle from it.
+As excluded middle gives the hypothesis, either of these would show
+that the hypothesis and excluded middle are equivalent.
+
+This also answers the question that motivates this file. Recall from
+the discussion at the end of Ordinals.InductiveRecursiveCodesInterpretations
+the implications
+
+ (0) if P is decidable then P → 𝟚 is discrete,
+ (1) if P → 𝟚 is discrete then ¬ P is decidable,
+
+and the question of whether they can be reversed. Read as principles
+about all propositions, the discreteness of P → 𝟚 and the decidability
+of ¬ P are both weak excluded middle, as shown above, and the
+decidability of P is excluded middle. So (1) can be reversed as a
+principle, although not for an individual proposition, because the
+proof that P → 𝟚 is discrete under weak excluded middle uses it for
+propositions other than P. The reversal of (0) as a principle says that
+weak excluded middle implies excluded middle, which is the taboo above,
+and for an individual proposition it is the hypothesis itself. So, as a
+principle, the discreteness of P → 𝟚 is not strictly between the
+decidability of P and that of ¬ P, because it is equivalent to the
+decidability of ¬ P, and what is missing for the decidability of P is
+the implication from weak excluded middle to excluded middle. We don't
+know whether, conversely, this implication gives the hypothesis.
+
+Finally, we discuss the original question, which was to find a type P
+that we can prove to be thinly inhabited and whose pointedness gives a
+constructive taboo. Anything that follows from the pointedness of such
+a P is irrefutable, because thinly inhabited types are nonempty.
+
+\begin{code}
+
+consequences-of-thinly-inhabited-props-are-irrefutable
+ : {P : 𝓤 ̇ } {X : 𝓥 ̇ }
+ → is-thinly-inhabited P
+ → (P → X)
+ → ¬¬ X
+consequences-of-thinly-inhabited-props-are-irrefutable ti f =
+ ¬¬-functor f (thinly-inhabited-gives-nonempty ti)
+
+\end{code}
+
+So such a P can give only irrefutable statements, and in particular no
+statement whose negation is consistent. The most it could give is one
+that is irrefutable but not provable, and we don't have such a P.
