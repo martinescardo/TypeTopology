@@ -4,7 +4,7 @@ In this file we construct the truncated singleton basis for the powerset sup
 lattice. We also observe that any small generated sup lattice is the retract of
 the powerset on its basis. Using this retraction we show that with Ω-resizing a
 small generated sup lattice is itself small. We conclude this file by showing
-if monotone functions on powersets have least (pre)fixed points, then so does
+if monotone functions on powersets have least prefixed points, then so does
 every monotone endomap on a sup-lattice with a small basis.
 
 \begin{code}
@@ -181,7 +181,7 @@ is also small.
 
 \end{code}
 
-Now we will investigate the connection between least (pre)fixed points of
+Now we will investigate the connection between least prefixed points of
 monotone maps on small generated sup lattices and monotone operators on the
 power set.
 
@@ -281,9 +281,9 @@ monotone-operator-implies-monotone-map-LPFP
 
 \end{code}
 
-We close the file by stating a corollary of the previous two results which
-manifests as a concrete equivalence between statements about least prefixed.
-The following are equivalent
+We close the file by stating a corollary of the previous two results where we
+fix a single universe level and give an equivalence between two statements
+about least prefixed points. The following are equivalent
 
  (i) Given a type A : 𝓤, every monotone map f : 𝓟 A → 𝓟 A has a least
      prefixed point.
