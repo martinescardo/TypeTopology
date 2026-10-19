@@ -1,4 +1,4 @@
-Martin Escardo, from about 2010 to 2026.
+Martin Escardo, started about 2010.
 
 A motivation for what is done here can be found in three blog
 posts by Chris Grossack from July 2024:
