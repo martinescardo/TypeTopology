@@ -81,7 +81,7 @@ Note: This generalizes the definition of 𝓟-lattice from the file FreeSupLatti
 \end{code}
 
 Note: The total space of ❴_❵ₜᵣ is not contractible. While this is somewhat
-pathological we will see that ❴_❵ₜᵣ satsifies enough of the criteria of a
+pathological we will see that ❴_❵ₜᵣ satisfies enough of the criteria of a
 singleton for our purposes.
 
 \begin{code}
@@ -97,9 +97,9 @@ singleton for our purposes.
    ⦅⇐⦆ : ❴ x ❵ₜᵣ ⊆ S → x ∈ S
    ⦅⇐⦆ γ = γ x ∣ refl ∣
 
- basis-char : (S : 𝓟 {𝓤} A)
-            → ⋃ (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S) ＝ S
- basis-char S = subset-extensionality pe fe I II
+ subset-is-⋃-of-❴❵ₜᵣ : (S : 𝓟 {𝓤} A)
+                     → ⋃ (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S) ＝ S
+ subset-is-⋃-of-❴❵ₜᵣ S = subset-extensionality pe fe I II
   where
    I : ⋃ (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S) ⊆ S
    I x = ∥∥-rec (holds-is-prop (S x))
@@ -117,7 +117,7 @@ singleton for our purposes.
             = λ S → transport
                      (λ - → (- is-lub-of (↓ᴮ 𝓟-sup-lattice ❴_❵ₜᵣ S
                                    , ↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S)) holds)
-                     (basis-char S)
+                     (subset-is-⋃-of-❴❵ₜᵣ S)
                      (⋃-is-upperbound (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S)
                       , λ (U , O) → ⋃-is-lowerbound-of-upperbounds
                                     (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S) U O) }
@@ -171,8 +171,7 @@ is also small.
 
 \begin{code}
 
- sup-lattice-is-small : Ω-resizing 𝓥
-                      → ⟨ L ⟩ is 𝓥 small
+ sup-lattice-is-small : Ω-resizing 𝓥 → ⟨ L ⟩ is 𝓥 small
  sup-lattice-is-small omega-res
   = embedded-retract-is-small sup-lattice-retract-of-pow
      (sections-into-sets-are-embeddings ↓-map (⋁-map , ⋁∘↓∼id)
@@ -220,11 +219,11 @@ Clearly monotone-map-LPFP 𝓤⁺ 𝓤 𝓤 implies monotone-operator-LPFP 𝓤.
 
 \begin{code}
 
-montone-map-implies-monotone-operator-LPFP
+monotone-map-implies-monotone-operator-LPFP
  : (A : 𝓤 ̇)
  → monotone-map-LPFP (𝓤 ⁺) 𝓤 𝓤 (𝓟-sup-lattice A) (❴_❵ₜᵣ A) (❴❵ₜᵣ-is-basis A)
  → monotone-operator-LPFP 𝓤 A
-montone-map-implies-monotone-operator-LPFP A mon-map-LPFP = mon-map-LPFP
+monotone-map-implies-monotone-operator-LPFP A mon-map-LPFP = mon-map-LPFP
 
 \end{code}
 
@@ -304,13 +303,13 @@ module _ (𝓤 : Universe) where
    I : ((A : 𝓤 ̇) → monotone-operator-LPFP 𝓤 A)
      → ((L : Sup-Lattice (𝓤 ⁺) 𝓤 𝓤) {B : 𝓤 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
         → monotone-map-LPFP (𝓤 ⁺) 𝓤 𝓤 L β h)
-   I mon-op-LPFP L {B} β h f f-mono
-    = monotone-operator-implies-monotone-map-LPFP L β h (mon-op-LPFP B) f f-mono
+   I mono-op-LPFP L {B} β h 
+    = monotone-operator-implies-monotone-map-LPFP L β h (mono-op-LPFP B) 
    II : ((L : Sup-Lattice (𝓤 ⁺) 𝓤 𝓤) {B : 𝓤 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
         → monotone-map-LPFP (𝓤 ⁺) 𝓤 𝓤 L β h)
       → ((A : 𝓤 ̇) → monotone-operator-LPFP 𝓤 A)
-   II mon-map-LPFP A f f-mono
-    = montone-map-implies-monotone-operator-LPFP A
-       (mon-map-LPFP (𝓟-sup-lattice A) (❴_❵ₜᵣ A) (❴❵ₜᵣ-is-basis A)) f f-mono
+   II mono-map-LPFP A
+    = monotone-map-implies-monotone-operator-LPFP A
+       (mono-map-LPFP (𝓟-sup-lattice A) (❴_❵ₜᵣ A) (❴❵ₜᵣ-is-basis A)) 
 
 \end{code}
