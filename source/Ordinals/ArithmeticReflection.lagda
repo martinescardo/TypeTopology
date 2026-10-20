@@ -1,9 +1,6 @@
 Tom de Jong, 31 July 2025.
 With additions by Fredrik Nordvall Forsberg in October 2025.
-
-This file provides a formalization of Section 7 ("Abstract Cancellation
-Arithmetic") of the paper "Constructive Ordinal Exponentiation" by
-Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
+Slightly refactored on 16 October 2026.
 
 For a fixed ordinal α, we answer the following question positively:
   Do the functions (α + _), (α × _), and (exp α _) : Ord → Ord reflect
@@ -48,20 +45,21 @@ open import UF.Equiv
 
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
-open import Ordinals.BoundedOperations ua pt sr
 open import Ordinals.Equivalence
 open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.Miscellaneous ua pt sr
 open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 open import Ordinals.Fin
 open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.Notions
+open import Ordinals.OperationsByCases ua pt sr
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Propositions ua
+open import Ordinals.SupremaPreservation ua pt sr
 open import Ordinals.Type
 open import Ordinals.Underlying
 
@@ -229,138 +227,20 @@ module uo-order
 
 \end{code}
 
-We now introduce a general scheme (cf. the BoundedOperations file)
-that captures addition, multiplication and exponentiation by a fixed
-ordinal α.
-
-We consider an operation F : Ordinal 𝓤 → Ordinal 𝓤 together with
-- an ordinal Z : Ordinal 𝓤 (for the zero case)
-- an operation S : Ordinal 𝓤 → Ordinal 𝓤 (for the successor case)
-such that
-- F (β +ₒ 𝟙ₒ) ＝ S (F β)         for all β : Ordinal 𝓤,
-- F (sup L)   ＝ Z ∨ sup (F ∘ L) for all L : I → Ordinal 𝓤 with I : 𝓤.
-
-Note that if we take L to be the empty family, then we get
-F 𝟘ₒ ＝ Z ∨ 𝟘ₒ ＝ Z, which is why Z is the zero case.
-
-As mentioned, examples are addition, multiplication and exponentiation
-by a fixed ordinal α. Specifically,
-- for F := (-) +ₒ α, we take Z = α  and S β := β +ₒ 𝟙ₒ;
-- for F := (-) ×ₒ α, we take Z = 𝟘ₒ and S β := β +ₒ α;
-- for F := α ^ₒ (-), we take Z = 𝟙ₒ and S β := β ×ₒ α (given 𝟙ₒ ⊴ α).
-
-We find it convenient to present Z ∨ sup (F ∘ L) via a single supremum.
+We introduce additional assumptions on top of the abstract framework from the
+file OperationsByCases.
 
 \begin{code}
-
-extended-sup : {I : 𝓤 ̇ } (L : I → Ordinal 𝓤) (Z : Ordinal 𝓤) → Ordinal 𝓤
-extended-sup {𝓤} {I} L Z = sup {I = 𝟙 + I} (cases (λ (_ : 𝟙{𝓤}) → Z) L)
-
-\end{code}
-
-As shown below, Z and S determine F uniquely, because any F which
-satisfies the above equations will be equal to the function G defined
-by transfinite recursion as
-  G β := Z ∨ sup (λ (b : ⟨ β ⟩) → S (G (β ↓ b))).
-This map G is called canonical-spec-by-cases below.
-
-\begin{code}
-
-canonical-spec-by-cases : (S : Ordinal 𝓤 → Ordinal 𝓤) (Z : Ordinal 𝓤)
-                        → Ordinal 𝓤 → Ordinal 𝓤
-canonical-spec-by-cases {𝓤} S Z =
- transfinite-recursion-on-OO (Ordinal 𝓤)
-                             (λ β ih → extended-sup (λ b → S (ih b)) Z)
 
 module framework
         (F : Ordinal 𝓤 → Ordinal 𝓤)
         (S : Ordinal 𝓤 → Ordinal 𝓤)
         (Z : Ordinal 𝓤)
         (F-succ : (β : Ordinal 𝓤) → F (β +ₒ 𝟙ₒ) ＝ S (F β))
-        (F-sup : (I : 𝓤 ̇ ) (L : I → Ordinal 𝓤)
-               → F (sup L) ＝ extended-sup (F ∘ L) Z)
+        (F-sup : preserves-suprema-up-to-join F Z)
        where
 
- Z-is-F𝟘ₒ : Z ＝ F 𝟘ₒ
- Z-is-F𝟘ₒ = Z                      ＝⟨ I ⟩
-            extended-sup (F ∘ J) Z ＝⟨ F-sup 𝟘 J ⁻¹ ⟩
-            F (sup J)              ＝⟨ ap F II ⟩
-            F 𝟘ₒ                   ∎
-  where
-   J : 𝟘 → Ordinal 𝓤
-   J = 𝟘-elim
-
-   I = ⊴-antisym Z (extended-sup (F ∘ J) Z)
-        (sup-is-upper-bound _ (inl ⋆))
-        (sup-is-lower-bound-of-upper-bounds _ Z
-          (dep-cases (λ _ → ⊴-refl Z) 𝟘-induction))
-   II : sup J ＝ 𝟘ₒ
-   II = ⊴-antisym (sup J) 𝟘ₒ
-         (sup-is-lower-bound-of-upper-bounds J 𝟘ₒ 𝟘-induction)
-         (𝟘ₒ-least-⊴ (sup J))
-
- F-eq : (β : Ordinal 𝓤)
-      → F β ＝ extended-sup (λ (b : ⟨ β ⟩) → S (F (β ↓ b))) Z
- F-eq β = F β                                        ＝⟨ I ⟩
-          F (sup λ b → (β ↓ b) +ₒ 𝟙ₒ)                ＝⟨ II ⟩
-          extended-sup (F ∘ (λ b → (β ↓ b) +ₒ 𝟙ₒ)) Z ＝⟨ III ⟩
-          extended-sup (λ b → S (F (β ↓ b))) Z       ∎
-  where
-   I   = ap F (supremum-of-successors-of-initial-segments pt sr β)
-   II  = F-sup ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
-   III = ap (λ - → extended-sup - Z) (dfunext fe' (λ b → F-succ (β ↓ b)))
-
- F-unique : (β : Ordinal 𝓤) → F β ＝ canonical-spec-by-cases S Z β
- F-unique = transfinite-induction-on-OO (λ β → F β ＝ G β) I
-  where
-   G = canonical-spec-by-cases S Z
-
-   I : (β : Ordinal 𝓤) → ((b : ⟨ β ⟩) → F (β ↓ b) ＝ G (β ↓ b)) → F β ＝ G β
-   I β ih = F β                                            ＝⟨ F-eq β ⟩
-            extended-sup (λ (b : ⟨ β ⟩) → S (F (β ↓ b))) Z ＝⟨ I₁ ⟩
-            extended-sup (λ (b : ⟨ β ⟩) → S (G (β ↓ b))) Z ＝⟨ I₂ ⟩
-            G β                                            ∎
-    where
-     I₁ = ap (λ - → extended-sup - Z) (dfunext fe' (λ b → ap S (ih b)))
-     I₂ = (transfinite-recursion-on-OO-behaviour
-            (Ordinal 𝓤)
-            (λ β ih → extended-sup (λ b → S (ih b)) Z) β) ⁻¹
-
-\end{code}
-
-The equations also imply that F is order preserving and hence that Z
-is below all values of F.
-
-\begin{code}
-
- F-preserves-⊴ : is-⊴-preserving F
- F-preserves-⊴ β γ l = III
-  where
-   J : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
-   J = cases (λ _ → β) (λ _ → γ)
-
-   I : sup J ＝ γ
-   I = ⊴-antisym (sup J) γ
-        (sup-is-lower-bound-of-upper-bounds J γ
-          (dep-cases (λ _ → l) (λ _ → ⊴-refl γ)))
-        (sup-is-upper-bound J (inr ⋆))
-   II : F β ⊴ extended-sup (F ∘ J) Z
-   II = sup-is-upper-bound _ (inr (inl ⋆))
-   III : F β ⊴ F γ
-   III = transport⁻¹ (F β ⊴_) (ap F (I ⁻¹) ∙ F-sup (𝟙 + 𝟙) J) II
-
- Z-below-all-values-of-F : (β : Ordinal 𝓤) → Z ⊴ F β
- Z-below-all-values-of-F β =
-  transport⁻¹ (_⊴ F β) Z-is-F𝟘ₒ (F-preserves-⊴ 𝟘ₒ β (𝟘ₒ-least-⊴ β))
-
-\end{code}
-
-We next introduce three additional assumptions on the parameter S that
-will ensure that F is order reflecting.
-
-Note that the second assumption is a strict extension of the first.
-
-\begin{code}
+ open operation-by-cases-framework F S Z F-succ F-sup
 
  Assumption-1 : 𝓤 ⁺ ̇
  Assumption-1 =
@@ -408,7 +288,7 @@ strict order.
    II = sup J                                             ＝⟨ II₁ ⟩
         extended-sup J Z                                  ＝⟨refl⟩
         extended-sup (λ c → F (γ ↓ c) +ₒ H (F (γ ↓ c))) Z ＝⟨ II₂ ⟩
-        extended-sup (λ c → S (F (γ ↓ c))) Z              ＝⟨ (F-eq γ ⁻¹) ⟩
+        extended-sup (λ c → S (F (γ ↓ c))) Z              ＝⟨ II₃ ⟩
         F γ                                               ∎
      where
       II₁ = ⊴-antisym (sup J) (extended-sup J Z)
@@ -417,13 +297,15 @@ strict order.
        where
         ub : (i : 𝟙 + ⟨ γ ⟩) → cases (λ _ → Z) J i ⊴ sup J
         ub (inl ⋆) = ⊴-trans Z (F (γ ↓ c₀)) (sup J)
-                      (Z-below-all-values-of-F (γ ↓ c₀))
+                      (least-value-if-preserves-suprema-up-to-join
+                        F Z F-sup (γ ↓ c₀))
                       (⊴-trans (F (γ ↓ c₀)) (J c₀) (sup J)
                         (+ₒ-left-⊴ (F (γ ↓ c₀)) (H (F (γ ↓ c₀))))
                         (sup-is-upper-bound J c₀))
         ub (inr c) = sup-is-upper-bound J c
       II₂ = ap (λ - → extended-sup - Z)
                (dfunext fe' (λ c → (S-H-eq (F (γ ↓ c))) ⁻¹))
+      II₃ = (recursive-equation γ) ⁻¹
 
    III : F (γ ↓ c₀) ⊲ F γ
    III = Idtofunₒ II [ c₀ , h₀ ] , (I ⁻¹ ∙ Idtofunₒ-↓-lemma II)
@@ -453,10 +335,10 @@ The following two results are technical auxiliary lemmas.
     ∥∥-rec ∃-is-prop III
       (initial-segment-of-sup-is-initial-segment-of-some-component _ x)
      where
-      x = Idtofunₒ (F-eq γ) x'
+      x = Idtofunₒ (recursive-equation γ) x'
 
       II : β ＝ (extended-sup (λ c → S (F (γ ↓ c))) Z) ↓ x
-      II = Idtofunₒ-↓-lemma (F-eq γ)
+      II = Idtofunₒ-↓-lemma (recursive-equation γ)
 
       III : (Σ i ꞉ 𝟙 + ⟨ γ ⟩ ,
              Σ y ꞉ ⟨ cases (λ _ → Z) (λ c → S (F (γ ↓ c))) i ⟩ ,
@@ -468,7 +350,9 @@ The following two results are technical auxiliary lemmas.
         l : β ⊲ Z
         l = y , (II ∙ p)
         l' : β ⊲ F 𝟘ₒ
-        l' = transport (β ⊲_) Z-is-F𝟘ₒ l
+        l' = transport⁻¹ (β ⊲_)
+              (preserves-suprema-up-to-join-implies-zero-equation F Z F-sup)
+              l
       III (inr c , y , p) = IV y' (p' ∙ Idtofunₒ-↓-lemma (H-S-eq (F (γ ↓ c))))
        where
         p' : β ＝ S (F (γ ↓ c)) ↓ y
@@ -518,7 +402,8 @@ The following two results are technical auxiliary lemmas.
     III : F ((β ↓ b) +ₒ 𝟙ₒ) ≤ᶜˡ (F γ +ₒ δ)
     III = ≤ᶜˡ-transitivity (F ((β ↓ b) +ₒ 𝟙ₒ)) (F β) (F γ +ₒ δ)
            (⊴-gives-≤ᶜˡ (F ((β ↓ b) +ₒ 𝟙ₒ)) (F β)
-             (F-preserves-⊴ ((β ↓ b) +ₒ 𝟙ₒ) β
+             (is-monotone-if-preserves-suprema-up-to-join F Z F-sup
+               ((β ↓ b) +ₒ 𝟙ₒ) β
                (upper-bound-of-successors-of-initial-segments β b)))
            (⊴-gives-≤ᶜˡ (F β) (F γ +ₒ δ) l₂)
 
@@ -561,7 +446,8 @@ give a proof by transfinite induction.
     where
      module _ (b : ⟨ β ⟩) where
       II₁ : F 𝟘ₒ ⊴ F (β ↓ b)
-      II₁ = F-preserves-⊴ 𝟘ₒ (β ↓ b) (𝟘ₒ-least-⊴ (β ↓ b))
+      II₁ = is-monotone-if-preserves-suprema-up-to-join
+             F Z F-sup 𝟘ₒ (β ↓ b) (𝟘ₒ-least-⊴ (β ↓ b))
       II₂ : F (β ↓ b) ⊲ F (γ +ₒ 𝟙ₒ)
       II₂ = ⊲-⊴-gives-⊲ (F (β ↓ b)) (F β) (F (γ +ₒ 𝟙ₒ))
              (F-preserves-⊲ asm-2 (β ↓ b) β (b , refl))
@@ -678,12 +564,13 @@ addition by α is order reflecting.
 
 module _ (α : Ordinal 𝓤) where
  private
+  open addition-by-fixed-ordinal
   open framework
         (α +ₒ_)
         (_+ₒ 𝟙ₒ)
         α
         (+ₒ-commutes-with-successor α)
-        (+ₒ-preserves-suprema-up-to-join pt sr α)
+        (+ₒ-preserves-suprema-up-to-join α)
 
   asm-2 : Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)
               , ((β : Ordinal 𝓤) → β +ₒ 𝟙ₒ ＝ β +ₒ H β))
@@ -725,8 +612,9 @@ module _ (α : Ordinal 𝓤) where
         (_+ₒ α)
         𝟘ₒ
         (×ₒ-successor α)
-        (Enderton-like'.preservation-of-suprema-up-to-join
-         (α ×ₒ_) 𝟘ₒ (×ₒ-preserves-suprema pt sr α))
+        (rl-implication
+          (preservation-of-suprema-continuity-equivalence (α ×ₒ_))
+          (×ₒ-is-continuous pt sr α))
 
   asm-2 : 𝟘ₒ ⊲ α
         → Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)
@@ -775,7 +663,7 @@ module _
         (_×ₒ α)
         𝟙ₒ
         (^ₒ-satisfies-succ-specification α α-has-least)
-        (^ₒ-satisfies-strong-sup-specification α)
+        (^ₒ-satisfies-zero-sup-combined-specification α)
 
   asm-2 : has-trichotomous-least-element α
         →  Σ (H , _) ꞉ (Σ H ꞉ (Ordinal 𝓤 → Ordinal 𝓤)

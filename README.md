@@ -304,6 +304,14 @@ only your name as author.
    Agda companion.
    https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html
 
+1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie
+   Xu. *Construtive Ordinal Exponentiation*. September 2025, accepted for
+   publication in the [Journal of the ACM][JACM] 2nd October 2026. \
+   This is an invited, expanded journal version of the LICS paper *Ordinal
+   Exponentiation in Homotopy Type Theory*.
+
+   https://arxiv.org/abs/2501.14542v6
+
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
 [LICS21]: https://easyconferences.eu/lics2021/
@@ -314,6 +322,7 @@ only your name as author.
 [MSCS]: https://www.cambridge.org/core/journals/mathematical-structures-in-computer-science
 [LIPICS]: https://www.dagstuhl.de/en/publishing/series/details/LIPIcs
 [JPAA]: https://www.sciencedirect.com/journal/journal-of-pure-and-applied-algebra
+[JACM]: https://dl.acm.org/journal/jacm/
 
 ## Current TypeTopology contributors in alphabetical order of first name
 

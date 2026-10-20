@@ -26,12 +26,13 @@ jobs:
         rm source/index.lagda
         mv source/index-updated.lagda source/index.lagda
 
-    - name: "Add commit data to index.lagda"
+    - name: "Add commit data to index.lagda and AllModulesIndex.lagda"
       run: |
         export COMMIT_HASH=$(echo ${{ github.event.after }} | cut -c1-7)
         COMMIT_URL=https://github.com/martinescardo/TypeTopology/commit/$COMMIT_HASH
-        sed -i "s|to-be-filled-automatically|[$COMMIT_HASH]($COMMIT_URL)|" source/index.lagda
+        sed -i "s|to-be-filled-automatically|[$COMMIT_HASH]($COMMIT_URL)|" source/index.lagda source/AllModulesIndex.lagda
         head -20 source/index.lagda
+        head -20 source/AllModulesIndex.lagda
 
     - name: "Restore cached .agdai files"
       id: cache-agdai-restore

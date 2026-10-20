@@ -63,9 +63,10 @@ open import Ordinals.MultiplicationProperties ua
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
-open suprema pt sr
+open import Ordinals.SupremaPreservation ua pt sr
 open import Ordinals.Type
 open import Ordinals.Underlying
+open suprema pt sr
 
 open import Ordinals.Exponentiation.DecreasingList ua pt
 open import Ordinals.Exponentiation.DecreasingListProperties-Concrete ua pt sr
@@ -75,7 +76,7 @@ open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Exponentiation.Taboos ua pt sr
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 
 \end{code}
 
@@ -140,8 +141,8 @@ Eq-3 I F y = ∥∥-functor h
 
 Lemma-2 : (α : Ordinal 𝓤)
         → ((β γ : Ordinal 𝓥) → β ⊴ γ → α ×ₒ β ⊴ α ×ₒ γ)
-        × ((I : 𝓤 ̇ ) (F : I → Ordinal 𝓤) → α ×ₒ sup F ＝ sup (λ i → α ×ₒ F i))
-Lemma-2 α = ×ₒ-right-monotone-⊴ α , ×ₒ-preserves-suprema pt sr α
+        × ({I : 𝓤 ̇ } (F : I → Ordinal 𝓤) → α ×ₒ sup F ＝ sup (λ i → α ×ₒ F i))
+Lemma-2 α = ×ₒ-right-monotone-⊴ α , ×ₒ-is-continuous pt sr α
 
 Eq-double-dagger : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
 Eq-double-dagger = exp-full-specification
@@ -152,11 +153,12 @@ Lemma-3 : (α : Ordinal 𝓤) (exp-α : Ordinal 𝓤 → Ordinal 𝓤)
         → exp-specification-sup  α exp-α
         → (exp-α 𝟙ₒ ＝ α)
         × (exp-α 𝟚ₒ ＝ α ×ₒ α)
-        × ((α ≠ 𝟘ₒ) → is-monotone (OO 𝓤) (OO 𝓤) exp-α)
+        × ((α ≠ 𝟘ₒ) → is-monotone-⊴ exp-α)
 Lemma-3 α exp-α exp-spec-zero exp-spec-succ exp-spec-sup =
    𝟙ₒ-neutral-exp α exp-α exp-spec-zero exp-spec-succ
  , exp-𝟚ₒ-is-×ₒ α exp-α exp-spec-zero exp-spec-succ
- , (λ α-nonzero → is-monotone-if-continuous exp-α (exp-spec-sup α-nonzero))
+ , (λ α-nonzero → is-monotone-if-preserves-inhabited-suprema
+                   exp-α (exp-spec-sup α-nonzero))
 
 Proposition-4
  : (Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exp-full-specification exp)
@@ -173,7 +175,7 @@ Proposition-4 =
 Eq-double-dagger' : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
 Eq-double-dagger' {𝓤} exp =
    ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-succ α (exp α))
- × ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-sup-strong α (exp α))
+ × ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-zero-sup-combined α (exp α))
 
 \end{code}
 
@@ -202,11 +204,11 @@ Proposition-8 α β γ =   ^ₒ-monotone-in-exponent α β γ
 Theorem-9 : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α
           → exp-specification-zero α (α ^ₒ_)
           × exp-specification-succ α (α ^ₒ_)
-          × exp-specification-sup-strong α (α ^ₒ_)
+          × exp-specification-zero-sup-combined α (α ^ₒ_)
           × exp-specification-sup α (α ^ₒ_)
 Theorem-9 {𝓤} α α-pos =   ^ₒ-satisfies-zero-specification {𝓤} {𝓤} α
                         , ^ₒ-satisfies-succ-specification {𝓤} {𝓤} α α-pos
-                        , ^ₒ-satisfies-strong-sup-specification α
+                        , ^ₒ-satisfies-zero-sup-combined-specification α
                         , ^ₒ-satisfies-sup-specification α
 
 Proposition-10 : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
@@ -368,7 +370,7 @@ module fixed-assumptions-3
 
  Theorem-20 : exp-specification-zero α (λ - → exp[α, - ])
             × exp-specification-succ α (λ - → exp[α, - ])
-            × exp-specification-sup-strong α (λ - → exp[α, - ])
+            × exp-specification-zero-sup-combined α (λ - → exp[α, - ])
             × exp-specification-sup α (λ - → exp[α, - ])
  Theorem-20 =   expᴸ-satisfies-zero-specification {𝓤} {𝓤} α⁺
               , transport⁻¹
@@ -376,9 +378,9 @@ module fixed-assumptions-3
                  NB[α⁺-eq]
                  (expᴸ-satisfies-succ-specification {𝓤} α⁺)
               , transport⁻¹
-                 (λ - → exp-specification-sup-strong - (λ - → exp[α, - ]))
+                 (λ - → exp-specification-zero-sup-combined - (λ - → exp[α, - ]))
                  NB[α⁺-eq]
-                 (expᴸ-satisfies-strong-sup-specification {𝓤} α⁺)
+                 (expᴸ-satisfies-zero-sup-combined-specification {𝓤} α⁺)
               , transport⁻¹
                  (λ - → exp-specification-sup - (λ - → exp[α, - ]))
                  NB[α⁺-eq]

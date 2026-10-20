@@ -1,10 +1,11 @@
-   [TypeTopology](https://github.com/martinescardo/TypeTopology)
+   [T y p e T o p o l o g y](https://github.com/martinescardo/TypeTopology)
+
    2010--2026--∞, continuously evolving.
 
    Various new theorems in univalent mathematics written in Agda
    -------------------------------------------------------------
 
-   [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/) and collaborators.
+   [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/) and [collaborators](https://github.com/martinescardo/TypeTopology#current-typetopology-contributors-in-alphabetical-order-of-first-name).
 
    Tested with Agda 2.8.0 and 2.9.0 (unreleased development version).
    This HTML rendering was automatically generated from commit to-be-filled-automatically.
@@ -16,7 +17,7 @@
      and with failed ideas and calculations eventually erased.
 
    * We offer this page as a preliminary announcement of results to be
-     submitted for publication, of the kind we would get when we visit
+     [submitted for publication](https://github.com/martinescardo/TypeTopology#academic-publications-and-preprints-resulting-from-typetopology), of the kind we would get when we visit
      a mathematician's office.
 
    * We have also used this development for learning other people's
@@ -57,7 +58,7 @@
      control safety and, to the extent this is currently possible, to
      fix which type theory is used.
 
-   * In our last count, on 2026-10-15, this development has 1000 Agda
+   * In our last count, on 2026-10-19, this development has 1002 Agda
      files with 298K lines of code, including comments and blank
      lines.
 

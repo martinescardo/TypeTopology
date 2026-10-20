@@ -68,6 +68,7 @@ private
  pe' : Prop-Ext
  pe' {𝓤} = pe 𝓤
 
+open import Ordinals.Arithmetic fe
 open import Ordinals.WellOrderTransport fe
 
 \end{code}
@@ -1190,6 +1191,10 @@ module suprema
                                (α i) (β i) (sup β)
                                (l i) (sup-is-upper-bound β i))
 
+ sup-pointwise-equal : {I : 𝓤 ̇ } (α β : I → Ordinal 𝓤)
+                     → α ∼ β → sup α ＝ sup β
+ sup-pointwise-equal α β h = ap sup (dfunext fe' h)
+
 \end{code}
 
 Conjecture (Martin Escardo, August 2018 originally in the file
@@ -1199,75 +1204,3 @@ joins constructed by taking the joint image in any upper bound.
 In this way we avoid both small quotients and small images. Moreover,
 the results of the second part of this file are a particular case of
 this taking Ord 𝓤 as an upper bound.
-
-Moved here on 5 December 2024 by Tom de Jong and Fredrik Nordvall Forsberg, but
-developed in February 2024 in collaboration with Nicolai Kraus and Chuangjie Xu.
-
-\begin{code}
-
- is-continuous : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
- is-continuous {𝓤} F =
-    {I : 𝓤 ̇  }
-  → ∥ I ∥
-  → (γ : I → Ordinal 𝓤)
-  → F (sup γ) ＝ sup (F ∘ γ)
-
- is-continuous-generalized : (Ordinal 𝓤 → Ordinal (𝓤 ⊔ 𝓥)) → (𝓤 ⊔ 𝓥) ⁺ ̇
- is-continuous-generalized {𝓤} {𝓥} F =
-    {I : 𝓤 ̇  }
-  → ∥ I ∥
-  → (γ : I → Ordinal 𝓤)
-  → F (sup γ) ＝ sup (λ (i : Lift 𝓥 I) → F (γ (lower i)))
-  where
-   open import UF.UniverseEmbedding
-
- is-monotone-if-continuous-generalized : (F : Ordinal 𝓤 → Ordinal (𝓤 ⊔ 𝓥))
-                                       → is-continuous-generalized F
-                                       → is-monotone (OO 𝓤) (OO (𝓤 ⊔ 𝓥)) F
- is-monotone-if-continuous-generalized {𝓤} {𝓥} F F-cont α β l = IV
-  where
-   open import UF.UniverseEmbedding
-   γ : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
-   γ (inl _) = α
-   γ (inr _) = β
-
-   β-is-upper-bound : (i : 𝟙 + 𝟙) → γ i ⊴ β
-   β-is-upper-bound (inl _) = ≼-gives-⊴ α β l
-   β-is-upper-bound (inr _) = ⊴-refl β
-
-   I : F (sup γ) ＝ sup (F ∘ γ ∘ lower)
-   I = F-cont ∣ inl ⋆ ∣ γ
-
-   II : sup γ ＝ β
-   II = ⊴-antisym (sup γ) β
-         (sup-is-lower-bound-of-upper-bounds γ β β-is-upper-bound)
-         (sup-is-upper-bound γ (inr ⋆))
-
-   III : F α ⊴ sup (F ∘ γ ∘ lower)
-   III = sup-is-upper-bound (F ∘ γ ∘ lower) (lift 𝓥 (inl ⋆))
-
-   IV : F α ≼ F β
-   IV = ⊴-gives-≼ (F α) (F β) (transport (F α ⊴_) (I ⁻¹ ∙ ap F II) III)
-
- to-is-continuous-generalized : (F : Ordinal 𝓤 → Ordinal 𝓤)
-                              → is-continuous F
-                              → is-continuous-generalized {𝓤} {𝓤} F
- to-is-continuous-generalized {𝓤} F F-cont {S} S-inh γ =
-  transport⁻¹
-   (_＝ sup (F ∘ γ ∘ lower))
-   (F-cont S-inh γ)
-   (⊴-antisym (sup (F ∘ γ)) (sup (F ∘ γ ∘ lower)) I II)
-   where
-    open import UF.UniverseEmbedding
-    I : sup (F ∘ γ) ⊴ sup (F ∘ γ ∘ lower)
-    I = sup-composition-⊴ (lift 𝓤) (F ∘ γ ∘ lower)
-    II : sup (F ∘ γ ∘ lower) ⊴ sup (F ∘ γ)
-    II = sup-composition-⊴ lower (F ∘ γ)
-
- is-monotone-if-continuous : (F : Ordinal 𝓤 → Ordinal 𝓤)
-                           → is-continuous F
-                           → is-monotone (OO 𝓤) (OO 𝓤) F
- is-monotone-if-continuous {𝓤} F F-cont =
-  is-monotone-if-continuous-generalized F (to-is-continuous-generalized F F-cont)
-
-\end{code}

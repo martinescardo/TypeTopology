@@ -45,7 +45,7 @@ open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
-open import Ordinals.Exponentiation.TrichotomousLeastElement ua pt
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 
 \end{code}
 

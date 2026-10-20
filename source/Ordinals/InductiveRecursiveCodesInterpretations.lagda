@@ -793,10 +793,15 @@ Let P be a proposition and assume function extensionality.
 
 (1) If (P → 𝟚) has decidable equality, then ¬ P is decidable.
 
-It doesn't seem to be possible to reverse any of the implications (0)
-and (1), so that the proposition "(P → 2) has decidable equality"
-seems to be strictly between "P is decidable" and "¬P is decidable".
-This is discussed in the file Taboos.P2.
+For a given proposition P, it doesn't seem to be possible to reverse
+either of (0) and (1), and the condition that (P → 𝟚) has decidable
+equality amounts to P being empty or thinly inhabited. Read as
+principles about all propositions, however, this condition is weak
+excluded middle, and so is the decidability of ¬ P, so that (1) does
+reverse, while the reversal of (0) is that weak excluded middle implies
+excluded middle, which may be regarded as a taboo. All of this,
+including the notion of thin inhabitedness, is discussed in the file
+Taboos.P2.
 
 QUESTION. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do
 have (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in Ordinals.ConvergentSequence. This is
