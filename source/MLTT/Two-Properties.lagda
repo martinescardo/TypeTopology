@@ -404,6 +404,28 @@ max𝟚-₀-right : {a b : 𝟚} → max𝟚 a b ＝ ₀ → b ＝ ₀
 max𝟚-₀-right {₀} {b} p = p
 max𝟚-₀-right {₁} {b} p = one-is-zero-elim p
 
+min𝟚-property₁ : (b : 𝟚) → min𝟚 b ₁ ＝ b
+min𝟚-property₁ ₀ = refl
+min𝟚-property₁ ₁ = refl
+
+min𝟚-complement : (b : 𝟚) → min𝟚 b (complement b) ＝ ₀
+min𝟚-complement ₀ = refl
+min𝟚-complement ₁ = refl
+
+max𝟚-complement : (b : 𝟚) → max𝟚 b (complement b) ＝ ₁
+max𝟚-complement ₀ = refl
+max𝟚-complement ₁ = refl
+
+min𝟚-min𝟚-distributivity
+ : (c a b : 𝟚) → min𝟚 c (min𝟚 a b) ＝ min𝟚 (min𝟚 c a) (min𝟚 c b)
+min𝟚-min𝟚-distributivity ₀ a b = refl
+min𝟚-min𝟚-distributivity ₁ a b = refl
+
+min𝟚-max𝟚-distributivity
+ : (c a b : 𝟚) → min𝟚 c (max𝟚 a b) ＝ max𝟚 (min𝟚 c a) (min𝟚 c b)
+min𝟚-max𝟚-distributivity ₀ a b = refl
+min𝟚-max𝟚-distributivity ₁ a b = refl
+
 \end{code}
 
 Addition modulo 2:
