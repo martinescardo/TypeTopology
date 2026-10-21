@@ -476,12 +476,11 @@ would be longer than the equivalence given here.
 
 \end{code}
 
-We now put the two steps above together with the one-point type of the
-module TypeTopology.StoneTypes, by induction on Brouwer codes, to get
-that the Κ interpretation produces ordinals whose underlying types are
-Stone types, where what makes the two steps apply is that the
-underlying type of a successor is a sum of a family over the two-point
-type and that of a limit is the squashed sum of the underlying types.
+The underlying type of a successor is a sum of a family over the
+two-point type, and that of a limit is the squashed sum. So the two
+steps above, together with that for the one-point type of the module
+TypeTopology.StoneTypes, give by induction on Brouwer codes that the Κ
+interpretation produces Stone types.
 
 \begin{code}
 
