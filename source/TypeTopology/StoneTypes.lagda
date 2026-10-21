@@ -1,6 +1,6 @@
 Martin Escardo, 21st October 2026.
 
-We discuss the notion of a Stone type and show as an example that ℕ∞
+We discuss a notion of a Stone type and show as an example that ℕ∞
 is a Stone type, assuming ¬ WLPO. We also discuss that this cannot be
 proved without such an assumption. Our definition of Stone type is
 that of [1], except that we don't consider the restriction to
@@ -22,19 +22,27 @@ ultrafilter is given as the clopen neighbourhoods of a unique point.
 
 We first observe that the evaluation map is an embedding if and only
 if X is totally separated. We then give a criterion for being a Stone
-type and a few facts about it that hold for any type, namely that the
-property is inherited by an equivalent type, that the empty and
-one-point types and the binary sums have it, and that a homomorphism
-is an evaluation as soon as it gives the value ₁ to a clopen whose
-₁-part is a Stone type.
+type and a few facts about it that hold for any type, namely that a
+type equivalent to a Stone type is a Stone type, that the empty and
+one-point types are Stone types, that Stone types are closed under
+binary sums, and that a homomorphism is an evaluation as soon as it
+gives the value ₁ to a clopen whose fiber over ₁ is a Stone type. We
+also show that the finite types and the two-point type are Stone
+types, as is every ¬¬-stable proposition.
 
 We show that ℕ∞ is a Stone type if ¬ WLPO holds, using these facts,
 which are also used in the module Ordinals.BrouwerCodesGiveStoneTypes
 for the compact totally separated interpretation of the Brouwer
-ordinal codes.
+ordinal codes. We also characterize being a Stone type for ℕ∞ as the
+condition that every homomorphism giving the value ₁ to all the upper
+sets is the evaluation at infinity.
 
-Finally, we show that if ¬ WLPO holds then Stone types are **not**
-closed under Σ.
+Finally, we establish two constructive taboos. That all Stone types
+are Π-compact gives WEM, and that they are closed under Σ gives
+¬¬ WLPO, so that if ¬ WLPO holds they are **not** closed under Σ. The
+counterexample for the second uses that products indexed by a
+proposition are Stone types, and in particular that P → 𝟚 is a Stone
+type for a proposition P.
 
 \begin{code}
 
@@ -62,6 +70,7 @@ open import UF.ClassicalLogic
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
@@ -166,12 +175,12 @@ module bhom-properties
   where
    I : h p ∧₂ h (¬̇ p) ＝ ₀
    I = h p ∧₂ h (¬̇ p) ＝⟨ (preserves-∧ p (¬̇ p))⁻¹ ⟩
-       h (p ∧̇ ¬̇ p)    ＝⟨ ap h I₀ ⟩
+       h (p ∧̇ ¬̇ p)    ＝⟨ ap h i₀ ⟩
        h 0̇            ＝⟨ preserves-₀ ⟩
        ₀              ∎
     where
-     I₀ : p ∧̇ ¬̇ p ＝ 0̇
-     I₀ = dfunext fe (λ x → min𝟚-complement (p x))
+     i₀ : p ∧̇ ¬̇ p ＝ 0̇
+     i₀ = dfunext fe (λ x → min𝟚-complement (p x))
 
    II : h p ∨₂ h (¬̇ p) ＝ ₁
    II = h p ∨₂ h (¬̇ p) ＝⟨ (preserves-∨ p (¬̇ p))⁻¹ ⟩
@@ -214,6 +223,9 @@ H X = Σ h ꞉ (C X → 𝟚) , is-bhom h
 is-stone-type : 𝓤 ̇ → 𝓤 ̇
 is-stone-type X = is-equiv (η X)
 
+being-stone-type-is-prop : (X : 𝓤 ̇ ) → is-prop (is-stone-type X)
+being-stone-type-is-prop X = being-equiv-is-prop'' fe (η X)
+
 \end{code}
 
 The first component of η is the map eval X of the module
@@ -249,9 +261,9 @@ totally-separated-gives-η-is-embedding {𝓤} {X} τ
 
 \end{code}
 
-Being a Stone type says that every homomorphism on the clopens is the
-evaluation at a point, and conversely, as η is an embedding when the
-type is totally separated.
+We now show that the homomorphisms on the clopens of a Stone type are
+evaluations, give a criterion for being a Stone type, and show that
+Stone types are totally separated.
 
 \begin{code}
 
@@ -301,9 +313,7 @@ stone-types-are-totally-separated {𝓤} {X} ζ
 
 \end{code}
 
-A type equivalent to a Stone type is a Stone type, because
-precomposition with an equivalence is an isomorphism of the boolean
-algebras of clopens.
+Stone types are closed under equivalence.
 
 \begin{code}
 
@@ -356,9 +366,7 @@ equiv-to-stone-type {𝓤} {𝓥} {X} {Y} 𝕗 ζ
 
 \end{code}
 
-The empty type is a Stone type, because it has no
-homomorphisms on its clopens, as the two constant clopens are equal
-there.
+The empty type is a Stone type.
 
 \begin{code}
 
@@ -413,10 +421,7 @@ The one-point type is a Stone type.
 
 \end{code}
 
-The ₁-part of a clopen q of X is presented by a map j into X together
-with a map ρ in the other direction which is a section of j over that
-part. When the part is a Stone type, a homomorphism giving the value ₁
-to q is an evaluation at a point of it.
+We now give a criterion for a homomorphism to be given by evaluation.
 
 \begin{code}
 
@@ -569,10 +574,7 @@ hom-is-evaluation-criterion {𝓤} {𝓥} {X} {A} q j σ jσ ζ h i e
 
 \end{code}
 
-Being a Stone type is inherited by binary sums. The clopen
-that is ₁ on the first summand and ₀ on the second reduces a
-homomorphism to one of the summands, according to the value it gives to
-that clopen, and then the criterion above applies.
+Stone types are closed under binary sums.
 
 \begin{code}
 
@@ -637,50 +639,7 @@ that clopen, and then the criterion above applies.
 
 \end{code}
 
-The sum of a family over the two-point type, which is the form that a
-binary sum takes in ordinal arithmetic, is a binary sum, and so this
-is a corollary. The library function alternative-+ does this for
-families over 𝟚 rather than over 𝟙 + 𝟙, and the change of variable
-would be longer than the equivalence given here.
-
-\begin{code}
-
-Σ-over-two-is-stone-type
- : (A : 𝟙 {𝓤} + 𝟙 {𝓥} → 𝓦 ̇ )
- → is-stone-type (A (inl ⋆))
- → is-stone-type (A (inr ⋆))
- → is-stone-type (Σ A)
-Σ-over-two-is-stone-type A ζ₀ ζ₁
- = equiv-to-stone-type I (+-is-stone-type ζ₀ ζ₁)
- where
-  f : Σ A → A (inl ⋆) + A (inr ⋆)
-  f (inl ⋆ , z) = inl z
-  f (inr ⋆ , z) = inr z
-
-  g : A (inl ⋆) + A (inr ⋆) → Σ A
-  g (inl z) = inl ⋆ , z
-  g (inr z) = inr ⋆ , z
-
-  gf : g ∘ f ∼ id
-  gf (inl ⋆ , z) = refl
-  gf (inr ⋆ , z) = refl
-
-  fg : f ∘ g ∼ id
-  fg (inl z) = refl
-  fg (inr z) = refl
-
-  I : Σ A ≃ A (inl ⋆) + A (inr ⋆)
-  I = qinveq f (g , gf , fg)
-
-\end{code}
-
-The standard finite types are Stone types, by induction
-on their number of elements, as Fin 0 is the empty type and
-Fin (succ n) is the sum of Fin n with the one-point type. Hence so is
-any type with a finite linear order, in the sense of the module
-Fin.Bishop, which is an equivalence with some Fin n. With
-propositional truncations the same holds for the finite types in the
-sense of Bishop, as being a Stone type is a proposition.
+The standard finite types are Stone types.
 
 \begin{code}
 
@@ -703,8 +662,7 @@ finite-linear-orders-are-stone-types (n , 𝕗)
 
 \end{code}
 
-The two-point type is a Stone type, being a binary sum of
-one-point types.
+The two-point type is a Stone type.
 
 \begin{code}
 
@@ -718,13 +676,7 @@ one-point types.
 
 \end{code}
 
-A ¬¬-stable proposition is a Stone type. It is totally
-separated, being a proposition, and a homomorphism on its clopens
-gives a point of it, because the homomorphism gives different values
-to the two constant clopens, which are equal when the proposition is
-empty, so that the proposition is irrefutable and hence holds. And
-with a point in hand every clopen is constant, as the type is a
-proposition.
+A ¬¬-stable proposition is a Stone type.
 
 \begin{code}
 
@@ -796,7 +748,7 @@ infix 50 ↑_
 
 \end{code}
 
-For a natural number k, the clopen singleton k is the characteristic
+For a natural number k, the clopen `singleton k` is the characteristic
 function of the singleton subset containing the point ι k.
 
 \begin{code}
@@ -901,9 +853,9 @@ module bhom-on-ℕ∞
 
 \end{code}
 
-If u is finite, say u ＝ ι k, then h gives the value ₁ to singleton k, whose
-₁-part is the single point ι k. So the criterion above applies with
-the one-point type, and h agrees with the evaluation at u on all
+If u is finite, say u ＝ ι k, then h gives the value ₁ to singleton k,
+which is ₁ only at the point ι k. So the criterion above applies
+with the one-point type, and h agrees with the evaluation at u on all
 clopens.
 
 \begin{code}
@@ -911,17 +863,17 @@ clopens.
  private
   h-at-singleton : (k : ℕ) → u ＝ ι k → h (singleton k) ＝ ₁
   h-at-singleton 0 e =
-   h (singleton 0)  ＝⟨ preserves-complement (↑ 0) ⟩
-   ¬₂ (α 0) ＝⟨ ap (¬₂_) I ⟩
-   ¬₂ ₀     ＝⟨refl⟩
-   ₁        ∎
+   h (singleton 0) ＝⟨ preserves-complement (↑ 0) ⟩
+   ¬₂ (α 0)        ＝⟨ ap (¬₂_) I ⟩
+   ¬₂ ₀            ＝⟨refl⟩
+   ₁               ∎
     where
      I : α 0 ＝ ₀
      I = α 0       ＝⟨ ap (λ - → ι - 0) e ⟩
          ι (ι 0) 0 ＝⟨ ℕ-to-ℕ∞-diagonal₀ 0 ⟩
          ₀         ∎
   h-at-singleton (succ j) e =
-   h (singleton (succ j))          ＝⟨ i₀ ⟩
+   h (singleton (succ j))  ＝⟨ i₀ ⟩
    α j ∧₂ h (¬̇ ↑ (succ j)) ＝⟨ i₁ ⟩
    α j ∧₂ ¬₂ (α (succ j))  ＝⟨ i₂ ⟩
    ₁ ∧₂ ¬₂ ₀               ＝⟨refl⟩
@@ -965,11 +917,9 @@ clopens.
 \end{code}
 
 If u is the point at infinity, then h gives the value ₁ to every upper
-set, and so a homomorphism that is not the evaluation at u gives the
-value ₁ to every upper set. For such a homomorphism, a modulus of a
-clopen decides the value of h at it, where the density of the finite
-points together with ∞ gives the required inequality of clopens from
-the inequality at those points.
+set, and so does a homomorphism that is not the evaluation at u. For
+such a homomorphism, a modulus of a clopen decides the value that h
+gives to that clopen.
 
 \begin{code}
 
@@ -999,10 +949,10 @@ the inequality at those points.
                (λ (s : ι (ι n) m ＝ ₀)
                    → max𝟚-lemma-converse (inl (ap (¬₂_) s)))
                (λ (s : ι (ι n) m ＝ ₁)
-                   → max𝟚-lemma-converse (inr (II₁ s)))
+                   → max𝟚-lemma-converse (inr (IV s)))
        where
-        II₁ : ι (ι n) m ＝ ₁ → p (ι n) ＝ ₁
-        II₁ s = p (ι n) ＝⟨ φ n (<-coarser-than-≤ m n (⊏-gives-< m n s)) ⟩
+        IV : ι (ι n) m ＝ ₁ → p (ι n) ＝ ₁
+        IV s = p (ι n) ＝⟨ φ n (<-coarser-than-≤ m n (⊏-gives-< m n s)) ⟩
                 p ∞     ＝⟨ r ⟩
                 ₁       ∎
 
@@ -1011,11 +961,11 @@ the inequality at those points.
      where
       III : (↑ m) x ＝ ₁ → p x ＝ ₁
       III s = p x                 ＝⟨refl⟩
-              ₀ ∨₂ p x            ＝⟨ IV₀ ⟩
+              ₀ ∨₂ p x            ＝⟨ IV ⟩
               ¬₂ ((↑ m) x) ∨₂ p x ＝⟨ I x ⟩
               ₁                   ∎
        where
-        IV₀ = ap (λ - → ¬₂ - ∨₂ p x) (s ⁻¹)
+        IV = ap (λ - → ¬₂ - ∨₂ p x) (s ⁻¹)
 
  h-at-∞ : u ＝ ∞
         → (p : C ℕ∞) (m : ℕ)
@@ -1055,8 +1005,8 @@ the inequality at those points.
 \end{code}
 
 Putting the two cases together, h is the evaluation at u as soon as it
-is the evaluation at ∞ when u is ∞, which is the following criterion,
-and that ¬ WLPO holds gives its hypothesis.
+is the evaluation at ∞ when u is ∞, which is the following criterion.
+If ¬ WLPO holds then the criterion applies.
 
 \begin{code}
 
@@ -1107,11 +1057,8 @@ gives that ℕ∞ is a Stone type if ¬ WLPO holds.
 
 \end{code}
 
-
-The following characterization says what being a Stone type amounts to
-for ℕ∞ in general. The homomorphisms left over by the above argument
-are those that give the value ₁ to every upper set, and ℕ∞ is a Stone
-type precisely when all of them are the evaluation at ∞.
+ℕ∞ is a Stone type precisely when every homomorphism that gives the
+value ₁ to all the upper sets is the evaluation at ∞.
 
 \begin{code}
 
@@ -1163,20 +1110,19 @@ evaluation-at-∞-gives-stone φ
 
 \end{code}
 
+That ℕ∞ is a Stone type is not provable without a hypothesis such as
+¬ WLPO. With choice there is a nonprincipal ultrafilter on ℕ, which is
+a homomorphism on the clopens of ℕ∞ that is not the evaluation at any
+point, so that ℕ∞ is not a Stone type in such a model.
+
 That ¬ WLPO holds is sufficient for ℕ∞ to be a Stone type, but it is not
 necessary. It is consistent with ZF that every ultrafilter on every set
 is principal, by a model of Blass [2] where the ultrafilters on ℕ are
-all principal. Excluded middle holds in the model of Blass, and hence so
-does WLPO, and there ℕ∞ is the set ℕ + 𝟙, the clopens of ℕ∞ are all the
-subsets of that set, and the homomorphisms on the clopens are its
-ultrafilters, which are all evaluations. So ℕ∞ is a Stone type there,
-and its being a Stone type doesn't give that ¬ WLPO holds.
-
-The module Ordinals.BrouwerCodesGiveStoneTypes generalizes the above
-result for ℕ∞, again assuming that ¬ WLPO holds, to the compact
-totally separated interpretation of the Brouwer ordinal codes, of
-which ℕ∞ is the interpretation of the code for the first infinite
-ordinal.
+all principal. In the model of Blass excluded middle holds, and hence so
+does WLPO, and ℕ∞ is the set ℕ + 𝟙. Every subset of ℕ + 𝟙 is decidable,
+so the clopens of ℕ∞ are the characteristic functions of all the subsets
+of ℕ + 𝟙, and the homomorphisms on the clopens are the ultrafilters on
+ℕ + 𝟙, which are all evaluations. So ℕ∞ is a Stone type in that model.
 
 [2] Blass, "A model without ultrafilters", Bull. Acad. Polon. Sci. 25,
     1977, pp. 329-331, which extends a model of Feferman, "Some
@@ -1185,13 +1131,21 @@ ordinal.
     https://doi.org/10.4064/fm-56-3-325-345.
 
 
-If all Stone types are Π-compact then WEM holds. A Π-compact type has
-decidable emptiness, by the decision for the constant clopen 0̇, and
-the type ¬ Q of a proposition Q is a ¬¬-stable proposition and hence a
-Stone type, so that the emptiness of ¬ Q, which is ¬¬ Q, would be
-decidable for every proposition Q. The definition of Π-compactness is
-repeated from the module TypeTopology.WeaklyCompactTypes, which is
-parametrized by propositional truncations, which are not assumed here.
+The module Ordinals.BrouwerCodesGiveStoneTypes generalizes the above
+result for ℕ∞, again assuming that ¬ WLPO holds, to the compact
+totally separated interpretation of the Brouwer ordinal codes, of
+which ℕ∞ is the interpretation of the code for the first infinite
+ordinal.
+
+
+We now show that if all Stone types are Π-compact then WEM holds. A
+Π-compact type has decidable emptiness, by the decision for the
+constant clopen 0̇, and the negation ¬ Q of a proposition Q is a
+¬¬-stable proposition and hence a Stone type, so that the emptiness of
+¬ Q, which is ¬¬ Q, would be decidable for every proposition Q. We
+repeat the definition of Π-compactness from the module
+TypeTopology.WeaklyCompactTypes, which is parametrized by
+propositional truncations, which we don't assume here.
 
 \begin{code}
 
@@ -1228,19 +1182,16 @@ Stone-Types-Are-Π-Compact 𝓤 = (X : 𝓤 ̇ ) → is-stone-type X → is-Π-c
 
 \end{code}
 
-Products indexed by a proposition are Stone types if all their members
-are, which is the analogue for this notion of the micro Tychonoff
-theorem of the module TypeTopology.MicroTychonoff.
+A product of Stone types indexed by a proposition is a Stone type,
+which is the analogue of the micro Tychonoff theorem of the module
+TypeTopology.MicroTychonoff.
 
-The point at which a homomorphism h evaluates has to be given
-uniformly in the witnesses of P, which is possible because a point of
-Π Y is precisely a rule assigning a point of Y p to each proof p of P,
-and a proof p gives an equivalence of Π Y with Y p, along which h
-becomes a homomorphism on the clopens of Y p and so evaluates at a
-point of it. The equation h r ＝ r v is an equality of booleans and
-hence ¬¬-stable, so P can be decided while proving it, and both cases
-are instances of the above, as Π Y is equivalent to Y p if P holds and
-to 𝟙 if it doesn't.
+In the following proof, the point at which h evaluates has to be given
+uniformly in the witness of P, since a point of Π Y is a map assigning
+a point of Y p to each witness p. The conclusion h r ＝ r v is an
+equation of booleans and hence ¬¬-stable, and P + ¬ P is irrefutable,
+so the proof may assume it, and then Π Y is equivalent to Y p or to 𝟙,
+both of which are Stone types.
 
 \begin{code}
 
@@ -1261,7 +1212,7 @@ prop-indexed-products-are-stone-types {𝓤} {𝓥} {P} {Y} P-is-prop ζ
   I : (h : C (Π Y) → 𝟚)
     → is-bhom h
     → Σ v ꞉ Π Y , ((r : C (Π Y)) → h r ＝ r v)
-  I h i = v , IV
+  I h i = f , IV
    where
     open bhom-properties h i
 
@@ -1277,11 +1228,11 @@ prop-indexed-products-are-stone-types {𝓤} {𝓥} {P} {Y} P-is-prop ζ
     II : (p : P) → Σ x ꞉ Y p , ((r : C (Y p)) → hₚ p r ＝ r x)
     II p = homs-are-evaluations (ζ p) (hₚ p) (hₚ-is-bhom p)
 
-    v : Π Y
-    v p = pr₁ (II p)
+    f : Π Y
+    f p = pr₁ (II p)
 
-    v-property : (p : P) (r : C (Y p)) → hₚ p r ＝ r (v p)
-    v-property p = pr₂ (II p)
+    f-property : (p : P) (r : C (Y p)) → hₚ p r ＝ r (f p)
+    f-property p = pr₂ (II p)
 
 \end{code}
 
@@ -1291,27 +1242,27 @@ clopens.
 
 \begin{code}
 
-    III : (Σ w ꞉ Π Y , ((r : C (Π Y)) → h r ＝ r w))
-        → (r : C (Π Y)) → h r ＝ r v
-    III (w , φ) r = h r ＝⟨ φ r ⟩
-                    r w ＝⟨ ap r (V ⁻¹) ⟩
-                    r v ∎
+    III : (Σ g ꞉ Π Y , ((r : C (Π Y)) → h r ＝ r g))
+        → (r : C (Π Y)) → h r ＝ r f
+    III (g , φ) r = h r ＝⟨ φ r ⟩
+                    r g ＝⟨ ap r (V ⁻¹) ⟩
+                    r f ∎
      where
-      V : v ＝ w
+      V : f ＝ g
       V = dfunext fe VI
        where
-        VI : (p : P) → v p ＝ w p
+        VI : (p : P) → f p ＝ g p
         VI p = stone-types-are-totally-separated (ζ p) vi
          where
-          vi : (r : C (Y p)) → r (v p) ＝ r (w p)
-          vi r = r (v p) ＝⟨ (v-property p r)⁻¹ ⟩
+          vi : (r : C (Y p)) → r (f p) ＝ r (g p)
+          vi r = r (f p) ＝⟨ (f-property p r)⁻¹ ⟩
                  hₚ p r  ＝⟨ φ (r ∘ ⌜ 𝕖 p ⌝) ⟩
-                 r (w p) ∎
+                 r (g p) ∎
 
-    IV : (r : C (Π Y)) → h r ＝ r v
-    IV r = 𝟚-is-¬¬-separated (h r) (r v) V
+    IV : (r : C (Π Y)) → h r ＝ r f
+    IV r = 𝟚-is-¬¬-separated (h r) (r f) V
      where
-      V : ¬¬ (h r ＝ r v)
+      V : ¬¬ (h r ＝ r f)
       V ν = VI VIII
        where
         VI : ¬¬ (P + ¬ P)
@@ -1345,13 +1296,12 @@ P→𝟚-is-stone-type P-is-prop
 \end{code}
 
 We now use this to show that if ¬ WLPO holds then Stone types are
-**not** closed under Σ. The counter-example is the type ℕ∞₂ of the
+**not** closed under Σ. A counterexample is the type ℕ∞₂ of the
 module TypeTopology.FailureOfTotalSeparatedness, whose total
-separatedness gives ¬¬ WLPO there. Its base ℕ∞ is a Stone type when ¬
-WLPO holds, and its fibers are of the form P → 𝟚 for a proposition P
-and hence are Stone types, so that the closure would make ℕ∞₂ a Stone
-type and hence totally separated. The statement is formulated for the
-first universe, which is where the counter-example lives.
+separatedness gives ¬¬ WLPO. Its base ℕ∞ is a Stone type when ¬ WLPO
+holds, and its fibers are of the form P → 𝟚 for a proposition P and
+hence are Stone types, so that the closure would make ℕ∞₂ a Stone type
+and hence totally separated.
 
 \begin{code}
 

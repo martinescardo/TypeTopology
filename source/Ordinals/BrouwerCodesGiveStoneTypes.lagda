@@ -8,16 +8,16 @@ that ¬ WLPO holds.
 
 The hypothesis ¬ WLPO is used only for the limit constructor, and it
 can't be dropped, because the code L (λ n → Z) is interpreted as a type
-equivalent to ℕ∞, which is a Stone type in a model of excluded middle,
-as discussed in the module TypeTopology.StoneTypes.
+equivalent to ℕ∞, which is not a Stone type in a model of choice, as
+discussed in the module TypeTopology.StoneTypes.
 
-The successor constructor and the finite part of the limit constructor
-are handled by the criteria of the above module, which say when a
-homomorphism is an evaluation. Here we show that the squashed sum of a
-family of Stone types is a Stone type if ¬ WLPO holds, which is the
-interpretation of the limit constructor, where the hypothesis plays the
-same role as for ℕ∞, by giving the ¬¬-existence of a modulus of
-continuity.
+The successor constructor reduces to the binary sums of the above
+module, and the finite part of the limit constructor is handled by its
+criteria, which say when a homomorphism is an evaluation. Here we show
+that the squashed sum of a family of compact Stone types is a Stone
+type if ¬ WLPO holds, which is the interpretation of the limit
+constructor, where the hypothesis plays the same role as for ℕ∞, by
+giving the ¬¬-existence of a modulus of continuity.
 
 \begin{code}
 
@@ -38,14 +38,14 @@ private
 open import CoNaturals.Type
 open import InjectiveTypes.Blackboard fe'
 open import MLTT.Two-Properties
- renaming (max𝟚 to infixl 39 _∨₂_ ; min𝟚 to infixl 40 _∧₂_ ;
+ renaming (max𝟚 to infixl 39 _∨₂_ ;
+           min𝟚 to infixl 40 _∧₂_ ;
            complement to infix 41 ¬₂_)
 open import Naturals.Order renaming (max to maxℕ)
 open import Notation.CanonicalMap
 open import Notation.Order
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
-open import TypeTopology.TotallySeparated
 open import TypeTopology.StoneTypes fe
 open import UF.Base
 open import UF.DiscreteAndSeparated
@@ -86,11 +86,6 @@ module _ (X : ℕ → 𝓤 ̇ )
    equiv-to-stone-type
     (Π-extension-property X ι ι-is-embedding k)
     (δ k)
-
-  Σ¹-is-ts : is-totally-separated (Σ¹ X)
-  Σ¹-is-ts =
-   Σ¹-is-totally-separated X
-    (λ n → stone-types-are-totally-separated (δ n))
 
   pullback : C ℕ∞ → C (Σ¹ X)
   pullback q = q ∘ Σ¹-base
@@ -157,18 +152,18 @@ they agree with the value of p at the only point of the fiber.
    where
     I : all p ∞ ＝ ₀ → all p ∞ ＝ p (∞ , y)
     I d = all p ∞   ＝⟨ d ⟩
-          ₀         ＝⟨ I₁ ⁻¹ ⟩
+          ₀         ＝⟨ IV ⁻¹ ⟩
           p (∞ , y) ∎
      where
-      I₀ : p (∞ , y) ＝ ₁ → (y' : Y ∞) → p (∞ , y') ＝ ₁
-      I₀ d y' = transport (λ - → p (∞ , -) ＝ ₁)
-                 (singletons-are-props (ι-∞-is-singleton X) y y')
-                 d
+      III : p (∞ , y) ＝ ₁ → (y' : Y ∞) → p (∞ , y') ＝ ₁
+      III d y' = transport (λ - → p (∞ , -) ＝ ₁)
+                  (singletons-are-props (ι-∞-is-singleton X) y y')
+                  d
 
-      I₁ : p (∞ , y) ＝ ₀
-      I₁ = different-from-₁-equal-₀
+      IV : p (∞ , y) ＝ ₀
+      IV = different-from-₁-equal-₀
             (λ (s : p (∞ , y) ＝ ₁)
-               → equal-₀-different-from-₁ d (all-from-all p ∞ (I₀ s)))
+               → equal-₀-different-from-₁ d (all-from-all p ∞ (III s)))
 
     II : all p ∞ ＝ ₁ → all p ∞ ＝ p (∞ , y)
     II d = all p ∞   ＝⟨ d ⟩
@@ -215,7 +210,7 @@ family of clopens of the fibers, whose members are ¬¬-separated.
 \end{code}
 
 Now let h be a homomorphism of the clopens of the squashed sum into
-the booleans. Its composite with the pullbackback of the clopens of ℕ∞
+the booleans. Its composite with the pullback of the clopens of ℕ∞
 is a homomorphism, which gives the base u of the only point at which h
 can be the evaluation, together with the facts about u established in
 the module TypeTopology.StoneTypes. The fiber component of the point
@@ -264,7 +259,7 @@ a product indexed by the witnesses that u is finite.
       I = h (pullback (singleton k)) ＝⟨ h-at-finite k e (singleton k) ⟩
           singleton k u              ＝⟨ ap (singleton k) e ⟩
           singleton k (ι k)          ＝⟨ singleton-property₁ k ⟩
-          ₁                  ∎
+          ₁                          ∎
 
     summand-point : (k : ℕ) → u ＝ ι k → Y (ι k)
     summand-point k e = pr₁ (summand k e)
@@ -292,11 +287,11 @@ a product indexed by the witnesses that u is finite.
 \end{code}
 
 In the case where the base is ∞, the homomorphism gives the value ₁ to
-every pullbackback of an upper set, and then a modulus of all p decides
-value of h at p when p is ₁ at the point at infinity, while a modulus
-of some p does it when p is ₀ there. In both cases the density of the
-finite points together with ∞ turns the information at those points
-into an inequality of clopens.
+every pullback of an upper set, and then the value of h at p is decided
+by a modulus of all p when p is ₁ at the point at infinity, and by a
+modulus of some p when p is ₀ at that point. In both cases the density
+of the finite points together with ∞ turns the information at those
+points into an inequality of clopens.
 
 \begin{code}
 
@@ -331,13 +326,13 @@ into an inequality of clopens.
         IV y = max𝟚-lemma-converse (inr (all-gives-all p ∞ r y))
 
       II : pullback (↑ m) ≤̇ p
-      II x = ≤₂-criterion v
+      II x = ≤₂-criterion III
        where
-        v : pullback (↑ m) x ＝ ₁ → p x ＝ ₁
-        v s = p x                        ＝⟨refl⟩
-              ₀ ∨₂ p x                   ＝⟨ ap (λ - → ¬₂ - ∨₂ p x) (s ⁻¹) ⟩
-              ¬₂ pullback (↑ m) x ∨₂ p x ＝⟨ I x ⟩
-              ₁                          ∎
+        III : pullback (↑ m) x ＝ ₁ → p x ＝ ₁
+        III s = p x                        ＝⟨refl⟩
+                ₀ ∨₂ p x                   ＝⟨ ap (λ - → ¬₂ - ∨₂ p x) (s ⁻¹) ⟩
+                ¬₂ pullback (↑ m) x ∨₂ p x ＝⟨ I x ⟩
+                ₁                          ∎
 
     ∞-case-₀ : u ＝ ∞
              → (p : C (Σ¹ X)) (m : ℕ)
@@ -369,13 +364,13 @@ into an inequality of clopens.
                (inl (ap ¬₂_ (not-some-gives-none p ∞ r y)))
 
       II : p ≤̇ ¬̇ pullback (↑ m)
-      II x = ≤₂-criterion v
+      II x = ≤₂-criterion IV
        where
-        v : p x ＝ ₁ → ¬₂ pullback (↑ m) x ＝ ₁
-        v s = ¬₂ pullback (↑ m) x           ＝⟨refl⟩
-              ₀ ∨₂ ¬₂ pullback (↑ m) x      ＝⟨ ap (λ - → ¬₂ - ∨₂ _) (s ⁻¹) ⟩
-              ¬₂ p x ∨₂ ¬₂ pullback (↑ m) x ＝⟨ I x ⟩
-              ₁                             ∎
+        IV : p x ＝ ₁ → ¬₂ pullback (↑ m) x ＝ ₁
+        IV s = ¬₂ pullback (↑ m) x           ＝⟨refl⟩
+               ₀ ∨₂ ¬₂ pullback (↑ m) x      ＝⟨ ap (λ - → ¬₂ - ∨₂ _) (s ⁻¹) ⟩
+               ¬₂ p x ∨₂ ¬₂ pullback (↑ m) x ＝⟨ I x ⟩
+               ₁                             ∎
 
       III : h (¬̇ pullback (↑ m)) ＝ ₀
       III = h (¬̇ pullback (↑ m))    ＝⟨ preserves-complement (pullback (↑ m)) ⟩
@@ -436,13 +431,57 @@ into an inequality of clopens.
 
  Σ¹-is-stone-type : ¬ WLPO → is-stone-type (Σ¹ X)
  Σ¹-is-stone-type nwlpo =
-  stone-criterion Σ¹-is-ts
+  stone-criterion
+   (Σ¹-is-totally-separated X
+     (λ n → stone-types-are-totally-separated (δ n)))
    (λ h i → h-is-an-evaluation h i nwlpo)
 
 \end{code}
 
-Putting the three steps together, by induction on Brouwer codes, we
-get that the Κ interpretation produces Stone ordinals.
+The sum of a family over the two-point type, which is the form that a
+binary sum takes in ordinal arithmetic, is a binary sum, and so the
+successor step is a corollary of the binary sums of the module
+TypeTopology.StoneTypes. The library function alternative-+ does this
+for families over 𝟚 rather than over 𝟙 + 𝟙, and the change of variable
+would be longer than the equivalence given here.
+
+\begin{code}
+
+Σ-over-two-is-stone-type
+ : (A : 𝟙 {𝓤} + 𝟙 {𝓥} → 𝓦 ̇ )
+ → is-stone-type (A (inl ⋆))
+ → is-stone-type (A (inr ⋆))
+ → is-stone-type (Σ A)
+Σ-over-two-is-stone-type A ζ₀ ζ₁
+ = equiv-to-stone-type I (+-is-stone-type ζ₀ ζ₁)
+ where
+  f : Σ A → A (inl ⋆) + A (inr ⋆)
+  f (inl ⋆ , z) = inl z
+  f (inr ⋆ , z) = inr z
+
+  g : A (inl ⋆) + A (inr ⋆) → Σ A
+  g (inl z) = inl ⋆ , z
+  g (inr z) = inr ⋆ , z
+
+  gf : g ∘ f ∼ id
+  gf (inl ⋆ , z) = refl
+  gf (inr ⋆ , z) = refl
+
+  fg : f ∘ g ∼ id
+  fg (inl z) = refl
+  fg (inr z) = refl
+
+  I : Σ A ≃ A (inl ⋆) + A (inr ⋆)
+  I = qinveq f (g , gf , fg)
+
+\end{code}
+
+We now put the two steps above together with the one-point type of the
+module TypeTopology.StoneTypes, by induction on Brouwer codes, to get
+that the Κ interpretation produces ordinals whose underlying types are
+Stone types, where what makes the two steps apply is that the
+underlying type of a successor is a sum of a family over the two-point
+type and that of a limit is the squashed sum of the underlying types.
 
 \begin{code}
 
