@@ -1,5 +1,4 @@
-Martin Escardo, 24th March 2022
-with minor improvements and additions June 2024.
+Martin Escardo, 24th March 2022, with additions June 2024 and October 2026.
 
 This file is a apropos the discussion at the end of the file
 Ordinals.InductiveRecursiveCodesInterpretations.
