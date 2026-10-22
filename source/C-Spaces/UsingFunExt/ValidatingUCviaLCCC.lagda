@@ -39,7 +39,7 @@ We show that it is validated in C-spaces step by step:
 πβ⁴ : U Γ⁴ → U (ℕSpace ⇒ 𝟚Space)
 πβ⁴ (((_ , _) , _) , β) = β
 
-Γ⁴Prp : U Γ⁴ → Set
+Γ⁴Prp : U Γ⁴ → 𝓤₀ ̇
 Γ⁴Prp w = pr₁(πα⁴ w) ＝⟦ πn⁴ w ⟧ pr₁(πβ⁴ w)
 
 dom⟦u₁⟧ : Space
@@ -63,7 +63,7 @@ dom⟦u₁⟧ = Subspace Γ⁴ Γ⁴Prp
 πβ⁵ : U Γ⁵ → U (ℕSpace ⇒ 𝟚Space)
 πβ⁵ = πβ⁴ ∘ pr₁
 
-Γ⁵Prp : U Γ⁵ → Set
+Γ⁵Prp : U Γ⁵ → 𝓤₀ ̇
 Γ⁵Prp w = pr₁ (πf⁵ w) (πα⁵ w) ＝ pr₁ (πf⁵ w) (πβ⁵ w)
 
 dom⟦u₂⟧ : Space
@@ -247,7 +247,7 @@ To validate UC is equivalent to inhabit the space dom⟦uc⟧.
 
 \begin{code}
 
-UC-is-validated : Type
+UC-is-validated : 𝓤₀ ̇
 UC-is-validated = U dom⟦uc⟧
 
 Theorem : UC-is-validated

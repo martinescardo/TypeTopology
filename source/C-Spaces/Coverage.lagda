@@ -1,4 +1,4 @@
-Chuangjie Xu 2012, ported to TypeTopology in 2025
+it stChuangjie Xu 2012, ported to TypeTopology in 2025
 
 \begin{code}
 
@@ -24,12 +24,12 @@ The monoid of uniformly continuous ₂ℕ → ₂ℕ:
 
 \begin{code}
 
-C : (₂ℕ → ₂ℕ) → Set
+C : (₂ℕ → ₂ℕ) → 𝓤₀ ̇
 C = uniformly-continuous-₂ℕ
 
 infixl 4 _∈_
 
-_∈_ : {X : Type} → X → (X → Set) → Set
+_∈_ : {X : 𝓤₀ ̇ } → X → (X → 𝓤₀ ̇ ) → 𝓤₀ ̇
 x ∈ A = A x
 
 \end{code}

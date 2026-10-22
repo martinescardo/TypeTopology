@@ -23,7 +23,7 @@ The terminal C-space:
 𝟙Space : Space
 𝟙Space = 𝟙 , P , c₀ , c₁ , c₂
  where
-  P : (₂ℕ → 𝟙) → Set
+  P : (₂ℕ → 𝟙) → 𝓤₀ ̇
   P p = 𝟙
   c₀ : ∀(x : 𝟙) → (λ α → x) ∈ P
   c₀ _ = ⋆
@@ -46,7 +46,7 @@ infixl 3 _⊗_
 _⊗_ : Space → Space → Space
 (X , P , pc₀ , pc₁ , pc₂) ⊗ (Y , Q , qc₀ , qc₁ , qc₂) = (X × Y) , R , rc₀ , rc₁ , rc₂
  where
-  R : (₂ℕ → X × Y) → Set
+  R : (₂ℕ → X × Y) → 𝓤₀ ̇
   R r = ((pr₁ ∘ r) ∈ P) × ((pr₂ ∘ r) ∈ Q)
 
   rc₀ : ∀(w : X × Y) → (λ α → w) ∈ R
@@ -84,7 +84,7 @@ infixr 3 _⇒_
 _⇒_ : Space → Space → Space
 X ⇒ Y = Map X Y , R , rc₀ , rc₁ , rc₂
  where
-  R : (₂ℕ → Map X Y) → Set
+  R : (₂ℕ → Map X Y) → 𝓤₀ ̇
   R r = ∀(p : ₂ℕ → U X) → p ∈ Probe X → ∀(t : ₂ℕ → ₂ℕ) → t ∈ C →
          (λ α → (pr₁ ∘ r)(t α)(p α)) ∈ Probe Y
 
@@ -183,15 +183,15 @@ Arbitrary product of C-spaces
 
 \begin{code}
 
-∏ : {I : Type} → (I → Space) → Space
+∏ : {I : 𝓤₀ ̇ } → (I → Space) → Space
 ∏ {I} X = A , P , c₀ , c₁ , c₂
  where
-  A : Type
+  A : 𝓤₀ ̇
   A = (i : I) → U(X i)
   π : (i : I) → A → U(X i)
   π i a = a i
 
-  P : (₂ℕ → A) → Set
+  P : (₂ℕ → A) → 𝓤₀ ̇
   P p = ∀(i : I) → (π i) ∘ p ∈ Probe (X i)
 
   c₀ : ∀(a : A) → (λ α → a) ∈ P
@@ -204,7 +204,7 @@ Arbitrary product of C-spaces
   c₂ p (n , pr) i = cond₂ (X i) ((π i) ∘ p) (n , λ s → pr s i)
 
 
-continuous-π : {I : Type} → (X : I → Space) → (i : I) → Map (∏ X) (X i)
+continuous-π : {I : 𝓤₀ ̇ } → (X : I → Space) → (i : I) → Map (∏ X) (X i)
 continuous-π {I} X i = π , cts
  where
   π : U(∏ X) → U(X i)
@@ -214,7 +214,7 @@ continuous-π {I} X i = π , cts
 
 
 universal-property-∏ :
-    {I : Type} → ∀(X : I → Space) →
+    {I : 𝓤₀ ̇ } → ∀(X : I → Space) →
     ∀(Y : Space) → ∀(f : (i : I) → Map Y (X i)) →
     Σ \(g : Map Y (∏ X)) →
       ∀(i : I) → ∀(y : U Y) → pr₁(continuous-π X i)(pr₁ g y) ＝ pr₁ (f i) y

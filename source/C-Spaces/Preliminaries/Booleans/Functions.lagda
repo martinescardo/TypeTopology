@@ -18,7 +18,7 @@ Boolean if-then-else
 
 \begin{code}
 
-if : {A : Type} → 𝟚 → A → A → A
+if : {A : 𝓤₀ ̇ } → 𝟚 → A → A → A
 if b a₀ a₁ = 𝟚-cases a₀ a₁ b
 
 \end{code}

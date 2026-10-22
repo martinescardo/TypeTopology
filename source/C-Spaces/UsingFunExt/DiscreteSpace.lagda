@@ -32,10 +32,10 @@ space are continuous.
 
 \begin{code}
 
-LC : {X : Type} → (₂ℕ → X) → Set
+LC : {X : 𝓤₀ ̇ } → (₂ℕ → X) → 𝓤₀ ̇
 LC = locally-constant
 
-LC-topology : (X : Type) → is-discrete X → probe-axioms X LC
+LC-topology : (X : 𝓤₀ ̇ ) → is-discrete X → probe-axioms X LC
 LC-topology X dis = c₀ , c₁ , c₂
  where
   c₀ : ∀(x : X) → (λ α → x) ∈ LC
@@ -113,11 +113,11 @@ LC-topology X dis = c₀ , c₁ , c₂
       goal = claim₀ ∙ claim₁ ∙ claim₂
 
 
-DiscreteSpace : (X : Type) → is-discrete X → Space
+DiscreteSpace : (X : 𝓤₀ ̇ ) → is-discrete X → Space
 DiscreteSpace X dec = X , LC , LC-topology X dec
 
 
-Lemma[discreteness] : (X : Type) (dec : is-discrete X) (Y : Space)
+Lemma[discreteness] : (X : 𝓤₀ ̇ ) (dec : is-discrete X) (Y : Space)
                     → ∀(f : X → U Y) → continuous (DiscreteSpace X dec) Y f
 Lemma[discreteness] X dec Y f p (m , prf , _) = cond₂ Y (f ∘ p) (m , claim)
  where
@@ -277,7 +277,7 @@ When X is an hset, local constancy of ₂ℕ → X is an hprop.
 
 \begin{code}
 
-Lemma[LC-hprop] : {X : Type} → is-set X → ∀(p : ₂ℕ → X) → (lc₀ lc₁ : p ∈ LC) → lc₀ ＝ lc₁
+Lemma[LC-hprop] : {X : 𝓤₀ ̇ } → is-set X → ∀(p : ₂ℕ → X) → (lc₀ lc₁ : p ∈ LC) → lc₀ ＝ lc₁
 Lemma[LC-hprop] hsX p (n₀ , (prf₀ , min₀)) (n₁ , (prf₁ , min₁)) = to-Σ-＝ (e , ee)
  where
   e : n₀ ＝ n₁
@@ -303,7 +303,7 @@ Lemma[LC-hprop] hsX p (n₀ , (prf₀ , min₀)) (n₁ , (prf₁ , min₁)) = to
   ee = to-×-＝ epr emin
 
 
-Lemma[Map-discrete] : (X : Space)(Y : Type)(d : is-discrete Y)(h : is-set Y) →
+Lemma[Map-discrete] : (X : Space)(Y : 𝓤₀ ̇ )(d : is-discrete Y)(h : is-set Y) →
                       (f g : Map X (DiscreteSpace Y d)) →
                       (∀(x : U X) → pr₁ f x ＝ pr₁ g x) → f ＝ g
 Lemma[Map-discrete] X Y d h (f , cf) (g , cg) ex = to-Σ-＝ (e₀ , e₁)
@@ -311,7 +311,7 @@ Lemma[Map-discrete] X Y d h (f , cf) (g , cg) ex = to-Σ-＝ (e₀ , e₁)
   e₀ : f ＝ g
   e₀ = fe ex
       ----
-  W : ((p : ₂ℕ → U X) → p ∈ Probe X → ℕ) → Set
+  W : ((p : ₂ℕ → U X) → p ∈ Probe X → ℕ) → 𝓤₀ ̇
   W φ = (∀(p : ₂ℕ → U X) (pX : p ∈ Probe X) →
          ∀(α β : ₂ℕ) → α ＝⟦ φ p pX ⟧ β → g(p α) ＝ g(p β))
       × (∀(p : ₂ℕ → U X) → ∀(pX : p ∈ Probe X) →

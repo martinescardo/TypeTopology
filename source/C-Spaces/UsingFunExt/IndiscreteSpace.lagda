@@ -24,7 +24,7 @@ Indiscrete C-spaces
 
 \begin{code}
 
-indiscrete : Space → Set
+indiscrete : Space → 𝓤₀ ̇
 indiscrete X = ∀(p : ₂ℕ → U X) → p ∈ Probe X
 
 \end{code}
@@ -35,7 +35,7 @@ The arbitrary product of indiscrete spaces is indiscrete.
 
 Proposition[∏-indiscrete] :
 
-  ∀{I : Type} (X : I → Space) → (∀ i → indiscrete (X i)) → indiscrete (∏ X)
+  ∀{I : 𝓤₀ ̇ } (X : I → Space) → (∀ i → indiscrete (X i)) → indiscrete (∏ X)
 
 Proposition[∏-indiscrete] X indX p = goal
  where
