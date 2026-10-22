@@ -336,19 +336,22 @@ being-hae-is-subsingleton : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥 → dfunext 
 
 being-hae-is-subsingleton fe₀ fe₁ fe₂ {X} {Y} f = subsingleton-criterion' γ
  where
-  a = λ g ε x
-    → ((g (f x) , ε (f x)) ＝ (x , refl (f x)))                                   ≃⟨ i  g ε x ⟩
-      (Σ p ꞉ g (f x) ＝ x , transport (λ - → f - ＝ f x) p (ε (f x)) ＝ refl (f x)) ≃⟨ ii g ε x ⟩
-      (Σ p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))                                     ■
-   where
-    i  = λ g ε x → Σ-＝-≃ (g (f x) , ε (f x)) (x , refl (f x))
-    ii = λ g ε x → Σ-cong (λ p → transport-ap-≃ f p (ε (f x)))
+  a : (g : Y → X) (ε : (x : Y) → f (g x) ＝ x) (x : X)
+    → (g (f x) , ε (f x) ＝ (x , refl (f x)))
+    ≃ (Σ p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))
+  a g ε x =
+   ((g (f x) , ε (f x)) ＝ (x , refl (f x)))                                     ≃⟨ i ⟩
+   (Σ p ꞉ g (f x) ＝ x , transport (λ - → f - ＝ f x) p (ε (f x)) ＝ refl (f x)) ≃⟨ ii ⟩
+   (Σ p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))                                      ■
+    where
+     i  = Σ-＝-≃ (g (f x) , ε (f x)) (x , refl (f x))
+     ii = Σ-cong (λ p → transport-ap-≃ f p (ε (f x)))
 
   b = (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ＝ (x , refl (f x)))         ≃⟨ i ⟩
-      (Σ (g , ε) ꞉ has-section f , ∀ x → Σ  p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))          ≃⟨ ii ⟩
-      (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , ∀ x → Σ  p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))   ≃⟨ iii ⟩
+      (Σ (g , ε) ꞉ has-section f , ∀ x → Σ  p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))         ≃⟨ ii ⟩
+      (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , ∀ x → Σ  p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))  ≃⟨ iii ⟩
       (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , Σ η ꞉ g ∘ f ∼ id , ∀ x → ap f (η x) ＝ ε (f x)) ≃⟨ iv ⟩
-      is-hae f                                                                           ■
+      is-hae f                                                                            ■
    where
     i   = Σ-cong (λ (g , ε) → Π-cong fe₂ fe₂ (a g ε))
     ii  = Σ-assoc

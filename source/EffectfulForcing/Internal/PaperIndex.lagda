@@ -7,7 +7,7 @@ date-started: 2025-02-03
 
 \begin{code}
 
-{-# OPTIONS --safe #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
@@ -146,7 +146,7 @@ Definition-13 = generic
 Definition-14 : Termᵀ₀ ((ι ⇒ ι) ⇒ ι) → 𝒟 ℕ
 Definition-14 = dialogue-tree
 
-Definition-15 : (σ : Typeᵀ) → (ℕ → ℕ) → 〖 σ 〗 → 〖 σ 〗𝒟 → Type
+Definition-15 : (σ : Typeᵀ) → (ℕ → ℕ) → 〖 σ 〗 → 〖 σ 〗𝒟 → 𝓤₀ ̇
 Definition-15 σ = R {σ}
 
 Theorem-16 : (α : ℕ → ℕ) (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι))

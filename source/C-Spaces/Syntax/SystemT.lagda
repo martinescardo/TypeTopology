@@ -27,7 +27,7 @@ binary products, and function spaces.
 infixr 10 _⊠_
 infixr 10 _⇨_
 
-data Ty : Type where
+data Ty : 𝓤₀ ̇  where
  ② : Ty
  Ⓝ : Ty
  _⊠_ : Ty → Ty → Ty
@@ -48,7 +48,7 @@ steps to the left in the context.
 
 infixl 10 _₊_
 
-data Cxt : Type where
+data Cxt : 𝓤₀ ̇  where
  ε : Cxt
  _₊_ : Cxt → Ty → Cxt
 
@@ -56,11 +56,11 @@ length : Cxt → ℕ
 length ε = zero
 length (Γ ₊ _) = succ (length Γ)
 
-data Fin : ℕ → Set where
+data Fin : ℕ → 𝓤₀ ̇  where
  zero : {n : ℕ} → Fin (succ n)
  succ : {n : ℕ} → Fin n → Fin (succ n)
 
-is-nonzero : ℕ → Set
+is-nonzero : ℕ → 𝓤₀ ̇
 is-nonzero 0        = 𝟘
 is-nonzero (succ n) = 𝟙
 
@@ -85,7 +85,7 @@ binary products, lambda abstraction, and application.
 
 infixl 10 _·_
 
-data Tm : Cxt → Ty → Set where
+data Tm : Cxt → Ty → 𝓤₀ ̇  where
  VAR  :  {Γ : Cxt}           → (i : Fin (length Γ)) → Tm Γ (Γ [ i ])
  ⊥    :  {Γ : Cxt}           → Tm Γ ②
  ⊤    :  {Γ : Cxt}           → Tm Γ ②

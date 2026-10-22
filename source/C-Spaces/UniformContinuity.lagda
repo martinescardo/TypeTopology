@@ -21,13 +21,13 @@ moduli to be minimal.
 
 \begin{code}
 
-locally-constant : {X : Type} → (₂ℕ → X) → Set
+locally-constant : {X : 𝓤₀ ̇ } → (₂ℕ → X) → 𝓤₀ ̇
 locally-constant p = Σ-min \(n : ℕ) → ∀(α β : ₂ℕ) → α ＝⟦ n ⟧ β → p α ＝ p β
 
-Axiom[UC-ℕ] : Type
+Axiom[UC-ℕ] : 𝓤₀ ̇
 Axiom[UC-ℕ] = ∀(f : ₂ℕ → ℕ) → locally-constant f
 
-uniformly-continuous-₂ℕ : (₂ℕ → ₂ℕ) → Set
+uniformly-continuous-₂ℕ : (₂ℕ → ₂ℕ) → 𝓤₀ ̇
 uniformly-continuous-₂ℕ t = ∀(m : ℕ) → Σ-min \(n : ℕ) → ∀(α β : ₂ℕ) → α ＝⟦ n ⟧ β → t α ＝⟦ m ⟧ t β
 
 \end{code}
@@ -36,19 +36,19 @@ Here we provide an algorithm to compute least moduli of uniform continuity.
 
 \begin{code}
 
-Lemma[decidable-0̄-1̄] : {X : Type} → (_~_ : X → X → Set) →
+Lemma[decidable-0̄-1̄] : {X : 𝓤₀ ̇ } → (_~_ : X → X → 𝓤₀ ̇ ) →
          (∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
          (p : ₂ℕ → X) → (n : ℕ) →
          is-decidable (∀(s : ₂Fin n) → p (cons s 0̄) ~ p (cons s 1̄))
 Lemma[decidable-0̄-1̄] _~_ dec p n = Lemma[₂Fin-decidability] n P claim
  where
-  P : ₂Fin n → Set
+  P : ₂Fin n → 𝓤₀ ̇
   P s = p (cons s 0̄) ~ p (cons s 1̄)
   claim : ∀(s : ₂Fin n) → is-decidable (P s)
   claim s = dec (p (cons s 0̄)) (p (cons s 1̄))
 
 
-LM : {X : Type} → (_~_ : X → X → Set) → (∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
+LM : {X : 𝓤₀ ̇ } → (_~_ : X → X → 𝓤₀ ̇ ) → (∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
      (₂ℕ → X) → ℕ → ℕ
 LM _~_ dec p 0        = 0
 LM _~_ dec p (succ n) = cases f₀ f₁ (Lemma[decidable-0̄-1̄] _~_ dec p n)
@@ -69,7 +69,7 @@ LM-₂ : (₂ℕ → 𝟚) → ℕ → ℕ
 LM-₂ = LM {𝟚} _＝_ 𝟚-is-discrete
 
 
-Lemma[LM]₀ : {X : Type} → (_~_ : X → X → Set) → (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
+Lemma[LM]₀ : {X : 𝓤₀ ̇ } → (_~_ : X → X → 𝓤₀ ̇ ) → (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
              (p : ₂ℕ → X) → (n : ℕ) →
              (∀(s : ₂Fin n) → p (cons s 0̄) ~ p (cons s 1̄)) →
              LM _~_ dec p (succ n) ＝ LM _~_ dec p n
@@ -80,7 +80,7 @@ Lemma[LM]₀ _~_ dec p n h = equality-cases (Lemma[decidable-0̄-1̄] _~_ dec p 
   claim₁ : ∀ f → Lemma[decidable-0̄-1̄] _~_ dec p n ＝ inr f → LM _~_ dec p (succ n) ＝ LM _~_ dec p n
   claim₁ f = 𝟘-elim(f h)
 
-Lemma[LM]₁ : {X : Type} → (_~_ : X → X → Set) → (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
+Lemma[LM]₁ : {X : 𝓤₀ ̇ } → (_~_ : X → X → 𝓤₀ ̇ ) → (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
              (p : ₂ℕ → X) → (n : ℕ) →
              ¬ (∀(s : ₂Fin n) → p (cons s 0̄) ~ p (cons s 1̄)) →
              LM _~_ dec p (succ n) ＝ succ n
@@ -92,7 +92,7 @@ Lemma[LM]₁ _~_ dec p n f = equality-cases (Lemma[decidable-0̄-1̄] _~_ dec p 
   claim₁ _ r = ap (cases _ _) r
 
 
-Lemma[succ-0̄-1̄] : {X : Type} → (_~_ : X → X → Set) →
+Lemma[succ-0̄-1̄] : {X : 𝓤₀ ̇ } → (_~_ : X → X → 𝓤₀ ̇ ) →
         (∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
         ({x₀ x₁ : X} → x₀ ~ x₁ → x₁ ~ x₀) →
         ({x₀ x₁ x₂ : X} → x₀ ~ x₁ → x₁ ~ x₂ → x₀ ~ x₂) →
@@ -145,7 +145,7 @@ Lemma[succ-0̄-1̄] {X} _~_ dec sy tr p n pr g α β en = tr eqα (sy eqβ)
   eqβ = cases subclaim₃ subclaim₄ subclaim₅
 
 
-Lemma[LM-modulus] : {X : Type} → (_~_ : X → X → Set) →
+Lemma[LM-modulus] : {X : 𝓤₀ ̇ } → (_~_ : X → X → 𝓤₀ ̇ ) →
         (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
         ({x₀ x₁ : X} → x₀ ~ x₁ → x₁ ~ x₀) →
         ({x₀ x₁ x₂ : X} → x₀ ~ x₁ → x₁ ~ x₂ → x₀ ~ x₂) →
@@ -174,7 +174,7 @@ Lemma[LM-modulus] _~_ dec sy tr p (succ n) pr α β e =
     e' = transport (λ k → α ＝⟦ k ⟧ β) fact e
 
 
-Lemma[LM-least] : {X : Type} → (_~_ : X → X → Set) →
+Lemma[LM-least] : {X : 𝓤₀ ̇ } → (_~_ : X → X → 𝓤₀ ̇ ) →
         (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
         ({x₀ x₁ : X} → x₀ ~ x₁ → x₁ ~ x₀) →
         ({x₀ x₁ x₂ : X} → x₀ ~ x₁ → x₁ ~ x₂ → x₀ ~ x₂) →
@@ -216,7 +216,7 @@ Lemma[LM-least] _~_ dec sy tr p (succ n) prn k prk = cases claim₀ claim₁ cla
   claim₂ = Lemma[decidable-0̄-1̄] _~_ dec p n
 
 
-Lemma[LM-least-modulus] : {X : Type} → (_~_ : X → X → Set) →
+Lemma[LM-least-modulus] : {X : 𝓤₀ ̇ } → (_~_ : X → X → 𝓤₀ ̇ ) →
         (dec : ∀(x₀ x₁ : X) → is-decidable (x₀ ~ x₁)) →
         ({x₀ x₁ : X} → x₀ ~ x₁ → x₁ ~ x₀) →
         ({x₀ x₁ x₂ : X} → x₀ ~ x₁ → x₁ ~ x₂ → x₀ ~ x₂) →

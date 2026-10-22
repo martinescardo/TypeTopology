@@ -617,7 +617,7 @@ closure-under-prop-Π-with-axioms
    ε α = dfunext fe' I
     where
      α₁ = λ h → pr₁ (α h)
-     α₂ = λ h → pr₂ (α h)
+     α₂ = λ (h : p holds) → pr₂ (α h)
 
      I : ρₐ (ρₐ⁻¹ α) ∼ α
      I h =

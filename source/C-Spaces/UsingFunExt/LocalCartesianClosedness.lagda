@@ -21,12 +21,12 @@ Subspace
 
 \begin{code}
 
-Subspace : (X : Space) → (U X → Set) → Space
+Subspace : (X : Space) → (U X → 𝓤₀ ̇ ) → Space
 Subspace X Prp = A , R , rc₀ , rc₁ , rc₂
  where
-  A : Type
+  A : 𝓤₀ ̇
   A = Σ \(x : U X) → Prp x
-  R : (₂ℕ → A) → Set
+  R : (₂ℕ → A) → 𝓤₀ ̇
   R r = pr₁ ∘ r ∈ Probe X
   rc₀ : ∀(a : A) → (λ α → a) ∈ R
   rc₀ (x , _) = cond₀ X x
@@ -35,7 +35,7 @@ Subspace X Prp = A , R , rc₀ , rc₁ , rc₂
   rc₂ : ∀(r : ₂ℕ → A) → (Σ \(n : ℕ) → ∀(s : ₂Fin n) → (r ∘ (cons s)) ∈ R) → r ∈ R
   rc₂ r pr = cond₂ X (pr₁ ∘ r) pr
 
-cts-incl : (X : Space) → (Prp : U X → Set) → Map (Subspace X Prp) X
+cts-incl : (X : Space) → (Prp : U X → 𝓤₀ ̇ ) → Map (Subspace X Prp) X
 cts-incl X Prp = pr₁ , (λ r rR → rR)
 
 \end{code}
@@ -47,7 +47,7 @@ C-spaces have all pullbacks.
 _×[_]_⟨_,_⟩ : (X Z Y : Space) → Map X Z → Map Y Z → Space
 X ×[ Z ] Y ⟨ f , g ⟩ = Subspace (X ⊗ Y) Prp
  where
-  Prp : U (X ⊗ Y) → Set
+  Prp : U (X ⊗ Y) → 𝓤₀ ̇
   Prp (x , y) = pr₁ f x ＝ pr₁ g y
 
 ⟪_×[_]_⟨_,_⟩⟫-pr₁ : (X Z Y : Space) → (f : Map X Z) → (g : Map Y Z) →
@@ -67,7 +67,7 @@ Equalizers are calculated in the same way as above.
 ⟪_,_⟫Eq₍_,_₎ : (X Y : Space) → Map X Y → Map X Y → Space
 ⟪ X , Y ⟫Eq₍ f , g ₎ = Subspace X Prp
  where
-  Prp : U X → Set
+  Prp : U X → 𝓤₀ ̇
   Prp x = pr₁ f x ＝ pr₁ g x
 
 \end{code}
@@ -93,7 +93,7 @@ Given a continuous map f : X → Y and y : Y, the fiber f⁻¹(y) is a C-space.
 ⟪_,_⟫_⁻¹₍_₎ : (X Y : Space) → Map X Y → U Y → Space
 ⟪ X , Y ⟫ f ⁻¹₍ y ₎ = Subspace X Prp
  where
-  Prp : U X → Set
+  Prp : U X → 𝓤₀ ̇
   Prp x = pr₁ f x ＝ y
 
 \end{code}
@@ -110,9 +110,9 @@ dom⟪ X , Z , Y ⟫ g ^ f = A , R , rc₀ , rc₁ , rc₂
   f⁻¹ z = ⟪ X , Z ⟫ f ⁻¹₍ z ₎
   g⁻¹ : U Z → Space
   g⁻¹ z = ⟪ Y , Z ⟫ g ⁻¹₍ z ₎
-  A : Type
+  A : 𝓤₀ ̇
   A = Σ \(z : U Z) → Map (f⁻¹ z) (g⁻¹  z)
-  R : (₂ℕ → A) → Set
+  R : (₂ℕ → A) → 𝓤₀ ̇
   R r =  (pr₁ ∘ r ∈ Probe Z)
        × (∀(t : ₂ℕ → ₂ℕ) → t ∈ C → ∀(p : ₂ℕ → U X) → p ∈ Probe X →
            (e : ∀(α : ₂ℕ) → pr₁ f(p α) ＝ pr₁(r(t α))) →
@@ -230,7 +230,7 @@ dom⟪ X , Y ⟫Π[ f ] (Z , g) = Subspace A Prp
   f∘g = ⟪ Z , X , Y ⟫ f ○ g
   A : Space
   A = dom⟪ X , Y , Z ⟫ f∘g ^ f
-  Prp : U A → Set
+  Prp : U A → 𝓤₀ ̇
   Prp (y , φ) = ∀(x : U(f⁻¹ y)) → pr₁ g (pr₁ (pr₁ φ x)) ＝ pr₁ x
 
 ⟪_,_⟫Π[_] : (X Y : Space) → (Map X Y) → Mapto X → Mapto Y

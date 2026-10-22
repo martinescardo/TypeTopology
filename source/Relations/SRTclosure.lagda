@@ -170,11 +170,11 @@ module _ {𝓤 : Universe}
               → transitive R
               → B ⊑ R
               → rt-closure ⊑ R
- rt-induction R r t B-included-in-R = γ
+ rt-induction R r t B-included-in-R = λ x y (n , b) → γ x y n b
   where
-   γ : (x y : X) → rt-closure x y → R x y
-   γ x x (0      , refl)      = r x
-   γ x y (succ n , z , b , c) = t x z y (B-included-in-R x z b) (γ z y (n , c))
+   γ : (x y : X) (n : ℕ) (b : (B ^ n) x y) → R x y
+   γ x x 0        refl        = r x
+   γ x y (succ n) (z , b , c) = t x z y (B-included-in-R x z b) (γ z y n c)
 
 \end{code}
 

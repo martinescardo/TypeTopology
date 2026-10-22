@@ -31,7 +31,7 @@ Type structure
 
 \begin{code}
 
-data Ty : Type where
+data Ty : 𝓤₀ ̇  where
  Ⓝ : Ty
  _⊠_ : Ty → Ty → Ty
  _⇨_ : Ty → Ty → Ty
@@ -40,11 +40,11 @@ data Ty : Type where
 
 The full type hierarchy (FTH) is a full subcategory of sets. Objects in FTH can
 be considered as (the interpretations of) the elements of Ty, while morphisms
-are maps ⟦ σ ⟧s → ⟦ τ ⟧s, where ⟦_⟧s is the interpretation of Ty in Set.
+are maps ⟦ σ ⟧s → ⟦ τ ⟧s, where ⟦_⟧s is the interpretation of Ty in 𝓤₀ ̇ .
 
 \begin{code}
 
-⟦_⟧s : Ty → Set
+⟦_⟧s : Ty → 𝓤₀ ̇
 ⟦ Ⓝ ⟧s = ℕ
 ⟦ σ ⊠ τ ⟧s = ⟦ σ ⟧s × ⟦ τ ⟧s
 ⟦ σ ⇨ τ ⟧s = ⟦ σ ⟧s → ⟦ τ ⟧s
@@ -139,7 +139,7 @@ in the sense that the two interpretations of each type are equivalent.
 
 \begin{code}
 
-_≅_ : Type → Set → Set
+_≅_ : 𝓤₀ ̇  → 𝓤₀ ̇  → 𝓤₀ ̇
 X ≅ Y = Σ \(f : X → Y) → Σ \(g : Y → X) →
            (∀(x : X) → g(f x) ＝ x) × (∀(y : Y) → f(g y) ＝ y)
 
@@ -232,10 +232,10 @@ follows the above theorem.
 
 \begin{code}
 
-HomFTH : Ty → Ty → Set
+HomFTH : Ty → Ty → 𝓤₀ ̇
 HomFTH σ τ = ⟦ σ ⟧s → ⟦ τ ⟧s
 
-HomKKH : Ty → Ty → Set
+HomKKH : Ty → Ty → 𝓤₀ ̇
 HomKKH σ τ = Map ⟦ σ ⟧c ⟦ τ ⟧c
 
 Corollary[UC→HomFTH≅HomKKH] : Axiom[UC-ℕ] → ∀(σ τ : Ty) → HomFTH σ τ ≅ HomKKH σ τ

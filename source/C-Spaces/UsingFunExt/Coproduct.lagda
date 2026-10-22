@@ -27,7 +27,7 @@ The initial C-space
 𝟘Space : Space
 𝟘Space = 𝟘 , P , c₀ , c₁ , c₂
  where
-  P : (₂ℕ → 𝟘) → Set
+  P : (₂ℕ → 𝟘) → 𝓤₀ ̇
   P p = 𝟘
   c₀ : ∀(x : 𝟘) → (λ α → x) ∈ P
   c₀ x = x
@@ -50,7 +50,7 @@ infixl 3 _⊕_
 _⊕_ : Space → Space → Space
 (X , P , pc₀ , pc₁ , pc₂) ⊕ (Y , Q , qc₀ , qc₁ , qc₂) = (X ⊎ Y) , R , rc₀ , rc₁ , rc₂
  where
-  R : (₂ℕ → X ⊎ Y) → Set
+  R : (₂ℕ → X ⊎ Y) → 𝓤₀ ̇
   R r = Σ \(n : ℕ) → ∀(s : ₂Fin n) →
            (Σ \(p : ₂ℕ → X) → (p ∈ P) × (∀(α : ₂ℕ) → r(cons s α) ＝ inl(p α)))
          ⊎ (Σ \(q : ₂ℕ → Y) → (q ∈ Q) × (∀(α : ₂ℕ) → r(cons s α) ＝ inr(q α)))
@@ -277,13 +277,13 @@ Arbitrary coproduct of C-spaces
 
 \begin{code}
 
-∐ : {I : Type} → (I → Space) → Space
+∐ : {I : 𝓤₀ ̇ } → (I → Space) → Space
 ∐ {I} X = A , P , c₀ , c₁ , c₂
  where
-  A : Type
+  A : 𝓤₀ ̇
   A = Σ \(i : I) → U(X i)
 
-  P : (₂ℕ → A) → Set
+  P : (₂ℕ → A) → 𝓤₀ ̇
   P p = Σ \(n : ℕ) → ∀(s : ₂Fin n) →
          Σ \(i : I) → Σ \(q : ₂ℕ → U(X i)) →
           (q ∈ Probe (X i)) × (∀(α : ₂ℕ) → p(cons s α) ＝ (i , q α))
@@ -378,7 +378,7 @@ Arbitrary coproduct of C-spaces
         eq₁ = claim₂ (cons s₂ α)
 
 
-continuous-inj : {I : Type} → (X : I → Space) → (i : I) → Map (X i) (∐ X)
+continuous-inj : {I : 𝓤₀ ̇ } → (X : I → Space) → (i : I) → Map (X i) (∐ X)
 continuous-inj {I} X i = inj , cts
  where
   inj : U(X i) → U(∐ X)
@@ -392,7 +392,7 @@ continuous-inj {I} X i = inj , cts
 
 
 universal-property-∐ :
-    {I : Type} → ∀(X : I → Space) →
+    {I : 𝓤₀ ̇ } → ∀(X : I → Space) →
     ∀(Y : Space) → ∀(f : (i : I) → Map (X i) Y) →
     Σ \(g : Map (∐ X) Y) →
       ∀(i : I) → ∀(x : U(X i)) → pr₁ g (pr₁ (continuous-inj X i) x) ＝ pr₁ (f i) x

@@ -20,7 +20,7 @@ Infinite sequences are defined as functions:
 
 \begin{code}
 
-₂ℕ : Type
+₂ℕ : 𝓤₀ ̇
 ₂ℕ = ℕ → 𝟚
 
 0̄ : ₂ℕ
@@ -75,7 +75,7 @@ Lemma[drop+] : ∀(n : ℕ) → ∀(α : ₂ℕ) → ∀(i : ℕ) → drop n α 
 Lemma[drop+] 0        α i = refl
 Lemma[drop+] (succ n) α i = Lemma[drop+] n (α ∘ succ) i
 
-isomorphism-₂Fin : ∀(X : Type) → ∀(n : ℕ) → (f : ₂Fin (succ n) → X) →
+isomorphism-₂Fin : ∀(X : 𝓤₀ ̇ ) → ∀(n : ℕ) → (f : ₂Fin (succ n) → X) →
                     Σ \(g : 𝟚 → ₂Fin n → X) →
                      ∀(s : ₂Fin (succ n)) → f s ＝ g (head s) (tail s)
 isomorphism-₂Fin X n f = g , prf
@@ -132,7 +132,7 @@ relation and a deciable type:
 
 infixl 10 _＝⟦_⟧_
 
-data _＝⟦_⟧_ {X : Type} : (ℕ → X) → ℕ → (ℕ → X) → Set where
+data _＝⟦_⟧_ {X : 𝓤₀ ̇ } : (ℕ → X) → ℕ → (ℕ → X) → Set where
  ＝⟦zero⟧ : {α β : ℕ → X} → α ＝⟦ 0 ⟧ β
  ＝⟦succ⟧ : {α β : ℕ → X}{n : ℕ} → α ＝⟦ n ⟧ β → α n ＝ β n → α ＝⟦ succ n ⟧ β
 
@@ -305,7 +305,7 @@ Lemma[cons-ftake-fdrop]² n m l k eq s α = goal
   Q i t = cons (ftake k n s) (cons t α) ∼ cons s α
   claim₀ : cons (ftake k n s) (cons ss α) ∼ cons s α
   claim₀ = Lemma[cons-ftake-fdrop] k n s α
-  transport² : {X : Type} (Y : X → Set) (Z : (x : X) → Y x → Set)
+  transport² : {X : 𝓤₀ ̇ } (Y : X → Set) (Z : (x : X) → Y x → Set)
              → {x x' : X} {y : Y x}
              → (p : x ＝ x') → Z x y → Z x' (transport Y p y)
   transport² Y Z refl z = z

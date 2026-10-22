@@ -64,7 +64,7 @@ complement-of-meet L {x} {y} {x′} {y′} φ ψ = β , γ
   open PosetReasoning (poset-of L)
   F = L
 
-  _⊓_ = λ x y → x ∧[ L ] y
+  _⊓_ = λ (x y : ⟨ L ⟩) → x ∧[ L ] y
 
   φ₀ : x ⊓ x′ ＝ 𝟎[ F ]
   φ₀ = x ⊓ x′ ＝⟨ ∧[ F ]-is-commutative x x′ ⟩ x′ ⊓ x ＝⟨ pr₁ φ ⟩  𝟎[ F ] ∎

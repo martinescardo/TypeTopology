@@ -460,7 +460,7 @@ compatibility-data-with-axioms
     ρσ' α = dfunext fe' I
      where
       α₁ = λ h → pr₁ (α h)
-      α₂ = λ h → pr₂ (α h)
+      α₂ = λ (h : p holds) → pr₂ (α h)
 
       I : ρ' (σ' α) ∼ α
       I h =

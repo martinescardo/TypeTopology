@@ -105,7 +105,7 @@ Binary sequences
 
 \begin{code}
 
-₂ℕ : Type
+₂ℕ : 𝓤₀ ̇
 ₂ℕ = ℕ → 𝟚
 
 0̄ : ₂ℕ
@@ -182,7 +182,7 @@ relation and a deciable type:
 
 infixl 10 _＝⟦_⟧_
 
-data _＝⟦_⟧_ {X : Type} : (ℕ → X) → ℕ → (ℕ → X) → Set where
+data _＝⟦_⟧_ {X : 𝓤₀ ̇ } : (ℕ → X) → ℕ → (ℕ → X) → Set where
  ＝⟦zero⟧ : {α β : ℕ → X} → α ＝⟦ 0 ⟧ β
  ＝⟦succ⟧ : {α β : ℕ → X}{n : ℕ} → α ＝⟦ n ⟧ β → α n ＝ β n → α ＝⟦ succ n ⟧ β
 

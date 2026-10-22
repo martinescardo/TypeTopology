@@ -32,10 +32,10 @@ Contexts are C-spaces, and substitutions are continuous maps.
 
 \begin{code}
 
-Con : Type₁
+Con : 𝓤₁ ̇
 Con = Space
 
-Sub : Con → Con → Set
+Sub : Con → Con → 𝓤₀ ̇
 Sub = Map
 
 \end{code}
@@ -53,9 +53,9 @@ proposition-valued.
 
 \begin{code}
 
-dependent-probe-axioms : (Γ : Space) (A : U Γ → Set)
-                       → ((p : ₂ℕ → U Γ) → p ∈ Probe Γ → ((α : ₂ℕ) → A (p α)) → Set)
-                       → Set
+dependent-probe-axioms : (Γ : Space) (A : U Γ → 𝓤₀ ̇ )
+                       → ((p : ₂ℕ → U Γ) → p ∈ Probe Γ → ((α : ₂ℕ) → A (p α)) → 𝓤₀ ̇ )
+                       → 𝓤₀ ̇
 dependent-probe-axioms (Γ , P , c₀ , c₁ , c₂) A Q
  =  ((γ : Γ) (a : A γ) → (λ α → a) ∈ Q (λ α → γ) (c₀ γ))
   × ((t : ₂ℕ → ₂ℕ) (tC : t ∈ C) (p : ₂ℕ → Γ) (pP : p ∈ P) →
@@ -67,8 +67,8 @@ dependent-probe-axioms (Γ , P , c₀ , c₁ , c₂) A Q
   × ((p : ₂ℕ → Γ) (pP pP' : p ∈ P) (q : (α : ₂ℕ) → A (p α)) → Q p pP q → Q p pP' q)
 
 dependent-probe-axioms-is-prop
- : (Γ : Space) (A : U Γ → Set)
- → (Q : (p : ₂ℕ → U Γ) → p ∈ Probe Γ → ((α : ₂ℕ) → A (p α)) → Set)
+ : (Γ : Space) (A : U Γ → 𝓤₀ ̇ )
+ → (Q : (p : ₂ℕ → U Γ) → p ∈ Probe Γ → ((α : ₂ℕ) → A (p α)) → 𝓤₀ ̇ )
  → (∀ p pΓ q → is-prop (q ∈ Q p pΓ))
  → is-prop (dependent-probe-axioms Γ A Q)
 dependent-probe-axioms-is-prop (Γ , P , c₀ , c₁ , c₂) A Q pQ
@@ -103,21 +103,21 @@ composites with probes are admissible.
 
 \begin{code}
 
-Ty : Con → Set₁
-Ty Γ = Σ \(A : U Γ → Set) →
-         Σ \(Q : (p : ₂ℕ → U Γ) → p ∈ Probe Γ → ((α : ₂ℕ) → A (p α)) → Set)
+Ty : Con → 𝓤₁ ̇
+Ty Γ = Σ \(A : U Γ → 𝓤₀ ̇ ) →
+         Σ \(Q : (p : ₂ℕ → U Γ) → p ∈ Probe Γ → ((α : ₂ℕ) → A (p α)) → 𝓤₀ ̇ )
            → (∀ p pΓ q → is-prop (q ∈ Q p pΓ)) ×
              dependent-probe-axioms Γ A Q
 
 tyProbe : (Γ : Con) (A : Ty Γ)
-        → (p : ₂ℕ → U Γ) → p ∈ Probe Γ → ((α : ₂ℕ) → U A (p α)) → Set
+        → (p : ₂ℕ → U Γ) → p ∈ Probe Γ → ((α : ₂ℕ) → U A (p α)) → 𝓤₀ ̇
 tyProbe _ (_ , Q , _) = Q
 
 tyProbe-is-prop : (Γ : Con) (A : Ty Γ)
                 → ∀ p pΓ q → is-prop (q ∈ tyProbe Γ A p pΓ)
 tyProbe-is-prop _ (_ , _ , pQ , _) = pQ
 
-Tm : (Γ : Con) → Ty Γ → Set
+Tm : (Γ : Con) → Ty Γ → 𝓤₀ ̇
 Tm (Γ , P , _) (A , Q , _)
  = Σ \(u : (γ : Γ) → A γ) → (p : ₂ℕ → Γ) (pP : p ∈ P) → u ∘ p ∈ Q p pP
 
@@ -132,9 +132,9 @@ its dependent probe predicate along a substitution.
 ⟪ Γ , Δ ⟫ (A , Q , pQ , tc₀ , tc₁ , tc₂ , tc₃) [ σ , cσ ]ʸ
  = Aσ , Q' , pQ' , c₀ , c₁ , c₂ , c₃
  where
-  Aσ : U Δ → Set
+  Aσ : U Δ → 𝓤₀ ̇
   Aσ δ = A (σ δ)
-  Q' : (p : ₂ℕ → U Δ) → p ∈ Probe Δ → ((α : ₂ℕ) → Aσ (p α)) → Set
+  Q' : (p : ₂ℕ → U Δ) → p ∈ Probe Δ → ((α : ₂ℕ) → Aσ (p α)) → 𝓤₀ ̇
   Q' p pΔ q = q ∈ Q (σ ∘ p) (cσ p pΔ)
   pQ' : ∀ p pΔ q → is-prop (q ∈ Q' p pΔ)
   pQ' p pΔ q = pQ (σ ∘ p) (cσ p pΔ) q
@@ -189,7 +189,7 @@ with the evident probe structure.
 _₊_ : (Γ : Con) → Ty Γ → Con
 Γ ₊ (A , Q , pQ , tc₀ , tc₁ , tc₂ , tc₃) = (Σ A , R , c₀ , c₁ , c₂)
  where
-  R : (₂ℕ → Σ A) → Set
+  R : (₂ℕ → Σ A) → 𝓤₀ ̇
   R r = Σ \(rΓ : pr₁ ∘ r ∈ Probe Γ) → pr₂ ∘ r ∈ Q (pr₁ ∘ r) rΓ
   c₀ : (w : Σ A) → (λ α → w) ∈ R
   c₀ (γ , a) = cond₀ Γ γ , tc₀ γ a

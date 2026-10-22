@@ -386,9 +386,9 @@ T-selection-strategy-lemma ext-const {X ∷ Xf} εt@(ε :: εf) ϕt@(ϕ :: ϕf) 
   p : X → T R
   p x = mapᵀ (subpred q x) (T-strategic-path (σf x))
 
-  I = λ x → α-curryᵀ q x (T-strategic-path (σf x)) ＝⟨refl⟩
-            α-extᵀ (subpred q x) (T-strategic-path (σf x)) ＝⟨refl⟩
-            α (mapᵀ (subpred q x) (T-strategic-path (σf x))) ∎
+  I = λ (x : X) → α-curryᵀ q x (T-strategic-path (σf x)) ＝⟨refl⟩
+                  α-extᵀ (subpred q x) (T-strategic-path (σf x)) ＝⟨refl⟩
+                  α (mapᵀ (subpred q x) (T-strategic-path (σf x))) ∎
 
   have-a' : α (extᵀ p (ε p)) ＝ ϕ (α ∘ p)
   have-a' = a p

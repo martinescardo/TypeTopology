@@ -39,7 +39,7 @@ all possible instantiations.
 
 \begin{code}
 
-is-dialogue-for : B ℕ → ({A : type} → T₀ (B-type〖 ι 〗 A)) → Type
+is-dialogue-for : B ℕ → ({A : type} → T₀ (B-type〖 ι 〗 A)) → 𝓤₀ ̇
 is-dialogue-for d t = {A : type} → ⟦ t ⟧₀ ≡[ ⌜B⌝ ι A ] church-encode d
 
 \end{code}
@@ -50,7 +50,7 @@ of `Rnorm` to contexts.
 
 \begin{code}
 
-Rnorm : {σ : type} (d : B〖 σ 〗) (t : {A : type} → T₀ (B-type〖 σ 〗 A)) → Type
+Rnorm : {σ : type} (d : B〖 σ 〗) (t : {A : type} → T₀ (B-type〖 σ 〗 A)) → 𝓤₀ ̇
 Rnorm {ι}     d t = is-dialogue-for d t
 Rnorm {σ ⇒ τ} d t = (u : B〖 σ 〗) (u' : {A : type}
                   → T₀ (B-type〖 σ 〗 A))
@@ -63,10 +63,10 @@ TODO. Move this into Subst?
 
 \begin{code}
 
-IB【_】 : Cxt → type → Type
+IB【_】 : Cxt → type → 𝓤₀ ̇
 IB【 Γ 】 A = Sub₀ (B-context【 Γ 】 A)
 
-Rnorms : {Γ : Cxt} → B【 Γ 】 → ({A : type} → IB【 Γ 】 A) → Type
+Rnorms : {Γ : Cxt} → B【 Γ 】 → ({A : type} → IB【 Γ 】 A) → 𝓤₀ ̇
 Rnorms {Γ} xs ys = {σ : type} (i : ∈Cxt σ Γ) → Rnorm (xs i) (ys (∈Cxt-B-type i))
 
 

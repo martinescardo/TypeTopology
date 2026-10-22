@@ -28,7 +28,7 @@ Brouwer trees.
 
 \begin{code}
 
-data Brouwer : Type where
+data Brouwer : 𝓤₀ ̇  where
  η : ℕ → Brouwer
  δ : (ℕ → Brouwer) → Brouwer
 

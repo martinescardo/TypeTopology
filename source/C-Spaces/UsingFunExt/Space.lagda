@@ -21,21 +21,21 @@ of X, called open. Thus a topology on a set X, in our sense, is a set of maps
 
 \begin{code}
 
-probe-axioms : (X : Type) → ((₂ℕ → X) → Set) → Set
+probe-axioms : (X : 𝓤₀ ̇ ) → ((₂ℕ → X) → 𝓤₀ ̇ ) → 𝓤₀ ̇
 probe-axioms X P =
     (∀(x : X) → (λ α → x) ∈ P)
   × (∀(t : ₂ℕ → ₂ℕ) → t ∈ C → ∀(p : ₂ℕ → X) → p ∈ P → p ∘ t ∈ P)
   × (∀(p : ₂ℕ → X) → (Σ \(n : ℕ) → ∀(s : ₂Fin n) → p ∘ cons s ∈ P) → p ∈ P)
 
-TopologyOn : Type → Set₁
-TopologyOn X = Σ \(P : (₂ℕ → X) → Set) → probe-axioms X P
+TopologyOn : 𝓤₀ ̇  → 𝓤₁ ̇
+TopologyOn X = Σ \(P : (₂ℕ → X) → 𝓤₀ ̇ ) → probe-axioms X P
 
-Space : Type₁
-Space = Σ \(X : Type) → TopologyOn X
+Space : 𝓤₁ ̇
+Space = Σ \(X : 𝓤₀ ̇ ) → TopologyOn X
 
 U = pr₁
 
-Probe : (X : Space) → (₂ℕ → U X) → Set
+Probe : (X : Space) → (₂ℕ → U X) → 𝓤₀ ̇
 Probe X = pr₁ (pr₂ X)
 
 cond₀ : (X : Space) →
@@ -59,13 +59,13 @@ category.
 
 \begin{code}
 
-continuous : (X Y : Space) → (U X → U Y) → Set
+continuous : (X Y : Space) → (U X → U Y) → 𝓤₀ ̇
 continuous X Y f = ∀ p → p ∈ Probe X → f ∘ p ∈ Probe Y
 
-Map : Space → Space → Set
+Map : Space → Space → 𝓤₀ ̇
 Map X Y = Σ \(f : U X → U Y) → continuous X Y f
 
-Mapto : (Y : Space) → Set₁
+Mapto : (Y : Space) → 𝓤₁ ̇
 Mapto Y = Σ \(X : Space) → Map X Y
 
 id-is-continuous : ∀{X : Space} → continuous X X id

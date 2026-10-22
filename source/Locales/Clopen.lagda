@@ -123,7 +123,7 @@ consists-of-clopens F S = Ɐ i ꞉ index S , is-clopen F (S [ i ])
  where
   open PosetReasoning (poset-of F)
 
-  _⊓_ = λ x y → x ∧[ F ] y
+  _⊓_ = λ (x y : ⟨ F ⟩) → x ∧[ F ] y
 
   φ₀ : x ⊓ x′ ＝ 𝟎[ F ]
   φ₀ = x ⊓ x′ ＝⟨ ∧[ F ]-is-commutative x x′ ⟩ x′ ⊓ x ＝⟨ pr₁ φ ⟩  𝟎[ F ] ∎
