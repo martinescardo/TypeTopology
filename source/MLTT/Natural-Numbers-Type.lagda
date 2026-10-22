@@ -4,7 +4,9 @@
 
 module MLTT.Natural-Numbers-Type where
 
-data ℕ : Type₀  where
+open import MLTT.Universes
+
+data ℕ : 𝓤₀ ̇  where
  zero : ℕ
  succ : ℕ → ℕ
 
