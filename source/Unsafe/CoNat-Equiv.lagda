@@ -49,9 +49,9 @@ some functions terminates.
 
 \begin{code}
 
-record _＝C_ (x y : CoNat) : Type
-data _＝C'_ (x y : CoNat') : Type
-_＝C''_ : CoNat' → CoNat' → Set
+record _＝C_ (x y : CoNat) : 𝓤₀ ̇
+data _＝C'_ (x y : CoNat') : 𝓤₀ ̇
+_＝C''_ : CoNat' → CoNat' → 𝓤₀ ̇
 
 cozero  ＝C'' cozero  = 𝟙
 cozero  ＝C'' cosuc y = 𝟘
