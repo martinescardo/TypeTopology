@@ -12,6 +12,7 @@ import Ordinals.ArithmeticReflection          -- by [2]
 import Ordinals.BoundedOperations             -- by [2]
 import Ordinals.BrouwerCodes
 import Ordinals.BrouwerCodesDiscreteAndCompactInterpretations
+import Ordinals.BrouwerCodesGiveStoneTypes
 import Ordinals.BrouwerCodesInterpretations
 import Ordinals.BrouwerCodesIntoInductiveRecursiveCodes
 import Ordinals.BrouwerCodesVariationInterpretations

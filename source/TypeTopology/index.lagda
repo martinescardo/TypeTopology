@@ -41,6 +41,7 @@ import TypeTopology.SigmaTotallySeparated
 import TypeTopology.SimpleTypes
 import TypeTopology.SquashedCantor
 import TypeTopology.SquashedSum
+import TypeTopology.StoneTypes
 import TypeTopology.TheTopologyOfTheUniverse
 import TypeTopology.TotallySeparated
 import TypeTopology.TotallySeparatedReflectionViaQuotients
