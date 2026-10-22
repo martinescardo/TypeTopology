@@ -2,12 +2,8 @@ Martin Escardo, 21st October 2026.
 
 We discuss a notion of a Stone type and show as an example that ℕ∞ is
 a Stone type, assuming ¬ WLPO. We also discuss that this cannot be
-proved without such an assumption. Our definition of Stone type says
-that a type is recovered from its boolean algebra of clopens by the
-evaluation map. In [1] a type is instead called a Stone type when it
-is equivalent to the spectrum of a countably presented boolean
-algebra, so that their Stone types are included by ours by their
-duality axiom, but not conversely, as discussed at the end of this
+proved without such an assumption. Our notion of Stone type is a
+variant of that of [1], and we compare them at the end of this
 module.
 
 [1] Cherubini, Coquand, Geerligs and Moeneclaey, "A Foundation for
@@ -16,37 +12,28 @@ module.
 
 The clopens of a type X are the 𝟚-valued functions on X, as in the
 module TypeTopology.TotallySeparated, and they form a boolean algebra
-with the pointwise operations. We say that X is a Stone type if it is
-equivalent, via the evaluation map, to the type of boolean algebra
-homomorphisms from its clopens to the booleans. The evaluation map
-sends a point to the homomorphism that evaluates clopens at it, and in
-topological terms the homomorphisms are the ultrafilters of the
-boolean algebra of clopens, so that being a Stone type says that every
-ultrafilter is given as the clopen neighbourhoods of a unique point.
+with the pointwise operations. We say that X is a pre-Stone type if it
+is equivalent, via the evaluation map, to the type of boolean algebra
+homomorphisms from its clopens to the booleans, and a Stone type if
+moreover its boolean algebra of clopens is discrete. In topological
+terms the homomorphisms are the ultrafilters of the boolean algebra of
+clopens.
 
 We first observe that the evaluation map is an embedding if and only
-if X is totally separated. We then give a criterion for being a Stone
-type and a few facts about it that hold for any type, namely that a
-type equivalent to a Stone type is a Stone type, that the empty and
-one-point types are Stone types, that Stone types are closed under
-binary sums, and that a homomorphism is an evaluation as soon as it
-gives the value ₁ to a clopen whose fiber over ₁ is a Stone type. We
-also show that the finite types and the two-point type are Stone
-types, as is every ¬¬-stable proposition.
+if X is totally separated. We then give criteria for a type to be a
+pre-Stone type and a Stone type, and show that Stone types are closed
+under binary sums. We also show that the finite types are Stone types,
+and that every ¬¬-stable proposition is a pre-Stone type.
 
 We show that ℕ∞ is a Stone type if ¬ WLPO holds, using these facts,
 which are also used in the module Ordinals.BrouwerCodesGiveStoneTypes
-for the compact totally separated interpretation of the Brouwer
-ordinal codes. We also characterize being a Stone type for ℕ∞ as the
-condition that every homomorphism giving the value ₁ to all the upper
-sets is the evaluation at infinity.
+to show that the compact totally separated interpretation of the
+Brouwer ordinal codes gives Stone types, again assuming ¬ WLPO.
 
-Finally, we establish two constructive taboos. That all Stone types
-are Π-compact gives WEM, and that they are closed under Σ gives
-¬¬ WLPO, so that if ¬ WLPO holds they are **not** closed under Σ. The
-counterexample for the second uses that products indexed by a
-proposition are Stone types, and in particular that P → 𝟚 is a Stone
-type for a proposition P.
+Finally, we establish two constructive taboos about pre-Stone types.
+That every pre-Stone type is a Stone type gives WEM, and that
+pre-Stone types are closed under Σ gives ¬¬ WLPO, so that if ¬ WLPO
+holds they are **not** closed under Σ.
 
 \begin{code}
 
@@ -54,21 +41,33 @@ type for a proposition P.
 
 open import MLTT.Spartan
 open import UF.FunExt
+open import UF.PropTrunc
 
-module TypeTopology.StoneTypes (fe : Fun-Ext) where
+module TypeTopology.StoneTypes
+        (fe : Fun-Ext)
+        (pt : propositional-truncations-exist)
+       where
+
+private
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe
 
 open import CoNaturals.Type
 open import MLTT.Two-Properties
  renaming (max𝟚 to infixl 39 _∨₂_ ;
            min𝟚 to infixl 40 _∧₂_ ;
            complement to infix 41 ¬₂_)
+open import NotionsOfDecidability.Decidable
 open import Naturals.Order renaming (max to maxℕ)
 open import Naturals.Properties
 open import Notation.CanonicalMap
 open import Notation.Order
 open import Taboos.WLPO
+open import TypeTopology.CompactTypes
 open import TypeTopology.DecidabilityOfNonContinuity fe
+open import TypeTopology.GenericConvergentSequenceCompactness fe
 open import TypeTopology.TotallySeparated
+open import TypeTopology.WeaklyCompactTypes fe' pt
 open import UF.Base
 open import UF.ClassicalLogic
 open import UF.DiscreteAndSeparated
@@ -83,9 +82,8 @@ open import UF.Subsingletons-FunExt
 \end{code}
 
 We now define the type C X of clopens of a type X and their boolean
-operations pointwise. The order ≤̇ is the one of the module
-TypeTopology.WeaklyCompactTypes, repeated here because that module is
-parametrized by propositional truncations, which are not assumed here.
+operations pointwise. The order ≤̇ and the notion of Π-compactness
+used below are those of the module TypeTopology.WeaklyCompactTypes.
 
 \begin{code}
 
@@ -97,7 +95,6 @@ module _ {X : 𝓤 ̇ } where
  infix  41 ¬̇_
  infixl 40 _∧̇_
  infixl 39 _∨̇_
- infix  30 _≤̇_
 
  0̇ : C X
  0̇ _ = ₀
@@ -113,9 +110,6 @@ module _ {X : 𝓤 ̇ } where
 
  ¬̇_ : C X → C X
  (¬̇ p) x = ¬₂ (p x)
-
- _≤̇_ : C X → C X → 𝓤 ̇
- p ≤̇ q = (x : X) → p x ≤ q x
 
 \end{code}
 
@@ -214,7 +208,10 @@ module bhom-properties
 \end{code}
 
 We now define the type of homomorphisms on the clopens of X, the
-evaluation map, and the notion of a Stone type.
+evaluation map, and the notions of a pre-Stone type and a Stone type.
+The clopens of X form a discrete type precisely when X is Π-compact in
+the sense of the module TypeTopology.WeaklyCompactTypes, so that a
+Stone type is a Π-compact pre-Stone type.
 
 \begin{code}
 
@@ -224,11 +221,68 @@ H X = Σ h ꞉ (C X → 𝟚) , is-bhom h
 η : (X : 𝓤 ̇ ) → X → H X
 η X x = eval X x , refl , refl , (λ p q → refl) , (λ p q → refl)
 
+is-pre-stone-type : 𝓤 ̇ → 𝓤 ̇
+is-pre-stone-type X = is-equiv (η X)
+
+being-pre-stone-type-is-prop : (X : 𝓤 ̇ ) → is-prop (is-pre-stone-type X)
+being-pre-stone-type-is-prop X = being-equiv-is-prop'' fe (η X)
+
 is-stone-type : 𝓤 ̇ → 𝓤 ̇
-is-stone-type X = is-equiv (η X)
+is-stone-type X = is-pre-stone-type X × is-discrete (C X)
 
 being-stone-type-is-prop : (X : 𝓤 ̇ ) → is-prop (is-stone-type X)
-being-stone-type-is-prop X = being-equiv-is-prop'' fe (η X)
+being-stone-type-is-prop X =
+ ×-is-prop (being-pre-stone-type-is-prop X) (being-discrete-is-prop fe')
+
+stone-types-are-pre-stone-types
+ : {X : 𝓤 ̇ }
+ → is-stone-type X
+ → is-pre-stone-type X
+stone-types-are-pre-stone-types
+ = pr₁
+
+stone-types-have-discrete-clopen-algebras
+ : {X : 𝓤 ̇ }
+ → is-stone-type X
+ → is-discrete (C X)
+stone-types-have-discrete-clopen-algebras
+ = pr₂
+
+discrete-clopen-algebra-gives-Π-compact
+ : {X : 𝓤 ̇ }
+ → is-discrete (C X)
+ → is-Π-compact X
+discrete-clopen-algebra-gives-Π-compact
+ = power-of-two-discrete-gives-compact-exponent
+
+Π-compact-gives-discrete-clopen-algebra
+ : {X : 𝓤 ̇ }
+ → is-Π-compact X
+ → is-discrete (C X)
+Π-compact-gives-discrete-clopen-algebra c
+ = discrete-to-power-Π-compact-is-discrete c 𝟚-is-discrete
+
+discrete-clopen-algebra-iff-Π-compact
+ : {X : 𝓤 ̇ }
+ → is-discrete (C X) ↔ is-Π-compact X
+discrete-clopen-algebra-iff-Π-compact
+ = discrete-clopen-algebra-gives-Π-compact ,
+   Π-compact-gives-discrete-clopen-algebra
+
+stone-types-are-Π-compact
+ : {X : 𝓤 ̇ }
+ → is-stone-type X
+ → is-Π-compact X
+stone-types-are-Π-compact
+ = discrete-clopen-algebra-gives-Π-compact
+ ∘ stone-types-have-discrete-clopen-algebras
+
+compact-types-are-Π-compact
+ : {X : 𝓤 ̇ }
+ → is-compact X
+ → is-Π-compact X
+compact-types-are-Π-compact
+ = ∃-compact-types-are-Π-compact ∘ compact-types-are-∃-compact
 
 \end{code}
 
@@ -265,15 +319,15 @@ totally-separated-gives-η-is-embedding {𝓤} {X} τ
 
 \end{code}
 
-We now show that the homomorphisms on the clopens of a Stone type are
-evaluations, give a criterion for being a Stone type, and show that
-Stone types are totally separated.
+We now show that the homomorphisms on the clopens of a pre-Stone type
+are evaluations, give criteria for a type to be a pre-Stone type and a
+Stone type, and show that pre-Stone types are totally separated.
 
 \begin{code}
 
 homs-are-evaluations
  : {X : 𝓤 ̇ }
- → is-stone-type X
+ → is-pre-stone-type X
  → (h : C X → 𝟚)
  → is-bhom h
  → Σ v ꞉ X , ((p : C X) → h p ＝ p v)
@@ -289,12 +343,12 @@ homs-are-evaluations {𝓤} {X} ζ h i
   II : (p : C X) → h p ＝ p x
   II p = (happly (ap pr₁ I) p)⁻¹
 
-stone-criterion
+pre-stone-criterion
  : {X : 𝓤 ̇ }
  → is-totally-separated X
  → ((h : C X → 𝟚) → is-bhom h → Σ v ꞉ X , ((p : C X) → h p ＝ p v))
- → is-stone-type X
-stone-criterion {𝓤} {X} τ ψ
+ → is-pre-stone-type X
+pre-stone-criterion {𝓤} {X} τ ψ
  = vv-equivs-are-equivs (η X) I
  where
   I : (σ : H X) → is-singleton (fiber (η X) σ)
@@ -308,26 +362,34 @@ stone-criterion {𝓤} {X} τ ψ
             (dfunext fe (λ p → (e p)⁻¹)))
       (totally-separated-gives-η-is-embedding τ (h , i))
 
-stone-types-are-totally-separated
+stone-criterion
  : {X : 𝓤 ̇ }
- → is-stone-type X
+ → is-discrete (C X)
  → is-totally-separated X
-stone-types-are-totally-separated {𝓤} {X} ζ
+ → ((h : C X → 𝟚) → is-bhom h → Σ v ꞉ X , ((p : C X) → h p ＝ p v))
+ → is-stone-type X
+stone-criterion d τ ψ = pre-stone-criterion τ ψ , d
+
+pre-stone-types-are-totally-separated
+ : {X : 𝓤 ̇ }
+ → is-pre-stone-type X
+ → is-totally-separated X
+pre-stone-types-are-totally-separated {𝓤} {X} ζ
  = η-is-embedding-gives-totally-separated (equivs-are-embeddings (η X) ζ)
 
 \end{code}
 
-Stone types are closed under equivalence.
+Pre-Stone types and Stone types are closed under equivalence.
 
 \begin{code}
 
-equiv-to-stone-type
+equiv-to-pre-stone-type
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
  → X ≃ Y
- → is-stone-type Y
- → is-stone-type X
-equiv-to-stone-type {𝓤} {𝓥} {X} {Y} 𝕗 ζ
- = stone-criterion I II
+ → is-pre-stone-type Y
+ → is-pre-stone-type X
+equiv-to-pre-stone-type {𝓤} {𝓥} {X} {Y} 𝕗 ζ
+ = pre-stone-criterion I II
  where
   f : X → Y
   f = ⌜ 𝕗 ⌝
@@ -344,7 +406,7 @@ equiv-to-stone-type {𝓤} {𝓥} {X} {Y} 𝕗 ζ
   I : is-totally-separated X
   I = retract-of-totally-separated
        (g , f , gf)
-       (stone-types-are-totally-separated ζ)
+       (pre-stone-types-are-totally-separated ζ)
 
   II : (h : C X → 𝟚)
      → is-bhom h
@@ -368,14 +430,24 @@ equiv-to-stone-type {𝓤} {𝓥} {X} {Y} 𝕗 ζ
             h (p ∘ g ∘ f) ＝⟨ φ (p ∘ g) ⟩
             p (g w)       ∎
 
+equiv-to-stone-type
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → X ≃ Y
+ → is-stone-type Y
+ → is-stone-type X
+equiv-to-stone-type 𝕗 ζ
+ = equiv-to-pre-stone-type 𝕗 (stone-types-are-pre-stone-types ζ) ,
+   Π-compact-gives-discrete-clopen-algebra
+    (retract-is-Π-compact (≃-gives-◁ 𝕗) (stone-types-are-Π-compact ζ))
+
 \end{code}
 
 The empty type is a Stone type.
 
 \begin{code}
 
-𝟘-is-stone-type : is-stone-type (𝟘 {𝓤})
-𝟘-is-stone-type {𝓤} = vv-equivs-are-equivs (η 𝟘) I
+𝟘-is-pre-stone-type : is-pre-stone-type (𝟘 {𝓤})
+𝟘-is-pre-stone-type {𝓤} = vv-equivs-are-equivs (η 𝟘) I
  where
   I : (σ : H (𝟘 {𝓤})) → is-singleton (fiber (η 𝟘) σ)
   I (h , i) = zero-is-one-elim III
@@ -391,15 +463,20 @@ The empty type is a Stone type.
           h 1̇ ＝⟨ preserves-₁ ⟩
           ₁   ∎
 
+𝟘-is-stone-type : is-stone-type (𝟘 {𝓤})
+𝟘-is-stone-type {𝓤}
+ = 𝟘-is-pre-stone-type ,
+   Π-compact-gives-discrete-clopen-algebra (empty-types-are-Π-compact 𝟘-elim)
+
 \end{code}
 
 The one-point type is a Stone type.
 
 \begin{code}
 
-𝟙-is-stone-type : is-stone-type (𝟙 {𝓤})
-𝟙-is-stone-type {𝓤} =
- stone-criterion 𝟙-is-totally-separated I
+𝟙-is-pre-stone-type : is-pre-stone-type (𝟙 {𝓤})
+𝟙-is-pre-stone-type {𝓤} =
+ pre-stone-criterion 𝟙-is-totally-separated I
  where
   I : (h : C (𝟙 {𝓤}) → 𝟚)
     → is-bhom h
@@ -423,6 +500,13 @@ The one-point type is a Stone type.
              ₁   ＝⟨ e ⁻¹ ⟩
              p ⋆ ∎
 
+𝟙-is-stone-type : is-stone-type (𝟙 {𝓤})
+𝟙-is-stone-type
+ = 𝟙-is-pre-stone-type ,
+   Π-compact-gives-discrete-clopen-algebra
+    (compact-types-are-Π-compact
+      (compact∙-types-are-compact 𝟙-is-compact∙))
+
 \end{code}
 
 We now give a criterion for a homomorphism to be given by evaluation.
@@ -435,7 +519,7 @@ hom-is-evaluation-criterion
    (j : A → X)
    (σ : (x : X) → q x ＝ ₁ → A)
  → ((x : X) (d : q x ＝ ₁) → j (σ x d) ＝ x)
- → is-stone-type A
+ → is-pre-stone-type A
  → (h : C X → 𝟚)
  → is-bhom h
  → h q ＝ ₁
@@ -582,16 +666,16 @@ Stone types are closed under binary sums.
 
 \begin{code}
 
-+-is-stone-type
++-is-pre-stone-type
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
- → is-stone-type X
- → is-stone-type Y
- → is-stone-type (X + Y)
-+-is-stone-type {𝓤} {𝓥} {X} {Y} ζ₀ ζ₁
- = stone-criterion
+ → is-pre-stone-type X
+ → is-pre-stone-type Y
+ → is-pre-stone-type (X + Y)
++-is-pre-stone-type {𝓤} {𝓥} {X} {Y} ζ₀ ζ₁
+ = pre-stone-criterion
     (+-totally-separated X Y
-      (stone-types-are-totally-separated ζ₀)
-      (stone-types-are-totally-separated ζ₁))
+      (pre-stone-types-are-totally-separated ζ₀)
+      (pre-stone-types-are-totally-separated ζ₁))
     I
  where
   q : C (X + Y)
@@ -641,6 +725,34 @@ Stone types are closed under binary sums.
          → Σ v ꞉ X + Y , ((p : C (X + Y)) → h p ＝ p v)
       IV (a , φ) = inl a , φ
 
++-is-Π-compact
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → is-Π-compact X
+ → is-Π-compact Y
+ → is-Π-compact (X + Y)
++-is-Π-compact {𝓤} {𝓥} {X} {Y} c₀ c₁ p
+ = I (×-preserves-decidability (c₀ (p ∘ inl)) (c₁ (p ∘ inr)))
+ where
+  I : is-decidable (((x : X) → p (inl x) ＝ ₁)
+                  × ((y : Y) → p (inr y) ＝ ₁))
+    → is-decidable ((z : X + Y) → p z ＝ ₁)
+  I (inl (φ , ψ)) = inl (dep-cases φ ψ)
+  I (inr ν)       = inr (λ α → ν ((λ x → α (inl x)) , (λ y → α (inr y))))
+
++-is-stone-type
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → is-stone-type X
+ → is-stone-type Y
+ → is-stone-type (X + Y)
++-is-stone-type ζ₀ ζ₁
+ = +-is-pre-stone-type
+    (stone-types-are-pre-stone-types ζ₀)
+    (stone-types-are-pre-stone-types ζ₁) ,
+   Π-compact-gives-discrete-clopen-algebra
+    (+-is-Π-compact
+      (stone-types-are-Π-compact ζ₀)
+      (stone-types-are-Π-compact ζ₁))
+
 \end{code}
 
 The standard finite types are Stone types.
@@ -680,17 +792,17 @@ The two-point type is a Stone type.
 
 \end{code}
 
-A ¬¬-stable proposition is a Stone type.
+A ¬¬-stable proposition is a pre-Stone type.
 
 \begin{code}
 
-¬¬-stable-props-are-stone-types
+¬¬-stable-props-are-pre-stone-types
  : {P : 𝓤 ̇ }
  → is-prop P
  → ¬¬-stable P
- → is-stone-type P
-¬¬-stable-props-are-stone-types {𝓤} {P} P-is-prop P-is-¬¬-stable
- = stone-criterion I II
+ → is-pre-stone-type P
+¬¬-stable-props-are-pre-stone-types {𝓤} {P} P-is-prop P-is-¬¬-stable
+ = pre-stone-criterion I II
  where
   I : is-totally-separated P
   I {x} {y} _ = P-is-prop x y
@@ -904,7 +1016,7 @@ clopens.
                          (λ _ → ι k)
                          (λ _ _ → ⋆)
                          (λ x d → (singleton-property₀ k x d)⁻¹)
-                         (𝟙-is-stone-type {𝓤₀})
+                         (𝟙-is-pre-stone-type {𝓤₀})
                          h i
                          (h-at-singleton k e))
   where
@@ -921,9 +1033,7 @@ clopens.
 \end{code}
 
 If u is the point at infinity, then h gives the value ₁ to every upper
-set, and so does a homomorphism that is not the evaluation at u. For
-such a homomorphism, a modulus of a clopen decides the value that h
-gives to that clopen.
+set, and so does a homomorphism that is not the evaluation at u.
 
 \begin{code}
 
@@ -1044,14 +1154,25 @@ If ¬ WLPO holds then the criterion applies.
 
 \end{code}
 
-The criterion above, applied to the total separatedness of ℕ∞, now
-gives that ℕ∞ is a Stone type if ¬ WLPO holds.
+The clopens of ℕ∞ form a discrete type, as ℕ∞ is compact, so that ℕ∞
+is a Stone type precisely when it is a pre-Stone type. The criterion
+above, applied to the discreteness of the clopens and to the total
+separatedness of ℕ∞, now gives that ℕ∞ is a Stone type if ¬ WLPO
+holds.
 
 \begin{code}
 
+ℕ∞-has-a-discrete-clopen-algebra : is-discrete (C ℕ∞)
+ℕ∞-has-a-discrete-clopen-algebra
+ = Π-compact-gives-discrete-clopen-algebra
+    (compact-types-are-Π-compact ℕ∞-compact)
+
 ℕ∞-is-stone-type : ¬ WLPO → is-stone-type ℕ∞
 ℕ∞-is-stone-type nwlpo =
- stone-criterion (ℕ∞-is-totally-separated fe) I
+ stone-criterion
+  ℕ∞-has-a-discrete-clopen-algebra
+  (ℕ∞-is-totally-separated fe)
+  I
  where
   I : (h : C ℕ∞ → 𝟚) (i : is-bhom h)
     → Σ v ꞉ ℕ∞ , ((p : C ℕ∞) → h p ＝ p v)
@@ -1077,7 +1198,7 @@ stone-gives-evaluation-at-∞
  : is-stone-type ℕ∞
  → Homs-Containing-All-Upper-Sets-Are-Evaluation-At-∞
 stone-gives-evaluation-at-∞ ζ h i t
- = I (homs-are-evaluations ζ h i)
+ = I (homs-are-evaluations (stone-types-are-pre-stone-types ζ) h i)
  where
   I : (Σ v ꞉ ℕ∞ , ((q : C ℕ∞) → h q ＝ q v))
     → (p : C ℕ∞) → h p ＝ p ∞
@@ -1097,7 +1218,10 @@ evaluation-at-∞-gives-stone
  : Homs-Containing-All-Upper-Sets-Are-Evaluation-At-∞
  → is-stone-type ℕ∞
 evaluation-at-∞-gives-stone φ
- = stone-criterion (ℕ∞-is-totally-separated fe) I
+ = stone-criterion
+    ℕ∞-has-a-discrete-clopen-algebra
+    (ℕ∞-is-totally-separated fe)
+    I
  where
   I : (h : C ℕ∞ → 𝟚) (i : is-bhom h)
     → Σ v ꞉ ℕ∞ , ((p : C ℕ∞) → h p ＝ p v)
@@ -1142,19 +1266,10 @@ which ℕ∞ is the interpretation of the code for the first infinite
 ordinal.
 
 
-We now show that if all Stone types are Π-compact then WEM holds. A
-Π-compact type has decidable emptiness, by the decision for the
-constant clopen 0̇, and the negation ¬ Q of a proposition Q is a
-¬¬-stable proposition and hence a Stone type, so that the emptiness of
-¬ Q, which is ¬¬ Q, would be decidable for every proposition Q. We
-repeat the definition of Π-compactness from the module
-TypeTopology.WeaklyCompactTypes, which is parametrized by
-propositional truncations, which we don't assume here.
+We now show that if every pre-Stone type is a Stone type then WEM
+holds.
 
 \begin{code}
-
-is-Π-compact : 𝓤 ̇ → 𝓤 ̇
-is-Π-compact X = (p : C X) → is-decidable ((x : X) → p x ＝ ₁)
 
 Π-compactness-gives-decidable-emptiness
  : {X : 𝓤 ̇ }
@@ -1167,18 +1282,22 @@ is-Π-compact X = (p : C X) → is-decidable ((x : X) → p x ＝ ₁)
   I (inl φ) = inl (λ x → zero-is-one-elim (φ x))
   I (inr ν) = inr (λ (f : ¬ X) → ν (λ x → 𝟘-elim (f x)))
 
-Stone-Types-Are-Π-Compact : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Stone-Types-Are-Π-Compact 𝓤 = (X : 𝓤 ̇ ) → is-stone-type X → is-Π-compact X
+Pre-Stone-Types-Are-Stone-Types : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Pre-Stone-Types-Are-Stone-Types 𝓤 =
+   (X : 𝓤 ̇ )
+ → is-pre-stone-type X
+ → is-stone-type X
 
-Π-compactness-of-stone-types-gives-WEM
- : Stone-Types-Are-Π-Compact 𝓤
+pre-stone-types-are-stone-types-gives-WEM
+ : Pre-Stone-Types-Are-Stone-Types 𝓤
  → WEM 𝓤
-Π-compactness-of-stone-types-gives-WEM c Q Q-is-prop
+pre-stone-types-are-stone-types-gives-WEM c Q Q-is-prop
  = I (Π-compactness-gives-decidable-emptiness
-      (c (¬ Q)
-         (¬¬-stable-props-are-stone-types
-           (negations-are-props fe)
-           three-negations-imply-one)))
+      (stone-types-are-Π-compact
+       (c (¬ Q)
+          (¬¬-stable-props-are-pre-stone-types
+            (negations-are-props fe)
+            three-negations-imply-one))))
  where
   I : is-decidable (¬ (¬ Q)) → ¬ Q + ¬¬ Q
   I (inl nnq) = inr nnq
@@ -1186,28 +1305,25 @@ Stone-Types-Are-Π-Compact 𝓤 = (X : 𝓤 ̇ ) → is-stone-type X → is-Π-c
 
 \end{code}
 
-A product of Stone types indexed by a proposition is a Stone type,
-which is the analogue of the micro Tychonoff theorem of the module
-TypeTopology.MicroTychonoff.
+A product of pre-Stone types indexed by a proposition is a pre-Stone
+type, which is the analogue of the micro Tychonoff theorem of the
+module TypeTopology.MicroTychonoff.
 
-In the following proof, the point at which h evaluates has to be given
-uniformly in the witness of P, since a point of Π Y is a map assigning
-a point of Y p to each witness p. The conclusion h r ＝ r v is an
-equation of booleans and hence ¬¬-stable, and P + ¬ P is irrefutable,
-so the proof may assume it, and then Π Y is equivalent to Y p or to 𝟙,
-both of which are Stone types.
+The point at which h evaluates has to be given uniformly in the
+witnesses of P. The conclusion h r ＝ r v is an equation of booleans,
+and hence ¬¬-stable, so the proof may assume the irrefutable P + ¬ P.
 
 \begin{code}
 
-prop-indexed-products-are-stone-types
+prop-indexed-products-are-pre-stone-types
  : {P : 𝓤 ̇ } {Y : P → 𝓥 ̇ }
  → is-prop P
- → ((p : P) → is-stone-type (Y p))
- → is-stone-type (Π Y)
-prop-indexed-products-are-stone-types {𝓤} {𝓥} {P} {Y} P-is-prop ζ
- = stone-criterion
+ → ((p : P) → is-pre-stone-type (Y p))
+ → is-pre-stone-type (Π Y)
+prop-indexed-products-are-pre-stone-types {𝓤} {𝓥} {P} {Y} P-is-prop ζ
+ = pre-stone-criterion
     (Π-is-totally-separated fe
-      (λ p → stone-types-are-totally-separated (ζ p)))
+      (λ p → pre-stone-types-are-totally-separated (ζ p)))
     I
  where
   𝕖 : (p : P) → Π Y ≃ Y p
@@ -1238,14 +1354,6 @@ prop-indexed-products-are-stone-types {𝓤} {𝓥} {P} {Y} P-is-prop ζ
     f-property : (p : P) (r : C (Y p)) → hₚ p r ＝ r (f p)
     f-property p = pr₂ (II p)
 
-\end{code}
-
-Any point at which h evaluates agrees with v, because the two agree in
-each member of the product, where the points are separated by the
-clopens.
-
-\begin{code}
-
     III : (Σ g ꞉ Π Y , ((r : C (Π Y)) → h r ＝ r g))
         → (r : C (Π Y)) → h r ＝ r f
     III (g , φ) r = h r ＝⟨ φ r ⟩
@@ -1256,7 +1364,7 @@ clopens.
       V = dfunext fe VI
        where
         VI : (p : P) → f p ＝ g p
-        VI p = stone-types-are-totally-separated (ζ p) vi
+        VI p = pre-stone-types-are-totally-separated (ζ p) vi
          where
           vi : (r : C (Y p)) → r (f p) ＝ r (g p)
           vi r = r (f p) ＝⟨ (f-property p r)⁻¹ ⟩
@@ -1272,81 +1380,73 @@ clopens.
         VI : ¬¬ (P + ¬ P)
         VI f = f (inr (λ p → f (inl p)))
 
-        VII : P + ¬ P → is-stone-type (Π Y)
-        VII (inl p)  = equiv-to-stone-type (𝕖 p) (ζ p)
-        VII (inr ν') = equiv-to-stone-type
+        VII : P + ¬ P → is-pre-stone-type (Π Y)
+        VII (inl p)  = equiv-to-pre-stone-type (𝕖 p) (ζ p)
+        VII (inr ν') = equiv-to-pre-stone-type
                         (empty-indexed-product-is-𝟙 fe ν')
-                        (𝟙-is-stone-type {𝓤₀})
+                        (𝟙-is-pre-stone-type {𝓤₀})
 
         VIII : ¬ (P + ¬ P)
         VIII d = ν (III (homs-are-evaluations (VII d) h i) r)
 
 \end{code}
 
-In particular, P → 𝟚 is a Stone type if P is a proposition. It is not
-discrete in general, as the discreteness of P → 𝟚 for all propositions
-amounts to WLPO, as discussed in the module Taboos.P2.
+In particular, P → 𝟚 is a pre-Stone type if P is a proposition. It is
+not discrete in general, as the discreteness of P → 𝟚 for all
+propositions amounts to WLPO, as discussed in the module Taboos.P2.
 
 \begin{code}
 
-P→𝟚-is-stone-type
+P→𝟚-is-pre-stone-type
  : {P : 𝓤 ̇ }
  → is-prop P
- → is-stone-type (P → 𝟚)
-P→𝟚-is-stone-type P-is-prop
- = prop-indexed-products-are-stone-types P-is-prop
-    (λ _ → 𝟚-is-stone-type)
+ → is-pre-stone-type (P → 𝟚)
+P→𝟚-is-pre-stone-type P-is-prop
+ = prop-indexed-products-are-pre-stone-types P-is-prop
+    (λ _ → stone-types-are-pre-stone-types 𝟚-is-stone-type)
 
 \end{code}
 
-We now use this to show that if ¬ WLPO holds then Stone types are
+We now use this to show that if ¬ WLPO holds then pre-Stone types are
 **not** closed under Σ. A counterexample is the type ℕ∞₂ of the
 module TypeTopology.FailureOfTotalSeparatedness, whose total
 separatedness gives ¬¬ WLPO. Its base ℕ∞ is a Stone type when ¬ WLPO
 holds, and its fibers are of the form P → 𝟚 for a proposition P and
-hence are Stone types, so that the closure would make ℕ∞₂ a Stone type
-and hence totally separated.
+hence are pre-Stone types, so that the closure would make ℕ∞₂ a
+pre-Stone type and hence totally separated.
 
 \begin{code}
 
 open import TypeTopology.FailureOfTotalSeparatedness fe
 
-Stone-Types-Are-Closed-Under-Σ : 𝓤₁ ̇
-Stone-Types-Are-Closed-Under-Σ =
+Pre-Stone-Types-Are-Closed-Under-Σ : 𝓤₁ ̇
+Pre-Stone-Types-Are-Closed-Under-Σ =
    (X : 𝓤₀ ̇ ) (Y : X → 𝓤₀ ̇ )
- → is-stone-type X
- → ((x : X) → is-stone-type (Y x))
- → is-stone-type (Σ Y)
+ → is-pre-stone-type X
+ → ((x : X) → is-pre-stone-type (Y x))
+ → is-pre-stone-type (Σ Y)
 
 closure-under-Σ-gives-¬¬-WLPO
- : Stone-Types-Are-Closed-Under-Σ
+ : Pre-Stone-Types-Are-Closed-Under-Σ
  → ¬¬ WLPO
 closure-under-Σ-gives-¬¬-WLPO c nwlpo
  = ℕ∞₂-is-not-totally-separated-in-general I nwlpo
  where
   I : is-totally-separated ℕ∞₂
-  I = stone-types-are-totally-separated
+  I = pre-stone-types-are-totally-separated
        (c ℕ∞
           (λ u → u ＝ ∞ → 𝟚)
-          (ℕ∞-is-stone-type nwlpo)
-          (λ u → P→𝟚-is-stone-type (ℕ∞-is-set fe)))
+          (stone-types-are-pre-stone-types (ℕ∞-is-stone-type nwlpo))
+          (λ u → P→𝟚-is-pre-stone-type (ℕ∞-is-set fe)))
 
 ¬WLPO-gives-failure-of-closure-under-Σ
  : ¬ WLPO
- → ¬ Stone-Types-Are-Closed-Under-Σ
+ → ¬ Pre-Stone-Types-Are-Closed-Under-Σ
 ¬WLPO-gives-failure-of-closure-under-Σ nwlpo c
  = closure-under-Σ-gives-¬¬-WLPO c nwlpo
 
 \end{code}
 
-The Stone types of [1] are closed under Σ, by their Theorem 4.18, with
-the same pointwise hypothesis on the fibers as above. There is no
-conflict with our result, because in [1] a type is a Stone type when
-it is equivalent to the spectrum of a countably presented boolean
-algebra, and such types are Stone types in our sense by their duality
-axiom, but not conversely. Since their axioms give ¬ WLPO, our Stone
-types are not closed under Σ in their setting, and therefore the
-fibers P → 𝟚 of the counterexample are Stone types in our sense but
-not in theirs. Because P is an equality in ℕ∞, their Lemma 3.10 and
-Corollary 1.22 give that P → 𝟚 is a Stone type in their sense only if
-P is decidable.
+Whether our Stone types are closed under Σ we don't know. The Stone
+types of [1] are closed under Σ, by their Theorem 4.18, but their
+notion of a Stone type is not ours.

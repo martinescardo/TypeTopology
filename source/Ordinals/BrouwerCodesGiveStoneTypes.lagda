@@ -14,10 +14,12 @@ discussed in the module TypeTopology.StoneTypes.
 The successor constructor reduces to the binary sums of the above
 module, and the finite part of the limit constructor is handled by its
 criteria, which say when a homomorphism is an evaluation. Here we show
-that the squashed sum of a family of compact Stone types is a Stone
-type if ¬ WLPO holds, which is the interpretation of the limit
+that the squashed sum of a family of compact pre-Stone types is a
+Stone type if ¬ WLPO holds, which is the interpretation of the limit
 constructor, where the hypothesis plays the same role as for ℕ∞, by
-giving the ¬¬-existence of a modulus of continuity.
+giving the ¬¬-existence of a modulus of continuity. That the clopens
+form a discrete type, which a Stone type requires in addition, comes
+from the compactness of the interpretation.
 
 \begin{code}
 
@@ -25,8 +27,12 @@ giving the ¬¬-existence of a modulus of continuity.
 
 open import MLTT.Spartan
 open import UF.FunExt
+open import UF.PropTrunc
 
-module Ordinals.BrouwerCodesGiveStoneTypes (fe : Fun-Ext) where
+module Ordinals.BrouwerCodesGiveStoneTypes
+        (fe : Fun-Ext)
+        (pt : propositional-truncations-exist)
+       where
 
 private
  fe' : FunExt
@@ -46,7 +52,8 @@ open import Notation.CanonicalMap
 open import Notation.Order
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
-open import TypeTopology.StoneTypes fe
+open import TypeTopology.StoneTypes fe pt
+open import TypeTopology.WeaklyCompactTypes fe' pt using (_≤̇_)
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
@@ -68,7 +75,7 @@ open import UF.PropIndexedPiSigma
 
 module _ (X : ℕ → 𝓤 ̇ )
          (κ : (n : ℕ) → is-compact∙ (X n))
-         (δ : (n : ℕ) → is-stone-type (X n))
+         (δ : (n : ℕ) → is-pre-stone-type (X n))
        where
 
  private
@@ -81,9 +88,9 @@ module _ (X : ℕ → 𝓤 ̇ )
   Y-is-compact∙ : (u : ℕ∞) → is-compact∙ (Y u)
   Y-is-compact∙ = /ι-is-compact∙ X κ
 
-  summands-are-stone-types : (k : ℕ) → is-stone-type (Y (ι k))
-  summands-are-stone-types k =
-   equiv-to-stone-type
+  summands-are-pre-stone-types : (k : ℕ) → is-pre-stone-type (Y (ι k))
+  summands-are-pre-stone-types k =
+   equiv-to-pre-stone-type
     (Π-extension-property X ι ι-is-embedding k)
     (δ k)
 
@@ -252,7 +259,7 @@ a product indexed by the witnesses that u is finite.
                    (λ a → ι k , a)
                    (σ k)
                    (jσ k)
-                   (summands-are-stone-types k)
+                   (summands-are-pre-stone-types k)
                    h i I
      where
       I : h (pullback (singleton k)) ＝ ₁
@@ -432,8 +439,11 @@ points into an inequality of clopens.
  Σ¹-is-stone-type : ¬ WLPO → is-stone-type (Σ¹ X)
  Σ¹-is-stone-type nwlpo =
   stone-criterion
+   (Π-compact-gives-discrete-clopen-algebra
+     (compact-types-are-Π-compact
+       (compact∙-types-are-compact (Σ¹-compact∙ X κ))))
    (Σ¹-is-totally-separated X
-     (λ n → stone-types-are-totally-separated (δ n)))
+     (λ n → pre-stone-types-are-totally-separated (δ n)))
    (λ h i → h-is-an-evaluation h i nwlpo)
 
 \end{code}
@@ -501,7 +511,7 @@ open import Ordinals.Underlying
  Σ¹-is-stone-type
   (λ n → ⟨ Κ (b n) ⟩)
   (λ n → Κ-compact∙ (b n))
-  (λ n → Κ-is-stone-type nwlpo (b n))
+  (λ n → stone-types-are-pre-stone-types (Κ-is-stone-type nwlpo (b n)))
   nwlpo
 
 \end{code}
