@@ -1,10 +1,14 @@
 Martin Escardo, 21st October 2026.
 
-We discuss a notion of a Stone type and show as an example that ℕ∞
-is a Stone type, assuming ¬ WLPO. We also discuss that this cannot be
-proved without such an assumption. Our definition of Stone type is
-that of [1], except that we don't consider the restriction to
-countable boolean algebras.
+We discuss a notion of a Stone type and show as an example that ℕ∞ is
+a Stone type, assuming ¬ WLPO. We also discuss that this cannot be
+proved without such an assumption. Our definition of Stone type says
+that a type is recovered from its boolean algebra of clopens by the
+evaluation map. In [1] a type is instead called a Stone type when it
+is equivalent to the spectrum of a countably presented boolean
+algebra, so that their Stone types are included by ours by their
+duality axiom, but not conversely, as discussed at the end of this
+module.
 
 [1] Cherubini, Coquand, Geerligs and Moeneclaey, "A Foundation for
     Synthetic Stone Duality", TYPES 2024, LIPIcs 336, pp. 3:1-3:20,
@@ -1334,3 +1338,15 @@ closure-under-Σ-gives-¬¬-WLPO c nwlpo
  = closure-under-Σ-gives-¬¬-WLPO c nwlpo
 
 \end{code}
+
+The Stone types of [1] are closed under Σ, by their Theorem 4.18, with
+the same pointwise hypothesis on the fibers as above. There is no
+conflict with our result, because in [1] a type is a Stone type when
+it is equivalent to the spectrum of a countably presented boolean
+algebra, and such types are Stone types in our sense by their duality
+axiom, but not conversely. Since their axioms give ¬ WLPO, our Stone
+types are not closed under Σ in their setting, and therefore the
+fibers P → 𝟚 of the counterexample are Stone types in our sense but
+not in theirs. Because P is an equality in ℕ∞, their Lemma 3.10 and
+Corollary 1.22 give that P → 𝟚 is a Stone type in their sense only if
+P is decidable.
