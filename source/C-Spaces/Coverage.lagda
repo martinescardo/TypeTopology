@@ -1,4 +1,4 @@
-it stChuangjie Xu 2012, ported to TypeTopology in 2025
+Chuangjie Xu 2012, ported to TypeTopology in 2025
 
 \begin{code}
 
