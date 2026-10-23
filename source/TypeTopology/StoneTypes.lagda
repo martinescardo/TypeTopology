@@ -45,12 +45,12 @@ to show that the compact totally separated interpretation of the
 Brouwer ordinal codes gives Stone types, again assuming ¬ WLPO.
 
 We close with three constructive taboos. That every pre-Stone type is
-a Stone type gives WEM. That Stone types are closed under Σ gives ¬¬
-WLPO, and the same for the pre-Stone types, so neither of them is
-closed under Σ when ¬ WLPO holds. That every compact totally separated
-type is a Stone type refutes the existence of a nonprincipal
-ultrafilter of the clopens of ℕ∞, so choice refutes it, although it
-holds in the model of Blass [2], where excluded middle holds.
+a Stone type gives WEM. That Stone types are closed under Σ gives ¬¬ WLPO,
+and the same for the pre-Stone types, so neither of them is closed
+under Σ when ¬ WLPO holds. That every compact totally separated type
+is a Stone type refutes the existence of a nonprincipal ultrafilter of
+the clopens of ℕ∞, so choice refutes it, although it holds in the
+model of Blass [2], where excluded middle holds.
 
 [2] Blass, "A model without ultrafilters", Bull. Acad. Polon. Sci. 25,
     1977, pp. 329-331, which extends a model of Feferman, "Some
