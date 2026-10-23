@@ -288,6 +288,9 @@ a ≤₂' b = b ＝ ₀ → a ＝ ₀
 ≤₂-anti {₁} {₀} l m = 𝟘-elim l
 ≤₂-anti {₁} {₁} l m = refl
 
+＝₂-criterion : {a b : 𝟚} → (a ＝ ₁ → b ＝ ₁) → (b ＝ ₁ → a ＝ ₁) → a ＝ b
+＝₂-criterion f g = ≤₂-anti (≤₂-criterion f) (≤₂-criterion g)
+
 min𝟚 : 𝟚 → 𝟚 → 𝟚
 min𝟚 ₀ b = ₀
 min𝟚 ₁ b = b

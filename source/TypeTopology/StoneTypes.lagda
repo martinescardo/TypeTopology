@@ -2,9 +2,13 @@ Martin Escardo, 21st October 2026.
 
 We discuss a notion of a Stone type and show as an example that ℕ∞ is
 a Stone type, assuming ¬ WLPO. We also discuss that this cannot be
-proved without such an assumption. Our notion of Stone type is a
-variant of that of [1], and we compare them at the end of this
-module.
+proved without such an assumption. The hypothesis ¬ WLPO can be
+regarded as a weak continuity principle. It is equivalent to the
+doubly negated continuity of every function of ℕ∞ into a discrete
+type, by the module TypeTopology.DecidabilityOfNonContinuity.
+
+Our notion of Stone type is a variant of that of [1], and we compare
+the two below.
 
 [1] Cherubini, Coquand, Geerligs and Moeneclaey, "A Foundation for
     Synthetic Stone Duality", TYPES 2024, LIPIcs 336, pp. 3:1-3:20,
@@ -12,28 +16,50 @@ module.
 
 The clopens of a type X are the 𝟚-valued functions on X, as in the
 module TypeTopology.TotallySeparated, and they form a boolean algebra
-with the pointwise operations. We say that X is a pre-Stone type if it
-is equivalent, via the evaluation map, to the type of boolean algebra
-homomorphisms from its clopens to the booleans, and a Stone type if
-moreover its boolean algebra of clopens is discrete. In topological
-terms the homomorphisms are the ultrafilters of the boolean algebra of
-clopens.
+with the pointwise operations. An ultrafilter of this algebra amounts
+to a boolean algebra homomorphism into 𝟚. Each point of X determines a
+principal ultrafilter. We say that X is a pre-Stone type if the map
+that takes a point to the principal ultrafilter it determines is an
+equivalence, and a Stone type if moreover its boolean algebra of
+clopens is discrete.
 
-We first observe that the evaluation map is an embedding if and only
-if X is totally separated. We then give criteria for a type to be a
-pre-Stone type and a Stone type, and show that Stone types are closed
-under binary sums. We also show that the finite types are Stone types,
-and that every ¬¬-stable proposition is a pre-Stone type.
+We first observe that being principal is a proposition, and that the
+map into the ultrafilters is an embedding, precisely when X is totally
+separated, and we give criteria for a type to be a pre-Stone type and
+a Stone type.
 
-We show that ℕ∞ is a Stone type if ¬ WLPO holds, using these facts,
-which are also used in the module Ordinals.BrouwerCodesGiveStoneTypes
-to show that the compact totally separated interpretation of the
-Brouwer ordinal codes gives Stone types, again assuming ¬ WLPO.
+We then show that pre-Stone types and Stone types are closed under
+retracts, and hence under equivalence, that Stone types are closed
+under binary sums and include the finite types, that a ¬¬-stable
+proposition is a pre-Stone type and a proposition is a Stone type
+precisely when it is decidable, that a product of pre-Stone types
+indexed by a proposition is a pre-Stone type, and a Stone type when
+the factors are compact and pointed, and that a sum of Stone types
+over a Stone type is a Stone type as soon as every clopen of every
+fiber is the restriction of a clopen of the sum, which holds at the
+isolated points of the base, for a constant family, giving the closure
+under binary products, and for a family of propositions.
 
-Finally, we establish two constructive taboos about pre-Stone types.
-That every pre-Stone type is a Stone type gives WEM, and that
-pre-Stone types are closed under Σ gives ¬¬ WLPO, so that if ¬ WLPO
-holds they are **not** closed under Σ.
+We show that ℕ∞ is a Stone type if ¬ WLPO holds. The same facts are
+used in the module Ordinals.BrouwerCodesGiveStoneTypes to show that
+the compact totally separated interpretation of the Brouwer ordinal
+codes gives Stone types, again assuming ¬ WLPO.
+
+We close with three constructive taboos, with the comparison with [1]
+made where their closure of the Stone types under Σ bears on ours.
+That every pre-Stone type is a Stone type gives WEM. That Stone types
+are closed under Σ gives ¬¬ WLPO, and the same for the pre-Stone
+types, so neither of them is closed under Σ when ¬ WLPO holds. That
+every compact totally separated type is a Stone type refutes the
+existence of a nonprincipal ultrafilter of the clopens of ℕ∞, so
+choice refutes it, although it holds in the model of Blass [2], where
+excluded middle holds.
+
+[2] Blass, "A model without ultrafilters", Bull. Acad. Polon. Sci. 25,
+    1977, pp. 329-331, which extends a model of Feferman, "Some
+    applications of the notions of forcing and generic sets",
+    Fundamenta Mathematicae 56, 1964, pp. 325-345,
+    https://doi.org/10.4064/fm-56-3-325-345.
 
 \begin{code}
 
@@ -53,11 +79,13 @@ private
  fe' 𝓤 𝓥 = fe
 
 open import CoNaturals.Type
+open import Fin.Bishop
+open import Fin.Type hiding (𝟏)
 open import MLTT.Two-Properties
- renaming (max𝟚 to infixl 39 _∨₂_ ;
-           min𝟚 to infixl 40 _∧₂_ ;
-           complement to infix 41 ¬₂_)
-open import NotionsOfDecidability.Decidable
+ renaming (max𝟚 to infixl 39 _∨_ ;
+           min𝟚 to infixl 40 _∧_ ;
+           complement to infix 41 ⇁_)
+open import NotionsOfDecidability.Complemented
 open import Naturals.Order renaming (max to maxℕ)
 open import Naturals.Properties
 open import Notation.CanonicalMap
@@ -66,8 +94,10 @@ open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.DecidabilityOfNonContinuity fe
 open import TypeTopology.GenericConvergentSequenceCompactness fe
+open import TypeTopology.MicroTychonoff
 open import TypeTopology.TotallySeparated
 open import TypeTopology.WeaklyCompactTypes fe' pt
+ renaming (_≤̇_ to infix 30 _⊆_)
 open import UF.Base
 open import UF.ClassicalLogic
 open import UF.DiscreteAndSeparated
@@ -76,159 +106,264 @@ open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.PropIndexedPiSigma
+open import UF.Retracts
+open import UF.Retracts-FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 \end{code}
 
-We now define the type C X of clopens of a type X and their boolean
-operations pointwise. The order ≤̇ and the notion of Π-compactness
-used below are those of the module TypeTopology.WeaklyCompactTypes.
+In what follows, we identify complemented subsets with their boolean
+valued characteristic functions, and introduce notation to make this
+point of view explicit. We first define the type Clopen X of clopens
+of a type X and various operations and relations on it.
 
 \begin{code}
 
-C : 𝓤 ̇ → 𝓤 ̇
-C X = X → 𝟚
+Clopen : 𝓤 ̇ → 𝓤 ̇
+Clopen X = X → 𝟚
 
 module _ {X : 𝓤 ̇ } where
 
- infix  41 ¬̇_
- infixl 40 _∧̇_
- infixl 39 _∨̇_
+ infixl 40 _∩_
+ infixl 39 _∪_
+ infix  45 _ϵ_
+ infix  35 _∈_
+ infix  35 _∉_
 
- 0̇ : C X
- 0̇ _ = ₀
+ _ϵ_ : X → Clopen X → 𝟚
+ x ϵ A = A x
 
- 1̇ : C X
- 1̇ _ = ₁
+ _∈_ : X → Clopen X → 𝓤₀ ̇
+ x ∈ A = x ϵ A ＝ ₁
 
- _∧̇_ : C X → C X → C X
- (p ∧̇ q) x = p x ∧₂ q x
+ _∉_ : X → Clopen X → 𝓤₀ ̇
+ x ∉ A = x ϵ A ＝ ₀
 
- _∨̇_ : C X → C X → C X
- (p ∨̇ q) x = p x ∨₂ q x
+ ∈-is-decidable : (x : X) (A : Clopen X) → is-decidable (x ∈ A)
+ ∈-is-decidable x A = 𝟚-is-discrete (x ϵ A) ₁
 
- ¬̇_ : C X → C X
- (¬̇ p) x = ¬₂ (p x)
+ ∅ : Clopen X
+ ∅ _ = ₀
+
+ 𝟏 : Clopen X
+ 𝟏 _ = ₁
+
+ _∩_ : Clopen X → Clopen X → Clopen X
+ (A ∩ B) x = x ϵ A ∧ x ϵ B
+
+ _∪_ : Clopen X → Clopen X → Clopen X
+ (A ∪ B) x = x ϵ A ∨ x ϵ B
+
+ complement : Clopen X → Clopen X
+ complement A x = ⇁ (x ϵ A)
 
 \end{code}
 
-A homomorphism of boolean algebras from the clopens of X to the
-booleans is a map preserving the two constants and the two binary
-operations.
+We now define the subtype of X classified by a clopen, together with
+its inclusion into X and the membership of its points in the clopen,
+which amounts to the restriction of the clopen to the subtype it
+classifies being 𝟏.
 
 \begin{code}
 
-is-bhom : {X : 𝓤 ̇ } → (C X → 𝟚) → 𝓤 ̇
-is-bhom {𝓤} {X} h = (h 0̇ ＝ ₀)
-                  × (h 1̇ ＝ ₁)
-                  × ((p q : C X) → h (p ∧̇ q) ＝ h p ∧₂ h q)
-                  × ((p q : C X) → h (p ∨̇ q) ＝ h p ∨₂ h q)
+clopen-subtype : {X : 𝓤 ̇ } → Clopen X → 𝓤 ̇
+clopen-subtype {𝓤} {X} A = Σ x ꞉ X , x ∈ A
 
-being-bhom-is-prop : {X : 𝓤 ̇ } (h : C X → 𝟚) → is-prop (is-bhom h)
-being-bhom-is-prop {𝓤} {X} h =
+clopen-subtype-inclusion : {X : 𝓤 ̇ } (A : Clopen X) → clopen-subtype A → X
+clopen-subtype-inclusion A = pr₁
+
+clopen-subtype-membership : {X : 𝓤 ̇ } (A : Clopen X) (z : clopen-subtype A)
+                          → clopen-subtype-inclusion A z ∈ A
+clopen-subtype-membership A = pr₂
+
+restriction-to-clopen-subtype-is-𝟏
+ : {X : 𝓤 ̇ } (A : Clopen X)
+ → A ∘ clopen-subtype-inclusion A ＝ 𝟏
+restriction-to-clopen-subtype-is-𝟏 A =
+ dfunext fe (clopen-subtype-membership A)
+
+\end{code}
+
+An ultrafilter of the boolean algebra of clopens of X is a boolean
+algebra homomorphism into 𝟚, and hence in particular a clopen of the
+clopens of X, so that the notation above applies to it.
+
+\begin{code}
+
+is-ultrafilter : {X : 𝓤 ̇ } → Clopen (Clopen X) → 𝓤 ̇
+is-ultrafilter {𝓤} {X} ℱ = (∅ ∉ ℱ)
+                         × (𝟏 ∈ ℱ)
+                         × ((A B : Clopen X) → (A ∩ B) ϵ ℱ ＝ A ϵ ℱ ∧ B ϵ ℱ)
+                         × ((A B : Clopen X) → (A ∪ B) ϵ ℱ ＝ A ϵ ℱ ∨ B ϵ ℱ)
+
+being-ultrafilter-is-prop : {X : 𝓤 ̇ } (ℱ : Clopen (Clopen X))
+                          → is-prop (is-ultrafilter ℱ)
+being-ultrafilter-is-prop {𝓤} {X} ℱ =
  ×₄-is-prop
   𝟚-is-set
   𝟚-is-set
-  (Π₂-is-prop fe (λ p q → 𝟚-is-set))
-  (Π₂-is-prop fe (λ p q → 𝟚-is-set))
+  (Π₂-is-prop fe (λ A B → 𝟚-is-set))
+  (Π₂-is-prop fe (λ A B → 𝟚-is-set))
 
 \end{code}
 
-Homomorphisms are monotone and preserve complements.
+A clopen of clopens of X is principal when it consists of the clopen
+neighbourhoods of a point. We use the name for arbitrary clopens of
+clopens, although we apply it only to ultrafilters.
 
 \begin{code}
 
-module bhom-properties
+is-principal : {X : 𝓤 ̇ } → Clopen (Clopen X) → 𝓤 ̇
+is-principal {𝓤} {X} ℱ = Σ x ꞉ X , ((A : Clopen X) → A ϵ ℱ ＝ x ϵ A)
+
+is-nonprincipal : {X : 𝓤 ̇ } → Clopen (Clopen X) → 𝓤 ̇
+is-nonprincipal ℱ = ¬ is-principal ℱ
+
+\end{code}
+
+Being principal is a proposition precisely when X is totally
+separated. A point witnessing that a clopen of clopens is principal is
+unique when the clopens separate the points of X, and conversely two
+points with the same clopens both witness that the clopen
+neighbourhoods of the first of them are principal.
+
+\begin{code}
+
+totally-separated-gives-being-principal-is-prop
+ : {X : 𝓤 ̇ }
+ → is-totally-separated X
+ → (ℱ : Clopen (Clopen X))
+ → is-prop (is-principal ℱ)
+totally-separated-gives-being-principal-is-prop {𝓤} {X} τ ℱ (x , φ) (y , ψ)
+ = to-subtype-＝ I II
+ where
+  I : (x : X) → is-prop ((A : Clopen X) → A ϵ ℱ ＝ x ϵ A)
+  I x = Π-is-prop fe (λ A → 𝟚-is-set)
+
+  II : x ＝ y
+  II = τ III
+   where
+    III : (A : Clopen X) → x ϵ A ＝ y ϵ A
+    III A = x ϵ A ＝⟨ (φ A)⁻¹ ⟩
+            A ϵ ℱ ＝⟨ ψ A ⟩
+            y ϵ A ∎
+
+being-principal-is-prop-gives-totally-separated
+ : {X : 𝓤 ̇ }
+ → ((ℱ : Clopen (Clopen X)) → is-prop (is-principal ℱ))
+ → is-totally-separated X
+being-principal-is-prop-gives-totally-separated {𝓤} {X} σ {x} {y} e
+ = ap pr₁ (σ (λ A → x ϵ A) (x , (λ A → refl)) (y , e))
+
+\end{code}
+
+We name the four conditions in the definition of an ultrafilter, and
+we show that ultrafilters are monotone and preserve complements.
+
+\begin{code}
+
+module ultrafilter-properties
         {X : 𝓤 ̇ }
-        (h : C X → 𝟚)
-        (i : is-bhom h)
+        (ℱ : Clopen (Clopen X))
+        (i : is-ultrafilter ℱ)
        where
 
- preserves-₀ : h 0̇ ＝ ₀
+ preserves-₀ : ∅ ∉ ℱ
  preserves-₀ = pr₁ i
 
- preserves-₁ : h 1̇ ＝ ₁
+ preserves-₁ : 𝟏 ∈ ℱ
  preserves-₁ = pr₁ (pr₂ i)
 
- preserves-∧ : (p q : C X) → h (p ∧̇ q) ＝ h p ∧₂ h q
+ preserves-∧ : (A B : Clopen X) → (A ∩ B) ϵ ℱ ＝ A ϵ ℱ ∧ B ϵ ℱ
  preserves-∧ = pr₁ (pr₂ (pr₂ i))
 
- preserves-∨ : (p q : C X) → h (p ∨̇ q) ＝ h p ∨₂ h q
+ preserves-∨ : (A B : Clopen X) → (A ∪ B) ϵ ℱ ＝ A ϵ ℱ ∨ B ϵ ℱ
  preserves-∨ = pr₂ (pr₂ (pr₂ i))
 
- monotone : {p q : C X} → p ≤̇ q → h p ≤ h q
- monotone {p} {q} l = transport (λ - → - ≤ h q) II Lemma[minab≤₂b]
+ monotone : {A B : Clopen X} → A ⊆ B → A ϵ ℱ ≤ B ϵ ℱ
+ monotone {A} {B} l = transport (λ - → - ≤ B ϵ ℱ) II Lemma[minab≤₂b]
   where
-   I : p ∧̇ q ＝ p
+   I : A ∩ B ＝ A
    I = dfunext fe (λ x → Lemma[a≤₂b→min𝟚ab＝a] (l x))
 
-   II : h p ∧₂ h q ＝ h p
-   II = h p ∧₂ h q ＝⟨ (preserves-∧ p q)⁻¹ ⟩
-        h (p ∧̇ q)  ＝⟨ ap h I ⟩
-        h p        ∎
+   II : A ϵ ℱ ∧ B ϵ ℱ ＝ A ϵ ℱ
+   II = A ϵ ℱ ∧ B ϵ ℱ ＝⟨ (preserves-∧ A B)⁻¹ ⟩
+        (A ∩ B) ϵ ℱ   ＝⟨ ap ℱ I ⟩
+        A ϵ ℱ         ∎
 
- preserves-complement : (p : C X) → h (¬̇ p) ＝ ¬₂ (h p)
- preserves-complement p = 𝟚-equality-cases III IV
+ preserves-complement : (A : Clopen X) → complement A ϵ ℱ ＝ ⇁ (A ϵ ℱ)
+ preserves-complement A = 𝟚-equality-cases III IV
   where
-   I : h p ∧₂ h (¬̇ p) ＝ ₀
-   I = h p ∧₂ h (¬̇ p) ＝⟨ (preserves-∧ p (¬̇ p))⁻¹ ⟩
-       h (p ∧̇ ¬̇ p)    ＝⟨ ap h i₀ ⟩
-       h 0̇            ＝⟨ preserves-₀ ⟩
-       ₀              ∎
+   I : A ϵ ℱ ∧ complement A ϵ ℱ ＝ ₀
+   I = A ϵ ℱ ∧ complement A ϵ ℱ ＝⟨ (preserves-∧ A (complement A))⁻¹ ⟩
+       (A ∩ complement A) ϵ ℱ   ＝⟨ ap ℱ I₀ ⟩
+       ∅ ϵ ℱ                    ＝⟨ preserves-₀ ⟩
+       ₀                        ∎
     where
-     i₀ : p ∧̇ ¬̇ p ＝ 0̇
-     i₀ = dfunext fe (λ x → min𝟚-complement (p x))
+     I₀ : A ∩ complement A ＝ ∅
+     I₀ = dfunext fe (λ x → min𝟚-complement (x ϵ A))
 
-   II : h p ∨₂ h (¬̇ p) ＝ ₁
-   II = h p ∨₂ h (¬̇ p) ＝⟨ (preserves-∨ p (¬̇ p))⁻¹ ⟩
-        h (p ∨̇ ¬̇ p)    ＝⟨ ap h i₁ ⟩
-        h 1̇            ＝⟨ preserves-₁ ⟩
-        ₁              ∎
+   II : A ϵ ℱ ∨ complement A ϵ ℱ ＝ ₁
+   II = A ϵ ℱ ∨ complement A ϵ ℱ ＝⟨ (preserves-∨ A (complement A))⁻¹ ⟩
+        (A ∪ complement A) ϵ ℱ   ＝⟨ ap ℱ II₀ ⟩
+        𝟏 ϵ ℱ                    ＝⟨ preserves-₁ ⟩
+        ₁                        ∎
     where
-     i₁ : p ∨̇ ¬̇ p ＝ 1̇
-     i₁ = dfunext fe (λ x → max𝟚-complement (p x))
+     II₀ : A ∪ complement A ＝ 𝟏
+     II₀ = dfunext fe (λ x → max𝟚-complement (x ϵ A))
 
-   III : h p ＝ ₀ → h (¬̇ p) ＝ ¬₂ (h p)
-   III e = h (¬̇ p)        ＝⟨refl⟩
-           ₀ ∨₂ h (¬̇ p)   ＝⟨ ap (λ - → - ∨₂ h (¬̇ p)) (e ⁻¹) ⟩
-           h p ∨₂ h (¬̇ p) ＝⟨ II ⟩
-           ₁              ＝⟨refl⟩
-           ¬₂ ₀           ＝⟨ ap (¬₂_) (e ⁻¹) ⟩
-           ¬₂ (h p)       ∎
+   III : A ∉ ℱ → complement A ϵ ℱ ＝ ⇁ (A ϵ ℱ)
+   III e = complement A ϵ ℱ         ＝⟨refl⟩
+           ₀ ∨ complement A ϵ ℱ     ＝⟨ ap (λ - → - ∨ complement A ϵ ℱ) (e ⁻¹) ⟩
+           A ϵ ℱ ∨ complement A ϵ ℱ ＝⟨ II ⟩
+           ₁                        ＝⟨refl⟩
+           ⇁ ₀                      ＝⟨ ap ⇁_ (e ⁻¹) ⟩
+           ⇁ (A ϵ ℱ)                ∎
 
-   IV : h p ＝ ₁ → h (¬̇ p) ＝ ¬₂ (h p)
-   IV e = h (¬̇ p)        ＝⟨refl⟩
-          ₁ ∧₂ h (¬̇ p)   ＝⟨ ap (λ - → - ∧₂ h (¬̇ p)) (e ⁻¹) ⟩
-          h p ∧₂ h (¬̇ p) ＝⟨ I ⟩
-          ₀              ＝⟨refl⟩
-          ¬₂ ₁           ＝⟨ ap (¬₂_) (e ⁻¹) ⟩
-          ¬₂ (h p)       ∎
+   IV : A ∈ ℱ → complement A ϵ ℱ ＝ ⇁ (A ϵ ℱ)
+   IV e = complement A ϵ ℱ         ＝⟨refl⟩
+          ₁ ∧ complement A ϵ ℱ     ＝⟨ ap (λ - → - ∧ complement A ϵ ℱ) (e ⁻¹) ⟩
+          A ϵ ℱ ∧ complement A ϵ ℱ ＝⟨ I ⟩
+          ₀                        ＝⟨refl⟩
+          ⇁ ₁                      ＝⟨ ap ⇁_ (e ⁻¹) ⟩
+          ⇁ (A ϵ ℱ)                ∎
 
 \end{code}
 
-We now define the type of homomorphisms on the clopens of X, the
-evaluation map, and the notions of a pre-Stone type and a Stone type.
-The clopens of X form a discrete type precisely when X is Π-compact in
-the sense of the module TypeTopology.WeaklyCompactTypes, so that a
-Stone type is a Π-compact pre-Stone type.
+We now define the type 𝕌 X of the ultrafilters of the clopens of X,
+the map 𝕡 that takes a point of X to its principal ultrafilter, and
+the notions of a pre-Stone type and a Stone type. The clopens of X
+form a discrete type precisely when X is Π-compact in the sense of the
+module TypeTopology.WeaklyCompactTypes, so that a Stone type is a
+Π-compact pre-Stone type.
 
 \begin{code}
 
-H : 𝓤 ̇ → 𝓤 ̇
-H X = Σ h ꞉ (C X → 𝟚) , is-bhom h
+𝕌 : 𝓤 ̇ → 𝓤 ̇
+𝕌 X = Σ ℱ ꞉ Clopen (Clopen X) , is-ultrafilter ℱ
 
-η : (X : 𝓤 ̇ ) → X → H X
-η X x = eval X x , refl , refl , (λ p q → refl) , (λ p q → refl)
+clopens-of : {X : 𝓤 ̇ } → 𝕌 X → Clopen (Clopen X)
+clopens-of = pr₁
+
+clopens-of-is-ultrafilter : {X : 𝓤 ̇ } (σ : 𝕌 X)
+                          → is-ultrafilter (clopens-of σ)
+clopens-of-is-ultrafilter = pr₂
+
+𝕡 : (X : 𝓤 ̇ ) → X → 𝕌 X
+𝕡 X x = eval X x , refl , refl , (λ A B → refl) , (λ A B → refl)
+
+_ : (X : 𝓤 ̇ ) (x : X) (A : Clopen X) → A ϵ clopens-of (𝕡 X x) ＝ x ϵ A
+_ = λ X x A → refl
 
 is-pre-stone-type : 𝓤 ̇ → 𝓤 ̇
-is-pre-stone-type X = is-equiv (η X)
+is-pre-stone-type X = is-equiv (𝕡 X)
 
 being-pre-stone-type-is-prop : (X : 𝓤 ̇ ) → is-prop (is-pre-stone-type X)
-being-pre-stone-type-is-prop X = being-equiv-is-prop'' fe (η X)
+being-pre-stone-type-is-prop X = being-equiv-is-prop'' fe (𝕡 X)
 
 is-stone-type : 𝓤 ̇ → 𝓤 ̇
-is-stone-type X = is-pre-stone-type X × is-discrete (C X)
+is-stone-type X = is-pre-stone-type X × is-discrete (Clopen X)
 
 being-stone-type-is-prop : (X : 𝓤 ̇ ) → is-prop (is-stone-type X)
 being-stone-type-is-prop X =
@@ -244,13 +379,13 @@ stone-types-are-pre-stone-types
 stone-types-have-discrete-clopen-algebras
  : {X : 𝓤 ̇ }
  → is-stone-type X
- → is-discrete (C X)
+ → is-discrete (Clopen X)
 stone-types-have-discrete-clopen-algebras
  = pr₂
 
 discrete-clopen-algebra-gives-Π-compact
  : {X : 𝓤 ̇ }
- → is-discrete (C X)
+ → is-discrete (Clopen X)
  → is-Π-compact X
 discrete-clopen-algebra-gives-Π-compact
  = power-of-two-discrete-gives-compact-exponent
@@ -258,16 +393,9 @@ discrete-clopen-algebra-gives-Π-compact
 Π-compact-gives-discrete-clopen-algebra
  : {X : 𝓤 ̇ }
  → is-Π-compact X
- → is-discrete (C X)
+ → is-discrete (Clopen X)
 Π-compact-gives-discrete-clopen-algebra c
  = discrete-to-power-Π-compact-is-discrete c 𝟚-is-discrete
-
-discrete-clopen-algebra-iff-Π-compact
- : {X : 𝓤 ̇ }
- → is-discrete (C X) ↔ is-Π-compact X
-discrete-clopen-algebra-iff-Π-compact
- = discrete-clopen-algebra-gives-Π-compact ,
-   Π-compact-gives-discrete-clopen-algebra
 
 stone-types-are-Π-compact
  : {X : 𝓤 ̇ }
@@ -277,96 +405,86 @@ stone-types-are-Π-compact
  = discrete-clopen-algebra-gives-Π-compact
  ∘ stone-types-have-discrete-clopen-algebras
 
-compact-types-are-Π-compact
- : {X : 𝓤 ̇ }
- → is-compact X
- → is-Π-compact X
-compact-types-are-Π-compact
- = ∃-compact-types-are-Π-compact ∘ compact-types-are-∃-compact
-
 \end{code}
 
-The first component of η is the map eval X of the module
-TypeTopology.TotallySeparated, which is an embedding precisely when X
-is totally separated, and so the same holds for η, as the inclusion of
-the homomorphisms into the maps on the clopens is an embedding.
+The first component of 𝕡 is the map eval X of the module
+TypeTopology.TotallySeparated, which takes a point to the evaluation
+at it and is the unit of the 𝟚-valued double dualization, as the
+clopens of the clopens of X are the 𝟚-valued double dual of X. So 𝕡 is
+the unit with its codomain cut down to the ultrafilters. The map
+eval X is an embedding precisely when X is totally separated, and so
+the same holds for 𝕡, as the inclusion of the ultrafilters into the
+maps on the clopens is an embedding.
 
 \begin{code}
 
-totally-separated-gives-η-is-embedding
+totally-separated-gives-𝕡-is-embedding
  : {X : 𝓤 ̇ }
  → is-totally-separated X
- → is-embedding (η X)
-totally-separated-gives-η-is-embedding {𝓤} {X} τ
- = factor-is-embedding (η X) pr₁
+ → is-embedding (𝕡 X)
+totally-separated-gives-𝕡-is-embedding {𝓤} {X} τ
+ = factor-is-embedding (𝕡 X) clopens-of
     (totally-separated-gives-totally-separated₂ fe τ)
-    (pr₁-is-embedding being-bhom-is-prop)
+    (pr₁-is-embedding being-ultrafilter-is-prop)
 
-η-is-embedding-gives-totally-separated
+𝕡-is-embedding-gives-totally-separated
  : {X : 𝓤 ̇ }
- → is-embedding (η X)
+ → is-embedding (𝕡 X)
  → is-totally-separated X
-η-is-embedding-gives-totally-separated e
+𝕡-is-embedding-gives-totally-separated e
  = totally-separated₂-gives-totally-separated fe
-    (∘-is-embedding e (pr₁-is-embedding being-bhom-is-prop))
-
-η-is-embedding-iff-totally-separated
- : {X : 𝓤 ̇ }
- → is-embedding (η X) ↔ is-totally-separated X
-η-is-embedding-iff-totally-separated
- = η-is-embedding-gives-totally-separated ,
-    totally-separated-gives-η-is-embedding
+    (∘-is-embedding e (pr₁-is-embedding being-ultrafilter-is-prop))
 
 \end{code}
 
-We now show that the homomorphisms on the clopens of a pre-Stone type
-are evaluations, give criteria for a type to be a pre-Stone type and a
+We now show that the ultrafilters of the clopens of a pre-Stone type
+are principal, give criteria for a type to be a pre-Stone type and a
 Stone type, and show that pre-Stone types are totally separated.
 
 \begin{code}
 
-homs-are-evaluations
+ultrafilters-of-pre-stone-types-are-principal
  : {X : 𝓤 ̇ }
  → is-pre-stone-type X
- → (h : C X → 𝟚)
- → is-bhom h
- → Σ v ꞉ X , ((p : C X) → h p ＝ p v)
-homs-are-evaluations {𝓤} {X} ζ h i
+ → (ℱ : Clopen (Clopen X))
+ → is-ultrafilter ℱ
+ → is-principal ℱ
+ultrafilters-of-pre-stone-types-are-principal {𝓤} {X} ζ ℱ i
  = x , II
  where
   x : X
-  x = inverse (η X) ζ (h , i)
+  x = inverse (𝕡 X) ζ (ℱ , i)
 
-  I : η X x ＝ (h , i)
-  I = inverses-are-sections (η X) ζ (h , i)
+  I : 𝕡 X x ＝ (ℱ , i)
+  I = inverses-are-sections (𝕡 X) ζ (ℱ , i)
 
-  II : (p : C X) → h p ＝ p x
-  II p = (happly (ap pr₁ I) p)⁻¹
+  II : (A : Clopen X) → A ϵ ℱ ＝ x ϵ A
+  II A = (happly (ap clopens-of I) A)⁻¹
 
 pre-stone-criterion
  : {X : 𝓤 ̇ }
  → is-totally-separated X
- → ((h : C X → 𝟚) → is-bhom h → Σ v ꞉ X , ((p : C X) → h p ＝ p v))
+ → ((ℱ : Clopen (Clopen X)) → is-ultrafilter ℱ → is-principal ℱ)
  → is-pre-stone-type X
 pre-stone-criterion {𝓤} {X} τ ψ
- = vv-equivs-are-equivs (η X) I
+ = vv-equivs-are-equivs (𝕡 X) I
  where
-  I : (σ : H X) → is-singleton (fiber (η X) σ)
-  I (h , i) = II (ψ h i)
+  I : (σ : 𝕌 X) → is-singleton (fiber (𝕡 X) σ)
+  I (ℱ , i) = II (ψ ℱ i)
    where
-    II : (Σ v ꞉ X , ((p : C X) → h p ＝ p v))
-       → is-singleton (fiber (η X) (h , i))
-    II (v , e) =
+    II : is-principal ℱ
+       → is-singleton (fiber (𝕡 X) (ℱ , i))
+    II (x , e) =
      pointed-props-are-singletons
-      (v , to-subtype-＝ being-bhom-is-prop
-            (dfunext fe (λ p → (e p)⁻¹)))
-      (totally-separated-gives-η-is-embedding τ (h , i))
+      (x , to-subtype-＝ being-ultrafilter-is-prop
+            (dfunext fe (λ A → (e A)⁻¹)))
+      (totally-separated-gives-𝕡-is-embedding τ (ℱ , i))
 
 stone-criterion
  : {X : 𝓤 ̇ }
- → is-discrete (C X)
+ → is-discrete (Clopen X)
  → is-totally-separated X
- → ((h : C X → 𝟚) → is-bhom h → Σ v ꞉ X , ((p : C X) → h p ＝ p v))
+ → ((ℱ : Clopen (Clopen X)) → is-ultrafilter ℱ → is-principal ℱ)
  → is-stone-type X
 stone-criterion d τ ψ = pre-stone-criterion τ ψ , d
 
@@ -375,11 +493,75 @@ pre-stone-types-are-totally-separated
  → is-pre-stone-type X
  → is-totally-separated X
 pre-stone-types-are-totally-separated {𝓤} {X} ζ
- = η-is-embedding-gives-totally-separated (equivs-are-embeddings (η X) ζ)
+ = 𝕡-is-embedding-gives-totally-separated (equivs-are-embeddings (𝕡 X) ζ)
 
 \end{code}
 
-Pre-Stone types and Stone types are closed under equivalence.
+Pre-Stone types and Stone types are closed under retracts. The
+clopens of a retract of X form a retract of the clopens of X, and a
+retract of a discrete type is discrete.
+
+\begin{code}
+
+retract-is-pre-stone-type
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → retract Y of X
+ → is-pre-stone-type X
+ → is-pre-stone-type Y
+retract-is-pre-stone-type {𝓤} {𝓥} {X} {Y} ρ ζ
+ = pre-stone-criterion
+    (retract-of-totally-separated
+      ρ
+      (pre-stone-types-are-totally-separated ζ))
+    I
+ where
+  r : X → Y
+  r = retraction ρ
+
+  s : Y → X
+  s = section ρ
+
+  I : (ℱ : Clopen (Clopen Y)) → is-ultrafilter ℱ → is-principal ℱ
+  I ℱ i = III (ultrafilters-of-pre-stone-types-are-principal ζ 𝒢 II)
+   where
+    open ultrafilter-properties ℱ i
+
+    𝒢 : Clopen (Clopen X)
+    𝒢 A = (A ∘ s) ϵ ℱ
+
+    II : is-ultrafilter 𝒢
+    II = preserves-₀ ,
+         preserves-₁ ,
+         (λ A A' → preserves-∧ (A ∘ s) (A' ∘ s)) ,
+         (λ A A' → preserves-∨ (A ∘ s) (A' ∘ s))
+
+    III : is-principal 𝒢 → is-principal ℱ
+    III (x , φ) = r x , IV
+     where
+      IV : (A : Clopen Y) → A ϵ ℱ ＝ r x ϵ A
+      IV A = A ϵ ℱ           ＝⟨ ap ℱ V ⟩
+             (A ∘ r ∘ s) ϵ ℱ ＝⟨ φ (A ∘ r) ⟩
+             r x ϵ A         ∎
+       where
+        V : A ＝ A ∘ r ∘ s
+        V = dfunext fe (λ y → ap A (retract-condition ρ y)⁻¹)
+
+retract-is-stone-type
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → retract Y of X
+ → is-stone-type X
+ → is-stone-type Y
+retract-is-stone-type ρ ζ
+ = retract-is-pre-stone-type ρ (stone-types-are-pre-stone-types ζ) ,
+   retract-is-discrete
+    (retract-contravariance fe ρ)
+    (stone-types-have-discrete-clopen-algebras ζ)
+
+\end{code}
+
+Pre-Stone types and Stone types are closed under equivalence, which is
+the special case of the closure under retracts for the retraction that
+an equivalence gives.
 
 \begin{code}
 
@@ -388,57 +570,14 @@ equiv-to-pre-stone-type
  → X ≃ Y
  → is-pre-stone-type Y
  → is-pre-stone-type X
-equiv-to-pre-stone-type {𝓤} {𝓥} {X} {Y} 𝕗 ζ
- = pre-stone-criterion I II
- where
-  f : X → Y
-  f = ⌜ 𝕗 ⌝
-
-  f-is-equiv : is-equiv f
-  f-is-equiv = ⌜⌝-is-equiv 𝕗
-
-  g : Y → X
-  g = inverse f f-is-equiv
-
-  gf : (x : X) → g (f x) ＝ x
-  gf = inverses-are-retractions f f-is-equiv
-
-  I : is-totally-separated X
-  I = retract-of-totally-separated
-       (g , f , gf)
-       (pre-stone-types-are-totally-separated ζ)
-
-  II : (h : C X → 𝟚)
-     → is-bhom h
-     → Σ v ꞉ X , ((p : C X) → h p ＝ p v)
-  II h i = IV (homs-are-evaluations ζ (λ q → h (q ∘ f)) III)
-   where
-    open bhom-properties h i
-
-    III : is-bhom (λ q → h (q ∘ f))
-    III = preserves-₀ ,
-          preserves-₁ ,
-          (λ q q' → preserves-∧ (q ∘ f) (q' ∘ f)) ,
-          (λ q q' → preserves-∨ (q ∘ f) (q' ∘ f))
-
-    IV : (Σ w ꞉ Y , ((q : C Y) → h (q ∘ f) ＝ q w))
-       → Σ v ꞉ X , ((p : C X) → h p ＝ p v)
-    IV (w , φ) = g w , V
-     where
-      V : (p : C X) → h p ＝ p (g w)
-      V p = h p           ＝⟨ ap h (dfunext fe (λ x → ap p (gf x)⁻¹)) ⟩
-            h (p ∘ g ∘ f) ＝⟨ φ (p ∘ g) ⟩
-            p (g w)       ∎
+equiv-to-pre-stone-type 𝕗 = retract-is-pre-stone-type (≃-gives-◁ 𝕗)
 
 equiv-to-stone-type
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
  → X ≃ Y
  → is-stone-type Y
  → is-stone-type X
-equiv-to-stone-type 𝕗 ζ
- = equiv-to-pre-stone-type 𝕗 (stone-types-are-pre-stone-types ζ) ,
-   Π-compact-gives-discrete-clopen-algebra
-    (retract-is-Π-compact (≃-gives-◁ 𝕗) (stone-types-are-Π-compact ζ))
+equiv-to-stone-type 𝕗 = retract-is-stone-type (≃-gives-◁ 𝕗)
 
 \end{code}
 
@@ -447,21 +586,21 @@ The empty type is a Stone type.
 \begin{code}
 
 𝟘-is-pre-stone-type : is-pre-stone-type (𝟘 {𝓤})
-𝟘-is-pre-stone-type {𝓤} = vv-equivs-are-equivs (η 𝟘) I
+𝟘-is-pre-stone-type {𝓤} = vv-equivs-are-equivs (𝕡 𝟘) I
  where
-  I : (σ : H (𝟘 {𝓤})) → is-singleton (fiber (η 𝟘) σ)
-  I (h , i) = zero-is-one-elim III
+  I : (σ : 𝕌 (𝟘 {𝓤})) → is-singleton (fiber (𝕡 𝟘) σ)
+  I (ℱ , i) = zero-is-one-elim III
    where
-    open bhom-properties h i
+    open ultrafilter-properties ℱ i
 
-    II : 0̇ ＝ 1̇
+    II : ∅ ＝ 𝟏
     II = dfunext fe (λ x → 𝟘-elim x)
 
     III : ₀ ＝ ₁
-    III = ₀   ＝⟨ preserves-₀ ⁻¹ ⟩
-          h 0̇ ＝⟨ ap h II ⟩
-          h 1̇ ＝⟨ preserves-₁ ⟩
-          ₁   ∎
+    III = ₀     ＝⟨ preserves-₀ ⁻¹ ⟩
+          ∅ ϵ ℱ ＝⟨ ap ℱ II ⟩
+          𝟏 ϵ ℱ ＝⟨ preserves-₁ ⟩
+          ₁     ∎
 
 𝟘-is-stone-type : is-stone-type (𝟘 {𝓤})
 𝟘-is-stone-type {𝓤}
@@ -478,27 +617,25 @@ The one-point type is a Stone type.
 𝟙-is-pre-stone-type {𝓤} =
  pre-stone-criterion 𝟙-is-totally-separated I
  where
-  I : (h : C (𝟙 {𝓤}) → 𝟚)
-    → is-bhom h
-    → Σ v ꞉ 𝟙 , ((p : C 𝟙) → h p ＝ p v)
-  I h i = ⋆ , II
+  I : (ℱ : Clopen (Clopen (𝟙 {𝓤}))) → is-ultrafilter ℱ → is-principal ℱ
+  I ℱ i = ⋆ , II
    where
-    open bhom-properties h i
+    open ultrafilter-properties ℱ i
 
-    II : (p : C (𝟙 {𝓤})) → h p ＝ p ⋆
-    II p = 𝟚-equality-cases III IV
+    II : (A : Clopen (𝟙 {𝓤})) → A ϵ ℱ ＝ ⋆ ϵ A
+    II A = 𝟚-equality-cases III IV
      where
-      III : p ⋆ ＝ ₀ → h p ＝ p ⋆
-      III e = h p ＝⟨ ap h (dfunext fe (λ _ → e)) ⟩
-              h 0̇ ＝⟨ preserves-₀ ⟩
-              ₀   ＝⟨ e ⁻¹ ⟩
-              p ⋆ ∎
+      III : ⋆ ∉ A → A ϵ ℱ ＝ ⋆ ϵ A
+      III e = A ϵ ℱ ＝⟨ ap ℱ (dfunext fe (λ _ → e)) ⟩
+              ∅ ϵ ℱ ＝⟨ preserves-₀ ⟩
+              ₀     ＝⟨ e ⁻¹ ⟩
+              ⋆ ϵ A ∎
 
-      IV : p ⋆ ＝ ₁ → h p ＝ p ⋆
-      IV e = h p ＝⟨ ap h (dfunext fe (λ _ → e)) ⟩
-             h 1̇ ＝⟨ preserves-₁ ⟩
-             ₁   ＝⟨ e ⁻¹ ⟩
-             p ⋆ ∎
+      IV : ⋆ ∈ A → A ϵ ℱ ＝ ⋆ ϵ A
+      IV e = A ϵ ℱ ＝⟨ ap ℱ (dfunext fe (λ _ → e)) ⟩
+             𝟏 ϵ ℱ ＝⟨ preserves-₁ ⟩
+             ₁     ＝⟨ e ⁻¹ ⟩
+             ⋆ ϵ A ∎
 
 𝟙-is-stone-type : is-stone-type (𝟙 {𝓤})
 𝟙-is-stone-type
@@ -509,155 +646,197 @@ The one-point type is a Stone type.
 
 \end{code}
 
-We now give a criterion for a homomorphism to be given by evaluation.
+Given a clopen A of X and a map σ that takes a point of X in A to a
+point of Y, we extend a clopen of Y to a clopen of X. The extension
+takes ∅ to ∅ and 𝟏 to A, it preserves the two binary operations, it
+agrees with the given clopen along σ, and the points which belong to
+it are in A. We use it for the criterion that follows and again for
+the clopen subtype below.
 
 \begin{code}
 
-hom-is-evaluation-criterion
- : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
-   (q : C X)
-   (j : A → X)
-   (σ : (x : X) → q x ＝ ₁ → A)
- → ((x : X) (d : q x ＝ ₁) → j (σ x d) ＝ x)
- → is-pre-stone-type A
- → (h : C X → 𝟚)
- → is-bhom h
- → h q ＝ ₁
- → Σ a ꞉ A , ((p : C X) → h p ＝ p (j a))
-hom-is-evaluation-criterion {𝓤} {𝓥} {X} {A} q j σ jσ ζ h i e
- = γ (homs-are-evaluations ζ (h ∘ ext) ext-is-bhom)
+module clopen-extension
+        {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+        (A : Clopen X)
+        (σ : (x : X) → x ∈ A → Y)
+       where
+
+ private
+  δ : (x : X) → is-decidable (x ∈ A)
+  δ x = ∈-is-decidable x A
+
+  ext' : Clopen Y → (x : X) → is-decidable (x ∈ A) → 𝟚
+  ext' C x (inl d) = σ x d ϵ C
+  ext' C x (inr _) = ₀
+
+ ext : Clopen Y → Clopen X
+ ext C x = ext' C x (δ x)
+
+ ext-∅ : ext ∅ ＝ ∅
+ ext-∅ = dfunext fe (λ x → I x (δ x))
+  where
+   I : (x : X) (c : is-decidable (x ∈ A)) → ext' ∅ x c ＝ ₀
+   I x (inl d) = refl
+   I x (inr _) = refl
+
+ ext-𝟏 : ext 𝟏 ＝ A
+ ext-𝟏 = dfunext fe (λ x → I x (δ x))
+  where
+   I : (x : X) (c : is-decidable (x ∈ A)) → ext' 𝟏 x c ＝ x ϵ A
+   I x (inl d) = d ⁻¹
+   I x (inr ν) = (different-from-₁-equal-₀ ν)⁻¹
+
+ ext-∩ : (C C' : Clopen Y) → ext (C ∩ C') ＝ ext C ∩ ext C'
+ ext-∩ C C' = dfunext fe (λ x → I x (δ x))
+  where
+   I : (x : X) (c : is-decidable (x ∈ A))
+     → ext' (C ∩ C') x c ＝ ext' C x c ∧ ext' C' x c
+   I x (inl d) = refl
+   I x (inr _) = refl
+
+ ext-∪ : (C C' : Clopen Y) → ext (C ∪ C') ＝ ext C ∪ ext C'
+ ext-∪ C C' = dfunext fe (λ x → I x (δ x))
+  where
+   I : (x : X) (c : is-decidable (x ∈ A))
+     → ext' (C ∪ C') x c ＝ ext' C x c ∨ ext' C' x c
+   I x (inl d) = refl
+   I x (inr _) = refl
+
+ ext-at-section : (C : Clopen Y) (x : X) (d : x ∈ A)
+                → x ϵ ext C ＝ σ x d ϵ C
+ ext-at-section C x d = I (δ x)
+  where
+   I : (c : is-decidable (x ∈ A)) → ext' C x c ＝ σ x d ϵ C
+   I (inl d') = ap (λ - → σ x - ϵ C) (𝟚-is-set d' d)
+   I (inr ν)  = 𝟘-elim (ν d)
+
+ ext-gives-∈ : (C : Clopen Y) (x : X) → x ∈ ext C → x ∈ A
+ ext-gives-∈ C x = I (δ x)
+  where
+   I : (c : is-decidable (x ∈ A)) → ext' C x c ＝ ₁ → x ∈ A
+   I (inl d) _ = d
+   I (inr _) s = zero-is-one-elim s
+
+\end{code}
+
+We now give a technical criterion for an ultrafilter to be principal,
+which we apply a number of times.
+
+\begin{code}
+
+ultrafilter-principality-criterion
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+   (A : Clopen X)
+   (j : Y → X)
+   (σ : (x : X) → x ∈ A → Y)
+ → ((x : X) (d : x ∈ A) → j (σ x d) ＝ x)
+ → is-pre-stone-type Y
+ → (ℱ : Clopen (Clopen X))
+ → is-ultrafilter ℱ
+ → A ∈ ℱ
+ → Σ y ꞉ Y , ((B : Clopen X) → B ϵ ℱ ＝ j y ϵ B)
+ultrafilter-principality-criterion {𝓤} {𝓥} {X} {Y} A j σ jσ ζ ℱ i e
+ = VI (ultrafilters-of-pre-stone-types-are-principal
+        ζ (ℱ ∘ ext) ext-is-ultrafilter)
  where
-  open bhom-properties h i
+  open ultrafilter-properties ℱ i
+  open clopen-extension A σ
 
-  decide : (x : X) → is-decidable (q x ＝ ₁)
-  decide x = 𝟚-is-discrete (q x) ₁
-
-  ext' : C A → (x : X) → is-decidable (q x ＝ ₁) → 𝟚
-  ext' r x (inl d) = r (σ x d)
-  ext' r x (inr _) = ₀
-
-  ext : C A → C X
-  ext r x = ext' r x (decide x)
-
-  ext-₀ : ext 0̇ ＝ 0̇
-  ext-₀ = dfunext fe (λ x → I x (decide x))
+  ext-is-ultrafilter : is-ultrafilter (ℱ ∘ ext)
+  ext-is-ultrafilter = I , II , III , IV
    where
-    I : (x : X) (c : is-decidable (q x ＝ ₁)) → ext' 0̇ x c ＝ ₀
-    I x (inl d) = refl
-    I x (inr _) = refl
-
-  ext-₁ : ext 1̇ ＝ q
-  ext-₁ = dfunext fe (λ x → I x (decide x))
-   where
-    I : (x : X) (c : is-decidable (q x ＝ ₁)) → ext' 1̇ x c ＝ q x
-    I x (inl d) = d ⁻¹
-    I x (inr ν) = (different-from-₁-equal-₀ ν)⁻¹
-
-  ext-∧ : (r s : C A) → ext (r ∧̇ s) ＝ ext r ∧̇ ext s
-  ext-∧ r s = dfunext fe (λ x → I x (decide x))
-   where
-    I : (x : X) (c : is-decidable (q x ＝ ₁))
-      → ext' (r ∧̇ s) x c ＝ ext' r x c ∧₂ ext' s x c
-    I x (inl d) = refl
-    I x (inr _) = refl
-
-  ext-∨ : (r s : C A) → ext (r ∨̇ s) ＝ ext r ∨̇ ext s
-  ext-∨ r s = dfunext fe (λ x → I x (decide x))
-   where
-    I : (x : X) (c : is-decidable (q x ＝ ₁))
-      → ext' (r ∨̇ s) x c ＝ ext' r x c ∨₂ ext' s x c
-    I x (inl d) = refl
-    I x (inr _) = refl
-
-  ext-is-bhom : is-bhom (h ∘ ext)
-  ext-is-bhom = I , II , III , IV
-   where
-    I : h (ext 0̇) ＝ ₀
-    I = h (ext 0̇) ＝⟨ ap h ext-₀ ⟩
-        h 0̇       ＝⟨ preserves-₀ ⟩
+    I : ext ∅ ∉ ℱ
+    I = ext ∅ ϵ ℱ ＝⟨ ap ℱ ext-∅ ⟩
+        ∅ ϵ ℱ     ＝⟨ preserves-₀ ⟩
         ₀         ∎
 
-    II : h (ext 1̇) ＝ ₁
-    II = h (ext 1̇) ＝⟨ ap h ext-₁ ⟩
-         h q       ＝⟨ e ⟩
+    II : ext 𝟏 ∈ ℱ
+    II = ext 𝟏 ϵ ℱ ＝⟨ ap ℱ ext-𝟏 ⟩
+         A ϵ ℱ     ＝⟨ e ⟩
          ₁         ∎
 
-    III : (r s : C A) → h (ext (r ∧̇ s)) ＝ h (ext r) ∧₂ h (ext s)
-    III r s = h (ext (r ∧̇ s))        ＝⟨ ap h (ext-∧ r s) ⟩
-              h (ext r ∧̇ ext s)      ＝⟨ preserves-∧ (ext r) (ext s) ⟩
-              h (ext r) ∧₂ h (ext s) ∎
+    III : (C C' : Clopen Y) → ext (C ∩ C') ϵ ℱ ＝ ext C ϵ ℱ ∧ ext C' ϵ ℱ
+    III C C' = ext (C ∩ C') ϵ ℱ       ＝⟨ ap ℱ (ext-∩ C C') ⟩
+               (ext C ∩ ext C') ϵ ℱ   ＝⟨ preserves-∧ (ext C) (ext C') ⟩
+               ext C ϵ ℱ ∧ ext C' ϵ ℱ ∎
 
-    IV : (r s : C A) → h (ext (r ∨̇ s)) ＝ h (ext r) ∨₂ h (ext s)
-    IV r s = h (ext (r ∨̇ s))        ＝⟨ ap h (ext-∨ r s) ⟩
-             h (ext r ∨̇ ext s)      ＝⟨ preserves-∨ (ext r) (ext s) ⟩
-             h (ext r) ∨₂ h (ext s) ∎
+    IV : (C C' : Clopen Y) → ext (C ∪ C') ϵ ℱ ＝ ext C ϵ ℱ ∨ ext C' ϵ ℱ
+    IV C C' = ext (C ∪ C') ϵ ℱ       ＝⟨ ap ℱ (ext-∪ C C') ⟩
+              (ext C ∪ ext C') ϵ ℱ   ＝⟨ preserves-∨ (ext C) (ext C') ⟩
+              ext C ϵ ℱ ∨ ext C' ϵ ℱ ∎
 
-  γ : (Σ a ꞉ A , ((r : C A) → h (ext r) ＝ r a))
-    → Σ a ꞉ A , ((p : C X) → h p ＝ p (j a))
-  γ (a , φ) = a , δ
+  VI : is-principal (ℱ ∘ ext)
+     → Σ y ꞉ Y , ((B : Clopen X) → B ϵ ℱ ＝ j y ϵ B)
+  VI (y , φ) = y , VII
    where
-    δ : (p : C X) → h p ＝ p (j a)
-    δ p = 𝟚-equality-cases I II
+    VII : (B : Clopen X) → B ϵ ℱ ＝ j y ϵ B
+    VII B = 𝟚-equality-cases I II
      where
-      I : p (j a) ＝ ₀ → h p ＝ p (j a)
-      I d = h p     ＝⟨ V ⟩
+      I : j y ∉ B → B ϵ ℱ ＝ j y ϵ B
+      I d = B ϵ ℱ   ＝⟨ V ⟩
             ₀       ＝⟨ d ⁻¹ ⟩
-            p (j a) ∎
+            j y ϵ B ∎
        where
-        III : p ≤̇ ext (p ∘ j) ∨̇ ¬̇ q
-        III x = ≤₂-criterion (v (decide x))
+        III : B ⊆ ext (B ∘ j) ∪ complement A
+        III x = ≤₂-criterion (v (∈-is-decidable x A))
          where
-          v : (c : is-decidable (q x ＝ ₁))
-            → p x ＝ ₁ → ext' (p ∘ j) x c ∨₂ ¬₂ (q x) ＝ ₁
+          v : (c : is-decidable (x ∈ A))
+            → x ∈ B → x ∈ ext (B ∘ j) ∪ complement A
           v (inl d) s = max𝟚-lemma-converse (inl vi)
            where
-            vi : p (j (σ x d)) ＝ ₁
-            vi = p (j (σ x d)) ＝⟨ ap p (jσ x d) ⟩
-                 p x           ＝⟨ s ⟩
-                 ₁             ∎
+            vi : x ∈ ext (B ∘ j)
+            vi = x ϵ ext (B ∘ j) ＝⟨ ext-at-section (B ∘ j) x d ⟩
+                 j (σ x d) ϵ B   ＝⟨ ap B (jσ x d) ⟩
+                 x ϵ B           ＝⟨ s ⟩
+                 ₁               ∎
           v (inr ν) s = max𝟚-lemma-converse
-                         (inr (ap ¬₂_ (different-from-₁-equal-₀ ν)))
+                         (inr (ap ⇁_ (different-from-₁-equal-₀ ν)))
 
-        IV : h (ext (p ∘ j) ∨̇ ¬̇ q) ＝ ₀
-        IV = h (ext (p ∘ j) ∨̇ ¬̇ q)      ＝⟨ preserves-∨ (ext (p ∘ j)) (¬̇ q) ⟩
-             h (ext (p ∘ j)) ∨₂ h (¬̇ q) ＝⟨ ap₂ _∨₂_ v vi ⟩
-             ₀ ∨₂ ₀                     ＝⟨refl⟩
-             ₀                          ∎
+        IV : (ext (B ∘ j) ∪ complement A) ∉ ℱ
+        IV = (ext (B ∘ j) ∪ complement A) ϵ ℱ   ＝⟨ IV₀ ⟩
+             ext (B ∘ j) ϵ ℱ ∨ complement A ϵ ℱ ＝⟨ ap₂ _∨_ IV₁ IV₂ ⟩
+             ₀ ∨ ₀                              ＝⟨refl⟩
+             ₀                                  ∎
          where
-          v : h (ext (p ∘ j)) ＝ ₀
-          v = h (ext (p ∘ j)) ＝⟨ φ (p ∘ j) ⟩
-              p (j a)         ＝⟨ d ⟩
-              ₀               ∎
+          IV₀ = preserves-∨ (ext (B ∘ j)) (complement A)
 
-          vi : h (¬̇ q) ＝ ₀
-          vi = h (¬̇ q)  ＝⟨ preserves-complement q ⟩
-               ¬₂ (h q) ＝⟨ ap ¬₂_ e ⟩
-               ¬₂ ₁     ＝⟨refl⟩
-               ₀        ∎
+          IV₁ : ext (B ∘ j) ∉ ℱ
+          IV₁ = ext (B ∘ j) ϵ ℱ ＝⟨ φ (B ∘ j) ⟩
+                j y ϵ B         ＝⟨ d ⟩
+                ₀               ∎
 
-        V : h p ＝ ₀
-        V = ₀-minimal (transport (λ - → h p ≤ -) IV (monotone III))
+          IV₂ : complement A ∉ ℱ
+          IV₂ = complement A ϵ ℱ ＝⟨ preserves-complement A ⟩
+                ⇁ (A ϵ ℱ)        ＝⟨ ap ⇁_ e ⟩
+                ⇁ ₁              ＝⟨refl⟩
+                ₀                ∎
 
-      II : p (j a) ＝ ₁ → h p ＝ p (j a)
-      II d = h p     ＝⟨ ₁-maximal IV ⟩
+        V : B ∉ ℱ
+        V = ₀-minimal (transport (λ - → B ϵ ℱ ≤ -) IV (monotone III))
+
+      II : j y ∈ B → B ϵ ℱ ＝ j y ϵ B
+      II d = B ϵ ℱ   ＝⟨ ₁-maximal IV ⟩
              ₁       ＝⟨ d ⁻¹ ⟩
-             p (j a) ∎
+             j y ϵ B ∎
        where
-        III : ext (p ∘ j) ≤̇ p
-        III x = ≤₂-criterion (v (decide x))
+        III : ext (B ∘ j) ⊆ B
+        III x = ≤₂-criterion III₀
          where
-          v : (c : is-decidable (q x ＝ ₁)) → ext' (p ∘ j) x c ＝ ₁ → p x ＝ ₁
-          v (inl d) s = p x           ＝⟨ (ap p (jσ x d))⁻¹ ⟩
-                        p (j (σ x d)) ＝⟨ s ⟩
-                        ₁             ∎
-          v (inr _) s = zero-is-one-elim s
+          III₀ : x ∈ ext (B ∘ j) → x ∈ B
+          III₀ s = x ϵ B           ＝⟨ (ap B (jσ x d'))⁻¹ ⟩
+                   j (σ x d') ϵ B  ＝⟨ (ext-at-section (B ∘ j) x d')⁻¹ ⟩
+                   x ϵ ext (B ∘ j) ＝⟨ s ⟩
+                   ₁               ∎
+           where
+            d' : x ∈ A
+            d' = ext-gives-∈ (B ∘ j) x s
 
-        IV : ₁ ≤ h p
-        IV = transport (λ - → - ≤ h p) v (monotone III)
+        IV : ₁ ≤ B ϵ ℱ
+        IV = transport (λ - → - ≤ B ϵ ℱ) v (monotone III)
          where
-          v : h (ext (p ∘ j)) ＝ ₁
-          v = h (ext (p ∘ j)) ＝⟨ φ (p ∘ j) ⟩
-              p (j a)         ＝⟨ d ⟩
+          v : ext (B ∘ j) ∈ ℱ
+          v = ext (B ∘ j) ϵ ℱ ＝⟨ φ (B ∘ j) ⟩
+              j y ϵ B         ＝⟨ d ⟩
               ₁               ∎
 
 \end{code}
@@ -678,66 +857,51 @@ Stone types are closed under binary sums.
       (pre-stone-types-are-totally-separated ζ₁))
     I
  where
-  q : C (X + Y)
-  q (inl _) = ₁
-  q (inr _) = ₀
+  A : Clopen (X + Y)
+  A (inl _) = ₁
+  A (inr _) = ₀
 
-  σ₀ : (z : X + Y) → q z ＝ ₁ → X
+  σ₀ : (z : X + Y) → z ∈ A → X
   σ₀ (inl x) d = x
   σ₀ (inr y) d = zero-is-one-elim d
 
-  σ₁ : (z : X + Y) → (¬̇ q) z ＝ ₁ → Y
+  σ₁ : (z : X + Y) → z ∈ complement A → Y
   σ₁ (inl x) d = zero-is-one-elim d
   σ₁ (inr y) d = y
 
-  jσ₀ : (z : X + Y) (d : q z ＝ ₁) → inl (σ₀ z d) ＝ z
+  jσ₀ : (z : X + Y) (d : z ∈ A) → inl (σ₀ z d) ＝ z
   jσ₀ (inl x) d = refl
   jσ₀ (inr y) d = zero-is-one-elim d
 
-  jσ₁ : (z : X + Y) (d : (¬̇ q) z ＝ ₁) → inr (σ₁ z d) ＝ z
+  jσ₁ : (z : X + Y) (d : z ∈ complement A) → inr (σ₁ z d) ＝ z
   jσ₁ (inl x) d = zero-is-one-elim d
   jσ₁ (inr y) d = refl
 
-  I : (h : C (X + Y) → 𝟚)
-    → is-bhom h
-    → Σ v ꞉ X + Y , ((p : C (X + Y)) → h p ＝ p v)
-  I h i = 𝟚-equality-cases II III
+  I : (ℱ : Clopen (Clopen (X + Y))) → is-ultrafilter ℱ → is-principal ℱ
+  I ℱ i = 𝟚-equality-cases II III
    where
-    open bhom-properties h i
+    open ultrafilter-properties ℱ i
 
-    II : h q ＝ ₀ → Σ v ꞉ X + Y , ((p : C (X + Y)) → h p ＝ p v)
-    II d = V (hom-is-evaluation-criterion (¬̇ q) inr σ₁ jσ₁ ζ₁ h i IV)
+    II : A ∉ ℱ → is-principal ℱ
+    II d = V (ultrafilter-principality-criterion
+                (complement A) inr σ₁ jσ₁ ζ₁ ℱ i IV)
      where
-      IV : h (¬̇ q) ＝ ₁
-      IV = h (¬̇ q)  ＝⟨ preserves-complement q ⟩
-           ¬₂ (h q) ＝⟨ ap ¬₂_ d ⟩
-           ¬₂ ₀     ＝⟨refl⟩
-           ₁        ∎
+      IV : complement A ∈ ℱ
+      IV = complement A ϵ ℱ ＝⟨ preserves-complement A ⟩
+           ⇁ (A ϵ ℱ)        ＝⟨ ap ⇁_ d ⟩
+           ⇁ ₀              ＝⟨refl⟩
+           ₁                ∎
 
-      V : (Σ a ꞉ Y , ((p : C (X + Y)) → h p ＝ p (inr a)))
-        → Σ v ꞉ X + Y , ((p : C (X + Y)) → h p ＝ p v)
-      V (a , φ) = inr a , φ
+      V : (Σ y ꞉ Y , ((B : Clopen (X + Y)) → B ϵ ℱ ＝ inr y ϵ B))
+        → is-principal ℱ
+      V (y , φ) = inr y , φ
 
-    III : h q ＝ ₁ → Σ v ꞉ X + Y , ((p : C (X + Y)) → h p ＝ p v)
-    III d = IV (hom-is-evaluation-criterion q inl σ₀ jσ₀ ζ₀ h i d)
+    III : A ∈ ℱ → is-principal ℱ
+    III d = IV (ultrafilter-principality-criterion A inl σ₀ jσ₀ ζ₀ ℱ i d)
      where
-      IV : (Σ a ꞉ X , ((p : C (X + Y)) → h p ＝ p (inl a)))
-         → Σ v ꞉ X + Y , ((p : C (X + Y)) → h p ＝ p v)
-      IV (a , φ) = inl a , φ
-
-+-is-Π-compact
- : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
- → is-Π-compact X
- → is-Π-compact Y
- → is-Π-compact (X + Y)
-+-is-Π-compact {𝓤} {𝓥} {X} {Y} c₀ c₁ p
- = I (×-preserves-decidability (c₀ (p ∘ inl)) (c₁ (p ∘ inr)))
- where
-  I : is-decidable (((x : X) → p (inl x) ＝ ₁)
-                  × ((y : Y) → p (inr y) ＝ ₁))
-    → is-decidable ((z : X + Y) → p z ＝ ₁)
-  I (inl (φ , ψ)) = inl (dep-cases φ ψ)
-  I (inr ν)       = inr (λ α → ν ((λ x → α (inl x)) , (λ y → α (inr y))))
+      IV : (Σ x ꞉ X , ((B : Clopen (X + Y)) → B ϵ ℱ ＝ inl x ϵ B))
+         → is-principal ℱ
+      IV (x , φ) = inl x , φ
 
 +-is-stone-type
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -759,15 +923,10 @@ The standard finite types are Stone types.
 
 \begin{code}
 
-open import Fin.Bishop
-open import Fin.Type
-
 Fin-is-stone-type : (n : ℕ) → is-stone-type (Fin n)
 Fin-is-stone-type 0        = 𝟘-is-stone-type
 Fin-is-stone-type (succ n) =
- +-is-stone-type
-  (Fin-is-stone-type n)
-  (𝟙-is-stone-type {𝓤₀})
+ +-is-stone-type (Fin-is-stone-type n) (𝟙-is-stone-type {𝓤₀})
 
 finite-linear-orders-are-stone-types
  : {X : 𝓤 ̇ }
@@ -807,511 +966,190 @@ A ¬¬-stable proposition is a pre-Stone type.
   I : is-totally-separated P
   I {x} {y} _ = P-is-prop x y
 
-  II : (h : C P → 𝟚)
-     → is-bhom h
-     → Σ v ꞉ P , ((q : C P) → h q ＝ q v)
-  II h i = p , VI
+  II : (ℱ : Clopen (Clopen P)) → is-ultrafilter ℱ → is-principal ℱ
+  II ℱ i = x₀ , VI
    where
-    open bhom-properties h i
+    open ultrafilter-properties ℱ i
 
-    III : ¬ P → 0̇ ＝ 1̇
-    III ν = dfunext fe (λ p → 𝟘-elim (ν p))
+    III : ¬ P → ∅ ＝ 𝟏
+    III ν = dfunext fe (λ x → 𝟘-elim (ν x))
 
     IV : ¬¬ P
     IV ν = zero-is-one-elim
-            (₀   ＝⟨ preserves-₀ ⁻¹ ⟩
-             h 0̇ ＝⟨ ap h (III ν) ⟩
-             h 1̇ ＝⟨ preserves-₁ ⟩
-             ₁   ∎)
+            (₀     ＝⟨ preserves-₀ ⁻¹ ⟩
+             ∅ ϵ ℱ ＝⟨ ap ℱ (III ν) ⟩
+             𝟏 ϵ ℱ ＝⟨ preserves-₁ ⟩
+             ₁     ∎)
 
-    p : P
-    p = P-is-¬¬-stable IV
+    x₀ : P
+    x₀ = P-is-¬¬-stable IV
 
-    V : (q : C P) (b : 𝟚) → q p ＝ b → q ＝ (λ _ → b)
-    V q b e = dfunext fe v
+    V : (A : Clopen P) (b : 𝟚) → x₀ ϵ A ＝ b → A ＝ (λ _ → b)
+    V A b e = dfunext fe v
      where
-      v : (p' : P) → q p' ＝ b
-      v p' = q p' ＝⟨ ap q (P-is-prop p' p) ⟩
-             q p  ＝⟨ e ⟩
-             b    ∎
+      v : (x : P) → x ϵ A ＝ b
+      v x = x ϵ A  ＝⟨ ap A (P-is-prop x x₀) ⟩
+            x₀ ϵ A ＝⟨ e ⟩
+            b      ∎
 
-    VI : (q : C P) → h q ＝ q p
-    VI q = 𝟚-equality-cases v vi
+    VI : (A : Clopen P) → A ϵ ℱ ＝ x₀ ϵ A
+    VI A = 𝟚-equality-cases v vi
      where
-      v : q p ＝ ₀ → h q ＝ q p
-      v e = h q ＝⟨ ap h (V q ₀ e) ⟩
-            h 0̇ ＝⟨ preserves-₀ ⟩
-            ₀   ＝⟨ e ⁻¹ ⟩
-            q p ∎
+      v : x₀ ∉ A → A ϵ ℱ ＝ x₀ ϵ A
+      v e = A ϵ ℱ  ＝⟨ ap ℱ (V A ₀ e) ⟩
+            ∅ ϵ ℱ  ＝⟨ preserves-₀ ⟩
+            ₀      ＝⟨ e ⁻¹ ⟩
+            x₀ ϵ A ∎
 
-      vi : q p ＝ ₁ → h q ＝ q p
-      vi e = h q ＝⟨ ap h (V q ₁ e) ⟩
-             h 1̇ ＝⟨ preserves-₁ ⟩
-             ₁   ＝⟨ e ⁻¹ ⟩
-             q p ∎
-
-\end{code}
-
-We now turn to ℕ∞. For a natural number n, the clopen ↑ n is the upper
-set of n in ℕ∞.
-
-\begin{code}
-
-infix 50 ↑_
-
-↑_ : ℕ → C ℕ∞
-(↑ n) x = ι x n
+      vi : x₀ ∈ A → A ϵ ℱ ＝ x₀ ϵ A
+      vi e = A ϵ ℱ  ＝⟨ ap ℱ (V A ₁ e) ⟩
+             𝟏 ϵ ℱ  ＝⟨ preserves-₁ ⟩
+             ₁      ＝⟨ e ⁻¹ ⟩
+             x₀ ϵ A ∎
 
 \end{code}
 
-For a natural number k, the clopen `singleton k` is the characteristic
-function of the singleton subset containing the point ι k.
+A proposition is a Stone type precisely when it is decidable.
 
 \begin{code}
 
-singleton : ℕ → C ℕ∞
-singleton 0        = ¬̇ ↑ 0
-singleton (succ j) = ↑ j ∧̇ ¬̇ ↑ (succ j)
+decidable-props-are-stone-types
+ : {P : 𝓤 ̇ }
+ → is-prop P
+ → is-decidable P
+ → is-stone-type P
+decidable-props-are-stone-types {𝓤} {P} P-is-prop (inl x)
+ = equiv-to-stone-type
+    (singleton-≃-𝟙 (pointed-props-are-singletons x P-is-prop))
+    (𝟙-is-stone-type {𝓤})
+decidable-props-are-stone-types {𝓤} {P} P-is-prop (inr ν)
+ = equiv-to-stone-type (empty-≃-𝟘 ν) (𝟘-is-stone-type {𝓤})
 
-singleton-property₀ : (k : ℕ) (x : ℕ∞) → singleton k x ＝ ₁ → x ＝ ι k
-singleton-property₀ 0 x e = is-Zero-equal-Zero fe (complement-lc (ι x 0) ₀ e)
-singleton-property₀ (succ j) x e =
- Succ-criterion fe
-  (Lemma[min𝟚ab＝₁→a＝₁] e)
-  (complement-lc (ι x (succ j)) ₀ (Lemma[min𝟚ab＝₁→b＝₁] e))
-
-singleton-property₁ : (k : ℕ) → singleton k (ι k) ＝ ₁
-singleton-property₁ 0        = ap (¬₂_) (ℕ-to-ℕ∞-diagonal₀ 0)
-singleton-property₁ (succ j) =
- Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
-  (ℕ-to-ℕ∞-diagonal₁ j)
-  (ap (¬₂_) (ℕ-to-ℕ∞-diagonal₀ (succ j)))
-
-\end{code}
-
-A modulus of a clopen of ℕ∞ is a point beyond which it has the same
-value it has at infinity. This is the notion of continuity of the
-module TypeTopology.DecidabilityOfNonContinuity, formulated with the
-order of ℕ rather than with maximum, and for 𝟚-valued rather than
-ℕ-valued functions.
-
-\begin{code}
-
-_is-modulus-of_ : ℕ → C ℕ∞ → 𝓤₀ ̇
-m is-modulus-of p = (n : ℕ) → m ≤ n → p (ι n) ＝ p ∞
-
-has-modulus : C ℕ∞ → 𝓤₀ ̇
-has-modulus p = Σ m ꞉ ℕ , m is-modulus-of p
-
-¬WLPO-gives-¬¬-has-modulus : ¬ WLPO → (p : C ℕ∞) → ¬¬ has-modulus p
-¬WLPO-gives-¬¬-has-modulus nwlpo p = ¬¬-functor II I
+stone-props-are-decidable
+ : {P : 𝓤 ̇ }
+ → is-prop P
+ → is-stone-type P
+ → is-decidable P
+stone-props-are-decidable {𝓤} {P} P-is-prop ζ
+ = I (negations-of-Π-compact-types-are-decidable P c)
  where
-  g : 𝟚 → ℕ
-  g ₀ = 0
-  g ₁ = 1
+  c : is-Π-compact P
+  c = stone-types-are-Π-compact ζ
 
-  g-lc : {b c : 𝟚} → g b ＝ g c → b ＝ c
-  g-lc {₀} {₀} r = refl
-  g-lc {₀} {₁} r = 𝟘-elim (zero-not-positive 0 r)
-  g-lc {₁} {₀} r = 𝟘-elim (zero-not-positive 0 (r ⁻¹))
-  g-lc {₁} {₁} r = refl
+  ℱ : Clopen (Clopen P)
+  ℱ = pr₁ (co-characteristic-function c)
 
-  f : ℕ∞ → ℕ
-  f = g ∘ p
+  ℱ-property : (A : Clopen P)
+             → (A ∉ ℱ → ¬ ((x : P) → x ∈ A)) × (A ∈ ℱ → (x : P) → x ∈ A)
+  ℱ-property = pr₂ (co-characteristic-function c)
 
-  I : ¬¬ continuous f
-  I = ¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f
+  ℱ-property₀ : (A : Clopen P) → A ∉ ℱ → ¬ ((x : P) → x ∈ A)
+  ℱ-property₀ A = pr₁ (ℱ-property A)
 
-  II : continuous f → has-modulus p
-  II (m , ψ) = m , III
+  ℱ-property₁ : (A : Clopen P) → A ∈ ℱ → (x : P) → x ∈ A
+  ℱ-property₁ A = pr₂ (ℱ-property A)
+
+  ℱ-property₂ : (A : Clopen P) → ((x : P) → x ∈ A) → A ∈ ℱ
+  ℱ-property₂ A σ = different-from-₀-equal-₁
+                       (λ e → ℱ-property₀ A e σ)
+
+  ℱ-property₃ : (A : Clopen P) → ¬ ((x : P) → x ∈ A) → A ∉ ℱ
+  ℱ-property₃ A ν = different-from-₁-equal-₀
+                           (λ e → ν (ℱ-property₁ A e))
+
+  not-all-gives-¬¬-some-outside
+   : (A : Clopen P)
+   → ¬ ((x : P) → x ∈ A)
+   → ¬¬ (Σ x ꞉ P , x ∉ A)
+  not-all-gives-¬¬-some-outside A ν φ =
+   ν (λ x → different-from-₀-equal-₁ (λ e → φ (x , e)))
+
+  I : is-decidable (¬ P) → is-decidable P
+  I (inl ν) = inr ν
+  I (inr ν) = inl (pr₁ (ultrafilters-of-pre-stone-types-are-principal
+                         (stone-types-are-pre-stone-types ζ)
+                         ℱ
+                         III))
    where
-    III : (n : ℕ) → m ≤ n → p (ι n) ＝ p ∞
-    III n l = g-lc (f (ι n)             ＝⟨ ap f (IV ⁻¹) ⟩
-                    f (max (ι m) (ι n)) ＝⟨ ψ n ⟩
-                    f ∞                 ∎)
+    III : is-ultrafilter ℱ
+    III = iv , v , vi , vii
      where
-      IV : max (ι m) (ι n) ＝ ι n
-      IV = max (ι m) (ι n) ＝⟨ (max-fin fe m n)⁻¹ ⟩
-           ι (maxℕ m n)    ＝⟨ ap ℕ-to-ℕ∞ (max-ord→ m n l) ⟩
-           ι n             ∎
+      iv : ∅ ∉ ℱ
+      iv = ℱ-property₃ ∅ (λ σ → ν (λ x → zero-is-one-elim (σ x)))
 
-\end{code}
+      v : 𝟏 ∈ ℱ
+      v = ℱ-property₂ 𝟏 (λ _ → refl)
 
-Given a homomorphism h of the clopens of ℕ∞ into the booleans, the
-sequence of values of h at the upper sets is decreasing, and so it is
-an element u of ℕ∞, at which h agrees with the evaluation on the upper
-sets by construction.
-
-\begin{code}
-
-module bhom-on-ℕ∞
-        (h : C ℕ∞ → 𝟚)
-        (i : is-bhom h)
+      vi : (A B : Clopen P) → (A ∩ B) ϵ ℱ ＝ A ϵ ℱ ∧ B ϵ ℱ
+      vi A B = ＝₂-criterion a b
        where
+        a : (A ∩ B) ∈ ℱ → A ϵ ℱ ∧ B ϵ ℱ ＝ ₁
+        a e = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
+               (ℱ-property₂ A (λ x → Lemma[min𝟚ab＝₁→a＝₁]
+                              (ℱ-property₁ (A ∩ B) e x)))
+               (ℱ-property₂ B (λ x → Lemma[min𝟚ab＝₁→b＝₁]
+                              (ℱ-property₁ (A ∩ B) e x)))
 
- open bhom-properties h i
+        b : A ϵ ℱ ∧ B ϵ ℱ ＝ ₁ → (A ∩ B) ∈ ℱ
+        b e = ℱ-property₂ (A ∩ B)
+               (λ x → Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
+                       (ℱ-property₁ A (Lemma[min𝟚ab＝₁→a＝₁] e) x)
+                       (ℱ-property₁ B (Lemma[min𝟚ab＝₁→b＝₁] e) x))
 
- private
-  α : ℕ → 𝟚
-  α n = h (↑ n)
-
-  α-is-decreasing : is-decreasing α
-  α-is-decreasing n = monotone I
-   where
-    I : ↑ (succ n) ≤̇ ↑ n
-    I (β , d) = d n
-
- u : ℕ∞
- u = (α , α-is-decreasing)
-
- h-agrees-with-u-at-upper-sets : (n : ℕ) → h (↑ n) ＝ (↑ n) u
- h-agrees-with-u-at-upper-sets n = refl
-
-\end{code}
-
-If u is finite, say u ＝ ι k, then h gives the value ₁ to singleton k,
-which is ₁ only at the point ι k. So the criterion above applies
-with the one-point type, and h agrees with the evaluation at u on all
-clopens.
-
-\begin{code}
-
- private
-  h-at-singleton : (k : ℕ) → u ＝ ι k → h (singleton k) ＝ ₁
-  h-at-singleton 0 e =
-   h (singleton 0) ＝⟨ preserves-complement (↑ 0) ⟩
-   ¬₂ (α 0)        ＝⟨ ap (¬₂_) I ⟩
-   ¬₂ ₀            ＝⟨refl⟩
-   ₁               ∎
-    where
-     I : α 0 ＝ ₀
-     I = α 0       ＝⟨ ap (λ - → ι - 0) e ⟩
-         ι (ι 0) 0 ＝⟨ ℕ-to-ℕ∞-diagonal₀ 0 ⟩
-         ₀         ∎
-  h-at-singleton (succ j) e =
-   h (singleton (succ j))  ＝⟨ i₀ ⟩
-   α j ∧₂ h (¬̇ ↑ (succ j)) ＝⟨ i₁ ⟩
-   α j ∧₂ ¬₂ (α (succ j))  ＝⟨ i₂ ⟩
-   ₁ ∧₂ ¬₂ ₀               ＝⟨refl⟩
-   ₁                       ∎
-    where
-     i₀ = preserves-∧ (↑ j) (¬̇ ↑ (succ j))
-     i₁ = ap (λ - → α j ∧₂ -) (preserves-complement (↑ (succ j)))
-
-     I : α j ＝ ₁
-     I = α j              ＝⟨ ap (λ - → ι - j) e ⟩
-         ι (ι (succ j)) j ＝⟨ ℕ-to-ℕ∞-diagonal₁ j ⟩
-         ₁                ∎
-
-     II : α (succ j) ＝ ₀
-     II = α (succ j)              ＝⟨ ap (λ - → ι - (succ j)) e ⟩
-          ι (ι (succ j)) (succ j) ＝⟨ ℕ-to-ℕ∞-diagonal₀ (succ j) ⟩
-          ₀                       ∎
-
-     i₂ = ap₂ (λ - -' → - ∧₂ ¬₂ -') I II
-
- h-at-finite : (k : ℕ) → u ＝ ι k → (p : C ℕ∞) → h p ＝ p u
- h-at-finite k e p = I (hom-is-evaluation-criterion
-                         (singleton k)
-                         (λ _ → ι k)
-                         (λ _ _ → ⋆)
-                         (λ x d → (singleton-property₀ k x d)⁻¹)
-                         (𝟙-is-pre-stone-type {𝓤₀})
-                         h i
-                         (h-at-singleton k e))
-  where
-   I : (Σ a ꞉ 𝟙 {𝓤₀} , ((q : C ℕ∞) → h q ＝ q (ι k)))
-     → h p ＝ p u
-   I (a , φ) = h p     ＝⟨ φ p ⟩
-               p (ι k) ＝⟨ (ap p e)⁻¹ ⟩
-               p u     ∎
-
- not-evaluation-gives-u-is-∞ : (p : C ℕ∞) → h p ≠ p u → u ＝ ∞
- not-evaluation-gives-u-is-∞ p ν =
-  not-finite-is-∞ fe (λ k e → ν (h-at-finite k e p))
-
-\end{code}
-
-If u is the point at infinity, then h gives the value ₁ to every upper
-set, and so does a homomorphism that is not the evaluation at u.
-
-\begin{code}
-
- h-at-upper-sets : u ＝ ∞ → (n : ℕ) → h (↑ n) ＝ ₁
- h-at-upper-sets e n = ap (λ - → ι - n) e
-
- not-evaluation-gives-₁-at-upper-sets
-  : (p : C ℕ∞) → h p ≠ p u → (n : ℕ) → h (↑ n) ＝ ₁
- not-evaluation-gives-₁-at-upper-sets p ν
-  = h-at-upper-sets (not-evaluation-gives-u-is-∞ p ν)
-
- private
-  h-at-∞-₁ : u ＝ ∞
-           → (p : C ℕ∞) (m : ℕ)
-           → m is-modulus-of p
-           → p ∞ ＝ ₁
-           → h p ＝ ₁
-  h-at-∞-₁ e p m φ r = ≤₂-criterion-converse
-                        (monotone II)
-                        (h-at-upper-sets e m)
-   where
-    I : (x : ℕ∞) → ((¬̇ ↑ m) ∨̇ p) x ＝ ₁
-    I = ℕ∞-𝟚-density fe III (max𝟚-lemma-converse (inr r))
-     where
-      III : (n : ℕ) → ((¬̇ ↑ m) ∨̇ p) (ι n) ＝ ₁
-      III n = 𝟚-equality-cases
-               (λ (s : ι (ι n) m ＝ ₀)
-                   → max𝟚-lemma-converse (inl (ap (¬₂_) s)))
-               (λ (s : ι (ι n) m ＝ ₁)
-                   → max𝟚-lemma-converse (inr (IV s)))
+      vii : (A B : Clopen P) → (A ∪ B) ϵ ℱ ＝ A ϵ ℱ ∨ B ϵ ℱ
+      vii A B = ＝₂-criterion a b
        where
-        IV : ι (ι n) m ＝ ₁ → p (ι n) ＝ ₁
-        IV s = p (ι n) ＝⟨ φ n (<-coarser-than-≤ m n (⊏-gives-< m n s)) ⟩
-                p ∞     ＝⟨ r ⟩
-                ₁       ∎
+        a : (A ∪ B) ∈ ℱ → A ϵ ℱ ∨ B ϵ ℱ ＝ ₁
+        a e = 𝟚-equality-cases viii ix
+         where
+          σ : (x : P) → x ∈ A ∪ B
+          σ = ℱ-property₁ (A ∪ B) e
 
-    II : ↑ m ≤̇ p
-    II x = ≤₂-criterion III
-     where
-      III : (↑ m) x ＝ ₁ → p x ＝ ₁
-      III s = p x                 ＝⟨refl⟩
-              ₀ ∨₂ p x            ＝⟨ IV ⟩
-              ¬₂ ((↑ m) x) ∨₂ p x ＝⟨ I x ⟩
-              ₁                   ∎
-       where
-        IV = ap (λ - → ¬₂ - ∨₂ p x) (s ⁻¹)
+          viii : A ∉ ℱ → A ϵ ℱ ∨ B ϵ ℱ ＝ ₁
+          viii e₀ = 𝟚-equality-cases viii₀ viii₁
+           where
+            viii₀ : B ∉ ℱ → A ϵ ℱ ∨ B ϵ ℱ ＝ ₁
+            viii₀ e₁ = 𝟘-elim
+                    (not-all-gives-¬¬-some-outside A (ℱ-property₀ A e₀)
+                      (λ (x₀ , r₀) →
+                         not-all-gives-¬¬-some-outside B (ℱ-property₀ B e₁)
+                          (λ (x₁ , r₁) → zero-is-one-elim
+                                          (xii x₀ x₁ r₀ r₁))))
+             where
+              xii : (x₀ x₁ : P) → x₀ ∉ A → x₁ ∉ B → ₀ ＝ ₁
+              xii x₀ x₁ r₀ r₁ =
+               ₀            ＝⟨ (ap₂ _∨_ r₀ xiii)⁻¹ ⟩
+               x₀ ϵ (A ∪ B) ＝⟨ σ x₀ ⟩
+               ₁            ∎
+               where
+                xiii : x₀ ∉ B
+                xiii = x₀ ϵ B ＝⟨ ap B (P-is-prop x₀ x₁) ⟩
+                       x₁ ϵ B ＝⟨ r₁ ⟩
+                       ₀      ∎
 
- h-at-∞ : u ＝ ∞
-        → (p : C ℕ∞) (m : ℕ)
-        → m is-modulus-of p
-        → h p ＝ p u
- h-at-∞ e p m φ = 𝟚-equality-cases II III
-  where
-   I : p u ＝ p ∞
-   I = ap p e
+            viii₁ : B ∈ ℱ → A ϵ ℱ ∨ B ϵ ℱ ＝ ₁
+            viii₁ e₁ = max𝟚-lemma-converse (inr e₁)
 
-   II : p ∞ ＝ ₀ → h p ＝ p u
-   II r = h p ＝⟨ V ⟩
-          ₀   ＝⟨ r ⁻¹ ⟩
-          p ∞ ＝⟨ I ⁻¹ ⟩
-          p u ∎
-    where
-     IV : h (¬̇ p) ＝ ₁
-     IV = h-at-∞-₁ e (¬̇ p) m
-           (λ n l → ap (¬₂_) (φ n l))
-           (ap (¬₂_) r)
+          ix : A ∈ ℱ → A ϵ ℱ ∨ B ϵ ℱ ＝ ₁
+          ix e₀ = max𝟚-lemma-converse (inl e₀)
 
-     V : h p ＝ ₀
-     V = complement-lc (h p) ₀ VI
-      where
-       VI : ¬₂ (h p) ＝ ¬₂ ₀
-       VI = ¬₂ (h p) ＝⟨ (preserves-complement p)⁻¹ ⟩
-            h (¬̇ p)  ＝⟨ IV ⟩
-            ₁        ＝⟨refl⟩
-            ¬₂ ₀     ∎
+        b : A ϵ ℱ ∨ B ϵ ℱ ＝ ₁ → (A ∪ B) ∈ ℱ
+        b e = ℱ-property₂ (A ∪ B) (cases viii ix (max𝟚-lemma e))
+         where
+          viii : A ∈ ℱ → (x : P) → x ∈ A ∪ B
+          viii e₀ x = max𝟚-lemma-converse
+                       (inl (ℱ-property₁ A e₀ x))
 
-   III : p ∞ ＝ ₁ → h p ＝ p u
-   III r = h p ＝⟨ h-at-∞-₁ e p m φ r ⟩
-           ₁   ＝⟨ r ⁻¹ ⟩
-           p ∞ ＝⟨ I ⁻¹ ⟩
-           p u ∎
-
-\end{code}
-
-Putting the two cases together, h is the evaluation at u as soon as it
-is the evaluation at ∞ when u is ∞, which is the following criterion.
-If ¬ WLPO holds then the criterion applies.
-
-\begin{code}
-
- h-is-evaluation-criterion
-  : (u ＝ ∞ → (p : C ℕ∞) → h p ＝ p ∞)
-  → (p : C ℕ∞) → h p ＝ p u
- h-is-evaluation-criterion ψ p
-  = 𝟚-is-¬¬-separated (h p) (p u) I
-  where
-   I : ¬¬ (h p ＝ p u)
-   I ν = ν (h p ＝⟨ ψ II p ⟩
-            p ∞ ＝⟨ (ap p II)⁻¹ ⟩
-            p u ∎)
-    where
-     II : u ＝ ∞
-     II = not-evaluation-gives-u-is-∞ p ν
-
- h-is-evaluation : ¬ WLPO → (p : C ℕ∞) → h p ＝ p u
- h-is-evaluation nwlpo = h-is-evaluation-criterion I
-  where
-   I : u ＝ ∞ → (p : C ℕ∞) → h p ＝ p ∞
-   I e p = 𝟚-is-¬¬-separated (h p) (p ∞) II
-    where
-     II : ¬¬ (h p ＝ p ∞)
-     II ν = ¬WLPO-gives-¬¬-has-modulus nwlpo p III
-      where
-       III : ¬ has-modulus p
-       III (m , φ) = ν (h p ＝⟨ h-at-∞ e p m φ ⟩
-                        p u ＝⟨ ap p e ⟩
-                        p ∞ ∎)
-
-\end{code}
-
-The clopens of ℕ∞ form a discrete type, as ℕ∞ is compact, so that ℕ∞
-is a Stone type precisely when it is a pre-Stone type. The criterion
-above, applied to the discreteness of the clopens and to the total
-separatedness of ℕ∞, now gives that ℕ∞ is a Stone type if ¬ WLPO
-holds.
-
-\begin{code}
-
-ℕ∞-has-a-discrete-clopen-algebra : is-discrete (C ℕ∞)
-ℕ∞-has-a-discrete-clopen-algebra
- = Π-compact-gives-discrete-clopen-algebra
-    (compact-types-are-Π-compact ℕ∞-compact)
-
-ℕ∞-is-stone-type : ¬ WLPO → is-stone-type ℕ∞
-ℕ∞-is-stone-type nwlpo =
- stone-criterion
-  ℕ∞-has-a-discrete-clopen-algebra
-  (ℕ∞-is-totally-separated fe)
-  I
- where
-  I : (h : C ℕ∞ → 𝟚) (i : is-bhom h)
-    → Σ v ꞉ ℕ∞ , ((p : C ℕ∞) → h p ＝ p v)
-  I h i = u , h-is-evaluation nwlpo
-   where
-    open bhom-on-ℕ∞ h i
-
-\end{code}
-
-ℕ∞ is a Stone type precisely when every homomorphism that gives the
-value ₁ to all the upper sets is the evaluation at ∞.
-
-\begin{code}
-
-Homs-Containing-All-Upper-Sets-Are-Evaluation-At-∞ : 𝓤₀ ̇
-Homs-Containing-All-Upper-Sets-Are-Evaluation-At-∞ =
-   (h : C ℕ∞ → 𝟚)
- → is-bhom h
- → ((n : ℕ) → h (↑ n) ＝ ₁)
- → (p : C ℕ∞) → h p ＝ p ∞
-
-stone-gives-evaluation-at-∞
- : is-stone-type ℕ∞
- → Homs-Containing-All-Upper-Sets-Are-Evaluation-At-∞
-stone-gives-evaluation-at-∞ ζ h i t
- = I (homs-are-evaluations (stone-types-are-pre-stone-types ζ) h i)
- where
-  I : (Σ v ꞉ ℕ∞ , ((q : C ℕ∞) → h q ＝ q v))
-    → (p : C ℕ∞) → h p ＝ p ∞
-  I (v , φ) p = h p ＝⟨ φ p ⟩
-                p v ＝⟨ ap p II ⟩
-                p ∞ ∎
-   where
-    II : v ＝ ∞
-    II = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe III)
-     where
-      III : (n : ℕ) → ι v n ＝ ι ∞ n
-      III n = ι v n   ＝⟨ (φ (↑ n))⁻¹ ⟩
-              h (↑ n) ＝⟨ t n ⟩
-              ₁       ∎
-
-evaluation-at-∞-gives-stone
- : Homs-Containing-All-Upper-Sets-Are-Evaluation-At-∞
- → is-stone-type ℕ∞
-evaluation-at-∞-gives-stone φ
- = stone-criterion
-    ℕ∞-has-a-discrete-clopen-algebra
-    (ℕ∞-is-totally-separated fe)
-    I
- where
-  I : (h : C ℕ∞ → 𝟚) (i : is-bhom h)
-    → Σ v ꞉ ℕ∞ , ((p : C ℕ∞) → h p ＝ p v)
-  I h i = u , h-is-evaluation-criterion (λ e → φ h i (h-at-upper-sets e))
-   where
-    open bhom-on-ℕ∞ h i
-
-ℕ∞-is-stone-type-iff-evaluation-at-∞
- : is-stone-type ℕ∞
- ↔ Homs-Containing-All-Upper-Sets-Are-Evaluation-At-∞
-ℕ∞-is-stone-type-iff-evaluation-at-∞
- = stone-gives-evaluation-at-∞ ,
-   evaluation-at-∞-gives-stone
-
-\end{code}
-
-That ℕ∞ is a Stone type is not provable without a hypothesis such as
-¬ WLPO. With choice there is a nonprincipal ultrafilter on ℕ, which is
-a homomorphism on the clopens of ℕ∞ that is not the evaluation at any
-point, so that ℕ∞ is not a Stone type in such a model.
-
-That ¬ WLPO holds is sufficient for ℕ∞ to be a Stone type, but it is not
-necessary. It is consistent with ZF that every ultrafilter on every set
-is principal, by a model of Blass [2] where the ultrafilters on ℕ are
-all principal. In the model of Blass excluded middle holds, and hence so
-does WLPO, and ℕ∞ is the set ℕ + 𝟙. Every subset of ℕ + 𝟙 is decidable,
-so the clopens of ℕ∞ are the characteristic functions of all the subsets
-of ℕ + 𝟙, and the homomorphisms on the clopens are the ultrafilters on
-ℕ + 𝟙, which are all evaluations. So ℕ∞ is a Stone type in that model.
-
-[2] Blass, "A model without ultrafilters", Bull. Acad. Polon. Sci. 25,
-    1977, pp. 329-331, which extends a model of Feferman, "Some
-    applications of the notions of forcing and generic sets",
-    Fundamenta Mathematicae 56, 1964, pp. 325-345,
-    https://doi.org/10.4064/fm-56-3-325-345.
-
-
-The module Ordinals.BrouwerCodesGiveStoneTypes generalizes the above
-result for ℕ∞, again assuming that ¬ WLPO holds, to the compact
-totally separated interpretation of the Brouwer ordinal codes, of
-which ℕ∞ is the interpretation of the code for the first infinite
-ordinal.
-
-
-We now show that if every pre-Stone type is a Stone type then WEM
-holds.
-
-\begin{code}
-
-Π-compactness-gives-decidable-emptiness
- : {X : 𝓤 ̇ }
- → is-Π-compact X
- → is-decidable (¬ X)
-Π-compactness-gives-decidable-emptiness {𝓤} {X} c
- = I (c 0̇)
- where
-  I : is-decidable ((x : X) → 0̇ x ＝ ₁) → is-decidable (¬ X)
-  I (inl φ) = inl (λ x → zero-is-one-elim (φ x))
-  I (inr ν) = inr (λ (f : ¬ X) → ν (λ x → 𝟘-elim (f x)))
-
-Pre-Stone-Types-Are-Stone-Types : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Pre-Stone-Types-Are-Stone-Types 𝓤 =
-   (X : 𝓤 ̇ )
- → is-pre-stone-type X
- → is-stone-type X
-
-pre-stone-types-are-stone-types-gives-WEM
- : Pre-Stone-Types-Are-Stone-Types 𝓤
- → WEM 𝓤
-pre-stone-types-are-stone-types-gives-WEM c Q Q-is-prop
- = I (Π-compactness-gives-decidable-emptiness
-      (stone-types-are-Π-compact
-       (c (¬ Q)
-          (¬¬-stable-props-are-pre-stone-types
-            (negations-are-props fe)
-            three-negations-imply-one))))
- where
-  I : is-decidable (¬ (¬ Q)) → ¬ Q + ¬¬ Q
-  I (inl nnq) = inr nnq
-  I (inr f)   = inl (three-negations-imply-one f)
+          ix : B ∈ ℱ → (x : P) → x ∈ A ∪ B
+          ix e₁ x = max𝟚-lemma-converse
+                     (inr (ℱ-property₁ B e₁ x))
 
 \end{code}
 
 A product of pre-Stone types indexed by a proposition is a pre-Stone
 type, which is the analogue of the micro Tychonoff theorem of the
-module TypeTopology.MicroTychonoff.
-
-The point at which h evaluates has to be given uniformly in the
-witnesses of P. The conclusion h r ＝ r v is an equation of booleans,
-and hence ¬¬-stable, so the proof may assume the irrefutable P + ¬ P.
+module TypeTopology.MicroTychonoff. The point at which ℱ is principal
+has to be given uniformly in the witnesses of P.
 
 \begin{code}
 
@@ -1329,36 +1167,37 @@ prop-indexed-products-are-pre-stone-types {𝓤} {𝓥} {P} {Y} P-is-prop ζ
   𝕖 : (p : P) → Π Y ≃ Y p
   𝕖 p = prop-indexed-product p fe P-is-prop
 
-  I : (h : C (Π Y) → 𝟚)
-    → is-bhom h
-    → Σ v ꞉ Π Y , ((r : C (Π Y)) → h r ＝ r v)
-  I h i = f , IV
+  I : (ℱ : Clopen (Clopen (Π Y)))
+    → is-ultrafilter ℱ
+    → is-principal ℱ
+  I ℱ i = f , IV
    where
-    open bhom-properties h i
+    open ultrafilter-properties ℱ i
 
-    hₚ : (p : P) → C (Y p) → 𝟚
-    hₚ p r = h (r ∘ ⌜ 𝕖 p ⌝)
+    ℱₚ : (p : P) → Clopen (Clopen (Y p))
+    ℱₚ p A = (A ∘ ⌜ 𝕖 p ⌝) ϵ ℱ
 
-    hₚ-is-bhom : (p : P) → is-bhom (hₚ p)
-    hₚ-is-bhom p = preserves-₀ ,
-                   preserves-₁ ,
-                   (λ r s → preserves-∧ (r ∘ ⌜ 𝕖 p ⌝) (s ∘ ⌜ 𝕖 p ⌝)) ,
-                   (λ r s → preserves-∨ (r ∘ ⌜ 𝕖 p ⌝) (s ∘ ⌜ 𝕖 p ⌝))
+    ℱₚ-is-ultrafilter : (p : P) → is-ultrafilter (ℱₚ p)
+    ℱₚ-is-ultrafilter p = preserves-₀ ,
+                          preserves-₁ ,
+                          (λ A B → preserves-∧ (A ∘ ⌜ 𝕖 p ⌝) (B ∘ ⌜ 𝕖 p ⌝)) ,
+                          (λ A B → preserves-∨ (A ∘ ⌜ 𝕖 p ⌝) (B ∘ ⌜ 𝕖 p ⌝))
 
-    II : (p : P) → Σ x ꞉ Y p , ((r : C (Y p)) → hₚ p r ＝ r x)
-    II p = homs-are-evaluations (ζ p) (hₚ p) (hₚ-is-bhom p)
+    II : (p : P) → Σ x ꞉ Y p , ((A : Clopen (Y p)) → A ϵ ℱₚ p ＝ x ϵ A)
+    II p = ultrafilters-of-pre-stone-types-are-principal
+            (ζ p) (ℱₚ p) (ℱₚ-is-ultrafilter p)
 
     f : Π Y
     f p = pr₁ (II p)
 
-    f-property : (p : P) (r : C (Y p)) → hₚ p r ＝ r (f p)
+    f-property : (p : P) (A : Clopen (Y p)) → A ϵ ℱₚ p ＝ f p ϵ A
     f-property p = pr₂ (II p)
 
-    III : (Σ g ꞉ Π Y , ((r : C (Π Y)) → h r ＝ r g))
-        → (r : C (Π Y)) → h r ＝ r f
-    III (g , φ) r = h r ＝⟨ φ r ⟩
-                    r g ＝⟨ ap r (V ⁻¹) ⟩
-                    r f ∎
+    III : (Σ g ꞉ Π Y , ((A : Clopen (Π Y)) → A ϵ ℱ ＝ g ϵ A))
+        → (A : Clopen (Π Y)) → A ϵ ℱ ＝ f ϵ A
+    III (g , φ) A = A ϵ ℱ ＝⟨ φ A ⟩
+                    g ϵ A ＝⟨ ap A (V ⁻¹) ⟩
+                    f ϵ A ∎
      where
       V : f ＝ g
       V = dfunext fe VI
@@ -1366,19 +1205,19 @@ prop-indexed-products-are-pre-stone-types {𝓤} {𝓥} {P} {Y} P-is-prop ζ
         VI : (p : P) → f p ＝ g p
         VI p = pre-stone-types-are-totally-separated (ζ p) vi
          where
-          vi : (r : C (Y p)) → r (f p) ＝ r (g p)
-          vi r = r (f p) ＝⟨ (f-property p r)⁻¹ ⟩
-                 hₚ p r  ＝⟨ φ (r ∘ ⌜ 𝕖 p ⌝) ⟩
-                 r (g p) ∎
+          vi : (A : Clopen (Y p)) → f p ϵ A ＝ g p ϵ A
+          vi A = f p ϵ A  ＝⟨ (f-property p A)⁻¹ ⟩
+                 A ϵ ℱₚ p ＝⟨ φ (A ∘ ⌜ 𝕖 p ⌝) ⟩
+                 g p ϵ A  ∎
 
-    IV : (r : C (Π Y)) → h r ＝ r f
-    IV r = 𝟚-is-¬¬-separated (h r) (r f) V
+    IV : (A : Clopen (Π Y)) → A ϵ ℱ ＝ f ϵ A
+    IV A = 𝟚-is-¬¬-separated (A ϵ ℱ) (f ϵ A) V
      where
-      V : ¬¬ (h r ＝ r f)
+      V : ¬¬ (A ϵ ℱ ＝ f ϵ A)
       V ν = VI VIII
        where
         VI : ¬¬ (P + ¬ P)
-        VI f = f (inr (λ p → f (inl p)))
+        VI ν' = ν' (inr (λ p → ν' (inl p)))
 
         VII : P + ¬ P → is-pre-stone-type (Π Y)
         VII (inl p)  = equiv-to-pre-stone-type (𝕖 p) (ζ p)
@@ -1387,13 +1226,39 @@ prop-indexed-products-are-pre-stone-types {𝓤} {𝓥} {P} {Y} P-is-prop ζ
                         (𝟙-is-pre-stone-type {𝓤₀})
 
         VIII : ¬ (P + ¬ P)
-        VIII d = ν (III (homs-are-evaluations (VII d) h i) r)
+        VIII d = ν (III (ultrafilters-of-pre-stone-types-are-principal
+                          (VII d) ℱ i) A)
 
 \end{code}
 
-In particular, P → 𝟚 is a pre-Stone type if P is a proposition. It is
-not discrete in general, as the discreteness of P → 𝟚 for all
-propositions amounts to WLPO, as discussed in the module Taboos.P2.
+If moreover the factors are compact and pointed then the product is a
+Stone type, because the micro Tychonoff theorem gives that the product
+is itself compact and pointed, and hence Π-compact.
+
+\begin{code}
+
+prop-indexed-products-are-stone-types
+ : {P : 𝓤 ̇ } {Y : P → 𝓥 ̇ }
+ → is-prop P
+ → ((p : P) → is-compact∙ (Y p))
+ → ((p : P) → is-pre-stone-type (Y p))
+ → is-stone-type (Π Y)
+prop-indexed-products-are-stone-types P-is-prop κ ζ
+ = prop-indexed-products-are-pre-stone-types P-is-prop ζ ,
+   Π-compact-gives-discrete-clopen-algebra
+    (compact-types-are-Π-compact
+      (compact∙-types-are-compact (micro-tychonoff fe P-is-prop κ)))
+
+\end{code}
+
+In particular, if P is a proposition then P → 𝟚 is a pre-Stone type,
+and in fact a Stone type, whether or not P is decidable. The type
+P → 𝟚 itself is not discrete in general, as the discreteness of P → 𝟚
+for all propositions P amounts to weak excluded middle, by
+P→𝟚-discreteness-iff-WEM of the module Taboos.P2. But the Stone
+condition concerns the clopens of P → 𝟚 rather than P → 𝟚 itself, and
+their discreteness amounts to the Π-compactness of P → 𝟚, which the
+micro Tychonoff theorem gives.
 
 \begin{code}
 
@@ -1405,19 +1270,954 @@ P→𝟚-is-pre-stone-type P-is-prop
  = prop-indexed-products-are-pre-stone-types P-is-prop
     (λ _ → stone-types-are-pre-stone-types 𝟚-is-stone-type)
 
+P→𝟚-is-stone-type
+ : {P : 𝓤 ̇ }
+ → is-prop P
+ → is-stone-type (P → 𝟚)
+P→𝟚-is-stone-type P-is-prop
+ = prop-indexed-products-are-stone-types P-is-prop
+    (λ _ → 𝟚-is-compact∙)
+    (λ _ → stone-types-are-pre-stone-types 𝟚-is-stone-type)
+
 \end{code}
 
-We now use this to show that if ¬ WLPO holds then pre-Stone types are
-**not** closed under Σ. A counterexample is the type ℕ∞₂ of the
-module TypeTopology.FailureOfTotalSeparatedness, whose total
-separatedness gives ¬¬ WLPO. Its base ℕ∞ is a Stone type when ¬ WLPO
-holds, and its fibers are of the form P → 𝟚 for a proposition P and
-hence are pre-Stone types, so that the closure would make ℕ∞₂ a
-pre-Stone type and hence totally separated.
+An ultrafilter of clopens of a sum is determined by the clopens of the
+fiber over the point of the base that it gives, because two clopens of
+the sum that agree on that fiber agree on a clopen of the base that
+belongs to the ultrafilter. So the sum is a Stone type as soon as
+every clopen of every fiber is the restriction of a clopen of the sum,
+which we call having extendable clopens. We define this pointwise,
+and we name the extension of a clopen of a fiber and the equation it
+satisfies on that fiber.
+
+\begin{code}
+
+clopens-are-extendable-at : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) → X → 𝓤 ⊔ 𝓥 ̇
+clopens-are-extendable-at {𝓤} {𝓥} {X} Y x =
+   (A : Clopen (Y x))
+ → Σ B ꞉ Clopen (Σ Y) , ((y : Y x) → (x , y) ϵ B ＝ y ϵ A)
+
+module _ {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } where
+
+ extension-of-clopen : {x : X}
+                     → clopens-are-extendable-at Y x
+                     → Clopen (Y x)
+                     → Clopen (Σ Y)
+ extension-of-clopen e A = pr₁ (e A)
+
+ extension-of-clopen-at-fiber
+  : {x : X}
+    (e : clopens-are-extendable-at Y x)
+    (A : Clopen (Y x))
+    (y : Y x)
+  → (x , y) ϵ extension-of-clopen e A ＝ y ϵ A
+ extension-of-clopen-at-fiber e A = pr₂ (e A)
+
+has-extendable-clopens : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+has-extendable-clopens {𝓤} {𝓥} {X} Y =
+ (x : X) → clopens-are-extendable-at Y x
+
+Σ-is-stone-type-if-family-has-extendable-clopens
+ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+ → is-stone-type X
+ → ((x : X) → is-stone-type (Y x))
+ → has-extendable-clopens Y
+ → is-stone-type (Σ Y)
+Σ-is-stone-type-if-family-has-extendable-clopens {𝓤} {𝓥} {X} {Y} ζ δ ext
+ = stone-criterion I II III
+ where
+  agreement-is-decidable
+   : (A B : Clopen (Σ Y)) (x : X)
+   → is-decidable ((λ y → (x , y) ϵ A) ＝ (λ y → (x , y) ϵ B))
+  agreement-is-decidable A B x
+   = stone-types-have-discrete-clopen-algebras (δ x)
+      (λ y → (x , y) ϵ A)
+      (λ y → (x , y) ϵ B)
+
+  agreement : Clopen (Σ Y) → Clopen (Σ Y) → Clopen X
+  agreement A B = pr₁ (co-characteristic-function (agreement-is-decidable A B))
+
+  agreement-property
+   : (A B : Clopen (Σ Y)) (x : X)
+   → (x ∉ agreement A B → (λ y → (x , y) ϵ A) ≠ (λ y → (x , y) ϵ B))
+   × (x ∈ agreement A B → (λ y → (x , y) ϵ A) ＝ (λ y → (x , y) ϵ B))
+  agreement-property A B = pr₂ (co-characteristic-function
+                                 (agreement-is-decidable A B))
+
+  agreement-property₀
+   : (A B : Clopen (Σ Y)) (x : X)
+   → x ∉ agreement A B
+   → (λ y → (x , y) ϵ A) ≠ (λ y → (x , y) ϵ B)
+  agreement-property₀ A B x = pr₁ (agreement-property A B x)
+
+  agreement-property₁
+   : (A B : Clopen (Σ Y)) (x : X)
+   → x ∈ agreement A B
+   → (λ y → (x , y) ϵ A) ＝ (λ y → (x , y) ϵ B)
+  agreement-property₁ A B x = pr₂ (agreement-property A B x)
+
+  agreement-property₂
+   : (A B : Clopen (Σ Y)) (x : X)
+   → ((y : Y x) → (x , y) ϵ A ＝ (x , y) ϵ B)
+   → x ∈ agreement A B
+  agreement-property₂ A B x ψ =
+   different-from-₀-equal-₁
+    (λ e → agreement-property₀ A B x e (dfunext fe ψ))
+
+  I : is-discrete (Clopen (Σ Y))
+  I = Π-compact-gives-discrete-clopen-algebra
+       (Π-compact-closed-under-Σ
+         (stone-types-are-Π-compact ζ)
+         (λ x → stone-types-are-Π-compact (δ x)))
+
+  II : is-totally-separated (Σ Y)
+  II {x , y} {x' , y'} φ = to-Σ-＝ (IV , V)
+   where
+    IV : x ＝ x'
+    IV = pre-stone-types-are-totally-separated
+          (stone-types-are-pre-stone-types ζ)
+          (λ C → φ (C ∘ pr₁))
+
+    V : transport Y IV y ＝ y'
+    V = pre-stone-types-are-totally-separated
+         (stone-types-are-pre-stone-types (δ x'))
+         VI
+     where
+      VI : (A : Clopen (Y x')) → transport Y IV y ϵ A ＝ y' ϵ A
+      VI A = transport Y IV y ϵ A        ＝⟨ (vii (transport Y IV y))⁻¹ ⟩
+             (x' , transport Y IV y) ϵ B ＝⟨ (ap B (to-Σ-＝ (IV , refl)))⁻¹ ⟩
+             (x , y) ϵ B                 ＝⟨ φ B ⟩
+             (x' , y') ϵ B               ＝⟨ vii y' ⟩
+             y' ϵ A                      ∎
+       where
+        B : Clopen (Σ Y)
+        B = extension-of-clopen (ext x') A
+
+        vii : (y'' : Y x') → (x' , y'') ϵ B ＝ y'' ϵ A
+        vii = extension-of-clopen-at-fiber (ext x') A
+
+  III : (ℱ : Clopen (Clopen (Σ Y))) → is-ultrafilter ℱ → is-principal ℱ
+  III ℱ i = (x₀ , y₀) , XIII
+   where
+    open ultrafilter-properties ℱ i
+
+    ℱ₁ : Clopen (Clopen X)
+    ℱ₁ C = (C ∘ pr₁) ϵ ℱ
+
+    IV : is-ultrafilter ℱ₁
+    IV = preserves-₀ ,
+         preserves-₁ ,
+         (λ C C' → preserves-∧ (C ∘ pr₁) (C' ∘ pr₁)) ,
+         (λ C C' → preserves-∨ (C ∘ pr₁) (C' ∘ pr₁))
+
+    V : is-principal ℱ₁
+    V = ultrafilters-of-pre-stone-types-are-principal
+         (stone-types-are-pre-stone-types ζ) ℱ₁ IV
+
+    x₀ : X
+    x₀ = pr₁ V
+
+    φ₁ : (C : Clopen X) → C ϵ ℱ₁ ＝ x₀ ϵ C
+    φ₁ = pr₂ V
+
+    VI : (A B : Clopen (Σ Y))
+       → ((y : Y x₀) → (x₀ , y) ϵ A ＝ (x₀ , y) ϵ B)
+       → A ϵ ℱ ＝ B ϵ ℱ
+    VI A B ψ = A ϵ ℱ         ＝⟨ VIII ⟩
+               (D ∩ A) ϵ ℱ   ＝⟨ ap ℱ IX ⟩
+               (D ∩ B) ϵ ℱ   ＝⟨ preserves-∧ D B ⟩
+               D ϵ ℱ ∧ B ϵ ℱ ＝⟨ ap (λ - → - ∧ B ϵ ℱ) VII ⟩
+               B ϵ ℱ         ∎
+     where
+      D : Clopen (Σ Y)
+      D = agreement A B ∘ pr₁
+
+      VII : D ∈ ℱ
+      VII = D ϵ ℱ              ＝⟨ φ₁ (agreement A B) ⟩
+            x₀ ϵ agreement A B ＝⟨ agreement-property₂ A B x₀ ψ ⟩
+            ₁                  ∎
+
+      VIII : A ϵ ℱ ＝ (D ∩ A) ϵ ℱ
+      VIII = A ϵ ℱ         ＝⟨ (ap (λ - → - ∧ A ϵ ℱ) VII)⁻¹ ⟩
+             D ϵ ℱ ∧ A ϵ ℱ ＝⟨ (preserves-∧ D A)⁻¹ ⟩
+             (D ∩ A) ϵ ℱ   ∎
+
+      IX : D ∩ A ＝ D ∩ B
+      IX = dfunext fe IX₀
+       where
+        IX₀ : (z : Σ Y) → z ϵ (D ∩ A) ＝ z ϵ (D ∩ B)
+        IX₀ (x' , y) = 𝟚-equality-cases xi xii
+         where
+          xi : x' ∉ agreement A B
+             → (x' , y) ϵ (D ∩ A) ＝ (x' , y) ϵ (D ∩ B)
+          xi e = (x' , y) ϵ (D ∩ A) ＝⟨ ap (λ - → - ∧ (x' , y) ϵ A) e ⟩
+                 ₀                  ＝⟨ (ap (λ - → - ∧ (x' , y) ϵ B) e)⁻¹ ⟩
+                 (x' , y) ϵ (D ∩ B) ∎
+
+          xii : x' ∈ agreement A B
+              → (x' , y) ϵ (D ∩ A) ＝ (x' , y) ϵ (D ∩ B)
+          xii e = ap (λ - → x' ϵ agreement A B ∧ -)
+                   (happly (agreement-property₁ A B x' e) y)
+
+    extension : Clopen (Y x₀) → Clopen (Σ Y)
+    extension A = extension-of-clopen (ext x₀) A
+
+    𝒢 : Clopen (Clopen (Y x₀))
+    𝒢 = ℱ ∘ extension
+
+    𝒢-slice : (A : Clopen (Y x₀)) (y : Y x₀) → (x₀ , y) ϵ extension A ＝ y ϵ A
+    𝒢-slice A = extension-of-clopen-at-fiber (ext x₀) A
+
+    𝒢-preserves-operation
+     : (_⊛_ : 𝟚 → 𝟚 → 𝟚)
+     → ((C D : Clopen (Σ Y)) → (λ z → z ϵ C ⊛ z ϵ D) ϵ ℱ ＝ C ϵ ℱ ⊛ D ϵ ℱ)
+     → (A B : Clopen (Y x₀))
+     → (λ y → y ϵ A ⊛ y ϵ B) ϵ 𝒢 ＝ A ϵ 𝒢 ⊛ B ϵ 𝒢
+    𝒢-preserves-operation _⊛_ p A B =
+     (λ y → y ϵ A ⊛ y ϵ B) ϵ 𝒢                     ＝⟨ i₀ ⟩
+     (λ z → z ϵ extension A ⊛ z ϵ extension B) ϵ ℱ ＝⟨ i₁ ⟩
+     A ϵ 𝒢 ⊛ B ϵ 𝒢                                 ∎
+     where
+      fiberwise : (y : Y x₀)
+                → (x₀ , y) ϵ extension (λ y' → y' ϵ A ⊛ y' ϵ B)
+                ＝ (x₀ , y) ϵ extension A ⊛ (x₀ , y) ϵ extension B
+      fiberwise y =
+       (x₀ , y) ϵ extension (λ y' → y' ϵ A ⊛ y' ϵ B)   ＝⟨ fiberwise₀ ⟩
+       y ϵ A ⊛ y ϵ B                                   ＝⟨ fiberwise₁ ⟩
+       (x₀ , y) ϵ extension A ⊛ (x₀ , y) ϵ extension B ∎
+       where
+        fiberwise₀ = 𝒢-slice (λ y' → y' ϵ A ⊛ y' ϵ B) y
+        fiberwise₁ = ap₂ _⊛_ ((𝒢-slice A y)⁻¹) ((𝒢-slice B y)⁻¹)
+
+      i₀ = VI (extension (λ y → y ϵ A ⊛ y ϵ B))
+              (λ z → z ϵ extension A ⊛ z ϵ extension B)
+              fiberwise
+      i₁ = p (extension A) (extension B)
+
+    XI : is-ultrafilter 𝒢
+    XI = xiii , xiv , xv , xvi
+     where
+      xiii : ∅ ∉ 𝒢
+      xiii = ∅ ϵ 𝒢 ＝⟨ VI (extension ∅) ∅ (𝒢-slice ∅) ⟩
+             ∅ ϵ ℱ ＝⟨ preserves-₀ ⟩
+             ₀     ∎
+
+      xiv : 𝟏 ∈ 𝒢
+      xiv = 𝟏 ϵ 𝒢 ＝⟨ VI (extension 𝟏) 𝟏 (𝒢-slice 𝟏) ⟩
+            𝟏 ϵ ℱ ＝⟨ preserves-₁ ⟩
+            ₁     ∎
+
+      xv : (A B : Clopen (Y x₀)) → (A ∩ B) ϵ 𝒢 ＝ A ϵ 𝒢 ∧ B ϵ 𝒢
+      xv = 𝒢-preserves-operation _∧_ preserves-∧
+
+      xvi : (A B : Clopen (Y x₀)) → (A ∪ B) ϵ 𝒢 ＝ A ϵ 𝒢 ∨ B ϵ 𝒢
+      xvi = 𝒢-preserves-operation _∨_ preserves-∨
+
+    XII : is-principal 𝒢
+    XII = ultrafilters-of-pre-stone-types-are-principal
+           (stone-types-are-pre-stone-types (δ x₀))
+           𝒢
+           XI
+
+    y₀ : Y x₀
+    y₀ = pr₁ XII
+
+    φ₂ : (A : Clopen (Y x₀)) → A ϵ 𝒢 ＝ y₀ ϵ A
+    φ₂ = pr₂ XII
+
+    XIII : (A : Clopen (Σ Y)) → A ϵ ℱ ＝ (x₀ , y₀) ϵ A
+    XIII A = A ϵ ℱ                    ＝⟨ xviii ⟩
+             (λ y → (x₀ , y) ϵ A) ϵ 𝒢 ＝⟨ φ₂ (λ y → (x₀ , y) ϵ A) ⟩
+             (x₀ , y₀) ϵ A            ∎
+     where
+      xviii : A ϵ ℱ ＝ (λ y → (x₀ , y) ϵ A) ϵ 𝒢
+      xviii = VI
+               A
+               (extension (λ y → (x₀ , y) ϵ A))
+               (λ y → (𝒢-slice (λ y' → (x₀ , y') ϵ A) y)⁻¹)
+
+\end{code}
+
+Clopens are extendable at isolated points.
+
+\begin{code}
+
+clopens-are-extendable-at-isolated-points
+ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+   (x : X)
+ → is-isolated x
+ → clopens-are-extendable-at Y x
+clopens-are-extendable-at-isolated-points {𝓤} {𝓥} {X} {Y} x j A
+ = B , III
+ where
+  I : (x' : X) → is-decidable (x ＝ x') → Clopen (Y x')
+  I x' (inl e) y = transport Y (e ⁻¹) y ϵ A
+  I x' (inr _) y = ₀
+
+  B : Clopen (Σ Y)
+  B (x' , y) = I x' (j x') y
+
+  II : (d : is-decidable (x ＝ x)) (y : Y x) → I x d y ＝ y ϵ A
+  II (inl e) y = ap (λ - → transport Y - y ϵ A)
+                    (isolated-points-are-h-isolated x j (e ⁻¹) refl)
+  II (inr ν) y = 𝟘-elim (ν refl)
+
+  III : (y : Y x) → (x , y) ϵ B ＝ y ϵ A
+  III = II (j x)
+
+discrete-bases-extend-clopens
+ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+ → is-discrete X
+ → has-extendable-clopens Y
+discrete-bases-extend-clopens d x
+ = clopens-are-extendable-at-isolated-points x (d x)
+
+\end{code}
+
+A constant family has extendable clopens, so Stone types are closed
+under binary products.
+
+\begin{code}
+
+constant-families-have-extendable-clopens
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → has-extendable-clopens (λ (_ : X) → Y)
+constant-families-have-extendable-clopens x A = A ∘ pr₂ , (λ y → refl)
+
+×-is-stone-type
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → is-stone-type X
+ → is-stone-type Y
+ → is-stone-type (X × Y)
+×-is-stone-type ζ ζ'
+ = Σ-is-stone-type-if-family-has-extendable-clopens
+    ζ
+    (λ _ → ζ')
+    constant-families-have-extendable-clopens
+
+\end{code}
+
+A family of propositions that are Stone types has extendable clopens.
+Hence the sum of a family of Stone propositions indexed by a Stone
+type is a Stone type, and in particular so is a clopen subtype.
+
+\begin{code}
+
+stone-propositions-have-extendable-clopens
+ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+ → ((x : X) → is-prop (Y x))
+ → ((x : X) → is-stone-type (Y x))
+ → has-extendable-clopens Y
+stone-propositions-have-extendable-clopens {𝓤} {𝓥} {X} {Y} i δ x A
+ = I (stone-props-are-decidable (i x) (δ x))
+ where
+  I : is-decidable (Y x)
+    → Σ B ꞉ Clopen (Σ Y) , ((y : Y x) → (x , y) ϵ B ＝ y ϵ A)
+  I (inl y₁) = (λ _ → y₁ ϵ A) , (λ y → ap A (i x y₁ y))
+  I (inr ν)  = ∅ , (λ y → 𝟘-elim (ν y))
+
+Σ-of-stone-propositions-is-stone-type
+ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+ → is-stone-type X
+ → ((x : X) → is-prop (Y x))
+ → ((x : X) → is-stone-type (Y x))
+ → is-stone-type (Σ Y)
+Σ-of-stone-propositions-is-stone-type ζ i δ
+ = Σ-is-stone-type-if-family-has-extendable-clopens
+    ζ
+    δ
+    (stone-propositions-have-extendable-clopens i δ)
+
+clopen-subtypes-of-stone-types-are-stone-types
+ : {X : 𝓤 ̇ }
+ → is-stone-type X
+ → (A : Clopen X)
+ → is-stone-type (clopen-subtype A)
+clopen-subtypes-of-stone-types-are-stone-types ζ A
+ = Σ-of-stone-propositions-is-stone-type
+    ζ
+    (λ _ → 𝟚-is-set)
+    (λ x → decidable-props-are-stone-types
+            𝟚-is-set
+            (∈-is-decidable x A))
+
+\end{code}
+
+The clopen subtype inherits the pre-Stone property.
+
+\begin{code}
+
+clopen-subtypes-of-pre-stone-types-are-pre-stone-types
+ : {X : 𝓤 ̇ }
+ → is-pre-stone-type X
+ → (A : Clopen X)
+ → is-pre-stone-type (clopen-subtype A)
+clopen-subtypes-of-pre-stone-types-are-pre-stone-types {𝓤} {X} ζ A
+ = pre-stone-criterion I II
+ where
+  σ : (x : X) → x ∈ A → clopen-subtype A
+  σ x d = (x , d)
+
+  open clopen-extension A σ
+
+  I : is-totally-separated (clopen-subtype A)
+  I φ = to-subtype-＝
+         (λ _ → 𝟚-is-set)
+         (pre-stone-types-are-totally-separated ζ
+           (λ B → φ (B ∘ clopen-subtype-inclusion A)))
+
+  II : (ℱ : Clopen (Clopen (clopen-subtype A)))
+     → is-ultrafilter ℱ
+     → is-principal ℱ
+  II ℱ i = IV (ultrafilters-of-pre-stone-types-are-principal ζ 𝒢 III)
+   where
+    open ultrafilter-properties ℱ i
+
+    𝒢 : Clopen (Clopen X)
+    𝒢 B = (B ∘ clopen-subtype-inclusion A) ϵ ℱ
+
+    III : is-ultrafilter 𝒢
+    III = preserves-₀ ,
+          preserves-₁ ,
+          (λ B B' → preserves-∧ (B ∘ clopen-subtype-inclusion A)
+                                (B' ∘ clopen-subtype-inclusion A)) ,
+          (λ B B' → preserves-∨ (B ∘ clopen-subtype-inclusion A)
+                                (B' ∘ clopen-subtype-inclusion A))
+
+    IV : is-principal 𝒢 → is-principal ℱ
+    IV (x₀ , V) = (x₀ , VI) , VIII
+     where
+      VI : x₀ ∈ A
+      VI = x₀ ϵ A ＝⟨ (V A)⁻¹ ⟩
+           A ϵ 𝒢  ＝⟨ ap ℱ (restriction-to-clopen-subtype-is-𝟏 A) ⟩
+           𝟏 ϵ ℱ  ＝⟨ preserves-₁ ⟩
+           ₁      ∎
+
+      VII : (C : Clopen (clopen-subtype A))
+          → ext C ∘ clopen-subtype-inclusion A ＝ C
+      VII C = dfunext fe (λ (x , d) → ext-at-section C x d)
+
+      VIII : (C : Clopen (clopen-subtype A)) → C ϵ ℱ ＝ (x₀ , VI) ϵ C
+      VIII C = C ϵ ℱ         ＝⟨ ap ℱ (VII C)⁻¹ ⟩
+               ext C ϵ 𝒢     ＝⟨ V (ext C) ⟩
+               x₀ ϵ ext C    ＝⟨ ext-at-section C x₀ VI ⟩
+               (x₀ , VI) ϵ C ∎
+
+\end{code}
+
+We now turn to ℕ∞. For a natural number n, the clopen ↑ n is the upper
+set of n in ℕ∞.
+
+\begin{code}
+
+infix 50 ↑_
+
+↑_ : ℕ → Clopen ℕ∞
+(↑ n) x = ι x n
+
+\end{code}
+
+For a natural number k, the clopen `singleton k` is the characteristic
+function of the singleton subset containing the point ι k.
+
+\begin{code}
+
+singleton : ℕ → Clopen ℕ∞
+singleton 0        = complement (↑ 0)
+singleton (succ j) = ↑ j ∩ complement (↑ (succ j))
+
+singleton-property₀ : (k : ℕ) (x : ℕ∞) → x ∈ singleton k → x ＝ ι k
+singleton-property₀ 0 x e = is-Zero-equal-Zero fe (complement-lc (ι x 0) ₀ e)
+singleton-property₀ (succ j) x e =
+ Succ-criterion fe
+  (Lemma[min𝟚ab＝₁→a＝₁] e)
+  (complement-lc (ι x (succ j)) ₀ (Lemma[min𝟚ab＝₁→b＝₁] e))
+
+singleton-property₁ : (k : ℕ) → ι k ∈ singleton k
+singleton-property₁ 0        = ap ⇁_ (ℕ-to-ℕ∞-diagonal₀ 0)
+singleton-property₁ (succ j) =
+ Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
+  (ℕ-to-ℕ∞-diagonal₁ j)
+  (ap ⇁_ (ℕ-to-ℕ∞-diagonal₀ (succ j)))
+
+\end{code}
+
+A modulus of a clopen A of ℕ∞ is an m : ℕ such that for all n ≥ m we
+have that ι n ϵ A if and only if ∞ ϵ A. This is the notion of
+continuity of the module TypeTopology.DecidabilityOfNonContinuity,
+formulated with the order of ℕ rather than with maximum, and for
+𝟚-valued rather than ℕ-valued functions. If ¬ WLPO holds then no
+clopen of ℕ∞ fails to have a modulus, and this is how we use the
+hypothesis.
+
+\begin{code}
+
+_is-modulus-of_ : ℕ → Clopen ℕ∞ → 𝓤₀ ̇
+m is-modulus-of A = (n : ℕ) → m ≤ n → ι n ϵ A ＝ ∞ ϵ A
+
+has-modulus : Clopen ℕ∞ → 𝓤₀ ̇
+has-modulus A = Σ m ꞉ ℕ , m is-modulus-of A
+
+¬WLPO-gives-¬¬-has-modulus : ¬ WLPO → (A : Clopen ℕ∞) → ¬¬ has-modulus A
+¬WLPO-gives-¬¬-has-modulus nwlpo A = ¬¬-functor II I
+ where
+  g : 𝟚 → ℕ
+  g ₀ = 0
+  g ₁ = 1
+
+  g-lc : {b c : 𝟚} → g b ＝ g c → b ＝ c
+  g-lc {₀} {₀} r = refl
+  g-lc {₀} {₁} r = 𝟘-elim (zero-not-positive 0 r)
+  g-lc {₁} {₀} r = 𝟘-elim (zero-not-positive 0 (r ⁻¹))
+  g-lc {₁} {₁} r = refl
+
+  f : ℕ∞ → ℕ
+  f = g ∘ A
+
+  I : ¬¬ continuous f
+  I = ¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f
+
+  II : continuous f → has-modulus A
+  II (m , ψ) = m , III
+   where
+    III : (n : ℕ) → m ≤ n → ι n ϵ A ＝ ∞ ϵ A
+    III n l = g-lc (f (ι n)             ＝⟨ ap f (IV ⁻¹) ⟩
+                    f (max (ι m) (ι n)) ＝⟨ ψ n ⟩
+                    f ∞                 ∎)
+     where
+      IV : max (ι m) (ι n) ＝ ι n
+      IV = max (ι m) (ι n) ＝⟨ (max-fin fe m n)⁻¹ ⟩
+           ι (maxℕ m n)    ＝⟨ ap ℕ-to-ℕ∞ (max-ord→ m n l) ⟩
+           ι n             ∎
+
+\end{code}
+
+Given an ultrafilter ℱ of the clopens of ℕ∞, the sequence of values of
+ℱ at the upper sets is decreasing, and so it is an element u of ℕ∞,
+with which ℱ agrees on the upper sets by construction.
+
+\begin{code}
+
+module ultrafilter-on-ℕ∞
+        (ℱ : Clopen (Clopen ℕ∞))
+        (i : is-ultrafilter ℱ)
+       where
+
+ open ultrafilter-properties ℱ i
+
+ private
+  α : ℕ → 𝟚
+  α n = ↑ n ϵ ℱ
+
+  α-is-decreasing : is-decreasing α
+  α-is-decreasing n = monotone I
+   where
+    I : ↑ (succ n) ⊆ ↑ n
+    I (β , d) = d n
+
+ u : ℕ∞
+ u = (α , α-is-decreasing)
+
+ _ : (n : ℕ) → ↑ n ϵ ℱ ＝ u ϵ ↑ n
+ _ = λ n → refl
+
+\end{code}
+
+If u is finite, say u ＝ ι k, then singleton k belongs to ℱ, and the
+only point belonging to singleton k is ι k. So the criterion above
+applies with the one-point type, and ℱ is principal at u.
+
+\begin{code}
+
+ private
+  ℱ-at-singleton : (k : ℕ) → u ＝ ι k → singleton k ∈ ℱ
+  ℱ-at-singleton 0 e =
+   singleton 0 ϵ ℱ ＝⟨ preserves-complement (↑ 0) ⟩
+   ⇁ (α 0)         ＝⟨ ap ⇁_ I ⟩
+   ⇁ ₀             ＝⟨refl⟩
+   ₁               ∎
+    where
+     I : α 0 ＝ ₀
+     I = α 0       ＝⟨ ap (λ - → ι - 0) e ⟩
+         ι (ι 0) 0 ＝⟨ ℕ-to-ℕ∞-diagonal₀ 0 ⟩
+         ₀         ∎
+  ℱ-at-singleton (succ j) e =
+   singleton (succ j) ϵ ℱ            ＝⟨ i₀ ⟩
+   α j ∧ complement (↑ (succ j)) ϵ ℱ ＝⟨ i₁ ⟩
+   α j ∧ ⇁ (α (succ j))              ＝⟨ i₂ ⟩
+   ₁ ∧ ⇁ ₀                           ＝⟨refl⟩
+   ₁                                 ∎
+    where
+     i₀ = preserves-∧ (↑ j) (complement (↑ (succ j)))
+     i₁ = ap (λ - → α j ∧ -) (preserves-complement (↑ (succ j)))
+
+     I : α j ＝ ₁
+     I = α j              ＝⟨ ap (λ - → ι - j) e ⟩
+         ι (ι (succ j)) j ＝⟨ ℕ-to-ℕ∞-diagonal₁ j ⟩
+         ₁                ∎
+
+     II : α (succ j) ＝ ₀
+     II = α (succ j)              ＝⟨ ap (λ - → ι - (succ j)) e ⟩
+          ι (ι (succ j)) (succ j) ＝⟨ ℕ-to-ℕ∞-diagonal₀ (succ j) ⟩
+          ₀                       ∎
+
+     i₂ = ap₂ (λ - -' → - ∧ ⇁ -') I II
+
+ ℱ-at-finite : (k : ℕ) → u ＝ ι k → (A : Clopen ℕ∞) → A ϵ ℱ ＝ u ϵ A
+ ℱ-at-finite k e A = I (ultrafilter-principality-criterion
+                         (singleton k)
+                         (λ _ → ι k)
+                         (λ _ _ → ⋆)
+                         (λ x d → (singleton-property₀ k x d)⁻¹)
+                         (𝟙-is-pre-stone-type {𝓤₀})
+                         ℱ i
+                         (ℱ-at-singleton k e))
+  where
+   I : (Σ y ꞉ 𝟙 {𝓤₀} , ((B : Clopen ℕ∞) → B ϵ ℱ ＝ ι k ϵ B))
+     → A ϵ ℱ ＝ u ϵ A
+   I (y , φ) = A ϵ ℱ   ＝⟨ φ A ⟩
+               ι k ϵ A ＝⟨ (ap A e)⁻¹ ⟩
+               u ϵ A   ∎
+
+ not-principal-at-u-gives-u-is-∞ : (A : Clopen ℕ∞) → A ϵ ℱ ≠ u ϵ A → u ＝ ∞
+ not-principal-at-u-gives-u-is-∞ A ν =
+  not-finite-is-∞ fe (λ k e → ν (ℱ-at-finite k e A))
+
+\end{code}
+
+If u is the point at infinity, then every upper set belongs to ℱ, and
+the same holds for an ultrafilter that is not principal.
+
+\begin{code}
+
+ ℱ-at-upper-sets : u ＝ ∞ → (n : ℕ) → ↑ n ∈ ℱ
+ ℱ-at-upper-sets e n = ap (λ - → ι - n) e
+
+ _ : (A : Clopen ℕ∞) → A ϵ ℱ ≠ u ϵ A → (n : ℕ) → ↑ n ∈ ℱ
+ _ = λ A ν → ℱ-at-upper-sets (not-principal-at-u-gives-u-is-∞ A ν)
+
+ private
+  clopens-containing-∞-are-in-ℱ
+   : u ＝ ∞
+   → (A : Clopen ℕ∞) (m : ℕ)
+   → m is-modulus-of A
+   → ∞ ∈ A
+   → A ∈ ℱ
+  clopens-containing-∞-are-in-ℱ e A m φ r =
+   ≤₂-criterion-converse (monotone II) (ℱ-at-upper-sets e m)
+   where
+    I : (x : ℕ∞) → x ∈ complement (↑ m) ∪ A
+    I = ℕ∞-𝟚-density fe III (max𝟚-lemma-converse (inr r))
+     where
+      III : (n : ℕ) → ι n ∈ complement (↑ m) ∪ A
+      III n = 𝟚-equality-cases
+               (λ (s : ι (ι n) m ＝ ₀)
+                   → max𝟚-lemma-converse (inl (ap ⇁_ s)))
+               (λ (s : ι (ι n) m ＝ ₁)
+                   → max𝟚-lemma-converse (inr (IV s)))
+       where
+        IV : ι (ι n) m ＝ ₁ → ι n ∈ A
+        IV s = ι n ϵ A ＝⟨ φ n (<-coarser-than-≤ m n (⊏-gives-< m n s)) ⟩
+               ∞ ϵ A   ＝⟨ r ⟩
+               ₁       ∎
+
+    II : ↑ m ⊆ A
+    II x = ≤₂-criterion III
+     where
+      III : x ∈ ↑ m → x ∈ A
+      III s = x ϵ A               ＝⟨refl⟩
+              ₀ ∨ x ϵ A           ＝⟨ IV ⟩
+              ⇁ (x ϵ ↑ m) ∨ x ϵ A ＝⟨ I x ⟩
+              ₁                   ∎
+       where
+        IV = ap (λ - → ⇁ - ∨ x ϵ A) (s ⁻¹)
+
+ ℱ-at-∞ : u ＝ ∞
+        → (A : Clopen ℕ∞) (m : ℕ)
+        → m is-modulus-of A
+        → A ϵ ℱ ＝ u ϵ A
+ ℱ-at-∞ e A m φ = 𝟚-equality-cases II III
+  where
+   I : u ϵ A ＝ ∞ ϵ A
+   I = ap A e
+
+   II : ∞ ∉ A → A ϵ ℱ ＝ u ϵ A
+   II r = A ϵ ℱ ＝⟨ V ⟩
+          ₀     ＝⟨ r ⁻¹ ⟩
+          ∞ ϵ A ＝⟨ I ⁻¹ ⟩
+          u ϵ A ∎
+    where
+     IV : complement A ∈ ℱ
+     IV = clopens-containing-∞-are-in-ℱ e (complement A) m
+           (λ n l → ap ⇁_ (φ n l))
+           (ap ⇁_ r)
+
+     V : A ∉ ℱ
+     V = complement-lc (A ϵ ℱ) ₀ VI
+      where
+       VI : ⇁ (A ϵ ℱ) ＝ ⇁ ₀
+       VI = ⇁ (A ϵ ℱ)        ＝⟨ (preserves-complement A)⁻¹ ⟩
+            complement A ϵ ℱ ＝⟨ IV ⟩
+            ₁                ＝⟨refl⟩
+            ⇁ ₀              ∎
+
+   III : ∞ ∈ A → A ϵ ℱ ＝ u ϵ A
+   III r = A ϵ ℱ ＝⟨ clopens-containing-∞-are-in-ℱ e A m φ r ⟩
+           ₁     ＝⟨ r ⁻¹ ⟩
+           ∞ ϵ A ＝⟨ I ⁻¹ ⟩
+           u ϵ A ∎
+
+\end{code}
+
+Putting the two cases together, ℱ is principal at u as soon as it is
+principal at ∞ when u is ∞, which is the following criterion. If
+¬ WLPO holds then the criterion applies.
+
+\begin{code}
+
+ ℱ-is-principal-at-u-criterion
+  : (u ＝ ∞ → (A : Clopen ℕ∞) → A ϵ ℱ ＝ ∞ ϵ A)
+  → (A : Clopen ℕ∞) → A ϵ ℱ ＝ u ϵ A
+ ℱ-is-principal-at-u-criterion ψ A
+  = 𝟚-is-¬¬-separated (A ϵ ℱ) (u ϵ A) I
+  where
+   I : ¬¬ (A ϵ ℱ ＝ u ϵ A)
+   I ν = ν (A ϵ ℱ ＝⟨ ψ II A ⟩
+            ∞ ϵ A ＝⟨ (ap A II)⁻¹ ⟩
+            u ϵ A ∎)
+    where
+     II : u ＝ ∞
+     II = not-principal-at-u-gives-u-is-∞ A ν
+
+ ℱ-is-principal-at-u : ¬ WLPO → (A : Clopen ℕ∞) → A ϵ ℱ ＝ u ϵ A
+ ℱ-is-principal-at-u nwlpo = ℱ-is-principal-at-u-criterion I
+  where
+   I : u ＝ ∞ → (A : Clopen ℕ∞) → A ϵ ℱ ＝ ∞ ϵ A
+   I e A = 𝟚-is-¬¬-separated (A ϵ ℱ) (∞ ϵ A) II
+    where
+     II : ¬¬ (A ϵ ℱ ＝ ∞ ϵ A)
+     II ν = ¬WLPO-gives-¬¬-has-modulus nwlpo A III
+      where
+       III : ¬ has-modulus A
+       III (m , φ) = ν (A ϵ ℱ ＝⟨ ℱ-at-∞ e A m φ ⟩
+                        u ϵ A ＝⟨ ap A e ⟩
+                        ∞ ϵ A ∎)
+
+\end{code}
+
+The clopens of ℕ∞ form a discrete type, as ℕ∞ is compact, so that ℕ∞
+is a Stone type precisely when it is a pre-Stone type. The criterion
+above, applied to the discreteness of the clopens and to the total
+separatedness of ℕ∞, now gives that ℕ∞ is a Stone type if ¬ WLPO
+holds.
+
+\begin{code}
+
+ℕ∞-has-a-discrete-clopen-algebra : is-discrete (Clopen ℕ∞)
+ℕ∞-has-a-discrete-clopen-algebra
+ = Π-compact-gives-discrete-clopen-algebra
+    (compact-types-are-Π-compact ℕ∞-compact)
+
+ℕ∞-is-stone-type : ¬ WLPO → is-stone-type ℕ∞
+ℕ∞-is-stone-type nwlpo =
+ stone-criterion
+  ℕ∞-has-a-discrete-clopen-algebra
+  (ℕ∞-is-totally-separated fe)
+  I
+ where
+  I : (ℱ : Clopen (Clopen ℕ∞)) (i : is-ultrafilter ℱ)
+    → is-principal ℱ
+  I ℱ i = u , ℱ-is-principal-at-u nwlpo
+   where
+    open ultrafilter-on-ℕ∞ ℱ i
+
+\end{code}
+
+Stone types are closed under binary products, as shown above, and so
+ℕ∞ × ℕ∞ is a Stone type when ¬ WLPO holds.
+
+\begin{code}
+
+ℕ∞×ℕ∞-is-stone-type : ¬ WLPO → is-stone-type (ℕ∞ × ℕ∞)
+ℕ∞×ℕ∞-is-stone-type nwlpo
+ = ×-is-stone-type
+    (ℕ∞-is-stone-type nwlpo)
+    (ℕ∞-is-stone-type nwlpo)
+
+\end{code}
+
+ℕ∞ is a Stone type precisely when every ultrafilter that contains all
+the upper sets is principal at ∞.
+
+\begin{code}
+
+Ultrafilters-Containing-All-Upper-Sets-Are-Principal-At-∞ : 𝓤₀ ̇
+Ultrafilters-Containing-All-Upper-Sets-Are-Principal-At-∞ =
+   (ℱ : Clopen (Clopen ℕ∞))
+ → is-ultrafilter ℱ
+ → ((n : ℕ) → ↑ n ∈ ℱ)
+ → (A : Clopen ℕ∞) → A ϵ ℱ ＝ ∞ ϵ A
+
+stone-gives-principal-at-∞
+ : is-stone-type ℕ∞
+ → Ultrafilters-Containing-All-Upper-Sets-Are-Principal-At-∞
+stone-gives-principal-at-∞ ζ ℱ i ψ
+ = I (ultrafilters-of-pre-stone-types-are-principal
+       (stone-types-are-pre-stone-types ζ) ℱ i)
+ where
+  I : is-principal ℱ
+    → (A : Clopen ℕ∞) → A ϵ ℱ ＝ ∞ ϵ A
+  I (u , φ) A = A ϵ ℱ ＝⟨ φ A ⟩
+                u ϵ A ＝⟨ ap A II ⟩
+                ∞ ϵ A ∎
+   where
+    II : u ＝ ∞
+    II = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe III)
+     where
+      III : (n : ℕ) → ι u n ＝ ι ∞ n
+      III n = ι u n   ＝⟨ (φ (↑ n))⁻¹ ⟩
+              ↑ n ϵ ℱ ＝⟨ ψ n ⟩
+              ₁       ＝⟨refl⟩
+              ι ∞ n   ∎
+
+principal-at-∞-gives-stone
+ : Ultrafilters-Containing-All-Upper-Sets-Are-Principal-At-∞
+ → is-stone-type ℕ∞
+principal-at-∞-gives-stone φ
+ = stone-criterion
+    ℕ∞-has-a-discrete-clopen-algebra
+    (ℕ∞-is-totally-separated fe)
+    I
+ where
+  I : (ℱ : Clopen (Clopen ℕ∞)) (i : is-ultrafilter ℱ)
+    → is-principal ℱ
+  I ℱ i = u , ℱ-is-principal-at-u-criterion (λ e → φ ℱ i (ℱ-at-upper-sets e))
+   where
+    open ultrafilter-on-ℕ∞ ℱ i
+
+ℕ∞-is-stone-type-iff-principal-at-∞
+ : is-stone-type ℕ∞
+ ↔ Ultrafilters-Containing-All-Upper-Sets-Are-Principal-At-∞
+ℕ∞-is-stone-type-iff-principal-at-∞
+ = stone-gives-principal-at-∞ ,
+   principal-at-∞-gives-stone
+
+\end{code}
+
+That ℕ∞ is a Stone type is not provable without a hypothesis such as
+¬ WLPO. With choice there is a nonprincipal ultrafilter on ℕ, which is
+an ultrafilter of the clopens of ℕ∞ that is not principal at any
+point, so that ℕ∞ is not a Stone type in such a model.
+
+That ¬ WLPO holds is sufficient for ℕ∞ to be a Stone type, but it is not
+necessary. It is consistent with ZF that every ultrafilter on every set
+is principal, by a model of Blass [2] where the ultrafilters on ℕ are
+all principal. In the model of Blass excluded middle holds, and hence so
+does WLPO, and ℕ∞ is the set ℕ + 𝟙. Every subset of ℕ + 𝟙 is decidable,
+so the clopens of ℕ∞ are the characteristic functions of all the subsets
+of ℕ + 𝟙, and the ultrafilters of the clopens are the ultrafilters of the
+powerset of ℕ + 𝟙, which are all principal. So ℕ∞ is a Stone type in
+that model.
+
+The module Ordinals.BrouwerCodesGiveStoneTypes generalizes the above
+result for ℕ∞, again assuming that ¬ WLPO holds, to the compact
+totally separated interpretation of the Brouwer ordinal codes, of
+which ℕ∞ is the interpretation of the code for the first infinite
+ordinal.
+
+We now show that if every pre-Stone type is a Stone type then WEM
+holds. The first step is that the emptiness of a Π-compact type is
+decidable, which is negations-of-Π-compact-types-are-decidable of
+TypeTopology.WeaklyCompactTypes.
+
+\begin{code}
+
+Pre-Stone-Types-Are-Stone-Types : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Pre-Stone-Types-Are-Stone-Types 𝓤 =
+   (X : 𝓤 ̇ )
+ → is-pre-stone-type X
+ → is-stone-type X
+
+pre-stone-types-are-stone-types-gives-WEM
+ : Pre-Stone-Types-Are-Stone-Types 𝓤
+ → WEM 𝓤
+pre-stone-types-are-stone-types-gives-WEM c Q Q-is-prop
+ = I (negations-of-Π-compact-types-are-decidable (¬ Q)
+      (stone-types-are-Π-compact
+       (c (¬ Q)
+          (¬¬-stable-props-are-pre-stone-types
+            (negations-are-props fe)
+            three-negations-imply-one))))
+ where
+  I : is-decidable (¬ (¬ Q)) → ¬ Q + ¬¬ Q
+  I (inl nnq) = inr nnq
+  I (inr f)   = inl (three-negations-imply-one f)
+
+\end{code}
+
+We now show that if ¬ WLPO holds then Stone types are **not** closed
+under Σ. A counterexample is the type ℕ∞₂ of the module
+TypeTopology.FailureOfTotalSeparatedness, whose total separatedness
+gives ¬¬ WLPO. Its base ℕ∞ is a Stone type when ¬ WLPO holds, and its
+fibers are of the form P → 𝟚 for a proposition P and hence are Stone
+types, so that the closure would make ℕ∞₂ a pre-Stone type and hence
+totally separated.
 
 \begin{code}
 
 open import TypeTopology.FailureOfTotalSeparatedness fe
+
+Stone-Types-Are-Closed-Under-Σ : 𝓤₁ ̇
+Stone-Types-Are-Closed-Under-Σ =
+   (X : 𝓤₀ ̇ ) (Y : X → 𝓤₀ ̇ )
+ → is-stone-type X
+ → ((x : X) → is-stone-type (Y x))
+ → is-stone-type (Σ Y)
+
+closure-under-Σ-gives-¬¬-WLPO
+ : Stone-Types-Are-Closed-Under-Σ
+ → ¬¬ WLPO
+closure-under-Σ-gives-¬¬-WLPO c nwlpo
+ = ℕ∞₂-is-not-totally-separated-in-general I nwlpo
+ where
+  I : is-totally-separated ℕ∞₂
+  I = pre-stone-types-are-totally-separated
+       (stone-types-are-pre-stone-types
+         (c ℕ∞
+            (λ u → u ＝ ∞ → 𝟚)
+            (ℕ∞-is-stone-type nwlpo)
+            (λ u → P→𝟚-is-stone-type (ℕ∞-is-set fe))))
+
+¬WLPO-gives-failure-of-closure-under-Σ
+ : ¬ WLPO
+ → ¬ Stone-Types-Are-Closed-Under-Σ
+¬WLPO-gives-failure-of-closure-under-Σ nwlpo c
+ = closure-under-Σ-gives-¬¬-WLPO c nwlpo
+
+\end{code}
+
+The Stone types of [1] are closed under Σ, by their Theorem 4.18, but
+the notion of a Stone type considered there is not the same as ours.
+The Stone spaces there are the spectra of the countably presented
+boolean algebras, and the boolean algebra of clopens of such a space
+is overtly discrete, so that the equality of two clopens is open
+rather than decidable, and becomes decidable only when it is closed as
+well, by their Corollary 1.22. So their Stone spaces are not Π-compact
+in general, whereas our definition includes Π-compactness via the
+discreteness of the type of clopens. Their proof of the closure under
+Σ appeals to their Axiom 3, local choice, in their Lemma 4.11, to
+replace data that varies pointwise over the base by data uniform in
+the base. Our definition lacks precisely that, as we saw above, where
+a sum of Stone types over a Stone type is a Stone type when the
+clopens of the fibers are restrictions of clopens of the sum, and that
+condition is refutable when ¬ WLPO holds.
+
+Coming back to our setting, the pre-Stone types are not closed under Σ
+either, when ¬ WLPO holds, because their closure under Σ gives that of
+the Stone types, the discreteness of the clopens of a sum coming from
+the Π-compactness of the base and of the fibers.
+
+\begin{code}
 
 Pre-Stone-Types-Are-Closed-Under-Σ : 𝓤₁ ̇
 Pre-Stone-Types-Are-Closed-Under-Σ =
@@ -1426,27 +2226,102 @@ Pre-Stone-Types-Are-Closed-Under-Σ =
  → ((x : X) → is-pre-stone-type (Y x))
  → is-pre-stone-type (Σ Y)
 
-closure-under-Σ-gives-¬¬-WLPO
+pre-stone-closure-under-Σ-gives-stone-closure-under-Σ
  : Pre-Stone-Types-Are-Closed-Under-Σ
- → ¬¬ WLPO
-closure-under-Σ-gives-¬¬-WLPO c nwlpo
+ → Stone-Types-Are-Closed-Under-Σ
+pre-stone-closure-under-Σ-gives-stone-closure-under-Σ c X Y ζ δ
+ = c X Y
+    (stone-types-are-pre-stone-types ζ)
+    (λ x → stone-types-are-pre-stone-types (δ x)) ,
+   Π-compact-gives-discrete-clopen-algebra
+    (Π-compact-closed-under-Σ
+      (stone-types-are-Π-compact ζ)
+      (λ x → stone-types-are-Π-compact (δ x)))
+
+¬WLPO-gives-failure-of-closure-under-Σ-for-pre-stone-types
+ : ¬ WLPO
+ → ¬ Pre-Stone-Types-Are-Closed-Under-Σ
+¬WLPO-gives-failure-of-closure-under-Σ-for-pre-stone-types nwlpo c
+ = ¬WLPO-gives-failure-of-closure-under-Σ nwlpo
+    (pre-stone-closure-under-Σ-gives-stone-closure-under-Σ c)
+
+\end{code}
+
+We can't drop the extendability of the clopens from the closure under
+Σ proved above when ¬ WLPO holds, because the counterexample ℕ∞₂ is a
+sum of Stone types over a Stone type.
+
+\begin{code}
+
+¬WLPO-gives-clopens-are-not-always-extendable
+ : ¬ WLPO
+ → ¬ has-extendable-clopens (λ (u : ℕ∞) → u ＝ ∞ → 𝟚)
+¬WLPO-gives-clopens-are-not-always-extendable nwlpo ext
  = ℕ∞₂-is-not-totally-separated-in-general I nwlpo
  where
   I : is-totally-separated ℕ∞₂
   I = pre-stone-types-are-totally-separated
-       (c ℕ∞
-          (λ u → u ＝ ∞ → 𝟚)
-          (stone-types-are-pre-stone-types (ℕ∞-is-stone-type nwlpo))
-          (λ u → P→𝟚-is-pre-stone-type (ℕ∞-is-set fe)))
-
-¬WLPO-gives-failure-of-closure-under-Σ
- : ¬ WLPO
- → ¬ Pre-Stone-Types-Are-Closed-Under-Σ
-¬WLPO-gives-failure-of-closure-under-Σ nwlpo c
- = closure-under-Σ-gives-¬¬-WLPO c nwlpo
+       (stone-types-are-pre-stone-types
+         (Σ-is-stone-type-if-family-has-extendable-clopens
+           (ℕ∞-is-stone-type nwlpo)
+           (λ u → P→𝟚-is-stone-type (ℕ∞-is-set fe))
+           ext))
 
 \end{code}
 
-Whether our Stone types are closed under Σ we don't know. The Stone
-types of [1] are closed under Σ, by their Theorem 4.18, but their
-notion of a Stone type is not ours.
+A compact type is Π-compact, so a compact totally separated type is a
+Stone type as soon as it is a pre-Stone type, which says that every
+ultrafilter of its clopens is principal. So the statement that every
+compact totally separated type is a Stone type contradicts choice. It
+gives that no ultrafilter of the clopens of such a type is
+nonprincipal, and ℕ∞ is compact and totally separated, whereas with
+choice there is a nonprincipal ultrafilter of the clopens of ℕ∞, as
+discussed above. Hence the statement is not provable.
+
+\begin{code}
+
+Compact-Totally-Separated-Types-Are-Stone-Types : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Compact-Totally-Separated-Types-Are-Stone-Types 𝓤 =
+   (X : 𝓤 ̇ )
+ → is-compact X
+ → is-totally-separated X
+ → is-stone-type X
+
+ultrafilters-on-compact-totally-separated-types-are-principal
+ : Compact-Totally-Separated-Types-Are-Stone-Types 𝓤
+ → (X : 𝓤 ̇ )
+ → is-compact X
+ → is-totally-separated X
+ → (ℱ : Clopen (Clopen X))
+ → is-ultrafilter ℱ
+ → is-principal ℱ
+ultrafilters-on-compact-totally-separated-types-are-principal c X κ τ ℱ i
+ = ultrafilters-of-pre-stone-types-are-principal
+    (stone-types-are-pre-stone-types (c X κ τ)) ℱ i
+
+ultrafilters-on-ℕ∞-are-principal
+ : Compact-Totally-Separated-Types-Are-Stone-Types 𝓤₀
+ → (ℱ : Clopen (Clopen ℕ∞))
+ → is-ultrafilter ℱ
+ → is-principal ℱ
+ultrafilters-on-ℕ∞-are-principal c
+ = ultrafilters-on-compact-totally-separated-types-are-principal
+    c
+    ℕ∞
+    ℕ∞-compact
+    (ℕ∞-is-totally-separated fe)
+
+nonprincipal-ultrafilter-on-ℕ∞-gives-failure
+ : (ℱ : Clopen (Clopen ℕ∞))
+ → is-ultrafilter ℱ
+ → is-nonprincipal ℱ
+ → ¬ Compact-Totally-Separated-Types-Are-Stone-Types 𝓤₀
+nonprincipal-ultrafilter-on-ℕ∞-gives-failure ℱ i ν c
+ = ν (ultrafilters-on-ℕ∞-are-principal c ℱ i)
+
+\end{code}
+
+The statement holds in the model of Blass [2] discussed above, where
+every ultrafilter on a set is principal and, excluded middle being
+available, every set is compact and totally separated and hence a
+Stone type.

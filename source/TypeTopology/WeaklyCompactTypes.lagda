@@ -13,6 +13,7 @@ open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Naturals.ExitTruncation
 open import Notation.Order
+open import NotionsOfDecidability.Decidable
 open import Taboos.LPO
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
@@ -121,6 +122,10 @@ compact-types-are-∃-compact {𝓤} {X} φ p = g (φ p)
  ∥∥-rec
   ∃-compactness-is-prop
   (compact-types-are-∃-compact ∘ Compact-types-are-compact)
+
+compact-types-are-Π-compact : {X : 𝓤 ̇ } → is-compact X → is-Π-compact X
+compact-types-are-Π-compact =
+ ∃-compact-types-are-Π-compact ∘ compact-types-are-∃-compact
 
 \end{code}
 
@@ -570,6 +575,25 @@ Closure of compactness under sums (and hence binary products):
    where
     h : ((σ : Σ Y) → p σ ＝ ₁) → (x : X) → q x ＝ ₁
     h β x = different-from-₀-equal-₁ (λ r → q₀ x r (λ y → β (x , y)))
+
+\end{code}
+
+And under binary sums, by deciding the two restrictions of p.
+
+\begin{code}
+
++-is-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+               → is-Π-compact X
+               → is-Π-compact Y
+               → is-Π-compact (X + Y)
++-is-Π-compact {𝓤} {𝓥} {X} {Y} c₀ c₁ p =
+ f (×-preserves-decidability (c₀ (p ∘ inl)) (c₁ (p ∘ inr)))
+ where
+  f : is-decidable (((x : X) → p (inl x) ＝ ₁)
+                  × ((y : Y) → p (inr y) ＝ ₁))
+    → is-decidable ((z : X + Y) → p z ＝ ₁)
+  f (inl (α , β)) = inl (dep-cases α β)
+  f (inr u)       = inr (λ γ → u ((λ x → γ (inl x)) , (λ y → γ (inr y))))
 
 \end{code}
 
