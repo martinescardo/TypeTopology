@@ -1,14 +1,14 @@
 Martin Escardo, 21st October 2026.
 
-We discuss a notion of a Stone type and show as an example that ℕ∞ is
-a Stone type, assuming ¬ WLPO. We also discuss that this cannot be
+We discuss a notion of Stone type and show as an example that ℕ∞ is a
+Stone type, assuming ¬ WLPO. We also discuss that this cannot be
 proved without such an assumption. The hypothesis ¬ WLPO can be
 regarded as a weak continuity principle. It is equivalent to the
 doubly negated continuity of every function of ℕ∞ into a discrete
 type, by the module TypeTopology.DecidabilityOfNonContinuity.
 
 Our notion of Stone type is a variant of that of [1], and we compare
-the two below.
+them below.
 
 [1] Cherubini, Coquand, Geerligs and Moeneclaey, "A Foundation for
     Synthetic Stone Duality", TYPES 2024, LIPIcs 336, pp. 3:1-3:20,
@@ -19,12 +19,11 @@ module TypeTopology.TotallySeparated, and they form a boolean algebra
 with the pointwise operations. An ultrafilter of this algebra amounts
 to a boolean algebra homomorphism into 𝟚. Each point of X determines a
 principal ultrafilter. We say that X is a pre-Stone type if the map
-that takes a point to the principal ultrafilter it determines is an
-equivalence, and a Stone type if moreover its boolean algebra of
-clopens is discrete.
+that takes a point to its principal ultrafilter is an equivalence, and
+a Stone type if moreover its boolean algebra of clopens is discrete.
 
 We first observe that being principal is a proposition, and that the
-map into the ultrafilters is an embedding, precisely when X is totally
+map into the ultrafilters is an embedding precisely when X is totally
 separated, and we give criteria for a type to be a pre-Stone type and
 a Stone type.
 
@@ -40,20 +39,18 @@ fiber is the restriction of a clopen of the sum, which holds at the
 isolated points of the base, for a constant family, giving the closure
 under binary products, and for a family of propositions.
 
-We show that ℕ∞ is a Stone type if ¬ WLPO holds. The same facts are
-used in the module Ordinals.BrouwerCodesGiveStoneTypes to show that
-the compact totally separated interpretation of the Brouwer ordinal
-codes gives Stone types, again assuming ¬ WLPO.
+We show that ℕ∞ is a Stone type if ¬ WLPO holds. The same facts to
+establish this are used in the module Ordinals.BrouwerCodesGiveStoneTypes
+to show that the compact totally separated interpretation of the
+Brouwer ordinal codes gives Stone types, again assuming ¬ WLPO.
 
-We close with three constructive taboos, with the comparison with [1]
-made where their closure of the Stone types under Σ bears on ours.
-That every pre-Stone type is a Stone type gives WEM. That Stone types
-are closed under Σ gives ¬¬ WLPO, and the same for the pre-Stone
-types, so neither of them is closed under Σ when ¬ WLPO holds. That
-every compact totally separated type is a Stone type refutes the
-existence of a nonprincipal ultrafilter of the clopens of ℕ∞, so
-choice refutes it, although it holds in the model of Blass [2], where
-excluded middle holds.
+We close with three constructive taboos. That every pre-Stone type is
+a Stone type gives WEM. That Stone types are closed under Σ gives ¬¬
+WLPO, and the same for the pre-Stone types, so neither of them is
+closed under Σ when ¬ WLPO holds. That every compact totally separated
+type is a Stone type refutes the existence of a nonprincipal
+ultrafilter of the clopens of ℕ∞, so choice refutes it, although it
+holds in the model of Blass [2], where excluded middle holds.
 
 [2] Blass, "A model without ultrafilters", Bull. Acad. Polon. Sci. 25,
     1977, pp. 329-331, which extends a model of Feferman, "Some
@@ -160,10 +157,7 @@ module _ {X : 𝓤 ̇ } where
 
 \end{code}
 
-We now define the subtype of X classified by a clopen, together with
-its inclusion into X and the membership of its points in the clopen,
-which amounts to the restriction of the clopen to the subtype it
-classifies being 𝟏.
+We now define the subtype of X classified by a clopen.
 
 \begin{code}
 
@@ -173,8 +167,8 @@ clopen-subtype {𝓤} {X} A = Σ x ꞉ X , x ∈ A
 clopen-subtype-inclusion : {X : 𝓤 ̇ } (A : Clopen X) → clopen-subtype A → X
 clopen-subtype-inclusion A = pr₁
 
-clopen-subtype-membership : {X : 𝓤 ̇ } (A : Clopen X) (z : clopen-subtype A)
-                          → clopen-subtype-inclusion A z ∈ A
+clopen-subtype-membership : {X : 𝓤 ̇ } (A : Clopen X) (c : clopen-subtype A)
+                          → clopen-subtype-inclusion A c ∈ A
 clopen-subtype-membership A = pr₂
 
 restriction-to-clopen-subtype-is-𝟏
@@ -222,11 +216,12 @@ is-nonprincipal ℱ = ¬ is-principal ℱ
 
 \end{code}
 
-Being principal is a proposition precisely when X is totally
-separated. A point witnessing that a clopen of clopens is principal is
-unique when the clopens separate the points of X, and conversely two
-points with the same clopens both witness that the clopen
-neighbourhoods of the first of them are principal.
+Being principal is a proposition precisely when X is totally separated
+in the sense of TypeTopology.TotallySeparated. A point witnessing that
+a clopen of clopens is principal is unique when the clopens separate
+the points of X, and conversely two points with the same clopens both
+witness that the clopen neighbourhoods of the first of them are
+principal.
 
 \begin{code}
 
@@ -1251,14 +1246,14 @@ prop-indexed-products-are-stone-types P-is-prop κ ζ
 
 \end{code}
 
-In particular, if P is a proposition then P → 𝟚 is a pre-Stone type,
-and in fact a Stone type, whether or not P is decidable. The type
-P → 𝟚 itself is not discrete in general, as the discreteness of P → 𝟚
-for all propositions P amounts to weak excluded middle, by
-P→𝟚-discreteness-iff-WEM of the module Taboos.P2. But the Stone
-condition concerns the clopens of P → 𝟚 rather than P → 𝟚 itself, and
-their discreteness amounts to the Π-compactness of P → 𝟚, which the
-micro Tychonoff theorem gives.
+In particular, if P is a proposition then the type P → 𝟚 is a
+pre-Stone type, and in fact a Stone type, whether or not P is
+decidable. The type P → 𝟚 itself is not discrete in general, as the
+discreteness of P → 𝟚 for all propositions P amounts to weak excluded
+middle, by P→𝟚-discreteness-iff-WEM of the module Taboos.P2. But the
+Stone condition concerns the clopens of P → 𝟚 rather than P → 𝟚
+itself, and their discreteness amounts to the Π-compactness of P → 𝟚,
+which the micro Tychonoff theorem gives.
 
 \begin{code}
 
@@ -1282,13 +1277,13 @@ P→𝟚-is-stone-type P-is-prop
 \end{code}
 
 An ultrafilter of clopens of a sum is determined by the clopens of the
-fiber over the point of the base that it gives, because two clopens of
-the sum that agree on that fiber agree on a clopen of the base that
-belongs to the ultrafilter. So the sum is a Stone type as soon as
-every clopen of every fiber is the restriction of a clopen of the sum,
-which we call having extendable clopens. We define this pointwise,
-and we name the extension of a clopen of a fiber and the equation it
-satisfies on that fiber.
+fiber over the point of the base, because two clopens of the sum that
+agree on that fiber agree on a clopen of the base that belongs to the
+ultrafilter. So the sum is a Stone type as soon as every clopen of
+every fiber is the restriction of a clopen of the sum, which we call
+having extendable clopens. We define this pointwise, and we name the
+extension of a clopen of a fiber and the equation it satisfies on that
+fiber.
 
 \begin{code}
 
@@ -2033,8 +2028,8 @@ holds.
 
 \end{code}
 
-Stone types are closed under binary products, as shown above, and so
-ℕ∞ × ℕ∞ is a Stone type when ¬ WLPO holds.
+As an example, Stone types are closed under binary products, as shown
+above, and so ℕ∞ × ℕ∞ is a Stone type when ¬ WLPO holds.
 
 \begin{code}
 
@@ -2104,20 +2099,19 @@ principal-at-∞-gives-stone φ
 
 \end{code}
 
-That ℕ∞ is a Stone type is not provable without a hypothesis such as
-¬ WLPO. With choice there is a nonprincipal ultrafilter on ℕ, which is
+That ℕ∞ is a Stone type is not provable without a hypothesis such as ¬
+WLPO. With choice there is a nonprincipal ultrafilter on ℕ, which is
 an ultrafilter of the clopens of ℕ∞ that is not principal at any
-point, so that ℕ∞ is not a Stone type in such a model.
-
-That ¬ WLPO holds is sufficient for ℕ∞ to be a Stone type, but it is not
-necessary. It is consistent with ZF that every ultrafilter on every set
-is principal, by a model of Blass [2] where the ultrafilters on ℕ are
-all principal. In the model of Blass excluded middle holds, and hence so
-does WLPO, and ℕ∞ is the set ℕ + 𝟙. Every subset of ℕ + 𝟙 is decidable,
-so the clopens of ℕ∞ are the characteristic functions of all the subsets
-of ℕ + 𝟙, and the ultrafilters of the clopens are the ultrafilters of the
-powerset of ℕ + 𝟙, which are all principal. So ℕ∞ is a Stone type in
-that model.
+point, so that ℕ∞ is not a Stone type in such a model.  That ¬ WLPO
+holds is sufficient for ℕ∞ to be a Stone type, but it is not
+necessary. It is consistent with ZF that every ultrafilter on every
+set is principal, by a model of Blass [2] where the ultrafilters on ℕ
+are all principal. In the model of Blass excluded middle holds, and
+hence so does WLPO, and ℕ∞ is the set ℕ + 𝟙. Every subset of ℕ + 𝟙 is
+decidable, so the clopens of ℕ∞ are the characteristic functions of
+all the subsets of ℕ + 𝟙, and the ultrafilters of the clopens are the
+ultrafilters of the powerset of ℕ + 𝟙, which are all principal. So ℕ∞
+is a Stone type in that model.
 
 The module Ordinals.BrouwerCodesGiveStoneTypes generalizes the above
 result for ℕ∞, again assuming that ¬ WLPO holds, to the compact
@@ -2196,7 +2190,7 @@ closure-under-Σ-gives-¬¬-WLPO c nwlpo
 
 \end{code}
 
-The Stone types of [1] are closed under Σ, by their Theorem 4.18, but
+The Stone types of [1] **are** closed under Σ, by their Theorem 4.18, but
 the notion of a Stone type considered there is not the same as ours.
 The Stone spaces there are the spectra of the countably presented
 boolean algebras, and the boolean algebra of clopens of such a space
@@ -2248,8 +2242,8 @@ pre-stone-closure-under-Σ-gives-stone-closure-under-Σ c X Y ζ δ
 \end{code}
 
 We can't drop the extendability of the clopens from the closure under
-Σ proved above when ¬ WLPO holds, because the counterexample ℕ∞₂ is a
-sum of Stone types over a Stone type.
+Σ proved above when ¬ WLPO holds, because the above counterexample ℕ∞₂
+is a sum of Stone types over a Stone type.
 
 \begin{code}
 
@@ -2271,12 +2265,12 @@ sum of Stone types over a Stone type.
 
 A compact type is Π-compact, so a compact totally separated type is a
 Stone type as soon as it is a pre-Stone type, which says that every
-ultrafilter of its clopens is principal. So the statement that every
-compact totally separated type is a Stone type contradicts choice. It
-gives that no ultrafilter of the clopens of such a type is
-nonprincipal, and ℕ∞ is compact and totally separated, whereas with
-choice there is a nonprincipal ultrafilter of the clopens of ℕ∞, as
-discussed above. Hence the statement is not provable.
+ultrafilter is principal. So the statement that every compact totally
+separated type is a Stone type contradicts choice. It gives that no
+ultrafilter of the clopens of such a type is nonprincipal, and ℕ∞ is
+compact and totally separated, whereas with choice there is a
+nonprincipal ultrafilter of the clopens of ℕ∞, as discussed
+above. Hence the statement is not provable.
 
 \begin{code}
 
@@ -2320,8 +2314,3 @@ nonprincipal-ultrafilter-on-ℕ∞-gives-failure ℱ i ν c
  = ν (ultrafilters-on-ℕ∞-are-principal c ℱ i)
 
 \end{code}
-
-The statement holds in the model of Blass [2] discussed above, where
-every ultrafilter on a set is principal and, excluded middle being
-available, every set is compact and totally separated and hence a
-Stone type.
