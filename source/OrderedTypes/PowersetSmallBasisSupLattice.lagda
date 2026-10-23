@@ -1,5 +1,7 @@
 Ian Ray. 27th September 2026.
 
+Updated in October 2026.
+
 In this file we construct the truncated singleton basis for the powerset sup
 lattice. We also observe that any small generated sup lattice is the retract of
 the powerset on its basis. Using this retraction we show that with Ω-resizing a
@@ -124,8 +126,7 @@ singleton for our purposes.
 
 \end{code}
 
-We will now observe that a sup lattice L, with small basis B, gives L as a
-retraction of 𝓟 B.
+We now observe that any sup lattice L with small basis B is a retract of 𝓟 B.
 
            L --- ↓ᴮ ---> 𝓟 B --- ⋁ ---> L
             \                          ^
@@ -161,19 +162,19 @@ module sup-lattice-powerset-retract
   : ⋁-map ∘ ↓-map ∼ id
  ⋁∘↓∼id x = is-supᴮ' x ⁻¹
 
- sup-lattice-retract-of-pow : retract ⟨ L ⟩ of 𝓟 {𝓥} B
- sup-lattice-retract-of-pow = (⋁-map , ↓-map , ⋁∘↓∼id)
+ sup-lattice-retract-of-powerset : retract ⟨ L ⟩ of 𝓟 {𝓥} B
+ sup-lattice-retract-of-powerset = (⋁-map , ↓-map , ⋁∘↓∼id)
 
 \end{code}
 
-We now show in the presence of Ω-resizing any small generated sup lattice
+We now show in the presence of Ω-resizing that any small generated sup lattice
 is also small.
 
 \begin{code}
 
  sup-lattice-is-small : Ω-resizing 𝓥 → ⟨ L ⟩ is 𝓥 small
  sup-lattice-is-small omega-res
-  = embedded-retract-is-small sup-lattice-retract-of-pow
+  = embedded-retract-is-small sup-lattice-retract-of-powerset
      (sections-into-sets-are-embeddings ↓-map (⋁-map , ⋁∘↓∼id)
       (powersets-are-sets fe pe))
      (Π-is-small fe' (B , ≃-refl B) (λ _ → omega-res))
