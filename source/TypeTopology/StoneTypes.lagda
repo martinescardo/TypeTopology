@@ -420,6 +420,9 @@ maps on the clopens is an embedding.
 
 \begin{code}
 
+clopens-of-is-embedding : {X : 𝓤 ̇ } → is-embedding (clopens-of {𝓤} {X})
+clopens-of-is-embedding = pr₁-is-embedding being-ultrafilter-is-prop
+
 totally-separated-gives-𝕡-is-embedding
  : {X : 𝓤 ̇ }
  → is-totally-separated X
@@ -427,7 +430,7 @@ totally-separated-gives-𝕡-is-embedding
 totally-separated-gives-𝕡-is-embedding {𝓤} {X} τ
  = factor-is-embedding (𝕡 X) clopens-of
     (totally-separated-gives-totally-separated₂ fe τ)
-    (pr₁-is-embedding being-ultrafilter-is-prop)
+    clopens-of-is-embedding
 
 𝕡-is-embedding-gives-totally-separated
  : {X : 𝓤 ̇ }
@@ -435,7 +438,7 @@ totally-separated-gives-𝕡-is-embedding {𝓤} {X} τ
  → is-totally-separated X
 𝕡-is-embedding-gives-totally-separated e
  = totally-separated₂-gives-totally-separated fe
-    (∘-is-embedding e (pr₁-is-embedding being-ultrafilter-is-prop))
+    (∘-is-embedding e clopens-of-is-embedding)
 
 \end{code}
 
