@@ -157,7 +157,8 @@ module _ {X : 𝓤 ̇ } where
 
 \end{code}
 
-We now define the subtype of X classified by a clopen.
+We now define the subtype of X classified by a clopen, whose inclusion
+into X is an embedding, as membership is a proposition.
 
 \begin{code}
 
@@ -171,11 +172,17 @@ clopen-subtype-membership : {X : 𝓤 ̇ } (A : Clopen X) (c : clopen-subtype A)
                           → clopen-subtype-inclusion A c ∈ A
 clopen-subtype-membership A = pr₂
 
+clopen-subtype-inclusion-is-embedding
+ : {X : 𝓤 ̇ } (A : Clopen X)
+ → is-embedding (clopen-subtype-inclusion A)
+clopen-subtype-inclusion-is-embedding A
+ = pr₁-is-embedding (λ _ → 𝟚-is-set)
+
 restriction-to-clopen-subtype-is-𝟏
  : {X : 𝓤 ̇ } (A : Clopen X)
  → A ∘ clopen-subtype-inclusion A ＝ 𝟏
-restriction-to-clopen-subtype-is-𝟏 A =
- dfunext fe (clopen-subtype-membership A)
+restriction-to-clopen-subtype-is-𝟏 A
+ = dfunext fe (clopen-subtype-membership A)
 
 \end{code}
 
@@ -1656,10 +1663,10 @@ clopen-subtypes-of-pre-stone-types-are-pre-stone-types {𝓤} {X} ζ A
   open clopen-extension A σ
 
   I : is-totally-separated (clopen-subtype A)
-  I φ = to-subtype-＝
-         (λ _ → 𝟚-is-set)
-         (pre-stone-types-are-totally-separated ζ
-           (λ B → φ (B ∘ clopen-subtype-inclusion A)))
+  I = embedding-into-totally-separated-gives-totally-separated
+       (clopen-subtype-inclusion A)
+       (clopen-subtype-inclusion-is-embedding A)
+       (pre-stone-types-are-totally-separated ζ)
 
   II : (ℱ : Clopen (Clopen (clopen-subtype A)))
      → is-ultrafilter ℱ
