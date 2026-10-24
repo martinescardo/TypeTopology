@@ -1481,9 +1481,9 @@ prop-indexed-products-are-pre-stone-types {𝓤} {𝓥} {P} {Y} P-is-prop ζ
         VI p = pre-stone-types-are-totally-separated (ζ p) VI₀
          where
           VI₀ : (A : Clopen (Y p)) → f p ϵ A ＝ g p ϵ A
-          VI₀ A = f p ϵ A  ＝⟨ (f-property p A)⁻¹ ⟩
+          VI₀ A = f p ϵ A ＝⟨ (f-property p A)⁻¹ ⟩
                   A ϵ 𝓖 p ＝⟨ φ (⌜ 𝕖 p ⌝ ⁻¹[ A ]) ⟩
-                  g p ϵ A  ∎
+                  g p ϵ A ∎
 
     IV : (A : Clopen (Π Y)) → A ϵ 𝓕 ＝ f ϵ A
     IV A = 𝟚-is-¬¬-separated (A ϵ 𝓕) (f ϵ A) V
@@ -1776,8 +1776,8 @@ module ultrafilter-over-base-point
         → (λ y → y ϵ A ⊛ y ϵ B) ϵ fiber-ultrafilter
         ＝ A ϵ fiber-ultrafilter ⊛ B ϵ fiber-ultrafilter
     III _⊛_ p A B
-     = E ϵ fiber-ultrafilter                       ＝⟨ V ⟩
-       E' ϵ 𝓕                                      ＝⟨ VI ⟩
+     = E ϵ fiber-ultrafilter                         ＝⟨ V ⟩
+       E' ϵ 𝓕                                        ＝⟨ VI ⟩
        A ϵ fiber-ultrafilter ⊛ B ϵ fiber-ultrafilter ∎
      where
       E : Clopen (Y x₀)
