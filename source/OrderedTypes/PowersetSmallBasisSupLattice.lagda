@@ -61,15 +61,16 @@ module _ (A : 𝓤 ̇) where
 
  𝓟-sup-lattice : Sup-Lattice (𝓤 ⁺) 𝓤 𝓤
  𝓟-sup-lattice
-  = (𝓟 {𝓤} A , (_⊆ₚ_ , sup) , (par-ord , suprema))
-  where
-   sup : Fam 𝓤 (𝓟 A) → 𝓟 {𝓤} A
-   sup (S , s) a = ⋃ s a
-   par-ord : is-partial-order (𝓟 A) _⊆ₚ_
-   par-ord = ((⊆-refl , ⊆-trans) , subset-extensionality pe fe)
-   suprema : (S : Fam 𝓤 (𝓟 {𝓤} A)) → ((sup S) is-lub-of S) holds
-   suprema (S , s)
-    = (⋃-is-upperbound s , λ (U , O) → ⋃-is-lowerbound-of-upperbounds s U O)
+  = (𝓟 {𝓤} A , (_⊆ₚ_ , 𝓟-sup) , (𝓟-par-ord , 𝓟-suprema))
+  module 𝓟-sup-lattice-data where
+   𝓟-sup : Fam 𝓤 (𝓟 A) → 𝓟 {𝓤} A
+   𝓟-sup (S , s) a = ⋃ s a
+   𝓟-par-ord : is-partial-order (𝓟 A) _⊆ₚ_
+   𝓟-par-ord = ((⊆-refl , ⊆-trans) , subset-extensionality pe fe)
+   𝓟-suprema : (S : Fam 𝓤 (𝓟 {𝓤} A)) → ((𝓟-sup S) is-lub-of S) holds
+   𝓟-suprema (S , s)
+    = (⋃-is-upperbound s , (λ ((U , O) : upper-bound (S , s))
+                            → ⋃-is-lowerbound-of-upperbounds s U O))
 
 \end{code}
 
@@ -78,7 +79,7 @@ Note: This generalizes the definition of 𝓟-lattice from the file FreeSupLatti
 \begin{code}
  
  ❴_❵ₜᵣ : A → 𝓟 {𝓤} A
- ❴ x ❵ₜᵣ = λ y → (∥ x ＝ y ∥ , ∥∥-is-prop)
+ ❴ x ❵ₜᵣ = λ (y : A) → (∥ x ＝ y ∥ , ∥∥-is-prop)
 
 \end{code}
 
@@ -101,29 +102,32 @@ singleton for our purposes.
 
  subset-is-⋃-of-❴❵ₜᵣ : (S : 𝓟 {𝓤} A)
                      → ⋃ (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S) ＝ S
- subset-is-⋃-of-❴❵ₜᵣ S = subset-extensionality pe fe I II
+ subset-is-⋃-of-❴❵ₜᵣ S = subset-extensionality pe fe I III
   where
    I : ⋃ (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S) ⊆ S
-   I x = ∥∥-rec (holds-is-prop (S x))
-          (λ ((a , a∈↓S) , o)
-            → ∥∥-rec (holds-is-prop (S x))
-               (λ p → transport (_∈ S) p (a∈↓S a ∈-❴❵ₜᵣ)) o)
-   II : S ⊆ ⋃ (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S)
-   II x x∈S
+   I x = ∥∥-rec (holds-is-prop (S x)) II
+    where
+     II : Σ (λ i → ↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S i x holds) → x ∈ S
+     II ((a , a∈↓S) , ∥a＝x∥)
+      = ∥∥-rec (holds-is-prop (S x))
+               (λ (p : a ＝ x) → transport (_∈ S) p (a∈↓S a ∈-❴❵ₜᵣ)) ∥a＝x∥
+   III : S ⊆ ⋃ (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S)
+   III x x∈S
     = ∣ (x , lr-implication (❴❵ₜᵣ-subset-characterization S) x∈S) , ∈-❴❵ₜᵣ ∣
 
  ❴❵ₜᵣ-is-basis : is-basis 𝓟-sup-lattice ❴_❵ₜᵣ
  ❴❵ₜᵣ-is-basis
-  = record{≤-is-small = λ S a → ((❴ a ❵ₜᵣ ⊆ S) , ≃-refl (❴ a ❵ₜᵣ ⊆ S)) ;
-           ↓-is-sup
-            = λ S → transport
-                     (λ - → (- is-lub-of (↓ᴮ 𝓟-sup-lattice ❴_❵ₜᵣ S
-                                   , ↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S)) holds)
-                     (subset-is-⋃-of-❴❵ₜᵣ S)
-                     (⋃-is-upperbound (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S)
-                      , λ (U , O) → ⋃-is-lowerbound-of-upperbounds
-                                    (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S) U O) }
-
+  = record{≤-is-small = I ; ↓-is-sup = II}
+  where
+   open 𝓟-sup-lattice-data
+   I : (S : 𝓟 {𝓤} A) (a : A) → (❴ a ❵ₜᵣ ⊆ S) is 𝓤 small
+   I S a = ((❴ a ❵ₜᵣ ⊆ S) , ≃-refl (❴ a ❵ₜᵣ ⊆ S))
+   ↓ᴮ-Fam : (S : 𝓟 {𝓤} A) → Fam 𝓤 (𝓟 A)
+   ↓ᴮ-Fam S = (↓ᴮ 𝓟-sup-lattice ❴_❵ₜᵣ S , ↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S)
+   II : (S : 𝓟 {𝓤} A) → (S is-lub-of (↓ᴮ-Fam S)) holds
+   II S = transport (λ (- : 𝓟 {𝓤} A) → (- is-lub-of (↓ᴮ-Fam S)) holds)
+           (subset-is-⋃-of-❴❵ₜᵣ S) (𝓟-suprema (↓ᴮ-Fam S))
+               
 \end{code}
 
 We now observe that any sup lattice L with small basis B is a retract of 𝓟 B.
@@ -158,8 +162,7 @@ module sup-lattice-powerset-retract
             → (⋁-map S ≤⟨ L ⟩ ⋁-map T) holds
  ⋁-monotone S T S⊆T = joins-are-monotone L β S T S⊆T
 
- ⋁∘↓∼id
-  : ⋁-map ∘ ↓-map ∼ id
+ ⋁∘↓∼id : ⋁-map ∘ ↓-map ∼ id
  ⋁∘↓∼id x = is-supᴮ' x ⁻¹
 
  sup-lattice-retract-of-powerset : retract ⟨ L ⟩ of 𝓟 {𝓥} B
@@ -177,7 +180,7 @@ is also small.
   = embedded-retract-is-small sup-lattice-retract-of-powerset
      (sections-into-sets-are-embeddings ↓-map (⋁-map , ⋁∘↓∼id)
       (powersets-are-sets fe pe))
-     (Π-is-small fe' (B , ≃-refl B) (λ _ → omega-res))
+     (Π-is-small fe' (B , ≃-refl B) (λ (_ : B) → omega-res))
 
 \end{code}
 
@@ -202,9 +205,8 @@ module _ (𝓤 𝓣 𝓥 : Universe)
    least-pre-fixed : (q : ⟨ L ⟩) → (f q ≤⟨ L ⟩ q) holds → (point ≤⟨ L ⟩ q) holds
 
  monotone-map-LPFP : 𝓤 ⊔ 𝓣 ̇
- monotone-map-LPFP
-  = (f : ⟨ L ⟩ → ⟨ L ⟩) (f-mono : is-monotone-endomap L f)
-  → monotone-map-has-least-pre-fixed-point f f-mono
+ monotone-map-LPFP = (f : ⟨ L ⟩ → ⟨ L ⟩) (f-mono : is-monotone-endomap L f)
+                   → monotone-map-has-least-pre-fixed-point f f-mono
 
 module _ (𝓤 : Universe) (A : 𝓤 ̇) where
 
