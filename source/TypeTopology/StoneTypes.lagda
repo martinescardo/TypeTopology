@@ -484,7 +484,7 @@ stone-types-are-Π-compact
 \end{code}
 
 The first component of the principal-filter map 𝕡 amounts to the map
-`eval X` of the module TypeTopology.TotallySeparated, which make the
+`eval X` of the module TypeTopology.TotallySeparated, which makes the
 lemmas used in the following proofs applicable.
 
 \begin{code}
@@ -1019,7 +1019,7 @@ Stone types are closed under binary sums.
 
 \end{code}
 
-The standard finite types are Stone types.
+Finite types are Stone types.
 
 \begin{code}
 
@@ -1448,27 +1448,25 @@ prop-indexed-products-are-pre-stone-types {𝓤} {𝓥} {P} {Y} P-is-prop ζ
   𝕖 : (p : P) → Π Y ≃ Y p
   𝕖 p = prop-indexed-product p fe P-is-prop
 
-  I : (𝓕 : Clopen (Clopen (Π Y)))
-    → is-ultrafilter 𝓕
-    → is-principal 𝓕
+  I : (𝓕 : Clopen (Clopen (Π Y))) → is-ultrafilter 𝓕 → is-principal 𝓕
   I 𝓕 i = f , IV
    where
     open ultrafilter-properties 𝓕 i
 
-    𝓕ₚ : (p : P) → Clopen (Clopen (Y p))
-    𝓕ₚ p = ultrafilter-image ⌜ 𝕖 p ⌝ 𝓕
+    𝓖 : (p : P) → Clopen (Clopen (Y p))
+    𝓖 p = ultrafilter-image ⌜ 𝕖 p ⌝ 𝓕
 
-    𝓕ₚ-is-ultrafilter : (p : P) → is-ultrafilter (𝓕ₚ p)
-    𝓕ₚ-is-ultrafilter p = ultrafilter-image-is-ultrafilter ⌜ 𝕖 p ⌝ 𝓕 i
+    𝓖-is-ultrafilter : (p : P) → is-ultrafilter (𝓖 p)
+    𝓖-is-ultrafilter p = ultrafilter-image-is-ultrafilter ⌜ 𝕖 p ⌝ 𝓕 i
 
-    II : (p : P) → is-principal (𝓕ₚ p)
+    II : (p : P) → is-principal (𝓖 p)
     II p = ultrafilters-of-pre-stone-types-are-principal
-            (ζ p) (𝓕ₚ p) (𝓕ₚ-is-ultrafilter p)
+            (ζ p) (𝓖 p) (𝓖-is-ultrafilter p)
 
     f : Π Y
     f p = principal-point (II p)
 
-    f-property : (p : P) → 𝓕ₚ p is-principal-at f p
+    f-property : (p : P) → 𝓖 p is-principal-at f p
     f-property p = principality (II p)
 
     III : is-principal 𝓕 → 𝓕 is-principal-at f
@@ -1484,7 +1482,7 @@ prop-indexed-products-are-pre-stone-types {𝓤} {𝓥} {P} {Y} P-is-prop ζ
          where
           VI₀ : (A : Clopen (Y p)) → f p ϵ A ＝ g p ϵ A
           VI₀ A = f p ϵ A  ＝⟨ (f-property p A)⁻¹ ⟩
-                  A ϵ 𝓕ₚ p ＝⟨ φ (⌜ 𝕖 p ⌝ ⁻¹[ A ]) ⟩
+                  A ϵ 𝓖 p ＝⟨ φ (⌜ 𝕖 p ⌝ ⁻¹[ A ]) ⟩
                   g p ϵ A  ∎
 
     IV : (A : Clopen (Π Y)) → A ϵ 𝓕 ＝ f ϵ A
@@ -1645,40 +1643,39 @@ module fiberwise-agreement
         (d : (x : X) → is-discrete (Clopen (Y x)))
        where
 
- agreement-is-decidable
-  : (A B : Clopen (Σ Y)) (x : X)
-  → is-decidable ((λ y → (x , y) ϵ A) ＝ (λ y → (x , y) ϵ B))
- agreement-is-decidable A B x
-  = d x (λ y → (x , y) ϵ A) (λ y → (x , y) ϵ B)
+ private
+  δ : (A B : Clopen (Σ Y)) (x : X)
+    → is-decidable ((λ y → (x , y) ϵ A) ＝ (λ y → (x , y) ϵ B))
+  δ A B x = d x (λ y → (x , y) ϵ A) (λ y → (x , y) ϵ B)
 
  agreement : Clopen (Σ Y) → Clopen (Σ Y) → Clopen X
- agreement A B = characteristic-clopen (agreement-is-decidable A B)
+ agreement A B = characteristic-clopen (δ A B)
 
  agreement-property₀
   : (A B : Clopen (Σ Y)) (x : X)
   → x ∈ agreement A B
   → (y : Y x) → (x , y) ϵ A ＝ (x , y) ϵ B
  agreement-property₀ A B x e
-  = happly (characteristic-clopen-property₁ (agreement-is-decidable A B) x e)
+  = happly (characteristic-clopen-property₁ (δ A B) x e)
 
  agreement-property₁
   : (A B : Clopen (Σ Y)) (x : X)
   → ((y : Y x) → (x , y) ϵ A ＝ (x , y) ϵ B)
   → x ∈ agreement A B
  agreement-property₁ A B x ψ
-  = characteristic-clopen-property₂
-     (agreement-is-decidable A B) x (dfunext fe ψ)
+  = characteristic-clopen-property₂  (δ A B) x (dfunext fe ψ)
 
 \end{code}
 
 We now fix an ultrafilter 𝓕 of clopens of a sum whose image on the
-base is the principal ultrafilter at a point x₀. Two clopens of the
-sum that agree on the fiber over x₀ get the same value from 𝓕, as they
-agree on a clopen of the base that belongs to 𝓕. If moreover the
-clopens of this fiber are extendable, then 𝓕 applied to the extensions
-gives an ultrafilter of the clopens of the fiber, and the value of 𝓕
-at a clopen of the sum is already given by this ultrafilter of the
-fiber.
+base is the principal ultrafilter at a point x₀. Whether a clopen of
+the sum belongs to 𝓕 depends only on its restriction to the fiber
+over x₀, because two clopens that agree on this fiber agree on a
+clopen of the base that belongs to 𝓕. If moreover the clopens of this
+fiber are extendable, then the clopens of the fiber whose extensions
+belong to 𝓕 form an ultrafilter, and a clopen of the sum belongs to 𝓕
+precisely when its restriction to the fiber belongs to this
+ultrafilter.
 
 \begin{code}
 
@@ -2038,22 +2035,22 @@ clopen-subtypes-of-pre-stone-types-are-pre-stone-types {𝓤} {X} ζ A
   II : (𝓕 : Clopen (Clopen (clopen-subtype A)))
      → is-ultrafilter 𝓕
      → is-principal 𝓕
-  II 𝓕 i = IV (ultrafilters-of-pre-stone-types-are-principal ζ 𝒢 III)
+  II 𝓕 i = IV (ultrafilters-of-pre-stone-types-are-principal ζ 𝓖 III)
    where
     open ultrafilter-properties 𝓕 i
 
-    𝒢 : Clopen (Clopen X)
-    𝒢 = ultrafilter-image (clopen-subtype-inclusion A) 𝓕
+    𝓖 : Clopen (Clopen X)
+    𝓖 = ultrafilter-image (clopen-subtype-inclusion A) 𝓕
 
-    III : is-ultrafilter 𝒢
+    III : is-ultrafilter 𝓖
     III = ultrafilter-image-is-ultrafilter (clopen-subtype-inclusion A) 𝓕 i
 
-    IV : is-principal 𝒢 → is-principal 𝓕
+    IV : is-principal 𝓖 → is-principal 𝓕
     IV (x₀ , V) = (x₀ , VI) , VIII
      where
       VI : x₀ ∈ A
       VI = x₀ ϵ A ＝⟨ (V A)⁻¹ ⟩
-           A ϵ 𝒢  ＝⟨ ap 𝓕 (self-restriction-is-𝟏 A) ⟩
+           A ϵ 𝓖  ＝⟨ ap 𝓕 (self-restriction-is-𝟏 A) ⟩
            𝟏 ϵ 𝓕  ＝⟨ preserves-₁ ⟩
            ₁      ∎
 
@@ -2062,7 +2059,7 @@ clopen-subtypes-of-pre-stone-types-are-pre-stone-types {𝓤} {X} ζ A
 
       VIII : (C : Clopen (clopen-subtype A)) → C ϵ 𝓕 ＝ (x₀ , VI) ϵ C
       VIII C = C ϵ 𝓕         ＝⟨ ap 𝓕 (VII C)⁻¹ ⟩
-               ext C ϵ 𝒢     ＝⟨ V (ext C) ⟩
+               ext C ϵ 𝓖     ＝⟨ V (ext C) ⟩
                x₀ ϵ ext C    ＝⟨ ext-at-section C x₀ VI ⟩
                (x₀ , VI) ϵ C ∎
 
@@ -2322,13 +2319,11 @@ the same holds for an ultrafilter that is not principal.
            (ap ⇁_ r)
 
      V : A ∉ 𝓕
-     V = complement-lc (A ϵ 𝓕) ₀ VI
-      where
-       VI : ⇁ (A ϵ 𝓕) ＝ ⇁ ₀
-       VI = ⇁ (A ϵ 𝓕)        ＝⟨ (preserves-complement A)⁻¹ ⟩
-            complement A ϵ 𝓕 ＝⟨ IV ⟩
-            ₁                ＝⟨refl⟩
-            ⇁ ₀              ∎
+     V = complement-lc (A ϵ 𝓕) ₀
+          (⇁ (A ϵ 𝓕)        ＝⟨ (preserves-complement A)⁻¹ ⟩
+           complement A ϵ 𝓕 ＝⟨ IV ⟩
+           ₁                ＝⟨refl⟩
+           ⇁ ₀              ∎)
 
    III : ∞ ∈ A → A ϵ 𝓕 ＝ u ϵ A
    III r = A ϵ 𝓕 ＝⟨ clopens-containing-∞-are-in-𝓕 e A m φ r ⟩
@@ -2408,9 +2403,9 @@ totally separated interpretation of the Brouwer ordinal codes, of
 which ℕ∞ is the interpretation of the code for the first infinite
 ordinal.
 
-We now discuss the assumption ¬ WLPO for the above result. We have
-that ℕ∞ is a Stone type precisely when every ultrafilter that contains
-all the upper sets is principal at ∞.
+We now discuss the assumption ¬ WLPO for the above result. With no
+assumptions, we have that ℕ∞ is a Stone type precisely when every
+ultrafilter that contains all the upper sets is principal at ∞.
 
 \begin{code}
 
@@ -2466,19 +2461,19 @@ principal-at-∞-gives-stone φ
 
 \end{code}
 
-That ℕ∞ is a Stone type is not provable under our assumptions, without
-a further hypothesis such as ¬ WLPO. With choice there is a
-nonprincipal ultrafilter on ℕ, which is an ultrafilter of the clopens
-of ℕ∞ that is not principal at any point, so that ℕ∞ is not a Stone
-type in such a model. That ¬ WLPO holds is sufficient for ℕ∞ to be a
-Stone type, but it is not necessary. It is consistent with ZF that
-every ultrafilter on every set is principal, by a model of Blass [2]
-where the ultrafilters on ℕ are all principal. In the model of Blass
-excluded middle holds, and hence so does WLPO, and ℕ∞ is the set
-ℕ + 𝟙. Every subset of ℕ + 𝟙 is decidable, so the clopens of ℕ∞ are
-the characteristic functions of all the subsets of ℕ + 𝟙, and the
-ultrafilters of the clopens are the ultrafilters of the powerset of
-ℕ + 𝟙, which are all principal. So ℕ∞ is a Stone type in that model.
+That ℕ∞ is a Stone type is not provable without a further hypothesis
+such as ¬ WLPO. With choice there is a nonprincipal ultrafilter on ℕ,
+which is an ultrafilter of the clopens of ℕ∞ that is not principal at
+any point, so that ℕ∞ is not a Stone type in such a model. That ¬ WLPO
+holds is sufficient for ℕ∞ to be a Stone type, but it is not
+necessary. It is consistent with ZF that every ultrafilter on every
+set is principal, by a model of Blass [2] where the ultrafilters on ℕ
+are all principal. In the model of Blass excluded middle holds, and
+hence so does WLPO, and ℕ∞ is the set ℕ + 𝟙. Every subset of ℕ + 𝟙 is
+decidable, so the clopens of ℕ∞ are the characteristic functions of
+all the subsets of ℕ + 𝟙, and the ultrafilters of the clopens are the
+ultrafilters of the powerset of ℕ + 𝟙, which are all principal. So ℕ∞
+is a Stone type in that model.
 
 We now show that if every pre-Stone type is a Stone type then WEM
 holds. The first step is that the emptiness of a Π-compact type is
