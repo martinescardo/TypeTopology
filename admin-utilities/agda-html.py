@@ -679,6 +679,18 @@ def render(agda, source, entry, htmldir, force):
                          "before has been left as it is.")
 
 
+def default_css():
+    """The stylesheet to use when none is given.
+
+    This script has a copy in two places, and the stylesheet is beside it
+    in TypeTopologyHTML while in the library itself it is assets/Agda.css,
+    so whichever of the two is there is the one taken.
+    """
+    beside = os.path.join(HERE, "Agda.css")
+    assets = os.path.join(os.path.dirname(HERE), "assets", "Agda.css")
+    return beside if os.path.exists(beside) else assets
+
+
 def stylesheet(css, htmldir):
     """Put the given stylesheet in place of the one Agda writes.
 
@@ -726,10 +738,11 @@ def main():
                    help="rewrite a copy of this existing rendering, and do "
                         "not run agda at all")
     p.add_argument("--agda", default="agda", help="the agda to run")
-    p.add_argument("--css", default=os.path.join(HERE, "Agda.css"),
+    p.add_argument("--css", default=default_css(),
                    help="the stylesheet to put in the rendering, replacing "
                         "the one agda writes; by default Agda.css beside "
-                        "this script, and 'none' keeps Agda's own")
+                        "this script, or the library's assets/Agda.css, "
+                        "whichever is there, and 'none' keeps Agda's own")
     p.add_argument("--search-url", default=SEARCH_URL, metavar="URL",
                    help="the search page that the magnifying glass in "
                         "the corner of every page leads to, by default the "
