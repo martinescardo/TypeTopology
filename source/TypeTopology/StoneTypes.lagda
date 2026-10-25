@@ -7,6 +7,11 @@ regarded as a weak continuity principle. It is equivalent to the
 doubly negated continuity of every function of ℕ∞ into a discrete
 type, by the module TypeTopology.DecidabilityOfNonContinuity.
 
+The same facts used to to establish that ℕ∞ is a Stone type are used
+in the module Ordinals.BrouwerCodesGiveStoneTypes to show that the
+compact totally separated interpretation of the Brouwer ordinal codes
+gives Stone types, again assuming ¬ WLPO.
+
 Our notion of Stone type is a variant of that of [1], and we compare
 the two notions below.
 
@@ -39,12 +44,6 @@ over a Stone type is a Stone type as soon as every clopen of every
 fiber is the preimage of a clopen of the sum, which holds for a
 constant family and so gives the closure of the Stone types under
 binary products.
-
-As discussed above, we show that ℕ∞ is a Stone type if ¬ WLPO
-holds. The same facts used to to establish this are used in the module
-Ordinals.BrouwerCodesGiveStoneTypes to show that the compact totally
-separated interpretation of the Brouwer ordinal codes gives Stone
-types, again assuming ¬ WLPO.
 
 We close with three constructive taboos. That every pre-Stone type is
 a Stone type gives WEM. That Stone types are closed under Σ gives ¬¬ WLPO,
