@@ -168,7 +168,7 @@ The preimage of a clopen along a map.
 infix 50 _⁻¹[_]
 
 _⁻¹[_] : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Clopen Y → Clopen X
-f ⁻¹[ A ] = λ x → f x ϵ A
+f ⁻¹[ B ] = λ x → f x ϵ B
 
 \end{code}
 
