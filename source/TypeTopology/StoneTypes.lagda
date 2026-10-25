@@ -17,10 +17,11 @@ the two notions below.
 The clopens of a type X are the 𝟚-valued functions on X, as in the
 module TypeTopology.TotallySeparated, and they form a boolean algebra
 with the pointwise operations. An ultrafilter of this algebra amounts
-to a boolean algebra homomorphism into 𝟚. Each point of X determines a
-principal ultrafilter. We say that X is a pre-Stone type if the map
-that takes a point to its principal ultrafilter is an equivalence, and
-a Stone type if moreover its boolean algebra of clopens is discrete.
+to a boolean algebra homomorphism into 𝟚. A point of X determines the
+principal ultrafilter of its clopen neighbourhoods. We say that X is a
+pre-Stone type if the map that takes a point to its principal
+ultrafilter is an equivalence, and a Stone type if moreover its
+boolean algebra of clopens is discrete.
 
 We first observe that being principal is a proposition, and that the
 map into the ultrafilters is an embedding precisely when X is totally
@@ -39,10 +40,11 @@ fiber is the preimage of a clopen of the sum, which holds for a
 constant family and so gives the closure of the Stone types under
 binary products.
 
-We show that ℕ∞ is a Stone type if ¬ WLPO holds. The same facts to
-establish this are used in the module Ordinals.BrouwerCodesGiveStoneTypes
-to show that the compact totally separated interpretation of the
-Brouwer ordinal codes gives Stone types, again assuming ¬ WLPO.
+As discussed above, we show that ℕ∞ is a Stone type if ¬ WLPO
+holds. The same facts used to to establish this are used in the module
+Ordinals.BrouwerCodesGiveStoneTypes to show that the compact totally
+separated interpretation of the Brouwer ordinal codes gives Stone
+types, again assuming ¬ WLPO.
 
 We close with three constructive taboos. That every pre-Stone type is
 a Stone type gives WEM. That Stone types are closed under Σ gives ¬¬ WLPO,
@@ -73,7 +75,7 @@ module TypeTopology.StoneTypes
 
 private
  fe' : FunExt
- fe' 𝓤 𝓥 = fe
+ fe' _ _ = fe
 
 open import CoNaturals.Type
 open import Fin.Bishop
@@ -123,7 +125,6 @@ module _ {X : 𝓤 ̇ } where
 
  infixl 40 _∩_
  infixl 39 _∪_
- infixr 31 _△_
  infix  45 _ϵ_
  infix  35 _∈_
  infix  35 _∉_
@@ -161,23 +162,14 @@ module _ {X : 𝓤 ̇ } where
 
 \end{code}
 
-Symmetric difference.
-
-\begin{code}
-
- _△_ : Clopen X → Clopen X → Clopen X
- A △ B = λ x → x ϵ A ⊕ x ϵ B
-
-\end{code}
-
 The preimage of a clopen along a map.
 
 \begin{code}
 
 infix 50 _⁻¹[_]
 
-_⁻¹[_] : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (Y → X) → Clopen X → Clopen Y
-f ⁻¹[ A ] = λ y → f y ϵ A
+_⁻¹[_] : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Clopen Y → Clopen X
+f ⁻¹[ A ] = λ x → f x ϵ A
 
 \end{code}
 
@@ -247,8 +239,7 @@ being-ultrafilter-is-prop {𝓤} {X} 𝓕 =
 A clopen of clopens of X is principal at a point of X when it consists
 of the clopen neighbourhoods of that point, and principal when it is
 principal at some point. We use the names for arbitrary clopens of
-clopens, although we apply them only to ultrafilters, and we name the
-point that witnesses principality and its property.
+clopens, although we apply them only to ultrafilters.
 
 \begin{code}
 
@@ -1144,8 +1135,7 @@ decidable-props-are-stone-types {𝓤} {P} P-is-prop (inr ν)
 \end{code}
 
 A decidable property of the points of X is classified by a clopen of X,
-its characteristic clopen, and we name the four implications relating
-membership in it and the property.
+and its characteristic clopen.
 
 \begin{code}
 
@@ -1205,7 +1195,7 @@ For the converse we need the following. For a Π-compact proposition P,
 it is decidable whether a clopen of P contains every point of P, and
 so this condition is classified by a clopen of the clopens of P. The
 whole space 𝟏 is the only clopen satisfying it, and this singleton is
-an ultrafilter as soon as P is nonempty.
+an ultrafilter precisely when P holds.
 
 \begin{code}
 
@@ -2333,9 +2323,9 @@ the same holds for an ultrafilter that is not principal.
 
 \end{code}
 
-Putting the two cases together, 𝓕 is principal at u as soon as it is
-principal at ∞ when u is ∞, which is the following criterion, and if
-¬ WLPO holds then the criterion applies.
+Putting the two cases together, 𝓕 is principal at u precisely when it
+is principal at ∞ when u is ∞, which is the following criterion, and
+if ¬ WLPO holds then the criterion applies.
 
 \begin{code}
 
@@ -2548,7 +2538,7 @@ closure-under-Σ-gives-¬¬-WLPO c nwlpo
 
 The Stone types of [1] **are** closed under Σ, by their Theorem 4.18,
 but the notion of a Stone type considered there is not the same as
-ours. The Stone spaces there are the spectra of countably presented
+ours. Their Stone spaces there are the spectra of countably presented
 boolean algebras, and the boolean algebra of clopens of such a space
 is overtly discrete, by their Corollary 2.14, so that the equality of
 two clopens is open rather than decidable, and becomes decidable only
