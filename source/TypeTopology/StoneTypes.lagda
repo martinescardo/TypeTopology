@@ -248,9 +248,6 @@ _is-principal-at_ {𝓤} {X} 𝓕 x = (A : Clopen X) → A ϵ 𝓕 ＝ x ϵ A
 is-principal : {X : 𝓤 ̇ } → Clopen (Clopen X) → 𝓤 ̇
 is-principal {𝓤} {X} 𝓕 = Σ x ꞉ X , 𝓕 is-principal-at x
 
-is-nonprincipal : {X : 𝓤 ̇ } → Clopen (Clopen X) → 𝓤 ̇
-is-nonprincipal 𝓕 = ¬ is-principal 𝓕
-
 principal-point
  : {X : 𝓤 ̇ } {𝓕 : Clopen (Clopen X)} → is-principal 𝓕 → X
 principal-point = pr₁
@@ -2655,7 +2652,7 @@ ultrafilters-on-ℕ∞-are-principal c
 nonprincipal-ultrafilter-on-ℕ∞-gives-failure
  : (𝓕 : Clopen (Clopen ℕ∞))
  → is-ultrafilter 𝓕
- → is-nonprincipal 𝓕
+ → ¬ is-principal 𝓕
  → ¬ Compact-Totally-Separated-Types-Are-Stone-Types 𝓤₀
 nonprincipal-ultrafilter-on-ℕ∞-gives-failure 𝓕 i ν c
  = ν (ultrafilters-on-ℕ∞-are-principal c 𝓕 i)
