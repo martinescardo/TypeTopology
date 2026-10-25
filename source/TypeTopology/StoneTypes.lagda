@@ -417,7 +417,10 @@ clopens-of-is-ultrafilter : {X : 𝓤 ̇ } (σ : 𝕌 X)
 clopens-of-is-ultrafilter = pr₂
 
 𝕡 : (X : 𝓤 ̇ ) → X → 𝕌 X
-𝕡 X x = (λ A → x ϵ A) , refl , refl , (λ A B → refl) , (λ A B → refl)
+𝕡 X x = (λ A → x ϵ A) , I
+ where
+  I : is-ultrafilter (λ A → x ϵ A)
+  I = refl , refl , (λ A B → refl) , (λ A B → refl)
 
 is-pre-stone-type : 𝓤 ̇ → 𝓤 ̇
 is-pre-stone-type X = is-equiv (𝕡 X)
