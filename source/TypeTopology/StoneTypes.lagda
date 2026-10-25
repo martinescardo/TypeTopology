@@ -176,7 +176,7 @@ We now define the subtype of X classified by a clopen, whose inclusion
 into X is an embedding, as membership is a proposition, together with
 the restriction of a clopen of X to such a subtype, which is its
 preimage along the inclusion. A clopen restricted to the subtype that
-it classifies is the whole of that subtype.
+it classifies is the whole subtype.
 
 \begin{code}
 
@@ -236,7 +236,7 @@ being-ultrafilter-is-prop {𝓤} {X} 𝓕 =
 \end{code}
 
 A clopen of clopens of X is principal at a point of X when it consists
-of the clopen neighbourhoods of that point, and principal when it is
+of the clopen neighbourhoods of the point, and principal when it is
 principal at some point. We use the names for arbitrary clopens of
 clopens, although we apply them only to ultrafilters.
 
@@ -495,9 +495,9 @@ totally-separated-gives-𝕡-is-embedding {𝓤} {X} τ
 
 \end{code}
 
-We now show that the ultrafilters of the clopens of a pre-Stone type
-are all principal, give criteria for a type to be a pre-Stone type and
-a Stone type, and show that pre-Stone types are totally separated.
+We now show that the ultrafilters of a pre-Stone type are all
+principal, give criteria for a type to be a pre-Stone type and a Stone
+type, and show that pre-Stone types are totally separated.
 
 \begin{code}
 
@@ -618,8 +618,7 @@ retract-is-stone-type ρ ζ
 \end{code}
 
 Pre-Stone types and Stone types are closed under equivalence, which is
-the special case of the closure under retracts for the retraction that
-an equivalence gives.
+the special case of the closure under retracts.
 
 \begin{code}
 
@@ -2241,7 +2240,7 @@ applies with the one-point type, and 𝓕 is principal at u.
 \end{code}
 
 If u is the point at infinity, then every upper set belongs to 𝓕, and
-the same holds for an ultrafilter that is not principal.
+the same holds for any ultrafilter.
 
 \begin{code}
 
@@ -2449,17 +2448,16 @@ principal-at-∞-gives-stone φ
 
 That ℕ∞ is a Stone type is not provable without a further hypothesis
 such as ¬ WLPO. With choice there is a nonprincipal ultrafilter on ℕ,
-which is an ultrafilter of the clopens of ℕ∞ that is not principal at
-any point, so that ℕ∞ is not a Stone type in such a model. That ¬ WLPO
-holds is sufficient for ℕ∞ to be a Stone type, but it is not
-necessary. It is consistent with ZF that every ultrafilter on every
-set is principal, by a model of Blass [2] where the ultrafilters on ℕ
-are all principal. In the model of Blass excluded middle holds, and
-hence so does WLPO, and ℕ∞ is the set ℕ + 𝟙. Every subset of ℕ + 𝟙 is
-decidable, so the clopens of ℕ∞ are the characteristic functions of
-all the subsets of ℕ + 𝟙, and the ultrafilters of the clopens are the
-ultrafilters of the powerset of ℕ + 𝟙, which are all principal. So ℕ∞
-is a Stone type in that model.
+which is a nonprincipal ultrafilter of ℕ∞, so that ℕ∞ is not a Stone
+type in such a model. That ¬ WLPO holds is sufficient for ℕ∞ to be a
+Stone type, but it is not necessary. It is consistent with ZF that
+every ultrafilter on every set is principal, by a model of Blass [2]
+where the ultrafilters on ℕ are all principal. In the model of Blass
+excluded middle holds, and hence so does WLPO, and ℕ∞ is the set ℕ + 𝟙.
+Every subset of ℕ + 𝟙 is decidable, so the clopens of ℕ∞ are the
+characteristic functions of all the subsets of ℕ + 𝟙, and the
+ultrafilters of the clopens are the ultrafilters of the powerset of ℕ + 𝟙,
+which are all principal. So ℕ∞ is a Stone type in that model.
 
 We now show that if every pre-Stone type is a Stone type then WEM
 holds. The first step is that the emptiness of a Π-compact type is
