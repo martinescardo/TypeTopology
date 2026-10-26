@@ -1,0 +1,318 @@
+Ian Ray. 27th September 2026.
+
+Updated in October 2026.
+
+In this file we construct the truncated singleton basis for the powerset sup
+lattice. We also observe that any small generated sup lattice is the retract of
+the powerset on its basis. Using this retraction we show that with Ω-resizing a
+small generated sup lattice is itself small. We conclude this file by showing
+if monotone functions on powersets have least prefixed points, then so does
+every monotone endomap on a sup-lattice with a small basis.
+
+\begin{code}
+
+{-# OPTIONS --safe --without-K #-}
+
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
+
+module OrderedTypes.PowersetSmallBasisSupLattice
+        (pt : propositional-truncations-exist)
+        (fe : Fun-Ext)
+        (pe : Prop-Ext)
+       where
+
+private
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+
+open import MLTT.Spartan
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Logic
+open import UF.Powerset-MultiUniverse
+open import UF.Retracts
+open import UF.Size
+open import UF.SmallnessProperties
+open import UF.SubtypeClassifier
+open import OrderedTypes.SupLattice pt fe
+open import OrderedTypes.SupLattice-SmallBasis pt fe
+
+open AllCombinators pt fe
+open PropositionalTruncation pt hiding (_∨_)
+open import Locales.Frame pt fe hiding (⟨_⟩ ; join-of ; rel-syntax)
+open import Slice.Family
+
+\end{code}
+
+We show that the powerset of any given small type A is itself a sup-lattice with
+small basis. To do this we first need to define the truncated singleton
+construction and show that it has the proper characterization of the singleton.
+
+\begin{code}
+
+module _ (A : 𝓤 ̇) where
+
+ open singleton-subsets
+ open unions-of-small-families pt 𝓤 𝓤 A
+ open PropositionalSubsetInclusionNotation fe
+ open Joins {𝓤 ⁺} {𝓤} {𝓟 {𝓤} A} _⊆ₚ_
+
+ 𝓟-sup-lattice : Sup-Lattice (𝓤 ⁺) 𝓤 𝓤
+ 𝓟-sup-lattice
+  = (𝓟 {𝓤} A , (_⊆ₚ_ , 𝓟-sup) , (𝓟-par-ord , 𝓟-suprema))
+  module 𝓟-sup-lattice-data where
+   𝓟-sup : Fam 𝓤 (𝓟 A) → 𝓟 {𝓤} A
+   𝓟-sup (S , s) a = ⋃ s a
+   𝓟-par-ord : is-partial-order (𝓟 A) _⊆ₚ_
+   𝓟-par-ord = ((⊆-refl , ⊆-trans) , subset-extensionality pe fe)
+   𝓟-suprema : (S : Fam 𝓤 (𝓟 {𝓤} A)) → ((𝓟-sup S) is-lub-of S) holds
+   𝓟-suprema (S , s)
+    = (⋃-is-upperbound s , (λ ((U , O) : upper-bound (S , s))
+                            → ⋃-is-lowerbound-of-upperbounds s U O))
+
+\end{code}
+
+Note: This generalizes the definition of 𝓟-lattice from the file FreeSupLattice.
+
+\begin{code}
+ 
+ ❴_❵ₜᵣ : A → 𝓟 {𝓤} A
+ ❴ x ❵ₜᵣ = λ (y : A) → (∥ x ＝ y ∥ , ∥∥-is-prop)
+
+\end{code}
+
+Note: The total space of ❴_❵ₜᵣ is not contractible. While this is somewhat
+pathological we will see that ❴_❵ₜᵣ satisfies enough of the criteria of a
+singleton for our purposes.
+
+\begin{code}
+
+ ∈-❴❵ₜᵣ : {x : A} → x ∈ ❴ x ❵ₜᵣ
+ ∈-❴❵ₜᵣ {x} = ∣ refl ∣
+
+ ❴❵ₜᵣ-subset-characterization : {x : A} (S : 𝓟 {𝓥} A) → x ∈ S ↔ ❴ x ❵ₜᵣ ⊆ S
+ ❴❵ₜᵣ-subset-characterization {𝓥} {x} S = ⦅⇒⦆ , ⦅⇐⦆
+  where
+   ⦅⇒⦆ : x ∈ S → ❴ x ❵ₜᵣ ⊆ S
+   ⦅⇒⦆ x∈S y = ∥∥-rec (holds-is-prop (S y)) (λ p → transport (_∈ S) p x∈S)
+   ⦅⇐⦆ : ❴ x ❵ₜᵣ ⊆ S → x ∈ S
+   ⦅⇐⦆ γ = γ x ∣ refl ∣
+
+ subset-is-⋃-of-❴❵ₜᵣ : (S : 𝓟 {𝓤} A)
+                     → ⋃ (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S) ＝ S
+ subset-is-⋃-of-❴❵ₜᵣ S = subset-extensionality pe fe I III
+  where
+   I : ⋃ (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S) ⊆ S
+   I x = ∥∥-rec (holds-is-prop (S x)) II
+    where
+     II : Σ (λ i → ↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S i x holds) → x ∈ S
+     II ((a , a∈↓S) , ∥a＝x∥)
+      = ∥∥-rec (holds-is-prop (S x))
+               (λ (p : a ＝ x) → transport (_∈ S) p (a∈↓S a ∈-❴❵ₜᵣ)) ∥a＝x∥
+   III : S ⊆ ⋃ (↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S)
+   III x x∈S
+    = ∣ (x , lr-implication (❴❵ₜᵣ-subset-characterization S) x∈S) , ∈-❴❵ₜᵣ ∣
+
+ ❴❵ₜᵣ-is-basis : is-basis 𝓟-sup-lattice ❴_❵ₜᵣ
+ ❴❵ₜᵣ-is-basis
+  = record{≤-is-small = I ; ↓-is-sup = II}
+  where
+   open 𝓟-sup-lattice-data
+   I : (S : 𝓟 {𝓤} A) (a : A) → (❴ a ❵ₜᵣ ⊆ S) is 𝓤 small
+   I S a = ((❴ a ❵ₜᵣ ⊆ S) , ≃-refl (❴ a ❵ₜᵣ ⊆ S))
+   ↓ᴮ-Fam : (S : 𝓟 {𝓤} A) → Fam 𝓤 (𝓟 A)
+   ↓ᴮ-Fam S = (↓ᴮ 𝓟-sup-lattice ❴_❵ₜᵣ S , ↓ᴮ-inclusion 𝓟-sup-lattice ❴_❵ₜᵣ S)
+   II : (S : 𝓟 {𝓤} A) → (S is-lub-of (↓ᴮ-Fam S)) holds
+   II S = transport (λ (- : 𝓟 {𝓤} A) → (- is-lub-of (↓ᴮ-Fam S)) holds)
+           (subset-is-⋃-of-❴❵ₜᵣ S) (𝓟-suprema (↓ᴮ-Fam S))
+               
+\end{code}
+
+We now observe that any sup lattice L with small basis B is a retract of 𝓟 B.
+
+           L --- ↓ᴮ ---> 𝓟 B --- ⋁ ---> L
+            \                          ^
+             \                        /
+               -------- id ----------
+
+\begin{code}
+
+module sup-lattice-powerset-retract
+         (L : Sup-Lattice 𝓤 𝓣 𝓥)
+         {B : 𝓥 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+       where
+
+ open is-basis h
+
+ ↓-map : ⟨ L ⟩ → 𝓟 {𝓥} B
+ ↓-map x b = ((b ≤ᴮ x) , ≤ᴮ-is-prop-valued)
+
+ ↓-monotone : (x y : ⟨ L ⟩)
+            → (x ≤⟨ L ⟩ y) holds
+            → ↓-map x ⊆ ↓-map y
+ ↓-monotone x y x≤y b b∈↓x = ≤ᴮ-≤-to-≤ᴮ b∈↓x x≤y 
+
+ ⋁-map : 𝓟 {𝓥} B → ⟨ L ⟩
+ ⋁-map S = ⋁⟨ L ⟩ (𝕋 S , β ∘ 𝕋-to-carrier S)
+
+ ⋁-monotone : (S T : 𝓟 {𝓥} B)
+            → S ⊆ T
+            → (⋁-map S ≤⟨ L ⟩ ⋁-map T) holds
+ ⋁-monotone S T S⊆T = joins-are-monotone L β S T S⊆T
+
+ ⋁∘↓∼id : ⋁-map ∘ ↓-map ∼ id
+ ⋁∘↓∼id x = is-supᴮ' x ⁻¹
+
+ sup-lattice-retract-of-powerset : retract ⟨ L ⟩ of 𝓟 {𝓥} B
+ sup-lattice-retract-of-powerset = (⋁-map , ↓-map , ⋁∘↓∼id)
+
+\end{code}
+
+We now show in the presence of Ω-resizing that any small generated sup lattice
+is also small.
+
+\begin{code}
+
+ sup-lattice-is-small : Ω-resizing 𝓥 → ⟨ L ⟩ is 𝓥 small
+ sup-lattice-is-small omega-res
+  = embedded-retract-is-small sup-lattice-retract-of-powerset
+     (sections-into-sets-are-embeddings ↓-map (⋁-map , ⋁∘↓∼id)
+      (powersets-are-sets fe pe))
+     (Π-is-small fe' (B , ≃-refl B) (λ (_ : B) → omega-res))
+
+\end{code}
+
+Now we will investigate the connection between least prefixed points of
+monotone maps on small generated sup lattices and monotone operators on the
+power set.
+
+\begin{code}
+
+module _ (𝓤 𝓣 𝓥 : Universe)
+         (L : Sup-Lattice 𝓤 𝓣 𝓥)
+         {B : 𝓥 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+       where
+
+ open is-basis h
+
+ record monotone-map-has-least-pre-fixed-point
+  (f : ⟨ L ⟩ → ⟨ L ⟩) (f-mono : is-monotone-endomap L f) : 𝓤 ⊔ 𝓣 ̇ where
+  field
+   point : ⟨ L ⟩
+   pre-fixed : (f point ≤⟨ L ⟩ point) holds
+   least-pre-fixed : (q : ⟨ L ⟩) → (f q ≤⟨ L ⟩ q) holds → (point ≤⟨ L ⟩ q) holds
+
+ monotone-map-LPFP : 𝓤 ⊔ 𝓣 ̇
+ monotone-map-LPFP = (f : ⟨ L ⟩ → ⟨ L ⟩) (f-mono : is-monotone-endomap L f)
+                   → monotone-map-has-least-pre-fixed-point f f-mono
+
+module _ (𝓤 : Universe) (A : 𝓤 ̇) where
+
+ monotone-operator-LPFP : (𝓤 ⁺) ̇
+ monotone-operator-LPFP
+  = (f : 𝓟 {𝓤} A → 𝓟 {𝓤} A) (f-mono : is-monotone-endomap (𝓟-sup-lattice A) f)
+  → monotone-map-has-least-pre-fixed-point
+     (𝓤 ⁺) 𝓤 𝓤 (𝓟-sup-lattice A) (❴_❵ₜᵣ A) (❴❵ₜᵣ-is-basis A) f f-mono
+
+\end{code}
+
+Clearly monotone-map-LPFP 𝓤⁺ 𝓤 𝓤 implies monotone-operator-LPFP 𝓤.
+
+\begin{code}
+
+monotone-map-implies-monotone-operator-LPFP
+ : (A : 𝓤 ̇)
+ → monotone-map-LPFP (𝓤 ⁺) 𝓤 𝓤 (𝓟-sup-lattice A) (❴_❵ₜᵣ A) (❴❵ₜᵣ-is-basis A)
+ → monotone-operator-LPFP 𝓤 A
+monotone-map-implies-monotone-operator-LPFP A mon-map-LPFP = mon-map-LPFP
+
+\end{code}
+
+We also have that monotone-operator-LPFP 𝓥 implies monotone-map-LPFP 𝓤 𝓣 𝓥.
+
+\begin{code}
+
+monotone-operator-implies-monotone-map-LPFP
+ : (L : Sup-Lattice 𝓤 𝓣 𝓥)
+   {B : 𝓥 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+ → monotone-operator-LPFP 𝓥 B
+ → monotone-map-LPFP 𝓤 𝓣 𝓥 L β h
+monotone-operator-implies-monotone-map-LPFP
+ {𝓤} {𝓣} {𝓥} L {B} β h mon-op-LPFP f f-mono
+  = record{point = p ; pre-fixed = fp≤p ; least-pre-fixed = p≤any}
+ where
+  open sup-lattice-powerset-retract L β h
+  open is-basis h
+  open equational-reasoning-≤ L
+  mon-op : 𝓟 {𝓥} B → 𝓟 {𝓥} B
+  mon-op = ↓-map ∘ f ∘ ⋁-map
+  mon-op-is-monotone : is-monotone-endomap (𝓟-sup-lattice B) mon-op
+  mon-op-is-monotone
+   = ∘-is-monotone (𝓟-sup-lattice B) L (𝓟-sup-lattice B)
+       ⋁-map (↓-map ∘ f) ⋁-monotone
+       (∘-is-monotone L L (𝓟-sup-lattice B) f ↓-map f-mono ↓-monotone)
+  S : 𝓟 {𝓥} B
+  S = monotone-map-has-least-pre-fixed-point.point
+       (mon-op-LPFP mon-op mon-op-is-monotone)
+  mon-opS⊆S : mon-op S ⊆ S
+  mon-opS⊆S = monotone-map-has-least-pre-fixed-point.pre-fixed
+               (mon-op-LPFP mon-op mon-op-is-monotone)
+  S⊆any : (T : 𝓟 {𝓥} B) → (mon-op T ⊆ T) → S ⊆ T
+  S⊆any = monotone-map-has-least-pre-fixed-point.least-pre-fixed
+           (mon-op-LPFP mon-op mon-op-is-monotone)
+  p : ⟨ L ⟩
+  p = ⋁-map S
+  fp≤p : (f p ≤⟨ L ⟩ p) holds
+  fp≤p = f p                ≤[ ＝-to-≤ L (⋁∘↓∼id (f p) ⁻¹) ]
+         ⋁-map (mon-op S)   ≤[ ⋁-monotone (mon-op S) S mon-opS⊆S ]
+         p                  ▣
+  p≤any : (q : ⟨ L ⟩) → (f q ≤⟨ L ⟩ q) holds → (p ≤⟨ L ⟩ q) holds
+  p≤any q fq≤q = ⋁-map S          ≤[ ⋁-monotone S (↓-map q) II ]
+                 ⋁-map (↓-map q)  ≤[ ＝-to-≤ L (⋁∘↓∼id q) ]
+                 q                ▣
+   where
+    I : mon-op (↓-map q) ⊆ ↓-map q
+    I = ⊆-trans (mon-op (↓-map q)) (↓-map (f q)) (↓-map q)
+         (pr₁ (⊆-refl-consequence (mon-op (↓-map q)) (↓-map (f q))
+                (ap (↓-map ∘ f) (⋁∘↓∼id q))))
+         (↓-monotone (f q) q fq≤q)
+    II : S ⊆ ↓-map q
+    II = S⊆any (↓-map q) I 
+
+\end{code}
+
+We close the file by stating a corollary of the previous two results where we
+fix a single universe level and give an equivalence between two statements
+about least prefixed points. The following are equivalent
+
+ (i) Given a type A : 𝓤, every monotone map f : 𝓟 A → 𝓟 A has a least
+     prefixed point.
+
+ (ii) Given a sup lattice L : 𝓤 ⁺ with 𝓤-basis (B , β), every monotone
+      map f : L → L has a least prefixed point.
+
+\begin{code}
+
+module _ (𝓤 : Universe) where
+
+ least-prefixed-point-equivalence
+  : ((A : 𝓤 ̇) → monotone-operator-LPFP 𝓤 A)
+  ↔ ((L : Sup-Lattice (𝓤 ⁺) 𝓤 𝓤) {B : 𝓤 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+     → monotone-map-LPFP (𝓤 ⁺) 𝓤 𝓤 L β h)
+ least-prefixed-point-equivalence = (I , II)
+  where
+   I : ((A : 𝓤 ̇) → monotone-operator-LPFP 𝓤 A)
+     → ((L : Sup-Lattice (𝓤 ⁺) 𝓤 𝓤) {B : 𝓤 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+        → monotone-map-LPFP (𝓤 ⁺) 𝓤 𝓤 L β h)
+   I mono-op-LPFP L {B} β h 
+    = monotone-operator-implies-monotone-map-LPFP L β h (mono-op-LPFP B) 
+   II : ((L : Sup-Lattice (𝓤 ⁺) 𝓤 𝓤) {B : 𝓤 ̇} (β : B → ⟨ L ⟩) (h : is-basis L β)
+        → monotone-map-LPFP (𝓤 ⁺) 𝓤 𝓤 L β h)
+      → ((A : 𝓤 ̇) → monotone-operator-LPFP 𝓤 A)
+   II mono-map-LPFP A
+    = monotone-map-implies-monotone-operator-LPFP A
+       (mono-map-LPFP (𝓟-sup-lattice A) (❴_❵ₜᵣ A) (❴❵ₜᵣ-is-basis A)) 
+
+\end{code}
