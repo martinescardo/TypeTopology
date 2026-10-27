@@ -90,7 +90,13 @@ OUR_LINK = re.compile(r'<a href="[^"]*">[^<]*</a>')
 # that text is not the module it points to, the link rests on a reading of
 # the name rather than on the name itself, and is reported.
 
-TO_A_PAGE = re.compile(r'<a href="([^"]*)\.html">([^<]*)</a>')
+TO_A_PAGE = re.compile(r'<a href="([^"]*)\.html(#\d+)?">([^<]*)</a>')
+
+# The defining occurrence of a name, which Agda writes as a link to its
+# own anchor on its own page. Every other occurrence of the name links to
+# that anchor, so this is the one place the name is defined.
+
+DEFINITION = re.compile(r'<a id="(\d+)" href="([^"]*)#(\d+)" class="[^"]*">([^<]*)</a>')
 
 # A module declared inside the page itself, which Agda writes as a link to
 # an anchor of the same page. A bare name in the prose is far more likely
@@ -234,13 +240,17 @@ def module_target(name, pages, tails, here):
 
     A name can name a module outright, with or without a file suffix. It
     can be an identifier qualified by its module, in which case the module
-    part is linked and the rest of the name left outside the link. Failing
+    part is found here and the caller extends the link over the identifier
+    when that page defines it, and otherwise leaves the rest of the name
+    outside the link. Failing
     both, its last component is tried, which is what lets a reference
     survive its module moving to another directory, and what resolves a
     file name written without its directory.
 
     Returns the href, the length of the text to link, and how it was
-    resolved, or None when no page of the library answers to the name.
+    resolved, or None when no page of the library answers to the name. The
+    how "short qualified" is a module named by its last components, which
+    the caller keeps only when the identifier after it is defined there.
     The how is "exact" when the text names a page as it stands, and
     "last component" when the link rests on the reading above, which the
     run reports separately so that it can be checked.
@@ -256,7 +266,72 @@ def module_target(name, pages, tails, here):
     found = by_last_component(base, tails, here)
     if found:
         return found + ".html", len(name), "last component"
+    # An identifier qualified by its module written short, as in
+    # RectApply.rect-ssub for a module whose page is
+    # DialogueTreesHeight.BrouwerOrdinals.RectApply. The module part is
+    # resolved by its last component, and accepted only when the page
+    # found ends with the whole of that part, so that Foo.RectApply.x does
+    # not reach a RectApply outside a directory Foo. Even so, a short
+    # name such as J or Idempotents is weak evidence, being as likely an
+    # initial, as in J.D. Christensen, or a file of another system, as in
+    # Idempotents.v, so the caller keeps the link only when the page found
+    # defines the identifier after the dot.
+    for k in range(len(parts) - 1, 0, -1):
+        prefix = ".".join(parts[:k])
+        found = by_last_component(prefix, tails, here)
+        if found and (found == prefix or found.endswith("." + prefix)):
+            return found + ".html", len(prefix), "short qualified"
     return None
+
+
+def definitions(htmldir):
+    """The names each page defines, with the anchor of each, read lazily.
+
+    A name defined more than once in a page, in two submodules say, is
+    left out, since a link to one of the two would be a guess.
+    """
+    cache = {}
+
+    def defined(page):
+        if page not in cache:
+            names, twice = {}, set()
+            path = os.path.join(htmldir, page + ".html")
+            text = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
+            for ident, href, anchor, name in DEFINITION.findall(text):
+                if ident == anchor and href == page + ".html":
+                    if name in names:
+                        twice.add(name)
+                    names[name] = anchor
+            cache[page] = {n: a for n, a in names.items() if n not in twice}
+        return cache[page]
+
+    return defined
+
+
+# What may follow an identifier in a sentence: the end of the word, the
+# punctuation of the sentence, a closing bracket, or an escaped quote.
+
+AFTER_IDENTIFIER = TRAILING + ")]}"
+QUOTE_ENTITIES = ("&quot;", "&#39;", "&apos;")
+
+
+def identifier_after(text, defined):
+    """The longest name that the page defines and the text begins with.
+
+    The text is what follows the dot after a module name, up to the next
+    space. An identifier can contain characters that a module name cannot,
+    such as < (escaped as &lt;) and Unicode symbols, which is why the
+    names are looked up rather than matched by a pattern.
+    """
+    word = re.match(r'\S*', text).group(0)
+    best = None
+    for name in defined:
+        if word.startswith(name) and (best is None or len(name) > len(best)):
+            rest = word[len(name):]
+            if (not rest or rest[0] in AFTER_IDENTIFIER
+                    or rest.startswith(QUOTE_ENTITIES)):
+                best = name
+    return best
 
 
 def path_target(name, pages):
@@ -276,7 +351,7 @@ def path_target(name, pages):
     return (module + ".html", len(name), "exact") if module in pages else None
 
 
-def linkify(text, pages, tails, here, own):
+def linkify(text, pages, tails, here, own, defined):
     """Link everything linkable in one stretch of escaped text.
 
     Returns the text, the links made, each with how it was resolved, and
@@ -285,6 +360,10 @@ def linkify(text, pages, tails, here, own):
     out, pos, links, unresolved = [], 0, [], []
     for m in LINKABLE.finditer(text):
         name, start = m.group(0), m.start()
+        if start < pos:
+            # Inside an identifier that an earlier link has taken in,
+            # which the pattern stopped short of at a symbol.
+            continue
         if m.lastgroup == "bare":
             # "the module Frame", a name with no directory and no suffix,
             # which is worth resolving because a reference written that
@@ -337,6 +416,25 @@ def linkify(text, pages, tails, here, own):
                 continue
             href, length, how = found
             linked = name[:length]
+            # A qualified identifier links to its definition, as a whole,
+            # when the page of its module defines it. Otherwise the module
+            # part alone is linked, as before, unless the module was named
+            # short, in which case nothing is.
+            after, ident = start + length, None
+            if m.lastgroup == "module" and text[after:after + 1] == ".":
+                page = href[:-len(".html")]
+                ident = identifier_after(text[after + 1:], defined(page))
+                if ident is not None:
+                    href = f"{href}#{defined(page)[ident]}"
+                    linked = text[start:after + 1 + len(ident)]
+            if how == "short qualified":
+                if ident is None:
+                    # Reported on the same terms as any other name that
+                    # answers to nothing, so a path is not.
+                    if m.lastgroup == "module":
+                        unresolved.append(name)
+                    continue
+                how = "last component"
         else:
             linked = trim(name)
             href = target(m.lastgroup, linked)
@@ -351,7 +449,7 @@ def linkify(text, pages, tails, here, own):
     return "".join(out), links, unresolved
 
 
-def transform(page, pages, tails, here, own):
+def transform(page, pages, tails, here, own, defined):
     """Rewrite one page.
 
     Returns the new page, the links added to it, and the names in it that
@@ -377,7 +475,7 @@ def transform(page, pages, tails, here, own):
             gap = body[pos:keep.start()] if keep else body[pos:]
             if "<" in gap:
                 return m.group(0)
-            done, made, missing = linkify(gap, pages, tails, here, own)
+            done, made, missing = linkify(gap, pages, tails, here, own, defined)
             out.append(done)
             added.extend(made)
             unresolved.extend(missing)
@@ -533,6 +631,7 @@ def rewrite(htmldir, check, md):
     for name in pages:
         tails[name.rsplit(".", 1)[-1]].add(name)
 
+    defined = definitions(htmldir)
     found, unresolved, rewritten = {}, collections.defaultdict(list), 0
     read, rendered = [], []
     for path in paths:
@@ -541,7 +640,7 @@ def rewrite(htmldir, check, md):
         page = unmark(original)
         own = {name for target, name in OWN_MODULE.findall(page)
                if target in ("", os.path.basename(path))}
-        new, links, missing = transform(page, pages, tails, here, own)
+        new, links, missing = transform(page, pages, tails, here, own, defined)
         for name in missing:
             unresolved[name].append(here)
         if links:
@@ -554,7 +653,7 @@ def rewrite(htmldir, check, md):
                 raise SystemExit(f"{path}: the text of the page changed; "
                                  f"nothing has been written")
             if check:
-                again, more, _ = transform(new, pages, tails, here, own)
+                again, more, _ = transform(new, pages, tails, here, own, defined)
                 if more or again != new:
                     raise SystemExit(f"{path}: rewriting it again would "
                                      f"change it further; nothing has "
@@ -574,9 +673,13 @@ def rewrite(htmldir, check, md):
             found[os.path.basename(path)] = here_links
         # Read back from the page itself, so that the report is the same
         # whether or not this run had anything to rewrite.
+        # A link to a definition shows the identifier after its module,
+        # which is taken off before the module is compared.
         read += [(here, module, shown)
-                 for module, shown in TO_A_PAGE.findall(new)
-                 if module in pages and SUFFIX.sub("", shown) != module]
+                 for module, anchor, shown in TO_A_PAGE.findall(new)
+                 if module in pages
+                 and (shown.rsplit(".", 1)[0] if anchor
+                      else SUFFIX.sub("", shown)) != module]
     return found, unresolved, read, rendered, rewritten
 
 
