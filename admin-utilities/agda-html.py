@@ -225,8 +225,20 @@ def by_last_component(name, tails, here):
     79 modules called index, 19 called Type and so on, and then the one in
     the same directory as the page doing the referring is taken. Failing
     that, nothing: a guess between two strangers is worse than no link.
+
+    A name of several components, such as BrouwerOrdinals.Order, first
+    narrows the candidates to the modules whose names end with all of
+    them, so that a partial path picks out its module among those sharing
+    the last component. When no module ends that way, the candidates are
+    kept as they were, which lets a reference survive its module moving
+    to another directory.
     """
     candidates = tails.get(name.rsplit(".", 1)[-1], set())
+    if "." in name:
+        ending = {c for c in candidates
+                  if c == name or c.endswith("." + name)}
+        if ending:
+            candidates = ending
     if len(candidates) > 1:
         home = here.rsplit(".", 1)[0] + "."
         near = {c for c in candidates if c.startswith(home)}
