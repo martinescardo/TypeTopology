@@ -31,6 +31,7 @@ module Locales.index where
   - Terminal locale
   - Sierpiński locale
   - The discrete locale
+  - The Alexandroff locale
   - Continuous maps and frame homomorphisms
   - Sublocales and nuclei
   - Compactness and the way-below relation
@@ -110,6 +111,17 @@ import Locales.DiscreteLocale.Definition     -- (1)
 import Locales.DiscreteLocale.Basis          -- (2)
 import Locales.DiscreteLocale.Two            -- (3)
 import Locales.DiscreteLocale.Two-Properties -- (4)
+
+\end{code}
+
+\subsection{The Alexandroff locale}
+
+The module below defines the Alexandroff locale on a poset `P`, defined by the
+frame of downward-closed subsets of `P`.
+
+\begin{code}
+
+import Locales.Alexandroff.Definition
 
 \end{code}
 
