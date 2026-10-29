@@ -463,9 +463,9 @@ work of Sara Negri as a reference:
 
 \begin{code}
 
-import Locales.FormalTopology.Definition -- (1)
-import Locales.FormalTopology.Morphism   -- (2)
-import Locales.FormalTopology.Category   -- (3)
+import Locales.FormalTopology.Definition               -- (1)
+import Locales.FormalTopology.Morphism                 -- (2)
+import Locales.FormalTopology.Category                 -- (3)
 import Locales.Sublocale.FormalTopologyCoveringNucleus -- (4)
 
 \end{code}
