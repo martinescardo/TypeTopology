@@ -23,17 +23,16 @@ module Locales.Sublocale.FormalTopologyCoveringNucleus
 
 open import Locales.Alexandroff.Definition
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
-open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.FormalTopology.Definition pt fe
 open import Locales.Frame pt fe renaming (⟨_⟩ to ⟨_⟩ᶠ)
 open import Locales.Sublocale.Nucleus pt fe
 open import MLTT.Spartan
 open import Notation.UnderlyingType
 open import UF.Logic
-open import UF.Powerset using (comprehension; _∩_; _∈_; 𝓟)
+open import UF.Powerset using (comprehension; _∩_; 𝓟)
 open import UF.Powerset-MultiUniverse using (powersets-are-sets)
 open import UF.Sets
-open import UF.SubtypeClassifier using (Ω; _holds; holds-is-prop)
+open import UF.SubtypeClassifier using (Ω; _holds)
 
 \end{code}
 
