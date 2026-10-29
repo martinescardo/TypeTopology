@@ -5,7 +5,7 @@ date-started: 2026-10-28
 ---
 
 This module contains a definition of the frame of downward-closed subsets of a
-poset. The locale that this frame defines is called the Alexandroff locale.
+poset. We refer to the locale this defines as the _Alexandroff locale_.
 
 \begin{code}
 
@@ -27,7 +27,7 @@ open import Locales.DiscreteLocale.Definition fe pe pt
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
 open import Slice.Family
 open import UF.Logic
-open import UF.Powerset-MultiUniverse
+open import UF.Powerset
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
@@ -56,6 +56,13 @@ We start by writing down the type of downward-closed subsets of `P`.
  Downward-Closed-Subset : 𝓤 ⁺  ̇
  Downward-Closed-Subset = Σ U ꞉ 𝓟 ∣ P ∣ₚ , is-downward-closed U holds
 
+\end{code}
+
+Given a downward-closed subset `𝔘`, we define the notation `x ε 𝔘` for `𝔘`'s
+underlying subset.
+
+\begin{code}
+
  underlying-subset-syntax : Downward-Closed-Subset → 𝓟 {𝓤} ∣ P ∣ₚ
  underlying-subset-syntax (U , _) = U
 
@@ -68,9 +75,9 @@ We start by writing down the type of downward-closed subsets of `P`.
 
 \end{code}
 
-This is a meet-semilattice when ordered under inclusion. We make use of the
-powerset frame from `Locales.DiscreteLocale.Definition` when defining this
-lattice.
+This forms a frame when ordered under inclusion. We make use of the powerset
+frame from `Locales.DiscreteLocale.Definition` when carrying out this
+construction.
 
 \begin{code}
 
@@ -134,12 +141,6 @@ lattice.
    δ : ((W , _) : lower-bound (U , V)) → (W ⊑ U ⊓↓ V) holds
    δ (W , p , q) = ∧[ powerset-frame ]-greatest _ _ _ p q
 
-\end{code}
-
-Furthermore, this lattice is small complete.
-
-\begin{code}
-
  ⨆_ : Fam 𝓤 Downward-Closed-Subset → Downward-Closed-Subset
  ⨆ S = ⋃ (λ i - → - ε (S [ i ])) , †
   where
@@ -195,7 +196,7 @@ into a frame.
    ‡ x p = ∥∥-rec (holds-is-prop (x ε U ⊓↓ (⨆ S))) ‡₀ p
     where
      ‡₀ : (Σ i ꞉ index S , (x ε U ⊓↓ (S [ i ])) holds) → (x ε U ⊓↓ (⨆ S)) holds
-     ‡₀ (i , (q , r)) = q , ∣ i , r ∣
+     ‡₀ (i , q , r) = q , ∣ i , r ∣
 
  downward-closed-subset-frame-structure
   : frame-structure 𝓤 𝓤 Downward-Closed-Subset
