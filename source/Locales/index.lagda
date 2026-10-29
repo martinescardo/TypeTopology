@@ -459,14 +459,17 @@ work of Sara Negri as a reference:
   1. Definition of formal topology and quasi formal topology
   2. Morphisms of formal topologies and quasi formal topologies
   3. Categories of formal topologies and quasi formal topologies
+  4. The covering nucleus on the Alexandroff locale induced by a formal topology
 
 \begin{code}
 
 import Locales.FormalTopology.Definition -- (1)
 import Locales.FormalTopology.Morphism   -- (2)
 import Locales.FormalTopology.Category   -- (3)
+import Locales.Sublocale.FormalTopologyCoveringNucleus -- (4)
 
 \end{code}
+
 
 \section{Miscellaneous}
 
