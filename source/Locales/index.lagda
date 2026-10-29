@@ -470,7 +470,6 @@ import Locales.Sublocale.FormalTopologyCoveringNucleus -- (4)
 
 \end{code}
 
-
 \section{Miscellaneous}
 
 The modules below contain:
