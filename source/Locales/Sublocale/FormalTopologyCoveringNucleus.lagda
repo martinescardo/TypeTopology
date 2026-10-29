@@ -163,13 +163,8 @@ The `◇` operator preserves binary meets of `↓𝒜`.
       cov = cover-satisfies-right-rule 𝒜 a U V cov₁ cov₂
 
       eq : U ⊓ V ＝ U ∩ V
-      eq = downward-closedness-implies-⊓-coincides-with-∩
-            pe
-            (≤-is-reflexive 𝒜P)
-            U
-            V
-            φ
-            ψ
+      eq =
+       downward-closedness-implies-⊓-coincides-with-∩ pe (≤-is-reflexive 𝒜P) φ ψ
 
 \end{code}
 

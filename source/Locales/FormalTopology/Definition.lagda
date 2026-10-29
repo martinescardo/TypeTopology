@@ -243,11 +243,11 @@ module Downward-Closure-Intersection-Syntax {A : 𝓤 ̇} (_⊑_ : A → A → �
  downward-closedness-implies-⊓-coincides-with-∩
   : propext 𝓤
   → is-reflexive _⊑_ holds
-  → (U V : 𝓟 A)
+  → {U V : 𝓟 A}
   → is-downward-closed U holds
   → is-downward-closed V holds
   → U ⊓ V ＝ U ∩ V
- downward-closedness-implies-⊓-coincides-with-∩ pe 𝓇𝒻𝓁 U V φ ψ =
+ downward-closedness-implies-⊓-coincides-with-∩ pe 𝓇𝒻𝓁 {U} {V} φ ψ =
   subset-extensionality pe fe † ‡
    where
     open PropositionalTruncation pt
