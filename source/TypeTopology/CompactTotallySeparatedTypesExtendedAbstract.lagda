@@ -278,10 +278,6 @@ Examples-3-3-5 : is-isolated ∞ ↔ WLPO
 Examples-3-3-5 = is-isolated-gives-is-isolated' ∞ ,
                  is-isolated'-gives-is-isolated ∞
 
--- ex:isolated (6), item:iota1-embedding-dense
-Examples-3-3-6 : is-embedding ι𝟙 × is-dense ι𝟙
-Examples-3-3-6 = ι𝟙-is-embedding fe₀ , ι𝟙-dense fe₀
-
 -- lem:discrete-sets (1), item:discrete-types-are-sets
 Lemma-3-4-1 : {X : 𝓤 ̇ } → is-discrete X → is-set X
 Lemma-3-4-1 = discrete-types-are-sets
@@ -344,163 +340,157 @@ Proposition-3-5-5' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                    → (x : X) → is-isolated x → is-isolated (f x)
 Proposition-3-5-5' = equivs-preserve-isolatedness
 
--- lem:sigma-isolated
-Lemma-3-6 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
-          → ((x : X) → is-Compact (Y x) {𝓤 ⊔ 𝓥})
-          → is-isolated (x , y) → is-isolated x
-Lemma-3-6 = Σ-isolated-left
-
 -- prop:discrete-exponential (1)
-Proposition-3-7-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Proposition-3-6-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → has-two-distinct-points Y
                   → is-discrete (X → Y)
                   → is-decidable (is-empty X)
-Proposition-3-7-1 =
+Proposition-3-6-1 =
  discrete-exponential-has-decidable-emptiness-of-exponent fe'
 
 -- prop:discrete-exponential (2)
-Proposition-3-7-2 : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
+Proposition-3-6-2 : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
                   → is-prop P
                   → ((p : P) → is-h-isolated (f p))
                   → is-embedding f
-Proposition-3-7-2 = maps-of-props-into-h-isolated-points-are-embeddings
+Proposition-3-6-2 = maps-of-props-into-h-isolated-points-are-embeddings
 
-Proposition-3-7-2' : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
+Proposition-3-6-2' : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
                    → is-prop P
                    → ((p : P) → is-isolated (f p))
                    → is-embedding f
-Proposition-3-7-2' = maps-of-props-into-isolated-points-are-embeddings
+Proposition-3-6-2' = maps-of-props-into-isolated-points-are-embeddings
 
 -- def:tot-sep
-Definition-3-8 : 𝓤 ̇ → 𝓤 ̇
-Definition-3-8 = is-totally-separated
+Definition-3-7 : 𝓤 ̇ → 𝓤 ̇
+Definition-3-7 = is-totally-separated
 
 -- lem:tot-sep-basic (1), item:disc-gives-ts
-Lemma-3-9-1 : {X : 𝓤 ̇ } → is-discrete X → is-totally-separated X
-Lemma-3-9-1 = discrete-types-are-totally-separated
+Lemma-3-8-1 : {X : 𝓤 ̇ } → is-discrete X → is-totally-separated X
+Lemma-3-8-1 = discrete-types-are-totally-separated
 
 -- lem:tot-sep-basic (2), item:ts-gives-nnsep
-Lemma-3-9-2 : (X : 𝓤 ̇ ) → is-totally-separated X → is-¬¬-separated X
-Lemma-3-9-2 = totally-separated-types-are-¬¬-separated
+Lemma-3-8-2 : (X : 𝓤 ̇ ) → is-totally-separated X → is-¬¬-separated X
+Lemma-3-8-2 = totally-separated-types-are-¬¬-separated
 
 -- lem:tot-sep-basic (3), item:nn-separated-is-set
-Lemma-3-9-3 : {X : 𝓤 ̇ } → is-¬¬-separated X → is-set X
-Lemma-3-9-3 = ¬¬-separated-types-are-sets fe'
+Lemma-3-8-3 : {X : 𝓤 ̇ } → is-¬¬-separated X → is-set X
+Lemma-3-8-3 = ¬¬-separated-types-are-sets fe'
 
 -- lem:tot-sep-basic (4), item:ts-is-set
-Lemma-3-9-4 : (X : 𝓤 ̇ ) → is-totally-separated X → is-set X
-Lemma-3-9-4 = totally-separated-types-are-sets fe'
+Lemma-3-8-4 : (X : 𝓤 ̇ ) → is-totally-separated X → is-set X
+Lemma-3-8-4 = totally-separated-types-are-sets fe'
 
 
 \end{code}
 
-The circle of Examples 3.10(1) is implemented as the type Tℤ of
+The circle of Examples 3.9(1) is implemented as the type Tℤ of
 ℤ-torsors of SyntheticHomotopyTheory.Circle.Construction.  Its loop
 space at the base point is ℤ, so it is not a set, and hence not
-totally separated by Lemma 3.9 above.
+totally separated by Lemma 3.8 above.
 
-Labels: Examples 3.10(1) = ex:tot-sep-failures(item:circle-not-tot-sep),
-Lemma 3.9 = lem:tot-sep-basic.
+Labels: Examples 3.9(1) = ex:tot-sep-failures(item:circle-not-tot-sep),
+Lemma 3.8 = lem:tot-sep-basic.
 
 \begin{code}
 
 -- ex:tot-sep-failures (1), item:circle-not-tot-sep
-Examples-3-10-1 : ¬ is-set Tℤ
-Examples-3-10-1 s = +disjoint (loops-are-a-proposition (inl ⋆) (inr (inl 0)))
+Examples-3-9-1 : ¬ is-set Tℤ
+Examples-3-9-1 s = +disjoint (loops-are-a-proposition (inl ⋆) (inr (inl 0)))
  where
   loops-are-a-proposition = equiv-to-prop
                              (≃-sym loops-at-base-equivalent-to-ℤ)
                              (s {base-of-Tℤ} {base-of-Tℤ})
 
 -- ex:tot-sep-failures (2), item:two-infinities-not-tot-sep
-Examples-3-10-2 : is-totally-separated ℕ∞₂ → ¬¬ WLPO
-Examples-3-10-2 = ℕ∞₂-is-not-totally-separated-in-general
+Examples-3-9-2 : is-totally-separated ℕ∞₂ → ¬¬ WLPO
+Examples-3-9-2 = ℕ∞₂-is-not-totally-separated-in-general
 
 -- ex:tot-sep-failures (2), the index type is totally separated
-Examples-3-10-2-index : is-totally-separated ℕ∞
-Examples-3-10-2-index = ℕ∞-is-totally-separated fe₀
+Examples-3-9-2-index : is-totally-separated ℕ∞
+Examples-3-9-2-index = ℕ∞-is-totally-separated fe₀
 
 -- ex:tot-sep-failures (2), the fibers are totally separated
-Examples-3-10-2-fibers : (u : ℕ∞) → is-totally-separated (u ＝ ∞ → 𝟚)
-Examples-3-10-2-fibers u = Π-is-totally-separated fe₀
+Examples-3-9-2-fibers : (u : ℕ∞) → is-totally-separated (u ＝ ∞ → 𝟚)
+Examples-3-9-2-fibers u = Π-is-totally-separated fe₀
                             (λ _ → 𝟚-is-totally-separated)
 
 -- prop:tot-sep-closure (1), item:tot-sep-retract
-Proposition-3-11-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Proposition-3-10-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → retract Y of X
                    → is-totally-separated X
                    → is-totally-separated Y
-Proposition-3-11-1 = retract-of-totally-separated
+Proposition-3-10-1 = retract-of-totally-separated
 
 -- prop:tot-sep-closure (1), item:tot-sep-retract, equivalence
-Proposition-3-11-1-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Proposition-3-10-1-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → X ≃ Y
                          → is-totally-separated X
                          → is-totally-separated Y
-Proposition-3-11-1-equiv = equiv-to-totally-separated
+Proposition-3-10-1-equiv = equiv-to-totally-separated
 
 -- prop:tot-sep-closure (2), item:tot-sep-product
-Proposition-3-11-2 : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+Proposition-3-10-2 : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                    → is-totally-separated X
                    → is-totally-separated Y
                    → is-totally-separated (X × Y)
-Proposition-3-11-2 = ×-totally-separated
+Proposition-3-10-2 = ×-totally-separated
 
 -- prop:tot-sep-closure (3)
-Proposition-3-11-3 : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+Proposition-3-10-3 : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                    → is-discrete X
                    → ((x : X) → is-totally-separated (Y x))
                    → is-totally-separated (Σ Y)
-Proposition-3-11-3 = Σ-is-totally-separated-if-index-type-is-discrete
+Proposition-3-10-3 = Σ-is-totally-separated-if-index-type-is-discrete
 
 -- prop:tot-sep-closure (3), the + case
-Proposition-3-11-3-+ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+Proposition-3-10-3-+ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                      → is-totally-separated X
                      → is-totally-separated Y
                      → is-totally-separated (X + Y)
-Proposition-3-11-3-+ = +-totally-separated
+Proposition-3-10-3-+ = +-totally-separated
 
 -- prop:tot-sep-closure (4)
-Proposition-3-11-4 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Proposition-3-10-4 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                    → ((x : X) → is-totally-separated (Y x))
                    → is-totally-separated (Π Y)
-Proposition-3-11-4 = Π-is-totally-separated fe'
+Proposition-3-10-4 = Π-is-totally-separated fe'
 
 -- ex:tot-sep (2), item:simple-types
-Examples-3-12-2 : 𝓤₀ ̇ → 𝓤₁ ̇
-Examples-3-12-2 = simple-type
+Examples-3-11-2 : 𝓤₀ ̇ → 𝓤₁ ̇
+Examples-3-11-2 = simple-type
 
-Examples-3-12-2' : {X : 𝓤₀ ̇ } → simple-type X → is-totally-separated X
-Examples-3-12-2' = simple-types-are-totally-separated
+Examples-3-11-2' : {X : 𝓤₀ ̇ } → simple-type X → is-totally-separated X
+Examples-3-11-2' = simple-types-are-totally-separated
 
-Examples-3-12-2'' : {X : 𝓤₀ ̇ } → simple-type X → retract ℕ of X
-Examples-3-12-2'' = ℕ-is-retract-of-any-simple-type
+Examples-3-11-2'' : {X : 𝓤₀ ̇ } → simple-type X → retract ℕ of X
+Examples-3-11-2'' = ℕ-is-retract-of-any-simple-type
 
 -- ex:tot-sep (2), item:simple-types, pointedness and the retract clause
-Examples-3-12-2-pointed : {X : 𝓤₀ ̇ } → simple-type X → X
-Examples-3-12-2-pointed = simple-types-pointed
+Examples-3-11-2-pointed : {X : 𝓤₀ ̇ } → simple-type X → X
+Examples-3-11-2-pointed = simple-types-pointed
 
-Examples-3-12-2-r : {X A : 𝓤₀ ̇ }
+Examples-3-11-2-r : {X A : 𝓤₀ ̇ }
                   → retract A of ℕ → simple-type X → retract A of X
-Examples-3-12-2-r = simple-types-r
+Examples-3-11-2-r = simple-types-r
 
 -- ex:tot-sep (2), item:simple-types, the induction step of the retract
-Examples-3-12-2-r-step : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+Examples-3-11-2-r-step : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
                        → X → retract A of Y → retract A of (X → Y)
-Examples-3-12-2-r-step x =
+Examples-3-11-2-r-step x =
  retracts-compose (codomain-is-retract-of-function-space-with-pointed-domain x)
 
 -- ex:tot-sep (3), item:cantor-not-discrete
-Examples-3-12-3 : is-discrete (ℕ → 𝟚) → WLPO
-Examples-3-12-3 = ℕ∞-discrete-gives-WLPO
-                ∘ retract-is-discrete (ℕ∞-retract-of-Cantor fe₀)
+Examples-3-11-3 : is-discrete (ℕ → 𝟚) → WLPO
+Examples-3-11-3 = ℕ∞-discrete-gives-WLPO
+                  ∘ retract-is-discrete (ℕ∞-retract-of-Cantor fe₀)
 
 -- lem:sigma-NInf-tot-sep
-Lemma-3-13 : (A : ℕ∞ → 𝓥 ̇ )
+Lemma-3-12 : (A : ℕ∞ → 𝓥 ̇ )
            → ((u : ℕ∞) → is-totally-separated (A u))
            → is-prop (A ∞)
            → is-totally-separated (Σ A)
-Lemma-3-13 = Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop fe₀
+Lemma-3-12 = Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop fe₀
 
 
 \end{code}
@@ -554,144 +544,128 @@ Lemma-4-5-1 = compact∙-types-are-compact
 Lemma-4-5-1' : {X : 𝓤 ̇ } → is-compact∙ X → X
 Lemma-4-5-1' = compact∙-types-are-pointed
 
--- lem:dense-into-nn-separated-rc
-Lemma-4-6 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : Y → 𝓦 ̇ } {j : X → Y} {f g : Π Z}
-          → is-dense j
-          → ((y : Y) → is-¬¬-separated (Z y))
-          → f ∘ j ∼ g ∘ j
-          → f ∼ g
-Lemma-4-6 = dense-maps-into-¬¬-separated-types-are-rc'
-
--- lem:dense-into-nn-separated-rc, the constant family
-Lemma-4-6' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {j : X → Y} {f g : Y → Z}
-           → is-dense j
-           → is-¬¬-separated Z
-           → f ∘ j ∼ g ∘ j
-           → f ∼ g
-Lemma-4-6' = dense-maps-into-¬¬-separated-types-are-rc
-
 -- ex:compact-pt-basic (1)
-Examples-4-7-1 : is-compact∙ 𝟚
-Examples-4-7-1 = 𝟚-is-compact∙
+Examples-4-6-1 : is-compact∙ 𝟚
+Examples-4-6-1 = 𝟚-is-compact∙
 
 -- ex:compact-pt-basic (2), item:NInf-compact
-Examples-4-7-2 : is-compact∙ ℕ∞
-Examples-4-7-2 = ℕ∞-compact∙
+Examples-4-6-2 : is-compact∙ ℕ∞
+Examples-4-6-2 = ℕ∞-compact∙
 
 -- thm:compact-closure (1), item:compact-zero-one
-Theorem-4-8-1-𝟘 : is-Compact (𝟘 {𝓤}) {𝓥}
-Theorem-4-8-1-𝟘 = 𝟘-is-Compact
+Theorem-4-7-1-𝟘 : is-Compact (𝟘 {𝓤}) {𝓥}
+Theorem-4-7-1-𝟘 = 𝟘-is-Compact
 
-Theorem-4-8-1-𝟙 : is-Compact (𝟙 {𝓤}) {𝓥}
-Theorem-4-8-1-𝟙 = 𝟙-is-Compact
+Theorem-4-7-1-𝟙 : is-Compact (𝟙 {𝓤}) {𝓥}
+Theorem-4-7-1-𝟙 = 𝟙-is-Compact
 
 -- thm:compact-closure (1), item:compact-zero-one, singletons
-Theorem-4-8-1-singleton : {X : 𝓤 ̇ } → is-singleton X → is-Compact X {𝓥}
-Theorem-4-8-1-singleton = singletons-are-Compact
+Theorem-4-7-1-singleton : {X : 𝓤 ̇ } → is-singleton X → is-Compact X {𝓥}
+Theorem-4-7-1-singleton = singletons-are-Compact
 
 -- thm:compact-closure (2), item:compact-plus
-Theorem-4-8-2 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Theorem-4-7-2 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
               → is-Compact X {𝓦} → is-Compact Y {𝓦} → is-Compact (X + Y) {𝓦}
-Theorem-4-8-2 = +-is-Compact
+Theorem-4-7-2 = +-is-Compact
 
 -- thm:compact-closure (3), item:compact-sigma
-Theorem-4-8-3 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Theorem-4-7-3 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
               → is-Compact X {𝓥 ⊔ 𝓦}
               → ((x : X) → is-Compact (Y x) {𝓦})
               → is-Compact (Σ Y) {𝓦}
-Theorem-4-8-3 = Σ-is-Compact
+Theorem-4-7-3 = Σ-is-Compact
 
 -- thm:compact-closure (4), item:compact-retract
-Theorem-4-8-4 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Theorem-4-7-4 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
               → retract Y of X → is-Compact X {𝓦} → is-Compact Y {𝓦}
-Theorem-4-8-4 = Compact-closed-under-retracts
+Theorem-4-7-4 = Compact-closed-under-retracts
 
 -- thm:compact-closure (5), item:compact-surjection
-Theorem-4-8-5 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+Theorem-4-7-5 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
               → funext 𝓥 𝓤₀
               → is-surjection f
               → is-Compact X {𝓥}
               → is-Compact Y {𝓥}
-Theorem-4-8-5 = surjection-Compact
+Theorem-4-7-5 = surjection-Compact
 
-Theorem-4-8-5' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+Theorem-4-7-5' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                → is-Compact X {𝓤 ⊔ 𝓥}
                → is-Compact (image f) {𝓤 ⊔ 𝓥}
-Theorem-4-8-5' = image-Compact fe'
+Theorem-4-7-5' = image-Compact fe'
 
 -- cor:compact-pt-closure (1), item:pt-retract
-Corollary-4-9-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Corollary-4-8-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → retract Y Of X → is-compact∙ X → is-compact∙ Y
-Corollary-4-9-1 = retract-is-compact∙
+Corollary-4-8-1 = retract-is-compact∙
 
-Corollary-4-9-1' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Corollary-4-8-1' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                  → X ≃ Y → is-compact∙ X → is-compact∙ Y
-Corollary-4-9-1' = compact∙-types-are-closed-under-equiv
+Corollary-4-8-1' = compact∙-types-are-closed-under-equiv
 
 -- cor:compact-pt-closure (2), item:pt-sigma
-Corollary-4-9-2 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Corollary-4-8-2 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                 → is-compact∙ X
                 → ((x : X) → is-compact∙ (Y x))
                 → is-compact∙ (Σ Y)
-Corollary-4-9-2 = Σ-is-compact∙
+Corollary-4-8-2 = Σ-is-compact∙
 
 -- cor:compact-pt-closure (2), item:pt-sigma, products and coproducts
-Corollary-4-9-2-× : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Corollary-4-8-2-× : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → is-compact∙ X → is-compact∙ Y → is-compact∙ (X × Y)
-Corollary-4-9-2-× = ×-is-compact∙
+Corollary-4-8-2-× = ×-is-compact∙
 
-Corollary-4-9-2-+ : {X₀ X₁ : 𝓤 ̇ }
+Corollary-4-8-2-+ : {X₀ X₁ : 𝓤 ̇ }
                   → is-compact∙ X₀ → is-compact∙ X₁ → is-compact∙ (X₀ + X₁)
-Corollary-4-9-2-+ = +-is-compact∙
+Corollary-4-8-2-+ = +-is-compact∙
 
 -- cor:compact-pt-closure (3), item:pt-image
-Corollary-4-9-3 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+Corollary-4-8-3 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-surjection f → is-compact∙ X → is-compact∙ Y
-Corollary-4-9-3 = codomain-of-surjection-is-compact∙ pt
+Corollary-4-8-3 = codomain-of-surjection-is-compact∙ pt
 
-Corollary-4-9-3' : {X Y : 𝓤₀ ̇ } (f : X → Y)
+Corollary-4-8-3' : {X Y : 𝓤₀ ̇ } (f : X → Y)
                  → is-compact∙ X → is-compact∙ (image f)
-Corollary-4-9-3' = image-is-compact∙ pt
+Corollary-4-8-3' = image-is-compact∙ pt
 
 -- prop:compact-complemented (1), item:complemented-subtype-compact
-Proposition-4-10-1 : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                   → is-Compact X {𝓥 ⊔ 𝓦}
-                   → is-complemented A
-                   → ((x : X) → is-prop (A x))
-                   → is-Compact (Σ x ꞉ X , A x) {𝓦}
-Proposition-4-10-1 = complemented-subset-of-compact-type
+Proposition-4-9-1 : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                  → is-Compact X {𝓥 ⊔ 𝓦}
+                  → is-complemented A
+                  → ((x : X) → is-prop (A x))
+                  → is-Compact (Σ x ꞉ X , A x) {𝓦}
+Proposition-4-9-1 = complemented-subset-of-compact-type
 
 -- prop:compact-complemented (2), item:decide-sum-or-product
-Proposition-4-10-2 : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
-                   → is-compact X
-                   → ((x : X) → A x + B x)
-                   → (Σ x ꞉ X , A x) + (Π x ꞉ X , B x)
-Proposition-4-10-2 = compact-gives-Σ+Π
+Proposition-4-9-2 : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
+                  → is-compact X
+                  → ((x : X) → A x + B x)
+                  → (Σ x ꞉ X , A x) + (Π x ꞉ X , B x)
+Proposition-4-9-2 = compact-gives-Σ+Π
 
 -- prop:compact-complemented (3), item:complemented-choice
-Proposition-4-10-3 : {X : 𝓤 ̇ } → is-Σ-Compact X {𝓥} → Complemented-choice X {𝓥}
-Proposition-4-10-3 = Σ-Compactness-gives-Complemented-choice
+Proposition-4-9-3 : {X : 𝓤 ̇ } → is-Σ-Compact X {𝓥} → Complemented-choice X {𝓥}
+Proposition-4-9-3 = Σ-Compactness-gives-Complemented-choice
 
 
 \end{code}
 
-Remark 4.11 records that the compactness of the Cantor type is
+Remark 4.10 records that the compactness of the Cantor type is
 independent of our type theory, holding in the topological topos and
 in the Kleene--Vesley topos and failing in the effective topos. This
 is a statement about models rather than a theorem of our type theory,
-so it has no entry. What it says about finite products is Theorem 4.8(3).
+so it has no entry. What it says about finite products is Theorem 4.7(3).
 
-Labels: Remark 4.11 = rem:tychonoff-independence,
-Theorem 4.8(3) = thm:compact-closure(item:compact-sigma).
+Labels: Remark 4.10 = rem:tychonoff-independence,
+Theorem 4.7(3) = thm:compact-closure(item:compact-sigma).
 
-The paragraph after Remark 4.11 claims that the Brouwerian principle
+The paragraph after Remark 4.10 claims that the Brouwerian principle
 that all maps of the Cantor type into a discrete type are uniformly
 continuous makes the Cantor type compact. The paper does not adopt
 this principle, and so the claim takes it as a hypothesis. The two
 primed entries are the notions of modulus of uniform continuity and of
 uniform continuity that the paragraph defines.
 
-Labels: Remark 4.11 = rem:tychonoff-independence.
+Labels: Remark 4.10 = rem:tychonoff-independence.
 
 \begin{code}
 
@@ -713,96 +687,104 @@ Prose-uniform-continuity-gives-cantor-compact''
 Prose-uniform-continuity-gives-cantor-compact'' N d
  = notions-of-continuity.uniformly-continuous N d
 
--- prop:cantor-uniform-search
-Proposition-4-12 : (p : 𝟚ᴺ → 𝟚)
-                 → uniformly-continuous p
-                 → Σ α₀ ꞉ 𝟚ᴺ , (p α₀ ＝ ₁ → (α : 𝟚ᴺ) → p α ＝ ₁)
-Proposition-4-12 = Cantor-uniformly-searchable
+-- claim cantor-uniform-search
+Prose-cantor-uniform-search
+ : (p : 𝟚ᴺ → 𝟚)
+ → uniformly-continuous p
+ → Σ α₀ ꞉ 𝟚ᴺ , (p α₀ ＝ ₁ → (α : 𝟚ᴺ) → p α ＝ ₁)
+Prose-cantor-uniform-search = Cantor-uniformly-searchable
 
-Proposition-4-12' : (p : 𝟚ᴺ → 𝟚)
-                  → uniformly-continuous p
-                  → is-decidable (Σ α ꞉ 𝟚ᴺ , p α ＝ ₀)
-Proposition-4-12' = having-root-is-decidable
+Prose-cantor-uniform-search'
+ : (p : 𝟚ᴺ → 𝟚)
+ → uniformly-continuous p
+ → is-decidable (Σ α ꞉ 𝟚ᴺ , p α ＝ ₀)
+Prose-cantor-uniform-search' = having-root-is-decidable
 
 -- prop:compact-to-discrete
-Proposition-4-13 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Proposition-4-11 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                  → is-compact X
                  → ((x : X) → is-discrete (Y x))
                  → (f g : (x : X) → Y x) → (f ♯ g) + (f ＝ g)
-Proposition-4-13 = apart-or-equal (fe _ _)
+Proposition-4-11 = apart-or-equal (fe _ _)
 
 -- prop:compact-to-discrete, in particular the product is discrete
-Proposition-4-13' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Proposition-4-11' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                   → is-compact X
                   → ((x : X) → is-discrete (Y x))
                   → is-discrete ((x : X) → Y x)
-Proposition-4-13' = discrete-to-power-compact-is-discrete (fe _ _)
+Proposition-4-11' = discrete-to-power-compact-is-discrete (fe _ _)
 
 -- ex:discrete-exponentials
-Example-4-14 : is-discrete (ℕ∞ → 𝟚)
-Example-4-14 = ℕ∞→𝟚-is-discrete
+Example-4-12 : is-discrete (ℕ∞ → 𝟚)
+Example-4-12 = ℕ∞→𝟚-is-discrete
 
-Example-4-14' : is-discrete (ℕ∞ → ℕ)
-Example-4-14' = ℕ∞→ℕ-is-discrete
+Example-4-12' : is-discrete (ℕ∞ → ℕ)
+Example-4-12' = ℕ∞→ℕ-is-discrete
+
+-- lem:sigma-isolated
+Lemma-4-13 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
+           → ((x : X) → is-Compact (Y x) {𝓤 ⊔ 𝓥})
+           → is-isolated (x , y) → is-isolated x
+Lemma-4-13 = Σ-isolated-left
 
 -- thm:micro-tychonoff
-Theorem-4-15 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Theorem-4-14 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
              → is-prop X
              → ((x : X) → is-compact∙ (Y x))
              → is-compact∙ (Π Y)
-Theorem-4-15 = micro-tychonoff fe'
+Theorem-4-14 = micro-tychonoff fe'
 
 -- ex:LPO-to-N
-Example-4-16 : is-compact∙ (LPO → ℕ)
-Example-4-16 = [LPO→ℕ]-is-compact∙ fe₀
+Example-4-15 : is-compact∙ (LPO → ℕ)
+Example-4-15 = [LPO→ℕ]-is-compact∙ fe₀
 
 -- def:extension
-Definition-4-17 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+Definition-4-16 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → (X → 𝓦 ̇ ) → (X → Y) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ )
-Definition-4-17 = Π-extension
+Definition-4-16 = Π-extension
 
 -- lem:extension-property (1), item:ext-restricts
-Lemma-4-18-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y)
+Lemma-4-17-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y)
              → is-embedding j
              → (x : X) → Π-extension f j (j x) ≃ f x
-Lemma-4-18-1 = Π-extension-property
+Lemma-4-17-1 = Π-extension-property
 
 -- lem:extension-property (2), item:ext-off-image
-Lemma-4-18-2 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y) (y : Y)
+Lemma-4-17-2 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y) (y : Y)
              → ((x : X) → j x ≠ y)
              → Π-extension f j y ≃ 𝟙 {𝓣}
-Lemma-4-18-2 f j = Π-extension-out-of-range f j
+Lemma-4-17-2 f j = Π-extension-out-of-range f j
 
 -- lem:extension-property (3), item:extended-sum-compact
-Lemma-4-18-3 : {X : 𝓤 ̇ } {K : 𝓥 ̇ } {Y : X → 𝓦 ̇ } (j : X → K)
+Lemma-4-17-3 : {X : 𝓤 ̇ } {K : 𝓥 ̇ } {Y : X → 𝓦 ̇ } (j : X → K)
              → is-embedding j
              → ((x : X) → is-compact∙ (Y x))
              → is-compact∙ K
              → is-compact∙ (Σ (Y / j))
-Lemma-4-18-3 = extended-sum-compact∙
+Lemma-4-17-3 = extended-sum-compact∙
 
 -- lem:extension-property (4), item:extension-tot-sep
-Lemma-4-18-4 : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (j : X → A) (Y : X → 𝓦 ̇ )
+Lemma-4-17-4 : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (j : X → A) (Y : X → 𝓦 ̇ )
              → ((x : X) → is-totally-separated (Y x))
              → (a : A) → is-totally-separated ((Y / j) a)
-Lemma-4-18-4 = /-is-totally-separated fe
+Lemma-4-17-4 = /-is-totally-separated fe
 
 -- lem:extension-property (5), item:ext-retract-fiber
-Lemma-4-18-5 : {X : 𝓤 ̇ } {K : 𝓥 ̇ } (Y Z : X → 𝓦 ̇ ) (j : X → K)
+Lemma-4-17-5 : {X : 𝓤 ̇ } {K : 𝓥 ̇ } (Y Z : X → 𝓦 ̇ ) (j : X → K)
              → ((x : X) → retract (Y x) of (Z x))
              → (k : K) → retract ((Y / j) k) of ((Z / j) k)
-Lemma-4-18-5 = retract-extension
+Lemma-4-17-5 = retract-extension
 
 -- lem:extension-property (6), item:ext-retract-sum
-Lemma-4-18-6 : {X : 𝓤 ̇ } {K : 𝓥 ̇ } (Y Z : X → 𝓦 ̇ ) (j : X → K)
+Lemma-4-17-6 : {X : 𝓤 ̇ } {K : 𝓥 ̇ } (Y Z : X → 𝓦 ̇ ) (j : X → K)
              → ((x : X) → retract (Y x) of (Z x))
              → retract (Σ (Y / j)) of (Σ (Z / j))
-Lemma-4-18-6 Y₀ Y₁ j ρ = Σ-retract (Y₀ / j) (Y₁ / j)
+Lemma-4-17-6 Y₀ Y₁ j ρ = Σ-retract (Y₀ / j) (Y₁ / j)
                           (retract-extension Y₀ Y₁ j ρ)
 
 -- lem:delayed-sequences
-Lemma-4-19 : 𝔻 Cantor ≃ Cantor
-Lemma-4-19 = 𝔻-Cantor-≃-Cantor
+Lemma-4-18 : 𝔻 Cantor ≃ Cantor
+Lemma-4-18 = 𝔻-Cantor-≃-Cantor
 
 
 \end{code}
@@ -980,6 +962,10 @@ Lemma-5-7-extensional _<_ _≺_ = times.well-order _<_ _≺_ fe
 -- def:ordinal-multiplication
 Definition-5-8 : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
 Definition-5-8 = _×ₒ_
+
+-- claim iota1-embedding-dense
+Prose-iota1-embedding-dense : is-embedding ι𝟙 × is-dense ι𝟙
+Prose-iota1-embedding-dense = ι𝟙-is-embedding fe₀ , ι𝟙-dense fe₀
 
 -- lem:sum-map (1), item:sum-map-equiv
 Lemma-5-9-1 : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {Y : 𝓦 ̇ } {B : Y → 𝓣 ̇ }
@@ -1342,167 +1328,167 @@ Theorem-6-5-3 = BDC.Κ-Cantor-retract
 Theorem-6-5-4 : (b : B) → is-compact∙ ⟨ ⟦ b ⟧-sup¹ ⟩
 Theorem-6-5-4 = ⟦_⟧₂-is-compact∙
 
--- prop:trich-compact-lpo
-Proposition-6-6 : ((b : B) → is-compact ⟨ ⟦ b ⟧-Σ ⟩) → LPO
-Proposition-6-6 = ⟦_⟧₃-compact-gives-LPO
+-- prop:interp-failures (1), item:trich-compact-lpo
+Proposition-6-6-1 : ((b : B) → is-compact ⟨ ⟦ b ⟧-Σ ⟩) → LPO
+Proposition-6-6-1 = ⟦_⟧₃-compact-gives-LPO
 
--- prop:failure-tot-sep
-Proposition-6-7 : ((b : B) → is-totally-separated ⟨ ⟦ b ⟧-sup¹ ⟩) → ¬¬ WLPO
-Proposition-6-7
+-- prop:interp-failures (2), item:failure-tot-sep
+Proposition-6-6-2 : ((b : B) → is-totally-separated ⟨ ⟦ b ⟧-sup¹ ⟩) → ¬¬ WLPO
+Proposition-6-6-2
  = FTS.total-separatedness-of-the-sup-of-extension-interpretation-gives-¬¬WLPO
 
 
 \end{code}
 
-Examples 3.12(1) has no entry. That total separatedness is not closed
-under sums is the example of Examples 3.10(2), whose index type and
+Examples 3.11(1) has no entry. That total separatedness is not closed
+under sums is the example of Examples 3.9(2), whose index type and
 fibers are totally separated by the two entries following
-Examples-3-10-2 above.
+Examples-3-9-2 above.
 
-Labels: Examples 3.12(1) = ex:tot-sep(item:ts-not-sigma),
-Examples 3.10(2) = ex:tot-sep-failures(item:two-infinities-not-tot-sep).
+Labels: Examples 3.11(1) = ex:tot-sep(item:ts-not-sigma),
+Examples 3.9(2) = ex:tot-sep-failures(item:two-infinities-not-tot-sep).
 
 \begin{code}
 
 -- thm:comparisons
-Theorem-6-8-₀₃ : Excluded-Middle → (b : B) → ⟦ b ⟧-sup ⊴ [ ⟦ b ⟧-Σ ]
-Theorem-6-8-₀₃ = comparison₀₃
+Theorem-6-7-₀₃ : Excluded-Middle → (b : B) → ⟦ b ⟧-sup ⊴ [ ⟦ b ⟧-Σ ]
+Theorem-6-7-₀₃ = comparison₀₃
 
-Theorem-6-8-₀₂ : EM 𝓤₁ → (b : B) → ⟦ b ⟧-sup ⊴ ⟦ b ⟧-sup¹
-Theorem-6-8-₀₂ = comparison₀₂
+Theorem-6-7-₀₂ : EM 𝓤₁ → (b : B) → ⟦ b ⟧-sup ⊴ ⟦ b ⟧-sup¹
+Theorem-6-7-₀₂ = comparison₀₂
 
-Theorem-6-8-₂₁ : Excluded-Middle → (b : B) → ⟦ b ⟧-sup¹ ⊴ [ ⟦ b ⟧-Σ¹ ]
-Theorem-6-8-₂₁ = comparison₂₁
+Theorem-6-7-₂₁ : Excluded-Middle → (b : B) → ⟦ b ⟧-sup¹ ⊴ [ ⟦ b ⟧-Σ¹ ]
+Theorem-6-7-₂₁ = comparison₂₁
 
-Theorem-6-8-₃₁ : EM 𝓤₀ → (b : B) → [ ⟦ b ⟧-Σ ] ⊴ [ ⟦ b ⟧-Σ¹ ]
-Theorem-6-8-₃₁ = comparison₃₁
+Theorem-6-7-₃₁ : EM 𝓤₀ → (b : B) → [ ⟦ b ⟧-Σ ] ⊴ [ ⟦ b ⟧-Σ¹ ]
+Theorem-6-7-₃₁ = comparison₃₁
 
 -- prop:comparisons-taboos (1), item:comparison03-gives-lpo
-Proposition-6-9-1 : ((b : B) → ⟦ b ⟧-sup ⊴ [ ⟦ b ⟧-Σ ]) → LPO
-Proposition-6-9-1 = FTr.comparison₀₃-gives-LPO
+Proposition-6-8-1 : ((b : B) → ⟦ b ⟧-sup ⊴ [ ⟦ b ⟧-Σ ]) → LPO
+Proposition-6-8-1 = FTr.comparison₀₃-gives-LPO
 
 -- prop:comparisons-taboos (2), item:comparison21-gives-notnot-wlpo
-Proposition-6-9-2 : ((b : B) → ⟦ b ⟧-sup¹ ⊴ [ ⟦ b ⟧-Σ¹ ]) → ¬¬ WLPO
-Proposition-6-9-2 = FTS.comparison₂₁-gives-¬¬WLPO
+Proposition-6-8-2 : ((b : B) → ⟦ b ⟧-sup¹ ⊴ [ ⟦ b ⟧-Σ¹ ]) → ¬¬ WLPO
+Proposition-6-8-2 = FTS.comparison₂₁-gives-¬¬WLPO
 
 -- def:delta-kappa
-Definition-6-10 : B → Ordᵀ
-Definition-6-10 = ⟦_⟧-Σ₁
+Definition-6-9 : B → Ordᵀ
+Definition-6-9 = ⟦_⟧-Σ₁
 
 -- thm:delta-kappa-props (1), item:delta-trichotomous
-Theorem-6-11-1 : (b : B) → is-trichotomous [ ⟦ b ⟧-Σ₁ ]
-Theorem-6-11-1 = BDC.Δ-is-trichotomous
+Theorem-6-10-1 : (b : B) → is-trichotomous [ ⟦ b ⟧-Σ₁ ]
+Theorem-6-10-1 = BDC.Δ-is-trichotomous
 
 -- thm:delta-kappa-props (2), item:delta-retract-N
-Theorem-6-11-2 : (b : B) → retract ⟨ ⟦ b ⟧-Σ₁ ⟩ of ℕ
-Theorem-6-11-2 = BDC.Δ-retract-of-ℕ
+Theorem-6-10-2 : (b : B) → retract ⟨ ⟦ b ⟧-Σ₁ ⟩ of ℕ
+Theorem-6-10-2 = BDC.Δ-retract-of-ℕ
 
-Theorem-6-11-2' : (b : B) → is-discrete ⟨ ⟦ b ⟧-Σ₁ ⟩
-Theorem-6-11-2' = BDC.Δ-is-discrete
+Theorem-6-10-2' : (b : B) → is-discrete ⟨ ⟦ b ⟧-Σ₁ ⟩
+Theorem-6-10-2' = BDC.Δ-is-discrete
 
 -- prop:delta-kappa-fail (1), item:delta-compact-lpo
-Proposition-6-12-1 : ((b : B) → is-compact ⟨ ⟦ b ⟧-Σ₁ ⟩) ↔ LPO
-Proposition-6-12-1 = BDC.Δ-compact-iff-LPO
+Proposition-6-11-1 : ((b : B) → is-compact ⟨ ⟦ b ⟧-Σ₁ ⟩) ↔ LPO
+Proposition-6-11-1 = BDC.Δ-compact-iff-LPO
 
 -- prop:delta-kappa-fail (2), item:kappa-discrete-wlpo
-Proposition-6-12-2 : ((b : B) → is-discrete ⟨ ⟦ b ⟧-Σ' ⟩) → WLPO
-Proposition-6-12-2 = BDC.Κ-discrete-gives-WLPO
+Proposition-6-11-2 : ((b : B) → is-discrete ⟨ ⟦ b ⟧-Σ' ⟩) → WLPO
+Proposition-6-11-2 = BDC.Κ-discrete-gives-WLPO
 
 -- def:iota
-Definition-6-13 : {b : B} → ⟨ ⟦ b ⟧-Σ₁ ⟩ → ⟨ ⟦ b ⟧-Σ' ⟩
-Definition-6-13 {b} = BDC.ι {b}
+Definition-6-12 : {b : B} → ⟨ ⟦ b ⟧-Σ₁ ⟩ → ⟨ ⟦ b ⟧-Σ' ⟩
+Definition-6-12 {b} = BDC.ι {b}
 
-Definition-6-13-limit-case : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
+Definition-6-12-limit-case : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
                            → ((n : ℕ) → X n → Y n)
                            → Σ₁ X → Σ¹ Y
-Definition-6-13-limit-case = Σ↑
+Definition-6-12-limit-case = Σ↑
 
 -- thm:iota, an embedding
-Theorem-6-14 : (b : B) → is-embedding (BDC.ι {b})
-Theorem-6-14 = BDC.ι-is-embedding
+Theorem-6-13 : (b : B) → is-embedding (BDC.ι {b})
+Theorem-6-13 = BDC.ι-is-embedding
 
 -- thm:iota, dense
-Theorem-6-14' : (b : B) → is-dense (BDC.ι {b})
-Theorem-6-14' = BDC.ι-is-dense
+Theorem-6-13' : (b : B) → is-dense (BDC.ι {b})
+Theorem-6-13' = BDC.ι-is-dense
 
 -- thm:iota, order-preserving
-Theorem-6-14'' : (b : B) (x y : ⟨ ⟦ b ⟧-Σ₁ ⟩)
+Theorem-6-13'' : (b : B) (x y : ⟨ ⟦ b ⟧-Σ₁ ⟩)
                → x ≺⟨ [ ⟦ b ⟧-Σ₁ ] ⟩ y
                → BDC.ι {b} x ≺⟨ [ ⟦ b ⟧-Σ' ] ⟩ BDC.ι {b} y
-Theorem-6-14'' = BDC.ι-is-order-preserving
+Theorem-6-13'' = BDC.ι-is-order-preserving
 
 -- thm:iota, order-reflecting
-Theorem-6-14''' : (b : B) (x y : ⟨ ⟦ b ⟧-Σ₁ ⟩)
+Theorem-6-13''' : (b : B) (x y : ⟨ ⟦ b ⟧-Σ₁ ⟩)
                 → BDC.ι {b} x ≺⟨ [ ⟦ b ⟧-Σ' ] ⟩ BDC.ι {b} y
                 → x ≺⟨ [ ⟦ b ⟧-Σ₁ ] ⟩ y
-Theorem-6-14''' = BDC.ι-is-order-reflecting
+Theorem-6-13''' = BDC.ι-is-order-reflecting
 
 -- ex:omega-plus-one
-Example-6-15 : [ ∑₁ (λ _ → 𝟙ᵒ) ] ≃ₒ [ succₒ ω ]
-Example-6-15 = ∑₁-of-𝟙ᵒ
+Example-6-14 : [ ∑₁ (λ _ → 𝟙ᵒ) ] ≃ₒ [ succₒ ω ]
+Example-6-14 = ∑₁-of-𝟙ᵒ
 
-Example-6-15' : [ ∑¹ (λ _ → 𝟙ᵒ) ] ≃ₒ [ ℕ∞ᵒ ]
-Example-6-15' = ∑¹-of-𝟙ᵒ
+Example-6-14' : [ ∑¹ (λ _ → 𝟙ᵒ) ] ≃ₒ [ ℕ∞ᵒ ]
+Example-6-14' = ∑¹-of-𝟙ᵒ
 
-Example-6-15'' : (τ : ℕ → Ordᵀ) → is-isolated (top (∑₁ τ))
-Example-6-15'' = ∑₁-top-is-isolated
+Example-6-14'' : (τ : ℕ → Ordᵀ) → is-isolated (top (∑₁ τ))
+Example-6-14'' = ∑₁-top-is-isolated
 
 -- prop:brouwer-iota-equiv-LPO
-Proposition-6-16 : ((b : B) → is-equiv (BDC.ι {b})) ↔ LPO
-Proposition-6-16 = BDC.ι-is-equiv-iff-LPO
+Proposition-6-15 : ((b : B) → is-equiv (BDC.ι {b})) ↔ LPO
+Proposition-6-15 = BDC.ι-is-equiv-iff-LPO
 
 -- def:has-inf
-Definition-6-17 : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-Definition-6-17 = has-inf
+Definition-6-16 : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+Definition-6-16 = has-inf
 
 -- def:has-inf (1), item:conditional-root
-Definition-6-17-1 : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → 𝟚) → X → 𝓤 ̇
-Definition-6-17-1 _≤_ = is-conditional-root _≤_
+Definition-6-16-1 : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → 𝟚) → X → 𝓤 ̇
+Definition-6-16-1 _≤_ = is-conditional-root _≤_
 
 -- def:has-inf (2), item:roots-infimum
-Definition-6-17-2 : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
-Definition-6-17-2 = is-roots-infimum
+Definition-6-16-2 : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
+Definition-6-16-2 = is-roots-infimum
 
-Definition-6-17-topped : Ordinalᵀ 𝓤 → 𝓤 ̇
-Definition-6-17-topped = has-infs-of-complemented-subsets
+Definition-6-16-topped : Ordinalᵀ 𝓤 → 𝓤 ̇
+Definition-6-16-topped = has-infs-of-complemented-subsets
 
 -- lem:least-element
-Lemma-6-18 : {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ )
+Lemma-6-17 : {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ )
            → has-inf _≤_
            → (p : X → 𝟚)
            → ¬¬ (Σ x ꞉ X , p x ＝ ₀)
            → Σ x₀ ꞉ X , is-least-root _≤_ p x₀
-Lemma-6-18 = has-inf-gives-least-root
+Lemma-6-17 = has-inf-gives-least-root
 
 -- thm:micro-inf-tychonoff
-Theorem-6-19 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Theorem-6-18 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
              → is-prop X
              → (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
              → ((x : X) → has-inf (λ (y y' : Y x) → ¬ (y' ≺ y)))
              → has-inf (λ (φ γ : Π Y) → ¬ (Σ x ꞉ X , γ x ≺ φ x))
-Theorem-6-19 = micro-inf-tychonoff
+Theorem-6-18 = micro-inf-tychonoff
 
 -- thm:kappa-infs
-Theorem-6-20 : propext 𝓤₀
+Theorem-6-19 : propext 𝓤₀
              → (b : B) → has-infs-of-complemented-subsets (⟦ b ⟧-Σ')
-Theorem-6-20 = BDC.Κ-has-infs-of-complemented-subsets
+Theorem-6-19 = BDC.Κ-has-infs-of-complemented-subsets
 
 -- cor:kappa-least
-Corollary-6-21 : propext 𝓤₀
+Corollary-6-20 : propext 𝓤₀
                → (b : B) (p : ⟨ ⟦ b ⟧-Σ' ⟩ → 𝟚)
                → ¬¬ (Σ x ꞉ ⟨ ⟦ b ⟧-Σ' ⟩ , p x ＝ ₀)
                → Σ x₀ ꞉ ⟨ ⟦ b ⟧-Σ' ⟩ , is-least-root
                                        (underlying-weak-order (⟦ b ⟧-Σ')) p x₀
-Corollary-6-21 = BDC.Κ-has-least-roots-of-complemented-subsets
+Corollary-6-20 = BDC.Κ-has-least-roots-of-complemented-subsets
 
 -- prop:delta-least-lpo
-Proposition-6-22 : propext 𝓤₀
+Proposition-6-21 : propext 𝓤₀
                  → (((b : B) (p : ⟨ ⟦ b ⟧-Σ₁ ⟩ → 𝟚)
                       → ¬¬ (Σ x ꞉ ⟨ ⟦ b ⟧-Σ₁ ⟩ , p x ＝ ₀)
                       → Σ x₀ ꞉ ⟨ ⟦ b ⟧-Σ₁ ⟩ ,
                          is-least-root (underlying-weak-order (⟦ b ⟧-Σ₁)) p x₀)
                     ↔ LPO)
-Proposition-6-22 = BDC.Δ-least-roots-iff-LPO
+Proposition-6-21 = BDC.Δ-least-roots-iff-LPO
 
 
 \end{code}
