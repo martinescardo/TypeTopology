@@ -65,6 +65,26 @@ The order is the same as that of `𝒪 X`.
  _≤ᶠ_ : Fixed-Point → Fixed-Point → Ω 𝓤
  (U , _) ≤ᶠ (V , _) = U ≤[ poset-of (𝒪 X) ] V
 
+ ≤ᶠ-is-reflexive : is-reflexive _≤ᶠ_ holds
+ ≤ᶠ-is-reflexive = ≤-is-reflexive (poset-of (𝒪 X)) ∘ underlying-open
+
+ ≤ᶠ-is-transitive : is-transitive _≤ᶠ_ holds
+ ≤ᶠ-is-transitive (U , _) (V , _) (W , _) =
+  ≤-is-transitive (poset-of (𝒪 X)) U V W
+
+ ≤ᶠ-is-antisymmetric : is-antisymmetric _≤ᶠ_
+ ≤ᶠ-is-antisymmetric {𝔘} {𝔙} p q = to-subtype-＝ † ‡
+  where
+   † : (U : ⟨ 𝒪 X ⟩) → is-prop (j U ＝ U)
+   † _ = carrier-of-[ poset-of (𝒪 X) ]-is-set
+
+   ‡ : underlying-open 𝔘 ＝ underlying-open 𝔙
+   ‡ = ≤-is-antisymmetric (poset-of (𝒪 X)) p q
+
+ ≤ᶠ-is-partial-order : is-partial-order Fixed-Point _≤ᶠ_
+ ≤ᶠ-is-partial-order =
+  (≤ᶠ-is-reflexive , ≤ᶠ-is-transitive) , ≤ᶠ-is-antisymmetric
+
  open Meets _≤ᶠ_
 
 \end{code}
@@ -133,7 +153,6 @@ The order is the same as that of `𝒪 X`.
    open PosetReasoning (poset-of (𝒪 X))
    open JoinNotation (λ - → ⋁[ 𝒪 X ] -)
 
-
    U⃗ : Fam 𝓤 ⟨ 𝒪 X ⟩
    U⃗ = ⁅ underlying-open 𝔘⃗ᵢ ∣ 𝔘⃗ᵢ ε 𝔘⃗ ⁆
 
@@ -160,21 +179,50 @@ The order is the same as that of `𝒪 X`.
  quotient-frame-data : frame-data 𝓤 𝓤 Fixed-Point
  quotient-frame-data = _≤ᶠ_ , 𝟏ᶠ , _∧ᶠ_ , ⋁ᶠ_
 
+ open JoinNotation ⋁ᶠ_
+
+ distributivityᶠ
+  : (𝔙 : Fixed-Point)
+  → (𝔘⃗ : Fam 𝓤 Fixed-Point)
+  → 𝔙 ∧ᶠ (⋁⟨ i ⟩ 𝔘⃗ [ i ]) ＝ ⋁⟨ i ⟩ 𝔙 ∧ᶠ (𝔘⃗ [ i ])
+ distributivityᶠ 𝔙@(V , p) 𝔘⃗ = to-subtype-＝ β γ
+  where
+
+   U⃗ : Fam 𝓤 ⟨ 𝒪 X ⟩
+   U⃗ = ⁅ underlying-open 𝔘⃗ᵢ ∣ 𝔘⃗ᵢ ε 𝔘⃗ ⁆
+   β : (U : ⟨ 𝒪 X ⟩) → is-prop (j U ＝ U)
+   β _ = carrier-of-[ poset-of (𝒪 X) ]-is-set
+
+   γ : (𝔙 ∧ᶠ (⋁⟨ i ⟩ 𝔘⃗ [ i ])) .pr₁ ＝ (⋁⟨ i ⟩ 𝔙 ∧ᶠ (𝔘⃗ [ i ])) .pr₁
+   γ = V ∧[ 𝒪 X ] j (⋁[ 𝒪 X ] U⃗)                        ＝⟨ refl ⟩
+       V ∧[ 𝒪 X ] j (⋁[ 𝒪 X ] ⁅ Uᵢ ∣ Uᵢ ε U⃗ ⁆)          ＝⟨ Ⅰ    ⟩
+       j V ∧[ 𝒪 X ] j (⋁[ 𝒪 X ] ⁅ Uᵢ ∣ Uᵢ ε U⃗ ⁆)        ＝⟨ Ⅱ    ⟩
+       j (V ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ Uᵢ ∣ Uᵢ ε U⃗ ⁆))        ＝⟨ Ⅲ    ⟩
+       j (⋁[ 𝒪 X ] ⁅ V ∧[ 𝒪 X ] Uᵢ ∣ Uᵢ ε U⃗ ⁆)          ∎
+        where
+         Ⅰ = ap (λ - → - ∧[ 𝒪 X ] j (⋁[ 𝒪 X ] U⃗)) (p ⁻¹)
+         Ⅱ = 𝓃₃ (𝒪 X) 𝒿 V (⋁[ 𝒪 X ] U⃗) ⁻¹
+         Ⅲ = ap j (distributivity (𝒪 X) V U⃗)
+
  quotient-frame-data-satisfies-frame-laws : satisfies-frame-laws quotient-frame-data
  quotient-frame-data-satisfies-frame-laws =
-    {!!}
+    ≤ᶠ-is-partial-order
   , (𝟏ᶠ-is-top , (λ { (𝔘 , 𝔙) →  ∧ᶠ-gives-glb 𝔘 𝔙  })
   , ⋁ᶠ-gives-lub
-  , {!!})
+  , λ { (𝔙 , 𝔘⃗) → distributivityᶠ 𝔙 𝔘⃗ })
+
+ quotient-frame-structure : frame-structure 𝓤 𝓤 Fixed-Point
+ quotient-frame-structure =
+  quotient-frame-data , quotient-frame-data-satisfies-frame-laws
 
  quotient-frame : Frame (𝓤 ⁺) 𝓤 𝓤
- quotient-frame = Fixed-Point , quotient-frame-data , quotient-frame-data-satisfies-frame-laws
+ quotient-frame = Fixed-Point , quotient-frame-structure
 
  sublocale : Locale (𝓤 ⁺) 𝓤 𝓤
  sublocale =
   record
    { ⟨_⟩ₗ         = Fixed-Point
-   ; frame-str-of = quotient-frame-data , {!!}
+   ; frame-str-of = quotient-frame-structure
    }
 
 \end{code}
