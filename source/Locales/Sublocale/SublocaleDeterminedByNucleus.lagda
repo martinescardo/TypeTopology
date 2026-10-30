@@ -127,8 +127,8 @@ The order is the same as that of `𝒪 X`.
 
  open Joins _≤ᶠ_
 
- ⋁ᶠ-gives-glb : (𝔘⃗ : Fam 𝓤 Fixed-Point) → ((⋁ᶠ 𝔘⃗) is-lub-of 𝔘⃗) holds
- ⋁ᶠ-gives-glb 𝔘⃗ = β , γ
+ ⋁ᶠ-gives-lub : (𝔘⃗ : Fam 𝓤 Fixed-Point) → ((⋁ᶠ 𝔘⃗) is-lub-of 𝔘⃗) holds
+ ⋁ᶠ-gives-lub 𝔘⃗ = β , γ
   where
    open PosetReasoning (poset-of (𝒪 X))
    open JoinNotation (λ - → ⋁[ 𝒪 X ] -)
@@ -164,7 +164,8 @@ The order is the same as that of `𝒪 X`.
  quotient-frame-data-satisfies-frame-laws =
     {!!}
   , (𝟏ᶠ-is-top , (λ { (𝔘 , 𝔙) →  ∧ᶠ-gives-glb 𝔘 𝔙  })
-  , {!!} , {!!})
+  , ⋁ᶠ-gives-lub
+  , {!!})
 
  quotient-frame : Frame (𝓤 ⁺) 𝓤 𝓤
  quotient-frame = Fixed-Point , quotient-frame-data , quotient-frame-data-satisfies-frame-laws
