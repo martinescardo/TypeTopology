@@ -44,9 +44,9 @@ exhibits-as-a-sublocale-of
  → 𝓤 ⁺  ̇
 exhibits-as-a-sublocale-of X 𝒿 Y = Y ≅c≅ Xⱼ
  where
-  open Sublocale-Determined-By-Nucleus X
+  open Sublocale-Determined-By-Nucleus
 
-  Xⱼ = sublocale-determined-by-nucleus 𝒿
+  Xⱼ = sublocale-determined-by-nucleus X 𝒿
 
 _is-sublocale-of_ : (Y X : Locale (𝓤 ⁺) 𝓤 𝓤) → Ω (𝓤 ⁺)
 Y is-sublocale-of X = Ǝ 𝒿 ꞉ Nucleus (𝒪 X) , exhibits-as-a-sublocale-of X 𝒿 Y
