@@ -109,14 +109,14 @@ The top element and binary meets are exactly the same as those of `𝒪 X`.
   → j V ＝ V
   → j (U ∧[ 𝒪 X ] V) ＝ U ∧[ 𝒪 X ] V
  fixed-points-are-closed-under-binary-meets U V p q =
-    j (U ∧[ 𝒪 X ] V)   ＝⟨ Ⅰ ⟩
-    j U ∧[ 𝒪 X ] j V   ＝⟨ Ⅱ ⟩
-    U ∧[ 𝒪 X ] j V     ＝⟨ Ⅲ ⟩
-    U ∧[ 𝒪 X ] V       ∎
-     where
-      Ⅰ = 𝓃₃ (𝒪 X) 𝒿 U V
-      Ⅱ = ap (λ - → - ∧[ 𝒪 X ] j V) (p ⁻¹) ⁻¹
-      Ⅲ = ap (λ - → U ∧[ 𝒪 X ] -) (q ⁻¹) ⁻¹
+  j (U ∧[ 𝒪 X ] V)   ＝⟨ Ⅰ ⟩
+  j U ∧[ 𝒪 X ] j V   ＝⟨ Ⅱ ⟩
+  U ∧[ 𝒪 X ] j V     ＝⟨ Ⅲ ⟩
+  U ∧[ 𝒪 X ] V       ∎
+   where
+    Ⅰ = 𝓃₃ (𝒪 X) 𝒿 U V
+    Ⅱ = ap (λ - → - ∧[ 𝒪 X ] j V) p
+    Ⅲ = ap (λ - → U ∧[ 𝒪 X ] -) q
 
  _∧ᶠ_ : Fixed-Point → Fixed-Point → Fixed-Point
  (U , p) ∧ᶠ (V , q) = (U ∧[ 𝒪 X ] V) , †
