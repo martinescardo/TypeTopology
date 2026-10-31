@@ -182,6 +182,13 @@ nucleus `j` with the join operation of `𝒪 X`.
       Ⅰ = nuclei-are-monotone (𝒪 X) 𝒿 ((⋁[ 𝒪 X ] U⃗) , V) †
       Ⅱ = p
 
+\end{code}
+
+We package these operations up into the defining frame of the sublocale that `j`
+defines, namely, the quotient frame given by `j`.
+
+\begin{code}
+
  quotient-frame-data : frame-data 𝓤 𝓤 Fixed-Point
  quotient-frame-data = _≤ᶠ_ , 𝟏ᶠ , _∧ᶠ_ , ⋁ᶠ_
 
