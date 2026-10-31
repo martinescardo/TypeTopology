@@ -5,7 +5,8 @@ date:   2026-10-30
 ---
 
 This module contains the construction of the sublocale of a locale determined by
-a nucleus on that locale.
+a nucleus on that locale. This is a standard construction that be found in
+textbooks on locale theory (e.g. [1, p. 49]).
 
 \begin{code}
 
@@ -41,6 +42,7 @@ module Sublocale-Determined-By-Nucleus
         (𝒿 : Nucleus (𝒪 X))
        where
 
+ j : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩
  j = pr₁ 𝒿
 
 \end{code}
@@ -138,8 +140,8 @@ The top element and binary meets are exactly the same as those of `𝒪 X`.
 
 \end{code}
 
-The join operation, however, is different. It is obtained by composing the
-nucleus `j` with the join operation of `𝒪 X`.
+The join operation, however, is different. It is obtained by composing the the
+join operation of `𝒪 X` with the nucleus `j`.
 
 \begin{code}
 
@@ -163,9 +165,9 @@ nucleus `j` with the join operation of `𝒪 X`.
    U⃗ = ⁅ underlying-open 𝔘⃗ᵢ ∣ 𝔘⃗ᵢ ε 𝔘⃗ ⁆
 
    β : ((⋁ᶠ 𝔘⃗) is-an-upper-bound-of 𝔘⃗) holds
-   β i = U⃗ [ i ]                ≤⟨ Ⅰ ⟩
-         ⋁⟨ i ⟩ U⃗ [ i ]         ≤⟨ Ⅱ ⟩
-         j (⋁⟨ i ⟩ U⃗ [ i ])     ■
+   β i = U⃗ [ i ]                   ≤⟨ Ⅰ ⟩
+         ⋁⟨ i ⟩ U⃗ [ i ]            ≤⟨ Ⅱ ⟩
+         j (⋁⟨ i ⟩ U⃗ [ i ])        ■
           where
            Ⅰ = ⋁[ 𝒪 X ]-upper U⃗ i
            Ⅱ = 𝓃₁ (𝒪 X) 𝒿 (⋁⟨ i ⟩ U⃗ [ i ])
@@ -184,13 +186,20 @@ nucleus `j` with the join operation of `𝒪 X`.
 
 \end{code}
 
-We package these operations up into the defining frame of the sublocale that `j`
-defines, namely, the quotient frame given by `j`.
+We package these operations up into the defining frame data defining the
+sublocale that `j` determines, namely, the quotient frame given by `j`.
 
 \begin{code}
 
  quotient-frame-data : frame-data 𝓤 𝓤 Fixed-Point
  quotient-frame-data = _≤ᶠ_ , 𝟏ᶠ , _∧ᶠ_ , ⋁ᶠ_
+
+\end{code}
+
+It remains to prove distributivity and package these into a frame, which we do
+below.
+
+\begin{code}
 
  open JoinNotation ⋁ᶠ_
 
@@ -200,9 +209,9 @@ defines, namely, the quotient frame given by `j`.
   → 𝔙 ∧ᶠ (⋁⟨ i ⟩ 𝔘⃗ [ i ]) ＝ ⋁⟨ i ⟩ 𝔙 ∧ᶠ (𝔘⃗ [ i ])
  distributivityᶠ 𝔙@(V , p) 𝔘⃗ = to-subtype-＝ β γ
   where
-
    U⃗ : Fam 𝓤 ⟨ 𝒪 X ⟩
    U⃗ = ⁅ underlying-open 𝔘⃗ᵢ ∣ 𝔘⃗ᵢ ε 𝔘⃗ ⁆
+
    β : (U : ⟨ 𝒪 X ⟩) → is-prop (j U ＝ U)
    β _ = carrier-of-[ poset-of (𝒪 X) ]-is-set
 
@@ -216,7 +225,8 @@ defines, namely, the quotient frame given by `j`.
          Ⅱ = 𝓃₃ (𝒪 X) 𝒿 V (⋁[ 𝒪 X ] U⃗) ⁻¹
          Ⅲ = ap j (distributivity (𝒪 X) V U⃗)
 
- quotient-frame-data-satisfies-frame-laws : satisfies-frame-laws quotient-frame-data
+ quotient-frame-data-satisfies-frame-laws
+  : satisfies-frame-laws quotient-frame-data
  quotient-frame-data-satisfies-frame-laws =
     ≤ᶠ-is-partial-order
   , (𝟏ᶠ-is-top , (λ { (𝔘 , 𝔙) →  ∧ᶠ-gives-glb 𝔘 𝔙  })
@@ -230,11 +240,22 @@ defines, namely, the quotient frame given by `j`.
  quotient-frame : Frame (𝓤 ⁺) 𝓤 𝓤
  quotient-frame = Fixed-Point , quotient-frame-structure
 
- sublocale : Locale (𝓤 ⁺) 𝓤 𝓤
- sublocale =
+\end{code}
+
+The sublocale determined by `j` is the locale that the above frame defines.
+
+\begin{code}
+
+ sublocale-determined-by-nucleus : Locale (𝓤 ⁺) 𝓤 𝓤
+ sublocale-determined-by-nucleus =
   record
    { ⟨_⟩ₗ         = Fixed-Point
    ; frame-str-of = quotient-frame-structure
    }
 
 \end{code}
+
+\section{Biblioography}
+
+[1]: Peter T. Johnstone. _Stone Spaces_. Cambridge Studies in Advanced
+     Mathematics, Cambridge, 1982. ISBN:978-0-521-33779-3
