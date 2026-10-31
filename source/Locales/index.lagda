@@ -144,11 +144,13 @@ The `Sublocale` subdirectory contains:
 
   1. Definition of the notion of nucleus along with some properties
   2. Properties of the image of a nucleus
+  3. Construction of the sublocale determined by a nucleus
 
 \begin{code}
 
 import Locales.Sublocale.Nucleus      -- (1)
 import Locales.Sublocale.NucleusImage -- (2)
+import Locales.Sublocale.SublocaleDeterminedByNucleus -- (3)
 
 \end{code}
 
