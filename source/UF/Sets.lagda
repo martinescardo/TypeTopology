@@ -52,6 +52,11 @@ refl-is-set : (X : 𝓤 ̇ )
             → is-set X
 refl-is-set X r {x} p refl = r x p
 
+refl-is-set' : (X : 𝓤 ̇ )
+             → ((x : X) (p : x ＝ x) → refl ＝ p)
+             → is-set X
+refl-is-set' X r {x} refl p = r x p
+
 +-is-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
          → is-set X
          → is-set Y
