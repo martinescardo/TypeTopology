@@ -4,8 +4,8 @@ author: Ayberk Tosun
 date:   2026-10-30
 ---
 
-This module contains the construction of the the sublocale of a locale
-determined by a nucleus on that locale.
+This module contains the construction of the sublocale of a locale determined by
+a nucleus on that locale.
 
 \begin{code}
 
@@ -62,7 +62,7 @@ We start by writing down the type of fixed points for `j`.
 
 \end{code}
 
-The order of the frame of fixed points is same as that of `𝒪 X`.
+The order of the frame of fixed points is the same as that of `𝒪 X`.
 
 \begin{code}
 
