@@ -148,8 +148,8 @@ The `Sublocale` subdirectory contains:
 
 \begin{code}
 
-import Locales.Sublocale.Nucleus      -- (1)
-import Locales.Sublocale.NucleusImage -- (2)
+import Locales.Sublocale.Nucleus                      -- (1)
+import Locales.Sublocale.NucleusImage                 -- (2)
 import Locales.Sublocale.SublocaleDeterminedByNucleus -- (3)
 
 \end{code}
