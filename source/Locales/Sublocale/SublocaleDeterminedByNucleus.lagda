@@ -144,19 +144,12 @@ nucleus `j` with the join operation of `𝒪 X`.
 \begin{code}
 
  ⋁ᶠ_ : Fam 𝓤 Fixed-Point → Fixed-Point
- ⋁ᶠ 𝔘⃗ = j (⋁⟨ i ⟩ U⃗ [ i ]) , ≤-is-antisymmetric (poset-of (𝒪 X)) ‡ †
+ ⋁ᶠ 𝔘⃗ = j (⋁⟨ i ⟩ U⃗ [ i ]) , nuclei-are-idempotent (𝒪 X) 𝒿 (⋁⟨ i ⟩ U⃗ [ i ])
   where
    open JoinNotation (λ - → ⋁[ 𝒪 X ] -)
-   open PosetReasoning (poset-of (𝒪 X))
 
    U⃗ : Fam 𝓤 ⟨ 𝒪 X ⟩
    U⃗ = ⁅ underlying-open 𝔘⃗ᵢ ∣ 𝔘⃗ᵢ ε 𝔘⃗ ⁆
-
-   ‡ : (j (j (⋁⟨ i ⟩ U⃗ [ i ])) ≤[ poset-of (𝒪 X) ] j (⋁⟨ i ⟩ U⃗ [ i ])) holds
-   ‡ = 𝓃₂ (𝒪 X) 𝒿 (⋁⟨ i ⟩ U⃗ [ i ])
-
-   † : (j (⋁⟨ i ⟩ U⃗ [ i ]) ≤[ poset-of (𝒪 X) ] j (j (⋁⟨ i ⟩ U⃗ [ i ]))) holds
-   † = 𝓃₁ (𝒪 X) 𝒿 (j (⋁⟨ i ⟩ U⃗ [ i ]))
 
  open Joins _≤ᶠ_
 
