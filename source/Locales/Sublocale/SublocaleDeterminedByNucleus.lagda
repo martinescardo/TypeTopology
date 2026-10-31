@@ -4,8 +4,8 @@ author: Ayberk Tosun
 date:   2026-10-30
 ---
 
-In this module, we construct the sublocale of a locale determined by a nucleus
-on that locale.
+This module contains the construction of the the sublocale of a locale
+determined by a nucleus on that locale.
 
 \begin{code}
 
@@ -13,12 +13,10 @@ on that locale.
 
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Subsingletons
 
 module Locales.Sublocale.SublocaleDeterminedByNucleus
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
-        --  (pe : Prop-Ext)
        where
 
 open import Locales.Frame pt fe
@@ -26,6 +24,7 @@ open import Locales.Sublocale.Nucleus pt fe
 open import MLTT.Spartan
 open import Slice.Family
 open import UF.Logic
+open import UF.Subsingletons
 open import UF.SubtypeClassifier using (Ω; _holds)
 
 open AllCombinators pt fe
@@ -46,7 +45,7 @@ module Sublocale-Determined-By-Nucleus
 
 \end{code}
 
-We start by writing down the type of fixed point for `j`.
+We start by writing down the type of fixed points for `j`.
 
 \begin{code}
 
@@ -56,9 +55,14 @@ We start by writing down the type of fixed point for `j`.
  underlying-open : Fixed-Point → ⟨ 𝒪 X ⟩
  underlying-open (U , _) = U
 
+ underlying-open-is-fixed-point
+  : (𝔘 : Fixed-Point)
+  → j (underlying-open 𝔘) ＝ underlying-open 𝔘
+ underlying-open-is-fixed-point (_ , p) = p
+
 \end{code}
 
-The order is the same as that of `𝒪 X`.
+The order of the frame of fixed points is same as that of `𝒪 X`.
 
 \begin{code}
 
@@ -88,6 +92,8 @@ The order is the same as that of `𝒪 X`.
  open Meets _≤ᶠ_
 
 \end{code}
+
+The top element and binary meets are exactly the same as those of `𝒪 X`.
 
 \begin{code}
 
@@ -129,6 +135,13 @@ The order is the same as that of `𝒪 X`.
 
    δ : ((𝔚 , _) : lower-bound (𝔘 , 𝔙)) → (𝔚 ≤ᶠ (𝔘 ∧ᶠ 𝔙)) holds
    δ (_ , p , q) = ∧[ 𝒪 X ]-greatest _ _ _ p q
+
+\end{code}
+
+The join operation, however, is different. It is obtained by composing the
+nucleus `j` with the join operation of `𝒪 X`.
+
+\begin{code}
 
  ⋁ᶠ_ : Fam 𝓤 Fixed-Point → Fixed-Point
  ⋁ᶠ 𝔘⃗ = j (⋁⟨ i ⟩ U⃗ [ i ]) , ≤-is-antisymmetric (poset-of (𝒪 X)) ‡ †
@@ -194,11 +207,10 @@ The order is the same as that of `𝒪 X`.
    β _ = carrier-of-[ poset-of (𝒪 X) ]-is-set
 
    γ : (𝔙 ∧ᶠ (⋁⟨ i ⟩ 𝔘⃗ [ i ])) .pr₁ ＝ (⋁⟨ i ⟩ 𝔙 ∧ᶠ (𝔘⃗ [ i ])) .pr₁
-   γ = V ∧[ 𝒪 X ] j (⋁[ 𝒪 X ] U⃗)                        ＝⟨ refl ⟩
-       V ∧[ 𝒪 X ] j (⋁[ 𝒪 X ] ⁅ Uᵢ ∣ Uᵢ ε U⃗ ⁆)          ＝⟨ Ⅰ    ⟩
-       j V ∧[ 𝒪 X ] j (⋁[ 𝒪 X ] ⁅ Uᵢ ∣ Uᵢ ε U⃗ ⁆)        ＝⟨ Ⅱ    ⟩
-       j (V ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ Uᵢ ∣ Uᵢ ε U⃗ ⁆))        ＝⟨ Ⅲ    ⟩
-       j (⋁[ 𝒪 X ] ⁅ V ∧[ 𝒪 X ] Uᵢ ∣ Uᵢ ε U⃗ ⁆)          ∎
+   γ = V ∧[ 𝒪 X ] j (⋁[ 𝒪 X ] U⃗)                    ＝⟨ Ⅰ    ⟩
+       j V ∧[ 𝒪 X ] j (⋁[ 𝒪 X ] U⃗)                  ＝⟨ Ⅱ    ⟩
+       j (V ∧[ 𝒪 X ] (⋁[ 𝒪 X ] U⃗))                  ＝⟨ Ⅲ    ⟩
+       j (⋁[ 𝒪 X ] ⁅ V ∧[ 𝒪 X ] Uᵢ ∣ Uᵢ ε U⃗ ⁆)      ∎
         where
          Ⅰ = ap (λ - → - ∧[ 𝒪 X ] j (⋁[ 𝒪 X ] U⃗)) (p ⁻¹)
          Ⅱ = 𝓃₃ (𝒪 X) 𝒿 V (⋁[ 𝒪 X ] U⃗) ⁻¹
