@@ -16,6 +16,7 @@ import gist.2-injective-types
 import gist.Ackermann
 import gist.DependentlyTypedTensors
 import gist.Hydra                         -- by Alice Laroche
+import gist.InductiveBars.index
 import gist.InjectivesVersusAlgebras
 import gist.IntervalObject
 import gist.MajoritiesOnlyActOnSets
