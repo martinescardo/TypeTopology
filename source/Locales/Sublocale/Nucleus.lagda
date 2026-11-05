@@ -253,3 +253,17 @@ module NucleusHeytingImplicationLaw (X : Locale 𝓤 𝓥 𝓥)
     ‡ = heyting-implication₁ U (j V) (j U ==> j V) ♥
 
 \end{code}
+
+Added on 2026-10-30.
+
+\begin{code}
+
+nucleus-preserves-top : (L : Frame (𝓤 ⁺) 𝓤 𝓤)
+                      → ((j , _) : Nucleus L)
+                      → j 𝟏[ L ] ＝ 𝟏[ L ]
+nucleus-preserves-top L 𝒿@(j , _) = only-𝟏-is-above-𝟏 L (j 𝟏[ L ]) †
+ where
+  † : (𝟏[ L ] ≤[ poset-of L ] (j 𝟏[ L ])) holds
+  † = 𝓃₁ L 𝒿 𝟏[ L ]
+
+\end{code}
