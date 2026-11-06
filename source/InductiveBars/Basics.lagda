@@ -8,14 +8,14 @@ natural numbers and show that they are logically equivalent.
 
 {-# OPTIONS --without-K --safe #-}
 
-module gist.InductiveBars.Basics where
+module InductiveBars.Basics where
 
 open import MLTT.Spartan
 open import MLTT.List
 open import UF.Powerset
 open import Naturals.Order
 
-open import gist.InductiveBars.Sequences
+open import InductiveBars.Sequences
 
 \end{code}
 
@@ -35,7 +35,12 @@ data _bars_ (V : 𝓟 (List ℕ)) (s : List ℕ) : 𝓤₀ ̇ where
  hit  : s ∈ V → V bars s
  step : ((n : ℕ) → V bars (s ++ [ n ])) → V bars s
 
--- A generalization of `step` to any finite depth
+\end{code}
+
+A generalization of `step` to any finite depth.
+
+\begin{code}
+
 bars-from-level : (V : 𝓟 (List ℕ)) (s : List ℕ) (n : ℕ)
                 → ((t : List ℕ) → length t ＝ n → (s ++ t) ∈ V)
                 → V bars s
@@ -271,9 +276,9 @@ inductive-bar-meets-every-sequence
  → Σ s ꞉ List ℕ , ((α extends s) × (s ∈ V))
 inductive-bar-meets-every-sequence V (base v) α = [] , ⋆ , v
 inductive-bar-meets-every-sequence V (step φ) α
- with inductive-bar-meets-every-sequence
-       (section₁ V (α 0)) (φ (α 0)) (α ∘ succ)
-... | (s , e , p) = (α 0 ∷ s) , (refl , e) , p
+ using (s , e , p) ←
+   inductive-bar-meets-every-sequence (section₁ V (α 0)) (φ (α 0)) (α ∘ succ)
+ = (α 0 ∷ s) , (refl , e) , p
 
 \end{code}
 
@@ -311,8 +316,9 @@ inductive-bar-meets-bounded-sequences-uniformly V (step φ) δ
   upper = pr₂ (finite-upper-bound μ δ₀)
   goal : (α : ℕ → ℕ) → α ≤¹ δ
        → Σ s ꞉ List ℕ , (length s ≤ℕ succ m) × (α extends s) × s ∈ V
-  goal α r with pr₂ (ihs (α 0)) (α ∘ succ) (r ∘ succ)
-  ... | s , rs , e , v = s' , rs' , e' , v'
+  goal α r
+   using (s , rs , e , v) ← pr₂ (ihs (α 0)) (α ∘ succ) (r ∘ succ)
+   = s' , rs' , e' , v
    where
     s' : List ℕ
     s' = α 0 ∷ s
@@ -320,9 +326,6 @@ inductive-bar-meets-bounded-sequences-uniformly V (step φ) δ
     rs' = ≤-trans (length s) (μ (α 0)) m rs (upper (α 0) (r 0))
     e' : α extends s'
     e' = refl , e
-    v' : s' ∈ V
-      -- s ∈ section₁ V (α 0)
-    v' = v
 
 \end{code}
 
@@ -359,27 +362,18 @@ inductive-bar-gives-dialogue V (step φ) = d , goal
   d : B (List ℕ)
   d = β ψ 0
   goal : (α : ℕ → ℕ) → (α extends (dialogue d α)) × (dialogue d α ∈ V)
-  goal α = es' , vs'
+  goal α
+   using (d₀ , res) ← ihs (α 0)
+       | (es , vs) ← res (α ∘ succ)
+   = transport (λ s → (α extends s) × (s ∈ V)) e ((refl , es) , vs)
    where
-    α₀ : ℕ
-    α₀ = α 0
-    d₀ : B (List ℕ)
-    d₀ = pr₁ (ihs α₀)
     s : List ℕ
     s = dialogue d₀ (α ∘ succ)
-    es : (α ∘ succ) extends s
-    es = pr₁ (pr₂ (ihs α₀) (α ∘ succ))
-    vs : s ∈ section₁ V α₀
-    vs = pr₂ (pr₂ (ihs α₀) (α ∘ succ))
-    e₀ : α₀ ∷ decode α (shift d₀) ＝ α₀ ∷ s
-    e₀ = ap (α₀ ∷_) (shift-spec d₀ α)
-    e₁ : α₀ ∷ decode α (shift d₀) ＝ dialogue d α
-    e₁ = decode-α-is-natural (α₀ ∷_) (shift d₀) α
-    e : α₀ ∷ s ＝ dialogue d α
+    e₀ : α 0 ∷ decode α (shift d₀) ＝ α 0 ∷ s
+    e₀ = ap (α 0 ∷_) (shift-spec d₀ α)
+    e₁ : α 0 ∷ decode α (shift d₀) ＝ dialogue d α
+    e₁ = decode-α-is-natural (α 0 ∷_) (shift d₀) α
+    e : α 0 ∷ s ＝ dialogue d α
     e = e₀ ⁻¹ ∙ e₁
-    es' : α extends (dialogue d α)
-    es' = transport (α extends_) e (refl , es)
-    vs' : (dialogue d α) ∈ V
-    vs' = transport (_∈ V) e vs
 
 \end{code}

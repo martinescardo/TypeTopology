@@ -166,6 +166,7 @@ import Fin.index
 import Games.index
 import Groups.index
 import Higgs.index
+import InductiveBars.index
 import InjectiveTypes.index
 import Integers.index
 import Iterative.index

@@ -2,13 +2,18 @@ Chuangjie Xu, November 2026
 
 We prove Brouwer’s thesis for monotone bars with bar-continuous witnesses.
 
+This development is motivated by Jonathan Sterling's "Higher order functions
+and Brouwer's thesis" (2021).  Because T-definable functions are bar continuous,
+we recover the result for monotone bars with T-definable witnesses, proved in
+Theorem 4.1 of the paper.
+
 \begin{code}
 
 {-# OPTIONS --without-K --safe #-}
 
 open import UF.FunExt using (Fun-Ext)
 
-module gist.InductiveBars.BrouwersThesis (fe : Fun-Ext) where
+module InductiveBars.BrouwersThesis (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import MLTT.List
@@ -18,9 +23,9 @@ open import Naturals.Order
 open import EffectfulForcing.MFPSAndVariations.SystemT
  using (T-definable)
 
-open import gist.InductiveBars.Sequences
-open import gist.InductiveBars.Basics
-open import gist.InductiveBars.Continuity fe
+open import InductiveBars.Sequences
+open import InductiveBars.Basics
+open import InductiveBars.Continuity fe
 
 \end{code}
 

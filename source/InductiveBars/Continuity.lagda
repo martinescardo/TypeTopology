@@ -9,7 +9,7 @@ In this module, we prove:
     subset of Baire space.
 (3) Bar continuity is logically equivalent to eloquence.
 
-As a corollary of (3), all system T-definable functions (ℕ → ℕ) → ℕ are
+As a corollary of (3), all System T-definable functions (ℕ → ℕ) → ℕ are
 bar continuous.
 
 TODO: Relate bar continuity to formal continuity as studied by Kawai.
@@ -20,21 +20,19 @@ TODO: Relate bar continuity to formal continuity as studied by Kawai.
 
 open import UF.FunExt using (Fun-Ext)
 
-module gist.InductiveBars.Continuity (fe : Fun-Ext) where
+module InductiveBars.Continuity (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import MLTT.List
 open import UF.Powerset
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
+open import UF.Subsingletons using (is-prop)
+open import UF.Subsingletons-FunExt using (Π₄-is-prop)
 open import UF.DiscreteAndSeparated using (ℕ-is-set)
 open import Naturals.Order
 
-open import gist.InductiveBars.Sequences
-open import gist.InductiveBars.Basics
+open import InductiveBars.Sequences
+open import InductiveBars.Basics
 
-open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
- using (_＝⦅_⦆_)
 open import EffectfulForcing.MFPSAndVariations.SystemT
  using (T-definable)
 open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS
@@ -127,25 +125,13 @@ is-pointwise-continuous : ((ℕ → ℕ) → ℕ) → 𝓤₀ ̇
 is-pointwise-continuous f
  = (α : ℕ → ℕ) → Σ m ꞉ ℕ , ((β : ℕ → ℕ) → α ＝⦅ m ⦆ β → f α ＝ f β)
 
-agreement-preserves-extension
- : (α β : ℕ → ℕ) (s : List ℕ)
- → α extends s
- → α ＝⦅ length s ⦆ β
- → β extends s
-agreement-preserves-extension α β [] eαs es = ⋆
-agreement-preserves-extension α β (n ∷ s) (refl , p) (e , q) = e' , IH
- where
-  e' : β 0 ＝ α 0 
-  e' = e ⁻¹
-  IH : (β ∘ succ) extends s
-  IH = agreement-preserves-extension (α ∘ succ) (β ∘ succ) s p q
-
 bar-continuity-implies-pointwise-continuity
  : (f : (ℕ → ℕ) → ℕ)
  → is-bar-continuous f → is-pointwise-continuous f
 bar-continuity-implies-pointwise-continuity f bc α
- with inductive-bar-meets-every-sequence (determining-prefixes f) bc α
-... | s , eαs , det = n , correct
+ using (s , eαs , det) ←
+   inductive-bar-meets-every-sequence (determining-prefixes f) bc α
+ = n , correct
  where
   n : ℕ
   n = length s
@@ -164,13 +150,6 @@ is-uniformly-continuous f
  = (δ : ℕ → ℕ)
  → Σ m ꞉ ℕ , ((α β : ℕ → ℕ) → α ≤¹ δ → β ≤¹ δ → α ＝⦅ m ⦆ β → f α ＝ f β)
 
-＝⦅⦆-≤ : (α β : ℕ → ℕ) {m n : ℕ} → m ≤ℕ n
-      → α ＝⦅ n ⦆ β → α ＝⦅ m ⦆ β
-＝⦅⦆-≤ α β {0} {n} ⋆ _ = ⋆
-＝⦅⦆-≤ α β {succ m} {0} ()
-＝⦅⦆-≤ α β {succ m} {succ n} r e
- = pr₁ e , ＝⦅⦆-≤ (α ∘ succ) (β ∘ succ) r (pr₂ e)
-
 bar-continuity-implies-uniform-continuity
  : (f : (ℕ → ℕ) → ℕ)
  → is-bar-continuous f → is-uniformly-continuous f
@@ -184,9 +163,9 @@ bar-continuity-implies-uniform-continuity f bc δ = m , correct
   m : ℕ
   m = pr₁ fact
   correct : (α β : ℕ → ℕ) → α ≤¹ δ → β ≤¹ δ → α ＝⦅ m ⦆ β → f α ＝ f β
-  -- Only one of the two sequences needs to be bounded by δ.
-  correct α β rα _ em with pr₂ fact α rα
-  ... | s , rs , eαs , det = det α β eαs eβs
+  correct α β rα _ em
+   using (s , rs , eαs , det) ← pr₂ fact α rα
+   = det α β eαs eβs
    where
     es : α ＝⦅ length s ⦆ β
     es = ＝⦅⦆-≤ α β rs em
@@ -217,16 +196,14 @@ bar-continuity-implies-eloquence f bc = d' , correct
   d' : B ℕ
   d' = B-functor value d
   correct : (α : ℕ → ℕ) → dialogue d' α ＝ f α
-  correct α = e₀ ⁻¹ ∙ e₁
+  correct α
+   using (eαs , det) ← pr₂ fact α
+   = e₀ ⁻¹ ∙ e₁
    where
     s : List ℕ
     s = dialogue d α
     e₀ : value s ＝ dialogue d' α
     e₀ = decode-α-is-natural value d α
-    eαs : α extends s
-    eαs = pr₁ (pr₂ fact α)
-    det : s determines f
-    det = pr₂ (pr₂ fact α)
     e₁ : value s ＝ f α
     e₁ = det (pad s) α (pad-extends s) eαs
 

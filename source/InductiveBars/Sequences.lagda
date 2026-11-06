@@ -4,7 +4,7 @@ Chuangjie Xu, November 2026
 
 {-# OPTIONS --without-K --safe #-}
 
-module gist.InductiveBars.Sequences where
+module InductiveBars.Sequences where
 
 open import MLTT.Spartan
 open import MLTT.List
@@ -48,6 +48,10 @@ prefix : {A : 𝓤 ̇} → ℕ → (ℕ → A) → List A
 prefix 0        α = []
 prefix (succ n) α = α 0 ∷ prefix n (α ∘ succ)
 
+extends-prefix : (α : ℕ → ℕ) (n : ℕ) → α extends (prefix n α)
+extends-prefix α 0 = ⋆
+extends-prefix α (succ n) = refl , extends-prefix (α ∘ succ) n
+
 extends-prefix-decomposition
  : {A : 𝓤 ̇} (α : ℕ → A) (s : List A) (n : ℕ)
  → α extends s
@@ -56,12 +60,8 @@ extends-prefix-decomposition
 extends-prefix-decomposition α s 0 _ _ = s , refl
 extends-prefix-decomposition α [] (succ n) _ ()
 extends-prefix-decomposition α (a ∷ s) (succ n) (refl , e) r
+ using (t , p) ← extends-prefix-decomposition (α ∘ succ) s n e r
  = t , ap (α 0 ∷_) p
- where
-  ih : Σ t ꞉ _ , prefix n (α ∘ succ) ++ t ＝ s
-  ih = extends-prefix-decomposition (α ∘ succ) s n e r
-  t = pr₁ ih
-  p = pr₂ ih
 
 lookup : {A : 𝓤 ̇} (s : List A) {i : ℕ} → i <ℕ length s → A
 lookup [] ()
@@ -83,8 +83,9 @@ finite-upper-bound α 0 = α 0 , upper
   upper : (i : ℕ) → i ≤ℕ 0 → α i ≤ℕ α 0
   upper 0 r = ≤-refl (α 0)
   upper (succ i) ()
-finite-upper-bound α (succ k) with finite-upper-bound (α ∘ succ) k
-... | M , upper = M' , upper'
+finite-upper-bound α (succ k)
+ using (M , upper) ← finite-upper-bound (α ∘ succ) k
+ = M' , upper'
  where
   M' : ℕ
   M' = max M (α 0)
@@ -98,5 +99,45 @@ infix 30 _≤¹_
 
 _≤¹_ : (ℕ → ℕ) → (ℕ → ℕ) → 𝓤₀ ̇
 α ≤¹ δ = (i : ℕ) → α i ≤ℕ δ i
+
+_＝⦅_⦆_ : {X : 𝓤 ̇} → (ℕ → X) → ℕ → (ℕ → X) → 𝓤 ̇
+α ＝⦅ 0      ⦆ β = 𝟙
+α ＝⦅ succ n ⦆ β = (α 0 ＝ β 0) × (α ∘ succ) ＝⦅ n ⦆ (β ∘ succ)
+
+＝⦅⦆-≤ : (α β : ℕ → ℕ) {m n : ℕ} → m ≤ℕ n
+      → α ＝⦅ n ⦆ β → α ＝⦅ m ⦆ β
+＝⦅⦆-≤ α β {0} {n} ⋆ _ = ⋆
+＝⦅⦆-≤ α β {succ m} {0} ()
+＝⦅⦆-≤ α β {succ m} {succ n} r e
+ = pr₁ e , ＝⦅⦆-≤ (α ∘ succ) (β ∘ succ) r (pr₂ e)
+
+agreement-preserves-extension
+ : (α β : ℕ → ℕ) (s : List ℕ)
+ → α extends s
+ → α ＝⦅ length s ⦆ β
+ → β extends s
+agreement-preserves-extension α β [] eαs es = ⋆
+agreement-preserves-extension α β (n ∷ s) (refl , p) (e , q) = e' , IH
+ where
+  e' : β 0 ＝ α 0 
+  e' = e ⁻¹
+  IH : (β ∘ succ) extends s
+  IH = agreement-preserves-extension (α ∘ succ) (β ∘ succ) s p q
+
+agreement-implies-extends-prefix
+ : (α β : ℕ → ℕ) (n : ℕ)
+ → α ＝⦅ n ⦆ β
+ → β extends (prefix n α)
+agreement-implies-extends-prefix α β 0 e = ⋆
+agreement-implies-extends-prefix α β (succ n) (p , q)
+ = (p ⁻¹) , agreement-implies-extends-prefix (α ∘ succ) (β ∘ succ) n q
+
+extends-prefix-implies-agreement
+ : (α β : ℕ → ℕ) (n : ℕ)
+ → β extends (prefix n α)
+ → α ＝⦅ n ⦆ β
+extends-prefix-implies-agreement α β 0 e = ⋆
+extends-prefix-implies-agreement α β (succ n) (p , q)
+ = (p ⁻¹) , extends-prefix-implies-agreement (α ∘ succ) (β ∘ succ) n q
 
 \end{code}
