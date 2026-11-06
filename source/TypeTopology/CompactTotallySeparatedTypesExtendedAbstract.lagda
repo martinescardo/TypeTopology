@@ -161,6 +161,7 @@ open import TypeTopology.DisconnectedTypes
 open import TypeTopology.ExtendedSumCompact fe
 open import TypeTopology.ExtensionTotallySeparated
 open import TypeTopology.GenericConvergentSequenceCompactness fe₀
+open import TypeTopology.ConvergentSequenceHasInf fe₀ using (ℕ∞-has-inf)
 open import TypeTopology.MicroTychonoff
 open import TypeTopology.WeaklyCompactTypes fe pt
 open import InjectiveTypes.Blackboard fe
@@ -328,6 +329,11 @@ Proposition-3-5-4'' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y}
                     → is-isolated (x , y)
                     → is-isolated x
 Proposition-3-5-4'' = ×-isolated-left
+
+Proposition-3-5-4''' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y}
+                     → is-isolated (x , y)
+                     → is-isolated y
+Proposition-3-5-4''' = ×-isolated-right
 
 -- prop:discrete-closure (5), item:discrete-reflected
 Proposition-3-5-5 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -544,6 +550,11 @@ Lemma-4-5-1 = compact∙-types-are-compact
 Lemma-4-5-1' : {X : 𝓤 ̇ } → is-compact∙ X → X
 Lemma-4-5-1' = compact∙-types-are-pointed
 
+-- lem:compact-pt, a universal witness is a root iff p has a root
+Lemma-4-5-root : {X : 𝓤 ̇ } → is-compact∙ X → (p : X → 𝟚)
+               → Σ x₀ ꞉ X , (p has-a-root ↔ x₀ is-a-root-of p)
+Lemma-4-5-root = putative-root
+
 -- ex:compact-pt-basic (1)
 Examples-4-6-1 : is-compact∙ 𝟚
 Examples-4-6-1 = 𝟚-is-compact∙
@@ -551,6 +562,13 @@ Examples-4-6-1 = 𝟚-is-compact∙
 -- ex:compact-pt-basic (2), item:NInf-compact
 Examples-4-6-2 : is-compact∙ ℕ∞
 Examples-4-6-2 = ℕ∞-compact∙
+
+-- ex:compact-pt-basic (2), the infimum of the roots
+Examples-4-6-2' : has-inf _≼ℕ∞_
+Examples-4-6-2' = ℕ∞-has-inf
+
+Examples-4-6-2'' : has-infs-of-complemented-subsets ℕ∞ᵒ
+Examples-4-6-2'' = ℕ∞ᵒ-has-infs-of-complemented-subsets (pe 𝓤₀)
 
 -- thm:compact-closure (1), item:compact-zero-one
 Theorem-4-7-1-𝟘 : is-Compact (𝟘 {𝓤}) {𝓥}
@@ -1069,6 +1087,9 @@ Labels: Lemma 5.15 = lem:topped-sum.
 -- lem:topped-sum
 Lemma-5-15 : (τ : Ordinalᵀ 𝓤) → (⟨ τ ⟩ → Ordinalᵀ 𝓤) → Ordinalᵀ 𝓤
 Lemma-5-15 = ∑
+
+Lemma-5-15' : (α : Ordinal 𝓤) → (⟨ α ⟩ → Ordinalᵀ 𝓤) → Ordinal 𝓤
+Lemma-5-15' = ∑ₒ
 
 -- lem:extension-ordinals (1), item:ordinal-extension
 Lemma-5-16-1 : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
