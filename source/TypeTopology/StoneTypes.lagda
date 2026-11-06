@@ -7,7 +7,7 @@ regarded as a weak continuity principle. It is equivalent to the
 doubly negated continuity of every function of ℕ∞ into a discrete
 type, by the module TypeTopology.DecidabilityOfNonContinuity.
 
-The same facts used to to establish that ℕ∞ is a Stone type are used
+The same facts used to establish that ℕ∞ is a Stone type are used
 in the module Ordinals.BrouwerCodesGiveStoneTypes to show that the
 compact totally separated interpretation of the Brouwer ordinal codes
 gives Stone types, again assuming ¬ WLPO.
