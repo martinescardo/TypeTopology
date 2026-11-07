@@ -363,44 +363,44 @@ push and pull request too.
 
 Please add yourself the first time you contribute. Use your adopted name, and not necessarily your given name, at your discretion.
 
-* Alex Rice
-* Alice Laroche
-* Andrew Sneap
-* Andrew Swan
-* Anna Williams
-* Ayberk Tosun
-* Brendan Hart
-* Bruno Paiva
-* Carlo Angiuli
-* Chuangjie Xu
-* Cory Knapp
-* Ettore Aldrovandi
-* Evan Cavallo
-* Fredrik Bakke
-* Fredrik Nordvall Forsberg
-* Ian Ray
-* Igor Arrieta (ii)
-* Ingo Blechschmidt
-* J. A. Carr
-* Jakub Opršal
-* Jon Sterling
-* Kelton OBrien
-* Keri D'Angelo
-* Lane Biocini
-* Marc Bezem
-* Martin Escardo
-* Mike Shulman
-* Nicolai Kraus
-* Ohad Kammar
-* Paul Levy (i)
-* Paulo Oliva
-* Peter Dybjer
-* Simcha van Collem
-* Thierry Coquand
-* Todd Waugh Ambridge
-* Tom de Jong
-* Ulrik Buchholtz
-* Vincent Rahli
+* [Alex Rice](https://alexarice.github.io/)
+* [Alice Laroche](https://github.com/alicelaroche)
+* [Andrew Sneap](https://github.com/adsneap)
+* [Andrew Swan](https://awswan.github.io/)
+* [Anna Williams](https://anna-maths.xyz/)
+* [Ayberk Tosun](https://ayberkt.xyz/)
+* [Brendan Hart](https://github.com/BrendanHart)
+* [Bruno Paiva](https://brunorochapaiva.github.io/)
+* [Carlo Angiuli](https://carloangiuli.com/)
+* [Chuangjie Xu](https://cj-xu.github.io/)
+* [Cory Knapp](https://github.com/cmknapp)
+* [Ettore Aldrovandi](https://www.math.fsu.edu/~ealdrov/)
+* [Evan Cavallo](https://ecavallo.net/)
+* [Fredrik Bakke](https://fredrik-bakke.github.io/forest/)
+* [Fredrik Nordvall Forsberg](https://fredriknf.com/)
+* [Ian Ray](https://ianray11.github.io/)
+* [Igor Arrieta](https://sites.google.com/view/igorarrieta) (ii)
+* [Ingo Blechschmidt](https://www.ingo-blechschmidt.eu/)
+* [J. A. Carr](https://github.com/jasoncarr0)
+* [Jakub Opršal](https://jakub-oprsal.info/)
+* [Jon Sterling](https://www.jonmsterling.com/)
+* [Kelton OBrien](https://keltono.net/)
+* [Keri D'Angelo](https://github.com/keridangelo)
+* [Lane Biocini](https://github.com/biocini)
+* [Marc Bezem](https://www4.uib.no/en/find-employees/marc.bezem)
+* [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/)
+* [Mike Shulman](https://home.sandiego.edu/~shulman/)
+* [Nicolai Kraus](https://nicolaikraus.github.io/)
+* [Ohad Kammar](https://denotational.co.uk/)
+* [Paul Levy](https://pblevy.github.io/) (i)
+* [Paulo Oliva](https://paulooliva.github.io/)
+* [Peter Dybjer](https://www.chalmers.se/en/persons/peterd/)
+* [Simcha van Collem](https://simchavc.github.io/)
+* [Thierry Coquand](https://www.chalmers.se/en/persons/coquand/)
+* [Todd Waugh Ambridge](https://www.cs.bham.ac.uk/~txw467/)
+* [Tom de Jong](https://tdejong.com/)
+* [Ulrik Buchholtz](https://ulrikbuchholtz.dk/)
+* [Vincent Rahli](https://www.cs.bham.ac.uk/~rahliv/)
 
 (i) These authors didn't write any single line of Agda code here, but
 they contributed to constructions, theorems and proofs via the hands
