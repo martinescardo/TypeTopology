@@ -5,9 +5,6 @@
 This development was started by [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/) at around 2010 as an `svn` project, and
 transferred to `github` Monday 5th February 2018.
 
-If you contribute, please add your full (legal or adopted) name and date
-at the place of contribution.
-
 ## Table of contents
 
  1. [About](#about)
