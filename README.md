@@ -2,7 +2,7 @@
 
 ## Various new theorems in constructive univalent mathematics written in Agda
 
-This development was started by Martin Escardo at around 2010 as an `svn` project, and
+This development was started by [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/) at around 2010 as an `svn` project, and
 transferred to `github` Monday 5th February 2018.
 
 If you contribute, please add your full (legal or adopted) name and date
@@ -86,12 +86,12 @@ pull request. The safe part of the library can also be checked with
 mikan index.lagda
 ```
 
-from the directory `source`, in which case the flags listed in
+from the directory [source](source), in which case the flags listed in
 [typetopology.mikan-lib](typetopology.mikan-lib) are used instead.
 
 ## Academic publications and preprints resulting from TypeTopology
 
-1. Martín H. Escardó. *Infinite sets that satisfy the principle of
+1. [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/). *Infinite sets that satisfy the principle of
    omniscience in any variety of constructive mathematics.* [The
    Journal of Symbolic
    Logic](https://www.cambridge.org/core/journals/journal-of-symbolic-logic),
@@ -99,40 +99,40 @@ from the directory `source`, in which case the flags listed in
 
    https://doi.org/10.2178/jsl.7803040
 
-1. Martín H. Escardó. *Continuity of Gödel's system T definable functionals via
+1. [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/). *Continuity of Gödel's system T definable functionals via
    effectful forcing.* [Electronic Notes in Theoretical Computer
    Science](https://www.sciencedirect.com/journal/electronic-notes-in-theoretical-computer-science),
    Volume 298, 2013, Pages 119-141. [MFPS XXIX](https://www.cs.cornell.edu/Conferences/MFPS29/)
 
    https://doi.org/10.1016/j.entcs.2013.09.010
 
-1. Nicolai Kraus, Martín H. Escardó, T. Coquand,
-   T. Altenkirch. *Generalizations of Hedberg's Theorem.* In: Hasegawa,
+1. [Nicolai Kraus](https://nicolaikraus.github.io/), [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/), [T. Coquand](https://www.chalmers.se/en/persons/coquand/),
+   [T. Altenkirch](https://people.cs.nott.ac.uk/psztxa/). *Generalizations of Hedberg's Theorem.* In: Hasegawa,
    M. (eds) Typed Lambda Calculi and Applications. [TLCA
    2013](https://www.kurims.kyoto-u.ac.jp/tlca2013/). Lecture Notes in
    Computer Science, vol 7941. Springer.
 
    https://doi.org/10.1007/978-3-642-38946-7_14
 
-1. Chuangjie Xu and H. Escardó Escardó. *A constructive model of uniform continuity.* TLCA 2013.
+1. [Chuangjie Xu](https://cj-xu.github.io/) and [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/). *A constructive model of uniform continuity.* TLCA 2013.
 
    https://doi.org/10.1007/978-3-642-38946-7_18
 
-1. Martín H. Escardó. *Constructive decidability of classical continuity.*
+1. [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/). *Constructive decidability of classical continuity.*
    [Mathematical Structures in Computer Science][MSCS], Volume 25, Special
    Issue 7: Computing with Infinite Data: Topological and Logical Foundations
    Part 1, October 2015, pp. 1578 - 1589 DOI:
 
    https://doi.org/10.1017/S096012951300042X
 
-1. Martín H. Escardó and Chuangjie Xu. *A constructive manifestation of
+1. [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/) and [Chuangjie Xu](https://cj-xu.github.io/). *A constructive manifestation of
    the Kleene-Kreisel continuous functionals.* Annals of Pure and
    Applied Logic 167(9), 2016.
 
    https://doi.org/10.1016/j.apal.2016.04.011
 
 
-1. Martín H. Escardó and Chuangjie Xu. *The inconsistency of a
+1. [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/) and [Chuangjie Xu](https://cj-xu.github.io/). *The inconsistency of a
    Brouwerian continuity principle with the Curry-Howard
    interpretation.* [13th International Conference on Typed Lambda
    Calculi and Applications (TLCA 2015)](https://drops.dagstuhl.de/opus/portals/lipics/index.php?semnr=15006).
@@ -140,20 +140,21 @@ from the directory `source`, in which case the flags listed in
    https://doi.org/10.4230/LIPIcs.TLCA.2015.153
 
 
-1. Chuangjie Xu. *A Continuous Computational Interpretation of Type Theories*.
+1. [Chuangjie Xu](https://cj-xu.github.io/). *A Continuous Computational Interpretation of Type Theories*.
    PhD thesis, School of Computer Science, University of
    Birmingham, UK, 2015.
 
+   https://etheses.bham.ac.uk/id/eprint/5967/ \
    https://cj-xu.github.io/ContinuityType/xu-thesis.pdf
 
-1. Martín H. Escardó and T. Streicher. *The intrinsic topology of
+1. [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/) and [T. Streicher](https://www2.mathematik.tu-darmstadt.de/~streicher/). *The intrinsic topology of
    Martin-Löf universes.* [Annals of Pure and Applied
    Logic](https://www.sciencedirect.com/journal/annals-of-pure-and-applied-logic),
    Volume 167, Issue 9, 2016, Pages 794-805.
 
    https://doi.org/10.1016/j.apal.2016.04.010
 
-1. Martín H. Escardó and Cory Knapp. *Partial elements and recursion via
+1. [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/) and Cory Knapp. *Partial elements and recursion via
    dominances in univalent type theory.* [Leibniz International Proceedings in
    Informatics
    (LIPIcs)][LIPICS],
@@ -162,40 +163,40 @@ from the directory `source`, in which case the flags listed in
 
    https://doi.org/10.4230/LIPIcs.CSL.2017.21
 
-1. Nicolai Kraus, Martín H. Escardó, T. Coquand, T. Altenkirch. *Notions of
+1. [Nicolai Kraus](https://nicolaikraus.github.io/), [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/), [T. Coquand](https://www.chalmers.se/en/persons/coquand/), [T. Altenkirch](https://people.cs.nott.ac.uk/psztxa/). *Notions of
    Anonymous Existence in Martin-Löf Type Theory.*  [Logical Methods in
    Computer Science][LMCS], March 24, 2017, Volume 13, Issue 1.
 
    https://doi.org/10.23638/LMCS-13(1:15)2017
 
-1. Brendan Hart. Investigating properties of PCF in Agda. MSci dissertation, School of Computer Science, University of Birmingham, UK, 2020.
+1. [Brendan Hart](https://github.com/BrendanHart). *Investigating properties of PCF in Agda.* MSci dissertation, School of Computer Science, University of Birmingham, UK, 2020.
 
-   https://github.com/BrendanHart/Investigating-Properties-of-PCF/blob/master/InvestigatingPropertiesOfPCFInAgda.pdf
-   https://github.com/BrendanHart/Investigating-Properties-of-PCF
+   https://github.com/BrendanHart/Investigating-Properties-of-PCF/blob/master/InvestigatingPropertiesOfPCFInAgda.pdf \
+   https://github.com/BrendanHart/Investigating-Properties-of-PCF \
    https://martinescardo.github.io/TypeTopology/PCF.Lambda.index.html
 
-1. Tom de Jong. *The Scott model of PCF in univalent type theory.*
+1. [Tom de Jong](https://tdejong.com/). *The Scott model of PCF in univalent type theory.*
    [Mathematical Structures in Computer
    Science](https://www.cambridge.org/core/journals/mathematical-structures-in-computer-science),
    Volume 31, Issue 10 - Homotopy Type Theory 2019, July 2021.
 
    https://doi.org/10.1017/S0960129521000153
 
-1. Martín H. Escardó. *The Cantor-Schröder-Bernstein Theorem for
+1. [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/). *The Cantor-Schröder-Bernstein Theorem for
    ∞-groupoids.*  [Journal of Homotopy and Related
    Structures](https://tcms.org.ge/Journals/JHRS/), 16(3), 363-366,
    2021.
 
    https://doi.org/10.1007/s40062-021-00284-6
 
-1. Martín H. Escardó.  *Injective types in univalent
+1. [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/).  *Injective types in univalent
    mathematics.* [Mathematical Structures in Computer
    Science](https://www.cambridge.org/core/journals/mathematical-structures-in-computer-science),
    Volume 31 , Issue 1 , 2021 , pp. 89 - 111.
 
    https://doi.org/10.1017/S0960129520000225
 
-1. Tom de Jong and Martín H. Escardó. *Domain Theory in Constructive
+1. [Tom de Jong](https://tdejong.com/) and [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/). *Domain Theory in Constructive
    and Predicative Univalent Foundations.* [Leibniz International
    Proceedings in Informatics
    (LIPIcs)](https://www.dagstuhl.de/en/publishing/series/details/LIPIcs),
@@ -204,14 +205,14 @@ from the directory `source`, in which case the flags listed in
 
    https://doi.org/10.4230/LIPIcs.CSL.2021.28
 
-1. Dan R. Ghica and Todd Waugh Ambridge. *Global Optimisation with
+1. [Dan R. Ghica](https://www.birmingham.ac.uk/staff/profiles/computer-science/academic-staff/ghica-dan) and [Todd Waugh Ambridge](https://www.cs.bham.ac.uk/~txw467/). *Global Optimisation with
    Constructive Reals.*
    [Logic in Computer Science (LICS)](https://dl.acm.org/conference/lics),
    Proceedings of [LICS 2021][LICS21], June 2021.
 
    https://doi.org/10.1109/LICS52264.2021.9470549
 
-1. Tom de Jong and Martín H. Escardó. *Predicative Aspects of Order
+1. [Tom de Jong](https://tdejong.com/) and [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/). *Predicative Aspects of Order
    Theory in Univalent Foundations.* [Leibniz International Proceedings
    in Informatics
    (LIPIcs)](https://www.dagstuhl.de/en/publishing/series/details/LIPIcs),
@@ -219,7 +220,7 @@ from the directory `source`, in which case the flags listed in
 
    https://doi.org/10.4230/LIPIcs.FSCD.2021.8
 
-1. Tom de Jong. *Domain Theory in Constructive and Predicative Univalent
+1. [Tom de Jong](https://tdejong.com/). *Domain Theory in Constructive and Predicative Univalent
    Foundations*. PhD thesis. School of Computer Science, University of
    Birmingham, UK. Submitted: 30 September 2022; accepted: 1 February 2023.
 
@@ -228,7 +229,7 @@ from the directory `source`, in which case the flags listed in
    https://arxiv.org/abs/2301.12405 \
    https://tdejong.com/writings/phd-thesis.pdf
 
-1. Ayberk Tosun and Martín H. Escardó. *Patch Locale of a Spectral
+1. [Ayberk Tosun](https://ayberkt.xyz/) and [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/). *Patch Locale of a Spectral
    Locale in Univalent Type Theory.* [Electronic Notes in Theoretical
    Informatics and Computer Science](https://entics.episciences.org/),
    Volume 1 - Proceedings of [MFPS XXXVIII][MFPS38], February
@@ -236,25 +237,23 @@ from the directory `source`, in which case the flags listed in
 
    https://doi.org/10.46298/entics.10808
 
-1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie
-   Xu. *Set-Theoretic and Type-Theoretic Ordinals Coincide.*
+1. [Tom de Jong](https://tdejong.com/), [Nicolai Kraus](https://nicolaikraus.github.io/), [Fredrik Nordvall Forsberg](https://fredriknf.com/) and
+   [Chuangjie Xu](https://cj-xu.github.io/). *Set-Theoretic and Type-Theoretic Ordinals Coincide.*
    [Logic in Computer Science (LICS)](https://dl.acm.org/conference/lics),
    Proceedings of [LICS 2023][LICS23]. June 2023.
 
    https://doi.org/10.1109/LICS56636.2023.10175762 \
    https://arxiv.org/abs/2301.10696
 
-1. Tom de Jong and Martín H. Escardó. *On Small Types in Univalent
+1. [Tom de Jong](https://tdejong.com/) and [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/). *On Small Types in Univalent
    Foundations.* [Logical Methods in Computer
    Science](https://lmcs.episciences.org/), Volume 19, Issue 2, May
    2023.
 
    https://doi.org/10.46298/lmcs-19(2:8)2023
 
-1. Martín H. Escardó and Paulo Oliva. *Higher-order Games with
-   Dependent Types*.
-
-   [Theoretical Computer
+1. [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/) and [Paulo Oliva](https://paulooliva.github.io/). *Higher-order Games with
+   Dependent Types*. [Theoretical Computer
    Science](https://www.sciencedirect.com/journal/theoretical-computer-science),
    Special issue "Continuity, Computability, Constructivity: From
    Logic to Algorithms", dedicated to Ulrich Berger's 65th birthday,
@@ -262,23 +261,24 @@ from the directory `source`, in which case the flags listed in
 
    https://doi.org/10.1016/j.tcs.2023.114111
 
-1. Ian Ray. *Tarski's least fixed point theorem: A predicative type theoretic
+1. [Ian Ray](https://ianray11.github.io/). *Tarski's least fixed point theorem: A predicative type theoretic
    formulation*. January 2024.
 
    https://doi.org/10.48550/arXiv.2401.00841
 
-1. Todd Waugh Ambridge. *Exact Real Search: Formalised Optimisation and
+1. [Todd Waugh Ambridge](https://www.cs.bham.ac.uk/~txw467/). *Exact Real Search: Formalised Optimisation and
    Regression in Constructive Univalent Mathematics.* January 2024. University
    of Birmingham. PhD thesis.
 
+   https://etheses.bham.ac.uk/id/eprint/14662/ \
    https://doi.org/10.48550/arXiv.2401.09270
 
-1. Tom de Jong. *Domain theory in univalent foundations I: Directed complete
+1. [Tom de Jong](https://tdejong.com/). *Domain theory in univalent foundations I: Directed complete
    posets and Scott's D∞*. July 2024.
 
    https://doi.org/10.48550/arxiv.2407.06952
 
-1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
+1. [Tom de Jong](https://tdejong.com/), [Nicolai Kraus](https://nicolaikraus.github.io/), [Fredrik Nordvall Forsberg](https://fredriknf.com/) and [Chuangjie Xu](https://cj-xu.github.io/).
    *Ordinal Exponentiation in Homotopy Type Theory*.
    [Logic in Computer Science (LICS)](https://dl.acm.org/conference/lics),
    Proceedings of [LICS 2025][LICS25]. October 2025.
@@ -286,12 +286,12 @@ from the directory `source`, in which case the flags listed in
    https://doi.org/10.1109/LICS65433.2025.00027 \
    https://arxiv.org/abs/2501.14542v4
 
-1. Martin H. Escardo, Bruno da Rocha Paiva, Vincent Rahli and Ayberk Tosun.
+1. [Martin H. Escardo](https://www.cs.bham.ac.uk/~mhe/), [Bruno da Rocha Paiva](https://brunorochapaiva.github.io/), [Vincent Rahli](https://www.cs.bham.ac.uk/~rahliv/) and [Ayberk Tosun](https://ayberkt.xyz/).
    *Internal Effectful Forcing in System T*. [FSCD'2025](https://fscd2025.github.io/).
 
    https://doi.org/10.48550/arXiv.2505.11055
 
-1. Ayberk Tosun. *Constructive and Predicative Locale Theory in Univalent
+1. [Ayberk Tosun](https://ayberkt.xyz/). *Constructive and Predicative Locale Theory in Univalent
    Foundations*. PhD thesis. School of Computer Science, University of
    Birmingham, UK. Submitted: 30 November 2024; accepted: 3 June 2025.
 
@@ -299,14 +299,14 @@ from the directory `source`, in which case the flags listed in
    Updated versions: \
    https://arxiv.org/abs/2603.01308
 
-1. Igor Arrieta, Martín H. Escardó and Ayberk Tosun. *The Patch Topology in
+1. [Igor Arrieta](https://sites.google.com/view/igorarrieta), [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/) and [Ayberk Tosun](https://ayberkt.xyz/). *The Patch Topology in
    Univalent Foundations*. [Mathematical Structures in Computer Science][MSCS],
    Volume 35, Special Issue: Advances in Homotopy Type Theory.
    August 2025.
 
    https://doi.org/10.1017/S0960129525000088
 
-1. Tom de Jong and Martín H. Escardó. *Continuous and algebraic domains in
+1. [Tom de Jong](https://tdejong.com/) and [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/). *Continuous and algebraic domains in
    univalent foundations*. [Journal of Pure and Applied Algebra][JPAA], Volume
    229, Issue 10. August 2025. \
    As requested by the journal, this publication
@@ -315,27 +315,27 @@ from the directory `source`, in which case the flags listed in
 
    https://doi.org/10.1016/j.jpaa.2025.108072
 
-1. Tom de Jong and Martín H. Escardó. *Examples and counterexamples of
+1. [Tom de Jong](https://tdejong.com/) and [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/). *Examples and counterexamples of
    injective types*. January 2026, accepted for publication in
    Ann. Pure Appl. Logic 30th August 2026.
 
    https://doi.org/10.48550/arxiv.2601.12536
    https://doi.org/10.1016/j.apal.2026.103829
 
-1. Anna Williams. *Formalising Displayed Categories with Univalent Foundations*.
+1. [Anna Williams](https://anna-maths.xyz/). *Formalising Displayed Categories with Univalent Foundations*.
    MSci project, School of Computer Science, University of Birmingham, UK, 2026.
 
    https://anna-maths.xyz/assets/papers/disp-categories.pdf
 
-1. Martín H. Escardó. *Compact totally separated types*, preprint, 9th September 2026.
+1. [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/). *Compact totally separated types*, preprint, 9th September 2026.
 
    https://arxiv.org/abs/2609.10447
 
    Agda companion.
    https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTotallySeparatedTypesArticle.html
 
-1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie
-   Xu. *Construtive Ordinal Exponentiation*. September 2025, accepted for
+1. [Tom de Jong](https://tdejong.com/), [Nicolai Kraus](https://nicolaikraus.github.io/), [Fredrik Nordvall Forsberg](https://fredriknf.com/) and
+   [Chuangjie Xu](https://cj-xu.github.io/). *Construtive Ordinal Exponentiation*. September 2025, accepted for
    publication in the [Journal of the ACM][JACM] 2nd October 2026. \
    This is an invited, expanded journal version of the LICS paper *Ordinal
    Exponentiation in Homotopy Type Theory*.
