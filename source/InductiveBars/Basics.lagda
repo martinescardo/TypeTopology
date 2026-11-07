@@ -31,9 +31,9 @@ need not be a proposition.
 
 \begin{code}
 
-data _bars_ (V : 𝓟 (List ℕ)) (s : List ℕ) : 𝓤₀ ̇ where
- hit  : s ∈ V → V bars s
- step : ((n : ℕ) → V bars (s ++ [ n ])) → V bars s
+data _bars_ (V : 𝓟 (List ℕ)) : List ℕ → 𝓤₀ ̇ where
+ hit  : {s : List ℕ} → s ∈ V → V bars s
+ step : {s : List ℕ} → ((n : ℕ) → V bars (s ++ [ n ])) → V bars s
 
 \end{code}
 
@@ -147,9 +147,9 @@ The type `is-inductive-bar V` need not be a proposition.
 
 \begin{code}
 
-data is-inductive-bar (V : 𝓟 (List ℕ)) : 𝓤₀ ̇ where
- base : [] ∈ V → is-inductive-bar V
- step : ((n : ℕ) → is-inductive-bar (section₁ V n)) → is-inductive-bar V
+data is-inductive-bar : 𝓟 (List ℕ) → 𝓤₁ ̇ where
+ base : {V : 𝓟 (List ℕ)} → [] ∈ V → is-inductive-bar V
+ step : {V : 𝓟 (List ℕ)} → ((n : ℕ) → is-inductive-bar (section₁ V n)) → is-inductive-bar V
 
 inductive-bar-section-append
  : (V : 𝓟 (List ℕ)) (s t : List ℕ)

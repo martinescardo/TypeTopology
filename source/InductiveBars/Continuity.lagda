@@ -73,7 +73,7 @@ the following logically equivalent notions of bar continuity.
 
 \begin{code}
 
-is-bar-continuous : ((ℕ → ℕ) → ℕ) → 𝓤₀ ̇
+is-bar-continuous : ((ℕ → ℕ) → ℕ) → 𝓤₁ ̇
 is-bar-continuous f = is-inductive-bar (determining-prefixes f)
 
 is-bar-continuous′ : ((ℕ → ℕ) → ℕ) → 𝓤₀ ̇

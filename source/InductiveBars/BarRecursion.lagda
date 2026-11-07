@@ -37,10 +37,12 @@ extension of s that belongs to V.
 
 \begin{code}
 
-data _controls-recursion-at_ (V : 𝓟 (List ℕ)) (s : List ℕ) : 𝓤₀ ̇ where
- stop     : s ∈ V
+data _controls-recursion-at_ (V : 𝓟 (List ℕ)) : List ℕ → 𝓤₀ ̇ where
+ stop     : {s : List ℕ}
+          → s ∈ V
           → V controls-recursion-at s
- continue : s ∉ V
+ continue : {s : List ℕ}
+          → s ∉ V
           → ((n : ℕ) → V controls-recursion-at (s ++ [ n ]))
           → V controls-recursion-at s
 
