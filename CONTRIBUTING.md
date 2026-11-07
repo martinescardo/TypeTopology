@@ -444,7 +444,19 @@ and everything else in the prose is written in full sentences.
     whose targets do this with the released or the development
     version of Agda, sequentially or in parallel, as `make help`
     explains. The GitHub action checks the whole library in the same
-    way on every pull request, other than draft pull requests.
+    way on every pull request, other than draft pull requests. A
+    second GitHub action checks the safe fragment of the library, which
+    is what [index.lagda](source/index.lagda) imports, with
+    [Mikan](https://codeberg.org/1lab/mikan), and so a contribution to
+    the safe fragment has to be accepted by Mikan too. To do this
+    yourself, run
+
+    ```
+    mikan index.lagda
+    ```
+
+    from `source`, which uses the flags listed in
+    [typetopology.mikan-lib](typetopology.mikan-lib) instead.
 
  1. Check for unused imports with
 

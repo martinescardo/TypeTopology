@@ -87,7 +87,9 @@ mikan index.lagda
 ```
 
 from the directory [source](source), in which case the flags listed in
-[typetopology.mikan-lib](typetopology.mikan-lib) are used instead.
+[typetopology.mikan-lib](typetopology.mikan-lib) are used instead. A
+[second GitHub action](.github/workflows/mikan.yml) does this on every
+push and pull request too.
 
 ## Academic publications and preprints resulting from TypeTopology
 
