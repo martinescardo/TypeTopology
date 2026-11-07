@@ -1,140 +1,411 @@
-# Contribution Guidelines
+# Contributing to TypeTopology
 
-Welcome to TypeTopology!
+TypeTopology is a blackboard for doing new mathematics in [univalent
+foundations](https://homotopytypetheory.org/book/), written in [Agda](https://agda.readthedocs.io/en/latest/), and we welcome contributions to it, from
+academics and non-academics alike. The best guide to our conventions
+is the library itself, so read a few files in the directory you are
+contributing to before you write your own.
 
-We always appreciate contributions in the form of pull requests.
+## Table of contents
 
-1. However, if you have something to add or modify, please in the first
-instance ask Martin Escardo and Tom de Jong, in a joint email message
-to their academic email addresses, where to add your contribution or
-modifications, before you make a pull request.
+ 1. [Before you start](#before-you-start)
+ 1. [What we ask of every contribution](#what-we-ask-of-every-contribution)
+ 1. [Keep every proof](#keep-every-proof)
+ 1. [Explain the mathematics to people](#explain-the-mathematics-to-people)
+ 1. [The preamble of a module](#the-preamble-of-a-module)
+ 1. [Names](#names)
+ 1. [Type theory and notation](#type-theory-and-notation)
+ 1. [Proofs](#proofs)
+ 1. [Layout](#layout)
+ 1. [Checking your work](#checking-your-work)
+ 1. [Pull requests](#pull-requests)
+ 1. [Reporting problems and asking for help](#reporting-problems-and-asking-for-help)
+ 1. [Code of conduct, inclusion, AI policy and license](#code-of-conduct-inclusion-ai-policy-and-license)
 
-1. Because the objective of TypeTopology is not to merely record existing
-mathematics, but to create new mathematics (read [the index
-file](source/index.lagda), and also [Papers
-resulting from
-TypeTopology](README.md#publications-resulting-from-typetopology)), it
-is not OK to attempt to modify somebody else's files without their explicit
-permission given in advance, before any pull request is made. These people may be working on a paper for publication, and it is not OK to jump in without their consent.
+## Before you start
 
-1. By default, if you have a new original contribution, it should first
-go to the [gist](source/gist) folder, in a new subfolder there, and
-once we are fully done with your pull request and merged it, we may find a better
-home for it (and we are open for your suggestions to where to place it).
+ 1. A first contribution goes to the directory [source/gist](https://www.cs.bham.ac.uk/~mhe/TypeTopology/gist.index.html),
+    and once it is accepted we allocate it an appropriate place in the
+    library, together with you. This holds both for new mathematics and
+    for existing mathematics that the library lacks, which we need
+    plenty of in order to do the new things we want to do.
 
-1. But you may also be just adding already existing mathematics, and this
-is rather welcome (we need lots of missing things in order to carry out the new things we want to do!). You should discuss with Martin Escardo and Tom de
-Jong where to add it.
+ 1. Ask before changing anything in a file written by somebody else,
+    and before making a pull request that touches it. The material may
+    be part of a paper in preparation.
 
-1. An important point is that we don't want to
-have just **one** proof, e.g. the "best proof". We want to have all
-known proofs. So, if you add a new, better (in your opinion) proof,
-don't delete the previous one (but you are invited to write in a
-comment how your new proof improves the old ones).
+ 1. Search the library before defining a notion or proving a lemma.
+    The [search page](https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html)
+    finds names, fragments of names, concepts and definitions, there is
+    an [Emacs command](https://github.com/martinescardo/TypeTopologySearch)
+    that does the same, the
+    [module descriptions](https://github.com/martinescardo/TypeTopologyModuleDescriptions)
+    say what each module is about, and the index file of each
+    directory gives an overview of its contents. A notion often has a
+    name here that differs from the one in the literature, so search
+    for the shape of a type as well as for a name.
 
-1. Below, we try to explain the style we adopt in TypeTopology. But we are not comprehensive enough. So first study how we write and typeset code in practice, to avoid unnecessary interactions during pull-request reviews.
+## What we ask of every contribution
 
-1. Most importantly, the objective of `TypeTopology` is to explain mathematics to *people* and not just *computers*. So write *plenty* of comments in your contributions, just as you would in your papers submitted for publication.
+ 1. Your name, which can be your given name or your adopted name, at
+    your discretion, and the date go at the place of contribution. A
+    new file starts with them, on its first line. An addition in the
+    middle of somebody else's file is marked with "Added by name on
+    date" before it and "End of addition" after it, as in
+    [TypeTopology.CompactTypes](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTypes.html). The first time you
+    contribute, add yourself to the list of contributors in the
+    [README](README.md). We want everybody who contributes to get
+    explicit credit, and we want a visible historical record, in
+    addition to the github commit history.
 
-1. We recognize, in view of the previous remark, that non-academics would like to contribute too, and they are most welcome to do so. In fact, a number of non-academics have already contributed, and we are very happy they did, and we would like to encourage everyone to join and contribute.
+ 1. Every new file is imported by the index file of its directory, and
+    every new directory has an index file imported by the index of its
+    parent, as in [DomainTheory.index](https://www.cs.bham.ac.uk/~mhe/TypeTopology/DomainTheory.index.html). This makes sure that the [GitHub action](.github/workflows/main.yml) checks every file,
+    and that a reader of the
+    [html rendering](https://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html)
+    can reach every file from the root index.
 
-1. And, please, do abide by the [code of conduct](CODE-OF-CONDUCT.md). So far we haven't had any problem whatsoever, and we want to keep it that way.
+ 1. Use the import check script
+    [utilities/imports.sh](utilities/imports.sh) to make sure you
+    don't have any unused imports before you do a pull request.
 
-1. **Important rule.** Everybody who contributes must add their given or adopted name to the file or place of contribution, together with the date of contribution. If in doubt, see how we do it in practice. If your contribution is in the middle of a file, then add "Added by `name` on `date`", then your contribution, then "End of addition"  (again, see how we do it in practice). We want everybody who contributes to get explicit credit. We also want to have an explicitly visible historical record.
+ 1. Every module starts with the pragma
 
-1. Any new file in an existing folder must be imported by the index file in that folder. Any new folder must have a new index file that is imported by the index of the parent folder. This has two purposes: (1) make sure that the github action checks *all* files for correctness, and, more importantly, (2) make sure that a human navigating the html rendering of `TypeTopology` can eventually reach any existing file starting from [AllModulesIndex](http://cs.bham.ac.uk/~mhe/TypeTopologyAllModulesIndex.html).
+    ```agda
+    {-# OPTIONS --safe --without-K #-}
+    ```
 
-# TODO
+    and type-checks with the released version of Agda named at the top
+    of [source/index.lagda](https://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html), with the flags fixed
+    in [typetopology.agda-lib](typetopology.agda-lib). A module that
+    needs an unsafe feature goes to the directory
+    [source/Unsafe](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html) and is imported from its index.
 
-The following is very old and should be revised and expanded when we have time. But for the moment please stick to it. You will learn further unwritten guidelines when you submit a pull request - apologies.
+ 1. [Postulates](https://agda.readthedocs.io/en/latest/language/postulates.html)
+    are not allowed, other than in unsafe modules as discussed above.
+    Every axiom that a result needs, whether of univalent foundations,
+    of classical mathematics, or of any other kind, such as the axioms
+    of synthetic topology or synthetic geometry, is a hypothesis of
+    the result, or a parameter of the module that collects such
+    results, so that the statement of a theorem says what it depends
+    on.
 
-# Conventions
+ 1. Everything you contribute is written by you. Our
+    [AI policy](AI-Policy.md) says that we will not consider AI
+    generated Agda code or prose.
 
-In this
-document, we provide a list of conventions and practices that we expect
-`TypeTopology` contributors to follow.
+    (Nevertheless, you may use TypeTopology as a library in your own
+    development that uses AI, as for example the separate repository
+    [DialogueTreesHeight](https://github.com/martinescardo/DialogueTreesHeight)
+    does.)
 
-- Developments are organised using subdirectories inside the `source` folder.
-  For example, the domain theory development lives in `source/DomainTheory`.
-- The file `index.lagda` contains a global index for `TypeTopology`, importing
-  the index for each development in each directory (e.g. `DomainTheory.index`).
-  If you are starting a new development, make sure that it has an `index.lagda`
-  file and that it is imported in the global `index.lagda` file.
-- The indentation length used in `TypeTopology` is **a single space**. Please be
-  careful about this as it is a nonstandard convention.
-- `TypeTopology` does not use the level notation of Agda (i.e. `Type ℓ`) and
-  instead provides a wrapper (in module [`MLTT.Universes`][1]) around this to
-  keep the notation close to pen-and-paper conventions. We use the variables `𝓤
-  𝓥 𝓦` for universe levels and use the notation `𝓤  ̇` to denote the universe at
-  level `𝓤`. Please make sure that your code uses this and avoids the level
-  notation.
+ 1. By contributing you agree that your contribution is released under
+    the [license](LICENSE) of the library, which is [GPL-3](https://www.gnu.org/licenses/gpl-3.0.html).
 
-  * To type `𝓤  ̇`, you can add the symbol `\^.` just after a space using Agda
-    mode in Emacs.
+## Keep every proof
 
-  * Always leave a single space character between the universe dot superscript
-    and the following bracket. This is needed in order for the dot not to show
-    on top of the closing bracket in some browsers in its HTML rendering,
-    including Firefox.
+We want all known proofs of a result, and not only one of them. If you
+add a new proof of something already proved here, keep the previous
+proof, and say in the prose how your proof differs from it or improves
+on it. The same goes for a new definition of a notion that already has
+one, which is added alongside the old one together with a proof that
+the two agree.
 
-- We use the symbol `＝` for the identity type. The Emacs Agda mode does not
-  provide a built-in abbreviation to type this so it's a good idea to insert
-  this binding to your `agda-input-user-translations` i.e.
-  ```
-  '(agda-input-user-translations '(("=" "＝")))
-  ```
-  so that you can type it as `\=`.
-- Each module should contain a preamble that includes:
+## Explain the mathematics to people
 
-  * the author(s) of the module,
-  * a brief summary of contents,
-  * starting date of the development and dates of major additions.
+The purpose of TypeTopology is to explain mathematics to people, and
+not only to computers. Every file is a literate Agda file, and the
+prose in it is written as the prose of a paper is. Write plenty of
+prose, explaining the mathematics and the choices made in the code.
 
-  See [`DomainTheory.Basics.Dcpo`][2] for an example.
-- We adhere to a limit of _80 characters per line_. Please make sure to use
-  `where` and `let` bindings to avoid lines exceeding this limit.
-- The casing convention we use is as follows:
+ 1. Say what the idea of a construction is and what the intention
+    behind a definition is. "The idea is that list concatenation will
+    be the group operation after suitable quotienting", in
+    [Groups.Free](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Groups.Free.html), tells the reader what to expect from the next
+    page of code.
 
-  * all function names should lower case and should use [_kebab casing_][3]
-    e.g. `idtoeq-eqtoid`;
-  * all type names should be upper case and should still use kebab casing if
-    involves multiple words e.g. `Perfect-Nucleus`.
-- We use [`.lagda` files][4] with `\begin{code}` and `\end{code}` blocks. There
-  are some plans to migrate all files to `.lagda.md`, but until this happens,
-  we'll continue to use `.lagda` for the sake of consistency.
-- Our convention is to leave blank lines after `\begin{code}` and before
-  `\end{code}`. In other words, your code should look like
-  ```text
-  \begin{code}
+ 1. Say what a hypothesis is for, and, when we know, why it cannot be
+    dropped.
 
-  <code goes here>
+ 1. Compare the notion you define with the ones in the literature and
+    in the rest of the library, and give the attributions, with links
+    to the papers.
 
-  \end{code}
-  ```
-- Comments and discussions in files are encouraged. Ideally, files should follow
-  a literate programming in style.
-- All modules should use the flags `--safe` and `--without-K`. Any modules that
-  use unsafe features should be placed under the directory `Unsafe` and should
-  be imported from `Unsafe/index.lagda`.
-- For `Σ` types, we use the notation `Σ x ꞉ A , B x`. Note that the colon
-  character here is `꞉` (the Unicode symbol `MODIFIER LETTER COLON`) and **not**
-  `∶` (i.e. the Unicode symbol `RATIO`), which is what you get by typing `\:` in
-  Agda mode. To get the former, you have to type `\:4`
-- Avoid `with` clauses when defining functions.
-- In the index files, whose purposes are to import modules in subdirectories,
-  make sure to _alphabetically sort_ the `import` lines. This is preferable in
-  all modules but it is a rule only for index files.
-- When the type signature for a function `foo : A → B → C → D` goes over the
-  character limit of 80 characters, break and indent it as:
-  ```
-  foo
-   : A
-   → B
-   → C
-   → D
-  ```
+ 1. A result whose proof is in the file is announced by its statement,
+    as in "Stone types are closed under binary sums" in
+    [TypeTopology.StoneTypes](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.StoneTypes.html), and the proof is left to the code.
 
-[1]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html
-[2]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/DomainTheory.Basics.Dcpo.html
-[3]: https://en.wikipedia.org/wiki/Letter_case#Kebab_case
-[4]: https://agda.readthedocs.io/en/v2.6.3/tools/literate-programming.html
+ 1. Routine facts need no prose. Experts know them and others will
+    find the formal proof soon enough.
+
+ 1. Adjectives that rate the mathematics, such as striking, surprising
+    or beautiful, are for the reader to supply. To point at something
+    worth emphasizing, say that it is noteworthy, and say why.
+
+ 1. No explanation is better than an obscure one.
+
+ 1. A variable in running prose is qualified, as in "the point a"
+    rather than a bare "a". A binary operation or relation is named in
+    prose with its underscores, as in "confluence modulo `_≈_`", and
+    written bare when applied to arguments.
+
+## The preamble of a module
+
+Every module starts with prose before its first code block, which
+gives the author or authors and the date on the first line, with the
+dates of major later additions, says in a few sentences what the
+module defines or proves, points to the index of its directory for an
+overview of the development it belongs to, and lists the references it
+relies on, with links. The module
+[DomainTheory.Basics.Dcpo](https://www.cs.bham.ac.uk/~mhe/TypeTopology/DomainTheory.Basics.Dcpo.html)
+is an example. The title line after the date may be a noun phrase,
+and everything else in the prose is written in full sentences.
+
+## Names
+
+ 1. A property is `is-` followed by its name, as in
+    [`is-embedding`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Embeddings.html), and a map between two types is named by its source
+    and target, as in [`ℕ-to-ℕ∞`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.GenericConvergentSequence.html).
+
+ 1. A fact about things is named so that it reads like a sentence, as
+    in [`ℕ-is-set`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.DiscreteAndSeparated.html), [`props-are-sets`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Subsingletons-Properties.html),
+    [`equivs-are-embeddings`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Embeddings.html), [`ℕ-to-ℕ∞-is-embedding`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.GenericConvergentSequence.html),
+    [`EM-gives-WEM`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.ClassicalLogic.html), [`𝟚-retract-of-ℕ∞`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.GenericConvergentSequence.html) and
+    [`being-embedding-is-prop`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Embeddings.html).
+
+ 1. Functions and lemmas are written in lower case and kebab style, as
+    in [`idtoeq-eqtoid`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Univalence.html), and types start with a capital, as in
+    [`Perfect-Nucleus`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Locales.PatchLocale.html). A lemma about a particular type carries the type
+    as a prefix, as in [`𝟚-is-discrete`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.DiscreteAndSeparated.html), while an operation on a type is
+    named without it, as in [`pred`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Fin.html) and [`suc-lc`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Fin.html) in
+    [MLTT.Fin](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Fin.html), since its type says what it acts on.
+
+ 1. A variant of an existing definition or lemma takes the same name
+    with a prime or a subscript, and a family of related facts about
+    one object is numbered with subscripts.
+
+ 1. The hypotheses of univalent foundations have standard variable
+    names across the library, namely [`fe`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.FunExt.html) for function extensionality,
+    [`pt`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html) for the existence of propositional truncations, [`ua`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Univalence.html) for
+    univalence, [`pe`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Subsingletons.html) for propositional extensionality, [`em`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.ClassicalLogic.html) for
+    excluded middle and [`sr`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Size.html) for set replacement. An identification
+    [`x ＝ y`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html) is a path and is named like one, as `p`, and a hypothesis
+    of type [`x ≠ y`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Negation.html) is named for what it is, as `ne`.
+
+## Type theory and notation
+
+ 1. We work in a minimal version of intensional Martin-Löf type theory
+    that we call Spartan MLTT, with a minimal subset of Agda. We define
+    everything from [MLTT.Spartan](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Spartan.html). The flag
+    [`exact-split`](https://agda.readthedocs.io/en/latest/tools/command-line-options.html#cmdoption-exact-split) is on, so that a definition by pattern matching holds
+    definitionally.
+
+ 1. We adopt the univalent point of view even in modules that assume
+    no axioms, taking seriously the distinction between types that are
+    singletons, propositions, sets and 1-groupoids, even where none of
+    univalence, function extensionality or propositional
+    extensionality is needed to reason about them, as in
+    [UF.Subsingletons](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Subsingletons.html).
+
+ 1. Universes are written [`𝓤 ̇`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html) for the universe at level `𝓤`, with
+    the variables [`𝓤 𝓥 𝓦 𝓣`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html), as defined in [MLTT.Universes](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html), and never
+    with Agda's own `Set ℓ` or `Type ℓ`. In [Emacs Agda mode](https://agda.readthedocs.io/en/latest/tools/emacs-mode.html#unicode-input) the
+    superscript dot is typed as `\^.` after a space. Leave a single
+    space between the dot and a following bracket, so that the dot
+    does not sit on top of the bracket in the html rendering.
+
+ 1. The identity type is [`＝`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html), typed as `\=` after adding
+
+    ```
+    '(agda-input-user-translations '(("=" "＝")))
+    ```
+
+    to your Emacs configuration.
+
+ 1. [Σ types](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma.html) are written [`Σ x ꞉ A , B x`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma.html), where the colon is the Unicode
+    character MODIFIER LETTER COLON, typed as `\:4`, and not the
+    character RATIO that `\:` gives. We prefer Σ types to records,
+    as in the definition of [`Ordinal`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html), because univalent foundations supplies constructions and theorems
+    for Σ types that we apply all the time. Records are not forbidden,
+    as they are equivalent to iterated Σ types.
+
+ 1. Use the named accessors of a structure rather than [`pr₁`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma.html) and
+    [`pr₂`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma.html), as in [`resized X s`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Size.html) rather than `pr₁ s` for
+    [`s : X is 𝓥 small`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Size.html), and as in [`underlying-order α`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html) and
+    [`is-well-ordered α`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html) for an ordinal `α` in [Ordinals.Type](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html).
+    Name the properties of a projection once, next to it, as
+    [`clopens-of-is-embedding`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.StoneTypes.html) does, rather than proving them
+    inline at each use.
+
+## Proofs
+
+ 1. We prefer proofs broken into small steps that each make sense on
+    their own, with a fact the code relies on silently, such as a
+    definitional equality that makes a clause type-check, stated as a
+    step rather than left implicit. Saving lines is not one of our
+    goals.
+
+ 1. We prefer to prove equalities with chains [`＝⟨ ⟩`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html), as in
+    [Integers.Multiplication](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Integers.Multiplication.html), so that every intermediate term is
+    on the page, although occasionally composing them with [`∙`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html) may be
+    preferable.
+
+ 1. Keep an argument explicit when it helps the reader, even when Agda
+    could infer it.
+
+ 1. The flag [`--no-infer-absurd-clauses`](https://agda.readthedocs.io/en/latest/tools/command-line-options.html#cmdoption-no-infer-absurd-clauses) is on, so that
+    Agda does not silently omit the clauses for impossible cases when
+    it checks a definition for coverage, and each such clause is
+    written out, which matches MLTT more closely. We write it without
+    absurd patterns `()` or dot patterns. A hypothesis whose type
+    computes to [`𝟘`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Empty.html) is eliminated with [`𝟘-elim`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Empty.html), or with
+    [`𝟘-induction`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Empty.html) when the result type depends on it, an equation
+    between distinct constructors is refuted with a lemma such as
+    [`zero-is-not-one`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Two-Properties.html) or [`succ-lc`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Naturals.Properties.html), and an inductive family at an
+    empty index is mapped into a code family that computes to
+    [`𝟘`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Empty.html)
+    there, as [`Fin-0-is-empty`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Fin.html) does.
+
+ 1. We avoid [`with`](https://agda.readthedocs.io/en/latest/language/with-abstraction.html).
+
+ 1. A helper that is useful beyond the proof it was written for is
+    public and global, with a name of its own, and not a local
+    definition in a `where` block. An anonymous declaration `_ : A`
+    followed by `_ = e` is for a claim worth emphasizing but not worth
+    naming, as in [UF.TruncationLevels](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.TruncationLevels.html).
+
+## Layout
+
+ 1. Lines have at most 80 characters, in code and prose alike, counted
+    in characters and not in bytes, since the files are full of
+    multi-byte Unicode.
+
+ 1. Indentation is a single space, which is nonstandard, so please pay
+    attention to it.
+
+ 1. A type signature that does not fit on one line is broken with the
+    name on its own line and the colon and arrows aligned under each
+    other, as in [Locales.StoneImpliesSpectral](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Locales.StoneImpliesSpectral.html). A
+    definition whose right-hand side does not fit on the line of its
+    left-hand side is broken in the same way, with the equals sign
+    under the colon:
+
+    ```agda
+    foo
+     : A
+     → B
+     → C
+     → D
+    foo a b c
+     = d
+    ```
+
+ 1. In an equality chain, the terms are left aligned, and every [`＝⟨`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html)
+    and the final [`∎`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html) sit in one column, one space after the widest
+    term, as in [Naturals.Addition](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Naturals.Addition.html):
+
+    ```agda
+    trivial-addition-rearrangement x y z =
+      (x + y) + z ＝⟨ addition-associativity x y z ⟩
+      x + (y + z) ＝⟨ ap (x +_) (addition-commutativity y z) ⟩
+      x + (z + y) ＝⟨ (addition-associativity x z y)⁻¹ ⟩
+      (x + z) + y ∎
+    ```
+
+    When the justifications would push the lines past the limit, they
+    are named in a `where` clause, as in
+    [CoNaturals.Type2Properties](https://www.cs.bham.ac.uk/~mhe/TypeTopology/CoNaturals.Type2Properties.html):
+
+    ```agda
+    finite'-preservation n =
+     ℕ∞'-to-ℕ∞ (ι n)             ＝⟨ I ⟩
+     ℕ∞'-to-ℕ∞ (ℕ∞-to-ℕ∞' (ι n)) ＝⟨ II ⟩
+     ι n                         ∎
+      where
+       I  = (ap ℕ∞'-to-ℕ∞ (finite-preservation n))⁻¹
+       II = inverses-are-retractions' ℕ∞-to-ℕ∞'-≃ (ι n)
+    ```
+
+    Alignment is counted in characters. After a rename, realign every
+    chain the name touches, including the ones that became narrower.
+
+ 1. Prose is wrapped per paragraph, at any width up to 80, without
+    breaking hyphenated words or short formulas such as [`¬ WLPO`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Taboos.WLPO.html) across
+    lines.
+
+ 1. Code blocks have a blank line before and after `\begin{code}`, and
+    before and after `\end{code}`, as in [UF.Size](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Size.html):
+
+    ```
+    A more standard notion of impredicativity is that the type Ω 𝓤 of
+    truth-values in the universe 𝓤 itself lives in 𝓤.
+
+    \begin{code}
+
+    Ω-resizing : (𝓤 : Universe) → 𝓤 ⁺ ̇
+    Ω-resizing 𝓤 = (Ω 𝓤) is 𝓤 small
+
+    \end{code}
+
+    Propositional resizing doesn't imply that the first universe 𝓤₀ is
+    impredicative, but it does imply that all other, successor, universes
+    𝓤 ⁺ are.
+    ```
+
+    We use [`.lagda` files](https://agda.readthedocs.io/en/latest/tools/literate-programming.html).
+
+## Checking your work
+
+ 1. Type-check your file with `agda` from the directory [source](source), and
+    treat a report of unsolved metavariables as an error. A file that
+    takes minutes on one line is usually leaving universe
+    metavariables unsolved, which is cured by pinning the universes,
+    as in [`𝟙 {𝓤₀}`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Unit.html), or by stating a lemma in the form its use site
+    needs.
+
+ 1. Check the whole library with [`make`](Makefile) at the root, which runs Agda
+    on [source/AllModulesIndex.lagda](source/AllModulesIndex.lagda), and which the GitHub action
+    also does on every pull request. The action skips draft pull
+    requests.
+
+ 1. Check for unused imports with
+
+    ```
+    ../utilities/imports.sh <file>.lagda
+    ```
+
+    from `source`, and remove the ones it reports, after confirming
+    by type-checking that each one is unused. The script runs in bash
+    and uses GNU sed, which Linux has, macOS gets as [`gsed`](https://formulae.brew.sh/formula/gnu-sed)
+    from Homebrew, and Windows gets together with bash from
+    [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) or
+    [Git for Windows](https://gitforwindows.org/).
+
+ 1. Check the line length with
+
+    ```
+    awk 'length > 80' <file>.lagda
+    ```
+
+    in a UTF-8 locale.
+
+## Pull requests
+
+We prefer small pull requests, but discuss with the maintainers if you
+feel that a particular case would benefit from a larger pull request.
+Small pull requests get reviewed sooner.
+
+## Reporting problems and asking for help
+
+To report a problem with the library, or to ask for help, including
+about where a contribution belongs, open an
+[issue](https://github.com/martinescardo/TypeTopology/issues).
+
+## Code of conduct, inclusion, AI policy and license
+
+By contributing, with pull requests, issues or discussion, you agree to
+abide by our [code of conduct](CODE-OF-CONDUCT.md) and
+[statement of inclusion](STATEMENT-OF-INCLUSION.md). So far we have had
+no problem whatsoever, and we want to keep it that way. Our
+[AI policy](AI-Policy.md) applies to every contribution, and the
+[license](LICENSE) is [GPL-3](https://www.gnu.org/licenses/gpl-3.0.html).
