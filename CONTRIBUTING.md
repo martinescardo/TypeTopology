@@ -130,14 +130,31 @@ prose, explaining the mathematics and the choices made in the code.
 
  1. Compare the notion you define with the ones in the literature and
     in the rest of the library, and give the attributions, with links
-    to the papers.
+    to the papers, as in
+    [UF.Size](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Size.html):
 
- 1. A result whose proof is in the file is announced by its statement,
-    as in "Stone types are closed under binary sums" in
-    [TypeTopology.StoneTypes](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.StoneTypes.html), and the proof is left to the code.
+    > The following notion of local smallness is due to Egbert Rijke, in his
+    > join-construction paper https://arxiv.org/abs/1701.07538.
+
+    A list of references cited in the prose by number is also fine, as
+    in [TypeTopology.DecidabilityOfNonContinuity](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.DecidabilityOfNonContinuity.html):
+
+    > It is shown in [3] that negative consistent axioms can be postulated
+    > in MLTT without loss of canonicity, and Andreas Abel filled important
+    > gaps and formalized this in Agda [4] using a logical-relations
+    > technique.
+    >
+    > ...
+    >
+    > [3] T. Coquand, N.A. Danielsson, M.H. Escardo, U. Norell and Chuangjie Xu.
+    > Negative consistent axioms can be postulated without loss of canonicity.
+    > https://www.cs.bham.ac.uk/~mhe/papers/negative-axioms.pdf
+    >
+    > [4] Andreas Abel. Negative Axioms.
+    >     https://github.com/andreasabel/logrel-mltt/tree/master/Application/NegativeAxioms
 
  1. Routine facts need no prose. Experts know them and others will
-    find the formal proof soon enough.
+    find the formal proof easily enough.
 
  1. Adjectives that rate the mathematics, such as striking, surprising
     or beautiful, are for the reader to supply. To point at something
@@ -176,20 +193,20 @@ and everything else in the prose is written in full sentences.
 ## Names
 
  1. A property is `is-` followed by its name, as in
-    [`is-embedding`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Embeddings.html), and a map between two types is named by its source
-    and target, as in [`ℕ-to-ℕ∞`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.GenericConvergentSequence.html).
+    [`is-embedding`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Embeddings.html#is-embedding), and a map between two types is named by its source
+    and target, as in [`ℕ-to-ℕ∞`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.GenericConvergentSequence.html#ℕ-to-ℕ∞).
 
  1. A fact about things is named so that it reads like a sentence, as
-    in [`ℕ-is-set`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.DiscreteAndSeparated.html), [`props-are-sets`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Subsingletons-Properties.html),
-    [`equivs-are-embeddings`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Embeddings.html), [`ℕ-to-ℕ∞-is-embedding`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.GenericConvergentSequence.html),
-    [`EM-gives-WEM`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.ClassicalLogic.html), [`𝟚-retract-of-ℕ∞`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.GenericConvergentSequence.html) and
-    [`being-embedding-is-prop`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Embeddings.html).
+    in [`ℕ-is-set`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.DiscreteAndSeparated.html#ℕ-is-set), [`props-are-sets`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Subsingletons-Properties.html#props-are-sets),
+    [`equivs-are-embeddings`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Embeddings.html#equivs-are-embeddings), [`ℕ-to-ℕ∞-is-embedding`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.GenericConvergentSequence.html#ℕ-to-ℕ∞-is-embedding),
+    [`EM-gives-WEM`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.ClassicalLogic.html#EM-gives-WEM), [`𝟚-retract-of-ℕ∞`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.GenericConvergentSequence.html#𝟚-retract-of-ℕ∞) and
+    [`being-embedding-is-prop`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Embeddings.html#being-embedding-is-prop).
 
  1. Functions and lemmas are written in lower case and kebab style, as
     in [`idtoeq-eqtoid`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Univalence.html), and types start with a capital, as in
-    [`Perfect-Nucleus`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Locales.PatchLocale.html). A lemma about a particular type carries the type
-    as a prefix, as in [`𝟚-is-discrete`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.DiscreteAndSeparated.html), while an operation on a type is
-    named without it, as in [`pred`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Fin.html) and [`suc-lc`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Fin.html) in
+    [`Perfect-Nucleus`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Locales.PatchLocale.html#PatchConstruction.Perfect-Nucleus). A lemma about a particular type carries the type
+    as a prefix, as in [`𝟚-is-discrete`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.DiscreteAndSeparated.html#𝟚-is-discrete), while an operation on a type is
+    named without it, as in [`pred`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Fin.html#pred) and [`suc-lc`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Fin.html#suc-lc) in
     [MLTT.Fin](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Fin.html), since its type says what it acts on.
 
  1. A variant of an existing definition or lemma takes the same name
@@ -201,8 +218,8 @@ and everything else in the prose is written in full sentences.
     [`pt`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html) for the existence of propositional truncations, [`ua`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Univalence.html) for
     univalence, [`pe`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Subsingletons.html) for propositional extensionality, [`em`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.ClassicalLogic.html) for
     excluded middle and [`sr`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Size.html) for set replacement. An identification
-    [`x ＝ y`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html) is a path and is named like one, as `p`, and a hypothesis
-    of type [`x ≠ y`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Negation.html) is named for what it is, as `ne`.
+    [`x ＝ y`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Identity-Type.html#_＝_) is a path and is named like one, as `p`, and a hypothesis
+    of type [`x ≠ y`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Negation.html#_≠_) is named for what it is, as `ne`.
 
 ## Type theory and notation
 
@@ -219,14 +236,26 @@ and everything else in the prose is written in full sentences.
     extensionality is needed to reason about them, as in
     [UF.Subsingletons](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Subsingletons.html).
 
- 1. Universes are written [`𝓤 ̇`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html) for the universe at level `𝓤`, with
+ 1. Universes are written [`𝓤 ̇`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html#_̇) for the universe at level `𝓤`, with
     the variables [`𝓤 𝓥 𝓦 𝓣`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html), as defined in [MLTT.Universes](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html), and never
-    with Agda's own `Set ℓ` or `Type ℓ`. In [Emacs Agda mode](https://agda.readthedocs.io/en/latest/tools/emacs-mode.html#unicode-input) the
-    superscript dot is typed as `\^.` after a space. Leave a single
-    space between the dot and a following bracket, so that the dot
-    does not sit on top of the bracket in the html rendering.
+    with Agda's own `Set ℓ` or `Type ℓ`. The superscript dot is a
+    postfix operator, typed as `\^.` in [Emacs Agda mode](https://agda.readthedocs.io/en/latest/tools/emacs-mode.html#unicode-input), and so
+    there is a space between `𝓤` and the dot, although it is not
+    visible, because the dot is displayed on top of it. There is also
+    exactly one space after the dot, before a closing bracket `)` or
+    `}` as much as before any other word, as in
+    [UF.Equiv](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Equiv.html):
 
- 1. The identity type is [`＝`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html), typed as `\=` after adding
+    ```agda
+    is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+    ```
+
+    Agda accepts `(X : 𝓤 ̇)` without the space, but then the dot is
+    displayed on top of the bracket in the html rendering. Two spaces
+    are not wanted either. The discussion in
+    [MLTT.Universes](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html) shows the difference as it is rendered.
+
+ 1. The identity type is [`＝`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Identity-Type.html#_＝_), typed as `\=` after adding
 
     ```
     '(agda-input-user-translations '(("=" "＝")))
@@ -234,19 +263,37 @@ and everything else in the prose is written in full sentences.
 
     to your Emacs configuration.
 
- 1. [Σ types](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma.html) are written [`Σ x ꞉ A , B x`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma.html), where the colon is the Unicode
+ 1. [Σ types](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma.html) are written [`Σ x ꞉ A , B x`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma.html#Sigma), where the colon is the Unicode
     character MODIFIER LETTER COLON, typed as `\:4`, and not the
-    character RATIO that `\:` gives. We prefer Σ types to records,
-    as in the definition of [`Ordinal`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html), because univalent foundations supplies constructions and theorems
-    for Σ types that we apply all the time. Records are not forbidden,
-    as they are equivalent to iterated Σ types.
+    character RATIO that `\:` gives. The same applies to
+    [`∃ x ꞉ A , B x`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html#PropositionalTruncation.Exists), the propositional truncation of the Σ type, defined
+    in [UF.PropTrunc](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html). We prefer Σ types to records,
+    as in the definition of [`Ordinal`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html#Ordinal), because univalent foundations supplies constructions and theorems
+    for Σ types that we apply all the time. Records are allowed in
+    some cases, as they are equivalent to iterated Σ types, in
+    particular when their fields quantify over universes, which a Σ
+    type cannot do, as in the record [`propositional-truncations-exist`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html#propositional-truncations-exist)
+    of [UF.PropTrunc](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html), whose type is `𝓤ω`.
 
- 1. Use the named accessors of a structure rather than [`pr₁`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma.html) and
-    [`pr₂`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma.html), as in [`resized X s`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Size.html) rather than `pr₁ s` for
-    [`s : X is 𝓥 small`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Size.html), and as in [`underlying-order α`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html) and
-    [`is-well-ordered α`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html) for an ordinal `α` in [Ordinals.Type](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html).
+ 1. Propositional truncation is neither built in nor postulated. A
+    module that needs it takes the hypothesis
+    [`pt : propositional-truncations-exist`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html#propositional-truncations-exist) as a parameter, and
+    brings the notation into scope with
+    [`open PropositionalTruncation pt`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html#PropositionalTruncation), as
+    [UF.ImageAndSurjection](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.ImageAndSurjection.html) does. This gives the truncation
+    [`∥ X ∥`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html#propositional-truncations-exist.∥_∥) of a type `X`, the proof [`∥∥-is-prop`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html#propositional-truncations-exist.∥∥-is-prop) that it is a
+    proposition, the inclusion [`∣ x ∣`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html#propositional-truncations-exist.∣_∣) of a point `x : X`, the
+    eliminator [`∥∥-rec`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html#propositional-truncations-exist.∥∥-rec), and [`∃`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html#PropositionalTruncation.∃) and [`∨`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html#PropositionalTruncation._∨_) defined
+    from them.
+
+ 1. Use the named accessors of a structure rather than [`pr₁`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma-Type.html#Σ.pr₁) and
+    [`pr₂`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma-Type.html#Σ.pr₂), as in [`resized X s`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Size.html#resized) rather than `pr₁ s` for
+    [`s : X is 𝓥 small`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Size.html#_is_small), and as in [`underlying-order α`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Underlying.html#Underlying.underlying-order) and
+    [`is-well-ordered α`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html#is-well-ordered) for an ordinal `α` in [Ordinals.Type](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html).
+    When you define your own type as a Σ type, name its projections
+    in the same way, as [Ordinals.Type](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html) does for [`Ordinal`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Type.html#Ordinal).
     Name the properties of a projection once, next to it, as
-    [`clopens-of-is-embedding`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.StoneTypes.html) does, rather than proving them
+    [`clopens-of-is-embedding`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.StoneTypes.html#clopens-of-is-embedding) does, rather than proving them
     inline at each use.
 
 ## Proofs
@@ -255,11 +302,31 @@ and everything else in the prose is written in full sentences.
     their own, with a fact the code relies on silently, such as a
     definitional equality that makes a clause type-check, stated as a
     step rather than left implicit. Saving lines is not one of our
-    goals.
+    goals. For example, [`cons-decreases-modulus`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CantorSearch.html#cons-decreases-modulus) in
+    [TypeTopology.CantorSearch](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CantorSearch.html) could be written in one line, but instead
+    states each step with its type:
 
- 1. We prefer to prove equalities with chains [`＝⟨ ⟩`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html), as in
+    ```agda
+    cons-decreases-modulus : (p : 𝟚ᴺ → 𝟚)
+                             (n : ℕ)
+                             (b : 𝟚)
+                           → (succ n) is-a-modulus-of-uc-of p
+                           → n is-a-modulus-of-uc-of (p ∘ cons b)
+    cons-decreases-modulus p n b u α β = III
+     where
+      I : α ＝⟦ n ⟧ β → cons b α ＝⟦ succ n ⟧ cons b β
+      I e = refl , e
+
+      II : cons b α ＝⟦ succ n ⟧ cons b β → p (cons b α) ＝ p (cons b β)
+      II = u (cons b α) (cons b β)
+
+      III : α ＝⟦ n ⟧ β → p (cons b α) ＝ p (cons b β)
+      III = II ∘ I
+    ```
+
+ 1. We prefer to prove equalities with chains [`＝⟨ ⟩`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html#_＝⟨_⟩_), as in
     [Integers.Multiplication](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Integers.Multiplication.html), so that every intermediate term is
-    on the page, although occasionally composing them with [`∙`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html) may be
+    on the page, although occasionally composing them with [`∙`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html#_∙_) may be
     preferable.
 
  1. Keep an argument explicit when it helps the reader, even when Agda
@@ -270,13 +337,13 @@ and everything else in the prose is written in full sentences.
     it checks a definition for coverage, and each such clause is
     written out, which matches MLTT more closely. We write it without
     absurd patterns `()` or dot patterns. A hypothesis whose type
-    computes to [`𝟘`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Empty.html) is eliminated with [`𝟘-elim`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Empty.html), or with
-    [`𝟘-induction`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Empty.html) when the result type depends on it, an equation
+    computes to [`𝟘`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Empty-Type.html#𝟘) is eliminated with [`𝟘-elim`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Empty.html#𝟘-elim), or with
+    [`𝟘-induction`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Empty.html#𝟘-induction) when the result type depends on it, an equation
     between distinct constructors is refuted with a lemma such as
-    [`zero-is-not-one`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Two-Properties.html) or [`succ-lc`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Naturals.Properties.html), and an inductive family at an
+    [`zero-is-not-one`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Two-Properties.html#zero-is-not-one) or [`succ-lc`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Naturals.Properties.html#succ-lc), and an inductive family at an
     empty index is mapped into a code family that computes to
-    [`𝟘`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Empty.html)
-    there, as [`Fin-0-is-empty`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Fin.html) does.
+    [`𝟘`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Empty-Type.html#𝟘)
+    there, as [`Fin-0-is-empty`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Fin.html#Fin-0-is-empty) does.
 
  1. We avoid [`with`](https://agda.readthedocs.io/en/latest/language/with-abstraction.html).
 
@@ -288,9 +355,7 @@ and everything else in the prose is written in full sentences.
 
 ## Layout
 
- 1. Lines have at most 80 characters, in code and prose alike, counted
-    in characters and not in bytes, since the files are full of
-    multi-byte Unicode.
+ 1. Lines have at most 80 characters, in code and prose alike.
 
  1. Indentation is a single space, which is nonstandard, so please pay
     attention to it.
@@ -312,8 +377,8 @@ and everything else in the prose is written in full sentences.
      = d
     ```
 
- 1. In an equality chain, the terms are left aligned, and every [`＝⟨`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html)
-    and the final [`∎`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html) sit in one column, one space after the widest
+ 1. In an equality chain, the terms are left aligned, and every [`＝⟨`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html#_＝⟨_⟩_)
+    and the final [`∎`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html#_∎) sit in one column, one space after the widest
     term, as in [Naturals.Addition](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Naturals.Addition.html):
 
     ```agda
@@ -342,7 +407,7 @@ and everything else in the prose is written in full sentences.
     chain the name touches, including the ones that became narrower.
 
  1. Prose is wrapped per paragraph, at any width up to 80, without
-    breaking hyphenated words or short formulas such as [`¬ WLPO`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Taboos.WLPO.html) across
+    breaking hyphenated words or short formulas such as [`¬ WLPO`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Taboos.WLPO.html#WLPO) across
     lines.
 
  1. Code blocks have a blank line before and after `\begin{code}`, and
@@ -368,17 +433,18 @@ and everything else in the prose is written in full sentences.
 
 ## Checking your work
 
- 1. Type-check your file with `agda` from the directory [source](source), and
-    treat a report of unsolved metavariables as an error. A file that
-    takes minutes on one line is usually leaving universe
-    metavariables unsolved, which is cured by pinning the universes,
-    as in [`𝟙 {𝓤₀}`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Unit.html), or by stating a lemma in the form its use site
-    needs.
+ 1. Check the whole library by running
 
- 1. Check the whole library with [`make`](Makefile) at the root, which runs Agda
-    on [source/AllModulesIndex.lagda](source/AllModulesIndex.lagda), and which the GitHub action
-    also does on every pull request. The action skips draft pull
-    requests.
+    ```
+    agda AllModulesIndex.lagda
+    ```
+
+    from `source`, since [AllModulesIndex.lagda](source/AllModulesIndex.lagda) imports every
+    module. Additionally, there is a [Makefile](Makefile) at the root,
+    whose targets do this with the released or the development
+    version of Agda, sequentially or in parallel, as `make help`
+    explains. The GitHub action checks the whole library in the same
+    way on every pull request, other than draft pull requests.
 
  1. Check for unused imports with
 
@@ -405,7 +471,9 @@ and everything else in the prose is written in full sentences.
 
 We prefer small pull requests, but discuss with the maintainers if you
 feel that a particular case would benefit from a larger pull request.
-Small pull requests get reviewed sooner.
+Small pull requests get reviewed sooner. Before submitting a pull
+request, make sure that redundant imports have been removed, as
+explained in [Checking your work](#checking-your-work).
 
 ## Reporting problems and asking for help
 
