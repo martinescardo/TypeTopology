@@ -22,6 +22,7 @@ transferred to `github` Monday 5th February 2018.
  1. [Statement of inclusion](https://github.com/martinescardo/TypeTopology/blob/master/STATEMENT-OF-INCLUSION.md)
  1. [Code of conduct](https://github.com/martinescardo/TypeTopology/blob/master/CODE-OF-CONDUCT.md)
  1. [Contributing](https://github.com/martinescardo/TypeTopology/blob/master/CONTRIBUTING.md)
+ 1. [Your contribution is your own](https://github.com/martinescardo/TypeTopology/blob/master/AI-Policy.md)
 
 ## About
 
