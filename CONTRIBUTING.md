@@ -12,6 +12,7 @@ contributing to before you write your own.
  1. [What we ask of every contribution](#what-we-ask-of-every-contribution)
  1. [Keep every proof](#keep-every-proof)
  1. [Explain the mathematics to people](#explain-the-mathematics-to-people)
+ 1. [Markdown in the prose](#markdown-in-the-prose)
  1. [The preamble of a module](#the-preamble-of-a-module)
  1. [Names](#names)
  1. [Type theory and notation](#type-theory-and-notation)
@@ -148,6 +149,17 @@ prose, explaining the mathematics and the choices made in the code.
     rather than a bare "a". A binary operation or relation is named in
     prose with its underscores, as in "confluence modulo `_≈_`", and
     written bare when applied to arguments.
+
+## Markdown in the prose
+
+A minimal amount of markdown is allowed in the prose, namely
+`` `code` ``, `*emphasis*`, `**bold**`, `[text](url)` and fenced code
+blocks. Agda's own html backend renders the prose as plain text, and
+the markdown is rendered by our own post-processing of the html
+rendering, the script
+[admin-utilities/agda-html.py](admin-utilities/agda-html.py), which
+also turns urls, DOIs, arXiv identifiers and references to modules
+into links.
 
 ## The preamble of a module
 
