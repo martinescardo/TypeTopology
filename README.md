@@ -18,13 +18,13 @@ at the place of contribution.
  1. [Brief module descriptions](https://github.com/martinescardo/TypeTopologyModuleDescriptions)
  1. [How to cite this repository](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
  1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-agda-files)
+ 1. [Installation](https://github.com/martinescardo/TypeTopology/blob/master/README.md#installation)
+ 1. [Checking the library](https://github.com/martinescardo/TypeTopology/blob/master/README.md#checking-the-library)
  1. [Academic publications and preprints resulting from TypeTopology](https://github.com/martinescardo/TypeTopology#academic-publications-and-preprints-resulting-from-typetopology)
  1. [Current contributors](https://github.com/martinescardo/TypeTopology/blob/master/README.md#current-typetopology-contributors-in-alphabetical-order-of-first-name)
  1. [Statement of inclusion](https://github.com/martinescardo/TypeTopology/blob/master/STATEMENT-OF-INCLUSION.md)
  1. [Code of conduct](https://github.com/martinescardo/TypeTopology/blob/master/CODE-OF-CONDUCT.md)
  1. [Contributing](https://github.com/martinescardo/TypeTopology/blob/master/CONTRIBUTING.md)
-
-    (These guidelines need reworking. But, generally, see how we write things in TypeTopology, and try to imitate our style, although departures from our style may some times be acceptable, if they are implicitly or explicitly justified.)
 
 ## About
 
@@ -34,7 +34,9 @@ The purpose of TypeTopology is to be a playground to work on new ideas we want t
 
 This leads to a fundamentally different organization of our ideas, as recorded in our Agda files here, compared to other existing libraries that record mathematical knowledge.
 
-But, of course, we are also happy for already-existing mathematical ideas to be recorded here. In fact, they may be very useful for developing our own new ideas. Or your own. We are happy for you to join us using TypeTopology as either a blackboard or as record of already-existing mathematical ideas. But, remember, the primary purpose of TypeTopology is to be a blackboard for thinking about mathematics.
+But, of course, we are also happy for already-existing mathematical ideas to be recorded here. In fact, they may be very useful for developing our own new ideas. Or your own. We are happy for you to join us using TypeTopology as either a blackboard or as record of already-existing mathematical ideas.
+
+TypeTopology is distributed under the [GPL-3](LICENSE) license.
 
 ## How to cite
 
@@ -49,15 +51,43 @@ You can use the following BibTeX entry to cite `TypeTopology`:
 }
 ```
 
-If you are citing only your own files, then create a different bibtex file with
-only your name as author.
+If you are citing only files written by particular contributors, then use a
+different BibTeX entry, with them as the authors and the url field pointing to
+those files.
 
 ## Root Agda files
 
- * [source/index.lagda](source/index.lagda) (only `--safe` modules).
- * [source/AllModulesIndex.lagda](source/AllModulesIndex.lagda) (including
-   "unsafe" ones).
+ * [source/index.lagda](source/index.lagda) hereditarily imports all [`--safe`](https://agda.readthedocs.io/en/latest/tools/command-line-options.html#cmdoption-safe) modules.
+ * [source/AllModulesIndex.lagda](source/AllModulesIndex.lagda) hereditarily imports all modules, including the unsafe ones.
  * Each subdirectory in [source/](source/) has its own index file.
+
+The adopted Agda [flags](https://agda.readthedocs.io/en/latest/tools/command-line-options.html) are listed in [typetopology.agda-lib](typetopology.agda-lib).
+
+## Installation
+
+The only dependency is [Agda](https://agda.readthedocs.io/en/latest/getting-started/installation.html),
+version 2.8.0 or 2.9.0. The [Agda standard library](https://github.com/agda/agda-stdlib) is not needed.
+
+## Checking the library
+
+To type-check every module, run
+
+```
+agda AllModulesIndex.lagda
+```
+
+from the directory [source](source), or use the [Makefile](Makefile) at
+the root, whose targets are explained by `make help`. The
+[GitHub action](.github/workflows/main.yml) does this on every push and
+pull request. The safe part of the library can also be checked with
+[Mikan](https://codeberg.org/1lab/mikan), by running
+
+```
+mikan index.lagda
+```
+
+from the directory `source`, in which case the flags listed in
+[typetopology.mikan-lib](typetopology.mikan-lib) are used instead.
 
 ## Academic publications and preprints resulting from TypeTopology
 
