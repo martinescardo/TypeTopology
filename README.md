@@ -55,6 +55,9 @@ If you are citing only files written by particular contributors, then use a
 different BibTeX entry, with them as the authors and the url field pointing to
 those files.
 
+TypeTopology is indexed by [zbMATH Open](https://zbmath.org/software/53728),
+which also lists the publications that cite it.
+
 ## Root Agda files
 
  * [source/index.lagda](source/index.lagda) hereditarily imports all [`--safe`](https://agda.readthedocs.io/en/latest/tools/command-line-options.html#cmdoption-safe) modules.
