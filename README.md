@@ -64,7 +64,7 @@ which also lists the publications that cite it.
  * [source/AllModulesIndex.lagda](source/AllModulesIndex.lagda) hereditarily imports all modules, including the unsafe ones.
  * Each subdirectory in [source/](source/) has its own index file.
 
-The adopted Agda [flags](https://agda.readthedocs.io/en/latest/tools/command-line-options.html) are listed in [typetopology.agda-lib](typetopology.agda-lib).
+The adopted Agda [flags](https://agda.readthedocs.io/en/latest/tools/command-line-options.html) are listed in [typetopology.agda-lib](typetopology.agda-lib), and the adopted [Mikan](https://codeberg.org/1lab/mikan) flags in [typetopology.mikan-lib](typetopology.mikan-lib).
 
 ## Installation
 
@@ -404,8 +404,8 @@ Please add yourself the first time you contribute. Use your adopted name, and no
 
 (i) These authors didn't write any single line of Agda code here, but
 they contributed to constructions, theorems and proofs via the hands
-of Martin Escardo.
+of [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/).
 
 (ii) These authors didn't write single line of Agda code here, but they
-contributed to constructions, theorems and proofs via the hands of Ayberk
-Tosun.
+contributed to constructions, theorems and proofs via the hands of
+[Ayberk Tosun](https://ayberkt.xyz/).
