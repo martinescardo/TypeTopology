@@ -41,9 +41,10 @@ by --unresolved. Those are worth reading: most are references that went
 stale when a module was renamed. Email addresses are deliberately left
 alone.
 
-The pages look exactly as they did. Agda's own stylesheet already gives
-every link no underline and a green background under the cursor, which is
-what an identifier in the code does, so the stylesheet is left alone too.
+A page with links in it reads exactly as it did. Agda's own stylesheet
+already gives every link no underline and a green background under the
+cursor, which is what an identifier in the code does, so the links need
+nothing of their own there.
 
 There are two additions. Three buttons in the top right corner of every
 page, which stay there while the page scrolls. A magnifying glass leads to
@@ -57,6 +58,12 @@ little markdown in the prose and the comments is rendered, `code`,
 *emphasis*, **bold**, [text](url) and fenced blocks, with its markup
 characters hidden by the stylesheet rather than removed. --no-markdown
 leaves it as plain text.
+
+The space that the universe dot needs before a closing bracket in the
+source, as in (X : 𝓤 ̇ ), is hidden by the stylesheet in the same way,
+so that the page reads (X : 𝓤 ̇) while its text stays as Agda wrote it.
+--no-tighten leaves the space showing, and takes the markup off a page
+that has it.
 """
 
 import argparse, collections, glob, os, re, shutil, subprocess, sys
@@ -627,15 +634,56 @@ def markdown(page, pages):
     return ELEMENT.sub(element, page), rendered
 
 
-def rewrite(htmldir, check, md):
+# The space between the universe dot and a closing bracket, which the
+# source needs because the dot is a postfix operator, and which the
+# rendering has no use for now that a browser puts the dot where it
+# belongs. It is wrapped in <dot-space>, which the stylesheet hides,
+# rather than taken out, so that every character Agda wrote is still in
+# the page, which is what the one check in rewrite below rests on, and so
+# that showing the spaces again is a matter of taking the markup off.
+# Agda emits no element of that name anywhere.
+#
+# Only ) and } are tightened. A comma keeps its space, because the source
+# needs it there as well, a name being allowed to end in a comma, and
+# because a space before a comma is the convention of the library
+# throughout. The space sits between two elements, in the text of the
+# <pre> itself, so none of this reaches inside an element. The dot is
+# found by the module it links to rather than by its offset there, which
+# moves whenever that module is edited.
+
+DOT = "\u0307"
+
+DOT_SPACE = re.compile(r'(<a\b[^>]*href="MLTT\.Universes\.html#\d+"'
+                       r'[^>]*>_?' + DOT + r'</a>)'
+                       r' (<a\b[^>]*>[)}])')
+
+DOT_SPACE_TAGS = re.compile(r'</?dot-space>')
+
+
+def tighten(page):
+    """Hide the space between the universe dot and a closing bracket.
+
+    Returns the new page and how many spaces were hidden in it. A space
+    already hidden is left alone, so a page can be given again.
+    """
+    return DOT_SPACE.subn(r'\1<dot-space> </dot-space>\2', page)
+
+
+def untighten(page):
+    "Show those spaces again, giving back the page they were hidden on."
+    return DOT_SPACE_TAGS.sub("", page)
+
+
+def rewrite(htmldir, check, md, tight):
     """Rewrite every page in place.
 
     Returns the links in each page, the names that answer to no page, the
     links that rest on a reading rather than on a name that is exact, the
-    markdown rendered, and how many pages had to be rewritten, which is
-    none of them when the last run did it already. The links counted are the ones this script
-    makes, an <a> with an href and nothing else, which is a shape Agda
-    itself never emits.
+    markdown rendered, how many spaces after the universe dot are
+    hidden, and how many pages had to be rewritten, which is none of them
+    when the last run did it already. The links counted are the ones this
+    script makes, an <a> with an href and nothing else, which is a shape
+    Agda itself never emits.
     """
     paths = sorted(glob.glob(os.path.join(htmldir, "*.html")))
     pages = {os.path.basename(p)[:-len(".html")] for p in paths}
@@ -645,11 +693,11 @@ def rewrite(htmldir, check, md):
 
     defined = definitions(htmldir)
     found, unresolved, rewritten = {}, collections.defaultdict(list), 0
-    read, rendered = [], []
+    read, rendered, tightened = [], [], 0
     for path in paths:
         here = os.path.basename(path)[:-len(".html")]
         original = open(path, encoding="utf-8").read()
-        page = unmark(original)
+        page = untighten(unmark(original))
         own = {name for target, name in OWN_MODULE.findall(page)
                if target in ("", os.path.basename(path))}
         new, links, missing = transform(page, pages, tails, here, own, defined)
@@ -677,6 +725,17 @@ def rewrite(htmldir, check, md):
             if visible(new) != visible(linked) or unmark(new) != linked:
                 raise SystemExit(f"{path}: the markdown cannot be taken off "
                                  f"again exactly; nothing has been written")
+        if tight:
+            # The spaces are only hidden, so the text of the page is
+            # untouched here as well, and taking the markup off gives
+            # back the page it was put on.
+            shown = new
+            new, hidden = tighten(new)
+            if untighten(new) != shown or visible(new) != visible(shown):
+                raise SystemExit(f"{path}: the spaces after the universe "
+                                 f"dot cannot be shown again exactly; "
+                                 f"nothing has been written")
+            tightened += hidden
         if new != original:
             open(path, "w", encoding="utf-8").write(new)
             rewritten += 1
@@ -692,7 +751,7 @@ def rewrite(htmldir, check, md):
                  if module in pages
                  and (shown.rsplit(".", 1)[0] if anchor
                       else SUFFIX.sub("", shown)) != module]
-    return found, unresolved, read, rendered, rewritten
+    return found, unresolved, read, rendered, tightened, rewritten
 
 
 def index_above(here, pages):
@@ -867,6 +926,10 @@ def main():
                         "as plain text, taking it off pages that have it")
     p.add_argument("--list-markdown", action="store_true",
                    help="list the markdown rendered, page by page")
+    p.add_argument("--no-tighten", action="store_true",
+                   help="leave the space between the universe dot and a "
+                        "closing bracket showing, taking the markup off "
+                        "pages that have it")
     p.add_argument("--force", action="store_true",
                    help="run agda even when the rendering looks up to date")
     p.add_argument("--check", action="store_true",
@@ -896,8 +959,9 @@ def main():
     if args.css != "none":
         stylesheet(args.css, out)
 
-    found, unresolved, read, rendered, rewritten = \
-        rewrite(out, args.check, not args.no_markdown)
+    found, unresolved, read, rendered, tightened, rewritten = \
+        rewrite(out, args.check, not args.no_markdown,
+                not args.no_tighten)
     links = [href for page in found.values() for href in page]
     pages = len(glob.glob(os.path.join(out, "*.html")))
     print(f"{len(links)} links in {len(found)} of the {pages} pages in {out}"
@@ -908,6 +972,9 @@ def main():
         print(f"{len(rendered)} pieces of markdown rendered: "
               + ", ".join(f"{n} {k}" for k, n in sorted(kinds.items()))
               + ("" if args.list_markdown else "; --list-markdown lists them"))
+    if tightened:
+        print(f"{tightened} spaces between the universe dot and a closing "
+              f"bracket hidden by the stylesheet")
     url = None if args.search_url == "none" else args.search_url
     changed = corner_buttons(out, url)
     if changed:

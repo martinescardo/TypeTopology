@@ -46,3 +46,8 @@
 .Agda em       { font-style: italic }
 .Agda strong   { font-weight: bold }
 .Agda md-block { display: inline-block; background: #F3F3F3 }
+
+/* The space the source needs between the universe dot and a closing
+   bracket, marked up by agda-html.py, so that the code reads (X : 𝓤 ̇).
+   Taking this line out shows those spaces again. */
+.Agda dot-space { display: none }
