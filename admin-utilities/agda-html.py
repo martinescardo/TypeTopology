@@ -720,9 +720,11 @@ def show_dots(page):
 #
 # The header is the first line of the first prose block of a page, which
 # Agda writes as the element with id 1, and it is taken as a header when
-# it carries a year. A file whose first line is a title or a name alone
-# keeps the ordinary weight, since telling those apart asks for a
-# judgement that a rendering should not be making.
+# it carries a year, or when it names contributors and nothing else. The
+# names are read from the list in README.md, so a contributor who adds
+# themselves there the first time they contribute, as that list asks,
+# has the headers of their files emboldened with everyone else's. A
+# first line that is a title keeps the ordinary weight.
 
 # Added opens a marker on its own, that being how it is always used,
 # while a word that also has an ordinary sense, such as Moved, is taken
@@ -745,23 +747,56 @@ BOLD_TAGS = re.compile(r'</?bold-mark>')
 
 YEAR = re.compile(r'\b(?:19|20)\d\d\b')
 
+# The contributors, as the list in README.md gives them, which is one
+# item of the form * [Name](url) per line under its own heading.
 
-def header(text):
+CONTRIBUTORS = re.compile(r'(?m)^[ \t]*\*[ \t]*\[([^\]\n]+)\]\(')
+
+CONTRIBUTORS_HEADING = "Current TypeTopology contributors"
+
+AND = re.compile(r'\s+and\s+|\s*,\s*|\s*&\s*')
+
+
+def contributors(root):
+    """The names in the list of contributors in README.md, or none.
+
+    A library without that file, which is what rewriting a rendering on
+    its own gives, leaves a header of names alone and keeps a dated one.
+    """
+    try:
+        readme = open(os.path.join(root, "README.md"), encoding="utf-8").read()
+    except OSError:
+        return set()
+    below = readme.split(CONTRIBUTORS_HEADING, 1)
+    if len(below) < 2:
+        return set()
+    section = below[1].split("\n##", 1)[0]
+    return set(CONTRIBUTORS.findall(section))
+
+
+def header(text, names):
     """The span of the header at the start of a prose block, or None.
 
-    It runs from the first character to the first full stop at or after
-    the year, which keeps an abbreviated month out of it, or to the end
-    of the line when there is none.
+    A dated header runs from the first character to the first full stop
+    at or after the year, which keeps an abbreviated month out of it, or
+    to the end of the line when there is none. A header of names runs to
+    the end of the line, and every name in it has to be in the list of
+    contributors, so that a title is left alone.
     """
     line = text.split("\n", 1)[0]
-    found = YEAR.search(line)
-    if not found or not line[:1].strip():
+    if not line[:1].strip():
         return None
-    stop = line.find(".", found.end())
-    return 0, len(line) if stop < 0 else stop + 1
+    found = YEAR.search(line)
+    if found:
+        stop = line.find(".", found.end())
+        return 0, len(line) if stop < 0 else stop + 1
+    said = [one for one in AND.split(line.rstrip(" .,")) if one]
+    if names and said and all(one in names for one in said):
+        return 0, len(line.rstrip())
+    return None
 
 
-def bold(page):
+def bold(page, names):
     """Put the header of a file and the markers of an addition in bold.
 
     Returns the new page, how many headers and how many markers were
@@ -779,7 +814,7 @@ def bold(page):
         text, where, inside = positions(body)
         inserts, spans = [], []
         if 'id="1"' in attrs and kind.group(1) == "Background":
-            where_header = header(text)
+            where_header = header(text, names)
             if where_header:
                 spans.append(where_header)
                 headers += 1
@@ -806,7 +841,7 @@ def unbold(page):
     return BOLD_TAGS.sub("", page)
 
 
-def rewrite(htmldir, check, md, tight, dots, embolden):
+def rewrite(htmldir, check, md, tight, dots, embolden, names):
     """Rewrite every page in place.
 
     Returns the links in each page, the names that answer to no page, the
@@ -861,7 +896,7 @@ def rewrite(htmldir, check, md, tight, dots, embolden):
                                  f"again exactly; nothing has been written")
         if embolden:
             plain = new
-            new, one, n = bold(new)
+            new, one, n = bold(new, names)
             if unbold(new) != plain or visible(new) != visible(plain):
                 raise SystemExit(f"{path}: the markup of the header and "
                                  f"the markers cannot be taken off again "
@@ -1104,6 +1139,9 @@ def main():
     args = p.parse_args()
 
     source = args.source or os.path.join(args.typetopology, "source")
+    root = (args.typetopology
+            if os.path.isfile(os.path.join(args.typetopology, "README.md"))
+            else os.path.dirname(HERE))
     out = os.path.abspath(args.out)
     os.makedirs(out, exist_ok=True)
 
@@ -1121,7 +1159,8 @@ def main():
     (found, unresolved, read, rendered, tightened, hidden_dots, headers,
      marked, rewritten) = rewrite(out, args.check, not args.no_markdown,
                                   not args.no_tighten, not args.no_hide_dots,
-                                  not args.no_bold)
+                                  not args.no_bold,
+                                  contributors(root))
     links = [href for page in found.values() for href in page]
     pages = len(glob.glob(os.path.join(out, "*.html")))
     print(f"{len(links)} links in {len(found)} of the {pages} pages in {out}"
