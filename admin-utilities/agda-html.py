@@ -547,13 +547,10 @@ def markdown_target(target, pages):
     return name + ".html" if name in pages else None
 
 
-def mark(body, pages):
-    """Put the markdown in one element's body, which may hold links already.
-
-    Returns the new body and what was rendered, as (kind, text) pairs.
+def positions(body):
+    """The visible text of an element body, where each of its characters
+    is in the body, and whether it is inside a link.
     """
-    # The visible text, where each of its characters is in the body, and
-    # whether it is inside a link.
     text, where, inside, depth, i = [], [], [], 0, 0
     while i < len(body):
         if body[i] == "<":
@@ -563,7 +560,15 @@ def mark(body, pages):
         else:
             text.append(body[i]), where.append(i), inside.append(depth > 0)
             i += 1
-    text = "".join(text)
+    return "".join(text), where, inside
+
+
+def mark(body, pages):
+    """Put the markdown in one element's body, which may hold links already.
+
+    Returns the new body and what was rendered, as (kind, text) pairs.
+    """
+    text, where, inside = positions(body)
     taken = [False] * len(text)
     inserts, rendered = [], []
     for kind, rx in MARKDOWN:
@@ -704,7 +709,104 @@ def show_dots(page):
     return UNIVERSE_DOT_TAGS.sub("", page)
 
 
-def rewrite(htmldir, check, md, tight, dots):
+# The line that says who wrote a file and when, and the markers of a
+# later addition, which open with Added and the date and close with End
+# of addition, put in bold so that the seams of a file show at a glance.
+# Each of them runs to the end of its first sentence, or of its line,
+# and a -- that begins a comment line is left as it is. A marker that
+# runs into a link is left alone rather than wrapped across it. Nothing
+# is added to the text of the page, only the markup that the stylesheet
+# makes bold.
+#
+# The header is the first line of the first prose block of a page, which
+# Agda writes as the element with id 1, and it is taken as a header when
+# it carries a year. A file whose first line is a title or a name alone
+# keeps the ordinary weight, since telling those apart asks for a
+# judgement that a rendering should not be making.
+
+# Added opens a marker on its own, that being how it is always used,
+# while a word that also has an ordinary sense, such as Moved, is taken
+# as a marker only when the line carries a year. TODO is a marker of its
+# own, and the word alone is emboldened, so that what a file still owes
+# its reader is easy to find.
+
+SEAMS = ("Updated|Moved|Refactored|Modified|Completed|Revised|Edited|"
+         "Removed|Renamed|Extended|Rewritten|Generali[sz]ed|Simplified|"
+         "Split|Rephrased|Deprecated")
+
+ADDITION = re.compile(r'(?m)^[ \t]*(?:--[ \t]*)?'
+                      r'(?:(Added\b[^\n.]*\.?)'
+                      r'|((?:' + SEAMS + r')\b[^\n.]*?'
+                      r'(?:19|20)\d\d[^\n.]*\.?)'
+                      r'|(End of (?:the )?addition[^\n]*?)[ \t]*$'
+                      r'|(TODO)\b)')
+
+BOLD_TAGS = re.compile(r'</?bold-mark>')
+
+YEAR = re.compile(r'\b(?:19|20)\d\d\b')
+
+
+def header(text):
+    """The span of the header at the start of a prose block, or None.
+
+    It runs from the first character to the first full stop at or after
+    the year, which keeps an abbreviated month out of it, or to the end
+    of the line when there is none.
+    """
+    line = text.split("\n", 1)[0]
+    found = YEAR.search(line)
+    if not found or not line[:1].strip():
+        return None
+    stop = line.find(".", found.end())
+    return 0, len(line) if stop < 0 else stop + 1
+
+
+def bold(page):
+    """Put the header of a file and the markers of an addition in bold.
+
+    Returns the new page, how many headers and how many markers were
+    found in it.
+    """
+    headers, found = 0, 0
+
+    def element(m):
+        nonlocal headers, found
+        tag, attrs, body = m.group(1), m.group(2), m.group(3)
+        kind = CLASS.search(attrs)
+        if "href" in attrs or not kind or \
+           kind.group(1) not in LINKABLE_CLASSES:
+            return m.group(0)
+        text, where, inside = positions(body)
+        inserts, spans = [], []
+        if 'id="1"' in attrs and kind.group(1) == "Background":
+            where_header = header(text)
+            if where_header:
+                spans.append(where_header)
+                headers += 1
+        for one in ADDITION.finditer(text):
+            which = next(i for i in (1, 2, 3, 4) if one.group(i))
+            spans.append((one.start(which), one.end(which)))
+            found += 1
+        for s, e in spans:
+            if e <= s or inside[s] or inside[e - 1]:
+                continue
+            inserts += [(where[s], 1, "<bold-mark>"),
+                        (where[e - 1] + 1, 0, "</bold-mark>")]
+        if not inserts:
+            return m.group(0)
+        for pos, _, mark_ in sorted(inserts, reverse=True):
+            body = body[:pos] + mark_ + body[pos:]
+        return f"<{tag}{attrs}>{body}</{tag}>"
+
+    return ELEMENT.sub(element, page), headers, found
+
+
+def unbold(page):
+    "Take that markup off, giving back the page it was put on."
+    return BOLD_TAGS.sub("", page)
+
+
+def rewrite(htmldir, check, md, tight, dots, embolden):
     """Rewrite every page in place.
 
     Returns the links in each page, the names that answer to no page, the
@@ -725,10 +827,11 @@ def rewrite(htmldir, check, md, tight, dots):
     defined = definitions(htmldir)
     found, unresolved, rewritten = {}, collections.defaultdict(list), 0
     read, rendered, tightened, hidden_dots = [], [], 0, 0
+    headers, marked = 0, 0
     for path in paths:
         here = os.path.basename(path)[:-len(".html")]
         original = open(path, encoding="utf-8").read()
-        page = show_dots(untighten(unmark(original)))
+        page = unbold(show_dots(untighten(unmark(original))))
         own = {name for target, name in OWN_MODULE.findall(page)
                if target in ("", os.path.basename(path))}
         new, links, missing = transform(page, pages, tails, here, own, defined)
@@ -756,6 +859,15 @@ def rewrite(htmldir, check, md, tight, dots):
             if visible(new) != visible(linked) or unmark(new) != linked:
                 raise SystemExit(f"{path}: the markdown cannot be taken off "
                                  f"again exactly; nothing has been written")
+        if embolden:
+            plain = new
+            new, one, n = bold(new)
+            if unbold(new) != plain or visible(new) != visible(plain):
+                raise SystemExit(f"{path}: the markup of the header and "
+                                 f"the markers cannot be taken off again "
+                                 f"exactly; nothing has been written")
+            headers += one
+            marked += n
         if tight:
             # The spaces are only hidden, so the text of the page is
             # untouched here as well, and taking the markup off gives
@@ -791,7 +903,7 @@ def rewrite(htmldir, check, md, tight, dots):
                  and (shown.rsplit(".", 1)[0] if anchor
                       else SUFFIX.sub("", shown)) != module]
     return (found, unresolved, read, rendered, tightened, hidden_dots,
-            rewritten)
+            headers, marked, rewritten)
 
 
 def index_above(here, pages):
@@ -970,6 +1082,10 @@ def main():
                    help="leave the space between the universe dot and a "
                         "closing bracket showing, taking the markup off "
                         "pages that have it")
+    p.add_argument("--no-bold", action="store_true",
+                   help="leave the header of a file and the markers of an "
+                        "addition in the ordinary weight, taking the "
+                        "markup off pages that have it")
     p.add_argument("--no-hide-dots", action="store_true",
                    help="leave the universe dots showing, taking the "
                         "markup off pages that have it")
@@ -1002,9 +1118,10 @@ def main():
     if args.css != "none":
         stylesheet(args.css, out)
 
-    (found, unresolved, read, rendered, tightened, hidden_dots,
-     rewritten) = rewrite(out, args.check, not args.no_markdown,
-                          not args.no_tighten, not args.no_hide_dots)
+    (found, unresolved, read, rendered, tightened, hidden_dots, headers,
+     marked, rewritten) = rewrite(out, args.check, not args.no_markdown,
+                                  not args.no_tighten, not args.no_hide_dots,
+                                  not args.no_bold)
     links = [href for page in found.values() for href in page]
     pages = len(glob.glob(os.path.join(out, "*.html")))
     print(f"{len(links)} links in {len(found)} of the {pages} pages in {out}"
@@ -1018,6 +1135,9 @@ def main():
     if tightened:
         print(f"{tightened} spaces between the universe dot and a closing "
               f"bracket hidden by the stylesheet")
+    if headers or marked:
+        print(f"{headers} headers and {marked} markers of an addition "
+              f"put in bold")
     if hidden_dots:
         print(f"{hidden_dots} universe dots hidden by the stylesheet, "
               f"and {NOTATION_PAGE} keeps its own")

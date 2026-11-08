@@ -57,3 +57,8 @@
    MLTT.Universes keeps its dots. Taking this line out shows them all
    again. */
 .Agda universe-dot { display: none }
+
+/* The header of a file and the markers of a later addition, marked up
+   by agda-html.py, so that the seams of a file show at a glance. Taking
+   this line out puts them back in the ordinary weight. */
+.Agda bold-mark { font-weight: bold }
