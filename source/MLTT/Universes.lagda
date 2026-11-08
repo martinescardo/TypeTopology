@@ -120,6 +120,22 @@ Not all web browsers exhibit the same problem, though, which is even
 more annoying. The current solution works for all browsers I tested
 on 5th September 2024 (Firefox, Chrome, Chromium, Safari).
 
+Added 8th November 2026. Now our html rendering
+
+  https://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html
+
+spares the reader the upperscript dot, the space before it and the
+space between the dot and a closing bracket, so that we see
+
+  (X : 𝓤)
+
+as in the HoTT book. This page is the exception and keeps its dots, so
+that the discussion above can be read in a browser as it is written
+here. But, of course, the above conventions must still be followed when
+editing files in emacs.
+
+End of addition.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}

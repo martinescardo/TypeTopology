@@ -250,10 +250,11 @@ and everything else in the prose is written in full sentences.
     is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
     ```
 
-    Agda accepts `(X : 𝓤 ̇)` without the space, but then the dot is
-    displayed on top of the bracket in the html rendering. Two spaces
-    are not wanted either. The discussion in
-    [MLTT.Universes](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html) shows the difference as it is rendered.
+    Our [html rendering](https://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html) is tidied for the reader by
+    `assets/Agda.css`, which hides the dot, the space before it and the
+    space between the dot and a closing bracket, so that we see
+    `(X : 𝓤)` as the HoTT book writes it while the source keeps what
+    Agda needs.
 
  1. The identity type is [`＝`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Identity-Type.html#_＝_), typed as `\=` after adding
 
