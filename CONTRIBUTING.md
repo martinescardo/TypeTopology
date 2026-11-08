@@ -70,17 +70,23 @@ contributing to before you write your own.
     [utilities/imports.sh](utilities/imports.sh) to make sure you
     don't have any unused imports before you do a pull request.
 
- 1. Every module starts with the pragma
+ 1. Every module hereditarily imported from [source/index.lagda](https://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html)
+    must include
 
     ```agda
     {-# OPTIONS --safe --without-K #-}
     ```
+    The option [--without-K](https://agda.readthedocs.io/en/latest/language/without-k.html) is for emphasis only,
+    as it is on by default in
+    [typetopology.agda-lib](typetopology.agda-lib), but
+    [--safe](https://agda.readthedocs.io/en/latest/language/safe-agda.html) is mandatory
+    because it is
+    [coinfective](https://agda.readthedocs.io/en/latest/tools/command-line-options.html#checking-options-for-consistency).
 
-    and type-checks with the released version of Agda named at the top
-    of [source/index.lagda](https://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html), with the flags fixed
-    in [typetopology.agda-lib](typetopology.agda-lib). A module that
-    needs an unsafe feature goes to the directory
-    [source/Unsafe](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html) and is imported from its index.
+    A module that needs an unsafe feature goes to the directory
+    [source/Unsafe](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html)
+    and must be imported from its index, and should still list
+    `--without-K`.
 
  1. [Postulates](https://agda.readthedocs.io/en/latest/language/postulates.html)
     are not allowed, other than in unsafe modules as discussed above.
@@ -448,9 +454,9 @@ and everything else in the prose is written in full sentences.
     way on every pull request, other than draft pull requests. A
     second GitHub action checks the safe fragment of the library, which
     is what [index.lagda](source/index.lagda) imports, with
-    [Mikan](https://codeberg.org/1lab/mikan), and so a contribution to
-    the safe fragment has to be accepted by Mikan too. To do this
-    yourself, run
+    [Mikan](https://codeberg.org/1lab/mikan). Checking with Agda is
+    all we ask of a pull request. If you like, you can run the Mikan
+    check yourself with
 
     ```
     mikan index.lagda
@@ -485,8 +491,29 @@ and everything else in the prose is written in full sentences.
 We prefer small pull requests, but discuss with the maintainers if you
 feel that a particular case would benefit from a larger pull request.
 Small pull requests get reviewed sooner. Before submitting a pull
-request, make sure that redundant imports have been removed, as
-explained in [Checking your work](#checking-your-work).
+request, go through this quick checklist, where each point is
+explained in the sections above, particularly
+[What we ask of every contribution](#what-we-ask-of-every-contribution)
+and [Checking your work](#checking-your-work).
+
+ - [ ] A first contribution goes to the directory `source/gist`.
+ - [ ] Your name and the date are at the place of contribution, and
+       your name is in the list of contributors in the
+       [README](README.md).
+ - [ ] Every new file is imported by the index file of its directory,
+       and every new directory has an index file imported by the index
+       of its parent.
+ - [ ] Every module in the safe fragment includes the pragma
+       `{-# OPTIONS --safe --without-K #-}`.
+ - [ ] Every axiom is a hypothesis of a result or a parameter of a
+       module, with no postulates.
+ - [ ] A new proof or definition of something the library already has
+       is added alongside the existing one.
+ - [ ] The required code layout is obeyed.
+ - [ ] The whole library type-checks with Agda.
+ - [ ] All imports are used.
+ - [ ] Every line has at most 80 characters.
+ - [ ] Everything you contribute is written by you.
 
 ## Reporting problems and asking for help
 
