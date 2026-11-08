@@ -67,6 +67,7 @@ that has it.
 """
 
 import argparse, collections, glob, os, re, shutil, subprocess, sys
+import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -605,17 +606,21 @@ def mark(body, pages):
     return body, rendered
 
 
-def unmark(page):
-    "Take the markdown off a page, giving back the page it was put on."
-    page = MARKDOWN_LINK.sub(r"\1", MARKDOWN_TAGS.sub("", page))
-
-    # An element that became a span only for a markdown link goes back.
+def unspan(page):
+    """Make an element that is a span with no link left in it an <a>
+    again, which is what it was before this script put a link inside it.
+    """
     def element(m):
         if m.group(1) == SPAN and "<a " not in m.group(3):
             return f"<a{m.group(2)}>{m.group(3)}</a>"
         return m.group(0)
 
     return ELEMENT.sub(element, page)
+
+
+def unmark(page):
+    "Take the markdown off a page, giving back the page it was put on."
+    return unspan(MARKDOWN_LINK.sub(r"\1", MARKDOWN_TAGS.sub("", page)))
 
 
 def markdown(page, pages):
@@ -748,17 +753,23 @@ BOLD_TAGS = re.compile(r'</?bold-mark>')
 YEAR = re.compile(r'\b(?:19|20)\d\d\b')
 
 # The contributors, as the list in README.md gives them, which is one
-# item of the form * [Name](url) per line under its own heading.
+# item of the form * [Name](url) per line under its own heading. A name
+# that the files write in a longer form than the list's, which ALIASES
+# records, answers to the same person and the same url.
 
-CONTRIBUTORS = re.compile(r'(?m)^[ \t]*\*[ \t]*\[([^\]\n]+)\]\(')
+CONTRIBUTORS = re.compile(r'(?m)^[ \t]*\*[ \t]*\[([^\]\n]+)\]\(([^)\s]+)\)')
 
 CONTRIBUTORS_HEADING = "Current TypeTopology contributors"
 
 AND = re.compile(r'\s+and\s+|\s*,\s*|\s*&\s*')
 
+ALIASES = {"Jonathan Sterling": "Jon Sterling",
+           "Bruno da Rocha Paiva": "Bruno Paiva"}
+
 
 def contributors(root):
-    """The names in the list of contributors in README.md, or none.
+    """The list of contributors in README.md, each name with the url of
+    their page there, or none.
 
     A library without that file, which is what rewriting a rendering on
     its own gives, leaves a header of names alone and keeps a dated one.
@@ -766,12 +777,16 @@ def contributors(root):
     try:
         readme = open(os.path.join(root, "README.md"), encoding="utf-8").read()
     except OSError:
-        return set()
+        return {}
     below = readme.split(CONTRIBUTORS_HEADING, 1)
     if len(below) < 2:
-        return set()
+        return {}
     section = below[1].split("\n##", 1)[0]
-    return set(CONTRIBUTORS.findall(section))
+    names = dict(CONTRIBUTORS.findall(section))
+    for written, listed in ALIASES.items():
+        if listed in names:
+            names[written] = names[listed]
+    return names
 
 
 def header(text, names):
@@ -845,13 +860,123 @@ def unbold(page):
     return BOLD_TAGS.sub("", page)
 
 
-def rewrite(htmldir, check, md, tight, dots, embolden, names):
+# The name of a contributor in the header of a file, and in a marker of
+# an addition, linked to the page that the list in README.md gives for
+# them. Only those two places get links, so a name in a reference to a
+# paper stays plain text. The names are matched with the accents taken
+# off both sides, so that a header saying Martín Escardó is linked by
+# the list's Martin Escardo, and ALIASES above carries the names the
+# files write in a longer form than the list's. A name inside a link
+# already, or one that the markup of another pass cuts in two, is left
+# as it is.
+
+AUTHOR_LINK = re.compile(r'<a class="Author" href="[^"]*">([^<]*)</a>')
+
+
+def fold(text):
+    """The text with the accents taken off its letters, one character
+    for one character, so that a position in it is a position in the
+    text.
+    """
+    folded = []
+    for c in text:
+        parts = unicodedata.normalize("NFD", c)
+        folded.append(parts[0] if all(unicodedata.combining(x)
+                                      for x in parts[1:]) else c)
+    return "".join(folded)
+
+
+def author_pattern(names):
+    """A pattern for the names of the contributors as a page writes
+    them, folded, with the url each matched form links to, or None when
+    there are no names.
+
+    An apostrophe in a name is matched in the escaped forms Agda writes
+    as well, so that Keri D'Angelo is found in a page that says
+    D&#39;Angelo.
+    """
+    if not names:
+        return None
+    urls = {}
+    for name, url in names.items():
+        base = fold(name)
+        for form in {base, base.replace("'", "&#39;"),
+                     base.replace("'", "&apos;")}:
+            urls[form] = url
+    ordered = sorted(urls, key=len, reverse=True)
+    rx = re.compile(r'(?<!\w)(?:' + "|".join(map(re.escape, ordered))
+                    + r')(?!\w)')
+    return rx, urls
+
+
+def link_authors(page, names, pattern):
+    """Link the names in the header of a file and in the markers of an
+    addition to the contributors' pages.
+
+    Returns the new page and how many names were linked.
+    """
+    rx, urls = pattern
+    linked = 0
+
+    def element(m):
+        nonlocal linked
+        tag, attrs, body = m.group(1), m.group(2), m.group(3)
+        kind = CLASS.search(attrs)
+        if "href" in attrs or not kind or \
+           kind.group(1) not in LINKABLE_CLASSES:
+            return m.group(0)
+        text, where, inside = positions(body)
+        spans = []
+        if 'id="1"' in attrs and kind.group(1) == "Background":
+            where_header = header(text, names)
+            if where_header:
+                spans.append(where_header)
+        for one in ADDITION.finditer(text):
+            which = next(i for i in (1, 2, 3, 4) if one.group(i))
+            if which != 4:
+                spans.append((one.start(which), one.end(which)))
+        if not spans:
+            return m.group(0)
+        folded = fold(text)
+        inserts, taken = [], set()
+        for s, e in spans:
+            for one in rx.finditer(folded, s):
+                a, b = one.start(), one.end()
+                if a >= e:
+                    break
+                if b > e or (a, b) in taken or any(inside[a:b]) or \
+                   "<" in body[where[a]:where[b - 1] + 1]:
+                    continue
+                taken.add((a, b))
+                inserts += [(where[a], 1,
+                             f'<a class="Author" '
+                             f'href="{urls[one.group(0)]}">'),
+                            (where[b - 1] + 1, 0, "</a>")]
+                linked += 1
+        if not inserts:
+            return m.group(0)
+        for pos, _, mark_ in sorted(inserts, reverse=True):
+            body = body[:pos] + mark_ + body[pos:]
+        # The element holds a link now, so it becomes a span, which
+        # unspan undoes once the link is taken off.
+        return f"<{SPAN}{attrs}>{body}</{SPAN}>"
+
+    return ELEMENT.sub(element, page), linked
+
+
+def unlink_authors(page):
+    "Take those links off, giving back the page they were put on."
+    return unspan(AUTHOR_LINK.sub(r"\1", page))
+
+
+def rewrite(htmldir, check, md, tight, dots, embolden, authors, names):
     """Rewrite every page in place.
 
     Returns the links in each page, the names that answer to no page, the
     links that rest on a reading rather than on a name that is exact, the
     markdown rendered, how many spaces after the universe dot are
-    hidden, how many universe dots are hidden, and how many pages had to
+    hidden, how many universe dots are hidden, how many names of authors
+    are linked, and how many pages had to
     be rewritten, which is none of them
     when the last run did it already. The links counted are the ones this
     script makes, an <a> with an href and nothing else, which is a shape
@@ -866,11 +991,12 @@ def rewrite(htmldir, check, md, tight, dots, embolden, names):
     defined = definitions(htmldir)
     found, unresolved, rewritten = {}, collections.defaultdict(list), 0
     read, rendered, tightened, hidden_dots = [], [], 0, 0
-    headers, marked = 0, 0
+    headers, marked, authored = 0, 0, 0
+    pattern = author_pattern(names)
     for path in paths:
         here = os.path.basename(path)[:-len(".html")]
         original = open(path, encoding="utf-8").read()
-        page = unbold(show_dots(untighten(unmark(original))))
+        page = unbold(show_dots(untighten(unmark(unlink_authors(original)))))
         own = {name for target, name in OWN_MODULE.findall(page)
                if target in ("", os.path.basename(path))}
         new, links, missing = transform(page, pages, tails, here, own, defined)
@@ -907,6 +1033,14 @@ def rewrite(htmldir, check, md, tight, dots, embolden, names):
                                  f"exactly; nothing has been written")
             headers += one
             marked += n
+        if authors and pattern:
+            plain = new
+            new, n = link_authors(new, names, pattern)
+            if unlink_authors(new) != plain or visible(new) != visible(plain):
+                raise SystemExit(f"{path}: the links on the names of the "
+                                 f"authors cannot be taken off again "
+                                 f"exactly; nothing has been written")
+            authored += n
         if tight:
             # The spaces are only hidden, so the text of the page is
             # untouched here as well, and taking the markup off gives
@@ -942,7 +1076,7 @@ def rewrite(htmldir, check, md, tight, dots, embolden, names):
                  and (shown.rsplit(".", 1)[0] if anchor
                       else SUFFIX.sub("", shown)) != module]
     return (found, unresolved, read, rendered, tightened, hidden_dots,
-            headers, marked, rewritten)
+            headers, marked, authored, rewritten)
 
 
 def index_above(here, pages):
@@ -1128,6 +1262,10 @@ def main():
     p.add_argument("--no-hide-dots", action="store_true",
                    help="leave the universe dots showing, taking the "
                         "markup off pages that have it")
+    p.add_argument("--no-author-links", action="store_true",
+                   help="leave the name of an author in a header or a "
+                        "marker as plain text, taking the links off "
+                        "pages that have them")
     p.add_argument("--force", action="store_true",
                    help="run agda even when the rendering looks up to date")
     p.add_argument("--check", action="store_true",
@@ -1161,10 +1299,13 @@ def main():
         stylesheet(args.css, out)
 
     (found, unresolved, read, rendered, tightened, hidden_dots, headers,
-     marked, rewritten) = rewrite(out, args.check, not args.no_markdown,
-                                  not args.no_tighten, not args.no_hide_dots,
-                                  not args.no_bold,
-                                  contributors(root))
+     marked, linked, rewritten) = rewrite(out, args.check,
+                                          not args.no_markdown,
+                                          not args.no_tighten,
+                                          not args.no_hide_dots,
+                                          not args.no_bold,
+                                          not args.no_author_links,
+                                          contributors(root))
     links = [href for page in found.values() for href in page]
     pages = len(glob.glob(os.path.join(out, "*.html")))
     print(f"{len(links)} links in {len(found)} of the {pages} pages in {out}"
@@ -1181,6 +1322,9 @@ def main():
     if headers or marked:
         print(f"{headers} headers and {marked} markers of an addition "
               f"put in bold")
+    if linked:
+        print(f"{linked} names of authors linked to their pages "
+              f"in README.md")
     if hidden_dots:
         print(f"{hidden_dots} universe dots hidden by the stylesheet, "
               f"and {NOTATION_PAGE} keeps its own")
