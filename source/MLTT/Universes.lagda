@@ -124,13 +124,13 @@ Added 8th November 2026. Now our html rendering
 
   https://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html
 
-spares the reader the upperscript dot, the space before it and the
+removes the upperscript dot, the space before it and the
 space between the dot and a closing bracket, so that we see
 
   (X : 𝓤)
 
-as in the HoTT book. But, of course, the above conventions must still
-be followed when editing files in emacs.
+as in the HoTT book. But the above conventions must still be followed
+when editing files.
 
 End of addition.
 
