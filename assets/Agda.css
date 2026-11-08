@@ -51,3 +51,9 @@
    bracket, marked up by agda-html.py, so that the code reads (X : 𝓤 ̇).
    Taking this line out shows those spaces again. */
 .Agda dot-space { display: none }
+
+/* The universe dot and the space before it, marked up by agda-html.py,
+   so that the code reads (X : 𝓤) as the HoTT book writes it, while
+   MLTT.Universes keeps its dots. Taking this line out shows them all
+   again. */
+.Agda universe-dot { display: none }

@@ -659,6 +659,22 @@ DOT_SPACE = re.compile(r'(<a\b[^>]*href="MLTT\.Universes\.html#\d+"'
 
 DOT_SPACE_TAGS = re.compile(r'</?dot-space>')
 
+# The universe dot itself, with the space the source needs before it,
+# which together make the page read (X : 𝓤) as the HoTT book writes it.
+# It is hidden in the same way as the space above, in <universe-dot>,
+# which the stylesheet hides, so that the page still holds every
+# character Agda wrote. Only a use of the dot is hidden, its body being
+# the dot alone rather than _̇, and the page of MLTT.Universes keeps its
+# dots, that being where the notation is explained.
+
+UNIVERSE_DOT = re.compile(r'(?<=</a>) '
+                          r'(<a\b[^>]*href="MLTT\.Universes\.html#\d+"'
+                          r'[^>]*>' + DOT + r'</a>)')
+
+UNIVERSE_DOT_TAGS = re.compile(r'</?universe-dot>')
+
+NOTATION_PAGE = "MLTT.Universes"
+
 
 def tighten(page):
     """Hide the space between the universe dot and a closing bracket.
@@ -674,13 +690,28 @@ def untighten(page):
     return DOT_SPACE_TAGS.sub("", page)
 
 
-def rewrite(htmldir, check, md, tight):
+def hide_dots(page):
+    """Hide the universe dots, with the space before each of them.
+
+    Returns the new page and how many dots were hidden in it. A dot
+    already hidden is left alone, so a page can be given again.
+    """
+    return UNIVERSE_DOT.subn(r'<universe-dot> \1</universe-dot>', page)
+
+
+def show_dots(page):
+    "Show them again, giving back the page they were hidden on."
+    return UNIVERSE_DOT_TAGS.sub("", page)
+
+
+def rewrite(htmldir, check, md, tight, dots):
     """Rewrite every page in place.
 
     Returns the links in each page, the names that answer to no page, the
     links that rest on a reading rather than on a name that is exact, the
     markdown rendered, how many spaces after the universe dot are
-    hidden, and how many pages had to be rewritten, which is none of them
+    hidden, how many universe dots are hidden, and how many pages had to
+    be rewritten, which is none of them
     when the last run did it already. The links counted are the ones this
     script makes, an <a> with an href and nothing else, which is a shape
     Agda itself never emits.
@@ -693,11 +724,11 @@ def rewrite(htmldir, check, md, tight):
 
     defined = definitions(htmldir)
     found, unresolved, rewritten = {}, collections.defaultdict(list), 0
-    read, rendered, tightened = [], [], 0
+    read, rendered, tightened, hidden_dots = [], [], 0, 0
     for path in paths:
         here = os.path.basename(path)[:-len(".html")]
         original = open(path, encoding="utf-8").read()
-        page = untighten(unmark(original))
+        page = show_dots(untighten(unmark(original)))
         own = {name for target, name in OWN_MODULE.findall(page)
                if target in ("", os.path.basename(path))}
         new, links, missing = transform(page, pages, tails, here, own, defined)
@@ -736,6 +767,14 @@ def rewrite(htmldir, check, md, tight):
                                  f"dot cannot be shown again exactly; "
                                  f"nothing has been written")
             tightened += hidden
+        if dots and here != NOTATION_PAGE:
+            shown = new
+            new, gone = hide_dots(new)
+            if show_dots(new) != shown or visible(new) != visible(shown):
+                raise SystemExit(f"{path}: the universe dots cannot be "
+                                 f"shown again exactly; nothing has been "
+                                 f"written")
+            hidden_dots += gone
         if new != original:
             open(path, "w", encoding="utf-8").write(new)
             rewritten += 1
@@ -751,7 +790,8 @@ def rewrite(htmldir, check, md, tight):
                  if module in pages
                  and (shown.rsplit(".", 1)[0] if anchor
                       else SUFFIX.sub("", shown)) != module]
-    return found, unresolved, read, rendered, tightened, rewritten
+    return (found, unresolved, read, rendered, tightened, hidden_dots,
+            rewritten)
 
 
 def index_above(here, pages):
@@ -930,6 +970,9 @@ def main():
                    help="leave the space between the universe dot and a "
                         "closing bracket showing, taking the markup off "
                         "pages that have it")
+    p.add_argument("--no-hide-dots", action="store_true",
+                   help="leave the universe dots showing, taking the "
+                        "markup off pages that have it")
     p.add_argument("--force", action="store_true",
                    help="run agda even when the rendering looks up to date")
     p.add_argument("--check", action="store_true",
@@ -959,9 +1002,9 @@ def main():
     if args.css != "none":
         stylesheet(args.css, out)
 
-    found, unresolved, read, rendered, tightened, rewritten = \
-        rewrite(out, args.check, not args.no_markdown,
-                not args.no_tighten)
+    (found, unresolved, read, rendered, tightened, hidden_dots,
+     rewritten) = rewrite(out, args.check, not args.no_markdown,
+                          not args.no_tighten, not args.no_hide_dots)
     links = [href for page in found.values() for href in page]
     pages = len(glob.glob(os.path.join(out, "*.html")))
     print(f"{len(links)} links in {len(found)} of the {pages} pages in {out}"
@@ -975,6 +1018,9 @@ def main():
     if tightened:
         print(f"{tightened} spaces between the universe dot and a closing "
               f"bracket hidden by the stylesheet")
+    if hidden_dots:
+        print(f"{hidden_dots} universe dots hidden by the stylesheet, "
+              f"and {NOTATION_PAGE} keeps its own")
     url = None if args.search_url == "none" else args.search_url
     changed = corner_buttons(out, url)
     if changed:
