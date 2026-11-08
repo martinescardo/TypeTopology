@@ -1,4 +1,4 @@
-Martin Escardo and Paulo Oliva 2010
+Martin Escardo and Paulo Oliva 2011
 
 \begin{code}
 

@@ -791,6 +791,10 @@ def header(text, names):
         stop = line.find(".", found.end())
         return 0, len(line) if stop < 0 else stop + 1
     said = [one for one in AND.split(line.rstrip(" .,")) if one]
+    if said and said[-1] == "original date unknown":
+        # The idiom of MLTT.Universes for a file whose history was
+        # severed by a reorganization: names, then this phrase.
+        said = said[:-1]
     if names and said and all(one in names for one in said):
         return 0, len(line.rstrip())
     return None
