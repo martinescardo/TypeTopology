@@ -1,3 +1,5 @@
+Martin Escardo, 2022.
+
 \section{Preamble}
 
 \begin{code}

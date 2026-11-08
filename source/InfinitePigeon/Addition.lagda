@@ -1,3 +1,5 @@
+Martin Escardo and Paulo Oliva 2010
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}

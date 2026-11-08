@@ -1,3 +1,5 @@
+Martin Escardo, 2026.
+
 Double function on natural nuumbers.
 
 \begin{code}

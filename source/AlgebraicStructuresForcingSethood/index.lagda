@@ -1,3 +1,5 @@
+Jakub Opršal and Tom de Jong, 2026.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}

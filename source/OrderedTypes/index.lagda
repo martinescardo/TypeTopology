@@ -1,3 +1,5 @@
+Ian Ray, Kelton OBrien, Martin Escardo and Tom de Jong, 2023-2026.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}

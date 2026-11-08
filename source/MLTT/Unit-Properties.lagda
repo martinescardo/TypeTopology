@@ -1,3 +1,5 @@
+Martin Escardo, original date unknown.
+
 One-element type properties.
 
 \begin{code}

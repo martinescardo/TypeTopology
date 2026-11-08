@@ -1,3 +1,5 @@
+Martin Escardo, original date unknown.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}

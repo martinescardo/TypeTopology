@@ -1,3 +1,5 @@
+Martin Escardo, original date unknown.
+
 Negation (and emptiness).
 
 \begin{code}

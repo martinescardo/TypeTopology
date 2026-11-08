@@ -1,3 +1,5 @@
+Martin Escardo, 2022.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-} --

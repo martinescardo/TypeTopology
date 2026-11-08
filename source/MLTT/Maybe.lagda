@@ -1,3 +1,5 @@
+Martin Escardo, 2023-2026.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-} --

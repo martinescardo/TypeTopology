@@ -1,3 +1,5 @@
+Ettore Aldrovandi, Keri D'Angelo, Marc Bezem and Martin Escardo, 2022-2026.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}

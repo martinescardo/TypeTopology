@@ -1,3 +1,5 @@
+Martin Escardo, original date unknown.
+
 Identity type.
 
 \begin{code}

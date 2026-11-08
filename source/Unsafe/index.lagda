@@ -1,3 +1,5 @@
+Martin Escardo, 2022-2026, and Tom de Jong, 2026.
+
 \begin{code}
 
 {-# OPTIONS --without-K --type-in-type --no-termination-check --guardedness

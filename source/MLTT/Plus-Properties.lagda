@@ -1,3 +1,5 @@
+Martin Escardo, original date unknown.
+
 Properties of the disjoint sum _+_ of types.
 
 \begin{code}

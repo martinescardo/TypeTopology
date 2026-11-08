@@ -1,3 +1,5 @@
+Martin Escardo, 2022.
+
 Natural numbers properties
 
 \begin{code}
