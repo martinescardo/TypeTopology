@@ -445,6 +445,8 @@ Added 8 August 2024 by Tom de Jong.
 
 \end{code}
 
+End of addition.
+
 Fixities:
 
 \begin{code}

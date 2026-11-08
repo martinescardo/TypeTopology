@@ -314,7 +314,7 @@ LPO-implies-LPO-variation fe lpo α = I (LPO-gives-compact-ℕ fe lpo α)
 
 \end{code}
 
-Added 3rd December by Martin Escardo 2025.
+Added 3rd December 2024 by Martin Escardo.
 
 \begin{code}
 

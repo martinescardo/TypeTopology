@@ -288,6 +288,8 @@ above.
 
 \end{code}
 
+End of addition.
+
 TODO. Find better names for the following lemmas.
 
 \begin{code}
@@ -478,6 +480,8 @@ initial-segment-of-least-element-is-𝟘ₒ α a a-is-least =
   (𝟘ₒ-least-⊴ (α ↓ a))
 
 \end{code}
+
+End of addition.
 
 Originally added 21st April 2022 by Martín Escardó.
 Moved up here on 27th May 2024 by Tom de Jong.

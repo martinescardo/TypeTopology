@@ -345,6 +345,8 @@ Added by Martin Escardo 23rd June 2025.
 End of 23rd June addition and continuing with Tom de Jong older
 additions.
 
+End of addition.
+
 We use a named module when defining singleton subsets, so that we can write
 ❴ x ❵ without having to keep supplying the proof that the ambient type is a set.
 

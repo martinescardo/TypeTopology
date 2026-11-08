@@ -217,6 +217,12 @@ ap-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 ap-is-equiv f e {x} {x'} =
  embedding-gives-embedding' f (equivs-are-embeddings f e) x x'
 
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 embedding-criterion-converse' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f
                              → (x' x : X)
@@ -676,6 +682,8 @@ fiber-to-𝟙 : {𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕛 : X ↪ Y)
 fiber-to-𝟙 𝕛 y = embedding-to-𝟙 {_} {_} {Fiber 𝕛 y}
 
 \end{code}
+
+End of addition.
 
 Fixities:
 

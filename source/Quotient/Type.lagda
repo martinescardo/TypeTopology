@@ -104,6 +104,8 @@ The induction principle follows from the universal property.
 
 \end{code}
 
+End of addition.
+
 Paying attention to universe levels, it is important to note that the quotient
 of X : 𝓤 by a 𝓥-valued equivalence relation is assumed to live in 𝓤 ⊔ 𝓥. In
 particular, the quotient of type in 𝓤 by a 𝓤-valued equivalence relation lives

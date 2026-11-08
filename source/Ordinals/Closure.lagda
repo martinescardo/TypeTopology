@@ -571,6 +571,8 @@ characterization of Σ↑ as an equivalence.
 
 \end{code}
 
+End of addition.
+
 
 28 July 2018. Inf property.
 

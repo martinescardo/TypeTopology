@@ -676,6 +676,8 @@ first case and compactness in the second.
 
 \end{code}
 
+End of addition.
+
 We don't need this for the moment:
 
 \begin{code}

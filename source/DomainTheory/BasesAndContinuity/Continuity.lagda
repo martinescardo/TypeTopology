@@ -126,6 +126,8 @@ characterization-of-continuous-DCPO-＝ ua 𝓓 𝓔 c₁ c₂ =
 
 \end{code}
 
+End of addition.
+
 Similarly, we define when a dcpo has algebraicity data where the
 approximating family is required to consist of compact elements.
 

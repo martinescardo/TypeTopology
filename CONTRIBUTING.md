@@ -53,7 +53,7 @@ contributing to before you write your own.
     new file starts with them, on its first line. An addition in the
     middle of somebody else's file is marked with "Added by name on
     date" before it and "End of addition" after it, as in
-    [TypeTopology.CompactTypes](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTypes.html). The first time you
+    [UF.Logic](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Logic.html). The first time you
     contribute, add yourself to the list of contributors in the
     [README](README.md). We want everybody who contributes to get
     explicit credit, and we want a visible historical record, in

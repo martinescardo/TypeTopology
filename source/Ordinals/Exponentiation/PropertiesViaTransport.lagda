@@ -195,6 +195,8 @@ If the base ordinal has a trichotomous least element, then so does α ^ₒ β.
 
 \end{code}
 
+End of addition.
+
 Since the abstract construction satisfies the ordinal specifications, so does
 the concrete construction.
 

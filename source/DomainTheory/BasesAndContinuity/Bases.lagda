@@ -717,6 +717,8 @@ module _
 
 \end{code}
 
+End of addition.
+
 Finally, a nice use of dcpos with small bases is that they yield locally small
 exponentials. More precisely, if 𝓔 is locally small and 𝓓 has an unspecified
 small basis, then the exponential 𝓓 ⟹ᵈᶜᵖᵒ 𝓔 is locally small, because when

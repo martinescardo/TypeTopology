@@ -221,6 +221,8 @@ is allowed in the do-block.
 
 \end{code}
 
+End of addition.
+
 \begin{code}
 
  infixr 0 _∨_

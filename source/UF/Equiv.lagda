@@ -941,6 +941,8 @@ involution-swap-≃ f f-involutive X-is-set {x} {y} =
 
 \end{code}
 
+End of addition.
+
 Associativities and precedences.
 
 \begin{code}

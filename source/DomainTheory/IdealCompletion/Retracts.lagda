@@ -490,6 +490,8 @@ Repackaged, we get the desired result:
 
 \end{code}
 
+End of addition.
+
 Of course, given a continuous dcpo D with small basis β : B → D, we can also
 consider Idl(B,≪) which is isomorphic to D.
 

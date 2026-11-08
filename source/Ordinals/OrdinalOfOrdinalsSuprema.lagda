@@ -738,6 +738,12 @@ segments of some αᵢ.
       → Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁺-is-upper-bound i) x ＝ (β , s)
     h (i , x , e) = i , x , to-subtype-＝ (λ _ → ∃-is-prop) (e ⁻¹)
 
+\end{code}
+
+End of addition.
+
+\begin{code}
+
  module lower-bound-of-upper-bounds-proof
          (β : Ordinal 𝓤)
          (β-is-upper-bound : (i : I) → α i ⊴ β)
@@ -997,6 +1003,12 @@ the supremum of α are given by initial segments of some αᵢ.
        where
         ⦅1⦆ = ap ⌜ φ ⌝⁻¹ e
         ⦅2⦆ = inverses-are-retractions ⌜ φ ⌝ (⌜⌝-is-equiv φ) y
+
+\end{code}
+
+End of addition.
+
+\begin{code}
 
   α⁻-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
                                     → ((i : I) → α i ⊴ β)
