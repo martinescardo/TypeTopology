@@ -129,10 +129,8 @@ space between the dot and a closing bracket, so that we see
 
   (X : 𝓤)
 
-as in the HoTT book. This page is the exception and keeps its dots, so
-that the discussion above can be read in a browser as it is written
-here. But, of course, the above conventions must still be followed when
-editing files in emacs.
+as in the HoTT book. But, of course, the above conventions must still
+be followed when editing files in emacs.
 
 End of addition.
 
