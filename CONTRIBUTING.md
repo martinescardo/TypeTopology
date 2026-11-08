@@ -510,6 +510,7 @@ and [Checking your work](#checking-your-work).
  - [ ] A new proof or definition of something the library already has
        is added alongside the existing one.
  - [ ] The required code layout is obeyed.
+ - [ ] Indentation is by 1 space.
  - [ ] The whole library type-checks with Agda.
  - [ ] All imports are used.
  - [ ] Every line has at most 80 characters.
