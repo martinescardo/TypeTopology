@@ -15,6 +15,7 @@ contributing to before you write your own.
  1. [Markdown in the prose](#markdown-in-the-prose)
  1. [The preamble of a module](#the-preamble-of-a-module)
  1. [Names](#names)
+ 1. [Suggested Emacs input sequences](#suggested-emacs-input-sequences)
  1. [Type theory and notation](#type-theory-and-notation)
  1. [Proofs](#proofs)
  1. [Layout](#layout)
@@ -121,9 +122,11 @@ the two agree.
 ## Explain the mathematics to people
 
 The purpose of TypeTopology is to explain mathematics to people, and
-not only to computers. Every file is a literate Agda file, and the
-prose in it is written as the prose of a paper is. Write plenty of
-prose, explaining the mathematics and the choices made in the code.
+not only to computers. Every file is a
+[literate Agda file](https://agda.readthedocs.io/en/latest/tools/literate-programming.html),
+with the extension `.lagda`, and the prose in it is written as the
+prose of a paper is. Write plenty of prose, explaining the mathematics
+and the choices made in the code.
 
  1. Say what the idea of a construction is and what the intention
     behind a definition is. "The idea is that list concatenation will
@@ -160,7 +163,7 @@ prose, explaining the mathematics and the choices made in the code.
     >     https://github.com/andreasabel/logrel-mltt/tree/master/Application/NegativeAxioms
 
  1. Routine facts need no prose. Experts know them and others will
-    find the formal proof easily enough.
+    find the formal proof easy enough.
 
  1. Adjectives that rate the mathematics, such as striking, surprising
     or beautiful, are for the reader to supply. To point at something
@@ -227,6 +230,23 @@ and everything else in the prose is written in full sentences.
     [`x ＝ y`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Identity-Type.html#_＝_) is a path and is named like one, as `p`, and a hypothesis
     of type [`x ≠ y`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Negation.html#_≠_) is named for what it is, as `ne`.
 
+## Suggested Emacs input sequences
+
+The following input sequences for [Emacs Agda mode](https://agda.readthedocs.io/en/latest/tools/emacs-mode.html#unicode-input)
+type the symbols and the text that the conventions below adopt.
+Each of them is explained below. Add
+
+```
+'(agda-input-user-translations
+  '(("UU" "𝓤") ("VV" "𝓥") ("WW" "𝓦") ("TT" "𝓣")
+    ("Ud" "𝓤 ̇ ") ("Vd" "𝓥 ̇ ") ("Wd" "𝓦 ̇ ") ("Td" "𝓣 ̇ ")
+    ("=" "＝")
+    ("beg" "\\begin{code}\n\n") ("end" "\\end{code}\n\n")
+    ("code" "\\begin{code}\n\n\n\n\\end{code}\n\n")))
+```
+
+to your Emacs configuration.
+
 ## Type theory and notation
 
  1. We work in a minimal version of intensional Martin-Löf type theory
@@ -237,19 +257,41 @@ and everything else in the prose is written in full sentences.
 
  1. We adopt the univalent point of view even in modules that assume
     no axioms, taking seriously the distinction between types that are
-    singletons, propositions, sets and 1-groupoids, even where none of
+    singletons, propositions, sets and 1-groupoids, etc., even where none of
     univalence, function extensionality or propositional
     extensionality is needed to reason about them, as in
     [UF.Subsingletons](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Subsingletons.html).
+
+ 1. Higher inductive types are available as hypotheses, in the same
+    way as the axioms above, rather than as primitives. Propositional
+    truncations are given by the record
+    [`propositional-truncations-exist`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html#propositional-truncations-exist),
+    with the truncation `∥ X ∥`, its proof of being a proposition, the
+    map `∣_∣` and the recursion principle `∥∥-rec` as fields, and a
+    module that needs them takes a parameter
+    `pt : propositional-truncations-exist`. Set quotients are given by
+    the record
+    [`set-quotients-exist`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Quotient.Type.html#set-quotients-exist)
+    in the same way. Such a record can also be constructed, under
+    assumptions: [Quotient.Large](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Quotient.Large.html)
+    builds set quotients, one universe up, from propositional
+    truncations, function extensionality and propositional
+    extensionality, and
+    [Quotient.FromSetReplacement](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Quotient.FromSetReplacement.html)
+    brings them down to the same universe with set replacement.
 
  1. Universes are written [`𝓤 ̇`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html#_̇) for the universe at level `𝓤`, with
     the variables [`𝓤 𝓥 𝓦 𝓣`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html), as defined in [MLTT.Universes](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html), and never
     with Agda's own `Set ℓ` or `Type ℓ`. The superscript dot is a
     postfix operator, typed as `\^.` in [Emacs Agda mode](https://agda.readthedocs.io/en/latest/tools/emacs-mode.html#unicode-input), and so
     there is a space between `𝓤` and the dot, although it is not
-    visible, because the dot is displayed on top of it. There is also
-    exactly one space after the dot, before a closing bracket `)` or
-    `}` as much as before any other word, as in
+    visible, because the dot is displayed on top of it. The universe
+    variables are typed as `\MCU`, `\MCV`, `\MCW` and `\MCT`, or as
+    `\UU`, `\VV`, `\WW` and `\TT`, and a universe `𝓤 ̇ ` with its dot
+    and the spaces around it as `\Ud`, `\Vd`, `\Wd` and `\Td`, with the
+    [input sequences above](#suggested-emacs-input-sequences). There is
+    exactly one space after the dot, even before a closing bracket `)`
+    or `}`, as in
     [UF.Equiv](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Equiv.html):
 
     ```agda
@@ -257,18 +299,12 @@ and everything else in the prose is written in full sentences.
     ```
 
     Our [html rendering](https://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html) is tidied for the reader by
-    `assets/Agda.css`, which hides the dot, the space before it and the
-    space between the dot and a closing bracket, so that we see
-    `(X : 𝓤)` as the HoTT book writes it while the source keeps what
-    Agda needs.
+    [assets/Agda.css](assets/Agda.css), which hides the dot and the
+    spaces before and after it, so that we see `(X : 𝓤)` as the HoTT
+    book writes it while the source keeps what Agda needs.
 
- 1. The identity type is [`＝`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Identity-Type.html#_＝_), typed as `\=` after adding
-
-    ```
-    '(agda-input-user-translations '(("=" "＝")))
-    ```
-
-    to your Emacs configuration.
+ 1. The identity type is [`＝`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Identity-Type.html#_＝_), typed as `\=` with the
+    input sequences above.
 
  1. [Σ types](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma.html) are written [`Σ x ꞉ A , B x`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Sigma.html#Sigma), where the colon is the Unicode
     character MODIFIER LETTER COLON, typed as `\:4`, and not the
@@ -372,16 +408,18 @@ and everything else in the prose is written in full sentences.
     other, as in [Locales.StoneImpliesSpectral](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Locales.StoneImpliesSpectral.html). A
     definition whose right-hand side does not fit on the line of its
     left-hand side is broken in the same way, with the equals sign
-    under the colon:
+    under the colon, as in
+    [TypeTopology.WeaklyCompactTypes](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.WeaklyCompactTypes.html#Π-compact-exponential-with-pointed-domain-has-Π-compact-codomain):
 
     ```agda
-    foo
-     : A
-     → B
-     → C
-     → D
-    foo a b c
-     = d
+    Π-compact-exponential-with-pointed-domain-has-Π-compact-codomain
+     : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+     → X
+     → is-Π-compact (X → Y)
+     → is-Π-compact Y
+    Π-compact-exponential-with-pointed-domain-has-Π-compact-codomain x
+     = retract-is-Π-compact
+        (codomain-is-retract-of-function-space-with-pointed-domain x)
     ```
 
  1. In an equality chain, the terms are left aligned, and every [`＝⟨`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html#_＝⟨_⟩_)
@@ -436,6 +474,10 @@ and everything else in the prose is written in full sentences.
     𝓤 ⁺ are.
     ```
 
+    In Emacs, `\beg`, `\end` and `\code` type `\begin{code}`,
+    `\end{code}` and an empty code block, each followed by its blank
+    line, with the input sequences above.
+
     We use [`.lagda` files](https://agda.readthedocs.io/en/latest/tools/literate-programming.html).
 
 ## Checking your work
@@ -454,9 +496,10 @@ and everything else in the prose is written in full sentences.
     way on every pull request, other than draft pull requests. A
     second GitHub action checks the safe fragment of the library, which
     is what [index.lagda](source/index.lagda) imports, with
-    [Mikan](https://codeberg.org/1lab/mikan). Checking with Agda is
-    all we ask of a pull request. If you like, you can run the Mikan
-    check yourself with
+    [Mikan](https://codeberg.org/1lab/mikan).
+
+    Checking with Agda is all we ask of a pull request. If you like,
+    you can run the Mikan check yourself with
 
     ```
     mikan index.lagda
@@ -473,8 +516,8 @@ and everything else in the prose is written in full sentences.
 
     from `source`, and remove the ones it reports, after confirming
     by type-checking that each one is unused. The script runs in bash
-    and uses GNU sed, which Linux has, macOS gets as [`gsed`](https://formulae.brew.sh/formula/gnu-sed)
-    from Homebrew, and Windows gets together with bash from
+    and uses GNU `sed`, which Linux has, macOS gets as [`gsed`](https://formulae.brew.sh/formula/gnu-sed)
+    from [Homebrew](https://brew.sh/), and Windows gets together with bash from
     [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) or
     [Git for Windows](https://gitforwindows.org/).
 
@@ -500,6 +543,8 @@ and [Checking your work](#checking-your-work).
  - [ ] Your name and the date are at the place of contribution, and
        your name is in the list of contributors in the
        [README](README.md).
+ - [ ] Everything taken or inspired from elsewhere is attributed, with
+       citations or links.
  - [ ] Every new file is imported by the index file of its directory,
        and every new directory has an index file imported by the index
        of its parent.
@@ -509,6 +554,7 @@ and [Checking your work](#checking-your-work).
        module, with no postulates.
  - [ ] A new proof or definition of something the library already has
        is added alongside the existing one.
+ - [ ] `with` is not used.
  - [ ] The required code layout is obeyed.
  - [ ] Indentation is by 1 space.
  - [ ] The whole library type-checks with Agda.
@@ -527,6 +573,10 @@ about where a contribution belongs, open an
 By contributing, with pull requests, issues or discussion, you agree to
 abide by our [code of conduct](CODE-OF-CONDUCT.md) and
 [statement of inclusion](STATEMENT-OF-INCLUSION.md). So far we have had
-no problem whatsoever, and we want to keep it that way. Our
+no problem whatsoever, and we want to keep it that way. If you are
+aware of a violation of these policies that affects you or somebody
+else, please report it to
+[Martin Escardo](mailto:m.escardo@cs.bham.ac.uk) or
+[Tom de Jong](mailto:tdejong.ac@gmail.com). Our
 [AI policy](AI-Policy.md) applies to every contribution, and the
 [license](LICENSE) is [GPL-3](https://www.gnu.org/licenses/gpl-3.0.html).
