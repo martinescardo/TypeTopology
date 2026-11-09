@@ -134,77 +134,150 @@ Philosophy of the repository
    * The files within most of the modules have extensive discussions
      in prose. See also [TypeTopology module descriptions](https://github.com/martinescardo/TypeTopologyModuleDescriptions/).
 
+The modules, by subject
+-----------------------
+
+   The following imports only the `--safe` modules. See [AllModulesIndex](https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
+   for the list of all modules, and the [TypeTopology module descriptions](https://github.com/martinescardo/TypeTopologyModuleDescriptions/)
+   for a fuller description of each directory.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
 module index where
 
-import MLTT.index                              -- Martin-Löf type theory.
-import W.index                                 -- W-types.
-import Notation.index                          -- General notation and conventions.
-import UF.index                                -- Univalent foundations.
-import Naturals.index                          -- Natural numbers.
-import Integers.index                          -- Integers.
-import Rationals.index                         -- Rational numbers.
-import Dyadics.index                           -- Dyadic rationals.
-import DyadicsInductive.index                  -- Dyadic rationals, defined inductively.
-import DedekindReals.index                     -- Real numbers, in their Dedekind incarnation.
-import Field.index                             -- Fields.
-import NotionsOfDecidability.index             -- Various notions of decidability.
-import Taboos.index                            -- Excluded middle, LPO, WLPO, LLPO, etc.
-import Fin.index                               -- Notions of finiteness.
-import Relations.index                         -- Relations, Church-Rosser property and more.
-import Quotient.index                          -- Set quotients.
-import Lifting.index                           -- The lifting monad of partial elements.
-import Dominance.index                         -- Dominances in the sense of Rosolini.
-import Groups.index                            -- UF-based group theory.
-import EGroups.index                           -- Setoid-based group theory.
-import DiscreteGraphicMonoids.index            -- Discrete graphic monoids, after Lawvere.
-import OrderedTypes.index                      -- Posets, lattices, frames and related structures.
-import Ordinals.index                          -- Ordinals and their arithmetic.
-import Iterative.index                         -- Iterative multisets, sets and ordinals.
-import Cardinals.index                         -- Cardinals.
-import CantorSchroederBernstein.index          -- Cantor-Schröder-Bernstein for homotopy types.
-import CoNaturals.index                        -- Conatural numbers.
-import Apartness.index                         -- Apartness relations.
-import TypeTopology.index                      -- The intrinsic topology of types.
-import ContinuityAxiom.index                   -- A continuity principle that contradicts Curry-Howard.
-import InjectiveTypes.index                    -- Injective types.
-import C-Spaces.index                          -- C-spaces as a continuous model of type theory.
-import DomainTheory.index                      -- Domain theory, constructive and predicative.
-import PCF.index                               -- The language PCF and its Scott model.
-import MetricSpaces.index                      -- Metric spaces, without mentioning the reals.
-import TWA.index                               -- Exact real search.
-import Locales.index                           -- Point-free topology, constructive and predicative.
-import SyntheticHomotopyTheory.index           -- The circle and the infinite real projective space.
-import Categories.index                        -- Category theory in univalent foundations.
-import WildCategories.index                    -- Wild higher categories.
-import MonadOnTypes.index                      -- Wild monads on types, with the selection and continuation monads.
-import EffectfulForcing.index                  -- Dialogue trees and effectful forcing for Gödel's system T.
-import InductiveBars.index                     -- Inductive bars, Brouwer's thesis and bar recursion.
-import Games.index                             -- Finite games of perfect information, via selection functions.
-import BinarySystems.index                     -- The initial binary system, an interval of dyadic rationals.
-import Higgs.index                             -- Higgs' involution theorem and its consequences.
-import Factorial.index                         -- The automorphism type of a type and its combinatorics.
-import AlgebraicStructuresForcingSethood.index -- Algebraic structures that force a type to be a set.
-import Modal.index                             -- Reflective subuniverses and modalities.
-import Slice.index                             -- The slice of a universe over a type.
-import Coslice.index                           -- The coslice of a universe under a type.
-import ReflexiveGraphs.index                   -- Reflexive graphs and lenses, after Sterling.
-import RelativeMonadOnStructuredTypes.index    -- Relative monads on structured types.
-import CrossedModules.index                    -- Crossed modules.
-import Various.index                           -- Miscellaneous results of interest.
-import Duploids.index                          -- Duploids, after Munch-Maccagnoni.
-import PathSequences.index                     -- A calculus of sequences of paths.
-import gist.index                              -- Examples, discussions and experiments.
-import deprecated.index                        -- Superseded modules, kept for reference.
-import MGS.index                               -- A modular version of our [HoTT/UF lecture notes](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/).
+\end{code}
+
+**Foundations.**
+
+\begin{code}
+
+import MLTT.index                  -- Martin-Löf type theory.
+import W.index                     -- W-types.
+import Notation.index              -- General notation and conventions.
+import UF.index                    -- Univalent foundations.
+import Quotient.index              -- Set quotients.
+import Relations.index             -- Relations, Church-Rosser property, etc.
+import Fin.index                   -- Notions of finiteness.
+import NotionsOfDecidability.index -- Various notions of decidability.
+import Taboos.index                -- Excluded middle, LPO, WLPO, LLPO, etc.
 
 \end{code}
 
-The above import only the `--safe` modules. See [AllModulesIndex](https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
-for the list of all modules.
+**Topology, domain theory and computation.**
+
+\begin{code}
+
+import TypeTopology.index     -- The intrinsic topology of types.
+import EffectfulForcing.index -- Dialogue trees and effectful forcing.
+import ContinuityAxiom.index  -- A continuity axiom contradicts Curry-Howard.
+import C-Spaces.index         -- C-spaces as a continuous model of type theory.
+import InductiveBars.index    -- Bars, Brouwer's thesis and bar recursion.
+import InjectiveTypes.index   -- Injective types.
+import DomainTheory.index     -- Domain theory.
+import PCF.index              -- PCF and its Scott model.
+import TWA.index              -- Exact real search.
+import Locales.index          -- Point-free topology.
+import Lifting.index          -- The lifting monad of partial elements.
+import Dominance.index        -- Dominances in the sense of Rosolini.
+
+\end{code}
+
+**Numbers.**
+
+\begin{code}
+
+import Naturals.index         -- Natural numbers.
+import Integers.index         -- Integers.
+import Rationals.index        -- Rational numbers.
+import Dyadics.index          -- Dyadic rationals.
+import DyadicsInductive.index -- Dyadic rationals, defined inductively.
+import BinarySystems.index    -- Dyadic rationals via binary systems.
+import DedekindReals.index    -- Real numbers, in their Dedekind incarnation.
+import CoNaturals.index       -- Conatural numbers.
+
+\end{code}
+
+**Algebra.**
+
+\begin{code}
+
+import Groups.index                            -- UF-based group theory.
+import EGroups.index                           -- Setoid-based group theory.
+import Field.index                             -- Fields.
+import CrossedModules.index                    -- Crossed modules.
+import AlgebraicStructuresForcingSethood.index -- Structures that force sethood.
+
+\end{code}
+
+**Order, ordinals and cardinals.**
+
+\begin{code}
+
+import OrderedTypes.index             -- Posets, lattices, frames, etc.
+import Ordinals.index                 -- Ordinals and their arithmetic.
+import Iterative.index                -- Iterative multisets, sets and ordinals.
+import Cardinals.index                -- Cardinals.
+import CantorSchroederBernstein.index -- Schröder-Bernstein for arbitrary types.
+
+\end{code}
+
+**Apartness and metric spaces.**
+
+\begin{code}
+
+import Apartness.index    -- Apartness relations.
+import MetricSpaces.index -- Metric spaces, without mentioning the reals.
+
+\end{code}
+
+**Homotopy type theory.**
+
+\begin{code}
+
+import SyntheticHomotopyTheory.index -- The circle and ℝP∞.
+import Modal.index                   -- Reflective subuniverses and modalities.
+import Slice.index                   -- The slice of a universe over a type.
+import Coslice.index                 -- The coslice of a universe under a type.
+import ReflexiveGraphs.index         -- Reflexive graph lenses, after Sterling.
+import PathSequences.index           -- A calculus of sequences of paths.
+
+\end{code}
+
+**Category theory.**
+
+\begin{code}
+
+import WildCategories.index -- Wild higher categories.
+import Categories.index     -- Category theory in univalent foundations.
+import Duploids.index       -- Duploids, after Munch-Maccagnoni.
+
+\end{code}
+
+**Monads and games.**
+
+\begin{code}
+
+import MonadOnTypes.index                   -- Wild monads on types.
+import RelativeMonadOnStructuredTypes.index -- Relative monads.
+import DiscreteGraphicMonoids.index         -- Graphic monoids, after Lawvere.
+import Games.index                          -- Games via selection functions.
+
+\end{code}
+
+**Miscellany.**
+
+\begin{code}
+
+import Higgs.index      -- Higgs' involution theorem and its consequences.
+import Factorial.index  -- Automorphism types and their combinatorics.
+import Various.index    -- Miscellaneous results of interest.
+import gist.index       -- Examples, discussions and experiments.
+import deprecated.index -- Superseded modules, kept for reference.
+import MGS.index        -- A modular version of our [HoTT/UF lecture notes](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/).
+
+\end{code}
 
 This file is accessible from both
 
