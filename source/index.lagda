@@ -2,8 +2,7 @@
 
    2010--2026--∞, continuously evolving.
 
-   Various new theorems in constructive univalent mathematics written in Agda
-   --------------------------------------------------------------------------
+   **Various new theorems in constructive univalent mathematics written in Agda**
 
    [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/) and [collaborators](https://github.com/martinescardo/TypeTopology#current-typetopology-contributors-in-alphabetical-order-of-first-name).
 
@@ -69,8 +68,7 @@
      files with 305K lines of code, including comments and blank
      lines.
 
-Philosophy of the repository
-----------------------------
+**Philosophy of the repository**
 
    * We adopt the univalent point of view, even in modules which don't
      assume the univalence axiom. In particular, we take seriously the
@@ -142,8 +140,7 @@ Philosophy of the repository
    * The files within most of the modules have extensive discussions
      in prose.
 
-The modules, by subject
------------------------
+**The modules, by subject**
 
    The following imports only the `--safe` modules. See [AllModulesIndex](https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
    for the list of all modules, and the [TypeTopology module descriptions](https://github.com/martinescardo/TypeTopologyModuleDescriptions/)
@@ -157,7 +154,7 @@ module index where
 
 \end{code}
 
-**Foundations.**
+**Foundations**
 
 \begin{code}
 
@@ -173,7 +170,7 @@ import Taboos.index                -- Excluded middle, LPO, WLPO, LLPO, etc.
 
 \end{code}
 
-**Topology, domain theory and computation.**
+**Topology, domain theory and computation**
 
 \begin{code}
 
@@ -192,7 +189,7 @@ import Dominance.index        -- Dominances in the sense of Rosolini.
 
 \end{code}
 
-**Numbers.**
+**Numbers**
 
 \begin{code}
 
@@ -207,7 +204,7 @@ import CoNaturals.index       -- Conatural numbers.
 
 \end{code}
 
-**Algebra.**
+**Algebra**
 
 \begin{code}
 
@@ -219,7 +216,7 @@ import AlgebraicStructuresForcingSethood.index -- Structures that force sethood.
 
 \end{code}
 
-**Order, ordinals and cardinals.**
+**Order, ordinals and cardinals**
 
 \begin{code}
 
@@ -231,7 +228,7 @@ import CantorSchroederBernstein.index -- Schröder-Bernstein for arbitrary types
 
 \end{code}
 
-**Apartness and metric spaces.**
+**Apartness and metric spaces**
 
 \begin{code}
 
@@ -240,7 +237,7 @@ import MetricSpaces.index -- Metric spaces, without mentioning the reals.
 
 \end{code}
 
-**Homotopy type theory.**
+**Homotopy type theory**
 
 \begin{code}
 
@@ -253,7 +250,7 @@ import PathSequences.index           -- A calculus of sequences of paths.
 
 \end{code}
 
-**Category theory.**
+**Category theory**
 
 \begin{code}
 
@@ -263,7 +260,7 @@ import Duploids.index       -- Duploids, after Munch-Maccagnoni.
 
 \end{code}
 
-**Monads and games.**
+**Monads and games**
 
 \begin{code}
 
@@ -274,7 +271,7 @@ import Games.index                          -- Games via selection functions.
 
 \end{code}
 
-**Miscellany.**
+**Miscellany**
 
 \begin{code}
 
