@@ -1,5 +1,5 @@
 /* Aspects. */
-.Agda .Comment       { color: black }
+.Agda .Comment       { color: #808080 }
 .Agda .Background    { color: black }
 .Agda .Markup        { color: LightGray }
 .Agda .Keyword       { color: #CD6600 }
