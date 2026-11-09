@@ -279,8 +279,8 @@ import Higgs.index      -- Higgs' involution theorem and its consequences.
 import Factorial.index  -- Automorphism types and their combinatorics.
 import Various.index    -- Miscellaneous results of interest.
 import gist.index       -- Examples, discussions and experiments.
-import deprecated.index -- Superseded modules, kept for reference.
 import MGS.index        -- A modular version of our [HoTT/UF lecture notes](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/).
+import deprecated.index -- Superseded modules, kept for reference.
 
 \end{code}
 
