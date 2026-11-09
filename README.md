@@ -28,7 +28,7 @@ transferred to `github` Monday 5th February 2018.
 
 TypeTopology is a blackboard, for working on new mathematics, rather than being an encyclopedia of existing mathematics. As a result, its organization differs considerably from other formalization developments, both in Agda and in other proof assistants.
 
-The purpose of TypeTopology is to be a playground to work on new ideas we want to submit for publication. The purpose of TypeTopology is to explain mathematics to people, and not only to computers.
+The purpose of TypeTopology is to be a playground to work on new ideas we want to submit for publication, and to explain mathematics to people, not only to computers.
 
 This leads to a fundamentally different organization of our ideas, as recorded in our Agda files here, compared to other existing developments that record mathematical knowledge.
 
