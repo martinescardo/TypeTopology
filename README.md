@@ -16,7 +16,7 @@ transferred to `github` Monday 5th February 2018.
  1. [How to cite this repository](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
  1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-agda-files)
  1. [Installation](https://github.com/martinescardo/TypeTopology/blob/master/README.md#installation)
- 1. [Checking the library](https://github.com/martinescardo/TypeTopology/blob/master/README.md#checking-the-library)
+ 1. [Checking the development](https://github.com/martinescardo/TypeTopology/blob/master/README.md#checking-the-development)
  1. [Academic publications and preprints resulting from TypeTopology](https://github.com/martinescardo/TypeTopology#academic-publications-and-preprints-resulting-from-typetopology)
  1. [Current contributors](https://github.com/martinescardo/TypeTopology/blob/master/README.md#current-typetopology-contributors-in-alphabetical-order-of-first-name)
  1. [Statement of inclusion](https://github.com/martinescardo/TypeTopology/blob/master/STATEMENT-OF-INCLUSION.md)
@@ -26,15 +26,17 @@ transferred to `github` Monday 5th February 2018.
 
 ## About
 
-TypeTopology is a blackboard, for working on new mathematics, rather than being an encyclopedia of existing mathematics. As a result, its organization differs considerably from other formalization libraries, both in Agda and in other proof assistants.
+TypeTopology is a blackboard, for working on new mathematics, rather than being an encyclopedia of existing mathematics. As a result, its organization differs considerably from other formalization developments, both in Agda and in other proof assistants.
 
 The purpose of TypeTopology is to be a playground to work on new ideas we want to submit for publication. The purpose of TypeTopology is to explain mathematics to people, and not only to computers.
 
-This leads to a fundamentally different organization of our ideas, as recorded in our Agda files here, compared to other existing libraries that record mathematical knowledge.
+This leads to a fundamentally different organization of our ideas, as recorded in our Agda files here, compared to other existing developments that record mathematical knowledge.
 
 But, of course, we are also happy for already-existing mathematical ideas to be recorded here. In fact, they may be very useful for developing our own new ideas. Or your own. We are happy for you to join us using TypeTopology as either a blackboard or as record of already-existing mathematical ideas.
 
 TypeTopology is distributed under the [GPL-3](LICENSE) license.
+
+The name TypeTopology was chosen both because of the well-known [connection of topology with constructive mathematics](https://doi.org/10.1093/oso/9780198537359.003.0005) and because homotopy theory is a branch of topology.
 
 ## How to cite
 
@@ -69,7 +71,7 @@ The adopted Agda [flags](https://agda.readthedocs.io/en/latest/tools/command-lin
 The only dependency is [Agda](https://agda.readthedocs.io/en/latest/getting-started/installation.html),
 version 2.8.0 or 2.9.0. The [Agda standard library](https://github.com/agda/agda-stdlib) is not needed.
 
-## Checking the library
+## Checking the development
 
 To type-check every module, run
 
@@ -80,7 +82,7 @@ agda AllModulesIndex.lagda
 from the directory [source](source), or use the [Makefile](Makefile) at
 the root, whose targets are explained by `make help`. The
 [GitHub action](.github/workflows/main.yml) does this on every push and
-pull request. The safe part of the library can also be checked with
+pull request. The safe part of the development can also be checked with
 [Mikan](https://codeberg.org/1lab/mikan), by running
 
 ```

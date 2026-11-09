@@ -3,8 +3,8 @@
 TypeTopology is a blackboard for doing new mathematics in [univalent
 foundations](https://homotopytypetheory.org/book/), written in [Agda](https://agda.readthedocs.io/en/latest/), and we welcome contributions to it, from
 academics and non-academics alike. The best guide to our conventions
-is the library itself, so read a few files in the directory you are
-contributing to before you write your own.
+is the development itself, so read a few files in the directory you
+are contributing to before you write your own.
 
 ## Table of contents
 
@@ -28,15 +28,15 @@ contributing to before you write your own.
 
  1. A first contribution goes to the directory [source/gist](https://www.cs.bham.ac.uk/~mhe/TypeTopology/gist.index.html),
     and once it is accepted we allocate it an appropriate place in the
-    library, together with you. This holds both for new mathematics and
-    for existing mathematics that the library lacks, which we need
-    plenty of in order to do the new things we want to do.
+    development, together with you. This holds both for new mathematics
+    and for existing mathematics that the development lacks, which we
+    need plenty of in order to do the new things we want to do.
 
  1. Ask before changing anything in a file written by somebody else,
     and before making a pull request that touches it. The material may
     be part of a paper in preparation.
 
- 1. Search the library before defining a notion or proving a lemma.
+ 1. Search the development before defining a notion or proving a lemma.
     The [search page](https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html)
     finds names, fragments of names, concepts and definitions, there is
     an [Emacs command](https://github.com/martinescardo/TypeTopologySearch)
@@ -108,7 +108,7 @@ contributing to before you write your own.
     does.)
 
  1. By contributing you agree that your contribution is released under
-    the [license](LICENSE) of the library, which is [GPL-3](https://www.gnu.org/licenses/gpl-3.0.html).
+    the [license](LICENSE) of the development, which is [GPL-3](https://www.gnu.org/licenses/gpl-3.0.html).
 
 ## Keep every proof
 
@@ -138,8 +138,8 @@ and the choices made in the code.
     dropped.
 
  1. Compare the notion you define with the ones in the literature and
-    in the rest of the library, and give the attributions, with links
-    to the papers, as in
+    in the rest of the development, and give the attributions, with
+    links to the papers, as in
     [UF.Size](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Size.html):
 
     > The following notion of local smallness is due to Egbert Rijke, in his
@@ -223,7 +223,7 @@ and everything else in the prose is written in full sentences.
     one object is numbered with subscripts.
 
  1. The hypotheses of univalent foundations have standard variable
-    names across the library, namely [`fe`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.FunExt.html) for function extensionality,
+    names across the development, namely [`fe`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.FunExt.html) for function extensionality,
     [`pt`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.PropTrunc.html) for the existence of propositional truncations, [`ua`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Univalence.html) for
     univalence, [`pe`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Subsingletons.html) for propositional extensionality, [`em`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.ClassicalLogic.html) for
     excluded middle and [`sr`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Size.html) for set replacement. An identification
@@ -257,7 +257,7 @@ to your Emacs configuration.
 
  1. We adopt the univalent point of view even in modules that assume
     no axioms, taking seriously the distinction between types that are
-    singletons, propositions, sets and 1-groupoids, etc., even where none of
+    singletons, propositions, sets, 1-groupoids, etc., even where none of
     univalence, function extensionality or propositional
     extensionality is needed to reason about them, as in
     [UF.Subsingletons](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.Subsingletons.html).
@@ -482,7 +482,7 @@ to your Emacs configuration.
 
 ## Checking your work
 
- 1. Check the whole library by running
+ 1. Check the whole development by running
 
     ```
     agda AllModulesIndex.lagda
@@ -492,10 +492,10 @@ to your Emacs configuration.
     module. Additionally, there is a [Makefile](Makefile) at the root,
     whose targets do this with the released or the development
     version of Agda, sequentially or in parallel, as `make help`
-    explains. The GitHub action checks the whole library in the same
-    way on every pull request, other than draft pull requests. A
-    second GitHub action checks the safe fragment of the library, which
-    is what [index.lagda](source/index.lagda) imports, with
+    explains. The GitHub action checks the whole development in the
+    same way on every pull request, other than draft pull requests. A
+    second GitHub action checks the safe fragment of the development,
+    which is what [index.lagda](source/index.lagda) imports, with
     [Mikan](https://codeberg.org/1lab/mikan).
 
     Checking with Agda is all we ask of a pull request. If you like,
@@ -552,19 +552,19 @@ and [Checking your work](#checking-your-work).
        `{-# OPTIONS --safe --without-K #-}`.
  - [ ] Every axiom is a hypothesis of a result or a parameter of a
        module, with no postulates.
- - [ ] A new proof or definition of something the library already has
-       is added alongside the existing one.
+ - [ ] A new proof or definition of something the development already
+       has is added alongside the existing one.
  - [ ] `with` is not used.
  - [ ] The required code layout is obeyed.
  - [ ] Indentation is by 1 space.
- - [ ] The whole library type-checks with Agda.
+ - [ ] The whole development type-checks with Agda.
  - [ ] All imports are used.
  - [ ] Every line has at most 80 characters.
  - [ ] Everything you contribute is written by you.
 
 ## Reporting problems and asking for help
 
-To report a problem with the library, or to ask for help, including
+To report a problem with the development, or to ask for help, including
 about where a contribution belongs, open an
 [issue](https://github.com/martinescardo/TypeTopology/issues).
 
