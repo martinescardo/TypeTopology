@@ -34,9 +34,9 @@ This leads to a fundamentally different organization of our ideas, as recorded i
 
 But, of course, we are also happy for already-existing mathematical ideas to be recorded here. In fact, they may be very useful for developing our own new ideas. Or your own. We are happy for you to join us using TypeTopology as either a blackboard or as record of already-existing mathematical ideas.
 
-TypeTopology is distributed under the [GPL-3](LICENSE) license.
-
 The name TypeTopology was chosen both because of the well-known [connection of topology with constructive mathematics](https://doi.org/10.1093/oso/9780198537359.003.0005) and because homotopy theory is a branch of topology.
+
+TypeTopology is distributed under the [GPL-3](LICENSE) license.
 
 ## How to cite
 
