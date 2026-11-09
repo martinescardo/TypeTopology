@@ -140,66 +140,66 @@ Philosophy of the repository
 
 module index where
 
-import Apartness.index
-import AlgebraicStructuresForcingSethood.index
-import BinarySystems.index
-import CantorSchroederBernstein.index
-import Cardinals.index
-import Categories.index
-import CoNaturals.index
-import ContinuityAxiom.index
-import Coslice.index
-import CrossedModules.index
-import C-Spaces.index
-import DedekindReals.index
-import DiscreteGraphicMonoids.index
-import DomainTheory.index
-import Dominance.index
-import Duploids.index
-import Dyadics.index
-import DyadicsInductive.index
-import EffectfulForcing.index
-import EGroups.index
-import Factorial.index
-import Field.index
-import Fin.index
-import Games.index
-import Groups.index
-import Higgs.index
-import InductiveBars.index
-import InjectiveTypes.index
-import Integers.index
-import Iterative.index
-import Lifting.index
-import Locales.index
-import MGS.index
-import MLTT.index
-import MetricSpaces.index
-import Modal.index
-import MonadOnTypes.index
-import Naturals.index
-import Notation.index
-import NotionsOfDecidability.index
-import OrderedTypes.index
-import Ordinals.index
-import PCF.index
-import PathSequences.index
-import Quotient.index
-import Rationals.index
-import ReflexiveGraphs.index
-import Relations.index
-import RelativeMonadOnStructuredTypes.index
-import Slice.index
-import SyntheticHomotopyTheory.index
-import TWA.index
-import Taboos.index
-import TypeTopology.index
-import UF.index
-import Various.index
-import W.index
-import WildCategories.index
-import deprecated.index
-import gist.index
+import MLTT.index                              -- Martin-Löf type theory.
+import W.index                                 -- W-types.
+import Notation.index                          -- General notation and conventions.
+import UF.index                                -- Univalent foundations.
+import Naturals.index                          -- Natural numbers.
+import Integers.index                          -- Integers.
+import Rationals.index                         -- Rational numbers.
+import Dyadics.index                           -- Dyadic rationals.
+import DyadicsInductive.index                  -- Dyadic rationals, defined inductively.
+import DedekindReals.index                     -- Real numbers, in their Dedekind incarnation.
+import Field.index                             -- Fields.
+import NotionsOfDecidability.index             -- Various notions of decidability.
+import Taboos.index                            -- Excluded middle, LPO, WLPO, LLPO, etc.
+import Fin.index                               -- Notions of finiteness.
+import Relations.index                         -- Relations, Church-Rosser property and more.
+import Quotient.index                          -- Set quotients.
+import Lifting.index                           -- The lifting monad of partial elements.
+import Dominance.index                         -- Dominances in the sense of Rosolini.
+import Groups.index                            -- UF-based group theory.
+import EGroups.index                           -- Setoid-based group theory.
+import DiscreteGraphicMonoids.index            -- Discrete graphic monoids, after Lawvere.
+import OrderedTypes.index                      -- Posets, lattices, frames and related structures.
+import Ordinals.index                          -- Ordinals and their arithmetic.
+import Iterative.index                         -- Iterative multisets, sets and ordinals.
+import Cardinals.index                         -- Cardinals.
+import CantorSchroederBernstein.index          -- Cantor-Schröder-Bernstein for homotopy types.
+import CoNaturals.index                        -- Conatural numbers.
+import Apartness.index                         -- Apartness relations.
+import TypeTopology.index                      -- The intrinsic topology of types.
+import ContinuityAxiom.index                   -- A continuity principle that contradicts Curry-Howard.
+import InjectiveTypes.index                    -- Injective types.
+import C-Spaces.index                          -- C-spaces as a continuous model of type theory.
+import DomainTheory.index                      -- Domain theory, constructive and predicative.
+import PCF.index                               -- The language PCF and its Scott model.
+import MetricSpaces.index                      -- Metric spaces, without mentioning the reals.
+import TWA.index                               -- Exact real search.
+import Locales.index                           -- Point-free topology, constructive and predicative.
+import SyntheticHomotopyTheory.index           -- The circle and the infinite real projective space.
+import Categories.index                        -- Category theory in univalent foundations.
+import WildCategories.index                    -- Wild higher categories.
+import MonadOnTypes.index                      -- Wild monads on types, with the selection and continuation monads.
+import EffectfulForcing.index                  -- Dialogue trees and effectful forcing for Gödel's system T.
+import InductiveBars.index                     -- Inductive bars, Brouwer's thesis and bar recursion.
+import Games.index                             -- Finite games of perfect information, via selection functions.
+import BinarySystems.index                     -- The initial binary system, an interval of dyadic rationals.
+import Higgs.index                             -- Higgs' involution theorem and its consequences.
+import Factorial.index                         -- The automorphism type of a type and its combinatorics.
+import AlgebraicStructuresForcingSethood.index -- Algebraic structures that force a type to be a set.
+import Modal.index                             -- Reflective subuniverses and modalities.
+import Slice.index                             -- The slice of a universe over a type.
+import Coslice.index                           -- The coslice of a universe under a type.
+import ReflexiveGraphs.index                   -- Reflexive graphs and lenses, after Sterling.
+import RelativeMonadOnStructuredTypes.index    -- Relative monads on structured types.
+import CrossedModules.index                    -- Crossed modules.
+import Various.index                           -- Miscellaneous results of interest.
+import Duploids.index                          -- Duploids, after Munch-Maccagnoni.
+import PathSequences.index                     -- A calculus of sequences of paths.
+import gist.index                              -- Examples, discussions and experiments.
+import deprecated.index                        -- Superseded modules, kept for reference.
+import MGS.index                               -- A modular version of our [HoTT/UF lecture notes](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/).
 
 \end{code}
 
