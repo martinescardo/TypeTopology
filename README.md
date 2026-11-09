@@ -12,7 +12,7 @@ transferred to `github` Monday 5th February 2018.
  1. [Alternative html rendering](https://pdmosses.github.io/TypeTopology) by [Peter Mosses](https://pdmosses.github.io/)
  1. [Search](https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html) for a name, a fragment of one, a concept, a definition, or a contributor, including wildcards
  1. [Emacs search command](https://github.com/martinescardo/TypeTopologySearch/blob/main/README.md) for TypeTopology
- 1. [Brief module descriptions](https://github.com/martinescardo/TypeTopologyModuleDescriptions)
+ 1. [Module descriptions](https://github.com/martinescardo/TypeTopologyModuleDescriptions)
  1. [How to cite this repository](https://github.com/martinescardo/TypeTopology/blob/master/README.md#how-to-cite)
  1. [Root Agda files](https://github.com/martinescardo/TypeTopology/blob/master/README.md#root-agda-files)
  1. [Installation](https://github.com/martinescardo/TypeTopology/blob/master/README.md#installation)

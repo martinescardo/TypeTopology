@@ -20,6 +20,7 @@ are contributing to before you write your own.
  1. [Proofs](#proofs)
  1. [Layout](#layout)
  1. [Checking your work](#checking-your-work)
+ 1. [Module descriptions](#module-descriptions)
  1. [Pull requests](#pull-requests)
  1. [Reporting problems and asking for help](#reporting-problems-and-asking-for-help)
  1. [Code of conduct, inclusion, AI policy and license](#code-of-conduct-inclusion-ai-policy-and-license)
@@ -529,6 +530,14 @@ to your Emacs configuration.
 
     in a UTF-8 locale.
 
+## Module descriptions
+
+The repository
+[TypeTopologyModuleDescriptions](https://github.com/martinescardo/TypeTopologyModuleDescriptions)
+has an entry for each directory of TypeTopology, which says what its
+modules do and lists its authors and the publications that resulted
+from it. Please make a pull request there too to explain your contribution.
+
 ## Pull requests
 
 We prefer small pull requests, but discuss with the maintainers if you
@@ -548,6 +557,9 @@ and [Checking your work](#checking-your-work).
  - [ ] Every new file is imported by the index file of its directory,
        and every new directory has an index file imported by the index
        of its parent.
+ - [ ] Your new modules and directories are described in the
+       [module descriptions](https://github.com/martinescardo/TypeTopologyModuleDescriptions),
+       by a pull request to that repository.
  - [ ] Every module in the safe fragment includes the pragma
        `{-# OPTIONS --safe --without-K #-}`.
  - [ ] Every axiom is a hypothesis of a result or a parameter of a
