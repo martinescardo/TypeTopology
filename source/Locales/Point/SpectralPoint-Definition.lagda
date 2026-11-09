@@ -54,7 +54,7 @@ A _spectral point_ of locale `X` is a frame homomorphism `𝒪(X) → Ω`
 preserving compact opens. In other words, it is a spectral map `𝟏 → X`.
 
 In the following definition, we call the underlying function of this frame
-homomorphism `point-fn.
+homomorphism `point-fn`.
 
 \begin{code}
 
