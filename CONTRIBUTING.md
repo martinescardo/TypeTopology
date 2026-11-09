@@ -186,7 +186,12 @@ the markdown is rendered by our own post-processing of the html
 rendering, the script
 [admin-utilities/agda-html.py](admin-utilities/agda-html.py), which
 also turns urls, DOIs, arXiv identifiers and references to modules
-into links.
+into links. In the html rendering, the markdown symbols and the urls
+of links are hidden, and so a line of prose is shorter there than in
+the source file. The limit of 80 characters applies to the rendered
+line, the one the reader sees. A source line that holds a url may
+therefore be longer than 80 characters, and the text of a link may
+start on one line and end on the next.
 
 ## The preamble of a module
 
