@@ -64,9 +64,18 @@ source, as in (X : 𝓤 ̇ ), is hidden by the stylesheet in the same way,
 so that the page reads (X : 𝓤 ̇) while its text stays as Agda wrote it.
 --no-tighten leaves the space showing, and takes the markup off a page
 that has it.
+
+Because the markup is hidden, a line of prose with a link in it renders
+narrower than it is in the source, by the length of the url and the
+brackets, so prose is wrapped by the text the reader sees, and the text
+of a link, of emphasis or of code may run over one line break. The
+script measures every page as rendered and reports the lines wider than
+80 characters, and the lines that hidden markup leaves short in the
+middle of a paragraph; --overflow lists them and --width changes the
+limit.
 """
 
-import argparse, collections, glob, os, re, shutil, subprocess, sys
+import argparse, collections, glob, html, os, re, shutil, subprocess, sys
 import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -515,6 +524,61 @@ def visible(page):
     return TAG.sub("", page)
 
 
+# What the reader sees. The stylesheet hides <md-mark>, <dot-space> and
+# <universe-dot> with their contents, so those go, and the tags of
+# everything else, and the entities Agda wrote for < > & are read back.
+
+HIDDEN = re.compile(r'<(md-mark|dot-space|universe-dot)>.*?</\1>', re.S)
+HIDDEN_MARK = re.compile(r'<md-mark>')
+
+
+def shown_lines(page):
+    """The lines of a page as the reader sees them, each with its source
+    line and whether it holds hidden markdown outside a fenced block.
+    """
+    pre = re.search(r'<pre class="Agda">(.*?)</pre>', page, re.S)
+    body = pre.group(1) if pre else page
+    # A hidden element may span a line break, as the fence of a block
+    # does, so its line breaks are kept, and the two lists stay in step.
+    kept = HIDDEN.sub(lambda m: "\n" * m.group(0).count("\n"), body)
+    seen = html.unescape(TAG.sub("", kept)).split("\n")
+    source = html.unescape(TAG.sub("", body)).split("\n")
+    marked, depth = [], 0
+    for line in body.split("\n"):
+        inside = depth > 0 or "<md-block>" in line
+        depth += line.count("<md-block>") - line.count("</md-block>")
+        marked.append(not inside and bool(HIDDEN_MARK.search(line)))
+    return list(zip(seen, source, marked))
+
+
+def overflow(htmldir, width):
+    """The lines that render wider than the width, and the lines that
+    hidden markup leaves short before a continuation of their paragraph.
+
+    Returns (page, line number, shown width, source width, text) tuples,
+    the wide ones and the short ones as two lists.
+    """
+    wide, short = [], []
+    for path in sorted(glob.glob(os.path.join(htmldir, "*.html"))):
+        here = os.path.basename(path)[:-len(".html")]
+        lines = shown_lines(open(path, encoding="utf-8").read())
+        for n, (seen, source, marked) in enumerate(lines, 1):
+            if len(seen) > width:
+                wide.append((here, n, len(seen), len(source), seen))
+            elif (marked and seen.strip() and len(source) - len(seen) >= 10
+                  and n < len(lines) and lines[n][0].strip()):
+                # A line with a url or more hidden in it, which the hiding
+                # leaves well short of the limit, or which was wrapped onto
+                # a line of its own because of its url, leaving the line
+                # before it short.
+                before = lines[n - 2][0] if n > 1 else ""
+                if (len(seen) < width - 25
+                    or (before.strip() and len(before) < width - 25
+                        and len(source) > width - 10)):
+                    short.append((here, n, len(seen), len(source), seen))
+    return wide, short
+
+
 # A little markdown in the prose and the comments: `code`, *emphasis*,
 # **bold**, [text](target) and fenced blocks. The markup characters stay in
 # the page, inside <md-mark>, which the stylesheet hides, so the text of the
@@ -522,17 +586,24 @@ def visible(page):
 # can be taken off again exactly, which is done before the links are made
 # and the markdown put back after, so that every run starts from the same
 # page. Lists, underscores and runs of three or more asterisks are left as
-# they are.
+# they are. The text of a piece may run over one line break, so that a
+# paragraph can be wrapped by the text the reader sees, with the url of a
+# link falling where it may. A piece of code may do so only when it is
+# short, at most 32 characters with the break, which fits an expression
+# and keeps a stray backtick, or the TeX quotes `like this', from pairing
+# with a backtick on the next line.
 
 MARKDOWN = [
     ("block", re.compile(r'(?m)^([ \t]*(`{3,})[^`\n]*\n)'
                          r'((?:(?![ \t]*\2).*\n)*?(?:(?![ \t]*\2).*))'
                          r'(\n[ \t]*\2`*[ \t]*)$')),
-    ("code", re.compile(r'(?<!`)(`)([^`\n]+)(`)(?!`)')),
-    ("link", re.compile(r'(\[)([^\]\n]+)(\]\(([^)\s]+)\))')),
-    ("strong", re.compile(r'(?<!\*)(\*\*)([^\s*](?:[^*\n]*[^\s*])?)(\*\*)(?!\*)')),
-    ("em", re.compile(r'(?<![*\w`])(\*)([A-Za-z][^*\n`]{0,60}?[A-Za-z.])(\*)'
-                      r'(?![*\w])')),
+    ("code", re.compile(r'(?<!`)(`)([^`\n]+|(?=[^`]{1,32}`)[^`\n]*\n[ \t]*[^`\n]+)'
+                        r'(`)(?!`)')),
+    ("link", re.compile(r'(\[)((?:[^\]\n]*\n[ \t]*)?[^\]\n]+)(\]\(([^)\s]+)\))')),
+    ("strong", re.compile(r'(?<!\*)(\*\*)([^\s*](?:[^*\n]*(?:\n[ \t]*[^*\n]*)?[^\s*])?)'
+                          r'(\*\*)(?!\*)')),
+    ("em", re.compile(r'(?<![*\w`])(\*)([A-Za-z][^*\n`]{0,60}?'
+                      r'(?:\n[ \t]*[^*\n`]{0,60}?)?[A-Za-z.])(\*)(?![*\w])')),
 ]
 
 MARKDOWN_TAGS = re.compile(r'</?(?:md-mark|md-block|code|em|strong)>')
@@ -1274,6 +1345,13 @@ def main():
                    help="list the links made, with how often each occurs")
     p.add_argument("--unresolved", action="store_true",
                    help="list the module references that point at no page")
+    p.add_argument("--overflow", action="store_true",
+                   help="list the lines that render wider than the limit, "
+                        "and the lines that hidden markup leaves short in "
+                        "the middle of a paragraph")
+    p.add_argument("--width", type=int, default=80, metavar="N",
+                   help="the limit on the width of a rendered line, "
+                        "80 by default")
     p.add_argument("--guessed", action="store_true",
                    help="list the links that rest on a reading of the name, "
                         "namely a bare name, or a qualified one whose module "
@@ -1342,6 +1420,12 @@ def main():
         print(f"{n} names in {len(unresolved)} shapes look like module "
               f"references but point at no page"
               + ("" if args.unresolved else "; --unresolved lists them"))
+    wide, short = overflow(out, args.width)
+    if wide or short:
+        print(f"{len(wide)} lines render wider than {args.width} characters "
+              f"in {len({w[0] for w in wide})} pages, and {len(short)} are "
+              f"left short by hidden markup before a continuation"
+              + ("" if args.overflow else "; --overflow lists them"))
 
     if args.list:
         counts = collections.Counter(links)
@@ -1350,12 +1434,19 @@ def main():
 
     if args.list_markdown:
         for here, kind, text in rendered:
-            shown = text if kind != "block" else text.replace("\n", "\n" + " " * 64)
+            shown = (text.replace("\n", "\n" + " " * 64) if kind == "block"
+                     else " ".join(text.split()))
             print(f"{kind:6}  {here:55} {shown}")
 
     if args.guessed:
         for page, module, shown in sorted(read):
             print(f"{shown:44} -> {module:44} in {page}")
+
+    if args.overflow:
+        for kind, rows in (("wide", wide), ("short", short)):
+            for here, n, seen, source, text in rows:
+                print(f"{kind:5} {here}:{n} {seen} shown, {source} in the "
+                      f"source  {text.strip()[:60]}")
 
     if args.unresolved:
         for name in sorted(unresolved, key=lambda k: (-len(unresolved[k]), k)):
