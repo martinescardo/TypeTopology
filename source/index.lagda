@@ -6,7 +6,7 @@
 
    [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/) and [collaborators](https://github.com/martinescardo/TypeTopology#current-typetopology-contributors-in-alphabetical-order-of-first-name).
 
-   Tested with Agda 2.8.0 and 2.9.0.
+   Tested with [Agda](https://agda.readthedocs.io/) 2.8.0 and 2.9.0.
    This HTML rendering was automatically generated from commit to-be-filled-automatically.
 
    * Our main use of this development is as a personal blackboard or
