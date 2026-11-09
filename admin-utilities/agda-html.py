@@ -138,7 +138,7 @@ SPAN = "span"
 # text, so a reader sees the same characters as before, and the classes,
 # which Agda never uses, are what identify them.
 
-SEARCH_URL = "https://martinescardo.github.io/TypeTopologySearch.html"
+SEARCH_URL = "https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html"
 
 MAIN_INDEX = "index"
 
