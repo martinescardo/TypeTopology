@@ -2,12 +2,12 @@
 
    2010--2026--∞, continuously evolving.
 
-   Various new theorems in univalent mathematics written in Agda
-   -------------------------------------------------------------
+   Various new theorems in constructive univalent mathematics written in Agda
+   --------------------------------------------------------------------------
 
    [Martin Escardo](https://www.cs.bham.ac.uk/~mhe/) and [collaborators](https://github.com/martinescardo/TypeTopology#current-typetopology-contributors-in-alphabetical-order-of-first-name).
 
-   Tested with Agda 2.8.0 and 2.9.0 (unreleased development version).
+   Tested with Agda 2.8.0 and 2.9.0.
    This HTML rendering was automatically generated from commit to-be-filled-automatically.
 
    * Our main use of this development is as a personal blackboard or
@@ -15,6 +15,11 @@
      particular, some modules have better and better results or
      approaches, as time progresses, with the significant steps kept,
      and with failed ideas and calculations eventually erased.
+
+   * The purpose of TypeTopology is to explain mathematics to people,
+     and not only to computers. The name TypeTopology was chosen both
+     because of the well-known [connection of topology with constructive
+     mathematics](https://doi.org/10.1093/oso/9780198537359.003.0005) and because homotopy theory is a branch of topology.
 
    * We offer this page as a preliminary announcement of results to be
      [submitted for publication](https://github.com/martinescardo/TypeTopology#academic-publications-and-preprints-resulting-from-typetopology), of the kind we would get when we visit
@@ -26,14 +31,15 @@
 
    * The required material on HoTT/UF has been developed on demand
      over the years to fulfill the needs of the above as they arise,
-     and hence is somewhat chaotic. It will continue to expand as the
-     need arises. Its form is the result of evolution rather than
-     intelligent design (paraphrasing Linus Torvalds).
+     and hence its organization reflects that history rather than a
+     plan. It will continue to expand and improve as the need arises.
 
      Our [MGS lecture notes](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/) develop HoTT/UF in Agda in a more
-     principled way, and offers better approaches to some
+     principled way, and offer better approaches to some
      constructions and simpler proofs of some (previously) difficult
-     theorems.
+     theorems. The directory [MGS](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MGS.index.html) of this development has a
+     modular version of the notes, with the prose deliberately left
+     out.
 
      Our philosophy, here and in the lecture notes, is to work with a
      minimal Martin-Löf type theory, and use principles from HoTT/UF
@@ -49,14 +55,15 @@
 
    * There is also a [module that links some "unsafe" modules](https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html) that use
      type theory beyond MLTT and HoTT/UF, which cannot be included in
-     this safe-modules index: The system with type-in-type is
-     inconsistent (as is well known), countable Tychonoff, and
-     compactness of the Cantor type using countable Tychonoff, and
-     more.
+     this safe-modules index, such as the inconsistency of
+     type-in-type, countable Tychonoff, and the compactness of the
+     Cantor type from countable Tychonoff.
 
-     This file also explains which [options are used in TypeTopology](https://github.com/martinescardo/TypeTopology/blob/master/typetopology.agda-lib) to
+     That module also explains the [options used in TypeTopology](https://github.com/martinescardo/TypeTopology/blob/master/typetopology.agda-lib) to
      control safety and, to the extent this is currently possible, to
-     fix which type theory is used.
+     fix which type theory is used. The safe modules are also checked
+     with [Mikan](https://codeberg.org/1lab/mikan), with the options listed in [typetopology.mikan-lib](https://github.com/martinescardo/TypeTopology/blob/master/typetopology.mikan-lib), as a
+     double check.
 
    * In our last count, on 2026-11-08, this development has 1015 Agda
      files with 305K lines of code, including comments and blank
@@ -106,7 +113,8 @@ Philosophy of the repository
      and originally proposed by Peter Aczel). We also have Zorn's
      Lemma, the Well-Ordering Principle and more.
 
-   * We don't assume propositional resizing as Voevodsky and UniMath do.
+   * We work without propositional resizing, which Voevodsky and UniMath
+     assume.
 
      But there are some theorems whose hypotheses or conclusions
      involve propositional resizing.
@@ -115,7 +123,7 @@ Philosophy of the repository
      ∞-topos, but some theorems will be valid only in special ∞-toposes,
      such as boolean toposes or other kinds of toposes.
 
-   * In particular, we don't use Cubical Agda features, deliberately,
+   * In particular, we deliberately avoid Cubical Agda features,
      because at present it is not known whether (some) cubical type
      theory has an interpretation in any ∞-topos.
 
@@ -132,7 +140,7 @@ Philosophy of the repository
      the existence of quotients, and some higher inductive types.
 
    * The files within most of the modules have extensive discussions
-     in prose. See also [TypeTopology module descriptions](https://github.com/martinescardo/TypeTopologyModuleDescriptions/).
+     in prose.
 
 The modules, by subject
 -----------------------
