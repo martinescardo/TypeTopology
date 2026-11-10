@@ -381,6 +381,14 @@ to your Emacs configuration.
  1. Keep an argument explicit when it helps the reader, even when Agda
     could infer it.
 
+ 1. Implicit arguments are passed positionally, with the implicit
+    arguments before the one we need supplied as well, as in
+    [`inl {𝓤} {𝓥} {X} {Y} x`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Plus-Properties.html) in
+    [MLTT.Plus-Properties](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Plus-Properties.html), and bound positionally on the left-hand
+    side of a definition, as in [`lhs {𝓤} {X} {x} {y} p = x`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html#lhs) in
+    [MLTT.Id](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Id.html), and never by [name](https://agda.readthedocs.io/en/latest/language/implicit-arguments.html), as in `inl {Y = Y} x` or
+    `lhs {X = X}`.
+
  1. The flag [`--no-infer-absurd-clauses`](https://agda.readthedocs.io/en/latest/tools/command-line-options.html#cmdoption-no-infer-absurd-clauses) is on, so that
     Agda does not silently omit the clauses for impossible cases when
     it checks a definition for coverage, and each such clause is
@@ -571,6 +579,7 @@ and [Checking your work](#checking-your-work).
        module, with no postulates.
  - [ ] A new proof or definition of something the development already
        has is added alongside the existing one.
+ - [ ] Implicit arguments are passed positionally.
  - [ ] `with` is not used.
  - [ ] The required code layout is obeyed.
  - [ ] Indentation is by 1 space.
