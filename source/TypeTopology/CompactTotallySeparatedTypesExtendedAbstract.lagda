@@ -1320,6 +1320,10 @@ Proposition-6-3-1 = ⟦_⟧₀-compact-gives-LPO
 Proposition-6-3-2 : ((b : B) → is-trichotomous ⟦ b ⟧-sup) → LPO
 Proposition-6-3-2 = FTr.trichotomy-of-the-standard-interpretation-gives-LPO
 
+-- prop:std-interp-failures (3), item:std-discrete-wlpo
+Proposition-6-3-3 : ((b : B) → is-discrete ⟨ ⟦ b ⟧-sup ⟩) → WLPO
+Proposition-6-3-3 = FTr.discreteness-of-the-standard-interpretation-gives-WLPO
+
 -- def:non-standard-interpretations
 Definition-6-4-Σ : B → Ordinal₃ 𝓤₀
 Definition-6-4-Σ = ⟦_⟧-Σ
@@ -1510,6 +1514,21 @@ Proposition-6-21 : propext 𝓤₀
                          is-least-root (underlying-weak-order (⟦ b ⟧-Σ₁)) p x₀)
                     ↔ LPO)
 Proposition-6-21 = BDC.Δ-least-roots-iff-LPO
+
+-- prop:std-trich-least-lpo
+Proposition-6-22 : ((b : B) (p : ⟨ ⟦ b ⟧-sup ⟩ → 𝟚)
+                    → ¬¬ (Σ x ꞉ ⟨ ⟦ b ⟧-sup ⟩ , p x ＝ ₀)
+                    → Σ x₀ ꞉ ⟨ ⟦ b ⟧-sup ⟩ ,
+                       is-least-root (underlying-weak-order ⟦ b ⟧-sup) p x₀)
+                 → LPO
+Proposition-6-22 = ⟦_⟧₀-least-roots-gives-LPO
+
+Proposition-6-22' : ((b : B) (p : ⟨ ⟦ b ⟧-Σ ⟩ → 𝟚)
+                     → ¬¬ (Σ x ꞉ ⟨ ⟦ b ⟧-Σ ⟩ , p x ＝ ₀)
+                     → Σ x₀ ꞉ ⟨ ⟦ b ⟧-Σ ⟩ ,
+                        is-least-root (underlying-weak-order [ ⟦ b ⟧-Σ ]) p x₀)
+                  → LPO
+Proposition-6-22' = ⟦_⟧₃-least-roots-gives-LPO
 
 
 \end{code}
