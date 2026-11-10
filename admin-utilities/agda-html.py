@@ -532,9 +532,14 @@ HIDDEN = re.compile(r'<(md-mark|dot-space|universe-dot)>.*?</\1>', re.S)
 HIDDEN_MARK = re.compile(r'<md-mark>')
 
 
+OPENS = re.compile(r'<(?:a|span)\b[^>]*class="(\w+)"[^>]*>|</(?:a|span)>')
+
+
 def shown_lines(page):
     """The lines of a page as the reader sees them, each with its source
-    line and whether it holds hidden markdown outside a fenced block.
+    line and whether it holds hidden markdown in the prose, that is, in
+    a Background element and outside a fenced block. A comment is a
+    unit of its own, so what it hides never leaves a paragraph short.
     """
     pre = re.search(r'<pre class="Agda">(.*?)</pre>', page, re.S)
     body = pre.group(1) if pre else page
@@ -543,11 +548,19 @@ def shown_lines(page):
     kept = HIDDEN.sub(lambda m: "\n" * m.group(0).count("\n"), body)
     seen = html.unescape(TAG.sub("", kept)).split("\n")
     source = html.unescape(TAG.sub("", body)).split("\n")
-    marked, depth = [], 0
+    marked, depth, cls = [], 0, None
     for line in body.split("\n"):
         inside = depth > 0 or "<md-block>" in line
         depth += line.count("<md-block>") - line.count("</md-block>")
-        marked.append(not inside and bool(HIDDEN_MARK.search(line)))
+        prose, pos = False, 0
+        for m in OPENS.finditer(line):
+            if HIDDEN_MARK.search(line, pos, m.start()) and cls == "Background":
+                prose = True
+            cls = m.group(1) if m.group(1) else (None if cls else cls)
+            pos = m.end()
+        if HIDDEN_MARK.search(line, pos) and cls == "Background":
+            prose = True
+        marked.append(not inside and prose)
     return list(zip(seen, source, marked))
 
 
@@ -566,11 +579,13 @@ def overflow(htmldir, width):
             if len(seen) > width:
                 wide.append((here, n, len(seen), len(source), seen))
             elif (marked and seen.strip() and len(source) - len(seen) >= 10
-                  and n < len(lines) and lines[n][0].strip()):
+                  and n < len(lines) and lines[n][0].strip()
+                  and lines[n][0].strip()[0].islower()):
                 # A line with a url or more hidden in it, which the hiding
                 # leaves well short of the limit, or which was wrapped onto
                 # a line of its own because of its url, leaving the line
-                # before it short.
+                # before it short. The next line beginning in lower case is
+                # what says the paragraph continues.
                 before = lines[n - 2][0] if n > 1 else ""
                 if (len(seen) < width - 25
                     or (before.strip() and len(before) < width - 25
