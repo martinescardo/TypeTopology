@@ -158,15 +158,15 @@ module index where
 
 \begin{code}
 
-import MLTT.index                  -- Martin-Löf type theory.
-import W.index                     -- W-types.
-import Notation.index              -- General notation and conventions.
-import UF.index                    -- Univalent foundations.
-import Quotient.index              -- Set quotients.
-import Relations.index             -- Relations, Church-Rosser property, etc.
-import Fin.index                   -- Notions of finiteness.
-import NotionsOfDecidability.index -- Various notions of decidability.
-import Taboos.index                -- Excluded middle, LPO, WLPO, LLPO, etc.
+import MLTT.index                  -- [Martin-Löf type theory](https://github.com/martinescardo/TypeTopologyModuleDescriptions#mltt).
+import W.index                     -- [W-types](https://github.com/martinescardo/TypeTopologyModuleDescriptions#w).
+import Notation.index              -- [General notation and conventions](https://github.com/martinescardo/TypeTopologyModuleDescriptions#notation).
+import UF.index                    -- [Univalent foundations](https://github.com/martinescardo/TypeTopologyModuleDescriptions#uf).
+import Quotient.index              -- [Set quotients](https://github.com/martinescardo/TypeTopologyModuleDescriptions#quotient).
+import Relations.index             -- [Relations, Church-Rosser property, etc](https://github.com/martinescardo/TypeTopologyModuleDescriptions#relations).
+import Fin.index                   -- [Notions of finiteness](https://github.com/martinescardo/TypeTopologyModuleDescriptions#fin).
+import NotionsOfDecidability.index -- [Various notions of decidability](https://github.com/martinescardo/TypeTopologyModuleDescriptions#notionsofdecidability).
+import Taboos.index                -- [Excluded middle, LPO, WLPO, LLPO, etc](https://github.com/martinescardo/TypeTopologyModuleDescriptions#taboos).
 
 \end{code}
 
@@ -174,18 +174,18 @@ import Taboos.index                -- Excluded middle, LPO, WLPO, LLPO, etc.
 
 \begin{code}
 
-import TypeTopology.index     -- The intrinsic topology of types.
-import EffectfulForcing.index -- Dialogue trees and effectful forcing.
-import ContinuityAxiom.index  -- A continuity axiom contradicts Curry-Howard.
-import C-Spaces.index         -- C-spaces as a continuous model of type theory.
-import InductiveBars.index    -- Bars, Brouwer's thesis and bar recursion.
-import InjectiveTypes.index   -- Injective types.
-import DomainTheory.index     -- Domain theory.
-import PCF.index              -- PCF and its Scott model.
-import TWA.index              -- Exact real search.
-import Locales.index          -- Point-free topology.
-import Lifting.index          -- The lifting monad of partial elements.
-import Dominance.index        -- Dominances in the sense of Rosolini.
+import TypeTopology.index     -- [The intrinsic topology of types](https://github.com/martinescardo/TypeTopologyModuleDescriptions#typetopology).
+import EffectfulForcing.index -- [Dialogue trees and effectful forcing](https://github.com/martinescardo/TypeTopologyModuleDescriptions#effectfulforcing).
+import ContinuityAxiom.index  -- [A continuity axiom contradicts Curry-Howard](https://github.com/martinescardo/TypeTopologyModuleDescriptions#continuityaxiom).
+import C-Spaces.index         -- [C-spaces as a continuous model of type theory](https://github.com/martinescardo/TypeTopologyModuleDescriptions#c-spaces).
+import InductiveBars.index    -- [Bars, Brouwer's thesis and bar recursion](https://github.com/martinescardo/TypeTopologyModuleDescriptions#inductivebars).
+import InjectiveTypes.index   -- [Injective types](https://github.com/martinescardo/TypeTopologyModuleDescriptions#injectivetypes).
+import Lifting.index          -- [The lifting monad of partial elements](https://github.com/martinescardo/TypeTopologyModuleDescriptions#lifting).
+import Dominance.index        -- [Dominances in the sense of Rosolini](https://github.com/martinescardo/TypeTopologyModuleDescriptions#dominance).
+import DomainTheory.index     -- [Domain theory](https://github.com/martinescardo/TypeTopologyModuleDescriptions#domaintheory).
+import PCF.index              -- [PCF and its Scott model](https://github.com/martinescardo/TypeTopologyModuleDescriptions#pcf).
+import TWA.index              -- [Exact real search](https://github.com/martinescardo/TypeTopologyModuleDescriptions#twa).
+import Locales.index          -- [Point-free topology](https://github.com/martinescardo/TypeTopologyModuleDescriptions#locales).
 
 \end{code}
 
@@ -193,14 +193,14 @@ import Dominance.index        -- Dominances in the sense of Rosolini.
 
 \begin{code}
 
-import Naturals.index         -- Natural numbers.
-import Integers.index         -- Integers.
-import Rationals.index        -- Rational numbers.
-import Dyadics.index          -- Dyadic rationals.
-import DyadicsInductive.index -- Dyadic rationals, defined inductively.
-import BinarySystems.index    -- Dyadic rationals via binary systems.
-import DedekindReals.index    -- Real numbers, in their Dedekind incarnation.
-import CoNaturals.index       -- Conatural numbers.
+import Naturals.index         -- [Natural numbers](https://github.com/martinescardo/TypeTopologyModuleDescriptions#naturals).
+import Integers.index         -- [Integers](https://github.com/martinescardo/TypeTopologyModuleDescriptions#integers).
+import Rationals.index        -- [Rational numbers](https://github.com/martinescardo/TypeTopologyModuleDescriptions#rationals).
+import Dyadics.index          -- [Dyadic rationals](https://github.com/martinescardo/TypeTopologyModuleDescriptions#dyadics).
+import DyadicsInductive.index -- [Dyadic rationals, defined inductively](https://github.com/martinescardo/TypeTopologyModuleDescriptions#dyadicsinductive).
+import BinarySystems.index    -- [Dyadic rationals via binary systems](https://github.com/martinescardo/TypeTopologyModuleDescriptions#binarysystems).
+import DedekindReals.index    -- [Real numbers, in their Dedekind incarnation](https://github.com/martinescardo/TypeTopologyModuleDescriptions#dedekindreals).
+import CoNaturals.index       -- [Conatural numbers](https://github.com/martinescardo/TypeTopologyModuleDescriptions#conaturals).
 
 \end{code}
 
@@ -208,11 +208,11 @@ import CoNaturals.index       -- Conatural numbers.
 
 \begin{code}
 
-import Groups.index                            -- UF-based group theory.
-import EGroups.index                           -- Setoid-based group theory.
-import Field.index                             -- Fields.
-import CrossedModules.index                    -- Crossed modules.
-import AlgebraicStructuresForcingSethood.index -- Structures that force sethood.
+import Groups.index                            -- [UF-based group theory](https://github.com/martinescardo/TypeTopologyModuleDescriptions#groups).
+import EGroups.index                           -- [Setoid-based group theory](https://github.com/martinescardo/TypeTopologyModuleDescriptions#egroups).
+import Field.index                             -- [Fields](https://github.com/martinescardo/TypeTopologyModuleDescriptions#field).
+import CrossedModules.index                    -- [Crossed modules](https://github.com/martinescardo/TypeTopologyModuleDescriptions#crossedmodules).
+import AlgebraicStructuresForcingSethood.index -- [Structures that force sethood](https://github.com/martinescardo/TypeTopologyModuleDescriptions#algebraicstructuresforcingsethood).
 
 \end{code}
 
@@ -220,11 +220,11 @@ import AlgebraicStructuresForcingSethood.index -- Structures that force sethood.
 
 \begin{code}
 
-import OrderedTypes.index             -- Posets, lattices, frames, etc.
-import Ordinals.index                 -- Ordinals and their arithmetic.
-import Iterative.index                -- Iterative multisets, sets and ordinals.
-import Cardinals.index                -- Cardinals.
-import CantorSchroederBernstein.index -- Schröder-Bernstein for arbitrary types.
+import OrderedTypes.index             -- [Posets, lattices, frames, etc](https://github.com/martinescardo/TypeTopologyModuleDescriptions#orderedtypes).
+import Ordinals.index                 -- [Ordinals and their arithmetic](https://github.com/martinescardo/TypeTopologyModuleDescriptions#ordinals).
+import Iterative.index                -- [Iterative multisets, sets and ordinals](https://github.com/martinescardo/TypeTopologyModuleDescriptions#iterative).
+import Cardinals.index                -- [Cardinals](https://github.com/martinescardo/TypeTopologyModuleDescriptions#cardinals).
+import CantorSchroederBernstein.index -- [Schröder-Bernstein for arbitrary types](https://github.com/martinescardo/TypeTopologyModuleDescriptions#cantorschroederbernstein).
 
 \end{code}
 
@@ -232,8 +232,8 @@ import CantorSchroederBernstein.index -- Schröder-Bernstein for arbitrary types
 
 \begin{code}
 
-import Apartness.index    -- Apartness relations.
-import MetricSpaces.index -- Metric spaces, without mentioning the reals.
+import Apartness.index    -- [Apartness relations](https://github.com/martinescardo/TypeTopologyModuleDescriptions#apartness).
+import MetricSpaces.index -- [Metric spaces, without mentioning the reals](https://github.com/martinescardo/TypeTopologyModuleDescriptions#metricspaces).
 
 \end{code}
 
@@ -241,12 +241,12 @@ import MetricSpaces.index -- Metric spaces, without mentioning the reals.
 
 \begin{code}
 
-import SyntheticHomotopyTheory.index -- The circle and ℝP∞.
-import Modal.index                   -- Reflective subuniverses and modalities.
-import Slice.index                   -- The slice of a universe over a type.
-import Coslice.index                 -- The coslice of a universe under a type.
-import ReflexiveGraphs.index         -- Reflexive graph lenses, after Sterling.
-import PathSequences.index           -- A calculus of sequences of paths.
+import SyntheticHomotopyTheory.index -- [The circle and ℝP∞](https://github.com/martinescardo/TypeTopologyModuleDescriptions#synthetichomotopytheory).
+import Modal.index                   -- [Reflective subuniverses and modalities](https://github.com/martinescardo/TypeTopologyModuleDescriptions#modal).
+import Slice.index                   -- [The slice of a universe over a type](https://github.com/martinescardo/TypeTopologyModuleDescriptions#slice).
+import Coslice.index                 -- [The coslice of a universe under a type](https://github.com/martinescardo/TypeTopologyModuleDescriptions#coslice).
+import ReflexiveGraphs.index         -- [Reflexive graph lenses, after Sterling](https://github.com/martinescardo/TypeTopologyModuleDescriptions#reflexivegraphs).
+import PathSequences.index           -- [A calculus of sequences of paths](https://github.com/martinescardo/TypeTopologyModuleDescriptions#pathsequences).
 
 \end{code}
 
@@ -254,9 +254,9 @@ import PathSequences.index           -- A calculus of sequences of paths.
 
 \begin{code}
 
-import WildCategories.index -- Wild higher categories.
-import Categories.index     -- Category theory in univalent foundations.
-import Duploids.index       -- Duploids, after Munch-Maccagnoni.
+import WildCategories.index -- [Wild higher categories](https://github.com/martinescardo/TypeTopologyModuleDescriptions#wildcategories).
+import Categories.index     -- [Category theory in univalent foundations](https://github.com/martinescardo/TypeTopologyModuleDescriptions#categories).
+import Duploids.index       -- [Duploids, after Munch-Maccagnoni](https://github.com/martinescardo/TypeTopologyModuleDescriptions#duploids).
 
 \end{code}
 
@@ -264,10 +264,10 @@ import Duploids.index       -- Duploids, after Munch-Maccagnoni.
 
 \begin{code}
 
-import MonadOnTypes.index                   -- Wild monads on types.
-import RelativeMonadOnStructuredTypes.index -- Relative monads.
-import DiscreteGraphicMonoids.index         -- Graphic monoids, after Lawvere.
-import Games.index                          -- Games via selection functions.
+import MonadOnTypes.index                   -- [Wild monads on types](https://github.com/martinescardo/TypeTopologyModuleDescriptions#monadontypes).
+import RelativeMonadOnStructuredTypes.index -- [Relative monads](https://github.com/martinescardo/TypeTopologyModuleDescriptions#relativemonadonstructuredtypes).
+import DiscreteGraphicMonoids.index         -- [Graphic monoids, after Lawvere](https://github.com/martinescardo/TypeTopologyModuleDescriptions#discretegraphicmonoids).
+import Games.index                          -- [Games via selection functions](https://github.com/martinescardo/TypeTopologyModuleDescriptions#games).
 
 \end{code}
 
@@ -275,12 +275,12 @@ import Games.index                          -- Games via selection functions.
 
 \begin{code}
 
-import Higgs.index      -- Higgs' involution theorem and its consequences.
-import Factorial.index  -- Automorphism types and their combinatorics.
-import Various.index    -- Miscellaneous results of interest.
-import gist.index       -- Examples, discussions and experiments.
-import MGS.index        -- A modular version of our [HoTT/UF lecture notes](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/).
-import deprecated.index -- Superseded modules, kept for reference.
+import Higgs.index      -- [Higgs' involution theorem and its consequences](https://github.com/martinescardo/TypeTopologyModuleDescriptions#higgs).
+import Factorial.index  -- [Automorphism types and their combinatorics](https://github.com/martinescardo/TypeTopologyModuleDescriptions#factorial).
+import Various.index    -- [Miscellaneous results of interest](https://github.com/martinescardo/TypeTopologyModuleDescriptions#various).
+import gist.index       -- [Examples, discussions and experiments](https://github.com/martinescardo/TypeTopologyModuleDescriptions#gist).
+import MGS.index        -- [A modular version](https://github.com/martinescardo/TypeTopologyModuleDescriptions#mgs) of our [HoTT/UF lecture notes](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/).
+import deprecated.index -- [Superseded modules, kept for reference](https://github.com/martinescardo/TypeTopologyModuleDescriptions#deprecated).
 
 \end{code}
 
