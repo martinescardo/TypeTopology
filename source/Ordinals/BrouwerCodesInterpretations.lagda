@@ -228,6 +228,99 @@ compactness amounts to LPO.
 
 \end{code}
 
+Added by Martin Escardo, 10th November 2026.
+
+The least element property for complemented subsets of the standard
+and of the trichotomous interpretations gives LPO, because in both of
+them the ordinal ω + 1 is the interpretation of a code, and the least
+element property of ω + 1 amounts to LPO, by
+Ordinals.Closure.succₒ-ω-least-roots-gives-LPO.
+
+\begin{code}
+
+open import Ordinals.Closure fe
+ using (succₒ-ω-least-roots-gives-LPO ; ≃ₒ-gives-has-least-roots)
+open import Ordinals.Equivalence
+open import Ordinals.InfProperty using (has-least-roots)
+open import UF.Equiv using (qinvs-are-equivs)
+
+⟦_⟧₀-least-roots-gives-LPO
+ : ((b : B) → has-least-roots (underlying-weak-order ⟦ b ⟧₀))
+ → LPO
+⟦_⟧₀-least-roots-gives-LPO h
+ = succₒ-ω-least-roots-gives-LPO
+    (transport
+      (λ - → has-least-roots (underlying-weak-order (- +ₒ 𝟙ₒ)))
+      ω-is-a-standard-interpretation
+      (h (S (L finite-code))))
+
+\end{code}
+
+For the trichotomous interpretation, the code S (L (λ _ → S Z)) is
+interpreted as the sum over ω of the constant family at 𝟘ₒ +ₒ 𝟙ₒ,
+followed by a top point, which is order equivalent to ω + 1.
+
+\begin{code}
+
+trichotomous-interpretation-of-ω+𝟙
+ : [ ⟦ S (L (λ _ → S Z)) ⟧₃ ] ≃ₒ (ω +ₒ 𝟙ₒ)
+trichotomous-interpretation-of-ω+𝟙
+ = f ,
+   f-is-order-preserving ,
+   qinvs-are-equivs f (g , η , ε) ,
+   g-is-order-preserving
+ where
+  α : Ordinal 𝓤₀
+  α = [ ⟦ S (L (λ _ → S Z)) ⟧₃ ]
+
+  f : ⟨ α ⟩ → ℕ + 𝟙
+  f (inl (n , _)) = inl n
+  f (inr ⋆)       = inr ⋆
+
+  g : ℕ + 𝟙 → ⟨ α ⟩
+  g (inl n) = inl (n , inr ⋆)
+  g (inr ⋆) = inr ⋆
+
+  η : g ∘ f ∼ id
+  η (inl (n , inl x)) = 𝟘-elim x
+  η (inl (n , inr ⋆)) = refl
+  η (inr ⋆)           = refl
+
+  ε : f ∘ g ∼ id
+  ε (inl n) = refl
+  ε (inr ⋆) = refl
+
+  f-is-order-preserving : is-order-preserving α (ω +ₒ 𝟙ₒ) f
+  f-is-order-preserving (inl (n , inl x)) y l = 𝟘-elim x
+  f-is-order-preserving (inl (n , inr ⋆)) (inl (m , inl x)) l = 𝟘-elim x
+  f-is-order-preserving (inl (n , inr ⋆)) (inl (m , inr ⋆)) (inl l) = l
+  f-is-order-preserving (inl (n , inr ⋆)) (inl (m , inr ⋆)) (inr (refl , l))
+   = 𝟘-elim l
+  f-is-order-preserving (inl (n , inr ⋆)) (inr ⋆) l = ⋆
+  f-is-order-preserving (inr ⋆) (inl y) l = 𝟘-elim l
+  f-is-order-preserving (inr ⋆) (inr ⋆) l = 𝟘-elim l
+
+  g-is-order-preserving : is-order-preserving (ω +ₒ 𝟙ₒ) α g
+  g-is-order-preserving (inl n) (inl m) l = inl l
+  g-is-order-preserving (inl n) (inr ⋆) l = ⋆
+  g-is-order-preserving (inr ⋆) (inl m) l = 𝟘-elim l
+  g-is-order-preserving (inr ⋆) (inr ⋆) l = 𝟘-elim l
+
+⟦_⟧₃-least-roots-gives-LPO
+ : ((b : B) → has-least-roots (underlying-weak-order [ ⟦ b ⟧₃ ]))
+ → LPO
+⟦_⟧₃-least-roots-gives-LPO h
+ = succₒ-ω-least-roots-gives-LPO
+    (≃ₒ-gives-has-least-roots
+      [ ⟦ S (L (λ _ → S Z)) ⟧₃ ]
+      (ω +ₒ 𝟙ₒ)
+      trichotomous-interpretation-of-ω+𝟙
+      (h (S (L (λ _ → S Z)))))
+
+\end{code}
+
+End of addition.
+
 We'll prove the following inequalities, where the arrows represent the
 relation _⊴_ on ordinals, under the assumption of excluded middle:
 

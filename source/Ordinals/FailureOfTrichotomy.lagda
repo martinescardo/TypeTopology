@@ -1,4 +1,5 @@
-Martin Escardo, 14th June 2026.
+Martin Escardo, 14th June 2026,
+with additions of 7th September and 10th November 2026.
 
 This is a companion to Ordinals.BrouwerCodesInterpretations.
 
@@ -19,6 +20,9 @@ the resulting ordinals are trichotomous, we conclude that LPO holds.
 To prove this, we exhibit, from any given conatural u, a Brouwer code
 such that if the standard interpretation of the code is trichotomous
 then the finiteness of u is decidable, which amounts to LPO.
+
+The same codes show that if the resulting ordinals are discrete, then
+WLPO holds.
 
 \begin{code}
 
@@ -59,7 +63,9 @@ open import Ordinals.TrichotomousType fe
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Taboos.LPO
+open import Taboos.WLPO
 open import UF.Base
+open import UF.DiscreteAndSeparated
 
 open PropositionalTruncation pt
 open suprema pt sr
@@ -189,6 +195,16 @@ module _ (u : ℕ∞) where
      III₁ : ι u i ＝ ₁ → is-finite u
      III₁ c = 𝟘-elim (¬𝟙ₒ⊲𝟙ₒ (transport (𝟙ₒ ⊲_) (α-is-𝟙ₒ i c) (b , II)))
 
+ y₀-equal-to-y₁-gives-not-finite : y₀ ＝ y₁ → ¬ is-finite u
+ y₀-equal-to-y₁-gives-not-finite p φ =
+  ¬𝟙ₒ⊲𝟙ₒ (transport (𝟙ₒ ⊲_) (I ⁻¹) (finite-gives-𝟙ₒ⊲supα φ))
+  where
+   I : 𝟙ₒ ＝ sup α
+   I = 𝟙ₒ         ＝⟨ lower-set-of-y₀-is-𝟙ₒ ⁻¹ ⟩
+       sup β ↓ y₀ ＝⟨ ap (sup β ↓_) p ⟩
+       sup β ↓ y₁ ＝⟨ lower-set-of-y₁-is-supα ⟩
+       sup α      ∎
+
  main-lemma : is-trichotomous (sup β) → is-decidable (is-finite u)
  main-lemma τ = I (τ y₀ y₁)
   where
@@ -199,16 +215,7 @@ module _ (u : ℕ∞) where
                        lower-set-of-y₀-is-𝟙ₒ
                        lower-set-of-y₁-is-supα
                        (↓-preserves-order (sup β) y₀ y₁ l)))
-   I (inr (inl e)) = inr I₁
-    where
-     I₀ : 𝟙ₒ ＝ sup α
-     I₀ = 𝟙ₒ          ＝⟨ lower-set-of-y₀-is-𝟙ₒ ⁻¹ ⟩
-          sup β ↓ y₀  ＝⟨ ap (sup β ↓_) e ⟩
-          sup β ↓ y₁  ＝⟨ lower-set-of-y₁-is-supα ⟩
-          sup α       ∎
-
-     I₁ : ¬ is-finite u
-     I₁ φ = ¬𝟙ₒ⊲𝟙ₒ (transport (𝟙ₒ ⊲_) (I₀ ⁻¹) (finite-gives-𝟙ₒ⊲supα φ))
+   I (inr (inl e)) = inr (y₀-equal-to-y₁-gives-not-finite e)
    I (inr (inr l)) = 𝟘-elim (¬supα⊲𝟙ₒ
                               (transport₂ _⊲_
                                 lower-set-of-y₁-is-supα
@@ -260,3 +267,60 @@ comparison₀₃-gives-LPO h = II
   II = trichotomy-of-the-standard-interpretation-gives-LPO I
 
 \end{code}
+
+Added by Martin Escardo, 10th November 2026.
+
+The same codes show that the discreteness of the standard
+interpretation gives WLPO. Discreteness decides whether the points y₀
+and y₁ above are equal. If they are, then the point u is not finite,
+by Ordinals.FailureOfTrichotomy.y₀-equal-to-y₁-gives-not-finite, and
+hence u ＝ ∞. If they are different, then u ≠ ∞, because if u ＝ ∞ then
+every ordinal α i is 𝟙ₒ, so that sup α is 𝟙ₒ, by
+Ordinals.OrdinalOfOrdinalsSuprema.sup-of-constant-family, and then y₀
+and y₁ have the same initial segment.
+
+\begin{code}
+
+∞-gives-sup-α-is-𝟙ₒ : (u : ℕ∞) → u ＝ ∞ → sup (α u) ＝ 𝟙ₒ
+∞-gives-sup-α-is-𝟙ₒ u p =
+ sup (α u)      ＝⟨ I ⟩
+ sup (λ _ → 𝟙ₒ) ＝⟨ II ⟩
+ 𝟙ₒ             ∎
+ where
+  α-is-constant : (i : ℕ) → α u i ＝ 𝟙ₒ
+  α-is-constant i = α-is-𝟙ₒ u i (ap (λ - → ι - i) p)
+
+  I  = sup-pointwise-equal (α u) (λ _ → 𝟙ₒ) α-is-constant
+  II = sup-of-constant-family 𝟙ₒ ∣ 0 ∣
+
+discreteness-lemma : (u : ℕ∞)
+                   → is-discrete ⟨ sup (β u) ⟩
+                   → is-decidable (u ＝ ∞)
+discreteness-lemma u d = I (d (y₀ u) (y₁ u))
+ where
+  I : is-decidable (y₀ u ＝ y₁ u) → is-decidable (u ＝ ∞)
+  I (inl p)  = inl (not-finite-is-∞' fe' II)
+   where
+    II : ¬ is-finite u
+    II = y₀-equal-to-y₁-gives-not-finite u p
+  I (inr ne) = inr III
+   where
+    II : u ＝ ∞ → sup (β u) ↓ y₀ u ＝ sup (β u) ↓ y₁ u
+    II q = sup (β u) ↓ y₀ u ＝⟨ lower-set-of-y₀-is-𝟙ₒ u ⟩
+           𝟙ₒ               ＝⟨ (∞-gives-sup-α-is-𝟙ₒ u q)⁻¹ ⟩
+           sup (α u)        ＝⟨ (lower-set-of-y₁-is-supα u)⁻¹ ⟩
+           sup (β u) ↓ y₁ u ∎
+
+    III : u ≠ ∞
+    III q = ne (↓-lc (sup (β u)) (y₀ u) (y₁ u) (II q))
+
+discreteness-of-the-standard-interpretation-gives-WLPO
+ : ((b : B) → is-discrete ⟨ ⟦ b ⟧₀ ⟩) → WLPO
+discreteness-of-the-standard-interpretation-gives-WLPO δ u
+ = discreteness-lemma u (δ (brouwer-code u))
+
+\end{code}
+
+The argument gives WLPO, since the second case refutes u ＝ ∞ and
+gives no bound for u. Whether the discreteness of the standard
+interpretation gives LPO is an open question.

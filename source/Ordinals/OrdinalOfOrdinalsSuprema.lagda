@@ -1209,6 +1209,28 @@ module suprema
 
 \end{code}
 
+Added by Martin Escardo, 10th November 2026.
+
+The supremum of a constant family indexed by an inhabited type is its
+constant value.
+
+\begin{code}
+
+ sup-of-constant-family : {I : 𝓤 ̇ } (γ : Ordinal 𝓤)
+                        → ∥ I ∥
+                        → sup (λ (_ : I) → γ) ＝ γ
+ sup-of-constant-family {𝓤} {I} γ s =
+  ⊴-antisym (sup (λ _ → γ)) γ
+   (sup-is-lower-bound-of-upper-bounds (λ _ → γ) γ (λ _ → ⊴-refl γ))
+   (∥∥-rec
+     (⊴-is-prop-valued γ (sup (λ _ → γ)))
+     (sup-is-upper-bound (λ _ → γ))
+     s)
+
+\end{code}
+
+End of addition.
+
 Conjecture (Martin Escardo, August 2018 originally in the file
 OrdinalOfOrdinals, moved here 30th March 2022). We have bounded
 joins constructed by taking the joint image in any upper bound.
