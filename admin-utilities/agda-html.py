@@ -1102,14 +1102,15 @@ def unlink_authors(page):
 
 # A citation [1] in the prose or a comment, linked to the entry of the
 # list of references on the same page that begins a line with [1] or
-# [1]:, and each number of [1, 2] linked to its own entry. A number is
+# [1]:, or with a markdown bullet - [1]:, and each number of [1, 2] linked to its own entry. A number is
 # linked only when the page has exactly one entry for it, so that a page
 # with two lists numbered from 1, or a citation of a list kept in another
 # file, is left as it is and reported. A link in markdown, [text](url),
 # is not a citation. Nothing is added to the text of the page, only the
 # anchor around the [n] of an entry and the link around a citation.
 
-ENTRY = re.compile(r'(?m)^[ \t]*(?:--[ \t]*)?(\[(\d+)\]):?(?=\s)')
+ENTRY = re.compile(r'(?m)^[ \t]*(?:--[ \t]*)?(?:[-*][ \t]+)?'
+                   r'(\[(\d+)\]):?(?=\s)')
 CITATION = re.compile(r'\[(\d+(?:\s*,\s*\d+)*)\](?!\()')
 NUMBER = re.compile(r'\d+')
 CITATION_LINK = re.compile(r'<a class="(?:Citation|Reference)"'
