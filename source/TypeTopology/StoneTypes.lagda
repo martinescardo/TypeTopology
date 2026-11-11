@@ -205,7 +205,7 @@ The restriction of a clopen to another clopen.
 infix 50 _↾_
 
 _↾_ : {X : 𝓤 ̇ } (B A : Clopen X) → Clopen (clopen-subtype A)
-B ↾ A = clopen-subtype-inclusion A ⁻¹[ B ]
+B ↾ A = (clopen-subtype-inclusion A)⁻¹[ B ]
 
 self-restriction-is-𝟏 : {X : 𝓤 ̇ } (A : Clopen X) → A ↾ A ＝ 𝟏
 self-restriction-is-𝟏 A = dfunext fe (clopen-subtype-membership A)
