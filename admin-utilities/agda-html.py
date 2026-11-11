@@ -34,6 +34,7 @@ and nowhere else:
     Ordinals.Notions.lagda          the same, with the suffix removed
     Locales.Frame.opens-are-sets    to the page of the module part
     FinitePigeon.agda               to the module with that file name
+    [1] and [1, 2]                  to the references on the same page
 
 A module reference is linked only when a page of that name is there to
 link to, so a name that points at nothing is left as it is, and reported
@@ -528,8 +529,9 @@ def visible(page):
 
 
 # What the reader sees. The stylesheet hides <md-mark>, <dot-space>,
-# <universe-dot> and <plus-space> with their contents, so those go, and the tags of
-# everything else, and the entities Agda wrote for < > & are read back.
+# <universe-dot> and <plus-space> with their contents, so those go, and
+# the tags of everything else, and the entities Agda wrote for < > & are
+# read back.
 
 HIDDEN = re.compile(r'<(md-mark|dot-space|universe-dot|plus-space)>.*?</\1>',
                     re.S)
@@ -1098,8 +1100,102 @@ def unlink_authors(page):
     return unspan(AUTHOR_LINK.sub(r"\1", page))
 
 
+# A citation [1] in the prose or a comment, linked to the entry of the
+# list of references on the same page that begins a line with [1] or
+# [1]:, and each number of [1, 2] linked to its own entry. A number is
+# linked only when the page has exactly one entry for it, so that a page
+# with two lists numbered from 1, or a citation of a list kept in another
+# file, is left as it is and reported. A link in markdown, [text](url),
+# is not a citation. Nothing is added to the text of the page, only the
+# anchor around the [n] of an entry and the link around a citation.
+
+ENTRY = re.compile(r'(?m)^[ \t]*(?:--[ \t]*)?(\[(\d+)\]):?(?=\s)')
+CITATION = re.compile(r'\[(\d+(?:\s*,\s*\d+)*)\](?!\()')
+NUMBER = re.compile(r'\d+')
+CITATION_LINK = re.compile(r'<a class="(?:Citation|Reference)"'
+                           r' (?:href|id)="[^"]*">([^<]*)</a>')
+
+
+def linkable(m):
+    """The kind of an element whose text this script may mark up, or
+    None for an element Agda links or that is code."""
+    kind = CLASS.search(m.group(2))
+    if "href" in m.group(2) or not kind or \
+       kind.group(1) not in LINKABLE_CLASSES:
+        return None
+    return kind.group(1)
+
+
+def reference_id(n):
+    return f"reference-{n}"
+
+
+def link_citations(page):
+    """Link the citations of a page to the entries of its references.
+
+    Returns the new page, how many citations were linked, and the
+    numbers cited that have no single entry to link to.
+    """
+    entries = collections.Counter()
+    for m in ELEMENT.finditer(page):
+        if linkable(m):
+            text, _, _ = positions(m.group(3))
+            entries.update(e.group(2) for e in ENTRY.finditer(text))
+    taken = set(re.findall(r'\bid="([^"]*)"', page))
+    single = {n for n, k in entries.items()
+              if k == 1 and reference_id(n) not in taken}
+    linked, missed = 0, []
+
+    def element(m):
+        nonlocal linked
+        tag, attrs, body = m.group(1), m.group(2), m.group(3)
+        if not linkable(m):
+            return m.group(0)
+        text, where, inside = positions(body)
+        inserts, starts = [], set()
+
+        def wrap(a, b, open_):
+            if any(inside[a:b]) or "<" in body[where[a]:where[b - 1] + 1]:
+                return False
+            inserts.extend([(where[a], 1, open_),
+                            (where[b - 1] + 1, 0, "</a>")])
+            return True
+
+        for e in ENTRY.finditer(text):
+            starts.add(e.start(1))
+            if e.group(2) in single:
+                wrap(e.start(1), e.end(1), f'<a class="Reference" '
+                     f'id="{reference_id(e.group(2))}">')
+        for c in CITATION.finditer(text):
+            if c.start() in starts:
+                continue
+            numbers = list(NUMBER.finditer(c.group(1)))
+            for d in numbers:
+                if d.group(0) not in single:
+                    missed.append(d.group(0))
+                    continue
+                a, b = c.start(1) + d.start(), c.start(1) + d.end()
+                if len(numbers) == 1:
+                    a, b = c.start(), c.end()
+                if wrap(a, b, f'<a class="Citation" '
+                        f'href="#{reference_id(d.group(0))}">'):
+                    linked += 1
+        if not inserts:
+            return m.group(0)
+        for pos, _, mark_ in sorted(inserts, reverse=True):
+            body = body[:pos] + mark_ + body[pos:]
+        return f"<{SPAN}{attrs}>{body}</{SPAN}>"
+
+    return ELEMENT.sub(element, page), linked, missed
+
+
+def unlink_citations(page):
+    "Take those links off, giving back the page they were put on."
+    return unspan(CITATION_LINK.sub(r"\1", page))
+
+
 def rewrite(htmldir, check, md, tight, dots, plus, embolden, authors,
-            names):
+            cite, names):
     """Rewrite every page in place.
 
     Returns the links in each page, the names that answer to no page, the
@@ -1107,9 +1203,9 @@ def rewrite(htmldir, check, md, tight, dots, plus, embolden, authors,
     markdown rendered, how many spaces after the universe dot are
     hidden, how many universe dots are hidden, how many spaces before
     the successor of a universe are hidden, how many names of authors
-    are linked, and how many pages had to
-    be rewritten, which is none of them
-    when the last run did it already. The links counted are the ones this
+    are linked, how many citations are linked and the ones left
+    unlinked, and how many pages had to be rewritten, which is none of
+    them when the last run did it already. The links counted are the ones this
     script makes, an <a> with an href and nothing else, which is a shape
     Agda itself never emits.
     """
@@ -1123,12 +1219,13 @@ def rewrite(htmldir, check, md, tight, dots, plus, embolden, authors,
     found, unresolved, rewritten = {}, collections.defaultdict(list), 0
     read, rendered, tightened, hidden_dots, plussed = [], [], 0, 0, 0
     headers, marked, authored = 0, 0, 0
+    cited, uncited = 0, []
     pattern = author_pattern(names)
     for path in paths:
         here = os.path.basename(path)[:-len(".html")]
         original = open(path, encoding="utf-8").read()
         page = unbold(untighten_plus(show_dots(untighten(
-            unmark(unlink_authors(original))))))
+            unmark(unlink_authors(unlink_citations(original)))))))
         own = {name for target, name in OWN_MODULE.findall(page)
                if target in ("", os.path.basename(path))}
         new, links, missing = transform(page, pages, tails, here, own, defined)
@@ -1173,6 +1270,16 @@ def rewrite(htmldir, check, md, tight, dots, plus, embolden, authors,
                                  f"authors cannot be taken off again "
                                  f"exactly; nothing has been written")
             authored += n
+        if cite:
+            plain = new
+            new, n, missed = link_citations(new)
+            if unlink_citations(new) != plain or \
+               visible(new) != visible(plain):
+                raise SystemExit(f"{path}: the links on the citations "
+                                 f"cannot be taken off again exactly; "
+                                 f"nothing has been written")
+            cited += n
+            uncited += [(here, k) for k in missed]
         if tight:
             # The spaces are only hidden, so the text of the page is
             # untouched here as well, and taking the markup off gives
@@ -1216,7 +1323,7 @@ def rewrite(htmldir, check, md, tight, dots, plus, embolden, authors,
                  and (shown.rsplit(".", 1)[0] if anchor
                       else SUFFIX.sub("", shown)) != module]
     return (found, unresolved, read, rendered, tightened, hidden_dots,
-            plussed, headers, marked, authored, rewritten)
+            plussed, cited, uncited, headers, marked, authored, rewritten)
 
 
 def index_above(here, pages):
@@ -1410,6 +1517,11 @@ def main():
                    help="leave the name of an author in a header or a "
                         "marker as plain text, taking the links off "
                         "pages that have them")
+    p.add_argument("--no-citations", action="store_true",
+                   help="leave the citations [1] unlinked, taking the "
+                        "links off pages that have them")
+    p.add_argument("--citations", action="store_true",
+                   help="list the citations left unlinked, page by page")
     p.add_argument("--force", action="store_true",
                    help="run agda even when the rendering looks up to date")
     p.add_argument("--check", action="store_true",
@@ -1450,14 +1562,10 @@ def main():
         stylesheet(args.css, out)
 
     (found, unresolved, read, rendered, tightened, hidden_dots, plussed,
-     headers, marked, linked, rewritten) = rewrite(out, args.check,
-                                          not args.no_markdown,
-                                          not args.no_tighten,
-                                          not args.no_hide_dots,
-                                          not args.no_tighten_plus,
-                                          not args.no_bold,
-                                          not args.no_author_links,
-                                          contributors(root))
+     cited, uncited, headers, marked, linked, rewritten) = rewrite(
+        out, args.check, not args.no_markdown, not args.no_tighten,
+        not args.no_hide_dots, not args.no_tighten_plus, not args.no_bold,
+        not args.no_author_links, not args.no_citations, contributors(root))
     links = [href for page in found.values() for href in page]
     pages = len(glob.glob(os.path.join(out, "*.html")))
     print(f"{len(links)} links in {len(found)} of the {pages} pages in {out}"
@@ -1483,6 +1591,17 @@ def main():
     if plussed:
         print(f"{plussed} spaces between a universe and its successor "
               f"hidden by the stylesheet")
+    if cited or uncited:
+        print(f"{cited} citations linked to their references, "
+              f"{len(uncited)} left unlinked for want of a single entry"
+              + ("" if args.citations or not uncited
+                 else "; --citations lists them"))
+    if args.citations:
+        by_page = collections.defaultdict(list)
+        for here, n in uncited:
+            by_page[here].append(n)
+        for here, ns in sorted(by_page.items()):
+            print(f"  {here}: " + " ".join(f"[{n}]" for n in ns))
     url = None if args.search_url == "none" else args.search_url
     changed = corner_buttons(out, url)
     if changed:
