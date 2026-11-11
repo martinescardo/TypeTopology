@@ -63,7 +63,10 @@ The space that the universe dot needs before a closing bracket in the
 source, as in (X : 𝓤 ̇ ), is hidden by the stylesheet in the same way,
 so that the page reads (X : 𝓤 ̇) while its text stays as Agda wrote it.
 --no-tighten leaves the space showing, and takes the markup off a page
-that has it.
+that has it. The space between a universe and its successor, as in 𝓤 ⁺,
+is hidden in the same way, so that the page reads 𝓤⁺, except on a line
+that defines a name ending in ⁺, such as 𝓤⁺ = 𝓤 ⁺, and --no-tighten-plus
+leaves it showing.
 
 Because the markup is hidden, a line of prose with a link in it renders
 narrower than it is in the source, by the length of the url and the
@@ -524,11 +527,12 @@ def visible(page):
     return TAG.sub("", page)
 
 
-# What the reader sees. The stylesheet hides <md-mark>, <dot-space> and
-# <universe-dot> with their contents, so those go, and the tags of
+# What the reader sees. The stylesheet hides <md-mark>, <dot-space>,
+# <universe-dot> and <plus-space> with their contents, so those go, and the tags of
 # everything else, and the entities Agda wrote for < > & are read back.
 
-HIDDEN = re.compile(r'<(md-mark|dot-space|universe-dot)>.*?</\1>', re.S)
+HIDDEN = re.compile(r'<(md-mark|dot-space|universe-dot|plus-space)>.*?</\1>',
+                    re.S)
 HIDDEN_MARK = re.compile(r'<md-mark>')
 
 
@@ -800,6 +804,45 @@ def show_dots(page):
     return UNIVERSE_DOT_TAGS.sub("", page)
 
 
+# The space between a universe and its successor, which the source needs
+# because ⁺ is a postfix operator, hidden so that the page reads 𝓤⁺ and
+# (𝓤 ⊔ 𝓥)⁺ as a paper writes them. It is hidden in the same way as the
+# spaces above, in <plus-space>, which the stylesheet hides. The successor
+# is found as the ⁺ or ⁺⁺ that links to MLTT.Universes, so that a name
+# such as List⁺ is left alone. A line that defines a name ending in ⁺, as
+# 𝓤⁺ = 𝓤 ⁺ does in Iterative.Sets, keeps its spaces, since it would
+# otherwise read 𝓤⁺ = 𝓤⁺, and the page of MLTT.Universes keeps them all,
+# that being where the notation is explained.
+
+PLUS_SPACE = re.compile(r'(?<=</a>) '
+                        r'(<a\b[^>]*href="MLTT\.Universes\.html#\d+"'
+                        r'[^>]*>⁺⁺?</a>)')
+
+PLUS_SPACE_TAGS = re.compile(r'</?plus-space>')
+
+DEFINES_PLUS = re.compile(r'\s*\S*⁺\s*=(?:\s|$)')
+
+
+def tighten_plus(page):
+    """Hide the space between a universe and its successor.
+
+    Returns the new page and how many spaces were hidden in it. A space
+    already hidden is left alone, so a page can be given again.
+    """
+    lines, hidden = page.split("\n"), 0
+    for i, line in enumerate(lines):
+        if DEFINES_PLUS.match(html.unescape(TAG.sub("", line))):
+            continue
+        lines[i], n = PLUS_SPACE.subn(r'<plus-space> </plus-space>\1', line)
+        hidden += n
+    return "\n".join(lines), hidden
+
+
+def untighten_plus(page):
+    "Show those spaces again, giving back the page they were hidden on."
+    return PLUS_SPACE_TAGS.sub("", page)
+
+
 # The line that says who wrote a file and when, and the markers of a
 # later addition, which open with Added and the date and close with End
 # of addition, put in bold so that the seams of a file show at a glance.
@@ -1055,13 +1098,15 @@ def unlink_authors(page):
     return unspan(AUTHOR_LINK.sub(r"\1", page))
 
 
-def rewrite(htmldir, check, md, tight, dots, embolden, authors, names):
+def rewrite(htmldir, check, md, tight, dots, plus, embolden, authors,
+            names):
     """Rewrite every page in place.
 
     Returns the links in each page, the names that answer to no page, the
     links that rest on a reading rather than on a name that is exact, the
     markdown rendered, how many spaces after the universe dot are
-    hidden, how many universe dots are hidden, how many names of authors
+    hidden, how many universe dots are hidden, how many spaces before
+    the successor of a universe are hidden, how many names of authors
     are linked, and how many pages had to
     be rewritten, which is none of them
     when the last run did it already. The links counted are the ones this
@@ -1076,13 +1121,14 @@ def rewrite(htmldir, check, md, tight, dots, embolden, authors, names):
 
     defined = definitions(htmldir)
     found, unresolved, rewritten = {}, collections.defaultdict(list), 0
-    read, rendered, tightened, hidden_dots = [], [], 0, 0
+    read, rendered, tightened, hidden_dots, plussed = [], [], 0, 0, 0
     headers, marked, authored = 0, 0, 0
     pattern = author_pattern(names)
     for path in paths:
         here = os.path.basename(path)[:-len(".html")]
         original = open(path, encoding="utf-8").read()
-        page = unbold(show_dots(untighten(unmark(unlink_authors(original)))))
+        page = unbold(untighten_plus(show_dots(untighten(
+            unmark(unlink_authors(original))))))
         own = {name for target, name in OWN_MODULE.findall(page)
                if target in ("", os.path.basename(path))}
         new, links, missing = transform(page, pages, tails, here, own, defined)
@@ -1146,6 +1192,14 @@ def rewrite(htmldir, check, md, tight, dots, embolden, authors, names):
                                  f"shown again exactly; nothing has been "
                                  f"written")
             hidden_dots += gone
+        if plus and here != NOTATION_PAGE:
+            shown = new
+            new, n = tighten_plus(new)
+            if untighten_plus(new) != shown or visible(new) != visible(shown):
+                raise SystemExit(f"{path}: the spaces before the successor "
+                                 f"of a universe cannot be shown again "
+                                 f"exactly; nothing has been written")
+            plussed += n
         if new != original:
             open(path, "w", encoding="utf-8").write(new)
             rewritten += 1
@@ -1162,7 +1216,7 @@ def rewrite(htmldir, check, md, tight, dots, embolden, authors, names):
                  and (shown.rsplit(".", 1)[0] if anchor
                       else SUFFIX.sub("", shown)) != module]
     return (found, unresolved, read, rendered, tightened, hidden_dots,
-            headers, marked, authored, rewritten)
+            plussed, headers, marked, authored, rewritten)
 
 
 def index_above(here, pages):
@@ -1348,6 +1402,10 @@ def main():
     p.add_argument("--no-hide-dots", action="store_true",
                    help="leave the universe dots showing, taking the "
                         "markup off pages that have it")
+    p.add_argument("--no-tighten-plus", action="store_true",
+                   help="leave the space between a universe and its "
+                        "successor showing, taking the markup off pages "
+                        "that have it")
     p.add_argument("--no-author-links", action="store_true",
                    help="leave the name of an author in a header or a "
                         "marker as plain text, taking the links off "
@@ -1391,11 +1449,12 @@ def main():
     if args.css != "none":
         stylesheet(args.css, out)
 
-    (found, unresolved, read, rendered, tightened, hidden_dots, headers,
-     marked, linked, rewritten) = rewrite(out, args.check,
+    (found, unresolved, read, rendered, tightened, hidden_dots, plussed,
+     headers, marked, linked, rewritten) = rewrite(out, args.check,
                                           not args.no_markdown,
                                           not args.no_tighten,
                                           not args.no_hide_dots,
+                                          not args.no_tighten_plus,
                                           not args.no_bold,
                                           not args.no_author_links,
                                           contributors(root))
@@ -1421,6 +1480,9 @@ def main():
     if hidden_dots:
         print(f"{hidden_dots} universe dots hidden by the stylesheet, "
               f"and {NOTATION_PAGE} keeps its own")
+    if plussed:
+        print(f"{plussed} spaces between a universe and its successor "
+              f"hidden by the stylesheet")
     url = None if args.search_url == "none" else args.search_url
     changed = corner_buttons(out, url)
     if changed:

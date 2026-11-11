@@ -58,6 +58,12 @@
    again. */
 .Agda universe-dot { display: none }
 
+/* The space the source needs between a universe and its successor,
+   marked up by agda-html.py, so that the code reads 𝓤⁺, while a line
+   such as 𝓤⁺ = 𝓤 ⁺ and MLTT.Universes keep theirs. Taking this line out
+   shows them all again. */
+.Agda plus-space { display: none }
+
 /* The header of a file and the markers of a later addition, marked up
    by agda-html.py, so that the seams of a file show at a glance. Taking
    this line out puts them back in the ordinary weight. */
