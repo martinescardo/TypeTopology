@@ -10,7 +10,8 @@
         https://www.cse.chalmers.se/~coquand/ordinal.pdf
         https://web.archive.org/web/20251203190938/https://www.cse.chalmers.se/~coquand/ordinal.ps
 
-    (ii) Hancock (Russell'08 Proof Theory meets Type Theory, Swansea)
+    (ii) Hancock, Church encodings of ordinals, and simulation of ordinal
+         functions, (Russell'08 Proof Theory meets Type Theory, Swansea)
          https://web.archive.org/web/20220723181746/http://www.cs.swan.ac.uk/~csetzer/russell08/slides/hancock.pdf
 
 
@@ -19,8 +20,8 @@
 
     An interesting and powerful idea is their use of "lenses", which
     allows to define rather large ordinals, in particular in the
-    presence of dependent types and universes. Another idea is to use
-    Church encodings of ordinals.
+    presence of dependent types and universes. Another idea, explicit
+    in (ii), is to use Church encodings of ordinals.
 
     Here I do something more modest, without lenses, but still with
     Church encodings. I explicitly define addition, multiplication and
