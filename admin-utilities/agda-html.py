@@ -763,13 +763,14 @@ DOT_SPACE_TAGS = re.compile(r'</?dot-space>')
 
 # The universe dot itself, with the space the source needs before it,
 # which together make the page read (X : 𝓤) as the HoTT book writes it.
+# A source with more than one space there has them all hidden.
 # It is hidden in the same way as the space above, in <universe-dot>,
 # which the stylesheet hides, so that the page still holds every
 # character Agda wrote. Only a use of the dot is hidden, its body being
 # the dot alone rather than _̇, and the page of MLTT.Universes keeps its
 # dots, that being where the notation is explained.
 
-UNIVERSE_DOT = re.compile(r'(?<=</a>) '
+UNIVERSE_DOT = re.compile(r'(?<=</a>)( +)'
                           r'(<a\b[^>]*href="MLTT\.Universes\.html#\d+"'
                           r'[^>]*>' + DOT + r'</a>)')
 
@@ -798,7 +799,7 @@ def hide_dots(page):
     Returns the new page and how many dots were hidden in it. A dot
     already hidden is left alone, so a page can be given again.
     """
-    return UNIVERSE_DOT.subn(r'<universe-dot> \1</universe-dot>', page)
+    return UNIVERSE_DOT.subn(r'<universe-dot>\1\2</universe-dot>', page)
 
 
 def show_dots(page):
