@@ -183,6 +183,25 @@ abstract
                          (λ a → sup⁺-is-strict-upper-bound f {inl a})))
      V   = (⊕-behaviour β α) ⁻¹
 
+⊕-⊲-left : (α β : Ordinal 𝓤) {a : ⟨ α ⟩} → (α ↓ a) ⊕ β ⊲ α ⊕ β
+⊕-⊲-left α β {a} = transport⁻¹ ((α ↓ a) ⊕ β ⊲_) (⊕-behaviour α β)
+                    (sup⁺-is-strict-upper-bound _ {inl a})
+
+⊕-⊲-right : (α β : Ordinal 𝓤) {b : ⟨ β ⟩} → α ⊕ (β ↓ b) ⊲ α ⊕ β
+⊕-⊲-right α β {b} = transport⁻¹ (α ⊕ (β ↓ b) ⊲_) (⊕-behaviour α β)
+                     (sup⁺-is-strict-upper-bound _ {inr b})
+
+⊕-⊲-mixed : (α β : Ordinal 𝓤) {a : ⟨ α ⟩} {b : ⟨ β ⟩}
+          → (α ↓ a) ⊕ (β ↓ b) ⊲ α ⊕ β
+⊕-⊲-mixed α β {a} {b} =
+ ⊲-is-transitive
+  ((α ↓ a) ⊕ (β ↓ b))
+  ((α ↓ a) ⊕ β)
+  (α ⊕ β)
+  (⊕-⊲-right (α ↓ a) β)
+  (⊕-⊲-left α β)
+
+-- TODO: Refer to the above ⊲-left/right/mixed?
 ⊕-↓-characterization
  : (α β : Ordinal 𝓤) (x : ⟨ α ⊕ β ⟩)
  → ∥ (Σ a ꞉ ⟨ α ⟩ , (α ⊕ β) ↓ x ＝ (α ↓ a) ⊕ β)
@@ -218,6 +237,7 @@ abstract
                + (Σ a ꞉ ⟨ α ⟩ , Σ b ꞉ ⟨ β ⟩ , σ ↓ s ＝ (α ↓ a) ⊕ (β ↓ b)) ∥
       III (inl a , inl x , e) = ∥∥-functor (+functor III₁ III₂) (IH₁ a x)
        where
+        -- TODO. Avoid duplicating e ∙ (+ₒ-↓-left x) ⁻¹
         III₁ : (Σ a' ꞉ ⟨ α ↓ a ⟩ , ((α ↓ a) ⊕ β) ↓ x ＝ ((α ↓ a ↓ a') ⊕ β))
              → Σ a ꞉ ⟨ α ⟩ , σ ↓ s ＝ (α ↓ a) ⊕ β
         III₁ ((a' , l) , e') = a' ,
@@ -258,6 +278,7 @@ abstract
 
       III (inr b , inl x , e) = ∥∥-functor III' (IH₂ b x)
        where
+        -- TODO. Avoid duplicating e ∙ (+ₒ-↓-left x) ⁻¹
         III' : ((Σ a ꞉ ⟨ α ⟩ , (α ⊕ (β ↓ b)) ↓ x ＝ (α ↓ a) ⊕ (β ↓ b))
                 + (Σ b' ꞉ ⟨ β ↓ b ⟩ , (α ⊕ (β ↓ b)) ↓ x ＝ α ⊕ (β ↓ b ↓ b'))
                 + (Σ a ꞉ ⟨ α ⟩ , Σ b' ꞉ ⟨ β ↓ b ⟩ ,
@@ -295,8 +316,23 @@ abstract
              (α ⊕ (β ↓ b)) +ₒ 𝟘ₒ           ＝⟨ 𝟘ₒ-right-neutral (α ⊕ (β ↓ b)) ⟩
              (α ⊕ (β ↓ b))                 ∎
 
+⊕-induction : (α β : Ordinal 𝓤) (P : Ordinal 𝓤 → 𝓥 ̇ )
+            → ((γ : Ordinal 𝓤) → is-prop (P γ))
+            → ((a : ⟨ α ⟩) → P ((α ↓ a) ⊕ β))
+            → ((b : ⟨ β ⟩) → P (α ⊕ (β ↓ b)))
+            → ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → P ((α ↓ a) ⊕ (β ↓ b)))
+            → (x : ⟨ α ⊕ β ⟩) → P ((α ⊕ β) ↓ x)
+⊕-induction α β P P-pv f g h x =
+ ∥∥-rec (P-pv ((α ⊕ β) ↓ x)) I (⊕-↓-characterization α β x)
+  where
+   I : ((Σ a ꞉ ⟨ α ⟩ , (α ⊕ β) ↓ x ＝ (α ↓ a) ⊕ β)
+        + (Σ b ꞉ ⟨ β ⟩ , (α ⊕ β) ↓ x ＝ α ⊕ (β ↓ b))
+        + (Σ a ꞉ ⟨ α ⟩ , Σ b ꞉ ⟨ β ⟩ , (α ⊕ β) ↓ x ＝ (α ↓ a) ⊕ (β ↓ b)))
+     → P ((α ⊕ β) ↓ x)
+   I (inl (a , e)) = transport⁻¹ P e (f a)
+   I (inr (inl (b , e))) = transport⁻¹ P e (g b)
+   I (inr (inr (a , b , e))) = transport⁻¹ P e (h a b)
 
-{-
 ⊕-is-associative : (α β γ : Ordinal 𝓤) → (α ⊕ β) ⊕ γ ＝ α ⊕ (β ⊕ γ)
 ⊕-is-associative {𝓤} = {!!}
  where
@@ -304,21 +340,42 @@ abstract
     → (α ⊕ β) ⊕ γ ＝ α ⊕ (β ⊕ γ)
   I = Transfinite-induction (OO 𝓤 ×ₒ (OO 𝓤 ×ₒ OO 𝓤)) _ II
    where
-    O³ = Ordinal 𝓤 × Ordinal 𝓤 × Ordinal 𝓤
-    II : (x@(α , (β , γ)) : O³)
-       → ((y@(γ , (δ , ε)) : O³)
-                           → y ≺⟨ OO 𝓤 ×ₒ (OO 𝓤 ×ₒ OO 𝓤) ⟩ x
+    OO³ = OO 𝓤 ×ₒ (OO 𝓤 ×ₒ OO 𝓤)
+
+    II : (x@(α , (β , γ)) : ⟨ OO³ ⟩)
+       → ((y@(γ , (δ , ε)) : ⟨ OO³ ⟩)
+                           → y ≺⟨ OO³ ⟩ x
                            → (γ ⊕ δ) ⊕ ε ＝ γ ⊕ (δ ⊕ ε))
        → (α ⊕ β) ⊕ γ ＝ α ⊕ (β ⊕ γ)
-    II (α , β , γ) IH =
+    II (α , β , γ) IH = ⊴-antisym ((α ⊕ β) ⊕ γ) (α ⊕ (β ⊕ γ))
+                         (to-⊴ ((α ⊕ β) ⊕ γ) (α ⊕ (β ⊕ γ)) III)
+                         {!!}
+     where
+      III : (x : ⟨ (α ⊕ β) ⊕ γ ⟩)
+          → ((α ⊕ β) ⊕ γ) ↓ x ⊲ α ⊕ (β ⊕ γ)
+      III = ⊕-induction (α ⊕ β) γ (_⊲ α ⊕ (β ⊕ γ)) (λ _ → ⊲-is-prop-valued _ _) III₁ {!!} {!!}
+       where
+        III₁ : (x : ⟨ α ⊕ β ⟩) → ((α ⊕ β) ↓ x) ⊕ γ ⊲ α ⊕ (β ⊕ γ)
+        III₁ = ⊕-induction α β (λ - → - ⊕ γ ⊲ α ⊕ (β ⊕ γ)) (λ _ → ⊲-is-prop-valued _ _) III₁₁ {!!} {!!}
+         where
+          III₁₁ : (a : ⟨ α ⟩) → ((α ↓ a) ⊕ β) ⊕ γ ⊲ α ⊕ (β ⊕ γ)
+          III₁₁ a = {!!} -- transitivity
+
+{- ∥∥-rec (⊲-is-prop-valued _ _) III' (⊕-↓-characterization (α ⊕ β) γ x)
+       where
+        III' : ((Σ x' ꞉ ⟨ α ⊕ β ⟩ , ((α ⊕ β) ⊕ γ) ↓ x ＝ ((α ⊕ β) ↓ x') ⊕ γ)
+                + (Σ c ꞉ ⟨ γ ⟩ , ((α ⊕ β) ⊕ γ) ↓ x ＝ (α ⊕ β) ⊕ (γ ↓ c))
+                + (Σ x' ꞉ ⟨ α ⊕ β ⟩ , Σ c ꞉ ⟨ γ ⟩ ,
+                    ((α ⊕ β) ⊕ γ) ↓ x ＝ ((α ⊕ β) ↓ x') ⊕ (γ ↓ c)))
+             → ((α ⊕ β) ⊕ γ) ↓ x ⊲ α ⊕ (β ⊕ γ)
+        III' = {!!} -}
+     {-
      (α ⊕ β) ⊕ γ ＝⟨ ⊕-behaviour (α ⊕ β) γ ⟩
      sup⁺ (cases (λ x → ((α ⊕ β) ↓ x) ⊕ γ) (λ c → (α ⊕ β) ⊕ (γ ↓ c))) ＝⟨ {!!} ⟩
      {!!} ＝⟨ {!!} ⟩
      {!!} ＝⟨ {!!} ⟩
      sup⁺ (cases (λ a → ((α ↓ a) ⊕ β) ⊕ γ) (λ y → α ⊕ ((β ⊕ γ) ↓ y)))  ＝⟨ ap (λ - → sup⁺ (cases -  (λ y → α ⊕ ((β ⊕ γ) ↓ y)))) (dfunext fe' (λ a → IH (α ↓ a , β , γ) (inr (refl , (a , refl))))) ⟩
      sup⁺ (cases (λ a → (α ↓ a) ⊕ (β ⊕ γ)) (λ y → α ⊕ ((β ⊕ γ) ↓ y))) ＝⟨ (⊕-behaviour α (β ⊕ γ)) ⁻¹ ⟩
-     (α ⊕ (β ⊕ γ)) ∎
-
--}
+     (α ⊕ (β ⊕ γ)) ∎ -}
 
 \end{code}
