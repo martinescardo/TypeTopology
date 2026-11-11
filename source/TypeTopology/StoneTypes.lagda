@@ -2504,9 +2504,9 @@ totally separated.
 
 open import TypeTopology.FailureOfTotalSeparatedness fe
 
-Stone-Types-Are-Closed-Under-Σ : 𝓤₁ ̇
-Stone-Types-Are-Closed-Under-Σ =
-   (X : 𝓤₀ ̇ ) (Y : X → 𝓤₀ ̇ )
+Stone-Types-Are-Closed-Under-Σ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺  ̇
+Stone-Types-Are-Closed-Under-Σ {𝓤} {𝓥} =
+   (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
  → is-stone-type X
  → ((x : X) → is-stone-type (Y x))
  → is-stone-type (Σ Y)
