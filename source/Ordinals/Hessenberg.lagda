@@ -2,8 +2,7 @@ TODO
 
 \begin{code}
 
--- TODO: Get rid of lossy-unification?
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
 
@@ -37,6 +36,7 @@ private
 
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Propositions ua
@@ -201,6 +201,18 @@ abstract
   (⊕-⊲-right (α ↓ a) β)
   (⊕-⊲-left α β)
 
+⊕-is-order-preserving-left : (α β γ : Ordinal 𝓤) → α ⊲ β → α ⊕ γ ⊲ β ⊕ γ
+⊕-is-order-preserving-left α β γ (b , refl) = ⊕-⊲-left β γ
+
+⊕-is-order-preserving-right : (α β γ : Ordinal 𝓤) → β ⊲ γ → α ⊕ β ⊲ α ⊕ γ
+⊕-is-order-preserving-right α β γ (c , refl) = ⊕-⊲-right α γ
+
+⊕-is-order-preserving : (α α' β β' : Ordinal 𝓤) → α ⊲ α' → β ⊲ β' → α ⊕ β ⊲ α' ⊕ β'
+⊕-is-order-preserving α α' β β' k l =
+ ⊲-is-transitive (α ⊕ β) (α' ⊕ β) (α' ⊕ β')
+  (⊕-is-order-preserving-left α α' β k)
+  (⊕-is-order-preserving-right α' β β' l)
+
 -- TODO: Refer to the above ⊲-left/right/mixed?
 ⊕-↓-characterization
  : (α β : Ordinal 𝓤) (x : ⟨ α ⊕ β ⟩)
@@ -237,7 +249,7 @@ abstract
                + (Σ a ꞉ ⟨ α ⟩ , Σ b ꞉ ⟨ β ⟩ , σ ↓ s ＝ (α ↓ a) ⊕ (β ↓ b)) ∥
       III (inl a , inl x , e) = ∥∥-functor (+functor III₁ III₂) (IH₁ a x)
        where
-        -- TODO. Avoid duplicating e ∙ (+ₒ-↓-left x) ⁻¹
+        -- TODO. Avoid duplicating e ∙ (+ₒ-↓-left x) ⁻¹ ?
         III₁ : (Σ a' ꞉ ⟨ α ↓ a ⟩ , ((α ↓ a) ⊕ β) ↓ x ＝ ((α ↓ a ↓ a') ⊕ β))
              → Σ a ꞉ ⟨ α ⟩ , σ ↓ s ＝ (α ↓ a) ⊕ β
         III₁ ((a' , l) , e') = a' ,
@@ -278,7 +290,7 @@ abstract
 
       III (inr b , inl x , e) = ∥∥-functor III' (IH₂ b x)
        where
-        -- TODO. Avoid duplicating e ∙ (+ₒ-↓-left x) ⁻¹
+        -- TODO. Avoid duplicating e ∙ (+ₒ-↓-left x) ⁻¹ ?
         III' : ((Σ a ꞉ ⟨ α ⟩ , (α ⊕ (β ↓ b)) ↓ x ＝ (α ↓ a) ⊕ (β ↓ b))
                 + (Σ b' ꞉ ⟨ β ↓ b ⟩ , (α ⊕ (β ↓ b)) ↓ x ＝ α ⊕ (β ↓ b ↓ b'))
                 + (Σ a ꞉ ⟨ α ⟩ , Σ b' ꞉ ⟨ β ↓ b ⟩ ,
@@ -333,49 +345,97 @@ abstract
    I (inr (inl (b , e))) = transport⁻¹ P e (g b)
    I (inr (inr (a , b , e))) = transport⁻¹ P e (h a b)
 
-⊕-is-associative : (α β γ : Ordinal 𝓤) → (α ⊕ β) ⊕ γ ＝ α ⊕ (β ⊕ γ)
-⊕-is-associative {𝓤} = {!!}
+-- TODO. Clean up
+-- TODO. Explain that the IH is not too strong enough to prove the one-sided
+-- version (α ⊕ β) ⊕ γ ⊴ α ⊕ (β ⊕ γ) first, which, using commutativity, would be
+-- enough to derive the equality.
+⊕-is-associative : (α β γ : Ordinal 𝓤)
+                 → (α ⊕ β) ⊕ γ ＝ α ⊕ (β ⊕ γ)
+⊕-is-associative {𝓤} = λ α β γ → Transfinite-induction (OO³) _ I (α , β , γ)
  where
-  I : ((α , (β , γ)) : Ordinal 𝓤 × Ordinal 𝓤 × Ordinal 𝓤)
+  OO³ = OO 𝓤 ×ₒ (OO 𝓤 ×ₒ OO 𝓤)
+
+  I : (s@(α , β , γ) : ⟨ OO³ ⟩)
+    → ((t@(γ , δ , ε) : ⟨ OO³ ⟩)
+                      → t ≺⟨ OO³ ⟩ s
+                      → (γ ⊕ δ) ⊕ ε ＝ γ ⊕ (δ ⊕ ε))
     → (α ⊕ β) ⊕ γ ＝ α ⊕ (β ⊕ γ)
-  I = Transfinite-induction (OO 𝓤 ×ₒ (OO 𝓤 ×ₒ OO 𝓤)) _ II
+  I (α , β , γ) IH = ⊴-antisym ((α ⊕ β) ⊕ γ) (α ⊕ (β ⊕ γ))
+                               (to-⊴ ((α ⊕ β) ⊕ γ) (α ⊕ (β ⊕ γ)) II)
+                               (to-⊴ (α ⊕ (β ⊕ γ)) ((α ⊕ β) ⊕ γ) II')
    where
-    OO³ = OO 𝓤 ×ₒ (OO 𝓤 ×ₒ OO 𝓤)
-
-    II : (x@(α , (β , γ)) : ⟨ OO³ ⟩)
-       → ((y@(γ , (δ , ε)) : ⟨ OO³ ⟩)
-                           → y ≺⟨ OO³ ⟩ x
-                           → (γ ⊕ δ) ⊕ ε ＝ γ ⊕ (δ ⊕ ε))
-       → (α ⊕ β) ⊕ γ ＝ α ⊕ (β ⊕ γ)
-    II (α , β , γ) IH = ⊴-antisym ((α ⊕ β) ⊕ γ) (α ⊕ (β ⊕ γ))
-                         (to-⊴ ((α ⊕ β) ⊕ γ) (α ⊕ (β ⊕ γ)) III)
-                         {!!}
+    II' : (y : ⟨ α ⊕ (β ⊕ γ) ⟩) → (α ⊕ (β ⊕ γ)) ↓ y ⊲ (α ⊕ β) ⊕ γ
+    II' = ⊕-induction α (β ⊕ γ) (_⊲ (α ⊕ β) ⊕ γ) (λ _ → ⊲-is-prop-valued _ _) IIᵃ (III α (inr refl)) λ a x → III (α ↓ a) (inl (a , refl)) x
      where
-      III : (x : ⟨ (α ⊕ β) ⊕ γ ⟩)
-          → ((α ⊕ β) ⊕ γ) ↓ x ⊲ α ⊕ (β ⊕ γ)
-      III = ⊕-induction (α ⊕ β) γ (_⊲ α ⊕ (β ⊕ γ)) (λ _ → ⊲-is-prop-valued _ _) III₁ {!!} {!!}
-       where
-        III₁ : (x : ⟨ α ⊕ β ⟩) → ((α ⊕ β) ↓ x) ⊕ γ ⊲ α ⊕ (β ⊕ γ)
-        III₁ = ⊕-induction α β (λ - → - ⊕ γ ⊲ α ⊕ (β ⊕ γ)) (λ _ → ⊲-is-prop-valued _ _) III₁₁ {!!} {!!}
-         where
-          III₁₁ : (a : ⟨ α ⟩) → ((α ↓ a) ⊕ β) ⊕ γ ⊲ α ⊕ (β ⊕ γ)
-          III₁₁ a = {!!} -- transitivity
+      IIᵃ : (a : ⟨ α ⟩) → (α ↓ a) ⊕ (β ⊕ γ) ⊲ (α ⊕ β) ⊕ γ
+      IIᵃ a = transport (_⊲ (α ⊕ β) ⊕ γ) (IH (α ↓ a , β , γ) (inr (refl , (a , refl)))) (⊕-is-order-preserving-left ((α ↓ a) ⊕ β) (α ⊕ β) γ (⊕-is-order-preserving-left (α ↓ a) α β (a , refl)))
 
-{- ∥∥-rec (⊲-is-prop-valued _ _) III' (⊕-↓-characterization (α ⊕ β) γ x)
+      III : (δ : Ordinal 𝓤) → ((δ ⊲ α) + (δ ＝ α))
+          → (x : ⟨ β ⊕ γ ⟩) → δ ⊕ ((β ⊕ γ) ↓ x) ⊲ (α ⊕ β) ⊕ γ
+      III δ s = ⊕-induction β γ (λ - → δ ⊕ - ⊲ (α ⊕ β) ⊕ γ) (λ _ → ⊲-is-prop-valued _ _) IIIᵇ IIIᶜ IIIᵇᶜ
        where
-        III' : ((Σ x' ꞉ ⟨ α ⊕ β ⟩ , ((α ⊕ β) ⊕ γ) ↓ x ＝ ((α ⊕ β) ↓ x') ⊕ γ)
-                + (Σ c ꞉ ⟨ γ ⟩ , ((α ⊕ β) ⊕ γ) ↓ x ＝ (α ⊕ β) ⊕ (γ ↓ c))
-                + (Σ x' ꞉ ⟨ α ⊕ β ⟩ , Σ c ꞉ ⟨ γ ⟩ ,
-                    ((α ⊕ β) ⊕ γ) ↓ x ＝ ((α ⊕ β) ↓ x') ⊕ (γ ↓ c)))
-             → ((α ⊕ β) ⊕ γ) ↓ x ⊲ α ⊕ (β ⊕ γ)
-        III' = {!!} -}
-     {-
-     (α ⊕ β) ⊕ γ ＝⟨ ⊕-behaviour (α ⊕ β) γ ⟩
-     sup⁺ (cases (λ x → ((α ⊕ β) ↓ x) ⊕ γ) (λ c → (α ⊕ β) ⊕ (γ ↓ c))) ＝⟨ {!!} ⟩
-     {!!} ＝⟨ {!!} ⟩
-     {!!} ＝⟨ {!!} ⟩
-     sup⁺ (cases (λ a → ((α ↓ a) ⊕ β) ⊕ γ) (λ y → α ⊕ ((β ⊕ γ) ↓ y)))  ＝⟨ ap (λ - → sup⁺ (cases -  (λ y → α ⊕ ((β ⊕ γ) ↓ y)))) (dfunext fe' (λ a → IH (α ↓ a , β , γ) (inr (refl , (a , refl))))) ⟩
-     sup⁺ (cases (λ a → (α ↓ a) ⊕ (β ⊕ γ)) (λ y → α ⊕ ((β ⊕ γ) ↓ y))) ＝⟨ (⊕-behaviour α (β ⊕ γ)) ⁻¹ ⟩
-     (α ⊕ (β ⊕ γ)) ∎ -}
+        IIIᵇ : (b : ⟨ β ⟩) → δ ⊕ ((β ↓ b) ⊕ γ) ⊲ (α ⊕ β) ⊕ γ
+        IIIᵇ b = transport (_⊲ (α ⊕ β) ⊕ γ) (IH (δ , β ↓ b , γ) (inl (inr (refl , (b , refl))))) (h s)
+         where
+          h : ((δ ⊲ α) + (δ ＝ α)) → (δ ⊕ (β ↓ b)) ⊕ γ ⊲ (α ⊕ β) ⊕ γ
+          h (inl k) = ⊕-is-order-preserving-left (δ ⊕ (β ↓ b)) (α ⊕ β) γ (⊕-is-order-preserving δ α (β ↓ b) β k (b , refl))
+          h (inr refl) = ⊕-is-order-preserving-left (α ⊕ (β ↓ b)) (α ⊕ β) γ (⊕-is-order-preserving-right α (β ↓ b) β (b , refl))
+        IIIᶜ : (c : ⟨ γ ⟩) → δ ⊕ (β ⊕ (γ ↓ c)) ⊲ (α ⊕ β) ⊕ γ
+        IIIᶜ c = transport (_⊲ (α ⊕ β) ⊕ γ) (IH (δ , β , γ ↓ c) (inl (inl (c , refl)))) (h s)
+         where
+         h : ((δ ⊲ α) + (δ ＝ α)) → (δ ⊕ β) ⊕ (γ ↓ c) ⊲ (α ⊕ β) ⊕ γ
+         h (inl k) = ⊕-is-order-preserving (δ ⊕ β) (α ⊕ β) (γ ↓ c) γ (⊕-is-order-preserving-left δ α β k) (c , refl)
+         h (inr refl) = ⊕-is-order-preserving-right (α ⊕ β) (γ ↓ c) γ (c , refl)
+        IIIᵇᶜ : (b : ⟨ β ⟩) (c : ⟨ γ ⟩) → δ ⊕ ((β ↓ b) ⊕ (γ ↓ c)) ⊲ (α ⊕ β) ⊕ γ
+        IIIᵇᶜ b c = transport (_⊲ (α ⊕ β) ⊕ γ) (IH (δ , β ↓ b , γ ↓ c) (inl (inl (c , refl)))) (h s)
+         where
+          h : ((δ ⊲ α) + (δ ＝ α)) → (δ ⊕ (β ↓ b)) ⊕ (γ ↓ c) ⊲ (α ⊕ β) ⊕ γ
+          h (inl k) = ⊕-is-order-preserving (δ ⊕ (β ↓ b)) (α ⊕ β) (γ ↓ c) γ (⊕-is-order-preserving δ α (β ↓ b) β k (b , refl)) (c , refl)
+          h (inr refl) = ⊕-is-order-preserving (α ⊕ (β ↓ b)) (α ⊕ β) (γ ↓ c) γ (⊕-is-order-preserving-right α (β ↓ b) β (b , refl)) (c , refl)
+
+    II : (y : ⟨ (α ⊕ β) ⊕ γ ⟩) → ((α ⊕ β) ⊕ γ) ↓ y ⊲ α ⊕ (β ⊕ γ)
+    II = ⊕-induction (α ⊕ β) γ (_⊲ α ⊕ (β ⊕ γ)) (λ _ → ⊲-is-prop-valued _ _) (III γ (inr refl)) III₂ (λ x c → III (γ ↓ c) (inl (c , refl)) x)
+     where
+      III₂ : (c : ⟨ γ ⟩) → (α ⊕ β) ⊕ (γ ↓ c) ⊲ α ⊕ (β ⊕ γ)
+      III₂ c = transport⁻¹ (_⊲ α ⊕ (β ⊕ γ)) (IH (α , β , γ ↓ c) (inl (inl (c , refl)))) (⊕-is-order-preserving-right α (β ⊕ (γ ↓ c)) (β ⊕ γ) (⊕-is-order-preserving-right β (γ ↓ c) γ (c , refl)))
+
+      III : (δ : Ordinal 𝓤) → ((δ ⊲ γ) + (δ ＝ γ))
+          → (x : ⟨ α ⊕ β ⟩) → ((α ⊕ β) ↓ x) ⊕ δ ⊲ α ⊕ (β ⊕ γ)
+      III δ s = ⊕-induction α β (λ - → - ⊕ δ ⊲ α ⊕ (β ⊕ γ)) (λ _ → ⊲-is-prop-valued _ _) IIIᵃ IIIᵇ IIIᵃᵇ
+       where
+        l : (b : ⟨ β ⟩) → (β ↓ b) ⊕ δ ⊲ β ⊕ γ
+        l b = h s
+         where
+          h : ((δ ⊲ γ) + (δ ＝ γ)) → (β ↓ b) ⊕ δ ⊲ β ⊕ γ
+          h (inl k) = ⊕-is-order-preserving (β ↓ b) β δ γ (b , refl) k
+          h (inr refl) = ⊕-is-order-preserving-left (β ↓ b) β γ (b , refl)
+        l' : (a : ⟨ α ⟩) → (α ↓ a) ⊕ (β ⊕ δ) ⊲ α ⊕ (β ⊕ γ)
+        l' a = h s
+         where
+          h : ((δ ⊲ γ) + (δ ＝ γ)) → (α ↓ a) ⊕ (β ⊕ δ) ⊲ α ⊕ (β ⊕ γ)
+          h (inl k) = ⊕-is-order-preserving (α ↓ a) α (β ⊕ δ) (β ⊕ γ) (a , refl) (⊕-is-order-preserving-right β δ γ k)
+          h (inr refl) = ⊕-is-order-preserving-left (α ↓ a) α (β ⊕ γ) (a , refl)
+
+        foo : (a : ⟨ α ⟩) → (α ↓ a , β , δ) ≺⟨ OO³ ⟩ (α , β , γ)
+        foo a = h s
+         where
+          h : ((δ ⊲ γ) + (δ ＝ γ)) → (α ↓ a , β , δ) ≺⟨ OO³ ⟩ (α , β , γ)
+          h (inl k) = inl (inl k)
+          h (inr refl) = inr (refl , (a , refl))
+
+        bar : (b : ⟨ β ⟩) (α' : Ordinal 𝓤)
+            → (α' , β ↓ b , δ) ≺⟨ OO³ ⟩ (α , β , γ)
+        bar b α' = h s
+         where
+          h : ((δ ⊲ γ) + (δ ＝ γ)) → (α' , β ↓ b , δ) ≺⟨ OO³ ⟩ (α , β , γ)
+          h (inl k) = inl (inl k)
+          h (inr refl) = inl (inr (refl , (b , refl)))
+
+        IIIᵃ : (a : ⟨ α ⟩) → ((α ↓ a) ⊕ β) ⊕ δ ⊲ α ⊕ (β ⊕ γ)
+        IIIᵃ a = transport⁻¹ (_⊲ α ⊕ (β ⊕ γ)) (IH (α ↓ a , β , δ) (foo a)) (l' a)
+        IIIᵇ : (b : ⟨ β ⟩) → (α ⊕ (β ↓ b)) ⊕ δ ⊲ α ⊕ (β ⊕ γ)
+        IIIᵇ b = transport⁻¹ (_⊲ (α ⊕ (β ⊕ γ))) (IH (α , (β ↓ b) , δ) (bar b α)) (⊕-is-order-preserving-right α ((β ↓ b) ⊕ δ) (β ⊕ γ) (l b))
+        IIIᵃᵇ : (a : ⟨ α ⟩) (b : ⟨ β ⟩) → ((α ↓ a) ⊕ (β ↓ b)) ⊕ δ ⊲ α ⊕ (β ⊕ γ)
+        IIIᵃᵇ a b = transport⁻¹ (_⊲ (α ⊕ (β ⊕ γ))) (IH (α ↓ a , β ↓ b , δ) (bar b (α ↓ a))) (⊕-is-order-preserving (α ↓ a) α ((β ↓ b) ⊕ δ) (β ⊕ γ) (a , refl) (l b))
 
 \end{code}
