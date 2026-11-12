@@ -2504,15 +2504,15 @@ totally separated.
 
 open import TypeTopology.FailureOfTotalSeparatedness fe
 
-Stone-Types-Are-Closed-Under-Σ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺  ̇
-Stone-Types-Are-Closed-Under-Σ {𝓤} {𝓥} =
+Stone-Types-Are-Closed-Under-Σ : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺  ̇
+Stone-Types-Are-Closed-Under-Σ 𝓤 𝓥 =
    (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
  → is-stone-type X
  → ((x : X) → is-stone-type (Y x))
  → is-stone-type (Σ Y)
 
 closure-under-Σ-gives-¬¬-WLPO
- : Stone-Types-Are-Closed-Under-Σ
+ : Stone-Types-Are-Closed-Under-Σ 𝓤₀ 𝓤₀
  → ¬¬ WLPO
 closure-under-Σ-gives-¬¬-WLPO c nwlpo
  = ℕ∞₂-is-not-totally-separated-in-general I nwlpo
@@ -2527,7 +2527,7 @@ closure-under-Σ-gives-¬¬-WLPO c nwlpo
 
 ¬WLPO-gives-failure-of-closure-under-Σ
  : ¬ WLPO
- → ¬ Stone-Types-Are-Closed-Under-Σ
+ → ¬ Stone-Types-Are-Closed-Under-Σ 𝓤₀ 𝓤₀
 ¬WLPO-gives-failure-of-closure-under-Σ nwlpo c
  = closure-under-Σ-gives-¬¬-WLPO c nwlpo
 
@@ -2556,16 +2556,16 @@ the Π-compactness of the base and of the fibers.
 
 \begin{code}
 
-Pre-Stone-Types-Are-Closed-Under-Σ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺  ̇
-Pre-Stone-Types-Are-Closed-Under-Σ {𝓤} {𝓥} =
+Pre-Stone-Types-Are-Closed-Under-Σ : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺  ̇
+Pre-Stone-Types-Are-Closed-Under-Σ 𝓤 𝓥 =
    (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
  → is-pre-stone-type X
  → ((x : X) → is-pre-stone-type (Y x))
  → is-pre-stone-type (Σ Y)
 
 pre-stone-closure-under-Σ-gives-stone-closure-under-Σ
- : Pre-Stone-Types-Are-Closed-Under-Σ {𝓤} {𝓥}
- → Stone-Types-Are-Closed-Under-Σ {𝓤} {𝓥}
+ : Pre-Stone-Types-Are-Closed-Under-Σ 𝓤 𝓥
+ → Stone-Types-Are-Closed-Under-Σ 𝓤 𝓥
 pre-stone-closure-under-Σ-gives-stone-closure-under-Σ c X Y ζ δ
  = c X Y
     (stone-types-are-pre-stone-types ζ)
@@ -2577,7 +2577,7 @@ pre-stone-closure-under-Σ-gives-stone-closure-under-Σ c X Y ζ δ
 
 ¬WLPO-gives-failure-of-closure-under-Σ-for-pre-stone-types
  : ¬ WLPO
- → ¬ Pre-Stone-Types-Are-Closed-Under-Σ
+ → ¬ Pre-Stone-Types-Are-Closed-Under-Σ 𝓤₀ 𝓤₀
 ¬WLPO-gives-failure-of-closure-under-Σ-for-pre-stone-types nwlpo c
  = ¬WLPO-gives-failure-of-closure-under-Σ nwlpo
     (pre-stone-closure-under-Σ-gives-stone-closure-under-Σ c)
