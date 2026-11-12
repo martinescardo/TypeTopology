@@ -247,6 +247,29 @@ Example-3-1'' : {X : 𝓤 ̇ } (κ : X → 𝟙 + X)
               → ∃! h ꞉ (X → ℕ∞), is-homomorphism κ h
 Example-3-1'' = PRED-is-the-homotopy-final-coalgebra
 
+\end{code}
+
+The last claim of Example 3.1 is that LPO and WLPO, which Section 2
+states for binary sequences, are equivalent to deciding whether a
+point of ℕ∞ is finite and whether it is ∞. For LPO, the formulation of
+Section 2 is literally the compactness of ℕ, and LPO' is the decision
+of finiteness. For WLPO, TypeTopology's WLPO is the decision of
+equality with ∞, and WLPO-traditional is the formulation of Section 2.
+
+Labels: Example 3.1 = ex:NInf.
+
+\begin{code}
+
+-- ex:NInf, LPO as the decision of finiteness
+Example-3-1-LPO : is-compact ℕ ↔ LPO'
+Example-3-1-LPO = LPO-gives-LPO' ∘ compact-ℕ-gives-LPO fe₀ ,
+                  LPO-gives-compact-ℕ fe₀ ∘ LPO'-gives-LPO
+
+-- ex:NInf, WLPO as the decision of equality with ∞
+Example-3-1-WLPO : WLPO-traditional ↔ WLPO
+Example-3-1-WLPO = WLPO-traditional-gives-WLPO fe₀ ,
+                   WLPO-gives-WLPO-traditional fe₀
+
 -- def:isolated
 Definition-3-2 : {X : 𝓤 ̇ } → X → 𝓤 ̇
 Definition-3-2 = is-isolated
@@ -311,6 +334,18 @@ Proposition-3-5-3 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                   → ((x : X) → is-discrete (Y x))
                   → is-discrete (Σ Y)
 Proposition-3-5-3 = Σ-is-discrete
+
+-- prop:discrete-closure (3), item:discrete-sigma, subtypes
+Proposition-3-5-3-subtype : {X : 𝓤 ̇ } {P : X → 𝓥 ̇ }
+                          → ((x : X) → is-prop (P x))
+                          → is-discrete X
+                          → is-discrete (Σ P)
+Proposition-3-5-3-subtype = subtype-is-discrete
+
+-- prop:discrete-closure (3), item:discrete-sigma, binary products
+Proposition-3-5-3-× : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                    → is-discrete X → is-discrete Y → is-discrete (X × Y)
+Proposition-3-5-3-× = ×-is-discrete
 
 -- prop:discrete-closure (4), item:discrete-sigma-isolated
 Proposition-3-5-4 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
@@ -490,6 +525,10 @@ Examples-3-11-2-r-step x =
 Examples-3-11-3 : is-discrete (ℕ → 𝟚) → WLPO
 Examples-3-11-3 = ℕ∞-discrete-gives-WLPO
                   ∘ retract-is-discrete (ℕ∞-retract-of-Cantor fe₀)
+
+-- ex:tot-sep (3), item:cantor-not-discrete, total separatedness
+Examples-3-11-3' : is-totally-separated (ℕ → 𝟚)
+Examples-3-11-3' = Cantor-is-totally-separated fe₀
 
 -- lem:sigma-NInf-tot-sep
 Lemma-3-12 : (A : ℕ∞ → 𝓥 ̇ )
@@ -1056,12 +1095,19 @@ Example-5-14-ordinal = ℕ∞ₒ
 Example-5-14-topped : Ordinalᵀ 𝓤₀
 Example-5-14-topped = ℕ∞ᵒ
 
+Example-5-14-top : (u : ℕ∞) → ¬ (∞ ≺ℕ∞ u)
+Example-5-14-top = ∞-top
+
 -- claim topped-arithmetic
 Prose-topped-arithmetic : Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤
 Prose-topped-arithmetic = _+ᵒ_
 
 Prose-topped-arithmetic' : Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤
 Prose-topped-arithmetic' = _×ᵒ_
+
+Prose-topped-arithmetic'' : (τ₀ τ₁ : Ordinalᵀ 𝓤)
+                          → [ τ₀ +ᵒ τ₁ ] ＝ ([ τ₀ ] +ₒ [ τ₁ ])
+Prose-topped-arithmetic'' = alternative-plus
 
 -- claim trichotomous-arithmetic
 Prose-trichotomous-arithmetic : Ordinal₃ 𝓤 → Ordinal₃ 𝓤 → Ordinal₃ 𝓤
