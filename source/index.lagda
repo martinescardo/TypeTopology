@@ -65,7 +65,7 @@
      double check.
 
    * In our last count, on 2026-11-12, this development has 1015 Agda
-     files with 305K lines of code, including comments and blank
+     files with 306K lines of code, including comments and blank
      lines.
 
 **Philosophy of the repository**
