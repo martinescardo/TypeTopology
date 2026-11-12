@@ -11,6 +11,8 @@ import InductiveBars.Basics
 import InductiveBars.Continuity
 import InductiveBars.BrouwersThesis
 import InductiveBars.BarContinuousModuli
-import InductiveBars.BarRecursion
+import InductiveBars.SpectorBarRecursion
+import InductiveBars.ModifiedBarRecursion
+import InductiveBars.ContinuityOnBaireSpace
 
 \end{code}
