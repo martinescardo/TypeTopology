@@ -20,6 +20,7 @@ open import MLTT.Plus-Properties
 open import MLTT.Spartan
 
 open import UF.Base
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.UA-FunExt
@@ -106,6 +107,7 @@ module _
  sup⁺ : Ordinal 𝓤
  sup⁺ = sup (λ i → α i +ₒ 𝟙ₒ)
 
+ -- TODO. Make α implicit and i explicit?
  sup⁺-is-strict-upper-bound : {i : I} → α i ⊲ sup⁺
  sup⁺-is-strict-upper-bound {i} =
   ⊲-⊴-gives-⊲ (α i) (α i +ₒ 𝟙ₒ) sup⁺
@@ -437,5 +439,105 @@ abstract
         IIIᵇ b = transport⁻¹ (_⊲ (α ⊕ (β ⊕ γ))) (IH (α , (β ↓ b) , δ) (bar b α)) (⊕-is-order-preserving-right α ((β ↓ b) ⊕ δ) (β ⊕ γ) (l b))
         IIIᵃᵇ : (a : ⟨ α ⟩) (b : ⟨ β ⟩) → ((α ↓ a) ⊕ (β ↓ b)) ⊕ δ ⊲ α ⊕ (β ⊕ γ)
         IIIᵃᵇ a b = transport⁻¹ (_⊲ (α ⊕ (β ⊕ γ))) (IH (α ↓ a , β ↓ b , δ) (bar b (α ↓ a))) (⊕-is-order-preserving (α ↓ a) α ((β ↓ b) ⊕ δ) (β ⊕ γ) (a , refl) (l b))
+
+\end{code}
+
+\begin{code}
+
+𝟘ₒ-is-right-neutral-⊕ : (α : Ordinal 𝓤) → α ⊕ 𝟘ₒ ＝ α
+𝟘ₒ-is-right-neutral-⊕ {𝓤} = transfinite-induction-on-OO _ I
+ where
+  I : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → (α ↓ a) ⊕ 𝟘ₒ ＝ α ↓ a) → α ⊕ 𝟘ₒ ＝ α
+  I α IH = ⊴-antisym (α ⊕ 𝟘ₒ) α (to-⊴ (α ⊕ 𝟘ₒ) α II) (to-⊴ α (α ⊕ 𝟘ₒ) III)
+   where
+    II : (x : ⟨ α ⊕ 𝟘ₒ ⟩) → (α ⊕ 𝟘ₒ) ↓ x ⊲ α
+    II = ⊕-induction α 𝟘ₒ (_⊲ α) (λ _ → ⊲-is-prop-valued _ α)
+          (λ a → (a , IH a))
+          𝟘-induction
+          (λ a → 𝟘-induction)
+    III : (a : ⟨ α ⟩) → α ↓ a ⊲ α ⊕ 𝟘ₒ
+    III a = transport (_⊲ α ⊕ 𝟘ₒ) (IH a) (⊕-⊲-left α 𝟘ₒ)
+
+𝟘ₒ-is-left-neutral-⊕ : (α : Ordinal 𝓤) → 𝟘ₒ ⊕ α ＝ α
+𝟘ₒ-is-left-neutral-⊕ α = ⊕-is-commutative 𝟘ₒ α ∙ 𝟘ₒ-is-right-neutral-⊕ α
+
+⊕𝟙ₒ-is-strictly-increasing : (α : Ordinal 𝓤) → α ⊲ α ⊕ 𝟙ₒ
+⊕𝟙ₒ-is-strictly-increasing α = transport (_⊲ α ⊕ 𝟙ₒ) (𝟘ₒ-is-right-neutral-⊕ α) I
+ where
+  I : α ⊕ 𝟘ₒ ⊲ α ⊕ 𝟙ₒ
+  I = ⊕-is-order-preserving-right α 𝟘ₒ 𝟙ₒ (⋆ , (𝟙ₒ-↓ ⁻¹))
+
+
+-- TODO. This fact will yield taboos for monotonicity.
+-- TODO. Clean up and rename
+test : (P : 𝓤 ̇ ) (i : is-prop P)
+     → let Pₒ = prop-ordinal P i in
+       Pₒ ⊕ 𝟙ₒ ＝ Pₒ +ₒ 𝟙ₒ
+test P i = transport⁻¹ (_＝ Pₒ +ₒ 𝟙ₒ) (⊕-behaviour Pₒ 𝟙ₒ ∙ II) I
+ where
+  Pₒ = prop-ordinal P i
+  σ = sup (λ (b : P + 𝟙) → cases (λ p → (Pₒ ↓ p) ⊕ 𝟙ₒ) (λ u → Pₒ ⊕ (𝟙ₒ ↓ u)) b +ₒ 𝟙ₒ)
+  τ = sup (λ (b : P + 𝟙) → cases (λ p → 𝟙ₒ) (λ u → Pₒ) b +ₒ 𝟙ₒ)
+  II : σ ＝ τ
+  II = sup-pointwise-equal _ _ h
+   where
+    h : (λ b → cases (λ p → (Pₒ ↓ p) ⊕ 𝟙ₒ) (λ u → Pₒ ⊕ (𝟙ₒ ↓ u)) b +ₒ 𝟙ₒ)
+        ∼ (λ b → cases (λ p → 𝟙ₒ) (λ u → Pₒ) b +ₒ 𝟙ₒ)
+    h (inl p) = ap (λ - → (- ⊕ 𝟙ₒ) +ₒ 𝟙ₒ) (prop-ordinal-↓ i p)
+                ∙ ap (_+ₒ 𝟙ₒ) (𝟘ₒ-is-left-neutral-⊕ 𝟙ₒ)
+    h (inr u) = ap (λ - → (Pₒ ⊕ -) +ₒ 𝟙ₒ) 𝟙ₒ-↓
+                ∙ ap (_+ₒ 𝟙ₒ) (𝟘ₒ-is-right-neutral-⊕ Pₒ)
+  I : τ ＝ Pₒ +ₒ 𝟙ₒ
+  I = ⊴-antisym τ (Pₒ +ₒ 𝟙ₒ) (sup-is-lower-bound-of-upper-bounds _ (Pₒ +ₒ 𝟙ₒ) (dep-cases foo bar)) (sup-is-upper-bound _ (inr ⋆))
+   where
+    foo : (p : P) → 𝟙ₒ +ₒ 𝟙ₒ ⊴ Pₒ +ₒ 𝟙ₒ
+    foo p = transport⁻¹ (λ - → 𝟙ₒ +ₒ 𝟙ₒ ⊴ - +ₒ 𝟙ₒ) (holds-gives-equal-𝟙ₒ i p) (⊴-refl 𝟚ₒ)
+    bar : (u : 𝟙) → Pₒ +ₒ 𝟙ₒ ⊴ Pₒ +ₒ 𝟙ₒ
+    bar _ = ⊴-refl (Pₒ +ₒ 𝟙ₒ)
+
+⊕-monotone-gives-EM'
+ : ((α β : Ordinal 𝓤) → α ⊴ β → α ⊕ 𝟙ₒ ⊴ β ⊕ 𝟙ₒ)
+ → EM 𝓤
+⊕-monotone-gives-EM' h P i = succ-of-prop-taboo P i I
+ where
+  Pₒ = prop-ordinal P i
+  I : Pₒ +ₒ 𝟙ₒ ⊴ 𝟙ₒ +ₒ 𝟙ₒ
+  I = transport₂ _⊴_
+       (test P i)
+       (test 𝟙 𝟙-is-prop)
+       (h Pₒ 𝟙ₒ (prop-ordinal-⊴-𝟙ₒ i))
+
+⊕-monotone-gives-EM
+ : ((α β γ : Ordinal 𝓤) → α ⊴ β → α ⊕ γ ⊴ β ⊕ γ)
+ → EM 𝓤
+⊕-monotone-gives-EM h = ⊕-monotone-gives-EM' (λ α β → h α β 𝟙ₒ)
+
+⊕-inflationary-gives-EM : ((α β : Ordinal 𝓤) → α ⊴ α ⊕ β) → EM 𝓤
+⊕-inflationary-gives-EM h P i = II (h 𝟙ₒ Pₒ)
+ where
+  Pₒ = prop-ordinal P i
+
+  I : 𝟙ₒ ⊴ Pₒ +ₒ 𝟙ₒ → P + ¬ P
+  I 𝕗@(f , f-sim) = I' (f ⋆) (simulations-preserve-↓ 𝟙ₒ (Pₒ +ₒ 𝟙ₒ) 𝕗 ⋆)
+   where
+    I' : (y : P + 𝟙) → 𝟙ₒ ↓ ⋆ ＝ (Pₒ +ₒ 𝟙ₒ) ↓ y → P + ¬ P
+    I' (inl p) e = inl p
+    I' (inr u) e = inr (λ p → 𝟘ₒ-is-not-𝟙ₒ (e' p))
+     where
+      e' : (p : P) → 𝟘ₒ ＝ 𝟙ₒ
+      e' p = 𝟘ₒ                 ＝⟨ 𝟙ₒ-↓ ⁻¹ ⟩
+             𝟙ₒ ↓ ⋆             ＝⟨ e ⟩
+             (Pₒ +ₒ 𝟙ₒ) ↓ inr u ＝⟨ (+ₒ-↓-right u) ⁻¹ ⟩
+             Pₒ +ₒ (𝟙ₒ ↓ u)     ＝⟨ ap (Pₒ +ₒ_) 𝟙ₒ-↓ ⟩
+             Pₒ +ₒ 𝟘ₒ           ＝⟨ 𝟘ₒ-right-neutral Pₒ ⟩
+             Pₒ                 ＝⟨ holds-gives-equal-𝟙ₒ i p ⟩
+             𝟙ₒ                 ∎
+
+  II : 𝟙ₒ ⊴ 𝟙ₒ ⊕ Pₒ → P + ¬ P
+  II l = I (transport (𝟙ₒ ⊴_) e l)
+   where
+    e = 𝟙ₒ ⊕ Pₒ  ＝⟨ ⊕-is-commutative 𝟙ₒ Pₒ ⟩
+        Pₒ ⊕ 𝟙ₒ  ＝⟨ test P i ⟩
+        Pₒ +ₒ 𝟙ₒ ∎
 
 \end{code}
