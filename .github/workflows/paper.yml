@@ -1,0 +1,33 @@
+name: Build the JOSS paper
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - 'Paper/paper.md'
+      - 'Paper/paper.bib'
+      - '.github/workflows/paper.yml'
+
+jobs:
+  paper:
+    if: github.repository == 'martinescardo/TypeTopology'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Paper/paper.pdf
+        uses: openjournals/openjournals-draft-action@master
+        with:
+          journal: joss
+          paper-path: Paper/paper.md
+
+      - name: Commit and push Paper/paper.pdf if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Rebuild the JOSS paper"
+          file_pattern: "Paper/paper.pdf"
