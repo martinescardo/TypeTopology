@@ -829,66 +829,53 @@ TODO. Actually (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ) is equivalent to
 This condition in turn implies α ⊴ β (and is equivalent to α ⊴ β under
 excluded middle).
 
-However, the successor function does not preserve _⊴_ in general:
+However, the successor function does not preserve _⊴_ in general, as
+shown below.
+
+Modified on 13 November 2026 by Tom de Jong to
+* strengthen the conclusion from WEM to EM, and
+* separately record the construction for future reference.
 
 \begin{code}
+
+succ-of-prop-taboo : (P : 𝓤 ̇ ) (isp : is-prop P)
+                   → prop-ordinal P isp +ₒ 𝟙ₒ ⊴ 𝟚ₒ
+                   → P + ¬ P
+succ-of-prop-taboo P isp 𝕗@(f , f-sim) = IV (f (inr ⋆)) I
+ where
+  Pₒ = prop-ordinal P isp
+
+  I = Pₒ                 ＝⟨ (𝟘ₒ-right-neutral Pₒ) ⁻¹ ⟩
+      Pₒ +ₒ 𝟘ₒ           ＝⟨ ap (Pₒ +ₒ_) (𝟙ₒ-↓ ⁻¹) ⟩
+      Pₒ +ₒ (𝟙ₒ ↓ ⋆)     ＝⟨ +ₒ-↓-right ⋆ ⟩
+      (Pₒ +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ simulations-preserve-↓ (Pₒ +ₒ 𝟙ₒ) 𝟚ₒ 𝕗 (inr ⋆) ⟩
+      𝟚ₒ ↓ f (inr ⋆)     ∎
+
+  II : Pₒ ＝ 𝟙ₒ → P
+  II e = Idtofunₒ (e ⁻¹) ⋆
+
+  III : Pₒ ＝ 𝟘ₒ → ¬ P
+  III e p = 𝟘-elim (Idtofunₒ e p)
+
+  IV : (x : ⟨ 𝟚ₒ ⟩) → Pₒ ＝ (𝟚ₒ ↓ x) → P + ¬ P
+  IV (inl ⋆) e = inr (III (e ∙ e'))
+   where
+    e' = 𝟚ₒ ↓ inl ⋆ ＝⟨ (+ₒ-↓-left ⋆) ⁻¹ ⟩
+         𝟙ₒ ↓ ⋆     ＝⟨ 𝟙ₒ-↓ ⟩
+         𝟘ₒ         ∎
+  IV (inr ⋆) e = inl (II (e ∙ e'))
+   where
+    e' = 𝟚ₒ ↓ inr ⋆     ＝⟨ (+ₒ-↓-right ⋆) ⁻¹ ⟩
+         𝟙ₒ +ₒ (𝟙ₒ ↓ ⋆) ＝⟨ ap (𝟙ₒ +ₒ_) 𝟙ₒ-↓ ⟩
+         𝟙ₒ +ₒ 𝟘ₒ       ＝⟨ 𝟘ₒ-right-neutral 𝟙ₒ ⟩
+         𝟙ₒ             ∎
 
 succ-not-necessarily-monotone : ((α β : Ordinal 𝓤)
                                       → α ⊴ β
                                       → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ))
-                              → typal-WEM 𝓤
-succ-not-necessarily-monotone {𝓤} ϕ = XII
- where
-  module _ (P : 𝓤 ̇ ) (isp : is-prop P) where
-   α : Ordinal 𝓤
-   α = prop-ordinal P isp
-
-   I :  (α +ₒ 𝟙ₒ) ⊴ 𝟚ₒ
-   I = ϕ α 𝟙ₒ l
-    where
-     l : α ⊴ 𝟙ₒ
-     l = unique-to-𝟙 ,
-         (λ x y (l : y ≺⟨ 𝟙ₒ ⟩ ⋆) → 𝟘-elim l) ,
-         (λ x y l → l)
-
-   II : type-of I → ¬ P + ¬¬ P
-   II (f , f-is-initial , f-is-order-preserving) = III (f (inr ⋆)) refl
-    where
-     III : (y : ⟨ 𝟚ₒ ⟩) → f (inr ⋆) ＝ y → ¬ P + ¬¬ P
-     III (inl ⋆) e = inl VII
-      where
-       IV : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ f (inr ⋆)
-       IV p = f-is-order-preserving (inl p) (inr ⋆) ⋆
-
-       V : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ inl ⋆
-       V p = transport (λ - → f (inl p) ≺⟨ 𝟚ₒ ⟩ -) e (IV p)
-
-       VI : (z : ⟨ 𝟚ₒ ⟩) → ¬ (z ≺⟨ 𝟚ₒ ⟩ inl ⋆)
-       VI (inl ⋆) l = 𝟘-elim l
-       VI (inr ⋆) l = 𝟘-elim l
-
-       VII : ¬ P
-       VII p = VI (f (inl p)) (V p)
-     III (inr ⋆) e = inr IX
-      where
-       VIII : Σ x' ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆) × (f x' ＝ inl ⋆)
-       VIII = f-is-initial
-               (inr ⋆)
-               (inl ⋆)
-               (transport⁻¹ (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) e ⋆)
-
-       IX : ¬¬ P
-       IX u = XI
-        where
-         X : ∀ x' → ¬ (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆)
-         X (inl p) l = u p
-         X (inr ⋆) l = 𝟘-elim l
-
-         XI : 𝟘
-         XI = X (pr₁ VIII) (pr₁ (pr₂ VIII))
-
-  XII : typal-WEM 𝓤
-  XII = WEM-gives-typal-WEM fe' (λ P isp → II P isp (I P isp))
+                              → EM 𝓤
+succ-not-necessarily-monotone {𝓤} ϕ P isp =
+ succ-of-prop-taboo P isp (ϕ (prop-ordinal P isp) 𝟙ₒ (prop-ordinal-⊴-𝟙ₒ isp))
 
 \end{code}
 
