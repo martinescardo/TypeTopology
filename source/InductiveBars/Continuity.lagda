@@ -13,21 +13,14 @@ Tatsuji Kawai in "Formally continuous functions on Baire space"
 {-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan hiding (𝓤 ; 𝓥)
-open import UF.FunExt using (Fun-Ext)
-open import UF.Sets using (is-set)
 
 module InductiveBars.Continuity
- (fe : Fun-Ext)
  {𝓤 𝓥 : Universe}
  (A : 𝓤 ̇)
  (R : 𝓥 ̇)
- (R-is-set : is-set R)
  where
 
 open import MLTT.List
-open import UF.Powerset-MultiUniverse
-open import UF.Subsingletons using (is-prop)
-open import UF.Subsingletons-FunExt using (Π₄-is-prop)
 open import Naturals.Order
 
 open import InductiveBars.Sequences
@@ -38,20 +31,13 @@ open import InductiveBars.Basics
 A finite sequence determines f : (ℕ → A) → R if f has the same value on
 all inputs extending that sequence.
 
-We define `determining-prefixes f` to denote the set of finite sequences
-that determine f.
-
 \begin{code}
 
 _determines_ : (List A) → ((ℕ → A) → R) → 𝓤 ⊔ 𝓥 ̇
 s determines f = (α β : ℕ → A) → α extends s → β extends s → f α ＝ f β
 
-determines-is-prop : (s : List A) (f : (ℕ → A) → R)
-                   → is-prop (s determines f)
-determines-is-prop s f = Π₄-is-prop fe (λ _ _ _ _ → R-is-set)
-
-determining-prefixes : ((ℕ → A) → R) → 𝓟 (List A)
-determining-prefixes f s = (s determines f) , determines-is-prop s f
+determining-prefixes : ((ℕ → A) → R) → List A → 𝓤 ⊔ 𝓥 ̇
+determining-prefixes f s = s determines f
 
 determining-prefixes-is-monotone
  : (f : (ℕ → A) → R) → is-monotone (determining-prefixes f)
@@ -158,7 +144,7 @@ dialogue-gives-inductive-bar
 dialogue-gives-inductive-bar (η a) = base (λ _ _ _ _ → refl)
 dialogue-gives-inductive-bar (β φ i) = fact
  where
-  V : 𝓟 (List A)
+  V : List A → 𝓤 ⊔ 𝓥 ̇
   V = determining-prefixes (dialogue (β φ i))
   claim : (s : List A) → length s ＝ succ i → is-inductive-bar (section V s)
   claim s e = inductive-bar-respects-inclusion (section W s) (section V s) θ b
@@ -167,7 +153,7 @@ dialogue-gives-inductive-bar (β φ i) = fact
     r = transport (i <ℕ_) (e ⁻¹) (≤-refl i)
     a : A
     a = lookup s r
-    W : 𝓟 (List A)
+    W : List A → 𝓤 ⊔ 𝓥 ̇
     W = determining-prefixes (dialogue (φ a))
     mW : is-monotone W
     mW = determining-prefixes-is-monotone (dialogue (φ a))

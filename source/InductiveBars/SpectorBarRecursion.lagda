@@ -31,14 +31,10 @@ module InductiveBars.SpectorBarRecursion
 
 open import MLTT.List
 open import Naturals.Order
-open import UF.Base using (ap₂)
-open import UF.DiscreteAndSeparated using (ℕ-is-set)
-open import UF.Powerset-MultiUniverse
-open import UF.Subsingletons using (is-prop)
 
 open import InductiveBars.Sequences hiding (pad)
 open import InductiveBars.Basics
-open import InductiveBars.Continuity fe A ℕ ℕ-is-set
+open import InductiveBars.Continuity A ℕ
 
 \end{code}
 
@@ -48,7 +44,7 @@ extension of s that belongs to V.
 
 \begin{code}
 
-data _controls-recursion-at_ {𝓥 : Universe} (V : 𝓟 {𝓥} (List A))
+data _controls-recursion-at_ {𝓥 : Universe} (V : List A → 𝓥 ̇)
  : List A → 𝓤 ⊔ 𝓥 ̇
  where
  stop     : {s : List A}
@@ -61,35 +57,12 @@ data _controls-recursion-at_ {𝓥 : Universe} (V : 𝓟 {𝓥} (List A))
 
 \end{code}
 
-Any two witnesses of `V controls-recursion-at s` are equal. They must
-either both stop or both continue.
-
-\begin{code}
-
-controls-recursion-at-is-prop
- : (V : 𝓟 {𝓥} (List A)) (s : List A) → is-prop (V controls-recursion-at s)
-controls-recursion-at-is-prop V s (stop p) (stop q)
- = ap stop (∈-is-prop V s p q)
-controls-recursion-at-is-prop V s (stop p) (continue q ψ)
- = 𝟘-elim (q p)
-controls-recursion-at-is-prop V s (continue p φ) (stop q)
- = 𝟘-elim (p q)
-controls-recursion-at-is-prop V s (continue p φ) (continue q ψ)
- = ap₂ continue (∉-is-prop fe V s p q) e
- where
-  ih : (a : A) → φ a ＝ ψ a
-  ih a = controls-recursion-at-is-prop V (s ++ [ a ]) (φ a) (ψ a)
-  e : φ ＝ ψ
-  e = dfunext fe ih
-
-\end{code}
-
 For decidable V, if V bars s, then V controls recursion at s.
 
 \begin{code}
 
 bars-implies-controls-recursion-at
- : (V : 𝓟 {𝓥} (List A)) → ((s : List A) → is-decidable (s ∈ V))
+ : (V : List A → 𝓥 ̇) → ((s : List A) → is-decidable (s ∈ V))
  → (s : List A) → V bars s → V controls-recursion-at s
 bars-implies-controls-recursion-at V dec s (hit p) = stop p
 bars-implies-controls-recursion-at V dec s (step φ) =
@@ -108,11 +81,34 @@ and when to continue.
 
 module _ {𝓦 : Universe} (X : 𝓦 ̇) where
 
- eval : {V : 𝓟 {𝓥} (List A)}
+ eval : {V : List A → 𝓥 ̇}
       → (List A → X) → (List A → (A → X) → X)
       → (s : List A) → V controls-recursion-at s → X
  eval G H s (stop _) = G s
  eval G H s (continue _ φ) = H s (λ a → eval G H (s ++ [ a ]) (φ a))
+
+\end{code}
+
+Evaluation is independent of the control witness, even when V is not
+proposition-valued, because evaluation does not use the data carried by
+stop witnesses. We use this independence to verify the recursion equations.
+
+\begin{code}
+
+ eval-witness-independent
+  : {V : List A → 𝓥 ̇}
+  → (G : List A → X) (H : List A → (A → X) → X)
+  → (s : List A) (c c' : V controls-recursion-at s)
+  → eval G H s c ＝ eval G H s c'
+ eval-witness-independent G H s (stop p) (stop q) = refl
+ eval-witness-independent G H s (stop p) (continue q ψ) = 𝟘-elim (q p)
+ eval-witness-independent G H s (continue p φ) (stop q) = 𝟘-elim (p q)
+ eval-witness-independent G H s (continue p φ) (continue q ψ)
+  = ap (H s) (dfunext fe ih)
+  where
+   ih : (a : A)
+      → eval G H (s ++ [ a ]) (φ a) ＝ eval G H (s ++ [ a ]) (ψ a)
+   ih a = eval-witness-independent G H (s ++ [ a ]) (φ a) (ψ a)
 
 \end{code}
 
@@ -125,20 +121,20 @@ the above evaluation function.
  BarRecursor : 𝓤 ⊔ 𝓦 ̇
  BarRecursor = (List A → X) → (List A → (A → X) → X) → List A → X
 
- gbr : {B : 𝓟 {𝓥} (List A)}
+ gbr : {B : List A → 𝓥 ̇}
      → ((s : List A) → B controls-recursion-at s)
      → BarRecursor
  gbr d G H s = eval G H s (d s)
 
  general-bar-recursor-spec
-  : {B : 𝓟 {𝓥} (List A)} (d : (s : List A) → B controls-recursion-at s)
+  : {B : List A → 𝓥 ̇} (d : (s : List A) → B controls-recursion-at s)
   → (G : List A → X) (H : List A → (A → X) → X) (s : List A)
   → (s ∈ B → gbr d G H s ＝ G s)
   × (s ∉ B → gbr d G H s ＝ H s (λ a → gbr d G H (s ++ [ a ])))
  general-bar-recursor-spec {B = B} d G H s = base-case , step-case
   where
    unique : (e : B controls-recursion-at s) → gbr d G H s ＝ eval G H s e
-   unique e = ap (eval G H s) (controls-recursion-at-is-prop B s (d s) e)
+   unique e = eval-witness-independent G H s (d s) e
    base-case : s ∈ B → gbr d G H s ＝ G s
    base-case p = unique (stop p)
    step-case : s ∉ B → gbr d G H s ＝ H s (λ a → gbr d G H (s ++ [ a ]))
@@ -161,9 +157,8 @@ assume a given a₀ : A throughout the development of Spector bar recursion.
    pad : List A → ℕ → A
    pad = pad-with a₀
 
-  stopping-prefixes : ((ℕ → A) → ℕ) → 𝓟 (List A)
-  stopping-prefixes Y s
-   = (Y (pad s) <ℕ length s) , <-is-prop-valued (Y (pad s)) (length s)
+  stopping-prefixes : ((ℕ → A) → ℕ) → List A → 𝓤₀ ̇
+  stopping-prefixes Y s = Y (pad s) <ℕ length s
 
 \end{code}
 
@@ -259,12 +254,10 @@ that the control functional is bar continuous.
    : (Y : (ℕ → A) → ℕ) (b b' : is-bar-continuous Y)
    → (G : List A → X) (H : List A → (A → X) → X) (s : List A)
    → sbr Y b G H s ＝ sbr Y b' G H s
-  sbr-witness-independent Y b b' G H s = ap (eval G H s) e
+  sbr-witness-independent Y b b' G H s = eval-witness-independent G H s c c'
    where
     c c' : stopping-prefixes Y controls-recursion-at s
     c  = bar-continuity-implies-stopping-prefixes-control-recursion Y b s
     c' = bar-continuity-implies-stopping-prefixes-control-recursion Y b' s
-    e : c ＝ c'
-    e = controls-recursion-at-is-prop (stopping-prefixes Y) s c c'
 
 \end{code}

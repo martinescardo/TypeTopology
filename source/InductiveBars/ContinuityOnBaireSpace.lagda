@@ -7,15 +7,11 @@ to natural numbers.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.FunExt using (Fun-Ext)
-
-module InductiveBars.ContinuityOnBaireSpace (fe : Fun-Ext) where
+module InductiveBars.ContinuityOnBaireSpace where
 
 open import MLTT.Spartan
 open import MLTT.List
 open import Naturals.Order
-open import UF.DiscreteAndSeparated using (ℕ-is-set)
-open import UF.Powerset-MultiUniverse
 
 open import EffectfulForcing.MFPSAndVariations.SystemT
  using (T-definable)
@@ -24,8 +20,8 @@ open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS
 
 open import InductiveBars.Sequences
 open import InductiveBars.Basics
-open import InductiveBars.Continuity fe ℕ ℕ ℕ-is-set
-open import InductiveBars.BrouwersThesis fe ℕ
+open import InductiveBars.Continuity ℕ ℕ
+open import InductiveBars.BrouwersThesis ℕ
 
 \end{code}
 
@@ -83,7 +79,7 @@ for monotone bars with T-definable witnesses.
 \begin{code}
 
 brouwers-thesis-for-T-definable-witnesses
- : (V : 𝓟 {𝓥} (List ℕ)) → is-monotone V
+ : (V : List ℕ → 𝓥 ̇) → is-monotone V
  → (f : (ℕ → ℕ) → ℕ) → T-definable f
  → ((α : ℕ → ℕ) → prefix (f α) α ∈ V)
  → is-inductive-bar V

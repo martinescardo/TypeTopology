@@ -16,28 +16,23 @@ in Constructive Type Theory" (2025, Section 5.3, Lemmas 26-28).
 {-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan hiding (𝓤)
-open import UF.FunExt using (Fun-Ext)
 
 module InductiveBars.BarContinuousModuli
- (fe : Fun-Ext)
  {𝓤 : Universe}
  (A : 𝓤 ̇)
  where
 
 open import MLTT.List
-open import UF.DiscreteAndSeparated using (ℕ-is-set)
-open import UF.Powerset-MultiUniverse
-open import UF.Sets using (is-set)
 
 open import EffectfulForcing.MFPSAndVariations.Dialogue
  using (eloquent)
 
 open import InductiveBars.Sequences
 open import InductiveBars.Basics
-open import InductiveBars.BrouwersThesis fe A
+open import InductiveBars.BrouwersThesis A
 
 import InductiveBars.Continuity
-open InductiveBars.Continuity fe A ℕ ℕ-is-set
+open InductiveBars.Continuity A ℕ
 
 \end{code}
 
@@ -53,13 +48,13 @@ it belongs to V.
 
 \begin{code}
 
-bar-depth : (V : 𝓟 {𝓥} (List A))
+bar-depth : (V : List A → 𝓥 ̇)
           → is-inductive-bar V
           → (ℕ → A) → ℕ
 bar-depth V (base v) α = 0
 bar-depth V (step φ) α = succ (bar-depth _ (φ (α 0)) (α ∘ succ))
 
-bar-depth-spec : (V : 𝓟 {𝓥} (List A)) (b : is-inductive-bar V)
+bar-depth-spec : (V : List A → 𝓥 ̇) (b : is-inductive-bar V)
                → (α : ℕ → A)
                → prefix (bar-depth V b α) α ∈ V
 bar-depth-spec V (base v) α = v
@@ -73,14 +68,14 @@ is bar continuous.
 \begin{code}
 
 bar-depth-is-bar-continuous
- : (V : 𝓟 {𝓥} (List A)) (b : is-inductive-bar V)
+ : (V : List A → 𝓥 ̇) (b : is-inductive-bar V)
  → is-bar-continuous (bar-depth V b)
 bar-depth-is-bar-continuous V (base v) = base (λ _ _ _ _ → refl)
 bar-depth-is-bar-continuous V (step φ) = step ψ
  where
   μ : A → (ℕ → A) → ℕ
   μ a = bar-depth (section₁ V a) (φ a)
-  W : 𝓟 (List A)
+  W : List A → 𝓤 ̇
   W = determining-prefixes (bar-depth V (step φ))
   ihs : (a : A) → is-inductive-bar (determining-prefixes (μ a))
   ihs a = bar-depth-is-bar-continuous (section₁ V a) (φ a)
@@ -112,7 +107,7 @@ _is-a-modulus-of-continuity-of_
 M is-a-modulus-of-continuity-of f = (α β : ℕ → A) → α ＝⦅ M α ⦆ β → f α ＝ f β
 
 bar-depth-is-self-modulating
- : (V : 𝓟 {𝓥} (List A)) (b : is-inductive-bar V)
+ : (V : List A → 𝓥 ̇) (b : is-inductive-bar V)
  → (bar-depth V b) is-a-modulus-of-continuity-of (bar-depth V b)
 bar-depth-is-self-modulating V (base v) α β em = refl
 bar-depth-is-self-modulating V (step φ) α β (e₀ , em) = ap succ e
@@ -133,10 +128,9 @@ is a self-modulating, bar-continuous modulus of pointwise continuity of f.
 
 module _ {𝓦 : Universe}
          (R : 𝓦 ̇)
-         (R-is-set : is-set R)
  where
 
- module 𝐑 = InductiveBars.Continuity fe A R R-is-set
+ module 𝐑 = InductiveBars.Continuity A R
  open 𝐑 using ()
   renaming
    ( is-bar-continuous to is-bar-continuousᴿ

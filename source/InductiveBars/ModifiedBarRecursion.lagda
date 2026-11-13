@@ -11,7 +11,7 @@ First, we use concatenation in place of overwriting. But this formulation is
 interdefinable with theirs, as explained in Remark 2.2 of their "Modified Bar
 Recursion" (BRICS RS-02-14, 2002).
 
-Second, we allow R to be any set, assuming Y is bar continuous. The control
+Second, we allow R to be any type, assuming Y is bar continuous. The control
 functional in their counterexample with result type ℕ → ℕ, given in the same
 remark, is not bar continuous.
 
@@ -21,21 +21,19 @@ remark, is not bar continuous.
 
 open import MLTT.Spartan hiding (𝓤 ; 𝓥)
 open import UF.FunExt using (Fun-Ext ; dfunext)
-open import UF.Sets using (is-set)
 
 module InductiveBars.ModifiedBarRecursion
  (fe : Fun-Ext)
  {𝓤 𝓥 : Universe}
  (A : 𝓤 ̇)
  (R : 𝓥 ̇)
- (R-is-set : is-set R)
  where
 
 open import MLTT.List
 
 open import InductiveBars.Sequences
 open import InductiveBars.Basics
-open import InductiveBars.Continuity fe A R R-is-set
+open import InductiveBars.Continuity A R
 
 \end{code}
 
