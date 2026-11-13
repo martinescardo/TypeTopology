@@ -467,8 +467,12 @@ abstract
   I : α ⊕ 𝟘ₒ ⊲ α ⊕ 𝟙ₒ
   I = ⊕-is-order-preserving-right α 𝟘ₒ 𝟙ₒ (⋆ , (𝟙ₒ-↓ ⁻¹))
 
+⊕-is-strictly-increasing : (α β : Ordinal 𝓤) → 𝟙ₒ ⊲ β → α ⊲ α ⊕ β
+⊕-is-strictly-increasing α β l =
+ ⊲-is-transitive α (α ⊕ 𝟙ₒ) (α ⊕ β)
+  (⊕𝟙ₒ-is-strictly-increasing α)
+  (⊕-is-order-preserving-right α 𝟙ₒ β l)
 
--- TODO. This fact will yield taboos for monotonicity.
 -- TODO. Clean up and rename
 test : (P : 𝓤 ̇ ) (i : is-prop P)
      → let Pₒ = prop-ordinal P i in
