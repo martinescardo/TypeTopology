@@ -19,36 +19,45 @@ length-++-right (a ∷ s) t
 
 _extends_ : {A : 𝓤 ̇} → (ℕ → A) → List A → 𝓤 ̇
 α extends [] = 𝟙
-α extends (n ∷ s) = (α 0 ＝ n) × ((α ∘ succ) extends s)
+α extends (a ∷ s) = (α 0 ＝ a) × ((α ∘ succ) extends s)
 
 extends-++ : {A : 𝓤 ̇} (α : ℕ → A) (s t : List A)
            → α extends (s ++ t) → α extends s
 extends-++ α [] t e = ⋆
-extends-++ α (n ∷ s) t e = pr₁ e , extends-++ (α ∘ succ) s t (pr₂ e)
+extends-++ α (_ ∷ s) t e = pr₁ e , extends-++ (α ∘ succ) s t (pr₂ e)
+
+extends-next : {A : 𝓤 ̇} (α : ℕ → A) (s : List A)
+             → α extends s
+             → α extends (s ++ [ α (length s) ])
+extends-next α [] e = refl , ⋆
+extends-next α (_ ∷ s) (p , q) = p , extends-next (α ∘ succ) s q
 
 infixr 2 _++∞_
 
 _++∞_ : {A : 𝓤 ̇} → List A → (ℕ → A) → (ℕ → A)
 ([]      ++∞ α)  i       = α i
-((x ∷ s) ++∞ α)  0       = x
-((x ∷ s) ++∞ α) (succ i) = (s ++∞ α) i
+((a ∷ _) ++∞ α)  0       = a
+((_ ∷ s) ++∞ α) (succ i) = (s ++∞ α) i
 
 ++∞-extends : {A : 𝓤 ̇} (s : List A) (α : ℕ → A)
             → (s ++∞ α) extends s
 ++∞-extends []      α = ⋆
-++∞-extends (x ∷ s) α = refl , ++∞-extends s α
+++∞-extends (_ ∷ s) α = refl , ++∞-extends s α
+
+pad-with : {A : 𝓤 ̇} → A → List A → ℕ → A
+pad-with a s = s ++∞ (λ _ → a)
 
 pad : List ℕ → (ℕ → ℕ)
-pad s = s ++∞ (λ _ → 0)
+pad = pad-with 0
 
-pad-extends : (s : List ℕ) → pad s extends s
-pad-extends s = ++∞-extends s (λ _ → 0)
+pad-extends : {A : 𝓤 ̇} {a : A} → (s : List A) → (pad-with a s) extends s
+pad-extends {a = a} s = ++∞-extends s (λ _ → a)
 
 prefix : {A : 𝓤 ̇} → ℕ → (ℕ → A) → List A
 prefix 0        α = []
 prefix (succ n) α = α 0 ∷ prefix n (α ∘ succ)
 
-extends-prefix : (α : ℕ → ℕ) (n : ℕ) → α extends (prefix n α)
+extends-prefix : {A : 𝓤 ̇} (α : ℕ → A) (n : ℕ) → α extends (prefix n α)
 extends-prefix α 0 = ⋆
 extends-prefix α (succ n) = refl , extends-prefix (α ∘ succ) n
 
@@ -100,11 +109,11 @@ infix 30 _≤¹_
 _≤¹_ : (ℕ → ℕ) → (ℕ → ℕ) → 𝓤₀ ̇
 α ≤¹ δ = (i : ℕ) → α i ≤ℕ δ i
 
-_＝⦅_⦆_ : {X : 𝓤 ̇} → (ℕ → X) → ℕ → (ℕ → X) → 𝓤 ̇
+_＝⦅_⦆_ : {A : 𝓤 ̇} → (ℕ → A) → ℕ → (ℕ → A) → 𝓤 ̇
 α ＝⦅ 0      ⦆ β = 𝟙
 α ＝⦅ succ n ⦆ β = (α 0 ＝ β 0) × (α ∘ succ) ＝⦅ n ⦆ (β ∘ succ)
 
-＝⦅⦆-≤ : (α β : ℕ → ℕ) {m n : ℕ} → m ≤ℕ n
+＝⦅⦆-≤ : {A : 𝓤 ̇} (α β : ℕ → A) {m n : ℕ} → m ≤ℕ n
       → α ＝⦅ n ⦆ β → α ＝⦅ m ⦆ β
 ＝⦅⦆-≤ α β {0} {n} ⋆ _ = ⋆
 ＝⦅⦆-≤ α β {succ m} {0} ()
@@ -112,20 +121,20 @@ _＝⦅_⦆_ : {X : 𝓤 ̇} → (ℕ → X) → ℕ → (ℕ → X) → 𝓤 ̇
  = pr₁ e , ＝⦅⦆-≤ (α ∘ succ) (β ∘ succ) r (pr₂ e)
 
 agreement-preserves-extension
- : (α β : ℕ → ℕ) (s : List ℕ)
+ : {A : 𝓤 ̇} (α β : ℕ → A) (s : List A)
  → α extends s
  → α ＝⦅ length s ⦆ β
  → β extends s
 agreement-preserves-extension α β [] eαs es = ⋆
 agreement-preserves-extension α β (n ∷ s) (refl , p) (e , q) = e' , IH
  where
-  e' : β 0 ＝ α 0 
+  e' : β 0 ＝ α 0
   e' = e ⁻¹
   IH : (β ∘ succ) extends s
   IH = agreement-preserves-extension (α ∘ succ) (β ∘ succ) s p q
 
 agreement-implies-extends-prefix
- : (α β : ℕ → ℕ) (n : ℕ)
+ : {A : 𝓤 ̇} (α β : ℕ → A) (n : ℕ)
  → α ＝⦅ n ⦆ β
  → β extends (prefix n α)
 agreement-implies-extends-prefix α β 0 e = ⋆
@@ -133,7 +142,7 @@ agreement-implies-extends-prefix α β (succ n) (p , q)
  = (p ⁻¹) , agreement-implies-extends-prefix (α ∘ succ) (β ∘ succ) n q
 
 extends-prefix-implies-agreement
- : (α β : ℕ → ℕ) (n : ℕ)
+ : {A : 𝓤 ̇} (α β : ℕ → A) (n : ℕ)
  → β extends (prefix n α)
  → α ＝⦅ n ⦆ β
 extends-prefix-implies-agreement α β 0 e = ⋆
