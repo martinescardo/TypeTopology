@@ -33,6 +33,9 @@ prop-ordinal-⊴ : {P : 𝓤 ̇  } {Q : 𝓥 ̇  } (i : is-prop P) (j : is-prop 
                → (P → Q) → prop-ordinal P i ⊴ prop-ordinal Q j
 prop-ordinal-⊴ _ _ f = f , (λ _ _ → 𝟘-elim) , (λ _ _ → 𝟘-elim)
 
+prop-ordinal-⊴-𝟙ₒ : {P : 𝓤 ̇ } (i : is-prop P) → prop-ordinal P i ⊴ 𝟙ₒ {𝓤}
+prop-ordinal-⊴-𝟙ₒ i = prop-ordinal-⊴ i 𝟙-is-prop (λ _ → ⋆)
+
 prop-ordinal-≃ₒ : {P : 𝓤 ̇  } {Q : 𝓥 ̇  } (i : is-prop P) (j : is-prop Q)
                 → (P → Q) → (Q → P) → prop-ordinal P i ≃ₒ prop-ordinal Q j
 prop-ordinal-≃ₒ {𝓤} {𝓥} {P} {Q} i j f g =
