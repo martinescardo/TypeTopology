@@ -38,6 +38,7 @@ private
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Propositions ua
@@ -543,5 +544,30 @@ test P i = transport⁻¹ (_＝ Pₒ +ₒ 𝟙ₒ) (⊕-behaviour Pₒ 𝟙ₒ �
     e = 𝟙ₒ ⊕ Pₒ  ＝⟨ ⊕-is-commutative 𝟙ₒ Pₒ ⟩
         Pₒ ⊕ 𝟙ₒ  ＝⟨ test P i ⟩
         Pₒ +ₒ 𝟙ₒ ∎
+
+⊕-above-+ₒ-gives-EM : ((α β : Ordinal 𝓤) → α +ₒ β ⊴ α ⊕ β)
+                    → EM 𝓤
+⊕-above-+ₒ-gives-EM h P i = II I
+ where
+  Pₒ = prop-ordinal P i
+
+  I : 𝟙ₒ +ₒ Pₒ ⊴ Pₒ +ₒ 𝟙ₒ
+  I = transport (𝟙ₒ +ₒ Pₒ ⊴_) e (h 𝟙ₒ Pₒ)
+   where
+    e : (𝟙ₒ ⊕ Pₒ) ＝ Pₒ +ₒ 𝟙ₒ
+    e = ⊕-is-commutative 𝟙ₒ Pₒ ∙ test P i
+
+  II : type-of I → P + ¬ P
+  II 𝕗@(f , f-sim) = aux (f (inl ⋆)) refl
+   where
+    III : (p : P) → f (inl ⋆) ＝ inl p
+    III p = simulations-preserve-least (𝟙ₒ +ₒ Pₒ) (Pₒ +ₒ 𝟙ₒ)
+             (inl ⋆) (inl p)
+             f f-sim
+             (left-preserves-least 𝟙ₒ Pₒ ⋆ 𝟙ₒ-least)
+             (left-preserves-least Pₒ 𝟙ₒ p (prop-ordinal-least i p))
+    aux : (x : P + 𝟙) → f (inl ⋆) ＝ x → P + ¬ P
+    aux (inl p) e = inl p
+    aux (inr ⋆) e = inr (λ p → +disjoint ((III p) ⁻¹ ∙ e))
 
 \end{code}
