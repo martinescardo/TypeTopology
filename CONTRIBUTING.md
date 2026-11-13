@@ -306,8 +306,8 @@ to your Emacs configuration.
 
     Our [html rendering](https://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html) is tidied for the reader by
     [assets/Agda.css](assets/Agda.css), which hides the dot and the
-    spaces before and after it, so that we see `(X : 𝓤)` as the HoTT
-    book writes it while the source keeps what Agda needs.
+    spaces before and after it, so that we see `(X : 𝓤)` as the [HoTT
+    book](https://homotopytypetheory.org/book/) writes it while the source keeps what Agda needs.
 
  1. The identity type is [`＝`](https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Identity-Type.html#_＝_), typed as `\=` with the
     input sequences above.
