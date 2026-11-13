@@ -13,7 +13,7 @@ authors:
     corresponding: true
   - given-names: Tom
     non-dropping-particle: de
-	surname: Jong
+    surname: Jong
     orcid: 0000-0003-1585-3172
     affiliation: 2
   - name: Ayberk Tosun
@@ -24,7 +24,7 @@ authors:
     affiliation: 4
   - given-names: Todd
     surname: Waugh Ambridge
-	orcid: 0009-0000-1796-6707
+    orcid: 0009-0000-1796-6707
     affiliation: 1
 affiliations:
   - name: School of Computer Science, University of Birmingham, United Kingdom
