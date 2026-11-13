@@ -28,3 +28,4 @@ source/html/*
 *.DS_Store
 #*
 .grepai/
+!Paper/paper.pdf

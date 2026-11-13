@@ -1125,6 +1125,12 @@ fiber-of-ap-≃ f {x} {y} p =
             (p ＝ refl)                                   ≃⟨by-definition⟩
             (transport (λ - → f - ＝ f x) refl p ＝ refl) ■
 
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 ∙-is-equiv-left : {X : 𝓤 ̇ } {x y z : X} (p : z ＝ x)
                 → is-equiv (λ (q : x ＝ y) → p ∙ q)
 ∙-is-equiv-left {𝓤} {X} {x} {y} refl =

@@ -1,3 +1,5 @@
+Martin Escardo, 2024-2026, and Tom de Jong, 2026.
+
 We use this directory to include examples for discussion or
 illustration.
 

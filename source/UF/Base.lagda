@@ -248,6 +248,8 @@ ap₂-∙ f refl refl refl refl = refl
 
 \end{code}
 
+End of addition.
+
 \begin{code}
 
 ap₃ : {W : 𝓣 ̇ } {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }

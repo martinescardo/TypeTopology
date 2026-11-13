@@ -1,3 +1,5 @@
+Martin Escardo, original date unknown.
+
 Alternative of _+_:
 
 \begin{code}

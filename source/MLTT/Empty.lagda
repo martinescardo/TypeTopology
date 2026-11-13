@@ -1,3 +1,5 @@
+Martin Escardo, original date unknown.
+
 Empty type.
 
 \begin{code}

@@ -34,6 +34,7 @@ and nowhere else:
     Ordinals.Notions.lagda          the same, with the suffix removed
     Locales.Frame.opens-are-sets    to the page of the module part
     FinitePigeon.agda               to the module with that file name
+    [1] and [1, 2]                  to the references on the same page
 
 A module reference is linked only when a page of that name is there to
 link to, so a name that points at nothing is left as it is, and reported
@@ -41,9 +42,10 @@ by --unresolved. Those are worth reading: most are references that went
 stale when a module was renamed. Email addresses are deliberately left
 alone.
 
-The pages look exactly as they did. Agda's own stylesheet already gives
-every link no underline and a green background under the cursor, which is
-what an identifier in the code does, so the stylesheet is left alone too.
+A page with links in it reads exactly as it did. Agda's own stylesheet
+already gives every link no underline and a green background under the
+cursor, which is what an identifier in the code does, so the links need
+nothing of their own there.
 
 There are two additions. Three buttons in the top right corner of every
 page, which stay there while the page scrolls. A magnifying glass leads to
@@ -57,9 +59,28 @@ little markdown in the prose and the comments is rendered, `code`,
 *emphasis*, **bold**, [text](url) and fenced blocks, with its markup
 characters hidden by the stylesheet rather than removed. --no-markdown
 leaves it as plain text.
+
+The space that the universe dot needs before a closing bracket in the
+source, as in (X : 𝓤 ̇ ), is hidden by the stylesheet in the same way,
+so that the page reads (X : 𝓤 ̇) while its text stays as Agda wrote it.
+--no-tighten leaves the space showing, and takes the markup off a page
+that has it. The space between a universe and its successor, as in 𝓤 ⁺,
+is hidden in the same way, so that the page reads 𝓤⁺, except on a line
+that defines a name ending in ⁺, such as 𝓤⁺ = 𝓤 ⁺, and --no-tighten-plus
+leaves it showing.
+
+Because the markup is hidden, a line of prose with a link in it renders
+narrower than it is in the source, by the length of the url and the
+brackets, so prose is wrapped by the text the reader sees, and the text
+of a link, of emphasis or of code may run over one line break. The
+script measures every page as rendered and reports the lines wider than
+80 characters, and the lines that hidden markup leaves short in the
+middle of a paragraph; --overflow lists them and --width changes the
+limit.
 """
 
-import argparse, collections, glob, os, re, shutil, subprocess, sys
+import argparse, collections, glob, html, os, re, shutil, subprocess, sys
+import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -121,7 +142,7 @@ SPAN = "span"
 # text, so a reader sees the same characters as before, and the classes,
 # which Agda never uses, are what identify them.
 
-SEARCH_URL = "https://martinescardo.github.io/TypeTopologySearch.html"
+SEARCH_URL = "https://www.cs.bham.ac.uk/~mhe/TypeTopologySearch.html"
 
 MAIN_INDEX = "index"
 
@@ -507,6 +528,78 @@ def visible(page):
     return TAG.sub("", page)
 
 
+# What the reader sees. The stylesheet hides <md-mark>, <dot-space>,
+# <universe-dot> and <plus-space> with their contents, so those go, and
+# the tags of everything else, and the entities Agda wrote for < > & are
+# read back.
+
+HIDDEN = re.compile(r'<(md-mark|dot-space|universe-dot|plus-space)>.*?</\1>',
+                    re.S)
+HIDDEN_MARK = re.compile(r'<md-mark>')
+
+
+OPENS = re.compile(r'<(?:a|span)\b[^>]*class="(\w+)"[^>]*>|</(?:a|span)>')
+
+
+def shown_lines(page):
+    """The lines of a page as the reader sees them, each with its source
+    line and whether it holds hidden markdown in the prose, that is, in
+    a Background element and outside a fenced block. A comment is a
+    unit of its own, so what it hides never leaves a paragraph short.
+    """
+    pre = re.search(r'<pre class="Agda">(.*?)</pre>', page, re.S)
+    body = pre.group(1) if pre else page
+    # A hidden element may span a line break, as the fence of a block
+    # does, so its line breaks are kept, and the two lists stay in step.
+    kept = HIDDEN.sub(lambda m: "\n" * m.group(0).count("\n"), body)
+    seen = html.unescape(TAG.sub("", kept)).split("\n")
+    source = html.unescape(TAG.sub("", body)).split("\n")
+    marked, depth, cls = [], 0, None
+    for line in body.split("\n"):
+        inside = depth > 0 or "<md-block>" in line
+        depth += line.count("<md-block>") - line.count("</md-block>")
+        prose, pos = False, 0
+        for m in OPENS.finditer(line):
+            if HIDDEN_MARK.search(line, pos, m.start()) and cls == "Background":
+                prose = True
+            cls = m.group(1) if m.group(1) else (None if cls else cls)
+            pos = m.end()
+        if HIDDEN_MARK.search(line, pos) and cls == "Background":
+            prose = True
+        marked.append(not inside and prose)
+    return list(zip(seen, source, marked))
+
+
+def overflow(htmldir, width):
+    """The lines that render wider than the width, and the lines that
+    hidden markup leaves short before a continuation of their paragraph.
+
+    Returns (page, line number, shown width, source width, text) tuples,
+    the wide ones and the short ones as two lists.
+    """
+    wide, short = [], []
+    for path in sorted(glob.glob(os.path.join(htmldir, "*.html"))):
+        here = os.path.basename(path)[:-len(".html")]
+        lines = shown_lines(open(path, encoding="utf-8").read())
+        for n, (seen, source, marked) in enumerate(lines, 1):
+            if len(seen) > width:
+                wide.append((here, n, len(seen), len(source), seen))
+            elif (marked and seen.strip() and len(source) - len(seen) >= 10
+                  and n < len(lines) and lines[n][0].strip()
+                  and lines[n][0].strip()[0].islower()):
+                # A line with a url or more hidden in it, which the hiding
+                # leaves well short of the limit, or which was wrapped onto
+                # a line of its own because of its url, leaving the line
+                # before it short. The next line beginning in lower case is
+                # what says the paragraph continues.
+                before = lines[n - 2][0] if n > 1 else ""
+                if (len(seen) < width - 25
+                    or (before.strip() and len(before) < width - 25
+                        and len(source) > width - 10)):
+                    short.append((here, n, len(seen), len(source), seen))
+    return wide, short
+
+
 # A little markdown in the prose and the comments: `code`, *emphasis*,
 # **bold**, [text](target) and fenced blocks. The markup characters stay in
 # the page, inside <md-mark>, which the stylesheet hides, so the text of the
@@ -514,17 +607,24 @@ def visible(page):
 # can be taken off again exactly, which is done before the links are made
 # and the markdown put back after, so that every run starts from the same
 # page. Lists, underscores and runs of three or more asterisks are left as
-# they are.
+# they are. The text of a piece may run over one line break, so that a
+# paragraph can be wrapped by the text the reader sees, with the url of a
+# link falling where it may. A piece of code may do so only when it is
+# short, at most 32 characters with the break, which fits an expression
+# and keeps a stray backtick, or the TeX quotes `like this', from pairing
+# with a backtick on the next line.
 
 MARKDOWN = [
     ("block", re.compile(r'(?m)^([ \t]*(`{3,})[^`\n]*\n)'
                          r'((?:(?![ \t]*\2).*\n)*?(?:(?![ \t]*\2).*))'
                          r'(\n[ \t]*\2`*[ \t]*)$')),
-    ("code", re.compile(r'(?<!`)(`)([^`\n]+)(`)(?!`)')),
-    ("link", re.compile(r'(\[)([^\]\n]+)(\]\(([^)\s]+)\))')),
-    ("strong", re.compile(r'(?<!\*)(\*\*)([^\s*](?:[^*\n]*[^\s*])?)(\*\*)(?!\*)')),
-    ("em", re.compile(r'(?<![*\w`])(\*)([A-Za-z][^*\n`]{0,60}?[A-Za-z.])(\*)'
-                      r'(?![*\w])')),
+    ("code", re.compile(r'(?<!`)(`)([^`\n]+|(?=[^`]{1,32}`)[^`\n]*\n[ \t]*[^`\n]+)'
+                        r'(`)(?!`)')),
+    ("link", re.compile(r'(\[)((?:[^\]\n]*\n[ \t]*)?[^\]\n]+)(\]\(([^)\s]+)\))')),
+    ("strong", re.compile(r'(?<!\*)(\*\*)([^\s*](?:[^*\n]*(?:\n[ \t]*[^*\n]*)?[^\s*])?)'
+                          r'(\*\*)(?!\*)')),
+    ("em", re.compile(r'(?<![*\w`])(\*)([A-Za-z][^*\n`]{0,60}?'
+                      r'(?:\n[ \t]*[^*\n`]{0,60}?)?[A-Za-z.])(\*)(?![*\w])')),
 ]
 
 MARKDOWN_TAGS = re.compile(r'</?(?:md-mark|md-block|code|em|strong)>')
@@ -540,13 +640,10 @@ def markdown_target(target, pages):
     return name + ".html" if name in pages else None
 
 
-def mark(body, pages):
-    """Put the markdown in one element's body, which may hold links already.
-
-    Returns the new body and what was rendered, as (kind, text) pairs.
+def positions(body):
+    """The visible text of an element body, where each of its characters
+    is in the body, and whether it is inside a link.
     """
-    # The visible text, where each of its characters is in the body, and
-    # whether it is inside a link.
     text, where, inside, depth, i = [], [], [], 0, 0
     while i < len(body):
         if body[i] == "<":
@@ -556,7 +653,15 @@ def mark(body, pages):
         else:
             text.append(body[i]), where.append(i), inside.append(depth > 0)
             i += 1
-    text = "".join(text)
+    return "".join(text), where, inside
+
+
+def mark(body, pages):
+    """Put the markdown in one element's body, which may hold links already.
+
+    Returns the new body and what was rendered, as (kind, text) pairs.
+    """
+    text, where, inside = positions(body)
     taken = [False] * len(text)
     inserts, rendered = [], []
     for kind, rx in MARKDOWN:
@@ -593,17 +698,21 @@ def mark(body, pages):
     return body, rendered
 
 
-def unmark(page):
-    "Take the markdown off a page, giving back the page it was put on."
-    page = MARKDOWN_LINK.sub(r"\1", MARKDOWN_TAGS.sub("", page))
-
-    # An element that became a span only for a markdown link goes back.
+def unspan(page):
+    """Make an element that is a span with no link left in it an <a>
+    again, which is what it was before this script put a link inside it.
+    """
     def element(m):
         if m.group(1) == SPAN and "<a " not in m.group(3):
             return f"<a{m.group(2)}>{m.group(3)}</a>"
         return m.group(0)
 
     return ELEMENT.sub(element, page)
+
+
+def unmark(page):
+    "Take the markdown off a page, giving back the page it was put on."
+    return unspan(MARKDOWN_LINK.sub(r"\1", MARKDOWN_TAGS.sub("", page)))
 
 
 def markdown(page, pages):
@@ -627,15 +736,480 @@ def markdown(page, pages):
     return ELEMENT.sub(element, page), rendered
 
 
-def rewrite(htmldir, check, md):
+# The space between the universe dot and a closing bracket, which the
+# source needs because the dot is a postfix operator, and which the
+# rendering has no use for now that a browser puts the dot where it
+# belongs. It is wrapped in <dot-space>, which the stylesheet hides,
+# rather than taken out, so that every character Agda wrote is still in
+# the page, which is what the one check in rewrite below rests on, and so
+# that showing the spaces again is a matter of taking the markup off.
+# Agda emits no element of that name anywhere.
+#
+# Only ) and } are tightened. A comma keeps its space, because the source
+# needs it there as well, a name being allowed to end in a comma, and
+# because a space before a comma is the convention of the library
+# throughout. The space sits between two elements, in the text of the
+# <pre> itself, so none of this reaches inside an element. The dot is
+# found by the module it links to rather than by its offset there, which
+# moves whenever that module is edited.
+
+DOT = "\u0307"
+
+DOT_SPACE = re.compile(r'(<a\b[^>]*href="MLTT\.Universes\.html#\d+"'
+                       r'[^>]*>_?' + DOT + r'</a>)'
+                       r' (<a\b[^>]*>[)}])')
+
+DOT_SPACE_TAGS = re.compile(r'</?dot-space>')
+
+# The universe dot itself, with the space the source needs before it,
+# which together make the page read (X : 𝓤) as the HoTT book writes it.
+# A source with more than one space there has them all hidden.
+# It is hidden in the same way as the space above, in <universe-dot>,
+# which the stylesheet hides, so that the page still holds every
+# character Agda wrote. Only a use of the dot is hidden, its body being
+# the dot alone rather than _̇, and the page of MLTT.Universes keeps its
+# dots, that being where the notation is explained.
+
+UNIVERSE_DOT = re.compile(r'(?<=</a>)( +)'
+                          r'(<a\b[^>]*href="MLTT\.Universes\.html#\d+"'
+                          r'[^>]*>' + DOT + r'</a>)')
+
+UNIVERSE_DOT_TAGS = re.compile(r'</?universe-dot>')
+
+NOTATION_PAGE = "MLTT.Universes"
+
+
+def tighten(page):
+    """Hide the space between the universe dot and a closing bracket.
+
+    Returns the new page and how many spaces were hidden in it. A space
+    already hidden is left alone, so a page can be given again.
+    """
+    return DOT_SPACE.subn(r'\1<dot-space> </dot-space>\2', page)
+
+
+def untighten(page):
+    "Show those spaces again, giving back the page they were hidden on."
+    return DOT_SPACE_TAGS.sub("", page)
+
+
+def hide_dots(page):
+    """Hide the universe dots, with the space before each of them.
+
+    Returns the new page and how many dots were hidden in it. A dot
+    already hidden is left alone, so a page can be given again.
+    """
+    return UNIVERSE_DOT.subn(r'<universe-dot>\1\2</universe-dot>', page)
+
+
+def show_dots(page):
+    "Show them again, giving back the page they were hidden on."
+    return UNIVERSE_DOT_TAGS.sub("", page)
+
+
+# The space between a universe and its successor, which the source needs
+# because ⁺ is a postfix operator, hidden so that the page reads 𝓤⁺ and
+# (𝓤 ⊔ 𝓥)⁺ as a paper writes them. It is hidden in the same way as the
+# spaces above, in <plus-space>, which the stylesheet hides. The successor
+# is found as the ⁺ or ⁺⁺ that links to MLTT.Universes, so that a name
+# such as List⁺ is left alone. A line that defines a name ending in ⁺, as
+# 𝓤⁺ = 𝓤 ⁺ does in Iterative.Sets, keeps its spaces, since it would
+# otherwise read 𝓤⁺ = 𝓤⁺, and the page of MLTT.Universes keeps them all,
+# that being where the notation is explained.
+
+PLUS_SPACE = re.compile(r'(?<=</a>) '
+                        r'(<a\b[^>]*href="MLTT\.Universes\.html#\d+"'
+                        r'[^>]*>⁺⁺?</a>)')
+
+PLUS_SPACE_TAGS = re.compile(r'</?plus-space>')
+
+DEFINES_PLUS = re.compile(r'\s*\S*⁺\s*=(?:\s|$)')
+
+
+def tighten_plus(page):
+    """Hide the space between a universe and its successor.
+
+    Returns the new page and how many spaces were hidden in it. A space
+    already hidden is left alone, so a page can be given again.
+    """
+    lines, hidden = page.split("\n"), 0
+    for i, line in enumerate(lines):
+        if DEFINES_PLUS.match(html.unescape(TAG.sub("", line))):
+            continue
+        lines[i], n = PLUS_SPACE.subn(r'<plus-space> </plus-space>\1', line)
+        hidden += n
+    return "\n".join(lines), hidden
+
+
+def untighten_plus(page):
+    "Show those spaces again, giving back the page they were hidden on."
+    return PLUS_SPACE_TAGS.sub("", page)
+
+
+# The line that says who wrote a file and when, and the markers of a
+# later addition, which open with Added and the date and close with End
+# of addition, put in bold so that the seams of a file show at a glance.
+# Each of them runs to the end of its first sentence, or of its line,
+# and a -- that begins a comment line is left as it is. A marker that
+# runs into a link is left alone rather than wrapped across it. Nothing
+# is added to the text of the page, only the markup that the stylesheet
+# makes bold.
+#
+# The header is the first line of the first prose block of a page, which
+# Agda writes as the element with id 1, and it is taken as a header when
+# it carries a year, or when it names contributors and nothing else. The
+# names are read from the list in README.md, so a contributor who adds
+# themselves there the first time they contribute, as that list asks,
+# has the headers of their files emboldened with everyone else's. A
+# first line that is a title keeps the ordinary weight.
+
+# Added opens a marker on its own, that being how it is always used,
+# while a word that also has an ordinary sense, such as Moved, is taken
+# as a marker only when the line carries a year. TODO is a marker of its
+# own, and the word alone is emboldened, so that what a file still owes
+# its reader is easy to find.
+
+SEAMS = ("Updated|Moved|Refactored|Modified|Completed|Revised|Edited|"
+         "Removed|Renamed|Extended|Rewritten|Generali[sz]ed|Simplified|"
+         "Split|Rephrased|Deprecated")
+
+ADDITION = re.compile(r'(?m)^[ \t]*(?:--[ \t]*)?'
+                      r'(?:(Added\b[^\n.]*\.?)'
+                      r'|((?:' + SEAMS + r')\b[^\n.]*?'
+                      r'(?:19|20)\d\d[^\n.]*\.?)'
+                      r'|(End of (?:the )?addition[^\n]*?)[ \t]*$'
+                      r'|(TODO)\b)')
+
+BOLD_TAGS = re.compile(r'</?bold-mark>')
+
+YEAR = re.compile(r'\b(?:19|20)\d\d\b')
+
+# The contributors, as the list in README.md gives them, which is one
+# item of the form * [Name](url) per line under its own heading. A name
+# that the files write in a longer form than the list's, which ALIASES
+# records, answers to the same person and the same url.
+
+CONTRIBUTORS = re.compile(r'(?m)^[ \t]*\*[ \t]*\[([^\]\n]+)\]\(([^)\s]+)\)')
+
+CONTRIBUTORS_HEADING = "Current TypeTopology contributors"
+
+AND = re.compile(r'\s+and\s+|\s*,\s*|\s*&\s*')
+
+ALIASES = {"Jonathan Sterling": "Jon Sterling",
+           "Bruno da Rocha Paiva": "Bruno Paiva"}
+
+
+def contributors(root):
+    """The list of contributors in README.md, each name with the url of
+    their page there, or none.
+
+    A library without that file, which is what rewriting a rendering on
+    its own gives, leaves a header of names alone and keeps a dated one.
+    """
+    try:
+        readme = open(os.path.join(root, "README.md"), encoding="utf-8").read()
+    except OSError:
+        return {}
+    below = readme.split(CONTRIBUTORS_HEADING, 1)
+    if len(below) < 2:
+        return {}
+    section = below[1].split("\n##", 1)[0]
+    names = dict(CONTRIBUTORS.findall(section))
+    for written, listed in ALIASES.items():
+        if listed in names:
+            names[written] = names[listed]
+    return names
+
+
+def header(text, names):
+    """The span of the header at the start of a prose block, or None.
+
+    A dated header runs from the first character to the first full stop
+    at or after the year, which keeps an abbreviated month out of it, or
+    to the end of the line when there is none. A header of names runs to
+    the end of the line, and every name in it has to be in the list of
+    contributors, so that a title is left alone.
+    """
+    line = text.split("\n", 1)[0]
+    if not line[:1].strip():
+        return None
+    found = YEAR.search(line)
+    if found:
+        stop = line.find(".", found.end())
+        return 0, len(line) if stop < 0 else stop + 1
+    said = [one for one in AND.split(line.rstrip(" .,")) if one]
+    if said and said[-1] == "original date unknown":
+        # The idiom of MLTT.Universes for a file whose history was
+        # severed by a reorganization: names, then this phrase.
+        said = said[:-1]
+    if names and said and all(one in names for one in said):
+        return 0, len(line.rstrip())
+    return None
+
+
+def bold(page, names):
+    """Put the header of a file and the markers of an addition in bold.
+
+    Returns the new page, how many headers and how many markers were
+    found in it.
+    """
+    headers, found = 0, 0
+
+    def element(m):
+        nonlocal headers, found
+        tag, attrs, body = m.group(1), m.group(2), m.group(3)
+        kind = CLASS.search(attrs)
+        if "href" in attrs or not kind or \
+           kind.group(1) not in LINKABLE_CLASSES:
+            return m.group(0)
+        text, where, inside = positions(body)
+        inserts, spans = [], []
+        if 'id="1"' in attrs and kind.group(1) == "Background":
+            where_header = header(text, names)
+            if where_header:
+                spans.append(where_header)
+                headers += 1
+        for one in ADDITION.finditer(text):
+            which = next(i for i in (1, 2, 3, 4) if one.group(i))
+            spans.append((one.start(which), one.end(which)))
+            found += 1
+        for s, e in spans:
+            if e <= s or inside[s] or inside[e - 1]:
+                continue
+            inserts += [(where[s], 1, "<bold-mark>"),
+                        (where[e - 1] + 1, 0, "</bold-mark>")]
+        if not inserts:
+            return m.group(0)
+        for pos, _, mark_ in sorted(inserts, reverse=True):
+            body = body[:pos] + mark_ + body[pos:]
+        return f"<{tag}{attrs}>{body}</{tag}>"
+
+    return ELEMENT.sub(element, page), headers, found
+
+
+def unbold(page):
+    "Take that markup off, giving back the page it was put on."
+    return BOLD_TAGS.sub("", page)
+
+
+# The name of a contributor in the header of a file, and in a marker of
+# an addition, linked to the page that the list in README.md gives for
+# them. Only those two places get links, so a name in a reference to a
+# paper stays plain text. The names are matched with the accents taken
+# off both sides, so that a header saying Martín Escardó is linked by
+# the list's Martin Escardo, and ALIASES above carries the names the
+# files write in a longer form than the list's. A name inside a link
+# already, or one that the markup of another pass cuts in two, is left
+# as it is.
+
+AUTHOR_LINK = re.compile(r'<a class="Author" href="[^"]*">([^<]*)</a>')
+
+
+def fold(text):
+    """The text with the accents taken off its letters, one character
+    for one character, so that a position in it is a position in the
+    text.
+    """
+    folded = []
+    for c in text:
+        parts = unicodedata.normalize("NFD", c)
+        folded.append(parts[0] if all(unicodedata.combining(x)
+                                      for x in parts[1:]) else c)
+    return "".join(folded)
+
+
+def author_pattern(names):
+    """A pattern for the names of the contributors as a page writes
+    them, folded, with the url each matched form links to, or None when
+    there are no names.
+
+    An apostrophe in a name is matched in the escaped forms Agda writes
+    as well, so that Keri D'Angelo is found in a page that says
+    D&#39;Angelo.
+    """
+    if not names:
+        return None
+    urls = {}
+    for name, url in names.items():
+        base = fold(name)
+        for form in {base, base.replace("'", "&#39;"),
+                     base.replace("'", "&apos;")}:
+            urls[form] = url
+    ordered = sorted(urls, key=len, reverse=True)
+    rx = re.compile(r'(?<!\w)(?:' + "|".join(map(re.escape, ordered))
+                    + r')(?!\w)')
+    return rx, urls
+
+
+def link_authors(page, names, pattern):
+    """Link the names in the header of a file and in the markers of an
+    addition to the contributors' pages.
+
+    Returns the new page and how many names were linked.
+    """
+    rx, urls = pattern
+    linked = 0
+
+    def element(m):
+        nonlocal linked
+        tag, attrs, body = m.group(1), m.group(2), m.group(3)
+        kind = CLASS.search(attrs)
+        if "href" in attrs or not kind or \
+           kind.group(1) not in LINKABLE_CLASSES:
+            return m.group(0)
+        text, where, inside = positions(body)
+        spans = []
+        if 'id="1"' in attrs and kind.group(1) == "Background":
+            where_header = header(text, names)
+            if where_header:
+                spans.append(where_header)
+        for one in ADDITION.finditer(text):
+            which = next(i for i in (1, 2, 3, 4) if one.group(i))
+            if which != 4:
+                spans.append((one.start(which), one.end(which)))
+        if not spans:
+            return m.group(0)
+        folded = fold(text)
+        inserts, taken = [], set()
+        for s, e in spans:
+            for one in rx.finditer(folded, s):
+                a, b = one.start(), one.end()
+                if a >= e:
+                    break
+                if b > e or (a, b) in taken or any(inside[a:b]) or \
+                   "<" in body[where[a]:where[b - 1] + 1]:
+                    continue
+                taken.add((a, b))
+                inserts += [(where[a], 1,
+                             f'<a class="Author" '
+                             f'href="{urls[one.group(0)]}">'),
+                            (where[b - 1] + 1, 0, "</a>")]
+                linked += 1
+        if not inserts:
+            return m.group(0)
+        for pos, _, mark_ in sorted(inserts, reverse=True):
+            body = body[:pos] + mark_ + body[pos:]
+        # The element holds a link now, so it becomes a span, which
+        # unspan undoes once the link is taken off.
+        return f"<{SPAN}{attrs}>{body}</{SPAN}>"
+
+    return ELEMENT.sub(element, page), linked
+
+
+def unlink_authors(page):
+    "Take those links off, giving back the page they were put on."
+    return unspan(AUTHOR_LINK.sub(r"\1", page))
+
+
+# A citation [1] in the prose or a comment, linked to the entry of the
+# list of references on the same page that begins a line with [1] or
+# [1]:, or with a markdown bullet - [1]:, and each number of [1, 2] linked to its own entry. A number is
+# linked only when the page has exactly one entry for it, so that a page
+# with two lists numbered from 1, or a citation of a list kept in another
+# file, is left as it is and reported. A link in markdown, [text](url),
+# is not a citation. Nothing is added to the text of the page, only the
+# anchor around the [n] of an entry and the link around a citation.
+
+ENTRY = re.compile(r'(?m)^[ \t]*(?:--[ \t]*)?(?:[-*][ \t]+)?'
+                   r'(\[(\d+)\]):?(?=\s)')
+CITATION = re.compile(r'\[(\d+(?:\s*,\s*\d+)*)\](?!\()')
+NUMBER = re.compile(r'\d+')
+CITATION_LINK = re.compile(r'<a class="(?:Citation|Reference)"'
+                           r' (?:href|id)="[^"]*">([^<]*)</a>')
+
+
+def linkable(m):
+    """The kind of an element whose text this script may mark up, or
+    None for an element Agda links or that is code."""
+    kind = CLASS.search(m.group(2))
+    if "href" in m.group(2) or not kind or \
+       kind.group(1) not in LINKABLE_CLASSES:
+        return None
+    return kind.group(1)
+
+
+def reference_id(n):
+    return f"reference-{n}"
+
+
+def link_citations(page):
+    """Link the citations of a page to the entries of its references.
+
+    Returns the new page, how many citations were linked, and the
+    numbers cited that have no single entry to link to.
+    """
+    entries = collections.Counter()
+    for m in ELEMENT.finditer(page):
+        if linkable(m):
+            text, _, _ = positions(m.group(3))
+            entries.update(e.group(2) for e in ENTRY.finditer(text))
+    taken = set(re.findall(r'\bid="([^"]*)"', page))
+    single = {n for n, k in entries.items()
+              if k == 1 and reference_id(n) not in taken}
+    linked, missed = 0, []
+
+    def element(m):
+        nonlocal linked
+        tag, attrs, body = m.group(1), m.group(2), m.group(3)
+        if not linkable(m):
+            return m.group(0)
+        text, where, inside = positions(body)
+        inserts, starts = [], set()
+
+        def wrap(a, b, open_):
+            if any(inside[a:b]) or "<" in body[where[a]:where[b - 1] + 1]:
+                return False
+            inserts.extend([(where[a], 1, open_),
+                            (where[b - 1] + 1, 0, "</a>")])
+            return True
+
+        for e in ENTRY.finditer(text):
+            starts.add(e.start(1))
+            if e.group(2) in single:
+                wrap(e.start(1), e.end(1), f'<a class="Reference" '
+                     f'id="{reference_id(e.group(2))}">')
+        for c in CITATION.finditer(text):
+            if c.start() in starts:
+                continue
+            numbers = list(NUMBER.finditer(c.group(1)))
+            for d in numbers:
+                if d.group(0) not in single:
+                    missed.append(d.group(0))
+                    continue
+                a, b = c.start(1) + d.start(), c.start(1) + d.end()
+                if len(numbers) == 1:
+                    a, b = c.start(), c.end()
+                if wrap(a, b, f'<a class="Citation" '
+                        f'href="#{reference_id(d.group(0))}">'):
+                    linked += 1
+        if not inserts:
+            return m.group(0)
+        for pos, _, mark_ in sorted(inserts, reverse=True):
+            body = body[:pos] + mark_ + body[pos:]
+        return f"<{SPAN}{attrs}>{body}</{SPAN}>"
+
+    return ELEMENT.sub(element, page), linked, missed
+
+
+def unlink_citations(page):
+    "Take those links off, giving back the page they were put on."
+    return unspan(CITATION_LINK.sub(r"\1", page))
+
+
+def rewrite(htmldir, check, md, tight, dots, plus, embolden, authors,
+            cite, names):
     """Rewrite every page in place.
 
     Returns the links in each page, the names that answer to no page, the
     links that rest on a reading rather than on a name that is exact, the
-    markdown rendered, and how many pages had to be rewritten, which is
-    none of them when the last run did it already. The links counted are the ones this script
-    makes, an <a> with an href and nothing else, which is a shape Agda
-    itself never emits.
+    markdown rendered, how many spaces after the universe dot are
+    hidden, how many universe dots are hidden, how many spaces before
+    the successor of a universe are hidden, how many names of authors
+    are linked, how many citations are linked and the ones left
+    unlinked, and how many pages had to be rewritten, which is none of
+    them when the last run did it already. The links counted are the ones this
+    script makes, an <a> with an href and nothing else, which is a shape
+    Agda itself never emits.
     """
     paths = sorted(glob.glob(os.path.join(htmldir, "*.html")))
     pages = {os.path.basename(p)[:-len(".html")] for p in paths}
@@ -645,11 +1219,15 @@ def rewrite(htmldir, check, md):
 
     defined = definitions(htmldir)
     found, unresolved, rewritten = {}, collections.defaultdict(list), 0
-    read, rendered = [], []
+    read, rendered, tightened, hidden_dots, plussed = [], [], 0, 0, 0
+    headers, marked, authored = 0, 0, 0
+    cited, uncited = 0, []
+    pattern = author_pattern(names)
     for path in paths:
         here = os.path.basename(path)[:-len(".html")]
         original = open(path, encoding="utf-8").read()
-        page = unmark(original)
+        page = unbold(untighten_plus(show_dots(untighten(
+            unmark(unlink_authors(unlink_citations(original)))))))
         own = {name for target, name in OWN_MODULE.findall(page)
                if target in ("", os.path.basename(path))}
         new, links, missing = transform(page, pages, tails, here, own, defined)
@@ -677,6 +1255,60 @@ def rewrite(htmldir, check, md):
             if visible(new) != visible(linked) or unmark(new) != linked:
                 raise SystemExit(f"{path}: the markdown cannot be taken off "
                                  f"again exactly; nothing has been written")
+        if embolden:
+            plain = new
+            new, one, n = bold(new, names)
+            if unbold(new) != plain or visible(new) != visible(plain):
+                raise SystemExit(f"{path}: the markup of the header and "
+                                 f"the markers cannot be taken off again "
+                                 f"exactly; nothing has been written")
+            headers += one
+            marked += n
+        if authors and pattern:
+            plain = new
+            new, n = link_authors(new, names, pattern)
+            if unlink_authors(new) != plain or visible(new) != visible(plain):
+                raise SystemExit(f"{path}: the links on the names of the "
+                                 f"authors cannot be taken off again "
+                                 f"exactly; nothing has been written")
+            authored += n
+        if cite:
+            plain = new
+            new, n, missed = link_citations(new)
+            if unlink_citations(new) != plain or \
+               visible(new) != visible(plain):
+                raise SystemExit(f"{path}: the links on the citations "
+                                 f"cannot be taken off again exactly; "
+                                 f"nothing has been written")
+            cited += n
+            uncited += [(here, k) for k in missed]
+        if tight:
+            # The spaces are only hidden, so the text of the page is
+            # untouched here as well, and taking the markup off gives
+            # back the page it was put on.
+            shown = new
+            new, hidden = tighten(new)
+            if untighten(new) != shown or visible(new) != visible(shown):
+                raise SystemExit(f"{path}: the spaces after the universe "
+                                 f"dot cannot be shown again exactly; "
+                                 f"nothing has been written")
+            tightened += hidden
+        if dots and here != NOTATION_PAGE:
+            shown = new
+            new, gone = hide_dots(new)
+            if show_dots(new) != shown or visible(new) != visible(shown):
+                raise SystemExit(f"{path}: the universe dots cannot be "
+                                 f"shown again exactly; nothing has been "
+                                 f"written")
+            hidden_dots += gone
+        if plus and here != NOTATION_PAGE:
+            shown = new
+            new, n = tighten_plus(new)
+            if untighten_plus(new) != shown or visible(new) != visible(shown):
+                raise SystemExit(f"{path}: the spaces before the successor "
+                                 f"of a universe cannot be shown again "
+                                 f"exactly; nothing has been written")
+            plussed += n
         if new != original:
             open(path, "w", encoding="utf-8").write(new)
             rewritten += 1
@@ -692,7 +1324,8 @@ def rewrite(htmldir, check, md):
                  if module in pages
                  and (shown.rsplit(".", 1)[0] if anchor
                       else SUFFIX.sub("", shown)) != module]
-    return found, unresolved, read, rendered, rewritten
+    return (found, unresolved, read, rendered, tightened, hidden_dots,
+            plussed, cited, uncited, headers, marked, authored, rewritten)
 
 
 def index_above(here, pages):
@@ -867,6 +1500,30 @@ def main():
                         "as plain text, taking it off pages that have it")
     p.add_argument("--list-markdown", action="store_true",
                    help="list the markdown rendered, page by page")
+    p.add_argument("--no-tighten", action="store_true",
+                   help="leave the space between the universe dot and a "
+                        "closing bracket showing, taking the markup off "
+                        "pages that have it")
+    p.add_argument("--no-bold", action="store_true",
+                   help="leave the header of a file and the markers of an "
+                        "addition in the ordinary weight, taking the "
+                        "markup off pages that have it")
+    p.add_argument("--no-hide-dots", action="store_true",
+                   help="leave the universe dots showing, taking the "
+                        "markup off pages that have it")
+    p.add_argument("--no-tighten-plus", action="store_true",
+                   help="leave the space between a universe and its "
+                        "successor showing, taking the markup off pages "
+                        "that have it")
+    p.add_argument("--no-author-links", action="store_true",
+                   help="leave the name of an author in a header or a "
+                        "marker as plain text, taking the links off "
+                        "pages that have them")
+    p.add_argument("--no-citations", action="store_true",
+                   help="leave the citations [1] unlinked, taking the "
+                        "links off pages that have them")
+    p.add_argument("--citations", action="store_true",
+                   help="list the citations left unlinked, page by page")
     p.add_argument("--force", action="store_true",
                    help="run agda even when the rendering looks up to date")
     p.add_argument("--check", action="store_true",
@@ -875,6 +1532,13 @@ def main():
                    help="list the links made, with how often each occurs")
     p.add_argument("--unresolved", action="store_true",
                    help="list the module references that point at no page")
+    p.add_argument("--overflow", action="store_true",
+                   help="list the lines that render wider than the limit, "
+                        "and the lines that hidden markup leaves short in "
+                        "the middle of a paragraph")
+    p.add_argument("--width", type=int, default=80, metavar="N",
+                   help="the limit on the width of a rendered line, "
+                        "80 by default")
     p.add_argument("--guessed", action="store_true",
                    help="list the links that rest on a reading of the name, "
                         "namely a bare name, or a qualified one whose module "
@@ -882,6 +1546,9 @@ def main():
     args = p.parse_args()
 
     source = args.source or os.path.join(args.typetopology, "source")
+    root = (args.typetopology
+            if os.path.isfile(os.path.join(args.typetopology, "README.md"))
+            else os.path.dirname(HERE))
     out = os.path.abspath(args.out)
     os.makedirs(out, exist_ok=True)
 
@@ -896,8 +1563,11 @@ def main():
     if args.css != "none":
         stylesheet(args.css, out)
 
-    found, unresolved, read, rendered, rewritten = \
-        rewrite(out, args.check, not args.no_markdown)
+    (found, unresolved, read, rendered, tightened, hidden_dots, plussed,
+     cited, uncited, headers, marked, linked, rewritten) = rewrite(
+        out, args.check, not args.no_markdown, not args.no_tighten,
+        not args.no_hide_dots, not args.no_tighten_plus, not args.no_bold,
+        not args.no_author_links, not args.no_citations, contributors(root))
     links = [href for page in found.values() for href in page]
     pages = len(glob.glob(os.path.join(out, "*.html")))
     print(f"{len(links)} links in {len(found)} of the {pages} pages in {out}"
@@ -908,6 +1578,32 @@ def main():
         print(f"{len(rendered)} pieces of markdown rendered: "
               + ", ".join(f"{n} {k}" for k, n in sorted(kinds.items()))
               + ("" if args.list_markdown else "; --list-markdown lists them"))
+    if tightened:
+        print(f"{tightened} spaces between the universe dot and a closing "
+              f"bracket hidden by the stylesheet")
+    if headers or marked:
+        print(f"{headers} headers and {marked} markers of an addition "
+              f"put in bold")
+    if linked:
+        print(f"{linked} names of authors linked to their pages "
+              f"in README.md")
+    if hidden_dots:
+        print(f"{hidden_dots} universe dots hidden by the stylesheet, "
+              f"and {NOTATION_PAGE} keeps its own")
+    if plussed:
+        print(f"{plussed} spaces between a universe and its successor "
+              f"hidden by the stylesheet")
+    if cited or uncited:
+        print(f"{cited} citations linked to their references, "
+              f"{len(uncited)} left unlinked for want of a single entry"
+              + ("" if args.citations or not uncited
+                 else "; --citations lists them"))
+    if args.citations:
+        by_page = collections.defaultdict(list)
+        for here, n in uncited:
+            by_page[here].append(n)
+        for here, ns in sorted(by_page.items()):
+            print(f"  {here}: " + " ".join(f"[{n}]" for n in ns))
     url = None if args.search_url == "none" else args.search_url
     changed = corner_buttons(out, url)
     if changed:
@@ -922,6 +1618,12 @@ def main():
         print(f"{n} names in {len(unresolved)} shapes look like module "
               f"references but point at no page"
               + ("" if args.unresolved else "; --unresolved lists them"))
+    wide, short = overflow(out, args.width)
+    if wide or short:
+        print(f"{len(wide)} lines render wider than {args.width} characters "
+              f"in {len({w[0] for w in wide})} pages, and {len(short)} are "
+              f"left short by hidden markup before a continuation"
+              + ("" if args.overflow else "; --overflow lists them"))
 
     if args.list:
         counts = collections.Counter(links)
@@ -930,12 +1632,19 @@ def main():
 
     if args.list_markdown:
         for here, kind, text in rendered:
-            shown = text if kind != "block" else text.replace("\n", "\n" + " " * 64)
+            shown = (text.replace("\n", "\n" + " " * 64) if kind == "block"
+                     else " ".join(text.split()))
             print(f"{kind:6}  {here:55} {shown}")
 
     if args.guessed:
         for page, module, shown in sorted(read):
             print(f"{shown:44} -> {module:44} in {page}")
+
+    if args.overflow:
+        for kind, rows in (("wide", wide), ("short", short)):
+            for here, n, seen, source, text in rows:
+                print(f"{kind:5} {here}:{n} {seen} shown, {source} in the "
+                      f"source  {text.strip()[:60]}")
 
     if args.unresolved:
         for name in sorted(unresolved, key=lambda k: (-len(unresolved[k]), k)):

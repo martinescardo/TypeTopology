@@ -2,10 +2,10 @@ Martin Escardo, 5-28 April 2026.
 
 The set of decreasing sequences of natural numbers bounded by a
 natural number k is compact, aka searchable, and also totally
-separated. That is, it is a Stone type. This is because it is
-isomorphic to another set we know to be compact. This doesn't require
-univalence. Our only assumption is function extensionality. And total
-separatedness follows directly from previous results.
+separated. This is because it is isomorphic to another set we know to
+be compact. This doesn't require univalence. Our only assumption is
+function extensionality. And total separatedness follows directly from
+previous results.
 
 This result was first announced at 7FWTop [1], before the formal proof
 here in Agda was completed, although the informal construction was

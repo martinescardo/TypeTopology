@@ -738,6 +738,12 @@ segments of some αᵢ.
       → Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁺-is-upper-bound i) x ＝ (β , s)
     h (i , x , e) = i , x , to-subtype-＝ (λ _ → ∃-is-prop) (e ⁻¹)
 
+\end{code}
+
+End of addition.
+
+\begin{code}
+
  module lower-bound-of-upper-bounds-proof
          (β : Ordinal 𝓤)
          (β-is-upper-bound : (i : I) → α i ⊴ β)
@@ -998,6 +1004,12 @@ the supremum of α are given by initial segments of some αᵢ.
         ⦅1⦆ = ap ⌜ φ ⌝⁻¹ e
         ⦅2⦆ = inverses-are-retractions ⌜ φ ⌝ (⌜⌝-is-equiv φ) y
 
+\end{code}
+
+End of addition.
+
+\begin{code}
+
   α⁻-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
                                     → ((i : I) → α i ⊴ β)
                                     → α⁻-Ord ⊴ β
@@ -1196,6 +1208,28 @@ module suprema
  sup-pointwise-equal α β h = ap sup (dfunext fe' h)
 
 \end{code}
+
+Added by Martin Escardo, 10th November 2026.
+
+The supremum of a constant family indexed by an inhabited type is its
+constant value.
+
+\begin{code}
+
+ sup-of-constant-family : {I : 𝓤 ̇ } (γ : Ordinal 𝓤)
+                        → ∥ I ∥
+                        → sup (λ (_ : I) → γ) ＝ γ
+ sup-of-constant-family {𝓤} {I} γ s =
+  ⊴-antisym (sup (λ _ → γ)) γ
+   (sup-is-lower-bound-of-upper-bounds (λ _ → γ) γ (λ _ → ⊴-refl γ))
+   (∥∥-rec
+     (⊴-is-prop-valued γ (sup (λ _ → γ)))
+     (sup-is-upper-bound (λ _ → γ))
+     s)
+
+\end{code}
+
+End of addition.
 
 Conjecture (Martin Escardo, August 2018 originally in the file
 OrdinalOfOrdinals, moved here 30th March 2022). We have bounded

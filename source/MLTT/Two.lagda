@@ -1,3 +1,5 @@
+Martin Escardo, original date unknown.
+
 Two-point type.
 
 \begin{code}

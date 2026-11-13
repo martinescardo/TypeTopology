@@ -1,3 +1,5 @@
+Todd Waugh Ambridge, 2024.
+
 [⇐ Index](../html/TWA.Thesis.index.html)
 
 # Main

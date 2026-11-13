@@ -1,5 +1,5 @@
 /* Aspects. */
-.Agda .Comment       { color: black }
+.Agda .Comment       { color: #808080 }
 .Agda .Background    { color: black }
 .Agda .Markup        { color: LightGray }
 .Agda .Keyword       { color: #CD6600 }
@@ -46,3 +46,25 @@
 .Agda em       { font-style: italic }
 .Agda strong   { font-weight: bold }
 .Agda md-block { display: inline-block; background: #F3F3F3 }
+
+/* The space the source needs between the universe dot and a closing
+   bracket, marked up by agda-html.py, so that the code reads (X : 𝓤 ̇).
+   Taking this line out shows those spaces again. */
+.Agda dot-space { display: none }
+
+/* The universe dot and the space before it, marked up by agda-html.py,
+   so that the code reads (X : 𝓤) as the HoTT book writes it, while
+   MLTT.Universes keeps its dots. Taking this line out shows them all
+   again. */
+.Agda universe-dot { display: none }
+
+/* The space the source needs between a universe and its successor,
+   marked up by agda-html.py, so that the code reads 𝓤⁺, while a line
+   such as 𝓤⁺ = 𝓤 ⁺ and MLTT.Universes keep theirs. Taking this line out
+   shows them all again. */
+.Agda plus-space { display: none }
+
+/* The header of a file and the markers of a later addition, marked up
+   by agda-html.py, so that the seams of a file show at a glance. Taking
+   this line out puts them back in the ordinary weight. */
+.Agda bold-mark { font-weight: bold }

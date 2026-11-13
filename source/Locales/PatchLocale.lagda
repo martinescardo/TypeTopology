@@ -349,7 +349,7 @@ Nuclei are ordered pointwise.
 
 The construction of the join is the nontrivial component of this development.
 Given a family `S ∶＝ { fᵢ : A → A | i ∶ I}` of endofunctions on some type `A`,
-and a list `i₀, …, iₙ` of indices (of type `I`), the function `sequence gives
+and a list `i₀, …, iₙ` of indices (of type `I`), the function `sequence` gives
 the composition of all `fᵢₙ ∘ ⋯ ∘ fᵢ₀`:
 
 \begin{code}

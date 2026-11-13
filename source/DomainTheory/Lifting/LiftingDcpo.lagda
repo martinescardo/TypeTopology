@@ -187,6 +187,8 @@ Added 3 July 2024 (but known much earlier of course).
 
 \end{code}
 
+End of addition.
+
 Of course, the map η from the dcpo to the lifted dcpo should be Scott
 continuous.
 

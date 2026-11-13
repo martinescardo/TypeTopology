@@ -261,6 +261,8 @@ a proposition.
 
 \end{code}
 
+End of addition.
+
 We introduce pretty syntax for chain reasoning with inequalities.
 (Cf. ＝⟨_⟩ and ∎ in Id.lagda, ≃⟨_⟩ and ■ in UF.Equiv.lagda)
 

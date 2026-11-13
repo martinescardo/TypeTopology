@@ -71,6 +71,8 @@ Added 19 June 2026.
 
 \end{code}
 
+End of addition.
+
 We will consider iterations of succ-ℤ and pred-ℤ in defining addition on ℤ and
 need some lemmas for working with those iterations.
 

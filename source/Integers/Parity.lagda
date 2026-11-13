@@ -1,3 +1,5 @@
+Andrew Sneap, 2022.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}

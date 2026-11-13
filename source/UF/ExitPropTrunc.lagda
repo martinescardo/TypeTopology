@@ -2,15 +2,15 @@ Martin Escardo 2012.
 
 Based on [1] and [2].
 
-1. Nicolai Kraus, Martín Escardó, Thierry Coquand & Thorsten Altenkirch.
-   Generalizations of Hedberg’s Theorem.
-   TLCA 2013
-   https://doi.org/10.1007/978-3-642-38946-7_14
+[1] Nicolai Kraus, Martín Escardó, Thierry Coquand & Thorsten Altenkirch.
+    Generalizations of Hedberg’s Theorem.
+    TLCA 2013
+    https://doi.org/10.1007/978-3-642-38946-7_14
 
-2. Nicolai Kraus, Martín Escardó, Thierry Coquand & Thorsten Altenkirch.
-   Notions of Anonymous Existence in Martin-Löf Type Theory.
-   Logical Methods in Computer Science, March 24, 2017, Volume 13, Issue 1.
-   https://doi.org/10.23638/LMCS-13(1:15)2017
+[2] Nicolai Kraus, Martín Escardó, Thierry Coquand & Thorsten Altenkirch.
+    Notions of Anonymous Existence in Martin-Löf Type Theory.
+    Logical Methods in Computer Science, March 24, 2017, Volume 13, Issue 1.
+    https://doi.org/10.23638/LMCS-13(1:15)2017
 
 \begin{code}
 

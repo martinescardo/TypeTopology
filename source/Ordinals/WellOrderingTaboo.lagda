@@ -113,6 +113,8 @@ explicit.
 
 \end{code}
 
+End of addition.
+
 We first present Andrew Swan's second proof, which is a simplification of his
 first proof that does not need exact quotients (we use propositional truncations
 to construct quotients).

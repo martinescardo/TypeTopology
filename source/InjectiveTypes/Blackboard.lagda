@@ -1894,6 +1894,8 @@ retract-of-aflabby D E D-aflabby (r , s , rs) P P-is-prop f
 
 \end{code}
 
+End of addition.
+
 Fixities:
 
 \begin{code}

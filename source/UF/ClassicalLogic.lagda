@@ -82,6 +82,9 @@ definition typal-WEM, which removes this assumption.
 WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
 WEM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬ P + ¬¬ P
 
+EM-gives-WEM : funext 𝓤 𝓤₀ → EM 𝓤 → WEM 𝓤
+EM-gives-WEM fe em P i = em (¬ P) (negations-are-props fe)
+
 typal-WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
 typal-WEM 𝓤 = (A : 𝓤 ̇ ) → ¬ A + ¬¬ A
 

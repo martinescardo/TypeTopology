@@ -7,7 +7,7 @@ regarded as a weak continuity principle. It is equivalent to the
 doubly negated continuity of every function of ℕ∞ into a discrete
 type, by the module TypeTopology.DecidabilityOfNonContinuity.
 
-The same facts used to to establish that ℕ∞ is a Stone type are used
+The same facts used to establish that ℕ∞ is a Stone type are used
 in the module Ordinals.BrouwerCodesGiveStoneTypes to show that the
 compact totally separated interpretation of the Brouwer ordinal codes
 gives Stone types, again assuming ¬ WLPO.
@@ -205,7 +205,7 @@ The restriction of a clopen to another clopen.
 infix 50 _↾_
 
 _↾_ : {X : 𝓤 ̇ } (B A : Clopen X) → Clopen (clopen-subtype A)
-B ↾ A = clopen-subtype-inclusion A ⁻¹[ B ]
+B ↾ A = (clopen-subtype-inclusion A)⁻¹[ B ]
 
 self-restriction-is-𝟏 : {X : 𝓤 ̇ } (A : Clopen X) → A ↾ A ＝ 𝟏
 self-restriction-is-𝟏 A = dfunext fe (clopen-subtype-membership A)
@@ -2504,15 +2504,15 @@ totally separated.
 
 open import TypeTopology.FailureOfTotalSeparatedness fe
 
-Stone-Types-Are-Closed-Under-Σ : 𝓤₁ ̇
-Stone-Types-Are-Closed-Under-Σ =
-   (X : 𝓤₀ ̇ ) (Y : X → 𝓤₀ ̇ )
+Stone-Types-Are-Closed-Under-Σ : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺  ̇
+Stone-Types-Are-Closed-Under-Σ 𝓤 𝓥 =
+   (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
  → is-stone-type X
  → ((x : X) → is-stone-type (Y x))
  → is-stone-type (Σ Y)
 
 closure-under-Σ-gives-¬¬-WLPO
- : Stone-Types-Are-Closed-Under-Σ
+ : Stone-Types-Are-Closed-Under-Σ 𝓤₀ 𝓤₀
  → ¬¬ WLPO
 closure-under-Σ-gives-¬¬-WLPO c nwlpo
  = ℕ∞₂-is-not-totally-separated-in-general I nwlpo
@@ -2527,7 +2527,7 @@ closure-under-Σ-gives-¬¬-WLPO c nwlpo
 
 ¬WLPO-gives-failure-of-closure-under-Σ
  : ¬ WLPO
- → ¬ Stone-Types-Are-Closed-Under-Σ
+ → ¬ Stone-Types-Are-Closed-Under-Σ 𝓤₀ 𝓤₀
 ¬WLPO-gives-failure-of-closure-under-Σ nwlpo c
  = closure-under-Σ-gives-¬¬-WLPO c nwlpo
 
@@ -2556,16 +2556,16 @@ the Π-compactness of the base and of the fibers.
 
 \begin{code}
 
-Pre-Stone-Types-Are-Closed-Under-Σ : 𝓤₁ ̇
-Pre-Stone-Types-Are-Closed-Under-Σ =
-   (X : 𝓤₀ ̇ ) (Y : X → 𝓤₀ ̇ )
+Pre-Stone-Types-Are-Closed-Under-Σ : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺  ̇
+Pre-Stone-Types-Are-Closed-Under-Σ 𝓤 𝓥 =
+   (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
  → is-pre-stone-type X
  → ((x : X) → is-pre-stone-type (Y x))
  → is-pre-stone-type (Σ Y)
 
 pre-stone-closure-under-Σ-gives-stone-closure-under-Σ
- : Pre-Stone-Types-Are-Closed-Under-Σ
- → Stone-Types-Are-Closed-Under-Σ
+ : Pre-Stone-Types-Are-Closed-Under-Σ 𝓤 𝓥
+ → Stone-Types-Are-Closed-Under-Σ 𝓤 𝓥
 pre-stone-closure-under-Σ-gives-stone-closure-under-Σ c X Y ζ δ
  = c X Y
     (stone-types-are-pre-stone-types ζ)
@@ -2577,7 +2577,7 @@ pre-stone-closure-under-Σ-gives-stone-closure-under-Σ c X Y ζ δ
 
 ¬WLPO-gives-failure-of-closure-under-Σ-for-pre-stone-types
  : ¬ WLPO
- → ¬ Pre-Stone-Types-Are-Closed-Under-Σ
+ → ¬ Pre-Stone-Types-Are-Closed-Under-Σ 𝓤₀ 𝓤₀
 ¬WLPO-gives-failure-of-closure-under-Σ-for-pre-stone-types nwlpo c
  = ¬WLPO-gives-failure-of-closure-under-Σ nwlpo
     (pre-stone-closure-under-Σ-gives-stone-closure-under-Σ c)

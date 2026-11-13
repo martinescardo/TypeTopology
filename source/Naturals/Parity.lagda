@@ -1,3 +1,5 @@
+Andrew Sneap, 2022-2023, and Martin Escardo, 2023-2026.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}

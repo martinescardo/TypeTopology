@@ -159,6 +159,8 @@ uniform-continuity-gives-extensionality p (n , u) = II
 
 \end{code}
 
+End of addition.
+
 We now define search over the Cantor space. The functions A and ε are
 mutually recursively defined. But of course we can consider only ε
 expanding the definition of A in that of ε, because the definition of

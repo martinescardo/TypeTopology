@@ -1,3 +1,5 @@
+Martin Escardo, original date unknown.
+
 The disjoint sum X + Y of two types X and Y.
 
 \begin{code}

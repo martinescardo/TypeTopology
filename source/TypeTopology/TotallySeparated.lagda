@@ -708,6 +708,8 @@ Added 21st July 2025.
 
 End of 21st July 2025 addition.
 
+End of addition.
+
 The notion of total separatedness (or 𝟚-separatedness) is analogous to
 the T₀-separation axiom (which says that any two points with the same
 open neighbourhoods are equal).

@@ -109,8 +109,6 @@ Ordinals.BrouwerCodesVariationInterpretations.
 ℓ                            : (b : B) → ⟨ Δ b ⟩ → 𝟚
 ℓ-isolated                   : (b : B) (x : ⟨ Δ b ⟩)
                              → ℓ b x ＝ ₀ → is-isolated (ι {b} x)
-ℓ-limit                      : (b : B) (x : ⟨ Δ b ⟩)
-                             → ℓ b x ＝ ₁ → is-limit-point (ι {b} x)
 ℓ-limit⁺                     : (b : B) (x : ⟨ Δ b ⟩)
                              → ℓ b x ＝ ₁ → is-limit-point⁺ (ι {b} x)
 
@@ -122,8 +120,6 @@ isolatedness-decision'       : ¬ WLPO
                              → (b : B) (x : ⟨ Δ b ⟩)
                              → is-decidable (is-isolated (ι {b} x))
 
-ι-is-equiv-gives-LPO         : ((b : B) → is-equiv (ι {b})) → LPO
-LPO-gives-ι-is-equiv         : LPO → (b : B) → is-equiv (ι {b})
 ι-is-equiv-iff-LPO           : ((b : B) → is-equiv (ι {b})) ↔ LPO
 
 ι-has-section-gives-Κ-discrete
@@ -137,22 +133,12 @@ LPO-gives-ι-is-equiv         : LPO → (b : B) → is-equiv (ι {b})
 
 LPO-gives-Κ-discrete         : LPO → (b : B) → is-discrete ⟨ Κ b ⟩
 Κ-discrete-gives-WLPO        : ((b : B) → is-discrete ⟨ Κ b ⟩) → WLPO
-Δ-compact-gives-LPO          : ((b : B) → is-compact ⟨ Δ b ⟩) → LPO
-LPO-gives-Δ-compact          : LPO → (b : B) → is-compact ⟨ Δ b ⟩
 Δ-compact-iff-LPO            : ((b : B) → is-compact ⟨ Δ b ⟩) ↔ LPO
-
-Δ-least-roots-gives-LPO      : ((b : B)
-                              → has-least-roots-of-complemented-subsets (Δ b))
-                             → LPO
-
-LPO-gives-Δ-least-roots      : propext 𝓤₀
-                             → LPO
-                             → (b : B)
-                             → has-least-roots-of-complemented-subsets (Δ b)
+Δ-≃ₒ-Κ-iff-LPO               : ((b : B) → [ Δ b ] ≃ₒ [ Κ b ]) ↔ LPO
 
 Δ-least-roots-iff-LPO        : propext 𝓤₀
                              → ((b : B)
-                              → has-least-roots-of-complemented-subsets (Δ b))
+                                → has-least-roots-of-complemented-subsets (Δ b))
                              ↔ LPO
 
 Κ-of-ε₀-code                 : Ordᵀ
@@ -343,6 +329,7 @@ value ₁.
 
 ℓ-isolated (L b) (inr ⋆ , u) p = one-is-zero-elim p
 
+ℓ-limit : (b : B) (x : ⟨ Δ b ⟩) → ℓ b x ＝ ₁ → is-limit-point (ι {b} x)
 ℓ-limit Z     ⋆           p = zero-is-one-elim p
 ℓ-limit (S b) (inr ⋆ , ⋆) p = zero-is-one-elim p
 ℓ-limit (S b) (inl ⋆ , x) p i = ℓ-limit b x p
@@ -397,13 +384,21 @@ isolatedness-decision' f b x =
 
 The code L (λ n → Z) plays the role that a primitive code for ω + 1
 plays in other ordinal notations, its discrete interpretation being
-ℕ + 𝟙 and its compact one ℕ∞.
+ℕ + 𝟙 and its compact one ℕ∞. We call this code ⌜ω+𝟙⌝, and we call its
+successor ⌜ω+𝟚⌝.
 
 \begin{code}
 
-ι-is-equiv-gives-LPO f = ι𝟙-is-equiv-gives-LPO
-                          (Σ↑-𝟙-is-equiv-gives-ι𝟙-is-equiv (f (L (λ _ → Z))))
+private
+ ⌜ω+𝟙⌝ ⌜ω+𝟚⌝ : B
+ ⌜ω+𝟙⌝ = L (λ _ → Z)
+ ⌜ω+𝟚⌝ = S ⌜ω+𝟙⌝
 
+ι-is-equiv-gives-LPO : ((b : B) → is-equiv (ι {b})) → LPO
+ι-is-equiv-gives-LPO f = ι𝟙-is-equiv-gives-LPO
+                          (Σ↑-𝟙-is-equiv-gives-ι𝟙-is-equiv (f ⌜ω+𝟙⌝))
+
+LPO-gives-ι-is-equiv : LPO → (b : B) → is-equiv (ι {b})
 LPO-gives-ι-is-equiv lpo Z     = id-is-equiv 𝟙
 LPO-gives-ι-is-equiv lpo (S b) = pair-fun-is-equiv
                                   id
@@ -427,8 +422,8 @@ can be closed is open, and it is the same question as the one left
 open at the end of the module Ordinals.InductiveRecursiveCodesInterpretations.
 
 In the other direction there is no gap. Compactness of the discrete
-interpretation is exactly LPO, and the code L (λ _ → Z) alone
-witnesses this in one direction.
+interpretation is exactly LPO, and the code ⌜ω+𝟙⌝ alone witnesses this
+in one direction.
 
 \begin{code}
 
@@ -445,15 +440,17 @@ LPO-gives-Κ-discrete lpo b = ι-is-equiv-gives-Κ-discrete b
 Κ-discrete-gives-WLPO f = ℕ∞-discrete-gives-WLPO
                            (retract-is-discrete
                              ℕ∞-retract-of-Σ¹-𝟙
-                             (f (L (λ _ → Z))))
+                             (f ⌜ω+𝟙⌝))
 
+Δ-compact-gives-LPO : ((b : B) → is-compact ⟨ Δ b ⟩) → LPO
 Δ-compact-gives-LPO κ = compact-ℕ-gives-LPO fe₀
                          (retract-is-compact
                            (retracts-compose
                              ℕ+𝟙-retract-of-Σ₁-𝟙
                              (cases id (λ _ → 0) , inl , (λ n → refl)))
-                           (κ (L (λ _ → Z))))
+                           (κ ⌜ω+𝟙⌝))
 
+LPO-gives-Δ-compact : LPO → (b : B) → is-compact ⟨ Δ b ⟩
 LPO-gives-Δ-compact lpo b = retract-is-compact
                              (Δ-retract-of-ℕ b)
                              (LPO-gives-compact-ℕ fe₀ lpo)
@@ -461,6 +458,111 @@ LPO-gives-Δ-compact lpo b = retract-is-compact
 Δ-compact-iff-LPO = Δ-compact-gives-LPO , LPO-gives-Δ-compact
 
 \end{code}
+
+Added by Martin Escardo, 10th November 2026.
+
+As ι is order preserving and order reflecting, it is an order
+equivalence as soon as it is an equivalence, and so LPO makes the
+discrete and the compact interpretations of every code order
+equivalent. Conversely, if they are order equivalent for every code,
+then the discrete interpretation is compact, as the compact one is,
+and so LPO holds, by
+Ordinals.BrouwerCodesDiscreteAndCompactInterpretations.Δ-compact-gives-LPO.
+
+\begin{code}
+
+LPO-gives-Δ-≃ₒ-Κ : LPO → (b : B) → [ Δ b ] ≃ₒ [ Κ b ]
+LPO-gives-Δ-≃ₒ-Κ lpo b
+ = ι {b} ,
+   order-preserving-reflecting-equivs-are-order-equivs
+    [ Δ b ] [ Κ b ] (ι {b})
+    (LPO-gives-ι-is-equiv lpo b)
+    (ι-is-order-preserving b)
+    (ι-is-order-reflecting b)
+
+Δ-≃ₒ-Κ-gives-LPO : ((b : B) → [ Δ b ] ≃ₒ [ Κ b ]) → LPO
+Δ-≃ₒ-Κ-gives-LPO h = Δ-compact-gives-LPO I
+ where
+  I : (b : B) → is-compact ⟨ Δ b ⟩
+  I b = compact∙-types-are-compact
+         (compact∙-types-are-closed-under-equiv
+           (≃ₒ-gives-≃ [ Κ b ] [ Δ b ] (≃ₒ-sym [ Δ b ] [ Κ b ] (h b)))
+           (Κ-compact∙ b))
+
+Δ-≃ₒ-Κ-iff-LPO = Δ-≃ₒ-Κ-gives-LPO , LPO-gives-Δ-≃ₒ-Κ
+
+\end{code}
+
+We now consider whether [ Δ b ] ⊴ [ Κ b ] holds for every code b. As
+in the module Ordinals.InductiveRecursiveCodesInterpretations, this is
+equivalent to LPO, and one code already accounts for the failure,
+namely ⌜ω+𝟚⌝, whose discrete interpretation is order equivalent to
+(ω + 1) + 1 and whose compact interpretation is order equivalent to
+ℕ∞ + 1, so that Ordinals.Closure.ω+𝟚-⊴-ℕ∞+𝟙-gives-LPO applies. For
+the code ⌜ω+𝟙⌝ alone the relation holds, because its two
+interpretations are order equivalent to ω + 1 and to ℕ∞.
+
+\begin{code}
+
+open import UF.Univalence
+
+module _ (ua : Univalence) where
+
+ open import Ordinals.ConvergentSequence ua
+ open import Ordinals.OrdinalOfOrdinals ua
+
+ Δ𝟙-⊴-Κ𝟙 : [ Δ ⌜ω+𝟙⌝ ] ⊴ [ Κ ⌜ω+𝟙⌝ ]
+ Δ𝟙-⊴-Κ𝟙 = III
+  where
+   I : [ Δ ⌜ω+𝟙⌝ ] ⊴ [ succₒ ω ]
+   I = ≃ₒ-to-⊴ [ Δ ⌜ω+𝟙⌝ ] [ succₒ ω ] ∑₁-of-𝟙ᵒ
+
+   II : [ ℕ∞ᵒ ] ⊴ [ Κ ⌜ω+𝟙⌝ ]
+   II = ≃ₒ-to-⊴ [ ℕ∞ᵒ ] [ Κ ⌜ω+𝟙⌝ ]
+         (≃ₒ-sym [ Κ ⌜ω+𝟙⌝ ] [ ℕ∞ᵒ ] ∑¹-of-𝟙ᵒ)
+
+   III : [ Δ ⌜ω+𝟙⌝ ] ⊴ [ Κ ⌜ω+𝟙⌝ ]
+   III = ⊴-trans [ Δ ⌜ω+𝟙⌝ ] [ succₒ ω ] [ Κ ⌜ω+𝟙⌝ ]
+          I
+          (⊴-trans [ succₒ ω ] [ ℕ∞ᵒ ] [ Κ ⌜ω+𝟙⌝ ] ω+𝟙-is-⊴-ℕ∞ II)
+
+ Δ-⊴-Κ-gives-LPO : [ Δ ⌜ω+𝟚⌝ ] ⊴ [ Κ ⌜ω+𝟚⌝ ] → LPO
+ Δ-⊴-Κ-gives-LPO h = ω+𝟚-⊴-ℕ∞+𝟙-gives-LPO ua IV
+  where
+   I : [ Δ ⌜ω+𝟚⌝ ] ≃ₒ [ succₒ ω +ᵒ 𝟙ᵒ ]
+   I = ∑-≃ₒ
+        𝟚ᵒ
+        (cases (λ _ → Δ ⌜ω+𝟙⌝) (λ _ → 𝟙ᵒ))
+        (cases (λ _ → succₒ ω) (λ _ → 𝟙ᵒ))
+        (dep-cases (λ _ → ∑₁-of-𝟙ᵒ) (λ _ → ≃ₒ-refl [ 𝟙ᵒ ]))
+
+   II : [ Κ ⌜ω+𝟚⌝ ] ≃ₒ [ ℕ∞ᵒ +ᵒ 𝟙ᵒ ]
+   II = ∑-≃ₒ
+         𝟚ᵒ
+         (cases (λ _ → Κ ⌜ω+𝟙⌝) (λ _ → 𝟙ᵒ))
+         (cases (λ _ → ℕ∞ᵒ) (λ _ → 𝟙ᵒ))
+         (dep-cases (λ _ → ∑¹-of-𝟙ᵒ) (λ _ → ≃ₒ-refl [ 𝟙ᵒ ]))
+
+   III : [ succₒ ω +ᵒ 𝟙ᵒ ] ⊴ [ Δ ⌜ω+𝟚⌝ ]
+   III = ≃ₒ-to-⊴ [ succₒ ω +ᵒ 𝟙ᵒ ] [ Δ ⌜ω+𝟚⌝ ]
+          (≃ₒ-sym [ Δ ⌜ω+𝟚⌝ ] [ succₒ ω +ᵒ 𝟙ᵒ ] I)
+
+   IV : [ succₒ ω +ᵒ 𝟙ᵒ ] ⊴ [ ℕ∞ᵒ +ᵒ 𝟙ᵒ ]
+   IV = ⊴-trans [ succₒ ω +ᵒ 𝟙ᵒ ] [ Δ ⌜ω+𝟚⌝ ] [ ℕ∞ᵒ +ᵒ 𝟙ᵒ ]
+         III
+         (⊴-trans [ Δ ⌜ω+𝟚⌝ ] [ Κ ⌜ω+𝟚⌝ ] [ ℕ∞ᵒ +ᵒ 𝟙ᵒ ]
+           h
+           (≃ₒ-to-⊴ [ Κ ⌜ω+𝟚⌝ ] [ ℕ∞ᵒ +ᵒ 𝟙ᵒ ] II))
+
+ LPO-gives-Δ-⊴-Κ : LPO → (b : B) → [ Δ b ] ⊴ [ Κ b ]
+ LPO-gives-Δ-⊴-Κ lpo b = ≃ₒ-to-⊴ [ Δ b ] [ Κ b ] (LPO-gives-Δ-≃ₒ-Κ lpo b)
+
+ Δ-⊴-Κ-iff-LPO : ((b : B) → [ Δ b ] ⊴ [ Κ b ]) ↔ LPO
+ Δ-⊴-Κ-iff-LPO = (λ h → Δ-⊴-Κ-gives-LPO (h ⌜ω+𝟚⌝)) , LPO-gives-Δ-⊴-Κ
+
+\end{code}
+
+End of addition.
 
 As discussed in the module Ordinals.Closure, propositional
 extensionality in the following construction is not strictly needed
@@ -490,7 +592,7 @@ Added 2nd September 2026.
 
 Hence every non-empty complemented subset of the compact
 interpretation has a least element. For the discrete interpretation
-this is exactly LPO, and the code L (λ _ → Z) alone witnesses one
+this is exactly LPO, and the code ⌜ω+𝟙⌝ alone witnesses one
 direction, its discrete interpretation being ω + 1.
 
 \begin{code}
@@ -501,7 +603,7 @@ direction, its discrete interpretation being ω + 1.
   (Κ-has-infs-of-complemented-subsets pe b)
 
 Δ𝟙-least-roots-gives-LPO
- : has-least-roots-of-complemented-subsets (Δ (L (λ _ → Z))) → LPO
+ : has-least-roots-of-complemented-subsets (Δ ⌜ω+𝟙⌝) → LPO
 Δ𝟙-least-roots-gives-LPO h
  = succₒ-ω-least-roots-gives-LPO
     (≃ₒ-gives-has-least-roots
@@ -510,22 +612,23 @@ direction, its discrete interpretation being ω + 1.
       ∑₁-of-𝟙ᵒ
       h)
 
-Δ-least-roots-gives-LPO h = Δ𝟙-least-roots-gives-LPO (h (L (λ _ → Z)))
+Δ-least-roots-gives-LPO
+ : ((b : B) → has-least-roots-of-complemented-subsets (Δ b))
+ → LPO
+Δ-least-roots-gives-LPO h = Δ𝟙-least-roots-gives-LPO (h ⌜ω+𝟙⌝)
 
+LPO-gives-Δ-least-roots
+ : propext 𝓤₀
+ → LPO
+ → (b : B)
+ → has-least-roots-of-complemented-subsets (Δ b)
 LPO-gives-Δ-least-roots pe lpo b = ≃ₒ-gives-has-least-roots
                                     [ Κ b ]
                                     [ Δ b ]
-                                    (≃ₒ-sym [ Δ b ] [ Κ b ] 𝕚)
+                                    (≃ₒ-sym [ Δ b ] [ Κ b ]
+                                      (LPO-gives-Δ-≃ₒ-Κ lpo b))
                                     (Κ-has-least-roots-of-complemented-subsets
                                       pe b)
- where
-  𝕚 : [ Δ b ] ≃ₒ [ Κ b ]
-  𝕚 = ι {b} ,
-      order-preserving-reflecting-equivs-are-order-equivs
-       [ Δ b ] [ Κ b ] (ι {b})
-       (LPO-gives-ι-is-equiv lpo b)
-       (ι-is-order-preserving b)
-       (ι-is-order-reflecting b)
 
 Δ-least-roots-iff-LPO pe = Δ-least-roots-gives-LPO ,
                            LPO-gives-Δ-least-roots pe

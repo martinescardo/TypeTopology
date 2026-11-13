@@ -1,3 +1,5 @@
+Brendan Hart, Martin Escardo and Tom de Jong, 2023.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}

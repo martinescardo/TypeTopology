@@ -1,3 +1,5 @@
+Martin Escardo, original date unknown.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -444,6 +446,8 @@ Added 8 August 2024 by Tom de Jong.
   η = retraction-equation (ap s) (ap-of-section-is-section s s-sect x x')
 
 \end{code}
+
+End of addition.
 
 Fixities:
 

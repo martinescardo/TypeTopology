@@ -120,6 +120,20 @@ Not all web browsers exhibit the same problem, though, which is even
 more annoying. The current solution works for all browsers I tested
 on 5th September 2024 (Firefox, Chrome, Chromium, Safari).
 
+Added 8th November 2026. Now our html rendering
+
+  https://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html
+
+removes the upperscript dot, the space before it and the
+space between the dot and a closing bracket, so that we see
+
+  (X : 𝓤)
+
+as in the HoTT book. But the above conventions must still be followed
+when editing files.
+
+End of addition.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}

@@ -1,0 +1,69 @@
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mikan:
+    runs-on: ubuntu-latest
+    name: Typechecking with Mikan
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 60
+    env:
+      # The commit of https://codeberg.org/1lab/mikan that is used.
+      # Mikan has no releases, so a commit is pinned here and updated
+      # deliberately. The 1Lab's continuous integration keeps a Linux
+      # build of every commit of the main branch in the binary cache
+      # mikan.cachix.org, so this step downloads Mikan rather than
+      # compiling it.
+      MIKAN_REV: 76a45405e7eb39bc9cad707244ca0561c9f737f7
+      NIX_CONFIG: |
+        extra-experimental-features = nix-command flakes
+        accept-flake-config = true
+    steps:
+    - name: "Clone repository"
+      uses: actions/checkout@v4
+
+    - name: "Install Nix"
+      uses: cachix/install-nix-action@v31
+
+    - name: "Use the Mikan binary cache"
+      uses: cachix/cachix-action@v17
+      with:
+        name: mikan
+        skipPush: true
+
+    - name: "Install Mikan"
+      run: |
+        nix profile install "git+https://codeberg.org/1lab/mikan?rev=$MIKAN_REV"
+        mikan --version
+
+    - name: "Restore cached interface files"
+      id: cache-mki-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: _build
+        key: ${{ runner.os }}-mikan-${{ env.MIKAN_REV }}-${{ github.ref_name }}-${{ github.event.before }}
+        restore-keys: |
+          ${{ runner.os }}-mikan-${{ env.MIKAN_REV }}-${{ github.ref_name }}-
+          ${{ runner.os }}-mikan-${{ env.MIKAN_REV }}-master-
+
+    - name: "Run Mikan"
+      id: typecheck
+      run: |
+        cd source
+        mikan index.lagda -j +RTS -A64M -qb0 -RTS
+
+    - name: "Save interface files"
+      id: cache-mki-save
+      uses: actions/cache/save@v4
+      with:
+        path: _build
+        key: ${{ runner.os }}-mikan-${{ env.MIKAN_REV }}-${{ github.ref_name }}-${{ github.event.after }}

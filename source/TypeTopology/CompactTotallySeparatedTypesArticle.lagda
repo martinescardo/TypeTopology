@@ -5,7 +5,7 @@ This is an Agda companion for the preprint
    Compact totally separated types
    -------------------------------
 
-   https://arxiv.org/abs/2609.10447v3, 28th September 2026
+   https://arxiv.org/abs/2609.10447v4, 12th November 2026
 
    Martín Hötzel Escardó
    https://www.cs.bham.ac.uk/~mhe/
@@ -14,7 +14,7 @@ This is an Agda companion for the preprint
    https://github.com/martinescardo/TypeTopology/blob/master/source/TypeTopology/CompactTotallySeparatedTypesArticle.lagda
 
    Readers of earlier arXiv versions of the paper should use the Agda
-   companions [1] and [2] below instead.
+   companions [1], [2] and [3] below instead.
 
 This file follows the definitions, lemmas, propositions, theorems,
 examples and remarks of the paper above, in the same order and with
@@ -46,6 +46,10 @@ given here to find out exactly what assumptions each result uses.
 [2] https://arxiv.org/abs/2609.10447v2, 15th September 2026
 
     https://github.com/martinescardo/TypeTopology/blob/c3e7e439d47ab9c0dfa0849b368bd076be0a19fb/source/TypeTopology/CompactTotallySeparatedTypesArticle.lagda
+
+[3] https://arxiv.org/abs/2609.10447v3, 28th September 2026
+
+    https://github.com/martinescardo/TypeTopology/blob/9efc8c7a826aba91d5c143edb9b9d3219f133f4e/source/TypeTopology/CompactTotallySeparatedTypesArticle.lagda
 
 Cite as
 
@@ -173,6 +177,7 @@ open import TypeTopology.DisconnectedTypes
 open import TypeTopology.ExtendedSumCompact fe
 open import TypeTopology.ExtensionTotallySeparated
 open import TypeTopology.GenericConvergentSequenceCompactness fe₀
+open import TypeTopology.ConvergentSequenceHasInf fe₀ using (ℕ∞-has-inf)
 open import TypeTopology.MicroTychonoff
 open import TypeTopology.WeaklyCompactTypes fe pt
 open import InjectiveTypes.Blackboard fe
@@ -279,6 +284,10 @@ Theorem-2-5 : {X : 𝓤 ̇ } (x : X)
             → ((y : X) → collapsible (x ＝ y))
             → (y : X) → is-prop (x ＝ y)
 Theorem-2-5 = local-hedberg
+
+-- thm:hedberg, at every point
+Theorem-2-5' : {X : 𝓤 ̇ } → Id-collapsible X → is-set X
+Theorem-2-5' = Id-collapsibles-are-sets
 
 -- def:Omega
 Definition-2-6 : (𝓤 : Universe) → 𝓤 ⁺ ̇
@@ -477,6 +486,19 @@ Lemma-2-21' = dense-maps-into-¬¬-separated-types-are-rc
 Lemma-2-22 : 𝟚 → Ω 𝓤
 Lemma-2-22 = 𝟚-to-Ω
 
+Lemma-2-22' : is-embedding (𝟚-to-Ω {𝓤})
+Lemma-2-22' {𝓤} = 𝟚-to-Ω-is-embedding (fe 𝓤 𝓤) (pe 𝓤)
+
+Lemma-2-22'' : is-dense (𝟚-to-Ω {𝓤})
+Lemma-2-22'' {𝓤} (p , ν) =
+ no-truth-values-other-than-⊥-or-⊤ (fe 𝓤 𝓤) (pe 𝓤) (p , I , II)
+ where
+  I : p ≠ ⊥
+  I e = ν (₀ , (e ⁻¹))
+
+  II : p ≠ ⊤
+  II e = ν (₁ , (e ⁻¹))
+
 -- def:global-choice
 Definition-2-23 : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Definition-2-23 = Global-Choice
@@ -492,17 +514,32 @@ Prose-global-choice-reformulation' = Global-Choice'-gives-Global-Choice
 Definition-2-24 : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Definition-2-24 = EM
 
+\end{code}
+
+Definition 2.25 states LPO and WLPO for binary sequences. In this
+form, LPO is literally the compactness of ℕ, and WLPO is
+WLPO-traditional. TypeTopology's LPO and WLPO, which the entries
+below use from here on, are the formulations over ℕ∞, equivalent to
+these by the entries Example-3-1-LPO and Example-3-1-WLPO.
+
+Labels: Definition 2.25 = def:lpo-wlpo.
+
+\begin{code}
+
 -- def:lpo-wlpo
 Definition-2-25 : 𝓤₀ ̇
-Definition-2-25 = LPO
+Definition-2-25 = is-compact ℕ
 
 Definition-2-25' : 𝓤₀ ̇
-Definition-2-25' = WLPO
+Definition-2-25' = WLPO-traditional
 
 -- claim compactness-of-N-is-LPO
 Prose-compactness-of-N-is-LPO : is-compact ℕ ↔ LPO
 Prose-compactness-of-N-is-LPO = compact-ℕ-gives-LPO fe₀ ,
                                 LPO-gives-compact-ℕ fe₀
+
+Prose-compactness-of-N-is-LPO' : is-Π-compact ℕ ↔ WLPO
+Prose-compactness-of-N-is-LPO' = Π-compact-ℕ-gives-WLPO , WLPO-gives-Π-compact-ℕ
 
 -- claim EM-LPO-WLPO
 Prose-EM-LPO-WLPO : EM 𝓤₀ → LPO
@@ -603,6 +640,30 @@ Example-3-1'' : {X : 𝓤 ̇ } (κ : X → 𝟙 + X)
               → ∃! h ꞉ (X → ℕ∞), is-homomorphism κ h
 Example-3-1'' = PRED-is-the-homotopy-final-coalgebra
 
+\end{code}
+
+The last claim of Example 3.1 is that LPO and WLPO, which Definition
+2.25 states for binary sequences, are equivalent to deciding whether a
+point of ℕ∞ is finite and whether it is ∞. For LPO, the formulation of
+Definition 2.25 is literally the compactness of ℕ, and LPO' is the
+decision of finiteness. For WLPO, TypeTopology's WLPO is the decision
+of equality with ∞, and WLPO-traditional is the formulation of
+Definition 2.25.
+
+Labels: Example 3.1 = ex:NInf, Definition 2.25 = def:lpo-wlpo.
+
+\begin{code}
+
+-- ex:NInf, LPO as the decision of finiteness
+Example-3-1-LPO : is-compact ℕ ↔ LPO'
+Example-3-1-LPO = LPO-gives-LPO' ∘ compact-ℕ-gives-LPO fe₀ ,
+                  LPO-gives-compact-ℕ fe₀ ∘ LPO'-gives-LPO
+
+-- ex:NInf, WLPO as the decision of equality with ∞
+Example-3-1-WLPO : WLPO-traditional ↔ WLPO
+Example-3-1-WLPO = WLPO-traditional-gives-WLPO fe₀ ,
+                   WLPO-gives-WLPO-traditional fe₀
+
 -- def:isolated
 Definition-3-2 : {X : 𝓤 ̇ } → X → 𝓤 ̇
 Definition-3-2 = is-isolated
@@ -684,6 +745,18 @@ Proposition-3-6-3 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                   → is-discrete (Σ Y)
 Proposition-3-6-3 = Σ-is-discrete
 
+-- prop:discrete-closure (3), item:discrete-sigma, subtypes
+Proposition-3-6-3-subtype : {X : 𝓤 ̇ } {P : X → 𝓥 ̇ }
+                          → ((x : X) → is-prop (P x))
+                          → is-discrete X
+                          → is-discrete (Σ P)
+Proposition-3-6-3-subtype = subtype-is-discrete
+
+-- prop:discrete-closure (3), item:discrete-sigma, binary products
+Proposition-3-6-3-× : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                    → is-discrete X → is-discrete Y → is-discrete (X × Y)
+Proposition-3-6-3-× = ×-is-discrete
+
 -- prop:discrete-closure (4), item:discrete-sigma-isolated
 Proposition-3-6-4 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
                   → is-isolated x
@@ -701,6 +774,11 @@ Proposition-3-6-4'' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y}
                     → is-isolated (x , y)
                     → is-isolated x
 Proposition-3-6-4'' = ×-isolated-left
+
+Proposition-3-6-4''' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y}
+                     → is-isolated (x , y)
+                     → is-isolated y
+Proposition-3-6-4''' = ×-isolated-right
 
 -- prop:discrete-closure (5), item:discrete-reflected
 Proposition-3-6-5 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -888,6 +966,10 @@ Examples-3-13-2-r-step x =
 Examples-3-13-3 : is-discrete (ℕ → 𝟚) → WLPO
 Examples-3-13-3 = ℕ∞-discrete-gives-WLPO ∘ retract-is-discrete (ℕ∞-retract-of-Cantor fe₀)
 
+-- ex:tot-sep (3), item:cantor-not-discrete, total separatedness
+Examples-3-13-3' : is-totally-separated (ℕ → 𝟚)
+Examples-3-13-3' = Cantor-is-totally-separated fe₀
+
 -- lem:sigma-NInf-tot-sep
 Lemma-3-14 : (A : ℕ∞ → 𝓥 ̇ )
            → ((u : ℕ∞) → is-totally-separated (A u))
@@ -953,6 +1035,13 @@ Lemma-4-2 = compact-types-are-Compact
 Lemma-4-2' : {X : 𝓤 ̇ } → is-Compact X {𝓤₀} → is-compact X
 Lemma-4-2' = Compact-types-are-compact
 
+-- lem:compact-formulations, the proposition valued families
+Lemma-4-2'' : {X : 𝓤 ̇ } → is-compact X → Σ-Compact' X {𝓥}
+Lemma-4-2'' c A _ = compact-types-are-Compact c A
+
+Lemma-4-2''' : {X : 𝓤 ̇ } → Σ-Compact' X {𝓤₀} → is-compact X
+Lemma-4-2''' = Compact'-types-are-compact
+
 -- lem:compact-decidable
 Lemma-4-3 : (X : 𝓤 ̇ ) → is-compact X → is-decidable X
 Lemma-4-3 = compact-types-are-decidable
@@ -1004,6 +1093,11 @@ Lemma-4-6-1' = compact∙-types-are-pointed
 Lemma-4-6-2 : {X : 𝓤 ̇ } → is-compact X → X → is-compact∙ X
 Lemma-4-6-2 = compact-pointed-types-are-compact∙
 
+-- lem:compact-pt, a universal witness is a root iff p has a root
+Lemma-4-6-root : {X : 𝓤 ̇ } → is-compact∙ X → (p : X → 𝟚)
+               → Σ x₀ ꞉ X , (p has-a-root ↔ x₀ is-a-root-of p)
+Lemma-4-6-root = putative-root
+
 -- ex:compact-pt-basic (1)
 Examples-4-7-1 : is-compact∙ 𝟚
 Examples-4-7-1 = 𝟚-is-compact∙
@@ -1015,6 +1109,13 @@ Examples-4-7-2 {𝓤} = Ω-is-compact∙ (fe 𝓤 𝓤) (pe 𝓤)
 -- ex:compact-pt-basic (3), item:NInf-compact
 Examples-4-7-3 : is-compact∙ ℕ∞
 Examples-4-7-3 = ℕ∞-compact∙
+
+-- ex:compact-pt-basic (3), the infimum of the roots
+Examples-4-7-3' : has-inf _≼ℕ∞_
+Examples-4-7-3' = ℕ∞-has-inf
+
+Examples-4-7-3'' : has-infs-of-complemented-subsets ℕ∞ᵒ
+Examples-4-7-3'' = ℕ∞ᵒ-has-infs-of-complemented-subsets (pe 𝓤₀)
 
 -- thm:compact-closure (1), item:compact-zero-one
 Theorem-4-8-1-𝟘 : is-Compact (𝟘 {𝓤}) {𝓥}
@@ -1560,6 +1661,10 @@ Prose-ordinal-of-ordinals-↓-preserves-order
  : (α : Ordinal 𝓤) (a b : ⟨ α ⟩) → a ≺⟨ α ⟩ b → (α ↓ a) ⊲ (α ↓ b)
 Prose-ordinal-of-ordinals-↓-preserves-order = ↓-preserves-order
 
+Prose-ordinal-of-ordinals-↓-lc
+ : (α : Ordinal 𝓤) (a b : ⟨ α ⟩) → α ↓ a ＝ α ↓ b → a ＝ b
+Prose-ordinal-of-ordinals-↓-lc = ↓-lc
+
 -- claim ordinal-comparisons
 Prose-ordinal-comparisons : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 Prose-ordinal-comparisons = _⊴_
@@ -1738,12 +1843,22 @@ Example-5-18-ordinal = ℕ∞ₒ
 Example-5-18-topped : Ordinalᵀ 𝓤₀
 Example-5-18-topped = ℕ∞ᵒ
 
+Example-5-18-top : (u : ℕ∞) → ¬ (∞ ≺ℕ∞ u)
+Example-5-18-top = ∞-top
+
+Example-5-18-largest : (u : ℕ∞) → u ≼ℕ∞ ∞
+Example-5-18-largest = ∞-largest
+
 -- claim topped-arithmetic
 Prose-topped-arithmetic : Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤
 Prose-topped-arithmetic = _+ᵒ_
 
 Prose-topped-arithmetic' : Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤
 Prose-topped-arithmetic' = _×ᵒ_
+
+Prose-topped-arithmetic'' : (τ₀ τ₁ : Ordinalᵀ 𝓤)
+                          → [ τ₀ +ᵒ τ₁ ] ＝ ([ τ₀ ] +ₒ [ τ₁ ])
+Prose-topped-arithmetic'' = alternative-plus
 
 -- claim trichotomous-arithmetic
 Prose-trichotomous-arithmetic : Ordinal₃ 𝓤 → Ordinal₃ 𝓤 → Ordinal₃ 𝓤
@@ -1768,6 +1883,9 @@ Labels: Lemma 5.19 = lem:topped-sum.
 -- lem:topped-sum
 Lemma-5-19 : (τ : Ordinalᵀ 𝓤) → (⟨ τ ⟩ → Ordinalᵀ 𝓤) → Ordinalᵀ 𝓤
 Lemma-5-19 = ∑
+
+Lemma-5-19' : (α : Ordinal 𝓤) → (⟨ α ⟩ → Ordinalᵀ 𝓤) → Ordinal 𝓤
+Lemma-5-19' = ∑ₒ
 
 -- lem:ordinal-extension
 Lemma-5-20 : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
@@ -1990,9 +2108,13 @@ Definition-6-2 = ⟦_⟧-sup
 Proposition-6-3 : ((b : B) → is-compact ⟨ ⟦ b ⟧-sup ⟩) → LPO
 Proposition-6-3 = ⟦_⟧₀-compact-gives-LPO
 
--- prop:failure-trichotomy
-Proposition-6-4 : ((b : B) → is-trichotomous ⟦ b ⟧-sup) → LPO
-Proposition-6-4 = FTr.trichotomy-of-the-standard-interpretation-gives-LPO
+-- prop:failure-trichotomy (1), item:std-trichotomous-lpo
+Proposition-6-4-1 : ((b : B) → is-trichotomous ⟦ b ⟧-sup) → LPO
+Proposition-6-4-1 = FTr.trichotomy-of-the-standard-interpretation-gives-LPO
+
+-- prop:failure-trichotomy (2), item:std-discrete-wlpo
+Proposition-6-4-2 : ((b : B) → is-discrete ⟨ ⟦ b ⟧-sup ⟩) → WLPO
+Proposition-6-4-2 = FTr.discreteness-of-the-standard-interpretation-gives-WLPO
 
 \end{code}
 
@@ -2245,71 +2367,127 @@ Example-6-24'' = ∑₁-top-is-isolated
 Proposition-6-25 : ((b : B) → is-equiv (BDC.ι {b})) ↔ LPO
 Proposition-6-25 = BDC.ι-is-equiv-iff-LPO
 
+-- lem:omega-plus-two (1), item:iota1-simulation
+Lemma-6-26-1 : is-simulation [ succₒ ω ] [ ℕ∞ᵒ ] ι𝟙
+Lemma-6-26-1 = pr₂ ω+𝟙-is-⊴-ℕ∞
+
+-- lem:omega-plus-two (2), item:omega-plus-two-lpo
+Lemma-6-26-2 : [ succₒ ω +ᵒ 𝟙ᵒ ] ⊴ [ ℕ∞ᵒ +ᵒ 𝟙ᵒ ] → LPO
+Lemma-6-26-2 = ω+𝟚-⊴-ℕ∞+𝟙-gives-LPO ua
+
+-- prop:delta-below-kappa (1), item:delta-below-kappa-omega
+Proposition-6-27-1 : [ ⟦ L (λ _ → Z) ⟧-Σ₁ ] ⊴ [ ⟦ L (λ _ → Z) ⟧-Σ' ]
+Proposition-6-27-1 = BDC.Δ𝟙-⊴-Κ𝟙 ua
+
+-- prop:delta-below-kappa (2), item:delta-below-kappa-lpo
+Proposition-6-27-2 : ((b : B) → [ ⟦ b ⟧-Σ₁ ] ⊴ [ ⟦ b ⟧-Σ' ]) ↔ LPO
+Proposition-6-27-2 = BDC.Δ-⊴-Κ-iff-LPO ua
+
+-- prop:delta-below-kappa (2), the code of the forward implication
+Proposition-6-27-2-instance
+ : [ ⟦ S (L (λ _ → Z)) ⟧-Σ₁ ] ⊴ [ ⟦ S (L (λ _ → Z)) ⟧-Σ' ] → LPO
+Proposition-6-27-2-instance = BDC.Δ-⊴-Κ-gives-LPO ua
+
 -- def:has-inf
-Definition-6-26 : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-Definition-6-26 = has-inf
+Definition-6-28 : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+Definition-6-28 = has-inf
 
 -- def:has-inf (1), item:conditional-root
-Definition-6-26-1 : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → 𝟚) → X → 𝓤 ̇
-Definition-6-26-1 _≤_ = is-conditional-root _≤_
+Definition-6-28-1 : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → 𝟚) → X → 𝓤 ̇
+Definition-6-28-1 _≤_ = is-conditional-root _≤_
 
 -- def:has-inf (2), item:roots-infimum
-Definition-6-26-2 : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
-Definition-6-26-2 = is-roots-infimum
+Definition-6-28-2 : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
+Definition-6-28-2 = is-roots-infimum
 
-Definition-6-26-topped : Ordinalᵀ 𝓤 → 𝓤 ̇
-Definition-6-26-topped = has-infs-of-complemented-subsets
+Definition-6-28-topped : Ordinalᵀ 𝓤 → 𝓤 ̇
+Definition-6-28-topped = has-infs-of-complemented-subsets
 
 -- rem:inf-gives-compact
-Remark-6-27 : {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ ) → has-inf _≤_ → is-compact∙ X
-Remark-6-27 = has-inf-gives-compact∙
+Remark-6-29 : {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ ) → has-inf _≤_ → is-compact∙ X
+Remark-6-29 = has-inf-gives-compact∙
 
 -- lem:least-element
-Lemma-6-28 : {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ )
+Lemma-6-30 : {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ )
            → has-inf _≤_
            → (p : X → 𝟚)
            → ¬¬ (Σ x ꞉ X , p x ＝ ₀)
            → Σ x₀ ꞉ X , is-least-root _≤_ p x₀
-Lemma-6-28 = has-inf-gives-least-root
+Lemma-6-30 = has-inf-gives-least-root
 
 -- thm:micro-inf-tychonoff
-Theorem-6-29 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Theorem-6-31 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
              → is-prop X
              → (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
              → ((x : X) → has-inf (λ (y y' : Y x) → ¬ (y' ≺ y)))
              → has-inf (λ (φ γ : Π Y) → ¬ (Σ x ꞉ X , γ x ≺ φ x))
-Theorem-6-29 = micro-inf-tychonoff
+Theorem-6-31 = micro-inf-tychonoff
 
 -- thm:kappa-infs
-Theorem-6-30 : propext 𝓤₀
+Theorem-6-32 : propext 𝓤₀
              → (b : B) → has-infs-of-complemented-subsets (⟦ b ⟧-Σ')
-Theorem-6-30 = BDC.Κ-has-infs-of-complemented-subsets
+Theorem-6-32 = BDC.Κ-has-infs-of-complemented-subsets
 
 -- cor:kappa-least
-Corollary-6-31 : propext 𝓤₀
+Corollary-6-33 : propext 𝓤₀
                → (b : B) (p : ⟨ ⟦ b ⟧-Σ' ⟩ → 𝟚)
                → ¬¬ (Σ x ꞉ ⟨ ⟦ b ⟧-Σ' ⟩ , p x ＝ ₀)
                → Σ x₀ ꞉ ⟨ ⟦ b ⟧-Σ' ⟩ , is-least-root
                                        (underlying-weak-order (⟦ b ⟧-Σ')) p x₀
-Corollary-6-31 = BDC.Κ-has-least-roots-of-complemented-subsets
+Corollary-6-33 = BDC.Κ-has-least-roots-of-complemented-subsets
+
+-- lem:omega-plus-one-least (1), item:least-transfer
+Lemma-6-34-1 : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+             → α ≃ₒ β
+             → ((p : ⟨ α ⟩ → 𝟚)
+                  → ¬¬ (Σ x ꞉ ⟨ α ⟩ , p x ＝ ₀)
+                  → Σ x₀ ꞉ ⟨ α ⟩ , is-least-root (underlying-weak-order α) p x₀)
+             → ((q : ⟨ β ⟩ → 𝟚)
+                  → ¬¬ (Σ y ꞉ ⟨ β ⟩ , q y ＝ ₀)
+                  → Σ y₀ ꞉ ⟨ β ⟩ , is-least-root (underlying-weak-order β) q y₀)
+Lemma-6-34-1 = ≃ₒ-gives-has-least-roots
+
+-- lem:omega-plus-one-least (2), item:omega-plus-one-least-lpo
+Lemma-6-34-2 : ((p : ⟨ succₒ ω ⟩ → 𝟚)
+                 → ¬¬ (Σ x ꞉ ⟨ succₒ ω ⟩ , p x ＝ ₀)
+                 → Σ x₀ ꞉ ⟨ succₒ ω ⟩ ,
+                    is-least-root (underlying-weak-order (succₒ ω)) p x₀)
+             → LPO
+Lemma-6-34-2 = succₒ-ω-least-roots-gives-LPO
 
 -- prop:delta-least-lpo
-Proposition-6-32 : propext 𝓤₀
+Proposition-6-35 : propext 𝓤₀
              → (((b : B) (p : ⟨ ⟦ b ⟧-Σ₁ ⟩ → 𝟚)
                   → ¬¬ (Σ x ꞉ ⟨ ⟦ b ⟧-Σ₁ ⟩ , p x ＝ ₀)
                   → Σ x₀ ꞉ ⟨ ⟦ b ⟧-Σ₁ ⟩ , is-least-root
                                           (underlying-weak-order (⟦ b ⟧-Σ₁)) p x₀)
                 ↔ LPO)
-Proposition-6-32 = BDC.Δ-least-roots-iff-LPO
+Proposition-6-35 = BDC.Δ-least-roots-iff-LPO
 
 -- rem:delta-least-single-code
-Remark-6-33 : ((p : ⟨ ⟦ (L (λ _ → Z)) ⟧-Σ₁ ⟩ → 𝟚)
+Remark-6-36 : ((p : ⟨ ⟦ (L (λ _ → Z)) ⟧-Σ₁ ⟩ → 𝟚)
                 → ¬¬ (Σ x ꞉ ⟨ ⟦ (L (λ _ → Z)) ⟧-Σ₁ ⟩ , p x ＝ ₀)
                 → Σ x₀ ꞉ ⟨ ⟦ (L (λ _ → Z)) ⟧-Σ₁ ⟩ ,
                      is-least-root
                       (underlying-weak-order (⟦ (L (λ _ → Z)) ⟧-Σ₁)) p x₀)
             → LPO
-Remark-6-33 = BDC.Δ𝟙-least-roots-gives-LPO
+Remark-6-36 = BDC.Δ𝟙-least-roots-gives-LPO
+
+-- prop:std-trich-least-lpo (1), item:std-least-lpo
+Proposition-6-37-1 : ((b : B) (p : ⟨ ⟦ b ⟧-sup ⟩ → 𝟚)
+                      → ¬¬ (Σ x ꞉ ⟨ ⟦ b ⟧-sup ⟩ , p x ＝ ₀)
+                      → Σ x₀ ꞉ ⟨ ⟦ b ⟧-sup ⟩ ,
+                         is-least-root (underlying-weak-order ⟦ b ⟧-sup) p x₀)
+                   → LPO
+Proposition-6-37-1 = ⟦_⟧₀-least-roots-gives-LPO
+
+-- prop:std-trich-least-lpo (2), item:trich-least-lpo
+Proposition-6-37-2 : ((b : B) (p : ⟨ ⟦ b ⟧-Σ ⟩ → 𝟚)
+                      → ¬¬ (Σ x ꞉ ⟨ ⟦ b ⟧-Σ ⟩ , p x ＝ ₀)
+                      → Σ x₀ ꞉ ⟨ ⟦ b ⟧-Σ ⟩ ,
+                         is-least-root (underlying-weak-order [ ⟦ b ⟧-Σ ]) p x₀)
+                   → LPO
+Proposition-6-37-2 = ⟦_⟧₃-least-roots-gives-LPO
 
 \end{code}
 
@@ -2418,7 +2596,7 @@ Proposition-7-8 : propext 𝓤₀
                    ↔ LPO)
 Proposition-7-8 = IRC.Δ-least-roots-iff-LPO
 
--- prop:E-delta-below-kappa (1), item:iota1-simulation
+-- prop:E-delta-below-kappa (1), item:E-iota1-simulation
 Proposition-7-9-1 : [ IRC.Δ IRC.⌜ω+𝟙⌝ ] ⊴ [ IRC.Κ IRC.⌜ω+𝟙⌝ ]
 Proposition-7-9-1 = ω+𝟙-is-⊴-ℕ∞
 

@@ -1,3 +1,5 @@
+Martin Escardo, original date unknown.
+
 Natural numbers
 
 \begin{code}
