@@ -33,7 +33,7 @@ affiliations:
     index: 2
   - name: Zeroth Research, United Kingdom (affiliated with **1** for the work described here)
     index: 3
-  - name: Independent researcher
+  - name: Independent researcher, Germany
     index: 4
 date: 13 November 2026
 bibliography: paper.bib
