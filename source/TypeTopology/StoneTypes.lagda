@@ -254,7 +254,7 @@ principal-point = pr₁
 
 principality
  : {X : 𝓤 ̇ } {𝓕 : Clopen (Clopen X)} (p : is-principal 𝓕)
- → 𝓕 is-principal-at principal-point p
+ → 𝓕 is-principal-at (principal-point p)
 principality = pr₂
 
 \end{code}
@@ -2053,8 +2053,8 @@ clopen-subtypes-of-pre-stone-types-are-pre-stone-types {𝓤} {X} ζ A
 
 \end{code}
 
-We now turn to ℕ∞. For a natural number n, the clopen ↑ n is the upper
-set of n in ℕ∞.
+We now turn to ℕ∞. For a natural number n, the clopen ↑ n is the
+strict upper set of n in ℕ∞.
 
 \begin{code}
 
@@ -2062,6 +2062,9 @@ infix 50 ↑_
 
 ↑_ : ℕ → Clopen ℕ∞
 ↑ n = λ x → ι x n
+
+_ : (n : ℕ) (x : ℕ∞) → x ∈ ↑ n ＝ n ⊏ x
+_ = λ n x → refl
 
 \end{code}
 
@@ -2260,8 +2263,8 @@ the same holds for any ultrafilter.
    → m is-modulus-of A
    → ∞ ∈ A
    → A ∈ 𝓕
-  clopens-containing-∞-are-in-𝓕 e A m φ r =
-   upper-closed II (𝓕-at-upper-sets e m)
+  clopens-containing-∞-are-in-𝓕 e A m φ r
+   = upper-closed II (𝓕-at-upper-sets e m)
    where
     I : (x : ℕ∞) → x ∈ complement (↑ m) ∪ A
     I = ℕ∞-𝟚-density fe III (max𝟚-lemma-converse (inr r))
