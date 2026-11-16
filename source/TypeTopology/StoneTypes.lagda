@@ -45,7 +45,7 @@ fiber is the preimage of a clopen of the sum, which holds for a
 constant family and so gives the closure of the Stone types under
 binary products.
 
-We close with three constructive taboos. That every pre-Stone type is
+We then discuss three constructive taboos. That every pre-Stone type is
 a Stone type gives WEM. That Stone types are closed under Σ gives ¬¬ WLPO,
 and the same for the pre-Stone types, so neither of them is closed
 under Σ when ¬ WLPO holds. That every compact totally separated type
@@ -58,6 +58,9 @@ model of Blass [2], where excluded middle holds.
     applications of the notions of forcing and generic sets",
     Fundamenta Mathematicae 56, 1964, pp. 325-345,
     https://doi.org/10.4064/fm-56-3-325-345.
+
+We close by showing that, assuming ¬ WLPO, the Cantor type is a Stone
+type precisely when it is Π-compact.
 
 \begin{code}
 
@@ -90,7 +93,7 @@ open import Notation.CanonicalMap
 open import Notation.Order
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
-open import TypeTopology.DecidabilityOfNonContinuity fe
+open import TypeTopology.DecidabilityOfNonContinuity fe hiding (_↾_)
 open import TypeTopology.GenericConvergentSequenceCompactness fe
 open import TypeTopology.MicroTychonoff
 open import TypeTopology.TotallySeparated
@@ -2660,5 +2663,221 @@ nonprincipal-ultrafilter-on-ℕ∞-gives-failure
  → ¬ Compact-Totally-Separated-Types-Are-Stone-Types 𝓤₀
 nonprincipal-ultrafilter-on-ℕ∞-gives-failure 𝓕 i ν c
  = ν (ultrafilters-on-ℕ∞-are-principal c 𝓕 i)
+
+\end{code}
+
+Added 16th November 2026.
+
+We now come to the Cantor type 𝟚ᴺ. Assuming ¬ WLPO, it is a Stone
+type precisely when it is Π-compact. Neither hypothesis can be
+dropped. With excluded middle and choice, the Cantor type is
+Π-compact but has a nonprincipal ultrafilter of clopens. And in
+Kleene's realizability model, where ¬ WLPO holds, Kleene's tree shows
+that the Cantor type is not Π-compact.
+
+The Π-compactness of the Cantor type is already necessary, because
+Stone types are Π-compact. For the converse, Corollary 4.5 of [3],
+with Π-compactness in place of searchability, as formalized in the
+module TypeTopology.DecidabilityOfNonContinuity, shows that ¬ WLPO
+gives a doubly negated modulus of uniform continuity to every clopen
+of the Cantor type. We show that an ultrafilter agrees with a clopen
+that has a modulus of uniform continuity at the point given by the
+values of the ultrafilter at the coordinates. Because equality of 𝟚
+is ¬¬-stable, the double negation is harmless.
+
+[3] Martín H. Escardó, "Constructive decidability of classical
+    continuity", Mathematical Structures in Computer Science 25(7),
+    2015, pp. 1578-1589, https://doi.org/10.1017/S096012951300042X.
+
+We use the notion of modulus of uniform continuity of the module
+TypeTopology.Cantor for functions into 𝟚. A modulus of uniform
+continuity of a clopen A of the Cantor type is thus an n : ℕ such that
+the membership of a sequence in A depends only on its first n terms.
+
+\begin{code}
+
+open import TypeTopology.Cantor
+ using (𝟚ᴺ ; head ; tail ; _∷_ ; cons-head-tail ; module notions-of-continuity)
+
+open import CantorSchroederBernstein.CSB-WLPO
+ using (Π-compact-types-are-Π-Compact)
+
+open notions-of-continuity 𝟚 𝟚-is-discrete
+ using (_is-a-modulus-of-uc-of_ ; uniformly-continuous)
+
+open Π-compactness-and-uniform-continuity 𝟚 𝟚-is-discrete
+ using (Π-compactness-and-¬WLPO-give-not-not-uniform-continuity)
+
+coordinate : ℕ → Clopen 𝟚ᴺ
+coordinate i = λ γ → γ i
+
+point-of : Clopen (Clopen 𝟚ᴺ) → 𝟚ᴺ
+point-of 𝓕 i = coordinate i ϵ 𝓕
+
+image-under-tail : Clopen (Clopen 𝟚ᴺ) → Clopen (Clopen 𝟚ᴺ)
+image-under-tail 𝓕 = λ B → tail ⁻¹[ B ] ϵ 𝓕
+
+image-under-tail-is-ultrafilter
+ : (𝓕 : Clopen (Clopen 𝟚ᴺ))
+ → is-ultrafilter 𝓕
+ → is-ultrafilter (image-under-tail 𝓕)
+image-under-tail-is-ultrafilter 𝓕 i
+ = preserves-₀ ,
+   preserves-₁ ,
+   (λ A B → preserves-∧ (tail ⁻¹[ A ]) (tail ⁻¹[ B ])) ,
+   (λ A B → preserves-∨ (tail ⁻¹[ A ]) (tail ⁻¹[ B ]))
+ where
+  open ultrafilter-properties 𝓕 i
+
+_ : (𝓕 : Clopen (Clopen 𝟚ᴺ))
+  → point-of (image-under-tail 𝓕) ＝ tail (point-of 𝓕)
+_ = λ 𝓕 → refl
+
+\end{code}
+
+Every clopen A of the Cantor type is a combination of the coordinate
+clopen at 0 and the preimages, under the tail map, of the preimages of
+A under the two maps that prepend a bit to a sequence.
+
+\begin{code}
+
+cons-decomposition
+ : (A : Clopen 𝟚ᴺ) (b : 𝟚) (δ : 𝟚ᴺ)
+ → (b ∷ δ) ϵ A ＝ b ∧ δ ϵ (₁ ∷_) ⁻¹[ A ] ∨ ⇁ b ∧ δ ϵ (₀ ∷_) ⁻¹[ A ]
+cons-decomposition A ₀ δ = refl
+cons-decomposition A ₁ δ = (max𝟚-comm ((₁ ∷ δ) ϵ A) ₀)⁻¹
+
+clopen-decomposition
+ : (A : Clopen 𝟚ᴺ)
+ → A ＝ coordinate 0 ∩ tail ⁻¹[ (₁ ∷_) ⁻¹[ A ] ]
+      ∪ complement (coordinate 0) ∩ tail ⁻¹[ (₀ ∷_) ⁻¹[ A ] ]
+clopen-decomposition A = dfunext fe I
+ where
+  I : (γ : 𝟚ᴺ)
+    → γ ϵ A ＝ head γ ∧ tail γ ϵ (₁ ∷_) ⁻¹[ A ]
+            ∨ ⇁ head γ ∧ tail γ ϵ (₀ ∷_) ⁻¹[ A ]
+  I γ = γ ϵ A                 ＝⟨ ap (_ϵ A) (dfunext fe (cons-head-tail γ)) ⟩
+        (head γ ∷ tail γ) ϵ A ＝⟨ cons-decomposition A (head γ) (tail γ) ⟩
+        head γ ∧ tail γ ϵ (₁ ∷_) ⁻¹[ A ] ∨ ⇁ head γ ∧ tail γ ϵ (₀ ∷_) ⁻¹[ A ] ∎
+
+\end{code}
+
+An ultrafilter agrees with any clopen that has a modulus of uniform
+continuity at its point, by induction on the modulus. A clopen with
+modulus 0 is constant. For a clopen with modulus n + 1, the two
+clopens obtained by prepending a bit have modulus n, and we apply the
+induction hypothesis to them and to the image of the ultrafilter under
+the tail map.
+
+\begin{code}
+
+ultrafilter-at-constant-clopen
+ : (𝓕 : Clopen (Clopen 𝟚ᴺ))
+ → is-ultrafilter 𝓕
+ → (b : 𝟚) → (λ _ → b) ϵ 𝓕 ＝ b
+ultrafilter-at-constant-clopen 𝓕 i ₀ = preserves-₀
+ where
+  open ultrafilter-properties 𝓕 i
+ultrafilter-at-constant-clopen 𝓕 i ₁ = preserves-₁
+ where
+  open ultrafilter-properties 𝓕 i
+
+ultrafilter-at-clopen-with-uniform-modulus
+ : (n : ℕ)
+   (𝓕 : Clopen (Clopen 𝟚ᴺ))
+ → is-ultrafilter 𝓕
+ → (A : Clopen 𝟚ᴺ)
+ → n is-a-modulus-of-uc-of A
+ → A ϵ 𝓕 ＝ point-of 𝓕 ϵ A
+ultrafilter-at-clopen-with-uniform-modulus 0 𝓕 i A m = I
+ where
+  𝟎ᴺ : 𝟚ᴺ
+  𝟎ᴺ = λ _ → ₀
+
+  c : 𝟚
+  c = 𝟎ᴺ ϵ A
+
+  I : A ϵ 𝓕 ＝ point-of 𝓕 ϵ A
+  I = A ϵ 𝓕          ＝⟨ I₀ ⟩
+      (λ γ → c) ϵ 𝓕  ＝⟨ I₁ ⟩
+      c              ＝⟨ I₂ ⟩
+      point-of 𝓕 ϵ A ∎
+   where
+    I₀ = ap (_ϵ 𝓕) (dfunext fe (λ γ → m γ 𝟎ᴺ ⋆))
+    I₁ = ultrafilter-at-constant-clopen 𝓕 i c
+    I₂ = (m (point-of 𝓕) 𝟎ᴺ ⋆)⁻¹
+ultrafilter-at-clopen-with-uniform-modulus (succ n) 𝓕 i A m = I
+ where
+  open ultrafilter-properties 𝓕 i
+
+  α : 𝟚ᴺ
+  α = point-of 𝓕
+
+  C : Clopen 𝟚ᴺ
+  C = coordinate 0
+
+  A₀ A₁ : Clopen 𝟚ᴺ
+  A₀ = (₀ ∷_) ⁻¹[ A ]
+  A₁ = (₁ ∷_) ⁻¹[ A ]
+
+  𝓖 : Clopen (Clopen 𝟚ᴺ)
+  𝓖 = image-under-tail 𝓕
+
+  IH : (b : 𝟚) → (b ∷_) ⁻¹[ A ] ϵ 𝓖 ＝ tail α ϵ (b ∷_) ⁻¹[ A ]
+  IH b = ultrafilter-at-clopen-with-uniform-modulus n 𝓖
+          (image-under-tail-is-ultrafilter 𝓕 i)
+          ((b ∷_) ⁻¹[ A ])
+          (λ δ δ' e → m (b ∷ δ) (b ∷ δ') (refl , e))
+
+  I : A ϵ 𝓕 ＝ α ϵ A
+  I = A ϵ 𝓕                                                        ＝⟨ I₀ ⟩
+      (C ∩ tail ⁻¹[ A₁ ] ∪ complement C ∩ tail ⁻¹[ A₀ ]) ϵ 𝓕       ＝⟨ I₁ ⟩
+      (C ∩ tail ⁻¹[ A₁ ]) ϵ 𝓕 ∨ (complement C ∩ tail ⁻¹[ A₀ ]) ϵ 𝓕 ＝⟨ I₂ ⟩
+      α 0 ∧ A₁ ϵ 𝓖 ∨ complement C ϵ 𝓕 ∧ A₀ ϵ 𝓖                     ＝⟨ I₃ ⟩
+      α 0 ∧ A₁ ϵ 𝓖 ∨ ⇁ α 0 ∧ A₀ ϵ 𝓖                                ＝⟨ I₄ ⟩
+      α 0 ∧ tail α ϵ A₁ ∨ ⇁ α 0 ∧ tail α ϵ A₀                      ＝⟨ I₅ ⟩
+      α ϵ A                                                        ∎
+   where
+    I₀ = ap (_ϵ 𝓕) (clopen-decomposition A)
+    I₁ = preserves-∨ (C ∩ tail ⁻¹[ A₁ ]) (complement C ∩ tail ⁻¹[ A₀ ])
+    I₂ = ap₂ _∨_
+          (preserves-∧ C (tail ⁻¹[ A₁ ]))
+          (preserves-∧ (complement C) (tail ⁻¹[ A₀ ]))
+    I₃ = ap (λ - → α 0 ∧ A₁ ϵ 𝓖 ∨ - ∧ A₀ ϵ 𝓖) (preserves-complement C)
+    I₄ = ap₂ (λ x y → α 0 ∧ x ∨ ⇁ α 0 ∧ y) (IH ₁) (IH ₀)
+    I₅ = (happly (clopen-decomposition A) α)⁻¹
+
+\end{code}
+
+Hence, assuming ¬ WLPO, every ultrafilter of the clopens of a
+Π-compact Cantor type is principal, and the Cantor type is a Stone
+type.
+
+\begin{code}
+
+Cantor-is-stone-type : ¬ WLPO → is-Π-compact 𝟚ᴺ → is-stone-type 𝟚ᴺ
+Cantor-is-stone-type nwlpo κ =
+ stone-criterion
+  (Π-compact-gives-discrete-clopen-algebra κ)
+  (Cantor-is-totally-separated fe)
+  I
+ where
+  I : (𝓕 : Clopen (Clopen 𝟚ᴺ)) → is-ultrafilter 𝓕 → is-principal 𝓕
+  I 𝓕 i = point-of 𝓕 , II
+   where
+    II : 𝓕 is-principal-at point-of 𝓕
+    II A = 𝟚-is-¬¬-separated (A ϵ 𝓕) (point-of 𝓕 ϵ A)
+            (¬¬-functor III
+              (Π-compactness-and-¬WLPO-give-not-not-uniform-continuity
+                (Π-compact-types-are-Π-Compact κ) nwlpo A))
+     where
+      III : uniformly-continuous A → A ϵ 𝓕 ＝ point-of 𝓕 ϵ A
+      III (n , m) = ultrafilter-at-clopen-with-uniform-modulus n 𝓕 i A m
+
+Cantor-is-stone-type-iff-Π-compact
+ : ¬ WLPO
+ → is-stone-type 𝟚ᴺ ↔ is-Π-compact 𝟚ᴺ
+Cantor-is-stone-type-iff-Π-compact nwlpo
+ = stone-types-are-Π-compact , Cantor-is-stone-type nwlpo
 
 \end{code}
