@@ -5,8 +5,6 @@ TODO
 {-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
-
-open import UF.Univalence
 open import UF.PropTrunc
 open import UF.Size
 
@@ -37,7 +35,6 @@ private
 
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
-open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
@@ -61,6 +58,10 @@ successor-⊴-gives-⊲ α β 𝕗@(f , f-sim) =
  where
   b : ⟨ β ⟩
   b = f (inr ⋆)
+
+\end{code}
+
+\begin{code}
 
 -- TODO: Upstream
 double-transfinite-induction-on-OO
@@ -99,6 +100,10 @@ double-transfinite-recursion-on-OO-behaviour {𝓥} {𝓤} {X} r = λ α β → 
        (λ (α , β) h → r α β (λ a → h ((α ↓ a) , β) (inr (refl , (a , refl))))
                             (λ b → h (α , (β ↓ b)) (inl (b , refl))))
 
+\end{code}
+
+\begin{code}
+
 -- TODO: Upstream
 module _
         {I : 𝓤 ̇ }
@@ -121,17 +126,9 @@ module _
   sup-is-lower-bound-of-upper-bounds (λ i → α i +ₒ 𝟙ₒ) β
    (λ i → ⊲-gives-successor-⊴ (α i) β (h i))
 
-{-
-private
- hessenberg-recursor
-  : ((α , β) : Ordinal 𝓤 × Ordinal 𝓤)
-  → (((γ , δ) : Ordinal 𝓤 × Ordinal 𝓤)
-              → (γ , δ) ≺⟨ OO 𝓤 ×ₒ OO 𝓤 ⟩ (α , β) → Ordinal 𝓤)
-  → Ordinal 𝓤
- hessenberg-recursor (α , β) r =
-  sup⁺ (cases (λ a → r (α ↓ a , β) (inr (refl , a , refl)))
-              (λ b → r (α , β ↓ b) (inl (b , refl))))
--}
+\end{code}
+
+\begin{code}
 
 abstract
  _⊕_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤
@@ -142,21 +139,9 @@ abstract
  ⊕-behaviour {𝓤} = double-transfinite-recursion-on-OO-behaviour
                     (λ α β r₁ r₂ → sup⁺ (cases r₁ r₂))
 
-{-
- ∥∥-rec
-  ∨-is-prop
-  {!!}
-  (initial-segment-of-sup-is-initial-segment-of-some-component {!λ y → cases r₁ r₂ y +ₒ 𝟙ₒ!} x)
-   where
+\end{code}
 
-    I : (Σ y ꞉ (⟨ α ⟩ + ⟨ β ⟩) , Σ x' ꞉ ⟨ cases r₁ r₂ y +ₒ 𝟙ₒ ⟩ , {!!})
-    {-
-          , Σ x' ꞉ ⟨ (cases r₁ r₂ y) +ₒ 𝟙ₒ ⟩
-            , (α ⊕ β) ↓ x ＝ ((cases r₁ r₂ y) +ₒ 𝟙ₒ) ↓ x') -}
-      → (Σ a ꞉ ⟨ α ⟩ , (α ⊕ β) ↓ x ＝ (α ↓ a) ⊕ β)
-        ∨ (Σ b ꞉ ⟨ β ⟩ , (α ⊕ β) ↓ x ＝ α ⊕ (β ↓ b))
-    I = {!!}
--}
+\begin{code}
 
 ⊕-is-commutative : (α β : Ordinal 𝓤) → α ⊕ β ＝ β ⊕ α
 ⊕-is-commutative {𝓤} = double-transfinite-induction-on-OO _ I
@@ -185,6 +170,10 @@ abstract
               (dep-cases (λ b → sup⁺-is-strict-upper-bound f {inr b})
                          (λ a → sup⁺-is-strict-upper-bound f {inl a})))
      V   = (⊕-behaviour β α) ⁻¹
+
+\end{code}
+
+\begin{code}
 
 ⊕-⊲-left : (α β : Ordinal 𝓤) {a : ⟨ α ⟩} → (α ↓ a) ⊕ β ⊲ α ⊕ β
 ⊕-⊲-left α β {a} = transport⁻¹ ((α ↓ a) ⊕ β ⊲_) (⊕-behaviour α β)
@@ -215,6 +204,10 @@ abstract
  ⊲-is-transitive (α ⊕ β) (α' ⊕ β) (α' ⊕ β')
   (⊕-is-order-preserving-left α α' β k)
   (⊕-is-order-preserving-right α' β β' l)
+
+\end{code}
+
+\begin{code}
 
 -- TODO: Refer to the above ⊲-left/right/mixed?
 ⊕-↓-characterization
@@ -558,7 +551,7 @@ test P i = transport⁻¹ (_＝ Pₒ +ₒ 𝟙ₒ) (⊕-behaviour Pₒ 𝟙ₒ �
     e = ⊕-is-commutative 𝟙ₒ Pₒ ∙ test P i
 
   II : type-of I → P + ¬ P
-  II 𝕗@(f , f-sim) = aux (f (inl ⋆)) refl
+  II 𝕗@(f , f-sim) = IV (f (inl ⋆)) refl
    where
     III : (p : P) → f (inl ⋆) ＝ inl p
     III p = simulations-preserve-least (𝟙ₒ +ₒ Pₒ) (Pₒ +ₒ 𝟙ₒ)
@@ -566,8 +559,8 @@ test P i = transport⁻¹ (_＝ Pₒ +ₒ 𝟙ₒ) (⊕-behaviour Pₒ 𝟙ₒ �
              f f-sim
              (left-preserves-least 𝟙ₒ Pₒ ⋆ 𝟙ₒ-least)
              (left-preserves-least Pₒ 𝟙ₒ p (prop-ordinal-least i p))
-    aux : (x : P + 𝟙) → f (inl ⋆) ＝ x → P + ¬ P
-    aux (inl p) e = inl p
-    aux (inr ⋆) e = inr (λ p → +disjoint ((III p) ⁻¹ ∙ e))
+    IV : (x : P + 𝟙) → f (inl ⋆) ＝ x → P + ¬ P
+    IV (inl p) e = inl p
+    IV (inr ⋆) e = inr (λ p → +disjoint ((III p) ⁻¹ ∙ e))
 
 \end{code}
