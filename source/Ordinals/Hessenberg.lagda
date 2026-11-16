@@ -1,4 +1,41 @@
-TODO
+Tom de Jong, 11-16 November 2026.
+
+Prompted by a question of Robbert Krebbers (9 November 2026), we explore a
+constructive approach to Hessenberg addition.
+
+This binary operation on ordinals, typically denoted by ⊕ and also known as the
+natural sum, is commutative and associative, in contrast to ordinary ordinal
+addition.
+
+A typical classical definition of Hessenberg addition goes via Cantor normal
+forms, but the Hessenberg sum α ⊕ β can also be characterized, via transfinite
+recursion, as the least ordinal strictly above α ⊕ γ and δ ⊕ β for γ < β and
+δ < α.
+In what follows we adopt this as a suitable constructive definition, replacing
+the (a priori large) quantification over ordinals γ < β and δ < α by a small
+quantification over elements b : ⟨ β ⟩ and a : ⟨ α ⟩ (which give rise to
+suitable ordinals via their initial segments).
+
+We then prove a number of properties of Hessenberg addition. It is
+   * commutative,
+   * associative,
+   * preserves the strict order (necessarily in both arguments), and
+   * strictly inflationary (α ⊲ α ⊕ β whenever 𝟙ₒ ⊴ β).
+Moreover, the empty ordinal is a neutral element of Hessenberg addition.
+
+We also characterize the initial segments of α ⊕ β as arising from one of three
+(possibly overlapping cases):
+   * (α ↓ a) ⊕ β,
+   * α ⊕ (β ↓ b), and
+   * (α ↓ a) ⊕ (β ↓ b).
+This gives rise to an induction principle that is used to prove associativity
+for instance.
+
+Finally, we show that a few properties are inherently classical by proving that
+they imply excluded middle. These include:
+  * monotonicity (i.e. preservation of the partial order ⊴),
+  * being inflationary (α ⊴ α ⊕ β), and
+  * being above ordinary addition (α +ₒ β ⊴ α ⊕ β).
 
 \begin{code}
 
