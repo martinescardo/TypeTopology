@@ -175,6 +175,15 @@ module notions-of-continuity
  uniformly-continuous : (𝟚ᴺ → N) → 𝓤 ̇
  uniformly-continuous p = Σ m ꞉ ℕ , m is-a-modulus-of-uc-of p
 
+ modulus-of-uc-of : (p : 𝟚ᴺ → N) → uniformly-continuous p → ℕ
+ modulus-of-uc-of p = pr₁
+
+ modulus-of-uc-property
+  : {p : 𝟚ᴺ → N}
+    (c : uniformly-continuous p)
+  → (modulus-of-uc-of p c) is-a-modulus-of-uc-of p
+ modulus-of-uc-property = pr₂
+
  uniform-continuity-data = uniformly-continuous
 
 \end{code}

@@ -1,4 +1,5 @@
-Martin Escardo, 7 May 2014, with many additions in the summer of 2024.
+Martin Escardo, 7 May 2014,
+with additions in the summer of 2024 and November 2026.
 
 For any function f : ℕ∞ → ℕ, it is decidable whether f is non-continuous.
 
@@ -16,6 +17,18 @@ been called "Decidability of non-continuity". In any case, it is not
 wrong.
 
 The summer 2024 additions give some applications of this.
+
+The November 2026 additions complete the formalization of [1], with
+the same numberings of that paper.
+
+Metatheorem 4.2 is discussed in the prose, and the functional (12) of
+[1] is modulus-of-continuity-functional. The discussion of convergent
+sequences at the end of Section 3 of [1] is the subject of the
+additions of September 2024. The claim there that WLPO makes every
+sequence of natural numbers converge to any natural number is proved
+with LPO in place of WLPO, as LPO-gives-ℕ∞-extension. For u ≠ ∞, the
+extension needs a number n with u ＝ ι n, which is what MP provides,
+and WLPO and MP together give LPO, by MP-and-WLPO-give-LPO.
 
 \begin{code}
 
@@ -164,6 +177,15 @@ being-modulus-of-continuity-is-prop
 being-modulus-of-continuity-is-prop f m
  = Π-is-prop fe (λ n → ℕ-is-set)
 
+being-modulus-of-continuity-is-decidable
+ : (f : ℕ∞ → ℕ)
+   (m : ℕ)
+ → is-decidable (m is-modulus-of-continuity-of f)
+being-modulus-of-continuity-is-decidable f m
+ = Theorem-8·2'
+    (λ y → f (max (ι m) y) ＝ f ∞)
+    (λ y → ℕ-is-discrete (f (max (ι m) y)) (f ∞))
+
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 continuous f = Σ m ꞉ ℕ , m is-modulus-of-continuity-of f
 
@@ -230,7 +252,11 @@ The paper [1] also discusses the following.
 
 All of them are proved below, but not in this order.
 
-We first prove (2).
+We first prove (2), using Lemma 3.6 of [1], which holds for every
+function f : ℕ∞ → ℕ. It gives a map G : ℕ∞ → ℕ∞, called the modulus
+of discontinuity of f in [1], such that u ≼ G u, and such that
+f (G u) ≠ f ∞ whenever f (max u v) ≠ f ∞ for some v, where this
+existence is understood classically, as a double negation.
 
 \begin{code}
 
@@ -238,58 +264,74 @@ open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness fe
 
+module modulus-of-discontinuity (f : ℕ∞ → ℕ) where
+
+ g : (u : ℕ∞)
+   → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
+ g u = ℕ∞-Compact∙
+        (λ v → f (max u v) ＝ f ∞)
+        (λ v → ℕ-is-discrete (f (max u v)) (f ∞))
+
+ G : ℕ∞ → ℕ∞
+ G u = max u (pr₁ (g u))
+
+ G-is-inflationary : (u : ℕ∞) → u ≼ G u
+ G-is-inflationary u = max-≼-upper-bound u (pr₁ (g u))
+
+ G-property₀ : (u : ℕ∞) → f (G u) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞
+ G-property₀ u = pr₂ (g u)
+
+ G-property₁ : (u : ℕ∞)
+             → (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
+             → f (G u) ≠ f ∞
+ G-property₁ u (v , d) = contrapositive
+                           (λ (e : f (G u) ＝ f ∞) → G-property₀ u e v)
+                           d
+
+ I : (u : ℕ∞)
+   → ¬¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
+   → (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
+ I u = Σ-Compactness-gives-Complemented-choice
+         ℕ∞-Compact
+         (λ v → f (max u v) ≠ f ∞)
+         (λ v → ¬-preserves-decidability
+                 (ℕ-is-discrete (f (max u v)) (f ∞)))
+
+ II : (u : ℕ∞)
+    → ¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
+    → (v : ℕ∞) → f (max u v) ＝ f ∞
+ II u ν v = discrete-is-¬¬-separated
+             ℕ-is-discrete
+             (f (max u v))
+             (f ∞)
+             (λ (d : f (max u v) ≠ f ∞) → ν (v , d))
+
+ III : (u : ℕ∞)
+     → ¬ ((v : ℕ∞) → f (max u v) ＝ f ∞)
+     → ¬¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
+ III u = contrapositive (II u)
+
+ G-property₂ : (u : ℕ∞)
+             → ¬ ((v : ℕ∞) → f (max u v) ＝ f ∞)
+             → f (G u) ≠ f ∞
+ G-property₂ u a = G-property₁ u (I u (III u a))
+
+Lemma-3·6
+ : (f : ℕ∞ → ℕ)
+ → Σ G ꞉ (ℕ∞ → ℕ∞)
+       , ((u : ℕ∞) → u ≼ G u)
+       × ((u : ℕ∞) → ¬¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞) → f (G u) ≠ f ∞)
+Lemma-3·6 f = G , G-is-inflationary , (λ u → G-property₁ u ∘ I u)
+ where
+  open modulus-of-discontinuity f
+
 noncontinuous-map-gives-WLPO
  : (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f)
  → WLPO
 noncontinuous-map-gives-WLPO (f , f-non-cts)
  = VI
  where
-  g : (u : ℕ∞)
-    → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
-  g u = ℕ∞-Compact∙
-         (λ v → f (max u v) ＝ f ∞)
-         (λ v → ℕ-is-discrete (f (max u v)) (f ∞))
-
-  G : ℕ∞ → ℕ∞
-  G u = max u (pr₁ (g u))
-
-  G-property₀ : (u : ℕ∞) → f (G u) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞
-  G-property₀ u = pr₂ (g u)
-
-  G-property₁ : (u : ℕ∞)
-              → (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
-              → f (G u) ≠ f ∞
-  G-property₁ u (v , d) = contrapositive
-                            (λ (e : f (G u) ＝ f ∞) → G-property₀ u e v)
-                            d
-
-  I : (u : ℕ∞)
-    → ¬¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
-    → (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
-  I u = Σ-Compactness-gives-Complemented-choice
-          ℕ∞-Compact
-          (λ v → f (max u v) ≠ f ∞)
-          (λ v → ¬-preserves-decidability
-                  (ℕ-is-discrete (f (max u v)) (f ∞)))
-
-  II : (u : ℕ∞)
-     → ¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
-     → (v : ℕ∞) → f (max u v) ＝ f ∞
-  II u ν v = discrete-is-¬¬-separated
-              ℕ-is-discrete
-              (f (max u v))
-              (f ∞)
-              (λ (d : f (max u v) ≠ f ∞) → ν (v , d))
-
-  III : (u : ℕ∞)
-      → ¬ ((v : ℕ∞) → f (max u v) ＝ f ∞)
-      → ¬¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
-  III u = contrapositive (II u)
-
-  G-property₂ : (u : ℕ∞)
-              → ¬ ((v : ℕ∞) → f (max u v) ＝ f ∞)
-              → f (G u) ≠ f ∞
-  G-property₂ u a = G-property₁ u (I u (III u a))
+  open modulus-of-discontinuity f
 
   G-propertyₙ : (n : ℕ) → f (G (ι n)) ≠ f ∞
   G-propertyₙ n = G-property₂ (ι n) h
@@ -339,10 +381,8 @@ MP-gives-that-not-not-continuous-functions-are-continuous
  → ¬¬ continuous f
  → continuous f
 MP-gives-that-not-not-continuous-functions-are-continuous mp f
- = mp (λ m → (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
-      (λ m → Theorem-8·2'
-              (λ x → f (max (ι m) x) ＝ f ∞)
-              (λ x → ℕ-is-discrete (f (max (ι m) x)) (f ∞)))
+ = mp (_is-modulus-of-continuity-of f)
+      (being-modulus-of-continuity-is-decidable f)
 
 \end{code}
 
@@ -500,9 +540,7 @@ module continuity-criteria (pt : propositional-truncations-exist) where
 
   private
    δ : (m : ℕ) → is-decidable ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
-   δ m = Theorem-8·2'
-          (λ y → f (max (ι m) y) ＝ f ∞)
-          (λ y → ℕ-is-discrete (f (max (ι m) y)) (f ∞))
+   δ = being-modulus-of-continuity-is-decidable f
 
   continuity-property-gives-continuity-data
    : is-continuous f
@@ -1929,3 +1967,998 @@ One possible idea is to do both, but instead take the primary
 definitions of `is-continuous` and of `is-eventually-constant` using
 minimality rather than propositional truncation, and then show that the
 definitions using minimality are (logically and typally) equivalent.
+
+Added 16th November 2026. We complete the formalization of [1] with
+Lemma 3.3, Corollary 3.4 and Section 4. Together with Lemma 3.6 above,
+this covers all numbered results of [1].
+
+Lemma 3.3 of [1] constructs the least modulus of continuity of a
+function f : ℕ∞ → ℕ, which lives in ℕ∞ rather than in ℕ. We extend the
+notion of modulus of continuity accordingly, again implementing the
+order with the maximum function.
+
+\begin{code}
+
+open import Ordinals.InfProperty using (has-inf-gives-least-root)
+open import TypeTopology.ConvergentSequenceHasInf fe using (ℕ∞-has-inf)
+
+_is-ℕ∞-modulus-of-continuity-of_ : ℕ∞ → (ℕ∞ → ℕ) → 𝓤₀ ̇
+v is-ℕ∞-modulus-of-continuity-of f = (u : ℕ∞) → f (max v u) ＝ f ∞
+
+_is-least-ℕ∞-modulus-of-continuity-of_ : ℕ∞ → (ℕ∞ → ℕ) → 𝓤₀ ̇
+v₀ is-least-ℕ∞-modulus-of-continuity-of f
+ = (v₀ is-ℕ∞-modulus-of-continuity-of f)
+ × ((v : ℕ∞) → v is-ℕ∞-modulus-of-continuity-of f → v₀ ≼ v)
+
+least-ℕ∞-modulus-of-continuity-is-modulus
+ : {v₀ : ℕ∞} {f : ℕ∞ → ℕ}
+ → v₀ is-least-ℕ∞-modulus-of-continuity-of f
+ → v₀ is-ℕ∞-modulus-of-continuity-of f
+least-ℕ∞-modulus-of-continuity-is-modulus = pr₁
+
+least-ℕ∞-modulus-of-continuity-is-lower-bound
+ : {v₀ : ℕ∞} {f : ℕ∞ → ℕ}
+ → v₀ is-least-ℕ∞-modulus-of-continuity-of f
+ → (v : ℕ∞) → v is-ℕ∞-modulus-of-continuity-of f → v₀ ≼ v
+least-ℕ∞-modulus-of-continuity-is-lower-bound = pr₂
+
+∞-is-ℕ∞-modulus-of-continuity
+ : (f : ℕ∞ → ℕ)
+ → ∞ is-ℕ∞-modulus-of-continuity-of f
+∞-is-ℕ∞-modulus-of-continuity f u = refl
+
+\end{code}
+
+The moduli of continuity of f in ℕ∞ form a subset of ℕ∞ that is
+complemented, by the Π-compactness of ℕ∞ and the decidability of
+equality of ℕ, and that contains ∞. Hence the infimum property of ℕ∞,
+proved in the module TypeTopology.ConvergentSequenceHasInf, gives its
+least element, as in the proof of Lemma 3.3 in [1], where it is called
+the discontinuity degree of f.
+
+\begin{code}
+
+least-ℕ∞-modulus-of-continuity
+ : (f : ℕ∞ → ℕ)
+ → Σ v₀ ꞉ ℕ∞ , v₀ is-least-ℕ∞-modulus-of-continuity-of f
+least-ℕ∞-modulus-of-continuity f = v₀ , IV , V
+ where
+  A : ℕ∞ → 𝓤₀ ̇
+  A = _is-ℕ∞-modulus-of-continuity-of f
+
+  δ : (v : ℕ∞) → is-decidable (v is-ℕ∞-modulus-of-continuity-of f)
+  δ v = ℕ∞-Π-Compact
+         (λ u → f (max v u) ＝ f ∞)
+         (λ u → ℕ-is-discrete (f (max v u)) (f ∞))
+
+  p : ℕ∞ → 𝟚
+  p = characteristic-map A δ
+
+  I : (v : ℕ∞) → p v ＝ ₀ → v is-ℕ∞-modulus-of-continuity-of f
+  I = characteristic-map-property₀ A δ
+
+  II : (v : ℕ∞) → v is-ℕ∞-modulus-of-continuity-of f → p v ＝ ₀
+  II = characteristic-map-property₀-back A δ
+
+  III : Σ v₀ ꞉ ℕ∞ , (p v₀ ＝ ₀) × ((v : ℕ∞) → p v ＝ ₀ → v₀ ≼ v)
+  III = has-inf-gives-least-root _≼_ ℕ∞-has-inf p
+         (¬¬-intro (∞ , II ∞ (∞-is-ℕ∞-modulus-of-continuity f)))
+
+  v₀ : ℕ∞
+  v₀ = pr₁ III
+
+  IV : v₀ is-ℕ∞-modulus-of-continuity-of f
+  IV = I v₀ (pr₁ (pr₂ III))
+
+  V : (v : ℕ∞) → v is-ℕ∞-modulus-of-continuity-of f → v₀ ≼ v
+  V v m = pr₂ (pr₂ III) v (II v m)
+
+discontinuity-degree : (ℕ∞ → ℕ) → ℕ∞
+discontinuity-degree f = pr₁ (least-ℕ∞-modulus-of-continuity f)
+
+discontinuity-degree-is-least
+ : (f : ℕ∞ → ℕ)
+ → (discontinuity-degree f) is-least-ℕ∞-modulus-of-continuity-of f
+discontinuity-degree-is-least f = pr₂ (least-ℕ∞-modulus-of-continuity f)
+
+Lemma-3·3
+ : Σ F ꞉ ((ℕ∞ → ℕ) → ℕ∞)
+       , ((f : ℕ∞ → ℕ) → (F f) is-least-ℕ∞-modulus-of-continuity-of f)
+Lemma-3·3 = discontinuity-degree , discontinuity-degree-is-least
+
+\end{code}
+
+The discontinuity degree of f is ∞ precisely when f is not continuous,
+and hence it is different from ∞ precisely when it is impossible that
+f is not continuous, which is called classical continuity in [1].
+
+\begin{code}
+
+discontinuity-degree-is-∞-iff-not-continuous
+ : (f : ℕ∞ → ℕ)
+ → (discontinuity-degree f ＝ ∞) ↔ ¬ continuous f
+discontinuity-degree-is-∞-iff-not-continuous f = I , II
+ where
+  F : ℕ∞
+  F = discontinuity-degree f
+
+  F-is-least : F is-least-ℕ∞-modulus-of-continuity-of f
+  F-is-least = discontinuity-degree-is-least f
+
+  F-is-modulus : F is-ℕ∞-modulus-of-continuity-of f
+  F-is-modulus = least-ℕ∞-modulus-of-continuity-is-modulus F-is-least
+
+  I : F ＝ ∞ → ¬ continuous f
+  I e (m , a) = ≼-gives-not-≺ ∞ (ι m) IV (∞-≺-largest m)
+   where
+    III : (ι m) is-ℕ∞-modulus-of-continuity-of f
+    III = ℕ∞-density fe ℕ-is-¬¬-separated
+           {λ u → f (max (ι m) u)}
+           {λ _ → f ∞}
+           a
+           (ap f (max∞-property' fe (ι m)))
+
+    IV : ∞ ≼ ι m
+    IV = transport (λ - → - ≼ ι m) e
+          (least-ℕ∞-modulus-of-continuity-is-lower-bound F-is-least (ι m) III)
+
+  II : ¬ continuous f → F ＝ ∞
+  II ν = not-finite-is-∞ fe
+          (λ n (e : F ＝ ι n)
+                → ν (n , (λ k → transport
+                                  (_is-ℕ∞-modulus-of-continuity-of f)
+                                  e
+                                  F-is-modulus
+                                  (ι k))))
+
+discontinuity-degree-is-not-∞-iff-not-not-continuous
+ : (f : ℕ∞ → ℕ)
+ → (discontinuity-degree f ≠ ∞) ↔ ¬¬ continuous f
+discontinuity-degree-is-not-∞-iff-not-not-continuous f
+ = (λ d ν → d (rl-implication I ν)) ,
+   (λ c e → c (lr-implication I e))
+ where
+  I = discontinuity-degree-is-∞-iff-not-continuous f
+
+Corollary-3·4
+ : (f : ℕ∞ → ℕ)
+ → ¬¬ continuous f
+ ↔ (Σ v ꞉ ℕ∞ , (v ≠ ∞) × (v is-ℕ∞-modulus-of-continuity-of f))
+Corollary-3·4 f = I , II
+ where
+  F : ℕ∞
+  F = discontinuity-degree f
+
+  F-is-least : F is-least-ℕ∞-modulus-of-continuity-of f
+  F-is-least = discontinuity-degree-is-least f
+
+  I : ¬¬ continuous f
+    → Σ v ꞉ ℕ∞ , (v ≠ ∞) × (v is-ℕ∞-modulus-of-continuity-of f)
+  I c = F ,
+        rl-implication
+         (discontinuity-degree-is-not-∞-iff-not-not-continuous f)
+         c ,
+        least-ℕ∞-modulus-of-continuity-is-modulus F-is-least
+
+  II : (Σ v ꞉ ℕ∞ , (v ≠ ∞) × (v is-ℕ∞-modulus-of-continuity-of f))
+     → ¬¬ continuous f
+  II (v , d , m) ν = d (≼-anti fe v ∞ (∞-largest v) IV)
+   where
+    III : F ＝ ∞
+    III = rl-implication (discontinuity-degree-is-∞-iff-not-continuous f) ν
+
+    IV : ∞ ≼ v
+    IV = transport (λ - → - ≼ v) III
+          (least-ℕ∞-modulus-of-continuity-is-lower-bound F-is-least v m)
+
+\end{code}
+
+We now come to Section 4 of [1], on the searchability of the Cantor
+type and uniform continuity. We formalize searchability as the notion
+is-compact∙ of the module TypeTopology.CompactTypes.
+
+The restriction α ↾ u of a sequence α : 𝟚ᴺ at u : ℕ∞ keeps the terms α i
+with i ⊏ u and replaces the others by ₀.
+
+\begin{code}
+
+infixl 50 _↾_
+
+_↾_ : 𝟚ᴺ → ℕ∞ → 𝟚ᴺ
+α ↾ u = λ i → min𝟚 (ι u i) (α i)
+
+\end{code}
+
+We have that α ↾ ∞ ＝ α by construction, and the sequence α ↾ ι n is
+α 0 , α 1 , ... , α (n - 1) , ₀ , ₀ , ₀ , ..., which agrees with α at
+the first n positions and vanishes from position n onwards.
+
+\begin{code}
+
+_ : (α : 𝟚ᴺ) → α ↾ ∞ ＝ α
+_ = λ α → refl
+
+restriction-agreement : (α : 𝟚ᴺ) (n : ℕ) → (α ↾ ι n) ＝⟦ n ⟧ α
+restriction-agreement α 0        = ⋆
+restriction-agreement α (succ n) = refl , restriction-agreement (tail α) n
+
+restriction-vanishing : (α : 𝟚ᴺ) (n i : ℕ) → n ≤ i → (α ↾ ι n) i ＝ ₀
+restriction-vanishing α 0        i        l = refl
+restriction-vanishing α (succ n) 0        l = 𝟘-elim l
+restriction-vanishing α (succ n) (succ i) l
+ = restriction-vanishing (tail α) n i l
+
+\end{code}
+
+The relation α ＝⟦ n ⟧ β, written α =ₙ β in [1], holds precisely when
+the restrictions of α and β at n are equal, and the relation α =ᵤ β of
+[1] is defined to be the equality of the restrictions of α and β at u,
+so that it extends α =ₙ β, and α =∞ β amounts to α ＝ β.
+
+\begin{code}
+
+open import UF.Base using (happly)
+
+agreement-gives-equal-restrictions
+ : (α β : 𝟚ᴺ) (n : ℕ)
+ → α ＝⟦ n ⟧ β
+ → α ↾ (ι n) ∼ β ↾ (ι n)
+agreement-gives-equal-restrictions α β 0        a       i        = refl
+agreement-gives-equal-restrictions α β (succ n) (h , t) 0        = h
+agreement-gives-equal-restrictions α β (succ n) (h , t) (succ i)
+ = agreement-gives-equal-restrictions (tail α) (tail β) n t i
+
+equal-restrictions-give-agreement
+ : (α β : 𝟚ᴺ) (n : ℕ)
+ → α ↾ (ι n) ∼ β ↾ (ι n)
+ → α ＝⟦ n ⟧ β
+equal-restrictions-give-agreement α β 0        e = ⋆
+equal-restrictions-give-agreement α β (succ n) e
+ = e 0 , equal-restrictions-give-agreement (tail α) (tail β) n (e ∘ succ)
+
+agreement-iff-equal-restrictions
+ : (α β : 𝟚ᴺ) (n : ℕ)
+ → (α ＝⟦ n ⟧ β) ↔ (α ↾ ι n ＝ β ↾ ι n)
+agreement-iff-equal-restrictions α β n
+ = (λ a → dfunext fe (agreement-gives-equal-restrictions α β n a)) ,
+   (λ e → equal-restrictions-give-agreement α β n (happly e))
+
+_ : (α β : 𝟚ᴺ) → (α ↾ ∞ ＝ β ↾ ∞) ↔ (α ＝ β)
+_ = λ α β → id , id
+
+\end{code}
+
+Restricting at w and then at v is the same as restricting at v when v ≼ w.
+
+\begin{code}
+
+restriction-of-restriction
+ : (α : 𝟚ᴺ) (v w : ℕ∞)
+ → v ≼ w
+ → (α ↾ w) ↾ v ＝ α ↾ v
+restriction-of-restriction α v w l
+ = dfunext fe (λ i → I (ι v i) (ι w i) (α i) (l i))
+ where
+  I : (a b c : 𝟚) → (a ＝ ₁ → b ＝ ₁) → min𝟚 a (min𝟚 b c) ＝ min𝟚 a c
+  I ₀ b c h = refl
+  I ₁ b c h = ap (λ - → min𝟚 - c) (h refl)
+
+\end{code}
+
+We first prove the results of Section 4 of [1] in a more general form,
+for functions 𝟚ᴺ → N into any type N with decidable equality, and with
+the Π-compactness of the Cantor type in place of its searchability,
+which is all that their proofs use. This generalization is not in [1].
+
+We use the notion of modulus of uniform continuity of the module
+TypeTopology.Cantor, which is that of [1], and we extend it to ℕ∞ with
+the relation α =ᵤ β.
+
+\begin{code}
+
+module Π-compactness-and-uniform-continuity
+        (N : 𝓤 ̇ )
+        (N-is-discrete : is-discrete N)
+       where
+
+ open notions-of-continuity N N-is-discrete
+       using (_is-a-modulus-of-uc-of_ ; uniformly-continuous)
+
+ _is-ℕ∞-modulus-of-uc-of_ : ℕ∞ → (𝟚ᴺ → N) → 𝓤 ̇
+ v is-ℕ∞-modulus-of-uc-of f = (α β : 𝟚ᴺ) → α ↾ v ＝ β ↾ v → f α ＝ f β
+
+ _is-least-ℕ∞-modulus-of-uc-of_ : ℕ∞ → (𝟚ᴺ → N) → 𝓤 ̇
+ v₀ is-least-ℕ∞-modulus-of-uc-of f
+  = (v₀ is-ℕ∞-modulus-of-uc-of f)
+  × ((v : ℕ∞) → v is-ℕ∞-modulus-of-uc-of f → v₀ ≼ v)
+
+ least-ℕ∞-modulus-of-uc-is-modulus
+  : {v₀ : ℕ∞} {f : 𝟚ᴺ → N}
+  → v₀ is-least-ℕ∞-modulus-of-uc-of f
+  → v₀ is-ℕ∞-modulus-of-uc-of f
+ least-ℕ∞-modulus-of-uc-is-modulus = pr₁
+
+ least-ℕ∞-modulus-of-uc-is-lower-bound
+  : {v₀ : ℕ∞} {f : 𝟚ᴺ → N}
+  → v₀ is-least-ℕ∞-modulus-of-uc-of f
+  → (v : ℕ∞) → v is-ℕ∞-modulus-of-uc-of f → v₀ ≼ v
+ least-ℕ∞-modulus-of-uc-is-lower-bound = pr₂
+
+ ℕ∞-moduli-of-uc-extend-moduli-of-uc
+  : (f : 𝟚ᴺ → N) (n : ℕ)
+  → ((ι n) is-ℕ∞-modulus-of-uc-of f) ↔ (n is-a-modulus-of-uc-of f)
+ ℕ∞-moduli-of-uc-extend-moduli-of-uc f n
+  = (λ m α β a
+       → m α β (lr-implication (agreement-iff-equal-restrictions α β n) a)) ,
+    (λ m α β e
+       → m α β (rl-implication (agreement-iff-equal-restrictions α β n) e))
+
+\end{code}
+
+A function f is invariant under the restriction at v precisely when v
+is an ℕ∞-modulus of uniform continuity of f, and the invariance at v
+gives the invariance at any w with v ≼ w.
+
+\begin{code}
+
+ _is-invariant-under-restriction-at_ : (𝟚ᴺ → N) → ℕ∞ → 𝓤 ̇
+ f is-invariant-under-restriction-at v = (γ : 𝟚ᴺ) → f γ ＝ f (γ ↾ v)
+
+ ℕ∞-modulus-of-uc-iff-restriction-invariance
+  : (f : 𝟚ᴺ → N) (v : ℕ∞)
+  → (v is-ℕ∞-modulus-of-uc-of f) ↔ (f is-invariant-under-restriction-at v)
+ ℕ∞-modulus-of-uc-iff-restriction-invariance f v = I , II
+  where
+   I : v is-ℕ∞-modulus-of-uc-of f → f is-invariant-under-restriction-at v
+   I m γ = m γ (γ ↾ v) ((restriction-of-restriction γ v v (λ n a → a))⁻¹)
+
+   II : f is-invariant-under-restriction-at v → v is-ℕ∞-modulus-of-uc-of f
+   II c α β e = f α       ＝⟨ c α ⟩
+                f (α ↾ v) ＝⟨ ap f e ⟩
+                f (β ↾ v) ＝⟨ (c β)⁻¹ ⟩
+                f β       ∎
+
+ restriction-invariance-is-upward-closed
+  : (f : 𝟚ᴺ → N) (v w : ℕ∞)
+  → v ≼ w
+  → f is-invariant-under-restriction-at v
+  → f is-invariant-under-restriction-at w
+ restriction-invariance-is-upward-closed f v w l c γ
+  = f γ             ＝⟨ c γ ⟩
+    f (γ ↾ v)       ＝⟨ ap f ((restriction-of-restriction γ v w l)⁻¹) ⟩
+    f ((γ ↾ w) ↾ v) ＝⟨ (c (γ ↾ w))⁻¹ ⟩
+    f (γ ↾ w)       ∎
+
+\end{code}
+
+The Π-compactness of the Cantor type makes the invariance under a
+restriction decidable, and this gives the function p : ℕ∞ → 𝟚 of the
+proofs of Theorem 4.3 and Lemma 4.4 in [1], which takes the value ₀
+precisely at the points u such that f is invariant under the
+restriction at u.
+
+\begin{code}
+
+ restriction-invariance-is-decidable
+  : is-Π-Compact 𝟚ᴺ {𝓤}
+  → (f : 𝟚ᴺ → N) (v : ℕ∞)
+  → is-decidable (f is-invariant-under-restriction-at v)
+ restriction-invariance-is-decidable κ f v
+  = κ (λ γ → f γ ＝ f (γ ↾ v)) (λ γ → N-is-discrete (f γ) (f (γ ↾ v)))
+
+ restriction-invariance-test : is-Π-Compact 𝟚ᴺ {𝓤} → (𝟚ᴺ → N) → ℕ∞ → 𝟚
+ restriction-invariance-test κ f
+  = characteristic-map
+     (f is-invariant-under-restriction-at_)
+     (restriction-invariance-is-decidable κ f)
+
+ restriction-invariance-test-property₀
+  : (κ : is-Π-Compact 𝟚ᴺ {𝓤}) (f : 𝟚ᴺ → N) (v : ℕ∞)
+  → restriction-invariance-test κ f v ＝ ₀
+  → f is-invariant-under-restriction-at v
+ restriction-invariance-test-property₀ κ f v
+  = characteristic-map-property₀
+     (f is-invariant-under-restriction-at_)
+     (restriction-invariance-is-decidable κ f)
+     v
+
+ restriction-invariance-test-property₁
+  : (κ : is-Π-Compact 𝟚ᴺ {𝓤}) (f : 𝟚ᴺ → N) (v : ℕ∞)
+  → f is-invariant-under-restriction-at v
+  → restriction-invariance-test κ f v ＝ ₀
+ restriction-invariance-test-property₁ κ f v
+  = characteristic-map-property₀-back
+     (f is-invariant-under-restriction-at_)
+     (restriction-invariance-is-decidable κ f)
+     v
+
+\end{code}
+
+As in Theorem 4.3 of [1], if the Cantor type is Π-compact and every
+function ℕ∞ → 𝟚 is continuous, then every function 𝟚ᴺ → N is
+uniformly continuous. Continuity is formulated for functions ℕ∞ → ℕ
+throughout this file, and so we express the continuity of a function
+p : ℕ∞ → 𝟚 as that of 𝟚-to-ℕ ∘ p.
+
+\begin{code}
+
+ Π-compactness-and-continuity-give-uniform-continuity
+  : is-Π-Compact 𝟚ᴺ {𝓤}
+  → ((p : ℕ∞ → 𝟚) → continuous (𝟚-to-ℕ ∘ p))
+  → (f : 𝟚ᴺ → N) → uniformly-continuous f
+ Π-compactness-and-continuity-give-uniform-continuity κ c f
+  = m , lr-implication (ℕ∞-moduli-of-uc-extend-moduli-of-uc f m) II
+  where
+   p : ℕ∞ → 𝟚
+   p = restriction-invariance-test κ f
+
+   m : ℕ
+   m = modulus-of-continuity-of (𝟚-to-ℕ ∘ p) (c p)
+
+   m-is-modulus : m is-modulus-of-continuity-of (𝟚-to-ℕ ∘ p)
+   m-is-modulus = modulus-of-continuity-property (c p)
+
+   p-at-∞ : p ∞ ＝ ₀
+   p-at-∞ = restriction-invariance-test-property₁ κ f ∞ (λ γ → refl)
+
+   I : p (ι m) ＝ ₀
+   I = p (ι m)             ＝⟨ ap p ((max-idemp fe (ι m))⁻¹) ⟩
+       p (max (ι m) (ι m)) ＝⟨ 𝟚-to-ℕ-is-lc (m-is-modulus m) ⟩
+       p ∞                 ＝⟨ p-at-∞ ⟩
+       ₀                   ∎
+
+   II : (ι m) is-ℕ∞-modulus-of-uc-of f
+   II = rl-implication (ℕ∞-modulus-of-uc-iff-restriction-invariance f (ι m))
+         (restriction-invariance-test-property₀ κ f (ι m) I)
+
+\end{code}
+
+As in Lemma 4.4 of [1], if the Cantor type is Π-compact, then every
+function f : 𝟚ᴺ → N has a least ℕ∞-modulus of uniform continuity,
+namely the discontinuity degree, given by Lemma 3.3, of 𝟚-to-ℕ ∘ p,
+where p is the restriction-invariance test of f.
+
+\begin{code}
+
+ ℕ∞-modulus-of-uc : is-Π-Compact 𝟚ᴺ {𝓤} → (𝟚ᴺ → N) → ℕ∞
+ ℕ∞-modulus-of-uc κ f
+  = discontinuity-degree (𝟚-to-ℕ ∘ restriction-invariance-test κ f)
+
+ ℕ∞-modulus-of-uc-is-least
+  : (κ : is-Π-Compact 𝟚ᴺ {𝓤}) (f : 𝟚ᴺ → N)
+  → (ℕ∞-modulus-of-uc κ f) is-least-ℕ∞-modulus-of-uc-of f
+ ℕ∞-modulus-of-uc-is-least κ f = IV , V
+  where
+   p : ℕ∞ → 𝟚
+   p = restriction-invariance-test κ f
+
+   g : ℕ∞ → ℕ
+   g = 𝟚-to-ℕ ∘ p
+
+   I : p ∞ ＝ ₀
+   I = restriction-invariance-test-property₁ κ f ∞ (λ γ → refl)
+
+   II : (v : ℕ∞)
+      → v is-ℕ∞-modulus-of-continuity-of g
+      → f is-invariant-under-restriction-at v
+   II v m = restriction-invariance-test-property₀ κ f v
+             (p v         ＝⟨ ap p ((max-idemp fe v)⁻¹) ⟩
+              p (max v v) ＝⟨ 𝟚-to-ℕ-is-lc (m v) ⟩
+              p ∞         ＝⟨ I ⟩
+              ₀           ∎)
+
+   III : (v : ℕ∞)
+       → f is-invariant-under-restriction-at v
+       → v is-ℕ∞-modulus-of-continuity-of g
+   III v c u = ap 𝟚-to-ℕ
+                (p (max v u) ＝⟨ III₁ ⟩
+                 ₀           ＝⟨ I ⁻¹ ⟩
+                 p ∞         ∎)
+    where
+     III₀ : f is-invariant-under-restriction-at (max v u)
+     III₀ = restriction-invariance-is-upward-closed f v (max v u)
+             (max-≼-upper-bound v u)
+             c
+
+     III₁ : p (max v u) ＝ ₀
+     III₁ = restriction-invariance-test-property₁ κ f (max v u) III₀
+
+   H-is-least : (discontinuity-degree g) is-least-ℕ∞-modulus-of-continuity-of g
+   H-is-least = discontinuity-degree-is-least g
+
+   IV : (discontinuity-degree g) is-ℕ∞-modulus-of-uc-of f
+   IV = rl-implication
+         (ℕ∞-modulus-of-uc-iff-restriction-invariance f
+           (discontinuity-degree g))
+         (II (discontinuity-degree g)
+           (least-ℕ∞-modulus-of-continuity-is-modulus H-is-least))
+
+   V : (v : ℕ∞) → v is-ℕ∞-modulus-of-uc-of f → discontinuity-degree g ≼ v
+   V v m = least-ℕ∞-modulus-of-continuity-is-lower-bound H-is-least v
+            (III v
+              (lr-implication
+                (ℕ∞-modulus-of-uc-iff-restriction-invariance f v)
+                m))
+
+\end{code}
+
+As in the three facts that [1] lists after Lemma 4.4, if the Cantor
+type is Π-compact, then the least ℕ∞-modulus of uniform continuity of
+a function f : 𝟚ᴺ → N is apart from ∞ precisely when f is uniformly
+continuous, is ∞ precisely when f is not uniformly continuous, and is
+different from ∞ precisely when f is classically uniformly continuous,
+that is, when it is impossible that f is not uniformly continuous. We
+formulate the apartness of an element u of ℕ∞ from ∞ as u ≺ ∞.
+
+\begin{code}
+
+ ℕ∞-modulus-of-uc-is-below-∞-iff-uniformly-continuous
+  : (κ : is-Π-Compact 𝟚ᴺ {𝓤}) (f : 𝟚ᴺ → N)
+  → (ℕ∞-modulus-of-uc κ f ≺ ∞) ↔ uniformly-continuous f
+ ℕ∞-modulus-of-uc-is-below-∞-iff-uniformly-continuous κ f = I , II
+  where
+   H : ℕ∞
+   H = ℕ∞-modulus-of-uc κ f
+
+   H-is-least : H is-least-ℕ∞-modulus-of-uc-of f
+   H-is-least = ℕ∞-modulus-of-uc-is-least κ f
+
+   I : H ≺ ∞ → uniformly-continuous f
+   I (n , e , _) = n , lr-implication (ℕ∞-moduli-of-uc-extend-moduli-of-uc f n)
+                        (transport (_is-ℕ∞-modulus-of-uc-of f) e
+                          (least-ℕ∞-modulus-of-uc-is-modulus H-is-least))
+
+   II : uniformly-continuous f → H ≺ ∞
+   II (n , m) = k , (e ⁻¹) , ∞-⊏-largest k
+    where
+     III : H ≼ ι n
+     III = least-ℕ∞-modulus-of-uc-is-lower-bound H-is-least (ι n)
+            (rl-implication (ℕ∞-moduli-of-uc-extend-moduli-of-uc f n) m)
+
+     IV : H ⊑ n
+     IV = not-⊏-is-⊒ (λ (a : n ⊏ H) → ≼-gives-not-≺ H (ι n) III (n , refl , a))
+
+     V : is-finite H
+     V = bounded-is-finite fe n H IV
+
+     k : ℕ
+     k = size V
+
+     e : ι k ＝ H
+     e = size-property V
+
+ ℕ∞-modulus-of-uc-is-∞-iff-not-uniformly-continuous
+  : (κ : is-Π-Compact 𝟚ᴺ {𝓤}) (f : 𝟚ᴺ → N)
+  → (ℕ∞-modulus-of-uc κ f ＝ ∞) ↔ ¬ uniformly-continuous f
+ ℕ∞-modulus-of-uc-is-∞-iff-not-uniformly-continuous κ f = II , III
+  where
+   H : ℕ∞
+   H = ℕ∞-modulus-of-uc κ f
+
+   I : (H ≺ ∞) ↔ uniformly-continuous f
+   I = ℕ∞-modulus-of-uc-is-below-∞-iff-uniformly-continuous κ f
+
+   II : H ＝ ∞ → ¬ uniformly-continuous f
+   II e u = ∞-top ∞ (transport (λ - → - ≺ ∞) e (rl-implication I u))
+
+   III : ¬ uniformly-continuous f → H ＝ ∞
+   III ν = not-finite-is-∞ fe
+            (λ n (e : H ＝ ι n) → ν (lr-implication I (n , e , ∞-⊏-largest n)))
+
+ ℕ∞-modulus-of-uc-is-not-∞-iff-not-not-uniformly-continuous
+  : (κ : is-Π-Compact 𝟚ᴺ {𝓤}) (f : 𝟚ᴺ → N)
+  → (ℕ∞-modulus-of-uc κ f ≠ ∞) ↔ ¬¬ uniformly-continuous f
+ ℕ∞-modulus-of-uc-is-not-∞-iff-not-not-uniformly-continuous κ f
+  = (λ d ν → d (rl-implication I ν)) ,
+    (λ c e → c (lr-implication I e))
+  where
+   I = ℕ∞-modulus-of-uc-is-∞-iff-not-uniformly-continuous κ f
+
+\end{code}
+
+As in Corollary 4.5 of [1], and with the proof given there, if the
+Cantor type is Π-compact and ¬ WLPO holds, then every function
+𝟚ᴺ → N is classically uniformly continuous.
+
+\begin{code}
+
+ Π-compactness-and-¬WLPO-give-not-not-uniform-continuity
+  : is-Π-Compact 𝟚ᴺ {𝓤}
+  → ¬ WLPO
+  → (f : 𝟚ᴺ → N) → ¬¬ uniformly-continuous f
+ Π-compactness-and-¬WLPO-give-not-not-uniform-continuity κ nwlpo f
+  = lr-implication
+     (ℕ∞-modulus-of-uc-is-not-∞-iff-not-not-uniformly-continuous κ f)
+     I
+  where
+   g : ℕ∞ → ℕ
+   g = 𝟚-to-ℕ ∘ restriction-invariance-test κ f
+
+   I : discontinuity-degree g ≠ ∞
+   I = rl-implication (discontinuity-degree-is-not-∞-iff-not-not-continuous g)
+        (¬WLPO-gives-all-functions-are-not-not-continuous nwlpo g)
+
+\end{code}
+
+We now formulate the results of Section 4 as in [1], for functions
+into ℕ, and with the searchability of the Cantor type, which gives its
+Π-compactness.
+
+\begin{code}
+
+open notions-of-continuity ℕ ℕ-is-discrete
+      using (_is-a-modulus-of-uc-of_ ;
+             uniformly-continuous ;
+             modulus-of-uc-of ;
+             modulus-of-uc-property)
+
+open Π-compactness-and-uniform-continuity ℕ ℕ-is-discrete
+
+compact∙-types-are-Π-Compact : {X : 𝓤 ̇ } → is-compact∙ X → is-Π-Compact X {𝓥}
+compact∙-types-are-Π-Compact {𝓤} {𝓥} {X} ε
+ = Σ-Compact-types-are-Π-Compact X
+    (compact-types-are-Compact (compact∙-types-are-compact ε))
+
+\end{code}
+
+Lemma 4.1 of [1] says that the Cantor type is searchable if excluded
+middle holds, or if all functions 𝟚ᴺ → ℕ are uniformly continuous. In
+our setting excluded middle concerns propositions, and what it gives
+is Π-compactness, which is what the above results use. The selection
+function constructed in the proof of the first case in [1] chooses a
+root of every function p : 𝟚ᴺ → 𝟚 that has one, which uses excluded
+middle for the type Σ α ꞉ 𝟚ᴺ , p α ＝ ₀ itself rather than for a
+proposition. The second case follows from the module
+TypeTopology.CantorSearch.
+
+\begin{code}
+
+open import TypeTopology.CantorSearch using (Cantor-uniformly-searchable)
+open import UF.ClassicalLogic using (EM)
+
+EM-gives-Π-Compactness : EM 𝓤₀ → (X : 𝓤₀ ̇ ) → is-Π-Compact X {𝓤₀}
+EM-gives-Π-Compactness em X A δ = I (em P P-is-prop)
+ where
+  P : 𝓤₀ ̇
+  P = (x : X) → ¬¬ A x
+
+  P-is-prop : is-prop P
+  P-is-prop = Π-is-prop fe (λ x → negations-are-props fe)
+
+  I : P + ¬ P → is-decidable (Π A)
+  I (inl φ) = inl (λ x → ¬¬-elim (δ x) (φ x))
+  I (inr ν) = inr (λ ψ → ν (λ x → ¬¬-intro (ψ x)))
+
+uniform-continuity-gives-searchability
+ : ((f : 𝟚ᴺ → ℕ) → uniformly-continuous f)
+ → is-compact∙ 𝟚ᴺ
+uniform-continuity-gives-searchability u p
+ = Cantor-uniformly-searchable p (m , I)
+ where
+  c : uniformly-continuous (𝟚-to-ℕ ∘ p)
+  c = u (𝟚-to-ℕ ∘ p)
+
+  m : ℕ
+  m = modulus-of-uc-of (𝟚-to-ℕ ∘ p) c
+
+  I : (α β : 𝟚ᴺ) → α ＝⟦ m ⟧ β → p α ＝ p β
+  I α β a = 𝟚-to-ℕ-is-lc (modulus-of-uc-property c α β a)
+
+Lemma-4·1
+ : (EM 𝓤₀ → is-Π-Compact 𝟚ᴺ {𝓤₀})
+ × (((f : 𝟚ᴺ → ℕ) → uniformly-continuous f) → is-compact∙ 𝟚ᴺ)
+Lemma-4·1 = (λ em → EM-gives-Π-Compactness em 𝟚ᴺ) ,
+            uniform-continuity-gives-searchability
+
+\end{code}
+
+The second case also holds when uniform continuity is formulated with
+the existential quantifier ∃, because, as shown in [5], a modulus of
+uniform continuity can then be found explicitly, as the least one.
+
+[5] Martin Escardo and Chuangjie Xu. The inconsistency of a Brouwerian
+    continuity principle with the Curry-Howard interpretation. TLCA
+    2015, LIPIcs volume 38, pages 153-164.
+
+    https://doi.org/10.4230/LIPIcs.TLCA.2015.153
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open notions-of-continuity ℕ ℕ-is-discrete
+       using (uc-property-gives-uc-data)
+
+ open notions-of-continuity.alternative-notions-of-continuity
+       ℕ ℕ-is-discrete pt
+       using (is-uniformly-continuous' ; uniform-continuity-unprime)
+
+ truncated-uniform-continuity-gives-searchability
+  : Fun-Ext
+  → ((f : 𝟚ᴺ → ℕ) → is-uniformly-continuous' f)
+  → is-compact∙ 𝟚ᴺ
+ truncated-uniform-continuity-gives-searchability fe' u
+  = uniform-continuity-gives-searchability
+     (λ f → uc-property-gives-uc-data f
+             (uniform-continuity-unprime fe' f (u f)))
+
+\end{code}
+
+Metatheorem 4.2 of [1] is a statement about formal systems, such as
+HAω with extensionality and choice, that are compatible with classical
+mathematics, in which all sets are searchable and not all functions
+are continuous. In such systems, the searchability of the Cantor type
+proves no continuity principle.
+
+In Theorem 4.3, the continuity of a function p : ℕ∞ → 𝟚 is expressed
+as that of 𝟚-to-ℕ ∘ p, as above.
+
+\begin{code}
+
+Theorem-4·3
+ : is-compact∙ 𝟚ᴺ
+ → ((p : ℕ∞ → 𝟚) → continuous (𝟚-to-ℕ ∘ p))
+ → (f : 𝟚ᴺ → ℕ) → uniformly-continuous f
+Theorem-4·3 ε
+ = Π-compactness-and-continuity-give-uniform-continuity
+    (compact∙-types-are-Π-Compact ε)
+
+Lemma-4·4
+ : is-compact∙ 𝟚ᴺ
+ → Σ H ꞉ ((𝟚ᴺ → ℕ) → ℕ∞)
+       , ((f : 𝟚ᴺ → ℕ) → (H f) is-least-ℕ∞-modulus-of-uc-of f)
+Lemma-4·4 ε = ℕ∞-modulus-of-uc κ , ℕ∞-modulus-of-uc-is-least κ
+ where
+  κ : is-Π-Compact 𝟚ᴺ {𝓤₀}
+  κ = compact∙-types-are-Π-Compact ε
+
+Corollary-4·5
+ : is-compact∙ 𝟚ᴺ
+ → ¬ WLPO
+ → (f : 𝟚ᴺ → ℕ) → ¬¬ uniformly-continuous f
+Corollary-4·5 ε
+ = Π-compactness-and-¬WLPO-give-not-not-uniform-continuity
+    (compact∙-types-are-Π-Compact ε)
+
+\end{code}
+
+For Corollary 4.6, we use the fact that MP gives that the elements of
+ℕ∞ different from ∞ are finite.
+
+\begin{code}
+
+MP-gives-that-elements-other-than-∞-are-below-∞
+ : MP 𝓤₀
+ → (u : ℕ∞) → u ≠ ∞ → u ≺ ∞
+MP-gives-that-elements-other-than-∞-are-below-∞ mp u d
+ = n , (e ⁻¹) , ∞-⊏-largest n
+ where
+  I : is-finite u
+  I = mp (λ n → ι n ＝ u)
+         (λ n → finite-isolated fe n u)
+         (λ ν → d (not-finite-is-∞ fe (λ n e → ν (n , (e ⁻¹)))))
+
+  n : ℕ
+  n = size I
+
+  e : ι n ＝ u
+  e = size-property I
+
+Corollary-4·6
+ : MP 𝓤₀
+ → ¬ WLPO
+ → is-compact∙ 𝟚ᴺ ↔ ((f : 𝟚ᴺ → ℕ) → uniformly-continuous f)
+Corollary-4·6 mp nwlpo = I , uniform-continuity-gives-searchability
+ where
+  I : is-compact∙ 𝟚ᴺ → (f : 𝟚ᴺ → ℕ) → uniformly-continuous f
+  I ε f = V
+   where
+    κ : is-Π-Compact 𝟚ᴺ {𝓤₀}
+    κ = compact∙-types-are-Π-Compact ε
+
+    II : ¬¬ uniformly-continuous f
+    II = Corollary-4·5 ε nwlpo f
+
+    III : ℕ∞-modulus-of-uc κ f ≠ ∞
+    III = rl-implication
+           (ℕ∞-modulus-of-uc-is-not-∞-iff-not-not-uniformly-continuous κ f)
+           II
+
+    IV : ℕ∞-modulus-of-uc κ f ≺ ∞
+    IV = MP-gives-that-elements-other-than-∞-are-below-∞ mp
+          (ℕ∞-modulus-of-uc κ f)
+          III
+
+    V : uniformly-continuous f
+    V = lr-implication
+         (ℕ∞-modulus-of-uc-is-below-∞-iff-uniformly-continuous κ f)
+         IV
+
+\end{code}
+
+The functional H : (𝟚ᴺ → ℕ) → ℕ that [1] mentions in its closing
+remarks assigns a modulus of uniform continuity to every function
+𝟚ᴺ → ℕ, assuming MP, ¬ WLPO and the searchability of the Cantor type.
+It is obtained from Corollary 4.6, which under these assumptions gives
+uniform continuity data for every such function, by taking its modulus
+with modulus-of-uc-of.
+
+We conclude with the closing remarks of Section 4 of [1]. Assuming MP
+and ¬ WLPO, Corollary 3.9 of [1], proved above as
+MP-and-¬WLPO-give-that-all-functions-are-continuous, gives continuity
+data for every function ℕ∞ → ℕ, and hence, without choice, a modulus
+of continuity functional, as in the continuity principle
+
+   ∃ F : (ℕ∞ → ℕ) → ℕ , ∀ f : ℕ∞ → ℕ , ∀ m ≥ F f , f m ＝ f ∞      (12)
+
+of [1]. By search bounded by the modulus, we may take the least
+modulus, and then F satisfies the two equations
+
+   F f ＝ 0                    if f u ＝ f ∞ for all u : ℕ∞,
+   F f ＝ succ (F (f ∘ Succ))  otherwise,
+
+of [1], which can be considered as computation rules, because their
+condition is decidable by the Π-compactness of ℕ∞.
+
+\begin{code}
+
+_is-least-modulus-of-continuity-of_ : ℕ → (ℕ∞ → ℕ) → 𝓤₀ ̇
+m is-least-modulus-of-continuity-of f
+ = (m is-modulus-of-continuity-of f)
+ × ((k : ℕ) → k is-modulus-of-continuity-of f → m ≤ k)
+
+least-modulus-of-continuity : (f : ℕ∞ → ℕ) → continuous f → ℕ
+least-modulus-of-continuity f
+ = minimal-number A δ
+ where
+  A : ℕ → 𝓤₀ ̇
+  A = _is-modulus-of-continuity-of f
+
+  δ : (m : ℕ) → A m → (k : ℕ) → k < m → is-decidable (A k)
+  δ _ _ k _ = being-modulus-of-continuity-is-decidable f k
+
+least-modulus-of-continuity-is-least
+ : (f : ℕ∞ → ℕ)
+   (c : continuous f)
+ → (least-modulus-of-continuity f c) is-least-modulus-of-continuity-of f
+least-modulus-of-continuity-is-least f c
+ = minimal-number-requirement A δ c , minimality A δ c
+ where
+  A : ℕ → 𝓤₀ ̇
+  A = _is-modulus-of-continuity-of f
+
+  δ : (m : ℕ) → A m → (k : ℕ) → k < m → is-decidable (A k)
+  δ _ _ k _ = being-modulus-of-continuity-is-decidable f k
+
+zero-is-modulus-of-continuity-iff-constant
+ : (f : ℕ∞ → ℕ)
+ → (0 is-modulus-of-continuity-of f) ↔ ((u : ℕ∞) → f u ＝ f ∞)
+zero-is-modulus-of-continuity-iff-constant f
+ = (λ a → ℕ∞-density fe ℕ-is-¬¬-separated {f} {λ _ → f ∞} a refl) ,
+   (λ b n → b (ι n))
+
+Succ-decreases-modulus-of-continuity
+ : (f : ℕ∞ → ℕ) (k : ℕ)
+ → (succ k) is-modulus-of-continuity-of f
+ → k is-modulus-of-continuity-of (f ∘ Succ)
+Succ-decreases-modulus-of-continuity f k a n
+ = f (Succ (max (ι k) (ι n)))        ＝⟨ I ⟩
+   f (max (ι (succ k)) (ι (succ n))) ＝⟨ a (succ n) ⟩
+   f ∞                               ＝⟨ II ⟩
+   f (Succ ∞)                        ∎
+ where
+  I  = ap f (max-Succ fe (ι k) (ι n))
+  II = ap f ((Succ-∞-is-∞ fe)⁻¹)
+
+Succ-decreases-modulus-of-continuity-converse
+ : (f : ℕ∞ → ℕ) (k : ℕ)
+ → k is-modulus-of-continuity-of (f ∘ Succ)
+ → (succ k) is-modulus-of-continuity-of f
+Succ-decreases-modulus-of-continuity-converse f k b 0
+ = f (max (ι (succ k)) (ι 0)) ＝⟨ I ⟩
+   f (Succ (ι k))             ＝⟨ II ⟩
+   f (Succ (max (ι k) (ι 0))) ＝⟨ b 0 ⟩
+   f (Succ ∞)                 ＝⟨ III ⟩
+   f ∞                        ∎
+ where
+  I   = ap f (max0-property' fe (ι (succ k)))
+  II  = ap (f ∘ Succ) ((max0-property' fe (ι k))⁻¹)
+  III = ap f (Succ-∞-is-∞ fe)
+Succ-decreases-modulus-of-continuity-converse f k b (succ n)
+ = f (max (ι (succ k)) (ι (succ n))) ＝⟨ IV ⟩
+   f (Succ (max (ι k) (ι n)))        ＝⟨ b n ⟩
+   f (Succ ∞)                        ＝⟨ V ⟩
+   f ∞                               ∎
+ where
+  IV = ap f ((max-Succ fe (ι k) (ι n))⁻¹)
+  V  = ap f (Succ-∞-is-∞ fe)
+
+least-modulus-equation₀
+ : (f : ℕ∞ → ℕ) (m : ℕ)
+ → m is-least-modulus-of-continuity-of f
+ → ((u : ℕ∞) → f u ＝ f ∞)
+ → m ＝ 0
+least-modulus-equation₀ f 0        _       c = refl
+least-modulus-equation₀ f (succ m) (_ , l) c
+ = 𝟘-elim
+    (l 0 (rl-implication (zero-is-modulus-of-continuity-iff-constant f) c))
+
+least-modulus-equation₁
+ : (f : ℕ∞ → ℕ) (m m' : ℕ)
+ → m is-least-modulus-of-continuity-of f
+ → m' is-least-modulus-of-continuity-of (f ∘ Succ)
+ → ¬ ((u : ℕ∞) → f u ＝ f ∞)
+ → m ＝ succ m'
+least-modulus-equation₁ f 0        m' (a , _) _         ν
+ = 𝟘-elim (ν (lr-implication (zero-is-modulus-of-continuity-iff-constant f) a))
+least-modulus-equation₁ f (succ k) m' (a , l) (a' , l') ν
+ = ap succ (≤-anti k m' I II)
+ where
+  I : k ≤ m'
+  I = l (succ m') (Succ-decreases-modulus-of-continuity-converse f m' a')
+
+  II : m' ≤ k
+  II = l' k (Succ-decreases-modulus-of-continuity f k a)
+
+module _ (mp : MP 𝓤₀) (nwlpo : ¬ WLPO) where
+
+ modulus-of-continuity-functional : (ℕ∞ → ℕ) → ℕ
+ modulus-of-continuity-functional f
+  = least-modulus-of-continuity f
+     (MP-and-¬WLPO-give-that-all-functions-are-continuous mp nwlpo f)
+
+ modulus-of-continuity-functional-is-least
+  : (f : ℕ∞ → ℕ)
+  → (modulus-of-continuity-functional f) is-least-modulus-of-continuity-of f
+ modulus-of-continuity-functional-is-least f
+  = least-modulus-of-continuity-is-least f
+     (MP-and-¬WLPO-give-that-all-functions-are-continuous mp nwlpo f)
+
+ modulus-of-continuity-functional-equation₀
+  : (f : ℕ∞ → ℕ)
+  → ((u : ℕ∞) → f u ＝ f ∞)
+  → modulus-of-continuity-functional f ＝ 0
+ modulus-of-continuity-functional-equation₀ f
+  = least-modulus-equation₀ f
+     (modulus-of-continuity-functional f)
+     (modulus-of-continuity-functional-is-least f)
+
+ modulus-of-continuity-functional-equation₁
+  : (f : ℕ∞ → ℕ)
+  → ¬ ((u : ℕ∞) → f u ＝ f ∞)
+  → modulus-of-continuity-functional f
+  ＝ succ (modulus-of-continuity-functional (f ∘ Succ))
+ modulus-of-continuity-functional-equation₁ f
+  = least-modulus-equation₁ f
+     (modulus-of-continuity-functional f)
+     (modulus-of-continuity-functional (f ∘ Succ))
+     (modulus-of-continuity-functional-is-least f)
+     (modulus-of-continuity-functional-is-least (f ∘ Succ))
+
+\end{code}
+
+The continuity principle (12), which says that there is a modulus of
+continuity functional, implies ¬ WLPO, as observed in [1]. With Σ in
+place of ∃, the principle (12) amounts to the continuity of all
+functions ℕ∞ → ℕ, because Π distributes over Σ, and this is the
+hypothesis of the following.
+
+\begin{code}
+
+continuity-principle-gives-¬WLPO
+ : ((f : ℕ∞ → ℕ) → continuous f)
+ → ¬ WLPO
+continuity-principle-gives-¬WLPO c
+ = rl-implication ¬WLPO-iff-all-maps-are-¬¬-continuous (λ f → ¬¬-intro (c f))
+
+\end{code}
+
+The paper [1] conjectures that the continuity principle (12) doesn't
+imply MP, and asks whether it implies Weak Markov's Principle. It also
+remarks that this principle seems to incorporate some amount of
+choice, and so not to be quite equivalent to the continuity of all
+functions ℕ∞ → ℕ, although it is equivalent to it in the presence of
+choice. In our setting, the continuity of all functions ℕ∞ → ℕ gives
+this principle whether continuity is formulated with Σ or with ∃,
+because the two formulations are logically equivalent, as shown in the
+module continuity-criteria above.

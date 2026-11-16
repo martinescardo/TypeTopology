@@ -720,6 +720,9 @@ max-fin fe (succ m) (succ n) =
 max-idemp : funext₀ → (u : ℕ∞) → max u u ＝ u
 max-idemp fe₀ u = ℕ∞-to-ℕ→𝟚-lc fe₀ (dfunext fe₀ (λ i → max𝟚-idemp (ι u i)))
 
+max-≼-upper-bound : (u v : ℕ∞) → u ≼ max u v
+max-≼-upper-bound u v n a = max𝟚-lemma-converse (inl a)
+
 min : ℕ∞ → ℕ∞ → ℕ∞
 min (α , r) (β , s) = (λ i → min𝟚 (α i) (β i)) , t
  where
