@@ -45,23 +45,6 @@ open import Ordinals.Underlying
 open suprema pt sr
 open PropositionalTruncation pt
 
--- TODO: Upstream
-⊲-gives-successor-⊴ : (α β : Ordinal 𝓤) → α ⊲ β → α +ₒ 𝟙ₒ ⊴ β
-⊲-gives-successor-⊴ α β (b , refl) =
- upper-bound-of-successors-of-initial-segments β b
-
-successor-⊴-gives-⊲ : (α β : Ordinal 𝓤) → α +ₒ 𝟙ₒ ⊴ β → α ⊲ β
-successor-⊴-gives-⊲ α β 𝕗@(f , f-sim) =
- b , (α                 ＝⟨ (successor-lemma-right α) ⁻¹ ⟩
-      (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ simulations-preserve-↓ (α +ₒ 𝟙ₒ) β 𝕗 (inr ⋆) ⟩
-      β ↓ b             ∎)
- where
-  b : ⟨ β ⟩
-  b = f (inr ⋆)
-
-\end{code}
-
-\begin{code}
 
 -- TODO: Upstream
 double-transfinite-induction-on-OO

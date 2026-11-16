@@ -526,7 +526,7 @@ successor-increasing α = inr ⋆ , ((successor-lemma-right α)⁻¹)
 
 \end{code}
 
-Added on 24th May 2024 by Tom de Jong.
+Added 24th May 2024 and 16th November 2026 by Tom de Jong.
 
 \begin{code}
 
@@ -543,9 +543,19 @@ upper-bound-of-successors-of-initial-segments α a = to-⊴ ((α ↓ a) +ₒ �
     e₂ = iterated-↓ α a b l
   I (inr ⋆) = a , successor-lemma-right (α ↓ a)
 
+⊲-gives-successor-⊴ : (α β : Ordinal 𝓤) → α ⊲ β → α +ₒ 𝟙ₒ ⊴ β
+⊲-gives-successor-⊴ α β (b , refl) =
+ upper-bound-of-successors-of-initial-segments β b
+
+successor-⊴-gives-⊲ : (α β : Ordinal 𝓤) → α +ₒ 𝟙ₒ ⊴ β → α ⊲ β
+successor-⊴-gives-⊲ α β 𝕗@(f , f-sim) = f (inr ⋆) ,
+ (α                 ＝⟨ (successor-lemma-right α) ⁻¹ ⟩
+  (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ simulations-preserve-↓ (α +ₒ 𝟙ₒ) β 𝕗 (inr ⋆) ⟩
+  β ↓ f (inr ⋆)     ∎)
+
 \end{code}
 
-End of addition.
+End of additions.
 
 Classically, if α ≼ β then there is (a necessarily unique) γ with
 α +ₒ γ ＝ β. But this not necessarily the case constructively. For
