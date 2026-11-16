@@ -520,8 +520,8 @@ abstract
 
 \begin{code}
 
-⊕-is-strictly-increasing : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β → α ⊲ α ⊕ β
-⊕-is-strictly-increasing α β 𝕗@(f , f-sim) = transport⁻¹ (_⊲ α ⊕ β) I II
+⊕-is-strictly-inflationary : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β → α ⊲ α ⊕ β
+⊕-is-strictly-inflationary α β 𝕗@(f , f-sim) = transport⁻¹ (_⊲ α ⊕ β) I II
  where
   b : ⟨ β ⟩
   b = f ⋆
@@ -538,8 +538,8 @@ abstract
   II : α ⊕ (β ↓ b) ⊲ α ⊕ β
   II = ⊕-⊲-right α β
 
-⊕𝟙ₒ-is-strictly-increasing : (α : Ordinal 𝓤) → α ⊲ α ⊕ 𝟙ₒ
-⊕𝟙ₒ-is-strictly-increasing α = ⊕-is-strictly-increasing α 𝟙ₒ (⊴-refl 𝟙ₒ)
+⊕𝟙ₒ-is-strictly-inflationary : (α : Ordinal 𝓤) → α ⊲ α ⊕ 𝟙ₒ
+⊕𝟙ₒ-is-strictly-inflationary α = ⊕-is-strictly-inflationary α 𝟙ₒ (⊴-refl 𝟙ₒ)
 
 \end{code}
 
