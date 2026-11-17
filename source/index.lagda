@@ -152,7 +152,6 @@
 
 module index where
 
-<<<<<<< HEAD
 \end{code}
 
 **Foundations**
