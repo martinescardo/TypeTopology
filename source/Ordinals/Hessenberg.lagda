@@ -37,6 +37,8 @@ they imply excluded middle. These include:
   * being inflationary (α ⊴ α ⊕ β), and
   * being above ordinary addition (α +ₒ β ⊴ α ⊕ β).
 
+TODO. Update with more taboos.
+
 TODO. Can we show δ ⊕ α < δ ⊕ β → α < β?
 
           1 < P + 1 decides P
@@ -583,10 +585,10 @@ Taking β = 𝟘ₒ yields α ⊕ 𝟙ₒ = α +ₒ 𝟙ₒ, but (-) + 𝟙ₒ i
 
 \begin{code}
 
--- TODO. Upstream and rename helpers
+-- TODO. Upstream.
 successor-is-order-preserving-gives-EM
  : ((α β : Ordinal 𝓤) → α ⊲ β → α +ₒ 𝟙ₒ ⊲ β +ₒ 𝟙ₒ) → EM 𝓤
-successor-is-order-preserving-gives-EM h P i = uncurry foo (h α β I)
+successor-is-order-preserving-gives-EM h P i = uncurry II (h α β I)
  where
   Pₒ = prop-ordinal P i
   α = Pₒ
@@ -599,36 +601,35 @@ successor-is-order-preserving-gives-EM h P i = uncurry foo (h α β I)
         (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ successor-lemma-right α ⟩
         α                 ∎
 
-  bar₁ : (p : P) → α ＝ 𝟙ₒ
-  bar₁ = holds-gives-equal-𝟙ₒ i
-  bar₂ : (p : P) → β ＝ 𝟚ₒ +ₒ 𝟙ₒ
-  bar₂ p = ap (λ - → (- +ₒ 𝟙ₒ) +ₒ -) (holds-gives-equal-𝟙ₒ i p)
+  eq₁ : (p : P) → α ＝ 𝟙ₒ
+  eq₁ = holds-gives-equal-𝟙ₒ i
+  eq₂ : (p : P) → β ＝ 𝟚ₒ +ₒ 𝟙ₒ
+  eq₂ p = ap (λ - → (- +ₒ 𝟙ₒ) +ₒ -) (holds-gives-equal-𝟙ₒ i p)
 
-  foo : (y : ((P + 𝟙) + P) + 𝟙) → α +ₒ 𝟙ₒ ＝ (β +ₒ 𝟙ₒ) ↓ y
-      → P + ¬ P
-  foo (inl (inl (inl p))) e = inl p
-  foo (inl (inl (inr ⋆))) e = inr ν
+  II : (y : ((P + 𝟙) + P) + 𝟙) → α +ₒ 𝟙ₒ ＝ (β +ₒ 𝟙ₒ) ↓ y
+     → P + ¬ P
+  II (inl (inl (inl p))) e = inl p
+  II (inl (inr p))       e = inl p
+  II (inl (inl (inr ⋆))) e = inr ν
    where
-    e' = (β +ₒ 𝟙ₒ) ↓ inl (inl (inr ⋆)) ＝⟨ +ₒ-↓-left (inl (inr ⋆)) ⁻¹ ⟩
-         β ↓ (inl (inr ⋆)) ＝⟨ (+ₒ-↓-left (inr ⋆)) ⁻¹ ⟩
-         (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ successor-lemma-right α ⟩
-         α                 ∎
-    e'' : α +ₒ 𝟙ₒ ＝ α
-    e'' = e ∙ e'
+    e' = α +ₒ 𝟙ₒ                       ＝⟨ e ⟩
+         (β +ₒ 𝟙ₒ) ↓ inl (inl (inr ⋆)) ＝⟨ +ₒ-↓-left (inl (inr ⋆)) ⁻¹ ⟩
+         β ↓ (inl (inr ⋆))             ＝⟨ (+ₒ-↓-left (inr ⋆)) ⁻¹ ⟩
+         (α +ₒ 𝟙ₒ) ↓ inr ⋆             ＝⟨ successor-lemma-right α ⟩
+         α                             ∎
     ν : ¬ P
-    ν p = +disjoint (transport⁻¹ is-prop (ap ⟨_⟩ e'') i (inl p) (inr ⋆))
-  foo (inl (inr p))       e = inl p
-  foo (inr ⋆)             e = inr ν
+    ν p = +disjoint (transport⁻¹ is-prop (ap ⟨_⟩ e') i (inl p) (inr ⋆))
+  II (inr ⋆)             e = inr ν
    where
     ν : ¬ P
-    ν p = 𝟚ₒ-is-not-𝟙ₒ ((+ₒ-left-cancellable 𝟙ₒ 𝟙ₒ 𝟚ₒ e'') ⁻¹)
+    ν p = 𝟚ₒ-is-not-𝟙ₒ ((+ₒ-left-cancellable 𝟙ₒ 𝟙ₒ 𝟚ₒ e') ⁻¹)
      where
-      e'' = 𝟙ₒ +ₒ 𝟙ₒ          ＝⟨ ap (_+ₒ 𝟙ₒ) ((bar₁ p) ⁻¹) ⟩
-            α +ₒ 𝟙ₒ           ＝⟨ e ⟩
-            (β +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ successor-lemma-right β ⟩
-            β                 ＝⟨ bar₂ p ⟩
-            𝟚ₒ +ₒ 𝟙ₒ          ＝⟨ +ₒ-assoc 𝟙ₒ 𝟙ₒ 𝟙ₒ ⟩
-            𝟙ₒ +ₒ 𝟚ₒ          ∎
+      e' = 𝟙ₒ +ₒ 𝟙ₒ          ＝⟨ ap (_+ₒ 𝟙ₒ) ((eq₁ p) ⁻¹) ⟩
+           α +ₒ 𝟙ₒ           ＝⟨ e ⟩
+           (β +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ successor-lemma-right β ⟩
+           β                 ＝⟨ eq₂ p ⟩
+           𝟚ₒ +ₒ 𝟙ₒ          ＝⟨ +ₒ-assoc 𝟙ₒ 𝟙ₒ 𝟙ₒ ⟩
+           𝟙ₒ +ₒ 𝟚ₒ          ∎
 
 ⊕-+ₒ-equal-successors-gives-EM : ((α : Ordinal 𝓤) → α ⊕ 𝟙ₒ ＝ α +ₒ 𝟙ₒ) → EM 𝓤
 ⊕-+ₒ-equal-successors-gives-EM {𝓤} h =
