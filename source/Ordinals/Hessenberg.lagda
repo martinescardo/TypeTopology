@@ -576,6 +576,81 @@ definition of Hessenberg addition.
 
 \end{code}
 
+TODO. FROM WELL-PARTIAL ORDERINGS AND HIERARCHIES
+      Lemma 3.3b) α ⊕ (β +ₒ 𝟙ₒ) ＝ (α ⊕ β) +ₒ 𝟙ₒ
+
+Taking β = 𝟘ₒ yields α ⊕ 𝟙ₒ = α +ₒ 𝟙ₒ, but (-) + 𝟙ₒ is not order preserving, while (-) ⊕ 𝟙ₒ is.
+
+\begin{code}
+
+-- TODO. Upstream and rename helpers
+successor-is-order-preserving-gives-EM
+ : ((α β : Ordinal 𝓤) → α ⊲ β → α +ₒ 𝟙ₒ ⊲ β +ₒ 𝟙ₒ) → EM 𝓤
+successor-is-order-preserving-gives-EM h P i = uncurry foo (h α β I)
+ where
+  Pₒ = prop-ordinal P i
+  α = Pₒ
+  β = α +ₒ 𝟙ₒ +ₒ Pₒ
+
+  I : α ⊲ β
+  I = (inl (inr ⋆) , (e ⁻¹))
+   where
+    e = β ↓ inl (inr ⋆)   ＝⟨ (+ₒ-↓-left (inr ⋆)) ⁻¹ ⟩
+        (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ successor-lemma-right α ⟩
+        α                 ∎
+
+  bar₁ : (p : P) → α ＝ 𝟙ₒ
+  bar₁ = holds-gives-equal-𝟙ₒ i
+  bar₂ : (p : P) → β ＝ 𝟚ₒ +ₒ 𝟙ₒ
+  bar₂ p = ap (λ - → (- +ₒ 𝟙ₒ) +ₒ -) (holds-gives-equal-𝟙ₒ i p)
+
+  foo : (y : ((P + 𝟙) + P) + 𝟙) → α +ₒ 𝟙ₒ ＝ (β +ₒ 𝟙ₒ) ↓ y
+      → P + ¬ P
+  foo (inl (inl (inl p))) e = inl p
+  foo (inl (inl (inr ⋆))) e = inr ν
+   where
+    e' = (β +ₒ 𝟙ₒ) ↓ inl (inl (inr ⋆)) ＝⟨ +ₒ-↓-left (inl (inr ⋆)) ⁻¹ ⟩
+         β ↓ (inl (inr ⋆)) ＝⟨ (+ₒ-↓-left (inr ⋆)) ⁻¹ ⟩
+         (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ successor-lemma-right α ⟩
+         α                 ∎
+    e'' : α +ₒ 𝟙ₒ ＝ α
+    e'' = e ∙ e'
+    ν : ¬ P
+    ν p = +disjoint (transport⁻¹ is-prop (ap ⟨_⟩ e'') i (inl p) (inr ⋆))
+  foo (inl (inr p))       e = inl p
+  foo (inr ⋆)             e = inr ν
+   where
+    ν : ¬ P
+    ν p = 𝟚ₒ-is-not-𝟙ₒ ((+ₒ-left-cancellable 𝟙ₒ 𝟙ₒ 𝟚ₒ e'') ⁻¹)
+     where
+      e'' = 𝟙ₒ +ₒ 𝟙ₒ          ＝⟨ ap (_+ₒ 𝟙ₒ) ((bar₁ p) ⁻¹) ⟩
+            α +ₒ 𝟙ₒ           ＝⟨ e ⟩
+            (β +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ successor-lemma-right β ⟩
+            β                 ＝⟨ bar₂ p ⟩
+            𝟚ₒ +ₒ 𝟙ₒ          ＝⟨ +ₒ-assoc 𝟙ₒ 𝟙ₒ 𝟙ₒ ⟩
+            𝟙ₒ +ₒ 𝟚ₒ          ∎
+
+⊕-+ₒ-equal-successors-gives-EM : ((α : Ordinal 𝓤) → α ⊕ 𝟙ₒ ＝ α +ₒ 𝟙ₒ) → EM 𝓤
+⊕-+ₒ-equal-successors-gives-EM {𝓤} h =
+ successor-is-order-preserving-gives-EM I
+  where
+   I : (α β : Ordinal 𝓤) → α ⊲ β → α +ₒ 𝟙ₒ ⊲ β +ₒ 𝟙ₒ
+   I α β l = transport₂ _⊲_ (h α) (h β)
+              (⊕-is-order-preserving-left α β 𝟙ₒ l)
+
+⊕-commutes-with-successor-gives-EM
+ : ((α β : Ordinal 𝓤) → α ⊕ (β +ₒ 𝟙ₒ) ＝ (α ⊕ β) +ₒ 𝟙ₒ)
+ → EM 𝓤
+⊕-commutes-with-successor-gives-EM {𝓤} h = ⊕-+ₒ-equal-successors-gives-EM I
+ where
+  I : (α : Ordinal 𝓤) → α ⊕ 𝟙ₒ ＝ α +ₒ 𝟙ₒ
+  I α = α ⊕ 𝟙ₒ         ＝⟨ ap (α ⊕_) ((𝟘ₒ-left-neutral 𝟙ₒ) ⁻¹) ⟩
+        α ⊕ (𝟘ₒ +ₒ 𝟙ₒ) ＝⟨ h α 𝟘ₒ ⟩
+        (α ⊕ 𝟘ₒ) +ₒ 𝟙ₒ ＝⟨ ap (_+ₒ 𝟙ₒ) (𝟘ₒ-is-right-neutral-⊕ α) ⟩
+        α +ₒ 𝟙ₒ        ∎
+
+\end{code}
+
 \begin{code}
 
 ⊕-prop-𝟙ₒ-is-+ₒ : (P : 𝓤 ̇ ) (i : is-prop P)
