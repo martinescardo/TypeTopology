@@ -1,7 +1,7 @@
 Theo Hepburn, started February 2025.
 
-Provides an implementation of insertion sort
-in our language.
+Provides an implementation of insertion sort in our language,
+and a proof that is is correct.
 
 \begin{code}
 
@@ -29,23 +29,17 @@ open import TGH.Language fe
 open import TGH.AFP2024.InsertionSort ℕ _<_ <-trichotomous
  renaming (insert to insert')
 
-call-intermediate-l-n : {σ : LType}
-                      → Closed (list ⇒ nat ⇒ σ)
-                      → (strategy : Strategy)
-                      → List ℕ → ℕ → ⟦ σ ⟧ᵢ
-call-intermediate-l-n t s l n
- = (pr₁ ((pr₁ ([] [ t ]ᵢ s)) (0 , (return l)))) (0 , return n)
+\end{code}
+
+Using many helper functions, we define a program sort that uses insertion
+sort to sort a list. We prove its correctness by proving that, for a given
+input, it produces the same output as an Agda insertion sort implementation
+that has been proved to sort a list.
+
+\begin{code}
 
 subtract : {n : ℕ} {Γ : Ctx n} → Term Γ (nat ⇒ nat ⇒ nat)
 subtract = lam nat (lam nat (nrec (var 𝟎) (var 𝟏) (lam nat (pred (var 𝟎)))))
-
-\end{code}
-
-The step functions of the list recursions below are given names. This
-lets us state and prove the lemmas about them without writing the
-step functions out in full each time.
-
-\begin{code}
 
 concat-step : {n : ℕ} {Γ : Ctx n} → Term Γ (list ⇒ nat ⇒ list)
 concat-step = lam list (lam nat (cons (var 𝟎) (var 𝟏)))
@@ -279,16 +273,6 @@ remove-greater-than-from-end-env-lemma {y = y} (x ∷ xs)
     (subtract-env-lemma y x)
     refl
     (ap (x ∷_) (remove-greater-than-from-end-env-lemma xs))
-
-\end{code}
-
-Unfolding lemmas. Evaluating `remove-less-than-from-start` or
-`remove-greater-than-from-end` on a non-empty list gives a conditional
-on the subtraction `y - x`. These lemmas state this directly in terms of
-the same function in the original environment, so that the proofs below
-never have to write out the extended environments.
-
-\begin{code}
 
 remove-less-than-from-start-cons
  : {n : ℕ} {Γ : Ctx n} {env : Env Γ}

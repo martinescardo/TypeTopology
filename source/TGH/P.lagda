@@ -1,7 +1,7 @@
 Theo Hepburn, started in February 2025
 
-A formalisation of the complexity class P,
-with proof of closure properties of P.
+A formalisation of the complexity class P, with proof of closure properties of
+P.
 
 \begin{code}
 
@@ -22,11 +22,20 @@ open import Naturals.Properties renaming (pred to pred')
 open import MLTT.Vector renaming (Vector to Vec)
 open import MLTT.Fin
 open import MLTT.List
-open import MLTT.Bool hiding (if_then_else_)
+open import MLTT.Bool renaming (not to not') hiding (if_then_else_)
 open import UF.Base
 open import TGH.Thunk
 open import TGH.Language fe
 open import TGH.ComplexityDefinitionsResults fe
+
+\end{code}
+
+We introduce a predicate `all-binary` that asserts that a list of natural
+numbers is binary (ie. contains just 1s and 0s), and a predicate
+`is-binary-program` that asserts that a program from a list to a list will
+return a binary list if the input is a list.
+
+\begin{code}
 
 all-binary : List ℕ → 𝓤₀ ̇
 all-binary [] = 𝟙
@@ -41,8 +50,28 @@ is-binary-program {n} {Γ} program
  → (all-binary xs)
  → all-binary ((env [ lam list program ]ₑ) xs)
 
+\end{code}
+
+We introduce the concept of a `Reduction` - a program that,
+for some context, takes a list of 1s and 0s and transforms
+it into another list of 1s and 0s.
+
+\begin{code}
+
 Reduction : {n : ℕ} (Γ : Ctx n) → 𝓤₀ ̇
 Reduction Γ = Σ program ꞉ Term (list ∷ Γ) list , is-binary-program program
+
+\end{code}
+
+We define a function that allows a program in our language that takes a `list`
+and returns a `nat` to be used a function for lists of booleans to booleans.
+
+We first define functions to convert between booleans and natural numbers.
+
+We say that 0 corresponds to `true` and any other natural number corresponds to
+`false`.
+
+\begin{code}
 
 bool-to-nat : Bool → ℕ
 bool-to-nat true = 0
@@ -113,6 +142,13 @@ to-decision-solver : {n : ℕ} {Γ : Ctx n}
 to-decision-solver env program l
  = nat-to-bool ((env [ lam list program ]ₑ) (map bool-to-nat l))
 
+\end{code}
+
+General definition for what it means for a program on lists
+to be polynomial time.
+
+\begin{code}
+
 general-list-polytime : {τ : LType} {n : ℕ} {Γ : Ctx n}
                       → ((τ ＝ nat) ∔ (τ ＝ list))
                       → Term (list ∷ Γ) τ
@@ -128,34 +164,45 @@ general-list-polytime {_} {n} {Γ} (inr refl) program
 
 \end{code}
 
-A solver for a decision problem `decision` in the context `Γ` is a program
+A `P-solver` for a decision problem `decision` in the context `Γ` is a program
 which decides it, together with a proof that it runs in polynomial time.
+
+A decision problem is in P if it has a `P-solver` for all contexts.
 
 \begin{code}
 
 P-solver : {n : ℕ} → Ctx n → (List Bool → Bool) → 𝓤₀ ̇
-P-solver Γ decision
- = Σ program ꞉ Term (list ∷ Γ) nat
- , ((env : Env Γ) → to-decision-solver env program ∼ decision)
- × general-list-polytime (inl refl) program
+P-solver Γ decision =
+ Σ program ꞉ Term (list ∷ Γ) nat
+  , ((env : Env Γ) → to-decision-solver env program ∼ decision)
+  × general-list-polytime (inl refl) program
 
 _∈P : (decision : List Bool → Bool) → 𝓤₀ ̇
 _∈P decision = Π n ꞉ ℕ , Π Γ ꞉ Ctx n , P-solver Γ decision
 
-not' : {n : ℕ} → {Γ : Ctx n} → Term Γ (nat ⇒ nat)
-not' = lam nat (if (var 𝟎) then suc zero else zero)
+\end{code}
 
-not'-not : {n : ℕ} {Γ : Ctx n}
+A helper program that changes a 0 to a 1 and a 1
+(or any other non-zero `nat`) to a 0.
+
+\begin{code}
+
+not : {n : ℕ} → {Γ : Ctx n} → Term Γ (nat ⇒ nat)
+not = lam nat (if (var 𝟎) then suc zero else zero)
+
+\end{code}
+
+Proof of correctness for `not` - that when wrapped with
+`nat-to-bool` and `bool-to-nat` it is equivalent to the `not'` Agda
+function, which turns `false` to `true` and `true` to `false`.
+
+\begin{code}
+
+not-not' : {n : ℕ} {Γ : Ctx n}
          → (env : Env Γ)
-         → nat-to-bool ∘ (env [ not' ]ₑ) ∘ bool-to-nat ∼ not
-not'-not env true = refl
-not'-not env false = refl
-
-not'-not' : {n : ℕ} {Γ : Ctx n}
-          → (env : Env Γ)
-          → (env [ not' ]ₑ) ∼ (env [ not' ]ₑ) ∘ bool-to-nat ∘ nat-to-bool
-not'-not' env zero = refl
-not'-not' env (succ _) = refl
+         → nat-to-bool ∘ (env [ not ]ₑ) ∘ bool-to-nat ∼ not'
+not-not' env true = refl
+not-not' env false = refl
 
 \end{code}
 
@@ -169,7 +216,7 @@ program is applied to the input list.
 not-program : {n : ℕ} {Γ : Ctx n}
             → Term (list ∷ list ∷ Γ) nat
             → Term (list ∷ Γ) nat
-not-program program = not' ∙ ((lam list program) ∙ (var 𝟎))
+not-program program = not ∙ ((lam list program) ∙ (var 𝟎))
 
 or-program : {n : ℕ} {Γ : Ctx n}
            → Term (list ∷ list ∷ Γ) nat
@@ -276,7 +323,7 @@ Closure of P under negation.
 
 P-closure₁ : (decision : List Bool → Bool)
            → decision ∈P
-           → (not ∘ decision) ∈P
+           → (not' ∘ decision) ∈P
 P-closure₁ decision d∈P n Γ
  = not-program program , correctness' , timing' timing
  where
@@ -351,7 +398,7 @@ P-closure₁ decision d∈P n Γ
 
   correctness' : (env : Env Γ)
                → to-decision-solver env (not-program program)
-               ∼ not ∘ decision
+               ∼ not' ∘ decision
   correctness' env xs
    = nat-to-bool (if' (E [ program ]ₑ) then' 1 else' 0)
    ＝⟨ ap nat-to-bool (ite-nat-bool-inverse (E [ program ]ₑ)) ⟩
@@ -360,8 +407,8 @@ P-closure₁ decision d∈P n Γ
    ＝⟨ ap (λ z → nat-to-bool (if' z then' 1 else' 0))
         (ap bool-to-nat (correctness (map bool-to-nat xs ∷E env) xs)) ⟩
      nat-to-bool (if' bool-to-nat (decision xs) then' 1 else' 0)
-   ＝⟨ not'-not env (decision xs) ⟩
-     not (decision xs)
+   ＝⟨ not-not' env (decision xs) ⟩
+     not' (decision xs)
    ∎
    where
     E : Env (list ∷ list ∷ Γ)

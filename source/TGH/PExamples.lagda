@@ -1,7 +1,6 @@
 Theo Hepburn, started March 2025
 
-Provides examples of some decsion problems
-that are in the complexity class P.
+Provides examples of some decision problems that are in the complexity class P.
 
 \begin{code}
 
@@ -22,7 +21,7 @@ open import Naturals.Properties renaming (pred to pred')
 open import MLTT.Vector renaming (Vector to Vec) hiding (head)
 open import MLTT.Fin
 open import MLTT.List
-open import MLTT.Bool
+open import MLTT.Bool renaming (not to not')
 open import UF.Base
 open import TGH.Thunk
 open import TGH.Language fe
@@ -33,27 +32,40 @@ open import TGH.P fe
 open import TGH.LastTimeListValueIndependent fe
 open import TGH.LastLinearTimeEager fe
 
+\end{code}
+
+The decision problem `first-true` on boolean lists accepts if the
+list is empty or starts with `true`, and rejects otherwise.
+
+\begin{code}
+
 first-true : List Bool → Bool
 first-true [] = true
 first-true (b ∷ _) = b
+
+\end{code}
+
+The decision problem `last-true` on boolean lists accepts if the list is
+empty or ends with `true`, and rejects otherwise.
+
+\begin{code}
 
 last-true : List Bool → Bool
 last-true [] = true
 last-true (b ∷ []) = b
 last-true (_ ∷ bs@(_ ∷ _)) = last-true bs
 
+\end{code}
+
+Proof that the `head` program decides `first-true`.
+
+\begin{code}
+
 list-head-first-true : (xs : List Bool)
                      → nat-to-bool (list-head (map bool-to-nat xs))
                      ＝ first-true xs
 list-head-first-true [] = refl
 list-head-first-true (x ∷ _) = bool-nat-inverse x
-
-list-last-last-true : (xs : List Bool)
-                    → nat-to-bool (last' (map bool-to-nat xs))
-                    ＝ last-true xs
-list-last-last-true [] = refl
-list-last-last-true (x ∷ []) = bool-nat-inverse x
-list-last-last-true (x ∷ y ∷ xs) = list-last-last-true (y ∷ xs)
 
 head-is-first-true : {n : ℕ} {Γ : Ctx n}
                    → (env : Env Γ)
@@ -68,6 +80,19 @@ head-is-first-true env xs
    first-true xs
  ∎
 
+ \end{code}
+
+Proof that the `last` program decides `last-true`.
+
+ \begin{code}
+
+list-last-last-true : (xs : List Bool)
+                    → nat-to-bool (last' (map bool-to-nat xs))
+                    ＝ last-true xs
+list-last-last-true [] = refl
+list-last-last-true (x ∷ []) = bool-nat-inverse x
+list-last-last-true (x ∷ y ∷ xs) = list-last-last-true (y ∷ xs)
+
 last-is-last-true : {n : ℕ} {Γ : Ctx n}
                   → (env : Env Γ)
                   → (xs : List Bool)
@@ -81,22 +106,54 @@ last-is-last-true env xs
    last-true xs
  ∎
 
+\end{code}
+
+Proof that the `first-true` decision problem is in P.
+
+\begin{code}
+
 first-true∈P : first-true ∈P
 first-true∈P _ _
  = head-comp , head-is-first-true , (1 , eager-head-linear-time')
 
-not-first-true∈P : (not ∘ first-true) ∈P
+not-first-true∈P : (not' ∘ first-true) ∈P
 not-first-true∈P = P-closure₁ first-true first-true∈P
+
+\end{code}
+
+Proof that the `last-true` decision problem is in P.
+
+\begin{code}
 
 last-true∈P : last-true ∈P
 last-true∈P _ _ = last-comp , last-is-last-true , (1 , last-linear-time)
 
-not-last-true∈P : (not ∘ last-true) ∈P
+\end{code}
+
+Proof that the negation of the `last-true` problem is in P.
+
+\begin{code}
+
+not-last-true∈P : (not' ∘ last-true) ∈P
 not-last-true∈P = P-closure₁ last-true last-true∈P
+
+\end{code}
+
+Proof that the disjunction of the `first-true` and `last-true` problems
+is in P.
+
+\begin{code}
 
 first-or-last-true∈P : (λ bs → (first-true bs || last-true bs)) ∈P
 first-or-last-true∈P
  = P-closure₂ first-true last-true first-true∈P last-true∈P
+
+\end{code}
+
+Proof that the conjunction of the `first-true` and `last-true` problems
+is in P.
+
+\begin{code}
 
 first-and-last-true∈P : (λ bs → (first-true bs && last-true bs)) ∈P
 first-and-last-true∈P

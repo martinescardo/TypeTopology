@@ -1,8 +1,9 @@
 Taken from the Advanced Functional Programming module lecture notes 2023-24
 
-Modified to remove uses of with
+Modified to remove uses of `with`
 
-Defines an insertion sort function and proves its correctness
+Defines an insertion sort function and proves that it is correct
+ie. that it sorts the input list.
 
 \begin{code}
 

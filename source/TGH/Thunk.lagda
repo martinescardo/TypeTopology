@@ -1,6 +1,6 @@
 Theo Hepburn, started October 2024.
 
-Contains a formalisation of the Thunk type proposed by Nils Anders Danielsson.
+Contains a formalisation of the `Thunk` type proposed by Nils Anders Danielsson.
 This is a monad used to keep track of the number of steps used to construct a
 type.
 
@@ -31,11 +31,5 @@ _>>=_ : {n₁ n₂ : ℕ} {X Y : 𝓤₀ ̇}
       → Thunk n₁ X → (X → Thunk n₂ Y) → Thunk (n₂ + n₁) Y
 return x >>= f = f x
 (√ x)    >>= f = √ (x >>= f)
-
-infixr 30 _∷T_
-
-data Thunk-List (X : 𝓤₀ ̇) : 𝓤₀ ̇ where
- nilT : Σ t ꞉ ℕ , Thunk t 𝟙 → Thunk-List X
- _∷T_ : Σ t ꞉ ℕ , Thunk t X → Thunk-List X → Thunk-List X
 
 \end{code}

@@ -1,7 +1,6 @@
 Theo Hepburn, started March 2025
 
-Provides a formalisation of the the complexity class NP,
-with a proof that P⊆NP.
+Provides a formalisation of the the complexity class NP, with a proof that P⊆NP.
 
 \begin{code}
 
@@ -28,8 +27,16 @@ open import TGH.Thunk
 open import TGH.Language fe
 open import TGH.P fe
 
-is-polytime' : (k C A₀ x y : ℕ) → 𝓤₀ ̇
-is-polytime' k C M x y = y ≤ C * (x ^ k) + M
+\end{code}
+
+A function that allows a program from two `list` arguments to a `nat` output
+to be used as a function from two arguments that are lists of booleans to a
+single boolean output.
+
+The first argument `c` will be used for the certificate and `l` for the list we
+are deciding on.
+
+\begin{code}
 
 to-decision-verifier : {n : ℕ} {Γ : Ctx n}
                      → (env : Env Γ)
@@ -42,56 +49,77 @@ to-decision-verifier env program c l
     ((env [ lam list (lam list program) ]ₑ)
      (map bool-to-nat c) (map bool-to-nat l))
 
-reduce : {n : ℕ} {Γ : Ctx n}
-       → (env : Env Γ)
-       → Term (list ∷ Γ) list
-       → List Bool
-       → List Bool
-reduce env r l
- = map nat-to-bool ((env [ lam list r ]ₑ) (map bool-to-nat l))
+\end{code}
+
+`is-polytime₂` and `verifier-polytime` express what it means for a program
+with two list arguments that returns a nat to be polynomial time.
+
+We have two lower bounds - one for the length of either list argument.
+
+The first argument corresponds to the list `l` we are deciding on and
+the second argument corresponds to the certificate `c`.
+
+\begin{code}
 
 is-polytime₂ : (k C N₀ N₁ x₁ x₂ y : ℕ) → 𝓤₀ ̇
 is-polytime₂ k C N₀ N₁ x₀ x₁ y
  = N₀ ≤ x₀ → N₁ ≤ x₁ → y ≤ C * (x₀ + x₁) ^ k
 
+verifier-polytime : {n : ℕ} {Γ : Ctx n}
+                  → Term (list ∷ list ∷ Γ) nat
+                  → 𝓤₀ ̇
+verifier-polytime {n} {Γ} program =
+ Σ k ꞉ ℕ
+ , Σ C ꞉ ℕ
+  , Σ N₀ ꞉ ℕ
+   , Σ N₁ ꞉ ℕ
+    , Π l ꞉ List ℕ
+     , Π c ꞉ List ℕ
+      , Π env ꞉ Envᵢ Γ
+       , is-polytime₂ k C N₀ N₁ (length c) (length l)
+          (pr₁ (pr₁ (pr₁ (env [ lam list (lam list program) ]ᵢ eager)
+           (thunk-type c)) (thunk-type l)))
+
+
+\end{code}
+
+We use `polynomial-length` to enforce that the length of the certificate is
+bounded by a polynomial function of the length of the list `l` we are
+deciding on.
+
+\begin{code}
+
 polynomial-length : (l₁ l₂ : List Bool) → (k C : ℕ) → 𝓤₀ ̇
 polynomial-length l₁ l₂ k C
  = (length l₂) ≤ C * (length l₁) ^ k
 
-general-list-polytime' : {τ : LType} {n : ℕ} {Γ : Ctx n}
-                       → ((τ ＝ nat) ∔ (τ ＝ list))
-                       → Term (list ∷ Γ) τ
-                       → 𝓤₀ ̇
-general-list-polytime' {_} {n} {Γ} (inl refl) program
- = Σ k ꞉ ℕ , Σ C ꞉ ℕ , Σ M ꞉ ℕ , Π l ꞉ List Bool , Π env ꞉ Envᵢ Γ
- , is-polytime' k C M (length l)
-    (pr₁ (pr₁ (env [ lam list program ]ᵢ eager)
-     (thunk-type (map bool-to-nat l))))
-general-list-polytime' {_} {n} {Γ} (inr refl) program
- = Σ k ꞉ ℕ , Σ C ꞉ ℕ , Σ M ꞉ ℕ , Π l ꞉ List Bool , Π env ꞉ Envᵢ Γ
- , is-polytime' k C M (length l)
-    (pr₁ (pr₁ (env [ lam list program ]ᵢ eager)
-     (thunk-type (map bool-to-nat l))))
+\end{code}
 
-verifier-polytime : {n : ℕ} {Γ : Ctx n}
-                  → Term (list ∷ list ∷ Γ) nat
-                  → 𝓤₀ ̇
-verifier-polytime {n} {Γ} program
- = Σ k ꞉ ℕ , Σ C ꞉ ℕ , Σ N₀ ꞉ ℕ , Σ N₁ ꞉ ℕ
- , Π l ꞉ List ℕ , Π c ꞉ List ℕ , Π env ꞉ Envᵢ Γ
- , is-polytime₂ k C N₀ N₁ (length c) (length l)
-    (pr₁ (pr₁ (pr₁ (env [ lam list (lam list program) ]ᵢ eager)
-     (thunk-type c)) (thunk-type l)))
+Definition of what it means for a decision problem to be in NP.
+
+\begin{code}
 
 _∈NP : (decision : List Bool → Bool) → 𝓤₀ ̇
-_∈NP decision
- = Π n ꞉ ℕ , Π Γ ꞉ Ctx n
- , Σ program ꞉ Term (list ∷ list ∷ Γ) nat
- , Σ k ꞉ ℕ , Σ C ꞉ ℕ
- , Π l ꞉ List Bool , Σ c ꞉ List Bool
- , polynomial-length l c k C
+_∈NP decision =
+ Π n ꞉ ℕ
+ , Π Γ ꞉ Ctx n
+  , Σ program ꞉ Term (list ∷ list ∷ Γ) nat
+   , Σ k ꞉ ℕ
+    , Σ C ꞉ ℕ
+     , Π l ꞉ List Bool
+      , Σ c ꞉ List Bool
+       , polynomial-length l c k C
  × ((env : Env Γ) → (to-decision-verifier env program c l ＝ decision l))
  × (verifier-polytime program)
+
+\end{code}
+
+Helper function that, when using the intermediate semantics for the eager
+evaluation strategy,  calling a function containing a program `term`
+on `thunk-type x` is the same as prepending `thunk-type x` to the
+environment of `term`.
+
+\begin{code}
 
 applying-function : {σ τ : LType} {n : ℕ} {Γ : Ctx n}
                   → (env : Envᵢ Γ)
@@ -102,6 +130,22 @@ applying-function : {σ τ : LType} {n : ℕ} {Γ : Ctx n}
 applying-function {nat} env term x = refl
 applying-function {list} env term x = refl
 applying-function {σ ⇒ σ₁} env term x = refl
+
+\end{code}
+
+Alternative definition for polynomial-time that is helpful for the
+P⊆NP proof.
+
+\begin{code}
+
+is-polytime' : (k C A₀ x y : ℕ) → 𝓤₀ ̇
+is-polytime' k C A₀ x y = y ≤ C * (x ^ k) + A₀
+
+\end{code}
+
+Proof that if a decision problem is in P, then it is also in NP.
+
+\begin{code}
 
 P⊆NP : (decision : List Bool → Bool) → decision ∈P → decision ∈NP
 P⊆NP decision p n Γ

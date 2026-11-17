@@ -1,16 +1,8 @@
 Theo Hepburn, started 22/05/2025.
 
-A prototype language that features natural numbers as the only basic type,
-with it being possible to construct functions on top of this type.
-
+A prototype language that features natural numbers as the only basic type.
 We also have examples of simple functions in this language.
-
-Todd comment:
-"I don't think you need a new line for small things such as succ or 1 +, just the more complicated expressions."
-
-TODO: Reduce the number of lines here
-
-I don't think we need to be as rigorous sticking to it - just on a case by case basis.
+We use function extensionality as we must prove the equality of functions.
 
 \begin{code}
 
@@ -34,20 +26,39 @@ open import MLTT.Fin
 open import TGH.BigO
 open import TGH.Thunk
 
-succ^ : List ℕ → ℕ → ℕ
-succ^ xs n = γ true xs n
- where
-  γ : Bool → List ℕ → ℕ → ℕ
-  γ _ [] n = n
-  γ true (zero ∷ xs) n = γ false xs n
-  γ true (succ x ∷ xs) n = succ (γ true (x ∷ xs) n)
-  γ false (zero ∷ xs) n = γ true xs n
-  γ false (succ x ∷ xs) n = 1 + (γ false (x ∷ xs) n)
+\end{code}
+
+Our prototype language features natural numbers as the only basic type,
+with it being possible to construct functions on top of this type.
+List types are not yet featured.
+
+\begin{code}
 
 infixr 30 _⇒_
 data LType : 𝓤₀ ̇  where
  nat : LType
  _⇒_ : LType → LType → LType
+
+ \end{code}
+
+The syntax of terms in our language is defined as follows using an
+inductive family of datatypes.
+
+`zero` and `suc` are the constructors for natural numbers.
+
+`var` is a variable lookup. `Ctx` is a vector of the types of variables.
+The type of the variable with de Bruijn index `i` is stored at position `i` of
+the context.
+
+`if_then_else_` allows for conditional branching. Here both branches
+must return natural numbers.
+
+`_∙_` is the application operator, allowing a function to be applied to an
+argument.
+
+`nrec` allows for recursion on natural numbers.
+
+ \begin{code}
 
 Ctx : ℕ → 𝓤₀ ̇
 Ctx = Vec LType
@@ -64,9 +75,24 @@ data Term {n : ℕ} (Γ : Ctx n) : LType → 𝓤₀ ̇  where
 Closed : LType → 𝓤₀ ̇
 Closed = Term []
 
+\end{code}
+
+We define a translation from LTypes to Agda Types.
+
+\begin{code}
+
 ⟦_⟧ : LType → 𝓤₀ ̇
 ⟦ nat ⟧ = ℕ
 ⟦ σ ⇒ τ ⟧ = ⟦ σ ⟧ → ⟦ τ ⟧
+
+\end{code}
+
+We define the concept of the environment, which is the vector of values
+for variables currently in scope.
+
+We look up the value of a variable using its de Bruijn index.
+
+\begin{code}
 
 infixr 5 _∷E_
 data Env : {n : ℕ} → Ctx n → 𝓤₀ ̇  where
@@ -77,9 +103,22 @@ lookup-env : {n : ℕ} {Γ : Ctx n} → (m : Fin n) → Env Γ → ⟦ Γ !! m �
 lookup-env 𝟎 (x ∷E _) = x
 lookup-env (suc m) (x ∷E env) = lookup-env m env
 
+\end{code}
+
+if..then..else.. defined using a natural number, rather than a boolean,
+as the condition.
+
+\begin{code}
+
 if'_then'_else'_ : {X : 𝓤₀ ̇} → ℕ → X → X → X
 if' zero then' x else' y = x
 if' succ _ then' x else' y = y
+
+\end{code}
+
+Natural number recursion.
+
+\begin{code}
 
 nat-rec : {n : ℕ} {Γ : Ctx n}
         → Env Γ
@@ -87,6 +126,12 @@ nat-rec : {n : ℕ} {Γ : Ctx n}
         → (base : Term Γ nat)
         → (f : Term Γ (nat ⇒ nat))
         → ℕ
+
+\end{code}
+
+Semantics of the prototype language.
+
+\begin{code}
 
 _[_]ₑ : {n : ℕ} {Γ : Ctx n} {τ : LType} → Env Γ → Term Γ τ → ⟦ τ ⟧
 env [ var v ]ₑ = lookup-env v env
@@ -101,6 +146,12 @@ env [ nrec t u v ]ₑ = nat-rec env (env [ t ]ₑ) u v
 nat-rec env zero base f = env [ base ]ₑ
 nat-rec env (succ m) base f = (env [ f ]ₑ) (nat-rec env m base f)
 
+\end{code}
+
+Program to double a natural number.
+
+\begin{code}
+
 double-step : {n : ℕ} {Γ : Ctx n} → Term Γ (nat ⇒ nat)
 double-step = lam nat (suc (suc (var 𝟎)))
 
@@ -109,7 +160,7 @@ double = lam nat (nrec (var 𝟎) zero double-step)
 
 \end{code}
 
-Correctness of double
+Correctness of the `double` program.
 
 \begin{code}
 
@@ -141,18 +192,37 @@ double-correctness (succ n)
 
 \end{code}
 
-Intermediate semantics
+Intermediate semantics. Uses the `Thunk` monad to keep track of the computed
+value along with the number of steps to compute it.
 
 \begin{code}
 
 NatThunk : 𝓤₀ ̇
 NatThunk = Σ t ꞉ ℕ , Thunk t ℕ
 
+\end{code}
+
+In the intermediate semantics we have a different corresponding Agda type for
+each `LType`, so we define a new type translation.
+
+\begin{code}
+
 ⟦_⟧ᵢ : LType → 𝓤₀ ̇
 
 thunk-type : {σ : LType} → ⟦ σ ⟧ → ⟦ σ ⟧ᵢ
 
 strip-thunk : {σ : LType} → ⟦ σ ⟧ᵢ → ⟦ σ ⟧
+
+\end{code}
+
+`value-time-independent` enforces that the value within the `Thunk` monad
+returned by the function `f` depends only on the value within the thunk
+arugment `x`, rather than the number of steps contained by `x`.
+
+This is crucial for proving that the normal and intermediate semantics are
+equivalent with regards to values, which we do later.
+
+\begin{code}
 
 value-time-independent : {σ τ : LType} → (f : ⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) → 𝓤₀ ̇
 value-time-independent {σ} f
@@ -212,6 +282,15 @@ strip-thunk-is-inverse-of-thunk-type {nat} x = refl
 strip-thunk-is-inverse-of-thunk-type {σ ⇒ τ} f
  = fe (strip-thunk-is-inverse-of-thunk-lemma f)
 
+\end{code}
+
+We need a new type of environment for the intermediate semantics to contain
+the type translations for the intermediate rather than the normal semantics.
+
+We also need new functions for looking up variables within that environment.
+
+\begin{code}
+
 infixr 5 _∷Eᵢ_
 data Envᵢ : {n : ℕ} → Ctx n → 𝓤₀ ̇ where
  [] : Envᵢ []
@@ -228,12 +307,25 @@ lookup-envᵢ : {n : ℕ} {Γ : Ctx n} → (m : Fin n) → Envᵢ Γ → ⟦ Γ 
 lookup-envᵢ 𝟎 (x ∷Eᵢ _) = x
 lookup-envᵢ (suc m) (x ∷Eᵢ env) = lookup-envᵢ m env
 
+\end{code}
+
+Semantics for `if_then_else_` using NatThunk. Moves time steps for the condition
+to the output and adds 1 additional time step.
+
+\begin{code}
+
 thunk-if : NatThunk → NatThunk → NatThunk → NatThunk
 thunk-if (zero , return zero) (n₂ , u) (n₃ , v) = succ n₂ , (√ u)
 thunk-if (zero , return (succ _)) (n₂ , u) (n₃ , v) = succ n₃ , (√ v)
 thunk-if (succ n₁ , (√ t)) u v
  = succ (get-time (thunk-if (n₁ , t) u v))
  , (√ (get-thunk (thunk-if (n₁ , t) u v)))
+
+\end{code}
+
+Natural number recursion for `NatThunk`.
+
+\begin{code}
 
 nat-recᵢ : {n : ℕ} {Γ : Ctx n}
          → Envᵢ Γ
@@ -255,6 +347,12 @@ strip-thunk-thunk-type-rearrange : {τ σ : LType}
                                  → strip-thunk ((get-function f) (thunk-type z))
                                  ＝ (strip-thunk f) z
 strip-thunk-thunk-type-rearrange f z = refl
+
+\end{code}
+
+Helper functions for adding steps to functions and values.
+
+\begin{code}
 
 inc-function : {σ τ : LType} → (⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ) → ⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ
 
@@ -315,6 +413,22 @@ increment-equal-semantics {σ ⇒ τ} (f , eqt) = fe λ x → γ₂ (thunk-type 
      strip-thunk (inc-function f y)
    ∎
 
+\end{code}
+
+Intermediate semantics.
+
+Loading variables and constants (only `zero` for now) is defined as taking one
+step.
+
+Calling the `suc` primitive takes 1 step.
+
+An `if_then_else_` statement takes 1 step.
+
+Application of a function and natural number recursion do not add any steps
+themselves, but they must use the above features, which add steps.
+
+\begin{code}
+
 _[_]ᵢ : {n : ℕ} {Γ : Ctx n} {τ : LType} → Envᵢ Γ → Term Γ τ → ⟦ τ ⟧ᵢ
 
 equivalent-semantics : {n : ℕ} {σ : LType} {Γ : Ctx n}
@@ -360,12 +474,6 @@ nat-recᵢ env zero base f = env [ base ]ᵢ
 nat-recᵢ env (succ n) base f
  = (get-function (env [ f ]ᵢ)) (nat-recᵢ env n base f)
 
-\end{code}
-
-We use function extensionality as we must prove the equality of functions.
-
-\begin{code}
-
 strip-thunk-thunk-type-lemma : {σ τ : LType}
                              → (f : ⟦ σ ⟧ᵢ → ⟦ τ ⟧ᵢ)
                              → (eqt : (x y : ⟦ σ ⟧ᵢ)
@@ -386,6 +494,16 @@ strip-thunk-thunk-type-lemma f eqt thunked unthunked eq
     ＝⟨ (strip-thunk-is-inverse-of-thunk-type unthunked)⁻¹ ⟩
       strip-thunk (thunk-type unthunked)
     ∎
+
+\end{code}
+
+Proof that the normal and intermediate semantics are equivalent with respect
+to values. This means that the intermediate semantics correctly encapsulate the
+normal semantics, and we can therefore use them to reason about the running
+times of programs for which we have proved correctness using the normal
+semantics.
+
+\begin{code}
 
 if-then-else-equality : {n : ℕ} {Γ : Ctx n}
                       → (env : Envᵢ Γ)
@@ -509,13 +627,26 @@ equivalent-semantics env (nrec t u v)
  = equivalent-nrec env (env [ t ]ᵢ) ((strip-thunk-env env) [ t ]ₑ)
     (equivalent-semantics env t) u v
 
+\end{code}
+
+Uses the intermediate semantics to produce a time function for a program
+- a function that returns the running time of a program given the size of its
+input.
+
+For the sake of simplicity, we consider the size of a natural number to be its
+value.
+
+\begin{code}
+
 time-function : (Closed (nat ⇒ nat)) → ℕ → ℕ
 time-function term n = get-time ((get-function ([] [ term ]ᵢ)) (0 , return n))
 
 \end{code}
 
-The recursion of `double` evaluated in the environment containing only `x`,
-and the same for `is-even` below.
+Proof that the `double` program is linear time.
+
+To show this, we prove that the time function for double has a time function
+that is O(n).
 
 \begin{code}
 
@@ -534,6 +665,10 @@ double-natrec-lemma (succ n)
            , (√ get-thunk y >>= (λ x → √ return (succ x))
                             >>= (λ x → √ return (succ x))))
     (double-natrec-lemma n)
+
+succ^ : ℕ → ℕ → ℕ → ℕ
+succ^ zero y n = n + y
+succ^ (succ x) y n = 1 + succ^ x y n
 
 double-time : (time-function double) ∈O[ (λ n → n) ]
 double-time = big-o (5 , 1 , γ)
@@ -578,7 +713,7 @@ double-time = big-o (5 , 1 , γ)
     γ₆ : 1 + (1 + get-time (double-rec (succ n) n)) ≤ 5 * (succ n)
     γ₆ = ≤-trans
           (1 + (1 + get-time (double-rec (succ n) n)))
-          (succ^ (2 ∷ 2 ∷ []) (get-time (double-rec (succ n) n)))
+          (succ^ 2 2 (get-time (double-rec (succ n) n)))
           (5 + 5 * n)
           (γ₅ (1 + (1 + get-time (double-rec (succ n) n))))
           (γ₀ n ⋆)
@@ -587,7 +722,7 @@ double-time = big-o (5 , 1 , γ)
        ＝ 1 + (1 + get-time (double-rec (succ n) n))
     γ₇ = ap ((1 +_) ∘ (1 +_) ∘ get-time) (double-natrec-lemma n)
 
-    γ₈ : succ^ (3 ∷ 4 ∷ []) (get-time (double-rec (succ (succ n)) n))
+    γ₈ : succ^ 4 3 (get-time (double-rec (succ (succ n)) n))
        ≤ 5 + (5 + 5 * n)
     γ₈ = γ₄ (1 + (1 + get-time (double-rec (succ (succ n)) n))) (5 + 5 * n)
           (transport (λ z → z ≤ 5 + 5 * n) ((γ₇)⁻¹) γ₆)
@@ -598,11 +733,25 @@ double-time = big-o (5 , 1 , γ)
   γ zero ()
   γ (succ n) le = γ₀ n ⋆
 
+
+\end{code}
+
+Definition of an `is-even` program, which checks if a natural number
+is even. It returns 0 if so and 1 otherwise.
+
+\begin{code}
+
 even-step : {n : ℕ} {Γ : Ctx n} → Term Γ (nat ⇒ nat)
 even-step = lam nat (if var 𝟎 then suc zero else zero)
 
 is-even : Closed (nat ⇒ nat)
 is-even = lam nat (nrec (var 𝟎) zero even-step)
+
+\end{code}
+
+Proof of correctness for `is-even`.
+
+\begin{code}
 
 my-even : ℕ → ℕ
 my-even zero = 0
@@ -629,8 +778,7 @@ is-even-correctness (succ n)
 
 \end{code}
 
-`even-if r` is the result of the conditional in `even-step`, when `r` is the
-(already evaluated) result of the recursive call.
+Proof that `is-even` is linear time.
 
 \begin{code}
 

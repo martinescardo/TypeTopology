@@ -25,6 +25,13 @@ open import MLTT.List
 open import UF.Base
 open import TGH.Thunk
 
+\end{code}
+
+We extent our type system to add lists as a basic type.
+All lists in this language are lists of natural numbers.
+
+\begin{code}
+
 
 infixr 30 _⇒_
 data LType : 𝓤₀ ̇  where
@@ -34,6 +41,19 @@ data LType : 𝓤₀ ̇  where
 
 Ctx : ℕ → 𝓤₀ ̇
 Ctx = Vec LType
+
+\end{code}
+
+We add additional constructors to the Term type family to allow us to construct
+and perform operations on lists.
+
+`nil and cons` are the constructors for lists.
+
+`lrec` provides recursion on lists, allowing the contents of lists to be read.
+
+`pred` is an additional constructor for natural numbers.
+
+\begin{code}
 
 infixl 20 _∙_
 data Term {n : ℕ} (Γ : Ctx n) : LType → 𝓤₀ ̇  where
@@ -51,6 +71,12 @@ data Term {n : ℕ} (Γ : Ctx n) : LType → 𝓤₀ ̇  where
 
 Closed : LType → 𝓤₀ ̇
 Closed = Term []
+
+\end{code}
+
+We expand our translation to include list types.
+
+\begin{code}
 
 ⟦_⟧ : LType → 𝓤₀ ̇
 ⟦ nat ⟧ = ℕ
@@ -70,6 +96,12 @@ if'_then'_else'_ : {X : 𝓤₀ ̇ } → ℕ → X → X → X
 if' zero then' x else' y = x
 if' succ _ then' x else' y = y
 
+\end{code}
+
+Natural number recursion and list recursion.
+
+\begin{code}
+
 nat-rec : {n : ℕ} {σ : LType} {Γ : Ctx n}
         → Env Γ
         → (m : ℕ)
@@ -84,6 +116,12 @@ list-rec : {σ : LType} {n : ℕ} {Γ : Ctx n}
          → (f : Term Γ (σ ⇒ nat ⇒ σ))
          → ⟦ σ ⟧
 
+\end{code}
+
+Normal semantics of the full language.
+
+\begin{code}
+
 _[_]ₑ : {n : ℕ} {Γ : Ctx n} {τ : LType} → Env Γ → Term Γ τ → ⟦ τ ⟧
 env [ var v ]ₑ = lookup-env v env
 env [ zero ]ₑ = zero
@@ -95,7 +133,6 @@ env [ if t then u else v ]ₑ
  = if' (env [ t ]ₑ) then' (env [ u ]ₑ) else' (env [ v ]ₑ)
 env [ t ∙ u ]ₑ = (env [ t ]ₑ) (env [ u ]ₑ)
 env [ lam _ t ]ₑ = λ x → (x ∷E env) [ t ]ₑ
---env [ elam _ t ]ₑ = λ x → (x ∷E env) [ t ]ₑ
 env [ nrec t u v ]ₑ = nat-rec env (env [ t ]ₑ) u v
 env [ lrec t u v ]ₑ = list-rec env (env [ t ]ₑ) u v
 
@@ -104,6 +141,14 @@ nat-rec env (succ m) base f = (env [ f ]ₑ) (nat-rec env m base f)
 
 list-rec env [] base f = env [ base ]ₑ
 list-rec env (x ∷ l) base f = (env [ f ]ₑ) (list-rec env l base f) x
+
+\end{code}
+
+Once again, in the intermediate semantics we have a different corresponding
+Agda type for each `LType`, so we define a new type translation, this time
+with list types too. Once again we use the `Thunk` monad.
+
+\begin{code}
 
 ⟦_⟧ᵢ : LType → 𝓤₀ ̇
 
@@ -251,6 +296,16 @@ thunk-if (zero , return zero) l r = increment l
 thunk-if (zero , return (succ _)) l r = increment r
 thunk-if (succ n₁ , (√ t)) u v = increment (thunk-if (n₁ , t) u v)
 
+\end{code}
+
+Natural number and list recursion with Thunked types.
+
+We also add an option in the semantics. We can evaluate the semantics of
+expressions using an eager evaluation strategy or a lazy evaluation strategy,
+and this will model the step count for either.
+
+\begin{code}
+
 nat-recᵢ : {σ : LType} {n : ℕ} {Γ : Ctx n}
          → Envᵢ Γ
          → (m : ℕ)
@@ -283,6 +338,24 @@ list-rec-builder : {σ : LType} {n : ℕ} {Γ : Ctx n}
                  → (strategy : Strategy)
                  → ⟦ σ ⟧ᵢ
 
+
+\end{code}
+
+Intermediate semantics.
+
+Loading variables and constants (`zero` and `nil`) is defined as taking one
+step.
+
+Calling the `suc`, `pred` or `cons` primitive takes 1 step.
+
+An `if_then_else_` statement takes 1 step.
+
+Application of a function, list recursion, and natural number recursion
+do not add any steps themselves, but they must use the above features,
+which add steps.
+
+\begin{code}
+
 _[_]ᵢ_ : {n : ℕ} {Γ : Ctx n} {τ : LType}
        → Envᵢ Γ → Term Γ τ → Strategy → ⟦ τ ⟧ᵢ
 
@@ -292,6 +365,24 @@ equivalent-semantics : {n : ℕ} {σ : LType} {Γ : Ctx n}
                      → (strategy : Strategy)
                      → strip-thunk (env [ term ]ᵢ strategy)
                      ＝ (strip-thunk-env env) [ term ]ₑ
+
+\end{code}
+
+We must use different helper functions to evaluate the intermediate semantics
+depending on whether we are modeling an eager or lazy evaluation strategy.
+
+In the lazy evaluation strategy, we evaluate function arguments when they
+are used in the function. This means that any steps assocaiated with the
+argument will be added on each time the argument is used. If an argument is
+used twice in a function, the associated number of steps will be added on twice
+to the running time. However, if an argument is not used at all, the number of
+steps will not be added on.
+
+In the eager evaluation strategy, we evaluate function arguments when the
+function is called. Therefore, the number of steps associated with each
+argument will only ever be added on once.
+
+\begin{code}
 
 lazy-function : {σ τ : LType} {n : ℕ} {Γ : Ctx n}
               → Envᵢ Γ
@@ -466,6 +557,16 @@ strip-thunk-thunk-type-lemma f eqt thunked unthunked eq
      strip-thunk (thunk-type unthunked)
     ∎)
 
+\end{code}
+
+Proof that the normal and intermediate semantics are equivalent with respect
+to values. This means that the intermediate semantics correctly encapsulate the
+normal semantics, and we can therefore use them to reason about the running
+times of programs for which we have proved correctness using the normal
+semantics.
+
+\begin{code}
+
 if-then-else-equality : {σ : LType} {n : ℕ} {Γ : Ctx n}
                       → (env : Envᵢ Γ)
                       → (term₁ : Term Γ σ)
@@ -618,13 +719,6 @@ equivalent-lrec env (.(succ _) , (√ thl)) l eq base f s
  ＝⟨ equivalent-lrec env (_ , thl) l eq base f s ⟩
    list-rec (strip-thunk-env env) l base f
  ∎
-
-\end{code}
-
-The semantics of a lambda abstraction is the same under both strategies, as
-the body is evaluated in an environment extended with a thunked argument.
-
-\begin{code}
 
 equivalent-lam-lemma : {n : ℕ} {Γ : Ctx n} {σ τ : LType}
                      → (env : Envᵢ Γ)

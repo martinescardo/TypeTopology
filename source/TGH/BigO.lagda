@@ -1,6 +1,6 @@
 Theo Hepburn, started October 2024.
 
-Contains an Agda formalisation of the definition of Big O.
+An Agda formalisation of the definition of Big O.
 
 \begin{code}
 

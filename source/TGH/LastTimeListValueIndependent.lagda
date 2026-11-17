@@ -1,7 +1,7 @@
 Theo Hepburn, started in February 2025
 
-A proof that the value output of the last program
-does not depend on the time component of the input.
+A proof that the value output of the last program does not depend on the
+time component of the input when the eager evaluation strategy is used.
 
 \begin{code}
 
@@ -21,13 +21,20 @@ open import Naturals.Order renaming (_≤ℕ_ to _≤_ ; _<ℕ_ to _<_)
 open import Naturals.Properties renaming (pred to pred')
 open import MLTT.Vector renaming (Vector to Vec) hiding (head)
 open import MLTT.Fin
-open import MLTT.List
+open import MLTT.List renaming (length to length')
 open import UF.Base
 open import TGH.Thunk
 open import TGH.Language fe
 open import TGH.HeadExample fe
 open import TGH.LastCorrectness fe
 open import TGH.ComplexityDefinitionsResults fe
+
+\end{code}
+
+Proof that the `last` program satisifies `time-independent-of-list-values`
+when the eager evaluation strategy is used.
+
+\begin{code}
 
 head-comp : {n : ℕ} {Γ : Ctx n} → Term (list ∷ Γ) nat
 head-comp = lrec (var 𝟎) zero (lam nat (lam nat (var 𝟎)))
@@ -60,8 +67,8 @@ head-time-value-env-independent-eager (succ pr₃ , (√ x))
  = ap inc-nat (head-time-value-env-independent-eager (pr₃ , x))
 
 last-list-length-lemma : (xs ys : List ℕ)
-                       → (length xs ＝ length ys)
-                       → length (last-list' xs) ＝ length (last-list' ys)
+                       → (length' xs ＝ length' ys)
+                       → length' (last-list' xs) ＝ length' (last-list' ys)
 last-list-length-lemma [] [] eql = refl
 last-list-length-lemma [] (y ∷ ys) ()
 last-list-length-lemma (x ∷ []) [] ()
@@ -75,43 +82,21 @@ last-list-length-lemma (x ∷ x₁ ∷ xs) (y ∷ x₂ ∷ ys) eql
 last-comp-length-lemma : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
                          {env₁ : Env Γ₁} {env₂ : Env Γ₂}
                        → (l₁ l₂ : List ℕ)
-                       → (length l₁) ＝ (length l₂)
-                       → length ((l₁ ∷E env₁) [ last-list ]ₑ)
-                       ＝ length ((l₂ ∷E env₂) [ last-list ]ₑ)
+                       → (length' l₁) ＝ (length' l₂)
+                       → length' ((l₁ ∷E env₁) [ last-list ]ₑ)
+                       ＝ length' ((l₂ ∷E env₂) [ last-list ]ₑ)
 last-comp-length-lemma xs ys eq
- = length ((xs ∷E _) [ last-list ]ₑ)
- ＝⟨ ap length (last-list-correctness-any-env xs) ⟩
-   length (last-list' xs)
+ = length' ((xs ∷E _) [ last-list ]ₑ)
+ ＝⟨ ap length' (last-list-correctness-any-env xs) ⟩
+   length' (last-list' xs)
  ＝⟨ last-list-length-lemma xs ys eq ⟩
-   length (last-list' ys)
- ＝⟨ ap length (last-list-correctness-any-env ys) ⁻¹ ⟩
-   length ((ys ∷E _) [ last-list ]ₑ)
+   length' (last-list' ys)
+ ＝⟨ ap length' (last-list-correctness-any-env ys) ⁻¹ ⟩
+   length' ((ys ∷E _) [ last-list ]ₑ)
  ∎
 
 recursive-call : {n : ℕ} {Γ : Ctx n} → Term (nat ∷ list ∷ Γ) list
-recursive-call = if length' ∙ (var 𝟏) then cons (var 𝟎) nil else (var 𝟏)
-
-\end{code}
-
-The following definitions name terms that occur many times in the proofs
-below.
-
-* `length'-step-applied env l y` is the result of applying the step
-  function of `length'` to the result `l` of the recursive call, and the
-  list element `y`, under the eager strategy.
-* `last-step-applied env l x` is the same for the step function of
-  `last-list`.
-* `cons-branch x` and `else-branch l` are the two branches of the
-  conditional in `recursive-call`, as thunks.
-* `cond-time b` is the time taken by the conditional once its condition
-  `b` has been evaluated.
-* `length-call-env l x env` is the environment in which `length'` is
-  called inside `recursive-call`.
-* `recursive-call-time env r x` is the time taken by `recursive-call`, when
-  `r` is the result of the recursive call and `x` is the list element.
-* `head-comp-time env L` is the time taken by `head-comp` on the list `L`.
-
-\begin{code}
+recursive-call = if length ∙ (var 𝟏) then cons (var 𝟎) nil else (var 𝟏)
 
 length'-step-applied : {n : ℕ} {Γ : Ctx n}
                      → Envᵢ Γ
@@ -169,40 +154,40 @@ nat-helper-env-lemma (zero , return x) n = refl
 nat-helper-env-lemma (succ pr₃ , (√ x)) n
  = ap inc-nat (nat-helper-env-lemma (pr₃ , x) n)
 
-length'-comp-same-env : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
+length-comp-same-env : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
                         {env₁ : Envᵢ Γ₁} {env₂ : Envᵢ Γ₂}
                       → (l : List ℕ)
                       → list-recᵢ env₁ l zero length'-step eager
                       ＝ list-recᵢ env₂ l zero length'-step eager
-length'-comp-same-env [] = refl
-length'-comp-same-env {_} {_} {_} {_} {env₁} {env₂} (x ∷ l)
+length-comp-same-env [] = refl
+length-comp-same-env {_} {_} {_} {_} {env₁} {env₂} (x ∷ l)
  = length'-step-applied env₁ (list-recᵢ env₁ l zero length'-step eager) x
- ＝⟨ ap (λ z → length'-step-applied env₁ z x) (length'-comp-same-env l) ⟩
+ ＝⟨ ap (λ z → length'-step-applied env₁ z x) (length-comp-same-env l) ⟩
    length'-step-applied env₁ (list-recᵢ env₂ l zero length'-step eager) x
  ＝⟨ nat-helper-env-lemma (list-recᵢ env₂ l zero length'-step eager) x ⟩
    length'-step-applied env₂ (list-recᵢ env₂ l zero length'-step eager) x
  ∎
 
-length'-same-env : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
+length-same-env : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
                    {env₁ : Envᵢ Γ₁} {env₂ : Envᵢ Γ₂}
                  → (l : Σ t ꞉ ℕ , Thunk t (List ℕ))
-                 → pr₁ (pr₁ (env₁ [ length' ]ᵢ eager) l)
-                 ＝ pr₁ (pr₁ (env₂ [ length' ]ᵢ eager) l)
-length'-same-env (zero , return l) = ap (succ ∘ pr₁) (length'-comp-same-env l)
-length'-same-env (succ pr₃ , (√ x)) = ap succ (length'-same-env (pr₃ , x))
+                 → pr₁ (pr₁ (env₁ [ length ]ᵢ eager) l)
+                 ＝ pr₁ (pr₁ (env₂ [ length ]ᵢ eager) l)
+length-same-env (zero , return l) = ap (succ ∘ pr₁) (length-comp-same-env l)
+length-same-env (succ pr₃ , (√ x)) = ap succ (length-same-env (pr₃ , x))
 
 recursive-call-comp-same-env
  : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
    {env₁ : Envᵢ Γ₁} {env₂ : Envᵢ Γ₂}
  → (l : List ℕ)
  → (x : ℕ)
- → thunk-if {list} (pr₁ (env₁ [ length' ]ᵢ eager) (thunk-type l))
+ → thunk-if {list} (pr₁ (env₁ [ length ]ᵢ eager) (thunk-type l))
     (cons-branch x) (else-branch l)
- ＝ thunk-if {list} (pr₁ (env₂ [ length' ]ᵢ eager) (thunk-type l))
+ ＝ thunk-if {list} (pr₁ (env₂ [ length ]ᵢ eager) (thunk-type l))
     (cons-branch x) (else-branch l)
 recursive-call-comp-same-env l x
  = ap (λ z → inc-list (thunk-if {list} z (cons-branch x) (else-branch l)))
-    (length'-comp-same-env l)
+    (length-comp-same-env l)
 
 recursive-call-same-env : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
                           {env₁ : Envᵢ Γ₁} {env₂ : Envᵢ Γ₂}
@@ -254,7 +239,7 @@ length'-comp-lemma : {n : ℕ} {Γ : Ctx n}
                    → (env : Envᵢ Γ)
                    → (l₁ l₂ : List ℕ)
                    → (x₁ x₂ : ℕ)
-                   → (length l₁ ＝ length l₂)
+                   → (length' l₁ ＝ length' l₂)
                    → length'-step-applied env
                       (list-recᵢ env l₁ zero length'-step eager) x₁
                    ＝ length'-step-applied env
@@ -277,20 +262,20 @@ length'-comp-lemma env (y₁ ∷ l₁) (y₂ ∷ l₂) x₁ x₂ eq
 length'-list-value-independent : {n : ℕ} {Γ : Ctx n}
                                → (env : Envᵢ Γ)
                                → time-independent-of-list-values env
-                                  (inl refl) eager length'
+                                  (inl refl) eager length
 length'-list-value-independent env [] [] eq = refl
 length'-list-value-independent env [] (x₂ ∷ l₂) ()
 length'-list-value-independent env (x₁ ∷ l₁) [] ()
 length'-list-value-independent env (x₁ ∷ l₁) (x₂ ∷ l₂) eq
  = succ (pr₁ (length'-step-applied env₁ (list-recᵢ env₁ l₁ zero length'-step
                                          eager) x₁))
- ＝⟨ ap (succ ∘ pr₁) (length'-comp-same-env (x₁ ∷ l₁)) ⟩
+ ＝⟨ ap (succ ∘ pr₁) (length-comp-same-env (x₁ ∷ l₁)) ⟩
    succ (pr₁ (length'-step-applied env
               (list-recᵢ env l₁ zero length'-step eager) x₁))
  ＝⟨ ap (succ ∘ pr₁) (length'-comp-lemma env l₁ l₂ x₁ x₂ (ap pred' eq)) ⟩
    succ (pr₁ (length'-step-applied env
               (list-recᵢ env l₂ zero length'-step eager) x₂))
- ＝⟨ ap (succ ∘ pr₁) (length'-comp-same-env (x₂ ∷ l₂)) ⁻¹ ⟩
+ ＝⟨ ap (succ ∘ pr₁) (length-comp-same-env (x₂ ∷ l₂)) ⁻¹ ⟩
    succ (pr₁ (length'-step-applied env₂
               (list-recᵢ env₂ l₂ zero length'-step eager) x₂))
  ∎
@@ -301,7 +286,7 @@ length'-list-value-independent env (x₁ ∷ l₁) (x₂ ∷ l₂) eq
 list-rec-length-lemma : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
                         {env₁ : Env Γ₁} {env₂ : Env Γ₂}
                       → (l₁ l₂ : List ℕ)
-                      → (length l₁ ＝ length l₂)
+                      → (length' l₁ ＝ length' l₂)
                       → list-rec env₁ l₁ zero length'-step
                       ＝ list-rec env₂ l₂ zero length'-step
 list-rec-length-lemma [] [] eq = refl
@@ -314,7 +299,7 @@ if-condition-lemma : {n : ℕ} {Γ : Ctx n}
                    → (env : Envᵢ Γ)
                    → (l₁ l₂ : List ℕ)
                    → (n₁ n₂ : ℕ)
-                   → (length l₁ ＝ length l₂)
+                   → (length' l₁ ＝ length' l₂)
                    → cond-time (strip-thunk
                       (list-recᵢ (length-call-env l₁ n₁ env) l₁ zero
                        length'-step eager))
@@ -349,7 +334,7 @@ recursive-call-list-value-independent {n} {Γ} env l₁ l₂ eq n₁ n₂
       (ap pred' (length'-list-value-independent env' l₁ l₂ eq)) ⟩
    succ (succ (succ (cond-time (strip-thunk r₁) + pr₁ r₂')))
  ＝⟨ ap (λ z → succ (succ (succ (cond-time (strip-thunk r₁) + z))))
-      (ap pr₁ (length'-comp-same-env l₂)) ⟩
+      (ap pr₁ (length-comp-same-env l₂)) ⟩
    succ (succ (succ (cond-time (strip-thunk r₁) + pr₁ r₂)))
  ＝⟨ ap (λ z → succ (succ (succ (z + pr₁ r₂))))
       (if-condition-lemma env l₁ l₂ n₁ n₂ eq) ⟩
@@ -375,27 +360,27 @@ recursive-call-length-lemma
  → (env : Envᵢ Γ)
  → (x₁ x₂ : ℕ)
  → (l₁ l₂ : List ℕ)
- → (length l₁ ＝ length l₂)
- → length (force (pr₂ (list-recᵢ (thunk-type {list} (x₁ ∷ l₁) ∷Eᵢ env)
-    l₁ nil last-step eager)))
- ＝ length (force (pr₂ (list-recᵢ (thunk-type {list} (x₂ ∷ l₂) ∷Eᵢ env)
-    l₂ nil last-step eager)))
+ → (length' l₁ ＝ length' l₂)
+ → length' (strip-thunk (list-recᵢ (thunk-type {list} (x₁ ∷ l₁) ∷Eᵢ env)
+    l₁ nil last-step eager))
+ ＝ length' (strip-thunk (list-recᵢ (thunk-type {list} (x₂ ∷ l₂) ∷Eᵢ env)
+    l₂ nil last-step eager))
 recursive-call-length-lemma env x₁ x₂ l₁ l₂ eq
- = length (force (pr₂ (list-recᵢ (thunk-type (x₁ ∷ l₁) ∷Eᵢ env)
-    l₁ nil last-step eager)))
- ＝⟨ ap length (equivalent-lrec-lemma
+ = length' (strip-thunk (list-recᵢ (thunk-type (x₁ ∷ l₁) ∷Eᵢ env)
+    l₁ nil last-step eager))
+ ＝⟨ ap length' (equivalent-lrec-lemma
       ((0 , return (x₁ ∷ l₁)) ∷Eᵢ env) l₁ nil _ eager) ⟩
-   length (list-rec ((x₁ ∷ l₁) ∷E (strip-thunk-env env)) l₁ nil last-step)
- ＝⟨ ap length (last-list-correctness-any-env l₁) ⟩
-   length (last-list' l₁)
+   length' (list-rec ((x₁ ∷ l₁) ∷E (strip-thunk-env env)) l₁ nil last-step)
+ ＝⟨ ap length' (last-list-correctness-any-env l₁) ⟩
+   length' (last-list' l₁)
  ＝⟨ last-list-length-lemma l₁ l₂ eq ⟩
-   length (last-list' l₂)
- ＝⟨ ap length (last-list-correctness-any-env l₂) ⁻¹ ⟩
-   length (list-rec ((x₂ ∷ l₂) ∷E (strip-thunk-env env)) l₂ nil last-step)
- ＝⟨ ap length (equivalent-lrec-lemma
+   length' (last-list' l₂)
+ ＝⟨ ap length' (last-list-correctness-any-env l₂) ⁻¹ ⟩
+   length' (list-rec ((x₂ ∷ l₂) ∷E (strip-thunk-env env)) l₂ nil last-step)
+ ＝⟨ ap length' (equivalent-lrec-lemma
       ((0 , return (x₂ ∷ l₂)) ∷Eᵢ env) l₂ nil _ eager) ⁻¹ ⟩
-   length (force (pr₂ (list-recᵢ (thunk-type (x₂ ∷ l₂) ∷Eᵢ env)
-    l₂ nil last-step eager)))
+   length' (strip-thunk (list-recᵢ (thunk-type (x₂ ∷ l₂) ∷Eᵢ env)
+    l₂ nil last-step eager))
  ∎
 
 last-list-list-value-independent : {n : ℕ} {Γ : Ctx n}

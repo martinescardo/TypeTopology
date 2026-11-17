@@ -1,10 +1,9 @@
 Theo Hepburn, started January 2025.
 
-Contains an implementation of the head
-function in our language. We prove that head
-is constant time when using a lazy evaluation
-strategy but linear time, and not constant time,
-when using an eager evaluation strategy.
+Contains an implementation of finding the head of a list in our language.
+We prove that `head` is correct and is constant time when using a lazy
+evaluation strategy but linear time, and not constant time, when using an eager
+evaluation strategy.
 
 \begin{code}
 
@@ -31,6 +30,14 @@ open import TGH.BigO
 open import TGH.Language fe
 open import TGH.ComplexityDefinitionsResults fe
 
+\end{code}
+
+For the identify functions for `nat` and `list`, the running time (and output)
+is always the same for a given value for the eager and lazy evaluation
+strategies.
+
+\begin{code}
+
 nat-id : Closed (nat ⇒ nat)
 nat-id = lam nat (var 𝟎)
 
@@ -49,8 +56,23 @@ list-id-eager-lazy-equal (zero , return x) = refl
 list-id-eager-lazy-equal (succ _ , (√ x))
  = ap inc-list (list-id-eager-lazy-equal (_ , x))
 
+\end{code}
+
+We define a program that returns the head (first element of a list).
+If the list is empty, we return zero as a default value.
+
+\begin{code}
+
 head : {n : ℕ} {Γ : Ctx n} → Term Γ (list ⇒ nat)
 head = lam list (lrec (var 𝟎) zero (lam nat (lam nat (var 𝟎))))
+
+\end{code}
+
+We show correctness by showing that the output of the `head` program is always
+the same as that of the Agda function `list-head` whose behaviour we want
+`head` to be equivalent to.
+
+\begin{code}
 
 list-head : List ℕ → ℕ
 list-head [] = zero
@@ -61,6 +83,13 @@ head-correctness : {n : ℕ} {Γ : Ctx n} {env : Env Γ}
                  → (env [ head ]ₑ) l ＝ list-head l
 head-correctness [] = refl
 head-correctness (_ ∷ _) = refl
+
+\end{code}
+
+When a lazy evaluation strategy is used, the `head` program always takes the
+same amount of time to run regardless of its environment.
+
+\begin{code}
 
 head-time-value-env-independent-lazy : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂}
                                      → {env₁ : Envᵢ Γ₁} {env₂ : Envᵢ Γ₂}
@@ -98,6 +127,15 @@ head-time-value-env-independent-lazy {_} {_} {_} {_} {env₁} {env₂}
   γ (zero , return (_ ∷ _)) = refl
   γ ((succ pr₃ , (√ x))) = ap inc-nat (γ (pr₃ , x))
 
+\end{code}
+
+We show that `head` satisfies `time-independent-of-list-values` when lazy
+evaluation is used, meaning that for any two input lists of the same length,
+the number of computational steps taken by `head` to execute, when lazy
+evaluation is used, is the same.
+
+\begin{code}
+
 head-list-value-independent-lazy : {n : ℕ} {Γ : Ctx n}
                                  → (env : Envᵢ Γ)
                                  → time-independent-of-list-values env
@@ -106,6 +144,12 @@ head-list-value-independent-lazy env [] [] _ = refl
 head-list-value-independent-lazy env (_ ∷ _) [] ()
 head-list-value-independent-lazy env [] (_ ∷ _) ()
 head-list-value-independent-lazy env (_ ∷ _) (_ ∷ _) _ = refl
+
+\end{code}
+
+When lazy evaluation is used, `head` is constant time.
+
+\begin{code}
 
 lazy-head-constant-time : {n : ℕ} {Γ : Ctx n}
                         → (env : Envᵢ Γ)
@@ -120,6 +164,13 @@ lazy-head-constant-time env = big-o (2 , (1 , γ))
     ≤ 2
   γ zero ()
   γ (succ x) _ = ⋆
+
+\end{code}
+
+We show that `head` also satisfies `list-independent-of-list-values` when eager
+evaluation is used.
+
+\begin{code}
 
 eager-head-env-lemma-I : {n₁ n₂ : ℕ} {Γ₁ : Ctx n₁} {Γ₂ : Ctx n₂} {x : ℕ}
                          {env₁ : Envᵢ Γ₁} {env₂ : Envᵢ Γ₂}
@@ -236,7 +287,7 @@ head-list-value-independent-eager env (x ∷ l₁) (x₁ ∷ l₂) eq
 \end{code}
 
 The result of applying the identity function on natural numbers to a
-thunk, under the eager strategy. This is used in several places below.
+thunk, using the eager strategy. This is used in several places below.
 
 \begin{code}
 
@@ -247,6 +298,13 @@ eager-nat-id : {n : ℕ} {Γ : Ctx n}
 eager-nat-id env x
  = pr₁ (eager-function-nat-helper env (lam nat (var 𝟎)) x) (0 , return 0)
 
+\end{code}
+
+Calling the identity function on natural numbers results in the addition
+of one time step.
+
+\begin{code}
+
 nat-function-lemma : {n : ℕ} {Γ : Ctx n}
                      {env : Envᵢ Γ}
                    → (x@(t , _) : Σ t ꞉ ℕ , Thunk t ℕ)
@@ -254,6 +312,12 @@ nat-function-lemma : {n : ℕ} {Γ : Ctx n}
 nat-function-lemma (zero , return x) = refl
 nat-function-lemma (succ _ , (√ x))
  = ap succ (nat-function-lemma (_ , x))
+
+\end{code}
+
+We show that when eager evaulation is used, `head` is not constant time.
+
+\begin{code}
 
 eager-head-not-constant-time-lemma : {n : ℕ} {Γ : Ctx n}
                                    → (env : Envᵢ Γ)
@@ -333,6 +397,15 @@ eager-head-not-constant-time env (big-o (C , N₀ , f)) = γ (≤-decidable N₀
    where
     γ₁ : succ C ≤ N₀
     γ₁ = not-less-or-equal-is-bigger N₀ C ineq
+
+\end{code}
+
+We show that, when eager evaluation is used, `head` is linear time according
+to the standard definition of Big O.
+
+The time function of `head` is therefore O(n).
+
+\begin{code}
 
 eager-head-linear-time-big-o : {n : ℕ} {Γ : Ctx n}
                              → Σ C ꞉ ℕ , Σ N₀ ꞉ ℕ
@@ -465,8 +538,15 @@ eager-head-linear-time env
  = big-o
     (3 , (1 , (λ n le → pr₂ (pr₂ eager-head-linear-time-big-o) n le env)))
 
+\end{code}
+
+We show that `head` is also linear time according to the alternative
+`is-program-linear-time` definition.
+
+\begin{code}
+
 eager-head-linear-time' : {n : ℕ} {Γ : Ctx n}
-                        → is-linear-time {_} {n} {Γ} head (inl refl)
+                        → is-program-linear-time {_} {n} {Γ} head (inl refl)
 eager-head-linear-time'
  = 3 , (1 , λ xs env le
    → transport (_≤ 3 * length xs)
