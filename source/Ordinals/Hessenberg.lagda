@@ -4,13 +4,13 @@ Prompted by a question of Robbert Krebbers (9 November 2026), we explore a
 constructive approach to Hessenberg addition.
 
 This binary operation on ordinals, typically denoted by ⊕ and also known as the
-natural sum, is commutative and associative, in contrast to ordinary ordinal
-addition.
+natural sum, is commutative and associative, the former in contrast to ordinary
+ordinal addition.
 
 A typical classical definition of Hessenberg addition goes via Cantor normal
 forms, but the Hessenberg sum α ⊕ β can also be characterized, via transfinite
 recursion, as the least ordinal strictly above α ⊕ γ and δ ⊕ β for γ < β and
-δ < α.
+δ < α [1,2].
 In what follows we adopt this as a suitable constructive definition, replacing
 the (a priori large) quantification over ordinals γ < β and δ < α by a small
 quantification over elements b : ⟨ β ⟩ and a : ⟨ α ⟩ (which give rise to
@@ -36,6 +36,16 @@ they imply excluded middle. These include:
   * monotonicity (i.e. preservation of the partial order ⊴),
   * being inflationary (α ⊴ α ⊕ β), and
   * being above ordinary addition (α +ₒ β ⊴ α ⊕ β).
+
+TODO. Can we show δ ⊕ α < δ ⊕ β → α < β?
+
+          1 < P + 1 decides P
+      δ ⊕ 1 < δ ⊕ (P + 1) = δ ⊕ (P ⊕ 1) = δ ⊕ (1 ⊕ P)
+
+[1]
+
+[2] 'Hessenberg sum/natural sum of ordinals definition'. 2024.
+    https://math.stackexchange.com/questions/4852808/hessenberg-sum-natural-sum-of-ordinals-definition
 
 \begin{code}
 
