@@ -92,8 +92,15 @@ open import Ordinals.Underlying
 open suprema pt sr
 open PropositionalTruncation pt
 
+\end{code}
 
--- TODO: Upstream
+The following is a sufficient binary transfinite induction principle. The most
+general version would have (b : ⟨ β ⟩) → P γ (β ↓ b) for an arbitrary ordinal γ
+(instead of the fixed α) as an hypothesis, but that isn't needed for our
+purposes here.
+
+\begin{code}
+
 double-transfinite-induction-on-OO
  : (P : Ordinal 𝓤 → Ordinal 𝓤 → 𝓥 ̇ )
  → ((α β : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a) β)
@@ -104,10 +111,8 @@ double-transfinite-induction-on-OO {𝓤} {𝓥} P h = λ α β → I (α , β)
  where
   I : ((α , β) : Ordinal 𝓤 × Ordinal 𝓤) → P α β
   I = Transfinite-induction (OO 𝓤 ×ₒ OO 𝓤) (uncurry P)
-       (λ (α , β) h'
-         → h α β
-            (λ a → h' ((α ↓ a) , β) (inr (refl , a , refl)))
-            (λ b → h' (α , (β ↓ b)) (inl (b , refl))))
+       (λ (α , β) h' → h α β (λ a → h' ((α ↓ a) , β) (inr (refl , a , refl)))
+                             (λ b → h' (α , (β ↓ b)) (inl (b , refl))))
 
 double-transfinite-recursion-on-OO
  : {X : 𝓥 ̇ }
@@ -132,6 +137,13 @@ double-transfinite-recursion-on-OO-behaviour {𝓥} {𝓤} {X} r = λ α β → 
 
 \end{code}
 
+It is also convenient to consider strict suprema, i.e. for a family of
+ordinals αᵢ indexed by a small type I, the least ordinal *strictly* above
+each αᵢ.
+The construction for this is simple: take the sup over all successors of αᵢ.
+
+NB. If this finds application(s) outside this file, it should be factored out.
+
 \begin{code}
 
 module _
@@ -155,6 +167,12 @@ module _
 
 \end{code}
 
+We now the Hessenberg sum α ⊕ β of two ordinals α and β by binary transfinite
+recursion as the strict supremum of α ⊕ (β ↓ b) and (α ↓ a) ⊕ β.
+
+For performance reasons, the definition is marked abstract with an explicit
+unfolding lemma.
+
 \begin{code}
 
 abstract
@@ -167,6 +185,8 @@ abstract
                     (λ α β r₁ r₂ → sup⁺ (cases r₁ r₂))
 
 \end{code}
+
+Commutativity follows straightforwardly by transfinite induction.
 
 \begin{code}
 
@@ -200,6 +220,9 @@ abstract
 
 \end{code}
 
+The following strict order preservation properties hold essentially by
+definition of Hessenberg addition.
+
 \begin{code}
 
 ⊕-⊲-left : (α β : Ordinal 𝓤) {a : ⟨ α ⟩} → (α ↓ a) ⊕ β ⊲ α ⊕ β
@@ -226,11 +249,11 @@ abstract
 ⊕-is-order-preserving-right : (α β γ : Ordinal 𝓤) → β ⊲ γ → α ⊕ β ⊲ α ⊕ γ
 ⊕-is-order-preserving-right α β γ (c , refl) = ⊕-⊲-right α γ
 
-⊕-is-order-preserving : (α α' β β' : Ordinal 𝓤) → α ⊲ α' → β ⊲ β' → α ⊕ β ⊲ α' ⊕ β'
-⊕-is-order-preserving α α' β β' k l =
- ⊲-is-transitive (α ⊕ β) (α' ⊕ β) (α' ⊕ β')
-  (⊕-is-order-preserving-left α α' β k)
-  (⊕-is-order-preserving-right α' β β' l)
+⊕-is-order-preserving : (α α' β β' : Ordinal 𝓤)
+                      → α ⊲ α'
+                      → β ⊲ β'
+                      → α ⊕ β ⊲ α' ⊕ β'
+⊕-is-order-preserving α α' β β' (a' , refl) (b' , refl) = ⊕-⊲-mixed α' β'
 
 \end{code}
 
