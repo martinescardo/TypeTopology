@@ -930,6 +930,20 @@ ultrafilter-principality-criterion {𝓤} {𝓥} {X} {Y} A j σ jσ ζ 𝓕 i e
         IX : B ∈ 𝓕
         IX = upper-closed (ext-preimage-⊆ B) VIII
 
+ultrafilter-principality-criterion-at-a-point
+ : {X : 𝓤 ̇ }
+   (A : Clopen X)
+   (x : X)
+ → ((x' : X) → x' ∈ A → x' ＝ x)
+ → (𝓕 : Clopen (Clopen X))
+ → is-ultrafilter 𝓕
+ → A ∈ 𝓕
+ → 𝓕 is-principal-at x
+ultrafilter-principality-criterion-at-a-point A x p 𝓕 i e
+ = pr₂ (ultrafilter-principality-criterion
+         A (λ _ → x) (λ _ _ → ⋆) (λ x' d → (p x' d)⁻¹)
+         (𝟙-is-pre-stone-type {𝓤₀}) 𝓕 i e)
+
 \end{code}
 
 Stone types are closed under binary sums.
@@ -1735,10 +1749,10 @@ module ultrafilter-over-base-point
   fiber-ultrafilter : Clopen (Clopen (Y x₀))
   fiber-ultrafilter = extension ⁻¹[ 𝓕 ]
 
-  fiber-ultrafilter-value
+  𝓕-via-the-fiber-ultrafilter
    : (A : Clopen (Σ Y))
    → A ϵ 𝓕 ＝ (λ y → (x₀ , y) ϵ A) ϵ fiber-ultrafilter
-  fiber-ultrafilter-value A
+  𝓕-via-the-fiber-ultrafilter A
    = 𝓕-depends-only-on-the-fiber
       A
       (extension (λ y → (x₀ , y) ϵ A))
@@ -1752,12 +1766,12 @@ module ultrafilter-over-base-point
      III _∨_ preserves-∨
    where
     I : ∅ ∉ fiber-ultrafilter
-    I = ∅ ϵ fiber-ultrafilter ＝⟨ (fiber-ultrafilter-value ∅)⁻¹ ⟩
+    I = ∅ ϵ fiber-ultrafilter ＝⟨ (𝓕-via-the-fiber-ultrafilter ∅)⁻¹ ⟩
         ∅ ϵ 𝓕                 ＝⟨ preserves-₀ ⟩
         ₀                     ∎
 
     II : 𝟏 ∈ fiber-ultrafilter
-    II = 𝟏 ϵ fiber-ultrafilter ＝⟨ (fiber-ultrafilter-value 𝟏)⁻¹ ⟩
+    II = 𝟏 ϵ fiber-ultrafilter ＝⟨ (𝓕-via-the-fiber-ultrafilter 𝟏)⁻¹ ⟩
          𝟏 ϵ 𝓕                 ＝⟨ preserves-₁ ⟩
          ₁                     ∎
 
@@ -1844,7 +1858,7 @@ ultrafilters-of-Σ-are-principal {𝓤} {𝓥} {X} {Y} ζ δ ext 𝓕 i
   III = principality II
 
   IV : (A : Clopen (Σ Y)) → A ϵ 𝓕 ＝ (x₀ , y₀) ϵ A
-  IV A = A ϵ 𝓕                  ＝⟨ fiber-ultrafilter-value A ⟩
+  IV A = A ϵ 𝓕                  ＝⟨ 𝓕-via-the-fiber-ultrafilter A ⟩
          A₀ ϵ fiber-ultrafilter ＝⟨ III A₀ ⟩
          (x₀ , y₀) ϵ A          ∎
    where
@@ -2146,9 +2160,9 @@ has-modulus A = Σ m ꞉ ℕ , m is-modulus-of A
 
 \end{code}
 
-Given an ultrafilter 𝓕 of the clopens of ℕ∞, the sequence of values of
-𝓕 at the upper sets is decreasing, and so it is an element u of ℕ∞,
-with which 𝓕 agrees on the upper sets by construction.
+Given an ultrafilter 𝓕 of the clopens of ℕ∞, the binary sequence that
+records which upper sets belong to 𝓕 is decreasing, and so it is an
+element u of ℕ∞, with which 𝓕 agrees on the upper sets by construction.
 
 \begin{code}
 
@@ -2218,29 +2232,17 @@ applies with the one-point type, and 𝓕 is principal at u.
      V = ap₂ (λ - -' → - ∧ ⇁ -') III IV
 
  𝓕-at-finite : (k : ℕ) → u ＝ ι k → 𝓕 is-principal-at u
- 𝓕-at-finite k e A = III
+ 𝓕-at-finite k e A = II
   where
-   j : 𝟙 {𝓤₀} → ℕ∞
-   j _ = ι k
+   I : 𝓕 is-principal-at ι k
+   I = ultrafilter-principality-criterion-at-a-point
+        (singleton k) (ι k) (singleton-property₀ k)
+        𝓕 i (𝓕-at-singleton k e)
 
-   σ : (x : ℕ∞) → x ∈ singleton k → 𝟙 {𝓤₀}
-   σ _ _ = ⋆
-
-   jσ : (x : ℕ∞) (d : x ∈ singleton k) → j (σ x d) ＝ x
-   jσ x d = (singleton-property₀ k x d)⁻¹
-
-   I : Σ y ꞉ 𝟙 {𝓤₀} , 𝓕 is-principal-at ι k
-   I = ultrafilter-principality-criterion
-        (singleton k) j σ jσ (𝟙-is-pre-stone-type {𝓤₀}) 𝓕 i
-        (𝓕-at-singleton k e)
-
-   II : 𝓕 is-principal-at ι k
-   II = pr₂ I
-
-   III : A ϵ 𝓕 ＝ u ϵ A
-   III = A ϵ 𝓕   ＝⟨ II A ⟩
-         ι k ϵ A ＝⟨ (ap A e)⁻¹ ⟩
-         u ϵ A   ∎
+   II : A ϵ 𝓕 ＝ u ϵ A
+   II = A ϵ 𝓕   ＝⟨ I A ⟩
+        ι k ϵ A ＝⟨ (ap A e)⁻¹ ⟩
+        u ϵ A   ∎
 
  not-principal-at-u-gives-u-is-∞ : (A : Clopen ℕ∞) → A ϵ 𝓕 ≠ u ϵ A → u ＝ ∞
  not-principal-at-u-gives-u-is-∞ A ν =
