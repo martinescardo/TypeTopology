@@ -70,6 +70,7 @@ open import UF.Base
 open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 
 private
@@ -756,5 +757,120 @@ successor-is-order-preserving-gives-EM h P i = uncurry II (h α β I)
     IV : (x : P + 𝟙) → f (inl ⋆) ＝ x → P + ¬ P
     IV (inl p) e = inl p
     IV (inr ⋆) e = inr (λ p → +disjoint ((III p) ⁻¹ ∙ e))
+
+\end{code}
+
+\begin{code}
+
+private
+ ⊕-lc-and-order-reflecting
+  : (δ α β : Ordinal 𝓤) → (δ ⊕ α ＝ δ ⊕ β → α ＝ β)
+                        × (δ ⊕ α ⊲ δ ⊕ β → α ⊲ β)
+                        × (δ ⊕ β ⊲ δ ⊕ α → β ⊲ α)
+ ⊕-lc-and-order-reflecting {𝓤} =
+  λ δ α β → Transfinite-induction OO³ _ I (δ , α , β)
+   where
+    OO³ = OO 𝓤 ×ₒ (OO 𝓤 ×ₒ OO 𝓤)
+    I : (s@(δ , α , β) : ⟨ OO³ ⟩)
+      → ((t@(δ' , α' , β') : ⟨ OO³ ⟩)
+                           → t ≺⟨ OO³ ⟩ s
+                           → (δ' ⊕ α' ＝ δ' ⊕ β' → α' ＝ β')
+                           × (δ' ⊕ α' ⊲ δ' ⊕ β' → α' ⊲ β')
+                           × (δ' ⊕ β' ⊲ δ' ⊕ α' → β' ⊲ α'))
+      → (δ ⊕ α ＝ δ ⊕ β → α ＝ β)
+      × (δ ⊕ α ⊲ δ ⊕ β → α ⊲ β)
+      × (δ ⊕ β ⊲ δ ⊕ α → β ⊲ α)
+    I (δ , α , β) IH = I₁ , I₂ , I₃
+     where
+      I₁ : δ ⊕ α ＝ δ ⊕ β → α ＝ β
+      I₁ e = ⊴-antisym α β (to-⊴ α β II) (to-⊴ β α II')
+       where
+        II : (a : ⟨ α ⟩) → α ↓ a ⊲ β
+        II a = ih (transport (δ ⊕ (α ↓ a) ⊲_) e (⊕-⊲-right δ α))
+         where
+          ih : δ ⊕ (α ↓ a) ⊲ δ ⊕ β → α ↓ a ⊲ β
+          ih = pr₁ (pr₂ (IH (δ , α ↓ a , β) (inl (inr (refl , (a , refl))))))
+
+        II' : (b : ⟨ β ⟩) → β ↓ b ⊲ α
+        II' b = ih (transport⁻¹ (δ ⊕ (β ↓ b) ⊲_) e (⊕-⊲-right δ β))
+         where
+          ih : δ ⊕ (β ↓ b) ⊲ δ ⊕ α → β ↓ b ⊲ α
+          ih = pr₂ (pr₂ (IH (δ , α , β ↓ b) (inl (inl (b , refl)))))
+
+      I₂ : δ ⊕ α ⊲ δ ⊕ β → α ⊲ β
+      I₂ = uncurry II
+       where
+        II : (x : ⟨ δ ⊕ β ⟩) → δ ⊕ α ＝ (δ ⊕ β) ↓ x → α ⊲ β
+        II = ⊕-induction δ β (λ - → δ ⊕ α ＝ - → α ⊲ β)
+              (λ _ → Π-is-prop fe' (λ _ → ⊲-is-prop-valued α β))
+              III
+              IV
+              V
+         where
+          III : (d : ⟨ δ ⟩) → δ ⊕ α ＝ (δ ↓ d) ⊕ β → α ⊲ β
+          III d e = pr₁ (pr₂ (IH (δ ↓ d , α , β) (inr (refl , (d , refl))))) l
+           where
+            l : (δ ↓ d) ⊕ α ⊲ (δ ↓ d) ⊕ β
+            l = transport ((δ ↓ d) ⊕ α ⊲_) e (⊕-⊲-left δ α)
+
+          IV : (b : ⟨ β ⟩) → δ ⊕ α ＝ δ ⊕ (β ↓ b) → α ⊲ β
+          IV b e = b , e'
+           where
+            e' : α ＝ β ↓ b
+            e' = pr₁ (IH (δ , α , β ↓ b) (inl (inl (b , refl)))) e
+
+          V : (d : ⟨ δ ⟩) (b : ⟨ β ⟩) → δ ⊕ α ＝ (δ ↓ d) ⊕ (β ↓ b) → α ⊲ β
+          V d b e = ⊲-is-transitive α (β ↓ b) β l (b , refl)
+           where
+            l : α ⊲ β ↓ b
+            l = pr₁ (pr₂ (IH (δ ↓ d , α , β ↓ b) (inl (inl (b , refl))))) l'
+             where
+              l' : (δ ↓ d) ⊕ α ⊲ (δ ↓ d) ⊕ (β ↓ b)
+              l' = transport ((δ ↓ d) ⊕ α ⊲_) e (⊕-⊲-left δ α)
+
+\end{code}
+
+TODO. Comment on symmetry.
+
+\begin{code}
+
+      I₃ : δ ⊕ β ⊲ δ ⊕ α → β ⊲ α
+      I₃ = uncurry II
+       where
+        II : (x : ⟨ δ ⊕ α ⟩) → δ ⊕ β ＝ (δ ⊕ α) ↓ x → β ⊲ α
+        II = ⊕-induction δ α (λ - → δ ⊕ β ＝ - → β ⊲ α)
+              (λ _ → Π-is-prop fe' (λ _ → ⊲-is-prop-valued β α))
+              III
+              IV
+              V
+         where
+          III : (d : ⟨ δ ⟩) → δ ⊕ β ＝ (δ ↓ d) ⊕ α → β ⊲ α
+          III d e = pr₂ (pr₂ (IH (δ ↓ d , α , β) (inr (refl , (d , refl))))) l
+           where
+            l : (δ ↓ d) ⊕ β ⊲ (δ ↓ d) ⊕ α
+            l = transport ((δ ↓ d) ⊕ β ⊲_) e (⊕-⊲-left δ β)
+
+          IV : (a : ⟨ α ⟩) → δ ⊕ β ＝ δ ⊕ (α ↓ a) → β ⊲ α
+          IV a e = a , (e' ⁻¹)
+           where
+            e' : α ↓ a ＝ β
+            e' = pr₁ (IH (δ , α ↓ a , β) (inl (inr (refl , (a , refl))))) (e ⁻¹)
+
+          V : (d : ⟨ δ ⟩) (a : ⟨ α ⟩) → δ ⊕ β ＝ (δ ↓ d) ⊕ (α ↓ a) → β ⊲ α
+          V d a e = ⊲-is-transitive β (α ↓ a) α l (a , refl)
+           where
+            l : β ⊲ α ↓ a
+            l = pr₂ (pr₂ (IH (δ ↓ d , α ↓ a , β)
+                             (inl (inr (refl , (a , refl))))))
+                    l'
+             where
+              l' : ((δ ↓ d) ⊕ β) ⊲ ((δ ↓ d) ⊕ (α ↓ a))
+              l' = transport ((δ ↓ d) ⊕ β ⊲_) e (⊕-⊲-left δ β)
+
+⊕-is-left-cancellable : (δ α β : Ordinal 𝓤) → δ ⊕ α ＝ δ ⊕ β → α ＝ β
+⊕-is-left-cancellable δ α β = pr₁ (⊕-lc-and-order-reflecting δ α β)
+
+⊕-is-order-reflecting : (δ α β : Ordinal 𝓤) → δ ⊕ α ⊲ δ ⊕ β → α ⊲ β
+⊕-is-order-reflecting δ α β = pr₁ (pr₂ (⊕-lc-and-order-reflecting δ α β))
 
 \end{code}
