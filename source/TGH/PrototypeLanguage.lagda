@@ -541,8 +541,6 @@ application-equality env (f₁ , eqt) thunked₂ unthunked₁ unthunked₂ eq₁
  = strip-thunk (f₁ thunked₂)
  ＝⟨ strip-thunk-thunk-type-lemma f₁ eqt thunked₂ unthunked₂ eq₂ ⟩
    strip-thunk (f₁ (thunk-type unthunked₂))
- ＝⟨ refl ⟩
-   (λ x → strip-thunk (f₁ (thunk-type x))) unthunked₂
  ＝⟨ ap (λ z → z unthunked₂) eq₁ ⟩
    unthunked₁ unthunked₂
  ∎

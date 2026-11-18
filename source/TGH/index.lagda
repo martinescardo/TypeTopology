@@ -31,7 +31,7 @@ import TGH.BigO
 
 \end{code}
 
-The Thunk monad, which we use to track the number of steps to produce a value.
+The `Thunk` monad, which we use to track the number of steps to produce a value.
 
 \begin{code}
 
@@ -84,7 +84,7 @@ import TGH.ComplexityDefinitionsResults
 Provides a program that finds the head of a list in our language.
 We prove the correctness of `head` and show that it is constant
 time when using a lazy evaluation strategy but linear time,
-and not constant time, when using an eager evaluation strategy.
+and not constant time, when using the eager evaluation strategy.
 
 \begin{code}
 
@@ -101,7 +101,7 @@ import TGH.LastCorrectness
 
 \end{code}
 
-A proof that the value output of the last program does not depend on the
+A proof that the value output of the `last` program does not depend on the
 time component of the input when the eager evaluation strategy is used.
 
 \begin{code}
