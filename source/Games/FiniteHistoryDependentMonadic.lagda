@@ -24,7 +24,7 @@ game is the same. See [1] for background.
 The main examples of 𝓣 we have in mind are the powerset monad (for the
 Herbrand Functional Interpretation [2]), probability distribution
 monads (for mixed strategies) and the reader monad (for alpha-beta
-pruning in the file Games.alpha-beta).
+pruning in the file deprecated.alpha-beta).
 
 [1] M. Escardo and P. Oliva.
     Higher-order Games with Dependent Types (2023)
