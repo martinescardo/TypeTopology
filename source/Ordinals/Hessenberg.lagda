@@ -426,7 +426,7 @@ definition of Hessenberg addition.
       IIᵃ a = transport (_⊲ (α ⊕ β) ⊕ γ)
                (IH (α ↓ a , β , γ) (inr (refl , (a , refl))))
                (⊕-is-order-preserving-left ((α ↓ a) ⊕ β) (α ⊕ β) γ
-                 (⊕-is-order-preserving-left (α ↓ a) α β (a , refl)))
+                 (⊕-⊲-left α β))
 
 \end{code}
 
@@ -459,7 +459,7 @@ definition of Hessenberg addition.
          h (inl k) = ⊕-is-order-preserving (δ ⊕ β) (α ⊕ β) (γ ↓ c) γ
                       (⊕-is-order-preserving-left δ α β k)
                       (c , refl)
-         h (inr refl) = ⊕-is-order-preserving-right (α ⊕ β) (γ ↓ c) γ (c , refl)
+         h (inr refl) = ⊕-⊲-right (α ⊕ β) γ
 
         IIIᵇᶜ : (b : ⟨ β ⟩) (c : ⟨ γ ⟩) → δ ⊕ ((β ↓ b) ⊕ (γ ↓ c)) ⊲ (α ⊕ β) ⊕ γ
         IIIᵇᶜ b c = transport (_⊲ (α ⊕ β) ⊕ γ)
@@ -480,7 +480,7 @@ definition of Hessenberg addition.
       III₂ c = transport⁻¹ (_⊲ α ⊕ (β ⊕ γ))
                            (IH (α , β , γ ↓ c) (inl (inl (c , refl))))
                            (⊕-is-order-preserving-right α (β ⊕ (γ ↓ c)) (β ⊕ γ)
-                             (⊕-is-order-preserving-right β (γ ↓ c) γ (c , refl)))
+                             (⊕-⊲-right β γ))
 
       III : (δ : Ordinal 𝓤) → ((δ ⊲ γ) + (δ ＝ γ))
           → (x : ⟨ α ⊕ β ⟩) → ((α ⊕ β) ↓ x) ⊕ δ ⊲ α ⊕ (β ⊕ γ)
@@ -493,7 +493,7 @@ definition of Hessenberg addition.
          where
           h : ((δ ⊲ γ) + (δ ＝ γ)) → (β ↓ b) ⊕ δ ⊲ β ⊕ γ
           h (inl k)    = ⊕-is-order-preserving (β ↓ b) β δ γ (b , refl) k
-          h (inr refl) = ⊕-is-order-preserving-left (β ↓ b) β γ (b , refl)
+          h (inr refl) = ⊕-⊲-left β γ
 
         IH-applicable : (b : ⟨ β ⟩) (α' : Ordinal 𝓤)
                       → (α' , β ↓ b , δ) ≺⟨ OO³ ⟩ (α , β , γ)
@@ -515,8 +515,7 @@ definition of Hessenberg addition.
                       ⊕-is-order-preserving (α ↓ a) α (β ⊕ δ) (β ⊕ γ)
                        (a , refl)
                        (⊕-is-order-preserving-right β δ γ k)
-          h (inr refl) = inr (refl , (a , refl)) ,
-                         ⊕-is-order-preserving-left (α ↓ a) α (β ⊕ γ) (a , refl)
+          h (inr refl) = inr (refl , (a , refl)) , ⊕-⊲-left α (β ⊕ γ)
 
         IIIᵇ : (b : ⟨ β ⟩) → (α ⊕ (β ↓ b)) ⊕ δ ⊲ α ⊕ (β ⊕ γ)
         IIIᵇ b = transport⁻¹ (_⊲ (α ⊕ (β ⊕ γ)))
