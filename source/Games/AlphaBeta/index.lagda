@@ -1,10 +1,13 @@
 Martin Escardo and Paulo Oliva, originally March - April 2023, with the
 proofs November 2026.
 
-In previous work [1] we showed that minimax-type searches can be
+In previous work [1, 2] we showed that minimax-type searches can be
 performed using monadic programming, via the continuation monad for
 calculating optimal outcomes, and the selection monad, with the
-product of selection functions, for optimal plays and strategies.
+product of selection functions, for optimal plays and strategies. In
+[3] we added game trees, in which the type of moves at a round, and
+the number of rounds, may depend on the moves played so far, and
+these are the games of this formalization.
 
 Here we compute optimal plays with the product of quantifiers instead,
 which is more efficient in practice, by extending the type of outcomes
@@ -13,7 +16,18 @@ efficiency with alpha-beta pruning, by combining the continuation
 monad with the reader monad, which records the alpha-beta bounds
 within the outcomes, leaving the types of moves unchanged.
 
-[1] Martin Escardo and Paulo Oliva. Higher-order games with
+[1] Martin Escardo and Paulo Oliva. Selection functions, bar
+    recursion and backward induction. Mathematical Structures in
+    Computer Science, Volume 20, Issue 2, 2010, 127-168.
+    https://doi.org/10.1017/S0960129509990351
+
+[2] Martin Escardo and Paulo Oliva. What sequential games, the
+    Tychonoff theorem and the double-negation shift have in common.
+    Proceedings of the Third ACM SIGPLAN Workshop on Mathematically
+    Structured Functional Programming (MSFP 2010), 21-32.
+    https://doi.org/10.1145/1863597.1863605
+
+[3] Martin Escardo and Paulo Oliva. Higher-order games with
     dependent types. Theoretical Computer Science, Volume 974, 29
     September 2023, 114111.
     https://doi.org/10.48550/arXiv.2212.07735

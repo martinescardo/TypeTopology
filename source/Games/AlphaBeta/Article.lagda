@@ -144,7 +144,8 @@ outcome function Games.AlphaBeta.Examples.q. The Haskell quantifiers
 phiMax and phiMin of Section 2.1 are φmax and φmin, and the Haskell
 global quantifier bigPhi of Section 2.3 is
 Games.AlphaBeta.ViaProductsOfQuantifiers.quantifier-tree, sequenced by
-sequenceᴷ of the module Games.FiniteHistoryDependent.
+sequenceᴷ of the module Games.FiniteHistoryDependent, which is the
+product of quantifiers of Remark 1.
 
 The claim at the end of Section 2 is that the exhaustive search
 computes the optimal outcome 6 of the example. That all 36 plays are
@@ -195,12 +196,12 @@ Prose-alpha-beta-outcome = Games.AlphaBeta.Examples.wikipedia-outcome*
 Section 4. Correctness of alpha-beta optimization.
 
 The quantifiers φ_min, φ_max, φ*_min and φ*_max are φmin, φmax, φ*min
-and φ*max, the product of quantifiers is sequenceᴷ of the module
-Games.FiniteHistoryDependent, and the outcomes out(G) and out*_{α,β}(G)
-are outcome and outcome*, as functions of the game tree, its labelling
-and the outcome function. For a subgame G_s, the outcome function q_s is
-subpred q x of the module Games.TypeTrees, for a single move x, and
-repeated for longer partial plays.
+and φ*max, the product of quantifiers is sequenceᴷ, as in Remark 1,
+and the outcomes out(G) and out*_{α,β}(G) are outcome and outcome*, as
+functions of the game tree, its labelling and the outcome function.
+For a subgame G_s, the outcome function q_s is subpred q x of the
+module Games.TypeTrees, for a single move x, and repeated for longer
+partial plays.
 
 Definition 1. The function ℓ, the function takeUntil, which is
 take-until here, and the maximum max⁺ of a non-empty list. The maximum
