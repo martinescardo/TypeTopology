@@ -34,7 +34,7 @@ open import TGH.P fe
 
 \end{code}
 
-Proof that, when the eager evaluation strategy is used, last is linear time,
+Proof that, when the eager evaluation strategy is used, `last` is linear time,
 according to the Big O definition and our alternative definition.
 
 \begin{code}
