@@ -235,9 +235,12 @@ Rκ α γ f g ζ n t (d , enc , refl)
  , enc-κ ζ₁ enc 
  , (ζ₂ n ∙ decode-kleisli-extension ζ₀ d α)
  where
-  ζ₀ = λ i → pr₁ (ζ i)
-  ζ₁ = λ i → pr₁ (pr₂ (ζ i))
-  ζ₂ = λ i → pr₂ (pr₂ (ζ i))
+  ζ₀ : ℕ → 𝒟
+  ζ₀ i = pr₁ (ζ i)
+  ζ₁ : (i : ℕ) → (g i) encodes (ζ₀ i)
+  ζ₁ i = pr₁ (pr₂ (ζ i))
+  ζ₂ : (i : ℕ) → f i ＝ dialogue (ζ₀ i) α
+  ζ₂ i = pr₂ (pr₂ (ζ i))
 
 R[KE] : (α : ℕ → ℕ)
       → {ρ : type} {Γ : Cxt} (γ : 【 Γ 】)
