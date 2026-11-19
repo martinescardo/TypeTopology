@@ -1,53 +1,82 @@
-Tom de Jong, 11-16 November 2026.
+Tom de Jong, 11–19 November 2026.
 
 Prompted by a question of Robbert Krebbers (9 November 2026), we explore a
 constructive approach to Hessenberg addition.
-
 This binary operation on ordinals, typically denoted by ⊕ and also known as the
 natural sum, is commutative and associative, the former in contrast to ordinary
 ordinal addition.
 
-A typical classical definition of Hessenberg addition goes via Cantor normal
-forms, but the Hessenberg sum α ⊕ β can also be characterized, via transfinite
-recursion, as the least ordinal strictly above α ⊕ γ and δ ⊕ β for γ < β and
-δ < α [1,2].
+A typical classical definition of Hessenberg addition [Kap. XX, Hes06] goes via
+Cantor normal forms, but the Hessenberg sum α ⊕ β can also be characterized, via
+transfinite recursion, as the least ordinal strictly above α ⊕ γ and δ ⊕ β for
+γ < β and δ < α. This characterization is attributed to Conway, see
+[Theorem 2.4, Alt17] and also [Sta24].
 In what follows we adopt this as a suitable constructive definition, replacing
 the (a priori large) quantification over ordinals γ < β and δ < α by a small
 quantification over elements b : ⟨ β ⟩ and a : ⟨ α ⟩ (which give rise to
 suitable ordinals via their initial segments).
 
-We then prove a number of properties of Hessenberg addition. It is
-   * commutative,
-   * associative,
-   * preserves the strict order (necessarily in both arguments), and
-   * strictly inflationary (α ⊲ α ⊕ β whenever 𝟙ₒ ⊴ β).
-Moreover, the empty ordinal is a neutral element of Hessenberg addition.
+With this definition, we give constructive proofs of the following properties of
+Hessenberg addition:
+  * commutativity, i.e. α ⊕ β ＝ β ⊕ α;
+  * associativity, i.e. (α ⊕ β) ⊕ γ ＝ α ⊕ (β ⊕ γ);
+  * neutrality of 𝟘ₒ, i.e. α ⊕ 𝟘ₒ ＝ α;
+  * strict order preservation and reflection, i.e. δ ⊕ α ⊲ δ ⊕ β ⇔ α ⊲ β.
+These properties were chosen as an axiomatization of "natural sums" by Carruth
+[Car42] and Hessenberg addition is shown to be the smallest such natural sum,
+see also [HPV23] for a recent take on Carruth's axioms.
+In addition to these properties we also show that Hessenberg addition is left
+cancellable, i.e. δ ⊕ α ＝ δ ⊕ β implies α ＝ β, as well as strictly
+inflationary for a summand with a least element, i.e. 𝟙ₒ ⊴ β implies ⊲ α ⊕ β.
 
-We also characterize the initial segments of α ⊕ β as arising from one of three
+We characterize the initial segments of α ⊕ β as arising from one of three
 (possibly overlapping cases):
    * (α ↓ a) ⊕ β,
-   * α ⊕ (β ↓ b), and
+   * α ⊕ (β ↓ b),
    * (α ↓ a) ⊕ (β ↓ b).
 This gives rise to an induction principle that is used to prove associativity
 for instance.
 
 Finally, we show that a few properties are inherently classical by proving that
 they imply excluded middle. These include:
-  * monotonicity (i.e. preservation of the partial order ⊴),
-  * being inflationary (α ⊴ α ⊕ β), and
-  * being above ordinary addition (α +ₒ β ⊴ α ⊕ β).
+  * monotonicity, i.e. α ⊴ β implies δ ⊕ α ⊴ δ ⊕ β;
+  * being inflationary, i.e. α ⊴ α ⊕ β;
+  * being above ordinary addition, i.e. α +ₒ β ⊴ α ⊕ β;
+  * commuting with successors, i.e. α ⊕ (β +ₒ 𝟙ₒ) ＝ (α ⊕ β) +ₒ 𝟙ₒ.
+This last property is classically proved as [Lemma 3.3b), dJP77]; the
+penultimate property is classically proved as [Proposition 5.1, Alt17] and
+[Theorem 1.IV, Car42].
 
-TODO. Update with more taboos.
+REFERENCES
 
-TODO. Can we show δ ⊕ α < δ ⊕ β → α < β?
+[Alt17] Harry J. Altman. 'Intermediate airthmetic operations on ordinal numbers'.
+        Mathematical Logic Quarterly, vol. 63, issue 3–4, pp. 228–242, 2017.
+        https://doi.org/10.1002/malq.201600006
+        https://arxiv.org/abs/1501.05747
 
-          1 < P + 1 decides P
-      δ ⊕ 1 < δ ⊕ (P + 1) = δ ⊕ (P ⊕ 1) = δ ⊕ (1 ⊕ P)
+[Car42] Philip W. Carruth. 'Arithmetic of ordinals with applications to the
+        theory of ordered Abelian groups'.
+        Bulletin of the American Math. Society, vol. 48, pp. 262–271, 1942.
+        https://doi.org/10.1090/S0002-9904-1942-07649-X
 
-[1]
+[dJP77] D. H. J de Jongh and Rohit Parikh.
+        'Well-partial orderings and hierarchies'
+        Indagationes Mathematicae (Proceedings), vol. 80, issue 3,
+        pp. 195–207, 1977.
+        https://doi.org/10.1016/1385-7258(77)90067-1
 
-[2] 'Hessenberg sum/natural sum of ordinals definition'. 2024.
-    https://math.stackexchange.com/questions/4852808/hessenberg-sum-natural-sum-of-ordinals-definition
+[Hes06] Gerhard Hessenberg. 'Grundbegriffe der Mengenlehre'.
+        Abhandlungen der Fries'schen Schule, I. Band, 4. Heft,
+        Vandenhoeck & Ruprecht, 1906.
+        https://archive.org/download/grundbegriffede00hessgoog/grundbegriffede00hessgoog.pdf
+
+[HPV23] Lorenz Halbeisen and Pedro Pablo Pérez-Velasco.
+        'On Carruth’s axioms for natural sums and products'.
+        European Journal of Mathematics, vol. 9, article no. 97, 2023
+        https://doi.org/10.1007/s40879-023-00696-z
+
+[Sta24] 'Hessenberg sum/natural sum of ordinals definition'. 2024.
+        https://math.stackexchange.com/questions/4852808/hessenberg-sum-natural-sum-of-ordinals-definition
 
 \begin{code}
 
@@ -578,10 +607,120 @@ definition of Hessenberg addition.
 
 \end{code}
 
-TODO. FROM WELL-PARTIAL ORDERINGS AND HIERARCHIES
-      Lemma 3.3b) α ⊕ (β +ₒ 𝟙ₒ) ＝ (α ⊕ β) +ₒ 𝟙ₒ
+\begin{code}
 
-Taking β = 𝟘ₒ yields α ⊕ 𝟙ₒ = α +ₒ 𝟙ₒ, but (-) + 𝟙ₒ is not order preserving, while (-) ⊕ 𝟙ₒ is.
+private
+ ⊕-lc-and-order-reflecting
+  : (δ α β : Ordinal 𝓤) → (δ ⊕ α ＝ δ ⊕ β → α ＝ β)
+                        × (δ ⊕ α ⊲ δ ⊕ β → α ⊲ β)
+                        × (δ ⊕ β ⊲ δ ⊕ α → β ⊲ α)
+ ⊕-lc-and-order-reflecting {𝓤} =
+  λ δ α β → Transfinite-induction OO³ _ I (δ , α , β)
+   where
+    OO³ = OO 𝓤 ×ₒ (OO 𝓤 ×ₒ OO 𝓤)
+    I : (s@(δ , α , β) : ⟨ OO³ ⟩)
+      → ((t@(δ' , α' , β') : ⟨ OO³ ⟩)
+                           → t ≺⟨ OO³ ⟩ s
+                           → (δ' ⊕ α' ＝ δ' ⊕ β' → α' ＝ β')
+                           × (δ' ⊕ α' ⊲ δ' ⊕ β' → α' ⊲ β')
+                           × (δ' ⊕ β' ⊲ δ' ⊕ α' → β' ⊲ α'))
+      → (δ ⊕ α ＝ δ ⊕ β → α ＝ β)
+      × (δ ⊕ α ⊲ δ ⊕ β → α ⊲ β)
+      × (δ ⊕ β ⊲ δ ⊕ α → β ⊲ α)
+    I (δ , α , β) IH = I₁ , I₂ , I₃
+     where
+      I₁ : δ ⊕ α ＝ δ ⊕ β → α ＝ β
+      I₁ e = ⊴-antisym α β (to-⊴ α β II) (to-⊴ β α II')
+       where
+        II : (a : ⟨ α ⟩) → α ↓ a ⊲ β
+        II a = ih (transport (δ ⊕ (α ↓ a) ⊲_) e (⊕-⊲-right δ α))
+         where
+          ih : δ ⊕ (α ↓ a) ⊲ δ ⊕ β → α ↓ a ⊲ β
+          ih = pr₁ (pr₂ (IH (δ , α ↓ a , β) (inl (inr (refl , (a , refl))))))
+
+        II' : (b : ⟨ β ⟩) → β ↓ b ⊲ α
+        II' b = ih (transport⁻¹ (δ ⊕ (β ↓ b) ⊲_) e (⊕-⊲-right δ β))
+         where
+          ih : δ ⊕ (β ↓ b) ⊲ δ ⊕ α → β ↓ b ⊲ α
+          ih = pr₂ (pr₂ (IH (δ , α , β ↓ b) (inl (inl (b , refl)))))
+
+      I₂ : δ ⊕ α ⊲ δ ⊕ β → α ⊲ β
+      I₂ = uncurry II
+       where
+        II : (x : ⟨ δ ⊕ β ⟩) → δ ⊕ α ＝ (δ ⊕ β) ↓ x → α ⊲ β
+        II = ⊕-induction δ β (λ - → δ ⊕ α ＝ - → α ⊲ β)
+              (λ _ → Π-is-prop fe' (λ _ → ⊲-is-prop-valued α β))
+              III
+              IV
+              V
+         where
+          III : (d : ⟨ δ ⟩) → δ ⊕ α ＝ (δ ↓ d) ⊕ β → α ⊲ β
+          III d e = pr₁ (pr₂ (IH (δ ↓ d , α , β) (inr (refl , (d , refl))))) l
+           where
+            l : (δ ↓ d) ⊕ α ⊲ (δ ↓ d) ⊕ β
+            l = transport ((δ ↓ d) ⊕ α ⊲_) e (⊕-⊲-left δ α)
+
+          IV : (b : ⟨ β ⟩) → δ ⊕ α ＝ δ ⊕ (β ↓ b) → α ⊲ β
+          IV b e = b , e'
+           where
+            e' : α ＝ β ↓ b
+            e' = pr₁ (IH (δ , α , β ↓ b) (inl (inl (b , refl)))) e
+
+          V : (d : ⟨ δ ⟩) (b : ⟨ β ⟩) → δ ⊕ α ＝ (δ ↓ d) ⊕ (β ↓ b) → α ⊲ β
+          V d b e = ⊲-is-transitive α (β ↓ b) β l (b , refl)
+           where
+            l : α ⊲ β ↓ b
+            l = pr₁ (pr₂ (IH (δ ↓ d , α , β ↓ b) (inl (inl (b , refl))))) l'
+             where
+              l' : (δ ↓ d) ⊕ α ⊲ (δ ↓ d) ⊕ (β ↓ b)
+              l' = transport ((δ ↓ d) ⊕ α ⊲_) e (⊕-⊲-left δ α)
+
+\end{code}
+
+TODO. Comment on symmetry.
+
+\begin{code}
+
+      I₃ : δ ⊕ β ⊲ δ ⊕ α → β ⊲ α
+      I₃ = uncurry II
+       where
+        II : (x : ⟨ δ ⊕ α ⟩) → δ ⊕ β ＝ (δ ⊕ α) ↓ x → β ⊲ α
+        II = ⊕-induction δ α (λ - → δ ⊕ β ＝ - → β ⊲ α)
+              (λ _ → Π-is-prop fe' (λ _ → ⊲-is-prop-valued β α))
+              III
+              IV
+              V
+         where
+          III : (d : ⟨ δ ⟩) → δ ⊕ β ＝ (δ ↓ d) ⊕ α → β ⊲ α
+          III d e = pr₂ (pr₂ (IH (δ ↓ d , α , β) (inr (refl , (d , refl))))) l
+           where
+            l : (δ ↓ d) ⊕ β ⊲ (δ ↓ d) ⊕ α
+            l = transport ((δ ↓ d) ⊕ β ⊲_) e (⊕-⊲-left δ β)
+
+          IV : (a : ⟨ α ⟩) → δ ⊕ β ＝ δ ⊕ (α ↓ a) → β ⊲ α
+          IV a e = a , (e' ⁻¹)
+           where
+            e' : α ↓ a ＝ β
+            e' = pr₁ (IH (δ , α ↓ a , β) (inl (inr (refl , (a , refl))))) (e ⁻¹)
+
+          V : (d : ⟨ δ ⟩) (a : ⟨ α ⟩) → δ ⊕ β ＝ (δ ↓ d) ⊕ (α ↓ a) → β ⊲ α
+          V d a e = ⊲-is-transitive β (α ↓ a) α l (a , refl)
+           where
+            l : β ⊲ α ↓ a
+            l = pr₂ (pr₂ (IH (δ ↓ d , α ↓ a , β)
+                             (inl (inr (refl , (a , refl))))))
+                    l'
+             where
+              l' : ((δ ↓ d) ⊕ β) ⊲ ((δ ↓ d) ⊕ (α ↓ a))
+              l' = transport ((δ ↓ d) ⊕ β ⊲_) e (⊕-⊲-left δ β)
+
+⊕-is-left-cancellable : (δ α β : Ordinal 𝓤) → δ ⊕ α ＝ δ ⊕ β → α ＝ β
+⊕-is-left-cancellable δ α β = pr₁ (⊕-lc-and-order-reflecting δ α β)
+
+⊕-is-order-reflecting : (δ α β : Ordinal 𝓤) → δ ⊕ α ⊲ δ ⊕ β → α ⊲ β
+⊕-is-order-reflecting δ α β = pr₁ (pr₂ (⊕-lc-and-order-reflecting δ α β))
+
+\end{code}
 
 \begin{code}
 
@@ -711,120 +850,5 @@ Taking β = 𝟘ₒ yields α ⊕ 𝟙ₒ = α +ₒ 𝟙ₒ, but (-) + 𝟙ₒ i
     IV : (x : P + 𝟙) → f (inl ⋆) ＝ x → P + ¬ P
     IV (inl p) e = inl p
     IV (inr ⋆) e = inr (λ p → +disjoint ((III p) ⁻¹ ∙ e))
-
-\end{code}
-
-\begin{code}
-
-private
- ⊕-lc-and-order-reflecting
-  : (δ α β : Ordinal 𝓤) → (δ ⊕ α ＝ δ ⊕ β → α ＝ β)
-                        × (δ ⊕ α ⊲ δ ⊕ β → α ⊲ β)
-                        × (δ ⊕ β ⊲ δ ⊕ α → β ⊲ α)
- ⊕-lc-and-order-reflecting {𝓤} =
-  λ δ α β → Transfinite-induction OO³ _ I (δ , α , β)
-   where
-    OO³ = OO 𝓤 ×ₒ (OO 𝓤 ×ₒ OO 𝓤)
-    I : (s@(δ , α , β) : ⟨ OO³ ⟩)
-      → ((t@(δ' , α' , β') : ⟨ OO³ ⟩)
-                           → t ≺⟨ OO³ ⟩ s
-                           → (δ' ⊕ α' ＝ δ' ⊕ β' → α' ＝ β')
-                           × (δ' ⊕ α' ⊲ δ' ⊕ β' → α' ⊲ β')
-                           × (δ' ⊕ β' ⊲ δ' ⊕ α' → β' ⊲ α'))
-      → (δ ⊕ α ＝ δ ⊕ β → α ＝ β)
-      × (δ ⊕ α ⊲ δ ⊕ β → α ⊲ β)
-      × (δ ⊕ β ⊲ δ ⊕ α → β ⊲ α)
-    I (δ , α , β) IH = I₁ , I₂ , I₃
-     where
-      I₁ : δ ⊕ α ＝ δ ⊕ β → α ＝ β
-      I₁ e = ⊴-antisym α β (to-⊴ α β II) (to-⊴ β α II')
-       where
-        II : (a : ⟨ α ⟩) → α ↓ a ⊲ β
-        II a = ih (transport (δ ⊕ (α ↓ a) ⊲_) e (⊕-⊲-right δ α))
-         where
-          ih : δ ⊕ (α ↓ a) ⊲ δ ⊕ β → α ↓ a ⊲ β
-          ih = pr₁ (pr₂ (IH (δ , α ↓ a , β) (inl (inr (refl , (a , refl))))))
-
-        II' : (b : ⟨ β ⟩) → β ↓ b ⊲ α
-        II' b = ih (transport⁻¹ (δ ⊕ (β ↓ b) ⊲_) e (⊕-⊲-right δ β))
-         where
-          ih : δ ⊕ (β ↓ b) ⊲ δ ⊕ α → β ↓ b ⊲ α
-          ih = pr₂ (pr₂ (IH (δ , α , β ↓ b) (inl (inl (b , refl)))))
-
-      I₂ : δ ⊕ α ⊲ δ ⊕ β → α ⊲ β
-      I₂ = uncurry II
-       where
-        II : (x : ⟨ δ ⊕ β ⟩) → δ ⊕ α ＝ (δ ⊕ β) ↓ x → α ⊲ β
-        II = ⊕-induction δ β (λ - → δ ⊕ α ＝ - → α ⊲ β)
-              (λ _ → Π-is-prop fe' (λ _ → ⊲-is-prop-valued α β))
-              III
-              IV
-              V
-         where
-          III : (d : ⟨ δ ⟩) → δ ⊕ α ＝ (δ ↓ d) ⊕ β → α ⊲ β
-          III d e = pr₁ (pr₂ (IH (δ ↓ d , α , β) (inr (refl , (d , refl))))) l
-           where
-            l : (δ ↓ d) ⊕ α ⊲ (δ ↓ d) ⊕ β
-            l = transport ((δ ↓ d) ⊕ α ⊲_) e (⊕-⊲-left δ α)
-
-          IV : (b : ⟨ β ⟩) → δ ⊕ α ＝ δ ⊕ (β ↓ b) → α ⊲ β
-          IV b e = b , e'
-           where
-            e' : α ＝ β ↓ b
-            e' = pr₁ (IH (δ , α , β ↓ b) (inl (inl (b , refl)))) e
-
-          V : (d : ⟨ δ ⟩) (b : ⟨ β ⟩) → δ ⊕ α ＝ (δ ↓ d) ⊕ (β ↓ b) → α ⊲ β
-          V d b e = ⊲-is-transitive α (β ↓ b) β l (b , refl)
-           where
-            l : α ⊲ β ↓ b
-            l = pr₁ (pr₂ (IH (δ ↓ d , α , β ↓ b) (inl (inl (b , refl))))) l'
-             where
-              l' : (δ ↓ d) ⊕ α ⊲ (δ ↓ d) ⊕ (β ↓ b)
-              l' = transport ((δ ↓ d) ⊕ α ⊲_) e (⊕-⊲-left δ α)
-
-\end{code}
-
-TODO. Comment on symmetry.
-
-\begin{code}
-
-      I₃ : δ ⊕ β ⊲ δ ⊕ α → β ⊲ α
-      I₃ = uncurry II
-       where
-        II : (x : ⟨ δ ⊕ α ⟩) → δ ⊕ β ＝ (δ ⊕ α) ↓ x → β ⊲ α
-        II = ⊕-induction δ α (λ - → δ ⊕ β ＝ - → β ⊲ α)
-              (λ _ → Π-is-prop fe' (λ _ → ⊲-is-prop-valued β α))
-              III
-              IV
-              V
-         where
-          III : (d : ⟨ δ ⟩) → δ ⊕ β ＝ (δ ↓ d) ⊕ α → β ⊲ α
-          III d e = pr₂ (pr₂ (IH (δ ↓ d , α , β) (inr (refl , (d , refl))))) l
-           where
-            l : (δ ↓ d) ⊕ β ⊲ (δ ↓ d) ⊕ α
-            l = transport ((δ ↓ d) ⊕ β ⊲_) e (⊕-⊲-left δ β)
-
-          IV : (a : ⟨ α ⟩) → δ ⊕ β ＝ δ ⊕ (α ↓ a) → β ⊲ α
-          IV a e = a , (e' ⁻¹)
-           where
-            e' : α ↓ a ＝ β
-            e' = pr₁ (IH (δ , α ↓ a , β) (inl (inr (refl , (a , refl))))) (e ⁻¹)
-
-          V : (d : ⟨ δ ⟩) (a : ⟨ α ⟩) → δ ⊕ β ＝ (δ ↓ d) ⊕ (α ↓ a) → β ⊲ α
-          V d a e = ⊲-is-transitive β (α ↓ a) α l (a , refl)
-           where
-            l : β ⊲ α ↓ a
-            l = pr₂ (pr₂ (IH (δ ↓ d , α ↓ a , β)
-                             (inl (inr (refl , (a , refl))))))
-                    l'
-             where
-              l' : ((δ ↓ d) ⊕ β) ⊲ ((δ ↓ d) ⊕ (α ↓ a))
-              l' = transport ((δ ↓ d) ⊕ β ⊲_) e (⊕-⊲-left δ β)
-
-⊕-is-left-cancellable : (δ α β : Ordinal 𝓤) → δ ⊕ α ＝ δ ⊕ β → α ＝ β
-⊕-is-left-cancellable δ α β = pr₁ (⊕-lc-and-order-reflecting δ α β)
-
-⊕-is-order-reflecting : (δ α β : Ordinal 𝓤) → δ ⊕ α ⊲ δ ⊕ β → α ⊲ β
-⊕-is-order-reflecting δ α β = pr₁ (pr₂ (⊕-lc-and-order-reflecting δ α β))
 
 \end{code}
