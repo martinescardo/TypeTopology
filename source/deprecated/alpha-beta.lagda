@@ -1,9 +1,5 @@
-Martin Escardo, Paulo Oliva, March - April 2023
-
-We got started writing the proofs 27th January 2026.
-
-This file is mostly for efficiency. See the tests with tic-tac-toe at
-the end of this file with the various possibilities offered here.
+Martin Escardo, Paulo Oliva, March - April 2023,
+with the proofs started 27th January 2026.
 
 We incorporate alpha-beta pruning to our previous work on finite
 history-dependent games using the selection and continuation monads (in
@@ -41,7 +37,7 @@ We now define standard minimax games.
 
 \begin{code}
 
-module Games.alpha-beta where
+module deprecated.alpha-beta where
 
 import Games.FiniteHistoryDependent
 open import Games.TypeTrees

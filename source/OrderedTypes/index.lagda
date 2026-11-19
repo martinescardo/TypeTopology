@@ -1,4 +1,4 @@
-Ian Ray, Kelton OBrien, Martin Escardo and Tom de Jong, 2023-2026.
+Ian Ray, Kelton OBrien, Martin Escardo, Paulo Oliva and Tom de Jong, 2023-2026.
 
 \begin{code}
 
@@ -6,6 +6,8 @@ Ian Ray, Kelton OBrien, Martin Escardo and Tom de Jong, 2023-2026.
 
 module OrderedTypes.index where
 
+import OrderedTypes.DecidableStrictWeakOrder        -- by Martin Escardo
+                                                    -- and Paulo Oliva
 import OrderedTypes.DeltaCompletePoset              -- by Ian Ray
 import OrderedTypes.Frame                           -- by Martin Escardo
 import OrderedTypes.FreeJoinSemiLattice             -- by Tom de Jong

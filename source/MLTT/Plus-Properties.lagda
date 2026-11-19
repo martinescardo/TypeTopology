@@ -180,3 +180,22 @@ inr-lc-is-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 inr-lc-is-retraction = encode-decode-inr.decode-encode (inr _)
 
 \end{code}
+
+Added by Martin Escardo and Paulo Oliva 17th November 2026.
+
+\begin{code}
+
+Cases-same : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (z : X + Y) (a : A)
+           → Cases z (λ _ → a) (λ _ → a) ＝ a
+Cases-same (inl _) a = refl
+Cases-same (inr _) a = refl
+
+Cases-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (z : X + Y) (f : X → A) (a : A)
+            → ¬ X
+            → Cases z f (λ _ → a) ＝ a
+Cases-right (inl x) f a n = 𝟘-elim (n x)
+Cases-right (inr _) f a n = refl
+
+\end{code}
+
+End of addition.

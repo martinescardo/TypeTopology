@@ -15,7 +15,8 @@ This is an Agda companion for the paper
    https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTotallySeparatedTypesExtendedAbstract.html
 
 The extended abstract is a shortened version of the paper [1], which
-contains all proofs and has its own Agda companion [2].
+contains all proofs and has its own Agda companion [2]. The extended
+abstract will be made available in due course and linked here.
 
 This file follows the definitions, lemmas, propositions, theorems,
 examples and remarks of the extended abstract, in the same order and

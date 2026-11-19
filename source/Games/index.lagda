@@ -19,8 +19,9 @@ import Games.ArgMinMax
 import Games.TicTacToe0                            -- (7)
 import Games.TicTacToe1                            -- (7)
 import Games.TicTacToe2                            -- (7)
-import Games.alpha-beta                            -- (8)
-import Games.SequenceJ-via-SequenceK               -- (8)
+import Games.AlphaBeta.index                       -- (8)
+import Games.SequenceJ-via-SequenceK
+import Games.OptimalPlaysViaProductsOfQuantifiers
 import Games.OptimalPlays                          -- (9)
 import Games.AllOptimalPlays                       -- (9)
 import Games.Alternative                           -- (10)
@@ -45,7 +46,7 @@ import Games.Alternative                           -- (10)
    Theory of finite history dependent games, as presented in the paper
 
    [1] Martin Escardo and Paulo Oliva. Higher-order games with
-       dependent types.  Theoretical Computer Science, Volume 974, 29
+       dependent types. Theoretical Computer Science, Volume 974, 29
        September 2023, 114111.
        https://doi.org/10.48550/arXiv.2212.07735
        https://doi.org/10.1016/j.tcs.2023.114111
@@ -91,17 +92,37 @@ import Games.Alternative                           -- (10)
 
    TicTacToe2 is more efficient but less elegant.
 
-8. alpha-beta.
+8. AlphaBeta.
 
-   This implements alpha-beta and more for efficiency, as exemplified
-   by e.g. tic-tac-toe.  However, it doesn't yet include correctness
-   proofs, although what needs to be proved is indicated in the file.
+   This implements alpha-beta pruning, with correctness proofs, as
+   presented in the paper
 
-   SequenceJ-via-SequenceK.
+   [2] Martin Escardo and Paulo Oliva. Alpha-Beta Pruning via Monadic
+       Continuations.
 
-   This shows how to do compute a product of selections functions as a
-   product of quantifiers, which is applied to alpha-beta. This mainly
-   for performance.
+   This is a monadic formulation of alpha-beta pruning based on the
+   combination of the continuation monad and the reader monad. Unlike
+   previous approaches that encode alpha-beta bounds into the types of
+   available moves, our construction records these bounds within
+   monadic outcomes, leaving the move types unchanged. The ordinary
+   continuation monad suffices to compute not only optimal outcomes
+   but also optimal plays, by extending the outcome type to include
+   the corresponding sequences of moves. We prove that the monadic
+   alpha-beta search computes the same optimal outcomes and plays as
+   exhaustive minimax search.
+
+   This is developed for the games of [1], in which the type of moves
+   at a round, and the number of rounds, may depend on the moves
+   played so far, and each node is labelled by either player.
+
+   The main theorems of the paper are stated in the module
+   Games.AlphaBeta.Summary, which displays every definition that their
+   statements use. The module Games.AlphaBeta.Article follows the paper
+   item by item.
+
+   This supersedes the file deprecated.alpha-beta, which didn't include
+   correctness proofs, although what needed to be proved was indicated
+   in the file.
 
 9. OptimalPlays.
 

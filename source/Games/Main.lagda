@@ -31,7 +31,7 @@ main : IO ⊤
 main = putStrLn (showℕ (Fin-to-ℕ r))
 -}
 
-open import Games.alpha-beta
+open import deprecated.alpha-beta
 
 main₀ : IO Unit
 main₀ = putStrLn (showListℕ test⋆)

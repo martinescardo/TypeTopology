@@ -84,3 +84,38 @@ map-equiv {A = A} {B} {f} e = qinvs-are-equivs (map f) (map f⁻¹ , η , ε)
   ε (b ∷ l) = ap₂ _∷_ (inverses-are-sections f e b) (ε l)
 
 \end{code}
+
+Added by Martin Escardo and Paulo Oliva 17th November 2026.
+
+\begin{code}
+
+All-map : {A : 𝓤 ̇ } {P : A → 𝓥 ̇ } {Q : A → 𝓦 ̇ } {as : List A}
+        → ((a : A) → P a → Q a) → All P as → All Q as
+All-map f []       = []
+All-map f (b ∷ bs) = f _ b ∷ All-map f bs
+
+module _ {A : 𝓤 ̇ } (P : A → 𝓥 ̇ ) (d : (a : A) → is-decidable (P a)) where
+
+ take-until : List A → List A
+ take-until []       = []
+ take-until (a ∷ as) = a ∷ Cases (d a) (λ _ → []) (λ _ → take-until as)
+
+ take-until-is-non-empty : (as : List A)
+                         → is-non-empty as
+                         → is-non-empty (take-until as)
+ take-until-is-non-empty []       ν = 𝟘-elim ν
+ take-until-is-non-empty (a ∷ as) _ = cons-is-non-empty
+
+ take-until-preserves : (Q : A → 𝓦 ̇ ) (as : List A)
+                      → All Q as → All Q (take-until as)
+ take-until-preserves Q []       []       = []
+ take-until-preserves Q (a ∷ as) (b ∷ bs) = b ∷ I (d a)
+  where
+   I : (e : is-decidable (P a))
+     → All Q (Cases e (λ _ → []) (λ _ → take-until as))
+   I (inl _) = []
+   I (inr _) = take-until-preserves Q as bs
+
+\end{code}
+
+End of addition.
