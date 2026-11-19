@@ -40,7 +40,7 @@ module EffectfulForcing.Internal.AnotherCorrectnessProof where
 open import MLTT.Spartan hiding (rec)
 
 open import EffectfulForcing.MFPSAndVariations.Church
- using (church-encode)
+ using (church-encode ; η⋆ ; β⋆ ; kleisli-extension⋆)
 open import EffectfulForcing.MFPSAndVariations.Combinators
  using (rec)
 open import EffectfulForcing.MFPSAndVariations.Dialogue
@@ -124,11 +124,11 @@ according to the structure of such a tree.
 
 data _encodes_ : 〖 ⌜𝒟⌝ 〗 → 𝒟 → 𝓤₀ ̇ where
  enc-η : (n : ℕ)
-       → (⟦ ⌜η⌝ ⟧₀ n) encodes (η n)
+       → (η⋆ n) encodes (η n)
  enc-β : {g : ℕ → 〖 ⌜𝒟⌝ 〗} {φ : ℕ → 𝒟}
        → ((j : ℕ) → (g j) encodes (φ j))
        → (i : ℕ)
-       → (⟦ ⌜β⌝ ⟧₀ g i) encodes (β φ i)
+       → (β⋆ g i) encodes (β φ i)
 
 \end{code}
 
@@ -154,14 +154,14 @@ canonical-encodes (β φ i) = enc-β (λ j → canonical-encodes (φ j)) i
 
 \end{code}
 
-`⌜kleisli-extension⌝` preserves the encoding relation.
+`kleisli-extension⋆` preserves the encoding relation.
 
 \begin{code}
 
 enc-κ : {g : ℕ → 〖 ⌜𝒟⌝ 〗} {f : ℕ → 𝒟} {t : 〖 ⌜𝒟⌝ 〗} {d : 𝒟}
       → ((i : ℕ) → (g i) encodes (f i))
       → t encodes d
-      → (⟦ ⌜kleisli-extension⌝ ⟧₀ g t) encodes (kleisli-extension f d)
+      → (kleisli-extension⋆ g t) encodes (kleisli-extension f d)
 enc-κ p (enc-η n) = p n
 enc-κ p (enc-β q i) = enc-β (λ j → enc-κ p (q j)) i
 
@@ -250,7 +250,7 @@ R[KE] α {σ ⇒ τ} γ f g ζ x y χ u v θ =
 
 RΩ : (α : ℕ → ℕ)
    → (n : ℕ) (t : 〖 ⌜𝒟⌝ 〗) → Rι α n t → Rι α (α n) (⟦ ⌜generic⌝ ⟧₀ t)
-RΩ α = Rκ α ⟨⟩ α (⟦ ⌜β⌝ · ⌜η⌝ ⟧₀) (λ i → β η i , enc-β enc-η i , refl)
+RΩ α = Rκ α ⟨⟩ α (β⋆ η⋆) (λ i → β η i , enc-β enc-η i , refl)
 
 \end{code}
 
