@@ -585,52 +585,6 @@ Taking β = 𝟘ₒ yields α ⊕ 𝟙ₒ = α +ₒ 𝟙ₒ, but (-) + 𝟙ₒ i
 
 \begin{code}
 
--- TODO. Upstream.
-successor-is-order-preserving-gives-EM
- : ((α β : Ordinal 𝓤) → α ⊲ β → α +ₒ 𝟙ₒ ⊲ β +ₒ 𝟙ₒ) → EM 𝓤
-successor-is-order-preserving-gives-EM h P i = uncurry II (h α β I)
- where
-  Pₒ = prop-ordinal P i
-  α = Pₒ
-  β = α +ₒ 𝟙ₒ +ₒ Pₒ
-
-  I : α ⊲ β
-  I = (inl (inr ⋆) , (e ⁻¹))
-   where
-    e = β ↓ inl (inr ⋆)   ＝⟨ (+ₒ-↓-left (inr ⋆)) ⁻¹ ⟩
-        (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ successor-lemma-right α ⟩
-        α                 ∎
-
-  eq₁ : (p : P) → α ＝ 𝟙ₒ
-  eq₁ = holds-gives-equal-𝟙ₒ i
-  eq₂ : (p : P) → β ＝ 𝟚ₒ +ₒ 𝟙ₒ
-  eq₂ p = ap (λ - → (- +ₒ 𝟙ₒ) +ₒ -) (holds-gives-equal-𝟙ₒ i p)
-
-  II : (y : ((P + 𝟙) + P) + 𝟙) → α +ₒ 𝟙ₒ ＝ (β +ₒ 𝟙ₒ) ↓ y
-     → P + ¬ P
-  II (inl (inl (inl p))) e = inl p
-  II (inl (inr p))       e = inl p
-  II (inl (inl (inr ⋆))) e = inr ν
-   where
-    e' = α +ₒ 𝟙ₒ                       ＝⟨ e ⟩
-         (β +ₒ 𝟙ₒ) ↓ inl (inl (inr ⋆)) ＝⟨ +ₒ-↓-left (inl (inr ⋆)) ⁻¹ ⟩
-         β ↓ (inl (inr ⋆))             ＝⟨ (+ₒ-↓-left (inr ⋆)) ⁻¹ ⟩
-         (α +ₒ 𝟙ₒ) ↓ inr ⋆             ＝⟨ successor-lemma-right α ⟩
-         α                             ∎
-    ν : ¬ P
-    ν p = +disjoint (transport⁻¹ is-prop (ap ⟨_⟩ e') i (inl p) (inr ⋆))
-  II (inr ⋆)             e = inr ν
-   where
-    ν : ¬ P
-    ν p = 𝟚ₒ-is-not-𝟙ₒ ((+ₒ-left-cancellable 𝟙ₒ 𝟙ₒ 𝟚ₒ e') ⁻¹)
-     where
-      e' = 𝟙ₒ +ₒ 𝟙ₒ          ＝⟨ ap (_+ₒ 𝟙ₒ) ((eq₁ p) ⁻¹) ⟩
-           α +ₒ 𝟙ₒ           ＝⟨ e ⟩
-           (β +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ successor-lemma-right β ⟩
-           β                 ＝⟨ eq₂ p ⟩
-           𝟚ₒ +ₒ 𝟙ₒ          ＝⟨ +ₒ-assoc 𝟙ₒ 𝟙ₒ 𝟙ₒ ⟩
-           𝟙ₒ +ₒ 𝟚ₒ          ∎
-
 ⊕-+ₒ-equal-successors-gives-EM : ((α : Ordinal 𝓤) → α ⊕ 𝟙ₒ ＝ α +ₒ 𝟙ₒ) → EM 𝓤
 ⊕-+ₒ-equal-successors-gives-EM {𝓤} h =
  successor-is-order-preserving-gives-EM I
