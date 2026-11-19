@@ -78,8 +78,9 @@ wikipedia-nodes = (maximizer , three)
 \end{code}
 
 The outcome function q' of Section 2.2 of the paper. The outcomes
-marked by the comments are those that the alpha-beta search doesn't
-need to consider.
+marked "can be pruned" are among those that the alpha-beta search does
+not evaluate, and of the plays covered by a clause marked "can be
+partially pruned", it evaluates some but not all.
 
 \begin{code}
 
@@ -89,12 +90,12 @@ q (𝟎 , 𝟎 , 𝟎 , _ , ⟨⟩) = 6
 q (𝟎 , 𝟎 , 𝟏 , 𝟎 , ⟨⟩) = 7
 q (𝟎 , 𝟎 , 𝟏 , 𝟏 , ⟨⟩) = 4
 q (𝟎 , 𝟎 , 𝟏 , 𝟐 , ⟨⟩) = 5 -- can be pruned
-q (𝟎 , 𝟏 , _ , _ , ⟨⟩) = 3
+q (𝟎 , 𝟏 , _ , _ , ⟨⟩) = 3 -- can be partially pruned
 q (𝟏 , 𝟎 , 𝟎 , _ , ⟨⟩) = 6
 q (𝟏 , 𝟎 , 𝟏 , 𝟎 , ⟨⟩) = 6
 q (𝟏 , 𝟎 , 𝟏 , _ , ⟨⟩) = 9 -- can be pruned
-q (𝟏 , 𝟏 , _ , _ , ⟨⟩) = 7
-q (𝟐 , 𝟎 , _ , _ , ⟨⟩) = 5
+q (𝟏 , 𝟏 , _ , _ , ⟨⟩) = 7 -- can be partially pruned
+q (𝟐 , 𝟎 , _ , _ , ⟨⟩) = 5 -- can be partially pruned
 q (𝟐 , _ , _ , _ , ⟨⟩) = 9 -- can be pruned
 q (𝟎 , 𝟎 , 𝟏 , suc (suc (suc i)) , ⟨⟩) = 𝟘-elim (Fin-0-is-empty i)
 q (𝟎 , 𝟎 , suc (suc i) , _ , ⟨⟩) = 𝟘-elim (Fin-0-is-empty i)
@@ -104,6 +105,10 @@ q (𝟏 , suc (suc i) , _ , _ , ⟨⟩) = 𝟘-elim (Fin-0-is-empty i)
 q (suc (suc (suc i)) , _ , _ , _ , ⟨⟩) = 𝟘-elim (Fin-0-is-empty i)
 
 \end{code}
+
+The last six clauses make q total. Since Fin (succ n) is defined as
+Fin n + 𝟙, Agda also asks for the cases suc (suc i) of Fin 2 and
+suc (suc (suc i)) of Fin 3, with i in the empty type Fin 0.
 
 The values of all outcomes lie strictly between 0 and 10, which we
 use as the initial bounds of the alpha-beta search.

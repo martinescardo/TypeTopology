@@ -20,8 +20,7 @@ import Games.TicTacToe0                            -- (7)
 import Games.TicTacToe1                            -- (7)
 import Games.TicTacToe2                            -- (7)
 import Games.AlphaBeta.index                       -- (8)
-import Games.SequenceJ-via-SequenceK
-import Games.OptimalPlaysViaProductsOfQuantifiers
+import Games.SequenceJ-via-SequenceK               -- (8)
 import Games.OptimalPlays                          -- (9)
 import Games.AllOptimalPlays                       -- (9)
 import Games.Alternative                           -- (10)
@@ -123,6 +122,12 @@ import Games.Alternative                           -- (10)
    This supersedes the file deprecated.alpha-beta, which didn't include
    correctness proofs, although what needed to be proved was indicated
    in the file.
+
+   SequenceJ-via-SequenceK.
+
+   This shows how to compute a product of selection functions as a
+   product of quantifiers, which is applied in deprecated.alpha-beta.
+   This is mainly for performance.
 
 9. OptimalPlays.
 

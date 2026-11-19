@@ -23,16 +23,16 @@ here too, under names beginning with Prose. Each of them is named in
 the LaTeX source by \claim{name}, placed where the claim is made, and
 the names are written out in order to the file
 alpha-beta-pruning.claims when the paper is typeset, so that the two
-lists can be compared. Claims about running times and about the order
-in which outcomes are evaluated are recorded as comments, since they
-are not formalizable here.
+lists can be compared. Claims about the number of plays evaluated and
+about the order in which outcomes are evaluated are recorded as
+comments, since they are not formalizable here.
 
 As in Section 4 of the paper, values form a type V with a decidable
 strict weak order, and outcomes form a type R with a valuation
-val : R → V. These are the parameters of this module. The examples of
-the paper take V = ℕ. In Sections 2 to 4 of the paper, R = V and val is
-the identity, and in Section 5, where outcomes are pairs of a value
-and a play, R = V × Path Xt and val is the first projection. A game is
+val : R → V. These are the parameters of this module. The examples
+here take V = ℕ. In Sections 2 to 4 of the paper, R = V and val is the
+identity, and in Section 5, where outcomes are pairs of a value and a
+play, R = V × Path Xt and val is the first projection. A game is
 given by a tree of types of moves, as in the module Games.TypeTrees,
 whose internal nodes are labelled by either player. These are the
 history-dependent games of Section 6.1 of the paper, in the generality
@@ -86,8 +86,8 @@ which is T in the module Games.AlphaBeta.Maximizer, with V × V in place
 of R × R, as in Section 4 of the paper.
 
 Contribution (2) of the introduction: the alpha-beta search computes
-the same optimal outcome as the exhaustive search. This is the
-corollary of Theorem 1 below.
+the same optimal outcome as the exhaustive search. This is
+Corollary 1 below.
 
 \begin{code}
 
@@ -144,7 +144,8 @@ outcome function Games.AlphaBeta.Examples.q. The Haskell quantifiers
 phiMax and phiMin of Section 2.1 are φmax and φmin, and the Haskell
 global quantifier bigPhi of Section 2.3 is
 Games.AlphaBeta.ViaProductsOfQuantifiers.quantifier-tree, sequenced by
-sequenceᴷ of the module Games.FiniteHistoryDependent.
+sequenceᴷ of the module Games.FiniteHistoryDependent, which is the
+product of quantifiers of Remark 1.
 
 The claim at the end of Section 2 is that the exhaustive search
 computes the optimal outcome 6 of the example. That all 36 plays are
@@ -195,12 +196,12 @@ Prose-alpha-beta-outcome = Games.AlphaBeta.Examples.wikipedia-outcome*
 Section 4. Correctness of alpha-beta optimization.
 
 The quantifiers φ_min, φ_max, φ*_min and φ*_max are φmin, φmax, φ*min
-and φ*max, the product of quantifiers is sequenceᴷ of the module
-Games.FiniteHistoryDependent, and the outcomes out(G) and out*_{α,β}(G)
-are outcome and outcome*, as functions of the game tree, its labelling
-and the outcome function. For a subgame G_s, the outcome function q_s is
-subpred q s of the module Games.TypeTrees, for a single move s, and
-repeated for longer partial plays.
+and φ*max, the product of quantifiers is sequenceᴷ, as in Remark 1,
+and the outcomes out(G) and out*_{α,β}(G) are outcome and outcome*, as
+functions of the game tree, its labelling and the outcome function.
+For a subgame G_s, the outcome function q_s is subpred q x of the
+module Games.TypeTrees, for a single move x, and repeated for longer
+partial plays.
 
 Definition 1. The function ℓ, the function takeUntil, which is
 take-until here, and the maximum max⁺ of a non-empty list. The maximum
@@ -302,7 +303,7 @@ Lemma-2-ii = φ*max-is-at-least-β
 
 \end{code}
 
-The claim that the dual lemmas hold for φ*min and a sequence β_x.
+The claim that the dual lemmas hold for φ*min and a sequence βᵢ.
 These are Lemmas 1 and 2 for the opposite order, where β plays the
 role of α, as in the entry Prose-min-dual-to-max above.
 
@@ -600,12 +601,12 @@ such games.
 
 Section 6.2. Alpha-beta search of Tic-Tac-Toe.
 
-The tic-tac-toe game is not formalized here. The module
+The Tic-Tac-Toe game is not formalized here. The module
 deprecated.alpha-beta has a version of it, and its optimal outcome is
 too expensive to compute by type checking. The claim that the
 alpha-beta search evaluates the outcome function on only 9 335 of the
 362 880 full plays, about 39 times fewer, is about the Haskell
 programs, and is not formalized here. The bounds -1 and 1 used for
-Tic-Tac-Toe are justified by
-Games.AlphaBeta.ViaProductsOfQuantifiers.corollary', which needs no
-bounds on the outcomes of the outcome function.
+Tic-Tac-Toe are justified by Corollary 1(b), which is
+Games.AlphaBeta.ViaProductsOfQuantifiers.corollary', and which needs
+no bounds on the outcomes of the outcome function.

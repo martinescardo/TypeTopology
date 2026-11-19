@@ -206,7 +206,7 @@ outcomes is cut after the first outcome whose value is at least β.
 
 Lemma 1 of the paper. For a list xs = [x₀ , … , xₙ₋₁], define α₀ = α
 and αᵢ₊₁ = max(αᵢ , val(p(xᵢ)(αᵢ , β))). Then the list ℓ(xs)(α , β) is
-the list of the values p(xᵢ)(αᵢ , β). We pair each xᵢ with its αᵢ.
+the list of the outcomes p(xᵢ)(αᵢ , β). We pair each xᵢ with its αᵢ.
 
 \begin{code}
 
@@ -457,11 +457,11 @@ Lemma 2(ii).
 \end{code}
 
 Case (iii) of the proof of Theorem 1 in the paper, with k the index
-at which the maximum is attained first. When the head y of the list is
-not optimal, its outcome is below the maximum, and the search goes on to
-the tail with an updated bound still below the maximum. When the head is
-optimal, its outcome is the maximum, the bound becomes the maximum, and
-part₁ bounds the rest of the list.
+at which the maximum is attained first. When the maximum is not
+attained at the head y of the list, the outcome of y is below the
+maximum, and the search goes on to the tail with an updated bound still
+below the maximum. When the maximum is attained at the head, the bound
+becomes the maximum, and part₁ bounds the rest of the list.
 
 \begin{code}
 
