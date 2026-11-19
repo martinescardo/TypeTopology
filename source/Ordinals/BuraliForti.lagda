@@ -382,6 +382,17 @@ and 𝓤⁺ are not equivalent.
 Marc Bezem conjectures that ¬ (Σ A : 𝓤 ̇ , A ≃ ∥ 𝓤 ̇ ∥₀), that is, there
 is no type in 𝓤 equivalent to the set truncation of 𝓤.
 
+Added 19th November 2026. This conjecture is now solved. It follows
+from a theorem of J. Daniel Christensen (Non-accessible localizations,
+Journal of Topology, 17(2), 2024, https://doi.org/10.1112/topo.12336),
+namely that a type is small if and only if it is locally small and its
+set truncation is small, together with the facts that universes are
+locally small and large. Ian Ray formalized this in January 2025 in
+the module UF.Size-TruncatedConnected, whose entry
+set-truncation-of-universe-is-large derives the conjecture, assuming
+univalence, the existence of truncations of all levels, and Rijke's
+replacement principle.
+
 Added 18th January 2021. The following generalizes
 Lift-hSet-is-not-equiv.
 
