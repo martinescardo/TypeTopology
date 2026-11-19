@@ -1,5 +1,7 @@
 Chuangjie Xu, April 2026
 
+Updated in November 2026
+
 This module gives a more direct proof that dialogue trees
 extracted from type-2 System T functionals are themselves
 definable in System T.
@@ -7,7 +9,7 @@ definable in System T.
 The proof uses a logical relation between the standard
 interpretation of System T and its Church-encoded
 dialogue-tree interpretation, together with an explicit
-representation relation between Church values and inductive
+encoding relation between Church values and inductive
 dialogue trees.
 
 This proof was originally developed as an instance of the
@@ -37,17 +39,16 @@ module EffectfulForcing.Internal.AnotherCorrectnessProof where
 
 open import MLTT.Spartan hiding (rec)
 
+open import EffectfulForcing.MFPSAndVariations.Church
+ using (church-encode)
 open import EffectfulForcing.MFPSAndVariations.Combinators
  using (rec)
+open import EffectfulForcing.MFPSAndVariations.Dialogue
 open import EffectfulForcing.MFPSAndVariations.SystemT
  using (type ; ι ; _⇒_ ; 〖_〗)
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.Internal.Internal
- using (⌜D⋆⌝ ; ⌜η⌝ ; ⌜β⌝ ; ⌜kleisli-extension⌝ ; ⌜generic⌝ ;
-        B-type〖_〗 ; B-context【_】 ; ∈Cxt-B-type ;
-        ⌜Kleisli-extension⌝ ; ⌜_⌝ ; ⌜dialogue-tree⌝)
-open import EffectfulForcing.MFPSAndVariations.Dialogue
- using (D ; η ; β ; dialogue ; generic ; kleisli-extension)
+open import EffectfulForcing.Internal.ExtensionalEquality
 
 \end{code}
 
@@ -111,112 +112,94 @@ branch = λ g i α → g (α i) α
 
 \end{code}
 
-Representable Church values.
+The encoding relation between Church values and dialogue trees.
 
-The semantic type `〖 ⌜𝒟⌝ 〗` is a higher-order function space,
-so its elements need not satisfy the fold laws of genuine
-dialogue trees. Accordingly, we restrict attention to those
-Church values that are represented by genuine inductive
-dialogue trees.
-
-To do this, we define `run`, which interprets an inductive
-dialogue tree using the standard branching algebra, but with
-an arbitrary choice of leaf algebra `e`. We then say that a
-dialogue tree `d` represents a Church value `t` when both
-yield the same result for every choice of leaf algebra `e`
-and oracle `α`.
-
-The main technical reason for using `run` rather than the
-ordinary `dialogue` function is that the proof that
-`⌜kleisli-extension⌝` preserves the logical relation needs
-arbitrary leaf algebras. The function `dialogue` fixes the
-leaf algebra to `leaf`, but in the logical-relation argument
-we must vary the leaf algebra while keeping the branching
-algebra fixed. The definition of `run` is tailored to exactly
-this argument.
+The type `〖 ⌜𝒟⌝ 〗` contains arbitrary functions of the leaf and query
+interpretations. Having this type alone does not ensure that a value
+represents an inductive dialogue tree. We therefore define an encoding
+relation that identifies values built from the Church constructors
+according to the structure of such a tree.
 
 \begin{code}
 
-run : 𝒟 → (ℕ → Type-2) → Type-2
-run (η n) e α = e n α
-run (β g i) e α = run (g (α i)) e α
-
-_represents_ : 𝒟 → 〖 ⌜𝒟⌝ 〗 → 𝓤₀ ̇
-d represents t = (e : ℕ → Type-2) (α : ℕ → ℕ) → t e branch α ＝ run d e α
+data _encodes_ : 〖 ⌜𝒟⌝ 〗 → 𝒟 → 𝓤₀ ̇ where
+ enc-η : (n : ℕ)
+       → (⟦ ⌜η⌝ ⟧₀ n) encodes (η n)
+ enc-β : {g : ℕ → 〖 ⌜𝒟⌝ 〗} {φ : ℕ → 𝒟}
+       → ((j : ℕ) → (g j) encodes (φ j))
+       → (i : ℕ)
+       → (⟦ ⌜β⌝ ⟧₀ g i) encodes (β φ i)
 
 \end{code}
 
-The first lemma shows that `run` agrees with the usual
-`dialogue` function when the leaf algebra is `leaf`. From this
-we obtain correctness of `⌜dialogue⌝` on represented Church
-values.
+The followings justify the encoding relation: every encoded value is
+hereditarily extensionally equal to the canonical encoding of its tree,
+and every tree is encoded by its canonical encoding.
 
 \begin{code}
 
-run-dialogue : (d : 𝒟) (α : ℕ → ℕ) → run d leaf α ＝ dialogue d α
-run-dialogue (η _) α = refl
-run-dialogue (β g i) α = run-dialogue (g (α i)) α
-
-⌜dialogue⌝-correct : {Γ : Cxt} (γ : 【 Γ 】)
-                   → (d : 𝒟) (t : 〖 ⌜𝒟⌝ 〗) → d represents t
-                   → (α : ℕ → ℕ) → ⟦ ⌜dialogue⌝ ⟧ γ t α ＝ dialogue d α
-⌜dialogue⌝-correct _ d _ r α = r leaf α ∙ run-dialogue d α
-
-\end{code}
-
-Compatibility with `⌜kleisli-extension⌝`.
-
-To prove preservation of representation under
-`⌜kleisli-extension⌝`, we use two auxiliary lemmas. The first,
-`run-ext`, says that changing the leaf algebra pointwise does
-not affect the result of `run`. The second, `run-κ`, states
-that the inductive operation `kleisli-extension` is
-interpreted by composing `run` with the continuation.
-Together they show that representation is preserved by
-`⌜kleisli-extension⌝`.
-
-\begin{code}
-
-run-ext : (d : 𝒟) {e₀ e₁ : ℕ → Type-2}
-        → ((n : ℕ) (α : ℕ → ℕ) → e₀ n α ＝ e₁ n α)
-        → (α : ℕ → ℕ) → run d e₀ α ＝ run d e₁ α
-run-ext (η n)   ξ α = ξ n α
-run-ext (β g i) ξ α = run-ext (g (α i)) ξ α
-
-run-κ : (h : ℕ → 𝒟) (t : 𝒟) (e : ℕ → Type-2) (α : ℕ → ℕ)
-      → run (kleisli-extension h t) e α ＝ run t (λ n → run (h n) e) α
-run-κ h (η n)   e α = refl
-run-κ h (β g i) e α = run-κ h (g (α i)) e α
-
-⌜kleisli-extension⌝-preserves-representation
- : {Γ : Cxt} (γ : 【 Γ 】)
- → (g : ℕ → 𝒟) (h : ℕ → 〖 ⌜𝒟⌝ 〗)
- → (∀ i → g i represents (h i))
- → (d : 𝒟) (t : 〖 ⌜𝒟⌝ 〗) → d represents t
- → kleisli-extension g d represents ⟦ ⌜kleisli-extension⌝ ⟧ γ h t
-⌜kleisli-extension⌝-preserves-representation _ g h ζ d t r e α = goal
+encodes→≡ : (t : 〖 ⌜𝒟⌝ 〗) (d : 𝒟)
+          → t encodes d
+          → t ≡[ ⌜𝒟⌝ ] (church-encode d)
+encodes→≡ _ _ (enc-η n) p _ = p refl
+encodes→≡ _ _ (enc-β {g} {φ} enc i) {a} {a'} p {b} {b'} q = q claim refl
  where
-  claim₀ : t (λ n → h n e branch) branch α ＝ run d (λ n → h n e branch) α
-  claim₀ = r (λ n → h n e branch) α
-  claim₁ : run d (λ n → h n e branch) α ＝ run d (λ n → run (g n) e) α
-  claim₁ = run-ext d (λ n β → ζ n e β) α
-  claim₂ : run d (λ n → run (g n) e) α ＝ run (kleisli-extension g d) e α
-  claim₂ = (run-κ g d e α) ⁻¹
-  goal : t (λ n → h n e branch) branch α ＝ run (kleisli-extension g d) e α
-  goal = claim₀ ∙ claim₁ ∙ claim₂
+  claim : {j k : ℕ} → j ≡ k
+        → (g j a b) ≡[ type-2 ] (church-encode (φ k) a' b')
+  claim {j} refl = encodes→≡ (g j) (φ j) (enc j) p q
+
+canonical-encodes : (d : 𝒟) → (church-encode d) encodes d
+canonical-encodes (η n)   = enc-η n
+canonical-encodes (β φ i) = enc-β (λ j → canonical-encodes (φ j)) i
+
+\end{code}
+
+`⌜kleisli-extension⌝` preserves the encoding relation.
+
+\begin{code}
+
+enc-κ : {g : ℕ → 〖 ⌜𝒟⌝ 〗} {f : ℕ → 𝒟} {t : 〖 ⌜𝒟⌝ 〗} {d : 𝒟}
+      → ((i : ℕ) → (g i) encodes (f i))
+      → t encodes d
+      → (⟦ ⌜kleisli-extension⌝ ⟧₀ g t) encodes (kleisli-extension f d)
+enc-κ p (enc-η n) = p n
+enc-κ p (enc-β q i) = enc-β (λ j → enc-κ p (q j)) i
+
+\end{code}
+
+Evaluating a Church value with `leaf` and `branch` gives the same result
+as evaluating its encoded tree. Consequently, two trees encoded by the
+same Church value agree at every oracle.
+
+\begin{code}
+
+encodes-eval
+ : {t : 〖 ⌜𝒟⌝ 〗} {d : 𝒟}
+ → t encodes d
+ → (α : ℕ → ℕ) → t leaf branch α ≡ dialogue d α
+encodes-eval (enc-η n)   α = refl
+encodes-eval (enc-β p i) α = encodes-eval (p (α i)) α
+
+encodes-eval-agree
+ : {t : 〖 ⌜𝒟⌝ 〗} {d d' : 𝒟}
+ → t encodes d
+ → t encodes d'
+ → (α : ℕ → ℕ) → dialogue d α ≡ dialogue d' α
+encodes-eval-agree enc enc' α
+ = (encodes-eval enc α)⁻¹ ∙ (encodes-eval enc' α)
 
 \end{code}
 
 Logical relation.
 
-The base relation `Rι` says that a natural number `n` is related
-to a Church value `t` when `t` is represented by an inductive
-dialogue tree that evaluates to `n` at the oracle `α`.
+For a fixed oracle α, the base relation Rι relates n to t by
+exhibiting a dialogue tree that t encodes and whose evaluation
+at α is n.
 
 \begin{code}
 
 Rι : (ℕ → ℕ) → 〖 ι 〗 → 〖 ⌜𝒟⌝ 〗 → 𝓤₀ ̇
-Rι α n t =  Σ d ꞉ 𝒟 , (d represents t) × (n ＝ dialogue d α)
+Rι α n t =  Σ d ꞉ 𝒟 , (t encodes d) × (n ＝ dialogue d α)
 
 R : (ℕ → ℕ) → {ρ : type} → 〖 ρ 〗 → 〖 ⟨ ρ ⟩ᴰ 〗 → 𝓤₀ ̇
 R α {ι} = Rι α
@@ -239,12 +222,7 @@ at all types.
 Rη : (α : ℕ → ℕ)
    → {Γ : Cxt} (γ : 【 Γ 】) (n : 〖 ι 〗)
    → Rι α n (⟦ ⌜η⌝ ⟧ γ n)
-Rη _ _ n = η n , (λ _ _ → refl) , refl
-
-dialogue-κ : (h : ℕ → 𝒟) (t : 𝒟) (α : ℕ → ℕ)
-           → dialogue (kleisli-extension h t) α ＝ dialogue (h (dialogue t α)) α
-dialogue-κ h (η n) α = refl
-dialogue-κ h (β g i) α = dialogue-κ h (g (α i)) α
+Rη α γ n = η n , enc-η n , refl
 
 Rκ : (α : ℕ → ℕ)
    → {Γ : Cxt} (γ : 【 Γ 】)
@@ -253,20 +231,14 @@ Rκ : (α : ℕ → ℕ)
    → (n : 〖 ι 〗) (t : 〖 ⌜𝒟⌝ 〗)
    → Rι α n t
    → Rι α (f n) (⟦ ⌜kleisli-extension⌝ ⟧ γ g t)
-Rκ α γ f g ζ n t (d , r , refl) = kleisli-extension h d , rep , value
+Rκ α γ f g ζ n t (d , enc , refl)
+ = kleisli-extension ζ₀ d
+ , enc-κ ζ₁ enc 
+ , (ζ₂ n ∙ decode-kleisli-extension ζ₀ d α)
  where
-  h : ℕ → 𝒟
-  h i = pr₁ (ζ i)
-  ζ' : ∀ i → (h i) represents (g i)
-  ζ' i = pr₁ (pr₂ (ζ i))
-  rep : kleisli-extension h d represents ⟦ ⌜kleisli-extension⌝ ⟧ γ g t
-  rep = ⌜kleisli-extension⌝-preserves-representation γ h g ζ' d t r
-  base : f (dialogue d α) ＝ dialogue (h (dialogue d α)) α
-  base = pr₂ (pr₂ (ζ (dialogue d α)))
-  step : dialogue (kleisli-extension h d) α ＝ dialogue (h (dialogue d α)) α
-  step = dialogue-κ h d α
-  value : f (dialogue d α) ＝ dialogue (kleisli-extension h d) α
-  value = base ∙ step ⁻¹
+  ζ₀ = λ i → pr₁ (ζ i)
+  ζ₁ = λ i → pr₁ (pr₂ (ζ i))
+  ζ₂ = λ i → pr₂ (pr₂ (ζ i))
 
 R[KE] : (α : ℕ → ℕ)
       → {ρ : type} {Γ : Cxt} (γ : 【 Γ 】)
@@ -279,20 +251,14 @@ R[KE] α {σ ⇒ τ} γ f g ζ x y χ u v θ =
 
 RΩ : (α : ℕ → ℕ)
    → (n : ℕ) (t : 〖 ⌜𝒟⌝ 〗) → Rι α n t → Rι α (α n) (⟦ ⌜generic⌝ ⟧₀ t)
-RΩ α n t (d , r , refl) = generic d , rep , value
- where
-  rep : (generic d) represents (⟦ ⌜generic⌝ ⟧₀ t)
-  rep = ⌜kleisli-extension⌝-preserves-representation ⟨⟩
-            (β η) (⟦ ⌜β⌝ · ⌜η⌝ ⟧₀) (λ _ _ _ → refl) d t r
-  value : α (dialogue d α) ＝ dialogue (generic d) α
-  value = (dialogue-κ (β η) d α) ⁻¹
+RΩ α = Rκ α ⟨⟩ α (⟦ ⌜β⌝ · ⌜η⌝ ⟧₀) (λ i → β η i , enc-β enc-η i , refl)
 
 \end{code}
 
 Fundamental theorem of the logical relation.
 
 We now prove that every System T term is related to its
-Church-encoded translation.
+Church-encoded translation in related environments.
 
 \begin{code}
 
@@ -338,27 +304,40 @@ FundamentalLemma α (t · u) γ δ ξ
 
 Correctness theorem.
 
-The fundamental theorem yields a represented dialogue tree for
-every closed term of type `(ι ⇒ ι) ⇒ ι`. The final theorem
-compares the standard interpretation of such a term with the
-evaluation of the extracted Church-encoded dialogue tree.
+The fundamental theorem implies that for each closed term t of
+type `(ι ⇒ ι) ⇒ ι`, ⟦ ⌜dialogue-tree⌝ t ⟧₀ encodes a dialogue
+tree whose evaluation agrees with ⟦ t ⟧₀ at every oracle.
 
 \begin{code}
 
-⌜dialogue-tree⌝-correct : (t : T₀ ((ι ⇒ ι) ⇒ ι))
-                        → (α : ℕ → ℕ)
-                        → ⟦ t ⟧₀ α ＝ ⟦ ⌜dialogue⌝ · ⌜dialogue-tree⌝ t ⟧₀ α
-⌜dialogue-tree⌝-correct t α = eq₀  ∙ eq₁ ⁻¹
+⌜dialogue-tree⌝-correct
+ : (t : T₀ ((ι ⇒ ι) ⇒ ι))
+ → Σ d ꞉ 𝒟 , (⟦ ⌜dialogue-tree⌝ t ⟧₀ encodes d)
+           × ((α : ℕ → ℕ) → ⟦ t ⟧₀ α ＝ dialogue d α)
+⌜dialogue-tree⌝-correct t = d , enc , val
  where
-  cor : Rι α (⟦ t ⟧₀ α) (⟦ ⌜ t ⌝ · ⌜generic⌝ ⟧₀)
-  cor = FundamentalLemma α t ⟨⟩ ⟨⟩ ∈Cxt-〈〉-elim α ⟦ ⌜generic⌝ ⟧₀ (RΩ α)
+  cor : (α : ℕ → ℕ) → Rι α (⟦ t ⟧₀ α) (⟦ ⌜ t ⌝ · ⌜generic⌝ ⟧₀)
+  cor α = FundamentalLemma α t ⟨⟩ ⟨⟩ ∈Cxt-〈〉-elim α ⟦ ⌜generic⌝ ⟧₀ (RΩ α)
   d : 𝒟
-  d = pr₁ cor
-  r : d represents ⟦ ⌜ t ⌝ · ⌜generic⌝ ⟧₀
-  r = pr₁ (pr₂ cor)
-  eq₀ : ⟦ t ⟧₀ α ＝ dialogue d α
-  eq₀ = pr₂ (pr₂ cor)
-  eq₁ : ⟦ ⌜dialogue⌝ ⟧₀ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α ＝ dialogue d α
-  eq₁ = ⌜dialogue⌝-correct ⟨⟩ d ⟦ ⌜ t ⌝ · ⌜generic⌝ ⟧₀ r α
+  d = pr₁ (cor (λ _ → 0))
+  enc : ⟦ ⌜dialogue-tree⌝ t ⟧₀ encodes d
+  enc = pr₁ (pr₂ (cor (λ _ → 0)))
+  val : (α : ℕ → ℕ) → ⟦ t ⟧₀ α ＝ dialogue d α
+  val α using (_ , enc' , val') ← cor α = val' ∙ encodes-eval-agree enc' enc α
+
+\end{code}
+
+Evaluating the extracted Church-encoded tree in System T
+recovers the functional denoted by the original term.
+
+\begin{code}
+
+⌜dialogue⌝-⌜dialogue-tree⌝-correct
+ : (t : T₀ ((ι ⇒ ι) ⇒ ι))
+ → (α : ℕ → ℕ)
+ → ⟦ t ⟧₀ α ＝ ⟦ ⌜dialogue⌝ · ⌜dialogue-tree⌝ t ⟧₀ α
+⌜dialogue⌝-⌜dialogue-tree⌝-correct t α
+ using (d , enc , val) ← ⌜dialogue-tree⌝-correct t
+ = val α ∙ (encodes-eval enc α)⁻¹
 
 \end{code}
