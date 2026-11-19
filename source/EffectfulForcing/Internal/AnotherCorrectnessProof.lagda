@@ -132,8 +132,8 @@ data _encodes_ : 〖 ⌜𝒟⌝ 〗 → 𝒟 → 𝓤₀ ̇ where
 
 \end{code}
 
-The followings justify the encoding relation: every encoded value is
-hereditarily extensionally equal to the canonical encoding of its tree,
+The following results justify the encoding relation: every encoded value
+is hereditarily extensionally equal to the canonical encoding of its tree,
 and every tree is encoded by its canonical encoding.
 
 \begin{code}
@@ -210,12 +210,11 @@ Rˣ α {Γ} γ δ = ∀ {ρ} (i : ∈Cxt ρ Γ) → R α (γ i) (δ (∈Cxt-B-ty
 
 \end{code}
 
-The logical relation is preserved by `⌜η⌝`,
-`⌜kleisli-extension⌝`, and `⌜generic⌝`.
+The logical relation is preserved by `⌜η⌝`, `⌜kleisli-extension⌝`,
+and `⌜generic⌝`.
 
-The key base-type preservation step is `Rκ`. The auxiliary
-lemma `R[KE]` then lifts it to the hereditary logical relation
-at all types.
+The key base-type preservation step is `Rκ`. The auxiliary lemma `R[KE]`
+then lifts it to the hereditary logical relation at all types.
 
 \begin{code}
 
@@ -262,23 +261,24 @@ Church-encoded translation in related environments.
 
 \begin{code}
 
-FundamentalLemma : (α : ℕ → ℕ)
-                 → {Γ : Cxt} {ρ : type} (t : T Γ ρ)
-                 → (γ : 【 Γ 】) (δ : 【 ⟪ Γ ⟫ᴰ 】) → Rˣ α γ δ
-                 → R α (⟦ t ⟧ γ) (⟦ ⌜ t ⌝ ⟧ δ)
-FundamentalLemma α Zero γ δ ξ = Rη α γ zero
-FundamentalLemma α (Succ t) γ δ ξ
+fundamental-lemma
+ : (α : ℕ → ℕ)
+ → {Γ : Cxt} {ρ : type} (t : T Γ ρ)
+ → (γ : 【 Γ 】) (δ : 【 ⟪ Γ ⟫ᴰ 】) → Rˣ α γ δ
+ → R α (⟦ t ⟧ γ) (⟦ ⌜ t ⌝ ⟧ δ)
+fundamental-lemma α Zero γ δ ξ = Rη α γ zero
+fundamental-lemma α (Succ t) γ δ ξ
  = Rκ α γ succ (λ i → ⟦ ⌜η⌝ ⟧ (δ ‚ i) (succ i))
                (λ i → Rη α (δ ‚ i) (succ i))
                (⟦ t ⟧ γ) (⟦ ⌜ t ⌝ ⟧ δ)
-               (FundamentalLemma α t γ δ ξ)
-FundamentalLemma α (Rec f g t) γ δ ξ = goal
+               (fundamental-lemma α t γ δ ξ)
+fundamental-lemma α (Rec f g t) γ δ ξ = goal
  where
   claim : ∀ i
         → R α (rec (⟦ f ⟧ γ) (⟦ g ⟧ γ) i)
               (rec (⟦ comp · ⌜ f ⌝ · ⌜η⌝ ⟧ δ) (⟦ ⌜ g ⌝ ⟧ δ) i)
-  claim zero = FundamentalLemma α g γ δ ξ
-  claim (succ i) = FundamentalLemma α f γ δ ξ i _ (Rη α γ i) _ _ (claim i)
+  claim zero = fundamental-lemma α g γ δ ξ
+  claim (succ i) = fundamental-lemma α f γ δ ξ i _ (Rη α γ i) _ _ (claim i)
   goal : R α (rec (⟦ f ⟧ γ) (⟦ g ⟧ γ) (⟦ t ⟧ γ))
              (⟦ ⌜Kleisli-extension⌝ ⟧ _
                (rec (⟦ comp · ⌜ f ⌝ · ⌜η⌝ ⟧ δ) (⟦ ⌜ g ⌝ ⟧ δ))
@@ -288,17 +288,17 @@ FundamentalLemma α (Rec f g t) γ δ ξ = goal
                    claim
                    (⟦ t ⟧ γ)
                    (⟦ ⌜ t ⌝ ⟧ δ)
-                   (FundamentalLemma α t γ δ ξ)
-FundamentalLemma α (ν i) γ δ ξ = ξ i
-FundamentalLemma α (ƛ t) γ δ ξ x y θ
- = FundamentalLemma α t (γ ‚ x) (δ ‚ y) ξ,,θ
+                   (fundamental-lemma α t γ δ ξ)
+fundamental-lemma α (ν i) γ δ ξ = ξ i
+fundamental-lemma α (ƛ t) γ δ ξ x y θ
+ = fundamental-lemma α t (γ ‚ x) (δ ‚ y) ξ,,θ
  where
   ξ,,θ : Rˣ α (γ ‚ x) (δ ‚ y)
   ξ,,θ (∈Cxt0 _) = θ
   ξ,,θ (∈CxtS _ i) = ξ i
-FundamentalLemma α (t · u) γ δ ξ
- = FundamentalLemma α t γ δ ξ
-    (⟦ u ⟧ γ) (⟦ ⌜ u ⌝ ⟧ δ) (FundamentalLemma α u γ δ ξ)
+fundamental-lemma α (t · u) γ δ ξ
+ = fundamental-lemma α t γ δ ξ
+    (⟦ u ⟧ γ) (⟦ ⌜ u ⌝ ⟧ δ) (fundamental-lemma α u γ δ ξ)
 
 \end{code}
 
@@ -317,7 +317,7 @@ tree whose evaluation agrees with ⟦ t ⟧₀ at every oracle.
 ⌜dialogue-tree⌝-correct t = d , enc , val
  where
   cor : (α : ℕ → ℕ) → Rι α (⟦ t ⟧₀ α) (⟦ ⌜ t ⌝ · ⌜generic⌝ ⟧₀)
-  cor α = FundamentalLemma α t ⟨⟩ ⟨⟩ ∈Cxt-〈〉-elim α ⟦ ⌜generic⌝ ⟧₀ (RΩ α)
+  cor α = fundamental-lemma α t ⟨⟩ ⟨⟩ ∈Cxt-〈〉-elim α ⟦ ⌜generic⌝ ⟧₀ (RΩ α)
   d : 𝒟
   d = pr₁ (cor (λ _ → 0))
   enc : ⟦ ⌜dialogue-tree⌝ t ⟧₀ encodes d
