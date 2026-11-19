@@ -10,7 +10,7 @@ A typical classical definition of Hessenberg addition [Kap. XX, Hes06] goes via
 Cantor normal forms, but the Hessenberg sum α ⊕ β can also be characterized, via
 transfinite recursion, as the least ordinal strictly above α ⊕ γ and δ ⊕ β for
 γ < β and δ < α. This characterization is attributed to Conway, see
-[Theorem 2.4, Alt17] and also [Sta24].
+[Theorem 2.4, Alt17] (and also [Sta24]).
 In what follows we adopt this as a suitable constructive definition, replacing
 the (a priori large) quantification over ordinals γ < β and δ < α by a small
 quantification over elements b : ⟨ β ⟩ and a : ⟨ α ⟩ (which give rise to
@@ -37,8 +37,8 @@ We characterize the initial segments of α ⊕ β as arising from one of three
 This gives rise to an induction principle that is used to prove associativity
 for instance.
 
-Finally, we show that a few properties are inherently classical by proving that
-they imply excluded middle. These include:
+Finally, we show that a few claims about Hessenberg addition are inherently
+classical by proving that they imply excluded middle. These include:
   * monotonicity, i.e. α ⊴ β implies δ ⊕ α ⊴ δ ⊕ β;
   * being inflationary, i.e. α ⊴ α ⊕ β;
   * being above ordinary addition, i.e. α +ₒ β ⊴ α ⊕ β;
@@ -171,8 +171,8 @@ double-transfinite-recursion-on-OO-behaviour {𝓥} {𝓤} {X} r = λ α β → 
 
 It is also convenient to consider strict suprema, i.e. for a family of
 ordinals αᵢ indexed by a small type I, the least ordinal *strictly* above
-each αᵢ.
-The construction for this is simple: take the sup over all successors of αᵢ.
+each αᵢ. The construction for this is simple: take the sup over all successors
+of αᵢ.
 
 NB. If this finds application(s) outside this file, it should be factored out.
 
@@ -199,8 +199,8 @@ module _
 
 \end{code}
 
-We now the Hessenberg sum α ⊕ β of two ordinals α and β by binary transfinite
-recursion as the strict supremum of α ⊕ (β ↓ b) and (α ↓ a) ⊕ β.
+We now define the Hessenberg sum α ⊕ β of two ordinals α and β by binary
+transfinite recursion as the strict supremum of α ⊕ (β ↓ b) and (α ↓ a) ⊕ β.
 
 For performance reasons, the definition is marked abstract with an explicit
 unfolding lemma.
@@ -218,7 +218,7 @@ abstract
 
 \end{code}
 
-Commutativity follows straightforwardly by transfinite induction.
+Commutativity follows straightforwardly by (double) transfinite induction.
 
 \begin{code}
 
@@ -289,9 +289,16 @@ definition of Hessenberg addition.
 
 \end{code}
 
+Note that ⊕-⊴-left/right/mixed tell us that each of (α ↓ a) ⊕ β, α ⊕ (β ↓ b) and
+(α ↓ a) ⊕ (β ↓ b) determine initial segments of α ⊕ β. The following lemma says
+that these are *all* initial segments of α ⊕ β.
+
+The truncation is not redundant in the sense that the cases can overlap (for
+instance, we can take β := α and we have (α ↓ a) ⊕ α ＝ α ⊕ (α ↓ a) thanks to
+commutativity).
+
 \begin{code}
 
--- TODO: Refer to the above ⊲-left/right/mixed?
 ⊕-↓-characterization
  : (α β : Ordinal 𝓤) (x : ⟨ α ⊕ β ⟩)
  → ∥ (Σ a ꞉ ⟨ α ⟩ , (α ⊕ β) ↓ x ＝ (α ↓ a) ⊕ β) +
@@ -365,7 +372,7 @@ definition of Hessenberg addition.
 
 \end{code}
 
-      -- These are symmetric to the above
+The following is symmetric to the above.
 
 \begin{code}
 
@@ -409,6 +416,9 @@ definition of Hessenberg addition.
 
 \end{code}
 
+The characterization of initial segments leads to a convenient "induction"
+principle for (initial segments determined by) elements of α ⊕ β.
+
 \begin{code}
 
 ⊕-induction : (α β : Ordinal 𝓤) (P : Ordinal 𝓤 → 𝓥 ̇ )
@@ -428,9 +438,17 @@ definition of Hessenberg addition.
    I (inr (inl (b , e)))     = transport⁻¹ P e (g b)
    I (inr (inr (a , b , e))) = transport⁻¹ P e (h a b)
 
--- TODO. Explain that the IH is not too strong enough to prove the one-sided
--- version (α ⊕ β) ⊕ γ ⊴ α ⊕ (β ⊕ γ) first, which, using commutativity, would be
--- enough to derive the equality.
+\end{code}
+
+With ⊕-induction we are ready to give a proof that ⊕ is associative.
+To avoid symmetric cases, we tried to first prove the one-sided version
+  (α ⊕ β) ⊕ γ ⊴ α ⊕ (β ⊕ γ),
+which, together with commutativity, would be enough to derive the equality.
+The problem with that approach is that the induction hypothesis is too weak. So
+we prove the equality directly and accept handling some symmetric cases.
+
+\begin{code}
+
 ⊕-is-associative : (α β γ : Ordinal 𝓤)
                  → (α ⊕ β) ⊕ γ ＝ α ⊕ (β ⊕ γ)
 ⊕-is-associative {𝓤} = λ α β γ → Transfinite-induction (OO³) _ I (α , β , γ)
@@ -459,6 +477,8 @@ definition of Hessenberg addition.
                  (⊕-⊲-left α β))
 
 \end{code}
+
+The following captures some of the common ingredients between the cases of II'.
 
 \begin{code}
 
@@ -497,6 +517,8 @@ definition of Hessenberg addition.
                               (⊕-is-order-preserving _ _ _ _ (l b) (c , refl))
 
 \end{code}
+
+The following is mostly symmetric to the above.
 
 \begin{code}
 
@@ -560,6 +582,9 @@ definition of Hessenberg addition.
 
 \end{code}
 
+With the main properties, commutativity and associativity, proved, we turn to
+𝟘ₒ being neutral for ⊕ and ⊕ being strictly inflationary.
+
 \begin{code}
 
 𝟘ₒ-is-right-neutral-⊕ : (α : Ordinal 𝓤) → α ⊕ 𝟘ₒ ＝ α
@@ -579,10 +604,6 @@ definition of Hessenberg addition.
 
 𝟘ₒ-is-left-neutral-⊕ : (α : Ordinal 𝓤) → 𝟘ₒ ⊕ α ＝ α
 𝟘ₒ-is-left-neutral-⊕ α = ⊕-is-commutative 𝟘ₒ α ∙ 𝟘ₒ-is-right-neutral-⊕ α
-
-\end{code}
-
-\begin{code}
 
 ⊕-is-strictly-inflationary : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β → α ⊲ α ⊕ β
 ⊕-is-strictly-inflationary α β 𝕗@(f , f-sim) = transport⁻¹ (_⊲ α ⊕ β) I II
@@ -606,6 +627,11 @@ definition of Hessenberg addition.
 ⊕𝟙ₒ-is-strictly-inflationary α = ⊕-is-strictly-inflationary α 𝟙ₒ (⊴-refl 𝟙ₒ)
 
 \end{code}
+
+As a final positive result, we show that Hessenberg addition reflects the
+(strict) order and is left cancellable (i.e. injective). These properties are
+proved *simultaneously* by induction. We include a symmetric version of order
+reflection in the statement to ensure a strong enough induction hypothesis.
 
 \begin{code}
 
@@ -637,6 +663,13 @@ private
          where
           ih : δ ⊕ (α ↓ a) ⊲ δ ⊕ β → α ↓ a ⊲ β
           ih = pr₁ (pr₂ (IH (δ , α ↓ a , β) (inl (inr (refl , (a , refl))))))
+
+\end{code}
+
+At this point we need the symmetric order preservation provided by the induction
+hypothesis.
+
+\begin{code}
 
         II' : (b : ⟨ β ⟩) → β ↓ b ⊲ α
         II' b = ih (transport⁻¹ (δ ⊕ (β ↓ b) ⊲_) e (⊕-⊲-right δ β))
@@ -677,7 +710,7 @@ private
 
 \end{code}
 
-TODO. Comment on symmetry.
+The rest of the proof is symmetric to the above.
 
 \begin{code}
 
@@ -722,6 +755,8 @@ TODO. Comment on symmetry.
 
 \end{code}
 
+Lastly, we prove that some claims about Hessenberg addition are inherently classical.
+
 \begin{code}
 
 ⊕-+ₒ-equal-successors-gives-EM : ((α : Ordinal 𝓤) → α ⊕ 𝟙ₒ ＝ α +ₒ 𝟙ₒ) → EM 𝓤
@@ -744,6 +779,11 @@ TODO. Comment on symmetry.
         α +ₒ 𝟙ₒ        ∎
 
 \end{code}
+
+While ∀ α . α ⊕ 𝟙ₒ ＝ α +ₒ 𝟙ₒ implies EM, we do have this equality,
+constructively, whenever α is a proposition.
+This is used to reduce claims about Hessenberg addition to claims about ordinary
+ordinal addition and thereby to excluded middle.
 
 \begin{code}
 
@@ -781,6 +821,9 @@ TODO. Comment on symmetry.
      III _ = ⊴-refl (Pₒ +ₒ 𝟙ₒ)
 
 \end{code}
+
+We use the above observation to show that Hessenberg addition, in general, fails
+to be monotone, inflationary, or above ordinary addition.
 
 \begin{code}
 
