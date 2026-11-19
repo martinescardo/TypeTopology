@@ -526,7 +526,19 @@ successor-increasing α = inr ⋆ , ((successor-lemma-right α)⁻¹)
 
 \end{code}
 
-Added on 24th May 2024 by Tom de Jong.
+Added 26 September 2025 by Fredrik Nordvall Forsberg.
+
+\begin{code}
+
+𝟚ₒ-is-not-𝟙ₒ : 𝟚ₒ {𝓤} ≠ 𝟙ₒ {𝓤}
+𝟚ₒ-is-not-𝟙ₒ p = 𝟘ₒ-is-not-𝟙ₒ (+ₒ-left-cancellable 𝟙ₒ 𝟙ₒ 𝟘ₒ p' ⁻¹)
+ where
+  p' : 𝟚ₒ ＝ 𝟙ₒ +ₒ 𝟘ₒ
+  p' = p ∙ 𝟘ₒ-right-neutral 𝟙ₒ ⁻¹
+
+\end{code}
+
+Added 24th May 2024 and 16th November 2026 by Tom de Jong.
 
 \begin{code}
 
@@ -543,9 +555,19 @@ upper-bound-of-successors-of-initial-segments α a = to-⊴ ((α ↓ a) +ₒ �
     e₂ = iterated-↓ α a b l
   I (inr ⋆) = a , successor-lemma-right (α ↓ a)
 
+⊲-gives-successor-⊴ : (α β : Ordinal 𝓤) → α ⊲ β → α +ₒ 𝟙ₒ ⊴ β
+⊲-gives-successor-⊴ α β (b , refl) =
+ upper-bound-of-successors-of-initial-segments β b
+
+successor-⊴-gives-⊲ : (α β : Ordinal 𝓤) → α +ₒ 𝟙ₒ ⊴ β → α ⊲ β
+successor-⊴-gives-⊲ α β 𝕗@(f , f-sim) = f (inr ⋆) ,
+ (α                 ＝⟨ (successor-lemma-right α) ⁻¹ ⟩
+  (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ simulations-preserve-↓ (α +ₒ 𝟙ₒ) β 𝕗 (inr ⋆) ⟩
+  β ↓ f (inr ⋆)     ∎)
+
 \end{code}
 
-End of addition.
+End of additions.
 
 Classically, if α ≼ β then there is (a necessarily unique) γ with
 α +ₒ γ ＝ β. But this not necessarily the case constructively. For
@@ -883,7 +905,60 @@ succ-not-necessarily-monotone {𝓤} ϕ P isp =
 
 \end{code}
 
-TODO. Also the implication α ⊲ β → (α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ) fails in general.
+Also the implication α ⊲ β → (α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ) fails in general.
+
+Added 19 November 2026 by Tom de Jong. We formalize a proof of the above.
+
+\begin{code}
+
+successor-is-order-preserving-gives-EM
+ : ((α β : Ordinal 𝓤) → α ⊲ β → α +ₒ 𝟙ₒ ⊲ β +ₒ 𝟙ₒ) → EM 𝓤
+successor-is-order-preserving-gives-EM h P i = uncurry II (h α β I)
+ where
+  Pₒ = prop-ordinal P i
+  α = Pₒ
+  β = α +ₒ 𝟙ₒ +ₒ Pₒ
+
+  I : α ⊲ β
+  I = (inl (inr ⋆) , (e ⁻¹))
+   where
+    e = β ↓ inl (inr ⋆)   ＝⟨ (+ₒ-↓-left (inr ⋆)) ⁻¹ ⟩
+        (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ successor-lemma-right α ⟩
+        α                 ∎
+
+  eq₁ : (p : P) → α ＝ 𝟙ₒ
+  eq₁ = holds-gives-equal-𝟙ₒ i
+  eq₂ : (p : P) → β ＝ 𝟚ₒ +ₒ 𝟙ₒ
+  eq₂ p = ap (λ - → (- +ₒ 𝟙ₒ) +ₒ -) (holds-gives-equal-𝟙ₒ i p)
+
+  II : (y : ((P + 𝟙) + P) + 𝟙) → α +ₒ 𝟙ₒ ＝ (β +ₒ 𝟙ₒ) ↓ y
+     → P + ¬ P
+  II (inl (inl (inl p))) e = inl p
+  II (inl (inr p))       e = inl p
+  II (inl (inl (inr ⋆))) e = inr ν
+   where
+    e' = α +ₒ 𝟙ₒ                       ＝⟨ e ⟩
+         (β +ₒ 𝟙ₒ) ↓ inl (inl (inr ⋆)) ＝⟨ +ₒ-↓-left (inl (inr ⋆)) ⁻¹ ⟩
+         β ↓ (inl (inr ⋆))             ＝⟨ (+ₒ-↓-left (inr ⋆)) ⁻¹ ⟩
+         (α +ₒ 𝟙ₒ) ↓ inr ⋆             ＝⟨ successor-lemma-right α ⟩
+         α                             ∎
+    ν : ¬ P
+    ν p = +disjoint (transport⁻¹ is-prop (ap ⟨_⟩ e') i (inl p) (inr ⋆))
+  II (inr ⋆)             e = inr ν
+   where
+    ν : ¬ P
+    ν p = 𝟚ₒ-is-not-𝟙ₒ ((+ₒ-left-cancellable 𝟙ₒ 𝟙ₒ 𝟚ₒ e') ⁻¹)
+     where
+      e' = 𝟙ₒ +ₒ 𝟙ₒ          ＝⟨ ap (_+ₒ 𝟙ₒ) ((eq₁ p) ⁻¹) ⟩
+           α +ₒ 𝟙ₒ           ＝⟨ e ⟩
+           (β +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ successor-lemma-right β ⟩
+           β                 ＝⟨ eq₂ p ⟩
+           𝟚ₒ +ₒ 𝟙ₒ          ＝⟨ +ₒ-assoc 𝟙ₒ 𝟙ₒ 𝟙ₒ ⟩
+           𝟙ₒ +ₒ 𝟚ₒ          ∎
+
+\end{code}
+
+End of addition.
 
 \begin{code}
 
@@ -1115,18 +1190,6 @@ Added 15 July 2025 by Tom de Jong.
 +ₒ-least α β  a₀ a₀-least =
  minimal-is-least (α +ₒ β) (inl a₀)
                   (+ₒ-minimal α β a₀ (least-is-minimal α a₀ a₀-least))
-
-\end{code}
-
-Added 26 September 2025 by Fredrik Nordvall Forsberg.
-
-\begin{code}
-
-𝟚ₒ-is-not-𝟙ₒ : 𝟚ₒ {𝓤} ≠ 𝟙ₒ {𝓤}
-𝟚ₒ-is-not-𝟙ₒ p = 𝟘ₒ-is-not-𝟙ₒ (+ₒ-left-cancellable 𝟙ₒ 𝟙ₒ 𝟘ₒ p' ⁻¹)
- where
-  p' : 𝟚ₒ ＝ 𝟙ₒ +ₒ 𝟘ₒ
-  p' = p ∙ 𝟘ₒ-right-neutral 𝟙ₒ ⁻¹
 
 \end{code}
 
