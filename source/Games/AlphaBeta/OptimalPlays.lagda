@@ -8,10 +8,10 @@ Part of the formalization, in Games.AlphaBeta.index, of the paper
 
 Computing optimal plays (Section 5 of the paper).
 
-Given a minimax game with outcomes in a type V of valued and outcome
+Given a minimax game with outcomes in a type V of values and outcome
 function q, we extend the type of outcomes to pairs of a value and a
 play, compared by their values, and the outcome function to
-q'(xs) = (q(xs) , xs).  We show that the optimal outcome of the
+q'(xs) = (q(xs) , xs). We show that the optimal outcome of the
 extended game is a pair of the optimal outcome of the original game
 and an optimal play of the original game, in the sense of the module
 Games.OptimalPlays. By Theorem 1, applied to the extended game, the
@@ -273,7 +273,7 @@ play.
 
 The same holds for the alpha-beta search of the extended game started
 with bounds -∞ and ∞ strictly below and above the values of all
-outcomes, by the corollary of Theorem 1.
+outcomes, by Corollary 1(a).
 
 \begin{code}
 

@@ -6,7 +6,8 @@ Part of the formalization, in Games.AlphaBeta.index, of the paper
   Martín Hötzel Escardó and Paulo Oliva.
   Alpha-Beta Pruning via Monadic Continuations.
 
-Correctness of the alpha-beta optimization (Theorem 1 of the paper).
+Correctness of the alpha-beta optimization (Theorem 1 and Corollary 1
+of the paper).
 
 A minimax game is given by a tree Xt of types of moves, as in the
 module Games.TypeTrees, whose internal nodes are labelled by a
@@ -77,9 +78,10 @@ quantifier*-tree {X ∷ Xf} (n :: nf) =
 \end{code}
 
 The game G and its monadic version G*, which performs the alpha-beta
-optimization, and their optimal outcomes out(G) and out*(G*), the
-latter as a function of the bounds (α , β). The outcome function of
-G* is the composition of q with the unit of the reader monad.
+optimization, together with the optimal outcome out(G) and the monadic
+outcome out*_{α,β}(G), the latter as a function of the bounds (α , β).
+The outcome function of G* is the composition of q with the unit of the
+reader monad.
 
 \begin{code}
 
@@ -122,9 +124,9 @@ quantifier-is-αβ-approximated-by-quantifier* (minimizer , xs) p p* h =
 
 Theorem 1 of the paper. For all bounds α and β,
 
- (i)   out(G) ≤ α implies out*(G*)(α , β) ≤ α,
- (ii)  out(G) ≥ β implies out*(G*)(α , β) ≥ β,
- (iii) α < out(G) < β implies out*(G*)(α , β) = out(G),
+ (i)   out(G) ≤ α implies out*_{α,β}(G) ≤ α,
+ (ii)  out(G) ≥ β implies out*_{α,β}(G) ≥ β,
+ (iii) α < out(G) < β implies out*_{α,β}(G) = out(G),
 
 where the inequalities compare values under val, and the equation in
 (iii) is an equation of outcomes. The proof is by induction on the
@@ -175,9 +177,9 @@ outcome-preserves Q (X ∷ Xf) (n :: nf) q a =
 
 \end{code}
 
-Hence, if the values of all outcomes lie strictly between two bounds
--∞ and ∞, the alpha-beta search started with these bounds computes
-the optimal outcome of the game.
+Corollary 1(a) of the paper. Hence, if the values of all outcomes lie
+strictly between two bounds -∞ and ∞, the alpha-beta search started
+with these bounds computes the optimal outcome of the game.
 
 \begin{code}
 
@@ -195,8 +197,9 @@ corollary Xt nt q -∞ ∞ a b =
 
 \end{code}
 
-If the outcome computed by the alpha-beta search lies strictly between
-the bounds, then it is the optimal outcome.
+Corollary 1(b) of the paper. If the outcome computed by the alpha-beta
+search lies strictly between the bounds, then it is the optimal
+outcome.
 
 \begin{code}
 

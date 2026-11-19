@@ -78,8 +78,8 @@ wikipedia-nodes = (maximizer , three)
 \end{code}
 
 The outcome function q' of Section 2.2 of the paper. The outcomes
-marked by the comments are those that the alpha-beta search doesn't
-need to consider.
+marked by the comments are among those that the alpha-beta search
+does not evaluate.
 
 \begin{code}
 
