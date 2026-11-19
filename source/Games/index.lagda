@@ -125,9 +125,9 @@ import Games.Alternative                           -- (10)
 
    SequenceJ-via-SequenceK.
 
-   This shows how to do compute a product of selections functions as a
+   This shows how to compute a product of selection functions as a
    product of quantifiers, which is applied in deprecated.alpha-beta.
-   This mainly for performance.
+   This is mainly for performance.
 
 9. OptimalPlays.
 
