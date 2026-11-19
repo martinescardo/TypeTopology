@@ -64,7 +64,7 @@
      with [Mikan](https://codeberg.org/1lab/mikan), with the options listed in [typetopology.mikan-lib](https://github.com/martinescardo/TypeTopology/blob/master/typetopology.mikan-lib), as a
      double check.
 
-   * In our last count, on 2026-11-18, this development has 1028 Agda
+   * In our last count, on 2026-11-19, this development has 1028 Agda
      files with 310K lines of code, including comments and blank
      lines.
 
