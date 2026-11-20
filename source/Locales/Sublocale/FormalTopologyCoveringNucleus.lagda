@@ -77,8 +77,7 @@ denote this by `𝒞₀`, following Negri’s notation from [1].
 \end{code}
 
 This operator forms a nucleus when restricted to downward-closed subsets. We
-start by defining this restriction, which we denote by `𝒞` in accordance with
-the view of nuclei as modal operators.
+start by defining this restriction, which we denote by `𝒞`.
 
 \begin{code}
 
