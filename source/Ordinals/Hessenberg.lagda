@@ -2,9 +2,9 @@ Tom de Jong, 11–19 November 2026.
 
 Prompted by a question of Robbert Krebbers (9 November 2026), we explore a
 constructive approach to Hessenberg addition.
-This binary operation on ordinals, typically denoted by ⊕ and also known as the
-natural sum, is commutative and associative, the former in contrast to ordinary
-ordinal addition.
+This binary operation on ordinals, typically denoted by ⊕ or by #, and also
+known as the natural sum, is commutative and associative, the former in contrast
+to ordinary ordinal addition.
 
 A typical classical definition of Hessenberg addition [Kap. XX, Hes06] goes via
 Cantor normal forms, but the Hessenberg sum α ⊕ β can also be characterized, via
@@ -47,6 +47,17 @@ This last property is classically proved as [Lemma 3.3b), dJP77]; the
 penultimate property is classically proved as [Proposition 5.1, Alt17] and
 [Theorem 1.IV, Car42].
 
+In all cited works, classical logic is assumed. A notable exception is a paper
+by Michael Rathjen [Rat16] where he also defines Hessenberg addition by
+transfinite recursion [Defintion 7.2, Rat16] and proves that it is commutative
+and preserves the strict order [Lemma 7.3, Rat16].
+What is new here are constructive proofs of additional properties, like
+associativity, as well as the reduction to excluded middle for some statements
+that hold classically.
+Another, non-fundamental difference (cf. the file Iterative/Ordinals.lagda), is
+that Rathjen works with ordinals qua hereditarily transitive sets in CZF,
+whereas we work with ordinals qua well-orders in HoTT.
+
 REFERENCES
 
 [Alt17] Harry J. Altman. 'Intermediate airthmetic operations on ordinal numbers'.
@@ -74,6 +85,14 @@ REFERENCES
         'On Carruth’s axioms for natural sums and products'.
         European Journal of Mathematics, vol. 9, article no. 97, 2023
         https://doi.org/10.1007/s40879-023-00696-z
+
+[Rat16] Michael Rathjen.
+        'Remarks on Barr’s Theorem: Proofs in Geometric Theories'.
+        In: 'Concepts of Proof in Mathematics, Philosophy, and Computer
+        Science', edited by Dieter Probst and Peter Schuster, pp. 347–374,
+        De Gruyter, 2016.
+        https://doi.org/10.1515/9781501502620-019
+        https://arxiv.org/pdf/1603.03374
 
 [Sta24] 'Hessenberg sum/natural sum of ordinals definition'. 2024.
         https://math.stackexchange.com/questions/4852808/hessenberg-sum-natural-sum-of-ordinals-definition
