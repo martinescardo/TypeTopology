@@ -67,7 +67,7 @@ We denote by `↓𝒜` the frame of downward-closed subsets of `𝒜P`.
 \end{code}
 
 By flipping the covering relation `_◁_`, we obtain an endomap on `𝓟 ⟨ 𝒜 ⟩`. We
-denote this by `𝒞̇`.
+denote this by `𝒞₀`, following Negri’s notation from [1].
 
 \begin{code}
 
