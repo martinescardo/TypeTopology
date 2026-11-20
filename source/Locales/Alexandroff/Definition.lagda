@@ -24,6 +24,7 @@ module Locales.Alexandroff.Definition
         (pe : Prop-Ext) where
 
 open import Locales.DiscreteLocale.Definition fe pe pt
+open import Locales.DownSet pt fe
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
 open import Slice.Family
 open import UF.Logic
@@ -44,17 +45,18 @@ module Downward-Closed-Subset-Frame (P : Poset 𝓤 𝓤) where
 
  open PropositionalSubsetInclusionNotation fe
 
+ _≤_ : ∣ P ∣ₚ → ∣ P ∣ₚ → Ω 𝓤
+ _≤_ = λ x y → x ≤[ P ] y
+
 \end{code}
 
 We start by writing down the type of downward-closed subsets of `P`.
 
 \begin{code}
 
- is-downward-closed : (∣ P ∣ₚ → Ω 𝓤) → Ω 𝓤
- is-downward-closed U = Ɐ u x ꞉ ∣ P ∣ₚ , u ∈ₚ U ⇒ x ≤[ P ] u ⇒ x ∈ₚ U
-
  Downward-Closed-Subset : 𝓤 ⁺  ̇
- Downward-Closed-Subset = Σ U ꞉ 𝓟 ∣ P ∣ₚ , is-downward-closed U holds
+ Downward-Closed-Subset =
+  Σ U ꞉ 𝓟 ∣ P ∣ₚ , is-downward-closed (λ x y → x ≤[ P ] y) U holds
 
 \end{code}
 
@@ -70,7 +72,7 @@ underlying subset.
  infix 8 underlying-subset-syntax
 
  underlying-subset-is-downward-closed : (U : Downward-Closed-Subset)
-                                      → is-downward-closed (λ - → - ε U) holds
+                                      → is-downward-closed _≤_ (λ - → - ε U) holds
  underlying-subset-is-downward-closed (_ , φ) = φ
 
 \end{code}
@@ -102,7 +104,7 @@ construction.
  ⊑-is-antisymmetric : is-antisymmetric _⊑_
  ⊑-is-antisymmetric β γ =
   to-subtype-＝
-   (holds-is-prop ∘ is-downward-closed)
+   (holds-is-prop ∘ is-downward-closed _≤_)
    (≤-is-antisymmetric powerset-poset β γ)
 
  ⊑-is-partial-order : is-partial-order Downward-Closed-Subset _⊑_
@@ -112,8 +114,8 @@ construction.
  top↓ : Downward-Closed-Subset
  top↓ = full , †
   where
-   † : is-downward-closed full holds
-   † _ _ ⋆ _ = ⋆
+   † : is-downward-closed _≤_ full holds
+   † _ ⋆ _ _ = ⋆
 
  top↓-is-top : (U : Downward-Closed-Subset) → (U ⊑ top↓) holds
  top↓-is-top _ _ _ = ⋆
@@ -121,8 +123,8 @@ construction.
  _⊓↓_ : Downward-Closed-Subset → Downward-Closed-Subset → Downward-Closed-Subset
  (U , φ) ⊓↓ (V , ψ) = U ∩ V , †
   where
-   † : is-downward-closed (U ∩ V) holds
-   † x y (β , γ) p = φ x y β p , ψ x y γ p
+   † : is-downward-closed _≤_ (U ∩ V) holds
+   † x (β , γ) y p = φ x β y p , ψ x γ y p
 
  infixl 35 _⊓↓_
 
@@ -146,12 +148,12 @@ construction.
   where
    open unions-of-small-families pt 𝓤 𝓤 ∣ P ∣ₚ
 
-   † : is-downward-closed (⋃ (λ i - → - ε (S [ i ]))) holds
-   † a x β p = ∥∥-functor ‡ β
+   † : is-downward-closed _≤_ (⋃ (λ i - → - ε (S [ i ]))) holds
+   † a β x p = ∥∥-functor ‡ β
     where
      ‡ : (Σ i ꞉ index S , (a ε (S [ i ])) holds)
        → (Σ i ꞉ index S , (x ε (S [ i ])) holds)
-     ‡ (i , β) = i , underlying-subset-is-downward-closed (S [ i ]) a x β p
+     ‡ (i , β) = i , underlying-subset-is-downward-closed (S [ i ]) a β x p
 
  open Joins _⊑_
 
