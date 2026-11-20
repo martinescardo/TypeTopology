@@ -27,7 +27,7 @@ These properties were chosen as an axiomatization of "natural sums" by Carruth
 see also [HPV23] for a recent take on Carruth's axioms.
 In addition to these properties we also show that Hessenberg addition is left
 cancellable, i.e. δ ⊕ α ＝ δ ⊕ β implies α ＝ β, as well as strictly
-inflationary for a summand with a least element, i.e. 𝟙ₒ ⊴ β implies ⊲ α ⊕ β.
+inflationary for a summand with a least element, i.e. 𝟙ₒ ⊴ β implies α ⊲ α ⊕ β.
 
 We characterize the initial segments of α ⊕ β as arising from one of three
 (possibly overlapping cases):
