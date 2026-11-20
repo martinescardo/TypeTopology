@@ -31,7 +31,7 @@ module Locales.index where
   - Terminal locale
   - Sierpiński locale
   - The discrete locale
-  - The Alexandroff locale
+  - The localic filter completion
   - Continuous maps and frame homomorphisms
   - Sublocales and nuclei
   - Compactness and the way-below relation
@@ -114,14 +114,14 @@ import Locales.DiscreteLocale.Two-Properties -- (4)
 
 \end{code}
 
-\subsection{The Alexandroff locale}
+\subsection{The localic filter completion}
 
-The module below defines the Alexandroff locale on a poset `P`, defined by the
-frame of downward-closed subsets of `P`.
+The module below defines the localic filter completion of a poset `P`, defined
+by the frame of downward-closed subsets of `P`.
 
 \begin{code}
 
-import Locales.Alexandroff.Definition
+import Locales.FilterCompletion.Definition
 
 \end{code}
 
@@ -459,7 +459,7 @@ work of Sara Negri as a reference:
   1. Definition of formal topology and quasi formal topology
   2. Morphisms of formal topologies and quasi formal topologies
   3. Categories of formal topologies and quasi formal topologies
-  4. The covering nucleus on the Alexandroff locale induced by a formal topology
+  4. The covering nucleus (on the down set frame) induced by a formal topology
 
 \begin{code}
 

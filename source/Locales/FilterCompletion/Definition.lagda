@@ -1,11 +1,11 @@
 ---
-title:        The Alexandroff locale
+title:        The localic filter completion
 author:       Ayberk Tosun
 date-started: 2026-10-28
 ---
 
 This module contains a definition of the frame of downward-closed subsets of a
-poset. We refer to the locale this defines as the _Alexandroff locale_.
+poset. We refer to the locale this defines as the _localic filter completion_.
 
 \begin{code}
 
@@ -17,7 +17,7 @@ open import UF.PropTrunc
 open import UF.Size hiding (is-locally-small)
 open import UF.Subsingletons
 
-module Locales.Alexandroff.Definition
+module Locales.FilterCompletion.Definition
         (𝓤  : Universe)
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
@@ -45,8 +45,9 @@ module Downward-Closed-Subset-Frame (P : Poset 𝓤 𝓤) where
 
  open PropositionalSubsetInclusionNotation fe
 
- _≤_ : ∣ P ∣ₚ → ∣ P ∣ₚ → Ω 𝓤
- _≤_ = λ x y → x ≤[ P ] y
+ private
+  _≤_ : ∣ P ∣ₚ → ∣ P ∣ₚ → Ω 𝓤
+  _≤_ = λ x y → x ≤[ P ] y
 
 \end{code}
 
@@ -208,12 +209,12 @@ into a frame.
 
 \end{code}
 
-The locale defined by this frame is called the _Alexandroff locale_.
+The locale defined by this frame is called the _filter completion_.
 
 \begin{code}
 
- alexandroff : Locale (𝓤 ⁺) 𝓤 𝓤
- alexandroff =
+ filter-completion : Locale (𝓤 ⁺) 𝓤 𝓤
+ filter-completion =
   record
   { ⟨_⟩ₗ         = Downward-Closed-Subsetₚ P
   ; frame-str-of = downward-closed-subset-frame-structure
