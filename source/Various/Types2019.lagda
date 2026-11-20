@@ -1,6 +1,6 @@
 Martin Escardo, 2019
 
-https://cas.oslo.no/types2019/programme/book-of-abstracts/
+https://eutypes.cs.ru.nl/pmwiki/uploads/Main/books-of-abstracts-TYPES2019.pdf
 
 *** Please do not move this file. It is linked from a published abstract. ***
 

@@ -439,7 +439,7 @@ Martin Hofmann and Thomas Streicher.  The groupoid interpretation of
 type theory.  In Twenty-five years of constructive type theory
 (Venice, 1995), volume 36 of Oxford Logic Guides, pages
 83--111. Oxford Univ.  Press, New York, 1998.
-http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=8452D335B33D098D993C3D5E870CAE03?doi=10.1.1.37.606&rep=rep1&type=pdf
+https://doi.org/10.1093/oso/9780198501275.003.0008
 
 Chris Kapulkin and Peter LeFanu Lumsdaine.  The simplicial model of
 univalent foundations (after Voevodsky), 2012.  https://arxiv.org/abs/1211.2851

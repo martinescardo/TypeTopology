@@ -24,7 +24,7 @@ This is interesting for at least two reasons:
 
 After Fredrik Nordvall Forsberg's talk at the workshop in honour of Thorsten
 Altenkirch's 60th birthday
-(https://www.cs.nott.ac.uk/~psznk/events/thorsten60/#fred), Andreas Abel asked
+(https://nicolaikraus.github.io/events/thorsten60/#fred), Andreas Abel asked
 how/whether we can relate set theoretic ordinals and type theoretic ordinals
 through Aczel's [Acz78] type theoretic interpretation of set theory. Since the
 cumulative hierarchy 𝕍 may be seen as an internal refinement of Aczel's
@@ -57,7 +57,7 @@ References
 [AR10] Peter Aczel and Michael Rathjen
        Notes on Constructive Set Theory
        Book draft
-       https://www1.maths.leeds.ac.uk/~rathjen/book.pdf
+       https://web.archive.org/web/20240205104915/http://www1.maths.leeds.ac.uk/~rathjen/book.pdf
        2010
 
 [Pow75] William C. Powell

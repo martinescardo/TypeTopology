@@ -4,7 +4,7 @@ This ports the structure identity principle examples formulated and proved in
 
  https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html
  https://arxiv.org/abs/1911.00580
- https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
+ https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 
 Each example is in a submodule:
 

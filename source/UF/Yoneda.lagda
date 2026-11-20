@@ -418,7 +418,7 @@ Yoneda-Theorem-forth x η i = nats-with-sections-are-equivs x η
 \end{code}
 
 Here is another proof, from the MGS'2019 lecture notes
-(https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes):
+(https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes):
 
 \begin{code}
 

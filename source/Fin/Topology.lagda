@@ -1,7 +1,7 @@
 Martin Escardo, November 2019
 
 Other interesting uses of the types Fin n is in the file
-https://www.cs.bham.ac.uk/~mhe/TypeTopology/ArithmeticViaEquivalence.html
+https://www.cs.bham.ac.uk/~mhe/TypeTopology/Fin.ArithmeticViaEquivalence.html
 which proves commutativity of addition and multiplication, and more,
 using the corresponding properties for (finite) types.
 

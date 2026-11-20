@@ -165,7 +165,7 @@ check.
    Informatics
    (LIPIcs)][LIPICS],
    Proceedings of [CSL
-   2017](https://www.math-stockholm.se/konferenser-och-akti/logic-in-stockholm-2/26th-eacsl-annual-co/computer-science-logic-2017-august-20-24-1.717663).
+   2017](https://drops.dagstuhl.de/entities/volume/LIPIcs-volume-82).
 
    https://doi.org/10.4230/LIPIcs.CSL.2017.21
 
@@ -348,7 +348,7 @@ check.
 
    https://arxiv.org/abs/2501.14542v6
 
-[CSL21]:  https://csl2021.fmf.uni-lj.si/
+[CSL21]:  https://drops.dagstuhl.de/entities/volume/LIPIcs-volume-183
 [FSCD21]: https://fscd2021.dc.uba.ar/
 [LICS21]: https://easyconferences.eu/lics2021/
 [LICS23]: https://lics.siglog.org/lics23/

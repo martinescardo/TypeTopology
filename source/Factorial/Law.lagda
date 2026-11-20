@@ -20,7 +20,7 @@ See also Coquand's
 
 and our
 
- https://www.cs.bham.ac.uk/~mhe/TypeTopology/PlusOneLC.html
+ https://www.cs.bham.ac.uk/~mhe/TypeTopology/Factorial.PlusOneLC.html
 
 More generally, for an arbitrary type X, we prove that
 

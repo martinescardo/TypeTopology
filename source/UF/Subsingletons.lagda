@@ -4,7 +4,7 @@ In univalent logic, as opposed to Curry-Howard logic, a proposition is
 a subsingleton or a type such that any two of its elements are
 identified.
 
-https://www.newton.ac.uk/files/seminar/20170711100011001-1442677.pdf
+https://www.cs.bham.ac.uk/~mhe/.talks/univalent-logic.pdf
 https://unimath.github.io/bham2017/uf.pdf
 
 \begin{code}
