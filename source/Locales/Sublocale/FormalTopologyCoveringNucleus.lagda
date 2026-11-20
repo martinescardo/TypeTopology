@@ -67,41 +67,37 @@ We denote by `↓𝒜` the frame of downward-closed subsets of `𝒜P`.
 \end{code}
 
 By flipping the covering relation `_◁_`, we obtain an endomap on `𝓟 ⟨ 𝒜 ⟩`. We
-denote this by `◇̇`.
+denote this by `𝒞̇`.
 
 \begin{code}
 
- ◇̇_ : 𝓟 ⟨ 𝒜 ⟩ → 𝓟 ⟨ 𝒜 ⟩
- ◇̇_ U = ⁅ a ꞉ ∣ 𝒜P ∣ₚ ∣ a ◁[ 𝒜 ] U ⁆
-
- infixr 7 ◇̇_
+ 𝒞₀ : 𝓟 ⟨ 𝒜 ⟩ → 𝓟 ⟨ 𝒜 ⟩
+ 𝒞₀ U = ⁅ a ꞉ ∣ 𝒜P ∣ₚ ∣ a ◁[ 𝒜 ] U ⁆
 
 \end{code}
 
 This operator forms a nucleus when restricted to downward-closed subsets. We
-start by defining this restriction, which we denote by `◇` in accordance with
+start by defining this restriction, which we denote by `𝒞` in accordance with
 the view of nuclei as modal operators.
 
 \begin{code}
 
- ◇_ : ⟨ ↓𝒜 ⟩ᶠ → ⟨ ↓𝒜 ⟩ᶠ
- ◇ (U , _) = ◇̇ U , φ
+ 𝒞 : ⟨ ↓𝒜 ⟩ᶠ → ⟨ ↓𝒜 ⟩ᶠ
+ 𝒞 (U , _) = 𝒞₀ U , φ
   where
    φ : is-downward-closed (λ x y → x ≤[ 𝒜P ] y) ⁅ a ꞉ ∣ 𝒜P ∣ₚ ∣ a ◁[ 𝒜 ] U ⁆ holds
    φ u₀ a cov p = cover-satisfies-left-rule 𝒜 u₀ cov U p a
 
- infixr 7 ◇_
-
 \end{code}
 
-Negri ([1], p. 22) uses the notation 𝒞_𝒜 for what we called `◇` above. She also
+Negri ([1], p. 22) uses the notation 𝒞_𝒜 for what we called `𝒞` above. She also
 uses the terminology _saturated_ for subsets that are fixed points for this
-operator (i.e. the `◇`-stable ones).
+operator (i.e. the `𝒞`-stable ones).
 
 \begin{code}
 
  is-saturated₀ : 𝓟 ⟨ 𝒜 ⟩ → Ω (𝓤 ⁺)
- is-saturated₀ U = ◇̇ U ＝ₚ U
+ is-saturated₀ U = 𝒞₀ U ＝ₚ U
   where
    σ : is-set (𝓟 ⟨ 𝒜 ⟩)
    σ = powersets-are-sets {𝓤} fe pe
@@ -115,30 +111,30 @@ operator (i.e. the `◇`-stable ones).
 
 \section{Inflationarity}
 
-The `◇` operator is inflationary.
+The `𝒞` operator is inflationary.
 
 \begin{code}
 
  𝒜₀ : Quasi-Formal-Topology 𝓤
  𝒜₀ = underlying-quasi-formal-topology 𝒜
 
- ◇-is-inflationary : is-inflationary ↓𝒜 ◇_ holds
- ◇-is-inflationary (U , _) a =
+ 𝒞-is-inflationary : is-inflationary ↓𝒜 𝒞 holds
+ 𝒞-is-inflationary (U , _) a =
   reflexivity-of-quasi-cover 𝒜₀ a U
 
 \end{code}
 
 \section{Preservation of binary meets}
 
-The `◇` operator preserves binary meets of `↓𝒜`.
+The `𝒞` operator preserves binary meets of `↓𝒜`.
 
 \begin{code}
 
  open FrameHomomorphisms
  open PosetNotation (poset-of ↓𝒜) using (_≤_)
 
- ◇-preserves-binary-meets : preserves-binary-meets ↓𝒜 ↓𝒜 ◇_ holds
- ◇-preserves-binary-meets 𝔘@(U , φ) 𝔙@(V , ψ) =
+ 𝒞-preserves-binary-meets : preserves-binary-meets ↓𝒜 ↓𝒜 𝒞 holds
+ 𝒞-preserves-binary-meets 𝔘@(U , φ) 𝔙@(V , ψ) =
   ≤-is-antisymmetric (poset-of ↓𝒜) † ‡
    where
     cov₁ : (U ∩ V ◁⁺[ 𝒜 ] U) holds
@@ -147,18 +143,18 @@ The `◇` operator preserves binary meets of `↓𝒜`.
     cov₂ : (U ∩ V ◁⁺[ 𝒜 ] V) holds
     cov₂ a (_ , γ) = reflexivity-of-quasi-cover 𝒜₀ a V γ
 
-    cov₁′ : (◇̇ (U ∩ V) ◁⁺[ 𝒜 ] U) holds
+    cov₁′ : (𝒞₀ (U ∩ V) ◁⁺[ 𝒜 ] U) holds
     cov₁′ a cov = transitivity-of-quasi-cover 𝒜₀ a (U ∩ V) U cov cov₁
 
-    cov₂′ : (◇̇ (U ∩ V) ◁⁺[ 𝒜 ] V) holds
+    cov₂′ : (𝒞₀ (U ∩ V) ◁⁺[ 𝒜 ] V) holds
     cov₂′ a cov = transitivity-of-quasi-cover 𝒜₀ a (U ∩ V) V cov cov₂
 
-    † : (◇ (𝔘 ∧[ ↓𝒜 ] 𝔙) ≤ (◇ 𝔘 ∧[ ↓𝒜 ] ◇ 𝔙)) holds
+    † : (𝒞 (𝔘 ∧[ ↓𝒜 ] 𝔙) ≤ (𝒞 𝔘 ∧[ ↓𝒜 ] 𝒞 𝔙)) holds
     † a cov = cov₁′ a cov , cov₂′ a cov
 
     open Downward-Closure-Intersection-Syntax (λ x y → x ≤[ 𝒜P ] y)
 
-    ‡ : ((◇ 𝔘 ∧[ ↓𝒜 ] ◇ 𝔙) ≤ ◇ (𝔘 ∧[ ↓𝒜 ] 𝔙)) holds
+    ‡ : ((𝒞 𝔘 ∧[ ↓𝒜 ] 𝒞 𝔙) ≤ 𝒞 (𝔘 ∧[ ↓𝒜 ] 𝔙)) holds
     ‡ a (cov₁ , cov₂) = transport (λ - → (a ◁[ 𝒜 ] -) holds) eq cov
      where
       cov : (a ◁[ 𝒜 ] U ⊓ V) holds
@@ -177,20 +173,20 @@ The `◇` operator preserves binary meets of `↓𝒜`.
 
 \section{Idempotence}
 
-The idempotence of the `◇` operator follows directly from the transitivity of
+The idempotence of the `𝒞` operator follows directly from the transitivity of
 `_◁⁺_`.
 
 \begin{code}
 
- ◇-is-idempotent : is-idempotent ↓𝒜 ◇_ holds
- ◇-is-idempotent (U , _) a cov = † a cov
+ 𝒞-is-idempotent : is-idempotent ↓𝒜 𝒞 holds
+ 𝒞-is-idempotent (U , _) a cov = † a cov
   where
    open Quasi-Cover-Reasoning 𝒜₀
 
-   † : (◇̇ ◇̇ U ◁⁺[ 𝒜 ] U) holds
-   † = ◇̇ ◇̇ U  ◁⁺⟨ (λ _ → id) ⟩
-       ◇̇ U    ◁⁺⟨ (λ _ → id) ⟩
-       U      ■
+   † : (𝒞₀ (𝒞₀ U) ◁⁺[ 𝒜 ] U) holds
+   † = 𝒞₀ (𝒞₀ U)  ◁⁺⟨ (λ _ → id) ⟩
+       𝒞₀ U       ◁⁺⟨ (λ _ → id) ⟩
+       U          ■
 
 \end{code}
 
@@ -199,7 +195,7 @@ Finally, we package everything up into a nucleus.
 \begin{code}
 
  ◁-nucleus : Nucleus ↓𝒜
- ◁-nucleus = ◇_ , ◇-is-inflationary , ◇-is-idempotent , ◇-preserves-binary-meets
+ ◁-nucleus = 𝒞 , 𝒞-is-inflationary , 𝒞-is-idempotent , 𝒞-preserves-binary-meets
 
 \end{code}
 
