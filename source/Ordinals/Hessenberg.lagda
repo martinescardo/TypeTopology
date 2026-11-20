@@ -353,7 +353,9 @@ commutativity).
                 (Σ a' ꞉ ⟨ α ↓ a ⟩ , Σ b ꞉ ⟨ β ⟩
                   , ((α ↓ a) ⊕ β) ↓ x ＝ ((α ↓ a ↓ a') ⊕ (β ↓ b))))
              → Tᵇ + Tᵃᵇ
-        III₂ (inl (b , e')) = inr (a , b , (p ∙ e'))
+        III₂ (inl (b , e')) = inr (a , b , (σ ↓ s             ＝⟨ p ⟩
+                                            ((α ↓ a) ⊕ β) ↓ x ＝⟨ e' ⟩
+                                            (α ↓ a) ⊕ (β ↓ b) ∎))
 
         III₂ (inr ((a' , l) , b , e')) = inr (a' , b ,
          (σ ↓ s                          ＝⟨ p ⟩
@@ -603,7 +605,9 @@ With the main properties, commutativity and associativity, proved, we turn to
     III a = transport (_⊲ α ⊕ 𝟘ₒ) (IH a) (⊕-⊲-left α 𝟘ₒ)
 
 𝟘ₒ-is-left-neutral-⊕ : (α : Ordinal 𝓤) → 𝟘ₒ ⊕ α ＝ α
-𝟘ₒ-is-left-neutral-⊕ α = ⊕-is-commutative 𝟘ₒ α ∙ 𝟘ₒ-is-right-neutral-⊕ α
+𝟘ₒ-is-left-neutral-⊕ α = 𝟘ₒ ⊕ α  ＝⟨ ⊕-is-commutative 𝟘ₒ α ⟩
+                         α  ⊕ 𝟘ₒ ＝⟨ 𝟘ₒ-is-right-neutral-⊕ α ⟩
+                         α       ∎
 
 ⊕-is-strictly-inflationary : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ β → α ⊲ α ⊕ β
 ⊕-is-strictly-inflationary α β 𝕗@(f , f-sim) = transport⁻¹ (_⊲ α ⊕ β) I II
@@ -803,10 +807,18 @@ ordinal addition and thereby to excluded middle.
    g b = cases (λ p → 𝟙ₒ) (λ u → Pₒ) b +ₒ 𝟙ₒ
 
    H : f ∼ g
-   H (inl p) = ap (λ - → (- ⊕ 𝟙ₒ) +ₒ 𝟙ₒ) (prop-ordinal-↓ i p)
-               ∙ ap (_+ₒ 𝟙ₒ) (𝟘ₒ-is-left-neutral-⊕ 𝟙ₒ)
-   H (inr u) = ap (λ - → (Pₒ ⊕ -) +ₒ 𝟙ₒ) 𝟙ₒ-↓
-               ∙ ap (_+ₒ 𝟙ₒ) (𝟘ₒ-is-right-neutral-⊕ Pₒ)
+   H (inl p) = ((Pₒ ↓ p) ⊕ 𝟙ₒ) +ₒ 𝟙ₒ ＝⟨ I ⟩
+               (𝟘ₒ ⊕ 𝟙ₒ) +ₒ 𝟙ₒ       ＝⟨ II ⟩
+               𝟙ₒ +ₒ 𝟙ₒ              ∎
+    where
+     I  = ap (λ - → (- ⊕ 𝟙ₒ) +ₒ 𝟙ₒ) (prop-ordinal-↓ i p)
+     II = ap (_+ₒ 𝟙ₒ) (𝟘ₒ-is-left-neutral-⊕ 𝟙ₒ)
+   H (inr u) = (Pₒ ⊕ (𝟙ₒ ↓ u)) +ₒ 𝟙ₒ ＝⟨ I ⟩
+               (Pₒ ⊕ 𝟘ₒ) +ₒ 𝟙ₒ       ＝⟨ II ⟩
+               Pₒ +ₒ 𝟙ₒ              ∎
+    where
+     I  = ap (λ - → (Pₒ ⊕ -) +ₒ 𝟙ₒ) 𝟙ₒ-↓
+     II = ap (_+ₒ 𝟙ₒ) (𝟘ₒ-is-right-neutral-⊕ Pₒ)
 
    I : sup g ＝ Pₒ +ₒ 𝟙ₒ
    I = ⊴-antisym (sup g) (Pₒ +ₒ 𝟙ₒ)
@@ -878,8 +890,9 @@ to be monotone, inflationary, or above ordinary addition.
   I : 𝟙ₒ +ₒ Pₒ ⊴ Pₒ +ₒ 𝟙ₒ
   I = transport (𝟙ₒ +ₒ Pₒ ⊴_) e (h 𝟙ₒ Pₒ)
    where
-    e : (𝟙ₒ ⊕ Pₒ) ＝ Pₒ +ₒ 𝟙ₒ
-    e = ⊕-is-commutative 𝟙ₒ Pₒ ∙ ⊕-prop-𝟙ₒ-is-+ₒ P i
+    e = 𝟙ₒ ⊕ Pₒ  ＝⟨ ⊕-is-commutative 𝟙ₒ Pₒ ⟩
+        Pₒ ⊕ 𝟙ₒ  ＝⟨ ⊕-prop-𝟙ₒ-is-+ₒ P i ⟩
+        Pₒ +ₒ 𝟙ₒ ∎
 
   II : type-of I → P + ¬ P
   II 𝕗@(f , f-sim) = IV (f (inl ⋆)) refl
@@ -892,6 +905,8 @@ to be monotone, inflationary, or above ordinary addition.
              (left-preserves-least Pₒ 𝟙ₒ p (prop-ordinal-least i p))
     IV : (x : P + 𝟙) → f (inl ⋆) ＝ x → P + ¬ P
     IV (inl p) e = inl p
-    IV (inr ⋆) e = inr (λ p → +disjoint ((III p) ⁻¹ ∙ e))
+    IV (inr ⋆) e = inr (λ p → +disjoint (inl p     ＝⟨ (III p) ⁻¹ ⟩
+                                         f (inl ⋆) ＝⟨ e ⟩
+                                         inr ⋆     ∎))
 
 \end{code}
