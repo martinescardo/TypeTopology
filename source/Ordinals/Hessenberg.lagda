@@ -800,6 +800,7 @@ ordinal addition and thereby to excluded middle.
  sup g    ＝⟨ I ⟩
  Pₒ +ₒ 𝟙ₒ ∎
   where
+   Pₒ : Ordinal 𝓤
    Pₒ = prop-ordinal P i
 
    f g : P + 𝟙 → Ordinal 𝓤
@@ -842,9 +843,11 @@ to be monotone, inflationary, or above ordinary addition.
 ⊕-monotone-successor-gives-EM
  : ((α β : Ordinal 𝓤) → α ⊴ β → α ⊕ 𝟙ₒ ⊴ β ⊕ 𝟙ₒ)
  → EM 𝓤
-⊕-monotone-successor-gives-EM h P i = succ-of-prop-taboo P i I
+⊕-monotone-successor-gives-EM {𝓤} h P i = succ-of-prop-taboo P i I
  where
+  Pₒ : Ordinal 𝓤
   Pₒ = prop-ordinal P i
+
   I : Pₒ +ₒ 𝟙ₒ ⊴ 𝟙ₒ +ₒ 𝟙ₒ
   I = transport₂ _⊴_
        (⊕-prop-𝟙ₒ-is-+ₒ P i)
@@ -855,8 +858,9 @@ to be monotone, inflationary, or above ordinary addition.
 ⊕-monotone-gives-EM h = ⊕-monotone-successor-gives-EM (λ α β → h α β 𝟙ₒ)
 
 ⊕-inflationary-gives-EM : ((α β : Ordinal 𝓤) → α ⊴ α ⊕ β) → EM 𝓤
-⊕-inflationary-gives-EM h P i = II (h 𝟙ₒ Pₒ)
+⊕-inflationary-gives-EM {𝓤} h P i = II (h 𝟙ₒ Pₒ)
  where
+  Pₒ : Ordinal 𝓤
   Pₒ = prop-ordinal P i
 
   I : 𝟙ₒ ⊴ Pₒ +ₒ 𝟙ₒ → P + ¬ P
@@ -883,8 +887,9 @@ to be monotone, inflationary, or above ordinary addition.
         Pₒ +ₒ 𝟙ₒ ∎
 
 ⊕-above-+ₒ-gives-EM : ((α β : Ordinal 𝓤) → α +ₒ β ⊴ α ⊕ β) → EM 𝓤
-⊕-above-+ₒ-gives-EM h P i = II I
+⊕-above-+ₒ-gives-EM {𝓤} h P i = II I
  where
+  Pₒ : Ordinal 𝓤
   Pₒ = prop-ordinal P i
 
   I : 𝟙ₒ +ₒ Pₒ ⊴ Pₒ +ₒ 𝟙ₒ
