@@ -28,6 +28,7 @@ import Ordinals.Exponentiation.index          -- by [2]
 import Ordinals.FailureOfTotalSeparatedness
 import Ordinals.FailureOfTrichotomy
 import Ordinals.Fin                           -- by [5] with additions by [2]
+import Ordinals.Hessenberg                    -- by [3]
 import Ordinals.IdentifyingEquivalentOrdinals -- by [3]
 import Ordinals.Indecomposable
 import Ordinals.InductiveRecursiveCodesInterpretations
