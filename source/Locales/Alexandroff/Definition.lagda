@@ -50,28 +50,18 @@ module Downward-Closed-Subset-Frame (P : Poset 𝓤 𝓤) where
 
 \end{code}
 
-We start by writing down the type of downward-closed subsets of `P`.
-
-\begin{code}
-
- Downward-Closed-Subset : 𝓤 ⁺  ̇
- Downward-Closed-Subset =
-  Σ U ꞉ 𝓟 ∣ P ∣ₚ , is-downward-closed (λ x y → x ≤[ P ] y) U holds
-
-\end{code}
-
 Given a downward-closed subset `𝔘`, we define the notation `x ε 𝔘` for `𝔘`'s
 underlying subset.
 
 \begin{code}
 
- underlying-subset-syntax : Downward-Closed-Subset → 𝓟 {𝓤} ∣ P ∣ₚ
+ underlying-subset-syntax : Downward-Closed-Subsetₚ P → 𝓟 {𝓤} ∣ P ∣ₚ
  underlying-subset-syntax (U , _) = U
 
  syntax underlying-subset-syntax 𝔘 x = x ε 𝔘
  infix 8 underlying-subset-syntax
 
- underlying-subset-is-downward-closed : (U : Downward-Closed-Subset)
+ underlying-subset-is-downward-closed : (U : Downward-Closed-Subsetₚ P)
                                       → is-downward-closed _≤_ (λ - → - ε U) holds
  underlying-subset-is-downward-closed (_ , φ) = φ
 
@@ -83,7 +73,7 @@ construction.
 
 \begin{code}
 
- _⊑_ : Downward-Closed-Subset → Downward-Closed-Subset → Ω 𝓤
+ _⊑_ : Downward-Closed-Subsetₚ P → Downward-Closed-Subsetₚ P → Ω 𝓤
  (U , _) ⊑ (V , _) = U ⊆ₚ V
 
  infix 30 _⊑_
@@ -107,20 +97,22 @@ construction.
    (holds-is-prop ∘ is-downward-closed _≤_)
    (≤-is-antisymmetric powerset-poset β γ)
 
- ⊑-is-partial-order : is-partial-order Downward-Closed-Subset _⊑_
+ ⊑-is-partial-order : is-partial-order (Downward-Closed-Subsetₚ P) _⊑_
  ⊑-is-partial-order = (⊑-is-reflexive , ⊑-is-transitive)
                     , ⊑-is-antisymmetric
 
- top↓ : Downward-Closed-Subset
+ top↓ : Downward-Closed-Subsetₚ P
  top↓ = full , †
   where
    † : is-downward-closed _≤_ full holds
    † _ ⋆ _ _ = ⋆
 
- top↓-is-top : (U : Downward-Closed-Subset) → (U ⊑ top↓) holds
+ top↓-is-top : (U : Downward-Closed-Subsetₚ P) → (U ⊑ top↓) holds
  top↓-is-top _ _ _ = ⋆
 
- _⊓↓_ : Downward-Closed-Subset → Downward-Closed-Subset → Downward-Closed-Subset
+ _⊓↓_ : Downward-Closed-Subsetₚ P
+      → Downward-Closed-Subsetₚ P
+      → Downward-Closed-Subsetₚ P
  (U , φ) ⊓↓ (V , ψ) = U ∩ V , †
   where
    † : is-downward-closed _≤_ (U ∩ V) holds
@@ -130,7 +122,7 @@ construction.
 
  open Meets _⊑_
 
- ⊓↓-gives-glb : (U V : Downward-Closed-Subset)
+ ⊓↓-gives-glb : (U V : Downward-Closed-Subsetₚ P)
               → ((U ⊓↓ V) is-glb-of (U , V)) holds
  ⊓↓-gives-glb U V = (β , γ) , δ
   where
@@ -143,7 +135,7 @@ construction.
    δ : ((W , _) : lower-bound (U , V)) → (W ⊑ U ⊓↓ V) holds
    δ (W , p , q) = ∧[ powerset-frame ]-greatest _ _ _ p q
 
- ⨆_ : Fam 𝓤 Downward-Closed-Subset → Downward-Closed-Subset
+ ⨆_ : Fam 𝓤 (Downward-Closed-Subsetₚ P) → Downward-Closed-Subsetₚ P
  ⨆ S = ⋃ (λ i - → - ε (S [ i ])) , †
   where
    open unions-of-small-families pt 𝓤 𝓤 ∣ P ∣ₚ
@@ -157,7 +149,8 @@ construction.
 
  open Joins _⊑_
 
- ⨆-gives-lub : (S : Fam 𝓤 Downward-Closed-Subset) → ((⨆ S) is-lub-of S) holds
+ ⨆-gives-lub : (S : Fam 𝓤 (Downward-Closed-Subsetₚ P))
+             → ((⨆ S) is-lub-of S) holds
  ⨆-gives-lub S = † , ‡
   where
    † : ((⨆ S) is-an-upper-bound-of S) holds
@@ -177,12 +170,12 @@ into a frame.
 
 \begin{code}
 
- downward-closed-subset-frame-data : frame-data 𝓤 𝓤 Downward-Closed-Subset
+ downward-closed-subset-frame-data : frame-data 𝓤 𝓤 (Downward-Closed-Subsetₚ P)
  downward-closed-subset-frame-data = _⊑_ , top↓ , _⊓↓_ , ⨆_
 
  distributivity↓
-  : (U : Downward-Closed-Subset)
-  → (S : Fam 𝓤 Downward-Closed-Subset)
+  : (U : Downward-Closed-Subsetₚ P)
+  → (S : Fam 𝓤 (Downward-Closed-Subsetₚ P))
   → U ⊓↓ (⨆ S) ＝ ⨆ ⁅ U ⊓↓ V ∣ V ε S ⁆
  distributivity↓ U S = ⊑-is-antisymmetric † ‡
   where
@@ -201,7 +194,7 @@ into a frame.
      ‡₀ (i , q , r) = q , ∣ i , r ∣
 
  downward-closed-subset-frame-structure
-  : frame-structure 𝓤 𝓤 Downward-Closed-Subset
+  : frame-structure 𝓤 𝓤 (Downward-Closed-Subsetₚ P)
  downward-closed-subset-frame-structure = downward-closed-subset-frame-data
                                         , ⊑-is-partial-order
                                         , top↓-is-top
@@ -211,7 +204,7 @@ into a frame.
 
  downward-closed-subset-frame : Frame (𝓤 ⁺) 𝓤 𝓤
  downward-closed-subset-frame =
-  Downward-Closed-Subset , downward-closed-subset-frame-structure
+  Downward-Closed-Subsetₚ P , downward-closed-subset-frame-structure
 
 \end{code}
 
@@ -222,7 +215,7 @@ The locale defined by this frame is called the _Alexandroff locale_.
  alexandroff : Locale (𝓤 ⁺) 𝓤 𝓤
  alexandroff =
   record
-  { ⟨_⟩ₗ         = Downward-Closed-Subset
+  { ⟨_⟩ₗ         = Downward-Closed-Subsetₚ P
   ; frame-str-of = downward-closed-subset-frame-structure
   }
 
