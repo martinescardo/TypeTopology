@@ -2,7 +2,7 @@ Martin Escardo, 30 April 2020
 
 This ports the structure identity principle examples formulated and proved in
 
- https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/index.html
+ https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html
  https://arxiv.org/abs/1911.00580
  https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
 

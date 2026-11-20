@@ -3,7 +3,7 @@ Tom de Jong (adapted from Martin's MGS lecture notes)
 
 We show that the type of natural numbers enjoys the universal property of a
 natural numbers object. We generalize
-https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/HoTT-UF-Agda.html#ℕ-is-nno
+https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html#ℕ-is-nno
 here from nondependent functions to dependent functions.
 
 \begin{code}

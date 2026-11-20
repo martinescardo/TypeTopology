@@ -154,7 +154,7 @@ bijections with families of pointed types.
 Tom de Jong, September 2019. I implement the above TODO.
 
 (There is an alternative solution at
-https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/)
+https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/)
 
 Fix type universes 𝓤 and 𝓥 and a type Y : 𝓤 ̇. Consider a property green : 𝓤 → 𝓥.
 If X : 𝓤 ̇ and f : X → Y, then we say that f is a green map if all of its fibers

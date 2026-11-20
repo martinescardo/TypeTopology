@@ -770,7 +770,7 @@ Id-is-embedding {𝓤} = UA-Id-embedding (ua 𝓤) fe
 
 The proof explained in the published article is implemented at
 
-https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/HoTT-UF-Agda.html#yoneda
+https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html#yoneda
 
 From this we conclude that algebraically injective types are retracts
 of powers of universes:

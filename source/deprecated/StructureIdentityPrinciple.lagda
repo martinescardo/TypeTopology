@@ -3,7 +3,7 @@ Martin Escardo, August 2018. A structure identity principle.
 There is a much better treatment of this here and so this file is
 obsolete:
 
-https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/
+https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/
 
 This is also ported in the module UF.SIP.
 

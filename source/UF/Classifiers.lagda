@@ -4,7 +4,7 @@ An obsolete, clumsy version of this file is at UF.Classifiers-Old.
 
 This version is ported from the Midlands Graduate School 2019 lecture notes
 
- https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/HoTT-UF-Agda.html
+ https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html
  https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
 
 but with the universe levels generalized and Σ-fibers added in

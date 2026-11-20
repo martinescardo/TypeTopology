@@ -61,7 +61,7 @@ We work with a Spartan MLTT:
   5. Universes (types of types), ranged over by 𝓤,𝓥,𝓦.
 
 (Here are lecture notes for HoTT/UF in Agda:
-https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes)
+https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes)
 
 
 Possible axioms for HoTT/UF
@@ -135,7 +135,7 @@ Main differences between HoTT/UF and MLTT
        Similarly for the types of rings, metric spaces, topological
        spaces, graphs, posets, categories, functor algebras etc.
 
-       (https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/)
+       (https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/)
 
   2. The treatment of propositions.
 
