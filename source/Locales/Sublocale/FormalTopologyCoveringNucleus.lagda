@@ -49,8 +49,9 @@ We denote by `𝒜P` the underlying poset of formal topology `𝒜`.
 
 \begin{code}
 
- 𝒜P : Poset 𝓤 𝓤
- 𝒜P = underlying-poset-of-formal-topology 𝒜
+ private
+  𝒜P : Poset 𝓤 𝓤
+  𝒜P = underlying-poset-of-formal-topology 𝒜
 
 \end{code}
 
