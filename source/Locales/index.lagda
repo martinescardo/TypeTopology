@@ -66,6 +66,15 @@ import Locales.SIP.FrameSIP
 
 \end{code}
 
+The `Locales.DownSet` module contains definitions and lemmas related to
+down sets of posets.
+
+\begin{code}
+
+import Locales.DownSet
+
+\end{code}
+
 \subsection{Terminal locale}
 
 The modules below contain:
