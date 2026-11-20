@@ -5,7 +5,7 @@ date:   2026-10-28
 ---
 
 In this module, we construct the nucleus that a formal topology's covering
-relation defines on the Alexandroff locale.
+relation defines on the localic filter completion.
 
 \begin{code}
 
@@ -21,8 +21,9 @@ module Locales.Sublocale.FormalTopologyCoveringNucleus
         (pe : Prop-Ext)
        where
 
-open import Locales.Alexandroff.Definition
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.DownSet pt fe
+open import Locales.FilterCompletion.Definition
 open import Locales.FormalTopology.Definition pt fe
 open import Locales.Frame pt fe renaming (⟨_⟩ to ⟨_⟩ᶠ)
 open import Locales.Sublocale.Nucleus pt fe
@@ -196,8 +197,8 @@ Finally, we package everything up into a nucleus.
 
 \end{code}
 
-The sublocale of the Alexandroff locale given by the above nucleus is the locale
-presented by the formal topology in consideration.
+The sublocale of the localic filter completion given by the above nucleus is
+the locale presented by the formal topology in consideration.
 
 \section{Bibliography}
 
