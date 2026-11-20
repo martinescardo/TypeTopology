@@ -21,6 +21,7 @@ module Locales.FormalTopology.Definition
         (fe : Fun-Ext)
        where
 
+open import Locales.DownSet pt fe
 open import Locales.Frame pt fe hiding (⟨_⟩)
 open import MLTT.Spartan
 open import Notation.UnderlyingType
@@ -237,15 +238,12 @@ module Downward-Closure-Intersection-Syntax {A : 𝓤 ̇} (_⊑_ : A → A → �
  _⊓_ : 𝓟 A → 𝓟 A → 𝓟 A
  U ⊓ V = (↓ U) ∩ (↓ V)
 
- is-downward-closed : 𝓟 A → Ω 𝓤
- is-downward-closed U = Ɐ u a ꞉ A , u ∈ₚ U ⇒ a ⊑ u ⇒ a ∈ₚ U
-
  downward-closedness-implies-⊓-coincides-with-∩
   : propext 𝓤
   → is-reflexive _⊑_ holds
   → {U V : 𝓟 A}
-  → is-downward-closed U holds
-  → is-downward-closed V holds
+  → is-downward-closed _⊑_ U holds
+  → is-downward-closed _⊑_ V holds
   → U ⊓ V ＝ U ∩ V
  downward-closedness-implies-⊓-coincides-with-∩ pe 𝓇𝒻𝓁 {U} {V} φ ψ =
   subset-extensionality pe fe † ‡
@@ -258,7 +256,7 @@ module Downward-Closure-Intersection-Syntax {A : 𝓤 ̇} (_⊑_ : A → A → �
       γ : Σ u ꞉ A , (u ∈ₚ U ∧ a ⊑ u) holds
         → Σ v ꞉ A , (v ∈ₚ V ∧ a ⊑ v) holds
         → (a ∈ₚ (U ∩ V)) holds
-      γ (u , pu , ru) (v , pv , rv)= φ u a pu ru , ψ v a pv rv
+      γ (u , pu , ru) (v , pv , rv)= φ u pu a ru , ψ v pv a rv
 
     ‡ : (U ∩ V) ⊆ (U ⊓ V)
     ‡ a (μ , ν) = ∣ a , μ , 𝓇𝒻𝓁 a ∣ , ∣ a , ν , 𝓇𝒻𝓁 a ∣
