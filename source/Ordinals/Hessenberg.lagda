@@ -499,13 +499,13 @@ The following captures some of the common ingredients between the cases of II'.
 
         IIIᵇ : (b : ⟨ β ⟩) → δ ⊕ ((β ↓ b) ⊕ γ) ⊲ (α ⊕ β) ⊕ γ
         IIIᵇ b = transport (_⊲ (α ⊕ β) ⊕ γ)
-                           (IH (δ , β ↓ b , γ) (inl (inr (refl , (b , refl)))))
-                           (⊕-is-order-preserving-left _ _ _ (l b))
+                  (IH (δ , β ↓ b , γ) (inl (inr (refl , (b , refl)))))
+                  (⊕-is-order-preserving-left _ _ _ (l b))
 
         IIIᶜ : (c : ⟨ γ ⟩) → δ ⊕ (β ⊕ (γ ↓ c)) ⊲ (α ⊕ β) ⊕ γ
         IIIᶜ c = transport (_⊲ (α ⊕ β) ⊕ γ)
-                           (IH (δ , β , γ ↓ c) (inl (inl (c , refl))))
-                           (h s)
+                  (IH (δ , β , γ ↓ c) (inl (inl (c , refl))))
+                  (h s)
          where
          h : ((δ ⊲ α) + (δ ＝ α)) → (δ ⊕ β) ⊕ (γ ↓ c) ⊲ (α ⊕ β) ⊕ γ
          h (inl k) = ⊕-is-order-preserving (δ ⊕ β) (α ⊕ β) (γ ↓ c) γ
@@ -515,8 +515,8 @@ The following captures some of the common ingredients between the cases of II'.
 
         IIIᵇᶜ : (b : ⟨ β ⟩) (c : ⟨ γ ⟩) → δ ⊕ ((β ↓ b) ⊕ (γ ↓ c)) ⊲ (α ⊕ β) ⊕ γ
         IIIᵇᶜ b c = transport (_⊲ (α ⊕ β) ⊕ γ)
-                              (IH (δ , β ↓ b , γ ↓ c) (inl (inl (c , refl))))
-                              (⊕-is-order-preserving _ _ _ _ (l b) (c , refl))
+                     (IH (δ , β ↓ b , γ ↓ c) (inl (inl (c , refl))))
+                     (⊕-is-order-preserving _ _ _ _ (l b) (c , refl))
 
 \end{code}
 
@@ -532,9 +532,9 @@ The following is mostly symmetric to the above.
      where
       III₂ : (c : ⟨ γ ⟩) → (α ⊕ β) ⊕ (γ ↓ c) ⊲ α ⊕ (β ⊕ γ)
       III₂ c = transport⁻¹ (_⊲ α ⊕ (β ⊕ γ))
-                           (IH (α , β , γ ↓ c) (inl (inl (c , refl))))
-                           (⊕-is-order-preserving-right α (β ⊕ (γ ↓ c)) (β ⊕ γ)
-                             (⊕-⊲-right β γ))
+                (IH (α , β , γ ↓ c) (inl (inl (c , refl))))
+                (⊕-is-order-preserving-right α (β ⊕ (γ ↓ c)) (β ⊕ γ)
+                  (⊕-⊲-right β γ))
 
       III : (δ : Ordinal 𝓤) → ((δ ⊲ γ) + (δ ＝ γ))
           → (x : ⟨ α ⊕ β ⟩) → ((α ⊕ β) ↓ x) ⊕ δ ⊲ α ⊕ (β ⊕ γ)
@@ -559,8 +559,8 @@ The following is mostly symmetric to the above.
 
         IIIᵃ : (a : ⟨ α ⟩) → ((α ↓ a) ⊕ β) ⊕ δ ⊲ α ⊕ (β ⊕ γ)
         IIIᵃ a = transport⁻¹ (_⊲ α ⊕ (β ⊕ γ))
-                             (IH (α ↓ a , β , δ) (pr₁ (h s)))
-                             (pr₂ (h s))
+                  (IH (α ↓ a , β , δ) (pr₁ (h s)))
+                  (pr₂ (h s))
          where
           h : ((δ ⊲ γ) + (δ ＝ γ))
             → (α ↓ a , β , δ) ≺⟨ OO³ ⟩ (α , β , γ)
@@ -573,14 +573,13 @@ The following is mostly symmetric to the above.
 
         IIIᵇ : (b : ⟨ β ⟩) → (α ⊕ (β ↓ b)) ⊕ δ ⊲ α ⊕ (β ⊕ γ)
         IIIᵇ b = transport⁻¹ (_⊲ (α ⊕ (β ⊕ γ)))
-                             (IH (α , (β ↓ b) , δ) (IH-applicable b α))
-                             (⊕-is-order-preserving-right _ _ _ (l b))
+                  (IH (α , (β ↓ b) , δ) (IH-applicable b α))
+                  (⊕-is-order-preserving-right _ _ _ (l b))
 
         IIIᵃᵇ : (a : ⟨ α ⟩) (b : ⟨ β ⟩) → ((α ↓ a) ⊕ (β ↓ b)) ⊕ δ ⊲ α ⊕ (β ⊕ γ)
         IIIᵃᵇ a b = transport⁻¹ (_⊲ (α ⊕ (β ⊕ γ)))
-                                (IH (α ↓ a , β ↓ b , δ)
-                                    (IH-applicable b (α ↓ a)))
-                                (⊕-is-order-preserving _ _ _ _ (a , refl) (l b))
+                     (IH (α ↓ a , β ↓ b , δ) (IH-applicable b (α ↓ a)))
+                     (⊕-is-order-preserving _ _ _ _ (a , refl) (l b))
 
 \end{code}
 
@@ -828,8 +827,8 @@ ordinal addition and thereby to excluded middle.
     where
      II : (p : P) → 𝟙ₒ +ₒ 𝟙ₒ ⊴ Pₒ +ₒ 𝟙ₒ
      II p = transport⁻¹ (λ - → 𝟙ₒ +ₒ 𝟙ₒ ⊴ - +ₒ 𝟙ₒ)
-                        (holds-gives-equal-𝟙ₒ i p)
-                        (⊴-refl 𝟚ₒ)
+             (holds-gives-equal-𝟙ₒ i p)
+             (⊴-refl 𝟚ₒ)
      III : (u : 𝟙) → Pₒ +ₒ 𝟙ₒ ⊴ Pₒ +ₒ 𝟙ₒ
      III _ = ⊴-refl (Pₒ +ₒ 𝟙ₒ)
 
