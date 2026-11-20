@@ -87,8 +87,8 @@ the view of nuclei as modal operators.
  ◇_ : ⟨ ↓𝒜 ⟩ᶠ → ⟨ ↓𝒜 ⟩ᶠ
  ◇ (U , _) = ◇̇ U , φ
   where
-   φ : is-downward-closed 𝒜P ⁅ a ꞉ ∣ 𝒜P ∣ₚ ∣ a ◁[ 𝒜 ] U ⁆ holds
-   φ u₀ a cov p = cover-satisfies-left-rule 𝒜 u₀ a U p cov
+   φ : is-downward-closed (λ x y → x ≤[ 𝒜P ] y) ⁅ a ꞉ ∣ 𝒜P ∣ₚ ∣ a ◁[ 𝒜 ] U ⁆ holds
+   φ u₀ a cov p = cover-satisfies-left-rule 𝒜 u₀ cov U p a
 
  infixr 7 ◇_
 
