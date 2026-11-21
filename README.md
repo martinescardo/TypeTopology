@@ -385,7 +385,7 @@ Please add yourself the first time you contribute. Use your adopted name, and no
 * [J. A. Carr](https://github.com/jasoncarr0)
 * [Jakub Opršal](https://jakub-oprsal.info/)
 * [Jon Sterling](https://www.jonmsterling.com/)
-* [Kelton OBrien](https://keltono.net/)
+* [Kelton OBrien](https://github.com/keltono)
 * [Keri D'Angelo](https://github.com/keridangelo)
 * [Lane Biocini](https://github.com/biocini)
 * [Marc Bezem](https://www4.uib.no/en/find-employees/marc.bezem)
