@@ -57,13 +57,14 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
   observation = refl _
 
   q = transport (λ - → - → Y) p pr₁ ＝⟨ transport-map-along-≃ ua e pr₁ ⟩
-      pr₁ ∘ ⌜ ≃-sym e ⌝             ＝⟨ refl _ ⟩
+      pr₁ ∘ ⌜ ≃-sym e ⌝             ＝⟨ refl _                         ⟩
       f                             ∎
 
   r : (Σ (fiber f) , pr₁) ＝ (X , f)
   r = to-Σ-＝ (p , q)
 
-χε : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+χε : is-univalent 𝓤
+   → dfunext 𝓤 (𝓤 ⁺)
    → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (𝕋 Y A) ＝ A
 
 χε ua fe Y A = fe γ
@@ -83,13 +84,15 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
   γ : ∀ y → fiber pr₁ y ＝ A y
   γ y = Eq→Id ua _ _ (invertibility-gives-≃ (f y) (g y , η y , ε y))
 
-universes-are-map-classifiers : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+universes-are-map-classifiers : is-univalent 𝓤
+                              → dfunext 𝓤 (𝓤 ⁺)
                               → is-map-classifier 𝓤
 
 universes-are-map-classifiers ua fe Y = invertibles-are-equivs (χ Y)
                                          (𝕋 Y , χη ua Y , χε ua fe Y)
 
-map-classification : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+map-classification : is-univalent 𝓤
+                   → dfunext 𝓤 (𝓤 ⁺)
                    → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
 
 map-classification ua fe Y = χ Y , universes-are-map-classifiers ua fe Y

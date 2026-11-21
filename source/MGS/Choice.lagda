@@ -81,8 +81,8 @@ unique-choice-gives-hfunext {𝓤} {𝓥} uc = →hfunext γ
     e : (x : X) → ∃! a ꞉ A x , f x ＝ a
     e x = singleton-types'-are-singletons (A x) (f x)
 
-unique-choice↔vvfunext : Unique-Choice 𝓤 𝓥 𝓥 ↔ vvfunext 𝓤 𝓥
-unique-choice↔vvfunext = unique-choice-gives-vvfunext ,
+unique-choice⇔vvfunext : Unique-Choice 𝓤 𝓥 𝓥 ⇔ vvfunext 𝓤 𝓥
+unique-choice⇔vvfunext = unique-choice-gives-vvfunext ,
                          vvfunext-gives-unique-choice
 
 module _ (hfe : global-hfunext) where
@@ -101,7 +101,7 @@ module _ (hfe : global-hfunext) where
 
  transport-hunapply A R f g φ h x =
 
-   transport (λ - → ∀ x → R x (- x)) (hunapply h) φ x ＝⟨ i ⟩
+   transport (λ - → ∀ x → R x (- x)) (hunapply h) φ x ＝⟨ i  ⟩
    transport (R x) (happly f g (hunapply h) x) (φ x)  ＝⟨ ii ⟩
    transport (R x) (h x) (φ x)                        ∎
 
@@ -152,8 +152,8 @@ module _ (hfe : global-hfunext) where
      p = hunapply (λ x → c₁ x (f x) (φ x))
 
      q : transport (λ - → (x : X) → R x (- x)) p φ₀ ∼ φ
-     q x = transport (λ - → (x : X) → R x (- x)) p φ₀ x           ＝⟨ i ⟩
-           transport (R x) (ap pr₁ (c x (f x , φ x))) (φ₀ x)      ＝⟨ ii ⟩
+     q x = transport (λ - → (x : X) → R x (- x)) p φ₀ x           ＝⟨ i   ⟩
+           transport (R x) (ap pr₁ (c x (f x , φ x))) (φ₀ x)      ＝⟨ ii  ⟩
            transport (λ σ → R x (pr₁ σ)) (c x (f x , φ x)) (φ₀ x) ＝⟨ iii ⟩
            φ x                                                    ∎
       where
@@ -190,15 +190,18 @@ module choice
                → ∃ f ꞉ Π A , ((x : X) → R x (f x))
 
   Choice : ∀ 𝓤 → 𝓤 ⁺ ̇
-  Choice 𝓤 = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (i : is-set X) (j : (x : X) → is-set (A x))
-           → AC 𝓤 X A i j
+  Choice 𝓤
+   = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (i : is-set X) (j : (x : X) → is-set (A x))
+   → AC 𝓤 X A i j
 
-  IAC : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → is-set X → ((x : X) → is-set (Y x)) → 𝓤 ⊔ 𝓥 ̇
+  IAC
+   : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → is-set X → ((x : X) → is-set (Y x)) → 𝓤 ⊔ 𝓥 ̇
   IAC X Y i j = ((x : X) → ∥ Y x ∥) → ∥ Π Y ∥
 
   IChoice : ∀ 𝓤 → 𝓤 ⁺ ̇
-  IChoice 𝓤 = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ ) (i : is-set X) (j : (x : X) → is-set (Y x))
-            → IAC X Y i j
+  IChoice 𝓤
+   = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ ) (i : is-set X) (j : (x : X) → is-set (Y x))
+   → IAC X Y i j
 
   Choice-gives-IChoice : Choice 𝓤 → IChoice 𝓤
   Choice-gives-IChoice {𝓤} ac X Y i j φ = γ
@@ -239,12 +242,14 @@ module choice
     γ : ∃ f ꞉ Π A , ((x : X) → R x (f x))
     γ = ∥∥-functor h a
 
-  TAC : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → is-set X → ((x : X) → is-set (A x)) → 𝓤 ⊔ 𝓥 ̇
-  TAC X A i j = ∥ ((x : X) → ∥ A x ∥ → A x)∥
+  TAC
+   : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → is-set X → ((x : X) → is-set (A x)) → 𝓤 ⊔ 𝓥 ̇
+  TAC X A i j = ∥((x : X) → ∥ A x ∥ → A x)∥
 
   TChoice : ∀ 𝓤 → 𝓤 ⁺ ̇
-  TChoice 𝓤 = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (i : is-set X) (j : (x : X) → is-set (A x))
-            → TAC X A i j
+  TChoice 𝓤
+   = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (i : is-set X) (j : (x : X) → is-set (A x))
+   → TAC X A i j
 
   IChoice-gives-TChoice : IChoice 𝓤 → TChoice 𝓤
   IChoice-gives-TChoice {𝓤} iac X A i j = γ
@@ -264,7 +269,7 @@ module choice
     φ : (x : X) → ∥ (∥ A x ∥ → A x) ∥
     φ x = iac ∥ A x ∥ (B x) (l x) (k x) (𝑖𝑑 ∥ A x ∥)
 
-    γ : ∥ ((x : X) → ∥ A x ∥ → A x)∥
+    γ : ∥((x : X) → ∥ A x ∥ → A x)∥
     γ = iac X (λ x → ∥ A x ∥ → A x) i m φ
 
   TChoice-gives-IChoice : TChoice 𝓤 → IChoice 𝓤
@@ -316,15 +321,16 @@ module choice
     sα : {m n : 𝟚} → s (r m) ＝ s (r n) → α m ＝ α n
     sα p = rα (l p)
 
-    γ : decidable (s (r ₀) ＝ s (r ₁)) → decidable (α ₀ ＝ α ₁)
+    γ : decidable (s (r ₀) ＝ s (r ₁)) → decidable(α ₀ ＝ α ₁)
     γ (inl p) = inl (sα p)
     γ (inr u) = inr (contrapositive αs u)
 
     d : decidable (s (r ₀) ＝ s (r ₁))
     d = 𝟚-has-decidable-equality (s (r ₀)) (s (r ₁))
 
-  choice-gives-decidable-equality : TChoice 𝓤
-                                  → (X : 𝓤 ̇ ) → is-set X → has-decidable-equality X
+  choice-gives-decidable-equality
+   : TChoice 𝓤
+   → (X : 𝓤 ̇ ) → is-set X → has-decidable-equality X
 
   choice-gives-decidable-equality {𝓤} tac X i x₀ x₁ = γ
    where
@@ -338,13 +344,13 @@ module choice
     l : is-subsingleton (decidable (x₀ ＝ x₁))
     l = +-is-subsingleton' hunapply (i (α ₀) (α ₁))
 
-    δ : ∥ ((x : X) → ∥ A x ∥ → A x)∥ → decidable (x₀ ＝ x₁)
+    δ : ∥((x : X) → ∥ A x ∥ → A x)∥ → decidable(x₀ ＝ x₁)
     δ = ∥∥-recursion l (decidable-equality-criterion α)
 
     j : (x : X) → is-set (A x)
     j x = subsets-of-sets-are-sets 𝟚 (λ n → α n ＝ x) 𝟚-is-set (λ n → i (α n) x)
 
-    h : ∥ ((x : X) → ∥ A x ∥ → A x)∥
+    h : ∥((x : X) → ∥ A x ∥ → A x)∥
     h = tac X A i j
 
     γ : decidable (x₀ ＝ x₁)
@@ -357,7 +363,7 @@ module choice
     ⊤ = (Lift 𝓤 𝟙 , equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton)
 
     δ : (ω : Ω 𝓤) → decidable (⊤ ＝ ω)
-    δ = choice-gives-decidable-equality tac (Ω 𝓤) (Ω-is-set hunapply pe) ⊤
+    δ = choice-gives-decidable-equality tac (Ω 𝓤) (Ω-is-a-set hunapply pe) ⊤
 
     em : (P : 𝓤 ̇ ) → is-subsingleton P → P + ¬ P
     em P i = γ (δ (P , i))
@@ -397,7 +403,7 @@ module choice
     γ (inr n) s = !𝟘 X (∥∥-recursion 𝟘-is-subsingleton n s)
 
   global-∥∥-choice-gives-all-types-are-sets : global-∥∥-choice 𝓤
-                                            → (X : 𝓤 ̇ ) → is-set  X
+                                            → (X : 𝓤 ̇ ) → is-set X
 
   global-∥∥-choice-gives-all-types-are-sets {𝓤} c X =
     types-with-wconstant-＝-endomaps-are-sets X
@@ -415,16 +421,16 @@ module choice
   global-∥∥-choice-gives-choice {𝓤} c X A i j = ∣(λ x → c (A x))∣
 
   global-∥∥-choice-gives-EM : propext 𝓤
-                           → global-∥∥-choice (𝓤 ⁺)
-                           → EM  𝓤
+                            → global-∥∥-choice (𝓤 ⁺)
+                            → EM  𝓤
 
   global-∥∥-choice-gives-EM {𝓤} pe c =
     choice-gives-EM pe (global-∥∥-choice-gives-choice c)
 
   global-∥∥-choice-gives-global-choice : propext 𝓤
-                                      → global-∥∥-choice 𝓤
-                                      → global-∥∥-choice (𝓤 ⁺)
-                                      → global-choice 𝓤
+                                       → global-∥∥-choice 𝓤
+                                       → global-∥∥-choice (𝓤 ⁺)
+                                       → global-choice 𝓤
 
   global-∥∥-choice-gives-global-choice {𝓤} pe c c⁺ X = γ
    where
@@ -453,8 +459,8 @@ module choice
     global-∥∥-choice-gives-global-choice pe (c 𝓤) (c (𝓤 ⁺))
 
   global-∥∥-choice-inconsistent-with-univalence : Global-∥∥-Choice
-                                               → Univalence
-                                               → 𝟘
+                                                → Univalence
+                                                → 𝟘
 
   global-∥∥-choice-inconsistent-with-univalence g ua = γ (g 𝓤₁) (ua 𝓤₀)
    where
@@ -472,7 +478,7 @@ module choice
       (Global-Choice-gives-Global-∥∥-Choice g)
 
   global-choice-gives-all-types-are-sets : global-choice 𝓤
-                                         → (X : 𝓤 ̇ ) → is-set  X
+                                         → (X : 𝓤 ̇ ) → is-set X
 
   global-choice-gives-all-types-are-sets {𝓤} c X = hedberg (λ x y → c (x ＝ y))
 

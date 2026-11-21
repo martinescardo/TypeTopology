@@ -60,7 +60,7 @@ module quotient
  η = corestriction equiv-rel
 
  η-surjection : is-surjection η
- η-surjection = corestriction-is-surjection equiv-rel
+ η-surjection = corestriction-surjection equiv-rel
 
  η-induction : (P : X/≈ → 𝓦 ̇ )
              → ((x' : X/≈) → is-subsingleton (P x'))
@@ -73,9 +73,10 @@ module quotient
  η-equiv-equal {x} {y} e =
   to-subtype-＝
     (λ _ → ∃-is-subsingleton)
-    (hunapply (λ z → to-subtype-＝
-                        (λ _ → being-subsingleton-is-subsingleton hunapply)
-                        (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e))))
+    (hunapply
+      (λ z → to-subtype-＝
+              (λ _ → being-subsingleton-is-subsingleton hunapply)
+              (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e))))
 
  η-equal-equiv : {x y : X} → η x ＝ η y → x ≈ y
  η-equal-equiv {x} {y} p = equiv-rel-reflect (ap pr₁ p)
@@ -109,9 +110,9 @@ module quotient
        h : (Σ x' ꞉ X , (η x' ＝ η x) × (f x' ＝ a))
          → (Σ y' ꞉ X , (η y' ＝ η x) × (f y' ＝ b))
          → a ＝ b
-       h (x' , r , s) (y' , t , u) = a    ＝⟨ s ⁻¹ ⟩
+       h (x' , r , s) (y' , t , u) = a    ＝⟨ s ⁻¹                         ⟩
                                      f x' ＝⟨ τ (η-equal-equiv (r ∙ t ⁻¹)) ⟩
-                                     f y' ＝⟨ u ⟩
+                                     f y' ＝⟨ u                            ⟩
                                      b    ∎
 
        p : a ＝ b
@@ -136,7 +137,7 @@ module quotient
      g y = pr₂ (k (η y))
 
      j : (y : X) → (Σ x ꞉ X , (η x ＝ η y) × (f x ＝ f' (η y))) → f'(η y) ＝ f y
-     j y (x , p , q) = f' (η y) ＝⟨ q ⁻¹ ⟩
+     j y (x , p , q) = f' (η y) ＝⟨ q ⁻¹                ⟩
                        f x      ＝⟨ τ (η-equal-equiv p) ⟩
                        f y      ∎
 

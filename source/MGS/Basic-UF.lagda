@@ -13,11 +13,11 @@ module MGS.Basic-UF where
 
 open import MGS.MLTT public
 
+is-singleton : 𝓤 ̇ → 𝓤 ̇
+is-singleton X = Σ c ꞉ X , ((x : X) → c ＝ x)
+
 is-center : (X : 𝓤 ̇ ) → X → 𝓤 ̇
 is-center X c = (x : X) → c ＝ x
-
-is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ c ꞉ X , is-center X c
 
 𝟙-is-singleton : is-singleton 𝟙
 𝟙-is-singleton = ⋆ , 𝟙-induction (λ x → ⋆ ＝ x) (refl ⋆)
@@ -36,7 +36,7 @@ is-subsingleton X = (x y : X) → x ＝ y
 
 singletons-are-subsingletons : (X : 𝓤 ̇ ) → is-singleton X → is-subsingleton X
 singletons-are-subsingletons X (c , φ) x y = x ＝⟨ (φ x)⁻¹ ⟩
-                                             c ＝⟨ φ y ⟩
+                                             c ＝⟨ φ y     ⟩
                                              y ∎
 
 𝟙-is-subsingleton : is-subsingleton 𝟙
@@ -47,8 +47,9 @@ pointed-subsingletons-are-singletons : (X : 𝓤 ̇ )
 
 pointed-subsingletons-are-singletons X x s = (x , s x)
 
-singleton-iff-pointed-and-subsingleton : {X : 𝓤 ̇ }
-                                       → is-singleton X ↔ (X × is-subsingleton X)
+singleton-iff-pointed-and-subsingleton
+ : {X : 𝓤 ̇ }
+ → is-singleton X ⇔ (X × is-subsingleton X)
 
 singleton-iff-pointed-and-subsingleton {𝓤} {X} = (a , b)
  where
@@ -74,16 +75,17 @@ EM-gives-EM' em X s = γ (em X s)
  where
   γ : X + ¬ X → is-singleton X + is-empty X
   γ (inl x) = inl (pointed-subsingletons-are-singletons X x s)
-  γ (inr x) = inr x
+  γ (inr ν) = inr ν
 
 EM'-gives-EM : EM' 𝓤 → EM 𝓤
 EM'-gives-EM em' X s = γ (em' X s)
  where
   γ : is-singleton X + is-empty X → X + ¬ X
   γ (inl i) = inl (center X i)
-  γ (inr x) = inr x
+  γ (inr e) = inr e
 
-no-unicorns : ¬ (Σ X ꞉ 𝓤 ̇ , is-subsingleton X × ¬ (is-singleton X) × ¬ (is-empty X))
+no-unicorns
+ : ¬(Σ X ꞉ 𝓤 ̇ , is-subsingleton X × ¬(is-singleton X) × ¬(is-empty X))
 no-unicorns (X , i , f , g) = c
  where
   e : is-empty X
@@ -155,9 +157,9 @@ module monoids where
 
  Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
  Monoid 𝓤 = Σ X ꞉ 𝓤 ̇ , is-set X
-                      × (Σ · ꞉ (X → X → X) , (Σ e ꞉ X , (left-neutral e ·)
-                                                      × (right-neutral e ·)
-                                                      × (associative ·)))
+                     × (Σ · ꞉ (X → X → X) , (Σ e ꞉ X , (left-neutral e ·)
+                                                     × (right-neutral e ·)
+                                                     × (associative ·)))
 
 refl-left : {X : 𝓤 ̇ } {x y : X} {p : x ＝ y} → refl x ∙ p ＝ p
 refl-left {𝓤} {X} {x} {x} {refl x} = refl (refl x)
@@ -234,6 +236,9 @@ transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
 
 transport-ap A f (refl x) a = refl a
 
+data Color : 𝓤₀ ̇ where
+ Black White : Color
+
 apd : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : (x : X) → A x) {x y : X}
       (p : x ＝ y) → transport A p (f x) ＝ f y
 
@@ -251,16 +256,28 @@ from-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
 
 from-Σ-＝ (refl (x , a)) = (refl x , refl a)
 
+to-Σ-＝-again : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {(x , a) (y , b) : Σ A}
+             → Σ p ꞉ x ＝ y , transport A p a ＝ b
+             → (x , a) ＝ (y , b)
+
+to-Σ-＝-again (refl x , refl a) = refl (x , a)
+
+from-Σ-＝-again : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {(x , a) (y , b) : Σ A}
+               → (x , a) ＝ (y , b)
+               → Σ p ꞉ x ＝ y , transport A p a ＝ b
+
+from-Σ-＝-again (refl (x , a)) = (refl x , refl a)
+
 to-Σ-＝' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x : X} {a a' : A x}
         → a ＝ a' → Id (Σ A) (x , a) (x , a')
 
 to-Σ-＝' {𝓤} {𝓥} {X} {A} {x} = ap (λ - → (x , -))
 
 transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
-                {x y : X} (p : x ＝ y) {c : A x × B x}
+              {x y : X} (p : x ＝ y) {(a , b) : A x × B x}
 
-            → transport (λ x → A x × B x) p c
-            ＝ (transport A p (pr₁ c) , transport B p (pr₂ c))
+            → transport (λ x → A x × B x) p (a , b)
+            ＝ (transport A p a , transport B p b)
 
 transport-× A B (refl _) = refl _
 

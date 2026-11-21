@@ -104,7 +104,7 @@ equivs-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y}
 equiv-to-singleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                     → X ≃ Y → is-singleton X → is-singleton Y
 
-subtypes-of-sets-are-sets' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
+subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-set Y → is-set X
 
 pr₁-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
@@ -122,15 +122,15 @@ to-subtype-＝ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
              → x ＝ y
              → (x , a) ＝ (y , b)
 
-pr₁-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-          → ((x : X) → is-singleton (A x))
-          → is-equiv (λ (t : Σ A) → pr₁ t)
+pr₁-is-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+             → ((x : X) → is-singleton (A x))
+             → is-equiv (λ (t : Σ A) → pr₁ t)
 
 pr₁-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
       → ((x : X) → is-singleton (A x))
       → Σ A ≃ X
 
-pr₁-≃ i = pr₁ , pr₁-equiv i
+pr₁-≃ i = pr₁ , pr₁-is-equiv i
 
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
            → (Π x ꞉ X , Σ a ꞉ A x , P x a)
@@ -152,7 +152,7 @@ maps-of-singletons-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 logically-equivalent-subsingletons-are-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                                                   → is-subsingleton X
                                                   → is-subsingleton Y
-                                                  → X ↔ Y
+                                                  → X ⇔ Y
                                                   → X ≃ Y
 
 singletons-are-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
@@ -225,8 +225,8 @@ sections-are-lc = sol
   sol : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (s : X → A)
       → has-retraction s → left-cancellable s
   sol s (r , ε) {x} {y} p = x       ＝⟨ (ε x)⁻¹ ⟩
-                            r (s x) ＝⟨ ap r p ⟩
-                            r (s y) ＝⟨ ε y ⟩
+                            r (s x) ＝⟨ ap r p  ⟩
+                            r (s y) ＝⟨ ε y     ⟩
                             y       ∎
 
 equivs-have-retractions = sol
@@ -259,7 +259,7 @@ comp-inverses = sol
       → g' ∼ inverse g j
       → f' ∘ g' ∼ inverse (g ∘ f) (∘-is-equiv j i)
   sol f g i j f' g' h k z =
-   f' (g' z)                          ＝⟨ h (g' z) ⟩
+   f' (g' z)                          ＝⟨ h (g' z)               ⟩
    inverse f i (g' z)                 ＝⟨ ap (inverse f i) (k z) ⟩
    inverse f i (inverse g j z)        ＝⟨ inverse-of-∘ f g i j z ⟩
    inverse (g ∘ f) (∘-is-equiv j i) z ∎
@@ -267,7 +267,7 @@ comp-inverses = sol
 equiv-to-set = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-set Y → is-set X
-  sol e = subtypes-of-sets-are-sets' ⌜ e ⌝ (equivs-are-lc ⌜ e ⌝ (⌜⌝-is-equiv e))
+  sol e = subtypes-of-sets-are-sets ⌜ e ⌝ (equivs-are-lc ⌜ e ⌝ (⌜⌝-is-equiv e))
 
 sections-closed-under-∼ = sol
  where
@@ -275,7 +275,7 @@ sections-closed-under-∼ = sol
       → has-retraction f → g ∼ f → has-retraction g
   sol f g (r , rf) h = (r ,
                         λ x → r (g x) ＝⟨ ap r (h x) ⟩
-                              r (f x) ＝⟨ rf x ⟩
+                              r (f x) ＝⟨ rf x       ⟩
                               x       ∎)
 
 retractions-closed-under-∼ = sol
@@ -284,7 +284,7 @@ retractions-closed-under-∼ = sol
       → has-section f → g ∼ f → has-section g
   sol f g (s , fs) h = (s ,
                         λ y → g (s y) ＝⟨ h (s y) ⟩
-                              f (s y) ＝⟨ fs y ⟩
+                              f (s y) ＝⟨ fs y    ⟩
                               y ∎)
 
 one-inverse = sol
@@ -295,7 +295,7 @@ one-inverse = sol
       → (f ∘ s ∼ id)
       → r ∼ s
   sol X Y f r s h k y = r y         ＝⟨ ap r ((k y)⁻¹) ⟩
-                        r (f (s y)) ＝⟨ h (s y) ⟩
+                        r (f (s y)) ＝⟨ h (s y)        ⟩
                         s y         ∎
 
 joyal-equivs-are-invertible = sol
@@ -304,9 +304,9 @@ joyal-equivs-are-invertible = sol
       → is-joyal-equiv f → invertible f
   sol f ((s , ε) , (r , η)) = (s , sf , ε)
    where
-    sf = λ (x : domain f) → s (f x)       ＝⟨ (η (s (f x)))⁻¹ ⟩
-                            r (f (s (f x))) ＝⟨ ap r (ε (f x)) ⟩
-                            r (f x)       ＝⟨ η x ⟩
+    sf = λ (x : domain f) → s(f x)       ＝⟨ (η (s (f x)))⁻¹ ⟩
+                            r(f(s(f x))) ＝⟨ ap r (ε (f x))  ⟩
+                            r(f x)       ＝⟨ η x             ⟩
                             x            ∎
 
 joyal-equivs-are-equivs = sol
@@ -343,7 +343,7 @@ equiv-to-singleton' = sol
       → X ≃ Y → is-singleton X → is-singleton Y
   sol e = retract-of-singleton (≃-gives-▷ e)
 
-subtypes-of-sets-are-sets' = sol
+subtypes-of-sets-are-sets = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
       → left-cancellable m → is-set Y → is-set X
@@ -371,7 +371,7 @@ subsets-of-sets-are-sets = sol
      → is-set X
      → ((x : X) → is-subsingleton (A x))
      → is-set (Σ x ꞉ X , A x)
-  sol X A h p = subtypes-of-sets-are-sets' pr₁ (pr₁-lc p) h
+  sol X A h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
 to-subtype-＝ = sol
  where
@@ -382,7 +382,7 @@ to-subtype-＝ = sol
       → (x , a) ＝ (y , b)
   sol {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p = to-Σ-＝ (p , s y (transport A p a) b)
 
-pr₁-equiv = sol
+pr₁-is-equiv = sol
  where
   sol : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
       → ((x : X) → is-singleton (A x))
@@ -390,13 +390,14 @@ pr₁-equiv = sol
   sol {𝓤} {𝓥} {X} {A} s = invertibles-are-equivs pr₁ (g , η , ε)
    where
     g : X → Σ A
-    g x = x , pr₁ (s x)
+    g x = x , pr₁(s x)
 
     ε : (x : X) → pr₁ (g x) ＝ x
     ε x = refl (pr₁ (g x))
 
     η : (σ : Σ A) → g (pr₁ σ) ＝ σ
-    η (x , a) = to-subtype-＝ (λ x → singletons-are-subsingletons (A x) (s x)) (ε x)
+    η (x , a)
+     = to-subtype-＝ (λ x → singletons-are-subsingletons (A x) (s x)) (ε x)
 
 ΠΣ-distr-≃ = sol
  where
@@ -483,7 +484,7 @@ maps-of-singletons-are-equivs = sol
 logically-equivalent-subsingletons-are-equivalent = sol
  where
   sol : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
-      → is-subsingleton X → is-subsingleton Y → X ↔ Y → X ≃ Y
+      → is-subsingleton X → is-subsingleton Y → X ⇔ Y → X ≃ Y
   sol  X Y i j (f , g) = invertibility-gives-≃ f
                           (g ,
                            (λ x → i (g (f x)) x) ,
@@ -548,7 +549,7 @@ NatΣ-equiv-gives-fiberwise-equiv = sol
       → is-singleton (X × Y)
   sol (x , φ) (y , γ) = (x , y) , δ
    where
-    δ : ∀ z → x , y ＝ z
+    δ : ∀ z → (x , y) ＝ z
     δ (x' , y' ) = to-×-＝ (φ x' , γ y')
 
 ×-is-subsingleton = sol

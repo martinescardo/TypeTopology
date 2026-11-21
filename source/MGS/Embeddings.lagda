@@ -33,11 +33,11 @@ pr₂-embedding A X i x ((a , x) , refl x) ((b , x) , refl x) = p
   p : ((a , x) , refl x) ＝ ((b , x) , refl x)
   p = ap (λ - → ((- , x) , refl x)) (i a b)
 
-pr₁-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-              → ((x : X) → is-subsingleton (A x))
-              → is-embedding (λ (σ : Σ A) → pr₁ σ)
+pr₁-is-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                 → ((x : X) → is-subsingleton (A x))
+                 → is-embedding (λ (σ : Σ A) → pr₁ σ)
 
-pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
+pr₁-is-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
  where
   p : a ＝ a'
   p = i x a a'
@@ -47,7 +47,8 @@ pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
 
 equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                         (f : X → Y)
-                      → is-equiv f → is-embedding f
+                      → is-equiv f
+                      → is-embedding f
 
 equivs-are-embeddings f i y = singletons-are-subsingletons (fiber f y) (i y)
 
@@ -56,7 +57,9 @@ id-is-embedding {𝓤} {X} = equivs-are-embeddings id (id-is-equiv X)
 
 ∘-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
               {f : X → Y} {g : Y → Z}
-            → is-embedding g  → is-embedding f → is-embedding (g ∘ f)
+            → is-embedding g
+            → is-embedding f
+            → is-embedding (g ∘ f)
 
 ∘-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} d e = h
  where
@@ -76,7 +79,11 @@ id-is-embedding {𝓤} {X} = equivs-are-embeddings id (id-is-equiv X)
   η _ (x , refl _) = refl (x , refl ((g ∘ f) x))
 
   h : (z : Z) → is-subsingleton (fiber (g ∘ f) z)
-  h z = lc-maps-reflect-subsingletons (φ z) (sections-are-lc (φ z) (γ z , η z)) (i z)
+  h z
+   = lc-maps-reflect-subsingletons
+      (φ z)
+      (sections-are-lc (φ z) (γ z , η z))
+      (i z)
 
 embedding-lemma : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → ((x : X) → is-singleton (fiber f (f x)))
@@ -151,12 +158,30 @@ embeddings-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 
 embeddings-are-lc f e {x} {y} = ⌜ embedding-criterion-converse f e x y ⌝
 
+lc-maps-into-sets-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                 → left-cancellable f
+                                 → is-set Y
+                                 → is-embedding f
+lc-maps-into-sets-are-embeddings {𝓤} {𝓥} {X} {Y} f lc i y = γ
+ where
+  γ : is-subsingleton (Σ x ꞉ X , f x ＝ y)
+  γ (x , p) (x' , p') = to-subtype-＝ j q
+   where
+    j : (x : X) → is-subsingleton (f x ＝ y)
+    j x = i (f x) y
+
+    q : x ＝ x'
+    q = lc (f x  ＝⟨ p     ⟩
+            y    ＝⟨ p' ⁻¹ ⟩
+            f x' ∎)
+
 embedding-with-section-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-embedding f
                                 → has-section f
                                 → is-equiv f
-embedding-with-section-is-equiv f i (g , η) y = pointed-subsingletons-are-singletons
-                                                 (fiber f y) (g y , η y) (i y)
+embedding-with-section-is-equiv f i (g , η) y
+ = pointed-subsingletons-are-singletons
+    (fiber f y) (g y , η y) (i y)
 
 NatΠ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → Π A → Π B
 NatΠ τ f x = τ x (f x)
@@ -172,8 +197,8 @@ NatΠ-is-embedding v w {X} {A} τ i = embedding-criterion (NatΠ τ) γ
  where
   γ : (f g : Π A) → (NatΠ τ f ＝ NatΠ τ g) ≃ (f ＝ g)
   γ f g = (NatΠ τ f ＝ NatΠ τ g) ≃⟨ hfunext-≃ w (NatΠ τ f) (NatΠ τ g) ⟩
-          (NatΠ τ f ∼ NatΠ τ g) ≃⟨ b ⟩
-          (f ∼ g)               ≃⟨ ≃-sym (hfunext-≃ v f g) ⟩
+          (NatΠ τ f ∼ NatΠ τ g) ≃⟨ b                                 ⟩
+          (f ∼ g)               ≃⟨ ≃-sym (hfunext-≃ v f g)           ⟩
           (f ＝ g)               ■
 
    where
@@ -183,10 +208,41 @@ NatΠ-is-embedding v w {X} {A} τ i = embedding-criterion (NatΠ τ) γ
     b : (NatΠ τ f ∼ NatΠ τ g) ≃ (f ∼ g)
     b = Π-cong (hfunext-gives-dfunext w) (hfunext-gives-dfunext v) a
 
+triangle-lemma
+ : dfunext 𝓦 (𝓤 ⊔ 𝓥)
+ → {Y : 𝓤 ̇ } {A : 𝓥 ̇ } (g : Y → A)
+ → is-embedding g
+ → {X : 𝓦 ̇ } (f : X → A) → is-subsingleton (Σ h ꞉ (X → Y) , g ∘ h ∼ f)
+
+triangle-lemma fe {Y} {A} g i {X} f = iv
+ where
+  ii : (x : X) → is-subsingleton (Σ y ꞉ Y , g y ＝ f x)
+  ii x = i (f x)
+
+  iii : is-subsingleton (Π x ꞉ X , Σ y ꞉ Y , g y ＝ f x)
+  iii = Π-is-subsingleton fe ii
+
+  iv : is-subsingleton (Σ h ꞉ (X → Y) , g ∘ h ∼ f)
+  iv = equiv-to-subsingleton (≃-sym ΠΣ-distr-≃) iii
+
+
+postcomp-is-embedding : dfunext 𝓦 (𝓤 ⊔ 𝓥) → hfunext 𝓦 𝓥
+                      → {Y : 𝓤 ̇ } {A : 𝓥 ̇ } (g : Y → A)
+                      → is-embedding g
+                      → (X : 𝓦 ̇ ) → is-embedding (λ (h : X → Y) → g ∘ h)
+
+postcomp-is-embedding fe hfe {Y} {A} g i X = γ
+ where
+  γ : (f : X → A) → is-subsingleton (Σ h ꞉ (X → Y) , g ∘ h ＝ f)
+  γ f = equiv-to-subsingleton u (triangle-lemma fe g i f)
+   where
+    u : (Σ h ꞉ (X → Y) , g ∘ h ＝ f) ≃ (Σ h ꞉ (X → Y) , g ∘ h ∼ f)
+    u = Σ-cong (λ h → hfunext-≃ hfe (g ∘ h) f)
+
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ f ꞉ (X → Y), is-embedding f
 
-Emb→fun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ↪ Y → X → Y
+Emb→fun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → (X → Y)
 Emb→fun (f , i) = f
 
 \end{code}

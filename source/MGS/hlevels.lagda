@@ -36,9 +36,9 @@ Hedberg : {X : 𝓤 ̇ } (x : X)
 
 Hedberg {𝓤} {X} x c y p q =
 
- p                         ＝⟨ a y p ⟩
+ p                         ＝⟨ a y p                                     ⟩
  (f x (refl x))⁻¹ ∙ f y p  ＝⟨ ap (λ - → (f x (refl x))⁻¹ ∙ -) (κ y p q) ⟩
- (f x (refl x))⁻¹ ∙ f y q  ＝⟨ (a y q)⁻¹ ⟩
+ (f x (refl x))⁻¹ ∙ f y q  ＝⟨ (a y q)⁻¹                                 ⟩
  q                         ∎
 
  where
@@ -66,9 +66,10 @@ sets-have-wconstant-＝-endomaps X s x y = (f , κ)
 types-with-wconstant-＝-endomaps-are-sets : (X : 𝓤 ̇ )
                                          → wconstant-＝-endomaps X → is-set X
 
-types-with-wconstant-＝-endomaps-are-sets X c x = Hedberg x
-                                                  (λ y → wcmap (x ＝ y) (c x y) ,
-                                                   wcmap-constancy (x ＝ y) (c x y))
+types-with-wconstant-＝-endomaps-are-sets X c x
+ = Hedberg x
+    (λ y → wcmap (x ＝ y) (c x y) ,
+     wcmap-constancy (x ＝ y) (c x y))
 
 subsingletons-have-wconstant-＝-endomaps : (X : 𝓤 ̇ )
                                         → is-subsingleton X
@@ -87,7 +88,8 @@ subsingletons-are-sets X s = types-with-wconstant-＝-endomaps-are-sets X
                                (subsingletons-have-wconstant-＝-endomaps X s)
 
 singletons-are-sets : (X : 𝓤 ̇ ) → is-singleton X → is-set X
-singletons-are-sets X = subsingletons-are-sets X ∘ singletons-are-subsingletons X
+singletons-are-sets X
+ = subsingletons-are-sets X ∘ singletons-are-subsingletons X
 
 𝟘-is-set : is-set 𝟘
 𝟘-is-set = subsingletons-are-sets 𝟘 𝟘-is-subsingleton
@@ -141,15 +143,16 @@ hlevel-upper X (succ n) = λ h x y → hlevel-upper (x ＝ y) n (h x y)
 
 _has-minimal-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X has-minimal-hlevel 0        = X is-of-hlevel 0
-X has-minimal-hlevel (succ n) = (X is-of-hlevel (succ n)) × ¬ (X is-of-hlevel n)
+X has-minimal-hlevel (succ n) = (X is-of-hlevel (succ n)) × ¬(X is-of-hlevel n)
 
 _has-minimal-hlevel-∞ : 𝓤 ̇ → 𝓤 ̇
-X has-minimal-hlevel-∞ = (n : ℕ) → ¬ (X is-of-hlevel n)
+X has-minimal-hlevel-∞ = (n : ℕ) → ¬(X is-of-hlevel n)
 
 pointed-types-have-wconstant-endomap : {X : 𝓤 ̇ } → X → wconstant-endomap X
 pointed-types-have-wconstant-endomap x = ((λ y → x) , (λ y y' → refl x))
 
-empty-types-have-wconstant-endomap : {X : 𝓤 ̇ } → is-empty X → wconstant-endomap X
+empty-types-have-wconstant-endomap
+ : {X : 𝓤 ̇ } → is-empty X → wconstant-endomap X
 empty-types-have-wconstant-endomap e = (id , (λ x x' → !𝟘 (x ＝ x') (e x)))
 
 decidable-has-wconstant-endomap : {X : 𝓤 ̇ } → decidable X → wconstant-endomap X

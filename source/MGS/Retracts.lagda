@@ -43,7 +43,7 @@ _◁∘_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y ◁ Z 
 (r , s , η) ◁∘ (r' , s' , η') = (r ∘ r' , s' ∘ s , η'')
  where
   η'' = λ x → r (r' (s' (s x))) ＝⟨ ap r (η' (s x)) ⟩
-              r (s x)           ＝⟨ η x ⟩
+              r (s x)           ＝⟨ η x             ⟩
               x                 ∎
 
 _◁⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y ◁ Z → X ◁ Z
@@ -121,7 +121,7 @@ retract-of-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 retract-of-singleton (r , s , η) (c , φ) = r c , γ
  where
   γ = λ y → r c     ＝⟨ ap r (φ (s y)) ⟩
-            r (s y) ＝⟨ η y ⟩
+            r (s y) ＝⟨ η y            ⟩
             y       ∎
 
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇

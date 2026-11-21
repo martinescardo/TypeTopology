@@ -32,7 +32,8 @@ transport-lemma A x τ x (refl x) = refl (τ x (refl x))
 𝓝 : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) → A x → Nat (𝓨 x) A
 𝓝 A x a y p = transport A p a
 
-yoneda-η : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+yoneda-η : dfunext 𝓤 (𝓤 ⊔ 𝓥)
+         → dfunext 𝓤 𝓥
          → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
          → 𝓝 A x ∘ 𝓔 A x ∼ id
 
@@ -49,24 +50,28 @@ yoneda-ε A x = γ
   γ : (a : A x) → transport A (refl x) a ＝ a
   γ = refl
 
-is-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+is-fiberwise-equiv
+ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 is-fiberwise-equiv τ = ∀ x → is-equiv (τ x)
 
-𝓔-is-equiv : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+𝓔-is-equiv : dfunext 𝓤 (𝓤 ⊔ 𝓥)
+           → dfunext 𝓤 𝓥
            → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
            → is-fiberwise-equiv (𝓔 A)
 
 𝓔-is-equiv fe fe' A x = invertibles-are-equivs (𝓔 A x )
                          (𝓝 A x , yoneda-η fe fe' A x , yoneda-ε A x)
 
-𝓝-is-equiv : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+𝓝-is-equiv : dfunext 𝓤 (𝓤 ⊔ 𝓥)
+           → dfunext 𝓤 𝓥
            → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
            → is-fiberwise-equiv (𝓝 A)
 
 𝓝-is-equiv fe fe' A x = invertibles-are-equivs (𝓝 A x)
                          (𝓔 A x , yoneda-ε A x , yoneda-η fe fe' A x)
 
-Yoneda-Lemma : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+Yoneda-Lemma : dfunext 𝓤 (𝓤 ⊔ 𝓥)
+             → dfunext 𝓤 𝓥
              → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
              → Nat (𝓨 x) A ≃ A x
 
@@ -186,10 +191,11 @@ fiberwise-◁-gives-≃ X A x ρ = γ
   f y = retraction (ρ y)
 
   e : is-fiberwise-equiv f
-  e = fiberwise-retractions-are-equivs A x f (λ y → retraction-has-section (ρ y))
+  e
+   = fiberwise-retractions-are-equivs A x f (λ y → retraction-has-section (ρ y))
 
   γ : (y : X) → A y ≃ (x ＝ y)
-  γ y = ≃-sym (f y , e y)
+  γ y = ≃-sym(f y , e y)
 
 embedding-criterion' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → ((x x' : X) → (f x ＝ f x') ◁ (x ＝ x'))
@@ -223,10 +229,11 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
            (being-fiberwise-equiv-is-subsingleton fe τ)
 
   ε : (x : X) → (𝓨 x ≃̇ A) ≃ A x
-  ε x = ((y : X) → 𝓨 x y ≃ A y)                       ≃⟨ ΠΣ-distr-≃ ⟩
-        (Σ τ ꞉ Nat (𝓨 x) A , is-fiberwise-equiv τ)    ≃⟨ pr₁-≃ (i x) ⟩
-        Nat (𝓨 x) A                                   ≃⟨ Yoneda-Lemma fe fe A x ⟩
-        A x                                           ■
+  ε x
+   = ((y : X) → 𝓨 x y ≃ A y)                       ≃⟨ ΠΣ-distr-≃             ⟩
+     (Σ τ ꞉ Nat (𝓨 x) A , is-fiberwise-equiv τ)    ≃⟨ pr₁-≃ (i x)            ⟩
+     Nat (𝓨 x) A                                   ≃⟨ Yoneda-Lemma fe fe A x ⟩
+     A x                                           ■
 
   δ : is-representable A ≃ Σ A
   δ = Σ-cong ε
@@ -252,8 +259,8 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
     where
      i  = λ (x : X) → (happly (𝓨 x) A , hfe (𝓨 x) A)
      ii = λ (x : X) → Π-cong dfe dfe
-                       (λ y → univalence-≃ (ua 𝓤)
-                               (𝓨 x y) (A y))
+                 (λ y → univalence-≃ (ua 𝓤)
+                         (𝓨 x y) (A y))
 
   e : fiber 𝓨 A ≃ is-representable A
   e = Σ-cong p

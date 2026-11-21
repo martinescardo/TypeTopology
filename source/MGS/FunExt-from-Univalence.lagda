@@ -64,12 +64,13 @@ univalence-gives-funext {𝓤} {𝓥} ua {X} {Y} {f₀} {f₁} = γ
   γ h = ap (λ π x → π (f₀ x , f₁ x , h x)) q
 
   γ' : f₀ ∼ f₁ → f₀ ＝ f₁
-  γ' h = f₀                             ＝⟨ refl _ ⟩
-         (λ x → f₀ x)                   ＝⟨ refl _ ⟩
-         (λ x → π₀ (f₀ x , f₁ x , h x)) ＝⟨ ap (λ - x → - (f₀ x , f₁ x , h x)) q ⟩
-         (λ x → π₁ (f₀ x , f₁ x , h x)) ＝⟨ refl _ ⟩
-         (λ x → f₁ x)                   ＝⟨ refl _ ⟩
-         f₁                             ∎
+  γ' h
+   = f₀                             ＝⟨ refl _                               ⟩
+     (λ x → f₀ x)                   ＝⟨ refl _                               ⟩
+     (λ x → π₀ (f₀ x , f₁ x , h x)) ＝⟨ ap (λ - x → - (f₀ x , f₁ x , h x)) q ⟩
+     (λ x → π₁ (f₀ x , f₁ x , h x)) ＝⟨ refl _                               ⟩
+     (λ x → f₁ x)                   ＝⟨ refl _                               ⟩
+     f₁                             ∎
 
 dfunext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 dfunext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ＝ g
@@ -100,42 +101,6 @@ dfunext-gives-vvfunext fe {X} {A} i = γ
   γ : is-singleton (Π A)
   γ = f , c
 
-postcomp-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-                    → funext 𝓦 𝓤
-                    → funext 𝓦 𝓥
-                    → (f : X → Y)
-                    → invertible f
-                    → invertible (λ (h : A → X) → f ∘ h)
-
-postcomp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = γ
- where
-  f' : (A → X) → (A → Y)
-  f' h = f ∘ h
-
-  g' : (A → Y) → (A → X)
-  g' k = g ∘ k
-
-  η' : (h : A → X) → g' (f' h) ＝ h
-  η' h = nfe (η ∘ h)
-
-  ε' : (k : A → Y) → f' (g' k) ＝ k
-  ε' k = nfe' (ε ∘ k)
-
-  γ : invertible f'
-  γ = (g' , η' , ε')
-
-postcomp-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-                  → funext 𝓦 𝓤
-                  → funext 𝓦 𝓥
-                  → (f : X → Y)
-                  → is-equiv f
-                  → is-equiv (λ (h : A → X) → f ∘ h)
-
-postcomp-is-equiv fe fe' f e =
- invertibles-are-equivs
-  (λ h → f ∘ h)
-  (postcomp-invertible fe fe' f (equivs-are-invertible f e))
-
 vvfunext-gives-hfunext : vvfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
 vvfunext-gives-hfunext vfe {X} {Y} f = γ
  where
@@ -155,10 +120,47 @@ vvfunext-gives-hfunext vfe {X} {Y} f = γ
   e = NatΣ (happly f)
 
   i : is-equiv e
-  i = maps-of-singletons-are-equivs e (singleton-types'-are-singletons (Π Y) f) d
+  i
+   = maps-of-singletons-are-equivs e (singleton-types'-are-singletons (Π Y) f) d
 
   γ : (g : Π Y) → is-equiv (happly f g)
   γ = NatΣ-equiv-gives-fiberwise-equiv (happly f) i
+
+postcomp-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+                    → funext 𝓦 𝓤
+                    → funext 𝓦 𝓥
+                    → (f : X → Y)
+                    → invertible f
+                    → invertible (λ (h : A → X) → f ∘ h)
+
+postcomp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe fe' f (g , η , ε) = γ
+ where
+  f' : (A → X) → (A → Y)
+  f' h = f ∘ h
+
+  g' : (A → Y) → (A → X)
+  g' k = g ∘ k
+
+  η' : (h : A → X) → g' (f' h) ＝ h
+  η' h = fe (η ∘ h)
+
+  ε' : (k : A → Y) → f' (g' k) ＝ k
+  ε' k = fe' (ε ∘ k)
+
+  γ : invertible f'
+  γ = (g' , η' , ε')
+
+postcomp-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+                  → funext 𝓦 𝓤
+                  → funext 𝓦 𝓥
+                  → (f : X → Y)
+                  → is-equiv f
+                  → is-equiv (λ (h : A → X) → f ∘ h)
+
+postcomp-is-equiv fe fe' f e =
+ invertibles-are-equivs
+  (λ h → f ∘ h)
+  (postcomp-invertible fe fe' f (equivs-are-invertible f e))
 
 funext-gives-vvfunext : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → vvfunext 𝓤 𝓥
 funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
@@ -167,7 +169,7 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   f = pr₁
 
   f-is-equiv : is-equiv f
-  f-is-equiv = pr₁-equiv φ
+  f-is-equiv = pr₁-is-equiv φ
 
   g : (X → Σ A) → (X → X)
   g h = f ∘ h
@@ -182,10 +184,10 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   r (h , p) x = transport A (happly (f ∘ h) (𝑖𝑑 X) p x) (pr₂ (h x))
 
   s : Π A → (Σ h ꞉ (X → Σ A), f ∘ h ＝ 𝑖𝑑 X)
-  s φ = (λ x → x , φ x) , refl (𝑖𝑑 X)
+  s ψ = (λ x → x , ψ x) , refl (𝑖𝑑 X)
 
-  η : ∀ φ → r (s φ) ＝ φ
-  η φ = refl (r (s φ))
+  η : ∀ ψ → r (s ψ) ＝ ψ
+  η ψ = refl (r (s ψ))
 
   γ : is-singleton (Π A)
   γ = retract-of-singleton (r , s , η) i
@@ -194,16 +196,21 @@ abstract
  funext-gives-hfunext       : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → hfunext 𝓤 𝓥
  dfunext-gives-hfunext      : dfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
  funext-gives-dfunext       : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → dfunext 𝓤 𝓥
- univalence-gives-dfunext'  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
- univalence-gives-hfunext'  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → hfunext 𝓤 𝓥
- univalence-gives-vvfunext' : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → vvfunext 𝓤 𝓥
+ univalence-gives-dfunext'
+  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+ univalence-gives-hfunext'
+  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → hfunext 𝓤 𝓥
+ univalence-gives-vvfunext'
+  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → vvfunext 𝓤 𝓥
  univalence-gives-hfunext   : is-univalent 𝓤 → hfunext 𝓤 𝓤
  univalence-gives-dfunext   : is-univalent 𝓤 → dfunext 𝓤 𝓤
  univalence-gives-vvfunext  : is-univalent 𝓤 → vvfunext 𝓤 𝓤
 
- funext-gives-hfunext fe fe' = vvfunext-gives-hfunext (funext-gives-vvfunext fe fe')
+ funext-gives-hfunext fe fe'
+  = vvfunext-gives-hfunext (funext-gives-vvfunext fe fe')
 
- funext-gives-dfunext fe fe' = hfunext-gives-dfunext (funext-gives-hfunext fe fe')
+ funext-gives-dfunext fe fe'
+  = hfunext-gives-dfunext (funext-gives-hfunext fe fe')
 
  dfunext-gives-hfunext fe = vvfunext-gives-hfunext (dfunext-gives-vvfunext fe)
 

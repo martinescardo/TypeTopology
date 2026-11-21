@@ -21,13 +21,13 @@ equiv-singleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
 
 equiv-singleton-lemma {𝓤} {𝓥} {X} {A} x f i = γ
  where
-  e : (y : X) → (x ＝ y) ≃ A y
-  e y = (f y , i y)
-
-  d : singleton-type' x ≃ Σ A
-  d = Σ-cong e
-
   abstract
+   e : (y : X) → (x ＝ y) ≃ A y
+   e y = (f y , i y)
+
+   d : singleton-type' x ≃ Σ A
+   d = Σ-cong e
+
    γ : is-singleton (Σ A)
    γ = equiv-to-singleton (≃-sym d) (singleton-types'-are-singletons X x)
 
@@ -38,13 +38,13 @@ singleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
 
 singleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
  where
-  g : singleton-type' x → Σ A
-  g = NatΣ f
-
-  e : is-equiv g
-  e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) i
-
   abstract
+   g : singleton-type' x → Σ A
+   g = NatΣ f
+
+   e : is-equiv g
+   e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) i
+
    γ : (y : X) → is-equiv (f y)
    γ = NatΣ-equiv-gives-fiberwise-equiv f e
 
@@ -88,9 +88,9 @@ univalence→ ua X = singletons-are-subsingletons
 
 𝔾-≃-equation {𝓤} {𝓥} ua X A a =
 
-  𝔾-≃ ua X A a X (id-≃ X) ＝⟨ refl _ ⟩
+  𝔾-≃ ua X A a X (id-≃ X) ＝⟨ refl _                       ⟩
   transport A p a         ＝⟨ ap (λ - → transport A - a) q ⟩
-  transport A (refl t) a  ＝⟨ refl _ ⟩
+  transport A (refl t) a  ＝⟨ refl _                       ⟩
   a                       ∎
 
  where
@@ -168,7 +168,9 @@ automatic-equiv-functoriality :
       (f : X → Y)
       (g : Y → Z)
 
-    → is-univalent 𝓤 → is-equiv f + is-equiv g → 𝓕 (g ∘ f) ＝ 𝓕 g ∘ 𝓕 f
+    → is-univalent 𝓤
+    → is-equiv f + is-equiv g
+    → 𝓕 (g ∘ f) ＝ 𝓕 g ∘ 𝓕 f
 
 automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
   where
@@ -229,7 +231,7 @@ transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = 𝕁-≃ ua A a X Y
   A X Y e = (g : X → Z) → transport (λ - → - → Z) (Eq→Id ua X Y e) g
                         ＝ g ∘ ⌜ ≃-sym e ⌝
   a : (X : 𝓤 ̇ ) → A X X (id-≃ X)
-  a X g = transport (λ - → - → Z) (Eq→Id ua X X (id-≃ X)) g ＝⟨ q ⟩
+  a X g = transport (λ - → - → Z) (Eq→Id ua X X (id-≃ X)) g ＝⟨ q      ⟩
           transport (λ - → - → Z) (refl X) g                ＝⟨ refl _ ⟩
           g                                                 ∎
     where

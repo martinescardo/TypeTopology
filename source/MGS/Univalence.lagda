@@ -68,8 +68,8 @@ module example-of-a-nonset (ua : is-univalent 𝓤₀) where
  p₀-is-not-p₁ q = e₀-is-not-e₁ r
   where
    r = e₀            ＝⟨ (inverses-are-sections (Id→Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
-       Id→Eq 𝟚 𝟚 p₀  ＝⟨ ap (Id→Eq 𝟚 𝟚) q ⟩
-       Id→Eq 𝟚 𝟚 p₁  ＝⟨ inverses-are-sections (Id→Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁ ⟩
+       Id→Eq 𝟚 𝟚 p₀  ＝⟨ ap (Id→Eq 𝟚 𝟚) q                                  ⟩
+       Id→Eq 𝟚 𝟚 p₁  ＝⟨ inverses-are-sections (Id→Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁     ⟩
        e₁            ∎
 
  𝓤₀-is-not-a-set : ¬ (is-set (𝓤₀ ̇ ))

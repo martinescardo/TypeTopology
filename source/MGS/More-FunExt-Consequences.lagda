@@ -15,7 +15,7 @@ open import MGS.HAE public
 open import MGS.Subsingleton-Theorems public
 
 being-subsingleton-is-subsingleton : dfunext 𝓤 𝓤
-                                   →  {X : 𝓤 ̇ }
+                                   → {X : 𝓤 ̇ }
                                    → is-subsingleton (is-subsingleton X)
 
 being-subsingleton-is-subsingleton fe {X} i j = c
@@ -49,7 +49,8 @@ being-center-is-subsingleton fe {X} c φ γ = k
 
 Π-is-set : hfunext 𝓤 𝓥
          → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-         → ((x : X) → is-set (A x)) → is-set (Π A)
+         → ((x : X) → is-set (A x))
+         → is-set (Π A)
 
 Π-is-set hfe s f g = b
  where
@@ -87,7 +88,8 @@ hlevel-relation-is-subsingleton fe (succ n) X =
   (λ x → Π-is-subsingleton fe
   (λ x' → hlevel-relation-is-subsingleton fe n (x ＝ x')))
 
-●-assoc : dfunext 𝓣 (𝓤 ⊔ 𝓣) → dfunext (𝓤 ⊔ 𝓣) (𝓤 ⊔ 𝓣)
+●-assoc : dfunext 𝓣 (𝓤 ⊔ 𝓣)
+        → dfunext (𝓤 ⊔ 𝓣) (𝓤 ⊔ 𝓣)
         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
           (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
         → α ● (β ● γ) ＝ (α ● β) ● γ
@@ -101,7 +103,8 @@ hlevel-relation-is-subsingleton fe (succ n) X =
   q : d ＝ e
   q = being-equiv-is-subsingleton fe fe' (h ∘ g ∘ f) _ _
 
-≃-sym-involutive : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) →
+≃-sym-involutive : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+                 → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) →
                    {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
                  → ≃-sym (≃-sym α) ＝ α
 
@@ -109,7 +112,9 @@ hlevel-relation-is-subsingleton fe (succ n) X =
                                    (being-equiv-is-subsingleton fe fe')
                                    (inversion-involutive f a)
 
-≃-sym-is-equiv : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+≃-sym-is-equiv : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+               → dfunext 𝓤 (𝓤 ⊔ 𝓥)
+               → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                → is-equiv (≃-sym {𝓤} {𝓥} {X} {Y})
 
@@ -118,13 +123,16 @@ hlevel-relation-is-subsingleton fe (succ n) X =
                                ≃-sym-involutive fe₀ fe₂ ,
                                ≃-sym-involutive fe₁ fe₂)
 
-≃-sym-≃ : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+≃-sym-≃ : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+        → dfunext 𝓤 (𝓤 ⊔ 𝓥)
+        → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
         → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
         → (X ≃ Y) ≃ (Y ≃ X)
 
 ≃-sym-≃ fe₀ fe₁ fe₂ X Y = ≃-sym , ≃-sym-is-equiv fe₀ fe₁ fe₂
 
-Π-cong : dfunext 𝓤 𝓥 → dfunext 𝓤 𝓦
+Π-cong : dfunext 𝓤 𝓥
+       → dfunext 𝓤 𝓦
        → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Y' : X → 𝓦 ̇ }
        → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
 
@@ -151,10 +159,10 @@ hlevel-relation-is-subsingleton fe (succ n) X =
   G : ((x : X) → Y' x) → (x : X) → Y x
   G γ x = g x (γ x)
 
-  FG : (γ : ((x : X) → Y' x)) → F (G γ) ＝ γ
+  FG : (γ : ((x : X) → Y' x)) → F(G γ) ＝ γ
   FG γ = fe' (λ x → fg x (γ x))
 
-  GF : (φ : ((x : X) → Y x)) → G (F φ) ＝ φ
+  GF : (φ : ((x : X) → Y x)) → G(F φ) ＝ φ
   GF φ = fe (λ x → gf x (φ x))
 
 hfunext-≃ : hfunext 𝓤 𝓥
@@ -170,7 +178,7 @@ hfunext₂-≃ : hfunext 𝓤 (𝓥 ⊔ 𝓦) → hfunext 𝓥 𝓦
 
 hfunext₂-≃ fe fe' {X} f g =
 
- (f ＝ g)                  ≃⟨ i ⟩
+ (f ＝ g)                  ≃⟨ i  ⟩
  (∀ x → f x ＝ g x)        ≃⟨ ii ⟩
  (∀ x y → f x y ＝ g x y)  ■
 
@@ -181,7 +189,8 @@ hfunext₂-≃ fe fe' {X} f g =
         (hfunext-gives-dfunext fe)
         (λ x → hfunext-≃ fe' (f x) (g x))
 
-precomp-invertible : dfunext 𝓥 𝓦 → dfunext 𝓤 𝓦
+precomp-invertible : dfunext 𝓥 𝓦
+                   → dfunext 𝓤 𝓦
                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y)
                    → invertible f
                    → invertible (λ (h : Y → Z) → h ∘ f)
@@ -199,6 +208,16 @@ precomp-invertible fe fe' {X} {Y} {Z} f (g , η , ε) = (g' , η' , ε')
 
   ε' : (k : X → Z) → f' (g' k) ＝ k
   ε' k = fe' (λ x → ap k (η x))
+
+precomp-is-equiv' : dfunext 𝓥 𝓦
+                  → dfunext 𝓤 𝓦
+                  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y)
+                  → is-equiv f
+                  → is-equiv (λ (h : Y → Z) → h ∘ f)
+
+precomp-is-equiv' fe fe' {X} {Y} {Z} f i = invertibles-are-equivs (_∘ f)
+                                            (precomp-invertible fe fe' f
+                                              (equivs-are-invertible f i))
 
 dprecomp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
          → Π A → Π (A ∘ f)
@@ -251,9 +270,11 @@ dprecomp-is-equiv fe fe' {X} {Y} A f i = invertibles-are-equivs φ (ψ , ψφ , 
                      → is-equiv f
                      → (Π y ꞉ Y , A y) ≃ (Π x ꞉ X , A (f x))
 
-Π-change-of-variable fe fe' A f i = dprecomp A f , dprecomp-is-equiv fe fe' A f i
+Π-change-of-variable fe fe' A f i
+ = dprecomp A f , dprecomp-is-equiv fe fe' A f i
 
-at-most-one-section : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥
+at-most-one-section : dfunext 𝓥 𝓤
+                    → hfunext 𝓥 𝓥
                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → has-retraction f
                     → is-subsingleton (has-section f)
@@ -287,7 +308,8 @@ at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , fh) = d
   d : (σ : has-section f) → h , fh ＝ σ
   d = singletons-are-subsingletons (has-section f) c (h , fh)
 
-at-most-one-retraction : hfunext 𝓤 𝓤 → dfunext 𝓥 𝓤
+at-most-one-retraction : hfunext 𝓤 𝓤
+                       → dfunext 𝓥 𝓤
                        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                        → has-section f
                        → is-subsingleton (has-retraction f)
@@ -321,16 +343,21 @@ at-most-one-retraction {𝓤} {𝓥} hfe fe' {X} {Y} f (g , fg) (h , hf) = d
   d : (ρ : has-retraction f) → h , hf ＝ ρ
   d = singletons-are-subsingletons (has-retraction f) c (h , hf)
 
-being-joyal-equiv-is-subsingleton : hfunext 𝓤 𝓤 → hfunext 𝓥 𝓥 → dfunext 𝓥 𝓤
+being-joyal-equiv-is-subsingleton : hfunext 𝓤 𝓤
+                                  → hfunext 𝓥 𝓥
+                                  → dfunext 𝓥 𝓤
                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                   → (f : X → Y)
                                   → is-subsingleton (is-joyal-equiv f)
 
-being-joyal-equiv-is-subsingleton fe₀ fe₁ fe₂ f = ×-is-subsingleton'
-                                                   (at-most-one-section    fe₂ fe₁ f ,
-                                                    at-most-one-retraction fe₀ fe₂ f)
+being-joyal-equiv-is-subsingleton fe₀ fe₁ fe₂ f
+ = ×-is-subsingleton'
+    (at-most-one-section    fe₂ fe₁ f ,
+     at-most-one-retraction fe₀ fe₂ f)
 
-being-hae-is-subsingleton : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥 → dfunext 𝓤 (𝓥 ⊔ 𝓤)
+being-hae-is-subsingleton : dfunext 𝓥 𝓤
+                          → hfunext 𝓥 𝓥
+                          → dfunext 𝓤 (𝓥 ⊔ 𝓤)
                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                           → is-subsingleton (is-hae f)
 
@@ -340,18 +367,26 @@ being-hae-is-subsingleton fe₀ fe₁ fe₂ {X} {Y} f = subsingleton-criterion' 
     → (g (f x) , ε (f x) ＝ (x , refl (f x)))
     ≃ (Σ p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))
   a g ε x =
-   ((g (f x) , ε (f x)) ＝ (x , refl (f x)))                                     ≃⟨ i ⟩
-   (Σ p ꞉ g (f x) ＝ x , transport (λ - → f - ＝ f x) p (ε (f x)) ＝ refl (f x)) ≃⟨ ii ⟩
-   (Σ p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))                                      ■
+   ((g (f x) , ε (f x)) ＝ (x , refl (f x)))                     ≃⟨ i  ⟩
+   (Σ p ꞉ g (f x) ＝ x
+        , transport (λ - → f - ＝ f x) p (ε (f x)) ＝ refl (f x)) ≃⟨ ii ⟩
+   (Σ p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))                       ■
     where
      i  = Σ-＝-≃ (g (f x) , ε (f x)) (x , refl (f x))
      ii = Σ-cong (λ p → transport-ap-≃ f p (ε (f x)))
 
-  b = (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ＝ (x , refl (f x)))         ≃⟨ i ⟩
-      (Σ (g , ε) ꞉ has-section f , ∀ x → Σ  p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))         ≃⟨ ii ⟩
-      (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , ∀ x → Σ  p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))  ≃⟨ iii ⟩
-      (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , Σ η ꞉ g ∘ f ∼ id , ∀ x → ap f (η x) ＝ ε (f x)) ≃⟨ iv ⟩
-      is-hae f                                                                            ■
+  b = (Σ (g , ε) ꞉ has-section f
+           , ∀ x → (g (f x) , ε (f x)) ＝ (x , refl (f x))) ≃⟨ i   ⟩
+      (Σ (g , ε) ꞉ has-section f
+           , ∀ x → Σ p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))   ≃⟨ ii  ⟩
+      (Σ g ꞉ (Y → X)
+           , Σ ε ꞉ f ∘ g ∼ id
+           , ∀ x → Σ p ꞉ g (f x) ＝ x , ap f p ＝ ε (f x))   ≃⟨ iii ⟩
+      (Σ g ꞉ (Y → X)
+           , Σ ε ꞉ f ∘ g ∼ id
+           , Σ η ꞉ g ∘ f ∼ id
+           , ∀ x → ap f (η x) ＝ ε (f x))                   ≃⟨ iv  ⟩
+      is-hae f                                             ■
    where
     i   = Σ-cong (λ (g , ε) → Π-cong fe₂ fe₂ (a g ε))
     ii  = Σ-assoc
@@ -362,12 +397,21 @@ being-hae-is-subsingleton fe₀ fe₁ fe₂ {X} {Y} f = subsingleton-criterion' 
   γ (g₀ , ε₀ , η₀ , τ₀) = i
    where
     c : (x : X) → is-set (fiber f (f x))
-    c x = singletons-are-sets (fiber f (f x)) (haes-are-equivs f (g₀ , ε₀ , η₀ , τ₀) (f x))
+    c x
+     = singletons-are-sets
+        (fiber f (f x))
+        (haes-are-equivs f (g₀ , ε₀ , η₀ , τ₀) (f x))
 
-    d : ((g , ε) : has-section f) → is-subsingleton (∀ x → (g (f x) , ε (f x)) ＝ (x , refl (f x)))
-    d (g , ε) = Π-is-subsingleton fe₂ (λ x → c x (g (f x) , ε (f x)) (x , refl (f x)))
+    d
+     : ((g , ε) : has-section f)
+     → is-subsingleton (∀ x → (g (f x) , ε (f x)) ＝ (x , refl (f x)))
+    d (g , ε)
+     = Π-is-subsingleton fe₂ (λ x → c x (g (f x) , ε (f x)) (x , refl (f x)))
 
-    e : is-subsingleton (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ＝ (x , refl (f x)))
+    e
+     : is-subsingleton
+        (Σ (g , ε) ꞉ has-section f
+             , ∀ x → (g (f x) , ε (f x)) ＝ (x , refl (f x)))
     e = Σ-is-subsingleton (at-most-one-section fe₀ fe₁ f (g₀ , ε₀)) d
 
     i : is-subsingleton (is-hae f)
@@ -398,7 +442,9 @@ emptiness-is-subsingleton fe X f g = fe (λ x → !𝟘 (f x ＝ g x) (f x))
                                (emptiness-is-subsingleton fe P)
                                (λ p n → n p)
 
-EM-is-subsingleton : dfunext (𝓤 ⁺) 𝓤 → dfunext 𝓤 𝓤 → dfunext 𝓤 𝓤₀
+EM-is-subsingleton : dfunext (𝓤 ⁺) 𝓤
+                   → dfunext 𝓤 𝓤
+                   → dfunext 𝓤 𝓤₀
                    → is-subsingleton (EM 𝓤)
 
 EM-is-subsingleton fe⁺ fe fe₀ = Π-is-subsingleton fe⁺

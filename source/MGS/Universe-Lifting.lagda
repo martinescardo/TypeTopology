@@ -92,8 +92,8 @@ universe-embedding-criterion {𝓤} {𝓥} ua ua' f e = embedding-criterion f γ
   fe₁ = lower-dfunext 𝓥 𝓥 𝓤 (𝓤 ⊔ 𝓥) fe
 
   γ : (X X' : 𝓤 ̇ ) → (f X ＝ f X') ≃ (X ＝ X')
-  γ X X' =  (f X ＝ f X')  ≃⟨ i ⟩
-            (f X ≃ f X')  ≃⟨ ii ⟩
+  γ X X' =  (f X ＝ f X')  ≃⟨ i   ⟩
+            (f X ≃ f X')  ≃⟨ ii  ⟩
             (X ≃ X')      ≃⟨ iii ⟩
             (X ＝ X')      ■
    where
@@ -132,8 +132,8 @@ module _ {𝓤 𝓥 : Universe}
  univalence→' X = s
   where
    e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ＝ Lift 𝓥 X)
-   e Y = (X ≃ Y)                 ≃⟨ i ⟩
-         (Y ≃ X)                 ≃⟨ ii ⟩
+   e Y = (X ≃ Y)                 ≃⟨ i   ⟩
+         (Y ≃ X)                 ≃⟨ ii  ⟩
          (Lift 𝓤 Y ≃ Lift 𝓥 X)   ≃⟨ iii ⟩
          (Lift 𝓤 Y ＝ Lift 𝓥 X)   ■
     where
@@ -171,11 +171,11 @@ univalence→''-dual : is-univalent (𝓤 ⊔ 𝓥)
 
 univalence→''-dual ua = univalence→'-dual ua ua
 
-G↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
+𝔾↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (X : 𝓤 ̇ ) (A : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y) → 𝓦 ̇ )
      → A (Lift 𝓥 X , ≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A (Y , e)
 
-G↑-≃ {𝓤} {𝓥} ua X A a Y e = transport A p a
+𝔾↑-≃ {𝓤} {𝓥} ua X A a Y e = transport A p a
  where
   t : Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
@@ -183,24 +183,24 @@ G↑-≃ {𝓤} {𝓥} ua X A a Y e = transport A p a
   p : t ＝ (Y , e)
   p = univalence→'' {𝓤} {𝓥} ua X t (Y , e)
 
-H↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
+ℍ↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
      → A (Lift 𝓥 X) (≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A Y e
 
-H↑-≃ ua X A = G↑-≃ ua X (Σ-induction A)
+ℍ↑-≃ ua X A = 𝔾↑-≃ ua X (Σ-induction A)
 
-J↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
+𝕁↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
      → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) (≃-Lift X))
      → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X Y e
 
-J↑-≃ ua A φ X = H↑-≃ ua X (A X) (φ X)
+𝕁↑-≃ ua A φ X = ℍ↑-≃ ua X (A X) (φ X)
 
-H↑-equiv : is-univalent (𝓤 ⊔ 𝓥)
+ℍ↑-equiv : is-univalent (𝓤 ⊔ 𝓥)
          → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
          → A (Lift 𝓥 X) lift → (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A Y f
 
-H↑-equiv {𝓤} {𝓥} {𝓦} ua X A a Y f i = γ (f , i)
+ℍ↑-equiv {𝓤} {𝓥} {𝓦} ua X A a Y f i = γ (f , i)
  where
   B : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇
   B Y (f , i) = A Y f
@@ -209,21 +209,22 @@ H↑-equiv {𝓤} {𝓥} {𝓦} ua X A a Y f i = γ (f , i)
   b = a
 
   γ : (e : X ≃ Y) → B Y e
-  γ = H↑-≃ ua X B b Y
+  γ = ℍ↑-≃ ua X B b Y
 
-J↑-equiv : is-univalent (𝓤 ⊔ 𝓥)
+𝕁↑-equiv : is-univalent (𝓤 ⊔ 𝓥)
          → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
          → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
          → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A X Y f
 
-J↑-equiv ua A φ X = H↑-equiv ua X (A X) (φ X)
+𝕁↑-equiv ua A φ X = ℍ↑-equiv ua X (A X) (φ X)
 
-J↑-invertible : is-univalent (𝓤 ⊔ 𝓥)
+𝕁↑-invertible : is-univalent (𝓤 ⊔ 𝓥)
               → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
               → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
               → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → invertible f → A X Y f
 
-J↑-invertible ua A φ X Y f i = J↑-equiv ua A φ X Y f (invertibles-are-equivs f i)
+𝕁↑-invertible ua A φ X Y f i
+ = 𝕁↑-equiv ua A φ X Y f (invertibles-are-equivs f i)
 
 lift-is-hae : (X : 𝓤 ̇ ) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
 lift-is-hae {𝓤} {𝓥} X = lower ,
@@ -235,14 +236,14 @@ equivs-are-haes↑ : is-univalent (𝓤 ⊔ 𝓥)
                  → {X : 𝓤 ̇ } {Y : 𝓤 ⊔ 𝓥 ̇ } (f : X → Y)
                  → is-equiv f → is-hae f
 
-equivs-are-haes↑ {𝓤} {𝓥} ua {X} {Y} = J↑-equiv {𝓤} {𝓥} ua (λ X Y f → is-hae f)
+equivs-are-haes↑ {𝓤} {𝓥} ua {X} {Y} = 𝕁↑-equiv {𝓤} {𝓥} ua (λ X Y f → is-hae f)
                                        lift-is-hae X Y
 
-G↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
+𝔾↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (Y : 𝓤 ̇ ) (A : (Σ X ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y) → 𝓦 ̇ )
      → A (Lift 𝓥 Y , Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A (X , e)
 
-G↓-≃ {𝓤} {𝓥} ua Y A a X e = transport A p a
+𝔾↓-≃ {𝓤} {𝓥} ua Y A a X e = transport A p a
  where
   t : Σ X ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y
   t = (Lift 𝓥 Y , Lift-≃ Y)
@@ -250,24 +251,24 @@ G↓-≃ {𝓤} {𝓥} ua Y A a X e = transport A p a
   p : t ＝ (X , e)
   p = univalence→'-dual {𝓤} {𝓤 ⊔ 𝓥} ua ua Y t (X , e)
 
-H↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
+ℍ↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
      → A (Lift 𝓥 Y) (Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X e
 
-H↓-≃ ua Y A = G↓-≃ ua Y (Σ-induction A)
+ℍ↓-≃ ua Y A = 𝔾↓-≃ ua Y (Σ-induction A)
 
-J↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
+𝕁↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (A : (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) → X ≃ Y → 𝓦 ̇ )
      → ((Y : 𝓤 ̇ ) → A (Lift 𝓥 Y) Y (Lift-≃ Y))
      → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (e : X ≃ Y) → A X Y e
 
-J↓-≃ ua A φ X Y = H↓-≃ ua Y (λ X → A X Y) (φ Y) X
+𝕁↓-≃ ua A φ X Y = ℍ↓-≃ ua Y (λ X → A X Y) (φ Y) X
 
-H↓-equiv : is-univalent (𝓤 ⊔ 𝓥)
+ℍ↓-equiv : is-univalent (𝓤 ⊔ 𝓥)
          → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
          → A (Lift 𝓥 Y) lower → (X : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A X f
 
-H↓-equiv {𝓤} {𝓥} {𝓦} ua Y A a X f i = γ (f , i)
+ℍ↓-equiv {𝓤} {𝓥} {𝓦} ua Y A a X f i = γ (f , i)
  where
   B : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇
   B X (f , i) = A X f
@@ -276,21 +277,22 @@ H↓-equiv {𝓤} {𝓥} {𝓦} ua Y A a X f i = γ (f , i)
   b = a
 
   γ : (e : X ≃ Y) → B X e
-  γ = H↓-≃ ua Y B b X
+  γ = ℍ↓-≃ ua Y B b X
 
-J↓-equiv : is-univalent (𝓤 ⊔ 𝓥)
+𝕁↓-equiv : is-univalent (𝓤 ⊔ 𝓥)
          → (A : (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) → (X → Y) → 𝓦 ̇ )
          → ((Y : 𝓤 ̇ ) → A (Lift 𝓥 Y) Y lower)
          → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A X Y f
 
-J↓-equiv ua A φ X Y = H↓-equiv ua Y (λ X → A X Y) (φ Y) X
+𝕁↓-equiv ua A φ X Y = ℍ↓-equiv ua Y (λ X → A X Y) (φ Y) X
 
-J↓-invertible : is-univalent (𝓤 ⊔ 𝓥)
+𝕁↓-invertible : is-univalent (𝓤 ⊔ 𝓥)
               → (A : (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) → (X → Y) → 𝓦 ̇ )
               → ((Y : 𝓤 ̇ ) → A (Lift 𝓥 Y) Y lower)
               → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y) → invertible f → A X Y f
 
-J↓-invertible ua A φ X Y f i = J↓-equiv ua A φ X Y f (invertibles-are-equivs f i)
+𝕁↓-invertible ua A φ X Y f i
+ = 𝕁↓-equiv ua A φ X Y f (invertibles-are-equivs f i)
 
 lower-is-hae : (X : 𝓤 ̇ ) → is-hae (lower {𝓤} {𝓥} {X})
 lower-is-hae {𝓤} {𝓥} X = lift ,
@@ -302,7 +304,7 @@ equivs-are-haes↓ : is-univalent (𝓤 ⊔ 𝓥)
                  → {X : 𝓤 ⊔ 𝓥 ̇ } {Y : 𝓤 ̇ } (f : X → Y)
                  → is-equiv f → is-hae f
 
-equivs-are-haes↓ {𝓤} {𝓥} ua {X} {Y} = J↓-equiv {𝓤} {𝓥} ua (λ X Y f → is-hae f)
+equivs-are-haes↓ {𝓤} {𝓥} ua {X} {Y} = 𝕁↓-equiv {𝓤} {𝓥} ua (λ X Y f → is-hae f)
                                        lower-is-hae X Y
 
 Id→Eq-is-hae' : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
@@ -335,14 +337,14 @@ global-≃-ap' : Univalence
 
 global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
 
-  A X          ≃⟨ φ X ⟩
+  A X          ≃⟨ φ X                                   ⟩
   A (Lift 𝓥 X) ≃⟨ Id→Eq (A (Lift 𝓥 X)) (A (Lift 𝓤 Y)) q ⟩
-  A (Lift 𝓤 Y) ≃⟨ ≃-sym (φ Y) ⟩
+  A (Lift 𝓤 Y) ≃⟨ ≃-sym (φ Y)                           ⟩
   A Y          ■
  where
   d : Lift 𝓥 X ≃ Lift 𝓤 Y
-  d = Lift 𝓥 X ≃⟨ Lift-≃ X ⟩
-      X        ≃⟨ e ⟩
+  d = Lift 𝓥 X ≃⟨ Lift-≃ X         ⟩
+      X        ≃⟨ e                ⟩
       Y        ≃⟨ ≃-sym (Lift-≃ Y) ⟩
       Lift 𝓤 Y ■
 

@@ -18,16 +18,16 @@ open import MLTT.Unit-Type renaming (𝟙 to 𝟙') public
 𝟙 : 𝓤₀ ̇
 𝟙 = 𝟙' {𝓤₀}
 
-𝟙-induction : (A : 𝟙 → 𝓤 ̇ ) → A ⋆ → (x : 𝟙) → A x
+𝟙-induction : (A : 𝟙 → 𝓤 ̇ ) → A ⋆ → (x : 𝟙) → A x
 𝟙-induction A a ⋆ = a
 
-𝟙-recursion : (B : 𝓤 ̇ ) → B → (𝟙 → B)
+𝟙-recursion : (B : 𝓤 ̇ ) → B → (𝟙 → B)
 𝟙-recursion B b x = 𝟙-induction (λ _ → B) b x
 
-!𝟙' : (X : 𝓤 ̇ ) → X → 𝟙
+!𝟙' : (X : 𝓤 ̇ ) → X → 𝟙
 !𝟙' X x = ⋆
 
-!𝟙 : {X : 𝓤 ̇ } → X → 𝟙
+!𝟙 : {X : 𝓤 ̇ } → X → 𝟙
 !𝟙 x = ⋆
 
 open import MLTT.Empty-Type renaming (𝟘 to 𝟘') public
@@ -93,6 +93,7 @@ module Arithmetic where
 module Arithmetic' where
 
   _+_  _×_ : ℕ → ℕ → ℕ
+
   x + y = h y
    where
     h : ℕ → ℕ
@@ -204,7 +205,8 @@ codomain {𝓤} {𝓥} {X} {Y} f = Y
 type-of : {X : 𝓤 ̇ } → X → 𝓤 ̇
 type-of {𝓤} {X} x = X
 
-open import MLTT.Identity-Type renaming (_＝_ to infix 0 _＝_ ; refl to 𝓻ℯ𝓯𝓵) public
+open import MLTT.Identity-Type
+ renaming (_＝_ to infix 0 _＝_ ; refl to 𝓻ℯ𝓯𝓵) public
 pattern refl x = 𝓻ℯ𝓯𝓵 {x = x}
 
 Id : (X : 𝓤 ̇ ) → X → X → 𝓤 ̇
@@ -242,7 +244,8 @@ transport A (refl x) = 𝑖𝑑 (A x)
 transport𝕁 : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
            → x ＝ y → A x → A y
 
-transport𝕁 {𝓤} {𝓥} {X} A {x} {y} = 𝕁 X (λ x y _ → A x → A y) (λ x → 𝑖𝑑 (A x)) x y
+transport𝕁 {𝓤} {𝓥} {X} A {x} {y}
+ = 𝕁 X (λ x y _ → A x → A y) (λ x → 𝑖𝑑 (A x)) x y
 
 nondep-ℍ : {X : 𝓤 ̇ } (x : X) (A : X → 𝓥 ̇ )
          → A x → (y : X) → x ＝ y → A y
@@ -302,8 +305,8 @@ _∼_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Π A → Π A → 𝓤 ⊔ 𝓥 
 f ∼ g = ∀ x → f x ＝ g x
 
 ¬¬ ¬¬¬ : 𝓤 ̇ → 𝓤 ̇
-¬¬  A = ¬ (¬ A)
-¬¬¬ A = ¬ (¬¬ A)
+¬¬  A = ¬(¬ A)
+¬¬¬ A = ¬(¬¬ A)
 
 dni : (A : 𝓤 ̇ ) → A → ¬¬ A
 dni A a u = u a
@@ -314,16 +317,16 @@ contrapositive f v a = v (f a)
 tno : (A : 𝓤 ̇ ) → ¬¬¬ A → ¬ A
 tno A = contrapositive (dni A)
 
-_↔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ↔ Y = (X → Y) × (Y → X)
+_⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+X ⇔ Y = (X → Y) × (Y → X)
 
-lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↔ Y) → (X → Y)
+lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (X → Y)
 lr-implication = pr₁
 
-rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↔ Y) → (Y → X)
+rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (Y → X)
 rl-implication = pr₂
 
-absurdity³-is-absurdity : {A : 𝓤 ̇ } → ¬¬¬ A ↔ ¬ A
+absurdity³-is-absurdity : {A : 𝓤 ̇ } → ¬¬¬ A ⇔ ¬ A
 absurdity³-is-absurdity {𝓤} {A} = firstly , secondly
  where
   firstly : ¬¬¬ A → ¬ A
@@ -333,7 +336,7 @@ absurdity³-is-absurdity {𝓤} {A} = firstly , secondly
   secondly = dni (¬ A)
 
 _≠_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
-x ≠ y = ¬ (x ＝ y)
+x ≠ y = ¬(x ＝ y)
 
 ≠-sym : {X : 𝓤 ̇ } {x y : X} → x ≠ y → y ≠ x
 ≠-sym {𝓤} {X} {x} {y} u = λ (p : y ＝ x) → u (p ⁻¹)
@@ -365,7 +368,7 @@ Id→Funs-agree (refl X) = refl (𝑖𝑑 X)
 decidable : 𝓤 ̇ → 𝓤 ̇
 decidable A = A + ¬ A
 
-has-decidable-equality : (X : 𝓤 ̇ ) → 𝓤 ̇
+has-decidable-equality : 𝓤 ̇ → 𝓤 ̇
 has-decidable-equality X = (x y : X) → decidable (x ＝ y)
 
 𝟚-has-decidable-equality : has-decidable-equality 𝟚
@@ -416,7 +419,7 @@ positive-not-zero x p = 𝟙-is-not-𝟘 (g p)
   g = ap f
 
 pred : ℕ → ℕ
-pred 0 = 0
+pred 0        = 0
 pred (succ n) = n
 
 succ-lc : {x y : ℕ} → succ x ＝ succ y → x ＝ y
@@ -439,12 +442,12 @@ module basic-arithmetic-and-order where
 
   +-assoc : (x y z : ℕ) → (x ∔ y) ∔ z ＝ x ∔ (y ∔ z)
 
-  +-assoc x y zero     = (x ∔ y) ∔ 0 ＝⟨ refl _ ⟩
+  +-assoc x y 0        = (x ∔ y) ∔ 0 ＝⟨ refl _ ⟩
                          x ∔ (y ∔ 0) ∎
 
-  +-assoc x y (succ z) = (x ∔ y) ∔ succ z   ＝⟨ refl _ ⟩
+  +-assoc x y (succ z) = (x ∔ y) ∔ succ z   ＝⟨ refl _     ⟩
                          succ ((x ∔ y) ∔ z) ＝⟨ ap succ IH ⟩
-                         succ (x ∔ (y ∔ z)) ＝⟨ refl _ ⟩
+                         succ (x ∔ (y ∔ z)) ＝⟨ refl _     ⟩
                          x ∔ (y ∔ succ z)   ∎
    where
     IH : (x ∔ y) ∔ z ＝ x ∔ (y ∔ z)
@@ -458,7 +461,7 @@ module basic-arithmetic-and-order where
 
   +-base-on-first 0        = refl 0
 
-  +-base-on-first (succ x) = 0 ∔ succ x   ＝⟨ refl _ ⟩
+  +-base-on-first (succ x) = 0 ∔ succ x   ＝⟨ refl _     ⟩
                              succ (0 ∔ x) ＝⟨ ap succ IH ⟩
                              succ x       ∎
    where
@@ -469,7 +472,7 @@ module basic-arithmetic-and-order where
 
   +-step-on-first x zero     = refl (succ x)
 
-  +-step-on-first x (succ y) = succ x ∔ succ y   ＝⟨ refl _ ⟩
+  +-step-on-first x (succ y) = succ x ∔ succ y   ＝⟨ refl _     ⟩
                                succ (succ x ∔ y) ＝⟨ ap succ IH ⟩
                                succ (x ∔ succ y) ∎
    where
@@ -483,8 +486,8 @@ module basic-arithmetic-and-order where
                y ∔ 0 ∎
 
   +-comm (succ x) y = succ x ∔ y  ＝⟨ +-step-on-first x y ⟩
-                      succ(x ∔ y) ＝⟨ ap succ IH ⟩
-                      succ(y ∔ x) ＝⟨ refl _ ⟩
+                      succ(x ∔ y) ＝⟨ ap succ IH          ⟩
+                      succ(y ∔ x) ＝⟨ refl _              ⟩
                       y ∔ succ x  ∎
     where
      IH : x ∔ y ＝ y ∔ x
@@ -493,15 +496,15 @@ module basic-arithmetic-and-order where
   +-lc : (x y z : ℕ) → x ∔ y ＝ x ∔ z → y ＝ z
 
   +-lc 0        y z p = y     ＝⟨ (+-base-on-first y)⁻¹ ⟩
-                        0 ∔ y ＝⟨ p ⟩
-                        0 ∔ z ＝⟨ +-base-on-first z ⟩
+                        0 ∔ y ＝⟨ p                     ⟩
+                        0 ∔ z ＝⟨ +-base-on-first z     ⟩
                         z     ∎
 
   +-lc (succ x) y z p = IH
    where
     q = succ (x ∔ y) ＝⟨ (+-step-on-first x y)⁻¹ ⟩
-        succ x ∔ y   ＝⟨ p ⟩
-        succ x ∔ z   ＝⟨ +-step-on-first x z ⟩
+        succ x ∔ y   ＝⟨ p                       ⟩
+        succ x ∔ z   ＝⟨ +-step-on-first x z     ⟩
         succ (x ∔ z) ∎
 
     IH : y ＝ z
@@ -527,7 +530,7 @@ module basic-arithmetic-and-order where
 
     γ : succ x ≼ succ y
     γ = z , (succ x ∔ z   ＝⟨ +-step-on-first x z ⟩
-             succ (x ∔ z) ＝⟨ ap succ p ⟩
+             succ (x ∔ z) ＝⟨ ap succ p           ⟩
              succ y       ∎)
 
   ≼-gives-≤ : (x y : ℕ) → x ≼ y → x ≤ y
@@ -539,13 +542,13 @@ module basic-arithmetic-and-order where
   ≼-gives-≤ (succ x) 0        (z , p) = positive-not-zero (x ∔ z) q
    where
     q = succ (x ∔ z) ＝⟨ (+-step-on-first x z)⁻¹ ⟩
-        succ x ∔ z   ＝⟨ p ⟩
+        succ x ∔ z   ＝⟨ p                       ⟩
         zero         ∎
 
   ≼-gives-≤ (succ x) (succ y) (z , p) = IH
    where
     q = succ (x ∔ z) ＝⟨ (+-step-on-first x z)⁻¹ ⟩
-        succ x ∔ z   ＝⟨ p ⟩
+        succ x ∔ z   ＝⟨ p                       ⟩
         succ y       ∎
 
     IH : x ≤ y
@@ -556,15 +559,15 @@ module basic-arithmetic-and-order where
   ≤-refl (succ n) = ≤-refl n
 
   ≤-trans : (l m n : ℕ) → l ≤ m → m ≤ n → l ≤ n
-  ≤-trans zero m n p q = ⋆
-  ≤-trans (succ l) zero n p q = !𝟘 (succ l ≤ n) p
-  ≤-trans (succ l) (succ m) zero p q = q
+  ≤-trans zero     m        n        p q = ⋆
+  ≤-trans (succ l) zero     n        p q = !𝟘 (succ l ≤ n) p
+  ≤-trans (succ l) (succ m) zero     p q = q
   ≤-trans (succ l) (succ m) (succ n) p q = ≤-trans l m n p q
 
   ≤-anti : (m n : ℕ) → m ≤ n → n ≤ m → m ＝ n
-  ≤-anti zero zero p q = refl zero
-  ≤-anti zero (succ n) p q = !𝟘 (zero ＝ succ n) q
-  ≤-anti (succ m) zero p q = !𝟘 (succ m ＝ zero) p
+  ≤-anti zero     zero     p q = refl zero
+  ≤-anti zero     (succ n) p q = !𝟘 (zero ＝ succ n) q
+  ≤-anti (succ m) zero     p q = !𝟘 (succ m ＝ zero) p
   ≤-anti (succ m) (succ n) p q = ap succ (≤-anti m n p q)
 
   ≤-succ : (n : ℕ) → n ≤ succ n
@@ -575,12 +578,12 @@ module basic-arithmetic-and-order where
   zero-minimal n = ⋆
 
   unique-minimal : (n : ℕ) → n ≤ zero → n ＝ zero
-  unique-minimal zero p = refl zero
+  unique-minimal zero     p = refl zero
   unique-minimal (succ n) p = !𝟘 (succ n ＝ zero) p
 
   ≤-split : (m n : ℕ) → m ≤ succ n → (m ≤ n) + (m ＝ succ n)
-  ≤-split zero n l = inl l
-  ≤-split (succ m) zero l = inr (ap succ (unique-minimal m l))
+  ≤-split zero     n        l = inl l
+  ≤-split (succ m) zero     l = inr (ap succ (unique-minimal m l))
   ≤-split (succ m) (succ n) l = +-recursion inl (inr ∘ ap succ) (≤-split m n l)
 
   _<_ : ℕ → ℕ → 𝓤₀ ̇
@@ -588,10 +591,10 @@ module basic-arithmetic-and-order where
 
   infix 10 _<_
 
-  not-<-gives-≥ : (m n : ℕ) → ¬ (n < m) → m ≤ n
-  not-<-gives-≥ zero n u = zero-minimal n
-  not-<-gives-≥ (succ m) zero = dni (zero < succ m) (zero-minimal m)
-  not-<-gives-≥ (succ m) (succ n) = not-<-gives-≥ m n
+  not-<-gives-≥ : (m n : ℕ) → ¬(n < m) → m ≤ n
+  not-<-gives-≥ zero     n        u = zero-minimal n
+  not-<-gives-≥ (succ m) zero     u = dni (zero < succ m) (zero-minimal m) u
+  not-<-gives-≥ (succ m) (succ n) u = not-<-gives-≥ m n u
 
   bounded-∀-next : (A : ℕ → 𝓤 ̇ ) (k : ℕ)
                  → A k
@@ -622,13 +625,13 @@ module basic-arithmetic-and-order where
 
   at-most-one-minimal-root f m n (p , φ) (q , ψ) = c m n a b
    where
-    a : ¬ (m < n)
+    a : ¬(m < n)
     a u = ψ m u p
 
-    b : ¬ (n < m)
+    b : ¬(n < m)
     b v = φ n v q
 
-    c : (m n : ℕ) → ¬ (m < n) → ¬ (n < m) → m ＝ n
+    c : (m n : ℕ) → ¬(m < n) → ¬(n < m) → m ＝ n
     c m n u v = ≤-anti m n (not-<-gives-≥ m n v) (not-<-gives-≥ n m u)
 
   minimal-root : (ℕ → ℕ) → 𝓤₀ ̇
@@ -659,7 +662,7 @@ module basic-arithmetic-and-order where
   root-gives-minimal-root : ∀ f → root f → minimal-root f
   root-gives-minimal-root f (n , p) = γ
    where
-    g : ¬ (f has-no-root< (succ n))
+    g : ¬(f has-no-root< (succ n))
     g φ = φ n (≤-refl n) p
 
     γ : minimal-root f
@@ -668,7 +671,7 @@ module basic-arithmetic-and-order where
 infixr 30 _×_
 infix   0 _∼_
 infixl 70 _∘_
-infix  10 _↔_
+infix  10 _⇔_
 infixl 30 _∙_
 infixr  0 _＝⟨_⟩_
 infix   1 _∎

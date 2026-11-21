@@ -26,7 +26,8 @@ haes-are-invertible f (g , η , ε , τ) = g , η , ε
 
 transport-ap-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                  {x x' : X} (a : x' ＝ x) (b : f x' ＝ f x)
-               → (transport (λ - → f - ＝ f x) a b ＝ refl (f x)) ≃ (ap f a ＝ b)
+               → (transport (λ - → f - ＝ f x) a b ＝ refl (f x))
+               ≃ (ap f a ＝ b)
 
 transport-ap-≃ f (refl x) b = γ
  where
@@ -97,8 +98,8 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f i = (g , η , ε , τ)
     by-definition-of-ε : ε (f x) ＝ b
     by-definition-of-ε = refl _
 
-    q = transport (λ - → f - ＝ f x)       a          b         ＝⟨ refl _ ⟩
-        transport (λ - → f - ＝ f x)       (ap pr₁ p) (pr₂ φ)   ＝⟨ t ⟩
+    q = transport (λ - → f - ＝ f x)       a          b         ＝⟨ refl _    ⟩
+        transport (λ - → f - ＝ f x)       (ap pr₁ p) (pr₂ φ)   ＝⟨ t         ⟩
         transport (λ - → f (pr₁ -) ＝ f x) p          (pr₂ φ)   ＝⟨ apd pr₂ p ⟩
         refl (f x)                                             ∎
      where
@@ -115,7 +116,9 @@ equivs-are-haes' f e = (inverse f e ,
                         inverses-are-sections f e ,
                         τ)
  where
-  τ : ∀ x → ap f (inverses-are-retractions f e x) ＝ inverses-are-sections f e (f x)
+  τ
+   : ∀ x
+   → ap f (inverses-are-retractions f e x) ＝ inverses-are-sections f e (f x)
   τ x = ⌜ transport-ap-≃ f (ap pr₁ p) (pr₂ φ) ⌝ q
    where
     φ : fiber f (f x)
@@ -133,13 +136,15 @@ equiv-invertible-hae-factorization : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 
 equiv-invertible-hae-factorization f e = refl (equivs-are-invertible f e)
 
-half-adjoint-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (x : X)
-                       → ap f (inverses-are-retractions f e x) ＝ inverses-are-sections f e (f x)
+half-adjoint-condition
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (x : X)
+ → ap f (inverses-are-retractions f e x) ＝ inverses-are-sections f e (f x)
 
 half-adjoint-condition f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
 
 Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                     → is-equiv f → (Σ y ꞉ Y , A y) ≃ (Σ x ꞉ X , A (f x))
+                     → is-equiv f
+                     → (Σ y ꞉ Y , A y) ≃ (Σ x ꞉ X , A (f x))
 
 Σ-change-of-variable {𝓤} {𝓥} {𝓦} {X} {Y} A f i = γ
  where
@@ -166,10 +171,10 @@ half-adjoint-condition f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
     a' : A (f (g (f x)))
     a' = transport A ((ε (f x))⁻¹) a
 
-    q = transport (A ∘ f) (η x)  a' ＝⟨ transport-ap A f (η x) a' ⟩
-        transport A (ap f (η x)) a' ＝⟨ ap (λ - → transport A - a') (τ x) ⟩
+    q = transport (A ∘ f) (η x)  a' ＝⟨ transport-ap A f (η x) a'             ⟩
+        transport A (ap f (η x)) a' ＝⟨ ap (λ - → transport A - a') (τ x)     ⟩
         transport A (ε (f x))    a' ＝⟨ transport-is-retraction A (ε (f x)) a ⟩
-        a                          ∎
+        a                           ∎
 
     p : (g (f x) , transport A ((ε (f x))⁻¹) a) ＝ (x , a)
     p = to-Σ-＝ (η x , q)
@@ -196,10 +201,10 @@ half-adjoint-condition f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
 ~-id-naturality h η {x} =
 
    η (h x)                         ＝⟨ refl _ ⟩
-   η (h x) ∙ refl (h x)            ＝⟨ i ⟩
-   η (h x) ∙ (η x ∙ (η x)⁻¹)       ＝⟨ ii ⟩
-   η (h x) ∙ η x ∙ (η x)⁻¹         ＝⟨ iii ⟩
-   η (h x) ∙ ap id (η x) ∙ (η x)⁻¹ ＝⟨ iv ⟩
+   η (h x) ∙ refl (h x)            ＝⟨ i      ⟩
+   η (h x) ∙ (η x ∙ (η x)⁻¹)       ＝⟨ ii     ⟩
+   η (h x) ∙ η x ∙ (η x)⁻¹         ＝⟨ iii    ⟩
+   η (h x) ∙ ap id (η x) ∙ (η x)⁻¹ ＝⟨ iv     ⟩
    ap h (η x)                      ∎
 
  where
@@ -214,32 +219,33 @@ invertibles-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 invertibles-are-haes f (g , η , ε) = g , η , ε' , τ
  where
   ε' = λ y → f (g y)         ＝⟨ (ε (f (g y)))⁻¹ ⟩
-             f (g (f (g y))) ＝⟨ ap f (η (g y)) ⟩
+             f (g (f (g y))) ＝⟨ ap f (η (g y))  ⟩
              f (g y)         ＝⟨ ε y ⟩
              y               ∎
 
   module _ (x : domain f) where
 
-   p = η (g (f x))       ＝⟨ ~-id-naturality (g ∘ f) η ⟩
-       ap (g ∘ f) (η x)  ＝⟨ ap-∘ f g (η x) ⟩
+   p = η (g (f x))       ＝⟨ ~-id-naturality (g ∘ f) η  ⟩
+       ap (g ∘ f) (η x)  ＝⟨ ap-∘ f g (η x)             ⟩
        ap g (ap f (η x)) ∎
 
-   q = ap f (η (g (f x))) ∙ ε (f x)          ＝⟨ by-p ⟩
-       ap f (ap g (ap f (η x))) ∙ ε (f x)    ＝⟨ by-ap-∘ ⟩
+   q = ap f (η (g (f x))) ∙ ε (f x)          ＝⟨ by-p            ⟩
+       ap f (ap g (ap f (η x))) ∙ ε (f x)    ＝⟨ by-ap-∘         ⟩
        ap (f ∘ g) (ap f (η x))  ∙ ε (f x)    ＝⟨ by-~-naturality ⟩
-       ε (f (g (f x))) ∙ ap id (ap f (η x))  ＝⟨ by-ap-id ⟩
+       ε (f (g (f x))) ∙ ap id (ap f (η x))  ＝⟨ by-ap-id        ⟩
        ε (f (g (f x))) ∙ ap f (η x)          ∎
     where
      by-p            = ap (λ - → ap f - ∙ ε (f x)) p
      by-ap-∘         = ap (_∙ ε (f x)) ((ap-∘ g f (ap f (η x)))⁻¹)
-     by-~-naturality = (~-naturality (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹
+     by-~-naturality
+      = (~-naturality (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹
      by-ap-id        = ap (ε (f (g (f x))) ∙_) (ap-id (ap f (η x)))
 
    τ = ap f (η x)                                           ＝⟨ refl-left ⁻¹ ⟩
-       refl (f (g (f x)))                     ∙ ap f (η x)  ＝⟨ by-⁻¹-left∙ ⟩
-       (ε (f (g (f x))))⁻¹ ∙  ε (f (g (f x))) ∙ ap f (η x)  ＝⟨ by-∙assoc ⟩
-       (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ＝⟨ by-q ⟩
-       (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ＝⟨ refl _ ⟩
+       refl (f (g (f x)))                     ∙ ap f (η x)  ＝⟨ by-⁻¹-left∙  ⟩
+       (ε (f (g (f x))))⁻¹ ∙  ε (f (g (f x))) ∙ ap f (η x)  ＝⟨ by-∙assoc    ⟩
+       (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ＝⟨ by-q         ⟩
+       (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ＝⟨ refl _       ⟩
        ε' (f x)                                             ∎
     where
      by-⁻¹-left∙ = ap (_∙ ap f (η x)) ((⁻¹-left∙ (ε (f (g (f x)))))⁻¹)

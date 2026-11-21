@@ -15,7 +15,8 @@ open import MGS.Embeddings public
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
 
-inhabitation-is-subsingleton : global-dfunext → (X : 𝓤 ̇ )
+inhabitation-is-subsingleton : global-dfunext
+                             → (X : 𝓤 ̇ )
                              → is-subsingleton (is-inhabited X)
 
 inhabitation-is-subsingleton fe X =
@@ -27,14 +28,16 @@ inhabitation-is-subsingleton fe X =
 inhabited-intro : {X : 𝓤 ̇ } → X → is-inhabited X
 inhabited-intro x = λ P s f → f x
 
-inhabited-recursion : {X P : 𝓤 ̇ } → is-subsingleton P → (X → P) → is-inhabited X → P
+inhabited-recursion
+ : {X P : 𝓤 ̇ } → is-subsingleton P → (X → P) → is-inhabited X → P
 inhabited-recursion s f φ = φ (codomain f) s f
 
-inhabited-recursion-computation : {X P : 𝓤 ̇ }
-                                  (i : is-subsingleton P)
-                                  (f : X → P)
-                                  (x : X)
-                                → inhabited-recursion i f (inhabited-intro x) ＝ f x
+inhabited-recursion-computation
+ : {X P : 𝓤 ̇ }
+   (i : is-subsingleton P)
+   (f : X → P)
+   (x : X)
+ → inhabited-recursion i f (inhabited-intro x) ＝ f x
 
 inhabited-recursion-computation i f x = refl (f x)
 
@@ -47,20 +50,23 @@ inhabited-induction : global-dfunext
 inhabited-induction fe {X} {P} i f s = φ' s
  where
   φ : X → P s
-  φ x = transport P (inhabitation-is-subsingleton fe X (inhabited-intro x) s) (f x)
+  φ x
+   = transport P (inhabitation-is-subsingleton fe X (inhabited-intro x) s) (f x)
 
   φ' : is-inhabited X → P s
   φ' = inhabited-recursion (i s) φ
 
-inhabited-computation : (fe : global-dfunext) {X : 𝓤 ̇ } {P : is-inhabited X → 𝓤 ̇ }
-                        (i : (s : is-inhabited X) → is-subsingleton (P s))
-                        (f : (x : X) → P (inhabited-intro x))
-                        (x : X)
-                      → inhabited-induction fe i f (inhabited-intro x) ＝ f x
+inhabited-computation
+ : (fe : global-dfunext) {X : 𝓤 ̇ } {P : is-inhabited X → 𝓤 ̇ }
+   (i : (s : is-inhabited X) → is-subsingleton (P s))
+   (f : (x : X) → P (inhabited-intro x))
+   (x : X)
+ → inhabited-induction fe i f (inhabited-intro x) ＝ f x
 
-inhabited-computation fe i f x = i (inhabited-intro x)
-                                   (inhabited-induction fe i f (inhabited-intro x))
-                                   (f x)
+inhabited-computation fe i f x
+ = i (inhabited-intro x)
+     (inhabited-induction fe i f (inhabited-intro x))
+     (f x)
 
 inhabited-subsingletons-are-pointed : (P : 𝓤 ̇ )
                                     → is-subsingleton P → is-inhabited P → P
@@ -139,7 +145,7 @@ module basic-truncation-development
   ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
   ∥∥-functor f = ∥∥-recursion ∥∥-is-subsingleton (λ x → ∣ f x ∣)
 
-  ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ↔ is-inhabited X
+  ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ⇔ is-inhabited X
   ∥∥-agrees-with-inhabitation X = a , b
    where
     a : ∥ X ∥ → is-inhabited X
@@ -154,7 +160,7 @@ module basic-truncation-development
   infixl 20 _∨_
 
   ∃ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-  ∃ A = (∥ Σ A ∥)
+  ∃ A = ∥ Σ A ∥
 
   -∃ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   -∃ X Y = ∃ Y
@@ -191,12 +197,13 @@ module basic-truncation-development
   being-surjection-is-subsingleton f = Π-is-subsingleton hunapply
                                         (λ y → ∃-is-subsingleton)
 
-  corestriction-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+  corestriction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                            → is-surjection (corestriction f)
 
-  corestriction-is-surjection f (y , s) = ∥∥-functor g s
+  corestriction-surjection f (y , s) = ∥∥-functor g s
    where
-    g : (Σ x ꞉ domain f , f x ＝ y) → Σ x ꞉ domain f , corestriction f x ＝ (y , s)
+    g
+     : (Σ x ꞉ domain f , f x ＝ y) → Σ x ꞉ domain f , corestriction f x ＝ (y , s)
     g (x , p) = x , to-subtype-＝ (λ _ → ∃-is-subsingleton) p
 
   surjection-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -241,7 +248,7 @@ module basic-truncation-development
 
   singleton-iff-inhabited-subsingleton : (X : 𝓤 ̇ )
                                        → is-singleton X
-                                       ↔ (∥ X ∥ × is-subsingleton X)
+                                       ⇔ (∥ X ∥ × is-subsingleton X)
 
   singleton-iff-inhabited-subsingleton X =
 
@@ -251,7 +258,7 @@ module basic-truncation-development
 
   equiv-iff-embedding-and-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                      →  is-equiv f
-                                     ↔ (is-embedding f × is-surjection f)
+                                     ⇔ (is-embedding f × is-surjection f)
 
   equiv-iff-embedding-and-surjection f = (a , b)
    where
@@ -283,7 +290,8 @@ from-fix : {X : 𝓤 ̇ } (f : X → X)
 
 from-fix f = pr₁
 
-to-fix : {X : 𝓤 ̇ } (f : X → X) → wconstant f
+to-fix : {X : 𝓤 ̇ } (f : X → X)
+       → wconstant f
        → X → fix f
 
 to-fix f κ x = f x , κ (f x) x
@@ -311,17 +319,19 @@ fix-is-subsingleton {𝓤} {X} f κ = γ
 choice-function : 𝓤 ̇ → 𝓤 ⁺ ̇
 choice-function X = is-inhabited X → X
 
-wconstant-endomap-gives-choice-function : {X : 𝓤 ̇ }
-                                        → wconstant-endomap X → choice-function X
+wconstant-endomap-gives-choice-function
+ : {X : 𝓤 ̇ }
+ → wconstant-endomap X → choice-function X
 
 wconstant-endomap-gives-choice-function {𝓤} {X} (f , κ) = from-fix f ∘ γ
  where
   γ : is-inhabited X → fix f
   γ = inhabited-recursion (fix-is-subsingleton f κ) (to-fix f κ)
 
-choice-function-gives-wconstant-endomap : global-dfunext
-                                        → {X : 𝓤 ̇ }
-                                        → choice-function X → wconstant-endomap X
+choice-function-gives-wconstant-endomap
+ : global-dfunext
+ → {X : 𝓤 ̇ }
+ → choice-function X → wconstant-endomap X
 
 choice-function-gives-wconstant-endomap fe {X} c = f , κ
  where
@@ -350,8 +360,8 @@ module find-hidden-root where
 
  μρ-root-minimal f m p n q = not-<-gives-≥ (μρ-root f (m , p)) n γ
   where
-   φ : ¬ (f n ≠ 0) → ¬ (n < μρ-root f (m , p))
-   φ = contrapositive (pr₂ (pr₂ (root-gives-minimal-root f (m , p))) n)
+   φ : ¬(f n ≠ 0) → ¬(n < μρ-root f (m , p))
+   φ = contrapositive (pr₂(pr₂ (root-gives-minimal-root f (m , p))) n)
 
    γ : ¬ (n < μρ-root f (m , p))
    γ = φ (dni (f n ＝ 0) q)
@@ -509,13 +519,14 @@ module exit-∥∥
  ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = f'
   where
    ψ : (y y' : Y) →  (Σ x ꞉ X , f x ＝ y) → (Σ x' ꞉ X , f x' ＝ y') → y ＝ y'
-   ψ y y' (x , r) (x' , r') = y    ＝⟨ r ⁻¹ ⟩
+   ψ y y' (x , r) (x' , r') = y    ＝⟨ r ⁻¹   ⟩
                               f x  ＝⟨ κ x x' ⟩
-                              f x' ＝⟨ r' ⟩
+                              f x' ＝⟨ r'     ⟩
                               y'   ∎
 
    φ : (y y' : Y) → (∃ x ꞉ X , f x ＝ y) → (∃ x' ꞉ X , f x' ＝ y') → y ＝ y'
-   φ y y' u u' = ∥∥-recursion (s y y') (λ - → ∥∥-recursion (s y y') (ψ y y' -) u') u
+   φ y y' u u'
+    = ∥∥-recursion (s y y') (λ - → ∥∥-recursion (s y y') (ψ y y' -) u') u
 
    P : 𝓤 ⊔ 𝓥 ̇
    P = image f
