@@ -12,6 +12,7 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Addition
 open import Naturals.Properties
+open import UF.Base
 
 module Naturals.Multiplication where
 
@@ -342,6 +343,98 @@ multiplication-preserves-order m n (succ k) l = γ
 
 \end{code}
 
+Added by Theo Hepburn on 21 November 2026.
+
+Multiplication preserves non-strict order when the multiplying constant
+is on the left.
+
+We show that m * k is equal to k * m, and that n * k is equal to
+k * n. Since we have that m * k ≤ n * k given that m ≤ n as above, we also
+have k * m ≤ k * n under that same condition.
+
+\begin{code}
+
+multiplication-preserves-order-left : (k m n : ℕ) → m ≤ n → k * m ≤ k * n
+multiplication-preserves-order-left k m n l = transport₂ _≤_ γ₁ γ₂ γ₃
+ where
+  γ₁ : m * k ＝ k * m
+  γ₁ = mult-commutativity m k
+
+  γ₂ : n * k ＝ k * n
+  γ₂ = mult-commutativity n k
+
+  γ₃ : m * k ≤ n * k
+  γ₃ = multiplication-preserves-order m n k l
+
+\end{code}
+
+Multiplication preserves non-strict order when, rather than multiplying by a
+constant, both numbers being multiplied are different.
+
+We have that m * x ≤ n * x by `multiplication-preserves-order`, and that
+n * x ≤ n * y by `multiplication-preserves-order-left`. Therefore, by
+transitivity, we have m * x ≤ n * y.
+
+\begin{code}
+
+≤-multiplying : (m n x y : ℕ) → m ≤ n → x ≤ y → m * x ≤ n * y
+≤-multiplying m n x y l₁ l₂ = ≤-trans (m * x) (n * x) (n * y) γ₁ γ₂
+ where
+  γ₁ : m * x ≤ n * x
+  γ₁ = multiplication-preserves-order m n x l₁ 
+
+  γ₂ : n * x ≤ n * y
+  γ₂ = multiplication-preserves-order-left n x y l₂
+
+\end{code}
+
+Proof that if x ≤ y, a * x + b * y ≤ (a + b) * y
+
+If we have two variables and one is lower than the other, it allows us to
+impose an upper bound on the expression without the lower variable.
+
+We show that the right hand side can be written as follows:
+
+(a + b) * y ＝ a * y + b * y by distributivity
+
+Since a * x ≤ a * y, we also have a * x + b * y ≤ a * y + b * y
+
+\begin{code}
+
+absorb-lower-variable : (a b x y : ℕ) → x ≤ y → a * x + b * y ≤ (a + b) * y
+absorb-lower-variable a b x y x≤y = transport (a * x + b * y ≤_) γ₁ γ₃
+ where
+  γ₁ : a * y + b * y ＝ (a + b) * y
+  γ₁ = distributivity-mult-over-addition' a b y ⁻¹
+
+  γ₂ : a * x ≤ a * y
+  γ₂ = multiplication-preserves-order-left a x y x≤y
+
+  γ₃ : a * x + b * y ≤ a * y + b * y
+  γ₃ = ≤-n-monotone-right (a * x) (a * y) (b * y) γ₂
+
+\end{code}
+
+Proof that when n ≠ 0, we have b + a * n ≤ (b + a) * n
+
+A special case of the above that allows us to impose an upper bound without a
+constant on an expression with a constant.
+
+First, we eliminate the invalid case n ＝ 0.
+
+We then have n ≥ 1. We use absorb-lower-variable to show that
+b + a * n ＝ b * 1 + a * n ≤ (b + a) * n
+
+\begin{code}
+
+absorb-constant : (a b n : ℕ) → n ≠ 0 → b + a * n ≤ (b + a) * n
+absorb-constant a b zero   n≠0 = 𝟘-elim (n≠0 refl)
+absorb-constant a b (succ n) l = absorb-lower-variable b a 1 (succ n) ⋆
+
+\end{code}
+
+End of addition
+
 For strict order, order is only preserved when multiplying by a value
 greater than 0.  Again by induction, the base case is trivial since we
 are multiplying by 1.  The inductive case is similar to the above
@@ -396,5 +489,3 @@ product-order-cancellable x (succ y) z l = γ
 
 less-than-pos-mult : (x y z : ℕ) → x < y → x < y * succ z
 less-than-pos-mult x y z l = <-+ x y (y * z) l
-
-\end{code}
