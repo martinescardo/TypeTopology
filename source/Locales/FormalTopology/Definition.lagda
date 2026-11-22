@@ -225,9 +225,6 @@ satisfies-cover-left-rule {_} {A} _⊑_ _◁_ =
 
 \end{code}
 
-Some notation for downward closures of sets as well as the intersection of
-downward closures.
-
 Now, we define the condition that Negri calls _right_:
 
 \begin{code}
