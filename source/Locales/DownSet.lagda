@@ -4,9 +4,9 @@ author: Ayberk Tosun
 date:   2026-11-20
 ---
 
-The notion of down set was used in many places throughout the locale theory
+The notion of down set is used in many places throughout the locale theory
 development. In this module, we define it in its most general form to avoid
-duplication. We also collect lemmas about it here.
+duplication. We also collect lemmas about it.
 
 \begin{code}
 
@@ -30,7 +30,7 @@ open AllCombinators pt fe
 
 \end{code}
 
-We define what it means for a subset `U` to downward closed with respect to
+We define what it means for a subset `U` to be downward closed with respect to
 some order `_≤_`. We do not assume anything about the order.
 
 \begin{code}
@@ -57,8 +57,8 @@ Downward-Closed-Subset' {_} {_} 𝓦 {A} _≤_ =
 
 In most cases, we work with down sets in the same as universe as that of the
 type in consideration. We define a special case for this. Our use of the prime
-symbol here follows the convention of `𝓟` and `𝓟'` from the `UF.Powerset`
-module.
+symbol here follows the notational distinction between `𝓟` and `𝓟'` from the
+`UF.Powerset` module.
 
 \begin{code}
 
@@ -67,8 +67,8 @@ Downward-Closed-Subset {𝓤} {_} {A} _≤_ = Downward-Closed-Subset' 𝓤 _≤_
 
 \end{code}
 
-We also give a direct definition of the downward-closed subsets of a poset,
-which we denoted by `Downward-Closed-Subsetₚ`.
+We also define a special case that directly captures the downward-closed subsets
+of a poset. This is denoted by `Downward-Closed-Subsetₚ`.
 
 \begin{code}
 
