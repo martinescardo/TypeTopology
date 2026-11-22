@@ -1,7 +1,7 @@
 ---
-title: Downward-closed sets
+title:  Downward-closed sets
 author: Ayberk Tosun
-date: 2026-11-20
+date:   2026-11-20
 ---
 
 The notion of down set was used in many places throughout the locale theory
