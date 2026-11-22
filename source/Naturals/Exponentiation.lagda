@@ -175,7 +175,7 @@ exponentiation-of-one : (k : ℕ) → 1 ^ k ＝ 1
 exponentiation-of-one zero = refl
 exponentiation-of-one (succ k)
  = 1 * (1 ^ k) ＝⟨ ap (λ x → 1 * x) (exponentiation-of-one k) ⟩
-   1 * 1 ＝⟨ refl ⟩
+   1 * 1       ＝⟨ refl ⟩
    1 ∎
 
 \end{code}
@@ -202,7 +202,7 @@ If k = 0, this is invalid.
 Otherwise:
 
 k ^ n' ＝ 1 * (k ^ n') by mult-left-id
-       ≤ k * (k ^ n') by multiplication-preserves-order, as 1 ≤ k
+       ≤  k * (k ^ n') by multiplication-preserves-order, as 1 ≤ k
        ＝ k ^ (n' + 1)
 
 \begin{code}
@@ -273,6 +273,9 @@ exponentiation-preserves-order-left (succ k) (succ m) zero x ()
 
 Holds when n = 0 and k = 0. m must equal 0 here as m ≤ 0.
 
+On the left hand side we have 0 ^ 0 ＝ 1 and on the right hand side we have
+0 ^ 0 ＝ 1. 1 ≤ 1 so this case holds.
+
 \begin{code}
 
 exponentiation-preserves-order-left zero zero zero (inr (inr n＝0)) l = ⋆
@@ -281,18 +284,20 @@ exponentiation-preserves-order-left zero zero zero (inr (inr n＝0)) l = ⋆
 
 Holds when k ≠ 0, m ＝ 0, and n ＝ 0. m must equal 0 here as m ≤ 0.
 
+Both sides are 0 ^ k, and 0 ^ k ≤ 0 ^ k.
+
 \begin{code}
 
-exponentiation-preserves-order-left (succ k) zero zero _ l = ⋆
+exponentiation-preserves-order-left k@(succ _) zero zero _ l = ⋆
 
 \end{code}
 
 Holds when k ＝ 0, m ≠ 0, and n ≠ 0.
 
-When k ＝ 0, we have m ^ 0 on the left hand side, which
+When k ＝ 0, we have 0 ^ m on the left hand side, which
 by exponentiation-of-zero equals 0, as m ≥ 0.
 
-When k ＝ 0, we have n ^ 0 on the right hand side, which
+When k ＝ 0, we have 0 ^ n on the right hand side, which
 by exponentiation-of-zero equals 0, as n ≥ 0.
 
 So we have 0 on both sides, and 0 ≤ 0 and ≤-refl.
@@ -321,7 +326,7 @@ On the left hand side, we have k ^ m ＝ 1 by definition.
 
 We have 1 ≤ k ^ n' by the inductive hypothesis.
 
-and k ^ n' ≤ (k ^ (n'+1)) by exponentiation-succ-≤ since k > 0 because k ≠ 0
+and k ^ n' ≤ (k ^ (n' + 1)) by exponentiation-succ-≤ since k > 0 because k ≠ 0
 
 So k ^ m ≤ (k ^ (n' + 1)) by transitivity.
 
@@ -360,7 +365,7 @@ exponentiation-preserves-order-left k@(succ _) (succ m) (succ n) _ l = γ₂
 \end{code}
 
 We then show that if we have m ≤ n and x ≤ y, we have m ^ x ≤ n ^ y,
-when m ≠ 0, x ≠ 0, or y ≠ 0.
+when m ≠ 0, x ≠ 0, or y ＝ 0.
 
 This holds as (m ^ x) ≤ (m ^ y) by `exponentiation-preserves-order-left`,
 and (m ^ y) ≤ (n ^ y) by `exponentiation-preserves-order-right`, and so by
@@ -400,14 +405,14 @@ Invalid cases are ruled out.
 
 \end{code}
 
-We show that if we have x ≤ y and m ≠ 0, x ≠ 0, or y ≠ 0, we have
+We show that if we have x ≤ y and m ≠ 0, x ≠ 0, or y ＝ 0, we have
 a * (n ^ x) + b * (n ^ y) ≤ (a + b) * (n ^ y)
 for any natural numbers a and b.
 
 This allows us to impose an upper bound of a monomial on a binomial
 when we can show that one exponent is ≤ another.
 
-Since we have x ≤ y and the m ≠ 0, x ≠ 0, or y ≠ 0 trichotomy, we
+Since we have x ≤ y and the m ≠ 0, x ≠ 0, or y ＝ 0 trichotomy, we
 have that n ^ x ≤ n ^ y by exponentiation-preserves-order-left.
 
 We then use absorb-lower-variable to prove the full result.
@@ -422,7 +427,7 @@ exponent-addition a b x y n trich x≤y
  = absorb-lower-variable a b (n ^ x) (n ^ y) γ
   where
    γ : n ^ x ≤ n ^ y
-   γ = (exponentiation-preserves-order-left n x y trich x≤y)
+   γ = exponentiation-preserves-order-left n x y trich x≤y
 
 \end{code}
 

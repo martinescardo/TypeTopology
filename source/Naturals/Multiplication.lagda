@@ -349,8 +349,8 @@ Multiplication preserves non-strict order when the multiplying constant
 is on the left.
 
 We show that m * k is equal to k * m, and that n * k is equal to
-k * n. Since we have that m * k ≤ n * k given that m ≤ n as above, we also
-have k * m ≤ k * n under that same condition.
+k * n. Since we have that m * k ≤ n * k given that m ≤ n as above, we can use
+mult-commutativity to rearrange both sides to get k * m ≤ k * n.
 
 \begin{code}
 
@@ -489,3 +489,5 @@ product-order-cancellable x (succ y) z l = γ
 
 less-than-pos-mult : (x y z : ℕ) → x < y → x < y * succ z
 less-than-pos-mult x y z l = <-+ x y (y * z) l
+
+\end{code}
