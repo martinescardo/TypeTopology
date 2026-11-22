@@ -228,44 +228,6 @@ satisfies-cover-left-rule {_} {A} _⊑_ _◁_ =
 Some notation for downward closures of sets as well as the intersection of
 downward closures.
 
-\begin{code}
-
-module Downward-Closure-Intersection-Syntax {A : 𝓤 ̇} (_⊑_ : A → A → Ω 𝓤) where
-
- ↓_ : 𝓟 A → 𝓟 A
- ↓ U = λ a → Ǝₚ u ꞉ A , (u ∈ₚ U ∧ a ⊑ u)
-
- _⊓_ : 𝓟 A → 𝓟 A → 𝓟 A
- U ⊓ V = (↓ U) ∩ (↓ V)
-
- downward-closedness-implies-⊓-coincides-with-∩
-  : propext 𝓤
-  → is-reflexive _⊑_ holds
-  → {U V : 𝓟 A}
-  → is-downward-closed _⊑_ U holds
-  → is-downward-closed _⊑_ V holds
-  → U ⊓ V ＝ U ∩ V
- downward-closedness-implies-⊓-coincides-with-∩ pe 𝓇𝒻𝓁 {U} {V} φ ψ =
-  subset-extensionality pe fe † ‡
-   where
-    open PropositionalTruncation pt
-
-    † : (U ⊓ V) ⊆ (U ∩ V)
-    † a (μ , ν) = ∥∥-rec₂ (holds-is-prop (a ∈ₚ (U ∩ V))) γ μ ν
-     where
-      γ : Σ u ꞉ A , (u ∈ₚ U ∧ a ⊑ u) holds
-        → Σ v ꞉ A , (v ∈ₚ V ∧ a ⊑ v) holds
-        → (a ∈ₚ (U ∩ V)) holds
-      γ (u , pu , ru) (v , pv , rv)= φ u pu a ru , ψ v pv a rv
-
-    ‡ : (U ∩ V) ⊆ (U ⊓ V)
-    ‡ a (μ , ν) = ∣ a , μ , 𝓇𝒻𝓁 a ∣ , ∣ a , ν , 𝓇𝒻𝓁 a ∣
-
- infix 6 _⊓_
- infix 7 ↓_
-
-\end{code}
-
 Now, we define the condition that Negri calls _right_:
 
 \begin{code}
