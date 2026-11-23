@@ -14,12 +14,14 @@ following [1] as a reference.
 
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Subsingletons
 
 module Locales.FormalTopology.Definition
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where
 
+open import Locales.DownSet pt fe
 open import Locales.Frame pt fe hiding (⟨_⟩)
 open import MLTT.Spartan
 open import Notation.UnderlyingType
@@ -220,24 +222,6 @@ We first define the condition that Negri [1] calls _left_:
 satisfies-cover-left-rule : {A : 𝓤 ̇} → (A → A → Ω 𝓤) → (A → 𝓟 A → Ω 𝓤) → Ω (𝓤 ⁺)
 satisfies-cover-left-rule {_} {A} _⊑_ _◁_ =
  Ɐ a b ꞉ A , Ɐ U ꞉ 𝓟 A , b ⊑ a ⇒ a ◁ U ⇒ b ◁ U
-
-\end{code}
-
-Some notation for downward closures of sets as well as the intersection of
-downward closures.
-
-\begin{code}
-
-module Downward-Closure-Intersection-Syntax {A : 𝓤 ̇} (_⊑_ : A → A → Ω 𝓤) where
-
- ↓_ : 𝓟 A → 𝓟 A
- ↓ U = λ a → Ǝₚ u ꞉ A , (u ∈ₚ U ∧ a ⊑ u)
-
- _⊓_ : 𝓟 A → 𝓟 A → 𝓟 A
- U ⊓ V = (↓ U) ∩ (↓ V)
-
- infix 6 _⊓_
- infix 7 ↓_
 
 \end{code}
 

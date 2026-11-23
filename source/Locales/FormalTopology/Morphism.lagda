@@ -22,6 +22,7 @@ module Locales.FormalTopology.Morphism
         (pe : Prop-Ext)
        where
 
+open import Locales.DownSet pt fe
 open import Locales.FormalTopology.Definition pt fe
 open import Locales.Frame pt fe hiding (⟨_⟩)
 open import MLTT.Spartan
@@ -384,10 +385,10 @@ identity-morphism-ft 𝒜 = from-qft-morphism 𝒜 𝒜 (identity-morphism-qft �
   β : preserves-binary-meets 𝒜 𝒜 (fun 𝒜₀ 𝒜₀ (identity-morphism-qft 𝒜₀)) holds
   β a₁ a₂ a (p₁ , p₂) = ∥∥-rec₂ (holds-is-prop (a ◁Q[ 𝒜₀ ] _)) γ p₁ p₂
    where
-    γ : Σ a₁′ ꞉ ⟨ 𝒜 ⟩ , (a₁ ＝ a₁′) × (a ≤[ P ] a₁′) holds
-      → Σ a₂′ ꞉ ⟨ 𝒜 ⟩ , (a₂ ＝ a₂′) × (a ≤[ P ] a₂′) holds
+    γ : Σ (a₁′ , _) ꞉ 𝕋 ❴ a₁ ❵ , (a ≤[ P ] a₁′) holds
+      → Σ (a₂′ , _) ꞉ 𝕋 ❴ a₂ ❵ , (a ≤[ P ] a₂′) holds
       → (a ◁[ 𝒜 ] ❴_❵ ⦅ lower-bounds 𝒜 𝒜 a₁ a₂ ⦆) holds
-    γ (a₁′ , r₁ , q₁) (a₂′ , r₂ , q₂) =
+    γ ((a₁′ , r₁) , q₁) ((a₂′ , r₂) , q₂) =
      reflexivity-of-quasi-cover 𝒜₀ a _ ∣ (a , Ⅰ , Ⅱ) , refl ∣
       where
        open PosetReasoning P
