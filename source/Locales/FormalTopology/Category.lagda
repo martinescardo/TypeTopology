@@ -24,6 +24,7 @@ module Locales.FormalTopology.Category
 
 open import Categories.Pre
 open import Categories.Wild
+open import Locales.DownSet pt fe
 open import Locales.FormalTopology.Definition pt fe
 open import Locales.FormalTopology.Morphism pt fe pe
 open import Locales.Frame pt fe hiding (⟨_⟩)
@@ -290,18 +291,22 @@ ftop-composition 𝒜 ℬ 𝒞 ℊ 𝒻 =
    f = ft-fun 𝒜 ℬ 𝒻
    g = ft-fun ℬ 𝒞 ℊ
 
+   open Downward-Closure (λ x y → x ⊑[ ℬ ] y)
+    renaming (↓ₛ_ to ↓₂_)
+   open Downward-Closure (λ x y → x ⊑[ 𝒞 ] y)
+    renaming (↓ₛ_ to ↓₃_)
    open Downward-Closure-Intersection-Syntax (λ x y → x ⊑[ ℬ ] y)
-    renaming (_⊓_ to _⊓₂_; ↓_ to ↓₂_)
+    renaming (_⊓_ to _⊓₂_)
    open Downward-Closure-Intersection-Syntax (λ x y → x ⊑[ 𝒞 ] y)
-    renaming (_⊓_ to _⊓₃_; ↓_ to ↓₃_)
+    renaming (_⊓_ to _⊓₃_)
 
    β : preserves-binary-meets 𝒜 𝒞 (relational-image g ∘ f) holds
    β a₁ a₂ c (μ₁ , μ₂) = ∥∥-rec₂ (holds-is-prop (_ ◁[ 𝒞 ] _)) † μ₁ μ₂
     where
-     † : Σ c₁ ꞉ ⟨ 𝒞 ⟩ , c₁ ∈ (relational-image g ∘ f) a₁ × (c ≤[ R ] c₁) holds
-       → Σ c₂ ꞉ ⟨ 𝒞 ⟩ , c₂ ∈ (relational-image g ∘ f) a₂ × (c ≤[ R ] c₂) holds
+     † : Σ (c₁ , _) ꞉ 𝕋 ((relational-image g ∘ f) a₁) , (c ≤[ R ] c₁) holds
+       → Σ (c₂ , _) ꞉ 𝕋 ((relational-image g ∘ f) a₂) , (c ≤[ R ] c₂) holds
        → (c ◁[ 𝒞 ] (relational-image g ∘ f) ⦅ lower-bounds 𝒜 𝒜 a₁ a₂ ⦆) holds
-     † (c₁ , ν₁ , p₁) (c₂ , ν₂ , p₂) = ∥∥-rec₂ (holds-is-prop (_ ◁[ 𝒞 ] _)) γ ν₁ ν₂
+     † ((c₁ , ν₁) , p₁) ((c₂ , ν₂) , p₂) = ∥∥-rec₂ (holds-is-prop (_ ◁[ 𝒞 ] _)) γ ν₁ ν₂
       where
        γ : (Σ (b₁ , _) ꞉ 𝕋 (f a₁) , c₁ ∈ g b₁)
          → (Σ (b₂ , _) ꞉ 𝕋 (f a₂) , c₂ ∈ g b₂)
@@ -318,7 +323,7 @@ ftop-composition 𝒜 ℬ 𝒞 ℊ 𝒻 =
                𝒞₀
                c
                (g b₁ ⊓₃ g b₂)
-               (∣ c₁ , q₁ , p₁ ∣ , ∣ c₂ , q₂ , p₂ ∣)
+               (∣ (c₁ , q₁) , p₁ ∣ , ∣ (c₂ , q₂) , p₂ ∣)
 
           Ⅱ : (g b₁ ⊓₃ g b₂ ◁⁺[ 𝒞 ] g ⦅ lower-bounds ℬ ℬ b₁ b₂ ⦆) holds
           Ⅱ = ft-fun-preserves-binary-meets ℬ 𝒞 ℊ b₁ b₂
@@ -335,7 +340,7 @@ ftop-composition 𝒜 ℬ 𝒞 ℊ 𝒻 =
                                  ℬ₀
                                  b
                                  (f a₁ ⊓₂ f a₂)
-                                 (∣ b₁ , θ₁ , r₁ ∣ , ∣ b₂ , θ₂ , r₂ ∣)
+                                 (∣ (b₁ , θ₁) , r₁ ∣ , ∣ (b₂ , θ₂) , r₂ ∣)
 
                 Ⅶ : (f a₁ ⊓₂ f a₂ ◁⁺[ ℬ ] f ⦅ lower-bounds 𝒜 𝒜 a₁ a₂ ⦆) holds
                 Ⅶ = ft-fun-preserves-binary-meets 𝒜 ℬ 𝒻 a₁ a₂
