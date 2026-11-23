@@ -397,6 +397,7 @@ Please add yourself the first time you contribute. Use your adopted name, and no
 * [Paulo Oliva](https://paulooliva.github.io/)
 * [Peter Dybjer](https://www.chalmers.se/en/persons/peterd/)
 * [Simcha van Collem](https://simchavc.github.io/)
+* [Theo Hepburn](https://github.com/theoxiii)
 * [Thierry Coquand](https://www.chalmers.se/en/persons/coquand/)
 * [Todd Waugh Ambridge](https://www.cs.bham.ac.uk/~txw467/)
 * [Tom de Jong](https://tdejong.com/)
