@@ -373,8 +373,10 @@ transitivity we have m ^ x ≤ n ^ y.
 
 \begin{code}
 
-≤-exponentiating : (m n x y : ℕ) → (m ≠ 0) ∔ (x ≠ 0) ∔ (y ＝ 0)
-                 → m ≤ n → x ≤ y → m ^ x ≤ n ^ y
+≤-exponentiating : (m n x y : ℕ)
+                 → (m ≠ 0) ∔ (x ≠ 0) ∔ (y ＝ 0)
+                 → m ≤ n → x ≤ y
+                 → m ^ x ≤ n ^ y
 ≤-exponentiating m n x y (inl m≠0) l₁ l₂
  = ≤-trans (m ^ x) (m ^ y) (n ^ y) γ₁ γ₂
  where
