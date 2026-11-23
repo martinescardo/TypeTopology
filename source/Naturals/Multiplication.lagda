@@ -350,7 +350,7 @@ is on the left.
 
 We show that m * k is equal to k * m, and that n * k is equal to
 k * n. Since we have that m * k ≤ n * k given that m ≤ n as above, we can use
-mult-commutativity to rearrange both sides to get k * m ≤ k * n.
+`mult-commutativity` to rearrange both sides to get k * m ≤ k * n.
 
 \begin{code}
 
@@ -395,14 +395,15 @@ impose an upper bound on the expression without the lower variable.
 
 We show that the right hand side can be written as follows:
 
-(a + b) * y ＝ a * y + b * y by distributivity
+(a + b) * y ＝ a * y + b * y by `distributivity-mult-over-addition'`
 
-Since a * x ≤ a * y, we also have a * x + b * y ≤ a * y + b * y
+Since a * x ≤ a * y, by `multiplication-preserves-order-left`, we also have
+a * x + b * y ≤ a * y + b * y
 
 \begin{code}
 
-absorb-lower-variable : (a b x y : ℕ) → x ≤ y → a * x + b * y ≤ (a + b) * y
-absorb-lower-variable a b x y x≤y = transport (a * x + b * y ≤_) γ₁ γ₃
+absorb-≤-variable : (a b x y : ℕ) → x ≤ y → a * x + b * y ≤ (a + b) * y
+absorb-≤-variable a b x y x≤y = transport (a * x + b * y ≤_) γ₁ γ₃
  where
   γ₁ : a * y + b * y ＝ (a + b) * y
   γ₁ = distributivity-mult-over-addition' a b y ⁻¹
@@ -422,14 +423,14 @@ constant on an expression with a constant.
 
 First, we eliminate the invalid case n ＝ 0.
 
-We then have n ≥ 1. We use absorb-lower-variable to show that
+We then have n ≥ 1. We use `absorb-≤-variable` to show that
 b + a * n ＝ b * 1 + a * n ≤ (b + a) * n
 
 \begin{code}
 
 absorb-constant : (a b n : ℕ) → n ≠ 0 → b + a * n ≤ (b + a) * n
 absorb-constant a b zero   n≠0 = 𝟘-elim (n≠0 refl)
-absorb-constant a b (succ n) l = absorb-lower-variable b a 1 (succ n) ⋆
+absorb-constant a b (succ n) l = absorb-≤-variable b a 1 (succ n) ⋆
 
 \end{code}
 

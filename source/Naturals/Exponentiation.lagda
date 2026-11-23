@@ -185,7 +185,7 @@ We prove that 0ᵏ ＝ 0 for all k > 0.
 Let k = k' + 1
 
 We do this by showing that, for any k' ≥ 0,
-0 ^ (k' + 1) = 0 * (0 ^ k') = 0 by zero-left-base.
+0 ^ (k' + 1) = 0 * (0 ^ k') = 0 by `zero-left-base`.
 
 \begin{code}
 
@@ -201,8 +201,8 @@ If k = 0, this is invalid.
 
 Otherwise:
 
-k ^ n' ＝ 1 * (k ^ n') by mult-left-id
-       ≤  k * (k ^ n') by multiplication-preserves-order, as 1 ≤ k
+k ^ n' ＝ 1 * (k ^ n') by `mult-left-id`
+       ≤  k * (k ^ n') by `multiplication-preserves-order`, as 1 ≤ k
        ＝ k ^ (n' + 1)
 
 \begin{code}
@@ -231,7 +231,7 @@ On the left hand side, we have m ^ (k + 1) ＝ m * m ^ k
 On the right hand side, we have n ^ (k + 1) ＝ n * n ^ k
 
 Since we have m ≤ n and m ^ k ≤ n ^ k by the inductive hypothesis, by
-≤-multiplying we prove that m * m ^ k ≤ n * n ^ k.
+`≤-multiplying` we prove that m * m ^ k ≤ n * n ^ k.
 
 \begin{code}
 
@@ -295,10 +295,10 @@ exponentiation-preserves-order-left k@(succ _) zero zero _ l = ⋆
 Holds when k ＝ 0, m ≠ 0, and n ≠ 0.
 
 When k ＝ 0, we have 0 ^ m on the left hand side, which
-by exponentiation-of-zero equals 0, as m ≥ 0.
+by `exponentiation-of-zero` equals 0, as m ≥ 0.
 
 When k ＝ 0, we have 0 ^ n on the right hand side, which
-by exponentiation-of-zero equals 0, as n ≥ 0.
+by `exponentiation-of-zero` equals 0, as n ≥ 0.
 
 So we have 0 on both sides, and 0 ≤ 0 and ≤-refl.
 
@@ -326,7 +326,7 @@ On the left hand side, we have k ^ m ＝ 1 by definition.
 
 We have 1 ≤ k ^ n' by the inductive hypothesis.
 
-and k ^ n' ≤ (k ^ (n' + 1)) by exponentiation-succ-≤ since k > 0 because k ≠ 0
+and k ^ n' ≤ (k ^ (n' + 1)) by `exponentiation-succ-≤` since k > 0 because k ≠ 0
 
 So k ^ m ≤ (k ^ (n' + 1)) by transitivity.
 
@@ -350,7 +350,7 @@ On the right hand side, we have k ^ (n' + 1) ­＝ k * k ^ n'.
 
 By the inductive hypothesis, we have k ^ m' ≤ k ^ n'.
 
-So by multiplication-preserves-order-left, we have k * k ^ m' ≤ k * k ^ n'.
+So by `multiplication-preserves-order-left`, we have k * k ^ m' ≤ k * k ^ n'.
 
 \begin{code}
 
@@ -413,9 +413,9 @@ This allows us to impose an upper bound of a monomial on a binomial
 when we can show that one exponent is ≤ another.
 
 Since we have x ≤ y and the m ≠ 0, x ≠ 0, or y ＝ 0 trichotomy, we
-have that n ^ x ≤ n ^ y by exponentiation-preserves-order-left.
+have that n ^ x ≤ n ^ y by `exponentiation-preserves-order-left`.
 
-We then use absorb-lower-variable to prove the full result.
+We then use `absorb-≤-variable` to prove the full result.
 
 \begin{code}
 
@@ -424,7 +424,7 @@ exponent-addition : (a b x y n : ℕ)
                   → x ≤ y
                   → a * (n ^ x) + b * (n ^ y) ≤ (a + b) * (n ^ y)
 exponent-addition a b x y n trich x≤y
- = absorb-lower-variable a b (n ^ x) (n ^ y) γ
+ = absorb-≤-variable a b (n ^ x) (n ^ y) γ
   where
    γ : n ^ x ≤ n ^ y
    γ = exponentiation-preserves-order-left n x y trich x≤y
