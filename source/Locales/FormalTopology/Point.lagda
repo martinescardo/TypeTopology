@@ -1,11 +1,11 @@
 ---
-title: Points of formal topologies
-author: Ayberk Tosun
+title:        Points of formal topologies
+author:       Ayberk Tosun
 date-started: 2026-11-21
 ---
 
-This module define the notion of point of a formal topology, sometimes called
-a _formal point_.
+This module define the notion of point of a formal topology, sometimes called a
+_formal point_.
 
 \begin{code}
 
