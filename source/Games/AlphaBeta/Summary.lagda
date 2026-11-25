@@ -4,6 +4,7 @@ The main theorems of the paper
 
   Martín Hötzel Escardó and Paulo Oliva.
   Alpha-Beta Pruning via Monadic Continuations.
+  https://doi.org/10.48550/arXiv.2611.32320
 
 This file states the main theorems, Theorem 1 and Corollaries 1 and 2
 of the paper, and displays every definition that their statements use.

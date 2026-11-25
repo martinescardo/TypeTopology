@@ -5,6 +5,7 @@ Part of the formalization, in Games.AlphaBeta.index, of the paper
 
   Martín Hötzel Escardó and Paulo Oliva.
   Alpha-Beta Pruning via Monadic Continuations.
+  https://doi.org/10.48550/arXiv.2611.32320
 
 Computing optimal plays (Section 5 of the paper).
 

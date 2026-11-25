@@ -37,9 +37,10 @@ The following imported Agda files are a formalization of the paper
 
   Martín Hötzel Escardó and Paulo Oliva.
   Alpha-Beta Pruning via Monadic Continuations.
+  https://doi.org/10.48550/arXiv.2611.32320
 
-The paper, and the Haskell programs discussed in it, will be made
-available soon and linked here.
+The Haskell programs discussed in the paper are available at
+https://www.cs.bham.ac.uk/~mhe/papers/alpha-beta-pruning/
 
 This supersedes the file deprecated.alpha-beta of March - April 2023,
 where the ideas originated, and where we got started writing the

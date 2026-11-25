@@ -6,6 +6,7 @@ This is an Agda companion for the paper
    --------------------------------------------
 
    Martín Hötzel Escardó and Paulo Oliva
+   https://doi.org/10.48550/arXiv.2611.32320
 
 This file follows the definitions, lemmas and theorems of the paper
 above, in the same order and with the same numbering, including the

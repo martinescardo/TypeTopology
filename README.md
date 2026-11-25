@@ -348,6 +348,15 @@ check.
 
    https://arxiv.org/abs/2501.14542v6
 
+1. [Martín H. Escardó](https://www.cs.bham.ac.uk/~mhe/) and [Paulo Oliva](https://paulooliva.github.io/). *Alpha-Beta Pruning via Monadic Continuations*,
+   preprint, 24th November 2026.
+
+   https://doi.org/10.48550/arXiv.2611.32320
+
+   Agda companion and Haskell programs. \
+   https://www.cs.bham.ac.uk/~mhe/TypeTopology/Games.AlphaBeta.index.html \
+   https://www.cs.bham.ac.uk/~mhe/papers/alpha-beta-pruning/
+
 [CSL21]:  https://drops.dagstuhl.de/entities/volume/LIPIcs-volume-183
 [FSCD21]: https://fscd2021.dc.uba.ar/
 [LICS21]: https://easyconferences.eu/lics2021/
